@@ -66,43 +66,58 @@ function makePillar(
     xunKong: xunKong(ganZhi),
     ganElement: STEM_ELEMENT[gan] ?? "土",
     zhiElement: BRANCH_ELEMENT[zhi] ?? "土",
+    ready: true,
+  };
+}
+
+function blankTimePillar(): Pillar {
+  return {
+    key: "time",
+    label: "時柱",
+    gan: "",
+    zhi: "",
+    ganZhi: "未定",
+    nayin: "—",
+    shiShenGan: "—",
+    hide: [],
+    diShi: "—",
+    xunKong: "—",
+    ganElement: "土",
+    zhiElement: "土",
+    ready: false,
   };
 }
 
 function scoreElements(pillars: Pillar[]): ElementScores {
   const s = EMPTY_ELEMENTS();
   for (const p of pillars) {
-    s[p.ganElement] += p.key === "day" ? 10 : 8;
-    p.hide.forEach((h, i) => {
-      const w = p.key === "month" ? (i === 0 ? 12 : 5) : i === 0 ? 6 : 3;
-      s[h.element] += w;
-    });
+    if (!p.ready) continue;
+    s[p.ganElement] += 1;
+    for (const h of p.hide) s[h.element] += 1;
   }
   return s;
 }
 
-function percents(scores: ElementScores): ElementScores {
-  const total = Object.values(scores).reduce((a, b) => a + b, 0) || 1;
-  const out = EMPTY_ELEMENTS();
-  (Object.keys(out) as Element[]).forEach((k) => {
-    out[k] = Math.round((scores[k] / total) * 100);
-  });
-  return out;
+function percents(_scores: ElementScores): ElementScores {
+  return EMPTY_ELEMENTS();
 }
 
 function judgeStrength(dayEl: Element, monthZhi: string, pillars: Pillar[]): Strength {
   const monthEl = BRANCH_ELEMENT[monthZhi] ?? "土";
   const deLing = monthEl === dayEl || ELEMENT_GENERATES[monthEl] === dayEl;
-  const dayP = pillars.find((p) => p.key === "day");
+  const known = pillars.filter((p) => p.ready);
+  const dayP = known.find((p) => p.key === "day");
   const deDi = Boolean(
     dayP && (dayP.zhiElement === dayEl || dayP.hide.some((h) => h.element === dayEl)),
   );
-  const helpers = pillars.filter((p) => p.key !== "day").filter((p) => p.ganElement === dayEl || p.ganElement === ELEMENT_MOTHER[dayEl]).length;
+  const helpers = known
+    .filter((p) => p.key !== "day")
+    .filter((p) => p.ganElement === dayEl || p.ganElement === ELEMENT_MOTHER[dayEl]).length;
   const deShi = helpers >= 2;
   const hits = [deLing, deDi, deShi].filter(Boolean).length;
   const tendency = hits >= 2 ? "偏旺" : hits === 1 ? "中和偏旺或中和" : "偏弱";
   const season = SEASON_OF_BRANCH[monthZhi] ?? "四季";
-  const summary = `日主得令${deLing ? "成立" : "不足"}、得地${deDi ? "成立" : "不足"}、得勢${deShi ? "成立" : "不足"}；月令屬${season}，此為旺衰底盤，仍須看調候、格局與流通。`;
+  const summary = `日主得令${deLing ? "成立" : "不足"}、得地${deDi ? "成立" : "不足"}、得勢${deShi ? "成立" : "不足"}；月令屬${season}。此為旺衰底盤，不是完整子平，仍須看調候、格局與流通。`;
   return { tendency, summary, deLing, deDi, deShi };
 }
 
@@ -124,18 +139,19 @@ function civilToUtc(y: number, m: number, d: number, h: number, min: number, tzO
 }
 
 export function buildChart(input: AnalyzeInput): Chart {
+  const timeUnknown = input.timeUnknown;
   let y = input.year;
   let m = input.month;
   let d = input.day;
-  let h = input.timeUnknown ? 12 : input.hour;
-  let min = input.timeUnknown ? 0 : input.minute;
+  let h = timeUnknown ? 12 : input.hour;
+  let min = timeUnknown ? 0 : input.minute;
 
   const birthLocal = new Date(y, m - 1, d, h, min, 0);
   const tzOff = timezoneOffsetHours(input.city.timezone, birthLocal);
   let shiftMinutes = 0;
   let usedTrueSolar = false;
 
-  if (input.useTrueSolar && !input.timeUnknown) {
+  if (input.useTrueSolar && !timeUnknown) {
     const ts = toTrueSolar({
       year: y,
       month: m,
@@ -157,7 +173,7 @@ export function buildChart(input: AnalyzeInput): Chart {
   let dayY = y;
   let dayM = m;
   let dayD = d;
-  if (input.ziPolicy === "late" && h >= 23) {
+  if (!timeUnknown && input.ziPolicy === "late" && h >= 23) {
     const n = addCivilDays(dayY, dayM, dayD, 1);
     dayY = n.year;
     dayM = n.month;
@@ -167,7 +183,7 @@ export function buildChart(input: AnalyzeInput): Chart {
   const dayGz = dayGanzhi(dayY, dayM, dayD);
   const next = addCivilDays(dayY, dayM, dayD, 1);
   const nextDayGz = dayGanzhi(next.year, next.month, next.day);
-  const timeGz = hourPillar(dayGz, h, nextDayGz);
+  const timeGz = timeUnknown ? "" : hourPillar(dayGz, h, nextDayGz);
 
   const instant = civilToUtc(y, m, d, h, min, tzOff);
   const ym = yearMonthPillars(instant);
@@ -177,7 +193,7 @@ export function buildChart(input: AnalyzeInput): Chart {
     makePillar("year", "年柱", ym.year, dayStem),
     makePillar("month", "月柱", ym.month, dayStem),
     makePillar("day", "日柱", dayGz, dayStem),
-    makePillar("time", "時柱", timeGz, dayStem),
+    timeUnknown || !timeGz ? blankTimePillar() : makePillar("time", "時柱", timeGz, dayStem),
   ];
 
   const dayMaster = dayStem;
@@ -189,7 +205,7 @@ export function buildChart(input: AnalyzeInput): Chart {
 
   const nowYear = new Date().getFullYear();
   let dayun: DayunPeriod[] = [];
-  if (input.gender !== "unspecified") {
+  if (input.gender !== "unspecified" && !timeUnknown) {
     dayun = dayunPeriods({
       yearGz: ym.year,
       monthGz: ym.month,
@@ -202,6 +218,16 @@ export function buildChart(input: AnalyzeInput): Chart {
   }
   const currentDayun = dayun.find((x) => x.current) ?? null;
   const liveLat = input.liveCity?.latitude ?? input.city.latitude;
+  const civilStamp = timeUnknown
+    ? `${input.year}-${String(input.month).padStart(2, "0")}-${String(input.day).padStart(2, "0")} 時辰未定`
+    : stamp(input.year, input.month, input.day, input.hour, input.minute);
+  const trueSolarStamp = timeUnknown ? "時辰未定，真太陽時不作校正" : stamp(y, m, d, h, min);
+  const minggong = timeUnknown || !timeGz ? "未定" : mingGong(ym.year, monthBranch, timeGz[1]);
+  const provenance = timeUnknown
+    ? `時辰未定：年月柱按當日正午取節氣，日柱按公曆日，時柱、命宮、大運起運留白，不偽造午時柱。子時政策不套用。`
+    : usedTrueSolar
+      ? `民用時間 ${stamp(input.year, input.month, input.day, input.hour, input.minute)}（${input.city.timezone}）經經度 ${input.city.longitude.toFixed(2)}°、均時差與時區校正，真太陽時 ${stamp(y, m, d, h, min)}，偏移約 ${shiftMinutes} 分鐘。節氣取太陽黃經，子時政策：${input.ziPolicy === "late" ? "晚子換日" : "子時不換日"}。`
+      : `按出生地民用時間排盤，未套用真太陽時。子時政策：${input.ziPolicy === "late" ? "晚子換日" : "子時不換日"}。`;
 
   return {
     pillars,
@@ -209,8 +235,8 @@ export function buildChart(input: AnalyzeInput): Chart {
     dayMasterElement,
     monthBranch,
     lunarDate: lunarDateLabel(input.year, input.month, input.day),
-    civilStamp: stamp(input.year, input.month, input.day, input.timeUnknown ? 12 : input.hour, input.timeUnknown ? 0 : input.minute),
-    trueSolarStamp: stamp(y, m, d, h, min),
+    civilStamp,
+    trueSolarStamp,
     timezone: input.city.timezone,
     cityLabel: input.city.display,
     liveCityLabel: input.liveCity?.display ?? null,
@@ -218,21 +244,20 @@ export function buildChart(input: AnalyzeInput): Chart {
     hemisphere: liveLat < 0 ? "S" : "N",
     ziPolicy: input.ziPolicy,
     usedTrueSolar,
-    timeUnknown: input.timeUnknown,
+    timeUnknown,
     gender: input.gender,
     elements,
     elementPercents: percents(elements),
     strength,
     useful,
     drain,
+    usefulProvisional: true,
     dayun,
     currentDayun,
     currentYear: yearMonthPillars(new Date()).year,
     taiyuan: taiYuan(ym.month),
-    minggong: mingGong(ym.year, monthBranch, timeGz[1]),
-    provenance: usedTrueSolar
-      ? `民用時間 ${stamp(input.year, input.month, input.day, input.hour, input.minute)}（${input.city.timezone}）經經度 ${input.city.longitude.toFixed(2)}°、均時差與時區校正，真太陽時 ${stamp(y, m, d, h, min)}，偏移約 ${shiftMinutes} 分鐘。節氣取太陽黃經，子時政策：${input.ziPolicy === "late" ? "晚子換日" : "子時不換日"}。`
-      : `按出生地民用時間排盤，未套用真太陽時。子時政策：${input.ziPolicy === "late" ? "晚子換日" : "子時不換日"}。`,
+    minggong,
+    provenance,
   };
 }
 

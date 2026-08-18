@@ -143,14 +143,20 @@ export const writeFullReport = createServerFn({ method: "POST" })
     if (!apiKey) return { text: fallback, source: "rule" as const };
 
     const detail = data.chart.pillars
-      .map((col) => `${col.label}${col.ganZhi} 十神${col.shiShenGan} 納音${col.nayin} 長生${col.diShi} 藏干${col.hide.map((h) => h.gan + h.shiShen).join("")}`)
+      .map((col) =>
+        col.ready === false || col.ganZhi === "未定"
+          ? `${col.label}未定`
+          : `${col.label}${col.ganZhi} 十神${col.shiShenGan} 納音${col.nayin} 長生${col.diShi} 藏干${col.hide.map((h) => h.gan + h.shiShen).join("")}`,
+      )
       .join("；");
     const prompt = `你是「昭梧」。客人花時間把出生資料和真正的問題交給你，你必須像看著這個人說話，不能像在寫免責聲明。
 
 硬規則：
 - 第一句就回答問題，給判斷，不要先寫「不保證」「資料不足」「難以判斷」「僅供參考」「要看更多」。
-- 缺性別、缺出生時辰、缺大運時：用原局＋流年＋日支照樣下判斷，把現有的盤用盡。禁止說資料不夠。
+- 有多少可靠資料就判多少。時辰未定：時柱、命宮、真太陽時、大運起運一律留白，禁止用正午冒充時柱。缺性別：大運留白。依賴缺失欄位的結論必須留白。
+- 已有的年柱、月令、日主、日支必須用盡。
 - 把客人的原話嵌進開頭。點出至少兩件「他看了會覺得被說中」的具體習慣，必須能從日主、日支、月令、十神推出來，不要寫誰都適用的空話。
+- 禁止五行百分比、禁止數十神個數定旺衰、禁止把粗候選寫成確定喜用神。
 - 禁止算命腔、禁止保證某月必發生某事、禁止醫療診斷與康復日期、禁止點名具體股票或官司輸贏。
 - 健康題：指出他如何硬撐、恢復從哪裡先壞，並清楚寫「已有痛、失眠、掉力就去看醫生」。
 - 選擇題：必須選邊，並說明為什麼另一邊現在吃虧。
@@ -162,9 +168,9 @@ export const writeFullReport = createServerFn({ method: "POST" })
 四柱明細：${detail}
 日主：${data.chart.dayMaster}${data.chart.dayMasterElement}
 月令：${data.chart.monthBranch}
-旺衰：${data.chart.strength.tendency}。${data.chart.strength.summary}
-喜用：${data.chart.useful.join("、")}　洩耗：${data.chart.drain.join("、")}
-大運：${data.chart.currentDayun ? `${data.chart.currentDayun.ganZhi} ${data.chart.currentDayun.startYear}-${data.chart.currentDayun.endYear}（${data.chart.currentDayun.startAge}–${data.chart.currentDayun.endAge}歲）` : `以流年${data.chart.currentYear}為今年天氣`}
+旺衰底盤：${data.chart.strength.tendency}。${data.chart.strength.summary}
+流通粗候選（待覆核）：${data.chart.useful.join("、")}　暫不必放大：${data.chart.drain.join("、")}
+大運：${data.chart.currentDayun ? `${data.chart.currentDayun.ganZhi} ${data.chart.currentDayun.startYear}-${data.chart.currentDayun.endYear}（${data.chart.currentDayun.startAge}–${data.chart.currentDayun.endAge}歲）` : data.chart.timeUnknown ? "時辰未定，大運起運留白" : `以流年${data.chart.currentYear}為今年天氣`}
 流年：${data.chart.currentYear}
 胎元／命宮：${data.chart.taiyuan}／${data.chart.minggong}
 出生地：${data.chart.cityLabel}

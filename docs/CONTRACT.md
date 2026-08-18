@@ -30,7 +30,7 @@ AnalyzeInput
 |---|---|---|
 | question | string | 必填，trim 後 ≤ 400 |
 | year/month/day | int | 1900–2100，日須落在該月 |
-| hour | 0–23 | `timeUnknown=true` 時強制 12 |
+| hour | 0–23 | `timeUnknown=true` 時 `parseInput` 填 12 **只供節氣取年月柱**；`chart.ts` 必須留白時柱／命宮／大運，**禁止偽造午時柱** |
 | minute | 0–59 | `timeUnknown=true` 時強制 0 |
 | gender | male \| female \| unspecified | 缺則無大運、一掌經整盤不作判定 |
 | relation | any \| hetero \| same \| unset | 只影響感情透鏡，不改盤 |
@@ -130,7 +130,9 @@ hourBranchOf(h) = BRANCHES[floor(((h+1) mod 24) / 2)]
 | 歲運 | 要 | 有大運＋流年干支；沒有歲運作用鏈 |
 
 旺衰：得令／得地／得勢，hits≥2 偏旺，=1 中和，=0 偏弱。  
-**禁止**用五行百分比當主判。`elementPercents` 只是內部計分，正文不得寫「木 32% 所以補木」。
+**禁止**用五行百分比當主判。`elementPercents` 必須全 0，不得進結果頁，正文不得寫「木 32% 所以補木」。`useful`／`drain` 只准標成「流通粗候選（待覆核）」，不得寫成確定喜用神。
+
+`timeUnknown=true`：年月柱可按當日正午取節氣；時柱 `ready=false`、`ganZhi=未定`；命宮、真太陽時、大運起運、晚子換日一律留白。
 
 月令 = 太陽黃經節氣月，不是公曆月。1988-10-04 必須是酉月，不是戌月。
 

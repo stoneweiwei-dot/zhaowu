@@ -28,6 +28,10 @@ function joinEl(els: Element[]): string {
   return els.join("、");
 }
 
+function isReady(col: Pillar): boolean {
+  return col.ready !== false && col.ganZhi !== "未定" && Boolean(col.gan);
+}
+
 function p(chart: Chart, key: Pillar["key"]): Pillar {
   return chart.pillars.find((x) => x.key === key) ?? chart.pillars[0];
 }
@@ -76,6 +80,7 @@ const GOD_WORK: Record<string, string> = {
 function countGods(chart: Chart): Record<string, number> {
   const bag: Record<string, number> = {};
   for (const col of chart.pillars) {
+    if (!isReady(col)) continue;
     if (col.key !== "day") {
       bag[col.shiShenGan] = (bag[col.shiShenGan] ?? 0) + 2;
     }
@@ -132,7 +137,10 @@ function weather(chart: Chart): string {
     const d = chart.currentDayun;
     return `你此刻走${d.ganZhi}大運（${d.startYear}–${d.endYear}），今年流年${chart.currentYear}正在引動原局。`;
   }
-  return `今年流年${chart.currentYear}正在引動原局。近一年的天氣已經夠用來判斷，不必再等一張「更完整的盤」。`;
+  if (chart.timeUnknown) {
+    return `今年流年${chart.currentYear}正在引動原局。時辰未定，大運起運與時柱留白，判斷只掛年日月。`;
+  }
+  return `今年流年${chart.currentYear}正在引動原局。`;
 }
 
 function clipQuestion(q: string): string {
@@ -196,6 +204,8 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
   const timeP = p(chart, "time");
   const yearP = p(chart, "year");
   const useful = joinEl(chart.useful);
+  const usefulLine = useful ? `調候粗候選是${useful}（待完整子平覆核，不是喜用神定論）` : "流通候選未定";
+  const timeLine = isReady(timeP) ? `時柱${timeP.ganZhi}是你出力的方式` : "時柱未定，出力方式先不寫死";
   const guide = guideFrom(chart);
   const god = topGod(chart);
   const stemTell = STEM_TELL[chart.dayMaster] ?? nature;
@@ -232,10 +242,10 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
       directAnswer = `你問「${q}」，結論先講：值得推進的，是已經連續回應你、並且進得了日支「${dayP.zhi}」這間房子的人；只興奮、不落地的，耗掉你的注意力。${stemTell}。${loveLens(chart, relation)}${now}接下來三十天，只核對一件事：對方有沒有主動把下一次見面或把話說清楚。有，就往前走一步；沒有，就停在這裡，不要再加碼解釋自己。`;
       break;
     case "career":
-      directAnswer = `你問「${q}」，結論是：職能要靠近「${ELEMENT_LABEL[chart.dayMasterElement]}」，盤面上最重的十神是${god}——${GOD_WORK[god] ?? "把判斷做成可交付物"}。${stemTell}。月令${monthP.zhi}是你做事的氣候，時柱${timeP.ganZhi}是你出力的方式。${now}${strong ? "你現在不是缺機會，是機會太多、出口太少。先把正在做的事收成一件能給外人看的作品。" : "你現在不宜空跳。先找一個能托住你、能署名、能重複使用的位置，再談轉場。"}三十天內只交一件可核對的成果。`;
+      directAnswer = `你問「${q}」，結論是：職能要靠近「${ELEMENT_LABEL[chart.dayMasterElement]}」，月令${monthP.zhi}下較活躍的十神是${god}（粗算，要掛回月令與透藏，不是數個數）——${GOD_WORK[god] ?? "把判斷做成可交付物"}。${stemTell}。${timeLine}。${now}${strong ? "你現在不是缺機會，是機會太多、出口太少。先把正在做的事收成一件能給外人看的作品。" : "你現在不宜空跳。先找一個能托住你、能署名、能重複使用的位置，再談轉場。"}三十天內只交一件可核對的成果。`;
       break;
     case "money":
-      directAnswer = `你問「${q}」，錢的結論很硬：你比較容易從「把${ELEMENT_LABEL[chart.dayMasterElement]}做成可交付成果」進來，不容易從追漲、頻繁換方向進來。${stemTell}。年柱${yearP.ganZhi}（${yearP.nayin}）是你看待資源的底色，盤面喜用是${useful}。${now}這個月只做一件財務動作：列出主收入、真實時薪、退出成本。數字出來之前，不要再開下一條線。`;
+      directAnswer = `你問「${q}」，錢的結論很硬：你比較容易從「把${ELEMENT_LABEL[chart.dayMasterElement]}做成可交付成果」進來，不容易從追漲、頻繁換方向進來。${stemTell}。年柱${yearP.ganZhi}（${yearP.nayin}）是你看待資源的底色。${usefulLine}。${now}這個月只做一件財務動作：列出主收入、真實時薪、退出成本。數字出來之前，不要再開下一條線。`;
       break;
     case "choice":
       directAnswer = `你問「${q}」。${leanChoice(question, chart)}${stemTell}。月令${monthP.zhi}、日支${dayP.zhi}告訴我：你不是不會選，是選完以後還在心裡替另一條路辦喪事。${now}選完的七天內，只服務被選中的那一條，另一條寫在紙上封起來。`;
@@ -244,11 +254,11 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
       directAnswer = `你問「${q}」，時間窗口就是現在這一截：流年${chart.currentYear}${chart.currentDayun ? `叠在${chart.currentDayun.ganZhi}大運上` : ""}。不是某一個「必成之日」，是機會開始具體、阻力下降、你可以試三十天而不必燒船的時候。${stemTell}。${now}${strong ? "窗口已經在眼前，再等，是把熱度耗掉。" : "先把托住你的那一塊補上，窗口才接得住；補的同時就可以小規模試，不必空等明年。"}`;
       break;
     default:
-      directAnswer = `你問「${q}」。先看見自己：${stemTell}。日支${dayP.zhi}——${branchTell}。四柱是 ${chart.pillars.map((x) => x.ganZhi).join("　")}，日主${chart.dayMaster}${chart.dayMasterElement}，月令${monthP.zhi}，旺衰是${chart.strength.tendency}，流通要的是${useful}。${now}你真正的功課不是再找一句更準的批語，而是把已經知道的那件事做成七天的行為。命局不會因一句話消失，可被你改的是：出口、邊界、以及你願不願意讓別人看見半成品。`;
+      directAnswer = `你問「${q}」。先看見自己：${stemTell}。日支${dayP.zhi}——${branchTell}。已排定的柱是 ${chart.pillars.filter(isReady).map((x) => x.ganZhi).join("　")}，日主${chart.dayMaster}${chart.dayMasterElement}，月令${monthP.zhi}，旺衰底盤是${chart.strength.tendency}。${usefulLine}。${now}你真正的功課不是再找一句更準的批語，而是把已經知道的那件事做成七天的行為。命局不會因一句話消失，可被你改的是：出口、邊界、以及你願不願意讓別人看見半成品。`;
   }
 
 
-  const rhythm = `人生節奏以${chart.dayMaster}${chart.dayMasterElement}為軸，在${monthP.zhi}月令裡展開。年柱${yearP.ganZhi}（${yearP.nayin}）是底色，日支${dayP.zhi}是每天回家會碰到的自己，時柱${timeP.ganZhi}（十二長生在${timeP.diShi}）是你真正出力的方式。${stemTell}。${strong ? `盤面偏滿，出口比進補重要：把${useful}做成流通，而不是再往自己身上加責任。` : `盤面需要先被托住：先補${useful}所代表的人、節奏與環境，再談擴張。`}穩定不是停住，是讓每一次選擇都有落點。`;
+  const rhythm = `人生節奏以${chart.dayMaster}${chart.dayMasterElement}為軸，在${monthP.zhi}月令裡展開。年柱${yearP.ganZhi}（${yearP.nayin}）是底色，日支${dayP.zhi}是每天回家會碰到的自己。${timeLine}。${stemTell}。${strong ? `盤面偏滿，出口比進補重要。${usefulLine}。` : `盤面需要先被托住。${usefulLine}。`}穩定不是停住，是讓每一次選擇都有落點。`;
 
   const work = `${GOD_WORK[god] ?? "把判斷做成可交付物"}。你吃香的是能看見成果、能複用、能署名的位置；一進「責任很大、產出卻說不清」的房間，你的${chart.dayMasterElement}就會先耗掉。今明兩步：選一項技能做成外人看得懂的交付物，並算清它能不能重複賣。`;
   const love = `${loveLens(chart, relation)}你容易先消化再開口。把隱含期待改成一句可協商的話，比再找一個會讀心的人準。三十天只看連續性，不看宣言。`;
@@ -304,6 +314,7 @@ export function composeFullReport(question: string, chart: Chart, reading: Readi
     pillars,
     `日主 ${chart.dayMaster}${chart.dayMasterElement}　月令 ${chart.monthBranch}　胎元 ${chart.taiyuan}　命宮 ${chart.minggong}`,
     chart.strength.summary,
+    chart.usefulProvisional ? `流通粗候選：${chart.useful.join("、") || "—"}（待完整子平覆核）` : null,
     "",
     "三、你的整體人生節奏",
     reading.rhythm,

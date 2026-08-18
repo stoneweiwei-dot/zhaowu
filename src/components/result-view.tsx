@@ -1,20 +1,12 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { saveReport, writeFullReport } from "@/lib/actions";
-import type { AnalysisResult, Element } from "@/lib/bazi/types";
+import type { AnalysisResult } from "@/lib/bazi/types";
+import type { MethodProtocol, PalmReading } from "@/lib/core/types";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { Mark } from "@/components/marks";
-import type { MethodProtocol, PalmReading } from "@/lib/core/types";
-
-const EL_CLASS: Record<Element, string> = {
-  木: "bg-wood/15 text-wood",
-  火: "bg-fire/15 text-fire",
-  土: "bg-earth/15 text-earth",
-  金: "bg-metal/15 text-metal",
-  水: "bg-water/15 text-water",
-};
 
 export function ResultView({ result }: { result: AnalysisResult }) {
   const { t } = useI18n();
@@ -77,40 +69,37 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           <p className="text-sm text-ink-mute">{chart.lunarDate}</p>
         </div>
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {chart.pillars.map((p) => (
+          {chart.pillars.map((p) => {
+            const ready = p.ready !== false && p.ganZhi !== "未定" && Boolean(p.gan);
+            return (
             <div key={p.key} className="rounded-md border border-line bg-paper/50 p-3 text-center">
               <p className="text-xs tracking-[0.2em] text-ink-mute">{p.label}</p>
               <p className="mt-1 font-display text-3xl tracking-[0.12em]">
-                {p.gan}
-                {p.zhi}
+                {ready ? `${p.gan}${p.zhi}` : "未定"}
               </p>
-              <p className="mt-2 text-xs text-cinnabar">{p.shiShenGan}</p>
-              <p className="text-xs text-ink-mute">{p.nayin}</p>
-              <p className="mt-2 text-[11px] text-ink-soft">
-                {t("hide")} {p.hide.map((h) => `${h.gan}${h.shiShen}`).join(" ")}
-              </p>
-              <p className="text-[11px] text-ink-mute">
-                {t("dishi")} {p.diShi} · {t("xunkong")} {p.xunKong}
-              </p>
+              {ready ? (
+                <>
+                  <p className="mt-2 text-xs text-cinnabar">{p.shiShenGan}</p>
+                  <p className="text-xs text-ink-mute">{p.nayin}</p>
+                  <p className="mt-2 text-[11px] text-ink-soft">
+                    {t("hide")} {p.hide.map((h) => `${h.gan}${h.shiShen}`).join(" ")}
+                  </p>
+                  <p className="text-[11px] text-ink-mute">
+                    {t("dishi")} {p.diShi} · {t("xunkong")} {p.xunKong}
+                  </p>
+                </>
+              ) : (
+                <p className="mt-2 text-xs leading-6 text-ink-mute">時辰未定，不偽造午時。</p>
+              )}
             </div>
-          ))}
+            );
+          })}
         </div>
         <p className="mt-4 text-xs leading-6 text-ink-mute">{chart.provenance}</p>
       </article>
 
       <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("wuxing")}</p>
-        <div className="mt-4 space-y-2">
-          {(Object.keys(chart.elementPercents) as Element[]).map((el) => (
-            <div key={el} className="flex items-center gap-3">
-              <span className={`w-8 rounded-sm px-1 text-center text-sm ${EL_CLASS[el]}`}>{el}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-paper-deep">
-                <div className={`h-full ${EL_CLASS[el]}`} style={{ width: `${chart.elementPercents[el]}%` }} />
-              </div>
-              <span className="w-10 text-right text-sm tabular-nums text-ink-soft">{chart.elementPercents[el]}%</span>
-            </div>
-          ))}
-        </div>
         <p className="mt-4 text-sm leading-7 text-ink-soft">{chart.strength.summary}</p>
         <p className="mt-3 text-sm text-ink-soft">
           {t("useful")}：{chart.useful.join("、")}　{t("drain")}：{chart.drain.join("、")}

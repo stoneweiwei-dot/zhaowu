@@ -32,6 +32,7 @@ export type Pillar = {
   xunKong: string;
   ganElement: Element;
   zhiElement: Element;
+  ready: boolean;
 };
 
 export type DayunPeriod = {
@@ -100,6 +101,7 @@ export type Chart = {
   strength: Strength;
   useful: Element[];
   drain: Element[];
+  usefulProvisional: boolean;
   dayun: DayunPeriod[];
   currentDayun: DayunPeriod | null;
   currentYear: string;
