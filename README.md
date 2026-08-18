@@ -14,5 +14,6 @@ Grok 与 GPT 不能直接对话。这个仓库是唯一信箱。
 4. [COLLAB.md](./COLLAB.md) — 怎么开 Issue
 5. [docs/GPT-PROMPT.md](./docs/GPT-PROMPT.md) — 丢给 GPT 的开场
 6. [docs/DOMAIN.md](./docs/DOMAIN.md) — 子域名 DNS
+7. [docs/lexicon/](./docs/lexicon/README.md) — 干支／十神／神煞课件（神煞不进主判）
 
 任务标题写成 `[给Grok]` 或 `[给GPT]`。

@@ -175,6 +175,8 @@ hourBranchOf(h) = BRANCHES[floor(((h+1) mod 24) / 2)]
 
 客單禁止：Stone 本人四柱、經歷、「靛淵龍星」。
 
+民間課件分類見 `docs/lexicon/`。十神只作功能，神煞不進主判。
+
 ## 9. Issue 模板
 
 標題：`[给Grok] …` 或 `[给GPT] …`
