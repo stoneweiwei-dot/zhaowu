@@ -1,0 +1,24 @@
+.intro-crane {
+  position: absolute;
+  left: -18vw;
+  top: 27%;
+  z-index: 2;
+  color: rgba(255, 241, 214, 0.76);
+  font-family: "Iowan Old Style", "Baskerville", serif;
+  font-size: clamp(3.4rem, 15vw, 7rem);
+  line-height: 1;
+  transform: rotate(-8deg) scaleX(1.7);
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,.28));
+  animation: intro-crane-flight 3.4s cubic-bezier(.2,.66,.35,1) .45s both;
+}
+
+@keyframes intro-crane-flight {
+  0% { left: -22vw; top: 38%; opacity: 0; transform: rotate(-12deg) scaleX(1.45) scale(.82); }
+  18% { opacity: .72; }
+  58% { top: 25%; opacity: .9; }
+  100% { left: 108vw; top: 16%; opacity: 0; transform: rotate(3deg) scaleX(1.7) scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-crane { display: none; }
+}
