@@ -21,7 +21,7 @@ jobs:
       - name: Build and typecheck
         run: npm run build
       - name: Locked engine acceptance vectors
-        run: node scripts/engine-acceptance.test.mjs
+        run: npm run test:engine
       - name: Package verified deploy source
         uses: actions/upload-artifact@v4
         with:
