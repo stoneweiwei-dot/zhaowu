@@ -4,6 +4,7 @@ import { test } from "node:test";
 const { buildPalm } = await import("../src/lib/palm/engine.ts");
 const { buildChart } = await import("../src/lib/bazi/chart.ts");
 const { FEATURED_CITIES } = await import("../src/lib/bazi/cities.ts");
+const { interpret, composeFullReport } = await import("../src/lib/bazi/interpret.ts");
 
 const TAIPEI = FEATURED_CITIES[0];
 
@@ -92,4 +93,24 @@ test("elementPercents 不得作为判定：必须全 0", () => {
   const chart = buildChart(sample());
   assert.deepEqual(chart.elementPercents, { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 });
   assert.equal(chart.usefulProvisional, true);
+});
+
+test("流通粗候选不得派生颜色、方位、时段或宠物结论", () => {
+  const question = "我适合什么颜色、方位和生活节奏？";
+  const chart = buildChart(sample({ question }));
+  const reading = interpret(question, chart, "unset", null);
+  const report = composeFullReport(question, chart, reading, null);
+
+  assert.equal(chart.usefulProvisional, true);
+  assert.deepEqual(reading.guide.colors, []);
+  assert.deepEqual(reading.guide.avoidColors, []);
+  assert.deepEqual(reading.guide.directions.favor, []);
+  assert.deepEqual(reading.guide.directions.rest, []);
+  assert.deepEqual(reading.guide.hours.favor, []);
+  assert.deepEqual(reading.guide.hours.drain, []);
+  assert.equal(reading.guide.pet, "");
+  assert.match(report, /正式取用尚未完成/);
+  assert.doesNotMatch(report, /較有利顏色：/);
+  assert.doesNotMatch(report, /較有利方位：/);
+  assert.doesNotMatch(report, /寵物取象：/);
 });
