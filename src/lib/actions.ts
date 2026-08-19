@@ -1,8 +1,5 @@
-import { createServerFn } from "@tanstack/react-start";
-import { authMiddleware } from "@/lib/auth/middleware";
-import { getSql } from "@/lib/db";
 import { FEATURED_CITIES, filterFeatured } from "@/lib/bazi/cities";
-import type { AnalysisResult, AnalyzeInput, CityHit, SavedReport } from "@/lib/bazi/types";
+import type { AnalysisResult, AnalyzeInput, CityHit } from "@/lib/bazi/types";
 
 function newId(): string {
   return crypto.randomUUID();
@@ -52,258 +49,108 @@ function parseInput(raw: AnalyzeInput): AnalyzeInput {
   };
 }
 
-export const getAlmanac = createServerFn({ method: "GET" }).handler(async () => {
+/**
+ * Client-safe runtime layer.
+ *
+ * The deterministic chart / palm / routing engines are pure TypeScript, so they
+ * do not need a server function. Keeping these calls in the browser means the
+ * production Netlify deployment remains usable even when no Netlify Functions
+ * are present. Secrets are never exposed here: the full-report path intentionally
+ * uses the deterministic rule composer only.
+ */
+export async function getAlmanac() {
   const { currentAlmanac } = await import("@/lib/bazi/chart");
   return currentAlmanac(new Date());
-});
+}
 
-export const searchCities = createServerFn({ method: "GET" })
-  .validator((q: string) => String(q ?? "").trim().slice(0, 40))
-  .handler(async ({ data: q }) => {
-    const local = filterFeatured(q);
-    if (!q || q.length < 2) return local;
-    try {
-      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=zh`;
-      const res = await fetch(url);
-      if (!res.ok) return local;
-      const body = (await res.json()) as {
-        results?: {
-          name: string;
-          country?: string;
-          admin1?: string;
-          latitude: number;
-          longitude: number;
-          timezone?: string;
-        }[];
-      };
-      const remote: CityHit[] = (body.results ?? []).map((r) => ({
-        name: r.name,
-        country: r.country ?? "",
-        display: [r.name, r.admin1, r.country].filter(Boolean).join("，"),
-        latitude: r.latitude,
-        longitude: r.longitude,
-        timezone: r.timezone || "UTC",
-      }));
-      const seen = new Set<string>();
-      const merged: CityHit[] = [];
-      for (const item of [...local, ...remote]) {
-        const key = `${item.display}-${item.latitude.toFixed(2)}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        merged.push(item);
-      }
-      return merged.slice(0, 8);
-    } catch {
-      return local.length ? local : FEATURED_CITIES.slice(0, 6);
-    }
-  });
+export async function searchCities({ data }: { data: string }): Promise<CityHit[]> {
+  const q = String(data ?? "").trim().slice(0, 40);
+  const local = filterFeatured(q);
+  if (!q || q.length < 2) return local;
 
-export const analyzeLife = createServerFn({ method: "POST" })
-  .validator((input: AnalyzeInput) => parseInput(input))
-  .handler(async ({ data }) => {
-    const { buildChart } = await import("@/lib/bazi/chart");
-    const { interpret, classifyQuestion } = await import("@/lib/bazi/interpret");
-    const { buildPalm } = await import("@/lib/palm/engine");
-    const { routeMethods } = await import("@/lib/core/method");
-    const chart = buildChart(data);
-    const palm = buildPalm({
-      year: data.year,
-      month: data.month,
-      day: data.day,
-      hour: data.hour,
-      timeUnknown: data.timeUnknown,
-      gender: data.gender,
-    });
-    const kind = classifyQuestion(data.question);
-    const methodProtocol = routeMethods(kind, {
-      palmReady: palm.ready,
-      palmMissing: palm.missing,
-    });
-    const reading = interpret(data.question, chart, data.relation, palm);
-    const result: AnalysisResult = {
-      id: newId(),
-      question: data.question,
-      chart,
-      reading,
-      createdAt: new Date().toISOString(),
-      methodProtocol,
-      palm,
+  try {
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=zh`;
+    const res = await fetch(url);
+    if (!res.ok) return local.length ? local : FEATURED_CITIES.slice(0, 6);
+    const body = (await res.json()) as {
+      results?: {
+        name: string;
+        country?: string;
+        admin1?: string;
+        latitude: number;
+        longitude: number;
+        timezone?: string;
+      }[];
     };
-    return result;
-  });
-
-export const writeFullReport = createServerFn({ method: "POST" })
-  .validator((payload: { question: string; chart: AnalysisResult["chart"]; reading: AnalysisResult["reading"]; palm?: AnalysisResult["palm"] }) => payload)
-  .handler(async ({ data }) => {
-    const { composeFullReport } = await import("@/lib/bazi/interpret");
-    const palm = data.palm ?? null;
-    const fallback = composeFullReport(data.question, data.chart, data.reading, palm);
-    if (data.reading.kind === "past") return { text: fallback, source: "rule" as const };
-    const apiKey = process.env.XAI_API_KEY;
-    if (!apiKey) return { text: fallback, source: "rule" as const };
-
-    const detail = data.chart.pillars
-      .map((col) =>
-        col.ready === false || col.ganZhi === "未定"
-          ? `${col.label}未定`
-          : `${col.label}${col.ganZhi} 十神${col.shiShenGan} 納音${col.nayin} 長生${col.diShi} 藏干${col.hide.map((h) => h.gan + h.shiShen).join("")}`,
-      )
-      .join("；");
-    const prompt = `你是「昭梧」。客人花時間把出生資料和真正的問題交給你，你必須像看著這個人說話，不能像在寫免責聲明。
-
-硬規則：
-- 第一句就回答問題，給判斷，不要先寫「不保證」「資料不足」「難以判斷」「僅供參考」「要看更多」。
-- 有多少可靠資料就判多少。時辰未定：時柱、命宮、真太陽時、大運起運一律留白，禁止用正午冒充時柱。缺性別：大運留白。依賴缺失欄位的結論必須留白。
-- 已有的年柱、月令、日主、日支必須用盡。
-- 把客人的原話嵌進開頭。點出至少兩件「他看了會覺得被說中」的具體習慣，必須能從日主、日支、月令、十神推出來，不要寫誰都適用的空話。
-- 禁止五行百分比、禁止數十神個數定旺衰、禁止把粗候選寫成確定喜用神。
-- usefulProvisional=true 時，流通粗候選不得再派生為顏色、方位、時段、寵物、擺設等生活取象結論；第 7 段只寫「正式取用尚未完成，待完整子平覆核」。
-- 禁止算命腔、禁止保證某月必發生某事、禁止醫療診斷與康復日期、禁止點名具體股票或官司輸贏。
-- 健康題：指出他如何硬撐、恢復從哪裡先壞，並清楚寫「已有痛、失眠、掉力就去看醫生」。
-- 選擇題：必須選邊，並說明為什麼另一邊現在吃虧。
-- 時間題：用流年、大運（有就用）指出「現在這一截」怎麼走，不編造必成之日。
-- 繁體中文。短句。像書院文書，不像廟祝。
-
-盤：
-問題：${data.question}
-四柱明細：${detail}
-日主：${data.chart.dayMaster}${data.chart.dayMasterElement}
-月令：${data.chart.monthBranch}
-旺衰底盤：${data.chart.strength.tendency}。${data.chart.strength.summary}
-流通粗候選（待覆核，不得派生生活建議）：${data.chart.useful.join("、")}　暫不必放大：${data.chart.drain.join("、")}
-取用狀態：${data.chart.usefulProvisional ? "usefulProvisional=true；正式取用未完成" : "正式取用可用"}
-大運：${data.chart.currentDayun ? `${data.chart.currentDayun.ganZhi} ${data.chart.currentDayun.startYear}-${data.chart.currentDayun.endYear}（${data.chart.currentDayun.startAge}–${data.chart.currentDayun.endAge}歲）` : data.chart.timeUnknown ? "時辰未定，大運起運留白" : `以流年${data.chart.currentYear}為今年天氣`}
-流年：${data.chart.currentYear}
-胎元／命宮：${data.chart.taiyuan}／${data.chart.minggong}
-出生地：${data.chart.cityLabel}
-真太陽時：${data.chart.trueSolarStamp}
-直答底稿（請在此基礎上寫得更準、更像在說這個人，不要更虛）：${data.reading.directAnswer}
-
-依序寫，固定九段，不得合併或少一段：
-1 你真正問的事（先給判斷）
-2 我憑什麼這樣說（點四柱，不要課堂講義）
-3 你的人生節奏
-4 你反覆出現的課題
-5 命誥
-6 工作／感情／財務／身心／家宅
-7 顏色、方位與時段（若 usefulProvisional=true，只寫正式取用尚未完成、待覆核；不得列具體顏色、方位、時段、寵物）
-8 一個最高優先行動
-9 最後一句話`;
-
-    try {
-      const res = await fetch("https://api.x.ai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "grok-4.5",
-          temperature: 0.55,
-          max_tokens: 2000,
-          messages: [{ role: "user", content: prompt }],
-        }),
-      });
-      if (!res.ok) return { text: fallback, source: "rule" as const };
-      const body = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-      const text = body.choices?.[0]?.message?.content?.trim();
-      if (!text) return { text: fallback, source: "rule" as const };
-      return { text, source: "ai" as const };
-    } catch {
-      return { text: fallback, source: "rule" as const };
+    const remote: CityHit[] = (body.results ?? []).map((r) => ({
+      name: r.name,
+      country: r.country ?? "",
+      display: [r.name, r.admin1, r.country].filter(Boolean).join("，"),
+      latitude: r.latitude,
+      longitude: r.longitude,
+      timezone: r.timezone || "UTC",
+    }));
+    const seen = new Set<string>();
+    const merged: CityHit[] = [];
+    for (const item of [...local, ...remote]) {
+      const key = `${item.display}-${item.latitude.toFixed(2)}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      merged.push(item);
     }
-  });
+    return merged.slice(0, 8);
+  } catch {
+    return local.length ? local : FEATURED_CITIES.slice(0, 6);
+  }
+}
 
-export const saveReport = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .validator((payload: { result: AnalysisResult; fullReport?: string | null }) => payload)
-  .handler(async ({ context, data }) => {
-    const sql = await getSql();
-    const id = data.result.id || newId();
-    const ganzhi = data.result.chart.pillars.map((p) => p.ganZhi).join(" ");
-    await sql`
-      insert into reports (id, user_id, question, city_label, day_master, ganzhi_line, chart_json, reading_json, full_report)
-      values (
-        ${id},
-        ${context.userId},
-        ${data.result.question},
-        ${data.result.chart.cityLabel},
-        ${data.result.chart.dayMaster},
-        ${ganzhi},
-        ${JSON.stringify(data.result.chart)},
-        ${JSON.stringify(data.result.reading)},
-        ${data.fullReport ?? null}
-      )
-    `;
-    return { id };
-  });
+export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promise<AnalysisResult> {
+  const data = parseInput(raw);
+  const [{ buildChart }, { interpret, classifyQuestion }, { buildPalm }, { routeMethods }] = await Promise.all([
+    import("@/lib/bazi/chart"),
+    import("@/lib/bazi/interpret"),
+    import("@/lib/palm/engine"),
+    import("@/lib/core/method"),
+  ]);
 
-export const listReports = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
-  .handler(async ({ context }) => {
-    const sql = await getSql();
-    const rows = await sql<{
-      id: string;
-      question: string;
-      city_label: string;
-      day_master: string;
-      ganzhi_line: string;
-      created_at: string;
-      full_report: string | null;
-    }>`
-      select id, question, city_label, day_master, ganzhi_line, created_at, full_report
-      from reports
-      where user_id = ${context.userId}
-      order by created_at desc
-    `;
-    return rows.map(
-      (r): SavedReport => ({
-        id: r.id,
-        question: r.question,
-        cityLabel: r.city_label,
-        dayMaster: r.day_master,
-        ganZhiLine: r.ganzhi_line,
-        createdAt: r.created_at,
-        hasFullReport: Boolean(r.full_report),
-      }),
-    );
+  const chart = buildChart(data);
+  const palm = buildPalm({
+    year: data.year,
+    month: data.month,
+    day: data.day,
+    hour: data.hour,
+    timeUnknown: data.timeUnknown,
+    gender: data.gender,
   });
+  const kind = classifyQuestion(data.question);
+  const methodProtocol = routeMethods(kind, {
+    palmReady: palm.ready,
+    palmMissing: palm.missing,
+  });
+  const reading = interpret(data.question, chart, data.relation, palm);
 
-export const loadReport = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
-  .validator((id: string) => id)
-  .handler(async ({ context, data: id }) => {
-    const sql = await getSql();
-    const rows = await sql<{
-      id: string;
-      question: string;
-      chart_json: string;
-      reading_json: string;
-      full_report: string | null;
-      created_at: string;
-    }>`
-      select id, question, chart_json, reading_json, full_report, created_at
-      from reports
-      where id = ${id} and user_id = ${context.userId}
-      limit 1
-    `;
-    const row = rows[0];
-    if (!row) return null;
-    const result: AnalysisResult = {
-      id: row.id,
-      question: row.question,
-      chart: JSON.parse(row.chart_json),
-      reading: JSON.parse(row.reading_json),
-      createdAt: row.created_at,
-    };
-    return { result, fullReport: row.full_report };
-  });
+  return {
+    id: newId(),
+    question: data.question,
+    chart,
+    reading,
+    createdAt: new Date().toISOString(),
+    methodProtocol,
+    palm,
+  };
+}
 
-export const deleteReport = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .validator((id: string) => id)
-  .handler(async ({ context, data: id }) => {
-    const sql = await getSql();
-    await sql`delete from reports where id = ${id} and user_id = ${context.userId}`;
-    return { ok: true as const };
-  });
+export async function writeFullReport({
+  data,
+}: {
+  data: {
+    question: string;
+    chart: AnalysisResult["chart"];
+    reading: AnalysisResult["reading"];
+    palm?: AnalysisResult["palm"];
+  };
+}) {
+  const { composeFullReport } = await import("@/lib/bazi/interpret");
+  const text = composeFullReport(data.question, data.chart, data.reading, data.palm ?? null);
+  return { text, source: "rule" as const };
+}
