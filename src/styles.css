@@ -16,7 +16,7 @@
   --color-earth: #9a7040;
   --color-metal: #6f6a60;
   --color-water: #3d5a6b;
-  --font-display: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --font-display: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "PMingLiU", serif;
   --font-sans: "Noto Sans TC", "PingFang TC", "Noto Sans", system-ui, sans-serif;
   --radius-xs: 4px;
   --radius-sm: 8px;
@@ -69,6 +69,131 @@
   box-shadow:
     0 0 0 1px var(--color-line),
     0 18px 50px rgb(60 42 20 / 0.1);
+}
+
+.hero-brand-card::before {
+  content: "";
+  position: absolute;
+  width: min(58vw, 360px);
+  aspect-ratio: 1;
+  right: -16%;
+  top: -28%;
+  border: 1px solid color-mix(in oklab, var(--color-line) 62%, transparent);
+  border-radius: 999px;
+  opacity: 0.58;
+  pointer-events: none;
+}
+
+.hero-brand-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(115deg, transparent 0 68%, rgb(143 48 39 / 0.025) 100%),
+    radial-gradient(circle at 86% 12%, rgb(154 112 64 / 0.08), transparent 32%);
+  pointer-events: none;
+}
+
+.hero-kicker {
+  color: var(--color-cinnabar);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.brand-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.08em;
+  font-family: "Songti SC", "STSong", "Noto Serif TC", "Noto Serif CJK TC", "PMingLiU", serif;
+  font-size: clamp(4rem, 14vw, 7rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: 0.08em;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  background: linear-gradient(135deg, var(--color-ink) 0 72%, var(--color-cinnabar-deep) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 7px 16px rgb(42 38 31 / 0.06));
+}
+
+.brand-wordmark span:last-child {
+  position: relative;
+  transform: translateY(0.08em);
+}
+
+.brand-wordmark span:last-child::after {
+  content: "";
+  position: absolute;
+  width: 0.16em;
+  height: 0.16em;
+  right: -0.2em;
+  top: -0.02em;
+  border-radius: 999px;
+  background: var(--color-cinnabar);
+  box-shadow: 0 0 0 5px rgb(143 48 39 / 0.08);
+}
+
+.brand-slogan {
+  max-width: 34rem;
+  font-family: "Songti SC", "STSong", "Noto Serif TC", "Noto Serif CJK TC", "PMingLiU", serif;
+  font-size: clamp(1.3rem, 5vw, 2rem);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.14em;
+  text-wrap: balance;
+}
+
+.brand-support {
+  font-family: "Songti SC", "STSong", "Noto Serif TC", "PMingLiU", serif;
+  font-size: clamp(1rem, 3.9vw, 1.18rem);
+  font-weight: 500;
+  line-height: 1.9;
+  letter-spacing: 0.065em;
+  text-wrap: balance;
+}
+
+.brand-english {
+  color: var(--color-ink-mute);
+  font-family: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
+  font-size: 0.75rem;
+  font-style: italic;
+  letter-spacing: 0.095em;
+}
+
+.brand-sign {
+  color: var(--color-cinnabar);
+  font-family: "Songti SC", "STSong", "Noto Serif TC", serif;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+}
+
+.brand-rule {
+  display: flex;
+  max-width: 19rem;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.brand-rule span {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, var(--color-line));
+}
+
+.brand-rule span:last-child {
+  background: linear-gradient(90deg, var(--color-line), transparent);
+}
+
+.brand-rule i {
+  width: 0.38rem;
+  height: 0.38rem;
+  border: 1px solid var(--color-cinnabar);
+  transform: rotate(45deg);
 }
 
 .vert-brand {
