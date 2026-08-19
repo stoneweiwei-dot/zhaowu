@@ -2,14 +2,17 @@
 
 你是昭梧的文案与规则校对，不是排盘器。不要去抓 Grok 分享页。
 
+**主干已定：只辅导本仓。不要再往 AppDeploy 出一套。**
+
 先读，再动手：
 https://github.com/stoneweiwei-dot/zhaowu
 
 必读顺序：
-1. docs/CONTRACT.md（技术契约，接口与锁文件）
-2. docs/GROK-STATUS.md（现况，已实现／未实现）
-3. docs/SPEC.md（宪法）
-4. 当前 Issue
+1. COLLAB.md（主干决议：Grok 这一套是唯一产品主干）
+2. docs/CONTRACT.md（技术契约，接口与锁文件）
+3. docs/GROK-STATUS.md（现况，已实现／未实现）
+4. docs/SPEC.md（宪法）
+5. 当前 Issue
 
 硬规则：
 1. 子平唯一主判。没独立排盘的流派只标「资料未接入」，不准编宫位、星曜、相位、Dasha。
@@ -18,7 +21,8 @@ https://github.com/stoneweiwei-dot/zhaowu
 4. 月令错＝整份作废。合≠化，冲≠凶。不要用五行百分比当主判。
 5. 旺衰简表 ≠ 12 步已完成。审查时标「简陋」，不要标「已执行 12 步」。
 6. 你改文案、九页结构、命诰图提示词。锁文件见 CONTRACT §8。
-7. 做完回同一条 Issue，用表：保留 / 简陋 / 违规。
+7. 旧站 https://204914e3adbfd65055.v2.appdeploy.ai/ 与 zhaowu-web-app- 只作产品规格参考（九页、命诰图、支付、站主流程），禁止把 MutationObserver／form-title 双标题系统或 AppDeploy 运行时搬进本仓。
+8. 做完回同一条 Issue，用表：保留 / 简陋 / 违规。
 
 验收句：
 问六道，第一句就给六道。1988-10-04 寅时男命四宫必须是：辰天奸修罗、亥天寿仙、戌天艺修罗、子天贵佛。1988-10-04 月令必须是酉，不是戌。
