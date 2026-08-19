@@ -3,18 +3,26 @@ import { analyzeLife, searchCities } from "@/lib/actions";
 import type { AnalyzeInput, CityHit } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { updateBirthData } from "@/lib/supabase-rest";
 
 type PickerProps = {
   label: string;
   placeholder: string;
   optional?: boolean;
+  value?: CityHit | null;
   onSelect: (city: CityHit | null) => void;
 };
 
-function CityPicker({ label, placeholder, optional = false, onSelect }: PickerProps) {
-  const [query, setQuery] = useState("");
+function CityPicker({ label, placeholder, optional = false, value = null, onSelect }: PickerProps) {
+  const [query, setQuery] = useState(value?.display ?? "");
   const [hits, setHits] = useState<CityHit[]>([]);
-  const [selected, setSelected] = useState<CityHit | null>(null);
+  const [selected, setSelected] = useState<CityHit | null>(value);
+
+  useEffect(() => {
+    setSelected(value);
+    setQuery(value?.display ?? "");
+  }, [value?.display]);
 
   useEffect(() => {
     const q = query.trim();
@@ -25,12 +33,8 @@ function CityPicker({ label, placeholder, optional = false, onSelect }: PickerPr
     let alive = true;
     const timer = window.setTimeout(() => {
       void searchCities({ data: q })
-        .then((rows) => {
-          if (alive) setHits(rows);
-        })
-        .catch(() => {
-          if (alive) setHits([]);
-        });
+        .then((rows) => { if (alive) setHits(rows); })
+        .catch(() => { if (alive) setHits([]); });
     }, 220);
     return () => {
       alive = false;
@@ -80,8 +84,17 @@ function CityPicker({ label, placeholder, optional = false, onSelect }: PickerPr
   );
 }
 
+function asCity(value: unknown): CityHit | null {
+  if (!value || typeof value !== "object") return null;
+  const c = value as Partial<CityHit>;
+  if (typeof c.display !== "string" || typeof c.name !== "string" || typeof c.timezone !== "string") return null;
+  if (!Number.isFinite(c.latitude) || !Number.isFinite(c.longitude)) return null;
+  return c as CityHit;
+}
+
 export function AnalysisForm() {
   const { t } = useI18n();
+  const { user, session } = useCurrentUserState();
   const setCurrent = useAppStore((s) => s.setCurrent);
   const reset = useAppStore((s) => s.reset);
   const [question, setQuestion] = useState("");
@@ -99,6 +112,7 @@ export function AnalysisForm() {
   const [useTrueSolar, setUseTrueSolar] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [remembered, setRemembered] = useState(false);
 
   useEffect(() => {
     reset();
@@ -106,6 +120,27 @@ export function AnalysisForm() {
     window.addEventListener("pagehide", clear);
     return () => window.removeEventListener("pagehide", clear);
   }, [reset]);
+
+  useEffect(() => {
+    const raw = user?.birthData;
+    if (!raw) return;
+    const b = raw as Record<string, unknown>;
+    setYear(b.year != null ? String(b.year) : "");
+    setMonth(b.month != null ? String(b.month) : "");
+    setDay(b.day != null ? String(b.day) : "");
+    setHour(b.hour != null ? String(b.hour) : "");
+    setMinute(b.minute != null ? String(b.minute) : "");
+    setTimeUnknown(Boolean(b.timeUnknown));
+    if (b.gender === "male" || b.gender === "female" || b.gender === "unspecified") setGender(b.gender);
+    if (b.relation === "any" || b.relation === "hetero" || b.relation === "same" || b.relation === "unset") setRelation(b.relation);
+    const bc = asCity(b.city);
+    const lc = asCity(b.liveCity);
+    if (bc) setBirthCity(bc);
+    setLiveCity(lc);
+    if (b.ziPolicy === "midnight" || b.ziPolicy === "late") setZiPolicy(b.ziPolicy);
+    if (typeof b.useTrueSolar === "boolean") setUseTrueSolar(b.useTrueSolar);
+    setRemembered(true);
+  }, [user?.id, user?.birthData]);
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -137,6 +172,12 @@ export function AnalysisForm() {
       };
       const result = await analyzeLife({ data: payload });
       setCurrent(result);
+      if (session) {
+        const { question: _question, ...birthData } = payload;
+        await updateBirthData(session, birthData as unknown as Record<string, unknown>).catch(() => undefined);
+        window.dispatchEvent(new Event("zhaowu-auth-change"));
+        setRemembered(true);
+      }
       window.setTimeout(() => document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
     } catch (err) {
       setError(err instanceof Error ? err.message : "分析暫時未能完成，請檢查資料後再試。");
@@ -150,18 +191,12 @@ export function AnalysisForm() {
       <p className="text-xs tracking-[0.28em] text-cinnabar">ZHAOWU · ANALYSIS</p>
       <h2 className="mt-2 font-display text-2xl sm:text-3xl">{t("formTitle")}</h2>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-ink-soft">{t("formLead")}</p>
+      {remembered ? <p className="mt-2 text-xs text-wood">已從「我的昭梧」回填出生資料。</p> : null}
 
       <form className="mt-6 space-y-6" onSubmit={(e) => void submit(e)}>
         <div>
           <label className="mb-2 block text-sm text-ink-soft">{t("question")}</label>
-          <textarea
-            value={question}
-            maxLength={400}
-            rows={4}
-            placeholder={t("qPh")}
-            className="w-full resize-y rounded-md border border-line bg-cream px-4 py-3 text-base leading-7 outline-none transition focus:border-cinnabar"
-            onChange={(e) => setQuestion(e.target.value)}
-          />
+          <textarea value={question} maxLength={400} rows={4} placeholder={t("qPh")} className="w-full resize-y rounded-md border border-line bg-cream px-4 py-3 text-base leading-7 outline-none transition focus:border-cinnabar" onChange={(e) => setQuestion(e.target.value)} />
           <p className="mt-1 text-right text-xs text-ink-mute">{question.length}/400</p>
         </div>
 
@@ -169,15 +204,7 @@ export function AnalysisForm() {
           {[{ label: t("year"), value: year, set: setYear, min: 1900, max: 2100 }, { label: t("month"), value: month, set: setMonth, min: 1, max: 12 }, { label: t("day"), value: day, set: setDay, min: 1, max: 31 }].map((f) => (
             <label key={f.label} className="text-sm text-ink-soft">
               <span className="mb-2 block">{f.label}</span>
-              <input
-                type="number"
-                inputMode="numeric"
-                min={f.min}
-                max={f.max}
-                value={f.value}
-                onChange={(e) => f.set(e.target.value)}
-                className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar"
-              />
+              <input type="number" inputMode="numeric" min={f.min} max={f.max} value={f.value} onChange={(e) => f.set(e.target.value)} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar" />
             </label>
           ))}
         </div>
@@ -185,81 +212,30 @@ export function AnalysisForm() {
         <div className="rounded-lg border border-line bg-paper/45 p-4">
           <div className="flex items-center justify-between gap-4">
             <p className="text-sm text-ink-soft">{t("time")}</p>
-            <label className="flex items-center gap-2 text-xs text-ink-mute">
-              <input type="checkbox" checked={timeUnknown} onChange={(e) => setTimeUnknown(e.target.checked)} />
-              {t("timeUnknown")}
-            </label>
+            <label className="flex items-center gap-2 text-xs text-ink-mute"><input type="checkbox" checked={timeUnknown} onChange={(e) => setTimeUnknown(e.target.checked)} />{t("timeUnknown")}</label>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-3">
-            <input
-              type="number"
-              inputMode="numeric"
-              min={0}
-              max={23}
-              disabled={timeUnknown}
-              value={hour}
-              placeholder="時 0–23"
-              onChange={(e) => setHour(e.target.value)}
-              className="h-12 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar"
-            />
-            <input
-              type="number"
-              inputMode="numeric"
-              min={0}
-              max={59}
-              disabled={timeUnknown}
-              value={minute}
-              placeholder="分 0–59"
-              onChange={(e) => setMinute(e.target.value)}
-              className="h-12 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar"
-            />
+            <input type="number" inputMode="numeric" min={0} max={23} disabled={timeUnknown} value={hour} placeholder="時 0–23" onChange={(e) => setHour(e.target.value)} className="h-12 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar" />
+            <input type="number" inputMode="numeric" min={0} max={59} disabled={timeUnknown} value={minute} placeholder="分 0–59" onChange={(e) => setMinute(e.target.value)} className="h-12 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar" />
           </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <label className="text-sm text-ink-soft">
-            <span className="mb-2 block">{t("gender")}</span>
-            <select value={gender} onChange={(e) => setGender(e.target.value as AnalyzeInput["gender"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar">
-              <option value="unspecified">{t("unset")}</option>
-              <option value="male">{t("male")}</option>
-              <option value="female">{t("female")}</option>
-            </select>
-          </label>
-          <label className="text-sm text-ink-soft">
-            <span className="mb-2 block">感情需求類型</span>
-            <select value={relation} onChange={(e) => setRelation(e.target.value as AnalyzeInput["relation"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar">
-              <option value="unset">{t("unset")}</option>
-              <option value="any">{t("relAny")}</option>
-              <option value="hetero">{t("relHet")}</option>
-              <option value="same">{t("relSame")}</option>
-            </select>
-            <span className="mt-1 block text-xs leading-5 text-ink-mute">{t("relHint")}</span>
-          </label>
+          <label className="text-sm text-ink-soft"><span className="mb-2 block">{t("gender")}</span><select value={gender} onChange={(e) => setGender(e.target.value as AnalyzeInput["gender"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar"><option value="unspecified">{t("unset")}</option><option value="male">{t("male")}</option><option value="female">{t("female")}</option></select></label>
+          <label className="text-sm text-ink-soft"><span className="mb-2 block">感情需求類型</span><select value={relation} onChange={(e) => setRelation(e.target.value as AnalyzeInput["relation"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar"><option value="unset">{t("unset")}</option><option value="any">{t("relAny")}</option><option value="hetero">{t("relHet")}</option><option value="same">{t("relSame")}</option></select><span className="mt-1 block text-xs leading-5 text-ink-mute">{t("relHint")}</span></label>
         </div>
 
-        <CityPicker label={t("city")} placeholder={t("cityPh")} onSelect={setBirthCity} />
-        <CityPicker label={t("liveCity")} placeholder={t("liveCity")} optional onSelect={setLiveCity} />
+        <CityPicker label={t("city")} placeholder={t("cityPh")} value={birthCity} onSelect={setBirthCity} />
+        <CityPicker label={t("liveCity")} placeholder={t("liveCity")} optional value={liveCity} onSelect={setLiveCity} />
         <p className="-mt-4 text-xs leading-5 text-ink-mute">{t("liveHint")}</p>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <label className="flex min-h-12 items-center gap-3 rounded-md border border-line bg-paper/35 px-4 text-sm text-ink-soft">
-            <input type="checkbox" checked={useTrueSolar} onChange={(e) => setUseTrueSolar(e.target.checked)} />
-            {t("solar")}
-          </label>
-          <label className="text-sm text-ink-soft">
-            <span className="mb-2 block">{t("zi")}</span>
-            <select value={ziPolicy} onChange={(e) => setZiPolicy(e.target.value as AnalyzeInput["ziPolicy"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar">
-              <option value="midnight">{t("ziMid")}</option>
-              <option value="late">{t("ziLate")}</option>
-            </select>
-          </label>
+          <label className="flex min-h-12 items-center gap-3 rounded-md border border-line bg-paper/35 px-4 text-sm text-ink-soft"><input type="checkbox" checked={useTrueSolar} onChange={(e) => setUseTrueSolar(e.target.checked)} />{t("solar")}</label>
+          <label className="text-sm text-ink-soft"><span className="mb-2 block">{t("zi")}</span><select value={ziPolicy} onChange={(e) => setZiPolicy(e.target.value as AnalyzeInput["ziPolicy"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar"><option value="midnight">{t("ziMid")}</option><option value="late">{t("ziLate")}</option></select></label>
         </div>
 
         {error ? <p className="rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm leading-6 text-cinnabar-deep">{error}</p> : null}
-
-        <button type="submit" disabled={busy} className="h-12 w-full rounded-full bg-cinnabar px-6 text-base font-medium text-cream disabled:opacity-55 sm:w-auto">
-          {busy ? t("analyzing") : t("analyze")}
-        </button>
+        <button type="submit" disabled={busy} className="h-12 w-full rounded-full bg-cinnabar px-6 text-base font-medium text-cream disabled:opacity-55 sm:w-auto">{busy ? t("analyzing") : t("analyze")}</button>
       </form>
     </section>
   );
