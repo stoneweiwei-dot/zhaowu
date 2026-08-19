@@ -7,13 +7,18 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { Mark } from "@/components/marks";
+import { composeNinePages, type NinePage } from "@/lib/report/nine-page";
+import { decreeImagePackage, type DecreeOverlay } from "@/lib/report/decree-image";
 
 export function ResultView({ result }: { result: AnalysisResult }) {
   const { t } = useI18n();
   const { user, isPending } = useCurrentUserState();
   const { fullReport, setFullReport, savedId, setSavedId, reset } = useAppStore();
-  const [busy, setBusy] = useState<"full" | "save" | null>(null);
+  const [busy, setBusy] = useState<"full" | "save" | "nine" | "decree" | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [ninePages, setNinePages] = useState<NinePage[] | null>(null);
+  const [decreeOverlay, setDecreeOverlay] = useState<DecreeOverlay | null>(null);
+  const [decreePrompt, setDecreePrompt] = useState<string | null>(null);
   const { chart, reading, question } = result;
 
   async function onFull() {
@@ -40,6 +45,35 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     } catch (err) {
       const text = err instanceof Error ? err.message : "";
       setMsg(text === "Unauthorized" ? t("needLogin") : text || t("needLogin"));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  function onNine() {
+    setBusy("nine");
+    setMsg(null);
+    try {
+      const pages = composeNinePages(result);
+      setNinePages(pages);
+    } catch (err) {
+      setMsg(err instanceof Error ? err.message : "九頁報告生成失敗。");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  function onDecree() {
+    setBusy("decree");
+    setMsg(null);
+    try {
+      const pkg = decreeImagePackage(result);
+      setDecreeOverlay(pkg.overlay);
+      setDecreePrompt(pkg.prompt);
+      // 實際圖像 API 呼叫留待 XAI_API_KEY + /v1/images/generations 接好後再補
+      // 目前先保證 9:16 疊字與 STONE 原創水印在前台可見
+    } catch (err) {
+      setMsg(err instanceof Error ? err.message : "命誥圖生成失敗。");
     } finally {
       setBusy(null);
     }
@@ -72,26 +106,26 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           {chart.pillars.map((p) => {
             const ready = p.ready !== false && p.ganZhi !== "未定" && Boolean(p.gan);
             return (
-            <div key={p.key} className="rounded-md border border-line bg-paper/50 p-3 text-center">
-              <p className="text-xs tracking-[0.2em] text-ink-mute">{p.label}</p>
-              <p className="mt-1 font-display text-3xl tracking-[0.12em]">
-                {ready ? `${p.gan}${p.zhi}` : "未定"}
-              </p>
-              {ready ? (
-                <>
-                  <p className="mt-2 text-xs text-cinnabar">{p.shiShenGan}</p>
-                  <p className="text-xs text-ink-mute">{p.nayin}</p>
-                  <p className="mt-2 text-[11px] text-ink-soft">
-                    {t("hide")} {p.hide.map((h) => `${h.gan}${h.shiShen}`).join(" ")}
-                  </p>
-                  <p className="text-[11px] text-ink-mute">
-                    {t("dishi")} {p.diShi} · {t("xunkong")} {p.xunKong}
-                  </p>
-                </>
-              ) : (
-                <p className="mt-2 text-xs leading-6 text-ink-mute">時辰未定，不偽造午時。</p>
-              )}
-            </div>
+              <div key={p.key} className="rounded-md border border-line bg-paper/50 p-3 text-center">
+                <p className="text-xs tracking-[0.2em] text-ink-mute">{p.label}</p>
+                <p className="mt-1 font-display text-3xl tracking-[0.12em]">
+                  {ready ? `${p.gan}${p.zhi}` : "未定"}
+                </p>
+                {ready ? (
+                  <>
+                    <p className="mt-2 text-xs text-cinnabar">{p.shiShenGan}</p>
+                    <p className="text-xs text-ink-mute">{p.nayin}</p>
+                    <p className="mt-2 text-[11px] text-ink-soft">
+                      {t("hide")} {p.hide.map((h) => `${h.gan}${h.shiShen}`).join(" ")}
+                    </p>
+                    <p className="text-[11px] text-ink-mute">
+                      {t("dishi")} {p.diShi} · {t("xunkong")} {p.xunKong}
+                    </p>
+                  </>
+                ) : (
+                  <p className="mt-2 text-xs leading-6 text-ink-mute">時辰未定，不偽造午時。</p>
+                )}
+              </div>
             );
           })}
         </div>
@@ -205,14 +239,76 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </article>
       ) : null}
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      {/* 九頁報告展示 */}
+      {ninePages ? (
+        <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7 space-y-6">
+          <p className="text-xs tracking-[0.28em] text-cinnabar">昭梧｜付費九頁報告（ZW-NINE-1.0）</p>
+          {ninePages.map((p) => (
+            <div key={p.key} className="border-t border-line pt-4 first:border-0 first:pt-0">
+              <p className="text-xs tracking-[0.2em] text-cinnabar">
+                第 {p.pageNo} 頁｜{p.title}
+              </p>
+              <div className="mt-3 space-y-2 text-sm leading-7 text-ink-soft">
+                {p.body.map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
+              </div>
+            </div>
+          ))}
+        </article>
+      ) : null}
+
+      {/* 命誥圖 9:16 疊字展示 */}
+      {decreeOverlay ? (
+        <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
+          <p className="text-xs tracking-[0.28em] text-cinnabar">9:16 命誥圖 · 前端疊字預覽</p>
+          <div className="mt-4 mx-auto w-full max-w-[280px] aspect-[9/16] relative overflow-hidden rounded-lg border border-line bg-gradient-to-b from-[#f7f0e4] via-[#efe6d6] to-[#e8dcc8] shadow-inner">
+            {/* 模擬乾淨背景 */}
+            <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, rgba(180,140,80,0.15), transparent 50%), radial-gradient(circle at 70% 80%, rgba(60,90,120,0.12), transparent 45%)" }} />
+            {/* 疊字層 */}
+            <div className="absolute inset-0 flex flex-col items-center justify-between p-5 text-center">
+              <p className="text-[11px] tracking-[0.35em] text-ink/70">{decreeOverlay.top}</p>
+              <p className="font-display text-lg leading-8 text-ink px-2">{decreeOverlay.center}</p>
+              <div className="space-y-1">
+                <p className="text-[10px] tracking-wider text-ink/60">{decreeOverlay.bottom}</p>
+                <p className="text-[9px] tracking-[0.3em] text-cinnabar/80">{decreeOverlay.watermark}</p>
+              </div>
+            </div>
+          </div>
+          <p className="mt-3 text-xs text-ink-mute">實際圖像由 xAI Imagine API 生成乾淨背景後，前端疊上以上文字與「STONE 原創」水印。目前先顯示疊字層。</p>
+          {decreePrompt ? (
+            <details className="mt-3 text-xs text-ink-mute">
+              <summary className="cursor-pointer">查看圖像提示詞</summary>
+              <pre className="mt-2 whitespace-pre-wrap break-words rounded bg-paper/60 p-3 text-[11px] leading-5">{decreePrompt}</pre>
+            </details>
+          ) : null}
+        </article>
+      ) : null}
+
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <button
           type="button"
           disabled={busy === "full"}
           onClick={() => void onFull()}
-          className="h-12 flex-1 rounded-full bg-cinnabar text-cream disabled:opacity-60"
+          className="h-12 flex-1 min-w-[140px] rounded-full bg-cinnabar text-cream disabled:opacity-60"
         >
           {busy === "full" ? t("generating") : t("genFull")}
+        </button>
+        <button
+          type="button"
+          disabled={busy === "nine"}
+          onClick={onNine}
+          className="h-12 flex-1 min-w-[140px] rounded-full border border-cinnabar bg-cream text-cinnabar disabled:opacity-60"
+        >
+          {busy === "nine" ? "生成中…" : "生成九頁報告"}
+        </button>
+        <button
+          type="button"
+          disabled={busy === "decree"}
+          onClick={onDecree}
+          className="h-12 flex-1 min-w-[140px] rounded-full border border-line bg-cream text-ink disabled:opacity-60"
+        >
+          {busy === "decree" ? "生成中…" : "生成命誥圖"}
         </button>
         {isPending ? (
           <span className="h-12 flex-1 animate-pulse rounded-full bg-paper-deep" />
@@ -221,12 +317,12 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             type="button"
             disabled={busy === "save" || Boolean(savedId)}
             onClick={() => void onSave()}
-            className="h-12 flex-1 rounded-full border border-line bg-cream text-ink disabled:opacity-60"
+            className="h-12 flex-1 min-w-[140px] rounded-full border border-line bg-cream text-ink disabled:opacity-60"
           >
             {savedId ? t("saved") : t("save")}
           </button>
         ) : (
-          <Link to="/login" className="grid h-12 flex-1 place-items-center rounded-full border border-line bg-cream">
+          <Link to="/login" className="grid h-12 flex-1 min-w-[140px] place-items-center rounded-full border border-line bg-cream">
             {t("needLogin")}
           </Link>
         )}

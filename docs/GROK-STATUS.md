@@ -31,9 +31,9 @@ Grok App Builder 重做的可运行站：TanStack Start + React + Vite + Tailwin
 | 旺衰／流通候选 | `chart.ts` | **简表**，旺衰底盘＋流通粗候选；不是 12 步引擎 |
 | 直答 | `interpret.ts` | 0 AI；立场先行；选择必选边 |
 | 完整报告 | `composeFullReport` + 可选 grok-4.5 | 前世强制 0 AI；固定九段 |
-| 付费九页母稿 | `docs/NINE-PAGE.md` + `src/lib/report/nine-page.ts` | **规格已入库 + 纯函数已接线**；UI 出图／付费流待接 |
-| 9:16 命诰图 | `docs/DECREE-IMAGE.md` + `src/lib/report/decree-image.ts` | **提示词与叠字层已接线**；图像 API／前端叠字待接 |
-| 结果页 | `result-view.tsx` | 直答、四柱、命诰、行动、粗候选待覆核、折叠方法区 |
+| 付费九页母稿 | `docs/NINE-PAGE.md` + `src/lib/report/nine-page.ts` | 规格 + 纯函数 + **前台按钮与完整展示已接** |
+| 9:16 命诰图 | `docs/DECREE-IMAGE.md` + `src/lib/report/decree-image.ts` | 提示词 + 叠字规格 + **前台 9:16 叠字预览与按钮已接**；实际 xAI Imagine API 出图仍待 env |
+| 结果页 | `result-view.tsx` | 直答、四柱、命诰、行动、粗候选待覆核、折叠方法区、**生成九页 / 生成命诰图 按钮** |
 | 登录存档 | Better Auth + `reports` | 有；未记住出生资料、无续问 |
 
 ## Issue #2 违规（已修）
@@ -47,14 +47,17 @@ Grok App Builder 重做的可运行站：TanStack Start + React + Vite + Tailwin
 | 九页母稿文案 | GPT 已交；已写入 `docs/NINE-PAGE.md` |
 | `composeNinePages` / `composeNinePageReport` | 已落地 |
 | 命诰图 Base Prompt + 叠字规格 | 已落地 `decree-image.ts` |
-| 结果页「生成九页／命诰图」按钮 | 待 App Builder 运行时接线 |
+| 结果页「生成九页／命诰图」按钮 | **已接（2026-08-19）** |
+| 九页完整分页展示 | **已接** |
+| 命诰图 9:16 叠字 + STONE 原創 水印预览 | **已接** |
+| 实际图像 API（xAI /v1/images/generations） | 待 XAI_API_KEY + server action |
 | 登录后记住出生、同盘追问 | 规格在 Issue #4；代码未接 |
 
 ## 未落地
 
 - STONE Core 12 步
 - 付费／结缘支付流
-- 命诰图实际出图与前端叠字
+- 命诰图实际出图（API 调用）
 - 登录回填出生、同盘追问
 - 紫微／西占等独立排盘
 
@@ -62,8 +65,8 @@ Grok App Builder 重做的可运行站：TanStack Start + React + Vite + Tailwin
 
 `AnalyzeInput → buildChart → buildPalm → classifyQuestion → routeMethods → interpret → AnalysisResult`  
 `writeFullReport`：`kind==="past"` 直接 `composePalmReport`。  
-付费九页：`composeNinePageReport(result)`（ZW-NINE-1.0）。  
-命诰图包：`decreeImagePackage(result)`（ZW-DECREE-IMG-1.0）。
+付费九页：`composeNinePageReport(result)`（ZW-NINE-1.0）→ 前台可点。  
+命诰图包：`decreeImagePackage(result)`（ZW-DECREE-IMG-1.0）→ 前台叠字预览可点。
 
 ## GPT 怎么审
 
