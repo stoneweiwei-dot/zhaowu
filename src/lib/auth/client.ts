@@ -1,5 +1,10 @@
-export const authEnabled = false;
+import { signOutRemote, supabaseConfigured } from "@/lib/supabase-rest";
+
+export const authEnabled = supabaseConfigured;
 
 export async function signOut() {
-  return;
+  await signOutRemote();
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("zhaowu-auth-change"));
+  }
 }
