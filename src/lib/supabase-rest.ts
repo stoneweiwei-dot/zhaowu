@@ -261,7 +261,8 @@ export async function listReportRecords(session: SupabaseSession, isOwner: boole
   const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests?select=${select}${filter}&order=created_at.desc&limit=${limit}`, {
     headers: headers(session.access_token),
   });
-  return jsonOrError<ReportRecord[]>(res);
+  const rows = await jsonOrError<ReportRecord[]>(res);
+  return rows.filter((row) => row.record_kind !== "test").slice(0, limit);
 }
 
 export async function deleteReportRecord(session: SupabaseSession, id: string) {
