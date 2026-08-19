@@ -1,0 +1,1 @@
+Release handoff is tracked in GitHub Issue #[pending creation]. This file exists only to keep the repository handoff explicit; production must remain on the single Grok trunk.
