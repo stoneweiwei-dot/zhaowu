@@ -1,23 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Mark } from "@/components/marks";
+import { INTRO_FRAMES } from "@/lib/intro-frames";
 
 const KEY = "zhaowu.intro.v1";
-const FRAME_MS = 900; // each visual beat
+const FRAME_MS = 900;
 const FADE_MS = 600;
-const FRAMES = [
-  "/intro/frame-1.jpg", // 暗 · 水晶山河
-  "/intro/frame-2.jpg", // 紅日升起
-  "/intro/frame-3.jpg", // 仙鶴飛過
-  "/intro/frame-4.jpg", // 定格留白（給 Slogan）
-];
 
 /**
- * 開場 Loading 封面 — 嚴格對齊 UI Spec
+ * 開場 Loading 封面 — 嚴格對齊 UI Spec（一模一樣）
  * 水晶山河從暗到明 → 紅日升起 → 仙鶴飛過 → Slogan + 葫蘆
- * 優先：public/intro/cover.mp4
- * 次選：四幀交叉淡入（frame-1~4.jpg）
- * 可點擊跳過；session 只播一次；reduced-motion 直接跳過
+ * 四幀已內嵌，無需再放 public 檔案即可運作
+ * 若有 public/intro/cover.mp4 仍優先播影片
  */
 export function IntroGate() {
   const { t } = useI18n();
@@ -75,7 +69,6 @@ export function IntroGate() {
       })
       .catch(() => {});
 
-    // 四幀節奏：暗 → 日 → 鶴 → 定格文案
     const t1 = window.setTimeout(() => setFrameIdx(1), FRAME_MS);
     const t2 = window.setTimeout(() => setFrameIdx(2), FRAME_MS * 2);
     const t3 = window.setTimeout(() => {
@@ -123,9 +116,9 @@ export function IntroGate() {
         />
       ) : (
         <div className="absolute inset-0" aria-hidden>
-          {FRAMES.map((src, i) => (
+          {INTRO_FRAMES.map((src, i) => (
             <img
-              key={src}
+              key={i}
               src={src}
               alt=""
               className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
@@ -134,12 +127,9 @@ export function IntroGate() {
               draggable={false}
             />
           ))}
-          {/* 無資源時的純色兜底，避免破圖 */}
-          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0d0a08] via-[#3a2418] to-[#c45a2e]" />
         </div>
       )}
 
-      {/* 定格文案：只在最後一幀或影片接近結束時出現 */}
       <div
         className={`relative z-10 flex flex-col items-center gap-5 px-6 text-center transition-opacity duration-700 ${
           showText || hasVideo ? "opacity-100" : "opacity-0"
