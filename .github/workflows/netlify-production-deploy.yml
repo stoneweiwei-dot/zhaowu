@@ -29,10 +29,16 @@ jobs:
         run: |
           set +x
           PROXY="${NETLIFY_TRIGGER#NETLIFY_DEPLOY_PROXY=}"
-          if OUTPUT=$(npx -y @netlify/mcp@latest --site-id d1d08003-f225-4749-adcd-fd730b0c07a8 --proxy-path "$PROXY" --no-wait 2>&1); then
-            gh issue comment 1 --body "NETLIFY_DEPLOY_RESULT=success · commit ${GITHUB_SHA}"
+          OUTPUT=""
+          STATUS=0
+          OUTPUT=$(npx -y @netlify/mcp@latest --site-id d1d08003-f225-4749-adcd-fd730b0c07a8 --proxy-path "$PROXY" --no-wait 2>&1) || STATUS=$?
+          SAFE=$(printf '%s' "$OUTPUT" \
+            | tail -n 40 \
+            | sed -E 's#https://netlify-mcp\.netlify\.app/proxy/[^[:space:]]+#<redacted-proxy>#g' \
+            | sed 's/`/'"'"'/g')
+          if [ "$STATUS" -eq 0 ]; then
+            gh issue comment 1 --body "NETLIFY_DEPLOY_RESULT=success · commit ${GITHUB_SHA}\n\n${SAFE}"
           else
-            SAFE=$(printf '%s' "$OUTPUT" | tail -n 20 | sed 's/`/'"'"'/g')
             gh issue comment 1 --body "NETLIFY_DEPLOY_RESULT=failed · commit ${GITHUB_SHA}\n\n${SAFE}"
-            exit 1
+            exit "$STATUS"
           fi
