@@ -2,6 +2,8 @@ name: Repair branch check
 on:
   push:
     branches: [repair/full-product-shell]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -12,7 +14,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
       - run: npm install --no-audit --no-fund
       - run: npm run check
       - run: npm run build
