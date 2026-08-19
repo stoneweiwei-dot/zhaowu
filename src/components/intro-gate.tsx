@@ -3,22 +3,35 @@ import { useI18n } from "@/lib/i18n";
 import { Mark } from "@/components/marks";
 
 const KEY = "zhaowu.intro.v1";
-const HOLD_MS = 3200;
-const FADE_MS = 700;
-const TOTAL_MS = HOLD_MS + FADE_MS;
+const FRAME_MS = 900; // each visual beat
+const FADE_MS = 600;
+const FRAMES = [
+  "/intro/frame-1.jpg", // 暗 · 水晶山河
+  "/intro/frame-2.jpg", // 紅日升起
+  "/intro/frame-3.jpg", // 仙鶴飛過
+  "/intro/frame-4.jpg", // 定格留白（給 Slogan）
+];
 
 /**
- * 开场 Loading 封面（Issue #5 / #6）
- * - 优先播放 public/intro/cover.mp4（9:16 推荐）
- * - 无视频时用水晶山河／红日升起氛围的 CSS 动画兜底
- * - 可点击跳过；sessionStorage 本会话只播一次；尊重 reduced-motion
+ * 開場 Loading 封面 — 嚴格對齊 UI Spec
+ * 水晶山河從暗到明 → 紅日升起 → 仙鶴飛過 → Slogan + 葫蘆
+ * 優先：public/intro/cover.mp4
+ * 次選：四幀交叉淡入（frame-1~4.jpg）
+ * 可點擊跳過；session 只播一次；reduced-motion 直接跳過
  */
 export function IntroGate() {
   const { t } = useI18n();
   const [phase, setPhase] = useState<"off" | "in" | "out">("off");
   const [hasVideo, setHasVideo] = useState(false);
+  const [frameIdx, setFrameIdx] = useState(0);
+  const [showText, setShowText] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const timers = useRef<number[]>([]);
+
+  function clearTimers() {
+    timers.current.forEach((id) => window.clearTimeout(id));
+    timers.current = [];
+  }
 
   function finish() {
     setPhase("out");
@@ -34,8 +47,7 @@ export function IntroGate() {
   }
 
   function skip() {
-    timers.current.forEach((id) => window.clearTimeout(id));
-    timers.current = [];
+    clearTimers();
     if (videoRef.current) {
       try {
         videoRef.current.pause();
@@ -57,24 +69,24 @@ export function IntroGate() {
 
     setPhase("in");
 
-    // 探测视频是否存在（不阻塞）
-    const probe = new Image();
-    // 用 fetch HEAD 探测 mp4 是否可达
     fetch("/intro/cover.mp4", { method: "HEAD" })
       .then((r) => {
         if (r.ok) setHasVideo(true);
       })
-      .catch(() => {
-        /* 无视频则走 CSS 氛围 */
-      });
+      .catch(() => {});
 
-    const hold = window.setTimeout(finish, HOLD_MS);
-    timers.current.push(hold);
+    // 四幀節奏：暗 → 日 → 鶴 → 定格文案
+    const t1 = window.setTimeout(() => setFrameIdx(1), FRAME_MS);
+    const t2 = window.setTimeout(() => setFrameIdx(2), FRAME_MS * 2);
+    const t3 = window.setTimeout(() => {
+      setFrameIdx(3);
+      setShowText(true);
+    }, FRAME_MS * 3);
+    const t4 = window.setTimeout(finish, FRAME_MS * 4 + 400);
 
-    return () => {
-      timers.current.forEach((id) => window.clearTimeout(id));
-      timers.current = [];
-    };
+    timers.current.push(t1, t2, t3, t4);
+
+    return () => clearTimers();
   }, []);
 
   useEffect(() => {
@@ -89,7 +101,7 @@ export function IntroGate() {
 
   return (
     <div
-      className={`fixed inset-0 z-[80] flex items-center justify-center overflow-hidden bg-[#1a1410] transition-opacity duration-700 ${
+      className={`fixed inset-0 z-[80] flex items-center justify-center overflow-hidden bg-[#0d0a08] transition-opacity duration-700 ${
         phase === "out" ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
       role="presentation"
@@ -99,7 +111,6 @@ export function IntroGate() {
       }}
       tabIndex={0}
     >
-      {/* 视频层（有文件时） */}
       {hasVideo ? (
         <video
           ref={videoRef}
@@ -111,18 +122,29 @@ export function IntroGate() {
           aria-hidden
         />
       ) : (
-        /* CSS 氛围兜底：暗 → 明，红日，山河气质 */
-        <div className="absolute inset-0 intro-atmosphere" aria-hidden>
-          <div className="intro-sky" />
-          <div className="intro-sun" />
-          <div className="intro-mist" />
-          <div className="intro-ridge intro-ridge-a" />
-          <div className="intro-ridge intro-ridge-b" />
+        <div className="absolute inset-0" aria-hidden>
+          {FRAMES.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                i === frameIdx ? "opacity-100" : "opacity-0"
+              }`}
+              draggable={false}
+            />
+          ))}
+          {/* 無資源時的純色兜底，避免破圖 */}
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0d0a08] via-[#3a2418] to-[#c45a2e]" />
         </div>
       )}
 
-      {/* 定格文案层 */}
-      <div className="relative z-10 flex flex-col items-center gap-5 px-6 text-center">
+      {/* 定格文案：只在最後一幀或影片接近結束時出現 */}
+      <div
+        className={`relative z-10 flex flex-col items-center gap-5 px-6 text-center transition-opacity duration-700 ${
+          showText || hasVideo ? "opacity-100" : "opacity-0"
+        }`}
+      >
         <Mark id="brand" size={88} eager className="h-20 w-20 intro-seal drop-shadow-lg" />
         <p className="font-display text-4xl tracking-[0.36em] text-[#f7f0e4] drop-shadow">{t("brand")}</p>
         <p className="text-sm tracking-[0.28em] text-[#e8c9a0]">{t("manifesto")}</p>
