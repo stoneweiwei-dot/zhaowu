@@ -1,19 +1,76 @@
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { getProfile, restoreSession, type SupabaseSession, type UserProfile } from "@/lib/supabase-rest";
 
 export type CurrentUser = {
   id: string;
   displayName: string;
+  email: string;
+  isOwner: boolean;
+  birthData: Record<string, unknown> | null;
 };
 
 export type AuthState = {
   user: CurrentUser | null;
+  profile: UserProfile | null;
+  session: SupabaseSession | null;
   isPending: boolean;
+  reload: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthState>({ user: null, isPending: false });
+const AuthContext = createContext<AuthState>({
+  user: null,
+  profile: null,
+  session: null,
+  isPending: true,
+  reload: async () => undefined,
+});
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  return <AuthContext.Provider value={{ user: null, isPending: false }}>{children}</AuthContext.Provider>;
+  const [session, setSession] = useState<SupabaseSession | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isPending, setPending] = useState(true);
+
+  const reload = useCallback(async () => {
+    setPending(true);
+    try {
+      const active = await restoreSession();
+      setSession(active);
+      if (!active) {
+        setProfile(null);
+        return;
+      }
+      const p = await getProfile(active).catch(() => null);
+      setProfile(p);
+    } finally {
+      setPending(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void reload();
+    const onAuth = () => void reload();
+    window.addEventListener("zhaowu-auth-change", onAuth);
+    return () => window.removeEventListener("zhaowu-auth-change", onAuth);
+  }, [reload]);
+
+  const user = useMemo<CurrentUser | null>(() => {
+    if (!session) return null;
+    const email = profile?.email ?? session.user.email ?? "";
+    const metaName = typeof session.user.user_metadata?.name === "string" ? session.user.user_metadata.name : "";
+    return {
+      id: session.user.id,
+      displayName: profile?.display_name?.trim() || metaName || email.split("@")[0] || "會員",
+      email,
+      isOwner: Boolean(profile?.is_owner),
+      birthData: profile?.birth_data ?? null,
+    };
+  }, [profile, session]);
+
+  return (
+    <AuthContext.Provider value={{ user, profile, session, isPending, reload }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuthState() {
