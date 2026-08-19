@@ -1,145 +1,54 @@
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { Mark } from "@/components/marks";
 import { INTRO_FRAMES } from "@/lib/intro-frames";
 
-const KEY = "zhaowu.intro.v1";
-const FRAME_MS = 900;
-const FADE_MS = 600;
+const KEY = "zhaowu.intro.v2";
+const MIN_MS = 2400;
+const MAX_MS = 7000;
+const FRAME_MS = 850;
 
-/**
- * 開場 Loading 封面 — 嚴格對齊 UI Spec（一模一樣）
- * 水晶山河從暗到明 → 紅日升起 → 仙鶴飛過 → Slogan + 葫蘆
- * 四幀已內嵌，無需再放 public 檔案即可運作
- * 若有 public/intro/cover.mp4 仍優先播影片
- */
 export function IntroGate() {
   const { t } = useI18n();
-  const [phase, setPhase] = useState<"off" | "in" | "out">("off");
-  const [hasVideo, setHasVideo] = useState(false);
+  const { isPending } = useCurrentUserState();
+  const [visible, setVisible] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const [frameIdx, setFrameIdx] = useState(0);
-  const [showText, setShowText] = useState(false);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [minElapsed, setMinElapsed] = useState(false);
+  const [skipped, setSkipped] = useState(false);
+  const reduced = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const timers = useRef<number[]>([]);
 
-  function clearTimers() {
-    timers.current.forEach((id) => window.clearTimeout(id));
-    timers.current = [];
-  }
-
-  function finish() {
-    setPhase("out");
-    const t = window.setTimeout(() => {
-      setPhase("off");
-      try {
-        sessionStorage.setItem(KEY, "1");
-      } catch {
-        /* ignore */
-      }
-    }, FADE_MS);
-    timers.current.push(t);
-  }
-
-  function skip() {
-    clearTimers();
-    if (videoRef.current) {
-      try {
-        videoRef.current.pause();
-      } catch {
-        /* ignore */
-      }
-    }
-    finish();
-  }
+  useEffect(() => {
+    try { if (sessionStorage.getItem(KEY)) return; } catch { /* still show */ }
+    setVisible(true);
+    timers.current.push(window.setTimeout(() => setMinElapsed(true), reduced ? 250 : MIN_MS));
+    timers.current.push(window.setTimeout(() => { setMinElapsed(true); setSkipped(true); }, MAX_MS));
+    if (!reduced) {
+      timers.current.push(window.setTimeout(() => setFrameIdx(1), FRAME_MS));
+      timers.current.push(window.setTimeout(() => setFrameIdx(2), FRAME_MS * 2));
+      timers.current.push(window.setTimeout(() => setFrameIdx(3), FRAME_MS * 3));
+    } else setFrameIdx(3);
+    return () => timers.current.forEach((id) => window.clearTimeout(id));
+  }, [reduced]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    try {
-      if (sessionStorage.getItem(KEY)) return;
-    } catch {
-      return;
-    }
+    if (!visible || leaving || !minElapsed || isPending) return;
+    setLeaving(true);
+    const id = window.setTimeout(() => {
+      setVisible(false);
+      try { sessionStorage.setItem(KEY, "1"); } catch { /* ignore */ }
+    }, reduced ? 20 : 500);
+    return () => window.clearTimeout(id);
+  }, [visible, leaving, minElapsed, isPending, reduced]);
 
-    setPhase("in");
-
-    fetch("/intro/cover.mp4", { method: "HEAD" })
-      .then((r) => {
-        if (r.ok) setHasVideo(true);
-      })
-      .catch(() => {});
-
-    const t1 = window.setTimeout(() => setFrameIdx(1), FRAME_MS);
-    const t2 = window.setTimeout(() => setFrameIdx(2), FRAME_MS * 2);
-    const t3 = window.setTimeout(() => {
-      setFrameIdx(3);
-      setShowText(true);
-    }, FRAME_MS * 3);
-    const t4 = window.setTimeout(finish, FRAME_MS * 4 + 400);
-
-    timers.current.push(t1, t2, t3, t4);
-
-    return () => clearTimers();
-  }, []);
-
-  useEffect(() => {
-    if (phase !== "in" || !hasVideo || !videoRef.current) return;
-    const v = videoRef.current;
-    v.currentTime = 0;
-    const p = v.play();
-    if (p && typeof p.catch === "function") p.catch(() => setHasVideo(false));
-  }, [phase, hasVideo]);
-
-  if (phase === "off") return null;
-
+  if (!visible) return null;
+  const showText = reduced || skipped || frameIdx >= 2;
   return (
-    <div
-      className={`fixed inset-0 z-[80] flex items-center justify-center overflow-hidden bg-[#0d0a08] transition-opacity duration-700 ${
-        phase === "out" ? "opacity-0 pointer-events-none" : "opacity-100"
-      }`}
-      role="presentation"
-      onClick={skip}
-      onKeyDown={(e) => {
-        if (e.key === "Escape" || e.key === "Enter" || e.key === " ") skip();
-      }}
-      tabIndex={0}
-    >
-      {hasVideo ? (
-        <video
-          ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover"
-          src="/intro/cover.mp4"
-          muted
-          playsInline
-          preload="auto"
-          aria-hidden
-        />
-      ) : (
-        <div className="absolute inset-0" aria-hidden>
-          {INTRO_FRAMES.map((src, i) => (
-            <img
-              key={i}
-              src={src}
-              alt=""
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-                i === frameIdx ? "opacity-100" : "opacity-0"
-              }`}
-              draggable={false}
-            />
-          ))}
-        </div>
-      )}
-
-      <div
-        className={`relative z-10 flex flex-col items-center gap-5 px-6 text-center transition-opacity duration-700 ${
-          showText || hasVideo ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <Mark id="brand" size={88} eager className="h-20 w-20 intro-seal drop-shadow-lg" />
-        <p className="font-display text-4xl tracking-[0.36em] text-[#f7f0e4] drop-shadow">{t("brand")}</p>
-        <p className="text-sm tracking-[0.28em] text-[#e8c9a0]">{t("manifesto")}</p>
-        <p className="mt-6 text-[11px] tracking-[0.2em] text-white/50">點擊跳過</p>
-      </div>
+    <div className={`fixed inset-0 z-[80] flex items-center justify-center overflow-hidden bg-[#0d0a08] transition-opacity duration-500 ${leaving ? "pointer-events-none opacity-0" : "opacity-100"}`} role="status" aria-live="polite">
+      {!reduced && !skipped ? <div className="absolute inset-0" aria-hidden>{INTRO_FRAMES.map((src, i) => <img key={i} src={src} alt="" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${i === frameIdx ? "opacity-100" : "opacity-0"}`} draggable={false} />)}</div> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,#5d321f_0%,#1a1210_42%,#0d0a08_75%)]" />}
+      <div className={`relative z-10 flex flex-col items-center gap-5 px-6 text-center transition-opacity duration-500 ${showText ? "opacity-100" : "opacity-0"}`}><Mark id="brand" size={88} className="h-20 w-20 text-[#e8c9a0] intro-seal" /><p className="font-display text-4xl tracking-[0.34em] text-[#f7f0e4]">{t("brand")}</p><p className="text-sm tracking-[0.22em] text-[#e8c9a0]">{t("heroSlogan")}</p><p className="mt-2 text-[11px] tracking-[0.12em] text-white/55">{isPending ? "正在载入账号与报告状态…" : "正在进入昭梧…"}</p>{!reduced && !skipped ? <button type="button" onClick={() => setSkipped(true)} className="mt-3 rounded-full border border-white/20 px-4 py-2 text-[11px] tracking-[0.16em] text-white/55">跳过动画</button> : null}</div>
     </div>
   );
 }

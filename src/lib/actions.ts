@@ -1,8 +1,41 @@
-import { createServerFn } from "@tanstack/react-start";
-import { authMiddleware } from "@/lib/auth/middleware";
-import { getSql } from "@/lib/db";
+import { supabase } from "@/lib/supabase";
 import { FEATURED_CITIES, filterFeatured } from "@/lib/bazi/cities";
+import { buildChart, currentAlmanac } from "@/lib/bazi/chart";
+import { classifyQuestion, composeFullReport, interpret } from "@/lib/bazi/interpret";
+import { buildPalm } from "@/lib/palm/engine";
+import { routeMethods } from "@/lib/core/method";
+import { composeNinePages } from "@/lib/report/nine-page";
 import type { AnalysisResult, AnalyzeInput, CityHit, SavedReport } from "@/lib/bazi/types";
+
+export type UsageSummary = {
+  usageDate: string;
+  questionCount: number;
+  reportCount: number;
+  questionRemaining: number;
+  reportRemaining: number;
+  owner?: boolean;
+};
+
+export type ReportRow = {
+  id: string;
+  public_code: string | null;
+  user_id: string | null;
+  user_email: string | null;
+  owner_archive_id: string | null;
+  alias: string | null;
+  record_kind: string;
+  status: string;
+  access_mode: string;
+  payment_tier: string | null;
+  payment_status: string;
+  context: Record<string, unknown> | null;
+  engine_snapshot: AnalysisResult | null;
+  mother_draft: unknown;
+  paid_report: unknown;
+  image_path: string | null;
+  created_at: string;
+  updated_at: string;
+};
 
 function newId(): string {
   return crypto.randomUUID();
@@ -11,13 +44,7 @@ function newId(): string {
 function isCity(value: unknown): value is CityHit {
   if (!value || typeof value !== "object") return false;
   const c = value as CityHit;
-  return (
-    typeof c.name === "string" &&
-    typeof c.display === "string" &&
-    typeof c.timezone === "string" &&
-    Number.isFinite(c.latitude) &&
-    Number.isFinite(c.longitude)
-  );
+  return typeof c.name === "string" && typeof c.display === "string" && typeof c.timezone === "string" && Number.isFinite(c.latitude) && Number.isFinite(c.longitude);
 }
 
 function parseInput(raw: AnalyzeInput): AnalyzeInput {
@@ -27,283 +54,227 @@ function parseInput(raw: AnalyzeInput): AnalyzeInput {
   const day = Number(raw.day);
   const hour = Number(raw.hour);
   const minute = Number.isFinite(Number(raw.minute)) ? Math.round(Number(raw.minute)) : 0;
-  if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
-    throw new Error("請分別填寫出生年、月、日。");
-  }
-  if (year < 1900 || year > 2100 || month < 1 || month > 12) {
-    throw new Error("出生日期不正確，請檢查年、月、日。");
-  }
+  if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) throw new Error("請分別填寫出生年、月、日。");
+  if (year < 1900 || year > 2100 || month < 1 || month > 12) throw new Error("出生日期不正確，請檢查年、月、日。");
   const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
   if (day < 1 || day > lastDay) throw new Error("出生日期不正確，請檢查年、月、日。");
-  if (!isCity(raw.city)) throw new Error("請填寫出生城市與國家。");
-  if (!raw.timeUnknown && (!Number.isInteger(hour) || hour < 0 || hour > 23 || minute < 0 || minute > 59)) {
-    throw new Error("出生時間請使用 24 小時格式。");
-  }
+  if (!isCity(raw.city)) throw new Error("請選擇出生城市與國家。");
+  if (!raw.timeUnknown && (!Number.isInteger(hour) || hour < 0 || hour > 23 || minute < 0 || minute > 59)) throw new Error("出生時間請使用 24 小時格式。");
   return {
     ...raw,
     year,
     month,
     day,
     hour: raw.timeUnknown ? 12 : hour,
-    question: raw.question.trim().slice(0, 400),
     minute: raw.timeUnknown ? 0 : minute,
+    question: raw.question.trim().slice(0, 400),
     liveCity: raw.liveCity && isCity(raw.liveCity) ? raw.liveCity : null,
     relation: raw.relation === "hetero" || raw.relation === "same" || raw.relation === "any" ? raw.relation : "unset",
   };
 }
 
-export const getAlmanac = createServerFn({ method: "GET" }).handler(async () => {
-  const { currentAlmanac } = await import("@/lib/bazi/chart");
+function sydneyDate(): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Australia/Sydney",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const m = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+  return `${m.year}-${m.month}-${m.day}`;
+}
+
+function guestUsage(kind?: "question" | "report"): UsageSummary {
+  const day = sydneyDate();
+  const key = `zhaowu.daily.${day}`;
+  let value = { questionCount: 0, reportCount: 0 };
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw) value = { ...value, ...JSON.parse(raw) };
+  } catch {
+    /* local fallback only */
+  }
+  if (kind === "question") {
+    if (value.questionCount >= 2) throw new Error("QUESTION_LIMIT");
+    value.questionCount += 1;
+  }
+  if (kind === "report") {
+    if (value.reportCount >= 1) throw new Error("REPORT_LIMIT");
+    value.reportCount += 1;
+  }
+  if (kind) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* ignore */ }
+  }
+  return {
+    usageDate: day,
+    questionCount: value.questionCount,
+    reportCount: value.reportCount,
+    questionRemaining: Math.max(0, 2 - value.questionCount),
+    reportRemaining: Math.max(0, 1 - value.reportCount),
+  };
+}
+
+async function isOwnerUser(userId: string): Promise<boolean> {
+  const { data } = await supabase.from("profiles").select("is_owner").eq("id", userId).maybeSingle();
+  return Boolean(data?.is_owner);
+}
+
+async function consumeAccess(kind: "question" | "report"): Promise<UsageSummary> {
+  const { data: auth } = await supabase.auth.getUser();
+  const user = auth.user;
+  if (!user) return guestUsage(kind);
+  if (await isOwnerUser(user.id)) {
+    return { usageDate: sydneyDate(), questionCount: 0, reportCount: 0, questionRemaining: 99, reportRemaining: 99, owner: true };
+  }
+  const { data, error } = await supabase.rpc("zhaowu_consume_usage", { kind });
+  if (error) {
+    if (error.message.includes("QUESTION_LIMIT")) throw new Error("QUESTION_LIMIT");
+    if (error.message.includes("REPORT_LIMIT")) throw new Error("REPORT_LIMIT");
+    throw error;
+  }
+  return data as UsageSummary;
+}
+
+export async function consumeQuestionAccess() {
+  return consumeAccess("question");
+}
+
+export async function consumeReportAccess() {
+  return consumeAccess("report");
+}
+
+export async function getUsageSummary(): Promise<UsageSummary> {
+  const { data: auth } = await supabase.auth.getUser();
+  const user = auth.user;
+  if (!user) return guestUsage();
+  if (await isOwnerUser(user.id)) return { usageDate: sydneyDate(), questionCount: 0, reportCount: 0, questionRemaining: 99, reportRemaining: 99, owner: true };
+  const day = sydneyDate();
+  const { data } = await supabase.from("daily_usage").select("question_count,report_count").eq("user_id", user.id).eq("usage_date", day).maybeSingle();
+  const q = Number(data?.question_count ?? 0);
+  const r = Number(data?.report_count ?? 0);
+  return { usageDate: day, questionCount: q, reportCount: r, questionRemaining: Math.max(0, 2 - q), reportRemaining: Math.max(0, 1 - r) };
+}
+
+export async function getAlmanac() {
   return currentAlmanac(new Date());
-});
+}
 
-export const searchCities = createServerFn({ method: "GET" })
-  .validator((q: string) => String(q ?? "").trim().slice(0, 40))
-  .handler(async ({ data: q }) => {
-    const local = filterFeatured(q);
-    if (!q || q.length < 2) return local;
-    try {
-      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=zh`;
-      const res = await fetch(url);
-      if (!res.ok) return local;
-      const body = (await res.json()) as {
-        results?: {
-          name: string;
-          country?: string;
-          admin1?: string;
-          latitude: number;
-          longitude: number;
-          timezone?: string;
-        }[];
-      };
-      const remote: CityHit[] = (body.results ?? []).map((r) => ({
-        name: r.name,
-        country: r.country ?? "",
-        display: [r.name, r.admin1, r.country].filter(Boolean).join("，"),
-        latitude: r.latitude,
-        longitude: r.longitude,
-        timezone: r.timezone || "UTC",
-      }));
-      const seen = new Set<string>();
-      const merged: CityHit[] = [];
-      for (const item of [...local, ...remote]) {
-        const key = `${item.display}-${item.latitude.toFixed(2)}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        merged.push(item);
-      }
-      return merged.slice(0, 8);
-    } catch {
-      return local.length ? local : FEATURED_CITIES.slice(0, 6);
-    }
-  });
+export async function searchCities({ data: q }: { data: string } | string): Promise<CityHit[]> {
+  const query = typeof q === "string" ? q : q;
+  const text = String(query ?? "").trim().slice(0, 40);
+  const local = filterFeatured(text);
+  if (!text || text.length < 2) return local;
+  try {
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(text)}&count=6&language=zh`;
+    const res = await fetch(url);
+    if (!res.ok) return local;
+    const body = (await res.json()) as { results?: { name: string; country?: string; admin1?: string; latitude: number; longitude: number; timezone?: string }[] };
+    const remote: CityHit[] = (body.results ?? []).map((r) => ({
+      name: r.name,
+      country: r.country ?? "",
+      display: [r.name, r.admin1, r.country].filter(Boolean).join("，"),
+      latitude: r.latitude,
+      longitude: r.longitude,
+      timezone: r.timezone || "UTC",
+    }));
+    const seen = new Set<string>();
+    return [...local, ...remote].filter((item) => {
+      const key = `${item.display}-${item.latitude.toFixed(2)}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).slice(0, 8);
+  } catch {
+    return local.length ? local : FEATURED_CITIES.slice(0, 6);
+  }
+}
 
-export const analyzeLife = createServerFn({ method: "POST" })
-  .validator((input: AnalyzeInput) => parseInput(input))
-  .handler(async ({ data }) => {
-    const { buildChart } = await import("@/lib/bazi/chart");
-    const { interpret, classifyQuestion } = await import("@/lib/bazi/interpret");
-    const { buildPalm } = await import("@/lib/palm/engine");
-    const { routeMethods } = await import("@/lib/core/method");
-    const chart = buildChart(data);
-    const palm = buildPalm({
-      year: data.year,
-      month: data.month,
-      day: data.day,
-      hour: data.hour,
-      timeUnknown: data.timeUnknown,
-      gender: data.gender,
-    });
-    const kind = classifyQuestion(data.question);
-    const methodProtocol = routeMethods(kind, {
-      palmReady: palm.ready,
-      palmMissing: palm.missing,
-    });
-    const reading = interpret(data.question, chart, data.relation, palm);
-    const result: AnalysisResult = {
-      id: newId(),
-      question: data.question,
-      chart,
-      reading,
-      createdAt: new Date().toISOString(),
-      methodProtocol,
-      palm,
-    };
-    return result;
-  });
+export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promise<AnalysisResult> {
+  const input = parseInput(raw);
+  const chart = buildChart(input);
+  const palm = buildPalm({ year: input.year, month: input.month, day: input.day, hour: input.hour, timeUnknown: input.timeUnknown, gender: input.gender });
+  const kind = classifyQuestion(input.question);
+  const methodProtocol = routeMethods(kind, { palmReady: palm.ready, palmMissing: palm.missing });
+  const reading = interpret(input.question, chart, input.relation, palm);
+  return { id: newId(), question: input.question, chart, reading, createdAt: new Date().toISOString(), methodProtocol, palm };
+}
 
-export const writeFullReport = createServerFn({ method: "POST" })
-  .validator((payload: { question: string; chart: AnalysisResult["chart"]; reading: AnalysisResult["reading"]; palm?: AnalysisResult["palm"] }) => payload)
-  .handler(async ({ data }) => {
-    const { composeFullReport } = await import("@/lib/bazi/interpret");
-    const palm = data.palm ?? null;
-    const fallback = composeFullReport(data.question, data.chart, data.reading, palm);
-    if (data.reading.kind === "past") return { text: fallback, source: "rule" as const };
-    const apiKey = process.env.XAI_API_KEY;
-    if (!apiKey) return { text: fallback, source: "rule" as const };
+export async function writeFullReport({ data }: { data: { question: string; chart: AnalysisResult["chart"]; reading: AnalysisResult["reading"]; palm?: AnalysisResult["palm"] } }) {
+  const text = composeFullReport(data.question, data.chart, data.reading, data.palm ?? null);
+  return { text, source: "rule" as const };
+}
 
-    const detail = data.chart.pillars
-      .map((col) =>
-        col.ready === false || col.ganZhi === "未定"
-          ? `${col.label}未定`
-          : `${col.label}${col.ganZhi} 十神${col.shiShenGan} 納音${col.nayin} 長生${col.diShi} 藏干${col.hide.map((h) => h.gan + h.shiShen).join("")}`,
-      )
-      .join("；");
-    const prompt = `你是「昭梧」。客人花時間把出生資料和真正的問題交給你，你必須像看著這個人說話，不能像在寫免責聲明。
+export async function saveBirthProfile(input: AnalyzeInput) {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return;
+  const { question: _question, ...birthData } = input;
+  const { error } = await supabase.from("profiles").update({ birth_data: birthData }).eq("id", auth.user.id);
+  if (error) throw error;
+}
 
-硬規則：
-- 第一句就回答問題，給判斷，不要先寫「不保證」「資料不足」「難以判斷」「僅供參考」「要看更多」。
-- 有多少可靠資料就判多少。時辰未定：時柱、命宮、真太陽時、大運起運一律留白，禁止用正午冒充時柱。缺性別：大運留白。依賴缺失欄位的結論必須留白。
-- 已有的年柱、月令、日主、日支必須用盡。
-- 把客人的原話嵌進開頭。點出至少兩件「他看了會覺得被說中」的具體習慣，必須能從日主、日支、月令、十神推出來，不要寫誰都適用的空話。
-- 禁止五行百分比、禁止數十神個數定旺衰、禁止把粗候選寫成確定喜用神。
-- usefulProvisional=true 時，流通粗候選不得再派生為顏色、方位、時段、寵物、擺設等生活取象結論；第 7 段只寫「正式取用尚未完成，待完整子平覆核」。
-- 禁止算命腔、禁止保證某月必發生某事、禁止醫療診斷與康復日期、禁止點名具體股票或官司輸贏。
-- 健康題：指出他如何硬撐、恢復從哪裡先壞，並清楚寫「已有痛、失眠、掉力就去看醫生」。
-- 選擇題：必須選邊，並說明為什麼另一邊現在吃虧。
-- 時間題：用流年、大運（有就用）指出「現在這一截」怎麼走，不編造必成之日。
-- 繁體中文。短句。像書院文書，不像廟祝。
+export async function saveReport({ data }: { data: { result: AnalysisResult; fullReport?: string | null; input?: AnalyzeInput | null } }) {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) throw new Error("Unauthorized");
+  const result = data.result;
+  const ninePages = composeNinePages(result);
+  const birthData = data.input ? (({ question: _q, ...rest }) => rest)(data.input) : null;
+  const paidReport = data.fullReport ? { version: "ZW-FULL-1.0", fullReport: data.fullReport, ninePages } : null;
+  const { data: row, error } = await supabase
+    .from("report_requests")
+    .insert({
+      id: result.id,
+      public_code: `ZW-${result.id.slice(0, 8).toUpperCase()}`,
+      user_id: auth.user.id,
+      user_email: auth.user.email ?? null,
+      record_kind: "customer",
+      status: "ready",
+      access_mode: "daily_free",
+      free_access_date: sydneyDate(),
+      payment_status: "unpaid",
+      context: { question: result.question, cityLabel: result.chart.cityLabel, birthData },
+      engine_snapshot: result,
+      mother_draft: ninePages,
+      paid_report: paidReport,
+      evidence_trace: { version: "ZW-NINE-1.0", usefulProvisional: result.chart.usefulProvisional },
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return { id: row.id as string };
+}
 
-盤：
-問題：${data.question}
-四柱明細：${detail}
-日主：${data.chart.dayMaster}${data.chart.dayMasterElement}
-月令：${data.chart.monthBranch}
-旺衰底盤：${data.chart.strength.tendency}。${data.chart.strength.summary}
-流通粗候選（待覆核，不得派生生活建議）：${data.chart.useful.join("、")}　暫不必放大：${data.chart.drain.join("、")}
-取用狀態：${data.chart.usefulProvisional ? "usefulProvisional=true；正式取用未完成" : "正式取用可用"}
-大運：${data.chart.currentDayun ? `${data.chart.currentDayun.ganZhi} ${data.chart.currentDayun.startYear}-${data.chart.currentDayun.endYear}（${data.chart.currentDayun.startAge}–${data.chart.currentDayun.endAge}歲）` : data.chart.timeUnknown ? "時辰未定，大運起運留白" : `以流年${data.chart.currentYear}為今年天氣`}
-流年：${data.chart.currentYear}
-胎元／命宮：${data.chart.taiyuan}／${data.chart.minggong}
-出生地：${data.chart.cityLabel}
-真太陽時：${data.chart.trueSolarStamp}
-直答底稿（請在此基礎上寫得更準、更像在說這個人，不要更虛）：${data.reading.directAnswer}
+const reportSelect = "id,public_code,user_id,user_email,owner_archive_id,alias,record_kind,status,access_mode,payment_tier,payment_status,context,engine_snapshot,mother_draft,paid_report,image_path,created_at,updated_at";
 
-依序寫，固定九段，不得合併或少一段：
-1 你真正問的事（先給判斷）
-2 我憑什麼這樣說（點四柱，不要課堂講義）
-3 你的人生節奏
-4 你反覆出現的課題
-5 命誥
-6 工作／感情／財務／身心／家宅
-7 顏色、方位與時段（若 usefulProvisional=true，只寫正式取用尚未完成、待覆核；不得列具體顏色、方位、時段、寵物）
-8 一個最高優先行動
-9 最後一句話`;
+export async function listReports(): Promise<SavedReport[]> {
+  const { data, error } = await supabase.from("report_requests").select(reportSelect).order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data as unknown as ReportRow[]).map((r) => ({
+    id: r.id,
+    question: String(r.context?.question ?? r.engine_snapshot?.question ?? "昭梧报告"),
+    cityLabel: String(r.context?.cityLabel ?? r.engine_snapshot?.chart?.cityLabel ?? ""),
+    dayMaster: String(r.engine_snapshot?.chart?.dayMaster ?? ""),
+    ganZhiLine: r.engine_snapshot?.chart?.pillars?.map((p) => p.ganZhi).join(" ") ?? "",
+    createdAt: r.created_at,
+    hasFullReport: Boolean(r.paid_report),
+  }));
+}
 
-    try {
-      const res = await fetch("https://api.x.ai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "grok-4.5",
-          temperature: 0.55,
-          max_tokens: 2000,
-          messages: [{ role: "user", content: prompt }],
-        }),
-      });
-      if (!res.ok) return { text: fallback, source: "rule" as const };
-      const body = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-      const text = body.choices?.[0]?.message?.content?.trim();
-      if (!text) return { text: fallback, source: "rule" as const };
-      return { text, source: "ai" as const };
-    } catch {
-      return { text: fallback, source: "rule" as const };
-    }
-  });
+export async function loadReport({ data: id }: { data: string }): Promise<ReportRow> {
+  const { data, error } = await supabase.from("report_requests").select(reportSelect).eq("id", id).single();
+  if (error) throw error;
+  return data as unknown as ReportRow;
+}
 
-export const saveReport = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .validator((payload: { result: AnalysisResult; fullReport?: string | null }) => payload)
-  .handler(async ({ context, data }) => {
-    const sql = await getSql();
-    const id = data.result.id || newId();
-    const ganzhi = data.result.chart.pillars.map((p) => p.ganZhi).join(" ");
-    await sql`
-      insert into reports (id, user_id, question, city_label, day_master, ganzhi_line, chart_json, reading_json, full_report)
-      values (
-        ${id},
-        ${context.userId},
-        ${data.result.question},
-        ${data.result.chart.cityLabel},
-        ${data.result.chart.dayMaster},
-        ${ganzhi},
-        ${JSON.stringify(data.result.chart)},
-        ${JSON.stringify(data.result.reading)},
-        ${data.fullReport ?? null}
-      )
-    `;
-    return { id };
-  });
+export async function deleteReport({ data: id }: { data: string }) {
+  const { error } = await supabase.from("report_requests").delete().eq("id", id);
+  if (error) throw error;
+  return { ok: true };
+}
 
-export const listReports = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
-  .handler(async ({ context }) => {
-    const sql = await getSql();
-    const rows = await sql<{
-      id: string;
-      question: string;
-      city_label: string;
-      day_master: string;
-      ganzhi_line: string;
-      created_at: string;
-      full_report: string | null;
-    }>`
-      select id, question, city_label, day_master, ganzhi_line, created_at, full_report
-      from reports
-      where user_id = ${context.userId}
-      order by created_at desc
-    `;
-    return rows.map(
-      (r): SavedReport => ({
-        id: r.id,
-        question: r.question,
-        cityLabel: r.city_label,
-        dayMaster: r.day_master,
-        ganZhiLine: r.ganzhi_line,
-        createdAt: r.created_at,
-        hasFullReport: Boolean(r.full_report),
-      }),
-    );
-  });
-
-export const loadReport = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
-  .validator((id: string) => id)
-  .handler(async ({ context, data: id }) => {
-    const sql = await getSql();
-    const rows = await sql<{
-      id: string;
-      question: string;
-      chart_json: string;
-      reading_json: string;
-      full_report: string | null;
-      created_at: string;
-    }>`
-      select id, question, chart_json, reading_json, full_report, created_at
-      from reports
-      where id = ${id} and user_id = ${context.userId}
-      limit 1
-    `;
-    const row = rows[0];
-    if (!row) return null;
-    const result: AnalysisResult = {
-      id: row.id,
-      question: row.question,
-      chart: JSON.parse(row.chart_json),
-      reading: JSON.parse(row.reading_json),
-      createdAt: row.created_at,
-    };
-    return { result, fullReport: row.full_report };
-  });
-
-export const deleteReport = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .validator((id: string) => id)
-  .handler(async ({ context, data: id }) => {
-    const sql = await getSql();
-    await sql`delete from reports where id = ${id} and user_id = ${context.userId}`;
-    return { ok: true as const };
-  });
+export async function listOwnerReports(): Promise<ReportRow[]> {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user || !(await isOwnerUser(auth.user.id))) throw new Error("OWNER_REQUIRED");
+  const { data, error } = await supabase.from("report_requests").select(reportSelect).order("updated_at", { ascending: false });
+  if (error) throw error;
+  return data as unknown as ReportRow[];
+}
