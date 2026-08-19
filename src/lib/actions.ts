@@ -1,5 +1,5 @@
 import { FEATURED_CITIES, filterFeatured } from "@/lib/bazi/cities";
-import type { AnalysisResult, AnalyzeInput, CityHit } from "@/lib/bazi/types";
+import type { AnalysisResult, AnalyzeInput, CityHit, RelationPref } from "@/lib/bazi/types";
 
 function newId(): string {
   return crypto.randomUUID();
@@ -49,15 +49,7 @@ function parseInput(raw: AnalyzeInput): AnalyzeInput {
   };
 }
 
-/**
- * Client-safe runtime layer.
- *
- * The deterministic chart / palm / routing engines are pure TypeScript, so they
- * do not need a server function. Keeping these calls in the browser means the
- * production Netlify deployment remains usable even when no Netlify Functions
- * are present. Secrets are never exposed here: the full-report path intentionally
- * uses the deterministic rule composer only.
- */
+/** Client-safe deterministic runtime. No secret keys are exposed in the browser. */
 export async function getAlmanac() {
   const { currentAlmanac } = await import("@/lib/bazi/chart");
   return currentAlmanac(new Date());
@@ -67,7 +59,6 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
   const q = String(data ?? "").trim().slice(0, 40);
   const local = filterFeatured(q);
   if (!q || q.length < 2) return local;
-
   try {
     const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=zh`;
     const res = await fetch(url);
@@ -133,6 +124,39 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
     id: newId(),
     question: data.question,
     chart,
+    reading,
+    createdAt: new Date().toISOString(),
+    methodProtocol,
+    palm,
+  };
+}
+
+export async function followUpLife({
+  data,
+}: {
+  data: {
+    question: string;
+    base: AnalysisResult;
+    relation?: RelationPref;
+  };
+}): Promise<AnalysisResult> {
+  const question = String(data.question ?? "").trim().slice(0, 400);
+  if (!question) throw new Error("請先寫下你想繼續問的問題。");
+  const [{ interpret, classifyQuestion }, { routeMethods }] = await Promise.all([
+    import("@/lib/bazi/interpret"),
+    import("@/lib/core/method"),
+  ]);
+  const palm = data.base.palm ?? null;
+  const kind = classifyQuestion(question);
+  const methodProtocol = routeMethods(kind, {
+    palmReady: Boolean(palm?.ready),
+    palmMissing: palm?.missing ?? [],
+  });
+  const reading = interpret(question, data.base.chart, data.relation ?? "unset", palm);
+  return {
+    id: newId(),
+    question,
+    chart: data.base.chart,
     reading,
     createdAt: new Date().toISOString(),
     methodProtocol,
