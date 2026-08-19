@@ -31,16 +31,25 @@ function Home() {
           <Mark id="01" size={88} className="absolute -right-1 -top-1 w-16 opacity-40 sm:w-[4.5rem]" />
           <p className="text-xs tracking-[0.32em] text-cinnabar">ZHAOWU</p>
           <h1 className="mt-3 font-display text-4xl leading-tight sm:text-5xl">
-            {t("brand")}
-            <span className="mt-2 block text-2xl text-ink-soft sm:text-3xl">{t("tagline")}</span>
+            昭見天機，以明其命；
+            <span className="mt-2 block text-2xl text-ink-soft sm:text-3xl">
+              梧引鳳棲，以安其身。
+            </span>
           </h1>
-          <p className="mt-3 text-xs tracking-[0.28em] text-ink-mute">{t("product")}</p>
+          <p className="mt-3 text-xs tracking-[0.28em] text-ink-mute">
+            天道昭昭，萬物有時；人各有命，亦各有歸。
+          </p>
           <p className="mt-5 max-w-xl text-sm leading-7 text-ink-soft">
-            {t("m1")}
+            昭梧以命理為鏡，觀其時，察其勢，明其路。
             <br />
-            {t("m2")}
+            不妄斷吉凶，不空談宿命，
             <br />
-            {t("m3")}
+            只願助你於未然處見端倪，於迷局中知進退，
+            <br />
+            最終在這紛繁世間，得一處安身安心之所。
+          </p>
+          <p className="mt-5 font-display text-lg tracking-[0.12em] text-cinnabar">
+            梧以棲鳳，人以安命。
           </p>
           <a
             href="#analysisForm"
