@@ -4,43 +4,26 @@ import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { SiteShell } from "@/components/site-shell";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "昭梧｜昭於未見，梧於有歸";
-const host = import.meta.env.VITE_PUBLIC_HOSTNAME;
-const ogImage = host ? `https://${host}/og.jpg` : undefined;
+const APP_NAME = "昭梧｜昭於未見，棲於有梧";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: APP_NAME },
-      { name: "description", content: "昭於未見，梧於有歸。子平八字命盤、真太陽時校正、問題直答，以及白話完整報告。" },
+      {
+        name: "description",
+        content: "昭於未見，棲於有梧。以子平八字為主判，提供真太陽時校正、問題直答與完整報告。",
+      },
       { name: "apple-mobile-web-app-title", content: "昭梧" },
       { name: "theme-color", content: "#f3ead8" },
-      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
       { property: "og:title", content: APP_NAME },
-      { property: "og:description", content: "昭於未見，梧於有歸。子平八字命盤與問題直答。" },
+      { property: "og:description", content: "昭於未見，棲於有梧。看清之後，知道往哪裡走。" },
       { property: "og:locale", content: "zh_TW" },
-      ...(ogImage
-        ? [
-            { property: "og:image", content: ogImage },
-            { property: "og:image:width", content: "1200" },
-            { property: "og:image:height", content: "630" },
-          ]
-        : []),
     ],
-    links: [
-      { rel: "icon", type: "image/png", href: "/favicon.png" },
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
-      { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/__grok/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap",
-      },
-    ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   component: () => (
     <html lang="zh-Hant" suppressHydrationWarning>
