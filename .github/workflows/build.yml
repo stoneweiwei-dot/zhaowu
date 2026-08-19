@@ -3,6 +3,8 @@ name: website-build
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -18,3 +20,15 @@ jobs:
         run: npm install
       - name: Build and typecheck
         run: npm run build
+      - name: Package verified deploy source
+        uses: actions/upload-artifact@v4
+        with:
+          name: zhaowu-deploy-source
+          path: |
+            package.json
+            package-lock.json
+            vite.config.ts
+            tsconfig.json
+            src
+          if-no-files-found: error
+          retention-days: 1
