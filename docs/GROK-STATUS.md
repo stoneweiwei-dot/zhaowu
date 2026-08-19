@@ -9,7 +9,11 @@ Grok 分享页是动态的，抓不到。**以本仓库为准。**
 | 域名 | https://zhaowu.soul-terminal.com （选定，DNS 未挂） |
 | 主站 | https://soul-terminal.com （WordPress，不要覆盖） |
 | 旧引擎快照 | https://github.com/stoneweiwei-dot/zhaowu-web-app- |
-| 旧运行时 | https://204914e3adbfd65055.v2.appdeploy.ai/ |
+| 旧运行时 | https://204914e3adbfd65055.v2.appdeploy.ai/ （只读参考） |
+
+## 主干决议（2026-08-19）
+
+Grok 本仓是唯一产品主干。GPT 只辅导本仓。AppDeploy 不作平行产品。见 [COLLAB.md](../COLLAB.md)。
 
 ## 这是什么
 
@@ -24,45 +28,46 @@ Grok App Builder 重做的可运行站：TanStack Start + React + Vite + Tailwin
 | 路由 ZW-METHOD-1.1 | `src/lib/core/method.ts` | 完整；专项目前几乎全是「资料未接入」 |
 | 一掌经 ZW-PALM-1.0 | `src/lib/palm/engine.ts` | 完整；1988-10-04 寅时男命已对上 辰亥戌子 |
 | 子平排盘 | `chart.ts` `calendar.ts` `solar-time.ts` | 节气月令、真太阳时、藏干、十神、纳音、长生、大运、胎元、命宫 |
-| 旺衰／流通候选 | `chart.ts` `judgeStrength` `usefulElements` | **简表**，标成旺衰底盘＋流通粗候选；不是 12 步引擎 |
-| 直答 | `src/lib/bazi/interpret.ts` | 0 AI；立场先行；选择必选边 |
-| 完整报告 | `composeFullReport` + 可选 grok-4.5 | 前世强制 0 AI；规则版与 AI 扩写统一固定九段 |
-| 结果页 | `src/components/result-view.tsx` | 直答、四柱、命诰、行动、粗候选待覆核、折叠方法区；无五行百分比条 |
-| 登录存档 | Better Auth + `reports` 表 | 有；未记住出生资料、无续问 |
-| 印章 | `src/components/marks.tsx` | 小 webp；`/login` 不撒 |
+| 旺衰／流通候选 | `chart.ts` | **简表**，旺衰底盘＋流通粗候选；不是 12 步引擎 |
+| 直答 | `interpret.ts` | 0 AI；立场先行；选择必选边 |
+| 完整报告 | `composeFullReport` + 可选 grok-4.5 | 前世强制 0 AI；固定九段 |
+| 付费九页母稿 | `docs/NINE-PAGE.md` + `src/lib/report/nine-page.ts` | **规格已入库 + 纯函数已接线**；UI 出图／付费流待接 |
+| 9:16 命诰图 | `docs/DECREE-IMAGE.md` + `src/lib/report/decree-image.ts` | **提示词与叠字层已接线**；图像 API／前端叠字待接 |
+| 结果页 | `result-view.tsx` | 直答、四柱、命诰、行动、粗候选待覆核、折叠方法区 |
+| 登录存档 | Better Auth + `reports` | 有；未记住出生资料、无续问 |
 
-## Issue #2 违规（已修，calendar / palm / method 未动）
+## Issue #2 违规（已修）
 
-| 违规 | 现况 |
+五行百分比主视觉已拆；喜用降级粗候选；`timeUnknown` 不伪造午时；usefulProvisional 门控生活取象。
+
+## Issue #4（GPT 交稿，Grok 接线中）
+
+| 项 | 状态 |
 |---|---|
-| 五行百分比当判定／主视觉 | `elementPercents` 强制全 0；结果页百分比条已拆 |
-| `useful`／`drain` 标成喜用 | 文案降级为「流通粗候选（待覆核）」；`usefulProvisional=true` |
-| 粗候选继续派生颜色／方位／时段／宠物 | `guideFrom()` 在 `usefulProvisional=true` 时不再产出生活取象；结果页与完整报告明确待覆核 |
-| `timeUnknown` 用 12:00 伪造午时柱 | 时柱 `ready=false`／`ganZhi=未定`；命宫、大运、真太阳时留白；正午只用来取节气年月 |
-| `writeFullReport` 叫模型缺资料也硬判 | 提示词改为：有多少可靠资料就判多少；禁止正午冒充时柱 |
-| AI 完整报告只有 8 段、规则版 9 段 | Grok 扩写提示词改成固定九段，与 `composeFullReport` 对齐 |
+| 九页母稿文案 | GPT 已交；已写入 `docs/NINE-PAGE.md` |
+| `composeNinePages` / `composeNinePageReport` | 已落地 |
+| 命诰图 Base Prompt + 叠字规格 | 已落地 `decree-image.ts` |
+| 结果页「生成九页／命诰图」按钮 | 待 App Builder 运行时接线 |
+| 登录后记住出生、同盘追问 | 规格在 Issue #4；代码未接 |
 
-验收测试：`scripts/engine-acceptance.test.mjs`（1988-10-04 寅时男命四宫；缺性别整盘不判；缺时辰不伪造午时；粗候选不得派生生活取象）。
+## 未落地
 
-## 未落地（不要写成已完成）
-
-- STONE Core 12 步：从化、格局、刑冲合害库、正式病药
-- 付费九页母稿、命诰图 9:16 出图
-- 紫微／西占／吠陀／六爻／奇门独立排盘
-- 南北半球风水（只标了南半球不反转五行）
-- 登录后自动回填出生资料
-- 同一张盘追问
+- STONE Core 12 步
+- 付费／结缘支付流
+- 命诰图实际出图与前端叠字
+- 登录回填出生、同盘追问
+- 紫微／西占等独立排盘
 
 ## 管线
 
 `AnalyzeInput → buildChart → buildPalm → classifyQuestion → routeMethods → interpret → AnalysisResult`  
-`writeFullReport`：`kind==="past"` 直接 `composePalmReport`，禁止再打模型。
-
-分类优先序（不可重排）：past → home → **choice** → health → love → career → money → timing → self。
+`writeFullReport`：`kind==="past"` 直接 `composePalmReport`。  
+付费九页：`composeNinePageReport(result)`（ZW-NINE-1.0）。  
+命诰图包：`decreeImagePackage(result)`（ZW-DECREE-IMG-1.0）。
 
 ## GPT 怎么审
 
-1. 读 [CONTRACT.md](./CONTRACT.md) 和本文件。  
-2. 对源码，不要对 Grok 分享页。  
-3. 回 [Issue #2](https://github.com/stoneweiwei-dot/zhaowu/issues/2)，三列表：保留 / 简陋 / 违规。  
-4. 锁文件见 CONTRACT §8。不要改 `calendar` 节气、`palm` 步进、`method` 路由。
+1. 读 CONTRACT、本文件、COLLAB。  
+2. 对源码，不要对分享页。  
+3. 回 Issue，三列表：保留 / 简陋 / 违规。  
+4. 不要改锁文件，不要往 AppDeploy 出平行版。
