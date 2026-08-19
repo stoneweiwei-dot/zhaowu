@@ -1,86 +1,155 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @theme {
+  --font-sans: "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Noto Serif TC", "Noto Sans TC", serif;
   --color-paper: #f3ead8;
-  --color-paper-deep: #e6d8b8;
-  --color-cream: #fffaf1;
-  --color-ink: #2a261f;
-  --color-ink-soft: #5a5348;
-  --color-ink-mute: #8a8174;
-  --color-cinnabar: #8f3027;
-  --color-cinnabar-deep: #6c221c;
-  --color-line: #d5c4a1;
-  --color-wood: #3d6b4f;
-  --color-fire: #8f3027;
-  --color-earth: #9a7040;
-  --color-metal: #6f6a60;
-  --color-water: #3d5a6b;
-  --font-display: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
-  --font-sans: "Noto Sans TC", "PingFang TC", "Noto Sans", system-ui, sans-serif;
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
-  --radius-xl: 28px;
+  --color-paper-deep: #e8dcc8;
+  --color-cream: #faf6ee;
+  --color-ink: #2a241c;
+  --color-ink-soft: #4a4036;
+  --color-ink-mute: #7a6e60;
+  --color-line: #d4c4a8;
+  --color-cinnabar: #b83a2e;
+  --color-gold: #c9a227;
+  --color-water: #3a6b7a;
+  --color-earth: #8b7355;
 }
 
-@layer base {
-  button:not(:disabled),
-  [role="button"]:not(:disabled) {
-    cursor: pointer;
-  }
-
-  html,
-  body {
-    background: var(--color-paper);
-    color: var(--color-ink);
-    font-family: var(--font-sans);
-    min-height: 100%;
-  }
-
-  body {
-    background-image:
-      linear-gradient(100deg, rgb(243 234 216 / 0.94) 0%, rgb(243 234 216 / 0.78) 46%, rgb(243 234 216 / 0.52) 72%),
-      linear-gradient(180deg, rgb(243 234 216 / 0.12), var(--color-paper) 88%),
-      url("/hero.jpg");
-    background-size: cover;
-    background-position: center top;
-    background-attachment: fixed;
-  }
-
-  ::selection {
-    background: color-mix(in oklab, var(--color-cinnabar) 28%, white);
-    color: var(--color-ink);
-  }
+html {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-paper);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+body {
+  min-height: 100dvh;
+}
+
+.font-display {
+  font-family: var(--font-display);
 }
 
 .seal-border {
-  box-shadow:
-    0 0 0 1px var(--color-line),
-    0 18px 50px rgb(60 42 20 / 0.1);
+  border: 1px solid color-mix(in srgb, var(--color-line) 80%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-cream) 60%, transparent) inset;
 }
 
-.vert-brand {
-  writing-mode: vertical-rl;
-  letter-spacing: 0.28em;
+/* IntroGate 氛围动画（无视频时的水晶山河／红日） */
+.intro-atmosphere {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.intro-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    #0d0a08 0%,
+    #1a1210 28%,
+    #3a2418 55%,
+    #7a3a22 78%,
+    #c45a2e 100%
+  );
+  animation: intro-sky-rise 3.2s ease-out forwards;
+}
+
+.intro-sun {
+  position: absolute;
+  left: 50%;
+  bottom: 28%;
+  width: 42vw;
+  max-width: 220px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #ffe6b0 0%, #f0a040 45%, #c04018 75%, transparent 78%);
+  transform: translate(-50%, 40%) scale(0.55);
+  opacity: 0.35;
+  filter: blur(1px);
+  animation: intro-sun-rise 3s ease-out forwards;
+}
+
+.intro-mist {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 70%, rgba(255, 230, 180, 0.18), transparent 70%),
+    radial-gradient(ellipse 60% 30% at 30% 40%, rgba(180, 200, 220, 0.08), transparent 60%);
+  animation: intro-mist-fade 3.2s ease-out forwards;
+}
+
+.intro-ridge {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  height: 38%;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent 0%, #1a1410 40%, #0d0a08 100%);
+  clip-path: polygon(0 60%, 12% 42%, 28% 55%, 45% 30%, 62% 48%, 78% 22%, 100% 40%, 100% 100%, 0 100%);
+  opacity: 0.85;
+}
+
+.intro-ridge-a {
+  bottom: 0;
+  height: 42%;
+  animation: intro-ridge-in 2.8s ease-out forwards;
+}
+
+.intro-ridge-b {
+  bottom: 0;
+  height: 28%;
+  opacity: 0.55;
+  clip-path: polygon(0 70%, 18% 50%, 35% 62%, 55% 38%, 72% 55%, 88% 32%, 100% 48%, 100% 100%, 0 100%);
+  animation: intro-ridge-in 3s ease-out 0.15s forwards;
 }
 
 .intro-seal {
-  animation: intro-seal 1.2s ease both;
+  animation: intro-seal-in 1.2s ease-out 0.4s both;
 }
 
-@keyframes intro-seal {
+@keyframes intro-sky-rise {
+  from {
+    filter: brightness(0.35);
+  }
+  to {
+    filter: brightness(1);
+  }
+}
+
+@keyframes intro-sun-rise {
+  from {
+    transform: translate(-50%, 55%) scale(0.4);
+    opacity: 0.15;
+  }
+  to {
+    transform: translate(-50%, 0%) scale(1);
+    opacity: 0.95;
+  }
+}
+
+@keyframes intro-mist-fade {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes intro-ridge-in {
+  from {
+    transform: translateY(12%);
+    opacity: 0.3;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+}
+
+@keyframes intro-seal-in {
   from {
     opacity: 0;
     transform: scale(0.86);
