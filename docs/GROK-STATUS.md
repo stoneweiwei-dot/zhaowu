@@ -26,7 +26,7 @@ Grok App Builder 重做的可运行站：TanStack Start + React + Vite + Tailwin
 | 子平排盘 | `chart.ts` `calendar.ts` `solar-time.ts` | 节气月令、真太阳时、藏干、十神、纳音、长生、大运、胎元、命宫 |
 | 旺衰／流通候选 | `chart.ts` `judgeStrength` `usefulElements` | **简表**，标成旺衰底盘＋流通粗候选；不是 12 步引擎 |
 | 直答 | `src/lib/bazi/interpret.ts` | 0 AI；立场先行；选择必选边 |
-| 完整报告 | `composeFullReport` + 可选 grok-4.5 | 前世强制 0 AI；九段标题 ≠ 付费九页 |
+| 完整报告 | `composeFullReport` + 可选 grok-4.5 | 前世强制 0 AI；规则版与 AI 扩写统一固定九段 |
 | 结果页 | `src/components/result-view.tsx` | 直答、四柱、命诰、行动、粗候选待覆核、折叠方法区；无五行百分比条 |
 | 登录存档 | Better Auth + `reports` 表 | 有；未记住出生资料、无续问 |
 | 印章 | `src/components/marks.tsx` | 小 webp；`/login` 不撒 |
@@ -37,10 +37,12 @@ Grok App Builder 重做的可运行站：TanStack Start + React + Vite + Tailwin
 |---|---|
 | 五行百分比当判定／主视觉 | `elementPercents` 强制全 0；结果页百分比条已拆 |
 | `useful`／`drain` 标成喜用 | 文案降级为「流通粗候选（待覆核）」；`usefulProvisional=true` |
+| 粗候选继续派生颜色／方位／时段／宠物 | `guideFrom()` 在 `usefulProvisional=true` 时不再产出生活取象；结果页与完整报告明确待覆核 |
 | `timeUnknown` 用 12:00 伪造午时柱 | 时柱 `ready=false`／`ganZhi=未定`；命宫、大运、真太阳时留白；正午只用来取节气年月 |
 | `writeFullReport` 叫模型缺资料也硬判 | 提示词改为：有多少可靠资料就判多少；禁止正午冒充时柱 |
+| AI 完整报告只有 8 段、规则版 9 段 | Grok 扩写提示词改成固定九段，与 `composeFullReport` 对齐 |
 
-验收测试：`scripts/engine-acceptance.test.mjs`（1988-10-04 寅时男命四宫；缺性别整盘不判；缺时辰不伪造午时）。
+验收测试：`scripts/engine-acceptance.test.mjs`（1988-10-04 寅时男命四宫；缺性别整盘不判；缺时辰不伪造午时；粗候选不得派生生活取象）。
 
 ## 未落地（不要写成已完成）
 
