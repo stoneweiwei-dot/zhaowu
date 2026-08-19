@@ -1,6 +1,6 @@
 # 域名：zhaowu.soul-terminal.com
 
-主站 `soul-terminal.com` 继续给 WordPress。昭梧引擎只用子域名。
+主站 `soul-terminal.com` 继续给 WordPress。昭梧只用子域名。
 
 ## 当前状态
 
@@ -8,38 +8,30 @@
 |---|---|
 | 正式域名 | `zhaowu.soul-terminal.com` |
 | 根站 | `soul-terminal.com`，不要动 |
-| DNS | **未挂** |
-| 当前部署目标 | **未锁定；不得猜** |
+| 生产平台 | **Netlify** |
+| Netlify 项目 | `stone-zhaowu-official` |
+| 当前生产 URL | `https://stone-zhaowu-official.netlify.app` |
+| 当前生产 deploy | `6a860f304b277fa443df8d72`（ready） |
+| CNAME 目标 | `stone-zhaowu-official.netlify.app` |
+| DNS | **尚未挂到正式子域名** |
 
-`DOMAIN.md` 是域名接线的唯一来源。以后不能再写「Grok 或 Vercel 二选一」这种模糊目标。
+这是唯一生产目标。Grok 临时网址与 AppDeploy 旧站均不再作为生产主干。
 
 ## DNS 规则
 
-只有当当前生产部署平台已经给出**唯一、可验证的 CNAME 主机名**时，才加这一条：
+先在 Netlify 项目里添加 `zhaowu.soul-terminal.com` 为 custom domain；Netlify 接受后，再到 `soul-terminal.com` 当前 DNS 提供商新增：
 
 | 类型 | 主机 | 目标 | 不要动 |
 |---|---|---|---|
-| CNAME | `zhaowu` | `<ACTIVE_DEPLOYMENT_HOST>` | 根记录 `@`、`www` |
+| CNAME | `zhaowu` | `stone-zhaowu-official.netlify.app` | 根记录 `@`、`www` |
 
-在 `<ACTIVE_DEPLOYMENT_HOST>` 没有被替换成真实主机名之前：**不要改 DNS。**
-
-TTL 300 即可。不要改 A 记录，不要买 SSL；TLS 交给实际部署平台签发。
-
-## 谁可以填部署目标
-
-部署方（Grok／Vercel／其他实际承载方）必须先给出：
-
-1. 当前生产发布 URL 能正常打开；
-2. 平台后台显示的自定义域名 CNAME 目标；
-3. 该目标只对应一个生产部署，不同时保留两个候选。
-
-然后把这里的 `<ACTIVE_DEPLOYMENT_HOST>` 改成那个**准确主机名**，再动 DNS。
+TTL 300 即可。不要改根站 A 记录，不要改 `www`，不要另买 SSL；TLS 交给 Netlify。
 
 ## 验收顺序
 
-1. 先验证平台原始发布 URL 可打开；
-2. 平台接受 `zhaowu.soul-terminal.com` 作为 custom domain；
-3. 再加 CNAME；
-4. 等 DNS 生效后确认 HTTPS 正常；
-5. iPhone 实机打开：主页 → 登录 → 报告列表 → 打开一份报告；
-6. `soul-terminal.com` 与 `www` 仍保持原 WordPress，不得被昭梧覆盖。
+1. Netlify 原始生产 URL `https://stone-zhaowu-official.netlify.app` 保持可用；
+2. Netlify 添加并接受 `zhaowu.soul-terminal.com`；
+3. DNS 仅新增 `zhaowu` CNAME → `stone-zhaowu-official.netlify.app`；
+4. DNS 生效后确认 `https://zhaowu.soul-terminal.com` HTTPS 正常；
+5. iPhone 实机：主页 → 登录 → 分析 → 九页／命诰 → 保存 → 我的昭梧／站主后台；
+6. `soul-terminal.com` 与 `www` 继续保持原 WordPress，不得被昭梧覆盖。
