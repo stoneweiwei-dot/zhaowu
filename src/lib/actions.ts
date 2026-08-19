@@ -157,6 +157,7 @@ export const writeFullReport = createServerFn({ method: "POST" })
 - 已有的年柱、月令、日主、日支必須用盡。
 - 把客人的原話嵌進開頭。點出至少兩件「他看了會覺得被說中」的具體習慣，必須能從日主、日支、月令、十神推出來，不要寫誰都適用的空話。
 - 禁止五行百分比、禁止數十神個數定旺衰、禁止把粗候選寫成確定喜用神。
+- usefulProvisional=true 時，流通粗候選不得再派生為顏色、方位、時段、寵物、擺設等生活取象結論；第 7 段只寫「正式取用尚未完成，待完整子平覆核」。
 - 禁止算命腔、禁止保證某月必發生某事、禁止醫療診斷與康復日期、禁止點名具體股票或官司輸贏。
 - 健康題：指出他如何硬撐、恢復從哪裡先壞，並清楚寫「已有痛、失眠、掉力就去看醫生」。
 - 選擇題：必須選邊，並說明為什麼另一邊現在吃虧。
@@ -169,7 +170,8 @@ export const writeFullReport = createServerFn({ method: "POST" })
 日主：${data.chart.dayMaster}${data.chart.dayMasterElement}
 月令：${data.chart.monthBranch}
 旺衰底盤：${data.chart.strength.tendency}。${data.chart.strength.summary}
-流通粗候選（待覆核）：${data.chart.useful.join("、")}　暫不必放大：${data.chart.drain.join("、")}
+流通粗候選（待覆核，不得派生生活建議）：${data.chart.useful.join("、")}　暫不必放大：${data.chart.drain.join("、")}
+取用狀態：${data.chart.usefulProvisional ? "usefulProvisional=true；正式取用未完成" : "正式取用可用"}
 大運：${data.chart.currentDayun ? `${data.chart.currentDayun.ganZhi} ${data.chart.currentDayun.startYear}-${data.chart.currentDayun.endYear}（${data.chart.currentDayun.startAge}–${data.chart.currentDayun.endAge}歲）` : data.chart.timeUnknown ? "時辰未定，大運起運留白" : `以流年${data.chart.currentYear}為今年天氣`}
 流年：${data.chart.currentYear}
 胎元／命宮：${data.chart.taiyuan}／${data.chart.minggong}
@@ -177,15 +179,16 @@ export const writeFullReport = createServerFn({ method: "POST" })
 真太陽時：${data.chart.trueSolarStamp}
 直答底稿（請在此基礎上寫得更準、更像在說這個人，不要更虛）：${data.reading.directAnswer}
 
-依序寫，用小標題：
+依序寫，固定九段，不得合併或少一段：
 1 你真正問的事（先給判斷）
 2 我憑什麼這樣說（點四柱，不要課堂講義）
 3 你的人生節奏
 4 你反覆出現的課題
 5 命誥
 6 工作／感情／財務／身心／家宅
-7 未來三十天只做這一件
-8 最後一句話`;
+7 顏色、方位與時段（若 usefulProvisional=true，只寫正式取用尚未完成、待覆核；不得列具體顏色、方位、時段、寵物）
+8 一個最高優先行動
+9 最後一句話`;
 
     try {
       const res = await fetch("https://api.x.ai/v1/chat/completions", {
