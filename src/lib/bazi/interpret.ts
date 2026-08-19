@@ -106,6 +106,16 @@ function topGod(chart: Chart): string {
 }
 
 function guideFrom(chart: Chart): LifeGuide {
+  if (chart.usefulProvisional) {
+    return {
+      colors: [],
+      avoidColors: [],
+      directions: { favor: [], rest: [] },
+      hours: { favor: [], drain: [] },
+      pet: "",
+    };
+  }
+
   const favorEl = chart.useful[0] ?? chart.dayMasterElement;
   const restEl = chart.drain[0] ?? "土";
   return {
@@ -169,7 +179,7 @@ function leanChoice(q: string, chart: Chart): string {
       if (strong) {
         return `兩個裡面，選「${pickMove}」。你現在不是缺勇氣，是盤面偏滿，需要一條能輸出、能離開舊位置的路；「${pickStay}」比較像把已經過重的東西再扛一次。`;
       }
-      return `兩個裡面，選「${pickStay}」。你現在需要的是能沉澱、能托住你的那一條；「${pickMove}」聽起來像突破，實際上會先抽走你還沒補上的${joinEl(chart.useful)}。`;
+      return `兩個裡面，選「${pickStay}」。你現在需要的是能沉澱、能托住你的那一條；「${pickMove}」聽起來像突破，實際上會先抽走你還沒補上的承載與資源。`;
     }
   }
   if (q.includes("該不該") || q.includes("要不要")) {
@@ -207,6 +217,9 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
   const usefulLine = useful ? `調候粗候選是${useful}（待完整子平覆核，不是喜用神定論）` : "流通候選未定";
   const timeLine = isReady(timeP) ? `時柱${timeP.ganZhi}是你出力的方式` : "時柱未定，出力方式先不寫死";
   const guide = guideFrom(chart);
+  const guideLine = chart.usefulProvisional
+    ? "顏色、方位、時段與寵物取象暫不下定論；等完整取用完成後再給。"
+    : `生活取象可先用${guide.colors[0]}這一系質地。`;
   const god = topGod(chart);
   const stemTell = STEM_TELL[chart.dayMaster] ?? nature;
   const branchTell = BRANCH_TELL[dayP.zhi] ?? "日常落點很具體，不喜歡被抽象安慰";
@@ -233,7 +246,7 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
       }
       break;
     case "home":
-      directAnswer = `你問「${q}」，先聽結論：出生盤只回答你的承載與節奏，不能代替房屋的光、風、路與動線。${stemTell}。${now}沒有平面圖、坐向或實地資料，風水不作判定；奇門也要另起局。眼下能做的，是把家分成「能做事的桌」和「能關燈的角落」，並讓${chart.dayMasterElement}吃到「${guide.colors[0]}」這一系質地。`;
+      directAnswer = `你問「${q}」，先聽結論：出生盤只回答你的承載與節奏，不能代替房屋的光、風、路與動線。${stemTell}。${now}沒有平面圖、坐向或實地資料，風水不作判定；奇門也要另起局。眼下能做的，是把家分成「能做事的桌」和「能關燈的角落」。${guideLine}`;
       break;
     case "health":
       directAnswer = `你問「${q}」，先聽結論：不是某個月份一到就會好，是你一直用「${ELEMENT_LABEL[chart.dayMasterElement]}」硬撐，恢復才會越來越差。${stemTell}。日支${dayP.zhi}的習慣是——${branchTell}。${now}這段時間最要收回的是睡眠、下班界線，以及一件你反覆想卻沒出口的事。身體若已經發出痛、失眠或突然掉力，去看醫生；命盤在這裡的用處，是指出你為什麼會拖到那一步。`;
@@ -257,14 +270,15 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
       directAnswer = `你問「${q}」。先看見自己：${stemTell}。日支${dayP.zhi}——${branchTell}。已排定的柱是 ${chart.pillars.filter(isReady).map((x) => x.ganZhi).join("　")}，日主${chart.dayMaster}${chart.dayMasterElement}，月令${monthP.zhi}，旺衰底盤是${chart.strength.tendency}。${usefulLine}。${now}你真正的功課不是再找一句更準的批語，而是把已經知道的那件事做成七天的行為。命局不會因一句話消失，可被你改的是：出口、邊界、以及你願不願意讓別人看見半成品。`;
   }
 
-
   const rhythm = `人生節奏以${chart.dayMaster}${chart.dayMasterElement}為軸，在${monthP.zhi}月令裡展開。年柱${yearP.ganZhi}（${yearP.nayin}）是底色，日支${dayP.zhi}是每天回家會碰到的自己。${timeLine}。${stemTell}。${strong ? `盤面偏滿，出口比進補重要。${usefulLine}。` : `盤面需要先被托住。${usefulLine}。`}穩定不是停住，是讓每一次選擇都有落點。`;
 
   const work = `${GOD_WORK[god] ?? "把判斷做成可交付物"}。你吃香的是能看見成果、能複用、能署名的位置；一進「責任很大、產出卻說不清」的房間，你的${chart.dayMasterElement}就會先耗掉。今明兩步：選一項技能做成外人看得懂的交付物，並算清它能不能重複賣。`;
   const love = `${loveLens(chart, relation)}你容易先消化再開口。把隱含期待改成一句可協商的話，比再找一個會讀心的人準。三十天只看連續性，不看宣言。`;
   const money = `錢從「${ELEMENT_LABEL[chart.dayMasterElement]}被做成產品」來。先固定一條主收入，記錄投入、實收、退出。帳本比儀式準。`;
   const body = `${chart.dayMaster}${chart.dayMasterElement}一壓久，恢復就會從睡眠和胃口先報信。這不是病名，是節奏。先收回固定睡覺的時間，以及一件你反覆想卻沒有出口的事。若已經有疼痛、突然掉力或長期失眠，先去看醫生。`;
-  const home = `家要同時有能做事的桌，和真正能關燈的角落。${chart.dayMasterElement}吃「${guide.colors[0]}」這一系的質地。東西、訊息、情緒各有位置，比再買一件象徵物有用。`;
+  const home = chart.usefulProvisional
+    ? "家要同時有能做事的桌，和真正能關燈的角落。正式取用尚未完成，所以暫不以流通粗候選指定顏色、方位或擺設。東西、訊息、情緒各有位置，比再買一件象徵物有用。"
+    : `家要同時有能做事的桌，和真正能關燈的角落。${chart.dayMasterElement}可先用「${guide.colors[0]}」這一系質地。東西、訊息、情緒各有位置，比再買一件象徵物有用。`;
   const action = `從今天起連續七天，只改一件：${kind === "love" ? "每天把一句該說的話寫下來，其中至少一次真的發出去" : kind === "career" ? "每天為同一件作品推進四十分鐘，第七天必須有一份能給外人看的東西" : kind === "money" ? "每天記下每一筆錢的去向，第七天只留一條主收入線" : "固定同一時間睡覺，並把一件反覆想的事寫完一頁"}。不要同時改三個習慣。`;
   const decree = `留住${chart.dayMaster}${chart.dayMasterElement}的本色，但不要讓它變成凡事由你硬扛。能交出去、能恢復、能修正，比一時撐住更像你的命。`;
   const lastLine = "别人觉得准，是因为你自己早就知道；真正改命的，是你下一次把这件事做完。";
@@ -320,7 +334,7 @@ export function composeFullReport(question: string, chart: Chart, reading: Readi
     reading.rhythm,
     "",
     "四、你反覆出現的課題",
-    `你最深的慣性，是用「${chart.useful[0] ?? chart.dayMasterElement}」去承擔。環境變了，方法還是舊的；關係裡和工作裡，能控制的事會被你抓得太久。這不是故事，是你自己認得的那種重複。`,
+    `你最深的慣性，是讓${chart.dayMaster}${chart.dayMasterElement}一路自己扛。環境變了，方法還是舊的；關係裡和工作裡，能控制的事會被你抓得太久。這不是故事，是你自己認得的那種重複。`,
     "",
     "五、個人命誥",
     reading.decree,
@@ -333,11 +347,14 @@ export function composeFullReport(question: string, chart: Chart, reading: Readi
     `家宅｜${reading.home}`,
     "",
     "七、顏色、方位與時段",
-    `較有利顏色：${reading.guide.colors.join("、")}`,
-    `現在不必刻意放大：${reading.guide.avoidColors.join("、")}`,
-    `較有利方位：${reading.guide.directions.favor.join("、")}`,
-    `較適合時段：${reading.guide.hours.favor.join("、")}`,
-    `寵物取象：${reading.guide.pet}`,
+    chart.usefulProvisional
+      ? "正式取用尚未完成：此頁暫不以流通粗候選推顏色、方位、時段或寵物。完成 STONE Core 12 步後再生成。"
+      : null,
+    !chart.usefulProvisional ? `較有利顏色：${reading.guide.colors.join("、")}` : null,
+    !chart.usefulProvisional ? `現在不必刻意放大：${reading.guide.avoidColors.join("、")}` : null,
+    !chart.usefulProvisional ? `較有利方位：${reading.guide.directions.favor.join("、")}` : null,
+    !chart.usefulProvisional ? `較適合時段：${reading.guide.hours.favor.join("、")}` : null,
+    !chart.usefulProvisional ? `寵物取象：${reading.guide.pet}` : null,
     "",
     "八、一個最高優先行動",
     reading.action,

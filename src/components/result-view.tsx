@@ -171,18 +171,24 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("guide")}</p>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 text-sm leading-7 text-ink-soft">
-          <p>
-            {t("favor")}：{reading.guide.colors.join("、")} · {reading.guide.directions.favor.join("、")} ·{" "}
-            {reading.guide.hours.favor.join("、")}
+        {chart.usefulProvisional ? (
+          <p className="mt-4 text-sm leading-7 text-ink-soft">
+            正式取用尚未完成。顏色、方位、時段與寵物取象暫不以「流通粗候選」下定論；完成 STONE Core 12 步後再生成。
           </p>
-          <p>
-            {t("rest")}：{reading.guide.avoidColors.join("、")} · {reading.guide.directions.rest.join("、")}
-          </p>
-          <p className="sm:col-span-2">
-            {t("pet")}：{reading.guide.pet}
-          </p>
-        </div>
+        ) : (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 text-sm leading-7 text-ink-soft">
+            <p>
+              {t("favor")}：{reading.guide.colors.join("、")} · {reading.guide.directions.favor.join("、")} ·{" "}
+              {reading.guide.hours.favor.join("、")}
+            </p>
+            <p>
+              {t("rest")}：{reading.guide.avoidColors.join("、")} · {reading.guide.directions.rest.join("、")}
+            </p>
+            <p className="sm:col-span-2">
+              {t("pet")}：{reading.guide.pet}
+            </p>
+          </div>
+        )}
       </article>
 
       <article className="seal-border relative overflow-hidden rounded-xl bg-cream/95 p-5 sm:p-7">
