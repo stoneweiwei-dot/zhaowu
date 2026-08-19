@@ -27,37 +27,41 @@ function Home() {
   return (
     <main className="space-y-10">
       <section className="grid items-end gap-8 md:grid-cols-[1.2fr_0.8fr]">
-        <div className="seal-border relative overflow-hidden rounded-xl bg-cream/92 p-5 sm:p-7">
-          <Mark id="01" size={88} className="absolute -right-1 -top-1 w-16 opacity-40 sm:w-[4.5rem]" />
-          <p className="text-xs tracking-[0.32em] text-cinnabar">ZHAOWU</p>
-          <h1 className="mt-3 font-display text-4xl leading-tight sm:text-5xl">
-            昭見天機，以明其命；
-            <span className="mt-2 block text-2xl text-ink-soft sm:text-3xl">
-              梧引鳳棲，以安其身。
-            </span>
-          </h1>
-          <p className="mt-3 text-xs tracking-[0.28em] text-ink-mute">
-            天道昭昭，萬物有時；人各有命，亦各有歸。
-          </p>
-          <p className="mt-5 max-w-xl text-sm leading-7 text-ink-soft">
-            昭梧以命理為鏡，觀其時，察其勢，明其路。
-            <br />
-            不妄斷吉凶，不空談宿命，
-            <br />
-            只願助你於未然處見端倪，於迷局中知進退，
-            <br />
-            最終在這紛繁世間，得一處安身安心之所。
-          </p>
-          <p className="mt-5 font-display text-lg tracking-[0.12em] text-cinnabar">
-            梧以棲鳳，人以安命。
-          </p>
-          <a
-            href="#analysisForm"
-            className="mt-6 inline-flex h-12 items-center rounded-full bg-cinnabar px-6 text-cream"
-          >
-            {t("start")}
-          </a>
+        <div className="hero-brand-card seal-border relative overflow-hidden rounded-xl bg-cream/92 p-5 sm:p-7">
+          <Mark id="01" size={88} className="absolute -right-1 -top-1 w-16 opacity-35 sm:w-[4.5rem]" />
+
+          <div className="relative z-10">
+            <p className="hero-kicker">ZHAOWU · {t("heroKicker")}</p>
+
+            <div className="mt-5 sm:mt-6">
+              <h1 className="brand-wordmark" aria-label={t("brand")}>
+                <span>昭</span>
+                <span>梧</span>
+              </h1>
+              <p className="brand-slogan mt-6">{t("heroSlogan")}</p>
+              <p className="brand-english mt-2">{t("heroEnglish")}</p>
+            </div>
+
+            <div className="brand-rule my-6" aria-hidden="true">
+              <span />
+              <i />
+              <span />
+            </div>
+
+            <p className="brand-support max-w-xl">{t("heroLead")}</p>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-ink-soft">{t("heroBody")}</p>
+
+            <p className="brand-sign mt-5">{t("heroSign")}</p>
+
+            <a
+              href="#analysisForm"
+              className="mt-6 inline-flex h-12 items-center rounded-full bg-cinnabar px-6 text-cream transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              {t("start")}
+            </a>
+          </div>
         </div>
+
         <aside className="seal-border relative overflow-hidden rounded-xl bg-cream/90 p-5">
           <Mark id="02" size={72} className="absolute right-2 top-2 w-14 opacity-45" />
           <p className="text-xs tracking-[0.28em] text-cinnabar">{t("today")}</p>
