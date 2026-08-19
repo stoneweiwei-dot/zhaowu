@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type Locale = "zh-Hant" | "zh-Hans";
+export type Locale = "zh-Hant" | "zh-Hans" | "en";
 
 type Entry = readonly [string, string];
 
@@ -124,6 +124,124 @@ const TABLE = {
 
 export type CopyKey = keyof typeof TABLE;
 
+const EN: Partial<Record<CopyKey, string>> = {
+  brand: "昭梧",
+  tagline: "See the unseen. Find where you belong.",
+  manifesto: "See the unseen. Find where you belong.",
+  heroKicker: "Destiny · Timing · Choice",
+  heroSlogan: "See what lies unseen. Find where you belong.",
+  heroLead: "Knowing your pattern is not surrender. It is seeing clearly enough to know where to go.",
+  heroBody: "Zhaowu uses traditional metaphysics as a mirror: to read timing, recognise momentum, and make clearer choices before the path fully takes shape.",
+  heroEnglish: "See what lies unseen. Find where you belong.",
+  heroSign: "Read the trend · Know the timing · Find your place",
+  m1: "Metaphysics is not fatalism; it is a way to understand your patterns.",
+  m2: "Timing is not an answer; it is the ability to recognise a window.",
+  m3: "What changes a life is still the sequence of conscious choices you make.",
+  product: "Life Rhythm & Decision Analysis",
+  start: "Start my analysis",
+  navHome: "Home",
+  navMine: "My Zhaowu",
+  navLogin: "Sign in",
+  logout: "Sign out",
+  today: "Today's Overview",
+  todayStem: "Day stem & branch",
+  todayTheme: "Today's theme",
+  yi: "Favourable",
+  ji: "Avoid",
+  jieqi: "Solar term",
+  chong: "Clash",
+  sha: "Direction",
+  lunar: "Lunar date",
+  formTitle: "Start with the question you actually want answered",
+  formLead: "Enter your birth date, local birth time, and city. Time correction is handled automatically.",
+  question: "Your real question",
+  qPh: "Example: What should I prioritise in my current situation?",
+  year: "Year",
+  month: "Month",
+  day: "Day",
+  time: "Birth time",
+  timeUnknown: "Time uncertain — leave the hour pillar and life palace blank",
+  gender: "Gender (for luck-cycle calculation)",
+  male: "Male",
+  female: "Female",
+  unset: "Prefer not to say",
+  relation: "Relationship preference",
+  relAny: "Any",
+  relHet: "Opposite-sex",
+  relSame: "Same-sex / diverse",
+  relHint: "Used only to frame relationship questions. It does not alter the chart.",
+  city: "Birth city / country",
+  cityPh: "Enter birth city and country",
+  liveCity: "Current city (optional)",
+  liveHint: "Used only for hemisphere, season and lifestyle context. It does not change the natal chart.",
+  solar: "Apply true solar time correction",
+  zi: "Zi-hour date policy",
+  ziLate: "Late-Zi changes the day from 23:00",
+  ziMid: "Change the day at midnight",
+  analyze: "Analyse",
+  analyzing: "Building your chart…",
+  locating: "Resolving birth-location time…",
+  faq: "FAQ",
+  faq1q: "What is the analysis based on?",
+  faq1a: "Zhaowu uses traditional Zi Ping BaZi as the sole primary judgement. Past-life / six-realm questions use the deterministic Dharma Palm method. Other systems remain labelled as not connected until they have their own independent calculation.",
+  faq2q: "Is the result guaranteed to be accurate?",
+  faq2a: "No event is guaranteed. The chart is used to organise structure, timing and higher-probability patterns; real-world resources, choices and actions still change outcomes.",
+  faq3q: "Is my data saved?",
+  faq3a: "When signed in, you can save reports to My Zhaowu. Logged-out analysis remains only in the current session.",
+  resultQ: "Your question",
+  resultA: "Direct answer",
+  chart: "Your BaZi chart",
+  dayMaster: "Day Master",
+  monthLing: "Month Command",
+  nayin: "Na Yin",
+  shishen: "Ten Gods",
+  hide: "Hidden stems",
+  dishi: "12 Life Stages",
+  xunkong: "Void",
+  wuxing: "Strength baseline",
+  favorEl: "Provisional flow candidates",
+  drainEl: "Do not amplify yet",
+  useful: "Provisional flow candidates (review pending)",
+  drain: "Do not amplify yet (review pending)",
+  strength: "Strength baseline",
+  dayun: "Luck-cycle rhythm",
+  rhythm: "Your overall life rhythm",
+  life: "Practical reading",
+  work: "Career",
+  love: "Relationships",
+  money: "Money",
+  body: "Body & mind",
+  home: "Home",
+  action: "Highest-priority action",
+  guide: "Colour, direction & timing",
+  favor: "More supportive",
+  rest: "Do not over-emphasise now",
+  pet: "Pet symbolism",
+  provenance: "Calculation source",
+  full: "Full plain-language report",
+  genFull: "Generate full report",
+  generating: "Building the full report…",
+  save: "Save to My Zhaowu",
+  saved: "Saved",
+  needLogin: "Sign in to save and continue.",
+  reset: "Start over",
+  disclaimer: "This is a traditional-cultural and symbolic interpretation for understanding patterns and choices. It is not a substitute for medical, legal or financial decisions.",
+  mineLead: "Keep your birth profile, questions and full reports under one account.",
+  emptyMine: "No reports yet. Complete an analysis and save it here.",
+  open: "Open",
+  del: "Delete",
+  loginTitle: "Sign in to Zhaowu",
+  loginLead: "Sign in to save full reports to My Zhaowu.",
+  withGoogle: "Continue with Google",
+  withX: "Continue with X",
+  backHome: "Back home",
+  steps: "Three steps — no prior metaphysics knowledge required",
+  s1: "Write the question you actually want answered",
+  s2: "Enter birth date, time and city",
+  s3: "Read the direct answer first, then the full report",
+  guest: "Guest",
+};
+
 type I18nState = {
   locale: Locale;
   setLocale: (locale: Locale) => void;
@@ -134,7 +252,7 @@ function readLocale(): Locale {
   if (typeof window === "undefined") return "zh-Hant";
   try {
     const v = window.localStorage.getItem("zhaowu.locale");
-    return v === "zh-Hans" ? "zh-Hans" : "zh-Hant";
+    return v === "zh-Hans" || v === "en" ? v : "zh-Hant";
   } catch {
     return "zh-Hant";
   }
@@ -143,16 +261,19 @@ function readLocale(): Locale {
 export const useI18n = create<I18nState>((set, get) => ({
   locale: "zh-Hant",
   setLocale: (locale) => {
-    try {
-      window.localStorage.setItem("zhaowu.locale", locale);
-    } catch {
-      /* ignore */
-    }
+    try { window.localStorage.setItem("zhaowu.locale", locale); } catch { /* ignore */ }
+    if (typeof document !== "undefined") document.documentElement.lang = locale === "en" ? "en" : locale;
     set({ locale });
   },
-  t: (key) => TABLE[key][get().locale === "zh-Hans" ? 1 : 0],
+  t: (key) => {
+    const locale = get().locale;
+    if (locale === "en") return EN[key] ?? TABLE[key][0];
+    return TABLE[key][locale === "zh-Hans" ? 1 : 0];
+  },
 }));
 
 export function hydrateLocale() {
-  useI18n.setState({ locale: readLocale() });
+  const locale = readLocale();
+  useI18n.setState({ locale });
+  if (typeof document !== "undefined") document.documentElement.lang = locale === "en" ? "en" : locale;
 }
