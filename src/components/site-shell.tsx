@@ -4,6 +4,7 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/supabase-rest";
+import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 import { IntroGate } from "@/components/intro-gate";
 import { Mark, SealScatter } from "@/components/marks";
 
@@ -37,6 +38,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     hydrateLocale();
     let alive = true;
+
     void recordVisit()
       .catch(() => undefined)
       .finally(() => {
@@ -44,6 +46,21 @@ export function SiteShell({ children }: { children: ReactNode }) {
           .then((value) => { if (alive) setStats(value); })
           .catch(() => undefined);
       });
+
+    void listPublicBackgrounds()
+      .then((assets) => {
+        if (!alive) return;
+        const picked = chooseDailyBackground(assets);
+        if (!picked) return;
+        const imageUrl = backgroundPublicUrl(picked.storage_path);
+        document.body.style.backgroundImage = [
+          "linear-gradient(100deg, rgb(243 234 216 / 0.94) 0%, rgb(243 234 216 / 0.78) 46%, rgb(243 234 216 / 0.52) 72%)",
+          "linear-gradient(180deg, rgb(243 234 216 / 0.12), var(--color-paper) 88%)",
+          `url(${JSON.stringify(imageUrl)})`,
+        ].join(", ");
+      })
+      .catch(() => undefined);
+
     return () => { alive = false; };
   }, []);
 
@@ -65,7 +82,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               {t("navHome")}
             </Link>
             <Link to="/account" className={`rounded-full px-2.5 py-2 ${pathname === "/account" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
-              {user?.isOwner ? "後台" : t("navMine")}
+              {user?.isOwner ? (locale === "en" ? "Admin" : "後台") : t("navMine")}
             </Link>
             <button
               type="button"
@@ -97,7 +114,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <p className="mt-2 text-[10px] tracking-[0.08em] text-ink-mute">
           {stats.version !== "—" ? `${stats.version} · #${stats.updateNumber}` : ""}
           {stats.version !== "—" ? " · " : ""}
-          今日 {stats.todayVisits.toLocaleString()} · 累計 {stats.totalVisits.toLocaleString()}
+          {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total" : "累計"} {stats.totalVisits.toLocaleString()}
         </p>
       </footer>
     </div>
