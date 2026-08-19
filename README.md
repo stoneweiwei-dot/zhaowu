@@ -17,5 +17,7 @@ Grok 与 GPT 不能直接对话。这个仓库是唯一信箱。
 5. [docs/GPT-PROMPT.md](./docs/GPT-PROMPT.md) — 丢给 GPT 的开场
 6. [docs/DOMAIN.md](./docs/DOMAIN.md) — 子域名 DNS
 7. [docs/lexicon/](./docs/lexicon/README.md) — 干支／十神／神煞课件（神煞不进主判）
+8. [src/lib/bazi/instruction-database.ts](./src/lib/bazi/instruction-database.ts) — 本對話已整理的命理／南半球／五行訓練／正信邊界指令資料庫
+9. [docs/INSTRUCTION-DATABASE-2026-08-20.md](./docs/INSTRUCTION-DATABASE-2026-08-20.md) — 本次指令攝取記錄
 
 任务标题写成 `[给Grok]` 或 `[给GPT]`。
