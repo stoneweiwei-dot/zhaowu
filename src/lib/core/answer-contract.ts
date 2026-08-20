@@ -121,10 +121,10 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
 
   if (req.asksMedicalTiming) {
     directAnswer = medicalTimingBoundary(question);
-  } else if (req.asksTravel && (req.asksWhere || (req.asksCompare && !req.asksWhen))) {
-    directAnswer = destinationBoundary(question, req);
   } else if (req.asksTravel && req.asksWhen) {
     directAnswer = `${temporalBoundary(question, chart, req)}${req.asksWhere || req.asksCompare ? destinationBoundary(question, req) : ""}`;
+  } else if (req.asksTravel && (req.asksWhere || req.asksCompare)) {
+    directAnswer = destinationBoundary(question, req);
   } else if (req.asksWhen) {
     directAnswer = temporalBoundary(question, chart, req);
   } else if (req.asksInvestmentPick) {
