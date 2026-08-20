@@ -97,11 +97,12 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
 
 export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promise<AnalysisResult> {
   const data = parseInput(raw);
-  const [{ buildChart }, { interpret, classifyQuestion }, { buildPalm }, { routeMethods }] = await Promise.all([
+  const [{ buildChart }, { interpret, classifyQuestion }, { buildPalm }, { routeMethods }, { applyAnswerContract }] = await Promise.all([
     import("@/lib/bazi/chart"),
     import("@/lib/bazi/interpret"),
     import("@/lib/palm/engine"),
     import("@/lib/core/method"),
+    import("@/lib/core/answer-contract"),
   ]);
 
   const chart = buildChart(data);
@@ -118,7 +119,11 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
     palmReady: palm.ready,
     palmMissing: palm.missing,
   });
-  const reading = interpret(data.question, chart, data.relation, palm);
+  const reading = applyAnswerContract(
+    data.question,
+    chart,
+    interpret(data.question, chart, data.relation, palm),
+  );
 
   return {
     id: newId(),
@@ -142,9 +147,10 @@ export async function followUpLife({
 }): Promise<AnalysisResult> {
   const question = String(data.question ?? "").trim().slice(0, 400);
   if (!question) throw new Error("請先寫下你想繼續問的問題。");
-  const [{ interpret, classifyQuestion }, { routeMethods }] = await Promise.all([
+  const [{ interpret, classifyQuestion }, { routeMethods }, { applyAnswerContract }] = await Promise.all([
     import("@/lib/bazi/interpret"),
     import("@/lib/core/method"),
+    import("@/lib/core/answer-contract"),
   ]);
   const palm = data.base.palm ?? null;
   const kind = classifyQuestion(question);
@@ -152,7 +158,11 @@ export async function followUpLife({
     palmReady: Boolean(palm?.ready),
     palmMissing: palm?.missing ?? [],
   });
-  const reading = interpret(question, data.base.chart, data.relation ?? "unset", palm);
+  const reading = applyAnswerContract(
+    question,
+    data.base.chart,
+    interpret(question, data.base.chart, data.relation ?? "unset", palm),
+  );
   return {
     id: newId(),
     question,
@@ -174,7 +184,11 @@ export async function writeFullReport({
     palm?: AnalysisResult["palm"];
   };
 }) {
-  const { composeFullReport } = await import("@/lib/bazi/interpret");
-  const text = composeFullReport(data.question, data.chart, data.reading, data.palm ?? null);
+  const [{ composeFullReport }, { applyAnswerContract }] = await Promise.all([
+    import("@/lib/bazi/interpret"),
+    import("@/lib/core/answer-contract"),
+  ]);
+  const reading = applyAnswerContract(data.question, data.chart, data.reading);
+  const text = composeFullReport(data.question, data.chart, reading, data.palm ?? null);
   return { text, source: "rule" as const };
 }
