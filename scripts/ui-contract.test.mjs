@@ -16,6 +16,20 @@ test("homepage is a customer-facing brand entry, not an incident notice", async 
   assert.doesNotMatch(home, /ZHAOWU · SAFE|白屏|視覺先暫停|视觉先暂停/);
 });
 
+test("mobile homepage prioritises the analysis form over supporting copy", async () => {
+  const home = await source("src/routes/index.tsx");
+  assert.ok(home.indexOf("<AnalysisForm />") < home.indexOf("STEPS.map"));
+  assert.match(home, /text-\[3\.5rem\][^\"]*sm:text-8xl/);
+  assert.doesNotMatch(home, /text-\[5\.4rem\]/);
+  assert.match(home, /className="mt-3 hidden[^\"]+sm:block">\{t\("heroBody"\)\}/);
+});
+
+test("signed-out mobile header keeps only language and login actions", async () => {
+  const shell = await source("src/components/site-shell.tsx");
+  assert.match(shell, /\{user \? \([\s\S]*?<Link to="\/account"/);
+  assert.doesNotMatch(shell, /min-\[390px\]:block">\{t\("tagline"\)\}/);
+});
+
 test("language control exposes Traditional, Simplified and English directly", async () => {
   const shell = await source("src/components/site-shell.tsx");
   assert.match(shell, /<select[\s\S]*id="site-language"/);

@@ -54,21 +54,23 @@ export function SiteShell({ children }: { children: ReactNode }) {
         />
       ) : null}
       <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/92 backdrop-blur-md">
-        <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-1.5 sm:px-4">
+        <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
           <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-cinnabar/30 bg-paper text-sm font-display text-cinnabar">昭</span>
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-cinnabar/30 bg-paper text-xs font-display text-cinnabar sm:h-9 sm:w-9 sm:text-sm">昭</span>
             <span className="min-w-0 leading-none">
-              <span className="block font-display text-lg tracking-[0.2em]">{t("brand")}</span>
-              <span className="hidden max-w-[16rem] truncate text-[10px] tracking-[0.15em] text-ink-mute min-[390px]:block">{t("tagline")}</span>
+              <span className="block font-display text-base tracking-[0.18em] sm:text-lg sm:tracking-[0.2em]">{t("brand")}</span>
+              <span className="hidden max-w-[16rem] truncate text-[10px] tracking-[0.15em] text-ink-mute sm:block">{t("tagline")}</span>
             </span>
           </Link>
           <nav className="flex shrink-0 items-center gap-1 text-sm">
             <Link to="/" className={`hidden rounded-full px-2.5 py-2 min-[520px]:inline ${pathname === "/" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
               {t("navHome")}
             </Link>
-            <Link to="/account" className={`rounded-full px-2.5 py-2 ${pathname === "/account" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
-              {user?.isOwner ? t("navAdmin") : t("navMine")}
-            </Link>
+            {user ? (
+              <Link to="/account" className={`hidden rounded-full px-2 py-2 min-[380px]:inline-flex ${pathname === "/account" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
+                {user.isOwner ? t("navAdmin") : t("navMine")}
+              </Link>
+            ) : null}
             <label htmlFor="site-language" className="sr-only">{t("language")}</label>
             <select
               id="site-language"
@@ -93,7 +95,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
       </header>
-      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-6 sm:pt-8">{children}</div>
+      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8">{children}</div>
       <footer className="relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
         <p className="font-display text-sm tracking-[0.28em] text-ink-mute">
           {t("brand")}<span className="ml-2 tracking-[0.2em]">ZHAOWU</span>
