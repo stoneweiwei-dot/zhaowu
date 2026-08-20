@@ -25,39 +25,46 @@ function Home() {
   const current = useAppStore((s) => s.current);
 
   return (
-    <main className="space-y-10 sm:space-y-14">
+    <main className="space-y-6 sm:space-y-14">
       <section
-        className="relative isolate overflow-hidden rounded-[2rem] border border-[#b99755]/35 bg-[radial-gradient(circle_at_76%_18%,rgba(222,187,111,.18),transparent_25%),radial-gradient(circle_at_10%_92%,rgba(111,157,130,.22),transparent_30%),linear-gradient(145deg,#17372f_0%,#0d2823_52%,#091c19_100%)] px-5 py-10 text-[#f6ead0] shadow-[0_28px_80px_rgba(28,42,34,.22)] sm:px-10 sm:py-14"
+        className="relative isolate overflow-hidden rounded-[1.4rem] border border-[#b99755]/35 bg-[radial-gradient(circle_at_76%_18%,rgba(222,187,111,.18),transparent_25%),radial-gradient(circle_at_10%_92%,rgba(111,157,130,.22),transparent_30%),linear-gradient(145deg,#17372f_0%,#0d2823_52%,#091c19_100%)] px-5 py-6 text-[#f6ead0] shadow-[0_18px_52px_rgba(28,42,34,.18)] sm:rounded-[2rem] sm:px-10 sm:py-14 sm:shadow-[0_28px_80px_rgba(28,42,34,.22)]"
         aria-labelledby="zhaowu-title"
       >
-        <div className="pointer-events-none absolute inset-3 rounded-[1.45rem] border border-[#d7b76f]/20" aria-hidden />
-        <Mark id="brand" size={300} eager className="pointer-events-none absolute -right-24 top-8 w-64 rotate-[8deg] opacity-25 sm:-right-12 sm:w-72 sm:opacity-35" />
-        <Mark id="04" size={150} className="pointer-events-none absolute -bottom-12 -left-10 w-36 -rotate-12 opacity-15" />
+        <div className="pointer-events-none absolute inset-2 rounded-[1rem] border border-[#d7b76f]/20 sm:inset-3 sm:rounded-[1.45rem]" aria-hidden />
+        <Mark id="brand" size={300} eager className="pointer-events-none absolute -right-14 top-9 w-40 rotate-[8deg] opacity-15 sm:-right-12 sm:top-8 sm:w-72 sm:opacity-35" />
+        <Mark id="04" size={150} className="pointer-events-none absolute -bottom-12 -left-10 hidden w-36 -rotate-12 opacity-15 sm:block" />
 
         <div className="relative z-10 max-w-2xl">
-          <p className="text-[11px] font-semibold tracking-[0.32em] text-[#d5b16b]">ZHAOWU · {t("heroKicker")}</p>
-          <h1 id="zhaowu-title" className="mt-4 font-display text-[5.4rem] font-bold leading-none tracking-[0.08em] text-[#f6ead0] sm:text-8xl">
+          <p className="text-[10px] font-semibold tracking-[0.25em] text-[#d5b16b] sm:text-[11px] sm:tracking-[0.32em]">ZHAOWU · {t("heroKicker")}</p>
+          <h1 id="zhaowu-title" className="mt-3 font-display text-[3.5rem] font-bold leading-none tracking-[0.06em] text-[#f6ead0] sm:mt-4 sm:text-8xl sm:tracking-[0.08em]">
             {t("brand")}
           </h1>
-          <p className="mt-7 max-w-xl font-display text-2xl font-semibold leading-[1.55] tracking-[0.1em] text-[#efd9a4] sm:text-3xl">
+          <p className="mt-4 max-w-xl pr-10 font-display text-xl font-semibold leading-[1.5] tracking-[0.08em] text-[#efd9a4] sm:mt-7 sm:pr-0 sm:text-3xl sm:leading-[1.55] sm:tracking-[0.1em]">
             {t("heroSlogan")}
           </p>
-          <p className="mt-3 max-w-xl font-serif text-xs italic tracking-[0.12em] text-[#f5ead0]/55">{t("heroEnglish")}</p>
-          <div className="my-6 h-px w-56 max-w-[70vw] bg-gradient-to-r from-[#d5b16b] to-transparent" aria-hidden />
-          <p className="max-w-xl font-display text-base leading-8 tracking-[0.04em] text-[#f1e3c1] sm:text-lg">{t("heroLead")}</p>
-          <p className="mt-3 max-w-xl text-sm leading-7 text-[#f5ead0]/68">{t("heroBody")}</p>
-          <p className="mt-5 w-fit border-y border-[#d5b16b]/30 py-2 font-display text-xs tracking-[0.24em] text-[#efd9a4]">{t("heroSign")}</p>
+          <p className="mt-2 max-w-xl pr-8 font-serif text-[11px] italic leading-5 tracking-[0.08em] text-[#f5ead0]/55 sm:mt-3 sm:pr-0 sm:text-xs sm:tracking-[0.12em]">{t("heroEnglish")}</p>
+          <div className="my-4 h-px w-44 max-w-[58vw] bg-gradient-to-r from-[#d5b16b] to-transparent sm:my-6 sm:w-56 sm:max-w-[70vw]" aria-hidden />
+          <p className="max-w-xl pr-6 font-display text-sm leading-7 tracking-[0.03em] text-[#f1e3c1] sm:pr-0 sm:text-lg sm:leading-8 sm:tracking-[0.04em]">{t("heroLead")}</p>
+          <p className="mt-3 hidden max-w-xl text-sm leading-7 text-[#f5ead0]/68 sm:block">{t("heroBody")}</p>
+          <p className="mt-5 hidden w-fit border-y border-[#d5b16b]/30 py-2 font-display text-xs tracking-[0.24em] text-[#efd9a4] sm:block">{t("heroSign")}</p>
 
-          <div className="mt-7 flex flex-col gap-3 min-[390px]:flex-row min-[390px]:flex-wrap">
-            <a href="#analysisForm" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#e2c985]/35 bg-cinnabar px-6 text-sm font-medium tracking-[0.08em] text-cream shadow-[0_14px_30px_rgba(0,0,0,.2)]">
+          <div className="mt-5 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap">
+            <a href="#analysisForm" className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[#e2c985]/35 bg-cinnabar px-6 text-sm font-medium tracking-[0.08em] text-cream shadow-[0_14px_30px_rgba(0,0,0,.2)] sm:w-auto">
               {t("start")}
             </a>
-            <Link to="/account" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#e2c985]/35 bg-[#fff9e9]/8 px-6 text-sm text-[#f5ead0]">
+            <Link to="/account" className="hidden min-h-12 items-center justify-center rounded-full border border-[#e2c985]/35 bg-[#fff9e9]/8 px-6 text-sm text-[#f5ead0] sm:inline-flex">
               {t("accountAdmin")}
             </Link>
           </div>
         </div>
       </section>
+
+      <section className="relative" aria-label={t("formTitle")}>
+        <AnalysisForm />
+      </section>
+
+      {current ? <ResultView result={current} /> : null}
+      {current ? <FollowUpBox result={current} /> : null}
 
       <section className="grid overflow-hidden rounded-[1.5rem] border border-line/80 bg-cream/72 sm:grid-cols-3" aria-label={t("steps")}>
         {STEPS.map((step, index) => (
@@ -85,13 +92,6 @@ function Home() {
           ))}
         </div>
       </section>
-
-      <section className="relative" aria-label={t("formTitle")}>
-        <AnalysisForm />
-      </section>
-
-      {current ? <ResultView result={current} /> : null}
-      {current ? <FollowUpBox result={current} /> : null}
 
       <section className="rounded-[1.5rem] border-y border-line/80 bg-cream/45 px-5 py-7 sm:px-8" aria-labelledby="faq-title">
         <h2 id="faq-title" className="font-display text-2xl font-semibold tracking-[0.12em] text-ink">{t("faq")}</h2>
