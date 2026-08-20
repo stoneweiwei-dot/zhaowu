@@ -5,7 +5,7 @@
   max-width: 100%;
   user-select: none;
   -webkit-user-drag: none;
-  filter: drop-shadow(0 1px 0 rgba(255, 250, 239, 0.9)) drop-shadow(0 3px 5px rgba(79, 42, 22, 0.15));
+  filter: drop-shadow(0 1px 0 rgba(255, 250, 239, 0.9)) drop-shadow(0 5px 10px rgba(79, 42, 22, 0.18));
 }
 
 header .zhaowu-emblem-brand {
@@ -13,27 +13,33 @@ header .zhaowu-emblem-brand {
 }
 
 .zhaowu-emblem-scatter {
-  filter: none !important;
+  filter: saturate(.82) drop-shadow(0 5px 16px rgba(79, 42, 22, .08)) !important;
   mix-blend-mode: multiply;
 }
 
-/* 主要卡片上的纹章，iPhone 上保持可辨识尺寸。 */
+/* 主要卡片纹章：直接成为构图元素，而不是小角标。 */
 .seal-border > .zhaowu-emblem {
-  min-width: 4.75rem !important;
-  min-height: 4.75rem !important;
-  width: 4.75rem !important;
-  height: 4.75rem !important;
+  min-width: 5.75rem !important;
+  min-height: 5.75rem !important;
+  width: 5.75rem !important;
+  height: 5.75rem !important;
+  opacity: .95 !important;
 }
 
 .hero-brand-card > .zhaowu-emblem {
-  width: 5.75rem !important;
-  height: 5.75rem !important;
+  width: 8.25rem !important;
+  height: 8.25rem !important;
+  right: -1rem !important;
+  top: -1.1rem !important;
+  transform: rotate(7deg);
   opacity: .96 !important;
 }
 
 .zhaowu-step-mark {
-  width: 4.25rem !important;
-  height: 4.25rem !important;
+  width: 5.25rem !important;
+  height: 5.25rem !important;
+  right: .15rem !important;
+  top: .15rem !important;
   opacity: .96 !important;
 }
 
@@ -41,21 +47,112 @@ header .zhaowu-emblem-brand {
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .28));
 }
 
-@media (max-width: 430px) {
-  .seal-border > .zhaowu-emblem {
-    min-width: 5rem !important;
-    min-height: 5rem !important;
-    width: 5rem !important;
-    height: 5rem !important;
+/* 首页九纹章陈列：视觉识别层，不是功能按钮。 */
+.zhaowu-emblem-field {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(142, 73, 43, .18);
+  border-radius: 1.25rem;
+  padding: 1.25rem .75rem;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(184, 131, 72, .13), transparent 34%),
+    linear-gradient(135deg, rgba(255,255,255,.28), rgba(239,226,204,.5));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.52);
+}
+
+.zhaowu-emblem-field::before,
+.zhaowu-emblem-field::after {
+  content: "";
+  position: absolute;
+  border: 1px solid rgba(184, 131, 72, .17);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.zhaowu-emblem-field::before {
+  width: 18rem;
+  height: 18rem;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.zhaowu-emblem-field::after {
+  width: 27rem;
+  height: 27rem;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: .7;
+}
+
+.zhaowu-emblem-orbit {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  align-items: center;
+  gap: .2rem;
+  min-height: 8.5rem;
+}
+
+.zhaowu-field-mark {
+  width: clamp(4.5rem, 8vw, 7rem) !important;
+  height: clamp(4.5rem, 8vw, 7rem) !important;
+  justify-self: center;
+  opacity: .93;
+}
+
+.zhaowu-field-mark:nth-child(1) { transform: translateY(.45rem) rotate(-8deg) scale(1.08); }
+.zhaowu-field-mark:nth-child(2) { transform: translateY(-.65rem) rotate(4deg); }
+.zhaowu-field-mark:nth-child(3) { transform: translateY(.8rem) rotate(-3deg); }
+.zhaowu-field-mark:nth-child(4) { transform: translateY(-.25rem) rotate(6deg); }
+.zhaowu-field-mark:nth-child(5) { transform: scale(1.18); }
+.zhaowu-field-mark:nth-child(6) { transform: translateY(.55rem) rotate(-5deg); }
+.zhaowu-field-mark:nth-child(7) { transform: translateY(-.75rem) rotate(3deg); }
+.zhaowu-field-mark:nth-child(8) { transform: translateY(.45rem) rotate(7deg); }
+.zhaowu-field-mark:nth-child(9) { transform: translateY(-.35rem) rotate(-6deg); }
+
+@media (max-width: 700px) {
+  .zhaowu-emblem-orbit {
+    grid-template-columns: repeat(3, 1fr);
+    gap: .65rem .35rem;
+    min-height: 19rem;
   }
 
-  .hero-brand-card > .zhaowu-emblem {
+  .zhaowu-field-mark {
+    width: 5.75rem !important;
+    height: 5.75rem !important;
+  }
+
+  .zhaowu-emblem-field::before { width: 16rem; height: 16rem; }
+  .zhaowu-emblem-field::after { width: 24rem; height: 24rem; }
+}
+
+@media (max-width: 430px) {
+  .seal-border > .zhaowu-emblem {
+    min-width: 6rem !important;
+    min-height: 6rem !important;
     width: 6rem !important;
     height: 6rem !important;
   }
 
+  .hero-brand-card > .zhaowu-emblem {
+    width: 8.5rem !important;
+    height: 8.5rem !important;
+  }
+
   .zhaowu-step-mark {
-    width: 4.5rem !important;
-    height: 4.5rem !important;
+    width: 5.5rem !important;
+    height: 5.5rem !important;
+  }
+
+  .zhaowu-emblem-field {
+    padding: 1.2rem .45rem;
+  }
+
+  .zhaowu-field-mark {
+    width: 5.35rem !important;
+    height: 5.35rem !important;
   }
 }
