@@ -101,6 +101,10 @@ function AccountPage() {
     }
     setOpenId(row.id);
     if (Object.prototype.hasOwnProperty.call(details, row.id)) return;
+    if (!session) {
+      setError("登入狀態已失效，請重新登入後再查看報告。");
+      return;
+    }
     setDetailBusyId(row.id);
     setError(null);
     try {
