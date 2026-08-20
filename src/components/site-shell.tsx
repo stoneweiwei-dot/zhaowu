@@ -4,7 +4,6 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/supabase-rest";
-import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 import { IntroGate } from "@/components/intro-gate";
 import { Mark, SealScatter } from "@/components/marks";
 
@@ -39,6 +38,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
     hydrateLocale();
     let alive = true;
 
+    document.body.style.backgroundImage = [
+      "radial-gradient(circle at 18% 8%, rgba(255,255,255,.82), transparent 24%)",
+      "radial-gradient(circle at 84% 22%, rgba(115,145,126,.10), transparent 22%)",
+      "linear-gradient(180deg, rgba(248,241,224,.96), rgba(239,227,202,.96))",
+    ].join(", ");
+
     void recordVisit()
       .catch(() => undefined)
       .finally(() => {
@@ -47,20 +52,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
           .catch(() => undefined);
       });
 
-    void listPublicBackgrounds()
-      .then((assets) => {
-        if (!alive) return;
-        const picked = chooseDailyBackground(assets);
-        if (!picked) return;
-        const imageUrl = backgroundPublicUrl(picked.storage_path);
-        document.body.style.backgroundImage = [
-          "linear-gradient(100deg, rgb(243 234 216 / 0.94) 0%, rgb(243 234 216 / 0.78) 46%, rgb(243 234 216 / 0.52) 72%)",
-          "linear-gradient(180deg, rgb(243 234 216 / 0.12), var(--color-paper) 88%)",
-          `url(${JSON.stringify(imageUrl)})`,
-        ].join(", ");
-      })
-      .catch(() => undefined);
-
     return () => { alive = false; };
   }, []);
 
@@ -68,13 +59,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
     <div className="relative min-h-dvh overflow-x-hidden">
       <IntroGate />
       {showScatter ? <SealScatter /> : null}
-      <header className="sticky top-0 z-30 border-b border-line/80 bg-paper/80 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-2 px-3 sm:px-4">
-          <Link to="/" className="relative z-10 flex min-w-0 items-center gap-2 text-ink">
-            <Mark id="brand" size={36} eager alt="" className="h-9 w-9 shrink-0" />
+      <header className="sticky top-0 z-30 border-b border-[#9a7040]/15 bg-[#f6eddc]/72 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-2 px-3 sm:px-4">
+          <Link to="/" className="relative z-10 flex min-w-0 items-center gap-2.5 text-ink">
+            <Mark id="brand" size={40} eager alt="" className="h-10 w-10 shrink-0 opacity-90" />
             <span className="min-w-0 leading-none">
-              <span className="block font-display text-lg tracking-[0.2em]">{t("brand")}</span>
-              <span className="hidden max-w-[16rem] truncate text-[10px] tracking-[0.15em] text-ink-mute min-[390px]:block">{t("tagline")}</span>
+              <span className="block font-display text-lg tracking-[0.22em]">{t("brand")}</span>
+              <span className="hidden max-w-[16rem] truncate text-[10px] tracking-[0.16em] text-ink-mute min-[390px]:block">{t("tagline")}</span>
             </span>
           </Link>
           <nav className="relative z-10 flex shrink-0 items-center gap-0.5 text-sm">
@@ -105,9 +96,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
       </header>
-      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-12 pt-8">{children}</div>
-      <footer className="relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-2 text-center">
-        <Mark id="04" size={140} className="mx-auto mb-3 h-10 w-36 opacity-45" />
+      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-6 sm:pt-8">{children}</div>
+      <footer className="relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
+        <Mark id="04" size={140} className="mx-auto mb-3 h-12 w-40 opacity-35" />
         <p className="font-display text-sm tracking-[0.28em] text-ink-mute">
           {t("brand")}<span className="ml-2 tracking-[0.2em]">ZHAOWU</span>
         </p>
