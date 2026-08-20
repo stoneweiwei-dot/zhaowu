@@ -11,7 +11,8 @@
 | 生产平台 | **Vercel**（既有项目，禁止另建第二个） |
 | Vercel 项目 | `stone-zhaowu-official` |
 | 当前生产 URL | `https://stone-zhaowu-official.vercel.app/` |
-| 最新生产 deployment | `dpl_HLxWaAq3b3CM4374FfgixhXaYXGh`（READY） |
+| GitHub Login Connection | 已由站主手动完成 |
+| Git 仓库链接 | 请确认 Settings → Git 已连到 `stoneweiwei-dot/zhaowu` |
 | GitHub main HEAD | 以仓库 `main` 最新 commit 为准 |
 | Netlify | **已停用**，不再作为生产目标，勿再触发 production workflow |
 
