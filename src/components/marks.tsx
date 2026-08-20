@@ -41,11 +41,15 @@ const ID_TO_EMBLEM: Record<string, EmblemName> = {
   "16": "vase",
   "17": "crane",
   jade: "wutong",
-  "scatter-a": "lotus",
-  "scatter-b": "crane",
-  "scatter-c": "wheel",
-  "scatter-d": "wutong",
-  "scatter-e": "gate",
+  "scatter-a": "brand",
+  "scatter-b": "lotus",
+  "scatter-c": "ruyi",
+  "scatter-d": "vase",
+  "scatter-e": "wheel",
+  "scatter-f": "gate",
+  "scatter-g": "mountain",
+  "scatter-h": "crane",
+  "scatter-i": "wutong",
 };
 
 function isScatter(id: string) {
@@ -80,11 +84,15 @@ export function Mark({ id, size = 64, eager = false, alt = "", className = "", .
 export function SealScatter() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
-      <Mark id="scatter-a" className="absolute left-[1%] top-[13%] h-28 w-28 -rotate-12 opacity-[0.055]" />
-      <Mark id="scatter-b" className="absolute right-[1%] top-[30%] h-36 w-36 rotate-6 opacity-[0.05]" />
-      <Mark id="scatter-c" className="absolute left-[5%] top-[55%] h-32 w-32 rotate-12 opacity-[0.045]" />
-      <Mark id="scatter-d" className="absolute right-[4%] top-[69%] h-28 w-28 -rotate-6 opacity-[0.045]" />
-      <Mark id="scatter-e" className="absolute bottom-[2%] left-[26%] h-40 w-40 opacity-[0.04]" />
+      <Mark id="scatter-a" className="absolute -left-10 top-[8%] h-44 w-44 -rotate-12 opacity-[0.09]" />
+      <Mark id="scatter-b" className="absolute -right-8 top-[19%] h-36 w-36 rotate-6 opacity-[0.11]" />
+      <Mark id="scatter-c" className="absolute left-[3%] top-[33%] h-32 w-32 rotate-12 opacity-[0.09]" />
+      <Mark id="scatter-d" className="absolute right-[1%] top-[43%] h-40 w-40 -rotate-6 opacity-[0.10]" />
+      <Mark id="scatter-e" className="absolute -left-6 top-[55%] h-36 w-36 rotate-6 opacity-[0.085]" />
+      <Mark id="scatter-f" className="absolute right-[4%] top-[64%] h-44 w-44 -rotate-3 opacity-[0.09]" />
+      <Mark id="scatter-g" className="absolute left-[2%] top-[75%] h-40 w-40 rotate-3 opacity-[0.085]" />
+      <Mark id="scatter-h" className="absolute -right-7 top-[84%] h-36 w-36 rotate-12 opacity-[0.10]" />
+      <Mark id="scatter-i" className="absolute bottom-[-2rem] left-[34%] h-40 w-40 -rotate-6 opacity-[0.09]" />
     </div>
   );
 }
