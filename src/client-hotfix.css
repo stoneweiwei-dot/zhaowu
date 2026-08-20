@@ -1,0 +1,7 @@
+/* Customer-facing hotfixes that avoid touching locked metaphysics engines. */
+
+/* Hide the internal image-generation prompt under the decree PNG preview.
+   The actual PNG, download button, and save instructions remain visible. */
+#result article:has(a[download="zhaowu-decree.png"]) details {
+  display: none;
+}
