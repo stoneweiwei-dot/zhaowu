@@ -9,7 +9,7 @@ import { useAppStore } from "@/lib/store";
 import { Mark } from "@/components/marks";
 import { composeNinePages, type NinePage } from "@/lib/report/nine-page";
 import { decreeImagePackage, type DecreeOverlay } from "@/lib/report/decree-image";
-import { saveReportRecord } from "@/lib/supabase-rest";
+import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
 export function ResultView({ result }: { result: AnalysisResult }) {
   const { t } = useI18n();
@@ -40,11 +40,28 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     return out.text;
   }
 
+  async function persistStage(stage: { fullReport?: string | null; ninePages?: NinePage[] | null; decreeOverlay?: DecreeOverlay | null }) {
+    if (!session || !user) return;
+    await patchReportRecord({
+      session,
+      profile,
+      result,
+      status: "report_ready",
+      ...stage,
+    });
+    setSavedId(result.id);
+  }
+
   async function onFull() {
     setBusy("full");
     setMsg(null);
     try {
-      await ensureFullReport();
+      const text = await ensureFullReport();
+      try {
+        await persistStage({ fullReport: text });
+      } catch {
+        setMsg("完整報告已生成，但雲端同步暫時失敗；基礎盤仍可繼續使用。");
+      }
     } catch (err) {
       setMsg(err instanceof Error ? err.message : "完整報告暫時未能生成。");
     } finally {
@@ -78,7 +95,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         decreeOverlay: overlay,
       });
       setSavedId(row?.id ?? result.id);
-      setMsg("已保存最高可用版本到「我的昭梧」。");
+      setMsg("最高可用版本已更新到同一筆報告，不會重複新增。");
     } catch (err) {
       setMsg(err instanceof Error ? err.message : "保存失敗。");
     } finally {
@@ -86,11 +103,17 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     }
   }
 
-  function onNine() {
+  async function onNine() {
     setBusy("nine");
     setMsg(null);
     try {
-      setNinePages(composeNinePages(result));
+      const pages = composeNinePages(result);
+      setNinePages(pages);
+      try {
+        await persistStage({ ninePages: pages });
+      } catch {
+        setMsg("九頁報告已生成，但雲端同步暫時失敗；畫面內容不受影響。");
+      }
     } catch (err) {
       setMsg(err instanceof Error ? err.message : "九頁報告生成失敗。");
     } finally {
@@ -98,13 +121,18 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     }
   }
 
-  function onDecree() {
+  async function onDecree() {
     setBusy("decree");
     setMsg(null);
     try {
       const pkg = decreeImagePackage(result);
       setDecreeOverlay(pkg.overlay);
       setDecreePrompt(pkg.prompt);
+      try {
+        await persistStage({ decreeOverlay: pkg.overlay });
+      } catch {
+        setMsg("命誥圖資料已生成，但雲端同步暫時失敗；畫面內容不受影響。");
+      }
     } catch (err) {
       setMsg(err instanceof Error ? err.message : "命誥圖生成失敗。");
     } finally {
@@ -280,10 +308,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <button type="button" disabled={busy === "full"} onClick={() => void onFull()} className="h-12 min-w-[140px] flex-1 rounded-full bg-cinnabar text-cream disabled:opacity-60">{busy === "full" ? t("generating") : t("genFull")}</button>
-        <button type="button" disabled={busy === "nine"} onClick={onNine} className="h-12 min-w-[140px] flex-1 rounded-full border border-cinnabar bg-cream text-cinnabar disabled:opacity-60">{busy === "nine" ? "生成中…" : "生成九頁報告"}</button>
-        <button type="button" disabled={busy === "decree"} onClick={onDecree} className="h-12 min-w-[140px] flex-1 rounded-full border border-line bg-cream text-ink disabled:opacity-60">{busy === "decree" ? "生成中…" : "生成命誥圖"}</button>
+        <button type="button" disabled={busy === "nine"} onClick={() => void onNine()} className="h-12 min-w-[140px] flex-1 rounded-full border border-cinnabar bg-cream text-cinnabar disabled:opacity-60">{busy === "nine" ? "生成中…" : "生成九頁報告"}</button>
+        <button type="button" disabled={busy === "decree"} onClick={() => void onDecree()} className="h-12 min-w-[140px] flex-1 rounded-full border border-line bg-cream text-ink disabled:opacity-60">{busy === "decree" ? "生成中…" : "生成命誥圖"}</button>
         {isPending ? <span className="h-12 flex-1 animate-pulse rounded-full bg-paper-deep" /> : user ? (
-          <button type="button" disabled={busy === "save" || Boolean(savedId)} onClick={() => void onSave()} className="h-12 min-w-[140px] flex-1 rounded-full border border-line bg-cream text-ink disabled:opacity-60">{savedId ? t("saved") : busy === "save" ? "保存最高版中…" : t("save")}</button>
+          <button type="button" disabled={busy === "save"} onClick={() => void onSave()} className="h-12 min-w-[140px] flex-1 rounded-full border border-line bg-cream text-ink disabled:opacity-60">{busy === "save" ? "保存最高版中…" : savedId ? "更新最高版" : t("save")}</button>
         ) : <Link to="/login" className="grid h-12 min-w-[140px] flex-1 place-items-center rounded-full border border-line bg-cream">{t("needLogin")}</Link>}
         <button type="button" onClick={() => reset()} className="h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
       </div>
