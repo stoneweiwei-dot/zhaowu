@@ -12,23 +12,29 @@ export type AnswerRequirements = {
   targetMonths: number[];
 };
 
+type SpecialTopic = "relation" | "legal" | "pet" | "fertility" | null;
+
 const WHEN_RE = /(什麼時候|什么时候|何時|何时|哪年|哪一年|哪月|幾月|几月|日期|多久|幾年|几年|時機|时机|窗口|應期|应期|今年|明年|後年|后年|上半年|下半年|年初|年底|季度|季|近期|最近)/;
 const WHERE_RE = /(去哪|去哪里|去哪裡|哪個城市|哪个城市|哪個國家|哪个国家|哪個地方|哪个地方|哪裡最好|哪里最好|什麼方向|什么方向|哪個方向|哪个方向|住哪|搬去哪)/;
 const COMPARE_RE = /(還是|还是|或者|二選一|二选一|哪一個|哪一个|哪個比較|哪个比较|選哪|选哪|比較好|比较好|該不該|该不该|要不要)/;
 const TRAVEL_RE = /(度假|旅行|旅遊|旅游|出行|出國|出国|出境|機票|机票|行程|目的地|旅居|vacation|travel|trip)/i;
-const MEDICAL_RE = /(手術|手术|治療|治疗|停藥|停药|用藥|用药|復原|恢复|康復|康复|懷孕|怀孕|受孕|病|痛|癌|醫生|医生|醫療|医疗)/;
+const MEDICAL_RE = /(手術|手术|治療|治疗|停藥|停药|用藥|用药|復原|恢复|康復|康复|懷孕|怀孕|受孕|備孕|备孕|生育|生孩子|孩子|病|痛|癌|醫生|医生|醫療|医疗)/;
 const INVESTMENT_RE = /(股票|基金|ETF|加密|虛擬幣|虚拟币|比特幣|比特币|期權|期权|彩票|彩券|號碼|号码|買哪|买哪|賣哪|卖哪)/i;
+const LEGAL_RE = /(官司|訴訟|诉讼|法律|律師|律师|法院|仲裁|糾紛|纠纷|合約糾紛|合同纠纷|判決|判决|起訴|起诉)/;
+const PET_RE = /(寵物|宠物|養貓|养猫|養狗|养狗|適合養|适合养|貓咪|猫咪|狗狗)/;
+const FERTILITY_RE = /(懷孕|怀孕|受孕|備孕|备孕|生育|生孩子|要孩子|有孩子)/;
+const RELATION_RE = /(父母|爸爸|媽媽|妈妈|母親|母亲|父親|父亲|家人|兄弟|姐妹|姊妹|朋友|友情|人際|人际|同事|合作夥伴|合作伙伴|客戶|客户|貴人|贵人|小人)/;
 
 const PAST_TOPIC_RE = /(前世|前三世|六道|輪迴|轮回|一掌經|一掌经|三世因果)/;
 const HOME_TOPIC_RE = /(家宅|搬家|房子|住宅|店面|風水|风水|買屋|买屋|買房|买房|住哪|坐向|戶型|户型)/;
-const HEALTH_TOPIC_RE = /(健康|病|痛|醫療|医疗|手術|手术|失眠|身體|身体|復原|恢复|康復|康复|睡不著|睡不着|懷孕|怀孕|受孕)/;
+const HEALTH_TOPIC_RE = /(健康|病|痛|醫療|医疗|手術|手术|失眠|身體|身体|復原|恢复|康復|康复|睡不著|睡不着|懷孕|怀孕|受孕|備孕|备孕|生育)/;
 const LOVE_TOPIC_RE = /(感情|戀愛|恋爱|愛情|爱情|交往|正緣|正缘|婚姻|結婚|结婚|伴侶|伴侣|桃花|復合|复合|分手|緣分|缘分|喜歡|喜欢|男友|女友|約會|约会|曖昧|暧昧|對象|对象)/;
-const CAREER_TOPIC_RE = /(工作|職業|职业|事業|事业|轉職|转职|跳槽|離職|离职|辭職|辞职|升遷|升迁|升職|升职|職場|职场|公司|職位|职位|上班|面試|面试|創業|创业|老闆|老板|offer|薪水|薪資|薪资|工資|工资)/i;
+const CAREER_TOPIC_RE = /(工作|職業|职业|事業|事业|轉職|转职|跳槽|離職|离职|辭職|辞职|升遷|升迁|升職|升职|職場|职场|公司|職位|职位|上班|面試|面试|創業|创业|老闆|老板|offer|薪水|薪資|薪资|工資|工资|學業|学业|學習|学习|考試|考试|升學|升学|留學|留学|學校|学校|大學|大学|研究所|博士|證照|证照)/i;
 const MONEY_TOPIC_RE = /(財運|财运|財務|财务|錢|钱|收入|投資|投资|理財|理财|債務|债务|存錢|存钱|虧|亏|賺|赚|股票|基金|ETF|加密|比特幣|比特币)/i;
 
 const TOPIC_LABEL: Partial<Record<ForecastTopic, string>> = {
   love: "感情",
-  career: "工作／事業",
+  career: "工作／事業／學業",
   money: "財務",
   health: "身心節奏",
   home: "家宅",
@@ -58,8 +64,8 @@ function targetYears(question: string): number[] {
 
   if (/(今年|本年)/.test(question)) years.push(now);
   if (/明年/.test(question)) years.push(now + 1);
-  if (/(後年|后年)/.test(question)) years.push(now + 2);
   if (/(大後年|大后年)/.test(question)) years.push(now + 3);
+  else if (/(後年|后年)/.test(question)) years.push(now + 2);
   if (/去年/.test(question)) years.push(now - 1);
 
   return uniqueSorted(years);
@@ -70,8 +76,8 @@ function targetMonths(question: string): number[] {
   for (const hit of question.matchAll(/(?:^|\D)(1[0-2]|0?[1-9])\s*月/g)) {
     months.push(Number(hit[1]));
   }
-  for (const [name, month] of Object.entries(CHINESE_MONTHS)) {
-    if (new RegExp(`${name}月`).test(question)) months.push(month);
+  for (const hit of question.matchAll(/(十二|十一|十|[一二三四五六七八九])月/g)) {
+    months.push(CHINESE_MONTHS[hit[1]]);
   }
 
   if (/上半年/.test(question)) months.push(1, 2, 3, 4, 5, 6);
@@ -88,6 +94,14 @@ function targetMonths(question: string): number[] {
   if (/年底/.test(question)) months.push(11, 12);
 
   return uniqueSorted(months.filter((m) => m >= 1 && m <= 12));
+}
+
+function specialTopic(question: string): SpecialTopic {
+  if (FERTILITY_RE.test(question)) return "fertility";
+  if (LEGAL_RE.test(question)) return "legal";
+  if (PET_RE.test(question)) return "pet";
+  if (RELATION_RE.test(question) && !LOVE_TOPIC_RE.test(question)) return "relation";
+  return null;
 }
 
 export function inferQuestionKind(question: string, fallback: QuestionKind = "self"): QuestionKind {
@@ -147,7 +161,29 @@ function readingForTopic(topic: ForecastTopic, reading: Reading): string {
 
 function medicalTimingAnswer(question: string, reading: Reading): string {
   const q = cleanQuestion(question);
-  return `你問的是「${q}」。命理這裡可以看壓力與生活節奏，但不能把恢復、手術、治療、停藥或受孕做成保證日期。就命盤層面，先看的是：${reading.body}；真正的醫療時間仍以檢查與醫生判斷為準。`;
+  return `你問的是「${q}」。命理這裡可以看壓力與生活節奏，但不能把恢復、手術、治療、停藥、受孕或生育做成保證日期。就命盤層面，先看的是：${reading.body}；真正的醫療時間仍以檢查與醫生判斷為準。`;
+}
+
+function fertilityAnswer(question: string, reading: Reading): string {
+  return `你問的是「${cleanQuestion(question)}」。這涉及備孕／生育，命盤不能替代生殖健康評估，也不能保證能否懷孕。命理層面最多只看生活壓力與節奏：${reading.body}；若要做現實決策，以醫療檢查、年齡、用藥與醫生建議為主。`;
+}
+
+function legalAnswer(question: string, reading: Reading): string {
+  return `你問的是「${cleanQuestion(question)}」。法律／官司結果不能靠命盤代替證據、程序與律師判斷，也不能保證勝敗。命盤最多只補充你目前的承壓與決策節奏：${reading.rhythm}；真正要優先核對的是期限、證據、合約文字和專業法律意見。`;
+}
+
+function relationAnswer(question: string, chart: Chart, reading: Reading, req: AnswerRequirements): string {
+  const timing = req.asksWhen
+    ? `時間節奏可參考：${buildTimingAnswer(chart, "self", req.targetYears, { months: req.targetMonths })}`
+    : "";
+  return `你問的是「${cleanQuestion(question)}」。這是家人／朋友／同事等非戀愛關係題，不套正緣或桃花模板。先看你自己的互動節奏：${reading.rhythm}${timing ? ` ${timing}` : ""}對方會怎麼選仍取決於對方本人與現實事件，不能由你的命盤單方面替對方下結論。`;
+}
+
+function petAnswer(question: string, chart: Chart, reading: Reading): string {
+  if (chart.usefulProvisional) {
+    return `你問的是「${cleanQuestion(question)}」。目前正式取用尚未完成，所以不從流通粗候選硬推「最適合哪種寵物、哪個顏色」。如果是現實飼養決策，先看居住空間、過敏、作息、照護成本與動物性格。`;
+  }
+  return `你問的是「${cleanQuestion(question)}」。命理取象只能當偏好參考：${reading.guide.pet}；真正是否適合飼養仍以空間、時間、健康與照護能力為主。`;
 }
 
 function investmentAnswer(question: string, reading: Reading): string {
@@ -234,12 +270,19 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
   const kind = inferQuestionKind(question, reading.kind);
   const topic = topicFor(question, kind, req);
   const topics = detectedTopics(question);
+  const special = specialTopic(question);
   let directAnswer = topics.length > 1
     ? multiTopicAnswer(question, topics, reading)
     : topicalAnswer(question, kind, reading);
 
   if (req.asksMedicalTiming) {
     directAnswer = medicalTimingAnswer(question, reading);
+  } else if (special === "fertility") {
+    directAnswer = fertilityAnswer(question, reading);
+  } else if (special === "legal") {
+    directAnswer = legalAnswer(question, reading);
+  } else if (special === "pet") {
+    directAnswer = petAnswer(question, chart, reading);
   } else if (req.asksInvestmentPick) {
     directAnswer = investmentAnswer(question, reading);
   } else if (req.asksTravel) {
@@ -251,6 +294,8 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
       : "";
     const fallback = !timing && !where ? buildTimingAnswer(chart, "travel", req.targetYears, { months: req.targetMonths }) : "";
     directAnswer = `你問的是「${cleanQuestion(question)}」。先直接回答：${[timing, where, fallback].filter(Boolean).join(" ")}`;
+  } else if (special === "relation") {
+    directAnswer = relationAnswer(question, chart, reading, req);
   } else if (req.asksWhen && topics.length > 1) {
     directAnswer = multiTopicTimingAnswer(question, chart, topics, req);
   } else if (req.asksWhen) {
