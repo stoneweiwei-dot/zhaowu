@@ -22,6 +22,17 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [decreePrompt, setDecreePrompt] = useState<string | null>(null);
   const { chart, reading, question } = result;
 
+  const lifeItems = [
+    { key: "career", label: t("work"), value: reading.work },
+    { key: "love", label: t("love"), value: reading.love },
+    { key: "money", label: t("money"), value: reading.money },
+    { key: "health", label: t("body"), value: reading.body },
+    { key: "home", label: t("home"), value: reading.home },
+  ];
+  const primaryLife = lifeItems.find((item) => item.key === reading.kind) ?? null;
+  const otherLife = primaryLife ? lifeItems.filter((item) => item.key !== primaryLife.key) : lifeItems;
+  const showLifePanel = reading.kind === "self" || Boolean(primaryLife);
+
   async function ensureFullReport() {
     if (fullReport) return fullReport;
     const out = await writeFullReport({ data: { question, chart, reading, palm: result.palm ?? null } });
@@ -146,7 +157,15 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("wuxing")}</p>
         <p className="mt-4 text-sm leading-7 text-ink-soft">{chart.strength.summary}</p>
-        <p className="mt-3 text-sm text-ink-soft">{t("useful")}：{chart.useful.join("、")}　{t("drain")}：{chart.drain.join("、")}</p>
+        {chart.usefulProvisional ? (
+          <div className="mt-3 rounded-md border border-line bg-paper/45 p-3 text-sm leading-7 text-ink-soft">
+            <p>流通粗候選（待完整子平覆核）：{chart.useful.join("、") || "—"}</p>
+            <p>暫不必放大：{chart.drain.join("、") || "—"}</p>
+            <p className="mt-1 text-xs text-cinnabar">這裡不是正式喜用神，不由此派生幸運色、方位、時段、寵物或職業吉凶。</p>
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-ink-soft">{t("useful")}：{chart.useful.join("、")}　{t("drain")}：{chart.drain.join("、")}</p>
+        )}
       </article>
 
       {chart.dayun.length > 0 ? (
@@ -166,8 +185,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       <article className="seal-border relative overflow-hidden rounded-xl bg-cream/95 p-5 sm:p-7">
         <Mark id="07" size={68} className="absolute bottom-2 right-2 w-12 opacity-20" />
-        <p className="text-xs tracking-[0.28em] text-cinnabar">流年 · 胎元 · 命宮</p>
-        <p className="mt-3 text-sm leading-7 text-ink-soft">今年{chart.currentYear}。胎元 {chart.taiyuan}，命宮 {chart.minggong}。流年給引動，不代替你現在就能做的那一步。</p>
+        <p className="text-xs tracking-[0.28em] text-cinnabar">當前流年 · 胎元 · 命宮</p>
+        <p className="mt-3 text-sm leading-7 text-ink-soft">今年{chart.currentYear}。胎元 {chart.taiyuan}，命宮 {chart.minggong}。</p>
+        {reading.kind === "timing" ? <p className="mt-2 text-xs leading-6 text-ink-mute">你若問的是未來年份，以第一屏已計算的目標年／流月窗口為主；這裡只展示當前背景，不拿今年冒充未來年份。</p> : null}
       </article>
 
       <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
@@ -176,14 +196,33 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <p className="mt-4 font-display text-lg">{reading.decree}</p>
       </article>
 
-      <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
-        <p className="text-xs tracking-[0.28em] text-cinnabar">{t("life")}</p>
-        <dl className="mt-4 space-y-3 text-sm leading-7">
-          {[[t("work"), reading.work], [t("love"), reading.love], [t("money"), reading.money], [t("body"), reading.body], [t("home"), reading.home]].map(([label, value]) => (
-            <div key={label}><dt className="text-cinnabar">{label}</dt><dd className="text-ink-soft">{value}</dd></div>
-          ))}
-        </dl>
-      </article>
+      {showLifePanel ? (
+        <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
+          <p className="text-xs tracking-[0.28em] text-cinnabar">{t("life")}</p>
+          {primaryLife ? (
+            <div className="mt-4 rounded-md border border-cinnabar/25 bg-cinnabar/5 p-4 text-sm leading-7">
+              <p className="text-xs tracking-[0.18em] text-cinnabar">本題主軸 · {primaryLife.label}</p>
+              <p className="mt-2 text-ink-soft">{primaryLife.value}</p>
+            </div>
+          ) : (
+            <dl className="mt-4 space-y-3 text-sm leading-7">
+              {lifeItems.map((item) => (
+                <div key={item.key}><dt className="text-cinnabar">{item.label}</dt><dd className="text-ink-soft">{item.value}</dd></div>
+              ))}
+            </dl>
+          )}
+          {primaryLife && otherLife.length ? (
+            <details className="mt-4 rounded-md border border-line bg-paper/35 p-3">
+              <summary className="cursor-pointer text-xs tracking-[0.16em] text-ink-mute">其他領域（補充，不取代本題答案）</summary>
+              <dl className="mt-3 space-y-3 text-sm leading-7">
+                {otherLife.map((item) => (
+                  <div key={item.key}><dt className="text-cinnabar">{item.label}</dt><dd className="text-ink-soft">{item.value}</dd></div>
+                ))}
+              </dl>
+            </details>
+          ) : null}
+        </article>
+      ) : null}
 
       <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("guide")}</p>
