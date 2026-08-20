@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { deleteReportRecord, listReportRecords, type ReportRecord } from "@/lib/supabase-rest";
+import {
+  deleteReportRecord,
+  getReportRecord,
+  listReportRecords,
+  type ReportListRecord,
+  type ReportRecord,
+} from "@/lib/supabase-rest";
 import {
   backgroundPublicUrl,
   deleteBackground,
@@ -10,16 +16,15 @@ import {
   uploadBackground,
   type BackgroundAsset,
 } from "@/lib/background-assets";
-import { applyAnswerContract } from "@/lib/core/answer-contract";
-import { composeNinePages } from "@/lib/report/nine-page";
 import { Mark } from "@/components/marks";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
-function reportLevel(row: ReportRecord) {
-  if (row.paid_report) return "最高版";
-  if (row.mother_draft) return "九頁母稿";
-  if (row.engine_snapshot) return "基礎盤";
+function reportLevel(row: Pick<ReportRecord, "status" | "payment_tier">) {
+  if (row.status === "full_ready" || row.payment_tier === "full") return "最高版";
+  if (row.status === "report_ready") return "完整／九頁";
+  if (row.status === "engine_ready") return "基礎盤";
+  if (row.status === "ready") return "已完成";
   return "待生成";
 }
 
@@ -30,7 +35,7 @@ function fullText(row: ReportRecord): string | null {
 }
 
 function storedNinePages(row: ReportRecord): { pageNo?: number; title?: string; body?: string[] }[] {
-  const sources = [row.paid_report, row.mother_draft];
+  const sources = [row.mother_draft, row.paid_report];
   for (const source of sources) {
     if (!source || typeof source !== "object") continue;
     const pages = (source as Record<string, unknown>).ninePages;
@@ -39,33 +44,11 @@ function storedNinePages(row: ReportRecord): { pageNo?: number; title?: string; 
   return [];
 }
 
-function rebuildLatest(row: ReportRecord) {
-  const snapshot = row.engine_snapshot;
-  if (!snapshot?.chart || !snapshot?.reading) return null;
-  try {
-    const question = String(row.context?.question ?? snapshot.question ?? "").trim() || snapshot.question;
-    const chart = {
-      ...snapshot.chart,
-      // Old snapshots that pre-date this flag must default to the safe/provisional side.
-      usefulProvisional: snapshot.chart.usefulProvisional !== false,
-    };
-    const reading = applyAnswerContract(question, chart, snapshot.reading);
-    return {
-      ...snapshot,
-      question,
-      chart,
-      reading,
-    };
-  } catch {
-    // Archive data can pre-date current runtime fields. If it cannot be rebuilt safely,
-    // keep the stored paid report rather than fabricating missing fields.
-    return null;
-  }
-}
-
 function AccountPage() {
   const { user, session, isPending } = useCurrentUserState();
-  const [rows, setRows] = useState<ReportRecord[]>([]);
+  const [rows, setRows] = useState<ReportListRecord[]>([]);
+  const [details, setDetails] = useState<Record<string, ReportRecord | null>>({});
+  const [detailBusyId, setDetailBusyId] = useState<string | null>(null);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -110,6 +93,26 @@ function AccountPage() {
     if (!q) return rows;
     return rows.filter((r) => [r.alias, r.user_email, r.context?.question].some((v) => String(v ?? "").toLowerCase().includes(q)));
   }, [query, rows]);
+
+  async function toggleReport(row: ReportListRecord) {
+    if (openId === row.id) {
+      setOpenId(null);
+      return;
+    }
+    setOpenId(row.id);
+    if (Object.prototype.hasOwnProperty.call(details, row.id)) return;
+    setDetailBusyId(row.id);
+    setError(null);
+    try {
+      const detail = await getReportRecord(session, row.id);
+      setDetails((prev) => ({ ...prev, [row.id]: detail }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "單筆報告讀取失敗。");
+      setDetails((prev) => ({ ...prev, [row.id]: null }));
+    } finally {
+      setDetailBusyId(null);
+    }
+  }
 
   async function onBackgroundUpload(e: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
@@ -163,7 +166,7 @@ function AccountPage() {
           </div>
           <div className="rounded-lg border border-line bg-paper/45 p-4">
             <p className="text-xs tracking-[0.2em] text-ink-mute">報告</p>
-            <p className="mt-2 text-sm text-ink-soft">{user.isOwner ? `目前可讀 ${rows.length} 筆（含客戶）` : `最近 ${rows.length} 筆，最多顯示 3 筆`}</p>
+            <p className="mt-2 text-sm text-ink-soft">{user.isOwner ? `目前可讀 ${rows.length} 筆（列表只載摘要）` : `最近 ${rows.length} 筆，最多顯示 3 筆`}</p>
           </div>
         </div>
       </section>
@@ -248,17 +251,15 @@ function AccountPage() {
 
         {busy ? <div className="mt-5 h-28 animate-pulse rounded-lg bg-paper-deep" /> : null}
         {error ? <p className="mt-4 rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm text-cinnabar-deep">{error}</p> : null}
-        {!busy && !filtered.length ? <p className="mt-5 text-sm leading-7 text-ink-mute">目前沒有報告。完成一次分析後，在結果頁按「保存到我的昭梧」。</p> : null}
+        {!busy && !filtered.length ? <p className="mt-5 text-sm leading-7 text-ink-mute">目前沒有報告。登入後完成一次分析，基礎盤會自動出現在這裡。</p> : null}
 
         <div className="mt-5 space-y-3">
           {filtered.map((row) => {
             const open = openId === row.id;
-            const canUseLatest = Boolean(row.engine_snapshot) && (user.isOwner || Boolean(row.paid_report || row.mother_draft));
-            const latest = canUseLatest ? rebuildLatest(row) : null;
-            const snapshot = latest ?? row.engine_snapshot;
-            const pages = latest ? composeNinePages(latest) : storedNinePages(row);
-            const text = latest ? null : fullText(row);
-            const latestLabel = user.isOwner && latest ? "最高版 · 即時重建" : reportLevel(row);
+            const detail = details[row.id] ?? null;
+            const snapshot = detail?.engine_snapshot ?? null;
+            const pages = detail ? storedNinePages(detail) : [];
+            const text = detail ? fullText(detail) : null;
             return (
               <article key={row.id} className="rounded-lg border border-line bg-paper/35 p-4">
                 <div className="flex items-start justify-center gap-2 text-center">
@@ -266,19 +267,19 @@ function AccountPage() {
                   <div className="min-w-0">
                     <h3 className="truncate font-display text-lg font-semibold">{row.alias || String(row.context?.question ?? "昭梧報告")}</h3>
                     {user.isOwner ? <p className="truncate text-xs text-cinnabar">{row.user_email || "未綁 Email"}</p> : null}
-                    <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString()} · {latestLabel}</p>
-                    {latest ? <p className="mt-1 text-[11px] text-cinnabar/80">依目前主幹規則重建；原保存稿仍保留於資料庫</p> : null}
+                    <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString()} · {reportLevel(row)}</p>
                   </div>
                 </div>
                 <div className="mt-3 text-center">
-                  <button type="button" onClick={() => setOpenId(open ? null : row.id)} className="rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink-soft">
+                  <button type="button" onClick={() => void toggleReport(row)} className="rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink-soft">
                     {open ? "收起" : "查看"}
                   </button>
                 </div>
 
                 {open ? (
                   <div className="mt-4 border-t border-line pt-4 text-sm leading-7 text-ink-soft">
-                    {snapshot ? (
+                    {detailBusyId === row.id ? <div className="h-28 animate-pulse rounded-lg bg-paper-deep" /> : null}
+                    {detailBusyId !== row.id && snapshot ? (
                       <div className="mb-4 rounded-md bg-cream/70 p-3">
                         <p className="text-xs tracking-[0.18em] text-cinnabar">命盤摘要</p>
                         <p className="mt-2">日主 {snapshot.chart.dayMaster}{snapshot.chart.dayMasterElement} · 月令 {snapshot.chart.monthBranch}</p>
@@ -286,8 +287,8 @@ function AccountPage() {
                         <p className="mt-2">{snapshot.reading.directAnswer}</p>
                       </div>
                     ) : null}
-                    {text ? <div className="mb-4 whitespace-pre-wrap">{text}</div> : null}
-                    {pages.length ? (
+                    {detailBusyId !== row.id && text ? <div className="mb-4 whitespace-pre-wrap">{text}</div> : null}
+                    {detailBusyId !== row.id && pages.length ? (
                       <div className="space-y-4">
                         {pages.map((p, i) => (
                           <div key={`${row.id}-${i}`} className="border-t border-line/70 pt-3 first:border-0 first:pt-0">
@@ -297,8 +298,8 @@ function AccountPage() {
                         ))}
                       </div>
                     ) : null}
-                    {!snapshot && !text && !pages.length ? <p className="text-ink-mute">這筆記錄尚未生成可讀內容。</p> : null}
-                    {user.isOwner ? (
+                    {detailBusyId !== row.id && detail && !snapshot && !text && !pages.length ? <p className="text-ink-mute">這筆記錄尚未生成可讀內容。</p> : null}
+                    {detailBusyId !== row.id && user.isOwner ? (
                       <button
                         type="button"
                         className="mt-5 text-xs text-cinnabar"
@@ -306,6 +307,11 @@ function AccountPage() {
                           if (!window.confirm("刪除這筆報告？")) return;
                           await deleteReportRecord(session, row.id);
                           setOpenId(null);
+                          setDetails((prev) => {
+                            const next = { ...prev };
+                            delete next[row.id];
+                            return next;
+                          });
                           await load();
                         }}
                       >
