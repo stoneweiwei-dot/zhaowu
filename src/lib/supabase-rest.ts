@@ -367,11 +367,13 @@ export async function recordVisit() {
   } catch {
     key = crypto.randomUUID();
   }
-  await fetch(`${SUPABASE_URL}/rest/v1/site_visits?on_conflict=visitor_key,visited_on`, {
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/zhaowu_record_visit`, {
     method: "POST",
-    headers: headers(null, { Prefer: "resolution=ignore-duplicates,return=minimal" }),
-    body: JSON.stringify([{ visitor_key: key }]),
-  }).catch(() => undefined);
+    headers: headers(),
+    body: JSON.stringify({ p_visitor_key: key }),
+  });
+  if (!res.ok) await jsonOrError(res);
 }
 
 export async function getPublicSiteStats(): Promise<PublicSiteStats> {
