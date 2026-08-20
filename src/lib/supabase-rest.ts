@@ -55,6 +55,21 @@ export type ReportRecord = {
   updated_at: string;
 };
 
+export type ReportListRecord = Pick<
+  ReportRecord,
+  | "id"
+  | "user_email"
+  | "alias"
+  | "record_kind"
+  | "status"
+  | "access_mode"
+  | "payment_tier"
+  | "payment_status"
+  | "context"
+  | "created_at"
+  | "updated_at"
+>;
+
 export type PublicSiteStats = {
   totalVisits: number;
   todayVisits: number;
@@ -214,6 +229,82 @@ export async function updateBirthData(session: SupabaseSession, birthData: Recor
   if (!res.ok) await jsonOrError(res);
 }
 
+function reportIdentity(session: SupabaseSession, profile: UserProfile | null, result: AnalysisResult) {
+  return {
+    id: result.id,
+    user_id: session.user.id,
+    user_email: profile?.email ?? session.user.email ?? null,
+    alias: result.question.trim().slice(0, 80),
+    record_kind: "analysis",
+    access_mode: "member",
+    payment_status: "not_required",
+    context: {
+      question: result.question,
+      cityLabel: result.chart.cityLabel,
+      dayMaster: result.chart.dayMaster,
+      ganZhiLine: result.chart.pillars.map((p) => p.ganZhi).join(" "),
+      createdAt: result.createdAt,
+    },
+  };
+}
+
+export async function createEngineReportRecord(args: {
+  session: SupabaseSession;
+  profile: UserProfile | null;
+  result: AnalysisResult;
+}) {
+  const { session, profile, result } = args;
+  const row = {
+    ...reportIdentity(session, profile, result),
+    status: "engine_ready",
+    payment_tier: "free",
+    engine_snapshot: result,
+  };
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests?on_conflict=id`, {
+    method: "POST",
+    headers: headers(session.access_token, { Prefer: "resolution=ignore-duplicates,return=representation" }),
+    body: JSON.stringify(row),
+  });
+  const rows = await jsonOrError<ReportRecord[]>(res);
+  return rows[0] ?? ({ ...row, public_code: null, mother_draft: null, paid_report: null, visual_profile: null, image_path: null, image_error: null, created_at: result.createdAt, updated_at: result.createdAt } as ReportRecord);
+}
+
+export async function patchReportRecord(args: {
+  session: SupabaseSession;
+  profile: UserProfile | null;
+  result: AnalysisResult;
+  status: "report_ready" | "full_ready";
+  fullReport?: string | null;
+  ninePages?: NinePage[] | null;
+  decreeOverlay?: DecreeOverlay | null;
+}) {
+  const { session, profile, result, status, fullReport, ninePages, decreeOverlay } = args;
+  const patch: Record<string, unknown> = {
+    status,
+    payment_tier: status === "full_ready" ? "full" : "free",
+    updated_at: new Date().toISOString(),
+  };
+  if (fullReport !== undefined) patch.paid_report = fullReport ? { text: fullReport } : null;
+  if (ninePages !== undefined) patch.mother_draft = ninePages ? { ninePages } : null;
+  if (decreeOverlay !== undefined) patch.visual_profile = decreeOverlay ? { decreeOverlay } : null;
+
+  const runPatch = async () => {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests?id=eq.${encodeURIComponent(result.id)}`, {
+      method: "PATCH",
+      headers: headers(session.access_token, { Prefer: "return=representation" }),
+      body: JSON.stringify(patch),
+    });
+    return jsonOrError<ReportRecord[]>(res);
+  };
+
+  let rows = await runPatch();
+  if (!rows.length) {
+    await createEngineReportRecord({ session, profile, result });
+    rows = await runPatch();
+  }
+  return rows[0] ?? null;
+}
+
 export async function saveReportRecord(args: {
   session: SupabaseSession;
   profile: UserProfile | null;
@@ -223,46 +314,37 @@ export async function saveReportRecord(args: {
   decreeOverlay: DecreeOverlay | null;
 }) {
   const { session, profile, result, fullReport, ninePages, decreeOverlay } = args;
-  const alias = result.question.trim().slice(0, 80);
-  const row = {
-    user_id: session.user.id,
-    user_email: profile?.email ?? session.user.email ?? null,
-    alias,
-    record_kind: "analysis",
-    status: "ready",
-    access_mode: "member",
-    payment_tier: fullReport || ninePages ? "full" : "free",
-    payment_status: "not_required",
-    context: {
-      question: result.question,
-      cityLabel: result.chart.cityLabel,
-      dayMaster: result.chart.dayMaster,
-      ganZhiLine: result.chart.pillars.map((p) => p.ganZhi).join(" "),
-      createdAt: result.createdAt,
-    },
-    engine_snapshot: result,
-    mother_draft: ninePages ? { ninePages } : null,
-    paid_report: fullReport ? { text: fullReport, ninePages: ninePages ?? null } : ninePages ? { ninePages } : null,
-    visual_profile: decreeOverlay ? { decreeOverlay } : null,
-  };
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests`, {
-    method: "POST",
-    headers: headers(session.access_token, { Prefer: "return=representation" }),
-    body: JSON.stringify(row),
+  await createEngineReportRecord({ session, profile, result });
+  return patchReportRecord({
+    session,
+    profile,
+    result,
+    status: "full_ready",
+    fullReport,
+    ninePages,
+    decreeOverlay,
   });
-  const rows = await jsonOrError<ReportRecord[]>(res);
-  return rows[0];
 }
 
-export async function listReportRecords(session: SupabaseSession, isOwner: boolean): Promise<ReportRecord[]> {
-  const select = "id,public_code,user_id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,engine_snapshot,mother_draft,paid_report,visual_profile,image_path,image_error,created_at,updated_at";
+export async function listReportRecords(session: SupabaseSession, isOwner: boolean): Promise<ReportListRecord[]> {
+  const select = "id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,created_at,updated_at";
   const filter = isOwner ? "" : `&user_id=eq.${encodeURIComponent(session.user.id)}`;
   const limit = isOwner ? 50 : 3;
   const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests?select=${select}${filter}&order=created_at.desc&limit=${limit}`, {
     headers: headers(session.access_token),
   });
+  const rows = await jsonOrError<ReportListRecord[]>(res);
+  return rows.slice(0, limit);
+}
+
+export async function getReportRecord(session: SupabaseSession, id: string): Promise<ReportRecord | null> {
+  const select = "id,public_code,user_id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,engine_snapshot,mother_draft,paid_report,visual_profile,image_path,image_error,created_at,updated_at";
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/report_requests?id=eq.${encodeURIComponent(id)}&select=${select}&limit=1`,
+    { headers: headers(session.access_token) },
+  );
   const rows = await jsonOrError<ReportRecord[]>(res);
-  return rows.filter((row) => row.record_kind !== "test").slice(0, limit);
+  return rows[0] ?? null;
 }
 
 export async function deleteReportRecord(session: SupabaseSession, id: string) {
