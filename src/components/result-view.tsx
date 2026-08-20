@@ -9,6 +9,7 @@ import { useAppStore } from "@/lib/store";
 import { Mark } from "@/components/marks";
 import { composeNinePages, type NinePage } from "@/lib/report/nine-page";
 import { decreeImagePackage, type DecreeOverlay } from "@/lib/report/decree-image";
+import { renderDecreePng } from "@/lib/report/decree-render";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
 export function ResultView({ result }: { result: AnalysisResult }) {
@@ -20,6 +21,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [ninePages, setNinePages] = useState<NinePage[] | null>(null);
   const [decreeOverlay, setDecreeOverlay] = useState<DecreeOverlay | null>(null);
   const [decreePrompt, setDecreePrompt] = useState<string | null>(null);
+  const [decreeImageUrl, setDecreeImageUrl] = useState<string | null>(null);
   const { chart, reading, question } = result;
 
   const lifeItems = [
@@ -38,6 +40,13 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     const out = await writeFullReport({ data: { question, chart, reading, palm: result.palm ?? null } });
     setFullReport(out.text);
     return out.text;
+  }
+
+  async function ensureDecreeImage() {
+    if (decreeImageUrl) return decreeImageUrl;
+    const url = await renderDecreePng(result);
+    setDecreeImageUrl(url);
+    return url;
   }
 
   async function persistStage(stage: { fullReport?: string | null; ninePages?: NinePage[] | null; decreeOverlay?: DecreeOverlay | null }) {
@@ -86,6 +95,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         setDecreeOverlay(pkg.overlay);
         setDecreePrompt(pkg.prompt);
       }
+      await ensureDecreeImage();
       const row = await saveReportRecord({
         session,
         profile,
@@ -95,7 +105,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         decreeOverlay: overlay,
       });
       setSavedId(row?.id ?? result.id);
-      setMsg("最高可用版本已更新到同一筆報告，不會重複新增。");
+      setMsg("最高可用版本已更新到同一筆報告；個人命誥圖也已生成。");
     } catch (err) {
       setMsg(err instanceof Error ? err.message : "保存失敗。");
     } finally {
@@ -108,11 +118,15 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setMsg(null);
     try {
       const pages = composeNinePages(result);
+      const pkg = decreeImagePackage(result);
       setNinePages(pages);
+      setDecreeOverlay(pkg.overlay);
+      setDecreePrompt(pkg.prompt);
+      await ensureDecreeImage();
       try {
-        await persistStage({ ninePages: pages });
+        await persistStage({ ninePages: pages, decreeOverlay: pkg.overlay });
       } catch {
-        setMsg("九頁報告已生成，但雲端同步暫時失敗；畫面內容不受影響。");
+        setMsg("九頁報告與個人命誥圖已生成，但雲端同步暫時失敗；畫面內容不受影響。");
       }
     } catch (err) {
       setMsg(err instanceof Error ? err.message : "九頁報告生成失敗。");
@@ -128,10 +142,11 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       const pkg = decreeImagePackage(result);
       setDecreeOverlay(pkg.overlay);
       setDecreePrompt(pkg.prompt);
+      await ensureDecreeImage();
       try {
         await persistStage({ decreeOverlay: pkg.overlay });
       } catch {
-        setMsg("命誥圖資料已生成，但雲端同步暫時失敗；畫面內容不受影響。");
+        setMsg("個人命誥 PNG 已生成，但雲端同步暫時失敗；畫面與存圖不受影響。");
       }
     } catch (err) {
       setMsg(err instanceof Error ? err.message : "命誥圖生成失敗。");
@@ -291,25 +306,32 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </article>
       ) : null}
 
-      {decreeOverlay ? (
+      {decreeOverlay && decreeImageUrl ? (
         <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
-          <p className="text-xs tracking-[0.28em] text-cinnabar">9:16 命誥圖 · STONE 原創</p>
-          <div className="relative mx-auto mt-4 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-lg border border-line bg-gradient-to-b from-[#f7f0e4] via-[#efe6d6] to-[#e8dcc8] shadow-inner">
-            <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, rgba(180,140,80,0.15), transparent 50%), radial-gradient(circle at 70% 80%, rgba(60,90,120,0.12), transparent 45%)" }} />
-            <div className="absolute inset-0 flex flex-col items-center justify-between p-5 text-center">
-              <p className="text-[11px] tracking-[0.35em] text-ink/70">{decreeOverlay.top}</p>
-              <p className="px-2 font-display text-lg leading-8 text-ink">{decreeOverlay.center}</p>
-              <div className="space-y-1"><p className="text-[10px] tracking-wider text-ink/60">{decreeOverlay.bottom}</p><p className="text-[9px] tracking-[0.3em] text-cinnabar/80">{decreeOverlay.watermark}</p></div>
-            </div>
+          <p className="text-xs tracking-[0.28em] text-cinnabar">個人命誥圖 · 1080×1920 · STONE 原創</p>
+          <img
+            src={decreeImageUrl}
+            alt="昭梧個人命誥圖"
+            className="mx-auto mt-4 aspect-[9/16] w-full max-w-[360px] rounded-lg border border-line object-cover shadow-lg"
+          />
+          <div className="mt-4 flex justify-center">
+            <a
+              href={decreeImageUrl}
+              download={`zhaowu-personal-decree-${result.id}.png`}
+              className="inline-flex h-11 items-center rounded-full border border-cinnabar bg-cream px-5 text-sm text-cinnabar"
+            >
+              儲存 9:16 原圖
+            </a>
           </div>
-          {decreePrompt ? <details className="mt-3 text-xs text-ink-mute"><summary className="cursor-pointer">查看圖像提示詞</summary><pre className="mt-2 whitespace-pre-wrap break-words rounded bg-paper/60 p-3 text-[11px] leading-5">{decreePrompt}</pre></details> : null}
+          <p className="mt-3 text-center text-xs leading-6 text-ink-mute">iPhone 也可直接長按上面的圖片保存。</p>
+          {decreePrompt ? <details className="mt-3 text-xs text-ink-mute"><summary className="cursor-pointer">查看視覺生成規格</summary><pre className="mt-2 whitespace-pre-wrap break-words rounded bg-paper/60 p-3 text-[11px] leading-5">{decreePrompt}</pre></details> : null}
         </article>
       ) : null}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <button type="button" disabled={busy === "full"} onClick={() => void onFull()} className="h-12 min-w-[140px] flex-1 rounded-full bg-cinnabar text-cream disabled:opacity-60">{busy === "full" ? t("generating") : t("genFull")}</button>
-        <button type="button" disabled={busy === "nine"} onClick={() => void onNine()} className="h-12 min-w-[140px] flex-1 rounded-full border border-cinnabar bg-cream text-cinnabar disabled:opacity-60">{busy === "nine" ? "生成中…" : "生成九頁報告"}</button>
-        <button type="button" disabled={busy === "decree"} onClick={() => void onDecree()} className="h-12 min-w-[140px] flex-1 rounded-full border border-line bg-cream text-ink disabled:opacity-60">{busy === "decree" ? "生成中…" : "生成命誥圖"}</button>
+        <button type="button" disabled={busy === "nine"} onClick={() => void onNine()} className="h-12 min-w-[140px] flex-1 rounded-full border border-cinnabar bg-cream text-cinnabar disabled:opacity-60">{busy === "nine" ? "生成中…" : "生成九頁報告＋命誥圖"}</button>
+        <button type="button" disabled={busy === "decree"} onClick={() => void onDecree()} className="h-12 min-w-[140px] flex-1 rounded-full border border-line bg-cream text-ink disabled:opacity-60">{busy === "decree" ? "生成中…" : decreeImageUrl ? "重新生成個人命誥圖" : "生成個人命誥圖"}</button>
         {isPending ? <span className="h-12 flex-1 animate-pulse rounded-full bg-paper-deep" /> : user ? (
           <button type="button" disabled={busy === "save"} onClick={() => void onSave()} className="h-12 min-w-[140px] flex-1 rounded-full border border-line bg-cream text-ink disabled:opacity-60">{busy === "save" ? "保存最高版中…" : savedId ? "更新最高版" : t("save")}</button>
         ) : <Link to="/login" className="grid h-12 min-w-[140px] flex-1 place-items-center rounded-full border border-line bg-cream">{t("needLogin")}</Link>}
