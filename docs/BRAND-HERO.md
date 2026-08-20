@@ -40,3 +40,7 @@
 - `src/styles.css`
 
 锁文件未动。部署必须继续使用本仓主干，不得复制到 AppDeploy 平行站。
+
+## 部署触发
+
+- 2026-08-20 21:30 Sydney：Netlify 已确认连接 `github.com/stoneweiwei-dot/zhaowu`，本次提交用于触发 continuous deployment。
