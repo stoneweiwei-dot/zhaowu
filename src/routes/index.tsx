@@ -1,139 +1,73 @@
-import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { getAlmanac } from "@/lib/actions";
 import { AnalysisForm } from "@/components/analysis-form";
 import { ResultView } from "@/components/result-view";
 import { FollowUpBox } from "@/components/follow-up-box";
-import { Mark } from "@/components/marks";
 import { useAppStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
-import "@/home-v2.css";
 
 export const Route = createFileRoute("/")({ component: Home });
-
-type Almanac = Awaited<ReturnType<typeof getAlmanac>>;
-const STEP_MARKS = ["06", "16", "17"] as const;
 
 function Home() {
   const { t, locale } = useI18n();
   const current = useAppStore((s) => s.current);
-  const [almanac, setAlmanac] = useState<Almanac | null>(null);
+  const isEnglish = locale === "en";
+  const isHans = locale === "zh-Hans";
 
-  const proof = useMemo(() => {
-    if (locale === "en") {
-      return {
-        title: "Clear method, clear boundary",
-        lead: "A refined surface is not enough. Zhaowu tells users what is actually calculated, what is only a route label, and what is not yet connected.",
-        cards: [
-          ["Primary judgement", "Zi Ping BaZi is the sole judgement core. The site reads structure, timing and choices instead of filling the page with generic mystical wording."],
-          ["Past-life route", "Six-realm questions use the deterministic Dharma Palm method. The answer must start with the realm and main star, with no extra AI expansion."],
-          ["No fake systems", "Zi Wei, Western, Vedic, Liu Yao and Qi Men remain marked as not connected until each has its own independent calculation."],
-        ],
-      };
-    }
-    if (locale === "zh-Hans") {
-      return {
-        title: "方法清楚，边界也清楚",
-        lead: "前台要有设计感，但判断不能含糊。用户一眼要看得出：哪些是真的接入，哪些还不能拿来当主判。",
-        cards: [
-          ["主判清楚", "昭梧只以子平八字作核心主判。看结构、看时机、看选择，不用五行百分比和通用玄学话术冒充结论。"],
-          ["前世独立", "六道／前世题只走达摩一掌经确定性排盘。第一句必须给六道与主星，不再额外调用 AI 发散。"],
-          ["不乱编流派", "紫微、西占、吠陀、六爻、奇门等未接入独立排盘前，只标资料未接入，不编宫位、星曜、相位或卦爻。"],
-        ],
-      };
-    }
-    return {
-      title: "方法清楚，邊界也清楚",
-      lead: "前台要有設計感，但判斷不能含糊。使用者一眼要看得出：哪些是真的接入，哪些還不能拿來當主判。",
-      cards: [
-        ["主判清楚", "昭梧只以子平八字作核心主判。看結構、看時機、看選擇，不用五行百分比和通用玄學話術冒充結論。"],
-        ["前世獨立", "六道／前世題只走達摩一掌經確定性排盤。第一句必須給六道與主星，不再額外調用 AI 發散。"],
-        ["不亂編流派", "紫微、西占、吠陀、六爻、奇門等未接入獨立排盤前，只標資料未接入，不編宮位、星曜、相位或卦爻。"],
-      ],
-    };
-  }, [locale]);
-
-  useEffect(() => {
-    void getAlmanac().then(setAlmanac).catch(() => setAlmanac(null));
-  }, []);
+  const safeTitle = isEnglish ? "Zhaowu Safe Entry" : isHans ? "昭梧安全入口" : "昭梧安全入口";
+  const safeLead = isEnglish
+    ? "The visual experiment has been paused. This page keeps the reading form, account entry and report flow available while the homepage art direction is rebuilt separately."
+    : isHans
+      ? "新版视觉先暂停。这里保留测算入口、账号入口和报告流程，先保证网站可打开、可使用，再单独重做美术。"
+      : "新版視覺先暫停。這裡保留測算入口、帳號入口和報告流程，先保證網站可打開、可使用，再單獨重做美術。";
 
   return (
-    <main className="zhaowu-v2">
-      <section className="zhaowu-v2-hero" aria-labelledby="zhaowu-title">
-        <span className="zhaowu-v2-build">ZW · 2026.08.20 · JADE</span>
-        <Mark id="brand" size={340} eager className="zhaowu-v2-seal" />
-        <Mark id="04" size={180} className="zhaowu-v2-corner a" />
-        <Mark id="03" size={220} className="zhaowu-v2-corner b" />
-
-        <div className="zhaowu-v2-inner">
-          <p className="zhaowu-v2-kicker">ZHAOWU · {t("heroKicker")}</p>
-          <h1 id="zhaowu-title" className="zhaowu-v2-wordmark">昭梧</h1>
-          <p className="zhaowu-v2-slogan">{t("heroSlogan")}</p>
-          <p className="zhaowu-v2-english">{t("heroEnglish")}</p>
-          <div className="zhaowu-v2-rule" aria-hidden />
-          <p className="zhaowu-v2-lead">{t("heroLead")}</p>
-          <p className="zhaowu-v2-body">{t("heroBody")}</p>
-          <p className="zhaowu-v2-sign">{t("heroSign")}</p>
-          <a href="#analysisForm" className="zhaowu-v2-start">{t("start")}</a>
+    <main className="space-y-8">
+      <section className="rounded-[2rem] border border-line bg-cream/95 px-5 py-8 shadow-[0_18px_50px_rgb(60_42_20_/_0.10)] sm:px-8 sm:py-10">
+        <p className="text-xs font-semibold tracking-[0.28em] text-cinnabar">ZHAOWU · SAFE · 2026.08.20</p>
+        <h1 className="mt-5 font-display text-5xl font-bold tracking-[0.18em] text-ink sm:text-7xl">昭梧</h1>
+        <p className="mt-5 max-w-2xl font-display text-xl leading-9 tracking-[0.08em] text-ink sm:text-2xl">{t("heroSlogan")}</p>
+        <p className="mt-3 max-w-2xl text-sm leading-7 text-ink-soft">{safeLead}</p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a href="#analysisForm" className="inline-flex h-12 items-center rounded-full bg-cinnabar px-6 text-cream shadow-sm">{t("start")}</a>
+          <a href="/account" className="inline-flex h-12 items-center rounded-full border border-line bg-paper px-6 text-ink-soft">{isEnglish ? "Account / Admin" : "帳號 / 後台"}</a>
         </div>
       </section>
 
-      <aside className="zhaowu-v2-almanac" aria-label={t("today")}>
-        <Mark id="02" size={94} />
-        <div>
-          <p className="zhaowu-v2-almanac-title">{t("today")}</p>
-          {almanac ? (
-            <div className="zhaowu-v2-almanac-meta">
-              <p>{almanac.day} · {almanac.year}年 {almanac.month}月 · {almanac.lunar}</p>
-              {almanac.jieqi ? <p>{t("jieqi")} {almanac.jieqi}</p> : null}
-              <p>{t("yi")} {almanac.yi.join("、") || "—"}</p>
-              <p>{t("ji")} {almanac.ji.join("、") || "—"}</p>
-            </div>
-          ) : <div className="mt-2 h-12 animate-pulse bg-paper-deep/40" />}
-        </div>
-      </aside>
-
-      <section className="zhaowu-v2-steps" aria-label="使用步骤">
+      <section className="grid gap-3 sm:grid-cols-3">
         {[t("s1"), t("s2"), t("s3")].map((item, i) => (
-          <article key={item} className="zhaowu-v2-step">
-            <div className="zhaowu-v2-step-no">0{i + 1}</div>
-            <div className="zhaowu-v2-step-text">{item}</div>
-            <Mark id={STEP_MARKS[i]} size={150} />
+          <article key={item} className="rounded-2xl border border-line bg-cream/85 p-4">
+            <p className="text-xs tracking-[0.2em] text-cinnabar">0{i + 1}</p>
+            <p className="mt-2 text-sm leading-7 text-ink-soft">{item}</p>
           </article>
         ))}
       </section>
 
-      <section className="zhaowu-v2-proof" aria-labelledby="zhaowu-proof-title">
-        <div className="zhaowu-v2-proof-head">
-          <p className="zhaowu-v2-proof-kicker">STONE CORE</p>
-          <h2 id="zhaowu-proof-title">{proof.title}</h2>
-          <p>{proof.lead}</p>
+      <section className="rounded-[1.75rem] border border-line bg-cream/92 p-4 shadow-[0_12px_38px_rgb(60_42_20_/_0.08)] sm:p-6">
+        <div className="mb-4 border-b border-line/70 pb-4">
+          <p className="text-xs tracking-[0.24em] text-cinnabar">{safeTitle}</p>
+          <p className="mt-2 text-sm leading-7 text-ink-soft">
+            {isEnglish
+              ? "Fill in the question and birth data below. The visual layer is deliberately simplified here to avoid blocking the reading workflow."
+              : isHans
+                ? "下面继续填写问题与出生资料。这个版本故意把视觉层简化，避免再挡住测算流程。"
+                : "下面繼續填寫問題與出生資料。這個版本故意把視覺層簡化，避免再擋住測算流程。"}
+          </p>
         </div>
-        <div className="zhaowu-v2-proof-grid">
-          {proof.cards.map(([title, body], i) => (
-            <article key={title} className="zhaowu-v2-proof-card">
-              <span>0{i + 1}</span>
-              <h3>{title}</h3>
-              <p>{body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="zhaowu-v2-form">
         <AnalysisForm />
       </section>
 
       {current ? <ResultView result={current} /> : null}
       {current ? <FollowUpBox result={current} /> : null}
 
-      <section className="zhaowu-v2-faq">
-        <h2>{t("faq")}</h2>
-        <dl>
-          <div><dt>{t("faq1q")}</dt><dd>{t("faq1a")}</dd></div>
-          <div><dt>{t("faq2q")}</dt><dd>{t("faq2a")}</dd></div>
-          <div><dt>{t("faq3q")}</dt><dd>{t("faq3a")}</dd></div>
-        </dl>
+      <section className="rounded-2xl border border-line bg-paper/80 p-5 text-sm leading-7 text-ink-soft">
+        <p className="font-display text-lg text-ink">{isEnglish ? "Current handling" : "目前處理"}</p>
+        <p className="mt-2">
+          {isEnglish
+            ? "The previous homepage art changes were the likely cause of the blank screen. This safe entry keeps the app usable first."
+            : isHans
+              ? "上一版首页视觉改动很可能造成白屏。现在先恢复可用入口，再单独重做视觉。"
+              : "上一版首頁視覺改動很可能造成白屏。現在先恢復可用入口，再單獨重做視覺。"}
+        </p>
       </section>
     </main>
   );
