@@ -23,6 +23,11 @@ export type ForecastYear = {
   destinationStyle: string;
 };
 
+export type ForecastOptions = {
+  months?: number[];
+  explain?: boolean;
+};
+
 const COMBINE: Record<string, string> = {
   子: "丑", 丑: "子", 寅: "亥", 亥: "寅", 卯: "戌", 戌: "卯",
   辰: "酉", 酉: "辰", 巳: "申", 申: "巳", 午: "未", 未: "午",
@@ -78,6 +83,11 @@ function godScore(god: string, topic: ForecastTopic, strong: boolean): number {
     case "home":
       if (isResource) return 2;
       if (isPeer) return 1;
+      return 0;
+    case "health":
+      if (isResource) return strong ? 0 : 1;
+      if (isOutput) return 1;
+      if (isOfficer) return -1;
       return 0;
     case "self":
       if (isOutput || isResource) return 1;
@@ -210,20 +220,65 @@ function yearVerdict(topic: ForecastTopic, f: ForecastYear): string {
   return `${f.year} 屬於可做、但要挑月份的年份。`;
 }
 
-export function buildTimingAnswer(chart: Chart, topic: ForecastTopic, targetYears: number[]): string {
+function normalizedMonths(months?: number[]): number[] {
+  if (!months?.length) return [];
+  return [...new Set(months.map(Number).filter((m) => Number.isInteger(m) && m >= 1 && m <= 12))].sort((a, b) => a - b);
+}
+
+function rankWithin(f: ForecastYear, months?: number[]): { best: ForecastPeriod[]; caution: ForecastPeriod[] } {
+  const scope = normalizedMonths(months);
+  const source = scope.length ? f.months.filter((m) => scope.includes(m.month)) : f.months;
+  const ranked = [...source].sort((a, b) => b.score - a.score || a.month - b.month);
+  const caution = [...source].sort((a, b) => a.score - b.score || a.month - b.month);
+  return {
+    best: ranked.slice(0, Math.min(3, ranked.length)),
+    caution: caution.slice(0, Math.min(2, caution.length)),
+  };
+}
+
+function evidence(items: ForecastPeriod[]): string {
+  const first = items[0];
+  if (!first) return "";
+  const why = first.notes.filter(Boolean).slice(0, 3).join("、");
+  return why ? `排序依據：${first.month}月主要見${why}。` : "";
+}
+
+function uncertainty(chart: Chart): string {
+  if (chart.timeUnknown) {
+    return "出生時間未確定，這次不使用時柱與大運做滿格推斷，月份排序只按已知盤面，精度會低一級。";
+  }
+  return "月份排序是已接入的歲運關係排序，不把它包裝成必然事件或保證日期。";
+}
+
+export function buildTimingAnswer(
+  chart: Chart,
+  topic: ForecastTopic,
+  targetYears: number[],
+  options: ForecastOptions = {},
+): string {
   const now = new Date().getFullYear();
   const years = targetYears.length ? targetYears.slice(0, 3) : [now, now + 1];
   const forecasts = years.map((year) => analyzeForecastYear(chart, year, topic));
+  const scope = normalizedMonths(options.months);
   const parts = forecasts.map((f) => {
-    const best = monthList(f.best);
-    const caution = monthList(f.caution);
-    return `${yearVerdict(topic, f)}較順的窗口：${best}。較容易折騰或阻力偏高：${caution}。`;
+    const ranked = rankWithin(f, scope);
+    const best = monthList(ranked.best);
+    const caution = monthList(ranked.caution);
+    const scopeText = scope.length ? `你指定的月份範圍內，` : "";
+    const why = options.explain === false ? "" : evidence(ranked.best);
+    return `${yearVerdict(topic, f)}${scopeText}較順的窗口：${best || "—"}。較容易折騰或阻力偏高：${caution || "—"}。${why}`;
   });
-  return parts.join(" ");
+  return `${parts.join(" ")} ${uncertainty(chart)}`.trim();
 }
 
-export function buildTravelDestinationAnswer(chart: Chart, targetYears: number[]): string {
+export function buildTravelDestinationAnswer(
+  chart: Chart,
+  targetYears: number[],
+  options: ForecastOptions = {},
+): string {
   const year = targetYears[0] ?? new Date().getFullYear();
   const f = analyzeForecastYear(chart, year, "travel");
-  return `如果你問「去哪裡比較適合」，在沒有指定候選城市的情況下，先看旅行型態：${f.destinationStyle}如果你給出 2–3 個具體城市，再做逐一比較；沒有候選地時不亂點名國家。`;
+  const ranked = rankWithin(f, options.months);
+  const style = destinationStyleFrom(ranked.best.length ? ranked.best : f.best);
+  return `如果你問「去哪裡比較適合」，在沒有指定候選城市的情況下，先看旅行型態：${style}如果你給出 2–3 個具體城市，再做逐一比較；沒有候選地時不亂點名國家。`;
 }
