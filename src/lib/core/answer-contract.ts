@@ -1,3 +1,4 @@
+import { buildTimingAnswer, buildTravelDestinationAnswer, type ForecastTopic } from "@/lib/bazi/forecast";
 import type { Chart, QuestionKind, Reading } from "@/lib/bazi/types";
 
 export type AnswerRequirements = {
@@ -15,7 +16,7 @@ const WHERE_RE = /(去哪|去哪里|去哪裡|哪個城市|哪个城市|哪個�
 const COMPARE_RE = /(還是|还是|或者|二選一|二选一|哪一個|哪一个|哪個比較|哪个比较|選哪|选哪|比較好|比较好|該不該|该不该|要不要)/;
 const TRAVEL_RE = /(度假|旅行|旅遊|旅游|出行|出國|出国|出境|機票|机票|行程|目的地|旅居|vacation|travel|trip)/i;
 const MEDICAL_RE = /(手術|手术|治療|治疗|停藥|停药|用藥|用药|復原|恢复|康復|康复|懷孕|怀孕|受孕|病|痛|癌|醫生|医生|醫療|医疗)/;
-const INVESTMENT_RE = /(股票|基金|ETF|加密|虛擬幣|虚拟币|比特幣|比特币|期權|期权|彩票|彩券|號碼|号码|買哪|买哪|賣哪|卖哪)/;
+const INVESTMENT_RE = /(股票|基金|ETF|加密|虛擬幣|虚拟币|比特幣|比特币|期權|期权|彩票|彩券|號碼|号码|買哪|买哪|賣哪|卖哪)/i;
 
 const PAST_TOPIC_RE = /(前世|前三世|六道|輪迴|轮回|一掌經|一掌经|三世因果)/;
 const HOME_TOPIC_RE = /(家宅|搬家|房子|住宅|店面|風水|风水|買屋|买屋|買房|买房|住哪|坐向|戶型|户型)/;
@@ -37,18 +38,19 @@ function targetYears(question: string): number[] {
 export function inferQuestionKind(question: string, fallback: QuestionKind = "self"): QuestionKind {
   if (PAST_TOPIC_RE.test(question)) return "past";
   if (HOME_TOPIC_RE.test(question)) return "home";
-  if (COMPARE_RE.test(question)) return "choice";
   if (HEALTH_TOPIC_RE.test(question)) return "health";
   if (LOVE_TOPIC_RE.test(question)) return "love";
   if (CAREER_TOPIC_RE.test(question)) return "career";
   if (MONEY_TOPIC_RE.test(question)) return "money";
+  if (COMPARE_RE.test(question)) return "choice";
   if (WHEN_RE.test(question) || targetYears(question).length > 0) return "timing";
   return fallback;
 }
 
 export function inspectAnswerRequirements(question: string): AnswerRequirements {
+  const years = targetYears(question);
+  const asksWhen = WHEN_RE.test(question) || years.length > 0;
   const asksTravel = TRAVEL_RE.test(question);
-  const asksWhen = WHEN_RE.test(question) || targetYears(question).length > 0;
   return {
     asksWhen,
     asksWhere: WHERE_RE.test(question),
@@ -56,49 +58,39 @@ export function inspectAnswerRequirements(question: string): AnswerRequirements 
     asksTravel,
     asksMedicalTiming: MEDICAL_RE.test(question) && asksWhen,
     asksInvestmentPick: INVESTMENT_RE.test(question),
-    targetYears: targetYears(question),
+    targetYears: years,
   };
 }
 
-function temporalBoundary(question: string, chart: Chart, req: AnswerRequirements): string {
-  const q = cleanQuestion(question);
-  const years = req.targetYears.length ? req.targetYears.join("、") : "你問的目標時間";
-  return [
-    `你問的是「${q}」。`,
-    `這題要真正回答時間，必須計算 ${years} 的流年／流月作用鏈，而不是把目前的原局性格句當成應期。`,
-    `目前這個結果只保存當前流年干支「${chart.currentYear}」與原局資料，沒有目標年份逐月結果，所以現在不能負責任地給出具體月份、日期，或斷言某一年一定適合／不適合。`,
-  ].join("");
+function topicFor(question: string, kind: QuestionKind, req: AnswerRequirements): ForecastTopic {
+  if (req.asksTravel) return "travel";
+  if (LOVE_TOPIC_RE.test(question)) return "love";
+  if (CAREER_TOPIC_RE.test(question)) return "career";
+  if (MONEY_TOPIC_RE.test(question)) return "money";
+  if (HOME_TOPIC_RE.test(question)) return "home";
+  if (HEALTH_TOPIC_RE.test(question)) return "health";
+  return kind;
 }
 
-function destinationBoundary(question: string, req: AnswerRequirements): string {
+function medicalTimingAnswer(question: string, reading: Reading): string {
   const q = cleanQuestion(question);
-  return [
-    `你問的是「${q}」。`,
-    "要回答「去哪裡最好」或比較兩個目的地，至少要有候選地點、經緯度／季節、實際行程條件，以及已完成的取用或專項遷移規則。",
-    "目前引擎沒有目的地比較模組，所以不能憑出生盤直接說某個國家、城市或方向一定最好。",
-    req.asksCompare ? "如果是在兩個目的地之間二選一，現在也不能用旺衰強弱硬選其中一個。" : "",
-  ].filter(Boolean).join("");
+  return `你問的是「${q}」。命理這裡可以看壓力與生活節奏，但不能把恢復、手術、治療、停藥或受孕做成保證日期。就命盤層面，先看的是：${reading.body}；真正的醫療時間仍以檢查與醫生判斷為準。`;
 }
 
-function medicalTimingBoundary(question: string): string {
+function investmentAnswer(question: string, reading: Reading): string {
   const q = cleanQuestion(question);
-  return `你問的是「${q}」。健康恢復、手術、治療、停藥或受孕時間不能由命盤替代醫療判斷；目前引擎也沒有醫療預後模型，因此不能給保證式日期。若症狀持續、惡化或涉及治療安排，先以醫生的診斷與時間表為準。`;
+  return `你問的是「${q}」。如果問題是財務節奏，這張盤能回答：${reading.money}；但如果要我直接指定某一檔股票、基金、加密資產或買賣點，命盤不能替代投資分析，也不把任何標的說成必賺。`;
 }
 
-function investmentBoundary(question: string): string {
+function homeLocationAnswer(question: string, chart: Chart, reading: Reading): string {
   const q = cleanQuestion(question);
-  return `你問的是「${q}」。目前命理引擎只能談財務節奏與風險承載，不能負責任地替你指定某一檔股票、基金、加密資產、彩票或買賣時點，也不會把命盤當收益保證。`;
+  const extra = chart.usefulProvisional
+    ? "正式取用尚未完成，所以不硬指定東西南北。"
+    : "若要精確到住宅，仍要把平面圖、坐向、採光與道路一起看。";
+  return `你問的是「${q}」。先回答能回答的部分：${reading.home}${extra}`;
 }
 
-function homeLocationBoundary(question: string, chart: Chart): string {
-  const q = cleanQuestion(question);
-  const useful = chart.usefulProvisional
-    ? "而且正式取用尚未完成，連出生盤生活取象都不能下最終方位。"
-    : "即使正式取用已完成，真實住宅仍需平面圖、坐向、採光與周邊道路資料。";
-  return `你問的是「${q}」。出生盤不能單獨回答哪一間房、哪個城市或哪個方位最好。${useful}`;
-}
-
-function topicalFallback(question: string, kind: QuestionKind, reading: Reading): string {
+function topicalAnswer(question: string, kind: QuestionKind, reading: Reading): string {
   const q = cleanQuestion(question);
   switch (kind) {
     case "love":
@@ -118,59 +110,55 @@ function topicalFallback(question: string, kind: QuestionKind, reading: Reading)
 
 function actionFor(kind: QuestionKind, req: AnswerRequirements): string {
   if (req.asksMedicalTiming) {
-    return "先把症狀、持續時間、已做檢查與醫生建議列清楚；醫療時間由醫療資料決定，不用命盤替代。";
+    return "把症狀、持續時間、已做檢查與醫生建議放在同一頁；命盤只補充生活節奏，不代替醫療時間表。";
   }
-  if (req.asksTravel && (req.asksWhen || req.asksWhere || req.asksCompare)) {
-    return "先固定要比較的年份／月份與 2–3 個候選目的地；在目標年流月和目的地比較模組完成前，不用目前這份報告替你訂票或否定整個年份。";
+  if (req.asksTravel) {
+    return "先用報告挑出的較順月份定旅行窗口；若要精確比較目的地，再放入 2–3 個具體城市，不再用通用性格句代替答案。";
   }
   if (req.asksWhen) {
-    return "先固定你要判斷的事件與目標年份／月份；等目標年流月作用鏈算出來，再談應期，不用通用性格句代替時間答案。";
+    return "先用報告列出的前三個月份做窗口，再把現實條件疊上去，不再把整年一刀切成好或壞。";
   }
   if (req.asksInvestmentPick) {
-    return "先列可承受虧損、資金期限與退出條件；命盤只作風險節奏參考，不替你指定標的。";
+    return "把可承受虧損、資金期限與退出條件寫清楚；命盤只看財務節奏，不替你指定標的。";
   }
   switch (kind) {
     case "love":
-      return "把你真正要核對的關係事件寫成一件可驗證的事：是否主動聯絡、是否約定下一次見面、是否把關係說清楚。";
+      return "只核對一件可驗證的關係事件：對方是否主動、是否安排下一次見面、是否把關係說清楚。";
     case "career":
-      return "把職涯問題縮成一個可比較決策：職位、收入、成長、退出成本各寫一欄，再用已接入的命局資料判斷承載。";
+      return "把職位、收入、成長、退出成本放在同一張表，再做決策。";
     case "money":
-      return "先列主收入、固定支出、可承受風險和退出成本；沒有數字前不開新的高風險線。";
+      return "先列主收入、固定支出、可承受風險與退出成本，再談擴張。";
     case "health":
-      return "把最困擾你的症狀、頻率與生活節奏記錄下來；持續或加重就就醫，命盤只看節奏，不作診斷。";
+      return "把症狀頻率與作息記錄下來；持續或加重就就醫。";
     case "home":
-      return "如果問真實住宅，補平面圖、坐向、採光與周邊道路；沒有這些資料就不做風水結論。";
+      return "真實住宅要補平面圖、坐向、採光與周邊道路，不憑一句八字亂定風水。";
     case "choice":
-      return "把兩個選項的現實條件列成同一張表，再只服務被選中的一條；不能比較的資料就明確留白。";
+      return "把兩個選項的現實條件放在同一張表，只比較同一組標準。";
     case "past":
-      return "只核對已排出的四宮與你能驗證的人生經驗；不追加沒有來源的前世故事。";
-    case "timing":
-      return "先固定事件與目標時間範圍；沒有流年流月計算就不給應期。";
-    case "self":
+      return "只核對已排出的四宮，不追加沒有來源的前世故事。";
     default:
-      return "挑一個你最常重複的行為模式，用最近三次真實事件去核對；對不上就不要硬套。";
+      return "把這個結論拿最近三次真實事件核對，對不上就不要硬套。";
   }
 }
 
 export function applyAnswerContract(question: string, chart: Chart, reading: Reading): Reading {
   const req = inspectAnswerRequirements(question);
   const kind = inferQuestionKind(question, reading.kind);
-  let directAnswer = reading.directAnswer;
+  const topic = topicFor(question, kind, req);
+  let directAnswer = topicalAnswer(question, kind, reading);
 
   if (req.asksMedicalTiming) {
-    directAnswer = medicalTimingBoundary(question);
-  } else if (req.asksTravel && req.asksWhen) {
-    directAnswer = `${temporalBoundary(question, chart, req)}${req.asksWhere || req.asksCompare ? destinationBoundary(question, req) : ""}`;
-  } else if (req.asksTravel && (req.asksWhere || req.asksCompare)) {
-    directAnswer = destinationBoundary(question, req);
-  } else if (req.asksWhen) {
-    directAnswer = temporalBoundary(question, chart, req);
+    directAnswer = medicalTimingAnswer(question, reading);
   } else if (req.asksInvestmentPick) {
-    directAnswer = investmentBoundary(question);
+    directAnswer = investmentAnswer(question, reading);
+  } else if (req.asksTravel) {
+    const timing = buildTimingAnswer(chart, "travel", req.targetYears);
+    const where = req.asksWhere || req.asksCompare ? ` ${buildTravelDestinationAnswer(chart, req.targetYears)}` : "";
+    directAnswer = `你問的是「${cleanQuestion(question)}」。先直接回答：${timing}${where}`;
+  } else if (req.asksWhen) {
+    directAnswer = `你問的是「${cleanQuestion(question)}」。先直接回答時間：${buildTimingAnswer(chart, topic, req.targetYears)}`;
   } else if (kind === "home" && req.asksWhere) {
-    directAnswer = homeLocationBoundary(question, chart);
-  } else if (kind !== reading.kind) {
-    directAnswer = topicalFallback(question, kind, reading);
+    directAnswer = homeLocationAnswer(question, chart, reading);
   }
 
   return {
