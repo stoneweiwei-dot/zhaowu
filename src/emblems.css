@@ -1,0 +1,33 @@
+/* 昭梧小纹章：作为可辨识的栏目图标，不再当淡水印处理。 */
+svg[viewBox="0 0 100 100"][aria-hidden="true"] {
+  opacity: 0.78 !important;
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 250, 239, 0.9))
+    drop-shadow(0 2px 2px rgba(79, 42, 22, 0.18))
+    drop-shadow(0 5px 8px rgba(79, 42, 22, 0.08)) !important;
+}
+
+/* 顶部品牌印记和主视觉标记更清楚。 */
+header svg[viewBox="0 0 100 100"],
+.hero-brand-card svg[viewBox="0 0 100 100"] {
+  opacity: 0.9 !important;
+}
+
+/* 页面散落纹样仍保持背景层级，不能抢正文。 */
+.fixed.inset-0.z-0 svg[viewBox="0 0 100 100"] {
+  opacity: 0.055 !important;
+  filter: none !important;
+}
+
+/* 卡片右上/右下的小纹章在 iPhone 上至少保持可辨识尺寸。 */
+.seal-border > svg[viewBox="0 0 100 100"] {
+  min-width: 3.25rem;
+  min-height: 3.25rem;
+}
+
+@media (max-width: 430px) {
+  .seal-border > svg[viewBox="0 0 100 100"] {
+    min-width: 3.5rem;
+    min-height: 3.5rem;
+  }
+}
