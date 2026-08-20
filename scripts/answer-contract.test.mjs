@@ -10,7 +10,7 @@ const { buildPalm } = await import("../src/lib/palm/engine.ts");
 
 const CITY = FEATURED_CITIES[0];
 
-function input(question) {
+function input(question, over = {}) {
   return {
     question,
     year: 1988,
@@ -25,11 +25,12 @@ function input(question) {
     liveCity: null,
     ziPolicy: "midnight",
     useTrueSolar: false,
+    ...over,
   };
 }
 
-function contracted(question, relation = "unset") {
-  const raw = input(question);
+function contracted(question, relation = "unset", over = {}) {
+  const raw = input(question, over);
   const chart = buildChart(raw);
   const palm = buildPalm({
     year: raw.year,
@@ -55,7 +56,7 @@ test("target-year forecast actually computes 12 monthly periods", () => {
   assert.ok(f.months.every((m) => /^\S{2}$/.test(m.monthGanZhi)));
 });
 
-test("旅行＋2027＋去哪裡：必须直接回答年份、月份与旅行类型", () => {
+test("旅行＋2027＋去哪裡：必须直接回答年份、月份、依据与旅行类型", () => {
   const q = "我什麼時候適合去度假，去哪裡最好？2027 是不是不適合我出行？";
   const req = inspectAnswerRequirements(q);
   const { reading } = contracted(q);
@@ -66,10 +67,31 @@ test("旅行＋2027＋去哪裡：必须直接回答年份、月份与旅行类�
   assert.match(reading.directAnswer, /2027/);
   assert.match(reading.directAnswer, /較順的窗口/);
   assert.match(reading.directAnswer, /月（/);
+  assert.match(reading.directAnswer, /排序依據/);
   assert.match(reading.directAnswer, /旅行型態/);
   assert.doesNotMatch(reading.directAnswer, /目前引擎沒有目的地比較模組/);
   assert.doesNotMatch(reading.directAnswer, /窗口已經在眼前/);
   assert.doesNotMatch(reading.action, /固定同一時間睡覺/);
+});
+
+test("明年＋下半年：自动解析相对年份并只在指定月份范围排序", () => {
+  const q = "明年下半年什麼時候最適合換工作？";
+  const now = new Date().getFullYear();
+  const req = inspectAnswerRequirements(q);
+  const { reading } = contracted(q);
+  assert.deepEqual(req.targetYears, [now + 1]);
+  assert.deepEqual(req.targetMonths, [7, 8, 9, 10, 11, 12]);
+  assert.match(reading.directAnswer, new RegExp(String(now + 1)));
+  assert.match(reading.directAnswer, /你指定的月份範圍內/);
+});
+
+test("指定 9月、10月：不会拿全年其他月份当答案", () => {
+  const q = "2027 年 9月和10月哪個月財運比較好？";
+  const req = inspectAnswerRequirements(q);
+  const { reading } = contracted(q);
+  assert.deepEqual(req.targetMonths, [9, 10]);
+  assert.match(reading.directAnswer, /9月（|10月（/);
+  assert.match(reading.directAnswer, /你指定的月份範圍內/);
 });
 
 test("感情時間題：必须回答时间窗口，不回人格模板", () => {
@@ -99,6 +121,23 @@ test("財運時間題：必须给月份窗口", () => {
   assert.match(reading.directAnswer, /月（/);
 });
 
+test("多主题时间题：感情和工作必须分开排，不能只答一个", () => {
+  const q = "明年感情和工作哪一個先有明顯變化？";
+  const { reading } = contracted(q, "same");
+  assert.match(reading.directAnswer, /感情｜/);
+  assert.match(reading.directAnswer, /工作／事業｜/);
+  assert.match(reading.directAnswer, /分開排/);
+  assert.match(reading.directAnswer, /較順的窗口/);
+});
+
+test("多主题非时间题：工作和财务必须各自回答", () => {
+  const q = "我工作最大的問題和財務最大的問題分別是什麼？";
+  const { reading } = contracted(q);
+  assert.match(reading.directAnswer, /工作／事業｜/);
+  assert.match(reading.directAnswer, /財務｜/);
+  assert.match(reading.directAnswer, /分開回答/);
+});
+
 test("健康恢復時間題：不做保證日期，但回答健康本題", () => {
   const q = "我的手痛大概什麼時候會恢復？";
   const { reading } = contracted(q);
@@ -122,10 +161,11 @@ test("投資標的題：回答財務節奏但不指定股票", () => {
   assert.match(reading.directAnswer, /不把任何標的說成必賺/);
 });
 
-test("普通二選一仍保留真正選邊", () => {
+test("普通二選一：不假装已比较没有提供的两个选项条件", () => {
   const q = "我應該留在現在的工作，還是換到新公司？";
   const { reading } = contracted(q);
-  assert.match(reading.directAnswer, /選|选/);
+  assert.match(reading.directAnswer, /二選一|比較要求/);
+  assert.match(reading.directAnswer, /沒有分開提供/);
   assert.doesNotMatch(reading.directAnswer, /旅行型態/);
 });
 
@@ -133,6 +173,13 @@ test("前世題保留一掌經結果", () => {
   const q = "我前世落在哪一道？";
   const { reading } = contracted(q);
   assert.match(reading.directAnswer, /(佛道|仙道|人道|修羅道|鬼道|畜生道)/);
+});
+
+test("未知出生时间：时间窗口必须自动降级精度", () => {
+  const q = "明年什麼時候適合換工作？";
+  const { reading } = contracted(q, "unset", { timeUnknown: true, hour: 12, minute: 0 });
+  assert.match(reading.directAnswer, /出生時間未確定/);
+  assert.match(reading.directAnswer, /精度會低一級/);
 });
 
 test("一般自我題可以正常回答，行動不再一律套睡眠模板", () => {
