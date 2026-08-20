@@ -1,8 +1,14 @@
 name: netlify-production-deploy
 
+# DISABLED 2026-08-21
+# Netlify production is no longer the deployment target.
+# Official production is the existing Vercel project:
+# https://stone-zhaowu-official.vercel.app/
+# Do not re-enable this workflow without an explicit new instruction.
+
 on:
-  issue_comment:
-    types: [created]
+  workflow_dispatch:
+    # Manual only, and the job is forced to skip.
 
 permissions:
   contents: read
@@ -10,35 +16,12 @@ permissions:
 
 jobs:
   deploy:
-    if: >-
-      github.actor == 'stoneweiwei-dot' &&
-      startsWith(github.event.comment.body, 'NETLIFY_DEPLOY_PROXY=')
+    if: false
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 1
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Submit verified main to Netlify
-        env:
-          NETLIFY_TRIGGER: ${{ github.event.comment.body }}
-          GH_TOKEN: ${{ github.token }}
+      - name: Netlify production deploy disabled
         run: |
-          set +x
-          PROXY="${NETLIFY_TRIGGER#NETLIFY_DEPLOY_PROXY=}"
-          OUTPUT=""
-          STATUS=0
-          OUTPUT=$(npx -y @netlify/mcp@latest --site-id d1d08003-f225-4749-adcd-fd730b0c07a8 --proxy-path "$PROXY" --no-wait 2>&1) || STATUS=$?
-          SAFE=$(printf '%s' "$OUTPUT" \
-            | tail -n 40 \
-            | sed -E 's#https://netlify-mcp\.netlify\.app/proxy/[^[:space:]]+#<redacted-proxy>#g' \
-            | sed 's/`/'"'"'/g')
-          if [ "$STATUS" -eq 0 ]; then
-            gh issue comment 1 --body "NETLIFY_DEPLOY_RESULT=success · commit ${GITHUB_SHA}\n\n${SAFE}"
-          else
-            gh issue comment 1 --body "NETLIFY_DEPLOY_RESULT=failed · commit ${GITHUB_SHA}\n\n${SAFE}"
-            exit "$STATUS"
-          fi
+          echo "Netlify production workflow is permanently disabled."
+          echo "Use the existing Vercel project stone-zhaowu-official instead."
+          exit 1
