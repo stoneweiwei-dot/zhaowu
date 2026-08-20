@@ -1,5 +1,5 @@
 import { BRANCH_ELEMENT } from "./constants";
-import { tenGod, yearMonthPillars } from "./calendar";
+import { jieqiAround, tenGod, yearMonthPillars } from "./calendar";
 import type { Chart, QuestionKind } from "./types";
 
 export type ForecastTopic = QuestionKind | "travel";
@@ -9,6 +9,8 @@ export type ForecastPeriod = {
   month: number;
   yearGanZhi: string;
   monthGanZhi: string;
+  jieStart: string;
+  jieEnd: string;
   score: number;
   notes: string[];
 };
@@ -175,7 +177,9 @@ export function analyzeForecastYear(chart: Chart, year: number, topic: ForecastT
 
   const months: ForecastPeriod[] = [];
   for (let month = 1; month <= 12; month++) {
-    const ym = yearMonthPillars(monthDate(year, month));
+    const at = monthDate(year, month);
+    const ym = yearMonthPillars(at);
+    const jie = jieqiAround(at);
     const monthPart = scoreGanZhi(ym.month, chart, topic);
     const score = Math.round((monthPart.score * 2 + yearBase.score + dayunBase) * 10) / 10;
     months.push({
@@ -183,6 +187,8 @@ export function analyzeForecastYear(chart: Chart, year: number, topic: ForecastT
       month,
       yearGanZhi: yearGz,
       monthGanZhi: ym.month,
+      jieStart: jie.prev.name,
+      jieEnd: jie.next.name,
       score,
       notes: [...monthPart.notes, ...(dayunGz ? [`大運${dayunGz}`] : [])],
     });
@@ -206,7 +212,9 @@ export function analyzeForecastYear(chart: Chart, year: number, topic: ForecastT
 }
 
 function monthList(items: ForecastPeriod[]): string {
-  return items.map((x) => `${x.month}月（${x.monthGanZhi}）`).join("、");
+  return items
+    .map((x) => `${x.month}月（${x.monthGanZhi}；${x.jieStart}→${x.jieEnd}）`)
+    .join("、");
 }
 
 function yearVerdict(topic: ForecastTopic, f: ForecastYear): string {
@@ -240,14 +248,14 @@ function evidence(items: ForecastPeriod[]): string {
   const first = items[0];
   if (!first) return "";
   const why = first.notes.filter(Boolean).slice(0, 3).join("、");
-  return why ? `排序依據：${first.month}月主要見${why}。` : "";
+  return why ? `排序依據：${first.month}月窗口以${first.jieStart}→${first.jieEnd}為節氣邊界，主要見${why}。` : "";
 }
 
 function uncertainty(chart: Chart): string {
   if (chart.timeUnknown) {
     return "出生時間未確定，這次不使用時柱與大運做滿格推斷，月份排序只按已知盤面，精度會低一級。";
   }
-  return "月份排序是已接入的歲運關係排序，不把它包裝成必然事件或保證日期。";
+  return "月份名稱只是方便閱讀；命理月以節氣交接為邊界，不等於公曆每月 1 日到月底。月份排序是已接入的歲運關係排序，不把它包裝成必然事件或保證日期。";
 }
 
 export function buildTimingAnswer(
