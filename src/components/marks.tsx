@@ -27,16 +27,16 @@ export function Mark({ id, size = 64, eager = false, alt = "", className = "", .
 }
 export function SealScatter() {
   return (
-    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
-      <Mark id="scatter-a" className="absolute -left-20 top-[6%] h-64 w-64 -rotate-12 opacity-[0.10]" />
-      <Mark id="scatter-b" className="absolute -right-20 top-[20%] h-56 w-56 rotate-6 opacity-[0.11]" />
-      <Mark id="scatter-c" className="absolute -left-16 top-[37%] h-52 w-52 rotate-12 opacity-[0.095]" />
-      <Mark id="scatter-d" className="absolute -right-16 top-[48%] h-60 w-60 -rotate-6 opacity-[0.10]" />
-      <Mark id="scatter-e" className="absolute -left-20 top-[61%] h-56 w-56 rotate-6 opacity-[0.085]" />
-      <Mark id="scatter-f" className="absolute -right-16 top-[73%] h-64 w-64 -rotate-3 opacity-[0.09]" />
-      <Mark id="scatter-g" className="absolute -left-14 bottom-[5%] h-56 w-56 rotate-3 opacity-[0.085]" />
-      <Mark id="scatter-h" className="absolute -right-16 bottom-[-2rem] h-60 w-60 rotate-12 opacity-[0.105]" />
-      <Mark id="scatter-i" className="absolute left-[36%] top-[82%] h-44 w-44 -rotate-6 opacity-[0.06]" />
+    <div className="pointer-events-none fixed inset-0 z-[1] overflow-hidden" aria-hidden>
+      <Mark id="scatter-a" eager className="absolute left-[2%] top-[7%] h-11 w-11 -rotate-12 opacity-[0.20] sm:h-16 sm:w-16" />
+      <Mark id="scatter-b" eager className="absolute right-[2%] top-[18%] h-12 w-12 rotate-6 opacity-[0.22] sm:h-16 sm:w-16" />
+      <Mark id="scatter-c" eager className="absolute left-[4%] top-[31%] h-10 w-10 rotate-12 opacity-[0.18] sm:h-14 sm:w-14" />
+      <Mark id="scatter-d" eager className="absolute right-[3%] top-[43%] h-12 w-12 -rotate-6 opacity-[0.21] sm:h-16 sm:w-16" />
+      <Mark id="scatter-e" eager className="absolute left-[2%] top-[56%] h-11 w-11 rotate-6 opacity-[0.18] sm:h-14 sm:w-14" />
+      <Mark id="scatter-f" eager className="absolute right-[5%] top-[66%] h-12 w-12 -rotate-3 opacity-[0.20] sm:h-16 sm:w-16" />
+      <Mark id="scatter-g" eager className="absolute left-[4%] top-[76%] h-11 w-11 rotate-3 opacity-[0.18] sm:h-14 sm:w-14" />
+      <Mark id="scatter-h" eager className="absolute right-[2%] top-[85%] h-12 w-12 rotate-12 opacity-[0.21] sm:h-16 sm:w-16" />
+      <Mark id="scatter-i" eager className="absolute left-[45%] top-[92%] h-10 w-10 -rotate-6 opacity-[0.16] sm:h-14 sm:w-14" />
     </div>
   );
 }
