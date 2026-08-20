@@ -1,0 +1,64 @@
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "";
+const VISITOR_KEY = "zhaowu.visitor.v1";
+
+export type PublicSiteStats = {
+  totalVisits: number;
+  todayVisits: number;
+  version: string;
+  updateNumber: number;
+  publishedAt: string | null;
+};
+
+function publicHeaders(extra?: HeadersInit): HeadersInit {
+  return {
+    apikey: SUPABASE_KEY,
+    "Content-Type": "application/json",
+    ...extra,
+  };
+}
+
+export async function recordVisit() {
+  if (!SUPABASE_URL || !SUPABASE_KEY || typeof window === "undefined") return;
+
+  let key = "";
+  try {
+    key = localStorage.getItem(VISITOR_KEY) ?? "";
+    if (!key) {
+      key = crypto.randomUUID();
+      localStorage.setItem(VISITOR_KEY, key);
+    }
+  } catch {
+    key = crypto.randomUUID();
+  }
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/zhaowu_record_visit`, {
+    method: "POST",
+    headers: publicHeaders({ Prefer: "return=minimal" }),
+    body: JSON.stringify({ p_visitor_key: key }),
+  });
+
+  if (!res.ok) throw new Error(`Visit counter failed: HTTP ${res.status}`);
+}
+
+export async function getPublicSiteStats(): Promise<PublicSiteStats> {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    return { totalVisits: 0, todayVisits: 0, version: "—", updateNumber: 0, publishedAt: null };
+  }
+
+  const [settingsRes, releaseRes] = await Promise.all([
+    fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.visitor_count&select=value&limit=1`, { headers: publicHeaders() }),
+    fetch(`${SUPABASE_URL}/rest/v1/release_history?select=version,update_number,published_at&order=published_at.desc&limit=1`, { headers: publicHeaders() }),
+  ]);
+
+  const settings = settingsRes.ok ? await settingsRes.json() as { value?: { total?: number; today?: number } }[] : [];
+  const releases = releaseRes.ok ? await releaseRes.json() as { version?: string; update_number?: number; published_at?: string }[] : [];
+
+  return {
+    totalVisits: Number(settings[0]?.value?.total ?? 0),
+    todayVisits: Number(settings[0]?.value?.today ?? 0),
+    version: String(releases[0]?.version ?? "—"),
+    updateNumber: Number(releases[0]?.update_number ?? 0),
+    publishedAt: releases[0]?.published_at ?? null,
+  };
+}
