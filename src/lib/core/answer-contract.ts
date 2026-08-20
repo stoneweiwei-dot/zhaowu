@@ -12,10 +12,17 @@ export type AnswerRequirements = {
 
 const WHEN_RE = /(什麼時候|什么时候|何時|何时|哪年|哪一年|哪月|幾月|几月|日期|多久|幾年|几年|時機|时机|窗口|應期|应期)/;
 const WHERE_RE = /(去哪|去哪里|去哪裡|哪個城市|哪个城市|哪個國家|哪个国家|哪個地方|哪个地方|哪裡最好|哪里最好|什麼方向|什么方向|哪個方向|哪个方向|住哪|搬去哪)/;
-const COMPARE_RE = /(還是|还是|或者|二選一|二选一|哪一個|哪一个|哪個比較|哪个比较|選哪|选哪|比較好|比较好)/;
+const COMPARE_RE = /(還是|还是|或者|二選一|二选一|哪一個|哪一个|哪個比較|哪个比较|選哪|选哪|比較好|比较好|該不該|该不该|要不要)/;
 const TRAVEL_RE = /(度假|旅行|旅遊|旅游|出行|出國|出国|出境|機票|机票|行程|目的地|旅居|vacation|travel|trip)/i;
 const MEDICAL_RE = /(手術|手术|治療|治疗|停藥|停药|用藥|用药|復原|恢复|康復|康复|懷孕|怀孕|受孕|病|痛|癌|醫生|医生|醫療|医疗)/;
 const INVESTMENT_RE = /(股票|基金|ETF|加密|虛擬幣|虚拟币|比特幣|比特币|期權|期权|彩票|彩券|號碼|号码|買哪|买哪|賣哪|卖哪)/;
+
+const PAST_TOPIC_RE = /(前世|前三世|六道|輪迴|轮回|一掌經|一掌经|三世因果)/;
+const HOME_TOPIC_RE = /(家宅|搬家|房子|住宅|店面|風水|风水|買屋|买屋|買房|买房|住哪|坐向|戶型|户型)/;
+const HEALTH_TOPIC_RE = /(健康|病|痛|醫療|医疗|手術|手术|失眠|身體|身体|復原|恢复|康復|康复|睡不著|睡不着|懷孕|怀孕|受孕)/;
+const LOVE_TOPIC_RE = /(感情|戀愛|恋爱|愛情|爱情|交往|正緣|正缘|婚姻|結婚|结婚|伴侶|伴侣|桃花|復合|复合|分手|緣分|缘分|喜歡|喜欢|男友|女友|約會|约会|曖昧|暧昧|對象|对象)/;
+const CAREER_TOPIC_RE = /(工作|職業|职业|事業|事业|轉職|转职|跳槽|離職|离职|辭職|辞职|升遷|升迁|升職|升职|職場|职场|公司|職位|职位|上班|面試|面试|創業|创业|老闆|老板|offer|薪水|薪資|薪资|工資|工资)/i;
+const MONEY_TOPIC_RE = /(財運|财运|財務|财务|錢|钱|收入|投資|投资|理財|理财|債務|债务|存錢|存钱|虧|亏|賺|赚|股票|基金|ETF|加密|比特幣|比特币)/i;
 
 function cleanQuestion(question: string): string {
   const q = question.trim().replace(/\s+/g, " ");
@@ -25,6 +32,18 @@ function cleanQuestion(question: string): string {
 function targetYears(question: string): number[] {
   const hits = question.match(/(?:19|20|21)\d{2}/g) ?? [];
   return [...new Set(hits.map(Number).filter((n) => n >= 1900 && n <= 2199))];
+}
+
+export function inferQuestionKind(question: string, fallback: QuestionKind = "self"): QuestionKind {
+  if (PAST_TOPIC_RE.test(question)) return "past";
+  if (HOME_TOPIC_RE.test(question)) return "home";
+  if (COMPARE_RE.test(question)) return "choice";
+  if (HEALTH_TOPIC_RE.test(question)) return "health";
+  if (LOVE_TOPIC_RE.test(question)) return "love";
+  if (CAREER_TOPIC_RE.test(question)) return "career";
+  if (MONEY_TOPIC_RE.test(question)) return "money";
+  if (WHEN_RE.test(question) || targetYears(question).length > 0) return "timing";
+  return fallback;
 }
 
 export function inspectAnswerRequirements(question: string): AnswerRequirements {
@@ -79,6 +98,24 @@ function homeLocationBoundary(question: string, chart: Chart): string {
   return `你問的是「${q}」。出生盤不能單獨回答哪一間房、哪個城市或哪個方位最好。${useful}`;
 }
 
+function topicalFallback(question: string, kind: QuestionKind, reading: Reading): string {
+  const q = cleanQuestion(question);
+  switch (kind) {
+    case "love":
+      return `你問的是「${q}」。${reading.love}`;
+    case "career":
+      return `你問的是「${q}」。${reading.work}`;
+    case "money":
+      return `你問的是「${q}」。${reading.money}`;
+    case "health":
+      return `你問的是「${q}」。${reading.body}`;
+    case "home":
+      return `你問的是「${q}」。${reading.home}`;
+    default:
+      return reading.directAnswer;
+  }
+}
+
 function actionFor(kind: QuestionKind, req: AnswerRequirements): string {
   if (req.asksMedicalTiming) {
     return "先把症狀、持續時間、已做檢查與醫生建議列清楚；醫療時間由醫療資料決定，不用命盤替代。";
@@ -117,6 +154,7 @@ function actionFor(kind: QuestionKind, req: AnswerRequirements): string {
 
 export function applyAnswerContract(question: string, chart: Chart, reading: Reading): Reading {
   const req = inspectAnswerRequirements(question);
+  const kind = inferQuestionKind(question, reading.kind);
   let directAnswer = reading.directAnswer;
 
   if (req.asksMedicalTiming) {
@@ -129,13 +167,16 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
     directAnswer = temporalBoundary(question, chart, req);
   } else if (req.asksInvestmentPick) {
     directAnswer = investmentBoundary(question);
-  } else if (reading.kind === "home" && req.asksWhere) {
+  } else if (kind === "home" && req.asksWhere) {
     directAnswer = homeLocationBoundary(question, chart);
+  } else if (kind !== reading.kind) {
+    directAnswer = topicalFallback(question, kind, reading);
   }
 
   return {
     ...reading,
+    kind,
     directAnswer,
-    action: actionFor(reading.kind, req),
+    action: actionFor(kind, req),
   };
 }
