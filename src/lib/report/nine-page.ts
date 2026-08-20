@@ -1,5 +1,5 @@
 import type { AnalysisResult, Chart, QuestionKind, Reading } from "@/lib/bazi/types";
-import type { MethodProtocol, PalmReading } from "@/lib/core/types";
+import type { MethodProtocol } from "@/lib/core/types";
 
 export type NinePageEvidence = {
   facts: string[];
@@ -20,39 +20,138 @@ function isReadyPillar(col: Chart["pillars"][number]): boolean {
   return col.ready !== false && col.ganZhi !== "未定" && Boolean(col.gan);
 }
 
+function hasMultiTopicAnswer(reading: Reading): boolean {
+  return /分開回答|分开回答|分開排|分开排/.test(reading.directAnswer);
+}
+
 function primaryTopic(kind: QuestionKind, reading: Reading): string {
   switch (kind) {
-    case "career":
-      return reading.work;
-    case "love":
-      return reading.love;
-    case "money":
-      return reading.money;
-    case "health":
-      return reading.body;
-    case "home":
-      return reading.home;
+    case "career": return reading.work;
+    case "love": return reading.love;
+    case "money": return reading.money;
+    case "health": return reading.body;
+    case "home": return reading.home;
     case "choice":
     case "timing":
+    case "past": return reading.directAnswer;
     case "self":
-    case "past":
-    default:
-      return `${reading.directAnswer}\n\n${reading.rhythm}`;
+    default: return reading.rhythm;
   }
 }
 
-function secondaryTopics(kind: QuestionKind, reading: Reading): string[] {
-  const bag: { key: QuestionKind | "work" | "love" | "money" | "body" | "home"; text: string }[] = [
-    { key: "career", text: reading.work },
-    { key: "love", text: reading.love },
-    { key: "money", text: reading.money },
-    { key: "health", text: reading.body },
-    { key: "home", text: reading.home },
-  ];
-  return bag
-    .filter((x) => x.key !== kind && x.text.trim())
-    .slice(0, 2)
-    .map((x) => x.text);
+function page4Body(question: string, reading: Reading): string[] {
+  if (hasMultiTopicAnswer(reading)) {
+    return [
+      reading.directAnswer,
+      "这题包含多个领域，报告继续分开写；不拿一个领域的月份、性格或结论去代替另一个领域。",
+      "核对标准：每个领域都必须能回到原问题中的对应部分。",
+    ];
+  }
+
+  switch (reading.kind) {
+    case "career":
+      return [
+        `主课题｜${reading.work}`,
+        `底层节奏｜${reading.rhythm}`,
+        "核对点：职位、责任、输出方式、收入与退出成本是否真的符合这条判断。",
+      ];
+    case "love":
+      return [
+        `主课题｜${reading.love}`,
+        `底层节奏｜${reading.rhythm}`,
+        "核对点：对方是否主动、是否安排下一次见面、关系是否被说清楚；不靠猜心补剧情。",
+      ];
+    case "money":
+      return [
+        `主课题｜${reading.money}`,
+        `底层节奏｜${reading.rhythm}`,
+        "核对点：收入结构、固定支出、风险承载、退出条件；不把财运等同于某个标的一定上涨。",
+      ];
+    case "health":
+      return [
+        `主课题｜${reading.body}`,
+        `底层节奏｜${reading.rhythm}`,
+        "核对点：症状、频率、睡眠、检查与医生意见；命理只看生活压力与节奏，不作诊断。",
+      ];
+    case "home":
+      return [
+        `主课题｜${reading.home}`,
+        `底层节奏｜${reading.rhythm}`,
+        "核对点：真实住宅还要看平面图、坐向、采光与道路；出生盘不单独替现实房屋下风水结论。",
+      ];
+    case "timing":
+      return [
+        reading.directAnswer,
+        "时间题只认已经计算出来的目标年／月份排序；不再拿“现在就是窗口”之类通用句替代应期。",
+        "排序是窗口比较，不是保证某件事一定在某月发生。",
+      ];
+    case "choice":
+      return [
+        reading.directAnswer,
+        "选择题必须把两个选项放在同一组现实标准下比较；没有分别提供的条件，就不假装已经替两边算完。",
+      ];
+    case "past":
+      return [
+        reading.directAnswer,
+        "前世题只保留已排出的一掌经宫位与六道结果，不追加没有来源的故事。",
+      ];
+    case "self":
+    default:
+      return [
+        `主课题｜${primaryTopic(reading.kind, reading)}`,
+        "核对点：拿最近三次真实事件验证；对不上就删，不为了凑版面硬解释。",
+      ];
+  }
+}
+
+function page6Body(reading: Reading): string[] {
+  switch (reading.kind) {
+    case "career":
+      return [
+        `现实落点｜${reading.work}`,
+        "把职位、收入、成长空间、责任与退出成本放在同一张表；命盘只负责补充承载与节奏。",
+      ];
+    case "love":
+      return [
+        `现实落点｜${reading.love}`,
+        "关系判断只认可验证行为：联系、见面、承诺、边界与是否持续投入。",
+      ];
+    case "money":
+      return [
+        `现实落点｜${reading.money}`,
+        "先看现金流、风险上限与退出条件；命盘不替代财务或投资分析。",
+      ];
+    case "health":
+      return [
+        `现实落点｜${reading.body}`,
+        "已有痛、失眠、掉力或持续症状就看医生；报告不提供医疗诊断和保证日期。",
+      ];
+    case "home":
+      return [
+        `现实落点｜${reading.home}`,
+        "真要落到房屋与空间，再补平面图、坐向、采光、道路与真实居住条件。",
+      ];
+    case "timing":
+      return [
+        "现实落点｜先把报告给出的较顺月份与现实条件叠加：假期、预算、工作、机票、对方时间或具体事件条件。",
+        "月份排序只用于缩小窗口，不把整年切成绝对好坏。",
+      ];
+    case "choice":
+      return [
+        "现实落点｜两个选项统一用同一套标准比较：收益、成本、责任、距离、风险与退出条件。",
+        "无法量化或没有资料的部分明确留白，不用命盘替事实补空。",
+      ];
+    case "past":
+      return [
+        "现实落点｜只把已排出的宫位当作自我观察线索，不用它给现实关系或重大决定背书。",
+      ];
+    case "self":
+    default:
+      return [
+        `现实落点｜${reading.rhythm}`,
+        "用最近三次真实事件核对这条模式，再决定要不要保留。",
+      ];
+  }
 }
 
 function page7Guide(chart: Chart, reading: Reading): string[] {
@@ -82,68 +181,12 @@ function methodLines(protocol?: MethodProtocol): string[] {
   ];
 }
 
-function isTravelTimingQuestion(question: string): boolean {
-  return /度假|旅行|旅遊|旅游|出行|出國|出国|去哪|去哪里|去哪裡|目的地/.test(question);
-}
-
-function targetYears(question: string): number[] {
-  const matches = question.match(/20\d{2}/g) ?? [];
-  return [...new Set(matches.map(Number).filter((year) => year >= 2000 && year <= 2099))];
-}
-
-function travelTimingPage1(question: string, chart: Chart): string[] {
-  const years = targetYears(question);
-  const askedYear = years[0];
-  const currentYear = Number(String(chart.currentYear).match(/20\d{2}/)?.[0] ?? new Date().getFullYear());
-  const yearLabel = askedYear ? String(askedYear) : "你问的目标年份";
-  const yearMismatch = askedYear ? askedYear !== currentYear : false;
-
-  return [
-    `这题其实有三个问题：什么时候适合出行、去哪里更合适、${askedYear ? `${askedYear} 年` : "目标年份"}是不是不适合出行。`,
-    yearMismatch
-      ? `先把最重要的一点说清楚：当前这份结果只带有 ${currentYear} 年的流年背景，并没有完成 ${yearLabel} 的流年 + 流月作用链，所以现在不能负责任地判断「${yearLabel} 全年适不适合出行」，更不能拿 ${currentYear} 的“当前窗口”冒充 ${yearLabel} 的答案。`
-      : "先把最重要的一点说清楚：出行题必须看目标年份与月份，不能只凭一句“现在是窗口”下结论。",
-    askedYear === 2027
-      ? "2027 是丁未年，但只知道“丁未”这两个字，仍不足以断定你全年不宜旅行；必须把丁未流年挂回原局、当前大运，再逐月看冲合刑害与承载，才能回答哪几个月适合、哪几个月应避开。"
-      : "不能因为某个流年干支，就直接把整年判成“适合”或“不适合出行”。",
-    chart.usefulProvisional
-      ? "至于“去哪里最好”：当前正式取用尚未完成，所以不能用未定的喜用神硬推东南西北、颜色或目的地。地点必须等取用与目标年份计算完成后再给。"
-      : "至于“去哪里最好”：应在目标年份计算完成后，再把目的地方位、气候与旅行强度挂回你的正式取用，不应先凭印象猜国家。",
-  ];
-}
-
-function travelTimingPage4(question: string, chart: Chart): string[] {
-  const years = targetYears(question);
-  const askedYear = years[0];
-  return [
-    `已知：原局、当前大运状态、当前流年背景。`,
-    askedYear ? `还必须补算：${askedYear} 流年与 12 个流月逐月作用。` : "还必须补算：目标年份与 12 个流月逐月作用。",
-    "判断顺序应是：先判整年是否适合远行，再排月份；月份出来后，再谈长途 / 短途、海岛 / 城市、寒冷 / 炎热与方向。",
-    chart.usefulProvisional
-      ? "正式取用未完成前，不生成“最佳方位 / 最佳国家”这类看似精确、其实没有证据的答案。"
-      : "目的地建议必须能回溯到正式取用与目标月份，不靠泛泛的五行联想。",
-  ];
-}
-
-function travelTimingPage8(question: string): string[] {
-  const years = targetYears(question);
-  const askedYear = years[0];
-  return [
-    "最高优先行动",
-    askedYear
-      ? `先完成 ${askedYear} 年流年 + 12 流月计算，再回答“哪几个月去、哪里更适合、哪些月份不建议远行”。`
-      : "先确定目标年份，再完成该年流年 + 12 流月计算。",
-    "在这一步完成前，不再输出“现在就是窗口”“再等会耗掉热度”这种与原问题无关的通用句。",
-  ];
-}
-
 /**
- * GPT Issue #4 九页母稿 → 结构化页。
- * 前世题仍应优先走 composePalmReport；本函数给非前世付费长文。
+ * 付费九页结构化报告。
+ * 关键规则：只消费已经由 answer-contract 校验后的 reading；报告层不得再另写一套旧判断。
  */
 export function composeNinePages(result: AnalysisResult): NinePage[] {
   const { question, chart, reading, methodProtocol, palm, id, createdAt } = result;
-  const travelTiming = reading.kind === "timing" && isTravelTimingQuestion(question);
   const pillars = chart.pillars
     .map((col) =>
       isReadyPillar(col)
@@ -156,26 +199,16 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
     pageNo: 1,
     key: "question",
     title: `你真正问的是：${question}`,
-    body: travelTiming
-      ? travelTimingPage1(question, chart)
-      : [
-          reading.directAnswer,
-          "本页依据已排出的子平原局、当前可用岁运信息与本题分类；不是用五行百分比下判。",
-          "先给结论，再看为什么。",
-        ],
+    body: [
+      reading.directAnswer,
+      "本页只使用已经通过全站回答契约的结论；时间、地点、比较、医疗、投资等问题都必须先覆盖原问题本身。",
+      "先给结论，再看为什么。",
+    ],
     evidence: {
-      facts: travelTiming
-        ? ["question", "targetYear", "chart.currentYear", "currentDayun", "usefulProvisional"]
-        : ["question", "reading.kind", "reading.directAnswer"],
-      conditions: travelTiming
-        ? ["提到未来年份时，必须先有该年流年 + 流月作用链", "地点建议必须晚于正式取用"]
-        : ["选择题必须选边", "前世题第一句必须先给六道 + 主星"],
-      limits: travelTiming
-        ? ["禁止用当前年份模板冒充目标年份答案", "禁止未算流月就给最佳月份", "禁止未定取用就给最佳国家或方位"]
-        : ["不调用未接入流派补强结论"],
-      checks: travelTiming
-        ? ["第一屏必须逐项回应：时间 / 地点 / 目标年份", "不得出现与问题无关的七天习惯模板"]
-        : ["首屏直接回答原问题", "不得以资料不足／仅供参考开场"],
+      facts: ["question", "reading.kind", "reading.directAnswer"],
+      conditions: ["首屏必须覆盖用户真正问到的维度", "复合问题必须逐项回答"],
+      limits: ["不得用通用人格句填补未计算能力", "不得调用未接入流派补强结论"],
+      checks: ["首屏直接回答原问题", "不得以资料不足／仅供参考开场", "不得复制过期专用模板覆盖最新引擎结果"],
     },
   };
 
@@ -235,19 +268,13 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
   const page4: NinePage = {
     pageNo: 4,
     key: "themes",
-    title: travelTiming ? "这题真正还缺哪一层计算" : "反复出现的课题",
-    body: travelTiming
-      ? travelTimingPage4(question, chart)
-      : [
-          `主课题：${primaryTopic(reading.kind, reading)}`,
-          ...secondaryTopics(reading.kind, reading).map((t, i) => `次课题 ${i + 1}：${t}`),
-          "重点不是面面俱到，而是哪种模式最容易重复。",
-        ],
+    title: reading.kind === "timing" ? "时间窗口为什么这样排" : "这题真正反复出现的课题",
+    body: page4Body(question, reading),
     evidence: {
-      facts: travelTiming ? ["question", "targetYear", "currentYear", "usefulProvisional"] : ["reading.work/love/money/body/home"],
-      conditions: travelTiming ? ["出行题先算年份，再算月份，再给地点"] : ["只展示与问题高度相关内容"],
-      limits: travelTiming ? ["不得用人格段落填充缺失的岁运计算"] : ["健康不做医疗诊断", "投资不做收益保证"],
-      checks: travelTiming ? ["必须清楚写出还缺的计算层"] : ["不得为了凑版面生成未有证据的新事件"],
+      facts: ["reading.kind", "reading.directAnswer", "reading.rhythm", "对应主题字段"],
+      conditions: ["只展示与问题高度相关内容", "多主题问题必须分开"],
+      limits: ["不得为了凑版面塞两个无关次课题", "健康不做医疗诊断", "投资不做收益保证"],
+      checks: ["职业题不自动塞感情段", "感情题不自动塞财务段", "时间题不得再显示旧的‘尚未补算’模板"],
     },
   };
 
@@ -273,16 +300,12 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
     pageNo: 6,
     key: "practice",
     title: "怎么把这张盘用到现实里",
-    body: [
-      reading.action,
-      reading.kind === "health" ? "已有痛、失眠、掉力就去看医生。" : "",
-      "能验证的行动，比堆更多术语有用。",
-    ].filter(Boolean),
+    body: page6Body(reading),
     evidence: {
-      facts: ["reading.action", "reading.kind"],
-      conditions: ["建议必须能在现实执行"],
-      limits: ["不得从未定喜用派生职业吉凶、宠物、摆设"],
-      checks: ["本页至少出现一个具体动作"],
+      facts: ["reading.kind", "对应主题字段", "reading.rhythm"],
+      conditions: ["建议必须对应本题并能在现实验证"],
+      limits: ["不得从未定喜用派生职业吉凶、宠物、摆设", "不得复制第 8 页的同一句行动来凑页数"],
+      checks: ["本页解释现实使用方式；第 8 页才给唯一最高优先行动"],
     },
   };
 
@@ -302,23 +325,21 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
   const page8: NinePage = {
     pageNo: 8,
     key: "priority",
-    title: travelTiming ? "下一步只做一件事" : "现在最该做的一件事",
-    body: travelTiming
-      ? travelTimingPage8(question)
-      : [
-          "最高优先行动",
-          reading.action,
-          chart.currentDayun
-            ? `你目前处于 ${chart.currentDayun.ganZhi} 大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）`
-            : "",
-          `流年背景：${chart.currentYear}`,
-          "先做这一件，其他建议才有意义。",
-        ].filter(Boolean),
+    title: "现在最该做的一件事",
+    body: [
+      "最高优先行动",
+      reading.action,
+      chart.currentDayun
+        ? `你目前处于 ${chart.currentDayun.ganZhi} 大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）`
+        : "",
+      `流年背景：${chart.currentYear}`,
+      "先做这一件，其他建议才有意义。",
+    ].filter(Boolean),
     evidence: {
-      facts: travelTiming ? ["question", "targetYear"] : ["reading.action", "currentDayun", "currentYear"],
-      conditions: travelTiming ? ["先补目标年份与流月计算"] : ["有可靠大运才显示大运句"],
-      limits: travelTiming ? ["禁止用七天习惯模板替代出行判断"] : ["不得声称已经完成完整岁运作用链"],
-      checks: travelTiming ? ["只保留一个明确下一步：补算目标年份"] : ["只有一个最高优先行动"],
+      facts: ["reading.action", "currentDayun", "currentYear"],
+      conditions: ["有可靠大运才显示大运句"],
+      limits: ["不得声称已经完成完整岁运作用链", "不得用固定七天睡眠模板覆盖不同题目"],
+      checks: ["只有一个最高优先行动", "行动必须与第 1 页问题一致"],
     },
   };
 
