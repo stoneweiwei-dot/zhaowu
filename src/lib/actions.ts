@@ -184,11 +184,26 @@ export async function writeFullReport({
     palm?: AnalysisResult["palm"];
   };
 }) {
-  const [{ composeFullReport }, { applyAnswerContract }] = await Promise.all([
-    import("@/lib/bazi/interpret"),
+  const [{ applyAnswerContract }, { routeMethods }, { composeNinePageReport }] = await Promise.all([
     import("@/lib/core/answer-contract"),
+    import("@/lib/core/method"),
+    import("@/lib/report/nine-page"),
   ]);
   const reading = applyAnswerContract(data.question, data.chart, data.reading);
-  const text = composeFullReport(data.question, data.chart, reading, data.palm ?? null);
+  const palm = data.palm ?? null;
+  const methodProtocol = routeMethods(reading.kind, {
+    palmReady: Boolean(palm?.ready),
+    palmMissing: palm?.missing ?? [],
+  });
+  const result: AnalysisResult = {
+    id: newId(),
+    question: data.question,
+    chart: data.chart,
+    reading,
+    createdAt: new Date().toISOString(),
+    methodProtocol,
+    palm,
+  };
+  const text = composeNinePageReport(result);
   return { text, source: "rule" as const };
 }
