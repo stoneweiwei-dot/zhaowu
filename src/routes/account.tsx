@@ -10,6 +10,8 @@ import {
   uploadBackground,
   type BackgroundAsset,
 } from "@/lib/background-assets";
+import { applyAnswerContract } from "@/lib/core/answer-contract";
+import { composeNinePages } from "@/lib/report/nine-page";
 import { Mark } from "@/components/marks";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
@@ -27,7 +29,7 @@ function fullText(row: ReportRecord): string | null {
   return typeof text === "string" ? text : null;
 }
 
-function ninePages(row: ReportRecord): { pageNo?: number; title?: string; body?: string[] }[] {
+function storedNinePages(row: ReportRecord): { pageNo?: number; title?: string; body?: string[] }[] {
   const sources = [row.paid_report, row.mother_draft];
   for (const source of sources) {
     if (!source || typeof source !== "object") continue;
@@ -35,6 +37,30 @@ function ninePages(row: ReportRecord): { pageNo?: number; title?: string; body?:
     if (Array.isArray(pages)) return pages as { pageNo?: number; title?: string; body?: string[] }[];
   }
   return [];
+}
+
+function rebuildLatest(row: ReportRecord) {
+  const snapshot = row.engine_snapshot;
+  if (!snapshot?.chart || !snapshot?.reading) return null;
+  try {
+    const question = String(row.context?.question ?? snapshot.question ?? "").trim() || snapshot.question;
+    const chart = {
+      ...snapshot.chart,
+      // Old snapshots that pre-date this flag must default to the safe/provisional side.
+      usefulProvisional: snapshot.chart.usefulProvisional !== false,
+    };
+    const reading = applyAnswerContract(question, chart, snapshot.reading);
+    return {
+      ...snapshot,
+      question,
+      chart,
+      reading,
+    };
+  } catch {
+    // Archive data can pre-date current runtime fields. If it cannot be rebuilt safely,
+    // keep the stored paid report rather than fabricating missing fields.
+    return null;
+  }
 }
 
 function AccountPage() {
@@ -227,9 +253,12 @@ function AccountPage() {
         <div className="mt-5 space-y-3">
           {filtered.map((row) => {
             const open = openId === row.id;
-            const snapshot = row.engine_snapshot;
-            const text = fullText(row);
-            const pages = ninePages(row);
+            const canUseLatest = Boolean(row.engine_snapshot) && (user.isOwner || Boolean(row.paid_report || row.mother_draft));
+            const latest = canUseLatest ? rebuildLatest(row) : null;
+            const snapshot = latest ?? row.engine_snapshot;
+            const pages = latest ? composeNinePages(latest) : storedNinePages(row);
+            const text = latest ? null : fullText(row);
+            const latestLabel = user.isOwner && latest ? "最高版 · 即時重建" : reportLevel(row);
             return (
               <article key={row.id} className="rounded-lg border border-line bg-paper/35 p-4">
                 <div className="flex items-start justify-center gap-2 text-center">
@@ -237,7 +266,8 @@ function AccountPage() {
                   <div className="min-w-0">
                     <h3 className="truncate font-display text-lg font-semibold">{row.alias || String(row.context?.question ?? "昭梧報告")}</h3>
                     {user.isOwner ? <p className="truncate text-xs text-cinnabar">{row.user_email || "未綁 Email"}</p> : null}
-                    <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString()} · {reportLevel(row)}</p>
+                    <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString()} · {latestLabel}</p>
+                    {latest ? <p className="mt-1 text-[11px] text-cinnabar/80">依目前主幹規則重建；原保存稿仍保留於資料庫</p> : null}
                   </div>
                 </div>
                 <div className="mt-3 text-center">
