@@ -4,7 +4,10 @@ import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vite";
 
+const isGitHubPages = process.env.GITHUB_PAGES === "true";
+
 export default defineConfig({
+  base: isGitHubPages ? "/zhaowu/" : "/",
   plugins: [
     tailwindcss(),
     tanstackRouter({ target: "react", autoCodeSplitting: false }),
