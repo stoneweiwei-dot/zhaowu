@@ -3,7 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
-import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/supabase-rest";
+import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/site-stats";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 
 const EMPTY_STATS: PublicSiteStats = {
