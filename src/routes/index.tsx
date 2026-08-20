@@ -13,7 +13,6 @@ export const Route = createFileRoute("/")({ component: Home });
 type Almanac = Awaited<ReturnType<typeof getAlmanac>>;
 
 const STEP_MARKS = ["06", "16", "17"] as const;
-const ORNAMENT_MARKS = ["brand", "02", "04", "01", "16", "07", "09", "06", "03"] as const;
 
 function Home() {
   const { t } = useI18n();
@@ -21,17 +20,15 @@ function Home() {
   const [almanac, setAlmanac] = useState<Almanac | null>(null);
 
   useEffect(() => {
-    void getAlmanac()
-      .then(setAlmanac)
-      .catch(() => setAlmanac(null));
+    void getAlmanac().then(setAlmanac).catch(() => setAlmanac(null));
   }, []);
 
   return (
     <main className="space-y-10">
       <section className="grid items-end gap-8 md:grid-cols-[1.2fr_0.8fr]">
         <div className="hero-brand-card seal-border relative overflow-hidden rounded-xl bg-cream/92 p-5 sm:p-7">
-          <Mark id="brand" size={132} eager className="absolute right-2 top-2" />
-          <div className="relative z-10 pr-20 sm:pr-28">
+          <Mark id="brand" size={190} eager className="zhaowu-hero-emblem absolute" />
+          <div className="relative z-10 pr-20 sm:pr-32">
             <p className="hero-kicker">ZHAOWU · {t("heroKicker")}</p>
             <div className="mt-5 sm:mt-6">
               <h1 className="brand-wordmark" aria-label={t("brand")}><span>昭</span><span>梧</span></h1>
@@ -47,8 +44,8 @@ function Home() {
         </div>
 
         <aside className="seal-border relative overflow-hidden rounded-xl bg-cream/90 p-5">
-          <Mark id="02" size={96} className="absolute right-2 top-2" />
-          <div className="pr-24">
+          <Mark id="02" size={150} className="zhaowu-almanac-emblem absolute" />
+          <div className="relative z-10 pr-24">
             <p className="text-xs tracking-[0.28em] text-cinnabar">{t("today")}</p>
             {almanac ? (
               <div className="mt-3 space-y-2">
@@ -64,20 +61,12 @@ function Home() {
         </aside>
       </section>
 
-      <section className="zhaowu-emblem-field" aria-label="昭梧东方纹章">
-        <div className="zhaowu-emblem-orbit" aria-hidden>
-          {ORNAMENT_MARKS.map((id) => (
-            <Mark key={id} id={id} size={112} className="zhaowu-field-mark" />
-          ))}
-        </div>
-      </section>
-
       <section className="grid gap-3 sm:grid-cols-3">
         {[t("s1"), t("s2"), t("s3")].map((item, i) => (
-          <div key={item} className="relative min-h-32 overflow-hidden rounded-lg border border-line bg-cream/80 px-4 py-4">
-            <Mark id={STEP_MARKS[i]} size={88} className="zhaowu-step-mark absolute right-2 top-2" />
-            <p className="text-xs tracking-[0.2em] text-cinnabar">0{i + 1}</p>
-            <p className="mt-2 pr-24 text-sm leading-6">{item}</p>
+          <div key={item} className="zhaowu-step-card relative min-h-32 overflow-hidden rounded-lg border border-line bg-cream/80 px-4 py-4">
+            <Mark id={STEP_MARKS[i]} size={108} className="zhaowu-step-mark absolute" />
+            <p className="relative z-10 text-xs tracking-[0.2em] text-cinnabar">0{i + 1}</p>
+            <p className="relative z-10 mt-2 pr-24 text-sm leading-6">{item}</p>
           </div>
         ))}
       </section>
@@ -86,15 +75,9 @@ function Home() {
       {current ? <ResultView result={current} /> : null}
       {current ? <FollowUpBox result={current} /> : null}
 
-      <div className="flex items-center justify-center gap-5 py-2" aria-hidden>
-        <Mark id="04" size={84} className="h-20 w-20" />
-        <Mark id="13" size={96} className="h-24 w-24" />
-        <Mark id="07" size={84} className="h-20 w-20" />
-      </div>
-
       <section className="seal-border relative overflow-hidden rounded-xl bg-cream/90 p-5 sm:p-7">
-        <Mark id="09" size={108} className="absolute bottom-1 right-1" />
-        <div className="pr-24 sm:pr-28">
+        <Mark id="09" size={180} className="zhaowu-faq-emblem absolute" />
+        <div className="relative z-10 pr-20 sm:pr-32">
           <p className="text-xs tracking-[0.28em] text-cinnabar">{t("faq")}</p>
           <dl className="mt-4 space-y-4 text-sm leading-7">
             <div><dt className="font-medium">{t("faq1q")}</dt><dd className="text-ink-soft">{t("faq1a")}</dd></div>
