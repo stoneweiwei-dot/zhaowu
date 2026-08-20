@@ -4,7 +4,7 @@ import type { AnalyzeInput, CityHit } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { updateBirthData } from "@/lib/supabase-rest";
+import { createEngineReportRecord, updateBirthData } from "@/lib/supabase-rest";
 
 type PickerProps = {
   label: string;
@@ -94,8 +94,9 @@ function asCity(value: unknown): CityHit | null {
 
 export function AnalysisForm() {
   const { t } = useI18n();
-  const { user, session } = useCurrentUserState();
+  const { user, profile, session } = useCurrentUserState();
   const setCurrent = useAppStore((s) => s.setCurrent);
+  const setSavedId = useAppStore((s) => s.setSavedId);
   const reset = useAppStore((s) => s.reset);
   const [question, setQuestion] = useState("");
   const [year, setYear] = useState("");
@@ -173,10 +174,15 @@ export function AnalysisForm() {
       const result = await analyzeLife({ data: payload });
       setCurrent(result);
       if (session) {
+        setSavedId(result.id);
         const { question: _question, ...birthData } = payload;
-        await updateBirthData(session, birthData as unknown as Record<string, unknown>).catch(() => undefined);
-        window.dispatchEvent(new Event("zhaowu-auth-change"));
-        setRemembered(true);
+        void Promise.allSettled([
+          createEngineReportRecord({ session, profile, result }),
+          updateBirthData(session, birthData as unknown as Record<string, unknown>),
+        ]).then(() => {
+          window.dispatchEvent(new Event("zhaowu-auth-change"));
+          setRemembered(true);
+        });
       }
       window.setTimeout(() => document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
     } catch (err) {
