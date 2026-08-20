@@ -85,6 +85,17 @@ test("明年＋下半年：自动解析相对年份并只在指定月份范围�
   assert.match(reading.directAnswer, /你指定的月份範圍內/);
 });
 
+test("大后年不能同时误识别成后年", () => {
+  const now = new Date().getFullYear();
+  const req = inspectAnswerRequirements("大后年哪幾個月適合換工作？");
+  assert.deepEqual(req.targetYears, [now + 3]);
+});
+
+test("中文十一月、十二月不能误撞成一月、二月", () => {
+  assert.deepEqual(inspectAnswerRequirements("十一月財運如何？").targetMonths, [11]);
+  assert.deepEqual(inspectAnswerRequirements("十二月工作如何？").targetMonths, [12]);
+});
+
 test("指定 9月、10月：不会拿全年其他月份当答案", () => {
   const q = "2027 年 9月和10月哪個月財運比較好？";
   const req = inspectAnswerRequirements(q);
@@ -113,6 +124,14 @@ test("工作時間題：必须给月份窗口", () => {
   assert.doesNotMatch(reading.directAnswer, /三十天內只交一件/);
 });
 
+test("学业考试题进入事业学业主题，不掉回 self", () => {
+  const q = "明年考試和升學哪幾個月比較順？";
+  assert.equal(inferQuestionKind(q, classifyQuestion(q)), "career");
+  const { reading } = contracted(q);
+  assert.match(reading.directAnswer, /較順的窗口/);
+  assert.doesNotMatch(reading.directAnswer, /性格盲點/);
+});
+
 test("財運時間題：必须给月份窗口", () => {
   const q = "2027 哪幾個月財運比較好？";
   const { reading } = contracted(q);
@@ -125,7 +144,7 @@ test("多主题时间题：感情和工作必须分开排，不能只答一个",
   const q = "明年感情和工作哪一個先有明顯變化？";
   const { reading } = contracted(q, "same");
   assert.match(reading.directAnswer, /感情｜/);
-  assert.match(reading.directAnswer, /工作／事業｜/);
+  assert.match(reading.directAnswer, /工作／事業／學業｜/);
   assert.match(reading.directAnswer, /分開排/);
   assert.match(reading.directAnswer, /較順的窗口/);
 });
@@ -133,9 +152,38 @@ test("多主题时间题：感情和工作必须分开排，不能只答一个",
 test("多主题非时间题：工作和财务必须各自回答", () => {
   const q = "我工作最大的問題和財務最大的問題分別是什麼？";
   const { reading } = contracted(q);
-  assert.match(reading.directAnswer, /工作／事業｜/);
+  assert.match(reading.directAnswer, /工作／事業／學業｜/);
   assert.match(reading.directAnswer, /財務｜/);
   assert.match(reading.directAnswer, /分開回答/);
+});
+
+test("父母朋友同事类关系题不套正缘桃花模板", () => {
+  const q = "我和父母最近關係為什麼這麼緊張？";
+  const { reading } = contracted(q);
+  assert.match(reading.directAnswer, /非戀愛關係題/);
+  assert.match(reading.directAnswer, /不套正緣或桃花模板/);
+});
+
+test("法律官司题不预测胜败", () => {
+  const q = "這個官司我會不會贏？";
+  const { reading } = contracted(q);
+  assert.match(reading.directAnswer, /不能保證勝敗/);
+  assert.match(reading.directAnswer, /律師|法律意見/);
+});
+
+test("宠物题在正式取用未完成时不硬推颜色和品种", () => {
+  const q = "我適合養什麼寵物和什麼顏色？";
+  const { chart, reading } = contracted(q);
+  assert.equal(chart.usefulProvisional, true);
+  assert.match(reading.directAnswer, /正式取用尚未完成/);
+  assert.doesNotMatch(reading.directAnswer, /最適合.*銀灰|最適合.*紅棕/);
+});
+
+test("备孕生育题不作保证", () => {
+  const q = "我適不適合現在備孕要孩子？";
+  const { reading } = contracted(q);
+  assert.match(reading.directAnswer, /不能替代生殖健康評估/);
+  assert.match(reading.directAnswer, /醫療檢查/);
 });
 
 test("健康恢復時間題：不做保證日期，但回答健康本題", () => {
