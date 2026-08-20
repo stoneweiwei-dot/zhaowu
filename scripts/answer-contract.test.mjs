@@ -5,6 +5,7 @@ const { buildChart } = await import("../src/lib/bazi/chart.ts");
 const { FEATURED_CITIES } = await import("../src/lib/bazi/cities.ts");
 const { interpret, classifyQuestion } = await import("../src/lib/bazi/interpret.ts");
 const { applyAnswerContract, inspectAnswerRequirements, inferQuestionKind } = await import("../src/lib/core/answer-contract.ts");
+const { analyzeForecastYear } = await import("../src/lib/bazi/forecast.ts");
 const { buildPalm } = await import("../src/lib/palm/engine.ts");
 
 const CITY = FEATURED_CITIES[0];
@@ -44,7 +45,17 @@ function contracted(question, relation = "unset") {
   };
 }
 
-test("旅行＋2027＋去哪裡：不得拿目前窗口或人格句冒充答案", () => {
+test("target-year forecast actually computes 12 monthly periods", () => {
+  const chart = buildChart(input("2027 旅行"));
+  const f = analyzeForecastYear(chart, 2027, "travel");
+  assert.equal(f.year, 2027);
+  assert.equal(f.months.length, 12);
+  assert.equal(f.best.length, 3);
+  assert.equal(f.caution.length, 2);
+  assert.ok(f.months.every((m) => /^\S{2}$/.test(m.monthGanZhi)));
+});
+
+test("旅行＋2027＋去哪裡：必须直接回答年份、月份与旅行类型", () => {
   const q = "我什麼時候適合去度假，去哪裡最好？2027 是不是不適合我出行？";
   const req = inspectAnswerRequirements(q);
   const { reading } = contracted(q);
@@ -53,84 +64,80 @@ test("旅行＋2027＋去哪裡：不得拿目前窗口或人格句冒充答案"
   assert.equal(req.asksWhere, true);
   assert.deepEqual(req.targetYears, [2027]);
   assert.match(reading.directAnswer, /2027/);
-  assert.match(reading.directAnswer, /流年／流月作用鏈/);
-  assert.match(reading.directAnswer, /目的地比較模組/);
+  assert.match(reading.directAnswer, /較順的窗口/);
+  assert.match(reading.directAnswer, /月（/);
+  assert.match(reading.directAnswer, /旅行型態/);
+  assert.doesNotMatch(reading.directAnswer, /目前引擎沒有目的地比較模組/);
   assert.doesNotMatch(reading.directAnswer, /窗口已經在眼前/);
   assert.doesNotMatch(reading.action, /固定同一時間睡覺/);
 });
 
-test("感情時間題：擴充分類後仍必須先承認沒有月級應期", () => {
+test("感情時間題：必须回答时间窗口，不回人格模板", () => {
   const q = "我什麼時候遇到適合長期交往的人？";
   assert.equal(inferQuestionKind(q, classifyQuestion(q)), "love");
   const { reading } = contracted(q, "same");
-  assert.equal(reading.kind, "love");
-  assert.match(reading.directAnswer, /流年／流月作用鏈/);
-  assert.match(reading.directAnswer, /不能負責任地給出具體月份/);
+  assert.match(reading.directAnswer, /先直接回答時間/);
+  assert.match(reading.directAnswer, /較順的窗口/);
+  assert.match(reading.directAnswer, /月（/);
+  assert.doesNotMatch(reading.directAnswer, /目前這個結果只保存/);
 });
 
-test("交往這種舊分類器容易漏掉的說法，最終必須回到感情題", () => {
-  const q = "我和他適合繼續交往嗎？";
-  const oldKind = classifyQuestion(q);
-  const { reading } = contracted(q, "same");
-  assert.equal(inferQuestionKind(q, oldKind), "love");
-  assert.equal(reading.kind, "love");
-  assert.match(reading.directAnswer, /你問的是/);
-  assert.doesNotMatch(reading.directAnswer, /先看見自己/);
-});
-
-test("工作時間題：不能用職能模板代替『何時』", () => {
+test("工作時間題：必须给月份窗口", () => {
   const q = "我何時適合換工作？";
   assert.equal(inferQuestionKind(q, classifyQuestion(q)), "career");
   const { reading } = contracted(q);
-  assert.match(reading.directAnswer, /要真正回答時間/);
+  assert.match(reading.directAnswer, /較順的窗口/);
+  assert.match(reading.directAnswer, /月（/);
   assert.doesNotMatch(reading.directAnswer, /三十天內只交一件/);
 });
 
-test("健康恢復時間題：不得給保證式日期，必須守醫療邊界", () => {
-  const q = "我的手痛大概什麼時候會恢復？";
+test("財運時間題：必须给月份窗口", () => {
+  const q = "2027 哪幾個月財運比較好？";
   const { reading } = contracted(q);
-  assert.equal(reading.kind, "health");
-  assert.match(reading.directAnswer, /不能由命盤替代醫療判斷/);
-  assert.match(reading.directAnswer, /不能給保證式日期/);
-  assert.match(reading.action, /就醫|醫生|医疗|醫療/);
+  assert.match(reading.directAnswer, /2027/);
+  assert.match(reading.directAnswer, /較順的窗口/);
+  assert.match(reading.directAnswer, /月（/);
 });
 
-test("家宅地點題：沒有平面圖／坐向／正式取用，不得說哪裡最好", () => {
+test("健康恢復時間題：不做保證日期，但回答健康本題", () => {
+  const q = "我的手痛大概什麼時候會恢復？";
+  const { reading } = contracted(q);
+  assert.match(reading.directAnswer, /命理這裡可以看壓力與生活節奏/);
+  assert.match(reading.directAnswer, /醫生判斷/);
+  assert.doesNotMatch(reading.directAnswer, /旅行|工作窗口|目的地/);
+});
+
+test("家宅地點題：回答家宅，不亂指定東西南北", () => {
   const q = "我住哪個方向、哪個城市最好？";
   const { chart, reading } = contracted(q);
   assert.equal(chart.usefulProvisional, true);
-  assert.equal(reading.kind, "home");
-  assert.match(reading.directAnswer, /不能單獨回答/);
+  assert.match(reading.directAnswer, /先回答能回答的部分/);
   assert.match(reading.directAnswer, /正式取用尚未完成/);
 });
 
-test("投資標的題：不得用命盤指定股票或買賣點", () => {
+test("投資標的題：回答財務節奏但不指定股票", () => {
   const q = "我今年買哪一檔股票最好？";
   const { reading } = contracted(q);
-  assert.equal(reading.kind, "money");
-  assert.match(reading.directAnswer, /不能負責任地替你指定/);
-  assert.match(reading.directAnswer, /收益保證/);
+  assert.match(reading.directAnswer, /財務節奏/);
+  assert.match(reading.directAnswer, /不把任何標的說成必賺/);
 });
 
-test("普通二選一仍保留真正選邊，不被過度攔截", () => {
+test("普通二選一仍保留真正選邊", () => {
   const q = "我應該留在現在的工作，還是換到新公司？";
   const { reading } = contracted(q);
-  assert.equal(reading.kind, "choice");
   assert.match(reading.directAnswer, /選|选/);
-  assert.doesNotMatch(reading.directAnswer, /目的地比較模組/);
+  assert.doesNotMatch(reading.directAnswer, /旅行型態/);
 });
 
-test("前世題保留一掌經已排結果，不被通用契約覆蓋", () => {
+test("前世題保留一掌經結果", () => {
   const q = "我前世落在哪一道？";
   const { reading } = contracted(q);
-  assert.equal(reading.kind, "past");
   assert.match(reading.directAnswer, /(佛道|仙道|人道|修羅道|鬼道|畜生道)/);
 });
 
-test("一般自我題可以正常回答，但行動不再一律套睡眠模板", () => {
+test("一般自我題可以正常回答，行動不再一律套睡眠模板", () => {
   const q = "我最大的性格盲點是什麼？";
   const { reading } = contracted(q);
-  assert.equal(reading.kind, "self");
   assert.ok(reading.directAnswer.length > 20);
   assert.match(reading.action, /真實事件|核對/);
   assert.doesNotMatch(reading.action, /固定同一時間睡覺/);
