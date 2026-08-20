@@ -4,6 +4,7 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/supabase-rest";
+import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -13,30 +14,16 @@ const EMPTY_STATS: PublicSiteStats = {
   publishedAt: null,
 };
 
-function nextLocale(locale: Locale): Locale {
-  if (locale === "zh-Hant") return "zh-Hans";
-  if (locale === "zh-Hans") return "en";
-  return "zh-Hant";
-}
-
-function localeLabel(locale: Locale) {
-  if (locale === "zh-Hant") return "繁";
-  if (locale === "zh-Hans") return "简";
-  return "EN";
-}
-
 export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
+  const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
 
   useEffect(() => {
     hydrateLocale();
     let alive = true;
-
-    document.body.style.backgroundImage = "linear-gradient(180deg, #f8f0df 0%, #efe1c4 100%)";
-    document.body.style.backgroundAttachment = "fixed";
 
     void recordVisit()
       .catch(() => undefined)
@@ -46,13 +33,28 @@ export function SiteShell({ children }: { children: ReactNode }) {
           .catch(() => undefined);
       });
 
+    void listPublicBackgrounds()
+      .then((assets) => {
+        if (!alive) return;
+        const selected = chooseDailyBackground(assets);
+        setBackgroundUrl(selected ? backgroundPublicUrl(selected.storage_path) : null);
+      })
+      .catch(() => undefined);
+
     return () => { alive = false; };
   }, []);
 
   return (
-    <div className="min-h-dvh bg-transparent text-ink">
-      <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/95 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-2 px-3 sm:px-4">
+    <div className="relative isolate min-h-dvh overflow-x-clip bg-transparent text-ink">
+      {backgroundUrl ? (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.14] saturate-75"
+          style={{ backgroundImage: `linear-gradient(rgba(247,239,221,.25), rgba(239,225,195,.72)), url(${backgroundUrl})` }}
+        />
+      ) : null}
+      <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/92 backdrop-blur-md">
+        <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-1.5 sm:px-4">
           <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-cinnabar/30 bg-paper text-sm font-display text-cinnabar">昭</span>
             <span className="min-w-0 leading-none">
@@ -60,22 +62,25 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span className="hidden max-w-[16rem] truncate text-[10px] tracking-[0.15em] text-ink-mute min-[390px]:block">{t("tagline")}</span>
             </span>
           </Link>
-          <nav className="flex shrink-0 items-center gap-0.5 text-sm">
+          <nav className="flex shrink-0 items-center gap-1 text-sm">
             <Link to="/" className={`hidden rounded-full px-2.5 py-2 min-[520px]:inline ${pathname === "/" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
               {t("navHome")}
             </Link>
             <Link to="/account" className={`rounded-full px-2.5 py-2 ${pathname === "/account" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
-              {user?.isOwner ? (locale === "en" ? "Admin" : "後台") : t("navMine")}
+              {user?.isOwner ? t("navAdmin") : t("navMine")}
             </Link>
-            <button
-              type="button"
-              className="rounded-full px-2.5 py-2 text-ink-soft hover:text-ink"
-              onClick={() => setLocale(nextLocale(locale))}
-              aria-label="Switch language"
-              title="繁體 / 简体 / English"
+            <label htmlFor="site-language" className="sr-only">{t("language")}</label>
+            <select
+              id="site-language"
+              value={locale}
+              onChange={(e) => setLocale(e.target.value as Locale)}
+              aria-label={t("language")}
+              className="h-10 max-w-[4.6rem] rounded-full border border-line/80 bg-paper/60 px-2 text-xs text-ink-soft outline-none focus:border-cinnabar"
             >
-              {localeLabel(locale)}
-            </button>
+              <option value="zh-Hant">繁體</option>
+              <option value="zh-Hans">简体</option>
+              <option value="en">EN</option>
+            </select>
             {isPending ? (
               <span className="h-8 w-14 animate-pulse rounded-full bg-paper-deep" />
             ) : user ? (
@@ -88,15 +93,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
       </header>
-      <div className="mx-auto max-w-5xl px-4 pb-14 pt-6 sm:pt-8">{children}</div>
-      <footer className="mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-6 sm:pt-8">{children}</div>
+      <footer className="relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
         <p className="font-display text-sm tracking-[0.28em] text-ink-mute">
           {t("brand")}<span className="ml-2 tracking-[0.2em]">ZHAOWU</span>
         </p>
         <p className="mt-2 text-[10px] tracking-[0.08em] text-ink-mute">
-          SAFE · {stats.version !== "—" ? `${stats.version} · #${stats.updateNumber}` : ""}
+          {stats.version !== "—" ? `${stats.version} · #${stats.updateNumber}` : "ZHAOWU"}
           {stats.version !== "—" ? " · " : ""}
-          {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total" : "累計"} {stats.totalVisits.toLocaleString()}
+          {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total" : locale === "zh-Hans" ? "累计" : "累計"} {stats.totalVisits.toLocaleString()}
         </p>
       </footer>
     </div>
