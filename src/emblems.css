@@ -46,7 +46,7 @@ header .zhaowu-emblem-brand { filter: none; }
 }
 .intro-seal { filter: drop-shadow(0 10px 18px rgba(0,0,0,.28)); }
 
-/* 2026-08-20：纯轮廓古风吉祥纹。固定在内容背后，约为视口宽度 1/10，不接收任何点击。 */
+/* 2026-08-20：纯轮廓古风吉祥纹。浮在主体视觉层上方，但完全不接收点击。 */
 body {
   position: relative;
   isolation: isolate;
@@ -55,7 +55,7 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 20;
   pointer-events: none;
   user-select: none;
   background-image:
@@ -74,19 +74,23 @@ body::before {
     clamp(34px, 10vw, 92px) auto,
     clamp(34px, 10vw, 92px) auto;
   background-position:
-    4% 12%,
-    93% 23%,
-    7% 41%,
-    95% 58%,
-    5% 74%,
-    91% 88%;
-  opacity: .20;
+    3% 12%,
+    97% 23%,
+    4% 41%,
+    96% 58%,
+    4% 74%,
+    95% 88%;
+  opacity: .34;
   mix-blend-mode: multiply;
 }
 #root {
   position: relative;
   z-index: 1;
   min-height: 100dvh;
+}
+header {
+  position: relative;
+  z-index: 30;
 }
 
 @media (max-width: 430px) {
@@ -96,12 +100,12 @@ body::before {
   .zhaowu-faq-emblem { width: 10rem !important; height: 10rem !important; right: -3rem !important; bottom: -2rem !important; opacity: .62; }
   body::before {
     background-position:
-      2% 11%,
-      97% 25%,
-      3% 42%,
-      97% 59%,
-      4% 76%,
-      94% 89%;
-    opacity: .18;
+      1% 11%,
+      99% 25%,
+      2% 42%,
+      98% 59%,
+      2% 76%,
+      97% 89%;
+    opacity: .30;
   }
 }
