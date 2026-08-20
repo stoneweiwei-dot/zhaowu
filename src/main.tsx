@@ -5,6 +5,7 @@ import { routeTree } from './routeTree.gen';
 import './styles.css';
 import './intro-extra.css';
 import './emblems.css';
+import './client-hotfix.css';
 
 const router = createRouter({ routeTree });
 
