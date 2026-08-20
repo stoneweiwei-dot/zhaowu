@@ -2,7 +2,7 @@
 
 主站 `soul-terminal.com` 继续给 WordPress。昭梧只用子域名。
 
-## 当前状态（2026-08-21 更新）
+## 当前状态（2026-08-21）
 
 | 项 | 状态 |
 |---|---|
@@ -11,10 +11,11 @@
 | 生产平台 | **Vercel**（既有项目，禁止另建第二个） |
 | Vercel 项目 | `stone-zhaowu-official` |
 | 当前生产 URL | `https://stone-zhaowu-official.vercel.app/` |
-| GitHub Login Connection | 已由站主手动完成 |
-| Git 仓库链接 | 请确认 Settings → Git 已连到 `stoneweiwei-dot/zhaowu` |
+| GitHub Login Connection | 已完成 |
+| Git 仓库链接 | 已连到 `stoneweiwei-dot/zhaowu` |
+| 最新手动 Redeploy | `dpl_DZXNQ6E5j28MUBKP5626Soa4K9RR`（READY，但无 git commit meta） |
 | GitHub main HEAD | 以仓库 `main` 最新 commit 为准 |
-| Netlify | **已停用**，不再作为生产目标，勿再触发 production workflow |
+| Netlify | **已停用** |
 
 这是唯一生产目标。AppDeploy 旧站、Netlify、Grok 临时网址均不再作为生产主干。
 
