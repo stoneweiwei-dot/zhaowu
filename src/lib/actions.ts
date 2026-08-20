@@ -64,9 +64,13 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
   const q = String(data ?? "").trim().slice(0, 40);
   const local = filterFeatured(q);
   if (!q || q.length < 2) return local;
+  if (local.length) return local;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 1800);
   try {
-    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=zh`;
-    const res = await fetch(url);
+    const language = /[a-z]/i.test(q) ? "en" : "zh";
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=${language}`;
+    const res = await fetch(url, { signal: controller.signal });
     if (!res.ok) return local.length ? local : FEATURED_CITIES.slice(0, 6);
     const body = (await res.json()) as {
       results?: {
@@ -97,6 +101,8 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
     return merged.slice(0, 8);
   } catch {
     return local.length ? local : FEATURED_CITIES.slice(0, 6);
+  } finally {
+    clearTimeout(timeout);
   }
 }
 

@@ -26,11 +26,80 @@ export const FEATURED_CITIES: CityHit[] = [
   { name: "溫哥華", country: "加拿大", display: "溫哥華，加拿大", latitude: 49.2827, longitude: -123.1207, timezone: "America/Vancouver" },
 ];
 
+const FEATURED_ALIASES: Record<string, string[]> = {
+  "臺北，臺灣": ["台北", "台北市", "Taipei", "Taiwan"],
+  "新北，臺灣": ["新北市", "New Taipei", "Taiwan"],
+  "臺中，臺灣": ["台中", "Taichung", "Taiwan"],
+  "臺南，臺灣": ["台南", "Tainan", "Taiwan"],
+  "高雄，臺灣": ["Kaohsiung", "Taiwan"],
+  "香港": ["Hong Kong", "HK"],
+  "澳門": ["澳门", "Macau", "Macao"],
+  "上海，中國": ["上海", "Shanghai", "China"],
+  "北京，中國": ["北京", "Beijing", "China"],
+  "廣州，中國": ["广州", "Guangzhou", "China"],
+  "深圳，中國": ["深圳", "Shenzhen", "China"],
+  "杭州，中國": ["杭州", "Hangzhou", "China"],
+  "成都，中國": ["成都", "Chengdu", "China"],
+  "新加坡": ["Singapore"],
+  "吉隆坡，馬來西亞": ["吉隆坡", "Kuala Lumpur", "Malaysia"],
+  "東京，日本": ["东京", "Tokyo", "Japan"],
+  "首爾，韓國": ["首尔", "Seoul", "Korea"],
+  "雪梨，澳洲": ["悉尼", "Sydney", "NSW", "Australia"],
+  "墨爾本，澳洲": ["墨尔本", "Melbourne", "Victoria", "Australia"],
+  "倫敦，英國": ["伦敦", "London", "United Kingdom", "UK"],
+  "紐約，美國": ["纽约", "New York", "NYC", "United States", "USA"],
+  "洛杉磯，美國": ["洛杉矶", "Los Angeles", "LA", "United States", "USA"],
+  "溫哥華，加拿大": ["温哥华", "Vancouver", "Canada"],
+};
+
+type CityDisplayLocale = "zh-Hant" | "zh-Hans" | "en";
+
+const FEATURED_DISPLAY: Record<string, Record<Exclude<CityDisplayLocale, "zh-Hant">, string>> = {
+  "25.033,121.5654": { "zh-Hans": "台北，台湾", en: "Taipei, Taiwan" },
+  "25.0169,121.4628": { "zh-Hans": "新北，台湾", en: "New Taipei, Taiwan" },
+  "24.1477,120.6736": { "zh-Hans": "台中，台湾", en: "Taichung, Taiwan" },
+  "22.9997,120.227": { "zh-Hans": "台南，台湾", en: "Tainan, Taiwan" },
+  "22.6273,120.3014": { "zh-Hans": "高雄，台湾", en: "Kaohsiung, Taiwan" },
+  "22.3193,114.1694": { "zh-Hans": "香港", en: "Hong Kong" },
+  "22.1987,113.5439": { "zh-Hans": "澳门", en: "Macau" },
+  "31.2304,121.4737": { "zh-Hans": "上海，中国", en: "Shanghai, China" },
+  "39.9042,116.4074": { "zh-Hans": "北京，中国", en: "Beijing, China" },
+  "23.1291,113.2644": { "zh-Hans": "广州，中国", en: "Guangzhou, China" },
+  "22.5431,114.0579": { "zh-Hans": "深圳，中国", en: "Shenzhen, China" },
+  "30.2741,120.1551": { "zh-Hans": "杭州，中国", en: "Hangzhou, China" },
+  "30.5728,104.0668": { "zh-Hans": "成都，中国", en: "Chengdu, China" },
+  "1.3521,103.8198": { "zh-Hans": "新加坡", en: "Singapore" },
+  "3.139,101.6869": { "zh-Hans": "吉隆坡，马来西亚", en: "Kuala Lumpur, Malaysia" },
+  "35.6762,139.6503": { "zh-Hans": "东京，日本", en: "Tokyo, Japan" },
+  "37.5665,126.978": { "zh-Hans": "首尔，韩国", en: "Seoul, South Korea" },
+  "-33.8688,151.2093": { "zh-Hans": "悉尼，澳大利亚", en: "Sydney, Australia" },
+  "-37.8136,144.9631": { "zh-Hans": "墨尔本，澳大利亚", en: "Melbourne, Australia" },
+  "51.5074,-0.1278": { "zh-Hans": "伦敦，英国", en: "London, United Kingdom" },
+  "40.7128,-74.006": { "zh-Hans": "纽约，美国", en: "New York, United States" },
+  "34.0522,-118.2437": { "zh-Hans": "洛杉矶，美国", en: "Los Angeles, United States" },
+  "49.2827,-123.1207": { "zh-Hans": "温哥华，加拿大", en: "Vancouver, Canada" },
+};
+
+function coordinateKey(city: Pick<CityHit, "latitude" | "longitude">) {
+  return `${city.latitude},${city.longitude}`;
+}
+
+export function localizeCityHit(city: CityHit, locale: CityDisplayLocale): CityHit {
+  const canonical = FEATURED_CITIES.find((candidate) => coordinateKey(candidate) === coordinateKey(city));
+  if (!canonical) return city;
+  const display = locale === "zh-Hant" ? canonical.display : FEATURED_DISPLAY[coordinateKey(city)]?.[locale];
+  return display ? { ...city, display } : city;
+}
+
+function normalizeCityQuery(value: string) {
+  return value.normalize("NFKC").toLowerCase().replace(/[\s,，。·/\\-]+/g, "");
+}
+
 export function filterFeatured(query: string): CityHit[] {
-  const q = query.trim().toLowerCase();
+  const q = normalizeCityQuery(query.trim());
   if (!q) return FEATURED_CITIES.slice(0, 8);
   return FEATURED_CITIES.filter((c) =>
-    `${c.name}${c.country}${c.display}`.toLowerCase().includes(q),
+    normalizeCityQuery(`${c.name}${c.country}${c.display}${(FEATURED_ALIASES[c.display] ?? []).join("")}`).includes(q),
   ).slice(0, 8);
 }
 

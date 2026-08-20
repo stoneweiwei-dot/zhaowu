@@ -17,6 +17,7 @@ import {
   type BackgroundAsset,
 } from "@/lib/background-assets";
 import { Mark } from "@/components/marks";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -45,6 +46,7 @@ function storedNinePages(row: ReportRecord): { pageNo?: number; title?: string; 
 }
 
 function AccountPage() {
+  const { t } = useI18n();
   const { user, session, isPending } = useCurrentUserState();
   const [rows, setRows] = useState<ReportListRecord[]>([]);
   const [details, setDetails] = useState<Record<string, ReportRecord | null>>({});
@@ -144,9 +146,9 @@ function AccountPage() {
       <main className="mx-auto max-w-xl">
         <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
           <p className="text-xs tracking-[0.28em] text-cinnabar">MY ZHAOWU</p>
-          <h1 className="mt-2 font-display text-3xl">我的昭梧</h1>
-          <p className="mt-4 text-sm leading-7 text-ink-soft">登入後查看你的出生檔案與最近三份報告。</p>
-          <Link to="/login" className="mt-6 inline-flex h-11 items-center rounded-full bg-cinnabar px-5 text-cream">登入</Link>
+          <h1 className="mt-2 font-display text-3xl">{t("myTitle")}</h1>
+          <p className="mt-4 text-sm leading-7 text-ink-soft">{t("mySignedOutLead")}</p>
+          <Link to="/login" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{t("loginTab")}</Link>
         </section>
       </main>
     );
@@ -330,7 +332,7 @@ function AccountPage() {
         </div>
       </section>
 
-      <Link to="/" className="inline-flex h-11 items-center rounded-full border border-line bg-cream px-5 text-ink">返回首頁</Link>
+      <Link to="/" className="inline-flex h-11 items-center rounded-full border border-line bg-cream px-5 text-ink">{t("backHome")}</Link>
     </main>
   );
 }

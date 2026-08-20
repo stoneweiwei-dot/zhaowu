@@ -1,28 +1,36 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { analyzeLife, searchCities } from "@/lib/actions";
 import type { AnalyzeInput, CityHit } from "@/lib/bazi/types";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, type Locale } from "@/lib/i18n";
+import { localizeCityHit } from "@/lib/bazi/cities";
 import { useAppStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { createEngineReportRecord, updateBirthData } from "@/lib/supabase-rest";
 
 type PickerProps = {
+  id: string;
   label: string;
   placeholder: string;
   optional?: boolean;
+  optionalLabel: string;
+  popularLabel: string;
+  locale: Locale;
   value?: CityHit | null;
   onSelect: (city: CityHit | null) => void;
 };
 
-function CityPicker({ label, placeholder, optional = false, value = null, onSelect }: PickerProps) {
+function CityPicker({ id, label, placeholder, optional = false, optionalLabel, popularLabel, locale, value = null, onSelect }: PickerProps) {
   const [query, setQuery] = useState(value?.display ?? "");
   const [hits, setHits] = useState<CityHit[]>([]);
   const [selected, setSelected] = useState<CityHit | null>(value);
+  const listId = `${id}-results`;
 
   useEffect(() => {
-    setSelected(value);
-    setQuery(value?.display ?? "");
-  }, [value?.display]);
+    const localized = value ? localizeCityHit(value, locale) : null;
+    setSelected(localized);
+    setQuery(localized?.display ?? "");
+    if (value && localized && localized.display !== value.display) onSelect(localized);
+  }, [locale, onSelect, value?.display, value?.latitude, value?.longitude]);
 
   useEffect(() => {
     const q = query.trim();
@@ -33,25 +41,36 @@ function CityPicker({ label, placeholder, optional = false, value = null, onSele
     let alive = true;
     const timer = window.setTimeout(() => {
       void searchCities({ data: q })
-        .then((rows) => { if (alive) setHits(rows); })
+        .then((rows) => { if (alive) setHits(rows.map((city) => localizeCityHit(city, locale))); })
         .catch(() => { if (alive) setHits([]); });
     }, 220);
     return () => {
       alive = false;
       window.clearTimeout(timer);
     };
-  }, [query, selected]);
+  }, [locale, query, selected]);
 
   return (
     <div className="relative">
-      <label className="mb-2 block text-sm text-ink-soft">
-        {label}{optional ? <span className="ml-2 text-xs text-ink-mute">選填</span> : null}
+      <label htmlFor={id} className="mb-2 block text-sm text-ink-soft">
+        {label}{optional ? <span className="ml-2 text-xs text-ink-mute">{optionalLabel}</span> : null}
       </label>
       <input
+        id={id}
         value={query}
         placeholder={placeholder}
         autoComplete="off"
+        aria-autocomplete="list"
+        aria-controls={listId}
+        aria-expanded={hits.length > 0}
         className="h-12 w-full rounded-md border border-line bg-cream px-4 text-base outline-none transition focus:border-cinnabar"
+        onFocus={() => {
+          if (selected || query.trim().length >= 2) return;
+          void searchCities({ data: "" }).then((rows) => setHits(rows.map((city) => localizeCityHit(city, locale)))).catch(() => setHits([]));
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") setHits([]);
+        }}
         onChange={(e) => {
           setQuery(e.target.value);
           if (selected) {
@@ -61,11 +80,14 @@ function CityPicker({ label, placeholder, optional = false, value = null, onSele
         }}
       />
       {hits.length ? (
-        <div className="absolute z-40 mt-1 max-h-64 w-full overflow-auto rounded-md border border-line bg-cream shadow-xl">
+        <div id={listId} role="listbox" aria-label={query.trim().length < 2 ? popularLabel : label} className="absolute z-40 mt-1 max-h-64 w-full overflow-auto rounded-md border border-line bg-cream shadow-xl">
+          {query.trim().length < 2 ? <p className="border-b border-line/60 px-4 py-2 text-xs tracking-[0.16em] text-ink-mute">{popularLabel}</p> : null}
           {hits.map((city) => (
             <button
               key={`${city.display}-${city.latitude}-${city.longitude}`}
               type="button"
+              role="option"
+              aria-selected={selected?.display === city.display}
               className="block w-full border-b border-line/60 px-4 py-3 text-left text-sm last:border-0 hover:bg-paper"
               onClick={() => {
                 setSelected(city);
@@ -93,7 +115,7 @@ function asCity(value: unknown): CityHit | null {
 }
 
 export function AnalysisForm() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { user, profile, session } = useCurrentUserState();
   const setCurrent = useAppStore((s) => s.setCurrent);
   const setSavedId = useAppStore((s) => s.setSavedId);
@@ -147,11 +169,11 @@ export function AnalysisForm() {
     e.preventDefault();
     setError(null);
     if (!birthCity) {
-      setError("請從搜尋結果選擇出生城市與國家。");
+      setError(t("errCity"));
       return;
     }
     if (!question.trim()) {
-      setError("請先寫下你真正想問的問題。");
+      setError(t("errQuestion"));
       return;
     }
     setBusy(true);
@@ -186,7 +208,7 @@ export function AnalysisForm() {
       }
       window.setTimeout(() => document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "分析暫時未能完成，請檢查資料後再試。");
+      setError(err instanceof Error ? err.message : t("errAnalyze"));
     } finally {
       setBusy(false);
     }
@@ -197,42 +219,42 @@ export function AnalysisForm() {
       <p className="text-xs tracking-[0.28em] text-cinnabar">ZHAOWU · ANALYSIS</p>
       <h2 className="mt-2 font-display text-2xl sm:text-3xl">{t("formTitle")}</h2>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-ink-soft">{t("formLead")}</p>
-      {remembered ? <p className="mt-2 text-xs text-wood">已從「我的昭梧」回填出生資料。</p> : null}
+      {remembered ? <p className="mt-2 text-xs text-wood">{t("remembered")}</p> : null}
 
       <form className="mt-6 space-y-6" onSubmit={(e) => void submit(e)}>
         <div>
-          <label className="mb-2 block text-sm text-ink-soft">{t("question")}</label>
-          <textarea value={question} maxLength={400} rows={4} placeholder={t("qPh")} className="w-full resize-y rounded-md border border-line bg-cream px-4 py-3 text-base leading-7 outline-none transition focus:border-cinnabar" onChange={(e) => setQuestion(e.target.value)} />
+          <label htmlFor="analysis-question" className="mb-2 block text-sm text-ink-soft">{t("question")}</label>
+          <textarea id="analysis-question" value={question} maxLength={400} rows={4} required placeholder={t("qPh")} className="w-full resize-y rounded-md border border-line bg-cream px-4 py-3 text-base leading-7 outline-none transition focus:border-cinnabar" onChange={(e) => setQuestion(e.target.value)} />
           <p className="mt-1 text-right text-xs text-ink-mute">{question.length}/400</p>
         </div>
 
         <div className="grid grid-cols-3 gap-3">
-          {[{ label: t("year"), value: year, set: setYear, min: 1900, max: 2100 }, { label: t("month"), value: month, set: setMonth, min: 1, max: 12 }, { label: t("day"), value: day, set: setDay, min: 1, max: 31 }].map((f) => (
-            <label key={f.label} className="text-sm text-ink-soft">
+          {[{ id: "birth-year", label: t("year"), value: year, set: setYear, min: 1900, max: 2100 }, { id: "birth-month", label: t("month"), value: month, set: setMonth, min: 1, max: 12 }, { id: "birth-day", label: t("day"), value: day, set: setDay, min: 1, max: 31 }].map((f) => (
+            <label htmlFor={f.id} key={f.id} className="text-sm text-ink-soft">
               <span className="mb-2 block">{f.label}</span>
-              <input type="number" inputMode="numeric" min={f.min} max={f.max} value={f.value} onChange={(e) => f.set(e.target.value)} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar" />
+              <input id={f.id} type="number" inputMode="numeric" min={f.min} max={f.max} required value={f.value} onChange={(e) => f.set(e.target.value)} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar" />
             </label>
           ))}
         </div>
 
         <div className="rounded-lg border border-line bg-paper/45 p-4">
-          <div className="flex items-center justify-between gap-4">
+          <div className="grid gap-3 sm:flex sm:items-center sm:justify-between sm:gap-4">
             <p className="text-sm text-ink-soft">{t("time")}</p>
-            <label className="flex items-center gap-2 text-xs text-ink-mute"><input type="checkbox" checked={timeUnknown} onChange={(e) => setTimeUnknown(e.target.checked)} />{t("timeUnknown")}</label>
+            <label htmlFor="time-unknown" className="flex min-h-11 items-center gap-2 text-xs leading-5 text-ink-mute"><input id="time-unknown" type="checkbox" checked={timeUnknown} onChange={(e) => setTimeUnknown(e.target.checked)} />{t("timeUnknown")}</label>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-3">
-            <input type="number" inputMode="numeric" min={0} max={23} disabled={timeUnknown} value={hour} placeholder="時 0–23" onChange={(e) => setHour(e.target.value)} className="h-12 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar" />
-            <input type="number" inputMode="numeric" min={0} max={59} disabled={timeUnknown} value={minute} placeholder="分 0–59" onChange={(e) => setMinute(e.target.value)} className="h-12 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar" />
+            <input id="birth-hour" aria-label={t("hourPh")} type="number" inputMode="numeric" min={0} max={23} required={!timeUnknown} disabled={timeUnknown} value={hour} placeholder={t("hourPh")} onChange={(e) => setHour(e.target.value)} className="h-12 min-w-0 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar" />
+            <input id="birth-minute" aria-label={t("minutePh")} type="number" inputMode="numeric" min={0} max={59} disabled={timeUnknown} value={minute} placeholder={t("minutePh")} onChange={(e) => setMinute(e.target.value)} className="h-12 min-w-0 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar" />
           </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <label className="text-sm text-ink-soft"><span className="mb-2 block">{t("gender")}</span><select value={gender} onChange={(e) => setGender(e.target.value as AnalyzeInput["gender"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar"><option value="unspecified">{t("unset")}</option><option value="male">{t("male")}</option><option value="female">{t("female")}</option></select></label>
-          <label className="text-sm text-ink-soft"><span className="mb-2 block">感情需求類型</span><select value={relation} onChange={(e) => setRelation(e.target.value as AnalyzeInput["relation"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar"><option value="unset">{t("unset")}</option><option value="any">{t("relAny")}</option><option value="hetero">{t("relHet")}</option><option value="same">{t("relSame")}</option></select><span className="mt-1 block text-xs leading-5 text-ink-mute">{t("relHint")}</span></label>
+          <label htmlFor="birth-gender" className="text-sm text-ink-soft"><span className="mb-2 block">{t("gender")}</span><select id="birth-gender" value={gender} onChange={(e) => setGender(e.target.value as AnalyzeInput["gender"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar"><option value="unspecified">{t("unset")}</option><option value="male">{t("male")}</option><option value="female">{t("female")}</option></select></label>
+          <label htmlFor="relationship-preference" className="text-sm text-ink-soft"><span className="mb-2 block">{t("relation")}</span><select id="relationship-preference" value={relation} onChange={(e) => setRelation(e.target.value as AnalyzeInput["relation"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar"><option value="unset">{t("unset")}</option><option value="any">{t("relAny")}</option><option value="hetero">{t("relHet")}</option><option value="same">{t("relSame")}</option></select><span className="mt-1 block text-xs leading-5 text-ink-mute">{t("relHint")}</span></label>
         </div>
 
-        <CityPicker label={t("city")} placeholder={t("cityPh")} value={birthCity} onSelect={setBirthCity} />
-        <CityPicker label={t("liveCity")} placeholder={t("liveCity")} optional value={liveCity} onSelect={setLiveCity} />
+        <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} onSelect={setBirthCity} />
+        <CityPicker id="current-city" label={t("liveCity")} placeholder={t("liveCity")} optional optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={liveCity} onSelect={setLiveCity} />
         <p className="-mt-4 text-xs leading-5 text-ink-mute">{t("liveHint")}</p>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -240,7 +262,7 @@ export function AnalysisForm() {
           <label className="text-sm text-ink-soft"><span className="mb-2 block">{t("zi")}</span><select value={ziPolicy} onChange={(e) => setZiPolicy(e.target.value as AnalyzeInput["ziPolicy"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar"><option value="midnight">{t("ziMid")}</option><option value="late">{t("ziLate")}</option></select></label>
         </div>
 
-        {error ? <p className="rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm leading-6 text-cinnabar-deep">{error}</p> : null}
+        {error ? <p role="alert" className="rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm leading-6 text-cinnabar-deep">{error}</p> : null}
         <button type="submit" disabled={busy} className="h-12 w-full rounded-full bg-cinnabar px-6 text-base font-medium text-cream disabled:opacity-55 sm:w-auto">{busy ? t("analyzing") : t("analyze")}</button>
       </form>
     </section>
