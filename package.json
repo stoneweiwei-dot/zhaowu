@@ -1,14 +1,14 @@
 {
   "name": "zhaowu",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build && tsc --noEmit",
+    "build": "npm run test:engine && vite build && tsc --noEmit",
     "preview": "vite preview",
     "check": "tsc --noEmit",
-    "test:engine": "tsx --test scripts/engine-acceptance.test.mjs"
+    "test:engine": "tsx --test scripts/*.test.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.121.34",
