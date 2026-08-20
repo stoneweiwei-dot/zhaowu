@@ -1,6 +1,6 @@
 {
   "name": "zhaowu",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -23,6 +23,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@tanstack/router-plugin": "^1.121.34",
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
