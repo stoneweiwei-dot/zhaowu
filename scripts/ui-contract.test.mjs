@@ -16,6 +16,29 @@ test("homepage is a customer-facing brand entry, not an incident notice", async 
   assert.doesNotMatch(home, /ZHAOWU · SAFE|白屏|視覺先暫停|视觉先暂停/);
 });
 
+test("site shell mounts the loading gate and scattered emblem layer", async () => {
+  const shell = await source("src/components/site-shell.tsx");
+  const intro = await source("src/components/intro-gate.tsx");
+  const marks = await source("src/components/marks.tsx");
+
+  assert.match(shell, /import \{ IntroGate \}/);
+  assert.match(shell, /import \{ SealScatter \}/);
+  assert.match(shell, /<IntroGate \/>/);
+  assert.match(shell, /showScatter \? <SealScatter \/>/);
+  assert.match(intro, /zhaowu\.intro\.v4/);
+  assert.match(intro, /MAX_WAIT_MS = 7000/);
+  assert.match(intro, /t\("introLoadingAuth"\)/);
+  assert.match(intro, /t\("introLoadingPage"\)/);
+  assert.equal((marks.match(/id="scatter-[a-i]" eager/g) ?? []).length, 9);
+});
+
+test("every mapped emblem asset exists in the public build", async () => {
+  const marks = await source("src/components/marks.tsx");
+  const assets = [...marks.matchAll(/"\/emblems\/([^\"]+)"/g)].map((match) => match[1]);
+  assert.ok(assets.length >= 9);
+  await Promise.all(assets.map((asset) => source(`public/emblems/${asset}`)));
+});
+
 test("mobile homepage prioritises the analysis form over supporting copy", async () => {
   const home = await source("src/routes/index.tsx");
   assert.ok(home.indexOf("<AnalysisForm />") < home.indexOf("STEPS.map"));

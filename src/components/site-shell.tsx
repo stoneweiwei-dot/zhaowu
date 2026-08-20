@@ -5,6 +5,8 @@ import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/site-stats";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
+import { IntroGate } from "@/components/intro-gate";
+import { SealScatter } from "@/components/marks";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -18,6 +20,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const showScatter = pathname !== "/login";
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
   const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
 
@@ -53,6 +56,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
           style={{ backgroundImage: `linear-gradient(rgba(247,239,221,.25), rgba(239,225,195,.72)), url(${backgroundUrl})` }}
         />
       ) : null}
+      <IntroGate />
+      {showScatter ? <SealScatter /> : null}
       <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/92 backdrop-blur-md">
         <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
           <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">

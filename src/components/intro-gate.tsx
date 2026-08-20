@@ -3,7 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import { Mark } from "@/components/marks";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 
-const KEY = "zhaowu.intro.v3";
+const KEY = "zhaowu.intro.v4";
 const FADE_MS = 520;
 const MAX_WAIT_MS = 7000;
 
@@ -25,6 +25,7 @@ export function IntroGate() {
 
   function finish() {
     if (phase === "out" || phase === "off") return;
+    clearTimers();
     setPhase("out");
     const id = window.setTimeout(() => {
       setPhase("off");
@@ -70,7 +71,7 @@ export function IntroGate() {
       className={`fixed inset-0 z-[80] flex items-center justify-center overflow-hidden bg-[#0d0a08] transition-opacity ${reduced ? "duration-0" : "duration-500"} ${phase === "out" ? "pointer-events-none opacity-0" : "opacity-100"}`}
       role="status"
       aria-live="polite"
-      aria-label="昭梧正在載入"
+      aria-label={t("introAria")}
     >
       <div className="intro-atmosphere" aria-hidden>
         <div className="intro-sky" />
@@ -87,11 +88,11 @@ export function IntroGate() {
         <p className="text-sm tracking-[0.24em] text-[#e8c9a0]">{t("manifesto")}</p>
         <div className="mt-2 flex items-center gap-2 text-[10px] tracking-[0.2em] text-white/45">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#e8c9a0]" />
-          {isPending ? "正在載入帳號與報告資料" : "正在完成頁面準備"}
+          {isPending ? t("introLoadingAuth") : t("introLoadingPage")}
         </div>
         {!reduced && !skipRequested ? (
           <button type="button" onClick={() => { setSkipRequested(true); setShowText(true); }} className="mt-2 text-[11px] tracking-[0.2em] text-white/50">
-            跳過動畫
+            {t("introSkip")}
           </button>
         ) : null}
       </div>
