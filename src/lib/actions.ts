@@ -97,7 +97,7 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
 
 export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promise<AnalysisResult> {
   const data = parseInput(raw);
-  const [{ buildChart }, { interpret, classifyQuestion }, { buildPalm }, { routeMethods }, { applyAnswerContract }] = await Promise.all([
+  const [{ buildChart }, { interpret, classifyQuestion }, { buildPalm }, { routeMethods }, { applyAnswerContract, inferQuestionKind }] = await Promise.all([
     import("@/lib/bazi/chart"),
     import("@/lib/bazi/interpret"),
     import("@/lib/palm/engine"),
@@ -114,7 +114,7 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
     timeUnknown: data.timeUnknown,
     gender: data.gender,
   });
-  const kind = classifyQuestion(data.question);
+  const kind = inferQuestionKind(data.question, classifyQuestion(data.question));
   const methodProtocol = routeMethods(kind, {
     palmReady: palm.ready,
     palmMissing: palm.missing,
@@ -147,13 +147,13 @@ export async function followUpLife({
 }): Promise<AnalysisResult> {
   const question = String(data.question ?? "").trim().slice(0, 400);
   if (!question) throw new Error("請先寫下你想繼續問的問題。");
-  const [{ interpret, classifyQuestion }, { routeMethods }, { applyAnswerContract }] = await Promise.all([
+  const [{ interpret, classifyQuestion }, { routeMethods }, { applyAnswerContract, inferQuestionKind }] = await Promise.all([
     import("@/lib/bazi/interpret"),
     import("@/lib/core/method"),
     import("@/lib/core/answer-contract"),
   ]);
   const palm = data.base.palm ?? null;
-  const kind = classifyQuestion(question);
+  const kind = inferQuestionKind(question, classifyQuestion(question));
   const methodProtocol = routeMethods(kind, {
     palmReady: Boolean(palm?.ready),
     palmMissing: palm?.missing ?? [],
