@@ -208,7 +208,7 @@ export function AnalysisForm() {
       }
       window.setTimeout(() => document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("errAnalyze"));
+      setError(locale === "en" ? t("errAnalyze") : err instanceof Error ? err.message : t("errAnalyze"));
     } finally {
       setBusy(false);
     }
