@@ -1,55 +1,70 @@
-# 昭梧｜Grok × GPT 交接本
+# 昭梧｜协作与交接规则
 
-两边不能直接对话。**唯一信箱是这个仓库。**
+两边不能直接对话。**唯一源码真相是本仓库；唯一当前状态真相是 [docs/CURRENT-STATE.md](./docs/CURRENT-STATE.md)。**
 
-| | |
-|---|---|
-| 域名 | https://zhaowu.soul-terminal.com |
-| 本仓 | https://github.com/stoneweiwei-dot/zhaowu |
-| 主站 | https://soul-terminal.com （不要动） |
-| 旧仓 | https://github.com/stoneweiwei-dot/zhaowu-web-app- （只读参考） |
-| 旧运行时 | https://204914e3adbfd65055.v2.appdeploy.ai/ （只读参考，不作主干） |
+## 每次接手先读
 
-技术契约：[docs/CONTRACT.md](./docs/CONTRACT.md)  
-现况：[docs/GROK-STATUS.md](./docs/GROK-STATUS.md)  
-宪法：[docs/SPEC.md](./docs/SPEC.md)
+1. [docs/CURRENT-STATE.md](./docs/CURRENT-STATE.md) — 当前生产架构、已完成项、未完成项、优先级
+2. [docs/CONTRACT.md](./docs/CONTRACT.md) — 技术契约
+3. [docs/SPEC.md](./docs/SPEC.md) — 产品边界
+4. [docs/NINE-PAGE.md](./docs/NINE-PAGE.md) — 客户九页报告结构
+5. [docs/PAID-REPORT-STYLE-v1.0.md](./docs/PAID-REPORT-STYLE-v1.0.md) — 「昭梧・四柱绘意报告风」
 
-## 主干决议（2026-08-19 Stone 拍板）
+**旧 Issue、旧聊天、旧部署文件与 CURRENT-STATE 冲突时，不得照旧执行。先以当前 `main`、Vercel Production、Supabase 实况为准。**
 
-**Grok 这一套是唯一主干。GPT 只辅导这一版，不再平行出一套。**
+## 唯一生产主线
 
 | 项 | 定案 |
 |---|---|
-| 源码真相 | 只认本仓 `stoneweiwei-dot/zhaowu` |
-| 运行主干 | Grok / 本仓部署；正式域名挂 `zhaowu.soul-terminal.com` |
-| AppDeploy 旧站 | 只读参考（文案、九页结构、命诰图规格、支付与站主流程的产品清单） |
-| 禁止 | 把引擎搬进 AppDeploy；把 MutationObserver / form-title 双标题系统搬进本仓；再开一套平行产品 |
-| 旧站多出来的能力 | 当规格清单往本仓接：付费九页母稿、9:16 命诰图、记住出生、同盘追问、结缘支付、站主开放报告 |
+| 源码 | `stoneweiwei-dot/zhaowu` |
+| 分支 | `main` |
+| Hosting | Vercel `stone-zhaowu-official` |
+| Database/Auth | 当前 Supabase |
+| 正式子域名 | `zhaowu.soul-terminal.com` |
+| AppDeploy / Netlify / Grok 临时站 | 只读参考，禁止作为 production |
 
-## 谁做什么
+## 防止重复返工
 
-| 角色 | 负责 | 不负责 |
-|---|---|---|
-| Grok | 排盘、路由、登录、接线、部署、主干代码 | 不改 WordPress；不写客单命盘；不维护 AppDeploy 运行时 |
-| GPT | 文案、九页母稿、命诰图提示词、对照 CONTRACT 挑违规 | 不改锁文件；不编未接入流派；不往 AppDeploy 出平行版 |
-| Stone | 开 Issue、拍板、验收、DNS | 不在两个聊天里说两套规则 |
+- 已通过功能没有新的可复现 FAIL，不得因为旧 Issue 再改。
+- Loading、Logo、Hero、登录方式等已收口功能默认冻结。
+- 客户收费报告只认九页，不再恢复旧 23 页客户结构。
+- 纯视觉修改不得阻塞排盘、登录、报告读取等核心故障。
+- 每次修改都要说明：**当前可复现问题 → 改动 → 验收结果 → production commit/deployment**。
 
-锁文件（升版本才能动）：`palm/engine.ts`、`core/method.ts`、`bazi/calendar.ts`、`chart.ts`、`interpret.ts` 的分类顺序、`actions.ts` 的前世 0-AI 短路。
+## 职责
 
-## Issue 怎么写
+| 角色 | 主要负责 |
+|---|---|
+| Grok / 代码 Agent | 排盘、路由、接线、构建、部署、可复现 bug |
+| GPT | 产品/文案/九页报告/四柱绘意规范、审查、必要的非锁定配置与文档收口 |
+| Stone | 产品拍板与最终实机验收 |
 
-标题：`[给Grok] …` 或 `[给GPT] …`
+这不是权限墙；如果 Stone 明确要求某一方直接处理网站，应以当前工具能力处理，但**不得绕过锁文件与 CURRENT-STATE**。
+
+## 锁文件
+
+没有单独版本升级与明确验收，不重写：
+
+- `src/lib/palm/engine.ts`
+- `src/lib/core/method.ts`
+- `src/lib/bazi/calendar.ts`
+- `src/lib/bazi/chart.ts`
+- `src/lib/bazi/interpret.ts` 分类顺序
+- `src/lib/actions.ts` 前世 0-AI 短路
+
+禁止搬回 AppDeploy 的 MutationObserver / form-title 双标题系统。
+
+## Issue 规则
+
+新 Issue 必须包含：
 
 ```
+当前可复现问题：
 要改：
 不要改：
 验收句：
 锁定档案：
-做完回：改了哪些档 / 验收过没过 / 下一步交给谁
+做完回：改了哪些档 / 验收过没过 / production commit/deployment
 ```
 
-GPT 审查回三列表：保留 / 简陋 / 违规。
-
-## 给 GPT 的开场
-
-见 [docs/GPT-PROMPT.md](./docs/GPT-PROMPT.md)
+如果问题已经由后续 production commit 解决，关闭旧 Issue，不保留成“未来 Agent 的待办”。
