@@ -3,14 +3,13 @@ import { BrandSeal } from "@/components/brand-seal";
 import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 
-const KEY = "zhaowu.intro.v6";
-const FADE_MS = 520;
+const KEY = "zhaowu.intro.v7";
 const MAX_WAIT_MS = 7000;
 
 export function IntroGate() {
   const { t } = useI18n();
   const { isPending } = useCurrentUserState();
-  const [phase, setPhase] = useState<"in" | "out" | "off">("in");
+  const [phase, setPhase] = useState<"in" | "off">("in");
   const [showText, setShowText] = useState(false);
   const [skipRequested, setSkipRequested] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -24,14 +23,10 @@ export function IntroGate() {
   }
 
   function finish() {
-    if (phase === "out" || phase === "off") return;
+    if (phase === "off") return;
     clearTimers();
-    setPhase("out");
-    const id = window.setTimeout(() => {
-      setPhase("off");
-      try { sessionStorage.setItem(KEY, "1"); } catch { /* ignore */ }
-    }, FADE_MS);
-    timers.current.push(id);
+    try { sessionStorage.setItem(KEY, "1"); } catch { /* ignore */ }
+    setPhase("off");
   }
 
   useEffect(() => {
@@ -68,7 +63,7 @@ export function IntroGate() {
 
   return (
     <div
-      className={`fixed inset-0 z-[80] overflow-hidden bg-[#eee8dc] transition-opacity ${reduced ? "duration-0" : "duration-500"} ${phase === "out" ? "pointer-events-none opacity-0" : "opacity-100"}`}
+      className="fixed inset-0 z-[80] overflow-hidden bg-[#eee8dc]"
       role="status"
       aria-live="polite"
       aria-label={t("introAria")}
