@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnalysisForm } from "@/components/analysis-form";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { Mark } from "@/components/marks";
+import { PaidReportShowcase } from "@/components/paid-report-showcase";
 import { ResultView } from "@/components/result-view";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
@@ -65,6 +66,8 @@ function Home() {
 
       {current ? <ResultView result={current} /> : null}
       {current ? <FollowUpBox result={current} /> : null}
+
+      <PaidReportShowcase />
 
       <section className="grid overflow-hidden rounded-[1.5rem] border border-line/80 bg-cream/72 sm:grid-cols-3" aria-label={t("steps")}>
         {STEPS.map((step, index) => (
