@@ -16,6 +16,19 @@ test("homepage is a customer-facing brand entry, not an incident notice", async 
   assert.doesNotMatch(home, /ZHAOWU · SAFE|白屏|視覺先暫停|视觉先暂停/);
 });
 
+test("homepage surfaces the paid Four Pillars art product after the analysis flow", async () => {
+  const home = await source("src/routes/index.tsx");
+  const showcase = await source("src/components/paid-report-showcase.tsx");
+  assert.match(home, /import \{ PaidReportShowcase \}/);
+  assert.match(home, /<PaidReportShowcase \/>/);
+  assert.ok(home.indexOf("<AnalysisForm />") < home.indexOf("<PaidReportShowcase />"));
+  assert.match(showcase, /9:16 iPhone 收藏版/);
+  assert.match(showcase, /STONE 原創/);
+  assert.match(showcase, /paidReportStyle\.pillarRoles/);
+  assert.match(showcase, /命局證據/);
+  assert.match(showcase, /視覺象徵/);
+});
+
 test("site shell mounts the loading gate and scattered emblem layer", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const intro = await source("src/components/intro-gate.tsx");
