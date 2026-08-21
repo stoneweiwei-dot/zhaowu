@@ -10,8 +10,50 @@ import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-
 import { composeNinePages, type NinePage } from "@/lib/report/nine-page";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
+const RESULT_COPY = {
+  "zh-Hant": {
+    syncFailed: "完整報告已整理完成，但雲端同步暫時失敗；畫面內容不受影響。",
+    fullFailed: "完整報告暫時未能生成。",
+    saved: "完整九頁報告已保存到同一筆記錄。",
+    saveFailed: "保存失敗。",
+    saving: "保存中…",
+    updateSaved: "更新已保存報告",
+    unknown: "未定",
+    pillars: { year: "年柱", month: "月柱", day: "日柱", hour: "時柱" },
+  },
+  "zh-Hans": {
+    syncFailed: "完整报告已整理完成，但云端同步暂时失败；画面内容不受影响。",
+    fullFailed: "完整报告暂时未能生成。",
+    saved: "完整九页报告已保存到同一笔记录。",
+    saveFailed: "保存失败。",
+    saving: "保存中…",
+    updateSaved: "更新已保存报告",
+    unknown: "未定",
+    pillars: { year: "年柱", month: "月柱", day: "日柱", hour: "时柱" },
+  },
+  en: {
+    syncFailed: "The full report is ready, but cloud sync failed temporarily. The report remains available on this page.",
+    fullFailed: "The full report could not be generated right now.",
+    saved: "The complete nine-page report has been saved to this record.",
+    saveFailed: "Saving failed.",
+    saving: "Saving…",
+    updateSaved: "Update saved report",
+    unknown: "Unknown",
+    pillars: { year: "Year", month: "Month", day: "Day", hour: "Hour" },
+  },
+} as const;
+
+const ELEMENT_EN: Record<string, string> = {
+  木: "Wood",
+  火: "Fire",
+  土: "Earth",
+  金: "Metal",
+  水: "Water",
+};
+
 export function ResultView({ result }: { result: AnalysisResult }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const copy = RESULT_COPY[locale];
   const { user, profile, session, isPending } = useCurrentUserState();
   const { fullReport, setFullReport, savedId, setSavedId, reset } = useAppStore();
   const [busy, setBusy] = useState<"full" | "save" | null>(null);
@@ -20,6 +62,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const { chart, reading, question } = result;
   const answer = customerDirectAnswer(question, reading.directAnswer);
   const answerParagraphs = customerParagraphs(answer);
+  const dayMasterElement = locale === "en" ? (ELEMENT_EN[chart.dayMasterElement] ?? chart.dayMasterElement) : chart.dayMasterElement;
 
   async function ensureFullReport() {
     if (fullReport) return fullReport;
@@ -47,11 +90,11 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           });
           setSavedId(result.id);
         } catch {
-          setMsg("完整報告已整理完成，但雲端同步暫時失敗；畫面內容不受影響。");
+          setMsg(copy.syncFailed);
         }
       }
     } catch (err) {
-      setMsg(err instanceof Error ? err.message : "完整報告暫時未能生成。");
+      setMsg(err instanceof Error && locale !== "en" ? err.message : copy.fullFailed);
     } finally {
       setBusy(null);
     }
@@ -76,9 +119,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         ninePages: pages,
       });
       setSavedId(row?.id ?? result.id);
-      setMsg("完整九頁報告已保存到同一筆記錄。");
+      setMsg(copy.saved);
     } catch (err) {
-      setMsg(err instanceof Error ? err.message : "保存失敗。");
+      setMsg(err instanceof Error && locale !== "en" ? err.message : copy.saveFailed);
     } finally {
       setBusy(null);
     }
@@ -98,17 +141,18 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-xs tracking-[0.28em] text-cinnabar">{t("chart")}</p>
-            <h3 className="mt-1 font-display text-xl">{t("dayMaster")} {chart.dayMaster}{chart.dayMasterElement} · {t("monthLing")} {chart.monthBranch}</h3>
+            <h3 className="mt-1 font-display text-xl">{t("dayMaster")} {chart.dayMaster}{dayMasterElement} · {t("monthLing")} {chart.monthBranch}</h3>
           </div>
           <p className="text-sm text-ink-mute">{chart.lunarDate}</p>
         </div>
         <div className="mt-5 grid grid-cols-4 gap-2">
           {chart.pillars.map((pillar) => {
             const ready = pillar.ready !== false && pillar.ganZhi !== "未定" && Boolean(pillar.gan);
+            const label = copy.pillars[pillar.key as keyof typeof copy.pillars] ?? pillar.label;
             return (
               <div key={pillar.key} className="rounded-md border border-line bg-paper/50 px-2 py-3 text-center">
-                <p className="text-[10px] tracking-[0.12em] text-ink-mute">{pillar.label}</p>
-                <p className="mt-1 font-display text-xl tracking-[0.08em] sm:text-2xl">{ready ? pillar.ganZhi : "未定"}</p>
+                <p className="text-[10px] tracking-[0.12em] text-ink-mute">{label}</p>
+                <p className="mt-1 font-display text-xl tracking-[0.08em] sm:text-2xl">{ready ? pillar.ganZhi : copy.unknown}</p>
               </div>
             );
           })}
@@ -121,7 +165,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </button>
         {isPending ? <span className="h-12 flex-1 animate-pulse rounded-full bg-paper-deep" /> : user ? (
           <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="h-12 min-w-[150px] flex-1 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">
-            {busy === "save" ? "保存中…" : savedId ? "更新已保存報告" : t("save")}
+            {busy === "save" ? copy.saving : savedId ? copy.updateSaved : t("save")}
           </button>
         ) : <Link to="/login" className="grid h-12 min-w-[150px] flex-1 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
         <button type="button" onClick={() => reset()} className="h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
