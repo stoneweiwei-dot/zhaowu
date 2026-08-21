@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
@@ -58,12 +59,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/92 backdrop-blur-md">
         <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
           <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
-            <img
-              src="/emblems/zhaowu-main-seal.svg"
-              alt=""
-              aria-hidden
-              className="h-9 w-9 shrink-0 object-contain sm:h-10 sm:w-10"
-            />
+            <BrandSeal />
             <span className="min-w-0 leading-none">
               <span className="block font-display text-base tracking-[0.18em] sm:text-lg sm:tracking-[0.2em]">{t("brand")}</span>
               <span className="hidden max-w-[16rem] truncate text-[10px] tracking-[0.15em] text-ink-mute sm:block">{t("tagline")}</span>
