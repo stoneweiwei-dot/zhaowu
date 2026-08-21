@@ -36,10 +36,10 @@ test("完整报告与九页卡片使用同一份新版答案", async () => {
   const question = "我什麼時候適合去度假，去哪裡最好？2027 是不是不適合我出行？";
   const { chart, reading, palm } = base(question);
   const out = await writeFullReport({ data: { question, chart, reading, palm } });
-  assert.match(out.text, /昭梧｜付费九页报告|昭梧｜付費九頁報告/);
+  assert.match(out.text, /昭梧｜专属九页报告/);
   assert.match(out.text, /2027/);
   assert.match(out.text, /較順的窗口/);
-  assert.match(out.text, /排序依據/);
+  assert.doesNotMatch(out.text, /排序依據|排序依据/);
   assert.doesNotMatch(out.text, /还必须补算|還必須補算|当前这份结果只带有|當前這份結果只帶有/);
 });
 
@@ -47,6 +47,6 @@ test("完整报告不会恢复旧的固定人格课题模板", async () => {
   const question = "我現在工作最大的問題是什麼？";
   const { chart, reading, palm } = base(question);
   const out = await writeFullReport({ data: { question, chart, reading, palm } });
-  assert.match(out.text, /本題主軸|主课题|主課題|工作/);
+  assert.ok(out.text.includes(reading.work));
   assert.doesNotMatch(out.text, /關係裡和工作裡，能控制的事會被你抓得太久|关系里和工作里，能控制的事会被你抓得太久/);
 });

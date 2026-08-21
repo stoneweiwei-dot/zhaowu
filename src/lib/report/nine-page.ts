@@ -1,5 +1,4 @@
 import type { AnalysisResult, Chart, QuestionKind, Reading } from "@/lib/bazi/types";
-import type { MethodProtocol } from "@/lib/core/types";
 
 export type NinePageEvidence = {
   facts: string[];
@@ -16,6 +15,35 @@ export type NinePage = {
   evidence: NinePageEvidence;
 };
 
+
+function customerCopy(value: string): string {
+  const text = value
+    .trim()
+    .replace(/調候粗候選[^。！？!?]*[。！？!?]?/g, "")
+    .replace(/调候粗候选[^。！？!?]*[。！？!?]?/g, "")
+    .replace(/此為旺衰底盤[^。！？!?]*[。！？!?]?/g, "")
+    .replace(/此为旺衰底盘[^。！？!?]*[。！？!?]?/g, "")
+    .replace(/[，,；;]\s*不再用通用性格句代替答案/g, "。")
+    .replace(/[，,；;]\s*不把它包裝成必然事件或保證日期/g, "。")
+    .replace(/[，,；;]\s*不把它包装成必然事件或保证日期/g, "。");
+
+  const internalCopy =
+    /全站回答契約|全站回答契约|本頁只使用|本页只使用|排序依據|排序依据|月份名稱只是|月份名称只是|命理月以節氣|命理月以节气|通用句|資料未接入|资料未接入|尚未完成|待覆核|待覆核|不是完整子平|不是喜用神|方法透明|報告編號|报告编号|隱藏算法|隐藏算法/;
+
+  return (text.match(/[^。！？!?]+[。！？!?]?/g) ?? [text])
+    .map((part) => part.trim())
+    .filter((part) => part && !internalCopy.test(part))
+    .join("");
+}
+
+function customerDirectAnswer(question: string, answer: string): string {
+  let text = answer.trim();
+  const quotedQuestion = question.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  text = text.replace(new RegExp(`^你[問问]的是[「“"]?${quotedQuestion}[」”"]?[。．.]?\\s*`), "");
+  text = text.replace(/^先直接回答(?:時間|时间)?[：:]\s*/, "");
+  return customerCopy(text) || "请先从报告列出的重点开始，再结合你的现实条件作决定。";
+}
+
 function isReadyPillar(col: Chart["pillars"][number]): boolean {
   return col.ready !== false && col.ganZhi !== "未定" && Boolean(col.gan);
 }
@@ -24,143 +52,73 @@ function hasMultiTopicAnswer(reading: Reading): boolean {
   return /分開回答|分开回答|分開排|分开排/.test(reading.directAnswer);
 }
 
-function primaryTopic(kind: QuestionKind, reading: Reading): string {
-  switch (kind) {
-    case "career": return reading.work;
-    case "love": return reading.love;
-    case "money": return reading.money;
-    case "health": return reading.body;
-    case "home": return reading.home;
-    case "choice":
-    case "timing":
-    case "past": return reading.directAnswer;
-    case "self":
-    default: return reading.rhythm;
-  }
-}
-
 function page4Body(question: string, reading: Reading): string[] {
   if (hasMultiTopicAnswer(reading)) {
-    return [
-      reading.directAnswer,
-      "这题包含多个领域，报告继续分开写；不拿一个领域的月份、性格或结论去代替另一个领域。",
-      "核对标准：每个领域都必须能回到原问题中的对应部分。",
-    ];
+    const topics = [
+      { match: /工作|事業|事业|職業|职业|學業|学业/, label: "工作重点", value: reading.work },
+      { match: /財務|财务|金錢|金钱|收入|投資|投资/, label: "财务重点", value: reading.money },
+      { match: /感情|關係|关系|伴侶|伴侣|婚姻/, label: "关系重点", value: reading.love },
+      { match: /健康|身體|身体|睡眠/, label: "身心重点", value: reading.body },
+      { match: /住|房|搬家|居家/, label: "居住重点", value: reading.home },
+    ]
+      .filter((topic) => topic.match.test(question))
+      .map((topic) => `${topic.label}｜${customerCopy(topic.value)}`)
+      .filter((line) => !line.endsWith("｜"));
+    return [...topics, "建议分别处理这些问题，先推进现实条件最清楚的一项。"];
   }
 
   switch (reading.kind) {
     case "career":
-      return [
-        `主课题｜${reading.work}`,
-        `底层节奏｜${reading.rhythm}`,
-        "核对点：职位、责任、输出方式、收入与退出成本是否真的符合这条判断。",
-      ];
+      return [customerCopy(reading.work)];
     case "love":
-      return [
-        `主课题｜${reading.love}`,
-        `底层节奏｜${reading.rhythm}`,
-        "核对点：对方是否主动、是否安排下一次见面、关系是否被说清楚；不靠猜心补剧情。",
-      ];
+      return [customerCopy(reading.love), "重点看对方是否持续联系、主动安排见面，并愿意把关系说清楚。"];
     case "money":
-      return [
-        `主课题｜${reading.money}`,
-        `底层节奏｜${reading.rhythm}`,
-        "核对点：收入结构、固定支出、风险承载、退出条件；不把财运等同于某个标的一定上涨。",
-      ];
+      return [customerCopy(reading.money), "决定前先确认现金流、可承受损失和退出条件。"];
     case "health":
-      return [
-        `主课题｜${reading.body}`,
-        `底层节奏｜${reading.rhythm}`,
-        "核对点：症状、频率、睡眠、检查与医生意见；命理只看生活压力与节奏，不作诊断。",
-      ];
+      return [customerCopy(reading.body), "如果不适持续、加重或影响睡眠与活动，请及时就医检查。"];
     case "home":
-      return [
-        `主课题｜${reading.home}`,
-        `底层节奏｜${reading.rhythm}`,
-        "核对点：真实住宅还要看平面图、坐向、采光与道路；出生盘不单独替现实房屋下风水结论。",
-      ];
+      return [customerCopy(reading.home), "最终选择同时考虑采光、通勤、预算与实际居住感受。"];
     case "timing":
-      return [
-        reading.directAnswer,
-        "时间题只认已经计算出来的目标年／月份排序；不再拿“现在就是窗口”之类通用句替代应期。",
-        "排序是窗口比较，不是保证某件事一定在某月发生。",
-      ];
+      return ["把报告列出的较顺月份与假期、预算、工作安排及同行人的时间一起确认。"];
     case "choice":
-      return [
-        reading.directAnswer,
-        "选择题必须把两个选项放在同一组现实标准下比较；没有分别提供的条件，就不假装已经替两边算完。",
-      ];
+      return ["把两个选项按收益、成本、风险与退出难度放在同一张表比较。"];
     case "past":
-      return [
-        reading.directAnswer,
-        "前世题只保留已排出的一掌经宫位与六道结果，不追加没有来源的故事。",
-      ];
+      return [customerCopy(reading.rhythm)];
     case "self":
     default:
-      return [
-        `主课题｜${primaryTopic(reading.kind, reading)}`,
-        "核对点：拿最近三次真实事件验证；对不上就删，不为了凑版面硬解释。",
-      ];
+      return ["留意自己在压力下反复出现的选择模式，再决定最值得改变的一处。"];
   }
 }
 
 function page6Body(reading: Reading): string[] {
   switch (reading.kind) {
     case "career":
-      return [
-        `现实落点｜${reading.work}`,
-        "把职位、收入、成长空间、责任与退出成本放在同一张表；命盘只负责补充承载与节奏。",
-      ];
+      return ["把职位、收入、成长空间、责任与退出成本放在一起比较，再决定下一步。"];
     case "love":
-      return [
-        `现实落点｜${reading.love}`,
-        "关系判断只认可验证行为：联系、见面、承诺、边界与是否持续投入。",
-      ];
+      return ["以持续联系、实际见面、明确承诺和边界作为关系判断标准。"];
     case "money":
-      return [
-        `现实落点｜${reading.money}`,
-        "先看现金流、风险上限与退出条件；命盘不替代财务或投资分析。",
-      ];
+      return ["先定风险上限和退出条件，再考虑收益空间。"];
     case "health":
-      return [
-        `现实落点｜${reading.body}`,
-        "已有痛、失眠、掉力或持续症状就看医生；报告不提供医疗诊断和保证日期。",
-      ];
+      return ["先稳定睡眠、作息与身体负荷；已有持续症状就安排专业检查。"];
     case "home":
-      return [
-        `现实落点｜${reading.home}`,
-        "真要落到房屋与空间，再补平面图、坐向、采光、道路与真实居住条件。",
-      ];
+      return ["实地核对采光、噪音、通勤、预算与居住舒适度后再决定。"];
     case "timing":
-      return [
-        "现实落点｜先把报告给出的较顺月份与现实条件叠加：假期、预算、工作、机票、对方时间或具体事件条件。",
-        "月份排序只用于缩小窗口，不把整年切成绝对好坏。",
-      ];
+      return ["优先准备报告列出的较顺月份，同时保留一个现实可行的备选窗口。"];
     case "choice":
-      return [
-        "现实落点｜两个选项统一用同一套标准比较：收益、成本、责任、距离、风险与退出条件。",
-        "无法量化或没有资料的部分明确留白，不用命盘替事实补空。",
-      ];
+      return ["先排除代价无法承受的选项，再比较长期收益与退出难度。"];
     case "past":
-      return [
-        "现实落点｜只把已排出的宫位当作自我观察线索，不用它给现实关系或重大决定背书。",
-      ];
+      return ["把结果当作自我观察线索，重点看它能否解释现实中反复出现的模式。"];
     case "self":
     default:
-      return [
-        `现实落点｜${reading.rhythm}`,
-        "用最近三次真实事件核对这条模式，再决定要不要保留。",
-      ];
+      return ["从最近三次真实经历中找共同点，再决定下一步要改变什么。"];
   }
 }
 
 function page7Guide(chart: Chart, reading: Reading): string[] {
   if (chart.usefulProvisional) {
     return [
-      "正式取用尚未完成。",
-      "当前只得到流通粗候选，不足以负责任地给出幸运色、方位、时段、宠物、摆设或职业吉凶。此页暂不硬填。",
-      `流通粗候选（待覆核）：${chart.useful.join("、") || "—"}　暂不必放大：${chart.drain.join("、") || "—"}`,
-      "不要把上面的粗候选叫作喜用神。",
+      "颜色与方位不必刻意追求固定答案。",
+      "现阶段更重要的是选择让你精神稳定、行动顺畅、能够长期坚持的环境与安排。",
     ];
   }
   return [
@@ -172,38 +130,25 @@ function page7Guide(chart: Chart, reading: Reading): string[] {
   ].filter(Boolean);
 }
 
-function methodLines(protocol?: MethodProtocol): string[] {
-  if (!protocol) return ["方法协议未附带。"];
-  const cards = [protocol.primary, ...protocol.selected].slice(0, 4);
-  return [
-    protocol.routingReason,
-    ...cards.map((c) => `${c.name}｜${c.status}｜${c.strength}`),
-  ];
-}
-
 /**
  * 付费九页结构化报告。
  * 关键规则：只消费已经由 answer-contract 校验后的 reading；报告层不得再另写一套旧判断。
  */
 export function composeNinePages(result: AnalysisResult): NinePage[] {
-  const { question, chart, reading, methodProtocol, palm, id, createdAt } = result;
+  const { question, chart, reading, palm } = result;
   const pillars = chart.pillars
     .map((col) =>
       isReadyPillar(col)
         ? `${col.label} ${col.ganZhi}（${col.nayin}／${col.shiShenGan}／十二长生${col.diShi}）`
-        : `${col.label} 未定（不伪造午时）`,
+        : `${col.label} 暂未确定`,
     )
     .join("\n");
 
   const page1: NinePage = {
     pageNo: 1,
     key: "question",
-    title: `你真正问的是：${question}`,
-    body: [
-      reading.directAnswer,
-      "本页只使用已经通过全站回答契约的结论；时间、地点、比较、医疗、投资等问题都必须先覆盖原问题本身。",
-      "先给结论，再看为什么。",
-    ],
+    title: "核心结论",
+    body: [customerDirectAnswer(question, reading.directAnswer)],
     evidence: {
       facts: ["question", "reading.kind", "reading.directAnswer"],
       conditions: ["首屏必须覆盖用户真正问到的维度", "复合问题必须逐项回答"],
@@ -215,28 +160,16 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
   const page2Body = [
     pillars,
     `日主 ${chart.dayMaster}${chart.dayMasterElement}　月令 ${chart.monthBranch}`,
-    `出生地／时区：${chart.cityLabel}／${chart.timezone}`,
-    chart.usedTrueSolar && !chart.timeUnknown
-      ? `真太阳时：${chart.trueSolarStamp}`
-      : chart.timeUnknown
-        ? "真太阳时：时辰未定，不作校正"
-        : "真太阳时：未套用",
     chart.currentDayun
       ? `当前大运：${chart.currentDayun.ganZhi}（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）`
-      : chart.timeUnknown
-        ? "大运：时辰未定，起运留白"
-        : chart.gender === "unspecified"
-          ? "大运：缺性别，整盘起运留白"
-          : "大运：未进入可标示区间",
-    `胎元 ${chart.taiyuan}　命宫 ${chart.minggong}`,
-    chart.provenance,
-    "月令按太阳黄经节气取，不按公历月份。",
-  ];
+      : "",
+    chart.timeUnknown ? "出生时间尚未确定，因此时柱与大运暂不列入本次判断。" : "",
+  ].filter(Boolean);
 
   const page2: NinePage = {
     pageNo: 2,
     key: "chart",
-    title: "这张盘凭什么这样排",
+    title: "命盘概览",
     body: page2Body,
     evidence: {
       facts: ["pillars", "monthBranch", "dayMaster", "timezone", "trueSolar", "dayun"],
@@ -249,14 +182,8 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
   const page3: NinePage = {
     pageNo: 3,
     key: "rhythm",
-    title: "你整个人生怎么运转",
-    body: [
-      reading.rhythm,
-      `旺衰底盘：${chart.strength.tendency}`,
-      chart.strength.summary,
-      `得令 ${chart.strength.deLing ? "成立" : "不足"}／得地 ${chart.strength.deDi ? "成立" : "不足"}／得势 ${chart.strength.deShi ? "成立" : "不足"}`,
-      "这是当前旺衰底盘，不等于 STONE Core 12 步已经完成。",
-    ],
+    title: "你的内在节奏",
+    body: [customerCopy(reading.rhythm)].filter(Boolean),
     evidence: {
       facts: ["chart.strength.*", "reading.rhythm"],
       conditions: ["只可称旺衰底盘"],
@@ -268,7 +195,7 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
   const page4: NinePage = {
     pageNo: 4,
     key: "themes",
-    title: reading.kind === "timing" ? "时间窗口为什么这样排" : "这题真正反复出现的课题",
+    title: reading.kind === "timing" ? "如何安排" : hasMultiTopicAnswer(reading) ? "分别来看" : "这件事的重点",
     body: page4Body(question, reading),
     evidence: {
       facts: ["reading.kind", "reading.directAnswer", "reading.rhythm", "对应主题字段"],
@@ -282,12 +209,7 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
     pageNo: 5,
     key: "decree",
     title: "个人命诰",
-    body: [
-      "命诰",
-      reading.decree,
-      "这段命诰只把前面已经成立的判断压缩成一句可记住的话，不新增宫位、星曜或隐藏算法。",
-      `昭梧 · 命理档案 ${id}`,
-    ],
+    body: [customerCopy(reading.decree)].filter(Boolean),
     evidence: {
       facts: ["reading.decree", "已成立主判"],
       conditions: ["命诰必须能被第 1–4 页的事实回溯"],
@@ -312,7 +234,7 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
   const page7: NinePage = {
     pageNo: 7,
     key: "guide",
-    title: chart.usefulProvisional ? "正式取用尚未完成" : "颜色 · 方位 · 时段",
+    title: chart.usefulProvisional ? "适合你的生活环境" : "颜色 · 方位 · 时段",
     body: page7Guide(chart, reading),
     evidence: {
       facts: ["usefulProvisional", "guide"],
@@ -326,15 +248,7 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
     pageNo: 8,
     key: "priority",
     title: "现在最该做的一件事",
-    body: [
-      "最高优先行动",
-      reading.action,
-      chart.currentDayun
-        ? `你目前处于 ${chart.currentDayun.ganZhi} 大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）`
-        : "",
-      `流年背景：${chart.currentYear}`,
-      "先做这一件，其他建议才有意义。",
-    ].filter(Boolean),
+    body: [customerCopy(reading.action)].filter(Boolean),
     evidence: {
       facts: ["reading.action", "currentDayun", "currentYear"],
       conditions: ["有可靠大运才显示大运句"],
@@ -344,22 +258,15 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
   };
 
   const palmNote =
-    reading.kind === "past" && palm
-      ? palm.ready
-        ? `前世四宫已执行：${palm.palaces.map((x) => `${x.zhi}・${x.star}｜${x.dao}`).join("；")}`
-        : `前世盘未齐：缺 ${palm.missing.join("、")}`
+    reading.kind === "past" && palm?.ready
+      ? `前世主题：${palm.palaces.map((x) => `${x.zhi}・${x.star}｜${x.dao}`).join("；")}`
       : "";
 
   const page9: NinePage = {
     pageNo: 9,
     key: "close",
-    title: "最后一句 + 方法透明",
-    body: [
-      reading.lastLine,
-      ...methodLines(methodProtocol),
-      palmNote,
-      `报告编号 ${id} · ${createdAt}`,
-    ].filter(Boolean),
+    title: "给你的最后一句",
+    body: [customerCopy(reading.lastLine), palmNote].filter(Boolean),
     evidence: {
       facts: ["reading.lastLine", "methodProtocol", "palm"],
       conditions: ["未接入方法只显示状态，不生成内容"],
@@ -376,7 +283,7 @@ export function renderNinePageText(pages: NinePage[]): string {
     const head = `第 ${p.pageNo} 页｜${p.title}`;
     return [head, "", ...p.body].join("\n");
   });
-  return ["昭梧｜付费九页报告（ZW-NINE-1.0）", "", ...blocks].join("\n\n");
+  return ["昭梧｜专属九页报告", "", ...blocks].join("\n\n");
 }
 
 export function composeNinePageReport(result: AnalysisResult): string {
