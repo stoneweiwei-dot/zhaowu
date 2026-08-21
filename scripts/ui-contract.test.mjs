@@ -41,21 +41,23 @@ test("generated nine-page reports use the 9:16 collectible renderer", async () =
   assert.match(renderer, /Chart evidence → life meaning → visual symbol/);
 });
 
-test("site shell mounts one primary brand mark and no global icon scatter", async () => {
+test("site shell and loading use the real Zhaowu text seal, not the old emblem asset", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const intro = await source("src/components/intro-gate.tsx");
+  const seal = await source("src/components/brand-seal.tsx");
 
-  assert.match(shell, /import \{ IntroGate \}/);
-  assert.match(shell, /<IntroGate \/>/);
-  assert.match(shell, /src="\/emblems\/zhaowu-main-seal\.svg"/);
-  assert.doesNotMatch(shell, /SealScatter|showScatter/);
-  assert.match(intro, /zhaowu\.intro\.v5/);
-  assert.match(intro, /src="\/emblems\/zhaowu-main-seal\.svg"/);
-  assert.doesNotMatch(intro, /<Mark |grid-cols-4/);
-  assert.match(intro, /MAX_WAIT_MS = 7000/);
+  assert.match(shell, /import \{ BrandSeal \}/);
+  assert.match(shell, /<BrandSeal \/>/);
+  assert.match(intro, /import \{ BrandSeal \}/);
+  assert.match(intro, /<BrandSeal size="lg" decorative/);
+  assert.match(intro, /zhaowu\.intro\.v6/);
+  assert.doesNotMatch(shell, /zhaowu-main-seal\.svg|SealScatter|showScatter/);
+  assert.doesNotMatch(intro, /zhaowu-main-seal\.svg|<Mark /);
+  assert.match(seal, /<span>昭<\/span>/);
+  assert.match(seal, /<span>梧<\/span>/);
 });
 
-test("loading gate uses a single paid-report 9:16 cover logo", async () => {
+test("loading gate keeps the paid-report 9:16 cover without decorative icon clutter", async () => {
   const intro = await source("src/components/intro-gate.tsx");
   assert.match(intro, /aspect-\[9\/16\]/);
   assert.match(intro, /命運四柱解析報告/);
@@ -63,9 +65,18 @@ test("loading gate uses a single paid-report 9:16 cover logo", async () => {
   assert.match(intro, /年柱 · 月柱 · 日柱 · 時柱/);
   assert.match(intro, /9:16 · iPhone 收藏版/);
   assert.match(intro, /STONE 原創/);
-  assert.equal((intro.match(/zhaowu-main-seal\.svg/g) ?? []).length, 1);
+  assert.doesNotMatch(intro, /\/emblems\//);
   assert.doesNotMatch(intro, /bg-\[#0d0a08\]/);
+  assert.match(intro, /MAX_WAIT_MS = 7000/);
   assert.match(intro, /minWait = skipRequested \|\| reduced \|\| seenBefore\.current \? 180 : 1850/);
+});
+
+test("homepage and global CSS do not paint decorative emblem wallpaper", async () => {
+  const home = await source("src/routes/index.tsx");
+  const emblems = await source("src/emblems.css");
+  assert.doesNotMatch(home, /import \{ Mark \}|<Mark /);
+  assert.match(emblems, /body::before \{[\s\S]*content: none;[\s\S]*display: none;/);
+  assert.doesNotMatch(emblems, /background-image:[\s\S]*line-ornament-/);
 });
 
 test("every mapped emblem asset exists in the public build", async () => {

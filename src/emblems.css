@@ -1,4 +1,4 @@
-/* 昭梧东方纹章：法器 / 玉佩 / 吉祥纹样，不做 icon 九宫格。 */
+/* 昭梧东方纹章：只供具有明确内容意义的报告／画面元素使用，不再铺满全站。 */
 .zhaowu-emblem {
   display: block;
   object-fit: contain;
@@ -8,7 +8,7 @@
   filter: drop-shadow(0 2px 0 rgba(255,250,239,.72)) drop-shadow(0 10px 22px rgba(73,39,25,.16));
 }
 header .zhaowu-emblem-brand { filter: none; }
-.zhaowu-emblem-scatter { filter: saturate(.9) drop-shadow(0 12px 28px rgba(70,42,27,.08)) !important; mix-blend-mode: multiply; }
+.zhaowu-emblem-scatter { display: none !important; }
 
 .zhaowu-hero-emblem {
   width: 11.75rem !important;
@@ -46,42 +46,13 @@ header .zhaowu-emblem-brand { filter: none; }
 }
 .intro-seal { filter: drop-shadow(0 10px 18px rgba(0,0,0,.28)); }
 
-/* 2026-08-20：纯轮廓古风吉祥纹。浮在主体视觉层上方，但完全不接收点击。 */
 body {
   position: relative;
   isolation: isolate;
 }
 body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  pointer-events: none;
-  user-select: none;
-  background-image:
-    url('/emblems/line-ornament-01.svg'),
-    url('/emblems/line-ornament-02.svg'),
-    url('/emblems/line-ornament-03.svg'),
-    url('/emblems/line-ornament-04.svg'),
-    url('/emblems/line-ornament-05.svg'),
-    url('/emblems/line-ornament-06.svg');
-  background-repeat: no-repeat;
-  background-size:
-    clamp(34px, 10vw, 92px) auto,
-    clamp(34px, 10vw, 92px) auto,
-    clamp(34px, 10vw, 92px) auto,
-    clamp(34px, 10vw, 92px) auto,
-    clamp(34px, 10vw, 92px) auto,
-    clamp(34px, 10vw, 92px) auto;
-  background-position:
-    3% 12%,
-    97% 23%,
-    4% 41%,
-    96% 58%,
-    4% 74%,
-    95% 88%;
-  opacity: .38;
-  mix-blend-mode: multiply;
+  content: none;
+  display: none;
 }
 #root {
   position: relative;
@@ -98,14 +69,4 @@ header {
   .zhaowu-almanac-emblem { width: 8.5rem !important; height: 8.5rem !important; right: -2.8rem !important; top: -1.5rem !important; opacity: .7; }
   .zhaowu-step-mark { width: 6.2rem !important; height: 6.2rem !important; right: -1.5rem !important; top: -.55rem !important; opacity: .72 !important; }
   .zhaowu-faq-emblem { width: 10rem !important; height: 10rem !important; right: -3rem !important; bottom: -2rem !important; opacity: .62; }
-  body::before {
-    background-position:
-      1% 11%,
-      99% 25%,
-      2% 42%,
-      98% 59%,
-      2% 76%,
-      97% 89%;
-    opacity: .34;
-  }
 }

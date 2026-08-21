@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { BrandSeal } from "@/components/brand-seal";
 import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 
-const KEY = "zhaowu.intro.v5";
+const KEY = "zhaowu.intro.v6";
 const FADE_MS = 520;
 const MAX_WAIT_MS = 7000;
 
@@ -85,12 +86,7 @@ export function IntroGate() {
           <div className="relative z-10 flex h-full flex-col items-center px-8 pb-8 pt-12 text-center sm:px-10">
             <p className="text-[9px] font-semibold tracking-[0.30em] text-[#8d6d35]">ZHAOWU · PRIVATE EDITION</p>
 
-            <img
-              src="/emblems/zhaowu-main-seal.svg"
-              alt=""
-              aria-hidden
-              className="mt-9 h-28 w-28 object-contain opacity-95 sm:h-32 sm:w-32"
-            />
+            <BrandSeal size="lg" decorative className="mt-9" />
 
             <h1 className="mt-6 font-display text-[3.25rem] font-semibold leading-none tracking-[0.16em] text-[#28231d]">昭梧</h1>
             <p className="mt-4 font-display text-base tracking-[0.16em] text-[#5f503c]">命運四柱解析報告</p>

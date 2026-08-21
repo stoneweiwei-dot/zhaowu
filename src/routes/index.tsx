@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnalysisForm } from "@/components/analysis-form";
 import { FollowUpBox } from "@/components/follow-up-box";
-import { Mark } from "@/components/marks";
 import { PaidReportShowcase } from "@/components/paid-report-showcase";
 import { ResultView } from "@/components/result-view";
 import { useI18n } from "@/lib/i18n";
@@ -9,16 +8,12 @@ import { useAppStore } from "@/lib/store";
 
 export const Route = createFileRoute("/")({ component: Home });
 
-const STEPS = [
-  { key: "s1" as const, mark: "06" },
-  { key: "s2" as const, mark: "16" },
-  { key: "s3" as const, mark: "17" },
-];
+const STEPS = ["s1", "s2", "s3"] as const;
 
 const PROOFS = [
-  { title: "proofPrimaryTitle" as const, body: "proofPrimaryBody" as const, mark: "02" },
-  { title: "proofPastTitle" as const, body: "proofPastBody" as const, mark: "01" },
-  { title: "proofBoundaryTitle" as const, body: "proofBoundaryBody" as const, mark: "04" },
+  { title: "proofPrimaryTitle" as const, body: "proofPrimaryBody" as const },
+  { title: "proofPastTitle" as const, body: "proofPastBody" as const },
+  { title: "proofBoundaryTitle" as const, body: "proofBoundaryBody" as const },
 ];
 
 function Home() {
@@ -32,8 +27,6 @@ function Home() {
         aria-labelledby="zhaowu-title"
       >
         <div className="pointer-events-none absolute inset-2 rounded-[1rem] border border-[#d7b76f]/20 sm:inset-3 sm:rounded-[1.45rem]" aria-hidden />
-        <Mark id="brand" size={300} eager className="pointer-events-none absolute -right-14 top-9 w-40 rotate-[8deg] opacity-15 sm:-right-12 sm:top-8 sm:w-72 sm:opacity-35" />
-        <Mark id="04" size={150} className="pointer-events-none absolute -bottom-12 -left-10 hidden w-36 -rotate-12 opacity-15 sm:block" />
 
         <div className="relative z-10 max-w-2xl">
           <p className="text-[10px] font-semibold tracking-[0.25em] text-[#d5b16b] sm:text-[11px] sm:tracking-[0.32em]">ZHAOWU · {t("heroKicker")}</p>
@@ -71,10 +64,9 @@ function Home() {
 
       <section className="grid overflow-hidden rounded-[1.5rem] border border-line/80 bg-cream/72 sm:grid-cols-3" aria-label={t("steps")}>
         {STEPS.map((step, index) => (
-          <article key={step.key} className="relative min-h-32 overflow-hidden border-b border-line/70 p-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
+          <article key={step} className="relative min-h-32 overflow-hidden border-b border-line/70 p-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
             <p className="font-display text-3xl text-cinnabar/80">0{index + 1}</p>
-            <p className="relative z-10 mt-3 max-w-[14rem] pr-14 font-display text-base leading-7 tracking-[0.03em] text-ink">{t(step.key)}</p>
-            <Mark id={step.mark} size={110} className="pointer-events-none absolute -bottom-5 -right-5 w-24 rotate-6 opacity-25" />
+            <p className="relative z-10 mt-3 max-w-[14rem] font-display text-base leading-7 tracking-[0.03em] text-ink">{t(step)}</p>
           </article>
         ))}
       </section>
@@ -88,9 +80,8 @@ function Home() {
           {PROOFS.map((proof, index) => (
             <article key={proof.title} className="relative min-h-48 overflow-hidden rounded-xl border border-line/75 bg-cream/72 p-5">
               <span className="text-xs tracking-[0.2em] text-cinnabar">0{index + 1}</span>
-              <h3 className="mt-5 pr-12 font-display text-lg font-semibold tracking-[0.05em] text-ink">{t(proof.title)}</h3>
+              <h3 className="mt-5 font-display text-lg font-semibold tracking-[0.05em] text-ink">{t(proof.title)}</h3>
               <p className="relative z-10 mt-3 text-sm leading-7 text-ink-soft">{t(proof.body)}</p>
-              <Mark id={proof.mark} size={100} className="pointer-events-none absolute -right-5 -top-4 w-24 rotate-6 opacity-20" />
             </article>
           ))}
         </div>
