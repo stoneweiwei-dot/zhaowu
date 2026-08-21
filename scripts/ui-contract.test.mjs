@@ -41,29 +41,29 @@ test("generated nine-page reports use the 9:16 collectible renderer", async () =
   assert.match(renderer, /Chart evidence → life meaning → visual symbol/);
 });
 
-test("site shell mounts the loading gate and scattered emblem layer", async () => {
+test("site shell mounts one primary brand mark and no global icon scatter", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const intro = await source("src/components/intro-gate.tsx");
-  const marks = await source("src/components/marks.tsx");
 
   assert.match(shell, /import \{ IntroGate \}/);
-  assert.match(shell, /import \{ SealScatter \}/);
   assert.match(shell, /<IntroGate \/>/);
-  assert.match(shell, /showScatter \? <SealScatter \/>/);
-  assert.match(intro, /zhaowu\.intro\.v4/);
+  assert.match(shell, /src="\/emblems\/zhaowu-main-seal\.svg"/);
+  assert.doesNotMatch(shell, /SealScatter|showScatter/);
+  assert.match(intro, /zhaowu\.intro\.v5/);
+  assert.match(intro, /src="\/emblems\/zhaowu-main-seal\.svg"/);
+  assert.doesNotMatch(intro, /<Mark |grid-cols-4/);
   assert.match(intro, /MAX_WAIT_MS = 7000/);
-  assert.match(intro, /t\("introLoadingAuth"\)/);
-  assert.match(intro, /t\("introLoadingPage"\)/);
-  assert.equal((marks.match(/id="scatter-[a-i]" eager/g) ?? []).length, 9);
 });
 
-test("loading gate uses the paid-report 9:16 cover language", async () => {
+test("loading gate uses a single paid-report 9:16 cover logo", async () => {
   const intro = await source("src/components/intro-gate.tsx");
   assert.match(intro, /aspect-\[9\/16\]/);
   assert.match(intro, /命運四柱解析報告/);
-  assert.match(intro, /四柱繪意 · PRIVATE EDITION/);
+  assert.match(intro, /四柱繪意/);
+  assert.match(intro, /年柱 · 月柱 · 日柱 · 時柱/);
   assert.match(intro, /9:16 · iPhone 收藏版/);
   assert.match(intro, /STONE 原創/);
+  assert.equal((intro.match(/zhaowu-main-seal\.svg/g) ?? []).length, 1);
   assert.doesNotMatch(intro, /bg-\[#0d0a08\]/);
   assert.match(intro, /minWait = skipRequested \|\| reduced \|\| seenBefore\.current \? 180 : 1850/);
 });
