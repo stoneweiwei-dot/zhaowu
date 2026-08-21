@@ -50,7 +50,7 @@ test("site shell and loading use the real Zhaowu text seal, not the old emblem a
   assert.match(shell, /<BrandSeal \/>/);
   assert.match(intro, /import \{ BrandSeal \}/);
   assert.match(intro, /<BrandSeal size="lg" decorative/);
-  assert.match(intro, /zhaowu\.intro\.v6/);
+  assert.match(intro, /zhaowu\.intro\.v7/);
   assert.doesNotMatch(shell, /zhaowu-main-seal\.svg|SealScatter|showScatter/);
   assert.doesNotMatch(intro, /zhaowu-main-seal\.svg|<Mark /);
   assert.match(seal, /<span>昭<\/span>/);
@@ -69,6 +69,15 @@ test("loading gate keeps the paid-report 9:16 cover without decorative icon clut
   assert.doesNotMatch(intro, /bg-\[#0d0a08\]/);
   assert.match(intro, /MAX_WAIT_MS = 7000/);
   assert.match(intro, /minWait = skipRequested \|\| reduced \|\| seenBefore\.current \? 180 : 1850/);
+});
+
+test("loading gate fully unmounts instead of leaving a translucent ghost over the homepage", async () => {
+  const intro = await source("src/components/intro-gate.tsx");
+  assert.match(intro, /setPhase\("off"\)/);
+  assert.match(intro, /if \(phase === "off"\) return null/);
+  assert.doesNotMatch(intro, /phase === "out"/);
+  assert.doesNotMatch(intro, /transition-opacity/);
+  assert.doesNotMatch(intro, /pointer-events-none opacity-0/);
 });
 
 test("homepage and global CSS do not paint decorative emblem wallpaper", async () => {
