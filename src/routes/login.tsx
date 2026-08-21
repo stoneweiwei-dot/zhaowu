@@ -27,6 +27,12 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Safari restores this page from its back-forward cache after a failed
+    // provider redirect. Clear the transient OAuth lock so Email remains usable.
+    const resetOAuthBusy = () => setOauthBusy(null);
+    window.addEventListener("pageshow", resetOAuthBusy);
+    window.addEventListener("focus", resetOAuthBusy);
+
     let alive = true;
     void (async () => {
       try {
@@ -43,6 +49,8 @@ function LoginPage() {
     })();
     return () => {
       alive = false;
+      window.removeEventListener("pageshow", resetOAuthBusy);
+      window.removeEventListener("focus", resetOAuthBusy);
     };
   }, [navigate, reload, t]);
 
@@ -182,7 +190,7 @@ function LoginPage() {
           {message ? <p role="status" className="rounded-md border border-wood/30 bg-wood/5 px-4 py-3 text-sm leading-6 text-wood">{message}</p> : null}
           {error ? <p role="alert" className="rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm leading-6 text-cinnabar-deep">{error}</p> : null}
 
-          <button type="submit" disabled={busy || !supabaseConfigured || oauthBusy !== null} className="h-12 w-full rounded-full bg-cinnabar px-6 text-base text-cream disabled:opacity-50">
+          <button type="submit" disabled={busy || !supabaseConfigured} className="h-12 w-full rounded-full bg-cinnabar px-6 text-base text-cream disabled:opacity-50">
             {busy ? t("processing") : mode === "login" ? t("loginTab") : t("createAccount")}
           </button>
         </form>
