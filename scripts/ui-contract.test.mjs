@@ -57,6 +57,17 @@ test("site shell mounts the loading gate and scattered emblem layer", async () =
   assert.equal((marks.match(/id="scatter-[a-i]" eager/g) ?? []).length, 9);
 });
 
+test("loading gate uses the paid-report 9:16 cover language", async () => {
+  const intro = await source("src/components/intro-gate.tsx");
+  assert.match(intro, /aspect-\[9\/16\]/);
+  assert.match(intro, /命運四柱解析報告/);
+  assert.match(intro, /四柱繪意 · PRIVATE EDITION/);
+  assert.match(intro, /9:16 · iPhone 收藏版/);
+  assert.match(intro, /STONE 原創/);
+  assert.doesNotMatch(intro, /bg-\[#0d0a08\]/);
+  assert.match(intro, /minWait = skipRequested \|\| reduced \|\| seenBefore\.current \? 180 : 1850/);
+});
+
 test("every mapped emblem asset exists in the public build", async () => {
   const marks = await source("src/components/marks.tsx");
   const assets = [...marks.matchAll(/"\/emblems\/([^\"]+)"/g)].map((match) => match[1]);
