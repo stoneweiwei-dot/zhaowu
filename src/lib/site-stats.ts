@@ -1,5 +1,9 @@
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "";
+const FALLBACK_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
+// Supabase publishable keys are designed for public/browser clients. Authorization remains enforced by RLS/RPC policies.
+const FALLBACK_SUPABASE_KEY = "sb_publishable_7prU26nA0AX7dny0PW_ReA_GKwI588H";
+
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL).replace(/\/$/, "");
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || FALLBACK_SUPABASE_KEY;
 const VISITOR_KEY = "zhaowu.visitor.v1";
 
 export type PublicSiteStats = {
@@ -43,7 +47,7 @@ export async function recordVisit() {
 
 export async function getPublicSiteStats(): Promise<PublicSiteStats> {
   if (!SUPABASE_URL || !SUPABASE_KEY) {
-    return { totalVisits: 0, todayVisits: 0, version: "—", updateNumber: 0, publishedAt: null };
+    throw new Error("Public site statistics are not configured.");
   }
 
   const [settingsRes, releaseRes] = await Promise.all([
@@ -51,8 +55,12 @@ export async function getPublicSiteStats(): Promise<PublicSiteStats> {
     fetch(`${SUPABASE_URL}/rest/v1/release_history?select=version,update_number,published_at&order=published_at.desc&limit=1`, { headers: publicHeaders() }),
   ]);
 
-  const settings = settingsRes.ok ? await settingsRes.json() as { value?: { total?: number; today?: number } }[] : [];
-  const releases = releaseRes.ok ? await releaseRes.json() as { version?: string; update_number?: number; published_at?: string }[] : [];
+  if (!settingsRes.ok || !releaseRes.ok) {
+    throw new Error(`Public site statistics failed: HTTP ${settingsRes.status}/${releaseRes.status}`);
+  }
+
+  const settings = await settingsRes.json() as { value?: { total?: number; today?: number } }[];
+  const releases = await releaseRes.json() as { version?: string; update_number?: number; published_at?: string }[];
 
   return {
     totalVisits: Number(settings[0]?.value?.total ?? 0),
