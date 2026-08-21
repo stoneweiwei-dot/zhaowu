@@ -296,7 +296,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       {ninePages ? (
         <article className="seal-border space-y-6 rounded-xl bg-cream/95 p-5 sm:p-7">
-          <p className="text-xs tracking-[0.28em] text-cinnabar">昭梧｜付費九頁報告（ZW-NINE-1.0）</p>
+          <p className="text-xs tracking-[0.28em] text-cinnabar">昭梧｜專屬九頁報告</p>
           {ninePages.map((p) => (
             <div key={p.key} className="border-t border-line pt-4 first:border-0 first:pt-0">
               <p className="text-xs tracking-[0.2em] text-cinnabar">第 {p.pageNo} 頁｜{p.title}</p>
