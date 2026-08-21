@@ -64,7 +64,7 @@ test("2027旅行九页必须使用最新流月结果，不再说尚未补算", (
 
   assert.match(p1.body.join("\n"), /2027/);
   assert.match(p1.body.join("\n"), /較順的窗口/);
-  assert.match(p1.body.join("\n"), /排序依據/);
+  assert.doesNotMatch(p1.body.join("\n"), /你問的是|你问的是|排序依據|排序依据/);
   assert.doesNotMatch(report, /没有完成 2027|沒有完成 2027|还必须补算|還必須補算/);
   assert.doesNotMatch(p4.body.join("\n"), /当前这份结果只带有|當前這份結果只帶有/);
 });
@@ -102,7 +102,7 @@ test("第6页解释现实使用方式，第8页才放唯一最高优先行动", 
   const p8 = page(result, 8).body.join("\n");
   assert.ok(!p6.includes(result.reading.action));
   assert.ok(p8.includes(result.reading.action));
-  assert.match(p8, /最高优先行动/);
+  assert.equal(page(result, 8).body.length, 1);
 });
 
 test("正式取用未完成时，第7页继续禁止幸运色方位宠物", () => {
@@ -110,8 +110,8 @@ test("正式取用未完成时，第7页继续禁止幸运色方位宠物", () =
   const p7 = page(result, 7);
   const text = p7.body.join("\n");
   assert.equal(result.chart.usefulProvisional, true);
-  assert.match(text, /正式取用尚未完成/);
-  assert.match(text, /此页暂不硬填/);
+  assert.match(text, /不必刻意追求固定答案/);
+  assert.doesNotMatch(text, /正式取用尚未完成|此页暂不硬填|粗候选|喜用神/);
   assert.doesNotMatch(text, /较有利颜色：.+[^—]/);
 });
 
@@ -126,4 +126,22 @@ test("未知时辰在九页排盘页明确留白，不伪造时柱与大运", ()
   assert.match(p2, /时柱 未定|時柱 未定|时辰未定|時辰未定/);
   assert.match(p2, /大运：时辰未定|大運：時辰未定/);
   assert.match(p1, /出生時間未確定/);
+});
+
+
+test("客户九页不得出现内部验收、未接入状态、编号与时间戳", () => {
+  const result = makeResult("我什麼時候適合去度假，去哪裡最好？2027 是不是不適合我出行？");
+  const report = composeNinePageReport(result);
+  assert.doesNotMatch(
+    report,
+    /全站回答契約|全站回答契约|資料未接入|资料未接入|正式取用尚未完成|粗候選|粗候选|方法透明|報告編號|报告编号|qa-nine-page|2026-08-20T00:00:00|ZW-NINE|隱藏算法|隐藏算法|為什麼這樣排|为什么这样排/,
+  );
+});
+
+test("客户九页不重复问题与直接答案", () => {
+  const result = makeResult("我何時適合換工作？");
+  const pages = composeNinePages(result);
+  const allBodies = pages.flatMap((p) => p.body);
+  assert.equal(allBodies.filter((line) => line === result.reading.directAnswer).length, 0);
+  assert.doesNotMatch(pages[0].body.join("\n"), /^你[問问]的是/);
 });
