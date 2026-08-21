@@ -9,6 +9,8 @@ const VISITOR_KEY = "zhaowu.visitor.v1";
 
 export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_KEY);
 
+export type OAuthProvider = "google" | "apple" | "twitter";
+
 export type SupabaseUser = {
   id: string;
   email?: string | null;
@@ -195,6 +197,58 @@ export async function signUpWithPassword(email: string, password: string, displa
     return { session, user: out.user };
   }
   return { session: null, user: out.user };
+}
+
+/** Start OAuth redirect for Google / Apple / X (twitter). */
+export function startOAuth(provider: OAuthProvider, redirectTo?: string) {
+  if (!supabaseConfigured) throw new Error("登入服務尚未配置。");
+  if (typeof window === "undefined") throw new Error("OAuth 只能在瀏覽器啟動。");
+  const target = redirectTo ?? `${window.location.origin}/login`;
+  const url = new URL(`${SUPABASE_URL}/auth/v1/authorize`);
+  url.searchParams.set("provider", provider);
+  url.searchParams.set("redirect_to", target);
+  window.location.assign(url.toString());
+}
+
+async function fetchUser(accessToken: string): Promise<SupabaseUser> {
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: headers(accessToken),
+  });
+  return jsonOrError<SupabaseUser>(res);
+}
+
+/** Capture OAuth tokens from URL hash or query after provider redirect. */
+export async function captureOAuthRedirect(): Promise<SupabaseSession | null> {
+  if (!supabaseConfigured || typeof window === "undefined") return null;
+
+  const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : "";
+  const search = window.location.search.startsWith("?") ? window.location.search.slice(1) : "";
+  const params = new URLSearchParams(hash || search);
+
+  const errorDescription = params.get("error_description") || params.get("error");
+  if (errorDescription) {
+    throw new Error(errorDescription);
+  }
+
+  const accessToken = params.get("access_token");
+  const refreshToken = params.get("refresh_token");
+  if (!accessToken || !refreshToken) return null;
+
+  const expiresIn = Number(params.get("expires_in") ?? 3600);
+  const tokenType = params.get("token_type") ?? "bearer";
+  const user = await fetchUser(accessToken);
+  const session = saveSession({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    expires_in: expiresIn,
+    token_type: tokenType,
+    user,
+  });
+
+  // Clean sensitive tokens from the address bar.
+  const cleanUrl = `${window.location.origin}${window.location.pathname}`;
+  window.history.replaceState({}, document.title, cleanUrl);
+  return session;
 }
 
 export async function signOutRemote(session?: SupabaseSession | null) {
