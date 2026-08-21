@@ -65,6 +65,47 @@ function drawMountain(ctx: CanvasRenderingContext2D, y: number, fill: string, al
   ctx.restore();
 }
 
+function drawCornerOrnament(ctx: CanvasRenderingContext2D, x: number, y: number, flipX = false, flipY = false) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1);
+  ctx.strokeStyle = "rgba(174, 132, 62, 0.46)";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(0, 82);
+  ctx.bezierCurveTo(42, 42, 84, 38, 122, 0);
+  ctx.moveTo(0, 118);
+  ctx.bezierCurveTo(66, 58, 120, 70, 182, 12);
+  ctx.moveTo(40, 142);
+  ctx.bezierCurveTo(88, 110, 136, 118, 196, 58);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawSacredGeometry(ctx: CanvasRenderingContext2D, accent: string) {
+  ctx.save();
+  ctx.translate(540, 760);
+  ctx.strokeStyle = "rgba(180, 143, 73, 0.52)";
+  ctx.lineWidth = 3;
+  for (const r of [300, 262, 186]) {
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 0.22;
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = 2;
+  for (let i = 0; i < 8; i++) {
+    ctx.rotate(Math.PI / 4);
+    ctx.beginPath();
+    ctx.moveTo(0, -315);
+    ctx.lineTo(0, 315);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 function splitLines(
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -96,7 +137,7 @@ function splitLines(
 
 function drawWatermarks(ctx: CanvasRenderingContext2D) {
   ctx.save();
-  ctx.fillStyle = "rgba(64, 48, 35, 0.11)";
+  ctx.fillStyle = "rgba(64, 48, 35, 0.10)";
   ctx.font = "600 42px -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Noto Sans CJK TC', sans-serif";
   ctx.textAlign = "center";
   ctx.translate(540, 970);
@@ -124,17 +165,17 @@ export async function renderDecreePng(result: AnalysisResult): Promise<string> {
 
   const bg = ctx.createLinearGradient(0, 0, 0, 1920);
   bg.addColorStop(0, palette.top);
-  bg.addColorStop(0.48, palette.mid);
+  bg.addColorStop(0.42, palette.mid);
   bg.addColorStop(1, palette.bottom);
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, 1080, 1920);
 
-  const glow = ctx.createRadialGradient(540, 780, 30, 540, 780, 620);
-  glow.addColorStop(0, "rgba(255,255,246,0.95)");
-  glow.addColorStop(0.52, "rgba(255,250,232,0.42)");
-  glow.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 120, 1080, 1450);
+  const halo = ctx.createRadialGradient(540, 735, 40, 540, 735, 690);
+  halo.addColorStop(0, "rgba(255,255,246,0.98)");
+  halo.addColorStop(0.42, "rgba(255,250,232,0.48)");
+  halo.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = halo;
+  ctx.fillRect(0, 90, 1080, 1500);
 
   // soft mineral-paper grain
   ctx.save();
@@ -148,32 +189,30 @@ export async function renderDecreePng(result: AnalysisResult): Promise<string> {
   }
   ctx.restore();
 
-  drawMountain(ctx, 1420, palette.accent, 0.11);
-  drawMountain(ctx, 1540, palette.accent2, 0.13);
+  drawMountain(ctx, 1400, palette.accent, 0.12);
+  drawMountain(ctx, 1540, palette.accent2, 0.15);
 
   for (const [x, y, s, a] of [
     [230, 340, 0.8, 0.16], [820, 430, 0.66, 0.14], [220, 1280, 0.58, 0.11], [865, 1190, 0.72, 0.12],
   ] as const) drawCloud(ctx, x, y, s, palette.accent, a);
 
-  ctx.save();
-  ctx.strokeStyle = "rgba(180, 143, 73, 0.52)";
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.arc(540, 760, 300, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.globalAlpha = 0.6;
-  ctx.beginPath();
-  ctx.arc(540, 760, 262, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.restore();
+  drawCornerOrnament(ctx, 115, 210, false, false);
+  drawCornerOrnament(ctx, 965, 210, true, false);
+  drawCornerOrnament(ctx, 115, 1450, false, true);
+  drawCornerOrnament(ctx, 965, 1450, true, true);
+  drawSacredGeometry(ctx, palette.accent);
 
   // inner decree panel
   ctx.save();
-  ctx.fillStyle = "rgba(255, 252, 243, 0.58)";
-  ctx.strokeStyle = "rgba(171, 132, 68, 0.52)";
-  ctx.lineWidth = 2;
-  roundRect(ctx, 120, 230, 840, 1210, 42);
+  ctx.fillStyle = "rgba(255, 252, 243, 0.48)";
+  ctx.strokeStyle = "rgba(171, 132, 68, 0.58)";
+  ctx.lineWidth = 3;
+  roundRect(ctx, 100, 205, 880, 1265, 48);
   ctx.fill();
+  ctx.stroke();
+  ctx.strokeStyle = "rgba(171, 132, 68, 0.23)";
+  ctx.lineWidth = 2;
+  roundRect(ctx, 132, 238, 816, 1198, 36);
   ctx.stroke();
   ctx.restore();
 
@@ -182,12 +221,12 @@ export async function renderDecreePng(result: AnalysisResult): Promise<string> {
   ctx.textAlign = "center";
   ctx.fillStyle = palette.accent;
   ctx.font = "600 34px -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Noto Sans CJK TC', sans-serif";
-  ctx.fillText(overlay.top, 540, 340);
+  ctx.fillText(overlay.top, 540, 328);
 
   ctx.fillStyle = "#3d3028";
-  ctx.font = "600 68px 'Songti TC', 'STSong', 'Noto Serif CJK TC', serif";
-  const lines = splitLines(ctx, overlay.center, 690, 8);
-  const lineHeight = 104;
+  ctx.font = "600 66px 'Songti TC', 'STSong', 'Noto Serif CJK TC', serif";
+  const lines = splitLines(ctx, overlay.center, 700, 8);
+  const lineHeight = 102;
   const total = Math.max(lineHeight, lines.length * lineHeight);
   let y = 760 - total / 2 + lineHeight * 0.8;
   for (const line of lines) {
@@ -197,13 +236,13 @@ export async function renderDecreePng(result: AnalysisResult): Promise<string> {
 
   // small seal
   ctx.save();
-  ctx.strokeStyle = "rgba(150, 45, 34, 0.75)";
+  ctx.strokeStyle = "rgba(150, 45, 34, 0.78)";
   ctx.fillStyle = "rgba(150, 45, 34, 0.08)";
   ctx.lineWidth = 4;
   roundRect(ctx, 772, 1220, 116, 116, 10);
   ctx.fill();
   ctx.stroke();
-  ctx.fillStyle = "rgba(150, 45, 34, 0.9)";
+  ctx.fillStyle = "rgba(150, 45, 34, 0.92)";
   ctx.font = "600 28px 'Songti TC', 'STSong', serif";
   ctx.fillText("昭梧", 830, 1272);
   ctx.fillText("命誥", 830, 1312);
