@@ -7,6 +7,7 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { Mark } from "@/components/marks";
+import { PaidReportPages } from "@/components/paid-report-pages";
 import { composeNinePages, type NinePage } from "@/lib/report/nine-page";
 import { decreeImagePackage, type DecreeOverlay } from "@/lib/report/decree-image";
 import { renderDecreePng } from "@/lib/report/decree-render";
@@ -294,17 +295,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </article>
       ) : null}
 
-      {ninePages ? (
-        <article className="seal-border space-y-6 rounded-xl bg-cream/95 p-5 sm:p-7">
-          <p className="text-xs tracking-[0.28em] text-cinnabar">昭梧｜專屬九頁報告</p>
-          {ninePages.map((p) => (
-            <div key={p.key} className="border-t border-line pt-4 first:border-0 first:pt-0">
-              <p className="text-xs tracking-[0.2em] text-cinnabar">第 {p.pageNo} 頁｜{p.title}</p>
-              <div className="mt-3 space-y-2 text-sm leading-7 text-ink-soft">{p.body.map((line, i) => <p key={i}>{line}</p>)}</div>
-            </div>
-          ))}
-        </article>
-      ) : null}
+      {ninePages ? <PaidReportPages pages={ninePages} /> : null}
 
       {decreeOverlay && decreeImageUrl ? (
         <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
