@@ -6,7 +6,6 @@ import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/site-stats";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 import { IntroGate } from "@/components/intro-gate";
-import { SealScatter } from "@/components/marks";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -20,7 +19,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const showScatter = pathname !== "/login";
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
   const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
 
@@ -57,11 +55,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
         />
       ) : null}
       <IntroGate />
-      {showScatter ? <SealScatter /> : null}
       <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/92 backdrop-blur-md">
         <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
           <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-cinnabar/30 bg-paper text-xs font-display text-cinnabar sm:h-9 sm:w-9 sm:text-sm">昭</span>
+            <img
+              src="/emblems/zhaowu-main-seal.svg"
+              alt=""
+              aria-hidden
+              className="h-9 w-9 shrink-0 object-contain sm:h-10 sm:w-10"
+            />
             <span className="min-w-0 leading-none">
               <span className="block font-display text-base tracking-[0.18em] sm:text-lg sm:tracking-[0.2em]">{t("brand")}</span>
               <span className="hidden max-w-[16rem] truncate text-[10px] tracking-[0.15em] text-ink-mute sm:block">{t("tagline")}</span>
