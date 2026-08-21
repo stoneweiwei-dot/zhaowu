@@ -1,18 +1,9 @@
 import type { AnalysisResult } from "@/lib/bazi/types";
 import type { NinePage } from "@/lib/report/nine-page";
-import type { DecreeOverlay } from "@/lib/report/decree-image";
+import { SUPABASE_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase-config";
 
-// These are public browser credentials (never a service-role key). Keeping a
-// production fallback prevents an omitted Vercel env var from disabling login.
-const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
-const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7prU26nA0AX7dny0PW_ReA_GKwI588H";
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "");
-const SUPABASE_KEY =
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || DEFAULT_SUPABASE_PUBLISHABLE_KEY;
+export { supabaseConfigured } from "@/lib/supabase-config";
 const SESSION_KEY = "zhaowu.supabase.session.v1";
-const VISITOR_KEY = "zhaowu.visitor.v1";
-
-export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_KEY);
 
 export type OAuthProvider = "google" | "apple" | "twitter";
 
@@ -76,14 +67,6 @@ export type ReportListRecord = Pick<
   | "created_at"
   | "updated_at"
 >;
-
-export type PublicSiteStats = {
-  totalVisits: number;
-  todayVisits: number;
-  version: string;
-  updateNumber: number;
-  publishedAt: string | null;
-};
 
 function headers(token?: string | null, extra?: HeadersInit): HeadersInit {
   return {
@@ -335,9 +318,8 @@ export async function patchReportRecord(args: {
   status: "report_ready" | "full_ready";
   fullReport?: string | null;
   ninePages?: NinePage[] | null;
-  decreeOverlay?: DecreeOverlay | null;
 }) {
-  const { session, profile, result, status, fullReport, ninePages, decreeOverlay } = args;
+  const { session, profile, result, status, fullReport, ninePages } = args;
   const patch: Record<string, unknown> = {
     status,
     payment_tier: status === "full_ready" ? "full" : "free",
@@ -345,7 +327,6 @@ export async function patchReportRecord(args: {
   };
   if (fullReport !== undefined) patch.paid_report = fullReport ? { text: fullReport } : null;
   if (ninePages !== undefined) patch.mother_draft = ninePages ? { ninePages } : null;
-  if (decreeOverlay !== undefined) patch.visual_profile = decreeOverlay ? { decreeOverlay } : null;
 
   const runPatch = async () => {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests?id=eq.${encodeURIComponent(result.id)}`, {
@@ -370,9 +351,8 @@ export async function saveReportRecord(args: {
   result: AnalysisResult;
   fullReport: string | null;
   ninePages: NinePage[] | null;
-  decreeOverlay: DecreeOverlay | null;
 }) {
-  const { session, profile, result, fullReport, ninePages, decreeOverlay } = args;
+  const { session, profile, result, fullReport, ninePages } = args;
   await createEngineReportRecord({ session, profile, result });
   return patchReportRecord({
     session,
@@ -381,7 +361,6 @@ export async function saveReportRecord(args: {
     status: "full_ready",
     fullReport,
     ninePages,
-    decreeOverlay,
   });
 }
 
@@ -412,40 +391,4 @@ export async function deleteReportRecord(session: SupabaseSession, id: string) {
     headers: headers(session.access_token, { Prefer: "return=minimal" }),
   });
   if (!res.ok) await jsonOrError(res);
-}
-
-export async function recordVisit() {
-  if (!supabaseConfigured || typeof window === "undefined") return;
-  let key = "";
-  try {
-    key = localStorage.getItem(VISITOR_KEY) ?? "";
-    if (!key) {
-      key = crypto.randomUUID();
-      localStorage.setItem(VISITOR_KEY, key);
-    }
-  } catch {
-    key = crypto.randomUUID();
-  }
-  await fetch(`${SUPABASE_URL}/rest/v1/site_visits?on_conflict=visitor_key,visited_on`, {
-    method: "POST",
-    headers: headers(null, { Prefer: "resolution=ignore-duplicates,return=minimal" }),
-    body: JSON.stringify([{ visitor_key: key }]),
-  }).catch(() => undefined);
-}
-
-export async function getPublicSiteStats(): Promise<PublicSiteStats> {
-  if (!supabaseConfigured) return { totalVisits: 0, todayVisits: 0, version: "—", updateNumber: 0, publishedAt: null };
-  const [settingsRes, releaseRes] = await Promise.all([
-    fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.visitor_count&select=value&limit=1`, { headers: headers() }),
-    fetch(`${SUPABASE_URL}/rest/v1/release_history?select=version,update_number,published_at&order=published_at.desc&limit=1`, { headers: headers() }),
-  ]);
-  const settings = settingsRes.ok ? await settingsRes.json() as { value?: { total?: number; today?: number } }[] : [];
-  const releases = releaseRes.ok ? await releaseRes.json() as { version?: string; update_number?: number; published_at?: string }[] : [];
-  return {
-    totalVisits: Number(settings[0]?.value?.total ?? 0),
-    todayVisits: Number(settings[0]?.value?.today ?? 0),
-    version: String(releases[0]?.version ?? "—"),
-    updateNumber: Number(releases[0]?.update_number ?? 0),
-    publishedAt: releases[0]?.published_at ?? null,
-  };
 }

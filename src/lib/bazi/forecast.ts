@@ -258,6 +258,51 @@ function uncertainty(chart: Chart): string {
   return "月份名稱只是方便閱讀；命理月以節氣交接為邊界，不等於公曆每月 1 日到月底。月份排序是已接入的歲運關係排序，不把它包裝成必然事件或保證日期。";
 }
 
+function singleMonthFocus(topic: ForecastTopic, score: number): string {
+  const restrained = score <= 0;
+  switch (topic) {
+    case "career":
+      return restrained
+        ? "工作上先把现有任务做稳，重要决定多留一次复核，不宜同时开启多条新线。"
+        : "工作上适合收口、交付和推动已经谈清楚的事项，再决定是否扩张。";
+    case "money":
+      return restrained
+        ? "财务上先守现金流和风险上限，暂缓高成本、难退出的决定。"
+        : "财务上可以推进已有计划，但先写清预算、风险上限和退出条件。";
+    case "love":
+      return restrained
+        ? "关系里先看持续回应和实际行动，不要用一次热度替代长期判断。"
+        : "关系里适合把话说清楚，并用持续联系和实际安排来判断进展。";
+    case "health":
+      return "这个月优先稳住睡眠、作息和身体负荷；若不适持续或加重，请及时就医。";
+    case "home":
+      return "居住决定要同时核对预算、通勤、采光和实际居住感受，不凭一个时间点仓促落定。";
+    case "travel":
+      return restrained
+        ? "行程宜少转场、留余量，并预先确认预算与体力负荷。"
+        : "可以安排出行，但仍以少转场、留余量的行程更稳。";
+    case "self":
+    default:
+      return restrained
+        ? "先收口手上的事，减少同时推进的目标，再观察下一步。"
+        : "适合先收口和交付，再决定是否扩张；不要同时开启太多新线。";
+  }
+}
+
+function singleMonthAnswer(chart: Chart, topic: ForecastTopic, period: ForecastPeriod): string {
+  const tone = period.score >= 5
+    ? "推进力较强"
+    : period.score >= 1
+      ? "整体可用"
+      : period.score <= -3
+        ? "阻力偏高"
+        : "起伏较多";
+  const precision = chart.timeUnknown
+    ? "出生时间尚未确定，因此这里只按已知盘面判断，精度会低一级。"
+    : "把它当作安排节奏的参考，不当作结果保证。";
+  return `${period.year}年${period.month}月（${period.monthGanZhi}，${period.jieStart}至${period.jieEnd}）${tone}。${singleMonthFocus(topic, period.score)}${precision}`;
+}
+
 export function buildTimingAnswer(
   chart: Chart,
   topic: ForecastTopic,
@@ -268,6 +313,10 @@ export function buildTimingAnswer(
   const years = targetYears.length ? targetYears.slice(0, 3) : [now, now + 1];
   const forecasts = years.map((year) => analyzeForecastYear(chart, year, topic));
   const scope = normalizedMonths(options.months);
+  if (forecasts.length === 1 && scope.length === 1) {
+    const period = forecasts[0].months.find((month) => month.month === scope[0]);
+    if (period) return singleMonthAnswer(chart, topic, period);
+  }
   const parts = forecasts.map((f) => {
     const ranked = rankWithin(f, scope);
     const best = monthList(ranked.best);

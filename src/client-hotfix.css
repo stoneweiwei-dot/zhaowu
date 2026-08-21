@@ -7,13 +7,6 @@ body,
   overflow-x: hidden;
 }
 
-/* Hide the internal image-generation prompt under the decree PNG preview.
-   The actual PNG, download button, and save instructions remain visible.
-   Match the rendered image instead of the dynamic download filename. */
-#result article:has(img[alt="昭梧個人命誥圖"]) details {
-  display: none !important;
-}
-
 #result pre {
   max-width: 100%;
   overflow-x: hidden;

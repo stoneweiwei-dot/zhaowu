@@ -16,29 +16,35 @@ test("homepage is a customer-facing brand entry, not an incident notice", async 
   assert.doesNotMatch(home, /ZHAOWU · SAFE|白屏|視覺先暫停|视觉先暂停/);
 });
 
-test("homepage surfaces the paid Four Pillars art product after the analysis flow", async () => {
+test("homepage keeps one analysis path and does not inject a second art-product showcase", async () => {
   const home = await source("src/routes/index.tsx");
-  const showcase = await source("src/components/paid-report-showcase.tsx");
-  assert.match(home, /import \{ PaidReportShowcase \}/);
-  assert.match(home, /<PaidReportShowcase \/>/);
-  assert.ok(home.indexOf("<AnalysisForm />") < home.indexOf("<PaidReportShowcase />"));
-  assert.match(showcase, /9:16 iPhone 收藏版/);
-  assert.match(showcase, /STONE 原創/);
-  assert.match(showcase, /paidReportStyle\.pillarRoles/);
-  assert.match(showcase, /命局證據/);
-  assert.match(showcase, /視覺象徵/);
+  assert.match(home, /<AnalysisForm \/>/);
+  assert.doesNotMatch(home, /PaidReportShowcase|paid-report-showcase/);
 });
 
-test("generated nine-page reports use the 9:16 collectible renderer", async () => {
+test("generated nine-page reports use an honest sequential text renderer", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const renderer = await source("src/components/paid-report-pages.tsx");
   assert.match(resultView, /import \{ PaidReportPages \}/);
   assert.match(resultView, /ninePages \? <PaidReportPages pages=\{ninePages\} \/>/);
-  assert.match(renderer, /aspect-\[9\/16\]/);
-  assert.match(renderer, /snap-x snap-mandatory/);
-  assert.match(renderer, /STONE 原創/);
-  assert.match(renderer, /paidReportStyle\.id/);
-  assert.match(renderer, /Chart evidence → life meaning → visual symbol/);
+  assert.match(renderer, /space-y-4/);
+  assert.match(renderer, /page\.body\.map/);
+  assert.doesNotMatch(renderer, /PAGE_VISUAL|aspect-\[9\/16\]|snap-x|bg-gradient|<Mark|STONE 原創|visual symbol|視覺象徵/);
+  assert.doesNotMatch(resultView, /renderDecreePng|decreeImagePackage|onNine|onDecree|生成個人命誥圖|生成九頁報告＋命誥圖/);
+  assert.equal((resultView.match(/onClick=\{\(\) => void onFull\(\)\}/g) ?? []).length, 1);
+});
+
+test("owner background client always uses Supabase JSON instead of the Vercel SPA rewrite", async () => {
+  const backgrounds = await source("src/lib/background-assets.ts");
+  const config = await source("src/lib/supabase-config.ts");
+  const stats = await source("src/lib/site-stats.ts");
+  const reports = await source("src/lib/supabase-rest.ts");
+  assert.match(backgrounds, /from "@\/lib\/supabase-config"/);
+  assert.match(stats, /from "@\/lib\/supabase-config"/);
+  assert.match(reports, /from "@\/lib\/supabase-config"/);
+  assert.match(config, /VITE_SUPABASE_URL \|\| DEFAULT_SUPABASE_URL/);
+  assert.match(backgrounds, /try \{[\s\S]*JSON\.parse\(text\)[\s\S]*\} catch \{/);
+  assert.match(backgrounds, /背景服務回應格式錯誤/);
 });
 
 test("site shell and loading use the real Zhaowu text seal, not the old emblem asset", async () => {
