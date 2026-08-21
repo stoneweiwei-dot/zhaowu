@@ -2,8 +2,13 @@ import type { AnalysisResult } from "@/lib/bazi/types";
 import type { NinePage } from "@/lib/report/nine-page";
 import type { DecreeOverlay } from "@/lib/report/decree-image";
 
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "";
+// These are public browser credentials (never a service-role key). Keeping a
+// production fallback prevents an omitted Vercel env var from disabling login.
+const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7prU26nA0AX7dny0PW_ReA_GKwI588H";
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "");
+const SUPABASE_KEY =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || DEFAULT_SUPABASE_PUBLISHABLE_KEY;
 const SESSION_KEY = "zhaowu.supabase.session.v1";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 
