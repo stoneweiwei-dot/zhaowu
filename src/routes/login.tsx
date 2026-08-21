@@ -146,14 +146,6 @@ function LoginPage() {
           >
             {oauthBusy === "apple" ? t("processing") : t("withApple")}
           </button>
-          <button
-            type="button"
-            disabled={!supabaseConfigured || oauthBusy !== null}
-            onClick={() => onOAuth("twitter")}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full border border-line bg-cream px-4 text-sm text-ink disabled:opacity-50"
-          >
-            {oauthBusy === "twitter" ? t("processing") : t("withX")}
-          </button>
         </div>
 
         <div className="my-6 flex items-center gap-3 text-[11px] tracking-[0.18em] text-ink-mute">
