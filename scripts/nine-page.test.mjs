@@ -122,7 +122,7 @@ test("未知时辰在九页排盘页明确留白，不伪造时柱与大运", ()
   });
   const p2 = page(result, 2).body.join("\n");
   const p1 = page(result, 1).body.join("\n");
-  assert.match(p2, /时柱 未定|時柱 未定|时辰未定|時辰未定/);
+  assert.match(p2, /时柱 暂未确定|時柱 暂未确定|时柱 未定|時柱 未定/);
   assert.match(p2, /出生时间尚未确定，因此时柱与大运暂不列入本次判断/);
   assert.match(p1, /出生時間未確定/);
 });
