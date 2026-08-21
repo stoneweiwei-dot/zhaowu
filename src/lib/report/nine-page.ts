@@ -1,4 +1,5 @@
-import type { AnalysisResult, Chart, QuestionKind, Reading } from "@/lib/bazi/types";
+import type { AnalysisResult, Chart, Reading } from "@/lib/bazi/types";
+import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
 
 export type NinePageEvidence = {
   facts: string[];
@@ -14,35 +15,6 @@ export type NinePage = {
   body: string[];
   evidence: NinePageEvidence;
 };
-
-
-function customerCopy(value: string): string {
-  const text = value
-    .trim()
-    .replace(/調候粗候選[^。！？!?]*[。！？!?]?/g, "")
-    .replace(/调候粗候选[^。！？!?]*[。！？!?]?/g, "")
-    .replace(/此為旺衰底盤[^。！？!?]*[。！？!?]?/g, "")
-    .replace(/此为旺衰底盘[^。！？!?]*[。！？!?]?/g, "")
-    .replace(/[，,；;]\s*不再用通用性格句代替答案/g, "。")
-    .replace(/[，,；;]\s*不把它包裝成必然事件或保證日期/g, "。")
-    .replace(/[，,；;]\s*不把它包装成必然事件或保证日期/g, "。");
-
-  const internalCopy =
-    /全站回答契約|全站回答契约|本頁只使用|本页只使用|排序依據|排序依据|月份名稱只是|月份名称只是|命理月以節氣|命理月以节气|通用句|資料未接入|资料未接入|尚未完成|待覆核|待覆核|不是完整子平|不是喜用神|方法透明|報告編號|报告编号|隱藏算法|隐藏算法/;
-
-  return (text.match(/[^。！？!?]+[。！？!?]?/g) ?? [text])
-    .map((part) => part.trim())
-    .filter((part) => part && !internalCopy.test(part))
-    .join("");
-}
-
-function customerDirectAnswer(question: string, answer: string): string {
-  let text = answer.trim();
-  const quotedQuestion = question.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  text = text.replace(new RegExp(`^你[問问]的是[「“"]?${quotedQuestion}[」”"]?[。．.]?\\s*`), "");
-  text = text.replace(/^先直接回答(?:時間|时间)?[：:]\s*/, "");
-  return customerCopy(text) || "请先从报告列出的重点开始，再结合你的现实条件作决定。";
-}
 
 function isReadyPillar(col: Chart["pillars"][number]): boolean {
   return col.ready !== false && col.ganZhi !== "未定" && Boolean(col.gan);

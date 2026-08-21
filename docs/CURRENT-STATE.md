@@ -23,13 +23,15 @@
 ## 2. 已完成且默认锁住，不要重复重做
 
 - GitHub `main` → Vercel Production 已自动同步。
-- 2026-08-22 收口后，付费报告规范修订已通过 Vercel build 并进入 READY；最近确认的功能性基线 commit：`6f66ce18578a87eaf438e456f4e919290a6cbc8e`。
-- Supabase 正常；`report_requests` 已存在成功的 `report_ready` / `full_ready` 记录，当前没有 generation/image error。
+- GitHub `main` 的每次修改必须先通过测试、Vercel build 与线上实测；不要在这里固定某个历史 commit。
+- Supabase 正常；登录、报告、背景与统计统一读取 `src/lib/supabase-config.ts`，禁止各模块再维护第二套 URL／Key fallback。
 - 三语 Locale 已包含 `zh-Hant / zh-Hans / en`。
 - Supabase 登录、报告存档、背景、访问统计、release history 已接入。
 - X 登录选项已移除。
 - Loading 的 ghost overlay 已移除；除非出现可复现回归，**不要再改 Loading / Logo / Hero**。
 - 客户九页报告已完成“去内部推理 / 去自问自答 / 去 UUID、时间戳、方法状态”的清理。
+- 首屏只显示直接答案与精简四柱；完整内容只走一个“查看完整九页报告”入口。
+- 浏览器端渐变假图、Canvas 命诰图、重复报告按钮与首页付费展示组件已经移除。没有接入真实图像生成前，不得把 CSS／SVG／Canvas 模板称为“生成图片”。
 - Supabase `migration_state` 已从旧 `netlify+supabase/foundation` 改为 `production / vercel+supabase`。
 - Supabase `paid_report_style` 已与九页客户产品及「昭梧・四柱绘意报告风」对齐。
 
@@ -51,13 +53,13 @@
 
 以 `docs/NINE-PAGE.md` 与 `src/lib/report/nine-page.ts` 为内容结构真相。
 
-**23 页旧 pageArchitecture 已废止，不得再作为客户产品结构。** 四柱绘意、瑞兽、法器、最终订制画属于九页报告中的视觉表达/附加成像能力，不再另起一套 23 页客户报告。
+**23 页旧 pageArchitecture 已废止，不得再作为客户产品结构。** 当前九页客户报告是顺序阅读的文字报告；报告第一屏不提前展开其余八页。
 
-## 4. 唯一视觉规范
+## 4. 视觉规范（仅供未来真实图像生成）
 
 名称：**昭梧・四柱绘意报告风**。
 
-核心：
+当前客户报告渲染器是文字版，不生成图。以下规范只有在真实图像服务、存储、失败状态与验收全部接通后才可启用：
 - 东方现代绘意 × 宋系册页 × 极简象征主义。
 - 暖米白／象牙白／淡宣纸，轻颗粒、旧印刷/版画感，大量留白。
 - 插画与正文分区清楚；优先“左图右文 / 单页单结论”，不要做复杂仙侠海报。
@@ -83,6 +85,7 @@
 - Issue #24：六道轮回习气测验。
 - 正式子域名 `zhaowu.soul-terminal.com` DNS 收口。
 - 实机 iPhone 对关键流程最终验收；只有真实 FAIL 才修。
+- 真实报告图生成尚未接入；未接入前保持文字版，不恢复浏览器假图。
 - 其他新功能必须另开 Issue，并且先确认不与已完成项重复。
 
 ## 7. 生产优先级
@@ -93,7 +96,7 @@
 2. 排盘或核心结论错误
 3. 登录 / 报告读取 / 保存失败
 4. 九页客户报告内容错误或泄露内部推理
-5. 报告图 / 四柱绘意生成
+5. 真实报告图生成（当前未接入，不能用模板代替）
 6. 后台管理
 7. 纯视觉微调
 

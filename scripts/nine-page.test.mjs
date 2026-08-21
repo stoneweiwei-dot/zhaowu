@@ -137,11 +137,12 @@ test("客户九页不得出现内部验收、未接入状态、编号与时间�
   );
 });
 
-test("客户九页不重复问题与直接答案", () => {
+test("客户九页第一页只保留一份直接答案，不重复问题前缀", () => {
   const result = makeResult("我何時適合換工作？");
   const pages = composeNinePages(result);
   const allBodies = pages.flatMap((p) => p.body);
-  assert.equal(allBodies.filter((line) => line === result.reading.directAnswer).length, 0);
+  assert.equal(allBodies.filter((line) => line === result.reading.directAnswer).length, 1);
+  assert.equal(pages[0].body[0], result.reading.directAnswer);
   assert.equal(pages[0].title, "核心结论");
   assert.doesNotMatch(pages[0].body.join("\n"), /^你[問问]的是/);
 });

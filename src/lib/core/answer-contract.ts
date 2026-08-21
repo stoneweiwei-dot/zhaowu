@@ -1,5 +1,6 @@
 import { buildTimingAnswer, buildTravelDestinationAnswer, type ForecastTopic } from "@/lib/bazi/forecast";
 import type { Chart, QuestionKind, Reading } from "@/lib/bazi/types";
+import { customerDirectAnswer } from "@/lib/report/customer-copy";
 
 export type AnswerRequirements = {
   asksWhen: boolean;
@@ -14,7 +15,7 @@ export type AnswerRequirements = {
 
 type SpecialTopic = "relation" | "legal" | "pet" | "fertility" | null;
 
-const WHEN_RE = /(什麼時候|什么时候|何時|何时|哪年|哪一年|哪月|幾月|几月|日期|多久|幾年|几年|時機|时机|窗口|應期|应期|今年|明年|後年|后年|上半年|下半年|年初|年底|季度|季|近期|最近)/;
+const WHEN_RE = /(什麼時候|什么时候|何時|何时|哪年|哪一年|哪月|幾月|几月|日期|多久|幾年|几年|時機|时机|窗口|應期|应期|今年|明年|後年|后年|這個月|这个月|本月|今月|上半年|下半年|年初|年底|季度|季|近期|最近)/;
 const WHERE_RE = /(去哪|去哪里|去哪裡|哪個城市|哪个城市|哪個國家|哪个国家|哪個地方|哪个地方|哪裡最好|哪里最好|什麼方向|什么方向|哪個方向|哪个方向|住哪|搬去哪)/;
 const COMPARE_RE = /(還是|还是|或者|二選一|二选一|哪一個|哪一个|哪個比較|哪个比较|選哪|选哪|比較好|比较好|該不該|该不该|要不要)/;
 const TRAVEL_RE = /(度假|旅行|旅遊|旅游|出行|出國|出国|出境|機票|机票|行程|目的地|旅居|vacation|travel|trip)/i;
@@ -63,6 +64,7 @@ function targetYears(question: string): number[] {
     .filter((n) => n >= 1900 && n <= 2199);
 
   if (/(今年|本年)/.test(question)) years.push(now);
+  if (/(這個月|这个月|本月|今月)/.test(question)) years.push(now);
   if (/明年/.test(question)) years.push(now + 1);
   if (/(大後年|大后年)/.test(question)) years.push(now + 3);
   else if (/(後年|后年)/.test(question)) years.push(now + 2);
@@ -92,6 +94,7 @@ function targetMonths(question: string): number[] {
   if (/(冬天|冬季)/.test(question)) months.push(12, 1, 2);
   if (/年初/.test(question)) months.push(1, 2, 3);
   if (/年底/.test(question)) months.push(11, 12);
+  if (/(這個月|这个月|本月|今月)/.test(question)) months.push(new Date().getMonth() + 1);
 
   return uniqueSorted(months.filter((m) => m >= 1 && m <= 12));
 }
@@ -119,6 +122,7 @@ export function inferQuestionKind(question: string, fallback: QuestionKind = "se
 export function inspectAnswerRequirements(question: string): AnswerRequirements {
   const years = targetYears(question);
   const months = targetMonths(question);
+  if (!years.length && months.length) years.push(new Date().getFullYear());
   const asksWhen = WHEN_RE.test(question) || years.length > 0 || months.length > 0;
   const asksTravel = TRAVEL_RE.test(question);
   return {
@@ -309,7 +313,7 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
   return {
     ...reading,
     kind,
-    directAnswer,
+    directAnswer: customerDirectAnswer(question, directAnswer),
     action: actionFor(kind, req),
   };
 }

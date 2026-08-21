@@ -1,7 +1,5 @@
 import type { SupabaseSession } from "@/lib/supabase-rest";
-
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "";
+import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const BUCKET = "zhaowu-backgrounds";
 
 export type BackgroundAsset = {
@@ -29,10 +27,22 @@ function apiHeaders(token?: string | null, json = true): HeadersInit {
 
 async function parse<T>(res: Response): Promise<T> {
   const text = await res.text();
-  const body = text ? JSON.parse(text) : null;
+  let body: unknown = null;
+  if (text) {
+    try {
+      body = JSON.parse(text);
+    } catch {
+      throw new Error(`背景服務回應格式錯誤（HTTP ${res.status}）。`);
+    }
+  }
   if (!res.ok) {
     const message = body && typeof body === "object"
-      ? String(body.message ?? body.error_description ?? body.error ?? `HTTP ${res.status}`)
+      ? String(
+        (body as Record<string, unknown>).message
+        ?? (body as Record<string, unknown>).error_description
+        ?? (body as Record<string, unknown>).error
+        ?? `HTTP ${res.status}`,
+      )
       : `HTTP ${res.status}`;
     throw new Error(message);
   }

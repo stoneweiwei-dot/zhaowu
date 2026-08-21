@@ -18,6 +18,7 @@ import {
 } from "@/lib/background-assets";
 import { Mark } from "@/components/marks";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { customerCopy, customerDirectAnswer, customerDocument } from "@/lib/report/customer-copy";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -37,7 +38,7 @@ function reportLevel(row: Pick<ReportRecord, "status" | "payment_tier">, locale:
 function fullText(row: ReportRecord): string | null {
   if (!row.paid_report || typeof row.paid_report !== "object") return null;
   const text = (row.paid_report as Record<string, unknown>).text;
-  return typeof text === "string" ? text : null;
+  return typeof text === "string" ? customerDocument(text) : null;
 }
 
 function storedNinePages(row: ReportRecord): { pageNo?: number; title?: string; body?: string[] }[] {
@@ -340,7 +341,7 @@ function AccountPage() {
                         <p className="text-xs tracking-[0.18em] text-cinnabar">{c.chartSummary}</p>
                         <p className="mt-2">{c.dayMaster} {snapshot.chart.dayMaster}{snapshot.chart.dayMasterElement} · {c.monthCommand} {snapshot.chart.monthBranch}</p>
                         <p>{snapshot.chart.pillars.map((p) => p.ganZhi).join("　")}</p>
-                        <p className="mt-2">{snapshot.reading.directAnswer}</p>
+                        <p className="mt-2">{customerDirectAnswer(snapshot.question, snapshot.reading.directAnswer)}</p>
                       </div>
                     ) : null}
                     {detailBusyId !== row.id && text ? <div className="mb-4 whitespace-pre-wrap">{text}</div> : null}
@@ -349,7 +350,7 @@ function AccountPage() {
                         {pages.map((p, i) => (
                           <div key={`${row.id}-${i}`} className="border-t border-line/70 pt-3 first:border-0 first:pt-0">
                             <p className="font-medium text-ink">{locale === "en" ? `${c.page} ${p.pageNo ?? i + 1}` : `第 ${p.pageNo ?? i + 1} ${c.page}`} · {p.title ?? c.fullReport}</p>
-                            {(p.body ?? []).map((line, j) => <p key={j} className="mt-1">{line}</p>)}
+                            {(p.body ?? []).map((line, j) => <p key={j} className="mt-1">{customerCopy(line)}</p>)}
                           </div>
                         ))}
                       </div>

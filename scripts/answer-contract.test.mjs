@@ -56,7 +56,7 @@ test("target-year forecast actually computes 12 monthly periods", () => {
   assert.ok(f.months.every((m) => /^\S{2}$/.test(m.monthGanZhi)));
 });
 
-test("旅行＋2027＋去哪裡：必须直接回答年份、月份、依据与旅行类型", () => {
+test("旅行＋2027＋去哪裡：必须直接回答年份、月份与旅行类型", () => {
   const q = "我什麼時候適合去度假，去哪裡最好？2027 是不是不適合我出行？";
   const req = inspectAnswerRequirements(q);
   const { reading } = contracted(q);
@@ -67,8 +67,8 @@ test("旅行＋2027＋去哪裡：必须直接回答年份、月份、依据与�
   assert.match(reading.directAnswer, /2027/);
   assert.match(reading.directAnswer, /較順的窗口/);
   assert.match(reading.directAnswer, /月（/);
-  assert.match(reading.directAnswer, /排序依據/);
   assert.match(reading.directAnswer, /旅行型態/);
+  assert.doesNotMatch(reading.directAnswer, /排序依據|排序依据|已接入|方法透明/);
   assert.doesNotMatch(reading.directAnswer, /目前引擎沒有目的地比較模組/);
   assert.doesNotMatch(reading.directAnswer, /窗口已經在眼前/);
   assert.doesNotMatch(reading.action, /固定同一時間睡覺/);
@@ -96,6 +96,22 @@ test("中文十一月、十二月不能误撞成一月、二月", () => {
   assert.deepEqual(inspectAnswerRequirements("十二月工作如何？").targetMonths, [12]);
 });
 
+test("这个月的运势会进入本年本月时间判断，不再掉回通用人格段落", () => {
+  const q = "我这个月的运势";
+  const now = new Date();
+  const req = inspectAnswerRequirements(q);
+  const { reading } = contracted(q);
+  assert.equal(req.asksWhen, true);
+  assert.deepEqual(req.targetYears, [now.getFullYear()]);
+  assert.deepEqual(req.targetMonths, [now.getMonth() + 1]);
+  assert.equal(inferQuestionKind(q, classifyQuestion(q)), "timing");
+  assert.match(reading.directAnswer, new RegExp(`${now.getFullYear()}年${now.getMonth() + 1}月`));
+  assert.doesNotMatch(
+    reading.directAnswer,
+    /已排定的柱|旺衰底盤|旺衰底盘|粗候選|粗候选|待覆核|待复核|不是喜用神|STONE Core|排序依據|排序依据/,
+  );
+});
+
 test("指定 9月、10月：不会拿全年其他月份当答案", () => {
   const q = "2027 年 9月和10月哪個月財運比較好？";
   const req = inspectAnswerRequirements(q);
@@ -109,7 +125,6 @@ test("感情時間題：必须回答时间窗口，不回人格模板", () => {
   const q = "我什麼時候遇到適合長期交往的人？";
   assert.equal(inferQuestionKind(q, classifyQuestion(q)), "love");
   const { reading } = contracted(q, "same");
-  assert.match(reading.directAnswer, /先直接回答時間/);
   assert.match(reading.directAnswer, /較順的窗口/);
   assert.match(reading.directAnswer, /月（/);
   assert.doesNotMatch(reading.directAnswer, /目前這個結果只保存/);
@@ -175,7 +190,8 @@ test("宠物题在正式取用未完成时不硬推颜色和品种", () => {
   const q = "我適合養什麼寵物和什麼顏色？";
   const { chart, reading } = contracted(q);
   assert.equal(chart.usefulProvisional, true);
-  assert.match(reading.directAnswer, /正式取用尚未完成/);
+  assert.match(reading.directAnswer, /居住空間|照護成本/);
+  assert.doesNotMatch(reading.directAnswer, /正式取用尚未完成|粗候選|粗候选|喜用神/);
   assert.doesNotMatch(reading.directAnswer, /最適合.*銀灰|最適合.*紅棕/);
 });
 
@@ -199,7 +215,7 @@ test("家宅地點題：回答家宅，不亂指定東西南北", () => {
   const { chart, reading } = contracted(q);
   assert.equal(chart.usefulProvisional, true);
   assert.match(reading.directAnswer, /先回答能回答的部分/);
-  assert.match(reading.directAnswer, /正式取用尚未完成/);
+  assert.doesNotMatch(reading.directAnswer, /正式取用尚未完成|粗候選|粗候选|喜用神/);
 });
 
 test("投資標的題：回答財務節奏但不指定股票", () => {

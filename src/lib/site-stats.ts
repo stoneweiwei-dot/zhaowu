@@ -1,9 +1,5 @@
-const FALLBACK_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
-// Supabase publishable keys are designed for public/browser clients. Authorization remains enforced by RLS/RPC policies.
-const FALLBACK_SUPABASE_KEY = "sb_publishable_7prU26nA0AX7dny0PW_ReA_GKwI588H";
+import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL).replace(/\/$/, "");
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || FALLBACK_SUPABASE_KEY;
 const VISITOR_KEY = "zhaowu.visitor.v1";
 
 export type PublicSiteStats = {
