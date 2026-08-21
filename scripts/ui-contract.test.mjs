@@ -29,6 +29,18 @@ test("homepage surfaces the paid Four Pillars art product after the analysis flo
   assert.match(showcase, /視覺象徵/);
 });
 
+test("generated nine-page reports use the 9:16 collectible renderer", async () => {
+  const resultView = await source("src/components/result-view.tsx");
+  const renderer = await source("src/components/paid-report-pages.tsx");
+  assert.match(resultView, /import \{ PaidReportPages \}/);
+  assert.match(resultView, /ninePages \? <PaidReportPages pages=\{ninePages\} \/>/);
+  assert.match(renderer, /aspect-\[9\/16\]/);
+  assert.match(renderer, /snap-x snap-mandatory/);
+  assert.match(renderer, /STONE 原創/);
+  assert.match(renderer, /paidReportStyle\.id/);
+  assert.match(renderer, /Chart evidence → life meaning → visual symbol/);
+});
+
 test("site shell mounts the loading gate and scattered emblem layer", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const intro = await source("src/components/intro-gate.tsx");
