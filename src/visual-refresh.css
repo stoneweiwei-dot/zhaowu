@@ -1,0 +1,376 @@
+:root {
+  --color-paper: #f7f1e6;
+  --color-paper-deep: #eadfc9;
+  --color-cream: #fffdf7;
+  --color-ink: #292c29;
+  --color-ink-soft: #5f625c;
+  --color-ink-mute: #8d8779;
+  --color-cinnabar: #a65445;
+  --color-cinnabar-deep: #7f4036;
+  --color-line: #d8c49c;
+  --color-wood: #2f7464;
+  --color-fire: #b85f4e;
+  --color-earth: #b48b4c;
+  --color-metal: #bc9d61;
+  --color-water: #315f7d;
+}
+
+html,
+body {
+  background: #f7f1e6;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 12% 10%, rgba(255,255,255,.94), transparent 24%),
+    radial-gradient(circle at 86% 18%, rgba(49,95,125,.09), transparent 24%),
+    radial-gradient(circle at 15% 78%, rgba(47,116,100,.10), transparent 28%),
+    linear-gradient(180deg, rgba(251,247,239,.97), rgba(244,235,218,.96));
+}
+
+/* Uploaded backgrounds should read as actual backgrounds, not disappear under beige. */
+.zhaowu-login-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 8%, rgba(255,255,255,.34), transparent 28%),
+    linear-gradient(180deg, rgba(255,253,247,.10), rgba(247,240,226,.24));
+}
+
+/* Decorative emblem layer: visible enough to matter, still kept away from interaction. */
+.zhaowu-emblem-scatter {
+  position: fixed;
+  inset: 0;
+  z-index: 12;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.zhaowu-random-emblem {
+  width: clamp(4.4rem, 8vw, 7rem);
+  height: clamp(4.4rem, 8vw, 7rem);
+  opacity: .24;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 7px 18px rgba(74,55,31,.10));
+}
+
+.zhaowu-random-emblem-1 { top: 7%; left: max(.75rem, calc(50% - 38rem)); }
+.zhaowu-random-emblem-2 { top: 18%; right: max(.75rem, calc(50% - 38rem)); }
+.zhaowu-random-emblem-3 { top: 31%; left: max(.45rem, calc(50% - 39rem)); }
+.zhaowu-random-emblem-4 { top: 44%; right: max(.4rem, calc(50% - 39rem)); }
+.zhaowu-random-emblem-5 { top: 58%; left: max(.6rem, calc(50% - 38rem)); }
+.zhaowu-random-emblem-6 { top: 70%; right: max(.6rem, calc(50% - 38rem)); }
+.zhaowu-random-emblem-7 { top: 82%; left: max(1rem, calc(50% - 37rem)); }
+.zhaowu-random-emblem-8 { top: 91%; right: max(1rem, calc(50% - 37rem)); }
+
+/* Dedicated login visual */
+.zhaowu-login-page {
+  position: relative;
+  z-index: 15;
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+  padding: 5.75rem 1rem 4rem;
+}
+
+.zhaowu-login-topbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem 0;
+}
+
+.zhaowu-login-home-link,
+.zhaowu-login-language {
+  min-height: 2.65rem;
+  border: 1px solid rgba(184,154,93,.42);
+  border-radius: 999px;
+  background: rgba(255,253,247,.78);
+  color: var(--color-ink-soft);
+  box-shadow: 0 8px 26px rgba(79,59,31,.08);
+  backdrop-filter: blur(16px);
+}
+
+.zhaowu-login-home-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 .95rem;
+  font-size: .78rem;
+  letter-spacing: .04em;
+}
+
+.zhaowu-login-language {
+  padding: 0 .8rem;
+  font-size: .75rem;
+  outline: none;
+}
+
+.zhaowu-login-card {
+  position: relative;
+  z-index: 20;
+  width: min(100%, 34rem);
+  overflow: hidden;
+  border: 1px solid rgba(184,154,93,.52);
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at 76% 8%, rgba(220,190,121,.14), transparent 26%),
+    linear-gradient(145deg, rgba(255,253,247,.93), rgba(248,241,225,.88));
+  padding: clamp(1.55rem, 5vw, 2.35rem);
+  box-shadow:
+    0 30px 90px rgba(65,47,23,.18),
+    inset 0 0 0 8px rgba(255,255,255,.18);
+  backdrop-filter: blur(18px) saturate(110%);
+}
+
+.zhaowu-login-card::before {
+  content: "";
+  position: absolute;
+  inset: .7rem;
+  pointer-events: none;
+  border: 1px solid rgba(47,116,100,.16);
+  border-radius: 1.45rem;
+}
+
+.zhaowu-login-brand-block {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.zhaowu-login-seal {
+  margin-bottom: 1rem;
+  border-color: #b99859 !important;
+  background: #2f7464 !important;
+  box-shadow: 0 12px 32px rgba(34,93,79,.18) !important;
+}
+
+.zhaowu-login-brand-en {
+  font-family: "Iowan Old Style", Baskerville, serif;
+  font-size: .68rem;
+  letter-spacing: .42em;
+  color: #92743f;
+}
+
+.zhaowu-login-brand-title {
+  margin-top: .55rem;
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 14vw, 5.2rem);
+  font-weight: 700;
+  line-height: .95;
+  letter-spacing: .08em;
+  color: var(--color-ink);
+}
+
+.zhaowu-login-brand-sub {
+  margin-top: .75rem;
+  font-family: "Iowan Old Style", Baskerville, serif;
+  font-size: .66rem;
+  letter-spacing: .20em;
+  color: var(--color-water);
+}
+
+.zhaowu-login-rule {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  width: min(17rem, 78%);
+  margin: 1.4rem auto 1.55rem;
+}
+
+.zhaowu-login-rule span {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, rgba(184,154,93,.68));
+}
+
+.zhaowu-login-rule span:last-child {
+  background: linear-gradient(90deg, rgba(184,154,93,.68), transparent);
+}
+
+.zhaowu-login-rule i {
+  width: .42rem;
+  height: .42rem;
+  border: 1px solid var(--color-wood);
+  transform: rotate(45deg);
+}
+
+.zhaowu-login-provider,
+.zhaowu-login-primary {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.zhaowu-login-provider {
+  width: 100%;
+  gap: .7rem;
+  border: 1px solid rgba(184,154,93,.44);
+  background: rgba(255,253,247,.76);
+  color: var(--color-ink);
+  font-size: .9rem;
+}
+
+.zhaowu-login-provider-dot {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  place-items: center;
+  border: 1px solid rgba(49,95,125,.22);
+  border-radius: 50%;
+  background: rgba(49,95,125,.06);
+  color: var(--color-water);
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.zhaowu-login-provider:not(:disabled):active,
+.zhaowu-login-primary:not(:disabled):active {
+  transform: scale(.985);
+}
+
+.zhaowu-login-input {
+  width: 100%;
+  height: 3rem;
+  border: 1px solid rgba(184,154,93,.45);
+  border-radius: 1rem;
+  background: rgba(255,253,247,.80);
+  padding: 0 1rem;
+  color: var(--color-ink);
+  font-size: 1rem;
+  outline: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+.zhaowu-login-input:focus {
+  border-color: rgba(47,116,100,.70);
+  box-shadow: 0 0 0 3px rgba(47,116,100,.08);
+}
+
+.zhaowu-login-primary {
+  border: 1px solid rgba(27,88,74,.26);
+  background: linear-gradient(135deg, #347c6b, #235e51);
+  padding: 0 1.4rem;
+  color: #fffdf7;
+  font-size: .92rem;
+  letter-spacing: .05em;
+  box-shadow: 0 12px 28px rgba(35,94,81,.18);
+}
+
+.zhaowu-login-account-ready {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.zhaowu-login-emblems {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.zhaowu-login-emblems img {
+  position: absolute;
+  width: clamp(5rem, 13vw, 9rem);
+  height: clamp(5rem, 13vw, 9rem);
+  object-fit: contain;
+  opacity: .62;
+  filter: drop-shadow(0 12px 28px rgba(85,62,31,.10));
+}
+
+.login-emblem-crane { top: 8%; right: 4%; transform: rotate(7deg); }
+.login-emblem-lotus { bottom: 7%; left: 3%; transform: rotate(-8deg); }
+.login-emblem-bagua { top: 24%; left: 4%; transform: rotate(-7deg); }
+.login-emblem-gourd { bottom: 18%; right: 4%; transform: rotate(8deg); }
+
+.zhaowu-login-signature {
+  position: fixed;
+  z-index: 20;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  color: rgba(80,74,62,.68);
+  font-family: "Iowan Old Style", Baskerville, serif;
+  font-size: .62rem;
+  letter-spacing: .18em;
+}
+
+/* Homepage palette: ivory + jade + lapis + warm gold, with no heavy dark-green block. */
+.zhaowu-home-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(184,154,93,.42);
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at 82% 15%, rgba(207,174,102,.18), transparent 28%),
+    radial-gradient(circle at 12% 86%, rgba(47,116,100,.13), transparent 28%),
+    linear-gradient(145deg, rgba(255,253,247,.96), rgba(245,237,218,.88));
+  box-shadow: 0 24px 78px rgba(74,55,31,.11);
+}
+
+.zhaowu-home-hero::before {
+  content: "";
+  position: absolute;
+  inset: .75rem;
+  border: 1px solid rgba(47,116,100,.15);
+  border-radius: 1.45rem;
+  pointer-events: none;
+}
+
+.zhaowu-home-hero-emblem {
+  position: absolute;
+  z-index: 1;
+  width: clamp(6.5rem, 17vw, 11rem);
+  height: clamp(6.5rem, 17vw, 11rem);
+  object-fit: contain;
+  opacity: .72;
+}
+
+.zhaowu-home-hero-emblem-a { top: 1rem; right: 1rem; transform: rotate(7deg); }
+.zhaowu-home-hero-emblem-b { right: 8%; bottom: -1.5rem; transform: rotate(-8deg); opacity: .52; }
+.zhaowu-home-hero-emblem-c { left: -1.4rem; bottom: 13%; transform: rotate(8deg); opacity: .34; }
+
+@media (max-width: 740px) {
+  .zhaowu-random-emblem {
+    width: 4rem;
+    height: 4rem;
+    opacity: .20;
+  }
+  .zhaowu-random-emblem-1 { top: 9%; left: .2rem; }
+  .zhaowu-random-emblem-2 { top: 23%; right: .2rem; }
+  .zhaowu-random-emblem-3 { top: 38%; left: .15rem; }
+  .zhaowu-random-emblem-4 { top: 53%; right: .15rem; }
+  .zhaowu-random-emblem-5 { top: 68%; left: .15rem; }
+  .zhaowu-random-emblem-6 { top: 82%; right: .15rem; display: block; }
+  .zhaowu-random-emblem-7 { display: none; }
+  .zhaowu-random-emblem-8 { display: none; }
+
+  .zhaowu-login-page { padding-top: 5.25rem; padding-bottom: 4.5rem; }
+  .zhaowu-login-card { width: min(100%, 31rem); border-radius: 1.65rem; }
+  .zhaowu-login-emblems img { width: 5rem; height: 5rem; opacity: .46; }
+  .login-emblem-crane { top: 9%; right: -1.2rem; }
+  .login-emblem-bagua { top: 23%; left: -1.3rem; }
+  .login-emblem-lotus { bottom: 8%; left: -1rem; }
+  .login-emblem-gourd { bottom: 19%; right: -1.3rem; }
+}
+
+@media (max-width: 430px) {
+  .zhaowu-login-brand-title { font-size: 3.65rem; }
+  .zhaowu-login-card { padding: 1.4rem; }
+  .zhaowu-login-card::before { inset: .55rem; }
+  .zhaowu-login-home-link { font-size: .72rem; }
+}
