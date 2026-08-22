@@ -8,12 +8,12 @@ async function source(path) {
   return readFile(new URL(path, root), "utf8");
 }
 
-test("homepage is a customer-facing brand entry, not an incident notice", async () => {
+test("homepage is a customer-facing brand entry, not an incident or methodology notice", async () => {
   const home = await source("src/routes/index.tsx");
   assert.match(home, /heroSlogan/);
-  assert.match(home, /methodTitle/);
   assert.match(home, /<AnalysisForm \/>/);
   assert.doesNotMatch(home, /ZHAOWU · SAFE|白屏|視覺先暫停|视觉先暂停/);
+  assert.doesNotMatch(home, /STEPS\.map|PROOFS\.map|methodTitle|methodLead|proofPrimary|proofPast|proofBoundary|faq1q|faq2q|faq3q/);
 });
 
 test("homepage keeps one analysis path and does not inject a second art-product showcase", async () => {
@@ -30,6 +30,7 @@ test("generated nine-page reports use an honest sequential text renderer", async
   assert.match(renderer, /space-y-4/);
   assert.match(renderer, /page\.body\.map/);
   assert.doesNotMatch(renderer, /PAGE_VISUAL|aspect-\[9\/16\]|snap-x|bg-gradient|<Mark|STONE 原創|visual symbol|視覺象徵/);
+  assert.doesNotMatch(renderer, /按順序閱讀|按顺序阅读|Read in order|可閱讀、可核對|可阅读、可核对|verifiable text/);
   assert.doesNotMatch(resultView, /renderDecreePng|decreeImagePackage|onNine|onDecree|生成個人命誥圖|生成九頁報告＋命誥圖/);
   assert.equal((resultView.match(/onClick=\{\(\) => void onFull\(\)\}/g) ?? []).length, 1);
 });
@@ -104,12 +105,13 @@ test("every mapped emblem asset exists in the public build", async () => {
   await Promise.all(assets.map((asset) => source(`public/emblems/${asset}`)));
 });
 
-test("mobile homepage prioritises the analysis form over supporting copy", async () => {
+test("mobile homepage prioritises the analysis form and removes explanatory filler", async () => {
   const home = await source("src/routes/index.tsx");
-  assert.ok(home.indexOf("<AnalysisForm />") < home.indexOf("STEPS.map"));
+  assert.ok(home.indexOf("<AnalysisForm />") < home.indexOf('to="/yizhangjing"'));
   assert.match(home, /text-\[3\.5rem\][^\"]*sm:text-8xl/);
   assert.doesNotMatch(home, /text-\[5\.4rem\]/);
   assert.match(home, /className="mt-3 hidden[^\"]+sm:block">\{t\("heroBody"\)\}/);
+  assert.doesNotMatch(home, /galleryBody|palmToolBody|palmToolScope|methodKicker|methodTitle|methodLead|PROOFS|STEPS|faq-title/);
 });
 
 test("signed-out mobile header keeps only language and login actions", async () => {
@@ -138,15 +140,15 @@ test("every customer-facing translation key has an English value", async () => {
   assert.doesNotMatch(i18n, /EN\[key\] \?\? TABLE\[key\]\[0\]/);
 });
 
-test("homepage exposes the standalone deterministic Palm tool", async () => {
+test("homepage exposes the standalone deterministic Palm tool without a marketing explainer block", async () => {
   const home = await source("src/routes/index.tsx");
   const route = await source("src/routes/yizhangjing.tsx");
   const tool = await source("src/components/palm-standalone.tsx");
 
-  assert.match(home, /galleryTitle/);
-  assert.match(home, /galleryBody/);
-  assert.match(home, /palmToolScope/);
+  assert.match(home, /palmToolTitle/);
+  assert.match(home, /palmToolButton/);
   assert.match(home, /to="\/yizhangjing"/);
+  assert.doesNotMatch(home, /galleryTitle|galleryBody|palmToolKicker|palmToolBody|palmToolScope/);
   assert.match(route, /createFileRoute\("\/yizhangjing"\)/);
   assert.match(tool, /buildPalm/);
   assert.match(tool, /scopeFour/);
