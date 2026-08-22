@@ -59,15 +59,24 @@ function Home() {
       {current ? <ResultView result={current} /> : null}
       {current ? <FollowUpBox result={current} /> : null}
 
-      <section className="flex flex-col gap-5 overflow-hidden rounded-[1.5rem] border border-[#b99755]/35 bg-gradient-to-br from-cream/95 to-paper/80 p-5 shadow-[0_16px_44px_rgba(69,50,29,.07)] sm:flex-row sm:items-center sm:justify-between sm:p-7" aria-labelledby="palm-tool-title">
-        <div className="max-w-2xl">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-cinnabar">{t("palmToolKicker")}</p>
-          <h2 id="palm-tool-title" className="mt-2 font-display text-xl font-semibold tracking-[0.05em] text-ink sm:text-2xl">{t("palmToolTitle")}</h2>
-          <p className="mt-2 text-sm leading-7 text-ink-soft">{t("palmToolBody")}</p>
-        </div>
-        <Link to="/yizhangjing" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full border border-cinnabar/35 px-5 text-sm font-medium text-cinnabar transition hover:bg-cinnabar hover:text-cream">
-          {t("palmToolButton")}
-        </Link>
+      <section className="space-y-4" aria-labelledby="gallery-title">
+        <header className="px-1 sm:px-2">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-cinnabar">{t("galleryKicker")}</p>
+          <h2 id="gallery-title" className="mt-2 font-display text-2xl font-semibold tracking-[0.06em] text-ink sm:text-3xl">{t("galleryTitle")}</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-7 text-ink-soft">{t("galleryBody")}</p>
+        </header>
+
+        <article className="flex flex-col gap-5 overflow-hidden rounded-[1.5rem] border border-[#b99755]/35 bg-gradient-to-br from-cream/95 to-paper/80 p-5 shadow-[0_16px_44px_rgba(69,50,29,.07)] sm:flex-row sm:items-center sm:justify-between sm:p-7" aria-labelledby="palm-tool-title">
+          <div className="max-w-2xl">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-cinnabar">{t("palmToolKicker")}</p>
+            <h3 id="palm-tool-title" className="mt-2 font-display text-xl font-semibold tracking-[0.05em] text-ink sm:text-2xl">{t("palmToolTitle")}</h3>
+            <p className="mt-2 text-sm leading-7 text-ink-soft">{t("palmToolBody")}</p>
+            <p className="mt-3 border-l-2 border-cinnabar/45 pl-3 text-xs font-medium leading-6 text-ink">{t("palmToolScope")}</p>
+          </div>
+          <Link to="/yizhangjing" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full border border-cinnabar/35 px-5 text-sm font-medium text-cinnabar transition hover:bg-cinnabar hover:text-cream">
+            {t("palmToolButton")}
+          </Link>
+        </article>
       </section>
 
       <section className="grid overflow-hidden rounded-[1.5rem] border border-line/80 bg-cream/72 sm:grid-cols-3" aria-label={t("steps")}>

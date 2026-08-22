@@ -16,7 +16,8 @@ const HOURS = [
 
 const COPY = {
   "zh-Hant": {
-    kicker: "昭梧 · 免費確定性排盤", title: "前世今生・達摩一掌經", lead: "以農曆生辰定年、月、日、時四宮，再看十二星與六道。結果由固定規則計算，不調用 AI。",
+    kicker: "昭梧 · 單頁展廳 · 免費確定性排盤", title: "前世今生・達摩一掌經", lead: "此頁把農曆出生年、月、日、時依固定順序排入四宮，顯示每一宮的地支、主星、所屬六道與習氣重點。",
+    scopeTitle: "排盤內容", scopeFour: "四宮｜年宮看根基，月宮看人際，日宮看關係，時宮看本命主軸。", scopeStars: "十二星｜顯示每一宮的主星與性格功能。", scopeRealms: "六道習氣｜整理佛、仙、人、修羅、鬼、畜生六類象徵課題。",
     note: "這是傳統民俗分類，用來觀察性格慣性與人生課題；不是可驗證的歷史前世，也不是宗教裁決。",
     name: "稱呼（選填）", namePh: "只顯示在本次結果，不會保存", direction: "一掌經順逆（必填）", directionHelp: "這是傳統算法的順逆參數，不用來定義你的性別身份。",
     forward: "順行（傳統男命）", reverse: "逆行（傳統女命）", date: "出生日期（國曆）", hour: "出生時辰", unknown: "不知道時辰（時宮留白）",
@@ -25,7 +26,8 @@ const COPY = {
     missingHour: "你未提供出生時辰，因此時宮／最近一世不作判定；目前只顯示年、月、日三宮。", again: "重新排盤", full: "回到昭梧完整分析", boundary: "傳統文化與象徵性解讀僅供自我觀察，不替代醫療、法律、財務或現實決策。",
   },
   "zh-Hans": {
-    kicker: "昭梧 · 免费确定性排盘", title: "前世今生・达摩一掌经", lead: "以农历生辰定年、月、日、时四宫，再看十二星与六道。结果由固定规则计算，不调用 AI。",
+    kicker: "昭梧 · 单页展厅 · 免费确定性排盘", title: "前世今生・达摩一掌经", lead: "此页把农历出生年、月、日、时依固定顺序排入四宫，显示每一宫的地支、主星、所属六道与习气重点。",
+    scopeTitle: "排盘内容", scopeFour: "四宫｜年宫看根基，月宫看人际，日宫看关系，时宫看本命主轴。", scopeStars: "十二星｜显示每一宫的主星与性格功能。", scopeRealms: "六道习气｜整理佛、仙、人、修罗、鬼、畜生六类象征课题。",
     note: "这是传统民俗分类，用来观察性格惯性与人生课题；不是可验证的历史前世，也不是宗教裁决。",
     name: "称呼（选填）", namePh: "只显示在本次结果，不会保存", direction: "一掌经顺逆（必填）", directionHelp: "这是传统算法的顺逆参数，不用来定义你的性别身份。",
     forward: "顺行（传统男命）", reverse: "逆行（传统女命）", date: "出生日期（公历）", hour: "出生时辰", unknown: "不知道时辰（时宫留白）",
@@ -34,7 +36,8 @@ const COPY = {
     missingHour: "你未提供出生时辰，因此时宫／最近一世不作判定；目前只显示年、月、日三宫。", again: "重新排盘", full: "回到昭梧完整分析", boundary: "传统文化与象征性解读仅供自我观察，不替代医疗、法律、财务或现实决定。",
   },
   en: {
-    kicker: "Zhaowu · free deterministic calculation", title: "Dharma Palm · Four-Palace Reading", lead: "Your lunar birth year, month, day and hour are placed into four palaces, twelve stars and six symbolic realms. The result follows fixed rules and does not call AI.",
+    kicker: "Zhaowu · single-page gallery · deterministic calculation", title: "Dharma Palm · Four-Palace Reading", lead: "This page places the lunar birth year, month, day and hour into four palaces, then shows each palace's branch, star, symbolic realm and pattern.",
+    scopeTitle: "Reading contents", scopeFour: "Four palaces · Roots, social pattern, relationships and the current-life axis.", scopeStars: "Twelve stars · The governing star and function of each palace.", scopeRealms: "Six realms · Symbolic patterns across Buddha, immortal, human, Asura, ghost and animal realms.",
     note: "This is a traditional folk classification for reflecting on patterns and life themes. It is not verifiable past-life history or a religious judgement.",
     name: "Name (optional)", namePh: "Shown only in this result; never saved", direction: "Palm sequence (required)", directionHelp: "This is the traditional method's calculation parameter; it does not define your gender identity.",
     forward: "Forward sequence (traditional male chart)", reverse: "Reverse sequence (traditional female chart)", date: "Date of birth (Gregorian)", hour: "Birth-hour branch", unknown: "Time unknown — leave the hour palace blank",
@@ -95,6 +98,14 @@ export function PalmStandalone() {
         <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-cinnabar sm:text-xs">{copy.kicker}</p>
         <h1 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-[0.06em] text-ink sm:text-5xl">{copy.title}</h1>
         <p className="mt-4 max-w-2xl text-sm leading-7 text-ink-soft sm:text-base sm:leading-8">{copy.lead}</p>
+        <div className="mt-5 rounded-2xl border border-line/75 bg-white/45 p-4 sm:p-5">
+          <h2 className="font-display text-lg font-semibold tracking-[0.06em] text-ink">{copy.scopeTitle}</h2>
+          <ul className="mt-3 grid gap-2 text-xs leading-6 text-ink-soft sm:text-sm sm:leading-7">
+            <li>{copy.scopeFour}</li>
+            <li>{copy.scopeStars}</li>
+            <li>{copy.scopeRealms}</li>
+          </ul>
+        </div>
         <p className="mt-4 rounded-2xl border border-[#b99755]/30 bg-paper/65 px-4 py-3 text-xs leading-6 text-ink-soft sm:text-sm">{copy.note}</p>
       </section>
 

@@ -141,11 +141,18 @@ test("homepage exposes the standalone deterministic Palm tool", async () => {
   const route = await source("src/routes/yizhangjing.tsx");
   const tool = await source("src/components/palm-standalone.tsx");
 
+  assert.match(home, /galleryTitle/);
+  assert.match(home, /galleryBody/);
+  assert.match(home, /palmToolScope/);
   assert.match(home, /to="\/yizhangjing"/);
   assert.match(route, /createFileRoute\("\/yizhangjing"\)/);
   assert.match(tool, /buildPalm/);
+  assert.match(tool, /scopeFour/);
+  assert.match(tool, /scopeStars/);
+  assert.match(tool, /scopeRealms/);
   assert.match(tool, /timeUnknown: hour === "unknown"/);
   assert.doesNotMatch(tool, /fetch\(|axios|supabase|writeFullReport|analyzeBirth/);
+  assert.doesNotMatch(tool, /常見問題|常见问题|FAQ|為什麼|为什么|你可能會問|你可能会问/);
   assert.match(tool, /useState<"" \| "required" \| "invalid">/);
   assert.match(tool, /\{copy\[error\]\}/);
   assert.doesNotMatch(tool, /setError\(copy\.(required|invalid)\)/);
