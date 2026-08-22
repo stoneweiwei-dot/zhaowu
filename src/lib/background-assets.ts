@@ -60,7 +60,7 @@ export function backgroundPublicUrl(path: string) {
 export async function listPublicBackgrounds(): Promise<BackgroundAsset[]> {
   if (!SUPABASE_URL || !SUPABASE_KEY) return [];
   const select = "id,source,name,storage_path,content_type,enabled,days_of_week,start_date,end_date,theme,created_at,updated_at";
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?enabled=eq.true&select=${select}&order=created_at.asc`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?enabled=eq.true&select=${select}&order=created_at.desc`, {
     headers: apiHeaders(),
   });
   if (!res.ok) return [];
@@ -151,15 +151,23 @@ export async function deleteBackground(session: SupabaseSession, asset: Backgrou
 }
 
 export function chooseDailyBackground(assets: BackgroundAsset[], now = new Date()): BackgroundAsset | null {
-  const eligible = assets.filter((asset) => {
-    if (!asset.enabled) return false;
-    if (asset.start_date && now < new Date(`${asset.start_date}T00:00:00`)) return false;
-    if (asset.end_date && now > new Date(`${asset.end_date}T23:59:59`)) return false;
-    if (asset.days_of_week.length && !asset.days_of_week.includes(now.getDay())) return false;
-    return true;
-  });
+  const eligible = assets
+    .filter((asset) => {
+      if (!asset.enabled) return false;
+      if (asset.start_date && now < new Date(`${asset.start_date}T00:00:00`)) return false;
+      if (asset.end_date && now > new Date(`${asset.end_date}T23:59:59`)) return false;
+      if (asset.days_of_week.length && !asset.days_of_week.includes(now.getDay())) return false;
+      return true;
+    })
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
   if (!eligible.length) return null;
-  const localDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const dayNumber = Math.floor(localDay.getTime() / 86400000);
-  return eligible[Math.abs(dayNumber) % eligible.length] ?? eligible[0];
+
+  // 新上傳的圖先成為當天默認背景；之後每天往下一張輪播。
+  // 這樣站主剛上傳的新圖不會因 epoch 取模而立刻跳到數十張舊圖中的任意一張。
+  const newest = new Date(eligible[0].created_at);
+  const newestDay = new Date(newest.getFullYear(), newest.getMonth(), newest.getDate()).getTime();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const daysSinceNewest = Math.max(0, Math.floor((today - newestDay) / 86400000));
+  return eligible[daysSinceNewest % eligible.length] ?? eligible[0];
 }
