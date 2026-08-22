@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
@@ -16,12 +16,64 @@ const EMPTY_STATS: PublicSiteStats = {
   publishedAt: null,
 };
 
+const RANDOM_EMBLEM_ASSETS = [
+  "/emblems/dharma-wheel-emblem.svg",
+  "/emblems/lotus-emblem.svg",
+  "/emblems/treasure-vase-emblem.svg",
+  "/emblems/ruyi-emblem.svg",
+  "/emblems/mountain-emblem.svg",
+  "/emblems/crane-feather-emblem.svg",
+  "/emblems/heaven-gate-emblem.svg",
+  "/emblems/wutong-leaf-emblem.svg",
+] as const;
+
+function hashSeed(value: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function seededRandom(initialSeed: number) {
+  let seed = initialSeed >>> 0;
+  return () => {
+    seed += 0x6d2b79f5;
+    let value = seed;
+    value = Math.imul(value ^ (value >>> 15), value | 1);
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function buildRandomEmblems(key: string) {
+  const random = seededRandom(hashSeed(key));
+  const pool = [...RANDOM_EMBLEM_ASSETS];
+
+  for (let index = pool.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(random() * (index + 1));
+    [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
+  }
+
+  return pool.slice(0, 6).map((src) => ({
+    src,
+    rotation: Math.round(random() * 16 - 8),
+    scale: 0.9 + random() * 0.18,
+  }));
+}
+
 export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
   const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
+  const [emblemSessionSeed] = useState(() => Math.floor(Math.random() * 1_000_000_000));
+  const decorativeEmblems = useMemo(
+    () => buildRandomEmblems(`${pathname}:${emblemSessionSeed}`),
+    [pathname, emblemSessionSeed],
+  );
 
   useEffect(() => {
     hydrateLocale();
@@ -55,6 +107,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
           style={{ backgroundImage: `linear-gradient(rgba(247,239,221,.25), rgba(239,225,195,.72)), url(${backgroundUrl})` }}
         />
       ) : null}
+      <div aria-hidden className="zhaowu-emblem-scatter">
+        {decorativeEmblems.map((emblem, index) => (
+          <img
+            key={`${pathname}-${emblem.src}-${index}`}
+            src={emblem.src}
+            alt=""
+            draggable={false}
+            className={`zhaowu-emblem zhaowu-random-emblem zhaowu-random-emblem-${index + 1}`}
+            style={{ transform: `rotate(${emblem.rotation}deg) scale(${emblem.scale})` }}
+          />
+        ))}
+      </div>
       <IntroGate />
       <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/92 backdrop-blur-md">
         <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
