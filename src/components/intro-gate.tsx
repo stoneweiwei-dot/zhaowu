@@ -1,33 +1,51 @@
-import { useEffect, useRef, useState } from "react";
-import { BrandSeal } from "@/components/brand-seal";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
-const KEY = "zhaowu.intro.v7";
-const MAX_WAIT_MS = 7000;
+const KEY = "zhaowu.intro.v8";
+const MIN_FIRST_VISIT_MS = 3000;
+const MIN_REPEAT_VISIT_MS = 280;
+const SLOW_NOTICE_MS = 8000;
+const VIDEO_SRC = "/intro/loading-v8.mp4";
 
 export function IntroGate() {
   const { t } = useI18n();
   const { isPending } = useCurrentUserState();
-  const [phase, setPhase] = useState<"in" | "off">("in");
-  const [showText, setShowText] = useState(false);
-  const [skipRequested, setSkipRequested] = useState(false);
+  const [phase, setPhase] = useState<"in" | "out" | "off">("in");
+  const [percent, setPercent] = useState(0);
+  const [label, setLabel] = useState("正在啟動昭梧");
+  const [bootReady, setBootReady] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+  const [mediaFailed, setMediaFailed] = useState(false);
+  const [bootError, setBootError] = useState<string | null>(null);
   const [reduced, setReduced] = useState(false);
+  const [slow, setSlow] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const startedAt = useRef(0);
   const seenBefore = useRef(false);
-  const timers = useRef<number[]>([]);
+  const finishTimer = useRef<number | null>(null);
 
-  function clearTimers() {
-    timers.current.forEach((id) => window.clearTimeout(id));
-    timers.current = [];
-  }
+  const displayPercent = useMemo(() => {
+    const authBonus = isPending ? 0 : 8;
+    const mediaBonus = videoReady || mediaFailed || reduced ? 7 : 0;
+    return Math.min(100, Math.round(percent * 0.85 + authBonus + mediaBonus));
+  }, [isPending, mediaFailed, percent, reduced, videoReady]);
 
-  function finish() {
-    if (phase === "off") return;
-    clearTimers();
+  const clearFinishTimer = useCallback(() => {
+    if (finishTimer.current !== null) {
+      window.clearTimeout(finishTimer.current);
+      finishTimer.current = null;
+    }
+  }, []);
+
+  const finish = useCallback(() => {
+    if (phase !== "in") return;
+    clearFinishTimer();
     try { sessionStorage.setItem(KEY, "1"); } catch { /* ignore */ }
-    setPhase("off");
-  }
+    setPhase("out");
+    window.setTimeout(() => setPhase("off"), 420);
+  }, [clearFinishTimer, phase]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -35,87 +53,132 @@ export function IntroGate() {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setReduced(prefersReduced);
     try { seenBefore.current = sessionStorage.getItem(KEY) === "1"; } catch { seenBefore.current = false; }
-    if (prefersReduced || seenBefore.current) setShowText(true);
-    else {
-      const textTimer = window.setTimeout(() => setShowText(true), 420);
-      timers.current.push(textTimer);
-    }
-    const maxTimer = window.setTimeout(() => finish(), MAX_WAIT_MS);
-    timers.current.push(maxTimer);
-    return () => clearTimers();
+    const slowTimer = window.setTimeout(() => setSlow(true), SLOW_NOTICE_MS);
+    return () => window.clearTimeout(slowTimer);
   }, []);
 
   useEffect(() => {
-    if (phase !== "in" || isPending || typeof window === "undefined") return;
-    const domReady = document.readyState !== "loading";
-    if (!domReady) return;
+    let cancelled = false;
+    setBootError(null);
+    setBootReady(false);
+    setPercent(0);
+
+    void runBootstrapReadiness((progress) => {
+      if (cancelled) return;
+      setPercent(progress.percent);
+      setLabel(progress.label);
+    })
+      .then(() => {
+        if (!cancelled) {
+          setBootReady(true);
+          setPercent(100);
+          setLabel("準備完成");
+        }
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        const message = error instanceof Error ? error.message : "啟動檢查未完成。";
+        setBootError(message);
+        setLabel("等待關鍵服務就緒");
+      });
+
+    return () => { cancelled = true; };
+  }, [attempt]);
+
+  useEffect(() => {
+    if (phase !== "in" || !bootReady || isPending || bootError) return;
+    if (!reduced && !videoReady && !mediaFailed) return;
+
     const elapsed = performance.now() - startedAt.current;
-    const minWait = skipRequested || reduced || seenBefore.current ? 180 : 1850;
-    if (elapsed >= minWait) {
-      finish();
-      return;
-    }
-    const id = window.setTimeout(() => finish(), minWait - elapsed);
-    timers.current.push(id);
-  }, [isPending, phase, reduced, skipRequested]);
+    const minimum = seenBefore.current || reduced ? MIN_REPEAT_VISIT_MS : MIN_FIRST_VISIT_MS;
+    const wait = Math.max(0, minimum - elapsed);
+    clearFinishTimer();
+    finishTimer.current = window.setTimeout(finish, wait);
+    return clearFinishTimer;
+  }, [bootError, bootReady, clearFinishTimer, finish, isPending, mediaFailed, phase, reduced, videoReady]);
 
   if (phase === "off") return null;
 
   return (
     <div
-      className="fixed inset-0 z-[80] overflow-hidden bg-[#eee8dc]"
+      className={`fixed inset-0 z-[90] overflow-hidden bg-[#172018] transition-opacity duration-[420ms] ${phase === "out" ? "pointer-events-none opacity-0" : "opacity-100"}`}
       role="status"
       aria-live="polite"
       aria-label={t("introAria")}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(181,141,72,.13),transparent_28%),linear-gradient(rgba(112,84,46,.022)_1px,transparent_1px)] bg-[length:auto,100%_7px]" aria-hidden />
+      <div className="absolute inset-0 bg-[#d8c79d]" aria-hidden>
+        {!reduced ? (
+          <video
+            className="h-full w-full object-cover"
+            src={VIDEO_SRC}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onCanPlay={() => setVideoReady(true)}
+            onLoadedData={() => setVideoReady(true)}
+            onError={() => setMediaFailed(true)}
+          />
+        ) : (
+          <div className="h-full w-full bg-[radial-gradient(circle_at_50%_18%,#f3d98f_0%,#8fa18a_34%,#314039_68%,#182019_100%)]" />
+        )}
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,237,211,.55)_0%,rgba(40,49,36,.18)_42%,rgba(13,20,16,.72)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_14%,rgba(255,239,179,.72),transparent_30%)] mix-blend-screen" />
+      </div>
 
-      <div className="relative flex min-h-dvh items-center justify-center px-5 py-5 sm:px-8">
-        <div
-          className={`relative aspect-[9/16] w-full max-w-[390px] overflow-hidden border border-[#9b8150]/45 bg-[#f6f1e7] shadow-[0_26px_80px_rgba(65,49,31,.16)] transition-all duration-700 ${showText ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"}`}
-        >
-          <div className="absolute inset-[10px] border border-[#9b8150]/24" aria-hidden />
-          <div className="absolute inset-x-8 top-8 h-px bg-[#9b8150]/28" aria-hidden />
-          <div className="absolute inset-x-8 bottom-8 h-px bg-[#9b8150]/28" aria-hidden />
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[430px] flex-col px-6 pb-[max(24px,env(safe-area-inset-bottom))] pt-[max(36px,env(safe-area-inset-top))] text-center text-[#fff9e8]">
+        <div className="pt-2">
+          <p className="text-[11px] tracking-[0.48em] text-[#f0dfb4]">Z H A O W U</p>
+          <p className="mt-2 text-[9px] tracking-[0.34em] text-[#d9c89d]">DESTINY · TIMING · CHOICE</p>
+        </div>
 
-          <div className="relative z-10 flex h-full flex-col items-center px-8 pb-8 pt-12 text-center sm:px-10">
-            <p className="text-[9px] font-semibold tracking-[0.30em] text-[#8d6d35]">ZHAOWU · PRIVATE EDITION</p>
+        <div className="mt-[11vh] rounded-[28px] border border-[#f8e7bb]/22 bg-[#172018]/28 px-5 py-6 shadow-[0_18px_60px_rgba(0,0,0,.18)] backdrop-blur-[2px]">
+          <h1 className="font-display text-[clamp(1.75rem,8vw,2.55rem)] leading-[1.35] tracking-[0.04em] text-[#fff8de]">
+            昭於未見，梧於有歸。
+          </h1>
+          <div className="mx-auto mt-5 h-px w-24 bg-[#e9d39b]/75" />
+          <div className="mt-5 space-y-2 font-display text-[15px] tracking-[0.12em] text-[#fff7df]">
+            <p>命理不是宿命</p>
+            <p>運勢不是答案</p>
+            <p>選擇才是開始</p>
+          </div>
+          <p className="mt-5 font-serif text-[13px] italic tracking-[0.04em] text-[#eadcb8]">See the unseen. Find your ground.</p>
+        </div>
 
-            <BrandSeal size="lg" decorative className="mt-9" />
-
-            <h1 className="mt-6 font-display text-[3.25rem] font-semibold leading-none tracking-[0.16em] text-[#28231d]">昭梧</h1>
-            <p className="mt-4 font-display text-base tracking-[0.16em] text-[#5f503c]">命運四柱解析報告</p>
-
-            <div className="mt-7 w-full border-y border-[#8f7548]/28 py-5">
-              <p className="font-display text-[1.05rem] leading-8 tracking-[0.08em] text-[#3e3428]">昭於未見，棲於有梧。</p>
-              <p className="mt-2 text-[9px] italic tracking-[0.08em] text-[#8a7a65]">See what lies unseen. Find where you belong.</p>
-            </div>
-
-            <div className="mt-8 text-[10px] tracking-[0.30em] text-[#78664b]" aria-label="四柱结构">
-              年柱 · 月柱 · 日柱 · 時柱
-            </div>
-
-            <div className="mt-8">
-              <p className="text-[9px] tracking-[0.24em] text-[#a04331]">四柱繪意</p>
-              <p className="mt-3 font-display text-sm leading-7 tracking-[0.04em] text-[#504536]">命理負責準確，文字負責理解，繪畫負責記憶。</p>
-            </div>
-
-            <div className="mt-auto w-full">
-              <div className="flex items-center justify-center gap-2 text-[9px] tracking-[0.18em] text-[#746854]">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#9a7738]" />
-                {isPending ? t("introLoadingAuth") : t("introLoadingPage")}
-              </div>
-              <div className="mt-5 flex items-end justify-between gap-4 border-t border-[#8f7548]/22 pt-3">
-                <p className="text-[8px] tracking-[0.18em] text-[#9b8a72]">9:16 · iPhone 收藏版</p>
-                <p className="font-display text-[9px] tracking-[0.16em] text-[#8a3f2d]">STONE 原創</p>
-              </div>
-              {!reduced && !skipRequested ? (
-                <button type="button" onClick={() => { setSkipRequested(true); setShowText(true); }} className="mt-3 text-[9px] tracking-[0.16em] text-[#9b8a72]">
-                  {t("introSkip")}
-                </button>
-              ) : null}
+        <div className="mt-auto pb-3">
+          <div
+            className="mx-auto flex h-[112px] w-[112px] items-center justify-center rounded-full bg-white/10 p-[5px] shadow-[0_0_42px_rgba(241,205,116,.28)] backdrop-blur-sm"
+            style={{ background: `conic-gradient(rgba(248,223,155,.98) ${displayPercent * 3.6}deg, rgba(255,255,255,.18) 0deg)` }}
+          >
+            <div className="flex h-full w-full items-center justify-center rounded-full bg-[#1a211a]/65 ring-1 ring-[#f5dfaa]/25">
+              <span className="font-display text-[30px] tabular-nums text-[#fff6dc]">{displayPercent}<span className="ml-0.5 text-sm">%</span></span>
             </div>
           </div>
+
+          <p className="mt-5 font-display text-[18px] tracking-[0.16em] text-[#fff7e5]">正在連接與分析</p>
+          <p className="mt-2 min-h-5 text-[11px] tracking-[0.12em] text-[#e2d5b6]">
+            {isPending ? "正在確認帳號與資料狀態" : label}
+          </p>
+          <p className="mt-2 text-[9px] tracking-[0.14em] text-[#cabd9e]">資料核心 · 命理引擎 · 九頁報告 · 四柱繪意</p>
+
+          {bootError ? (
+            <div className="mt-4 rounded-2xl border border-[#f1d8a2]/35 bg-[#1a211a]/62 px-4 py-3 text-[11px] text-[#f4e5c1] backdrop-blur">
+              <p>{bootError}</p>
+              <button
+                type="button"
+                onClick={() => { setSlow(false); setAttempt((value) => value + 1); }}
+                className="mt-2 rounded-full border border-[#edd7a3]/45 px-4 py-2 tracking-[0.12em] text-[#fff3d1]"
+              >
+                重新連接
+              </button>
+            </div>
+          ) : slow && (!bootReady || isPending) ? (
+            <p className="mt-4 text-[10px] tracking-[0.08em] text-[#ead7aa]">首次載入需要較久，正在繼續確認關鍵服務。</p>
+          ) : null}
+
+          <div className="mx-auto mt-5 h-px w-40 bg-[#ecd9a8]/45" />
+          <p className="mt-3 text-[9px] tracking-[0.22em] text-[#d4c39f]">STONE 原創 · 2026</p>
         </div>
       </div>
     </div>
