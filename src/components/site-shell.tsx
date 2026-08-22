@@ -132,7 +132,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           />
         ))}
       </div>
-      <IntroGate />
+      {pathname !== "/login" ? <IntroGate /> : null}
       <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/92 backdrop-blur-md">
         <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
           <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
