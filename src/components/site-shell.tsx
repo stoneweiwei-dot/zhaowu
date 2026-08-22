@@ -17,10 +17,23 @@ const EMPTY_STATS: PublicSiteStats = {
 };
 
 const RANDOM_EMBLEM_ASSETS = [
+  // 佛教八吉祥／八寶系
   "/emblems/dharma-wheel-emblem.svg",
+  "/emblems/modern-conch-emblem.svg",
+  "/emblems/modern-parasol-emblem.svg",
   "/emblems/lotus-emblem.svg",
   "/emblems/treasure-vase-emblem.svg",
+  "/emblems/modern-endless-knot-emblem.svg",
+  "/emblems/modern-golden-fish-emblem.svg",
+  "/emblems/modern-victory-banner-emblem.svg",
+  // 道家／天人神寶系
+  "/emblems/modern-gourd-emblem.svg",
+  "/emblems/modern-bagua-emblem.svg",
+  "/emblems/modern-bell-emblem.svg",
+  "/emblems/modern-sword-emblem.svg",
+  "/emblems/modern-incense-emblem.svg",
   "/emblems/ruyi-emblem.svg",
+  // 山水、仙鶴等氣氛紋樣
   "/emblems/mountain-emblem.svg",
   "/emblems/crane-feather-emblem.svg",
   "/emblems/heaven-gate-emblem.svg",
