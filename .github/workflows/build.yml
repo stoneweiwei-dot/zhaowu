@@ -1,4 +1,4 @@
-name: website-build
+name: Production CI
 
 on:
   pull_request:
@@ -7,21 +7,40 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: production-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  verify:
+    name: Test, typecheck, build, and package
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
+
       - name: Install dependencies
-        run: npm install
-      - name: Build and typecheck
-        run: npm run build
-      - name: Locked engine acceptance vectors
+        run: npm install --no-audit --no-fund
+
+      - name: Deterministic engine and contract tests
         run: npm run test:engine
+
+      - name: TypeScript check
+        run: npm run check
+
+      - name: Production build
+        run: npm exec vite build
+
       - name: Package verified deploy source
         uses: actions/upload-artifact@v4
         with:
