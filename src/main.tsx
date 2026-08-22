@@ -6,6 +6,7 @@ import './styles.css';
 import './intro-extra.css';
 import './emblems.css';
 import './client-hotfix.css';
+import './visual-refresh.css';
 
 const router = createRouter({ routeTree });
 
