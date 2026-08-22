@@ -51,7 +51,7 @@ export function PalmStandalone() {
   const [date, setDate] = useState("");
   const [gender, setGender] = useState<Gender>("unspecified");
   const [hour, setHour] = useState("unknown");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<"" | "required" | "invalid">("");
   const [result, setResult] = useState<PalmReading | null>(null);
   const resultRef = useRef<HTMLElement>(null);
   const maxDate = new Date().toISOString().slice(0, 10);
@@ -59,7 +59,7 @@ export function PalmStandalone() {
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (!date || gender === "unspecified") {
-      setError(copy.required);
+      setError("required");
       return;
     }
     const [year, month, day] = date.split("-").map(Number);
@@ -72,7 +72,7 @@ export function PalmStandalone() {
       gender,
     });
     if (!reading.palaces.length) {
-      setError(copy.invalid);
+      setError("invalid");
       return;
     }
     setError("");
@@ -131,7 +131,7 @@ export function PalmStandalone() {
           </select>
         </label>
 
-        {error ? <p role="alert" className="mt-4 rounded-xl border border-cinnabar/25 bg-cinnabar/7 px-4 py-3 text-sm text-cinnabar-deep">{error}</p> : null}
+        {error ? <p role="alert" className="mt-4 rounded-xl border border-cinnabar/25 bg-cinnabar/7 px-4 py-3 text-sm text-cinnabar-deep">{copy[error]}</p> : null}
 
         <button type="submit" className="mt-6 min-h-12 w-full rounded-full bg-cinnabar px-6 text-sm font-semibold tracking-[0.12em] text-cream shadow-[0_12px_28px_rgba(111,36,30,.18)] transition hover:bg-cinnabar-deep focus:outline-none focus:ring-2 focus:ring-cinnabar/35 focus:ring-offset-2">
           {copy.submit}
