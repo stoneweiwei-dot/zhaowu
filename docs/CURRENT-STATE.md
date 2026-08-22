@@ -30,6 +30,7 @@
 - X 登录选项已移除。
 - Loading 的 ghost overlay 已移除；除非出现可复现回归，**不要再改 Loading / Logo / Hero**。
 - 客户九页报告已完成“去内部推理 / 去自问自答 / 去 UUID、时间戳、方法状态”的清理。
+- 首页已设「单页展厅」作为独立工具入口；达摩一掌经单页只展示用途、输入与结果，不混入九页报告或问答式填充文案。
 - 首屏只显示直接答案与精简四柱；完整内容只走一个“查看完整九页报告”入口。
 - 浏览器端渐变假图、Canvas 命诰图、重复报告按钮与首页付费展示组件已经移除。没有接入真实图像生成前，不得把 CSS／SVG／Canvas 模板称为“生成图片”。
 - Supabase `migration_state` 已从旧 `netlify+supabase/foundation` 改为 `production / vercel+supabase`。
