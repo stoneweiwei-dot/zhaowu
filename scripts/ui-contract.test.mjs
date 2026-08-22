@@ -134,6 +134,8 @@ test("every customer-facing translation key has an English value", async () => {
   const tableKeys = keys(table);
   const englishKeys = new Set(keys(english));
   assert.deepEqual(tableKeys.filter((key) => !englishKeys.has(key)), []);
+  assert.match(i18n, /const EN: Record<CopyKey, string>/);
+  assert.doesNotMatch(i18n, /EN\[key\] \?\? TABLE\[key\]\[0\]/);
 });
 
 test("homepage exposes the standalone deterministic Palm tool", async () => {
@@ -151,11 +153,29 @@ test("homepage exposes the standalone deterministic Palm tool", async () => {
   assert.match(tool, /scopeStars/);
   assert.match(tool, /scopeRealms/);
   assert.match(tool, /timeUnknown: hour === "unknown"/);
+  assert.match(tool, /presentPalmHourLabel/);
   assert.doesNotMatch(tool, /fetch\(|axios|supabase|writeFullReport|analyzeBirth/);
+  assert.doesNotMatch(tool, /presentPalmGuidance|copy\.cause|copy\.fruit|copy\.seed/);
+  assert.match(tool, /copy\.readingBody/);
   assert.doesNotMatch(tool, /常見問題|常见问题|FAQ|為什麼|为什么|你可能會問|你可能会问/);
   assert.match(tool, /useState<"" \| "required" \| "invalid">/);
   assert.match(tool, /\{copy\[error\]\}/);
   assert.doesNotMatch(tool, /setError\(copy\.(required|invalid)\)/);
+});
+
+test("standalone Palm English presentation contains no Chinese branches or result text", async () => {
+  const { buildPalm } = await import("../src/lib/palm/engine.ts");
+  const { presentLunarLabel, presentPalmHourLabel, presentPalmPalace } = await import("../src/lib/palm/standalone-presentation.ts");
+  const reading = buildPalm({ year: 1988, month: 10, day: 4, hour: 4, timeUnknown: false, gender: "male" });
+  const han = /[\u3400-\u9fff]/;
+
+  assert.equal(reading.palaces.length, 4);
+  assert.doesNotMatch(presentLunarLabel(reading.lunarLabel, "en"), han);
+  assert.doesNotMatch(presentPalmHourLabel("寅", "03:00–04:59", "en"), han);
+  for (const palace of reading.palaces) {
+    const presented = presentPalmPalace(palace, "en");
+    assert.doesNotMatch(Object.values(presented).join(" "), han);
+  }
 });
 
 test("public form uses associated labels and translated relationship copy", async () => {
