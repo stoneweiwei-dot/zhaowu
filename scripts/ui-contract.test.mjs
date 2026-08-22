@@ -47,34 +47,37 @@ test("owner background client always uses Supabase JSON instead of the Vercel SP
   assert.match(backgrounds, /背景服務回應格式錯誤/);
 });
 
-test("site shell and loading use the real Zhaowu text seal, not the old emblem asset", async () => {
+test("site shell keeps the real Zhaowu text seal while loading stays free of invented logos", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const intro = await source("src/components/intro-gate.tsx");
   const seal = await source("src/components/brand-seal.tsx");
 
   assert.match(shell, /import \{ BrandSeal \}/);
   assert.match(shell, /<BrandSeal \/>/);
-  assert.match(intro, /import \{ BrandSeal \}/);
-  assert.match(intro, /<BrandSeal size="lg" decorative/);
-  assert.match(intro, /zhaowu\.intro\.v7/);
+  assert.doesNotMatch(intro, /import \{ BrandSeal \}|<BrandSeal|zhaowu-main-seal\.svg|<Mark /);
+  assert.match(intro, /昭於未見，梧於有歸。/);
+  assert.match(intro, /zhaowu\.intro\.v8/);
   assert.doesNotMatch(shell, /zhaowu-main-seal\.svg|SealScatter|showScatter/);
-  assert.doesNotMatch(intro, /zhaowu-main-seal\.svg|<Mark /);
   assert.match(seal, /<span>昭<\/span>/);
   assert.match(seal, /<span>梧<\/span>/);
 });
 
-test("loading gate keeps the paid-report 9:16 cover without decorative icon clutter", async () => {
+test("loading gate uses the approved animated opening and real readiness progress", async () => {
   const intro = await source("src/components/intro-gate.tsx");
-  assert.match(intro, /aspect-\[9\/16\]/);
-  assert.match(intro, /命運四柱解析報告/);
-  assert.match(intro, /四柱繪意/);
-  assert.match(intro, /年柱 · 月柱 · 日柱 · 時柱/);
-  assert.match(intro, /9:16 · iPhone 收藏版/);
+  const bootstrap = await source("src/lib/bootstrap-readiness.ts");
+  assert.match(intro, /\/intro\/loading-v8\.mp4/);
+  assert.match(intro, /命理不是宿命/);
+  assert.match(intro, /運勢不是答案/);
+  assert.match(intro, /選擇才是開始/);
+  assert.match(intro, /See the unseen\. Find your ground\./);
   assert.match(intro, /STONE 原創/);
+  assert.match(intro, /bootReady/);
+  assert.match(intro, /isPending/);
+  assert.match(intro, /videoReady/);
+  assert.match(bootstrap, /site_settings\?key=eq\.migration_state/);
+  assert.match(bootstrap, /architecture\.length !== 9/);
+  assert.match(bootstrap, /正在待命四柱繪意與命誥圖/);
   assert.doesNotMatch(intro, /\/emblems\//);
-  assert.doesNotMatch(intro, /bg-\[#0d0a08\]/);
-  assert.match(intro, /MAX_WAIT_MS = 7000/);
-  assert.match(intro, /minWait = skipRequested \|\| reduced \|\| seenBefore\.current \? 180 : 1850/);
 });
 
 test("loading gate fully unmounts instead of leaving a translucent ghost over the homepage", async () => {

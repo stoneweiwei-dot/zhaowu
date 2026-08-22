@@ -12,7 +12,7 @@ const VIDEO_SRC = "/intro/loading-v8.mp4";
 export function IntroGate() {
   const { t } = useI18n();
   const { isPending } = useCurrentUserState();
-  const [phase, setPhase] = useState<"in" | "out" | "off">("in");
+  const [phase, setPhase] = useState<"in" | "off">("in");
   const [percent, setPercent] = useState(0);
   const [label, setLabel] = useState("正在啟動昭梧");
   const [bootReady, setBootReady] = useState(false);
@@ -40,12 +40,10 @@ export function IntroGate() {
   }, []);
 
   const finish = useCallback(() => {
-    if (phase !== "in") return;
     clearFinishTimer();
     try { sessionStorage.setItem(KEY, "1"); } catch { /* ignore */ }
-    setPhase("out");
-    window.setTimeout(() => setPhase("off"), 420);
-  }, [clearFinishTimer, phase]);
+    setPhase("off");
+  }, [clearFinishTimer]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -101,7 +99,7 @@ export function IntroGate() {
 
   return (
     <div
-      className={`fixed inset-0 z-[90] overflow-hidden bg-[#172018] transition-opacity duration-[420ms] ${phase === "out" ? "pointer-events-none opacity-0" : "opacity-100"}`}
+      className="fixed inset-0 z-[90] overflow-hidden bg-[#172018]"
       role="status"
       aria-live="polite"
       aria-label={t("introAria")}
