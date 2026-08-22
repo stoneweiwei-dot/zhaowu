@@ -143,6 +143,9 @@ test("homepage exposes the standalone deterministic Palm tool", async () => {
   assert.match(tool, /buildPalm/);
   assert.match(tool, /timeUnknown: hour === "unknown"/);
   assert.doesNotMatch(tool, /fetch\(|axios|supabase|writeFullReport|analyzeBirth/);
+  assert.match(tool, /useState<"" \| "required" \| "invalid">/);
+  assert.match(tool, /\{copy\[error\]\}/);
+  assert.doesNotMatch(tool, /setError\(copy\.(required|invalid)\)/);
 });
 
 test("public form uses associated labels and translated relationship copy", async () => {
