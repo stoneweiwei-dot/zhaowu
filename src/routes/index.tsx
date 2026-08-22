@@ -36,7 +36,7 @@ function Home() {
             <a href="#analysisForm" className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-wood/25 bg-wood px-6 text-sm font-medium tracking-[0.08em] text-cream shadow-[0_14px_30px_rgba(35,94,81,.16)] sm:w-auto">
               {t("start")}
             </a>
-            <Link to="/account" className="hidden min-h-12 items-center justify-center rounded-full border border-earth/35 bg-cream/72 px-6 text-sm text-ink-soft backdrop-blur sm:inline-flex">
+            <Link to="/account" className="hidden min-h-12 items-center justify-center rounded-full border border-earth/35 bg-cream/70 px-6 text-sm text-ink-soft backdrop-blur sm:inline-flex">
               {t("accountAdmin")}
             </Link>
           </div>
@@ -51,8 +51,8 @@ function Home() {
       {current ? <FollowUpBox result={current} /> : null}
 
       <section aria-label={t("palmToolTitle")}>
-        <article className="relative flex flex-col gap-4 overflow-hidden rounded-[1.5rem] border border-earth/30 bg-gradient-to-br from-cream/92 to-paper/78 p-5 shadow-[0_16px_44px_rgba(69,50,29,.07)] backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:p-7">
-          <img src="/emblems/lotus-emblem.svg" alt="" aria-hidden className="zhaowu-emblem pointer-events-none absolute -right-4 -top-5 h-24 w-24 rotate-6 opacity-45" />
+        <article className="relative flex flex-col gap-4 overflow-hidden rounded-[1.5rem] border border-earth/30 bg-gradient-to-br from-cream/90 to-paper/80 p-5 shadow-[0_16px_44px_rgba(69,50,29,.07)] backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:p-7">
+          <img src="/emblems/lotus-emblem.svg" alt="" aria-hidden className="zhaowu-emblem pointer-events-none absolute -right-4 -top-5 h-24 w-24 rotate-6 opacity-[0.45]" />
           <h2 className="relative z-10 font-display text-xl font-semibold tracking-[0.05em] text-ink sm:text-2xl">{t("palmToolTitle")}</h2>
           <Link to="/yizhangjing" className="relative z-10 inline-flex min-h-12 shrink-0 items-center justify-center rounded-full border border-wood/35 px-5 text-sm font-medium text-wood transition hover:bg-wood hover:text-cream">
             {t("palmToolButton")}
