@@ -186,7 +186,7 @@ const TABLE = {
 
 export type CopyKey = keyof typeof TABLE;
 
-const EN: Partial<Record<CopyKey, string>> = {
+const EN: Record<CopyKey, string> = {
   brand: "昭梧",
   tagline: "See the unseen. Find where you belong.",
   manifesto: "See the unseen. Find where you belong.",
@@ -391,7 +391,7 @@ export const useI18n = create<I18nState>((set, get) => ({
   },
   t: (key) => {
     const locale = get().locale;
-    if (locale === "en") return EN[key] ?? TABLE[key][0];
+    if (locale === "en") return EN[key];
     return TABLE[key][locale === "zh-Hans" ? 1 : 0];
   },
 }));

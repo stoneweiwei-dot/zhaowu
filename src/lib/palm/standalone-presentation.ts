@@ -1,5 +1,5 @@
 import type { Locale } from "@/lib/i18n";
-import type { DaoName, PalmPalace, PalmReading } from "@/lib/core/types";
+import type { DaoName, PalmPalace } from "@/lib/core/types";
 
 type PalacePresentation = Pick<PalmPalace, "key" | "zhi"> & {
   lifeLabel: string;
@@ -40,6 +40,21 @@ const ENGLISH_BY_BRANCH: Record<string, Omit<PalacePresentation, "key" | "zhi" |
   亥: { star: "Longevity", dao: "Immortal realm", meaning: "Reflection, recovery, spirituality and the long view", verse: "A long view and a steady heart allow later life to settle well." },
 };
 
+const ENGLISH_BRANCHES: Record<string, { short: string; full: string }> = {
+  子: { short: "Zi", full: "Zi · Rat" },
+  丑: { short: "Chou", full: "Chou · Ox" },
+  寅: { short: "Yin", full: "Yin · Tiger" },
+  卯: { short: "Mao", full: "Mao · Rabbit" },
+  辰: { short: "Chen", full: "Chen · Dragon" },
+  巳: { short: "Si", full: "Si · Snake" },
+  午: { short: "Wu", full: "Wu · Horse" },
+  未: { short: "Wei", full: "Wei · Goat" },
+  申: { short: "Shen", full: "Shen · Monkey" },
+  酉: { short: "You", full: "You · Rooster" },
+  戌: { short: "Xu", full: "Xu · Dog" },
+  亥: { short: "Hai", full: "Hai · Pig" },
+};
+
 const LIFE_LABELS = {
   "zh-Hant": { year: "前四世", month: "前三世", day: "前二世", time: "最近一世" },
   "zh-Hans": { year: "前四世", month: "前三世", day: "前二世", time: "最近一世" },
@@ -51,33 +66,6 @@ const RANGE_LABELS = {
   "zh-Hans": { year: "年宫 · 根基与早年", month: "月宫 · 青年与人际", day: "日宫 · 关系与中年", time: "时宫 · 命宫主轴" },
   en: { year: "Year palace · roots", month: "Month palace · early adulthood", day: "Day palace · relationships", time: "Hour palace · life axis" },
 } as const;
-
-const GUIDANCE: Record<Locale, Record<DaoName, { cause: string; fruit: string; seed: string }>> = {
-  "zh-Hant": {
-    佛道: { cause: "前因落在守正、助人與珍惜福分。", fruit: "今生較容易從學習、貴人與照見他人中得到回應。", seed: "善意要有邊界，福分才養得久。" },
-    仙道: { cause: "前因落在才情、清貴與抽離。", fruit: "今生容易靠靈感、技藝與長線眼光建立自己的位置。", seed: "把靈感做成可交付的作品，不只停在想像裡。" },
-    人道: { cause: "前因落在責任、組織與把事情做成。", fruit: "今生容易被需要，也容易比別人多扛一層。", seed: "少接一件不屬於你的責任，才能保留真正的推進力。" },
-    修羅道: { cause: "前因落在競爭、策略與不肯低頭。", fruit: "今生的技藝與勝負心都很強，成敗常取決於力量用在哪裡。", seed: "把勝負心留給作品，不把每段關係都變成戰場。" },
-    鬼道: { cause: "前因落在敏感、承壓與看見隱痛。", fruit: "今生容易替人收拾，也容易把別人的重量留在自己身上。", seed: "先安頓睡眠與邊界，再去承接別人的需要。" },
-    畜生道: { cause: "前因落在求生、耐受與破後重建。", fruit: "今生的執行力和韌性可用，但不能把長期消耗當成正常。", seed: "每一次重建都要留下能用的結構，不再只靠硬撐。" },
-  },
-  "zh-Hans": {
-    佛道: { cause: "前因落在守正、助人与珍惜福分。", fruit: "今生较容易从学习、贵人与照见他人中得到回应。", seed: "善意要有边界，福分才养得久。" },
-    仙道: { cause: "前因落在才情、清贵与抽离。", fruit: "今生容易靠灵感、技艺与长线眼光建立自己的位置。", seed: "把灵感做成可交付的作品，不只停在想象里。" },
-    人道: { cause: "前因落在责任、组织与把事情做成。", fruit: "今生容易被需要，也容易比别人多扛一层。", seed: "少接一件不属于你的责任，才能保留真正的推进力。" },
-    修羅道: { cause: "前因落在竞争、策略与不肯低头。", fruit: "今生的技艺与胜负心都很强，成败常取决于力量用在哪里。", seed: "把胜负心留给作品，不把每段关系都变成战场。" },
-    鬼道: { cause: "前因落在敏感、承压与看见隐痛。", fruit: "今生容易替人收拾，也容易把别人的重量留在自己身上。", seed: "先安顿睡眠与边界，再去承接别人的需要。" },
-    畜生道: { cause: "前因落在求生、耐受与破后重建。", fruit: "今生的执行力和韧性可用，但不能把长期消耗当成正常。", seed: "每一次重建都要留下能用的结构，不再只靠硬撑。" },
-  },
-  en: {
-    佛道: { cause: "The inherited pattern centres on integrity, service and careful use of good fortune.", fruit: "Learning, support and helping others tend to open the path.", seed: "Give with boundaries so that generosity remains sustainable." },
-    仙道: { cause: "The inherited pattern centres on talent, refinement and distance.", fruit: "Inspiration, craft and a long view can become a distinct place in the world.", seed: "Turn inspiration into finished work instead of leaving it in imagination." },
-    人道: { cause: "The inherited pattern centres on responsibility, organisation and making things work.", fruit: "Being needed is a strength, but it can also become excess weight.", seed: "Release one responsibility that was never yours." },
-    修羅道: { cause: "The inherited pattern centres on competition, strategy and refusal to yield.", fruit: "Skill and competitive force are both strong; the outcome depends on where they are directed.", seed: "Keep the contest inside the work, not inside every relationship." },
-    鬼道: { cause: "The inherited pattern centres on sensitivity, pressure and hidden pain.", fruit: "You may be quick to carry what others leave behind.", seed: "Settle sleep and boundaries before carrying another person's needs." },
-    畜生道: { cause: "The inherited pattern centres on survival, endurance and rebuilding.", fruit: "Resilience is available, but chronic depletion must not become normal.", seed: "Make each rebuild leave behind a structure you can keep." },
-  },
-};
 
 const DAO_TONES: Record<DaoName, string> = {
   佛道: "#9a7422",
@@ -107,12 +95,13 @@ export function presentPalmPalace(palace: PalmPalace, locale: Locale): PalacePre
     };
   }
   const translated = locale === "en" ? ENGLISH_BY_BRANCH[palace.zhi] : SIMPLIFIED_BY_BRANCH[palace.zhi];
-  return { key, zhi: palace.zhi, lifeLabel: LIFE_LABELS[locale][key], range: RANGE_LABELS[locale][key], ...translated };
+  const zhi = locale === "en" ? (ENGLISH_BRANCHES[palace.zhi]?.short ?? "—") : palace.zhi;
+  return { key, zhi, lifeLabel: LIFE_LABELS[locale][key], range: RANGE_LABELS[locale][key], ...translated };
 }
 
-export function presentPalmGuidance(palm: PalmReading, locale: Locale) {
-  const axis = palm.latest ?? palm.palaces.at(-1);
-  return axis ? GUIDANCE[locale][axis.dao] : null;
+export function presentPalmHourLabel(branch: string, range: string, locale: Locale): string {
+  if (locale !== "en") return `${branch} · ${range}`;
+  return `${ENGLISH_BRANCHES[branch]?.full ?? "Unknown branch"} · ${range}`;
 }
 
 export function presentLunarLabel(label: string, locale: Locale): string {

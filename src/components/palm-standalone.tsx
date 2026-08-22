@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { buildPalm } from "@/lib/palm/engine";
-import { palmDaoTone, presentLunarLabel, presentPalmGuidance, presentPalmPalace } from "@/lib/palm/standalone-presentation";
+import { palmDaoTone, presentLunarLabel, presentPalmHourLabel, presentPalmPalace } from "@/lib/palm/standalone-presentation";
 import type { Gender } from "@/lib/bazi/types";
 import type { PalmReading } from "@/lib/core/types";
 
@@ -22,7 +22,7 @@ const COPY = {
     name: "稱呼（選填）", namePh: "只顯示在本次結果，不會保存", direction: "一掌經順逆（必填）", directionHelp: "這是傳統算法的順逆參數，不用來定義你的性別身份。",
     forward: "順行（傳統男命）", reverse: "逆行（傳統女命）", date: "出生日期（國曆）", hour: "出生時辰", unknown: "不知道時辰（時宮留白）",
     submit: "開始排盤", privacy: "資料只在你的裝置上即時計算；不登入、不保存、不傳送。", required: "請填出生日期，並選擇一掌經順逆。", invalid: "這個日期無法轉換為農曆，請檢查後再試。",
-    result: "一掌經四宮", resultFor: "的四宮結果", palaces: "前世四世・輪迴足跡", axis: "本命主軸", cause: "前因", fruit: "今果", seed: "後種",
+    result: "一掌經四宮", resultFor: "的四宮結果", palaces: "前世四世・輪迴足跡", readingTitle: "四宮讀法", readingBody: "年、月、日、時四宮分別看根基、人際、關係與本命主軸。四宮分開讀，不拿單一宮位替你下整體人格結論，也不額外生成與排盤無關的建議。",
     missingHour: "你未提供出生時辰，因此時宮／最近一世不作判定；目前只顯示年、月、日三宮。", again: "重新排盤", full: "回到昭梧完整分析", boundary: "傳統文化與象徵性解讀僅供自我觀察，不替代醫療、法律、財務或現實決策。",
   },
   "zh-Hans": {
@@ -32,7 +32,7 @@ const COPY = {
     name: "称呼（选填）", namePh: "只显示在本次结果，不会保存", direction: "一掌经顺逆（必填）", directionHelp: "这是传统算法的顺逆参数，不用来定义你的性别身份。",
     forward: "顺行（传统男命）", reverse: "逆行（传统女命）", date: "出生日期（公历）", hour: "出生时辰", unknown: "不知道时辰（时宫留白）",
     submit: "开始排盘", privacy: "资料只在你的设备上即时计算；不登录、不保存、不传送。", required: "请填出生日期，并选择一掌经顺逆。", invalid: "这个日期无法转换为农历，请检查后再试。",
-    result: "一掌经四宫", resultFor: "的四宫结果", palaces: "前世四世・轮回足迹", axis: "本命主轴", cause: "前因", fruit: "今果", seed: "后种",
+    result: "一掌经四宫", resultFor: "的四宫结果", palaces: "前世四世・轮回足迹", readingTitle: "四宫读法", readingBody: "年、月、日、时四宫分别看根基、人际、关系与本命主轴。四宫分开读，不拿单一宫位替你下整体人格结论，也不额外生成与排盘无关的建议。",
     missingHour: "你未提供出生时辰，因此时宫／最近一世不作判定；目前只显示年、月、日三宫。", again: "重新排盘", full: "回到昭梧完整分析", boundary: "传统文化与象征性解读仅供自我观察，不替代医疗、法律、财务或现实决定。",
   },
   en: {
@@ -42,7 +42,7 @@ const COPY = {
     name: "Name (optional)", namePh: "Shown only in this result; never saved", direction: "Palm sequence (required)", directionHelp: "This is the traditional method's calculation parameter; it does not define your gender identity.",
     forward: "Forward sequence (traditional male chart)", reverse: "Reverse sequence (traditional female chart)", date: "Date of birth (Gregorian)", hour: "Birth-hour branch", unknown: "Time unknown — leave the hour palace blank",
     submit: "Calculate four palaces", privacy: "Calculated on this device only. No sign-in, storage or transmission.", required: "Enter a birth date and choose a Palm sequence.", invalid: "This date cannot be converted to a lunar date. Check it and try again.",
-    result: "Four-palace reading", resultFor: " · four-palace result", palaces: "Four symbolic prior-life palaces", axis: "Current life axis", cause: "Inherited pattern", fruit: "Current expression", seed: "Practice",
+    result: "Four-palace reading", resultFor: " · four-palace result", palaces: "Four symbolic prior-life palaces", readingTitle: "How to read the four palaces", readingBody: "Read the year, month, day and hour palaces separately as roots, social pattern, relationships and the current-life axis. One palace is not used to invent an overall personality verdict or unrelated advice.",
     missingHour: "Birth time was not provided, so the hour palace and most recent prior-life category remain blank. The year, month and day palaces are shown.", again: "Calculate again", full: "Return to full Zhaowu analysis", boundary: "Traditional and symbolic interpretation for self-reflection only. It does not replace medical, legal, financial or practical decisions.",
   },
 } as const satisfies Record<Locale, Record<string, string>>;
@@ -88,8 +88,6 @@ export function PalmStandalone() {
     setError("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  const guidance = result ? presentPalmGuidance(result, locale) : null;
 
   return (
     <main className="mx-auto max-w-3xl space-y-6 pb-8 sm:space-y-8">
@@ -138,7 +136,7 @@ export function PalmStandalone() {
           {copy.hour}
           <select value={hour} onChange={(event) => setHour(event.target.value)} className="mt-2 min-h-12 w-full rounded-xl border border-line bg-white/65 px-4 text-base outline-none transition focus:border-cinnabar focus:ring-2 focus:ring-cinnabar/10">
             <option value="unknown">{copy.unknown}</option>
-            {HOURS.map(([value, branch, range]) => <option key={value} value={value}>{branch} · {range}</option>)}
+            {HOURS.map(([value, branch, range]) => <option key={value} value={value}>{presentPalmHourLabel(branch, range, locale)}</option>)}
           </select>
         </label>
 
@@ -178,16 +176,10 @@ export function PalmStandalone() {
             })}
           </div>
 
-          {guidance ? (
-            <article className="rounded-2xl border border-[#b99755]/35 bg-paper/60 p-5">
-              <h3 className="font-display text-xl font-semibold tracking-[0.06em] text-ink">{copy.axis}</h3>
-              <dl className="mt-4 grid gap-4 text-sm leading-7 sm:grid-cols-3">
-                <div><dt className="font-semibold text-cinnabar">{copy.cause}</dt><dd className="mt-1 text-ink-soft">{guidance.cause}</dd></div>
-                <div><dt className="font-semibold text-cinnabar">{copy.fruit}</dt><dd className="mt-1 text-ink-soft">{guidance.fruit}</dd></div>
-                <div><dt className="font-semibold text-cinnabar">{copy.seed}</dt><dd className="mt-1 text-ink-soft">{guidance.seed}</dd></div>
-              </dl>
-            </article>
-          ) : null}
+          <article className="rounded-2xl border border-[#b99755]/35 bg-paper/60 p-5">
+            <h3 className="font-display text-xl font-semibold tracking-[0.06em] text-ink">{copy.readingTitle}</h3>
+            <p className="mt-3 text-sm leading-7 text-ink-soft">{copy.readingBody}</p>
+          </article>
 
           <p className="text-xs leading-6 text-ink-mute">{copy.boundary}</p>
           <div className="grid gap-3 sm:grid-cols-2">
