@@ -17,7 +17,6 @@ const EMPTY_STATS: PublicSiteStats = {
 };
 
 const RANDOM_EMBLEM_ASSETS = [
-  // 佛教八吉祥／八寶系
   "/emblems/dharma-wheel-emblem.svg",
   "/emblems/modern-conch-emblem.svg",
   "/emblems/modern-parasol-emblem.svg",
@@ -26,14 +25,12 @@ const RANDOM_EMBLEM_ASSETS = [
   "/emblems/modern-endless-knot-emblem.svg",
   "/emblems/modern-golden-fish-emblem.svg",
   "/emblems/modern-victory-banner-emblem.svg",
-  // 道家／天人神寶系
   "/emblems/modern-gourd-emblem.svg",
   "/emblems/modern-bagua-emblem.svg",
   "/emblems/modern-bell-emblem.svg",
   "/emblems/modern-sword-emblem.svg",
   "/emblems/modern-incense-emblem.svg",
   "/emblems/ruyi-emblem.svg",
-  // 山水、仙鶴等氣氛紋樣
   "/emblems/mountain-emblem.svg",
   "/emblems/crane-feather-emblem.svg",
   "/emblems/heaven-gate-emblem.svg",
@@ -69,7 +66,7 @@ function buildRandomEmblems(key: string) {
     [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
   }
 
-  return pool.slice(0, 6).map((src) => ({
+  return pool.slice(0, 8).map((src) => ({
     src,
     rotation: Math.round(random() * 16 - 8),
     scale: 0.9 + random() * 0.18,
@@ -80,6 +77,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isLogin = pathname === "/login";
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
   const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
   const [emblemSessionSeed] = useState(() => Math.floor(Math.random() * 1_000_000_000));
@@ -112,14 +110,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="relative isolate min-h-dvh overflow-x-clip bg-transparent text-ink">
+    <div className={`relative isolate min-h-dvh overflow-x-clip bg-transparent text-ink ${isLogin ? "zhaowu-login-shell" : ""}`}>
       {backgroundUrl ? (
         <div
           aria-hidden
-          className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.14] saturate-75"
-          style={{ backgroundImage: `linear-gradient(rgba(247,239,221,.25), rgba(239,225,195,.72)), url(${backgroundUrl})` }}
+          className={`pointer-events-none fixed inset-0 z-0 bg-cover bg-center bg-no-repeat ${isLogin ? "opacity-[0.56]" : "opacity-[0.34]"}`}
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,253,247,.12), rgba(246,239,224,.40)), url(${backgroundUrl})`,
+            backgroundPosition: "center 28%",
+          }}
         />
       ) : null}
+
       <div aria-hidden className="zhaowu-emblem-scatter">
         {decorativeEmblems.map((emblem, index) => (
           <img
@@ -132,60 +134,70 @@ export function SiteShell({ children }: { children: ReactNode }) {
           />
         ))}
       </div>
-      {pathname !== "/login" ? <IntroGate /> : null}
-      <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/92 backdrop-blur-md">
-        <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
-          <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
-            <BrandSeal />
-            <span className="min-w-0 leading-none">
-              <span className="block font-display text-base tracking-[0.18em] sm:text-lg sm:tracking-[0.2em]">{t("brand")}</span>
-              <span className="hidden max-w-[16rem] truncate text-[10px] tracking-[0.15em] text-ink-mute sm:block">{t("tagline")}</span>
-            </span>
-          </Link>
-          <nav className="flex shrink-0 items-center gap-1 text-sm">
-            <Link to="/" className={`hidden rounded-full px-2.5 py-2 min-[520px]:inline ${pathname === "/" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
-              {t("navHome")}
+
+      {!isLogin ? <IntroGate /> : null}
+
+      {!isLogin ? (
+        <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/86 backdrop-blur-md">
+          <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
+            <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
+              <BrandSeal />
+              <span className="min-w-0 leading-none">
+                <span className="block font-display text-base tracking-[0.18em] sm:text-lg sm:tracking-[0.2em]">{t("brand")}</span>
+                <span className="hidden max-w-[16rem] truncate text-[10px] tracking-[0.15em] text-ink-mute sm:block">{t("tagline")}</span>
+              </span>
             </Link>
-            {user ? (
-              <Link to="/account" className={`hidden rounded-full px-2 py-2 min-[380px]:inline-flex ${pathname === "/account" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
-                {user.isOwner ? t("navAdmin") : t("navMine")}
+            <nav className="flex shrink-0 items-center gap-1 text-sm">
+              <Link to="/" className={`hidden rounded-full px-2.5 py-2 min-[520px]:inline ${pathname === "/" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
+                {t("navHome")}
               </Link>
-            ) : null}
-            <label htmlFor="site-language" className="sr-only">{t("language")}</label>
-            <select
-              id="site-language"
-              value={locale}
-              onChange={(e) => setLocale(e.target.value as Locale)}
-              aria-label={t("language")}
-              className="h-10 max-w-[4.6rem] rounded-full border border-line/80 bg-paper/60 px-2 text-xs text-ink-soft outline-none focus:border-cinnabar"
-            >
-              <option value="zh-Hant">繁體</option>
-              <option value="zh-Hans">简体</option>
-              <option value="en">EN</option>
-            </select>
-            {isPending ? (
-              <span className="h-8 w-14 animate-pulse rounded-full bg-paper-deep" />
-            ) : user ? (
-              <button type="button" onClick={() => void signOut()} className="max-w-20 truncate rounded-full px-2.5 py-2 text-ink-soft hover:text-ink">
-                {authEnabled ? t("logout") : user.displayName}
-              </button>
-            ) : (
-              <Link to="/login" className="rounded-full bg-cinnabar px-3 py-2 text-cream">{t("navLogin")}</Link>
-            )}
-          </nav>
-        </div>
-      </header>
-      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8">{children}</div>
-      <footer className="relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
-        <p className="font-display text-sm tracking-[0.28em] text-ink-mute">
-          {t("brand")}<span className="ml-2 tracking-[0.2em]">ZHAOWU</span>
-        </p>
-        <p className="mt-2 text-[10px] tracking-[0.08em] text-ink-mute">
-          {stats.version !== "—" ? `${stats.version} · #${stats.updateNumber}` : "ZHAOWU"}
-          {stats.version !== "—" ? " · " : ""}
-          {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total" : locale === "zh-Hans" ? "累计" : "累計"} {stats.totalVisits.toLocaleString()}
-        </p>
-      </footer>
+              {user ? (
+                <Link to="/account" className={`hidden rounded-full px-2 py-2 min-[380px]:inline-flex ${pathname === "/account" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
+                  {user.isOwner ? t("navAdmin") : t("navMine")}
+                </Link>
+              ) : null}
+              <label htmlFor="site-language" className="sr-only">{t("language")}</label>
+              <select
+                id="site-language"
+                value={locale}
+                onChange={(e) => setLocale(e.target.value as Locale)}
+                aria-label={t("language")}
+                className="h-10 max-w-[4.6rem] rounded-full border border-line/80 bg-paper/70 px-2 text-xs text-ink-soft outline-none focus:border-cinnabar"
+              >
+                <option value="zh-Hant">繁體</option>
+                <option value="zh-Hans">简体</option>
+                <option value="en">EN</option>
+              </select>
+              {isPending ? (
+                <span className="h-8 w-14 animate-pulse rounded-full bg-paper-deep" />
+              ) : user ? (
+                <button type="button" onClick={() => void signOut()} className="max-w-20 truncate rounded-full px-2.5 py-2 text-ink-soft hover:text-ink">
+                  {authEnabled ? t("logout") : user.displayName}
+                </button>
+              ) : (
+                <Link to="/login" className="rounded-full bg-cinnabar px-3 py-2 text-cream">{t("navLogin")}</Link>
+              )}
+            </nav>
+          </div>
+        </header>
+      ) : null}
+
+      <div className={isLogin ? "relative z-10 min-h-dvh" : "relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8"}>
+        {children}
+      </div>
+
+      {!isLogin ? (
+        <footer className="relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
+          <p className="font-display text-sm tracking-[0.28em] text-ink-mute">
+            {t("brand")}<span className="ml-2 tracking-[0.2em]">ZHAOWU</span>
+          </p>
+          <p className="mt-2 text-[10px] tracking-[0.08em] text-ink-mute">
+            {stats.version !== "—" ? `${stats.version} · #${stats.updateNumber}` : "ZHAOWU"}
+            {stats.version !== "—" ? " · " : ""}
+            {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total" : locale === "zh-Hans" ? "累计" : "累計"} {stats.totalVisits.toLocaleString()}
+          </p>
+        </footer>
+      ) : null}
     </div>
   );
 }
