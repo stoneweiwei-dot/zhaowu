@@ -133,6 +133,18 @@ test("every customer-facing translation key has an English value", async () => {
   assert.deepEqual(tableKeys.filter((key) => !englishKeys.has(key)), []);
 });
 
+test("homepage exposes the standalone deterministic Palm tool", async () => {
+  const home = await source("src/routes/index.tsx");
+  const route = await source("src/routes/yizhangjing.tsx");
+  const tool = await source("src/components/palm-standalone.tsx");
+
+  assert.match(home, /to="\/yizhangjing"/);
+  assert.match(route, /createFileRoute\("\/yizhangjing"\)/);
+  assert.match(tool, /buildPalm/);
+  assert.match(tool, /timeUnknown: hour === "unknown"/);
+  assert.doesNotMatch(tool, /fetch\(|axios|supabase|writeFullReport|analyzeBirth/);
+});
+
 test("public form uses associated labels and translated relationship copy", async () => {
   const form = await source("src/components/analysis-form.tsx");
   assert.match(form, /htmlFor="analysis-question"/);
