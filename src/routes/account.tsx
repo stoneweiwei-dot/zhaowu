@@ -21,9 +21,8 @@ import {
 } from "@/lib/background-assets";
 import { Mark } from "@/components/marks";
 import { useI18n, type Locale } from "@/lib/i18n";
-import { customerCopy, customerDirectAnswer, customerDocument } from "@/lib/report/customer-copy";
-import { applyAnswerContract } from "@/lib/core/answer-contract";
-import { composeNinePages, type NinePage } from "@/lib/report/nine-page";
+import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
+import type { NinePage } from "@/lib/report/nine-page";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -51,28 +50,21 @@ function storedNinePages(row: ReportRecord): NinePage[] {
   for (const source of sources) {
     if (!source || typeof source !== "object") continue;
     const pages = (source as Record<string, unknown>).ninePages;
-    if (Array.isArray(pages)) return pages as NinePage[];
+    if (Array.isArray(pages)) {
+      return (pages as NinePage[]).map((page) => ({
+        ...page,
+        body: (page.body ?? []).map((line) => customerCopy(String(line))).filter(Boolean),
+      }));
+    }
   }
   return [];
 }
 
-function liveNinePages(row: ReportRecord): NinePage[] {
-  const snapshot = row.engine_snapshot;
-  if (snapshot?.question && snapshot.chart && snapshot.reading) {
-    try {
-      const reading = applyAnswerContract(snapshot.question, snapshot.chart, snapshot.reading);
-      return composeNinePages({
-        ...snapshot,
-        reading,
-      });
-    } catch {
-      /* fall through to stored pages */
-    }
-  }
-  return storedNinePages(row).map((page) => ({
-    ...page,
-    body: (page.body ?? []).map((line) => customerCopy(String(line))).filter(Boolean),
-  }));
+function statusPill(ok: boolean, label: string, pendingLabel: string) {
+  return {
+    label: ok ? label : pendingLabel,
+    className: ok ? "border-emerald-700/25 bg-emerald-700/5 text-emerald-800" : "border-line bg-paper/55 text-ink-mute",
+  };
 }
 
 function AccountPage() {
@@ -92,29 +84,29 @@ function AccountPage() {
   const c = useMemo(() => ({
     reportsReadError: tr(locale, "報告讀取失敗。", "报告读取失败。", "Could not load reports."),
     backgroundsReadError: tr(locale, "背景圖片讀取失敗。", "背景图片读取失败。", "Could not load background images."),
-    expired: tr(locale, "登入狀態已失效，請重新登入後再查看報告。", "登录状态已失效，请重新登录后再查看报告。", "Your session has expired. Sign in again to open reports."),
+    expired: tr(locale, "登入狀態已失效，請重新登入。", "登录状态已失效，请重新登录。", "Your session has expired. Sign in again."),
     reportReadError: tr(locale, "單筆報告讀取失敗。", "单笔报告读取失败。", "Could not load this report."),
-    uploaded: (n: number) => tr(locale, `已上傳 ${n} 張；啟用中的圖片會按日期輪播。`, `已上传 ${n} 张；启用中的图片会按日期轮播。`, `Uploaded ${n} image${n === 1 ? "" : "s"}. Enabled images rotate by date.`),
+    uploaded: (n: number) => tr(locale, `已上傳 ${n} 張。`, `已上传 ${n} 张。`, `Uploaded ${n} image${n === 1 ? "" : "s"}.`),
     uploadFailed: tr(locale, "圖片上傳失敗。", "图片上传失败。", "Image upload failed."),
     ownerTitle: tr(locale, "昭梧站主後台", "昭梧站主后台", "Zhaowu Owner Console"),
     memberTitle: tr(locale, "我的昭梧", "我的昭梧", "My Zhaowu"),
-    ownerBadge: tr(locale, "站主 · 最高版直看", "站主 · 最高版直看", "Owner · highest version access"),
+    ownerBadge: tr(locale, "站主 · 單一最終結果", "站主 · 单一最终结果", "Owner · single final result"),
     birthData: tr(locale, "出生資料", "出生资料", "Birth profile"),
-    birthSaved: tr(locale, "已記住，下次分析可自動回填。", "已记住，下次分析可自动回填。", "Saved. It will be filled automatically next time."),
-    birthEmpty: tr(locale, "尚未保存；完成一次分析後會自動記住。", "尚未保存；完成一次分析后会自动记住。", "Not saved yet. It will be remembered after an analysis."),
+    birthSaved: tr(locale, "已記住，下次分析可自動回填。", "已记住，下次分析可自动回填。", "Saved for the next analysis."),
+    birthEmpty: tr(locale, "尚未保存。", "尚未保存。", "Not saved yet."),
     reports: tr(locale, "報告", "报告", "Reports"),
-    ownerCount: (n: number) => tr(locale, `目前可讀 ${n} 筆（列表只載摘要）`, `目前可读 ${n} 笔（列表只载摘要）`, `${n} report${n === 1 ? "" : "s"} available; the list loads summaries only.`),
-    memberCount: (n: number) => tr(locale, `最近 ${n} 筆，最多顯示 3 筆`, `最近 ${n} 笔，最多显示 3 笔`, `${n} recent report${n === 1 ? "" : "s"}; up to 3 are shown.`),
+    ownerCount: (n: number) => tr(locale, `目前 ${n} 筆`, `目前 ${n} 笔`, `${n} reports`),
+    memberCount: (n: number) => tr(locale, `最近 ${n} 筆，最多顯示 3 筆`, `最近 ${n} 笔，最多显示 3 笔`, `${n} recent reports; up to 3 shown`),
     backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
     uploading: tr(locale, "上傳中…", "上传中…", "Uploading…"),
     upload: tr(locale, "＋上傳圖片", "＋上传图片", "+ Upload images"),
-    backgroundLead: tr(locale, "可一次選多張。點紅色「設為壁紙」會立刻把這張鋪滿全站，卡片會半透明，讓壁紙看得見。其餘啟用中的圖片按日期輪播。", "可一次选多张。点红色「设为壁纸」会立刻把这张铺满全站，卡片会半透明，让壁纸看得见。其余启用中的图片按日期轮播。", "Select multiple images. The red “Set as wallpaper” button pins it site-wide; cards turn translucent so the art stays visible. Other enabled images rotate by date."),
+    backgroundLead: tr(locale, "點「設為壁紙」會固定全站背景；其餘啟用圖片按日期輪播。", "点“设为壁纸”会固定全站背景；其余启用图片按日期轮播。", "Set a wallpaper to pin it site-wide; other enabled images rotate by date."),
     uploadedImages: (n: number) => tr(locale, `＋已上傳圖片（${n}）`, `＋已上传图片（${n}）`, `+ Uploaded images (${n})`),
     noImages: tr(locale, "目前沒有已上傳圖片。", "目前没有已上传图片。", "No uploaded images yet."),
     enabled: tr(locale, "啟用輪播", "启用轮播", "Enable rotation"),
     setWallpaper: tr(locale, "設為壁紙", "设为壁纸", "Set as wallpaper"),
     currentWallpaper: tr(locale, "目前壁紙", "当前壁纸", "Current wallpaper"),
-    wallpaperSet: tr(locale, "已設為目前壁紙。回首頁即可看到。", "已设为当前壁纸。回首页即可看到。", "Set as the current wallpaper. Open the home page to see it."),
+    wallpaperSet: tr(locale, "已設為目前壁紙。", "已设为当前壁纸。", "Wallpaper updated."),
     unpinWallpaper: tr(locale, "取消固定", "取消固定", "Unpin"),
     updateFailed: tr(locale, "更新失敗。", "更新失败。", "Update failed."),
     delete: tr(locale, "刪除", "删除", "Delete"),
@@ -123,7 +115,7 @@ function AccountPage() {
     customerReports: tr(locale, "客戶報告", "客户报告", "Customer reports"),
     recentReports: tr(locale, "最近報告", "最近报告", "Recent reports"),
     search: tr(locale, "搜尋 Email / 問題", "搜索 Email / 问题", "Search email / question"),
-    empty: tr(locale, "目前沒有報告。登入後完成一次分析，基礎盤會自動出現在這裡。", "目前没有报告。登录后完成一次分析，基础盘会自动出现在这里。", "No reports yet. After a signed-in analysis, the base chart will appear here automatically."),
+    empty: tr(locale, "目前沒有報告。", "目前没有报告。", "No reports yet."),
     reportFallback: tr(locale, "昭梧報告", "昭梧报告", "Zhaowu report"),
     noEmail: tr(locale, "未綁 Email", "未绑定 Email", "No email linked"),
     collapse: tr(locale, "收起", "收起", "Collapse"),
@@ -133,9 +125,19 @@ function AccountPage() {
     monthCommand: tr(locale, "月令", "月令", "Month command"),
     page: tr(locale, "頁", "页", "Page"),
     fullReport: tr(locale, "完整報告", "完整报告", "Full report"),
-    noReadable: tr(locale, "這筆記錄尚未生成可讀內容。", "这笔记录尚未生成可读内容。", "This record does not yet contain readable report content."),
+    noReadable: tr(locale, "這筆記錄尚未保存最終可讀內容。", "这笔记录尚未保存最终可读内容。", "This record does not yet contain a saved final result."),
     deleteRecordConfirm: tr(locale, "刪除這筆報告？", "删除这笔报告？", "Delete this report?"),
     deleteRecord: tr(locale, "刪除記錄", "删除记录", "Delete record"),
+    finalSource: tr(locale, "最終結果來源：保存版本", "最终结果来源：保存版本", "Final source: saved version"),
+    chartDone: tr(locale, "命盤完成", "命盘完成", "Chart ready"),
+    chartPending: tr(locale, "命盤待生成", "命盘待生成", "Chart pending"),
+    answerDone: tr(locale, "最終答案完成", "最终答案完成", "Final answer ready"),
+    answerPending: tr(locale, "最終答案待保存", "最终答案待保存", "Final answer pending"),
+    pagesDone: tr(locale, "九頁完成", "九页完成", "Nine pages ready"),
+    pagesPending: tr(locale, "九頁待生成", "九页待生成", "Nine pages pending"),
+    imageDone: tr(locale, "命誥圖完成", "命诰图完成", "Decree image ready"),
+    imageFailed: tr(locale, "命誥圖失敗", "命诰图失败", "Decree image failed"),
+    imageUnconfigured: tr(locale, "命誥圖未配置", "命诰图未配置", "Decree image not configured"),
   }), [locale]);
 
   async function load() {
@@ -216,9 +218,7 @@ function AccountPage() {
     }
   }
 
-  if (isPending) {
-    return <div className="mx-auto h-52 max-w-xl animate-pulse rounded-xl bg-cream/70" />;
-  }
+  if (isPending) return <div className="mx-auto h-52 max-w-xl animate-pulse rounded-xl bg-cream/70" />;
 
   if (!user || !session) {
     return (
@@ -280,80 +280,34 @@ function AccountPage() {
                   <img src={backgroundPublicUrl(asset.storage_path)} alt={asset.name} className="aspect-[16/9] w-full object-cover" loading="lazy" />
                   <div className="p-3">
                     <p className="truncate text-sm font-medium text-ink">{asset.name}</p>
-                    <p className="mt-1 text-[11px] text-ink-mute">{new Date(asset.created_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")}</p>
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                       <label className="flex items-center gap-2 text-xs text-ink-soft">
-                        <input
-                          type="checkbox"
-                          checked={asset.enabled}
-                          onChange={async (e) => {
-                            setBackgroundMsg(null);
-                            try {
-                              await setBackgroundEnabled(session, asset.id, e.target.checked);
-                              await loadBackgrounds();
-                            } catch (err) {
-                              setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed);
-                            }
-                          }}
-                        />
+                        <input type="checkbox" checked={asset.enabled} onChange={async (e) => {
+                          try { await setBackgroundEnabled(session, asset.id, e.target.checked); await loadBackgrounds(); }
+                          catch (err) { setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed); }
+                        }} />
                         {c.enabled}
                       </label>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         {isPinnedWallpaper(asset) ? (
-                          <button
-                            type="button"
-                            className="rounded-full border border-wood/40 bg-wood/10 px-3 py-1.5 text-xs text-wood"
-                            onClick={async () => {
-                              setBackgroundMsg(null);
-                              try {
-                                await clearBackgroundWallpaper(session, asset.id);
-                                await loadBackgrounds();
-                              } catch (err) {
-                                setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed);
-                              }
-                            }}
-                          >
-                            {c.unpinWallpaper}
-                          </button>
+                          <button type="button" className="rounded-full border border-wood/40 bg-wood/10 px-3 py-1.5 text-xs text-wood" onClick={async () => {
+                            try { await clearBackgroundWallpaper(session, asset.id); await loadBackgrounds(); }
+                            catch (err) { setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed); }
+                          }}>{c.unpinWallpaper}</button>
                         ) : (
-                          <button
-                            type="button"
-                            className="rounded-full bg-cinnabar px-3 py-1.5 text-xs text-cream"
-                            onClick={async () => {
-                              setBackgroundMsg(null);
-                              try {
-                                await setBackgroundWallpaper(session, asset.id);
-                                await loadBackgrounds();
-                                setBackgroundMsg(c.wallpaperSet);
-                              } catch (err) {
-                                setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed);
-                              }
-                            }}
-                          >
-                            {c.setWallpaper}
-                          </button>
+                          <button type="button" className="rounded-full bg-cinnabar px-3 py-1.5 text-xs text-cream" onClick={async () => {
+                            try { await setBackgroundWallpaper(session, asset.id); await loadBackgrounds(); setBackgroundMsg(c.wallpaperSet); }
+                            catch (err) { setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed); }
+                          }}>{c.setWallpaper}</button>
                         )}
-                        <button
-                          type="button"
-                          className="rounded-full px-3 py-1.5 text-xs text-cinnabar"
-                          onClick={async () => {
-                            if (!window.confirm(c.deleteImage(asset.name))) return;
-                            setBackgroundMsg(null);
-                            try {
-                              await deleteBackground(session, asset);
-                              await loadBackgrounds();
-                            } catch (err) {
-                              setBackgroundMsg(err instanceof Error ? err.message : c.deleteFailed);
-                            }
-                          }}
-                        >
-                          {c.delete}
-                        </button>
+                        <button type="button" className="rounded-full px-3 py-1.5 text-xs text-cinnabar" onClick={async () => {
+                          if (!window.confirm(c.deleteImage(asset.name))) return;
+                          try { await deleteBackground(session, asset); await loadBackgrounds(); }
+                          catch (err) { setBackgroundMsg(err instanceof Error ? err.message : c.deleteFailed); }
+                        }}>{c.delete}</button>
                       </div>
                     </div>
-                    {isPinnedWallpaper(asset) ? (
-                      <p className="mt-2 text-[11px] tracking-[0.12em] text-cinnabar">{c.currentWallpaper}</p>
-                    ) : null}
+                    {isPinnedWallpaper(asset) ? <p className="mt-2 text-[11px] tracking-[0.12em] text-cinnabar">{c.currentWallpaper}</p> : null}
                   </div>
                 </article>
               ))}
@@ -368,9 +322,7 @@ function AccountPage() {
             <p className="text-xs tracking-[0.28em] text-cinnabar">REPORTS</p>
             <h2 className="mt-1 font-display text-2xl">{user.isOwner ? c.customerReports : c.recentReports}</h2>
           </div>
-          {user.isOwner ? (
-            <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} />
-          ) : null}
+          {user.isOwner ? <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} /> : null}
         </div>
 
         {busy ? <div className="mt-5 h-28 animate-pulse rounded-lg bg-paper-deep" /> : null}
@@ -382,8 +334,20 @@ function AccountPage() {
             const open = openId === row.id;
             const detail = details[row.id] ?? null;
             const snapshot = detail?.engine_snapshot ?? null;
-            const pages = detail ? liveNinePages(detail) : [];
+            const pages = detail ? storedNinePages(detail) : [];
             const text = detail ? fullText(detail) : null;
+            const savedAnswer = pages[0]?.body?.[0] || null;
+            const fallbackAnswer = snapshot?.reading?.directAnswer ? customerCopy(snapshot.reading.directAnswer) : null;
+            const displayAnswer = savedAnswer || fallbackAnswer;
+            const chartState = statusPill(Boolean(snapshot?.chart), c.chartDone, c.chartPending);
+            const answerState = statusPill(Boolean(savedAnswer || fallbackAnswer), c.answerDone, c.answerPending);
+            const pagesState = statusPill(pages.length === 9, c.pagesDone, c.pagesPending);
+            const imageState = detail?.image_path
+              ? { label: c.imageDone, className: "border-emerald-700/25 bg-emerald-700/5 text-emerald-800" }
+              : detail?.image_error
+                ? { label: c.imageFailed, className: "border-cinnabar/30 bg-cinnabar/5 text-cinnabar" }
+                : { label: c.imageUnconfigured, className: "border-line bg-paper/55 text-ink-mute" };
+
             return (
               <article key={row.id} className="rounded-lg border border-line bg-paper/35 p-4">
                 <div className="flex items-start justify-center gap-2 text-center">
@@ -395,52 +359,53 @@ function AccountPage() {
                   </div>
                 </div>
                 <div className="mt-3 text-center">
-                  <button type="button" onClick={() => void toggleReport(row)} className="rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink-soft">
-                    {open ? c.collapse : c.open}
-                  </button>
+                  <button type="button" onClick={() => void toggleReport(row)} className="rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink-soft">{open ? c.collapse : c.open}</button>
                 </div>
 
                 {open ? (
                   <div className="mt-4 border-t border-line pt-4 text-sm leading-7 text-ink-soft">
                     {detailBusyId === row.id ? <div className="h-28 animate-pulse rounded-lg bg-paper-deep" /> : null}
-                    {detailBusyId !== row.id && snapshot ? (
-                      <div className="mb-4 rounded-md bg-cream/70 p-3">
-                        <p className="text-xs tracking-[0.18em] text-cinnabar">{c.chartSummary}</p>
-                        <p className="mt-2">{c.dayMaster} {snapshot.chart.dayMaster}{snapshot.chart.dayMasterElement} · {c.monthCommand} {snapshot.chart.monthBranch}</p>
-                        <p>{snapshot.chart.pillars.map((p) => p.ganZhi).join("　")}</p>
-                        <p className="mt-2">{customerDirectAnswer(snapshot.question, applyAnswerContract(snapshot.question, snapshot.chart, snapshot.reading).directAnswer)}</p>
-                      </div>
-                    ) : null}
-                    {detailBusyId !== row.id && text ? <div className="mb-4 whitespace-pre-wrap">{text}</div> : null}
-                    {detailBusyId !== row.id && pages.length ? (
-                      <div className="space-y-4">
-                        {pages.map((p, i) => (
-                          <div key={`${row.id}-${i}`} className="border-t border-line/70 pt-3 first:border-0 first:pt-0">
-                            <p className="font-medium text-ink">{locale === "en" ? `${c.page} ${p.pageNo ?? i + 1}` : `第 ${p.pageNo ?? i + 1} ${c.page}`} · {p.title ?? c.fullReport}</p>
-                            {(p.body ?? []).map((line, j) => <p key={j} className="mt-1">{customerCopy(line)}</p>)}
+                    {detailBusyId !== row.id && detail ? (
+                      <>
+                        {user.isOwner ? (
+                          <div className="mb-4 rounded-lg border border-line bg-cream/70 p-3">
+                            <p className="text-[11px] tracking-[0.18em] text-cinnabar">{c.finalSource}</p>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {[chartState, answerState, pagesState, imageState].map((s) => <span key={s.label} className={`rounded-full border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
+                            </div>
                           </div>
-                        ))}
-                      </div>
-                    ) : null}
-                    {detailBusyId !== row.id && detail && !snapshot && !text && !pages.length ? <p className="text-ink-mute">{c.noReadable}</p> : null}
-                    {detailBusyId !== row.id && user.isOwner ? (
-                      <button
-                        type="button"
-                        className="mt-5 text-xs text-cinnabar"
-                        onClick={async () => {
-                          if (!window.confirm(c.deleteRecordConfirm)) return;
-                          await deleteReportRecord(session, row.id);
-                          setOpenId(null);
-                          setDetails((prev) => {
-                            const next = { ...prev };
-                            delete next[row.id];
-                            return next;
-                          });
-                          await load();
-                        }}
-                      >
-                        {c.deleteRecord}
-                      </button>
+                        ) : null}
+
+                        {snapshot?.chart ? (
+                          <div className="mb-4 rounded-md bg-cream/70 p-3">
+                            <p className="text-xs tracking-[0.18em] text-cinnabar">{c.chartSummary}</p>
+                            <p className="mt-2">{c.dayMaster} {snapshot.chart.dayMaster}{snapshot.chart.dayMasterElement} · {c.monthCommand} {snapshot.chart.monthBranch}</p>
+                            <p>{snapshot.chart.pillars.map((p) => p.ganZhi).join("　")}</p>
+                            {displayAnswer ? <p className="mt-3 font-medium text-ink">{displayAnswer}</p> : null}
+                          </div>
+                        ) : displayAnswer ? <p className="mb-4 font-medium text-ink">{displayAnswer}</p> : null}
+
+                        {pages.length ? (
+                          <div className="space-y-4">
+                            {pages.map((p, i) => (
+                              <div key={`${row.id}-${i}`} className="border-t border-line/70 pt-3 first:border-0 first:pt-0">
+                                <p className="font-medium text-ink">{locale === "en" ? `${c.page} ${p.pageNo ?? i + 1}` : `第 ${p.pageNo ?? i + 1} ${c.page}`} · {p.title ?? c.fullReport}</p>
+                                {(p.body ?? []).map((line, j) => <p key={j} className="mt-1">{customerCopy(line)}</p>)}
+                              </div>
+                            ))}
+                          </div>
+                        ) : text ? <div className="whitespace-pre-wrap">{text}</div> : !displayAnswer ? <p className="text-ink-mute">{c.noReadable}</p> : null}
+
+                        {user.isOwner ? (
+                          <button type="button" className="mt-5 text-xs text-cinnabar" onClick={async () => {
+                            if (!window.confirm(c.deleteRecordConfirm)) return;
+                            await deleteReportRecord(session, row.id);
+                            setOpenId(null);
+                            setDetails((prev) => { const next = { ...prev }; delete next[row.id]; return next; });
+                            await load();
+                          }}>{c.deleteRecord}</button>
+                        ) : null}
+                      </>
                     ) : null}
                   </div>
                 ) : null}

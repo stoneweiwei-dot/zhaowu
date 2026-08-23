@@ -4,8 +4,9 @@ import { buildChart, currentAlmanac } from "@/lib/bazi/chart";
 import { classifyQuestion, interpret } from "@/lib/bazi/interpret";
 import { buildPalm } from "@/lib/palm/engine";
 import { routeMethods } from "@/lib/core/method";
-import { applyAnswerContract, inferQuestionKind } from "@/lib/core/answer-contract";
+import { inferQuestionKind } from "@/lib/core/answer-contract";
 import { composeNinePageReport } from "@/lib/report/nine-page";
+import { finalizeReading } from "@/lib/report/final-reading";
 
 function newId(): string {
   return crypto.randomUUID();
@@ -122,7 +123,7 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
     palmReady: palm.ready,
     palmMissing: palm.missing,
   });
-  const reading = applyAnswerContract(
+  const reading = finalizeReading(
     data.question,
     chart,
     interpret(data.question, chart, data.relation, palm),
@@ -156,7 +157,7 @@ export async function followUpLife({
     palmReady: Boolean(palm?.ready),
     palmMissing: palm?.missing ?? [],
   });
-  const reading = applyAnswerContract(
+  const reading = finalizeReading(
     question,
     data.base.chart,
     interpret(question, data.base.chart, data.relation ?? "unset", palm),
@@ -182,7 +183,7 @@ export async function writeFullReport({
     palm?: AnalysisResult["palm"];
   };
 }) {
-  const reading = applyAnswerContract(data.question, data.chart, data.reading);
+  const reading = finalizeReading(data.question, data.chart, data.reading);
   const palm = data.palm ?? null;
   const methodProtocol = routeMethods(reading.kind, {
     palmReady: Boolean(palm?.ready),
