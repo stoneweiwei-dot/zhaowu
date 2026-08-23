@@ -3,13 +3,12 @@ import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
-/** v16：去掉舊山水海報；開場只認 loading-v11 */
-const KEY = "zhaowu.intro.v16";
+/** v17：高清绢本立轴海报，不再播低分辨率开场视频 */
+const KEY = "zhaowu.intro.v17";
 const MIN_HOLD_FIRST_MS = 6500;
 const MIN_HOLD_REPEAT_MS = 4800;
 const SLOW_NOTICE_MS = 10000;
-/** 鎖定加速版；cache-bust 避免舊片快取 */
-const VIDEO_SRC = "/intro/loading-v11.mp4?v=20260823c";
+const POSTER_SRC = "/intro/loading-poster.jpg?v=20260823-song";
 
 export function IntroGate() {
   const { t, locale } = useI18n();
@@ -101,6 +100,7 @@ export function IntroGate() {
       seen = false;
     }
     holdTarget.current = prefersReduced ? 2800 : seen ? MIN_HOLD_REPEAT_MS : MIN_HOLD_FIRST_MS;
+    setVideoReady(true);
 
     const slowTimer = window.setTimeout(() => setSlow(true), SLOW_NOTICE_MS);
 
@@ -126,7 +126,7 @@ export function IntroGate() {
       const timeFallback = prefersReduced || (vDur <= 0 && elapsed >= target);
       if (videoOk || timeFallback) {
         setHoldDone(true);
-        if (videoOk) setVideoComplete(true);
+        setVideoComplete(true);
       }
 
       raf.current = window.requestAnimationFrame(tick);
@@ -230,75 +230,12 @@ export function IntroGate() {
       aria-label={t("introAria")}
     >
       <div className="absolute inset-0 bg-[#0c100e]" aria-hidden>
-        {/* 不用舊山水 poster：載入前只顯示暗底，避免「看起來還是舊片」 */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,#1a241c_0%,#0c100e_55%,#080b09_100%)]" />
-        {!reduced ? (
-          <video
-            key={VIDEO_SRC}
-            ref={videoRef}
-            className="absolute inset-0 h-full w-full object-cover"
-            src={VIDEO_SRC}
-            autoPlay
-            muted
-            playsInline
-            preload="auto"
-            loop={ambientLoop}
-            style={{ opacity: videoReady && !mediaFailed ? 1 : 0 }}
-            onLoadedMetadata={() => {
-              const el = videoRef.current;
-              if (el && Number.isFinite(el.duration) && el.duration > 0) {
-                videoDurationRef.current = el.duration;
-              }
-            }}
-            onCanPlay={() => {
-              setVideoReady(true);
-              const el = videoRef.current;
-              if (el) {
-                el.muted = true;
-                el.playbackRate = 1;
-                el.loop = ambientLoopRef.current;
-                void el.play().catch(() => undefined);
-              }
-            }}
-            onLoadedData={() => {
-              setVideoReady(true);
-              const el = videoRef.current;
-              if (el) void el.play().catch(() => undefined);
-            }}
-            onTimeUpdate={() => {
-              const el = videoRef.current;
-              if (!el) return;
-              videoTimeRef.current = el.currentTime || 0;
-              if (Number.isFinite(el.duration) && el.duration > 0) {
-                videoDurationRef.current = el.duration;
-              }
-            }}
-            onEnded={() => {
-              if (ambientLoopRef.current) {
-                const el = videoRef.current;
-                if (el) {
-                  el.currentTime = 0;
-                  void el.play().catch(() => undefined);
-                }
-                return;
-              }
-              setVideoComplete(true);
-              setHoldDone(true);
-              const el = videoRef.current;
-              if (el && Number.isFinite(el.duration)) {
-                videoTimeRef.current = el.duration;
-              }
-            }}
-            onError={() => {
-              setMediaFailed(true);
-              setVideoReady(true);
-              setHoldDone(true);
-              setVideoComplete(true);
-            }}
-          />
-        ) : (
-          <div className="h-full w-full bg-[radial-gradient(circle_at_50%_18%,#f3d98f_0%,#8fa18a_34%,#314039_68%,#182019_100%)]" />
-        )}
+        <img
+          src={POSTER_SRC}
+          alt=""
+          className="intro-media intro-poster"
+          draggable={false}
+        />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,10,.16)_0%,rgba(8,12,10,.06)_42%,rgba(8,12,10,.4)_100%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_16%,rgba(255,239,179,.12),transparent_34%)] mix-blend-screen" />
       </div>

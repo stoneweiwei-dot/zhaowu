@@ -67,7 +67,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
         const weekly = await loadWeeklyWallpaper();
         if (!alive) return;
-        setBackgroundUrl(weekly);
+        setBackgroundUrl(weekly ?? "/wallpaper-song.jpg");
       })();
     };
 
