@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
-import { SealScatter } from "@/components/marks";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
@@ -17,7 +16,6 @@ const EMPTY_STATS: PublicSiteStats = {
   publishedAt: null,
 };
 
-/** Weekly traditional / neo-Chinese pattern practice wallpaper (local asset). */
 const WEEKLY_WALLPAPER_B64_PATH = "/wallpapers/current-weekly.b64";
 
 async function loadWeeklyWallpaper(): Promise<string | null> {
@@ -54,20 +52,22 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
     const loadBackground = () => {
       void (async () => {
-        const weekly = await loadWeeklyWallpaper();
-        if (!alive) return;
-        if (weekly) {
-          setBackgroundUrl(weekly);
-          return;
-        }
         try {
+          // Owner-uploaded images are the primary live background pool.
           const assets = await listPublicBackgrounds();
           if (!alive) return;
           const selected = chooseDailyBackground(assets);
-          setBackgroundUrl(selected ? backgroundPublicUrl(selected.storage_path) : null);
+          if (selected) {
+            setBackgroundUrl(backgroundPublicUrl(selected.storage_path));
+            return;
+          }
         } catch {
-          if (alive) setBackgroundUrl(null);
+          // Fall through to the weekly generated fallback.
         }
+
+        const weekly = await loadWeeklyWallpaper();
+        if (!alive) return;
+        setBackgroundUrl(weekly);
       })();
     };
 
@@ -80,17 +80,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className={`relative isolate min-h-dvh overflow-x-clip bg-transparent text-ink ${isLogin ? "zhaowu-login-shell" : ""} ${backgroundUrl ? "zhaowu-has-wallpaper" : ""}`}>
-      {backgroundUrl ? (
+    <div className={`relative isolate min-h-dvh overflow-x-clip bg-transparent text-ink ${isLogin ? "zhaowu-login-shell" : ""} ${backgroundUrl && !isLogin ? "zhaowu-has-wallpaper" : ""}`}>
+      {backgroundUrl && !isLogin ? (
         <div
           aria-hidden
-          className={`zhaowu-site-wallpaper ${isLogin ? "is-login" : ""}`}
+          className="zhaowu-site-wallpaper"
           style={{ backgroundImage: `url("${backgroundUrl}")` }}
         />
       ) : null}
 
       {!isLogin ? <IntroGate /> : null}
-      {!isLogin ? <SealScatter seedKey={pathname} /> : null}
 
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">
@@ -117,7 +116,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 value={locale}
                 onChange={(e) => setLocale(e.target.value as Locale)}
                 aria-label={t("language")}
-                className="h-10 max-w-[4.6rem] rounded-full border border-line/80 bg-cream/90 px-2 text-xs text-ink-soft outline-none focus:border-cinnabar"
+                className="h-10 max-w-[4.6rem] rounded-full border border-line/80 bg-cream/95 px-2 text-xs text-ink-soft outline-none focus:border-cinnabar"
               >
                 <option value="zh-Hant">繁體</option>
                 <option value="zh-Hans">简体</option>

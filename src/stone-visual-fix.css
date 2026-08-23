@@ -1,0 +1,306 @@
+/* Final visual correction: real artwork first, clean reading surfaces, no ghost-logo wallpaper. */
+
+/* Uploaded owner images remain visible as atmosphere, never as text texture. */
+.zhaowu-site-wallpaper {
+  opacity: .34 !important;
+  filter: saturate(.82) brightness(.88) blur(1.5px);
+  transform: scale(1.018);
+}
+
+.zhaowu-site-wallpaper::after {
+  background: linear-gradient(180deg, rgba(255,253,247,.42), rgba(247,241,230,.62)) !important;
+}
+
+.zhaowu-site-header {
+  background: rgba(255,253,247,.96) !important;
+}
+
+.zhaowu-has-wallpaper .seal-border,
+.zhaowu-has-wallpaper section.seal-border,
+.zhaowu-has-wallpaper .zhaowu-tool-card,
+.zhaowu-has-wallpaper .zhaowu-home-hero {
+  background: #fffdf7 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-home-hero {
+  border-color: rgba(180,139,76,.36) !important;
+  box-shadow: 0 18px 50px rgba(76,55,25,.10) !important;
+}
+
+/* A deliberate emblem row: visible objects, not random translucent watermarks. */
+.stone-motif-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: .55rem;
+  padding: .7rem .8rem;
+  border: 1px solid rgba(180,139,76,.28);
+  border-radius: 1.25rem;
+  background: rgba(255,253,247,.96);
+  box-shadow: 0 12px 30px rgba(76,55,25,.07);
+}
+
+.stone-motif-row img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  opacity: .92;
+  filter: none !important;
+}
+
+/* LOGIN: use the existing Stone loading-poster artwork as the actual visual surface. */
+.stone-login-screen {
+  position: relative;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #21170d;
+  color: #292c29;
+}
+
+.stone-login-art {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #2a1d0f;
+}
+
+.stone-login-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transform: scale(1.01);
+}
+
+.stone-login-art-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(24,15,6,.02) 0%, rgba(24,15,6,.02) 46%, rgba(24,15,6,.24) 61%, rgba(24,15,6,.70) 100%);
+}
+
+.stone-login-topbar {
+  position: fixed;
+  top: max(.85rem, env(safe-area-inset-top));
+  left: max(.8rem, env(safe-area-inset-left));
+  right: max(.8rem, env(safe-area-inset-right));
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stone-login-pill {
+  min-height: 2.45rem;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(245,224,172,.54);
+  border-radius: 999px;
+  background: rgba(31,24,14,.46);
+  padding: 0 .9rem;
+  color: #fff7df;
+  font-size: .76rem;
+  box-shadow: 0 8px 26px rgba(0,0,0,.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.stone-login-language {
+  appearance: auto;
+  outline: none;
+}
+
+.stone-login-sheet {
+  position: fixed;
+  z-index: 20;
+  left: 50%;
+  bottom: 0;
+  width: min(100%, 430px);
+  max-height: 48dvh;
+  overflow-y: auto;
+  transform: translateX(-50%);
+  border: 1px solid rgba(204,166,91,.50);
+  border-bottom: 0;
+  border-radius: 1.8rem 1.8rem 0 0;
+  background: rgba(255,253,247,.985);
+  padding: 1.05rem 1rem max(1rem, env(safe-area-inset-bottom));
+  box-shadow: 0 -22px 70px rgba(19,12,5,.30);
+}
+
+.stone-login-sheet-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: .8rem;
+}
+
+.stone-login-kicker {
+  color: #a65445;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+}
+
+.stone-login-title {
+  margin-top: .2rem;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #262923;
+}
+
+.stone-login-tabs {
+  display: flex;
+  flex-shrink: 0;
+  padding: .2rem;
+  border: 1px solid #dcc9a2;
+  border-radius: 999px;
+  background: #f5ecda;
+}
+
+.stone-login-tabs button {
+  min-height: 2rem;
+  border-radius: 999px;
+  padding: 0 .72rem;
+  color: #6b695f;
+  font-size: .72rem;
+}
+
+.stone-login-tabs button.is-active {
+  background: #2f7464;
+  color: #fffdf7;
+}
+
+.stone-login-providers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .55rem;
+  margin-top: .8rem;
+}
+
+.stone-login-providers button {
+  min-height: 2.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  border: 1px solid #d8c49c;
+  border-radius: 999px;
+  background: #fffdf7;
+  color: #343733;
+  font-size: .78rem;
+}
+
+.stone-login-providers button span {
+  width: 1.35rem;
+  height: 1.35rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(49,95,125,.25);
+  border-radius: 50%;
+  color: #315f7d;
+  font-size: .65rem;
+  font-weight: 700;
+}
+
+.stone-login-divider {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  margin: .65rem 0;
+  color: #9a927e;
+  font-size: .62rem;
+  letter-spacing: .08em;
+}
+
+.stone-login-divider span {
+  height: 1px;
+  flex: 1;
+  background: #dfd0b2;
+}
+
+.stone-login-form {
+  display: grid;
+  gap: .5rem;
+}
+
+.stone-login-form input {
+  width: 100%;
+  height: 2.7rem;
+  border: 1px solid #d8c49c;
+  border-radius: .9rem;
+  background: #fffdf7;
+  padding: 0 .9rem;
+  color: #292c29;
+  font-size: .9rem;
+  outline: none;
+}
+
+.stone-login-form input:focus {
+  border-color: #2f7464;
+  box-shadow: 0 0 0 3px rgba(47,116,100,.08);
+}
+
+.stone-login-primary {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: #2f7464;
+  padding: 0 1.2rem;
+  color: #fffdf7;
+  font-size: .88rem;
+  font-weight: 600;
+  box-shadow: 0 10px 24px rgba(47,116,100,.18);
+}
+
+.stone-login-message,
+.stone-login-error {
+  border-radius: .8rem;
+  padding: .55rem .7rem;
+  font-size: .72rem;
+  line-height: 1.45;
+}
+
+.stone-login-message {
+  background: rgba(47,116,100,.08);
+  color: #2f7464;
+}
+
+.stone-login-error {
+  background: rgba(166,84,69,.08);
+  color: #7f4036;
+}
+
+.stone-login-signature {
+  margin-top: .55rem;
+  text-align: center;
+  color: #9a927e;
+  font-size: .56rem;
+  letter-spacing: .16em;
+}
+
+@media (max-height: 760px) {
+  .stone-login-sheet { max-height: 54dvh; }
+  .stone-login-providers { margin-top: .55rem; }
+  .stone-login-divider { margin: .45rem 0; }
+}
+
+@media (min-width: 700px) {
+  .stone-login-art::before,
+  .stone-login-art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .stone-login-art img {
+    width: min(100%, 560px);
+    margin: 0 auto;
+    display: block;
+  }
+}
