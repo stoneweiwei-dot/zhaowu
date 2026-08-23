@@ -3,14 +3,15 @@ import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
-/** v12：重置舊 session，避免被舊邏輯秒關 */
-const KEY = "zhaowu.intro.v12";
-/** 影片實測約 6.0s，首次至少播到接近片尾 */
+/** v13：使用加速版從暗到明（15s→6s） */
+const KEY = "zhaowu.intro.v13";
+/** 與加速後影片長度對齊 */
 const MIN_HOLD_FIRST_MS = 6200;
-/** 重訪仍至少看一段，禁止 1 秒閃進 */
 const MIN_HOLD_REPEAT_MS = 4500;
 const SLOW_NOTICE_MS = 10000;
-const VIDEO_SRC = "/intro/loading-v10.mp4";
+/** 優先新加速片；若尚未上傳則回退舊片 */
+const VIDEO_SRC_PRIMARY = "/intro/loading-v11.mp4";
+const VIDEO_SRC_FALLBACK = "/intro/loading-v10.mp4";
 const POSTER_SRC = "/intro/loading-poster.jpg";
 
 export function IntroGate() {
@@ -29,6 +30,7 @@ export function IntroGate() {
   const [slow, setSlow] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [holdDone, setHoldDone] = useState(false);
+  const [videoSrc, setVideoSrc] = useState(VIDEO_SRC_PRIMARY);
   const startedAt = useRef(0);
   const holdTarget = useRef(MIN_HOLD_FIRST_MS);
   const bootPercentRef = useRef(0);
@@ -198,7 +200,7 @@ export function IntroGate() {
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
-            src={VIDEO_SRC}
+            src={videoSrc}
             poster={POSTER_SRC}
             autoPlay
             muted
@@ -242,7 +244,16 @@ export function IntroGate() {
                 videoTimeRef.current = el.duration;
               }
             }}
-            onError={() => setMediaFailed(true)}
+            onError={() => {
+              // 新片未上傳時回退舊片，避免開場空白
+              if (videoSrc === VIDEO_SRC_PRIMARY) {
+                setVideoSrc(VIDEO_SRC_FALLBACK);
+                setVideoReady(false);
+                setMediaFailed(false);
+                return;
+              }
+              setMediaFailed(true);
+            }}
           />
         ) : (
           <div className="h-full w-full bg-[radial-gradient(circle_at_50%_18%,#f3d98f_0%,#8fa18a_34%,#314039_68%,#182019_100%)]" />
