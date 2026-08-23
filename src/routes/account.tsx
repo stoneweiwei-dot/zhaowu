@@ -22,6 +22,7 @@ import {
 import { Mark } from "@/components/marks";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
+import { generateDecreeImage } from "@/lib/report/decree-image";
 import type { NinePage } from "@/lib/report/nine-page";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
@@ -63,7 +64,9 @@ function storedNinePages(row: ReportRecord): NinePage[] {
 function statusPill(ok: boolean, label: string, pendingLabel: string) {
   return {
     label: ok ? label : pendingLabel,
-    className: ok ? "border-emerald-700/25 bg-emerald-700/5 text-emerald-800" : "border-line bg-paper/55 text-ink-mute",
+    className: ok
+      ? "border-emerald-700/25 bg-emerald-700/5 text-emerald-800"
+      : "border-line bg-paper/55 text-ink-mute",
   };
 }
 
@@ -73,8 +76,13 @@ function AccountPage() {
   const [rows, setRows] = useState<ReportListRecord[]>([]);
   const [details, setDetails] = useState<Record<string, ReportRecord | null>>({});
   const [detailBusyId, setDetailBusyId] = useState<string | null>(null);
+  const [actionBusyId, setActionBusyId] = useState<string | null>(null);
   const [busy, setBusy] = useState(true);
+  const [refreshBusy, setRefreshBusy] = useState(false);
+  const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [reportMessages, setReportMessages] = useState<Record<string, string>>({});
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
   const [openId, setOpenId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [backgrounds, setBackgrounds] = useState<BackgroundAsset[]>([]);
@@ -97,6 +105,10 @@ function AccountPage() {
     reports: tr(locale, "報告", "报告", "Reports"),
     ownerCount: (n: number) => tr(locale, `目前 ${n} 筆`, `目前 ${n} 笔`, `${n} reports`),
     memberCount: (n: number) => tr(locale, `最近 ${n} 筆，最多顯示 3 筆`, `最近 ${n} 笔，最多显示 3 笔`, `${n} recent reports; up to 3 shown`),
+    refreshAll: tr(locale, "刷新後台", "刷新后台", "Refresh console"),
+    refreshing: tr(locale, "刷新中…", "刷新中…", "Refreshing…"),
+    refreshed: tr(locale, "已刷新", "已刷新", "Refreshed"),
+    refreshOne: tr(locale, "刷新這筆", "刷新这笔", "Refresh"),
     backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
     uploading: tr(locale, "上傳中…", "上传中…", "Uploading…"),
     upload: tr(locale, "＋上傳圖片", "＋上传图片", "+ Upload images"),
@@ -137,7 +149,15 @@ function AccountPage() {
     pagesPending: tr(locale, "九頁待生成", "九页待生成", "Nine pages pending"),
     imageDone: tr(locale, "命誥圖完成", "命诰图完成", "Decree image ready"),
     imageFailed: tr(locale, "命誥圖失敗", "命诰图失败", "Decree image failed"),
-    imageUnconfigured: tr(locale, "命誥圖未配置", "命诰图未配置", "Decree image not configured"),
+    imagePending: tr(locale, "命誥圖待生成", "命诰图待生成", "Decree image pending"),
+    generateImage: tr(locale, "生成命誥圖", "生成命诰图", "Generate decree image"),
+    viewImage: tr(locale, "查看命誥圖", "查看命诰图", "View decree image"),
+    regenerateImage: tr(locale, "重新生成", "重新生成", "Regenerate"),
+    generatingImage: tr(locale, "生成中…", "生成中…", "Generating…"),
+    imageReady: tr(locale, "命誥圖已生成並刷新。", "命诰图已生成并刷新。", "Decree image generated and refreshed."),
+    copied: tr(locale, "最終答案已複製。", "最终答案已复制。", "Final answer copied."),
+    copyAnswer: tr(locale, "複製最終答案", "复制最终答案", "Copy final answer"),
+    updated: tr(locale, "更新", "更新", "Updated"),
   }), [locale]);
 
   async function load() {
@@ -166,6 +186,41 @@ function AccountPage() {
     }
   }
 
+  async function refreshDetail(id: string, silent = false) {
+    if (!session) {
+      setError(c.expired);
+      return null;
+    }
+    setDetailBusyId(id);
+    if (!silent) setReportMessages((prev) => ({ ...prev, [id]: "" }));
+    try {
+      const detail = await getReportRecord(session, id);
+      setDetails((prev) => ({ ...prev, [id]: detail }));
+      return detail;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : c.reportReadError;
+      setReportMessages((prev) => ({ ...prev, [id]: message }));
+      setDetails((prev) => ({ ...prev, [id]: null }));
+      return null;
+    } finally {
+      setDetailBusyId(null);
+    }
+  }
+
+  async function refreshAll() {
+    if (!session || !user) return;
+    setRefreshBusy(true);
+    setError(null);
+    try {
+      await load();
+      if (user.isOwner) await loadBackgrounds();
+      if (openId) await refreshDetail(openId, true);
+      setLastRefreshedAt(new Date());
+    } finally {
+      setRefreshBusy(false);
+    }
+  }
+
   useEffect(() => {
     void load();
     if (user?.isOwner) void loadBackgrounds();
@@ -183,21 +238,36 @@ function AccountPage() {
       return;
     }
     setOpenId(row.id);
-    if (Object.prototype.hasOwnProperty.call(details, row.id)) return;
+    await refreshDetail(row.id);
+  }
+
+  async function onReportImage(id: string, force: boolean) {
     if (!session) {
-      setError(c.expired);
+      setReportMessages((prev) => ({ ...prev, [id]: c.expired }));
       return;
     }
-    setDetailBusyId(row.id);
-    setError(null);
+    setActionBusyId(id);
+    setReportMessages((prev) => ({ ...prev, [id]: "" }));
     try {
-      const detail = await getReportRecord(session, row.id);
-      setDetails((prev) => ({ ...prev, [row.id]: detail }));
+      const out = await generateDecreeImage(session, id, force);
+      if (out.signedUrl) setImageUrls((prev) => ({ ...prev, [id]: out.signedUrl! }));
+      await refreshDetail(id, true);
+      await load();
+      setReportMessages((prev) => ({ ...prev, [id]: c.imageReady }));
     } catch (err) {
-      setError(err instanceof Error ? err.message : c.reportReadError);
-      setDetails((prev) => ({ ...prev, [row.id]: null }));
+      setReportMessages((prev) => ({ ...prev, [id]: err instanceof Error ? err.message : c.updateFailed }));
+      await refreshDetail(id, true);
     } finally {
-      setDetailBusyId(null);
+      setActionBusyId(null);
+    }
+  }
+
+  async function copyFinalAnswer(id: string, text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setReportMessages((prev) => ({ ...prev, [id]: c.copied }));
+    } catch {
+      setReportMessages((prev) => ({ ...prev, [id]: c.updateFailed }));
     }
   }
 
@@ -242,7 +312,12 @@ function AccountPage() {
             <h1 className="mt-2 font-display text-3xl">{user.isOwner ? c.ownerTitle : c.memberTitle}</h1>
             <p className="mt-2 text-sm text-ink-soft">{user.displayName} · {user.email}</p>
           </div>
-          {user.isOwner ? <span className="rounded-full border border-cinnabar/30 bg-cinnabar/5 px-3 py-1 text-xs text-cinnabar">{c.ownerBadge}</span> : null}
+          <div className="flex flex-wrap items-center gap-2">
+            {user.isOwner ? <span className="rounded-full border border-cinnabar/30 bg-cinnabar/5 px-3 py-1 text-xs text-cinnabar">{c.ownerBadge}</span> : null}
+            <button type="button" disabled={refreshBusy} onClick={() => void refreshAll()} className="rounded-full border border-line bg-paper/70 px-3 py-2 text-xs text-ink-soft disabled:opacity-50">
+              {refreshBusy ? c.refreshing : c.refreshAll}
+            </button>
+          </div>
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <div className="rounded-lg border border-line bg-paper/45 p-4">
@@ -252,6 +327,7 @@ function AccountPage() {
           <div className="rounded-lg border border-line bg-paper/45 p-4">
             <p className="text-xs tracking-[0.2em] text-ink-mute">{c.reports}</p>
             <p className="mt-2 text-sm text-ink-soft">{user.isOwner ? c.ownerCount(rows.length) : c.memberCount(rows.length)}</p>
+            {lastRefreshedAt ? <p className="mt-1 text-[11px] text-ink-mute">{c.refreshed} · {lastRefreshedAt.toLocaleTimeString()}</p> : null}
           </div>
         </div>
       </section>
@@ -322,10 +398,15 @@ function AccountPage() {
             <p className="text-xs tracking-[0.28em] text-cinnabar">REPORTS</p>
             <h2 className="mt-1 font-display text-2xl">{user.isOwner ? c.customerReports : c.recentReports}</h2>
           </div>
-          {user.isOwner ? <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} /> : null}
+          <div className="flex flex-wrap items-center gap-2">
+            {user.isOwner ? <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} /> : null}
+            <button type="button" disabled={refreshBusy} onClick={() => void refreshAll()} className="h-10 rounded-full border border-line bg-cream px-4 text-sm text-ink-soft disabled:opacity-50">
+              {refreshBusy ? c.refreshing : c.refreshAll}
+            </button>
+          </div>
         </div>
 
-        {busy ? <div className="mt-5 h-28 animate-pulse rounded-lg bg-paper-deep" /> : null}
+        {busy ? <div className="mt-5 h-20 animate-pulse rounded-lg bg-paper-deep" /> : null}
         {error ? <p className="mt-4 rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm text-cinnabar-deep">{error}</p> : null}
         {!busy && !filtered.length ? <p className="mt-5 text-sm leading-7 text-ink-mute">{c.empty}</p> : null}
 
@@ -346,7 +427,8 @@ function AccountPage() {
               ? { label: c.imageDone, className: "border-emerald-700/25 bg-emerald-700/5 text-emerald-800" }
               : detail?.image_error
                 ? { label: c.imageFailed, className: "border-cinnabar/30 bg-cinnabar/5 text-cinnabar" }
-                : { label: c.imageUnconfigured, className: "border-line bg-paper/55 text-ink-mute" };
+                : { label: c.imagePending, className: "border-line bg-paper/55 text-ink-mute" };
+            const rowBusy = detailBusyId === row.id || actionBusyId === row.id;
 
             return (
               <article key={row.id} className="rounded-lg border border-line bg-paper/35 p-4">
@@ -356,10 +438,15 @@ function AccountPage() {
                     <h3 className="truncate font-display text-lg font-semibold">{row.alias || String(row.context?.question ?? c.reportFallback)}</h3>
                     {user.isOwner ? <p className="truncate text-xs text-cinnabar">{row.user_email || c.noEmail}</p> : null}
                     <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")} · {reportLevel(row, locale)}</p>
+                    <p className="mt-1 text-[11px] text-ink-mute">{c.updated} {new Date(row.updated_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")}</p>
                   </div>
                 </div>
-                <div className="mt-3 text-center">
+
+                <div className="mt-3 flex flex-wrap justify-center gap-2">
                   <button type="button" onClick={() => void toggleReport(row)} className="rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink-soft">{open ? c.collapse : c.open}</button>
+                  <button type="button" disabled={rowBusy} onClick={() => void refreshDetail(row.id)} className="rounded-full border border-line bg-paper/70 px-4 py-2 text-sm text-ink-soft disabled:opacity-50">
+                    {detailBusyId === row.id ? c.refreshing : c.refreshOne}
+                  </button>
                 </div>
 
                 {open ? (
@@ -385,6 +472,20 @@ function AccountPage() {
                           </div>
                         ) : displayAnswer ? <p className="mb-4 font-medium text-ink">{displayAnswer}</p> : null}
 
+                        {user.isOwner ? (
+                          <div className="mb-5 flex flex-wrap gap-2 rounded-lg border border-line bg-paper/50 p-3">
+                            {displayAnswer ? <button type="button" className="rounded-full border border-line bg-cream px-3 py-1.5 text-xs text-ink-soft" onClick={() => void copyFinalAnswer(row.id, displayAnswer)}>{c.copyAnswer}</button> : null}
+                            <button type="button" disabled={actionBusyId === row.id} className="rounded-full bg-cinnabar px-3 py-1.5 text-xs text-cream disabled:opacity-50" onClick={() => void onReportImage(row.id, false)}>
+                              {actionBusyId === row.id ? c.generatingImage : detail.image_path ? c.viewImage : c.generateImage}
+                            </button>
+                            {detail.image_path ? <button type="button" disabled={actionBusyId === row.id} className="rounded-full border border-cinnabar/35 bg-cinnabar/5 px-3 py-1.5 text-xs text-cinnabar disabled:opacity-50" onClick={() => void onReportImage(row.id, true)}>{c.regenerateImage}</button> : null}
+                          </div>
+                        ) : null}
+
+                        {reportMessages[row.id] ? <p className="mb-4 rounded-md border border-line bg-cream/70 px-3 py-2 text-xs text-cinnabar">{reportMessages[row.id]}</p> : null}
+
+                        {imageUrls[row.id] ? <div className="mb-5 mx-auto max-w-sm overflow-hidden rounded-xl border border-line bg-cream p-2"><img src={imageUrls[row.id]} alt={c.imageDone} className="aspect-[9/16] w-full rounded-lg object-cover" /></div> : null}
+
                         {pages.length ? (
                           <div className="space-y-4">
                             {pages.map((p, i) => (
@@ -396,15 +497,13 @@ function AccountPage() {
                           </div>
                         ) : text ? <div className="whitespace-pre-wrap">{text}</div> : !displayAnswer ? <p className="text-ink-mute">{c.noReadable}</p> : null}
 
-                        {user.isOwner ? (
-                          <button type="button" className="mt-5 text-xs text-cinnabar" onClick={async () => {
-                            if (!window.confirm(c.deleteRecordConfirm)) return;
-                            await deleteReportRecord(session, row.id);
-                            setOpenId(null);
-                            setDetails((prev) => { const next = { ...prev }; delete next[row.id]; return next; });
-                            await load();
-                          }}>{c.deleteRecord}</button>
-                        ) : null}
+                        {user.isOwner ? <button type="button" className="mt-5 text-xs text-cinnabar" onClick={async () => {
+                          if (!window.confirm(c.deleteRecordConfirm)) return;
+                          await deleteReportRecord(session, row.id);
+                          setOpenId(null);
+                          setDetails((prev) => { const next = { ...prev }; delete next[row.id]; return next; });
+                          await load();
+                        }}>{c.deleteRecord}</button> : null}
                       </>
                     ) : null}
                   </div>
