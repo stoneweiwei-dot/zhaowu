@@ -7,15 +7,6 @@ import { useAppStore } from "@/lib/store";
 
 export const Route = createFileRoute("/")({ component: Home });
 
-const HOME_MOTIFS = [
-  "/emblems/crane-feather-emblem.svg",
-  "/emblems/lotus-emblem.svg",
-  "/emblems/modern-gourd-emblem.svg",
-  "/emblems/modern-endless-knot-emblem.svg",
-  "/emblems/modern-bagua-emblem.svg",
-  "/emblems/dharma-wheel-emblem.svg",
-] as const;
-
 function Home() {
   const { t } = useI18n();
   const current = useAppStore((s) => s.current);
@@ -46,14 +37,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      <div className="zhaowu-motif-strip" aria-hidden>
-        {HOME_MOTIFS.map((src) => (
-          <span key={src} className="zhaowu-motif-chip">
-            <img src={src} alt="" draggable={false} />
-          </span>
-        ))}
-      </div>
 
       <section className="relative" aria-label={t("formTitle")}>
         <AnalysisForm />
