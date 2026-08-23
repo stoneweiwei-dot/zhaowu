@@ -80,9 +80,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const isLogin = pathname === "/login";
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
   const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
-  const [emblemSessionSeed] = useState(() => Math.floor(Math.random() * 1_000_000_000));
+  const [emblemSessionSeed, setEmblemSessionSeed] = useState(0);
   const decorativeEmblems = useMemo(
-    () => buildRandomEmblems(`${pathname}:${emblemSessionSeed}`),
+    () => (emblemSessionSeed ? buildRandomEmblems(`${pathname}:${emblemSessionSeed}`) : []),
     [pathname, emblemSessionSeed],
   );
 
@@ -109,6 +109,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     };
 
     loadBackground();
+    setEmblemSessionSeed(Math.floor(Math.random() * 1_000_000_000));
     window.addEventListener("zhaowu-background-change", loadBackground);
     return () => {
       alive = false;
