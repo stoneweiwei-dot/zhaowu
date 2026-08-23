@@ -52,10 +52,6 @@ const ID_TO_EMBLEM: Record<string, EmblemName> = {
   jade: "wutong",
 };
 
-/**
- * 全站随机散落池：空心古金线条独立 SVG。
- * 彩绘 sheet 资源待以 public 二进制方式接入后再切换。
- */
 const SCATTER_POOL = [
   "/emblems/line-ornament-01.svg",
   "/emblems/line-ornament-02.svg",
@@ -153,7 +149,7 @@ export function SealScatter({ seedKey = "home" }: { seedKey?: string }) {
       typeof window === "undefined"
         ? 108
         : ((Date.now() >>> 0) ^ Math.floor(Math.random() * 0xffffffff)) >>> 0;
-    const count = 4 + (visitJitter % 3);
+    const count = 4 + (visitJitter % 2);
     return buildScatter((routeSeed ^ visitJitter) >>> 0, count);
   }, [seedKey]);
 
