@@ -52,25 +52,27 @@ const ID_TO_EMBLEM: Record<string, EmblemName> = {
   jade: "wutong",
 };
 
+// 佛教八吉祥 + 道家／天人神寶 + 昭梧山水祥瑞。
+// 每頁只抽其中一部分，避免固定一排與重複貼紙感。
 const SCATTER_POOL: EmblemName[] = [
   "lotus",
-  "crane",
-  "ruyi",
   "wheel",
-  "gourd",
-  "knot",
-  "bagua",
   "vase",
-  "mountain",
-  "wutong",
+  "knot",
   "conch",
   "fish",
-  "sword",
   "parasol",
+  "banner",
+  "gourd",
+  "bagua",
+  "sword",
   "bell",
   "incense",
-  "banner",
+  "ruyi",
   "gate",
+  "crane",
+  "mountain",
+  "wutong",
 ];
 
 type ScatterItem = {
@@ -92,34 +94,46 @@ function mulberry32(seed: number) {
   };
 }
 
-function buildScatter(seed: number, count = 11): ScatterItem[] {
+function hashSeed(value: string) {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function buildScatter(seed: number, count = 8): ScatterItem[] {
   const rand = mulberry32(seed);
   const items: ScatterItem[] = [];
-  const used: Array<{ left: number; top: number }> = [];
+  const remaining = [...SCATTER_POOL];
+  const used: Array<{ side: "left" | "right"; top: number }> = [];
 
-  for (let i = 0; i < count; i += 1) {
-    let left = 0;
-    let top = 0;
+  for (let i = 0; i < Math.min(count, remaining.length); i += 1) {
+    const side: "left" | "right" = rand() < 0.5 ? "left" : "right";
+    let top = 6 + rand() * 88;
     let tries = 0;
-    do {
-      left = 2 + rand() * 92;
-      top = 3 + rand() * 90;
+    while (
+      tries < 24 &&
+      used.some((u) => u.side === side && Math.abs(u.top - top) < 12)
+    ) {
+      top = 6 + rand() * 88;
       tries += 1;
-    } while (
-      tries < 18 &&
-      used.some((u) => Math.hypot(u.left - left, u.top - top) < 12)
-    );
-    used.push({ left, top });
+    }
+    used.push({ side, top });
 
-    const name = SCATTER_POOL[Math.floor(rand() * SCATTER_POOL.length)] ?? "lotus";
+    const left = side === "left" ? 1 + rand() * 15 : 84 + rand() * 15;
+    const nameIndex = Math.floor(rand() * remaining.length);
+    const [name = "lotus"] = remaining.splice(nameIndex, 1);
+
     items.push({
       key: `s-${i}-${name}`,
       src: EMBLEMS[name],
       left,
       top,
-      size: 34 + Math.floor(rand() * 42),
-      rotate: -18 + rand() * 36,
-      opacity: 0.11 + rand() * 0.14,
+      size: 46 + Math.floor(rand() * 34),
+      rotate: -14 + rand() * 28,
+      opacity: 0.42 + rand() * 0.2,
     });
   }
   return items;
@@ -144,15 +158,21 @@ export function Mark({ id, size = 64, eager = false, alt = "", className = "", .
   );
 }
 
-/** Sitewide soft scatter: random positions each page visit, never a rigid strip. */
+/**
+ * Sitewide auspicious scatter.
+ * - Every route gets a new subset and placement.
+ * - Symbols stay in side bands so they do not cover primary controls/text.
+ * - The random draw is frozen for the lifetime of the current route render.
+ */
 export function SealScatter({ seedKey = "home" }: { seedKey?: string }) {
   const items = useMemo(() => {
-    const base =
+    const pathname = typeof window === "undefined" ? seedKey : window.location.pathname;
+    const routeSeed = hashSeed(`${seedKey}:${pathname}`);
+    const visitJitter =
       typeof window === "undefined"
-        ? Array.from(seedKey).reduce((acc, ch) => acc + ch.charCodeAt(0), 1)
-        : (Date.now() % 100000) +
-          Array.from(`${seedKey}:${window.location.pathname}`).reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-    return buildScatter(base || 108, 11);
+        ? 108
+        : ((Date.now() >>> 0) ^ Math.floor(Math.random() * 0xffffffff)) >>> 0;
+    return buildScatter((routeSeed ^ visitJitter) >>> 0, 8);
   }, [seedKey]);
 
   return (
