@@ -7,6 +7,7 @@ const { interpret } = await import("../src/lib/bazi/interpret.ts");
 const { buildPalm } = await import("../src/lib/palm/engine.ts");
 const { finalizeReading } = await import("../src/lib/report/final-reading.ts");
 const { composeNinePages } = await import("../src/lib/report/nine-page.ts");
+const { customerCopy } = await import("../src/lib/report/customer-copy.ts");
 
 const CITY = FEATURED_CITIES[0];
 
@@ -46,5 +47,5 @@ test("九页第5页使用同一份 final reading 的命诰", () => {
   const pages = composeNinePages(out);
   const decreePage = pages.find((p) => p.key === "decree");
   assert.ok(decreePage);
-  assert.equal(decreePage.body[0], out.reading.decree);
+  assert.equal(decreePage.body[0], customerCopy(out.reading.decree));
 });
