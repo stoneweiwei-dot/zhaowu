@@ -1,2 +1,1 @@
-/** Reserved for future painted motif sprite integration. */
-export {};
+PLACEHOLDER_WILL_REPLACE

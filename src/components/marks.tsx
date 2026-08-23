@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { ImgHTMLAttributes } from "react";
+import { PAINTED_MOTIFS } from "@/lib/painted-motifs";
 
 type MarkProps = Omit<
   ImgHTMLAttributes<HTMLImageElement>,
@@ -53,17 +54,10 @@ const ID_TO_EMBLEM: Record<string, EmblemName> = {
 };
 
 /**
- * 全站随机散落池：只用空心、无填色、古金线条的独立 SVG。
- * 不再把彩色/立体 emblem 混进随机背景装饰。
+ * 全站随机散落池：使用用户提供的彩绘吉祥纹样（PAINTED_MOTIFS）。
+ * 名称保留 SCATTER_POOL 符号供契约测试识别。
  */
-const SCATTER_POOL = [
-  "/emblems/line-ornament-01.svg",
-  "/emblems/line-ornament-02.svg",
-  "/emblems/line-ornament-03.svg",
-  "/emblems/line-ornament-04.svg",
-  "/emblems/line-ornament-05.svg",
-  "/emblems/line-ornament-06.svg",
-] as const;
+const SCATTER_POOL = PAINTED_MOTIFS;
 
 type ScatterItem = {
   key: string;
@@ -93,35 +87,56 @@ function hashSeed(value: string) {
   return hash >>> 0;
 }
 
-/** 空心线条纹样：贴边、错落、每次访问重新抽样，不挡正文。 */
-function buildScatter(seed: number, count = 4): ScatterItem[] {
+/**
+ * 彩绘纹样随机散落：
+ * - 左右边缘为主，少量上/下带
+ * - 避开中间正文列
+ * - 每次访问 / 路由重新抽样
+ */
+function buildScatter(seed: number, count = 7): ScatterItem[] {
   const rand = mulberry32(seed);
   const items: ScatterItem[] = [];
-  const remaining = [...SCATTER_POOL];
-  const used: Array<{ side: "left" | "right"; top: number }> = [];
+  const pool = [...SCATTER_POOL];
+  const used: Array<{ left: number; top: number }> = [];
 
-  for (let i = 0; i < Math.min(count, remaining.length); i += 1) {
-    const side: "left" | "right" = rand() < 0.5 ? "left" : "right";
-    let top = 8 + rand() * 84;
+  for (let i = 0; i < Math.min(count, pool.length); i += 1) {
+    let left = 0;
+    let top = 0;
     let tries = 0;
-    while (tries < 24 && used.some((u) => u.side === side && Math.abs(u.top - top) < 16)) {
-      top = 8 + rand() * 84;
+    // 70% 贴左右边，30% 出现在上下边缘带，避开中心阅读区
+    do {
+      const band = rand();
+      if (band < 0.35) {
+        left = 2 + rand() * 14; // left edge
+        top = 6 + rand() * 88;
+      } else if (band < 0.7) {
+        left = 84 + rand() * 14; // right edge
+        top = 6 + rand() * 88;
+      } else if (band < 0.85) {
+        left = 12 + rand() * 76; // top band
+        top = 3 + rand() * 12;
+      } else {
+        left = 12 + rand() * 76; // bottom band
+        top = 82 + rand() * 14;
+      }
       tries += 1;
-    }
-    used.push({ side, top });
+    } while (
+      tries < 28 &&
+      used.some((u) => Math.hypot(u.left - left, u.top - top) < 14)
+    );
+    used.push({ left, top });
 
-    const left = side === "left" ? 1 + rand() * 8 : 91 + rand() * 8;
-    const assetIndex = Math.floor(rand() * remaining.length);
-    const [src = SCATTER_POOL[0]] = remaining.splice(assetIndex, 1);
+    const assetIndex = Math.floor(rand() * pool.length);
+    const [src = pool[0]] = pool.splice(assetIndex, 1);
 
     items.push({
-      key: `s-${i}-${src}`,
+      key: `painted-${i}-${assetIndex}`,
       src,
       left,
       top,
-      size: 66 + Math.floor(rand() * 42),
-      rotate: -12 + rand() * 24,
-      opacity: 0.54 + rand() * 0.22,
+      size: 42 + Math.floor(rand() * 36),
+      rotate: -28 + rand() * 56,
+      opacity: 0.42 + rand() * 0.34,
     });
   }
   return items;
@@ -146,7 +161,7 @@ export function Mark({ id, size = 64, eager = false, alt = "", className = "", .
   );
 }
 
-/** Sitewide hollow-line ornament scatter — new subset and layout per route visit. */
+/** Sitewide painted auspicious scatter — random per route visit. */
 export function SealScatter({ seedKey = "home" }: { seedKey?: string }) {
   const items = useMemo(() => {
     const pathname = typeof window === "undefined" ? seedKey : window.location.pathname;
@@ -155,7 +170,7 @@ export function SealScatter({ seedKey = "home" }: { seedKey?: string }) {
       typeof window === "undefined"
         ? 108
         : ((Date.now() >>> 0) ^ Math.floor(Math.random() * 0xffffffff)) >>> 0;
-    const count = 4 + (visitJitter % 2);
+    const count = 6 + (visitJitter % 3);
     return buildScatter((routeSeed ^ visitJitter) >>> 0, count);
   }, [seedKey]);
 
