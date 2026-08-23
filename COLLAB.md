@@ -2,8 +2,15 @@
 
 两边不能直接对话。**唯一源码真相是本仓库；唯一当前状态真相是 [docs/CURRENT-STATE.md](./docs/CURRENT-STATE.md)。**
 
+## 所有 APP / AI / Agent 的统一入口
+
+无论由 ChatGPT、Codex、Grok、AppDeploy、GitHub-connected agent、部署 Agent 或未来任何平台接手昭梧，**第一优先级都必须先读取并遵守根目录 [AGENTS.md](./AGENTS.md)**。
+
+其中 `AGENTS.md` 的 **Section 0 — SAFE NEW-INSTRUCTION SUPERSESSION** 是全平台最高优先级的项目治理规则：每次收到新指令，先自动检查是否与旧指令冲突；仅在确认不会破坏现有逻辑、数据、构建、部署、权限、报告、路由与整体顺畅度时，才把被新指令取代的旧指令从当前 active execution path 中删除或停用。不能证明安全就不得强删。
+
 ## 每次接手先读
 
+0. [AGENTS.md](./AGENTS.md) — 全平台最高执行协议；先做新旧指令冲突与安全取代检查
 1. [docs/CURRENT-STATE.md](./docs/CURRENT-STATE.md) — 当前生产架构、已完成项、未完成项、优先级
 2. [docs/CONTRACT.md](./docs/CONTRACT.md) — 技术契约
 3. [docs/SPEC.md](./docs/SPEC.md) — 产品边界
