@@ -3,9 +3,9 @@ import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
-/** v13：使用加速版從暗到明（15s→6s） */
-const KEY = "zhaowu.intro.v13";
-/** 與加速後影片長度對齊 */
+/** v14：預設播完一輪再進站；可選循環（站點預設片，不耗 token） */
+const KEY = "zhaowu.intro.v14";
+/** 與加速後影片長度對齊；僅作進度參考，真正進站以影片播完為準 */
 const MIN_HOLD_FIRST_MS = 6200;
 const MIN_HOLD_REPEAT_MS = 4500;
 const SLOW_NOTICE_MS = 10000;
@@ -30,12 +30,15 @@ export function IntroGate() {
   const [slow, setSlow] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [holdDone, setHoldDone] = useState(false);
+  /** 使用者選擇持續循環站點預設開場片，不自動進主頁 */
+  const [ambientLoop, setAmbientLoop] = useState(false);
   const [videoSrc, setVideoSrc] = useState(VIDEO_SRC_PRIMARY);
   const startedAt = useRef(0);
   const holdTarget = useRef(MIN_HOLD_FIRST_MS);
   const bootPercentRef = useRef(0);
   const videoTimeRef = useRef(0);
   const videoDurationRef = useRef(0);
+  const ambientLoopRef = useRef(false);
   const finishTimer = useRef<number | null>(null);
   const raf = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -43,6 +46,10 @@ export function IntroGate() {
   useEffect(() => {
     bootPercentRef.current = bootPercent;
   }, [bootPercent]);
+
+  useEffect(() => {
+    ambientLoopRef.current = ambientLoop;
+  }, [ambientLoop]);
 
   const clearTimers = useCallback(() => {
     if (finishTimer.current !== null) {
@@ -67,8 +74,24 @@ export function IntroGate() {
   }, [clearTimers]);
 
   const skip = useCallback(() => {
+    ambientLoopRef.current = false;
+    setAmbientLoop(false);
     finish();
   }, [finish]);
+
+  const enableLoop = useCallback(() => {
+    ambientLoopRef.current = true;
+    setAmbientLoop(true);
+    setPercent(100);
+    setVideoComplete(true);
+    setHoldDone(true);
+    const el = videoRef.current;
+    if (el) {
+      el.loop = true;
+      el.muted = true;
+      void el.play().catch(() => undefined);
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -87,20 +110,27 @@ export function IntroGate() {
     const slowTimer = window.setTimeout(() => setSlow(true), SLOW_NOTICE_MS);
 
     const tick = () => {
+      if (ambientLoopRef.current) {
+        setPercent(100);
+        raf.current = window.requestAnimationFrame(tick);
+        return;
+      }
+
       const elapsed = performance.now() - startedAt.current;
       const target = holdTarget.current;
       const vDur = videoDurationRef.current;
       const vTime = videoTimeRef.current;
 
       const timeRatio = Math.min(1, elapsed / target);
-      const videoRatio = vDur > 0 ? Math.min(1, vTime / Math.max(0.1, vDur * 0.92)) : 0;
-      const ceremonyRatio = Math.max(timeRatio, videoRatio * 0.95);
-      const blended = ceremonyRatio * 90 + Math.min(bootPercentRef.current, 100) * 0.1;
+      const videoRatio = vDur > 0 ? Math.min(1, vTime / Math.max(0.1, vDur * 0.98)) : 0;
+      const ceremonyRatio = Math.max(timeRatio * 0.35, videoRatio);
+      const blended = ceremonyRatio * 92 + Math.min(bootPercentRef.current, 100) * 0.08;
       setPercent(Math.min(99, Math.round(blended)));
 
-      const timeOk = elapsed >= target;
-      const videoOk = vDur > 0 && vTime >= Math.max(1, vDur - 0.2);
-      if (timeOk || videoOk) {
+      // 預設：必須接近片尾才算 hold 完成（不是純計時秒關）
+      const videoOk = vDur > 0 && vTime >= Math.max(1, vDur - 0.15);
+      const timeFallback = prefersReduced || (vDur <= 0 && elapsed >= target);
+      if (videoOk || timeFallback) {
         setHoldDone(true);
         if (videoOk) setVideoComplete(true);
       }
@@ -149,6 +179,8 @@ export function IntroGate() {
 
   useEffect(() => {
     if (phase !== "in") return;
+    // 循環模式下永不自動進站
+    if (ambientLoop) return;
 
     if (bootError) {
       if (!holdDone) return;
@@ -159,13 +191,16 @@ export function IntroGate() {
     }
 
     const mediaGate = reduced || mediaFailed || videoReady;
+    // 預設：影片（或降動態）播完一輪 + 後台就緒才進站
     if (!holdDone || !bootReady || isPending || !mediaGate) return;
+    if (!reduced && !mediaFailed && !videoComplete) return;
 
     setPercent(100);
     clearTimers();
     finishTimer.current = window.setTimeout(finish, 360);
     return clearTimers;
   }, [
+    ambientLoop,
     bootError,
     bootReady,
     clearTimers,
@@ -175,12 +210,25 @@ export function IntroGate() {
     mediaFailed,
     phase,
     reduced,
+    videoComplete,
     videoReady,
   ]);
 
   if (phase === "off") return null;
 
   const skipLabel = locale === "en" ? "Skip" : locale === "zh-Hans" ? "跳过" : "跳過";
+  const loopLabel = ambientLoop
+    ? locale === "en"
+      ? "Looping"
+      : locale === "zh-Hans"
+        ? "循环中"
+        : "循環中"
+    : locale === "en"
+      ? "Loop"
+      : locale === "zh-Hans"
+        ? "循环"
+        : "循環";
+  const enterLabel = locale === "en" ? "Enter" : locale === "zh-Hans" ? "进入" : "進入";
 
   return (
     <div
@@ -206,7 +254,7 @@ export function IntroGate() {
             muted
             playsInline
             preload="auto"
-            loop={false}
+            loop={ambientLoop}
             style={{ opacity: 1 }}
             onLoadedMetadata={() => {
               const el = videoRef.current;
@@ -220,6 +268,7 @@ export function IntroGate() {
               if (el) {
                 el.muted = true;
                 el.playbackRate = 1;
+                el.loop = ambientLoopRef.current;
                 void el.play().catch(() => undefined);
               }
             }}
@@ -237,6 +286,15 @@ export function IntroGate() {
               }
             }}
             onEnded={() => {
+              // 循環模式：由 video.loop 接手，不進站
+              if (ambientLoopRef.current) {
+                const el = videoRef.current;
+                if (el) {
+                  el.currentTime = 0;
+                  void el.play().catch(() => undefined);
+                }
+                return;
+              }
               setVideoComplete(true);
               setHoldDone(true);
               const el = videoRef.current;
@@ -245,7 +303,6 @@ export function IntroGate() {
               }
             }}
             onError={() => {
-              // 新片未上傳時回退舊片，避免開場空白
               if (videoSrc === VIDEO_SRC_PRIMARY) {
                 setVideoSrc(VIDEO_SRC_FALLBACK);
                 setVideoReady(false);
@@ -262,13 +319,33 @@ export function IntroGate() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_16%,rgba(255,239,179,.12),transparent_34%)] mix-blend-screen" />
       </div>
 
-      <button
-        type="button"
-        onClick={skip}
-        className="absolute bottom-[max(18px,env(safe-area-inset-bottom))] right-[max(16px,env(safe-area-inset-right))] z-20 rounded-full border border-[#f0dfb4]/4 bg-[#152018]/6 px-4 py-2 text-[11px] tracking-[0.22em] text-[#f7edd0] backdrop-blur-sm"
-      >
-        {skipLabel}
-      </button>
+      <div className="absolute bottom-[max(18px,env(safe-area-inset-bottom))] right-[max(16px,env(safe-area-inset-right))] z-20 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={enableLoop}
+          aria-pressed={ambientLoop}
+          className={`rounded-full border px-4 py-2 text-[11px] tracking-[0.18em] backdrop-blur-sm ${ambientLoop ? "border-[#f0dfb4]/7 bg-[#f0dfb4]/2 text-[#fff6d8]" : "border-[#f0dfb4]/4 bg-[#152018]/6 text-[#f7edd0]"}`}
+        >
+          {loopLabel}
+        </button>
+        {ambientLoop ? (
+          <button
+            type="button"
+            onClick={skip}
+            className="rounded-full border border-[#f0dfb4]/55 bg-[#1a261c]/75 px-4 py-2 text-[11px] tracking-[0.18em] text-[#fff6d8] backdrop-blur-sm"
+          >
+            {enterLabel}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={skip}
+            className="rounded-full border border-[#f0dfb4]/4 bg-[#152018]/6 px-4 py-2 text-[11px] tracking-[0.22em] text-[#f7edd0] backdrop-blur-sm"
+          >
+            {skipLabel}
+          </button>
+        )}
+      </div>
 
       <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[430px] flex-col px-6 pb-[max(56px,env(safe-area-inset-bottom))] pt-[max(36px,env(safe-area-inset-top))] text-center text-[#fff9e8]">
         <div className="pt-2">
@@ -305,32 +382,54 @@ export function IntroGate() {
           </div>
 
           <p className="mt-5 font-display text-[17px] tracking-[0.16em] text-[#fff7e5]">
-            {locale === "en" ? "Opening" : locale === "zh-Hans" ? "正在开启" : "正在開啟"}
+            {ambientLoop
+              ? locale === "en"
+                ? "Ambient opening"
+                : locale === "zh-Hans"
+                  ? "循环开场"
+                  : "循環開場"
+              : locale === "en"
+                ? "Opening"
+                : locale === "zh-Hans"
+                  ? "正在开启"
+                  : "正在開啟"}
           </p>
           <p className="mt-2 min-h-5 text-[11px] tracking-[0.12em] text-[#e2d5b6]">
-            {isPending
+            {ambientLoop
               ? locale === "en"
-                ? "Checking account"
+                ? "Site default video · no token used"
                 : locale === "zh-Hans"
-                  ? "正在确认账号状态"
-                  : "正在確認帳號狀態"
-              : label}
+                  ? "网站默认开场片 · 不消耗 token"
+                  : "網站預設開場片 · 不消耗 token"
+              : isPending
+                ? locale === "en"
+                  ? "Checking account"
+                  : locale === "zh-Hans"
+                    ? "正在确认账号状态"
+                    : "正在確認帳號狀態"
+                : label}
           </p>
           <p className="mt-2 text-[9px] tracking-[0.14em] text-[#cabd9e]">
-            {locale === "en"
-              ? videoComplete
-                ? "Ready to enter"
-                : "Playing opening — or skip"
-              : locale === "zh-Hans"
+            {ambientLoop
+              ? locale === "en"
+                ? "Looping · tap Enter when ready"
+                : locale === "zh-Hans"
+                  ? "持续循环中 · 想进站再点「进入」"
+                  : "持續循環中 · 想進站再點「進入」"
+              : locale === "en"
                 ? videoComplete
-                  ? "开场完成"
-                  : "正在播放从暗到明 · 可右下角跳过"
-                : videoComplete
-                  ? "開場完成"
-                  : "正在播放從暗到明 · 可右下角跳過"}
+                  ? "Ready to enter"
+                  : "Plays once, then enters — or Skip / Loop"
+                : locale === "zh-Hans"
+                  ? videoComplete
+                    ? "开场完成"
+                    : "默认播完一轮进站 · 可跳过或循环"
+                  : videoComplete
+                    ? "開場完成"
+                    : "預設播完一輪進站 · 可跳過或循環"}
           </p>
 
-          {bootError ? (
+          {bootError && !ambientLoop ? (
             <div className="mt-4 rounded-2xl border border-[#f1d8a2]/35 bg-[#1a211a]/62 px-4 py-3 text-[11px] text-[#f4e5c1]">
               <p>{bootError}</p>
               <button
@@ -344,7 +443,7 @@ export function IntroGate() {
                 {locale === "en" ? "Retry" : locale === "zh-Hans" ? "重新连接" : "重新連接"}
               </button>
             </div>
-          ) : slow && (!bootReady || isPending) ? (
+          ) : slow && !ambientLoop && (!bootReady || isPending) ? (
             <p className="mt-4 text-[10px] tracking-[0.08em] text-[#ead7aa]">
               {locale === "en"
                 ? "Still connecting core services…"
