@@ -61,7 +61,7 @@ export function IntroGate() {
       /* ignore */
     }
     setPhase("leaving");
-    window.setTimeout(() => setPhase("off"), 480);
+    window.setTimeout(() => setPhase("off"), 420);
   }, [clearTimers]);
 
   const skip = useCallback(() => {
@@ -80,7 +80,6 @@ export function IntroGate() {
     } catch {
       seen = false;
     }
-    // 減少動態：仍給靜態開場，但不播影片
     holdTarget.current = prefersReduced ? 2800 : seen ? MIN_HOLD_REPEAT_MS : MIN_HOLD_FIRST_MS;
 
     const slowTimer = window.setTimeout(() => setSlow(true), SLOW_NOTICE_MS);
@@ -91,14 +90,12 @@ export function IntroGate() {
       const vDur = videoDurationRef.current;
       const vTime = videoTimeRef.current;
 
-      // 進度：時間 + 影片進度雙軌，避免一下跳滿
       const timeRatio = Math.min(1, elapsed / target);
       const videoRatio = vDur > 0 ? Math.min(1, vTime / Math.max(0.1, vDur * 0.92)) : 0;
       const ceremonyRatio = Math.max(timeRatio, videoRatio * 0.95);
       const blended = ceremonyRatio * 90 + Math.min(bootPercentRef.current, 100) * 0.1;
       setPercent(Math.min(99, Math.round(blended)));
 
-      // 完成條件：時間到 或 影片播到接近結尾
       const timeOk = elapsed >= target;
       const videoOk = vDur > 0 && vTime >= Math.max(1, vDur - 0.2);
       if (timeOk || videoOk) {
@@ -151,7 +148,6 @@ export function IntroGate() {
   useEffect(() => {
     if (phase !== "in") return;
 
-    // 有錯誤時仍允許在最短開場後進頁，避免卡死
     if (bootError) {
       if (!holdDone) return;
       setPercent(100);
@@ -160,8 +156,6 @@ export function IntroGate() {
       return clearTimers;
     }
 
-    // 正常：開場必須走完（時間或影片近結尾）+ 後台就緒 + 非 pending
-    // 影片失敗時改走純時間 hold，不秒關
     const mediaGate = reduced || mediaFailed || videoReady;
     if (!holdDone || !bootReady || isPending || !mediaGate) return;
 
@@ -188,7 +182,7 @@ export function IntroGate() {
 
   return (
     <div
-      className={`fixed inset-0 z-[90] overflow-hidden bg-[#0f1410] transition-opacity duration-[480ms] ease-out ${phase === "leaving" ? "opacity-0" : "opacity-100"}`}
+      className={`fixed inset-0 z-[90] overflow-hidden bg-[#0f1410] transition-opacity duration-[420ms] ease-out ${phase === "leaving" ? "opacity-0" : "opacity-100"}`}
       role="status"
       aria-live="polite"
       aria-label={t("introAria")}
@@ -211,7 +205,6 @@ export function IntroGate() {
             playsInline
             preload="auto"
             loop={false}
-            // 始終可見，避免 opacity 0 導致「只閃一下」
             style={{ opacity: 1 }}
             onLoadedMetadata={() => {
               const el = videoRef.current;
