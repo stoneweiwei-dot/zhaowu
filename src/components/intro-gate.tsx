@@ -3,14 +3,13 @@ import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
-/** v15：強制新加速片，禁止靜默回退舊片 */
-const KEY = "zhaowu.intro.v15";
+/** v16：去掉舊山水海報；開場只認 loading-v11 */
+const KEY = "zhaowu.intro.v16";
 const MIN_HOLD_FIRST_MS = 6500;
 const MIN_HOLD_REPEAT_MS = 4800;
 const SLOW_NOTICE_MS = 10000;
-/** 鎖定加速版；加 cache-bust 避免 CDN／瀏覽器吃到舊 v10 快取 */
-const VIDEO_SRC = "/intro/loading-v11.mp4?v=20260823b";
-const POSTER_SRC = "/intro/loading-poster.jpg";
+/** 鎖定加速版；cache-bust 避免舊片快取 */
+const VIDEO_SRC = "/intro/loading-v11.mp4?v=20260823c";
 
 export function IntroGate() {
   const { t, locale } = useI18n();
@@ -230,26 +229,21 @@ export function IntroGate() {
       aria-live="polite"
       aria-label={t("introAria")}
     >
-      <div className="absolute inset-0 bg-[#121812]" aria-hidden>
-        <img
-          src={POSTER_SRC}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-          draggable={false}
-        />
+      <div className="absolute inset-0 bg-[#0c100e]" aria-hidden>
+        {/* 不用舊山水 poster：載入前只顯示暗底，避免「看起來還是舊片」 */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,#1a241c_0%,#0c100e_55%,#080b09_100%)]" />
         {!reduced ? (
           <video
             key={VIDEO_SRC}
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
             src={VIDEO_SRC}
-            poster={POSTER_SRC}
             autoPlay
             muted
             playsInline
             preload="auto"
             loop={ambientLoop}
-            style={{ opacity: 1 }}
+            style={{ opacity: videoReady && !mediaFailed ? 1 : 0 }}
             onLoadedMetadata={() => {
               const el = videoRef.current;
               if (el && Number.isFinite(el.duration) && el.duration > 0) {
@@ -296,7 +290,6 @@ export function IntroGate() {
               }
             }}
             onError={() => {
-              // 不再回退舊片；失敗時用靜態海報 + 計時進站
               setMediaFailed(true);
               setVideoReady(true);
               setHoldDone(true);
