@@ -40,6 +40,8 @@ test("个人命诰引用月令、日支、旺衰而不是只按日主套话", ()
   assert.ok(out.reading.decree.includes(`日支${dayZhi}`));
   assert.ok(out.reading.decree.includes(out.chart.strength.tendency));
   assert.doesNotMatch(out.reading.decree, /^留住.+的本色，但不要讓它變成凡事由你硬扛/);
+  assert.match(out.reading.decree, /月令偏|调候先跟月令走/);
+  assert.match(out.reading.decree, /已排定的干支|干支关系只按已排定/);
 });
 
 test("九页第5页使用同一份 final reading 的命诰", () => {
