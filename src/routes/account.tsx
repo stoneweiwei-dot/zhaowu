@@ -10,9 +10,12 @@ import {
 } from "@/lib/supabase-rest";
 import {
   backgroundPublicUrl,
+  clearBackgroundWallpaper,
   deleteBackground,
+  isPinnedWallpaper,
   listOwnerBackgrounds,
   setBackgroundEnabled,
+  setBackgroundWallpaper,
   uploadBackground,
   type BackgroundAsset,
 } from "@/lib/background-assets";
@@ -84,10 +87,14 @@ function AccountPage() {
     backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
     uploading: tr(locale, "上傳中…", "上传中…", "Uploading…"),
     upload: tr(locale, "＋上傳圖片", "＋上传图片", "+ Upload images"),
-    backgroundLead: tr(locale, "可一次選多張。啟用中的圖片按日期自動輪播；全部停用時使用網站內建背景。", "可一次选多张。启用中的图片按日期自动轮播；全部停用时使用网站内建背景。", "Select multiple images at once. Enabled images rotate by date; the built-in background is used when all are disabled."),
+    backgroundLead: tr(locale, "可一次選多張。點「設為壁紙」會立刻用這張當全站背景；其餘啟用中的圖片按日期輪播。", "可一次选多张。点「设为壁纸」会立刻用这张当全站背景；其余启用中的图片按日期轮播。", "Select multiple images. “Set as wallpaper” applies it immediately; other enabled images rotate by date."),
     uploadedImages: (n: number) => tr(locale, `＋已上傳圖片（${n}）`, `＋已上传图片（${n}）`, `+ Uploaded images (${n})`),
     noImages: tr(locale, "目前沒有已上傳圖片。", "目前没有已上传图片。", "No uploaded images yet."),
     enabled: tr(locale, "啟用輪播", "启用轮播", "Enable rotation"),
+    setWallpaper: tr(locale, "設為壁紙", "设为壁纸", "Set as wallpaper"),
+    currentWallpaper: tr(locale, "目前壁紙", "当前壁纸", "Current wallpaper"),
+    wallpaperSet: tr(locale, "已設為目前壁紙。回首頁即可看到。", "已设为当前壁纸。回首页即可看到。", "Set as the current wallpaper. Open the home page to see it."),
+    unpinWallpaper: tr(locale, "取消固定", "取消固定", "Unpin"),
     updateFailed: tr(locale, "更新失敗。", "更新失败。", "Update failed."),
     delete: tr(locale, "刪除", "删除", "Delete"),
     deleteImage: (name: string) => tr(locale, `刪除「${name}」？`, `删除“${name}”？`, `Delete “${name}”?`),
@@ -253,7 +260,7 @@ function AccountPage() {
                   <div className="p-3">
                     <p className="truncate text-sm font-medium text-ink">{asset.name}</p>
                     <p className="mt-1 text-[11px] text-ink-mute">{new Date(asset.created_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")}</p>
-                    <div className="mt-3 flex items-center justify-between gap-3">
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                       <label className="flex items-center gap-2 text-xs text-ink-soft">
                         <input
                           type="checkbox"
@@ -270,23 +277,62 @@ function AccountPage() {
                         />
                         {c.enabled}
                       </label>
-                      <button
-                        type="button"
-                        className="text-xs text-cinnabar"
-                        onClick={async () => {
-                          if (!window.confirm(c.deleteImage(asset.name))) return;
-                          setBackgroundMsg(null);
-                          try {
-                            await deleteBackground(session, asset);
-                            await loadBackgrounds();
-                          } catch (err) {
-                            setBackgroundMsg(err instanceof Error ? err.message : c.deleteFailed);
-                          }
-                        }}
-                      >
-                        {c.delete}
-                      </button>
+                      <div className="flex items-center gap-3">
+                        {isPinnedWallpaper(asset) ? (
+                          <button
+                            type="button"
+                            className="text-xs text-wood"
+                            onClick={async () => {
+                              setBackgroundMsg(null);
+                              try {
+                                await clearBackgroundWallpaper(session, asset.id);
+                                await loadBackgrounds();
+                              } catch (err) {
+                                setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed);
+                              }
+                            }}
+                          >
+                            {c.unpinWallpaper}
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="text-xs text-cinnabar"
+                            onClick={async () => {
+                              setBackgroundMsg(null);
+                              try {
+                                await setBackgroundWallpaper(session, asset.id);
+                                await loadBackgrounds();
+                                setBackgroundMsg(c.wallpaperSet);
+                              } catch (err) {
+                                setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed);
+                              }
+                            }}
+                          >
+                            {c.setWallpaper}
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="text-xs text-cinnabar"
+                          onClick={async () => {
+                            if (!window.confirm(c.deleteImage(asset.name))) return;
+                            setBackgroundMsg(null);
+                            try {
+                              await deleteBackground(session, asset);
+                              await loadBackgrounds();
+                            } catch (err) {
+                              setBackgroundMsg(err instanceof Error ? err.message : c.deleteFailed);
+                            }
+                          }}
+                        >
+                          {c.delete}
+                        </button>
+                      </div>
                     </div>
+                    {isPinnedWallpaper(asset) ? (
+                      <p className="mt-2 text-[11px] tracking-[0.12em] text-cinnabar">{c.currentWallpaper}</p>
+                    ) : null}
                   </div>
                 </article>
               ))}

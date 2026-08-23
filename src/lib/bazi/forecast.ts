@@ -169,6 +169,95 @@ function destinationStyleFrom(best: ForecastPeriod[]): string {
   }
 }
 
+export type TravelPlace = {
+  name: string;
+  why: string;
+  element: string;
+};
+
+const TRAVEL_PLACES: Record<string, { name: string; why: string }[]> = {
+  水: [
+    { name: "沖繩", why: "海島步調鬆、水氣足" },
+    { name: "杭州西湖", why: "濱水可步行、轉場少" },
+    { name: "釜山", why: "海岸城市、行程可鬆可緊" },
+    { name: "峇里島", why: "湖海與休息感並存" },
+  ],
+  木: [
+    { name: "京都", why: "綠意古寺、適合步行深遊" },
+    { name: "清邁", why: "山林小城、節奏溫和" },
+    { name: "南投日月潭", why: "山湖、少趕場" },
+    { name: "奈良", why: "綠意古都、一地住久" },
+  ],
+  火: [
+    { name: "墾丁", why: "日照足、真正放假" },
+    { name: "雪梨", why: "陽光海岸、活動多但不逼促" },
+    { name: "沖繩本島", why: "暖陽海島型" },
+    { name: "黃金海岸", why: "日照長、節奏可自己控" },
+  ],
+  金: [
+    { name: "東京", why: "秩序清楚、交通好、節奏俐落" },
+    { name: "新加坡", why: "乾爽好走、行程可控" },
+    { name: "首爾", why: "城市機能強、轉場成本低" },
+    { name: "維也納", why: "城市節奏清楚、好規劃" },
+  ],
+  土: [
+    { name: "台南", why: "古城慢遊、一地住久" },
+    { name: "西安", why: "厚土古城、適合深遊" },
+    { name: "清邁舊城", why: "內陸慢城" },
+    { name: "京都", why: "古城、少轉場" },
+  ],
+};
+
+const KNOWN_TRAVEL_NAMES = [
+  "沖繩", "冲绳", "京都", "東京", "东京", "大阪", "北海道", "奈良",
+  "首爾", "首尔", "釜山", "新加坡", "峇里島", "巴厘岛", "清邁", "清迈",
+  "杭州西湖", "西湖", "杭州", "墾丁", "垦丁", "台南", "臺南", "台北", "臺北",
+  "高雄", "花蓮", "花莲", "澎湖", "阿里山", "日月潭", "南投",
+  "雪梨", "悉尼", "墨爾本", "墨尔本", "黃金海岸", "黄金海岸",
+  "西安", "麗江", "丽江", "桂林", "陽朔", "阳朔", "成都", "敦煌", "九寨溝", "九寨沟",
+  "三亞", "三亚", "香港", "澳門", "澳门", "吉隆坡", "普吉", "蘇梅", "苏梅",
+  "長灘島", "长滩岛", "暹粒", "吳哥", "吴哥", "維也納", "维也纳",
+  "倫敦", "伦敦", "巴黎", "紐約", "纽约", "洛杉磯", "洛杉矶", "溫哥華", "温哥华",
+];
+
+function hashSeed(value: string) {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+export function extractNamedPlaces(question: string): string[] {
+  const hits: string[] = [];
+  for (const name of KNOWN_TRAVEL_NAMES) {
+    if (question.includes(name) && !hits.some((hit) => hit.includes(name) || name.includes(hit))) {
+      hits.push(name);
+    }
+  }
+  return hits.slice(0, 4);
+}
+
+export function pickTravelDestinations(
+  chart: Chart,
+  year?: number,
+  months?: number[],
+): TravelPlace[] {
+  const targetYear = year ?? new Date().getFullYear();
+  const f = analyzeForecastYear(chart, targetYear, "travel");
+  const ranked = rankWithin(f, months);
+  const best = ranked.best[0] ?? f.best[0];
+  const element = (best ? BRANCH_ELEMENT[best.monthGanZhi[1]] : chart.dayMasterElement) || "土";
+  const pool = TRAVEL_PLACES[element] ?? TRAVEL_PLACES.土;
+  const start = hashSeed(`${chart.dayMaster}${chart.monthBranch}${chart.civilStamp}${element}${targetYear}`) % pool.length;
+  return [0, 1, 2].map((offset) => {
+    const item = pool[(start + offset) % pool.length];
+    return { ...item, element };
+  });
+}
+
+
 export function analyzeForecastYear(chart: Chart, year: number, topic: ForecastTopic): ForecastYear {
   const yearGz = yearMonthPillars(new Date(Date.UTC(year, 6, 1, 12))).year;
   const yearBase = scoreGanZhi(yearGz, chart, topic);
@@ -331,11 +420,21 @@ export function buildTimingAnswer(
 export function buildTravelDestinationAnswer(
   chart: Chart,
   targetYears: number[],
-  options: ForecastOptions = {},
+  options: ForecastOptions & { question?: string } = {},
 ): string {
   const year = targetYears[0] ?? new Date().getFullYear();
-  const f = analyzeForecastYear(chart, year, "travel");
-  const ranked = rankWithin(f, options.months);
-  const style = destinationStyleFrom(ranked.best.length ? ranked.best : f.best);
-  return `如果你問「去哪裡比較適合」，在沒有指定候選城市的情況下，先看旅行型態：${style}如果你給出 2–3 個具體城市，再做逐一比較；沒有候選地時不亂點名國家。`;
+  const named = extractNamedPlaces(options.question ?? "");
+  if (named.length >= 2) {
+    return `你提到的地方裡，先這樣排：主選 ${named[0]}，備選 ${named.slice(1).join("、")}。都按較順月份走，行程少轉場；不是再問你補城市。`;
+  }
+  if (named.length === 1) {
+    const alts = pickTravelDestinations(chart, year, options.months)
+      .map((place) => place.name)
+      .filter((name) => name !== named[0])
+      .slice(0, 2);
+    return `${named[0]}可以去，適合排在較順月份。同類型也可看 ${alts.join("、")}。直接定一處主行程即可。`;
+  }
+  const picks = pickTravelDestinations(chart, year, options.months);
+  return `這次直接給你三個目的地：${picks.map((place) => `${place.name}（${place.why}）`).join("、")}。先定第一處做主行程，另外兩處作備選，不用再補城市。`;
 }
+

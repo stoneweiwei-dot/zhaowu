@@ -1,5 +1,6 @@
 import type { AnalysisResult, Chart, Reading } from "@/lib/bazi/types";
 import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
+import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
 
 export type NinePageEvidence = {
   facts: string[];
@@ -25,6 +26,13 @@ function hasMultiTopicAnswer(reading: Reading): boolean {
 }
 
 function page4Body(question: string, reading: Reading): string[] {
+  const req = inspectAnswerRequirements(question);
+  if (req.asksTravel) {
+    return [
+      "按第 1 页已经给出的目的地，先定一处主行程、一处备选。",
+      "把较顺月份与假期、预算、体力和签证一起确认，少转场。",
+    ];
+  }
   if (hasMultiTopicAnswer(reading)) {
     const topics = [
       { match: /工作|事業|事业|職業|职业|學業|学业/, label: "工作重点", value: reading.work },
@@ -62,7 +70,10 @@ function page4Body(question: string, reading: Reading): string[] {
   }
 }
 
-function page6Body(reading: Reading): string[] {
+function page6Body(question: string, reading: Reading): string[] {
+  if (inspectAnswerRequirements(question).asksTravel) {
+    return ["先锁定第 1 页的主选目的地和较顺月份，再排机票与住宿，不要同时铺开三地。"];
+  }
   switch (reading.kind) {
     case "career":
       return ["把职位、收入、成长空间、责任与退出成本放在一起比较，再决定下一步。"];
@@ -194,7 +205,7 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
     pageNo: 6,
     key: "practice",
     title: "怎么把这张盘用到现实里",
-    body: page6Body(reading),
+    body: page6Body(question, reading),
     evidence: {
       facts: ["reading.kind", "对应主题字段", "reading.rhythm"],
       conditions: ["建议必须对应本题并能在现实验证"],

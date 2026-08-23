@@ -1,3 +1,30 @@
+.intro-media {
+  position: absolute;
+  inset: -6%;
+  width: 112%;
+  height: 112%;
+  object-fit: cover;
+  object-position: center 28%;
+}
+
+.intro-poster {
+  animation: intro-kenburns 14s ease-out both;
+}
+
+.intro-video {
+  opacity: 0;
+  transition: opacity .7s ease;
+}
+
+.intro-video.is-ready {
+  opacity: 1;
+}
+
+@keyframes intro-kenburns {
+  from { transform: scale(1.1) translate3d(0, 2.4%, 0); }
+  to { transform: scale(1) translate3d(0, 0, 0); }
+}
+
 .intro-crane {
   position: absolute;
   left: -18vw;
@@ -21,4 +48,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .intro-crane { display: none; }
+  .intro-poster { animation: none; }
 }

@@ -56,7 +56,7 @@ test("target-year forecast actually computes 12 monthly periods", () => {
   assert.ok(f.months.every((m) => /^\S{2}$/.test(m.monthGanZhi)));
 });
 
-test("旅行＋2027＋去哪裡：必须直接回答年份、月份与旅行类型", () => {
+test("旅行＋2027＋去哪裡：必须直接回答年份、月份与具体目的地", () => {
   const q = "我什麼時候適合去度假，去哪裡最好？2027 是不是不適合我出行？";
   const req = inspectAnswerRequirements(q);
   const { reading } = contracted(q);
@@ -67,11 +67,13 @@ test("旅行＋2027＋去哪裡：必须直接回答年份、月份与旅行类�
   assert.match(reading.directAnswer, /2027/);
   assert.match(reading.directAnswer, /較順的窗口/);
   assert.match(reading.directAnswer, /月（/);
-  assert.match(reading.directAnswer, /旅行型態/);
+  assert.match(reading.directAnswer, /沖繩|京都|東京|雪梨|台南|清邁|杭州|墾丁|新加坡|首爾|釜山|奈良|西安|峇里|維也納|黃金海岸/);
   assert.doesNotMatch(reading.directAnswer, /排序依據|排序依据|已接入|方法透明/);
   assert.doesNotMatch(reading.directAnswer, /目前引擎沒有目的地比較模組/);
   assert.doesNotMatch(reading.directAnswer, /窗口已經在眼前/);
+  assert.doesNotMatch(reading.directAnswer, /給出 2|放入 2|如果你問「去哪裡/);
   assert.doesNotMatch(reading.action, /固定同一時間睡覺/);
+  assert.doesNotMatch(reading.action, /放入 2|具體城市/);
 });
 
 test("明年＋下半年：自动解析相对年份并只在指定月份范围排序", () => {
@@ -231,6 +233,18 @@ test("普通二選一：不假装已比较没有提供的两个选项条件", ()
   assert.match(reading.directAnswer, /二選一|比較要求/);
   assert.match(reading.directAnswer, /沒有分開提供/);
   assert.doesNotMatch(reading.directAnswer, /旅行型態/);
+});
+
+test("去哪里旅游：必须点名目的地，不得反问用户补城市", () => {
+  const q = "去哪里旅游";
+  const req = inspectAnswerRequirements(q);
+  const { reading } = contracted(q);
+  assert.equal(req.asksTravel, true);
+  assert.equal(req.asksWhere, true);
+  assert.match(reading.directAnswer, /沖繩|京都|東京|雪梨|台南|清邁|杭州|墾丁|新加坡|首爾|釜山|奈良|西安|峇里|維也納|黃金海岸/);
+  assert.doesNotMatch(reading.directAnswer, /給出 2|放入 2|如果你問/);
+  assert.doesNotMatch(reading.action, /放入 2|具體城市|2–3 個/);
+  assert.match(reading.action, /行程定下來|行程定下来/);
 });
 
 test("前世題保留一掌經結果", () => {

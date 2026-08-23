@@ -98,27 +98,31 @@ export function SiteShell({ children }: { children: ReactNode }) {
           .catch(() => undefined);
       });
 
-    void listPublicBackgrounds()
-      .then((assets) => {
-        if (!alive) return;
-        const selected = chooseDailyBackground(assets);
-        setBackgroundUrl(selected ? backgroundPublicUrl(selected.storage_path) : null);
-      })
-      .catch(() => undefined);
+    const loadBackground = () => {
+      void listPublicBackgrounds()
+        .then((assets) => {
+          if (!alive) return;
+          const selected = chooseDailyBackground(assets);
+          setBackgroundUrl(selected ? backgroundPublicUrl(selected.storage_path) : null);
+        })
+        .catch(() => undefined);
+    };
 
-    return () => { alive = false; };
+    loadBackground();
+    window.addEventListener("zhaowu-background-change", loadBackground);
+    return () => {
+      alive = false;
+      window.removeEventListener("zhaowu-background-change", loadBackground);
+    };
   }, []);
 
   return (
-    <div className={`relative isolate min-h-dvh overflow-x-clip bg-transparent text-ink ${isLogin ? "zhaowu-login-shell" : ""}`}>
+    <div className={`relative isolate min-h-dvh overflow-x-clip bg-transparent text-ink ${isLogin ? "zhaowu-login-shell" : ""} ${backgroundUrl ? "zhaowu-has-wallpaper" : ""}`}>
       {backgroundUrl ? (
         <div
           aria-hidden
-          className={`pointer-events-none fixed inset-0 z-0 bg-cover bg-center bg-no-repeat ${isLogin ? "opacity-[0.56]" : "opacity-[0.34]"}`}
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,253,247,.12), rgba(246,239,224,.40)), url(${backgroundUrl})`,
-            backgroundPosition: "center 28%",
-          }}
+          className={`zhaowu-site-wallpaper ${isLogin ? "is-login" : ""}`}
+          style={{ backgroundImage: `url("${backgroundUrl}")` }}
         />
       ) : null}
 
@@ -138,7 +142,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       {!isLogin ? <IntroGate /> : null}
 
       {!isLogin ? (
-        <header className="sticky top-0 z-30 border-b border-line/70 bg-cream/86 backdrop-blur-md">
+        <header className={`sticky top-0 z-30 border-b border-line/70 backdrop-blur-md ${backgroundUrl ? "bg-cream/70" : "bg-cream/86"}`}>
           <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
             <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
               <BrandSeal />

@@ -3,11 +3,12 @@ import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
-const KEY = "zhaowu.intro.v8";
+const KEY = "zhaowu.intro.v9";
 const MIN_FIRST_VISIT_MS = 3000;
 const MIN_REPEAT_VISIT_MS = 280;
 const SLOW_NOTICE_MS = 8000;
 const VIDEO_SRC = "/intro/loading-v8.mp4";
+const POSTER_SRC = "/intro/loading-poster.jpg";
 
 export function IntroGate() {
   const { t } = useI18n();
@@ -104,11 +105,18 @@ export function IntroGate() {
       aria-live="polite"
       aria-label={t("introAria")}
     >
-      <div className="absolute inset-0 bg-[#d8c79d]" aria-hidden>
+      <div className="absolute inset-0 bg-[#1c241c]" aria-hidden>
+        <img
+          src={POSTER_SRC}
+          alt=""
+          className="intro-media intro-poster"
+          draggable={false}
+        />
         {!reduced ? (
           <video
-            className="h-full w-full object-cover"
+            className={`intro-media intro-video ${videoReady ? "is-ready" : ""}`}
             src={VIDEO_SRC}
+            poster={POSTER_SRC}
             autoPlay
             muted
             loop
@@ -121,8 +129,8 @@ export function IntroGate() {
         ) : (
           <div className="h-full w-full bg-[radial-gradient(circle_at_50%_18%,#f3d98f_0%,#8fa18a_34%,#314039_68%,#182019_100%)]" />
         )}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,237,211,.55)_0%,rgba(40,49,36,.18)_42%,rgba(13,20,16,.72)_100%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_14%,rgba(255,239,179,.72),transparent_30%)] mix-blend-screen" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(246,237,211,.22)_0%,rgba(40,49,36,.10)_42%,rgba(13,20,16,.42)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_14%,rgba(255,239,179,.28),transparent_32%)] mix-blend-screen" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[430px] flex-col px-6 pb-[max(24px,env(safe-area-inset-bottom))] pt-[max(36px,env(safe-area-inset-top))] text-center text-[#fff9e8]">

@@ -44,6 +44,11 @@
     background-attachment: fixed;
   }
 
+  body:has(.zhaowu-has-wallpaper) {
+    background: #cbb892;
+    background-image: none;
+  }
+
   ::selection {
     background: color-mix(in oklab, var(--color-cinnabar) 28%, white);
     color: var(--color-ink);

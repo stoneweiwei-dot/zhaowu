@@ -133,6 +133,58 @@ export async function setBackgroundEnabled(session: SupabaseSession, id: string,
   if (!res.ok) await parse(res);
 }
 
+export function isPinnedWallpaper(asset: BackgroundAsset) {
+  return asset.theme === "wallpaper";
+}
+
+export async function setBackgroundWallpaper(session: SupabaseSession, id: string) {
+  const current = await listOwnerBackgrounds(session);
+  const previous = current.filter((asset) => asset.theme === "wallpaper" && asset.id !== id);
+  for (const asset of previous) {
+    const clear = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?id=eq.${encodeURIComponent(asset.id)}`, {
+      method: "PATCH",
+      headers: {
+        ...apiHeaders(session.access_token),
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({ theme: "daily-rotation", updated_at: new Date().toISOString() }),
+    });
+    if (!clear.ok) await parse(clear);
+  }
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: {
+      ...apiHeaders(session.access_token),
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({
+      enabled: true,
+      theme: "wallpaper",
+      updated_at: new Date().toISOString(),
+    }),
+  });
+  if (!res.ok) await parse(res);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("zhaowu-background-change"));
+  }
+}
+
+export async function clearBackgroundWallpaper(session: SupabaseSession, id: string) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: {
+      ...apiHeaders(session.access_token),
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({ theme: "daily-rotation", updated_at: new Date().toISOString() }),
+  });
+  if (!res.ok) await parse(res);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("zhaowu-background-change"));
+  }
+}
+
 export async function deleteBackground(session: SupabaseSession, asset: BackgroundAsset) {
   const storage = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(asset.storage_path)}`, {
     method: "DELETE",
@@ -162,6 +214,9 @@ export function chooseDailyBackground(assets: BackgroundAsset[], now = new Date(
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   if (!eligible.length) return null;
+
+  const pinned = eligible.find((asset) => asset.theme === "wallpaper");
+  if (pinned) return pinned;
 
   // 新上傳的圖先成為當天默認背景；之後每天往下一張輪播。
   // 這樣站主剛上傳的新圖不會因 epoch 取模而立刻跳到數十張舊圖中的任意一張。

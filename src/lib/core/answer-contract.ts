@@ -1,4 +1,4 @@
-import { buildTimingAnswer, buildTravelDestinationAnswer, type ForecastTopic } from "@/lib/bazi/forecast";
+import { buildTimingAnswer, buildTravelDestinationAnswer, pickTravelDestinations, type ForecastTopic } from "@/lib/bazi/forecast";
 import type { Chart, QuestionKind, Reading } from "@/lib/bazi/types";
 import { customerDirectAnswer } from "@/lib/report/customer-copy";
 
@@ -242,12 +242,15 @@ function compareNote(kind: QuestionKind, reading: Reading): string {
   return `這題同時有二選一／比較要求。命盤可以先給你的承載背景：${base}；但如果兩個選項本身的收入、距離、責任、關係狀態或其他現實條件沒有分開提供，就不能假裝已經比較過兩邊。`;
 }
 
-function actionFor(kind: QuestionKind, req: AnswerRequirements): string {
+function actionFor(kind: QuestionKind, req: AnswerRequirements, chart: Chart): string {
   if (req.asksMedicalTiming) {
     return "把症狀、持續時間、已做檢查與醫生建議放在同一頁；命盤只補充生活節奏，不代替醫療時間表。";
   }
   if (req.asksTravel) {
-    return "先用報告挑出的較順月份定旅行窗口；若要精確比較目的地，再放入 2–3 個具體城市，不再用通用性格句代替答案。";
+    const picks = pickTravelDestinations(chart, req.targetYears[0], req.targetMonths);
+    const first = picks[0]?.name ?? "較順目的地";
+    const windowText = req.asksWhen ? "報告列出的較順月份" : "最近可以出行的窗口";
+    return `先把${windowText}的${first}行程定下來，另外兩處只作備選。`;
   }
   if (req.asksWhen) {
     return req.targetMonths.length
@@ -293,11 +296,11 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
     const timing = req.asksWhen
       ? buildTimingAnswer(chart, "travel", req.targetYears, { months: req.targetMonths })
       : "";
-    const where = req.asksWhere || req.asksCompare
-      ? buildTravelDestinationAnswer(chart, req.targetYears, { months: req.targetMonths })
-      : "";
-    const fallback = !timing && !where ? buildTimingAnswer(chart, "travel", req.targetYears, { months: req.targetMonths }) : "";
-    directAnswer = `你問的是「${cleanQuestion(question)}」。先直接回答：${[timing, where, fallback].filter(Boolean).join(" ")}`;
+    const where = buildTravelDestinationAnswer(chart, req.targetYears, {
+      months: req.targetMonths,
+      question,
+    });
+    directAnswer = `你問的是「${cleanQuestion(question)}」。先直接回答：${[where, timing].filter(Boolean).join(" ")}`;
   } else if (special === "relation") {
     directAnswer = relationAnswer(question, chart, reading, req);
   } else if (req.asksWhen && topics.length > 1) {
@@ -314,6 +317,6 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
     ...reading,
     kind,
     directAnswer: customerDirectAnswer(question, directAnswer),
-    action: actionFor(kind, req),
+    action: actionFor(kind, req, chart),
   };
 }

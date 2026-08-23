@@ -64,7 +64,8 @@ test("2027旅行九页必须使用最新流月结果，不再说尚未补算", (
 
   assert.match(p1.body.join("\n"), /2027/);
   assert.match(p1.body.join("\n"), /較順的窗口/);
-  assert.doesNotMatch(p1.body.join("\n"), /你問的是|你问的是|排序依據|排序依据/);
+  assert.match(p1.body.join("\n"), /沖繩|京都|東京|雪梨|台南|清邁|杭州|墾丁|新加坡|首爾|釜山|奈良|西安|峇里|維也納|黃金海岸/);
+  assert.doesNotMatch(p1.body.join("\n"), /你問的是|你问的是|排序依據|排序依据|放入 2|給出 2/);
   assert.doesNotMatch(report, /没有完成 2027|沒有完成 2027|还必须补算|還必須補算/);
   assert.doesNotMatch(p4.body.join("\n"), /当前这份结果只带有|當前這份結果只帶有/);
 });
