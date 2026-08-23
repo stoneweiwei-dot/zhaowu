@@ -3,12 +3,12 @@ import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
-/** v17：高清绢本立轴海报，不再播低分辨率开场视频 */
-const KEY = "zhaowu.intro.v17";
-const MIN_HOLD_FIRST_MS = 6500;
-const MIN_HOLD_REPEAT_MS = 4800;
-const SLOW_NOTICE_MS = 10000;
-const POSTER_SRC = "/intro/loading-poster.jpg?v=20260823-song";
+/** v18：快速进站 — 首访约 2.2s，最长 4s 强制进入，随时可跳过 */
+const KEY = "zhaowu.intro.v18";
+const MIN_HOLD_FIRST_MS = 2200;
+const MIN_HOLD_REPEAT_MS = 1200;
+const HARD_MAX_MS = 4000;
+const POSTER_SRC = "/intro/loading-poster.jpg?v=20260824-fast";
 
 export function IntroGate() {
   const { t, locale } = useI18n();
@@ -17,33 +17,14 @@ export function IntroGate() {
   const [percent, setPercent] = useState(0);
   const [label, setLabel] = useState("正在啟動昭梧");
   const [bootReady, setBootReady] = useState(false);
-  const [bootPercent, setBootPercent] = useState(0);
-  const [videoReady, setVideoReady] = useState(false);
-  const [videoComplete, setVideoComplete] = useState(false);
-  const [mediaFailed, setMediaFailed] = useState(false);
   const [bootError, setBootError] = useState<string | null>(null);
-  const [reduced, setReduced] = useState(false);
-  const [slow, setSlow] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [holdDone, setHoldDone] = useState(false);
-  const [ambientLoop, setAmbientLoop] = useState(false);
   const startedAt = useRef(0);
   const holdTarget = useRef(MIN_HOLD_FIRST_MS);
-  const bootPercentRef = useRef(0);
-  const videoTimeRef = useRef(0);
-  const videoDurationRef = useRef(0);
-  const ambientLoopRef = useRef(false);
   const finishTimer = useRef<number | null>(null);
   const raf = useRef<number | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  useEffect(() => {
-    bootPercentRef.current = bootPercent;
-  }, [bootPercent]);
-
-  useEffect(() => {
-    ambientLoopRef.current = ambientLoop;
-  }, [ambientLoop]);
+  const finished = useRef(false);
 
   const clearTimers = useCallback(() => {
     if (finishTimer.current !== null) {
@@ -57,41 +38,27 @@ export function IntroGate() {
   }, []);
 
   const finish = useCallback(() => {
+    if (finished.current) return;
+    finished.current = true;
     clearTimers();
     try {
       sessionStorage.setItem(KEY, "1");
     } catch {
       /* ignore */
     }
+    setPercent(100);
     setPhase("leaving");
-    window.setTimeout(() => setPhase("off"), 420);
+    window.setTimeout(() => setPhase("off"), 320);
   }, [clearTimers]);
 
   const skip = useCallback(() => {
-    ambientLoopRef.current = false;
-    setAmbientLoop(false);
     finish();
   }, [finish]);
-
-  const enableLoop = useCallback(() => {
-    ambientLoopRef.current = true;
-    setAmbientLoop(true);
-    setPercent(100);
-    setVideoComplete(true);
-    setHoldDone(true);
-    const el = videoRef.current;
-    if (el) {
-      el.loop = true;
-      el.muted = true;
-      void el.play().catch(() => undefined);
-    }
-  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     startedAt.current = performance.now();
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setReduced(prefersReduced);
 
     let seen = false;
     try {
@@ -99,70 +66,52 @@ export function IntroGate() {
     } catch {
       seen = false;
     }
-    holdTarget.current = prefersReduced ? 2800 : seen ? MIN_HOLD_REPEAT_MS : MIN_HOLD_FIRST_MS;
-    setVideoReady(true);
-
-    const slowTimer = window.setTimeout(() => setSlow(true), SLOW_NOTICE_MS);
+    holdTarget.current = prefersReduced ? 900 : seen ? MIN_HOLD_REPEAT_MS : MIN_HOLD_FIRST_MS;
 
     const tick = () => {
-      if (ambientLoopRef.current) {
-        setPercent(100);
-        raf.current = window.requestAnimationFrame(tick);
-        return;
-      }
-
       const elapsed = performance.now() - startedAt.current;
       const target = holdTarget.current;
-      const vDur = videoDurationRef.current;
-      const vTime = videoTimeRef.current;
+      const ratio = Math.min(1, elapsed / target);
+      setPercent(Math.min(99, Math.round(ratio * 100)));
 
-      const timeRatio = Math.min(1, elapsed / target);
-      const videoRatio = vDur > 0 ? Math.min(1, vTime / Math.max(0.1, vDur * 0.98)) : 0;
-      const ceremonyRatio = Math.max(timeRatio * 0.35, videoRatio);
-      const blended = ceremonyRatio * 92 + Math.min(bootPercentRef.current, 100) * 0.08;
-      setPercent(Math.min(99, Math.round(blended)));
-
-      const videoOk = vDur > 0 && vTime >= Math.max(1, vDur - 0.15);
-      const timeFallback = prefersReduced || (vDur <= 0 && elapsed >= target);
-      if (videoOk || timeFallback) {
+      if (elapsed >= target) setHoldDone(true);
+      if (elapsed >= HARD_MAX_MS) {
         setHoldDone(true);
-        setVideoComplete(true);
+        finish();
+        return;
       }
-
       raf.current = window.requestAnimationFrame(tick);
     };
     raf.current = window.requestAnimationFrame(tick);
 
     return () => {
-      window.clearTimeout(slowTimer);
       if (raf.current !== null) window.cancelAnimationFrame(raf.current);
     };
-  }, []);
+  }, [finish]);
 
   useEffect(() => {
     let cancelled = false;
     setBootError(null);
     setBootReady(false);
-    setBootPercent(0);
 
     void runBootstrapReadiness((progress) => {
       if (cancelled) return;
-      setBootPercent(progress.percent);
       setLabel(progress.label);
     })
       .then(() => {
         if (!cancelled) {
           setBootReady(true);
-          setBootPercent(100);
           setLabel(locale === "en" ? "Ready" : locale === "zh-Hans" ? "准备完成" : "準備完成");
         }
       })
       .catch((error: unknown) => {
         if (cancelled) return;
+        // 启动检查失败不堵进站；标一下即可
         const message = error instanceof Error ? error.message : "啟動檢查未完成。";
         setBootError(message);
+        setBootReady(true);
         setLabel(
-          locale === "en" ? "Waiting for services" : locale === "zh-Hans" ? "等待关键服务就绪" : "等待關鍵服務就緒",
+          locale === "en" ? "Ready" : locale === "zh-Hans" ? "准备完成" : "準備完成",
         );
       });
 
@@ -173,58 +122,23 @@ export function IntroGate() {
 
   useEffect(() => {
     if (phase !== "in") return;
-    if (ambientLoop) return;
+    if (!holdDone) return;
+    // 最短展示结束后：boot 好或已超时 → 进站；auth 仍 pending 时也允许进（不卡死）
+    if (!bootReady && performance.now() - startedAt.current < HARD_MAX_MS - 200) return;
+    if (isPending && performance.now() - startedAt.current < HARD_MAX_MS - 200) return;
 
-    if (bootError) {
-      if (!holdDone) return;
-      setPercent(100);
-      clearTimers();
-      finishTimer.current = window.setTimeout(finish, 320);
-      return clearTimers;
-    }
-
-    const mediaGate = reduced || mediaFailed || videoReady;
-    if (!holdDone || !bootReady || isPending || !mediaGate) return;
-    if (!reduced && !mediaFailed && !videoComplete) return;
-
-    setPercent(100);
     clearTimers();
-    finishTimer.current = window.setTimeout(finish, 360);
+    finishTimer.current = window.setTimeout(finish, 180);
     return clearTimers;
-  }, [
-    ambientLoop,
-    bootError,
-    bootReady,
-    clearTimers,
-    finish,
-    holdDone,
-    isPending,
-    mediaFailed,
-    phase,
-    reduced,
-    videoComplete,
-    videoReady,
-  ]);
+  }, [bootReady, clearTimers, finish, holdDone, isPending, phase]);
 
   if (phase === "off") return null;
 
   const skipLabel = locale === "en" ? "Skip" : locale === "zh-Hans" ? "跳过" : "跳過";
-  const loopLabel = ambientLoop
-    ? locale === "en"
-      ? "Looping"
-      : locale === "zh-Hans"
-        ? "循环中"
-        : "循環中"
-    : locale === "en"
-      ? "Loop"
-      : locale === "zh-Hans"
-        ? "循环"
-        : "循環";
-  const enterLabel = locale === "en" ? "Enter" : locale === "zh-Hans" ? "进入" : "進入";
 
   return (
     <div
-      className={`fixed inset-0 z-[90] overflow-hidden bg-[#0f1410] transition-opacity duration-[420ms] ease-out ${phase === "leaving" ? "opacity-0" : "opacity-100"}`}
+      className={`fixed inset-0 z-[90] overflow-hidden bg-[#0f1410] transition-opacity duration-[320ms] ease-out ${phase === "leaving" ? "opacity-0" : "opacity-100"}`}
       role="status"
       aria-live="polite"
       aria-label={t("introAria")}
@@ -233,39 +147,21 @@ export function IntroGate() {
         <img
           src={POSTER_SRC}
           alt=""
-          className="intro-media intro-poster"
+          className="absolute inset-0 h-full w-full object-cover"
           draggable={false}
         />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,10,.16)_0%,rgba(8,12,10,.06)_42%,rgba(8,12,10,.4)_100%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_16%,rgba(255,239,179,.12),transparent_34%)] mix-blend-screen" />
       </div>
 
-      <div className="absolute bottom-[max(18px,env(safe-area-inset-bottom))] right-[max(16px,env(safe-area-inset-right))] z-20 flex items-center gap-2">
+      <div className="absolute bottom-[max(18px,env(safe-area-inset-bottom))] right-[max(16px,env(safe-area-inset-right))] z-20">
         <button
           type="button"
-          onClick={enableLoop}
-          aria-pressed={ambientLoop}
-          className={`rounded-full border px-4 py-2 text-[11px] tracking-[0.18em] backdrop-blur-sm ${ambientLoop ? "border-[#f0dfb4]/7 bg-[#f0dfb4]/2 text-[#fff6d8]" : "border-[#f0dfb4]/4 bg-[#152018]/6 text-[#f7edd0]"}`}
+          onClick={skip}
+          className="rounded-full border border-[#f0dfb4]/4 bg-[#152018]/6 px-4 py-2 text-[11px] tracking-[0.22em] text-[#f7edd0] backdrop-blur-sm"
         >
-          {loopLabel}
+          {skipLabel}
         </button>
-        {ambientLoop ? (
-          <button
-            type="button"
-            onClick={skip}
-            className="rounded-full border border-[#f0dfb4]/55 bg-[#1a261c]/75 px-4 py-2 text-[11px] tracking-[0.18em] text-[#fff6d8] backdrop-blur-sm"
-          >
-            {enterLabel}
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={skip}
-            className="rounded-full border border-[#f0dfb4]/4 bg-[#152018]/6 px-4 py-2 text-[11px] tracking-[0.22em] text-[#f7edd0] backdrop-blur-sm"
-          >
-            {skipLabel}
-          </button>
-        )}
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[430px] flex-col px-6 pb-[max(56px,env(safe-area-inset-bottom))] pt-[max(36px,env(safe-area-inset-top))] text-center text-[#fff9e8]">
@@ -303,75 +199,33 @@ export function IntroGate() {
           </div>
 
           <p className="mt-5 font-display text-[17px] tracking-[0.16em] text-[#fff7e5]">
-            {ambientLoop
-              ? locale === "en"
-                ? "Ambient opening"
-                : locale === "zh-Hans"
-                  ? "循环开场"
-                  : "循環開場"
-              : locale === "en"
-                ? "Opening"
-                : locale === "zh-Hans"
-                  ? "正在开启"
-                  : "正在開啟"}
+            {locale === "en" ? "Opening" : locale === "zh-Hans" ? "正在开启" : "正在開啟"}
           </p>
           <p className="mt-2 min-h-5 text-[11px] tracking-[0.12em] text-[#e2d5b6]">
-            {ambientLoop
+            {isPending
               ? locale === "en"
-                ? "Site default video · no token used"
+                ? "Checking account"
                 : locale === "zh-Hans"
-                  ? "网站默认开场片 · 不消耗 token"
-                  : "網站預設開場片 · 不消耗 token"
-              : isPending
-                ? locale === "en"
-                  ? "Checking account"
-                  : locale === "zh-Hans"
-                    ? "正在确认账号状态"
-                    : "正在確認帳號狀態"
-                : label}
+                  ? "正在确认账号状态"
+                  : "正在確認帳號狀態"
+              : label}
           </p>
           <p className="mt-2 text-[9px] tracking-[0.14em] text-[#cabd9e]">
-            {ambientLoop
-              ? locale === "en"
-                ? "Looping · tap Enter when ready"
-                : locale === "zh-Hans"
-                  ? "持续循环中 · 想进站再点「进入」"
-                  : "持續循環中 · 想進站再點「進入」"
-              : locale === "en"
-                ? videoComplete
-                  ? "Ready to enter"
-                  : "Plays once, then enters — or Skip / Loop"
-                : locale === "zh-Hans"
-                  ? videoComplete
-                    ? "开场完成"
-                    : "默认播完一轮进站 · 可跳过或循环"
-                  : videoComplete
-                    ? "開場完成"
-                    : "預設播完一輪進站 · 可跳過或循環"}
+            {locale === "en"
+              ? "Tap Skip anytime"
+              : locale === "zh-Hans"
+                ? "随时可点跳过"
+                : "隨時可點跳過"}
           </p>
 
-          {bootError && !ambientLoop ? (
-            <div className="mt-4 rounded-2xl border border-[#f1d8a2]/35 bg-[#1a211a]/62 px-4 py-3 text-[11px] text-[#f4e5c1]">
-              <p>{bootError}</p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSlow(false);
-                  setAttempt((value) => value + 1);
-                }}
-                className="mt-2 rounded-full border border-[#edd7a3]/45 px-4 py-2 tracking-[0.12em] text-[#fff3d1]"
-              >
-                {locale === "en" ? "Retry" : locale === "zh-Hans" ? "重新连接" : "重新連接"}
-              </button>
-            </div>
-          ) : slow && !ambientLoop && (!bootReady || isPending) ? (
-            <p className="mt-4 text-[10px] tracking-[0.08em] text-[#ead7aa]">
-              {locale === "en"
-                ? "Still connecting core services…"
-                : locale === "zh-Hans"
-                  ? "仍在连接关键服务…"
-                  : "仍在連接關鍵服務…"}
-            </p>
+          {bootError ? (
+            <button
+              type="button"
+              onClick={() => setAttempt((value) => value + 1)}
+              className="mt-3 rounded-full border border-[#edd7a3]/45 px-4 py-2 text-[11px] tracking-[0.12em] text-[#fff3d1]"
+            >
+              {locale === "en" ? "Retry services" : locale === "zh-Hans" ? "重试连接" : "重試連接"}
+            </button>
           ) : null}
 
           <div className="mx-auto mt-5 h-px w-40 bg-[#ecd9a8]/4" />
