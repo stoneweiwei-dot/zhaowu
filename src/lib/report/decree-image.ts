@@ -17,7 +17,7 @@ type DecreeImageFailure = {
 function friendlyMessage(code: string, detail?: string): string {
   switch (code) {
     case "IMAGE_GENERATION_NOT_CONFIGURED":
-      return "命诰图生成服务尚未配置 OPENAI_API_KEY。";
+      return "命诰图生成服务尚未配置。";
     case "DECREE_NOT_READY":
       return "请先生成并保存完整九页报告，再生成命诰图。";
     case "REPORT_NOT_FOUND":
