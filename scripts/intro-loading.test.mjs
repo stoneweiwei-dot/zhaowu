@@ -2,26 +2,16 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-const intro = await readFile(new URL('../src/components/intro-gate.tsx', import.meta.url), 'utf8');
+const shell = await readFile(new URL('../src/components/site-shell.tsx', import.meta.url), 'utf8');
 const bootstrap = await readFile(new URL('../src/lib/bootstrap-readiness.ts', import.meta.url), 'utf8');
 
-test('loading gate uses the approved opening and copy', () => {
-  assert.match(intro, /zhaowu\.intro\.v18/);
-  assert.match(intro, /loading-poster\.jpg/);
-  assert.doesNotMatch(intro, /loading-v10\.mp4/);
-  assert.doesNotMatch(intro, /loading-v11\.mp4/);
-  assert.match(intro, /HARD_MAX_MS/);
-  assert.match(intro, /昭於未見，梧於有歸。/);
-  assert.match(intro, /命理不是宿命/);
-  assert.match(intro, /運勢不是答案/);
-  assert.match(intro, /選擇才是開始/);
-  assert.match(intro, /See the unseen\. Find your ground\./);
+test('home opens without a blocking loading gate', () => {
+  assert.doesNotMatch(shell, /<IntroGate/);
+  assert.doesNotMatch(shell, /loading-v10\.mp4/);
+  assert.doesNotMatch(shell, /loading-v11\.mp4/);
 });
 
-test('loading gate waits for auth and critical bootstrap readiness', () => {
-  assert.match(intro, /bootReady/);
-  assert.match(intro, /isPending/);
-  assert.doesNotMatch(intro, /videoReady/);
+test('bootstrap still checks nine-page report runtime', () => {
   assert.match(bootstrap, /site_settings\?key=eq\.migration_state/);
   assert.match(bootstrap, /import\("@\/lib\/actions"\)/);
   assert.match(bootstrap, /import\("@\/lib\/report\/nine-page"\)/);

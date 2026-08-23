@@ -50,7 +50,6 @@ test("owner background client always uses Supabase JSON instead of the Vercel SP
 
 test("site shell keeps the real Zhaowu text seal and mounts auspicious scatter on every route", async () => {
   const shell = await source("src/components/site-shell.tsx");
-  const intro = await source("src/components/intro-gate.tsx");
   const seal = await source("src/components/brand-seal.tsx");
 
   assert.match(shell, /import \{ BrandSeal \}/);
@@ -58,45 +57,23 @@ test("site shell keeps the real Zhaowu text seal and mounts auspicious scatter o
   assert.match(shell, /<BrandSeal \/>/);
   assert.match(shell, /<SealScatter seedKey=\{pathname\} \/>/);
   assert.doesNotMatch(shell, /!isLogin \? <SealScatter/);
-  assert.doesNotMatch(intro, /import \{ BrandSeal \}|<BrandSeal|zhaowu-main-seal\.svg|<Mark /);
-  assert.match(intro, /昭於未見，梧於有歸。/);
-  assert.match(intro, /zhaowu\.intro\.v18/);
-  assert.match(intro, /loading-poster\.jpg/);
+  assert.doesNotMatch(shell, /<IntroGate/);
   assert.doesNotMatch(shell, /zhaowu-main-seal\.svg|showScatter/);
   assert.match(seal, /<span>昭<\/span>/);
   assert.match(seal, /<span>梧<\/span>/);
 });
 
-test("loading gate uses the approved animated opening and real readiness progress", async () => {
-  const intro = await source("src/components/intro-gate.tsx");
-  const bootstrap = await source("src/lib/bootstrap-readiness.ts");
-  assert.doesNotMatch(intro, /loading-v11\.mp4/);
-  assert.doesNotMatch(intro, /loading-v10\.mp4/);
-  assert.match(intro, /loading-poster\.jpg/);
-  assert.match(intro, /命理不是宿命/);
-  assert.match(intro, /運勢不是答案/);
-  assert.match(intro, /選擇才是開始/);
-  assert.match(intro, /See the unseen\. Find your ground\./);
-  assert.match(intro, /STONE 原創/);
-  assert.match(intro, /bootReady/);
-  assert.match(intro, /isPending/);
-  assert.match(intro, /HARD_MAX_MS/);
-  assert.doesNotMatch(intro, /ambientLoop/);
-  assert.match(bootstrap, /site_settings\?key=eq\.migration_state/);
-  assert.match(bootstrap, /architecture\.length !== 9/);
-  assert.match(bootstrap, /正在待命四柱繪意與命誥圖/);
-  assert.doesNotMatch(intro, /\/emblems\//);
+test("home opens without a blocking intro overlay", async () => {
+  const shell = await source("src/components/site-shell.tsx");
+  assert.doesNotMatch(shell, /<IntroGate/);
+  assert.doesNotMatch(shell, /loading-v11\.mp4/);
+  assert.doesNotMatch(shell, /loading-v10\.mp4/);
 });
 
-test("loading gate fades out briefly and then fully unmounts", async () => {
-  const intro = await source("src/components/intro-gate.tsx");
-  assert.match(intro, /setPhase\("leaving"\)/);
-  assert.match(intro, /setPhase\("off"\)/);
-  assert.match(intro, /window\.setTimeout\(\(\) => setPhase\("off"\), 320\)/);
-  assert.match(intro, /phase === "leaving" \? "opacity-0" : "opacity-100"/);
-  assert.match(intro, /if \(phase === "off"\) return null/);
-  assert.doesNotMatch(intro, /phase === "out"/);
-  assert.doesNotMatch(intro, /pointer-events-none opacity-0/);
+test("site shell unblocks the first screen instead of fading a loading gate", async () => {
+  const shell = await source("src/components/site-shell.tsx");
+  assert.doesNotMatch(shell, /<IntroGate/);
+  assert.doesNotMatch(shell, /setPhase\("leaving"\)/);
 });
 
 test("homepage uses sitewide random auspicious scatter instead of a fixed motif strip", async () => {
