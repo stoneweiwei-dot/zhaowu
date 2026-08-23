@@ -11,7 +11,8 @@ header .zhaowu-emblem-brand { filter: none; }
 
 /* 固定一排 motif 已废弃，避免残留样式再出现 */
 .zhaowu-motif-strip,
-.zhaowu-motif-chip {
+.zhaowu-motif-chip,
+.stone-motif-row {
   display: none !important;
 }
 
@@ -28,11 +29,23 @@ header .zhaowu-emblem-brand { filter: none; }
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
+  mix-blend-mode: normal;
   filter:
-    saturate(0.92)
-    drop-shadow(0 0 1px rgba(255, 252, 245, 0.85))
-    drop-shadow(0 10px 18px rgba(70, 42, 25, 0.08));
-  mix-blend-mode: multiply;
+    saturate(1.02)
+    contrast(1.04)
+    drop-shadow(0 0 2px rgba(255, 252, 245, 1))
+    drop-shadow(0 0 7px rgba(255, 247, 226, .82))
+    drop-shadow(0 7px 15px rgba(47, 35, 24, .20));
+}
+
+/* 登录页使用摄影／绘画底图，额外加强一层浅色边缘，仍保持在表单下层。 */
+.zhaowu-login-shell .zhaowu-scatter-piece {
+  filter:
+    saturate(1.04)
+    contrast(1.06)
+    drop-shadow(0 0 2px rgba(255, 252, 245, 1))
+    drop-shadow(0 0 9px rgba(255, 244, 214, .90))
+    drop-shadow(0 8px 18px rgba(0, 0, 0, .30));
 }
 
 .zhaowu-hero-emblem {
@@ -91,7 +104,7 @@ header {
 
 @media (max-width: 430px) {
   .zhaowu-scatter-piece {
-    mix-blend-mode: multiply;
+    mix-blend-mode: normal;
   }
   .zhaowu-hero-emblem { width: 10.5rem !important; height: 10.5rem !important; right: -3.4rem !important; top: -1.7rem !important; opacity: .84; }
   .zhaowu-almanac-emblem { width: 8.5rem !important; height: 8.5rem !important; right: -2.8rem !important; top: -1.5rem !important; opacity: .7; }
