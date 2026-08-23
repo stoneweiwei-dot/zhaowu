@@ -14,11 +14,11 @@ import { BrandSeal } from "@/components/brand-seal";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
-const LOGIN_EMBLEMS = [
-  ["/emblems/crane-feather-emblem.svg", "login-emblem-crane"],
-  ["/emblems/lotus-emblem.svg", "login-emblem-lotus"],
-  ["/emblems/modern-bagua-emblem.svg", "login-emblem-bagua"],
-  ["/emblems/modern-gourd-emblem.svg", "login-emblem-gourd"],
+const LOGIN_MOTIFS = [
+  "/emblems/crane-feather-emblem.svg",
+  "/emblems/lotus-emblem.svg",
+  "/emblems/modern-bagua-emblem.svg",
+  "/emblems/modern-gourd-emblem.svg",
 ] as const;
 
 function LoginPage() {
@@ -129,40 +129,37 @@ function LoginPage() {
         </select>
       </div>
 
-      <div className="zhaowu-login-emblems" aria-hidden>
-        {LOGIN_EMBLEMS.map(([src, className]) => (
-          <img key={src} src={src} alt="" className={`zhaowu-emblem ${className}`} draggable={false} />
-        ))}
-      </div>
-
       <section className="zhaowu-login-card">
-        <div className="zhaowu-login-brand-block">
+        <div className="zhaowu-login-brand-row">
           <BrandSeal size="lg" decorative className="zhaowu-login-seal" />
-          <p className="zhaowu-login-brand-en">Z H A O W U</p>
-          <h1 className="zhaowu-login-brand-title">{t("brand")}</h1>
-          <p className="zhaowu-login-brand-sub">DESTINY · TIMING · CHOICE</p>
+          <div>
+            <p className="zhaowu-login-brand-en">Z H A O W U</p>
+            <h1 className="zhaowu-login-brand-title">{t("brand")}</h1>
+            <p className="zhaowu-login-brand-sub">DESTINY · TIMING · CHOICE</p>
+          </div>
         </div>
 
-        <div className="zhaowu-login-rule" aria-hidden><span /><i /><span /></div>
+        <div className="zhaowu-login-motif-row" aria-hidden>
+          {LOGIN_MOTIFS.map((src) => <img key={src} src={src} alt="" draggable={false} />)}
+        </div>
 
         {!isPending && user ? (
           <div className="zhaowu-login-account-ready">
-            <p className="text-xs tracking-[0.24em] text-cinnabar">ACCOUNT</p>
-            <h2 className="mt-2 font-display text-3xl text-ink">{t("loggedInTitle")}</h2>
-            <p className="mt-4 text-sm leading-7 text-ink-soft">
+            <p className="text-xs tracking-[0.22em] text-cinnabar">ACCOUNT</p>
+            <h2 className="mt-1 font-display text-2xl text-ink">{t("loggedInTitle")}</h2>
+            <p className="mt-3 text-sm leading-6 text-ink-soft">
               {user.displayName} · {user.email}{user.isOwner ? ` · ${t("owner")}` : ""}
             </p>
-            <Link to="/account" className="zhaowu-login-primary mt-6">{t("enterMine")}</Link>
+            <Link to="/account" className="zhaowu-login-primary mt-4">{t("enterMine")}</Link>
           </div>
         ) : (
           <>
-            <div className="text-center">
-              <p className="text-xs tracking-[0.24em] text-cinnabar">ACCOUNT</p>
-              <h2 className="mt-2 font-display text-2xl text-ink sm:text-3xl">{mode === "login" ? t("loginTitle") : t("signupTitle")}</h2>
-              <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-ink-soft">{t("loginPageLead")}</p>
+            <div className="zhaowu-login-heading">
+              <p className="text-[10px] tracking-[0.22em] text-cinnabar">ACCOUNT</p>
+              <h2 className="mt-1 font-display text-2xl text-ink">{mode === "login" ? t("loginTitle") : t("signupTitle")}</h2>
             </div>
 
-            <div className="mt-6 space-y-3">
+            <div className="zhaowu-login-providers">
               <button
                 type="button"
                 disabled={!supabaseConfigured || oauthBusy !== null}
@@ -170,7 +167,7 @@ function LoginPage() {
                 className="zhaowu-login-provider"
               >
                 <span className="zhaowu-login-provider-dot">G</span>
-                {oauthBusy === "google" ? t("processing") : t("withGoogle")}
+                <span>{oauthBusy === "google" ? t("processing") : t("withGoogle")}</span>
               </button>
               <button
                 type="button"
@@ -179,43 +176,39 @@ function LoginPage() {
                 className="zhaowu-login-provider"
               >
                 <span className="zhaowu-login-provider-dot">●</span>
-                {oauthBusy === "apple" ? t("processing") : t("withApple")}
+                <span>{oauthBusy === "apple" ? t("processing") : t("withApple")}</span>
               </button>
             </div>
 
-            <div className="my-6 flex items-center gap-3 text-[11px] tracking-[0.18em] text-ink-mute">
-              <span className="h-px flex-1 bg-line" />
-              <span>{t("orEmail")}</span>
-              <span className="h-px flex-1 bg-line" />
+            <div className="zhaowu-login-divider">
+              <span />
+              <b>{t("orEmail")}</b>
+              <span />
             </div>
 
-            <div className="grid grid-cols-2 rounded-full border border-line/80 bg-paper/55 p-1 text-sm">
-              <button type="button" onClick={() => setMode("login")} className={`rounded-full px-4 py-2.5 transition ${mode === "login" ? "bg-wood text-cream shadow-sm" : "text-ink-soft"}`}>
-                {t("loginTab")}
-              </button>
-              <button type="button" onClick={() => setMode("signup")} className={`rounded-full px-4 py-2.5 transition ${mode === "signup" ? "bg-wood text-cream shadow-sm" : "text-ink-soft"}`}>
-                {t("signupTab")}
-              </button>
+            <div className="zhaowu-login-tabs">
+              <button type="button" onClick={() => setMode("login")} className={mode === "login" ? "is-active" : ""}>{t("loginTab")}</button>
+              <button type="button" onClick={() => setMode("signup")} className={mode === "signup" ? "is-active" : ""}>{t("signupTab")}</button>
             </div>
 
-            <form className="mt-6 space-y-4" onSubmit={(e) => void submit(e)}>
+            <form className="zhaowu-login-form" onSubmit={(e) => void submit(e)}>
               {mode === "signup" ? (
-                <label htmlFor="display-name" className="block text-sm text-ink-soft">
-                  <span className="mb-2 block">{t("displayName")}</span>
+                <label htmlFor="display-name" className="zhaowu-login-field">
+                  <span>{t("displayName")}</span>
                   <input id="display-name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="zhaowu-login-input" placeholder={t("displayNamePh")} />
                 </label>
               ) : null}
-              <label htmlFor="login-email" className="block text-sm text-ink-soft">
-                <span className="mb-2 block">Email</span>
+              <label htmlFor="login-email" className="zhaowu-login-field">
+                <span>Email</span>
                 <input id="login-email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="zhaowu-login-input" placeholder="name@example.com" />
               </label>
-              <label htmlFor="login-password" className="block text-sm text-ink-soft">
-                <span className="mb-2 block">{t("password")}</span>
+              <label htmlFor="login-password" className="zhaowu-login-field">
+                <span>{t("password")}</span>
                 <input id="login-password" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} className="zhaowu-login-input" placeholder={t("passwordPh")} />
               </label>
 
-              {message ? <p role="status" className="rounded-xl border border-wood/25 bg-wood/5 px-4 py-3 text-sm leading-6 text-wood">{message}</p> : null}
-              {error ? <p role="alert" className="rounded-xl border border-cinnabar/25 bg-cinnabar/5 px-4 py-3 text-sm leading-6 text-cinnabar-deep">{error}</p> : null}
+              {message ? <p role="status" className="zhaowu-login-message">{message}</p> : null}
+              {error ? <p role="alert" className="zhaowu-login-error">{error}</p> : null}
 
               <button type="submit" disabled={busy || !supabaseConfigured} className="zhaowu-login-primary w-full disabled:opacity-50">
                 {busy ? t("processing") : mode === "login" ? t("loginTab") : t("createAccount")}
@@ -223,9 +216,9 @@ function LoginPage() {
             </form>
           </>
         )}
-      </section>
 
-      <p className="zhaowu-login-signature">ZHAOWU · STONE 原創</p>
+        <p className="zhaowu-login-signature">ZHAOWU · STONE 原創</p>
+      </section>
     </main>
   );
 }
