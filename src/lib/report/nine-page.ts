@@ -121,6 +121,39 @@ function page7Guide(chart: Chart, reading: Reading): string[] {
   ].filter(Boolean);
 }
 
+function page9Body(question: string, reading: Reading, chart: Chart, palm: AnalysisResult["palm"]): string[] {
+  const req = inspectAnswerRequirements(question);
+  if (req.asksTravel) {
+    const names = travelNames(question, chart);
+    return [`去，就去${names[0]}。把行程落在较顺的那一截，少转场，回来才有余力。`];
+  }
+  if (reading.kind === "past") {
+    const dao = palm?.ready ? (palm.latest?.dao ?? palm.palaces.at(-1)?.dao) : null;
+    if (dao) {
+      return [`这一世要改的，不是再确认宫位，而是把「${dao}」里反复出现的那一招，换成一个看得见的出口。`];
+    }
+    return ["前世这一页只作观察。缺出生时辰时，六道先不作判定；先改你这世反复做的那一件事。"];
+  }
+  switch (reading.kind) {
+    case "career":
+      return [`日主${chart.dayMaster}${chart.dayMasterElement}吃的是能署名的交付。收到能给外人看的那一份，这题才算问完。`];
+    case "love":
+      return ["感情只看对方有没有把下一次说清楚；没有，就停在这里，不要再加码解释自己。"];
+    case "money":
+      return ["钱的事先把主收入和退出成本写下来，数字出来之前，不要再开下一笔。"];
+    case "health":
+      return ["身体这题先收回睡眠和负荷；已经痛、失眠或突然掉力，先看病，再谈命盘。"];
+    case "home":
+      return ["住的事以你实地待得住为准，颜色和摆设排在后面。"];
+    case "choice":
+      return ["选定的那一条，七天内只服务它；另一条写下来封住。"];
+    case "timing":
+      return ["窗口在眼前这一截。小规模试，不必空等一个必成之日。"];
+    default:
+      return [`你这盘的轴是${chart.dayMaster}${chart.dayMasterElement}。把已经知道的那件事做成七天行为，命局不因一句话消失。`];
+  }
+}
+
 /**
  * 付费九页结构化报告。
  * 关键规则：只消费已经由 answer-contract 校验后的 reading；报告层不得再另写一套旧判断。
@@ -248,21 +281,16 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
     },
   };
 
-  const palmNote =
-    reading.kind === "past" && palm?.ready
-      ? `前世主题：${palm.palaces.map((x) => `${x.zhi}・${x.star}｜${x.dao}`).join("；")}`
-      : "";
-
   const page9: NinePage = {
     pageNo: 9,
     key: "close",
     title: "给你的最后一句",
-    body: [customerCopy(reading.lastLine), palmNote].filter(Boolean),
+    body: page9Body(question, reading, chart, palm),
     evidence: {
-      facts: ["reading.lastLine", "methodProtocol", "palm"],
-      conditions: ["未接入方法只显示状态，不生成内容"],
-      limits: ["不得写假宫位／星曜／相位／Dasha／卦爻／奇门盘"],
-      checks: ["方法区最多四卡", "状态词只能三种"],
+      facts: ["reading.lastLine", "palm"],
+      conditions: ["最后一句必须收这一问，不得用万能鸡汤"],
+      limits: ["不得把宫位清单、方法状态、报告编号写入客户成品"],
+      checks: ["不得复制第 1 页或第 8 页", "旅行题必须点名主选城市"],
     },
   };
 

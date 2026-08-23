@@ -281,7 +281,24 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
     : `家要同時有能做事的桌，和真正能關燈的角落。${chart.dayMasterElement}可先用「${guide.colors[0]}」這一系質地。東西、訊息、情緒各有位置，比再買一件象徵物有用。`;
   const action = `從今天起連續七天，只改一件：${kind === "love" ? "每天把一句該說的話寫下來，其中至少一次真的發出去" : kind === "career" ? "每天為同一件作品推進四十分鐘，第七天必須有一份能給外人看的東西" : kind === "money" ? "每天記下每一筆錢的去向，第七天只留一條主收入線" : "固定同一時間睡覺，並把一件反覆想的事寫完一頁"}。不要同時改三個習慣。`;
   const decree = `留住${chart.dayMaster}${chart.dayMasterElement}的本色，但不要讓它變成凡事由你硬扛。能交出去、能恢復、能修正，比一時撐住更像你的命。`;
-  const lastLine = "别人觉得准，是因为你自己早就知道；真正改命的，是你下一次把这件事做完。";
+  const lastLine =
+    kind === "career"
+      ? `日主${chart.dayMaster}${chart.dayMasterElement}吃的是能署名的交付。收到能给外人看的那一份，这题才算问完。`
+      : kind === "love"
+        ? "感情只看对方有没有把下一次说清楚；没有，就停在这里，不要再加码解释自己。"
+        : kind === "money"
+          ? "钱的事先把主收入和退出成本写下来，数字出来之前，不要再开下一笔。"
+          : kind === "health"
+            ? "身体这题先收回睡眠和负荷；已经痛、失眠或突然掉力，先看病，再谈命盘。"
+            : kind === "home"
+              ? "住的事以你实地待得住为准，颜色和摆设排在后面。"
+              : kind === "choice"
+                ? "选定的那一条，七天内只服务它；另一条写下来封住。"
+                : kind === "timing"
+                  ? "窗口在眼前这一截。小规模试，不必空等一个必成之日。"
+                  : kind === "past"
+                    ? "这一世要改的，不是再确认宫位，而是把反复出现的那一招，换成一个看得见的出口。"
+                    : `你这盘的轴是${chart.dayMaster}${chart.dayMasterElement}。把已经知道的那件事做成七天行为，命局不因一句话消失。`;
 
   return {
     kind,

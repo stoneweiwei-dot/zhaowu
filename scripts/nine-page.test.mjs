@@ -133,7 +133,6 @@ test("未知时辰在九页排盘页明确留白，不伪造时柱与大运", ()
   assert.match(p1, /出生時間未確定/);
 });
 
-
 test("客户九页不得出现内部验收、未接入状态、编号与时间戳", () => {
   const result = makeResult("我什麼時候適合去度假，去哪裡最好？2027 是不是不適合我出行？");
   const report = composeNinePageReport(result);
@@ -151,4 +150,22 @@ test("客户九页第一页只保留一份直接答案，不重复问题前缀",
   assert.equal(pages[0].body[0], result.reading.directAnswer);
   assert.equal(pages[0].title, "核心结论");
   assert.doesNotMatch(pages[0].body.join("\n"), /^你[問问]的是/);
+});
+
+test("第九页必须收这一问，不得再用万能鸡汤或宫位清单", () => {
+  const travel = makeResult("我什麼時候適合去度假，去哪裡最好？2027 是不是不適合我出行？");
+  const career = makeResult("我現在工作最大的問題是什麼？");
+  const past = makeResult("我前世是哪一道？");
+  const p9Travel = page(travel, 9).body.join("\n");
+  const p9Career = page(career, 9).body.join("\n");
+  const p9Past = page(past, 9).body.join("\n");
+
+  assert.doesNotMatch(p9Travel, /别人觉得准|別人覺得準|真正改命的/);
+  assert.doesNotMatch(p9Career, /别人觉得准|別人覺得準|真正改命的/);
+  assert.match(p9Travel, /沖繩|京都|東京|雪梨|台南|清邁|杭州|墾丁|新加坡|首爾|釜山|奈良|西安|峇里|維也納|黃金海岸/);
+  assert.match(p9Career, /交付|工作/);
+  assert.doesNotMatch(p9Past, /前世主题：|前世主題：/);
+  assert.doesNotMatch(p9Past, /天奸星｜/);
+  assert.notEqual(p9Career, page(career, 1).body.join("\n"));
+  assert.notEqual(p9Career, page(career, 8).body.join("\n"));
 });
