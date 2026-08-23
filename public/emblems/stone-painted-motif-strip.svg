@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 128" role="img" aria-label="昭梧彩绘吉祥纹样：仙鹤、莲花、葫芦、海浪、锦鲤、蝴蝶">
+<defs>
+  <linearGradient id="jade" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2d8b78"/><stop offset="1" stop-color="#79b6a3"/></linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e6bd67"/><stop offset="1" stop-color="#a96d27"/></linearGradient>
+  <linearGradient id="coral" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ef8e73"/><stop offset="1" stop-color="#c95c49"/></linearGradient>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2f7597"/><stop offset="1" stop-color="#74b8c7"/></linearGradient>
+  <linearGradient id="cream" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdf4"/><stop offset="1" stop-color="#ead9ad"/></linearGradient>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#9f6a28" flood-opacity=".16"/></filter>
+</defs>
+<g filter="url(#soft)" stroke-linecap="round" stroke-linejoin="round">
+  <!-- crane -->
+  <g transform="translate(12,8)" stroke="url(#gold)" stroke-width="2.4">
+    <path d="M28 79C45 60 56 40 57 21c10 12 19 20 34 22-12 7-24 8-32 7 18 7 28 16 37 29-17-3-28-8-39-17-1 15-8 29-20 42" fill="url(#cream)"/>
+    <path d="M55 25c-1-11 6-16 17-16 8 0 13 4 16 9-7-1-13 0-18 4" fill="none"/>
+    <circle cx="74" cy="14" r="2.4" fill="#b94738" stroke="none"/>
+    <path d="M86 17l16 2-15 4" fill="#d7a446"/>
+    <path d="M34 78l-13 24M40 81l-4 25" fill="none"/>
+  </g>
+  <!-- lotus -->
+  <g transform="translate(132,12)" stroke="url(#gold)" stroke-width="2.2">
+    <path d="M54 91C32 85 19 69 18 49c16 4 26 12 34 26-2-24 6-44 22-59 7 17 8 34 0 55 9-14 20-24 35-29 0 22-14 40-35 49-6 3-14 3-20 0Z" fill="url(#coral)"/>
+    <path d="M56 92C39 88 29 79 23 66c14-1 25 4 35 16 3-17 10-29 21-38 3 15 0 28-8 40 10-8 22-10 36-7-8 11-19 17-34 19" fill="url(#cream)"/>
+    <path d="M24 96c22-8 48-8 76 0" fill="none" stroke="#2d8b78" stroke-width="3"/>
+  </g>
+  <!-- gourd -->
+  <g transform="translate(252,8)" stroke="url(#gold)" stroke-width="2.3">
+    <path d="M61 19c-7 6-10 13-8 21-18 7-27 22-24 38 3 20 20 31 39 29 21-2 34-18 31-36-2-15-12-25-28-30 4-10 2-18-4-24Z" fill="url(#jade)"/>
+    <path d="M51 45c15 8 25 8 34 1" fill="none"/>
+    <path d="M69 20c10-6 18-3 23 7" fill="none" stroke="#b94738" stroke-width="4"/>
+    <path d="M89 29c10 5 16 12 20 22M90 30c-7 7-10 14-9 23" fill="none" stroke="#b94738"/>
+    <circle cx="108" cy="52" r="3" fill="#2d8b78"/>
+  </g>
+  <!-- wave -->
+  <g transform="translate(370,15)" stroke="url(#gold)" stroke-width="2.2">
+    <circle cx="58" cy="55" r="44" fill="#fffdf5"/>
+    <path d="M17 68c11-22 28-32 46-27 12 3 18 11 24 24-12-7-23-8-33-2 10 0 19 5 27 16-16-6-30-3-41 9-8-5-16-12-23-20Z" fill="url(#blue)"/>
+    <path d="M22 76c13-7 25-8 36-4M30 85c12-7 24-8 37-4" fill="none" stroke="#fff8df" stroke-width="4"/>
+  </g>
+  <!-- koi -->
+  <g transform="translate(492,12)" stroke="url(#gold)" stroke-width="2.1">
+    <circle cx="58" cy="55" r="44" fill="#fffdf5"/>
+    <path d="M27 42c16-17 37-18 50-8-7 3-13 8-16 14-10-2-20 0-29 7 5 1 10 4 15 9-11 1-20-2-27-8 0-5 3-10 7-14Z" fill="url(#coral)"/>
+    <path d="M83 68c-14 16-34 18-48 8 7-3 13-8 16-14 11 2 21 0 29-7-5-1-10-4-15-9 11-1 20 2 27 8 0 5-3 10-9 14Z" fill="url(#cream)"/>
+    <circle cx="39" cy="43" r="2" fill="#202c2a" stroke="none"/><circle cx="76" cy="70" r="2" fill="#202c2a" stroke="none"/>
+  </g>
+  <!-- butterfly -->
+  <g transform="translate(612,12)" stroke="url(#gold)" stroke-width="2.2">
+    <path d="M56 58C39 25 16 20 13 42c-2 16 14 28 37 29-18 7-27 22-18 31 10 9 25-3 28-23" fill="url(#jade)"/>
+    <path d="M62 58c17-33 40-38 43-16 2 16-14 28-37 29 18 7 27 22 18 31-10 9-25-3-28-23" fill="url(#cream)"/>
+    <path d="M59 46v42" stroke="#8d5d28" stroke-width="4"/>
+    <path d="M58 45c-8-12-15-15-21-14M63 45c8-12 15-15 21-14" fill="none"/>
+    <circle cx="59" cy="44" r="5" fill="#b94738"/>
+    <path d="M30 42c8 4 14 10 19 18M88 42c-8 4-14 10-19 18" fill="none" stroke="#e0b85f"/>
+  </g>
+</g>
+</svg>

@@ -54,7 +54,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
     const loadBackground = () => {
       void (async () => {
         try {
-          // Owner-uploaded images are the primary live background pool.
           const assets = await listPublicBackgrounds();
           if (!alive) return;
           const selected = chooseDailyBackground(assets);

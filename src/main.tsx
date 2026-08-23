@@ -8,6 +8,7 @@ import './emblems.css';
 import './client-hotfix.css';
 import './visual-refresh.css';
 import './stone-visual-fix.css';
+import './motif-row-lock.css';
 
 const router = createRouter({ routeTree });
 

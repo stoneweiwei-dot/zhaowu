@@ -38,6 +38,15 @@ function Home() {
         </div>
       </section>
 
+      <div className="overflow-hidden rounded-[1.6rem] border border-[#d8b778]/70 bg-[#fffdf6]/95 px-3 py-2.5 shadow-[0_10px_28px_rgba(88,58,25,.08)]" aria-label="昭梧吉祥纹样">
+        <img
+          src="/emblems/stone-painted-motif-strip.svg"
+          alt="仙鹤、莲花、葫芦、海浪、锦鲤、蝴蝶"
+          className="block h-auto w-full"
+          draggable={false}
+        />
+      </div>
+
       <section className="relative" aria-label={t("formTitle")}>
         <AnalysisForm />
       </section>
