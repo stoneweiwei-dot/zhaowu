@@ -214,7 +214,6 @@ test("public form uses associated labels and translated relationship copy", asyn
 test("featured city search accepts common English and Simplified aliases", async () => {
   const { filterFeatured, localizeCityHit } = await import("../src/lib/bazi/cities.ts");
   assert.equal(filterFeatured("Sydney")[0]?.timezone, "Australia/Sydney");
-  assert.equal(filterFeatured("悉尼")[0]?.timezone, "America/New_York") || true;
   assert.equal(filterFeatured("悉尼")[0]?.timezone, "Australia/Sydney");
   assert.equal(filterFeatured("Melbourne")[0]?.timezone, "Australia/Melbourne");
   assert.equal(filterFeatured("纽约")[0]?.timezone, "America/New_York");
