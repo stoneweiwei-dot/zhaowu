@@ -116,7 +116,8 @@ const PAINTED_SVG: Record<string, string> = {
     ),
 };
 
-const SCATTER_KEYS = Object.keys(PAINTED_SVG);
+/** contract: keep SCATTER_POOL symbol */
+const SCATTER_POOL = Object.keys(PAINTED_SVG);
 
 type ScatterItem = {
   key: string;
@@ -150,7 +151,7 @@ function hashSeed(value: string) {
 function buildScatter(seed: number, count = 8): ScatterItem[] {
   const rand = mulberry32(seed);
   const items: ScatterItem[] = [];
-  const remaining = [...SCATTER_KEYS];
+  const remaining = [...SCATTER_POOL];
   const used: Array<{ side: "left" | "right"; top: number }> = [];
 
   for (let i = 0; i < Math.min(count, remaining.length); i += 1) {
