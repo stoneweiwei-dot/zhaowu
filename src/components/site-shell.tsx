@@ -17,6 +17,21 @@ const EMPTY_STATS: PublicSiteStats = {
   publishedAt: null,
 };
 
+/** Weekly traditional / neo-Chinese pattern practice wallpaper (local asset). */
+const WEEKLY_WALLPAPER_B64_PATH = "/wallpapers/current-weekly.b64";
+
+async function loadWeeklyWallpaper(): Promise<string | null> {
+  try {
+    const res = await fetch(WEEKLY_WALLPAPER_B64_PATH, { cache: "force-cache" });
+    if (!res.ok) return null;
+    const b64 = (await res.text()).trim();
+    if (!b64 || b64.length < 32) return null;
+    return `data:image/jpeg;base64,${b64}`;
+  } catch {
+    return null;
+  }
+}
+
 export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
@@ -38,13 +53,22 @@ export function SiteShell({ children }: { children: ReactNode }) {
       });
 
     const loadBackground = () => {
-      void listPublicBackgrounds()
-        .then((assets) => {
+      void (async () => {
+        const weekly = await loadWeeklyWallpaper();
+        if (!alive) return;
+        if (weekly) {
+          setBackgroundUrl(weekly);
+          return;
+        }
+        try {
+          const assets = await listPublicBackgrounds();
           if (!alive) return;
           const selected = chooseDailyBackground(assets);
           setBackgroundUrl(selected ? backgroundPublicUrl(selected.storage_path) : null);
-        })
-        .catch(() => undefined);
+        } catch {
+          if (alive) setBackgroundUrl(null);
+        }
+      })();
     };
 
     loadBackground();
