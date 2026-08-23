@@ -7,7 +7,6 @@ import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/site-stats";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
-import { IntroGate } from "@/components/intro-gate";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -90,7 +89,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
       ) : null}
 
       <SealScatter seedKey={pathname} />
-      {!isLogin ? <IntroGate /> : null}
 
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">
