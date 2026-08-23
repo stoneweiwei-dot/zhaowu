@@ -9,33 +9,31 @@
 }
 header .zhaowu-emblem-brand { filter: none; }
 
-.zhaowu-emblem-scatter {
-  position: absolute;
+/* 固定一排 motif 已废弃，避免残留样式再出现 */
+.zhaowu-motif-strip,
+.zhaowu-motif-chip {
+  display: none !important;
+}
+
+.zhaowu-seal-scatter {
+  position: fixed;
   inset: 0;
-  z-index: 2;
+  z-index: 1;
   overflow: hidden;
   pointer-events: none;
 }
 
-.zhaowu-random-emblem {
-  position: absolute;
-  width: clamp(4.5rem, 8vw, 7.25rem);
-  height: clamp(4.5rem, 8vw, 7.25rem);
+.zhaowu-scatter-piece {
   object-fit: contain;
-  opacity: .64;
-  transform-origin: center;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
   filter:
-    drop-shadow(0 0 2px rgba(255,255,255,.98))
-    drop-shadow(0 0 8px rgba(255,249,234,.92))
-    drop-shadow(0 8px 18px rgba(70,42,25,.18));
+    saturate(0.92)
+    drop-shadow(0 0 1px rgba(255, 252, 245, 0.85))
+    drop-shadow(0 10px 18px rgba(70, 42, 25, 0.08));
+  mix-blend-mode: multiply;
 }
-
-.zhaowu-random-emblem-1 { top: 7%; left: max(-2.25rem, calc(50% - 39rem)); }
-.zhaowu-random-emblem-2 { top: 20%; right: max(-2.2rem, calc(50% - 39rem)); }
-.zhaowu-random-emblem-3 { top: 37%; left: max(-2.8rem, calc(50% - 40rem)); }
-.zhaowu-random-emblem-4 { top: 54%; right: max(-2.7rem, calc(50% - 40rem)); }
-.zhaowu-random-emblem-5 { top: 71%; left: max(-2.4rem, calc(50% - 39rem)); }
-.zhaowu-random-emblem-6 { top: 86%; right: max(-2.5rem, calc(50% - 39rem)); }
 
 .zhaowu-hero-emblem {
   width: 11.75rem !important;
@@ -91,38 +89,12 @@ header {
   z-index: 30;
 }
 
-@media (max-width: 740px) {
-  .zhaowu-random-emblem {
-    width: clamp(3.4rem, 17vw, 5rem);
-    height: clamp(3.4rem, 17vw, 5rem);
-    opacity: .52;
-  }
-  .zhaowu-random-emblem-1 { top: 6%; left: -2rem; }
-  .zhaowu-random-emblem-2 { top: 24%; right: -2rem; }
-  .zhaowu-random-emblem-3 { top: 45%; left: -2.2rem; }
-  .zhaowu-random-emblem-4 { top: 66%; right: -2.2rem; }
-  .zhaowu-random-emblem-5 { top: 84%; left: -2rem; }
-  .zhaowu-random-emblem-6 { display: none; }
-}
-
 @media (max-width: 430px) {
-  .zhaowu-random-emblem {
-    width: 4.25rem;
-    height: 4.25rem;
-    opacity: .48;
+  .zhaowu-scatter-piece {
+    mix-blend-mode: multiply;
   }
-  .zhaowu-random-emblem-1 { left: -2.35rem; }
-  .zhaowu-random-emblem-2 { right: -2.35rem; }
-  .zhaowu-random-emblem-3 { left: -2.45rem; }
-  .zhaowu-random-emblem-4 { right: -2.45rem; }
-  .zhaowu-random-emblem-5 { left: -2.35rem; }
-
   .zhaowu-hero-emblem { width: 10.5rem !important; height: 10.5rem !important; right: -3.4rem !important; top: -1.7rem !important; opacity: .84; }
   .zhaowu-almanac-emblem { width: 8.5rem !important; height: 8.5rem !important; right: -2.8rem !important; top: -1.5rem !important; opacity: .7; }
   .zhaowu-step-mark { width: 6.2rem !important; height: 6.2rem !important; right: -1.5rem !important; top: -.55rem !important; opacity: .72 !important; }
   .zhaowu-faq-emblem { width: 10rem !important; height: 10rem !important; right: -3rem !important; bottom: -2rem !important; opacity: .62; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .zhaowu-random-emblem { transition: none; }
 }
