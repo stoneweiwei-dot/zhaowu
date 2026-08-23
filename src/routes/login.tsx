@@ -10,16 +10,8 @@ import {
 } from "@/lib/supabase-rest";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n, type Locale } from "@/lib/i18n";
-import { BrandSeal } from "@/components/brand-seal";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
-
-const LOGIN_MOTIFS = [
-  "/emblems/crane-feather-emblem.svg",
-  "/emblems/lotus-emblem.svg",
-  "/emblems/modern-bagua-emblem.svg",
-  "/emblems/modern-gourd-emblem.svg",
-] as const;
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -112,16 +104,21 @@ function LoginPage() {
   }
 
   return (
-    <main className="zhaowu-login-page">
-      <div className="zhaowu-login-topbar">
-        <Link to="/" className="zhaowu-login-home-link">← {t("backHome")}</Link>
+    <main className="stone-login-screen">
+      <div className="stone-login-art" aria-hidden>
+        <img src="/intro/loading-poster.jpg" alt="" draggable={false} />
+        <div className="stone-login-art-shade" />
+      </div>
+
+      <div className="stone-login-topbar">
+        <Link to="/" className="stone-login-pill">← {t("backHome")}</Link>
         <label htmlFor="login-language" className="sr-only">{t("language")}</label>
         <select
           id="login-language"
           value={locale}
           onChange={(e) => setLocale(e.target.value as Locale)}
           aria-label={t("language")}
-          className="zhaowu-login-language"
+          className="stone-login-pill stone-login-language"
         >
           <option value="zh-Hant">繁體</option>
           <option value="zh-Hans">简体</option>
@@ -129,95 +126,57 @@ function LoginPage() {
         </select>
       </div>
 
-      <section className="zhaowu-login-card">
-        <div className="zhaowu-login-brand-row">
-          <BrandSeal size="lg" decorative className="zhaowu-login-seal" />
-          <div>
-            <p className="zhaowu-login-brand-en">Z H A O W U</p>
-            <h1 className="zhaowu-login-brand-title">{t("brand")}</h1>
-            <p className="zhaowu-login-brand-sub">DESTINY · TIMING · CHOICE</p>
-          </div>
-        </div>
-
-        <div className="zhaowu-login-motif-row" aria-hidden>
-          {LOGIN_MOTIFS.map((src) => <img key={src} src={src} alt="" draggable={false} />)}
-        </div>
-
+      <section className="stone-login-sheet">
         {!isPending && user ? (
-          <div className="zhaowu-login-account-ready">
-            <p className="text-xs tracking-[0.22em] text-cinnabar">ACCOUNT</p>
-            <h2 className="mt-1 font-display text-2xl text-ink">{t("loggedInTitle")}</h2>
-            <p className="mt-3 text-sm leading-6 text-ink-soft">
+          <div className="text-center">
+            <p className="stone-login-kicker">ACCOUNT</p>
+            <h1 className="stone-login-title">{t("loggedInTitle")}</h1>
+            <p className="mt-2 text-sm leading-6 text-ink-soft">
               {user.displayName} · {user.email}{user.isOwner ? ` · ${t("owner")}` : ""}
             </p>
-            <Link to="/account" className="zhaowu-login-primary mt-4">{t("enterMine")}</Link>
+            <Link to="/account" className="stone-login-primary mt-4">{t("enterMine")}</Link>
           </div>
         ) : (
           <>
-            <div className="zhaowu-login-heading">
-              <p className="text-[10px] tracking-[0.22em] text-cinnabar">ACCOUNT</p>
-              <h2 className="mt-1 font-display text-2xl text-ink">{mode === "login" ? t("loginTitle") : t("signupTitle")}</h2>
+            <div className="stone-login-sheet-head">
+              <div>
+                <p className="stone-login-kicker">ZHAOWU · ACCOUNT</p>
+                <h1 className="stone-login-title">{mode === "login" ? t("loginTitle") : t("signupTitle")}</h1>
+              </div>
+              <div className="stone-login-tabs" aria-label="account mode">
+                <button type="button" onClick={() => setMode("login")} className={mode === "login" ? "is-active" : ""}>{t("loginTab")}</button>
+                <button type="button" onClick={() => setMode("signup")} className={mode === "signup" ? "is-active" : ""}>{t("signupTab")}</button>
+              </div>
             </div>
 
-            <div className="zhaowu-login-providers">
-              <button
-                type="button"
-                disabled={!supabaseConfigured || oauthBusy !== null}
-                onClick={() => onOAuth("google")}
-                className="zhaowu-login-provider"
-              >
-                <span className="zhaowu-login-provider-dot">G</span>
-                <span>{oauthBusy === "google" ? t("processing") : t("withGoogle")}</span>
+            <div className="stone-login-providers">
+              <button type="button" disabled={!supabaseConfigured || oauthBusy !== null} onClick={() => onOAuth("google")}>
+                <span>G</span>{oauthBusy === "google" ? t("processing") : t("withGoogle")}
               </button>
-              <button
-                type="button"
-                disabled={!supabaseConfigured || oauthBusy !== null}
-                onClick={() => onOAuth("apple")}
-                className="zhaowu-login-provider"
-              >
-                <span className="zhaowu-login-provider-dot">●</span>
-                <span>{oauthBusy === "apple" ? t("processing") : t("withApple")}</span>
+              <button type="button" disabled={!supabaseConfigured || oauthBusy !== null} onClick={() => onOAuth("apple")}>
+                <span>●</span>{oauthBusy === "apple" ? t("processing") : t("withApple")}
               </button>
             </div>
 
-            <div className="zhaowu-login-divider">
-              <span />
-              <b>{t("orEmail")}</b>
-              <span />
-            </div>
+            <div className="stone-login-divider"><span />{t("orEmail")}<span /></div>
 
-            <div className="zhaowu-login-tabs">
-              <button type="button" onClick={() => setMode("login")} className={mode === "login" ? "is-active" : ""}>{t("loginTab")}</button>
-              <button type="button" onClick={() => setMode("signup")} className={mode === "signup" ? "is-active" : ""}>{t("signupTab")}</button>
-            </div>
-
-            <form className="zhaowu-login-form" onSubmit={(e) => void submit(e)}>
+            <form className="stone-login-form" onSubmit={(e) => void submit(e)}>
               {mode === "signup" ? (
-                <label htmlFor="display-name" className="zhaowu-login-field">
-                  <span>{t("displayName")}</span>
-                  <input id="display-name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="zhaowu-login-input" placeholder={t("displayNamePh")} />
-                </label>
+                <input id="display-name" aria-label={t("displayName")} value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("displayNamePh")} />
               ) : null}
-              <label htmlFor="login-email" className="zhaowu-login-field">
-                <span>Email</span>
-                <input id="login-email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="zhaowu-login-input" placeholder="name@example.com" />
-              </label>
-              <label htmlFor="login-password" className="zhaowu-login-field">
-                <span>{t("password")}</span>
-                <input id="login-password" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} className="zhaowu-login-input" placeholder={t("passwordPh")} />
-              </label>
+              <input id="login-email" aria-label="Email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+              <input id="login-password" aria-label={t("password")} type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("password")} />
 
-              {message ? <p role="status" className="zhaowu-login-message">{message}</p> : null}
-              {error ? <p role="alert" className="zhaowu-login-error">{error}</p> : null}
+              {message ? <p role="status" className="stone-login-message">{message}</p> : null}
+              {error ? <p role="alert" className="stone-login-error">{error}</p> : null}
 
-              <button type="submit" disabled={busy || !supabaseConfigured} className="zhaowu-login-primary w-full disabled:opacity-50">
+              <button type="submit" disabled={busy || !supabaseConfigured} className="stone-login-primary w-full disabled:opacity-50">
                 {busy ? t("processing") : mode === "login" ? t("loginTab") : t("createAccount")}
               </button>
             </form>
           </>
         )}
-
-        <p className="zhaowu-login-signature">ZHAOWU · STONE 原創</p>
+        <p className="stone-login-signature">STONE 原創 · 2026</p>
       </section>
     </main>
   );
