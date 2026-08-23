@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
@@ -16,63 +16,6 @@ const EMPTY_STATS: PublicSiteStats = {
   publishedAt: null,
 };
 
-const RANDOM_EMBLEM_ASSETS = [
-  "/emblems/dharma-wheel-emblem.svg",
-  "/emblems/modern-conch-emblem.svg",
-  "/emblems/modern-parasol-emblem.svg",
-  "/emblems/lotus-emblem.svg",
-  "/emblems/treasure-vase-emblem.svg",
-  "/emblems/modern-endless-knot-emblem.svg",
-  "/emblems/modern-golden-fish-emblem.svg",
-  "/emblems/modern-victory-banner-emblem.svg",
-  "/emblems/modern-gourd-emblem.svg",
-  "/emblems/modern-bagua-emblem.svg",
-  "/emblems/modern-bell-emblem.svg",
-  "/emblems/modern-sword-emblem.svg",
-  "/emblems/modern-incense-emblem.svg",
-  "/emblems/ruyi-emblem.svg",
-  "/emblems/mountain-emblem.svg",
-  "/emblems/crane-feather-emblem.svg",
-  "/emblems/heaven-gate-emblem.svg",
-  "/emblems/wutong-leaf-emblem.svg",
-] as const;
-
-function hashSeed(value: string) {
-  let hash = 2166136261;
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function seededRandom(initialSeed: number) {
-  let seed = initialSeed >>> 0;
-  return () => {
-    seed += 0x6d2b79f5;
-    let value = seed;
-    value = Math.imul(value ^ (value >>> 15), value | 1);
-    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
-    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function buildRandomEmblems(key: string) {
-  const random = seededRandom(hashSeed(key));
-  const pool = [...RANDOM_EMBLEM_ASSETS];
-
-  for (let index = pool.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(random() * (index + 1));
-    [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
-  }
-
-  return pool.slice(0, 8).map((src) => ({
-    src,
-    rotation: Math.round(random() * 16 - 8),
-    scale: 0.9 + random() * 0.18,
-  }));
-}
-
 export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
@@ -80,11 +23,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const isLogin = pathname === "/login";
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
   const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
-  const [emblemSessionSeed, setEmblemSessionSeed] = useState(0);
-  const decorativeEmblems = useMemo(
-    () => (emblemSessionSeed ? buildRandomEmblems(`${pathname}:${emblemSessionSeed}`) : []),
-    [pathname, emblemSessionSeed],
-  );
 
   useEffect(() => {
     hydrateLocale();
@@ -109,7 +47,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
     };
 
     loadBackground();
-    setEmblemSessionSeed(Math.floor(Math.random() * 1_000_000_000));
     window.addEventListener("zhaowu-background-change", loadBackground);
     return () => {
       alive = false;
@@ -127,23 +64,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
         />
       ) : null}
 
-      <div aria-hidden className="zhaowu-emblem-scatter">
-        {decorativeEmblems.map((emblem, index) => (
-          <img
-            key={`${pathname}-${emblem.src}-${index}`}
-            src={emblem.src}
-            alt=""
-            draggable={false}
-            className={`zhaowu-emblem zhaowu-random-emblem zhaowu-random-emblem-${index + 1}`}
-            style={{ transform: `rotate(${emblem.rotation}deg) scale(${emblem.scale})` }}
-          />
-        ))}
-      </div>
-
       {!isLogin ? <IntroGate /> : null}
 
       {!isLogin ? (
-        <header className={`sticky top-0 z-30 border-b border-line/70 backdrop-blur-md ${backgroundUrl ? "bg-cream/70" : "bg-cream/86"}`}>
+        <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">
           <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
             <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
               <BrandSeal />
@@ -167,7 +91,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 value={locale}
                 onChange={(e) => setLocale(e.target.value as Locale)}
                 aria-label={t("language")}
-                className="h-10 max-w-[4.6rem] rounded-full border border-line/80 bg-paper/70 px-2 text-xs text-ink-soft outline-none focus:border-cinnabar"
+                className="h-10 max-w-[4.6rem] rounded-full border border-line/80 bg-cream/90 px-2 text-xs text-ink-soft outline-none focus:border-cinnabar"
               >
                 <option value="zh-Hant">繁體</option>
                 <option value="zh-Hans">简体</option>
@@ -180,7 +104,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   {authEnabled ? t("logout") : user.displayName}
                 </button>
               ) : (
-                <Link to="/login" className="rounded-full bg-cinnabar px-3 py-2 text-cream">{t("navLogin")}</Link>
+                <Link to="/login" className="rounded-full bg-wood px-3 py-2 text-cream">{t("navLogin")}</Link>
               )}
             </nav>
           </div>
