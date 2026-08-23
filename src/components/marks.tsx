@@ -103,7 +103,8 @@ function hashSeed(value: string) {
   return hash >>> 0;
 }
 
-function buildScatter(seed: number, count = 8): ScatterItem[] {
+/** 低調散落：更小、更淡、貼邊，避免突兀貼紙感 */
+function buildScatter(seed: number, count = 5): ScatterItem[] {
   const rand = mulberry32(seed);
   const items: ScatterItem[] = [];
   const remaining = [...SCATTER_POOL];
@@ -111,18 +112,19 @@ function buildScatter(seed: number, count = 8): ScatterItem[] {
 
   for (let i = 0; i < Math.min(count, remaining.length); i += 1) {
     const side: "left" | "right" = rand() < 0.5 ? "left" : "right";
-    let top = 6 + rand() * 88;
+    let top = 8 + rand() * 84;
     let tries = 0;
     while (
       tries < 24 &&
-      used.some((u) => u.side === side && Math.abs(u.top - top) < 12)
+      used.some((u) => u.side === side && Math.abs(u.top - top) < 14)
     ) {
-      top = 6 + rand() * 88;
+      top = 8 + rand() * 84;
       tries += 1;
     }
     used.push({ side, top });
 
-    const left = side === "left" ? 1 + rand() * 15 : 84 + rand() * 15;
+    // 更貼邊緣，不侵入中間閱讀區
+    const left = side === "left" ? 0.5 + rand() * 9 : 90 + rand() * 9;
     const nameIndex = Math.floor(rand() * remaining.length);
     const [name = "lotus"] = remaining.splice(nameIndex, 1);
 
@@ -131,9 +133,9 @@ function buildScatter(seed: number, count = 8): ScatterItem[] {
       src: EMBLEMS[name],
       left,
       top,
-      size: 46 + Math.floor(rand() * 34),
-      rotate: -14 + rand() * 28,
-      opacity: 0.42 + rand() * 0.2,
+      size: 26 + Math.floor(rand() * 18),
+      rotate: -18 + rand() * 36,
+      opacity: 0.16 + rand() * 0.14,
     });
   }
   return items;
@@ -161,8 +163,8 @@ export function Mark({ id, size = 64, eager = false, alt = "", className = "", .
 /**
  * Sitewide auspicious scatter.
  * - Every route gets a new subset and placement.
- * - Symbols stay in side bands so they do not cover primary controls/text.
- * - The random draw is frozen for the lifetime of the current route render.
+ * - Symbols stay in thin side bands so they do not cover primary controls/text.
+ * - Soft opacity — background texture, not stickers.
  */
 export function SealScatter({ seedKey = "home" }: { seedKey?: string }) {
   const items = useMemo(() => {
@@ -172,7 +174,7 @@ export function SealScatter({ seedKey = "home" }: { seedKey?: string }) {
       typeof window === "undefined"
         ? 108
         : ((Date.now() >>> 0) ^ Math.floor(Math.random() * 0xffffffff)) >>> 0;
-    return buildScatter((routeSeed ^ visitJitter) >>> 0, 8);
+    return buildScatter((routeSeed ^ visitJitter) >>> 0, 5);
   }, [seedKey]);
 
   return (
