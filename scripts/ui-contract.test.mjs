@@ -60,8 +60,8 @@ test("site shell keeps the real Zhaowu text seal and mounts auspicious scatter o
   assert.doesNotMatch(shell, /!isLogin \? <SealScatter/);
   assert.doesNotMatch(intro, /import \{ BrandSeal \}|<BrandSeal|zhaowu-main-seal\.svg|<Mark /);
   assert.match(intro, /昭於未見，梧於有歸。/);
-  assert.match(intro, /zhaowu\.intro\.v15/);
-  assert.match(intro, /\/intro\/loading-poster\.jpg/);
+  assert.match(intro, /zhaowu\.intro\.v16/);
+  assert.doesNotMatch(intro, /loading-poster\.jpg/);
   assert.doesNotMatch(shell, /zhaowu-main-seal\.svg|showScatter/);
   assert.match(seal, /<span>昭<\/span>/);
   assert.match(seal, /<span>梧<\/span>/);
@@ -72,7 +72,7 @@ test("loading gate uses the approved animated opening and real readiness progres
   const bootstrap = await source("src/lib/bootstrap-readiness.ts");
   assert.match(intro, /\/intro\/loading-v11\.mp4/);
   assert.doesNotMatch(intro, /loading-v10\.mp4/);
-  assert.match(intro, /\/intro\/loading-poster\.jpg/);
+  assert.doesNotMatch(intro, /loading-poster\.jpg/);
   assert.match(intro, /命理不是宿命/);
   assert.match(intro, /運勢不是答案/);
   assert.match(intro, /選擇才是開始/);
