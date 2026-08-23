@@ -8,6 +8,7 @@ import { useAppStore } from "@/lib/store";
 import { PaidReportPages } from "@/components/paid-report-pages";
 import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeNinePages, type NinePage } from "@/lib/report/nine-page";
+import { generateDecreeImage } from "@/lib/report/decree-image";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
 const RESULT_COPY = {
@@ -19,6 +20,10 @@ const RESULT_COPY = {
     saving: "保存中…",
     updateSaved: "更新已保存報告",
     unknown: "未定",
+    imageGenerate: "生成個人命誥圖",
+    imageGenerating: "命誥圖生成中…",
+    imageReady: "個人命誥圖已生成並保存。",
+    imageAlt: "昭梧個人命誥圖",
     pillars: { year: "年柱", month: "月柱", day: "日柱", hour: "時柱" },
   },
   "zh-Hans": {
@@ -29,6 +34,10 @@ const RESULT_COPY = {
     saving: "保存中…",
     updateSaved: "更新已保存报告",
     unknown: "未定",
+    imageGenerate: "生成个人命诰图",
+    imageGenerating: "命诰图生成中…",
+    imageReady: "个人命诰图已生成并保存。",
+    imageAlt: "昭梧个人命诰图",
     pillars: { year: "年柱", month: "月柱", day: "日柱", hour: "时柱" },
   },
   en: {
@@ -39,6 +48,10 @@ const RESULT_COPY = {
     saving: "Saving…",
     updateSaved: "Update saved report",
     unknown: "Unknown",
+    imageGenerate: "Generate personal decree image",
+    imageGenerating: "Generating decree image…",
+    imageReady: "Your personal decree image has been generated and saved.",
+    imageAlt: "Zhaowu personal decree image",
     pillars: { year: "Year", month: "Month", day: "Day", hour: "Hour" },
   },
 } as const;
@@ -56,9 +69,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const copy = RESULT_COPY[locale];
   const { user, profile, session, isPending } = useCurrentUserState();
   const { fullReport, setFullReport, savedId, setSavedId, reset } = useAppStore();
-  const [busy, setBusy] = useState<"full" | "save" | null>(null);
+  const [busy, setBusy] = useState<"full" | "save" | "image" | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [ninePages, setNinePages] = useState<NinePage[] | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const { chart, reading, question } = result;
   const answer = customerDirectAnswer(question, reading.directAnswer);
   const answerParagraphs = customerParagraphs(answer);
@@ -69,6 +83,22 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     const out = await writeFullReport({ data: { question, chart, reading, palm: result.palm ?? null } });
     setFullReport(out.text);
     return out.text;
+  }
+
+  async function ensureSavedReport() {
+    if (!session || !user) throw new Error(t("needLogin"));
+    const reportText = await ensureFullReport();
+    const pages = ninePages ?? composeNinePages(result);
+    setNinePages(pages);
+    const row = await saveReportRecord({
+      session,
+      profile,
+      result,
+      fullReport: reportText,
+      ninePages: pages,
+    });
+    setSavedId(row?.id ?? result.id);
+    return row?.id ?? result.id;
   }
 
   async function onFull() {
@@ -108,20 +138,29 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setBusy("save");
     setMsg(null);
     try {
-      const reportText = await ensureFullReport();
-      const pages = ninePages ?? composeNinePages(result);
-      setNinePages(pages);
-      const row = await saveReportRecord({
-        session,
-        profile,
-        result,
-        fullReport: reportText,
-        ninePages: pages,
-      });
-      setSavedId(row?.id ?? result.id);
+      await ensureSavedReport();
       setMsg(copy.saved);
     } catch (err) {
       setMsg(err instanceof Error && locale !== "en" ? err.message : copy.saveFailed);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function onImage() {
+    if (!session || !user) {
+      setMsg(t("needLogin"));
+      return;
+    }
+    setBusy("image");
+    setMsg(null);
+    try {
+      const reportId = await ensureSavedReport();
+      const out = await generateDecreeImage(session, reportId);
+      if (out.signedUrl) setImageUrl(out.signedUrl);
+      setMsg(copy.imageReady);
+    } catch (err) {
+      setMsg(err instanceof Error ? err.message : copy.fullFailed);
     } finally {
       setBusy(null);
     }
@@ -164,14 +203,26 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           {busy === "full" ? t("generating") : t("genFull")}
         </button>
         {isPending ? <span className="h-12 flex-1 animate-pulse rounded-full bg-paper-deep" /> : user ? (
-          <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="h-12 min-w-[150px] flex-1 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">
-            {busy === "save" ? copy.saving : savedId ? copy.updateSaved : t("save")}
-          </button>
+          <>
+            <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="h-12 min-w-[150px] flex-1 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">
+              {busy === "save" ? copy.saving : savedId ? copy.updateSaved : t("save")}
+            </button>
+            <button type="button" disabled={busy !== null} onClick={() => void onImage()} className="h-12 min-w-[180px] flex-1 rounded-full border border-cinnabar/35 bg-cinnabar/5 px-5 text-cinnabar disabled:opacity-60">
+              {busy === "image" ? copy.imageGenerating : copy.imageGenerate}
+            </button>
+          </>
         ) : <Link to="/login" className="grid h-12 min-w-[150px] flex-1 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
         <button type="button" onClick={() => reset()} className="h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
       </div>
 
       {msg ? <p className="text-sm text-cinnabar">{msg}</p> : null}
+      {imageUrl ? (
+        <article className="seal-border rounded-xl bg-cream/95 p-4 sm:p-6">
+          <div className="mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden rounded-xl border border-line bg-paper-deep shadow-sm">
+            <img src={imageUrl} alt={copy.imageAlt} className="h-full w-full object-cover" />
+          </div>
+        </article>
+      ) : null}
       {ninePages ? <PaidReportPages pages={ninePages} /> : null}
       <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
     </section>
