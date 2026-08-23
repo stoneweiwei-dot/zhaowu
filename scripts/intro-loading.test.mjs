@@ -5,10 +5,12 @@ import test from 'node:test';
 const intro = await readFile(new URL('../src/components/intro-gate.tsx', import.meta.url), 'utf8');
 const bootstrap = await readFile(new URL('../src/lib/bootstrap-readiness.ts', import.meta.url), 'utf8');
 
-test('loading gate uses the approved animated opening and copy', () => {
-  assert.match(intro, /\/intro\/loading-v11\.mp4/);
+test('loading gate uses the approved opening and copy', () => {
+  assert.match(intro, /zhaowu\.intro\.v18/);
+  assert.match(intro, /loading-poster\.jpg/);
   assert.doesNotMatch(intro, /loading-v10\.mp4/);
-  assert.doesNotMatch(intro, /loading-poster\.jpg/);
+  assert.doesNotMatch(intro, /loading-v11\.mp4/);
+  assert.match(intro, /HARD_MAX_MS/);
   assert.match(intro, /昭於未見，梧於有歸。/);
   assert.match(intro, /命理不是宿命/);
   assert.match(intro, /運勢不是答案/);
@@ -19,7 +21,7 @@ test('loading gate uses the approved animated opening and copy', () => {
 test('loading gate waits for auth and critical bootstrap readiness', () => {
   assert.match(intro, /bootReady/);
   assert.match(intro, /isPending/);
-  assert.match(intro, /videoReady/);
+  assert.doesNotMatch(intro, /videoReady/);
   assert.match(bootstrap, /site_settings\?key=eq\.migration_state/);
   assert.match(bootstrap, /import\("@\/lib\/actions"\)/);
   assert.match(bootstrap, /import\("@\/lib\/report\/nine-page"\)/);
