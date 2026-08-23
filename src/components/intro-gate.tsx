@@ -3,11 +3,12 @@ import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
-const KEY = "zhaowu.intro.v11";
-/** 首次保留從暗到明的氣勢，但避免整段約 15 秒過長 */
-const CEREMONY_FIRST_MS = 8200;
-/** 重訪仍給一點開場，不瞬間切走 */
-const CEREMONY_REPEAT_MS = 2400;
+/** v12：重置舊 session，避免被舊邏輯秒關 */
+const KEY = "zhaowu.intro.v12";
+/** 影片實測約 6.0s，首次至少播到接近片尾 */
+const MIN_HOLD_FIRST_MS = 6200;
+/** 重訪仍至少看一段，禁止 1 秒閃進 */
+const MIN_HOLD_REPEAT_MS = 4500;
 const SLOW_NOTICE_MS = 10000;
 const VIDEO_SRC = "/intro/loading-v10.mp4";
 const POSTER_SRC = "/intro/loading-poster.jpg";
@@ -21,16 +22,18 @@ export function IntroGate() {
   const [bootReady, setBootReady] = useState(false);
   const [bootPercent, setBootPercent] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
+  const [videoComplete, setVideoComplete] = useState(false);
   const [mediaFailed, setMediaFailed] = useState(false);
   const [bootError, setBootError] = useState<string | null>(null);
   const [reduced, setReduced] = useState(false);
   const [slow, setSlow] = useState(false);
   const [attempt, setAttempt] = useState(0);
-  const [ceremonyDone, setCeremonyDone] = useState(false);
+  const [holdDone, setHoldDone] = useState(false);
   const startedAt = useRef(0);
-  const seenBefore = useRef(false);
-  const ceremonyTarget = useRef(CEREMONY_FIRST_MS);
+  const holdTarget = useRef(MIN_HOLD_FIRST_MS);
   const bootPercentRef = useRef(0);
+  const videoTimeRef = useRef(0);
+  const videoDurationRef = useRef(0);
   const finishTimer = useRef<number | null>(null);
   const raf = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -58,7 +61,7 @@ export function IntroGate() {
       /* ignore */
     }
     setPhase("leaving");
-    window.setTimeout(() => setPhase("off"), 420);
+    window.setTimeout(() => setPhase("off"), 480);
   }, [clearTimers]);
 
   const skip = useCallback(() => {
@@ -70,27 +73,39 @@ export function IntroGate() {
     startedAt.current = performance.now();
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setReduced(prefersReduced);
+
+    let seen = false;
     try {
-      seenBefore.current = sessionStorage.getItem(KEY) === "1";
+      seen = sessionStorage.getItem(KEY) === "1";
     } catch {
-      seenBefore.current = false;
+      seen = false;
     }
-    ceremonyTarget.current =
-      prefersReduced ? 600 : seenBefore.current ? CEREMONY_REPEAT_MS : CEREMONY_FIRST_MS;
+    // 減少動態：仍給靜態開場，但不播影片
+    holdTarget.current = prefersReduced ? 2800 : seen ? MIN_HOLD_REPEAT_MS : MIN_HOLD_FIRST_MS;
 
     const slowTimer = window.setTimeout(() => setSlow(true), SLOW_NOTICE_MS);
 
     const tick = () => {
       const elapsed = performance.now() - startedAt.current;
-      const target = ceremonyTarget.current;
-      const ceremonyRatio = Math.min(1, elapsed / target);
-      // 前台儀式進度主導，後台就緒只微調，避免一下跳到 100%
-      const blended = ceremonyRatio * 88 + Math.min(bootPercentRef.current, 100) * 0.12;
+      const target = holdTarget.current;
+      const vDur = videoDurationRef.current;
+      const vTime = videoTimeRef.current;
+
+      // 進度：時間 + 影片進度雙軌，避免一下跳滿
+      const timeRatio = Math.min(1, elapsed / target);
+      const videoRatio = vDur > 0 ? Math.min(1, vTime / Math.max(0.1, vDur * 0.92)) : 0;
+      const ceremonyRatio = Math.max(timeRatio, videoRatio * 0.95);
+      const blended = ceremonyRatio * 90 + Math.min(bootPercentRef.current, 100) * 0.1;
       setPercent(Math.min(99, Math.round(blended)));
-      if (elapsed >= target) {
-        setCeremonyDone(true);
-        return;
+
+      // 完成條件：時間到 或 影片播到接近結尾
+      const timeOk = elapsed >= target;
+      const videoOk = vDur > 0 && vTime >= Math.max(1, vDur - 0.2);
+      if (timeOk || videoOk) {
+        setHoldDone(true);
+        if (videoOk) setVideoComplete(true);
       }
+
       raf.current = window.requestAnimationFrame(tick);
     };
     raf.current = window.requestAnimationFrame(tick);
@@ -123,7 +138,9 @@ export function IntroGate() {
         if (cancelled) return;
         const message = error instanceof Error ? error.message : "啟動檢查未完成。";
         setBootError(message);
-        setLabel(locale === "en" ? "Waiting for services" : locale === "zh-Hans" ? "等待关键服务就绪" : "等待關鍵服務就緒");
+        setLabel(
+          locale === "en" ? "Waiting for services" : locale === "zh-Hans" ? "等待关键服务就绪" : "等待關鍵服務就緒",
+        );
       });
 
     return () => {
@@ -132,16 +149,38 @@ export function IntroGate() {
   }, [attempt, locale]);
 
   useEffect(() => {
-    if (phase !== "in" || bootError) return;
-    // 必須：儀式走完 + 後台就緒 + 帳號狀態不在 pending
-    const mediaOk = reduced || videoReady || mediaFailed;
-    if (!ceremonyDone || !bootReady || isPending || !mediaOk) return;
+    if (phase !== "in") return;
+
+    // 有錯誤時仍允許在最短開場後進頁，避免卡死
+    if (bootError) {
+      if (!holdDone) return;
+      setPercent(100);
+      clearTimers();
+      finishTimer.current = window.setTimeout(finish, 320);
+      return clearTimers;
+    }
+
+    // 正常：開場必須走完（時間或影片近結尾）+ 後台就緒 + 非 pending
+    // 影片失敗時改走純時間 hold，不秒關
+    const mediaGate = reduced || mediaFailed || videoReady;
+    if (!holdDone || !bootReady || isPending || !mediaGate) return;
 
     setPercent(100);
     clearTimers();
-    finishTimer.current = window.setTimeout(finish, 380);
+    finishTimer.current = window.setTimeout(finish, 360);
     return clearTimers;
-  }, [bootError, bootReady, ceremonyDone, clearTimers, finish, isPending, mediaFailed, phase, reduced, videoReady]);
+  }, [
+    bootError,
+    bootReady,
+    clearTimers,
+    finish,
+    holdDone,
+    isPending,
+    mediaFailed,
+    phase,
+    reduced,
+    videoReady,
+  ]);
 
   if (phase === "off") return null;
 
@@ -149,7 +188,7 @@ export function IntroGate() {
 
   return (
     <div
-      className={`fixed inset-0 z-[90] overflow-hidden bg-[#0f1410] transition-opacity duration-[420ms] ease-out ${phase === "leaving" ? "opacity-0" : "opacity-100"}`}
+      className={`fixed inset-0 z-[90] overflow-hidden bg-[#0f1410] transition-opacity duration-[480ms] ease-out ${phase === "leaving" ? "opacity-0" : "opacity-100"}`}
       role="status"
       aria-live="polite"
       aria-label={t("introAria")}
@@ -158,13 +197,13 @@ export function IntroGate() {
         <img
           src={POSTER_SRC}
           alt=""
-          className="intro-media intro-poster absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover"
           draggable={false}
         />
         {!reduced ? (
           <video
             ref={videoRef}
-            className={`intro-media intro-video absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${videoReady ? "opacity-100" : "opacity-0"}`}
+            className="absolute inset-0 h-full w-full object-cover"
             src={VIDEO_SRC}
             poster={POSTER_SRC}
             autoPlay
@@ -172,28 +211,57 @@ export function IntroGate() {
             playsInline
             preload="auto"
             loop={false}
+            // 始終可見，避免 opacity 0 導致「只閃一下」
+            style={{ opacity: 1 }}
+            onLoadedMetadata={() => {
+              const el = videoRef.current;
+              if (el && Number.isFinite(el.duration) && el.duration > 0) {
+                videoDurationRef.current = el.duration;
+              }
+            }}
             onCanPlay={() => {
               setVideoReady(true);
               const el = videoRef.current;
               if (el) {
+                el.muted = true;
                 el.playbackRate = 1;
                 void el.play().catch(() => undefined);
               }
             }}
-            onLoadedData={() => setVideoReady(true)}
+            onLoadedData={() => {
+              setVideoReady(true);
+              const el = videoRef.current;
+              if (el) void el.play().catch(() => undefined);
+            }}
+            onTimeUpdate={() => {
+              const el = videoRef.current;
+              if (!el) return;
+              videoTimeRef.current = el.currentTime || 0;
+              if (Number.isFinite(el.duration) && el.duration > 0) {
+                videoDurationRef.current = el.duration;
+              }
+            }}
+            onEnded={() => {
+              setVideoComplete(true);
+              setHoldDone(true);
+              const el = videoRef.current;
+              if (el && Number.isFinite(el.duration)) {
+                videoTimeRef.current = el.duration;
+              }
+            }}
             onError={() => setMediaFailed(true)}
           />
         ) : (
           <div className="h-full w-full bg-[radial-gradient(circle_at_50%_18%,#f3d98f_0%,#8fa18a_34%,#314039_68%,#182019_100%)]" />
         )}
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,10,.18)_0%,rgba(8,12,10,.08)_40%,rgba(8,12,10,.42)_100%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_16%,rgba(255,239,179,.14),transparent_34%)] mix-blend-screen" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,12,10,.16)_0%,rgba(8,12,10,.06)_42%,rgba(8,12,10,.4)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_16%,rgba(255,239,179,.12),transparent_34%)] mix-blend-screen" />
       </div>
 
       <button
         type="button"
         onClick={skip}
-        className="absolute bottom-[max(18px,env(safe-area-inset-bottom))] right-[max(16px,env(safe-area-inset-right))] z-20 rounded-full border border-[#f0dfb4]/35 bg-[#152018]/55 px-4 py-2 text-[11px] tracking-[0.22em] text-[#f7edd0] backdrop-blur-sm transition hover:border-[#f0dfb4]/7 hover:bg-[#1b2820]/75"
+        className="absolute bottom-[max(18px,env(safe-area-inset-bottom))] right-[max(16px,env(safe-area-inset-right))] z-20 rounded-full border border-[#f0dfb4]/4 bg-[#152018]/6 px-4 py-2 text-[11px] tracking-[0.22em] text-[#f7edd0] backdrop-blur-sm"
       >
         {skipLabel}
       </button>
@@ -204,7 +272,7 @@ export function IntroGate() {
           <p className="mt-2 text-[9px] tracking-[0.34em] text-[#d9c89d]">DESTINY · TIMING · CHOICE</p>
         </div>
 
-        <div className="mt-[10vh] rounded-[28px] border border-[#f8e7bb]/18 bg-[#172018]/22 px-5 py-6 shadow-[0_18px_60px_rgba(0,0,0,.14)] backdrop-blur-[1px]">
+        <div className="mt-[10vh] rounded-[28px] border border-[#f8e7bb]/18 bg-[#172018]/2 px-5 py-6 shadow-[0_18px_60px_rgba(0,0,0,.12)]">
           <h1 className="font-display text-[clamp(1.75rem,8vw,2.55rem)] leading-[1.35] tracking-[0.04em] text-[#fff8de]">
             昭於未見，梧於有歸。
           </h1>
@@ -219,12 +287,12 @@ export function IntroGate() {
 
         <div className="mt-auto pb-3">
           <div
-            className="mx-auto flex h-[104px] w-[104px] items-center justify-center rounded-full bg-white/10 p-[5px] shadow-[0_0_42px_rgba(241,205,116,.22)]"
+            className="mx-auto flex h-[104px] w-[104px] items-center justify-center rounded-full p-[5px] shadow-[0_0_42px_rgba(241,205,116,.2)]"
             style={{
               background: `conic-gradient(rgba(248,223,155,.98) ${percent * 3.6}deg, rgba(255,255,255,.16) 0deg)`,
             }}
           >
-            <div className="flex h-full w-full items-center justify-center rounded-full bg-[#1a211a]/7 ring-1 ring-[#f5dfaa]/22">
+            <div className="flex h-full w-full items-center justify-center rounded-full bg-[#1a211a]/72 ring-1 ring-[#f5dfaa]/2">
               <span className="font-display text-[28px] tabular-nums text-[#fff6dc]">
                 {percent}
                 <span className="ml-0.5 text-sm">%</span>
@@ -246,10 +314,16 @@ export function IntroGate() {
           </p>
           <p className="mt-2 text-[9px] tracking-[0.14em] text-[#cabd9e]">
             {locale === "en"
-              ? "Watch the light rise — or skip"
+              ? videoComplete
+                ? "Ready to enter"
+                : "Playing opening — or skip"
               : locale === "zh-Hans"
-                ? "可看完从暗到明，也可右下角跳过"
-                : "可看完從暗到明，也可右下角跳過"}
+                ? videoComplete
+                  ? "开场完成"
+                  : "正在播放从暗到明 · 可右下角跳过"
+                : videoComplete
+                  ? "開場完成"
+                  : "正在播放從暗到明 · 可右下角跳過"}
           </p>
 
           {bootError ? (
