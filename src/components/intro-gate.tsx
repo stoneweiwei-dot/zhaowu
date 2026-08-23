@@ -4,7 +4,7 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
 const KEY = "zhaowu.intro.v11";
-/** 首次保留從暗到明的完整氣勢，但避免整段 15 秒過長 */
+/** 首次保留從暗到明的氣勢，但避免整段約 15 秒過長 */
 const CEREMONY_FIRST_MS = 8200;
 /** 重訪仍給一點開場，不瞬間切走 */
 const CEREMONY_REPEAT_MS = 2400;
@@ -30,9 +30,14 @@ export function IntroGate() {
   const startedAt = useRef(0);
   const seenBefore = useRef(false);
   const ceremonyTarget = useRef(CEREMONY_FIRST_MS);
+  const bootPercentRef = useRef(0);
   const finishTimer = useRef<number | null>(null);
   const raf = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    bootPercentRef.current = bootPercent;
+  }, [bootPercent]);
 
   const clearTimers = useCallback(() => {
     if (finishTimer.current !== null) {
@@ -79,8 +84,8 @@ export function IntroGate() {
       const elapsed = performance.now() - startedAt.current;
       const target = ceremonyTarget.current;
       const ceremonyRatio = Math.min(1, elapsed / target);
-      // 前台儀式進度主導，後台就緒只作微調，避免一下跳到 100%
-      const blended = ceremonyRatio * 88 + Math.min(bootPercent, 100) * 0.12;
+      // 前台儀式進度主導，後台就緒只微調，避免一下跳到 100%
+      const blended = ceremonyRatio * 88 + Math.min(bootPercentRef.current, 100) * 0.12;
       setPercent(Math.min(99, Math.round(blended)));
       if (elapsed >= target) {
         setCeremonyDone(true);
@@ -94,7 +99,7 @@ export function IntroGate() {
       window.clearTimeout(slowTimer);
       if (raf.current !== null) window.cancelAnimationFrame(raf.current);
     };
-  }, [bootPercent]);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -129,7 +134,6 @@ export function IntroGate() {
   useEffect(() => {
     if (phase !== "in" || bootError) return;
     // 必須：儀式走完 + 後台就緒 + 帳號狀態不在 pending
-    // 影片失敗／減少動態時，不阻塞進入
     const mediaOk = reduced || videoReady || mediaFailed;
     if (!ceremonyDone || !bootReady || isPending || !mediaOk) return;
 
@@ -167,7 +171,6 @@ export function IntroGate() {
             muted
             playsInline
             preload="auto"
-            // 不 loop：讓從暗到明自然走完；若影片比儀式短，停在最後一幀
             loop={false}
             onCanPlay={() => {
               setVideoReady(true);
@@ -242,7 +245,11 @@ export function IntroGate() {
               : label}
           </p>
           <p className="mt-2 text-[9px] tracking-[0.14em] text-[#cabd9e]">
-            {locale === "en" ? "Watch the light rise — or skip" : locale === "zh-Hans" ? "可看完从暗到明，也可右下角跳过" : "可看完從暗到明，也可右下角跳過"}
+            {locale === "en"
+              ? "Watch the light rise — or skip"
+              : locale === "zh-Hans"
+                ? "可看完从暗到明，也可右下角跳过"
+                : "可看完從暗到明，也可右下角跳過"}
           </p>
 
           {bootError ? (
