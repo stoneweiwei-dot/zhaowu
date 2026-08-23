@@ -48,18 +48,21 @@ test("owner background client always uses Supabase JSON instead of the Vercel SP
   assert.match(backgrounds, /背景服務回應格式錯誤/);
 });
 
-test("site shell keeps the real Zhaowu text seal while loading stays free of invented logos", async () => {
+test("site shell keeps the real Zhaowu text seal and mounts auspicious scatter on every route", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const intro = await source("src/components/intro-gate.tsx");
   const seal = await source("src/components/brand-seal.tsx");
 
   assert.match(shell, /import \{ BrandSeal \}/);
+  assert.match(shell, /import \{ SealScatter \} from "@\/components\/marks"/);
   assert.match(shell, /<BrandSeal \/>/);
+  assert.match(shell, /<SealScatter seedKey=\{pathname\} \/>/);
+  assert.doesNotMatch(shell, /!isLogin \? <SealScatter/);
   assert.doesNotMatch(intro, /import \{ BrandSeal \}|<BrandSeal|zhaowu-main-seal\.svg|<Mark /);
   assert.match(intro, /昭於未見，梧於有歸。/);
-  assert.match(intro, /zhaowu\.intro\.v10/);
+  assert.match(intro, /zhaowu\.intro\.v11/);
   assert.match(intro, /\/intro\/loading-poster\.jpg/);
-  assert.doesNotMatch(shell, /zhaowu-main-seal\.svg|SealScatter|showScatter/);
+  assert.doesNotMatch(shell, /zhaowu-main-seal\.svg|showScatter/);
   assert.match(seal, /<span>昭<\/span>/);
   assert.match(seal, /<span>梧<\/span>/);
 });
@@ -83,19 +86,35 @@ test("loading gate uses the approved animated opening and real readiness progres
   assert.doesNotMatch(intro, /\/emblems\//);
 });
 
-test("loading gate fully unmounts instead of leaving a translucent ghost over the homepage", async () => {
+test("loading gate fades out briefly and then fully unmounts", async () => {
   const intro = await source("src/components/intro-gate.tsx");
+  assert.match(intro, /setPhase\("leaving"\)/);
   assert.match(intro, /setPhase\("off"\)/);
+  assert.match(intro, /window\.setTimeout\(\(\) => setPhase\("off"\), 420\)/);
+  assert.match(intro, /phase === "leaving" \? "opacity-0" : "opacity-100"/);
   assert.match(intro, /if \(phase === "off"\) return null/);
   assert.doesNotMatch(intro, /phase === "out"/);
-  assert.doesNotMatch(intro, /transition-opacity/);
   assert.doesNotMatch(intro, /pointer-events-none opacity-0/);
 });
 
-test("homepage and global CSS do not paint decorative emblem wallpaper", async () => {
+test("homepage uses sitewide random auspicious scatter instead of a fixed motif strip", async () => {
   const home = await source("src/routes/index.tsx");
+  const shell = await source("src/components/site-shell.tsx");
+  const marks = await source("src/components/marks.tsx");
   const emblems = await source("src/emblems.css");
-  assert.doesNotMatch(home, /import \{ Mark \}|<Mark /);
+
+  assert.doesNotMatch(home, /STONE_MOTIFS|stone-motif-row|import \{ Mark \}|<Mark /);
+  assert.match(shell, /<SealScatter seedKey=\{pathname\} \/>/);
+  assert.match(marks, /SCATTER_POOL/);
+  for (const name of ["lotus", "wheel", "vase", "knot", "conch", "fish", "parasol", "banner", "gourd", "bagua", "sword", "bell", "incense", "ruyi", "gate"]) {
+    assert.match(marks, new RegExp(`"${name}"`));
+  }
+  assert.match(marks, /Date\.now\(\)/);
+  assert.match(marks, /Math\.random\(\)/);
+  assert.match(marks, /left = side === "left"/);
+  assert.match(emblems, /\.zhaowu-seal-scatter/);
+  assert.match(emblems, /\.zhaowu-scatter-piece/);
+  assert.match(emblems, /mix-blend-mode:\s*normal/);
   assert.match(emblems, /body::before \{[\s\S]*content: none;[\s\S]*display: none;/);
   assert.doesNotMatch(emblems, /background-image:[\s\S]*line-ornament-/);
 });
@@ -103,7 +122,7 @@ test("homepage and global CSS do not paint decorative emblem wallpaper", async (
 test("every mapped emblem asset exists in the public build", async () => {
   const marks = await source("src/components/marks.tsx");
   const assets = [...marks.matchAll(/"\/emblems\/([^\"]+)"/g)].map((match) => match[1]);
-  assert.ok(assets.length >= 9);
+  assert.ok(assets.length >= 18);
   await Promise.all(assets.map((asset) => source(`public/emblems/${asset}`)));
 });
 
