@@ -7,6 +7,45 @@ Production project: `stone-zhaowu-official`
 Production URL: `https://stone-zhaowu-official.vercel.app/`
 Primary branch: `main`
 
+## 0. HIGHEST PRIORITY — SAFE NEW-INSTRUCTION SUPERSESSION
+
+This rule applies to **every AI / APP / coding agent / automation / platform** that works on ZHAOWU, including but not limited to ChatGPT, Codex, Grok, AppDeploy, GitHub-connected agents, deployment agents and future tools.
+
+Before executing **every new user instruction**, the agent must first perform an instruction-conflict preflight against all currently active project instructions that overlap the same feature, route, workflow, asset, automation or behavior.
+
+Required process:
+
+1. Identify the new instruction's exact scope and intended result.
+2. Search the active repository truth for older overlapping instructions, implementations, flags, automations, docs, issues, branches, tests, contracts and legacy code that could enforce a conflicting behavior.
+3. Classify each older item as:
+   - **Compatible** — keep it.
+   - **Independent** — outside the new instruction's scope; keep it untouched.
+   - **Superseded / conflicting** — the newer explicit user instruction replaces it.
+   - **Runtime-protected / dependency-required** — it may look old, but removal could break logic, data, compatibility, build, routing or production flow.
+4. For a **superseded / conflicting** older instruction, remove it from the **active execution path** only when safe removal is proven. This may mean deleting obsolete active code/config/docs/automation references or disabling the obsolete behavior so it can no longer override the new instruction.
+5. The newer instruction supersedes **only the conflicting portion** of the older instruction. Never delete unrelated requirements merely because they are older.
+6. **Do not delete, disable or rewrite an older instruction/implementation if doing so could break or degrade any existing logic, data integrity, build, deployment, auth, permissions, report generation, report history, routing, payment, multilingual behavior, calendar, Bazi/destiny calculation, Supabase data, user flow or production stability.**
+7. If safe deletion cannot be proven, do **not** force-delete it. Instead:
+   - keep the dependency needed for runtime compatibility,
+   - mark or isolate the obsolete behavior as deprecated/inactive where possible,
+   - prevent it from overriding the newer instruction,
+   - report the exact dependency conflict before changing protected logic.
+8. Before removing an old active instruction or implementation, check all imports, references, tests, routes, CSS selectors, assets, database dependencies, environment variables, automations and deployment contracts that depend on it.
+9. After superseding/removing anything, run the normal regression gates. The change is invalid if it makes the website less stable, less smooth, slower in a material way, or breaks any previously working core path.
+10. Never revive an older instruction from old chat, issue, branch, deployment, automation or legacy file if a newer active instruction has already superseded it.
+11. Never create a parallel production path to preserve an obsolete instruction. ZHAOWU keeps one production source of truth.
+12. Deletion under this rule means **removal from the current active instruction/execution path**, not rewriting Git history. Keep normal repository history for auditability and rollback.
+
+Instruction precedence for overlapping project behavior:
+
+**latest explicit user instruction → current `main` / production truth → this repository protocol and current contracts → older active docs/issues → stale chats/branches/deployments.**
+
+Safety exception: a newer instruction does not automatically authorize breaking locked core logic, data integrity, security, auth, payment, production routing or other protected contracts. Those may change only when the user explicitly requests that scope and the dependency/regression checks pass.
+
+The governing principle is:
+
+> **New intent wins over conflicting old intent, but never by breaking working logic or production flow. Remove obsolete active instructions only when their removal is demonstrably safe.**
+
 ## 1. No false completion
 
 Never call a task "done", "fixed", "finished", "live", or equivalent unless the full production loop is complete.
