@@ -60,8 +60,8 @@ test("site shell keeps the real Zhaowu text seal and mounts auspicious scatter o
   assert.doesNotMatch(shell, /!isLogin \? <SealScatter/);
   assert.doesNotMatch(intro, /import \{ BrandSeal \}|<BrandSeal|zhaowu-main-seal\.svg|<Mark /);
   assert.match(intro, /昭於未見，梧於有歸。/);
-  assert.match(intro, /zhaowu\.intro\.v16/);
-  assert.doesNotMatch(intro, /loading-poster\.jpg/);
+  assert.match(intro, /zhaowu\.intro\.v18/);
+  assert.match(intro, /loading-poster\.jpg/);
   assert.doesNotMatch(shell, /zhaowu-main-seal\.svg|showScatter/);
   assert.match(seal, /<span>昭<\/span>/);
   assert.match(seal, /<span>梧<\/span>/);
@@ -70,9 +70,9 @@ test("site shell keeps the real Zhaowu text seal and mounts auspicious scatter o
 test("loading gate uses the approved animated opening and real readiness progress", async () => {
   const intro = await source("src/components/intro-gate.tsx");
   const bootstrap = await source("src/lib/bootstrap-readiness.ts");
-  assert.match(intro, /\/intro\/loading-v11\.mp4/);
+  assert.doesNotMatch(intro, /loading-v11\.mp4/);
   assert.doesNotMatch(intro, /loading-v10\.mp4/);
-  assert.doesNotMatch(intro, /loading-poster\.jpg/);
+  assert.match(intro, /loading-poster\.jpg/);
   assert.match(intro, /命理不是宿命/);
   assert.match(intro, /運勢不是答案/);
   assert.match(intro, /選擇才是開始/);
@@ -80,8 +80,8 @@ test("loading gate uses the approved animated opening and real readiness progres
   assert.match(intro, /STONE 原創/);
   assert.match(intro, /bootReady/);
   assert.match(intro, /isPending/);
-  assert.match(intro, /videoReady/);
-  assert.match(intro, /ambientLoop/);
+  assert.match(intro, /HARD_MAX_MS/);
+  assert.doesNotMatch(intro, /ambientLoop/);
   assert.match(bootstrap, /site_settings\?key=eq\.migration_state/);
   assert.match(bootstrap, /architecture\.length !== 9/);
   assert.match(bootstrap, /正在待命四柱繪意與命誥圖/);
@@ -92,7 +92,7 @@ test("loading gate fades out briefly and then fully unmounts", async () => {
   const intro = await source("src/components/intro-gate.tsx");
   assert.match(intro, /setPhase\("leaving"\)/);
   assert.match(intro, /setPhase\("off"\)/);
-  assert.match(intro, /window\.setTimeout\(\(\) => setPhase\("off"\), 420\)/);
+  assert.match(intro, /window\.setTimeout\(\(\) => setPhase\("off"\), 320\)/);
   assert.match(intro, /phase === "leaving" \? "opacity-0" : "opacity-100"/);
   assert.match(intro, /if \(phase === "off"\) return null/);
   assert.doesNotMatch(intro, /phase === "out"/);
