@@ -3,15 +3,13 @@ import { useI18n } from "@/lib/i18n";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
-/** v14：預設播完一輪再進站；可選循環（站點預設片，不耗 token） */
-const KEY = "zhaowu.intro.v14";
-/** 與加速後影片長度對齊；僅作進度參考，真正進站以影片播完為準 */
-const MIN_HOLD_FIRST_MS = 6200;
-const MIN_HOLD_REPEAT_MS = 4500;
+/** v15：強制新加速片，禁止靜默回退舊片 */
+const KEY = "zhaowu.intro.v15";
+const MIN_HOLD_FIRST_MS = 6500;
+const MIN_HOLD_REPEAT_MS = 4800;
 const SLOW_NOTICE_MS = 10000;
-/** 優先新加速片；若尚未上傳則回退舊片 */
-const VIDEO_SRC_PRIMARY = "/intro/loading-v11.mp4";
-const VIDEO_SRC_FALLBACK = "/intro/loading-v10.mp4";
+/** 鎖定加速版；加 cache-bust 避免 CDN／瀏覽器吃到舊 v10 快取 */
+const VIDEO_SRC = "/intro/loading-v11.mp4?v=20260823b";
 const POSTER_SRC = "/intro/loading-poster.jpg";
 
 export function IntroGate() {
@@ -30,9 +28,7 @@ export function IntroGate() {
   const [slow, setSlow] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [holdDone, setHoldDone] = useState(false);
-  /** 使用者選擇持續循環站點預設開場片，不自動進主頁 */
   const [ambientLoop, setAmbientLoop] = useState(false);
-  const [videoSrc, setVideoSrc] = useState(VIDEO_SRC_PRIMARY);
   const startedAt = useRef(0);
   const holdTarget = useRef(MIN_HOLD_FIRST_MS);
   const bootPercentRef = useRef(0);
@@ -127,7 +123,6 @@ export function IntroGate() {
       const blended = ceremonyRatio * 92 + Math.min(bootPercentRef.current, 100) * 0.08;
       setPercent(Math.min(99, Math.round(blended)));
 
-      // 預設：必須接近片尾才算 hold 完成（不是純計時秒關）
       const videoOk = vDur > 0 && vTime >= Math.max(1, vDur - 0.15);
       const timeFallback = prefersReduced || (vDur <= 0 && elapsed >= target);
       if (videoOk || timeFallback) {
@@ -179,7 +174,6 @@ export function IntroGate() {
 
   useEffect(() => {
     if (phase !== "in") return;
-    // 循環模式下永不自動進站
     if (ambientLoop) return;
 
     if (bootError) {
@@ -191,7 +185,6 @@ export function IntroGate() {
     }
 
     const mediaGate = reduced || mediaFailed || videoReady;
-    // 預設：影片（或降動態）播完一輪 + 後台就緒才進站
     if (!holdDone || !bootReady || isPending || !mediaGate) return;
     if (!reduced && !mediaFailed && !videoComplete) return;
 
@@ -246,9 +239,10 @@ export function IntroGate() {
         />
         {!reduced ? (
           <video
+            key={VIDEO_SRC}
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
-            src={videoSrc}
+            src={VIDEO_SRC}
             poster={POSTER_SRC}
             autoPlay
             muted
@@ -286,7 +280,6 @@ export function IntroGate() {
               }
             }}
             onEnded={() => {
-              // 循環模式：由 video.loop 接手，不進站
               if (ambientLoopRef.current) {
                 const el = videoRef.current;
                 if (el) {
@@ -303,13 +296,11 @@ export function IntroGate() {
               }
             }}
             onError={() => {
-              if (videoSrc === VIDEO_SRC_PRIMARY) {
-                setVideoSrc(VIDEO_SRC_FALLBACK);
-                setVideoReady(false);
-                setMediaFailed(false);
-                return;
-              }
+              // 不再回退舊片；失敗時用靜態海報 + 計時進站
               setMediaFailed(true);
+              setVideoReady(true);
+              setHoldDone(true);
+              setVideoComplete(true);
             }}
           />
         ) : (
