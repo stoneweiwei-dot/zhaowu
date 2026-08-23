@@ -28,7 +28,7 @@ body {
     linear-gradient(180deg, #fbf8f1, #f4ecdd);
 }
 
-/* Uploaded owner images are atmospheric wallpaper only. They must never compete with report content. */
+/* Uploaded owner images must be visible on the pages, not a faint wash behind opaque cards. */
 body:has(.zhaowu-has-wallpaper) {
   background: #d9ccb3;
   background-image: none;
@@ -42,22 +42,20 @@ body:has(.zhaowu-has-wallpaper) {
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
-  opacity: .52;
-  filter: saturate(.82) brightness(.78);
+  opacity: 1;
+  filter: none;
 }
 
 .zhaowu-site-wallpaper::after {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(180deg, rgba(255,252,245,.34), rgba(247,240,226,.56)),
-    radial-gradient(circle at 50% 20%, rgba(255,255,255,.10), transparent 46%);
+  background: linear-gradient(180deg, rgba(255,252,245,.08), rgba(247,240,226,.14));
 }
 
 .zhaowu-site-wallpaper.is-login {
-  opacity: .46;
-  filter: saturate(.78) brightness(.74);
+  opacity: 1;
+  filter: none;
 }
 
 .zhaowu-site-header {
@@ -65,10 +63,27 @@ body:has(.zhaowu-has-wallpaper) {
   box-shadow: 0 8px 30px rgba(73,54,29,.06);
 }
 
+body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
+  background: rgba(255,253,248,.40);
+}
+
 .zhaowu-has-wallpaper .seal-border,
 .zhaowu-has-wallpaper section.seal-border {
-  background: rgba(255,253,248,.965) !important;
-  backdrop-filter: blur(18px) saturate(108%);
+  background: rgba(255,253,248,.56) !important;
+  backdrop-filter: blur(10px) saturate(108%);
+}
+
+body:has(.zhaowu-has-wallpaper) .zhaowu-home-hero {
+  background:
+    radial-gradient(circle at 86% 12%, rgba(213,181,111,.12), transparent 25%),
+    radial-gradient(circle at 10% 90%, rgba(59,135,119,.08), transparent 27%),
+    linear-gradient(145deg, rgba(255,253,248,.42), rgba(249,243,231,.34)) !important;
+  backdrop-filter: blur(8px);
+}
+
+body:has(.zhaowu-has-wallpaper) .zhaowu-motif-strip,
+body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
+  background: rgba(255,253,248,.55);
 }
 
 /* Homepage: clean paper above the wallpaper, not transparent panes. */
@@ -162,7 +177,7 @@ body:has(.zhaowu-has-wallpaper) {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(255,253,248,.24), rgba(247,240,226,.42));
+  background: linear-gradient(180deg, rgba(255,253,248,.08), rgba(247,240,226,.16));
 }
 
 .zhaowu-login-page {

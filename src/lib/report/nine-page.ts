@@ -1,6 +1,7 @@
 import type { AnalysisResult, Chart, Reading } from "@/lib/bazi/types";
 import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
 import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
+import { pickTravelDestinations } from "@/lib/bazi/forecast";
 
 export type NinePageEvidence = {
   facts: string[];
@@ -25,11 +26,17 @@ function hasMultiTopicAnswer(reading: Reading): boolean {
   return /分開回答|分开回答|分開排|分开排/.test(reading.directAnswer);
 }
 
-function page4Body(question: string, reading: Reading): string[] {
+function travelNames(question: string, chart: Chart): string[] {
+  const req = inspectAnswerRequirements(question);
+  return pickTravelDestinations(chart, req.targetYears[0], req.targetMonths).map((place) => place.name);
+}
+
+function page4Body(question: string, reading: Reading, chart: Chart): string[] {
   const req = inspectAnswerRequirements(question);
   if (req.asksTravel) {
+    const names = travelNames(question, chart);
     return [
-      "按第 1 页已经给出的目的地，先定一处主行程、一处备选。",
+      `这次去：主选 ${names[0]}，备选 ${names[1]}、${names[2]}。先定主选，另外两处不要同时铺开。`,
       "把较顺月份与假期、预算、体力和签证一起确认，少转场。",
     ];
   }
@@ -70,9 +77,10 @@ function page4Body(question: string, reading: Reading): string[] {
   }
 }
 
-function page6Body(question: string, reading: Reading): string[] {
+function page6Body(question: string, reading: Reading, chart: Chart): string[] {
   if (inspectAnswerRequirements(question).asksTravel) {
-    return ["先锁定第 1 页的主选目的地和较顺月份，再排机票与住宿，不要同时铺开三地。"];
+    const names = travelNames(question, chart);
+    return [`先锁定主选 ${names[0]} 和较顺月份，再排机票与住宿，不要同时铺开三地。`];
   }
   switch (reading.kind) {
     case "career":
@@ -179,7 +187,7 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
     pageNo: 4,
     key: "themes",
     title: reading.kind === "timing" ? "如何安排" : hasMultiTopicAnswer(reading) ? "分别来看" : "这件事的重点",
-    body: page4Body(question, reading),
+    body: page4Body(question, reading, chart),
     evidence: {
       facts: ["reading.kind", "reading.directAnswer", "reading.rhythm", "对应主题字段"],
       conditions: ["只展示与问题高度相关内容", "多主题问题必须分开"],
@@ -205,7 +213,7 @@ export function composeNinePages(result: AnalysisResult): NinePage[] {
     pageNo: 6,
     key: "practice",
     title: "怎么把这张盘用到现实里",
-    body: page6Body(question, reading),
+    body: page6Body(question, reading, chart),
     evidence: {
       facts: ["reading.kind", "对应主题字段", "reading.rhythm"],
       conditions: ["建议必须对应本题并能在现实验证"],

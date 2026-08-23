@@ -248,9 +248,11 @@ function actionFor(kind: QuestionKind, req: AnswerRequirements, chart: Chart): s
   }
   if (req.asksTravel) {
     const picks = pickTravelDestinations(chart, req.targetYears[0], req.targetMonths);
-    const first = picks[0]?.name ?? "較順目的地";
-    const windowText = req.asksWhen ? "報告列出的較順月份" : "最近可以出行的窗口";
-    return `先把${windowText}的${first}行程定下來，另外兩處只作備選。`;
+    const first = picks[0]?.name ?? "较顺目的地";
+    const second = picks[1]?.name ?? "备选一";
+    const third = picks[2]?.name ?? "备选二";
+    const windowText = req.asksWhen ? "报告列出的较顺月份" : "最近可以出行的窗口";
+    return `现在就订：主选${first}，备选${second}、${third}。用${windowText}把${first}行程定下来。`;
   }
   if (req.asksWhen) {
     return req.targetMonths.length

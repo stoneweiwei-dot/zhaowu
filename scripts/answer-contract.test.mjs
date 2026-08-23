@@ -73,7 +73,18 @@ test("旅行＋2027＋去哪裡：必须直接回答年份、月份与具体目�
   assert.doesNotMatch(reading.directAnswer, /窗口已經在眼前/);
   assert.doesNotMatch(reading.directAnswer, /給出 2|放入 2|如果你問「去哪裡/);
   assert.doesNotMatch(reading.action, /固定同一時間睡覺/);
-  assert.doesNotMatch(reading.action, /放入 2|具體城市/);
+  assert.doesNotMatch(reading.action, /放入 2|具體城市|具体城市/);
+});
+
+test("去哪里旅游：必须直接点名 2–3 个目的地，不得反问用户补城市", () => {
+  const q = "去哪里旅游";
+  const { reading } = contracted(q);
+  assert.equal(inspectAnswerRequirements(q).asksTravel, true);
+  assert.match(reading.directAnswer, /沖繩|京都|東京|雪梨|台南|清邁|杭州|墾丁|新加坡|首爾|釜山|奈良|西安|峇里|維也納|黃金海岸/);
+  assert.match(reading.directAnswer, /主選|主选|這次直接給你三個目的地|这次直接给你三个目的地/);
+  assert.match(reading.action, /主选|主選/);
+  assert.doesNotMatch(reading.directAnswer, /放入 2|給出 2|给出 2|具體城市|具体城市|如果你問「去哪裡|如果你问「去哪里/);
+  assert.doesNotMatch(reading.action, /放入 2|具體城市|具体城市|再補城市|再补城市/);
 });
 
 test("明年＋下半年：自动解析相对年份并只在指定月份范围排序", () => {

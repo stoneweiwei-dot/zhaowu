@@ -22,6 +22,8 @@ import {
 import { Mark } from "@/components/marks";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDirectAnswer, customerDocument } from "@/lib/report/customer-copy";
+import { applyAnswerContract } from "@/lib/core/answer-contract";
+import { composeNinePages, type NinePage } from "@/lib/report/nine-page";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -44,14 +46,33 @@ function fullText(row: ReportRecord): string | null {
   return typeof text === "string" ? customerDocument(text) : null;
 }
 
-function storedNinePages(row: ReportRecord): { pageNo?: number; title?: string; body?: string[] }[] {
+function storedNinePages(row: ReportRecord): NinePage[] {
   const sources = [row.mother_draft, row.paid_report];
   for (const source of sources) {
     if (!source || typeof source !== "object") continue;
     const pages = (source as Record<string, unknown>).ninePages;
-    if (Array.isArray(pages)) return pages as { pageNo?: number; title?: string; body?: string[] }[];
+    if (Array.isArray(pages)) return pages as NinePage[];
   }
   return [];
+}
+
+function liveNinePages(row: ReportRecord): NinePage[] {
+  const snapshot = row.engine_snapshot;
+  if (snapshot?.question && snapshot.chart && snapshot.reading) {
+    try {
+      const reading = applyAnswerContract(snapshot.question, snapshot.chart, snapshot.reading);
+      return composeNinePages({
+        ...snapshot,
+        reading,
+      });
+    } catch {
+      /* fall through to stored pages */
+    }
+  }
+  return storedNinePages(row).map((page) => ({
+    ...page,
+    body: (page.body ?? []).map((line) => customerCopy(String(line))).filter(Boolean),
+  }));
 }
 
 function AccountPage() {
@@ -87,7 +108,7 @@ function AccountPage() {
     backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
     uploading: tr(locale, "上傳中…", "上传中…", "Uploading…"),
     upload: tr(locale, "＋上傳圖片", "＋上传图片", "+ Upload images"),
-    backgroundLead: tr(locale, "可一次選多張。點「設為壁紙」會立刻用這張當全站背景；其餘啟用中的圖片按日期輪播。", "可一次选多张。点「设为壁纸」会立刻用这张当全站背景；其余启用中的图片按日期轮播。", "Select multiple images. “Set as wallpaper” applies it immediately; other enabled images rotate by date."),
+    backgroundLead: tr(locale, "可一次選多張。點紅色「設為壁紙」會立刻把這張鋪滿全站，卡片會半透明，讓壁紙看得見。其餘啟用中的圖片按日期輪播。", "可一次选多张。点红色「设为壁纸」会立刻把这张铺满全站，卡片会半透明，让壁纸看得见。其余启用中的图片按日期轮播。", "Select multiple images. The red “Set as wallpaper” button pins it site-wide; cards turn translucent so the art stays visible. Other enabled images rotate by date."),
     uploadedImages: (n: number) => tr(locale, `＋已上傳圖片（${n}）`, `＋已上传图片（${n}）`, `+ Uploaded images (${n})`),
     noImages: tr(locale, "目前沒有已上傳圖片。", "目前没有已上传图片。", "No uploaded images yet."),
     enabled: tr(locale, "啟用輪播", "启用轮播", "Enable rotation"),
@@ -281,7 +302,7 @@ function AccountPage() {
                         {isPinnedWallpaper(asset) ? (
                           <button
                             type="button"
-                            className="text-xs text-wood"
+                            className="rounded-full border border-wood/40 bg-wood/10 px-3 py-1.5 text-xs text-wood"
                             onClick={async () => {
                               setBackgroundMsg(null);
                               try {
@@ -297,7 +318,7 @@ function AccountPage() {
                         ) : (
                           <button
                             type="button"
-                            className="text-xs text-cinnabar"
+                            className="rounded-full bg-cinnabar px-3 py-1.5 text-xs text-cream"
                             onClick={async () => {
                               setBackgroundMsg(null);
                               try {
@@ -314,7 +335,7 @@ function AccountPage() {
                         )}
                         <button
                           type="button"
-                          className="text-xs text-cinnabar"
+                          className="rounded-full px-3 py-1.5 text-xs text-cinnabar"
                           onClick={async () => {
                             if (!window.confirm(c.deleteImage(asset.name))) return;
                             setBackgroundMsg(null);
@@ -361,7 +382,7 @@ function AccountPage() {
             const open = openId === row.id;
             const detail = details[row.id] ?? null;
             const snapshot = detail?.engine_snapshot ?? null;
-            const pages = detail ? storedNinePages(detail) : [];
+            const pages = detail ? liveNinePages(detail) : [];
             const text = detail ? fullText(detail) : null;
             return (
               <article key={row.id} className="rounded-lg border border-line bg-paper/35 p-4">
@@ -387,7 +408,7 @@ function AccountPage() {
                         <p className="text-xs tracking-[0.18em] text-cinnabar">{c.chartSummary}</p>
                         <p className="mt-2">{c.dayMaster} {snapshot.chart.dayMaster}{snapshot.chart.dayMasterElement} · {c.monthCommand} {snapshot.chart.monthBranch}</p>
                         <p>{snapshot.chart.pillars.map((p) => p.ganZhi).join("　")}</p>
-                        <p className="mt-2">{customerDirectAnswer(snapshot.question, snapshot.reading.directAnswer)}</p>
+                        <p className="mt-2">{customerDirectAnswer(snapshot.question, applyAnswerContract(snapshot.question, snapshot.chart, snapshot.reading).directAnswer)}</p>
                       </div>
                     ) : null}
                     {detailBusyId !== row.id && text ? <div className="mb-4 whitespace-pre-wrap">{text}</div> : null}
