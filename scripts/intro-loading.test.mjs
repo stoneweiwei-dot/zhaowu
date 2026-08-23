@@ -6,7 +6,8 @@ const intro = await readFile(new URL('../src/components/intro-gate.tsx', import.
 const bootstrap = await readFile(new URL('../src/lib/bootstrap-readiness.ts', import.meta.url), 'utf8');
 
 test('loading gate uses the approved animated opening and copy', () => {
-  assert.match(intro, /\/intro\/loading-v10\.mp4/);
+  assert.match(intro, /\/intro\/loading-v11\.mp4/);
+  assert.doesNotMatch(intro, /loading-v10\.mp4/);
   assert.match(intro, /\/intro\/loading-poster\.jpg/);
   assert.match(intro, /昭於未見，梧於有歸。/);
   assert.match(intro, /命理不是宿命/);
