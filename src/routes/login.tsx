@@ -77,6 +77,7 @@ function LoginPage() {
         await signInWithPassword(email, password);
       }
       window.dispatchEvent(new Event("zhaowu-auth-change"));
+      await reload();
       await navigate({ to: "/account" });
     } catch (err) {
       const text = err instanceof Error ? err.message : t("loginFailed");

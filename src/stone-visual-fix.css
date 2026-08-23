@@ -37,17 +37,21 @@
 /* LOGIN: use the existing Stone loading-poster artwork as the actual visual surface. */
 .stone-login-screen {
   position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
-  overflow: hidden;
+  overflow: auto;
   background: #21170d;
   color: #292c29;
 }
 
 .stone-login-art {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 0;
   overflow: hidden;
+  pointer-events: none;
   background: #2a1d0f;
 }
 
@@ -98,19 +102,17 @@
 }
 
 .stone-login-sheet {
-  position: fixed;
+  position: relative;
   z-index: 20;
-  left: 50%;
-  bottom: 0;
   width: min(100%, 430px);
-  max-height: 48dvh;
-  overflow-y: auto;
-  transform: translateX(-50%);
+  margin: auto auto 0;
+  max-height: none;
+  overflow: visible;
   border: 1px solid rgba(204,166,91,.50);
   border-bottom: 0;
   border-radius: 1.8rem 1.8rem 0 0;
   background: rgba(255,253,247,.985);
-  padding: 1.05rem 1rem max(1rem, env(safe-area-inset-bottom));
+  padding: 1.05rem 1rem max(1.2rem, env(safe-area-inset-bottom));
   box-shadow: 0 -22px 70px rgba(19,12,5,.30);
 }
 
@@ -271,7 +273,7 @@
 }
 
 @media (max-height: 760px) {
-  .stone-login-sheet { max-height: 54dvh; }
+  .stone-login-sheet { max-height: none; }
   .stone-login-providers { margin-top: .55rem; }
   .stone-login-divider { margin: .45rem 0; }
 }

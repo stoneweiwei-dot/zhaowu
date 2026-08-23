@@ -79,7 +79,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className={`relative isolate min-h-dvh overflow-x-clip bg-transparent text-ink ${isLogin ? "zhaowu-login-shell" : ""} ${backgroundUrl && !isLogin ? "zhaowu-has-wallpaper" : ""}`}>
+    <div className={`relative isolate min-h-dvh bg-transparent text-ink ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"} ${backgroundUrl && !isLogin ? "zhaowu-has-wallpaper" : ""}`}>
       {backgroundUrl && !isLogin ? (
         <div
           aria-hidden
@@ -88,7 +88,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         />
       ) : null}
 
-      <SealScatter seedKey={pathname} />
+      {!isLogin ? <SealScatter seedKey={pathname} /> : null}
 
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">

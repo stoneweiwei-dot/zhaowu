@@ -56,7 +56,7 @@ test("site shell keeps the real Zhaowu text seal and mounts auspicious scatter o
   assert.match(shell, /import \{ SealScatter \} from "@\/components\/marks"/);
   assert.match(shell, /<BrandSeal \/>/);
   assert.match(shell, /<SealScatter seedKey=\{pathname\} \/>/);
-  assert.doesNotMatch(shell, /!isLogin \? <SealScatter/);
+  assert.match(shell, /!isLogin \? <SealScatter/);
   assert.doesNotMatch(shell, /<IntroGate/);
   assert.doesNotMatch(shell, /zhaowu-main-seal\.svg|showScatter/);
   assert.match(seal, /<span>昭<\/span>/);
