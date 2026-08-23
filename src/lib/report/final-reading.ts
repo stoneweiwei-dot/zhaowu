@@ -5,6 +5,15 @@ function dayBranch(chart: Chart): string {
   return chart.pillars.find((p) => p.key === "day")?.zhi || "—";
 }
 
+function strengthLine(chart: Chart): string {
+  const facts = [
+    chart.strength.deLing ? "得令" : "不得令",
+    chart.strength.deDi ? "得地" : "不得地",
+    chart.strength.deShi ? "得势" : "不得势",
+  ].join("、");
+  return `旺衰表现为${chart.strength.tendency}（${facts}）。`;
+}
+
 function flowLine(chart: Chart): string {
   if (!chart.usefulProvisional && chart.useful.length) {
     return `已成立的流通重点落在${chart.useful.join("、")}，需要避免让${chart.drain.join("、") || "耗泄端"}继续失衡。`;
@@ -28,7 +37,7 @@ export function finalizeReading(question: string, chart: Chart, raw: Reading): R
 
   const decree = [
     `命以${chart.dayMaster}${chart.dayMasterElement}为主，在${chart.monthBranch}月令中成形；日支${dayZhi}是你真正落到日常关系与选择里的位置。`,
-    `旺衰底盘为${chart.strength.tendency}：${chart.strength.summary}`,
+    strengthLine(chart),
     flowLine(chart),
     dayun,
     `因此你的命诰不是“硬撑到底”，而是：保留${chart.dayMaster}${chart.dayMasterElement}的判断力，同时让重要选择有出口、有边界、能复盘；该收时收、该动时动，不用同一种方法扛所有阶段。`,
