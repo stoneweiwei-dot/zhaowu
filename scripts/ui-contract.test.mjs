@@ -76,18 +76,21 @@ test("site shell unblocks the first screen instead of fading a loading gate", as
   assert.doesNotMatch(shell, /setPhase\("leaving"\)/);
 });
 
-test("homepage uses sitewide random auspicious scatter instead of a fixed motif strip", async () => {
+test("homepage uses sitewide random hollow-line ornament scatter instead of a fixed motif strip", async () => {
   const home = await source("src/routes/index.tsx");
   const shell = await source("src/components/site-shell.tsx");
   const marks = await source("src/components/marks.tsx");
   const emblems = await source("src/emblems.css");
+  const pool = marks.slice(marks.indexOf("const SCATTER_POOL"), marks.indexOf("type ScatterItem"));
 
   assert.doesNotMatch(home, /STONE_MOTIFS|stone-motif-row|import \{ Mark \}|<Mark /);
   assert.match(shell, /<SealScatter seedKey=\{pathname\} \/>/);
   assert.match(marks, /SCATTER_POOL/);
-  for (const name of ["lotus", "wheel", "vase", "knot", "conch", "fish", "parasol", "banner", "gourd", "bagua", "sword", "bell", "incense", "ruyi", "gate"]) {
-    assert.match(marks, new RegExp(`"${name}"`));
+  for (let i = 1; i <= 6; i += 1) {
+    const n = String(i).padStart(2, "0");
+    assert.match(pool, new RegExp(`line-ornament-${n}\\.svg`));
   }
+  assert.doesNotMatch(pool, /lotus-emblem|dharma-wheel-emblem|modern-|treasure-vase-emblem|ruyi-emblem/);
   assert.match(marks, /Date\.now\(\)/);
   assert.match(marks, /Math\.random\(\)/);
   assert.match(marks, /left = side === "left"/);
