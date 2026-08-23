@@ -24,6 +24,7 @@ header .zhaowu-emblem-brand { filter: none; }
   pointer-events: none;
 }
 
+/* 低調：弱光暈，不當貼紙 */
 .zhaowu-scatter-piece {
   object-fit: contain;
   pointer-events: none;
@@ -31,21 +32,18 @@ header .zhaowu-emblem-brand { filter: none; }
   -webkit-user-drag: none;
   mix-blend-mode: normal;
   filter:
-    saturate(1.02)
-    contrast(1.04)
-    drop-shadow(0 0 2px rgba(255, 252, 245, 1))
-    drop-shadow(0 0 7px rgba(255, 247, 226, .82))
-    drop-shadow(0 7px 15px rgba(47, 35, 24, .20));
+    saturate(0.95)
+    contrast(1.02)
+    drop-shadow(0 0 1px rgba(255, 252, 245, .55))
+    drop-shadow(0 4px 10px rgba(47, 35, 24, .12));
 }
 
-/* 登录页使用摄影／绘画底图，额外加强一层浅色边缘，仍保持在表单下层。 */
 .zhaowu-login-shell .zhaowu-scatter-piece {
   filter:
-    saturate(1.04)
-    contrast(1.06)
-    drop-shadow(0 0 2px rgba(255, 252, 245, 1))
-    drop-shadow(0 0 9px rgba(255, 244, 214, .90))
-    drop-shadow(0 8px 18px rgba(0, 0, 0, .30));
+    saturate(0.98)
+    contrast(1.03)
+    drop-shadow(0 0 1px rgba(255, 252, 245, .6))
+    drop-shadow(0 5px 12px rgba(0, 0, 0, .18));
 }
 
 .zhaowu-hero-emblem {
