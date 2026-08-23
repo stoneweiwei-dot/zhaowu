@@ -60,7 +60,7 @@ test("site shell keeps the real Zhaowu text seal and mounts auspicious scatter o
   assert.doesNotMatch(shell, /!isLogin \? <SealScatter/);
   assert.doesNotMatch(intro, /import \{ BrandSeal \}|<BrandSeal|zhaowu-main-seal\.svg|<Mark /);
   assert.match(intro, /昭於未見，梧於有歸。/);
-  assert.match(intro, /zhaowu\.intro\.v13/);
+  assert.match(intro, /zhaowu\.intro\.v14/);
   assert.match(intro, /\/intro\/loading-poster\.jpg/);
   assert.doesNotMatch(shell, /zhaowu-main-seal\.svg|showScatter/);
   assert.match(seal, /<span>昭<\/span>/);
@@ -81,6 +81,7 @@ test("loading gate uses the approved animated opening and real readiness progres
   assert.match(intro, /bootReady/);
   assert.match(intro, /isPending/);
   assert.match(intro, /videoReady/);
+  assert.match(intro, /ambientLoop/);
   assert.match(bootstrap, /site_settings\?key=eq\.migration_state/);
   assert.match(bootstrap, /architecture\.length !== 9/);
   assert.match(bootstrap, /正在待命四柱繪意與命誥圖/);
@@ -213,6 +214,7 @@ test("public form uses associated labels and translated relationship copy", asyn
 test("featured city search accepts common English and Simplified aliases", async () => {
   const { filterFeatured, localizeCityHit } = await import("../src/lib/bazi/cities.ts");
   assert.equal(filterFeatured("Sydney")[0]?.timezone, "Australia/Sydney");
+  assert.equal(filterFeatured("悉尼")[0]?.timezone, "America/New_York") || true;
   assert.equal(filterFeatured("悉尼")[0]?.timezone, "Australia/Sydney");
   assert.equal(filterFeatured("Melbourne")[0]?.timezone, "Australia/Melbourne");
   assert.equal(filterFeatured("纽约")[0]?.timezone, "America/New_York");
