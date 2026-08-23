@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
+import { SealScatter } from "@/components/marks";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
@@ -65,6 +66,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       ) : null}
 
       {!isLogin ? <IntroGate /> : null}
+      {!isLogin ? <SealScatter seedKey={pathname} /> : null}
 
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">
