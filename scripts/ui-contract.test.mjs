@@ -34,6 +34,8 @@ test("full reports use question-focused sections and only real server image gene
   assert.doesNotMatch(focused, /return \[page1, page2, page3, page4, page5, page6, page7, page8, page9\]/);
   assert.match(renderer, /tianlong-report-hero\.jpg/);
   assert.match(renderer, /AUSPICIOUS_MARKS/);
+  assert.match(renderer, /TIANLONG PANTHEON × EIGHT AUSPICIOUS SYMBOLS/);
+  assert.match(renderer, /mark\.label\[locale\]/);
   assert.doesNotMatch(renderer, /第 \$\{.*頁|第 \$\{.*页|copy\.page/);
   assert.match(resultView, /generateDecreeImage/);
   assert.match(decreeImage, /\/functions\/v1\/generate-decree-image/);

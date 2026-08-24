@@ -7,6 +7,7 @@ const { interpret, classifyQuestion } = await import("../src/lib/bazi/interpret.
 const { applyAnswerContract, inferQuestionKind } = await import("../src/lib/core/answer-contract.ts");
 const { buildPalm } = await import("../src/lib/palm/engine.ts");
 const { composeFocusedReport, composeFocusedReportText } = await import("../src/lib/report/focused-report.ts");
+const { finalizeReading } = await import("../src/lib/report/final-reading.ts");
 
 const CITY = FEATURED_CITIES[0];
 
@@ -120,4 +121,23 @@ test("直接答案在结构化报告中只出现一次", () => {
   assert.equal(exact.length, 1);
   assert.equal(sections[0].key, "conclusion");
   assert.equal(sections[0].title, "直接结论");
+});
+
+
+test("English UI keeps the direct answer and full report in English", () => {
+  const question = "What should I prioritise in my work over the next six months?";
+  const result = makeResult(question);
+  result.locale = "en";
+  result.reading = finalizeReading(question, result.chart, result.reading, "en");
+
+  const report = composeFocusedReportText(result);
+  const sections = composeFocusedReport(result);
+  assert.equal(result.reading.kind, "career");
+  assert.match(result.reading.directAnswer, /Prioritize one clearly owned workstream/i);
+  assert.deepEqual(
+    sections.map((item) => item.title),
+    ["Direct conclusion", "Chart basis", "Timing and rhythm", "Practical action"],
+  );
+  assert.match(report, /Zhaowu \| Personal full report/);
+  assert.doesNotMatch(report, /[\u3400-\u9fff]/);
 });

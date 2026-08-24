@@ -180,6 +180,7 @@ export function AnalysisForm() {
     try {
       const payload: AnalyzeInput = {
         question: question.trim(),
+        locale,
         year: Number(year),
         month: Number(month),
         day: Number(day),

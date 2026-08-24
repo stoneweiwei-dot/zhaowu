@@ -1,4 +1,4 @@
-import type { AnalysisResult, Chart, Reading } from "@/lib/bazi/types";
+import type { AnalysisResult, AppLocale, Chart, Reading } from "@/lib/bazi/types";
 import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
 import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
 import { pickTravelDestinations } from "@/lib/bazi/forecast";
@@ -20,6 +20,132 @@ export type ReportSection = {
   optional?: boolean;
   evidence: ReportSectionEvidence;
 };
+
+
+const STEM_EN: Record<string, string> = {
+  甲: "Jia", 乙: "Yi", 丙: "Bing", 丁: "Ding", 戊: "Wu",
+  己: "Ji", 庚: "Geng", 辛: "Xin", 壬: "Ren", 癸: "Gui",
+};
+
+const BRANCH_EN: Record<string, string> = {
+  子: "Zi", 丑: "Chou", 寅: "Yin", 卯: "Mao", 辰: "Chen", 巳: "Si",
+  午: "Wu", 未: "Wei", 申: "Shen", 酉: "You", 戌: "Xu", 亥: "Hai",
+};
+
+const ELEMENT_EN: Record<string, string> = {
+  木: "Wood", 火: "Fire", 土: "Earth", 金: "Metal", 水: "Water",
+};
+
+function englishGanZhi(value: string): string {
+  if (!value || value.length < 2) return "unconfirmed";
+  const stem = STEM_EN[value[0]];
+  const branch = BRANCH_EN[value[1]];
+  return stem && branch ? `${stem}-${branch}` : "unconfirmed";
+}
+
+function englishTopicBody(reading: Reading): string {
+  switch (reading.kind) {
+    case "career": return reading.work;
+    case "love": return reading.love;
+    case "money": return reading.money;
+    case "health": return reading.body;
+    case "home": return reading.home;
+    default: return reading.rhythm;
+  }
+}
+
+function composeEnglishFocusedReport(result: AnalysisResult): ReportSection[] {
+  const { reading, chart } = result;
+  const dayMaster = `${STEM_EN[chart.dayMaster] ?? "Unconfirmed"} (${ELEMENT_EN[chart.dayMasterElement] ?? "Element unconfirmed"})`;
+  const monthCommand = BRANCH_EN[chart.monthBranch] ?? "Unconfirmed";
+  const basis = [
+    `Day Master: ${dayMaster}. Month Command: ${monthCommand}.`,
+    chart.currentDayun
+      ? `Current ten-year cycle: ${englishGanZhi(chart.currentDayun.ganZhi)} (${chart.currentDayun.startYear}–${chart.currentDayun.endYear}).`
+      : "",
+    chart.timeUnknown
+      ? "Birth time is unconfirmed, so the hour pillar and cycle start are not used as hard conclusions."
+      : "",
+    englishTopicBody(reading),
+  ].filter(Boolean);
+
+  const sections: ReportSection[] = [
+    {
+      sectionNo: 1,
+      pageNo: 1,
+      key: "conclusion",
+      title: "Direct conclusion",
+      body: [reading.directAnswer],
+      evidence: {
+        facts: ["question", "reading.kind", "reading.directAnswer"],
+        conditions: ["Answer the original question first"],
+        limits: ["Do not add unrelated personality copy"],
+        checks: ["No repeated question prefix"],
+      },
+    },
+    {
+      sectionNo: 2,
+      pageNo: 2,
+      key: "basis",
+      title: "Chart basis",
+      body: Array.from(new Set(basis)),
+      evidence: {
+        facts: ["dayMaster", "monthBranch", "currentDayun", "topic reading"],
+        conditions: ["Keep only evidence relevant to the question"],
+        limits: ["Do not expose an internal reasoning chain"],
+        checks: ["No unrelated topic sections"],
+      },
+    },
+    {
+      sectionNo: 3,
+      pageNo: 3,
+      key: "timing",
+      title: "Timing and rhythm",
+      body: [reading.rhythm],
+      evidence: {
+        facts: ["reading.rhythm", "currentDayun"],
+        conditions: ["Use timing as a planning window"],
+        limits: ["Do not promise an outcome date"],
+        checks: ["Timing must serve the question"],
+      },
+    },
+    {
+      sectionNo: 4,
+      pageNo: 4,
+      key: "action",
+      title: "Practical action",
+      body: [reading.action],
+      evidence: {
+        facts: ["reading.action", "reading.kind"],
+        conditions: ["Advice must be executable"],
+        limits: ["Do not repeat earlier sections"],
+        checks: ["Priority action must match the conclusion"],
+      },
+    },
+  ];
+
+  if (reading.kind === "love") {
+    sections.push({
+      sectionNo: 5,
+      pageNo: 5,
+      key: "relationship",
+      title: "Relationship conditions",
+      body: [
+        reading.love,
+        "Look for consistent contact, concrete plans, explicit commitment, and respected boundaries.",
+      ],
+      optional: true,
+      evidence: {
+        facts: ["reading.kind=love", "reading.love"],
+        conditions: ["Only shown for relationship questions"],
+        limits: ["Do not add this section to unrelated questions"],
+        checks: ["Every line must serve the original question"],
+      },
+    });
+  }
+
+  return sections;
+}
 
 function hasMultiTopicAnswer(reading: Reading): boolean {
   return /分開回答|分开回答|分開排|分开排/.test(reading.directAnswer);
@@ -170,6 +296,7 @@ function relationshipSection(reading: Reading): ReportSection | null {
  * 图像模块（个人命诰图）独立于文字结构，由用户主动生成，失败不得阻塞文字报告。
  */
 export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
+  if (result.locale === "en") return composeEnglishFocusedReport(result);
   const { question, chart, reading } = result;
 
   const sections: ReportSection[] = [
@@ -233,15 +360,17 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
   return sections;
 }
 
-export function renderFocusedReportText(sections: ReportSection[]): string {
+export function renderFocusedReportText(sections: ReportSection[], locale: AppLocale = "zh-Hans"): string {
+  const separator = locale === "en" ? " | " : "｜";
   const blocks = sections.map((section) => [
-    `${String(section.sectionNo).padStart(2, "0")}｜${section.title}`,
+    `${String(section.sectionNo).padStart(2, "0")}${separator}${section.title}`,
     "",
     ...section.body,
   ].join("\n"));
-  return ["昭梧｜专属完整报告", "", ...blocks].join("\n\n");
+  const title = locale === "en" ? "Zhaowu | Personal full report" : "昭梧｜专属完整报告";
+  return [title, "", ...blocks].join("\n\n");
 }
 
 export function composeFocusedReportText(result: AnalysisResult): string {
-  return renderFocusedReportText(composeFocusedReport(result));
+  return renderFocusedReportText(composeFocusedReport(result), result.locale);
 }
