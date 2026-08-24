@@ -6,8 +6,7 @@ const { FEATURED_CITIES } = await import("../src/lib/bazi/cities.ts");
 const { interpret } = await import("../src/lib/bazi/interpret.ts");
 const { buildPalm } = await import("../src/lib/palm/engine.ts");
 const { finalizeReading } = await import("../src/lib/report/final-reading.ts");
-const { composeNinePages } = await import("../src/lib/report/nine-page.ts");
-const { customerCopy } = await import("../src/lib/report/customer-copy.ts");
+const { composeFocusedReport } = await import("../src/lib/report/focused-report.ts");
 
 const CITY = FEATURED_CITIES[0];
 
@@ -44,10 +43,10 @@ test("个人命诰引用月令、日支、旺衰而不是只按日主套话", ()
   assert.match(out.reading.decree, /已排定的干支|干支关系只按已排定/);
 });
 
-test("九页第5页使用同一份 final reading 的命诰", () => {
+test("命诰继续保存在 final reading 供真实图片生成，但不强塞进每份文字报告", () => {
   const out = result("我现在最该怎么安排事业？");
-  const pages = composeNinePages(out);
-  const decreePage = pages.find((p) => p.key === "decree");
-  assert.ok(decreePage);
-  assert.equal(decreePage.body[0], customerCopy(out.reading.decree));
+  assert.ok(out.reading.decree.length > 20);
+  const sections = composeFocusedReport(out);
+  assert.equal(sections.some((section) => section.key === "decree"), false);
+  assert.equal(sections.length, 4);
 });
