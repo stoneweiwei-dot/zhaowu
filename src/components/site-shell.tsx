@@ -106,6 +106,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   {user.isOwner ? t("navAdmin") : t("navMine")}
                 </Link>
               ) : null}
+              {/* Keep language choices visible; do not hide them behind a dropdown. */}
               <div
                 role="group"
                 aria-label={t("language")}
