@@ -117,6 +117,35 @@ export const zhaowuInstructionDatabase: InstructionRule[] = [
     ]
   },
   {
+    id: 'ZW-DECREE-FREE-PAID-COPY-1.0',
+    title: '個人命誥圖：免費雙句命辭與付費解說協議',
+    status: 'production',
+    layer: 'core',
+    priority: 12,
+    purpose: '讓免費命誥圖只留下兩句有命理氣質、略帶玄意但不神叨的個人命辭；完整圖解與現實提示只為付費版預留。',
+    rules: [
+      '免費版個人命誥圖只顯示兩行命辭，不顯示長篇命理解說、畫面元素字典、證據鏈、現實建議或生成理由。',
+      '兩行命辭必須由已確認命盤資料生成：第一行優先取日主天干與五行氣質，第二行只在喜用/病藥已成立時取其功能；若尚未成立則退回月令季相與節奏，不得硬猜喜用。',
+      '中文命辭語氣採半古半白：有畫面、有餘味、能讀懂；每行約 10–18 個中文字，禁止堆砌仙佛、天命、劫數、宿世、神諭等詞。',
+      '英文版不是逐字翻譯古文，而是兩行短句式 poetic aphorism，保持克制、可讀、和命盤結構相符。',
+      '命誥圖本體不強迫 AI 在圖片裡生成大段中文字；為避免亂碼，兩句命辭由前端以真正文字排在圖下方。',
+      '付費版圖解可以先準備生成規則，但免費畫面不得渲染。付費圖解啟用後需與同一張命誥圖的主象、輔象、色彩、場景及同一份 canonical reading 對齊，不可圖文各說各話。',
+      '付費圖解總長建議 220–380 字，固定涵蓋：圖名與一句總述、這張圖在說什麼、4–6 個畫面元素對照、3 條現實提示、一句收束。',
+      '付費圖解的三條現實提示固定回答：現在最該強化什麼、最容易失衡在哪裡、下一步最適合怎麼做。'
+    ],
+    guards: [
+      '禁止免費版把付費圖解提前漏出。',
+      '禁止自問自答、模型推理過程、提示詞、UUID、生成原因或內部技術文字出現在客戶畫面。',
+      '禁止為了玄妙而寫恐嚇式宿命句；不得把象徵畫面說成神明真實授命或不可改變的命運判決。',
+      '禁止解釋畫面裡沒有實際出現的元素；同一張圖只解釋真正生成出的主象與輔象。'
+    ],
+    outputContract: [
+      'FREE: exactly two lines only. No paragraph explanation.',
+      'PAID-HIDDEN-CONTRACT: decree_title 6–12字；decree_subtitle 16–28字；decree_overview 80–140字；decree_elements 4–6項；decree_guidance 3項；decree_closing 12–24字。',
+      'PAID-HIDDEN-PROMPT: 用白話解釋「這張圖為什麼這樣畫、每個核心元素代表什麼、對現實有什麼提示」；只引用 canonical chart / reading 與實際 visual profile；不要使用「可能、也許、仿佛」堆水字，不要神神叨叨，不要自問自答。'
+    ]
+  },
+  {
     id: 'ZW-FIVE-ELEMENT-FUNCTIONAL-TRAINING-1.0',
     title: '五行功能訓練與生活補法協議',
     status: 'production',
@@ -170,4 +199,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-08-20T05:14:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-08-25T01:25:00+10:00';
