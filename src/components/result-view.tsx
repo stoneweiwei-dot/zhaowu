@@ -9,6 +9,7 @@ import { FocusedReportSections } from "@/components/paid-report-pages";
 import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
 import { generateDecreeImage } from "@/lib/report/decree-image";
+import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
 const RESULT_COPY = {
@@ -118,6 +119,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const { chart, reading, question } = result;
   const answer = customerDirectAnswer(question, reading.directAnswer);
   const answerParagraphs = customerParagraphs(answer);
+  const decreeCouplet = buildFreeDecreeCouplet(chart, locale);
   const dayMasterText = locale === "en"
     ? `${STEM_EN[chart.dayMaster] ?? "Unconfirmed"} (${ELEMENT_EN[chart.dayMasterElement] ?? "Element unconfirmed"})`
     : `${chart.dayMaster}${chart.dayMasterElement}`;
@@ -268,6 +270,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           <div className="mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden rounded-xl border border-line bg-paper-deep shadow-sm">
             <img src={imageUrl} alt={copy.imageAlt} className="h-full w-full object-cover" />
           </div>
+          <blockquote className="mx-auto mt-5 max-w-sm whitespace-pre-line text-center font-display text-lg leading-8 tracking-[0.08em] text-ink">
+            {decreeCouplet}
+          </blockquote>
         </article>
       ) : null}
       {reportSections ? <FocusedReportSections sections={reportSections} /> : null}
