@@ -34,41 +34,42 @@
   display: none !important;
 }
 
-/* LOGIN: use the existing Stone loading artwork as the actual animated visual surface. */
+/* LOGIN: static artwork is a real hero region, not a hidden full-screen wallpaper. */
 .stone-login-screen {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: #21170d;
   color: #292c29;
 }
 
 .stone-login-art {
-  position: absolute;
-  inset: 0;
+  position: relative;
   z-index: 0;
+  flex: 0 0 auto;
+  width: 100%;
+  height: clamp(320px, 48dvh, 470px);
   overflow: hidden;
   pointer-events: none;
   background: #2a1d0f;
 }
 
-.stone-login-art img,
-.stone-login-art video {
+.stone-login-art img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
-  transform: scale(1.01);
+  object-position: center 18%;
 }
 
 .stone-login-art-shade {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(180deg, rgba(24,15,6,.02) 0%, rgba(24,15,6,.02) 46%, rgba(24,15,6,.24) 61%, rgba(24,15,6,.70) 100%);
+  background: linear-gradient(180deg, rgba(24,15,6,.02) 0%, rgba(24,15,6,.04) 68%, rgba(24,15,6,.34) 100%);
 }
 
 .stone-login-topbar {
@@ -105,16 +106,15 @@
 .stone-login-sheet {
   position: relative;
   z-index: 20;
-  width: min(100%, 430px);
-  margin: auto auto 0;
+  width: min(calc(100% - 1rem), 430px);
+  margin: -1.6rem auto 0;
   max-height: none;
   overflow: visible;
   border: 1px solid rgba(204,166,91,.50);
-  border-bottom: 0;
-  border-radius: 1.8rem 1.8rem 0 0;
-  background: rgba(255,253,247,.985);
-  padding: 1.05rem 1rem max(1.2rem, env(safe-area-inset-bottom));
-  box-shadow: 0 -22px 70px rgba(19,12,5,.30);
+  border-radius: 1.8rem 1.8rem .9rem .9rem;
+  background: #fffdf7;
+  padding: 1.1rem 1rem max(1.2rem, env(safe-area-inset-bottom));
+  box-shadow: 0 -14px 52px rgba(19,12,5,.24), 0 18px 40px rgba(19,12,5,.16);
 }
 
 .stone-login-sheet-head {
@@ -274,22 +274,24 @@
 }
 
 @media (max-height: 760px) {
-  .stone-login-sheet { max-height: none; }
+  .stone-login-art { height: clamp(280px, 42dvh, 350px); }
   .stone-login-providers { margin-top: .55rem; }
   .stone-login-divider { margin: .45rem 0; }
 }
 
 @media (min-width: 700px) {
-  .stone-login-art::before,
-  .stone-login-art::after {
-    content: "";
-    position: absolute;
-    inset: 0;
+  .stone-login-screen {
+    padding-bottom: 2rem;
   }
-  .stone-login-art img,
-  .stone-login-art video {
+  .stone-login-art {
+    height: clamp(380px, 55dvh, 560px);
+  }
+  .stone-login-art img {
     width: min(100%, 560px);
     margin: 0 auto;
-    display: block;
+    object-position: center 14%;
+  }
+  .stone-login-sheet {
+    margin-top: -2rem;
   }
 }
