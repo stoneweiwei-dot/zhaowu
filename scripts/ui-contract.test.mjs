@@ -79,11 +79,24 @@ test("site shell unblocks the first screen instead of fading a loading gate", as
   assert.doesNotMatch(shell, /setPhase\("leaving"\)/);
 });
 
-test("Tianlong/Buddhist visual language is curated inside the report instead of scattered across every route", async () => {
+test("Tianlong/Buddhist visual language is curated inside the report with real image assets", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const renderer = await source("src/components/paid-report-pages.tsx");
   assert.doesNotMatch(shell, /SealScatter/);
   assert.match(renderer, /天龍八部/);
-  assert.match(renderer, /輪", "蓮", "結", "螺", "魚", "瓶/);
+  for (const asset of [
+    "dharma-wheel-emblem.svg",
+    "lotus-emblem.svg",
+    "modern-endless-knot-emblem.svg",
+    "modern-conch-emblem.svg",
+    "modern-golden-fish-emblem.svg",
+    "treasure-vase-emblem.svg",
+    "modern-parasol-emblem.svg",
+    "modern-victory-banner-emblem.svg",
+  ]) {
+    assert.match(renderer, new RegExp(asset.replaceAll(".", "\\.")));
+  }
+  assert.match(renderer, /<img src=\{mark\.src\}/);
   assert.match(renderer, /zhaowu-auspicious-rail/);
+  assert.doesNotMatch(renderer, /\["輪",\s*"蓮",\s*"結",\s*"螺",\s*"魚",\s*"瓶"\]/);
 });
