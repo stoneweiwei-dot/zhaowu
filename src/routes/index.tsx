@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnalysisForm } from "@/components/analysis-form";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { ResultView } from "@/components/result-view";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
   const { t } = useI18n();
+  const { user, isPending } = useCurrentUserState();
   const current = useAppStore((s) => s.current);
 
   return (
@@ -31,8 +33,11 @@ function Home() {
             <a href="#analysisForm" className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-wood/25 bg-wood px-6 text-sm font-medium tracking-[0.08em] text-cream shadow-[0_14px_30px_rgba(35,94,81,.14)] sm:w-auto">
               {t("start")}
             </a>
-            <Link to="/account" className="hidden min-h-12 items-center justify-center rounded-full border border-earth/35 bg-cream px-6 text-sm text-ink-soft sm:inline-flex">
-              {t("accountAdmin")}
+            <Link
+              to={user ? "/account" : "/login"}
+              className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-earth/35 bg-cream px-6 text-sm text-ink-soft sm:w-auto"
+            >
+              {isPending ? "…" : user ? t("accountAdmin") : t("navLogin")}
             </Link>
           </div>
         </div>

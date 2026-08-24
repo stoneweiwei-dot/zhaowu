@@ -1,5 +1,12 @@
 import type { AnalysisResult } from "@/lib/bazi/types";
 import type { NinePage } from "@/lib/report/nine-page";
+import { composeFocusedReport, composeFocusedReportText } from "@/lib/report/focused-report";
+import {
+  CURRENT_ENGINE_VERSION,
+  needsStoredAnalysisUpgrade,
+  upgradeStoredAnalysis,
+  type VersionedAnalysisResult,
+} from "@/lib/report/legacy-upgrade";
 import { SUPABASE_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase-config";
 
 export { supabaseConfigured } from "@/lib/supabase-config";
@@ -271,6 +278,10 @@ export async function updateBirthData(session: SupabaseSession, birthData: Recor
   if (!res.ok) await jsonOrError(res);
 }
 
+function versionedResult(result: AnalysisResult): VersionedAnalysisResult {
+  return { ...result, engineVersion: CURRENT_ENGINE_VERSION };
+}
+
 function reportIdentity(session: SupabaseSession, profile: UserProfile | null, result: AnalysisResult) {
   return {
     id: result.id,
@@ -286,6 +297,7 @@ function reportIdentity(session: SupabaseSession, profile: UserProfile | null, r
       dayMaster: result.chart.dayMaster,
       ganZhiLine: result.chart.pillars.map((p) => p.ganZhi).join(" "),
       createdAt: result.createdAt,
+      engineVersion: CURRENT_ENGINE_VERSION,
     },
   };
 }
@@ -300,7 +312,7 @@ export async function createEngineReportRecord(args: {
     ...reportIdentity(session, profile, result),
     status: "engine_ready",
     payment_tier: "free",
-    engine_snapshot: result,
+    engine_snapshot: versionedResult(result),
   };
   const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests?on_conflict=id`, {
     method: "POST",
@@ -323,10 +335,11 @@ export async function patchReportRecord(args: {
   const patch: Record<string, unknown> = {
     status,
     payment_tier: status === "full_ready" ? "full" : "free",
+    engine_snapshot: versionedResult(result),
     updated_at: new Date().toISOString(),
   };
   if (fullReport !== undefined) patch.paid_report = fullReport ? { text: fullReport } : null;
-  if (ninePages !== undefined) patch.mother_draft = ninePages ? { ninePages } : null;
+  if (ninePages !== undefined) patch.mother_draft = ninePages ? { reportSections: ninePages, ninePages } : null;
 
   const runPatch = async () => {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests?id=eq.${encodeURIComponent(result.id)}`, {
@@ -375,6 +388,44 @@ export async function listReportRecords(session: SupabaseSession, isOwner: boole
   return rows.slice(0, limit);
 }
 
+async function upgradeLegacyRecordOnce(session: SupabaseSession, row: ReportRecord): Promise<ReportRecord> {
+  const snapshot = row.engine_snapshot as VersionedAnalysisResult | null;
+  if (!snapshot || !needsStoredAnalysisUpgrade(snapshot)) return row;
+
+  const upgraded = upgradeStoredAnalysis(snapshot);
+  const patch: Record<string, unknown> = {
+    engine_snapshot: upgraded,
+    image_path: null,
+    image_error: null,
+    visual_profile: null,
+    generation_error: null,
+    updated_at: new Date().toISOString(),
+  };
+
+  // Preserve whether the customer had paid/generated a full report. If a readable
+  // report already existed, migrate it to the current focused structure once.
+  if (row.paid_report || row.mother_draft) {
+    const sections = composeFocusedReport(upgraded);
+    patch.mother_draft = { reportSections: sections, ninePages: sections };
+    patch.paid_report = { text: composeFocusedReportText(upgraded), reportSections: sections };
+  }
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests?id=eq.${encodeURIComponent(row.id)}`, {
+      method: "PATCH",
+      headers: headers(session.access_token, { Prefer: "return=representation" }),
+      body: JSON.stringify(patch),
+    });
+    const rows = await jsonOrError<ReportRecord[]>(res);
+    return rows[0] ?? ({ ...row, ...patch } as ReportRecord);
+  } catch {
+    // Reading must never fail merely because a legacy row cannot be migrated.
+    // Return the corrected canonical view for this session and try persistence
+    // again on the next authenticated read.
+    return { ...row, ...patch } as ReportRecord;
+  }
+}
+
 export async function getReportRecord(session: SupabaseSession, id: string): Promise<ReportRecord | null> {
   const select = "id,public_code,user_id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,engine_snapshot,mother_draft,paid_report,visual_profile,image_path,image_error,created_at,updated_at";
   const res = await fetch(
@@ -382,7 +433,8 @@ export async function getReportRecord(session: SupabaseSession, id: string): Pro
     { headers: headers(session.access_token) },
   );
   const rows = await jsonOrError<ReportRecord[]>(res);
-  return rows[0] ?? null;
+  const row = rows[0] ?? null;
+  return row ? upgradeLegacyRecordOnce(session, row) : null;
 }
 
 export async function deleteReportRecord(session: SupabaseSession, id: string) {

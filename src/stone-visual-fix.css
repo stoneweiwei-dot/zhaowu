@@ -34,7 +34,7 @@
   display: none !important;
 }
 
-/* LOGIN: use the existing Stone loading-poster artwork as the actual visual surface. */
+/* LOGIN: use the existing Stone loading artwork as the actual animated visual surface. */
 .stone-login-screen {
   position: relative;
   z-index: 2;
@@ -55,7 +55,8 @@
   background: #2a1d0f;
 }
 
-.stone-login-art img {
+.stone-login-art img,
+.stone-login-art video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -285,7 +286,8 @@
     position: absolute;
     inset: 0;
   }
-  .stone-login-art img {
+  .stone-login-art img,
+  .stone-login-art video {
     width: min(100%, 560px);
     margin: 0 auto;
     display: block;
