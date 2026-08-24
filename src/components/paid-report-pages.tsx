@@ -6,28 +6,34 @@ const COPY = {
     title: "完整報告",
     lead: "只保留與你這一問直接相關的內容",
     artAlt: "昭梧天龍八部與佛教吉祥意象",
+    kicker: "ZHAOWU · 天龍八部 × 佛教八吉祥",
+    marksAria: "佛教八吉祥",
   },
   "zh-Hans": {
     title: "完整报告",
     lead: "只保留与你这一问直接相关的内容",
     artAlt: "昭梧天龙八部与佛教吉祥意象",
+    kicker: "ZHAOWU · 天龙八部 × 佛教八吉祥",
+    marksAria: "佛教八吉祥",
   },
   en: {
     title: "Full report",
     lead: "Only what directly serves this question",
     artAlt: "Zhaowu Tianlong and Buddhist auspicious visual",
+    kicker: "ZHAOWU · TIANLONG PANTHEON × EIGHT AUSPICIOUS SYMBOLS",
+    marksAria: "Eight auspicious Buddhist symbols",
   },
 } as const;
 
 const AUSPICIOUS_MARKS = [
-  { src: "/emblems/dharma-wheel-emblem.svg", alt: "法輪" },
-  { src: "/emblems/lotus-emblem.svg", alt: "蓮花" },
-  { src: "/emblems/modern-endless-knot-emblem.svg", alt: "盤長結" },
-  { src: "/emblems/modern-conch-emblem.svg", alt: "法螺" },
-  { src: "/emblems/modern-golden-fish-emblem.svg", alt: "雙魚" },
-  { src: "/emblems/treasure-vase-emblem.svg", alt: "寶瓶" },
-  { src: "/emblems/modern-parasol-emblem.svg", alt: "寶傘" },
-  { src: "/emblems/modern-victory-banner-emblem.svg", alt: "勝利幢" },
+  { src: "/emblems/dharma-wheel-emblem.svg", label: { "zh-Hant": "法輪", "zh-Hans": "法轮", en: "Dharma wheel" } },
+  { src: "/emblems/lotus-emblem.svg", label: { "zh-Hant": "蓮花", "zh-Hans": "莲花", en: "Lotus" } },
+  { src: "/emblems/modern-endless-knot-emblem.svg", label: { "zh-Hant": "盤長結", "zh-Hans": "盘长结", en: "Endless knot" } },
+  { src: "/emblems/modern-conch-emblem.svg", label: { "zh-Hant": "法螺", "zh-Hans": "法螺", en: "Conch" } },
+  { src: "/emblems/modern-golden-fish-emblem.svg", label: { "zh-Hant": "雙魚", "zh-Hans": "双鱼", en: "Golden fish" } },
+  { src: "/emblems/treasure-vase-emblem.svg", label: { "zh-Hant": "寶瓶", "zh-Hans": "宝瓶", en: "Treasure vase" } },
+  { src: "/emblems/modern-parasol-emblem.svg", label: { "zh-Hant": "寶傘", "zh-Hans": "宝伞", en: "Parasol" } },
+  { src: "/emblems/modern-victory-banner-emblem.svg", label: { "zh-Hant": "勝利幢", "zh-Hans": "胜利幢", en: "Victory banner" } },
 ] as const;
 
 export function FocusedReportSections({ sections }: { sections: ReportSection[] }) {
@@ -44,20 +50,20 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
         />
         <div className="zhaowu-report-visual-shade absolute inset-0" aria-hidden />
         <div className="relative z-10 flex min-h-40 flex-col justify-end p-5 sm:min-h-48 sm:p-7">
-          <p className="text-[10px] font-semibold tracking-[0.28em] text-[#d9b66f]">ZHAOWU · 天龍八部 × 佛教八吉祥</p>
+          <p className="text-[10px] font-semibold tracking-[0.28em] text-[#d9b66f]">{copy.kicker}</p>
           <h3 id="focused-report-title" className="mt-2 font-display text-2xl tracking-[0.05em] text-[#fff8e8] sm:text-3xl">{copy.title}</h3>
           <p className="mt-2 max-w-xl text-xs leading-6 text-[#efe4cf]/85 sm:text-sm">{copy.lead}</p>
         </div>
       </div>
 
       <div className="zhaowu-auspicious-rail border-b border-line/60 bg-[#f7f0e2] px-4 py-3">
-        <div className="mx-auto grid max-w-xl grid-cols-4 gap-2 sm:grid-cols-8" aria-label="佛教八吉祥">
+        <div className="mx-auto grid max-w-xl grid-cols-4 gap-2 sm:grid-cols-8" aria-label={copy.marksAria}>
           {AUSPICIOUS_MARKS.map((mark) => (
             <figure key={mark.src} className="flex min-w-0 flex-col items-center gap-1">
               <span className="grid h-11 w-11 place-items-center rounded-full border border-[#c9a863]/45 bg-[#fffaf0] shadow-[0_5px_14px_rgba(108,77,29,.08)]">
                 <img src={mark.src} alt="" aria-hidden className="h-8 w-8 object-contain" />
               </span>
-              <figcaption className="text-[9px] tracking-[0.08em] text-[#82663d]">{mark.alt}</figcaption>
+              <figcaption className="text-[9px] tracking-[0.08em] text-[#82663d]">{mark.label[locale]}</figcaption>
             </figure>
           ))}
         </div>
