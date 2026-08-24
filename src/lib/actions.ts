@@ -127,10 +127,12 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
     data.question,
     chart,
     interpret(data.question, chart, data.relation, palm),
+    data.locale,
   );
 
   return {
     id: newId(),
+    locale: data.locale,
     question: data.question,
     chart,
     reading,
@@ -161,9 +163,11 @@ export async function followUpLife({
     question,
     data.base.chart,
     interpret(question, data.base.chart, data.relation ?? "unset", palm),
+    data.base.locale,
   );
   return {
     id: newId(),
+    locale: data.base.locale,
     question,
     chart: data.base.chart,
     reading,
@@ -181,9 +185,10 @@ export async function writeFullReport({
     chart: AnalysisResult["chart"];
     reading: AnalysisResult["reading"];
     palm?: AnalysisResult["palm"];
+    locale?: AnalysisResult["locale"];
   };
 }) {
-  const reading = finalizeReading(data.question, data.chart, data.reading);
+  const reading = finalizeReading(data.question, data.chart, data.reading, data.locale);
   const palm = data.palm ?? null;
   const methodProtocol = routeMethods(reading.kind, {
     palmReady: Boolean(palm?.ready),
@@ -191,6 +196,7 @@ export async function writeFullReport({
   });
   const result: AnalysisResult = {
     id: newId(),
+    locale: data.locale,
     question: data.question,
     chart: data.chart,
     reading,
