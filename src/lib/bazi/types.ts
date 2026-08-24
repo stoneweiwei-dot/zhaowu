@@ -2,6 +2,7 @@ export type Element = "木" | "火" | "土" | "金" | "水";
 export type Gender = "male" | "female" | "unspecified";
 export type RelationPref = "any" | "hetero" | "same" | "unset";
 export type ZiPolicy = "midnight" | "late";
+export type AppLocale = "zh-Hant" | "zh-Hans" | "en";
 export type QuestionKind =
   | "career"
   | "love"
@@ -55,6 +56,7 @@ export type CityHit = {
 
 export type AnalyzeInput = {
   question: string;
+  locale?: AppLocale;
   year: number;
   month: number;
   day: number;
@@ -135,6 +137,7 @@ export type Reading = {
 
 export type AnalysisResult = {
   id: string;
+  locale?: AppLocale;
   question: string;
   chart: Chart;
   reading: Reading;
