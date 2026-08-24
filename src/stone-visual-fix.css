@@ -46,7 +46,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   display: none !important;
 }
 
-/* LOGIN: static artwork is a real hero region, not a hidden full-screen wallpaper. */
+/* LOGIN: static artwork is a real hero region, with subtle motion only. */
 .stone-login-screen {
   position: relative;
   z-index: 2;
@@ -57,6 +57,38 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   overflow-y: auto;
   background: #21170d;
   color: #292c29;
+  isolation: isolate;
+}
+
+.stone-login-screen::before,
+.stone-login-screen::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.stone-login-screen::before {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(218,176,92,.16), transparent 20%),
+    radial-gradient(circle at 82% 31%, rgba(83,151,135,.11), transparent 22%),
+    radial-gradient(circle at 50% 62%, rgba(255,244,205,.08), transparent 28%);
+  mix-blend-mode: screen;
+  animation: stone-login-ambient 11s ease-in-out infinite alternate;
+}
+
+.stone-login-screen::after {
+  z-index: 2;
+  opacity: .28;
+  background-image:
+    radial-gradient(circle, rgba(255,226,156,.70) 0 1px, transparent 1.4px),
+    radial-gradient(circle, rgba(143,190,177,.46) 0 1px, transparent 1.3px);
+  background-size: 44px 44px, 67px 67px;
+  background-position: 0 0, 21px 13px;
+  mask-image: linear-gradient(180deg, #000 0 46%, transparent 76%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0 46%, transparent 76%);
+  animation: stone-login-dust 24s linear infinite;
 }
 
 .stone-login-art {
@@ -76,12 +108,18 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   height: 100%;
   object-fit: cover;
   object-position: center 18%;
+  transform: scale(1.025);
+  filter: saturate(1.03) contrast(1.02);
+  animation: stone-login-drift 18s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
 .stone-login-art-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(24,15,6,.02) 0%, rgba(24,15,6,.04) 68%, rgba(24,15,6,.34) 100%);
+  background:
+    linear-gradient(180deg, rgba(24,15,6,.00) 0%, rgba(24,15,6,.03) 52%, rgba(24,15,6,.38) 100%),
+    radial-gradient(circle at 50% 34%, rgba(255,229,167,.08), transparent 38%);
 }
 
 .stone-login-topbar {
@@ -108,6 +146,11 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   box-shadow: 0 8px 26px rgba(0,0,0,.18);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+
+.stone-login-pill:active {
+  transform: scale(.97);
 }
 
 .stone-login-language {
@@ -121,12 +164,26 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   width: min(calc(100% - 1rem), 430px);
   margin: -1.6rem auto 0;
   max-height: none;
-  overflow: visible;
+  overflow: hidden;
   border: 1px solid rgba(204,166,91,.50);
   border-radius: 1.8rem 1.8rem .9rem .9rem;
-  background: #fffdf7;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(222,181,97,.10), transparent 34%),
+    #fffdf7;
   padding: 1.1rem 1rem max(1.2rem, env(safe-area-inset-bottom));
   box-shadow: 0 -14px 52px rgba(19,12,5,.24), 0 18px 40px rgba(19,12,5,.16);
+}
+
+.stone-login-sheet::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 4.8rem;
+  height: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, #c89a42 42%, #6fa091 58%, transparent);
+  box-shadow: 0 0 18px rgba(200,154,66,.34);
 }
 
 .stone-login-sheet-head {
@@ -167,6 +224,11 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   padding: 0 .72rem;
   color: #6b695f;
   font-size: .72rem;
+  transition: transform .18s ease, background .18s ease, color .18s ease;
+}
+
+.stone-login-tabs button:active {
+  transform: scale(.96);
 }
 
 .stone-login-tabs button.is-active {
@@ -191,20 +253,24 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   background: #fffdf7;
   padding: 0 .9rem;
   color: #292c29;
-  font-size: .9rem;
+  font-size: 1rem;
   outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
 }
 
 .stone-login-form input:focus {
   border-color: #2f7464;
-  box-shadow: 0 0 0 3px rgba(47,116,100,.08);
+  box-shadow: 0 0 0 3px rgba(47,116,100,.08), 0 8px 20px rgba(47,116,100,.06);
+  transform: translateY(-1px);
 }
 
 .stone-login-primary {
+  position: relative;
   min-height: 2.75rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   border: 0;
   border-radius: 999px;
   background: #2f7464;
@@ -213,6 +279,24 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   font-size: .88rem;
   font-weight: 600;
   box-shadow: 0 10px 24px rgba(47,116,100,.18);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.stone-login-primary::after {
+  content: "";
+  position: absolute;
+  top: -70%;
+  bottom: -70%;
+  left: -34%;
+  width: 24%;
+  transform: rotate(17deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.38), transparent);
+  animation: stone-login-button-sheen 5.8s ease-in-out infinite;
+}
+
+.stone-login-primary:active {
+  transform: translateY(1px) scale(.985);
+  box-shadow: 0 6px 16px rgba(47,116,100,.16);
 }
 
 .stone-login-message,
@@ -241,6 +325,29 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   letter-spacing: .16em;
 }
 
+@keyframes stone-login-drift {
+  0% { transform: scale(1.025) translate3d(0, 0, 0); }
+  50% { transform: scale(1.045) translate3d(-.45%, -.35%, 0); }
+  100% { transform: scale(1.035) translate3d(.38%, -.18%, 0); }
+}
+
+@keyframes stone-login-ambient {
+  from { opacity: .62; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.035); }
+}
+
+@keyframes stone-login-dust {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -44px, 0); }
+}
+
+@keyframes stone-login-button-sheen {
+  0%, 63% { left: -34%; opacity: 0; }
+  68% { opacity: .8; }
+  82% { left: 112%; opacity: .3; }
+  100% { left: 112%; opacity: 0; }
+}
+
 @media (max-height: 760px) {
   .stone-login-art { height: clamp(280px, 42dvh, 350px); }
 }
@@ -259,5 +366,21 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   }
   .stone-login-sheet {
     margin-top: -2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stone-login-screen::before,
+  .stone-login-screen::after,
+  .stone-login-art img,
+  .stone-login-primary::after {
+    animation: none !important;
+  }
+
+  .stone-login-pill,
+  .stone-login-tabs button,
+  .stone-login-form input,
+  .stone-login-primary {
+    transition: none !important;
   }
 }
