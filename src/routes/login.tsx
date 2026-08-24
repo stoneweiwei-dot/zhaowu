@@ -6,7 +6,7 @@ import {
   supabaseConfigured,
 } from "@/lib/supabase-rest";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { useI18n, type Locale } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
@@ -66,18 +66,29 @@ function LoginPage() {
 
       <div className="stone-login-topbar">
         <Link to="/" className="stone-login-pill">← {t("backHome")}</Link>
-        <label htmlFor="login-language" className="sr-only">{t("language")}</label>
-        <select
-          id="login-language"
-          value={locale}
-          onChange={(e) => setLocale(e.target.value as Locale)}
+        <div
+          role="group"
           aria-label={t("language")}
-          className="stone-login-pill stone-login-language"
+          className="flex shrink-0 items-stretch overflow-hidden rounded-full border border-[#f5e0ac]/55 bg-[#1f180e]/55 shadow-[0_8px_26px_rgba(0,0,0,.18)] backdrop-blur-md"
         >
-          <option value="zh-Hant">繁體</option>
-          <option value="zh-Hans">简体</option>
-          <option value="en">EN</option>
-        </select>
+          {([
+            ["zh-Hant", "繁中"],
+            ["zh-Hans", "简中"],
+            ["en", "EN"],
+          ] as const).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setLocale(value)}
+              aria-pressed={locale === value}
+              className={`min-h-[2.45rem] min-w-[2.7rem] border-r border-[#f5e0ac]/25 px-2 text-[11px] font-medium transition last:border-r-0 ${
+                locale === value ? "bg-[#f1ddb0] text-[#21170d]" : "text-[#fff7df] hover:bg-white/10"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <section className="stone-login-sheet">
