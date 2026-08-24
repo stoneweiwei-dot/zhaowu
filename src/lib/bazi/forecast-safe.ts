@@ -32,10 +32,7 @@ function rankDistinct(periods: ForecastPeriod[]) {
   return { best, caution };
 }
 
-/**
- * Customer-facing timing answer with one invariant: the same month may never be
- * shown as both a recommended window and a caution window.
- */
+/** Customer timing output: a month can never be both best and caution. */
 export function buildDistinctTimingAnswer(
   chart: Chart,
   topic: ForecastTopic,
@@ -54,7 +51,7 @@ export function buildDistinctTimingAnswer(
     if (periods.length === 1) {
       const only = periods[0];
       const tone = only.score >= 2 ? "偏順" : only.score <= -2 ? "阻力偏高" : "中性可用";
-      return `${yearVerdict(topic, forecast.score, year)}你指定的 ${monthLabel(only)} 為${tone}。`;
+      return `${yearVerdict(topic, forecast.score, year)}你指定的月份範圍內，${monthLabel(only)} 為${tone}。`;
     }
 
     const ranked = rankDistinct(periods);
@@ -62,8 +59,9 @@ export function buildDistinctTimingAnswer(
     const caution = ranked.caution.map(monthLabel).join("、");
     return [
       yearVerdict(topic, forecast.score, year),
-      `較順窗口：${best || "—"}。`,
-      caution ? `需要保守安排：${caution}。` : "",
+      scope.length ? "你指定的月份範圍內，" : "",
+      `較順的窗口：${best || "—"}。`,
+      caution ? `較需要保守安排：${caution}。` : "",
     ].filter(Boolean).join("");
   });
 
