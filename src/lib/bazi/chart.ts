@@ -98,8 +98,14 @@ function scoreElements(pillars: Pillar[]): ElementScores {
   return s;
 }
 
-function percents(_scores: ElementScores): ElementScores {
-  return EMPTY_ELEMENTS();
+function percents(scores: ElementScores): ElementScores {
+  const total = Object.values(scores).reduce((sum, value) => sum + value, 0);
+  if (!total) return EMPTY_ELEMENTS();
+  const out = EMPTY_ELEMENTS();
+  for (const element of Object.keys(out) as Element[]) {
+    out[element] = Math.round((scores[element] / total) * 1000) / 10;
+  }
+  return out;
 }
 
 function judgeStrength(dayEl: Element, monthZhi: string, pillars: Pillar[]): Strength {
@@ -217,7 +223,6 @@ export function buildChart(input: AnalyzeInput): Chart {
     }));
   }
   const currentDayun = dayun.find((x) => x.current) ?? null;
-  const liveLat = input.liveCity?.latitude ?? input.city.latitude;
   const civilStamp = timeUnknown
     ? `${input.year}-${String(input.month).padStart(2, "0")}-${String(input.day).padStart(2, "0")} 時辰未定`
     : stamp(input.year, input.month, input.day, input.hour, input.minute);
@@ -241,7 +246,7 @@ export function buildChart(input: AnalyzeInput): Chart {
     cityLabel: input.city.display,
     liveCityLabel: input.liveCity?.display ?? null,
     longitude: input.city.longitude,
-    hemisphere: liveLat < 0 ? "S" : "N",
+    hemisphere: input.city.latitude < 0 ? "S" : "N",
     ziPolicy: input.ziPolicy,
     usedTrueSolar,
     timeUnknown,

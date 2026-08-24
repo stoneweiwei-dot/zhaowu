@@ -1,4 +1,5 @@
 import { buildTimingAnswer, buildTravelDestinationAnswer, pickTravelDestinations, type ForecastTopic } from "@/lib/bazi/forecast";
+import { HIDDEN, tenGod } from "@/lib/bazi/calendar";
 import type { Chart, QuestionKind, Reading } from "@/lib/bazi/types";
 import { customerDirectAnswer } from "@/lib/report/customer-copy";
 
@@ -18,6 +19,7 @@ type SpecialTopic = "relation" | "legal" | "pet" | "fertility" | null;
 const WHEN_RE = /(什麼時候|什么时候|何時|何时|哪年|哪一年|哪月|幾月|几月|日期|多久|幾年|几年|時機|时机|窗口|應期|应期|今年|明年|後年|后年|這個月|这个月|本月|今月|上半年|下半年|年初|年底|季度|季|近期|最近)/;
 const WHERE_RE = /(去哪|去哪里|去哪裡|哪個城市|哪个城市|哪個國家|哪个国家|哪個地方|哪个地方|哪裡最好|哪里最好|什麼方向|什么方向|哪個方向|哪个方向|住哪|搬去哪)/;
 const COMPARE_RE = /(還是|还是|或者|二選一|二选一|哪一個|哪一个|哪個比較|哪个比较|選哪|选哪|比較好|比较好|該不該|该不该|要不要)/;
+const STRENGTH_RE = /(身強|身强|身弱|強弱|强弱|旺衰|日主.{0,8}(強|强|弱)|五行.{0,8}(能量|比例|占比|大小)|能量.{0,8}(大小|強|强|弱))/;
 const TRAVEL_RE = /(度假|旅行|旅遊|旅游|出行|出國|出国|出境|機票|机票|行程|目的地|旅居|vacation|travel|trip)/i;
 const MEDICAL_RE = /(手術|手术|治療|治疗|停藥|停药|用藥|用药|復原|恢复|康復|康复|懷孕|怀孕|受孕|備孕|备孕|生育|生孩子|孩子|病|痛|癌|醫生|医生|醫療|医疗)/;
 const INVESTMENT_RE = /(股票|基金|ETF|加密|虛擬幣|虚拟币|比特幣|比特币|期權|期权|彩票|彩券|號碼|号码|買哪|买哪|賣哪|卖哪)/i;
@@ -47,6 +49,11 @@ const CHINESE_MONTHS: Record<string, number> = {
   一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6,
   七: 7, 八: 8, 九: 9, 十: 10, 十一: 11, 十二: 12,
 };
+
+const SUPPORT_GODS = new Set(["比肩", "劫財", "劫财", "正印", "偏印", "日主"]);
+const OUTPUT_GODS = new Set(["食神", "傷官", "伤官"]);
+const WEALTH_GODS = new Set(["正財", "正财", "偏財", "偏财"]);
+const OFFICER_GODS = new Set(["正官", "七殺", "七杀"]);
 
 function cleanQuestion(question: string): string {
   const q = question.trim().replace(/\s+/g, " ");
@@ -99,6 +106,10 @@ function targetMonths(question: string): number[] {
   return uniqueSorted(months.filter((m) => m >= 1 && m <= 12));
 }
 
+function isRealComparison(question: string): boolean {
+  return COMPARE_RE.test(question) && !STRENGTH_RE.test(question);
+}
+
 function specialTopic(question: string): SpecialTopic {
   if (FERTILITY_RE.test(question)) return "fertility";
   if (LEGAL_RE.test(question)) return "legal";
@@ -114,7 +125,8 @@ export function inferQuestionKind(question: string, fallback: QuestionKind = "se
   if (LOVE_TOPIC_RE.test(question)) return "love";
   if (CAREER_TOPIC_RE.test(question)) return "career";
   if (MONEY_TOPIC_RE.test(question)) return "money";
-  if (COMPARE_RE.test(question)) return "choice";
+  if (STRENGTH_RE.test(question)) return "self";
+  if (isRealComparison(question)) return "choice";
   if (WHEN_RE.test(question) || targetYears(question).length > 0 || targetMonths(question).length > 0) return "timing";
   return fallback;
 }
@@ -128,7 +140,7 @@ export function inspectAnswerRequirements(question: string): AnswerRequirements 
   return {
     asksWhen,
     asksWhere: WHERE_RE.test(question),
-    asksCompare: COMPARE_RE.test(question),
+    asksCompare: isRealComparison(question),
     asksTravel,
     asksMedicalTiming: MEDICAL_RE.test(question) && asksWhen,
     asksInvestmentPick: INVESTMENT_RE.test(question),
@@ -161,6 +173,65 @@ function readingForTopic(topic: ForecastTopic, reading: Reading): string {
     case "home": return reading.home;
     default: return reading.directAnswer;
   }
+}
+
+function godEffect(god: string): { score: number; verb: string } {
+  if (SUPPORT_GODS.has(god)) return { score: 1, verb: "扶身" };
+  if (OUTPUT_GODS.has(god)) return { score: -0.9, verb: "泄身" };
+  if (WEALTH_GODS.has(god)) return { score: -0.8, verb: "耗身" };
+  if (OFFICER_GODS.has(god)) return { score: -1, verb: "制身" };
+  return { score: 0, verb: "中性" };
+}
+
+function ganZhiStrengthEffect(gz: string, dayStem: string): { score: number; detail: string } {
+  if (!gz || gz.length < 2) return { score: 0, detail: "未定" };
+  const gan = gz[0];
+  const zhi = gz[1];
+  const stemGod = tenGod(dayStem, gan);
+  const stemEffect = godEffect(stemGod);
+  const hidden = HIDDEN[zhi] ?? [];
+  const hiddenWeights = [1.2, 0.6, 0.35];
+  let score = stemEffect.score;
+  const hiddenDetails = hidden.map((hiddenGan, index) => {
+    const god = tenGod(dayStem, hiddenGan);
+    const effect = godEffect(god);
+    score += effect.score * (hiddenWeights[index] ?? 0.25);
+    return `${hiddenGan}${god}${effect.verb}`;
+  });
+  return {
+    score,
+    detail: `${gz}：天干${gan}${stemGod}${stemEffect.verb}${hiddenDetails.length ? `；地支${zhi}藏${hiddenDetails.join("、")}` : ""}`,
+  };
+}
+
+function currentStrengthConclusion(base: string, net: number): string {
+  if (base.includes("旺")) {
+    if (net <= -1.5) return "原局偏旺正在被大運與流年明顯泄耗、耗身或制約，當前更接近中和偏旺；不能因此直接判成身弱。";
+    if (net >= 1.2) return "原局偏旺又得到歲運扶身，當前仍屬偏旺，而且旺度比原局更容易被放大。";
+    return "原局仍以偏旺為主，歲運有拉回但幅度不足以改判為身弱。";
+  }
+  if (base.includes("弱")) {
+    if (net >= 1.5) return "原局偏弱得到歲運明顯扶助，當前向中和靠近；是否真正轉旺仍要看月令與根氣，不能只看一個流年。";
+    if (net <= -1.2) return "原局偏弱又遇泄耗或制約，當前弱勢更明顯。";
+    return "原局偏弱，歲運雖有增減，但目前不足以改變底層判定。";
+  }
+  if (net >= 1.5) return "原局接近中和，歲運扶身後目前偏向中和偏旺。";
+  if (net <= -1.5) return "原局接近中和，歲運泄耗／制約後目前偏向中和偏弱。";
+  return "原局接近中和，歲運目前沒有把旺衰推到明顯另一端。";
+}
+
+function strengthAnswer(question: string, chart: Chart): string {
+  const dayunGz = chart.currentDayun?.ganZhi ?? "";
+  const dayun = ganZhiStrengthEffect(dayunGz, chart.dayMaster);
+  const year = ganZhiStrengthEffect(chart.currentYear, chart.dayMaster);
+  const net = dayun.score * 1.15 + year.score;
+  const pct = chart.elementPercents;
+  const pctLine = `五行結構計數占比（天干＋藏干，不等同旺衰權重）：木${pct.木}%、火${pct.火}%、土${pct.土}%、金${pct.金}%、水${pct.水}%。`;
+  const dayunLine = chart.currentDayun
+    ? `當前大運 ${dayun.detail}。`
+    : "當前大運未能可靠排出，因此不拿它改判旺衰。";
+  const yearLine = `流年 ${year.detail}。`;
+  return `直接結論：原局日主${chart.dayMaster}${chart.dayMasterElement}的旺衰底盤是「${chart.strength.tendency}」。${dayunLine}${yearLine}${currentStrengthConclusion(chart.strength.tendency, net)} ${pctLine}判身強身弱的順序必須是原局月令與根氣 → 大運 → 流年，不能把五行個數或一句「還是」當成二選一題。`;
 }
 
 function medicalTimingAnswer(question: string, reading: Reading): string {
@@ -242,7 +313,10 @@ function compareNote(kind: QuestionKind, reading: Reading): string {
   return `這題同時有二選一／比較要求。命盤可以先給你的承載背景：${base}；但如果兩個選項本身的收入、距離、責任、關係狀態或其他現實條件沒有分開提供，就不能假裝已經比較過兩邊。`;
 }
 
-function actionFor(kind: QuestionKind, req: AnswerRequirements, chart: Chart): string {
+function actionFor(question: string, kind: QuestionKind, req: AnswerRequirements, chart: Chart): string {
+  if (STRENGTH_RE.test(question)) {
+    return "旺衰只按三層核對：先定原局月令與根氣，再看大運扶泄制化，最后看流年是否把趋势放大或拉回；不要再用五行个数直接等同身强身弱。";
+  }
   if (req.asksMedicalTiming) {
     return "把症狀、持續時間、已做檢查與醫生建議放在同一頁；命盤只補充生活節奏，不代替醫療時間表。";
   }
@@ -284,7 +358,9 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
     ? multiTopicAnswer(question, topics, reading)
     : topicalAnswer(question, kind, reading);
 
-  if (req.asksMedicalTiming) {
+  if (STRENGTH_RE.test(question)) {
+    directAnswer = strengthAnswer(question, chart);
+  } else if (req.asksMedicalTiming) {
     directAnswer = medicalTimingAnswer(question, reading);
   } else if (special === "fertility") {
     directAnswer = fertilityAnswer(question, reading);
@@ -319,6 +395,6 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
     ...reading,
     kind,
     directAnswer: customerDirectAnswer(question, directAnswer),
-    action: actionFor(kind, req, chart),
+    action: actionFor(question, kind, req, chart),
   };
 }

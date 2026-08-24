@@ -89,9 +89,12 @@ test("timeUnknown=true：一掌经只排年月日，八字不伪造午时柱", (
   assert.match(chart.provenance, /不偽造午時柱/);
 });
 
-test("elementPercents 不得作为判定：必须全 0", () => {
+test("elementPercents 只作结构展示，但不得再伪造为全 0", () => {
   const chart = buildChart(sample());
-  assert.deepEqual(chart.elementPercents, { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 });
+  const values = Object.values(chart.elementPercents);
+  assert.ok(values.some((value) => value > 0));
+  const total = values.reduce((sum, value) => sum + value, 0);
+  assert.ok(total >= 99.8 && total <= 100.2, `unexpected total ${total}`);
   assert.equal(chart.usefulProvisional, true);
 });
 
