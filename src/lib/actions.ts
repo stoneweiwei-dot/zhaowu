@@ -5,7 +5,7 @@ import { classifyQuestion, interpret } from "@/lib/bazi/interpret";
 import { buildPalm } from "@/lib/palm/engine";
 import { routeMethods } from "@/lib/core/method";
 import { inferQuestionKind } from "@/lib/core/answer-contract";
-import { composeNinePageReport } from "@/lib/report/nine-page";
+import { composeFocusedReportText } from "@/lib/report/focused-report";
 import { finalizeReading } from "@/lib/report/final-reading";
 
 function newId(): string {
@@ -198,6 +198,6 @@ export async function writeFullReport({
     methodProtocol,
     palm,
   };
-  const text = composeNinePageReport(result);
+  const text = composeFocusedReportText(result);
   return { text, source: "rule" as const };
 }

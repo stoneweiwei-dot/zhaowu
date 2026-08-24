@@ -32,14 +32,14 @@ function base(question) {
   return { chart, reading, palm };
 }
 
-test("完整报告与九页卡片使用同一份新版答案", async () => {
+test("完整报告与结构化区块使用同一份新版答案", async () => {
   const question = "我什麼時候適合去度假，去哪裡最好？2027 是不是不適合我出行？";
   const { chart, reading, palm } = base(question);
   const out = await writeFullReport({ data: { question, chart, reading, palm } });
-  assert.match(out.text, /昭梧｜专属九页报告/);
+  assert.match(out.text, /昭梧｜专属完整报告/);
   assert.match(out.text, /2027/);
   assert.match(out.text, /較順的窗口/);
-  assert.doesNotMatch(out.text, /排序依據|排序依据/);
+  assert.doesNotMatch(out.text, /九页|九頁|排序依據|排序依据/);
   assert.doesNotMatch(out.text, /还必须补算|還必須補算|当前这份结果只带有|當前這份結果只帶有/);
 });
 

@@ -5,9 +5,9 @@ import type { AnalysisResult } from "@/lib/bazi/types";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
-import { PaidReportPages } from "@/components/paid-report-pages";
+import { FocusedReportSections } from "@/components/paid-report-pages";
 import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
-import { composeNinePages, type NinePage } from "@/lib/report/nine-page";
+import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
 import { generateDecreeImage } from "@/lib/report/decree-image";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
@@ -15,11 +15,13 @@ const RESULT_COPY = {
   "zh-Hant": {
     syncFailed: "完整報告已整理完成，但雲端同步暫時失敗；畫面內容不受影響。",
     fullFailed: "完整報告暫時未能生成。",
-    saved: "完整九頁報告已保存到同一筆記錄。",
+    saved: "完整報告已保存到同一筆記錄。",
     saveFailed: "保存失敗。",
     saving: "保存中…",
     updateSaved: "更新已保存報告",
     unknown: "未定",
+    fullGenerate: "查看完整報告",
+    fullGenerating: "正在整理與這一問直接相關的內容…",
     imageGenerate: "生成個人命誥圖",
     imageGenerating: "命誥圖生成中…",
     imageReady: "個人命誥圖已生成並保存。",
@@ -29,11 +31,13 @@ const RESULT_COPY = {
   "zh-Hans": {
     syncFailed: "完整报告已整理完成，但云端同步暂时失败；画面内容不受影响。",
     fullFailed: "完整报告暂时未能生成。",
-    saved: "完整九页报告已保存到同一笔记录。",
+    saved: "完整报告已保存到同一笔记录。",
     saveFailed: "保存失败。",
     saving: "保存中…",
     updateSaved: "更新已保存报告",
     unknown: "未定",
+    fullGenerate: "查看完整报告",
+    fullGenerating: "正在整理与你这一问直接相关的内容…",
     imageGenerate: "生成个人命诰图",
     imageGenerating: "命诰图生成中…",
     imageReady: "个人命诰图已生成并保存。",
@@ -43,11 +47,13 @@ const RESULT_COPY = {
   en: {
     syncFailed: "The full report is ready, but cloud sync failed temporarily. The report remains available on this page.",
     fullFailed: "The full report could not be generated right now.",
-    saved: "The complete nine-page report has been saved to this record.",
+    saved: "The full report has been saved to this record.",
     saveFailed: "Saving failed.",
     saving: "Saving…",
     updateSaved: "Update saved report",
     unknown: "Unknown",
+    fullGenerate: "View full report",
+    fullGenerating: "Organizing only what directly serves this question…",
     imageGenerate: "Generate personal decree image",
     imageGenerating: "Generating decree image…",
     imageReady: "Your personal decree image has been generated and saved.",
@@ -71,7 +77,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const { fullReport, setFullReport, savedId, setSavedId, reset } = useAppStore();
   const [busy, setBusy] = useState<"full" | "save" | "image" | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
-  const [ninePages, setNinePages] = useState<NinePage[] | null>(null);
+  const [reportSections, setReportSections] = useState<ReportSection[] | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const { chart, reading, question } = result;
   const answer = customerDirectAnswer(question, reading.directAnswer);
@@ -88,14 +94,15 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   async function ensureSavedReport() {
     if (!session || !user) throw new Error(t("needLogin"));
     const reportText = await ensureFullReport();
-    const pages = ninePages ?? composeNinePages(result);
-    setNinePages(pages);
+    const sections = reportSections ?? composeFocusedReport(result);
+    setReportSections(sections);
     const row = await saveReportRecord({
       session,
       profile,
       result,
       fullReport: reportText,
-      ninePages: pages,
+      // Legacy field name in the persistence adapter; content is the new dynamic section schema.
+      ninePages: sections,
     });
     setSavedId(row?.id ?? result.id);
     return row?.id ?? result.id;
@@ -105,9 +112,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setBusy("full");
     setMsg(null);
     try {
-      const pages = composeNinePages(result);
+      const sections = composeFocusedReport(result);
       const text = await ensureFullReport();
-      setNinePages(pages);
+      setReportSections(sections);
       if (session && user) {
         try {
           await patchReportRecord({
@@ -116,7 +123,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             result,
             status: "report_ready",
             fullReport: text,
-            ninePages: pages,
+            ninePages: sections,
           });
           setSavedId(result.id);
         } catch {
@@ -200,7 +207,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="h-12 min-w-[180px] flex-1 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">
-          {busy === "full" ? t("generating") : t("genFull")}
+          {busy === "full" ? copy.fullGenerating : copy.fullGenerate}
         </button>
         {isPending ? <span className="h-12 flex-1 animate-pulse rounded-full bg-paper-deep" /> : user ? (
           <>
@@ -223,7 +230,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </div>
         </article>
       ) : null}
-      {ninePages ? <PaidReportPages pages={ninePages} /> : null}
+      {reportSections ? <FocusedReportSections sections={reportSections} /> : null}
       <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
     </section>
   );
