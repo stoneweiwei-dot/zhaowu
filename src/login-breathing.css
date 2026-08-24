@@ -6,7 +6,7 @@
     radial-gradient(circle at 82% 30%, rgba(62, 119, 104, .14), transparent 30%),
     linear-gradient(145deg, #1f160d 0%, #1d2a24 56%, #4a3019 118%);
   background-size: 145% 145%;
-  animation: stone-login-background-breathe 26s ease-in-out infinite alternate;
+  animation: stone-login-background-breathe 28s ease-in-out infinite alternate;
 }
 
 .stone-login-sheet {
