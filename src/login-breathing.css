@@ -1,0 +1,96 @@
+/* Login-page breathing refinement. Pure CSS only; no auth or routing changes. */
+
+.stone-login-screen {
+  background:
+    radial-gradient(circle at 18% 16%, rgba(184, 139, 62, .14), transparent 28%),
+    radial-gradient(circle at 82% 30%, rgba(62, 119, 104, .14), transparent 30%),
+    linear-gradient(145deg, #1f160d 0%, #1d2a24 56%, #4a3019 118%);
+  background-size: 145% 145%;
+  animation: stone-login-background-breathe 26s ease-in-out infinite alternate;
+}
+
+.stone-login-sheet {
+  transform-origin: center bottom;
+  animation: stone-login-sheet-enter .56s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.stone-login-title {
+  position: relative;
+  display: inline-block;
+  padding-bottom: .16rem;
+}
+
+.stone-login-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -.06rem;
+  height: 1px;
+  border-radius: 999px;
+  opacity: .48;
+  transform: scaleX(.32);
+  transform-origin: left center;
+  background: linear-gradient(90deg, rgba(183, 132, 45, 0), rgba(183, 132, 45, .88), rgba(67, 127, 111, .72), rgba(183, 132, 45, 0));
+  box-shadow: 0 0 10px rgba(183, 132, 45, .14);
+  animation: stone-login-title-line 7.6s ease-in-out infinite;
+}
+
+.stone-login-kicker {
+  text-shadow: 0 0 14px rgba(177, 112, 76, .08);
+}
+
+@keyframes stone-login-background-breathe {
+  0% {
+    background-position: 0% 18%;
+  }
+  50% {
+    background-position: 54% 48%;
+  }
+  100% {
+    background-position: 100% 76%;
+  }
+}
+
+@keyframes stone-login-sheet-enter {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(.992);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes stone-login-title-line {
+  0%, 15% {
+    opacity: .18;
+    transform: scaleX(.22);
+  }
+  42% {
+    opacity: .64;
+    transform: scaleX(.86);
+  }
+  62% {
+    opacity: .42;
+    transform: scaleX(.58);
+  }
+  100% {
+    opacity: .18;
+    transform: scaleX(.26);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stone-login-screen,
+  .stone-login-sheet,
+  .stone-login-title::after {
+    animation: none !important;
+  }
+
+  .stone-login-title::after {
+    opacity: .34;
+    transform: scaleX(.52);
+  }
+}
