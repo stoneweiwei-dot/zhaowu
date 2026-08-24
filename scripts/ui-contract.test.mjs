@@ -100,3 +100,15 @@ test("Tianlong/Buddhist visual language is curated inside the report with real i
   assert.match(renderer, /zhaowu-auspicious-rail/);
   assert.doesNotMatch(renderer, /\["輪",\s*"蓮",\s*"結",\s*"螺",\s*"魚",\s*"瓶"\]/);
 });
+
+test("Dharma Palm standalone uses a four-life trail, richer symbolic prose and real Buddhist ornament assets", async () => {
+  const palm = await source("src/components/palm-standalone.tsx");
+  const presentation = await source("src/lib/palm/standalone-presentation.ts");
+  assert.match(palm, /traceTitle/);
+  assert.match(palm, /realmFrom/);
+  assert.match(palm, /lotus-emblem\.svg/);
+  assert.match(palm, /dharma-wheel-emblem\.svg/);
+  assert.match(presentation, /前世若依一掌經象意來看/);
+  assert.match(presentation, /把傲氣練進手藝裡的修羅/);
+  assert.doesNotMatch(presentation, /前世就是/);
+});
