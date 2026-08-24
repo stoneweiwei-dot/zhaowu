@@ -107,9 +107,7 @@ function LoginPage() {
   return (
     <main className="stone-login-screen">
       <div className="stone-login-art" aria-hidden>
-        <video autoPlay muted loop playsInline preload="metadata" poster="/intro/loading-poster.jpg">
-          <source src="/intro/loading-v11.mp4" type="video/mp4" />
-        </video>
+        <img src="/intro/loading-poster.jpg" alt="" draggable={false} />
         <div className="stone-login-art-shade" />
       </div>
 
