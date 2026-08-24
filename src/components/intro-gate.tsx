@@ -1,67 +1,90 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 
-const KEY = "zhaowu.intro.v19";
-const POSTER_SRC = "/intro/loading-poster.jpg?v=20260824-still";
+const MIN_VISIBLE_MS = 3200;
+const MAX_VISIBLE_MS = 8000;
+const POSTER_SRC = "/intro/loading-poster.jpg?v=20260824-motion";
 
 export function IntroGate() {
   const { locale } = useI18n();
-  const [off, setOff] = useState(false);
+  const [phase, setPhase] = useState<"in" | "leaving" | "off">("in");
+  const [percent, setPercent] = useState(4);
+  const [minimumDone, setMinimumDone] = useState(false);
+  const [runtimeReady, setRuntimeReady] = useState(false);
+  const finishedRef = useRef(false);
+
+  const finish = useCallback(() => {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
+    setPercent(100);
+    setPhase("leaving");
+    window.setTimeout(() => setPhase("off"), 360);
+  }, []);
 
   useEffect(() => {
-    void runBootstrapReadiness(() => undefined).catch(() => undefined);
-  }, []);
+    let cancelled = false;
+    const minimumTimer = window.setTimeout(() => {
+      if (!cancelled) setMinimumDone(true);
+    }, MIN_VISIBLE_MS);
+    const maximumTimer = window.setTimeout(() => {
+      if (!cancelled) finish();
+    }, MAX_VISIBLE_MS);
 
-  const enter = useCallback(() => {
-    try {
-      sessionStorage.setItem(KEY, "1");
-    } catch {
-      /* ignore */
-    }
-    setOff(true);
-  }, []);
+    void runBootstrapReadiness((progress) => {
+      if (cancelled) return;
+      setPercent(Math.min(96, Math.max(4, progress.percent)));
+    })
+      .then(() => {
+        if (!cancelled) setRuntimeReady(true);
+      })
+      .catch(() => {
+        // A slow or unavailable readiness check must never trap the user on loading.
+        if (!cancelled) setRuntimeReady(true);
+      });
 
-  if (off) return null;
+    return () => {
+      cancelled = true;
+      window.clearTimeout(minimumTimer);
+      window.clearTimeout(maximumTimer);
+    };
+  }, [finish]);
 
-  const enterLabel = locale === "en" ? "Enter" : locale === "zh-Hans" ? "进入" : "進入";
-  const title = locale === "zh-Hans" ? "昭于未见，梧于有归。" : locale === "en" ? "See what lies unseen. Find where you belong." : "昭於未見，梧於有歸。";
-  const lines =
-    locale === "en"
-      ? ["Destiny is not fate", "Timing is not an answer", "Choice is where it begins"]
-      : locale === "zh-Hans"
-        ? ["命理不是宿命", "运势不是答案", "选择才是开始"]
-        : ["命理不是宿命", "運勢不是答案", "選擇才是開始"];
+  useEffect(() => {
+    if (minimumDone && runtimeReady) finish();
+  }, [finish, minimumDone, runtimeReady]);
+
+  if (phase === "off") return null;
+
+  const loadingLabel = locale === "en" ? "Preparing Zhaowu" : locale === "zh-Hans" ? "正在准备昭梧" : "正在準備昭梧";
 
   return (
-    <div className="fixed inset-0 z-[90] overflow-hidden bg-[#1a1810] text-[#fff9e8]" role="dialog" aria-label="昭梧">
-      <img src={POSTER_SRC} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "center 22%" }} draggable={false} />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(18,16,10,.22)_0%,rgba(18,16,10,.08)_38%,rgba(18,16,10,.46)_100%)]" />
+    <div
+      className={`fixed inset-0 z-[100] overflow-hidden bg-[#11150f] transition-opacity duration-[360ms] ease-out ${phase === "leaving" ? "opacity-0" : "opacity-100"}`}
+      role="status"
+      aria-live="polite"
+      aria-label={loadingLabel}
+    >
+      <img src={POSTER_SRC} alt="" aria-hidden className="intro-media intro-poster" draggable={false} />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(12,14,10,.16)_0%,rgba(12,14,10,.05)_42%,rgba(12,14,10,.48)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_16%,rgba(255,238,186,.13),transparent_34%)] mix-blend-screen" />
 
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[430px] flex-col px-6 pb-[max(56px,env(safe-area-inset-bottom))] pt-[max(36px,env(safe-area-inset-top))] text-center">
-        <p className="text-[11px] tracking-[0.48em] text-[#f0dfb4]">Z H A O W U</p>
-        <p className="mt-2 text-[9px] tracking-[0.34em] text-[#d9c89d]">DESTINY · TIMING · CHOICE</p>
-
-        <div className="mt-[10vh] rounded-[28px] border border-[#f8e7bb]/18 bg-[#172018]/18 px-5 py-6">
-          <h1 className="font-display text-[clamp(1.75rem,8vw,2.55rem)] leading-[1.35] tracking-[0.04em] text-[#fff8de]">{title}</h1>
-          <div className="mx-auto mt-5 h-px w-24 bg-[#e9d39b]/75" />
-          <div className="mt-5 space-y-2 font-display text-[15px] tracking-[0.12em] text-[#fff7df]">
-            {lines.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
-          </div>
-          <p className="mt-5 font-serif text-[13px] italic tracking-[0.04em] text-[#eadcb8]">See the unseen. Find your ground.</p>
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[430px] flex-col px-6 pb-[max(34px,env(safe-area-inset-bottom))] pt-[max(34px,env(safe-area-inset-top))] text-center text-[#fff8df]">
+        <div>
+          <p className="text-[11px] tracking-[0.48em] text-[#f0dfb4]">Z H A O W U</p>
+          <p className="mt-2 text-[9px] tracking-[0.34em] text-[#d7c69c]">DESTINY · TIMING · CHOICE</p>
         </div>
 
-        <div className="mt-auto pb-3">
-          <button
-            type="button"
-            onClick={enter}
-            className="min-h-12 min-w-[9.5rem] rounded-full border border-[#f0dfb4]/55 bg-[#1a261c]/82 px-8 font-display text-[15px] tracking-[0.28em] text-[#fff6d8]"
-          >
-            {enterLabel}
-          </button>
-          <p className="mt-3 text-[9px] tracking-[0.22em] text-[#d4c39f]">STONE 原創 · 2026</p>
+        <div className="mt-auto pb-4">
+          <div className="mx-auto h-[3px] w-36 overflow-hidden rounded-full bg-white/20">
+            <div
+              className="h-full rounded-full bg-[#f0d99c] transition-[width] duration-300 ease-out"
+              style={{ width: `${percent}%` }}
+            />
+          </div>
+          <p className="mt-4 font-display text-[15px] tracking-[0.18em] text-[#fff7df]">{loadingLabel}</p>
+          <p className="mt-2 text-[10px] tabular-nums tracking-[0.18em] text-[#d7c69c]">{percent}%</p>
+          <p className="mt-4 text-[9px] tracking-[0.22em] text-[#cbbb96]">STONE 原創 · 2026</p>
         </div>
       </div>
     </div>
