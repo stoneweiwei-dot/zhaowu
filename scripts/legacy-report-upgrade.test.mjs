@@ -69,7 +69,7 @@ test("旧保存记录只升级一次，并把错误二选一答案迁移成当�
   const upgraded = upgradeStoredAnalysis(stale);
   assert.equal(upgraded.engineVersion, CURRENT_ENGINE_VERSION);
   assert.equal(upgraded.reading.kind, "self");
-  assert.doesNotMatch(upgraded.reading.directAnswer, /二選一|二选一|收入、距離|收入、距离/);
+  assert.doesNotMatch(upgraded.reading.directAnswer, /這題同時有二選一|这题同时有二选一|收入、距離、責任|收入、距离、责任/);
   assert.match(upgraded.reading.directAnswer, /原局日主壬水/);
   assert.match(upgraded.reading.directAnswer, /乙丑/);
   assert.match(upgraded.reading.directAnswer, /丙午/);
