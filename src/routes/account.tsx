@@ -19,11 +19,10 @@ import {
   uploadBackground,
   type BackgroundAsset,
 } from "@/lib/background-assets";
-import { Mark } from "@/components/marks";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
 import { generateDecreeImage } from "@/lib/report/decree-image";
-import type { NinePage } from "@/lib/report/nine-page";
+import type { ReportSection } from "@/lib/report/focused-report";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -33,8 +32,8 @@ function tr(locale: Locale, hant: string, hans: string, en: string) {
 }
 
 function reportLevel(row: Pick<ReportRecord, "status" | "payment_tier">, locale: Locale) {
-  if (row.status === "full_ready" || row.payment_tier === "full") return tr(locale, "最高版", "最高版", "Highest version");
-  if (row.status === "report_ready") return tr(locale, "完整／九頁", "完整／九页", "Full / nine-page");
+  if (row.status === "full_ready" || row.payment_tier === "full") return tr(locale, "完整版", "完整版", "Full report");
+  if (row.status === "report_ready") return tr(locale, "完整報告", "完整报告", "Full report");
   if (row.status === "engine_ready") return tr(locale, "基礎盤", "基础盘", "Base chart");
   if (row.status === "ready") return tr(locale, "已完成", "已完成", "Ready");
   return tr(locale, "待生成", "待生成", "Pending");
@@ -46,17 +45,32 @@ function fullText(row: ReportRecord): string | null {
   return typeof text === "string" ? customerDocument(text) : null;
 }
 
-function storedNinePages(row: ReportRecord): NinePage[] {
+/**
+ * New records may use focused-report naming later; old records use `ninePages`.
+ * The old key is read only as storage compatibility and is never surfaced as a product name.
+ */
+function storedReportSections(row: ReportRecord): ReportSection[] {
   const sources = [row.mother_draft, row.paid_report];
   for (const source of sources) {
     if (!source || typeof source !== "object") continue;
-    const pages = (source as Record<string, unknown>).ninePages;
-    if (Array.isArray(pages)) {
-      return (pages as NinePage[]).map((page) => ({
-        ...page,
-        body: (page.body ?? []).map((line) => customerCopy(String(line))).filter(Boolean),
-      }));
-    }
+    const record = source as Record<string, unknown>;
+    const candidate = record.reportSections ?? record.sections ?? record.ninePages;
+    if (!Array.isArray(candidate)) continue;
+    return candidate.map((raw, index) => {
+      const item = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+      const sectionNo = Number(item.sectionNo ?? item.pageNo ?? index + 1);
+      return {
+        sectionNo,
+        pageNo: sectionNo,
+        key: String(item.key ?? `legacy-${index}`) as ReportSection["key"],
+        title: customerCopy(String(item.title ?? "完整报告")),
+        body: Array.isArray(item.body) ? item.body.map((line) => customerCopy(String(line))).filter(Boolean) : [],
+        optional: Boolean(item.optional),
+        evidence: (item.evidence && typeof item.evidence === "object" ? item.evidence : {
+          facts: [], conditions: [], limits: [], checks: [],
+        }) as ReportSection["evidence"],
+      };
+    });
   }
   return [];
 }
@@ -75,32 +89,29 @@ function AccountPage() {
   const { user, session, isPending } = useCurrentUserState();
   const [rows, setRows] = useState<ReportListRecord[]>([]);
   const [details, setDetails] = useState<Record<string, ReportRecord | null>>({});
-  const [detailBusyId, setDetailBusyId] = useState<string | null>(null);
-  const [actionBusyId, setActionBusyId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
   const [busy, setBusy] = useState(true);
   const [refreshBusy, setRefreshBusy] = useState(false);
-  const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
+  const [detailBusyId, setDetailBusyId] = useState<string | null>(null);
+  const [actionBusyId, setActionBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reportMessages, setReportMessages] = useState<Record<string, string>>({});
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
-  const [openId, setOpenId] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
   const [backgrounds, setBackgrounds] = useState<BackgroundAsset[]>([]);
   const [backgroundBusy, setBackgroundBusy] = useState(false);
   const [backgroundMsg, setBackgroundMsg] = useState<string | null>(null);
+  const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
 
   const c = useMemo(() => ({
-    reportsReadError: tr(locale, "報告讀取失敗。", "报告读取失败。", "Could not load reports."),
-    backgroundsReadError: tr(locale, "背景圖片讀取失敗。", "背景图片读取失败。", "Could not load background images."),
-    expired: tr(locale, "登入狀態已失效，請重新登入。", "登录状态已失效，请重新登录。", "Your session has expired. Sign in again."),
-    reportReadError: tr(locale, "單筆報告讀取失敗。", "单笔报告读取失败。", "Could not load this report."),
-    uploaded: (n: number) => tr(locale, `已上傳 ${n} 張。`, `已上传 ${n} 张。`, `Uploaded ${n} image${n === 1 ? "" : "s"}.`),
-    uploadFailed: tr(locale, "圖片上傳失敗。", "图片上传失败。", "Image upload failed."),
     ownerTitle: tr(locale, "昭梧站主後台", "昭梧站主后台", "Zhaowu Owner Console"),
     memberTitle: tr(locale, "我的昭梧", "我的昭梧", "My Zhaowu"),
-    ownerBadge: tr(locale, "站主 · 單一最終結果", "站主 · 单一最终结果", "Owner · single final result"),
+    ownerBadge: tr(locale, "站主 · 單一最終答案", "站主 · 单一最终答案", "Owner · one final answer"),
+    reportsReadError: tr(locale, "報告讀取失敗。", "报告读取失败。", "Could not load reports."),
+    reportReadError: tr(locale, "單筆報告讀取失敗。", "单笔报告读取失败。", "Could not load this report."),
+    expired: tr(locale, "登入狀態已失效，請重新登入。", "登录状态已失效，请重新登录。", "Your session has expired. Sign in again."),
     birthData: tr(locale, "出生資料", "出生资料", "Birth profile"),
-    birthSaved: tr(locale, "已記住，下次分析可自動回填。", "已记住，下次分析可自动回填。", "Saved for the next analysis."),
+    birthSaved: tr(locale, "已保存，可供下次分析回填。", "已保存，可供下次分析回填。", "Saved for the next analysis."),
     birthEmpty: tr(locale, "尚未保存。", "尚未保存。", "Not saved yet."),
     reports: tr(locale, "報告", "报告", "Reports"),
     ownerCount: (n: number) => tr(locale, `目前 ${n} 筆`, `目前 ${n} 笔`, `${n} reports`),
@@ -109,44 +120,29 @@ function AccountPage() {
     refreshing: tr(locale, "刷新中…", "刷新中…", "Refreshing…"),
     refreshed: tr(locale, "已刷新", "已刷新", "Refreshed"),
     refreshOne: tr(locale, "刷新這筆", "刷新这笔", "Refresh"),
-    backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
-    uploading: tr(locale, "上傳中…", "上传中…", "Uploading…"),
-    upload: tr(locale, "＋上傳圖片", "＋上传图片", "+ Upload images"),
-    backgroundLead: tr(locale, "點「設為壁紙」會固定全站背景；其餘啟用圖片按日期輪播。", "点“设为壁纸”会固定全站背景；其余启用图片按日期轮播。", "Set a wallpaper to pin it site-wide; other enabled images rotate by date."),
-    uploadedImages: (n: number) => tr(locale, `＋已上傳圖片（${n}）`, `＋已上传图片（${n}）`, `+ Uploaded images (${n})`),
-    noImages: tr(locale, "目前沒有已上傳圖片。", "目前没有已上传图片。", "No uploaded images yet."),
-    enabled: tr(locale, "啟用輪播", "启用轮播", "Enable rotation"),
-    setWallpaper: tr(locale, "設為壁紙", "设为壁纸", "Set as wallpaper"),
-    currentWallpaper: tr(locale, "目前壁紙", "当前壁纸", "Current wallpaper"),
-    wallpaperSet: tr(locale, "已設為目前壁紙。", "已设为当前壁纸。", "Wallpaper updated."),
-    unpinWallpaper: tr(locale, "取消固定", "取消固定", "Unpin"),
-    updateFailed: tr(locale, "更新失敗。", "更新失败。", "Update failed."),
-    delete: tr(locale, "刪除", "删除", "Delete"),
-    deleteImage: (name: string) => tr(locale, `刪除「${name}」？`, `删除“${name}”？`, `Delete “${name}”?`),
-    deleteFailed: tr(locale, "刪除失敗。", "删除失败。", "Delete failed."),
     customerReports: tr(locale, "客戶報告", "客户报告", "Customer reports"),
     recentReports: tr(locale, "最近報告", "最近报告", "Recent reports"),
     search: tr(locale, "搜尋 Email / 問題", "搜索 Email / 问题", "Search email / question"),
     empty: tr(locale, "目前沒有報告。", "目前没有报告。", "No reports yet."),
-    reportFallback: tr(locale, "昭梧報告", "昭梧报告", "Zhaowu report"),
-    noEmail: tr(locale, "未綁 Email", "未绑定 Email", "No email linked"),
-    collapse: tr(locale, "收起", "收起", "Collapse"),
     open: tr(locale, "查看", "查看", "Open"),
+    collapse: tr(locale, "收起", "收起", "Collapse"),
+    noEmail: tr(locale, "未綁 Email", "未绑定 Email", "No email linked"),
+    reportFallback: tr(locale, "昭梧報告", "昭梧报告", "Zhaowu report"),
     chartSummary: tr(locale, "命盤摘要", "命盘摘要", "Chart summary"),
     dayMaster: tr(locale, "日主", "日主", "Day Master"),
     monthCommand: tr(locale, "月令", "月令", "Month command"),
-    page: tr(locale, "頁", "页", "Page"),
-    fullReport: tr(locale, "完整報告", "完整报告", "Full report"),
-    noReadable: tr(locale, "這筆記錄尚未保存最終可讀內容。", "这笔记录尚未保存最终可读内容。", "This record does not yet contain a saved final result."),
-    deleteRecordConfirm: tr(locale, "刪除這筆報告？", "删除这笔报告？", "Delete this report?"),
-    deleteRecord: tr(locale, "刪除記錄", "删除记录", "Delete record"),
-    finalSource: tr(locale, "最終結果來源：保存版本", "最终结果来源：保存版本", "Final source: saved version"),
+    finalSource: tr(locale, "最終答案來源：保存版本，不重新計算", "最终答案来源：保存版本，不重新计算", "Final answer source: saved version, no live recalculation"),
     chartDone: tr(locale, "命盤完成", "命盘完成", "Chart ready"),
     chartPending: tr(locale, "命盤待生成", "命盘待生成", "Chart pending"),
     answerDone: tr(locale, "最終答案完成", "最终答案完成", "Final answer ready"),
     answerPending: tr(locale, "最終答案待保存", "最终答案待保存", "Final answer pending"),
-    pagesDone: tr(locale, "九頁完成", "九页完成", "Nine pages ready"),
-    pagesPending: tr(locale, "九頁待生成", "九页待生成", "Nine pages pending"),
+    reportDone: tr(locale, "完整報告完成", "完整报告完成", "Full report ready"),
+    reportPending: tr(locale, "完整報告待生成", "完整报告待生成", "Full report pending"),
+    section: tr(locale, "區", "区", "Section"),
+    fullReport: tr(locale, "完整報告", "完整报告", "Full report"),
+    noReadable: tr(locale, "這筆記錄尚未保存最終可讀內容。", "这笔记录尚未保存最终可读内容。", "This record does not yet contain a saved final result."),
+    copyAnswer: tr(locale, "複製最終答案", "复制最终答案", "Copy final answer"),
+    copied: tr(locale, "最終答案已複製。", "最终答案已复制。", "Final answer copied."),
     imageDone: tr(locale, "命誥圖完成", "命诰图完成", "Decree image ready"),
     imageFailed: tr(locale, "命誥圖失敗", "命诰图失败", "Decree image failed"),
     imagePending: tr(locale, "命誥圖待生成", "命诰图待生成", "Decree image pending"),
@@ -155,12 +151,30 @@ function AccountPage() {
     regenerateImage: tr(locale, "重新生成", "重新生成", "Regenerate"),
     generatingImage: tr(locale, "生成中…", "生成中…", "Generating…"),
     imageReady: tr(locale, "命誥圖已生成並刷新。", "命诰图已生成并刷新。", "Decree image generated and refreshed."),
-    copied: tr(locale, "最終答案已複製。", "最终答案已复制。", "Final answer copied."),
-    copyAnswer: tr(locale, "複製最終答案", "复制最终答案", "Copy final answer"),
+    deleteRecordConfirm: tr(locale, "刪除這筆報告？", "删除这笔报告？", "Delete this report?"),
+    deleteRecord: tr(locale, "刪除記錄", "删除记录", "Delete record"),
+    backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
+    backgroundLead: tr(locale, "站主設定的壁紙優先；其餘啟用圖片才參與輪播。", "站主设置的壁纸优先；其余启用图片才参与轮播。", "Pinned owner wallpaper has priority; other enabled images may rotate."),
+    uploadedImages: (n: number) => tr(locale, `＋已上傳圖片（${n}）`, `＋已上传图片（${n}）`, `+ Uploaded images (${n})`),
+    noImages: tr(locale, "目前沒有已上傳圖片。", "目前没有已上传图片。", "No uploaded images yet."),
+    upload: tr(locale, "＋上傳圖片", "＋上传图片", "+ Upload images"),
+    uploading: tr(locale, "上傳中…", "上传中…", "Uploading…"),
+    uploaded: (n: number) => tr(locale, `已上傳 ${n} 張。`, `已上传 ${n} 张。`, `Uploaded ${n} image${n === 1 ? "" : "s"}.`),
+    uploadFailed: tr(locale, "圖片上傳失敗。", "图片上传失败。", "Image upload failed."),
+    enabled: tr(locale, "啟用輪播", "启用轮播", "Enable rotation"),
+    setWallpaper: tr(locale, "設為壁紙", "设为壁纸", "Set as wallpaper"),
+    currentWallpaper: tr(locale, "目前壁紙", "当前壁纸", "Current wallpaper"),
+    unpinWallpaper: tr(locale, "取消固定", "取消固定", "Unpin"),
+    wallpaperSet: tr(locale, "已設為目前壁紙。", "已设为当前壁纸。", "Wallpaper updated."),
+    delete: tr(locale, "刪除", "删除", "Delete"),
+    deleteImage: (name: string) => tr(locale, `刪除「${name}」？`, `删除“${name}”？`, `Delete “${name}”?`),
+    deleteFailed: tr(locale, "刪除失敗。", "删除失败。", "Delete failed."),
+    updateFailed: tr(locale, "更新失敗。", "更新失败。", "Update failed."),
+    backgroundsReadError: tr(locale, "背景圖片讀取失敗。", "背景图片读取失败。", "Could not load background images."),
     updated: tr(locale, "更新", "更新", "Updated"),
   }), [locale]);
 
-  async function load() {
+  async function loadReports() {
     if (!session || !user) {
       setRows([]);
       setBusy(false);
@@ -212,7 +226,7 @@ function AccountPage() {
     setRefreshBusy(true);
     setError(null);
     try {
-      await load();
+      await loadReports();
       if (user.isOwner) await loadBackgrounds();
       if (openId) await refreshDetail(openId, true);
       setLastRefreshedAt(new Date());
@@ -222,7 +236,7 @@ function AccountPage() {
   }
 
   useEffect(() => {
-    void load();
+    void loadReports();
     if (user?.isOwner) void loadBackgrounds();
   }, [session?.access_token, user?.isOwner]);
 
@@ -252,7 +266,7 @@ function AccountPage() {
       const out = await generateDecreeImage(session, id, force);
       if (out.signedUrl) setImageUrls((prev) => ({ ...prev, [id]: out.signedUrl! }));
       await refreshDetail(id, true);
-      await load();
+      await loadReports();
       setReportMessages((prev) => ({ ...prev, [id]: c.imageReady }));
     } catch (err) {
       setReportMessages((prev) => ({ ...prev, [id]: err instanceof Error ? err.message : c.updateFailed }));
@@ -415,14 +429,14 @@ function AccountPage() {
             const open = openId === row.id;
             const detail = details[row.id] ?? null;
             const snapshot = detail?.engine_snapshot ?? null;
-            const pages = detail ? storedNinePages(detail) : [];
+            const sections = detail ? storedReportSections(detail) : [];
             const text = detail ? fullText(detail) : null;
-            const savedAnswer = pages[0]?.body?.[0] || null;
+            const savedAnswer = sections[0]?.body?.[0] || null;
             const fallbackAnswer = snapshot?.reading?.directAnswer ? customerCopy(snapshot.reading.directAnswer) : null;
             const displayAnswer = savedAnswer || fallbackAnswer;
             const chartState = statusPill(Boolean(snapshot?.chart), c.chartDone, c.chartPending);
             const answerState = statusPill(Boolean(savedAnswer || fallbackAnswer), c.answerDone, c.answerPending);
-            const pagesState = statusPill(pages.length === 9, c.pagesDone, c.pagesPending);
+            const reportState = statusPill(sections.length >= 4 || Boolean(text), c.reportDone, c.reportPending);
             const imageState = detail?.image_path
               ? { label: c.imageDone, className: "border-emerald-700/25 bg-emerald-700/5 text-emerald-800" }
               : detail?.image_error
@@ -432,14 +446,11 @@ function AccountPage() {
 
             return (
               <article key={row.id} className="rounded-lg border border-line bg-paper/35 p-4">
-                <div className="flex items-start justify-center gap-2 text-center">
-                  <Mark id="brand" size={30} className="mt-0.5 h-7 w-7 shrink-0 opacity-80" />
-                  <div className="min-w-0">
-                    <h3 className="truncate font-display text-lg font-semibold">{row.alias || String(row.context?.question ?? c.reportFallback)}</h3>
-                    {user.isOwner ? <p className="truncate text-xs text-cinnabar">{row.user_email || c.noEmail}</p> : null}
-                    <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")} · {reportLevel(row, locale)}</p>
-                    <p className="mt-1 text-[11px] text-ink-mute">{c.updated} {new Date(row.updated_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")}</p>
-                  </div>
+                <div className="text-center">
+                  <h3 className="truncate font-display text-lg font-semibold">{row.alias || String(row.context?.question ?? c.reportFallback)}</h3>
+                  {user.isOwner ? <p className="truncate text-xs text-cinnabar">{row.user_email || c.noEmail}</p> : null}
+                  <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")} · {reportLevel(row, locale)}</p>
+                  <p className="mt-1 text-[11px] text-ink-mute">{c.updated} {new Date(row.updated_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")}</p>
                 </div>
 
                 <div className="mt-3 flex flex-wrap justify-center gap-2">
@@ -458,7 +469,7 @@ function AccountPage() {
                           <div className="mb-4 rounded-lg border border-line bg-cream/70 p-3">
                             <p className="text-[11px] tracking-[0.18em] text-cinnabar">{c.finalSource}</p>
                             <div className="mt-3 flex flex-wrap gap-2">
-                              {[chartState, answerState, pagesState, imageState].map((s) => <span key={s.label} className={`rounded-full border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
+                              {[chartState, answerState, reportState, imageState].map((s) => <span key={s.label} className={`rounded-full border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
                             </div>
                           </div>
                         ) : null}
@@ -486,12 +497,12 @@ function AccountPage() {
 
                         {imageUrls[row.id] ? <div className="mb-5 mx-auto max-w-sm overflow-hidden rounded-xl border border-line bg-cream p-2"><img src={imageUrls[row.id]} alt={c.imageDone} className="aspect-[9/16] w-full rounded-lg object-cover" /></div> : null}
 
-                        {pages.length ? (
+                        {sections.length ? (
                           <div className="space-y-4">
-                            {pages.map((p, i) => (
-                              <div key={`${row.id}-${i}`} className="border-t border-line/70 pt-3 first:border-0 first:pt-0">
-                                <p className="font-medium text-ink">{locale === "en" ? `${c.page} ${p.pageNo ?? i + 1}` : `第 ${p.pageNo ?? i + 1} ${c.page}`} · {p.title ?? c.fullReport}</p>
-                                {(p.body ?? []).map((line, j) => <p key={j} className="mt-1">{customerCopy(line)}</p>)}
+                            {sections.map((section, index) => (
+                              <div key={`${row.id}-${section.key}-${index}`} className="border-t border-line/70 pt-3 first:border-0 first:pt-0">
+                                <p className="font-medium text-ink">{String(section.sectionNo ?? index + 1).padStart(2, "0")} · {section.title || c.fullReport}</p>
+                                {(section.body ?? []).map((line, j) => <p key={j} className="mt-1">{customerCopy(line)}</p>)}
                               </div>
                             ))}
                           </div>
@@ -502,7 +513,7 @@ function AccountPage() {
                           await deleteReportRecord(session, row.id);
                           setOpenId(null);
                           setDetails((prev) => { const next = { ...prev }; delete next[row.id]; return next; });
-                          await load();
+                          await loadReports();
                         }}>{c.deleteRecord}</button> : null}
                       </>
                     ) : null}
