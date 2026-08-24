@@ -11,6 +11,7 @@ import './stone-visual-fix.css';
 import './motif-row-lock.css';
 import './focused-report.css';
 import './login-breathing.css';
+import './palm-light-refinement.css';
 
 const router = createRouter({ routeTree });
 
