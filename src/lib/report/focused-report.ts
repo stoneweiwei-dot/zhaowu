@@ -12,6 +12,8 @@ export type ReportSectionEvidence = {
 
 export type ReportSection = {
   sectionNo: number;
+  /** Legacy storage alias only. New UI must use sectionNo / section language, never page language. */
+  pageNo: number;
   key: "conclusion" | "basis" | "timing" | "action" | "relationship";
   title: string;
   body: string[];
@@ -146,6 +148,7 @@ function relationshipSection(reading: Reading): ReportSection | null {
   if (reading.kind !== "love") return null;
   return {
     sectionNo: 5,
+    pageNo: 5,
     key: "relationship",
     title: "关系与对象",
     body: [
@@ -172,6 +175,7 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
   const sections: ReportSection[] = [
     {
       sectionNo: 1,
+      pageNo: 1,
       key: "conclusion",
       title: "直接结论",
       body: [customerDirectAnswer(question, reading.directAnswer)],
@@ -184,6 +188,7 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
     },
     {
       sectionNo: 2,
+      pageNo: 2,
       key: "basis",
       title: "命理依据",
       body: basisBody(question, reading, chart),
@@ -196,6 +201,7 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
     },
     {
       sectionNo: 3,
+      pageNo: 3,
       key: "timing",
       title: "时间与节奏",
       body: timingBody(question, reading, chart),
@@ -208,6 +214,7 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
     },
     {
       sectionNo: 4,
+      pageNo: 4,
       key: "action",
       title: "现实行动",
       body: actionBody(question, reading, chart),
