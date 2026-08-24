@@ -1,12 +1,9 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
-  captureOAuthRedirect,
   signInWithPassword,
   signUpWithPassword,
-  startOAuth,
   supabaseConfigured,
-  type OAuthProvider,
 } from "@/lib/supabase-rest";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n, type Locale } from "@/lib/i18n";
@@ -22,35 +19,8 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
-  const [oauthBusy, setOauthBusy] = useState<OAuthProvider | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const resetOAuthBusy = () => setOauthBusy(null);
-    window.addEventListener("pageshow", resetOAuthBusy);
-    window.addEventListener("focus", resetOAuthBusy);
-
-    let alive = true;
-    void (async () => {
-      try {
-        const session = await captureOAuthRedirect();
-        if (!alive || !session) return;
-        window.dispatchEvent(new Event("zhaowu-auth-change"));
-        await reload();
-        await navigate({ to: "/account" });
-      } catch (err) {
-        if (!alive) return;
-        const text = err instanceof Error ? err.message : t("loginFailed");
-        setError(text);
-      }
-    })();
-    return () => {
-      alive = false;
-      window.removeEventListener("pageshow", resetOAuthBusy);
-      window.removeEventListener("focus", resetOAuthBusy);
-    };
-  }, [navigate, reload, t]);
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -84,23 +54,6 @@ function LoginPage() {
       setError(text.includes("Invalid login credentials") ? t("invalidCredentials") : text);
     } finally {
       setBusy(false);
-    }
-  }
-
-  function onOAuth(provider: OAuthProvider) {
-    setError(null);
-    setMessage(null);
-    if (!supabaseConfigured) {
-      setError(t("loginUnavailable"));
-      return;
-    }
-    setOauthBusy(provider);
-    try {
-      startOAuth(provider);
-    } catch (err) {
-      const text = err instanceof Error ? err.message : t("loginFailed");
-      setError(text);
-      setOauthBusy(null);
     }
   }
 
@@ -150,18 +103,7 @@ function LoginPage() {
               </div>
             </div>
 
-            <div className="stone-login-providers">
-              <button type="button" disabled={!supabaseConfigured || oauthBusy !== null} onClick={() => onOAuth("google")}>
-                <span>G</span>{oauthBusy === "google" ? t("processing") : t("withGoogle")}
-              </button>
-              <button type="button" disabled={!supabaseConfigured || oauthBusy !== null} onClick={() => onOAuth("apple")}>
-                <span>●</span>{oauthBusy === "apple" ? t("processing") : t("withApple")}
-              </button>
-            </div>
-
-            <div className="stone-login-divider"><span />{t("orEmail")}<span /></div>
-
-            <form className="stone-login-form" onSubmit={(e) => void submit(e)}>
+            <form className="stone-login-form stone-login-form-member-only" onSubmit={(e) => void submit(e)}>
               {mode === "signup" ? (
                 <input id="display-name" aria-label={t("displayName")} value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("displayNamePh")} />
               ) : null}
