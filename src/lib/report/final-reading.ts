@@ -1,5 +1,6 @@
 import { applyAnswerContract } from "@/lib/core/answer-contract";
 import type { Chart, Reading } from "@/lib/bazi/types";
+import { applyCustomerAnswerHotfix } from "@/lib/report/customer-answer-hotfix";
 
 function dayBranch(chart: Chart): string {
   return chart.pillars.find((p) => p.key === "day")?.zhi || "—";
@@ -46,12 +47,10 @@ function relationLine(chart: Chart): string {
   return `已排定的干支为${pillars}；在完整刑冲合害库接入前，不把未计算的合冲刑害写成主判。`;
 }
 
-/**
- * Build the one customer-facing final Reading used by the front-end, persistence,
- * nine-page report and owner console. No later screen should silently recalculate it.
- */
+/** One final customer-facing Reading used by UI, persistence and reports. */
 export function finalizeReading(question: string, chart: Chart, raw: Reading): Reading {
-  const reading = applyAnswerContract(question, chart, raw);
+  const contracted = applyAnswerContract(question, chart, raw);
+  const reading = applyCustomerAnswerHotfix(question, chart, contracted);
   const dayZhi = dayBranch(chart);
   const dayun = chart.currentDayun
     ? `你现在行${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}），所以命诰不能只讲原局，也要把当前阶段的承载方式算进去。`
