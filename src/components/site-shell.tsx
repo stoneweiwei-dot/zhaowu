@@ -3,7 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
-import { hydrateLocale, useI18n, type Locale } from "@/lib/i18n";
+import { hydrateLocale, useI18n } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/site-stats";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 
@@ -106,18 +106,29 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   {user.isOwner ? t("navAdmin") : t("navMine")}
                 </Link>
               ) : null}
-              <label htmlFor="site-language" className="sr-only">{t("language")}</label>
-              <select
-                id="site-language"
-                value={locale}
-                onChange={(e) => setLocale(e.target.value as Locale)}
+              <div
+                role="group"
                 aria-label={t("language")}
-                className="h-10 max-w-[4.6rem] rounded-full border border-line/80 bg-cream/95 px-2 text-xs text-ink-soft outline-none focus:border-cinnabar"
+                className="flex h-9 shrink-0 items-stretch overflow-hidden rounded-full border border-line/80 bg-cream/95"
               >
-                <option value="zh-Hant">繁體</option>
-                <option value="zh-Hans">简体</option>
-                <option value="en">EN</option>
-              </select>
+                {([
+                  ["zh-Hant", "繁中"],
+                  ["zh-Hans", "简中"],
+                  ["en", "EN"],
+                ] as const).map(([value, label]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setLocale(value)}
+                    aria-pressed={locale === value}
+                    className={`min-w-[2.25rem] border-r border-line/60 px-1.5 text-[10px] font-medium transition last:border-r-0 sm:min-w-[2.6rem] sm:px-2 sm:text-[11px] ${
+                      locale === value ? "bg-wood text-cream" : "text-ink-soft hover:bg-paper-deep hover:text-ink"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
               {isPending ? (
                 <span className="h-8 w-14 animate-pulse rounded-full bg-paper-deep" />
               ) : user ? (
