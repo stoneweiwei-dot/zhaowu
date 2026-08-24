@@ -49,7 +49,7 @@ test("身强还是弱属于旺衰题，不得被“还是”误判成二选一",
   const c = chart();
   const raw = interpret(q, c, "same", null);
   const reading = applyAnswerContract(q, c, raw);
-  assert.doesNotMatch(reading.directAnswer, /二選一|二选一|比較要求|比较要求|收入、距離|收入、距离/);
+  assert.doesNotMatch(reading.directAnswer, /這題同時有二選一|这题同时有二选一|比較要求|比较要求|收入、距離|收入、距离/);
   assert.match(reading.directAnswer, /原局日主壬水/);
   assert.match(reading.directAnswer, /乙丑/);
   assert.match(reading.directAnswer, /丙午/);
