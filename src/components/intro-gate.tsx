@@ -7,12 +7,15 @@ import {
   scheduleIntroGateHardExit,
 } from "@/lib/intro-gate-policy";
 
+const LOTUS_BLOOM_MS = 2200;
+
 export function IntroGate() {
   const { locale } = useI18n();
   const [phase, setPhase] = useState<"in" | "leaving" | "off">("in");
   const [percent, setPercent] = useState(4);
   const [minimumDone, setMinimumDone] = useState(false);
   const [runtimeReady, setRuntimeReady] = useState(false);
+  const [visualDone, setVisualDone] = useState(false);
   const finishedRef = useRef(false);
   const exitTimerRef = useRef<number | null>(null);
 
@@ -43,11 +46,14 @@ export function IntroGate() {
     const minimumTimer = window.setTimeout(() => {
       if (!cancelled) setMinimumDone(true);
     }, INTRO_GATE_MIN_VISIBLE_MS);
+    const visualTimer = window.setTimeout(() => {
+      if (!cancelled) setVisualDone(true);
+    }, LOTUS_BLOOM_MS);
     const cancelHardExit = scheduleIntroGateHardExit(
       window.setTimeout,
       window.clearTimeout,
       () => {
-        // Do not fade here: the blocking overlay must be fully gone before 3 seconds.
+        // The loading art is decorative. Never let it block the usable site.
         if (!cancelled) forceOff();
       },
     );
@@ -60,13 +66,14 @@ export function IntroGate() {
         if (!cancelled) setRuntimeReady(true);
       })
       .catch(() => {
-        // Failed data/auth/runtime warm-up degrades immediately to the usable page.
+        // Do not fade here: bootstrap failure must reveal the already-mounted site immediately.
         if (!cancelled) forceOff();
       });
 
     return () => {
       cancelled = true;
       window.clearTimeout(minimumTimer);
+      window.clearTimeout(visualTimer);
       cancelHardExit();
       if (exitTimerRef.current !== null) {
         window.clearTimeout(exitTimerRef.current);
@@ -76,44 +83,50 @@ export function IntroGate() {
   }, [forceOff]);
 
   useEffect(() => {
-    if (minimumDone && runtimeReady) finish();
-  }, [finish, minimumDone, runtimeReady]);
+    if (minimumDone && runtimeReady && visualDone) finish();
+  }, [finish, minimumDone, runtimeReady, visualDone]);
 
   if (phase === "off") return null;
 
-  const loadingLabel = locale === "en" ? "Preparing Zhaowu" : locale === "zh-Hans" ? "正在准备昭梧" : "正在準備昭梧";
+  const loadingLabel =
+    locale === "en"
+      ? "Preparing Zhaowu"
+      : locale === "zh-Hans"
+        ? "正在准备昭梧"
+        : "正在準備昭梧";
 
   return (
     <div
-      className={`fixed inset-0 z-[100] overflow-hidden bg-[#f7f2e8] transition-opacity duration-150 ease-out ${phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"}`}
+      className={`zhaowu-lotus-intro fixed inset-0 z-[100] overflow-hidden transition-opacity duration-150 ease-out ${
+        phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"
+      }`}
       role="status"
       aria-live="polite"
       aria-label={loadingLabel}
     >
-      <div className="intro-paper-field" aria-hidden />
-      <div className="intro-orbit-mark" aria-hidden>
-        <span />
-        <span />
-        <span />
-        <b>昭梧</b>
-      </div>
+      <img
+        className="zhaowu-lotus-intro__art"
+        src="/intro/lotus-bloom-v12.webp"
+        alt=""
+        aria-hidden
+        draggable={false}
+        fetchPriority="high"
+      />
+      <div className="zhaowu-lotus-intro__veil" aria-hidden />
 
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[430px] flex-col px-6 pb-[max(34px,env(safe-area-inset-bottom))] pt-[max(34px,env(safe-area-inset-top))] text-center text-[#27241f]">
-        <div>
-          <p className="text-[11px] tracking-[0.48em] text-[#a7352b]">Z H A O W U</p>
-          <p className="mt-2 text-[9px] tracking-[0.34em] text-[#8a8173]">DESTINY · TIMING · CHOICE</p>
+      <div className="zhaowu-lotus-intro__copy">
+        <div className="zhaowu-lotus-intro__brand">
+          <p>Z H A O W U</p>
+          <span>DESTINY · TIMING · CHOICE</span>
         </div>
 
-        <div className="mt-auto pb-4">
-          <div className="mx-auto h-[3px] w-36 overflow-hidden rounded-full bg-[#d8c7a4]">
-            <div
-              className="h-full rounded-full bg-[#a7352b] transition-[width] duration-300 ease-out"
-              style={{ width: `${percent}%` }}
-            />
+        <div className="zhaowu-lotus-intro__status">
+          <div className="zhaowu-lotus-intro__bar" aria-hidden>
+            <i style={{ width: `${percent}%` }} />
           </div>
-          <p className="mt-4 font-display text-[15px] tracking-[0.18em] text-[#27241f]">{loadingLabel}</p>
-          <p className="mt-2 text-[10px] tabular-nums tracking-[0.18em] text-[#8a8173]">{percent}%</p>
-          <p className="mt-4 text-[9px] tracking-[0.22em] text-[#8a8173]">STONE 原創 · 2026</p>
+          <p>{loadingLabel}</p>
+          <span>{percent}%</span>
+          <small>STONE 原創 · 2026</small>
         </div>
       </div>
     </div>
