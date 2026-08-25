@@ -2,6 +2,7 @@ import { buildTravelDestinationAnswer, extractNamedPlaces, pickTravelDestination
 import { buildDistinctTimingAnswer } from "@/lib/bazi/forecast-safe";
 import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
 import type { Chart, Reading } from "@/lib/bazi/types";
+import { applyCosmicSymbolicReading, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 
 const ELEMENT_PROFILE_RE = /(五行.{0,8}(屬性|属性|主導|主导|分布|比例|占比|能量|哪個最多|哪个最多)|哪個五行|哪个五行|五行誰最強|五行谁最强)/;
 const TRAVEL_FOLLOWUP_RE = /((具體|具体|推薦|推荐|適合|适合).{0,16}(國家|国家|城市|目的地)|(國家|国家|城市|目的地).{0,16}(旅行|旅遊|旅游|度假|充電|充电|適合|适合|推薦|推荐))/;
@@ -66,6 +67,10 @@ function travelAnswer(question: string, chart: Chart, reading: Reading): Reading
  * concrete, reproducible routing failure exists; it does not recalculate the chart.
  */
 export function applyCustomerAnswerHotfix(question: string, chart: Chart, reading: Reading): Reading {
+  if (isCosmicSymbolicQuestion(question)) {
+    return applyCosmicSymbolicReading(question, chart, reading, ENGLISH_RE.test(question) ? "en" : "zh-Hans");
+  }
+
   if (ELEMENT_PROFILE_RE.test(question)) {
     return {
       ...reading,
