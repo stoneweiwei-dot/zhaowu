@@ -1,0 +1,314 @@
+.zhaowu-tools-section {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(156, 112, 51, .24);
+  border-radius: 1.8rem;
+  padding: clamp(1.1rem, 4vw, 2rem);
+  background:
+    radial-gradient(circle at 93% 4%, rgba(79, 127, 159, .08), transparent 24%),
+    radial-gradient(circle at 7% 92%, rgba(59, 135, 119, .08), transparent 26%),
+    linear-gradient(145deg, rgba(255, 253, 248, .98), rgba(245, 237, 221, .96));
+  box-shadow: 0 18px 52px rgba(74, 55, 31, .08);
+}
+
+.zhaowu-tools-section::before {
+  content: "";
+  position: absolute;
+  inset: .65rem;
+  border: 1px solid rgba(198, 154, 75, .14);
+  border-radius: 1.35rem;
+  pointer-events: none;
+}
+
+.zhaowu-tools-section::after {
+  content: "術";
+  position: absolute;
+  right: -.03em;
+  bottom: -.25em;
+  color: rgba(104, 73, 38, .035);
+  font-family: var(--font-display, serif);
+  font-size: clamp(11rem, 34vw, 22rem);
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.zhaowu-tools-heading {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1rem;
+  padding: .2rem .15rem .9rem;
+  border-bottom: 1px solid rgba(156, 112, 51, .2);
+}
+
+.zhaowu-tools-heading p {
+  color: #9b6b33;
+  font-size: .64rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+}
+
+.zhaowu-tools-heading h2 {
+  margin-top: .28rem;
+  color: #292a26;
+  font-family: var(--font-display, serif);
+  font-size: clamp(1.7rem, 5vw, 2.6rem);
+  line-height: 1.08;
+  letter-spacing: .1em;
+}
+
+.zhaowu-tools-heading > span {
+  justify-self: end;
+  max-width: 24rem;
+  color: #69645b;
+  font-size: .78rem;
+  line-height: 1.75;
+  text-align: right;
+}
+
+.zhaowu-tools-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .8rem;
+}
+
+.zhaowu-specialist-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  min-height: 19rem;
+  flex-direction: column;
+  border-radius: 1.45rem;
+  padding: 1.15rem;
+  box-shadow: 0 14px 34px rgba(63, 45, 24, .09), inset 0 1px rgba(255,255,255,.55);
+}
+
+.zhaowu-specialist-card::before {
+  content: "";
+  position: absolute;
+  inset: .45rem;
+  border-radius: 1.08rem;
+  pointer-events: none;
+}
+
+.zhaowu-specialist-card.is-palm {
+  border: 1px solid rgba(52, 123, 105, .28);
+  background:
+    radial-gradient(circle at 88% 10%, rgba(52, 123, 105, .11), transparent 28%),
+    radial-gradient(circle at 18% 90%, rgba(198, 154, 75, .11), transparent 30%),
+    linear-gradient(150deg, #fffdf8 0%, #f5efe2 100%);
+}
+
+.zhaowu-specialist-card.is-palm::before { border: 1px solid rgba(52, 123, 105, .12); }
+
+.zhaowu-specialist-card.is-tianji {
+  border: 1px solid rgba(91, 57, 117, .26);
+  color: #f8f1ff;
+  background:
+    radial-gradient(circle at 82% 13%, rgba(188, 135, 226, .18), transparent 27%),
+    radial-gradient(circle at 12% 95%, rgba(209, 175, 112, .11), transparent 26%),
+    linear-gradient(150deg, #251037 0%, #13071f 100%);
+}
+
+.zhaowu-specialist-card.is-tianji::before { border: 1px solid rgba(224, 193, 138, .12); }
+
+.zhaowu-card-number {
+  position: absolute;
+  right: .9rem;
+  top: .65rem;
+  font-family: var(--font-display, serif);
+  font-size: 4.4rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.is-palm .zhaowu-card-number { color: rgba(52, 123, 105, .07); }
+.is-tianji .zhaowu-card-number { color: rgba(224, 193, 138, .08); }
+
+.zhaowu-specialist-mark {
+  position: absolute;
+  right: 1.1rem;
+  top: 3.6rem;
+  width: 6.4rem;
+  height: 6.4rem;
+  object-fit: contain;
+  opacity: .78;
+  filter: saturate(.9) drop-shadow(0 8px 18px rgba(65, 45, 20, .08));
+}
+
+.zhaowu-specialist-content {
+  position: relative;
+  z-index: 2;
+  max-width: 78%;
+}
+
+.zhaowu-specialist-eyebrow {
+  font-size: .61rem;
+  font-weight: 750;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.is-palm .zhaowu-specialist-eyebrow { color: #3b8777; }
+.is-tianji .zhaowu-specialist-eyebrow { color: #d8bc88; }
+
+.zhaowu-specialist-card h3 {
+  margin-top: .7rem;
+  font-family: var(--font-display, serif);
+  font-size: clamp(1.35rem, 4.8vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: .055em;
+}
+
+.is-palm h3 { color: #272823; }
+.is-tianji h3 { color: #fbf6ff; }
+
+.zhaowu-specialist-desc {
+  margin-top: .72rem;
+  max-width: 24rem;
+  font-size: .77rem;
+  line-height: 1.75;
+}
+
+.is-palm .zhaowu-specialist-desc { color: #645f56; }
+.is-tianji .zhaowu-specialist-desc { color: #cbbbd7; }
+
+.zhaowu-specialist-meta {
+  display: flex;
+  align-items: center;
+  gap: .42rem;
+  margin-top: .8rem;
+  font-size: .62rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.zhaowu-specialist-meta span {
+  width: 1.6rem;
+  height: 1px;
+}
+
+.is-palm .zhaowu-specialist-meta { color: #8b7150; }
+.is-palm .zhaowu-specialist-meta span { background: rgba(139,113,80,.55); }
+.is-tianji .zhaowu-specialist-meta { color: #a997b8; }
+.is-tianji .zhaowu-specialist-meta span { background: rgba(216,188,136,.5); }
+
+.zhaowu-specialist-action {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  min-height: 3.1rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: auto;
+  border-radius: 999px;
+  padding: 0 1.05rem 0 1.2rem;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+.zhaowu-specialist-action:hover { transform: translateY(-1px); }
+.zhaowu-specialist-action b { font-size: 1.05rem; font-weight: 500; }
+
+.is-palm-action {
+  border: 1px solid rgba(52, 123, 105, .35);
+  color: #2f7465;
+  background: rgba(255, 253, 248, .9);
+  box-shadow: 0 8px 22px rgba(52, 123, 105, .08);
+}
+
+.is-tianji-action {
+  border: 1px solid rgba(231, 204, 153, .42);
+  color: #24122d;
+  background: linear-gradient(180deg, #ead4aa, #cba16d);
+  box-shadow: 0 10px 25px rgba(4, 1, 8, .24), inset 0 1px rgba(255,255,255,.38);
+}
+
+.zhaowu-tianji-orbit-mark {
+  position: absolute;
+  right: .75rem;
+  top: 3.45rem;
+  width: 7rem;
+  height: 7rem;
+  border: 1px solid rgba(224, 193, 138, .19);
+  border-radius: 50%;
+  opacity: .82;
+  box-shadow: inset 0 0 28px rgba(165, 103, 208, .08), 0 0 0 14px rgba(224,193,138,.025);
+}
+
+.zhaowu-tianji-orbit-mark i {
+  position: absolute;
+  inset: 17%;
+  border: 1px solid rgba(213, 187, 239, .13);
+  border-radius: 50%;
+}
+
+.zhaowu-tianji-orbit-mark i:nth-child(2) { inset: 32%; border-color: rgba(224, 193, 138, .18); }
+.zhaowu-tianji-orbit-mark i:nth-child(3) { inset: 46%; background: rgba(224, 193, 138, .12); }
+
+.zhaowu-tianji-orbit-mark b {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #dec797;
+  font-family: var(--font-display, serif);
+  font-size: .78rem;
+  letter-spacing: .08em;
+}
+
+@media (max-width: 760px) {
+  .zhaowu-tools-section {
+    border-radius: 1.45rem;
+    padding: 1rem;
+  }
+
+  .zhaowu-tools-section::before { inset: .45rem; border-radius: 1.1rem; }
+
+  .zhaowu-tools-heading {
+    grid-template-columns: 1fr;
+    gap: .45rem;
+    padding: .15rem .1rem .8rem;
+  }
+
+  .zhaowu-tools-heading > span {
+    justify-self: start;
+    max-width: 27rem;
+    text-align: left;
+    font-size: .72rem;
+  }
+
+  .zhaowu-tools-grid { grid-template-columns: 1fr; gap: .7rem; }
+
+  .zhaowu-specialist-card {
+    min-height: 17.2rem;
+    border-radius: 1.2rem;
+    padding: 1rem;
+  }
+
+  .zhaowu-specialist-content { max-width: 76%; }
+  .zhaowu-specialist-mark { right: .7rem; top: 3.2rem; width: 5.7rem; height: 5.7rem; }
+  .zhaowu-tianji-orbit-mark { right: .55rem; top: 3.15rem; width: 6.2rem; height: 6.2rem; }
+  .zhaowu-specialist-desc { font-size: .75rem; }
+}
+
+@media (max-width: 380px) {
+  .zhaowu-specialist-card { min-height: 17.8rem; }
+  .zhaowu-specialist-content { max-width: 72%; }
+  .zhaowu-specialist-card h3 { font-size: 1.28rem; }
+  .zhaowu-specialist-mark { width: 5.2rem; height: 5.2rem; }
+  .zhaowu-tianji-orbit-mark { width: 5.6rem; height: 5.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-specialist-action { transition: none; }
+}

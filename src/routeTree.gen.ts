@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as TianjiXinggongRouteImport } from './routes/tianji-xinggong'
 import { Route as YizhangjingRouteImport } from './routes/yizhangjing'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TianjiXinggongRoute = TianjiXinggongRouteImport.update({
+  id: '/tianji-xinggong',
+  path: '/tianji-xinggong',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const YizhangjingRoute = YizhangjingRouteImport.update({
   id: '/yizhangjing',
   path: '/yizhangjing',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/tianji-xinggong': typeof TianjiXinggongRoute
   '/yizhangjing': typeof YizhangjingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/tianji-xinggong': typeof TianjiXinggongRoute
   '/yizhangjing': typeof YizhangjingRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/tianji-xinggong': typeof TianjiXinggongRoute
   '/yizhangjing': typeof YizhangjingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/account' | '/login' | '/yizhangjing'
+  fullPaths: '/' | '/account' | '/login' | '/tianji-xinggong' | '/yizhangjing'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account' | '/login' | '/yizhangjing'
-  id: '__root__' | '/' | '/account' | '/login' | '/yizhangjing'
+  to: '/' | '/account' | '/login' | '/tianji-xinggong' | '/yizhangjing'
+  id: '__root__' | '/' | '/account' | '/login' | '/tianji-xinggong' | '/yizhangjing'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
   LoginRoute: typeof LoginRoute
+  TianjiXinggongRoute: typeof TianjiXinggongRoute
   YizhangjingRoute: typeof YizhangjingRoute
 }
 
@@ -92,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tianji-xinggong': {
+      id: '/tianji-xinggong'
+      path: '/tianji-xinggong'
+      fullPath: '/tianji-xinggong'
+      preLoaderRoute: typeof TianjiXinggongRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/yizhangjing': {
       id: '/yizhangjing'
       path: '/yizhangjing'
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
   LoginRoute: LoginRoute,
+  TianjiXinggongRoute: TianjiXinggongRoute,
   YizhangjingRoute: YizhangjingRoute,
 }
 export const routeTree = rootRouteImport

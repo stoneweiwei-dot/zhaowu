@@ -6,6 +6,7 @@ import { ResultView } from "@/components/result-view";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
+import "@/home-polish-v3.css";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -13,11 +14,47 @@ function Home() {
   const { t, locale } = useI18n();
   const { user, isPending } = useCurrentUserState();
   const current = useAppStore((s) => s.current);
-  const tianjiCopy = locale === "en"
-    ? { title: "Tianji Star Palace · V2.0", button: "Open calculation" }
+  const toolsCopy = locale === "en"
+    ? {
+        kicker: "ZHAOWU · TRADITIONAL METHODS",
+        title: "Specialist charts",
+        lead: "Two focused systems, each with its own fixed calculation logic.",
+        palmEyebrow: "DARUMA · PALM METHOD",
+        palmDesc: "Four palaces and six paths, presented as a compact standalone reading.",
+        palmMeta: "Traditional lookup",
+        tianjiEyebrow: "TIANJI · 12 PALACES",
+        tianjiTitle: "Tianji Star Palace · V2.0",
+        tianjiDesc: "Gregorian or lunar birth date. Middle-qi correction is handled automatically.",
+        tianjiMeta: "Deterministic · zero AI",
+        tianjiButton: "Open calculation",
+      }
     : locale === "zh-Hans"
-      ? { title: "天机星宫 · V2.0", button: "进入查表" }
-      : { title: "天機星宮 · V2.0", button: "進入查表" };
+      ? {
+          kicker: "昭梧 · 传统术数工具",
+          title: "专门排盘",
+          lead: "两套独立体系，各自按固定规则计算，不把复杂判断丢给客人。",
+          palmEyebrow: "达摩 · 一掌经",
+          palmDesc: "四宫与六道独立排盘，结果直接呈现，不混入主八字报告。",
+          palmMeta: "传统查表",
+          tianjiEyebrow: "天机 · 十二宫",
+          tianjiTitle: "天机星宫 · V2.0",
+          tianjiDesc: "西历、农历都可输入；中气与时辰由系统自动换算。",
+          tianjiMeta: "固定查表 · ZERO AI",
+          tianjiButton: "进入排盘",
+        }
+      : {
+          kicker: "昭梧 · 傳統術數工具",
+          title: "專門排盤",
+          lead: "兩套獨立體系，各自按固定規則計算，不把複雜判斷丟給客人。",
+          palmEyebrow: "達摩 · 一掌經",
+          palmDesc: "四宮與六道獨立排盤，結果直接呈現，不混入主八字報告。",
+          palmMeta: "傳統查表",
+          tianjiEyebrow: "天機 · 十二宮",
+          tianjiTitle: "天機星宮 · V2.0",
+          tianjiDesc: "西曆、農曆都可輸入；中氣與時辰由系統自動換算。",
+          tianjiMeta: "固定查表 · ZERO AI",
+          tianjiButton: "進入排盤",
+        };
 
   return (
     <main className="space-y-6 sm:space-y-10">
@@ -58,23 +95,44 @@ function Home() {
       {current ? <ResultView result={current} /> : null}
       {current ? <FollowUpBox result={current} /> : null}
 
-      <section className="grid gap-4 sm:grid-cols-2" aria-label={t("galleryTitle")}>
-        <article className="zhaowu-tool-card relative flex min-h-[168px] flex-col gap-4 overflow-hidden rounded-[1.5rem] border border-earth/30 p-5 shadow-[0_16px_44px_rgba(69,50,29,.07)] sm:p-7">
-          <img src="/emblems/lotus-emblem.svg" alt="" aria-hidden className="zhaowu-tool-card-mark" />
-          <h2 className="relative z-10 font-display text-xl font-semibold tracking-[0.05em] text-ink sm:text-2xl">{t("palmToolTitle")}</h2>
-          <Link to="/yizhangjing" className="relative z-10 mt-auto inline-flex min-h-12 items-center justify-center rounded-full border border-wood/35 bg-cream px-5 text-sm font-medium text-wood transition hover:bg-wood hover:text-cream">
-            {t("palmToolButton")}
-          </Link>
-        </article>
+      <section className="zhaowu-tools-section" aria-label={t("galleryTitle")}>
+        <header className="zhaowu-tools-heading">
+          <div>
+            <p>{toolsCopy.kicker}</p>
+            <h2>{toolsCopy.title}</h2>
+          </div>
+          <span>{toolsCopy.lead}</span>
+        </header>
 
-        <article className="relative flex min-h-[168px] flex-col gap-4 overflow-hidden rounded-[1.5rem] border border-[#5c3d78]/25 bg-[radial-gradient(circle_at_80%_0%,rgba(89,48,124,.12),transparent_42%),linear-gradient(145deg,rgba(247,242,233,.96),rgba(239,231,245,.86))] p-5 shadow-[0_16px_44px_rgba(54,31,74,.08)] sm:p-7">
-          <div className="absolute -right-10 -top-12 h-36 w-36 rounded-full border border-[#6f4d89]/15 shadow-[0_0_0_28px_rgba(111,77,137,.04),0_0_0_56px_rgba(111,77,137,.025)]" aria-hidden />
-          <p className="relative z-10 text-[10px] font-semibold tracking-[0.22em] text-[#76548d]">DETERMINISTIC · ZERO AI</p>
-          <h2 className="relative z-10 font-display text-xl font-semibold tracking-[0.05em] text-ink sm:text-2xl">{tianjiCopy.title}</h2>
-          <Link to="/tianji-xinggong" className="relative z-10 mt-auto inline-flex min-h-12 items-center justify-center rounded-full border border-[#684c7f]/30 bg-[#22112f] px-5 text-sm font-medium text-[#f6effb] transition hover:bg-[#3a2050]">
-            {tianjiCopy.button}
-          </Link>
-        </article>
+        <div className="zhaowu-tools-grid">
+          <article className="zhaowu-specialist-card is-palm">
+            <div className="zhaowu-card-number" aria-hidden>壹</div>
+            <img src="/emblems/lotus-emblem.svg" alt="" aria-hidden className="zhaowu-specialist-mark" />
+            <div className="zhaowu-specialist-content">
+              <p className="zhaowu-specialist-eyebrow">{toolsCopy.palmEyebrow}</p>
+              <h3>{t("palmToolTitle")}</h3>
+              <p className="zhaowu-specialist-desc">{toolsCopy.palmDesc}</p>
+              <div className="zhaowu-specialist-meta"><span />{toolsCopy.palmMeta}</div>
+            </div>
+            <Link to="/yizhangjing" className="zhaowu-specialist-action is-palm-action">
+              <span>{t("palmToolButton")}</span><b aria-hidden>→</b>
+            </Link>
+          </article>
+
+          <article className="zhaowu-specialist-card is-tianji">
+            <div className="zhaowu-card-number" aria-hidden>貳</div>
+            <div className="zhaowu-tianji-orbit-mark" aria-hidden><i /><i /><i /><b>天機</b></div>
+            <div className="zhaowu-specialist-content">
+              <p className="zhaowu-specialist-eyebrow">{toolsCopy.tianjiEyebrow}</p>
+              <h3>{toolsCopy.tianjiTitle}</h3>
+              <p className="zhaowu-specialist-desc">{toolsCopy.tianjiDesc}</p>
+              <div className="zhaowu-specialist-meta"><span />{toolsCopy.tianjiMeta}</div>
+            </div>
+            <Link to="/tianji-xinggong" className="zhaowu-specialist-action is-tianji-action">
+              <span>{toolsCopy.tianjiButton}</span><b aria-hidden>→</b>
+            </Link>
+          </article>
+        </div>
       </section>
     </main>
   );
