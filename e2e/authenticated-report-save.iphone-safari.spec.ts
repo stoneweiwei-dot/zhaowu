@@ -129,3 +129,40 @@ test("Signed-in member can generate and persist one full report record", async (
   expect(fullReady?.id).toBe(engineReady?.id);
   await expectMobileViewportHealthy(page);
 });
+
+test("Full report stays available when Supabase persistence fails", async ({ page }) => {
+  await page.addInitScript((session) => {
+    localStorage.setItem("zhaowu.supabase.session.v1", JSON.stringify(session));
+  }, TEST_SESSION);
+
+  await page.route("**/rest/v1/**", async (route) => {
+    const url = new URL(route.request().url());
+
+    if (url.pathname.endsWith("/profiles")) {
+      return fulfillJson(route, [TEST_PROFILE]);
+    }
+
+    if (url.pathname.endsWith("/site_settings")) {
+      return fulfillJson(route, [{ key: "migration_state", value: { ready: true } }]);
+    }
+
+    if (url.pathname.endsWith("/report_requests")) {
+      return fulfillJson(route, { message: "temporary persistence outage" }, 503);
+    }
+
+    return fulfillJson(route, []);
+  });
+
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await fillKnownBirthData(page);
+  await page.getByRole("button", { name: "開始分析", exact: true }).click();
+
+  await expect(page.locator("#result")).toBeVisible();
+  await expect(page.getByText("我現在最應該先處理什麼？", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
+
+  await expect(page.getByRole("heading", { name: "完整報告", exact: true })).toBeVisible();
+  await expect(page.getByText("完整報告已整理完成，但雲端同步暫時失敗；畫面內容不受影響。", { exact: true })).toBeVisible();
+  await expectMobileViewportHealthy(page);
+});
