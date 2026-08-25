@@ -33,9 +33,10 @@ test("full reports use question-focused sections and only real server image gene
   assert.match(focused, /composeFocusedReport/);
   assert.doesNotMatch(focused, /return \[page1, page2, page3, page4, page5, page6, page7, page8, page9\]/);
   assert.match(renderer, /tianlong-report-hero\.jpg/);
-  assert.match(renderer, /AUSPICIOUS_MARKS/);
-  assert.match(renderer, /TIANLONG PANTHEON × EIGHT AUSPICIOUS SYMBOLS/);
+  assert.match(renderer, /REPORT_ORNAMENTS/);
+  assert.match(renderer, /AUSPICIOUS MOTIFS × DESTINY NARRATIVE/);
   assert.match(renderer, /mark\.label\[locale\]/);
+  assert.match(renderer, /zhaowu-report-ornament/);
   assert.doesNotMatch(renderer, /第 \$\{.*頁|第 \$\{.*页|copy\.page/);
   assert.match(resultView, /generateDecreeImage/);
   assert.match(decreeImage, /\/functions\/v1\/generate-decree-image/);
@@ -91,25 +92,26 @@ test("site shell unblocks the first screen instead of fading a loading gate", as
   assert.doesNotMatch(shell, /setPhase\("leaving"\)/);
 });
 
-test("Tianlong/Buddhist visual language is curated inside the report with real image assets", async () => {
+test("generated auspicious visual language is curated inside the report with real image assets", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const renderer = await source("src/components/paid-report-pages.tsx");
   assert.doesNotMatch(shell, /SealScatter/);
   assert.match(renderer, /天龍八部/);
   for (const asset of [
-    "dharma-wheel-emblem.svg",
-    "lotus-emblem.svg",
-    "modern-endless-knot-emblem.svg",
-    "modern-conch-emblem.svg",
-    "modern-golden-fish-emblem.svg",
-    "treasure-vase-emblem.svg",
-    "modern-parasol-emblem.svg",
-    "modern-victory-banner-emblem.svg",
+    "phoenix.webp",
+    "celestial-pearl.webp",
+    "lotus.webp",
+    "dragon.webp",
+    "pomegranate.webp",
+    "endless-knot.webp",
+    "twin-fish.webp",
+    "crane.webp",
   ]) {
     assert.match(renderer, new RegExp(asset.replaceAll(".", "\\.")));
   }
   assert.match(renderer, /<img src=\{mark\.src\}/);
   assert.match(renderer, /zhaowu-auspicious-rail/);
+  assert.match(renderer, /zhaowu-report-ornament/);
   assert.doesNotMatch(renderer, /\["輪",\s*"蓮",\s*"結",\s*"螺",\s*"魚",\s*"瓶"\]/);
 });
 
