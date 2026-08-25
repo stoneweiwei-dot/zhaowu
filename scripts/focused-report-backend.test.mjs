@@ -42,3 +42,16 @@ test("website keeps the app concept base while specialist cards use the generate
   assert.doesNotMatch(login, /stone-login-art img|loading-poster/);
   assert.doesNotMatch(intro, /loading-poster|intro-poster|<img/);
 });
+
+test("owner-selected wallpaper remains visible on home, account and login", async () => {
+  const shell = await source("src/components/site-shell.tsx");
+  const main = await source("src/main.tsx");
+  const wallpaper = await source("src/wallpaper-visibility-fix.css");
+
+  assert.match(shell, /backgroundUrl \? "zhaowu-has-wallpaper"/);
+  assert.match(shell, /className=\{`zhaowu-site-wallpaper \$\{isLogin \? "is-login" : ""\}`\}/);
+  assert.doesNotMatch(shell, /backgroundUrl && !isLogin \?/);
+  assert.match(main, /wallpaper-visibility-fix\.css/);
+  assert.match(wallpaper, /\.zhaowu-has-wallpaper \.zhaowu-login-card/);
+  assert.match(wallpaper, /background-color: rgba\(255,253,248,\.66\)/);
+});
