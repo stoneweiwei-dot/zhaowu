@@ -1,7 +1,7 @@
 import type { AnalysisResult } from "@/lib/bazi/types";
 import { finalizeReading } from "@/lib/report/final-reading";
 
-export const CURRENT_ENGINE_VERSION = "ZW-ENGINE-2026.08.24-P0.2";
+export const CURRENT_ENGINE_VERSION = "ZW-ENGINE-2026.08.25-P0.3-SYMBOLIC";
 
 export type VersionedAnalysisResult = AnalysisResult & {
   engineVersion?: string;
@@ -30,7 +30,8 @@ export function needsStoredAnalysisUpgrade(result: VersionedAnalysisResult | nul
  * One-time migration for persisted deterministic readings created by an older engine.
  * It never rebuilds the birth chart from guessed inputs. It only:
  *  - repairs legacy derived percentages when the stored chart already contains counts;
- *  - reapplies the current answer contract to the exact stored question/chart;
+ *  - reapplies the current answer contract / independent symbolic router to the exact stored question/chart;
+ *  - preserves the stored locale so Traditional Chinese / English do not regress during migration;
  *  - stamps the canonical engine version so later reads stay immutable.
  */
 export function upgradeStoredAnalysis(result: VersionedAnalysisResult): VersionedAnalysisResult {
@@ -40,7 +41,7 @@ export function upgradeStoredAnalysis(result: VersionedAnalysisResult): Versione
     ...result.chart,
     elementPercents: normalizedElementPercents(result),
   };
-  const reading = finalizeReading(result.question, chart, result.reading);
+  const reading = finalizeReading(result.question, chart, result.reading, result.locale ?? "zh-Hans");
 
   return {
     ...result,
