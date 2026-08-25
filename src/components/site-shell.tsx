@@ -65,7 +65,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
         const weekly = await loadWeeklyWallpaper();
         if (!alive) return;
-        setBackgroundUrl(weekly ?? "/wallpaper-song.jpg");
+        setBackgroundUrl(weekly ?? "/wallpapers/zhaowu-song-default-v2.webp");
       })();
     };
 

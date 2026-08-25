@@ -1,46 +1,125 @@
-/* Keep owner-selected wallpapers visually meaningful after the app-style refresh. */
+/*
+ * Wallpaper visibility contract:
+ * every default, weekly and owner-selected image remains a clearly visible part
+ * of the page. Foreground surfaces act like thin xuan paper, never an opaque wall.
+ */
 .zhaowu-has-wallpaper .zhaowu-site-wallpaper {
-  opacity: 1;
-  filter: none;
+  display: block !important;
+  opacity: 1 !important;
+  filter: saturate(1.03) contrast(1.01) !important;
+  transform: none !important;
+  background-position: 50% 54%;
 }
 
 .zhaowu-has-wallpaper .zhaowu-site-wallpaper::after {
-  background: linear-gradient(180deg, rgba(255,252,245,.03), rgba(247,240,226,.08));
+  content: "" !important;
+  display: block !important;
+  background:
+    linear-gradient(180deg, rgba(255,252,245,.025), rgba(247,240,226,.045)),
+    radial-gradient(circle at 50% 12%, rgba(255,255,255,.035), transparent 36%);
 }
 
 .zhaowu-has-wallpaper .zhaowu-site-header {
-  background: rgba(255,253,248,.48) !important;
-  backdrop-filter: blur(14px) saturate(110%);
+  background: rgba(255,253,248,.38) !important;
+  backdrop-filter: blur(9px) saturate(112%);
+  -webkit-backdrop-filter: blur(9px) saturate(112%);
 }
 
 .zhaowu-has-wallpaper .zhaowu-home-hero,
+.zhaowu-has-wallpaper .zhaowu-tools-section,
 .zhaowu-has-wallpaper .zhaowu-tool-card,
 .zhaowu-has-wallpaper .seal-border,
 .zhaowu-has-wallpaper section.seal-border {
-  background-color: rgba(255,253,248,.66) !important;
-  backdrop-filter: blur(12px) saturate(108%);
+  background-color: rgba(255,253,248,.48) !important;
+  background-image: linear-gradient(145deg, rgba(255,255,255,.10), rgba(241,231,211,.025)) !important;
+  backdrop-filter: blur(7px) saturate(110%);
+  -webkit-backdrop-filter: blur(7px) saturate(110%);
+  box-shadow: 0 16px 42px rgba(75,55,29,.10), inset 0 0 0 1px rgba(255,255,255,.28);
+}
+
+.zhaowu-has-wallpaper .zhaowu-specialist-card.is-palm {
+  background:
+    linear-gradient(110deg, rgba(255,255,255,.25), transparent 42%),
+    radial-gradient(circle at 89% 17%, rgba(221,151,127,.10), transparent 30%),
+    linear-gradient(150deg, rgba(255,253,248,.56), rgba(244,236,220,.46)) !important;
+  backdrop-filter: blur(6px) saturate(108%);
+  -webkit-backdrop-filter: blur(6px) saturate(108%);
+}
+
+.zhaowu-has-wallpaper .zhaowu-specialist-card.is-tianji {
+  background:
+    radial-gradient(circle at 84% 16%, rgba(202,155,231,.14), transparent 28%),
+    radial-gradient(circle at 10% 94%, rgba(222,181,111,.10), transparent 27%),
+    linear-gradient(152deg, rgba(43,18,61,.72), rgba(16,7,25,.64)) !important;
+  backdrop-filter: blur(6px) saturate(112%);
+  -webkit-backdrop-filter: blur(6px) saturate(112%);
 }
 
 .zhaowu-has-wallpaper .zhaowu-login-card {
-  background: rgba(255,253,248,.80) !important;
-  backdrop-filter: blur(16px) saturate(110%);
+  background: rgba(255,253,248,.58) !important;
+  backdrop-filter: blur(10px) saturate(112%);
+  -webkit-backdrop-filter: blur(10px) saturate(112%);
 }
 
 .zhaowu-has-wallpaper .zhaowu-login-home-link,
 .zhaowu-has-wallpaper .zhaowu-login-language {
-  background: rgba(255,253,248,.74) !important;
+  background: rgba(255,253,248,.54) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.zhaowu-has-wallpaper .stone-login-screen {
+  background: transparent !important;
+}
+
+.zhaowu-has-wallpaper .stone-login-screen::before {
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255,255,255,.16), transparent 24%),
+    radial-gradient(circle at 82% 31%, rgba(167,53,43,.045), transparent 22%),
+    linear-gradient(180deg, rgba(251,248,241,.08), rgba(241,230,211,.16)) !important;
+}
+
+.zhaowu-has-wallpaper .stone-login-screen::after {
+  opacity: .07 !important;
+}
+
+.zhaowu-has-wallpaper .stone-login-art {
+  background:
+    linear-gradient(rgba(255,253,248,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,253,248,.02) 1px, transparent 1px),
+    radial-gradient(circle at 50% 42%, rgba(255,253,248,.09), transparent 34%),
+    radial-gradient(circle at 72% 18%, rgba(167,53,43,.12), transparent 26%),
+    linear-gradient(145deg, rgba(48,43,37,.32), rgba(23,20,16,.40)) !important;
+}
+
+.zhaowu-has-wallpaper .stone-login-art-shade {
+  background:
+    linear-gradient(180deg, rgba(24,15,6,.01), rgba(24,15,6,.03) 56%, rgba(247,242,232,.18)),
+    radial-gradient(circle at 50% 34%, rgba(255,229,167,.06), transparent 38%) !important;
+}
+
+.zhaowu-has-wallpaper .stone-login-sheet {
+  background:
+    linear-gradient(rgba(39,36,31,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(39,36,31,.018) 1px, transparent 1px),
+    radial-gradient(circle at 50% -10%, rgba(167,53,43,.055), transparent 34%),
+    rgba(255,253,247,.58) !important;
+  backdrop-filter: blur(10px) saturate(110%);
+  -webkit-backdrop-filter: blur(10px) saturate(110%);
 }
 
 @media (max-width: 640px) {
   .zhaowu-has-wallpaper .zhaowu-home-hero,
+  .zhaowu-has-wallpaper .zhaowu-tools-section,
   .zhaowu-has-wallpaper .zhaowu-tool-card,
   .zhaowu-has-wallpaper .seal-border,
   .zhaowu-has-wallpaper section.seal-border {
-    background-color: rgba(255,253,248,.72) !important;
-    backdrop-filter: blur(10px) saturate(106%);
+    background-color: rgba(255,253,248,.54) !important;
+    backdrop-filter: blur(7px) saturate(108%);
+    -webkit-backdrop-filter: blur(7px) saturate(108%);
   }
 
   .zhaowu-has-wallpaper .zhaowu-login-card {
-    background: rgba(255,253,248,.84) !important;
+    background: rgba(255,253,248,.62) !important;
   }
 }

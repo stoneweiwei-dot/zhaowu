@@ -49,11 +49,17 @@ test("owner-selected wallpaper remains visible on home, account and login", asyn
   const shell = await source("src/components/site-shell.tsx");
   const main = await source("src/main.tsx");
   const wallpaper = await source("src/wallpaper-visibility-fix.css");
+  const defaultWallpaper = await readFile(new URL("public/wallpapers/zhaowu-song-default-v2.webp", root));
 
   assert.match(shell, /backgroundUrl \? "zhaowu-has-wallpaper"/);
   assert.match(shell, /className=\{`zhaowu-site-wallpaper \$\{isLogin \? "is-login" : ""\}`\}/);
   assert.doesNotMatch(shell, /backgroundUrl && !isLogin \?/);
+  assert.match(shell, /\/wallpapers\/zhaowu-song-default-v2\.webp/);
   assert.match(main, /wallpaper-visibility-fix\.css/);
   assert.match(wallpaper, /\.zhaowu-has-wallpaper \.zhaowu-login-card/);
-  assert.match(wallpaper, /background-color: rgba\(255,253,248,\.66\)/);
+  assert.match(wallpaper, /display: block !important/);
+  assert.match(wallpaper, /background-color: rgba\(255,253,248,\.48\)/);
+  assert.match(wallpaper, /\.zhaowu-has-wallpaper \.stone-login-screen/);
+  assert.equal(defaultWallpaper.subarray(0, 4).toString(), "RIFF");
+  assert.ok(defaultWallpaper.length > 100_000);
 });
