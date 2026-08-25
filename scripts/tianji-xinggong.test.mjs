@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   calculateTianjiXinggong,
+  resolveTianjiBirth,
   TIANJI_HOURS,
   TIANJI_MONTHS,
   TIANJI_PALACE_TABLE,
@@ -62,4 +64,39 @@ test("腊月过中气后回到正月，再按原表查宫", () => {
   const result = calculateTianjiXinggong("腊", "子", true);
   assert.equal(result.correctedMonth, "正");
   assert.equal(result.palace, "卯");
+});
+
+test("西历年月日时可直接自动换算成农历、时辰和星宫", () => {
+  const resolved = resolveTianjiBirth({ calendar: "solar", year: 1990, month: 1, day: 1, hour: 12 });
+  assert.equal(resolved.solar.year, 1990);
+  assert.equal(resolved.solar.month, 1);
+  assert.equal(resolved.solar.day, 1);
+  assert.ok(resolved.lunar.month >= 1 && resolved.lunar.month <= 12);
+  assert.ok(TIANJI_HOURS.includes(resolved.hourBranch));
+  assert.ok(EXPECTED[resolved.result.originalMonth].includes(resolved.result.palace));
+});
+
+test("同一生日以西历或农历输入，后台换算结果保持一致", () => {
+  const solar = resolveTianjiBirth({ calendar: "solar", year: 1990, month: 1, day: 1, hour: 12 });
+  const lunar = resolveTianjiBirth({
+    calendar: "lunar",
+    year: solar.lunar.year,
+    month: solar.lunar.month,
+    day: solar.lunar.day,
+    isLeap: solar.lunar.isLeap,
+    hour: 12,
+  });
+  assert.deepEqual(lunar.solar, solar.solar);
+  assert.equal(lunar.hourBranch, solar.hourBranch);
+  assert.equal(lunar.result.palace, solar.result.palace);
+  assert.equal(lunar.result.afterMiddleQi, solar.result.afterMiddleQi);
+});
+
+test("前台不再要求客人手动判断中气", () => {
+  const source = readFileSync(new URL("../src/routes/tianji-xinggong.tsx", import.meta.url), "utf8");
+  assert.equal(source.includes('type="checkbox"'), false);
+  assert.equal(source.includes("setAfterMiddleQi"), false);
+  assert.equal(source.includes("resolveTianjiBirth"), true);
+  assert.equal(source.includes('switchCalendar("solar")'), true);
+  assert.equal(source.includes('switchCalendar("lunar")'), true);
 });
