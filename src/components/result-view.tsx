@@ -265,14 +265,16 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </div>
 
       {msg ? <p className="text-sm text-cinnabar">{msg}</p> : null}
+      <article className="seal-border rounded-xl bg-cream/95 p-4 sm:p-6">
+        <blockquote className="mx-auto max-w-sm whitespace-pre-line text-center font-display text-lg leading-8 tracking-[0.08em] text-ink">
+          {decreeCouplet}
+        </blockquote>
+      </article>
       {imageUrl ? (
         <article className="seal-border rounded-xl bg-cream/95 p-4 sm:p-6">
           <div className="mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden rounded-xl border border-line bg-paper-deep shadow-sm">
             <img src={imageUrl} alt={copy.imageAlt} className="h-full w-full object-cover" />
           </div>
-          <blockquote className="mx-auto mt-5 max-w-sm whitespace-pre-line text-center font-display text-lg leading-8 tracking-[0.08em] text-ink">
-            {decreeCouplet}
-          </blockquote>
         </article>
       ) : null}
       {reportSections ? <FocusedReportSections sections={reportSections} /> : null}

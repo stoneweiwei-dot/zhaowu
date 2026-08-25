@@ -43,6 +43,16 @@ test("full reports use question-focused sections and only real server image gene
   assert.equal((resultView.match(/onClick=\{\(\) => void onFull\(\)\}/g) ?? []).length, 1);
 });
 
+test("free decree text remains available when image generation fails", async () => {
+  const resultView = await source("src/components/result-view.tsx");
+  const decreePosition = resultView.indexOf("{decreeCouplet}");
+  const imageGuardPosition = resultView.indexOf("{imageUrl ? (");
+
+  assert.ok(decreePosition >= 0, "free decree text must be rendered");
+  assert.ok(imageGuardPosition > decreePosition, "free decree text must render before the optional image");
+  assert.doesNotMatch(resultView.slice(imageGuardPosition), /\{decreeCouplet\}/);
+});
+
 test("owner background client always uses Supabase JSON instead of the Vercel SPA rewrite", async () => {
   const backgrounds = await source("src/lib/background-assets.ts");
   const config = await source("src/lib/supabase-config.ts");
