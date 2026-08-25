@@ -1,0 +1,46 @@
+/* Keep owner-selected wallpapers visually meaningful after the app-style refresh. */
+.zhaowu-has-wallpaper .zhaowu-site-wallpaper {
+  opacity: 1;
+  filter: none;
+}
+
+.zhaowu-has-wallpaper .zhaowu-site-wallpaper::after {
+  background: linear-gradient(180deg, rgba(255,252,245,.03), rgba(247,240,226,.08));
+}
+
+.zhaowu-has-wallpaper .zhaowu-site-header {
+  background: rgba(255,253,248,.48) !important;
+  backdrop-filter: blur(14px) saturate(110%);
+}
+
+.zhaowu-has-wallpaper .zhaowu-home-hero,
+.zhaowu-has-wallpaper .zhaowu-tool-card,
+.zhaowu-has-wallpaper .seal-border,
+.zhaowu-has-wallpaper section.seal-border {
+  background-color: rgba(255,253,248,.66) !important;
+  backdrop-filter: blur(12px) saturate(108%);
+}
+
+.zhaowu-has-wallpaper .zhaowu-login-card {
+  background: rgba(255,253,248,.80) !important;
+  backdrop-filter: blur(16px) saturate(110%);
+}
+
+.zhaowu-has-wallpaper .zhaowu-login-home-link,
+.zhaowu-has-wallpaper .zhaowu-login-language {
+  background: rgba(255,253,248,.74) !important;
+}
+
+@media (max-width: 640px) {
+  .zhaowu-has-wallpaper .zhaowu-home-hero,
+  .zhaowu-has-wallpaper .zhaowu-tool-card,
+  .zhaowu-has-wallpaper .seal-border,
+  .zhaowu-has-wallpaper section.seal-border {
+    background-color: rgba(255,253,248,.72) !important;
+    backdrop-filter: blur(10px) saturate(106%);
+  }
+
+  .zhaowu-has-wallpaper .zhaowu-login-card {
+    background: rgba(255,253,248,.84) !important;
+  }
+}
