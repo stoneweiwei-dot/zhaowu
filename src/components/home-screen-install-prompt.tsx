@@ -136,10 +136,13 @@ export function HomeScreenInstallPrompt() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[90] flex items-end justify-center bg-black/25 px-3 pb-3 backdrop-blur-[2px] sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-labelledby="home-install-title">
-      <button className="absolute inset-0 cursor-default" aria-label={copy.gotIt} onClick={dismiss} />
-
-      <section className="relative z-10 w-full max-w-md overflow-hidden rounded-[1.8rem] border border-earth/30 bg-[#fffaf0] shadow-[0_24px_70px_rgba(39,30,18,.24)]">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[90] flex justify-center px-3 pb-[max(.75rem,env(safe-area-inset-bottom))] sm:px-6 sm:pb-6">
+      <section
+        className="pointer-events-auto relative w-full max-w-md overflow-hidden rounded-[1.8rem] border border-earth/30 bg-[#fffaf0]/[.98] shadow-[0_20px_60px_rgba(39,30,18,.22)] backdrop-blur-md"
+        role="dialog"
+        aria-labelledby="home-install-title"
+        aria-describedby="home-install-lead"
+      >
         <div className="relative px-5 pb-4 pt-5 sm:px-6 sm:pt-6">
           <button
             type="button"
@@ -160,7 +163,7 @@ export function HomeScreenInstallPrompt() {
             </div>
           </div>
 
-          <p className="mt-4 text-sm leading-6 text-ink-soft">{copy.lead}</p>
+          <p id="home-install-lead" className="mt-4 text-sm leading-6 text-ink-soft">{copy.lead}</p>
         </div>
 
         <div className="border-y border-earth/15 bg-white/45 px-5 py-4 sm:px-6">
