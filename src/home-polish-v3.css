@@ -78,6 +78,11 @@
   gap: .9rem;
 }
 
+.zhaowu-tools-grid.is-single { grid-template-columns: minmax(0, 1fr); }
+.zhaowu-specialist-card.is-dual { min-height: 20rem; }
+.zhaowu-specialist-card.is-dual .zhaowu-specialist-content { max-width: min(70%, 43rem); }
+.zhaowu-specialist-mark.zhaowu-specialist-mark--dual-palm { right: 8.6rem; width: 8.2rem; opacity: .2; }
+
 .zhaowu-specialist-card {
   position: relative;
   overflow: hidden;
@@ -323,6 +328,8 @@
   }
 
   .zhaowu-tools-grid { grid-template-columns: 1fr; gap: .85rem; }
+  .zhaowu-specialist-card.is-dual .zhaowu-specialist-content { max-width: 73%; }
+  .zhaowu-specialist-mark.zhaowu-specialist-mark--dual-palm { right: 5.4rem; width: 6.2rem; opacity: .16; }
 
   .zhaowu-specialist-card {
     min-height: 22rem;
