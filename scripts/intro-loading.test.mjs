@@ -26,6 +26,11 @@ test('bootstrap still checks nine-page report runtime', () => {
   assert.match(bootstrap, /正在待命四柱繪意與命誥圖/);
 });
 
+test('bootstrap does not preload customer report copy that belongs to result rendering', () => {
+  assert.doesNotMatch(bootstrap, /import\("@\/lib\/report\/customer-copy"\)/);
+  assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
+});
+
 test('loading gate hard-exits before the three-second mobile budget', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
