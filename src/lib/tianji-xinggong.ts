@@ -1,9 +1,12 @@
+import { hourBranchOf, solarTermUtc, toLunar } from "./bazi/calendar";
+
 export const TIANJI_MONTHS = ["正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊"] as const;
 export const TIANJI_HOURS = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"] as const;
 
 export type TianjiMonth = (typeof TIANJI_MONTHS)[number];
 export type TianjiHour = (typeof TIANJI_HOURS)[number];
 export type TianjiPalace = "子" | "丑" | "寅" | "卯" | "辰" | "巳" | "午" | "未" | "申" | "酉" | "戌" | "亥";
+export type TianjiCalendar = "solar" | "lunar";
 
 /**
  * 天机星宫 V2.0 权威查表。
@@ -52,6 +55,83 @@ export type TianjiResult = {
   star: string;
 };
 
+export type TianjiBirthInput = {
+  calendar: TianjiCalendar;
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  isLeap?: boolean;
+};
+
+export type TianjiBirthResolution = {
+  calendar: TianjiCalendar;
+  solar: { year: number; month: number; day: number; hour: number };
+  lunar: { year: number; month: number; day: number; isLeap: boolean };
+  hourBranch: TianjiHour;
+  middleQi: { name: string; at: Date } | null;
+  result: TianjiResult;
+};
+
+const MIDDLE_QI = [
+  { name: "雨水", longitude: 330 },
+  { name: "春分", longitude: 0 },
+  { name: "谷雨", longitude: 30 },
+  { name: "小满", longitude: 60 },
+  { name: "夏至", longitude: 90 },
+  { name: "大暑", longitude: 120 },
+  { name: "处暑", longitude: 150 },
+  { name: "秋分", longitude: 180 },
+  { name: "霜降", longitude: 210 },
+  { name: "小雪", longitude: 240 },
+  { name: "冬至", longitude: 270 },
+  { name: "大寒", longitude: 300 },
+] as const;
+
+function chinaCivilToUtc(year: number, month: number, day: number, hour: number) {
+  return new Date(Date.UTC(year, month - 1, day, hour - 8));
+}
+
+function chinaDateParts(at: Date) {
+  const shifted = new Date(at.getTime() + 8 * 3600000);
+  return {
+    year: shifted.getUTCFullYear(),
+    month: shifted.getUTCMonth() + 1,
+    day: shifted.getUTCDate(),
+  };
+}
+
+function toSolarFromLunar(year: number, month: number, day: number, isLeap = false) {
+  if (year < 1900 || year > 2099) return null;
+  const start = Date.UTC(year, 0, 1);
+  const end = Date.UTC(year + 1, 11, 31);
+  for (let cursor = start; cursor <= end; cursor += 86400000) {
+    const date = new Date(cursor);
+    const solarYear = date.getUTCFullYear();
+    const solarMonth = date.getUTCMonth() + 1;
+    const solarDay = date.getUTCDate();
+    const lunar = toLunar(solarYear, solarMonth, solarDay);
+    if (lunar && lunar.year === year && lunar.month === month && lunar.day === day && lunar.isLeap === isLeap) {
+      return { year: solarYear, month: solarMonth, day: solarDay };
+    }
+  }
+  return null;
+}
+
+function findMiddleQi(lunarYear: number, lunarMonth: number, isLeap: boolean) {
+  if (isLeap || lunarMonth < 1 || lunarMonth > 12) return null;
+  const target = MIDDLE_QI[lunarMonth - 1];
+  for (const solarYear of [lunarYear - 1, lunarYear, lunarYear + 1]) {
+    const at = solarTermUtc(solarYear, target.longitude);
+    const parts = chinaDateParts(at);
+    const lunar = toLunar(parts.year, parts.month, parts.day);
+    if (lunar && lunar.year === lunarYear && lunar.month === lunarMonth && !lunar.isLeap) {
+      return { name: target.name, at };
+    }
+  }
+  return null;
+}
+
 export function getCorrectedMonth(month: TianjiMonth, afterMiddleQi: boolean): { month: TianjiMonth; number: number } {
   const monthIndex = TIANJI_MONTHS.indexOf(month);
   if (monthIndex < 0) throw new Error("Unsupported lunar month");
@@ -79,5 +159,38 @@ export function calculateTianjiXinggong(month: TianjiMonth, hour: TianjiHour, af
     afterMiddleQi,
     palace,
     star: STAR_BY_PALACE[palace],
+  };
+}
+
+export function resolveTianjiBirth(input: TianjiBirthInput): TianjiBirthResolution {
+  if (!Number.isInteger(input.hour) || input.hour < 0 || input.hour > 23) throw new Error("Unsupported birth hour");
+
+  let solar: { year: number; month: number; day: number } | null = null;
+  let lunar: { year: number; month: number; day: number; isLeap: boolean } | null = null;
+
+  if (input.calendar === "solar") {
+    solar = { year: input.year, month: input.month, day: input.day };
+    lunar = toLunar(input.year, input.month, input.day);
+  } else {
+    solar = toSolarFromLunar(input.year, input.month, input.day, Boolean(input.isLeap));
+    lunar = solar ? toLunar(solar.year, solar.month, solar.day) : null;
+  }
+
+  if (!solar || !lunar) throw new Error("Unsupported or invalid birth date");
+
+  const hourBranch = hourBranchOf(input.hour) as TianjiHour;
+  const middleQi = findMiddleQi(lunar.year, lunar.month, lunar.isLeap);
+  const birthAt = chinaCivilToUtc(solar.year, solar.month, solar.day, input.hour);
+  const afterMiddleQi = Boolean(middleQi && birthAt.getTime() >= middleQi.at.getTime());
+  const month = TIANJI_MONTHS[lunar.month - 1];
+  const result = calculateTianjiXinggong(month, hourBranch, afterMiddleQi);
+
+  return {
+    calendar: input.calendar,
+    solar: { ...solar, hour: input.hour },
+    lunar,
+    hourBranch,
+    middleQi,
+    result,
   };
 }
