@@ -28,7 +28,8 @@ test("full reports use question-focused sections and only real server image gene
   const focused = await source("src/lib/report/focused-report.ts");
   const decreeImage = await source("src/lib/report/decree-image.ts");
   assert.match(resultView, /import \{ FocusedReportSections \}/);
-  assert.match(resultView, /reportSections \? <FocusedReportSections sections=\{reportSections\} \/>/);
+  assert.match(resultView, /canPreviewPaid && reportSections/);
+  assert.match(resultView, /<FocusedReportSections sections=\{reportSections\} \/>/);
   assert.match(focused, /4 个固定核心区/);
   assert.match(focused, /composeFocusedReport/);
   assert.doesNotMatch(focused, /return \[page1, page2, page3, page4, page5, page6, page7, page8, page9\]/);
@@ -40,21 +41,39 @@ test("full reports use question-focused sections and only real server image gene
   assert.match(renderer, /mark\.label\[locale\]/);
   assert.match(renderer, /zhaowu-report-ornament/);
   assert.doesNotMatch(renderer, /第 \$\{.*頁|第 \$\{.*页|copy\.page/);
-  assert.match(resultView, /generateDecreeImage/);
+  assert.doesNotMatch(resultView, /generateDecreeImage|onImage|imageUrl/);
   assert.match(decreeImage, /\/functions\/v1\/generate-decree-image/);
   assert.doesNotMatch(decreeImage, /canvas|toDataURL|svg|renderDecreePng/i);
-  assert.equal((resultView.match(/onClick=\{\(\) => void onFull\(\)\}/g) ?? []).length, 1);
+  assert.match(resultView, /<PaidReportCounter/);
+  assert.match(resultView, /onPreview=\{\(\) => void onFull\(\)\}/);
+});
+
+test("free results do not generate the paid report or image", async () => {
+  const resultView = await source("src/components/result-view.tsx");
+  const counter = await source("src/components/paid-report-counter.tsx");
+  const tiers = await source("src/lib/report/report-tier-contract.ts");
+  const saveStart = resultView.indexOf("async function onSave()");
+  const renderStart = resultView.indexOf("  return (");
+  const saveBody = resultView.slice(saveStart, renderStart);
+
+  assert.match(saveBody, /createEngineReportRecord/);
+  assert.doesNotMatch(saveBody, /ensureFullReport|saveReportRecord|generateDecreeImage/);
+  assert.match(resultView, /if \(!canPreviewPaid\) return;/);
+  assert.match(counter, /disabled aria-disabled="true"/);
+  assert.match(counter, /付款功能尚未開放/);
+  assert.match(tiers, /checkoutEnabled: false/);
+  assert.match(tiers, /generatedImage: false/);
+  assert.match(tiers, /昭梧・宋式天地化形/);
 });
 
 test("free decree text remains available when image generation fails", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const decreePosition = resultView.indexOf("{decreeCouplet}");
-  const imageGuardPosition = resultView.indexOf("{imageUrl ? (");
+  const counterPosition = resultView.indexOf("<PaidReportCounter");
 
   assert.ok(decreePosition >= 0, "free decree text must be rendered");
-  assert.ok(imageGuardPosition > decreePosition, "free decree text must render before the optional image");
-  assert.doesNotMatch(resultView.slice(imageGuardPosition), /\{decreeCouplet\}/);
-  assert.match(resultView, /setImageUrl\(null\); setMsg\(copy\.imageLoadFailed\)/);
+  assert.ok(counterPosition > decreePosition, "free decree text must render before the paid counter");
+  assert.doesNotMatch(resultView.slice(counterPosition), /\{decreeCouplet\}/);
 });
 
 test("report visual system uses a deep aubergine and antique-gold treatment without a corrupt hero dependency", async () => {
