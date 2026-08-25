@@ -8,7 +8,8 @@
     "build": "npm run test:engine && vite build && tsc --noEmit",
     "preview": "vite preview",
     "check": "tsc --noEmit",
-    "test:engine": "tsx --test scripts/*.test.mjs"
+    "test:engine": "tsx --test scripts/*.test.mjs",
+    "test:iphone-safari": "playwright test --project=iphone-safari"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.121.34",
@@ -23,6 +24,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.1",
     "@tanstack/router-plugin": "^1.121.34",
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
