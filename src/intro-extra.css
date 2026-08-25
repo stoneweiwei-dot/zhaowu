@@ -11,77 +11,126 @@
   background-size: 30px 30px, 30px 30px, auto, auto, auto, auto;
 }
 
-.intro-orbit-mark {
+/* Zhaowu · Dawn Lotus intro
+   Four generated stills are packed into one tiny animated WebP so iPhone Safari
+   gets a real bud → bloom transition without a heavy video decoder or network stall. */
+.zhaowu-lotus-intro {
+  background: #101a18;
+  color: #fff8e9;
+  isolation: isolate;
+}
+
+.zhaowu-lotus-intro__art {
   position: absolute;
-  left: 50%;
-  top: 45%;
-  display: grid;
-  width: min(66vw, 18rem);
-  aspect-ratio: 1;
-  place-items: center;
-  transform: translate(-50%, -50%);
-  border: 1px solid rgba(167, 53, 43, .20);
-  border-radius: 50%;
-  color: #27241f;
-  box-shadow:
-    0 0 0 1.3rem rgba(167, 53, 43, .035),
-    0 0 0 2.7rem rgba(47, 111, 95, .025),
-    inset 0 0 50px rgba(255,255,255,.42);
-  animation: intro-kenburns 16s ease-out both;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  transform: scale(1.015);
+  filter: saturate(.94) contrast(1.03);
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-.intro-orbit-mark span {
+.zhaowu-lotus-intro__veil {
   position: absolute;
-  inset: 15%;
-  border: 1px solid rgba(139, 115, 77, .22);
-  border-radius: 50%;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(7, 14, 13, .38) 0%, rgba(7, 14, 13, .02) 28%, rgba(7, 14, 13, .02) 58%, rgba(7, 14, 13, .62) 100%),
+    radial-gradient(circle at 50% 28%, rgba(255, 215, 145, .08), transparent 38%);
+  pointer-events: none;
 }
 
-.intro-orbit-mark span:nth-child(2) { inset: 31%; border-color: rgba(167, 53, 43, .24); }
-.intro-orbit-mark span:nth-child(3) { inset: 47%; background: rgba(167, 53, 43, .055); }
-
-.intro-orbit-mark b {
-  font-family: var(--font-display);
-  font-size: clamp(2.4rem, 13vw, 4rem);
-  letter-spacing: .16em;
-}
-
-.intro-video {
-  opacity: 0;
-  transition: opacity .7s ease;
-}
-
-.intro-video.is-ready {
-  opacity: 1;
-}
-
-@keyframes intro-kenburns {
-  from { transform: scale(1.02) translate3d(0, 1%, 0); }
-  to { transform: scale(1) translate3d(0, 0, 0); }
-}
-
-.intro-crane {
-  position: absolute;
-  left: -18vw;
-  top: 27%;
+.zhaowu-lotus-intro__copy {
+  position: relative;
   z-index: 2;
-  color: rgba(255, 241, 214, 0.76);
-  font-family: "Iowan Old Style", "Baskerville", serif;
-  font-size: clamp(3.4rem, 15vw, 7rem);
-  line-height: 1;
-  transform: rotate(-8deg) scaleX(1.7);
-  filter: drop-shadow(0 8px 20px rgba(0,0,0,.28));
-  animation: intro-crane-flight 3.4s cubic-bezier(.2,.66,.35,1) .45s both;
+  width: min(100%, 430px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding:
+    max(34px, env(safe-area-inset-top))
+    26px
+    max(32px, env(safe-area-inset-bottom));
+  text-align: center;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, .34);
 }
 
-@keyframes intro-crane-flight {
-  0% { left: -22vw; top: 38%; opacity: 0; transform: rotate(-12deg) scaleX(1.45) scale(.82); }
-  18% { opacity: .72; }
-  58% { top: 25%; opacity: .9; }
-  100% { left: 108vw; top: 16%; opacity: 0; transform: rotate(3deg) scaleX(1.7) scale(1.08); }
+.zhaowu-lotus-intro__brand p {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: .48em;
+  color: rgba(255, 244, 218, .92);
+}
+
+.zhaowu-lotus-intro__brand span {
+  display: block;
+  margin-top: 8px;
+  font-size: 9px;
+  letter-spacing: .32em;
+  color: rgba(255, 244, 218, .66);
+}
+
+.zhaowu-lotus-intro__status {
+  padding-bottom: 2px;
+}
+
+.zhaowu-lotus-intro__bar {
+  width: 150px;
+  height: 2px;
+  margin: 0 auto 16px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 240, 205, .28);
+  box-shadow: 0 0 18px rgba(255, 215, 145, .08);
+}
+
+.zhaowu-lotus-intro__bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: rgba(255, 236, 188, .96);
+  box-shadow: 0 0 14px rgba(255, 218, 142, .45);
+  transition: width 260ms ease-out;
+}
+
+.zhaowu-lotus-intro__status p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: .18em;
+  color: rgba(255, 248, 231, .96);
+}
+
+.zhaowu-lotus-intro__status > span {
+  display: block;
+  margin-top: 8px;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .18em;
+  color: rgba(255, 244, 218, .72);
+}
+
+.zhaowu-lotus-intro__status small {
+  display: block;
+  margin-top: 14px;
+  font-size: 9px;
+  letter-spacing: .22em;
+  color: rgba(255, 244, 218, .68);
+}
+
+@media (min-width: 700px) {
+  .zhaowu-lotus-intro__art {
+    object-fit: contain;
+    background: #101a18;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .intro-crane { display: none; }
-  .intro-orbit-mark { animation: none; }
+  .zhaowu-lotus-intro__art {
+    animation: none;
+  }
 }

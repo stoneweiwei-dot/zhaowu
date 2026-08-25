@@ -40,7 +40,9 @@ test("website keeps the app concept base while specialist cards use the generate
   assert.match(homeRoute, /\/ornaments\/generated\/celestial-pearl\.webp/);
   assert.match(login, /stone-login-orbit/);
   assert.doesNotMatch(login, /stone-login-art img|loading-poster/);
-  assert.doesNotMatch(intro, /loading-poster|intro-poster|<img/);
+  assert.doesNotMatch(intro, /loading-poster|intro-poster/);
+  assert.match(intro, /\/intro\/lotus-bloom-v12\.webp/);
+  assert.match(intro, /LOTUS_BLOOM_MS = 2200/);
 });
 
 test("owner-selected wallpaper remains visible on home, account and login", async () => {
