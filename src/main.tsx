@@ -12,6 +12,7 @@ import './motif-row-lock.css';
 import './focused-report.css';
 import './login-breathing.css';
 import './palm-light-refinement.css';
+import './wallpaper-visibility-fix.css';
 
 const router = createRouter({ routeTree });
 
