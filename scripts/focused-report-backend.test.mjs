@@ -23,13 +23,18 @@ test("legacy ninePages storage key is read only as compatibility, not product st
   assert.match(account, /old key is read only as storage compatibility/);
 });
 
-test("owner console keeps the App design baseline outside background rotation", async () => {
+test("website visual system uses the app concept style without publishing the concept image", async () => {
   const account = await source("src/routes/account.tsx");
-  const baseline = await source("docs/APP-UI-DESIGN-BASELINE-20260825.md");
-  const asset = await readFile(new URL("public/visuals/zhaowu-app-ui-concept-20260825.jpg", root));
+  const styles = await source("src/styles.css");
+  const home = await source("src/home-polish-v3.css");
+  const login = await source("src/stone-visual-fix.css");
+  const intro = await source("src/components/intro-gate.tsx");
 
-  assert.match(account, /user\.isOwner[\s\S]*APP DESIGN BASELINE/);
-  assert.match(account, /\/visuals\/zhaowu-app-ui-concept-20260825\.jpg/);
-  assert.match(baseline, /不得加入到 `zhaowu-backgrounds` 輪播/);
-  assert.ok(asset.byteLength > 100_000);
+  assert.doesNotMatch(account, /APP DESIGN BASELINE|zhaowu-app-ui-concept|designTitle|openDesign/);
+  assert.match(styles, /--color-cinnabar:\s*#a7352b/);
+  assert.match(styles, /linear-gradient\(rgba\(116, 100, 75, \.045\) 1px, transparent 1px\)/);
+  assert.match(home, /\.zhaowu-specialist-card\.is-tianji[\s\S]*linear-gradient\(150deg, #302b25 0%, #16130f 100%\)/);
+  assert.match(login, /stone-login-orbit/);
+  assert.doesNotMatch(login, /stone-login-art img|loading-poster/);
+  assert.doesNotMatch(intro, /loading-poster|intro-poster|<img/);
 });

@@ -172,14 +172,6 @@ function AccountPage() {
     deleteFailed: tr(locale, "刪除失敗。", "删除失败。", "Delete failed."),
     updateFailed: tr(locale, "更新失敗。", "更新失败。", "Update failed."),
     backgroundsReadError: tr(locale, "背景圖片讀取失敗。", "背景图片读取失败。", "Could not load background images."),
-    designTitle: tr(locale, "App 設計基準", "App 设计基准", "App design baseline"),
-    designLead: tr(
-      locale,
-      "昭梧命理分析 App 的宋式極簡 × 未來東方介面基準。此橫向規格圖只作產品與開發對照，不參與手機背景輪播。",
-      "昭梧命理分析 App 的宋式极简 × 未来东方界面基准。此横向规格图只作产品与开发对照，不参与手机背景轮播。",
-      "The Song-minimal × future-Oriental interface baseline for the Zhaowu analysis app. This landscape reference is excluded from mobile background rotation.",
-    ),
-    openDesign: tr(locale, "開啟原圖", "打开原图", "Open full image"),
     updated: tr(locale, "更新", "更新", "Updated"),
   }), [locale]);
 
@@ -412,34 +404,6 @@ function AccountPage() {
               ))}
             </div>
           </details>
-        </section>
-      ) : null}
-
-      {user.isOwner ? (
-        <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
-          <p className="text-xs tracking-[0.28em] text-cinnabar">APP DESIGN BASELINE</p>
-          <div className="mt-1 flex flex-wrap items-start justify-between gap-3">
-            <div className="max-w-2xl">
-              <h2 className="font-display text-2xl">{c.designTitle}</h2>
-              <p className="mt-3 text-xs leading-6 text-ink-mute">{c.designLead}</p>
-            </div>
-            <a
-              href="/visuals/zhaowu-app-ui-concept-20260825.jpg"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex h-10 items-center rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft"
-            >
-              {c.openDesign}
-            </a>
-          </div>
-          <a href="/visuals/zhaowu-app-ui-concept-20260825.jpg" target="_blank" rel="noreferrer" className="mt-5 block overflow-hidden rounded-lg border border-line bg-paper/45">
-            <img
-              src="/visuals/zhaowu-app-ui-concept-20260825.jpg"
-              alt={c.designTitle}
-              className="aspect-[5.5/3] w-full object-contain"
-              loading="lazy"
-            />
-          </a>
         </section>
       ) : null}
 

@@ -8,7 +8,7 @@ export default defineConfig({
   base: "/",
   plugins: [
     tailwindcss(),
-    tanstackRouter({ target: "react", autoCodeSplitting: false }),
+    tanstackRouter({ target: "react", autoCodeSplitting: true }),
     tsconfigPaths(),
     react(),
   ],

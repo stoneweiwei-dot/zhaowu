@@ -74,15 +74,11 @@ async function warmReportRuntime() {
 }
 
 async function warmImageStandby() {
-  const [style, copy] = await Promise.all([
-    import("@/lib/report/paid-report-style"),
-    import("@/lib/report/customer-copy"),
-  ]);
+  const style = await import("@/lib/report/paid-report-style");
   const config = style.getPaidReportStyle();
   if (!config.visual?.ratio?.includes("9:16") || !config.visual?.watermark?.includes("STONE 原創")) {
     throw new Error("四柱繪意規格尚未就緒。");
   }
-  if (!copy) throw new Error("成像文案模組尚未就緒。");
 }
 
 export async function runBootstrapReadiness(onProgress: (progress: BootstrapProgress) => void) {
