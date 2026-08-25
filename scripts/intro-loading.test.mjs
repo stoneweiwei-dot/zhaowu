@@ -4,6 +4,12 @@ import test from 'node:test';
 
 const shell = await readFile(new URL('../src/components/site-shell.tsx', import.meta.url), 'utf8');
 const bootstrap = await readFile(new URL('../src/lib/bootstrap-readiness.ts', import.meta.url), 'utf8');
+const root = await readFile(new URL('../src/routes/__root.tsx', import.meta.url), 'utf8');
+const gate = await readFile(new URL('../src/components/intro-gate.tsx', import.meta.url), 'utf8');
+const {
+  INTRO_GATE_HARD_EXIT_MS,
+  scheduleIntroGateHardExit,
+} = await import('../src/lib/intro-gate-policy.ts');
 
 test('home opens without a blocking loading gate', () => {
   assert.doesNotMatch(shell, /<IntroGate/);
@@ -18,4 +24,41 @@ test('bootstrap still checks nine-page report runtime', () => {
   assert.match(bootstrap, /import\("@\/lib\/report\/paid-report-style"\)/);
   assert.match(bootstrap, /architecture\.length !== 9/);
   assert.match(bootstrap, /正在待命四柱繪意與命誥圖/);
+});
+
+test('loading gate hard-exits before the three-second mobile budget', () => {
+  let scheduledDelay = null;
+  let scheduledCallback = null;
+  let cancelledTimer = null;
+  let exited = false;
+
+  const cancel = scheduleIntroGateHardExit(
+    (callback, delayMs) => {
+      scheduledCallback = callback;
+      scheduledDelay = delayMs;
+      return 17;
+    },
+    (timerId) => { cancelledTimer = timerId; },
+    () => { exited = true; },
+  );
+
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 2800);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 3000);
+  assert.equal(scheduledDelay, 2800);
+  scheduledCallback();
+  assert.equal(exited, true);
+  cancel();
+  assert.equal(cancelledTimer, 17);
+});
+
+test('iPhone Safari routes stay mounted and usable when bootstrap fails', () => {
+  const gatePosition = root.indexOf('<IntroGate />');
+  const shellPosition = root.indexOf('<SiteShell>');
+
+  assert.ok(gatePosition >= 0, 'the optional intro may still render');
+  assert.ok(shellPosition > gatePosition, 'home, login and account content mount independently beneath the intro');
+  assert.match(gate, /\.catch\(\(\) => \{[\s\S]*forceOff\(\)/);
+  assert.match(gate, /Do not fade here:[\s\S]*forceOff\(\)/);
+  assert.match(gate, /pointer-events-none opacity-0/);
+  assert.doesNotMatch(root, /runtimeReady\s*\?\s*<SiteShell/);
 });
