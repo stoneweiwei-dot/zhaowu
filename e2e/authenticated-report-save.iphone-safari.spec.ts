@@ -83,7 +83,8 @@ test("Signed-in member can generate and persist one full report record", async (
       const method = request.method();
       if (method === "GET") return fulfillJson(route, []);
 
-      const payload = request.postDataJSON() as Record<string, unknown> | null;
+      const rawPayload = request.postDataJSON() as Record<string, unknown> | Array<Record<string, unknown>> | null;
+      const payload = Array.isArray(rawPayload) ? (rawPayload[0] ?? null) : rawPayload;
       const queryId = url.searchParams.get("id")?.replace(/^eq\./, "") ?? null;
       const bodyId = typeof payload?.id === "string" ? payload.id : null;
       const id = bodyId ?? queryId;
@@ -107,24 +108,24 @@ test("Signed-in member can generate and persist one full report record", async (
 
   const result = page.locator("#result");
   await expect(result).toBeVisible();
-  await expect(page.getByRole("button", { name: "保存", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeVisible();
+  await expect.poll(() => writes.some((call) => call.method === "POST" && call.status === "engine_ready")).toBe(true);
+
+  const engineReady = writes.find((call) => call.method === "POST" && call.status === "engine_ready");
+  expect(engineReady?.id).toBeTruthy();
 
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "完整報告", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeVisible();
+  await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "report_ready")).toBe(true);
+
+  const reportReady = writes.find((call) => call.method === "PATCH" && call.status === "report_ready");
+  expect(reportReady?.id).toBe(engineReady?.id);
 
   await page.getByRole("button", { name: "更新已保存報告", exact: true }).click();
   await expect(page.getByText("完整報告已保存到同一筆記錄。", { exact: true })).toBeVisible();
+  await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "full_ready")).toBe(true);
 
-  const reportReady = writes.find((call) => call.method === "PATCH" && call.status === "report_ready");
-  const engineReady = writes.find((call) => call.method === "POST" && call.status === "engine_ready");
   const fullReady = writes.find((call) => call.method === "PATCH" && call.status === "full_ready");
-
-  expect(reportReady).toBeTruthy();
-  expect(engineReady).toBeTruthy();
-  expect(fullReady).toBeTruthy();
-  expect(reportReady?.id).toBeTruthy();
-  expect(engineReady?.id).toBe(reportReady?.id);
-  expect(fullReady?.id).toBe(reportReady?.id);
+  expect(fullReady?.id).toBe(engineReady?.id);
   await expectMobileViewportHealthy(page);
 });
