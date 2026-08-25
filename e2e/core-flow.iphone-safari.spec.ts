@@ -99,7 +99,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await fillKnownBirthData(page);
 
     await page.locator("#birth-city").click();
-    const firstCity = page.getByRole("option").first();
+    const firstCity = page.locator('#birth-city-results [role="option"]').first();
     await expect(firstCity).toBeVisible();
     await firstCity.click();
 
