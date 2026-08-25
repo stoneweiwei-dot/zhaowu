@@ -10,9 +10,14 @@ import { useAppStore } from "@/lib/store";
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { user, isPending } = useCurrentUserState();
   const current = useAppStore((s) => s.current);
+  const tianjiCopy = locale === "en"
+    ? { title: "Tianji Star Palace · V2.0", button: "Open calculation" }
+    : locale === "zh-Hans"
+      ? { title: "天机星宫 · V2.0", button: "进入查表" }
+      : { title: "天機星宮 · V2.0", button: "進入查表" };
 
   return (
     <main className="space-y-6 sm:space-y-10">
@@ -53,12 +58,21 @@ function Home() {
       {current ? <ResultView result={current} /> : null}
       {current ? <FollowUpBox result={current} /> : null}
 
-      <section aria-label={t("palmToolTitle")}>
-        <article className="zhaowu-tool-card relative flex flex-col gap-4 overflow-hidden rounded-[1.5rem] border border-earth/30 p-5 shadow-[0_16px_44px_rgba(69,50,29,.07)] sm:flex-row sm:items-center sm:justify-between sm:p-7">
+      <section className="grid gap-4 sm:grid-cols-2" aria-label={t("galleryTitle")}>
+        <article className="zhaowu-tool-card relative flex min-h-[168px] flex-col gap-4 overflow-hidden rounded-[1.5rem] border border-earth/30 p-5 shadow-[0_16px_44px_rgba(69,50,29,.07)] sm:p-7">
           <img src="/emblems/lotus-emblem.svg" alt="" aria-hidden className="zhaowu-tool-card-mark" />
           <h2 className="relative z-10 font-display text-xl font-semibold tracking-[0.05em] text-ink sm:text-2xl">{t("palmToolTitle")}</h2>
-          <Link to="/yizhangjing" className="relative z-10 inline-flex min-h-12 shrink-0 items-center justify-center rounded-full border border-wood/35 bg-cream px-5 text-sm font-medium text-wood transition hover:bg-wood hover:text-cream">
+          <Link to="/yizhangjing" className="relative z-10 mt-auto inline-flex min-h-12 items-center justify-center rounded-full border border-wood/35 bg-cream px-5 text-sm font-medium text-wood transition hover:bg-wood hover:text-cream">
             {t("palmToolButton")}
+          </Link>
+        </article>
+
+        <article className="relative flex min-h-[168px] flex-col gap-4 overflow-hidden rounded-[1.5rem] border border-[#5c3d78]/25 bg-[radial-gradient(circle_at_80%_0%,rgba(89,48,124,.12),transparent_42%),linear-gradient(145deg,rgba(247,242,233,.96),rgba(239,231,245,.86))] p-5 shadow-[0_16px_44px_rgba(54,31,74,.08)] sm:p-7">
+          <div className="absolute -right-10 -top-12 h-36 w-36 rounded-full border border-[#6f4d89]/15 shadow-[0_0_0_28px_rgba(111,77,137,.04),0_0_0_56px_rgba(111,77,137,.025)]" aria-hidden />
+          <p className="relative z-10 text-[10px] font-semibold tracking-[0.22em] text-[#76548d]">DETERMINISTIC · ZERO AI</p>
+          <h2 className="relative z-10 font-display text-xl font-semibold tracking-[0.05em] text-ink sm:text-2xl">{tianjiCopy.title}</h2>
+          <Link to="/tianji-xinggong" className="relative z-10 mt-auto inline-flex min-h-12 items-center justify-center rounded-full border border-[#684c7f]/30 bg-[#22112f] px-5 text-sm font-medium text-[#f6effb] transition hover:bg-[#3a2050]">
+            {tianjiCopy.button}
           </Link>
         </article>
       </section>
