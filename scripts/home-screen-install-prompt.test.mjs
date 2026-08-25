@@ -24,6 +24,13 @@ test("iPhone flow teaches Safari share -> Add to Home Screen -> Add", () => {
   assert.match(component, /beforeinstallprompt/);
 });
 
+test("install guide stays non-modal so it cannot block the primary customer flow", () => {
+  assert.match(component, /pointer-events-none fixed inset-x-0 bottom-0/);
+  assert.match(component, /pointer-events-auto relative w-full max-w-md/);
+  assert.doesNotMatch(component, /aria-modal="true"/);
+  assert.doesNotMatch(component, /absolute inset-0 cursor-default/);
+});
+
 test("dismissal is throttled and users can permanently acknowledge installation", () => {
   assert.match(component, /14 \* 24 \* 60 \* 60 \* 1000/);
   assert.match(component, /INSTALLED_ACK_KEY/);
