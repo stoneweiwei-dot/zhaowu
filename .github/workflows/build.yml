@@ -41,6 +41,12 @@ jobs:
       - name: Production build
         run: npm exec vite build
 
+      - name: Install Mobile Safari browser runtime
+        run: npm exec playwright install --with-deps webkit
+
+      - name: iPhone Safari loading fallback regression
+        run: npm run test:iphone-safari
+
       - name: Package verified deploy source
         uses: actions/upload-artifact@v4
         with:
@@ -49,8 +55,10 @@ jobs:
             package.json
             package-lock.json
             index.html
+            playwright.config.ts
             vite.config.ts
             tsconfig.json
+            e2e
             public
             scripts
             src
