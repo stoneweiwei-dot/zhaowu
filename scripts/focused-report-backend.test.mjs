@@ -22,3 +22,14 @@ test("legacy ninePages storage key is read only as compatibility, not product st
   assert.match(account, /record\.reportSections \?\? record\.sections \?\? record\.ninePages/);
   assert.match(account, /old key is read only as storage compatibility/);
 });
+
+test("owner console keeps the App design baseline outside background rotation", async () => {
+  const account = await source("src/routes/account.tsx");
+  const baseline = await source("docs/APP-UI-DESIGN-BASELINE-20260825.md");
+  const asset = await readFile(new URL("public/visuals/zhaowu-app-ui-concept-20260825.jpg", root));
+
+  assert.match(account, /user\.isOwner[\s\S]*APP DESIGN BASELINE/);
+  assert.match(account, /\/visuals\/zhaowu-app-ui-concept-20260825\.jpg/);
+  assert.match(baseline, /不得加入到 `zhaowu-backgrounds` 輪播/);
+  assert.ok(asset.byteLength > 100_000);
+});
