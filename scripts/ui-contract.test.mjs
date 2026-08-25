@@ -34,8 +34,9 @@ test("full reports use question-focused sections and only real server image gene
   assert.doesNotMatch(focused, /return \[page1, page2, page3, page4, page5, page6, page7, page8, page9\]/);
   assert.match(renderer, /tianlong-report-hero\.jpg/);
   assert.match(renderer, /REPORT_ORNAMENTS/);
-  assert.match(renderer, /TIANLONG × CHINESE AUSPICIOUS MOTIFS/);
+  assert.match(renderer, /AUSPICIOUS MOTIFS × DESTINY NARRATIVE/);
   assert.match(renderer, /mark\.label\[locale\]/);
+  assert.match(renderer, /zhaowu-report-ornament/);
   assert.doesNotMatch(renderer, /第 \$\{.*頁|第 \$\{.*页|copy\.page/);
   assert.match(resultView, /generateDecreeImage/);
   assert.match(decreeImage, /\/functions\/v1\/generate-decree-image/);
@@ -91,10 +92,9 @@ test("site shell unblocks the first screen instead of fading a loading gate", as
   assert.doesNotMatch(shell, /setPhase\("leaving"\)/);
 });
 
-test("Tianlong visual language uses generated Chinese ornaments without obscuring report text", async () => {
+test("generated auspicious visual language is curated inside the report with real image assets", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const renderer = await source("src/components/paid-report-pages.tsx");
-  const css = await source("src/focused-report.css");
   assert.doesNotMatch(shell, /SealScatter/);
   assert.match(renderer, /天龍八部/);
   for (const asset of [
@@ -102,15 +102,17 @@ test("Tianlong visual language uses generated Chinese ornaments without obscurin
     "celestial-pearl.webp",
     "lotus.webp",
     "dragon.webp",
+    "pomegranate.webp",
+    "endless-knot.webp",
+    "twin-fish.webp",
+    "crane.webp",
   ]) {
     assert.match(renderer, new RegExp(asset.replaceAll(".", "\\.")));
   }
+  assert.match(renderer, /<img src=\{mark\.src\}/);
+  assert.match(renderer, /zhaowu-auspicious-rail/);
   assert.match(renderer, /zhaowu-report-ornament/);
-  assert.match(renderer, /aria-hidden className="zhaowu-report-ornament"/);
-  assert.match(css, /\.zhaowu-report-ornament/);
-  assert.match(css, /opacity: \.18/);
-  assert.match(css, /pointer-events: none/);
-  assert.doesNotMatch(renderer, /dharma-wheel-emblem\.svg|modern-endless-knot-emblem\.svg|modern-conch-emblem\.svg/);
+  assert.doesNotMatch(renderer, /\["輪",\s*"蓮",\s*"結",\s*"螺",\s*"魚",\s*"瓶"\]/);
 });
 
 test("every rendered report section receives a content-aware watercolor dragon without blocking text", async () => {

@@ -7,21 +7,21 @@ const COPY = {
     title: "完整報告",
     lead: "只保留與你這一問直接相關的內容",
     artAlt: "昭梧天龍八部與東方吉祥意象",
-    kicker: "ZHAOWU · 天龍八部 × 東方吉祥紋樣",
+    kicker: "ZHAOWU · 東方吉祥紋樣 × 命理敘事",
     marksAria: "昭梧吉祥紋樣",
   },
   "zh-Hans": {
     title: "完整报告",
     lead: "只保留与你这一问直接相关的内容",
     artAlt: "昭梧天龙八部与东方吉祥意象",
-    kicker: "ZHAOWU · 天龙八部 × 东方吉祥纹样",
+    kicker: "ZHAOWU · 东方吉祥纹样 × 命理叙事",
     marksAria: "昭梧吉祥纹样",
   },
   en: {
     title: "Full report",
     lead: "Only what directly serves this question",
-    artAlt: "Zhaowu Tianlong and Chinese auspicious visual language",
-    kicker: "ZHAOWU · TIANLONG × CHINESE AUSPICIOUS MOTIFS",
+    artAlt: "Zhaowu Tianlong and East Asian auspicious visual",
+    kicker: "ZHAOWU · AUSPICIOUS MOTIFS × DESTINY NARRATIVE",
     marksAria: "Zhaowu auspicious motifs",
   },
 } as const;
@@ -31,6 +31,10 @@ const REPORT_ORNAMENTS = [
   { src: "/ornaments/generated/celestial-pearl.webp", label: { "zh-Hant": "星珠", "zh-Hans": "星珠", en: "Celestial pearl" } },
   { src: "/ornaments/generated/lotus.webp", label: { "zh-Hant": "蓮華", "zh-Hans": "莲华", en: "Lotus" } },
   { src: "/ornaments/generated/dragon.webp", label: { "zh-Hant": "雲龍", "zh-Hans": "云龙", en: "Cloud dragon" } },
+  { src: "/ornaments/generated/pomegranate.webp", label: { "zh-Hant": "福果", "zh-Hans": "福果", en: "Pomegranate" } },
+  { src: "/ornaments/generated/endless-knot.webp", label: { "zh-Hant": "盤長", "zh-Hans": "盘长", en: "Endless knot" } },
+  { src: "/ornaments/generated/twin-fish.webp", label: { "zh-Hant": "雙鯉", "zh-Hans": "双鲤", en: "Twin fish" } },
+  { src: "/ornaments/generated/crane.webp", label: { "zh-Hant": "雲鶴", "zh-Hans": "云鹤", en: "Crane" } },
 ] as const;
 
 export function FocusedReportSections({ sections }: { sections: ReportSection[] }) {
@@ -54,7 +58,7 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
       </div>
 
       <div className="zhaowu-auspicious-rail border-b border-line/60 bg-[#f7f0e2] px-4 py-3">
-        <div className="mx-auto grid max-w-md grid-cols-4 gap-2" aria-label={copy.marksAria}>
+        <div className="mx-auto grid max-w-xl grid-cols-4 gap-2 sm:grid-cols-8" aria-label={copy.marksAria}>
           {REPORT_ORNAMENTS.map((mark) => (
             <figure key={mark.src} className="flex min-w-0 flex-col items-center gap-1.5">
               <span className="grid h-14 w-14 place-items-center rounded-full border border-[#c9a863]/40 bg-[#fffaf0] shadow-[0_6px_16px_rgba(108,77,29,.08)]">
