@@ -32,6 +32,9 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("heading", { name: "先回答你真正想問的事", exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: "登入", exact: true }).first()).toBeVisible();
 
+    // Wait until the first-visit install prompt is actually present, then prove it cannot block the main CTA.
+    await expect(page.getByRole("dialog", { name: "把昭梧加入主畫面", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "查看加入步驟", exact: true })).toBeVisible();
     await page.getByRole("link", { name: "開始我的分析", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeInViewport();
     await expectMobileViewportHealthy(page);
