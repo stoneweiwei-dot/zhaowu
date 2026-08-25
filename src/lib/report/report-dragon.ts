@@ -64,7 +64,7 @@ export const REPORT_DRAGON_ASSETS = {
 
 const GROUPS = {
   calm: [REPORT_DRAGON_ASSETS.neutral, REPORT_DRAGON_ASSETS.angel],
-  reflection: [REPORT_DRAGON_ASSETS.thinking, REPORT_DRAGON_ASSETS.neutral, REPORT_DRAGON_ASSETS.sealed],
+  reflection: [REPORT_DRAGON_ASSETS.thinking, REPORT_DRAGON_ASSETS.sealed],
   joy: [REPORT_DRAGON_ASSETS.giggle, REPORT_DRAGON_ASSETS.party, REPORT_DRAGON_ASSETS.starstruck, REPORT_DRAGON_ASSETS.hungry],
   love: [REPORT_DRAGON_ASSETS.heartEyes, REPORT_DRAGON_ASSETS.shyWave, REPORT_DRAGON_ASSETS.wink, REPORT_DRAGON_ASSETS.embarrassed],
   progress: [REPORT_DRAGON_ASSETS.thumbsUp, REPORT_DRAGON_ASSETS.cheerful, REPORT_DRAGON_ASSETS.cool],
@@ -80,7 +80,7 @@ const ANGER_PATTERN = /憤怒|愤怒|生氣|生气|衝突|冲突|爭執|争执|�
 const DISTRESS_PATTERN = /難過|难过|失落|分手|結束|结束|拒絕|拒绝|孤單|孤单|傷心|伤心|sad|grief|breakup|rejection|lonely|loss/;
 const STRAIN_PATTERN = /壓力|压力|卡住|反覆|反复|拖延|混亂|混乱|負擔|负担|困難|困难|stress|stuck|repeat|delay|confus|burden|difficult/;
 const LOVE_PATTERN = /感情|關係|关系|愛|爱|對象|对象|伴侶|伴侣|婚姻|桃花|love|relationship|partner|romance|marriage/;
-const JOY_PATTERN = /好消息|順利|顺利|機會|机会|開心|开心|喜悅|喜悦|成功|值得|good news|smooth|opportun|happy|joy|success|worth/;
+const JOY_PATTERN = /好消息|順利|顺利|機會|机会|開心|开心|喜悅|喜悦|成功|good news|smooth|opportun|happy|joy|success/;
 
 function stableIndex(value: string, length: number): number {
   let hash = 2166136261;
