@@ -42,7 +42,7 @@ jobs:
         run: npm exec vite build
 
       - name: Install Mobile Safari browser runtime
-        run: npm exec playwright install --with-deps webkit
+        run: ./node_modules/.bin/playwright install --with-deps webkit
 
       - name: iPhone Safari loading fallback regression
         run: npm run test:iphone-safari
