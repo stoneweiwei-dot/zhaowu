@@ -18,13 +18,19 @@ function Home() {
     ? {
         kicker: "ZHAOWU · TRADITIONAL METHODS",
         title: "Specialist charts",
-        lead: "Two focused systems, each with its own fixed calculation logic.",
+        lead: "Two focused systems: Dharma Palm traces the four palaces and six paths, while Tianji resolves the Life Palace and its star pattern. The rules stay fixed; the tedious calendar work stays backstage.",
         palmEyebrow: "DARUMA · PALM METHOD",
-        palmDesc: "Four palaces and six paths, presented as a compact standalone reading.",
+        palmDesc: "A standalone chart built from the twelve earthly branches, four palaces and six paths, stepping through the birth year, month, day and hour.",
+        palmPoints: ["Four-palace structure and six-path sequence", "Clear natal pattern and disposition summary"],
         palmMeta: "Traditional lookup",
         tianjiEyebrow: "TIANJI · 12 PALACES",
         tianjiTitle: "Tianji Star Palace · V2.0",
-        tianjiDesc: "Gregorian or lunar birth date. Middle-qi correction is handled automatically.",
+        tianjiDesc: "Starting from the birth year, month, day and hour, the system deterministically resolves the Life Palace and star-palace structure.",
+        tianjiPoints: [
+          "Converts Gregorian / lunar dates, hour branch and seasonal qi automatically",
+          "Advances the lookup month automatically when middle qi requires it",
+          "Fixed lookup logic, no AI guessing; the path stays traceable",
+        ],
         tianjiMeta: "Deterministic · zero AI",
         tianjiButton: "Open calculation",
       }
@@ -32,26 +38,38 @@ function Home() {
       ? {
           kicker: "昭梧 · 传统术数工具",
           title: "专门排盘",
-          lead: "两套独立体系，各自按固定规则计算，不把复杂判断丢给客人。",
+          lead: "两套独立体系：一掌经看四宫六道，天机星宫看命宫星曜。规则固定，历法换算和节令判断全部交给后台，别再让客人兼职当天文台。",
           palmEyebrow: "达摩 · 一掌经",
-          palmDesc: "四宫与六道独立排盘，结果直接呈现，不混入主八字报告。",
+          palmDesc: "以十二地支、四宫与六道为骨架，按出生年月日时逐层落宫，独立呈现先天格局与命性脉络。",
+          palmPoints: ["四宫格局 · 六道流转", "先天命性 · 落宫脉络"],
           palmMeta: "传统查表",
           tianjiEyebrow: "天机 · 十二宫",
           tianjiTitle: "天机星宫 · V2.0",
-          tianjiDesc: "西历、农历都可输入；中气与时辰由系统自动换算。",
+          tianjiDesc: "以出生年月日时为起点，按固定规则推演命宫与星宫结构，让结果有章法，不是只剩一个孤零零的宫名。",
+          tianjiPoints: [
+            "自动换算西历／农历、出生时辰与节令中气",
+            "必要时自动顺延查表月份，避免客人自行判断",
+            "全程固定查表，不调用 AI 猜测，结果逻辑可追溯",
+          ],
           tianjiMeta: "固定查表 · ZERO AI",
           tianjiButton: "进入排盘",
         }
       : {
           kicker: "昭梧 · 傳統術數工具",
           title: "專門排盤",
-          lead: "兩套獨立體系，各自按固定規則計算，不把複雜判斷丟給客人。",
+          lead: "兩套獨立體系：一掌經看四宮六道，天機星宮看命宮星曜。規則固定，曆法換算和節令判斷全部交給後台，別再讓客人兼職當天文台。",
           palmEyebrow: "達摩 · 一掌經",
-          palmDesc: "四宮與六道獨立排盤，結果直接呈現，不混入主八字報告。",
+          palmDesc: "以十二地支、四宮與六道為骨架，按出生年月日時逐層落宮，獨立呈現先天格局與命性脈絡。",
+          palmPoints: ["四宮格局 · 六道流轉", "先天命性 · 落宮脈絡"],
           palmMeta: "傳統查表",
           tianjiEyebrow: "天機 · 十二宮",
           tianjiTitle: "天機星宮 · V2.0",
-          tianjiDesc: "西曆、農曆都可輸入；中氣與時辰由系統自動換算。",
+          tianjiDesc: "以出生年月日時為起點，按固定規則推演命宮與星宮結構，讓結果有章法，不是只剩一個孤零零的宮名。",
+          tianjiPoints: [
+            "自動換算西曆／農曆、出生時辰與節令中氣",
+            "必要時自動順延查表月份，避免客人自行判斷",
+            "全程固定查表，不調用 AI 猜測，結果邏輯可追溯",
+          ],
           tianjiMeta: "固定查表 · ZERO AI",
           tianjiButton: "進入排盤",
         };
@@ -107,11 +125,14 @@ function Home() {
         <div className="zhaowu-tools-grid">
           <article className="zhaowu-specialist-card is-palm">
             <div className="zhaowu-card-number" aria-hidden>壹</div>
-            <img src="/emblems/lotus-emblem.svg" alt="" aria-hidden className="zhaowu-specialist-mark" />
+            <img src="/ornaments/generated/phoenix.webp" alt="" aria-hidden className="zhaowu-specialist-mark zhaowu-specialist-mark--palm" />
             <div className="zhaowu-specialist-content">
               <p className="zhaowu-specialist-eyebrow">{toolsCopy.palmEyebrow}</p>
               <h3>{t("palmToolTitle")}</h3>
               <p className="zhaowu-specialist-desc">{toolsCopy.palmDesc}</p>
+              <ul className="zhaowu-specialist-points">
+                {toolsCopy.palmPoints.map((point) => <li key={point}>{point}</li>)}
+              </ul>
               <div className="zhaowu-specialist-meta"><span />{toolsCopy.palmMeta}</div>
             </div>
             <Link to="/yizhangjing" className="zhaowu-specialist-action is-palm-action">
@@ -121,11 +142,14 @@ function Home() {
 
           <article className="zhaowu-specialist-card is-tianji">
             <div className="zhaowu-card-number" aria-hidden>貳</div>
-            <div className="zhaowu-tianji-orbit-mark" aria-hidden><i /><i /><i /><b>天機</b></div>
+            <img src="/ornaments/generated/celestial-pearl.webp" alt="" aria-hidden className="zhaowu-specialist-mark zhaowu-specialist-mark--tianji" />
             <div className="zhaowu-specialist-content">
               <p className="zhaowu-specialist-eyebrow">{toolsCopy.tianjiEyebrow}</p>
               <h3>{toolsCopy.tianjiTitle}</h3>
               <p className="zhaowu-specialist-desc">{toolsCopy.tianjiDesc}</p>
+              <ul className="zhaowu-specialist-points">
+                {toolsCopy.tianjiPoints.map((point) => <li key={point}>{point}</li>)}
+              </ul>
               <div className="zhaowu-specialist-meta"><span />{toolsCopy.tianjiMeta}</div>
             </div>
             <Link to="/tianji-xinggong" className="zhaowu-specialist-action is-tianji-action">
