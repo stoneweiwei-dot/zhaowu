@@ -17,61 +17,37 @@ function Home() {
   const toolsCopy = locale === "en"
     ? {
         kicker: "ZHAOWU · TRADITIONAL METHODS",
-        title: "Specialist charts",
-        lead: "Two focused systems: Dharma Palm traces the four palaces and six paths, while Tianji resolves the Life Palace and its star pattern. Fixed rules, calendar conversion and seasonal-qi handling are automated; the interface keeps only the inputs and results that matter.",
-        palmEyebrow: "DARUMA · PALM METHOD",
-        palmDesc: "A standalone chart built from the twelve earthly branches, four palaces and six paths, stepping through the birth year, month, day and hour.",
-        palmPoints: ["Four-palace structure and six-path sequence", "Clear natal pattern and disposition summary"],
-        palmMeta: "Traditional lookup",
-        tianjiEyebrow: "TIANJI · 12 PALACES",
-        tianjiTitle: "Tianji Star Palace · V2.0",
-        tianjiDesc: "Starting from the birth year, month, day and hour, the system deterministically resolves the Life Palace and star-palace structure with a traceable lookup path and corresponding star traits.",
-        tianjiPoints: [
-          "Converts Gregorian / lunar dates, hour branch and seasonal qi automatically",
-          "Advances the lookup month automatically when middle qi requires it",
-          "Fixed lookup logic, no AI guessing; the path stays traceable",
-        ],
-        tianjiMeta: "Deterministic · zero AI",
-        tianjiButton: "Open calculation",
+        title: "Dual Destiny Engine",
+        lead: "Enter birth details once. Two independent calculations reveal the outward stance and the inner pattern together.",
+        eyebrow: "TIANJI STAR PALACE × DHARMA PALM",
+        toolTitle: "Tianji · Dual Destiny Chart V3.0",
+        desc: "Gregorian or lunar input with automatic middle-qi correction, Tianji Life Palace, Dharma Palm four palaces and one integrated reading.",
+        points: ["Two independent traditional engines", "One birth input, one integrated result", "Fixed and traceable calculation · zero AI"],
+        meta: "Two engines · one input",
+        button: "Open dual chart",
       }
     : locale === "zh-Hans"
       ? {
           kicker: "昭梧 · 传统术数工具",
-          title: "专门排盘",
-          lead: "两套独立体系：一掌经看四宫六道，天机星宫看命宫星曜。规则固定，历法换算与节令判断由系统自动完成，前台只保留必要输入与清晰结果。",
-          palmEyebrow: "达摩 · 一掌经",
-          palmDesc: "以十二地支、四宫与六道为骨架，按出生年月日时逐层落宫，独立呈现先天格局与命性脉络。",
-          palmPoints: ["四宫格局 · 六道流转", "先天命性 · 落宫脉络"],
-          palmMeta: "传统查表",
-          tianjiEyebrow: "天机 · 十二宫",
-          tianjiTitle: "天机星宫 · V2.0",
-          tianjiDesc: "以出生年月日时为起点，按固定规则推演命宫与星宫结构，完整呈现查表路径与对应星性。",
-          tianjiPoints: [
-            "自动换算西历／农历、出生时辰与节令中气",
-            "必要时自动顺延查表月份，避免客人自行判断",
-            "全程固定查表，不调用 AI 猜测，结果逻辑可追溯",
-          ],
-          tianjiMeta: "固定查表 · ZERO AI",
-          tianjiButton: "进入排盘",
+          title: "天机 · 双轨命盘",
+          lead: "出生资料只填一次，两套独立算法同时呈现外在立足点与内在灵魂底色。",
+          eyebrow: "天机星宫 × 达摩一掌经",
+          toolTitle: "天机 · 双轨命盘综合引擎 V3.0",
+          desc: "西历、农历都可输入；自动处理中气，输出天机命宫、一掌经四宫六道与融合星评。",
+          points: ["两套传统算法独立计算", "一次输入，同时得到双轨结果", "固定查表、路径可追溯 · ZERO AI"],
+          meta: "双引擎 · 一次输入",
+          button: "进入双轨排盘",
         }
       : {
           kicker: "昭梧 · 傳統術數工具",
-          title: "專門排盤",
-          lead: "兩套獨立體系：一掌經看四宮六道，天機星宮看命宮星曜。規則固定，曆法換算與節令判斷由系統自動完成，前台只保留必要輸入與清晰結果。",
-          palmEyebrow: "達摩 · 一掌經",
-          palmDesc: "以十二地支、四宮與六道為骨架，按出生年月日時逐層落宮，獨立呈現先天格局與命性脈絡。",
-          palmPoints: ["四宮格局 · 六道流轉", "先天命性 · 落宮脈絡"],
-          palmMeta: "傳統查表",
-          tianjiEyebrow: "天機 · 十二宮",
-          tianjiTitle: "天機星宮 · V2.0",
-          tianjiDesc: "以出生年月日時為起點，按固定規則推演命宮與星宮結構，完整呈現查表路徑與對應星性。",
-          tianjiPoints: [
-            "自動換算西曆／農曆、出生時辰與節令中氣",
-            "必要時自動順延查表月份，避免客人自行判斷",
-            "全程固定查表，不調用 AI 猜測，結果邏輯可追溯",
-          ],
-          tianjiMeta: "固定查表 · ZERO AI",
-          tianjiButton: "進入排盤",
+          title: "天機 · 雙軌命盤",
+          lead: "出生資料只填一次，兩套獨立算法同時呈現外在立足點與內在靈魂底色。",
+          eyebrow: "天機星宮 × 達摩一掌經",
+          toolTitle: "天機 · 雙軌命盤綜合引擎 V3.0",
+          desc: "西曆、農曆都可輸入；自動處理中氣，輸出天機命宮、一掌經四宮六道與融合星評。",
+          points: ["兩套傳統算法獨立計算", "一次輸入，同時得到雙軌結果", "固定查表、路徑可追溯 · ZERO AI"],
+          meta: "雙引擎 · 一次輸入",
+          button: "進入雙軌排盤",
         };
 
   return (
@@ -122,38 +98,22 @@ function Home() {
           <span>{toolsCopy.lead}</span>
         </header>
 
-        <div className="zhaowu-tools-grid">
-          <article className="zhaowu-specialist-card is-palm">
-            <div className="zhaowu-card-number" aria-hidden>壹</div>
-            <img src="/ornaments/generated/phoenix.webp" alt="" aria-hidden className="zhaowu-specialist-mark zhaowu-specialist-mark--palm" />
-            <div className="zhaowu-specialist-content">
-              <p className="zhaowu-specialist-eyebrow">{toolsCopy.palmEyebrow}</p>
-              <h3>{t("palmToolTitle")}</h3>
-              <p className="zhaowu-specialist-desc">{toolsCopy.palmDesc}</p>
-              <ul className="zhaowu-specialist-points">
-                {toolsCopy.palmPoints.map((point) => <li key={point}>{point}</li>)}
-              </ul>
-              <div className="zhaowu-specialist-meta"><span />{toolsCopy.palmMeta}</div>
-            </div>
-            <Link to="/yizhangjing" className="zhaowu-specialist-action is-palm-action">
-              <span>{t("palmToolButton")}</span><b aria-hidden>→</b>
-            </Link>
-          </article>
-
-          <article className="zhaowu-specialist-card is-tianji">
-            <div className="zhaowu-card-number" aria-hidden>貳</div>
+        <div className="zhaowu-tools-grid is-single">
+          <article className="zhaowu-specialist-card is-tianji is-dual">
+            <div className="zhaowu-card-number" aria-hidden>雙</div>
+            <img src="/ornaments/generated/phoenix.webp" alt="" aria-hidden className="zhaowu-specialist-mark zhaowu-specialist-mark--palm zhaowu-specialist-mark--dual-palm" />
             <img src="/ornaments/generated/celestial-pearl.webp" alt="" aria-hidden className="zhaowu-specialist-mark zhaowu-specialist-mark--tianji" />
             <div className="zhaowu-specialist-content">
-              <p className="zhaowu-specialist-eyebrow">{toolsCopy.tianjiEyebrow}</p>
-              <h3>{toolsCopy.tianjiTitle}</h3>
-              <p className="zhaowu-specialist-desc">{toolsCopy.tianjiDesc}</p>
+              <p className="zhaowu-specialist-eyebrow">{toolsCopy.eyebrow}</p>
+              <h3>{toolsCopy.toolTitle}</h3>
+              <p className="zhaowu-specialist-desc">{toolsCopy.desc}</p>
               <ul className="zhaowu-specialist-points">
-                {toolsCopy.tianjiPoints.map((point) => <li key={point}>{point}</li>)}
+                {toolsCopy.points.map((point) => <li key={point}>{point}</li>)}
               </ul>
-              <div className="zhaowu-specialist-meta"><span />{toolsCopy.tianjiMeta}</div>
+              <div className="zhaowu-specialist-meta"><span />{toolsCopy.meta}</div>
             </div>
-            <Link to="/tianji-xinggong" className="zhaowu-specialist-action is-tianji-action">
-              <span>{toolsCopy.tianjiButton}</span><b aria-hidden>→</b>
+            <Link to="/tianji-dual" className="zhaowu-specialist-action is-tianji-action">
+              <span>{toolsCopy.button}</span><b aria-hidden>→</b>
             </Link>
           </article>
         </div>
