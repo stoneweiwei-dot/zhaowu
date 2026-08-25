@@ -7,8 +7,6 @@ import {
   scheduleIntroGateHardExit,
 } from "@/lib/intro-gate-policy";
 
-const POSTER_SRC = "/intro/loading-poster.jpg?v=20260824-motion";
-
 export function IntroGate() {
   const { locale } = useI18n();
   const [phase, setPhase] = useState<"in" | "leaving" | "off">("in");
@@ -87,31 +85,35 @@ export function IntroGate() {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] overflow-hidden bg-[#11150f] transition-opacity duration-150 ease-out ${phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"}`}
+      className={`fixed inset-0 z-[100] overflow-hidden bg-[#f7f2e8] transition-opacity duration-150 ease-out ${phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"}`}
       role="status"
       aria-live="polite"
       aria-label={loadingLabel}
     >
-      <img src={POSTER_SRC} alt="" aria-hidden className="intro-media intro-poster" draggable={false} />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(12,14,10,.16)_0%,rgba(12,14,10,.05)_42%,rgba(12,14,10,.48)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_16%,rgba(255,238,186,.13),transparent_34%)] mix-blend-screen" />
+      <div className="intro-paper-field" aria-hidden />
+      <div className="intro-orbit-mark" aria-hidden>
+        <span />
+        <span />
+        <span />
+        <b>昭梧</b>
+      </div>
 
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[430px] flex-col px-6 pb-[max(34px,env(safe-area-inset-bottom))] pt-[max(34px,env(safe-area-inset-top))] text-center text-[#fff8df]">
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[430px] flex-col px-6 pb-[max(34px,env(safe-area-inset-bottom))] pt-[max(34px,env(safe-area-inset-top))] text-center text-[#27241f]">
         <div>
-          <p className="text-[11px] tracking-[0.48em] text-[#f0dfb4]">Z H A O W U</p>
-          <p className="mt-2 text-[9px] tracking-[0.34em] text-[#d7c69c]">DESTINY · TIMING · CHOICE</p>
+          <p className="text-[11px] tracking-[0.48em] text-[#a7352b]">Z H A O W U</p>
+          <p className="mt-2 text-[9px] tracking-[0.34em] text-[#8a8173]">DESTINY · TIMING · CHOICE</p>
         </div>
 
         <div className="mt-auto pb-4">
-          <div className="mx-auto h-[3px] w-36 overflow-hidden rounded-full bg-white/20">
+          <div className="mx-auto h-[3px] w-36 overflow-hidden rounded-full bg-[#d8c7a4]">
             <div
-              className="h-full rounded-full bg-[#f0d99c] transition-[width] duration-300 ease-out"
+              className="h-full rounded-full bg-[#a7352b] transition-[width] duration-300 ease-out"
               style={{ width: `${percent}%` }}
             />
           </div>
-          <p className="mt-4 font-display text-[15px] tracking-[0.18em] text-[#fff7df]">{loadingLabel}</p>
-          <p className="mt-2 text-[10px] tabular-nums tracking-[0.18em] text-[#d7c69c]">{percent}%</p>
-          <p className="mt-4 text-[9px] tracking-[0.22em] text-[#cbbb96]">STONE 原創 · 2026</p>
+          <p className="mt-4 font-display text-[15px] tracking-[0.18em] text-[#27241f]">{loadingLabel}</p>
+          <p className="mt-2 text-[10px] tabular-nums tracking-[0.18em] text-[#8a8173]">{percent}%</p>
+          <p className="mt-4 text-[9px] tracking-[0.22em] text-[#8a8173]">STONE 原創 · 2026</p>
         </div>
       </div>
     </div>

@@ -2,9 +2,12 @@
 
 .stone-login-screen {
   background:
-    radial-gradient(circle at 18% 16%, rgba(184, 139, 62, .14), transparent 28%),
-    radial-gradient(circle at 82% 30%, rgba(62, 119, 104, .14), transparent 30%),
-    linear-gradient(145deg, #1f160d 0%, #1d2a24 56%, #4a3019 118%);
+    linear-gradient(rgba(39, 36, 31, .042) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(39, 36, 31, .03) 1px, transparent 1px),
+    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, .70), transparent 28%),
+    radial-gradient(circle at 82% 30%, rgba(167, 53, 43, .08), transparent 30%),
+    radial-gradient(circle at 16% 84%, rgba(47, 111, 95, .055), transparent 28%),
+    linear-gradient(145deg, #fbf8f1 0%, #f1e6d3 100%);
   background-size: 145% 145%;
   animation: stone-login-background-breathe 28s ease-in-out infinite alternate;
 }
@@ -31,8 +34,8 @@
   opacity: .48;
   transform: scaleX(.32);
   transform-origin: left center;
-  background: linear-gradient(90deg, rgba(183, 132, 45, 0), rgba(183, 132, 45, .88), rgba(67, 127, 111, .72), rgba(183, 132, 45, 0));
-  box-shadow: 0 0 10px rgba(183, 132, 45, .14);
+  background: linear-gradient(90deg, rgba(167, 53, 43, 0), rgba(167, 53, 43, .86), rgba(47, 111, 95, .54), rgba(167, 53, 43, 0));
+  box-shadow: 0 0 10px rgba(167, 53, 43, .14);
   animation: stone-login-title-line 7.6s ease-in-out infinite;
 }
 

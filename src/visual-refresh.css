@@ -1,18 +1,18 @@
 :root {
-  --color-paper: #fbf7ef;
-  --color-paper-deep: #eee3ce;
+  --color-paper: #f7f2e8;
+  --color-paper-deep: #e8dcc6;
   --color-cream: #fffdf8;
-  --color-ink: #292a26;
-  --color-ink-soft: #5d5d55;
+  --color-ink: #27241f;
+  --color-ink-soft: #5a554c;
   --color-ink-mute: #8b8578;
-  --color-cinnabar: #c26852;
-  --color-cinnabar-deep: #934737;
-  --color-line: #dfc995;
-  --color-wood: #3b8777;
-  --color-fire: #c26852;
-  --color-earth: #c69a4b;
-  --color-metal: #c7a65d;
-  --color-water: #4f7f9f;
+  --color-cinnabar: #a7352b;
+  --color-cinnabar-deep: #76251f;
+  --color-line: #d8c7a4;
+  --color-wood: #2f6f5f;
+  --color-fire: #a7352b;
+  --color-earth: #9b7745;
+  --color-metal: #756f64;
+  --color-water: #314f58;
 }
 
 html,
@@ -22,10 +22,13 @@ body {
 
 body {
   background-image:
+    linear-gradient(rgba(116, 100, 75, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(116, 100, 75, .035) 1px, transparent 1px),
     radial-gradient(circle at 14% 7%, rgba(255,255,255,.96), transparent 28%),
-    radial-gradient(circle at 88% 18%, rgba(79,127,159,.08), transparent 24%),
-    radial-gradient(circle at 12% 82%, rgba(59,135,119,.08), transparent 28%),
-    linear-gradient(180deg, #fbf8f1, #f4ecdd);
+    radial-gradient(circle at 88% 18%, rgba(167,53,43,.06), transparent 24%),
+    radial-gradient(circle at 12% 82%, rgba(47,111,95,.055), transparent 28%),
+    linear-gradient(180deg, #fbf8f1, #f1e6d3);
+  background-size: 32px 32px, 32px 32px, auto, auto, auto, auto;
 }
 
 /* Uploaded owner images must be visible on the pages, not a faint wash behind opaque cards. */
@@ -91,34 +94,42 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border: 1px solid rgba(198,154,75,.42);
-  border-radius: 1.8rem;
+  border: 1px solid rgba(139, 115, 77, .30);
+  border-radius: 18px;
   background:
-    radial-gradient(circle at 86% 12%, rgba(213,181,111,.18), transparent 25%),
-    radial-gradient(circle at 10% 90%, rgba(59,135,119,.10), transparent 27%),
-    linear-gradient(145deg, rgba(255,253,248,.985), rgba(249,243,231,.98));
-  box-shadow: 0 22px 66px rgba(74,55,31,.12);
+    linear-gradient(rgba(39, 36, 31, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(39, 36, 31, .026) 1px, transparent 1px),
+    radial-gradient(circle at 86% 12%, rgba(167, 53, 43, .10), transparent 25%),
+    radial-gradient(circle at 10% 90%, rgba(47,111,95,.08), transparent 27%),
+    linear-gradient(145deg, rgba(255,253,248,.985), rgba(246,240,228,.97));
+  background-size: 28px 28px, 28px 28px, auto, auto, auto;
+  box-shadow: 0 22px 66px rgba(74,55,31,.10), inset 0 1px 0 rgba(255,255,255,.72);
 }
 
 .zhaowu-home-hero::before {
   content: "";
   position: absolute;
   inset: .7rem;
-  border: 1px solid rgba(198,154,75,.25);
-  border-radius: 1.3rem;
+  border: 1px solid rgba(167, 53, 43, .16);
+  border-radius: 12px;
   pointer-events: none;
 }
 
 .zhaowu-home-hero::after {
-  content: "";
+  content: "昭";
   position: absolute;
-  width: 10rem;
-  height: 10rem;
-  right: -3.5rem;
-  top: -3.5rem;
-  border: 1px solid rgba(59,135,119,.16);
-  border-radius: 50%;
-  box-shadow: 0 0 0 1.2rem rgba(198,154,75,.04), 0 0 0 2.4rem rgba(79,127,159,.025);
+  right: -.10em;
+  bottom: -.26em;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  color: rgba(39, 36, 31, .035);
+  font-family: var(--font-display, serif);
+  font-size: clamp(12rem, 36vw, 24rem);
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: none;
   pointer-events: none;
 }
 
