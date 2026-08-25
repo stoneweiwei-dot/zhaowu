@@ -98,6 +98,23 @@ test("owner background client always uses Supabase JSON instead of the Vercel SP
   assert.match(backgrounds, /背景服務回應格式錯誤/);
 });
 
+test("owner can view every existing report image without regenerating it", async () => {
+  const account = await source("src/routes/account.tsx");
+  const imageClient = await source("src/lib/report/decree-image.ts");
+  const imageFunction = await source("supabase/functions/generate-decree-image/index.ts");
+
+  assert.match(account, /import \{ generateDecreeImage, viewDecreeImage \}/);
+  assert.match(account, /if \(user\?\.isOwner && detail\?\.image_path\) await viewReportImage\(row\.id, true\)/);
+  assert.match(account, /detail\.image_path \? viewReportImage\(row\.id\) : onReportImage\(row\.id, false\)/);
+  assert.match(imageClient, /viewOnly: true/);
+  assert.match(imageFunction, /if \(payload\?\.viewOnly === true\)/);
+  assert.match(imageFunction, /if \(!report\.image_path\) return json\(\{ ok: false, error: "IMAGE_NOT_FOUND" \}, 404\)/);
+  assert.ok(
+    imageFunction.indexOf("if (payload?.viewOnly === true)") < imageFunction.indexOf("const openaiKey"),
+    "view-only access must return before paid image generation is considered",
+  );
+});
+
 test("site shell keeps the real Zhaowu text seal and no longer mounts random page-wide ornament scatter", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const seal = await source("src/components/brand-seal.tsx");

@@ -22,7 +22,7 @@ import {
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
 import { ReportDragonSticker } from "@/components/report-dragon-sticker";
-import { generateDecreeImage } from "@/lib/report/decree-image";
+import { generateDecreeImage, viewDecreeImage } from "@/lib/report/decree-image";
 import type { ReportSection } from "@/lib/report/focused-report";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
@@ -151,7 +151,9 @@ function AccountPage() {
     viewImage: tr(locale, "查看命誥圖", "查看命诰图", "View decree image"),
     regenerateImage: tr(locale, "重新生成", "重新生成", "Regenerate"),
     generatingImage: tr(locale, "生成中…", "生成中…", "Generating…"),
+    viewingImage: tr(locale, "讀取圖片中…", "读取图片中…", "Loading image…"),
     imageReady: tr(locale, "命誥圖已生成並刷新。", "命诰图已生成并刷新。", "Decree image generated and refreshed."),
+    imageViewed: tr(locale, "已載入這筆命誥圖。", "已载入这笔命诰图。", "Decree image loaded."),
     deleteRecordConfirm: tr(locale, "刪除這筆報告？", "删除这笔报告？", "Delete this report?"),
     deleteRecord: tr(locale, "刪除記錄", "删除记录", "Delete record"),
     backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
@@ -253,7 +255,23 @@ function AccountPage() {
       return;
     }
     setOpenId(row.id);
-    await refreshDetail(row.id);
+    const detail = await refreshDetail(row.id);
+    if (user?.isOwner && detail?.image_path) await viewReportImage(row.id, true);
+  }
+
+  async function viewReportImage(id: string, silent = false) {
+    if (!session || !user?.isOwner) return;
+    setActionBusyId(id);
+    if (!silent) setReportMessages((prev) => ({ ...prev, [id]: "" }));
+    try {
+      const out = await viewDecreeImage(session, id);
+      if (out.signedUrl) setImageUrls((prev) => ({ ...prev, [id]: out.signedUrl! }));
+      if (!silent) setReportMessages((prev) => ({ ...prev, [id]: c.imageViewed }));
+    } catch (err) {
+      setReportMessages((prev) => ({ ...prev, [id]: err instanceof Error ? err.message : c.updateFailed }));
+    } finally {
+      setActionBusyId(null);
+    }
   }
 
   async function onReportImage(id: string, force: boolean) {
@@ -487,8 +505,8 @@ function AccountPage() {
                         {user.isOwner ? (
                           <div className="mb-5 flex flex-wrap gap-2 rounded-lg border border-line bg-paper/50 p-3">
                             {displayAnswer ? <button type="button" className="rounded-full border border-line bg-cream px-3 py-1.5 text-xs text-ink-soft" onClick={() => void copyFinalAnswer(row.id, displayAnswer)}>{c.copyAnswer}</button> : null}
-                            <button type="button" disabled={actionBusyId === row.id} className="rounded-full bg-cinnabar px-3 py-1.5 text-xs text-cream disabled:opacity-50" onClick={() => void onReportImage(row.id, false)}>
-                              {actionBusyId === row.id ? c.generatingImage : detail.image_path ? c.viewImage : c.generateImage}
+                            <button type="button" disabled={actionBusyId === row.id} className="rounded-full bg-cinnabar px-3 py-1.5 text-xs text-cream disabled:opacity-50" onClick={() => void (detail.image_path ? viewReportImage(row.id) : onReportImage(row.id, false))}>
+                              {actionBusyId === row.id ? (detail.image_path ? c.viewingImage : c.generatingImage) : detail.image_path ? c.viewImage : c.generateImage}
                             </button>
                             {detail.image_path ? <button type="button" disabled={actionBusyId === row.id} className="rounded-full border border-cinnabar/35 bg-cinnabar/5 px-3 py-1.5 text-xs text-cinnabar disabled:opacity-50" onClick={() => void onReportImage(row.id, true)}>{c.regenerateImage}</button> : null}
                           </div>

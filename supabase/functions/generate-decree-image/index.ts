@@ -129,6 +129,23 @@ Deno.serve(async (req: Request) => {
     ? report.visual_profile
     : {};
   const currentStyleVersion = String((profile as any)?.imageStyleVersion ?? "");
+  if (payload?.viewOnly === true) {
+    if (!report.image_path) return json({ ok: false, error: "IMAGE_NOT_FOUND" }, 404);
+    const { data: signed, error: signError } = await service.storage
+      .from("zhaowu-report-images")
+      .createSignedUrl(report.image_path, 3600);
+    if (signError || !signed?.signedUrl) {
+      return json({ ok: false, error: "IMAGE_SIGN_FAILED" }, 500);
+    }
+    return json({
+      ok: true,
+      imagePath: report.image_path,
+      signedUrl: signed.signedUrl,
+      reused: true,
+      styleVersion: currentStyleVersion || null,
+      guardianStyleId: (profile as any)?.guardianStyleId ?? null,
+    });
+  }
   if (report.image_path && payload?.force !== true && currentStyleVersion === IMAGE_STYLE_VERSION) {
     const { data: signed, error: signError } = await service.storage
       .from("zhaowu-report-images")
