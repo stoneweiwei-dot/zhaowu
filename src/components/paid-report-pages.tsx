@@ -26,6 +26,30 @@ const COPY = {
   },
 } as const;
 
+const SECTION_TITLES = {
+  "zh-Hant": {
+    conclusion: "直接結論",
+    basis: "命理依據",
+    timing: "時間與節奏",
+    action: "現實行動",
+    relationship: "關係條件",
+  },
+  "zh-Hans": {
+    conclusion: "直接结论",
+    basis: "命理依据",
+    timing: "时间与节奏",
+    action: "现实行动",
+    relationship: "关系条件",
+  },
+  en: {
+    conclusion: "Direct conclusion",
+    basis: "Chart basis",
+    timing: "Timing and rhythm",
+    action: "Practical action",
+    relationship: "Relationship conditions",
+  },
+} as const;
+
 const REPORT_ORNAMENTS = [
   { src: "/ornaments/generated/phoenix.webp", label: { "zh-Hant": "鳳儀", "zh-Hans": "凤仪", en: "Phoenix" } },
   { src: "/ornaments/generated/celestial-pearl.webp", label: { "zh-Hant": "星珠", "zh-Hans": "星珠", en: "Celestial pearl" } },
@@ -37,9 +61,20 @@ const REPORT_ORNAMENTS = [
   { src: "/ornaments/generated/crane.webp", label: { "zh-Hant": "雲鶴", "zh-Hans": "云鹤", en: "Crane" } },
 ] as const;
 
+function normalizeReportLine(line: string): string {
+  return line.replace(/\s+/g, " ").trim();
+}
+
 export function FocusedReportSections({ sections }: { sections: ReportSection[] }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
+  const timingLines = new Set(
+    sections
+      .filter((section) => section.key === "timing")
+      .flatMap((section) => section.body)
+      .map(normalizeReportLine)
+      .filter(Boolean),
+  );
 
   return (
     <section className="zhaowu-focused-report seal-border overflow-hidden rounded-[1.5rem] bg-cream/95" aria-labelledby="focused-report-title">
@@ -71,6 +106,16 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
       <div className="space-y-4 p-5 sm:p-7">
         {sections.map((section, index) => {
           const ornament = REPORT_ORNAMENTS[index % REPORT_ORNAMENTS.length];
+          const localizedTitle = SECTION_TITLES[locale][section.key] ?? section.title;
+          const uniqueBody = section.body.filter((line, lineIndex, body) => {
+            const normalized = normalizeReportLine(line);
+            return Boolean(normalized) && body.findIndex((candidate) => normalizeReportLine(candidate) === normalized) === lineIndex;
+          });
+          const withoutTimingDuplicate = section.key === "basis"
+            ? uniqueBody.filter((line) => !timingLines.has(normalizeReportLine(line)))
+            : uniqueBody;
+          const visibleBody = withoutTimingDuplicate.length > 0 ? withoutTimingDuplicate : uniqueBody;
+
           return (
             <article key={section.key} className="zhaowu-report-section rounded-xl border border-line bg-paper/70 p-4 sm:p-5">
               <img src={ornament.src} alt="" aria-hidden className="zhaowu-report-ornament" onError={(event) => { event.currentTarget.hidden = true; }} />
@@ -79,12 +124,12 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#b08a49]/35 bg-[#f4ead6] font-display text-sm text-[#8a632f]">
                     {String(section.sectionNo).padStart(2, "0")}
                   </span>
-                  <h4 className="font-display text-xl leading-8 tracking-[0.03em] text-ink">{section.title}</h4>
+                  <h4 className="font-display text-xl leading-8 tracking-[0.03em] text-ink">{localizedTitle}</h4>
                 </div>
                 <ReportDragonSticker section={section} />
               </div>
               <div className="zhaowu-report-section-body mt-3 space-y-3 text-sm leading-7 text-ink-soft">
-                {section.body.map((line, lineIndex) => <p key={lineIndex} className="whitespace-pre-line">{line}</p>)}
+                {visibleBody.map((line, lineIndex) => <p key={lineIndex} className="whitespace-pre-line">{line}</p>)}
               </div>
             </article>
           );
