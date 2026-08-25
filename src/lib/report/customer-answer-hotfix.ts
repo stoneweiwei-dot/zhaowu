@@ -2,6 +2,7 @@ import { buildTravelDestinationAnswer, extractNamedPlaces, pickTravelDestination
 import { buildDistinctTimingAnswer } from "@/lib/bazi/forecast-safe";
 import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
 import type { Chart, Reading } from "@/lib/bazi/types";
+import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { applyCosmicSymbolicReading, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 
 const ELEMENT_PROFILE_RE = /(五行.{0,8}(屬性|属性|主導|主导|分布|比例|占比|能量|哪個最多|哪个最多)|哪個五行|哪个五行|五行誰最強|五行谁最强)/;
@@ -72,6 +73,17 @@ export function applyCustomerAnswerHotfix(question: string, chart: Chart, readin
   if (isCosmicSymbolicQuestion(question)) {
     const locale = ENGLISH_RE.test(question) && !HAN_RE.test(question) ? "en" : "zh-Hans";
     return applyCosmicSymbolicReading(question, chart, reading, locale);
+  }
+
+  if (isStructureQuestion(question)) {
+    const structure = analyzeStructure(chart);
+    return {
+      ...reading,
+      kind: "self",
+      directAnswer: structure.directAnswer,
+      rhythm: `格局屬於原局底盤，不會因大運或流年換掉；歲運只決定「${structure.label}」與${structure.supportingPattern ?? "原局主線"}當下能否順利發揮。`,
+      action: `先以${structure.label}定底盤，再核對${structure.supportingPattern ?? "月令主氣"}的成立與受損條件；不要用一段性格描述或某一年的感受改寫原局格局。`,
+    };
   }
 
   if (ELEMENT_PROFILE_RE.test(question)) {
