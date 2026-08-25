@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnalysisForm } from "@/components/analysis-form";
 import { FollowUpBox } from "@/components/follow-up-box";
+import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
 import { ResultView } from "@/components/result-view";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
@@ -15,6 +16,8 @@ function Home() {
 
   return (
     <main className="space-y-6 sm:space-y-10">
+      <HomeScreenInstallPrompt />
+
       <section className="zhaowu-home-hero px-5 py-7 sm:px-10 sm:py-14" aria-labelledby="zhaowu-title">
         <div className="relative z-10 max-w-2xl">
           <p className="text-[10px] font-semibold tracking-[0.25em] text-earth sm:text-[11px] sm:tracking-[0.32em]">ZHAOWU · {t("heroKicker")}</p>
