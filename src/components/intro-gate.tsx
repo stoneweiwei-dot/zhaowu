@@ -66,7 +66,7 @@ export function IntroGate() {
         if (!cancelled) setRuntimeReady(true);
       })
       .catch(() => {
-        // Failed data/auth/runtime warm-up degrades immediately to the usable page.
+        // Do not fade here: bootstrap failure must reveal the already-mounted site immediately.
         if (!cancelled) forceOff();
       });
 
