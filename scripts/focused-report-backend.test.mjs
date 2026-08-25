@@ -23,17 +23,21 @@ test("legacy ninePages storage key is read only as compatibility, not product st
   assert.match(account, /old key is read only as storage compatibility/);
 });
 
-test("website visual system uses the app concept style without publishing the concept image", async () => {
+test("website keeps the app concept base while specialist cards use the generated ornament treatment", async () => {
   const account = await source("src/routes/account.tsx");
   const styles = await source("src/styles.css");
   const home = await source("src/home-polish-v3.css");
+  const homeRoute = await source("src/routes/index.tsx");
   const login = await source("src/stone-visual-fix.css");
   const intro = await source("src/components/intro-gate.tsx");
 
   assert.doesNotMatch(account, /APP DESIGN BASELINE|zhaowu-app-ui-concept|designTitle|openDesign/);
   assert.match(styles, /--color-cinnabar:\s*#a7352b/);
   assert.match(styles, /linear-gradient\(rgba\(116, 100, 75, \.045\) 1px, transparent 1px\)/);
-  assert.match(home, /\.zhaowu-specialist-card\.is-tianji[\s\S]*linear-gradient\(150deg, #302b25 0%, #16130f 100%\)/);
+  assert.match(home, /\.zhaowu-specialist-card\.is-tianji[\s\S]*linear-gradient\(152deg, #2b123d 0%, #170823 62%, #100719 100%\)/);
+  assert.match(home, /\.zhaowu-specialist-mark--tianji/);
+  assert.match(homeRoute, /\/ornaments\/generated\/phoenix\.webp/);
+  assert.match(homeRoute, /\/ornaments\/generated\/celestial-pearl\.webp/);
   assert.match(login, /stone-login-orbit/);
   assert.doesNotMatch(login, /stone-login-art img|loading-poster/);
   assert.doesNotMatch(intro, /loading-poster|intro-poster|<img/);
