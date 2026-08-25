@@ -78,11 +78,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className={`relative isolate min-h-dvh bg-transparent text-ink ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"} ${backgroundUrl && !isLogin ? "zhaowu-has-wallpaper" : ""}`}>
-      {backgroundUrl && !isLogin ? (
+    <div className={`relative isolate min-h-dvh bg-transparent text-ink ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"} ${backgroundUrl ? "zhaowu-has-wallpaper" : ""}`}>
+      {backgroundUrl ? (
         <div
           aria-hidden
-          className="zhaowu-site-wallpaper"
+          className={`zhaowu-site-wallpaper ${isLogin ? "is-login" : ""}`}
           style={{ backgroundImage: `url("${backgroundUrl}")` }}
         />
       ) : null}
@@ -106,7 +106,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   {user.isOwner ? t("navAdmin") : t("navMine")}
                 </Link>
               ) : null}
-              {/* Keep language choices visible; do not hide them behind a dropdown. */}
               <div
                 role="group"
                 aria-label={t("language")}
