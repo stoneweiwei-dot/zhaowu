@@ -113,6 +113,20 @@ test("Tianlong/Buddhist visual language is curated inside the report with real i
   assert.doesNotMatch(renderer, /\["輪",\s*"蓮",\s*"結",\s*"螺",\s*"魚",\s*"瓶"\]/);
 });
 
+test("every rendered report section receives a content-aware watercolor dragon without blocking text", async () => {
+  const renderer = await source("src/components/paid-report-pages.tsx");
+  const account = await source("src/routes/account.tsx");
+  const sticker = await source("src/components/report-dragon-sticker.tsx");
+  const selector = await source("src/lib/report/report-dragon.ts");
+
+  assert.match(renderer, /<ReportDragonSticker section=\{section\}/);
+  assert.match(account, /<ReportDragonSticker section=\{section\} compact/);
+  assert.match(sticker, /backgroundImage: `url\(\/mascot\/report-dragons\/volume-0\$\{dragon\.sheet\}\.webp\)`/);
+  assert.match(selector, /selectReportDragon/);
+  assert.match(selector, /REPORT_DRAGON_ASSETS/);
+  assert.doesNotMatch(sticker, /onLoad|await|Suspense/);
+});
+
 test("Dharma Palm standalone uses a four-life trail, richer symbolic prose and real Buddhist ornament assets", async () => {
   const palm = await source("src/components/palm-standalone.tsx");
   const presentation = await source("src/lib/palm/standalone-presentation.ts");

@@ -1,5 +1,6 @@
 import { useI18n } from "@/lib/i18n";
 import type { ReportSection } from "@/lib/report/focused-report";
+import { ReportDragonSticker } from "@/components/report-dragon-sticker";
 
 const COPY = {
   "zh-Hant": {
@@ -72,11 +73,14 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
       <div className="space-y-4 p-5 sm:p-7">
         {sections.map((section) => (
           <article key={section.key} className="zhaowu-report-section rounded-xl border border-line bg-paper/70 p-4 sm:p-5">
-            <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#b08a49]/35 bg-[#f4ead6] font-display text-sm text-[#8a632f]">
-                {String(section.sectionNo).padStart(2, "0")}
-              </span>
-              <h4 className="font-display text-xl leading-8 tracking-[0.03em] text-ink">{section.title}</h4>
+            <div className="zhaowu-report-section-heading">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#b08a49]/35 bg-[#f4ead6] font-display text-sm text-[#8a632f]">
+                  {String(section.sectionNo).padStart(2, "0")}
+                </span>
+                <h4 className="font-display text-xl leading-8 tracking-[0.03em] text-ink">{section.title}</h4>
+              </div>
+              <ReportDragonSticker section={section} />
             </div>
             <div className="mt-3 space-y-3 text-sm leading-7 text-ink-soft">
               {section.body.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
