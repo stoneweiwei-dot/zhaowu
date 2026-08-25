@@ -21,6 +21,7 @@ import {
 } from "@/lib/background-assets";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
+import { ReportDragonSticker } from "@/components/report-dragon-sticker";
 import { generateDecreeImage } from "@/lib/report/decree-image";
 import type { ReportSection } from "@/lib/report/focused-report";
 
@@ -537,7 +538,10 @@ function AccountPage() {
                           <div className="space-y-4">
                             {sections.map((section, index) => (
                               <div key={`${row.id}-${section.key}-${index}`} className="border-t border-line/70 pt-3 first:border-0 first:pt-0">
-                                <p className="font-medium text-ink">{String(section.sectionNo ?? index + 1).padStart(2, "0")} · {section.title || c.fullReport}</p>
+                                <div className="flex items-start justify-between gap-3">
+                                  <p className="pt-1 font-medium text-ink">{String(section.sectionNo ?? index + 1).padStart(2, "0")} · {section.title || c.fullReport}</p>
+                                  <ReportDragonSticker section={section} compact />
+                                </div>
                                 {(section.body ?? []).map((line, j) => <p key={j} className="mt-1">{customerCopy(line)}</p>)}
                               </div>
                             ))}
