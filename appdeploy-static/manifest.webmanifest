@@ -1,0 +1,18 @@
+{
+  "name": "昭梧｜人生節奏與選擇分析",
+  "short_name": "昭梧",
+  "description": "昭梧｜人生節奏與選擇分析",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fffaf0",
+  "theme_color": "#fffaf0",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/stoneweiwei-dot/zhaowu/34162973cd0d6e12e9a4457430e908603e2b6245/public/emblems/lotus-emblem.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
