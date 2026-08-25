@@ -44,11 +44,9 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
   return (
     <section className="zhaowu-focused-report seal-border overflow-hidden rounded-[1.5rem] bg-cream/95" aria-labelledby="focused-report-title">
       <div className="zhaowu-report-visual relative min-h-40 overflow-hidden border-b border-line/70 sm:min-h-48">
-        <img
-          src="/visuals/tianlong-report-hero.jpg"
-          alt={copy.artAlt}
-          className="absolute inset-0 h-full w-full object-cover object-[50%_36%]"
-        />
+        <img src="/ornaments/generated/phoenix.webp" alt="" aria-hidden className="zhaowu-report-hero-phoenix" onError={(event) => { event.currentTarget.hidden = true; }} />
+        <img src="/ornaments/generated/celestial-pearl.webp" alt="" aria-hidden className="zhaowu-report-hero-pearl" onError={(event) => { event.currentTarget.hidden = true; }} />
+        <img src="/ornaments/generated/lotus.webp" alt="" aria-hidden className="zhaowu-report-hero-lotus" onError={(event) => { event.currentTarget.hidden = true; }} />
         <div className="zhaowu-report-visual-shade absolute inset-0" aria-hidden />
         <div className="relative z-10 flex min-h-40 flex-col justify-end p-5 sm:min-h-48 sm:p-7">
           <p className="text-[10px] font-semibold tracking-[0.28em] text-[#d9b66f]">{copy.kicker}</p>
@@ -62,7 +60,7 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
           {REPORT_ORNAMENTS.map((mark) => (
             <figure key={mark.src} className="flex min-w-0 flex-col items-center gap-1.5">
               <span className="grid h-14 w-14 place-items-center rounded-full border border-[#c9a863]/40 bg-[#fffaf0] shadow-[0_6px_16px_rgba(108,77,29,.08)]">
-                <img src={mark.src} alt="" aria-hidden className="h-12 w-12 object-contain" />
+                <img src={mark.src} alt="" aria-hidden className="h-12 w-12 object-contain" onError={(event) => { event.currentTarget.hidden = true; }} />
               </span>
               <figcaption className="text-[9px] tracking-[0.08em] text-[#82663d]">{mark.label[locale]}</figcaption>
             </figure>
@@ -75,7 +73,7 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
           const ornament = REPORT_ORNAMENTS[index % REPORT_ORNAMENTS.length];
           return (
             <article key={section.key} className="zhaowu-report-section rounded-xl border border-line bg-paper/70 p-4 sm:p-5">
-              <img src={ornament.src} alt="" aria-hidden className="zhaowu-report-ornament" />
+              <img src={ornament.src} alt="" aria-hidden className="zhaowu-report-ornament" onError={(event) => { event.currentTarget.hidden = true; }} />
               <div className="zhaowu-report-section-heading">
                 <div className="flex min-w-0 items-center gap-3">
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#b08a49]/35 bg-[#f4ead6] font-display text-sm text-[#8a632f]">

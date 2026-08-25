@@ -3,6 +3,7 @@ import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
 import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
 import { pickTravelDestinations } from "@/lib/bazi/forecast";
 import { buildCosmicProfile, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
+import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 
 export type ReportSectionEvidence = {
   facts: string[];
@@ -226,6 +227,7 @@ function travelNames(question: string, chart: Chart): string[] {
 
 function topicLines(question: string, reading: Reading, chart: Chart): string[] {
   const req = inspectAnswerRequirements(question);
+  if (isStructureQuestion(question)) return analyzeStructure(chart).evidenceLines;
   if (req.asksTravel) {
     const names = travelNames(question, chart);
     return [
@@ -257,8 +259,9 @@ function topicLines(question: string, reading: Reading, chart: Chart): string[] 
     case "home":
       return [customerCopy(reading.home)];
     case "past":
-    case "self":
       return [customerCopy(reading.rhythm)];
+    case "self":
+      return [];
     case "timing":
       return ["这题只保留与时间窗口有关的判断，不额外扩写工作、感情或财务。"];
     case "choice":
@@ -285,6 +288,12 @@ function basisBody(question: string, reading: Reading, chart: Chart): string[] {
 
 function timingBody(question: string, reading: Reading, chart: Chart): string[] {
   const req = inspectAnswerRequirements(question);
+  if (isStructureQuestion(question)) {
+    const structure = analyzeStructure(chart);
+    return [
+      `格局是原局結構，不隨大運更名。${chart.currentDayun ? `目前${chart.currentDayun.ganZhi}大運（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）只影響「${structure.label}」與${structure.supportingPattern ?? "原局主線"}的發揮程度。` : "目前大運未可靠排出，因此不追加歲運判斷。"}`,
+    ];
+  }
   if (req.asksTravel) {
     const names = travelNames(question, chart);
     return [
@@ -298,6 +307,7 @@ function timingBody(question: string, reading: Reading, chart: Chart): string[] 
 
 function actionBody(question: string, reading: Reading, chart: Chart): string[] {
   const req = inspectAnswerRequirements(question);
+  if (isStructureQuestion(question)) return [customerCopy(reading.action)];
   const lines = [customerCopy(reading.action)].filter(Boolean);
 
   if (req.asksTravel) {
