@@ -1,6 +1,7 @@
 import { applyAnswerContract } from "@/lib/core/answer-contract";
 import type { AppLocale, Chart, QuestionKind, Reading } from "@/lib/bazi/types";
 import { applyCustomerAnswerHotfix } from "@/lib/report/customer-answer-hotfix";
+import { applyCosmicSymbolicReading, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 
 const STEM_EN: Record<string, string> = {
   甲: "Jia", 乙: "Yi", 丙: "Bing", 丁: "Ding", 戊: "Wu",
@@ -201,6 +202,7 @@ export function finalizeReading(
 ): Reading {
   const contracted = applyAnswerContract(question, chart, raw);
   const reading = applyCustomerAnswerHotfix(question, chart, contracted);
+  if (isCosmicSymbolicQuestion(question)) return applyCosmicSymbolicReading(question, chart, reading, locale);
   if (locale === "en") return buildEnglishReading(question, chart, reading);
 
   const dayZhi = dayBranch(chart);
