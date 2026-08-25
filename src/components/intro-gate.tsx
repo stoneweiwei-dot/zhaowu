@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
+import {
+  INTRO_GATE_FADE_MS,
+  INTRO_GATE_MIN_VISIBLE_MS,
+  scheduleIntroGateHardExit,
+} from "@/lib/intro-gate-policy";
 
-const MIN_VISIBLE_MS = 3200;
-const MAX_VISIBLE_MS = 8000;
 const POSTER_SRC = "/intro/loading-poster.jpg?v=20260824-motion";
 
 export function IntroGate() {
@@ -13,23 +16,43 @@ export function IntroGate() {
   const [minimumDone, setMinimumDone] = useState(false);
   const [runtimeReady, setRuntimeReady] = useState(false);
   const finishedRef = useRef(false);
+  const exitTimerRef = useRef<number | null>(null);
+
+  const forceOff = useCallback(() => {
+    if (finishedRef.current && exitTimerRef.current === null) return;
+    finishedRef.current = true;
+    if (exitTimerRef.current !== null) {
+      window.clearTimeout(exitTimerRef.current);
+      exitTimerRef.current = null;
+    }
+    setPercent(100);
+    setPhase("off");
+  }, []);
 
   const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
     setPercent(100);
     setPhase("leaving");
-    window.setTimeout(() => setPhase("off"), 360);
+    exitTimerRef.current = window.setTimeout(() => {
+      exitTimerRef.current = null;
+      setPhase("off");
+    }, INTRO_GATE_FADE_MS);
   }, []);
 
   useEffect(() => {
     let cancelled = false;
     const minimumTimer = window.setTimeout(() => {
       if (!cancelled) setMinimumDone(true);
-    }, MIN_VISIBLE_MS);
-    const maximumTimer = window.setTimeout(() => {
-      if (!cancelled) finish();
-    }, MAX_VISIBLE_MS);
+    }, INTRO_GATE_MIN_VISIBLE_MS);
+    const cancelHardExit = scheduleIntroGateHardExit(
+      window.setTimeout,
+      window.clearTimeout,
+      () => {
+        // Do not fade here: the blocking overlay must be fully gone before 3 seconds.
+        if (!cancelled) forceOff();
+      },
+    );
 
     void runBootstrapReadiness((progress) => {
       if (cancelled) return;
@@ -39,16 +62,20 @@ export function IntroGate() {
         if (!cancelled) setRuntimeReady(true);
       })
       .catch(() => {
-        // A slow or unavailable readiness check must never trap the user on loading.
-        if (!cancelled) setRuntimeReady(true);
+        // Failed data/auth/runtime warm-up degrades immediately to the usable page.
+        if (!cancelled) forceOff();
       });
 
     return () => {
       cancelled = true;
       window.clearTimeout(minimumTimer);
-      window.clearTimeout(maximumTimer);
+      cancelHardExit();
+      if (exitTimerRef.current !== null) {
+        window.clearTimeout(exitTimerRef.current);
+        exitTimerRef.current = null;
+      }
     };
-  }, [finish]);
+  }, [forceOff]);
 
   useEffect(() => {
     if (minimumDone && runtimeReady) finish();
@@ -60,7 +87,7 @@ export function IntroGate() {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] overflow-hidden bg-[#11150f] transition-opacity duration-[360ms] ease-out ${phase === "leaving" ? "opacity-0" : "opacity-100"}`}
+      className={`fixed inset-0 z-[100] overflow-hidden bg-[#11150f] transition-opacity duration-150 ease-out ${phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"}`}
       role="status"
       aria-live="polite"
       aria-label={loadingLabel}
