@@ -6,35 +6,31 @@ const COPY = {
   "zh-Hant": {
     title: "完整報告",
     lead: "只保留與你這一問直接相關的內容",
-    artAlt: "昭梧天龍八部與佛教吉祥意象",
-    kicker: "ZHAOWU · 天龍八部 × 佛教八吉祥",
-    marksAria: "佛教八吉祥",
+    artAlt: "昭梧天龍八部與東方吉祥意象",
+    kicker: "ZHAOWU · 東方吉祥紋樣 × 命理敘事",
+    marksAria: "昭梧吉祥紋樣",
   },
   "zh-Hans": {
     title: "完整报告",
     lead: "只保留与你这一问直接相关的内容",
-    artAlt: "昭梧天龙八部与佛教吉祥意象",
-    kicker: "ZHAOWU · 天龙八部 × 佛教八吉祥",
-    marksAria: "佛教八吉祥",
+    artAlt: "昭梧天龙八部与东方吉祥意象",
+    kicker: "ZHAOWU · 东方吉祥纹样 × 命理叙事",
+    marksAria: "昭梧吉祥纹样",
   },
   en: {
     title: "Full report",
     lead: "Only what directly serves this question",
-    artAlt: "Zhaowu Tianlong and Buddhist auspicious visual",
-    kicker: "ZHAOWU · TIANLONG PANTHEON × EIGHT AUSPICIOUS SYMBOLS",
-    marksAria: "Eight auspicious Buddhist symbols",
+    artAlt: "Zhaowu Tianlong and East Asian auspicious visual",
+    kicker: "ZHAOWU · AUSPICIOUS MOTIFS × DESTINY NARRATIVE",
+    marksAria: "Zhaowu auspicious motifs",
   },
 } as const;
 
-const AUSPICIOUS_MARKS = [
-  { src: "/emblems/dharma-wheel-emblem.svg", label: { "zh-Hant": "法輪", "zh-Hans": "法轮", en: "Dharma wheel" } },
-  { src: "/emblems/lotus-emblem.svg", label: { "zh-Hant": "蓮花", "zh-Hans": "莲花", en: "Lotus" } },
-  { src: "/emblems/modern-endless-knot-emblem.svg", label: { "zh-Hant": "盤長結", "zh-Hans": "盘长结", en: "Endless knot" } },
-  { src: "/emblems/modern-conch-emblem.svg", label: { "zh-Hant": "法螺", "zh-Hans": "法螺", en: "Conch" } },
-  { src: "/emblems/modern-golden-fish-emblem.svg", label: { "zh-Hant": "雙魚", "zh-Hans": "双鱼", en: "Golden fish" } },
-  { src: "/emblems/treasure-vase-emblem.svg", label: { "zh-Hant": "寶瓶", "zh-Hans": "宝瓶", en: "Treasure vase" } },
-  { src: "/emblems/modern-parasol-emblem.svg", label: { "zh-Hant": "寶傘", "zh-Hans": "宝伞", en: "Parasol" } },
-  { src: "/emblems/modern-victory-banner-emblem.svg", label: { "zh-Hant": "勝利幢", "zh-Hans": "胜利幢", en: "Victory banner" } },
+const REPORT_ORNAMENTS = [
+  { src: "/ornaments/generated/phoenix.webp", label: { "zh-Hant": "鳳儀", "zh-Hans": "凤仪", en: "Phoenix" } },
+  { src: "/ornaments/generated/celestial-pearl.webp", label: { "zh-Hant": "星珠", "zh-Hans": "星珠", en: "Celestial pearl" } },
+  { src: "/ornaments/generated/lotus.webp", label: { "zh-Hant": "蓮華", "zh-Hans": "莲华", en: "Lotus" } },
+  { src: "/ornaments/generated/dragon.webp", label: { "zh-Hant": "雲龍", "zh-Hans": "云龙", en: "Cloud dragon" } },
 ] as const;
 
 export function FocusedReportSections({ sections }: { sections: ReportSection[] }) {
@@ -58,11 +54,11 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
       </div>
 
       <div className="zhaowu-auspicious-rail border-b border-line/60 bg-[#f7f0e2] px-4 py-3">
-        <div className="mx-auto grid max-w-xl grid-cols-4 gap-2 sm:grid-cols-8" aria-label={copy.marksAria}>
-          {AUSPICIOUS_MARKS.map((mark) => (
-            <figure key={mark.src} className="flex min-w-0 flex-col items-center gap-1">
-              <span className="grid h-11 w-11 place-items-center rounded-full border border-[#c9a863]/45 bg-[#fffaf0] shadow-[0_5px_14px_rgba(108,77,29,.08)]">
-                <img src={mark.src} alt="" aria-hidden className="h-8 w-8 object-contain" />
+        <div className="mx-auto grid max-w-md grid-cols-4 gap-2" aria-label={copy.marksAria}>
+          {REPORT_ORNAMENTS.map((mark) => (
+            <figure key={mark.src} className="flex min-w-0 flex-col items-center gap-1.5">
+              <span className="grid h-14 w-14 place-items-center rounded-full border border-[#c9a863]/40 bg-[#fffaf0] shadow-[0_6px_16px_rgba(108,77,29,.08)]">
+                <img src={mark.src} alt="" aria-hidden className="h-12 w-12 object-contain" />
               </span>
               <figcaption className="text-[9px] tracking-[0.08em] text-[#82663d]">{mark.label[locale]}</figcaption>
             </figure>
@@ -71,22 +67,26 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
       </div>
 
       <div className="space-y-4 p-5 sm:p-7">
-        {sections.map((section) => (
-          <article key={section.key} className="zhaowu-report-section rounded-xl border border-line bg-paper/70 p-4 sm:p-5">
-            <div className="zhaowu-report-section-heading">
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#b08a49]/35 bg-[#f4ead6] font-display text-sm text-[#8a632f]">
-                  {String(section.sectionNo).padStart(2, "0")}
-                </span>
-                <h4 className="font-display text-xl leading-8 tracking-[0.03em] text-ink">{section.title}</h4>
+        {sections.map((section, index) => {
+          const ornament = REPORT_ORNAMENTS[index % REPORT_ORNAMENTS.length];
+          return (
+            <article key={section.key} className="zhaowu-report-section rounded-xl border border-line bg-paper/70 p-4 sm:p-5">
+              <img src={ornament.src} alt="" aria-hidden className="zhaowu-report-ornament" />
+              <div className="zhaowu-report-section-heading">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#b08a49]/35 bg-[#f4ead6] font-display text-sm text-[#8a632f]">
+                    {String(section.sectionNo).padStart(2, "0")}
+                  </span>
+                  <h4 className="font-display text-xl leading-8 tracking-[0.03em] text-ink">{section.title}</h4>
+                </div>
+                <ReportDragonSticker section={section} />
               </div>
-              <ReportDragonSticker section={section} />
-            </div>
-            <div className="mt-3 space-y-3 text-sm leading-7 text-ink-soft">
-              {section.body.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
-            </div>
-          </article>
-        ))}
+              <div className="zhaowu-report-section-body mt-3 space-y-3 text-sm leading-7 text-ink-soft">
+                {section.body.map((line, lineIndex) => <p key={lineIndex} className="whitespace-pre-line">{line}</p>)}
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
