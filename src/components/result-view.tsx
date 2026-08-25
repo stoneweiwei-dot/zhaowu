@@ -26,6 +26,7 @@ const RESULT_COPY = {
     imageGenerate: "生成個人命誥圖",
     imageGenerating: "命誥圖生成中…",
     imageReady: "個人命誥圖已生成並保存。",
+    imageLoadFailed: "命誥圖未能載入；文字答案與完整報告不受影響。",
     imageAlt: "昭梧個人命誥圖",
     pillars: { year: "年柱", month: "月柱", day: "日柱", time: "時柱" },
   },
@@ -42,6 +43,7 @@ const RESULT_COPY = {
     imageGenerate: "生成个人命诰图",
     imageGenerating: "命诰图生成中…",
     imageReady: "个人命诰图已生成并保存。",
+    imageLoadFailed: "命诰图未能载入；文字答案与完整报告不受影响。",
     imageAlt: "昭梧个人命诰图",
     pillars: { year: "年柱", month: "月柱", day: "日柱", time: "时柱" },
   },
@@ -58,6 +60,7 @@ const RESULT_COPY = {
     imageGenerate: "Generate personal decree image",
     imageGenerating: "Generating decree image…",
     imageReady: "Your personal decree image has been generated and saved.",
+    imageLoadFailed: "The decree image could not be loaded. Your text answer and full report remain available.",
     imageAlt: "Zhaowu personal decree image",
     pillars: { year: "Year", month: "Month", day: "Day", time: "Time" },
   },
@@ -273,7 +276,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       {imageUrl ? (
         <article className="seal-border rounded-xl bg-cream/95 p-4 sm:p-6">
           <div className="mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden rounded-xl border border-line bg-paper-deep shadow-sm">
-            <img src={imageUrl} alt={copy.imageAlt} className="h-full w-full object-cover" />
+            <img src={imageUrl} alt={copy.imageAlt} className="h-full w-full object-cover" onError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />
           </div>
         </article>
       ) : null}

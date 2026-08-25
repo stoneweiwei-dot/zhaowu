@@ -32,7 +32,9 @@ test("full reports use question-focused sections and only real server image gene
   assert.match(focused, /4 个固定核心区/);
   assert.match(focused, /composeFocusedReport/);
   assert.doesNotMatch(focused, /return \[page1, page2, page3, page4, page5, page6, page7, page8, page9\]/);
-  assert.match(renderer, /tianlong-report-hero\.jpg/);
+  assert.doesNotMatch(renderer, /tianlong-report-hero\.jpg/);
+  assert.match(renderer, /zhaowu-report-hero-phoenix/);
+  assert.match(renderer, /onError=\{\(event\) => \{ event\.currentTarget\.hidden = true; \}\}/);
   assert.match(renderer, /REPORT_ORNAMENTS/);
   assert.match(renderer, /AUSPICIOUS MOTIFS × DESTINY NARRATIVE/);
   assert.match(renderer, /mark\.label\[locale\]/);
@@ -52,6 +54,16 @@ test("free decree text remains available when image generation fails", async () 
   assert.ok(decreePosition >= 0, "free decree text must be rendered");
   assert.ok(imageGuardPosition > decreePosition, "free decree text must render before the optional image");
   assert.doesNotMatch(resultView.slice(imageGuardPosition), /\{decreeCouplet\}/);
+  assert.match(resultView, /setImageUrl\(null\); setMsg\(copy\.imageLoadFailed\)/);
+});
+
+test("report visual system uses a deep aubergine and antique-gold treatment without a corrupt hero dependency", async () => {
+  const styles = await source("src/focused-report.css");
+  const renderer = await source("src/components/paid-report-pages.tsx");
+  assert.match(styles, /linear-gradient\(155deg, #2b123d 0%, #180a27 55%, #100719 100%\)/);
+  assert.match(styles, /zhaowu-report-hero-pearl/);
+  assert.match(styles, /#e2bd76/);
+  assert.doesNotMatch(renderer, /\/visuals\/tianlong-report-hero\.jpg/);
 });
 
 test("owner background client always uses Supabase JSON instead of the Vercel SPA rewrite", async () => {
