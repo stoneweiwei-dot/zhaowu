@@ -60,7 +60,22 @@ function LoginPage() {
   return (
     <main className="stone-login-screen">
       <div className="stone-login-art" aria-hidden>
-        <img src="/intro/loading-poster.jpg" alt="" draggable={false} />
+        <div className="stone-login-orbit">
+          <span />
+          <span />
+          <span />
+          <b>昭梧</b>
+        </div>
+        <div className="stone-login-panel panel-a">
+          <i>日主</i>
+          <strong>甲木</strong>
+          <em>平衡</em>
+        </div>
+        <div className="stone-login-panel panel-b">
+          <i>流年</i>
+          <strong>丙午</strong>
+          <em>推演</em>
+        </div>
         <div className="stone-login-art-shade" />
       </div>
 

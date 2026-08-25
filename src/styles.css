@@ -2,20 +2,20 @@
 @import "tw-animate-css";
 
 @theme {
-  --color-paper: #f3ead8;
-  --color-paper-deep: #e6d8b8;
-  --color-cream: #fffaf1;
-  --color-ink: #2a261f;
-  --color-ink-soft: #5a5348;
-  --color-ink-mute: #8a8174;
-  --color-cinnabar: #8f3027;
-  --color-cinnabar-deep: #6c221c;
-  --color-line: #d5c4a1;
-  --color-wood: #3d6b4f;
-  --color-fire: #8f3027;
-  --color-earth: #9a7040;
-  --color-metal: #6f6a60;
-  --color-water: #3d5a6b;
+  --color-paper: #f7f2e8;
+  --color-paper-deep: #e8dcc6;
+  --color-cream: #fffdf7;
+  --color-ink: #27241f;
+  --color-ink-soft: #5a554c;
+  --color-ink-mute: #8a8173;
+  --color-cinnabar: #a7352b;
+  --color-cinnabar-deep: #76251f;
+  --color-line: #d8c7a4;
+  --color-wood: #2f6f5f;
+  --color-fire: #a7352b;
+  --color-earth: #9b7745;
+  --color-metal: #756f64;
+  --color-water: #314f58;
   --font-display: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "PMingLiU", serif;
   --font-sans: "Noto Sans TC", "PingFang TC", "Noto Sans", system-ui, sans-serif;
   --radius-xs: 4px;
@@ -38,9 +38,13 @@
 
   body {
     background-image:
-      radial-gradient(circle at 18% 8%, rgba(255,255,255,.82), transparent 24%),
-      radial-gradient(circle at 84% 22%, rgba(115,145,126,.10), transparent 22%),
-      linear-gradient(180deg, rgba(248,241,224,.96), rgba(239,227,202,.96));
+      linear-gradient(rgba(116, 100, 75, .045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(116, 100, 75, .035) 1px, transparent 1px),
+      radial-gradient(circle at 18% 10%, rgba(255, 255, 255, .92), transparent 25%),
+      radial-gradient(circle at 86% 18%, rgba(167, 53, 43, .055), transparent 23%),
+      radial-gradient(circle at 16% 84%, rgba(47, 111, 95, .055), transparent 28%),
+      linear-gradient(180deg, #fbf8f1, #f1e6d3);
+    background-size: 32px 32px, 32px 32px, auto, auto, auto, auto;
     background-attachment: fixed;
   }
 
@@ -64,7 +68,11 @@
 }
 
 .seal-border {
-  box-shadow: 0 0 0 1px var(--color-line), 0 18px 50px rgb(60 42 20 / 0.1);
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-line) 82%, transparent),
+    0 18px 50px rgb(62 45 24 / 0.08),
+    inset 0 1px 0 rgb(255 255 255 / .58);
 }
 
 .hero-kicker {
@@ -86,7 +94,7 @@
   letter-spacing: 0.08em;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
-  background: linear-gradient(135deg, #28231d 0 68%, #7e2e27 100%);
+  background: linear-gradient(135deg, #28231d 0 66%, #a7352b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

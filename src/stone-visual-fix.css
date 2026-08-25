@@ -55,7 +55,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   min-height: 100dvh;
   overflow-x: hidden;
   overflow-y: auto;
-  background: #21170d;
+  background: #f7f2e8;
   color: #292c29;
   isolation: isolate;
 }
@@ -71,19 +71,23 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .stone-login-screen::before {
   z-index: 1;
   background:
-    radial-gradient(circle at 18% 22%, rgba(218,176,92,.16), transparent 20%),
-    radial-gradient(circle at 82% 31%, rgba(83,151,135,.11), transparent 22%),
-    radial-gradient(circle at 50% 62%, rgba(255,244,205,.08), transparent 28%);
-  mix-blend-mode: screen;
+    linear-gradient(rgba(39, 36, 31, .042) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(39, 36, 31, .03) 1px, transparent 1px),
+    radial-gradient(circle at 18% 22%, rgba(255,255,255,.74), transparent 20%),
+    radial-gradient(circle at 82% 31%, rgba(167,53,43,.08), transparent 22%),
+    radial-gradient(circle at 50% 62%, rgba(47,111,95,.06), transparent 28%),
+    linear-gradient(180deg, #fbf8f1, #f1e6d3);
+  background-size: 28px 28px, 28px 28px, auto, auto, auto, auto;
+  mix-blend-mode: normal;
   animation: stone-login-ambient 11s ease-in-out infinite alternate;
 }
 
 .stone-login-screen::after {
   z-index: 2;
-  opacity: .28;
+  opacity: .18;
   background-image:
-    radial-gradient(circle, rgba(255,226,156,.70) 0 1px, transparent 1.4px),
-    radial-gradient(circle, rgba(143,190,177,.46) 0 1px, transparent 1.3px);
+    radial-gradient(circle, rgba(167,53,43,.42) 0 1px, transparent 1.4px),
+    radial-gradient(circle, rgba(47,111,95,.28) 0 1px, transparent 1.3px);
   background-size: 44px 44px, 67px 67px;
   background-position: 0 0, 21px 13px;
   mask-image: linear-gradient(180deg, #000 0 46%, transparent 76%);
@@ -96,29 +100,98 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   z-index: 0;
   flex: 0 0 auto;
   width: 100%;
-  height: clamp(320px, 48dvh, 470px);
+  height: clamp(300px, 46dvh, 460px);
   overflow: hidden;
   pointer-events: none;
-  background: #2a1d0f;
+  background:
+    linear-gradient(rgba(255,253,248,.052) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,253,248,.038) 1px, transparent 1px),
+    radial-gradient(circle at 50% 42%, rgba(255,253,248,.16), transparent 34%),
+    radial-gradient(circle at 72% 18%, rgba(167,53,43,.20), transparent 26%),
+    linear-gradient(145deg, #302b25, #171410);
+  background-size: 28px 28px, 28px 28px, auto, auto, auto;
 }
 
-.stone-login-art img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 18%;
-  transform: scale(1.025);
-  filter: saturate(1.03) contrast(1.02);
+.stone-login-orbit {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  display: grid;
+  width: clamp(13rem, 58vw, 23rem);
+  aspect-ratio: 1;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(216, 199, 164, .26);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1.5rem rgba(216, 199, 164, .035),
+    0 0 0 3rem rgba(167, 53, 43, .035),
+    inset 0 0 48px rgba(255, 253, 248, .055);
   animation: stone-login-drift 18s ease-in-out infinite alternate;
-  will-change: transform;
+}
+
+.stone-login-orbit span {
+  position: absolute;
+  inset: 14%;
+  border: 1px solid rgba(216, 199, 164, .16);
+  border-radius: 50%;
+}
+
+.stone-login-orbit span:nth-child(2) { inset: 29%; border-color: rgba(167, 53, 43, .24); }
+.stone-login-orbit span:nth-child(3) { inset: 44%; background: rgba(255,253,248,.06); }
+
+.stone-login-orbit b {
+  color: #fff7e3;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 12vw, 4rem);
+  letter-spacing: .12em;
+  text-shadow: 0 10px 32px rgba(0,0,0,.25);
+}
+
+.stone-login-panel {
+  position: absolute;
+  display: grid;
+  gap: .18rem;
+  width: 8rem;
+  border: 1px solid rgba(216, 199, 164, .24);
+  border-radius: 12px;
+  background: rgba(255,253,248,.09);
+  padding: .65rem .7rem;
+  color: #fff7e3;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 18px 38px rgba(0,0,0,.18);
+}
+
+.stone-login-panel i,
+.stone-login-panel em {
+  color: rgba(255,247,227,.62);
+  font-size: .58rem;
+  font-style: normal;
+  letter-spacing: .18em;
+}
+
+.stone-login-panel strong {
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  letter-spacing: .10em;
+}
+
+.stone-login-panel.panel-a { left: max(1rem, calc(50% - 13rem)); top: 34%; }
+.stone-login-panel.panel-b { right: max(1rem, calc(50% - 13rem)); bottom: 20%; }
+
+@media (max-width: 430px) {
+  .stone-login-panel { width: 6.7rem; padding: .55rem .6rem; }
+  .stone-login-panel strong { font-size: 1.05rem; }
+  .stone-login-panel.panel-a { left: .9rem; top: 33%; }
+  .stone-login-panel.panel-b { right: .9rem; bottom: 18%; }
 }
 
 .stone-login-art-shade {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(24,15,6,.00) 0%, rgba(24,15,6,.03) 52%, rgba(24,15,6,.38) 100%),
+    linear-gradient(180deg, rgba(24,15,6,.02) 0%, rgba(24,15,6,.04) 52%, rgba(247,242,232,.74) 100%),
     radial-gradient(circle at 50% 34%, rgba(255,229,167,.08), transparent 38%);
 }
 
@@ -165,11 +238,14 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   margin: -1.6rem auto 0;
   max-height: none;
   overflow: hidden;
-  border: 1px solid rgba(204,166,91,.50);
-  border-radius: 1.8rem 1.8rem .9rem .9rem;
+  border: 1px solid rgba(139,115,77,.32);
+  border-radius: 16px 16px 10px 10px;
   background:
-    radial-gradient(circle at 50% -10%, rgba(222,181,97,.10), transparent 34%),
+    linear-gradient(rgba(39,36,31,.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(39,36,31,.024) 1px, transparent 1px),
+    radial-gradient(circle at 50% -10%, rgba(167,53,43,.075), transparent 34%),
     #fffdf7;
+  background-size: 24px 24px, 24px 24px, auto, auto;
   padding: 1.1rem 1rem max(1.2rem, env(safe-area-inset-bottom));
   box-shadow: 0 -14px 52px rgba(19,12,5,.24), 0 18px 40px rgba(19,12,5,.16);
 }
@@ -232,7 +308,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 }
 
 .stone-login-tabs button.is-active {
-  background: #2f7464;
+  background: #a7352b;
   color: #fffdf7;
 }
 
@@ -259,8 +335,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 }
 
 .stone-login-form input:focus {
-  border-color: #2f7464;
-  box-shadow: 0 0 0 3px rgba(47,116,100,.08), 0 8px 20px rgba(47,116,100,.06);
+  border-color: #a7352b;
+  box-shadow: 0 0 0 3px rgba(167,53,43,.08), 0 8px 20px rgba(167,53,43,.06);
   transform: translateY(-1px);
 }
 
@@ -273,12 +349,12 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   overflow: hidden;
   border: 0;
   border-radius: 999px;
-  background: #2f7464;
+  background: linear-gradient(180deg, #a7352b, #76251f);
   padding: 0 1.2rem;
   color: #fffdf7;
   font-size: .88rem;
   font-weight: 600;
-  box-shadow: 0 10px 24px rgba(47,116,100,.18);
+  box-shadow: 0 10px 24px rgba(167,53,43,.18);
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
@@ -296,7 +372,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 
 .stone-login-primary:active {
   transform: translateY(1px) scale(.985);
-  box-shadow: 0 6px 16px rgba(47,116,100,.16);
+  box-shadow: 0 6px 16px rgba(167,53,43,.16);
 }
 
 .stone-login-message,
@@ -308,8 +384,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 }
 
 .stone-login-message {
-  background: rgba(47,116,100,.08);
-  color: #2f7464;
+  background: rgba(47,111,95,.08);
+  color: #2f6f5f;
 }
 
 .stone-login-error {
@@ -359,11 +435,6 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   .stone-login-art {
     height: clamp(380px, 55dvh, 560px);
   }
-  .stone-login-art img {
-    width: min(100%, 560px);
-    margin: 0 auto;
-    object-position: center 14%;
-  }
   .stone-login-sheet {
     margin-top: -2rem;
   }
@@ -372,7 +443,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 @media (prefers-reduced-motion: reduce) {
   .stone-login-screen::before,
   .stone-login-screen::after,
-  .stone-login-art img,
+  .stone-login-orbit,
   .stone-login-primary::after {
     animation: none !important;
   }
