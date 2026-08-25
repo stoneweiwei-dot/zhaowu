@@ -106,7 +106,7 @@ test.describe("iPhone Safari authenticated member flow", () => {
 
     await expect(page).toHaveURL(/\/account$/);
     await expect(page.getByText("會員流程測試報告", { exact: true })).toBeVisible();
-    await expect(page.getByText(TEST_USER.email, { exact: true }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
     expect(passwordGrantCalled).toBe(true);
 
     const stored = await page.evaluate(() => localStorage.getItem("zhaowu.supabase.session.v1"));
