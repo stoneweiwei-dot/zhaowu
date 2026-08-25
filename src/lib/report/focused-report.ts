@@ -2,6 +2,7 @@ import type { AnalysisResult, AppLocale, Chart, Reading } from "@/lib/bazi/types
 import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
 import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
 import { pickTravelDestinations } from "@/lib/bazi/forecast";
+import { buildCosmicProfile, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 
 export type ReportSectionEvidence = {
   facts: string[];
@@ -21,6 +22,73 @@ export type ReportSection = {
   evidence: ReportSectionEvidence;
 };
 
+function composeCosmicFocusedReport(result: AnalysisResult): ReportSection[] {
+  const locale = result.locale ?? "zh-Hans";
+  const profile = buildCosmicProfile(result.chart, locale);
+  const isEn = locale === "en";
+  const isHant = locale === "zh-Hant";
+
+  const titles = isEn
+    ? ["Direct conclusion", "Soul-origin archetypes", "Dimension and current phase", "Real-world integration"]
+    : isHant
+      ? ["直接結論", "宇宙靈魂原型（象徵）", "意識維度與當前階段", "現實整合"]
+      : ["直接结论", "宇宙灵魂原型（象征）", "意识维度与当前阶段", "现实整合"];
+
+  return [
+    {
+      sectionNo: 1,
+      pageNo: 1,
+      key: "conclusion",
+      title: titles[0],
+      body: [profile.directAnswer],
+      evidence: {
+        facts: ["question", "cosmic symbolic profile"],
+        conditions: ["Answer the requested soul-origin / starseed question directly"],
+        limits: ["Symbolic module only; never replace Bazi main judgment"],
+        checks: ["No generic personality fallback"],
+      },
+    },
+    {
+      sectionNo: 2,
+      pageNo: 2,
+      key: "basis",
+      title: titles[1],
+      body: profile.archetypeLines,
+      evidence: {
+        facts: ["dayMaster", "monthBranch", "element structure", "currentDayun"],
+        conditions: ["Bazi is used only as a cross-reference anchor"],
+        limits: ["Do not claim literal extraterrestrial origin"],
+        checks: ["Primary and secondary archetypes must be named"],
+      },
+    },
+    {
+      sectionNo: 3,
+      pageNo: 3,
+      key: "timing",
+      title: titles[2],
+      body: profile.dimensionLines,
+      evidence: {
+        facts: ["symbolic dimension model", "chart strength tendency"],
+        conditions: ["3D/4D/5D describe symbolic modes of attention and integration"],
+        limits: ["No soul rank, cosmic IQ, or measurable frequency claims"],
+        checks: ["Current phase must be explicit"],
+      },
+    },
+    {
+      sectionNo: 4,
+      pageNo: 4,
+      key: "action",
+      title: titles[3],
+      body: [...profile.actionLines, profile.disclaimer],
+      evidence: {
+        facts: ["symbolic archetype", "real-life pattern check"],
+        conditions: ["Advice must translate symbolism into observable action"],
+        limits: ["No belief-dependent instruction"],
+        checks: ["Keep only what can be tested against real repeated patterns"],
+      },
+    },
+  ];
+}
 
 const STEM_EN: Record<string, string> = {
   甲: "Jia", 乙: "Yi", 丙: "Bing", 丁: "Ding", 戊: "Wu",
@@ -296,6 +364,7 @@ function relationshipSection(reading: Reading): ReportSection | null {
  * 图像模块（个人命诰图）独立于文字结构，由用户主动生成，失败不得阻塞文字报告。
  */
 export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
+  if (isCosmicSymbolicQuestion(result.question)) return composeCosmicFocusedReport(result);
   if (result.locale === "en") return composeEnglishFocusedReport(result);
   const { question, chart, reading } = result;
 
