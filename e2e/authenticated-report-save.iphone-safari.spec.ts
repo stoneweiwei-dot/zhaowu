@@ -158,7 +158,7 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
   await page.getByRole("button", { name: "開始分析", exact: true }).click();
 
   await expect(page.locator("#result")).toBeVisible();
-  await expect(page.getByText("我現在最應該先處理什麼？", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "我現在最應該先處理什麼？", exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
 
