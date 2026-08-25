@@ -8,6 +8,7 @@ const ELEMENT_PROFILE_RE = /(五行.{0,8}(屬性|属性|主導|主导|分布|比
 const TRAVEL_FOLLOWUP_RE = /((具體|具体|推薦|推荐|適合|适合).{0,16}(國家|国家|城市|目的地)|(國家|国家|城市|目的地).{0,16}(旅行|旅遊|旅游|度假|充電|充电|適合|适合|推薦|推荐))/;
 const CAUTION_RE = /(注意|小心|風險|风险|避開|避开|careful|watch out|caution|risk|avoid)/i;
 const ENGLISH_RE = /[A-Za-z]{4,}/;
+const HAN_RE = /[\u3400-\u9fff]/;
 
 function elementProfileAnswer(chart: Chart): string {
   const entries = Object.entries(chart.elementPercents) as [keyof Chart["elementPercents"], number][];
@@ -28,7 +29,7 @@ function travelCautionAnswer(question: string, chart: Chart): string {
   const named = extractNamedPlaces(question)[0] ?? englishPlace(question);
   const place = named || "這次行程";
   const strong = chart.strength.tendency.includes("旺");
-  if (ENGLISH_RE.test(question)) {
+  if (ENGLISH_RE.test(question) && !HAN_RE.test(question)) {
     return `For ${place}, the main thing to watch is itinerary overload. Your chart is currently ${chart.strength.tendency} at the base level, so use the trip to discharge pressure rather than create another packed project: keep daily transfers low, leave one recovery block each day, avoid stacking several late nights, and keep budget/transport/weather buffer. This is a timing-and-rhythm reading, not a safety guarantee; use current official travel advice for real-world safety.`;
   }
   return `直接結論：去${place}最需要防的不是「不能去」，而是把行程排成另一個工作項目。你的原局目前是${chart.strength.tendency}，${strong ? "更適合用旅行做泄放與換氣，不適合每天塞滿景點" : "更需要保留恢復時間，不適合連續高強度轉場"}。實際安排抓四件事：少轉場、每天留一段空白、不要連續熬夜、交通／天氣／預算各留緩衝。現實安全仍以當地最新官方資訊為準。`;
@@ -37,10 +38,11 @@ function travelCautionAnswer(question: string, chart: Chart): string {
 function travelAnswer(question: string, chart: Chart, reading: Reading): Reading {
   const req = inspectAnswerRequirements(question);
   if (CAUTION_RE.test(question)) {
+    const englishOnly = ENGLISH_RE.test(question) && !HAN_RE.test(question);
     return {
       ...reading,
       directAnswer: travelCautionAnswer(question, chart),
-      action: ENGLISH_RE.test(question)
+      action: englishOnly
         ? "Keep one low-load block in every travel day and verify transport, weather and official advisories before departure."
         : "把每一天至少留一段空白，出發前再核對交通、天氣與官方安全資訊。",
     };
@@ -68,7 +70,8 @@ function travelAnswer(question: string, chart: Chart, reading: Reading): Reading
  */
 export function applyCustomerAnswerHotfix(question: string, chart: Chart, reading: Reading): Reading {
   if (isCosmicSymbolicQuestion(question)) {
-    return applyCosmicSymbolicReading(question, chart, reading, ENGLISH_RE.test(question) ? "en" : "zh-Hans");
+    const locale = ENGLISH_RE.test(question) && !HAN_RE.test(question) ? "en" : "zh-Hans";
+    return applyCosmicSymbolicReading(question, chart, reading, locale);
   }
 
   if (ELEMENT_PROFILE_RE.test(question)) {
