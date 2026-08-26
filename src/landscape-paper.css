@@ -1,0 +1,45 @@
+/* Last-cascade visual lock: landscape is visible and pressed; cards stay readable. */
+.zhaowu-site-wallpaper {
+  display: block !important;
+  opacity: 1 !important;
+  filter: saturate(0.86) contrast(0.96) brightness(0.92) !important;
+}
+
+.zhaowu-site-wallpaper::after {
+  display: block !important;
+  content: "" !important;
+  background: linear-gradient(180deg, rgba(247, 241, 228, .40), rgba(244, 236, 218, .62)) !important;
+}
+
+body:has(.zhaowu-has-wallpaper) {
+  background: #d8c7a4 !important;
+  background-image: none !important;
+}
+
+.zhaowu-site-header,
+body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
+  background: rgba(255, 252, 244, .78) !important;
+  backdrop-filter: blur(16px) saturate(112%);
+  -webkit-backdrop-filter: blur(16px) saturate(112%);
+}
+
+.zhaowu-has-wallpaper .zhaowu-home-hero,
+.zhaowu-has-wallpaper .zhaowu-tool-card,
+.zhaowu-has-wallpaper .seal-border,
+.zhaowu-has-wallpaper section.seal-border {
+  background: rgba(255, 252, 244, .88) !important;
+  backdrop-filter: blur(12px) saturate(108%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(108%) !important;
+}
+
+.zhaowu-home-hero {
+  border-radius: 22px !important;
+  border-color: rgba(152, 117, 70, .28) !important;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, .88), transparent 28%),
+    radial-gradient(circle at 86% 18%, rgba(167, 53, 43, .04), transparent 24%),
+    linear-gradient(180deg, #fbf8f1, #f3ead8) !important;
+}
