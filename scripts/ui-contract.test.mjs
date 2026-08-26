@@ -57,6 +57,15 @@ test("free decree text remains available when image generation fails", async () 
   assert.match(resultView, /setImageUrl\(null\); setMsg\(copy\.imageLoadFailed\)/);
 });
 
+test("free result keeps technical chart evidence inside the full report", async () => {
+  const resultView = await source("src/components/result-view.tsx");
+  const focused = await source("src/lib/report/focused-report.ts");
+
+  assert.doesNotMatch(resultView, /chart\.pillars\.map|t\("dayMaster"\)|t\("monthLing"\)/);
+  assert.match(focused, /title: "命理依据"/);
+  assert.match(focused, /title: "Chart basis"/);
+});
+
 test("report visual system uses a deep aubergine and antique-gold treatment without a corrupt hero dependency", async () => {
   const styles = await source("src/focused-report.css");
   const renderer = await source("src/components/paid-report-pages.tsx");
