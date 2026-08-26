@@ -7,6 +7,7 @@ import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/site-stats";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
+import { GreenDragonGuide } from "@/components/green-dragon-guide";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -149,6 +150,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <div className={isLogin ? "relative z-10 min-h-dvh" : "relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8"}>
         {children}
       </div>
+
+      {!isLogin ? <GreenDragonGuide /> : null}
 
       {!isLogin ? (
         <footer className="relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
