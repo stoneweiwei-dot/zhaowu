@@ -7,7 +7,7 @@ function normalizedMonths(months?: number[]): number[] {
 }
 
 function monthLabel(period: ForecastPeriod): string {
-  return `${period.month}月（${period.monthGanZhi}；${period.jieStart}→${period.jieEnd}）`;
+  return `${period.month}月`;
 }
 
 function yearVerdict(topic: ForecastTopic, score: number, year: number): string {
@@ -66,7 +66,7 @@ export function buildDistinctTimingAnswer(
   });
 
   const precision = chart.timeUnknown
-    ? "出生時間未確定，本次不使用時柱與大運做滿格推斷。"
-    : "月份以節氣交接為邊界；這是節奏排序，不是事件保證。";
+    ? "出生時間未確定，所以月份判斷會較寬。"
+    : "這些月份只代表行動先後順序，不保證結果。";
   return `${blocks.join(" ")} ${precision}`.trim();
 }
