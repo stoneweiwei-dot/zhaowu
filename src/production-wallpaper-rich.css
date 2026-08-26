@@ -1,0 +1,126 @@
+/* Final wallpaper-aware visual lock. Loaded last.
+ * The wallpaper stays visible, but content is deliberately tinted rather than white glass.
+ */
+
+.zhaowu-has-wallpaper .zhaowu-app-frame {
+  background:
+    linear-gradient(155deg, rgba(219, 195, 153, .62), rgba(195, 166, 122, .48)),
+    radial-gradient(circle at 90% 4%, rgba(158, 53, 43, .12), transparent 31%) !important;
+  border-color: rgba(181, 139, 75, .52) !important;
+  backdrop-filter: blur(3px) saturate(106%) !important;
+  -webkit-backdrop-filter: blur(3px) saturate(106%) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-home-hero {
+  border-color: rgba(207, 171, 103, .55) !important;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(222, 184, 105, .18), transparent 30%),
+    radial-gradient(circle at 14% 92%, rgba(168, 55, 45, .14), transparent 34%),
+    linear-gradient(150deg, rgba(18, 55, 45, .94), rgba(31, 75, 59, .90) 58%, rgba(22, 48, 40, .92)) !important;
+  backdrop-filter: blur(2px) saturate(110%) !important;
+  -webkit-backdrop-filter: blur(2px) saturate(110%) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .seal-border:not(.zhaowu-focused-report),
+.zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border:not(.zhaowu-focused-report),
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-tool-card {
+  border-color: rgba(137, 95, 49, .32) !important;
+  background:
+    linear-gradient(152deg, rgba(238, 220, 184, .88), rgba(216, 190, 146, .84)),
+    radial-gradient(circle at 100% 0, rgba(139, 84, 39, .10), transparent 34%) !important;
+  box-shadow:
+    0 12px 34px rgba(49, 33, 19, .14),
+    inset 0 1px rgba(255, 241, 207, .58) !important;
+  backdrop-filter: blur(3px) saturate(106%) !important;
+  -webkit-backdrop-filter: blur(3px) saturate(106%) !important;
+}
+
+.zhaowu-has-wallpaper #analysisForm input,
+.zhaowu-has-wallpaper #analysisForm textarea,
+.zhaowu-has-wallpaper #analysisForm select {
+  background: rgba(239, 222, 190, .90) !important;
+  border-color: rgba(111, 77, 42, .34) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-dual {
+  border-color: rgba(207, 169, 98, .44) !important;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(218, 179, 100, .16), transparent 31%),
+    linear-gradient(150deg, rgba(38, 18, 48, .94), rgba(71, 31, 75, .90)) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tianji {
+  border-color: rgba(198, 157, 87, .43) !important;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(221, 183, 103, .15), transparent 31%),
+    linear-gradient(150deg, rgba(25, 34, 55, .94), rgba(42, 31, 65, .90)) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tea {
+  border-color: rgba(194, 157, 90, .43) !important;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(224, 190, 115, .16), transparent 31%),
+    linear-gradient(150deg, rgba(20, 62, 50, .94), rgba(39, 86, 67, .90)) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-dual h3,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tianji h3,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tea h3,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-dual .zhaowu-specialist-desc,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tianji .zhaowu-specialist-desc,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tea .zhaowu-specialist-desc {
+  color: #f5ead2 !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card .zhaowu-specialist-eyebrow {
+  color: #dfbd78 !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card .zhaowu-specialist-action {
+  border-color: rgba(225, 191, 121, .40) !important;
+  background: rgba(238, 218, 177, .11) !important;
+  color: #f0d9a7 !important;
+}
+
+/* Full report keeps its strong aubergine identity. */
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report {
+  border-color: rgba(180, 136, 70, .50) !important;
+  background: rgba(31, 12, 43, .76) !important;
+  box-shadow: 0 18px 48px rgba(34, 20, 38, .24) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section {
+  border-color: rgba(207, 165, 93, .26) !important;
+  background:
+    radial-gradient(circle at 96% 96%, rgba(185, 103, 198, .12), transparent 30%),
+    rgba(42, 18, 57, .82) !important;
+  color: #f6ead4 !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section h4,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section p,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section .text-ink,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section .text-ink-soft {
+  color: #f3e7d0 !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-login-card,
+.zhaowu-has-wallpaper .stone-login-sheet {
+  border-color: rgba(181, 137, 72, .50) !important;
+  background:
+    radial-gradient(circle at 100% 0, rgba(158, 51, 43, .10), transparent 33%),
+    linear-gradient(150deg, rgba(231, 211, 174, .90), rgba(207, 181, 139, .88)) !important;
+  box-shadow: 0 24px 70px rgba(42, 28, 17, .24) !important;
+}
+
+@media (max-width: 640px) {
+  .zhaowu-has-wallpaper .zhaowu-app-frame {
+    background: linear-gradient(155deg, rgba(215, 190, 149, .58), rgba(190, 160, 117, .44)) !important;
+  }
+
+  .zhaowu-has-wallpaper .zhaowu-app-frame .seal-border:not(.zhaowu-focused-report),
+  .zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border:not(.zhaowu-focused-report),
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-tool-card {
+    background: linear-gradient(152deg, rgba(236, 217, 180, .88), rgba(214, 187, 142, .84)) !important;
+  }
+}
