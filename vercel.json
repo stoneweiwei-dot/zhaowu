@@ -6,10 +6,7 @@
   "installCommand": "npm ci",
   "ignoreCommand": "if [ -n \"$VERCEL_GIT_PREVIOUS_SHA\" ]; then git diff --quiet \"$VERCEL_GIT_PREVIOUS_SHA\" HEAD -- . ':(exclude).github/**' ':(exclude)docs/**'; else exit 1; fi",
   "git": {
-    "deploymentEnabled": {
-      "main": true,
-      "*": false
-    }
+    "deploymentEnabled": false
   },
   "rewrites": [
     {
