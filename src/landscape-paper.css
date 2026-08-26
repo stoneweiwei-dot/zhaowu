@@ -2,17 +2,17 @@
 .zhaowu-site-wallpaper {
   display: block !important;
   opacity: 1 !important;
-  filter: saturate(0.86) contrast(0.96) brightness(0.92) !important;
+  filter: saturate(0.88) contrast(0.98) brightness(0.94) !important;
 }
 
 .zhaowu-site-wallpaper::after {
   display: block !important;
   content: "" !important;
-  background: linear-gradient(180deg, rgba(247, 241, 228, .40), rgba(244, 236, 218, .62)) !important;
+  background: linear-gradient(180deg, rgba(247, 241, 228, .22), rgba(244, 236, 218, .42)) !important;
 }
 
 body:has(.zhaowu-has-wallpaper) {
-  background: #d8c7a4 !important;
+  background: #cbb892 !important;
   background-image: none !important;
 }
 
@@ -28,6 +28,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-has-wallpaper .seal-border,
 .zhaowu-has-wallpaper section.seal-border {
   background: rgba(255, 252, 244, .88) !important;
+  background-image: none !important;
   backdrop-filter: blur(12px) saturate(108%) !important;
   -webkit-backdrop-filter: blur(12px) saturate(108%) !important;
 }
@@ -35,11 +36,4 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-home-hero {
   border-radius: 22px !important;
   border-color: rgba(152, 117, 70, .28) !important;
-}
-
-body {
-  background-image:
-    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, .88), transparent 28%),
-    radial-gradient(circle at 86% 18%, rgba(167, 53, 43, .04), transparent 24%),
-    linear-gradient(180deg, #fbf8f1, #f3ead8) !important;
 }

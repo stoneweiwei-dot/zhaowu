@@ -1,39 +1,35 @@
-/* Final visual correction: clean paper surfaces, no ghost-logo wallpaper. */
+/* Final visual correction: paper cards over a visible pressed landscape. */
 
-/* Owner-uploaded artwork stays in the asset library, but is not painted behind public UI. */
+/* Owner-uploaded artwork stays visible behind public UI. */
 .zhaowu-site-wallpaper {
-  display: none !important;
-  opacity: 0 !important;
-  filter: none !important;
+  display: block !important;
+  opacity: 1 !important;
+  filter: saturate(0.88) contrast(0.98) brightness(0.94) !important;
   transform: none !important;
 }
 
 .zhaowu-site-wallpaper::after {
-  display: none !important;
-  content: none !important;
+  display: block !important;
+  content: "" !important;
 }
 
 body:has(.zhaowu-has-wallpaper) {
-  background: #fbf7ef !important;
-  background-image:
-    radial-gradient(circle at 14% 7%, rgba(255,255,255,.96), transparent 28%),
-    radial-gradient(circle at 88% 18%, rgba(79,127,159,.055), transparent 24%),
-    radial-gradient(circle at 12% 82%, rgba(59,135,119,.045), transparent 28%),
-    linear-gradient(180deg, #fbf8f1, #f4ecdd) !important;
+  background: #cbb892 !important;
+  background-image: none !important;
 }
 
 .zhaowu-site-header,
 body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
-  background: rgba(255,253,247,.97) !important;
+  background: rgba(255,252,244,.78) !important;
 }
 
 .zhaowu-has-wallpaper .seal-border,
 .zhaowu-has-wallpaper section.seal-border,
 .zhaowu-has-wallpaper .zhaowu-tool-card,
 .zhaowu-has-wallpaper .zhaowu-home-hero {
-  background: #fffdf7 !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  background: rgba(255, 252, 244, .88) !important;
+  backdrop-filter: blur(12px) saturate(108%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(108%) !important;
 }
 
 .zhaowu-home-hero {
