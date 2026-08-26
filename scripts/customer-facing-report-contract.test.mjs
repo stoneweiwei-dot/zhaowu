@@ -19,7 +19,7 @@ test("English customer report is composed separately from the Bazi section engin
   assert.doesNotMatch(englishPath, /chart\./);
   assert.match(englishPath, /Bottom line/);
   assert.match(englishPath, /What to do next/);
-  assert.match(englishPath, /What matters for work/);
+  assert.match(customer, /What matters for work/);
 });
 
 test("English renderer drops legacy chart-basis cards but keeps separately written topic guidance", async () => {
