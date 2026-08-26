@@ -34,7 +34,7 @@ test("loading intro remains non-blocking and hard-exits inside the mobile budget
     source("src/components/intro-gate.tsx"),
     source("src/lib/intro-gate-policy.ts"),
   ]);
-  assert.match(policy, /INTRO_HARD_EXIT_MS = 2800/);
+  assert.match(policy, /INTRO_GATE_HARD_EXIT_MS = 2800/);
   assert.match(intro, /LOTUS_BLOOM_MS = 2200/);
 });
 
