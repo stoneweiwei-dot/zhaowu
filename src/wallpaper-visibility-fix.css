@@ -1,48 +1,141 @@
-/* Wallpaper stays visible as a pressed landscape wash, not a raw photo or a hidden layer. */
+/* Wallpaper must remain visibly readable through the app surfaces.
+ * This layer intentionally uses higher-specificity wallpaper selectors so later
+ * visual reset/richness files cannot turn the page back into opaque cards.
+ */
 .zhaowu-has-wallpaper .zhaowu-site-wallpaper {
   display: block;
   opacity: 1;
-  filter: saturate(0.86) contrast(0.96) brightness(0.92);
+  filter: saturate(.94) contrast(.98) brightness(.96);
 }
 
 .zhaowu-has-wallpaper .zhaowu-site-wallpaper::after {
   display: block;
-  background: linear-gradient(180deg, rgba(247, 241, 228, .38), rgba(244, 236, 218, .62));
+  background: linear-gradient(180deg, rgba(247, 241, 228, .10), rgba(244, 236, 218, .20)) !important;
+}
+
+/* The shell itself should frame the content, not hide the wallpaper. */
+.zhaowu-has-wallpaper .zhaowu-app-frame {
+  background: rgba(251, 247, 239, .38) !important;
+  background-image: none !important;
+  backdrop-filter: blur(2px) saturate(102%) !important;
+  -webkit-backdrop-filter: blur(2px) saturate(102%) !important;
 }
 
 .zhaowu-has-wallpaper .zhaowu-site-header {
-  background: rgba(255, 252, 244, .78) !important;
-  backdrop-filter: blur(16px) saturate(112%);
+  background: rgba(255, 252, 244, .62) !important;
+  backdrop-filter: blur(7px) saturate(108%) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(108%) !important;
 }
 
-.zhaowu-has-wallpaper .zhaowu-home-hero,
-.zhaowu-has-wallpaper .zhaowu-tool-card,
-.zhaowu-has-wallpaper .seal-border,
-.zhaowu-has-wallpaper section.seal-border {
-  background-color: rgba(255, 252, 244, .88) !important;
-  backdrop-filter: blur(12px) saturate(108%);
+/* Core page sections: translucent enough that the chosen wallpaper remains obvious. */
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-home-hero,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-tool-card,
+.zhaowu-has-wallpaper .zhaowu-app-frame .seal-border,
+.zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border {
+  background: rgba(255, 252, 244, .60) !important;
+  background-image: none !important;
+  backdrop-filter: blur(3px) saturate(104%) !important;
+  -webkit-backdrop-filter: blur(3px) saturate(104%) !important;
 }
 
-.zhaowu-has-wallpaper .zhaowu-login-card {
-  background: rgba(255, 252, 244, .90) !important;
-  backdrop-filter: blur(16px) saturate(110%);
+/* Inputs need a little more body than their parent panels for legibility. */
+.zhaowu-has-wallpaper #analysisForm input,
+.zhaowu-has-wallpaper #analysisForm textarea,
+.zhaowu-has-wallpaper #analysisForm select,
+.zhaowu-has-wallpaper .stone-login-form input {
+  background: rgba(255, 254, 251, .74) !important;
+}
+
+/* Specialist/tool cards also used to be nearly solid. Keep their identity but reveal the wallpaper. */
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-dual,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tianji,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tea {
+  background: rgba(255, 252, 244, .58) !important;
+  background-image: none !important;
+  backdrop-filter: blur(3px) saturate(104%) !important;
+  -webkit-backdrop-filter: blur(3px) saturate(104%) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-action {
+  background: rgba(255, 252, 246, .58) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+}
+
+/* Full report keeps the aubergine identity, but no longer becomes an opaque wall. */
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report {
+  background: rgba(31, 12, 43, .46) !important;
+  background-image: none !important;
+  backdrop-filter: blur(2px) saturate(106%) !important;
+  -webkit-backdrop-filter: blur(2px) saturate(106%) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-visual {
+  background:
+    linear-gradient(rgba(214, 174, 93, .06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214, 174, 93, .05) 1px, transparent 1px),
+    rgba(31, 12, 43, .62) !important;
+  background-size: 34px 34px, 34px 34px, auto !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-auspicious-rail {
+  background: rgba(20, 8, 31, .60) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section {
+  background:
+    radial-gradient(circle at 96% 96%, rgba(185, 103, 198, .10), transparent 30%),
+    rgba(38, 16, 52, .68) !important;
+  backdrop-filter: blur(2px) saturate(104%) !important;
+  -webkit-backdrop-filter: blur(2px) saturate(104%) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-customer-status,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-report-basis {
+  background: rgba(232, 214, 178, .60) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+}
+
+/* Login remains readable while still visibly sharing the selected site wallpaper. */
+.zhaowu-has-wallpaper .zhaowu-login-card,
+.zhaowu-has-wallpaper .stone-login-sheet {
+  background: rgba(255, 252, 244, .62) !important;
+  background-image: none !important;
+  backdrop-filter: blur(5px) saturate(106%) !important;
+  -webkit-backdrop-filter: blur(5px) saturate(106%) !important;
 }
 
 .zhaowu-has-wallpaper .zhaowu-login-home-link,
-.zhaowu-has-wallpaper .zhaowu-login-language {
-  background: rgba(255, 252, 244, .82) !important;
+.zhaowu-has-wallpaper .zhaowu-login-language,
+.zhaowu-has-wallpaper .stone-login-pill,
+.zhaowu-has-wallpaper .stone-login-topbar [role="group"] {
+  background: rgba(255, 252, 244, .60) !important;
 }
 
 @media (max-width: 640px) {
-  .zhaowu-has-wallpaper .zhaowu-home-hero,
-  .zhaowu-has-wallpaper .zhaowu-tool-card,
-  .zhaowu-has-wallpaper .seal-border,
-  .zhaowu-has-wallpaper section.seal-border {
-    background-color: rgba(255, 252, 244, .90) !important;
-    backdrop-filter: blur(10px) saturate(106%);
+  .zhaowu-has-wallpaper .zhaowu-app-frame {
+    background: rgba(251, 247, 239, .34) !important;
   }
 
-  .zhaowu-has-wallpaper .zhaowu-login-card {
-    background: rgba(255, 252, 244, .92) !important;
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-home-hero,
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-tool-card,
+  .zhaowu-has-wallpaper .zhaowu-app-frame .seal-border,
+  .zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border {
+    background: rgba(255, 252, 244, .62) !important;
+    backdrop-filter: blur(2px) saturate(103%) !important;
+    -webkit-backdrop-filter: blur(2px) saturate(103%) !important;
+  }
+
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section {
+    background: rgba(38, 16, 52, .70) !important;
+  }
+
+  .zhaowu-has-wallpaper .zhaowu-login-card,
+  .zhaowu-has-wallpaper .stone-login-sheet {
+    background: rgba(255, 252, 244, .66) !important;
   }
 }
