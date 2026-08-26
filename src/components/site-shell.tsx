@@ -148,6 +148,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
       ) : null}
 
       <div className={isLogin ? "relative z-10 min-h-dvh" : "relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8"}>
+        {user?.isOwner && pathname === "/account" ? (
+          <div className="mb-4 flex justify-end">
+            <Link to="/gallery" className="inline-flex min-h-10 items-center rounded-full border border-line bg-cream/95 px-4 text-xs font-medium text-ink-soft shadow-sm">
+              {locale === "en" ? "Open Gallery" : locale === "zh-Hans" ? "打开图库" : "打開圖庫"}
+            </Link>
+          </div>
+        ) : null}
         {children}
       </div>
 
