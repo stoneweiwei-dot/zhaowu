@@ -56,3 +56,13 @@ test("主页只有一个双轨入口，独立旧路由保留兼容但不再分�
   assert.match(route, /calculateDualDestiny/);
   assert.doesNotMatch(route, /supabase|fetch\(|localStorage/);
 });
+
+test("双轨结果切换语言时重新本地化校时、宫位和英文盘心", () => {
+  const route = readFileSync(new URL("../src/routes/tianji-dual.tsx", import.meta.url), "utf8");
+
+  assert.match(route, /localizeCityHit\(birthCity, locale\)\.display/);
+  assert.match(route, /locale === "zh-Hans" \? "宫" : "宮"/);
+  assert.match(route, /EN_BRANCH\[active as TianjiPalace\]/);
+  assert.match(route, /locale === "en" \? "AB" : "合"/);
+  assert.doesNotMatch(route, /setTimeNote\(`\$\{copy\.corrected\}/);
+});
