@@ -8,22 +8,28 @@ async function source(path) {
   return readFile(new URL(path, root), "utf8");
 }
 
-test("random site scatter uses only hollow line ornament assets", async () => {
+test("random site scatter uses visible real emblem assets", async () => {
   const marks = await source("src/components/marks.tsx");
   const pool = marks.slice(marks.indexOf("const SCATTER_POOL"), marks.indexOf("type ScatterItem"));
 
-  for (let i = 1; i <= 6; i += 1) {
-    const n = String(i).padStart(2, "0");
-    assert.match(pool, new RegExp(`line-ornament-${n}\\.svg`));
+  for (const name of [
+    "lotus-emblem",
+    "dharma-wheel-emblem",
+    "modern-endless-knot-emblem",
+    "modern-golden-fish-emblem",
+    "crane-feather-emblem",
+    "ruyi-emblem",
+  ]) {
+    assert.match(pool, new RegExp(`${name}\\.svg`));
   }
 
-  assert.doesNotMatch(pool, /lotus-emblem|dharma-wheel-emblem|modern-|treasure-vase-emblem|ruyi-emblem/);
+  assert.doesNotMatch(pool, /line-ornament-/);
   assert.match(marks, /Date\.now\(\)/);
   assert.match(marks, /Math\.random\(\)/);
-  assert.match(marks, /const count = 4 \+ \(visitJitter % 2\)/);
+  assert.match(marks, /const count = 5 \+ \(visitJitter % 3\)/);
 });
 
-test("line ornament assets stay transparent outline SVGs", async () => {
+test("line ornament assets stay transparent outline SVGs when present", async () => {
   for (let i = 1; i <= 6; i += 1) {
     const n = String(i).padStart(2, "0");
     const svg = await source(`public/emblems/line-ornament-${n}.svg`);
