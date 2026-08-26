@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { TeaGalleryImage } from "@/components/tea-gallery-image";
 import type { Chart } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { localizeTea, recommendGuardianFromChart, type TeaProfile } from "@/lib/tea-guardian";
@@ -38,7 +39,7 @@ export function TeaPortraitCard({ tea, label, locale, featured = false }: { tea:
   return (
     <article className={`tea-result-card ${featured ? "is-featured" : ""}`}>
       <div className="tea-result-image-wrap">
-        <img src={item.image} alt={`${COPY[locale].imageAlt}・${item.name}`} className="tea-result-image" loading="lazy" decoding="async" />
+        <TeaGalleryImage teaId={tea.id} fallback={item.image} alt={`${COPY[locale].imageAlt}・${item.name}`} className="tea-result-image" />
       </div>
       <div className="tea-result-copy">
         <p className="tea-result-label">{label}</p>
