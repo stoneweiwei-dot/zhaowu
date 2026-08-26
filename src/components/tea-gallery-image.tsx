@@ -15,7 +15,7 @@ export function TeaGalleryImage({ teaId, fallback, alt, className }: { teaId: st
         if (!alive) return;
         const asset = assets[teaId];
         if (!asset) return;
-        setSrc(galleryPublicUrl(asset.storage_path));
+        setSrc(galleryPublicUrl(asset.storage_path, asset.bucket_id));
         setUsingFallback(false);
       })
       .catch(() => undefined);
