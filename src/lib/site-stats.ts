@@ -13,6 +13,7 @@ export type PublicSiteStats = {
 function publicHeaders(extra?: HeadersInit): HeadersInit {
   return {
     apikey: SUPABASE_KEY,
+    Authorization: `Bearer ${SUPABASE_KEY}`,
     "Content-Type": "application/json",
     ...extra,
   };
