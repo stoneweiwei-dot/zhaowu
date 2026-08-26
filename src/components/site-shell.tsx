@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
@@ -17,6 +17,45 @@ const EMPTY_STATS: PublicSiteStats = {
 };
 
 const WEEKLY_WALLPAPER_B64_PATH = "/wallpapers/current-weekly.b64";
+const AUSPICIOUS_EMBLEM_POOL = [
+  "/emblems/dharma-wheel-emblem.svg",
+  "/emblems/lotus-emblem.svg",
+  "/emblems/modern-bagua-emblem.svg",
+  "/emblems/modern-bell-emblem.svg",
+  "/emblems/modern-conch-emblem.svg",
+  "/emblems/heaven-gate-emblem.svg",
+  "/emblems/crane-feather-emblem.svg",
+  "/emblems/line-ornament-01.svg",
+  "/emblems/line-ornament-02.svg",
+  "/emblems/line-ornament-03.svg",
+  "/emblems/line-ornament-04.svg",
+  "/emblems/line-ornament-05.svg",
+  "/emblems/line-ornament-06.svg",
+] as const;
+
+function hashSeed(value: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function chooseRouteEmblems(pathname: string, visitSeed: number, count = 6) {
+  const pool = [...AUSPICIOUS_EMBLEM_POOL];
+  let state = hashSeed(`${pathname}:${visitSeed}`) || 1;
+  const next = () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 0x1_0000_0000;
+  };
+
+  for (let index = pool.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(next() * (index + 1));
+    [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
+  }
+  return pool.slice(0, count);
+}
 
 async function loadWeeklyWallpaper(): Promise<string | null> {
   try {
@@ -48,6 +87,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const isLogin = pathname === "/login";
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
   const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
+  const [emblemVisitSeed] = useState(() => Math.floor(Math.random() * 0x7fffffff));
+  const routeEmblems = useMemo(
+    () => chooseRouteEmblems(pathname, emblemVisitSeed),
+    [pathname, emblemVisitSeed],
+  );
 
   useEffect(() => {
     hydrateLocale();
@@ -100,6 +144,22 @@ export function SiteShell({ children }: { children: ReactNode }) {
           style={{ backgroundImage: `url("${backgroundUrl}")` }}
         />
       ) : null}
+
+      <div
+        aria-hidden="true"
+        data-testid="auspicious-emblem-scatter"
+        className="zhaowu-emblem-scatter"
+      >
+        {routeEmblems.map((src, index) => (
+          <img
+            key={`${pathname}-${src}-${index}`}
+            src={src}
+            alt=""
+            draggable={false}
+            className={`zhaowu-random-emblem zhaowu-random-emblem-${index + 1}`}
+          />
+        ))}
+      </div>
 
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">
