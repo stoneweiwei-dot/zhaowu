@@ -18,9 +18,10 @@ export type BackgroundAsset = {
 };
 
 function apiHeaders(token?: string | null, json = true): HeadersInit {
+  const bearer = token || SUPABASE_KEY;
   return {
     apikey: SUPABASE_KEY,
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
     ...(json ? { "Content-Type": "application/json" } : {}),
   };
 }
@@ -218,11 +219,10 @@ export function chooseDailyBackground(assets: BackgroundAsset[], now = new Date(
   const pinned = eligible.find((asset) => asset.theme === "wallpaper");
   if (pinned) return pinned;
 
-  // 新上傳的圖先成為當天默認背景；之後每天往下一張輪播。
-  // 這樣站主剛上傳的新圖不會因 epoch 取模而立刻跳到數十張舊圖中的任意一張。
-  const newest = new Date(eligible[0].created_at);
-  const newestDay = new Date(newest.getFullYear(), newest.getMonth(), newest.getDate()).getTime();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  const daysSinceNewest = Math.max(0, Math.floor((today - newestDay) / 86400000));
-  return eligible[daysSinceNewest % eligible.length] ?? eligible[0];
+  const weekday = now.getDay();
+  const explicit = eligible.filter((asset) => asset.days_of_week.includes(weekday));
+  const pool = explicit.length ? explicit : eligible;
+  const yearStart = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now.getTime() - yearStart.getTime()) / 86_400_000);
+  return pool[Math.abs(dayOfYear) % pool.length] ?? pool[0] ?? null;
 }
