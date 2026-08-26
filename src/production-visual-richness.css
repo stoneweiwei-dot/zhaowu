@@ -1,0 +1,290 @@
+/*
+ * Zhaowu visual richness layer — loaded after the emergency pale reset.
+ * The goal is not glassy white minimalism: visible wallpaper, warm mineral paper,
+ * deep jade / aubergine anchors, antique gold rules, and restrained auspicious marks.
+ */
+
+:root {
+  --zr-paper: rgba(239, 224, 194, .90);
+  --zr-paper-soft: rgba(232, 214, 178, .76);
+  --zr-paper-deep: #e2c99a;
+  --zr-ink: #2d271f;
+  --zr-jade: #173f35;
+  --zr-jade-2: #28594a;
+  --zr-aubergine: #271331;
+  --zr-aubergine-2: #48214e;
+  --zr-gold: #b88845;
+  --zr-gold-soft: #d5b979;
+  --zr-red: #aa382d;
+  --zr-line: rgba(118, 78, 38, .30);
+}
+
+body:has(.zhaowu-has-wallpaper) {
+  background: #bca783 !important;
+}
+
+.zhaowu-site-wallpaper {
+  filter: saturate(1.02) contrast(1.01) brightness(.92) !important;
+}
+
+.zhaowu-site-wallpaper::after {
+  background:
+    linear-gradient(180deg, rgba(75, 53, 31, .05), rgba(60, 42, 25, .12)),
+    radial-gradient(circle at 50% 8%, rgba(247, 226, 181, .12), transparent 42%) !important;
+}
+
+.zhaowu-app-frame {
+  padding-bottom: 5.6rem !important;
+  border-color: rgba(192, 155, 94, .48) !important;
+  background:
+    linear-gradient(155deg, rgba(226, 205, 165, .72), rgba(213, 190, 151, .58)),
+    radial-gradient(circle at 92% 6%, rgba(170, 56, 45, .08), transparent 28%) !important;
+  box-shadow:
+    0 24px 70px rgba(38, 27, 17, .22),
+    inset 0 1px rgba(255, 245, 220, .55) !important;
+  backdrop-filter: blur(7px) saturate(108%) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(108%) !important;
+}
+
+.zhaowu-site-header,
+body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
+  border-bottom: 1px solid rgba(157, 113, 54, .34) !important;
+  background:
+    linear-gradient(90deg, rgba(236, 219, 185, .92), rgba(224, 201, 159, .88)) !important;
+  box-shadow: 0 8px 30px rgba(43, 30, 18, .12) !important;
+}
+
+/* Strong, designed opening panel instead of a washed-out white box. */
+.zhaowu-home-hero,
+.zhaowu-has-wallpaper .zhaowu-home-hero {
+  border: 1px solid rgba(204, 170, 105, .56) !important;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(218, 184, 110, .18), transparent 30%),
+    radial-gradient(circle at 15% 88%, rgba(197, 95, 69, .10), transparent 34%),
+    linear-gradient(150deg, rgba(20, 57, 48, .96), rgba(34, 73, 60, .90) 58%, rgba(27, 52, 45, .92)) !important;
+  box-shadow:
+    0 20px 52px rgba(19, 42, 35, .24),
+    inset 0 0 0 1px rgba(230, 199, 132, .10) !important;
+  backdrop-filter: blur(3px) saturate(112%) !important;
+  -webkit-backdrop-filter: blur(3px) saturate(112%) !important;
+}
+
+.zhaowu-home-hero::before {
+  inset: 17px 18px auto !important;
+  background: linear-gradient(90deg, transparent, rgba(224, 190, 119, .72), transparent) !important;
+}
+
+.zhaowu-home-hero::after {
+  content: "";
+  position: absolute;
+  right: -3.2rem;
+  bottom: -4rem;
+  width: 12rem;
+  height: 12rem;
+  border: 1px solid rgba(217, 183, 111, .22);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 18px rgba(215, 177, 103, .025), inset 0 0 0 42px rgba(215, 177, 103, .02);
+  pointer-events: none;
+}
+
+.zhaowu-home-hero h1,
+.zhaowu-home-hero h2 {
+  color: #f8edd5 !important;
+  text-shadow: 0 3px 18px rgba(5, 19, 16, .28);
+}
+
+.zhaowu-home-hero p,
+.zhaowu-home-hero .text-ink-soft,
+.zhaowu-home-hero .text-ink-mute {
+  color: rgba(247, 234, 207, .82) !important;
+}
+
+.zhaowu-home-hero a[href="/login"],
+.zhaowu-home-hero a[href="/account"] {
+  border-color: rgba(225, 194, 129, .45) !important;
+  background: rgba(239, 220, 181, .12) !important;
+  color: #f7e8c6 !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Warm mineral-paper cards; no plain white glass. */
+.zhaowu-app-frame .seal-border:not(.zhaowu-focused-report),
+.zhaowu-app-frame section.seal-border:not(.zhaowu-focused-report),
+.zhaowu-app-frame .zhaowu-tool-card,
+.zhaowu-has-wallpaper .seal-border:not(.zhaowu-focused-report),
+.zhaowu-has-wallpaper section.seal-border:not(.zhaowu-focused-report),
+.zhaowu-has-wallpaper .zhaowu-tool-card {
+  border-color: var(--zr-line) !important;
+  background:
+    linear-gradient(152deg, rgba(246, 234, 209, .94), rgba(232, 214, 177, .91)),
+    radial-gradient(circle at 100% 0, rgba(160, 111, 55, .08), transparent 34%) !important;
+  box-shadow:
+    0 12px 32px rgba(61, 42, 24, .12),
+    inset 0 1px rgba(255, 247, 226, .62) !important;
+  backdrop-filter: blur(7px) saturate(104%) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(104%) !important;
+}
+
+#analysisForm {
+  position: relative;
+  overflow: hidden;
+}
+
+#analysisForm::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, var(--zr-jade), var(--zr-gold), var(--zr-red));
+  opacity: .82;
+}
+
+#analysisForm input,
+#analysisForm textarea,
+#analysisForm select {
+  border-color: rgba(104, 73, 39, .32) !important;
+  background: rgba(247, 237, 216, .88) !important;
+  color: var(--zr-ink) !important;
+}
+
+#analysisForm button[type="submit"] {
+  background: linear-gradient(180deg, #b84a38, #8f2e27) !important;
+  box-shadow: 0 12px 26px rgba(111, 39, 31, .22) !important;
+}
+
+/* Specialist entrances regain visual identity without becoming giant posters. */
+.zhaowu-specialist-card.is-dual {
+  border-color: rgba(203, 167, 98, .42) !important;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(205, 168, 92, .14), transparent 32%),
+    linear-gradient(150deg, rgba(39, 19, 49, .97), rgba(68, 31, 73, .94)) !important;
+  color: #f5e8cb !important;
+}
+
+.zhaowu-specialist-card.is-tianji {
+  border-color: rgba(191, 150, 80, .43) !important;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(218, 180, 104, .13), transparent 30%),
+    linear-gradient(150deg, rgba(28, 37, 57, .97), rgba(38, 30, 61, .94)) !important;
+  color: #f5e8cb !important;
+}
+
+.zhaowu-specialist-card.is-tea {
+  border-color: rgba(184, 151, 91, .42) !important;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(222, 188, 119, .15), transparent 32%),
+    linear-gradient(150deg, rgba(24, 64, 52, .97), rgba(38, 82, 65, .93)) !important;
+  color: #f4ead2 !important;
+}
+
+.zhaowu-specialist-card.is-dual h3,
+.zhaowu-specialist-card.is-tianji h3,
+.zhaowu-specialist-card.is-tea h3,
+.zhaowu-specialist-card.is-dual .zhaowu-specialist-desc,
+.zhaowu-specialist-card.is-tianji .zhaowu-specialist-desc,
+.zhaowu-specialist-card.is-tea .zhaowu-specialist-desc {
+  color: #f4ead3 !important;
+}
+
+.zhaowu-specialist-card .zhaowu-specialist-eyebrow {
+  color: #d9b46d !important;
+}
+
+.zhaowu-specialist-card.is-dual .zhaowu-specialist-action,
+.zhaowu-specialist-card.is-tianji .zhaowu-specialist-action,
+.zhaowu-specialist-card.is-tea .zhaowu-specialist-action {
+  border-color: rgba(222, 188, 119, .38) !important;
+  background: rgba(243, 226, 190, .10) !important;
+  color: #f1d9a6 !important;
+}
+
+.zhaowu-specialist-mark,
+.zhaowu-specialist-mark.zhaowu-specialist-mark--dual-palm,
+.zhaowu-specialist-mark--tianji,
+.zhaowu-specialist-mark--tea {
+  opacity: .54 !important;
+  filter: saturate(.9) drop-shadow(0 6px 12px rgba(0,0,0,.13)) !important;
+}
+
+/* Report remains a designed purple / antique-gold artifact. */
+.zhaowu-focused-report {
+  border-color: rgba(153, 110, 58, .46) !important;
+  background: linear-gradient(180deg, #ead6b1, #dfc493) !important;
+  box-shadow: 0 18px 48px rgba(47, 29, 17, .18) !important;
+}
+
+.zhaowu-report-section {
+  border-color: rgba(116, 76, 38, .28) !important;
+  background:
+    linear-gradient(150deg, rgba(244, 230, 203, .96), rgba(225, 202, 161, .94)) !important;
+  box-shadow: 0 9px 24px rgba(53, 34, 20, .08);
+}
+
+.zhaowu-report-basis {
+  background: rgba(218, 194, 151, .54) !important;
+}
+
+.zhaowu-customer-status {
+  margin-inline: 2px;
+  border: 1px solid rgba(156, 89, 52, .30);
+  border-radius: 14px;
+  background: rgba(231, 205, 164, .88);
+  padding: .72rem .9rem;
+  color: #8b3a2e !important;
+  line-height: 1.55;
+}
+
+/* The auspicious marks are small edge accents, not a wall of stickers. */
+.zhaowu-seal-scatter {
+  z-index: 11 !important;
+}
+
+.zhaowu-scatter-piece {
+  opacity: .36 !important;
+  filter:
+    sepia(.10)
+    saturate(.82)
+    drop-shadow(0 0 1px rgba(246, 226, 189, .72))
+    drop-shadow(0 5px 12px rgba(51, 34, 21, .12)) !important;
+}
+
+/* Keep the dragon out of report text and above the iPhone bottom safe area. */
+.zhaowu-dragon-guide {
+  right: max(.65rem, env(safe-area-inset-right)) !important;
+  bottom: max(1rem, calc(env(safe-area-inset-bottom) + .75rem)) !important;
+}
+
+.zhaowu-dragon-guide-trigger {
+  min-height: 2.9rem !important;
+  border-color: rgba(38, 91, 73, .34) !important;
+  background: rgba(238, 224, 195, .94) !important;
+  box-shadow: 0 10px 28px rgba(27, 47, 39, .17) !important;
+}
+
+.zhaowu-dragon-guide-avatar {
+  width: 2.35rem !important;
+}
+
+/* Login should also feel designed and warm rather than clinical white glass. */
+.stone-login-sheet,
+.zhaowu-has-wallpaper .stone-login-sheet {
+  border-color: rgba(188, 147, 83, .46) !important;
+  background:
+    radial-gradient(circle at 100% 0, rgba(168, 55, 45, .08), transparent 32%),
+    linear-gradient(150deg, rgba(239, 224, 194, .94), rgba(222, 201, 161, .92)) !important;
+  box-shadow: 0 24px 70px rgba(42, 28, 17, .24) !important;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-app-frame {
+    background: linear-gradient(155deg, rgba(225, 203, 163, .68), rgba(211, 186, 145, .54)) !important;
+  }
+
+  .zhaowu-scatter-piece {
+    opacity: .30 !important;
+  }
+
+  .zhaowu-dragon-guide-trigger span:last-child {
+    font-size: .68rem;
+  }
+}
