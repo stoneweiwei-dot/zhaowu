@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
-import { SealScatter } from "@/components/marks";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
@@ -89,8 +88,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
         />
       ) : null}
 
-      {!isLogin ? <SealScatter seedKey={pathname} /> : null}
-
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">
           <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
@@ -147,7 +144,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </header>
       ) : null}
 
-      <div className={isLogin ? "relative z-10 min-h-dvh" : "relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8"}>
+      <div className={isLogin ? "relative z-10 min-h-dvh" : "zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8"}>
         {user?.isOwner && pathname === "/account" ? (
           <div className="mb-4 flex justify-end">
             <Link to="/gallery" className="inline-flex min-h-10 items-center rounded-full border border-line bg-cream/95 px-4 text-xs font-medium text-ink-soft shadow-sm">
