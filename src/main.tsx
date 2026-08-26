@@ -17,6 +17,7 @@ import './green-dragon-guide.css';
 import './tea-guardian.css';
 import './landscape-paper.css';
 import './production-visual-reset.css';
+import './production-visual-richness.css';
 
 const router = createRouter({ routeTree });
 
