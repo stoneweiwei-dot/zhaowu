@@ -69,13 +69,13 @@ function Home() {
         };
 
   return (
-    <main className="space-y-6 sm:space-y-10">
+    <main className="space-y-7 sm:space-y-12">
       <HomeScreenInstallPrompt />
 
-      <section className="zhaowu-home-hero px-5 py-7 sm:px-10 sm:py-14" aria-labelledby="zhaowu-title">
+      <section className="zhaowu-home-hero px-5 py-8 sm:px-10 sm:py-16" aria-labelledby="zhaowu-title">
         <div className="relative z-10 max-w-2xl">
           <p className="text-[10px] font-semibold tracking-[0.25em] text-earth sm:text-[11px] sm:tracking-[0.32em]">ZHAOWU · {t("heroKicker")}</p>
-          <h1 id="zhaowu-title" className="mt-3 font-display text-[3.5rem] font-bold leading-none tracking-[0.06em] text-ink sm:mt-4 sm:text-8xl sm:tracking-[0.08em]">
+          <h1 id="zhaowu-title" className="mt-3 font-display text-[2.85rem] font-bold leading-none tracking-[0.08em] text-ink sm:mt-4 sm:text-7xl sm:tracking-[0.1em]">
             {t("brand")}
           </h1>
           <p className="mt-4 max-w-xl font-display text-xl font-semibold leading-[1.5] tracking-[0.08em] text-wood sm:mt-7 sm:text-3xl sm:leading-[1.55] sm:tracking-[0.1em]">
