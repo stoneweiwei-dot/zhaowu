@@ -14,20 +14,24 @@ type DecreeImageFailure = {
   detail?: string;
 };
 
-function friendlyMessage(code: string, detail?: string): string {
+function friendlyMessage(code: string): string {
   switch (code) {
     case "IMAGE_GENERATION_NOT_CONFIGURED":
-      return "命诰图生成服务尚未配置。";
+      return "命誥圖生成服務尚未配置。";
     case "DECREE_NOT_READY":
-      return "请先生成并保存完整九页报告，再生成命诰图。";
+      return "請先生成並保存完整報告，再生成命誥圖。";
     case "REPORT_NOT_FOUND":
-      return "找不到这笔已保存报告，请先保存后再试。";
+      return "找不到這筆已保存報告，請先保存後再試。";
     case "UNAUTHORIZED":
-      return "登录状态已失效，请重新登录后再生成命诰图。";
+      return "登入狀態已失效，請重新登入後再生成命誥圖。";
+    case "GALLERY_REFERENCE_NOT_FOUND":
+      return "個人命誥圖庫目前沒有可用的核准母圖，暫不啟動生成。";
+    case "GALLERY_REFERENCE_LOAD_FAILED":
+      return "個人命誥母圖暫時無法載入，請稍後再試。";
     case "IMAGE_GENERATION_FAILED":
-      return detail ? `命诰图生成失败：${detail}` : "命诰图生成失败，请稍后再试。";
+      return "命誥圖生成服務目前暫不可用，請稍後再試。";
     default:
-      return detail || "命诰图暂时无法生成。";
+      return "命誥圖暫時無法生成。";
   }
 }
 
@@ -55,7 +59,7 @@ export async function generateDecreeImage(
 
   if (!res.ok || !body || body.ok !== true) {
     const fail = (body ?? {}) as DecreeImageFailure;
-    throw new Error(friendlyMessage(String(fail.error ?? `HTTP_${res.status}`), fail.detail));
+    throw new Error(friendlyMessage(String(fail.error ?? `HTTP_${res.status}`)));
   }
   return body;
 }

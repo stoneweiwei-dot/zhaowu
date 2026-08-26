@@ -99,11 +99,11 @@ export function scoreCustomerGalleryArt(chart: Pick<Chart, "useful" | "drain">, 
   return Number((support + balance * 0.18 - drainScore * 0.36 + knowledge.confidence * 4).toFixed(6));
 }
 
-export function chooseCustomerGalleryArt(
+export function rankCustomerGalleryArt(
   chart: Pick<Chart, "useful" | "drain">,
   candidates: Array<{ asset: GalleryAsset; knowledge: GalleryArtKnowledge }>,
-): CustomerGalleryArt | null {
-  const ranked = candidates
+): CustomerGalleryArt[] {
+  return candidates
     .map(({ asset, knowledge }) => ({
       asset,
       knowledge,
@@ -113,7 +113,13 @@ export function chooseCustomerGalleryArt(
     }))
     .filter((candidate) => Number.isFinite(candidate.score))
     .sort((a, b) => b.score - a.score || a.asset.id.localeCompare(b.asset.id));
-  return ranked[0] ?? null;
+}
+
+export function chooseCustomerGalleryArt(
+  chart: Pick<Chart, "useful" | "drain">,
+  candidates: Array<{ asset: GalleryAsset; knowledge: GalleryArtKnowledge }>,
+): CustomerGalleryArt | null {
+  return rankCustomerGalleryArt(chart, candidates)[0] ?? null;
 }
 
 export async function loadCustomerGalleryCandidates(): Promise<Array<{ asset: GalleryAsset; knowledge: GalleryArtKnowledge }>> {

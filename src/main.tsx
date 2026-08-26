@@ -18,6 +18,7 @@ import './tea-guardian.css';
 import './landscape-paper.css';
 import './production-visual-reset.css';
 import './gallery-unification.css';
+import './approved-mobile-ui-v2.css';
 
 const router = createRouter({ routeTree });
 

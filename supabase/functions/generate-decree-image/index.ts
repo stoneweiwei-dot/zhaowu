@@ -6,12 +6,21 @@ import {
   type GuardianStyle,
 } from "./style-pool.ts";
 
-const IMAGE_STYLE_VERSION = "song-saturated-sacred-pool-v4-20260825";
+const IMAGE_STYLE_VERSION = "gallery-seeded-song-v5-20260827";
+const GALLERY_BUCKET = "zhaowu-gallery";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+const ELEMENT_KEY: Record<string, "wood" | "fire" | "earth" | "metal" | "water"> = {
+  木: "wood",
+  火: "fire",
+  土: "earth",
+  金: "metal",
+  水: "water",
 };
 
 function json(body: unknown, status = 200) {
@@ -32,6 +41,58 @@ function decreeFrom(report: any): string {
     if (body) return body;
   }
   return "";
+}
+
+function clampScore(value: unknown): number {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return 0;
+  return Math.max(0, Math.min(100, numeric));
+}
+
+function referenceScore(chart: any, knowledge: any): number {
+  const useful = [...new Set(Array.isArray(chart?.useful) ? chart.useful.map(String) : [])].filter((value) => ELEMENT_KEY[value]);
+  const drain = [...new Set(Array.isArray(chart?.drain) ? chart.drain.map(String) : [])]
+    .filter((value) => ELEMENT_KEY[value] && !useful.includes(value));
+  if (!useful.length) return Number.NEGATIVE_INFINITY;
+
+  const scores = knowledge?.element_scores && typeof knowledge.element_scores === "object"
+    ? knowledge.element_scores as Record<string, unknown>
+    : {};
+  const usefulScores = useful.map((element) => clampScore(scores[ELEMENT_KEY[element]]));
+  const support = usefulScores.reduce((sum, value) => sum + value, 0) / usefulScores.length;
+  const balance = usefulScores.length > 1 ? Math.min(...usefulScores) : usefulScores[0];
+  const drainScore = drain.length
+    ? drain.reduce((sum, element) => sum + clampScore(scores[ELEMENT_KEY[element]]), 0) / drain.length
+    : 0;
+  const confidence = Math.max(0, Math.min(1, Number(knowledge?.confidence) || 0));
+  return Number((support + balance * 0.18 - drainScore * 0.36 + confidence * 4).toFixed(6));
+}
+
+async function chooseGalleryReference(service: any, chart: any) {
+  const { data: knowledgeRows, error: knowledgeError } = await service
+    .from("gallery_asset_knowledge")
+    .select("asset_id,element_scores,confidence")
+    .eq("analysis_status", "approved")
+    .eq("client_eligible", true);
+  if (knowledgeError || !Array.isArray(knowledgeRows) || !knowledgeRows.length) return null;
+
+  const ids = knowledgeRows.map((row: any) => String(row.asset_id ?? "")).filter(Boolean);
+  if (!ids.length) return null;
+
+  const { data: assets, error: assetsError } = await service
+    .from("gallery_assets")
+    .select("id,category,asset_key,title,storage_path,bucket_id,content_type,enabled")
+    .eq("enabled", true)
+    .eq("category", "reference-style")
+    .in("id", ids);
+  if (assetsError || !Array.isArray(assets) || !assets.length) return null;
+
+  const knowledgeById = new Map(knowledgeRows.map((row: any) => [String(row.asset_id), row]));
+  const ranked = assets
+    .map((asset: any) => ({ asset, score: referenceScore(chart, knowledgeById.get(String(asset.id))) }))
+    .filter((candidate: any) => Number.isFinite(candidate.score))
+    .sort((a: any, b: any) => b.score - a.score || String(a.asset.id).localeCompare(String(b.asset.id)));
+  return ranked[0]?.asset ?? null;
 }
 
 function visualTheme(question: string) {
@@ -56,7 +117,7 @@ function visualTheme(question: string) {
   return "BALANCE: use one principal sacred symbol and at most one secondary auspicious motif, keeping the composition quiet and breathable.";
 }
 
-function visualPrompt(report: any, decree: string, guardianStyle: GuardianStyle): string {
+function visualPrompt(report: any, decree: string, guardianStyle: GuardianStyle, referenceTitle: string): string {
   const chart = report?.engine_snapshot?.chart ?? {};
   const reading = report?.engine_snapshot?.reading ?? {};
   const pillars = Array.isArray(chart.pillars)
@@ -70,22 +131,21 @@ function visualPrompt(report: any, decree: string, guardianStyle: GuardianStyle)
 
   return [
     "Create one original premium vertical 9:16 commissioned artwork for ZHAOWU / 昭梧. It is a personal destiny decree illustration, not a UI screenshot and not product photography.",
-    "PRIMARY VISUAL LANGUAGE: refined Song-dynasty inspired mineral-color painting on continuous warm ivory silk or xuan-paper. Compared with a pale Song-style wash, raise saturation and clarity by one controlled level: use luminous but richer celadon, jade green, turquoise, azurite or lapis blue, pearl white, warm ochre-gold leaf and restrained cinnabar. Keep the palette elegant and harmonious, never neon, muddy or candy-like.",
-    "CONTRAST / LEGIBILITY: the sacred subject must read clearly on a phone screen. Preserve bright air and negative space, but give the main figure, robe edges, face, hands, jewelry and principal symbol enough tonal separation to remain visible. Avoid milky low-contrast haze, cream-on-cream washout and overexposed pastel fog.",
-    "STYLE: elegant flat-to-shallow-relief painted forms, delicate ink-and-mineral brushwork, subtle silk texture, fine gold linework and atmospheric cloud layers. Avoid photorealism and avoid glossy 3D collectible-figure rendering.",
-    "SUBJECT: if a celestial guardian or sacred figure is used, render it as a refined traditional East Asian painted celestial archetype with calm expression, graceful robes and symbolic protective presence. The guardian layer is artistic and symbolic only; do not present a random deity as an objective religious fact or destiny claim. Do not make it look like a resin statue, toy, game character, or product shot. Keep the figure integrated into the painted environment rather than cut out on a white backdrop.",
+    `REFERENCE SOURCE: the supplied owner-approved Gallery image (${referenceTitle || "approved personal reference"}) is the visual mother-image for this generation. Preserve its civilization, historical painting language, paper/silk atmosphere, palette family, brush density, spatial rhythm and overall visual temperature. Create a new original composition for this person's chart; do not simply copy the reference image, its text, seals, watermark, exact figure, or exact object placement.`,
+    "PRIMARY VISUAL LANGUAGE: refined Song-dynasty inspired mineral-color painting on continuous warm ivory silk or xuan-paper. Use old-paper texture, soft aged scanning, restrained mineral color, gentle ink absorption and quiet museum-like depth. Avoid modern high-definition CG, commercial xianxia posters, glossy game-card rendering and plastic digital highlights.",
+    "CONTRAST / LEGIBILITY: the sacred subject must read clearly on a phone screen. Preserve bright air and negative space, but give the main figure, robe edges, face, hands and principal symbol enough tonal separation to remain visible. Avoid milky cream-on-cream washout.",
+    "SUBJECT: if a celestial guardian or sacred figure is used, render it as a refined traditional East Asian painted celestial archetype with calm expression, graceful robes and symbolic protective presence. Keep gender cues restrained and avoid sexualized anatomy, exaggerated muscles, glossy jewelry or fantasy armor.",
     `SELECTED GUARDIAN VISUAL MODE (${guardianStyle.id} / ${guardianStyle.label}): ${guardianStyle.directive}`,
     `QUESTION-SPECIFIC ART DIRECTION: ${visualTheme(question)}`,
     "COMPOSITION: one clear focal subject occupying roughly the central 45–60% of the page, with generous breathing room above and around it. Use one principal auspicious symbol and at most one secondary motif. Let clouds, water, mountain mist, lotus petals, or silk ribbons connect the composition softly.",
     "SYMBOL DISCIPLINE: every important object must translate an already-supported report meaning such as balance, pressure, release, timing, movement, relationship, purification or resource flow. Do not invent a new Bazi conclusion merely to justify a pretty object.",
-    "BORDER: if used, keep it thin, elegant and partially broken like a painted scroll edge. For the concealed-sacred mode, a thin antique-gold circular moon-disc or mandala frame is preferred around the figure.",
-    "ABSOLUTE NEGATIVES: NO black or near-black background unless the requested symbol absolutely requires a small dark accent; NO dark teal lacquer slab; NO glossy 3D sculpture; NO white product-photo cutout; NO crowded set of eight auspicious objects; NO oversized halo machinery; NO generic temple souvenir aesthetic; NO flat SVG sticker row; NO UI cards; NO fake charts; NO generated prose; NO gibberish signatures or fake calligraphy; NO watermarks embedded by the image model; NO washed-out pastel figure that disappears into the background; NO childish chibi deity; NO generic fantasy armor.",
+    "ABSOLUTE NEGATIVES: NO black or near-black full background; NO glossy 3D sculpture; NO white product-photo cutout; NO crowded auspicious-object collage; NO generic fantasy armor; NO UI cards; NO fake charts; NO generated prose; NO gibberish signatures; NO fake calligraphy; NO watermark copied from the reference; NO modern game-character-card look.",
     "Typography: generate no readable text at all. Leave a small clean lower-right safe area so the website can add branding separately without risking garbled AI text.",
     `Question context: ${question || "personal destiny report"}.`,
     `Four pillars: ${pillars}. Day master: ${dayMaster}. Month command: ${month}. Current dayun: ${dayun}.`,
     `Direct conclusion context: ${direct.slice(0, 650)}.`,
     `Personal decree meaning: ${decree.slice(0, 1000)}.`,
-    "Translate the chart into balance, pressure, release, timing and movement through restrained symbolic imagery. The result should feel like a bespoke museum-quality Eastern painted scroll created for one person, not a generic Buddhist ornament collage.",
+    "Translate the chart into balance, pressure, release, timing and movement through restrained symbolic imagery. The result should feel like an old Eastern painted scroll that has existed for years, not a newly rendered digital poster.",
   ].join("\n");
 }
 
@@ -141,6 +201,7 @@ Deno.serve(async (req: Request) => {
         reused: true,
         styleVersion: IMAGE_STYLE_VERSION,
         guardianStyleId: (profile as any)?.guardianStyleId ?? null,
+        galleryReferenceAssetId: (profile as any)?.galleryReferenceAssetId ?? null,
       });
     }
   }
@@ -148,9 +209,23 @@ Deno.serve(async (req: Request) => {
   const decree = decreeFrom(report);
   if (!decree) return json({ ok: false, error: "DECREE_NOT_READY" }, 409);
 
+  const chart = report?.engine_snapshot?.chart ?? {};
+  const galleryReference = await chooseGalleryReference(service, chart);
+  if (!galleryReference) {
+    return json({ ok: false, error: "GALLERY_REFERENCE_NOT_FOUND" }, 409);
+  }
+
+  const referenceBucket = String(galleryReference.bucket_id || GALLERY_BUCKET);
+  const { data: referenceBlob, error: referenceError } = await service.storage
+    .from(referenceBucket)
+    .download(String(galleryReference.storage_path));
+  if (referenceError || !referenceBlob) {
+    return json({ ok: false, error: "GALLERY_REFERENCE_LOAD_FAILED" }, 502);
+  }
+
   const attempts = Number(report.generation_attempts ?? 0) + 1;
   const guardianStyle = chooseGuardianStyle(
-    `${report.id}:${attempts}:${GUARDIAN_STYLE_POOL_VERSION}`,
+    `${report.id}:${galleryReference.id}:${attempts}:${GUARDIAN_STYLE_POOL_VERSION}`,
   );
   const openaiKey = Deno.env.get("OPENAI_API_KEY");
 
@@ -165,19 +240,18 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const imageRes = await fetch("https://api.openai.com/v1/images/generations", {
+    const form = new FormData();
+    form.append("model", "gpt-image-1");
+    form.append("prompt", visualPrompt(report, decree, guardianStyle, String(galleryReference.title ?? galleryReference.asset_key ?? "")));
+    form.append("size", "1024x1536");
+    form.append("quality", "high");
+    form.append("output_format", "png");
+    form.append("image", referenceBlob, "approved-gallery-reference.png");
+
+    const imageRes = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-image-1",
-        prompt: visualPrompt(report, decree, guardianStyle),
-        size: "1024x1536",
-        quality: "high",
-        output_format: "png",
-      }),
+      headers: { Authorization: `Bearer ${openaiKey}` },
+      body: form,
     });
 
     const imageBody = await imageRes.json();
@@ -210,7 +284,10 @@ Deno.serve(async (req: Request) => {
         guardianStylePoolVersion: GUARDIAN_STYLE_POOL_VERSION,
         guardianStyleId: guardianStyle.id,
         guardianStyleLabel: guardianStyle.label,
-        visualSystem: "濃郁版宋氏聖相風 × 含藏聖相隨機護法池 × 昭梧四柱繪意",
+        galleryReferenceAssetId: galleryReference.id,
+        galleryReferenceAssetKey: galleryReference.asset_key,
+        galleryReferenceTitle: galleryReference.title,
+        visualSystem: "站主核准命誥圖庫母圖 × 舊宣紙宋系圖譜風 × 昭梧四柱繪意",
         auspiciousMotifs: ["依問題只選一主一輔，不堆疊八吉祥"],
       },
       updated_at: new Date().toISOString(),
@@ -226,6 +303,7 @@ Deno.serve(async (req: Request) => {
       reused: false,
       styleVersion: IMAGE_STYLE_VERSION,
       guardianStyleId: guardianStyle.id,
+      galleryReferenceAssetId: galleryReference.id,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -233,8 +311,14 @@ Deno.serve(async (req: Request) => {
       image_error: "IMAGE_GENERATION_FAILED",
       generation_error: message.slice(0, 1000),
       generation_attempts: attempts,
+      visual_profile: {
+        ...profile,
+        galleryReferenceAssetId: galleryReference.id,
+        galleryReferenceAssetKey: galleryReference.asset_key,
+        galleryReferenceTitle: galleryReference.title,
+      },
       updated_at: new Date().toISOString(),
     }).eq("id", reportId);
-    return json({ ok: false, error: "IMAGE_GENERATION_FAILED", detail: message }, 500);
+    return json({ ok: false, error: "IMAGE_GENERATION_FAILED" }, 500);
   }
 });
