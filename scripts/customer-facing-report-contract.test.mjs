@@ -19,16 +19,27 @@ test("English customer report is composed separately from the Bazi section engin
   assert.doesNotMatch(englishPath, /chart\./);
   assert.match(englishPath, /Bottom line/);
   assert.match(englishPath, /What to do next/);
+  assert.match(englishPath, /What matters for work/);
 });
 
-test("English report renderer rejects translated Bazi jargon and hides the basis card", async () => {
+test("English renderer drops legacy chart-basis cards but keeps separately written topic guidance", async () => {
   const renderer = await source("src/components/paid-report-pages.tsx");
   assert.match(renderer, /ENGLISH_TECHNICAL/);
-  assert.match(renderer, /locale === "en" \? null/);
-  assert.match(renderer, /section\.key !== "basis"/);
+  assert.match(renderer, /isLegacyEnglishBasis/);
+  assert.match(renderer, /locale !== "en" \? section\.key !== "basis" : !isLegacyEnglishBasis\(section\)/);
+  assert.match(renderer, /locale === "en" \? \(section\.title/);
   assert.match(renderer, /ZHAOWU · PERSONAL GUIDANCE/);
   assert.match(renderer, /Bottom line/);
   assert.match(renderer, /What to do next/);
+});
+
+test("persisted full-report text uses the same customer-facing language layer", async () => {
+  const actions = await source("src/lib/actions.ts");
+  const customer = await source("src/lib/report/customer-report.ts");
+  assert.match(actions, /composeCustomerReportText/);
+  assert.doesNotMatch(actions, /composeFocusedReportText/);
+  assert.match(customer, /ZHAOWU \| Personal report/);
+  assert.match(customer, /昭梧｜专属完整报告/);
 });
 
 test("image provider details are never exposed to customers", async () => {
