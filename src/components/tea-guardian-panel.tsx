@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import type { AnalysisResult } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import { matchTeaGuardians, quizComplete, readTeaQuizAnswers, type TeaQuizAnswers } from "@/lib/tea/guardian";
+import { TeaGuardianImage } from "@/components/tea-guardian-image";
 
 const COPY = {
   "zh-Hant": {
@@ -64,7 +65,7 @@ export function TeaGuardianPanel({ result, useStoredTaste = true, compact = fals
     <section className={`seal-border overflow-hidden rounded-[1.4rem] bg-cream/95 ${compact ? "mt-4" : "mt-5"}`} aria-labelledby={`tea-guardian-${result.id}`}>
       <div className="grid gap-0 sm:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
         <div className="relative bg-paper-deep/60">
-          <img src={primary.tea.image} alt={primary.tea.guardian[locale]} loading="lazy" className="aspect-[9/16] h-full max-h-[34rem] w-full object-cover object-top" onError={(event) => { event.currentTarget.hidden = true; }} />
+          <TeaGuardianImage teaId={primary.tea.id} fallback={primary.tea.image} alt={primary.tea.guardian[locale]} className="aspect-[9/16] h-full max-h-[34rem] w-full object-cover object-top" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#2a1e12]/65 to-transparent" aria-hidden />
           <div className="absolute inset-x-0 bottom-0 p-4 text-[#fff9ed]">
             <p className="text-[10px] tracking-[0.22em] text-[#ead3a8]">{copy.kicker}</p>
@@ -93,7 +94,7 @@ export function TeaGuardianPanel({ result, useStoredTaste = true, compact = fals
               <div className="mt-3 grid grid-cols-2 gap-3">
                 {matches.slice(1).map((match) => (
                   <div key={match.tea.id} className="rounded-xl border border-line bg-paper/55 p-2.5">
-                    <img src={match.tea.image} alt="" aria-hidden loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover object-top" onError={(event) => { event.currentTarget.hidden = true; }} />
+                    <TeaGuardianImage teaId={match.tea.id} fallback={match.tea.image} alt={match.tea.guardian[locale]} className="aspect-[4/3] w-full rounded-lg object-cover object-top" />
                     <p className="mt-2 font-display text-sm text-ink">{match.tea.tea[locale]}</p>
                     <p className="text-[11px] text-ink-mute">{match.tea.guardian[locale]} · {match.score}%</p>
                   </div>
