@@ -32,12 +32,12 @@ function uniqueLines(lines: string[], locale: AppLocale): string[] {
 
 function englishSubject(result: AnalysisResult): QuestionKind {
   const question = result.question.toLowerCase();
-  if (/\b(?:job|work|career|business|promotion|role|employer|study|exam|course)\b/.test(question)) return "career";
-  if (/\b(?:love|relationship|partner|dating|boyfriend|girlfriend|husband|wife|romance)\b/.test(question)) return "love";
-  if (/\b(?:money|financial|finance|income|salary|saving|budget|investment|cash)\b/.test(question)) return "money";
+  if (/\b(?:jobs?|work|careers?|business(?:es)?|promotions?|roles?|employers?|study|studies|exams?|courses?)\b/.test(question)) return "career";
+  if (/\b(?:love|relationships?|partners?|dating|boyfriends?|girlfriends?|husbands?|wives|romance)\b/.test(question)) return "love";
+  if (/\b(?:money|financial|finance|income|salar(?:y|ies)|savings?|budgets?|investments?|cash)\b/.test(question)) return "money";
   if (/\b(?:health|sleep|energy|recovery|body|wellbeing|well-being)\b/.test(question)) return "health";
-  if (/\b(?:home|house|move|moving|relocate|relocation|suburb|city|live)\b/.test(question)) return "home";
-  if (/\b(?:choose|choice|option|versus|vs\.?|which one|better choice)\b/.test(question)) return "choice";
+  if (/\b(?:home|homes|house|houses|move|moving|relocate|relocation|suburb|suburbs|city|cities|live|living)\b/.test(question)) return "home";
+  if (/\b(?:choose|choice|choices|option|options|versus|vs\.?|which one|better choice)\b/.test(question)) return "choice";
   return result.reading.kind;
 }
 
