@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }) => {
   const consoleErrors: string[] = [];
+  const unauthorized: string[] = [];
   page.on("console", (message) => { if (message.type() === "error") consoleErrors.push(message.text()); });
+  page.on("response", (response) => { if (response.status() === 401) unauthorized.push(response.url()); });
 
   await page.goto("/tea-guardian");
   await expect(page.getByRole("heading", { name: "七題找到你真正適合的茶" })).toBeVisible();
@@ -19,7 +21,8 @@ test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
-  expect(consoleErrors).toEqual([]);
+  expect(unauthorized, `Unexpected 401 responses:\n${unauthorized.join("\n")}`).toEqual([]);
+  expect(consoleErrors, `Console errors:\n${consoleErrors.join("\n")}`).toEqual([]);
   await page.screenshot({ path: "test-results/tea-guardian-iphone.png", fullPage: true });
 });
 
