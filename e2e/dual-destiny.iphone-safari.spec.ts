@@ -26,4 +26,18 @@ test("iPhone Safari can complete the dual chart with local birthplace correction
   await expect(page.getByText("軌道 B · 內在底色", { exact: true })).toBeVisible();
   await expect(page.getByText("融合星評", { exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+
+  await page.getByRole("button", { name: "简中", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "双轨结果", exact: true })).toBeVisible();
+  await expect(page.getByText(/已按出生地校正 悉尼，澳大利亚/)).toBeVisible();
+  await expect(page.getByText("巳宫", { exact: true })).toBeVisible();
+  await expect(page.locator("main")).not.toContainText("真太陽時偏移");
+  await expect(page.locator("main")).not.toContainText("巳宮");
+
+  await page.getByRole("button", { name: "EN", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Dual result", exact: true })).toBeVisible();
+  await expect(page.getByText(/Birth time adjusted for Sydney, Australia/)).toBeVisible();
+  await expect(page.getByText("Si", { exact: true }).first()).toBeVisible();
+  expect(await page.locator("main").innerText()).not.toMatch(/[\u3400-\u9fff]/);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
