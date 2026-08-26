@@ -30,6 +30,17 @@ function uniqueLines(lines: string[], locale: AppLocale): string[] {
     });
 }
 
+function englishSubject(result: AnalysisResult): QuestionKind {
+  const question = result.question.toLowerCase();
+  if (/\b(?:job|work|career|business|promotion|role|employer|study|exam|course)\b/.test(question)) return "career";
+  if (/\b(?:love|relationship|partner|dating|boyfriend|girlfriend|husband|wife|romance)\b/.test(question)) return "love";
+  if (/\b(?:money|financial|finance|income|salary|saving|budget|investment|cash)\b/.test(question)) return "money";
+  if (/\b(?:health|sleep|energy|recovery|body|wellbeing|well-being)\b/.test(question)) return "health";
+  if (/\b(?:home|house|move|moving|relocate|relocation|suburb|city|live)\b/.test(question)) return "home";
+  if (/\b(?:choose|choice|option|versus|vs\.?|which one|better choice)\b/.test(question)) return "choice";
+  return result.reading.kind;
+}
+
 function englishTopic(kind: QuestionKind, result: AnalysisResult): string {
   switch (kind) {
     case "career": return result.reading.work;
@@ -74,15 +85,16 @@ function section(
 
 function composePlainEnglish(result: AnalysisResult): ReportSection[] {
   const { reading, question } = result;
+  const subject = englishSubject(result);
   const direct = uniqueLines([reading.directAnswer], "en");
-  const topic = uniqueLines([englishTopic(reading.kind, result)], "en");
+  const topic = uniqueLines([englishTopic(subject, result)], "en");
   const timing = uniqueLines([reading.rhythm], "en");
   const action = uniqueLines([reading.action], "en");
   const asksTiming = reading.kind === "timing" || /\b(?:when|timing|which month|which year|how soon|this year|next year|next month|next few months)\b/i.test(question);
 
   const out: ReportSection[] = [];
   if (direct.length) out.push(section(out.length + 1, "conclusion", "Bottom line", direct));
-  if (topic.length && topic[0] !== direct[0]) out.push(section(out.length + 1, reading.kind === "love" ? "relationship" : "basis", englishTopicTitle(reading.kind), topic));
+  if (topic.length && topic[0] !== direct[0]) out.push(section(out.length + 1, subject === "love" ? "relationship" : "basis", englishTopicTitle(subject), topic));
   if (asksTiming && timing.length && !out.some((item) => item.body.some((line) => timing.includes(line)))) {
     out.push(section(out.length + 1, "timing", "Timing", timing));
   }
