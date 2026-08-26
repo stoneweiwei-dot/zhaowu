@@ -1,0 +1,365 @@
+/*
+ * Approved mobile visual lock — 2026-08-27
+ * Based on the owner-approved 9:16 mockup: visible wallpaper, warm xuan-paper
+ * surfaces, restrained cinnabar actions, and an integrated decree-gallery module.
+ * Imported last. Do not raise panel opacity back to solid white.
+ */
+:root {
+  --zv2-paper: rgba(247, 239, 224, .48);
+  --zv2-paper-soft: rgba(248, 241, 228, .38);
+  --zv2-paper-field: rgba(252, 247, 237, .66);
+  --zv2-line: rgba(157, 126, 78, .28);
+  --zv2-line-strong: rgba(157, 126, 78, .42);
+  --zv2-shadow: 0 14px 42px rgba(67, 52, 31, .075);
+  --zv2-red: #b2352a;
+  --zv2-red-deep: #962c24;
+  --zv2-jade: #2e7564;
+}
+
+body:has(.zhaowu-has-wallpaper) {
+  background: #d9c9aa !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-site-wallpaper {
+  opacity: 1 !important;
+  filter: saturate(.92) contrast(.96) brightness(.99) !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-site-wallpaper::after {
+  background:
+    linear-gradient(180deg, rgba(249, 242, 226, .06), rgba(237, 222, 196, .12)),
+    radial-gradient(circle at 48% 10%, rgba(255, 251, 242, .08), transparent 44%) !important;
+}
+
+/* The frame is a thin paper veil, not a white container. */
+.zhaowu-has-wallpaper .zhaowu-app-frame {
+  width: min(calc(100% - 12px), 560px) !important;
+  margin: 6px auto 22px !important;
+  border: 1px solid rgba(255, 250, 239, .52) !important;
+  border-radius: 26px !important;
+  background: rgba(244, 234, 215, .20) !important;
+  box-shadow: 0 22px 72px rgba(54, 42, 25, .10) !important;
+  backdrop-filter: blur(1.5px) saturate(104%) !important;
+  -webkit-backdrop-filter: blur(1.5px) saturate(104%) !important;
+}
+
+.zhaowu-site-header,
+body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
+.zhaowu-has-wallpaper .zhaowu-site-header {
+  border-bottom: 1px solid rgba(153, 122, 77, .18) !important;
+  background: rgba(248, 240, 225, .54) !important;
+  box-shadow: 0 8px 24px rgba(61, 48, 29, .035) !important;
+  backdrop-filter: blur(8px) saturate(106%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(106%) !important;
+}
+
+.zhaowu-site-header .bg-wood,
+.zhaowu-site-header button[aria-pressed="true"] {
+  background: var(--zv2-jade) !important;
+  color: #fffaf0 !important;
+}
+
+.zhaowu-home-hero,
+.zhaowu-has-wallpaper .zhaowu-home-hero,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-home-hero {
+  border: 1px solid var(--zv2-line) !important;
+  border-radius: 22px !important;
+  background: rgba(248, 240, 225, .44) !important;
+  background-image: none !important;
+  box-shadow: var(--zv2-shadow) !important;
+  backdrop-filter: blur(2px) saturate(103%) !important;
+  -webkit-backdrop-filter: blur(2px) saturate(103%) !important;
+}
+
+/* Main content cards retain the owner wallpaper in view. */
+.zhaowu-has-wallpaper .zhaowu-app-frame .seal-border,
+.zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border,
+.zhaowu-has-wallpaper .zhaowu-app-frame article.seal-border,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-tool-card,
+.zhaowu-app-frame .zhaowu-result-card,
+.zhaowu-app-frame .zhaowu-decree-gallery,
+.zhaowu-app-frame .zhaowu-decree-couplet,
+.zhaowu-app-frame .zhaowu-generated-decree {
+  border: 1px solid var(--zv2-line) !important;
+  background: var(--zv2-paper) !important;
+  background-image: none !important;
+  box-shadow: var(--zv2-shadow) !important;
+  backdrop-filter: blur(2.5px) saturate(103%) !important;
+  -webkit-backdrop-filter: blur(2.5px) saturate(103%) !important;
+}
+
+#analysisForm,
+.zhaowu-app-frame .zhaowu-result-card {
+  border-radius: 22px !important;
+}
+
+#analysisForm input,
+#analysisForm textarea,
+#analysisForm select,
+.zhaowu-has-wallpaper #analysisForm input,
+.zhaowu-has-wallpaper #analysisForm textarea,
+.zhaowu-has-wallpaper #analysisForm select {
+  border: 1px solid var(--zv2-line-strong) !important;
+  background: var(--zv2-paper-field) !important;
+  color: var(--zv-ink) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.28) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+}
+
+#analysisForm button[type="submit"],
+.zhaowu-result-primary {
+  border: 0 !important;
+  background: linear-gradient(180deg, var(--zv2-red), var(--zv2-red-deep)) !important;
+  color: #fff9ef !important;
+  box-shadow: 0 10px 22px rgba(130, 41, 31, .13) !important;
+}
+
+/* Direct answer + action stack from the approved mobile mockup. */
+.zhaowu-result-flow {
+  scroll-margin-top: 5.25rem;
+}
+
+.zhaowu-result-card {
+  padding: 22px 18px !important;
+}
+
+.zhaowu-result-card h2 {
+  font-size: clamp(1.7rem, 7.6vw, 2.25rem) !important;
+  line-height: 1.18 !important;
+}
+
+.zhaowu-result-actions {
+  gap: 10px !important;
+}
+
+.zhaowu-result-primary,
+.zhaowu-result-secondary {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 999px !important;
+}
+
+.zhaowu-result-secondary {
+  border-color: var(--zv2-line-strong) !important;
+  background: rgba(249, 242, 229, .50) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+}
+
+.zhaowu-result-reset {
+  min-height: 44px !important;
+  background: transparent !important;
+}
+
+.zhaowu-result-message {
+  margin-inline: 4px;
+  border: 1px solid rgba(178, 53, 42, .20);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(250, 238, 224, .42);
+  line-height: 1.65;
+}
+
+/* Personal decree gallery: matched reference is visibly part of generation. */
+.zhaowu-decree-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+  gap: 16px;
+  overflow: hidden;
+  border-radius: 22px !important;
+  padding: 18px !important;
+}
+
+.zhaowu-decree-copy {
+  min-width: 0;
+  align-self: center;
+}
+
+.zhaowu-decree-kicker {
+  color: #9d3f32;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .17em;
+  line-height: 1.55;
+}
+
+.zhaowu-decree-copy h3 {
+  margin-top: 7px;
+  font-family: var(--font-display, serif);
+  font-size: clamp(1.35rem, 5.8vw, 1.9rem);
+  line-height: 1.18;
+  letter-spacing: .04em;
+}
+
+.zhaowu-decree-note {
+  margin-top: 10px;
+  color: var(--zv-muted);
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.zhaowu-decree-generate {
+  display: inline-flex;
+  width: 100%;
+  min-height: 46px;
+  margin-top: 14px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid rgba(178, 53, 42, .62);
+  border-radius: 999px;
+  padding: 0 14px;
+  color: var(--zv2-red-deep);
+  background: rgba(250, 240, 225, .40);
+  font-size: 12px;
+  line-height: 1.3;
+  text-align: left;
+  box-shadow: none;
+}
+
+.zhaowu-decree-generate:disabled {
+  cursor: not-allowed;
+  opacity: .52;
+}
+
+.zhaowu-decree-generate b {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.zhaowu-decree-unavailable {
+  margin-top: 8px;
+  color: var(--zv-muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.zhaowu-decree-previews {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 1.45fr .78fr .78fr;
+  gap: 7px;
+  align-items: end;
+}
+
+.zhaowu-decree-preview,
+.zhaowu-decree-preview-skeleton {
+  position: relative;
+  display: block;
+  aspect-ratio: 9 / 16;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(154, 121, 74, .30);
+  border-radius: 10px;
+  background: rgba(231, 216, 189, .50);
+  box-shadow: 0 7px 18px rgba(66, 48, 26, .09);
+}
+
+.zhaowu-decree-preview.is-main,
+.zhaowu-decree-preview-skeleton.is-main {
+  border-color: rgba(166, 124, 59, .48);
+}
+
+.zhaowu-decree-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zhaowu-decree-preview figcaption {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(255,248,235,.38);
+  border-radius: 999px;
+  padding: 3px 5px;
+  color: #fff9ec;
+  background: rgba(72, 51, 31, .55);
+  font-size: 8px;
+  line-height: 1.25;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.zhaowu-decree-preview-skeleton {
+  animation: zhaowu-decree-pulse 1.35s ease-in-out infinite alternate;
+}
+
+@keyframes zhaowu-decree-pulse {
+  from { opacity: .42; }
+  to { opacity: .78; }
+}
+
+/* Keep other small tool cards in the same paper family instead of a white row. */
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-dual,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tianji,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tea {
+  border-color: var(--zv2-line) !important;
+  background: rgba(247, 239, 224, .44) !important;
+  background-image: none !important;
+  box-shadow: var(--zv2-shadow) !important;
+  backdrop-filter: blur(2px) saturate(103%) !important;
+  -webkit-backdrop-filter: blur(2px) saturate(103%) !important;
+}
+
+.zhaowu-specialist-action,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-action {
+  background: rgba(250, 243, 231, .46) !important;
+}
+
+@media (max-width: 440px) {
+  .zhaowu-has-wallpaper .zhaowu-app-frame {
+    width: calc(100% - 8px) !important;
+    padding: 7px 7px 18px !important;
+    border-radius: 22px !important;
+    background: rgba(244, 234, 215, .16) !important;
+  }
+
+  .zhaowu-site-header > div {
+    padding-inline: 8px !important;
+  }
+
+  .zhaowu-decree-gallery {
+    grid-template-columns: minmax(0, .90fr) minmax(0, 1.10fr);
+    gap: 11px;
+    padding: 15px !important;
+  }
+
+  .zhaowu-decree-note {
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .zhaowu-decree-generate {
+    min-height: 44px;
+    padding-inline: 12px;
+    font-size: 11px;
+  }
+
+  .zhaowu-decree-previews {
+    gap: 5px;
+  }
+
+  .zhaowu-decree-preview,
+  .zhaowu-decree-preview-skeleton {
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .zhaowu-decree-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .zhaowu-decree-previews {
+    max-width: 300px;
+  }
+}
