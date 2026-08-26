@@ -1,6 +1,7 @@
 import { applyAnswerContract } from "@/lib/core/answer-contract";
 import type { AppLocale, Chart, QuestionKind, Reading } from "@/lib/bazi/types";
 import { applyCustomerAnswerHotfix } from "@/lib/report/customer-answer-hotfix";
+import { customerDirectAnswer } from "@/lib/report/customer-copy";
 import { applyCosmicSymbolicReading, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 
 const STEM_EN: Record<string, string> = {
@@ -32,12 +33,6 @@ function englishGanZhi(value: string): string {
   return stem && branch ? `${stem}-${branch}` : "unconfirmed cycle";
 }
 
-function englishStrength(value: string): string {
-  if (value.includes("旺")) return "strong";
-  if (value.includes("弱")) return "light";
-  return "balanced";
-}
-
 function englishQuestionKind(question: string, fallback: QuestionKind): QuestionKind {
   if (/\b(work|career|job|role|profession|business|project|study|school|exam)\b/i.test(question)) return "career";
   if (/\b(love|relationship|partner|dating|marriage|romance)\b/i.test(question)) return "love";
@@ -50,10 +45,39 @@ function englishQuestionKind(question: string, fallback: QuestionKind): Question
 }
 
 function horizonPhrase(question: string): string {
+  if (/\bthis\s+year\b/i.test(question)) return "this year";
   if (/next\s+six\s+months/i.test(question)) return "over the next six months";
   if (/next\s+(?:three|3)\s+months/i.test(question)) return "over the next three months";
   if (/next\s+(?:twelve|12)\s+months|next\s+year/i.test(question)) return "over the next year";
   return "in the period you are asking about";
+}
+
+type EnglishRegion = "au" | "nz" | "uk" | "us" | "ca" | "international";
+
+function englishRegion(chart: Chart): EnglishRegion {
+  const place = `${chart.liveCityLabel ?? ""} ${chart.cityLabel}`.toLowerCase();
+  if (/australia|澳洲|澳大利/.test(place)) return "au";
+  if (/new zealand|aotearoa|紐西蘭|新西兰/.test(place)) return "nz";
+  if (/united kingdom|england|scotland|wales|northern ireland|英國|英国/.test(place)) return "uk";
+  if (/united states|\bu\.s\.|\busa\b|美國|美国/.test(place)) return "us";
+  if (/canada|加拿大/.test(place)) return "ca";
+  return "international";
+}
+
+function prioritise(region: EnglishRegion): string {
+  return region === "us" || region === "ca" ? "Prioritize" : "Prioritise";
+}
+
+function regionalJobCheck(question: string, region: EnglishRegion): string {
+  if (!/\b(change jobs?|new job|offer|salary|pay|role)\b/i.test(question)) return "";
+  switch (region) {
+    case "au": return "Compare base pay, super, leave, hours and commute together.";
+    case "nz": return "Compare base pay, KiwiSaver, leave, hours and commute together.";
+    case "uk": return "Compare pay, pension, leave, hours and commute together.";
+    case "us": return "Compare pay, health cover, paid leave, hours and commute together.";
+    case "ca": return "Compare pay, benefits, paid leave, hours and commute together.";
+    default: return "Compare pay, benefits, leave, hours and commute together.";
+  }
 }
 
 function englishAction(kind: QuestionKind): string {
@@ -80,30 +104,139 @@ function englishAction(kind: QuestionKind): string {
 }
 
 function englishDirectAnswer(question: string, chart: Chart, kind: QuestionKind): string {
-  const context = `Chart context: ${englishStem(chart.dayMaster)} (${ELEMENT_EN[chart.dayMasterElement] ?? "Element unconfirmed"}) Day Master under ${englishBranch(chart.monthBranch)} as Month Command, with a ${englishStrength(chart.strength.tendency)} baseline. Use this as pacing context, not as a guaranteed outcome.`;
+  const region = englishRegion(chart);
+  const lead = prioritise(region);
   if (/\b(travel|trip|vacation)\b/i.test(question)) {
-    return `Prioritize a low-friction itinerary with fewer transfers, a daily recovery block, and explicit budget, transport, and weather buffers. ${context}`;
+    return `${lead} a simple itinerary with fewer transfers. Leave time to rest each day and keep extra room in the budget for transport or weather changes.`;
   }
   switch (kind) {
     case "career":
-      return `Prioritize one clearly owned workstream ${horizonPhrase(question)}. Choose the option with a visible deliverable, explicit decision rights, and a manageable workload; do not split attention across several equally urgent tracks. ${context}`;
+      return `${lead} one main work goal ${horizonPhrase(question)}. Choose work where success is clear, your responsibility is defined, and the workload is realistic. Do not treat several priorities as equally urgent. ${regionalJobCheck(question, region)}`.trim();
     case "love":
-      return `Prioritize observable reciprocity over interpretation: consistent contact, concrete plans, clear commitment, and respected boundaries. ${context}`;
+      return "Look at what the other person actually does: do they stay in contact, make plans, speak clearly about commitment, and respect your boundaries?";
     case "money":
-      return `Prioritize cash-flow resilience and a defined downside before pursuing expansion or return. ${context}`;
+      return `${lead} steady cash flow. Before taking a financial risk, decide how much you can afford to lose and when you will stop.`;
     case "health":
-      return `Prioritize recovery capacity, sleep, and sustainable load. This reading cannot diagnose a condition or replace medical assessment. ${context}`;
+      return `${lead} sleep, recovery, and a workload your body can handle. This report cannot diagnose a condition or replace medical care.`;
     case "home":
-      return `Prioritize the option that works in daily life after you verify light, noise, commute, layout, and total cost in person. ${context}`;
+      return `${lead} the home that works in daily life. Check light, noise, commute, layout, and total cost in person before deciding.`;
     case "choice":
-      return `Prioritize the option whose downside is affordable and whose exit remains workable; compare both choices against the same criteria before deciding. ${context}`;
+      return "Choose the option whose worst-case cost you can handle and which is easier to leave. Compare both choices using the same facts before deciding.";
     case "timing":
-      return `Treat the period you named as a planning window, not a promised event date. Prepare the decision, dependencies, and fallback before the window opens. ${context}`;
+      return "Use the period you named to prepare, not as a promise that something will happen. Confirm the real deadline, requirements, and backup plan before acting.";
     case "past":
-      return `Use the symbolic reading only as a prompt for patterns you can verify in present life; do not treat it as literal historical proof. ${context}`;
+      return "Treat this as a way to notice repeated patterns in your present life, not as proof of a literal past life.";
     default:
-      return `Prioritize the one decision you can test through observable action now, then review the result before expanding the commitment. ${context}`;
+      return `${lead} one decision you can test through action now. Review what actually happens before making a bigger commitment.`;
   }
+}
+
+const CHINESE_TECHNICAL_SENTENCE = /命盤|命盘|命理|八字|四柱|天干|地支|藏干|日主|月令|旺衰|身強|身强|身弱|喜用神|用神|格局|十神|大運|大运|流年|流月|干支|扶身|泄身|制身|扶泄|制化|調候|调候|病藥|病药|刑沖|刑冲|合害|節氣邊界|节气边界/;
+
+function simplifyPlainChinese(value: string): string {
+  return value
+    .replaceAll("整體", "整体")
+    .replaceAll("推進", "推进")
+    .replaceAll("較", "较")
+    .replaceAll("順", "顺")
+    .replaceAll("這", "这")
+    .replaceAll("時間", "时间")
+    .replaceAll("行動", "行动")
+    .replaceAll("先後", "先后")
+    .replaceAll("保證", "保证")
+    .replaceAll("選", "选")
+    .replaceAll("國", "国")
+    .replaceAll("臺", "台")
+    .replaceAll("東京", "东京")
+    .replaceAll("首爾", "首尔")
+    .replaceAll("沖繩", "冲绳")
+    .replaceAll("清邁", "清迈")
+    .replaceAll("維也納", "维也纳")
+    .replaceAll("黃金海岸", "黄金海岸")
+    .replaceAll("峇里", "巴厘");
+}
+
+function stripChineseTechnicalDetail(question: string, answer: string, locale: AppLocale): string {
+  const base = customerDirectAnswer(question, answer)
+    .replace(/(\d{1,2}月)（[甲乙丙丁戊己庚辛壬癸][子丑寅卯辰巳午未申酉戌亥][；;][^）]+）/g, "$1")
+    .replace(/(\d{4}年\d{1,2}月)（[甲乙丙丁戊己庚辛壬癸][子丑寅卯辰巳午未申酉戌亥][，,][^）]+）/g, "$1");
+  const replacement = locale === "zh-Hant"
+    ? "這些時間只代表行動先後順序，不保證結果。"
+    : "这些时间只代表行动先后顺序，不保证结果。";
+  const uncertainty = locale === "zh-Hant"
+    ? "出生時間未確定，所以時間判斷會較寬。"
+    : "出生时间未确定，所以时间判断会较宽。";
+  const sentences = (base.match(/[^。！？!?]+[。！？!?]?/g) ?? [base])
+    .map((part) => part.trim())
+    .map((part) => /出生時間未確定|出生时间未确定/.test(part) ? uncertainty : part)
+    .map((part) => /月份以節氣|月份以节气|命理月/.test(part) ? replacement : part)
+    .filter((part) => part && !CHINESE_TECHNICAL_SENTENCE.test(part));
+  const plain = sentences.join("") || replacement;
+  return locale === "zh-Hans" ? simplifyPlainChinese(plain) : plain;
+}
+
+function chineseDirectAnswer(question: string, chart: Chart, reading: Reading, locale: AppLocale): string {
+  const isHant = locale === "zh-Hant";
+  const hasTiming = /(何時|何时|什麼時候|什么时候|哪一年|哪年|哪個月|哪个月|今年|明年|後年|后年|\d{4})/.test(question);
+  const hasTravel = /(旅行|旅遊|旅游|度假|出行|去哪|國家|国家|城市|目的地)/.test(question);
+  if (hasTiming || hasTravel) return stripChineseTechnicalDetail(question, reading.directAnswer, locale);
+
+  switch (reading.kind) {
+    case "career":
+      return isHant
+        ? "先集中在一個最重要、能完成的工作目標。選擇責任清楚、成果可見、工作量能承受的項目；不要同時把幾件事都當成最高優先。"
+        : "先集中在一个最重要、能完成的工作目标。选择责任清楚、成果可见、工作量能承受的项目；不要同时把几件事都当成最高优先。";
+    case "love":
+      return isHant
+        ? "不要靠猜測判斷關係，直接看對方是否持續聯繫、主動安排見面、願意說清承諾並尊重你的邊界。"
+        : "不要靠猜测判断关系，直接看对方是否持续联系、主动安排见面、愿意说清承诺并尊重你的边界。";
+    case "money":
+      return isHant
+        ? "先守住穩定現金流。做任何有風險的決定前，先寫清最多能承受多少損失，以及什麼情況必須停止。"
+        : "先守住稳定现金流。做任何有风险的决定前，先写清最多能承受多少损失，以及什么情况必须停止。";
+    case "health":
+      return isHant
+        ? "先保住睡眠、恢復時間和身體能承受的工作量。持續、加重或影響活動的不適，需要交給合格醫療人員判斷。"
+        : "先保住睡眠、恢复时间和身体能承受的工作量。持续、加重或影响活动的不适，需要交给合格医疗人员判断。";
+    case "home":
+      return isHant
+        ? "選真正適合日常生活的地方。決定前親自核對採光、噪音、通勤、空間配置和總成本。"
+        : "选真正适合日常生活的地方。决定前亲自核对采光、噪音、通勤、布局和总成本。";
+    case "choice":
+      return isHant
+        ? "先排除最壞結果無法承受的選項，再用同一組條件比較收益、成本、責任和退出難度。"
+        : "先排除最坏结果无法承受的选项，再用同一组条件比较收益、成本、责任和退出难度。";
+    case "past":
+      return isHant
+        ? "把它當成觀察今生重複習慣的線索，不當成真實歷史證明；只保留能和現實經歷互相印證的部分。"
+        : "把它当成观察今生重复习惯的线索，不当成真实历史证明；只保留能和现实经历互相印证的部分。";
+    default: {
+      const highLoad = chart.strength.tendency.includes("旺");
+      if (isHant) return highLoad
+        ? "你現在更需要減少同時承擔的事情，把一個主要目標做完，再決定是否擴張。"
+        : "你現在更需要保護精力，把事情排出先後，只保留一個最重要的下一步。";
+      return highLoad
+        ? "你现在更需要减少同时承担的事情，把一个主要目标做完，再决定是否扩张。"
+        : "你现在更需要保护精力，把事情排出先后，只保留一个最重要的下一步。";
+    }
+  }
+}
+
+export function buildFreeDirectAnswer(
+  question: string,
+  chart: Chart,
+  reading: Reading,
+  locale: AppLocale,
+): string {
+  if (isCosmicSymbolicQuestion(question)) {
+    return locale === "en"
+      ? "Treat this as a symbolic way to notice how you handle pressure and make choices, not as proof of a literal origin. Keep only what matches repeated patterns in your real life."
+      : locale === "zh-Hant"
+        ? "把這份結果當成觀察自己如何承受壓力、如何做選擇的象徵線索，不當成真實來源證明；只保留能和現實反覆印證的部分。"
+        : "把这份结果当成观察自己如何承受压力、如何做选择的象征线索，不当成真实来源证明；只保留能和现实反复印证的部分。";
+  }
+  if (locale === "en") return englishDirectAnswer(question, chart, englishQuestionKind(question, reading.kind));
+  return chineseDirectAnswer(question, chart, reading, locale);
 }
 
 function buildEnglishReading(question: string, chart: Chart, source: Reading): Reading {
