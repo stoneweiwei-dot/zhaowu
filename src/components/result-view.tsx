@@ -6,6 +6,7 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { FocusedReportSections } from "@/components/paid-report-pages";
+import { CustomerStandardArt } from "@/components/customer-standard-art";
 import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
 import { generateDecreeImage } from "@/lib/report/decree-image";
@@ -206,6 +207,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </article>
       ) : null}
       {reportSections ? <FocusedReportSections sections={reportSections} /> : null}
+      {reportSections ? <CustomerStandardArt chart={chart} /> : null}
       {reportSections ? <TeaGuardianReport chart={chart} /> : null}
       <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
     </section>
