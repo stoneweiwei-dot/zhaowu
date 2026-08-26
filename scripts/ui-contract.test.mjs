@@ -36,7 +36,7 @@ test("full reports use question-focused sections and only real server image gene
   assert.match(renderer, /zhaowu-report-hero-phoenix/);
   assert.match(renderer, /onError=\{\(event\) => \{ event\.currentTarget\.hidden = true; \}\}/);
   assert.match(renderer, /REPORT_ORNAMENTS/);
-  assert.match(renderer, /AUSPICIOUS MOTIFS × DESTINY NARRATIVE/);
+  assert.match(renderer, /ZHAOWU · PERSONAL GUIDANCE/);
   assert.match(renderer, /mark\.label\[locale\]/);
   assert.match(renderer, /zhaowu-report-ornament/);
   assert.doesNotMatch(renderer, /第 \$\{.*頁|第 \$\{.*页|copy\.page/);
@@ -69,7 +69,7 @@ test("free decree text remains available when image generation fails", async () 
   assert.match(resultView, /setImageUrl\(null\); setMsg\(copy\.imageLoadFailed\)/);
 });
 
-test("free result keeps technical chart evidence inside the full report", async () => {
+test("free result keeps technical chart evidence inside the full report engine, not the free answer", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const focused = await source("src/lib/report/focused-report.ts");
 
@@ -80,10 +80,13 @@ test("free result keeps technical chart evidence inside the full report", async 
 
 test("report visual system uses a deep aubergine and antique-gold treatment without a corrupt hero dependency", async () => {
   const styles = await source("src/focused-report.css");
+  const richness = await source("src/production-visual-richness.css");
   const renderer = await source("src/components/paid-report-pages.tsx");
   assert.match(styles, /linear-gradient\(155deg, #2b123d 0%, #180a27 55%, #100719 100%\)/);
   assert.match(styles, /zhaowu-report-hero-pearl/);
   assert.match(styles, /#e2bd76/);
+  assert.match(richness, /--zr-aubergine/);
+  assert.match(richness, /zhaowu-focused-report/);
   assert.doesNotMatch(renderer, /\/visuals\/tianlong-report-hero\.jpg/);
 });
 
@@ -100,14 +103,17 @@ test("owner background client always uses Supabase JSON instead of the Vercel SP
   assert.match(backgrounds, /背景服務回應格式錯誤/);
 });
 
-test("site shell keeps the real Zhaowu text seal without random page-wide ornament scatter", async () => {
+test("site shell keeps the real Zhaowu text seal and restrained auspicious edge symbols", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const seal = await source("src/components/brand-seal.tsx");
+  const marks = await source("src/components/marks.tsx");
 
   assert.match(shell, /import \{ BrandSeal \}/);
   assert.match(shell, /<BrandSeal \/>/);
-  assert.doesNotMatch(shell, /SealScatter/);
+  assert.match(shell, /import \{ SealScatter \}/);
+  assert.match(shell, /<SealScatter seedKey=\{pathname\} \/>/);
   assert.match(shell, /zhaowu-app-frame/);
+  assert.match(marks, /SCATTER_POOL/);
   assert.match(seal, /<span>昭<\/span>/);
   assert.match(seal, /<span>梧<\/span>/);
 });
@@ -126,7 +132,7 @@ test("site shell unblocks the first screen instead of fading a loading gate", as
 
 test("generated auspicious visual language is curated inside the report with real image assets", async () => {
   const renderer = await source("src/components/paid-report-pages.tsx");
-  assert.match(renderer, /天龍八部/);
+  assert.match(renderer, /REPORT_ORNAMENTS/);
   for (const asset of [
     "phoenix.webp",
     "celestial-pearl.webp",
