@@ -52,13 +52,16 @@ const ID_TO_EMBLEM: Record<string, EmblemName> = {
   jade: "wutong",
 };
 
+/** Visible random scatter pool — real emblem assets, not thin line ornaments. */
 const SCATTER_POOL = [
-  "/emblems/line-ornament-01.svg",
-  "/emblems/line-ornament-02.svg",
-  "/emblems/line-ornament-03.svg",
-  "/emblems/line-ornament-04.svg",
-  "/emblems/line-ornament-05.svg",
-  "/emblems/line-ornament-06.svg",
+  "/emblems/lotus-emblem.svg",
+  "/emblems/dharma-wheel-emblem.svg",
+  "/emblems/modern-endless-knot-emblem.svg",
+  "/emblems/modern-golden-fish-emblem.svg",
+  "/emblems/crane-feather-emblem.svg",
+  "/emblems/ruyi-emblem.svg",
+  "/emblems/treasure-vase-emblem.svg",
+  "/emblems/modern-gourd-emblem.svg",
 ] as const;
 
 type ScatterItem = {
@@ -89,7 +92,7 @@ function hashSeed(value: string) {
   return hash >>> 0;
 }
 
-function buildScatter(seed: number, count = 5): ScatterItem[] {
+function buildScatter(seed: number, count = 6): ScatterItem[] {
   const rand = mulberry32(seed);
   const items: ScatterItem[] = [];
   const remaining = [...SCATTER_POOL];
@@ -97,15 +100,15 @@ function buildScatter(seed: number, count = 5): ScatterItem[] {
 
   for (let i = 0; i < Math.min(count, remaining.length); i += 1) {
     const side: "left" | "right" = rand() < 0.5 ? "left" : "right";
-    let top = 8 + rand() * 84;
+    let top = 6 + rand() * 88;
     let tries = 0;
-    while (tries < 24 && used.some((u) => u.side === side && Math.abs(u.top - top) < 14)) {
-      top = 8 + rand() * 84;
+    while (tries < 24 && used.some((u) => u.side === side && Math.abs(u.top - top) < 12)) {
+      top = 6 + rand() * 88;
       tries += 1;
     }
     used.push({ side, top });
 
-    const left = side === "left" ? 1 + rand() * 10 : 89 + rand() * 10;
+    const left = side === "left" ? 0.5 + rand() * 12 : 87 + rand() * 12;
     const assetIndex = Math.floor(rand() * remaining.length);
     const [src = SCATTER_POOL[0]] = remaining.splice(assetIndex, 1);
 
@@ -114,9 +117,9 @@ function buildScatter(seed: number, count = 5): ScatterItem[] {
       src,
       left,
       top,
-      size: 58 + Math.floor(rand() * 48),
-      rotate: -16 + rand() * 32,
-      opacity: 0.5 + rand() * 0.28,
+      size: 42 + Math.floor(rand() * 36),
+      rotate: -18 + rand() * 36,
+      opacity: 0.42 + rand() * 0.28,
     });
   }
   return items;
@@ -149,7 +152,7 @@ export function SealScatter({ seedKey = "home" }: { seedKey?: string }) {
       typeof window === "undefined"
         ? 108
         : ((Date.now() >>> 0) ^ Math.floor(Math.random() * 0xffffffff)) >>> 0;
-    const count = 4 + (visitJitter % 2);
+    const count = 5 + (visitJitter % 3);
     return buildScatter((routeSeed ^ visitJitter) >>> 0, count);
   }, [seedKey]);
 

@@ -79,15 +79,20 @@ test("owner background client always uses Supabase JSON instead of the Vercel SP
   assert.match(backgrounds, /背景服務回應格式錯誤/);
 });
 
-test("site shell keeps the real Zhaowu text seal and no longer mounts random page-wide ornament scatter", async () => {
+test("site shell keeps the real Zhaowu text seal and mounts random page-wide ornament scatter on non-login pages", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const seal = await source("src/components/brand-seal.tsx");
+  const marks = await source("src/components/marks.tsx");
 
   assert.match(shell, /import \{ BrandSeal \}/);
   assert.match(shell, /<BrandSeal \/>/);
-  assert.doesNotMatch(shell, /import \{ SealScatter \}/);
-  assert.doesNotMatch(shell, /<SealScatter/);
-  assert.doesNotMatch(shell, /<IntroGate/);
+  assert.match(shell, /import \{ SealScatter \}/);
+  assert.match(shell, /<SealScatter/);
+  assert.match(marks, /SCATTER_POOL/);
+  assert.match(marks, /lotus-emblem\.svg/);
+  assert.match(marks, /dharma-wheel-emblem\.svg/);
+  assert.match(marks, /modern-endless-knot-emblem\.svg/);
+  assert.match(marks, /modern-golden-fish-emblem\.svg/);
   assert.match(seal, /<span>昭<\/span>/);
   assert.match(seal, /<span>梧<\/span>/);
 });
@@ -107,7 +112,7 @@ test("site shell unblocks the first screen instead of fading a loading gate", as
 test("generated auspicious visual language is curated inside the report with real image assets", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const renderer = await source("src/components/paid-report-pages.tsx");
-  assert.doesNotMatch(shell, /SealScatter/);
+  assert.match(shell, /SealScatter/);
   assert.match(renderer, /天龍八部/);
   for (const asset of [
     "phoenix.webp",
