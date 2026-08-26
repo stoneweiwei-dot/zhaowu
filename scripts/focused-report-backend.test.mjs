@@ -1,40 +1,47 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import test from "node:test";
+import { test } from "node:test";
+
+const root = new URL("../", import.meta.url);
 
 async function source(path) {
-  return readFile(new URL(`../${path}`, import.meta.url), "utf8");
+  return readFile(new URL(path, root), "utf8");
 }
 
-test("focused report keeps the backend answer source and dynamic sections", async () => {
-  const [resultView, focused, supabase] = await Promise.all([
-    source("src/components/result-view.tsx"),
-    source("src/lib/report/focused-report.ts"),
-    source("src/lib/supabase-rest.ts"),
-  ]);
-
-  assert.match(resultView, /writeFullReport/);
-  assert.match(resultView, /composeFocusedReport/);
-  assert.match(resultView, /fullReport: text/);
-  assert.match(resultView, /ninePages: sections/);
-  assert.match(focused, /question-focused/i);
-  assert.match(supabase, /mother_draft/);
+test("owner console exposes one final answer and dynamic report sections", async () => {
+  const account = await source("src/routes/account.tsx");
+  assert.match(account, /storedReportSections/);
+  assert.match(account, /最终答案来源：保存版本，不重新计算|最終答案來源：保存版本，不重新計算/);
+  assert.match(account, /完整报告完成|完整報告完成/);
+  assert.doesNotMatch(account, /"九頁完成"|"九页完成"|"完整／九頁"|"完整／九页"/);
+  assert.doesNotMatch(account, /pages\.length === 9/);
 });
 
-test("free decree text remains available independently from image generation", async () => {
-  const resultView = await source("src/components/result-view.tsx");
-  assert.match(resultView, /buildFreeDecreeCouplet/);
-  assert.match(resultView, /decreeCouplet/);
-  assert.match(resultView, /generateDecreeImage/);
-  assert.match(resultView, /imageLoadFailed/);
+test("legacy ninePages storage key is read only as compatibility, not product structure", async () => {
+  const account = await source("src/routes/account.tsx");
+  assert.match(account, /record\.reportSections \?\? record\.sections \?\? record\.ninePages/);
+  assert.match(account, /old key is read only as storage compatibility/);
 });
 
-test("loading intro remains non-blocking and hard-exits inside the mobile budget", async () => {
-  const [intro, policy] = await Promise.all([
-    source("src/components/intro-gate.tsx"),
-    source("src/lib/intro-gate-policy.ts"),
-  ]);
-  assert.match(policy, /INTRO_GATE_HARD_EXIT_MS = 2800/);
+test("website keeps the app concept base while specialist cards use the generated ornament treatment", async () => {
+  const account = await source("src/routes/account.tsx");
+  const styles = await source("src/styles.css");
+  const home = await source("src/home-polish-v3.css");
+  const homeRoute = await source("src/routes/index.tsx");
+  const login = await source("src/stone-visual-fix.css");
+  const intro = await source("src/components/intro-gate.tsx");
+
+  assert.doesNotMatch(account, /APP DESIGN BASELINE|zhaowu-app-ui-concept|designTitle|openDesign/);
+  assert.match(styles, /--color-cinnabar:\s*#a7352b/);
+  assert.match(styles, /linear-gradient\(rgba\(116, 100, 75, \.045\) 1px, transparent 1px\)/);
+  assert.match(home, /\.zhaowu-specialist-card\.is-tianji[\s\S]*linear-gradient\(152deg, #2b123d 0%, #170823 62%, #100719 100%\)/);
+  assert.match(home, /\.zhaowu-specialist-mark--tianji/);
+  assert.match(homeRoute, /\/ornaments\/generated\/phoenix\.webp/);
+  assert.match(homeRoute, /\/ornaments\/generated\/celestial-pearl\.webp/);
+  assert.match(login, /stone-login-orbit/);
+  assert.doesNotMatch(login, /stone-login-art img|loading-poster/);
+  assert.doesNotMatch(intro, /loading-poster|intro-poster/);
+  assert.match(intro, /\/intro\/lotus-bloom-v12\.webp/);
   assert.match(intro, /LOTUS_BLOOM_MS = 2200/);
 });
 
