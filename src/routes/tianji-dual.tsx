@@ -112,7 +112,6 @@ function CityPicker({ locale, copy, value, onSelect, onClear }: { locale: Locale
   useEffect(() => {
     const localized = value ? localizeCityHit(value, locale) : null;
     setQuery(localized?.display ?? "");
-    if (localized && value && localized.display !== value.display) onSelect(localized);
   }, [locale, value?.display, value?.latitude, value?.longitude]);
 
   useEffect(() => {
@@ -164,7 +163,7 @@ function CityPicker({ locale, copy, value, onSelect, onClear }: { locale: Locale
               key={`${city.display}-${city.latitude}-${city.longitude}`}
               type="button"
               role="option"
-              aria-selected={value?.display === city.display}
+              aria-selected={value?.latitude === city.latitude && value?.longitude === city.longitude}
               className="block w-full border-b border-white/10 px-3 py-3 text-left last:border-0 hover:bg-white/5"
               onClick={() => {
                 setQuery(city.display);
@@ -183,10 +182,11 @@ function CityPicker({ locale, copy, value, onSelect, onClear }: { locale: Locale
 }
 
 function Orbit({ active, centre, locale, reverse = false }: { active: string; centre: string; locale: Locale; reverse?: boolean }) {
+  const activeLabel = locale === "en" ? (EN_BRANCH[active as TianjiPalace] ?? active) : active;
   return (
     <div className={`dual-orbit${reverse ? " is-reverse" : ""}${locale === "en" ? " is-en" : ""}`} aria-hidden="true">
       <div className="dual-orbit-ring" />
-      <div className="dual-orbit-core"><b>{active}</b><span>{centre}</span></div>
+      <div className="dual-orbit-core"><b>{activeLabel}</b><span>{centre}</span></div>
       {PALACES.map((palace, index) => {
         const angle = (index / 12) * 360 - 90;
         const style = { transform: `rotate(${angle}deg) translate(112px) rotate(${-angle}deg)` } as CSSProperties;
@@ -210,7 +210,7 @@ function TianjiDualPage() {
   const [direction, setDirection] = useState<DualDirection>("male");
   const [result, setResult] = useState<DualDestinyResult | null>(null);
   const [error, setError] = useState("");
-  const [timeNote, setTimeNote] = useState("");
+  const [timeNote, setTimeNote] = useState<{ hour: number; minute: number; shiftMinutes: number } | null>(null);
   const resultRef = useRef<HTMLElement>(null);
   const lunarMonths = useMemo(() => getLunarMonths(year), [year]);
   const selectedLunarMonth = lunarMonths.find((item) => `${item.month}:${Number(item.isLeap)}` === lunarMonthKey);
@@ -223,11 +223,11 @@ function TianjiDualPage() {
     if (lunarMonths[0]) setLunarMonthKey(`${lunarMonths[0].month}:${Number(lunarMonths[0].isLeap)}`);
   }, [calendar, lunarMonthKey, lunarMonths]);
 
-  function clear() { setResult(null); setError(""); setTimeNote(""); }
+  function clear() { setResult(null); setError(""); setTimeNote(null); }
   function calculate() {
     if (!birthCity) {
       setResult(null);
-      setTimeNote("");
+      setTimeNote(null);
       setError(copy.cityRequired);
       return;
     }
@@ -265,14 +265,13 @@ function TianjiDualPage() {
           result: correctedTianji,
         },
       };
-      const sign = trueSolar.shiftMinutes > 0 ? "+" : "";
-      setTimeNote(`${copy.corrected} ${birthCity.display} · ${formatClock(trueSolar.hour, trueSolar.minute)} · ${copy.shift} ${sign}${trueSolar.shiftMinutes} min`);
+      setTimeNote({ hour: trueSolar.hour, minute: trueSolar.minute, shiftMinutes: trueSolar.shiftMinutes });
       setResult(next);
       setError("");
       window.setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
     } catch {
       setResult(null);
-      setTimeNote("");
+      setTimeNote(null);
       setError(copy.invalid);
     }
   }
@@ -285,7 +284,7 @@ function TianjiDualPage() {
       <div className="dual-shell">
         <div className="dual-topbar"><p>{copy.kicker}</p><Link to="/">{copy.back}</Link></div>
         <header className="dual-hero">
-          <div><span>雙</span><span>軌</span></div>
+          <div><span>{locale === "en" ? "A" : locale === "zh-Hans" ? "双" : "雙"}</span><span>{locale === "en" ? "B" : locale === "zh-Hans" ? "轨" : "軌"}</span></div>
           <h1 id="dual-title">{copy.title}</h1><p>{copy.lead}</p>
         </header>
 
@@ -304,7 +303,7 @@ function TianjiDualPage() {
           <CityPicker locale={locale} copy={copy} value={birthCity} onSelect={(city) => { setBirthCity(city); clear(); }} onClear={() => { setBirthCity(null); clear(); }} />
           <fieldset className="dual-direction"><legend>{copy.direction}</legend><div><button type="button" aria-pressed={direction === "male"} onClick={() => { setDirection("male"); clear(); }}>{copy.male}</button><button type="button" aria-pressed={direction === "female"} onClick={() => { setDirection("female"); clear(); }}>{copy.female}</button></div><p>{copy.directionHint}</p></fieldset>
           <div className="dual-auto"><i>✓</i><span>{copy.auto}</span></div>
-          {timeNote ? <p className="mt-2 text-xs leading-5 text-[#b9ded8]">{timeNote}</p> : null}
+          {timeNote && birthCity ? <p className="mt-2 text-xs leading-5 text-[#b9ded8]">{copy.corrected} {localizeCityHit(birthCity, locale).display} · {formatClock(timeNote.hour, timeNote.minute)} · {copy.shift} {timeNote.shiftMinutes > 0 ? "+" : ""}{timeNote.shiftMinutes} min</p> : null}
           {error ? <p className="dual-error" role="alert">{error}</p> : null}
           <button className="dual-submit" type="button" onClick={calculate}>{copy.submit}</button>
           <p className="dual-privacy">{copy.privacy}</p>
@@ -317,7 +316,7 @@ function TianjiDualPage() {
               <article className="dual-engine-card is-tianji">
                 <p className="dual-engine-label">{copy.outer}</p>
                 <Orbit active={result.tianji.result.palace} centre={TIANJI_STARS[result.tianji.result.palace][locale]} locale={locale} />
-                <dl><div><dt>{copy.palace}</dt><dd>{locale === "en" ? EN_BRANCH[result.tianji.result.palace] : `${result.tianji.result.palace}宮`}</dd></div><div><dt>{copy.star}</dt><dd>{TIANJI_STARS[result.tianji.result.palace][locale]}</dd></div></dl>
+                <dl><div><dt>{copy.palace}</dt><dd>{locale === "en" ? EN_BRANCH[result.tianji.result.palace] : `${result.tianji.result.palace}${locale === "zh-Hans" ? "宫" : "宮"}`}</dd></div><div><dt>{copy.star}</dt><dd>{TIANJI_STARS[result.tianji.result.palace][locale]}</dd></div></dl>
                 <div className="dual-reading"><small>{copy.character}</small><p>{TIANJI_CHARACTER[result.tianji.result.palace][locale]}</p></div>
                 <p className="dual-lunar">{presentLunarLabel(result.palm.lunarLabel, locale)}</p>
                 <p className="dual-correction"><b>{copy.correction}</b>{result.tianji.result.afterMiddleQi ? copy.advanced : copy.unchanged}</p>
@@ -330,7 +329,7 @@ function TianjiDualPage() {
                 <div className="dual-four"><small>{copy.four}</small><div>{reversedPalaces.map((item) => <span key={item.key}><b>{item.zhi}</b><em>{item.star}</em></span>)}</div></div>
               </article>
             </div>
-            <article className="dual-fusion"><span>合</span><div><small>{copy.fusion}</small><h3>{fusion.title}</h3><p>{fusion.body}</p><blockquote><b>{copy.advice}</b>{fusion.guidance}</blockquote></div></article>
+            <article className="dual-fusion"><span>{locale === "en" ? "AB" : "合"}</span><div><small>{copy.fusion}</small><h3>{fusion.title}</h3><p>{fusion.body}</p><blockquote><b>{copy.advice}</b>{fusion.guidance}</blockquote></div></article>
             <p className="dual-boundary">{copy.boundary}</p>
           </section>
         ) : null}
