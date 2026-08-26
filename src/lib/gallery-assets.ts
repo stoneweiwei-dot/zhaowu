@@ -9,6 +9,7 @@ export type GalleryAsset = {
   asset_key: string;
   title: string;
   storage_path: string;
+  bucket_id: string;
   content_type: string | null;
   tags: string[];
   enabled: boolean;
@@ -54,11 +55,11 @@ function safeSlug(value: string, fallback = "asset") {
   return clean || fallback;
 }
 
-export function galleryPublicUrl(path: string) {
-  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${safePath(path)}`;
+export function galleryPublicUrl(path: string, bucketId = BUCKET) {
+  return `${SUPABASE_URL}/storage/v1/object/public/${encodeURIComponent(bucketId || BUCKET)}/${safePath(path)}`;
 }
 
-const SELECT = "id,category,asset_key,title,storage_path,content_type,tags,enabled,is_primary,created_at,updated_at";
+const SELECT = "id,category,asset_key,title,storage_path,bucket_id,content_type,tags,enabled,is_primary,created_at,updated_at";
 
 export async function listPublicGalleryAssets(category?: string): Promise<GalleryAsset[]> {
   if (!SUPABASE_URL || !SUPABASE_KEY) return [];
@@ -130,6 +131,7 @@ export async function uploadGalleryAsset(
       asset_key: assetKey,
       title: (meta.title || file.name).slice(0, 180),
       storage_path: path,
+      bucket_id: BUCKET,
       content_type: file.type || null,
       tags: (meta.tags ?? []).map((tag) => tag.trim()).filter(Boolean).slice(0, 20),
       enabled: true,
@@ -175,7 +177,8 @@ export async function setGalleryAssetPrimary(session: SupabaseSession, asset: Ga
 }
 
 export async function deleteGalleryAsset(session: SupabaseSession, asset: GalleryAsset) {
-  const storage = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(asset.storage_path)}`, {
+  const bucketId = asset.bucket_id || BUCKET;
+  const storage = await fetch(`${SUPABASE_URL}/storage/v1/object/${encodeURIComponent(bucketId)}/${safePath(asset.storage_path)}`, {
     method: "DELETE",
     headers: headers(session.access_token, false),
   });
