@@ -11,12 +11,13 @@ async function source(path) {
 test("traditional report titles stay traditional and stale basis/timing duplicates are hidden", async () => {
   const renderer = await source("src/components/paid-report-pages.tsx");
 
-  for (const title of ["直接結論", "命理依據", "時間與節奏", "現實行動", "關係條件"]) {
+  for (const title of ["直接結論", "命理依據", "時間與節奏", "下一步", "關係條件"]) {
     assert.match(renderer, new RegExp(title));
   }
 
   assert.match(renderer, /SECTION_TITLES\[locale\]\[section\.key\]/);
   assert.match(renderer, /section\.key === "basis"/);
   assert.match(renderer, /timingLines\.has\(normalizeReportLine\(line\)\)/);
-  assert.match(renderer, /visibleBody\.map/);
+  assert.match(renderer, /body\.map/);
+  assert.match(renderer, /basisDetails/);
 });
