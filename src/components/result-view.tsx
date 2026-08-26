@@ -7,7 +7,8 @@ import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
-import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
+import type { ReportSection } from "@/lib/report/focused-report";
+import { buildCustomerReportSections } from "@/lib/report/customer-report";
 import { generateDecreeImage } from "@/lib/report/decree-image";
 import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
 import { buildFreeDirectAnswer } from "@/lib/report/final-reading";
@@ -27,6 +28,7 @@ const RESULT_COPY = {
     imageGenerate: "生成個人命誥圖",
     imageGenerating: "命誥圖生成中…",
     imageReady: "個人命誥圖已生成並保存。",
+    imageUnavailable: "命誥圖暫時無法生成；文字答案與完整報告不受影響。",
     imageLoadFailed: "命誥圖未能載入；文字答案與完整報告不受影響。",
     imageAlt: "昭梧個人命誥圖",
   },
@@ -42,6 +44,7 @@ const RESULT_COPY = {
     imageGenerate: "生成个人命诰图",
     imageGenerating: "命诰图生成中…",
     imageReady: "个人命诰图已生成并保存。",
+    imageUnavailable: "命诰图暂时无法生成；文字答案与完整报告不受影响。",
     imageLoadFailed: "命诰图未能载入；文字答案与完整报告不受影响。",
     imageAlt: "昭梧个人命诰图",
   },
@@ -53,12 +56,13 @@ const RESULT_COPY = {
     saving: "Saving…",
     updateSaved: "Update saved report",
     fullGenerate: "View full report",
-    fullGenerating: "Organizing only what directly serves this question…",
-    imageGenerate: "Generate personal decree image",
-    imageGenerating: "Generating decree image…",
-    imageReady: "Your personal decree image has been generated and saved.",
-    imageLoadFailed: "The decree image could not be loaded. Your text answer and full report remain available.",
-    imageAlt: "Zhaowu personal decree image",
+    fullGenerating: "Preparing a clear answer for this question…",
+    imageGenerate: "Generate personal image",
+    imageGenerating: "Generating image…",
+    imageReady: "Your personal image has been generated and saved.",
+    imageUnavailable: "The personal image is temporarily unavailable. Your written answer and full report are still available.",
+    imageLoadFailed: "The personal image could not be loaded. Your written answer and full report remain available.",
+    imageAlt: "Zhaowu personal image",
   },
 } as const;
 
@@ -83,17 +87,21 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     return out.text;
   }
 
+  function customerSections() {
+    return buildCustomerReportSections({ ...result, locale: result.locale ?? locale });
+  }
+
   async function ensureSavedReport() {
     if (!session || !user) throw new Error(t("needLogin"));
     const reportText = await ensureFullReport();
-    const sections = reportSections ?? composeFocusedReport(result);
+    const sections = reportSections ?? customerSections();
     setReportSections(sections);
     const row = await saveReportRecord({
       session,
       profile,
       result,
       fullReport: reportText,
-      // Legacy field name in the persistence adapter; content is the new dynamic section schema.
+      // Legacy field name in the persistence adapter; content is the customer-facing section schema.
       ninePages: sections,
     });
     setSavedId(row?.id ?? result.id);
@@ -104,7 +112,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setBusy("full");
     setMsg(null);
     try {
-      const sections = composeFocusedReport(result);
+      const sections = customerSections();
       const text = await ensureFullReport();
       setReportSections(sections);
       if (session && user) {
@@ -158,8 +166,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       const out = await generateDecreeImage(session, reportId);
       if (out.signedUrl) setImageUrl(out.signedUrl);
       setMsg(copy.imageReady);
-    } catch (err) {
-      setMsg(err instanceof Error ? err.message : copy.fullFailed);
+    } catch {
+      setMsg(copy.imageUnavailable);
     } finally {
       setBusy(null);
     }
@@ -192,7 +200,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <button type="button" onClick={() => reset()} className="h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
       </div>
 
-      {msg ? <p className="text-sm text-cinnabar">{msg}</p> : null}
+      {msg ? <p className="zhaowu-customer-status text-sm text-cinnabar">{msg}</p> : null}
       <article className="seal-border rounded-xl bg-cream/95 p-4 sm:p-6">
         <blockquote className="mx-auto max-w-sm whitespace-pre-line text-center font-display text-lg leading-8 tracking-[0.08em] text-ink">
           {decreeCouplet}
