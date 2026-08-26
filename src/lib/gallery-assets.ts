@@ -18,9 +18,10 @@ export type GalleryAsset = {
 };
 
 function headers(token?: string | null, json = true): HeadersInit {
+  const bearer = token || SUPABASE_KEY;
   return {
     apikey: SUPABASE_KEY,
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
     ...(json ? { "Content-Type": "application/json" } : {}),
   };
 }
