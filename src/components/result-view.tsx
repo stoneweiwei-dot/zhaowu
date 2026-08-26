@@ -10,6 +10,7 @@ import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-
 import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
 import { generateDecreeImage } from "@/lib/report/decree-image";
 import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
+import { buildFreeDirectAnswer } from "@/lib/report/final-reading";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
 const RESULT_COPY = {
@@ -20,7 +21,6 @@ const RESULT_COPY = {
     saveFailed: "保存失敗。",
     saving: "保存中…",
     updateSaved: "更新已保存報告",
-    unknown: "未定",
     fullGenerate: "查看完整報告",
     fullGenerating: "正在整理與這一問直接相關的內容…",
     imageGenerate: "生成個人命誥圖",
@@ -28,7 +28,6 @@ const RESULT_COPY = {
     imageReady: "個人命誥圖已生成並保存。",
     imageLoadFailed: "命誥圖未能載入；文字答案與完整報告不受影響。",
     imageAlt: "昭梧個人命誥圖",
-    pillars: { year: "年柱", month: "月柱", day: "日柱", time: "時柱" },
   },
   "zh-Hans": {
     syncFailed: "完整报告已整理完成，但云端同步暂时失败；画面内容不受影响。",
@@ -37,7 +36,6 @@ const RESULT_COPY = {
     saveFailed: "保存失败。",
     saving: "保存中…",
     updateSaved: "更新已保存报告",
-    unknown: "未定",
     fullGenerate: "查看完整报告",
     fullGenerating: "正在整理与你这一问直接相关的内容…",
     imageGenerate: "生成个人命诰图",
@@ -45,7 +43,6 @@ const RESULT_COPY = {
     imageReady: "个人命诰图已生成并保存。",
     imageLoadFailed: "命诰图未能载入；文字答案与完整报告不受影响。",
     imageAlt: "昭梧个人命诰图",
-    pillars: { year: "年柱", month: "月柱", day: "日柱", time: "时柱" },
   },
   en: {
     syncFailed: "The full report is ready, but cloud sync failed temporarily. The report remains available on this page.",
@@ -54,7 +51,6 @@ const RESULT_COPY = {
     saveFailed: "Saving failed.",
     saving: "Saving…",
     updateSaved: "Update saved report",
-    unknown: "Unknown",
     fullGenerate: "View full report",
     fullGenerating: "Organizing only what directly serves this question…",
     imageGenerate: "Generate personal decree image",
@@ -62,53 +58,8 @@ const RESULT_COPY = {
     imageReady: "Your personal decree image has been generated and saved.",
     imageLoadFailed: "The decree image could not be loaded. Your text answer and full report remain available.",
     imageAlt: "Zhaowu personal decree image",
-    pillars: { year: "Year", month: "Month", day: "Day", time: "Time" },
   },
 } as const;
-
-const ELEMENT_EN: Record<string, string> = {
-  木: "Wood",
-  火: "Fire",
-  土: "Earth",
-  金: "Metal",
-  水: "Water",
-};
-
-const STEM_EN: Record<string, string> = {
-  甲: "Jia", 乙: "Yi", 丙: "Bing", 丁: "Ding", 戊: "Wu",
-  己: "Ji", 庚: "Geng", 辛: "Xin", 壬: "Ren", 癸: "Gui",
-};
-
-const BRANCH_EN: Record<string, string> = {
-  子: "Zi", 丑: "Chou", 寅: "Yin", 卯: "Mao", 辰: "Chen", 巳: "Si",
-  午: "Wu", 未: "Wei", 申: "Shen", 酉: "You", 戌: "Xu", 亥: "Hai",
-};
-
-const CHINESE_DIGIT: Record<string, number> = {
-  零: 0, 〇: 0, 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9,
-};
-
-function chineseNumber(value: string): number | null {
-  const text = value.replace(/^初/, "");
-  if (text === "十") return 10;
-  if (text.startsWith("十")) return 10 + (CHINESE_DIGIT[text[1]] ?? 0);
-  if (text.startsWith("廿")) return 20 + (CHINESE_DIGIT[text[1]] ?? 0);
-  if (text.startsWith("三十")) return 30;
-  if (text.length === 2 && text[1] === "十") return (CHINESE_DIGIT[text[0]] ?? 0) * 10;
-  return text.length === 1 && text in CHINESE_DIGIT ? CHINESE_DIGIT[text] : null;
-}
-
-function englishLunarDate(value: string): string {
-  const text = value.replace(/^(農曆|农历)/, "").trim();
-  const match = text.match(/^([零〇一二三四五六七八九]{4})年(.+?)月(.+)$/);
-  if (!match) return "Lunar calendar date";
-  const year = [...match[1]].map((part) => CHINESE_DIGIT[part]).join("");
-  const month = match[2] === "正" ? 1 : match[2] === "冬" ? 11 : /^(臘|腊)$/.test(match[2]) ? 12 : chineseNumber(match[2]);
-  const day = chineseNumber(match[3]);
-  if (!year || month == null || day == null) return "Lunar calendar date";
-  return `Lunar date · ${year} · month ${month} · day ${day}`;
-}
-
 
 export function ResultView({ result }: { result: AnalysisResult }) {
   const { t, locale } = useI18n();
@@ -120,14 +71,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [reportSections, setReportSections] = useState<ReportSection[] | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const { chart, reading, question } = result;
-  const answer = customerDirectAnswer(question, reading.directAnswer);
+  const answer = customerDirectAnswer(question, buildFreeDirectAnswer(question, chart, reading, locale));
   const answerParagraphs = customerParagraphs(answer);
   const decreeCouplet = buildFreeDecreeCouplet(chart, locale);
-  const dayMasterText = locale === "en"
-    ? `${STEM_EN[chart.dayMaster] ?? "Unconfirmed"} (${ELEMENT_EN[chart.dayMasterElement] ?? "Element unconfirmed"})`
-    : `${chart.dayMaster}${chart.dayMasterElement}`;
-  const monthBranchText = locale === "en" ? (BRANCH_EN[chart.monthBranch] ?? "Unconfirmed") : chart.monthBranch;
-  const lunarDateText = locale === "en" ? englishLunarDate(chart.lunarDate) : chart.lunarDate;
 
   async function ensureFullReport() {
     if (fullReport) return fullReport;
@@ -225,28 +171,6 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <h2 className="mt-2 font-display text-2xl">{question}</h2>
         <div className="mt-4 space-y-3 text-[15px] leading-8 text-ink-soft">
           {answerParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
-        </div>
-      </article>
-
-      <article className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-xs tracking-[0.28em] text-cinnabar">{t("chart")}</p>
-            <h3 className="mt-1 font-display text-xl">{t("dayMaster")} {dayMasterText} · {t("monthLing")} {monthBranchText}</h3>
-          </div>
-          <p className="text-sm text-ink-mute">{lunarDateText}</p>
-        </div>
-        <div className="mt-5 grid grid-cols-4 gap-2">
-          {chart.pillars.map((pillar) => {
-            const ready = pillar.ready !== false && pillar.ganZhi !== "未定" && Boolean(pillar.gan);
-            const label = copy.pillars[pillar.key as keyof typeof copy.pillars] ?? pillar.label;
-            return (
-              <div key={pillar.key} className="rounded-md border border-line bg-paper/50 px-2 py-3 text-center">
-                <p className="text-[10px] tracking-[0.12em] text-ink-mute">{label}</p>
-                <p className="mt-1 font-display text-xl tracking-[0.08em] sm:text-2xl">{ready ? pillar.ganZhi : copy.unknown}</p>
-              </div>
-            );
-          })}
         </div>
       </article>
 
