@@ -133,7 +133,7 @@ test("English UI keeps the direct answer and full report in English", () => {
   const report = composeFocusedReportText(result);
   const sections = composeFocusedReport(result);
   assert.equal(result.reading.kind, "career");
-  assert.match(result.reading.directAnswer, /Prioritize one clearly owned workstream/i);
+  assert.match(result.reading.directAnswer, /Prioritise one main work goal/i);
   assert.deepEqual(
     sections.map((item) => item.title),
     ["Direct conclusion", "Chart basis", "Timing and rhythm", "Practical action"],
