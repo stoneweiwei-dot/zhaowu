@@ -13,14 +13,35 @@ import {
 } from "@/lib/gallery-assets";
 
 const CATEGORIES = ["tea-guardian", "reference-style", "buddhist", "daoist", "guardian-beast", "auspicious-motif", "report-art", "background", "dragon-sticker"] as const;
+type GalleryCategory = (typeof CATEGORIES)[number];
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
 }
 
+function categoryLabel(locale: Locale, category: GalleryCategory) {
+  const labels: Record<GalleryCategory, [string, string, string]> = {
+    "tea-guardian": ["茶仙／茶神", "茶仙／茶神", "Tea guardians"],
+    "reference-style": ["風格參考", "风格参考", "Style references"],
+    buddhist: ["佛教圖像", "佛教图像", "Buddhist art"],
+    daoist: ["道教圖像", "道教图像", "Daoist art"],
+    "guardian-beast": ["瑞獸／護法獸", "瑞兽／护法兽", "Guardian beasts"],
+    "auspicious-motif": ["吉祥紋樣", "吉祥纹样", "Auspicious motifs"],
+    "report-art": ["報告插圖／命誥參考", "报告插图／命诰参考", "Report art"],
+    background: ["網站背景", "网站背景", "Website backgrounds"],
+    "dragon-sticker": ["小綠龍表情", "小绿龙表情", "Dragon stickers"],
+  };
+  const [hant, hans, en] = labels[category];
+  return tr(locale, hant, hans, en);
+}
+
+function notifyGalleryChanged() {
+  if (typeof window !== "undefined") window.dispatchEvent(new Event("zhaowu-gallery-change"));
+}
+
 export function OwnerGalleryManager({ session, locale }: { session: SupabaseSession; locale: Locale }) {
   const [assets, setAssets] = useState<GalleryAsset[]>([]);
-  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("tea-guardian");
+  const [category, setCategory] = useState<GalleryCategory>("tea-guardian");
   const [filter, setFilter] = useState("all");
   const [assetKey, setAssetKey] = useState(TEA_CATALOG[0]?.id ?? "");
   const [title, setTitle] = useState("");
@@ -31,15 +52,15 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
 
   const copy = useMemo(() => ({
     title: tr(locale, "昭梧圖庫", "昭梧图库", "Zhaowu Gallery"),
-    lead: tr(locale, "所有神像、茶仙、風格參考圖、背景與報告插圖統一放在圖庫。新上傳只會進 zhaowu-gallery；舊背景庫只保留已匯入的歷史檔案。", "所有神像、茶仙、风格参考图、背景与报告插图统一放在图库。新上传只会进 zhaowu-gallery；旧背景库只保留已导入的历史文件。", "Store all guardians, tea art, style references, backgrounds and report images in one gallery. New uploads go only to zhaowu-gallery; the legacy background bucket is retained only for imported historical files."),
-    category: tr(locale, "分類", "分类", "Category"),
+    lead: tr(locale, "所有神像、茶仙、風格參考圖、網站背景、命誥與報告插圖都統一放在這裡。原背景庫已併入圖庫；舊檔案保留原檔，不需要重新上傳。", "所有神像、茶仙、风格参考图、网站背景、命诰与报告插图都统一放在这里。原背景库已并入图库；旧文件保留原文件，不需要重新上传。", "All guardians, tea art, style references, website backgrounds and report artwork now live in one gallery. Legacy background files are already indexed here and do not need to be uploaded again."),
+    category: tr(locale, "用途分類", "用途分类", "Use / category"),
     key: tr(locale, "關聯鍵", "关联键", "Asset key"),
     titleLabel: tr(locale, "圖片名稱（可選）", "图片名称（可选）", "Title (optional)"),
     tags: tr(locale, "標籤，逗號分隔（可選）", "标签，逗号分隔（可选）", "Tags, comma separated (optional)"),
     primary: tr(locale, "上傳後設為目前主圖", "上传后设为当前主图", "Set as current primary image"),
     upload: tr(locale, "選圖並上傳", "选图并上传", "Choose and upload"),
     uploading: tr(locale, "上傳中…", "上传中…", "Uploading…"),
-    all: tr(locale, "全部", "全部", "All"),
+    all: tr(locale, "全部圖片", "全部图片", "All images"),
     empty: tr(locale, "這個分類目前沒有圖片。", "这个分类目前没有图片。", "No images in this category yet."),
     setPrimary: tr(locale, "設為主圖", "设为主图", "Set primary"),
     primaryNow: tr(locale, "目前主圖", "当前主图", "Current primary"),
@@ -67,7 +88,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       for (const file of files) {
         await uploadGalleryAsset(session, file, {
           category,
-          assetKey: files.length === 1 ? assetKey || undefined : undefined,
+          assetKey: category === "background" ? "site-wallpaper" : files.length === 1 ? assetKey || undefined : undefined,
           title: files.length === 1 ? title || undefined : undefined,
           tags: tags.split(",").map((tag) => tag.trim()).filter(Boolean),
           primary: files.length === 1 && primary,
@@ -76,6 +97,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       setTitle("");
       setTags("");
       await load();
+      notifyGalleryChanged();
       setMessage(tr(locale, `已上傳 ${files.length} 張。`, `已上传 ${files.length} 张。`, `Uploaded ${files.length} image${files.length === 1 ? "" : "s"}.`));
     } catch (error) {
       setMessage(error instanceof Error ? error.message : copy.failed);
@@ -94,8 +116,8 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
-        <label className="text-xs text-ink-soft"><span className="mb-1 block text-ink-mute">{copy.category}</span><select value={category} onChange={(e) => { const value = e.target.value as (typeof CATEGORIES)[number]; setCategory(value); setAssetKey(value === "tea-guardian" ? (TEA_CATALOG[0]?.id ?? "") : ""); }} className="h-11 w-full rounded-lg border border-line bg-paper px-3">{CATEGORIES.map((item) => <option key={item}>{item}</option>)}</select></label>
-        <label className="text-xs text-ink-soft"><span className="mb-1 block text-ink-mute">{copy.key}</span>{category === "tea-guardian" ? <select value={assetKey} onChange={(e) => setAssetKey(e.target.value)} className="h-11 w-full rounded-lg border border-line bg-paper px-3">{TEA_CATALOG.map((tea) => <option key={tea.id} value={tea.id}>{tea.name[locale]} · {tea.id}</option>)}</select> : <input value={assetKey} onChange={(e) => setAssetKey(e.target.value)} placeholder="asset-key" className="h-11 w-full rounded-lg border border-line bg-paper px-3" />}</label>
+        <label className="text-xs text-ink-soft"><span className="mb-1 block text-ink-mute">{copy.category}</span><select value={category} onChange={(e) => { const value = e.target.value as GalleryCategory; setCategory(value); setAssetKey(value === "tea-guardian" ? (TEA_CATALOG[0]?.id ?? "") : value === "background" ? "site-wallpaper" : ""); }} className="h-11 w-full rounded-lg border border-line bg-paper px-3">{CATEGORIES.map((item) => <option key={item} value={item}>{categoryLabel(locale, item)}</option>)}</select></label>
+        <label className="text-xs text-ink-soft"><span className="mb-1 block text-ink-mute">{copy.key}</span>{category === "tea-guardian" ? <select value={assetKey} onChange={(e) => setAssetKey(e.target.value)} className="h-11 w-full rounded-lg border border-line bg-paper px-3">{TEA_CATALOG.map((tea) => <option key={tea.id} value={tea.id}>{tea.name[locale]} · {tea.id}</option>)}</select> : <input value={assetKey} onChange={(e) => setAssetKey(e.target.value)} placeholder={category === "background" ? "site-wallpaper" : "asset-key"} disabled={category === "background"} className="h-11 w-full rounded-lg border border-line bg-paper px-3 disabled:opacity-70" />}</label>
         <label className="text-xs text-ink-soft"><span className="mb-1 block text-ink-mute">{copy.titleLabel}</span><input value={title} onChange={(e) => setTitle(e.target.value)} className="h-11 w-full rounded-lg border border-line bg-paper px-3" /></label>
         <label className="text-xs text-ink-soft"><span className="mb-1 block text-ink-mute">{copy.tags}</span><input value={tags} onChange={(e) => setTags(e.target.value)} className="h-11 w-full rounded-lg border border-line bg-paper px-3" /></label>
       </div>
@@ -107,7 +129,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       {message ? <p className="mt-3 text-sm text-cinnabar">{message}</p> : null}
 
       <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
-        <select value={filter} onChange={(e) => setFilter(e.target.value)} className="h-9 rounded-full border border-line bg-paper px-3 text-xs"><option value="all">{copy.all}</option>{CATEGORIES.map((item) => <option key={item}>{item}</option>)}</select>
+        <select value={filter} onChange={(e) => setFilter(e.target.value)} className="h-9 rounded-full border border-line bg-paper px-3 text-xs"><option value="all">{copy.all}</option>{CATEGORIES.map((item) => <option key={item} value={item}>{categoryLabel(locale, item)}</option>)}</select>
         <span className="text-xs text-ink-mute">{visible.length}</span>
       </div>
 
@@ -116,10 +138,10 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
         {visible.map((asset) => <article key={asset.id} className="overflow-hidden rounded-xl border border-line bg-paper/35">
           <img src={galleryPublicUrl(asset.storage_path, asset.bucket_id)} alt={asset.title || asset.asset_key} loading="lazy" className="aspect-[4/3] w-full object-cover object-top" />
           <div className="p-3">
-            <div className="flex items-start justify-between gap-2"><div className="min-w-0"><p className="truncate text-sm font-medium">{asset.title || asset.asset_key}</p><p className="truncate text-[11px] text-ink-mute">{asset.category} / {asset.asset_key}</p></div>{asset.is_primary ? <span className="shrink-0 rounded-full bg-wood/10 px-2 py-1 text-[10px] text-wood">{copy.primaryNow}</span> : null}</div>
+            <div className="flex items-start justify-between gap-2"><div className="min-w-0"><p className="truncate text-sm font-medium">{asset.title || asset.asset_key}</p><p className="truncate text-[11px] text-ink-mute">{CATEGORIES.includes(asset.category as GalleryCategory) ? categoryLabel(locale, asset.category as GalleryCategory) : asset.category}</p>{asset.tags?.length ? <p className="mt-1 line-clamp-2 text-[10px] leading-4 text-ink-mute">{asset.tags.join(" · ")}</p> : null}</div>{asset.is_primary ? <span className="shrink-0 rounded-full bg-wood/10 px-2 py-1 text-[10px] text-wood">{copy.primaryNow}</span> : null}</div>
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-              <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={asset.enabled} onChange={async (e) => { try { await setGalleryAssetEnabled(session, asset.id, e.target.checked); await load(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); } }} />{copy.enabled}</label>
-              <div className="flex gap-2">{!asset.is_primary ? <button type="button" onClick={async () => { try { await setGalleryAssetPrimary(session, asset); await load(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); } }} className="rounded-full bg-wood px-3 py-1.5 text-xs text-cream">{copy.setPrimary}</button> : null}<button type="button" onClick={async () => { if (!window.confirm(`${copy.remove} ${asset.title || asset.asset_key}?`)) return; try { await deleteGalleryAsset(session, asset); await load(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); } }} className="rounded-full px-3 py-1.5 text-xs text-cinnabar">{copy.remove}</button></div>
+              <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={asset.enabled} onChange={async (e) => { try { await setGalleryAssetEnabled(session, asset.id, e.target.checked); await load(); notifyGalleryChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); } }} />{copy.enabled}</label>
+              <div className="flex gap-2">{!asset.is_primary ? <button type="button" onClick={async () => { try { await setGalleryAssetPrimary(session, asset); await load(); notifyGalleryChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); } }} className="rounded-full bg-wood px-3 py-1.5 text-xs text-cream">{copy.setPrimary}</button> : null}<button type="button" onClick={async () => { if (!window.confirm(`${copy.remove} ${asset.title || asset.asset_key}?`)) return; try { await deleteGalleryAsset(session, asset); await load(); notifyGalleryChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); } }} className="rounded-full px-3 py-1.5 text-xs text-cinnabar">{copy.remove}</button></div>
             </div>
           </div>
         </article>)}
