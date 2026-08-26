@@ -110,6 +110,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   {user.isOwner ? t("navAdmin") : t("navMine")}
                 </Link>
               ) : null}
+              {user?.isOwner ? (
+                <Link to="/gallery" className={`hidden rounded-full px-2 py-2 min-[640px]:inline-flex ${pathname === "/gallery" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
+                  {locale === "en" ? "Gallery" : locale === "zh-Hans" ? "图库" : "圖庫"}
+                </Link>
+              ) : null}
               <div
                 role="group"
                 aria-label={t("language")}
