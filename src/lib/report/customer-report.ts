@@ -120,8 +120,15 @@ export function buildCustomerReportSections(result: AnalysisResult): ReportSecti
 
 /** The persisted/exportable full-report text must match the same customer-facing sections shown on screen. */
 export function composeCustomerReportText(result: AnalysisResult): string {
-  return buildCustomerReportSections(result)
+  const locale = result.locale ?? "zh-Hans";
+  const heading = locale === "en"
+    ? "ZHAOWU | Personal report"
+    : locale === "zh-Hant"
+      ? "昭梧｜專屬完整報告"
+      : "昭梧｜专属完整报告";
+  const body = buildCustomerReportSections(result)
     .map((item) => `${item.title}\n${item.body.join("\n")}`)
     .join("\n\n")
     .trim();
+  return `${heading}\n\n${body}`.trim();
 }
