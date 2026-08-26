@@ -4,7 +4,7 @@ import { test } from "node:test";
 
 const root = new URL("../", import.meta.url);
 
-test("Vercel spends builds only on the unique production branch", async () => {
+test("Vercel deploys only main through Git integration", async () => {
   const config = JSON.parse(await readFile(new URL("vercel.json", root), "utf8"));
   assert.equal(config.git.deploymentEnabled.main, true);
   assert.equal(config.git.deploymentEnabled["*"], false);

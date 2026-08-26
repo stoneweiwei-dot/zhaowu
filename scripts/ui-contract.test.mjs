@@ -46,6 +46,18 @@ test("full reports use question-focused sections and only real server image gene
   assert.equal((resultView.match(/onClick=\{\(\) => void onFull\(\)\}/g) ?? []).length, 1);
 });
 
+test("tea guardian stays outside the four question-focused report sections", async () => {
+  const resultView = await source("src/components/result-view.tsx");
+  const account = await source("src/routes/account.tsx");
+  const focused = await source("src/lib/report/focused-report.ts");
+  const tea = await source("src/lib/tea-guardian.ts");
+  assert.match(resultView, /<TeaGuardianReport chart=\{chart\}/);
+  assert.match(account, /<TeaGuardianReport chart=\{snapshot\.chart\}/);
+  assert.doesNotMatch(focused, /teaGuardian|茶仙守護|茶仙守护/);
+  assert.match(tea, /recommendGuardianFromChart/);
+  assert.match(tea, /不等於直接補某個五行/);
+});
+
 test("free decree text remains available when image generation fails", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const decreePosition = resultView.indexOf("{decreeCouplet}");

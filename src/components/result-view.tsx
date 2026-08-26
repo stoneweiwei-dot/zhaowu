@@ -12,6 +12,7 @@ import { generateDecreeImage } from "@/lib/report/decree-image";
 import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
 import { buildFreeDirectAnswer } from "@/lib/report/final-reading";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
+import { TeaGuardianReport } from "@/components/tea-guardian-report";
 
 const RESULT_COPY = {
   "zh-Hant": {
@@ -205,6 +206,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </article>
       ) : null}
       {reportSections ? <FocusedReportSections sections={reportSections} /> : null}
+      {reportSections ? <TeaGuardianReport chart={chart} /> : null}
       <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
     </section>
   );
