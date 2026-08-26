@@ -82,6 +82,10 @@ function visibleLines(section: ReportSection, locale: "zh-Hant" | "zh-Hans" | "e
   return safe.map((line) => line.trim()).filter(Boolean);
 }
 
+function isLegacyEnglishBasis(section: ReportSection) {
+  return section.key === "basis" && /^(?:chart basis|命理依據|命理依据)$/i.test(section.title.trim());
+}
+
 export function FocusedReportSections({ sections }: { sections: ReportSection[] }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
@@ -97,8 +101,8 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
     .map((section) => ({ section, body: visibleLines(section, locale, timingLines) }))
     .filter((item) => item.body.length > 0);
 
-  // English customers never see a translated Bazi-basis section. The English report is a separate plain-language product.
-  const mainSections = prepared.filter(({ section }) => section.key !== "basis");
+  // English keeps plain topic guidance (for example “What matters for work”) but drops legacy translated chart-basis cards.
+  const mainSections = prepared.filter(({ section }) => locale !== "en" ? section.key !== "basis" : !isLegacyEnglishBasis(section));
   const basis = locale === "en" ? null : prepared.find(({ section }) => section.key === "basis") ?? null;
 
   return (
@@ -131,7 +135,7 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
       <div className="space-y-4 p-5 sm:p-7">
         {mainSections.map(({ section, body }, index) => {
           const ornament = REPORT_ORNAMENTS[index % REPORT_ORNAMENTS.length];
-          const localizedTitle = SECTION_TITLES[locale][section.key] ?? section.title;
+          const localizedTitle = locale === "en" ? (section.title || SECTION_TITLES.en[section.key]) : (SECTION_TITLES[locale][section.key] ?? section.title);
           return (
             <article key={`${section.key}-${index}`} className="zhaowu-report-section rounded-xl border border-line bg-paper/70 p-4 sm:p-5">
               <img src={ornament.src} alt="" aria-hidden className="zhaowu-report-ornament" onError={(event) => { event.currentTarget.hidden = true; }} />
