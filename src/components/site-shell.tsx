@@ -5,7 +5,7 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/site-stats";
-import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
+import { galleryPublicUrl, listPublicGalleryAssets, type GalleryAsset } from "@/lib/gallery-assets";
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
 
 const EMPTY_STATS: PublicSiteStats = {
@@ -28,6 +28,17 @@ async function loadWeeklyWallpaper(): Promise<string | null> {
   } catch {
     return null;
   }
+}
+
+function chooseGalleryWallpaper(assets: GalleryAsset[], now = new Date()): GalleryAsset | null {
+  const enabled = assets.filter((asset) => asset.enabled);
+  if (!enabled.length) return null;
+  const primary = enabled.find((asset) => asset.is_primary);
+  if (primary) return primary;
+  const start = Date.UTC(now.getFullYear(), 0, 0);
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const dayOfYear = Math.floor((today - start) / 86_400_000);
+  return enabled[Math.abs(dayOfYear) % enabled.length] ?? enabled[0] ?? null;
 }
 
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -53,11 +64,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
     const loadBackground = () => {
       void (async () => {
         try {
-          const assets = await listPublicBackgrounds();
+          const assets = await listPublicGalleryAssets("background");
           if (!alive) return;
-          const selected = chooseDailyBackground(assets);
+          const selected = chooseGalleryWallpaper(assets);
           if (selected) {
-            setBackgroundUrl(backgroundPublicUrl(selected.storage_path));
+            setBackgroundUrl(galleryPublicUrl(selected.storage_path, selected.bucket_id));
             return;
           }
         } catch {
@@ -72,9 +83,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
     loadBackground();
     window.addEventListener("zhaowu-background-change", loadBackground);
+    window.addEventListener("zhaowu-gallery-change", loadBackground);
     return () => {
       alive = false;
       window.removeEventListener("zhaowu-background-change", loadBackground);
+      window.removeEventListener("zhaowu-gallery-change", loadBackground);
     };
   }, []);
 
@@ -105,6 +118,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
               {user ? (
                 <Link to="/account" className={`hidden rounded-full px-2 py-2 min-[380px]:inline-flex ${pathname === "/account" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
                   {user.isOwner ? t("navAdmin") : t("navMine")}
+                </Link>
+              ) : null}
+              {user?.isOwner ? (
+                <Link
+                  to="/gallery"
+                  aria-label={locale === "en" ? "Open Gallery" : locale === "zh-Hans" ? "打开图库" : "打開圖庫"}
+                  className={`inline-flex h-9 items-center rounded-full border px-2.5 text-[11px] font-medium shadow-sm ${pathname === "/gallery" ? "border-cinnabar/50 bg-cinnabar text-cream" : "border-line bg-cream/95 text-ink-soft"}`}
+                >
+                  {locale === "en" ? "Gallery" : locale === "zh-Hans" ? "图库" : "圖庫"}
                 </Link>
               ) : null}
               <div
@@ -145,13 +167,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
       ) : null}
 
       <div className={isLogin ? "relative z-10 min-h-dvh" : "zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8"}>
-        {user?.isOwner && pathname === "/account" ? (
-          <div className="mb-4 flex justify-end">
-            <Link to="/gallery" className="inline-flex min-h-10 items-center rounded-full border border-line bg-cream/95 px-4 text-xs font-medium text-ink-soft shadow-sm">
-              {locale === "en" ? "Open Gallery" : locale === "zh-Hans" ? "打开图库" : "打開圖庫"}
-            </Link>
-          </div>
-        ) : null}
         {children}
       </div>
 
