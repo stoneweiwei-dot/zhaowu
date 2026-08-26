@@ -15,6 +15,7 @@ import './palm-light-refinement.css';
 import './wallpaper-visibility-fix.css';
 import './green-dragon-guide.css';
 import './tea-guardian.css';
+import './landscape-paper.css';
 
 const router = createRouter({ routeTree });
 
