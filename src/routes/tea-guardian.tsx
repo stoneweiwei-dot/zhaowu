@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
+import { TeaGuardianImage } from "@/components/tea-guardian-image";
 import {
   matchTeaGuardians,
   quizComplete,
@@ -144,7 +145,7 @@ function TeaGuardianQuizPage() {
       {primary ? (
         <section className="seal-border overflow-hidden rounded-[1.5rem] bg-cream/95" aria-live="polite">
           <div className="grid sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-            <img src={primary.tea.image} alt={primary.tea.guardian[locale]} className="aspect-[9/16] h-full max-h-[38rem] w-full object-cover object-top" />
+            <TeaGuardianImage teaId={primary.tea.id} fallback={primary.tea.image} alt={primary.tea.guardian[locale]} className="aspect-[9/16] h-full max-h-[38rem] w-full object-cover object-top" />
             <div className="p-5 sm:p-7">
               <p className="text-[10px] tracking-[0.24em] text-cinnabar">{result ? copy.result : copy.tasteResult}</p>
               <h2 className="mt-2 font-display text-3xl text-ink">{primary.tea.guardian[locale]}</h2>
@@ -162,7 +163,7 @@ function TeaGuardianQuizPage() {
                 <div className="mt-3 grid grid-cols-2 gap-3">
                   {matches.slice(1).map((match) => (
                     <div key={match.tea.id} className="rounded-xl border border-line bg-paper/55 p-2.5">
-                      <img src={match.tea.image} alt="" aria-hidden loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover object-top" />
+                      <TeaGuardianImage teaId={match.tea.id} fallback={match.tea.image} alt={match.tea.guardian[locale]} className="aspect-[4/3] w-full rounded-lg object-cover object-top" />
                       <p className="mt-2 font-display text-sm text-ink">{match.tea.tea[locale]}</p>
                       <p className="text-[11px] text-ink-mute">{match.score}%</p>
                     </div>
