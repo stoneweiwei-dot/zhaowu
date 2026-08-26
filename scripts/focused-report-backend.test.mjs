@@ -45,20 +45,25 @@ test("website keeps the app concept base while specialist cards use the generate
   assert.match(intro, /LOTUS_BLOOM_MS = 2200/);
 });
 
-test("owner-selected wallpaper remains visible on home, account and login", async () => {
+test("owner-selected wallpaper remains visible without forcing pale white content cards", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const main = await source("src/main.tsx");
   const wallpaper = await source("src/wallpaper-visibility-fix.css");
   const landscape = await source("src/landscape-paper.css");
+  const rich = await source("src/production-wallpaper-rich.css");
 
   assert.match(shell, /backgroundUrl \? "zhaowu-has-wallpaper"/);
   assert.match(shell, /className=\{`zhaowu-site-wallpaper \$\{isLogin \? "is-login" : ""\}`\}/);
   assert.doesNotMatch(shell, /backgroundUrl && !isLogin \?/);
   assert.match(main, /wallpaper-visibility-fix\.css/);
   assert.match(main, /landscape-paper\.css/);
-  assert.ok(main.indexOf("wallpaper-visibility-fix.css") < main.indexOf("landscape-paper.css"));
+  assert.match(main, /production-wallpaper-rich\.css/);
+  assert.ok(main.indexOf("wallpaper-visibility-fix.css") < main.indexOf("production-wallpaper-rich.css"));
   assert.match(wallpaper, /\.zhaowu-has-wallpaper \.zhaowu-login-card/);
-  assert.match(wallpaper, /background-color:\s*rgba\(\s*255,\s*252,\s*244,\s*\.88\s*\)/);
+  assert.match(wallpaper, /background:\s*rgba\(255,\s*252,\s*244,\s*\.60\)\s*!important/);
   assert.match(landscape, /\.zhaowu-site-wallpaper[\s\S]*display:\s*block\s*!important/);
-  assert.match(landscape, /background:\s*rgba\(255,\s*252,\s*244,\s*\.88\)\s*!important/);
+  assert.match(rich, /\.zhaowu-has-wallpaper \.zhaowu-app-frame \.zhaowu-home-hero/);
+  assert.match(rich, /linear-gradient\(150deg, rgba\(18, 55, 45, \.94\)/);
+  assert.match(rich, /\.zhaowu-has-wallpaper \.zhaowu-app-frame \.seal-border:not\(\.zhaowu-focused-report\)/);
+  assert.match(rich, /rgba\(238, 220, 184, \.88\)/);
 });
