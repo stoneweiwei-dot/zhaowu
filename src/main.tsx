@@ -13,6 +13,7 @@ import './focused-report.css';
 import './login-breathing.css';
 import './palm-light-refinement.css';
 import './wallpaper-visibility-fix.css';
+import './green-dragon-guide.css';
 
 const router = createRouter({ routeTree });
 
