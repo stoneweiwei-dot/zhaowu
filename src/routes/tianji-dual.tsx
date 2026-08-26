@@ -1,9 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { calculateDualDestiny, buildDualFusion, type DualDestinyResult, type DualDirection } from "@/lib/dual-destiny";
+import { searchCities } from "@/lib/actions";
 import { toLunar } from "@/lib/bazi/calendar";
+import { localizeCityHit, timezoneOffsetHours } from "@/lib/bazi/cities";
+import { toTrueSolar } from "@/lib/bazi/solar-time";
+import type { CityHit } from "@/lib/bazi/types";
 import { presentLunarLabel, presentPalmPalace } from "@/lib/palm/standalone-presentation";
-import { type TianjiCalendar, type TianjiPalace } from "@/lib/tianji-xinggong";
+import { calculateTianjiXinggong, TIANJI_MONTHS, type TianjiCalendar, type TianjiPalace } from "@/lib/tianji-xinggong";
 import { useI18n, type Locale } from "@/lib/i18n";
 import "@/tianji-dual.css";
 
@@ -11,23 +15,24 @@ export const Route = createFileRoute("/tianji-dual")({ component: TianjiDualPage
 
 const PALACES: TianjiPalace[] = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 const HOURS = Array.from({ length: 24 }, (_, index) => index);
+const MINUTES = Array.from({ length: 60 }, (_, index) => index);
 const SOLAR_YEARS = Array.from({ length: 201 }, (_, index) => 2100 - index);
 const LUNAR_YEARS = Array.from({ length: 200 }, (_, index) => 2099 - index);
 
 const COPY = {
   "zh-Hant": {
-    kicker: "昭梧 · 天機雙軌命盤 V3.0", title: "一次輸入，同看外在格局與內在底色", lead: "天機星宮讀你如何在現實中立足；達摩一掌經讀反覆驅動選擇的內在習氣。兩套算法各自獨立，只共用出生資料。",
-    back: "返回昭梧", input: "出生資料", solar: "西曆", lunar: "農曆", year: "年", month: "月", day: "日", hour: "時", direction: "一掌經順逆", male: "男命 · 順行", female: "女命 · 逆行", directionHint: "此項只決定一掌經的傳統順逆算法，不用來判定性別認同。", auto: "農曆、中氣與時辰由系統自動換算", submit: "啟動雙軌命盤", invalid: "出生資料無法換算，請檢查日期後重試。", privacy: "本機即時計算 · 不登入 · 不保存出生資料",
+    kicker: "昭梧 · 雙軌性格分析", title: "一次填寫，看看你給人的感覺和做決定的習慣", lead: "填入出生日期、準確時間和出生地。系統會先把出生時間校正好，再從兩個角度用白話整理你的性格與選擇習慣。",
+    back: "返回昭梧", input: "出生資料", solar: "西曆", lunar: "農曆", year: "年", month: "月", day: "日", time: "出生時間", hour: "時", minute: "分", city: "出生地", cityPlaceholder: "輸入城市或國家", popularCities: "常用城市", direction: "傳統排法", male: "男命 · 順排", female: "女命 · 逆排", directionHint: "這只影響其中一項傳統計算，不代表性別認同。", auto: "系統會按出生地自動處理當地時區、夏令時與真太陽時，你不用自己換算。", submit: "開始分析", invalid: "出生資料無法換算，請檢查日期、時間與出生地後重試。", cityRequired: "請先選擇出生城市與國家，系統需要出生地來校正時間。", privacy: "出生時間在本機自動校正 · 不登入 · 不保存出生資料", corrected: "已按出生地校正", shift: "真太陽時偏移",
     result: "雙軌結果", outer: "軌道 A · 外在立足", inner: "軌道 B · 內在底色", palace: "命宮", star: "星曜", character: "性格主軸", four: "時 · 日 · 月 · 年四宮", lifePalace: "今生命宮", fusion: "融合星評", advice: "正向寄語", correction: "中氣修正", unchanged: "未過中氣，沿用原農曆月份。", advanced: "已過中氣，查表月份自動順延。", boundary: "兩套結果屬傳統文化與象徵性解讀，用於整理性格慣性，不是可驗證的前世事實，也不替代現實決策。",
   },
   "zh-Hans": {
-    kicker: "昭梧 · 天机双轨命盘 V3.0", title: "一次输入，同看外在格局与内在底色", lead: "天机星宫读你如何在现实中立足；达摩一掌经读反复驱动选择的内在习气。两套算法各自独立，只共用出生资料。",
-    back: "返回昭梧", input: "出生资料", solar: "西历", lunar: "农历", year: "年", month: "月", day: "日", hour: "时", direction: "一掌经顺逆", male: "男命 · 顺行", female: "女命 · 逆行", directionHint: "此项只决定一掌经的传统顺逆算法，不用来判定性别认同。", auto: "农历、中气与时辰由系统自动换算", submit: "启动双轨命盘", invalid: "出生资料无法换算，请检查日期后重试。", privacy: "本机即时计算 · 不登录 · 不保存出生资料",
+    kicker: "昭梧 · 双轨性格分析", title: "一次填写，看看你给人的感觉和做决定的习惯", lead: "填入出生日期、准确时间和出生地。系统会先把出生时间校正好，再从两个角度用白话整理你的性格与选择习惯。",
+    back: "返回昭梧", input: "出生资料", solar: "西历", lunar: "农历", year: "年", month: "月", day: "日", time: "出生时间", hour: "时", minute: "分", city: "出生地", cityPlaceholder: "输入城市或国家", popularCities: "常用城市", direction: "传统排法", male: "男命 · 顺排", female: "女命 · 逆排", directionHint: "这只影响其中一项传统计算，不代表性别认同。", auto: "系统会按出生地自动处理当地时区、夏令时和真太阳时，你不用自己换算。", submit: "开始分析", invalid: "出生资料无法换算，请检查日期、时间和出生地后重试。", cityRequired: "请先选择出生城市和国家，系统需要出生地来校正时间。", privacy: "出生时间在本机自动校正 · 不登录 · 不保存出生资料", corrected: "已按出生地校正", shift: "真太阳时偏移",
     result: "双轨结果", outer: "轨道 A · 外在立足", inner: "轨道 B · 内在底色", palace: "命宫", star: "星曜", character: "性格主轴", four: "时 · 日 · 月 · 年四宫", lifePalace: "今生命宫", fusion: "融合星评", advice: "正向寄语", correction: "中气修正", unchanged: "未过中气，沿用原农历月份。", advanced: "已过中气，查表月份自动顺延。", boundary: "两套结果属传统文化与象征性解读，用于整理性格惯性，不是可验证的前世事实，也不替代现实决策。",
   },
   en: {
-    kicker: "ZHAOWU · DUAL DESTINY ENGINE V3.0", title: "One input, two views of character", lead: "Tianji Star Palace reads how you establish yourself outwardly. Dharma Palm reads the inner habit that repeatedly drives your choices. The calculations remain independent and share only the birth data.",
-    back: "Back to Zhaowu", input: "Birth details", solar: "Gregorian", lunar: "Lunar", year: "Year", month: "Month", day: "Day", hour: "Hour", direction: "Dharma Palm sequence", male: "Male chart · forward", female: "Female chart · reverse", directionHint: "This selects the traditional sequence only; it does not define gender identity.", auto: "Lunar date, middle qi and hour branch are resolved automatically", submit: "Run both charts", invalid: "The birth data could not be converted. Check the date and try again.", privacy: "Calculated on this device · no login · birth data is not saved",
+    kicker: "ZHAOWU · TWO-ANGLE CHARACTER READING", title: "Enter your details once and see two sides of how you operate", lead: "Enter your birth date, exact time and birthplace. The system adjusts the birth time first, then gives you a plain-English view of how you come across and the habits that tend to drive your choices.",
+    back: "Back to Zhaowu", input: "Birth details", solar: "Gregorian", lunar: "Lunar", year: "Year", month: "Month", day: "Day", time: "Birth time", hour: "Hour", minute: "Minute", city: "Birthplace", cityPlaceholder: "Type a city or country", popularCities: "Common cities", direction: "Traditional sequence", male: "Male chart · forward", female: "Female chart · reverse", directionHint: "This only changes one traditional calculation; it does not define gender identity.", auto: "The system automatically adjusts for the birthplace time zone, daylight saving and true solar time. You do not need to convert anything yourself.", submit: "Start analysis", invalid: "The birth details could not be converted. Check the date, time and birthplace and try again.", cityRequired: "Select the birth city and country first so the birth time can be adjusted correctly.", privacy: "Birth time is adjusted on this device · no login · birth data is not saved", corrected: "Birth time adjusted for", shift: "True-solar adjustment",
     result: "Dual result", outer: "Track A · outward stance", inner: "Track B · inner pattern", palace: "Life Palace", star: "Star", character: "Character axis", four: "Hour · day · month · year palaces", lifePalace: "Present-life palace", fusion: "Integrated reading", advice: "Constructive direction", correction: "Middle-qi correction", unchanged: "Before middle qi; the original lunar month was kept.", advanced: "After middle qi; the lookup month advanced automatically.", boundary: "Both results are traditional symbolic frameworks for organising character patterns. They are not verifiable past-life facts and do not replace real-world decisions.",
   },
 } as const;
@@ -79,6 +84,104 @@ function getLunarMonths(year: number) {
   return [...found.values()].sort((a, b) => a.month - b.month || Number(a.isLeap) - Number(b.isLeap));
 }
 
+function zonedCivilInstant(city: CityHit, year: number, month: number, day: number, hour: number, minute: number) {
+  const wall = Date.UTC(year, month - 1, day, hour, minute, 0);
+  let instantMs = wall;
+  let offset = timezoneOffsetHours(city.timezone, new Date(instantMs));
+  for (let i = 0; i < 3; i += 1) {
+    const next = wall - offset * 3_600_000;
+    if (Math.abs(next - instantMs) < 1_000) {
+      instantMs = next;
+      break;
+    }
+    instantMs = next;
+    offset = timezoneOffsetHours(city.timezone, new Date(instantMs));
+  }
+  offset = timezoneOffsetHours(city.timezone, new Date(instantMs));
+  return { instant: new Date(instantMs), offsetHours: offset };
+}
+
+function formatClock(hour: number, minute: number) {
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+}
+
+function CityPicker({ locale, copy, value, onSelect, onClear }: { locale: Locale; copy: (typeof COPY)[Locale]; value: CityHit | null; onSelect: (city: CityHit) => void; onClear: () => void }) {
+  const [query, setQuery] = useState("");
+  const [hits, setHits] = useState<CityHit[]>([]);
+
+  useEffect(() => {
+    const localized = value ? localizeCityHit(value, locale) : null;
+    setQuery(localized?.display ?? "");
+    if (localized && value && localized.display !== value.display) onSelect(localized);
+  }, [locale, value?.display, value?.latitude, value?.longitude]);
+
+  useEffect(() => {
+    const q = query.trim();
+    if (value?.display === q || q.length < 2) {
+      setHits([]);
+      return;
+    }
+    let alive = true;
+    const timer = window.setTimeout(() => {
+      void searchCities({ data: q })
+        .then((rows) => { if (alive) setHits(rows.map((city) => localizeCityHit(city, locale))); })
+        .catch(() => { if (alive) setHits([]); });
+    }, 220);
+    return () => {
+      alive = false;
+      window.clearTimeout(timer);
+    };
+  }, [locale, query, value?.display]);
+
+  return (
+    <div className="relative mt-4">
+      <label htmlFor="dual-birth-city" className="mb-2 block text-xs text-[#cbbbd6]">{copy.city}</label>
+      <input
+        id="dual-birth-city"
+        value={query}
+        placeholder={copy.cityPlaceholder}
+        autoComplete="off"
+        aria-autocomplete="list"
+        aria-controls="dual-birth-city-results"
+        aria-expanded={hits.length > 0}
+        className="h-[3.15rem] w-full rounded-[.9rem] border border-white/20 bg-black/25 px-3 text-base text-white outline-none placeholder:text-white/35 focus:border-[#dfbd7c]"
+        onFocus={() => {
+          if (value || query.trim().length >= 2) return;
+          void searchCities({ data: "" })
+            .then((rows) => setHits(rows.map((city) => localizeCityHit(city, locale))))
+            .catch(() => setHits([]));
+        }}
+        onChange={(event) => {
+          setQuery(event.target.value);
+          if (value) onClear();
+        }}
+      />
+      {hits.length ? (
+        <div id="dual-birth-city-results" role="listbox" className="absolute z-40 mt-1 max-h-64 w-full overflow-auto rounded-[.9rem] border border-white/15 bg-[#160b24] shadow-2xl">
+          {query.trim().length < 2 ? <p className="border-b border-white/10 px-3 py-2 text-[.68rem] tracking-[.12em] text-white/45">{copy.popularCities}</p> : null}
+          {hits.map((city) => (
+            <button
+              key={`${city.display}-${city.latitude}-${city.longitude}`}
+              type="button"
+              role="option"
+              aria-selected={value?.display === city.display}
+              className="block w-full border-b border-white/10 px-3 py-3 text-left last:border-0 hover:bg-white/5"
+              onClick={() => {
+                setQuery(city.display);
+                setHits([]);
+                onSelect(city);
+              }}
+            >
+              <span className="block text-sm text-white">{city.display}</span>
+              <span className="mt-1 block text-[.68rem] text-white/45">{city.timezone}</span>
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function Orbit({ active, centre, locale, reverse = false }: { active: string; centre: string; locale: Locale; reverse?: boolean }) {
   return (
     <div className={`dual-orbit${reverse ? " is-reverse" : ""}${locale === "en" ? " is-en" : ""}`} aria-hidden="true">
@@ -101,10 +204,13 @@ function TianjiDualPage() {
   const [month, setMonth] = useState(1);
   const [day, setDay] = useState(1);
   const [hour, setHour] = useState(12);
+  const [minute, setMinute] = useState(0);
+  const [birthCity, setBirthCity] = useState<CityHit | null>(null);
   const [lunarMonthKey, setLunarMonthKey] = useState("1:0");
   const [direction, setDirection] = useState<DualDirection>("male");
   const [result, setResult] = useState<DualDestinyResult | null>(null);
   const [error, setError] = useState("");
+  const [timeNote, setTimeNote] = useState("");
   const resultRef = useRef<HTMLElement>(null);
   const lunarMonths = useMemo(() => getLunarMonths(year), [year]);
   const selectedLunarMonth = lunarMonths.find((item) => `${item.month}:${Number(item.isLeap)}` === lunarMonthKey);
@@ -117,14 +223,58 @@ function TianjiDualPage() {
     if (lunarMonths[0]) setLunarMonthKey(`${lunarMonths[0].month}:${Number(lunarMonths[0].isLeap)}`);
   }, [calendar, lunarMonthKey, lunarMonths]);
 
-  function clear() { setResult(null); setError(""); }
+  function clear() { setResult(null); setError(""); setTimeNote(""); }
   function calculate() {
+    if (!birthCity) {
+      setResult(null);
+      setTimeNote("");
+      setError(copy.cityRequired);
+      return;
+    }
     try {
       const [lunarMonth, leap] = lunarMonthKey.split(":").map(Number);
-      const next = calculateDualDestiny({ calendar, year, month: calendar === "solar" ? month : lunarMonth, day, hour, isLeap: calendar === "lunar" && leap === 1, direction });
-      setResult(next); setError("");
+      const raw = { calendar, year, month: calendar === "solar" ? month : lunarMonth, day, hour, isLeap: calendar === "lunar" && leap === 1, direction } as const;
+      const civilResult = calculateDualDestiny(raw);
+      const solarDate = civilResult.tianji.solar;
+      const local = zonedCivilInstant(birthCity, solarDate.year, solarDate.month, solarDate.day, hour, minute);
+      const trueSolar = toTrueSolar({
+        year: solarDate.year,
+        month: solarDate.month,
+        day: solarDate.day,
+        hour,
+        minute,
+        longitude: birthCity.longitude,
+        tzOffsetHours: local.offsetHours,
+      });
+      const correctedBase = calculateDualDestiny({
+        calendar: "solar",
+        year: trueSolar.year,
+        month: trueSolar.month,
+        day: trueSolar.day,
+        hour: trueSolar.hour,
+        isLeap: false,
+        direction,
+      });
+      const actualAfterMiddleQi = Boolean(correctedBase.tianji.middleQi && local.instant.getTime() >= correctedBase.tianji.middleQi.at.getTime());
+      const correctedMonth = TIANJI_MONTHS[correctedBase.tianji.lunar.month - 1]!;
+      const correctedTianji = calculateTianjiXinggong(correctedMonth, correctedBase.tianji.hourBranch, actualAfterMiddleQi);
+      const next: DualDestinyResult = {
+        ...correctedBase,
+        tianji: {
+          ...correctedBase.tianji,
+          result: correctedTianji,
+        },
+      };
+      const sign = trueSolar.shiftMinutes > 0 ? "+" : "";
+      setTimeNote(`${copy.corrected} ${birthCity.display} · ${formatClock(trueSolar.hour, trueSolar.minute)} · ${copy.shift} ${sign}${trueSolar.shiftMinutes} min`);
+      setResult(next);
+      setError("");
       window.setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
-    } catch { setResult(null); setError(copy.invalid); }
+    } catch {
+      setResult(null);
+      setTimeNote("");
+      setError(copy.invalid);
+    }
   }
 
   const latest = result?.palm.latest ? presentPalmPalace(result.palm.latest, locale) : null;
@@ -149,10 +299,12 @@ function TianjiDualPage() {
             <label><span>{copy.year}</span><select value={year} onChange={(event) => { setYear(Number(event.target.value)); clear(); }}>{(calendar === "solar" ? SOLAR_YEARS : LUNAR_YEARS).map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
             <label><span>{copy.month}</span>{calendar === "solar" ? <select value={month} onChange={(event) => { setMonth(Number(event.target.value)); clear(); }}>{Array.from({ length: 12 }, (_, i) => i + 1).map((value) => <option key={value} value={value}>{value}</option>)}</select> : <select value={lunarMonthKey} onChange={(event) => { setLunarMonthKey(event.target.value); clear(); }}>{lunarMonths.map((value) => <option key={`${value.month}:${Number(value.isLeap)}`} value={`${value.month}:${Number(value.isLeap)}`}>{lunarMonthLabel(value.month, value.isLeap, locale)}</option>)}</select>}</label>
             <label><span>{copy.day}</span><select value={day} onChange={(event) => { setDay(Number(event.target.value)); clear(); }}>{Array.from({ length: maxDay }, (_, i) => i + 1).map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
-            <label><span>{copy.hour}</span><select value={hour} onChange={(event) => { setHour(Number(event.target.value)); clear(); }}>{HOURS.map((value) => <option key={value} value={value}>{String(value).padStart(2, "0")}:00</option>)}</select></label>
+            <label><span>{copy.time}</span><span className="grid grid-cols-2 gap-2"><select aria-label={copy.hour} value={hour} onChange={(event) => { setHour(Number(event.target.value)); clear(); }}>{HOURS.map((value) => <option key={value} value={value}>{String(value).padStart(2, "0")}</option>)}</select><select aria-label={copy.minute} value={minute} onChange={(event) => { setMinute(Number(event.target.value)); clear(); }}>{MINUTES.map((value) => <option key={value} value={value}>{String(value).padStart(2, "0")}</option>)}</select></span></label>
           </div>
+          <CityPicker locale={locale} copy={copy} value={birthCity} onSelect={(city) => { setBirthCity(city); clear(); }} onClear={() => { setBirthCity(null); clear(); }} />
           <fieldset className="dual-direction"><legend>{copy.direction}</legend><div><button type="button" aria-pressed={direction === "male"} onClick={() => { setDirection("male"); clear(); }}>{copy.male}</button><button type="button" aria-pressed={direction === "female"} onClick={() => { setDirection("female"); clear(); }}>{copy.female}</button></div><p>{copy.directionHint}</p></fieldset>
           <div className="dual-auto"><i>✓</i><span>{copy.auto}</span></div>
+          {timeNote ? <p className="mt-2 text-xs leading-5 text-[#b9ded8]">{timeNote}</p> : null}
           {error ? <p className="dual-error" role="alert">{error}</p> : null}
           <button className="dual-submit" type="button" onClick={calculate}>{copy.submit}</button>
           <p className="dual-privacy">{copy.privacy}</p>
