@@ -24,6 +24,7 @@ import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
 import { ReportDragonSticker } from "@/components/report-dragon-sticker";
 import { generateDecreeImage } from "@/lib/report/decree-image";
 import type { ReportSection } from "@/lib/report/focused-report";
+import { TeaGuardianReport } from "@/components/tea-guardian-report";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -511,6 +512,8 @@ function AccountPage() {
                             ))}
                           </div>
                         ) : text ? <div className="whitespace-pre-wrap">{text}</div> : !displayAnswer ? <p className="text-ink-mute">{c.noReadable}</p> : null}
+
+                        {snapshot?.chart && (sections.length || text) ? <div className="mt-5"><TeaGuardianReport chart={snapshot.chart} /></div> : null}
 
                         {user.isOwner ? <button type="button" className="mt-5 text-xs text-cinnabar" onClick={async () => {
                           if (!window.confirm(c.deleteRecordConfirm)) return;

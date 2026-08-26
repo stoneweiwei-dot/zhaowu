@@ -146,6 +146,21 @@
   box-shadow: 0 0 0 1.2rem rgba(188,135,226,.035), 0 0 0 2.4rem rgba(224,193,138,.02);
 }
 
+.zhaowu-specialist-card.is-tea {
+  border: 1px solid rgba(132, 86, 39, .34);
+  color: #342a22;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(158, 99, 52, .15), transparent 28%),
+    repeating-linear-gradient(7deg, rgba(91, 65, 37, .017) 0 1px, transparent 1px 7px),
+    linear-gradient(150deg, #f7efdd 0%, #dfcba8 100%);
+}
+
+.zhaowu-specialist-card.is-tea::before { border: 1px solid rgba(132, 86, 39, .16); }
+.zhaowu-specialist-card.is-tea::after {
+  border: 1px solid rgba(130, 84, 43, .12);
+  box-shadow: 0 0 0 1.2rem rgba(133, 88, 47, .025), 0 0 0 2.4rem rgba(71, 112, 82, .022);
+}
+
 .zhaowu-card-number {
   position: absolute;
   right: .9rem;
@@ -159,6 +174,7 @@
 
 .is-palm .zhaowu-card-number { color: rgba(52, 123, 105, .055); }
 .is-tianji .zhaowu-card-number { color: rgba(224, 193, 138, .075); }
+.is-tea .zhaowu-card-number { color: rgba(109, 70, 36, .07); }
 
 .zhaowu-specialist-mark {
   position: absolute;
@@ -182,6 +198,16 @@
   filter: saturate(.96) brightness(1.03) drop-shadow(0 12px 24px rgba(6, 1, 12, .26));
 }
 
+.zhaowu-specialist-mark--tea {
+  right: .4rem;
+  top: 2.7rem;
+  width: 9rem;
+  height: 11.5rem;
+  opacity: .7;
+  object-fit: contain;
+  filter: sepia(.08) saturate(.82) drop-shadow(0 10px 18px rgba(67, 43, 22, .14));
+}
+
 .zhaowu-specialist-content {
   position: relative;
   z-index: 2;
@@ -197,6 +223,7 @@
 
 .is-palm .zhaowu-specialist-eyebrow { color: #3b8777; }
 .is-tianji .zhaowu-specialist-eyebrow { color: #dfc592; }
+.is-tea .zhaowu-specialist-eyebrow { color: #87552f; }
 
 .zhaowu-specialist-card h3 {
   margin-top: .72rem;
@@ -208,6 +235,7 @@
 
 .is-palm h3 { color: #272823; }
 .is-tianji h3 { color: #fbf6ff; }
+.is-tea h3 { color: #302821; }
 
 .zhaowu-specialist-desc {
   margin-top: .72rem;
@@ -218,6 +246,7 @@
 
 .is-palm .zhaowu-specialist-desc { color: #645f56; }
 .is-tianji .zhaowu-specialist-desc { color: #d3c4de; }
+.is-tea .zhaowu-specialist-desc { color: #665c51; }
 
 .zhaowu-specialist-points {
   position: relative;
@@ -250,6 +279,7 @@
 
 .is-palm .zhaowu-specialist-points { color: #7b674e; }
 .is-tianji .zhaowu-specialist-points { color: #c8b598; }
+.is-tea .zhaowu-specialist-points { color: #745d47; }
 
 .zhaowu-specialist-meta {
   display: flex;
@@ -270,6 +300,8 @@
 .is-palm .zhaowu-specialist-meta span { background: rgba(139,113,80,.55); }
 .is-tianji .zhaowu-specialist-meta { color: #ad9bbd; }
 .is-tianji .zhaowu-specialist-meta span { background: rgba(216,188,136,.5); }
+.is-tea .zhaowu-specialist-meta { color: #816548; }
+.is-tea .zhaowu-specialist-meta span { background: rgba(129,101,72,.55); }
 
 .zhaowu-specialist-action {
   position: relative;
@@ -303,6 +335,13 @@
   color: #26152f;
   background: linear-gradient(180deg, #efd9ad, #cda46e);
   box-shadow: 0 11px 28px rgba(4, 1, 8, .28), inset 0 1px rgba(255,255,255,.4);
+}
+
+.is-tea-action {
+  border: 1px solid rgba(102, 62, 32, .35);
+  color: #fff9eb;
+  background: linear-gradient(180deg, #8f5836, #6d402b);
+  box-shadow: 0 11px 26px rgba(76, 45, 23, .17), inset 0 1px rgba(255,255,255,.18);
 }
 
 @media (max-width: 760px) {

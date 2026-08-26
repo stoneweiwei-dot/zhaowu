@@ -25,6 +25,12 @@ function Home() {
         points: ["See how you usually come across", "See the habits that repeat in your choices", "Birthplace differences are adjusted automatically"],
         meta: "Birth details entered once",
         button: "Start analysis",
+        teaEyebrow: "TASTE × CURRENT STATE × CHART",
+        teaTitle: "Tea Guardian · Seven-question match",
+        teaDesc: "Find a taste favourite and a best fit for right now. If a chart is available, add a separate chart-based tea guardian.",
+        teaPoints: ["16 original tea-guardian artworks", "Taste and chart scored separately", "No medical or generic element claims"],
+        teaMeta: "Seven questions · three answers",
+        teaButton: "Start tea guardian test",
       }
     : locale === "zh-Hans"
       ? {
@@ -37,6 +43,12 @@ function Home() {
           points: ["看你在人前通常怎么表现", "看你做决定时容易重复的习惯", "出生地不同，时间会自动校正"],
           meta: "出生资料只填一次",
           button: "开始分析",
+          teaEyebrow: "口味 × 当下状态 × 命盘",
+          teaTitle: "茶仙守护・七题评估",
+          teaDesc: "分别找出纯口味最爱、当下适合茶；若本次命盘已完成，再加入本命茶仙守护。",
+          teaPoints: ["16 张原创茶仙图", "口味与命理分开计算", "不做医疗或缺什么补什么"],
+          teaMeta: "七题 · 三个答案",
+          teaButton: "开始茶仙测验",
         }
       : {
           kicker: "昭梧 · 性格輔助工具",
@@ -48,6 +60,12 @@ function Home() {
           points: ["看你在人前通常怎麼表現", "看你做決定時容易重複的習慣", "出生地不同，時間會自動校正"],
           meta: "出生資料只填一次",
           button: "開始分析",
+          teaEyebrow: "口味 × 當下狀態 × 命盤",
+          teaTitle: "茶仙守護・七題評估",
+          teaDesc: "分別找出純口味最愛、當下適合茶；若本次命盤已完成，再加入本命茶仙守護。",
+          teaPoints: ["16 張原創茶仙圖", "口味與命理分開計算", "不做醫療或缺什麼補什麼"],
+          teaMeta: "七題 · 三個答案",
+          teaButton: "開始茶仙測驗",
         };
 
   return (
@@ -98,7 +116,7 @@ function Home() {
           <span>{toolsCopy.lead}</span>
         </header>
 
-        <div className="zhaowu-tools-grid is-single">
+        <div className="zhaowu-tools-grid">
           <article className="zhaowu-specialist-card is-tianji is-dual">
             <div className="zhaowu-card-number" aria-hidden>雙</div>
             <img src="/ornaments/generated/phoenix.webp" alt="" aria-hidden className="zhaowu-specialist-mark zhaowu-specialist-mark--palm zhaowu-specialist-mark--dual-palm" />
@@ -114,6 +132,23 @@ function Home() {
             </div>
             <Link to="/tianji-dual" className="zhaowu-specialist-action is-tianji-action">
               <span>{toolsCopy.button}</span><b aria-hidden>→</b>
+            </Link>
+          </article>
+
+          <article className="zhaowu-specialist-card is-tea">
+            <div className="zhaowu-card-number" aria-hidden>茶</div>
+            <img src="/tea-guardians/dahongpao.webp" alt="" aria-hidden className="zhaowu-specialist-mark zhaowu-specialist-mark--tea" loading="lazy" decoding="async" />
+            <div className="zhaowu-specialist-content">
+              <p className="zhaowu-specialist-eyebrow">{toolsCopy.teaEyebrow}</p>
+              <h3>{toolsCopy.teaTitle}</h3>
+              <p className="zhaowu-specialist-desc">{toolsCopy.teaDesc}</p>
+              <ul className="zhaowu-specialist-points">
+                {toolsCopy.teaPoints.map((point) => <li key={point}>{point}</li>)}
+              </ul>
+              <div className="zhaowu-specialist-meta"><span />{toolsCopy.teaMeta}</div>
+            </div>
+            <Link to="/tea-guardian" className="zhaowu-specialist-action is-tea-action">
+              <span>{toolsCopy.teaButton}</span><b aria-hidden>→</b>
             </Link>
           </article>
         </div>
