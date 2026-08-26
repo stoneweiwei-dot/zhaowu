@@ -12,7 +12,7 @@ import {
   type GalleryAsset,
 } from "@/lib/gallery-assets";
 
-const CATEGORIES = ["tea-guardian", "buddhist", "daoist", "guardian-beast", "auspicious-motif", "report-art", "background", "dragon-sticker"] as const;
+const CATEGORIES = ["tea-guardian", "reference-style", "buddhist", "daoist", "guardian-beast", "auspicious-motif", "report-art", "background", "dragon-sticker"] as const;
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -31,7 +31,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
 
   const copy = useMemo(() => ({
     title: tr(locale, "昭梧圖庫", "昭梧图库", "Zhaowu Gallery"),
-    lead: tr(locale, "神像、茶仙、背景與報告插圖統一放在 Supabase 圖庫。程式用「分類＋關聯鍵」找目前主圖。", "神像、茶仙、背景与报告插图统一放在 Supabase 图库。程序用“分类＋关联键”找当前主图。", "Store guardians, tea art, backgrounds and report images in one Supabase gallery. The app resolves the current primary image by category and asset key."),
+    lead: tr(locale, "所有神像、茶仙、風格參考圖、背景與報告插圖統一放在圖庫。新上傳只會進 zhaowu-gallery；舊背景庫只保留已匯入的歷史檔案。", "所有神像、茶仙、风格参考图、背景与报告插图统一放在图库。新上传只会进 zhaowu-gallery；旧背景库只保留已导入的历史文件。", "Store all guardians, tea art, style references, backgrounds and report images in one gallery. New uploads go only to zhaowu-gallery; the legacy background bucket is retained only for imported historical files."),
     category: tr(locale, "分類", "分类", "Category"),
     key: tr(locale, "關聯鍵", "关联键", "Asset key"),
     titleLabel: tr(locale, "圖片名稱（可選）", "图片名称（可选）", "Title (optional)"),
@@ -114,7 +114,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       {!visible.length ? <p className="mt-4 text-sm text-ink-mute">{copy.empty}</p> : null}
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {visible.map((asset) => <article key={asset.id} className="overflow-hidden rounded-xl border border-line bg-paper/35">
-          <img src={galleryPublicUrl(asset.storage_path)} alt={asset.title || asset.asset_key} loading="lazy" className="aspect-[4/3] w-full object-cover object-top" />
+          <img src={galleryPublicUrl(asset.storage_path, asset.bucket_id)} alt={asset.title || asset.asset_key} loading="lazy" className="aspect-[4/3] w-full object-cover object-top" />
           <div className="p-3">
             <div className="flex items-start justify-between gap-2"><div className="min-w-0"><p className="truncate text-sm font-medium">{asset.title || asset.asset_key}</p><p className="truncate text-[11px] text-ink-mute">{asset.category} / {asset.asset_key}</p></div>{asset.is_primary ? <span className="shrink-0 rounded-full bg-wood/10 px-2 py-1 text-[10px] text-wood">{copy.primaryNow}</span> : null}</div>
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
