@@ -1,0 +1,6 @@
+/* The legacy Background Library is no longer a customer-facing/owner-facing surface.
+ * Its files are indexed in /gallery; source storage remains untouched for rollback safety.
+ */
+.zhaowu-app-frame main.max-w-3xl > section:nth-of-type(2):has(input[type="file"][accept*="image"]) {
+  display: none !important;
+}
