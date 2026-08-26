@@ -117,3 +117,11 @@ export function buildCustomerReportSections(result: AnalysisResult): ReportSecti
   if (locale === "en") return composePlainEnglish(result);
   return compactChinese(composeFocusedReport(result), locale);
 }
+
+/** The persisted/exportable full-report text must match the same customer-facing sections shown on screen. */
+export function composeCustomerReportText(result: AnalysisResult): string {
+  return buildCustomerReportSections(result)
+    .map((item) => `${item.title}\n${item.body.join("\n")}`)
+    .join("\n\n")
+    .trim();
+}
