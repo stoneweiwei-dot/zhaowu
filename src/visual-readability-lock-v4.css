@@ -1,27 +1,50 @@
 /*
  * ZHAOWU owner readability lock — 2026-08-27.
- * Imported after approved-parchment-ui-v3.css.
- * Keeps the owner wallpaper visible in gutters while giving text-bearing surfaces enough paper density
- * to remain readable on bright, dark, or detailed background art.
+ * FINAL visual layer imported after approved-parchment-ui-v3.css.
+ * The owner wallpaper remains visible in gutters and between sections, while every text-bearing
+ * surface gets enough warm-paper density to remain readable on bright, dark, or detailed art.
  */
 
 :root {
-  --zv4-surface: rgba(249, 243, 232, .90);
-  --zv4-surface-strong: rgba(250, 245, 236, .96);
-  --zv4-field: rgba(255, 251, 244, .94);
+  --zv4-surface: rgba(249, 243, 232, .92);
+  --zv4-surface-strong: rgba(250, 245, 236, .97);
+  --zv4-field: rgba(255, 251, 244, .96);
   --zv4-ink: #29251f;
   --zv4-ink-soft: #494137;
   --zv4-line: rgba(139, 100, 57, .30);
 }
 
-/* Do not veil the owner wallpaper globally. The separation happens only where text is read. */
+/* Keep the owner wallpaper genuinely visible around the reading material. */
 .zhaowu-has-wallpaper .zhaowu-app-frame {
-  background: rgba(244, 233, 212, .04) !important;
+  background-color: rgba(244, 233, 212, .04) !important;
+  background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-/* Primary reading surfaces: warm paper, not glass. */
+/*
+ * IMPORTANT: these selectors intentionally match/exceed the specificity of the old
+ * wallpaper-visibility-fix.css rules. Source order alone was not enough because the old rules
+ * also used !important and a longer selector chain.
+ */
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-home-hero,
+.zhaowu-has-wallpaper .zhaowu-app-frame #analysisForm,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-result-card,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-decree-gallery,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-decree-couplet,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-generated-decree,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-tools-section,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card,
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-tool-card,
+.zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border {
+  background-color: var(--zv4-surface) !important;
+  background-image: linear-gradient(180deg, rgba(255, 252, 246, .20), rgba(239, 224, 198, .06)) !important;
+  border-color: var(--zv4-line) !important;
+  backdrop-filter: blur(1px) saturate(101%) !important;
+  -webkit-backdrop-filter: blur(1px) saturate(101%) !important;
+}
+
+/* Same readable material also applies when there is no owner wallpaper loaded yet. */
 .zhaowu-home-hero,
 #analysisForm,
 .zhaowu-result-card,
@@ -30,16 +53,15 @@
 .zhaowu-generated-decree,
 .zhaowu-tools-section,
 .zhaowu-specialist-card,
-.zhaowu-focused-report {
-  background:
-    linear-gradient(180deg, rgba(255, 252, 246, .22), rgba(239, 224, 198, .08)),
-    var(--zv4-surface) !important;
+.zhaowu-tool-card {
+  background-color: var(--zv4-surface) !important;
   border-color: var(--zv4-line) !important;
-  backdrop-filter: blur(1px) saturate(101%) !important;
-  -webkit-backdrop-filter: blur(1px) saturate(101%) !important;
 }
 
 /* Inputs and secondary text containers must stay legible over every wallpaper. */
+.zhaowu-has-wallpaper #analysisForm input,
+.zhaowu-has-wallpaper #analysisForm textarea,
+.zhaowu-has-wallpaper #analysisForm select,
 #analysisForm input,
 #analysisForm textarea,
 #analysisForm select,
@@ -51,30 +73,43 @@
   background-color: var(--zv4-field) !important;
 }
 
-/* Full report: explicitly extinguish the old purple skin and make each reading section opaque enough. */
+/* Full report: explicitly extinguish every legacy aubergine/purple wallpaper rule. */
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report,
 .zhaowu-focused-report {
   color: var(--zv4-ink) !important;
   background-color: var(--zv4-surface-strong) !important;
+  background-image: linear-gradient(180deg, rgba(255, 252, 246, .16), rgba(238, 222, 195, .05)) !important;
+  border-color: var(--zv4-line) !important;
+  backdrop-filter: blur(1px) saturate(101%) !important;
+  -webkit-backdrop-filter: blur(1px) saturate(101%) !important;
 }
 
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-visual,
+.zhaowu-focused-report .zhaowu-report-visual,
 .zhaowu-report-visual {
-  background:
+  background-color: rgba(249, 243, 232, .95) !important;
+  background-image:
     radial-gradient(circle at 82% 18%, rgba(172, 123, 65, .08), transparent 14rem),
-    linear-gradient(180deg, rgba(255, 251, 244, .20), rgba(235, 217, 187, .08)),
-    rgba(249, 243, 232, .93) !important;
+    linear-gradient(180deg, rgba(255, 251, 244, .18), rgba(235, 217, 187, .06)) !important;
+  background-size: auto !important;
 }
 
 .zhaowu-report-visual-shade {
-  background: linear-gradient(90deg, rgba(248, 240, 226, .18), rgba(255, 252, 246, .04), rgba(238, 223, 198, .13)) !important;
+  background: linear-gradient(90deg, rgba(248, 240, 226, .16), rgba(255, 252, 246, .03), rgba(238, 223, 198, .11)) !important;
 }
 
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-auspicious-rail,
+.zhaowu-focused-report .zhaowu-auspicious-rail,
 .zhaowu-auspicious-rail {
-  background: rgba(250, 245, 236, .96) !important;
+  background-color: rgba(250, 245, 236, .97) !important;
+  background-image: none !important;
   border-color: var(--zv4-line) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-auspicious-rail figure > span {
-  background: rgba(255, 251, 243, .98) !important;
+  background: rgba(255, 251, 243, .99) !important;
 }
 
 .zhaowu-auspicious-rail img {
@@ -82,11 +117,14 @@
   filter: none !important;
 }
 
+.zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section,
+.zhaowu-focused-report .zhaowu-report-section,
 .zhaowu-report-section {
-  background:
-    linear-gradient(180deg, rgba(255, 252, 246, .18), rgba(239, 224, 198, .05)),
-    rgba(250, 245, 236, .96) !important;
+  background-color: rgba(250, 245, 236, .97) !important;
+  background-image: linear-gradient(180deg, rgba(255, 252, 246, .14), rgba(239, 224, 198, .04)) !important;
   border-color: var(--zv4-line) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-report-section-heading h4,
@@ -128,24 +166,35 @@
     drop-shadow(0 5px 12px rgba(66, 47, 29, .18)) !important;
 }
 
+/* Login shares the owner wallpaper but never sacrifices text/input contrast. */
+.zhaowu-has-wallpaper .zhaowu-login-card,
+.zhaowu-has-wallpaper .stone-login-sheet {
+  background-color: rgba(250, 245, 236, .94) !important;
+  background-image: linear-gradient(180deg, rgba(255, 252, 246, .12), rgba(239, 224, 198, .04)) !important;
+  backdrop-filter: blur(1px) !important;
+  -webkit-backdrop-filter: blur(1px) !important;
+}
+
 @media (max-width: 430px) {
-  .zhaowu-home-hero,
-  #analysisForm,
-  .zhaowu-result-card,
-  .zhaowu-decree-gallery,
-  .zhaowu-decree-couplet,
-  .zhaowu-generated-decree,
-  .zhaowu-tools-section,
-  .zhaowu-specialist-card {
-    background-color: rgba(249, 243, 232, .92) !important;
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-home-hero,
+  .zhaowu-has-wallpaper .zhaowu-app-frame #analysisForm,
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-result-card,
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-decree-gallery,
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-decree-couplet,
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-generated-decree,
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-tools-section,
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card,
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-tool-card,
+  .zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border {
+    background-color: rgba(249, 243, 232, .94) !important;
   }
 
-  .zhaowu-focused-report {
-    background-color: rgba(250, 245, 236, .97) !important;
-  }
-
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report,
+  .zhaowu-focused-report,
+  .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section,
+  .zhaowu-focused-report .zhaowu-report-section,
   .zhaowu-report-section {
-    background-color: rgba(250, 245, 236, .97) !important;
+    background-color: rgba(250, 245, 236, .98) !important;
   }
 
   .zhaowu-random-emblem {
