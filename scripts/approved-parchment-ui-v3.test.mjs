@@ -29,3 +29,12 @@ test("wallpaper and cards use one warm translucent material family", async () =>
   assert.match(css, /--zv3-red:\s*#b4372b/);
   assert.match(css, /--zv3-jade:\s*#2f7465/);
 });
+
+test("standalone Tianji Xinggong uses the same parchment system with no purple skin", async () => {
+  const css = await read("src/tianji-xinggong.css");
+  assert.match(css, /--tj-bg:\s*#efe1c6/);
+  assert.match(css, /--tj-panel:\s*rgba\(247, 238, 220, \.34\)/);
+  assert.match(css, /\.tianji-calendar-tabs button\[aria-selected="true"\][\s\S]*#2f7465/);
+  assert.match(css, /\.tianji-button[\s\S]*#b4372b[\s\S]*#982d25/);
+  assert.doesNotMatch(css, /#10051d|#281041|#3a1853|#0e0619|#0c0515|#311446|#2b123d/);
+});

@@ -1,28 +1,29 @@
 .tianji-page {
-  --tj-bg: #10051d;
-  --tj-bg-2: #281041;
-  --tj-bg-3: #3a1853;
-  --tj-panel: rgba(31, 13, 52, 0.74);
-  --tj-panel-strong: rgba(20, 7, 35, 0.88);
-  --tj-line: rgba(232, 210, 255, 0.18);
-  --tj-line-strong: rgba(221, 190, 255, 0.34);
-  --tj-gold: #e0c18a;
-  --tj-gold-2: #bd8f58;
-  --tj-text: #fbf7ff;
-  --tj-muted: #cdbed9;
-  --tj-soft: #9f8eae;
+  --tj-bg: #efe1c6;
+  --tj-bg-2: #f4ead6;
+  --tj-bg-3: #e8d4b0;
+  --tj-panel: rgba(247, 238, 220, .34);
+  --tj-panel-strong: rgba(249, 241, 227, .54);
+  --tj-line: rgba(148, 109, 61, .28);
+  --tj-line-strong: rgba(148, 109, 61, .42);
+  --tj-gold: #9a713d;
+  --tj-gold-2: #b4372b;
+  --tj-text: #2b2924;
+  --tj-muted: #625b50;
+  --tj-soft: #8b806f;
   position: relative;
   overflow: hidden;
-  border-radius: 2rem;
   min-height: 760px;
+  border: 1px solid var(--tj-line);
+  border-radius: 2rem;
   isolation: isolate;
   color: var(--tj-text);
   background:
-    radial-gradient(circle at 12% 4%, rgba(174, 111, 224, 0.28), transparent 26%),
-    radial-gradient(circle at 93% 22%, rgba(89, 82, 190, 0.2), transparent 28%),
-    radial-gradient(circle at 48% 82%, rgba(119, 61, 154, 0.16), transparent 34%),
-    linear-gradient(155deg, #0e0619 0%, var(--tj-bg-2) 52%, #0c0515 100%);
-  box-shadow: 0 30px 84px rgba(26, 9, 42, 0.24);
+    radial-gradient(circle at 84% 16%, rgba(170, 121, 63, .07), transparent 24rem),
+    radial-gradient(circle at 9% 92%, rgba(47, 116, 101, .045), transparent 20rem),
+    linear-gradient(180deg, rgba(255, 249, 238, .18), rgba(238, 221, 192, .08)),
+    rgba(246, 236, 217, .28);
+  box-shadow: 0 14px 38px rgba(74, 54, 31, .065);
 }
 
 .tianji-page::before,
@@ -35,42 +36,42 @@
 
 .tianji-page::before {
   inset: -12%;
+  opacity: .15;
   background-image:
-    radial-gradient(circle, rgba(255, 255, 255, .85) 0 1px, transparent 1.35px),
-    radial-gradient(circle, rgba(224, 193, 138, .72) 0 1px, transparent 1.25px),
-    radial-gradient(circle, rgba(215, 188, 255, .52) 0 1px, transparent 1.25px);
-  background-size: 92px 92px, 137px 137px, 183px 183px;
-  background-position: 18px 20px, 62px 75px, 104px 26px;
-  opacity: .48;
-  animation: tj-stars 24s linear infinite;
+    radial-gradient(circle, rgba(142, 103, 58, .22) 0 1px, transparent 1.25px),
+    radial-gradient(circle, rgba(47, 116, 101, .16) 0 1px, transparent 1.2px);
+  background-size: 96px 96px, 151px 151px;
+  background-position: 18px 20px, 66px 78px;
+  animation: tj-stars 28s linear infinite;
 }
 
 .tianji-page::after {
-  width: 660px;
-  height: 660px;
-  right: -260px;
-  top: -250px;
+  width: 620px;
+  height: 620px;
+  right: -300px;
+  top: -280px;
+  border: 1px solid rgba(150, 111, 64, .09);
   border-radius: 50%;
-  border: 1px solid rgba(231, 208, 255, .08);
   box-shadow:
-    0 0 0 72px rgba(231, 208, 255, .022),
-    0 0 0 144px rgba(231, 208, 255, .016),
-    0 0 0 216px rgba(231, 208, 255, .01);
+    0 0 0 68px rgba(150, 111, 64, .015),
+    0 0 0 136px rgba(150, 111, 64, .010);
 }
 
 @keyframes tj-stars {
   from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(46px, 34px, 0); }
+  to { transform: translate3d(36px, 28px, 0); }
 }
 
 @keyframes tj-rise {
-  from { opacity: 0; transform: translateY(12px) scale(.99); }
+  from { opacity: 0; transform: translateY(10px) scale(.992); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .tianji-shell {
   position: relative;
   z-index: 1;
+  max-width: 1120px;
+  margin: 0 auto;
   padding: 1.25rem;
 }
 
@@ -83,9 +84,9 @@
 
 .tianji-kicker {
   color: var(--tj-gold);
-  letter-spacing: .24em;
-  font-size: .72rem;
+  font-size: .7rem;
   font-weight: 750;
+  letter-spacing: .22em;
   text-transform: uppercase;
 }
 
@@ -94,18 +95,19 @@
   min-height: 2.5rem;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, .14);
+  border: 1px solid var(--tj-line);
   border-radius: 999px;
   padding: 0 .9rem;
-  color: rgba(255, 255, 255, .7);
+  color: var(--tj-muted);
+  background: rgba(249, 241, 226, .36);
   font-size: .76rem;
   transition: border-color .18s ease, color .18s ease, background .18s ease;
 }
 
 .tianji-back:hover {
-  border-color: rgba(255, 255, 255, .32);
-  background: rgba(255, 255, 255, .04);
-  color: #fff;
+  border-color: rgba(180, 55, 43, .38);
+  color: #982d25;
+  background: rgba(250, 242, 227, .55);
 }
 
 .tianji-hero {
@@ -124,11 +126,11 @@
   display: inline-flex;
   align-items: center;
   min-height: 1.9rem;
-  border: 1px solid rgba(224, 193, 138, .24);
+  border: 1px solid rgba(150, 111, 64, .28);
   border-radius: 999px;
   padding: 0 .75rem;
-  color: #d9c59d;
-  background: rgba(224, 193, 138, .06);
+  color: var(--tj-gold);
+  background: rgba(247, 237, 217, .40);
   font-size: .67rem;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -137,20 +139,21 @@
 .tianji-title {
   margin-top: .75rem;
   max-width: 760px;
+  color: var(--tj-text);
   font-family: var(--font-display, serif);
   font-size: clamp(2.35rem, 7.5vw, 5.1rem);
   line-height: 1.02;
   letter-spacing: .055em;
   text-wrap: balance;
-  text-shadow: 0 10px 34px rgba(0, 0, 0, .2);
+  text-shadow: none;
 }
 
 .tianji-lead {
   margin-top: .9rem;
   max-width: 50rem;
   color: var(--tj-muted);
-  line-height: 1.82;
   font-size: .92rem;
+  line-height: 1.82;
 }
 
 .tianji-sigil {
@@ -160,14 +163,10 @@
   display: grid;
   place-items: center;
   justify-self: end;
-  border: 1px solid rgba(224, 193, 138, .2);
+  border: 1px solid rgba(150, 111, 64, .28);
   border-radius: 50%;
-  background:
-    radial-gradient(circle at center, rgba(224, 193, 138, .12), transparent 52%),
-    rgba(255, 255, 255, .015);
-  box-shadow:
-    0 0 0 18px rgba(224, 193, 138, .025),
-    inset 0 0 46px rgba(185, 118, 231, .09);
+  background: radial-gradient(circle at center, rgba(255, 249, 238, .72), rgba(239, 224, 198, .42) 68%);
+  box-shadow: 0 0 0 18px rgba(150, 111, 64, .018), inset 0 0 38px rgba(154, 113, 61, .035);
 }
 
 .tianji-sigil::before,
@@ -175,50 +174,43 @@
   content: "";
   position: absolute;
   inset: 16%;
+  border: 1px solid rgba(150, 111, 64, .17);
   border-radius: 50%;
-  border: 1px solid rgba(211, 185, 245, .11);
 }
 
-.tianji-sigil::after {
-  inset: 35%;
-  border-color: rgba(224, 193, 138, .24);
-}
-
+.tianji-sigil::after { inset: 35%; border-color: rgba(47, 116, 101, .18); }
 .tianji-sigil span,
 .tianji-sigil b {
   position: absolute;
-  color: rgba(232, 213, 247, .75);
+  color: var(--tj-gold);
   font-family: var(--font-display, serif);
   font-size: 1.25rem;
   font-weight: 600;
 }
-
 .tianji-sigil span { top: 22%; }
 .tianji-sigil b { bottom: 22%; }
-.tianji-sigil i { width: 1px; height: 46%; background: linear-gradient(transparent, rgba(224,193,138,.65), transparent); }
+.tianji-sigil i { width: 1px; height: 46%; background: linear-gradient(transparent, rgba(180,55,43,.45), transparent); }
 
 .tianji-grid {
-  margin-top: 1.4rem;
   display: grid;
   grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
   gap: 1rem;
   align-items: stretch;
+  margin-top: 1.4rem;
 }
 
 .tianji-panel {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--tj-line);
-  background:
-    linear-gradient(165deg, rgba(255, 255, 255, .035), transparent 38%),
-    var(--tj-panel);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
   border-radius: 1.55rem;
   padding: 1.15rem;
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, .05),
-    0 18px 50px rgba(5, 2, 10, .16);
+  background:
+    linear-gradient(165deg, rgba(255, 249, 238, .16), transparent 38%),
+    var(--tj-panel);
+  backdrop-filter: blur(1.5px) saturate(102%);
+  -webkit-backdrop-filter: blur(1.5px) saturate(102%);
+  box-shadow: 0 8px 24px rgba(74, 54, 31, .045);
 }
 
 .tianji-panel::after {
@@ -228,9 +220,9 @@
   height: 190px;
   right: -90px;
   bottom: -110px;
-  border: 1px solid rgba(224, 193, 138, .07);
+  border: 1px solid rgba(150, 111, 64, .08);
   border-radius: 50%;
-  box-shadow: 0 0 0 30px rgba(224,193,138,.018), 0 0 0 60px rgba(224,193,138,.012);
+  box-shadow: 0 0 0 30px rgba(150,111,64,.012), 0 0 0 60px rgba(150,111,64,.008);
   pointer-events: none;
 }
 
@@ -245,21 +237,22 @@
 
 .tianji-panel-heading > span {
   display: inline-grid;
-  place-items: center;
   width: 2rem;
   height: 2rem;
-  border: 1px solid rgba(224, 193, 138, .24);
+  place-items: center;
+  border: 1px solid rgba(150, 111, 64, .28);
   border-radius: 50%;
   color: var(--tj-gold);
-  background: rgba(224, 193, 138, .055);
+  background: rgba(247, 237, 217, .42);
   font-size: .66rem;
   letter-spacing: .08em;
 }
 
 .tianji-panel h2 {
+  color: var(--tj-text);
   font-size: 1.02rem;
-  letter-spacing: .08em;
   font-weight: 700;
+  letter-spacing: .08em;
 }
 
 .tianji-calendar-tabs {
@@ -268,10 +261,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: .4rem;
-  border: 1px solid rgba(231, 210, 255, .12);
+  border: 1px solid var(--tj-line);
   border-radius: 999px;
   padding: .3rem;
-  background: rgba(8, 3, 16, .36);
+  background: rgba(244, 231, 208, .28);
 }
 
 .tianji-calendar-tabs button {
@@ -284,123 +277,99 @@
 }
 
 .tianji-calendar-tabs button[aria-selected="true"] {
-  color: #25132f;
-  background: linear-gradient(180deg, #ead3a6, #c89d69);
-  box-shadow: 0 7px 20px rgba(0, 0, 0, .18);
+  color: #fffaf0;
+  background: #2f7465;
+  box-shadow: 0 7px 18px rgba(47, 116, 101, .10);
 }
 
 .tianji-field-block {
   position: relative;
   z-index: 1;
-  margin-top: 1rem;
   display: grid;
   gap: .48rem;
+  margin-top: 1rem;
 }
 
-.tianji-field-block > label {
-  color: var(--tj-muted);
-  font-size: .74rem;
-  letter-spacing: .06em;
-}
-
-.tianji-date-grid {
-  display: grid;
-  grid-template-columns: 1.18fr 1fr .82fr;
-  gap: .45rem;
-}
+.tianji-field-block > label { color: var(--tj-muted); font-size: .74rem; letter-spacing: .06em; }
+.tianji-date-grid { display: grid; grid-template-columns: 1.18fr 1fr .82fr; gap: .45rem; }
 
 .tianji-select {
   width: 100%;
   min-width: 0;
   min-height: 3.15rem;
-  border: 1px solid rgba(225, 201, 251, .2);
+  border: 1px solid var(--tj-line-strong);
   border-radius: .95rem;
-  background: linear-gradient(180deg, rgba(10, 4, 19, .62), rgba(16, 6, 29, .54));
-  color: var(--tj-text);
   padding: 0 .82rem;
+  color: var(--tj-text);
+  background: rgba(255, 250, 241, .58);
   outline: none;
   font-size: .88rem;
-  box-shadow: inset 0 1px rgba(255,255,255,.025);
+  box-shadow: inset 0 1px rgba(255,255,255,.24);
 }
 
 .tianji-select:focus {
-  border-color: rgba(224, 193, 138, .66);
-  box-shadow: 0 0 0 3px rgba(224, 193, 138, .08), inset 0 1px rgba(255,255,255,.03);
+  border-color: rgba(180, 55, 43, .48);
+  box-shadow: 0 0 0 3px rgba(180, 55, 43, .065);
 }
 
 .tianji-auto-note {
   position: relative;
   z-index: 1;
-  margin-top: 1rem;
   display: flex;
   gap: .72rem;
   align-items: flex-start;
-  border: 1px solid rgba(224, 193, 138, .16);
+  margin-top: 1rem;
+  border: 1px solid rgba(47, 116, 101, .22);
   border-radius: 1rem;
   padding: .85rem;
-  background: linear-gradient(135deg, rgba(224, 193, 138, .075), rgba(153, 101, 198, .055));
+  background: rgba(47, 116, 101, .055);
 }
 
 .tianji-auto-icon {
   flex: 0 0 auto;
   display: grid;
-  place-items: center;
   width: 1.45rem;
   height: 1.45rem;
+  place-items: center;
   border-radius: 50%;
-  color: #221229;
-  background: var(--tj-gold);
+  color: #fffaf0;
+  background: #2f7465;
   font-size: .78rem;
   font-weight: 900;
 }
 
-.tianji-auto-note strong {
-  display: block;
-  color: #f3e8cf;
-  font-size: .82rem;
-}
-
-.tianji-auto-note small {
-  display: block;
-  margin-top: .24rem;
-  color: var(--tj-muted);
-  font-size: .7rem;
-  line-height: 1.55;
-}
+.tianji-auto-note strong { display: block; color: #2f7465; font-size: .82rem; }
+.tianji-auto-note small { display: block; margin-top: .24rem; color: var(--tj-muted); font-size: .7rem; line-height: 1.55; }
 
 .tianji-error {
   position: relative;
   z-index: 1;
   margin-top: .75rem;
-  border: 1px solid rgba(255, 137, 157, .26);
+  border: 1px solid rgba(180, 55, 43, .22);
   border-radius: .85rem;
   padding: .65rem .75rem;
-  color: #ffd4dc;
-  background: rgba(133, 38, 62, .16);
+  color: #982d25;
+  background: rgba(251, 242, 227, .48);
   font-size: .75rem;
 }
 
 .tianji-button {
   position: relative;
   z-index: 1;
-  margin-top: 1rem;
-  min-height: 3.25rem;
   width: 100%;
-  border: 1px solid rgba(236, 212, 164, .62);
+  min-height: 3.25rem;
+  margin-top: 1rem;
+  border: 0;
   border-radius: 999px;
-  background: linear-gradient(180deg, #ead3a6 0%, #d1aa75 58%, #b98653 100%);
-  color: #211129;
+  color: #fff9ef;
+  background: linear-gradient(180deg, #b4372b, #982d25);
   font-weight: 850;
   letter-spacing: .1em;
-  box-shadow: 0 14px 32px rgba(5, 2, 10, .28), inset 0 1px rgba(255,255,255,.42);
-  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  box-shadow: 0 10px 22px rgba(131, 43, 32, .12);
+  transition: transform .18s ease, filter .18s ease;
 }
 
-.tianji-button:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.03);
-  box-shadow: 0 18px 38px rgba(5, 2, 10, .34), inset 0 1px rgba(255,255,255,.48);
-}
+.tianji-button:hover { transform: translateY(-1px); filter: brightness(1.025); }
 
 .tianji-orbit {
   position: relative;
@@ -415,16 +384,15 @@
   position: absolute;
   inset: 4%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(180, 120, 225, .09), transparent 64%);
-  filter: blur(4px);
+  background: radial-gradient(circle, rgba(154, 113, 61, .05), transparent 64%);
 }
 
 .tianji-orbit-ring {
   position: absolute;
   inset: 12%;
-  border: 1px solid rgba(224, 193, 138, .25);
+  border: 1px solid rgba(150, 111, 64, .28);
   border-radius: 50%;
-  box-shadow: 0 0 34px rgba(151, 102, 203, .11), inset 0 0 38px rgba(151, 102, 203, .05);
+  box-shadow: inset 0 0 38px rgba(154, 113, 61, .035), 0 0 0 24px rgba(255,255,255,.02);
 }
 
 .tianji-orbit-ring::before,
@@ -432,37 +400,25 @@
   content: "";
   position: absolute;
   inset: 14%;
-  border: 1px solid rgba(222, 199, 255, .1);
+  border: 1px solid rgba(150, 111, 64, .13);
   border-radius: 50%;
 }
-
-.tianji-orbit-ring::after { inset: 32%; border-color: rgba(224, 193, 138, .16); }
+.tianji-orbit-ring::after { inset: 32%; border-color: rgba(47, 116, 101, .16); }
 
 .tianji-core {
   position: absolute;
   inset: 34%;
   display: grid;
   place-items: center;
+  border: 1px solid rgba(150, 111, 64, .34);
   border-radius: 50%;
-  border: 1px solid rgba(224, 193, 138, .38);
-  background: radial-gradient(circle at 45% 38%, rgba(225, 198, 245, .16), rgba(28, 10, 47, .88) 64%);
+  background: radial-gradient(circle at 45% 38%, rgba(255, 249, 238, .80), rgba(239, 224, 198, .60) 68%);
   text-align: center;
-  box-shadow: 0 0 36px rgba(177, 112, 237, .15), inset 0 0 24px rgba(224,193,138,.04);
+  box-shadow: 0 0 24px rgba(74, 54, 31, .04);
 }
 
-.tianji-core b {
-  display: block;
-  color: var(--tj-gold);
-  font-size: 1.28rem;
-  letter-spacing: .08em;
-}
-
-.tianji-core span {
-  display: block;
-  margin-top: .18rem;
-  color: var(--tj-muted);
-  font-size: .66rem;
-}
+.tianji-core b { display: block; color: var(--tj-text); font-size: 1.28rem; letter-spacing: .08em; }
+.tianji-core span { display: block; margin-top: .18rem; color: var(--tj-gold); font-size: .66rem; }
 
 .tianji-node {
   position: absolute;
@@ -473,19 +429,19 @@
   margin: -1rem;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(226, 206, 248, .11);
+  border: 1px solid rgba(150, 111, 64, .24);
   border-radius: 50%;
-  color: rgba(244, 236, 255, .72);
-  background: rgba(20, 7, 35, .82);
+  color: var(--tj-muted);
+  background: rgba(249, 241, 226, .84);
   font-size: .7rem;
-  box-shadow: 0 5px 14px rgba(0,0,0,.12);
+  box-shadow: 0 5px 14px rgba(74,54,31,.045);
 }
 
 .tianji-node[data-active="true"] {
-  color: #190e22;
-  background: var(--tj-gold);
-  border-color: var(--tj-gold);
-  box-shadow: 0 0 26px rgba(224, 193, 138, .48);
+  border-color: #2f7465;
+  color: #fffaf0;
+  background: #2f7465;
+  box-shadow: 0 0 14px rgba(47,116,101,.16);
   font-weight: 850;
 }
 
@@ -498,114 +454,46 @@
   padding: .25rem 1rem .6rem;
   text-align: center;
 }
-
-.tianji-empty-state span {
-  color: rgba(224, 193, 138, .72);
-  font-family: var(--font-display, serif);
-  font-size: 2.4rem;
-  letter-spacing: .12em;
-}
-
-.tianji-empty-state p {
-  max-width: 24rem;
-  color: var(--tj-soft);
-  font-size: .72rem;
-  line-height: 1.65;
-}
-
+.tianji-empty-state span { color: var(--tj-gold); font-family: var(--font-display, serif); font-size: 2.4rem; letter-spacing: .12em; }
+.tianji-empty-state p { max-width: 24rem; color: var(--tj-soft); font-size: .72rem; line-height: 1.65; }
 .tianji-result { position: relative; z-index: 1; animation: tj-rise .42s ease both; }
 
-.tianji-resolved-strip {
-  border: 1px solid rgba(224, 193, 138, .2);
+.tianji-resolved-strip,
+.tianji-result-cards > div,
+.tianji-reading,
+.tianji-destiny {
+  border: 1px solid var(--tj-line);
   border-radius: 1rem;
-  padding: .85rem;
-  background: linear-gradient(135deg, rgba(224, 193, 138, .08), rgba(118, 76, 154, .06));
+  background: rgba(247, 238, 220, .34);
+  box-shadow: 0 6px 18px rgba(74,54,31,.035);
 }
 
+.tianji-resolved-strip { padding: .85rem; background: linear-gradient(135deg, rgba(180,55,43,.035), rgba(47,116,101,.035)), rgba(247,238,220,.34); }
 .tianji-resolved-strip small,
 .tianji-reading small,
 .tianji-destiny small,
-.tianji-result-cards small {
-  color: var(--tj-gold);
-  font-size: .66rem;
-  letter-spacing: .11em;
-}
+.tianji-result-cards small { color: var(--tj-gold); font-size: .66rem; letter-spacing: .11em; }
+.tianji-resolved-strip p { margin-top: .35rem; color: var(--tj-text); font-size: .78rem; line-height: 1.6; }
+.tianji-resolved-strip span { display: block; margin-top: .42rem; color: var(--tj-muted); font-size: .7rem; line-height: 1.55; }
 
-.tianji-resolved-strip p {
-  margin-top: .35rem;
-  color: #f5eef9;
-  font-size: .78rem;
-  line-height: 1.6;
-}
-
-.tianji-resolved-strip span {
-  display: block;
-  margin-top: .42rem;
-  color: var(--tj-muted);
-  font-size: .7rem;
-  line-height: 1.55;
-}
-
-.tianji-result-cards {
-  display: grid;
-  grid-template-columns: .72fr 1.28fr;
-  gap: .65rem;
-  margin-top: .7rem;
-}
-
-.tianji-result-cards > div {
-  min-height: 6.1rem;
-  border: 1px solid rgba(231, 210, 255, .12);
-  border-radius: 1rem;
-  padding: .82rem;
-  background: rgba(8, 3, 16, .28);
-}
-
-.tianji-result-cards strong {
-  display: block;
-  margin-top: .35rem;
-  color: #fff;
-  font-family: var(--font-display, serif);
-  font-size: 1.45rem;
-  letter-spacing: .06em;
-}
-
-.tianji-result-cards span {
-  display: block;
-  margin-top: .18rem;
-  color: var(--tj-muted);
-  font-size: .7rem;
-}
+.tianji-result-cards { display: grid; grid-template-columns: .72fr 1.28fr; gap: .65rem; margin-top: .7rem; }
+.tianji-result-cards > div { min-height: 6.1rem; padding: .82rem; }
+.tianji-result-cards strong { display: block; margin-top: .35rem; color: var(--tj-text); font-family: var(--font-display, serif); font-size: 1.45rem; letter-spacing: .06em; }
+.tianji-result-cards span { display: block; margin-top: .18rem; color: var(--tj-muted); font-size: .7rem; }
 
 .tianji-reading,
-.tianji-destiny {
-  margin-top: .7rem;
-  border: 1px solid rgba(231, 210, 255, .11);
-  border-radius: 1rem;
-  padding: .9rem;
-  background: rgba(8, 3, 16, .24);
-}
-
+.tianji-destiny { margin-top: .7rem; padding: .9rem; }
 .tianji-reading p,
-.tianji-destiny p {
-  margin-top: .42rem;
-  color: #f1e8f8;
-  line-height: 1.72;
-  font-size: .82rem;
-}
-
-.tianji-destiny {
-  border-color: rgba(224, 193, 138, .2);
-  background: linear-gradient(135deg, rgba(224, 193, 138, .09), rgba(119, 78, 164, .07));
-}
+.tianji-destiny p { margin-top: .42rem; color: var(--tj-muted); font-size: .82rem; line-height: 1.72; }
+.tianji-destiny { border-color: rgba(180,55,43,.22); background: linear-gradient(135deg, rgba(180,55,43,.04), rgba(47,116,101,.03)), rgba(247,238,220,.34); }
 
 @media (max-width: 760px) {
-  .tianji-page { border-radius: 1.45rem; min-height: 0; }
+  .tianji-page { min-height: 0; border-radius: 1.45rem; }
   .tianji-shell { padding: .95rem; }
   .tianji-hero { grid-template-columns: 1fr; padding-top: .95rem; }
-  .tianji-sigil { position: absolute; right: -.25rem; top: -.05rem; width: 108px; opacity: .32; }
+  .tianji-sigil { position: absolute; right: -.25rem; top: -.05rem; width: 108px; opacity: .34; }
   .tianji-hero-copy { padding-right: 1.7rem; }
-  .tianji-title { max-width: 92%; font-size: clamp(2.35rem, 12vw, 3.5rem); line-height: 1.02; }
+  .tianji-title { max-width: 92%; font-size: clamp(2.35rem, 12vw, 3.5rem); }
   .tianji-lead { max-width: 94%; font-size: .84rem; line-height: 1.75; }
   .tianji-grid { grid-template-columns: 1fr; gap: .8rem; margin-top: 1.15rem; }
   .tianji-panel { padding: .95rem; border-radius: 1.25rem; }
@@ -631,5 +519,5 @@
   .tianji-result { animation: none !important; }
   .tianji-button,
   .tianji-back,
-  .tianji-calendar-tabs button { transition: none; }
+  .tianji-calendar-tabs button { transition: none !important; }
 }
