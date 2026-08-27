@@ -4,12 +4,15 @@ import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("decree image backend prefers approved art but always falls back through the enabled Gallery", async () => {
+test("decree image backend ranks the whole enabled visual library and keeps approval as a signal, not a gate", async () => {
   const source = await read("supabase/functions/generate-decree-image/index.ts");
   assert.match(source, /from\("gallery_asset_knowledge"\)/);
   assert.match(source, /knowledge\?\.analysis_status === "approved"/);
   assert.match(source, /knowledge\?\.client_eligible === true/);
   assert.match(source, /\.eq\("category", "visual-library"\)/);
+  assert.match(source, /rankGalleryAssets\(visualAssets, knowledgeById, chart, question\)/);
+  assert.doesNotMatch(source, /const strictAssets/);
+  assert.doesNotMatch(source, /if \(strictAssets\.length\)/);
   assert.match(source, /knowledge-fallback/);
   assert.match(source, /visual-library-fallback/);
   assert.match(source, /any-enabled-fallback/);
