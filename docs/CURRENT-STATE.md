@@ -29,7 +29,7 @@
 - Loading ghost overlay 已移除。
 - **后台答案单一来源 P0-1 已收口**：`finalizeReading` 产出唯一最终 Reading；已保存报告打开时不再 live 重算成另一套答案。
 - **个人命诰 P0-2 已升级为证据型文案**；完整刑冲合害库 / 正式病药仍未在 chart 引擎落地，不得假装已算。
-- **真实命诰图 P0-3 已接线**：生成走 Supabase Edge Function `generate-decree-image`；已保存旧图的查看走独立 delivery-only signer `view-decree-image` → private Storage signed URL。客户端禁止 Canvas / SVG / CSS 假图；查看旧图不得触发图片生成额度。
+- **真实命诰图 P0-3 已接线**：已保存旧图的查看走独立 delivery-only signer `view-decree-image` → private Storage signed URL；新报告默认由 `generate-decree-image` 从启用的 `visual-library` 中按现有可用知识、问题主题与视觉匹配选出最接近的一张，并复制到该报告自己的 private report image path，因此默认交付不依赖图片 API credits。仅显式 `force=true` 才尝试供应商个性化编辑，失败必须回退到已选中的 Gallery 图。客户端禁止 Canvas / SVG / CSS 假图。
 - 后台背景图库及资产管理能力保留，但**当前全站应用页面不渲染图库壁纸、weekly fallback 或随机散落吉祥图**；背景资产只保留为以后可重新启用的素材能力。
 - 首页只保留一条分析主路径；达摩一掌经为独立工具入口。
 
@@ -51,7 +51,7 @@
 - **关系与对象**：只在感情／关系问题出现。
 - 以后新增条件区必须先证明与原问题直接相关。
 
-个人命诰图 / 视觉成像独立于文字报告，由用户主动生成，失败不得阻塞文字阅读；已有成图应优先直接展示，不因供应商额度、风格版本或重新生成失败而消失。
+个人命诰图 / 视觉成像独立于文字报告，由用户主动生成，失败不得阻塞文字阅读；已有成图应优先直接展示，不因供应商额度、风格版本或重新生成失败而消失。新报告默认可以直接交付 Gallery 匹配图，不需要等待供应商生成。
 
 唯一产品契约：`docs/FOCUSED-REPORT.md` + `src/lib/report/focused-report.ts`。
 
@@ -103,7 +103,7 @@
 - iPhone 关键流程最终实机验收。
 - chart 引擎：完整刑冲合害库、正式病药通关、完整岁运作用链仍未实现。
 - 后台历史记录仍可能带旧 `ninePages` 字段名；只作兼容，前台与新后台文案不得继续称“九页”。
-- 新命诰图的供应商生成仍依赖图片 API credits；没有 credits 时只能交付已有成图，不能把供应商失败伪装成成功生成。
+- `force=true` 的供应商个性化命诰图仍依赖图片 API credits；默认新报告 Gallery-direct 交付不依赖 credits，供应商失败不得阻塞 Gallery 图交付。
 
 ## 8. 生产优先级
 
