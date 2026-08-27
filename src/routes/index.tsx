@@ -69,7 +69,7 @@ function Home() {
         };
 
   return (
-    <main className="space-y-7 sm:space-y-12">
+    <main className="zhaowu-home-sheet-page space-y-7 sm:space-y-12">
       <HomeScreenInstallPrompt />
 
       <section className="zhaowu-home-hero px-5 py-8 sm:px-10 sm:py-16" aria-labelledby="zhaowu-title">
@@ -119,8 +119,6 @@ function Home() {
         <div className="zhaowu-tools-grid">
           <article className="zhaowu-specialist-card is-tianji is-dual">
             <div className="zhaowu-card-number" aria-hidden>雙</div>
-            <img src="/ornaments/generated/phoenix.webp" alt="" aria-hidden className="zhaowu-specialist-mark zhaowu-specialist-mark--palm zhaowu-specialist-mark--dual-palm" />
-            <img src="/ornaments/generated/celestial-pearl.webp" alt="" aria-hidden className="zhaowu-specialist-mark zhaowu-specialist-mark--tianji" />
             <div className="zhaowu-specialist-content">
               <p className="zhaowu-specialist-eyebrow">{toolsCopy.eyebrow}</p>
               <h3>{toolsCopy.toolTitle}</h3>
@@ -137,7 +135,6 @@ function Home() {
 
           <article className="zhaowu-specialist-card is-tea">
             <div className="zhaowu-card-number" aria-hidden>茶</div>
-            <img src="/tea-guardians/dahongpao.webp" alt="" aria-hidden className="zhaowu-specialist-mark zhaowu-specialist-mark--tea" loading="lazy" decoding="async" />
             <div className="zhaowu-specialist-content">
               <p className="zhaowu-specialist-eyebrow">{toolsCopy.teaEyebrow}</p>
               <h3>{toolsCopy.teaTitle}</h3>

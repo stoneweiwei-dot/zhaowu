@@ -23,11 +23,12 @@ test("legacy ninePages storage key is read only as compatibility, not product st
   assert.match(account, /old key is read only as storage compatibility/);
 });
 
-test("website keeps the app concept base while specialist cards use the generated ornament treatment", async () => {
+test("website keeps the app concept base while homepage specialist cards shed loose ornament images", async () => {
   const account = await source("src/routes/account.tsx");
   const styles = await source("src/styles.css");
   const home = await source("src/home-polish-v3.css");
   const homeRoute = await source("src/routes/index.tsx");
+  const finalHome = await source("src/home-sheet-ui-v5.css");
   const login = await source("src/stone-visual-fix.css");
   const intro = await source("src/components/intro-gate.tsx");
 
@@ -35,9 +36,10 @@ test("website keeps the app concept base while specialist cards use the generate
   assert.match(styles, /--color-cinnabar:\s*#a7352b/);
   assert.match(styles, /linear-gradient\(rgba\(116, 100, 75, \.045\) 1px, transparent 1px\)/);
   assert.match(home, /\.zhaowu-specialist-card\.is-tianji[\s\S]*linear-gradient\(152deg, #2b123d 0%, #170823 62%, #100719 100%\)/);
-  assert.match(home, /\.zhaowu-specialist-mark--tianji/);
-  assert.match(homeRoute, /\/ornaments\/generated\/phoenix\.webp/);
-  assert.match(homeRoute, /\/ornaments\/generated\/celestial-pearl\.webp/);
+  assert.doesNotMatch(homeRoute, /zhaowu-specialist-mark/);
+  assert.doesNotMatch(homeRoute, /\/ornaments\/generated\/phoenix\.webp/);
+  assert.doesNotMatch(homeRoute, /\/ornaments\/generated\/celestial-pearl\.webp/);
+  assert.match(finalHome, /\.zhaowu-home-sheet-shell \.zhaowu-specialist-mark/);
   assert.match(login, /stone-login-orbit/);
   assert.doesNotMatch(login, /stone-login-art img|loading-poster/);
   assert.doesNotMatch(intro, /loading-poster|intro-poster/);
@@ -45,23 +47,23 @@ test("website keeps the app concept base while specialist cards use the generate
   assert.match(intro, /LOTUS_BLOOM_MS = 2200/);
 });
 
-test("owner-selected wallpaper remains visibly readable through home, report and login surfaces", async () => {
+test("owner-selected wallpaper remains available away from home while homepage is a closed sheet", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const main = await source("src/main.tsx");
   const wallpaper = await source("src/wallpaper-visibility-fix.css");
   const landscape = await source("src/landscape-paper.css");
+  const finalHome = await source("src/home-sheet-ui-v5.css");
 
-  assert.match(shell, /backgroundUrl \? "zhaowu-has-wallpaper"/);
+  assert.match(shell, /const showWallpaper = Boolean\(backgroundUrl && !isHome\)/);
+  assert.match(shell, /\{showWallpaper \? \(/);
   assert.match(shell, /className=\{`zhaowu-site-wallpaper \$\{isLogin \? "is-login" : ""\}`\}/);
-  assert.doesNotMatch(shell, /backgroundUrl && !isLogin \?/);
   assert.match(main, /wallpaper-visibility-fix\.css/);
   assert.match(main, /landscape-paper\.css/);
-  assert.ok(main.indexOf("wallpaper-visibility-fix.css") < main.indexOf("landscape-paper.css"));
+  assert.match(main, /home-sheet-ui-v5\.css/);
+  assert.ok(main.indexOf("visual-readability-lock-v4.css") < main.indexOf("home-sheet-ui-v5.css"));
   assert.match(wallpaper, /\.zhaowu-has-wallpaper \.zhaowu-login-card/);
   assert.match(wallpaper, /\.zhaowu-has-wallpaper \.zhaowu-app-frame \.seal-border/);
-  assert.match(wallpaper, /background:\s*rgba\(\s*255,\s*252,\s*244,\s*\.60\s*\)\s*!important/);
-  assert.match(wallpaper, /\.zhaowu-has-wallpaper \.zhaowu-app-frame \.zhaowu-focused-report \.zhaowu-report-section/);
-  assert.match(wallpaper, /rgba\(38,\s*16,\s*52,\s*\.68\)/);
   assert.match(landscape, /\.zhaowu-site-wallpaper[\s\S]*display:\s*block\s*!important/);
-  assert.match(landscape, /background:\s*rgba\(255,\s*252,\s*244,\s*\.88\)\s*!important/);
+  assert.match(finalHome, /\.zhaowu-home-sheet-shell \.zhaowu-site-wallpaper/);
+  assert.match(finalHome, /display:\s*none\s*!important/);
 });

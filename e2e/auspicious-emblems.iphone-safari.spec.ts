@@ -1,12 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const CORE_ROUTES = ["/", "/login", "/account", "/tianji-dual", "/yizhangjing"] as const;
+const DECORATED_ROUTES = ["/login", "/account", "/tianji-dual", "/yizhangjing"] as const;
 
 async function makeAppOfflineSafe(page: Page) {
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
 }
 
-async function expectAuspiciousEmblemsHealthy(page: Page, route: (typeof CORE_ROUTES)[number]) {
+async function expectAuspiciousEmblemsHealthy(page: Page, route: (typeof DECORATED_ROUTES)[number]) {
   const scatter = page.getByTestId("auspicious-emblem-scatter");
   await expect(scatter).toBeAttached();
   expect(await scatter.evaluate((node) => getComputedStyle(node).pointerEvents)).toBe("none");
@@ -56,18 +56,60 @@ async function expectAuspiciousEmblemsHealthy(page: Page, route: (typeof CORE_RO
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 }
 
-test.describe("iPhone Safari auspicious emblem scatter", () => {
-  test("renders painterly WebP ornaments above page material without blocking core routes", async ({ page }) => {
+test.describe("iPhone Safari homepage sheet and route ornaments", () => {
+  test("keeps painterly WebP ornaments on non-home routes without blocking content", async ({ page }) => {
     await makeAppOfflineSafe(page);
 
-    for (const route of CORE_ROUTES) {
+    for (const route of DECORATED_ROUTES) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
       await expectAuspiciousEmblemsHealthy(page, route);
     }
   });
 
-  test("reads the owner-managed background_assets wallpaper and keeps reading surfaces opaque", async ({ page }) => {
+  test("renders the homepage as one closed parchment sheet with no wallpaper or loose emblem scatter", async ({ page }) => {
+    await makeAppOfflineSafe(page);
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    expect(await page.evaluate(() => window.innerWidth)).toBe(390);
+    await expect(page.locator(".zhaowu-home-sheet-shell")).toBeVisible();
+    await expect(page.locator(".zhaowu-site-wallpaper")).toHaveCount(0);
+    await expect(page.getByTestId("auspicious-emblem-scatter")).toHaveCount(0);
+
+    const frame = page.locator(".zhaowu-home-app-frame").first();
+    await expect(frame).toBeVisible();
+    const frameBox = await frame.boundingBox();
+    expect(frameBox).not.toBeNull();
+    if (frameBox) {
+      expect(frameBox.x).toBeLessThanOrEqual(1);
+      expect(frameBox.width).toBeGreaterThanOrEqual(388);
+    }
+
+    const shellAlpha = await page.locator(".zhaowu-home-sheet-shell").evaluate((node) => {
+      const value = getComputedStyle(node).backgroundColor;
+      const rgba = value.match(/rgba?\(([^)]+)\)/);
+      if (!rgba) return 1;
+      const parts = rgba[1].split(",").map((part) => Number.parseFloat(part.trim()));
+      return parts.length >= 4 && Number.isFinite(parts[3]) ? parts[3] : 1;
+    });
+    expect(shellAlpha).toBe(1);
+
+    const hero = page.locator(".zhaowu-home-hero").first();
+    await expect(hero).toBeVisible();
+    const heroAlpha = await hero.evaluate((node) => {
+      const value = getComputedStyle(node).backgroundColor;
+      const rgba = value.match(/rgba?\(([^)]+)\)/);
+      if (!rgba) return 1;
+      const parts = rgba[1].split(",").map((part) => Number.parseFloat(part.trim()));
+      return parts.length >= 4 && Number.isFinite(parts[3]) ? parts[3] : 1;
+    });
+    expect(heroAlpha).toBe(1);
+
+    await expect(page.locator(".zhaowu-specialist-mark")).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  });
+
+  test("keeps owner-managed wallpaper available away from the homepage", async ({ page }) => {
     await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
 
     let backgroundReads = 0;
@@ -95,23 +137,12 @@ test.describe("iPhone Safari auspicious emblem scatter", () => {
       });
     });
 
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto("/tianji-dual", { waitUntil: "domcontentloaded" });
     await expect.poll(() => backgroundReads).toBeGreaterThan(0);
 
     const wallpaper = page.locator(".zhaowu-site-wallpaper");
     await expect(wallpaper).toBeAttached();
     await expect(wallpaper).toHaveAttribute("style", /zhaowu-backgrounds.*owner-wallpaper\.webp/);
-
-    const hero = page.locator(".zhaowu-home-hero").first();
-    await expect(hero).toBeVisible();
-    const heroAlpha = await hero.evaluate((node) => {
-      const value = getComputedStyle(node).backgroundColor;
-      const rgba = value.match(/rgba?\(([^)]+)\)/);
-      if (!rgba) return 1;
-      const parts = rgba[1].split(",").map((part) => Number.parseFloat(part.trim()));
-      return parts.length >= 4 && Number.isFinite(parts[3]) ? parts[3] : 1;
-    });
-    expect(heroAlpha).toBeGreaterThanOrEqual(0.88);
 
     const reportSurfaceAlpha = await page.evaluate(() => {
       const report = document.createElement("section");
