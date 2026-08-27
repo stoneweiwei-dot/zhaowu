@@ -19,6 +19,7 @@ import './landscape-paper.css';
 import './production-visual-reset.css';
 import './gallery-unification.css';
 import './approved-mobile-ui-v2.css';
+import './approved-parchment-ui-v3.css';
 
 const router = createRouter({ routeTree });
 

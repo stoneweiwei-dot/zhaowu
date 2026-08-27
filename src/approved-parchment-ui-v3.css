@@ -1,0 +1,754 @@
+/*
+ * Owner-approved ZHAOWU parchment UI lock — 2026-08-27.
+ * Visual source of truth: warm xuan-paper / Song landscape, seamless wallpaper-card
+ * blending, cinnabar primary actions, jade controls, ink typography, green-dragon accents.
+ * Imported last. This file intentionally supersedes legacy purple / black report skins.
+ */
+:root {
+  --zv3-paper: rgba(246, 236, 217, .34);
+  --zv3-paper-strong: rgba(249, 241, 227, .54);
+  --zv3-paper-field: rgba(255, 250, 241, .58);
+  --zv3-paper-faint: rgba(248, 239, 222, .20);
+  --zv3-line: rgba(148, 109, 61, .28);
+  --zv3-line-soft: rgba(148, 109, 61, .16);
+  --zv3-line-strong: rgba(148, 109, 61, .42);
+  --zv3-ink: #2b2924;
+  --zv3-ink-soft: #625b50;
+  --zv3-ink-mute: #8b806f;
+  --zv3-red: #b4372b;
+  --zv3-red-deep: #982d25;
+  --zv3-jade: #2f7465;
+  --zv3-earth: #9a713d;
+  --zv3-shadow: 0 14px 38px rgba(74, 54, 31, .065);
+  --zv3-shadow-soft: 0 8px 24px rgba(74, 54, 31, .045);
+}
+
+body:has(.zhaowu-has-wallpaper) {
+  background: #d8c7a5 !important;
+}
+
+.zhaowu-has-wallpaper .zhaowu-site-wallpaper {
+  opacity: 1 !important;
+  filter: saturate(.84) contrast(.93) brightness(1.035) sepia(.035) !important;
+  transform: scale(1.002);
+}
+
+.zhaowu-has-wallpaper .zhaowu-site-wallpaper::after {
+  background:
+    linear-gradient(180deg, rgba(255, 249, 237, .035), rgba(233, 215, 186, .055)),
+    radial-gradient(circle at 50% 8%, rgba(255, 252, 244, .07), transparent 42%) !important;
+}
+
+/* The app frame must disappear into the wallpaper instead of becoming a second page. */
+.zhaowu-has-wallpaper .zhaowu-app-frame {
+  width: min(calc(100% - 10px), 620px) !important;
+  margin: 6px auto 24px !important;
+  padding: 8px 8px 20px !important;
+  border: 1px solid rgba(255, 250, 240, .34) !important;
+  border-radius: 28px !important;
+  background: rgba(244, 233, 212, .075) !important;
+  box-shadow: 0 18px 48px rgba(69, 51, 29, .045) !important;
+  backdrop-filter: blur(.7px) saturate(102%) !important;
+  -webkit-backdrop-filter: blur(.7px) saturate(102%) !important;
+}
+
+.zhaowu-site-header,
+body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
+.zhaowu-has-wallpaper .zhaowu-site-header {
+  border-bottom: 1px solid var(--zv3-line-soft) !important;
+  background: rgba(249, 241, 226, .72) !important;
+  box-shadow: 0 8px 24px rgba(62, 47, 29, .035) !important;
+  backdrop-filter: blur(8px) saturate(104%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(104%) !important;
+}
+
+.zhaowu-site-header > div {
+  min-height: 64px !important;
+}
+
+.zhaowu-site-header .bg-wood,
+.zhaowu-site-header button[aria-pressed="true"] {
+  background: var(--zv3-jade) !important;
+  color: #fffaf0 !important;
+}
+
+.zhaowu-site-header [role="group"] {
+  border-color: var(--zv3-line) !important;
+  background: rgba(250, 244, 232, .56) !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-site-header a,
+.zhaowu-site-header button {
+  text-shadow: none !important;
+}
+
+/* One material family for hero, form, result and visual modules. */
+.zhaowu-home-hero,
+#analysisForm,
+.zhaowu-result-card,
+.zhaowu-decree-gallery,
+.zhaowu-decree-couplet,
+.zhaowu-generated-decree,
+.zhaowu-tools-section,
+.zhaowu-specialist-card,
+.zhaowu-focused-report,
+.dual-page,
+.dual-input-card,
+.dual-results {
+  border-color: var(--zv3-line) !important;
+  background-color: transparent !important;
+  box-shadow: var(--zv3-shadow) !important;
+}
+
+.zhaowu-home-hero,
+#analysisForm,
+.zhaowu-result-card,
+.zhaowu-decree-gallery,
+.zhaowu-decree-couplet,
+.zhaowu-generated-decree,
+.zhaowu-tools-section,
+.zhaowu-specialist-card,
+.zhaowu-focused-report {
+  background:
+    linear-gradient(180deg, rgba(255, 249, 238, .24), rgba(240, 226, 200, .11)),
+    var(--zv3-paper) !important;
+  backdrop-filter: blur(1.4px) saturate(102%) !important;
+  -webkit-backdrop-filter: blur(1.4px) saturate(102%) !important;
+}
+
+.zhaowu-home-hero,
+#analysisForm,
+.zhaowu-result-card,
+.zhaowu-decree-gallery,
+.zhaowu-focused-report,
+.zhaowu-tools-section {
+  border-radius: 26px !important;
+}
+
+.zhaowu-home-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 30rem;
+  padding-top: 2.15rem !important;
+  padding-bottom: 2.35rem !important;
+  box-shadow: var(--zv3-shadow), inset 0 0 0 1px rgba(255,255,255,.20) !important;
+}
+
+.zhaowu-home-hero::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(150, 111, 64, .18);
+  border-radius: 19px;
+  pointer-events: none;
+}
+
+.zhaowu-home-hero::after {
+  content: "";
+  position: absolute;
+  right: -3rem;
+  bottom: -3.5rem;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(164, 118, 64, .06), transparent 67%);
+  pointer-events: none;
+}
+
+.zhaowu-home-hero h1,
+.zhaowu-home-hero h2,
+#analysisForm h2,
+.zhaowu-result-card h2,
+.zhaowu-decree-copy h3,
+.zhaowu-tools-heading h2,
+.zhaowu-specialist-card h3,
+.zhaowu-focused-report h3,
+.zhaowu-report-section h4 {
+  color: var(--zv3-ink) !important;
+  text-shadow: none !important;
+}
+
+.zhaowu-home-hero .text-wood {
+  color: var(--zv3-jade) !important;
+}
+
+.zhaowu-home-hero .text-earth,
+#analysisForm .text-cinnabar,
+.zhaowu-decree-kicker,
+.zhaowu-tools-heading p,
+.zhaowu-specialist-eyebrow {
+  color: var(--zv3-earth) !important;
+}
+
+.zhaowu-home-hero a[href="#analysisForm"],
+#analysisForm button[type="submit"],
+.zhaowu-result-primary {
+  border: 0 !important;
+  background: linear-gradient(180deg, var(--zv3-red), var(--zv3-red-deep)) !important;
+  color: #fff9ef !important;
+  box-shadow: 0 10px 22px rgba(131, 43, 32, .13) !important;
+}
+
+.zhaowu-home-hero a[href="/login"],
+.zhaowu-home-hero a[href="/account"] {
+  border-color: var(--zv3-line) !important;
+  background: rgba(250, 244, 232, .52) !important;
+  color: var(--zv3-ink-soft) !important;
+  box-shadow: none !important;
+}
+
+#analysisForm {
+  padding: 24px 20px !important;
+}
+
+#analysisForm input,
+#analysisForm textarea,
+#analysisForm select,
+.zhaowu-dragon-guide-panel input {
+  border: 1px solid var(--zv3-line-strong) !important;
+  background: var(--zv3-paper-field) !important;
+  color: var(--zv3-ink) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.24) !important;
+  backdrop-filter: blur(1.5px) !important;
+  -webkit-backdrop-filter: blur(1.5px) !important;
+}
+
+#analysisForm textarea {
+  min-height: 10rem;
+  border-radius: 18px !important;
+}
+
+#analysisForm input,
+#analysisForm select {
+  border-radius: 14px !important;
+}
+
+#analysisForm .bg-paper\/45,
+#analysisForm .bg-paper\/35 {
+  border-color: var(--zv3-line-soft) !important;
+  background: rgba(247, 238, 220, .22) !important;
+}
+
+#analysisForm input:focus,
+#analysisForm textarea:focus,
+#analysisForm select:focus {
+  border-color: rgba(180, 55, 43, .48) !important;
+  box-shadow: 0 0 0 3px rgba(180, 55, 43, .065) !important;
+}
+
+.zhaowu-result-flow {
+  scroll-margin-top: 5.5rem;
+}
+
+.zhaowu-result-card {
+  padding: 24px 20px !important;
+}
+
+.zhaowu-result-card p,
+.zhaowu-decree-note,
+.zhaowu-decree-unavailable {
+  color: var(--zv3-ink-soft) !important;
+}
+
+.zhaowu-result-secondary {
+  border-color: var(--zv3-line-strong) !important;
+  background: rgba(250, 244, 232, .42) !important;
+  color: var(--zv3-ink) !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-result-reset {
+  color: var(--zv3-ink-soft) !important;
+  background: transparent !important;
+}
+
+.zhaowu-result-message {
+  border-color: rgba(180, 55, 43, .18) !important;
+  background: rgba(251, 242, 227, .42) !important;
+  color: var(--zv3-red-deep) !important;
+}
+
+/* Decree area: same paper as the page, never a purple or foreign-color platform. */
+.zhaowu-decree-gallery {
+  gap: 18px !important;
+  padding: 20px !important;
+}
+
+.zhaowu-decree-generate {
+  border-color: rgba(180, 55, 43, .50) !important;
+  background: rgba(250, 241, 225, .26) !important;
+  color: var(--zv3-red-deep) !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-decree-preview,
+.zhaowu-decree-preview-skeleton {
+  border-color: rgba(150, 111, 64, .30) !important;
+  background: rgba(236, 221, 193, .40) !important;
+  box-shadow: 0 7px 18px rgba(67, 49, 28, .07) !important;
+}
+
+.zhaowu-decree-preview.is-main,
+.zhaowu-decree-preview-skeleton.is-main {
+  border-color: rgba(180, 55, 43, .40) !important;
+  box-shadow: 0 8px 20px rgba(89, 55, 30, .08) !important;
+}
+
+.zhaowu-decree-preview figcaption {
+  border-color: rgba(150, 111, 64, .18) !important;
+  background: rgba(247, 238, 220, .76) !important;
+  color: var(--zv3-ink) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+}
+
+/* Homepage tools all join the same visual civilization. */
+.zhaowu-tools-section,
+.zhaowu-specialist-card.is-palm,
+.zhaowu-specialist-card.is-tianji,
+.zhaowu-specialist-card.is-dual,
+.zhaowu-specialist-card.is-tea {
+  color: var(--zv3-ink) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 249, 238, .18), rgba(240, 226, 200, .08)),
+    var(--zv3-paper) !important;
+}
+
+.zhaowu-tools-section::before,
+.zhaowu-specialist-card::before {
+  border-color: var(--zv3-line-soft) !important;
+}
+
+.zhaowu-tools-section::after,
+.zhaowu-specialist-card::after,
+.zhaowu-card-number {
+  color: rgba(112, 79, 43, .035) !important;
+  border-color: rgba(150, 111, 64, .08) !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-specialist-card h3,
+.is-tianji h3,
+.is-tea h3,
+.is-palm h3 {
+  color: var(--zv3-ink) !important;
+}
+
+.zhaowu-specialist-desc,
+.zhaowu-specialist-points,
+.zhaowu-specialist-meta,
+.is-tianji .zhaowu-specialist-desc,
+.is-tianji .zhaowu-specialist-points,
+.is-tianji .zhaowu-specialist-meta,
+.is-tea .zhaowu-specialist-desc,
+.is-tea .zhaowu-specialist-points,
+.is-tea .zhaowu-specialist-meta {
+  color: var(--zv3-ink-soft) !important;
+}
+
+.zhaowu-specialist-action,
+.is-tianji-action,
+.is-tea-action,
+.is-palm-action {
+  border: 1px solid var(--zv3-line-strong) !important;
+  background: rgba(250, 243, 229, .40) !important;
+  color: var(--zv3-red-deep) !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-specialist-mark {
+  filter: sepia(.08) saturate(.72) drop-shadow(0 8px 14px rgba(73, 53, 31, .08)) !important;
+}
+
+/* Full report: remove legacy purple/black active skin completely. */
+.zhaowu-focused-report {
+  color: var(--zv3-ink) !important;
+  overflow: hidden;
+}
+
+.zhaowu-report-visual {
+  min-height: 12rem !important;
+  border-bottom-color: var(--zv3-line-soft) !important;
+  background:
+    radial-gradient(circle at 83% 25%, rgba(167, 119, 65, .065), transparent 15rem),
+    linear-gradient(180deg, rgba(255, 249, 238, .20), rgba(239, 224, 198, .10)),
+    rgba(246, 236, 217, .26) !important;
+  background-size: auto !important;
+}
+
+.zhaowu-report-visual::before,
+.zhaowu-report-visual::after {
+  border-color: rgba(150, 111, 64, .12) !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-report-visual-shade {
+  background: linear-gradient(90deg, rgba(245, 233, 213, .13), rgba(255, 249, 238, .025), rgba(235, 218, 190, .10)) !important;
+}
+
+.zhaowu-report-visual .text-\[\#d9b66f\] {
+  color: var(--zv3-earth) !important;
+}
+
+.zhaowu-report-visual .text-\[\#fff8e8\],
+.zhaowu-report-visual .text-\[\#efe4cf\]\/85 {
+  color: var(--zv3-ink) !important;
+}
+
+.zhaowu-report-hero-phoenix,
+.zhaowu-report-hero-pearl,
+.zhaowu-report-hero-lotus {
+  opacity: .28 !important;
+  filter: sepia(.14) saturate(.64) contrast(.92) drop-shadow(0 7px 12px rgba(73, 52, 30, .06)) !important;
+}
+
+.zhaowu-auspicious-rail {
+  border-color: var(--zv3-line-soft) !important;
+  background: rgba(247, 238, 220, .30) !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-auspicious-rail figure > span {
+  border-color: rgba(150, 111, 64, .24) !important;
+  background: rgba(255, 249, 238, .46) !important;
+  box-shadow: 0 5px 14px rgba(77, 55, 30, .045) !important;
+}
+
+.zhaowu-auspicious-rail figcaption {
+  color: var(--zv3-earth) !important;
+}
+
+.zhaowu-focused-report > .space-y-4 {
+  background: transparent !important;
+}
+
+.zhaowu-report-section {
+  border-color: var(--zv3-line) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 249, 238, .15), rgba(239, 224, 198, .07)),
+    rgba(247, 238, 220, .34) !important;
+  box-shadow: var(--zv3-shadow-soft) !important;
+}
+
+.zhaowu-report-section::after {
+  border-color: rgba(150, 111, 64, .08) !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-report-section-heading span {
+  border-color: rgba(150, 111, 64, .28) !important;
+  background: rgba(247, 237, 217, .48) !important;
+  color: var(--zv3-earth) !important;
+}
+
+.zhaowu-report-section-heading h4 {
+  color: var(--zv3-ink) !important;
+}
+
+.zhaowu-report-section-body {
+  color: var(--zv3-ink-soft) !important;
+}
+
+.zhaowu-report-ornament {
+  opacity: .11 !important;
+  filter: sepia(.14) saturate(.62) contrast(.9) !important;
+}
+
+.zhaowu-report-dragon {
+  filter: drop-shadow(0 6px 9px rgba(71, 52, 31, .08)) !important;
+}
+
+/* Dual tool: convert the old violet celestial UI into the same parchment system. */
+.dual-page {
+  --dual-night: #efe1c6;
+  --dual-violet: #e8d4b0;
+  --dual-gold: #a8783d;
+  --dual-cream: var(--zv3-ink);
+  --dual-muted: var(--zv3-ink-soft);
+  color: var(--zv3-ink) !important;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(172, 123, 65, .06), transparent 24rem),
+    linear-gradient(180deg, rgba(255, 249, 238, .14), rgba(238, 221, 192, .08)),
+    rgba(246, 236, 217, .24) !important;
+  box-shadow: var(--zv3-shadow) !important;
+}
+
+.dual-page::before {
+  opacity: .16 !important;
+  background-image:
+    radial-gradient(circle, rgba(142, 103, 58, .22) 0 1px, transparent 1.2px),
+    radial-gradient(circle, rgba(47, 116, 101, .16) 0 1px, transparent 1.2px) !important;
+}
+
+.dual-page::after {
+  border-color: rgba(150, 111, 64, .09) !important;
+  box-shadow: 0 0 0 72px rgba(150, 111, 64, .015), 0 0 0 144px rgba(150, 111, 64, .010) !important;
+}
+
+.dual-topbar p,
+.dual-section-title > span,
+.dual-engine-label,
+.dual-lunar,
+.dual-correction b,
+.dual-fusion blockquote b {
+  color: var(--zv3-earth) !important;
+}
+
+.dual-topbar a {
+  border-color: var(--zv3-line) !important;
+  color: var(--zv3-ink-soft) !important;
+  background: rgba(249, 242, 228, .34) !important;
+}
+
+.dual-hero h1,
+.dual-section-title h2,
+.dual-engine-card dd,
+.dual-fusion h3 {
+  color: var(--zv3-ink) !important;
+}
+
+.dual-hero p,
+.dual-direction legend,
+.dual-direction p,
+.dual-privacy,
+.dual-boundary,
+.dual-reading p,
+.dual-fusion p,
+.dual-engine-card dt,
+.dual-reading small,
+.dual-four small,
+.dual-fusion small,
+.dual-four em {
+  color: var(--zv3-ink-soft) !important;
+}
+
+.dual-input-card,
+.dual-results,
+.dual-engine-card,
+.dual-engine-card.is-palm,
+.dual-engine-card dl div,
+.dual-reading,
+.dual-four span,
+.dual-fusion {
+  border-color: var(--zv3-line) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 249, 238, .12), rgba(238, 221, 192, .05)),
+    rgba(247, 238, 220, .32) !important;
+  box-shadow: var(--zv3-shadow-soft) !important;
+}
+
+.dual-input-card,
+.dual-results {
+  backdrop-filter: blur(1.4px) saturate(102%) !important;
+  -webkit-backdrop-filter: blur(1.4px) saturate(102%) !important;
+}
+
+.dual-tabs {
+  border-color: var(--zv3-line) !important;
+  background: rgba(244, 231, 208, .26) !important;
+}
+
+.dual-tabs button,
+.dual-direction button {
+  color: var(--zv3-ink-soft) !important;
+}
+
+.dual-tabs button[aria-selected="true"] {
+  color: #fffaf0 !important;
+  background: var(--zv3-jade) !important;
+  box-shadow: 0 7px 18px rgba(47, 116, 101, .10) !important;
+}
+
+.dual-fields label {
+  color: var(--zv3-ink-soft) !important;
+}
+
+.dual-fields select,
+.dual-direction button {
+  border-color: var(--zv3-line-strong) !important;
+  color: var(--zv3-ink) !important;
+  background: var(--zv3-paper-field) !important;
+}
+
+.dual-fields select:focus {
+  border-color: rgba(180, 55, 43, .46) !important;
+  box-shadow: 0 0 0 3px rgba(180, 55, 43, .06) !important;
+}
+
+.dual-direction button[aria-pressed="true"] {
+  border-color: rgba(47, 116, 101, .42) !important;
+  color: var(--zv3-jade) !important;
+  background: rgba(47, 116, 101, .07) !important;
+}
+
+.dual-auto {
+  border-color: rgba(47, 116, 101, .22) !important;
+  color: var(--zv3-jade) !important;
+  background: rgba(47, 116, 101, .055) !important;
+}
+
+.dual-auto i {
+  border-color: rgba(47, 116, 101, .32) !important;
+}
+
+.dual-submit {
+  color: #fff9ef !important;
+  background: linear-gradient(180deg, var(--zv3-red), var(--zv3-red-deep)) !important;
+  box-shadow: 0 10px 22px rgba(131, 43, 32, .12) !important;
+}
+
+.dual-error {
+  color: var(--zv3-red-deep) !important;
+}
+
+.dual-orbit-ring {
+  border-color: rgba(150, 111, 64, .26) !important;
+  box-shadow: inset 0 0 40px rgba(154, 113, 62, .035), 0 0 0 26px rgba(255,255,255,.025) !important;
+}
+
+.dual-orbit-ring::before {
+  background: var(--zv3-red) !important;
+  box-shadow: 0 0 12px rgba(180, 55, 43, .20) !important;
+}
+
+.dual-orbit-ring::after {
+  border-color: rgba(47, 116, 101, .18) !important;
+}
+
+.dual-orbit-core {
+  border-color: rgba(150, 111, 64, .34) !important;
+  background: radial-gradient(circle, rgba(255, 249, 238, .76), rgba(239, 224, 198, .58) 68%) !important;
+  box-shadow: 0 0 24px rgba(76, 55, 31, .045) !important;
+}
+
+.dual-orbit-core b {
+  color: var(--zv3-ink) !important;
+}
+
+.dual-orbit-core span {
+  color: var(--zv3-earth) !important;
+}
+
+.dual-orbit-node {
+  border-color: rgba(150, 111, 64, .25) !important;
+  color: var(--zv3-ink-soft) !important;
+  background: rgba(249, 241, 226, .82) !important;
+}
+
+.dual-orbit-node[data-active="true"] {
+  border-color: var(--zv3-jade) !important;
+  color: #fffaf0 !important;
+  background: var(--zv3-jade) !important;
+  box-shadow: 0 0 12px rgba(47, 116, 101, .16) !important;
+}
+
+.dual-reading {
+  border-left-color: rgba(180, 55, 43, .36) !important;
+}
+
+.dual-fusion > span {
+  border-color: rgba(180, 55, 43, .36) !important;
+  color: var(--zv3-red-deep) !important;
+}
+
+.dual-fusion blockquote {
+  color: var(--zv3-ink-soft) !important;
+  background: rgba(244, 231, 208, .30) !important;
+}
+
+/* Dragon assistant uses the same paper instead of a bright white pill. */
+.zhaowu-dragon-guide-trigger,
+.zhaowu-dragon-guide-panel,
+.zhaowu-dragon-guide-answer,
+.zhaowu-dragon-guide-shortcuts button {
+  border-color: var(--zv3-line) !important;
+  background: rgba(249, 241, 226, .82) !important;
+  color: var(--zv3-ink) !important;
+  box-shadow: 0 12px 34px rgba(58, 45, 28, .10) !important;
+  backdrop-filter: blur(8px) saturate(103%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(103%) !important;
+}
+
+.zhaowu-dragon-guide-trigger {
+  color: var(--zv3-jade) !important;
+}
+
+.zhaowu-dragon-guide-answer button,
+.zhaowu-dragon-guide-panel form button {
+  background: var(--zv3-jade) !important;
+  color: #fffaf0 !important;
+}
+
+@media (max-width: 440px) {
+  .zhaowu-has-wallpaper .zhaowu-app-frame {
+    width: calc(100% - 6px) !important;
+    margin-top: 3px !important;
+    padding: 6px 6px 18px !important;
+    border-radius: 22px !important;
+    background: rgba(244, 233, 212, .055) !important;
+  }
+
+  .zhaowu-site-header > div {
+    min-height: 60px !important;
+    padding-inline: 8px !important;
+  }
+
+  .zhaowu-home-hero,
+  #analysisForm,
+  .zhaowu-result-card,
+  .zhaowu-decree-gallery,
+  .zhaowu-focused-report,
+  .zhaowu-tools-section {
+    border-radius: 22px !important;
+  }
+
+  .zhaowu-home-hero {
+    min-height: 27rem;
+  }
+
+  #analysisForm,
+  .zhaowu-result-card {
+    padding: 20px 16px !important;
+  }
+
+  .zhaowu-decree-gallery {
+    grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr) !important;
+    gap: 11px !important;
+    padding: 16px !important;
+  }
+
+  .zhaowu-decree-note {
+    font-size: 11px !important;
+    line-height: 1.65 !important;
+  }
+
+  .zhaowu-report-visual {
+    min-height: 11rem !important;
+  }
+
+  .zhaowu-report-section {
+    border-radius: 16px !important;
+  }
+
+  .dual-page {
+    border-radius: 22px !important;
+  }
+
+  .dual-shell {
+    padding: .8rem !important;
+  }
+
+  .dual-input-card,
+  .dual-results,
+  .dual-engine-card,
+  .dual-fusion {
+    border-radius: 18px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .zhaowu-decree-gallery {
+    grid-template-columns: 1fr !important;
+  }
+}
