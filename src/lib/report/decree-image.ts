@@ -26,16 +26,17 @@ function friendlyMessage(code: string): string {
     case "UNAUTHORIZED":
     case "HTTP_401":
       return "登入狀態已失效，請重新登入後再查看命誥圖。";
+    case "NO_GALLERY_ASSET_AVAILABLE":
     case "GALLERY_REFERENCE_NOT_FOUND":
-      return "個人命誥圖庫目前沒有可用的核准母圖，暫不啟動生成。";
+      return "目前圖庫沒有可用圖片，請稍後再試。";
     case "GALLERY_REFERENCE_LOAD_FAILED":
-      return "個人命誥母圖暫時無法載入，請稍後再試。";
+      return "個人命誥圖片暫時無法載入，請稍後再試。";
     case "IMAGE_LOAD_FAILED":
       return "已保存的命誥圖暫時無法載入，請稍後再試。";
     case "IMAGE_GENERATION_FAILED":
-      return "命誥圖生成服務目前暫不可用，請稍後再試。";
+      return "命誥圖目前暫時無法建立，請稍後再試。";
     default:
-      return "命誥圖暫時無法生成。";
+      return "命誥圖暫時無法建立。";
   }
 }
 
