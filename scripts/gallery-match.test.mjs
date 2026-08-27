@@ -31,9 +31,10 @@ test("approved Gallery match is visible at the decree action instead of appearin
   assert.match(preview, /\.catch\(\(\) =>/);
 });
 
-test("owner Gallery uses only application roles, not guessed religious categories", async () => {
+test("owner Gallery category list contains only application roles", async () => {
   const manager = await read("src/components/owner-gallery-manager.tsx");
-  assert.match(manager, /"visual-library", "tea-guardian", "background", "dragon-sticker"/);
-  assert.doesNotMatch(manager, /buddhist|daoist|guardian-beast|auspicious-motif|report-art|reference-style/);
+  const categoryLine = manager.match(/const CATEGORIES = \[[^\n]+\] as const;/)?.[0] ?? "";
+  assert.equal(categoryLine, 'const CATEGORIES = ["visual-library", "tea-guardian", "background", "dragon-sticker"] as const;');
+  assert.doesNotMatch(categoryLine, /buddhist|daoist|guardian-beast|auspicious-motif|report-art|reference-style/);
   assert.match(manager, /Semantic interpretation belongs to per-image knowledge metadata/);
 });
