@@ -4,12 +4,13 @@ import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("decree image backend requires an approved client-eligible owner Gallery reference", async () => {
+test("decree image backend requires approved client-eligible art from the flat visual library", async () => {
   const source = await read("supabase/functions/generate-decree-image/index.ts");
   assert.match(source, /from\("gallery_asset_knowledge"\)/);
   assert.match(source, /\.eq\("analysis_status", "approved"\)/);
   assert.match(source, /\.eq\("client_eligible", true\)/);
-  assert.match(source, /\.eq\("category", "reference-style"\)/);
+  assert.match(source, /\.eq\("category", "visual-library"\)/);
+  assert.doesNotMatch(source, /\.eq\("category", "reference-style"\)/);
   assert.match(source, /chart\?\.useful/);
   assert.match(source, /chart\?\.drain/);
   assert.match(source, /GALLERY_REFERENCE_NOT_FOUND/);
