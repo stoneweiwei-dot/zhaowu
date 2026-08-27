@@ -17,6 +17,8 @@ test("GPT gallery auto-ingest is wired through Vercel and Supabase", async () =>
   assert.match(fn, /claim_gallery_ingest_queue/);
   assert.match(fn, /zhaowu-gallery/);
   assert.match(fn, /10 \* 1024 \* 1024/);
+  assert.match(fn, /SYSTEM_CATEGORIES = new Set\(\["visual-library", "tea-guardian", "background", "dragon-sticker"\]\)/);
+  assert.match(fn, /return SYSTEM_CATEGORIES\.has\(requested\) \? requested : "visual-library"/);
   assert.match(migration, /gallery_ingest_queue/);
   assert.match(migration, /enable row level security/);
   assert.match(migration, /grant execute on function public\.claim_gallery_ingest_queue\(\) to service_role/);
