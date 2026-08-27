@@ -47,23 +47,21 @@ test("website keeps the app concept base while homepage specialist cards shed lo
   assert.match(intro, /LOTUS_BLOOM_MS = 2200/);
 });
 
-test("owner-selected wallpaper remains available away from home while homepage is a closed sheet", async () => {
+test("background assets remain manageable but no longer render as application wallpaper", async () => {
   const shell = await source("src/components/site-shell.tsx");
+  const account = await source("src/routes/account.tsx");
   const main = await source("src/main.tsx");
-  const wallpaper = await source("src/wallpaper-visibility-fix.css");
-  const landscape = await source("src/landscape-paper.css");
   const finalHome = await source("src/home-sheet-ui-v5.css");
 
-  assert.match(shell, /const showWallpaper = Boolean\(backgroundUrl && !isHome\)/);
-  assert.match(shell, /\{showWallpaper \? \(/);
-  assert.match(shell, /className=\{`zhaowu-site-wallpaper \$\{isLogin \? "is-login" : ""\}`\}/);
-  assert.match(main, /wallpaper-visibility-fix\.css/);
-  assert.match(main, /landscape-paper\.css/);
+  assert.doesNotMatch(shell, /@\/lib\/background-assets/);
+  assert.doesNotMatch(shell, /zhaowu-site-wallpaper/);
+  assert.doesNotMatch(shell, /auspicious-emblem-scatter/);
+  assert.match(shell, /\$\{!isLogin \? "zhaowu-home-sheet-shell" : ""\}/);
+  assert.match(account, /listOwnerBackgrounds/);
+  assert.match(account, /uploadBackground/);
+  assert.match(account, /setBackgroundWallpaper/);
   assert.match(main, /home-sheet-ui-v5\.css/);
   assert.ok(main.indexOf("visual-readability-lock-v4.css") < main.indexOf("home-sheet-ui-v5.css"));
-  assert.match(wallpaper, /\.zhaowu-has-wallpaper \.zhaowu-login-card/);
-  assert.match(wallpaper, /\.zhaowu-has-wallpaper \.zhaowu-app-frame \.seal-border/);
-  assert.match(landscape, /\.zhaowu-site-wallpaper[\s\S]*display:\s*block\s*!important/);
   assert.match(finalHome, /\.zhaowu-home-sheet-shell \.zhaowu-site-wallpaper/);
   assert.match(finalHome, /display:\s*none\s*!important/);
 });
