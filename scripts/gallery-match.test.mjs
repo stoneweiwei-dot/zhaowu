@@ -31,10 +31,11 @@ test("approved Gallery match is visible at the decree action instead of appearin
   assert.match(preview, /\.catch\(\(\) =>/);
 });
 
-test("owner Gallery category list contains only application roles", async () => {
+test("owner Gallery is one upload surface with no manual religious taxonomy", async () => {
   const manager = await read("src/components/owner-gallery-manager.tsx");
-  const categoryLine = manager.match(/const CATEGORIES = \[[^\n]+\] as const;/)?.[0] ?? "";
-  assert.equal(categoryLine, 'const CATEGORIES = ["visual-library", "tea-guardian", "background", "dragon-sticker"] as const;');
-  assert.doesNotMatch(categoryLine, /buddhist|daoist|guardian-beast|auspicious-motif|report-art|reference-style/);
-  assert.match(manager, /Semantic interpretation belongs to per-image knowledge metadata/);
+  assert.match(manager, /category:\s*"visual-library"/);
+  assert.match(manager, /tags:\s*\["owner-upload", "auto-classify"\]/);
+  assert.match(manager, /分類、五行、用途、客戶匹配與背景調用都由系統在後台處理/);
+  assert.doesNotMatch(manager, /const CATEGORIES/);
+  assert.doesNotMatch(manager, /<select[^>]*>[^]*buddhist|<select[^>]*>[^]*daoist/);
 });
