@@ -18,15 +18,14 @@ jobs:
         with:
           node-version: 24
       - run: npm ci --no-audit --no-fund
-      - name: Rewrite public assets to GitHub raw CDN for fallback host
+      - name: Make app host-independent for fallback deployment
         shell: python
         run: |
           from pathlib import Path
           sha = '${{ github.sha }}'
           root = f'https://raw.githubusercontent.com/stoneweiwei-dot/zhaowu/{sha}/public'
           prefixes = ['emblems','intro','ornaments','tea-guardians','wallpapers','mascot']
-          files = list(Path('src').rglob('*'))
-          for p in files:
+          for p in Path('src').rglob('*'):
               if p.suffix not in {'.ts','.tsx','.js','.jsx','.css'}:
                   continue
               text = p.read_text(encoding='utf-8')
@@ -42,8 +41,16 @@ jobs:
                   text = text.replace(f"'/{name}'", f"'{root}/{name}'")
               text = text.replace('"/api/gallery-ingest-finalize"', '"https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize"')
               text = text.replace("'/api/gallery-ingest-finalize'", "'https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize'")
+              if p.as_posix() == 'src/main.tsx':
+                  text = text.replace("import { createRouter, RouterProvider } from '@tanstack/react-router';", "import { createHashHistory, createRouter, RouterProvider } from '@tanstack/react-router';")
+                  text = text.replace('const router = createRouter({ routeTree });', 'const router = createRouter({ routeTree, history: createHashHistory() });')
               if text != original:
                   p.write_text(text, encoding='utf-8')
+          index = Path('index.html')
+          text = index.read_text(encoding='utf-8')
+          text = text.replace('href="/manifest.webmanifest"', f'href="{root}/manifest.webmanifest"')
+          text = text.replace('href="/emblems/lotus-emblem.svg"', f'href="{root}/emblems/lotus-emblem.svg"')
+          index.write_text(text, encoding='utf-8')
       - name: Write fallback Vite config
         run: |
           cat > vite.fallback.config.ts <<'EOF'
@@ -72,6 +79,7 @@ jobs:
           test -f dist/index.html
           test -f dist/app.js
           test -f dist/app.css
+          grep -q 'createHashHistory' src/main.tsx
           du -sh dist
           find dist -maxdepth 2 -type f -printf '%p %k KB\n'
       - uses: actions/upload-artifact@v4
