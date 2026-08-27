@@ -1,0 +1,82 @@
+name: Fallback Hosting Dist
+
+on:
+  push:
+    branches: [deploy/fallback-host-20260827]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-fallback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci --no-audit --no-fund
+      - name: Rewrite public assets to GitHub raw CDN for fallback host
+        shell: python
+        run: |
+          from pathlib import Path
+          sha = '${{ github.sha }}'
+          root = f'https://raw.githubusercontent.com/stoneweiwei-dot/zhaowu/{sha}/public'
+          prefixes = ['emblems','intro','ornaments','tea-guardians','wallpapers','mascot']
+          files = list(Path('src').rglob('*'))
+          for p in files:
+              if p.suffix not in {'.ts','.tsx','.js','.jsx','.css'}:
+                  continue
+              text = p.read_text(encoding='utf-8')
+              original = text
+              for prefix in prefixes:
+                  text = text.replace(f'"/{prefix}/', f'"{root}/{prefix}/')
+                  text = text.replace(f"'/{prefix}/", f"'{root}/{prefix}/")
+                  text = text.replace(f'url(/{prefix}/', f'url({root}/{prefix}/')
+                  text = text.replace(f'url("/{prefix}/', f'url("{root}/{prefix}/')
+                  text = text.replace(f"url('/{prefix}/", f"url('{root}/{prefix}/")
+              for name in ['wallpaper-song.jpg','manifest.webmanifest','og.jpg','zhaowu-icon.svg']:
+                  text = text.replace(f'"/{name}"', f'"{root}/{name}"')
+                  text = text.replace(f"'/{name}'", f"'{root}/{name}'")
+              text = text.replace('"/api/gallery-ingest-finalize"', '"https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize"')
+              text = text.replace("'/api/gallery-ingest-finalize'", "'https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize'")
+              if text != original:
+                  p.write_text(text, encoding='utf-8')
+      - name: Write fallback Vite config
+        run: |
+          cat > vite.fallback.config.ts <<'EOF'
+          import { mergeConfig } from 'vite';
+          import baseConfig from './vite.config';
+          export default mergeConfig(baseConfig, {
+            base: './',
+            publicDir: false,
+            build: {
+              cssCodeSplit: false,
+              assetsInlineLimit: 8192,
+              rollupOptions: {
+                output: {
+                  inlineDynamicImports: true,
+                  entryFileNames: 'app.js',
+                  assetFileNames: (assetInfo) => assetInfo.name?.endsWith('.css') ? 'app.css' : 'asset-[name][extname]'
+                }
+              }
+            }
+          });
+          EOF
+      - name: Build compact fallback dist
+        run: npm exec vite build -- --config vite.fallback.config.ts
+      - name: Verify compact output
+        run: |
+          test -f dist/index.html
+          test -f dist/app.js
+          test -f dist/app.css
+          du -sh dist
+          find dist -maxdepth 2 -type f -printf '%p %k KB\n'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zhaowu-fallback-dist
+          path: dist
+          if-no-files-found: error
+          retention-days: 1
