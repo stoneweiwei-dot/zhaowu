@@ -3,9 +3,10 @@ import type { SupabaseSession } from "@/lib/supabase-rest";
 
 export type DecreeImageResult = {
   ok: true;
-  imagePath: string;
+  imagePath: string | null;
   signedUrl: string | null;
   reused?: boolean;
+  missing?: boolean;
 };
 
 type DecreeImageFailure = {
@@ -35,10 +36,10 @@ function friendlyMessage(code: string): string {
   }
 }
 
-export async function generateDecreeImage(
+async function requestDecreeImage(
   session: SupabaseSession,
   reportId: string,
-  force = false,
+  payload: { force?: boolean; viewOnly?: boolean },
 ): Promise<DecreeImageResult> {
   const res = await fetch(`${SUPABASE_URL}/functions/v1/generate-decree-image`, {
     method: "POST",
@@ -47,7 +48,7 @@ export async function generateDecreeImage(
       apikey: SUPABASE_KEY,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ reportId, force }),
+    body: JSON.stringify({ reportId, ...payload }),
   });
 
   let body: DecreeImageResult | DecreeImageFailure | null = null;
@@ -62,4 +63,19 @@ export async function generateDecreeImage(
     throw new Error(friendlyMessage(String(fail.error ?? `HTTP_${res.status}`)));
   }
   return body;
+}
+
+export async function loadExistingDecreeImage(
+  session: SupabaseSession,
+  reportId: string,
+): Promise<DecreeImageResult> {
+  return requestDecreeImage(session, reportId, { viewOnly: true });
+}
+
+export async function generateDecreeImage(
+  session: SupabaseSession,
+  reportId: string,
+  force = false,
+): Promise<DecreeImageResult> {
+  return requestDecreeImage(session, reportId, { force });
 }

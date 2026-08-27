@@ -155,6 +155,7 @@ Deno.serve(async (req: Request) => {
 
   const reportId = String(payload?.reportId ?? "").trim();
   const force = payload?.force === true;
+  const viewOnly = payload?.viewOnly === true;
   if (!reportId) return json({ ok: false, error: "REPORT_ID_REQUIRED" }, 400);
 
   const userClient = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: auth } } });
@@ -183,6 +184,13 @@ Deno.serve(async (req: Request) => {
         galleryReferenceAssetId: (profile as any)?.galleryReferenceAssetId ?? null,
       });
     }
+  }
+
+  // Result pages use this mode on mount. It is strictly delivery-only: never spend image credits
+  // and never turn a missing old image into a generation failure just because the user opened a report.
+  if (viewOnly) {
+    if (report.image_path) return json({ ok: false, error: "IMAGE_LOAD_FAILED" }, 502);
+    return json({ ok: true, imagePath: null, signedUrl: null, reused: false, missing: true });
   }
 
   const decree = decreeFrom(report);
