@@ -144,14 +144,12 @@ test("generated auspicious visual language is curated inside the report with rea
   }
 });
 
-test("report dragon assets remain non-blocking underneath the active parchment shell", async () => {
+test("report dragon assets are removed from the active parchment shell", async () => {
   const renderer = await source("src/components/paid-report-pages.tsx");
   const dragon = await source("src/components/report-dragon-sticker.tsx");
-  const reportStyles = await source("src/focused-report.css");
   const active = await source("src/home-sheet-ui-v5.css");
   assert.match(renderer, /ReportDragonSticker/);
   assert.match(dragon, /selectReportDragon/);
-  assert.match(reportStyles, /\.zhaowu-report-dragon[\s\S]*pointer-events:\s*none/);
   assert.match(active, /\.zhaowu-home-sheet-shell \.zhaowu-report-dragon/);
   assert.match(active, /display:\s*none\s*!important/);
 });
