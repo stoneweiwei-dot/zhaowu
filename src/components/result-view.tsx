@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { writeFullReport } from "@/lib/actions";
 import type { AnalysisResult } from "@/lib/bazi/types";
@@ -9,7 +9,7 @@ import { FocusedReportSections } from "@/components/paid-report-pages";
 import { DecreeGalleryPreview } from "@/components/decree-gallery-preview";
 import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
-import { generateDecreeImage } from "@/lib/report/decree-image";
+import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/report/decree-image";
 import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
 import { buildFreeDirectAnswer } from "@/lib/report/final-reading";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
@@ -70,6 +70,23 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const answer = customerDirectAnswer(question, buildFreeDirectAnswer(question, chart, reading, locale));
   const answerParagraphs = customerParagraphs(answer);
   const decreeCouplet = buildFreeDecreeCouplet(chart, locale);
+
+  useEffect(() => {
+    let cancelled = false;
+    setImageUrl(null);
+    if (!session || !user || !result.id) return () => { cancelled = true; };
+
+    void loadExistingDecreeImage(session, result.id)
+      .then((out) => {
+        if (!cancelled && out.signedUrl) setImageUrl(out.signedUrl);
+      })
+      .catch(() => {
+        // View-only retrieval is intentionally silent. A missing old image must not trigger generation
+        // or replace the user's text answer with an infrastructure error.
+      });
+
+    return () => { cancelled = true; };
+  }, [result.id, session?.access_token, user?.id]);
 
   async function ensureFullReport() {
     if (fullReport) return fullReport;
