@@ -54,11 +54,11 @@ test.describe("iPhone Safari parchment application shell", () => {
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {
     let backgroundReads = 0;
+    await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
     await page.route("**/rest/v1/background_assets?**", (route) => {
       backgroundReads += 1;
       return route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
     });
-    await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
 
     await page.goto("/account", { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(250);
