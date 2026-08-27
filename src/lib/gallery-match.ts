@@ -137,7 +137,7 @@ export async function loadCustomerGalleryCandidates(): Promise<Array<{ asset: Ga
   const ids = knowledge.map((row) => row.asset_id.replace(/[^a-fA-F0-9-]/g, "")).filter(Boolean);
   if (!ids.length) return [];
   const assetsResponse = await fetch(
-    `${SUPABASE_URL}/rest/v1/gallery_assets?enabled=eq.true&id=in.(${ids.join(",")})&select=${ASSET_SELECT}&order=id.asc`,
+    `${SUPABASE_URL}/rest/v1/gallery_assets?enabled=eq.true&category=eq.visual-library&id=in.(${ids.join(",")})&select=${ASSET_SELECT}&order=id.asc`,
     { headers: publicHeaders() },
   );
   if (!assetsResponse.ok) return [];
