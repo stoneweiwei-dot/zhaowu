@@ -6,7 +6,7 @@ import {
   type GuardianStyle,
 } from "./style-pool.ts";
 
-const IMAGE_STYLE_VERSION = "gallery-seeded-song-v5-20260827";
+const IMAGE_STYLE_VERSION = "gallery-seeded-song-v6-flat-library-20260827";
 const GALLERY_BUCKET = "zhaowu-gallery";
 
 const cors = {
@@ -83,7 +83,7 @@ async function chooseGalleryReference(service: any, chart: any) {
     .from("gallery_assets")
     .select("id,category,asset_key,title,storage_path,bucket_id,content_type,enabled")
     .eq("enabled", true)
-    .eq("category", "reference-style")
+    .eq("category", "visual-library")
     .in("id", ids);
   if (assetsError || !Array.isArray(assets) || !assets.length) return null;
 
@@ -287,7 +287,7 @@ Deno.serve(async (req: Request) => {
         galleryReferenceAssetId: galleryReference.id,
         galleryReferenceAssetKey: galleryReference.asset_key,
         galleryReferenceTitle: galleryReference.title,
-        visualSystem: "站主核准命誥圖庫母圖 × 舊宣紙宋系圖譜風 × 昭梧四柱繪意",
+        visualSystem: "站主核准作品庫母圖 × 舊宣紙宋系圖譜風 × 昭梧四柱繪意",
         auspiciousMotifs: ["依問題只選一主一輔，不堆疊八吉祥"],
       },
       updated_at: new Date().toISOString(),
