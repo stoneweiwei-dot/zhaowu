@@ -8,12 +8,14 @@ async function source(path) {
   return readFile(new URL(path, root), "utf8");
 }
 
-test("homepage suppresses wallpaper and loose ornament scatter while keeping other routes intact", async () => {
+test("all non-login application routes use the closed parchment shell without wallpaper or loose scatter", async () => {
   const shell = await source("src/components/site-shell.tsx");
   assert.match(shell, /const isHome = pathname === "\/"/);
-  assert.match(shell, /const showWallpaper = Boolean\(backgroundUrl && !isHome\)/);
-  assert.match(shell, /const showScatter = !isHome/);
-  assert.match(shell, /zhaowu-home-sheet-shell/);
+  assert.match(shell, /const isLogin = pathname === "\/login"/);
+  assert.match(shell, /\$\{!isLogin \? "zhaowu-home-sheet-shell" : ""\}/);
+  assert.doesNotMatch(shell, /backgroundUrl|showWallpaper|showScatter/);
+  assert.doesNotMatch(shell, /zhaowu-site-wallpaper/);
+  assert.doesNotMatch(shell, /auspicious-emblem-scatter/);
   assert.match(shell, /zhaowu-home-app-frame/);
 });
 

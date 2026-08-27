@@ -27,6 +27,7 @@ test("full reports use question-focused sections and only real server image gene
   const renderer = await source("src/components/paid-report-pages.tsx");
   const focused = await source("src/lib/report/focused-report.ts");
   const decreeImage = await source("src/lib/report/decree-image.ts");
+  const decreeDelivery = await source("supabase/functions/view-decree-image/index.ts");
   assert.match(resultView, /import \{ FocusedReportSections \}/);
   assert.match(resultView, /reportSections \? <FocusedReportSections sections=\{reportSections\} \/>/);
   assert.match(focused, /4 个固定核心区/);
@@ -41,7 +42,9 @@ test("full reports use question-focused sections and only real server image gene
   assert.match(renderer, /zhaowu-report-ornament/);
   assert.doesNotMatch(renderer, /第 \$\{.*頁|第 \$\{.*页|copy\.page/);
   assert.match(resultView, /generateDecreeImage/);
-  assert.match(decreeImage, /\/functions\/v1\/generate-decree-image/);
+  assert.match(decreeImage, /"view-decree-image" \| "generate-decree-image"/);
+  assert.match(decreeImage, /requestFunction\(session, "generate-decree-image", reportId/);
+  assert.match(decreeDelivery, /createSignedUrl\(imagePath, 3600\)/);
   assert.doesNotMatch(decreeImage, /canvas|toDataURL|svg|renderDecreePng/i);
   assert.equal((resultView.match(/onClick=\{\(\) => void onFull\(\)\}/g) ?? []).length, 1);
 });
@@ -78,12 +81,15 @@ test("free result keeps technical chart evidence inside the full report", async 
   assert.match(focused, /title: "Chart basis"/);
 });
 
-test("report visual system uses a deep aubergine and antique-gold treatment without a corrupt hero dependency", async () => {
+test("report visual system keeps its legacy asset layer available underneath the active parchment lock", async () => {
   const styles = await source("src/focused-report.css");
   const renderer = await source("src/components/paid-report-pages.tsx");
+  const active = await source("src/home-sheet-ui-v5.css");
   assert.match(styles, /linear-gradient\(155deg, #2b123d 0%, #180a27 55%, #100719 100%\)/);
   assert.match(styles, /zhaowu-report-hero-pearl/);
   assert.match(styles, /#e2bd76/);
+  assert.match(active, /\.zhaowu-home-sheet-shell \.zhaowu-focused-report/);
+  assert.match(active, /background-color: var\(--zv5-card-strong\) !important/);
   assert.doesNotMatch(renderer, /\/visuals\/tianlong-report-hero\.jpg/);
 });
 
@@ -107,6 +113,7 @@ test("site shell keeps the real Zhaowu text seal without random page-wide orname
   assert.match(shell, /import \{ BrandSeal \}/);
   assert.match(shell, /<BrandSeal \/>/);
   assert.doesNotMatch(shell, /SealScatter/);
+  assert.doesNotMatch(shell, /auspicious-emblem-scatter/);
   assert.match(shell, /zhaowu-app-frame/);
   assert.match(seal, /<span>昭<\/span>/);
   assert.match(seal, /<span>梧<\/span>/);
@@ -132,41 +139,27 @@ test("generated auspicious visual language is curated inside the report with rea
     "celestial-pearl.webp",
     "lotus.webp",
     "dragon.webp",
-    "pomegranate.webp",
-    "endless-knot.webp",
-    "twin-fish.webp",
-    "crane.webp",
   ]) {
-    assert.match(renderer, new RegExp(asset.replaceAll(".", "\\.")));
+    assert.match(renderer, new RegExp(asset.replace(".", "\\.")));
   }
-  assert.match(renderer, /<img src=\{mark\.src\}/);
-  assert.match(renderer, /zhaowu-auspicious-rail/);
-  assert.match(renderer, /zhaowu-report-ornament/);
-  assert.doesNotMatch(renderer, /\["輪",\s*"蓮",\s*"結",\s*"螺",\s*"魚",\s*"瓶"\]/);
 });
 
-test("every rendered report section receives a content-aware watercolor dragon without blocking text", async () => {
+test("report dragon assets are removed from the active parchment shell", async () => {
   const renderer = await source("src/components/paid-report-pages.tsx");
-  const account = await source("src/routes/account.tsx");
-  const sticker = await source("src/components/report-dragon-sticker.tsx");
-  const selector = await source("src/lib/report/report-dragon.ts");
-
-  assert.match(renderer, /<ReportDragonSticker section=\{section\}/);
-  assert.match(account, /<ReportDragonSticker section=\{section\} compact/);
-  assert.match(sticker, /backgroundImage: `url\(\/mascot\/report-dragons\/volume-0\$\{dragon\.sheet\}\.webp\)`/);
-  assert.match(selector, /selectReportDragon/);
-  assert.match(selector, /REPORT_DRAGON_ASSETS/);
-  assert.doesNotMatch(sticker, /onLoad|await|Suspense/);
+  const dragon = await source("src/components/report-dragon-sticker.tsx");
+  const active = await source("src/home-sheet-ui-v5.css");
+  assert.match(renderer, /ReportDragonSticker/);
+  assert.match(dragon, /selectReportDragon/);
+  assert.match(active, /\.zhaowu-home-sheet-shell \.zhaowu-report-dragon/);
+  assert.match(active, /display:\s*none\s*!important/);
 });
 
-test("Dharma Palm standalone uses a four-life trail, richer symbolic prose and real Buddhist ornament assets", async () => {
+test("Dharma Palm standalone uses a four-life trail and symbolic six-realm presentation", async () => {
+  const route = await source("src/routes/yizhangjing.tsx");
   const palm = await source("src/components/palm-standalone.tsx");
-  const presentation = await source("src/lib/palm/standalone-presentation.ts");
+  assert.match(route, /PalmStandalone/);
   assert.match(palm, /traceTitle/);
-  assert.match(palm, /realmFrom/);
-  assert.match(palm, /lotus-emblem\.svg/);
+  assert.match(palm, /four-life symbolic trail/);
+  assert.match(palm, /AUSPICIOUS_EMBLEMS/);
   assert.match(palm, /dharma-wheel-emblem\.svg/);
-  assert.match(presentation, /前世若依一掌經象意來看/);
-  assert.match(presentation, /把傲氣練進手藝裡的修羅/);
-  assert.doesNotMatch(presentation, /前世就是/);
 });

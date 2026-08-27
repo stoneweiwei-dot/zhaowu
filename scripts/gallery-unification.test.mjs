@@ -5,19 +5,22 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("one visible Gallery coexists with the owner-managed background wallpaper pipeline", async () => {
+test("one visible Gallery coexists with an inactive owner-managed background asset library", async () => {
   const shell = await source("src/components/site-shell.tsx");
+  const account = await source("src/routes/account.tsx");
   const gallery = await source("src/components/owner-gallery-manager.tsx");
   const main = await source("src/main.tsx");
   const lock = await source("src/gallery-unification.css");
 
-  assert.match(shell, /from "@\/lib\/background-assets"/);
-  assert.match(shell, /listPublicBackgrounds\(\)/);
-  assert.match(shell, /chooseDailyBackground\(assets\)/);
-  assert.match(shell, /backgroundPublicUrl\(selected\.storage_path\)/);
-  assert.doesNotMatch(shell, /listPublicGalleryAssets\("background"\)/);
+  assert.doesNotMatch(shell, /from "@\/lib\/background-assets"/);
+  assert.doesNotMatch(shell, /listPublicBackgrounds\(\)/);
+  assert.doesNotMatch(shell, /zhaowu-site-wallpaper/);
   assert.match(shell, /to="\/gallery"/);
   assert.match(shell, /"图库"/);
+
+  assert.match(account, /from "@\/lib\/background-assets"/);
+  assert.match(account, /listOwnerBackgrounds/);
+  assert.match(account, /setBackgroundWallpaper/);
 
   assert.match(gallery, /你只需要把喜欢的图放进来/);
   assert.match(gallery, /分类、五行、用途、客户匹配与背景调用都由系统在后台处理/);
