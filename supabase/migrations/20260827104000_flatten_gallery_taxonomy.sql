@@ -7,7 +7,6 @@ set
     else array_append(tags, 'legacy-category:' || category)
   end,
   category = 'visual-library',
-  is_primary = false,
   updated_at = now()
 where category in (
   'buddhist',
