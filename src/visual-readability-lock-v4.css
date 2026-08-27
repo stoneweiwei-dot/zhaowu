@@ -1,0 +1,154 @@
+/*
+ * ZHAOWU owner readability lock — 2026-08-27.
+ * Imported after approved-parchment-ui-v3.css.
+ * Keeps the owner wallpaper visible in gutters while giving text-bearing surfaces enough paper density
+ * to remain readable on bright, dark, or detailed background art.
+ */
+
+:root {
+  --zv4-surface: rgba(249, 243, 232, .90);
+  --zv4-surface-strong: rgba(250, 245, 236, .96);
+  --zv4-field: rgba(255, 251, 244, .94);
+  --zv4-ink: #29251f;
+  --zv4-ink-soft: #494137;
+  --zv4-line: rgba(139, 100, 57, .30);
+}
+
+/* Do not veil the owner wallpaper globally. The separation happens only where text is read. */
+.zhaowu-has-wallpaper .zhaowu-app-frame {
+  background: rgba(244, 233, 212, .04) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Primary reading surfaces: warm paper, not glass. */
+.zhaowu-home-hero,
+#analysisForm,
+.zhaowu-result-card,
+.zhaowu-decree-gallery,
+.zhaowu-decree-couplet,
+.zhaowu-generated-decree,
+.zhaowu-tools-section,
+.zhaowu-specialist-card,
+.zhaowu-focused-report {
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, .22), rgba(239, 224, 198, .08)),
+    var(--zv4-surface) !important;
+  border-color: var(--zv4-line) !important;
+  backdrop-filter: blur(1px) saturate(101%) !important;
+  -webkit-backdrop-filter: blur(1px) saturate(101%) !important;
+}
+
+/* Inputs and secondary text containers must stay legible over every wallpaper. */
+#analysisForm input,
+#analysisForm textarea,
+#analysisForm select,
+.zhaowu-dragon-guide-panel input,
+.zhaowu-result-message,
+.zhaowu-result-secondary,
+.zhaowu-decree-preview,
+.zhaowu-decree-preview-skeleton {
+  background-color: var(--zv4-field) !important;
+}
+
+/* Full report: explicitly extinguish the old purple skin and make each reading section opaque enough. */
+.zhaowu-focused-report {
+  color: var(--zv4-ink) !important;
+  background-color: var(--zv4-surface-strong) !important;
+}
+
+.zhaowu-report-visual {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(172, 123, 65, .08), transparent 14rem),
+    linear-gradient(180deg, rgba(255, 251, 244, .20), rgba(235, 217, 187, .08)),
+    rgba(249, 243, 232, .93) !important;
+}
+
+.zhaowu-report-visual-shade {
+  background: linear-gradient(90deg, rgba(248, 240, 226, .18), rgba(255, 252, 246, .04), rgba(238, 223, 198, .13)) !important;
+}
+
+.zhaowu-auspicious-rail {
+  background: rgba(250, 245, 236, .96) !important;
+  border-color: var(--zv4-line) !important;
+}
+
+.zhaowu-auspicious-rail figure > span {
+  background: rgba(255, 251, 243, .98) !important;
+}
+
+.zhaowu-auspicious-rail img {
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.zhaowu-report-section {
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, .18), rgba(239, 224, 198, .05)),
+    rgba(250, 245, 236, .96) !important;
+  border-color: var(--zv4-line) !important;
+}
+
+.zhaowu-report-section-heading h4,
+.zhaowu-focused-report h3,
+.zhaowu-report-visual .text-\[\#fff8e8\],
+.zhaowu-report-visual .text-\[\#efe4cf\]\/85 {
+  color: var(--zv4-ink) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.zhaowu-report-section-body,
+.zhaowu-report-section-body p,
+.zhaowu-focused-report p,
+.zhaowu-decree-copy,
+.zhaowu-decree-copy p {
+  color: var(--zv4-ink-soft) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.zhaowu-report-hero-phoenix,
+.zhaowu-report-hero-pearl,
+.zhaowu-report-hero-lotus {
+  opacity: .72 !important;
+  filter: saturate(.92) contrast(.98) drop-shadow(0 7px 12px rgba(73, 52, 30, .08)) !important;
+}
+
+/* Section ornaments stay subordinate because they sit inside the text card. */
+.zhaowu-report-ornament {
+  opacity: .18 !important;
+}
+
+/* Global random decorations now use painterly WebP assets; show their actual color and detail. */
+.zhaowu-random-emblem {
+  opacity: .96 !important;
+  filter:
+    drop-shadow(0 0 2px rgba(255, 252, 244, .98))
+    drop-shadow(0 5px 12px rgba(66, 47, 29, .18)) !important;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-home-hero,
+  #analysisForm,
+  .zhaowu-result-card,
+  .zhaowu-decree-gallery,
+  .zhaowu-decree-couplet,
+  .zhaowu-generated-decree,
+  .zhaowu-tools-section,
+  .zhaowu-specialist-card {
+    background-color: rgba(249, 243, 232, .92) !important;
+  }
+
+  .zhaowu-focused-report {
+    background-color: rgba(250, 245, 236, .97) !important;
+  }
+
+  .zhaowu-report-section {
+    background-color: rgba(250, 245, 236, .97) !important;
+  }
+
+  .zhaowu-random-emblem {
+    opacity: .96 !important;
+  }
+}

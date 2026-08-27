@@ -32,12 +32,14 @@ async function expectAuspiciousEmblemsHealthy(page: Page, route: (typeof CORE_RO
 
   const sources = await emblems.evaluateAll((nodes) => nodes.map((node) => (node as HTMLImageElement).getAttribute("src")));
   expect(new Set(sources).size).toBe(6);
+  expect(sources.every((source) => Boolean(source?.startsWith("/ornaments/generated/") && source.endsWith(".webp")))).toBe(true);
+  expect(sources.some((source) => source?.includes("/emblems/") || source?.endsWith(".svg"))).toBe(false);
 
   for (let index = 0; index < 4; index += 1) {
     const emblem = emblems.nth(index);
     await expect(emblem).toBeVisible();
     expect(await emblem.evaluate((node) => getComputedStyle(node).pointerEvents)).toBe("none");
-    expect(await emblem.evaluate((node) => Number.parseFloat(getComputedStyle(node).opacity))).toBeGreaterThanOrEqual(0.8);
+    expect(await emblem.evaluate((node) => Number.parseFloat(getComputedStyle(node).opacity))).toBeGreaterThanOrEqual(0.92);
     const box = await emblem.boundingBox();
     expect(box).not.toBeNull();
     if (!box) continue;
@@ -55,7 +57,7 @@ async function expectAuspiciousEmblemsHealthy(page: Page, route: (typeof CORE_RO
 }
 
 test.describe("iPhone Safari auspicious emblem scatter", () => {
-  test("renders above page material without blocking core routes", async ({ page }) => {
+  test("renders painterly WebP ornaments above page material without blocking core routes", async ({ page }) => {
     await makeAppOfflineSafe(page);
 
     for (const route of CORE_ROUTES) {
@@ -63,5 +65,75 @@ test.describe("iPhone Safari auspicious emblem scatter", () => {
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
       await expectAuspiciousEmblemsHealthy(page, route);
     }
+  });
+
+  test("reads the owner-managed background_assets wallpaper and keeps reading surfaces opaque", async ({ page }) => {
+    await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
+
+    let backgroundReads = 0;
+    await page.route("**/rest/v1/background_assets?**", (route) => {
+      backgroundReads += 1;
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify([
+          {
+            id: "11111111-1111-4111-8111-111111111111",
+            source: "upload",
+            name: "owner-wallpaper.webp",
+            storage_path: "2026-08-27/owner-wallpaper.webp",
+            content_type: "image/webp",
+            enabled: true,
+            days_of_week: [],
+            start_date: null,
+            end_date: null,
+            theme: "wallpaper",
+            created_at: "2026-08-27T00:00:00.000Z",
+            updated_at: "2026-08-27T00:00:00.000Z",
+          },
+        ]),
+      });
+    });
+
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await expect.poll(() => backgroundReads).toBeGreaterThan(0);
+
+    const wallpaper = page.locator(".zhaowu-site-wallpaper");
+    await expect(wallpaper).toBeAttached();
+    await expect(wallpaper).toHaveAttribute("style", /zhaowu-backgrounds.*owner-wallpaper\.webp/);
+
+    const hero = page.locator(".zhaowu-home-hero").first();
+    await expect(hero).toBeVisible();
+    const heroAlpha = await hero.evaluate((node) => {
+      const value = getComputedStyle(node).backgroundColor;
+      const rgba = value.match(/rgba?\(([^)]+)\)/);
+      if (!rgba) return 1;
+      const parts = rgba[1].split(",").map((part) => Number.parseFloat(part.trim()));
+      return parts.length >= 4 && Number.isFinite(parts[3]) ? parts[3] : 1;
+    });
+    expect(heroAlpha).toBeGreaterThanOrEqual(0.88);
+
+    const reportSurfaceAlpha = await page.evaluate(() => {
+      const report = document.createElement("section");
+      report.className = "zhaowu-focused-report";
+      const card = document.createElement("article");
+      card.className = "zhaowu-report-section";
+      report.append(card);
+      document.body.append(report);
+      const parseAlpha = (value: string) => {
+        const rgba = value.match(/rgba?\(([^)]+)\)/);
+        if (!rgba) return 1;
+        const parts = rgba[1].split(",").map((part) => Number.parseFloat(part.trim()));
+        return parts.length >= 4 && Number.isFinite(parts[3]) ? parts[3] : 1;
+      };
+      const value = {
+        report: parseAlpha(getComputedStyle(report).backgroundColor),
+        card: parseAlpha(getComputedStyle(card).backgroundColor),
+      };
+      report.remove();
+      return value;
+    });
+    expect(reportSurfaceAlpha.report).toBeGreaterThanOrEqual(0.94);
+    expect(reportSurfaceAlpha.card).toBeGreaterThanOrEqual(0.94);
   });
 });

@@ -5,7 +5,11 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/site-stats";
-import { galleryPublicUrl, listPublicGalleryAssets, type GalleryAsset } from "@/lib/gallery-assets";
+import {
+  backgroundPublicUrl,
+  chooseDailyBackground,
+  listPublicBackgrounds,
+} from "@/lib/background-assets";
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
 
 const EMPTY_STATS: PublicSiteStats = {
@@ -18,19 +22,14 @@ const EMPTY_STATS: PublicSiteStats = {
 
 const WEEKLY_WALLPAPER_B64_PATH = "/wallpapers/current-weekly.b64";
 const AUSPICIOUS_EMBLEM_POOL = [
-  "/emblems/dharma-wheel-emblem.svg",
-  "/emblems/lotus-emblem.svg",
-  "/emblems/modern-bagua-emblem.svg",
-  "/emblems/modern-bell-emblem.svg",
-  "/emblems/modern-conch-emblem.svg",
-  "/emblems/heaven-gate-emblem.svg",
-  "/emblems/crane-feather-emblem.svg",
-  "/emblems/line-ornament-01.svg",
-  "/emblems/line-ornament-02.svg",
-  "/emblems/line-ornament-03.svg",
-  "/emblems/line-ornament-04.svg",
-  "/emblems/line-ornament-05.svg",
-  "/emblems/line-ornament-06.svg",
+  "/ornaments/generated/phoenix.webp",
+  "/ornaments/generated/celestial-pearl.webp",
+  "/ornaments/generated/lotus.webp",
+  "/ornaments/generated/dragon.webp",
+  "/ornaments/generated/pomegranate.webp",
+  "/ornaments/generated/endless-knot.webp",
+  "/ornaments/generated/twin-fish.webp",
+  "/ornaments/generated/crane.webp",
 ] as const;
 
 function hashSeed(value: string) {
@@ -69,17 +68,6 @@ async function loadWeeklyWallpaper(): Promise<string | null> {
   }
 }
 
-function chooseGalleryWallpaper(assets: GalleryAsset[], now = new Date()): GalleryAsset | null {
-  const enabled = assets.filter((asset) => asset.enabled);
-  if (!enabled.length) return null;
-  const primary = enabled.find((asset) => asset.is_primary);
-  if (primary) return primary;
-  const start = Date.UTC(now.getFullYear(), 0, 0);
-  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-  const dayOfYear = Math.floor((today - start) / 86_400_000);
-  return enabled[Math.abs(dayOfYear) % enabled.length] ?? enabled[0] ?? null;
-}
-
 export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
@@ -108,11 +96,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
     const loadBackground = () => {
       void (async () => {
         try {
-          const assets = await listPublicGalleryAssets("background");
+          const assets = await listPublicBackgrounds();
           if (!alive) return;
-          const selected = chooseGalleryWallpaper(assets);
+          const selected = chooseDailyBackground(assets);
           if (selected) {
-            setBackgroundUrl(galleryPublicUrl(selected.storage_path, selected.bucket_id));
+            setBackgroundUrl(backgroundPublicUrl(selected.storage_path));
             return;
           }
         } catch {

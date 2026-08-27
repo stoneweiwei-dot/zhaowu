@@ -20,6 +20,7 @@ import './production-visual-reset.css';
 import './gallery-unification.css';
 import './approved-mobile-ui-v2.css';
 import './approved-parchment-ui-v3.css';
+import './visual-readability-lock-v4.css';
 
 const router = createRouter({ routeTree });
 
