@@ -16,7 +16,8 @@ test("owner image management uses one visible Gallery instead of the legacy Back
   assert.doesNotMatch(shell, /from "@\/lib\/background-assets"/);
   assert.match(shell, /to="\/gallery"/);
   assert.match(shell, /"图库"/);
-  assert.match(gallery, /原背景库已并入图库/);
+  assert.match(gallery, /一般作品统一进作品库/);
+  assert.match(gallery, /系统只保留真正会影响网站功能的用途/);
   assert.match(gallery, /category === "background" \? "site-wallpaper"/);
   assert.match(main, /gallery-unification\.css/);
   assert.match(lock, /section:nth-of-type\(2\):has\(input\[type="file"\]/);
