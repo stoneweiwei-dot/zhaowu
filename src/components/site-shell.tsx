@@ -1,15 +1,10 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/site-stats";
-import {
-  backgroundPublicUrl,
-  chooseDailyBackground,
-  listPublicBackgrounds,
-} from "@/lib/background-assets";
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
 
 const EMPTY_STATS: PublicSiteStats = {
@@ -20,54 +15,6 @@ const EMPTY_STATS: PublicSiteStats = {
   publishedAt: null,
 };
 
-const WEEKLY_WALLPAPER_B64_PATH = "/wallpapers/current-weekly.b64";
-const AUSPICIOUS_EMBLEM_POOL = [
-  "/ornaments/generated/phoenix.webp",
-  "/ornaments/generated/celestial-pearl.webp",
-  "/ornaments/generated/lotus.webp",
-  "/ornaments/generated/dragon.webp",
-  "/ornaments/generated/pomegranate.webp",
-  "/ornaments/generated/endless-knot.webp",
-  "/ornaments/generated/twin-fish.webp",
-  "/ornaments/generated/crane.webp",
-] as const;
-
-function hashSeed(value: string) {
-  let hash = 2166136261;
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function chooseRouteEmblems(pathname: string, visitSeed: number, count = 6) {
-  const pool = [...AUSPICIOUS_EMBLEM_POOL];
-  let state = hashSeed(`${pathname}:${visitSeed}`) || 1;
-  const next = () => {
-    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
-    return state / 0x1_0000_0000;
-  };
-
-  for (let index = pool.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(next() * (index + 1));
-    [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
-  }
-  return pool.slice(0, count);
-}
-
-async function loadWeeklyWallpaper(): Promise<string | null> {
-  try {
-    const res = await fetch(WEEKLY_WALLPAPER_B64_PATH, { cache: "force-cache" });
-    if (!res.ok) return null;
-    const b64 = (await res.text()).trim();
-    if (!b64 || b64.length < 32) return null;
-    return `data:image/jpeg;base64,${b64}`;
-  } catch {
-    return null;
-  }
-}
-
 export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
@@ -75,14 +22,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const isHome = pathname === "/";
   const isLogin = pathname === "/login";
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
-  const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
-  const [emblemVisitSeed] = useState(() => Math.floor(Math.random() * 0x7fffffff));
-  const routeEmblems = useMemo(
-    () => chooseRouteEmblems(pathname, emblemVisitSeed),
-    [pathname, emblemVisitSeed],
-  );
-  const showWallpaper = Boolean(backgroundUrl && !isHome);
-  const showScatter = !isHome;
 
   useEffect(() => {
     hydrateLocale();
@@ -96,64 +35,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
           .catch(() => undefined);
       });
 
-    const loadBackground = () => {
-      void (async () => {
-        try {
-          const assets = await listPublicBackgrounds();
-          if (!alive) return;
-          const selected = chooseDailyBackground(assets);
-          if (selected) {
-            setBackgroundUrl(backgroundPublicUrl(selected.storage_path));
-            return;
-          }
-        } catch {
-          // Fall through to the weekly generated fallback.
-        }
-
-        const weekly = await loadWeeklyWallpaper();
-        if (!alive) return;
-        setBackgroundUrl(weekly ?? "/wallpaper-song.jpg");
-      })();
-    };
-
-    loadBackground();
-    window.addEventListener("zhaowu-background-change", loadBackground);
-    window.addEventListener("zhaowu-gallery-change", loadBackground);
     return () => {
       alive = false;
-      window.removeEventListener("zhaowu-background-change", loadBackground);
-      window.removeEventListener("zhaowu-gallery-change", loadBackground);
     };
   }, []);
 
   return (
-    <div className={`relative isolate min-h-dvh bg-transparent text-ink ${isHome ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"} ${showWallpaper ? "zhaowu-has-wallpaper" : ""}`}>
-      {showWallpaper ? (
-        <div
-          aria-hidden
-          className={`zhaowu-site-wallpaper ${isLogin ? "is-login" : ""}`}
-          style={{ backgroundImage: `url("${backgroundUrl}")` }}
-        />
-      ) : null}
-
-      {showScatter ? (
-        <div
-          aria-hidden="true"
-          data-testid="auspicious-emblem-scatter"
-          className="zhaowu-emblem-scatter"
-        >
-          {routeEmblems.map((src, index) => (
-            <img
-              key={`${pathname}-${src}-${index}`}
-              src={src}
-              alt=""
-              draggable={false}
-              className={`zhaowu-random-emblem zhaowu-random-emblem-${index + 1}`}
-            />
-          ))}
-        </div>
-      ) : null}
-
+    <div className={`relative isolate min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"}`}>
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">
           <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
