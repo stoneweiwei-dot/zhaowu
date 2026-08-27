@@ -92,6 +92,9 @@ function relaxedReferenceScore(asset: any, knowledge: any, chart: any, question:
   const strict = referenceScore(chart, knowledge);
   let score = Number.isFinite(strict) ? strict : 0;
   score += Math.max(0, Math.min(1, Number(knowledge?.confidence) || 0)) * 4;
+  if (knowledge) score += 2;
+  if (knowledge?.analysis_status === "approved") score += 4;
+  if (knowledge?.client_eligible === true) score += 6;
 
   const text = galleryText(asset, knowledge);
   if (/(宋|song|宣紙|宣纸|xuan|絹|绢|silk|工筆|工笔|gongbi|岩彩|mineral|古畫|古画|historical|圖譜|图谱|atlas|山水|landscape|東方|东方|east.asian)/.test(text)) score += 18;
@@ -152,23 +155,16 @@ async function chooseGalleryReference(service: any, chart: any, question: string
         .filter(([id]) => Boolean(id)),
     );
 
-    const strictAssets = visualAssets.filter((asset: any) => {
-      const knowledge = knowledgeById.get(String(asset.id));
-      return knowledge?.analysis_status === "approved" && knowledge?.client_eligible === true;
-    });
-    if (strictAssets.length) {
-      const winner = rankGalleryAssets(strictAssets, knowledgeById, chart, question)[0];
-      return { asset: winner.asset, mode: "strict", score: winner.score };
-    }
-
-    const knowledgeBacked = visualAssets.filter((asset: any) => knowledgeById.has(String(asset.id)));
-    if (knowledgeBacked.length) {
-      const winner = rankGalleryAssets(knowledgeBacked, knowledgeById, chart, question)[0];
-      return { asset: winner.asset, mode: "knowledge-fallback", score: winner.score };
-    }
-
+    // Rank the whole enabled visual library. Approval and semantic knowledge are quality signals,
+    // not hard gates: a closer Gallery image must be allowed to beat the old four-item approved pool.
     const winner = rankGalleryAssets(visualAssets, knowledgeById, chart, question)[0];
-    return { asset: winner.asset, mode: "visual-library-fallback", score: winner.score };
+    const knowledge = knowledgeById.get(String(winner.asset.id));
+    const mode: GallerySelection["mode"] = knowledge?.analysis_status === "approved" && knowledge?.client_eligible === true
+      ? "strict"
+      : knowledge
+        ? "knowledge-fallback"
+        : "visual-library-fallback";
+    return { asset: winner.asset, mode, score: winner.score };
   }
 
   const { data: anyAssets } = await service
