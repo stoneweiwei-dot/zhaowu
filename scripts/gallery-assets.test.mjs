@@ -22,7 +22,7 @@ test("owner gallery route is owner-gated and registered", async () => {
   assert.match(route, /!user\.isOwner/);
   assert.match(route, /OwnerGalleryManager/);
   assert.match(tree, /'\/gallery'/);
-  assert.match(manager, /"reference-style"/);
+  assert.match(manager, /"visual-library"/);
   assert.match(manager, /galleryPublicUrl\(asset\.storage_path, asset\.bucket_id\)/);
 });
 
