@@ -6,7 +6,8 @@ import {
   type GuardianStyle,
 } from "./style-pool.ts";
 
-const IMAGE_STYLE_VERSION = "gallery-seeded-song-v7-reuse-existing-20260827";
+const IMAGE_STYLE_VERSION = "gallery-seeded-song-v8-optional-personalization-20260827";
+const GALLERY_DIRECT_VERSION = "gallery-direct-v1-20260827";
 const GALLERY_BUCKET = "zhaowu-gallery";
 const REPORT_BUCKET = "zhaowu-report-images";
 
@@ -70,31 +71,167 @@ function referenceScore(chart: any, knowledge: any): number {
   return Number((support + balance * 0.18 - drainScore * 0.36 + confidence * 4).toFixed(6));
 }
 
-async function chooseGalleryReference(service: any, chart: any) {
-  const { data: knowledgeRows, error: knowledgeError } = await service
-    .from("gallery_asset_knowledge")
-    .select("asset_id,element_scores,confidence")
-    .eq("analysis_status", "approved")
-    .eq("client_eligible", true);
-  if (knowledgeError || !Array.isArray(knowledgeRows) || !knowledgeRows.length) return null;
+function listText(value: unknown): string[] {
+  return Array.isArray(value) ? value.map(String).map((item) => item.trim()).filter(Boolean) : [];
+}
 
-  const ids = knowledgeRows.map((row: any) => String(row.asset_id ?? "")).filter(Boolean);
-  if (!ids.length) return null;
+function galleryText(asset: any, knowledge: any): string {
+  return [
+    asset?.title,
+    asset?.asset_key,
+    asset?.category,
+    ...listText(asset?.tags),
+    ...listText(knowledge?.subject_labels),
+    ...listText(knowledge?.style_labels),
+    ...listText(knowledge?.motifs),
+    ...listText(knowledge?.use_roles),
+  ].filter(Boolean).join(" ").toLowerCase();
+}
 
-  const { data: assets, error: assetsError } = await service
-    .from("gallery_assets")
-    .select("id,category,asset_key,title,storage_path,bucket_id,content_type,enabled")
-    .eq("enabled", true)
-    .eq("category", "visual-library")
-    .in("id", ids);
-  if (assetsError || !Array.isArray(assets) || !assets.length) return null;
+function relaxedReferenceScore(asset: any, knowledge: any, chart: any, question: string): number {
+  const strict = referenceScore(chart, knowledge);
+  let score = Number.isFinite(strict) ? strict : 0;
+  score += Math.max(0, Math.min(1, Number(knowledge?.confidence) || 0)) * 4;
 
-  const knowledgeById = new Map(knowledgeRows.map((row: any) => [String(row.asset_id), row]));
-  const ranked = assets
-    .map((asset: any) => ({ asset, score: referenceScore(chart, knowledgeById.get(String(asset.id))) }))
-    .filter((candidate: any) => Number.isFinite(candidate.score))
+  const text = galleryText(asset, knowledge);
+  if (/(宋|song|宣紙|宣纸|xuan|絹|绢|silk|工筆|工笔|gongbi|岩彩|mineral|古畫|古画|historical|圖譜|图谱|atlas|山水|landscape|東方|东方|east.asian)/.test(text)) score += 18;
+  if (/(weekly.pattern|賽博|赛博|cyber|sticker|表情|emoji)/.test(text)) score -= 18;
+  if (String(asset?.category ?? "") === "background") score -= 10;
+  if (String(asset?.category ?? "") === "dragon-sticker") score -= 40;
+  if (String(asset?.category ?? "") === "tea-guardian") score -= 6;
+
+  if (/(感情|戀愛|恋爱|正緣|正缘|婚姻|伴侶|伴侣|關係|关系|桃花|love|relationship|partner)/i.test(question)) {
+    if (/(蓮|莲|lotus|結|结|knot|月|moon|雙|双|pair|狐|fox|花|flower)/.test(text)) score += 10;
+  }
+  if (/(旅行|旅遊|旅游|出行|搬家|城市|國家|国家|travel|move|city|country)/i.test(question)) {
+    if (/(雲|云|cloud|水|water|川|river|山|mountain|路|path|舟|boat|鶴|鹤|crane)/.test(text)) score += 10;
+  }
+  if (/(財|财|收入|資源|资源|福氣|福气|money|finance|income|career|work)/i.test(question)) {
+    if (/(金|gold|寶|宝|treasure|瓶|vase|玉|jade|鹿|deer|鶴|鹤|crane)/.test(text)) score += 8;
+  }
+  if (/(健康|清理|淨化|净化|修復|修复|療癒|疗愈|health|healing|recover)/i.test(question)) {
+    if (/(蓮|莲|lotus|水|water|玉|jade|光|light|藥|药|medicine|月|moon)/.test(text)) score += 8;
+  }
+  if (/(格局|八字|命盤|命盘|自己|性格|人生|destiny|chart|self|life)/i.test(question)) {
+    if (/(龍|龙|dragon|山水|landscape|護法|护法|guardian|聖|圣|sacred|玄|moon|月|雲|云|cloud)/.test(text)) score += 8;
+  }
+
+  return Number(score.toFixed(6));
+}
+
+type GallerySelection = {
+  asset: any;
+  mode: "strict" | "knowledge-fallback" | "visual-library-fallback" | "any-enabled-fallback";
+  score: number;
+};
+
+function rankGalleryAssets(assets: any[], knowledgeById: Map<string, any>, chart: any, question: string) {
+  return assets
+    .map((asset: any) => ({
+      asset,
+      knowledge: knowledgeById.get(String(asset.id)),
+      score: relaxedReferenceScore(asset, knowledgeById.get(String(asset.id)), chart, question),
+    }))
     .sort((a: any, b: any) => b.score - a.score || String(a.asset.id).localeCompare(String(b.asset.id)));
-  return ranked[0]?.asset ?? null;
+}
+
+async function chooseGalleryReference(service: any, chart: any, question: string): Promise<GallerySelection | null> {
+  const { data: visualAssets, error: assetsError } = await service
+    .from("gallery_assets")
+    .select("id,category,asset_key,title,tags,storage_path,bucket_id,content_type,enabled")
+    .eq("enabled", true)
+    .eq("category", "visual-library");
+
+  if (!assetsError && Array.isArray(visualAssets) && visualAssets.length) {
+    const { data: knowledgeRows } = await service
+      .from("gallery_asset_knowledge")
+      .select("asset_id,element_scores,confidence,analysis_status,client_eligible,subject_labels,style_labels,motifs,use_roles");
+    const knowledgeById = new Map(
+      (Array.isArray(knowledgeRows) ? knowledgeRows : [])
+        .map((row: any) => [String(row.asset_id ?? ""), row] as const)
+        .filter(([id]) => Boolean(id)),
+    );
+
+    const strictAssets = visualAssets.filter((asset: any) => {
+      const knowledge = knowledgeById.get(String(asset.id));
+      return knowledge?.analysis_status === "approved" && knowledge?.client_eligible === true;
+    });
+    if (strictAssets.length) {
+      const winner = rankGalleryAssets(strictAssets, knowledgeById, chart, question)[0];
+      return { asset: winner.asset, mode: "strict", score: winner.score };
+    }
+
+    const knowledgeBacked = visualAssets.filter((asset: any) => knowledgeById.has(String(asset.id)));
+    if (knowledgeBacked.length) {
+      const winner = rankGalleryAssets(knowledgeBacked, knowledgeById, chart, question)[0];
+      return { asset: winner.asset, mode: "knowledge-fallback", score: winner.score };
+    }
+
+    const winner = rankGalleryAssets(visualAssets, knowledgeById, chart, question)[0];
+    return { asset: winner.asset, mode: "visual-library-fallback", score: winner.score };
+  }
+
+  const { data: anyAssets } = await service
+    .from("gallery_assets")
+    .select("id,category,asset_key,title,tags,storage_path,bucket_id,content_type,enabled")
+    .eq("enabled", true);
+  if (!Array.isArray(anyAssets) || !anyAssets.length) return null;
+  const emptyKnowledge = new Map<string, any>();
+  const winner = rankGalleryAssets(anyAssets, emptyKnowledge, chart, question)[0];
+  return { asset: winner.asset, mode: "any-enabled-fallback", score: winner.score };
+}
+
+function imageExtension(asset: any): string {
+  const path = String(asset?.storage_path ?? "");
+  const match = path.match(/\.([a-z0-9]{2,5})$/i);
+  const ext = String(match?.[1] ?? "").toLowerCase();
+  if (["png", "jpg", "jpeg", "webp"].includes(ext)) return ext;
+  const contentType = String(asset?.content_type ?? "").toLowerCase();
+  if (contentType.includes("jpeg")) return "jpg";
+  if (contentType.includes("webp")) return "webp";
+  return "png";
+}
+
+async function deliverGalleryDirect(
+  service: any,
+  report: any,
+  profile: any,
+  selection: GallerySelection,
+  referenceBlob: Blob,
+  attempts: number,
+  providerError: string | null = null,
+) {
+  const asset = selection.asset;
+  const owner = report.user_id || "owner";
+  const objectPath = `${owner}/${report.id}/decree-${GALLERY_DIRECT_VERSION}-${asset.id}.${imageExtension(asset)}`;
+  const contentType = String(asset.content_type || referenceBlob.type || "image/png");
+  const { error: uploadError } = await service.storage
+    .from(REPORT_BUCKET)
+    .upload(objectPath, referenceBlob, { contentType, upsert: true });
+  if (uploadError) throw uploadError;
+
+  await service.from("report_requests").update({
+    image_path: objectPath,
+    image_error: null,
+    generation_error: providerError ? providerError.slice(0, 1000) : null,
+    generation_attempts: attempts,
+    visual_profile: {
+      ...profile,
+      imageStyleVersion: GALLERY_DIRECT_VERSION,
+      imageSource: "gallery-direct",
+      gallerySelectionMode: selection.mode,
+      gallerySelectionScore: selection.score,
+      galleryReferenceAssetId: asset.id,
+      galleryReferenceAssetKey: asset.asset_key,
+      galleryReferenceTitle: asset.title,
+      visualSystem: "站主總圖庫直接匹配 × 昭梧個人命誥圖",
+    },
+    updated_at: new Date().toISOString(),
+  }).eq("id", report.id);
+
+  const signedUrl = await signExisting(service, objectPath);
+  if (!signedUrl) throw new Error("GALLERY_DIRECT_SIGN_FAILED");
+  return { imagePath: objectPath, signedUrl };
 }
 
 function visualTheme(question: string) {
@@ -169,8 +306,7 @@ Deno.serve(async (req: Request) => {
 
   const profile = report.visual_profile && typeof report.visual_profile === "object" ? report.visual_profile : {};
 
-  // Delivery first: a previously generated personal image must remain viewable even if the style version changes
-  // or the image provider is temporarily unavailable. Regeneration is explicit via force=true.
+  // Delivery first: a previously generated or Gallery-selected personal image always wins.
   if (report.image_path && !force) {
     const signedUrl = await signExisting(service, report.image_path);
     if (signedUrl) {
@@ -186,19 +322,17 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  // Result pages use this mode on mount. It is strictly delivery-only: never spend image credits
-  // and never turn a missing old image into a generation failure just because the user opened a report.
+  // Result pages use this mode on mount. It is strictly delivery-only.
   if (viewOnly) {
     if (report.image_path) return json({ ok: false, error: "IMAGE_LOAD_FAILED" }, 502);
     return json({ ok: true, imagePath: null, signedUrl: null, reused: false, missing: true });
   }
 
-  const decree = decreeFrom(report);
-  if (!decree) return json({ ok: false, error: "DECREE_NOT_READY" }, 409);
-
   const chart = report?.engine_snapshot?.chart ?? {};
-  const galleryReference = await chooseGalleryReference(service, chart);
-  if (!galleryReference) return json({ ok: false, error: "GALLERY_REFERENCE_NOT_FOUND" }, 409);
+  const question = String(report?.alias ?? report?.engine_snapshot?.question ?? "").trim();
+  const gallerySelection = await chooseGalleryReference(service, chart, question);
+  if (!gallerySelection) return json({ ok: false, error: "NO_GALLERY_ASSET_AVAILABLE" }, 409);
+  const galleryReference = gallerySelection.asset;
 
   const referenceBucket = String(galleryReference.bucket_id || GALLERY_BUCKET);
   const { data: referenceBlob, error: referenceError } = await service.storage
@@ -207,9 +341,72 @@ Deno.serve(async (req: Request) => {
   if (referenceError || !referenceBlob) return json({ ok: false, error: "GALLERY_REFERENCE_LOAD_FAILED" }, 502);
 
   const attempts = Number(report.generation_attempts ?? 0) + 1;
+
+  // New reports no longer depend on image-provider credits. The default action selects the best
+  // available owner Gallery artwork and stores a report-scoped copy immediately.
+  if (!force) {
+    try {
+      const direct = await deliverGalleryDirect(service, report, profile, gallerySelection, referenceBlob, attempts);
+      return json({
+        ok: true,
+        imagePath: direct.imagePath,
+        signedUrl: direct.signedUrl,
+        reused: false,
+        galleryDirect: true,
+        styleVersion: GALLERY_DIRECT_VERSION,
+        guardianStyleId: null,
+        galleryReferenceAssetId: galleryReference.id,
+        gallerySelectionMode: gallerySelection.mode,
+      });
+    } catch {
+      return json({ ok: false, error: "GALLERY_REFERENCE_LOAD_FAILED" }, 502);
+    }
+  }
+
+  // Explicit force=true keeps the optional provider-personalized path. If it fails, Gallery direct
+  // delivery is still the fallback, so a new report never loses its image merely because credits are unavailable.
+  const decree = decreeFrom(report);
+  if (!decree) {
+    try {
+      const direct = await deliverGalleryDirect(service, report, profile, gallerySelection, referenceBlob, attempts);
+      return json({
+        ok: true,
+        imagePath: direct.imagePath,
+        signedUrl: direct.signedUrl,
+        reused: false,
+        galleryDirect: true,
+        degraded: true,
+        styleVersion: GALLERY_DIRECT_VERSION,
+        guardianStyleId: null,
+        galleryReferenceAssetId: galleryReference.id,
+        gallerySelectionMode: gallerySelection.mode,
+      });
+    } catch {
+      return json({ ok: false, error: "DECREE_NOT_READY" }, 409);
+    }
+  }
+
   const guardianStyle = chooseGuardianStyle(`${report.id}:${galleryReference.id}:${attempts}:${GUARDIAN_STYLE_POOL_VERSION}`);
   const openaiKey = Deno.env.get("OPENAI_API_KEY");
-  if (!openaiKey) return json({ ok: false, error: "IMAGE_GENERATION_NOT_CONFIGURED" }, 503);
+  if (!openaiKey) {
+    try {
+      const direct = await deliverGalleryDirect(service, report, profile, gallerySelection, referenceBlob, attempts, "IMAGE_GENERATION_NOT_CONFIGURED");
+      return json({
+        ok: true,
+        imagePath: direct.imagePath,
+        signedUrl: direct.signedUrl,
+        reused: false,
+        galleryDirect: true,
+        degraded: true,
+        styleVersion: GALLERY_DIRECT_VERSION,
+        guardianStyleId: null,
+        galleryReferenceAssetId: galleryReference.id,
+        gallerySelectionMode: gallerySelection.mode,
+      });
+    } catch {
+      return json({ ok: false, error: "IMAGE_GENERATION_NOT_CONFIGURED" }, 503);
+    }
+  }
 
   try {
     const form = new FormData();
@@ -250,13 +447,16 @@ Deno.serve(async (req: Request) => {
       visual_profile: {
         ...profile,
         imageStyleVersion: IMAGE_STYLE_VERSION,
+        imageSource: "provider-edit",
         guardianStylePoolVersion: GUARDIAN_STYLE_POOL_VERSION,
         guardianStyleId: guardianStyle.id,
         guardianStyleLabel: guardianStyle.label,
+        gallerySelectionMode: gallerySelection.mode,
+        gallerySelectionScore: gallerySelection.score,
         galleryReferenceAssetId: galleryReference.id,
         galleryReferenceAssetKey: galleryReference.asset_key,
         galleryReferenceTitle: galleryReference.title,
-        visualSystem: "站主核准作品庫母圖 × 舊宣紙宋系圖譜風 × 昭梧四柱繪意",
+        visualSystem: "站主總圖庫母圖 × 舊宣紙宋系圖譜風 × 昭梧四柱繪意",
       },
       updated_at: new Date().toISOString(),
     }).eq("id", reportId);
@@ -270,6 +470,7 @@ Deno.serve(async (req: Request) => {
       styleVersion: IMAGE_STYLE_VERSION,
       guardianStyleId: guardianStyle.id,
       galleryReferenceAssetId: galleryReference.id,
+      gallerySelectionMode: gallerySelection.mode,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -293,22 +494,42 @@ Deno.serve(async (req: Request) => {
           styleVersion: String((profile as any)?.imageStyleVersion ?? "legacy"),
           guardianStyleId: (profile as any)?.guardianStyleId ?? null,
           galleryReferenceAssetId: galleryReference.id,
+          gallerySelectionMode: gallerySelection.mode,
         });
       }
     }
 
-    await service.from("report_requests").update({
-      image_error: "IMAGE_GENERATION_FAILED",
-      generation_error: message.slice(0, 1000),
-      generation_attempts: attempts,
-      visual_profile: {
-        ...profile,
+    try {
+      const direct = await deliverGalleryDirect(service, report, profile, gallerySelection, referenceBlob, attempts, message);
+      return json({
+        ok: true,
+        imagePath: direct.imagePath,
+        signedUrl: direct.signedUrl,
+        reused: false,
+        galleryDirect: true,
+        degraded: true,
+        styleVersion: GALLERY_DIRECT_VERSION,
+        guardianStyleId: null,
         galleryReferenceAssetId: galleryReference.id,
-        galleryReferenceAssetKey: galleryReference.asset_key,
-        galleryReferenceTitle: galleryReference.title,
-      },
-      updated_at: new Date().toISOString(),
-    }).eq("id", reportId);
-    return json({ ok: false, error: "IMAGE_GENERATION_FAILED" }, 500);
+        gallerySelectionMode: gallerySelection.mode,
+      });
+    } catch (fallbackError) {
+      const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+      await service.from("report_requests").update({
+        image_error: "IMAGE_GENERATION_FAILED",
+        generation_error: `${message}; gallery fallback: ${fallbackMessage}`.slice(0, 1000),
+        generation_attempts: attempts,
+        visual_profile: {
+          ...profile,
+          gallerySelectionMode: gallerySelection.mode,
+          gallerySelectionScore: gallerySelection.score,
+          galleryReferenceAssetId: galleryReference.id,
+          galleryReferenceAssetKey: galleryReference.asset_key,
+          galleryReferenceTitle: galleryReference.title,
+        },
+        updated_at: new Date().toISOString(),
+      }).eq("id", reportId);
+      return json({ ok: false, error: "IMAGE_GENERATION_FAILED" }, 500);
+    }
   }
 });
