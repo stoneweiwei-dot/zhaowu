@@ -26,6 +26,16 @@ test("decree generation edits the matched Gallery image instead of starting from
   assert.match(source, /galleryReferenceAssetId/);
 });
 
+test("existing personal decree image is delivered before any regeneration attempt", async () => {
+  const source = await read("supabase/functions/generate-decree-image/index.ts");
+  const reuseIndex = source.indexOf("if (report.image_path && !force)");
+  const providerIndex = source.indexOf('fetch("https://api.openai.com/v1/images/edits"');
+  assert.ok(reuseIndex >= 0, "existing image reuse guard is required");
+  assert.ok(providerIndex > reuseIndex, "existing personal image must be signed and returned before provider generation");
+  assert.match(source, /createSignedUrl\(imagePath, 3600\)/);
+  assert.match(source, /A failed refresh must never make an already-generated personal image disappear/);
+});
+
 test("provider billing details are never exposed to customers", async () => {
   const client = await read("src/lib/report/decree-image.ts");
   assert.match(client, /IMAGE_GENERATION_FAILED/);
