@@ -4,10 +4,11 @@ import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("customer Gallery matching reads approved client-eligible knowledge only", async () => {
+test("customer Gallery matching reads approved client-eligible knowledge from one visual library", async () => {
   const source = await read("src/lib/gallery-match.ts");
   assert.match(source, /analysis_status=eq\.approved/);
   assert.match(source, /client_eligible=eq\.true/);
+  assert.match(source, /category=eq\.visual-library/);
   assert.match(source, /chart\.useful/);
   assert.match(source, /chart\.drain/);
   assert.match(source, /rankCustomerGalleryArt/);
@@ -25,7 +26,14 @@ test("approved Gallery match is visible at the decree action instead of appearin
   assert.match(resultView, /reportSections \? <FocusedReportSections/);
   assert.match(preview, /loadCustomerGalleryCandidates/);
   assert.match(preview, /rankCustomerGalleryArt/);
-  assert.match(preview, /站主核准的個人命誥圖庫匹配母圖/);
-  assert.match(preview, /The image never changes the reading itself/);
+  assert.match(preview, /站主核准作品庫中自行匹配合適母圖/);
+  assert.match(preview, /Religious category guesses do not control the match/);
   assert.match(preview, /\.catch\(\(\) =>/);
+});
+
+test("owner Gallery uses only application roles, not guessed religious categories", async () => {
+  const manager = await read("src/components/owner-gallery-manager.tsx");
+  assert.match(manager, /"visual-library", "tea-guardian", "background", "dragon-sticker"/);
+  assert.doesNotMatch(manager, /buddhist|daoist|guardian-beast|auspicious-motif|report-art|reference-style/);
+  assert.match(manager, /Semantic interpretation belongs to per-image knowledge metadata/);
 });
