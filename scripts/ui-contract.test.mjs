@@ -144,17 +144,24 @@ test("generated auspicious visual language is curated inside the report with rea
   }
 });
 
-test("every rendered report section receives a content-aware watercolor dragon without blocking text", async () => {
+test("report dragon assets remain non-blocking underneath the active parchment shell", async () => {
   const renderer = await source("src/components/paid-report-pages.tsx");
   const dragon = await source("src/components/report-dragon-sticker.tsx");
+  const reportStyles = await source("src/focused-report.css");
+  const active = await source("src/home-sheet-ui-v5.css");
   assert.match(renderer, /ReportDragonSticker/);
   assert.match(dragon, /selectReportDragon/);
-  assert.match(dragon, /pointer-events-none/);
+  assert.match(reportStyles, /\.zhaowu-report-dragon[\s\S]*pointer-events:\s*none/);
+  assert.match(active, /\.zhaowu-home-sheet-shell \.zhaowu-report-dragon/);
+  assert.match(active, /display:\s*none\s*!important/);
 });
 
-test("Dharma Palm standalone uses a four-life trail, richer symbolic prose and real Buddhist ornament assets", async () => {
-  const palm = await source("src/routes/yizhangjing.tsx");
-  assert.match(palm, /fourLifeTrail/);
-  assert.match(palm, /BUDDHIST_ORNAMENTS/);
-  assert.doesNotMatch(palm, /svg|data:image\/svg/i);
+test("Dharma Palm standalone uses a four-life trail and symbolic six-realm presentation", async () => {
+  const route = await source("src/routes/yizhangjing.tsx");
+  const palm = await source("src/components/palm-standalone.tsx");
+  assert.match(route, /PalmStandalone/);
+  assert.match(palm, /traceTitle/);
+  assert.match(palm, /four-life symbolic trail/);
+  assert.match(palm, /AUSPICIOUS_EMBLEMS/);
+  assert.match(palm, /dharma-wheel-emblem\.svg/);
 });
