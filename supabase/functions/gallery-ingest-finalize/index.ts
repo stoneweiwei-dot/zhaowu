@@ -3,6 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const jsonHeaders = { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" };
 const BUCKET = "zhaowu-gallery";
+const SYSTEM_CATEGORIES = new Set(["visual-library", "tea-guardian", "background", "dragon-sticker"]);
 
 function fail(status: number, error: string) {
   return new Response(JSON.stringify({ ok: false, error }), { status, headers: jsonHeaders });
@@ -14,6 +15,11 @@ function clean(value: string, fallback: string, max = 120) {
     .replace(/^-+|-+$/g, "")
     .slice(0, max);
   return normalized || fallback;
+}
+
+function normalizeCategory(value: unknown) {
+  const requested = clean(String(value ?? ""), "visual-library", 100);
+  return SYSTEM_CATEGORIES.has(requested) ? requested : "visual-library";
 }
 
 function decodeBase64(input: string) {
@@ -77,7 +83,8 @@ Deno.serve(async (req: Request) => {
   catch { return fail(400, "invalid_base64"); }
   if (!bytes.byteLength || bytes.byteLength > 10 * 1024 * 1024) return fail(413, "image_too_large");
 
-  const category = clean(queue.category, "uncategorized", 100);
+  // Categories are operational routing only. Unknown/semantic labels are flattened into the general visual library.
+  const category = normalizeCategory(queue.category);
   const assetKey = clean(queue.asset_key, crypto.randomUUID(), 120);
   const ext = ["jpg", "jpeg", "png", "webp", "avif"].includes(queue.file_ext) ? queue.file_ext : "webp";
   const path = `${category}/${assetKey}/${new Date().toISOString().slice(0, 10)}-${crypto.randomUUID()}.${ext}`;
