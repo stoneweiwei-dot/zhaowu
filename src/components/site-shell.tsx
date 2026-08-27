@@ -72,6 +72,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isHome = pathname === "/";
   const isLogin = pathname === "/login";
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
   const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
@@ -80,6 +81,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
     () => chooseRouteEmblems(pathname, emblemVisitSeed),
     [pathname, emblemVisitSeed],
   );
+  const showWallpaper = Boolean(backgroundUrl && !isHome);
+  const showScatter = !isHome;
 
   useEffect(() => {
     hydrateLocale();
@@ -124,8 +127,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className={`relative isolate min-h-dvh bg-transparent text-ink ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"} ${backgroundUrl ? "zhaowu-has-wallpaper" : ""}`}>
-      {backgroundUrl ? (
+    <div className={`relative isolate min-h-dvh bg-transparent text-ink ${isHome ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"} ${showWallpaper ? "zhaowu-has-wallpaper" : ""}`}>
+      {showWallpaper ? (
         <div
           aria-hidden
           className={`zhaowu-site-wallpaper ${isLogin ? "is-login" : ""}`}
@@ -133,21 +136,23 @@ export function SiteShell({ children }: { children: ReactNode }) {
         />
       ) : null}
 
-      <div
-        aria-hidden="true"
-        data-testid="auspicious-emblem-scatter"
-        className="zhaowu-emblem-scatter"
-      >
-        {routeEmblems.map((src, index) => (
-          <img
-            key={`${pathname}-${src}-${index}`}
-            src={src}
-            alt=""
-            draggable={false}
-            className={`zhaowu-random-emblem zhaowu-random-emblem-${index + 1}`}
-          />
-        ))}
-      </div>
+      {showScatter ? (
+        <div
+          aria-hidden="true"
+          data-testid="auspicious-emblem-scatter"
+          className="zhaowu-emblem-scatter"
+        >
+          {routeEmblems.map((src, index) => (
+            <img
+              key={`${pathname}-${src}-${index}`}
+              src={src}
+              alt=""
+              draggable={false}
+              className={`zhaowu-random-emblem zhaowu-random-emblem-${index + 1}`}
+            />
+          ))}
+        </div>
+      ) : null}
 
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">
@@ -214,7 +219,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </header>
       ) : null}
 
-      <div className={isLogin ? "relative z-10 min-h-dvh" : "zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8"}>
+      <div className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>
         {children}
       </div>
 
