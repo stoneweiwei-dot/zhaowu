@@ -5,21 +5,25 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("owner image management uses one visible Gallery instead of the legacy Background Library", async () => {
+test("one visible Gallery coexists with the owner-managed background wallpaper pipeline", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const gallery = await source("src/components/owner-gallery-manager.tsx");
   const main = await source("src/main.tsx");
   const lock = await source("src/gallery-unification.css");
 
-  assert.match(shell, /listPublicGalleryAssets\("background"\)/);
-  assert.match(shell, /galleryPublicUrl\(selected\.storage_path, selected\.bucket_id\)/);
-  assert.doesNotMatch(shell, /from "@\/lib\/background-assets"/);
+  assert.match(shell, /from "@\/lib\/background-assets"/);
+  assert.match(shell, /listPublicBackgrounds\(\)/);
+  assert.match(shell, /chooseDailyBackground\(assets\)/);
+  assert.match(shell, /backgroundPublicUrl\(selected\.storage_path\)/);
+  assert.doesNotMatch(shell, /listPublicGalleryAssets\("background"\)/);
   assert.match(shell, /to="\/gallery"/);
   assert.match(shell, /"图库"/);
+
   assert.match(gallery, /你只需要把喜欢的图放进来/);
   assert.match(gallery, /分类、五行、用途、客户匹配与背景调用都由系统在后台处理/);
   assert.match(gallery, /category:\s*"visual-library"/);
   assert.doesNotMatch(gallery, /category === "background" \? "site-wallpaper"/);
+
   assert.match(main, /gallery-unification\.css/);
   assert.match(lock, /section:nth-of-type\(2\):has\(input\[type="file"\]/);
 });
