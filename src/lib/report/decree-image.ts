@@ -7,6 +7,7 @@ export type DecreeImageResult = {
   signedUrl: string | null;
   reused?: boolean;
   missing?: boolean;
+  galleryReferenceAssetId?: string | null;
 };
 
 type DecreeImageFailure = {
