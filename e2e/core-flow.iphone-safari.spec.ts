@@ -27,16 +27,17 @@ test.describe("iPhone Safari core customer flow", () => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("heading", { name: "昭梧", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "開始我的分析", exact: true })).toBeVisible();
+    await expect(page.locator("#zhaowu-home-intro-title")).toBeVisible();
+    await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.getByRole("heading", { name: "先回答你真正想問的事", exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: "登入", exact: true }).first()).toBeVisible();
 
-    // Wait until the first-visit install prompt is actually present, then prove it cannot block the main CTA.
+    // Wait until the first-visit install prompt is actually present, then prove it cannot block the main form.
     await expect(page.getByRole("dialog", { name: "把昭梧加入主畫面", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "查看加入步驟", exact: true })).toBeVisible();
-    await page.getByRole("link", { name: "開始我的分析", exact: true }).click();
+    await page.locator("#analysisForm").scrollIntoViewIfNeeded();
     await expect(page.locator("#analysisForm")).toBeInViewport();
+    await expect(page.locator('#analysisForm button[type="submit"]')).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
@@ -45,7 +46,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await page.getByRole("button", { name: "简中", exact: true }).click();
-    await expect(page.getByRole("link", { name: "开始我的分析", exact: true })).toBeVisible();
+    await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.getByRole("heading", { name: "先回答你真正想问的事", exact: true })).toBeVisible();
 
     await page.getByRole("button", { name: "EN", exact: true }).click();
@@ -56,7 +57,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#birth-day")).toBeVisible();
 
     await page.getByRole("button", { name: "繁中", exact: true }).click();
-    await expect(page.getByRole("link", { name: "開始我的分析", exact: true })).toBeVisible();
+    await expect(page.locator("#zhaowu-home-intro-title")).toBeVisible();
+    await expect(page.locator('#analysisForm button[type="submit"]')).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
