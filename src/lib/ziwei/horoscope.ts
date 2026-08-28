@@ -128,9 +128,9 @@ export type ZiweiActivationEvent = {
 
 export type ZiweiTruthExtension = {
   truthVersion: 'ziwei_truth_extension_v0.5';
-  productionReady: true;
-  calculationDataReady: true;
-  primarySourceComplete: false;
+  productionReady: typeof ZIWEI_ENGINE_READINESS.calculationDataReady;
+  calculationDataReady: typeof ZIWEI_ENGINE_READINESS.calculationDataReady;
+  primarySourceComplete: typeof ZIWEI_ENGINE_READINESS.primarySourceComplete;
   calculationProfileId: typeof ZIWEI_ENGINE_READINESS.profile.id;
   referenceLock: typeof ZIWEI_REFERENCE_LOCK;
   natalStars: ZiweiStarPlacement[];
