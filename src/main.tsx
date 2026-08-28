@@ -23,6 +23,7 @@ import './approved-parchment-ui-v3.css';
 import './visual-readability-lock-v4.css';
 import './home-sheet-ui-v5.css';
 import './typography-lock-v6.css';
+import './decree-selection-rationale.css';
 
 const router = createRouter({ routeTree });
 
