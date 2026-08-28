@@ -52,16 +52,27 @@ Deno.serve(async (req: Request) => {
 
   const [{ data: profile }, { data: report, error: reportError }] = await Promise.all([
     service.from("profiles").select("is_owner").eq("id", actor.id).maybeSingle(),
-    service.from("report_requests").select("id,user_id,image_path").eq("id", reportId).maybeSingle(),
+    service.from("report_requests").select("id,user_id,image_path,visual_profile").eq("id", reportId).maybeSingle(),
   ]);
 
   if (reportError || !report) return json({ ok: false, error: "REPORT_NOT_FOUND" }, 404);
   const isOwner = profile?.is_owner === true;
   if (!isOwner && report.user_id !== actor.id) return json({ ok: false, error: "REPORT_NOT_FOUND" }, 404);
 
+  const visualProfile = report.visual_profile && typeof report.visual_profile === "object"
+    ? report.visual_profile as Record<string, unknown>
+    : {};
+  const galleryReferenceAssetId = String(visualProfile.galleryReferenceAssetId ?? "").trim() || null;
   const imagePath = String(report.image_path ?? "").trim();
   if (!imagePath) {
-    return json({ ok: true, imagePath: null, signedUrl: null, reused: false, missing: true });
+    return json({
+      ok: true,
+      imagePath: null,
+      signedUrl: null,
+      reused: false,
+      missing: true,
+      galleryReferenceAssetId,
+    });
   }
 
   const { data: signed, error: signError } = await service.storage
@@ -75,5 +86,6 @@ Deno.serve(async (req: Request) => {
     signedUrl: signed.signedUrl,
     reused: true,
     missing: false,
+    galleryReferenceAssetId,
   });
 });
