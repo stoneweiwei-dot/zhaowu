@@ -5,3 +5,4 @@ export * from './horoscope';
 export * from './classical-metadata';
 export * from './source-registry';
 export * from './profiles';
+export * from './plain-summary';
