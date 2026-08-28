@@ -36,6 +36,16 @@ test('customer Chinese summary does not expose specialist Ziwei terms', () => {
   }
 });
 
+test('Simplified customer summary is native Simplified Chinese, not mixed Traditional copy', () => {
+  for (const source of [a, b]) {
+    const targetYear = source === a ? 2026 : 2027;
+    const activeDecadalIndex = source === a ? 2 : 3;
+    const report = buildZiweiPlainSummary({ ...source, locale: 'zh-Hans', activeDecadalIndex, targetYear });
+    const text = `${report.title} ${report.paragraphs.join(' ')} ${report.closing}`;
+    assert.doesNotMatch(text, /[裡這個會讓來說與為對過開還點業財關係壓態選擇實現適長變轉穩發間邊際較經驗價體慮務責權認後話進處學習顯環質復斷線願應該屬標準維護總結簡單專門從內歲當時將無種給別腦觀決優見擔撐場產資條談順暢衝親確彈誠勝續揮氣細緒銳東靜動調劃錢戶項團隊職創積鮮曖臨篩脈數輩傳議題戰強繼協尋詢層證寫讀顧辦壘鬧愛並採構築帶啟網擴縮風險節徑壞運賴遲儲覽語則隨樂區佔盡]/u);
+  }
+});
+
 test('English customer summary is plain English with no Chinese characters', () => {
   const report = buildZiweiPlainSummary({ ...b, locale: 'en', activeDecadalIndex: 3, targetYear: 2027 });
   const text = `${report.title} ${report.paragraphs.join(' ')} ${report.closing}`;
