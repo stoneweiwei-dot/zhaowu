@@ -52,6 +52,8 @@ function parseInput(raw: AnalyzeInput): AnalyzeInput {
     question: raw.question.trim().slice(0, 400),
     minute: raw.timeUnknown ? 0 : minute,
     liveCity: raw.liveCity && isCity(raw.liveCity) ? raw.liveCity : null,
+    ziPolicy: "midnight",
+    useTrueSolar: true,
     relation: raw.relation === "hetero" || raw.relation === "same" || raw.relation === "any" ? raw.relation : "unset",
   };
 }

@@ -51,6 +51,12 @@ async function fillKnownBirthData(page: Page) {
   await firstCity.click();
 }
 
+async function dismissInstallPrompt(page: Page) {
+  const dismiss = page.getByRole("button", { name: "已加入，不再提示", exact: true });
+  await expect(dismiss).toBeVisible();
+  await dismiss.click();
+}
+
 async function expectMobileViewportHealthy(page: Page) {
   expect(await page.evaluate(() => window.innerWidth)).toBe(390);
   expect(
@@ -103,6 +109,7 @@ test("Signed-in member can generate and persist one full report record", async (
   });
 
   await page.goto("/", { waitUntil: "domcontentloaded" });
+  await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "開始分析", exact: true }).click();
 
@@ -154,6 +161,7 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
   });
 
   await page.goto("/", { waitUntil: "domcontentloaded" });
+  await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "開始分析", exact: true }).click();
 

@@ -176,20 +176,10 @@ export function buildChart(input: AnalyzeInput): Chart {
     usedTrueSolar = true;
   }
 
-  let dayY = y;
-  let dayM = m;
-  let dayD = d;
-  if (!timeUnknown && input.ziPolicy === "late" && h >= 23) {
-    const n = addCivilDays(dayY, dayM, dayD, 1);
-    dayY = n.year;
-    dayM = n.month;
-    dayD = n.day;
-  }
-
-  const dayGz = dayGanzhi(dayY, dayM, dayD);
-  const next = addCivilDays(dayY, dayM, dayD, 1);
-  const nextDayGz = dayGanzhi(next.year, next.month, next.day);
-  const timeGz = timeUnknown ? "" : hourPillar(dayGz, h, nextDayGz);
+  // True-solar correction above may cross midnight. The corrected civil date is
+  // authoritative: 23:xx stays on that date and 00:xx belongs to the next date.
+  const dayGz = dayGanzhi(y, m, d);
+  const timeGz = timeUnknown ? "" : hourPillar(dayGz, h);
 
   const instant = civilToUtc(y, m, d, h, min, tzOff);
   const ym = yearMonthPillars(instant);
@@ -231,8 +221,8 @@ export function buildChart(input: AnalyzeInput): Chart {
   const provenance = timeUnknown
     ? `時辰未定：年月柱按當日正午取節氣，日柱按公曆日，時柱、命宮、大運起運留白，不偽造午時柱。子時政策不套用。`
     : usedTrueSolar
-      ? `民用時間 ${stamp(input.year, input.month, input.day, input.hour, input.minute)}（${input.city.timezone}）經經度 ${input.city.longitude.toFixed(2)}°、均時差與時區校正，真太陽時 ${stamp(y, m, d, h, min)}，偏移約 ${shiftMinutes} 分鐘。節氣取太陽黃經，子時政策：${input.ziPolicy === "late" ? "晚子換日" : "子時不換日"}。`
-      : `按出生地民用時間排盤，未套用真太陽時。子時政策：${input.ziPolicy === "late" ? "晚子換日" : "子時不換日"}。`;
+      ? `民用時間 ${stamp(input.year, input.month, input.day, input.hour, input.minute)}（${input.city.timezone}）經經度 ${input.city.longitude.toFixed(2)}°、均時差與時區校正，真太陽時 ${stamp(y, m, d, h, min)}，偏移約 ${shiftMinutes} 分鐘。節氣取太陽黃經，換日固定以真太陽時午夜為界。`
+      : `按出生地民用時間排盤，換日固定以午夜為界。`;
 
   return {
     pillars,
@@ -247,7 +237,7 @@ export function buildChart(input: AnalyzeInput): Chart {
     liveCityLabel: input.liveCity?.display ?? null,
     longitude: input.city.longitude,
     hemisphere: input.city.latitude < 0 ? "S" : "N",
-    ziPolicy: input.ziPolicy,
+    ziPolicy: "midnight",
     usedTrueSolar,
     timeUnknown,
     gender: input.gender,

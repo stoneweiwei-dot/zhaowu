@@ -155,11 +155,19 @@ export function scoreCustomerGalleryArt(chart: Pick<Chart, "useful" | "drain">, 
   return Number(score.toFixed(6));
 }
 
+const TEA_GUARDIAN_ART_RE = /(?:tea[-_\s]?(?:guardian|deity)|茶仙|茶神|茶守護|茶守护)/i;
+
+export function isPersonalDecreeAsset(candidate: { asset: GalleryAsset; knowledge: GalleryArtKnowledge }): boolean {
+  if (candidate.asset.category === "tea-guardian") return false;
+  return !TEA_GUARDIAN_ART_RE.test(semanticText(candidate));
+}
+
 export function rankCustomerGalleryArt(
   chart: Pick<Chart, "useful" | "drain">,
   candidates: Array<{ asset: GalleryAsset; knowledge: GalleryArtKnowledge }>,
 ): CustomerGalleryArt[] {
   return candidates
+    .filter(isPersonalDecreeAsset)
     .map(({ asset, knowledge }) => ({
       asset,
       knowledge,

@@ -131,8 +131,6 @@ export function AnalysisForm() {
   const [relation, setRelation] = useState<AnalyzeInput["relation"]>("unset");
   const [birthCity, setBirthCity] = useState<CityHit | null>(null);
   const [liveCity, setLiveCity] = useState<CityHit | null>(null);
-  const [ziPolicy, setZiPolicy] = useState<AnalyzeInput["ziPolicy"]>("midnight");
-  const [useTrueSolar, setUseTrueSolar] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [remembered, setRemembered] = useState(false);
@@ -160,8 +158,6 @@ export function AnalysisForm() {
     const lc = asCity(b.liveCity);
     if (bc) setBirthCity(bc);
     setLiveCity(lc);
-    if (b.ziPolicy === "midnight" || b.ziPolicy === "late") setZiPolicy(b.ziPolicy);
-    if (typeof b.useTrueSolar === "boolean") setUseTrueSolar(b.useTrueSolar);
     setRemembered(true);
   }, [user?.id, user?.birthData]);
 
@@ -191,8 +187,8 @@ export function AnalysisForm() {
         relation,
         city: birthCity,
         liveCity,
-        ziPolicy,
-        useTrueSolar,
+        ziPolicy: "midnight",
+        useTrueSolar: true,
       };
       const result = await analyzeLife({ data: payload });
       setCurrent(result);
@@ -217,7 +213,7 @@ export function AnalysisForm() {
 
   return (
     <section id="analysisForm" className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
-      <p className="text-xs tracking-[0.28em] text-cinnabar">ZHAOWU · ANALYSIS</p>
+      <p className="text-xs tracking-[0.24em] text-cinnabar">ZHAOWU · BIRTH CHART</p>
       <h2 className="mt-2 font-display text-2xl sm:text-3xl">{t("formTitle")}</h2>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-ink-soft">{t("formLead")}</p>
       {remembered ? <p className="mt-2 text-xs text-wood">{t("remembered")}</p> : null}
@@ -225,7 +221,7 @@ export function AnalysisForm() {
       <form className="mt-6 space-y-6" onSubmit={(e) => void submit(e)}>
         <div>
           <label htmlFor="analysis-question" className="mb-2 block text-sm text-ink-soft">{t("question")}</label>
-          <textarea id="analysis-question" value={question} maxLength={400} rows={4} required placeholder={t("qPh")} className="w-full resize-y rounded-md border border-line bg-cream px-4 py-3 text-base leading-7 outline-none transition focus:border-cinnabar" onChange={(e) => setQuestion(e.target.value)} />
+          <textarea id="analysis-question" value={question} maxLength={400} rows={3} required placeholder={t("qPh")} className="w-full resize-y rounded-md border border-line bg-cream px-4 py-3 text-base leading-7 outline-none transition focus:border-cinnabar" onChange={(e) => setQuestion(e.target.value)} />
           <p className="mt-1 text-right text-xs text-ink-mute">{question.length}/400</p>
         </div>
 
@@ -258,10 +254,6 @@ export function AnalysisForm() {
         <CityPicker id="current-city" label={t("liveCity")} placeholder={t("liveCity")} optional optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={liveCity} onSelect={setLiveCity} />
         <p className="-mt-4 text-xs leading-5 text-ink-mute">{t("liveHint")}</p>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          <label className="flex min-h-12 items-center gap-3 rounded-md border border-line bg-paper/35 px-4 text-sm text-ink-soft"><input type="checkbox" checked={useTrueSolar} onChange={(e) => setUseTrueSolar(e.target.checked)} />{t("solar")}</label>
-          <label className="text-sm text-ink-soft"><span className="mb-2 block">{t("zi")}</span><select value={ziPolicy} onChange={(e) => setZiPolicy(e.target.value as AnalyzeInput["ziPolicy"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar"><option value="midnight">{t("ziMid")}</option><option value="late">{t("ziLate")}</option></select></label>
-        </div>
 
         {error ? <p role="alert" className="rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm leading-6 text-cinnabar-deep">{error}</p> : null}
         <button type="submit" disabled={busy} className="h-12 w-full rounded-full bg-cinnabar px-6 text-base font-medium text-cream disabled:opacity-55 sm:w-auto">{busy ? t("analyzing") : t("analyze")}</button>
