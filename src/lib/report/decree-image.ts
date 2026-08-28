@@ -44,7 +44,7 @@ function callFunction(
   session: SupabaseSession,
   functionName: "view-decree-image" | "generate-decree-image",
   reportId: string,
-  payload: { force?: boolean; viewOnly?: boolean },
+  payload: { force?: boolean; viewOnly?: boolean; reselectGallery?: boolean },
 ) {
   return fetch(`${SUPABASE_URL}/functions/v1/${functionName}`, {
     method: "POST",
@@ -61,7 +61,7 @@ async function requestFunction(
   session: SupabaseSession,
   functionName: "view-decree-image" | "generate-decree-image",
   reportId: string,
-  payload: { force?: boolean; viewOnly?: boolean } = {},
+  payload: { force?: boolean; viewOnly?: boolean; reselectGallery?: boolean } = {},
 ): Promise<DecreeImageResult> {
   let res = await callFunction(session, functionName, reportId, payload);
 
@@ -101,9 +101,10 @@ export async function generateDecreeImage(
   reportId: string,
   force = false,
 ): Promise<DecreeImageResult> {
-  if (!force) {
-    const existing = await loadExistingDecreeImage(session, reportId);
-    if (existing.signedUrl || !existing.missing) return existing;
-  }
-  return requestFunction(session, "generate-decree-image", reportId, { force });
+  // Explicit user generation is different from passive page loading: re-rank the current Gallery
+  // even when this report already has an older Gallery-direct image. This path never needs provider
+  // credits unless force=true is explicitly requested.
+  return requestFunction(session, "generate-decree-image", reportId, force
+    ? { force: true }
+    : { reselectGallery: true });
 }
