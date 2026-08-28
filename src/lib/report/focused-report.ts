@@ -5,6 +5,7 @@ import { pickTravelDestinations } from "@/lib/bazi/forecast";
 import { buildCosmicProfile, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { buildBodyAttentionLines } from "@/lib/report/body-attention";
+import { buildMindAdviceLines } from "@/lib/report/mind-advice";
 
 export type ReportSectionEvidence = {
   facts: string[];
@@ -187,12 +188,15 @@ function cosmicSummaryLines(result: AnalysisResult): string[] {
 }
 
 function summaryLines(result: AnalysisResult): string[] {
-  if (isCosmicSymbolicQuestion(result.question)) return cosmicSummaryLines(result);
-  if ((result.locale ?? "zh-Hans") === "en") return englishSummaryLines(result);
-  return chineseSummaryLines(result);
+  const core = isCosmicSymbolicQuestion(result.question)
+    ? cosmicSummaryLines(result)
+    : (result.locale ?? "zh-Hans") === "en"
+      ? englishSummaryLines(result)
+      : chineseSummaryLines(result);
+  return dedupeLines([...core, ...buildMindAdviceLines(result)]);
 }
 
-/** New reports have exactly one overall summary plus one body-attention block. */
+/** New reports keep one overall summary plus one body-attention block; mind advice stays inside the summary. */
 export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
   const locale = result.locale ?? "zh-Hans";
   const titles = REPORT_TITLES[locale];
@@ -205,9 +209,9 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
       body: summaryLines(result),
       evidence: {
         facts: ["final reading", "question-relevant chart facts", "timing", "action"],
-        conditions: ["All question-specific content is merged into one continuous summary"],
-        limits: ["No unrelated topic filler", "No internal chain-of-thought"],
-        checks: ["Direct answer appears once", "No numbered mini-sections"],
+        conditions: ["All question-specific content and compact topic-matched mind advice are merged into one continuous summary"],
+        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Mind advice never overrides the calculated reading"],
+        checks: ["Direct answer appears once", "No numbered mini-sections", "Mind advice stays inside summary"],
       },
     },
     {
