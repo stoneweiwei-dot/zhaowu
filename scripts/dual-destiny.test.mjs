@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { calculateDualDestiny, buildDualFusion } from "../src/lib/dual-destiny.ts";
+import { calculateDualDestiny } from "../src/lib/dual-destiny.ts";
 import { buildPalm } from "../src/lib/palm/engine.ts";
 import { resolveTianjiBirth } from "../src/lib/tianji-xinggong.ts";
 
@@ -34,16 +34,14 @@ test("一掌经顺逆只改变一掌经，不污染天机星宫", () => {
   assert.notDeepEqual(reverse.palm.palaces.map((item) => item.zhi), forward.palm.palaces.map((item) => item.zhi));
 });
 
-test("三语融合星评包含外在、内在与行动建议，英文不混入中文", () => {
-  const result = calculateDualDestiny(STONE);
-  const hans = buildDualFusion(result, "zh-Hans");
-  const english = buildDualFusion(result, "en");
+test("客户页把结果说清楚，并彻底删除融合长文与系统话术", () => {
+  const route = readFileSync(new URL("../src/routes/tianji-dual.tsx", import.meta.url), "utf8");
 
-  assert.match(hans.body, /天机命宫/);
-  assert.match(hans.body, /一掌经时宫/);
-  assert.ok(hans.guidance.length > 8);
-  assert.doesNotMatch(english.body, /[\u3400-\u9fff]/);
-  assert.doesNotMatch(english.guidance, /[\u3400-\u9fff]/);
+  assert.match(route, /一个人，两种反应/);
+  assert.match(route, /平时怎样做事/);
+  assert.match(route, /压力来时的反应/);
+  assert.match(route, /查看传统盘面/);
+  assert.doesNotMatch(route, /buildDualFusion|fusion\.body|fusion\.guidance|融合星评|正向寄语|轨道 A|轨道 B|双轨结果/);
 });
 
 test("双轨工具保留独立路由，但不再占据核心分析首页", () => {
