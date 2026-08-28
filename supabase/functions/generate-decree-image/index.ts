@@ -22,6 +22,7 @@ const ELEMENT_KEY: Record<string, "wood" | "fire" | "earth" | "metal" | "water">
 };
 
 const TRAVEL_QUESTION_RE = /(旅行|旅遊|旅游|出行|出國|出国|搬家|城市|國家|国家|方向|度假|假期|行程|旅程|travel|trip|vacation|holiday|journey|tour|move|city|country)/i;
+const DESTINY_QUESTION_RE = /(格局|命格|命局|命理|亮點|亮点|八字|命盤|命盘|自己|性格|人生|destiny|chart|self|life)/i;
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -116,7 +117,7 @@ function relaxedReferenceScore(asset: any, knowledge: any, chart: any, question:
   if (/(健康|清理|淨化|净化|修復|修复|療癒|疗愈|health|healing|recover)/i.test(question)) {
     if (/(蓮|莲|lotus|水|water|玉|jade|光|light|藥|药|medicine|月|moon)/.test(text)) score += 8;
   }
-  if (/(格局|八字|命盤|命盘|自己|性格|人生|destiny|chart|self|life)/i.test(question)) {
+  if (DESTINY_QUESTION_RE.test(question)) {
     if (/(龍|龙|dragon|山水|landscape|護法|护法|guardian|聖|圣|sacred|玄|moon|月|雲|云|cloud)/.test(text)) score += 8;
   }
 

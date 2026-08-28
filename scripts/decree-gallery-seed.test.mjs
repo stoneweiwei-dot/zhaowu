@@ -37,6 +37,17 @@ test("Gallery ranking recognizes real travel and holiday wording without double-
   assert.equal((source.match(/confidence \* 4/g) ?? []).length, 1, "confidence belongs only inside the base reference score");
 });
 
+test("Gallery ranking recognizes destiny wording used by the latest report", async () => {
+  const source = await read("supabase/functions/generate-decree-image/index.ts");
+  assert.match(source, /DESTINY_QUESTION_RE/);
+  assert.match(source, /命格/);
+  assert.match(source, /命局/);
+  assert.match(source, /命理/);
+  assert.match(source, /亮點/);
+  assert.match(source, /亮点/);
+  assert.match(source, /DESTINY_QUESTION_RE\.test\(question\)/);
+});
+
 test("new reports copy the best matched Gallery artwork directly without requiring image-provider credits", async () => {
   const source = await read("supabase/functions/generate-decree-image/index.ts");
   const directIndex = source.indexOf("if (!force)");
