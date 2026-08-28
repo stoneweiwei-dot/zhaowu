@@ -1,5 +1,5 @@
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
-import type { SupabaseSession } from "@/lib/supabase-rest";
+import { refreshSession, type SupabaseSession } from "@/lib/supabase-rest";
 
 export type DecreeImageResult = {
   ok: true;
@@ -40,13 +40,13 @@ function friendlyMessage(code: string): string {
   }
 }
 
-async function requestFunction(
+function callFunction(
   session: SupabaseSession,
   functionName: "view-decree-image" | "generate-decree-image",
   reportId: string,
-  payload: { force?: boolean; viewOnly?: boolean } = {},
-): Promise<DecreeImageResult> {
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/${functionName}`, {
+  payload: { force?: boolean; viewOnly?: boolean },
+) {
+  return fetch(`${SUPABASE_URL}/functions/v1/${functionName}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${session.access_token}`,
@@ -55,6 +55,25 @@ async function requestFunction(
     },
     body: JSON.stringify({ reportId, ...payload }),
   });
+}
+
+async function requestFunction(
+  session: SupabaseSession,
+  functionName: "view-decree-image" | "generate-decree-image",
+  reportId: string,
+  payload: { force?: boolean; viewOnly?: boolean } = {},
+): Promise<DecreeImageResult> {
+  let res = await callFunction(session, functionName, reportId, payload);
+
+  // A report page can stay open longer than the access-token lifetime. Refresh once on 401 so
+  // stored decree delivery and Gallery-direct generation do not fail merely because the in-memory
+  // session object is stale. Real authorization failures still surface after the single retry.
+  if (res.status === 401) {
+    const refreshed = await refreshSession(session);
+    if (refreshed?.access_token) {
+      res = await callFunction(refreshed, functionName, reportId, payload);
+    }
+  }
 
   let body: DecreeImageResult | DecreeImageFailure | null = null;
   try {
