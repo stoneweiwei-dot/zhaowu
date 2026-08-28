@@ -17,13 +17,16 @@ test("stored decree delivery is isolated from the image provider", () => {
   assert.ok(!deliveryEdge.includes("api.openai.com"));
 });
 
-test("client asks the delivery-only signer before attempting regeneration", () => {
+test("passive loading uses the delivery-only signer while explicit generation reselects Gallery", () => {
   assert.ok(client.includes("export async function loadExistingDecreeImage"));
   assert.ok(client.includes('requestFunction(session, "view-decree-image", reportId)'));
-  assert.ok(client.includes("if (!force)"));
-  assert.ok(client.includes("const existing = await loadExistingDecreeImage(session, reportId)"));
-  assert.ok(client.includes("if (existing.signedUrl || !existing.missing) return existing"));
-  assert.ok(client.includes('requestFunction(session, "generate-decree-image", reportId, { force })'));
+  assert.ok(client.includes("export async function generateDecreeImage"));
+  assert.ok(client.includes("reselectGallery: true"));
+  const generateStart = client.indexOf("export async function generateDecreeImage");
+  assert.ok(generateStart >= 0);
+  const generateBody = client.slice(generateStart);
+  assert.ok(!generateBody.includes("const existing = await loadExistingDecreeImage(session, reportId)"));
+  assert.ok(generateBody.includes('requestFunction(session, "generate-decree-image", reportId'));
 });
 
 test("decree delivery refreshes an expired access token once before surfacing 401", () => {
@@ -35,8 +38,8 @@ test("decree delivery refreshes an expired access token once before surfacing 40
   assert.equal((refreshBlock.match(/refreshSession\(/g) ?? []).length, 1);
 });
 
-test("generation endpoint still preserves an existing image on provider failure", () => {
-  const reuseIndex = generationEdge.indexOf("if (report.image_path && !force)");
+test("generation endpoint preserves passive reuse and protects an existing image on provider failure", () => {
+  const reuseIndex = generationEdge.indexOf("if (report.image_path && !force && !reselectGallery)");
   const providerIndex = generationEdge.indexOf("https://api.openai.com/v1/images/edits");
   assert.ok(reuseIndex >= 0);
   assert.ok(providerIndex > reuseIndex);
