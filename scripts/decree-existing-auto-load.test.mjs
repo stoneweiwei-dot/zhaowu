@@ -26,6 +26,15 @@ test("client asks the delivery-only signer before attempting regeneration", () =
   assert.ok(client.includes('requestFunction(session, "generate-decree-image", reportId, { force })'));
 });
 
+test("decree delivery refreshes an expired access token once before surfacing 401", () => {
+  assert.ok(client.includes('import { refreshSession, type SupabaseSession } from "@/lib/supabase-rest"'));
+  assert.ok(client.includes("if (res.status === 401)"));
+  assert.ok(client.includes("const refreshed = await refreshSession(session)"));
+  assert.ok(client.includes("res = await callFunction(refreshed, functionName, reportId, payload)"));
+  const refreshBlock = client.slice(client.indexOf("if (res.status === 401)"), client.indexOf("let body:"));
+  assert.equal((refreshBlock.match(/refreshSession\(/g) ?? []).length, 1);
+});
+
 test("generation endpoint still preserves an existing image on provider failure", () => {
   const reuseIndex = generationEdge.indexOf("if (report.image_path && !force)");
   const providerIndex = generationEdge.indexOf("https://api.openai.com/v1/images/edits");
