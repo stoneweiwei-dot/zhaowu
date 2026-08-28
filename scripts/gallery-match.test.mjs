@@ -94,8 +94,8 @@ test("Gallery match is visible at the decree action instead of appearing only af
   assert.match(resultView, /reportSections \? <FocusedReportSections/);
   assert.match(preview, /loadCustomerGalleryCandidates/);
   assert.match(preview, /rankCustomerGalleryArt/);
-  assert.match(preview, /從整個啟用作品庫中選出最接近的一張/);
-  assert.match(preview, /Religious category guesses do not control the match/);
+  assert.match(preview, /系統會按這次命盤和問題/);
+  assert.match(preview, /The artwork presents the reading; it never changes it/);
   assert.match(preview, /Default generation is owned by generate-decree-image/);
   assert.match(preview, /const canGenerate = !loading;/);
   assert.doesNotMatch(preview, /matches\.length > 0/);
