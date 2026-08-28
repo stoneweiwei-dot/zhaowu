@@ -22,7 +22,7 @@ test("homepage keeps one analysis path and does not inject a second art-product 
   assert.doesNotMatch(home, /PaidReportShowcase|paid-report-showcase/);
 });
 
-test("full reports use question-focused sections and only real server image generation", async () => {
+test("full reports use one overall summary plus body attention and only real server image generation", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const renderer = await source("src/components/paid-report-pages.tsx");
   const focused = await source("src/lib/report/focused-report.ts");
@@ -30,7 +30,9 @@ test("full reports use question-focused sections and only real server image gene
   const decreeDelivery = await source("supabase/functions/view-decree-image/index.ts");
   assert.match(resultView, /import \{ FocusedReportSections \}/);
   assert.match(resultView, /reportSections \? <FocusedReportSections sections=\{reportSections\} \/>/);
-  assert.match(focused, /4 个固定核心区/);
+  assert.match(focused, /key: "summary"/);
+  assert.match(focused, /key: "body"/);
+  assert.match(focused, /buildBodyAttentionLines/);
   assert.match(focused, /composeFocusedReport/);
   assert.doesNotMatch(focused, /return \[page1, page2, page3, page4, page5, page6, page7, page8, page9\]/);
   assert.doesNotMatch(renderer, /tianlong-report-hero\.jpg/);
@@ -40,6 +42,7 @@ test("full reports use question-focused sections and only real server image gene
   assert.match(renderer, /AUSPICIOUS MOTIFS × DESTINY NARRATIVE/);
   assert.match(renderer, /mark\.label\[locale\]/);
   assert.match(renderer, /zhaowu-report-ornament/);
+  assert.doesNotMatch(renderer, /padStart\(2, "0"\)/);
   assert.doesNotMatch(renderer, /第 \$\{.*頁|第 \$\{.*页|copy\.page/);
   assert.match(resultView, /generateDecreeImage/);
   assert.match(decreeImage, /"view-decree-image" \| "generate-decree-image"/);
@@ -49,7 +52,7 @@ test("full reports use question-focused sections and only real server image gene
   assert.equal((resultView.match(/onClick=\{\(\) => void onFull\(\)\}/g) ?? []).length, 1);
 });
 
-test("tea guardian stays outside the four question-focused report sections", async () => {
+test("tea guardian stays outside the unified report content blocks", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const account = await source("src/routes/account.tsx");
   const focused = await source("src/lib/report/focused-report.ts");
@@ -72,13 +75,14 @@ test("free decree text remains available when image generation fails", async () 
   assert.match(resultView, /setImageUrl\(null\); setMsg\(copy\.imageLoadFailed\)/);
 });
 
-test("free result keeps technical chart evidence inside the full report", async () => {
+test("free result keeps technical chart evidence inside the unified overall summary", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const focused = await source("src/lib/report/focused-report.ts");
 
   assert.doesNotMatch(resultView, /chart\.pillars\.map|t\("dayMaster"\)|t\("monthLing"\)/);
-  assert.match(focused, /title: "命理依据"/);
-  assert.match(focused, /title: "Chart basis"/);
+  assert.match(focused, /命盘落点/);
+  assert.match(focused, /question-relevant chart facts/);
+  assert.match(focused, /Overall summary/);
 });
 
 test("report visual system keeps its legacy asset layer available underneath the active parchment lock", async () => {

@@ -41,15 +41,13 @@ test("a direct 格局 question returns Stone's chart structure instead of generi
   assert.doesNotMatch(reading.directAnswer, /通用人格回答|出口|邊界|半成品/);
 });
 
-test("structure report basis and timing sections are distinct and remain on the asked topic", () => {
+test("structure report keeps its evidence inside the unified overall summary", () => {
   const question = "我的八字格局是什麼？";
   const reading = applyCustomerAnswerHotfix(question, chart, rawReading);
   const sections = composeFocusedReport({ id: "stone", question, chart, reading, createdAt: "2026-08-26T00:00:00Z", locale: "zh-Hant" });
-  const basis = sections.find((section) => section.key === "basis");
-  const timing = sections.find((section) => section.key === "timing");
-  assert.ok(basis && timing);
-  assert.notDeepEqual(basis.body, timing.body);
-  assert.match(basis.body.join(" "), /月令主氣|正印格|殺印相生/);
-  assert.match(timing.body.join(" "), /格局是原局結構/);
-  assert.doesNotMatch(basis.body.join(" "), /重複的通用節奏段落/);
+  assert.deepEqual(sections.map((section) => section.key), ["summary", "body"]);
+  const summary = sections.find((section) => section.key === "summary");
+  assert.ok(summary);
+  assert.match(summary.body.join(" "), /月令主氣|正印格|殺印相生/);
+  assert.doesNotMatch(summary.body.join(" "), /重複的通用節奏段落|通用行動/);
 });

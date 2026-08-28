@@ -48,5 +48,5 @@ test("命诰继续保存在 final reading 供真实图片生成，但不强塞�
   assert.ok(out.reading.decree.length > 20);
   const sections = composeFocusedReport(out);
   assert.equal(sections.some((section) => section.key === "decree"), false);
-  assert.equal(sections.length, 4);
+  assert.deepEqual(sections.map((section) => section.key), ["summary", "body"]);
 });

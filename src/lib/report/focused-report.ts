@@ -106,20 +106,21 @@ function topicLines(question: string, reading: Reading, chart: Chart): string[] 
 function chineseSummaryLines(result: AnalysisResult): string[] {
   const { question, chart, reading } = result;
   const req = inspectAnswerRequirements(question);
+  const structureQuestion = isStructureQuestion(question);
   const lines = [
     customerDirectAnswer(question, reading.directAnswer),
     `命盘落点：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`,
-    chart.currentDayun ? `当前阶段：${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
+    chart.currentDayun && !structureQuestion ? `当前阶段：${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
     chart.timeUnknown ? "出生时间未确定，因此本次不把时柱与大运起运当作硬结论依据。" : "",
     ...topicLines(question, reading, chart),
-    customerCopy(reading.rhythm),
-    customerCopy(reading.action),
+    structureQuestion ? "" : customerCopy(reading.rhythm),
+    structureQuestion ? "" : customerCopy(reading.action),
   ];
 
   if (req.asksTravel) {
     const names = travelNames(question, chart);
     lines.push(`执行顺序：先定 ${names[0]}，再订交通和住宿；备选只留一个。`);
-  } else if (reading.kind === "career") {
+  } else if (reading.kind === "career" && !structureQuestion) {
     lines.push("把职位、收入、成长空间、责任和退出成本放在同一张表里，只推进最值得的一条。 ");
   } else if (reading.kind === "money") {
     lines.push("先写清风险上限、现金流和退出条件，再考虑收益空间。 ");
@@ -143,13 +144,21 @@ function englishTopicBody(reading: Reading): string {
   }
 }
 
+function plainEnglishRhythm(value: string): string {
+  return value
+    .replace(/Your current ten-year cycle is [^.]+\.\s*/gi, "")
+    .replace(/\b(?:Day Master|Month Command|Ten Gods?|BaZi|ten-year cycle|luck cycle)\b/gi, "current pattern")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function englishSummaryLines(result: AnalysisResult): string[] {
   const { question, chart, reading } = result;
   const req = inspectAnswerRequirements(question);
   const lines = [
     reading.directAnswer,
     englishTopicBody(reading),
-    reading.rhythm,
+    plainEnglishRhythm(reading.rhythm),
     reading.action,
     chart.timeUnknown ? "The birth time is not confirmed, so timing that depends on the birth hour is treated as approximate." : "",
   ];
@@ -183,6 +192,7 @@ function summaryLines(result: AnalysisResult): string[] {
   return chineseSummaryLines(result);
 }
 
+/** New reports have exactly one overall summary plus one body-attention block. */
 export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
   const locale = result.locale ?? "zh-Hans";
   const titles = REPORT_TITLES[locale];
