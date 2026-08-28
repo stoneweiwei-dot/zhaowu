@@ -109,13 +109,16 @@ test('三方四正几何关系是纯索引关系', () => {
   assert.equal(palaceRelation(0, 3), 'other');
 });
 
-test('Truth extension 保持 productionReady=false 并锁定参考版本', () => {
+test('Truth extension 标记计算资料可生产使用，同时保留原典未完全统一状态', () => {
   const chart = buildZiweiCoreChart(
     { yearStem: '辛', yearBranch: '酉', lunarMonth: 8, lunarDay: 27, timeBranch: '午' },
     { mutagenProfile: 'south_iztro_v1' },
   );
   const truth = buildZiweiTruthExtension({ chart, directionBasis: 'male', targetYear: { year: 2026, stem: '丙', branch: '午' }, activeDecadalIndex: 3 });
-  assert.equal(truth.productionReady, false);
+  assert.equal(truth.productionReady, true);
+  assert.equal(truth.calculationDataReady, true);
+  assert.equal(truth.primarySourceComplete, false);
+  assert.equal(truth.calculationProfileId, 'zhaowu_ziwei_v0.5.2');
   assert.equal(truth.truthVersion, 'ziwei_truth_extension_v0.5');
   assert.equal(truth.referenceLock.iztroVersion, '2.6.0');
   assert.equal(truth.referenceLock.iztroCommit, '1ba89cca577c6d5d46754d6f49b6b51467c577d1');
