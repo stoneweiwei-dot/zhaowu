@@ -61,6 +61,33 @@ test("new reports copy the best matched Gallery artwork directly without requiri
   assert.match(source, /gallerySelectionMode/);
 });
 
+test("explicit decree generation reselects Gallery without requiring provider credits", async () => {
+  const backend = await read("supabase/functions/generate-decree-image/index.ts");
+  const client = await read("src/lib/report/decree-image.ts");
+  assert.match(backend, /const reselectGallery = payload\?\.reselectGallery === true/);
+  assert.match(backend, /if \(report\.image_path && !force && !reselectGallery\)/);
+  const directIndex = backend.indexOf("if (!force)");
+  const providerIndex = backend.indexOf('fetch("https://api.openai.com/v1/images/edits"');
+  assert.ok(directIndex >= 0 && providerIndex > directIndex, "Gallery reselection must remain on the no-provider direct path");
+  assert.match(client, /reselectGallery: true/);
+  const generateStart = client.indexOf("export async function generateDecreeImage");
+  assert.ok(generateStart >= 0, "generateDecreeImage export is required");
+  const generateBody = client.slice(generateStart);
+  assert.doesNotMatch(generateBody, /loadExistingDecreeImage\(session, reportId\)/);
+});
+
+test("passive existing decree image is reused unless Gallery reselection or force was requested", async () => {
+  const source = await read("supabase/functions/generate-decree-image/index.ts");
+  const reuseIndex = source.indexOf("if (report.image_path && !force && !reselectGallery)");
+  const galleryIndex = source.indexOf("chooseGalleryReference(service, chart, question)");
+  const providerIndex = source.indexOf('fetch("https://api.openai.com/v1/images/edits"');
+  assert.ok(reuseIndex >= 0, "passive existing-image reuse guard is required");
+  assert.ok(galleryIndex > reuseIndex, "passive existing image must be returned before Gallery selection");
+  assert.ok(providerIndex > reuseIndex, "passive existing image must be returned before provider generation");
+  assert.match(source, /createSignedUrl\(imagePath, 3600\)/);
+  assert.match(source, /A failed refresh must never make an already-generated personal image disappear/);
+});
+
 test("provider personalization remains optional and falls back to the matched Gallery image", async () => {
   const source = await read("supabase/functions/generate-decree-image/index.ts");
   assert.match(source, /new FormData\(\)/);
@@ -70,18 +97,6 @@ test("provider personalization remains optional and falls back to the matched Ga
   assert.match(source, /Explicit force=true keeps the optional provider-personalized path/);
   assert.match(source, /galleryDirect: true/);
   assert.match(source, /degraded: true/);
-});
-
-test("existing personal decree image is delivered before any reselection or regeneration attempt", async () => {
-  const source = await read("supabase/functions/generate-decree-image/index.ts");
-  const reuseIndex = source.indexOf("if (report.image_path && !force)");
-  const galleryIndex = source.indexOf("chooseGalleryReference(service, chart, question)");
-  const providerIndex = source.indexOf('fetch("https://api.openai.com/v1/images/edits"');
-  assert.ok(reuseIndex >= 0, "existing image reuse guard is required");
-  assert.ok(galleryIndex > reuseIndex, "existing personal image must be returned before Gallery reselection");
-  assert.ok(providerIndex > reuseIndex, "existing personal image must be returned before provider generation");
-  assert.match(source, /createSignedUrl\(imagePath, 3600\)/);
-  assert.match(source, /A failed refresh must never make an already-generated personal image disappear/);
 });
 
 test("provider billing details are never exposed to customers", async () => {

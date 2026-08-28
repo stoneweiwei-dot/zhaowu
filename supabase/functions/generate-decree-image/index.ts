@@ -291,6 +291,7 @@ Deno.serve(async (req: Request) => {
   const reportId = String(payload?.reportId ?? "").trim();
   const force = payload?.force === true;
   const viewOnly = payload?.viewOnly === true;
+  const reselectGallery = payload?.reselectGallery === true;
   if (!reportId) return json({ ok: false, error: "REPORT_ID_REQUIRED" }, 400);
 
   const userClient = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: auth } } });
@@ -304,8 +305,9 @@ Deno.serve(async (req: Request) => {
 
   const profile = report.visual_profile && typeof report.visual_profile === "object" ? report.visual_profile : {};
 
-  // Delivery first: a previously generated or Gallery-selected personal image always wins.
-  if (report.image_path && !force) {
+  // Passive report loading reuses the saved image. Explicit Gallery reselection skips this guard
+  // but still stays on the no-provider Gallery-direct path unless force=true was separately requested.
+  if (report.image_path && !force && !reselectGallery) {
     const signedUrl = await signExisting(service, report.image_path);
     if (signedUrl) {
       return json({
@@ -340,8 +342,8 @@ Deno.serve(async (req: Request) => {
 
   const attempts = Number(report.generation_attempts ?? 0) + 1;
 
-  // New reports no longer depend on image-provider credits. The default action selects the best
-  // available owner Gallery artwork and stores a report-scoped copy immediately.
+  // New reports and explicit Gallery reselection no longer depend on image-provider credits. The
+  // action selects the best available owner Gallery artwork and stores a report-scoped copy immediately.
   if (!force) {
     try {
       const direct = await deliverGalleryDirect(service, report, profile, gallerySelection, referenceBlob, attempts);
