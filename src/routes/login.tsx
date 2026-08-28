@@ -121,11 +121,11 @@ function LoginPage() {
           ) : null}
           <label>
             <span>Email</span>
-            <input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@example.com" />
+            <input id="login-email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@example.com" />
           </label>
           <label>
             <span>{t("password")}</span>
-            <input type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={t("passwordPh")} />
+            <input id="login-password" type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={t("passwordPh")} />
           </label>
 
           {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
