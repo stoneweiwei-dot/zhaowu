@@ -31,11 +31,11 @@ test.describe("iPhone Safari parchment application shell", () => {
     expect(backgroundImage).toContain("wallpaper-song.jpg");
     await expect(page.locator(".zhaowu-home-intro").first()).toBeVisible();
     await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
-    await expect(page.locator(".zhaowu-ziwei-feature").first()).toBeVisible();
+    await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
 
     const formBackground = await page.locator("#analysisForm").evaluate((node) => getComputedStyle(node).backgroundColor);
     expect(alphaOf(formBackground)).toBeLessThan(1);
-    expect(alphaOf(formBackground)).toBeGreaterThan(0.6);
+    expect(alphaOf(formBackground)).toBeGreaterThan(0.65);
   });
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {
