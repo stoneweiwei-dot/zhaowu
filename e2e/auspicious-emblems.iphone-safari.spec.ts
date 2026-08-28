@@ -1,11 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 const PAPER_ROUTES = ["/", "/account", "/tianji-dual", "/yizhangjing"] as const;
-
-async function makeAppOfflineSafe(page: Page) {
-  await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
-}
-
+async function makeAppOfflineSafe(page: Page) { await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" })); }
 function alphaOf(value: string) {
   const rgba = value.match(/rgba?\(([^)]+)\)/);
   if (!rgba) return 1;
@@ -14,42 +10,32 @@ function alphaOf(value: string) {
 }
 
 test.describe("iPhone Safari parchment application shell", () => {
-  test("keeps every application route wallpaper-free and removes loose emblem scatter", async ({ page }) => {
+  test("keeps dynamic wallpaper and loose scatter out of every application route", async ({ page }) => {
     await makeAppOfflineSafe(page);
-
     for (const route of PAPER_ROUTES) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
-
-      const shell = page.locator(".zhaowu-home-sheet-shell");
-      await expect(shell).toBeVisible();
+      await expect(page.locator(".zhaowu-home-sheet-shell")).toBeVisible();
       await expect(page.locator(".zhaowu-site-wallpaper")).toHaveCount(0);
       await expect(page.getByTestId("auspicious-emblem-scatter")).toHaveCount(0);
-
-      const shellAlpha = await shell.evaluate((node) => getComputedStyle(node).backgroundColor);
-      expect(alphaOf(shellAlpha)).toBe(1);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     }
   });
 
-  test("keeps the homepage full-width and readable without wallpaper gutters", async ({ page }) => {
+  test("homepage shows the packaged Song landscape behind readable translucent panels", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    const frame = page.locator(".zhaowu-home-app-frame").first();
-    await expect(frame).toBeVisible();
-    const frameBox = await frame.boundingBox();
-    expect(frameBox).not.toBeNull();
-    if (frameBox) {
-      expect(frameBox.x).toBeLessThanOrEqual(1);
-      expect(frameBox.width).toBeGreaterThanOrEqual(388);
-    }
+    const shell = page.locator(".zhaowu-home-sheet-shell").first();
+    const backgroundImage = await shell.evaluate((node) => getComputedStyle(node).backgroundImage);
+    expect(backgroundImage).toContain("wallpaper-song.jpg");
+    await expect(page.locator(".zhaowu-home-intro").first()).toBeVisible();
+    await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
+    await expect(page.locator(".zhaowu-ziwei-feature").first()).toBeVisible();
 
-    const hero = page.locator(".zhaowu-home-hero").first();
-    await expect(hero).toBeVisible();
-    const heroBackground = await hero.evaluate((node) => getComputedStyle(node).backgroundColor);
-    expect(alphaOf(heroBackground)).toBe(1);
-    await expect(page.locator(".zhaowu-specialist-mark")).toHaveCount(0);
+    const formBackground = await page.locator("#analysisForm").evaluate((node) => getComputedStyle(node).backgroundColor);
+    expect(alphaOf(formBackground)).toBeLessThan(1);
+    expect(alphaOf(formBackground)).toBeGreaterThan(0.6);
   });
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {
@@ -59,10 +45,8 @@ test.describe("iPhone Safari parchment application shell", () => {
       backgroundReads += 1;
       return route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
     });
-
     await page.goto("/account", { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(250);
     expect(backgroundReads).toBe(0);
-    await expect(page.locator(".zhaowu-site-wallpaper")).toHaveCount(0);
   });
 });

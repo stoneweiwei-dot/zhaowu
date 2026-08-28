@@ -1,151 +1,142 @@
-import { useState, type FormEvent } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import {
-  signInWithPassword,
-  signUpWithPassword,
-  supabaseConfigured,
-} from "@/lib/supabase-rest";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { FormEvent, useEffect, useState } from "react";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
+import { captureOAuthRedirect, signInWithPassword, signUpWithPassword, startOAuth, supabaseConfigured, type OAuthProvider } from "@/lib/supabase-rest";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
+type Mode = "signin" | "signup";
+
+const OAUTH_COPY = {
+  "zh-Hant": { quick: "快速登入", email: "或使用電子郵件", google: "使用 Google 繼續", apple: "使用 Apple 繼續" },
+  "zh-Hans": { quick: "快速登录", email: "或使用电子邮箱", google: "使用 Google 继续", apple: "使用 Apple 继续" },
+  en: { quick: "Quick sign in", email: "or use email", google: "Continue with Google", apple: "Continue with Apple" },
+} as const;
+
 function LoginPage() {
+  const { t, locale } = useI18n();
   const navigate = useNavigate();
-  const { t, locale, setLocale } = useI18n();
-  const { user, isPending, reload } = useCurrentUserState();
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const { user, reload } = useCurrentUserState();
+  const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [oauthBusy, setOauthBusy] = useState<OAuthProvider | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+  const oauthCopy = OAUTH_COPY[locale];
 
-  async function submit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  useEffect(() => {
+    void captureOAuthRedirect().then((session) => {
+      if (session) void reload();
+    });
+  }, [reload]);
+
+  useEffect(() => {
+    if (user) void navigate({ to: "/account" });
+  }, [navigate, user]);
+
+  function onOAuth(provider: "google" | "apple") {
     setError(null);
-    setMessage(null);
-    if (!supabaseConfigured) {
-      setError(t("loginUnavailable"));
-      return;
+    setInfo(null);
+    setOauthBusy(provider);
+    try {
+      startOAuth(provider, "/login");
+    } catch (err) {
+      setOauthBusy(null);
+      setError(err instanceof Error ? err.message : t("loginUnavailable"));
     }
+  }
+
+  async function onSubmit(event: FormEvent) {
+    event.preventDefault();
+    setError(null);
+    setInfo(null);
     if (!email.trim() || password.length < 8) {
       setError(t("loginValidation"));
       return;
     }
+    if (!supabaseConfigured) {
+      setError(t("loginUnavailable"));
+      return;
+    }
     setBusy(true);
     try {
-      if (mode === "signup") {
-        const out = await signUpWithPassword(email, password, displayName || email.split("@")[0]);
-        if (!out.session) {
-          setMessage(t("accountCreated"));
-          setMode("login");
-          return;
-        }
-      } else {
-        await signInWithPassword(email, password);
+      if (mode === "signin") {
+        await signInWithPassword(email.trim(), password);
+        await reload();
+        await navigate({ to: "/account" });
+        return;
       }
-      window.dispatchEvent(new Event("zhaowu-auth-change"));
-      await reload();
-      await navigate({ to: "/account" });
+      const { session } = await signUpWithPassword(email.trim(), password, displayName.trim());
+      if (session) {
+        await reload();
+        await navigate({ to: "/account" });
+        return;
+      }
+      // Some Supabase projects require one email confirmation after account creation.
+      // No extra confirmation UI is added here; the backend decides whether confirmation is required.
+      setInfo(t("accountCreated"));
+      setMode("signin");
     } catch (err) {
-      const text = err instanceof Error ? err.message : t("loginFailed");
-      setError(text.includes("Invalid login credentials") ? t("invalidCredentials") : text);
+      setError(err instanceof Error ? err.message : t("loginFailed"));
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <main className="stone-login-screen">
-      <div className="stone-login-art" aria-hidden>
-        <div className="stone-login-orbit">
-          <span />
-          <span />
-          <span />
-          <b>昭梧</b>
-        </div>
-        <div className="stone-login-panel panel-a">
-          <i>日主</i>
-          <strong>甲木</strong>
-          <em>平衡</em>
-        </div>
-        <div className="stone-login-panel panel-b">
-          <i>流年</i>
-          <strong>丙午</strong>
-          <em>推演</em>
-        </div>
-        <div className="stone-login-art-shade" />
-      </div>
+    <main className="stone-login-screen" aria-labelledby="login-title">
+      <section className="stone-login-panel seal-border">
+        <p className="stone-login-kicker">ZHAOWU · ACCOUNT</p>
+        <h1 id="login-title" className="stone-login-title">{mode === "signin" ? t("loginTitle") : t("signupTitle")}</h1>
+        <p className="stone-login-lead">{mode === "signin" ? t("loginLead") : t("loginPageLead")}</p>
 
-      <div className="stone-login-topbar">
-        <Link to="/" className="stone-login-pill">← {t("backHome")}</Link>
-        <div
-          role="group"
-          aria-label={t("language")}
-          className="flex shrink-0 items-stretch overflow-hidden rounded-full border border-[#f5e0ac]/55 bg-[#1f180e]/55 shadow-[0_8px_26px_rgba(0,0,0,.18)] backdrop-blur-md"
-        >
-          {([
-            ["zh-Hant", "繁中"],
-            ["zh-Hans", "简中"],
-            ["en", "EN"],
-          ] as const).map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setLocale(value)}
-              aria-pressed={locale === value}
-              className={`min-h-[2.45rem] min-w-[2.7rem] border-r border-[#f5e0ac]/25 px-2 text-[11px] font-medium transition last:border-r-0 ${
-                locale === value ? "bg-[#f1ddb0] text-[#21170d]" : "text-[#fff7df] hover:bg-white/10"
-              }`}
-            >
-              {label}
+        <div className="stone-login-tabs" role="tablist" aria-label={t("loginTitle")}> 
+          <button type="button" role="tab" aria-selected={mode === "signin"} onClick={() => setMode("signin")}>{t("loginTab")}</button>
+          <button type="button" role="tab" aria-selected={mode === "signup"} onClick={() => setMode("signup")}>{t("signupTab")}</button>
+        </div>
+
+        <div className="mt-5">
+          <p className="mb-3 text-center text-xs tracking-[0.12em] text-ink-mute">{oauthCopy.quick}</p>
+          <div className="grid grid-cols-2 gap-3">
+            <button type="button" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("google")} className="min-h-12 rounded-xl border border-line bg-cream/70 px-3 text-sm text-ink disabled:opacity-50">
+              {oauthCopy.google}
             </button>
-          ))}
-        </div>
-      </div>
-
-      <section className="stone-login-sheet">
-        {!isPending && user ? (
-          <div className="text-center">
-            <p className="stone-login-kicker">ACCOUNT</p>
-            <h1 className="stone-login-title">{t("loggedInTitle")}</h1>
-            <p className="mt-2 text-sm leading-6 text-ink-soft">
-              {user.displayName} · {user.email}{user.isOwner ? ` · ${t("owner")}` : ""}
-            </p>
-            <Link to="/account" className="stone-login-primary mt-4">{t("enterMine")}</Link>
+            <button type="button" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("apple")} className="min-h-12 rounded-xl border border-line bg-cream/70 px-3 text-sm text-ink disabled:opacity-50">
+              {oauthCopy.apple}
+            </button>
           </div>
-        ) : (
-          <>
-            <div className="stone-login-sheet-head">
-              <div>
-                <p className="stone-login-kicker">ZHAOWU · ACCOUNT</p>
-                <h1 className="stone-login-title">{mode === "login" ? t("loginTitle") : t("signupTitle")}</h1>
-              </div>
-              <div className="stone-login-tabs" aria-label="account mode">
-                <button type="button" onClick={() => setMode("login")} className={mode === "login" ? "is-active" : ""}>{t("loginTab")}</button>
-                <button type="button" onClick={() => setMode("signup")} className={mode === "signup" ? "is-active" : ""}>{t("signupTab")}</button>
-              </div>
-            </div>
+          <p className="my-4 text-center text-xs text-ink-mute">{oauthCopy.email}</p>
+        </div>
 
-            <form className="stone-login-form stone-login-form-member-only" onSubmit={(e) => void submit(e)}>
-              {mode === "signup" ? (
-                <input id="display-name" aria-label={t("displayName")} value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("displayNamePh")} />
-              ) : null}
-              <input id="login-email" aria-label="Email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-              <input id="login-password" aria-label={t("password")} type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("password")} />
+        <form onSubmit={onSubmit} className="stone-login-form">
+          {mode === "signup" ? (
+            <label>
+              <span>{t("displayName")}</span>
+              <input autoComplete="name" value={displayName} onChange={(event) => setDisplayName(event.target.value)} placeholder={t("displayNamePh")} />
+            </label>
+          ) : null}
+          <label>
+            <span>Email</span>
+            <input id="login-email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@example.com" />
+          </label>
+          <label>
+            <span>{t("password")}</span>
+            <input id="login-password" type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={t("passwordPh")} />
+          </label>
 
-              {message ? <p role="status" className="stone-login-message">{message}</p> : null}
-              {error ? <p role="alert" className="stone-login-error">{error}</p> : null}
+          {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
+          {info ? <p className="stone-login-info" role="status">{info}</p> : null}
 
-              <button type="submit" disabled={busy || !supabaseConfigured} className="stone-login-primary w-full disabled:opacity-50">
-                {busy ? t("processing") : mode === "login" ? t("loginTab") : t("createAccount")}
-              </button>
-            </form>
-          </>
-        )}
-        <p className="stone-login-signature">STONE 原創 · 2026</p>
+          <button type="submit" disabled={busy || oauthBusy !== null} className="stone-login-submit">
+            {busy ? t("processing") : mode === "signin" ? t("loginTab") : t("createAccount")}
+          </button>
+        </form>
+
+        <p className="stone-login-note">{t("loginPageLead")}</p>
       </section>
     </main>
   );

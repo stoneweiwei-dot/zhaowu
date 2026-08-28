@@ -33,7 +33,7 @@ async function gateDuration(page: Page) {
 }
 
 const routes = [
-  { path: "/", heading: "昭梧", action: "開始我的分析", actionRole: "link" },
+  { path: "/", heading: "先回答你真正想問的事", action: "開始分析", actionRole: "button" },
   { path: "/login", heading: "登入昭梧", action: "Email", actionRole: "textbox" },
   { path: "/account", heading: "我的昭梧", action: "登入", actionRole: "link" },
 ] as const;
@@ -68,6 +68,6 @@ test.describe("iPhone Safari startup fallback", () => {
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator(GATE)).toHaveCount(0, { timeout: 1_500 });
-    await expect(page.getByRole("heading", { name: "昭梧", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "先回答你真正想問的事", exact: true })).toBeVisible();
   });
 });
