@@ -5,9 +5,9 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 async function source(path) { return readFile(new URL(path, root), "utf8"); }
 
-test("report UI has only overall summary and body-attention presentation for new reports", async () => {
+test("report UI has only one plain-language answer flow and body-attention presentation for new reports", async () => {
   const renderer = await source("src/components/paid-report-pages.tsx");
-  for (const title of ["總體概括", "身體需要注意", "总体概括", "身体需要注意", "Overall summary", "Body areas to watch"]) {
+  for (const title of ["你現在最需要知道的事", "身體需要留意", "你现在最需要知道的事", "身体需要留意", "What matters now", "Body areas to watch"]) {
     assert.match(renderer, new RegExp(title));
   }
   assert.match(renderer, /continuousReportContent/);
