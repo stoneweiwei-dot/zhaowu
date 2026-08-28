@@ -9,39 +9,39 @@ import {
 
 const COPY = {
   "zh-Hant": {
-    kicker: "昭梧作品庫 · 個人命誥母圖",
-    title: "你的命誥圖",
-    note: "先依本次命盤，從站主核准作品庫中自行匹配合適母圖，再據此生成你的個人版本。不再用佛、道等人工分組決定圖片。圖像只負責視覺呈現，不反向改動命理判斷。",
-    generate: "生成個人命誥圖",
-    generating: "命誥圖生成中…",
+    kicker: "昭梧作品庫 · 個人命詮母圖",
+    title: "你的命詮圖",
+    note: "先依本次命盤，從整個啟用作品庫中選出最接近的一張，再複製為你的個人命詮圖。不再用核准標籤或佛、道等人工分組決定能不能出圖。圖像只負責視覺呈現，不反向改動命理判斷。",
+    generate: "生成個人命詮圖",
+    generating: "命詮圖生成中…",
     matched: "匹配母圖",
     generated: "你的成圖",
-    unavailable: "目前作品庫沒有可用的核准母圖，暫不啟動生成。",
-    alt: "昭梧核准作品庫參考圖",
-    generatedAlt: "昭梧個人命誥圖",
+    unavailable: "目前啟用作品庫沒有可用圖片，暫時無法生成命詮圖。",
+    alt: "昭梧作品庫參考圖",
+    generatedAlt: "昭梧個人命詮圖",
   },
   "zh-Hans": {
-    kicker: "昭梧作品库 · 个人命诰母图",
-    title: "你的命诰图",
-    note: "先依本次命盘，从站主核准作品库中自行匹配合适母图，再据此生成你的个人版本。不再用佛、道等人工分组决定图片。图像只负责视觉呈现，不反向改动命理判断。",
-    generate: "生成个人命诰图",
-    generating: "命诰图生成中…",
+    kicker: "昭梧作品库 · 个人命诺母图",
+    title: "你的命诺图",
+    note: "先依本次命盘，从整个启用作品库中选出最接近的一张，再复制为你的个人命诺图。不再用核准标签或佛、道等人工分组决定能不能出图。图像只负责视觉呈现，不反向改动命理判断。",
+    generate: "生成个人命诺图",
+    generating: "命诺图生成中…",
     matched: "匹配母图",
     generated: "你的成图",
-    unavailable: "目前作品库没有可用的核准母图，暂不启动生成。",
-    alt: "昭梧核准作品库参考图",
-    generatedAlt: "昭梧个人命诰图",
+    unavailable: "目前启用作品库没有可用图片，暂时无法生成命诺图。",
+    alt: "昭梧作品库参考图",
+    generatedAlt: "昭梧个人命诺图",
   },
   en: {
     kicker: "ZHAOWU VISUAL LIBRARY · PERSONAL SOURCE",
     title: "Your decree image",
-    note: "Zhaowu matches an owner-approved reference from one visual library using image-level metadata, then generates your version from it. Religious category guesses do not control the match. The image never changes the reading itself.",
+    note: "Zhaowu ranks the whole enabled visual library, copies the closest image into a private decree asset, and never blocks delivery on approval tags. Religious category guesses do not control the match. The image never changes the reading itself.",
     generate: "Generate my decree image",
     generating: "Generating decree image…",
     matched: "Matched reference",
     generated: "Your image",
-    unavailable: "No approved visual-library reference is available, so generation is paused.",
-    alt: "Owner-approved Zhaowu visual reference",
+    unavailable: "The enabled visual library is empty, so a decree image cannot be created yet.",
+    alt: "Zhaowu visual-library reference",
     generatedAlt: "Your Zhaowu decree image",
   },
 } as const;
@@ -78,7 +78,9 @@ export function DecreeGalleryPreview({ chart, busy, generatedImageUrl, onGenerat
   const heroSrc = generatedImageUrl ?? matches[0]?.imageUrl ?? null;
   const heroAlt = generatedImageUrl ? copy.generatedAlt : copy.alt;
   const secondary = useMemo(() => matches.slice(generatedImageUrl ? 0 : 1, generatedImageUrl ? 2 : 3), [generatedImageUrl, matches]);
-  const canGenerate = !loading && matches.length > 0;
+  // Preview ranking is decorative. Default generation is owned by generate-decree-image
+  // and must stay clickable even if approved/client_eligible knowledge is missing.
+  const canGenerate = !loading;
 
   return (
     <article className="zhaowu-decree-gallery seal-border" aria-labelledby="zhaowu-decree-gallery-title">
