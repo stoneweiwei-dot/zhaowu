@@ -76,7 +76,7 @@ function LoginPage() {
         return;
       }
       // Some Supabase projects require one email confirmation after account creation.
-      // No extra confirmation UI is added here; the backend decides whether email confirmation is required.
+      // No extra confirmation UI is added here; the backend decides whether confirmation is required.
       setInfo(t("accountCreated"));
       setMode("signin");
     } catch (err) {
