@@ -19,6 +19,14 @@ test("email signup has no separate verification-code screen", () => {
   assert.match(login, /backend decides whether confirmation is required/);
 });
 
+test("mobile login uses the full-width sheet instead of the decorative mini panel", () => {
+  assert.match(login, /className="stone-login-sheet seal-border"/);
+  assert.doesNotMatch(login, /className="stone-login-panel seal-border"/);
+  assert.match(login, /className="stone-login-primary"/);
+  assert.match(login, /className="stone-login-message"/);
+  assert.match(login, /className="stone-login-signature"/);
+});
+
 test("one-sheet report removes customer-facing metaphysical jargon", () => {
   assert.match(report, /zhaowu-report-continuous-sheet/);
   assert.match(report, /PERSONAL ANALYSIS/);
