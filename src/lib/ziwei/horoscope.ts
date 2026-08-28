@@ -18,6 +18,7 @@ import {
   type ZiweiCoreChart,
   type ZiweiMutagenProfile,
 } from './core';
+import { ZIWEI_ENGINE_READINESS } from './profiles';
 
 export type ZiweiDirectionBasis = 'male' | 'female';
 export type ZiweiScope = 'natal' | 'decadal' | 'yearly';
@@ -127,7 +128,10 @@ export type ZiweiActivationEvent = {
 
 export type ZiweiTruthExtension = {
   truthVersion: 'ziwei_truth_extension_v0.5';
-  productionReady: false;
+  productionReady: true;
+  calculationDataReady: true;
+  primarySourceComplete: false;
+  calculationProfileId: typeof ZIWEI_ENGINE_READINESS.profile.id;
   referenceLock: typeof ZIWEI_REFERENCE_LOCK;
   natalStars: ZiweiStarPlacement[];
   natalMutagens: ZiweiMutagenEvent[];
@@ -361,7 +365,10 @@ export function buildZiweiTruthExtension(input: {
   const activeDecadal = input.activeDecadalIndex == null ? null : decadals[input.activeDecadalIndex] ?? null;
   return {
     truthVersion: 'ziwei_truth_extension_v0.5',
-    productionReady: false,
+    productionReady: ZIWEI_ENGINE_READINESS.calculationDataReady,
+    calculationDataReady: ZIWEI_ENGINE_READINESS.calculationDataReady,
+    primarySourceComplete: ZIWEI_ENGINE_READINESS.primarySourceComplete,
+    calculationProfileId: ZIWEI_ENGINE_READINESS.profile.id,
     referenceLock: ZIWEI_REFERENCE_LOCK,
     natalStars,
     natalMutagens,
