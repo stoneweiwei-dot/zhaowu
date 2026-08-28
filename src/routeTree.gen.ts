@@ -17,6 +17,7 @@ import { Route as TeaGuardianRouteImport } from './routes/tea-guardian'
 import { Route as TianjiDualRouteImport } from './routes/tianji-dual'
 import { Route as TianjiXinggongRouteImport } from './routes/tianji-xinggong'
 import { Route as YizhangjingRouteImport } from './routes/yizhangjing'
+import { Route as ZiweiRouteImport } from './routes/ziwei'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const YizhangjingRoute = YizhangjingRouteImport.update({
   path: '/yizhangjing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ZiweiRoute = ZiweiRouteImport.update({
+  id: '/ziwei',
+  path: '/ziwei',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/yizhangjing': typeof YizhangjingRoute
+  '/ziwei': typeof ZiweiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/yizhangjing': typeof YizhangjingRoute
+  '/ziwei': typeof ZiweiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/yizhangjing': typeof YizhangjingRoute
+  '/ziwei': typeof ZiweiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/tianji-dual'
     | '/tianji-xinggong'
     | '/yizhangjing'
+    | '/ziwei'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/tianji-dual'
     | '/tianji-xinggong'
     | '/yizhangjing'
+    | '/ziwei'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/tianji-dual'
     | '/tianji-xinggong'
     | '/yizhangjing'
+    | '/ziwei'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   TianjiDualRoute: typeof TianjiDualRoute
   TianjiXinggongRoute: typeof TianjiXinggongRoute
   YizhangjingRoute: typeof YizhangjingRoute
+  ZiweiRoute: typeof ZiweiRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof YizhangjingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ziwei': {
+      id: '/ziwei'
+      path: '/ziwei'
+      fullPath: '/ziwei'
+      preLoaderRoute: typeof ZiweiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   TianjiDualRoute: TianjiDualRoute,
   TianjiXinggongRoute: TianjiXinggongRoute,
   YizhangjingRoute: YizhangjingRoute,
+  ZiweiRoute: ZiweiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
