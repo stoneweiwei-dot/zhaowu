@@ -34,6 +34,8 @@ test('紫微页面先交付客户白话总解，再折叠专业命盘', async ()
   assert.match(css, /grid-template-columns:\s*repeat\(4/);
   assert.match(css, /@media \(max-width:\s*430px\)/);
   assert.match(summaryCss, /\.ziwei-plain-report/);
+  assert.match(summaryCss, /html\[lang="en"\] \.ziwei-hero-rule b\{font-size:0\}/);
+  assert.match(summaryCss, /html\[lang="en"\] \.ziwei-plain-seal\{font-size:0\}/);
   assert.match(summaryCss, /@media\(max-width:520px\)/);
   assert.match(summary, /zhaowu_ziwei_plain_summary_v1/);
   assert.match(summary, /internalEvidence/);
