@@ -1,42 +1,62 @@
-import { useI18n } from "@/lib/i18n";
+import { useI18n, type Locale } from "@/lib/i18n";
 import type { ReportSection } from "@/lib/report/focused-report";
 
 const COPY = {
   "zh-Hant": {
-    title: "完整報告",
-    lead: "先看整體結論，再看身體需要留意的地方。",
-    kicker: "ZHAOWU · PERSONAL REPORT",
-    summary: "總體概括",
-    body: "身體需要注意的地方",
+    title: "你的完整分析",
+    lead: "只保留跟你這一問有關的結論、時間和下一步。",
+    kicker: "ZHAOWU · PERSONAL ANALYSIS",
+    summary: "你現在最需要知道的事",
+    body: "身體需要留意",
   },
   "zh-Hans": {
-    title: "完整报告",
-    lead: "先看整体结论，再看身体需要留意的地方。",
-    kicker: "ZHAOWU · PERSONAL REPORT",
-    summary: "总体概括",
-    body: "身体需要注意的地方",
+    title: "你的完整分析",
+    lead: "只保留跟你这一问有关的结论、时间和下一步。",
+    kicker: "ZHAOWU · PERSONAL ANALYSIS",
+    summary: "你现在最需要知道的事",
+    body: "身体需要留意",
   },
   en: {
-    title: "Full report",
-    lead: "Start with the overall conclusion, then the body areas worth watching.",
-    kicker: "ZHAOWU · PERSONAL REPORT",
-    summary: "Overall summary",
+    title: "Your full analysis",
+    lead: "Only the answer, useful timing and practical next steps for your question.",
+    kicker: "ZHAOWU · PERSONAL ANALYSIS",
+    summary: "What matters now",
     body: "Body areas to watch",
   },
 } as const;
+
+const CHINESE_JARGON = /命[盤盘](?:落點|落点|格局)?|命局|日主|月令|大[運运]|流年|流月|十神|正印|偏印|七[殺杀]|官[殺杀]|食神|傷官|伤官|比肩|劫[財财]|喜用神|忌神|五行生克|五行生剋|[殺杀]印相生|旺衰|身[強强]|身弱|刑[沖冲]合害|納音|纳音/;
+const ENGLISH_JARGON = /\b(?:bazi|day master|month command|ten gods?|luck cycle|ten-year cycle|destiny|fate|auspicious|metaphys(?:ic|ical|ics)|cosmic|spiritual alignment)\b|chart indicates|elemental balance/gi;
 
 function normalizeReportLine(line: string): string {
   return line.replace(/\s+/g, " ").trim();
 }
 
-function uniqueLines(lines: string[]): string[] {
-  return lines.filter((line, index, body) => {
-    const normalized = normalizeReportLine(line);
-    return Boolean(normalized) && body.findIndex((candidate) => normalizeReportLine(candidate) === normalized) === index;
-  });
+function customerSafeLine(line: string, locale: Locale): string {
+  const normalized = normalizeReportLine(line);
+  if (!normalized) return "";
+  if (locale === "en") {
+    if (ENGLISH_JARGON.test(normalized)) return "";
+    ENGLISH_JARGON.lastIndex = 0;
+    return normalized;
+  }
+  if (CHINESE_JARGON.test(normalized)) return "";
+  return normalized;
 }
 
-function continuousReportContent(sections: ReportSection[]) {
+function uniqueLines(lines: string[], locale: Locale): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const line of lines) {
+    const safe = customerSafeLine(line, locale);
+    if (!safe || seen.has(safe)) continue;
+    seen.add(safe);
+    out.push(safe);
+  }
+  return out;
+}
+
+function continuousReportContent(sections: ReportSection[], locale: Locale) {
   const summarySection = sections.find((section) => section.key === "summary");
   const bodySection = sections.find((section) => section.key === "body");
 
@@ -46,13 +66,13 @@ function continuousReportContent(sections: ReportSection[]) {
       summary: uniqueLines([
         ...(summarySection?.body ?? []),
         ...overflow.flatMap((section) => section.body ?? []),
-      ]),
-      body: uniqueLines(bodySection?.body ?? []),
+      ], locale),
+      body: uniqueLines(bodySection?.body ?? [], locale),
     };
   }
 
   return {
-    summary: uniqueLines(sections.flatMap((section) => section.body ?? [])),
+    summary: uniqueLines(sections.flatMap((section) => section.body ?? []), locale),
     body: [],
   };
 }
@@ -60,7 +80,7 @@ function continuousReportContent(sections: ReportSection[]) {
 export function FocusedReportSections({ sections }: { sections: ReportSection[] }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
-  const content = continuousReportContent(sections);
+  const content = continuousReportContent(sections, locale);
 
   if (!content.summary.length && !content.body.length) return null;
 
@@ -95,5 +115,5 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
   );
 }
 
-/** Legacy export name kept so historical report imports keep rendering through the same one-sheet view. */
+/** Historical imports render through the same one-sheet view. */
 export const PaidReportPages = FocusedReportSections;
