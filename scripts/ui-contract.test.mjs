@@ -8,9 +8,9 @@ async function source(path) { return readFile(new URL(path, root), "utf8"); }
 test("homepage is a customer-facing entry without a duplicate giant brand hero", async () => {
   const home = await source("src/routes/index.tsx");
   assert.match(home, /zhaowu-home-intro/);
-  assert.match(home, /heroLead/);
+  assert.match(home, /heroKicker/);
   assert.match(home, /<AnalysisForm \/>/);
-  assert.match(home, /<ZiweiHomeFeature \/>/);
+  assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section/);
   assert.doesNotMatch(home, /zhaowu-home-hero/);
   assert.doesNotMatch(home, /ZHAOWU · SAFE|白屏|視覺先暫停|视觉先暂停/);
   assert.doesNotMatch(home, /STEPS\.map|PROOFS\.map|methodTitle|methodLead|proofPrimary|proofPast|proofBoundary|faq1q|faq2q|faq3q/);
@@ -52,22 +52,22 @@ test("full reports render one continuous summary then body attention, while decr
   assert.equal((resultView.match(/onClick=\{\(\) => void onFull\(\)\}/g) ?? []).length, 1);
 });
 
-test("tea guardian remains a standalone tool while the embedded full-report slot is retired", async () => {
+test("tea guardian stays separate from the homepage, report and personal decree image", async () => {
   const resultView = await source("src/components/result-view.tsx");
-  const account = await source("src/routes/account.tsx");
   const home = await source("src/routes/index.tsx");
-  const embeddedTea = await source("src/components/tea-guardian-report.tsx");
   const focused = await source("src/lib/report/focused-report.ts");
+  const teaRoute = await source("src/routes/tea-guardian.tsx");
   const tea = await source("src/lib/tea-guardian.ts");
+  const gallery = await source("src/lib/gallery-match.ts");
+  const edge = await source("supabase/functions/generate-decree-image/index.ts");
 
-  assert.match(resultView, /TeaGuardianReport/);
-  assert.match(account, /TeaGuardianReport/);
-  assert.match(embeddedTea, /embedded report slot is intentionally retired/);
-  assert.match(embeddedTea, /return null;/);
-  assert.match(home, /to="\/tea-guardian"/);
+  assert.doesNotMatch(resultView, /TeaGuardianReport|tea-guardian/);
+  assert.doesNotMatch(home, /tea-guardian|茶仙守護|茶仙守护/);
   assert.doesNotMatch(focused, /teaGuardian|茶仙守護|茶仙守护/);
+  assert.match(teaRoute, /TeaGuardian/);
   assert.match(tea, /recommendGuardianFromChart/);
-  assert.match(tea, /不等於直接補某個五行/);
+  assert.match(gallery, /isPersonalDecreeAsset/);
+  assert.match(edge, /isPersonalDecreeAsset/);
 });
 
 test("free decree text remains available when image generation fails", async () => {
@@ -153,4 +153,17 @@ test("Dharma Palm standalone uses a four-life trail and symbolic six-realm prese
   assert.match(palm, /four-life symbolic trail/);
   assert.match(palm, /AUSPICIOUS_EMBLEMS/);
   assert.match(palm, /dharma-wheel-emblem\.svg/);
+});
+
+
+test("customer birth form hides technical time policies and backend fixes them", async () => {
+  const form = await source("src/components/analysis-form.tsx");
+  const actions = await source("src/lib/actions.ts");
+  const chart = await source("src/lib/bazi/chart.ts");
+  assert.doesNotMatch(form, /setZiPolicy|setUseTrueSolar|t\("solar"\)|t\("zi"\)/);
+  assert.match(form, /ziPolicy: "midnight"/);
+  assert.match(form, /useTrueSolar: true/);
+  assert.match(actions, /ziPolicy: "midnight"/);
+  assert.match(actions, /useTrueSolar: true/);
+  assert.match(chart, /換日固定以真太陽時午夜為界/);
 });

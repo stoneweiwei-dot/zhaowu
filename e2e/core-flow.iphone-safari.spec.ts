@@ -27,9 +27,10 @@ test.describe("iPhone Safari core customer flow", () => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await expect(page.locator("#zhaowu-home-intro-title")).toBeVisible();
     await expect(page.locator("#analysisForm")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "先回答你真正想問的事", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "你的命盤資料", exact: true })).toBeVisible();
+    await expect(page.getByText("子時換日", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("套用真太陽時校正", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "登入", exact: true }).first()).toBeVisible();
 
     // Wait until the first-visit install prompt is actually present, then prove it cannot block the main form.
@@ -47,7 +48,7 @@ test.describe("iPhone Safari core customer flow", () => {
 
     await page.getByRole("button", { name: "简中", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "先回答你真正想问的事", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "你的命盘资料", exact: true })).toBeVisible();
 
     await page.getByRole("button", { name: "EN", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();

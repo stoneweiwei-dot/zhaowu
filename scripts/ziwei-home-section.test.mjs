@@ -4,15 +4,13 @@ import test from 'node:test';
 
 const read = (path) => readFile(new URL(path, import.meta.url), 'utf8');
 
-test('首页存在独立紫微专题 section，并链接 /ziwei', async () => {
-  const [home, feature] = await Promise.all([
+test('紫微保留独立页面，但不再占据核心分析首页', async () => {
+  const [home, route] = await Promise.all([
     read('../src/routes/index.tsx'),
-    read('../src/components/ziwei-home-feature.tsx'),
+    read('../src/routes/ziwei.tsx'),
   ]);
-  assert.match(home, /<ZiweiHomeFeature\s*\/>/);
-  assert.match(feature, /to="\/ziwei"/);
-  assert.match(feature, /紫微斗數・十二宮真值命盤|紫微斗数・十二宫真值命盘/);
-  assert.match(feature, /zhaowu-ziwei-mini-chart/);
+  assert.doesNotMatch(home, /ZiweiHomeFeature|to="\/ziwei"/);
+  assert.match(route, /createFileRoute\("\/ziwei"\)/);
 });
 
 test('紫微页面先交付客户白话总解，再折叠专业命盘', async () => {

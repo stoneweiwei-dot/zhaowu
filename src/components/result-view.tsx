@@ -13,7 +13,6 @@ import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/report/decre
 import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
 import { buildFreeDirectAnswer } from "@/lib/report/final-reading";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
-import { TeaGuardianReport } from "@/components/tea-guardian-report";
 
 const RESULT_COPY = {
   "zh-Hant": {
@@ -24,7 +23,7 @@ const RESULT_COPY = {
     saving: "保存中…",
     updateSaved: "更新已保存報告",
     fullGenerate: "查看完整報告",
-    fullGenerating: "正在整理與這一問直接相關的內容…",
+    fullGenerating: "正在整理完整報告…",
     imageReady: "個人命誥圖已生成並保存。",
     imageLoadFailed: "命誥圖未能載入；文字答案與完整報告不受影響。",
     imageAlt: "昭梧個人命誥圖",
@@ -37,7 +36,7 @@ const RESULT_COPY = {
     saving: "保存中…",
     updateSaved: "更新已保存报告",
     fullGenerate: "查看完整报告",
-    fullGenerating: "正在整理与你这一问直接相关的内容…",
+    fullGenerating: "正在整理完整报告…",
     imageReady: "个人命诰图已生成并保存。",
     imageLoadFailed: "命诰图未能载入；文字答案与完整报告不受影响。",
     imageAlt: "昭梧个人命诰图",
@@ -50,7 +49,7 @@ const RESULT_COPY = {
     saving: "Saving…",
     updateSaved: "Update saved report",
     fullGenerate: "View full report",
-    fullGenerating: "Organizing only what directly serves this question…",
+    fullGenerating: "Preparing your full report…",
     imageReady: "Your personal decree image has been generated and saved.",
     imageLoadFailed: "The decree image could not be loaded. Your text answer and full report remain available.",
     imageAlt: "Zhaowu personal decree image",
@@ -232,7 +231,6 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       ) : null}
 
       {reportSections ? <FocusedReportSections sections={reportSections} /> : null}
-      {reportSections ? <TeaGuardianReport chart={chart} /> : null}
       <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
     </section>
   );

@@ -130,8 +130,16 @@ type GallerySelection = {
   score: number;
 };
 
+const TEA_GUARDIAN_ART_RE = /(?:tea[-_\s]?(?:guardian|deity)|茶仙|茶神|茶守護|茶守护)/i;
+
+function isPersonalDecreeAsset(asset: any, knowledge: any): boolean {
+  if (String(asset?.category ?? "") === "tea-guardian") return false;
+  return !TEA_GUARDIAN_ART_RE.test(galleryText(asset, knowledge));
+}
+
 function rankGalleryAssets(assets: any[], knowledgeById: Map<string, any>, chart: any, question: string) {
   return assets
+    .filter((asset: any) => isPersonalDecreeAsset(asset, knowledgeById.get(String(asset.id))))
     .map((asset: any) => ({
       asset,
       knowledge: knowledgeById.get(String(asset.id)),

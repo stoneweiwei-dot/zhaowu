@@ -146,10 +146,11 @@ export function yearMonthPillars(at: Date): { year: string; month: string; jieNa
   return { year, month: monthStem + monthBranch, jieName: prev.name };
 }
 
-export function hourPillar(dayGz: string, hour: number, nextDayGz: string): string {
+export function hourPillar(dayGz: string, hour: number): string {
   const branchIdx = hour === 23 ? 0 : Math.floor((hour + 1) / 2) % 12;
-  const stemDay = hour === 23 ? nextDayGz : dayGz;
-  const dayStem = STEMS.indexOf(stemDay[0] as (typeof STEMS)[number]);
+  // Zhaowu uses the ordinary midnight boundary after true-solar correction:
+  // 23:00–23:59 stays on this civil day; 00:00 starts the following civil day.
+  const dayStem = STEMS.indexOf(dayGz[0] as (typeof STEMS)[number]);
   const hourStem = STEMS[((dayStem % 5) * 2 + branchIdx) % 10];
   return hourStem + BRANCHES[branchIdx];
 }

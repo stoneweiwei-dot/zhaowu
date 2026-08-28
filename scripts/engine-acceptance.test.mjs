@@ -5,6 +5,7 @@ const { buildPalm } = await import("../src/lib/palm/engine.ts");
 const { buildChart } = await import("../src/lib/bazi/chart.ts");
 const { FEATURED_CITIES } = await import("../src/lib/bazi/cities.ts");
 const { interpret, composeFullReport } = await import("../src/lib/bazi/interpret.ts");
+const { dayGanzhi, hourPillar } = await import("../src/lib/bazi/calendar.ts");
 
 const TAIPEI = FEATURED_CITIES[0];
 
@@ -116,4 +117,25 @@ test("流通粗候选不得派生颜色、方位、时段或宠物结论", () =>
   assert.doesNotMatch(report, /較有利顏色：/);
   assert.doesNotMatch(report, /較有利方位：/);
   assert.doesNotMatch(report, /寵物取象：/);
+});
+
+test("真太陽時完成後固定以午夜換日，23點不借次日天干", () => {
+  const sameDay = dayGanzhi(2026, 8, 28);
+  const nextDay = dayGanzhi(2026, 8, 29);
+  const lateZi = hourPillar(sameDay, 23);
+  const earlyZi = hourPillar(nextDay, 0);
+
+  assert.equal(lateZi[1], "子");
+  assert.equal(earlyZi[1], "子");
+  assert.equal(lateZi[0], hourPillar(sameDay, 0)[0]);
+  assert.equal(earlyZi[0], hourPillar(nextDay, 0)[0]);
+});
+
+test("客戶提交不能關閉真太陽時或改成晚子換日", async () => {
+  const actions = await import("../src/lib/actions.ts");
+  const input = sample({ useTrueSolar: false, ziPolicy: "late" });
+  const result = await actions.analyzeLife({ data: input });
+  assert.equal(result.chart.usedTrueSolar, true);
+  assert.equal(result.chart.ziPolicy, "midnight");
+  assert.match(result.chart.provenance, /真太陽時|真太阳时/);
 });

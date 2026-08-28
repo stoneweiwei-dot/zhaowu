@@ -5,6 +5,7 @@ import {
   chooseCustomerGalleryArt,
   emptyGalleryKnowledge,
   rankCustomerGalleryArt,
+  isPersonalDecreeAsset,
 } from "../src/lib/gallery-match.ts";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
@@ -108,4 +109,36 @@ test("owner Gallery is one upload surface with no manual religious taxonomy", as
   assert.match(manager, /分類、五行、用途、客戶匹配與背景調用都由系統在後台處理/);
   assert.doesNotMatch(manager, /const CATEGORIES/);
   assert.doesNotMatch(manager, /<select[^>]*>[^]*buddhist|<select[^>]*>[^]*daoist/);
+});
+
+
+test("personal decree images hard-exclude Tea Guardian art in both normal and fallback ranking", async () => {
+  const chart = { useful: ["木"], drain: [] };
+  const tea = fakeAsset("tea-guardian-super-match");
+  tea.category = "tea-guardian";
+  tea.tags = ["group:tea-guardian"];
+  const ordinary = fakeAsset("landscape-ordinary");
+
+  const teaCandidate = {
+    asset: tea,
+    knowledge: {
+      ...emptyGalleryKnowledge(tea.id),
+      element_scores: { wood: 100, fire: 0, earth: 0, metal: 0, water: 0 },
+    },
+  };
+  const ordinaryCandidate = {
+    asset: ordinary,
+    knowledge: {
+      ...emptyGalleryKnowledge(ordinary.id),
+      element_scores: { wood: 10, fire: 0, earth: 0, metal: 0, water: 0 },
+    },
+  };
+
+  assert.equal(isPersonalDecreeAsset(teaCandidate), false);
+  assert.equal(chooseCustomerGalleryArt(chart, [teaCandidate, ordinaryCandidate])?.asset.id, ordinary.id);
+
+  const edge = await read("supabase/functions/generate-decree-image/index.ts");
+  assert.match(edge, /isPersonalDecreeAsset/);
+  assert.match(edge, /category.*tea-guardian/);
+  assert.match(edge, /\.filter\(\(asset: any\) => isPersonalDecreeAsset/);
 });
