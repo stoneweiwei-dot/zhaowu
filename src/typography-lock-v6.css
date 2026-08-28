@@ -1,0 +1,108 @@
+/*
+ * ZHAOWU typography lock v6 — real CSS, no generated-image font simulation.
+ * Goal: refined Songti display type for Chinese headings, system/PingFang UI type
+ * for readable controls/body copy, and clean system typography for English.
+ * No external webfont/CDN dependency.
+ */
+
+:root {
+  --zv6-display-tc: "Songti TC", "PMingLiU", "Noto Serif TC", "Noto Serif CJK TC", serif;
+  --zv6-display-sc: "Songti SC", "STSong", "Noto Serif SC", "Noto Serif CJK SC", serif;
+  --zv6-ui-tc: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "Helvetica Neue", Arial, sans-serif;
+  --zv6-ui-sc: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --zv6-ui-en: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+}
+
+.zhaowu-home-sheet-shell {
+  font-family: var(--zv6-ui-tc) !important;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.zhaowu-home-sheet-shell h1,
+.zhaowu-home-sheet-shell h2,
+.zhaowu-home-sheet-shell h3,
+.zhaowu-home-sheet-shell h4,
+.zhaowu-home-sheet-shell .font-display,
+.zhaowu-home-sheet-shell .brand-wordmark {
+  font-family: var(--zv6-display-tc) !important;
+  font-synthesis: none;
+}
+
+.zhaowu-home-sheet-shell button,
+.zhaowu-home-sheet-shell input,
+.zhaowu-home-sheet-shell textarea,
+.zhaowu-home-sheet-shell select,
+.zhaowu-home-sheet-shell label,
+.zhaowu-home-sheet-shell nav,
+.zhaowu-home-sheet-shell .zhaowu-result-primary,
+.zhaowu-home-sheet-shell .zhaowu-result-secondary,
+.zhaowu-home-sheet-shell .zhaowu-decree-generate,
+.zhaowu-home-sheet-shell .zhaowu-specialist-action,
+.zhaowu-home-sheet-shell .zhaowu-dragon-guide {
+  font-family: var(--zv6-ui-tc) !important;
+}
+
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell {
+  font-family: var(--zv6-ui-sc) !important;
+}
+
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell h1,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell h2,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell h3,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell h4,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell .font-display,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell .brand-wordmark {
+  font-family: var(--zv6-display-sc) !important;
+}
+
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell button,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell input,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell textarea,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell select,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell label,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell nav,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell .zhaowu-result-primary,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell .zhaowu-result-secondary,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell .zhaowu-decree-generate,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell .zhaowu-specialist-action,
+html[lang="zh-Hans"] .zhaowu-home-sheet-shell .zhaowu-dragon-guide {
+  font-family: var(--zv6-ui-sc) !important;
+}
+
+html[lang="en"] .zhaowu-home-sheet-shell,
+html[lang="en"] .zhaowu-home-sheet-shell h1,
+html[lang="en"] .zhaowu-home-sheet-shell h2,
+html[lang="en"] .zhaowu-home-sheet-shell h3,
+html[lang="en"] .zhaowu-home-sheet-shell h4,
+html[lang="en"] .zhaowu-home-sheet-shell .font-display,
+html[lang="en"] .zhaowu-home-sheet-shell button,
+html[lang="en"] .zhaowu-home-sheet-shell input,
+html[lang="en"] .zhaowu-home-sheet-shell textarea,
+html[lang="en"] .zhaowu-home-sheet-shell select,
+html[lang="en"] .zhaowu-home-sheet-shell label,
+html[lang="en"] .zhaowu-home-sheet-shell nav {
+  font-family: var(--zv6-ui-en) !important;
+  font-synthesis: none;
+}
+
+/* Keep the approved compact, calm typography on iPhone. */
+@media (max-width: 430px) {
+  .zhaowu-home-sheet-shell h1,
+  .zhaowu-home-sheet-shell h2,
+  .zhaowu-home-sheet-shell h3,
+  .zhaowu-home-sheet-shell h4 {
+    text-wrap: balance;
+  }
+
+  .zhaowu-home-sheet-shell p,
+  .zhaowu-home-sheet-shell li,
+  .zhaowu-home-sheet-shell label,
+  .zhaowu-home-sheet-shell button,
+  .zhaowu-home-sheet-shell input,
+  .zhaowu-home-sheet-shell select,
+  .zhaowu-home-sheet-shell textarea {
+    text-rendering: optimizeLegibility;
+  }
+}
