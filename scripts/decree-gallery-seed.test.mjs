@@ -22,6 +22,21 @@ test("decree image backend ranks the whole enabled visual library and keeps appr
   assert.match(source, /chart\?\.drain/);
 });
 
+test("Gallery ranking recognizes real travel and holiday wording without double-counting confidence", async () => {
+  const source = await read("supabase/functions/generate-decree-image/index.ts");
+  assert.match(source, /度假/);
+  assert.match(source, /假期/);
+  assert.match(source, /行程/);
+  assert.match(source, /旅程/);
+  assert.match(source, /trip/);
+  assert.match(source, /vacation/);
+  assert.match(source, /holiday/);
+  assert.match(source, /journey/);
+  const confidenceBonus = "Math.max(0, Math.min(1, Number(knowledge?.confidence) || 0)) * 4";
+  assert.equal(source.split(confidenceBonus).length - 1, 0, "relaxed ranking must not add confidence a second time");
+  assert.equal((source.match(/confidence \* 4/g) ?? []).length, 1, "confidence belongs only inside the base reference score");
+});
+
 test("new reports copy the best matched Gallery artwork directly without requiring image-provider credits", async () => {
   const source = await read("supabase/functions/generate-decree-image/index.ts");
   const directIndex = source.indexOf("if (!force)");
