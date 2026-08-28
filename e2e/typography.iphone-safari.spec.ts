@@ -16,7 +16,7 @@ test.describe("iPhone Safari typography lock", () => {
     const shellFont = await shell.evaluate((node) => getComputedStyle(node).fontFamily);
     expect(shellFont).toContain("PingFang TC");
 
-    const title = page.locator("#zhaowu-title");
+    const title = page.locator("#zhaowu-home-intro-title");
     await expect(title).toBeVisible();
     const titleFont = await title.evaluate((node) => getComputedStyle(node).fontFamily);
     expect(titleFont).toContain("Songti TC");
