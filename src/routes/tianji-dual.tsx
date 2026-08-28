@@ -339,7 +339,7 @@ function TianjiDualPage() {
                 <span className="dual-side-number" aria-hidden="true">二</span>
                 <div>
                   <h3>{copy.inner}</h3>
-                  <p>{INNER_CHARACTER[result.palm.latest!.zhi][locale]}</p>
+                  <p>{INNER_CHARACTER[result.palm.latest!.zhi as TianjiPalace][locale]}</p>
                 </div>
               </article>
             </div>
