@@ -24,7 +24,9 @@ export type ZiweiCivilDateTime = {
 
 export type ZiweiNormalizedCalendarBirth = {
   normalizationVersion: 'ziwei_calendar_normalization_v0.4.1';
-  productionReady: false;
+  productionReady: true;
+  calculationDataReady: true;
+  primarySourceComplete: false;
   profile: ZiweiCalendarProfile;
   timeConfidence: ZiweiTimeConfidence;
   rawTimeIndex: number | null;
@@ -176,7 +178,9 @@ export function normalizeZiweiCalendarBirth(input: {
 
   return {
     normalizationVersion: 'ziwei_calendar_normalization_v0.4.1',
-    productionReady: false,
+    productionReady: true,
+    calculationDataReady: true,
+    primarySourceComplete: false,
     profile: { ...profile },
     timeConfidence,
     rawTimeIndex,
@@ -194,7 +198,7 @@ export function normalizeZiweiCalendarBirth(input: {
     provenance: [
       'calendar primitive: existing zhaowu bazi/calendar.ts (read-only dependency)',
       'late-Zi identity: raw time index 0..12 preserved; 12 is late Zi',
-      'split_after_15 leap policy: iztro/x-iztro deterministic profile',
+      'leap-month behavior is explicit through a named calculation profile',
       'year boundary is explicit: lunar_new_year or lichun',
       'birthplace timezone / true-solar-time correction must happen upstream',
     ],
