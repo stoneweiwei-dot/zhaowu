@@ -21,6 +21,8 @@ const ELEMENT_KEY: Record<string, "wood" | "fire" | "earth" | "metal" | "water">
   木: "wood", 火: "fire", 土: "earth", 金: "metal", 水: "water",
 };
 
+const TRAVEL_QUESTION_RE = /(旅行|旅遊|旅游|出行|出國|出国|搬家|城市|國家|国家|方向|度假|假期|行程|旅程|travel|trip|vacation|holiday|journey|tour|move|city|country)/i;
+
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -91,7 +93,6 @@ function galleryText(asset: any, knowledge: any): string {
 function relaxedReferenceScore(asset: any, knowledge: any, chart: any, question: string): number {
   const strict = referenceScore(chart, knowledge);
   let score = Number.isFinite(strict) ? strict : 0;
-  score += Math.max(0, Math.min(1, Number(knowledge?.confidence) || 0)) * 4;
   if (knowledge) score += 2;
   if (knowledge?.analysis_status === "approved") score += 4;
   if (knowledge?.client_eligible === true) score += 6;
@@ -106,7 +107,7 @@ function relaxedReferenceScore(asset: any, knowledge: any, chart: any, question:
   if (/(感情|戀愛|恋爱|正緣|正缘|婚姻|伴侶|伴侣|關係|关系|桃花|love|relationship|partner)/i.test(question)) {
     if (/(蓮|莲|lotus|結|结|knot|月|moon|雙|双|pair|狐|fox|花|flower)/.test(text)) score += 10;
   }
-  if (/(旅行|旅遊|旅游|出行|搬家|城市|國家|国家|travel|move|city|country)/i.test(question)) {
+  if (TRAVEL_QUESTION_RE.test(question)) {
     if (/(雲|云|cloud|水|water|川|river|山|mountain|路|path|舟|boat|鶴|鹤|crane)/.test(text)) score += 10;
   }
   if (/(財|财|收入|資源|资源|福氣|福气|money|finance|income|career|work)/i.test(question)) {
@@ -234,7 +235,7 @@ function visualTheme(question: string) {
   if (/(感情|戀愛|恋爱|正緣|正缘|婚姻|伴侶|伴侣|關係|关系|合作|桃花)/.test(question)) {
     return "AFFINITY: use one elegant paired-lotus or endless-knot motif, gentle mirrored movement, no literal romantic couple.";
   }
-  if (/(旅行|旅遊|旅游|出行|搬家|城市|國家|国家|方向)/.test(question)) {
+  if (TRAVEL_QUESTION_RE.test(question)) {
     return "MOVEMENT: use a flowing cloud-and-water path with generous open space.";
   }
   if (/(財|财|收入|資源|资源|福氣|福气)/.test(question)) {
