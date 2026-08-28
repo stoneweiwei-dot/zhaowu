@@ -29,8 +29,9 @@ function LoginPage() {
   const oauthCopy = OAUTH_COPY[locale];
 
   useEffect(() => {
-    const session = captureOAuthRedirect();
-    if (session) void reload();
+    void captureOAuthRedirect().then((session) => {
+      if (session) void reload();
+    });
   }, [reload]);
 
   useEffect(() => {
@@ -53,11 +54,11 @@ function LoginPage() {
     event.preventDefault();
     setError(null);
     setInfo(null);
-    if (!email.trim() || password.length < 6) {
+    if (!email.trim() || password.length < 8) {
       setError(t("loginValidation"));
       return;
     }
-    if (!supabaseConfigured()) {
+    if (!supabaseConfigured) {
       setError(t("loginUnavailable"));
       return;
     }
@@ -91,9 +92,9 @@ function LoginPage() {
       <section className="stone-login-panel seal-border">
         <p className="stone-login-kicker">ZHAOWU · ACCOUNT</p>
         <h1 id="login-title" className="stone-login-title">{mode === "signin" ? t("loginTitle") : t("signupTitle")}</h1>
-        <p className="stone-login-lead">{mode === "signin" ? t("loginLead") : t("signupLead")}</p>
+        <p className="stone-login-lead">{mode === "signin" ? t("loginLead") : t("loginPageLead")}</p>
 
-        <div className="stone-login-tabs" role="tablist" aria-label={t("loginMode")}> 
+        <div className="stone-login-tabs" role="tablist" aria-label={t("loginTitle")}> 
           <button type="button" role="tab" aria-selected={mode === "signin"} onClick={() => setMode("signin")}>{t("loginTab")}</button>
           <button type="button" role="tab" aria-selected={mode === "signup"} onClick={() => setMode("signup")}>{t("signupTab")}</button>
         </div>
@@ -119,7 +120,7 @@ function LoginPage() {
             </label>
           ) : null}
           <label>
-            <span>{t("email")}</span>
+            <span>Email</span>
             <input type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@example.com" />
           </label>
           <label>
@@ -131,7 +132,7 @@ function LoginPage() {
           {info ? <p className="stone-login-info" role="status">{info}</p> : null}
 
           <button type="submit" disabled={busy || oauthBusy !== null} className="stone-login-submit">
-            {busy ? t("loginWorking") : mode === "signin" ? t("loginAction") : t("signupAction")}
+            {busy ? t("processing") : mode === "signin" ? t("loginTab") : t("createAccount")}
           </button>
         </form>
 
