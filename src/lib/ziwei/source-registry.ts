@@ -173,7 +173,9 @@ export const ZIWEI_RULE_SOURCES = {
   },
 } as const satisfies Record<string, ZiweiRuleSource>;
 
-export const ZIWEI_PRIMARY_SOURCE_BLOCKERS = Object.entries(ZIWEI_RULE_SOURCES)
+const ZIWEI_RULE_SOURCE_ENTRIES = Object.entries(ZIWEI_RULE_SOURCES) as Array<[string, ZiweiRuleSource]>;
+
+export const ZIWEI_PRIMARY_SOURCE_BLOCKERS = ZIWEI_RULE_SOURCE_ENTRIES
   .filter(([, source]) => source.confidence === 'pinned_implementation_only' || source.confidence === 'unverified')
   .map(([rule]) => rule);
 
