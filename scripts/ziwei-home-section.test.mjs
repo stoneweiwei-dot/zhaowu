@@ -28,8 +28,9 @@ test('紫微页面明确计算层可正式使用，同时保留流派与原典�
   assert.doesNotMatch(route, /productionReady=false/);
   assert.match(css, /grid-template-columns:\s*repeat\(4/);
   assert.match(css, /@media \(max-width:\s*430px\)/);
-  assert.match(engine, /productionReady:\s*true/);
-  assert.match(engine, /calculationDataReady:\s*true/);
-  assert.match(engine, /primarySourceComplete:\s*false/);
+  assert.match(engine, /import \{ ZIWEI_ENGINE_READINESS \} from '\.\/profiles'/);
+  assert.match(engine, /productionReady:\s*ZIWEI_ENGINE_READINESS\.calculationDataReady/);
+  assert.match(engine, /calculationDataReady:\s*ZIWEI_ENGINE_READINESS\.calculationDataReady/);
+  assert.match(engine, /primarySourceComplete:\s*ZIWEI_ENGINE_READINESS\.primarySourceComplete/);
   assert.match(engine, /1ba89cca577c6d5d46754d6f49b6b51467c577d1/);
 });
