@@ -18,7 +18,6 @@ function Home() {
 
       <section className="zhaowu-home-intro" aria-label={t("heroKicker")}>
         <p className="zhaowu-home-intro-kicker">ZHAOWU · {t("heroKicker")}</p>
-        <h1 className="sr-only">{t("formTitle")}</h1>
       </section>
 
       <section className="relative" aria-label={t("formTitle")}><AnalysisForm /></section>
