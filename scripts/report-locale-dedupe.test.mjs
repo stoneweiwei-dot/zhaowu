@@ -10,8 +10,11 @@ test("report UI has only overall summary and body-attention presentation for new
   for (const title of ["總體概括", "身體需要注意", "总体概括", "身体需要注意", "Overall summary", "Body areas to watch"]) {
     assert.match(renderer, new RegExp(title));
   }
-  assert.match(renderer, /normalizeDisplaySections/);
-  assert.match(renderer, /sections\.flatMap\(\(section\) => section\.body\)/);
+  assert.match(renderer, /continuousReportContent/);
+  assert.match(renderer, /sections\.flatMap\(\(section\) => section\.body \?\? \[\]\)/);
+  assert.match(renderer, /uniqueLines/);
+  assert.match(renderer, /content\.summary\.map/);
+  assert.match(renderer, /content\.body\.map/);
   assert.doesNotMatch(renderer, /padStart\(2, "0"\)/);
-  assert.match(renderer, /visibleBody\.map/);
+  assert.doesNotMatch(renderer, /REPORT_ORNAMENTS|ReportDragonSticker/);
 });

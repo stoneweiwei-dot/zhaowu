@@ -3,15 +3,15 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 
 const root = new URL("../", import.meta.url);
+async function source(path) { return readFile(new URL(path, root), "utf8"); }
 
-async function source(path) {
-  return readFile(new URL(path, root), "utf8");
-}
-
-test("homepage is a customer-facing brand entry, not an incident or methodology notice", async () => {
+test("homepage is a customer-facing entry without a duplicate giant brand hero", async () => {
   const home = await source("src/routes/index.tsx");
-  assert.match(home, /heroSlogan/);
+  assert.match(home, /zhaowu-home-intro/);
+  assert.match(home, /heroLead/);
   assert.match(home, /<AnalysisForm \/>/);
+  assert.match(home, /<ZiweiHomeFeature \/>/);
+  assert.doesNotMatch(home, /zhaowu-home-hero/);
   assert.doesNotMatch(home, /ZHAOWU · SAFE|白屏|視覺先暫停|视觉先暂停/);
   assert.doesNotMatch(home, /STEPS\.map|PROOFS\.map|methodTitle|methodLead|proofPrimary|proofPast|proofBoundary|faq1q|faq2q|faq3q/);
 });
@@ -22,12 +22,13 @@ test("homepage keeps one analysis path and does not inject a second art-product 
   assert.doesNotMatch(home, /PaidReportShowcase|paid-report-showcase/);
 });
 
-test("full reports use one overall summary plus body attention and only real server image generation", async () => {
+test("full reports render one continuous summary then body attention, while decree image delivery stays server-side", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const renderer = await source("src/components/paid-report-pages.tsx");
   const focused = await source("src/lib/report/focused-report.ts");
   const decreeImage = await source("src/lib/report/decree-image.ts");
   const decreeDelivery = await source("supabase/functions/view-decree-image/index.ts");
+
   assert.match(resultView, /import \{ FocusedReportSections \}/);
   assert.match(resultView, /reportSections \? <FocusedReportSections sections=\{reportSections\} \/>/);
   assert.match(focused, /key: "summary"/);
@@ -35,15 +36,14 @@ test("full reports use one overall summary plus body attention and only real ser
   assert.match(focused, /buildBodyAttentionLines/);
   assert.match(focused, /composeFocusedReport/);
   assert.doesNotMatch(focused, /return \[page1, page2, page3, page4, page5, page6, page7, page8, page9\]/);
-  assert.doesNotMatch(renderer, /tianlong-report-hero\.jpg/);
-  assert.match(renderer, /zhaowu-report-hero-phoenix/);
-  assert.match(renderer, /onError=\{\(event\) => \{ event\.currentTarget\.hidden = true; \}\}/);
-  assert.match(renderer, /REPORT_ORNAMENTS/);
-  assert.match(renderer, /AUSPICIOUS MOTIFS × DESTINY NARRATIVE/);
-  assert.match(renderer, /mark\.label\[locale\]/);
-  assert.match(renderer, /zhaowu-report-ornament/);
+
+  assert.match(renderer, /zhaowu-report-continuous-sheet/);
+  assert.match(renderer, /continuousReportContent/);
+  assert.match(renderer, /zhaowu-report-summary-block/);
+  assert.match(renderer, /zhaowu-report-body-block/);
+  assert.doesNotMatch(renderer, /REPORT_ORNAMENTS|ReportDragonSticker|zhaowu-report-ornament|zhaowu-auspicious-rail/);
   assert.doesNotMatch(renderer, /padStart\(2, "0"\)/);
-  assert.doesNotMatch(renderer, /第 \$\{.*頁|第 \$\{.*页|copy\.page/);
+
   assert.match(resultView, /generateDecreeImage/);
   assert.match(decreeImage, /"view-decree-image" \| "generate-decree-image"/);
   assert.match(decreeImage, /requestFunction\(session, "generate-decree-image", reportId/);
@@ -52,13 +52,19 @@ test("full reports use one overall summary plus body attention and only real ser
   assert.equal((resultView.match(/onClick=\{\(\) => void onFull\(\)\}/g) ?? []).length, 1);
 });
 
-test("tea guardian stays outside the unified report content blocks", async () => {
+test("tea guardian remains a standalone tool while the embedded full-report slot is retired", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const account = await source("src/routes/account.tsx");
+  const home = await source("src/routes/index.tsx");
+  const embeddedTea = await source("src/components/tea-guardian-report.tsx");
   const focused = await source("src/lib/report/focused-report.ts");
   const tea = await source("src/lib/tea-guardian.ts");
-  assert.match(resultView, /<TeaGuardianReport chart=\{chart\}/);
-  assert.match(account, /<TeaGuardianReport chart=\{snapshot\.chart\}/);
+
+  assert.match(resultView, /TeaGuardianReport/);
+  assert.match(account, /TeaGuardianReport/);
+  assert.match(embeddedTea, /embedded report slot is intentionally retired/);
+  assert.match(embeddedTea, /return null;/);
+  assert.match(home, /to="\/tea-guardian"/);
   assert.doesNotMatch(focused, /teaGuardian|茶仙守護|茶仙守护/);
   assert.match(tea, /recommendGuardianFromChart/);
   assert.match(tea, /不等於直接補某個五行/);
@@ -68,7 +74,6 @@ test("free decree text remains available when image generation fails", async () 
   const resultView = await source("src/components/result-view.tsx");
   const decreePosition = resultView.indexOf("{decreeCouplet}");
   const imageGuardPosition = resultView.indexOf("{imageUrl ? (");
-
   assert.ok(decreePosition >= 0, "free decree text must be rendered");
   assert.ok(imageGuardPosition > decreePosition, "free decree text must render before the optional image");
   assert.doesNotMatch(resultView.slice(imageGuardPosition), /\{decreeCouplet\}/);
@@ -78,23 +83,20 @@ test("free decree text remains available when image generation fails", async () 
 test("free result keeps technical chart evidence inside the unified overall summary", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const focused = await source("src/lib/report/focused-report.ts");
-
   assert.doesNotMatch(resultView, /chart\.pillars\.map|t\("dayMaster"\)|t\("monthLing"\)/);
   assert.match(focused, /命盘落点/);
   assert.match(focused, /question-relevant chart facts/);
   assert.match(focused, /Overall summary/);
 });
 
-test("report visual system keeps its legacy asset layer available underneath the active parchment lock", async () => {
+test("report visual system is one warm paper sheet without legacy purple or ornamental layers", async () => {
   const styles = await source("src/focused-report.css");
   const renderer = await source("src/components/paid-report-pages.tsx");
-  const active = await source("src/home-sheet-ui-v5.css");
-  assert.match(styles, /linear-gradient\(155deg, #2b123d 0%, #180a27 55%, #100719 100%\)/);
-  assert.match(styles, /zhaowu-report-hero-pearl/);
-  assert.match(styles, /#e2bd76/);
-  assert.match(active, /\.zhaowu-home-sheet-shell \.zhaowu-focused-report/);
-  assert.match(active, /background-color: var\(--zv5-card-strong\) !important/);
-  assert.doesNotMatch(renderer, /\/visuals\/tianlong-report-hero\.jpg/);
+  assert.match(styles, /zhaowu-report-continuous-sheet/);
+  assert.match(styles, /#f8efdf/);
+  assert.match(styles, /zhaowu-report-body-block/);
+  assert.doesNotMatch(styles, /#2b123d|#180a27|#100719/);
+  assert.doesNotMatch(renderer, /phoenix\.webp|celestial-pearl\.webp|lotus\.webp|dragon\.webp/);
 });
 
 test("owner background client always uses Supabase JSON instead of the Vercel SPA rewrite", async () => {
@@ -113,7 +115,6 @@ test("owner background client always uses Supabase JSON instead of the Vercel SP
 test("site shell keeps the real Zhaowu text seal without random page-wide ornament scatter", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const seal = await source("src/components/brand-seal.tsx");
-
   assert.match(shell, /import \{ BrandSeal \}/);
   assert.match(shell, /<BrandSeal \/>/);
   assert.doesNotMatch(shell, /SealScatter/);
@@ -135,27 +136,13 @@ test("site shell unblocks the first screen instead of fading a loading gate", as
   assert.doesNotMatch(shell, /setPhase\("leaving"\)/);
 });
 
-test("generated auspicious visual language is curated inside the report with real image assets", async () => {
+test("active full-report renderer has no report dragon or ornament rail", async () => {
   const renderer = await source("src/components/paid-report-pages.tsx");
-  assert.match(renderer, /天龍八部/);
-  for (const asset of [
-    "phoenix.webp",
-    "celestial-pearl.webp",
-    "lotus.webp",
-    "dragon.webp",
-  ]) {
-    assert.match(renderer, new RegExp(asset.replace(".", "\\.")));
-  }
-});
-
-test("report dragon assets are removed from the active parchment shell", async () => {
-  const renderer = await source("src/components/paid-report-pages.tsx");
-  const dragon = await source("src/components/report-dragon-sticker.tsx");
   const active = await source("src/home-sheet-ui-v5.css");
-  assert.match(renderer, /ReportDragonSticker/);
-  assert.match(dragon, /selectReportDragon/);
-  assert.match(active, /\.zhaowu-home-sheet-shell \.zhaowu-report-dragon/);
-  assert.match(active, /display:\s*none\s*!important/);
+  assert.doesNotMatch(renderer, /ReportDragonSticker/);
+  assert.doesNotMatch(renderer, /REPORT_ORNAMENTS/);
+  assert.match(active, /zhaowu-report-dragon/);
+  assert.match(active, /display: none !important/);
 });
 
 test("Dharma Palm standalone uses a four-life trail and symbolic six-realm presentation", async () => {

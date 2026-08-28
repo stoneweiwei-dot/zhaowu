@@ -3,23 +3,19 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 
 const root = new URL("../", import.meta.url);
+async function source(path) { return readFile(new URL(path, root), "utf8"); }
 
-async function source(path) {
-  return readFile(new URL(path, root), "utf8");
-}
-
-test("all non-login application routes use the closed parchment shell without wallpaper or loose scatter", async () => {
+test("application shell keeps dynamic owner wallpaper and loose scatter out of active routes", async () => {
   const shell = await source("src/components/site-shell.tsx");
   assert.match(shell, /const isHome = pathname === "\/"/);
   assert.match(shell, /const isLogin = pathname === "\/login"/);
-  assert.match(shell, /\$\{!isLogin \? "zhaowu-home-sheet-shell" : ""\}/);
+  assert.match(shell, /zhaowu-home-sheet-shell/);
   assert.doesNotMatch(shell, /backgroundUrl|showWallpaper|showScatter/);
   assert.doesNotMatch(shell, /zhaowu-site-wallpaper/);
   assert.doesNotMatch(shell, /auspicious-emblem-scatter/);
-  assert.match(shell, /zhaowu-home-app-frame/);
 });
 
-test("full-sheet homepage CSS is the final visual layer and contains no transparent wallpaper gutters", async () => {
+test("homepage uses the packaged Song landscape and compact intro instead of a second giant brand hero", async () => {
   const main = await source("src/main.tsx");
   const css = await source("src/home-sheet-ui-v5.css");
   const home = await source("src/routes/index.tsx");
@@ -29,11 +25,12 @@ test("full-sheet homepage CSS is the final visual layer and contains no transpar
   assert.ok(v4 >= 0 && v5 > v4, "home sheet lock must import after readability v4");
 
   assert.match(home, /zhaowu-home-sheet-page/);
-  assert.doesNotMatch(home, /zhaowu-specialist-mark/);
+  assert.match(home, /zhaowu-home-intro/);
+  assert.doesNotMatch(home, /zhaowu-home-hero/);
+  assert.match(home, /<ZiweiHomeFeature \/>/);
+  assert.match(css, /url\("\/wallpaper-song\.jpg"\)/);
+  assert.match(css, /--zv5-card: rgba\(251, 245, 233, \.86\)/);
+  assert.match(css, /backdrop-filter: blur\(3px\) saturate\(\.9\)/);
   assert.match(css, /\.zhaowu-home-sheet-shell \.zhaowu-site-wallpaper/);
-  assert.match(css, /display: none !important/);
-  assert.match(css, /\.zhaowu-home-sheet-shell \.zhaowu-home-app-frame/);
-  assert.match(css, /width: 100vw !important/);
-  assert.match(css, /--zv5-card: #fbf5e9/);
-  assert.match(css, /background-color: var\(--zv5-card\) !important/);
+  assert.doesNotMatch(css, /background-attachment:\s*fixed/);
 });

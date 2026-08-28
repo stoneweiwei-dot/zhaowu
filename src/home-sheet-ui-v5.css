@@ -1,8 +1,8 @@
 /*
- * ZHAOWU homepage full-sheet lock — 2026-08-27 owner direction.
- * The homepage is one closed parchment composition: no owner/weekly wallpaper,
- * no page-wide emblem scatter, no transparent gutters, no legacy purple surfaces.
- * Imported after visual-readability-lock-v4.css and scoped to the homepage shell.
+ * ZHAOWU application parchment lock.
+ * Home uses the packaged Song landscape as one visible background composition;
+ * non-home routes keep the stable closed parchment shell. Dynamic owner/weekly
+ * wallpaper and loose emblem scatter stay out of the application shell.
  */
 
 :root {
@@ -19,20 +19,29 @@
   --zv5-red-deep: #992c24;
   --zv5-jade: #2f7465;
   --zv5-earth: #98703d;
-  --zv5-shadow: 0 10px 28px rgba(76, 55, 31, .055);
+  --zv5-shadow: 0 10px 28px rgba(76, 55, 31, .065);
 }
 
 body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell {
   background-color: var(--zv5-page) !important;
-  background-image:
-    radial-gradient(circle at 12% 6%, rgba(255,255,255,.32), transparent 28rem),
-    radial-gradient(circle at 86% 58%, rgba(198,160,105,.055), transparent 30rem),
-    linear-gradient(180deg, #f8f0e2 0%, #f4ead8 48%, #f6eddd 100%) !important;
+  background-image: linear-gradient(180deg, #f8f0e2 0%, #f4ead8 48%, #f6eddd 100%) !important;
   color: var(--zv5-ink) !important;
 }
 
-/* Defensive lock: homepage never exposes a gallery/weekly wallpaper or global emblem scatter. */
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) {
+  --zv5-card: rgba(251, 245, 233, .86);
+  --zv5-card-strong: rgba(252, 247, 238, .91);
+  --zv5-field: rgba(255, 250, 241, .89);
+  background-color: #f4ead8 !important;
+  background-image:
+    linear-gradient(180deg, rgba(249, 245, 237, .72) 0%, rgba(248, 239, 224, .54) 38%, rgba(246, 235, 216, .48) 72%, rgba(249, 243, 232, .68) 100%),
+    url("/wallpaper-song.jpg") !important;
+  background-size: cover !important;
+  background-position: 58% top !important;
+  background-repeat: no-repeat !important;
+}
+
 .zhaowu-home-sheet-shell .zhaowu-site-wallpaper,
 .zhaowu-home-sheet-shell .zhaowu-emblem-scatter,
 .zhaowu-home-sheet-shell [data-testid="auspicious-emblem-scatter"] {
@@ -40,41 +49,76 @@ body:has(.zhaowu-home-sheet-shell),
 }
 
 .zhaowu-home-sheet-shell .zhaowu-site-header {
-  background: rgba(248, 240, 226, .985) !important;
+  background: rgba(249, 243, 232, .96) !important;
   border-bottom: 1px solid var(--zv5-line-soft) !important;
   box-shadow: 0 5px 16px rgba(73, 52, 29, .035) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  backdrop-filter: blur(6px) saturate(.94) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(.94) !important;
 }
 
-/* The homepage is a single sheet. No outer transparent frame and no wallpaper gutters. */
-.zhaowu-home-sheet-shell .zhaowu-home-app-frame,
 .zhaowu-home-sheet-shell .zhaowu-app-frame {
   width: 100% !important;
-  max-width: 680px !important;
   margin: 0 auto !important;
-  padding: 10px 10px 30px !important;
   border: 0 !important;
-  border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-home-app-frame {
+  max-width: 760px !important;
+  padding: 12px 12px 32px !important;
 }
 
 .zhaowu-home-sheet-page {
   display: flex !important;
   flex-direction: column !important;
-  gap: 12px !important;
+  gap: 13px !important;
   width: 100% !important;
 }
 
-.zhaowu-home-sheet-page > :not([hidden]) ~ :not([hidden]) {
-  margin-top: 0 !important;
+.zhaowu-home-sheet-page > :not([hidden]) ~ :not([hidden]) { margin-top: 0 !important; }
+
+.zhaowu-home-intro {
+  padding: 14px 8px 10px;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
-/* One readable paper material across the whole homepage. */
-.zhaowu-home-sheet-shell .zhaowu-home-hero,
+.zhaowu-home-intro-kicker {
+  margin: 0;
+  color: var(--zv5-earth);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .24em;
+}
+
+.zhaowu-home-intro-line {
+  width: 86px;
+  height: 1px;
+  margin: 9px 0 10px;
+  background: linear-gradient(90deg, rgba(181,58,46,.68), rgba(151,111,62,.18));
+}
+
+.zhaowu-home-intro-title {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--zv5-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 4.6vw, 1.7rem);
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: .025em;
+}
+
+.zhaowu-home-intro-copy {
+  margin: 5px 0 0;
+  max-width: 40rem;
+  color: #65594a;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
 .zhaowu-home-sheet-shell #analysisForm,
 .zhaowu-home-sheet-shell .zhaowu-result-card,
 .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
@@ -83,21 +127,28 @@ body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell .zhaowu-tools-section,
 .zhaowu-home-sheet-shell .zhaowu-specialist-card,
 .zhaowu-home-sheet-shell .zhaowu-focused-report,
-.zhaowu-home-sheet-shell .zhaowu-report-visual,
-.zhaowu-home-sheet-shell .zhaowu-report-section,
 .zhaowu-home-sheet-shell .zhaowu-tool-card,
 .zhaowu-home-sheet-shell section.seal-border {
   background-color: var(--zv5-card) !important;
-  background-image:
-    linear-gradient(180deg, rgba(255,255,255,.20), rgba(228,203,163,.035)) !important;
+  background-image: linear-gradient(180deg, rgba(255,255,255,.18), rgba(228,203,163,.025)) !important;
   border-color: var(--zv5-line) !important;
   color: var(--zv5-ink) !important;
   box-shadow: var(--zv5-shadow) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
 }
 
-.zhaowu-home-sheet-shell .zhaowu-home-hero,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) #analysisForm,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-result-card,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-decree-gallery,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-decree-couplet,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-generated-decree,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-tools-section,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-specialist-card,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-focused-report,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-ziwei-feature {
+  backdrop-filter: blur(3px) saturate(.9) !important;
+  -webkit-backdrop-filter: blur(3px) saturate(.9) !important;
+}
+
 .zhaowu-home-sheet-shell #analysisForm,
 .zhaowu-home-sheet-shell .zhaowu-result-card,
 .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
@@ -106,28 +157,10 @@ body:has(.zhaowu-home-sheet-shell),
   border-radius: 22px !important;
 }
 
-.zhaowu-home-sheet-shell .zhaowu-home-hero {
-  min-height: 0 !important;
-  padding: 30px 22px 32px !important;
-  overflow: hidden !important;
-}
-
-.zhaowu-home-sheet-shell .zhaowu-home-hero::before {
-  inset: 8px !important;
-  border-color: var(--zv5-line-soft) !important;
-  border-radius: 16px !important;
-}
-
-.zhaowu-home-sheet-shell .zhaowu-home-hero::after {
-  opacity: .22 !important;
-}
-
 .zhaowu-home-sheet-shell #analysisForm,
 .zhaowu-home-sheet-shell .zhaowu-result-card,
 .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
-.zhaowu-home-sheet-shell .zhaowu-tools-section {
-  padding: 20px 18px !important;
-}
+.zhaowu-home-sheet-shell .zhaowu-tools-section { padding: 20px 18px !important; }
 
 .zhaowu-home-sheet-shell #analysisForm input,
 .zhaowu-home-sheet-shell #analysisForm textarea,
@@ -140,8 +173,6 @@ body:has(.zhaowu-home-sheet-shell),
   background-color: var(--zv5-field) !important;
   border-color: rgba(151, 111, 62, .35) !important;
   color: var(--zv5-ink) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-home-sheet-shell h1,
@@ -150,15 +181,13 @@ body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell h4,
 .zhaowu-home-sheet-shell p,
 .zhaowu-home-sheet-shell li,
-.zhaowu-home-sheet-shell label {
-  text-shadow: none !important;
-}
+.zhaowu-home-sheet-shell label { text-shadow: none !important; }
 
 .zhaowu-home-sheet-shell .zhaowu-result-card p,
 .zhaowu-home-sheet-shell .zhaowu-decree-copy,
 .zhaowu-home-sheet-shell .zhaowu-decree-copy p,
-.zhaowu-home-sheet-shell .zhaowu-report-section-body,
-.zhaowu-home-sheet-shell .zhaowu-report-section-body p,
+.zhaowu-home-sheet-shell .zhaowu-report-copy,
+.zhaowu-home-sheet-shell .zhaowu-report-copy p,
 .zhaowu-home-sheet-shell .zhaowu-focused-report p,
 .zhaowu-home-sheet-shell .zhaowu-specialist-desc,
 .zhaowu-home-sheet-shell .zhaowu-specialist-points,
@@ -167,7 +196,6 @@ body:has(.zhaowu-home-sheet-shell),
   opacity: 1 !important;
 }
 
-.zhaowu-home-sheet-shell .zhaowu-home-hero a[href="#analysisForm"],
 .zhaowu-home-sheet-shell #analysisForm button[type="submit"],
 .zhaowu-home-sheet-shell .zhaowu-result-primary {
   background: linear-gradient(180deg, var(--zv5-red), var(--zv5-red-deep)) !important;
@@ -177,7 +205,8 @@ body:has(.zhaowu-home-sheet-shell),
 }
 
 .zhaowu-home-sheet-shell .zhaowu-decree-generate,
-.zhaowu-home-sheet-shell .zhaowu-specialist-action {
+.zhaowu-home-sheet-shell .zhaowu-specialist-action,
+.zhaowu-home-sheet-shell .zhaowu-ziwei-action {
   background: var(--zv5-card-strong) !important;
   border-color: rgba(181, 58, 46, .46) !important;
   color: var(--zv5-red-deep) !important;
@@ -190,69 +219,39 @@ body:has(.zhaowu-home-sheet-shell),
   color: #fffaf2 !important;
 }
 
-/* The owner asked to remove loose little logos on the homepage. */
 .zhaowu-home-sheet-shell .zhaowu-specialist-mark,
 .zhaowu-home-sheet-shell .zhaowu-auspicious-rail,
 .zhaowu-home-sheet-shell .zhaowu-report-hero-phoenix,
 .zhaowu-home-sheet-shell .zhaowu-report-hero-pearl,
 .zhaowu-home-sheet-shell .zhaowu-report-hero-lotus,
 .zhaowu-home-sheet-shell .zhaowu-report-ornament,
-.zhaowu-home-sheet-shell .zhaowu-report-dragon {
-  display: none !important;
-}
+.zhaowu-home-sheet-shell .zhaowu-report-dragon { display: none !important; }
 
-.zhaowu-home-sheet-shell .zhaowu-focused-report,
-.zhaowu-home-sheet-shell .zhaowu-report-visual,
-.zhaowu-home-sheet-shell .zhaowu-report-section {
-  background-color: var(--zv5-card-strong) !important;
-}
-
-.zhaowu-home-sheet-shell .zhaowu-report-visual-shade {
-  background: transparent !important;
-}
-
-.zhaowu-home-sheet-shell .zhaowu-tools-grid {
-  gap: 10px !important;
-}
-
-.zhaowu-home-sheet-shell .zhaowu-specialist-card {
-  overflow: hidden !important;
-}
-
-.zhaowu-home-sheet-shell footer {
-  margin-top: 0 !important;
-  background: transparent !important;
-}
+.zhaowu-home-sheet-shell footer { margin-top: 0 !important; background: transparent !important; }
 
 @media (max-width: 430px) {
-  .zhaowu-home-sheet-shell .zhaowu-home-app-frame,
-  .zhaowu-home-sheet-shell .zhaowu-app-frame {
+  .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) {
+    background-position: 62% top !important;
+    background-size: auto 100% !important;
+  }
+
+  .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-home-app-frame {
     width: 100vw !important;
     max-width: 100vw !important;
     padding: 8px 8px 24px !important;
   }
 
-  .zhaowu-home-sheet-page {
-    gap: 9px !important;
-  }
+  .zhaowu-home-sheet-page { gap: 9px !important; }
+  .zhaowu-home-intro { padding: 9px 7px 7px; }
 
-  .zhaowu-home-sheet-shell .zhaowu-home-hero,
   .zhaowu-home-sheet-shell #analysisForm,
   .zhaowu-home-sheet-shell .zhaowu-result-card,
   .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
   .zhaowu-home-sheet-shell .zhaowu-tools-section,
-  .zhaowu-home-sheet-shell .zhaowu-focused-report {
-    border-radius: 19px !important;
-  }
-
-  .zhaowu-home-sheet-shell .zhaowu-home-hero {
-    padding: 26px 18px 28px !important;
-  }
+  .zhaowu-home-sheet-shell .zhaowu-focused-report { border-radius: 19px !important; }
 
   .zhaowu-home-sheet-shell #analysisForm,
   .zhaowu-home-sheet-shell .zhaowu-result-card,
   .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
-  .zhaowu-home-sheet-shell .zhaowu-tools-section {
-    padding: 18px 16px !important;
-  }
+  .zhaowu-home-sheet-shell .zhaowu-tools-section { padding: 18px 16px !important; }
 }
