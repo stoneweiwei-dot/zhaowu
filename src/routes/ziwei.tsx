@@ -8,16 +8,19 @@ import type { CityHit } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
 import {
   buildZiweiCoreChart,
+  buildZiweiPlainSummary,
   buildZiweiTruthExtension,
   normalizeZiweiCalendarBirth,
   type EarthlyBranch,
   type HeavenlyStem,
-  type ZiweiDirectionBasis,
-  type ZiweiTruthExtension,
   type ZiweiCoreChart,
+  type ZiweiDirectionBasis,
   type ZiweiNormalizedCalendarBirth,
+  type ZiweiTruthExtension,
+  type ZiweiTransformation,
 } from "@/lib/ziwei";
 import "@/ziwei.css";
+import "@/ziwei-summary.css";
 
 export const Route = createFileRoute("/ziwei")({ component: ZiweiPage });
 
@@ -35,26 +38,51 @@ const CHART_BRANCHES = [
 ] as const;
 
 const PALACE_EN: Record<string, string> = {
-  命: "Life", 兄弟: "Siblings", 夫妻: "Partner", 子女: "Children", 財帛: "Money", 疾厄: "Health",
-  遷移: "Movement", 交友: "Network", 官祿: "Work", 田宅: "Home", 福德: "Inner life", 父母: "Parents",
+  命: "Self", 兄弟: "Peers", 夫妻: "Partner", 子女: "Projects", 財帛: "Money", 疾厄: "Pace",
+  遷移: "Environment", 交友: "Network", 官祿: "Work", 田宅: "Home", 福德: "Inner life", 父母: "Family",
+};
+
+const BRANCH_EN: Record<string, string> = {
+  子: "Rat", 丑: "Ox", 寅: "Tiger", 卯: "Rabbit", 辰: "Dragon", 巳: "Snake",
+  午: "Horse", 未: "Goat", 申: "Monkey", 酉: "Rooster", 戌: "Dog", 亥: "Pig",
+};
+
+const STAR_EN: Record<string, string> = {
+  紫微: "Leadership", 天機: "Strategy", 太陽: "Visibility", 武曲: "Practicality", 天同: "Ease", 廉貞: "Boundaries",
+  天府: "Stability", 太陰: "Sensitivity", 貪狼: "Exploration", 巨門: "Analysis", 天相: "Coordination", 天梁: "Responsibility",
+  七殺: "Decisiveness", 破軍: "Reinvention", 天魁: "Support", 天鉞: "Support", 文昌: "Writing", 文曲: "Expression",
+  祿存: "Resources", 擎羊: "Friction", 陀羅: "Delay", 火星: "Urgency", 鈴星: "Pressure", 地空: "Distance", 地劫: "Disruption",
+  天馬: "Movement", 紅鸞: "Attraction", 天喜: "Celebration", 年解: "Resolution", 左輔: "Support", 右弼: "Support",
 };
 
 const HANS: Record<string, string> = {
   財: "财", 遷: "迁", 祿: "禄", 貞: "贞", 機: "机", 陰: "阴", 貪: "贪", 門: "门", 殺: "杀",
-  輔: "辅", 弼: "弼", 鉞: "钺", 馬: "马", 鸞: "鸾", 羅: "罗", 廟: "庙", 鈴: "铃", 權: "权",
+  輔: "辅", 鉞: "钺", 馬: "马", 鸞: "鸾", 羅: "罗", 廟: "庙", 鈴: "铃", 權: "权", 體: "体",
 };
 
 function hans(value: string) {
   return Array.from(value).map((char) => HANS[char] ?? char).join("");
 }
 
-function localizedCanonical(value: string, locale: Locale) {
+function starLabel(value: string, locale: Locale) {
+  if (locale === "en") return STAR_EN[value] ?? "Chart factor";
   return locale === "zh-Hans" ? hans(value) : value;
+}
+
+function branchLabel(value: string, locale: Locale) {
+  if (locale === "en") return BRANCH_EN[value] ?? value;
+  return value;
 }
 
 function palaceLabel(name: string, locale: Locale) {
   if (locale === "en") return PALACE_EN[name] ?? name;
-  return localizedCanonical(name, locale);
+  return locale === "zh-Hans" ? hans(name) : name;
+}
+
+function transformLabel(value: ZiweiTransformation, locale: Locale) {
+  if (locale === "en") return ({ 祿: "Support", 權: "Responsibility", 科: "Recognition", 忌: "Pressure" } as const)[value];
+  const prefix = locale === "zh-Hans" ? "化" : "化";
+  return `${prefix}${locale === "zh-Hans" ? hans(value) : value}`;
 }
 
 function yearGanzhi(year: number): { stem: HeavenlyStem; branch: EarthlyBranch; ganzhi: string } {
@@ -126,11 +154,7 @@ function CityField({ locale, city, onSelect, label, placeholder }: {
       {hits.length ? (
         <div className="ziwei-city-results" role="listbox">
           {hits.map((hit) => (
-            <button
-              type="button"
-              key={`${hit.latitude}-${hit.longitude}`}
-              onClick={() => { onSelect(hit); setQuery(hit.display); setHits([]); }}
-            >
+            <button type="button" key={`${hit.latitude}-${hit.longitude}`} onClick={() => { onSelect(hit); setQuery(hit.display); setHits([]); }}>
               <b>{hit.display}</b><small>{hit.timezone}</small>
             </button>
           ))}
@@ -145,41 +169,41 @@ function ZiweiPage() {
   const now = new Date();
   const copy = locale === "en"
     ? {
-        back: "Back to Zhaowu", kicker: "ZHAOWU · ZI WEI DOU SHU", title: "Deterministic 12-palace chart",
-        lead: "The chart engine calculates palace positions, the 14 major stars, transformations, supporting stars, 10-year cycles and an annual overlay before any interpretation is written.",
-        trust: "Calculation layer v0.5.3 · star positions are deterministic", input: "Birth details", year: "Year", month: "Month", day: "Day", hour: "Hour", minute: "Minute",
+        back: "Back to Zhaowu", kicker: "ZHAOWU · ZI WEI", title: "Your Zi Wei reading",
+        lead: "We calculate the chart first, then translate the useful patterns into plain English. You get the explanation before the technical chart.",
+        trust: "Deterministic calculation · plain-language interpretation", input: "Birth details", year: "Year", month: "Month", day: "Day", hour: "Hour", minute: "Minute",
         city: "Birthplace", cityPh: "Search city", basis: "Cycle direction rule", male: "Male rule", female: "Female rule",
-        trueSolar: "Apply true solar time", trueSolarHint: "Uses birthplace longitude, local time zone and daylight-saving offset.", targetYear: "Annual overlay year",
-        calculate: "Build my Zi Wei chart", error: "Check the birth date, time and birthplace.", result: "Calculated chart", life: "Life Palace", body: "Body Palace", bureau: "Five-element bureau", yearGz: "Birth year",
-        chart: "12-palace chart", major: "14 major stars", cycles: "10-year cycles", annual: "Annual overlay",
-        source: "Engine status", sourceBody: "The calculation data is verified for production use. School-dependent rules such as brightness and moving-star sets are explicitly version-locked; primary-source traditions still differ, so the engine does not pretend there is one universal historical table.",
-        active: "Active for selected year", noActive: "Before the first 10-year cycle", nominal: "Nominal age", corrected: "Time used", civil: "Civil time", solar: "True solar", shift: "shift",
-        annualStars: "Annual moving stars", factsOnly: "Calculation facts only · no medical or fortune diagnosis here",
+        trueSolar: "Apply true solar time", trueSolarHint: "Uses birthplace longitude, local time zone and daylight-saving offset.", targetYear: "Year to review",
+        calculate: "Read my Zi Wei chart", error: "Check the birth date, time and birthplace.", result: "Your result", life: "Core position", body: "Action focus", bureau: "Chart rhythm", yearGz: "Birth year",
+        summaryKicker: "PLAIN-LANGUAGE READING", technical: "View technical chart details", chart: "12-position chart", major: "14 major factors", cycles: "10-year cycles", annual: "Yearly overlay",
+        source: "Engine status", sourceBody: "Calculation facts are version-locked. The customer explanation is generated only from those facts and never changes star positions.",
+        active: "Active longer phase", noActive: "Before the first 10-year cycle", nominal: "Nominal age", corrected: "Time used", civil: "Civil time", solar: "True solar", shift: "shift",
+        annualStars: "Yearly moving factors", factsOnly: "Traditional interpretive framework · not medical or financial diagnosis",
       }
     : locale === "zh-Hans"
       ? {
-          back: "返回昭梧", kicker: "昭梧 · 紫微斗数", title: "紫微斗数・十二宫真值命盘",
-          lead: "命宫、身宫、十四主星、四化、辅煞、大限与流年先由固定算法排出，再交给解释层；这里不让 AI 自己猜星位。",
-          trust: "计算层 v0.5.3 · 星位由固定算法计算", input: "出生资料", year: "年", month: "月", day: "日", hour: "时", minute: "分",
+          back: "返回昭梧", kicker: "昭梧 · 紫微斗数", title: "你的紫微白话解读",
+          lead: "先把命盘算准，再把真正有用的部分翻译成白话。客人先看到解释，专业命盘放在后面。",
+          trust: "固定算法排盘 · 白话解释", input: "出生资料", year: "年", month: "月", day: "日", hour: "时", minute: "分",
           city: "出生地", cityPh: "搜索城市", basis: "大限顺逆规则", male: "男命规则", female: "女命规则",
-          trueSolar: "使用真太阳时", trueSolarHint: "按出生地经度、当地时区与夏令时校正。", targetYear: "查看流年",
-          calculate: "排出我的紫微命盘", error: "请检查出生日期、时间和出生地。", result: "计算结果", life: "命宫", body: "身宫", bureau: "五行局", yearGz: "生年干支",
-          chart: "十二宫盘", major: "十四主星", cycles: "十二步大限", annual: "流年叠盘",
-          source: "引擎状态", sourceBody: "计算资料已通过验证，可正式使用。庙旺表、流曜等存在流派差异的规则已锁定版本；原典之间仍有差异，因此不会伪装成唯一历史真值。",
-          active: "所选年份所在大限", noActive: "尚未进入第一大限", nominal: "虚岁", corrected: "实际排盘时间", civil: "民用时间", solar: "真太阳时", shift: "偏移",
-          annualStars: "流年流曜", factsOnly: "这里只给计算事实 · 不做医疗或吉凶诊断",
+          trueSolar: "使用真太阳时", trueSolarHint: "按出生地经度、当地时区与夏令时校正。", targetYear: "想查看的年份",
+          calculate: "生成我的紫微解读", error: "请检查出生日期、时间和出生地。", result: "你的结果", life: "核心位置", body: "行动重心", bureau: "命盘节奏", yearGz: "生年干支",
+          summaryKicker: "白话总解", technical: "查看专业命盘资料", chart: "十二宫盘", major: "十四主星", cycles: "十二步大限", annual: "流年叠盘",
+          source: "引擎状态", sourceBody: "排盘事实已锁定版本；白话解释只读取这些事实，不会反向修改星位。",
+          active: "当前十年阶段", noActive: "尚未进入第一大限", nominal: "虚岁", corrected: "实际排盘时间", civil: "民用时间", solar: "真太阳时", shift: "偏移",
+          annualStars: "流年变化因素", factsOnly: "传统文化解释 · 不作医疗或投资诊断",
         }
       : {
-          back: "返回昭梧", kicker: "昭梧 · 紫微斗數", title: "紫微斗數・十二宮真值命盤",
-          lead: "命宮、身宮、十四主星、四化、輔煞、大限與流年先由固定算法排出，再交給解釋層；這裡不讓 AI 自己猜星位。",
-          trust: "計算層 v0.5.3 · 星位由固定算法計算", input: "出生資料", year: "年", month: "月", day: "日", hour: "時", minute: "分",
+          back: "返回昭梧", kicker: "昭梧 · 紫微斗數", title: "你的紫微白話解讀",
+          lead: "先把命盤算準，再把真正有用的部分翻譯成白話。客人先看到解釋，專業命盤放在後面。",
+          trust: "固定算法排盤 · 白話解釋", input: "出生資料", year: "年", month: "月", day: "日", hour: "時", minute: "分",
           city: "出生地", cityPh: "搜尋城市", basis: "大限順逆規則", male: "男命規則", female: "女命規則",
-          trueSolar: "使用真太陽時", trueSolarHint: "按出生地經度、當地時區與夏令時校正。", targetYear: "查看流年",
-          calculate: "排出我的紫微命盤", error: "請檢查出生日期、時間和出生地。", result: "計算結果", life: "命宮", body: "身宮", bureau: "五行局", yearGz: "生年干支",
-          chart: "十二宮盤", major: "十四主星", cycles: "十二步大限", annual: "流年疊盤",
-          source: "引擎狀態", sourceBody: "計算資料已通過驗證，可正式使用。廟旺表、流曜等存在流派差異的規則已鎖定版本；原典之間仍有差異，因此不會偽裝成唯一歷史真值。",
-          active: "所選年份所在大限", noActive: "尚未進入第一大限", nominal: "虛歲", corrected: "實際排盤時間", civil: "民用時間", solar: "真太陽時", shift: "偏移",
-          annualStars: "流年流曜", factsOnly: "這裡只給計算事實 · 不做醫療或吉凶診斷",
+          trueSolar: "使用真太陽時", trueSolarHint: "按出生地經度、當地時區與夏令時校正。", targetYear: "想查看的年份",
+          calculate: "生成我的紫微解讀", error: "請檢查出生日期、時間和出生地。", result: "你的結果", life: "核心位置", body: "行動重心", bureau: "命盤節奏", yearGz: "生年干支",
+          summaryKicker: "白話總解", technical: "查看專業命盤資料", chart: "十二宮盤", major: "十四主星", cycles: "十二步大限", annual: "流年疊盤",
+          source: "引擎狀態", sourceBody: "排盤事實已鎖定版本；白話解釋只讀取這些事實，不會反向修改星位。",
+          active: "當前十年階段", noActive: "尚未進入第一大限", nominal: "虛歲", corrected: "實際排盤時間", civil: "民用時間", solar: "真太陽時", shift: "偏移",
+          annualStars: "流年變化因素", factsOnly: "傳統文化解釋 · 不作醫療或投資診斷",
         };
 
   const [year, setYear] = useState("");
@@ -240,6 +264,7 @@ function ZiweiPage() {
     return map;
   }, [result]);
   const activeDecadal = result?.activeDecadalIndex == null ? null : result.extension.decadals[result.activeDecadalIndex] ?? null;
+  const plainSummary = useMemo(() => result ? buildZiweiPlainSummary({ chart: result.core, extension: result.extension, locale, activeDecadalIndex: result.activeDecadalIndex, targetYear: result.targetYear }) : null, [result, locale]);
 
   return (
     <main className="ziwei-page">
@@ -264,27 +289,40 @@ function ZiweiPage() {
         </form>
       </section>
 
-      {result ? (
+      {result && plainSummary ? (
         <section id="ziwei-result" className="ziwei-result">
-          <header className="ziwei-result-heading"><div><p>ZHAOWU · CALCULATED</p><h2>{copy.result}</h2></div><span>{copy.factsOnly}</span></header>
+          <header className="ziwei-result-heading"><div><p>ZHAOWU · READ</p><h2>{copy.result}</h2></div><span>{copy.factsOnly}</span></header>
           <div className="ziwei-summary-grid">
-            <article><small>{copy.life}</small><b>{result.core.soulPalace}</b><span>{result.core.soulPalaceStem}{result.core.soulPalace}</span></article>
-            <article><small>{copy.body}</small><b>{result.core.bodyPalace}</b><span>{palaceLabel(result.core.palaces.find((p)=>p.isBodyPalace)?.name ?? "",locale)}</span></article>
-            <article><small>{copy.bureau}</small><b className="is-wide">{localizedCanonical(result.core.fiveElementsBureau.name,locale)}</b><span>{result.core.fiveElementsBureau.number}</span></article>
-            <article><small>{copy.yearGz}</small><b>{localizedCanonical(result.normalized.effectiveYearGanzhi ?? "—",locale)}</b><span>{result.normalized.profile.id}</span></article>
+            <article><small>{copy.life}</small><b>{branchLabel(result.core.soulPalace, locale)}</b><span>{locale === 'en' ? 'calculated' : `${result.core.soulPalaceStem}${result.core.soulPalace}`}</span></article>
+            <article><small>{copy.body}</small><b>{branchLabel(result.core.bodyPalace, locale)}</b><span>{palaceLabel(result.core.palaces.find((p)=>p.isBodyPalace)?.name ?? "",locale)}</span></article>
+            <article><small>{copy.bureau}</small><b className="is-wide">{locale === 'en' ? `Level ${result.core.fiveElementsBureau.number}` : locale === 'zh-Hans' ? hans(result.core.fiveElementsBureau.name) : result.core.fiveElementsBureau.name}</b><span>{result.core.fiveElementsBureau.number}</span></article>
+            <article><small>{copy.yearGz}</small><b>{locale === 'en' ? result.normalized.sourceLunarDate.year : locale === 'zh-Hans' ? hans(result.normalized.effectiveYearGanzhi ?? "—") : result.normalized.effectiveYearGanzhi ?? "—"}</b><span>{result.normalized.profile.id}</span></article>
           </div>
           <div className="ziwei-time-note"><span>{copy.corrected}</span><b>{result.usedTrueSolar?copy.solar:copy.civil}</b><i>{result.normalized.civilDate.year}-{String(result.normalized.civilDate.month).padStart(2,"0")}-{String(result.normalized.civilDate.day).padStart(2,"0")} {String(result.normalized.civilDate.hour??0).padStart(2,"0")}:{String(result.normalized.civilDate.minute??0).padStart(2,"0")}</i>{result.usedTrueSolar?<em>{copy.shift} {result.shiftMinutes>=0?"+":""}{result.shiftMinutes} min</em>:null}</div>
-          <section className="ziwei-chart-section">
-            <div className="ziwei-section-title"><p>12 PALACES</p><h3>{copy.chart}</h3></div>
-            <div className="ziwei-chart-board">
-              {CHART_BRANCHES.map(([branch,gridArea])=>{const palace=result.core.palaces.find((item)=>item.branch===branch);const stars=starsByBranch.get(branch)??[];const majors=stars.filter((star)=>majorSet.has(star.star));const auxiliary=stars.filter((star)=>!majorSet.has(star.star)).slice(0,3);return <article key={branch} style={{gridArea}} className={`${palace?.branch===result.core.soulPalace?"is-life ":""}${palace?.isBodyPalace?"is-body":""}`}><header><b>{palace?.stem}{branch}</b><span>{palaceLabel(palace?.name??"",locale)}</span></header><div className="ziwei-major-list">{majors.map((star)=><strong key={star.star}>{localizedCanonical(star.star,locale)}{star.brightness?<small>{localizedCanonical(star.brightness,locale)}</small>:null}</strong>)}</div><div className="ziwei-aux-list">{auxiliary.map((star)=><span key={star.star}>{localizedCanonical(star.star,locale)}</span>)}</div></article>;})}
-              <div className="ziwei-chart-center"><p>{result.normalized.sourceLunarDate.isLeap?(locale==="en"?"Leap lunar month":locale==="zh-Hans"?"闰月":"閏月"):"LUNAR"}</p><b>{result.normalized.sourceLunarDate.month}月{result.normalized.sourceLunarDate.day}日</b><span>{localizedCanonical(result.core.fiveElementsBureau.name,locale)}</span><div className="ziwei-center-mutagens">{result.extension.natalMutagens.map((item)=><i key={item.transformation}>{localizedCanonical(item.transformation,locale)} · {localizedCanonical(item.targetStar,locale)}</i>)}</div></div>
-            </div>
+
+          <section className="ziwei-plain-report" aria-labelledby="ziwei-plain-title">
+            <div className="ziwei-plain-seal" aria-hidden>梧</div>
+            <header><p>{copy.summaryKicker}</p><h3 id="ziwei-plain-title">{plainSummary.title}</h3></header>
+            <div className="ziwei-plain-body">{plainSummary.paragraphs.map((paragraph, index)=><p key={index}>{paragraph}</p>)}</div>
+            <blockquote>{plainSummary.closing}</blockquote>
           </section>
-          <section className="ziwei-lists-section"><div className="ziwei-section-title"><p>14 MAJOR STARS</p><h3>{copy.major}</h3></div><div className="ziwei-major-table">{result.extension.natalStars.filter((star)=>majorSet.has(star.star)).map((star)=><article key={star.star}><b>{localizedCanonical(star.star,locale)}</b><span>{star.branch}</span><i>{star.brightness?localizedCanonical(star.brightness,locale):"—"}</i></article>)}</div></section>
-          <section className="ziwei-cycle-section"><div className="ziwei-section-title"><p>10-YEAR CYCLES</p><h3>{copy.cycles}</h3></div><div className="ziwei-cycle-strip">{result.extension.decadals.map((item)=><article key={item.index} className={item.index===result.activeDecadalIndex?"is-active":""}><small>{item.ageStart}–{item.ageEnd}</small><b>{item.stem}{item.branch}</b><span>{item.direction===1?"順":"逆"}</span></article>)}</div><p className="ziwei-active-note">{copy.nominal} {result.nominalAge} · {activeDecadal?`${copy.active}: ${activeDecadal.ageStart}–${activeDecadal.ageEnd} · ${activeDecadal.stem}${activeDecadal.branch}`:copy.noActive}</p></section>
-          {result.extension.yearly?<section className="ziwei-annual-section"><div className="ziwei-section-title"><p>YEARLY OVERLAY · {result.targetYear}</p><h3>{copy.annual}</h3></div><div className="ziwei-annual-head"><b>{result.targetYear} · {localizedCanonical(result.targetGanzhi,locale)}</b><span>{copy.life}: {result.extension.yearly.lifeBranch}</span></div><div className="ziwei-transform-grid">{result.extension.yearly.mutagens.map((event)=><article key={event.transformation}><small>化{localizedCanonical(event.transformation,locale)}</small><b>{localizedCanonical(event.targetStar,locale)}</b><span>{event.branch??"—"} · {event.natalPalaceName?palaceLabel(event.natalPalaceName,locale):"—"}</span></article>)}</div><p className="ziwei-subhead">{copy.annualStars}</p><div className="ziwei-moving-stars">{result.extension.yearly.movingStars.map((star)=><span key={star.star}><b>{localizedCanonical(star.star,locale)}</b>{star.branch}</span>)}</div></section>:null}
-          <section className="ziwei-engine-note"><p>{copy.source}</p><strong>{result.extension.calculationProfileId}</strong><span>{copy.sourceBody}</span><code>iztro 2.6.0 · 1ba89cca…</code></section>
+
+          <details className="ziwei-technical">
+            <summary>{copy.technical}<span aria-hidden>＋</span></summary>
+            <div className="ziwei-technical-inner">
+              <section className="ziwei-chart-section">
+                <div className="ziwei-section-title"><p>12</p><h3>{copy.chart}</h3></div>
+                <div className="ziwei-chart-board">
+                  {CHART_BRANCHES.map(([branch,gridArea])=>{const palace=result.core.palaces.find((item)=>item.branch===branch);const stars=starsByBranch.get(branch)??[];const majors=stars.filter((star)=>majorSet.has(star.star));const auxiliary=stars.filter((star)=>!majorSet.has(star.star)).slice(0,3);return <article key={branch} style={{gridArea}} className={`${palace?.branch===result.core.soulPalace?"is-life ":""}${palace?.isBodyPalace?"is-body":""}`}><header><b>{locale==='en'?branchLabel(branch,locale):`${palace?.stem}${branch}`}</b><span>{palaceLabel(palace?.name??"",locale)}</span></header><div className="ziwei-major-list">{majors.map((star)=><strong key={star.star}>{starLabel(star.star,locale)}{star.brightness && locale!=='en'?<small>{locale==='zh-Hans'?hans(star.brightness):star.brightness}</small>:null}</strong>)}</div><div className="ziwei-aux-list">{auxiliary.map((star)=><span key={star.star}>{starLabel(star.star,locale)}</span>)}</div></article>;})}
+                  <div className="ziwei-chart-center"><p>{result.normalized.sourceLunarDate.isLeap?(locale==="en"?"Leap lunar month":locale==="zh-Hans"?"闰月":"閏月"):"LUNAR"}</p><b>{locale==='en'?`${result.normalized.sourceLunarDate.month}/${result.normalized.sourceLunarDate.day}`:`${result.normalized.sourceLunarDate.month}月${result.normalized.sourceLunarDate.day}日`}</b><span>{locale==='en'?`Level ${result.core.fiveElementsBureau.number}`:locale==='zh-Hans'?hans(result.core.fiveElementsBureau.name):result.core.fiveElementsBureau.name}</span></div>
+                </div>
+              </section>
+              <section className="ziwei-lists-section"><div className="ziwei-section-title"><p>14</p><h3>{copy.major}</h3></div><div className="ziwei-major-table">{result.extension.natalStars.filter((star)=>majorSet.has(star.star)).map((star)=><article key={star.star}><b>{starLabel(star.star,locale)}</b><span>{branchLabel(star.branch,locale)}</span><i>{locale==='en'?'—':star.brightness?(locale==='zh-Hans'?hans(star.brightness):star.brightness):"—"}</i></article>)}</div></section>
+              <section className="ziwei-cycle-section"><div className="ziwei-section-title"><p>10Y</p><h3>{copy.cycles}</h3></div><div className="ziwei-cycle-strip">{result.extension.decadals.map((item)=><article key={item.index} className={item.index===result.activeDecadalIndex?"is-active":""}><small>{item.ageStart}–{item.ageEnd}</small><b>{locale==='en'?branchLabel(item.branch,locale):`${item.stem}${item.branch}`}</b><span>{item.direction===1?(locale==='en'?'forward':locale==='zh-Hans'?'顺':'順'):(locale==='en'?'reverse':locale==='zh-Hans'?'逆':'逆')}</span></article>)}</div><p className="ziwei-active-note">{copy.nominal} {result.nominalAge} · {activeDecadal?`${copy.active}: ${activeDecadal.ageStart}–${activeDecadal.ageEnd}`:copy.noActive}</p></section>
+              {result.extension.yearly?<section className="ziwei-annual-section"><div className="ziwei-section-title"><p>{result.targetYear}</p><h3>{copy.annual}</h3></div><div className="ziwei-annual-head"><b>{locale==='en'?result.targetYear:`${result.targetYear} · ${result.targetGanzhi}`}</b><span>{copy.life}: {branchLabel(result.extension.yearly.lifeBranch,locale)}</span></div><div className="ziwei-transform-grid">{result.extension.yearly.mutagens.map((event)=><article key={event.transformation}><small>{transformLabel(event.transformation,locale)}</small><b>{starLabel(event.targetStar,locale)}</b><span>{event.natalPalaceName?palaceLabel(event.natalPalaceName,locale):"—"}</span></article>)}</div><p className="ziwei-subhead">{copy.annualStars}</p><div className="ziwei-moving-stars">{result.extension.yearly.movingStars.map((star)=><span key={star.star}><b>{starLabel(star.star,locale)}</b>{branchLabel(star.branch,locale)}</span>)}</div></section>:null}
+              <section className="ziwei-engine-note"><p>{copy.source}</p><strong>{result.extension.calculationProfileId}</strong><span>{copy.sourceBody}</span><code>iztro 2.6.0 · 1ba89cca…</code></section>
+            </div>
+          </details>
         </section>
       ):null}
     </main>
