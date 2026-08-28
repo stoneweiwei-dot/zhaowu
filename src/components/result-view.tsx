@@ -66,6 +66,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [msg, setMsg] = useState<string | null>(null);
   const [reportSections, setReportSections] = useState<ReportSection[] | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageReferenceAssetId, setImageReferenceAssetId] = useState<string | null>(null);
   const { chart, reading, question } = result;
   const answer = customerDirectAnswer(question, buildFreeDirectAnswer(question, chart, reading, locale));
   const answerParagraphs = customerParagraphs(answer);
@@ -74,11 +75,14 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   useEffect(() => {
     let cancelled = false;
     setImageUrl(null);
+    setImageReferenceAssetId(null);
     if (!session || !user || !result.id) return () => { cancelled = true; };
 
     void loadExistingDecreeImage(session, result.id)
       .then((out) => {
-        if (!cancelled && out.signedUrl) setImageUrl(out.signedUrl);
+        if (cancelled) return;
+        if (out.signedUrl) setImageUrl(out.signedUrl);
+        setImageReferenceAssetId(out.galleryReferenceAssetId ?? null);
       })
       .catch(() => {
         // View-only retrieval is intentionally silent. A missing old image must not trigger generation
@@ -169,6 +173,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       const reportId = await ensureSavedReport();
       const out = await generateDecreeImage(session, reportId);
       if (out.signedUrl) setImageUrl(out.signedUrl);
+      setImageReferenceAssetId(out.galleryReferenceAssetId ?? null);
       setMsg(copy.imageReady);
     } catch (err) {
       setMsg(err instanceof Error ? err.message : copy.fullFailed);
@@ -190,8 +195,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       {user ? (
         <DecreeGalleryPreview
           chart={chart}
+          question={question}
           busy={busy === "image"}
           generatedImageUrl={imageUrl}
+          selectedAssetId={imageReferenceAssetId}
           onGenerate={() => void onImage()}
         />
       ) : null}

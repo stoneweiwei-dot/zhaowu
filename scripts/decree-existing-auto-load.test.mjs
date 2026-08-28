@@ -7,19 +7,23 @@ const deliveryEdge = fs.readFileSync("supabase/functions/view-decree-image/index
 const client = fs.readFileSync("src/lib/report/decree-image.ts", "utf8");
 const resultView = fs.readFileSync("src/components/result-view.tsx", "utf8");
 
-test("stored decree delivery is isolated from the image provider", () => {
+test("stored decree delivery is isolated from the image provider and returns its Gallery reference", () => {
   assert.ok(deliveryEdge.includes('const REPORT_BUCKET = "zhaowu-report-images"'));
   assert.ok(deliveryEdge.includes("authClient.auth.getUser(token)"));
   assert.ok(deliveryEdge.includes('service.from("profiles").select("is_owner")'));
-  assert.ok(deliveryEdge.includes('service.from("report_requests").select("id,user_id,image_path")'));
+  assert.ok(deliveryEdge.includes('select("id,user_id,image_path,visual_profile")'));
+  assert.ok(deliveryEdge.includes("galleryReferenceAssetId"));
   assert.ok(deliveryEdge.includes("createSignedUrl(imagePath, 3600)"));
-  assert.ok(deliveryEdge.includes("imagePath: null, signedUrl: null, reused: false, missing: true"));
+  assert.ok(deliveryEdge.includes("imagePath: null"));
+  assert.ok(deliveryEdge.includes("signedUrl: null"));
+  assert.ok(deliveryEdge.includes("missing: true"));
   assert.ok(!deliveryEdge.includes("api.openai.com"));
 });
 
 test("passive loading uses the delivery-only signer while explicit generation reselects Gallery", () => {
   assert.ok(client.includes("export async function loadExistingDecreeImage"));
   assert.ok(client.includes('requestFunction(session, "view-decree-image", reportId)'));
+  assert.ok(client.includes("galleryReferenceAssetId?: string | null"));
   assert.ok(client.includes("export async function generateDecreeImage"));
   assert.ok(client.includes("reselectGallery: true"));
   const generateStart = client.indexOf("export async function generateDecreeImage");
@@ -46,9 +50,11 @@ test("generation endpoint preserves passive reuse and protects an existing image
   assert.ok(generationEdge.includes("A failed refresh must never make an already-generated personal image disappear"));
 });
 
-test("result view automatically restores a stored personal decree image", () => {
+test("result view automatically restores both the stored image and its Gallery reference", () => {
   assert.ok(resultView.includes('import { useEffect, useState } from "react"'));
   assert.ok(resultView.includes("generateDecreeImage, loadExistingDecreeImage"));
   assert.ok(resultView.includes("void loadExistingDecreeImage(session, result.id)"));
-  assert.ok(resultView.includes("if (!cancelled && out.signedUrl) setImageUrl(out.signedUrl)"));
+  assert.ok(resultView.includes("if (out.signedUrl) setImageUrl(out.signedUrl)"));
+  assert.ok(resultView.includes("setImageReferenceAssetId(out.galleryReferenceAssetId ?? null)"));
+  assert.ok(resultView.includes("selectedAssetId={imageReferenceAssetId}"));
 });

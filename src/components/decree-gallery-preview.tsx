@@ -2,10 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import type { Chart } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import {
+  explainCustomerGalleryChoice,
   loadCustomerGalleryCandidates,
   rankCustomerGalleryArt,
-  type CustomerGalleryArt,
+  type GalleryArtKnowledge,
 } from "@/lib/gallery-match";
+import type { GalleryAsset } from "@/lib/gallery-assets";
 
 const COPY = {
   "zh-Hant": {
@@ -16,6 +18,7 @@ const COPY = {
     generating: "命詮圖生成中…",
     matched: "匹配母圖",
     generated: "你的成圖",
+    reasonTitle: "為什麼是這張圖",
     unavailable: "目前啟用作品庫沒有可用圖片，暫時無法生成命詮圖。",
     alt: "昭梧作品庫參考圖",
     generatedAlt: "昭梧個人命詮圖",
@@ -28,6 +31,7 @@ const COPY = {
     generating: "命诺图生成中…",
     matched: "匹配母图",
     generated: "你的成图",
+    reasonTitle: "为什么是这张图",
     unavailable: "目前启用作品库没有可用图片，暂时无法生成命诺图。",
     alt: "昭梧作品库参考图",
     generatedAlt: "昭梧个人命诺图",
@@ -40,34 +44,39 @@ const COPY = {
     generating: "Generating decree image…",
     matched: "Matched reference",
     generated: "Your image",
+    reasonTitle: "Why this image",
     unavailable: "The enabled visual library is empty, so a decree image cannot be created yet.",
     alt: "Zhaowu visual-library reference",
     generatedAlt: "Your Zhaowu decree image",
   },
 } as const;
 
+type GalleryCandidate = { asset: GalleryAsset; knowledge: GalleryArtKnowledge };
+
 type Props = {
   chart: Chart;
+  question: string;
   busy: boolean;
   generatedImageUrl: string | null;
+  selectedAssetId: string | null;
   onGenerate: () => void;
 };
 
-export function DecreeGalleryPreview({ chart, busy, generatedImageUrl, onGenerate }: Props) {
+export function DecreeGalleryPreview({ chart, question, busy, generatedImageUrl, selectedAssetId, onGenerate }: Props) {
   const { locale } = useI18n();
   const copy = COPY[locale];
-  const [matches, setMatches] = useState<CustomerGalleryArt[]>([]);
+  const [candidates, setCandidates] = useState<GalleryCandidate[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     void loadCustomerGalleryCandidates()
-      .then((candidates) => {
-        if (active) setMatches(rankCustomerGalleryArt(chart, candidates).slice(0, 3));
+      .then((rows) => {
+        if (active) setCandidates(rows);
       })
       .catch(() => {
-        if (active) setMatches([]);
+        if (active) setCandidates([]);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -75,9 +84,20 @@ export function DecreeGalleryPreview({ chart, busy, generatedImageUrl, onGenerat
     return () => { active = false; };
   }, [chart]);
 
+  const matches = useMemo(() => rankCustomerGalleryArt(chart, candidates).slice(0, 3), [chart, candidates]);
   const heroSrc = generatedImageUrl ?? matches[0]?.imageUrl ?? null;
   const heroAlt = generatedImageUrl ? copy.generatedAlt : copy.alt;
   const secondary = useMemo(() => matches.slice(generatedImageUrl ? 0 : 1, generatedImageUrl ? 2 : 3), [generatedImageUrl, matches]);
+  const selectedCandidate = useMemo(
+    () => selectedAssetId ? candidates.find((candidate) => candidate.asset.id === selectedAssetId) ?? null : null,
+    [candidates, selectedAssetId],
+  );
+  const selectionReason = useMemo(
+    () => generatedImageUrl && selectedCandidate
+      ? explainCustomerGalleryChoice(chart, question, selectedCandidate, locale)
+      : null,
+    [chart, generatedImageUrl, locale, question, selectedCandidate],
+  );
   // Preview ranking is decorative. Default generation is owned by generate-decree-image
   // and must stay clickable even if approved/client_eligible knowledge is missing.
   const canGenerate = !loading;
@@ -121,6 +141,13 @@ export function DecreeGalleryPreview({ chart, busy, generatedImageUrl, onGenerat
           </>
         ) : null}
       </div>
+
+      {selectionReason ? (
+        <div className="mt-4 rounded-xl border border-line bg-cream p-4 text-sm leading-7 text-ink-soft">
+          <p className="font-display text-base text-ink">{copy.reasonTitle}</p>
+          <p className="mt-1">{selectionReason}</p>
+        </div>
+      ) : null}
     </article>
   );
 }
