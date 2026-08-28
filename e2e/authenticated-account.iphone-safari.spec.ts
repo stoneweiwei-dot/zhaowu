@@ -100,6 +100,27 @@ test.describe("iPhone Safari authenticated member flow", () => {
     });
 
     await page.goto("/login", { waitUntil: "domcontentloaded" });
+    const loginSheet = page.locator(".stone-login-sheet");
+    await expect(loginSheet).toBeVisible();
+    const loginLayout = await loginSheet.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return {
+        width: rect.width,
+        left: rect.left,
+        right: rect.right,
+        position: style.position,
+        opacity: Number(style.opacity),
+      };
+    });
+    expect(loginLayout.position).toBe("relative");
+    expect(loginLayout.opacity).toBeGreaterThanOrEqual(0.95);
+    expect(loginLayout.width).toBeGreaterThanOrEqual(320);
+    expect(loginLayout.left).toBeGreaterThanOrEqual(0);
+    expect(loginLayout.right).toBeLessThanOrEqual(390);
+    await expect(page.getByRole("tab", { name: "登入", exact: true })).toHaveAttribute("aria-selected", "true");
+    await expectMobileViewportHealthy(page);
+
     await page.locator("#login-email").fill(TEST_USER.email);
     await page.locator("#login-password").fill("correct-password");
     await page.locator(".stone-login-form button[type=submit]").click();
