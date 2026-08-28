@@ -115,7 +115,7 @@ test("Signed-in member can generate and persist one full report record", async (
   expect(engineReady?.id).toBeTruthy();
 
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "完整報告", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
   await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "report_ready")).toBe(true);
 
   const reportReady = writes.find((call) => call.method === "PATCH" && call.status === "report_ready");
@@ -162,7 +162,7 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
 
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
 
-  await expect(page.getByRole("heading", { name: "完整報告", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
   await expect(page.getByText("完整報告已整理完成，但雲端同步暫時失敗；畫面內容不受影響。", { exact: true })).toBeVisible();
   await expectMobileViewportHealthy(page);
 });
