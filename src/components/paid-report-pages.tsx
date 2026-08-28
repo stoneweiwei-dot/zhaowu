@@ -5,44 +5,47 @@ import { ReportDragonSticker } from "@/components/report-dragon-sticker";
 const COPY = {
   "zh-Hant": {
     title: "完整報告",
-    lead: "只保留與你這一問直接相關的內容",
-    artAlt: "昭梧天龍八部與東方吉祥意象",
-    kicker: "ZHAOWU · 東方吉祥紋樣 × 命理敘事",
+    lead: "先給一份完整總結，再單獨標出身體需要注意的地方",
+    kicker: "ZHAOWU · 人生節奏與選擇分析",
     marksAria: "昭梧吉祥紋樣",
   },
   "zh-Hans": {
     title: "完整报告",
-    lead: "只保留与你这一问直接相关的内容",
-    artAlt: "昭梧天龙八部与东方吉祥意象",
-    kicker: "ZHAOWU · 东方吉祥纹样 × 命理叙事",
+    lead: "先给一份完整总结，再单独标出身体需要注意的地方",
+    kicker: "ZHAOWU · 人生节奏与选择分析",
     marksAria: "昭梧吉祥纹样",
   },
   en: {
     title: "Full report",
-    lead: "Only what directly serves this question",
-    artAlt: "Zhaowu Tianlong and East Asian auspicious visual",
-    kicker: "ZHAOWU · AUSPICIOUS MOTIFS × DESTINY NARRATIVE",
+    lead: "One complete summary, followed by the body areas worth watching",
+    kicker: "ZHAOWU · LIFE RHYTHM & DECISION ANALYSIS",
     marksAria: "Zhaowu auspicious motifs",
   },
 } as const;
 
 const SECTION_TITLES = {
   "zh-Hant": {
-    conclusion: "直接結論",
+    summary: "總體概括",
+    body: "身體需要注意",
+    conclusion: "總體概括",
     basis: "命理依據",
     timing: "時間與節奏",
     action: "現實行動",
     relationship: "關係條件",
   },
   "zh-Hans": {
-    conclusion: "直接结论",
+    summary: "总体概括",
+    body: "身体需要注意",
+    conclusion: "总体概括",
     basis: "命理依据",
     timing: "时间与节奏",
     action: "现实行动",
     relationship: "关系条件",
   },
   en: {
-    conclusion: "Direct conclusion",
+    summary: "Overall summary",
+    body: "Body areas to watch",
+    conclusion: "Overall summary",
     basis: "Chart basis",
     timing: "Timing and rhythm",
     action: "Practical action",
@@ -55,26 +58,35 @@ const REPORT_ORNAMENTS = [
   { src: "/ornaments/generated/celestial-pearl.webp", label: { "zh-Hant": "星珠", "zh-Hans": "星珠", en: "Celestial pearl" } },
   { src: "/ornaments/generated/lotus.webp", label: { "zh-Hant": "蓮華", "zh-Hans": "莲华", en: "Lotus" } },
   { src: "/ornaments/generated/dragon.webp", label: { "zh-Hant": "雲龍", "zh-Hans": "云龙", en: "Cloud dragon" } },
-  { src: "/ornaments/generated/pomegranate.webp", label: { "zh-Hant": "福果", "zh-Hans": "福果", en: "Pomegranate" } },
-  { src: "/ornaments/generated/endless-knot.webp", label: { "zh-Hant": "盤長", "zh-Hans": "盘长", en: "Endless knot" } },
-  { src: "/ornaments/generated/twin-fish.webp", label: { "zh-Hant": "雙鯉", "zh-Hans": "双鲤", en: "Twin fish" } },
-  { src: "/ornaments/generated/crane.webp", label: { "zh-Hant": "雲鶴", "zh-Hans": "云鹤", en: "Crane" } },
 ] as const;
 
 function normalizeReportLine(line: string): string {
   return line.replace(/\s+/g, " ").trim();
 }
 
+function uniqueLines(lines: string[]): string[] {
+  return lines.filter((line, index, body) => {
+    const normalized = normalizeReportLine(line);
+    return Boolean(normalized) && body.findIndex((candidate) => normalizeReportLine(candidate) === normalized) === index;
+  });
+}
+
+function normalizeDisplaySections(sections: ReportSection[]): ReportSection[] {
+  if (sections.some((section) => section.key === "summary" || section.key === "body")) return sections;
+  if (!sections.length) return [];
+  return [{
+    ...sections[0],
+    sectionNo: 1,
+    pageNo: 1,
+    key: "summary",
+    body: uniqueLines(sections.flatMap((section) => section.body)),
+  }];
+}
+
 export function FocusedReportSections({ sections }: { sections: ReportSection[] }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
-  const timingLines = new Set(
-    sections
-      .filter((section) => section.key === "timing")
-      .flatMap((section) => section.body)
-      .map(normalizeReportLine)
-      .filter(Boolean),
-  );
+  const visibleSections = normalizeDisplaySections(sections);
 
   return (
     <section className="zhaowu-focused-report seal-border overflow-hidden rounded-[1.5rem] bg-cream/95" aria-labelledby="focused-report-title">
@@ -91,7 +103,7 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
       </div>
 
       <div className="zhaowu-auspicious-rail border-b border-line/60 bg-[#f7f0e2] px-4 py-3">
-        <div className="mx-auto grid max-w-xl grid-cols-4 gap-2 sm:grid-cols-8" aria-label={copy.marksAria}>
+        <div className="mx-auto grid max-w-sm grid-cols-4 gap-2" aria-label={copy.marksAria}>
           {REPORT_ORNAMENTS.map((mark) => (
             <figure key={mark.src} className="flex min-w-0 flex-col items-center gap-1.5">
               <span className="grid h-14 w-14 place-items-center rounded-full border border-[#c9a863]/40 bg-[#fffaf0] shadow-[0_6px_16px_rgba(108,77,29,.08)]">
@@ -104,28 +116,13 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
       </div>
 
       <div className="space-y-4 p-5 sm:p-7">
-        {sections.map((section, index) => {
-          const ornament = REPORT_ORNAMENTS[index % REPORT_ORNAMENTS.length];
+        {visibleSections.map((section) => {
           const localizedTitle = SECTION_TITLES[locale][section.key] ?? section.title;
-          const uniqueBody = section.body.filter((line, lineIndex, body) => {
-            const normalized = normalizeReportLine(line);
-            return Boolean(normalized) && body.findIndex((candidate) => normalizeReportLine(candidate) === normalized) === lineIndex;
-          });
-          const withoutTimingDuplicate = section.key === "basis"
-            ? uniqueBody.filter((line) => !timingLines.has(normalizeReportLine(line)))
-            : uniqueBody;
-          const visibleBody = withoutTimingDuplicate.length > 0 ? withoutTimingDuplicate : uniqueBody;
-
+          const visibleBody = uniqueLines(section.body);
           return (
             <article key={section.key} className="zhaowu-report-section rounded-xl border border-line bg-paper/70 p-4 sm:p-5">
-              <img src={ornament.src} alt="" aria-hidden className="zhaowu-report-ornament" onError={(event) => { event.currentTarget.hidden = true; }} />
               <div className="zhaowu-report-section-heading">
-                <div className="flex min-w-0 items-center gap-3">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#b08a49]/35 bg-[#f4ead6] font-display text-sm text-[#8a632f]">
-                    {String(section.sectionNo).padStart(2, "0")}
-                  </span>
-                  <h4 className="font-display text-xl leading-8 tracking-[0.03em] text-ink">{localizedTitle}</h4>
-                </div>
+                <h4 className="font-display text-xl leading-8 tracking-[0.03em] text-ink">{localizedTitle}</h4>
                 <ReportDragonSticker section={section} />
               </div>
               <div className="zhaowu-report-section-body mt-3 space-y-3 text-sm leading-7 text-ink-soft">
@@ -139,5 +136,5 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
   );
 }
 
-/** Legacy export name kept temporarily so old imports do not hard-fail during deployment transitions. */
+/** Legacy export name kept so old imports do not hard-fail during deployment transitions. */
 export const PaidReportPages = FocusedReportSections;

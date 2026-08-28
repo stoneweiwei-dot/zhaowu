@@ -4,6 +4,7 @@ import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
 import { pickTravelDestinations } from "@/lib/bazi/forecast";
 import { buildCosmicProfile, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
+import { buildBodyAttentionLines } from "@/lib/report/body-attention";
 
 export type ReportSectionEvidence = {
   facts: string[];
@@ -12,212 +13,46 @@ export type ReportSectionEvidence = {
   checks: string[];
 };
 
+export type ReportSectionKey =
+  | "summary"
+  | "body"
+  | "conclusion"
+  | "basis"
+  | "timing"
+  | "action"
+  | "relationship";
+
 export type ReportSection = {
   sectionNo: number;
-  /** Legacy storage alias only. New UI must use sectionNo / section language, never page language. */
+  /** Legacy storage alias only. New UI must use section language, never page language. */
   pageNo: number;
-  key: "conclusion" | "basis" | "timing" | "action" | "relationship";
+  key: ReportSectionKey;
   title: string;
   body: string[];
   optional?: boolean;
   evidence: ReportSectionEvidence;
 };
 
-function composeCosmicFocusedReport(result: AnalysisResult): ReportSection[] {
-  const locale = result.locale ?? "zh-Hans";
-  const profile = buildCosmicProfile(result.chart, locale);
-  const isEn = locale === "en";
-  const isHant = locale === "zh-Hant";
+const REPORT_TITLES: Record<AppLocale, { summary: string; body: string; report: string }> = {
+  "zh-Hant": { summary: "總體概括", body: "身體需要注意", report: "昭梧｜專屬完整報告" },
+  "zh-Hans": { summary: "总体概括", body: "身体需要注意", report: "昭梧｜专属完整报告" },
+  en: { summary: "Overall summary", body: "Body areas to watch", report: "Zhaowu | Personal full report" },
+};
 
-  const titles = isEn
-    ? ["Direct conclusion", "Soul-origin archetypes", "Dimension and current phase", "Real-world integration"]
-    : isHant
-      ? ["直接結論", "宇宙靈魂原型（象徵）", "意識維度與當前階段", "現實整合"]
-      : ["直接结论", "宇宙灵魂原型（象征）", "意识维度与当前阶段", "现实整合"];
-
-  return [
-    {
-      sectionNo: 1,
-      pageNo: 1,
-      key: "conclusion",
-      title: titles[0],
-      body: [profile.directAnswer],
-      evidence: {
-        facts: ["question", "cosmic symbolic profile"],
-        conditions: ["Answer the requested soul-origin / starseed question directly"],
-        limits: ["Symbolic module only; never replace Bazi main judgment"],
-        checks: ["No generic personality fallback"],
-      },
-    },
-    {
-      sectionNo: 2,
-      pageNo: 2,
-      key: "basis",
-      title: titles[1],
-      body: profile.archetypeLines,
-      evidence: {
-        facts: ["dayMaster", "monthBranch", "element structure", "currentDayun"],
-        conditions: ["Bazi is used only as a cross-reference anchor"],
-        limits: ["Do not claim literal extraterrestrial origin"],
-        checks: ["Primary and secondary archetypes must be named"],
-      },
-    },
-    {
-      sectionNo: 3,
-      pageNo: 3,
-      key: "timing",
-      title: titles[2],
-      body: profile.dimensionLines,
-      evidence: {
-        facts: ["symbolic dimension model", "chart strength tendency"],
-        conditions: ["3D/4D/5D describe symbolic modes of attention and integration"],
-        limits: ["No soul rank, cosmic IQ, or measurable frequency claims"],
-        checks: ["Current phase must be explicit"],
-      },
-    },
-    {
-      sectionNo: 4,
-      pageNo: 4,
-      key: "action",
-      title: titles[3],
-      body: [...profile.actionLines, profile.disclaimer],
-      evidence: {
-        facts: ["symbolic archetype", "real-life pattern check"],
-        conditions: ["Advice must translate symbolism into observable action"],
-        limits: ["No belief-dependent instruction"],
-        checks: ["Keep only what can be tested against real repeated patterns"],
-      },
-    },
-  ];
+function normalizeLine(line: string): string {
+  return line.replace(/\s+/g, " ").trim();
 }
 
-const STEM_EN: Record<string, string> = {
-  甲: "Jia", 乙: "Yi", 丙: "Bing", 丁: "Ding", 戊: "Wu",
-  己: "Ji", 庚: "Geng", 辛: "Xin", 壬: "Ren", 癸: "Gui",
-};
-
-const BRANCH_EN: Record<string, string> = {
-  子: "Zi", 丑: "Chou", 寅: "Yin", 卯: "Mao", 辰: "Chen", 巳: "Si",
-  午: "Wu", 未: "Wei", 申: "Shen", 酉: "You", 戌: "Xu", 亥: "Hai",
-};
-
-const ELEMENT_EN: Record<string, string> = {
-  木: "Wood", 火: "Fire", 土: "Earth", 金: "Metal", 水: "Water",
-};
-
-function englishGanZhi(value: string): string {
-  if (!value || value.length < 2) return "unconfirmed";
-  const stem = STEM_EN[value[0]];
-  const branch = BRANCH_EN[value[1]];
-  return stem && branch ? `${stem}-${branch}` : "unconfirmed";
-}
-
-function englishTopicBody(reading: Reading): string {
-  switch (reading.kind) {
-    case "career": return reading.work;
-    case "love": return reading.love;
-    case "money": return reading.money;
-    case "health": return reading.body;
-    case "home": return reading.home;
-    default: return reading.rhythm;
+function dedupeLines(lines: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const line of lines) {
+    const normalized = normalizeLine(line);
+    if (!normalized || seen.has(normalized)) continue;
+    seen.add(normalized);
+    out.push(line.trim());
   }
-}
-
-function composeEnglishFocusedReport(result: AnalysisResult): ReportSection[] {
-  const { reading, chart } = result;
-  const dayMaster = `${STEM_EN[chart.dayMaster] ?? "Unconfirmed"} (${ELEMENT_EN[chart.dayMasterElement] ?? "Element unconfirmed"})`;
-  const monthCommand = BRANCH_EN[chart.monthBranch] ?? "Unconfirmed";
-  const basis = [
-    `Day Master: ${dayMaster}. Month Command: ${monthCommand}.`,
-    chart.currentDayun
-      ? `Current ten-year cycle: ${englishGanZhi(chart.currentDayun.ganZhi)} (${chart.currentDayun.startYear}–${chart.currentDayun.endYear}).`
-      : "",
-    chart.timeUnknown
-      ? "Birth time is unconfirmed, so the hour pillar and cycle start are not used as hard conclusions."
-      : "",
-    englishTopicBody(reading),
-  ].filter(Boolean);
-
-  const sections: ReportSection[] = [
-    {
-      sectionNo: 1,
-      pageNo: 1,
-      key: "conclusion",
-      title: "Direct conclusion",
-      body: [reading.directAnswer],
-      evidence: {
-        facts: ["question", "reading.kind", "reading.directAnswer"],
-        conditions: ["Answer the original question first"],
-        limits: ["Do not add unrelated personality copy"],
-        checks: ["No repeated question prefix"],
-      },
-    },
-    {
-      sectionNo: 2,
-      pageNo: 2,
-      key: "basis",
-      title: "Chart basis",
-      body: Array.from(new Set(basis)),
-      evidence: {
-        facts: ["dayMaster", "monthBranch", "currentDayun", "topic reading"],
-        conditions: ["Keep only evidence relevant to the question"],
-        limits: ["Do not expose an internal reasoning chain"],
-        checks: ["No unrelated topic sections"],
-      },
-    },
-    {
-      sectionNo: 3,
-      pageNo: 3,
-      key: "timing",
-      title: "Timing and rhythm",
-      body: [reading.rhythm],
-      evidence: {
-        facts: ["reading.rhythm", "currentDayun"],
-        conditions: ["Use timing as a planning window"],
-        limits: ["Do not promise an outcome date"],
-        checks: ["Timing must serve the question"],
-      },
-    },
-    {
-      sectionNo: 4,
-      pageNo: 4,
-      key: "action",
-      title: "Practical action",
-      body: [reading.action],
-      evidence: {
-        facts: ["reading.action", "reading.kind"],
-        conditions: ["Advice must be executable"],
-        limits: ["Do not repeat earlier sections"],
-        checks: ["Priority action must match the conclusion"],
-      },
-    },
-  ];
-
-  if (reading.kind === "love") {
-    sections.push({
-      sectionNo: 5,
-      pageNo: 5,
-      key: "relationship",
-      title: "Relationship conditions",
-      body: [
-        reading.love,
-        "Look for consistent contact, concrete plans, explicit commitment, and respected boundaries.",
-      ],
-      optional: true,
-      evidence: {
-        facts: ["reading.kind=love", "reading.love"],
-        conditions: ["Only shown for relationship questions"],
-        limits: ["Do not add this section to unrelated questions"],
-        checks: ["Every line must serve the original question"],
-      },
-    });
-  }
-
-  return sections;
-}
-
-function hasMultiTopicAnswer(reading: Reading): boolean {
-  return /分開回答|分开回答|分開排|分开排/.test(reading.directAnswer);
+  return out;
 }
 
 function travelNames(question: string, chart: Chart): string[] {
@@ -225,9 +60,14 @@ function travelNames(question: string, chart: Chart): string[] {
   return pickTravelDestinations(chart, req.targetYears[0], req.targetMonths).map((place) => place.name);
 }
 
+function hasMultiTopicAnswer(reading: Reading): boolean {
+  return /分開回答|分开回答|分開排|分开排/.test(reading.directAnswer);
+}
+
 function topicLines(question: string, reading: Reading, chart: Chart): string[] {
   const req = inspectAnswerRequirements(question);
   if (isStructureQuestion(question)) return analyzeStructure(chart).evidenceLines;
+
   if (req.asksTravel) {
     const names = travelNames(question, chart);
     return [
@@ -250,206 +90,138 @@ function topicLines(question: string, reading: Reading, chart: Chart): string[] 
   }
 
   switch (reading.kind) {
-    case "career":
-      return [customerCopy(reading.work)];
-    case "money":
-      return [customerCopy(reading.money)];
-    case "health":
-      return [customerCopy(reading.body)];
-    case "home":
-      return [customerCopy(reading.home)];
-    case "past":
-      return [customerCopy(reading.rhythm)];
-    case "self":
-      return [];
-    case "timing":
-      return ["这题只保留与时间窗口有关的判断，不额外扩写工作、感情或财务。"];
-    case "choice":
-      return ["这题只比较选项本身的方向、代价和退出难度，不为了凑内容加入旁支主题。"];
-    case "love":
-      return ["关系题的对象与互动细节放在后面的条件区，本节只保留命盘与当前阶段的依据。"];
-    default:
-      return [];
+    case "career": return [customerCopy(reading.work)];
+    case "money": return [customerCopy(reading.money)];
+    case "health": return [customerCopy(reading.body)];
+    case "home": return [customerCopy(reading.home)];
+    case "past": return [customerCopy(reading.rhythm)];
+    case "self": return [];
+    case "timing": return ["这题只保留与时间窗口有关的判断，不额外扩写工作、感情或财务。"];
+    case "choice": return ["这题只比较选项本身的方向、代价和退出难度，不为了凑内容加入旁支主题。"];
+    case "love": return [customerCopy(reading.love)];
+    default: return [];
   }
 }
 
-function basisBody(question: string, reading: Reading, chart: Chart): string[] {
-  const body = [
+function chineseSummaryLines(result: AnalysisResult): string[] {
+  const { question, chart, reading } = result;
+  const req = inspectAnswerRequirements(question);
+  const lines = [
+    customerDirectAnswer(question, reading.directAnswer),
     `命盘落点：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`,
-    chart.currentDayun
-      ? `当前阶段：${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。`
-      : "",
+    chart.currentDayun ? `当前阶段：${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
     chart.timeUnknown ? "出生时间未确定，因此本次不把时柱与大运起运当作硬结论依据。" : "",
     ...topicLines(question, reading, chart),
-  ].filter(Boolean);
-
-  return Array.from(new Set(body));
-}
-
-function timingBody(question: string, reading: Reading, chart: Chart): string[] {
-  const req = inspectAnswerRequirements(question);
-  if (isStructureQuestion(question)) {
-    const structure = analyzeStructure(chart);
-    return [
-      `格局是原局結構，不隨大運更名。${chart.currentDayun ? `目前${chart.currentDayun.ganZhi}大運（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）只影響「${structure.label}」與${structure.supportingPattern ?? "原局主線"}的發揮程度。` : "目前大運未可靠排出，因此不追加歲運判斷。"}`,
-    ];
-  }
-  if (req.asksTravel) {
-    const names = travelNames(question, chart);
-    return [
-      customerCopy(reading.rhythm),
-      `节奏上先锁定主选 ${names[0]}，再把较顺月份与假期、预算、体力和签证一起确认；不要同时铺开三地。`,
-    ].filter(Boolean);
-  }
-
-  return [customerCopy(reading.rhythm)].filter(Boolean);
-}
-
-function actionBody(question: string, reading: Reading, chart: Chart): string[] {
-  const req = inspectAnswerRequirements(question);
-  if (isStructureQuestion(question)) return [customerCopy(reading.action)];
-  const lines = [customerCopy(reading.action)].filter(Boolean);
+    customerCopy(reading.rhythm),
+    customerCopy(reading.action),
+  ];
 
   if (req.asksTravel) {
     const names = travelNames(question, chart);
     lines.push(`执行顺序：先定 ${names[0]}，再订交通和住宿；备选只留一个。`);
-    return lines;
+  } else if (reading.kind === "career") {
+    lines.push("把职位、收入、成长空间、责任和退出成本放在同一张表里，只推进最值得的一条。 ");
+  } else if (reading.kind === "money") {
+    lines.push("先写清风险上限、现金流和退出条件，再考虑收益空间。 ");
+  } else if (reading.kind === "health") {
+    lines.push("先稳定睡眠、作息与身体负荷；不适持续、加重或影响活动时及时就医。 ");
+  } else if (reading.kind === "love") {
+    lines.push("关系只看持续联系、实际见面、明确承诺和边界；没有这些，就不要靠解释补关系。 ");
   }
 
+  return dedupeLines(lines);
+}
+
+function englishTopicBody(reading: Reading): string {
   switch (reading.kind) {
-    case "career":
-      lines.push("把职位、收入、成长空间、责任和退出成本放在同一张表里，只推进最值得的一条。");
-      break;
-    case "love":
-      lines.push("只看持续联系、实际见面、明确承诺和边界；没有这些，就不要靠解释补关系。 ");
-      break;
-    case "money":
-      lines.push("先写清风险上限、现金流和退出条件，再考虑收益空间。 ");
-      break;
-    case "health":
-      lines.push("先稳定睡眠、作息与身体负荷；不适持续、加重或影响活动时及时就医。 ");
-      break;
-    case "home":
-      lines.push("实地核对采光、噪音、通勤、预算和真实居住感受后再决定。 ");
-      break;
-    case "choice":
-      lines.push("先排除代价无法承受的选项，再比较长期收益与退出难度。 ");
-      break;
-    case "timing":
-      lines.push("把较顺窗口当成准备优先级，不把它当成保证成功的日期。 ");
-      break;
-    case "past":
-      lines.push("把象征结果当成自我观察线索，只保留能解释现实重复模式的部分。 ");
-      break;
-    default:
-      break;
+    case "career": return reading.work;
+    case "love": return reading.love;
+    case "money": return reading.money;
+    case "health": return reading.body;
+    case "home": return reading.home;
+    default: return reading.rhythm;
+  }
+}
+
+function englishSummaryLines(result: AnalysisResult): string[] {
+  const { question, chart, reading } = result;
+  const req = inspectAnswerRequirements(question);
+  const lines = [
+    reading.directAnswer,
+    englishTopicBody(reading),
+    reading.rhythm,
+    reading.action,
+    chart.timeUnknown ? "The birth time is not confirmed, so timing that depends on the birth hour is treated as approximate." : "",
+  ];
+
+  if (req.asksTravel) {
+    const names = travelNames(question, chart);
+    if (names.length) lines.push(`Shortlist: ${names.slice(0, 3).join(", ")}. Choose the first option that also works for leave, budget, travel time and visa requirements.`);
+  }
+  if (reading.kind === "love") {
+    lines.push("Judge the relationship by consistent contact, actual plans, clear commitment and respected boundaries.");
   }
 
-  return lines.map((line) => line.trim()).filter(Boolean);
+  return dedupeLines(lines);
 }
 
-function relationshipSection(reading: Reading): ReportSection | null {
-  if (reading.kind !== "love") return null;
-  return {
-    sectionNo: 5,
-    pageNo: 5,
-    key: "relationship",
-    title: "关系与对象",
-    body: [
-      customerCopy(reading.love),
-      "观察重点：对方是否持续联系、主动安排见面，并愿意把关系与边界说清楚。",
-    ].filter(Boolean),
-    optional: true,
-    evidence: {
-      facts: ["reading.kind=love", "reading.love"],
-      conditions: ["只有关系问题才出现"],
-      limits: ["不得在职业、财务、健康等无关问题中硬塞关系画像"],
-      checks: ["本节必须与用户原问直接相关"],
-    },
-  };
+function cosmicSummaryLines(result: AnalysisResult): string[] {
+  const locale = result.locale ?? "zh-Hans";
+  const profile = buildCosmicProfile(result.chart, locale);
+  return dedupeLines([
+    profile.directAnswer,
+    ...profile.archetypeLines,
+    ...profile.dimensionLines,
+    ...profile.actionLines,
+    profile.disclaimer,
+  ]);
 }
 
-/**
- * 昭梧完整报告：4 个固定核心区 + 最多 1 个文字条件区。
- * 图像模块（个人命诰图）独立于文字结构，由用户主动生成，失败不得阻塞文字报告。
- */
+function summaryLines(result: AnalysisResult): string[] {
+  if (isCosmicSymbolicQuestion(result.question)) return cosmicSummaryLines(result);
+  if ((result.locale ?? "zh-Hans") === "en") return englishSummaryLines(result);
+  return chineseSummaryLines(result);
+}
+
 export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
-  if (isCosmicSymbolicQuestion(result.question)) return composeCosmicFocusedReport(result);
-  if (result.locale === "en") return composeEnglishFocusedReport(result);
-  const { question, chart, reading } = result;
-
-  const sections: ReportSection[] = [
+  const locale = result.locale ?? "zh-Hans";
+  const titles = REPORT_TITLES[locale];
+  return [
     {
       sectionNo: 1,
       pageNo: 1,
-      key: "conclusion",
-      title: "直接结论",
-      body: [customerDirectAnswer(question, reading.directAnswer)],
+      key: "summary",
+      title: titles.summary,
+      body: summaryLines(result),
       evidence: {
-        facts: ["question", "reading.kind", "reading.directAnswer"],
-        conditions: ["第一屏直接回答原问题", "复合问题必须逐项回答"],
-        limits: ["不得用无关人格句补字数", "不得调用未接入流派补强结论"],
-        checks: ["不得以资料不足／仅供参考开场", "不得重复问题前缀"],
+        facts: ["final reading", "question-relevant chart facts", "timing", "action"],
+        conditions: ["All question-specific content is merged into one continuous summary"],
+        limits: ["No unrelated topic filler", "No internal chain-of-thought"],
+        checks: ["Direct answer appears once", "No numbered mini-sections"],
       },
     },
     {
       sectionNo: 2,
       pageNo: 2,
-      key: "basis",
-      title: "命理依据",
-      body: basisBody(question, reading, chart),
+      key: "body",
+      title: titles.body,
+      body: buildBodyAttentionLines(result.chart, locale),
       evidence: {
-        facts: ["dayMaster", "monthBranch", "currentDayun", "question-specific reading field"],
-        conditions: ["只保留与当前问题直接相关的依据"],
-        limits: ["不展示内部推理链", "不把未实现的格局／病药／刑冲合害写成已完成"],
-        checks: ["删掉任何与原问无关的主题段落"],
-      },
-    },
-    {
-      sectionNo: 3,
-      pageNo: 3,
-      key: "timing",
-      title: "时间与节奏",
-      body: timingBody(question, reading, chart),
-      evidence: {
-        facts: ["reading.rhythm", "currentDayun", "travel windows when requested"],
-        conditions: ["时间题、出行题必须给可执行窗口；非时间题只讲当前节奏"],
-        limits: ["不得承诺必成日期"],
-        checks: ["内容必须服务原问题"],
-      },
-    },
-    {
-      sectionNo: 4,
-      pageNo: 4,
-      key: "action",
-      title: "现实行动",
-      body: actionBody(question, reading, chart),
-      evidence: {
-        facts: ["reading.action", "reading.kind"],
-        conditions: ["建议必须可以在现实中执行"],
-        limits: ["不重复前文凑字数"],
-        checks: ["最高优先行动与第 1 节结论一致"],
+        facts: ["four-pillar earthly branches", "month seasonal weighting", "current long-term cycle branch", "six fixed opposition axes"],
+        conditions: ["Earthly branch sets the observation area; paired branches are read as one axis"],
+        limits: ["Traditional symbolic body map only", "Not a medical diagnosis", "No unimplemented Zi Wei star or sha-ji layer is invented"],
+        checks: ["Seasonal weight is shown", "Medical boundary is explicit"],
       },
     },
   ];
-
-  const relationship = relationshipSection(reading);
-  if (relationship) sections.push(relationship);
-
-  return sections;
 }
 
 export function renderFocusedReportText(sections: ReportSection[], locale: AppLocale = "zh-Hans"): string {
-  const separator = locale === "en" ? " | " : "｜";
-  const blocks = sections.map((section) => [
-    `${String(section.sectionNo).padStart(2, "0")}${separator}${section.title}`,
-    "",
-    ...section.body,
-  ].join("\n"));
-  const title = locale === "en" ? "Zhaowu | Personal full report" : "昭梧｜专属完整报告";
-  return [title, "", ...blocks].join("\n\n");
+  const title = REPORT_TITLES[locale].report;
+  const blocks = sections.map((section) => `${section.title}\n\n${section.body.join("\n\n")}`);
+  return [title, ...blocks].join("\n\n");
 }
 
 export function composeFocusedReportText(result: AnalysisResult): string {
-  return renderFocusedReportText(composeFocusedReport(result), result.locale);
+  return renderFocusedReportText(composeFocusedReport(result), result.locale ?? "zh-Hans");
 }
