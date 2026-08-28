@@ -13,7 +13,7 @@ test("双轨出生资料要求地点与分钟，并由系统自动校正时间",
   assert.match(route, /MINUTES/);
   assert.match(route, /timezoneOffsetHours/);
   assert.match(route, /toTrueSolar/);
-  assert.match(route, /夏令时和真太阳时/);
+  assert.match(route, /时间会按出生地自动校正/);
   assert.match(form, /ziPolicy: "midnight"/);
   assert.match(form, /useTrueSolar: true/);
   assert.match(actions, /ziPolicy: "midnight"/);
