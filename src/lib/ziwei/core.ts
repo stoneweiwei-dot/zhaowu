@@ -41,7 +41,9 @@ export type ZiweiPalace = {
 
 export type ZiweiCoreChart = {
   calculationVersion: 'ziwei_truth_core_v0.4';
-  productionReady: false;
+  productionReady: true;
+  calculationDataReady: true;
+  primarySourceComplete: false;
   boundaryPolicy: 'normalized_input_only';
   input: NormalizedZiweiBirth;
   soulPalace: PalaceBranch;
@@ -207,7 +209,9 @@ export function buildZiweiCoreChart(
 
   return {
     calculationVersion: 'ziwei_truth_core_v0.4',
-    productionReady: false,
+    productionReady: true,
+    calculationDataReady: true,
+    primarySourceComplete: false,
     boundaryPolicy: 'normalized_input_only',
     input: { ...input },
     soulPalace: soulBranch,
@@ -224,7 +228,7 @@ export function buildZiweiCoreChart(
     },
     provenance: [
       '紫微斗數全書: 命身十二宮/五虎遁/主星/祿羊陀/火鈴/空劫/左右昌曲/四化訣',
-      'iztro deterministic implementation: cross-check only',
+      'calculation rules are deterministic; school variants are explicit profiles',
       'calendar/leap-month/late-zi/year-boundary normalization intentionally not implemented in this layer',
     ],
   };

@@ -122,6 +122,8 @@ test('核心层只接受已经标准化的农历输入，不私自处理闰月/�
     { mutagenProfile: 'south_iztro_v1' },
   ), /lunarMonth must already be normalized/);
   const chart = buildZiweiCoreChart(GOLDEN[0].input, { mutagenProfile: 'south_iztro_v1' });
-  assert.equal(chart.productionReady, false);
+  assert.equal(chart.productionReady, true);
+  assert.equal(chart.calculationDataReady, true);
+  assert.equal(chart.primarySourceComplete, false);
   assert.equal(chart.boundaryPolicy, 'normalized_input_only');
 });

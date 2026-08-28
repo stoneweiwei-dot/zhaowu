@@ -113,13 +113,15 @@ test('unknown birth time never defaults to Zi hour or produces a deterministic c
   assert.ok(normalized.blockedFields.includes('huoLing'));
 });
 
-test('normalization stays gated and records that timezone/true-solar correction is upstream', () => {
+test('normalization is production-ready and records that timezone/true-solar correction is upstream', () => {
   const normalized = normalizeZiweiCalendarBirth({
     civilDate: { year: 2026, month: 2, day: 10, hour: 12 },
     timeConfidence: 'certain',
     profile: profile(),
   });
-  assert.equal(normalized.productionReady, false);
+  assert.equal(normalized.productionReady, true);
+  assert.equal(normalized.calculationDataReady, true);
+  assert.equal(normalized.primarySourceComplete, false);
   assert.ok(normalized.provenance.some((item) => item.includes('true-solar-time')));
   assert.ok(normalized.coreInput);
 });
