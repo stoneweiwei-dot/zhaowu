@@ -46,11 +46,11 @@ test("三语融合星评包含外在、内在与行动建议，英文不混入�
   assert.doesNotMatch(english.guidance, /[\u3400-\u9fff]/);
 });
 
-test("主页只有一个双轨入口，独立旧路由保留兼容但不再分散主页", () => {
+test("双轨工具保留独立路由，但不再占据核心分析首页", () => {
   const home = readFileSync(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
   const route = readFileSync(new URL("../src/routes/tianji-dual.tsx", import.meta.url), "utf8");
 
-  assert.match(home, /to="\/tianji-dual"/);
+  assert.doesNotMatch(home, /to="\/tianji-dual"|双轨性格分析/);
   assert.doesNotMatch(home, /to="\/tianji-xinggong"/);
   assert.doesNotMatch(home, /to="\/yizhangjing"/);
   assert.match(route, /calculateDualDestiny/);

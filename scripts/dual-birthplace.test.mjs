@@ -6,15 +6,19 @@ import { toTrueSolar } from "../src/lib/bazi/solar-time.ts";
 
 test("双轨出生资料要求地点与分钟，并由系统自动校正时间", () => {
   const route = readFileSync(new URL("../src/routes/tianji-dual.tsx", import.meta.url), "utf8");
-  const home = readFileSync(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
+  const form = readFileSync(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
+  const actions = readFileSync(new URL("../src/lib/actions.ts", import.meta.url), "utf8");
 
   assert.match(route, /birthCity/);
   assert.match(route, /MINUTES/);
   assert.match(route, /timezoneOffsetHours/);
   assert.match(route, /toTrueSolar/);
   assert.match(route, /夏令时和真太阳时/);
-  assert.match(home, /出生地不同，时间会自动校正/);
-  assert.doesNotMatch(home, /自动处理中气/);
+  assert.match(form, /ziPolicy: "midnight"/);
+  assert.match(form, /useTrueSolar: true/);
+  assert.match(actions, /ziPolicy: "midnight"/);
+  assert.match(actions, /useTrueSolar: true/);
+  assert.doesNotMatch(form, /setZiPolicy|setUseTrueSolar/);
   assert.doesNotMatch(route, /lead: "天机星宫读你如何/);
 });
 
