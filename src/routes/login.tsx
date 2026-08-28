@@ -89,14 +89,14 @@ function LoginPage() {
 
   return (
     <main className="stone-login-screen" aria-labelledby="login-title">
-      <section className="stone-login-panel seal-border">
+      <section className="stone-login-sheet seal-border">
         <p className="stone-login-kicker">ZHAOWU · ACCOUNT</p>
         <h1 id="login-title" className="stone-login-title">{mode === "signin" ? t("loginTitle") : t("signupTitle")}</h1>
         <p className="stone-login-lead">{mode === "signin" ? t("loginLead") : t("loginPageLead")}</p>
 
         <div className="stone-login-tabs" role="tablist" aria-label={t("loginTitle")}> 
-          <button type="button" role="tab" aria-selected={mode === "signin"} onClick={() => setMode("signin")}>{t("loginTab")}</button>
-          <button type="button" role="tab" aria-selected={mode === "signup"} onClick={() => setMode("signup")}>{t("signupTab")}</button>
+          <button type="button" role="tab" aria-selected={mode === "signin"} className={mode === "signin" ? "is-active" : undefined} onClick={() => setMode("signin")}>{t("loginTab")}</button>
+          <button type="button" role="tab" aria-selected={mode === "signup"} className={mode === "signup" ? "is-active" : undefined} onClick={() => setMode("signup")}>{t("signupTab")}</button>
         </div>
 
         <div className="mt-5">
@@ -129,14 +129,14 @@ function LoginPage() {
           </label>
 
           {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
-          {info ? <p className="stone-login-info" role="status">{info}</p> : null}
+          {info ? <p className="stone-login-message" role="status">{info}</p> : null}
 
-          <button type="submit" disabled={busy || oauthBusy !== null} className="stone-login-submit">
+          <button type="submit" disabled={busy || oauthBusy !== null} className="stone-login-primary">
             {busy ? t("processing") : mode === "signin" ? t("loginTab") : t("createAccount")}
           </button>
         </form>
 
-        <p className="stone-login-note">{t("loginPageLead")}</p>
+        <p className="stone-login-signature">{t("loginPageLead")}</p>
       </section>
     </main>
   );
