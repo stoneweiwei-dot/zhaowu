@@ -2,6 +2,7 @@ import { FEATURED_CITIES, filterFeatured } from "@/lib/bazi/cities";
 import type { AnalysisResult, AnalyzeInput, CityHit, RelationPref } from "@/lib/bazi/types";
 import { buildChart, currentAlmanac } from "@/lib/bazi/chart";
 import { classifyQuestion, interpret } from "@/lib/bazi/interpret";
+import { applyMonthStageFeedbackPolicy } from "@/lib/bazi/month-stage-feedback";
 import { buildPalm } from "@/lib/palm/engine";
 import { routeMethods } from "@/lib/core/method";
 import { inferQuestionKind } from "@/lib/core/answer-contract";
@@ -125,10 +126,15 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
     palmReady: palm.ready,
     palmMissing: palm.missing,
   });
-  const reading = finalizeReading(
+  const rawReading = applyMonthStageFeedbackPolicy(
     data.question,
     chart,
     interpret(data.question, chart, data.relation, palm),
+  );
+  const reading = finalizeReading(
+    data.question,
+    chart,
+    rawReading,
     data.locale,
   );
 
@@ -161,10 +167,15 @@ export async function followUpLife({
     palmReady: Boolean(palm?.ready),
     palmMissing: palm?.missing ?? [],
   });
-  const reading = finalizeReading(
+  const rawReading = applyMonthStageFeedbackPolicy(
     question,
     data.base.chart,
     interpret(question, data.base.chart, data.relation ?? "unset", palm),
+  );
+  const reading = finalizeReading(
+    question,
+    data.base.chart,
+    rawReading,
     data.base.locale,
   );
   return {
@@ -190,7 +201,8 @@ export async function writeFullReport({
     locale?: AnalysisResult["locale"];
   };
 }) {
-  const reading = finalizeReading(data.question, data.chart, data.reading, data.locale);
+  const governedReading = applyMonthStageFeedbackPolicy(data.question, data.chart, data.reading);
+  const reading = finalizeReading(data.question, data.chart, governedReading, data.locale);
   const palm = data.palm ?? null;
   const methodProtocol = routeMethods(reading.kind, {
     palmReady: Boolean(palm?.ready),
