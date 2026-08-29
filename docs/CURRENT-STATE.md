@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最后核对：2026-08-29 16:05 AEST
+最后核对：2026-08-29 22:55 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -27,7 +27,9 @@
 - `finalizeReading` 是最终 Reading 单一来源；已保存报告不重新 live 算出另一套答案。
 - 个人命诰文字为证据型文案；真实命诰图走私有 report image delivery，失败不得阻塞文字答案。
 - Gallery/背景资产管理能力保留；当前页面不读取 Supabase owner/weekly wallpaper 作为应用背景。
-- 首页只保留一个主分析表单；「性格两面」以紧凑宣纸入口链接到独立 `/tianji-dual`，达摩一掌经、茶仙守护、紫微继续保持独立路由。
+- 首页只保留一个主分析表单；三個专题入口分别进入 `/qizheng`、`/yizhangjing`、`/ziwei`。「性格两面」继续保持为独立 `/tianji-dual`，不得再用 CSS 或文案伪装成「前世今生」。
+- `/yizhangjing` 是首页唯一「前世今生」入口：以达摩一掌经排前四世六道、逐世特征与留到今生的习性，并明确合并重复六道的加强影响。
+- `/qizheng` 与 `/ziwei` 都只向客户交付出生资料表单 + 白话专题报告；技术盘、星位轮、宫位表、计算 profile 与内部状态不进入客户画面。
 
 没有新的可复现 FAIL 时，不得因为旧 Issue / 旧聊天复活已废止实现。
 
@@ -73,9 +75,11 @@
 
 最终视觉覆盖层：`src/home-sheet-ui-v5.css`；报告层：`src/focused-report.css`。
 
-## 6. 紫微 Calculation Truth Layer
+## 6. 专题报告与 Calculation Truth Layer
 
-`src/lib/ziwei/` 已进入确定性计算数据可用于生产的阶段；当前 `/ziwei` 保留版本化计算 profile、规则来源与三语状态展示。最近的 readiness 迁移将 deterministic calculation data 标记为 production-ready，同时继续明确：primary-source unanimity 仍为 false。紫微计算事实与八字核心保持分层，不得反向覆盖八字锁定逻辑。
+`src/lib/ziwei/` 已进入确定性计算数据可用于生产的阶段；`/ziwei` 在后台保留版本化 calculation profile 和证据层，但客户只看到性格、事业、财务、关系、压力和当前人生阶段的白话报告。primary-source unanimity 仍为 false，紫微计算事实与八字核心保持分层，不得反向覆盖八字锁定逻辑。
+
+`src/lib/qizheng/engine.ts` 继续负责七政真天象计算；`src/lib/qizheng/plain-summary.ts` 只做客户报告组合，不改动星体计算。客户报告发挥七政对性情、情绪节奏、行动压力、关系取向和机会落地的观察优势，不显示黄经轮盘与技术口径。
 
 ## 7. 当前真正未完成
 
@@ -120,3 +124,10 @@
 - `src/home-sheet-ui-v5.css` 把 `/wallpaper-song.jpg` 应用到 `.zhaowu-home-sheet-shell` 与 `.zhaowu-login-shell`。
 - 卡片 / header / 登入纸面改为不透明 `#fbf5e9`，输入底 `#fffaf1`，`backdrop-filter: none`。
 - 不改排盘核心、auth、payment、Supabase schema。
+
+## 2026-08-29 — 三个专题入口客户化重做
+
+- 首页「前世今生」从错误的 `/tianji-dual` 改为真正的 `/yizhangjing`；`/tianji-dual` 恢复诚实的「性格两面」身份。
+- 达摩一掌经报告交付前四世各自六道、逐世特征、携带习性、最近一世主轴与重复六道加重总结。
+- 紫微与七政都改为 56px 以上出生资料输入和单张白话报告；客户画面不显示专业命盘、七政星位轮、计算 profile 或内部说明。
+- 三个专题分别使用自己的强项，不共享同一套通用人格模板；不改锁定的八字、一掌经与七政计算核心。

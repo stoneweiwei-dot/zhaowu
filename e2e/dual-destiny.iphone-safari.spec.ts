@@ -1,40 +1,28 @@
 import { expect, test } from "@playwright/test";
 
-async function pseudoText(page: import("@playwright/test").Page, selector: string) {
-  return page.locator(selector).evaluate((element) => {
-    const value = getComputedStyle(element, "::after").content;
-    return value.replace(/^['\"]|['\"]$/g, "");
-  });
-}
+test("iPhone Safari opens the real Dharma Palm Past & Present report", async ({ page }) => {
+  await page.goto("/yizhangjing", { waitUntil: "domcontentloaded" });
 
-test("iPhone Safari can complete Past & Present with local birthplace correction and without cloud services", async ({ page }) => {
-  await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
-  await page.goto("/tianji-dual", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("heading", { name: "前世今生・達摩一掌經" })).toBeVisible();
+  await page.getByLabel("出生日期（國曆）").fill("1988-10-04");
+  await page.getByLabel("順行（傳統男命）").check();
+  await page.getByLabel("出生時辰").selectOption("3");
 
-  await expect(page.locator(".dual-hero h1")).toBeVisible();
-  expect(await pseudoText(page, ".dual-hero h1")).toBe("前世今生");
+  for (const field of [page.getByLabel("出生日期（國曆）"), page.getByLabel("出生時辰")]) {
+    expect((await field.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(56);
+  }
 
-  const fields = page.locator(".dual-fields select");
-  await fields.nth(0).selectOption("1988");
-  await fields.nth(1).selectOption("10");
-  await fields.nth(2).selectOption("4");
-  await fields.nth(3).selectOption("4");
-  await fields.nth(4).selectOption("40");
+  await page.getByRole("button", { name: "生成我的報告" }).click();
 
-  const birthplace = page.getByLabel("出生地");
-  await birthplace.fill("Sydney");
-  await expect(page.locator("#dual-birth-city-results button").first()).toBeVisible();
-  await page.locator("#dual-birth-city-results button").first().click();
-  await expect(birthplace).toHaveValue("雪梨，澳洲");
-
-  await page.getByRole("button", { name: "看結果", exact: true }).click();
-
-  await expect(page.getByText(/已按出生地校正 雪梨，澳洲/)).toBeVisible();
-  await expect(page.locator(".dual-results .dual-section-title h2")).toBeVisible();
-  expect(await pseudoText(page, ".dual-results .dual-section-title h2")).toBe("前世今生總覽");
-  expect(await pseudoText(page, ".dual-side-card:nth-child(1) h3")).toBe("今生的表現");
-  expect(await pseudoText(page, ".dual-side-card:nth-child(2) h3")).toBe("前世留下的慣性");
-  expect(await pseudoText(page, ".dual-details summary")).toBe("查看傳統計算依據");
-  await expect(page.getByText("融合星評", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "前四世・六道習性報告" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "前四世來自哪一道" })).toBeVisible();
+  await expect(page.getByText("前四世", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("前三世", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("前二世", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("前一世", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText(/修羅道在四世中出現2次/)).toBeVisible();
+  await expect(page.getByText(/被重複加強/)).toBeVisible();
+  await expect(page.getByText("這一世的特徵", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("留到今生的習性", { exact: true }).first()).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });

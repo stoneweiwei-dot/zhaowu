@@ -1,47 +1,169 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AnalysisForm } from "@/components/analysis-form";
-import { QizhengHomePanel } from "@/components/qizheng-home";
-import { useI18n } from "@/lib/i18n";
-import { useAppStore } from "@/lib/store";
+import { useEffect, useState, type FormEvent } from "react";
+import { searchCities } from "@/lib/actions";
+import { localizeCityHit } from "@/lib/bazi/cities";
+import type { CityHit } from "@/lib/bazi/types";
+import { useI18n, type Locale } from "@/lib/i18n";
+import { calculateQizheng } from "@/lib/qizheng/engine";
+import { buildQizhengPlainSummary, type QizhengPlainSummary } from "@/lib/qizheng/plain-summary";
+import "@/qizheng-home.css";
 
 export const Route = createFileRoute("/qizheng")({ component: QizhengPage });
 
-function QizhengPage() {
-  const { locale } = useI18n();
-  const current = useAppStore((s) => s.current);
-  const copy =
-    locale === "en"
-      ? {
-          kicker: "ZHAOWU · CLASSICAL SKY",
-          title: "Seven Luminaries & Four Derived Points",
-          lead: "Enter one set of birth details. The sky layer is calculated separately from the main Zhaowu reading.",
-          back: "Back to Zhaowu",
-        }
-      : locale === "zh-Hans"
-        ? {
-            kicker: "昭梧 · 古法天象",
-            title: "七政四余",
-            lead: "只填一份出生资料。七政四余独立成区，不再塞进主页主报告里。",
-            back: "返回昭梧",
-          }
-        : {
-            kicker: "昭梧 · 古法天象",
-            title: "七政四餘",
-            lead: "只填一份出生資料。七政四餘獨立成區，不再塞進主頁主報告裡。",
-            back: "返回昭梧",
-          };
+function CityField({ locale, city, onSelect, label, placeholder }: {
+  locale: Locale;
+  city: CityHit | null;
+  onSelect: (city: CityHit | null) => void;
+  label: string;
+  placeholder: string;
+}) {
+  const [query, setQuery] = useState(city?.display ?? "");
+  const [hits, setHits] = useState<CityHit[]>([]);
+
+  useEffect(() => {
+    setQuery(city ? localizeCityHit(city, locale).display : "");
+  }, [city?.display, city?.latitude, city?.longitude, locale]);
+
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (city && trimmed === localizeCityHit(city, locale).display) {
+      setHits([]);
+      return;
+    }
+    if (trimmed.length < 2) {
+      setHits([]);
+      return;
+    }
+    let alive = true;
+    const timer = window.setTimeout(() => {
+      void searchCities({ data: trimmed })
+        .then((rows) => { if (alive) setHits(rows.map((row) => localizeCityHit(row, locale))); })
+        .catch(() => { if (alive) setHits([]); });
+    }, 220);
+    return () => { alive = false; window.clearTimeout(timer); };
+  }, [city, locale, query]);
 
   return (
-    <main className="mx-auto w-full max-w-3xl space-y-4 pb-6">
-      <section className="seal-border rounded-[18px] border border-line/80 bg-paper/95 p-5 shadow-paper sm:p-6">
-        <Link to="/" className="text-xs tracking-[0.12em] text-cinnabar">← {copy.back}</Link>
-        <p className="mt-5 text-[10px] font-semibold tracking-[0.22em] text-earth">{copy.kicker}</p>
-        <h1 className="mt-2 font-display text-3xl tracking-[0.08em] text-ink sm:text-4xl">{copy.title}</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-7 text-ink-soft">{copy.lead}</p>
+    <label className="qz-field qz-city-field">
+      <span>{label}</span>
+      <input
+        value={query}
+        placeholder={placeholder}
+        autoComplete="off"
+        onFocus={() => {
+          if (query.trim().length >= 2) return;
+          void searchCities({ data: "" })
+            .then((rows) => setHits(rows.map((row) => localizeCityHit(row, locale))))
+            .catch(() => setHits([]));
+        }}
+        onChange={(event) => {
+          setQuery(event.target.value);
+          if (city) onSelect(null);
+        }}
+      />
+      {hits.length ? (
+        <div className="qz-city-results" role="listbox">
+          {hits.map((hit) => (
+            <button type="button" key={hit.latitude + "-" + hit.longitude} onClick={() => { onSelect(hit); setQuery(hit.display); setHits([]); }}>
+              <b>{hit.display}</b><small>{hit.timezone}</small>
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </label>
+  );
+}
+
+function QizhengPage() {
+  const { locale } = useI18n();
+  const copy = locale === "en"
+    ? {
+        back: "Back to Zhaowu", kicker: "ZHAOWU · SEVEN LUMINARIES", title: "Your Seven Luminaries report",
+        lead: "See your temperament, emotional rhythm, action under pressure, relationship values and the pattern that becomes strongest over time.",
+        input: "Birth details", year: "Year", month: "Month", day: "Day", hour: "Hour", minute: "Minute",
+        city: "Birthplace", cityPh: "Search city", submit: "Generate my report", error: "Check the birth date, time and birthplace.",
+        result: "Your personal reading", note: "Traditional interpretation for self-reflection",
+      }
+    : locale === "zh-Hans"
+      ? {
+          back: "返回昭梧", kicker: "昭梧 · 七政四余", title: "你的七政命局报告",
+          lead: "专看你的性情底色、情绪节奏、压力反应、关系取向，以及哪一种惯性在命局里被加强。",
+          input: "出生资料", year: "年", month: "月", day: "日", hour: "时", minute: "分",
+          city: "出生地", cityPh: "搜索城市", submit: "生成我的报告", error: "请检查出生日期、时间和出生地。",
+          result: "你的个人报告", note: "传统文化解读，用于自我观察",
+        }
+      : {
+          back: "返回昭梧", kicker: "昭梧 · 七政四餘", title: "你的七政命局報告",
+          lead: "專看你的性情底色、情緒節奏、壓力反應、關係取向，以及哪一種慣性在命局裡被加強。",
+          input: "出生資料", year: "年", month: "月", day: "日", hour: "時", minute: "分",
+          city: "出生地", cityPh: "搜尋城市", submit: "生成我的報告", error: "請檢查出生日期、時間和出生地。",
+          result: "你的個人報告", note: "傳統文化解讀，用於自我觀察",
+        };
+
+  const [year, setYear] = useState("");
+  const [month, setMonth] = useState("");
+  const [day, setDay] = useState("");
+  const [hour, setHour] = useState("");
+  const [minute, setMinute] = useState("0");
+  const [city, setCity] = useState<CityHit | null>(null);
+  const [report, setReport] = useState<QizhengPlainSummary | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    try {
+      if (!city) throw new Error("city");
+      const y = Number(year), m = Number(month), d = Number(day), h = Number(hour), min = Number(minute || 0);
+      if (![y, m, d, h, min].every(Number.isFinite)) throw new Error("number");
+      const civilCheck = new Date(Date.UTC(y, m - 1, d));
+      if (civilCheck.getUTCFullYear() !== y || civilCheck.getUTCMonth() !== m - 1 || civilCheck.getUTCDate() !== d) throw new Error("date");
+      const chart = calculateQizheng({ year: y, month: m, day: d, hour: h, minute: min, timezone: city.timezone });
+      if (!chart) throw new Error("chart");
+      setReport(buildQizhengPlainSummary(chart, locale));
+      window.setTimeout(() => document.getElementById("qizheng-result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 30);
+    } catch {
+      setError(copy.error);
+    }
+  }
+
+  return (
+    <main className="qz-page">
+      <div className="qz-topline"><Link to="/" className="qz-back">← {copy.back}</Link><span>{copy.kicker}</span></div>
+      <section className="qz-hero">
+        <p>{copy.kicker}</p>
+        <h1>{copy.title}</h1>
+        <div className="qz-hero-mark" aria-hidden><i /><b>曜</b><i /></div>
+        <p className="qz-hero-lead">{copy.lead}</p>
       </section>
 
-      <AnalysisForm />
-      {current ? <QizhengHomePanel result={current} /> : null}
+      <section className="qz-form-card">
+        <header><p>ZHAOWU · INPUT</p><h2>{copy.input}</h2></header>
+        <form onSubmit={submit}>
+          <div className="qz-date-grid">
+            {[[copy.year, year, setYear, 1900, 2100], [copy.month, month, setMonth, 1, 12], [copy.day, day, setDay, 1, 31], [copy.hour, hour, setHour, 0, 23], [copy.minute, minute, setMinute, 0, 59]].map(([label, value, setter, min, max]) => (
+              <label className="qz-field" key={String(label)}><span>{label as string}</span><input required type="number" inputMode="numeric" min={min as number} max={max as number} value={value as string} onChange={(event) => (setter as (value: string) => void)(event.target.value)} /></label>
+            ))}
+          </div>
+          <CityField locale={locale} city={city} onSelect={setCity} label={copy.city} placeholder={copy.cityPh} />
+          {error ? <p className="qz-error">{error}</p> : null}
+          <button className="qz-submit" type="submit">{copy.submit}<b aria-hidden>→</b></button>
+        </form>
+      </section>
+
+      {report ? (
+        <section id="qizheng-result" className="qz-report">
+          <header className="qz-report-heading"><div><p>ZHAOWU · READ</p><h2>{copy.result}</h2></div><span>{copy.note}</span></header>
+          <div className="qz-report-paper">
+            <div className="qz-report-seal" aria-hidden>曜</div>
+            <header><p>{copy.kicker}</p><h3>{report.title}</h3><span>{report.lead}</span></header>
+            <div className="qz-report-sections">{report.sections.map((section, index) => (
+              <article key={section.key}><i aria-hidden>{String(index + 1).padStart(2, "0")}</i><div><h4>{section.title}</h4><p>{section.body}</p></div></article>
+            ))}</div>
+            <blockquote>{report.closing}</blockquote>
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }

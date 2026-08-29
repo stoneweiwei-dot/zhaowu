@@ -12,16 +12,17 @@
   padding: 4px 0 24px;
   color: var(--zw-ink);
 }
-.ziwei-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; color: var(--zw-soft); font-size: 10px; letter-spacing: .06em; }
+.ziwei-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; color: var(--zw-soft); font-size: 11px; letter-spacing: .06em; }
 .ziwei-back { color: var(--zw-red); font-weight: 700; }
 .ziwei-topline > span { text-align: right; }
 .ziwei-hero,.ziwei-form-card,.ziwei-result { border: 1px solid var(--zw-line); border-radius: 24px; background: radial-gradient(circle at 90% 10%, rgba(47,116,101,.045), transparent 24rem),linear-gradient(180deg, rgba(255,255,255,.26), rgba(224,193,148,.025)),var(--zw-paper-2); box-shadow: 0 12px 34px rgba(77,54,28,.06); }
-.ziwei-hero { position: relative; overflow: hidden; padding: 36px 30px 34px; text-align: center; }
+.ziwei-hero { position: relative; overflow: hidden; padding: 38px 30px 36px; text-align: left; }
 .ziwei-hero::after { content: "紫微"; position: absolute; right: -28px; bottom: -50px; color: rgba(139,98,52,.04); font-family: serif; font-size: 11rem; font-weight: 700; line-height: 1; pointer-events: none; }
 .ziwei-hero > p:first-child { position: relative; z-index: 1; color: #8c663a; font-size: 10px; font-weight: 700; letter-spacing: .24em; }
 .ziwei-hero h1 { position: relative; z-index: 1; margin-top: 10px; font-family: var(--font-display, serif); font-size: clamp(2rem, 7vw, 3.6rem); line-height: 1.18; letter-spacing: .06em; }
 .ziwei-hero-lead { position: relative; z-index: 1; max-width: 42rem; margin: 14px auto 0; color: var(--zw-soft); font-size: 13px; line-height: 1.9; }
-.ziwei-hero-rule { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 34px 1fr; align-items: center; gap: 10px; width: min(360px, 82%); margin: 17px auto 0; }
+.ziwei-hero-rule { position: relative; z-index: 1; display: grid; grid-template-columns: 34px minmax(80px,180px); align-items: center; gap: 10px; width: min(260px, 82%); margin: 17px 0 0; }
+.ziwei-hero-rule i:first-child { display: none; }
 .ziwei-hero-rule i { height: 1px; background: linear-gradient(90deg, transparent, rgba(169,52,43,.35)); }
 .ziwei-hero-rule i:last-child { transform: rotate(180deg); }
 .ziwei-hero-rule b { display: grid; width: 31px; height: 31px; place-items: center; border: 1px solid rgba(169,52,43,.36); color: var(--zw-red); font-family: serif; font-size: 14px; transform: rotate(45deg); }
@@ -29,11 +30,11 @@
 .ziwei-form-card header p,.ziwei-result-heading p,.ziwei-section-title p,.ziwei-engine-note > p { color: #946a38; font-size: 9px; font-weight: 800; letter-spacing: .2em; }
 .ziwei-form-card header h2,.ziwei-result-heading h2 { margin-top: 5px; font-family: var(--font-display, serif); font-size: 1.55rem; }
 .ziwei-form-card form { margin-top: 20px; }
-.ziwei-date-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 9px; }
+.ziwei-date-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 11px; }
 .ziwei-options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
 .ziwei-field { position: relative; display: block; min-width: 0; }
-.ziwei-field > span { display: block; margin-bottom: 6px; color: var(--zw-soft); font-size: 11px; }
-.ziwei-field input,.ziwei-field select { width: 100%; min-height: 46px; border: 1px solid var(--zw-line); border-radius: 10px; background: #fffaf1; padding: 0 11px; color: var(--zw-ink); font-size: 14px; outline: none; }
+.ziwei-field > span { display: block; margin-bottom: 7px; color: var(--zw-soft); font-size: 12px; font-weight: 600; }
+.ziwei-field input,.ziwei-field select { width: 100%; min-height: 56px; border: 1px solid var(--zw-line); border-radius: 13px; background: #fffaf1; padding: 0 14px; color: var(--zw-ink); font-size: 16px; outline: none; }
 .ziwei-field input:focus,.ziwei-field select:focus { border-color: rgba(169,52,43,.55); box-shadow: 0 0 0 3px rgba(169,52,43,.055); }
 .ziwei-city-field { margin-top: 10px; }
 .ziwei-city-results { position: absolute; z-index: 20; top: calc(100% + 5px); left: 0; right: 0; max-height: 250px; overflow: auto; border: 1px solid var(--zw-line); border-radius: 12px; background: #fffaf1; box-shadow: 0 18px 45px rgba(65,44,22,.13); }
@@ -46,7 +47,7 @@
 .ziwei-check b { display: block; font-size: 12px; }
 .ziwei-check small { display: block; margin-top: 3px; color: var(--zw-soft); font-size: 10px; line-height: 1.5; }
 .ziwei-error { margin-top: 10px; color: var(--zw-red); font-size: 12px; }
-.ziwei-submit { display: flex; width: 100%; min-height: 50px; align-items: center; justify-content: center; gap: 18px; margin-top: 16px; border: 0; border-radius: 999px; background: linear-gradient(180deg,#ad3c32,#932c25); color: #fffaf2; font-size: 13px; font-weight: 700; letter-spacing: .07em; box-shadow: 0 9px 22px rgba(143,47,37,.13); }
+.ziwei-submit { display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: center; gap: 18px; margin-top: 18px; border: 0; border-radius: 999px; background: linear-gradient(180deg,#ad3c32,#932c25); color: #fffaf2; font-size: 16px; font-weight: 700; letter-spacing: .07em; box-shadow: 0 9px 22px rgba(143,47,37,.13); }
 .ziwei-submit b { font-size: 16px; }
 .ziwei-result { margin-top: 12px; padding: 24px; }
 .ziwei-result-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; }
@@ -117,9 +118,10 @@
   .ziwei-hero h1 { font-size: 2rem; }
   .ziwei-hero-lead { font-size: 12px; line-height: 1.8; }
   .ziwei-form-card,.ziwei-result { padding: 17px 14px; }
-  .ziwei-date-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; }
-  .ziwei-options-grid { grid-template-columns: 1fr 1fr; gap: 7px; }
-  .ziwei-field input,.ziwei-field select { min-height: 44px; padding: 0 9px; font-size: 13px; }
+  .ziwei-date-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 11px; }
+  .ziwei-date-grid .ziwei-field:first-child { grid-column: 1 / -1; }
+  .ziwei-options-grid { grid-template-columns: 1fr; gap: 10px; }
+  .ziwei-field input,.ziwei-field select { min-height: 56px; padding: 0 13px; font-size: 16px; }
   .ziwei-result-heading { align-items: flex-start; }
   .ziwei-result-heading > span { max-width: 48%; font-size: 8px; }
   .ziwei-summary-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }

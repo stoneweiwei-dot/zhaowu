@@ -17,30 +17,30 @@ function Home() {
     locale === "en"
       ? {
           label: "Three specialist sections",
-          lead: "Three separate routes. Each calculates its own layer before interpretation.",
+          lead: "Three focused readings, each written around what that tradition explains best.",
           items: [
-            { to: "/qizheng" as const, eyebrow: "CLASSICAL SKY", title: "Seven Luminaries", detail: "Sun, Moon, five planets and the four derived points in a separate classical-sky view.", mark: "☉", tone: "sky" },
-            { to: "/tianji-dual" as const, eyebrow: "SYMBOLIC THREAD", title: "Past & Present", detail: "A symbolic view of older patterns and how they tend to surface in present-day responses.", mark: "↺", tone: "fate" },
-            { to: "/ziwei" as const, eyebrow: "STAR PALACES", title: "Zi Wei Dou Shu", detail: "Twelve palaces, fourteen major stars, longer cycles and yearly timing, explained in plain English.", mark: "✦", tone: "ziwei" },
+            { to: "/qizheng" as const, eyebrow: "CLASSICAL SKY", title: "Seven Luminaries", detail: "Your temperament, emotional rhythm, drive and natural way of handling pressure.", mark: "☉", tone: "sky" },
+            { to: "/yizhangjing" as const, eyebrow: "PAST-LIFE PATTERNS", title: "Past & Present", detail: "Four prior lives, their six-realm origins, carried habits and any pattern that repeats more strongly.", mark: "緣", tone: "fate" },
+            { to: "/ziwei" as const, eyebrow: "LIFE PATTERNS", title: "Zi Wei Dou Shu", detail: "Character, work, money, relationships and the main theme of your current longer phase.", mark: "斗", tone: "ziwei" },
           ],
         }
       : locale === "zh-Hans"
         ? {
             label: "三个独立专区",
-            lead: "七政四余、前世今生、紫微斗数，各自独立计算，不混进主八字判断。",
+            lead: "三个专题，各自只讲自己最擅长看的部分，直接给你一份清楚的个人报告。",
             items: [
-              { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四余", detail: "独立查看日月五星与四余的天象层，和主八字判断分开。", mark: "曜", tone: "sky" },
-              { to: "/tianji-dual" as const, eyebrow: "因缘旧习", title: "前世今生", detail: "用既有双轨计算看旧有惯性与今生反应；只作传统象征表达。", mark: "缘", tone: "fate" },
-              { to: "/ziwei" as const, eyebrow: "星宫推演", title: "紫微斗数", detail: "十二宫、十四主星、大限与流年先算后解，先给你白话总解。", mark: "斗", tone: "ziwei" },
+              { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四余", detail: "看天性、情绪节奏、行动方式，以及面对压力时最自然的反应。", mark: "曜", tone: "sky" },
+              { to: "/yizhangjing" as const, eyebrow: "四世六道", title: "前世今生", detail: "看前四世来自哪一道、留下什么习性，以及重复出现后被加强的主轴。", mark: "缘", tone: "fate" },
+              { to: "/ziwei" as const, eyebrow: "人生格局", title: "紫微斗数", detail: "看性格底色、事业财务、关系模式，以及当前十年最重要的课题。", mark: "斗", tone: "ziwei" },
             ],
           }
         : {
             label: "三個獨立專區",
-            lead: "七政四餘、前世今生、紫微斗數，各自獨立計算，不混進主八字判斷。",
+            lead: "三個專題，各自只講自己最擅長看的部分，直接給你一份清楚的個人報告。",
             items: [
-              { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四餘", detail: "獨立查看日月五星與四餘的天象層，和主八字判斷分開。", mark: "曜", tone: "sky" },
-              { to: "/tianji-dual" as const, eyebrow: "因緣舊習", title: "前世今生", detail: "用既有雙軌計算看舊有慣性與今生反應；只作傳統象徵表達。", mark: "緣", tone: "fate" },
-              { to: "/ziwei" as const, eyebrow: "星宮推演", title: "紫微斗數", detail: "十二宮、十四主星、大限與流年先算後解，先給你白話總解。", mark: "斗", tone: "ziwei" },
+              { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四餘", detail: "看天性、情緒節奏、行動方式，以及面對壓力時最自然的反應。", mark: "曜", tone: "sky" },
+              { to: "/yizhangjing" as const, eyebrow: "四世六道", title: "前世今生", detail: "看前四世來自哪一道、留下什麼習性，以及重複出現後被加強的主軸。", mark: "緣", tone: "fate" },
+              { to: "/ziwei" as const, eyebrow: "人生格局", title: "紫微斗數", detail: "看性格底色、事業財務、關係模式，以及當前十年最重要的課題。", mark: "斗", tone: "ziwei" },
             ],
           };
 

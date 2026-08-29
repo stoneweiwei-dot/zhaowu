@@ -81,22 +81,34 @@ test("客户页把结果说清楚，并彻底删除融合长文与系统话术",
   );
 });
 
-test("前世今生保留原双轨引擎，并作为首页三门之一", () => {
+test("首页前世今生进入真正的达摩一掌经，性格两面保持诚实命名", () => {
   const home = readFileSync(
     new URL("../src/routes/index.tsx", import.meta.url),
     "utf8",
   );
-  const route = readFileSync(
+  const dualRoute = readFileSync(
     new URL("../src/routes/tianji-dual.tsx", import.meta.url),
     "utf8",
   );
+  const palmRoute = readFileSync(
+    new URL("../src/components/palm-standalone.tsx", import.meta.url),
+    "utf8",
+  );
+  const palmPresentation = readFileSync(
+    new URL("../src/lib/palm/standalone-presentation.ts", import.meta.url),
+    "utf8",
+  );
 
-  assert.match(home, /to: "\/tianji-dual"/);
+  assert.match(home, /to: "\/yizhangjing"/);
   assert.match(home, /前世今生/);
   assert.match(home, /zhaowu-home-portals/);
   assert.doesNotMatch(home, /性格兩面|zhaowu-home-dual-entry|双轨性格分析|zhaowu-tools-section/);
   assert.doesNotMatch(home, /to="\/tianji-xinggong"/);
-  assert.doesNotMatch(home, /to="\/yizhangjing"/);
-  assert.match(route, /calculateDualDestiny/);
-  assert.doesNotMatch(route, /supabase|fetch\(|localStorage/);
+  assert.match(dualRoute, /calculateDualDestiny/);
+  assert.match(dualRoute, /一个人，两种反应/);
+  assert.match(palmRoute, /buildPalm/);
+  assert.match(palmRoute, /buildPalmSynthesis/);
+  assert.match(palmRoute, /前四世來自哪一道/);
+  assert.match(palmPresentation, /被重複加強/);
+  assert.doesNotMatch(palmRoute, /supabase|fetch\(|localStorage/);
 });
