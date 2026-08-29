@@ -33,8 +33,11 @@ test("qizheng does not invent a chart when birth time is unknown", () => {
   assert.equal(calculateQizheng({ year: 2000, month: 1, day: 1, hour: 12, minute: 0, timezone: "UTC", timeUnknown: true }), null);
 });
 
-test("homepage mounts qizheng inside the main result flow", async () => {
-  const source = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
-  assert.match(source, /import \{ QizhengHomePanel \}/);
-  assert.match(source, /\{current \? <QizhengHomePanel result=\{current\} \/> : null\}/);
+test("qizheng lives behind its own homepage gateway instead of inside the main result flow", async () => {
+  const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
+  const route = await readFile(new URL("../src/routes/qizheng.tsx", import.meta.url), "utf8");
+  assert.match(home, /to: "\/qizheng"/);
+  assert.doesNotMatch(home, /<QizhengHomePanel/);
+  assert.match(route, /createFileRoute\("\/qizheng"\)/);
+  assert.match(route, /<QizhengHomePanel result=\{current\} \/>/);
 });
