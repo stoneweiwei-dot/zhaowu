@@ -16,28 +16,31 @@ function Home() {
   const portalCopy =
     locale === "en"
       ? {
-          label: "Three classical systems",
+          label: "Three specialist sections",
+          lead: "Three separate routes. Each calculates its own layer before interpretation.",
           items: [
-            { to: "/qizheng" as const, title: "Seven Luminaries", detail: "Sun · Moon · Five planets", mark: "曜", tone: "sky" },
-            { to: "/tianji-dual" as const, title: "Past & Present", detail: "Old patterns · present response", mark: "緣", tone: "fate" },
-            { to: "/ziwei" as const, title: "Zi Wei Dou Shu", detail: "Twelve palaces · fourteen stars", mark: "斗", tone: "ziwei" },
+            { to: "/qizheng" as const, eyebrow: "CLASSICAL SKY", title: "Seven Luminaries", detail: "Sun, Moon, five planets and the four derived points in a separate classical-sky view.", mark: "☉", tone: "sky" },
+            { to: "/tianji-dual" as const, eyebrow: "SYMBOLIC THREAD", title: "Past & Present", detail: "A symbolic view of older patterns and how they tend to surface in present-day responses.", mark: "↺", tone: "fate" },
+            { to: "/ziwei" as const, eyebrow: "STAR PALACES", title: "Zi Wei Dou Shu", detail: "Twelve palaces, fourteen major stars, longer cycles and yearly timing, explained in plain English.", mark: "✦", tone: "ziwei" },
           ],
         }
       : locale === "zh-Hans"
         ? {
-            label: "三门传统体系",
+            label: "三个独立专区",
+            lead: "七政四余、前世今生、紫微斗数，各自独立计算，不混进主八字判断。",
             items: [
-              { to: "/qizheng" as const, title: "七政四余", detail: "日月五星 · 罗计孛炁", mark: "曜", tone: "sky" },
-              { to: "/tianji-dual" as const, title: "前世今生", detail: "旧习惯 · 今生反应", mark: "缘", tone: "fate" },
-              { to: "/ziwei" as const, title: "紫微斗数", detail: "十二宫 · 十四主星", mark: "斗", tone: "ziwei" },
+              { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四余", detail: "独立查看日月五星与四余的天象层，和主八字判断分开。", mark: "曜", tone: "sky" },
+              { to: "/tianji-dual" as const, eyebrow: "因缘旧习", title: "前世今生", detail: "用既有双轨计算看旧有惯性与今生反应；只作传统象征表达。", mark: "缘", tone: "fate" },
+              { to: "/ziwei" as const, eyebrow: "星宫推演", title: "紫微斗数", detail: "十二宫、十四主星、大限与流年先算后解，先给你白话总解。", mark: "斗", tone: "ziwei" },
             ],
           }
         : {
-            label: "三門傳統體系",
+            label: "三個獨立專區",
+            lead: "七政四餘、前世今生、紫微斗數，各自獨立計算，不混進主八字判斷。",
             items: [
-              { to: "/qizheng" as const, title: "七政四餘", detail: "日月五星 · 羅計孛炁", mark: "曜", tone: "sky" },
-              { to: "/tianji-dual" as const, title: "前世今生", detail: "舊習慣 · 今生反應", mark: "緣", tone: "fate" },
-              { to: "/ziwei" as const, title: "紫微斗數", detail: "十二宮 · 十四主星", mark: "斗", tone: "ziwei" },
+              { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四餘", detail: "獨立查看日月五星與四餘的天象層，和主八字判斷分開。", mark: "曜", tone: "sky" },
+              { to: "/tianji-dual" as const, eyebrow: "因緣舊習", title: "前世今生", detail: "用既有雙軌計算看舊有慣性與今生反應；只作傳統象徵表達。", mark: "緣", tone: "fate" },
+              { to: "/ziwei" as const, eyebrow: "星宮推演", title: "紫微斗數", detail: "十二宮、十四主星、大限與流年先算後解，先給你白話總解。", mark: "斗", tone: "ziwei" },
             ],
           };
 
@@ -49,23 +52,31 @@ function Home() {
         <p className="zhaowu-home-intro-kicker">ZHAOWU · {t("heroKicker")}</p>
       </section>
 
-      <section className="zhaowu-home-portals" aria-label={portalCopy.label}>
-        {portalCopy.items.map((item) => (
-          <Link
-            key={item.to}
-            to={item.to}
-            className={`zhaowu-home-portal zhaowu-home-portal--${item.tone}`}
-            aria-label={item.title}
-          >
-            <span className="zhaowu-home-portal-frame" aria-hidden="true" />
-            <span className="zhaowu-home-portal-mark" aria-hidden="true">{item.mark}</span>
-            <span className="zhaowu-home-portal-copy">
-              <strong>{item.title}</strong>
-              <small>{item.detail}</small>
-            </span>
-            <span className="zhaowu-home-portal-arrow" aria-hidden="true">↗</span>
-          </Link>
-        ))}
+      <section className="zhaowu-home-portals-block" aria-label={portalCopy.label}>
+        <header className="zhaowu-home-portals-heading">
+          <p>ZHAOWU · SPECIALIST</p>
+          <h2>{portalCopy.label}</h2>
+          <span>{portalCopy.lead}</span>
+        </header>
+        <div className="zhaowu-home-portals">
+          {portalCopy.items.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={`zhaowu-home-portal zhaowu-home-portal--${item.tone}`}
+              aria-label={item.title}
+            >
+              <span className="zhaowu-home-portal-frame" aria-hidden="true" />
+              <span className="zhaowu-home-portal-mark" aria-hidden="true">{item.mark}</span>
+              <span className="zhaowu-home-portal-copy">
+                <em>{item.eyebrow}</em>
+                <strong>{item.title}</strong>
+                <small>{item.detail}</small>
+              </span>
+              <span className="zhaowu-home-portal-arrow" aria-hidden="true">↗</span>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="relative" aria-label={t("formTitle")}>
