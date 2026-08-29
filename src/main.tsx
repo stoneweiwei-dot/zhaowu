@@ -14,6 +14,7 @@ import './login-breathing.css';
 import './palm-light-refinement.css';
 import './wallpaper-visibility-fix.css';
 import './green-dragon-guide.css';
+import './report-history.css';
 import './tea-guardian.css';
 import './landscape-paper.css';
 import './production-visual-reset.css';

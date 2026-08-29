@@ -67,14 +67,6 @@ export function MindAdviceComic({ result }: { result: AnalysisResult }) {
         <p className="zhaowu-mind-comic-en">{comic.en}</p>
       </div>
 
-      <div className="zhaowu-mind-comic-gallery">
-        <img src={comic.galleryAssetPath} alt="" />
-        <div>
-          <strong>{comic.gallerySymbol} · Gallery reference</strong>
-          <p>{comic.galleryMeaning}</p>
-        </div>
-      </div>
-
       <div className="zhaowu-mind-comic-watermark">STONE 原創</div>
     </aside>
   );

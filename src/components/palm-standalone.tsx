@@ -4,6 +4,7 @@ import { BrandSeal } from "@/components/brand-seal";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { buildPalm } from "@/lib/palm/engine";
 import { buildPalmSynthesis, palmDaoTone, presentLunarLabel, presentPalmHourLabel, presentPalmPalace, splitPalmMeaning } from "@/lib/palm/standalone-presentation";
+import { saveSpecialistHistory } from "@/lib/specialist-history";
 import type { Gender } from "@/lib/bazi/types";
 import type { PalmReading } from "@/lib/core/types";
 
@@ -31,33 +32,33 @@ const COPY = {
     scopeTitle: "一掌之間，看四世來處", scopeFour: "四宮｜年宮、月宮、日宮、時宮依序排出四世輪迴足跡。", scopeStars: "十二星｜每一宮都有主星，說明這一世留下的性格與能力。", scopeRealms: "六道來處｜佛、仙、人、修羅、鬼、畜生六類象意，讀的是習氣與修行課題。",
     note: "它不替你證明一段無法驗證的前世歷史，而是給『我為什麼會成為現在的我』一個有秩序、可閱讀的因果框架。",
     formTitle: "填寫出生資料", formLead: "填好日期、時辰與順逆，直接閱讀你的四世六道報告。",
-    name: "稱呼（選填）", namePh: "只顯示在本次結果，不會保存", direction: "一掌經順逆（必填）", directionHelp: "這是傳統算法的順逆參數，不用來定義你的性別身份。",
+    name: "稱呼（選填）", namePh: "用來標記這台裝置裡的報告", direction: "一掌經順逆（必填）", directionHelp: "這是傳統算法的順逆參數，不用來定義你的性別身份。",
     forward: "順行（傳統男命）", reverse: "逆行（傳統女命）", date: "出生日期（國曆）", year: "年", month: "月", day: "日", hour: "出生時辰", unknown: "不知道時辰（時宮留白）",
-    submit: "生成我的報告", privacy: "傳統文化與象徵性解讀，用於自我觀察。", required: "請填出生日期，並選擇一掌經順逆。", invalid: "這個日期無法轉換為農曆，請檢查後再試。",
+    submit: "生成我的報告", privacy: "報告會自動保存在這台裝置，可到「我的紀錄」查看或刪除。", required: "請填出生日期，並選擇一掌經順逆。", invalid: "這個日期無法轉換為農曆，請檢查後再試。",
     result: "前世今生報告", resultFor: "的前世今生報告", palaces: "前四世・六道習性報告", traceTitle: "前四世來自哪一道", traceHint: "由最遠的前四世讀到最近的前一世。哪一道重複出現，代表那一類性格與反應在今生更容易被加強。", realmFrom: "六道來處", traitLabel: "這一世的特徵", storyLabel: "留到今生的習性", verseLabel: "古訣", readingTitle: "四世合看", readingBody: "四個宮位不是四句互不相關的標籤。年宮看最遠的根，月宮看與人群相處的舊習，日宮看關係與才情，時宮收束成離今生最近的一世。重複的六道要加重讀，最近一世則是最容易在今生被觸發的主軸。",
-    missingHour: "你未提供出生時辰，因此時宮／前一世不作判定；目前只顯示年、月、日三宮。", again: "重新排盤", full: "回到昭梧完整分析", boundary: "傳統文化與象徵性解讀僅供自我觀察，不替代醫療、法律、財務或現實決策。",
+    missingHour: "你未提供出生時辰，因此時宮／前一世不作判定；目前只顯示年、月、日三宮。", again: "重新排盤", full: "回到昭梧完整分析", history: "查看我的紀錄", saved: "這份報告已保存在本裝置。", saveFailed: "報告已生成，但瀏覽器阻止了本機保存。", boundary: "傳統文化與象徵性解讀僅供自我觀察，不替代醫療、法律、財務或現實決策。",
   },
   "zh-Hans": {
     kicker: "昭梧 · 前世今生专题", title: "前世今生・达摩一掌经", lead: "一掌经最迷人的地方，不只在四个宫位，而在它把四宫串成一条前世到今生的因果线：从哪一道来、留下什么习气、今生又该怎么把这份本事用好。",
     scopeTitle: "一掌之间，看四世来处", scopeFour: "四宫｜年宫、月宫、日宫、时宫依序排出四世轮回足迹。", scopeStars: "十二星｜每一宫都有主星，说明这一世留下的性格与能力。", scopeRealms: "六道来处｜佛、仙、人、修罗、鬼、畜生六类象意，读的是习气与修行课题。",
     note: "它不替你证明一段无法验证的前世历史，而是给‘我为什么会成为现在的我’一个有秩序、可阅读的因果框架。",
     formTitle: "填写出生资料", formLead: "填好日期、时辰与顺逆，直接阅读你的四世六道报告。",
-    name: "称呼（选填）", namePh: "只显示在本次结果，不会保存", direction: "一掌经顺逆（必填）", directionHelp: "这是传统算法的顺逆参数，不用来定义你的性别身份。",
+    name: "称呼（选填）", namePh: "用来标记这台设备里的报告", direction: "一掌经顺逆（必填）", directionHelp: "这是传统算法的顺逆参数，不用来定义你的性别身份。",
     forward: "顺行（传统男命）", reverse: "逆行（传统女命）", date: "出生日期（公历）", year: "年", month: "月", day: "日", hour: "出生时辰", unknown: "不知道时辰（时宫留白）",
-    submit: "生成我的报告", privacy: "传统文化与象征性解读，用于自我观察。", required: "请填出生日期，并选择一掌经顺逆。", invalid: "这个日期无法转换为农历，请检查后再试。",
+    submit: "生成我的报告", privacy: "报告会自动保存在这台设备，可到“我的记录”查看或删除。", required: "请填出生日期，并选择一掌经顺逆。", invalid: "这个日期无法转换为农历，请检查后再试。",
     result: "前世今生报告", resultFor: "的前世今生报告", palaces: "前四世・六道习性报告", traceTitle: "前四世来自哪一道", traceHint: "由最远的前四世读到最近的前一世。哪一道重复出现，代表那一类性格与反应在今生更容易被加强。", realmFrom: "六道来处", traitLabel: "这一世的特征", storyLabel: "留到今生的习性", verseLabel: "古诀", readingTitle: "四世合看", readingBody: "四个宫位不是四句互不相关的标签。年宫看最远的根，月宫看与人群相处的旧习，日宫看关系与才情，时宫收束成离今生最近的一世。重复的六道要加重读，最近一世则是最容易在今生被触发的主轴。",
-    missingHour: "你未提供出生时辰，因此时宫／前一世不作判定；目前只显示年、月、日三宫。", again: "重新排盘", full: "回到昭梧完整分析", boundary: "传统文化与象征性解读仅供自我观察，不替代医疗、法律、财务或现实决定。",
+    missingHour: "你未提供出生时辰，因此时宫／前一世不作判定；目前只显示年、月、日三宫。", again: "重新排盘", full: "回到昭梧完整分析", history: "查看我的记录", saved: "这份报告已保存在本设备。", saveFailed: "报告已生成，但浏览器阻止了本地保存。", boundary: "传统文化与象征性解读仅供自我观察，不替代医疗、法律、财务或现实决定。",
   },
   en: {
     kicker: "Zhaowu · Past & Present", title: "Dharma Palm · Four-Palace Reading", lead: "The appeal of the Dharma Palm is not only its four palaces, but the way they form a symbolic line from prior lives into the present: the realm a pattern comes from, what it leaves behind, and how that gift is handled now.",
     scopeTitle: "Four prior-life palaces in one palm", scopeFour: "Four palaces · Year, month, day and hour form a four-life symbolic trail.", scopeStars: "Twelve stars · Each palace carries a star describing the ability and pattern it leaves behind.", scopeRealms: "Six realms · Buddha, immortal, human, Asura, ghost and animal imagery frame the recurring lesson.",
     note: "This does not prove unverifiable past-life history. It offers a coherent symbolic framework for asking why certain strengths and habits feel so persistent.",
     formTitle: "Birth details", formLead: "Enter the date, hour and sequence to read your four-life, six-realm report.",
-    name: "Name (optional)", namePh: "Shown only in this result; never saved", direction: "Palm sequence (required)", directionHelp: "This is the traditional method's calculation parameter; it does not define your gender identity.",
+    name: "Name (optional)", namePh: "Used to label this report on your device", direction: "Palm sequence (required)", directionHelp: "This is the traditional method's calculation parameter; it does not define your gender identity.",
     forward: "Forward sequence (traditional male chart)", reverse: "Reverse sequence (traditional female chart)", date: "Date of birth (Gregorian)", year: "Year", month: "Month", day: "Day", hour: "Birth-hour branch", unknown: "Time unknown — leave the hour palace blank",
-    submit: "Generate my report", privacy: "Traditional symbolic interpretation for self-reflection.", required: "Enter a birth date and choose a Palm sequence.", invalid: "This date cannot be converted to a lunar date. Check it and try again.",
+    submit: "Generate my report", privacy: "Saved automatically on this device. View or delete it in My history.", required: "Enter a birth date and choose a Palm sequence.", invalid: "This date cannot be converted to a lunar date. Check it and try again.",
     result: "Past & Present report", resultFor: " · Past & Present report", palaces: "Four prior lives and carried patterns", traceTitle: "Where each prior life comes from", traceHint: "Read from the fourth prior life toward the most recent one. A repeated realm means that style of reaction is more strongly reinforced in the present.", realmFrom: "Symbolic realm", traitLabel: "Traits of this life", storyLabel: "Habit carried forward", verseLabel: "Traditional verse", readingTitle: "Read all four lives together", readingBody: "The four palaces are not isolated labels. The year palace is the distant root, the month palace describes older social habits, the day palace brings craft and relationships closer, and the hour palace becomes the pattern nearest to the present. Repetition strengthens a habit; the latest palace is the easiest pattern to trigger now.",
-    missingHour: "Birth time was not provided, so the hour palace and most recent prior-life category remain blank. The year, month and day palaces are shown.", again: "Calculate again", full: "Return to full Zhaowu analysis", boundary: "Traditional and symbolic interpretation for self-reflection only. It does not replace medical, legal, financial or practical decisions.",
+    missingHour: "Birth time was not provided, so the hour palace and most recent prior-life category remain blank. The year, month and day palaces are shown.", again: "Calculate again", full: "Return to full Zhaowu analysis", history: "View my history", saved: "This report is saved on this device.", saveFailed: "The report is ready, but this browser blocked local storage.", boundary: "Traditional and symbolic interpretation for self-reflection only. It does not replace medical, legal, financial or practical decisions.",
   },
 } as const satisfies Record<Locale, Record<string, string>>;
 
@@ -72,6 +73,7 @@ export function PalmStandalone() {
   const [hour, setHour] = useState("unknown");
   const [error, setError] = useState<"" | "required" | "invalid">("");
   const [result, setResult] = useState<PalmReading | null>(null);
+  const [historySaved, setHistorySaved] = useState(false);
   const resultRef = useRef<HTMLElement>(null);
   const maxYear = new Date().getFullYear();
 
@@ -99,6 +101,27 @@ export function PalmStandalone() {
       setError("invalid");
       return;
     }
+    const savedSynthesis = buildPalmSynthesis(reading.palaces, locale);
+    const hourRow = HOURS.find(([value]) => value === hour);
+    const savedEntry = saveSpecialistHistory({
+      kind: "yizhangjing",
+      locale,
+      sourcePath: "/yizhangjing",
+      title: name.trim() ? `${name.trim()}${copy.resultFor}` : copy.palaces,
+      inputSummary: `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")} · ${hourRow ? presentPalmHourLabel(hourRow[1], hourRow[2], locale) : copy.unknown}`,
+      sections: [
+        ...reading.palaces.map((palace) => {
+          const item = presentPalmPalace(palace, locale);
+          const meaning = splitPalmMeaning(item.meaning, locale);
+          return { title: `${item.lifeLabel} · ${item.dao}`, body: `${copy.traitLabel}：${meaning.trait}\n${copy.storyLabel}：${meaning.habit}` };
+        }),
+        { title: savedSynthesis.repeatedTitle, body: savedSynthesis.repeatedBody },
+        { title: savedSynthesis.presentTitle, body: savedSynthesis.presentBody },
+        { title: savedSynthesis.directionTitle, body: savedSynthesis.directionBody },
+      ],
+      closing: copy.boundary,
+    });
+    setHistorySaved(Boolean(savedEntry));
     setError("");
     setResult(reading);
     window.requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
@@ -106,6 +129,7 @@ export function PalmStandalone() {
 
   const reset = () => {
     setResult(null);
+    setHistorySaved(false);
     setError("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -323,6 +347,7 @@ export function PalmStandalone() {
             ) : null}
 
             <p className="text-xs leading-6 text-ink-mute">{copy.boundary}</p>
+            <div className="palm-history-note"><span>{historySaved ? copy.saved : copy.saveFailed}</span>{historySaved ? <Link to="/history">{copy.history}<b aria-hidden>→</b></Link> : null}</div>
             <div className="grid gap-3 sm:grid-cols-2">
               <button type="button" onClick={reset} className="min-h-12 rounded-full border border-cinnabar/35 bg-transparent px-5 text-sm font-medium text-cinnabar">{copy.again}</button>
               <Link to="/" className="inline-flex min-h-12 items-center justify-center rounded-full bg-cinnabar px-5 text-sm font-medium text-cream">{copy.full}</Link>

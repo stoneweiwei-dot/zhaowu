@@ -23,6 +23,12 @@ test("Seven Luminaries uses one large mobile form and returns only a plain repor
   await expect(page.getByRole("heading", { name: "命局性情" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "被加強的慣性" })).toBeVisible();
   await expect(page.locator(".qz-wheel, .qz-body, .qz-policy")).toHaveCount(0);
+  await expect(page.getByText("已自動保存在這台裝置。")).toBeVisible();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("zhaowu.specialist-history.v1") || "[]").length)).toBe(1);
+  await page.getByRole("link", { name: "查看我的紀錄" }).click();
+  await expect(page.getByRole("heading", { name: "我的紀錄" })).toBeVisible();
+  await expect(page.getByText("七政四餘", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("1988-10-04 · 04:40", { exact: false })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
@@ -36,5 +42,7 @@ test("Zi Wei opens normally and returns a customer report without a technical ch
   await expect(page.getByRole("heading", { name: "事業與做事方式" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "當前人生階段" })).toBeVisible();
   await expect(page.locator(".ziwei-chart-board, .ziwei-technical")).toHaveCount(0);
+  await expect(page.getByText("已自動保存在這台裝置。")).toBeVisible();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("zhaowu.specialist-history.v1") || "[]").length)).toBe(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
