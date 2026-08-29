@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { calculateQizheng, localBirthToUtc } from "../src/lib/qizheng/engine.ts";
+import { buildQizhengPlainSummary } from "../src/lib/qizheng/plain-summary.ts";
 
 test("qizheng timezone conversion preserves the civil instant", () => {
   const utc = localBirthToUtc({ year: 2000, month: 1, day: 1, hour: 20, minute: 0, timezone: "Asia/Shanghai" });
@@ -39,5 +40,18 @@ test("qizheng lives behind its own homepage gateway instead of inside the main r
   assert.match(home, /to: "\/qizheng"/);
   assert.doesNotMatch(home, /<QizhengHomePanel/);
   assert.match(route, /createFileRoute\("\/qizheng"\)/);
-  assert.match(route, /<QizhengHomePanel result=\{current\} \/>/);
+  assert.match(route, /buildQizhengPlainSummary/);
+  assert.match(route, /qz-report-sections/);
+  assert.doesNotMatch(route, /<AnalysisForm|<QizhengHomePanel|qz-wheel/);
+});
+
+test("qizheng customer report uses the seven luminaries' own strengths without exposing a chart", () => {
+  const chart = calculateQizheng({ year: 2000, month: 1, day: 1, hour: 12, minute: 0, timezone: "UTC" });
+  assert.ok(chart);
+  const report = buildQizhengPlainSummary(chart, "zh-Hant");
+  assert.equal(report.version, "zhaowu_qizheng_plain_summary_v1");
+  assert.deepEqual(report.sections.map((section) => section.key), ["temperament", "mind", "relationship", "action", "growth", "habit"]);
+  assert.match(report.sections.at(-1).body, /習性會被加強/);
+  assert.ok(report.internalEvidence.length >= 7);
+  assert.doesNotMatch(report.sections.map((section) => section.body).join(""), /黃經|宮度|回歸黃道|計北羅南/);
 });

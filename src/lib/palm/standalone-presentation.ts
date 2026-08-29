@@ -10,6 +10,20 @@ type PalacePresentation = Pick<PalmPalace, "key" | "zhi"> & {
   verse: string;
 };
 
+export type PalmMeaningParts = {
+  trait: string;
+  habit: string;
+};
+
+export type PalmSynthesis = {
+  repeatedTitle: string;
+  repeatedBody: string;
+  presentTitle: string;
+  presentBody: string;
+  directionTitle: string;
+  directionBody: string;
+};
+
 const TRADITIONAL_BY_BRANCH: Record<string, Omit<PalacePresentation, "key" | "zhi" | "lifeLabel" | "range">> = {
   子: { star: "天貴星", dao: "佛道", meaning: "前世若依一掌經象意來看，這一路帶著佛道的清貴與內修：重精神品質，也願意照顧弱者。今生常把智慧、學習與助人放在心上；課題不是一味做善人，而是讓慈悲有邊界、福氣有落點。", verse: "天貴紫垣星，人人不可輕；聰明兼富貴，一世足豐榮。" },
   丑: { star: "天厄星", dao: "鬼道", meaning: "這一路像從幽暗處走過來的人：對匱乏、壓力和別人的隱痛特別敏感。今生往往比別人更能熬、更能察覺危機；課題是別把吃苦當成命，也別長住在別人的黑暗裡。", verse: "天厄多憂煎，勞心又費力；先苦後甘來，堅心渡難關。" },
@@ -100,6 +114,108 @@ export function presentPalmPalace(palace: PalmPalace, locale: Locale): PalacePre
   const translated = locale === "zh-Hant" ? TRADITIONAL_BY_BRANCH[palace.zhi] : locale === "en" ? ENGLISH_BY_BRANCH[palace.zhi] : SIMPLIFIED_BY_BRANCH[palace.zhi];
   const zhi = locale === "en" ? (ENGLISH_BRANCHES[palace.zhi]?.short ?? "—") : palace.zhi;
   return { key, zhi, lifeLabel: LIFE_LABELS[locale][key], range: RANGE_LABELS[locale][key], ...translated };
+}
+
+const REALM_AMPLIFICATION: Record<DaoName, Record<Locale, string>> = {
+  佛道: {
+    "zh-Hant": "慈悲、精神潔癖、學習力與替人承擔的傾向",
+    "zh-Hans": "慈悲、精神洁癖、学习力与替人承担的倾向",
+    en: "compassion, high inner standards, learning and taking responsibility for others",
+  },
+  仙道: {
+    "zh-Hant": "審美、感受力、才情、自由與不願被俗務困住的傾向",
+    "zh-Hans": "审美、感受力、才情、自由与不愿被俗务困住的倾向",
+    en: "aesthetic sensitivity, imagination, freedom and resistance to being trapped by routine",
+  },
+  人道: {
+    "zh-Hant": "責任感、現實判斷、組織能力與靠自己站穩的傾向",
+    "zh-Hans": "责任感、现实判断、组织能力与靠自己站稳的倾向",
+    en: "responsibility, practical judgement, organisation and self-reliance",
+  },
+  修羅道: {
+    "zh-Hant": "競爭心、強邊界、快速判斷、不服輸與把本事磨到很深的傾向",
+    "zh-Hans": "竞争心、强边界、快速判断、不服输与把本事磨到很深的倾向",
+    en: "competitive drive, strong boundaries, quick judgement and the urge to master a craft",
+  },
+  鬼道: {
+    "zh-Hant": "對匱乏與危機的敏感、耐受力、替人操心與難以真正放鬆的傾向",
+    "zh-Hans": "对匮乏与危机的敏感、耐受力、替人操心与难以真正放松的倾向",
+    en: "sensitivity to scarcity and crisis, endurance, worry for others and difficulty fully relaxing",
+  },
+  畜生道: {
+    "zh-Hant": "求生本能、反應速度、韌性、直接行動與先保護自己的傾向",
+    "zh-Hans": "求生本能、反应速度、韧性、直接行动与先保护自己的倾向",
+    en: "survival instinct, speed, resilience, direct action and self-protection",
+  },
+};
+
+const REALM_DIRECTION: Record<DaoName, Record<Locale, string>> = {
+  佛道: { "zh-Hant": "把善意留給值得的人，也把界線留給自己；慈悲若沒有邊界，最後只會變成耗損。", "zh-Hans": "把善意留给值得的人，也把界线留给自己；慈悲若没有边界，最后只会变成耗损。", en: "Keep compassion, but give it boundaries. Care without limits eventually becomes depletion." },
+  仙道: { "zh-Hant": "把靈感、審美與感受做成能留下來的作品；自由需要方向，才不會只剩漂移。", "zh-Hans": "把灵感、审美与感受做成能留下来的作品；自由需要方向，才不会只剩漂移。", en: "Give imagination and sensitivity a finished form. Freedom needs direction or it turns into drift." },
+  人道: { "zh-Hant": "保留承擔能力，但不要把別人的責任全部接走；真正的穩，是分得清誰該做什麼。", "zh-Hans": "保留承担能力，但不要把别人的责任全部接走；真正的稳，是分得清谁该做什么。", en: "Keep your capacity for responsibility, but do not inherit everyone else's duties. Stability needs clear ownership." },
+  修羅道: { "zh-Hant": "把勝負心用在作品與解題，不用在每一段關係；你的鋒利需要目標，不需要到處開戰。", "zh-Hans": "把胜负心用在作品与解题，不用在每一段关系；你的锋利需要目标，不需要到处开战。", en: "Put competitive force into craft and problem-solving, not every relationship. The edge needs a target, not constant conflict." },
+  鬼道: { "zh-Hant": "你可以看見風險，但不必永遠住在風險裡；先建立自己的安全感，再決定要替誰分擔。", "zh-Hans": "你可以看见风险，但不必永远住在风险里；先建立自己的安全感，再决定要替谁分担。", en: "You may see risk early, but you do not have to live inside it. Build your own security before carrying others." },
+  畜生道: { "zh-Hant": "保留韌性與行動力，同時學會辨認什麼已經不值得再撐；能停下也是一種求生智慧。", "zh-Hans": "保留韧性与行动力，同时学会辨认什么已经不值得再撑；能停下也是一种求生智慧。", en: "Keep resilience and speed, while learning what no longer deserves endurance. Stopping can also be survival wisdom." },
+};
+
+export function splitPalmMeaning(meaning: string, locale: Locale): PalmMeaningParts {
+  if (locale !== "en") {
+    const index = meaning.indexOf("今生");
+    if (index > 0) {
+      return {
+        trait: meaning.slice(0, index).trim(),
+        habit: meaning.slice(index).trim(),
+      };
+    }
+  }
+  const firstStop = meaning.indexOf(".");
+  if (firstStop > 0) {
+    return {
+      trait: meaning.slice(0, firstStop + 1).trim(),
+      habit: meaning.slice(firstStop + 1).trim(),
+    };
+  }
+  return { trait: meaning, habit: meaning };
+}
+
+export function buildPalmSynthesis(palaces: PalmPalace[], locale: Locale): PalmSynthesis {
+  const counts = new Map<DaoName, number>();
+  for (const palace of palaces) counts.set(palace.dao, (counts.get(palace.dao) ?? 0) + 1);
+  const repeated = [...counts.entries()].filter(([, count]) => count > 1).sort((a, b) => b[1] - a[1]);
+  const latest = palaces.at(-1);
+  const latestPresentation = latest ? presentPalmPalace(latest, locale) : null;
+  const latestHabit = latestPresentation ? splitPalmMeaning(latestPresentation.meaning, locale).habit : "";
+
+  if (locale === "en") {
+    const repeatedBody = repeated.length
+      ? repeated.map(([dao, count]) => `${dao} appears ${count} times. This strengthens ${REALM_AMPLIFICATION[dao].en}.`).join(" ")
+      : "No realm repeats across the available palaces. Your pattern is more mixed: several different habits are carried forward, so none should be treated as the whole personality.";
+    return {
+      repeatedTitle: "What repeats becomes stronger",
+      repeatedBody,
+      presentTitle: "The pattern closest to the present",
+      presentBody: latestPresentation ? `The most recent prior-life palace falls in ${latestPresentation.dao}, under ${latestPresentation.star}. ${latestHabit}` : "Without a birth time, the nearest prior-life palace remains open.",
+      directionTitle: "How to use it now",
+      directionBody: latest ? REALM_DIRECTION[latest.dao].en : "Read the three available palaces as background patterns until the birth time is known.",
+    };
+  }
+
+  const isHans = locale === "zh-Hans";
+  const repeatedBody = repeated.length
+    ? repeated.map(([dao, count]) => `${dao}${isHans ? "在四世中出现" : "在四世中出現"}${count}${isHans ? "次，表示" : "次，表示"}${REALM_AMPLIFICATION[dao][locale]}${isHans ? "被重复加强。" : "被重複加強。"}`).join("")
+    : isHans
+      ? "目前四宫没有重复的六道。说明你带来的习性较混合，不能用其中任何一世概括整个人。"
+      : "目前四宮沒有重複的六道。說明你帶來的習性較混合，不能用其中任何一世概括整個人。";
+  return {
+    repeatedTitle: isHans ? "重复出现，习性会加强" : "重複出現，習性會加強",
+    repeatedBody,
+    presentTitle: isHans ? "离今生最近的一世" : "離今生最近的一世",
+    presentBody: latestPresentation
+      ? `${isHans ? "前一世落在" : "前一世落在"}${latestPresentation.dao}，${isHans ? "主星是" : "主星是"}${latestPresentation.star}。${latestHabit}`
+      : isHans ? "没有出生时辰，前一世这一宫暂不判断。" : "沒有出生時辰，前一世這一宮暫不判斷。",
+    directionTitle: isHans ? "今生怎么用这份习性" : "今生怎麼用這份習性",
+    directionBody: latest ? REALM_DIRECTION[latest.dao][locale] : isHans ? "时辰未定前，先把前三宫当作背景习性阅读。" : "時辰未定前，先把前三宮當作背景習性閱讀。",
+  };
 }
 
 export function presentPalmHourLabel(branch: string, range: string, locale: Locale): string {

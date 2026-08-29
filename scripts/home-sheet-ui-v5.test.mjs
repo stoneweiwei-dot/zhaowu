@@ -33,7 +33,7 @@ test("homepage keeps the Song parchment flow and integrates three compact gatewa
   assert.doesNotMatch(home, /zhaowu-home-hero/);
   assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian/);
   assert.match(home, /to: "\/qizheng"/);
-  assert.match(home, /to: "\/tianji-dual"/);
+  assert.match(home, /to: "\/yizhangjing"/);
   assert.match(home, /to: "\/ziwei"/);
   assert.match(home, /七政四餘/);
   assert.match(home, /前世今生/);

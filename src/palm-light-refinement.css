@@ -1,212 +1,218 @@
-/*
- * Dharma Palm visual correction, 2026-08-25.
- * This file intentionally overrides only the standalone /yizhangjing layout.
- * The calculation engine and result data remain untouched.
- */
-
-main.max-w-3xl {
-  max-width: 50rem;
+.palm-standalone {
+  --palm-paper: #fbf5e9;
+  --palm-paper-strong: #fffaf1;
+  --palm-ink: #29251f;
+  --palm-soft: #5b5044;
+  --palm-earth: #8a5d38;
+  --palm-jade: #2f7465;
+  --palm-red: #a33b31;
+  width: min(100%, 54rem);
 }
 
-/* --- Hero: light Song-scroll presentation instead of the dark ceremonial slab. --- */
-main.max-w-3xl > section:first-child {
-  position: relative;
+.palm-standalone .palm-hero {
   isolation: isolate;
-  overflow: hidden;
-  border: 1px solid rgba(181, 148, 83, 0.34) !important;
-  border-radius: 1.8rem !important;
+  border-color: rgba(151, 111, 62, .3) !important;
   background:
-    radial-gradient(circle at 84% 8%, rgba(62, 118, 105, 0.09), transparent 30%),
-    radial-gradient(circle at 9% 88%, rgba(177, 87, 65, 0.055), transparent 28%),
-    linear-gradient(180deg, rgba(255, 253, 247, 0.99), rgba(248, 243, 232, 0.985)) !important;
-  padding: 1.65rem 1.35rem 1.45rem !important;
-  color: #2e2a25 !important;
-  box-shadow: 0 18px 48px rgba(91, 70, 37, 0.09) !important;
+    radial-gradient(circle at 83% 12%, rgba(47, 116, 101, .08), transparent 29%),
+    radial-gradient(circle at 7% 92%, rgba(163, 59, 49, .055), transparent 28%),
+    repeating-linear-gradient(8deg, rgba(90, 65, 38, .016) 0 1px, transparent 1px 8px),
+    var(--palm-paper) !important;
+  box-shadow: 0 18px 44px rgba(76, 55, 31, .08) !important;
 }
 
-main.max-w-3xl > section:first-child::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
-  background: linear-gradient(180deg, #a87642, #2f736a 58%, rgba(47, 115, 106, 0));
-  opacity: 0.72;
+.palm-standalone .palm-hero-overlay,
+.palm-standalone .palm-hero-art,
+.palm-standalone .palm-hero-ornaments,
+.palm-standalone .palm-hero > div[aria-hidden] {
+  display: none !important;
 }
 
-main.max-w-3xl > section:first-child::after {
-  content: "四宮 · 十二星 · 六道";
-  position: relative;
-  display: inline-flex;
-  margin-top: 1rem;
-  border: 1px solid rgba(176, 145, 82, 0.34);
-  border-radius: 999px;
-  background: rgba(255, 252, 245, 0.84);
-  padding: 0.5rem 0.85rem;
-  color: #6c675f;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+.palm-standalone .palm-hero > img {
+  opacity: .035 !important;
+  filter: sepia(.45) saturate(.55);
 }
 
-html[lang="zh-Hans"] main.max-w-3xl > section:first-child::after {
-  content: "四宫 · 十二星 · 六道";
+.palm-standalone .palm-hero-copy {
+  display: block !important;
+  padding: 2rem 1.5rem 2.1rem !important;
 }
 
-html[lang="en"] main.max-w-3xl > section:first-child::after {
-  content: "FOUR PALACES · TWELVE STARS · SIX REALMS";
-  letter-spacing: 0.08em;
+.palm-standalone .palm-hero p:first-child {
+  color: var(--palm-earth) !important;
+  font-size: .68rem !important;
+  letter-spacing: .2em !important;
 }
 
-main.max-w-3xl > section:first-child [class*="absolute"][class*="inset-0"] {
-  background: none !important;
-}
-
-main.max-w-3xl > section:first-child [aria-hidden="true"] {
-  opacity: 0.1 !important;
-  filter: saturate(0.7);
-}
-
-main.max-w-3xl > section:first-child h1 {
-  max-width: 15em;
-  margin-top: 0.7rem !important;
-  color: #25231f !important;
-  font-size: clamp(2rem, 7vw, 3.1rem) !important;
-  line-height: 1.16 !important;
-  letter-spacing: 0.055em !important;
+.palm-standalone .palm-hero h1 {
+  max-width: 14em;
+  margin-top: .75rem !important;
+  color: var(--palm-ink) !important;
+  font-size: clamp(2.15rem, 8vw, 3.65rem) !important;
+  line-height: 1.13 !important;
   text-shadow: none !important;
 }
 
-main.max-w-3xl > section:first-child h2,
-main.max-w-3xl > section:first-child p {
-  color: #5f5a53 !important;
-  text-shadow: none !important;
-}
-
-main.max-w-3xl > section:first-child p:first-of-type {
-  color: #a45a47 !important;
-  font-size: 0.67rem !important;
-  letter-spacing: 0.2em !important;
-}
-
-main.max-w-3xl > section:first-child p[class*="max-w-2xl"] {
-  max-width: 42rem !important;
-  margin-top: 1rem !important;
-  color: #5e5a53 !important;
-  font-size: 0.94rem !important;
+.palm-standalone .palm-hero h1 + p {
+  max-width: 42rem;
+  color: var(--palm-soft) !important;
+  font-size: .95rem !important;
   line-height: 1.85 !important;
 }
 
-/* The old three dark explanation cards and eight-icon rail made the hero feel like a game menu. */
-main.max-w-3xl > section:first-child [class*="grid-cols-3"],
-main.max-w-3xl > section:first-child [class*="grid-cols-8"] {
+.palm-standalone .palm-hero [class*="grid-cols-3"] {
   display: none !important;
 }
 
-/* Hide the long disclaimer-style note from the hero; it still exists elsewhere in the flow. */
-main.max-w-3xl > section:first-child > div.relative > p[class*="rounded-2xl"] {
-  display: none !important;
+.palm-form-section,
+.palm-result {
+  border-color: rgba(151, 111, 62, .3) !important;
+  background: var(--palm-paper) !important;
+  box-shadow: 0 16px 40px rgba(76, 55, 31, .08) !important;
 }
 
-/* --- Form: paper card with quiet jade accents, not another heavy block. --- */
-main.max-w-3xl > form {
-  border: 1px solid rgba(181, 148, 83, 0.3) !important;
-  border-radius: 1.6rem !important;
+.palm-form {
+  border-color: rgba(151, 111, 62, .23) !important;
+  background: var(--palm-paper-strong) !important;
+}
+
+.palm-form input,
+.palm-form select {
+  min-height: 56px !important;
+  border-color: rgba(151, 111, 62, .32) !important;
+  background: #fffdf7 !important;
+  color: var(--palm-ink) !important;
+  font-size: 16px !important;
+}
+
+.palm-form fieldset label {
+  min-height: 64px !important;
+  border-color: rgba(151, 111, 62, .28) !important;
+  background: #fffdf7 !important;
+}
+
+.palm-form fieldset label:has(input:checked) {
+  border-color: rgba(47, 116, 101, .52) !important;
+  background: rgba(47, 116, 101, .07) !important;
+  box-shadow: inset 4px 0 0 var(--palm-jade) !important;
+}
+
+.palm-form button[type="submit"] {
+  min-height: 56px !important;
+  background: linear-gradient(180deg, #b23e34, #983028) !important;
+}
+
+.palm-result-head {
+  border-color: rgba(151, 111, 62, .22) !important;
   background:
-    radial-gradient(circle at 92% 4%, rgba(47, 115, 106, 0.055), transparent 26%),
-    rgba(255, 253, 248, 0.975) !important;
-  padding: 1.35rem !important;
-  box-shadow: 0 14px 38px rgba(91, 70, 37, 0.075) !important;
+    radial-gradient(circle at 87% 15%, rgba(47, 116, 101, .07), transparent 28%),
+    var(--palm-paper-strong) !important;
 }
 
-main.max-w-3xl > form input,
-main.max-w-3xl > form select {
-  border-color: rgba(177, 145, 82, 0.38) !important;
-  background: rgba(255, 255, 252, 0.96) !important;
-  color: #2f2c27 !important;
+.palm-result-head > img {
+  display: none !important;
 }
 
-main.max-w-3xl > form fieldset label {
-  border-color: rgba(177, 145, 82, 0.32) !important;
-  background: rgba(251, 247, 239, 0.86) !important;
+.palm-result-head p,
+.palm-result-head h2 {
+  color: var(--palm-ink) !important;
+}
+
+.palm-result-head p:first-child {
+  color: var(--palm-earth) !important;
+}
+
+.palm-result article {
+  background-color: var(--palm-paper-strong) !important;
   box-shadow: none !important;
 }
 
-main.max-w-3xl > form fieldset label:has(input:checked) {
-  border-color: rgba(47, 115, 106, 0.55) !important;
-  background: rgba(47, 115, 106, 0.07) !important;
-  box-shadow: inset 3px 0 0 #2f736a !important;
+.palm-synthesis-grid {
+  display: grid;
+  gap: 12px;
 }
 
-main.max-w-3xl > form button[type="submit"] {
-  background: #2f736a !important;
-  color: #fffaf0 !important;
-  box-shadow: 0 10px 24px rgba(47, 115, 106, 0.18) !important;
+.palm-synthesis-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(151, 111, 62, .25);
+  border-radius: 18px;
+  padding: 18px 18px 18px 56px;
+  background: var(--palm-paper-strong);
 }
 
-main.max-w-3xl > form button[type="submit"]:hover {
-  background: #285f58 !important;
+.palm-synthesis-card > span {
+  position: absolute;
+  left: 16px;
+  top: 18px;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid rgba(163, 59, 49, .34);
+  border-radius: 50%;
+  color: var(--palm-red);
+  font-size: 10px;
+  font-weight: 700;
 }
 
-/* --- Result: keep the symbolic colors, but remove the black-green poster treatment. --- */
-main.max-w-3xl > section[aria-live="polite"] {
-  border: 1px solid rgba(181, 148, 83, 0.32) !important;
-  border-radius: 1.7rem !important;
-  background: rgba(255, 253, 248, 0.98) !important;
-  box-shadow: 0 18px 48px rgba(91, 70, 37, 0.08) !important;
+.palm-synthesis-card h3 {
+  margin: 0;
+  color: var(--palm-ink);
+  font-family: var(--font-display, serif);
+  font-size: 1.15rem;
+  letter-spacing: .04em;
 }
 
-main.max-w-3xl > section[aria-live="polite"] > div:first-child {
-  border-color: rgba(181, 148, 83, 0.28) !important;
-  background: transparent !important;
-  color: #292621 !important;
+.palm-synthesis-card p {
+  margin: 8px 0 0;
+  color: var(--palm-soft);
+  font-size: 14px;
+  line-height: 1.85;
 }
 
-main.max-w-3xl > section[aria-live="polite"] article {
-  background-color: rgba(255, 251, 244, 0.94) !important;
-  box-shadow: none !important;
-}
-
-main.max-w-3xl > section[aria-live="polite"] h2,
-main.max-w-3xl > section[aria-live="polite"] h3 {
-  color: #2b2823 !important;
-  text-shadow: none !important;
-}
-
-main.max-w-3xl > section[aria-live="polite"] p {
-  text-shadow: none !important;
-}
-
-@media (min-width: 640px) {
-  main.max-w-3xl > section:first-child {
-    padding: 2.2rem 2.5rem 2rem !important;
+@media (min-width: 700px) {
+  .palm-standalone .palm-hero-copy {
+    padding: 2.7rem 3rem 2.8rem !important;
   }
 
-  main.max-w-3xl > form {
-    padding: 2rem !important;
+  .palm-synthesis-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .palm-synthesis-card {
+    padding: 54px 18px 20px;
   }
 }
 
-@media (max-width: 639px) {
-  main.max-w-3xl {
-    gap: 1rem !important;
+@media (max-width: 430px) {
+  .palm-standalone {
+    gap: 14px !important;
   }
 
-  main.max-w-3xl > section:first-child {
-    border-radius: 1.45rem !important;
+  .palm-standalone .palm-hero,
+  .palm-form-section,
+  .palm-result {
+    border-radius: 20px !important;
   }
 
-  main.max-w-3xl > section:first-child h1 {
-    font-size: clamp(1.9rem, 9vw, 2.5rem) !important;
+  .palm-standalone .palm-hero-copy {
+    padding: 1.7rem 1.15rem 1.75rem !important;
   }
 
-  main.max-w-3xl > section:first-child p[class*="max-w-2xl"] {
-    display: -webkit-box;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+  .palm-standalone .palm-hero h1 {
+    font-size: 2.2rem !important;
   }
 
-  main.max-w-3xl > form {
-    border-radius: 1.35rem !important;
+  .palm-form-section {
+    padding: 14px !important;
+  }
+
+  .palm-form {
+    padding: 17px !important;
+  }
+
+  .palm-result > div:last-child {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
   }
 }
