@@ -1,5 +1,7 @@
 import { useI18n, type Locale } from "@/lib/i18n";
+import type { AnalysisResult } from "@/lib/bazi/types";
 import type { ReportSection } from "@/lib/report/focused-report";
+import { MindAdviceComic } from "@/components/mind-advice-comic";
 
 const COPY = {
   "zh-Hant": {
@@ -77,7 +79,7 @@ function continuousReportContent(sections: ReportSection[], locale: Locale) {
   };
 }
 
-export function FocusedReportSections({ sections }: { sections: ReportSection[] }) {
+export function FocusedReportSections({ sections, result }: { sections: ReportSection[]; result?: AnalysisResult }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const content = continuousReportContent(sections, locale);
@@ -99,6 +101,7 @@ export function FocusedReportSections({ sections }: { sections: ReportSection[] 
             <div className="zhaowu-report-copy">
               {content.summary.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
             </div>
+            {result ? <MindAdviceComic result={result} /> : null}
           </div>
         ) : null}
 
