@@ -72,7 +72,7 @@ export function buildMonthStageText(chart: Chart): string {
     exposed
       ? `主氣${mainStem}已透到天干，舞台力量較容易直接顯化。`
       : `主氣${mainStem}未直接透干，不能只憑月支把它當成全部人生結論。`,
-    "月令是提綱，不使用固定八成或80%權重；正式結論仍須經調候、根氣透藏、格局體用、病藥、流通制化與承載旺衰共同收束。",
+    "月令是提綱，不設固定百分比權重；正式結論仍須經調候、根氣透藏、格局體用、病藥、流通制化與承載旺衰共同收束。",
   ].join("");
 }
 
@@ -92,7 +92,9 @@ export function applyMonthStageFeedbackPolicy(question: string, chart: Chart, re
 
 export function monthStagePolicyViolations(text: string): string[] {
   const violations: string[] = [];
-  if (/(月令).{0,12}(八成|80\s*%)/i.test(text)) violations.push("MONTH_FIXED_80_PERCENT");
+  if (/(月令)(固定)?(占|佔|影响|影響|权重|權重).{0,8}(八成|80\s*%)/i.test(text)) {
+    violations.push("MONTH_FIXED_80_PERCENT");
+  }
   if (/[子丑寅卯辰巳午未申酉戌亥].{0,6}(就是|等於|等于|固定對應|固定对应).{0,8}(劫煞|災煞|灾煞|天煞|地煞|年煞|月煞|亡神|將星|将星|攀鞍|驛馬|驿马|六害|華蓋|华盖)/.test(text)) {
     violations.push("FIXED_MONTH_BRANCH_SHENSHA");
   }
