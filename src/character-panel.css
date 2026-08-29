@@ -1,0 +1,137 @@
+.zhaowu-character-panel {
+  overflow: hidden;
+  background: #fbf5e9;
+  padding: 18px 16px 16px;
+  color: #29251f;
+}
+
+.zhaowu-character-kicker {
+  margin: 0 0 12px;
+  color: #a7352b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .22em;
+}
+
+.zhaowu-character-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.zhaowu-character-portrait {
+  display: grid;
+  place-items: center;
+  min-height: 210px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(154, 111, 60, .34);
+  background: #fffaf1;
+}
+
+.zhaowu-character-portrait img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.zhaowu-character-portrait figcaption {
+  padding: 24px 18px;
+  color: #8a8173;
+  font-size: 13px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.zhaowu-character-arts,
+.zhaowu-character-scores {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.zhaowu-character-arts th,
+.zhaowu-character-arts td,
+.zhaowu-character-scores th,
+.zhaowu-character-scores td {
+  border: 1px solid rgba(154, 111, 60, .38);
+  padding: .45rem 0;
+  text-align: center;
+}
+
+.zhaowu-character-arts th,
+.zhaowu-character-scores th {
+  background: #f3ead8;
+  font-weight: 700;
+}
+
+.zhaowu-character-arts .is-active {
+  color: #a7352b;
+  background: #f6e4d6;
+  font-weight: 700;
+}
+
+.zhaowu-character-right header {
+  text-align: center;
+}
+
+.zhaowu-character-school {
+  margin: 0;
+  color: #98703d;
+  font-size: 11px;
+  letter-spacing: .16em;
+}
+
+.zhaowu-character-right h3 {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  letter-spacing: .08em;
+}
+
+.zhaowu-character-master {
+  margin: 4px 0 0;
+  color: #675b4c;
+  font-size: 13px;
+}
+
+.zhaowu-character-radar {
+  display: block;
+  width: min(100%, 260px);
+  margin: 8px auto 0;
+}
+
+.zhaowu-character-radar-ring {
+  fill: #efe6d4;
+  stroke: #b39a6d;
+  stroke-width: 1.2;
+}
+
+.zhaowu-character-radar-fill {
+  fill: #5c5853;
+  stroke: #2f2b27;
+  stroke-width: 1;
+}
+
+.zhaowu-character-radar text {
+  fill: #29251f;
+  font-size: 13px;
+  font-family: var(--font-display);
+}
+
+.zhaowu-character-total,
+.zhaowu-character-lead,
+.zhaowu-character-legend {
+  margin: 10px 0 0;
+  color: #675b4c;
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+@media (min-width: 720px) {
+  .zhaowu-character-grid {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    align-items: start;
+  }
+}
