@@ -4,11 +4,13 @@ test("iPhone Safari opens the real Dharma Palm Past & Present report", async ({ 
   await page.goto("/yizhangjing", { waitUntil: "domcontentloaded" });
 
   await expect(page.getByRole("heading", { name: "前世今生・達摩一掌經" })).toBeVisible();
-  await page.getByLabel("出生日期（國曆）").fill("1988-10-04");
+  await page.getByLabel("年", { exact: true }).fill("1988");
+  await page.getByLabel("月", { exact: true }).fill("10");
+  await page.getByLabel("日", { exact: true }).fill("4");
   await page.getByLabel("順行（傳統男命）").check();
   await page.getByLabel("出生時辰").selectOption("3");
 
-  for (const field of [page.getByLabel("出生日期（國曆）"), page.getByLabel("出生時辰")]) {
+  for (const field of [page.getByLabel("年", { exact: true }), page.getByLabel("月", { exact: true }), page.getByLabel("日", { exact: true }), page.getByLabel("出生時辰")]) {
     expect((await field.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(56);
   }
 
