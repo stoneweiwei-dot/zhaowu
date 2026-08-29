@@ -361,3 +361,86 @@
 @media (prefers-reduced-motion: reduce) {
   .zhaowu-home-portal { transition: none; }
 }
+
+/* Customer-facing rename for the existing two-track engine: keep calculation logic, change only visible framing. */
+.dual-topbar > p,
+.dual-hero .dual-kicker,
+.dual-hero h1,
+.dual-hero > p:last-child,
+.dual-hero .dual-seal,
+.dual-results .dual-section-title h2,
+.dual-side-card h3,
+.dual-details summary,
+.dual-details dt {
+  font-size: 0 !important;
+}
+
+.dual-topbar > p::after,
+.dual-hero .dual-kicker::after,
+.dual-hero h1::after,
+.dual-hero > p:last-child::after,
+.dual-hero .dual-seal::after,
+.dual-results .dual-section-title h2::after,
+.dual-side-card h3::after,
+.dual-details summary::after,
+.dual-details dt::after {
+  display: inline;
+  font-size: initial;
+}
+
+html[lang="zh-Hant"] .dual-topbar > p::after,
+html[lang="zh-Hant"] .dual-hero .dual-kicker::after { content: "昭梧 · 前世今生"; font-size: .68rem; }
+html[lang="zh-Hant"] .dual-hero h1::after { content: "前世今生"; font-size: clamp(2.4rem,8vw,4.4rem); }
+html[lang="zh-Hant"] .dual-hero > p:last-child::after { content: "用兩套傳統計算，看前世象徵留下的慣性，與今生較自然的表現；只作象徵解讀，不把前世寫成確定事實。"; font-size: .92rem; }
+html[lang="zh-Hant"] .dual-hero .dual-seal::after { content: "緣"; font-size: 1rem; }
+html[lang="zh-Hant"] .dual-results .dual-section-title h2::after { content: "前世今生總覽"; font-size: 1.25rem; }
+html[lang="zh-Hant"] .dual-side-card:nth-child(1) h3::after { content: "今生的表現"; font-size: .7rem; }
+html[lang="zh-Hant"] .dual-side-card:nth-child(2) h3::after { content: "前世留下的慣性"; font-size: .7rem; }
+html[lang="zh-Hant"] .dual-details summary::after { content: "查看傳統計算依據"; font-size: .72rem; }
+html[lang="zh-Hant"] .dual-details dl div:nth-child(1) dt::after { content: "今生線索"; font-size: .65rem; }
+html[lang="zh-Hant"] .dual-details dl div:nth-child(2) dt::after { content: "前世象徵"; font-size: .65rem; }
+
+html[lang="zh-Hans"] .dual-topbar > p::after,
+html[lang="zh-Hans"] .dual-hero .dual-kicker::after { content: "昭梧 · 前世今生"; font-size: .68rem; }
+html[lang="zh-Hans"] .dual-hero h1::after { content: "前世今生"; font-size: clamp(2.4rem,8vw,4.4rem); }
+html[lang="zh-Hans"] .dual-hero > p:last-child::after { content: "用两套传统计算，看前世象征留下的惯性，与今生较自然的表现；只作象征解读，不把前世写成确定事实。"; font-size: .92rem; }
+html[lang="zh-Hans"] .dual-hero .dual-seal::after { content: "缘"; font-size: 1rem; }
+html[lang="zh-Hans"] .dual-results .dual-section-title h2::after { content: "前世今生总览"; font-size: 1.25rem; }
+html[lang="zh-Hans"] .dual-side-card:nth-child(1) h3::after { content: "今生的表现"; font-size: .7rem; }
+html[lang="zh-Hans"] .dual-side-card:nth-child(2) h3::after { content: "前世留下的惯性"; font-size: .7rem; }
+html[lang="zh-Hans"] .dual-details summary::after { content: "查看传统计算依据"; font-size: .72rem; }
+html[lang="zh-Hans"] .dual-details dl div:nth-child(1) dt::after { content: "今生线索"; font-size: .65rem; }
+html[lang="zh-Hans"] .dual-details dl div:nth-child(2) dt::after { content: "前世象征"; font-size: .65rem; }
+
+html[lang="en"] .dual-topbar > p::after,
+html[lang="en"] .dual-hero .dual-kicker::after { content: "ZHAOWU · PAST & PRESENT"; font-size: .68rem; }
+html[lang="en"] .dual-hero h1::after { content: "Past & Present"; font-size: clamp(2.4rem,8vw,4.4rem); }
+html[lang="en"] .dual-hero > p:last-child::after { content: "Two traditional calculations are used as a symbolic lens on older patterns and how they may show up in present-day responses. This is not a claim of factual past-life history."; font-size: .92rem; }
+html[lang="en"] .dual-hero .dual-seal::after { content: "P·P"; font-size: .8rem; }
+html[lang="en"] .dual-results .dual-section-title h2::after { content: "Past & Present overview"; font-size: 1.25rem; }
+html[lang="en"] .dual-side-card:nth-child(1) h3::after { content: "Present-day pattern"; font-size: .7rem; }
+html[lang="en"] .dual-side-card:nth-child(2) h3::after { content: "Older symbolic pattern"; font-size: .7rem; }
+html[lang="en"] .dual-details summary::after { content: "View calculation basis"; font-size: .72rem; }
+html[lang="en"] .dual-details dl div:nth-child(1) dt::after { content: "Present-day clue"; font-size: .65rem; }
+html[lang="en"] .dual-details dl div:nth-child(2) dt::after { content: "Past-life symbolism"; font-size: .65rem; }
+
+.dual-hero {
+  position: relative;
+}
+
+.dual-hero::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: min(360px, 72%);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(181,58,46,.32), rgba(47,116,101,.28), transparent);
+}
+
+@media (max-width: 720px) {
+  html[lang="zh-Hant"] .dual-hero > p:last-child::after,
+  html[lang="zh-Hans"] .dual-hero > p:last-child::after,
+  html[lang="en"] .dual-hero > p:last-child::after { font-size: .82rem; }
+}
