@@ -36,19 +36,14 @@ test("homepage matches the compact landscape sheet instead of stacking product c
     home,
     /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian/,
   );
-  assert.doesNotMatch(home, /to="\/tianji-dual"/);
-  assert.doesNotMatch(home, /zhaowu-home-dual-entry/);
+  assert.match(home, /to="\/tianji-dual"/);
+  assert.match(home, /zhaowu-home-dual-entry/);
+  assert.match(home, /性格兩面/);
   assert.match(css, /#analysisForm\.is-compact/);
   assert.match(css, /\.zhaowu-analysis-settings/);
   assert.match(css, /url\("\/wallpaper-song\.jpg"\)/);
-  assert.match(
-    css,
-    /--zv5-card:\s*rgba\(251,\s*245,\s*233,\s*0?\.72\)/,
-  );
-  assert.match(
-    css,
-    /backdrop-filter:\s*blur\(1\.5px\)\s*saturate\(0?\.92\)/,
-  );
+  assert.match(css, /--zv5-card:\s*rgba\(251,\s*245,\s*233,\s*0?\.72\)/);
+  assert.match(css, /backdrop-filter:\s*blur\(1\.5px\)\s*saturate\(0?\.92\)/);
   assert.match(css, /\.zhaowu-home-sheet-shell \.zhaowu-site-wallpaper/);
   assert.match(css, /background-size:\s*auto,\s*980px auto/);
   assert.match(css, /background-repeat: repeat-y/);

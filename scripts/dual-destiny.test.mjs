@@ -81,7 +81,7 @@ test("客户页把结果说清楚，并彻底删除融合长文与系统话术",
   );
 });
 
-test("性格两面保留独立路由，但不挤入新版首页长卷", () => {
+test("性格两面保留独立路由与紧凑首页入口", () => {
   const home = readFileSync(
     new URL("../src/routes/index.tsx", import.meta.url),
     "utf8",
@@ -91,9 +91,9 @@ test("性格两面保留独立路由，但不挤入新版首页长卷", () => {
     "utf8",
   );
 
-  assert.doesNotMatch(home, /to="\/tianji-dual"/);
-  assert.doesNotMatch(home, /性格两面/);
-  assert.doesNotMatch(home, /zhaowu-home-dual-entry/);
+  assert.match(home, /to="\/tianji-dual"/);
+  assert.match(home, /性格两面/);
+  assert.match(home, /zhaowu-home-dual-entry/);
   assert.doesNotMatch(home, /双轨性格分析|zhaowu-tools-section/);
   assert.doesNotMatch(home, /to="\/tianji-xinggong"/);
   assert.doesNotMatch(home, /to="\/yizhangjing"/);
