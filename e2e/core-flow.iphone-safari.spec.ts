@@ -1,11 +1,16 @@
 import { expect, test, type Page } from "@playwright/test";
 
 async function makeAppOfflineSafe(page: Page) {
-  await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
+  await page.route("**/rest/v1/**", (route) =>
+    route.fulfill({ status: 503, body: "offline-test" }),
+  );
 }
 
 async function dismissInstallPrompt(page: Page) {
-  const dismiss = page.getByRole("button", { name: "已加入，不再提示", exact: true });
+  const dismiss = page.getByRole("button", {
+    name: "已加入，不再提示",
+    exact: true,
+  });
   await expect(dismiss).toBeVisible();
   await dismiss.click();
 }
@@ -14,7 +19,9 @@ async function expectMobileViewportHealthy(page: Page) {
   expect(await page.evaluate(() => window.innerWidth)).toBe(390);
   expect(
     await page.evaluate(
-      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      () =>
+        document.documentElement.scrollWidth <=
+        document.documentElement.clientWidth,
     ),
   ).toBe(true);
 }
@@ -29,34 +36,56 @@ async function fillKnownBirthData(page: Page) {
 }
 
 test.describe("iPhone Safari core customer flow", () => {
-  test("Home exposes the analysis entry and survives backend degradation", async ({ page }) => {
+  test("Home exposes the analysis entry and survives backend degradation", async ({
+    page,
+  }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await expect(page.locator("#analysisForm")).toBeVisible();
-    await expect(page.getByRole("link", { name: "性格兩面", exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "你的命盤資料", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "性格兩面", exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: "你的命盤資訊", exact: true }),
+    ).toBeVisible();
     await expect(page.getByText("子時換日", { exact: true })).toHaveCount(0);
-    await expect(page.getByText("套用真太陽時校正", { exact: true })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: "登入", exact: true }).first()).toBeVisible();
+    await expect(
+      page.getByText("套用真太陽時校正", { exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: "登入", exact: true }).first(),
+    ).toBeVisible();
 
     // Wait until the first-visit install prompt is actually present, then prove it cannot block the main form.
-    await expect(page.getByRole("dialog", { name: "把昭梧加入主畫面", exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "查看加入步驟", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("dialog", { name: "把昭梧加入主畫面", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "查看加入步驟", exact: true }),
+    ).toBeVisible();
     await page.locator("#analysisForm").scrollIntoViewIfNeeded();
     await expect(page.locator("#analysisForm")).toBeInViewport();
-    await expect(page.locator('#analysisForm button[type="submit"]')).toBeVisible();
+    await expect(
+      page.locator('#analysisForm button[type="submit"]'),
+    ).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
-  test("Home language switching keeps the main controls usable", async ({ page }) => {
+  test("Home language switching keeps the main controls usable", async ({
+    page,
+  }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await page.getByRole("button", { name: "简中", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "你的命盘资料", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "性格两面", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "你的命盘信息", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "性格两面", exact: true }),
+    ).toHaveCount(0);
 
     await page.getByRole("button", { name: "EN", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();
@@ -64,55 +93,81 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#birth-year")).toBeVisible();
     await expect(page.locator("#birth-month")).toBeVisible();
     await expect(page.locator("#birth-day")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Two sides of character", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Two sides of character", exact: true }),
+    ).toHaveCount(0);
 
     await page.getByRole("button", { name: "繁中", exact: true }).click();
-    await expect(page.getByRole("heading", { name: "你的命盤資料", exact: true })).toBeVisible();
-    await expect(page.locator('#analysisForm button[type="submit"]')).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "你的命盤資訊", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.locator('#analysisForm button[type="submit"]'),
+    ).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
-  test("Login page remains reachable and exposes email credentials", async ({ page }) => {
+  test("Login page remains reachable and exposes email credentials", async ({
+    page,
+  }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/login", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("heading", { name: "登入昭梧", exact: true })).toBeVisible();
-    await expect(page.getByRole("textbox", { name: "Email", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "登入昭梧", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("textbox", { name: "Email", exact: true }),
+    ).toBeVisible();
     await expect(page.locator('input[type="password"]')).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
-  test("Signed-out Account degrades to a clear login path", async ({ page }) => {
+  test("Signed-out Account degrades to a clear login path", async ({
+    page,
+  }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/account", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("heading", { name: "我的昭梧", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "登入", exact: true }).first()).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "我的昭梧", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "登入", exact: true }).first(),
+    ).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
-  test("Analysis form blocks incomplete submissions instead of failing silently", async ({ page }) => {
+  test("Analysis form blocks incomplete submissions instead of failing silently", async ({
+    page,
+  }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await fillKnownBirthData(page);
 
-    await page.locator("#analysisForm form").evaluate((form) =>
-      (form as HTMLFormElement).requestSubmit(),
-    );
+    await page
+      .locator("#analysisForm form")
+      .evaluate((form) => (form as HTMLFormElement).requestSubmit());
 
-    await expect(page.getByText("請從搜尋結果選擇出生城市與國家。", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("請從搜尋結果選擇出生城市與國家。", { exact: true }),
+    ).toBeVisible();
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
-  test("Free analysis completes end-to-end without cloud availability", async ({ page }) => {
+  test("Free analysis completes end-to-end without cloud availability", async ({
+    page,
+  }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await dismissInstallPrompt(page);
     await fillKnownBirthData(page);
 
     await page.locator("#birth-city").click();
-    const firstCity = page.locator('#birth-city-results [role="option"]').first();
+    const firstCity = page
+      .locator('#birth-city-results [role="option"]')
+      .first();
     await expect(firstCity).toBeVisible();
     await firstCity.click();
 
@@ -120,9 +175,29 @@ test.describe("iPhone Safari core customer flow", () => {
 
     const result = page.locator("#result");
     await expect(result).toBeVisible();
-    await expect(page.getByRole("heading", { name: "我現在最應該先處理什麼？", exact: true })).toBeVisible();
+    await expect(page.locator("#analysisForm")).toHaveClass(/is-compact/);
+    await expect(
+      page.getByRole("button", { name: "調整資料", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("已套用真太陽時校正", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("子時不換日（以午夜為界）", { exact: true }),
+    ).toBeVisible();
+    await expect(page.locator("#analysis-question")).toHaveCount(0);
+    await expect(page.locator("#birth-city")).toBeVisible();
+    await expect(page.locator("#current-city")).toBeVisible();
+    await expect(
+      page.getByRole("heading", {
+        name: "我現在最應該先處理什麼？",
+        exact: true,
+      }),
+    ).toBeVisible();
     await expect(result.locator("article").first()).not.toBeEmpty();
-    await expect(page.getByRole("button", { name: "查看完整報告", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "查看完整報告", exact: true }),
+    ).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 });

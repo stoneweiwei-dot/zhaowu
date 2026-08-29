@@ -3,7 +3,9 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 
 const root = new URL("../", import.meta.url);
-async function source(path) { return readFile(new URL(path, root), "utf8"); }
+async function source(path) {
+  return readFile(new URL(path, root), "utf8");
+}
 
 test("application shell keeps dynamic owner wallpaper and loose scatter out of active routes", async () => {
   const shell = await source("src/components/site-shell.tsx");
@@ -22,15 +24,22 @@ test("homepage matches the compact landscape sheet instead of stacking product c
 
   const v4 = main.indexOf("./visual-readability-lock-v4.css");
   const v5 = main.indexOf("./home-sheet-ui-v5.css");
-  assert.ok(v4 >= 0 && v5 > v4, "home sheet lock must import after readability v4");
+  assert.ok(
+    v4 >= 0 && v5 > v4,
+    "home sheet lock must import after readability v4",
+  );
 
   assert.match(home, /zhaowu-home-sheet-page/);
   assert.match(home, /zhaowu-home-intro/);
   assert.doesNotMatch(home, /zhaowu-home-hero/);
-  assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian/);
-  assert.match(home, /to="\/tianji-dual"/);
-  assert.match(home, /zhaowu-home-dual-entry/);
-  assert.match(css, /\.zhaowu-home-dual-entry/);
+  assert.doesNotMatch(
+    home,
+    /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian/,
+  );
+  assert.doesNotMatch(home, /to="\/tianji-dual"/);
+  assert.doesNotMatch(home, /zhaowu-home-dual-entry/);
+  assert.match(css, /#analysisForm\.is-compact/);
+  assert.match(css, /\.zhaowu-analysis-settings/);
   assert.match(css, /url\("\/wallpaper-song\.jpg"\)/);
   assert.match(css, /--zv5-card: rgba\(251, 245, 233, \.72\)/);
   assert.match(css, /backdrop-filter: blur\(1\.5px\) saturate\(\.92\)/);

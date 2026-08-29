@@ -6,15 +6,15 @@
 
 ## 1. 唯一生产主线
 
-| 项 | 当前唯一真相 |
-|---|---|
-| GitHub | `stoneweiwei-dot/zhaowu` |
-| Branch | `main` |
-| Hosting | **Vercel** |
-| Vercel project | `stone-zhaowu-official` (`prj_81IIJjyeM3l47ZPsiIE7d6eOrp9I`) |
-| Production URL | `https://stone-zhaowu-official.vercel.app/` |
-| Database/Auth | **Supabase** project `plgpxusmemnmzckbwtiv` |
-| 正式子域名 | `zhaowu.soul-terminal.com`；DNS 未完成前继续使用 Vercel production URL |
+| 项             | 当前唯一真相                                                           |
+| -------------- | ---------------------------------------------------------------------- |
+| GitHub         | `stoneweiwei-dot/zhaowu`                                               |
+| Branch         | `main`                                                                 |
+| Hosting        | **Vercel**                                                             |
+| Vercel project | `stone-zhaowu-official` (`prj_81IIJjyeM3l47ZPsiIE7d6eOrp9I`)           |
+| Production URL | `https://stone-zhaowu-official.vercel.app/`                            |
+| Database/Auth  | **Supabase** project `plgpxusmemnmzckbwtiv`                            |
+| 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前继续使用 Vercel production URL |
 
 每次接手实时检查 `main` 与 Vercel Production 的 `githubCommitSha`，禁止另建第二条 production 主线。Netlify、AppDeploy、Lovable standby、旧临时站只读参考。
 
@@ -27,7 +27,7 @@
 - `finalizeReading` 是最终 Reading 单一来源；已保存报告不重新 live 算出另一套答案。
 - 个人命诰文字为证据型文案；真实命诰图走私有 report image delivery，失败不得阻塞文字答案。
 - Gallery/背景资产管理能力保留；当前页面不读取 Supabase owner/weekly wallpaper 作为应用背景。
-- 首页只保留一个主分析表单；「性格两面」以紧凑入口链接到独立 `/tianji-dual`，达摩一掌经、茶仙守护、紫微继续保持独立路由。
+- 首页只保留一个主分析表单；「性格两面」、达摩一掌经、茶仙守护、紫微继续保持独立路由，不挤入首页长卷。
 
 没有新的可复现 FAIL 时，不得因为旧 Issue / 旧聊天复活已废止实现。
 
@@ -64,7 +64,7 @@
 
 - 首页 Header 已承担品牌识别，正文不再重复一张巨大的「昭梧」品牌 Hero 卡；只保留紧凑引导后直接进入分析表单。
 - 首页使用仓库固定资产 `/wallpaper-song.jpg` 作为淡宋山水宣纸背景；它是静态打包资产，不是 Supabase owner/weekly wallpaper。
-- 首页表单、结果、命诰、紫微入口与工具面板使用暖米半透明纸面，让山水能从四周与纸面下方看见，同时保证正文对比度。
+- 首页表单、结果与命诰使用暖米半透明纸面，让山水能从四周与纸面下方看见，同时保证正文对比度。
 - 主 CTA 朱砂红、语言选中青玉绿、正文墨色、边线淡金茶色。
 - iPhone 390–430 px 优先；不使用 `background-attachment: fixed`，避免移动 Safari 滚动问题。
 - 动态 owner/weekly wallpaper 继续不参与前台 shell；图库资产本身不删除，继续用于内容与命诰匹配。
@@ -115,7 +115,6 @@
 
 每次改网站之前：读 `AGENTS.md` 与本文件；查实时 main + Vercel Production；只处理当前可复现问题。新指令与旧指令冲突时，按 AGENTS 的安全 supersession 规则使旧 active path 失效，但不得破坏运行依赖。
 
-
 ## 2026-08-29 — 首頁／時間／命詮圖邊界收口
 
 - 首頁只保留核心分析流程，移除首頁上的紫微與茶仙大型推廣卡；獨立工具路由仍保留。
@@ -124,7 +123,6 @@
 - 個人命詮圖在客戶端排序與 Supabase 生成函數兩層都硬性排除茶仙／茶神圖；茶仙只留在選茶工具。
 - 圖庫未滿：2026-08-28 實測 Storage 約 779 MB／1 GB（約 78%）；未刪除、覆蓋或搬動任何圖片。
 
-
 ## 2026-08-29 — 性格兩面頁重做
 
 - 獨立路由仍為 `/tianji-dual`，客戶名稱改為「性格兩面」，不再用「雙軌命盤」作主標題。
@@ -132,15 +130,20 @@
 - 傳統宮位與星曜只放在預設收起的「查看傳統盤面」，不再搶在客戶答案前面。
 - 頁面改用暖米宣紙、朱砂與墨色，移除紫色宇宙盤與旋轉動畫；出生地、分鐘、時區、夏令時及真太陽時校正仍由原確定性計算完成。
 
-
 ## 2026-08-29 — iPhone 登入頁版面修復
 
 - 正式登入表單重新使用完整寬度的 `.stone-login-sheet`，不再誤用只供背景裝飾小牌使用的 `.stone-login-panel`。
 - 登入／註冊頁籤、狀態訊息、主按鈕與底部說明重新接回既有暖宣紙登入樣式，不改 Supabase 驗證、OAuth 或帳戶權限。
 - iPhone Safari 回歸測試鎖定登入紙面必須為相對定位、可見、寬度至少 320px，且不得超出 390px viewport。
 
-
 ## 2026-08-29 — 首頁恢復「性格兩面」入口
 
 - 首頁在主分析表單上方顯示一條緊湊的「性格兩面」入口，繁中／簡中／英文都可直接進入 `/tianji-dual`。
 - 入口不是大型產品卡，不恢復舊工具牆，也不改首頁唯一主分析表單、排盤核心或報告流程。
+
+## 2026-08-29 — iPhone 首頁按核准畫面收口（取代上一條首頁入口）
+
+- 最新核准畫面以單一首頁長卷為準；「性格兩面」保留獨立 `/tianji-dual` 路由，但從首頁移除，避免插在命盤資訊與分析結果之間。
+- 第一次分析前仍顯示提問與完整出生資料；分析完成後，同一表單自動收成「命盤資訊」紙面，只顯示出生城市、現居城市、固定時間校正狀態與主按鈕。
+- 「調整資料」可立即展開完整欄位，沒有刪除輸入能力，也不改真太陽時、午夜換日、排盤、登入、保存或 Supabase 行為。
+- iPhone 390px 回歸測試鎖定：分析後精簡紙面、兩個城市欄、校正狀態、朱砂主按鈕、結果卡、命詮圖區與操作鍵均不得造成橫向溢出。
