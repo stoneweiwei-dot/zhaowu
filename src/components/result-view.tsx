@@ -188,6 +188,12 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </div>
       </article>
 
+      <article className="zhaowu-decree-couplet seal-border rounded-xl bg-cream/95 p-4 sm:p-6">
+        <blockquote className="mx-auto max-w-sm whitespace-pre-line text-center font-display text-lg leading-8 tracking-[0.08em] text-ink">
+          {decreeCouplet}
+        </blockquote>
+      </article>
+
       {user ? (
         <DecreeGalleryPreview
           chart={chart}
@@ -213,12 +219,6 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </div>
 
       {msg ? <p className="zhaowu-result-message text-sm text-cinnabar">{msg}</p> : null}
-
-      <article className="zhaowu-decree-couplet seal-border rounded-xl bg-cream/95 p-4 sm:p-6">
-        <blockquote className="mx-auto max-w-sm whitespace-pre-line text-center font-display text-lg leading-8 tracking-[0.08em] text-ink">
-          {decreeCouplet}
-        </blockquote>
-      </article>
 
       {reportSections ? <FocusedReportSections sections={reportSections} /> : null}
       <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
