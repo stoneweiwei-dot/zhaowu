@@ -2,51 +2,51 @@ import { useEffect, useMemo, useState } from "react";
 import type { Chart } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import {
-  explainCustomerGalleryChoice,
   loadCustomerGalleryCandidates,
   rankCustomerGalleryArt,
   type GalleryArtKnowledge,
 } from "@/lib/gallery-match";
 import type { GalleryAsset } from "@/lib/gallery-assets";
+import { explainCustomerDecreeImageChoice } from "@/lib/report/decree-selection-copy";
 
 const COPY = {
   "zh-Hant": {
     kicker: "你的個人命詮圖",
     title: "為你選一張圖",
-    note: "系統會按這次命盤和問題，從作品庫選一張最合適的圖，做成你的個人命詮圖。圖片只負責呈現，不會改動命理判斷。",
+    note: "這張命詮圖會把這次分析最重要的狀態，轉成一張可以直接感受的畫面。",
     generate: "製作我的命詮圖",
     generating: "命詮圖生成中…",
     matched: "為你選的圖",
     generated: "你的成圖",
     reasonTitle: "為什麼是這張圖",
-    unavailable: "目前啟用作品庫沒有可用圖片，暫時無法生成命詮圖。",
-    alt: "昭梧作品庫參考圖",
+    unavailable: "目前沒有可用的命詮圖，暫時無法生成。",
+    alt: "昭梧命詮圖參考",
     generatedAlt: "昭梧個人命詮圖",
   },
   "zh-Hans": {
     kicker: "你的个人命诰图",
     title: "为你选一张图",
-    note: "系统会按这次命盘和问题，从作品库选一张最合适的图，做成你的个人命诰图。图片只负责呈现，不会改动命理判断。",
+    note: "这张命诰图会把这次分析最重要的状态，转成一张可以直接感受的画面。",
     generate: "制作我的命诰图",
     generating: "命诰图生成中…",
     matched: "为你选的图",
     generated: "你的成图",
     reasonTitle: "为什么是这张图",
-    unavailable: "目前启用作品库没有可用图片，暂时无法生成命诺图。",
-    alt: "昭梧作品库参考图",
-    generatedAlt: "昭梧个人命诺图",
+    unavailable: "目前没有可用的命诰图，暂时无法生成。",
+    alt: "昭梧命诰图参考",
+    generatedAlt: "昭梧个人命诰图",
   },
   en: {
     kicker: "YOUR PERSONAL DECREE IMAGE",
     title: "Your decree image",
-    note: "Zhaowu chooses one image that fits this chart and question, then makes it your personal decree image. The artwork presents the reading; it never changes it.",
+    note: "Your decree image turns the core message of this reading into a single visual you can feel at a glance.",
     generate: "Generate my decree image",
     generating: "Generating decree image…",
     matched: "Chosen for you",
     generated: "Your image",
     reasonTitle: "Why this image",
-    unavailable: "The enabled visual library is empty, so a decree image cannot be created yet.",
-    alt: "Zhaowu visual-library reference",
+    unavailable: "A decree image is not available right now.",
+    alt: "Zhaowu decree image reference",
     generatedAlt: "Your Zhaowu decree image",
   },
 } as const;
@@ -60,9 +60,18 @@ type Props = {
   generatedImageUrl: string | null;
   selectedAssetId: string | null;
   onGenerate: () => void;
+  onGeneratedImageError?: () => void;
 };
 
-export function DecreeGalleryPreview({ chart, question, busy, generatedImageUrl, selectedAssetId, onGenerate }: Props) {
+export function DecreeGalleryPreview({
+  chart,
+  question,
+  busy,
+  generatedImageUrl,
+  selectedAssetId,
+  onGenerate,
+  onGeneratedImageError,
+}: Props) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const [candidates, setCandidates] = useState<GalleryCandidate[]>([]);
@@ -87,14 +96,14 @@ export function DecreeGalleryPreview({ chart, question, busy, generatedImageUrl,
   const matches = useMemo(() => rankCustomerGalleryArt(chart, candidates).slice(0, 3), [chart, candidates]);
   const heroSrc = generatedImageUrl ?? matches[0]?.imageUrl ?? null;
   const heroAlt = generatedImageUrl ? copy.generatedAlt : copy.alt;
-  const secondary = useMemo(() => matches.slice(generatedImageUrl ? 0 : 1, generatedImageUrl ? 2 : 3), [generatedImageUrl, matches]);
+  const secondary = useMemo(() => generatedImageUrl ? [] : matches.slice(1, 3), [generatedImageUrl, matches]);
   const selectedCandidate = useMemo(
     () => selectedAssetId ? candidates.find((candidate) => candidate.asset.id === selectedAssetId) ?? null : null,
     [candidates, selectedAssetId],
   );
   const selectionReason = useMemo(
     () => generatedImageUrl && selectedCandidate
-      ? explainCustomerGalleryChoice(chart, question, selectedCandidate, locale)
+      ? explainCustomerDecreeImageChoice(chart, question, selectedCandidate, locale)
       : null,
     [chart, generatedImageUrl, locale, question, selectedCandidate],
   );
@@ -130,7 +139,13 @@ export function DecreeGalleryPreview({ chart, question, busy, generatedImageUrl,
         ) : heroSrc ? (
           <>
             <figure className="zhaowu-decree-preview is-main">
-              <img src={heroSrc} alt={heroAlt} loading="eager" decoding="async" />
+              <img
+                src={heroSrc}
+                alt={heroAlt}
+                loading="eager"
+                decoding="async"
+                onError={generatedImageUrl ? onGeneratedImageError : undefined}
+              />
               <figcaption>{generatedImageUrl ? copy.generated : copy.matched}</figcaption>
             </figure>
             {secondary.map((match) => (
