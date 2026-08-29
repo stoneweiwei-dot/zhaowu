@@ -6,6 +6,7 @@ const shell = await readFile(new URL('../src/components/site-shell.tsx', import.
 const bootstrap = await readFile(new URL('../src/lib/bootstrap-readiness.ts', import.meta.url), 'utf8');
 const root = await readFile(new URL('../src/routes/__root.tsx', import.meta.url), 'utf8');
 const gate = await readFile(new URL('../src/components/intro-gate.tsx', import.meta.url), 'utf8');
+const introCss = await readFile(new URL('../src/intro-extra.css', import.meta.url), 'utf8');
 const {
   INTRO_GATE_HARD_EXIT_MS,
   scheduleIntroGateHardExit,
@@ -31,6 +32,14 @@ test('bootstrap does not preload customer report copy that belongs to result ren
   assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
 });
 
+test('loading keeps the existing artwork and stages the lotus sequence', () => {
+  assert.match(gate, /lotus-bloom-v12\\.webp/);
+  assert.match(gate, /zhaowu-lotus-intro__petals/);
+  assert.match(gate, /zhaowu-lotus-intro__twin-bloom/);
+  assert.match(introCss, /lotus-petal-fall/);
+  assert.match(introCss, /twin-lotus-bloom/);
+});
+
 test('loading gate hard-exits before the three-second mobile budget', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
@@ -47,9 +56,9 @@ test('loading gate hard-exits before the three-second mobile budget', () => {
     () => { exited = true; },
   );
 
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 2800);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 3000);
-  assert.equal(scheduledDelay, 2800);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 4200);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 5000);
+  assert.equal(scheduledDelay, 4200);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
