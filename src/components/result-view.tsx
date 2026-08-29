@@ -26,7 +26,6 @@ const RESULT_COPY = {
     fullGenerating: "正在整理完整報告…",
     imageReady: "個人命誥圖已生成並保存。",
     imageLoadFailed: "命誥圖未能載入；文字答案與完整報告不受影響。",
-    imageAlt: "昭梧個人命誥圖",
   },
   "zh-Hans": {
     syncFailed: "完整报告已整理完成，但云端同步暂时失败；画面内容不受影响。",
@@ -39,7 +38,6 @@ const RESULT_COPY = {
     fullGenerating: "正在整理完整报告…",
     imageReady: "个人命诰图已生成并保存。",
     imageLoadFailed: "命诰图未能载入；文字答案与完整报告不受影响。",
-    imageAlt: "昭梧个人命诰图",
   },
   en: {
     syncFailed: "The full report is ready, but cloud sync failed temporarily. The report remains available on this page.",
@@ -52,7 +50,6 @@ const RESULT_COPY = {
     fullGenerating: "Preparing your full report…",
     imageReady: "Your personal decree image has been generated and saved.",
     imageLoadFailed: "The decree image could not be loaded. Your text answer and full report remain available.",
-    imageAlt: "Zhaowu personal decree image",
   },
 } as const;
 
@@ -199,6 +196,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           generatedImageUrl={imageUrl}
           selectedAssetId={imageReferenceAssetId}
           onGenerate={() => void onImage()}
+          onGeneratedImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }}
         />
       ) : null}
 
@@ -221,14 +219,6 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           {decreeCouplet}
         </blockquote>
       </article>
-
-      {imageUrl ? (
-        <article className="zhaowu-generated-decree seal-border rounded-xl bg-cream/95 p-4 sm:p-6">
-          <div className="mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden rounded-xl border border-line bg-paper-deep shadow-sm">
-            <img src={imageUrl} alt={copy.imageAlt} className="h-full w-full object-cover" onError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />
-          </div>
-        </article>
-      ) : null}
 
       {reportSections ? <FocusedReportSections sections={reportSections} /> : null}
       <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
