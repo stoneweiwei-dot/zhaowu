@@ -1,8 +1,9 @@
 /*
  * ZHAOWU application parchment lock.
- * Home uses the packaged Song landscape as one visible background composition;
- * non-home routes keep the stable closed parchment shell. Dynamic owner/weekly
- * wallpaper and loose emblem scatter stay out of the application shell.
+ * Every application page uses the packaged Song landscape as one locked
+ * background composition. Cards, header, login sheet and tool panels are
+ * fully opaque parchment. Dynamic owner/weekly wallpaper and loose emblem
+ * scatter stay out of the application shell.
  */
 
 :root {
@@ -23,29 +24,17 @@
 }
 
 body:has(.zhaowu-home-sheet-shell),
-.zhaowu-home-sheet-shell {
-  background-color: var(--zv5-page) !important;
-  background-image: linear-gradient(
-    180deg,
-    #f8f0e2 0%,
-    #f4ead8 48%,
-    #f6eddd 100%
-  ) !important;
-  color: var(--zv5-ink) !important;
-}
-
-.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) {
-  --zv5-card: rgba(251, 245, 233, 0.72);
-  --zv5-card-strong: rgba(252, 247, 238, 0.82);
-  --zv5-field: rgba(255, 250, 241, 0.8);
+body:has(.zhaowu-login-shell),
+.zhaowu-home-sheet-shell,
+.zhaowu-login-shell {
   background-color: #f4ead8 !important;
   background-image:
     linear-gradient(
       180deg,
-      rgba(249, 245, 237, 0.28) 0%,
-      rgba(248, 239, 224, 0.18) 38%,
-      rgba(246, 235, 216, 0.14) 72%,
-      rgba(249, 243, 232, 0.25) 100%
+      rgba(249, 245, 237, 0.22) 0%,
+      rgba(248, 239, 224, 0.12) 38%,
+      rgba(246, 235, 216, 0.10) 72%,
+      rgba(249, 243, 232, 0.20) 100%
     ),
     url("/wallpaper-song.jpg") !important;
   background-size:
@@ -55,6 +44,7 @@ body:has(.zhaowu-home-sheet-shell),
     0 0,
     58% 0 !important;
   background-repeat: repeat-y !important;
+  color: var(--zv5-ink) !important;
 }
 
 .zhaowu-home-sheet-shell .zhaowu-site-wallpaper,
@@ -64,11 +54,11 @@ body:has(.zhaowu-home-sheet-shell),
 }
 
 .zhaowu-home-sheet-shell .zhaowu-site-header {
-  background: rgba(249, 243, 232, 0.96) !important;
+  background: #fbf5e9 !important;
   border-bottom: 1px solid var(--zv5-line-soft) !important;
   box-shadow: 0 5px 16px rgba(73, 52, 29, 0.035) !important;
-  backdrop-filter: blur(6px) saturate(0.94) !important;
-  -webkit-backdrop-filter: blur(6px) saturate(0.94) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-home-sheet-shell .zhaowu-app-frame {
@@ -135,19 +125,6 @@ body:has(.zhaowu-home-sheet-shell),
   border-color: var(--zv5-line) !important;
   color: var(--zv5-ink) !important;
   box-shadow: var(--zv5-shadow) !important;
-}
-
-.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) #analysisForm,
-.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-result-card,
-.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-decree-gallery,
-.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-decree-couplet,
-.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-generated-decree,
-.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-tools-section,
-.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-specialist-card,
-.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-focused-report,
-.zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-ziwei-feature {
-  backdrop-filter: blur(1.5px) saturate(0.92) !important;
-  -webkit-backdrop-filter: blur(1.5px) saturate(0.92) !important;
 }
 
 .zhaowu-home-sheet-shell #analysisForm,
@@ -375,10 +352,10 @@ body:has(.zhaowu-home-sheet-shell),
   border-radius: 16px;
   padding: 9px 12px;
   color: var(--zv5-ink);
-  background: rgba(251, 245, 233, 0.72);
+  background: #fbf5e9;
   box-shadow: var(--zv5-shadow);
-  backdrop-filter: blur(1.5px) saturate(0.92);
-  -webkit-backdrop-filter: blur(1.5px) saturate(0.92);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .zhaowu-home-dual-entry:active {
@@ -393,7 +370,7 @@ body:has(.zhaowu-home-sheet-shell),
   border: 1px solid rgba(181, 58, 46, 0.42);
   border-radius: 50%;
   color: var(--zv5-red-deep);
-  background: rgba(255, 250, 241, 0.68);
+  background: #fffaf1;
   font-family: var(--font-display, serif);
   font-size: 11px;
   letter-spacing: 0.04em;
@@ -512,7 +489,7 @@ body:has(.zhaowu-home-sheet-shell),
   border-radius: 13px;
   padding: 8px 10px;
   color: var(--zv5-ink-soft);
-  background: rgba(255, 250, 241, 0.48);
+  background: #fffaf1;
   font-size: 11px;
   line-height: 1.35;
 }
@@ -553,5 +530,45 @@ body:has(.zhaowu-home-sheet-shell),
 @media (max-width: 360px) {
   .zhaowu-analysis-settings {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Final opaque lock: Song landscape stays behind solid parchment cards. */
+.zhaowu-home-sheet-shell #analysisForm,
+.zhaowu-home-sheet-shell .zhaowu-result-card,
+.zhaowu-home-sheet-shell .zhaowu-decree-gallery,
+.zhaowu-home-sheet-shell .zhaowu-decree-couplet,
+.zhaowu-home-sheet-shell .zhaowu-generated-decree,
+.zhaowu-home-sheet-shell .zhaowu-tools-section,
+.zhaowu-home-sheet-shell .zhaowu-specialist-card,
+.zhaowu-home-sheet-shell .zhaowu-focused-report,
+.zhaowu-home-sheet-shell .zhaowu-tool-card,
+.zhaowu-home-sheet-shell .zhaowu-home-dual-entry,
+.zhaowu-home-sheet-shell section.seal-border,
+.zhaowu-login-shell .stone-login-sheet,
+.zhaowu-login-shell .stone-login-panel {
+  background-color: #fbf5e9 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-home-sheet-shell #analysisForm input,
+.zhaowu-home-sheet-shell #analysisForm textarea,
+.zhaowu-home-sheet-shell #analysisForm select,
+.zhaowu-home-sheet-shell .zhaowu-analysis-settings > span,
+.zhaowu-login-shell input,
+.zhaowu-login-shell textarea {
+  background-color: #fffaf1 !important;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-home-sheet-shell,
+  .zhaowu-login-shell {
+    background-position:
+      0 0,
+      57% 0 !important;
+    background-size:
+      auto,
+      880px auto !important;
   }
 }
