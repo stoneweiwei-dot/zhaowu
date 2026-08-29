@@ -33,7 +33,7 @@ test('bootstrap does not preload customer report copy that belongs to result ren
 });
 
 test('loading keeps the existing artwork and stages the lotus sequence', () => {
-  assert.match(gate, /lotus-bloom-v12\\.webp/);
+  assert.match(gate, /lotus-bloom-v12\.webp/);
   assert.match(gate, /zhaowu-lotus-intro__petals/);
   assert.match(gate, /zhaowu-lotus-intro__twin-bloom/);
   assert.match(introCss, /lotus-petal-fall/);
