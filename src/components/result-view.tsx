@@ -220,7 +220,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       {msg ? <p className="zhaowu-result-message text-sm text-cinnabar">{msg}</p> : null}
 
-      {reportSections ? <FocusedReportSections sections={reportSections} /> : null}
+      {reportSections ? <FocusedReportSections sections={reportSections} result={result} /> : null}
       <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
     </section>
   );
