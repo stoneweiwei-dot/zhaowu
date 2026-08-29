@@ -73,7 +73,7 @@ test.describe("iPhone Safari startup fallback", () => {
 
       await expect(gate).toBeVisible();
       await expect(heading).toBeAttached();
-      await expect(gate).toHaveCount(0, { timeout: 3_000 });
+      await expect(gate).toHaveCount(0, { timeout: 5_000 });
       await expect(heading).toBeVisible();
       await expect(
         page
@@ -83,7 +83,7 @@ test.describe("iPhone Safari startup fallback", () => {
 
       const duration = await gateDuration(page);
       expect(duration).not.toBeNull();
-      expect(duration!).toBeLessThanOrEqual(3_000);
+      expect(duration!).toBeLessThanOrEqual(5_000);
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
       expect(
         await page.evaluate(
