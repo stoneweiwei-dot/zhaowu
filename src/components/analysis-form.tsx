@@ -543,12 +543,12 @@ export function AnalysisForm() {
           >
             <span>
               <b aria-hidden>✓</b>
-              {compactCopy.solar}
+              <span>{compactCopy.solar}</span>
               <i aria-hidden>i</i>
             </span>
             <span>
               <small>{locale === "en" ? "Day boundary" : t("zi")}</small>
-              {compactCopy.zi}
+              <span>{compactCopy.zi}</span>
             </span>
           </div>
         ) : null}
