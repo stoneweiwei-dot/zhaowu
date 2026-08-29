@@ -7,7 +7,7 @@ import {
   scheduleIntroGateHardExit,
 } from "@/lib/intro-gate-policy";
 
-const LOTUS_BLOOM_MS = 2200;
+const LOTUS_BLOOM_MS = 4200;
 
 export function IntroGate() {
   const { locale } = useI18n();
@@ -97,7 +97,7 @@ export function IntroGate() {
 
   return (
     <div
-      className={`zhaowu-lotus-intro fixed inset-0 z-[100] overflow-hidden transition-opacity duration-150 ease-out ${
+      className={`zhaowu-lotus-intro fixed inset-0 z-[100] overflow-hidden transition-opacity duration-180 ease-out ${
         phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
       role="status"
@@ -112,6 +112,13 @@ export function IntroGate() {
         draggable={false}
         fetchPriority="high"
       />
+      <div className="zhaowu-lotus-intro__pond" aria-hidden />
+      <div className="zhaowu-lotus-intro__heaven" aria-hidden>
+        <i className="zhaowu-lotus-intro__hua h1" />
+        <i className="zhaowu-lotus-intro__hua h2" />
+        <i className="zhaowu-lotus-intro__hua h3" />
+        <i className="zhaowu-lotus-intro__hua h4" />
+      </div>
       <div className="zhaowu-lotus-intro__veil" aria-hidden />
 
       <div className="zhaowu-lotus-intro__copy">
