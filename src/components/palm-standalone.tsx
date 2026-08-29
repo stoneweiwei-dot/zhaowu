@@ -32,7 +32,7 @@ const COPY = {
     note: "它不替你證明一段無法驗證的前世歷史，而是給『我為什麼會成為現在的我』一個有秩序、可閱讀的因果框架。",
     formTitle: "填寫出生資料", formLead: "填好日期、時辰與順逆，直接閱讀你的四世六道報告。",
     name: "稱呼（選填）", namePh: "只顯示在本次結果，不會保存", direction: "一掌經順逆（必填）", directionHelp: "這是傳統算法的順逆參數，不用來定義你的性別身份。",
-    forward: "順行（傳統男命）", reverse: "逆行（傳統女命）", date: "出生日期（國曆）", hour: "出生時辰", unknown: "不知道時辰（時宮留白）",
+    forward: "順行（傳統男命）", reverse: "逆行（傳統女命）", date: "出生日期（國曆）", year: "年", month: "月", day: "日", hour: "出生時辰", unknown: "不知道時辰（時宮留白）",
     submit: "生成我的報告", privacy: "傳統文化與象徵性解讀，用於自我觀察。", required: "請填出生日期，並選擇一掌經順逆。", invalid: "這個日期無法轉換為農曆，請檢查後再試。",
     result: "前世今生報告", resultFor: "的前世今生報告", palaces: "前四世・六道習性報告", traceTitle: "前四世來自哪一道", traceHint: "由最遠的前四世讀到最近的前一世。哪一道重複出現，代表那一類性格與反應在今生更容易被加強。", realmFrom: "六道來處", traitLabel: "這一世的特徵", storyLabel: "留到今生的習性", verseLabel: "古訣", readingTitle: "四世合看", readingBody: "四個宮位不是四句互不相關的標籤。年宮看最遠的根，月宮看與人群相處的舊習，日宮看關係與才情，時宮收束成離今生最近的一世。重複的六道要加重讀，最近一世則是最容易在今生被觸發的主軸。",
     missingHour: "你未提供出生時辰，因此時宮／前一世不作判定；目前只顯示年、月、日三宮。", again: "重新排盤", full: "回到昭梧完整分析", boundary: "傳統文化與象徵性解讀僅供自我觀察，不替代醫療、法律、財務或現實決策。",
@@ -43,7 +43,7 @@ const COPY = {
     note: "它不替你证明一段无法验证的前世历史，而是给‘我为什么会成为现在的我’一个有秩序、可阅读的因果框架。",
     formTitle: "填写出生资料", formLead: "填好日期、时辰与顺逆，直接阅读你的四世六道报告。",
     name: "称呼（选填）", namePh: "只显示在本次结果，不会保存", direction: "一掌经顺逆（必填）", directionHelp: "这是传统算法的顺逆参数，不用来定义你的性别身份。",
-    forward: "顺行（传统男命）", reverse: "逆行（传统女命）", date: "出生日期（公历）", hour: "出生时辰", unknown: "不知道时辰（时宫留白）",
+    forward: "顺行（传统男命）", reverse: "逆行（传统女命）", date: "出生日期（公历）", year: "年", month: "月", day: "日", hour: "出生时辰", unknown: "不知道时辰（时宫留白）",
     submit: "生成我的报告", privacy: "传统文化与象征性解读，用于自我观察。", required: "请填出生日期，并选择一掌经顺逆。", invalid: "这个日期无法转换为农历，请检查后再试。",
     result: "前世今生报告", resultFor: "的前世今生报告", palaces: "前四世・六道习性报告", traceTitle: "前四世来自哪一道", traceHint: "由最远的前四世读到最近的前一世。哪一道重复出现，代表那一类性格与反应在今生更容易被加强。", realmFrom: "六道来处", traitLabel: "这一世的特征", storyLabel: "留到今生的习性", verseLabel: "古诀", readingTitle: "四世合看", readingBody: "四个宫位不是四句互不相关的标签。年宫看最远的根，月宫看与人群相处的旧习，日宫看关系与才情，时宫收束成离今生最近的一世。重复的六道要加重读，最近一世则是最容易在今生被触发的主轴。",
     missingHour: "你未提供出生时辰，因此时宫／前一世不作判定；目前只显示年、月、日三宫。", again: "重新排盘", full: "回到昭梧完整分析", boundary: "传统文化与象征性解读仅供自我观察，不替代医疗、法律、财务或现实决定。",
@@ -54,7 +54,7 @@ const COPY = {
     note: "This does not prove unverifiable past-life history. It offers a coherent symbolic framework for asking why certain strengths and habits feel so persistent.",
     formTitle: "Birth details", formLead: "Enter the date, hour and sequence to read your four-life, six-realm report.",
     name: "Name (optional)", namePh: "Shown only in this result; never saved", direction: "Palm sequence (required)", directionHelp: "This is the traditional method's calculation parameter; it does not define your gender identity.",
-    forward: "Forward sequence (traditional male chart)", reverse: "Reverse sequence (traditional female chart)", date: "Date of birth (Gregorian)", hour: "Birth-hour branch", unknown: "Time unknown — leave the hour palace blank",
+    forward: "Forward sequence (traditional male chart)", reverse: "Reverse sequence (traditional female chart)", date: "Date of birth (Gregorian)", year: "Year", month: "Month", day: "Day", hour: "Birth-hour branch", unknown: "Time unknown — leave the hour palace blank",
     submit: "Generate my report", privacy: "Traditional symbolic interpretation for self-reflection.", required: "Enter a birth date and choose a Palm sequence.", invalid: "This date cannot be converted to a lunar date. Check it and try again.",
     result: "Past & Present report", resultFor: " · Past & Present report", palaces: "Four prior lives and carried patterns", traceTitle: "Where each prior life comes from", traceHint: "Read from the fourth prior life toward the most recent one. A repeated realm means that style of reaction is more strongly reinforced in the present.", realmFrom: "Symbolic realm", traitLabel: "Traits of this life", storyLabel: "Habit carried forward", verseLabel: "Traditional verse", readingTitle: "Read all four lives together", readingBody: "The four palaces are not isolated labels. The year palace is the distant root, the month palace describes older social habits, the day palace brings craft and relationships closer, and the hour palace becomes the pattern nearest to the present. Repetition strengthens a habit; the latest palace is the easiest pattern to trigger now.",
     missingHour: "Birth time was not provided, so the hour palace and most recent prior-life category remain blank. The year, month and day palaces are shown.", again: "Calculate again", full: "Return to full Zhaowu analysis", boundary: "Traditional and symbolic interpretation for self-reflection only. It does not replace medical, legal, financial or practical decisions.",
@@ -65,25 +65,32 @@ export function PalmStandalone() {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const [name, setName] = useState("");
-  const [date, setDate] = useState("");
+  const [year, setYear] = useState("");
+  const [month, setMonth] = useState("");
+  const [day, setDay] = useState("");
   const [gender, setGender] = useState<Gender>("unspecified");
   const [hour, setHour] = useState("unknown");
   const [error, setError] = useState<"" | "required" | "invalid">("");
   const [result, setResult] = useState<PalmReading | null>(null);
   const resultRef = useRef<HTMLElement>(null);
-  const maxDate = new Date().toISOString().slice(0, 10);
+  const maxYear = new Date().getFullYear();
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (!date || gender === "unspecified") {
+    if (!year || !month || !day || gender === "unspecified") {
       setError("required");
       return;
     }
-    const [year, month, day] = date.split("-").map(Number);
+    const y = Number(year), m = Number(month), d = Number(day);
+    const civilCheck = new Date(Date.UTC(y, m - 1, d));
+    if (civilCheck.getUTCFullYear() !== y || civilCheck.getUTCMonth() !== m - 1 || civilCheck.getUTCDate() !== d) {
+      setError("invalid");
+      return;
+    }
     const reading = buildPalm({
-      year,
-      month,
-      day,
+      year: y,
+      month: m,
+      day: d,
       hour: hour === "unknown" ? 12 : Number(hour),
       timeUnknown: hour === "unknown",
       gender,
@@ -171,18 +178,20 @@ export function PalmStandalone() {
         <form onSubmit={onSubmit} className="palm-form relative overflow-hidden rounded-[1.4rem] border border-line/80 bg-cream/92 p-5 sm:p-7" noValidate>
           <img src="/emblems/modern-conch-emblem.svg" alt="" aria-hidden className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 opacity-[0.035]" />
           <div className="relative">
-            <div className="grid gap-5 sm:grid-cols-2">
-              <label className="block text-sm font-medium text-ink">
-                {copy.name}
-                <input value={name} onChange={(event) => setName(event.target.value.slice(0, 40))} placeholder={copy.namePh} className="mt-2 min-h-14 w-full rounded-xl border border-line bg-white/72 px-4 text-base outline-none transition focus:border-cinnabar focus:ring-2 focus:ring-cinnabar/10" />
-              </label>
-              <label className="block text-sm font-medium text-ink">
-                {copy.date}
-                <input type="date" min="1900-01-31" max={maxDate} value={date} onChange={(event) => setDate(event.target.value)} className="mt-2 min-h-14 w-full rounded-xl border border-line bg-white/72 px-4 text-base outline-none transition focus:border-cinnabar focus:ring-2 focus:ring-cinnabar/10" />
-              </label>
-            </div>
-
+            <label className="block text-sm font-medium text-ink">
+              {copy.name}
+              <input value={name} onChange={(event) => setName(event.target.value.slice(0, 40))} placeholder={copy.namePh} className="mt-2 min-h-14 w-full rounded-xl border border-line bg-white/72 px-4 text-base outline-none transition focus:border-cinnabar focus:ring-2 focus:ring-cinnabar/10" />
+            </label>
             <fieldset className="mt-5">
+              <legend className="text-sm font-medium text-ink">{copy.date}</legend>
+              <div className="palm-birth-grid mt-2">
+                {([[copy.year, year, setYear, 1900, maxYear], [copy.month, month, setMonth, 1, 12], [copy.day, day, setDay, 1, 31]] as const).map(([label, value, setter, min, max]) => (
+                  <label key={label}><span>{label}</span><input required type="number" inputMode="numeric" min={min} max={max} value={value} onChange={(event) => setter(event.target.value)} /></label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className="palm-direction mt-5">
               <legend className="text-sm font-medium text-ink">{copy.direction}</legend>
               <p className="mt-1 text-xs leading-5 text-ink-mute">{copy.directionHelp}</p>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">

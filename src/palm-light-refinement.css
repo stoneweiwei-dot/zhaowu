@@ -84,13 +84,13 @@
   font-size: 16px !important;
 }
 
-.palm-form fieldset label {
+.palm-form .palm-direction label {
   min-height: 64px !important;
   border-color: rgba(151, 111, 62, .28) !important;
   background: #fffdf7 !important;
 }
 
-.palm-form fieldset label:has(input:checked) {
+.palm-form .palm-direction label:has(input:checked) {
   border-color: rgba(47, 116, 101, .52) !important;
   background: rgba(47, 116, 101, .07) !important;
   box-shadow: inset 4px 0 0 var(--palm-jade) !important;
@@ -99,6 +99,28 @@
 .palm-form button[type="submit"] {
   min-height: 56px !important;
   background: linear-gradient(180deg, #b23e34, #983028) !important;
+}
+
+.palm-birth-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.palm-birth-grid label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.palm-birth-grid label:first-child {
+  grid-column: 1 / -1;
+}
+
+.palm-birth-grid span {
+  color: var(--palm-soft);
+  font-size: 12px;
+  font-weight: 650;
 }
 
 .palm-result-head {
@@ -177,6 +199,14 @@
 
   .palm-synthesis-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .palm-birth-grid {
+    grid-template-columns: 1.35fr 1fr 1fr;
+  }
+
+  .palm-birth-grid label:first-child {
+    grid-column: auto;
   }
 
   .palm-synthesis-card {
