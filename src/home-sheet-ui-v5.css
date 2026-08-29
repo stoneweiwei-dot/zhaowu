@@ -13,32 +13,47 @@
   --zv5-field: #fffaf1;
   --zv5-ink: #29251f;
   --zv5-ink-soft: #544b40;
-  --zv5-line: rgba(151, 111, 62, .30);
-  --zv5-line-soft: rgba(151, 111, 62, .18);
+  --zv5-line: rgba(151, 111, 62, 0.3);
+  --zv5-line-soft: rgba(151, 111, 62, 0.18);
   --zv5-red: #b53a2e;
   --zv5-red-deep: #992c24;
   --zv5-jade: #2f7465;
   --zv5-earth: #98703d;
-  --zv5-shadow: 0 8px 22px rgba(76, 55, 31, .055);
+  --zv5-shadow: 0 8px 22px rgba(76, 55, 31, 0.055);
 }
 
 body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell {
   background-color: var(--zv5-page) !important;
-  background-image: linear-gradient(180deg, #f8f0e2 0%, #f4ead8 48%, #f6eddd 100%) !important;
+  background-image: linear-gradient(
+    180deg,
+    #f8f0e2 0%,
+    #f4ead8 48%,
+    #f6eddd 100%
+  ) !important;
   color: var(--zv5-ink) !important;
 }
 
 .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) {
-  --zv5-card: rgba(251, 245, 233, .72);
-  --zv5-card-strong: rgba(252, 247, 238, .82);
-  --zv5-field: rgba(255, 250, 241, .80);
+  --zv5-card: rgba(251, 245, 233, 0.72);
+  --zv5-card-strong: rgba(252, 247, 238, 0.82);
+  --zv5-field: rgba(255, 250, 241, 0.8);
   background-color: #f4ead8 !important;
   background-image:
-    linear-gradient(180deg, rgba(249, 245, 237, .28) 0%, rgba(248, 239, 224, .18) 38%, rgba(246, 235, 216, .14) 72%, rgba(249, 243, 232, .25) 100%),
+    linear-gradient(
+      180deg,
+      rgba(249, 245, 237, 0.28) 0%,
+      rgba(248, 239, 224, 0.18) 38%,
+      rgba(246, 235, 216, 0.14) 72%,
+      rgba(249, 243, 232, 0.25) 100%
+    ),
     url("/wallpaper-song.jpg") !important;
-  background-size: auto, 980px auto !important;
-  background-position: 0 0, 58% 0 !important;
+  background-size:
+    auto,
+    980px auto !important;
+  background-position:
+    0 0,
+    58% 0 !important;
   background-repeat: repeat-y !important;
 }
 
@@ -49,11 +64,11 @@ body:has(.zhaowu-home-sheet-shell),
 }
 
 .zhaowu-home-sheet-shell .zhaowu-site-header {
-  background: rgba(249, 243, 232, .96) !important;
+  background: rgba(249, 243, 232, 0.96) !important;
   border-bottom: 1px solid var(--zv5-line-soft) !important;
-  box-shadow: 0 5px 16px rgba(73, 52, 29, .035) !important;
-  backdrop-filter: blur(6px) saturate(.94) !important;
-  -webkit-backdrop-filter: blur(6px) saturate(.94) !important;
+  box-shadow: 0 5px 16px rgba(73, 52, 29, 0.035) !important;
+  backdrop-filter: blur(6px) saturate(0.94) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(0.94) !important;
 }
 
 .zhaowu-home-sheet-shell .zhaowu-app-frame {
@@ -76,7 +91,9 @@ body:has(.zhaowu-home-sheet-shell),
   width: 100% !important;
 }
 
-.zhaowu-home-sheet-page > :not([hidden]) ~ :not([hidden]) { margin-top: 0 !important; }
+.zhaowu-home-sheet-page > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0 !important;
+}
 
 .zhaowu-home-intro {
   padding: 8px 7px 4px;
@@ -90,12 +107,14 @@ body:has(.zhaowu-home-sheet-shell),
   color: var(--zv5-earth);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: .24em;
+  letter-spacing: 0.24em;
 }
 
 .zhaowu-home-intro-line,
 .zhaowu-home-intro-title,
-.zhaowu-home-intro-copy { display: none !important; }
+.zhaowu-home-intro-copy {
+  display: none !important;
+}
 
 .zhaowu-home-sheet-shell #analysisForm,
 .zhaowu-home-sheet-shell .zhaowu-result-card,
@@ -108,7 +127,11 @@ body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell .zhaowu-tool-card,
 .zhaowu-home-sheet-shell section.seal-border {
   background-color: var(--zv5-card) !important;
-  background-image: linear-gradient(180deg, rgba(255,255,255,.18), rgba(228,203,163,.025)) !important;
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(228, 203, 163, 0.025)
+  ) !important;
   border-color: var(--zv5-line) !important;
   color: var(--zv5-ink) !important;
   box-shadow: var(--zv5-shadow) !important;
@@ -123,8 +146,8 @@ body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-specialist-card,
 .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-focused-report,
 .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-ziwei-feature {
-  backdrop-filter: blur(1.5px) saturate(.92) !important;
-  -webkit-backdrop-filter: blur(1.5px) saturate(.92) !important;
+  backdrop-filter: blur(1.5px) saturate(0.92) !important;
+  -webkit-backdrop-filter: blur(1.5px) saturate(0.92) !important;
 }
 
 .zhaowu-home-sheet-shell #analysisForm,
@@ -138,7 +161,9 @@ body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell #analysisForm,
 .zhaowu-home-sheet-shell .zhaowu-result-card,
 .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
-.zhaowu-home-sheet-shell .zhaowu-tools-section { padding: 15px 15px !important; }
+.zhaowu-home-sheet-shell .zhaowu-tools-section {
+  padding: 15px 15px !important;
+}
 
 .zhaowu-home-sheet-shell #analysisForm input,
 .zhaowu-home-sheet-shell #analysisForm textarea,
@@ -149,7 +174,7 @@ body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell .zhaowu-decree-preview,
 .zhaowu-home-sheet-shell .zhaowu-decree-preview-skeleton {
   background-color: var(--zv5-field) !important;
-  border-color: rgba(151, 111, 62, .35) !important;
+  border-color: rgba(151, 111, 62, 0.35) !important;
   color: var(--zv5-ink) !important;
 }
 
@@ -159,7 +184,9 @@ body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell h4,
 .zhaowu-home-sheet-shell p,
 .zhaowu-home-sheet-shell li,
-.zhaowu-home-sheet-shell label { text-shadow: none !important; }
+.zhaowu-home-sheet-shell label {
+  text-shadow: none !important;
+}
 
 .zhaowu-home-sheet-shell .zhaowu-result-card p,
 .zhaowu-home-sheet-shell .zhaowu-decree-copy,
@@ -176,17 +203,21 @@ body:has(.zhaowu-home-sheet-shell),
 
 .zhaowu-home-sheet-shell #analysisForm button[type="submit"],
 .zhaowu-home-sheet-shell .zhaowu-result-primary {
-  background: linear-gradient(180deg, var(--zv5-red), var(--zv5-red-deep)) !important;
+  background: linear-gradient(
+    180deg,
+    var(--zv5-red),
+    var(--zv5-red-deep)
+  ) !important;
   border-color: transparent !important;
   color: #fffaf2 !important;
-  box-shadow: 0 8px 18px rgba(143, 47, 37, .12) !important;
+  box-shadow: 0 8px 18px rgba(143, 47, 37, 0.12) !important;
 }
 
 .zhaowu-home-sheet-shell .zhaowu-decree-generate,
 .zhaowu-home-sheet-shell .zhaowu-specialist-action,
 .zhaowu-home-sheet-shell .zhaowu-ziwei-action {
   background: var(--zv5-card-strong) !important;
-  border-color: rgba(181, 58, 46, .46) !important;
+  border-color: rgba(181, 58, 46, 0.46) !important;
   color: var(--zv5-red-deep) !important;
   box-shadow: none !important;
 }
@@ -203,14 +234,23 @@ body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell .zhaowu-report-hero-pearl,
 .zhaowu-home-sheet-shell .zhaowu-report-hero-lotus,
 .zhaowu-home-sheet-shell .zhaowu-report-ornament,
-.zhaowu-home-sheet-shell .zhaowu-report-dragon { display: none !important; }
+.zhaowu-home-sheet-shell .zhaowu-report-dragon {
+  display: none !important;
+}
 
-.zhaowu-home-sheet-shell footer { margin-top: 0 !important; background: transparent !important; }
+.zhaowu-home-sheet-shell footer {
+  margin-top: 0 !important;
+  background: transparent !important;
+}
 
 @media (max-width: 430px) {
   .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) {
-    background-position: 0 0, 57% 0 !important;
-    background-size: auto, 880px auto !important;
+    background-position:
+      0 0,
+      57% 0 !important;
+    background-size:
+      auto,
+      880px auto !important;
   }
 
   .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-home-app-frame {
@@ -219,107 +259,223 @@ body:has(.zhaowu-home-sheet-shell),
     padding: 6px 7px 20px !important;
   }
 
-  .zhaowu-home-sheet-page { gap: 7px !important; }
-  .zhaowu-home-intro { padding: 7px 6px 3px; }
+  .zhaowu-home-sheet-page {
+    gap: 7px !important;
+  }
+  .zhaowu-home-intro {
+    padding: 7px 6px 3px;
+  }
 
   .zhaowu-home-sheet-shell #analysisForm,
   .zhaowu-home-sheet-shell .zhaowu-result-card,
   .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
   .zhaowu-home-sheet-shell .zhaowu-tools-section,
-  .zhaowu-home-sheet-shell .zhaowu-focused-report { border-radius: 16px !important; }
+  .zhaowu-home-sheet-shell .zhaowu-focused-report {
+    border-radius: 16px !important;
+  }
 
   .zhaowu-home-sheet-shell #analysisForm,
   .zhaowu-home-sheet-shell .zhaowu-result-card,
   .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
-  .zhaowu-home-sheet-shell .zhaowu-tools-section { padding: 14px 13px !important; }
+  .zhaowu-home-sheet-shell .zhaowu-tools-section {
+    padding: 14px 13px !important;
+  }
 }
 
-
 /* Screenshot-one lock: one compact parchment flow with the landscape visible. */
-.zhaowu-home-sheet-shell #analysisForm > h2 { font-size: 1.35rem !important; margin-top: .35rem !important; }
-.zhaowu-home-sheet-shell #analysisForm > p { line-height: 1.6 !important; }
-.zhaowu-home-sheet-shell #analysisForm form { margin-top: 14px !important; }
-.zhaowu-home-sheet-shell #analysisForm form > :not([hidden]) ~ :not([hidden]) { margin-top: 13px !important; }
-.zhaowu-home-sheet-shell #analysisForm textarea { min-height: 88px !important; }
-.zhaowu-home-sheet-shell .zhaowu-result-flow { gap: 8px !important; }
-.zhaowu-home-sheet-shell .zhaowu-result-card { padding: 15px !important; }
-.zhaowu-home-sheet-shell .zhaowu-result-card h2 { font-size: 1.35rem !important; }
+.zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-heading h2 {
+  font-size: 1.35rem !important;
+  margin-top: 0.35rem !important;
+}
+.zhaowu-home-sheet-shell #analysisForm > p {
+  line-height: 1.6 !important;
+}
+.zhaowu-home-sheet-shell #analysisForm form {
+  margin-top: 14px !important;
+}
+.zhaowu-home-sheet-shell #analysisForm form > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 13px !important;
+}
+.zhaowu-home-sheet-shell #analysisForm textarea {
+  min-height: 88px !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-result-flow {
+  gap: 8px !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-result-card {
+  padding: 15px !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-result-card h2 {
+  font-size: 1.35rem !important;
+}
 .zhaowu-home-sheet-shell .zhaowu-decree-gallery {
   display: grid !important;
-  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) !important;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) !important;
   gap: 12px !important;
   align-items: center !important;
 }
 .zhaowu-home-sheet-shell .zhaowu-decree-copy,
-.zhaowu-home-sheet-shell .zhaowu-decree-previews { min-width: 0 !important; }
-.zhaowu-home-sheet-shell .zhaowu-decree-note { font-size: 12px !important; line-height: 1.7 !important; }
-.zhaowu-home-sheet-shell .zhaowu-decree-generate { width: 100% !important; }
-.zhaowu-home-sheet-shell .zhaowu-result-actions { gap: 7px !important; }
-.zhaowu-home-sheet-shell .zhaowu-decree-couplet { display: none !important; }
-
-@media (max-width: 430px) {
-  .zhaowu-home-sheet-shell .zhaowu-site-header { position: relative !important; }
-  .zhaowu-home-sheet-shell .zhaowu-decree-gallery { grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr) !important; }
-  .zhaowu-home-sheet-shell .zhaowu-decree-kicker { font-size: 9px !important; letter-spacing: .12em !important; }
-  .zhaowu-home-sheet-shell .zhaowu-decree-copy h3 { font-size: 1.05rem !important; }
-  .zhaowu-home-sheet-shell .zhaowu-decree-generate { min-height: 42px !important; padding: 0 10px !important; font-size: 12px !important; }
+.zhaowu-home-sheet-shell .zhaowu-decree-previews {
+  min-width: 0 !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-decree-note {
+  font-size: 12px !important;
+  line-height: 1.7 !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-decree-generate {
+  width: 100% !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-result-actions {
+  gap: 7px !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-decree-couplet {
+  display: none !important;
 }
 
+@media (max-width: 430px) {
+  .zhaowu-home-sheet-shell .zhaowu-site-header {
+    position: relative !important;
+  }
+  .zhaowu-home-sheet-shell .zhaowu-site-header > div {
+    min-height: 58px;
+    padding-inline: 8px !important;
+  }
+  .zhaowu-home-sheet-shell .zhaowu-site-header nav {
+    gap: 2px;
+  }
+  .zhaowu-home-sheet-shell .zhaowu-site-header nav > a,
+  .zhaowu-home-sheet-shell .zhaowu-site-header nav > button {
+    padding-inline: 8px;
+  }
+  .zhaowu-home-sheet-shell .zhaowu-decree-gallery {
+    grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr) !important;
+  }
+  .zhaowu-home-sheet-shell .zhaowu-decree-kicker {
+    font-size: 9px !important;
+    letter-spacing: 0.12em !important;
+  }
+  .zhaowu-home-sheet-shell .zhaowu-decree-copy h3 {
+    font-size: 1.05rem !important;
+  }
+  .zhaowu-home-sheet-shell .zhaowu-decree-generate {
+    min-height: 42px !important;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+  }
+}
 
-/* Compact homepage entry for the standalone character comparison. */
-.zhaowu-home-dual-entry {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+/* After a result is available, the long input form folds into the approved
+ * mobile chart-information panel. The calculation inputs remain available
+ * through the explicit edit-details action. */
+.zhaowu-analysis-heading {
+  display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 64px;
-  border: 1px solid var(--zv5-line);
-  border-radius: 16px;
-  padding: 9px 12px;
-  color: var(--zv5-ink);
-  background: rgba(251, 245, 233, .72);
-  box-shadow: var(--zv5-shadow);
-  backdrop-filter: blur(1.5px) saturate(.92);
-  -webkit-backdrop-filter: blur(1.5px) saturate(.92);
+  justify-content: space-between;
+  gap: 14px;
 }
-.zhaowu-home-dual-entry:active { transform: translateY(1px); }
-.zhaowu-home-dual-mark {
+
+.zhaowu-analysis-edit {
+  display: inline-flex;
+  min-height: 38px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  border-radius: 999px;
+  padding: 0 8px;
+  color: var(--zv5-earth);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.zhaowu-analysis-edit span {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.zhaowu-home-sheet-shell #analysisForm.is-compact {
+  padding: 15px !important;
+}
+
+.zhaowu-home-sheet-shell #analysisForm.is-compact h2 {
+  font-size: 1.22rem !important;
+  letter-spacing: 0.04em;
+}
+
+.zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-compact-form {
   display: grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
-  border: 1px solid rgba(181, 58, 46, .42);
-  border-radius: 50%;
-  color: var(--zv5-red-deep);
-  font-family: var(--font-display, serif);
-  font-size: 11px;
-  letter-spacing: .04em;
-  background: rgba(255, 250, 241, .68);
+  gap: 13px;
+  margin-top: 15px !important;
 }
-.zhaowu-home-dual-copy { min-width: 0; }
-.zhaowu-home-dual-copy strong {
-  display: block;
-  font-family: var(--font-display, serif);
-  font-size: 16px;
-  line-height: 1.3;
-  letter-spacing: .04em;
+
+.zhaowu-home-sheet-shell
+  #analysisForm
+  .zhaowu-analysis-compact-form
+  > :not([hidden])
+  ~ :not([hidden]) {
+  margin-top: 0 !important;
 }
-.zhaowu-home-dual-copy small {
-  display: block;
-  margin-top: 3px;
-  overflow: hidden;
+
+.zhaowu-analysis-cities {
+  display: grid;
+  gap: 12px;
+}
+
+.zhaowu-analysis-settings {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 10px;
+}
+
+.zhaowu-analysis-settings > span {
+  display: flex;
+  min-width: 0;
+  min-height: 46px;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(151, 111, 62, 0.3);
+  border-radius: 13px;
+  padding: 8px 10px;
   color: var(--zv5-ink-soft);
+  background: rgba(255, 250, 241, 0.48);
   font-size: 11px;
-  line-height: 1.45;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.35;
 }
-.zhaowu-home-dual-entry > b {
-  color: var(--zv5-red-deep);
-  font-size: 20px;
-  font-weight: 500;
+
+.zhaowu-analysis-settings b {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 5px;
+  color: #fffaf2;
+  background: var(--zv5-jade);
+  font-size: 12px;
 }
-@media (max-width: 430px) {
-  .zhaowu-home-dual-entry { min-height: 60px; padding: 8px 10px; }
-  .zhaowu-home-dual-mark { width: 40px; height: 40px; }
+
+.zhaowu-analysis-settings i {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(151, 111, 62, 0.55);
+  border-radius: 50%;
+  color: var(--zv5-earth);
+  font-family: serif;
+  font-size: 10px;
+  font-style: normal;
+}
+
+.zhaowu-analysis-settings small {
+  display: block;
+  flex: 0 0 auto;
+  color: var(--zv5-earth);
+  font-size: 10px;
+}
+
+@media (max-width: 360px) {
+  .zhaowu-analysis-settings {
+    grid-template-columns: 1fr;
+  }
 }

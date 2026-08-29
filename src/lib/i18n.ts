@@ -14,13 +14,31 @@ const TABLE = {
   introSkip: ["跳過動畫", "跳过动画"],
   heroKicker: ["命理 · 時機 · 選擇", "命理 · 时机 · 选择"],
   heroSlogan: ["昭於未見，棲於有梧。", "昭于未见，栖于有梧。"],
-  heroLead: ["知命，不是認命；是看清之後，知道往哪裡走。", "知命，不是认命；是看清之后，知道往哪里走。"],
-  heroBody: ["昭梧以命理為鏡，觀其時、察其勢、明其路。看見尚未顯形的端倪，也為每一次選擇留一處可棲之地。", "昭梧以命理为镜，观其时、察其势、明其路。看见尚未显形的端倪，也为每一次选择留一处可栖之地。"],
-  heroEnglish: ["See what lies unseen. Find where you belong.", "See what lies unseen. Find where you belong."],
+  heroLead: [
+    "知命，不是認命；是看清之後，知道往哪裡走。",
+    "知命，不是认命；是看清之后，知道往哪里走。",
+  ],
+  heroBody: [
+    "昭梧以命理為鏡，觀其時、察其勢、明其路。看見尚未顯形的端倪，也為每一次選擇留一處可棲之地。",
+    "昭梧以命理为镜，观其时、察其势、明其路。看见尚未显形的端倪，也为每一次选择留一处可栖之地。",
+  ],
+  heroEnglish: [
+    "See what lies unseen. Find where you belong.",
+    "See what lies unseen. Find where you belong.",
+  ],
   heroSign: ["見勢 · 知時 · 有歸", "见势 · 知时 · 有归"],
-  m1: ["命理不是宿命，而是理解自己的方法；", "命理不是宿命，而是理解自己的方法；"],
-  m2: ["運勢不是答案，而是看見時機的能力；", "运势不是答案，而是看见时机的能力；"],
-  m3: ["真正改變人生的，始終是每一次清醒而有意識的選擇。", "真正改变人生的，始终是每一次清醒而有意识的选择。"],
+  m1: [
+    "命理不是宿命，而是理解自己的方法；",
+    "命理不是宿命，而是理解自己的方法；",
+  ],
+  m2: [
+    "運勢不是答案，而是看見時機的能力；",
+    "运势不是答案，而是看见时机的能力；",
+  ],
+  m3: [
+    "真正改變人生的，始終是每一次清醒而有意識的選擇。",
+    "真正改变人生的，始终是每一次清醒而有意识的选择。",
+  ],
   product: ["人生節奏與選擇分析", "人生节奏与选择分析"],
   start: ["開始我的分析", "开始我的分析"],
   navHome: ["首頁", "首页"],
@@ -38,10 +56,16 @@ const TABLE = {
   chong: ["沖", "冲"],
   sha: ["煞", "煞"],
   lunar: ["農曆", "农历"],
-  formTitle: ["你的命盤資料", "你的命盘资料"],
-  formLead: ["填出生證明上的日期、時間和城市，其餘交給系統。", "填出生证明上的日期、时间和城市，其余交给系统。"],
+  formTitle: ["你的命盤資訊", "你的命盘信息"],
+  formLead: [
+    "填出生證明上的日期、時間和城市，其餘交給系統。",
+    "填出生证明上的日期、时间和城市，其余交给系统。",
+  ],
   question: ["你現在最想知道什麼？", "你现在最想知道什么？"],
-  qPh: ["例如：這份工作要不要繼續？我現在最該先處理什麼？", "例如：这份工作要不要继续？我现在最该先处理什么？"],
+  qPh: [
+    "例如：這份工作要不要繼續？我現在最該先處理什麼？",
+    "例如：这份工作要不要继续？我现在最该先处理什么？",
+  ],
   year: ["年", "年"],
   month: ["月", "月"],
   day: ["日", "日"],
@@ -55,13 +79,19 @@ const TABLE = {
   relAny: ["不限", "不限"],
   relHet: ["異性緣", "异性缘"],
   relSame: ["同性／多元", "同性／多元"],
-  relHint: ["只用於感情問題的方向判斷，不影響其他分析。", "只用于感情问题的方向判断，不影响其他分析。"],
+  relHint: [
+    "只用於感情問題的方向判斷，不影響其他分析。",
+    "只用于感情问题的方向判断，不影响其他分析。",
+  ],
   city: ["出生城市／國家", "出生城市／国家"],
   cityPh: ["請輸入出生城市與國家", "请输入出生城市与国家"],
   popularCities: ["常用城市", "常用城市"],
   liveCity: ["目前居住城市（選填）", "目前居住城市（选填）"],
   optional: ["選填", "选填"],
-  liveHint: ["只修正南北半球、季節與生活節奏，不改變出生八字。", "只修正南北半球、季节与生活节奏，不改变出生八字。"],
+  liveHint: [
+    "只修正南北半球、季節與生活節奏，不改變出生八字。",
+    "只修正南北半球、季节与生活节奏，不改变出生八字。",
+  ],
   hourPh: ["時 0–23", "时 0–23"],
   minutePh: ["分 0–59", "分 0–59"],
   solar: ["套用真太陽時校正", "套用真太阳时校正"],
@@ -71,18 +101,36 @@ const TABLE = {
   analyze: ["開始分析", "开始分析"],
   analyzing: ["正在建立命盤…", "正在建立命盘…"],
   locating: ["正在換算出生地時間…", "正在换算出生地时间…"],
-  remembered: ["已帶入你上次保存的出生資料，可以直接修改。", "已带入你上次保存的出生资料，可以直接修改。"],
-  errCity: ["請從搜尋結果選擇出生城市與國家。", "请从搜索结果选择出生城市与国家。"],
+  remembered: [
+    "已帶入你上次保存的出生資料，可以直接修改。",
+    "已带入你上次保存的出生资料，可以直接修改。",
+  ],
+  errCity: [
+    "請從搜尋結果選擇出生城市與國家。",
+    "请从搜索结果选择出生城市与国家。",
+  ],
   errQuestion: ["請先寫下你真正想問的問題。", "请先写下你真正想问的问题。"],
-  errAnalyze: ["分析暫時未能完成，請檢查資料後再試。", "分析暂时未能完成，请检查资料后再试。"],
+  errAnalyze: [
+    "分析暫時未能完成，請檢查資料後再試。",
+    "分析暂时未能完成，请检查资料后再试。",
+  ],
   faq: ["常見問題", "常见问题"],
   faq1q: ["分析依據是什麼？", "分析依据是什么？"],
-  faq1a: ["昭梧以傳統子平八字為唯一主判。前世／六道題走達摩一掌經確定性排盤，零額外 AI。紫微、西占等未接入獨立排盤前，只標示資料未接入，不拿八字反推。", "昭梧以传统子平八字为唯一主判。前世／六道题走达摩一掌经确定性排盘，零额外 AI。紫微、西占等未接入独立排盘前，只标示资料未接入，不拿八字反推。"],
+  faq1a: [
+    "昭梧以傳統子平八字為唯一主判。前世／六道題走達摩一掌經確定性排盤，零額外 AI。紫微、西占等未接入獨立排盤前，只標示資料未接入，不拿八字反推。",
+    "昭梧以传统子平八字为唯一主判。前世／六道题走达摩一掌经确定性排盘，零额外 AI。紫微、西占等未接入独立排盘前，只标示资料未接入，不拿八字反推。",
+  ],
   faq2q: ["分析結果一定準確嗎？", "分析结果一定准确吗？"],
-  faq2a: ["不保證任何事件一定發生。八字用來整理結構、時機與較高機率的課題；現實中的資源、選擇與行動仍會改變結果。", "不保证任何事件一定发生。八字用来整理结构、时机与较高机率的课题；现实中的资源、选择与行动仍会改变结果。"],
+  faq2a: [
+    "不保證任何事件一定發生。八字用來整理結構、時機與較高機率的課題；現實中的資源、選擇與行動仍會改變結果。",
+    "不保证任何事件一定发生。八字用来整理结构、时机与较高机率的课题；现实中的资源、选择与行动仍会改变结果。",
+  ],
   faq3q: ["我的資料會保存嗎？", "我的资料会保存吗？"],
-  faq3a: ["登入後可把報告存到「我的昭梧」。未登入的分析只留在這次瀏覽。你也可以隨時刪除已保存的報告。", "登录后可把报告存到「我的昭梧」。未登录的分析只留在这次浏览。你也可以随时删除已保存的报告。"],
-  resultQ: ["你真正問的問題", "你真正问的问题"],
+  faq3a: [
+    "登入後可把報告存到「我的昭梧」。未登入的分析只留在這次瀏覽。你也可以隨時刪除已保存的報告。",
+    "登录后可把报告存到「我的昭梧」。未登录的分析只留在这次浏览。你也可以随时删除已保存的报告。",
+  ],
+  resultQ: ["你的分析結果", "你的分析结果"],
   resultA: ["問題直答", "问题直答"],
   chart: ["你的八字", "你的八字"],
   dayMaster: ["日主", "日主"],
@@ -119,14 +167,29 @@ const TABLE = {
   saved: ["已保存", "已保存"],
   needLogin: ["登入後即可保存與續看。", "登录后即可保存与续看。"],
   reset: ["重新開始", "重新开始"],
-  disclaimer: ["以上屬傳統文化與象徵性解讀，用來理解人生慣性與課題，不代表已被證實的前世事實，亦不替代醫療、法律或財務決定。", "以上属传统文化与象征性解读，用来理解人生惯性与课题，不代表已被证实的前世事实，亦不替代医疗、法律或财务决定。"],
-  mineLead: ["同一帳號保存你的出生檔案、歷次問題與完整報告。", "同一账号保存你的出生档案、历次问题与完整报告。"],
-  emptyMine: ["帳號內還沒有報告。完成一次分析後，可保存到這裡。", "账号内还没有报告。完成一次分析后，可保存到这里。"],
+  disclaimer: [
+    "以上屬傳統文化與象徵性解讀，用來理解人生慣性與課題，不代表已被證實的前世事實，亦不替代醫療、法律或財務決定。",
+    "以上属传统文化与象征性解读，用来理解人生惯性与课题，不代表已被证实的前世事实，亦不替代医疗、法律或财务决定。",
+  ],
+  mineLead: [
+    "同一帳號保存你的出生檔案、歷次問題與完整報告。",
+    "同一账号保存你的出生档案、历次问题与完整报告。",
+  ],
+  emptyMine: [
+    "帳號內還沒有報告。完成一次分析後，可保存到這裡。",
+    "账号内还没有报告。完成一次分析后，可保存到这里。",
+  ],
   open: ["查看", "查看"],
   del: ["刪除", "删除"],
   loginTitle: ["登入昭梧", "登录昭梧"],
-  loginLead: ["登入後，完整報告會自動保存到「我的昭梧」。", "登录后，完整报告会自动保存到「我的昭梧」。"],
-  loginPageLead: ["登入後會保存出生資料與最近報告；站主帳號可直接查看客戶目前可用的最高版本報告。", "登录后会保存出生资料与最近报告；站主账号可直接查看客户目前可用的最高版本报告。"],
+  loginLead: [
+    "登入後，完整報告會自動保存到「我的昭梧」。",
+    "登录后，完整报告会自动保存到「我的昭梧」。",
+  ],
+  loginPageLead: [
+    "登入後會保存出生資料與最近報告；站主帳號可直接查看客戶目前可用的最高版本報告。",
+    "登录后会保存出生资料与最近报告；站主账号可直接查看客户目前可用的最高版本报告。",
+  ],
   loginTab: ["登入", "登录"],
   signupTab: ["註冊", "注册"],
   signupTitle: ["建立昭梧帳號", "建立昭梧账号"],
@@ -137,8 +200,14 @@ const TABLE = {
   processing: ["處理中…", "处理中…"],
   createAccount: ["建立帳號", "建立账号"],
   loginUnavailable: ["登入服務尚未配置完成。", "登录服务尚未配置完成。"],
-  loginValidation: ["請輸入有效 Email，密碼至少 8 位。", "请输入有效 Email，密码至少 8 位。"],
-  accountCreated: ["帳號已建立。請到 Email 完成確認後，再回來登入。", "账号已建立。请到 Email 完成确认后，再回来登录。"],
+  loginValidation: [
+    "請輸入有效 Email，密碼至少 8 位。",
+    "请输入有效 Email，密码至少 8 位。",
+  ],
+  accountCreated: [
+    "帳號已建立。請到 Email 完成確認後，再回來登入。",
+    "账号已建立。请到 Email 完成确认后，再回来登录。",
+  ],
   invalidCredentials: ["Email 或密碼不正確。", "Email 或密码不正确。"],
   loginFailed: ["登入失敗。", "登录失败。"],
   loggedInTitle: ["已登入昭梧", "已登录昭梧"],
@@ -155,31 +224,67 @@ const TABLE = {
   s3: ["先看直答，再閱讀完整報告", "先看直答，再阅读完整报告"],
   accountAdmin: ["帳號／後台", "账号／后台"],
   methodKicker: ["方法透明 · 邊界清楚", "方法透明 · 边界清楚"],
-  methodTitle: ["不是多講玄學，而是先把能算與不能算說清楚", "不是多讲玄学，而是先把能算与不能算说清楚"],
-  methodLead: ["昭梧把已接入的方法、尚未接入的資料與判斷邊界公開呈現，避免用漂亮話術冒充結論。", "昭梧把已接入的方法、尚未接入的资料与判断边界公开呈现，避免用漂亮话术冒充结论。"],
+  methodTitle: [
+    "不是多講玄學，而是先把能算與不能算說清楚",
+    "不是多讲玄学，而是先把能算与不能算说清楚",
+  ],
+  methodLead: [
+    "昭梧把已接入的方法、尚未接入的資料與判斷邊界公開呈現，避免用漂亮話術冒充結論。",
+    "昭梧把已接入的方法、尚未接入的资料与判断边界公开呈现，避免用漂亮话术冒充结论。",
+  ],
   proofPrimaryTitle: ["子平主判", "子平主判"],
-  proofPrimaryBody: ["以子平八字作唯一核心主判，先回答問題，再展示命盤與依據。", "以子平八字作唯一核心主判，先回答问题，再展示命盘与依据。"],
+  proofPrimaryBody: [
+    "以子平八字作唯一核心主判，先回答問題，再展示命盤與依據。",
+    "以子平八字作唯一核心主判，先回答问题，再展示命盘与依据。",
+  ],
   proofPastTitle: ["前世獨立排盤", "前世独立排盘"],
-  proofPastBody: ["六道／前世題只走達摩一掌經確定性排盤，不用額外 AI 發散。", "六道／前世题只走达摩一掌经确定性排盘，不用额外 AI 发散。"],
+  proofPastBody: [
+    "六道／前世題只走達摩一掌經確定性排盤，不用額外 AI 發散。",
+    "六道／前世题只走达摩一掌经确定性排盘，不用额外 AI 发散。",
+  ],
   galleryKicker: ["單頁展廳", "单页展厅"],
   galleryTitle: ["獨立工具，一頁只看一件事", "独立工具，一页只看一件事"],
-  galleryBody: ["這裡集中可獨立開啟的排盤與測驗。每張單頁只保留用途、輸入與結果，不混入完整報告流程。", "这里集中可独立打开的排盘与测验。每张单页只保留用途、输入与结果，不混入完整报告流程。"],
+  galleryBody: [
+    "這裡集中可獨立開啟的排盤與測驗。每張單頁只保留用途、輸入與結果，不混入完整報告流程。",
+    "这里集中可独立打开的排盘与测验。每张单页只保留用途、输入与结果，不混入完整报告流程。",
+  ],
   palmToolKicker: ["免費工具 · 零 AI", "免费工具 · 零 AI"],
   palmToolTitle: ["達摩一掌經｜四宮與六道", "达摩一掌经｜四宫与六道"],
-  palmToolBody: ["只填出生日期、時辰與傳統順逆，直接看年、月、日、時四宮。結果在裝置上計算，不登入、不保存。", "只填出生日期、时辰与传统顺逆，直接看年、月、日、时四宫。结果在设备上计算，不登录、不保存。"],
-  palmToolScope: ["用途｜查看前四世四宮、十二星、六道習氣與本命主軸", "用途｜查看前四世四宫、十二星、六道习气与本命主轴"],
+  palmToolBody: [
+    "只填出生日期、時辰與傳統順逆，直接看年、月、日、時四宮。結果在裝置上計算，不登入、不保存。",
+    "只填出生日期、时辰与传统顺逆，直接看年、月、日、时四宫。结果在设备上计算，不登录、不保存。",
+  ],
+  palmToolScope: [
+    "用途｜查看前四世四宮、十二星、六道習氣與本命主軸",
+    "用途｜查看前四世四宫、十二星、六道习气与本命主轴",
+  ],
   palmToolButton: ["開始免費排盤", "开始免费排盘"],
   proofBoundaryTitle: ["未接入不亂編", "未接入不乱编"],
-  proofBoundaryBody: ["紫微、西占、六爻等沒有獨立排盤前，只標示資料未接入。", "紫微、西占、六爻等没有独立排盘前，只标示资料未接入。"],
+  proofBoundaryBody: [
+    "紫微、西占、六爻等沒有獨立排盤前，只標示資料未接入。",
+    "紫微、西占、六爻等没有独立排盘前，只标示资料未接入。",
+  ],
   myTitle: ["我的昭梧", "我的昭梧"],
-  mySignedOutLead: ["登入後查看你的出生檔案與最近三份報告。", "登录后查看你的出生档案与最近三份报告。"],
+  mySignedOutLead: [
+    "登入後查看你的出生檔案與最近三份報告。",
+    "登录后查看你的出生档案与最近三份报告。",
+  ],
   followTitle: ["繼續問這張盤", "继续问这张盘"],
-  followGuestLead: ["登入後可沿用同一張命盤追問，不需要重新填出生資料。", "登录后可沿用同一张命盘追问，不需要重新填出生资料。"],
-  followLead: ["四柱、月令、真太陽時與大運沿用目前這張盤，只重新判斷你的新問題。", "四柱、月令、真太阳时与大运沿用目前这张盘，只重新判断你的新问题。"],
+  followGuestLead: [
+    "登入後可沿用同一張命盤追問，不需要重新填出生資料。",
+    "登录后可沿用同一张命盘追问，不需要重新填出生资料。",
+  ],
+  followLead: [
+    "四柱、月令、真太陽時與大運沿用目前這張盤，只重新判斷你的新問題。",
+    "四柱、月令、真太阳时与大运沿用目前这张盘，只重新判断你的新问题。",
+  ],
   followLogin: ["登入後續問", "登录后续问"],
   followButton: ["繼續問", "继续问"],
   followBusy: ["分析中…", "分析中…"],
-  followPh: ["例如：那我現在應該先換工作，還是先把手上的事做完？", "例如：那我现在应该先换工作，还是先把手上的事做完？"],
+  followPh: [
+    "例如：那我現在應該先換工作，還是先把手上的事做完？",
+    "例如：那我现在应该先换工作，还是先把手上的事做完？",
+  ],
   followError: ["續問失敗。", "续问失败。"],
   guest: ["來訪", "来访"],
 } as const satisfies Record<string, Entry>;
@@ -196,8 +301,10 @@ const EN: Record<CopyKey, string> = {
   introSkip: "Skip animation",
   heroKicker: "Destiny · Timing · Choice",
   heroSlogan: "See what lies unseen. Find where you belong.",
-  heroLead: "Knowing your pattern is not surrender. It is seeing clearly enough to know where to go.",
-  heroBody: "Zhaowu uses traditional metaphysics as a mirror: to read timing, recognise momentum, and make clearer choices before the path fully takes shape.",
+  heroLead:
+    "Knowing your pattern is not surrender. It is seeing clearly enough to know where to go.",
+  heroBody:
+    "Zhaowu uses traditional metaphysics as a mirror: to read timing, recognise momentum, and make clearer choices before the path fully takes shape.",
   heroEnglish: "See what lies unseen. Find where you belong.",
   heroSign: "Read the trend · Know the timing · Find your place",
   m1: "Metaphysics is not fatalism; it is a way to understand your patterns.",
@@ -220,8 +327,9 @@ const EN: Record<CopyKey, string> = {
   chong: "Clash",
   sha: "Direction",
   lunar: "Lunar date",
-  formTitle: "Your birth details",
-  formLead: "Enter the date, time and city shown on your birth record. The system handles the rest.",
+  formTitle: "Your chart details",
+  formLead:
+    "Enter the date, time and city shown on your birth record. The system handles the rest.",
   question: "What do you most want to know right now?",
   qPh: "Example: Should I stay in this job? What should I deal with first?",
   year: "Year",
@@ -237,13 +345,15 @@ const EN: Record<CopyKey, string> = {
   relAny: "Any",
   relHet: "Opposite-sex",
   relSame: "Same-sex / diverse",
-  relHint: "Used only to frame relationship questions. It does not alter the chart.",
+  relHint:
+    "Used only to frame relationship questions. It does not alter the chart.",
   city: "Birth city / country",
   cityPh: "Enter birth city and country",
   popularCities: "Popular cities",
   liveCity: "Current city (optional)",
   optional: "Optional",
-  liveHint: "Used only for hemisphere, season and lifestyle context. It does not change the natal chart.",
+  liveHint:
+    "Used only for hemisphere, season and lifestyle context. It does not change the natal chart.",
   hourPh: "Hour 0–23",
   minutePh: "Minute 0–59",
   solar: "Apply true solar time correction",
@@ -256,15 +366,19 @@ const EN: Record<CopyKey, string> = {
   remembered: "Your saved birth details are here. You can edit them.",
   errCity: "Choose your birth city from the search results.",
   errQuestion: "Write the question you actually want answered first.",
-  errAnalyze: "The analysis could not be completed. Check the details and try again.",
+  errAnalyze:
+    "The analysis could not be completed. Check the details and try again.",
   faq: "FAQ",
   faq1q: "What is the analysis based on?",
-  faq1a: "Zhaowu uses traditional Zi Ping BaZi as the sole primary judgement. Past-life / six-realm questions use the deterministic Dharma Palm calculation without extra AI expansion.",
+  faq1a:
+    "Zhaowu uses traditional Zi Ping BaZi as the sole primary judgement. Past-life / six-realm questions use the deterministic Dharma Palm calculation without extra AI expansion.",
   faq2q: "Is the result guaranteed to be accurate?",
-  faq2a: "No event is guaranteed. The chart is used to organise structure, timing and higher-probability patterns; real-world resources, choices and actions still change outcomes.",
+  faq2a:
+    "No event is guaranteed. The chart is used to organise structure, timing and higher-probability patterns; real-world resources, choices and actions still change outcomes.",
   faq3q: "Is my data saved?",
-  faq3a: "When signed in, you can save reports to My Zhaowu. Logged-out analysis remains only in the current session.",
-  resultQ: "Your question",
+  faq3a:
+    "When signed in, you can save reports to My Zhaowu. Logged-out analysis remains only in the current session.",
+  resultQ: "Your analysis",
   resultA: "Direct answer",
   chart: "Your BaZi chart",
   dayMaster: "Day Master",
@@ -301,14 +415,17 @@ const EN: Record<CopyKey, string> = {
   saved: "Saved",
   needLogin: "Sign in to save and continue.",
   reset: "Start over",
-  disclaimer: "This is a traditional-cultural and symbolic interpretation for understanding patterns and choices. It is not a substitute for medical, legal or financial decisions.",
-  mineLead: "Keep your birth profile, questions and full reports under one account.",
+  disclaimer:
+    "This is a traditional-cultural and symbolic interpretation for understanding patterns and choices. It is not a substitute for medical, legal or financial decisions.",
+  mineLead:
+    "Keep your birth profile, questions and full reports under one account.",
   emptyMine: "No reports yet. Complete an analysis and save it here.",
   open: "Open",
   del: "Delete",
   loginTitle: "Sign in to Zhaowu",
   loginLead: "Sign in to save full reports to My Zhaowu.",
-  loginPageLead: "Sign in to save birth details and recent reports. The verified owner account can open each customer's highest available report.",
+  loginPageLead:
+    "Sign in to save birth details and recent reports. The verified owner account can open each customer's highest available report.",
   loginTab: "Sign in",
   signupTab: "Create account",
   signupTitle: "Create a Zhaowu account",
@@ -319,8 +436,10 @@ const EN: Record<CopyKey, string> = {
   processing: "Processing…",
   createAccount: "Create account",
   loginUnavailable: "Sign-in has not been configured yet.",
-  loginValidation: "Enter a valid email and a password of at least 8 characters.",
-  accountCreated: "Account created. Confirm your email, then return here to sign in.",
+  loginValidation:
+    "Enter a valid email and a password of at least 8 characters.",
+  accountCreated:
+    "Account created. Confirm your email, then return here to sign in.",
   invalidCredentials: "The email or password is incorrect.",
   loginFailed: "Sign-in failed.",
   loggedInTitle: "Signed in to Zhaowu",
@@ -338,30 +457,41 @@ const EN: Record<CopyKey, string> = {
   accountAdmin: "Account / Admin",
   methodKicker: "Transparent method · Clear boundaries",
   methodTitle: "A clear answer starts with what can—and cannot—be calculated",
-  methodLead: "Zhaowu shows which methods are active, which data is not connected, and where the judgement stops. Design never substitutes for evidence.",
+  methodLead:
+    "Zhaowu shows which methods are active, which data is not connected, and where the judgement stops. Design never substitutes for evidence.",
   proofPrimaryTitle: "Zi Ping primary judgement",
-  proofPrimaryBody: "Zi Ping BaZi is the sole core judgement. The question is answered first, followed by the chart and its basis.",
+  proofPrimaryBody:
+    "Zi Ping BaZi is the sole core judgement. The question is answered first, followed by the chart and its basis.",
   proofPastTitle: "Independent past-life method",
-  proofPastBody: "Six-realm and past-life questions use the deterministic Dharma Palm calculation without extra AI expansion.",
+  proofPastBody:
+    "Six-realm and past-life questions use the deterministic Dharma Palm calculation without extra AI expansion.",
   galleryKicker: "Single-page gallery",
   galleryTitle: "One standalone tool, one clear purpose",
-  galleryBody: "Standalone calculations and quizzes live here. Each page contains only its purpose, inputs and result, separate from the full-report flow.",
+  galleryBody:
+    "Standalone calculations and quizzes live here. Each page contains only its purpose, inputs and result, separate from the full-report flow.",
   palmToolKicker: "Free tool · zero AI",
   palmToolTitle: "Dharma Palm · Four Palaces",
-  palmToolBody: "Enter a birth date, hour and traditional sequence to view the year, month, day and hour palaces. Calculated on-device with no sign-in or storage.",
-  palmToolScope: "Purpose · View four prior-life palaces, twelve stars, six symbolic realms and the current-life axis",
+  palmToolBody:
+    "Enter a birth date, hour and traditional sequence to view the year, month, day and hour palaces. Calculated on-device with no sign-in or storage.",
+  palmToolScope:
+    "Purpose · View four prior-life palaces, twelve stars, six symbolic realms and the current-life axis",
   palmToolButton: "Open free calculation",
   proofBoundaryTitle: "No invented systems",
-  proofBoundaryBody: "Zi Wei, Western astrology, Liu Yao and other systems stay marked as not connected until their own calculations exist.",
+  proofBoundaryBody:
+    "Zi Wei, Western astrology, Liu Yao and other systems stay marked as not connected until their own calculations exist.",
   myTitle: "My Zhaowu",
-  mySignedOutLead: "Sign in to view your birth profile and three most recent reports.",
+  mySignedOutLead:
+    "Sign in to view your birth profile and three most recent reports.",
   followTitle: "Ask another question using this chart",
-  followGuestLead: "Sign in to reuse the same chart without entering your birth details again.",
-  followLead: "The pillars, month command, true solar time and luck cycle stay unchanged. Only the new question is interpreted.",
+  followGuestLead:
+    "Sign in to reuse the same chart without entering your birth details again.",
+  followLead:
+    "The pillars, month command, true solar time and luck cycle stay unchanged. Only the new question is interpreted.",
   followLogin: "Sign in to continue",
   followButton: "Ask follow-up",
   followBusy: "Analysing…",
-  followPh: "Example: Should I change jobs first, or finish the current project?",
+  followPh:
+    "Example: Should I change jobs first, or finish the current project?",
   followError: "The follow-up could not be completed.",
   guest: "Guest",
 };
@@ -385,8 +515,13 @@ function readLocale(): Locale {
 export const useI18n = create<I18nState>((set, get) => ({
   locale: readLocale(),
   setLocale: (locale) => {
-    try { window.localStorage.setItem("zhaowu.locale", locale); } catch { /* ignore */ }
-    if (typeof document !== "undefined") document.documentElement.lang = locale === "en" ? "en" : locale;
+    try {
+      window.localStorage.setItem("zhaowu.locale", locale);
+    } catch {
+      /* ignore */
+    }
+    if (typeof document !== "undefined")
+      document.documentElement.lang = locale === "en" ? "en" : locale;
     set({ locale });
   },
   t: (key) => {
@@ -399,5 +534,6 @@ export const useI18n = create<I18nState>((set, get) => ({
 export function hydrateLocale() {
   const locale = readLocale();
   useI18n.setState({ locale });
-  if (typeof document !== "undefined") document.documentElement.lang = locale === "en" ? "en" : locale;
+  if (typeof document !== "undefined")
+    document.documentElement.lang = locale === "en" ? "en" : locale;
 }
