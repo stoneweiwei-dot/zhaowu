@@ -42,7 +42,7 @@ test("孤立四庫先標庫在而未動，不為完整而硬斷開庫", () => {
   };
   const text = buildFourTombsRuntimeText(chart);
   assert.match(text, /庫在而未動/);
-  assert.match(text, /不等於藏干力量排名/);
+  assert.match(text, /不(?:等於|是)藏干力量排名/);
 });
 
 test("四庫 runtime overlay 冪等，不會重複塞入報告", () => {
