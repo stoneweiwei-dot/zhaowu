@@ -1,202 +1,104 @@
-export type InstructionRule = {
-  id: string;
-  title: string;
-  status: 'production' | 'candidate' | 'reference';
-  layer: 'core' | 'bazi' | 'relationship' | 'environment' | 'training' | 'boundary';
-  priority: number;
-  purpose: string;
-  rules: string[];
-  guards: string[];
-  outputContract?: string[];
+import {
+  zhaowuInstructionDatabase as baseInstructionDatabase,
+  type InstructionRule as BaseInstructionRule,
+} from './instruction-database-base';
+
+export type InstructionTrigger = {
+  /** Any matching natal or active branch enables this instruction. */
+  branchAny?: readonly string[];
 };
 
+export type InstructionRule = BaseInstructionRule & {
+  trigger?: InstructionTrigger;
+};
+
+export const FOUR_TOMB_BRANCHES = ['辰', '戌', '丑', '未'] as const;
+export type FourTombBranch = (typeof FOUR_TOMB_BRANCHES)[number];
+
+export const fourTombsInstructionRule: InstructionRule = {
+  id: 'ZW-FOUR-TOMBS-MUKU-1.0',
+  title: '辰戌丑未四庫／墓庫動態分析協議',
+  status: 'production',
+  layer: 'bazi',
+  priority: 8,
+  purpose: '凡四柱或歲運出現辰、戌、丑、未，強制切換到四庫專門分析：分離本氣、庫氣與中餘氣，處理合沖刑會的收束與鬆動，並防止把庫氣名稱誤當力量排序或把本氣十神混成庫氣十神。',
+  trigger: { branchAny: FOUR_TOMB_BRANCHES },
+  rules: [
+    '觸發條件：年、月、日、時任一地支為辰戌丑未即啟用原局四庫分析；若原局無四庫而大運或流年出現四庫，只在歲運觸發層啟用，不反向改寫原局常態。',
+    '四庫身份按十二長生墓位處理：辰為水庫、戌為火庫、丑為金庫、未為木庫。這是墓庫身份與可被引動的五行對象，不等於藏干力量排序，也不預設吉凶。',
+    '必須分開列出本氣、中氣／餘氣、庫氣及其對日主的十神。不得把本氣十神與庫氣十神混用。例：壬日主見辰，辰庫氣癸水為劫財，辰本氣戊土才是七殺；不能把「辰本氣七殺」寫成「七殺庫」。',
+    '「旺者為庫，衰者為墓」的旺衰主詞，是被墓／被庫的那個五行在全局或該步歲運中的旺衰，不是日主身強身弱。日主強而某十神之氣弱入墓，仍可按墓論。',
+    '庫氣不等於最強藏干。藏干分日歷代版本有差異，不能因「庫氣」名稱就判它強於中氣或餘氣；力量仍回到月令、透干、根氣、貼近、制化與歲運引動。',
+    '辰戌沖、丑未沖不得只斷「化土」，也不得只斷「開庫」。同時評估土支互相耗動、庫門鬆動、藏氣釋放、損根與重新入局，明確指出被動的是哪個藏干、十神、用神或病源。',
+    '開庫機制與開庫結果必須分開：沖、刑、拱／會、干透、歲運引動屬於「如何動庫」；喜忌、病藥、承載與流通屬於「動後結果」。不得把「喜忌定吉凶」列成第五種開庫手段。',
+    '四庫在三合、三會、六合上的方向並不對稱：辰可被引向水、木、金；戌三合與六合多指向火而三會可向金；丑可被引向金、水、土；未可被引向木、火，而午未六合的化氣方向有傳統分歧，優先論牽制與收束，不強斷化氣。',
+    '「六合閉庫」不可一刀切。辰酉、卯戌可形成較明確的身份收束；子丑多先論合住與收束，化氣仍須條件；午未先論協調、牽制、收束，除非月令、透干、根氣與全局條件足以支持，否則不強判合化。',
+    '同一庫同時受合鎖與自刑、沖、刑、三合或三會時，不得寫「鎖死」。例如雙辰自刑又見辰酉合，要比較收束／牽制與耗損／鬆動兩股力量；優先級回到月令、透干、貼近日主或關鍵宮位、是否觸及病藥，以及歲運是否引動。',
+    '辰戌丑未之所以兼具土與墓庫功能，先按四季交接的承載、收束背景理解；具體辰收水、未收木、戌收火、丑收金，再回到十二長生墓位。不得把「四庫」理解成四個完全相同的普通土支。',
+    '位置只決定歸屬與場景，不直接決定吉凶：年、月、日、時所在宮位要和藏干十神、合沖刑會、病藥與歲運一起看。',
+    '任何歲運斷語都必須展示實際干支鏈條。原局、大運、流年沒有形成對應關係時，不得憑空寫「丑未大沖」「辰戌開庫」等懸空事件句。',
+    '墓庫相關現實映射只可翻譯為資源內收、流通受阻、蓄積待用、被引動後釋放或震盪等結構語言，再由具體十神與宮位落到事業、財務、關係或生活；禁止直接套死亡、離婚、失職、墜胎、抑鬱早逝、被騙等固定事件。',
+  ],
+  guards: [
+    '禁止「庫氣比餘氣強」或「得庫氣必吉」。',
+    '禁止「開庫必發財」「沖庫必凶」「沖庫必開」等單因果斷語。',
+    '禁止把六合直接等同合化，或把所有四庫六合一律寫成同一種「閉庫」。',
+    '禁止把辰戌沖／丑未沖簡化成單純化土，亦禁止忽略土支耗動與藏氣重新入局。',
+    '禁止混用本氣十神與庫氣十神。',
+    '禁止因四庫名稱直接推出婚變、官非、死亡、疾病、破產等恐嚇性結論。',
+    '禁止忽略雙辰自刑、丑未戌刑局或其他同時存在的合沖刑會，只保留單一「鎖庫」敘事。',
+    '禁止沒有原局／大運／流年干支證據就製造歲運事件。',
+  ],
+  outputContract: [
+    '觸發後至少輸出：四庫位置 → 本氣／中餘氣／庫氣及十神 → 庫／墓判定 → 合沖刑會動態 → 病藥與流通影響 → 歲運觸發條件 → 現實映射與驗證點。',
+    '若四庫只是存在但未被透干、合沖刑會或歲運有效引動，明確標示「庫在而未動」，不得為了內容完整而硬斷事件。',
+  ],
+};
+
+/** Preserve all legacy production instructions and append the four-tombs module. */
 export const zhaowuInstructionDatabase: InstructionRule[] = [
-  {
-    id: 'ZW-AI-METAPHYSICS-CORE-1.0',
-    title: '昭梧玄學分析核心防錯協議',
-    status: 'production',
-    layer: 'core',
-    priority: 1,
-    purpose: '把所有命理、旁證、環境與象徵模組收束到 deterministic-first、子平主判、證據鏈與邊界管理之下。',
-    rules: [
-      '先做輸入資料、時區、夏令時、真太陽時、節氣邊界與四柱校驗，排盤事實不得由文字模型偷改。',
-      '子平八字是唯一核心主判；紫微、七政、西占、達摩一掌經、前世因果、靈魂原型、風水環境只可作旁證、象徵或環境層。',
-      '用神分析必須走病到藥與功能判定，不得以五行數量、缺失、生肖、單柱、神煞直接定喜忌。',
-      '每個重要結論需具備事實、關係、成立條件、結論、限制、現實驗證點。',
-      '證據分級：A=確定性排盤事實；B=規則推導結構；C=現實映射；D=象徵或未驗證假說。低級證據不得推翻高級證據。',
-      '未知保持 UNKNOWN；資料不足、時辰不明、規則衝突、無法驗證時不可用敘事補洞。'
-    ],
-    guards: [
-      '禁止偽精確百分比與成功率，除非有真實校準資料。',
-      '禁止把神煞、六道、上界、前世、靈魂原型寫成事實身份。',
-      '禁止醫療、法律、投資、死亡、絕症、必離婚、必破產等恐嚇式斷語。'
-    ],
-    outputContract: [
-      '先回答使用者問題，再展示依據。',
-      '輸出結論必須標示：確定結構、較高概率、歲運觸發、象徵補充、不作判定。'
-    ]
-  },
-  {
-    id: 'SH-FECM-1.0',
-    title: '南半球五行氣候—環境校正模型',
-    status: 'production',
-    layer: 'environment',
-    priority: 20,
-    purpose: '在不改寫四柱八字的前提下，為南半球出生地與居住地加入天時地氣、氣候與風水環境校正層。',
-    rules: [
-      '南半球不自動反轉八字月令、干支、四柱或大運順逆。',
-      '傳統節氣月令仍作命理月令；當地自然季相另作環境參照，不得把對沖月令當第二個真正月令。',
-      '火勢不可固定乘 0.82，水勢不可固定乘 1.18；須看緯度、季節、太陽高度、晝長、雲量、日照、海陸與住宅採光。',
-      '寒暖與燥濕分兩軸：熱軸為寒、偏寒、平、偏暖、熱；水分軸為燥、偏燥、平、偏濕、濕。',
-      '海陸地形按真實環境判斷：沿海與水體偏水，植被偏木，高日照與熱島偏火，厚重地形偏土，高樓金融金屬標準偏金。',
-      '風場不是單一五行，而是搬運機制；海風、內陸風、冷風、熱風、悶閉與過強風分別判斷其對氣機的搬運、散逸或閉塞。',
-      '南半球住宅不可機械套用北半球南向最好；需分開判斷傳統方位象意、實際得光、風向、水氣與命局病藥。',
-      '最後只判斷此地是否補命局之藥或加重命局之病，不得說某城市必旺某類人。'
-    ],
-    guards: [
-      '禁止南半球火弱水旺一刀切。',
-      '禁止城市行政區固定五行。',
-      '禁止把風水象意說成科學已證實。',
-      '禁止用環境層反向改寫本盤格局、月令、用神與大運。'
-    ],
-    outputContract: [
-      '本盤核心、南半球季相、天文火勢、熱濕氣候、海陸地氣、風場流通、環境適配、實際調整建議、最終一句話。'
-    ]
-  },
-  {
-    id: 'ZW-BAZI-EVENT-INFERENCE-1.0',
-    title: '八字斷事：理法、象法、技法協議',
-    status: 'production',
-    layer: 'bazi',
-    priority: 10,
-    purpose: '讓八字斷事從理法成立、象法落地、技法觸發與現實驗證四層輸出，避免看見單一符號就神斷。',
-    rules: [
-      '理法層先看陰陽五行、五行作用、干支特性、干支作用、十神特性、十神作用。',
-      '五行不是數量統計，必須回到月令、根氣、透藏、流通、制化、承載、病藥。',
-      '天干主外顯、行為、資源、現實可見事件；地支主內在結構、長期壓力、宮位、根氣與暗線。',
-      '合沖刑害破庫先看是否成局，再看是否被破；真正優先級取決於月令、透干、貼近關鍵位置、病藥與歲運觸發。',
-      '十神是功能關係，不是人格標籤；必須分清得令失令、有根無根、清濁真假、喜忌、有用或成病。',
-      '象法層以宮位、五行類象、干支類象、十神類象與關係意象落到人生場景。',
-      '技法層以原局種子、格局用神、做功方式、大運流年流月流日判斷事件機制與應期。',
-      '無做功路徑，不輸出具體事件句；無三條以上支持，不作精確應期。'
-    ],
-    guards: [
-      '禁止理法未成立就直接取象。',
-      '禁止只靠象法寫故事。',
-      '禁止單一十神、日柱、神煞、生肖定人格、婚姻、財富、疾病或死亡。',
-      '性傾向與私生活屬敏感議題，只能分析吸引模式與關係結構，不可只靠八字斷定。'
-    ],
-    outputContract: [
-      '問題定位、理法依據、象法落點、技法判斷、現實表現、有利面、失衡面、行動建議、驗證點。'
-    ]
-  },
-  {
-    id: 'ZW-WIFE-STAR-CONTESTED-1.0',
-    title: '男命妻星被比劫競奪與婚姻穩定度判斷協議',
-    status: 'production',
-    layer: 'relationship',
-    priority: 30,
-    purpose: '把比劫旺、財星受爭、夫妻宮受擾等結構納入男命感情風險分析，但避免恐嚇式宿命斷語。',
-    rules: [
-      '男命通常以財星為妻星與伴侶資源象，但仍須結合日支夫妻宮、財星根氣、透藏、清濁、喜忌、歲運。',
-      '比肩與劫財代表同類競爭、朋友兄弟同輩、資源分流、伴侶場的競爭壓力；比劫旺不等於主觀不忠。',
-      '比劫特別旺的判定須看天干透出、地支根氣、比劫成勢或成局、財星是否虛浮無根、比劫是否緊貼或包圍財星。',
-      '財星虛弱且比劫旺，表示伴侶位置容易受外力、同輩、朋友圈、資源競爭或自我邊界問題干擾。',
-      '財星有根但被比劫奪財，表示不是沒有關係資源，而是守護成本高、安全感不足、比劫運中更易出現競爭。',
-      '比劫大運或流年是風險窗口，須看是否同時引動財星、夫妻宮、合沖刑害、財庫與現實條件。',
-      '若有官殺制比劫、食傷生財有路、財星得地有護、夫妻宮不受重傷，則不能直接判婚姻不穩。'
-    ],
-    guards: [
-      '禁止說妻星永遠被搶走。',
-      '禁止說必有第三者、必離婚、必被戴綠帽。',
-      '禁止把比劫旺等同道德不忠。',
-      '女命、同性戀與非傳統關係不得硬套妻字；按伴侶場、關係對象與本人自我認同翻譯。'
-    ],
-    outputContract: [
-      '判斷財星狀態、比劫強度、夫妻宮、保護機制、歲運窗口、現實驗證點、關係邊界建議。'
-    ]
-  },
-  {
-    id: 'ZW-DECREE-FREE-PAID-COPY-1.0',
-    title: '個人命誥圖：免費雙句命辭與付費解說協議',
-    status: 'production',
-    layer: 'core',
-    priority: 12,
-    purpose: '讓免費命誥圖只留下兩句有命理氣質、略帶玄意但不神叨的個人命辭；完整圖解與現實提示只為付費版預留。',
-    rules: [
-      '免費版個人命誥圖只顯示兩行命辭，不顯示長篇命理解說、畫面元素字典、證據鏈、現實建議或生成理由。',
-      '兩行命辭必須由已確認命盤資料生成：第一行優先取日主天干與五行氣質，第二行只在喜用/病藥已成立時取其功能；若尚未成立則退回月令季相與節奏，不得硬猜喜用。',
-      '中文命辭語氣採半古半白：有畫面、有餘味、能讀懂；每行約 10–18 個中文字，禁止堆砌仙佛、天命、劫數、宿世、神諭等詞。',
-      '英文版不是逐字翻譯古文，而是兩行短句式 poetic aphorism，保持克制、可讀、和命盤結構相符。',
-      '命誥圖本體不強迫 AI 在圖片裡生成大段中文字；為避免亂碼，兩句命辭由前端以真正文字排在圖下方。',
-      '付費版圖解可以先準備生成規則，但免費畫面不得渲染。付費圖解啟用後需與同一張命誥圖的主象、輔象、色彩、場景及同一份 canonical reading 對齊，不可圖文各說各話。',
-      '付費圖解總長建議 220–380 字，固定涵蓋：圖名與一句總述、這張圖在說什麼、4–6 個畫面元素對照、3 條現實提示、一句收束。',
-      '付費圖解的三條現實提示固定回答：現在最該強化什麼、最容易失衡在哪裡、下一步最適合怎麼做。'
-    ],
-    guards: [
-      '禁止免費版把付費圖解提前漏出。',
-      '禁止自問自答、模型推理過程、提示詞、UUID、生成原因或內部技術文字出現在客戶畫面。',
-      '禁止為了玄妙而寫恐嚇式宿命句；不得把象徵畫面說成神明真實授命或不可改變的命運判決。',
-      '禁止解釋畫面裡沒有實際出現的元素；同一張圖只解釋真正生成出的主象與輔象。'
-    ],
-    outputContract: [
-      'FREE: exactly two lines only. No paragraph explanation.',
-      'PAID-HIDDEN-CONTRACT: decree_title 6–12字；decree_subtitle 16–28字；decree_overview 80–140字；decree_elements 4–6項；decree_guidance 3項；decree_closing 12–24字。',
-      'PAID-HIDDEN-PROMPT: 用白話解釋「這張圖為什麼這樣畫、每個核心元素代表什麼、對現實有什麼提示」；只引用 canonical chart / reading 與實際 visual profile；不要使用「可能、也許、仿佛」堆水字，不要神神叨叨，不要自問自答。'
-    ]
-  },
-  {
-    id: 'ZW-FIVE-ELEMENT-FUNCTIONAL-TRAINING-1.0',
-    title: '五行功能訓練與生活補法協議',
-    status: 'production',
-    layer: 'training',
-    priority: 40,
-    purpose: '把木火土金水轉化為生活可執行功能訓練，但只在該五行為藥、為喜或有利但受阻時啟用。',
-    rules: [
-      '五行生活建議只能在用神、喜神、病藥已判定後輸出，不得用缺什麼補什麼。',
-      '木的功能是長：學習、規劃、生發、仁慈、耐心、向上；木為藥時可建議學習、長期規劃、接觸植物、伸展、培養耐心。',
-      '火的功能是動：行動、表達、熱情、顯化、曝光、溫度；火為藥時可建議表達、運動、接受陽光、增加展示與行動。',
-      '土的功能是穩：承載、規律、接地、整理、落實、信用；土為藥時可建議規律作息、整理空間、接觸土地、做飯、建立穩定節奏。',
-      '金的功能是立：邊界、紀律、標準、精準、斷捨離、執行；金為藥時可建議力量訓練、清理雜物、建立規則、提高標準、乾淨利落。',
-      '水的功能是流：流動、智慧、適應、資訊、探索、連接；水為藥時可建議游泳、瑜伽、走動、旅行、寫日記、保持好奇與資訊流通。',
-      '若該五行已成病，生活建議必須反向提醒：木防想多不落地，火防急躁耗散，土防拖延濕滯，金防太硬太冷，水防散亂沉溺。'
-    ],
-    guards: [
-      '禁止把生活補法當用神判定依據。',
-      '禁止人人都曬太陽、人人都游泳、人人都斷捨離的模板化建議。',
-      '飲食、運動、健康建議只作生活方向，不替代醫療與專業建議。'
-    ],
-    outputContract: [
-      '先寫成立前提：此五行在命局中為藥、為喜，或為有利但受阻的功能；若成病則不可照搬補法。'
-    ]
-  },
-  {
-    id: 'ZW-ZHENGXIN-BIANSIN-BOUNDARY-1.0',
-    title: '正信與迷信邊界協議',
-    status: 'production',
-    layer: 'boundary',
-    priority: 5,
-    purpose: '保留信仰、因果、修心與積德的精神提醒，但防止網站走向恐嚇、依賴、賣焦慮或外力改命。',
-    rules: [
-      '正信是相信因果、承擔選擇、尊重神明但不把神明當許願機、把命理當方向提醒而非判決書。',
-      '正信鼓勵理性思考、歡迎查證與學習；修心、修德、修行比求神改命更重要。',
-      '迷信是把人生交給外力、凡事都怪命、認為拜拜或法器能解決所有問題、把命盤當不能改變的判決書。',
-      '迷信是不敢質疑、只因害怕得罪神明而服從、花錢求改命卻不改自己。',
-      '積陰德類內容只可作精神建議：藏人之過、困境不踩、成全善行、功勞讓人、不揭舊傷、給人台階、默默助人、不惡意揣測、長久小善、有力不報復。'
-    ],
-    guards: [
-      '禁止賣法器、改命服務、付費消災、恐嚇式神煞。',
-      '禁止把信仰判成科學事實。',
-      '禁止要求使用者因命理放棄醫療、法律、投資或心理專業判斷。'
-    ],
-    outputContract: [
-      '精神提醒只放在報告結尾或文化象徵層，不可污染子平主判。'
-    ]
-  }
+  ...baseInstructionDatabase,
+  fourTombsInstructionRule,
 ];
+
+export type InstructionContext = {
+  natalBranches?: readonly string[];
+  /** Dayun / annual / monthly branches currently being evaluated. */
+  activeBranches?: readonly string[];
+};
+
+export function getFourTombsTriggerContext(
+  context: InstructionContext = {},
+): 'natal' | 'transit' | null {
+  const natal = context.natalBranches ?? [];
+  if (natal.some((branch) => FOUR_TOMB_BRANCHES.includes(branch as FourTombBranch))) return 'natal';
+  const active = context.activeBranches ?? [];
+  if (active.some((branch) => FOUR_TOMB_BRANCHES.includes(branch as FourTombBranch))) return 'transit';
+  return null;
+}
+
+function triggerMatches(rule: InstructionRule, context: InstructionContext): boolean {
+  const branchAny = rule.trigger?.branchAny;
+  if (!branchAny?.length) return true;
+  const branches = [...(context.natalBranches ?? []), ...(context.activeBranches ?? [])];
+  return branches.some((branch) => branchAny.includes(branch));
+}
+
+/**
+ * Canonical instruction router for BaZi analysis.
+ * Any 辰／戌／丑／未 in natal branches or active luck/year branches automatically
+ * injects ZW-FOUR-TOMBS-MUKU-1.0 before the generic event-inference protocol.
+ */
+export function getApplicableInstructionRules(
+  context: InstructionContext = {},
+): InstructionRule[] {
+  return zhaowuInstructionDatabase
+    .filter((rule) => triggerMatches(rule, context))
+    .sort((a, b) => a.priority - b.priority);
+}
 
 export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-08-25T01:25:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-08-30T00:00:00Z';

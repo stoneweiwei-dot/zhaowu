@@ -3,6 +3,7 @@ import type { AnalysisResult, AnalyzeInput, CityHit, RelationPref } from "@/lib/
 import { buildChart, currentAlmanac } from "@/lib/bazi/chart";
 import { classifyQuestion, interpret } from "@/lib/bazi/interpret";
 import { applyMonthStageFeedbackPolicy } from "@/lib/bazi/month-stage-feedback";
+import { applyFourTombsRuntimePolicy } from "@/lib/bazi/four-tombs-runtime";
 import { buildPalm } from "@/lib/palm/engine";
 import { routeMethods } from "@/lib/core/method";
 import { inferQuestionKind } from "@/lib/core/answer-contract";
@@ -126,10 +127,13 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
     palmReady: palm.ready,
     palmMissing: palm.missing,
   });
-  const rawReading = applyMonthStageFeedbackPolicy(
-    data.question,
+  const rawReading = applyFourTombsRuntimePolicy(
     chart,
-    interpret(data.question, chart, data.relation, palm),
+    applyMonthStageFeedbackPolicy(
+      data.question,
+      chart,
+      interpret(data.question, chart, data.relation, palm),
+    ),
   );
   const reading = finalizeReading(
     data.question,
@@ -167,10 +171,13 @@ export async function followUpLife({
     palmReady: Boolean(palm?.ready),
     palmMissing: palm?.missing ?? [],
   });
-  const rawReading = applyMonthStageFeedbackPolicy(
-    question,
+  const rawReading = applyFourTombsRuntimePolicy(
     data.base.chart,
-    interpret(question, data.base.chart, data.relation ?? "unset", palm),
+    applyMonthStageFeedbackPolicy(
+      question,
+      data.base.chart,
+      interpret(question, data.base.chart, data.relation ?? "unset", palm),
+    ),
   );
   const reading = finalizeReading(
     question,
@@ -201,7 +208,10 @@ export async function writeFullReport({
     locale?: AnalysisResult["locale"];
   };
 }) {
-  const governedReading = applyMonthStageFeedbackPolicy(data.question, data.chart, data.reading);
+  const governedReading = applyFourTombsRuntimePolicy(
+    data.chart,
+    applyMonthStageFeedbackPolicy(data.question, data.chart, data.reading),
+  );
   const reading = finalizeReading(data.question, data.chart, governedReading, data.locale);
   const palm = data.palm ?? null;
   const methodProtocol = routeMethods(reading.kind, {
