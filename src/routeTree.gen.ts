@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as HistoryRouteImport } from './routes/history'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as QizhengRouteImport } from './routes/qizheng'
 import { Route as TeaGuardianRouteImport } from './routes/tea-guardian'
@@ -33,6 +34,11 @@ const AccountRoute = AccountRouteImport.update({
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/gallery': typeof GalleryRoute
+  '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/qizheng': typeof QizhengRoute
   '/tea-guardian': typeof TeaGuardianRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/gallery': typeof GalleryRoute
+  '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/qizheng': typeof QizhengRoute
   '/tea-guardian': typeof TeaGuardianRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/gallery': typeof GalleryRoute
+  '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/qizheng': typeof QizhengRoute
   '/tea-guardian': typeof TeaGuardianRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/gallery'
+    | '/history'
     | '/login'
     | '/qizheng'
     | '/tea-guardian'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/gallery'
+    | '/history'
     | '/login'
     | '/qizheng'
     | '/tea-guardian'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/gallery'
+    | '/history'
     | '/login'
     | '/qizheng'
     | '/tea-guardian'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
   GalleryRoute: typeof GalleryRoute
+  HistoryRoute: typeof HistoryRoute
   LoginRoute: typeof LoginRoute
   QizhengRoute: typeof QizhengRoute
   TeaGuardianRoute: typeof TeaGuardianRoute
@@ -181,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/gallery'
       fullPath: '/gallery'
       preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -239,6 +259,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
   GalleryRoute: GalleryRoute,
+  HistoryRoute: HistoryRoute,
   LoginRoute: LoginRoute,
   QizhengRoute: QizhengRoute,
   TeaGuardianRoute: TeaGuardianRoute,

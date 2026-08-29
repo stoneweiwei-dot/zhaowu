@@ -6,6 +6,7 @@ import type { CityHit } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { calculateQizheng } from "@/lib/qizheng/engine";
 import { buildQizhengPlainSummary, type QizhengPlainSummary } from "@/lib/qizheng/plain-summary";
+import { saveSpecialistHistory } from "@/lib/specialist-history";
 import "@/qizheng-home.css";
 
 export const Route = createFileRoute("/qizheng")({ component: QizhengPage });
@@ -83,6 +84,7 @@ function QizhengPage() {
         input: "Birth details", year: "Year", month: "Month", day: "Day", hour: "Hour", minute: "Minute",
         city: "Birthplace", cityPh: "Search city", submit: "Generate my report", error: "Check the birth date, time and birthplace.",
         result: "Your personal reading", note: "Traditional interpretation for self-reflection",
+        saved: "Saved automatically on this device.", saveFailed: "The report is ready, but this browser blocked local storage.", history: "View my history",
       }
     : locale === "zh-Hans"
       ? {
@@ -91,6 +93,7 @@ function QizhengPage() {
           input: "出生资料", year: "年", month: "月", day: "日", hour: "时", minute: "分",
           city: "出生地", cityPh: "搜索城市", submit: "生成我的报告", error: "请检查出生日期、时间和出生地。",
           result: "你的个人报告", note: "传统文化解读，用于自我观察",
+          saved: "已自动保存在这台设备。", saveFailed: "报告已生成，但浏览器阻止了本地保存。", history: "查看我的记录",
         }
       : {
           back: "返回昭梧", kicker: "昭梧 · 七政四餘", title: "你的七政命局報告",
@@ -98,6 +101,7 @@ function QizhengPage() {
           input: "出生資料", year: "年", month: "月", day: "日", hour: "時", minute: "分",
           city: "出生地", cityPh: "搜尋城市", submit: "生成我的報告", error: "請檢查出生日期、時間和出生地。",
           result: "你的個人報告", note: "傳統文化解讀，用於自我觀察",
+          saved: "已自動保存在這台裝置。", saveFailed: "報告已生成，但瀏覽器阻止了本機保存。", history: "查看我的紀錄",
         };
 
   const [year, setYear] = useState("");
@@ -107,6 +111,7 @@ function QizhengPage() {
   const [minute, setMinute] = useState("0");
   const [city, setCity] = useState<CityHit | null>(null);
   const [report, setReport] = useState<QizhengPlainSummary | null>(null);
+  const [historySaved, setHistorySaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -120,7 +125,18 @@ function QizhengPage() {
       if (civilCheck.getUTCFullYear() !== y || civilCheck.getUTCMonth() !== m - 1 || civilCheck.getUTCDate() !== d) throw new Error("date");
       const chart = calculateQizheng({ year: y, month: m, day: d, hour: h, minute: min, timezone: city.timezone });
       if (!chart) throw new Error("chart");
-      setReport(buildQizhengPlainSummary(chart, locale));
+      const nextReport = buildQizhengPlainSummary(chart, locale);
+      setReport(nextReport);
+      const savedEntry = saveSpecialistHistory({
+        kind: "qizheng",
+        locale,
+        sourcePath: "/qizheng",
+        title: nextReport.title,
+        inputSummary: `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")} · ${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")} · ${localizeCityHit(city, locale).display}`,
+        sections: nextReport.sections.map((section) => ({ title: section.title, body: section.body })),
+        closing: nextReport.closing,
+      });
+      setHistorySaved(Boolean(savedEntry));
       window.setTimeout(() => document.getElementById("qizheng-result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 30);
     } catch {
       setError(copy.error);
@@ -161,6 +177,7 @@ function QizhengPage() {
               <article key={section.key}><i aria-hidden>{String(index + 1).padStart(2, "0")}</i><div><h4>{section.title}</h4><p>{section.body}</p></div></article>
             ))}</div>
             <blockquote>{report.closing}</blockquote>
+            <div className="qz-report-history"><span>{historySaved ? copy.saved : copy.saveFailed}</span>{historySaved ? <Link to="/history">{copy.history}<b aria-hidden>→</b></Link> : null}</div>
           </div>
         </section>
       ) : null}

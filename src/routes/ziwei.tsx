@@ -6,6 +6,7 @@ import { ganzhiOf } from "@/lib/bazi/calendar";
 import { toTrueSolar } from "@/lib/bazi/solar-time";
 import type { CityHit } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { saveSpecialistHistory } from "@/lib/specialist-history";
 import {
   buildZiweiCoreChart,
   buildZiweiPlainSummary,
@@ -118,6 +119,7 @@ function ZiweiPage() {
         calculate: "Generate my report", error: "Check the birth date, time and birthplace.", result: "Your Zi Wei report",
         summaryKicker: "YOUR READING", factsOnly: "Traditional interpretation for self-reflection",
         sections: ["Character", "Work and strengths", "Money pattern", "Relationships", "Pressure and recovery", "Current life phase"],
+        saved: "Saved automatically on this device.", saveFailed: "The report is ready, but this browser blocked local storage.", history: "View my history",
       }
     : locale === "zh-Hans"
       ? {
@@ -128,6 +130,7 @@ function ZiweiPage() {
           calculate: "生成我的报告", error: "请检查出生日期、时间和出生地。", result: "你的紫微报告",
           summaryKicker: "个人报告", factsOnly: "传统文化解读，用于自我观察",
           sections: ["性格底色", "事业与做事方式", "财务习惯", "关系模式", "压力与恢复", "当前人生阶段"],
+          saved: "已自动保存在这台设备。", saveFailed: "报告已生成，但浏览器阻止了本地保存。", history: "查看我的记录",
         }
       : {
           back: "返回昭梧", kicker: "昭梧 · 紫微斗數", title: "你的紫微報告",
@@ -137,6 +140,7 @@ function ZiweiPage() {
           calculate: "生成我的報告", error: "請檢查出生日期、時間和出生地。", result: "你的紫微報告",
           summaryKicker: "個人報告", factsOnly: "傳統文化解讀，用於自我觀察",
           sections: ["性格底色", "事業與做事方式", "財務習慣", "關係模式", "壓力與恢復", "當前人生階段"],
+          saved: "已自動保存在這台裝置。", saveFailed: "報告已生成，但瀏覽器阻止了本機保存。", history: "查看我的紀錄",
         };
 
   const [year, setYear] = useState("");
@@ -147,6 +151,7 @@ function ZiweiPage() {
   const [city, setCity] = useState<CityHit | null>(null);
   const [basis, setBasis] = useState<ZiweiDirectionBasis>("male");
   const [result, setResult] = useState<ResultState | null>(null);
+  const [historySaved, setHistorySaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -174,7 +179,19 @@ function ZiweiPage() {
       const rawDecadalIndex = nominalAge >= firstAge ? Math.floor((nominalAge - firstAge) / 10) : -1;
       const activeDecadalIndex = rawDecadalIndex >= 0 && rawDecadalIndex < 12 ? rawDecadalIndex : null;
       const extension = buildZiweiTruthExtension({ chart: core, directionBasis: basis, targetYear: { year: ty, stem: target.stem, branch: target.branch }, activeDecadalIndex });
-      setResult({ normalized, core, extension, targetYear: ty, activeDecadalIndex });
+      const nextResult = { normalized, core, extension, targetYear: ty, activeDecadalIndex };
+      const nextSummary = buildZiweiPlainSummary({ chart: core, extension, locale, activeDecadalIndex, targetYear: ty });
+      setResult(nextResult);
+      const savedEntry = saveSpecialistHistory({
+        kind: "ziwei",
+        locale,
+        sourcePath: "/ziwei",
+        title: nextSummary.title,
+        inputSummary: `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")} · ${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")} · ${localizeCityHit(city, locale).display}`,
+        sections: nextSummary.paragraphs.map((paragraph, index) => ({ title: copy.sections[index] ?? copy.result, body: paragraph })),
+        closing: nextSummary.closing,
+      });
+      setHistorySaved(Boolean(savedEntry));
       window.setTimeout(() => document.getElementById("ziwei-result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 30);
     } catch {
       setError(copy.error);
@@ -212,6 +229,7 @@ function ZiweiPage() {
             <header><p>{copy.summaryKicker}</p><h3 id="ziwei-plain-title">{plainSummary.title}</h3></header>
             <div className="ziwei-plain-body ziwei-report-sections">{plainSummary.paragraphs.map((paragraph, index)=><article key={copy.sections[index] ?? index}><h4>{copy.sections[index]}</h4><p>{paragraph}</p></article>)}</div>
             <blockquote>{plainSummary.closing}</blockquote>
+            <div className="ziwei-report-history"><span>{historySaved ? copy.saved : copy.saveFailed}</span>{historySaved ? <Link to="/history">{copy.history}<b aria-hidden>→</b></Link> : null}</div>
           </section>
         </section>
       ):null}

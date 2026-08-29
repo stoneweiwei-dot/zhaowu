@@ -28,8 +28,11 @@ test("common navigation requests resolve locally in all three languages", () => 
   );
   assert.equal(
     resolveLocalSiteGuide("Where are my saved reports?", "en")?.route,
-    "/account",
+    "/history",
   );
+  assert.equal(resolveLocalSiteGuide("我想看七政四餘", "zh-Hant")?.route, "/qizheng");
+  assert.equal(resolveLocalSiteGuide("我想看以前的紫微报告", "zh-Hans")?.route, "/ziwei");
+  assert.equal(resolveLocalSiteGuide("Open Dharma Palm", "en")?.route, "/yizhangjing");
   assert.equal(
     resolveLocalSiteGuide("I want a career analysis", "en")?.route,
     "/#analysisForm",
@@ -40,7 +43,11 @@ test("the guide can only recommend real public site routes", () => {
   assert.deepEqual(SITE_GUIDE_ROUTES, [
     "/",
     "/#analysisForm",
+    "/qizheng",
+    "/yizhangjing",
+    "/ziwei",
     "/tianji-dual",
+    "/history",
     "/account",
     "/login",
   ]);
@@ -69,6 +76,10 @@ test("the shell mounts a non-blocking green dragon guide and the AI endpoint val
   assert.match(edge, /ALLOWED_ROUTES|safeRoute|gpt-4\.1-nano/);
   assert.match(edge, /source: "ai"|source: "fallback"/);
   assert.match(guide, /性格兩面/);
+  assert.match(guide, /七政四餘/);
+  assert.match(guide, /前世今生/);
+  assert.match(guide, /紫微斗數/);
+  assert.match(guide, /我的紀錄/);
   assert.match(edge, /Two sides of character/);
   assert.doesNotMatch(guide, /雙軌命盤|双轨命盘|Dual chart/);
   assert.doesNotMatch(guide, /Suspense|await.*render/);

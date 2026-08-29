@@ -73,8 +73,8 @@ export function GreenDragonGuide() {
       ? {
           title: "Jade Dragon guide",
           intro:
-            "Tell me what you want to do. I will take you to the right page.",
-          placeholder: "Where can I find my saved report?",
+            "Choose a reading or reopen a report. I will take you straight there.",
+          placeholder: "For example: show my previous Zi Wei report",
           ask: "Ask",
           close: "Close guide",
           open: "Open Jade Dragon guide",
@@ -84,8 +84,8 @@ export function GreenDragonGuide() {
       : locale === "zh-Hans"
         ? {
             title: "青玉小龙导航",
-            intro: "告诉我你想做什么，我带你去正确页面。",
-            placeholder: "例如：我想看保存的报告",
+            intro: "选择一种分析，或重看以前的报告，我带你直接前往。",
+            placeholder: "例如：我想看以前的紫微报告",
             ask: "问小龙",
             close: "关闭导航",
             open: "打开青玉小龙导航",
@@ -93,8 +93,8 @@ export function GreenDragonGuide() {
           }
         : {
             title: "青玉小龍導覽",
-            intro: "告訴我你想做什麼，我帶你去正確頁面。",
-            placeholder: "例如：我想看保存的報告",
+            intro: "選擇一種分析，或重看以前的報告，我帶你直接前往。",
+            placeholder: "例如：我想看以前的紫微報告",
             ask: "問小龍",
             close: "關閉導覽",
             open: "打開青玉小龍導覽",
@@ -160,14 +160,23 @@ export function GreenDragonGuide() {
           </div>
           <div
             className="zhaowu-dragon-guide-shortcuts"
-            aria-label="Site shortcuts"
+            aria-label={locale === "en" ? "Reading navigation" : locale === "zh-Hans" ? "分析导航" : "分析導覽"}
           >
             <button type="button" onClick={() => go("/#analysisForm")}>
               {locale === "en"
-                ? "Analysis"
+                ? "BaZi"
                 : locale === "zh-Hans"
-                  ? "开始分析"
-                  : "開始分析"}
+                  ? "八字分析"
+                  : "八字分析"}
+            </button>
+            <button type="button" onClick={() => go("/qizheng")}>
+              {locale === "en" ? "Seven Luminaries" : locale === "zh-Hans" ? "七政四余" : "七政四餘"}
+            </button>
+            <button type="button" onClick={() => go("/yizhangjing")}>
+              {locale === "en" ? "Past & Present" : "前世今生"}
+            </button>
+            <button type="button" onClick={() => go("/ziwei")}>
+              {locale === "en" ? "Zi Wei" : locale === "zh-Hans" ? "紫微斗数" : "紫微斗數"}
             </button>
             <button type="button" onClick={() => go("/tianji-dual")}>
               {locale === "en"
@@ -176,12 +185,12 @@ export function GreenDragonGuide() {
                   ? "性格两面"
                   : "性格兩面"}
             </button>
-            <button type="button" onClick={() => go("/account")}>
+            <button type="button" onClick={() => go("/history")}>
               {locale === "en"
-                ? "My reports"
+                ? "My history"
                 : locale === "zh-Hans"
-                  ? "我的报告"
-                  : "我的報告"}
+                  ? "我的记录"
+                  : "我的紀錄"}
             </button>
           </div>
           <form onSubmit={submit}>

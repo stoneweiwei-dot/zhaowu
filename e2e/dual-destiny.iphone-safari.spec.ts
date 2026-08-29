@@ -26,5 +26,7 @@ test("iPhone Safari opens the real Dharma Palm Past & Present report", async ({ 
   await expect(page.getByText(/被重複加強/)).toBeVisible();
   await expect(page.getByText("這一世的特徵", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("留到今生的習性", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("這份報告已保存在本裝置。")).toBeVisible();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("zhaowu.specialist-history.v1") || "[]").length)).toBe(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });

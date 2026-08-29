@@ -1,7 +1,11 @@
 const ALLOWED_ROUTES = [
   "/",
   "/#analysisForm",
+  "/qizheng",
+  "/yizhangjing",
+  "/ziwei",
   "/tianji-dual",
+  "/history",
   "/account",
   "/login",
 ] as const;
@@ -57,20 +61,20 @@ function fallback(locale: string) {
   if (locale === "en")
     return {
       reply:
-        "I can guide you to an analysis, Two sides of character, saved reports, or sign-in.",
+        "Choose BaZi, Seven Luminaries, Past & Present, Zi Wei, Two sides, or My history.",
       route: "/",
       cta: "Go home",
       source: "fallback",
     };
   if (locale === "zh-Hant")
     return {
-      reply: "我可以帶你去分析、性格兩面、已保存報告或登入頁。",
+      reply: "請選擇八字、七政、前世今生、紫微、性格兩面或我的紀錄。",
       route: "/",
       cta: "返回首頁",
       source: "fallback",
     };
   return {
-    reply: "我可以带你去分析、性格两面、已保存报告或登录页。",
+    reply: "请选择八字、七政、前世今生、紫微、性格两面或我的记录。",
     route: "/",
     cta: "返回首页",
     source: "fallback",
@@ -142,7 +146,7 @@ Deno.serve(async (req: Request) => {
             },
           },
         },
-        instructions: `You are the Jade Dragon navigation guide for Zhaowu. You ONLY help visitors choose an existing page. Never perform BaZi readings, medical/legal/financial advice, or invent routes. Available routes: / = home; /#analysisForm = ask a work, relationship, timing or life-choice question; /tianji-dual = Two sides of character, showing everyday behaviour and responses under pressure; /account = saved birth details and reports; /login = sign in/register. Reply in ${locale}. Return only compact JSON with keys reply, route, cta. route must be one available route or null. Keep reply under 55 words.`,
+        instructions: `You are the Jade Dragon navigation guide for Zhaowu. You ONLY help visitors choose an existing page. Never perform BaZi readings, medical/legal/financial advice, or invent routes. Available routes: / = home; /#analysisForm = BaZi questions about work, relationships, timing or choices; /qizheng = Seven Luminaries plain-language report; /yizhangjing = Past & Present Dharma Palm report; /ziwei = Zi Wei plain-language report; /tianji-dual = Two sides of character; /history = specialist reports saved on this device; /account = signed-in BaZi questions and cloud reports; /login = sign in/register. Reply naturally and completely in ${locale}. Return only compact JSON with keys reply, route, cta. route must be one available route or null. Keep reply under 55 words.`,
         input: `Current page: ${pathname}\nVisitor: ${message}`,
       }),
     });
