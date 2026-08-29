@@ -55,8 +55,8 @@ function toneOf(body: QizhengBody | undefined): BranchTone {
   return body ? BRANCH_TONE[body.palace] ?? "earth" : "earth";
 }
 
-function retroText(body: QizhengBody | undefined, locale: Locale) {
-  if (!body?.retrograde) return "";
+function retroText(locale: Locale, ...bodies: Array<QizhengBody | undefined>) {
+  if (!bodies.some((body) => body?.retrograde)) return "";
   if (locale === "en") return " This tendency is more inward than it first appears: you tend to rehearse, revise, or digest it privately before others see the result.";
   if (locale === "zh-Hans") return " 这股倾向更偏向内在运作：你往往会先在心里反复消化、修改，之后才让别人看见结果。";
   return " 這股傾向更偏向內在運作：你往往會先在心裡反覆消化、修改，之後才讓別人看見結果。";
@@ -77,6 +77,16 @@ function joinTwo(first: string, second: string, locale: Locale) {
   return first + "；同時，" + second + "。";
 }
 
+function temperamentText(sun: QizhengBody | undefined, moon: QizhengBody | undefined, locale: Locale) {
+  const sunTone = toneOf(sun);
+  const moonTone = toneOf(moon);
+  const c = TONE_COPY[locale];
+  if (sunTone !== moonTone) return joinTwo(c[sunTone].gift, c[moonTone].gift, locale);
+  if (locale === "en") return "your outer style and inner emotional rhythm reinforce the same quality: " + c[sunTone].gift + ". This makes the gift especially consistent, and makes its blind spot worth watching.";
+  if (locale === "zh-Hans") return "你的外在表现和内在情绪走的是同一种节奏：" + c[sunTone].gift + "。这让优势特别稳定，也代表它的盲点更容易被放大。";
+  return "你的外在表現和內在情緒走的是同一種節奏：" + c[sunTone].gift + "。這讓優勢特別穩定，也代表它的盲點更容易被放大。";
+}
+
 export function buildQizhengPlainSummary(chart: QizhengResult, locale: Locale): QizhengPlainSummary {
   const sun = findBody(chart, "sun");
   const moon = findBody(chart, "moon");
@@ -94,11 +104,11 @@ export function buildQizhengPlainSummary(chart: QizhengResult, locale: Locale): 
       title: "Your Seven Luminaries reading",
       lead: "This reading focuses on temperament, emotional rhythm, action under pressure, relationships and the way opportunity becomes sustainable.",
       sections: [
-        { key: "temperament", title: "Core temperament", body: "At your centre, " + joinTwo(c[toneOf(sun)].gift, c[toneOf(moon)].gift, locale) },
-        { key: "mind", title: "Thinking and communication", body: "Your mind works best when you can " + c[toneOf(mercury)].pace + ". " + c[toneOf(mercury)].shadow + retroText(mercury, locale) },
-        { key: "relationship", title: "Relationships and values", body: "You value people and environments where " + c[toneOf(venus)].gift + ". In closeness, watch for this pattern: " + c[toneOf(venus)].shadow + retroText(venus, locale) },
-        { key: "action", title: "Action and pressure", body: "When action is required, you tend to " + c[toneOf(mars)].pace + ". Longer pressure asks you to remember that " + c[toneOf(saturn)].shadow + retroText(mars, locale) + retroText(saturn, locale) },
-        { key: "growth", title: "Growth and opportunity", body: "Opportunity expands when " + c[toneOf(jupiter)].gift + ". Your most reliable growth strategy is to " + c[toneOf(jupiter)].pace + retroText(jupiter, locale) },
+        { key: "temperament", title: "Core temperament", body: "At your centre, " + temperamentText(sun, moon, locale) },
+        { key: "mind", title: "Thinking and communication", body: "Your mind works best when you can " + c[toneOf(mercury)].pace + ". " + c[toneOf(mercury)].shadow + "." + retroText(locale, mercury) },
+        { key: "relationship", title: "Relationships and values", body: "You value people and environments where " + c[toneOf(venus)].gift + ". In closeness, watch for this pattern: " + c[toneOf(venus)].shadow + "." + retroText(locale, venus) },
+        { key: "action", title: "Action and pressure", body: "When action is required, you tend to " + c[toneOf(mars)].pace + ". Longer pressure asks you to remember that " + c[toneOf(saturn)].shadow + "." + retroText(locale, mars, saturn) },
+        { key: "growth", title: "Growth and opportunity", body: "Opportunity expands when " + c[toneOf(jupiter)].gift + ". Your most reliable growth strategy is to " + c[toneOf(jupiter)].pace + "." + retroText(locale, jupiter) },
         { key: "habit", title: "Your reinforced pattern", body: "The same " + dominant + " rhythm appears in " + dominantCount + " of the seven main indicators, so this habit is reinforced: " + c[dominant].gift + ". Its useful correction is equally clear—" + c[dominant].shadow + "." },
       ],
       closing: "Use the strong rhythm as a talent, not as your only response. The chart becomes most useful when you can choose when to lean into it and when to soften it.",
@@ -112,11 +122,11 @@ export function buildQizhengPlainSummary(chart: QizhengResult, locale: Locale): 
     title: hans ? "你的七政命局报告" : "你的七政命局報告",
     lead: hans ? "这份报告专看你的性情底色、情绪节奏、压力反应、关系取向，以及机会怎样才能真正落地。" : "這份報告專看你的性情底色、情緒節奏、壓力反應、關係取向，以及機會怎樣才能真正落地。",
     sections: [
-      { key: "temperament", title: hans ? "命局性情" : "命局性情", body: (hans ? "你的核心一面，" : "你的核心一面，") + joinTwo(c[toneOf(sun)].gift, c[toneOf(moon)].gift, locale) },
-      { key: "mind", title: hans ? "思考与表达" : "思考與表達", body: (hans ? "你的脑子在能够" : "你的腦子在能夠") + c[toneOf(mercury)].pace + (hans ? "时最好用。需要留意的是：" : "時最好用。需要留意的是：") + c[toneOf(mercury)].shadow + retroText(mercury, locale) },
-      { key: "relationship", title: hans ? "关系与选择" : "關係與選擇", body: (hans ? "你会被这种人和环境吸引：" : "你會被這種人和環境吸引：") + c[toneOf(venus)].gift + (hans ? "。进入亲密关系后，要留意：" : "。進入親密關係後，要留意：") + c[toneOf(venus)].shadow + retroText(venus, locale) },
-      { key: "action", title: hans ? "行动与压力" : "行動與壓力", body: (hans ? "需要出手时，你适合" : "需要出手時，你適合") + c[toneOf(mars)].pace + (hans ? "。压力拉长后，真正的功课是：" : "。壓力拉長後，真正的功課是：") + c[toneOf(saturn)].shadow + retroText(mars, locale) + retroText(saturn, locale) },
-      { key: "growth", title: hans ? "机会与成长" : "機會與成長", body: (hans ? "你的机会会在这时放大：" : "你的機會會在這時放大：") + c[toneOf(jupiter)].gift + (hans ? "。最稳的成长方式是：" : "。最穩的成長方式是：") + c[toneOf(jupiter)].pace + retroText(jupiter, locale) },
+      { key: "temperament", title: "命局性情", body: temperamentText(sun, moon, locale) },
+      { key: "mind", title: hans ? "思考与表达" : "思考與表達", body: (hans ? "你的脑子在能够" : "你的腦子在能夠") + c[toneOf(mercury)].pace + (hans ? "时最好用。需要留意的是：" : "時最好用。需要留意的是：") + c[toneOf(mercury)].shadow + "。" + retroText(locale, mercury) },
+      { key: "relationship", title: hans ? "关系与选择" : "關係與選擇", body: (hans ? "你会被这种人和环境吸引：" : "你會被這種人和環境吸引：") + c[toneOf(venus)].gift + (hans ? "。进入亲密关系后，要留意：" : "。進入親密關係後，要留意：") + c[toneOf(venus)].shadow + "。" + retroText(locale, venus) },
+      { key: "action", title: hans ? "行动与压力" : "行動與壓力", body: (hans ? "需要出手时，你适合" : "需要出手時，你適合") + c[toneOf(mars)].pace + (hans ? "。压力拉长后，真正的功课是：" : "。壓力拉長後，真正的功課是：") + c[toneOf(saturn)].shadow + "。" + retroText(locale, mars, saturn) },
+      { key: "growth", title: hans ? "机会与成长" : "機會與成長", body: (hans ? "你的机会会在这时放大：" : "你的機會會在這時放大：") + c[toneOf(jupiter)].gift + (hans ? "。最稳的成长方式是：" : "。最穩的成長方式是：") + c[toneOf(jupiter)].pace + "。" + retroText(locale, jupiter) },
       { key: "habit", title: hans ? "被加强的惯性" : "被加強的慣性", body: (hans ? "七个主要观察点里，有" : "七個主要觀察點裡，有") + dominantCount + (hans ? "个落在同一种节奏，因此这项习性会被加强：" : "個落在同一種節奏，因此這項習性會被加強：") + c[dominant].gift + (hans ? "。它的提醒也很明确：" : "。它的提醒也很明確：") + c[dominant].shadow + "。" },
     ],
     closing: hans ? "把最强的节奏当成天赋，而不是唯一反应。真正有用的地方，是知道什么时候顺势，什么时候主动放松惯性。" : "把最強的節奏當成天賦，而不是唯一反應。真正有用的地方，是知道什麼時候順勢，什麼時候主動放鬆慣性。",
