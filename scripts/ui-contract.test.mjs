@@ -97,14 +97,14 @@ test("tea guardian stays separate from the homepage, report and personal decree 
 test("free decree text remains available when image generation fails", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const decreePosition = resultView.indexOf("{decreeCouplet}");
-  const imageGuardPosition = resultView.indexOf("{imageUrl ? (");
+  const imagePosition = resultView.indexOf("<DecreeGalleryPreview");
   assert.ok(decreePosition >= 0, "free decree text must be rendered");
   assert.ok(
-    imageGuardPosition > decreePosition,
+    imagePosition > decreePosition,
     "free decree text must render before the optional image",
   );
   assert.doesNotMatch(
-    resultView.slice(imageGuardPosition),
+    resultView.slice(imagePosition),
     /\{decreeCouplet\}/,
   );
   assert.match(
