@@ -22,20 +22,22 @@ test.describe("iPhone Safari parchment application shell", () => {
     }
   });
 
-  test("homepage shows the packaged Song landscape behind readable translucent panels", async ({ page }) => {
+  test("every application page locks the Song landscape behind opaque parchment cards", async ({ page }) => {
     await makeAppOfflineSafe(page);
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    for (const route of PAPER_ROUTES) {
+      await page.goto(route, { waitUntil: "domcontentloaded" });
+      const shell = page.locator(".zhaowu-home-sheet-shell").first();
+      const backgroundImage = await shell.evaluate((node) => getComputedStyle(node).backgroundImage);
+      expect(backgroundImage).toContain("wallpaper-song.jpg");
+    }
 
-    const shell = page.locator(".zhaowu-home-sheet-shell").first();
-    const backgroundImage = await shell.evaluate((node) => getComputedStyle(node).backgroundImage);
-    expect(backgroundImage).toContain("wallpaper-song.jpg");
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator(".zhaowu-home-intro").first()).toBeVisible();
     await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
 
     const formBackground = await page.locator("#analysisForm").evaluate((node) => getComputedStyle(node).backgroundColor);
-    expect(alphaOf(formBackground)).toBeLessThan(1);
-    expect(alphaOf(formBackground)).toBeGreaterThan(0.65);
+    expect(alphaOf(formBackground)).toBeGreaterThanOrEqual(0.98);
   });
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {
