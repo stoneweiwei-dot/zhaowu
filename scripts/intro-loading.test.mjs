@@ -40,7 +40,7 @@ test('loading keeps the existing artwork and stages the lotus sequence', () => {
   assert.match(introCss, /twin-lotus-bloom/);
 });
 
-test('loading gate hard-exits before the three-second mobile budget', () => {
+test('loading gate hard-exits within the five-second mobile budget', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
   let cancelledTimer = null;
