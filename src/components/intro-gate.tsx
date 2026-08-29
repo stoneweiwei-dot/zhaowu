@@ -7,7 +7,7 @@ import {
   scheduleIntroGateHardExit,
 } from "@/lib/intro-gate-policy";
 
-const LOTUS_BLOOM_MS = 2200;
+const LOTUS_BLOOM_MS = 3600;
 
 export function IntroGate() {
   const { locale } = useI18n();
@@ -113,6 +113,12 @@ export function IntroGate() {
         fetchPriority="high"
       />
       <div className="zhaowu-lotus-intro__veil" aria-hidden />
+      <div className="zhaowu-lotus-intro__petals" aria-hidden>
+        <i /><i /><i /><i /><i /><i /><i /><i />
+      </div>
+      <div className="zhaowu-lotus-intro__twin-bloom" aria-hidden>
+        <span /><span />
+      </div>
 
       <div className="zhaowu-lotus-intro__copy">
         <div className="zhaowu-lotus-intro__brand">
