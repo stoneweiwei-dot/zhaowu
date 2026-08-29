@@ -1,10 +1,19 @@
 import { expect, test } from "@playwright/test";
 
-test("iPhone Safari can complete the dual chart with local birthplace correction and without cloud services", async ({ page }) => {
+async function pseudoText(page: import("@playwright/test").Page, selector: string) {
+  return page.locator(selector).evaluate((element) => {
+    const value = getComputedStyle(element, "::after").content;
+    return value.replace(/^['\"]|['\"]$/g, "");
+  });
+}
+
+test("iPhone Safari can complete Past & Present with local birthplace correction and without cloud services", async ({ page }) => {
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
   await page.goto("/tianji-dual", { waitUntil: "domcontentloaded" });
 
-  await expect(page.getByRole("heading", { name: "一個人，兩種反應", exact: true })).toBeVisible();
+  await expect(page.locator(".dual-hero h1")).toBeVisible();
+  expect(await pseudoText(page, ".dual-hero h1")).toBe("前世今生");
+
   const fields = page.locator(".dual-fields select");
   await fields.nth(0).selectOption("1988");
   await fields.nth(1).selectOption("10");
@@ -21,10 +30,11 @@ test("iPhone Safari can complete the dual chart with local birthplace correction
   await page.getByRole("button", { name: "看結果", exact: true }).click();
 
   await expect(page.getByText(/已按出生地校正 雪梨，澳洲/)).toBeVisible();
-  await expect(page.getByRole("heading", { name: "你的兩種反應", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "平時怎樣做事", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "壓力來時的反應", exact: true })).toBeVisible();
-  await expect(page.getByText("查看傳統盤面", { exact: true })).toBeVisible();
+  await expect(page.locator(".dual-results .dual-section-title h2")).toBeVisible();
+  expect(await pseudoText(page, ".dual-results .dual-section-title h2")).toBe("前世今生總覽");
+  expect(await pseudoText(page, ".dual-side-card:nth-child(1) h3")).toBe("今生的表現");
+  expect(await pseudoText(page, ".dual-side-card:nth-child(2) h3")).toBe("前世留下的慣性");
+  expect(await pseudoText(page, ".dual-details summary")).toBe("查看傳統計算依據");
   await expect(page.getByText("融合星評", { exact: true })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
