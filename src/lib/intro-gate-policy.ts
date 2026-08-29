@@ -1,6 +1,6 @@
-export const INTRO_GATE_MIN_VISIBLE_MS = 650;
-export const INTRO_GATE_HARD_EXIT_MS = 2800;
-export const INTRO_GATE_FADE_MS = 160;
+export const INTRO_GATE_MIN_VISIBLE_MS = 900;
+export const INTRO_GATE_HARD_EXIT_MS = 4200;
+export const INTRO_GATE_FADE_MS = 220;
 
 type TimerId = number;
 type Schedule = (callback: () => void, delayMs: number) => TimerId;
