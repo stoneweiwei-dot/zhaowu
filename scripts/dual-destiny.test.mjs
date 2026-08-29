@@ -44,11 +44,14 @@ test("客户页把结果说清楚，并彻底删除融合长文与系统话术",
   assert.doesNotMatch(route, /buildDualFusion|fusion\.body|fusion\.guidance|融合星评|正向寄语|轨道 A|轨道 B|双轨结果/);
 });
 
-test("双轨工具保留独立路由，但不再占据核心分析首页", () => {
+test("性格两面保留独立路由，并在首页提供紧凑入口", () => {
   const home = readFileSync(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
   const route = readFileSync(new URL("../src/routes/tianji-dual.tsx", import.meta.url), "utf8");
 
-  assert.doesNotMatch(home, /to="\/tianji-dual"|双轨性格分析/);
+  assert.match(home, /to="\/tianji-dual"/);
+  assert.match(home, /性格两面/);
+  assert.match(home, /zhaowu-home-dual-entry/);
+  assert.doesNotMatch(home, /双轨性格分析|zhaowu-tools-section/);
   assert.doesNotMatch(home, /to="\/tianji-xinggong"/);
   assert.doesNotMatch(home, /to="\/yizhangjing"/);
   assert.match(route, /calculateDualDestiny/);

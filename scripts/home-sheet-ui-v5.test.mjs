@@ -27,7 +27,10 @@ test("homepage matches the compact landscape sheet instead of stacking product c
   assert.match(home, /zhaowu-home-sheet-page/);
   assert.match(home, /zhaowu-home-intro/);
   assert.doesNotMatch(home, /zhaowu-home-hero/);
-  assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian|tianji-dual/);
+  assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian/);
+  assert.match(home, /to="\/tianji-dual"/);
+  assert.match(home, /zhaowu-home-dual-entry/);
+  assert.match(css, /\.zhaowu-home-dual-entry/);
   assert.match(css, /url\("\/wallpaper-song\.jpg"\)/);
   assert.match(css, /--zv5-card: rgba\(251, 245, 233, \.72\)/);
   assert.match(css, /backdrop-filter: blur\(1\.5px\) saturate\(\.92\)/);
