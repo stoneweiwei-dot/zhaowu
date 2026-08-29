@@ -82,8 +82,10 @@ export function buildFeedbackCalibrationText(question: string): string {
 }
 
 export function applyMonthStageFeedbackPolicy(question: string, chart: Chart, reading: Reading): Reading {
-  const monthStage = buildMonthStageText(chart);
-  const feedback = buildFeedbackCalibrationText(question);
+  const hasMonthStage = reading.rhythm.includes("【月令舞台】");
+  const hasFeedback = reading.rhythm.includes("【現實反饋校驗】");
+  const monthStage = hasMonthStage ? "" : buildMonthStageText(chart);
+  const feedback = hasFeedback ? "" : buildFeedbackCalibrationText(question);
   const rhythm = [reading.rhythm, monthStage, feedback].filter(Boolean).join(" ");
   return { ...reading, rhythm };
 }
