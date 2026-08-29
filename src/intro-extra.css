@@ -12,8 +12,8 @@
 }
 
 /* Zhaowu · Dawn Lotus intro
-   Four generated stills are packed into one tiny animated WebP so iPhone Safari
-   gets a real bud → bloom transition without a heavy video decoder or network stall. */
+   Keep the official lotus-bloom stills. Play once: bud → open → full bloom,
+   with four heavenly flowers falling over the merit pond. */
 .zhaowu-lotus-intro {
   background: #101a18;
   color: #fff8e9;
@@ -26,11 +26,64 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 50%;
-  transform: scale(1.015);
-  filter: saturate(.94) contrast(1.03);
+  object-position: 50% 48%;
+  transform: scale(1.04);
+  filter: saturate(.96) contrast(1.04) brightness(.96);
   user-select: none;
   -webkit-user-drag: none;
+  animation: zhaowu-lotus-bloom-hold 4.2s cubic-bezier(.22,.7,.28,1) both;
+}
+
+.zhaowu-lotus-intro__pond {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: 42%;
+  height: 18%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 228, 170, .16) 0%, transparent 72%);
+  pointer-events: none;
+  animation: zhaowu-pond-wake 4.2s ease-out both;
+}
+
+.zhaowu-lotus-intro__heaven {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.zhaowu-lotus-intro__hua {
+  position: absolute;
+  top: -8%;
+  width: 10px;
+  height: 16px;
+  border-radius: 80% 0 80% 0;
+  opacity: 0;
+  filter: blur(.15px);
+  animation: zhaowu-four-hua 4.2s linear both;
+}
+
+.zhaowu-lotus-intro__hua.h1 {
+  left: 18%;
+  background: #f4d7a0;
+  animation-delay: .15s;
+}
+.zhaowu-lotus-intro__hua.h2 {
+  left: 38%;
+  background: #f3b7c8;
+  animation-delay: .55s;
+}
+.zhaowu-lotus-intro__hua.h3 {
+  left: 58%;
+  background: #efe7d2;
+  animation-delay: .95s;
+}
+.zhaowu-lotus-intro__hua.h4 {
+  left: 76%;
+  background: #d9b36a;
+  animation-delay: 1.25s;
 }
 
 .zhaowu-lotus-intro__veil {
@@ -122,6 +175,24 @@
   color: rgba(255, 244, 218, .68);
 }
 
+@keyframes zhaowu-lotus-bloom-hold {
+  0% { transform: scale(1.06); filter: saturate(.9) contrast(1.02) brightness(.86); }
+  55% { transform: scale(1.02); filter: saturate(1) contrast(1.05) brightness(1.02); }
+  100% { transform: scale(1); filter: saturate(1.02) contrast(1.06) brightness(1.05); }
+}
+
+@keyframes zhaowu-pond-wake {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.6); }
+  45% { opacity: .85; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: .25; transform: translate(-50%, -50%) scale(1.18); }
+}
+
+@keyframes zhaowu-four-hua {
+  0% { opacity: 0; transform: translate3d(0,-12px,0) rotate(0deg) scale(.6); }
+  12% { opacity: .9; }
+  100% { opacity: 0; transform: translate3d(-18px, 78vh, 0) rotate(210deg) scale(.85); }
+}
+
 @media (min-width: 700px) {
   .zhaowu-lotus-intro__art {
     object-fit: contain;
@@ -130,7 +201,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zhaowu-lotus-intro__art {
+  .zhaowu-lotus-intro__art,
+  .zhaowu-lotus-intro__pond,
+  .zhaowu-lotus-intro__hua {
     animation: none;
   }
 }
