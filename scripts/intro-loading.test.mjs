@@ -6,6 +6,7 @@ const shell = await readFile(new URL('../src/components/site-shell.tsx', import.
 const bootstrap = await readFile(new URL('../src/lib/bootstrap-readiness.ts', import.meta.url), 'utf8');
 const root = await readFile(new URL('../src/routes/__root.tsx', import.meta.url), 'utf8');
 const gate = await readFile(new URL('../src/components/intro-gate.tsx', import.meta.url), 'utf8');
+const css = await readFile(new URL('../src/intro-extra.css', import.meta.url), 'utf8');
 const {
   INTRO_GATE_HARD_EXIT_MS,
   scheduleIntroGateHardExit,
@@ -31,7 +32,7 @@ test('bootstrap does not preload customer report copy that belongs to result ren
   assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
 });
 
-test('loading gate hard-exits before the three-second mobile budget', () => {
+test('loading gate hard-exits inside the five-second bloom budget', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
   let cancelledTimer = null;
@@ -47,13 +48,23 @@ test('loading gate hard-exits before the three-second mobile budget', () => {
     () => { exited = true; },
   );
 
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 2800);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 3000);
-  assert.equal(scheduledDelay, 2800);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 4800);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS >= 3000);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 5000);
+  assert.equal(scheduledDelay, 4800);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
   assert.equal(cancelledTimer, 17);
+});
+
+test('intro keeps the official lotus image and plays one bloom with four falling flowers', () => {
+  assert.match(gate, /lotus-bloom-v12\.webp/);
+  assert.match(gate, /LOTUS_BLOOM_MS = 4200/);
+  assert.match(gate, /zhaowu-lotus-intro__heaven/);
+  assert.match(css, /zhaowu-four-hua/);
+  assert.match(css, /lotus-bloom-v12|Dawn Lotus/);
+  assert.doesNotMatch(gate, /loading-v10\.mp4|loading-v11\.mp4/);
 });
 
 test('iPhone Safari routes stay mounted and usable when bootstrap fails', () => {
