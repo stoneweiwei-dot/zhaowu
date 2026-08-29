@@ -35,9 +35,9 @@ body:has(.zhaowu-home-sheet-shell),
 }
 
 .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) {
-  --zv5-card: rgba(251, 245, 233, 0.72);
-  --zv5-card-strong: rgba(252, 247, 238, 0.82);
-  --zv5-field: rgba(255, 250, 241, 0.8);
+  --zv5-card: #fbf5e9;
+  --zv5-card-strong: #fcf7ee;
+  --zv5-field: #fffaf1;
   background-color: #f4ead8 !important;
   background-image:
     linear-gradient(
@@ -146,8 +146,8 @@ body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-specialist-card,
 .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-focused-report,
 .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-ziwei-feature {
-  backdrop-filter: blur(1.5px) saturate(0.92) !important;
-  -webkit-backdrop-filter: blur(1.5px) saturate(0.92) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-home-sheet-shell #analysisForm,
@@ -377,8 +377,8 @@ body:has(.zhaowu-home-sheet-shell),
   color: var(--zv5-ink);
   background: rgba(251, 245, 233, 0.72);
   box-shadow: var(--zv5-shadow);
-  backdrop-filter: blur(1.5px) saturate(0.92);
-  -webkit-backdrop-filter: blur(1.5px) saturate(0.92);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .zhaowu-home-dual-entry:active {
