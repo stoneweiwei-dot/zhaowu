@@ -39,7 +39,7 @@ test("full reports render one continuous summary then body attention, while decr
   assert.match(resultView, /import \{ FocusedReportSections \}/);
   assert.match(
     resultView,
-    /reportSections \? <FocusedReportSections sections=\{reportSections\} \/>/,
+    /reportSections \? <FocusedReportSections sections=\{reportSections\} result=\{result\} \/>/,
   );
   assert.match(focused, /key: "summary"/);
   assert.match(focused, /key: "body"/);
