@@ -2,6 +2,32 @@ import type { AnalysisResult, AppLocale } from "@/lib/bazi/types";
 
 type AdvicePack = Record<AppLocale, readonly string[]>;
 
+export type MindAdviceComicDirective = {
+  format: "9:16";
+  bilingual: true;
+  style: string;
+  sourcePolicy: string;
+  libraryCrossReference: string;
+  watermark: string;
+};
+
+/**
+ * Visual policy for report-side mind/body/spirit advice illustrations.
+ * The comic is explanatory only: it visualises the selected advice and must never
+ * alter calculation truth, the reading result, or the meaning of the advice.
+ */
+export const MIND_ADVICE_COMIC_DIRECTIVE: MindAdviceComicDirective = {
+  format: "9:16",
+  bilingual: true,
+  style:
+    "溫暖米白／淡宣紙底、乾淨黑色手繪線條、低飽和藍橙扁平人物、簡潔小漫畫／科普信息圖；人物表情與日常場景直接承載建議，不走寫實、3D、商業仙俠或高飽和海報感；留白充足，手機閱讀優先。",
+  sourcePolicy:
+    "先從本檔已命中的身心靈／開悟建議中取核心意思，再轉成一個可視化的日常情境。不得為了畫面反過來修改命理解讀，不新增宿命、醫療或超自然斷言。",
+  libraryCrossReference:
+    "生成前交叉引用昭梧既有圖庫：優先找與該次報告主題、情緒、關係／身體／行動／自我議題相符的既有圖像語義；有合適素材可引用其象徵與構圖語彙，沒有才生成新漫畫。避免重複同一構圖。",
+  watermark: "STONE 原創；位於安全區內，清楚可見但不搶正文。",
+};
+
 const GENERAL: AdvicePack = {
   "zh-Hant": [
     "命理建議｜煩惱仍會來，但不必跟著它走；平靜不是沒有雜念，而是知道念頭在，仍能把心收回當下。",
