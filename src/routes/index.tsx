@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnalysisForm } from "@/components/analysis-form";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
+import { QizhengHomePanel } from "@/components/qizheng-home";
 import { ResultView } from "@/components/result-view";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
@@ -57,6 +58,7 @@ function Home() {
         <AnalysisForm />
       </section>
       {current ? <ResultView result={current} /> : null}
+      {current ? <QizhengHomePanel result={current} /> : null}
       {current ? <FollowUpBox result={current} /> : null}
     </main>
   );
