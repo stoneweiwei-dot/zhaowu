@@ -1,0 +1,153 @@
+.zhaowu-character-panel {
+  overflow: hidden;
+  background: #fbf5e9;
+  padding: 14px 12px 16px;
+  color: #29251f;
+}
+
+.zhaowu-character-sheet {
+  display: grid;
+  gap: 14px;
+}
+
+.zhaowu-character-portrait {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #5c4a32;
+  background: #fffaf1;
+}
+
+.zhaowu-character-portrait img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.zhaowu-character-portrait figcaption {
+  padding: 24px 18px;
+  color: #8a8173;
+  font-size: 13px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.zhaowu-character-arts,
+.zhaowu-character-scores {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.zhaowu-character-arts th,
+.zhaowu-character-arts td,
+.zhaowu-character-scores th,
+.zhaowu-character-scores td {
+  border: 1px solid #7a6240;
+  padding: .42rem 0;
+  text-align: center;
+}
+
+.zhaowu-character-arts th,
+.zhaowu-character-scores th {
+  background: #f3ead8;
+  font-weight: 700;
+}
+
+.zhaowu-character-arts tr.is-school th,
+.zhaowu-character-arts tr.is-school td {
+  color: #a7352b;
+  background: #f6e4d6;
+  font-weight: 700;
+}
+
+.zhaowu-character-nameblock {
+  text-align: left;
+}
+
+.zhaowu-character-nameblock h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  letter-spacing: .08em;
+}
+
+.zhaowu-character-nameblock p {
+  margin: 4px 0 0;
+  color: #675b4c;
+  font-size: 13px;
+}
+
+.zhaowu-character-radar {
+  display: block;
+  width: min(100%, 280px);
+  margin: 4px auto 0;
+}
+
+.zhaowu-character-radar-ring {
+  fill: #efe6d4;
+  stroke: #7a6240;
+  stroke-width: 1.2;
+}
+
+.zhaowu-character-radar-fill {
+  fill: #5c5853;
+  stroke: #2f2b27;
+  stroke-width: 1;
+}
+
+.zhaowu-character-radar text {
+  fill: #29251f;
+  font-size: 15px;
+  font-family: var(--font-display);
+}
+
+.zhaowu-character-notes,
+.zhaowu-character-msg {
+  margin: 12px 0 0;
+  color: #29251f;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.zhaowu-character-notes p {
+  margin: 0;
+}
+
+.zhaowu-character-actions {
+  margin-top: 12px;
+}
+
+.zhaowu-character-save {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #a7352b;
+  border-radius: 999px;
+  background: #fffaf1;
+  color: #a7352b;
+  font-size: 15px;
+}
+
+.zhaowu-character-save:disabled {
+  opacity: .6;
+}
+
+@media (min-width: 720px) {
+  .zhaowu-character-sheet {
+    grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr);
+    align-items: start;
+  }
+
+  .zhaowu-character-portrait img {
+    height: 320px;
+  }
+
+  .zhaowu-character-save {
+    width: auto;
+    padding: 0 22px;
+  }
+}

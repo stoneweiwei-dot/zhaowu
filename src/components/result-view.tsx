@@ -6,6 +6,7 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { FocusedReportSections } from "@/components/paid-report-pages";
+import { CharacterPanel } from "@/components/character-panel";
 import { DecreeGalleryPreview } from "@/components/decree-gallery-preview";
 import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
@@ -24,8 +25,8 @@ const RESULT_COPY = {
     updateSaved: "更新已保存報告",
     fullGenerate: "查看完整報告",
     fullGenerating: "正在整理完整報告…",
-    imageReady: "個人命誥圖已生成並保存。",
-    imageLoadFailed: "命誥圖未能載入；文字答案與完整報告不受影響。",
+    imageReady: "個人命詰圖已生成並保存。",
+    imageLoadFailed: "命詰圖未能載入；文字答案與完整報告不受影響。",
   },
   "zh-Hans": {
     syncFailed: "完整报告已整理完成，但云端同步暂时失败；画面内容不受影响。",
@@ -193,6 +194,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           {decreeCouplet}
         </blockquote>
       </article>
+
+      <CharacterPanel chart={chart} portraitUrl={imageUrl} />
 
       {user ? (
         <DecreeGalleryPreview
