@@ -44,7 +44,7 @@ test.describe("iPhone Safari core customer flow", () => {
 
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "性格兩面", exact: true }),
+      page.getByRole("link", { name: "前世今生", exact: true }),
     ).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "你的命盤資訊", exact: true }),
@@ -84,7 +84,7 @@ test.describe("iPhone Safari core customer flow", () => {
       page.getByRole("heading", { name: "你的命盘信息", exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "性格两面", exact: true }),
+      page.getByRole("link", { name: "前世今生", exact: true }),
     ).toBeVisible();
 
     await page.getByRole("button", { name: "EN", exact: true }).click();
@@ -94,7 +94,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#birth-month")).toBeVisible();
     await expect(page.locator("#birth-day")).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Two sides of character", exact: true }),
+      page.getByRole("link", { name: "Past & Present", exact: true }),
     ).toBeVisible();
 
     await page.getByRole("button", { name: "繁中", exact: true }).click();
