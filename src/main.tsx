@@ -10,6 +10,7 @@ import './visual-refresh.css';
 import './stone-visual-fix.css';
 import './motif-row-lock.css';
 import './focused-report.css';
+import './character-panel.css';
 import './login-breathing.css';
 import './palm-light-refinement.css';
 import './wallpaper-visibility-fix.css';
