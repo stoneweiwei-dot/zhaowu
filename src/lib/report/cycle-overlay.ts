@@ -25,6 +25,8 @@ const ELEMENT_FUNCTION: Record<Element, Record<AppLocale, string>> = {
   水: { "zh-Hant": "保留流動性、資訊與選項", "zh-Hans": "保留流动性、信息与选项", en: "preserve liquidity, information and options" },
 };
 
+const ELEMENT_EN: Record<Element, string> = { 木: "growth", 火: "action", 土: "grounding", 金: "boundaries", 水: "flow" };
+
 function relation(a: string, b: string): "clash" | "combine" | "harm" | null {
   if (!a || !b) return null;
   if (CLASH[a] === b) return "clash";
@@ -51,11 +53,7 @@ function cycleElement(chart: Chart, yearBranch: string): Element | null {
   return yearElement ?? null;
 }
 
-/**
- * Customer-facing timing overlay. It never re-computes the natal chart or luck-cycle direction.
- * It only reads canonical chart output, then overlays natal -> current dayun -> current year.
- * Five-element functional advice is hard-labelled only when the canonical useful-element result is non-provisional.
- */
+/** Reads canonical chart output, then overlays natal -> current dayun -> current year. */
 export function buildCycleOverlayLines(result: AnalysisResult): string[] {
   const locale = result.locale ?? "zh-Hans";
   const chart = result.chart;
@@ -74,9 +72,9 @@ export function buildCycleOverlayLines(result: AnalysisResult): string[] {
 
   const lines: string[] = [];
   if (locale === "en") {
-    lines.push(`Timing overlay: birth pattern → ${dayunGz} current phase (${chart.currentDayun.startYear}–${chart.currentDayun.endYear}) → ${yearGz} in ${year}.`);
-    if (dyYear) lines.push(`The current-phase branch ${dayunBranch} and annual branch ${yearBranch} form a ${branchLabel(dyYear, locale)}. Treat this as a change/activation signal, not an automatic good-or-bad verdict.`);
-    if (natalHits.length) lines.push(`The annual branch also activates birth-pattern relationship(s): ${natalHits.map((hit) => `${yearBranch}-${hit.branch} ${branchLabel(hit.kind, locale)}`).join(", ")}. Read these together with the current phase rather than judging the year alone.`);
+    lines.push(`Timing overlay: birth pattern → current phase (${chart.currentDayun.startYear}–${chart.currentDayun.endYear}) → ${year}.`);
+    if (dyYear) lines.push(`The current phase and ${year} form a ${branchLabel(dyYear, locale)} pattern. Treat this as a change or activation signal, not an automatic good-or-bad verdict.`);
+    if (natalHits.length) lines.push(`The ${year} pattern also activates ${natalHits.length} relationship${natalHits.length === 1 ? "" : "s"} already present in the birth pattern. Read these together with the current phase rather than judging the year alone.`);
   } else {
     const trad = locale === "zh-Hant";
     lines.push(`${trad ? "歲運疊加" : "岁运叠加"}：原局 → ${dayunGz}${trad ? "大運" : "大运"}（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）→ ${year}年${yearGz}。`);
@@ -89,7 +87,7 @@ export function buildCycleOverlayLines(result: AnalysisResult): string[] {
 
   if (chart.usefulProvisional) {
     lines.push(locale === "en"
-      ? "Five-element function is not hard-labelled here because the useful-element conclusion is still provisional; do not turn the annual element into a remedy by itself."
+      ? "The five-element function is not hard-labelled here because the core balancing conclusion is still provisional; the annual pattern alone is not treated as a remedy."
       : locale === "zh-Hant"
         ? "五行功能暫不硬判：喜用／病藥仍屬待覆核時，不得只看流年五行就叫客人補某一行。"
         : "五行功能暂不硬判：喜用／病药仍属待复核时，不得只看流年五行就叫客人补某一行。"
@@ -98,7 +96,7 @@ export function buildCycleOverlayLines(result: AnalysisResult): string[] {
   }
 
   lines.push(locale === "en"
-    ? `Current functional emphasis: ${element} — ${ELEMENT_FUNCTION[element][locale]}. Re-check this whenever the current phase or annual year changes.`
+    ? `Current functional emphasis: ${ELEMENT_EN[element]} — ${ELEMENT_FUNCTION[element][locale]}. Re-check this whenever the current phase or annual year changes.`
     : `${locale === "zh-Hant" ? "當前功能重點" : "当前功能重点"}：${element}｜${ELEMENT_FUNCTION[element][locale]}。大運或流年更換後必須重新計算，不沿用上一年的固定補法。`
   );
   return lines;
