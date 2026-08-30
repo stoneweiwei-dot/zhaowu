@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
 import { LIFE_VIEW_ARTICLES } from "@/lib/life-view";
+import { LIFE_VIEW_FILE_ARTICLES } from "@/lib/life-view-from-files";
+
+const ARTICLES = [...LIFE_VIEW_FILE_ARTICLES, ...LIFE_VIEW_ARTICLES];
 
 export function LifeViewSection() {
   const { locale } = useI18n();
@@ -46,9 +49,9 @@ export function LifeViewSection() {
         <p className="mt-3 text-sm leading-7 text-ink-soft sm:text-[15px]">{copy.lead}</p>
       </header>
 
-      {LIFE_VIEW_ARTICLES.length ? (
+      {ARTICLES.length ? (
         <div className="mt-6 divide-y divide-line/70 border-y border-line/70">
-          {LIFE_VIEW_ARTICLES.map((article) => (
+          {ARTICLES.map((article) => (
             <details key={article.id} className="group py-5">
               <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
                 <div className="flex items-start justify-between gap-4">
