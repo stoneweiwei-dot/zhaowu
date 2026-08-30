@@ -4,6 +4,7 @@ import {
   FO_ARTS,
   PANEL_ATTRS,
   WU_ARTS,
+  isActiveArt,
   type CharacterPanel,
   type MethodSchool,
   type PanelAttr,
@@ -14,7 +15,7 @@ export const CARD_HEIGHT = 1000;
 
 const ATTR_HANS: Record<PanelAttr, string> = {
   精: "精",
-  炅: "炅",
+  炁: "炁",
   神: "神",
   武: "武",
   術: "术",
@@ -48,7 +49,7 @@ export function schoolCaption(school: MethodSchool, locale: Locale): string {
   if (locale === "zh-Hans") {
     return school === "dao" ? "道门｜玄门五术" : school === "fo" ? "佛门｜禅观法门" : "巫门｜巫祝契盟";
   }
-  return school === "dao" ? "道門｜玄門五術" : school === "fo" ? "佛門｜禅觀法門" : "巫門｜巫祝契盟";
+  return school === "dao" ? "道門｜玄門五術" : school === "fo" ? "佛門｜禎觀法門" : "巫門｜巫祝契盟";
 }
 
 export function panelCaptions(locale: Locale): string[] {
@@ -61,15 +62,15 @@ export function panelCaptions(locale: Locale): string[] {
   }
   if (locale === "zh-Hans") {
     return [
-      "我们会用到十项属性：精、炅、神、武、术、护、宝、遁、广、察，每项十分，总分一百分。",
+      "我们会用到十项属性：精、炁、神、武、术、护、宝、遁、广、察，每项十分，总分一百分。",
       "除这十项属性之外，还有道、佛、巫三套功法类型：",
       "仙、医、命、相、卜，属玄门五术；禅、悉、观、闻、识；巫、祝、鬼、妖、契。",
     ];
   }
   return [
-    "我們會用到十項屬性：精、炅、神、武、術、護、寶、遁、廣、察，每項十分，總分一百分。",
+    "我們會用到十項屬性：精、炁、神、武、術、護、寶、遁、廣、察，每項十分，總分一百分。",
     "除這十項屬性之外，還有道、佛、巫三套功法類型：",
-    "仙、醫、命、相、卜，屬玄門五術；禅、悉、觀、聞、識；巫、祝、鬼、妖、契。",
+    "仙、醫、命、相、卜，屬玄門五術；禎、悉、觀、聞、識；巫、祝、鬼、妖、契。",
   ];
 }
 
@@ -101,16 +102,20 @@ export function buildLandscapePanelSvg(panel: CharacterPanel, locale: Locale): s
   const fill = radarPolygon(panel.scores, 1148, 368, 168);
   const ring = PANEL_ATTRS.map((_, index) => radarVertex(index, 1148, 368, 168));
   const empty = locale === "en"
-    ? "Portrait after decree image"
+    ? "Matching gallery portrait"
     : locale === "zh-Hans"
-      ? "生成命诰图后，画像会放在这里"
-      : "生成命詰圖後，畫像會放在這裡";
+      ? "正在按你的命盘匹配图库画像"
+      : "正在按你的命盤匹配圖庫畫像";
+  const artKeys = [DAO_ARTS, FO_ARTS, WU_ARTS];
 
   const artCells = [arts.dao, arts.fo, arts.wu].flatMap((row, rowIndex) =>
     row.map((art, colIndex) => {
       const x = 56 + colIndex * 97.6;
       const y = 684 + rowIndex * 44;
-      return `<rect x="${x}" y="${y}" width="97.6" height="44" fill="${rowIndex === 0 ? "#f3ead8" : "#fffaf1"}" stroke="#7a6240" /><text x="${x + 48.8}" y="${y + 28}" text-anchor="middle" font-size="20" fill="#29251f">${art}</text>`;
+      const active = isActiveArt(panel.artScores[artKeys[rowIndex][colIndex]]);
+      const bg = active ? "#f6e4d6" : rowIndex === 0 ? "#f3ead8" : "#fffaf1";
+      const color = active ? "#a7352b" : "#29251f";
+      return `<rect x="${x}" y="${y}" width="97.6" height="44" fill="${bg}" stroke="#7a6240" /><text x="${x + 48.8}" y="${y + 28}" text-anchor="middle" font-size="20" fill="${color}">${art}</text>`;
     }),
   ).join("");
 
@@ -184,7 +189,6 @@ export async function downloadCharacterPanelImage(
         await picLoaded;
         ctx.drawImage(pic, 56, 48, 488, 612);
       } catch {
-        // Keep the cream portrait frame if the remote image cannot be stamped.
       }
     }
     const png = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
