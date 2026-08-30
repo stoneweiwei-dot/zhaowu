@@ -41,8 +41,12 @@ test("manifest and Apple web-app metadata support a clean home-screen launch", (
   assert.equal(manifest.display, "standalone");
   assert.equal(manifest.start_url, "/");
   assert.equal(manifest.short_name, "昭梧");
+  assert.ok(manifest.icons.some((icon) => icon.sizes === "180x180"));
+  assert.ok(manifest.icons.some((icon) => icon.sizes === "192x192"));
+  assert.ok(manifest.icons.some((icon) => icon.sizes === "512x512"));
   assert.match(html, /rel="manifest"/);
   assert.match(html, /apple-mobile-web-app-capable/);
   assert.match(html, /apple-mobile-web-app-title/);
+  assert.match(html, /apple-touch-icon\.png\?v=3/);
   assert.match(html, /viewport-fit=cover/);
 });

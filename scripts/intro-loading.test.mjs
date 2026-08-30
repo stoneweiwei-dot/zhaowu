@@ -32,7 +32,7 @@ test('bootstrap does not preload customer report copy that belongs to result ren
   assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
 });
 
-test('loading gate hard-exits inside the five-second bloom budget', () => {
+test('loading gate hard-exits inside the three-second bloom budget', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
   let cancelledTimer = null;
@@ -48,23 +48,26 @@ test('loading gate hard-exits inside the five-second bloom budget', () => {
     () => { exited = true; },
   );
 
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 4800);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS >= 3000);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 5000);
-  assert.equal(scheduledDelay, 4800);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 3000);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS >= 2600);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 3000);
+  assert.equal(scheduledDelay, 3000);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro keeps the official lotus image and plays one bloom with four falling flowers', () => {
+test('intro plays the official lotus video once with still fallback and four falling flowers', () => {
   assert.match(gate, /lotus-bloom-v12\.webp/);
-  assert.match(gate, /LOTUS_BLOOM_MS = 4200/);
+  assert.match(gate, /loading-v11\.mp4/);
+  assert.match(gate, /LOTUS_BLOOM_MS = 2600/);
+  assert.match(gate, /playbackRate/);
   assert.match(gate, /zhaowu-lotus-intro__heaven/);
   assert.match(css, /zhaowu-four-hua/);
-  assert.match(css, /lotus-bloom-v12|Dawn Lotus/);
-  assert.doesNotMatch(gate, /loading-v10\.mp4|loading-v11\.mp4/);
+  assert.match(css, /2\.6s/);
+  assert.match(css, /Dawn Lotus/);
+  assert.doesNotMatch(gate, /loading-v10\.mp4/);
 });
 
 test('iPhone Safari routes stay mounted and usable when bootstrap fails', () => {

@@ -12,7 +12,7 @@
 }
 
 /* Zhaowu · Dawn Lotus intro
-   Keep the official lotus-bloom stills. Play once: bud → open → full bloom,
+   Official lotus still as poster/fallback. Play loading-v11 once in ≤3s,
    with four heavenly flowers falling over the merit pond. */
 .zhaowu-lotus-intro {
   background: #101a18;
@@ -20,6 +20,7 @@
   isolation: isolate;
 }
 
+.zhaowu-lotus-intro__still,
 .zhaowu-lotus-intro__art {
   position: absolute;
   inset: 0;
@@ -27,29 +28,39 @@
   height: 100%;
   object-fit: cover;
   object-position: 50% 48%;
-  transform: scale(1.04);
-  filter: saturate(.96) contrast(1.04) brightness(.96);
   user-select: none;
   -webkit-user-drag: none;
-  animation: zhaowu-lotus-bloom-hold 4.2s cubic-bezier(.22,.7,.28,1) both;
+}
+
+.zhaowu-lotus-intro__still {
+  z-index: 0;
+}
+
+.zhaowu-lotus-intro__art {
+  z-index: 1;
+  transform: scale(1.04);
+  filter: saturate(.96) contrast(1.04) brightness(.96);
+  animation: zhaowu-lotus-bloom-hold 2.6s cubic-bezier(.22,.7,.28,1) both;
 }
 
 .zhaowu-lotus-intro__pond {
   position: absolute;
   left: 50%;
   top: 58%;
+  z-index: 2;
   width: 42%;
   height: 18%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 228, 170, .16) 0%, transparent 72%);
   pointer-events: none;
-  animation: zhaowu-pond-wake 4.2s ease-out both;
+  animation: zhaowu-pond-wake 2.6s ease-out both;
 }
 
 .zhaowu-lotus-intro__heaven {
   position: absolute;
   inset: 0;
+  z-index: 2;
   pointer-events: none;
   overflow: hidden;
 }
@@ -57,38 +68,39 @@
 .zhaowu-lotus-intro__hua {
   position: absolute;
   top: -8%;
-  width: 10px;
-  height: 16px;
+  width: 16px;
+  height: 24px;
   border-radius: 80% 0 80% 0;
   opacity: 0;
   filter: blur(.15px);
-  animation: zhaowu-four-hua 4.2s linear both;
+  animation: zhaowu-four-hua 2.6s linear both;
 }
 
 .zhaowu-lotus-intro__hua.h1 {
   left: 18%;
   background: #f4d7a0;
-  animation-delay: .15s;
+  animation-delay: .08s;
 }
 .zhaowu-lotus-intro__hua.h2 {
   left: 38%;
   background: #f3b7c8;
-  animation-delay: .55s;
+  animation-delay: .28s;
 }
 .zhaowu-lotus-intro__hua.h3 {
   left: 58%;
   background: #efe7d2;
-  animation-delay: .95s;
+  animation-delay: .48s;
 }
 .zhaowu-lotus-intro__hua.h4 {
   left: 76%;
   background: #d9b36a;
-  animation-delay: 1.25s;
+  animation-delay: .68s;
 }
 
 .zhaowu-lotus-intro__veil {
   position: absolute;
   inset: 0;
+  z-index: 2;
   background:
     linear-gradient(180deg, rgba(7, 14, 13, .38) 0%, rgba(7, 14, 13, .02) 28%, rgba(7, 14, 13, .02) 58%, rgba(7, 14, 13, .62) 100%),
     radial-gradient(circle at 50% 28%, rgba(255, 215, 145, .08), transparent 38%);
@@ -97,7 +109,7 @@
 
 .zhaowu-lotus-intro__copy {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: min(100%, 430px);
   min-height: 100dvh;
   margin: 0 auto;
@@ -194,7 +206,8 @@
 }
 
 @media (min-width: 700px) {
-  .zhaowu-lotus-intro__art {
+  .zhaowu-lotus-intro__art,
+  .zhaowu-lotus-intro__still {
     object-fit: contain;
     background: #101a18;
   }
