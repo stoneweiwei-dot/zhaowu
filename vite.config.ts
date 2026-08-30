@@ -5,14 +5,17 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { execFileSync } from "node:child_process";
 import { defineConfig, type Plugin } from "vite";
 
-function homeScreenIcons(): Plugin {
+function writeGeneratedPublicAssets(): Plugin {
   const write = () => {
     execFileSync(process.execPath, ["scripts/write-home-icons.mjs"], {
       stdio: "inherit",
     });
+    execFileSync(process.execPath, ["scripts/write-intro-media.mjs"], {
+      stdio: "inherit",
+    });
   };
   return {
-    name: "zhaowu-home-screen-icons",
+    name: "zhaowu-generated-public-assets",
     buildStart() {
       write();
     },
@@ -25,7 +28,7 @@ function homeScreenIcons(): Plugin {
 export default defineConfig({
   base: "/",
   plugins: [
-    homeScreenIcons(),
+    writeGeneratedPublicAssets(),
     tailwindcss(),
     tanstackRouter({ target: "react", autoCodeSplitting: true }),
     tsconfigPaths(),
