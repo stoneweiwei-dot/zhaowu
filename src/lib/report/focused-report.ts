@@ -7,6 +7,7 @@ import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { buildBodyAttentionLines } from "@/lib/report/body-attention";
 import { buildMindAdviceLines } from "@/lib/report/mind-advice";
 import { deriveGuardianBeast } from "@/lib/report/guardian-beast";
+import { buildCycleOverlayLines } from "@/lib/report/cycle-overlay";
 
 export type ReportSectionEvidence = {
   facts: string[];
@@ -205,7 +206,7 @@ function summaryLines(result: AnalysisResult): string[] {
     : (result.locale ?? "zh-Hans") === "en"
       ? englishSummaryLines(result)
       : chineseSummaryLines(result);
-  return dedupeLines([...core, ...buildMindAdviceLines(result)]);
+  return dedupeLines([...core, ...buildCycleOverlayLines(result), ...buildMindAdviceLines(result)]);
 }
 
 /** New reports keep one overall summary plus one body-attention block; mind advice stays inside the summary. */
@@ -220,10 +221,10 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
       title: titles.summary,
       body: summaryLines(result),
       evidence: {
-        facts: ["final reading", "question-relevant chart facts", "guardian beast symbol", "timing", "action"],
-        conditions: ["All question-specific content and compact topic-matched mind advice are merged into one continuous summary", "Guardian beast is derived from chart element structure and remains symbolic"],
-        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Mind advice never overrides the calculated reading", "Guardian beast is not a supernatural claim"],
-        checks: ["Direct answer appears once", "No numbered mini-sections", "Mind advice stays inside summary", "Guardian beast appears once"],
+        facts: ["final reading", "question-relevant chart facts", "guardian beast symbol", "original chart + target Dayun + target annual year", "timing", "action"],
+        conditions: ["All question-specific content and compact topic-matched mind advice are merged into one continuous summary", "Guardian beast is derived from chart element structure and remains symbolic", "Cycle overlay only consumes canonical chart output; it does not recompute luck-cycle direction"],
+        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Mind advice never overrides the calculated reading", "Guardian beast is not a supernatural claim", "Provisional useful-element conclusions never become hard five-element remedies"],
+        checks: ["Direct answer appears once", "No numbered mini-sections", "Mind advice stays inside summary", "Guardian beast appears once", "Dayun and annual year are read together when birth time is known"],
       },
     },
     {
