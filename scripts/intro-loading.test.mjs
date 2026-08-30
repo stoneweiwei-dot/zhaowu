@@ -24,7 +24,7 @@ test('bootstrap still checks nine-page report runtime', () => {
   assert.match(bootstrap, /import\("@\/lib\/actions"\)/);
   assert.match(bootstrap, /import\("@\/lib\/report\/nine-page"\)/);
   assert.match(bootstrap, /import\("@\/lib\/report\/paid-report-style"\)/);
-  assert.match(bootstrap, /architecture\.length !== 9/);
+  assert.match(bootstrap, /reportStyle\.status !== "production"/);
   assert.match(bootstrap, /正在待命四柱繪意/);
 });
 
