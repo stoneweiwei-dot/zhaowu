@@ -74,12 +74,12 @@ export function buildCycleOverlayLines(result: AnalysisResult): string[] {
 
   const lines: string[] = [];
   if (locale === "en") {
-    lines.push(`Timing overlay: natal chart → ${dayunGz} ten-year cycle (${chart.currentDayun.startYear}–${chart.currentDayun.endYear}) → ${yearGz} in ${year}.`);
-    if (dyYear) lines.push(`The ten-year branch ${dayunBranch} and annual branch ${yearBranch} form a ${branchLabel(dyYear, locale)}. Treat this as a change/activation signal, not an automatic good-or-bad verdict.`);
-    if (natalHits.length) lines.push(`The annual branch also activates natal branch relationship(s): ${natalHits.map((hit) => `${yearBranch}-${hit.branch} ${branchLabel(hit.kind, locale)}`).join(", ")}. Read these together with the ten-year cycle rather than judging the year alone.`);
+    lines.push(`Timing overlay: birth pattern → ${dayunGz} current phase (${chart.currentDayun.startYear}–${chart.currentDayun.endYear}) → ${yearGz} in ${year}.`);
+    if (dyYear) lines.push(`The current-phase branch ${dayunBranch} and annual branch ${yearBranch} form a ${branchLabel(dyYear, locale)}. Treat this as a change/activation signal, not an automatic good-or-bad verdict.`);
+    if (natalHits.length) lines.push(`The annual branch also activates birth-pattern relationship(s): ${natalHits.map((hit) => `${yearBranch}-${hit.branch} ${branchLabel(hit.kind, locale)}`).join(", ")}. Read these together with the current phase rather than judging the year alone.`);
   } else {
     const trad = locale === "zh-Hant";
-    lines.push(`${trad ? "歲運疊加" : "岁运叠加"}：原局 → ${dayunGz}${trad ? "大運" : "大运"}（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）→ ${year}${trad ? "年" : "年"}${yearGz}。`);
+    lines.push(`${trad ? "歲運疊加" : "岁运叠加"}：原局 → ${dayunGz}${trad ? "大運" : "大运"}（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）→ ${year}年${yearGz}。`);
     if (dyYear) lines.push(`${trad ? "大運" : "大运"}${dayunBranch}與${trad ? "流年" : "流年"}${yearBranch}形成${branchLabel(dyYear, locale)}；先判為「動／重整／引動」，不能直接翻譯成吉或凶。`);
     if (natalHits.length) lines.push(`${trad ? "流年同時引動原局" : "流年同时引动原局"}：${natalHits.map((hit) => `${yearBranch}${hit.branch}${branchLabel(hit.kind, locale)}`).join("、")}；年度策略必須把原局、大運、流年放在同一層判讀。`);
   }
@@ -98,7 +98,7 @@ export function buildCycleOverlayLines(result: AnalysisResult): string[] {
   }
 
   lines.push(locale === "en"
-    ? `Current functional emphasis: ${element} — ${ELEMENT_FUNCTION[element][locale]}. Re-check this whenever the ten-year cycle or annual year changes.`
+    ? `Current functional emphasis: ${element} — ${ELEMENT_FUNCTION[element][locale]}. Re-check this whenever the current phase or annual year changes.`
     : `${locale === "zh-Hant" ? "當前功能重點" : "当前功能重点"}：${element}｜${ELEMENT_FUNCTION[element][locale]}。大運或流年更換後必須重新計算，不沿用上一年的固定補法。`
   );
   return lines;
