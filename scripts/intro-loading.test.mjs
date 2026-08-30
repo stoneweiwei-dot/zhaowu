@@ -19,12 +19,14 @@ test('home opens without a blocking loading gate', () => {
   assert.doesNotMatch(shell, /loading-v11\.mp4/);
 });
 
-test('bootstrap still checks nine-page report runtime', () => {
+test('bootstrap checks the current continuous report runtime', () => {
   assert.match(bootstrap, /site_settings\?key=eq\.migration_state/);
   assert.match(bootstrap, /import\("@\/lib\/actions"\)/);
-  assert.match(bootstrap, /import\("@\/lib\/report\/nine-page"\)/);
+  assert.match(bootstrap, /import\("@\/lib\/report\/focused-report"\)/);
   assert.match(bootstrap, /import\("@\/lib\/report\/paid-report-style"\)/);
-  assert.match(bootstrap, /architecture\.length !== 9/);
+  assert.match(bootstrap, /composeFocusedReport/);
+  assert.match(bootstrap, /getPaidReportStyle\(\)\.status !== "production"/);
+  assert.doesNotMatch(bootstrap, /pageArchitecture|architecture\.length !== 9|report\/nine-page/);
   assert.match(bootstrap, /正在待命四柱繪意/);
 });
 
