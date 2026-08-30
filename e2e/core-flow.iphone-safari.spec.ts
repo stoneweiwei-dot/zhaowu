@@ -57,7 +57,6 @@ test.describe("iPhone Safari core customer flow", () => {
       page.getByRole("link", { name: "登入", exact: true }).first(),
     ).toBeVisible();
 
-    // Wait until the first-visit install prompt is actually present, then prove it cannot block the main form.
     await expect(
       page.getByRole("dialog", { name: "把昭梧加入主畫面", exact: true }),
     ).toBeVisible();
@@ -171,7 +170,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(firstCity).toBeVisible();
     await firstCity.click();
 
-    await page.getByRole("button", { name: "開始分析", exact: true }).click();
+    await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
 
     const result = page.locator("#result");
     await expect(result).toBeVisible();

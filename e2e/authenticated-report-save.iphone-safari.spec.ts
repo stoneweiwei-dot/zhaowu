@@ -111,7 +111,7 @@ test("Signed-in member can generate and persist one full report record", async (
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "開始分析", exact: true }).click();
+  await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
 
   const result = page.locator("#result");
   await expect(result).toBeVisible();
@@ -163,7 +163,7 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "開始分析", exact: true }).click();
+  await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
 
   await expect(page.locator("#result")).toBeVisible();
   await expect(page.getByRole("heading", { name: "我現在最應該先處理什麼？", exact: true })).toBeVisible();
