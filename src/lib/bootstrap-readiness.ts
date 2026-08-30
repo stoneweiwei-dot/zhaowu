@@ -67,9 +67,9 @@ async function warmReportRuntime() {
   if (typeof ninePage.composeNinePageReport !== "function") {
     throw new Error("九頁報告模組尚未就緒。");
   }
-  const architecture = style.getPaidReportStyle().pageArchitecture;
-  if (!Array.isArray(architecture) || architecture.length !== 9) {
-    throw new Error("報告結構未鎖定為九頁。");
+  const reportStyle = style.getPaidReportStyle();
+  if (reportStyle.status !== "production") {
+    throw new Error("付費報告規格尚未就緒。");
   }
 }
 
