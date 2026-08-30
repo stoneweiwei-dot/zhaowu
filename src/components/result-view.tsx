@@ -13,6 +13,7 @@ import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-r
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/report/decree-image";
 import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
 import { buildFreeDirectAnswer } from "@/lib/report/final-reading";
+import { buildFreeChartMelody } from "@/lib/report/free-chart-melody";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
 const RESULT_COPY = {
@@ -68,6 +69,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const answer = customerDirectAnswer(question, buildFreeDirectAnswer(question, chart, reading, locale));
   const answerParagraphs = customerParagraphs(answer);
   const decreeCouplet = buildFreeDecreeCouplet(chart, locale);
+  const chartMelody = buildFreeChartMelody(chart, locale);
 
   useEffect(() => {
     let cancelled = false;
@@ -81,10 +83,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         if (out.signedUrl) setImageUrl(out.signedUrl);
         setImageReferenceAssetId(out.galleryReferenceAssetId ?? null);
       })
-      .catch(() => {
-        // View-only retrieval is intentionally silent. A missing old image must not trigger generation
-        // or replace the user's text answer with an infrastructure error.
-      });
+      .catch(() => {});
 
     return () => { cancelled = true; };
   }, [result.id, session?.access_token, user?.id]);
@@ -101,14 +100,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     const reportText = await ensureFullReport();
     const sections = reportSections ?? composeFocusedReport(result);
     setReportSections(sections);
-    const row = await saveReportRecord({
-      session,
-      profile,
-      result,
-      fullReport: reportText,
-      // Legacy field name in the persistence adapter; content is the new dynamic section schema.
-      ninePages: sections,
-    });
+    const row = await saveReportRecord({ session, profile, result, fullReport: reportText, ninePages: sections });
     setSavedId(row?.id ?? result.id);
     return row?.id ?? result.id;
   }
@@ -122,14 +114,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       setReportSections(sections);
       if (session && user) {
         try {
-          await patchReportRecord({
-            session,
-            profile,
-            result,
-            status: "report_ready",
-            fullReport: text,
-            ninePages: sections,
-          });
+          await patchReportRecord({ session, profile, result, status: "report_ready", fullReport: text, ninePages: sections });
           setSavedId(result.id);
         } catch {
           setMsg(copy.syncFailed);
@@ -143,27 +128,16 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   }
 
   async function onSave() {
-    if (!session || !user) {
-      setMsg(t("needLogin"));
-      return;
-    }
+    if (!session || !user) { setMsg(t("needLogin")); return; }
     setBusy("save");
     setMsg(null);
-    try {
-      await ensureSavedReport();
-      setMsg(copy.saved);
-    } catch (err) {
-      setMsg(err instanceof Error && locale !== "en" ? err.message : copy.saveFailed);
-    } finally {
-      setBusy(null);
-    }
+    try { await ensureSavedReport(); setMsg(copy.saved); }
+    catch (err) { setMsg(err instanceof Error && locale !== "en" ? err.message : copy.saveFailed); }
+    finally { setBusy(null); }
   }
 
   async function onImage() {
-    if (!session || !user) {
-      setMsg(t("needLogin"));
-      return;
-    }
+    if (!session || !user) { setMsg(t("needLogin")); return; }
     setBusy("image");
     setMsg(null);
     try {
@@ -172,11 +146,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       if (out.signedUrl) setImageUrl(out.signedUrl);
       setImageReferenceAssetId(out.galleryReferenceAssetId ?? null);
       setMsg(copy.imageReady);
-    } catch (err) {
-      setMsg(err instanceof Error ? err.message : copy.fullFailed);
-    } finally {
-      setBusy(null);
-    }
+    } catch (err) { setMsg(err instanceof Error ? err.message : copy.fullFailed); }
+    finally { setBusy(null); }
   }
 
   return (
@@ -187,42 +158,26 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <div className="mt-4 space-y-3 text-[15px] leading-8 text-ink-soft">
           {answerParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
         </div>
+        <div className="mt-5 border-t border-line/70 pt-4">
+          <p className="text-[14px] leading-7 text-ink-soft">{chartMelody.text}</p>
+        </div>
       </article>
 
       <article className="zhaowu-decree-couplet seal-border rounded-xl bg-cream/95 p-4 sm:p-6">
-        <blockquote className="mx-auto max-w-sm whitespace-pre-line text-center font-display text-lg leading-8 tracking-[0.08em] text-ink">
-          {decreeCouplet}
-        </blockquote>
+        <blockquote className="mx-auto max-w-sm whitespace-pre-line text-center font-display text-lg leading-8 tracking-[0.08em] text-ink">{decreeCouplet}</blockquote>
       </article>
 
       <CharacterPanel chart={chart} portraitUrl={imageUrl} />
 
-      {user ? (
-        <DecreeGalleryPreview
-          chart={chart}
-          question={question}
-          busy={busy === "image"}
-          generatedImageUrl={imageUrl}
-          selectedAssetId={imageReferenceAssetId}
-          onGenerate={() => void onImage()}
-          onGeneratedImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }}
-        />
-      ) : null}
+      {user ? <DecreeGalleryPreview chart={chart} question={question} busy={busy === "image"} generatedImageUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={() => void onImage()} onGeneratedImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} /> : null}
 
       <div className="zhaowu-result-actions flex flex-col gap-3">
-        <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">
-          {busy === "full" ? copy.fullGenerating : copy.fullGenerate}
-        </button>
-        {isPending ? <span className="h-12 animate-pulse rounded-full bg-paper-deep" /> : user ? (
-          <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">
-            {busy === "save" ? copy.saving : savedId ? copy.updateSaved : t("save")}
-          </button>
-        ) : <Link to="/login" className="zhaowu-result-secondary grid h-12 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
+        <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">{busy === "full" ? copy.fullGenerating : copy.fullGenerate}</button>
+        {isPending ? <span className="h-12 animate-pulse rounded-full bg-paper-deep" /> : user ? <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">{busy === "save" ? copy.saving : savedId ? copy.updateSaved : t("save")}</button> : <Link to="/login" className="zhaowu-result-secondary grid h-12 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
         <button type="button" onClick={() => reset()} className="zhaowu-result-reset h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
       </div>
 
       {msg ? <p className="zhaowu-result-message text-sm text-cinnabar">{msg}</p> : null}
-
       {reportSections ? <FocusedReportSections sections={reportSections} result={result} /> : null}
       <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
     </section>
