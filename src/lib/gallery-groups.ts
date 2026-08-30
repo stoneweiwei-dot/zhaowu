@@ -19,6 +19,7 @@ export const PUBLIC_ATLAS_GROUPS = [
   "guardian-beast",
   "auspicious",
   "report-art",
+  "recent-upload",
 ] as const satisfies readonly GalleryDisplayGroup[];
 
 export type PublicAtlasGroup = (typeof PUBLIC_ATLAS_GROUPS)[number];

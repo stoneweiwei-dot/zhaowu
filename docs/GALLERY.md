@@ -18,16 +18,28 @@
 - `tea-guardian + dahongpao`
 - `tea-guardian + longjing`
 - `background + site-wallpaper`
-- `buddhist + dizang`
+- `visual-library + <asset_key>`
 - `dragon-sticker + happy`
 
 茶仙报告与茶仙测验优先读取 `tea-guardian + <tea.id>` 的当前主图；没有主图或网络加载失败时退回 repo 内置 WebP，不阻塞报告。
 
 ## 昭梧吉象图鉴
 
-首页公开区块 `#auspicious-atlas` 复用现有 `visual-library`，不新建第二图库，也不复制 Storage 对象。首批公开集合只采用现有资产中已经有稳定旧键位、能够明确属于圣像／吉祥风水／瑞兽／命理意象范围的图片；近期未细分上传和纯风格参考不自动公开。
+公开「昭梧吉象图鉴」继续复用同一个 `visual-library`，不新建第二图库，也不复制 Storage 对象。
 
-前台只呈现一个混合的「昭梧吉象图鉴」，不向用户暴露佛／道等人工硬分类。首屏最多加载 12 张，继续浏览再逐批增加；图片使用 lazy loading，任一图片或图库请求失败都不得阻塞首页、分析或报告。
+当前公开候选规则：
+
+- 所有 `enabled` 的 `visual-library` 主视觉图均可进入图鉴，包括既有圣像／道韵／瑞兽／吉祥／报告图，以及后续 `img-*` 上传图。
+- `reference-*` 纯参考图继续只留后台，不进入客户图鉴。
+- `background`、`dragon-sticker`、`tea-guardian` 保持各自原用途，不混入吉象图鉴。
+- 前台只呈现一个混合图鉴，不向客户暴露佛／道等人工硬分类。
+
+展示方式固定为两层：
+
+1. 首页 `#auspicious-atlas` 只显示 6 张代表图和「进入完整图鉴」入口，禁止把整库在主页一次展开。
+2. 独立 `/auspicious-atlas` 才是完整浏览页，首次显示 24 张，其余每次再加载 24 张；所有图片继续 lazy loading。
+
+任一图片或图库请求失败都不得阻塞首页、分析、登入、账户或报告。图鉴是增强内容，不是核心分析依赖。
 
 Owner UI `/gallery` 仍是唯一上传入口，并保留「吉象图鉴／全部图片」两个检视。系统内部可继续利用既有键位、语义审计与匹配资料做自动整理，但不要求站主手工维护宗教分类，也不改变 Supabase schema 或反向影响八字判断。
 
