@@ -7,8 +7,10 @@ const docsSource = await readFile(new URL('../docs/PAID-REPORT-STYLE-v1.0.md', i
 
 test('paid report style contract is production-locked', () => {
   for (const required of [
-    'ZW-PAID-ART-REPORT-1.0',
-    '命局证据 → 命理作用 → 人生含义 → 视觉象征',
+    'ZW-PAID-ART-REPORT-1.1',
+    '命局证据 → 大运引动 → 流年/流月引动 → 当期命理作用 → 人生含义 → 五行功能 → 视觉象征',
+    '原局 → 大运 → 流年 → 流月',
+    '同一客户跨年份购买报告必须重新计算',
     '9:16 iPhone优先',
     'STONE 原創',
     '护法/法器：必须由命局结果推导'
@@ -17,7 +19,7 @@ test('paid report style contract is production-locked', () => {
   }
 });
 
-test('documentation and code use the same paid report contract id', () => {
+test('v1.0 documentation remains the historical baseline while code advances the production policy', () => {
   assert.match(docsSource, /ZW-PAID-ART-REPORT-1\.0/);
   assert.match(docsSource, /判断先于绘画/);
   assert.match(docsSource, /任何关键项失败：\*\*不得作为收费版交付。\*\*/);
