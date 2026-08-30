@@ -31,6 +31,8 @@ export function writeIntroMedia() {
       "public/intro/loading-v11.mp4.b64.d",
       "public/intro/loading-v11.mp4.b64.e",
       "public/intro/loading-v11.mp4.b64.f",
+      "public/intro/loading-v11.mp4.b64.g",
+      "public/intro/loading-v11.mp4.b64.h",
     ],
     "public/intro/loading-v11.mp4",
     "0000002066747970",
