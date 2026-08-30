@@ -1,16 +1,20 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const VIDEO_PART_PREFIX = "loading-v11.part.";
+const VIDEO_PART_COUNT = 81;
 
-function decodeBase64Parts(partRels, destRel, magicHex) {
-  const pieces = [];
-  for (const rel of partRels) {
-    const path = resolve(ROOT, rel);
-    if (!existsSync(path)) return false;
-    pieces.push(readFileSync(path, "utf8").replace(/\s+/g, ""));
-  }
+function decodeNumberedParts(dirRel, prefix, destRel, magicHex, expectedCount) {
+  const dir = resolve(ROOT, dirRel);
+  if (!existsSync(dir)) return false;
+  const names = readdirSync(dir)
+    .filter((n) => n.startsWith(prefix))
+    .sort();
+  if (!names.length) return false;
+  if (expectedCount && names.length < expectedCount) return false;
+  const pieces = names.map((n) => readFileSync(resolve(dir, n), "utf8").replace(/\s+/g, ""));
   const buf = Buffer.from(pieces.join(""), "base64");
   if (magicHex) {
     const got = buf.subarray(0, magicHex.length / 2).toString("hex");
@@ -23,24 +27,19 @@ function decodeBase64Parts(partRels, destRel, magicHex) {
 }
 
 export function writeIntroMedia() {
-  const video = decodeBase64Parts(
-    [
-      "public/intro/loading-v11.mp4.b64.a",
-      "public/intro/loading-v11.mp4.b64.b",
-      "public/intro/loading-v11.mp4.b64.c",
-      "public/intro/loading-v11.mp4.b64.d",
-      "public/intro/loading-v11.mp4.b64.e",
-      "public/intro/loading-v11.mp4.b64.f",
-      "public/intro/loading-v11.mp4.b64.g",
-      "public/intro/loading-v11.mp4.b64.h",
-    ],
+  const video = decodeNumberedParts(
+    "public/intro",
+    VIDEO_PART_PREFIX,
     "public/intro/loading-v11.mp4",
     "0000002066747970",
+    VIDEO_PART_COUNT,
   );
-  const poster = decodeBase64Parts(
-    ["public/intro/lotus-bloom-v12.webp.b64"],
+  const poster = decodeNumberedParts(
+    "public/intro",
+    "lotus-bloom-v12.webp.b64",
     "public/intro/lotus-bloom-v12.webp",
     "52494646",
+    1,
   );
   return { video, poster };
 }
