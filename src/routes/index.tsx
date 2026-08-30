@@ -64,6 +64,13 @@ function Home() {
 
       <section className="zhaowu-home-intro" aria-label={t("heroKicker")}>
         <p className="zhaowu-home-intro-kicker">ZHAOWU · {t("heroKicker")}</p>
+        <p className="zhaowu-home-intro-quiz">
+          {locale === "en"
+            ? "Fill the paper. Get the answer. Then generate the report."
+            : locale === "zh-Hans"
+              ? "像心理测验一样交卷：先得答案，再生成报告。"
+              : "像心理測驗一樣交卷：先得答案，再生成報告。"}
+        </p>
       </section>
 
       <section className="relative" aria-label={t("formTitle")}>
