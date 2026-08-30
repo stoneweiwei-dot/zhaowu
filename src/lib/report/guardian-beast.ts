@@ -34,15 +34,17 @@ const COPY = {
 } as const;
 
 function chooseElement(chart: Chart): Element {
-  return chart.useful[0] ?? chart.dayMasterElement;
+  return chart.useful?.[0] ?? chart.dayMasterElement ?? "水";
 }
 
 export function deriveGuardianBeast(chart: Chart, locale: AppLocale = "zh-Hans"): GuardianBeast {
   const element = chooseElement(chart);
   const [name, englishName, keywords] = COPY[locale][element];
-  const month = chart.monthBranch;
-  const dm = `${chart.dayMaster}${chart.dayMasterElement}`;
-  const useful = chart.useful.length ? chart.useful.join("、") : chart.dayMasterElement;
+  const month = chart.monthBranch ?? "未定";
+  const dayMasterElement = chart.dayMasterElement ?? element;
+  const dm = `${chart.dayMaster ?? ""}${dayMasterElement}`;
+  const usefulList = chart.useful ?? [];
+  const useful = usefulList.length ? usefulList.join("、") : dayMasterElement;
 
   const rationale = locale === "en"
     ? `This symbolic beast is selected from the chart's working element (${element}), read together with the ${dm} Day Master, the ${month} month branch and the chart's useful elements (${useful}). It is a visual metaphor for the chart, not a supernatural claim.`
