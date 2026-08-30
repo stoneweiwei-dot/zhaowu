@@ -21,31 +21,32 @@ import {
   radarVertex,
   schoolCaption,
 } from "@/lib/report/character-panel-card";
+import { isCharacterPanelVisualEligible } from "@/lib/report/character-panel-visual-contract";
 
 const COPY = {
   "zh-Hant": {
-    portrait: "為你匹配的圖庫畫像",
-    empty: "正在按你的命盤匹配圖庫畫像。",
-    save: "保存這份人物報告圖",
+    portrait: "為你匹配的宋系人物畫像",
+    empty: "正在按你的命盤匹配宋系人物畫像。",
+    save: "保存這份 9:16 人物屬性圖",
     saving: "正在製圖…",
-    saved: "人物報告圖已保存到此裝置。",
-    failed: "人物報告圖暫時無法保存，請稍後再試。",
+    saved: "9:16 人物屬性圖已保存到此裝置。",
+    failed: "人物屬性圖暫時無法保存，請稍後再試。",
   },
   "zh-Hans": {
-    portrait: "为你匹配的图库画像",
-    empty: "正在按你的命盘匹配图库画像。",
-    save: "保存这份人物报告图",
+    portrait: "为你匹配的宋系人物画像",
+    empty: "正在按你的命盘匹配宋系人物画像。",
+    save: "保存这份 9:16 人物属性图",
     saving: "正在制图…",
-    saved: "人物报告图已保存到此装置。",
-    failed: "人物报告图暂时无法保存，请稍后再试。",
+    saved: "9:16 人物属性图已保存到此装置。",
+    failed: "人物属性图暂时无法保存，请稍后再试。",
   },
   en: {
-    portrait: "Gallery portrait matched to this chart",
-    empty: "Matching a gallery portrait to this chart.",
-    save: "Save this character report image",
+    portrait: "Song-style portrait matched to this chart",
+    empty: "Matching a Song-style portrait to this chart.",
+    save: "Save this 9:16 character attribute image",
     saving: "Preparing image…",
-    saved: "The character report image was saved on this device.",
-    failed: "The character report image could not be saved right now.",
+    saved: "The 9:16 character attribute image was saved on this device.",
+    failed: "The character attribute image could not be saved right now.",
   },
 } as const;
 
@@ -81,20 +82,32 @@ export function CharacterPanel({
   const panel = buildCharacterPanel(chart);
   const arts = artRows(locale);
   const captions = panelCaptions(locale);
-  const [faceUrl, setFaceUrl] = useState<string | null>(portraitUrl ?? null);
+  const initialPortrait = portraitUrl && isCharacterPanelVisualEligible({ storage_path: portraitUrl }) ? portraitUrl : null;
+  const [faceUrl, setFaceUrl] = useState<string | null>(initialPortrait);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (portraitUrl) {
+    if (portraitUrl && isCharacterPanelVisualEligible({ storage_path: portraitUrl })) {
       setFaceUrl(portraitUrl);
       return;
     }
     let live = true;
     void loadCustomerGalleryCandidates()
+      .then((rows) => rows.filter(({ asset, knowledge }) => isCharacterPanelVisualEligible({
+        category: asset.category,
+        asset_key: asset.asset_key,
+        title: asset.title,
+        storage_path: asset.storage_path,
+        summary: knowledge.summary,
+        subject_labels: knowledge.subject_labels,
+        motifs: knowledge.motifs,
+        use_roles: knowledge.use_roles,
+      })))
       .then((rows) => rankCustomerGalleryArt(chart, rows)[0]?.imageUrl ?? null)
       .then((url) => {
-        if (live && url) setFaceUrl(url);
+        if (live && url && isCharacterPanelVisualEligible({ storage_path: url })) setFaceUrl(url);
+        else if (live) setFaceUrl(null);
       })
       .catch(() => {
         if (live) setFaceUrl(null);

@@ -40,7 +40,7 @@ async function gateDuration(page: Page) {
 const routes = [
   {
     path: "/",
-    heading: "你的命盤資訊",
+    heading: "交卷，先看答案",
     action: "交卷，看答案",
     actionRole: "button",
   },
@@ -106,7 +106,7 @@ test.describe("iPhone Safari startup fallback", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator(GATE)).toHaveCount(0, { timeout: 1_500 });
     await expect(
-      page.getByRole("heading", { name: "你的命盤資訊", exact: true }),
+      page.getByRole("heading", { name: "交卷，先看答案", exact: true }),
     ).toBeVisible();
   });
 });
