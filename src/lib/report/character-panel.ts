@@ -1,4 +1,4 @@
-import type { Chart } from "@/lib/bazi/types";
+import type { Chart, Element } from "@/lib/bazi/types";
 
 export const PANEL_ATTRS = ["精", "炁", "神", "武", "術", "護", "寶", "遁", "廣", "察"] as const;
 export type PanelAttr = (typeof PANEL_ATTRS)[number];
@@ -42,7 +42,7 @@ function god(bag: Record<string, number>, ...names: string[]): number {
   return names.reduce((sum, name) => sum + (bag[name] ?? 0), 0);
 }
 
-function elementShare(chart: Chart, element: string): number {
+function elementShare(chart: Chart, element: Element): number {
   return (chart.elementPercents[element] ?? 0) / 20;
 }
 

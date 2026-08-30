@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnalysisForm } from "@/components/analysis-form";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
+import { LifeViewSection } from "@/components/life-view-section";
 import { ResultView } from "@/components/result-view";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
@@ -78,6 +79,8 @@ function Home() {
           ))}
         </div>
       </section>
+
+      <LifeViewSection />
 
       <section className="relative" aria-label={t("formTitle")}>
         <AnalysisForm />
