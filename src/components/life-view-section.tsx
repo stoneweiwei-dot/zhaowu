@@ -8,25 +8,25 @@ export function LifeViewSection() {
     if (locale === "en") {
       return {
         kicker: "STONE · NOTES",
-        title: "My View of Life",
-        lead: "A growing collection of my own writing on life, choices, people and what I have come to understand.",
+        title: "Zhaowu · Notes on Life",
+        lead: "Events leave traces; people act from causes. See the pattern, know the timing.",
         empty: "Articles will be added here over time.",
         open: "Read",
       };
     }
     if (locale === "zh-Hans") {
       return {
-        kicker: "STONE · 随笔",
-        title: "我的人生观和理解",
-        lead: "这里收录我对人生、选择、人和世界的理解。文章会持续更新，不包装成标准答案。",
+        kicker: "STONE · 观世",
+        title: "昭梧 · 观世录",
+        lead: "世事有迹，人心有因；见其势，知其时。",
         empty: "文章会在这里持续更新。",
         open: "阅读全文",
       };
     }
     return {
-      kicker: "STONE · 隨筆",
-      title: "我的人生觀和理解",
-      lead: "這裡收錄我對人生、選擇、人和世界的理解。文章會持續更新，不包裝成標準答案。",
+      kicker: "STONE · 觀世",
+      title: "昭梧 · 觀世錄",
+      lead: "世事有跡，人心有因；見其勢，知其時。",
       empty: "文章會在這裡持續更新。",
       open: "閱讀全文",
     };

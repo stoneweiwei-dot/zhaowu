@@ -6,13 +6,17 @@ const home = readFileSync(new URL("../src/routes/index.tsx", import.meta.url), "
 const section = readFileSync(new URL("../src/components/life-view-section.tsx", import.meta.url), "utf8");
 const source = readFileSync(new URL("../src/lib/life-view.ts", import.meta.url), "utf8");
 
-test("home exposes Stone's life-view section with one stable article source", () => {
+test("home exposes Zhaowu Guan Shi Lu with one stable multilingual article source", () => {
   assert.match(home, /LifeViewSection/);
   assert.match(home, /<LifeViewSection \/>/);
   assert.match(section, /id="life-view"/);
-  assert.match(section, /我的人生觀和理解/);
-  assert.match(section, /我的人生观和理解/);
-  assert.match(section, /My View of Life/);
+  assert.match(section, /昭梧 · 觀世錄/);
+  assert.match(section, /昭梧 · 观世录/);
+  assert.match(section, /Zhaowu · Notes on Life/);
+  assert.match(section, /世事有跡，人心有因；見其勢，知其時。/);
+  assert.match(section, /世事有迹，人心有因；见其势，知其时。/);
   assert.match(section, /LIFE_VIEW_ARTICLES/);
   assert.match(source, /export const LIFE_VIEW_ARTICLES/);
+  assert.match(source, /id: "break-the-deadlock"/);
+  assert.match(source, /id: "long-term-practice"/);
 });
