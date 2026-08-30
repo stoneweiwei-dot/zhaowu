@@ -47,7 +47,8 @@ function branchLabel(kind: "clash" | "combine" | "harm", locale: AppLocale): str
 }
 
 function cycleElement(chart: Chart, yearBranch: string): Element | null {
-  const useful = chart.useful.filter((element) => !chart.drain.includes(element));
+  const drain = chart.drain ?? [];
+  const useful = (chart.useful ?? []).filter((element) => !drain.includes(element));
   if (!chart.usefulProvisional && useful.length) return useful[0];
   const yearElement = BRANCH_ELEMENT[yearBranch] as Element | undefined;
   return yearElement ?? null;
