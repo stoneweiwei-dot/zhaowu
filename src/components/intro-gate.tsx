@@ -7,7 +7,7 @@ import {
   scheduleIntroGateHardExit,
 } from "@/lib/intro-gate-policy";
 
-const LOTUS_BLOOM_MS = 4200;
+const LOTUS_BLOOM_MS = 2600;
 
 export function IntroGate() {
   const { locale } = useI18n();
@@ -104,13 +104,28 @@ export function IntroGate() {
       aria-live="polite"
       aria-label={loadingLabel}
     >
-      <img
+      <video
         className="zhaowu-lotus-intro__art"
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        poster="/intro/lotus-bloom-v12.webp"
+        onLoadedMetadata={(event) => {
+          const media = event.currentTarget;
+          if (media.duration > 0) {
+            media.playbackRate = Math.max(1, media.duration / (LOTUS_BLOOM_MS / 1000));
+          }
+        }}
+      >
+        <source src="/intro/loading-v11.mp4" type="video/mp4" />
+      </video>
+      <img
+        className="zhaowu-lotus-intro__still"
         src="/intro/lotus-bloom-v12.webp"
         alt=""
         aria-hidden
         draggable={false}
-        fetchPriority="high"
       />
       <div className="zhaowu-lotus-intro__pond" aria-hidden />
       <div className="zhaowu-lotus-intro__heaven" aria-hidden>
