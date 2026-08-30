@@ -2,8 +2,9 @@ import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
 import { LIFE_VIEW_ARTICLES } from "@/lib/life-view";
 import { LIFE_VIEW_FILE_ARTICLES } from "@/lib/life-view-from-files";
+import { LIFE_VIEW_PRACTICE_ARTICLES } from "@/lib/life-view-practice-manual";
 
-const ARTICLES = [...LIFE_VIEW_FILE_ARTICLES, ...LIFE_VIEW_ARTICLES];
+const ARTICLES = [...LIFE_VIEW_PRACTICE_ARTICLES, ...LIFE_VIEW_FILE_ARTICLES, ...LIFE_VIEW_ARTICLES];
 
 export function LifeViewSection() {
   const { locale } = useI18n();
