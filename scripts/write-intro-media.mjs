@@ -24,7 +24,14 @@ function decodeBase64Parts(partRels, destRel, magicHex) {
 
 export function writeIntroMedia() {
   const video = decodeBase64Parts(
-    ["public/intro/loading-v11.mp4.b64.a", "public/intro/loading-v11.mp4.b64.b"],
+    [
+      "public/intro/loading-v11.mp4.b64.a",
+      "public/intro/loading-v11.mp4.b64.b",
+      "public/intro/loading-v11.mp4.b64.c",
+      "public/intro/loading-v11.mp4.b64.d",
+      "public/intro/loading-v11.mp4.b64.e",
+      "public/intro/loading-v11.mp4.b64.f",
+    ],
     "public/intro/loading-v11.mp4",
     "0000002066747970",
   );
