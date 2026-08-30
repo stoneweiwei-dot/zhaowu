@@ -27,11 +27,12 @@ test("homepage life paper keeps one analysis form and quiz skin", async () => {
 
   assert.match(form, /zhaowu-quiz-chip/);
   assert.match(form, /composeQuizQuestion/);
-  assert.match(form, /t\("analyze"\)/);
+  assert.match(form, /quizTitle/);
   assert.match(home, /zhaowu-home-quiz-title/);
   assert.match(css, /display: grid !important/);
-  const i18n = await source("src/lib/i18n.ts");
-  assert.match(i18n, /formTitle: \["人生試卷"/);
-  assert.match(i18n, /analyze: \["交卷，看答案"/);
-  assert.match(i18n, /resultQ: \["卷面答案"/);
+  const copy = await source("src/lib/report/quiz-copy.ts");
+  assert.match(copy, /人生試卷/);
+  assert.match(copy, /交卷，看答案/);
+  assert.match(copy, /卷面答案/);
+  assert.match(form, /quizSubmit/);
 });
