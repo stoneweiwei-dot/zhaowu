@@ -22,6 +22,7 @@ import {
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
 import { ReportDragonSticker } from "@/components/report-dragon-sticker";
+import { DecreeImageReason } from "@/components/decree-image-reason";
 import { generateDecreeImage } from "@/lib/report/decree-image";
 import type { ReportSection } from "@/lib/report/focused-report";
 import { TeaGuardianReport } from "@/components/tea-guardian-report";
@@ -45,6 +46,13 @@ function fullText(row: ReportRecord): string | null {
   if (!row.paid_report || typeof row.paid_report !== "object") return null;
   const text = (row.paid_report as Record<string, unknown>).text;
   return typeof text === "string" ? customerDocument(text) : null;
+}
+
+function reportGalleryReferenceAssetId(row: ReportRecord): string | null {
+  if (!row.visual_profile || typeof row.visual_profile !== "object") return null;
+  const value = (row.visual_profile as Record<string, unknown>).galleryReferenceAssetId;
+  const id = String(value ?? "").trim();
+  return id || null;
 }
 
 /**
@@ -497,7 +505,21 @@ function AccountPage() {
 
                         {reportMessages[row.id] ? <p className="mb-4 rounded-md border border-line bg-cream/70 px-3 py-2 text-xs text-cinnabar">{reportMessages[row.id]}</p> : null}
 
-                        {imageUrls[row.id] ? <div className="mb-5 mx-auto max-w-sm overflow-hidden rounded-xl border border-line bg-cream p-2"><img src={imageUrls[row.id]} alt={c.imageDone} className="aspect-[9/16] w-full rounded-lg object-cover" /></div> : null}
+                        {imageUrls[row.id] ? (
+                          <div className="mb-5 mx-auto max-w-sm">
+                            <div className="overflow-hidden rounded-xl border border-line bg-cream p-2">
+                              <img src={imageUrls[row.id]} alt={c.imageDone} className="aspect-[9/16] w-full rounded-lg object-cover" />
+                            </div>
+                            {snapshot?.chart ? (
+                              <DecreeImageReason
+                                chart={snapshot.chart}
+                                question={String(row.alias || row.context?.question || c.reportFallback)}
+                                selectedAssetId={reportGalleryReferenceAssetId(detail)}
+                                compact
+                              />
+                            ) : null}
+                          </div>
+                        ) : null}
 
                         {sections.length ? (
                           <div className="space-y-4">
