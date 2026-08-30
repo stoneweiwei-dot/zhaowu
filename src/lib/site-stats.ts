@@ -71,13 +71,15 @@ export async function getPublicSiteStats(): Promise<PublicSiteStats> {
   const settings = await settingsRes.json() as { value?: { total?: number; today?: number } }[];
   const releases = await releaseRes.json() as { version?: string; update_number?: number; published_at?: string; notes?: { summary?: string } }[];
   const latest = releases[0];
+  const databaseUpdateNumber = Number(latest?.update_number ?? 0);
+  const databaseIsCurrent = databaseUpdateNumber >= SITE_RELEASE_FALLBACK.updateNumber;
 
   return {
     totalVisits: Number(settings[0]?.value?.total ?? 0),
     todayVisits: Number(settings[0]?.value?.today ?? 0),
-    version: String(latest?.version ?? SITE_RELEASE_FALLBACK.version),
-    updateNumber: Number(latest?.update_number ?? SITE_RELEASE_FALLBACK.updateNumber),
-    publishedAt: latest?.published_at ?? SITE_RELEASE_FALLBACK.publishedAt,
-    latestSummary: String(latest?.notes?.summary ?? SITE_RELEASE_FALLBACK.latestSummary),
+    version: databaseIsCurrent ? String(latest?.version ?? SITE_RELEASE_FALLBACK.version) : SITE_RELEASE_FALLBACK.version,
+    updateNumber: databaseIsCurrent ? databaseUpdateNumber : SITE_RELEASE_FALLBACK.updateNumber,
+    publishedAt: databaseIsCurrent ? (latest?.published_at ?? SITE_RELEASE_FALLBACK.publishedAt) : SITE_RELEASE_FALLBACK.publishedAt,
+    latestSummary: databaseIsCurrent ? String(latest?.notes?.summary ?? SITE_RELEASE_FALLBACK.latestSummary) : SITE_RELEASE_FALLBACK.latestSummary,
   };
 }
