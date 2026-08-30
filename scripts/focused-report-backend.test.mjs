@@ -44,12 +44,12 @@ test("website keeps the app concept base while homepage specialist cards shed lo
   assert.doesNotMatch(login, /stone-login-art img|loading-poster/);
   assert.doesNotMatch(intro, /loading-poster|intro-poster/);
   assert.match(intro, /\/intro\/lotus-bloom-v12\.webp/);
-  assert.match(intro, /LOTUS_BLOOM_MS = 4200/);
+  assert.match(intro, /LOTUS_BLOOM_MS = 2600/);
 });
 
 test("background assets remain manageable but no longer render as application wallpaper", async () => {
-  const shell = await source("src/components/site-shell.tsx");
   const account = await source("src/routes/account.tsx");
+  const shell = await source("src/components/site-shell.tsx");
   const main = await source("src/main.tsx");
   const finalHome = await source("src/home-sheet-ui-v5.css");
 
