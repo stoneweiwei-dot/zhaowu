@@ -1,7 +1,10 @@
 {
-  "parts": 8,
+  "parts": 81,
+  "prefix": "loading-v11.part.",
   "mime": "video/mp4",
   "durationSec": 3.0,
+  "width": 404,
+  "height": 720,
   "file": "/intro/loading-v11.mp4",
   "notes": "HD lotus bloom trimmed 0-3s, watermark cropped, muted, parchment grade, no audio"
 }
