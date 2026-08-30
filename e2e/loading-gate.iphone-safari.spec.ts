@@ -41,7 +41,7 @@ const routes = [
   {
     path: "/",
     heading: "你的命盤資訊",
-    action: "開始分析",
+    action: "交卷，看答案",
     actionRole: "button",
   },
   {
