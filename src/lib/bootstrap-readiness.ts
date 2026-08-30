@@ -60,16 +60,15 @@ async function warmCoreRuntime() {
 }
 
 async function warmReportRuntime() {
-  const [ninePage, style] = await Promise.all([
-    import("@/lib/report/nine-page"),
+  const [report, style] = await Promise.all([
+    import("@/lib/report/focused-report"),
     import("@/lib/report/paid-report-style"),
   ]);
-  if (typeof ninePage.composeNinePageReport !== "function") {
-    throw new Error("九頁報告模組尚未就緒。");
+  if (typeof report.composeFocusedReport !== "function") {
+    throw new Error("完整報告模組尚未就緒。");
   }
-  const architecture = style.getPaidReportStyle().pageArchitecture;
-  if (!Array.isArray(architecture) || architecture.length !== 9) {
-    throw new Error("報告結構未鎖定為九頁。");
+  if (style.getPaidReportStyle().status !== "production") {
+    throw new Error("報告規格尚未就緒。");
   }
 }
 
@@ -86,7 +85,7 @@ export async function runBootstrapReadiness(onProgress: (progress: BootstrapProg
     { key: "document", label: "正在建立啟動環境", weight: 10, run: waitForDocumentReady },
     { key: "data", label: "正在連接資料模型", weight: 25, run: verifyDataModel },
     { key: "core", label: "正在待命命理核心", weight: 25, run: warmCoreRuntime },
-    { key: "report", label: "正在準備九頁報告", weight: 20, run: warmReportRuntime },
+    { key: "report", label: "正在準備完整報告", weight: 20, run: warmReportRuntime },
     { key: "image", label: "正在待命四柱繪意與命誥圖", weight: 20, run: warmImageStandby },
   ];
 
