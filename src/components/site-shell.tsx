@@ -4,16 +4,28 @@ import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
-import { getPublicSiteStats, recordVisit, type PublicSiteStats } from "@/lib/site-stats";
+import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
   todayVisits: 0,
-  version: "—",
-  updateNumber: 0,
-  publishedAt: null,
+  version: SITE_RELEASE_FALLBACK.version,
+  updateNumber: SITE_RELEASE_FALLBACK.updateNumber,
+  publishedAt: SITE_RELEASE_FALLBACK.publishedAt,
+  latestSummary: SITE_RELEASE_FALLBACK.latestSummary,
 };
+
+function formatReleaseDate(value: string | null, locale: "zh-Hant" | "zh-Hans" | "en") {
+  if (!value) return "";
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return "";
+  return new Intl.DateTimeFormat(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
@@ -39,6 +51,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
       alive = false;
     };
   }, []);
+
+  const releaseDate = formatReleaseDate(stats.publishedAt, locale);
 
   return (
     <div className={`relative isolate min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"}`}>
@@ -118,11 +132,20 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <p className="font-display text-sm tracking-[0.28em] text-ink-mute">
             {t("brand")}<span className="ml-2 tracking-[0.2em]">ZHAOWU</span>
           </p>
-          <p className="mt-2 text-[10px] tracking-[0.08em] text-ink-mute">
-            {stats.version !== "—" ? `${stats.version} · #${stats.updateNumber}` : "ZHAOWU"}
-            {stats.version !== "—" ? " · " : ""}
-            {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total" : locale === "zh-Hans" ? "累计" : "累計"} {stats.totalVisits.toLocaleString()}
+          <p className="mt-2 text-[10px] tracking-[0.08em] text-ink-mute" data-site-release>
+            {stats.version}
+            {" · "}{locale === "en" ? "Updates" : locale === "zh-Hans" ? "累计更新" : "累計更新"} {stats.updateNumber}
+            {releaseDate ? ` · ${releaseDate}` : ""}
           </p>
+          <p className="mt-1 text-[10px] tracking-[0.08em] text-ink-mute">
+            {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total visits" : locale === "zh-Hans" ? "累计访问" : "累計訪問"} {stats.totalVisits.toLocaleString()}
+          </p>
+          <details className="mx-auto mt-3 max-w-xl border-t border-line/60 pt-3 text-left text-[11px] leading-5 text-ink-mute" data-latest-change-report>
+            <summary className="cursor-pointer list-none text-center font-medium text-ink-soft [&::-webkit-details-marker]:hidden">
+              {locale === "en" ? "Latest update report ＋" : locale === "zh-Hans" ? "最新更新报告 ＋" : "最新更新報告 ＋"}
+            </summary>
+            <p className="mt-2 text-center">{stats.latestSummary}</p>
+          </details>
         </footer>
       ) : null}
     </div>

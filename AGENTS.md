@@ -283,3 +283,25 @@ Never use ambiguous completion language.
 For ZHAOWU work, facts beat assumptions, production beats local state, and verification beats implementation.
 
 If there is no production evidence, there is no completion claim.
+
+## 16. MANDATORY RELEASE LEDGER
+
+Every change that reaches ZHAOWU production and modifies runtime behavior, backend behavior, customer-facing UI, report output, deployment behavior, or production data/configuration must leave a release record. This applies to every AI, APP, agent and manual maintainer.
+
+Before merge:
+
+1. Bump the public release fallback in `src/lib/site-stats.ts`.
+2. Increase `updateNumber` by exactly one from the latest recorded production release.
+3. Create one matching file under `docs/change-reports/` named with the same release version/date.
+4. The change report must state: what changed, why, affected scope, protected scope, rollback path, and verification state.
+5. Tests must fail if the footer release metadata and matching report drift apart.
+
+After Production is VERIFIED:
+
+6. Insert the same version and `update_number` into Supabase `public.release_history` with summary, PR, source commit, deployment id and verification notes.
+7. Never overwrite or delete older `release_history` rows merely to make the count look cleaner. Historical rows are audit records.
+8. The website footer must always show current version, cumulative recorded update count, latest update date, and the latest update-report summary. If Supabase is temporarily stale/unavailable, the code fallback must still show the current release.
+9. A production change without its release report is **INCOMPLETE**, even if the feature itself works.
+10. Documentation-only changes that do not affect production runtime/configuration may be exempt unless the user explicitly asks to version them.
+
+The release ledger is the canonical answer to: **which version is live, how many recorded production updates have occurred, and what changed in the latest release.**
