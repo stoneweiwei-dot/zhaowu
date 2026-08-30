@@ -18,10 +18,20 @@ test("homepage life paper keeps one analysis form and quiz skin", async () => {
   assert.match(home, /zhaowu-home-intro-quiz/);
   assert.match(form, /id="analysisForm"/);
   assert.match(form, /id="analysis-question"/);
-  assert.match(form, /id="birth-year"/);
+  assert.match(form, /birth-year/);
   assert.match(main, /home-quiz-paper\.css/);
   assert.match(css, /\.zhaowu-quiz-sheet/);
   assert.match(quiz, /export function composeQuizQuestion/);
   assert.match(quiz, /seed: "工作"/);
   assert.doesNotMatch(quiz, /Math\.random/);
+
+  assert.match(form, /zhaowu-quiz-chip/);
+  assert.match(form, /composeQuizQuestion/);
+  assert.match(form, /t\("analyze"\)/);
+  assert.match(home, /zhaowu-home-quiz-title/);
+  assert.match(css, /display: grid !important/);
+  const i18n = await source("src/lib/i18n.ts");
+  assert.match(i18n, /formTitle: \["人生試卷"/);
+  assert.match(i18n, /analyze: \["交卷，看答案"/);
+  assert.match(i18n, /resultQ: \["卷面答案"/);
 });
