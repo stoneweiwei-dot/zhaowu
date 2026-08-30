@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Chart } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { loadCustomerGalleryCandidates, rankCustomerGalleryArt } from "@/lib/gallery-match";
 import {
+  DAO_ARTS,
+  FO_ARTS,
   PANEL_ATTRS,
+  WU_ARTS,
   buildCharacterPanel,
+  isActiveArt,
+  type ArtKey,
   type MethodSchool,
   type PanelAttr,
 } from "@/lib/report/character-panel";
@@ -18,28 +24,28 @@ import {
 
 const COPY = {
   "zh-Hant": {
-    portrait: "命詰圖",
-    empty: "生成命詰圖後，畫像會放在這裡。",
-    save: "保存人物面板圖",
+    portrait: "為你匹配的圖庫畫像",
+    empty: "正在按你的命盤匹配圖庫畫像。",
+    save: "保存這份人物報告圖",
     saving: "正在製圖…",
-    saved: "人物面板圖已保存到此裝置。",
-    failed: "人物面板圖暫時無法保存，請稍後再試。",
+    saved: "人物報告圖已保存到此裝置。",
+    failed: "人物報告圖暫時無法保存，請稍後再試。",
   },
   "zh-Hans": {
-    portrait: "命诰图",
-    empty: "生成命诰图后，画像会放在这里。",
-    save: "保存人物面板图",
+    portrait: "为你匹配的图库画像",
+    empty: "正在按你的命盘匹配图库画像。",
+    save: "保存这份人物报告图",
     saving: "正在制图…",
-    saved: "人物面板图已保存到此装置。",
-    failed: "人物面板图暂时无法保存，请稍后再试。",
+    saved: "人物报告图已保存到此装置。",
+    failed: "人物报告图暂时无法保存，请稍后再试。",
   },
   en: {
-    portrait: "Decree image",
-    empty: "Generate the decree image to place the portrait here.",
-    save: "Save character panel image",
+    portrait: "Gallery portrait matched to this chart",
+    empty: "Matching a gallery portrait to this chart.",
+    save: "Save this character report image",
     saving: "Preparing image…",
-    saved: "The character panel image was saved on this device.",
-    failed: "The character panel image could not be saved right now.",
+    saved: "The character report image was saved on this device.",
+    failed: "The character report image could not be saved right now.",
   },
 } as const;
 
@@ -75,14 +81,32 @@ export function CharacterPanel({
   const panel = buildCharacterPanel(chart);
   const arts = artRows(locale);
   const captions = panelCaptions(locale);
+  const [faceUrl, setFaceUrl] = useState<string | null>(portraitUrl ?? null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (portraitUrl) {
+      setFaceUrl(portraitUrl);
+      return;
+    }
+    let live = true;
+    void loadCustomerGalleryCandidates()
+      .then((rows) => rankCustomerGalleryArt(chart, rows)[0]?.imageUrl ?? null)
+      .then((url) => {
+        if (live && url) setFaceUrl(url);
+      })
+      .catch(() => {
+        if (live) setFaceUrl(null);
+      });
+    return () => { live = false; };
+  }, [chart, portraitUrl]);
 
   async function onSaveImage() {
     setBusy(true);
     setMsg(null);
     try {
-      await downloadCharacterPanelImage(panel, locale, portraitUrl);
+      await downloadCharacterPanelImage(panel, locale, faceUrl);
       setMsg(copy.saved);
     } catch {
       setMsg(copy.failed);
@@ -91,13 +115,17 @@ export function CharacterPanel({
     }
   }
 
+  function artClass(key: ArtKey) {
+    return isActiveArt(panel.artScores[key]) ? "is-active" : undefined;
+  }
+
   return (
     <article className="zhaowu-character-panel seal-border" aria-labelledby="zhaowu-character-panel-title">
       <div className="zhaowu-character-sheet">
         <div className="zhaowu-character-left">
           <figure className="zhaowu-character-portrait">
-            {portraitUrl ? (
-              <img src={portraitUrl} alt={copy.portrait} />
+            {faceUrl ? (
+              <img src={faceUrl} alt={copy.portrait} />
             ) : (
               <figcaption>{copy.empty}</figcaption>
             )}
@@ -105,13 +133,13 @@ export function CharacterPanel({
           <table className="zhaowu-character-arts">
             <tbody>
               <tr className={panel.school === "dao" ? "is-school" : undefined}>
-                {arts.dao.map((art) => <th key={art}>{art}</th>)}
+                {arts.dao.map((art, index) => <th key={art} className={artClass(DAO_ARTS[index])}>{art}</th>)}
               </tr>
               <tr className={panel.school === "fo" ? "is-school" : undefined}>
-                {arts.fo.map((art) => <td key={art}>{art}</td>)}
+                {arts.fo.map((art, index) => <td key={art} className={artClass(FO_ARTS[index])}>{art}</td>)}
               </tr>
               <tr className={panel.school === "wu" ? "is-school" : undefined}>
-                {arts.wu.map((art) => <td key={art}>{art}</td>)}
+                {arts.wu.map((art, index) => <td key={art} className={artClass(WU_ARTS[index])}>{art}</td>)}
               </tr>
             </tbody>
           </table>
