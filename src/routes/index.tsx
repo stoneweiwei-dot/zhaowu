@@ -46,6 +46,12 @@ function Home() {
             ],
           };
 
+  const funCopy = locale === "en"
+    ? { kicker: "FUN TESTS", title: "Playful self-tests", lead: "Short tests for personality and behaviour. The first one compares your inner animal with your chart guardian beast.", cardTitle: "Inner Animal × Guardian Beast", cardDetail: "12 questions. Find your current animal archetype, then compare it with your BaZi guardian beast to see whether the two patterns align.", action: "Take the test" }
+    : locale === "zh-Hans"
+      ? { kicker: "趣味测验", title: "昭梧趣味测验系列", lead: "轻一点，但不是乱测。心理自评和命理象征分开计算，再做交叉解读。", cardTitle: "内在动物 × 命局瑞兽", cardDetail: "12题测出你当前最常使用的动物人格原型；已有命盘时，再判断内外同象、相生、相制或异象。", action: "开始测验" }
+      : { kicker: "趣味測驗", title: "昭梧趣味測驗系列", lead: "輕一點，但不是亂測。心理自評和命理象徵分開計算，再做交叉解讀。", cardTitle: "內在動物 × 命局瑞獸", cardDetail: "12 題測出你當前最常使用的動物人格原型；已有命盤時，再判斷內外同象、相生、相制或異象。", action: "開始測驗" };
+
   return (
     <main className="zhaowu-home-sheet-page space-y-7 sm:space-y-12">
       <HomeScreenInstallPrompt />
@@ -79,6 +85,25 @@ function Home() {
             </Link>
           ))}
         </div>
+      </section>
+
+      <section className="seal-border rounded-2xl bg-cream/90 p-5 sm:p-7" aria-label={funCopy.title}>
+        <header>
+          <p className="text-xs tracking-[0.28em] text-cinnabar">ZHAOWU · {funCopy.kicker}</p>
+          <h2 className="mt-2 font-display text-2xl text-ink">{funCopy.title}</h2>
+          <p className="mt-2 text-sm leading-7 text-ink-soft">{funCopy.lead}</p>
+        </header>
+        <Link to="/fun-tests" className="mt-5 block rounded-2xl border border-line bg-paper p-5 transition hover:border-cinnabar/50" aria-label={funCopy.cardTitle}>
+          <div className="flex items-start justify-between gap-5">
+            <div>
+              <span className="text-xs tracking-[0.22em] text-cinnabar">SERIES 01</span>
+              <strong className="mt-2 block font-display text-xl text-ink">{funCopy.cardTitle}</strong>
+              <span className="mt-2 block text-sm leading-6 text-ink-soft">{funCopy.cardDetail}</span>
+            </div>
+            <span className="text-xl text-cinnabar" aria-hidden="true">↗</span>
+          </div>
+          <span className="mt-4 inline-block text-sm text-cinnabar">{funCopy.action}</span>
+        </Link>
       </section>
 
       <AuspiciousGallerySection />
