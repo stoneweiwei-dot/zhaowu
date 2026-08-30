@@ -1,10 +1,10 @@
 import type { Chart } from "@/lib/bazi/types";
 
-export const PANEL_ATTRS = ["精", "炅", "神", "武", "術", "護", "寶", "遁", "廣", "察"] as const;
+export const PANEL_ATTRS = ["精", "炁", "神", "武", "術", "護", "寶", "遁", "廣", "察"] as const;
 export type PanelAttr = (typeof PANEL_ATTRS)[number];
 
 export const DAO_ARTS = ["仙", "醫", "命", "相", "卜"] as const;
-export const FO_ARTS = ["禎", "悉", "觀", "聞", "識"] as const;
+export const FO_ARTS = ["禪", "悉", "觀", "聞", "識"] as const;
 export const WU_ARTS = ["巫", "祝", "鬼", "妖", "契"] as const;
 export const ALL_ARTS = [...DAO_ARTS, ...FO_ARTS, ...WU_ARTS] as const;
 export type ArtKey = (typeof ALL_ARTS)[number];
@@ -68,7 +68,7 @@ export function buildCharacterPanel(chart: Chart): CharacterPanel {
 
   const scores = {
     精: clampScore(3 + bi * 1.2 + dayPct / 18 + di + strong),
-    炅: clampScore(3 + dayPct / 14 + ling + shi + elementShare(chart, "水")),
+    炁: clampScore(3 + dayPct / 14 + ling + shi + elementShare(chart, "水")),
     神: clampScore(3 + zhengYin * 1.3 + pianYin),
     武: clampScore(3 + qiSha * 1.4 + elementShare(chart, "火")),
     術: clampScore(3 + shiShen * 1.2 + shang),
@@ -85,7 +85,7 @@ export function buildCharacterPanel(chart: Chart): CharacterPanel {
     命: clampScore(3 + zhengGuan * 1.3 + zhengYin),
     相: clampScore(3 + shang * 1.2 + pianYin),
     卜: clampScore(3 + shiShen + zhengGuan + elementShare(chart, "水")),
-    禎: clampScore(3 + zhengYin * 1.4 + pianYin),
+    禪: clampScore(3 + zhengYin * 1.4 + pianYin),
     悉: clampScore(3 + shiShen * 1.4),
     觀: clampScore(3 + zhengYin * 1.2 + shang),
     聞: clampScore(3 + pianYin * 1.4),
@@ -102,13 +102,13 @@ export function buildCharacterPanel(chart: Chart): CharacterPanel {
     fo: FO_ARTS.reduce((sum, key) => sum + artScores[key], 0),
     wu: WU_ARTS.reduce((sum, key) => sum + artScores[key], 0),
   };
-  const useful = chart.useful[0];
   let school: MethodSchool = "dao";
   if (schoolTotals.fo >= schoolTotals.dao && schoolTotals.fo >= schoolTotals.wu) school = "fo";
   if (schoolTotals.wu >= schoolTotals.dao && schoolTotals.wu >= schoolTotals.fo) school = "wu";
-  if (useful === "金" || useful === "水") school = schoolTotals.dao >= schoolTotals.wu - 2 ? "dao" : school;
-  if (useful === "火") school = schoolTotals.wu >= schoolTotals.fo - 2 ? "wu" : school;
-  if (useful === "土" || useful === "木") school = schoolTotals.fo >= schoolTotals.dao - 2 ? "fo" : school;
+  const useful = chart.useful[0];
+  if ((useful === "金" || useful === "水") && schoolTotals.dao >= schoolTotals.wu - 2) school = "dao";
+  if (useful === "火" && schoolTotals.wu >= schoolTotals.fo - 2) school = "wu";
+  if ((useful === "土" || useful === "木") && schoolTotals.fo >= schoolTotals.dao - 2) school = "fo";
 
   const dayPillar = chart.pillars.find((col) => col.key === "day");
   const title = dayPillar?.nayin?.trim() || `${chart.dayMaster}${chart.dayMasterElement}`;
