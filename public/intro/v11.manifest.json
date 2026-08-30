@@ -1,6 +1,7 @@
 {
   "parts": 1,
   "mime": "video/mp4",
-  "durationSec": 6.08,
-  "file": "/intro/v11.full.b64"
+  "durationSec": 3.0,
+  "file": "/intro/loading-v11.mp4",
+  "notes": "HD lotus bloom trimmed 0-3s, watermark cropped, muted, parchment grade"
 }
