@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 
 const { buildChart } = await import("../src/lib/bazi/chart.ts");
 const { FEATURED_CITIES } = await import("../src/lib/bazi/cities.ts");
-const { PANEL_ATTRS, buildCharacterPanel } = await import("../src/lib/report/character-panel.ts");
+const { ALL_ARTS, PANEL_ATTRS, buildCharacterPanel } = await import("../src/lib/report/character-panel.ts");
 
 const CITY = FEATURED_CITIES[0];
 
@@ -30,8 +30,12 @@ function chartFor(over = {}) {
 test("character panel scores stay within 1-10 and total stays within 10-100", () => {
   const panel = buildCharacterPanel(chartFor());
   assert.equal(PANEL_ATTRS.length, 10);
+  assert.equal(PANEL_ATTRS[1], "炁");
   for (const key of PANEL_ATTRS) {
     assert.ok(panel.scores[key] >= 1 && panel.scores[key] <= 10, key);
+  }
+  for (const key of ALL_ARTS) {
+    assert.ok(panel.artScores[key] >= 1 && panel.artScores[key] <= 10, key);
   }
   assert.ok(panel.total >= 10 && panel.total <= 100);
   assert.match(panel.school, /^(dao|fo|wu)$/);
@@ -55,7 +59,7 @@ const { buildLandscapePanelSvg } = await import("../src/lib/report/character-pan
 test("character panel report image keeps the reference sheet contract", () => {
   const svg = buildLandscapePanelSvg(buildCharacterPanel(chartFor()), "zh-Hans");
   assert.match(svg, /精/);
-  assert.match(svg, /炅/);
+  assert.match(svg, /炁/);
   assert.match(svg, /仙/);
   assert.match(svg, /禅/);
   assert.match(svg, /巫/);

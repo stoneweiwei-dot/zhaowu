@@ -60,6 +60,10 @@
 
 .zhaowu-character-arts tr.is-school th,
 .zhaowu-character-arts tr.is-school td {
+  box-shadow: inset 0 -2px 0 #a7352b;
+}
+
+.zhaowu-character-arts .is-active {
   color: #a7352b;
   background: #f6e4d6;
   font-weight: 700;
