@@ -23,6 +23,22 @@
 
 茶仙报告与茶仙测验优先读取 `tea-guardian + <tea.id>` 的当前主图；没有主图或网络加载失败时退回 repo 内置 WebP，不阻塞报告。
 
+## 昭梧吉象图鉴
+
+首页公开区块 `#auspicious-atlas` 从现有 `visual-library` 中读取已能按既有 `asset_key` 明确归类的图片，不新建第二图库，也不复制 Storage 对象。
+
+公开分组：
+
+- `library-buddhist-*` → 圣像
+- `library-daoist-*` → 道韵
+- `library-guardian-beast-*` → 瑞兽
+- `library-auspicious-*` → 吉祥·风水
+- `library-report-art-*` → 命理图
+
+`img-*` 近期上传、`reference-*` 风格参考、背景、小绿龙和茶仙不进入公开吉象图鉴。公开区块首屏只载入有限张数，图片使用 lazy loading；任一图片或图库请求失败都不得阻塞首页、分析或报告。
+
+Owner UI `/gallery` 保持站主专用，并按同一套既有标记提供分组检视；分组只整理展示，不改 Supabase schema，也不反向影响八字判断。
+
 ## 客户可见的选图解释
 
 「为什么选这张图」只解释这张图本身的象征，以及它如何呼应该次用户的问题、分析核心和当下需要。文案要让用户理解「这张图为什么属于我这次的分析」。

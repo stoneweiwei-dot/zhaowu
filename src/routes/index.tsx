@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnalysisForm } from "@/components/analysis-form";
+import { AuspiciousGallerySection } from "@/components/auspicious-gallery-section";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
 import { LifeViewSection } from "@/components/life-view-section";
@@ -79,6 +80,8 @@ function Home() {
           ))}
         </div>
       </section>
+
+      <AuspiciousGallerySection />
 
       <LifeViewSection />
 
