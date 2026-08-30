@@ -6,6 +6,7 @@ import { buildCosmicProfile, isCosmicSymbolicQuestion } from "@/lib/symbolic/cos
 import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { buildBodyAttentionLines } from "@/lib/report/body-attention";
 import { buildMindAdviceLines } from "@/lib/report/mind-advice";
+import { deriveGuardianBeast } from "@/lib/report/guardian-beast";
 
 export type ReportSectionEvidence = {
   facts: string[];
@@ -104,13 +105,22 @@ function topicLines(question: string, reading: Reading, chart: Chart): string[] 
   }
 }
 
+function guardianLine(chart: Chart, locale: AppLocale): string {
+  const beast = deriveGuardianBeast(chart, locale);
+  if (locale === "en") return `Chart guardian beast: ${beast.name}. ${beast.keywords.join(", ")}.`;
+  if (locale === "zh-Hant") return `命局瑞獸｜${beast.name}：${beast.keywords.join("、")}。${beast.rationale}`;
+  return `命局瑞兽｜${beast.name}：${beast.keywords.join("、")}。${beast.rationale}`;
+}
+
 function chineseSummaryLines(result: AnalysisResult): string[] {
   const { question, chart, reading } = result;
+  const locale = result.locale ?? "zh-Hans";
   const req = inspectAnswerRequirements(question);
   const structureQuestion = isStructureQuestion(question);
   const lines = [
     customerDirectAnswer(question, reading.directAnswer),
     `命盘落点：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`,
+    guardianLine(chart, locale),
     chart.currentDayun && !structureQuestion ? `当前阶段：${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
     chart.timeUnknown ? "出生时间未确定，因此本次不把时柱与大运起运当作硬结论依据。" : "",
     ...topicLines(question, reading, chart),
@@ -158,6 +168,7 @@ function englishSummaryLines(result: AnalysisResult): string[] {
   const req = inspectAnswerRequirements(question);
   const lines = [
     reading.directAnswer,
+    guardianLine(chart, "en"),
     englishTopicBody(reading),
     plainEnglishRhythm(reading.rhythm),
     reading.action,
@@ -180,6 +191,7 @@ function cosmicSummaryLines(result: AnalysisResult): string[] {
   const profile = buildCosmicProfile(result.chart, locale);
   return dedupeLines([
     profile.directAnswer,
+    guardianLine(result.chart, locale),
     ...profile.archetypeLines,
     ...profile.dimensionLines,
     ...profile.actionLines,
@@ -208,10 +220,10 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
       title: titles.summary,
       body: summaryLines(result),
       evidence: {
-        facts: ["final reading", "question-relevant chart facts", "timing", "action"],
-        conditions: ["All question-specific content and compact topic-matched mind advice are merged into one continuous summary"],
-        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Mind advice never overrides the calculated reading"],
-        checks: ["Direct answer appears once", "No numbered mini-sections", "Mind advice stays inside summary"],
+        facts: ["final reading", "question-relevant chart facts", "guardian beast symbol", "timing", "action"],
+        conditions: ["All question-specific content and compact topic-matched mind advice are merged into one continuous summary", "Guardian beast is derived from chart element structure and remains symbolic"],
+        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Mind advice never overrides the calculated reading", "Guardian beast is not a supernatural claim"],
+        checks: ["Direct answer appears once", "No numbered mini-sections", "Mind advice stays inside summary", "Guardian beast appears once"],
       },
     },
     {
