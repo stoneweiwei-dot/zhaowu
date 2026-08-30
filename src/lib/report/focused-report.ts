@@ -6,6 +6,7 @@ import { buildCosmicProfile, isCosmicSymbolicQuestion } from "@/lib/symbolic/cos
 import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { buildBodyAttentionLines } from "@/lib/report/body-attention";
 import { buildMindAdviceLines } from "@/lib/report/mind-advice";
+import { buildCycleOverlayLines } from "@/lib/report/cycle-overlay";
 
 export type ReportSectionEvidence = {
   facts: string[];
@@ -193,7 +194,7 @@ function summaryLines(result: AnalysisResult): string[] {
     : (result.locale ?? "zh-Hans") === "en"
       ? englishSummaryLines(result)
       : chineseSummaryLines(result);
-  return dedupeLines([...core, ...buildMindAdviceLines(result)]);
+  return dedupeLines([...core, ...buildCycleOverlayLines(result), ...buildMindAdviceLines(result)]);
 }
 
 /** New reports keep one overall summary plus one body-attention block; mind advice stays inside the summary. */
@@ -208,10 +209,10 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
       title: titles.summary,
       body: summaryLines(result),
       evidence: {
-        facts: ["final reading", "question-relevant chart facts", "timing", "action"],
-        conditions: ["All question-specific content and compact topic-matched mind advice are merged into one continuous summary"],
-        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Mind advice never overrides the calculated reading"],
-        checks: ["Direct answer appears once", "No numbered mini-sections", "Mind advice stays inside summary"],
+        facts: ["final reading", "question-relevant chart facts", "natal → dayun → annual overlay", "timing", "action"],
+        conditions: ["All question-specific content, cycle overlay and compact topic-matched mind advice are merged into one continuous summary"],
+        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Mind advice never overrides the calculated reading", "No five-element remedy is hard-labelled while useful-element status is provisional"],
+        checks: ["Direct answer appears once", "Current dayun and current annual year are overlaid before functional advice", "No numbered mini-sections", "Mind advice stays inside summary"],
       },
     },
     {
