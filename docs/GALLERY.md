@@ -25,19 +25,11 @@
 
 ## 昭梧吉象图鉴
 
-首页公开区块 `#auspicious-atlas` 从现有 `visual-library` 中读取已能按既有 `asset_key` 明确归类的图片，不新建第二图库，也不复制 Storage 对象。
+首页公开区块 `#auspicious-atlas` 复用现有 `visual-library`，不新建第二图库，也不复制 Storage 对象。首批公开集合只采用现有资产中已经有稳定旧键位、能够明确属于圣像／吉祥风水／瑞兽／命理意象范围的图片；近期未细分上传和纯风格参考不自动公开。
 
-公开分组：
+前台只呈现一个混合的「昭梧吉象图鉴」，不向用户暴露佛／道等人工硬分类。首屏最多加载 12 张，继续浏览再逐批增加；图片使用 lazy loading，任一图片或图库请求失败都不得阻塞首页、分析或报告。
 
-- `library-buddhist-*` → 圣像
-- `library-daoist-*` → 道韵
-- `library-guardian-beast-*` → 瑞兽
-- `library-auspicious-*` → 吉祥·风水
-- `library-report-art-*` → 命理图
-
-`img-*` 近期上传、`reference-*` 风格参考、背景、小绿龙和茶仙不进入公开吉象图鉴。公开区块首屏只载入有限张数，图片使用 lazy loading；任一图片或图库请求失败都不得阻塞首页、分析或报告。
-
-Owner UI `/gallery` 保持站主专用，并按同一套既有标记提供分组检视；分组只整理展示，不改 Supabase schema，也不反向影响八字判断。
+Owner UI `/gallery` 仍是唯一上传入口，并保留「吉象图鉴／全部图片」两个检视。系统内部可继续利用既有键位、语义审计与匹配资料做自动整理，但不要求站主手工维护宗教分类，也不改变 Supabase schema 或反向影响八字判断。
 
 ## 客户可见的选图解释
 
