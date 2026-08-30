@@ -8,7 +8,19 @@ export type PublicSiteStats = {
   version: string;
   updateNumber: number;
   publishedAt: string | null;
+  latestSummary: string;
 };
+
+/**
+ * Public fallback so version history remains visible even if the statistics request is unavailable.
+ * Every production runtime/backend change must bump this release and add the matching change report.
+ */
+export const SITE_RELEASE_FALLBACK = {
+  version: "ZW-WEB-2026.08.31-r11",
+  updateNumber: 11,
+  publishedAt: "2026-08-31T04:37:00+10:00",
+  latestSummary: "完整報告加入原局→大運→流年疊加；付費五行／靈光視覺先做歲運覆核；恢復版本與更新報告制度。",
+} as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {
   return {
@@ -49,7 +61,7 @@ export async function getPublicSiteStats(): Promise<PublicSiteStats> {
 
   const [settingsRes, releaseRes] = await Promise.all([
     fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.visitor_count&select=value&limit=1`, { headers: publicHeaders() }),
-    fetch(`${SUPABASE_URL}/rest/v1/release_history?select=version,update_number,published_at&order=published_at.desc&limit=1`, { headers: publicHeaders() }),
+    fetch(`${SUPABASE_URL}/rest/v1/release_history?select=version,update_number,published_at,notes&order=update_number.desc.nullslast,published_at.desc&limit=1`, { headers: publicHeaders() }),
   ]);
 
   if (!settingsRes.ok || !releaseRes.ok) {
@@ -57,13 +69,15 @@ export async function getPublicSiteStats(): Promise<PublicSiteStats> {
   }
 
   const settings = await settingsRes.json() as { value?: { total?: number; today?: number } }[];
-  const releases = await releaseRes.json() as { version?: string; update_number?: number; published_at?: string }[];
+  const releases = await releaseRes.json() as { version?: string; update_number?: number; published_at?: string; notes?: { summary?: string } }[];
+  const latest = releases[0];
 
   return {
     totalVisits: Number(settings[0]?.value?.total ?? 0),
     todayVisits: Number(settings[0]?.value?.today ?? 0),
-    version: String(releases[0]?.version ?? "—"),
-    updateNumber: Number(releases[0]?.update_number ?? 0),
-    publishedAt: releases[0]?.published_at ?? null,
+    version: String(latest?.version ?? SITE_RELEASE_FALLBACK.version),
+    updateNumber: Number(latest?.update_number ?? SITE_RELEASE_FALLBACK.updateNumber),
+    publishedAt: latest?.published_at ?? SITE_RELEASE_FALLBACK.publishedAt,
+    latestSummary: String(latest?.notes?.summary ?? SITE_RELEASE_FALLBACK.latestSummary),
   };
 }
