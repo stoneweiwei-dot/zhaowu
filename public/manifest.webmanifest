@@ -9,9 +9,9 @@
   "theme_color": "#fffaf0",
   "icons": [
     {
-      "src": "/emblems/lotus-emblem.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/apple-touch-icon.png?v=2",
+      "sizes": "180x180",
+      "type": "image/png",
       "purpose": "any"
     }
   ]
