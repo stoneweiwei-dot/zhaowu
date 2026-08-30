@@ -15,6 +15,43 @@ export type InstructionRule = BaseInstructionRule & {
 export const FOUR_TOMB_BRANCHES = ['辰', '戌', '丑', '未'] as const;
 export type FourTombBranch = (typeof FOUR_TOMB_BRANCHES)[number];
 
+/**
+ * 病藥不是「缺什麼補什麼」，也不是把偏枯本身浪漫化成富貴。
+ * 這一層把命局結構、十神習氣、現實代價、自主對治與歲運觸發串成同一條判斷鏈。
+ */
+export const pathologyRemedyInstructionRule: InstructionRule = {
+  id: 'ZW-BAZI-PATHOLOGY-REMEDY-1.0',
+  title: '八字病藥／習氣對治協議',
+  status: 'production',
+  layer: 'bazi',
+  priority: 7,
+  purpose: '把「病藥」從單純喜忌或歲運等待，提升為命局結構 → 習氣 → 現實代價 → 對治功能 → 自主行動 → 歲運助力的完整分析鏈。',
+  rules: [
+    '先辨病，再取藥。病不是某五行缺失、數量太少或形式上的不平均，而是由月令、根氣、透藏、流通、制化、承載、寒暖燥濕與十神作用共同形成的核心結構性矛盾。',
+    '不得把「偏枯、失衡、衝突很大」本身直接判成富貴、爆發力或高階格局；失衡只代表張力與風險，是否成用必須看是否存在可行的制、化、泄、通關、調候與承載路徑。',
+    '病要落到功能層：指出哪一股力量過度、受阻、失去出口、承載不足、互相絞殺或寒暖燥濕失調，以及它如何影響全局做功。',
+    '十神配合五行可用來描述習氣與行為慣性，但十神不是人格標籤。必須把命理結構翻譯成可驗證的現實模式，例如控制、競爭、拖延、過度承擔、衝動輸出、資源分散、界線不足或封閉內耗。',
+    '固定分析順序為：命局之病 → 習氣表現 → 現實代價 → 對治之藥 → 自主可做 → 歲運何時助力。不得跳過中間鏈條直接從某個十神或五行跳到事件結論。',
+    '藥是功能，不是元素貼紙。可用的藥包括制、化、泄、通關、調候、培根、建立承載、疏導出口、重新分配資源與邊界；最後才映射到合適的工作方式、關係策略、作息、環境與決策。',
+    '不能只靠歲運。大運、流年、流月只負責觸發、放大、提供條件或改變可用資源；若原局之病可以透過行為、制度、技能、合作方式或生活結構改善，必須同時給出本人可主動執行的對治。',
+    '歲運之藥必須與原局病根建立可解釋的干支／五行／十神作用鏈，不能因某一年出現喜用五行就直接說「病被治好」或「必發」。',
+    '若病重而藥弱、藥受制、藥無根或承載不足，應表述為「可用但成本高／需條件／暫不足以完全轉化」；若病藥關係尚未成立，保持 UNKNOWN，不硬取用神。',
+    '經典出處校正：本協議引用的「有病方為貴，無傷不是奇；格中如去病，財祿兩相隨」按當前資料標記為《五言獨步》（收於《淵海子平》），後由《神峰通考·病藥說》引用並發揮；不得誤標為《滴天髓》。',
+  ],
+  guards: [
+    '禁止「失衡越大越富貴」「百億格局」「有病必貴」「藥到必發」等單因果或財富神話式斷語。',
+    '禁止五行缺什麼補什麼、數量少就補、顏色／方位直接當用神。',
+    '禁止把十神當固定性格標籤或道德評價。',
+    '禁止把焦慮、疾病、困境浪漫化成「修行機緣」而忽略現實處理；健康議題仍守醫療邊界。',
+    '禁止只等大運流年、不提供任何可執行的自主對治。',
+    '禁止引用經典時張冠李戴；來源不確定時必須標示來源層級或待核。',
+  ],
+  outputContract: [
+    '至少輸出：核心病點、結構證據、習氣／行為表現、現實代價、對治功能、本人可執行行動、歲運助力條件、限制與驗證點。',
+    '若沒有足夠結構證據，只能寫「病藥未定」，不得為了完整而硬造病或藥。',
+  ],
+};
+
 export const fourTombsInstructionRule: InstructionRule = {
   id: 'ZW-FOUR-TOMBS-MUKU-1.0',
   title: '辰戌丑未四庫／墓庫動態分析協議',
@@ -55,9 +92,10 @@ export const fourTombsInstructionRule: InstructionRule = {
   ],
 };
 
-/** Preserve all legacy production instructions and append the four-tombs module. */
+/** Preserve all legacy production instructions and append the pathology/remedy + four-tombs modules. */
 export const zhaowuInstructionDatabase: InstructionRule[] = [
   ...baseInstructionDatabase,
+  pathologyRemedyInstructionRule,
   fourTombsInstructionRule,
 ];
 
@@ -86,8 +124,9 @@ function triggerMatches(rule: InstructionRule, context: InstructionContext): boo
 
 /**
  * Canonical instruction router for BaZi analysis.
- * Any 辰／戌／丑／未 in natal branches or active luck/year branches automatically
- * injects ZW-FOUR-TOMBS-MUKU-1.0 before the generic event-inference protocol.
+ * ZW-BAZI-PATHOLOGY-REMEDY-1.0 is always injected as the generic pathology/remedy layer.
+ * Any 辰／戌／丑／未 in natal branches or active luck/year branches additionally injects
+ * ZW-FOUR-TOMBS-MUKU-1.0 before the generic event-inference protocol.
  */
 export function getApplicableInstructionRules(
   context: InstructionContext = {},
@@ -101,4 +140,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-08-30T00:00:00Z';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-08-30T12:45:00Z';
