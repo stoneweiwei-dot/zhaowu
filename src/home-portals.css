@@ -1,56 +1,86 @@
 .zhaowu-home-portals-block {
   position: relative;
   width: 100%;
-  padding: 18px;
-  border: 1px solid rgba(151, 111, 62, 0.28);
-  border-radius: 24px;
-  background: #fbf5e9;
-  box-shadow: 0 16px 38px rgba(76, 55, 31, 0.08);
+  padding: 20px 2px 10px;
+  border-top: 1px solid rgba(139, 99, 55, 0.2);
+  border-bottom: 1px solid rgba(139, 99, 55, 0.18);
+  background: linear-gradient(180deg, rgba(249, 241, 222, 0.12), rgba(240, 225, 195, 0.18));
   overflow: hidden;
 }
 
-.zhaowu-home-portals-block::before {
+.zhaowu-home-portals-block::before,
+.zhaowu-home-portals-block::after {
   content: "";
   position: absolute;
-  inset: 0;
   pointer-events: none;
+}
+
+.zhaowu-home-portals-block::before {
+  inset: 0;
   background:
-    radial-gradient(circle at 8% 4%, rgba(45, 111, 93, 0.05), transparent 28%),
-    radial-gradient(circle at 94% 96%, rgba(166, 48, 40, 0.045), transparent 30%),
-    repeating-linear-gradient(7deg, rgba(95, 69, 40, 0.014) 0 1px, transparent 1px 8px);
+    radial-gradient(ellipse at 4% 78%, rgba(72, 95, 76, 0.045), transparent 25%),
+    radial-gradient(ellipse at 88% 24%, rgba(153, 89, 55, 0.04), transparent 27%),
+    linear-gradient(104deg, transparent 0 54%, rgba(116, 91, 60, 0.02) 54% 55%, transparent 55% 100%);
+}
+
+.zhaowu-home-portals-block::after {
+  width: 84px;
+  height: 25px;
+  right: 12px;
+  top: 15px;
+  opacity: 0.2;
+  background:
+    radial-gradient(ellipse at 18% 62%, transparent 39%, rgba(117, 84, 50, 0.42) 40% 43%, transparent 44%),
+    radial-gradient(ellipse at 51% 50%, transparent 39%, rgba(117, 84, 50, 0.34) 40% 43%, transparent 44%),
+    radial-gradient(ellipse at 82% 63%, transparent 39%, rgba(117, 84, 50, 0.3) 40% 43%, transparent 44%);
 }
 
 .zhaowu-home-portals-heading {
   position: relative;
   z-index: 1;
-  margin-bottom: 14px;
+  margin: 0 10px 15px;
+  padding-left: 18px;
+}
+
+.zhaowu-home-portals-heading::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 7px;
+  height: 27px;
+  border: 1px solid rgba(153, 44, 36, 0.38);
+  background: rgba(153, 44, 36, 0.055);
+  box-shadow: inset 0 0 0 2px rgba(249, 241, 222, 0.72);
 }
 
 .zhaowu-home-portals-heading p {
-  margin: 0 0 5px;
-  color: #8a5d38;
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 0.2em;
+  margin: 0 0 4px;
+  color: rgba(123, 83, 46, 0.72);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
 }
 
 .zhaowu-home-portals-heading h2 {
   margin: 0;
   color: var(--zv5-ink, #29251f);
-  font-family: var(--font-display, serif);
-  font-size: 24px;
-  font-weight: 720;
-  line-height: 1.2;
-  letter-spacing: 0.05em;
+  font-family: var(--font-display, "Noto Serif TC", serif);
+  font-size: 23px;
+  font-weight: 520;
+  line-height: 1.22;
+  letter-spacing: 0.12em;
 }
 
 .zhaowu-home-portals-heading span {
   display: block;
-  margin-top: 7px;
-  max-width: 680px;
-  color: var(--zv5-ink-soft, #544b40);
-  font-size: 12.5px;
-  line-height: 1.65;
+  margin-top: 5px;
+  color: rgba(80, 67, 51, 0.68);
+  font-family: var(--font-display, "Noto Serif TC", serif);
+  font-size: 12px;
+  line-height: 1.7;
+  letter-spacing: 0.05em;
 }
 
 .zhaowu-home-portals {
@@ -58,304 +88,298 @@
   z-index: 1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 9px;
   width: 100%;
 }
 
 .zhaowu-home-portal {
+  --portal-accent: 123, 91, 54;
   position: relative;
+  display: block;
   overflow: hidden;
   min-width: 0;
-  min-height: 188px;
-  border: 1px solid rgba(151, 111, 62, 0.34);
-  border-radius: 19px;
-  padding: 16px;
+  min-height: 182px;
+  border: 1px solid rgba(139, 99, 55, 0.23);
+  border-radius: 7px;
+  padding: 15px 13px 13px 18px;
   color: var(--zv5-ink, #29251f);
-  background: #fffaf1;
-  box-shadow: 0 10px 26px rgba(76, 55, 31, 0.065);
+  background:
+    linear-gradient(180deg, rgba(255, 251, 240, 0.58), rgba(246, 236, 214, 0.45)),
+    rgba(249, 241, 222, 0.42);
+  box-shadow: inset 0 0 28px rgba(112, 79, 45, 0.025);
   isolation: isolate;
-  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
-}
-
-.zhaowu-home-portal::before,
-.zhaowu-home-portal::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  z-index: -1;
+  transition: transform 150ms ease, border-color 150ms ease, background-color 150ms ease;
 }
 
 .zhaowu-home-portal::before {
-  width: 150px;
-  height: 150px;
-  right: -34px;
-  top: -48px;
-  border: 1px solid rgba(126, 82, 43, 0.09);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 18px rgba(126, 82, 43, 0.025),
-    0 0 0 38px rgba(126, 82, 43, 0.018);
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  bottom: 5px;
+  width: 7px;
+  border-left: 1px solid rgba(123, 84, 48, 0.22);
+  border-right: 1px solid rgba(123, 84, 48, 0.16);
+  background: linear-gradient(90deg, rgba(120, 84, 48, 0.04), rgba(255,255,255,0.32), rgba(120, 84, 48, 0.05));
+  box-shadow: 2px 0 7px rgba(72, 52, 31, 0.035);
+  z-index: 2;
 }
 
 .zhaowu-home-portal::after {
-  left: 15px;
-  right: 15px;
-  bottom: 12px;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(151, 111, 62, 0.22), transparent 78%);
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 18% 92%, rgba(var(--portal-accent), 0.07), transparent 29%),
+    radial-gradient(ellipse at 79% 15%, rgba(var(--portal-accent), 0.035), transparent 27%);
 }
-
-.zhaowu-home-portal:active { transform: translateY(1px); }
 
 .zhaowu-home-portal-frame {
   position: absolute;
-  inset: 7px;
-  border: 1px solid rgba(151, 111, 62, 0.12);
-  border-radius: 14px;
+  inset: 5px 5px 5px 12px;
+  border: 1px solid rgba(139, 99, 55, 0.09);
+  border-radius: 3px;
   pointer-events: none;
+  z-index: 0;
+}
+
+.zhaowu-home-portal-art {
+  position: absolute;
+  left: 18px;
+  right: 7px;
+  bottom: 4px;
+  height: 63px;
   z-index: -1;
+  opacity: 0.24;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 12% 100%, rgba(var(--portal-accent), 0.26) 0 17%, transparent 18%),
+    radial-gradient(ellipse at 31% 104%, rgba(var(--portal-accent), 0.2) 0 21%, transparent 22%),
+    radial-gradient(ellipse at 52% 102%, rgba(var(--portal-accent), 0.14) 0 26%, transparent 27%),
+    linear-gradient(168deg, transparent 0 56%, rgba(var(--portal-accent), 0.12) 57% 59%, transparent 60% 100%);
+  filter: blur(0.1px);
 }
 
 .zhaowu-home-portal-mark {
   position: absolute;
-  right: 16px;
-  top: 16px;
+  right: 10px;
+  top: 10px;
   display: grid;
-  width: 64px;
-  height: 64px;
+  width: 22px;
+  height: 22px;
   place-items: center;
-  border: 1px solid rgba(151, 111, 62, 0.24);
-  border-radius: 50%;
-  color: rgba(126, 82, 43, 0.66);
-  background: #fbf5e9;
+  border: 1px solid rgba(153, 44, 36, 0.32);
+  border-radius: 2px;
+  color: rgba(143, 47, 39, 0.72);
+  background: rgba(153, 44, 36, 0.035);
   font-family: var(--font-display, serif);
-  font-size: 26px;
+  font-size: 11px;
+  font-weight: 500;
   line-height: 1;
-  box-shadow: 0 4px 14px rgba(76, 55, 31, 0.04);
-}
-
-.zhaowu-home-portal-mark::before,
-.zhaowu-home-portal-mark::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.zhaowu-home-portal-mark::before {
-  inset: -7px;
-  border: 1px solid rgba(151, 111, 62, 0.11);
-}
-
-.zhaowu-home-portal-mark::after {
-  width: 5px;
-  height: 5px;
-  right: -5px;
-  top: 7px;
-  background: rgba(181, 58, 46, 0.48);
+  box-shadow: inset 0 0 0 2px rgba(251, 246, 232, 0.7);
 }
 
 .zhaowu-home-portal-copy {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 20px;
-  min-width: 0;
-  max-width: calc(100% - 32px);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: 151px;
+  flex-direction: column;
+  padding-top: 26px;
 }
 
 .zhaowu-home-portal-copy em {
   display: block;
-  margin-bottom: 6px;
-  color: #8a5d38;
+  margin-bottom: 7px;
+  color: rgba(var(--portal-accent), 0.78);
+  font-family: var(--font-display, serif);
   font-size: 9px;
   font-style: normal;
-  font-weight: 750;
+  font-weight: 550;
   letter-spacing: 0.16em;
 }
 
 .zhaowu-home-portal-copy strong {
   display: block;
-  max-width: calc(100% - 34px);
-  font-family: var(--font-display, serif);
-  font-size: 21px;
-  font-weight: 720;
-  line-height: 1.2;
-  letter-spacing: 0.045em;
+  font-family: var(--font-display, "Noto Serif TC", serif);
+  font-size: 20px;
+  font-weight: 520;
+  line-height: 1.22;
+  letter-spacing: 0.075em;
 }
 
 .zhaowu-home-portal-copy small {
   display: -webkit-box;
-  margin-top: 7px;
-  max-width: 92%;
+  margin-top: 9px;
   overflow: hidden;
-  color: var(--zv5-ink-soft, #544b40);
-  font-size: 11.5px;
-  line-height: 1.55;
+  color: rgba(71, 61, 49, 0.7);
+  font-family: var(--font-display, "Noto Serif TC", serif);
+  font-size: 11px;
+  line-height: 1.65;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
 }
 
-.zhaowu-home-portal-arrow {
-  position: absolute;
-  left: 16px;
-  top: 16px;
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
-  border: 1px solid rgba(153, 44, 36, 0.16);
-  border-radius: 50%;
-  color: rgba(153, 44, 36, 0.72);
-  background: #fffaf1;
-  font-size: 12px;
-  line-height: 1;
+.zhaowu-home-portal-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 12px;
+  color: rgba(var(--portal-accent), 0.82);
+  font-family: var(--font-display, serif);
+  font-size: 10px;
+  letter-spacing: 0.08em;
 }
 
-.zhaowu-home-portal--sky {
-  border-color: rgba(47, 116, 101, 0.34);
-  background:
-    radial-gradient(circle at 82% 18%, rgba(47, 116, 101, 0.08), transparent 31%),
-    #fffaf1;
+.zhaowu-home-portal-action b {
+  font-size: 14px;
+  font-weight: 400;
+  transform: translateY(-0.5px);
 }
-.zhaowu-home-portal--sky .zhaowu-home-portal-mark {
-  border-color: rgba(47, 116, 101, 0.3);
-  color: rgba(47, 116, 101, 0.78);
-}
-.zhaowu-home-portal--sky .zhaowu-home-portal-copy em { color: #326f61; }
 
-.zhaowu-home-portal--fate {
-  border-color: rgba(181, 58, 46, 0.3);
-  background:
-    radial-gradient(circle at 80% 20%, rgba(181, 58, 46, 0.07), transparent 31%),
-    #fffaf1;
-}
-.zhaowu-home-portal--fate .zhaowu-home-portal-mark {
-  border-color: rgba(181, 58, 46, 0.3);
-  color: rgba(153, 44, 36, 0.76);
-}
-.zhaowu-home-portal--fate .zhaowu-home-portal-copy em { color: #933c34; }
+.zhaowu-home-portal--sky { --portal-accent: 67, 112, 94; }
+.zhaowu-home-portal--fate { --portal-accent: 151, 66, 53; }
+.zhaowu-home-portal--ziwei { --portal-accent: 126, 91, 53; }
 
-.zhaowu-home-portal--ziwei {
-  border-color: rgba(132, 94, 60, 0.34);
-  background:
-    linear-gradient(rgba(132, 94, 60, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(132, 94, 60, 0.035) 1px, transparent 1px),
-    #fffaf1;
-  background-size: 28px 28px;
+.zhaowu-home-portal:active {
+  transform: translateY(1px);
+  border-color: rgba(var(--portal-accent), 0.36);
 }
-.zhaowu-home-portal--ziwei .zhaowu-home-portal-mark {
-  border-radius: 14px;
-  border-color: rgba(132, 94, 60, 0.32);
-  color: rgba(112, 73, 42, 0.78);
-}
-.zhaowu-home-portal--ziwei .zhaowu-home-portal-mark::before { border-radius: 18px; }
 
 @media (hover: hover) {
   .zhaowu-home-portal:hover {
-    transform: translateY(-2px);
-    border-color: rgba(181, 58, 46, 0.42);
-    box-shadow: 0 14px 32px rgba(76, 55, 31, 0.09);
+    transform: translateY(-1px);
+    border-color: rgba(var(--portal-accent), 0.34);
+    background-color: rgba(255, 250, 236, 0.54);
   }
 }
 
 @media (max-width: 640px) {
   .zhaowu-home-portals-block {
-    padding: 15px;
-    border-radius: 21px;
+    padding: 17px 0 8px;
   }
 
   .zhaowu-home-portals-heading {
-    margin-bottom: 12px;
+    margin: 0 8px 13px;
   }
 
   .zhaowu-home-portals-heading h2 {
-    font-size: 22px;
-  }
-
-  .zhaowu-home-portals-heading span {
-    font-size: 12px;
-    line-height: 1.6;
+    font-size: 21px;
   }
 
   .zhaowu-home-portals {
-    grid-template-columns: 1fr;
-    gap: 11px;
+    gap: 6px;
   }
 
   .zhaowu-home-portal {
-    min-height: 164px;
-    border-radius: 18px;
+    min-height: 176px;
+    padding: 12px 9px 10px 14px;
+  }
+
+  .zhaowu-home-portal::before {
+    left: 4px;
+    width: 6px;
+  }
+
+  .zhaowu-home-portal-frame {
+    inset: 4px 4px 4px 10px;
   }
 
   .zhaowu-home-portal-mark {
-    width: 60px;
-    height: 60px;
-    font-size: 25px;
+    right: 7px;
+    top: 7px;
+    width: 19px;
+    height: 19px;
+    font-size: 9px;
+  }
+
+  .zhaowu-home-portal-copy {
+    min-height: 153px;
+    padding-top: 24px;
+  }
+
+  .zhaowu-home-portal-copy em {
+    margin-bottom: 6px;
+    font-size: 8px;
+    letter-spacing: 0.08em;
   }
 
   .zhaowu-home-portal-copy strong {
-    font-size: 22px;
+    font-size: 16px;
+    line-height: 1.28;
+    letter-spacing: 0.03em;
   }
 
   .zhaowu-home-portal-copy small {
-    max-width: 78%;
-    font-size: 12px;
+    margin-top: 7px;
+    font-size: 9.2px;
     line-height: 1.55;
+    -webkit-line-clamp: 4;
+  }
+
+  .zhaowu-home-portal-action {
+    gap: 3px;
+    padding-top: 9px;
+    font-size: 8.8px;
+    letter-spacing: 0.02em;
+  }
+
+  .zhaowu-home-portal-art {
+    left: 12px;
+    height: 54px;
   }
 }
 
 @media (max-width: 430px) {
-  .zhaowu-home-portals-block {
-    padding: 13px;
-    border-radius: 20px;
-  }
-
-  .zhaowu-home-portals { gap: 10px; }
+  .zhaowu-home-portals-heading p { font-size: 8px; }
+  .zhaowu-home-portals-heading span { font-size: 11px; }
+  .zhaowu-home-portals { gap: 5px; }
 
   .zhaowu-home-portal {
-    min-height: 160px;
-    padding: 14px;
-    border-radius: 17px;
-  }
-
-  .zhaowu-home-portal-frame { inset: 6px; border-radius: 13px; }
-
-  .zhaowu-home-portal-mark {
-    right: 14px;
-    top: 14px;
-    width: 58px;
-    height: 58px;
-    font-size: 24px;
+    min-height: 171px;
+    padding-right: 7px;
   }
 
   .zhaowu-home-portal-copy {
-    left: 14px;
-    right: 14px;
-    bottom: 18px;
+    min-height: 148px;
   }
 
   .zhaowu-home-portal-copy strong {
-    max-width: calc(100% - 58px);
-    font-size: 21px;
+    font-size: 15px;
   }
 
   .zhaowu-home-portal-copy small {
-    max-width: 78%;
-    font-size: 11.7px;
+    font-size: 8.7px;
+    line-height: 1.5;
   }
 
-  .zhaowu-home-portal-arrow {
-    left: 14px;
-    top: 14px;
+  .zhaowu-home-portal-action {
+    font-size: 8.3px;
   }
 }
 
-@media (max-width: 360px) {
-  .zhaowu-home-portals-block { padding: 11px; }
-  .zhaowu-home-portal { min-height: 154px; }
-  .zhaowu-home-portal-copy strong { font-size: 19px; }
-  .zhaowu-home-portal-copy small { max-width: 76%; font-size: 11.2px; }
+@media (max-width: 370px) {
+  .zhaowu-home-portals {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .zhaowu-home-portal {
+    min-height: 142px;
+    padding: 12px 12px 10px 19px;
+  }
+
+  .zhaowu-home-portal-copy {
+    min-height: 119px;
+    padding-top: 18px;
+  }
+
+  .zhaowu-home-portal-copy strong { font-size: 18px; }
+  .zhaowu-home-portal-copy small { max-width: 82%; font-size: 10.5px; }
+  .zhaowu-home-portal-action { font-size: 9.5px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as AuspiciousAtlasRouteImport } from './routes/auspicious-atlas'
+import { Route as FunTestsRouteImport } from './routes/fun-tests'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as LoginRouteImport } from './routes/login'
@@ -29,6 +31,16 @@ const IndexRoute = IndexRouteImport.update({
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuspiciousAtlasRoute = AuspiciousAtlasRouteImport.update({
+  id: '/auspicious-atlas',
+  path: '/auspicious-atlas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FunTestsRoute = FunTestsRouteImport.update({
+  id: '/fun-tests',
+  path: '/fun-tests',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -80,6 +92,8 @@ const ZiweiRoute = ZiweiRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/fun-tests': typeof FunTestsRoute
   '/gallery': typeof GalleryRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
@@ -93,6 +107,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/fun-tests': typeof FunTestsRoute
   '/gallery': typeof GalleryRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
@@ -107,6 +123,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/fun-tests': typeof FunTestsRoute
   '/gallery': typeof GalleryRoute
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
@@ -122,6 +140,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
+    | '/auspicious-atlas'
+    | '/fun-tests'
     | '/gallery'
     | '/history'
     | '/login'
@@ -135,6 +155,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/account'
+    | '/auspicious-atlas'
+    | '/fun-tests'
     | '/gallery'
     | '/history'
     | '/login'
@@ -148,6 +170,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/account'
+    | '/auspicious-atlas'
+    | '/fun-tests'
     | '/gallery'
     | '/history'
     | '/login'
@@ -162,6 +186,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
+  AuspiciousAtlasRoute: typeof AuspiciousAtlasRoute
+  FunTestsRoute: typeof FunTestsRoute
   GalleryRoute: typeof GalleryRoute
   HistoryRoute: typeof HistoryRoute
   LoginRoute: typeof LoginRoute
@@ -187,6 +213,20 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auspicious-atlas': {
+      id: '/auspicious-atlas'
+      path: '/auspicious-atlas'
+      fullPath: '/auspicious-atlas'
+      preLoaderRoute: typeof AuspiciousAtlasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fun-tests': {
+      id: '/fun-tests'
+      path: '/fun-tests'
+      fullPath: '/fun-tests'
+      preLoaderRoute: typeof FunTestsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -258,6 +298,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
+  AuspiciousAtlasRoute: AuspiciousAtlasRoute,
+  FunTestsRoute: FunTestsRoute,
   GalleryRoute: GalleryRoute,
   HistoryRoute: HistoryRoute,
   LoginRoute: LoginRoute,

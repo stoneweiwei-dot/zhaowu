@@ -18,31 +18,37 @@ function Home() {
   const portalCopy =
     locale === "en"
       ? {
-          label: "Three specialist sections",
-          lead: "Three focused readings, each written around what that tradition explains best.",
+          kicker: "THREE WAYS",
+          label: "Three Ways of Seeing",
+          lead: "Three traditions, each revealing a different layer.",
+          action: "Enter",
           items: [
-            { to: "/qizheng" as const, eyebrow: "CLASSICAL SKY", title: "Seven Luminaries", detail: "Your temperament, emotional rhythm, drive and natural way of handling pressure.", mark: "☉", tone: "sky" },
-            { to: "/yizhangjing" as const, eyebrow: "PAST-LIFE PATTERNS", title: "Past & Present", detail: "Four prior lives, their six-realm origins, carried habits and any pattern that repeats more strongly.", mark: "緣", tone: "fate" },
-            { to: "/ziwei" as const, eyebrow: "LIFE PATTERNS", title: "Zi Wei Dou Shu", detail: "Character, work, money, relationships and the main theme of your current longer phase.", mark: "斗", tone: "ziwei" },
+            { to: "/qizheng" as const, eyebrow: "CLASSICAL SKY", title: "Seven Luminaries", detail: "Read celestial rhythm, temperament, action and your natural response under pressure.", mark: "曜", tone: "sky" },
+            { to: "/yizhangjing" as const, eyebrow: "PAST-LIFE PATTERNS", title: "Past & Present", detail: "Trace prior-life habits and the themes that return more strongly in this life.", mark: "世", tone: "fate" },
+            { to: "/ziwei" as const, eyebrow: "PALACE PATTERNS", title: "Zi Wei Dou Shu", detail: "Read character, relationships, work, money and the main theme of the current decade.", mark: "斗", tone: "ziwei" },
           ],
         }
       : locale === "zh-Hans"
         ? {
-            label: "三个独立专区",
-            lead: "三个专题，各自只讲自己最擅长看的部分，直接给你一份清楚的个人报告。",
+            kicker: "三门",
+            label: "三门分观",
+            lead: "各依其法，各见其深。",
+            action: "进入分门",
             items: [
-              { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四余", detail: "看天性、情绪节奏、行动方式，以及面对压力时最自然的反应。", mark: "曜", tone: "sky" },
-              { to: "/yizhangjing" as const, eyebrow: "四世六道", title: "前世今生", detail: "看前四世来自哪一道、留下什么习性，以及重复出现后被加强的主轴。", mark: "缘", tone: "fate" },
-              { to: "/ziwei" as const, eyebrow: "人生格局", title: "紫微斗数", detail: "看性格底色、事业财务、关系模式，以及当前十年最重要的课题。", mark: "斗", tone: "ziwei" },
+              { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四余", detail: "观天象气机，辨性情节奏、行动方式，以及临事时最自然的应对。", mark: "曜", tone: "sky" },
+              { to: "/yizhangjing" as const, eyebrow: "前尘习气", title: "前世今生", detail: "看前四世所来之道、所留之习，以及今生反复出现而被加强的主题。", mark: "世", tone: "fate" },
+              { to: "/ziwei" as const, eyebrow: "宫位格局", title: "紫微斗数", detail: "察性格底色、关系模式、事业财务脉络，以及当前十年的重要课题。", mark: "斗", tone: "ziwei" },
             ],
           }
         : {
-            label: "三個獨立專區",
-            lead: "三個專題，各自只講自己最擅長看的部分，直接給你一份清楚的個人報告。",
+            kicker: "三門",
+            label: "三門分觀",
+            lead: "各依其法，各見其深。",
+            action: "進入分門",
             items: [
-              { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四餘", detail: "看天性、情緒節奏、行動方式，以及面對壓力時最自然的反應。", mark: "曜", tone: "sky" },
-              { to: "/yizhangjing" as const, eyebrow: "四世六道", title: "前世今生", detail: "看前四世來自哪一道、留下什麼習性，以及重複出現後被加強的主軸。", mark: "緣", tone: "fate" },
-              { to: "/ziwei" as const, eyebrow: "人生格局", title: "紫微斗數", detail: "看性格底色、事業財務、關係模式，以及當前十年最重要的課題。", mark: "斗", tone: "ziwei" },
+              { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四餘", detail: "觀天象氣機，辨性情節奏、行動方式，以及臨事時最自然的應對。", mark: "曜", tone: "sky" },
+              { to: "/yizhangjing" as const, eyebrow: "前塵習氣", title: "前世今生", detail: "看前四世所來之道、所留之習，以及今生反覆出現而被加強的主題。", mark: "世", tone: "fate" },
+              { to: "/ziwei" as const, eyebrow: "宮位格局", title: "紫微斗數", detail: "察性格底色、關係模式、事業財務脈絡，以及當前十年的重要課題。", mark: "斗", tone: "ziwei" },
             ],
           };
 
@@ -60,9 +66,15 @@ function Home() {
         <p className="zhaowu-home-intro-kicker">ZHAOWU · {t("heroKicker")}</p>
       </section>
 
+      <section className="relative" aria-label={t("formTitle")}>
+        <AnalysisForm />
+      </section>
+      {current ? <ResultView result={current} /> : null}
+      {current ? <FollowUpBox result={current} /> : null}
+
       <section className="zhaowu-home-portals-block" aria-label={portalCopy.label}>
         <header className="zhaowu-home-portals-heading">
-          <p>ZHAOWU · SPECIALIST</p>
+          <p>ZHAOWU · {portalCopy.kicker}</p>
           <h2>{portalCopy.label}</h2>
           <span>{portalCopy.lead}</span>
         </header>
@@ -75,13 +87,14 @@ function Home() {
               aria-label={item.title}
             >
               <span className="zhaowu-home-portal-frame" aria-hidden="true" />
+              <span className="zhaowu-home-portal-art" aria-hidden="true" />
               <span className="zhaowu-home-portal-mark" aria-hidden="true">{item.mark}</span>
               <span className="zhaowu-home-portal-copy">
                 <em>{item.eyebrow}</em>
                 <strong>{item.title}</strong>
                 <small>{item.detail}</small>
+                <span className="zhaowu-home-portal-action">{portalCopy.action}<b aria-hidden="true">›</b></span>
               </span>
-              <span className="zhaowu-home-portal-arrow" aria-hidden="true">↗</span>
             </Link>
           ))}
         </div>
@@ -107,14 +120,7 @@ function Home() {
       </section>
 
       <AuspiciousGallerySection />
-
       <LifeViewSection />
-
-      <section className="relative" aria-label={t("formTitle")}>
-        <AnalysisForm />
-      </section>
-      {current ? <ResultView result={current} /> : null}
-      {current ? <FollowUpBox result={current} /> : null}
     </main>
   );
 }
