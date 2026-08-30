@@ -7,7 +7,7 @@ import {
   type GalleryArtKnowledge,
 } from "@/lib/gallery-match";
 import type { GalleryAsset } from "@/lib/gallery-assets";
-import { explainCustomerDecreeImageChoice } from "@/lib/report/decree-selection-copy";
+import { DecreeImageReason } from "@/components/decree-image-reason";
 
 const COPY = {
   "zh-Hant": {
@@ -18,7 +18,6 @@ const COPY = {
     generating: "命詮圖生成中…",
     matched: "為你選的圖",
     generated: "你的成圖",
-    reasonTitle: "為什麼是這張圖",
     unavailable: "目前沒有可用的命詮圖，暫時無法生成。",
     alt: "昭梧命詮圖參考",
     generatedAlt: "昭梧個人命詮圖",
@@ -31,7 +30,6 @@ const COPY = {
     generating: "命诰图生成中…",
     matched: "为你选的图",
     generated: "你的成图",
-    reasonTitle: "为什么是这张图",
     unavailable: "目前没有可用的命诰图，暂时无法生成。",
     alt: "昭梧命诰图参考",
     generatedAlt: "昭梧个人命诰图",
@@ -44,7 +42,6 @@ const COPY = {
     generating: "Generating decree image…",
     matched: "Chosen for you",
     generated: "Your image",
-    reasonTitle: "Why this image",
     unavailable: "A decree image is not available right now.",
     alt: "Zhaowu decree image reference",
     generatedAlt: "Your Zhaowu decree image",
@@ -97,16 +94,6 @@ export function DecreeGalleryPreview({
   const heroSrc = generatedImageUrl ?? matches[0]?.imageUrl ?? null;
   const heroAlt = generatedImageUrl ? copy.generatedAlt : copy.alt;
   const secondary = useMemo(() => generatedImageUrl ? [] : matches.slice(1, 3), [generatedImageUrl, matches]);
-  const selectedCandidate = useMemo(
-    () => selectedAssetId ? candidates.find((candidate) => candidate.asset.id === selectedAssetId) ?? null : null,
-    [candidates, selectedAssetId],
-  );
-  const selectionReason = useMemo(
-    () => generatedImageUrl && selectedCandidate
-      ? explainCustomerDecreeImageChoice(chart, question, selectedCandidate, locale)
-      : null,
-    [chart, generatedImageUrl, locale, question, selectedCandidate],
-  );
   // Preview ranking is decorative. Default generation is owned by generate-decree-image
   // and must stay clickable even if approved/client_eligible knowledge is missing.
   const canGenerate = !loading;
@@ -157,11 +144,8 @@ export function DecreeGalleryPreview({
         ) : null}
       </div>
 
-      {selectionReason ? (
-        <div className="mt-4 rounded-xl border border-line bg-cream p-4 text-sm leading-7 text-ink-soft">
-          <p className="font-display text-base text-ink">{copy.reasonTitle}</p>
-          <p className="mt-1">{selectionReason}</p>
-        </div>
+      {generatedImageUrl ? (
+        <DecreeImageReason chart={chart} question={question} selectedAssetId={selectedAssetId} />
       ) : null}
     </article>
   );

@@ -84,9 +84,10 @@ test("visual-library ranking stays deterministic when scores tie", () => {
 });
 
 test("Gallery match is visible at the decree action instead of appearing only after the full report", async () => {
-  const [resultView, preview] = await Promise.all([
+  const [resultView, preview, reason] = await Promise.all([
     read("src/components/result-view.tsx"),
     read("src/components/decree-gallery-preview.tsx"),
+    read("src/components/decree-image-reason.tsx"),
   ]);
   assert.match(resultView, /<DecreeGalleryPreview/);
   assert.match(resultView, /generatedImageUrl=\{imageUrl\}/);
@@ -96,7 +97,8 @@ test("Gallery match is visible at the decree action instead of appearing only af
   assert.match(preview, /rankCustomerGalleryArt/);
   assert.match(preview, /這張命詮圖會把這次分析最重要的狀態/);
   assert.match(preview, /core message of this reading/);
-  assert.match(preview, /explainCustomerDecreeImageChoice/);
+  assert.match(preview, /DecreeImageReason/);
+  assert.match(reason, /explainCustomerDecreeImageChoice/);
   assert.doesNotMatch(preview, /系統會按這次命盤和問題/);
   assert.doesNotMatch(preview, /The artwork presents the reading; it never changes it/);
   assert.match(preview, /Default generation is owned by generate-decree-image/);
