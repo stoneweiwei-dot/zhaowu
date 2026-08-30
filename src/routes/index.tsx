@@ -63,13 +63,14 @@ function Home() {
       <HomeScreenInstallPrompt />
 
       <section className="zhaowu-home-intro" aria-label={t("heroKicker")}>
-        <p className="zhaowu-home-intro-kicker">ZHAOWU · {t("heroKicker")}</p>
+        <p className="zhaowu-home-intro-kicker">ZHAOWU · {locale === "en" ? "LIFE QUIZ" : locale === "zh-Hans" ? "人生测验" : "人生測驗"}</p>
+        <h1 className="zhaowu-home-quiz-title">{locale === "en" ? "Hand in the paper. Read the answer." : locale === "zh-Hans" ? "交卷，先看答案" : "交卷，先看答案"}</h1>
         <p className="zhaowu-home-intro-quiz">
           {locale === "en"
-            ? "Fill the paper. Get the answer. Then generate the report."
+            ? "A short life quiz: choose a direction, mark your state, write the question. The direct answer comes first; the full report is generated after."
             : locale === "zh-Hans"
-              ? "像心理测验一样交卷：先得答案，再生成报告。"
-              : "像心理測驗一樣交卷：先得答案，再生成報告。"}
+              ? "把分析做成心理测验试卷。选方向、标近况、写下问题。交卷后立刻给结论，再生成完整报告。"
+              : "把分析做成心理測驗試卷。選方向、標近況、寫下問題。交卷後立刻給結論，再生成完整報告。"}
         </p>
       </section>
 
