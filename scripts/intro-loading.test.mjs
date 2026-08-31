@@ -8,6 +8,7 @@ const bootstrap = await readFile(new URL('../src/lib/bootstrap-readiness.ts', im
 const root = await readFile(new URL('../src/routes/__root.tsx', import.meta.url), 'utf8');
 const gate = await readFile(new URL('../src/components/intro-gate.tsx', import.meta.url), 'utf8');
 const css = await readFile(new URL('../src/intro-extra.css', import.meta.url), 'utf8');
+const mediaWriter = await readFile(new URL('./write-intro-media.mjs', import.meta.url), 'utf8');
 const {
   INTRO_GATE_HARD_EXIT_MS,
   scheduleIntroGateHardExit,
@@ -17,6 +18,7 @@ test('home opens without a blocking loading gate', () => {
   assert.doesNotMatch(shell, /<IntroGate/);
   assert.doesNotMatch(shell, /loading-v10\.mp4/);
   assert.doesNotMatch(shell, /loading-v11\.mp4/);
+  assert.doesNotMatch(shell, /loading-v13\.mp4/);
 });
 
 test('bootstrap still checks nine-page report runtime', () => {
@@ -50,7 +52,7 @@ test('loading gate hard-exits inside the three-second bloom budget', () => {
   );
 
   assert.equal(INTRO_GATE_HARD_EXIT_MS, 3000);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS >= 2600);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS >= 2734);
   assert.ok(INTRO_GATE_HARD_EXIT_MS <= 3000);
   assert.equal(scheduledDelay, 3000);
   scheduledCallback();
@@ -59,16 +61,22 @@ test('loading gate hard-exits inside the three-second bloom budget', () => {
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro plays the official lotus video once with still fallback and four falling flowers', () => {
-  assert.match(gate, /lotus-bloom-v12\.webp/);
-  assert.match(gate, /loading-v11\.mp4/);
-  assert.match(gate, /LOTUS_BLOOM_MS = 2600/);
+test('intro uses the uploaded twin-lotus animation as the loading page', () => {
+  assert.match(gate, /loading-v13\.mp4/);
+  assert.match(gate, /LOTUS_BLOOM_MS = 2734/);
   assert.match(gate, /playbackRate/);
-  assert.match(gate, /zhaowu-lotus-intro__heaven/);
-  assert.match(css, /zhaowu-four-hua/);
-  assert.match(css, /2\.6s/);
-  assert.match(css, /Dawn Lotus/);
+  assert.match(gate, /正在準備昭梧/);
+  assert.match(gate, /STONE 原創/);
+  assert.doesNotMatch(gate, /zhaowu-lotus-intro__heaven/);
+  assert.doesNotMatch(gate, /zhaowu-lotus-intro__hua/);
+  assert.doesNotMatch(css, /zhaowu-four-hua/);
+  assert.match(css, /uploaded twin-lotus loading animation/);
+  assert.match(css, /#131b15 79%/);
+  assert.match(mediaWriter, /loading-user-20260831\.part\./);
+  assert.match(mediaWriter, /VIDEO_PART_COUNT = 12/);
+  assert.match(mediaWriter, /loading-v13\.mp4/);
   assert.doesNotMatch(gate, /loading-v10\.mp4/);
+  assert.doesNotMatch(gate, /loading-v11\.mp4/);
 });
 
 test('iPhone Safari routes stay mounted and usable when bootstrap fails', () => {
@@ -100,6 +108,6 @@ test('home-screen icons are valid PNGs at iOS root and manifest sizes', async ()
   assert.match(html, /apple-touch-icon-precomposed\.png/);
   assert.doesNotMatch(html, /apple-touch-icon\.png\?v=/);
   assert.match(manifest, /"src": "\/apple-touch-icon\.png"/);
-  assert.match(manifest, /"src": "\/icons\/icon-192\.png"/);
-  assert.match(manifest, /"src": "\/icons\/icon-512\.png"/);
+  assert.match(manifest, /"src": "\/icons\/icon-192\.png/);
+  assert.match(manifest, /"src": "\/icons\/icon-512\.png/);
 });
