@@ -7,7 +7,7 @@ import {
   scheduleIntroGateHardExit,
 } from "@/lib/intro-gate-policy";
 
-const LOTUS_BLOOM_MS = 2600;
+const LOTUS_BLOOM_MS = 2734;
 
 export function IntroGate() {
   const { locale } = useI18n();
@@ -104,22 +104,6 @@ export function IntroGate() {
       aria-live="polite"
       aria-label={loadingLabel}
     >
-      <video
-        className="zhaowu-lotus-intro__art"
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-        poster="/intro/lotus-bloom-v12.webp"
-        onLoadedMetadata={(event) => {
-          const media = event.currentTarget;
-          if (media.duration > 0) {
-            media.playbackRate = Math.max(1, media.duration / (LOTUS_BLOOM_MS / 1000));
-          }
-        }}
-      >
-        <source src="/intro/loading-v11.mp4" type="video/mp4" />
-      </video>
       <img
         className="zhaowu-lotus-intro__still"
         src="/intro/lotus-bloom-v12.webp"
@@ -127,21 +111,24 @@ export function IntroGate() {
         aria-hidden
         draggable={false}
       />
-      <div className="zhaowu-lotus-intro__pond" aria-hidden />
-      <div className="zhaowu-lotus-intro__heaven" aria-hidden>
-        <i className="zhaowu-lotus-intro__hua h1" />
-        <i className="zhaowu-lotus-intro__hua h2" />
-        <i className="zhaowu-lotus-intro__hua h3" />
-        <i className="zhaowu-lotus-intro__hua h4" />
-      </div>
+      <video
+        className="zhaowu-lotus-intro__art"
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        onLoadedMetadata={(event) => {
+          const media = event.currentTarget;
+          if (media.duration > 0) {
+            media.playbackRate = Math.max(1, media.duration / (LOTUS_BLOOM_MS / 1000));
+          }
+        }}
+      >
+        <source src="/intro/loading-v13.mp4" type="video/mp4" />
+      </video>
       <div className="zhaowu-lotus-intro__veil" aria-hidden />
 
       <div className="zhaowu-lotus-intro__copy">
-        <div className="zhaowu-lotus-intro__brand">
-          <p>Z H A O W U</p>
-          <span>DESTINY · TIMING · CHOICE</span>
-        </div>
-
         <div className="zhaowu-lotus-intro__status">
           <div className="zhaowu-lotus-intro__bar" aria-hidden>
             <i style={{ width: `${percent}%` }} />
