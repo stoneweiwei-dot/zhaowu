@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.08.31-r14",
-  updateNumber: 14,
-  publishedAt: "2026-08-31T12:37:00+10:00",
-  latestSummary: "手機端問小龍改為頁面內展開，不再遮擋表單與正文；移除舊性格兩面入口，觀世錄配圖改為段落間的小幅裁切片段。",
+  version: "ZW-WEB-2026.08.31-r15",
+  updateNumber: 15,
+  publishedAt: "2026-08-31T13:10:00+10:00",
+  latestSummary: "首頁答卷移除方向與近況選項，只保留直接提問和出生資料；觀世錄手機配圖放大為清晰可讀的段落插圖。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {

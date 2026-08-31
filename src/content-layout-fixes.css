@@ -38,7 +38,7 @@
 
 .life-view-art-fragment {
   position: relative;
-  width: clamp(5.75rem, 26vw, 8.25rem);
+  width: clamp(11rem, 22vw, 15rem);
   margin-top: 1.1rem;
   margin-bottom: .55rem;
   overflow: hidden;
@@ -71,11 +71,27 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.34);
+  transform: scale(1.16);
 }
 
-@media (min-width: 641px) {
+@media (max-width: 640px) {
   .life-view-art-fragment {
-    width: clamp(7rem, 15vw, 9.5rem);
+    float: none;
+    clear: both;
+    width: min(72%, 14.5rem);
+    margin-top: 1.25rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .life-view-art-fragment.is-left {
+    float: none;
+    margin-right: auto;
+    margin-left: 0;
+  }
+
+  .life-view-art-fragment.is-right {
+    float: none;
+    margin-right: 0;
+    margin-left: auto;
   }
 }

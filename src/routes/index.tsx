@@ -67,10 +67,10 @@ function Home() {
         <h1 className="zhaowu-home-quiz-title">{locale === "en" ? "Hand in the paper. Read the answer." : locale === "zh-Hans" ? "交卷，先看答案" : "交卷，先看答案"}</h1>
         <p className="zhaowu-home-intro-quiz">
           {locale === "en"
-            ? "A short life quiz: choose a direction, mark your state, write the question. The direct answer comes first; the full report is generated after."
+            ? "Write the question you actually want answered. The direct answer comes first; the full report is generated after."
             : locale === "zh-Hans"
-              ? "把分析做成心理测验试卷。选方向、标近况、写下问题。交卷后立刻给结论，再生成完整报告。"
-              : "把分析做成心理測驗試卷。選方向、標近況、寫下問題。交卷後立刻給結論，再生成完整報告。"}
+              ? "把真正想问的事直接写下。交卷后立刻给结论，再生成完整报告。"
+              : "把真正想問的事直接寫下。交卷後立刻給結論，再生成完整報告。"}
         </p>
       </section>
 

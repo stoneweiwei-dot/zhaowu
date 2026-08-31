@@ -60,6 +60,9 @@ test.describe("iPhone Safari core customer flow", () => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
+    await expect(page.locator("#analysisForm .zhaowu-quiz-topics")).toHaveCount(0);
+    await expect(page.locator("#analysisForm .zhaowu-quiz-states")).toHaveCount(0);
+
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(
       page.getByRole("link", { name: "前世今生", exact: true }),
@@ -151,7 +154,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(fragment).toBeVisible();
     await expect(fragment.locator("img")).toHaveCSS("object-fit", "cover");
     const fragmentBox = await fragment.boundingBox();
-    expect(fragmentBox?.width ?? 999).toBeLessThan(160);
+    expect(fragmentBox?.width ?? 0).toBeGreaterThanOrEqual(180);
+    expect(fragmentBox?.width ?? 999).toBeLessThanOrEqual(240);
     await expectMobileViewportHealthy(page);
   });
 
