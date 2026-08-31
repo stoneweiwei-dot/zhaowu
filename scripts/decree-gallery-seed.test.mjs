@@ -99,6 +99,12 @@ test("provider personalization remains optional and falls back to the matched Ga
   assert.match(source, /degraded: true/);
 });
 
+test("the customer-facing production button explicitly requests provider personalization", async () => {
+  const resultView = await read("src/components/result-view.tsx");
+  assert.match(resultView, /generateDecreeImage\(session, reportId, true\)/);
+  assert.doesNotMatch(resultView, /generateDecreeImage\(session, reportId\);/);
+});
+
 test("provider billing details are never exposed to customers", async () => {
   const client = await read("src/lib/report/decree-image.ts");
   assert.match(client, /IMAGE_GENERATION_FAILED/);

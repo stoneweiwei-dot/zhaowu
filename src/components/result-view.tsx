@@ -142,7 +142,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setMsg(null);
     try {
       const reportId = await ensureSavedReport();
-      const out = await generateDecreeImage(session, reportId);
+      // The customer-facing production button must attempt the real provider image first.
+      // The Edge Function still falls back to the matched Gallery image when provider
+      // credentials, credits, or generation are unavailable, so text delivery stays intact.
+      const out = await generateDecreeImage(session, reportId, true);
       if (out.signedUrl) setImageUrl(out.signedUrl);
       setImageReferenceAssetId(out.galleryReferenceAssetId ?? null);
       setMsg(copy.imageReady);
