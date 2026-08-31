@@ -65,8 +65,11 @@ test("report-only chart recommendation is available without quiz answers", () =>
 
 test("mobile tea portrait card stacks image above copy so titles stay whole", async () => {
   const css = await readFile(new URL("../src/tea-guardian.css", import.meta.url), "utf8");
-  const mobile = css.slice(css.indexOf("@media (max-width: 720px)"));
-  assert.match(mobile, /\.tea-result-card \{[\s\S]*grid-template-columns:\s*1fr;/);
-  assert.match(mobile, /\.tea-result-copy h3 \{[\s\S]*overflow-wrap:\s*anywhere;/);
-  assert.doesNotMatch(mobile, /minmax\(7\.2rem/);
+  const lock = await readFile(new URL("../src/content-layout-fixes.css", import.meta.url), "utf8");
+  const base = css.slice(css.indexOf(".tea-result-card {"), css.indexOf(".tea-result-card.is-featured"));
+  assert.match(base, /grid-template-columns:\s*1fr;/);
+  assert.match(css, /@media \(min-width: 900px\)/);
+  assert.match(css, /\.tea-result-copy h3 \{[\s\S]*overflow-wrap:\s*anywhere;/);
+  assert.match(lock, /@media \(max-width: 899px\)[\s\S]*\.tea-result-card \{[\s\S]*grid-template-columns:\s*1fr !important;/);
+  assert.doesNotMatch(base, /minmax\(8\.8rem/);
 });

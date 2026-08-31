@@ -95,3 +95,23 @@
     margin-left: auto;
   }
 }
+
+/* Tea portrait cards: phones stay stacked so the title is never eaten by the artwork. */
+@media (max-width: 899px) {
+  .tea-result-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .tea-result-image-wrap,
+  .tea-result-copy,
+  .tea-result-copy h3,
+  .tea-result-label,
+  .tea-result-guardian,
+  .tea-result-meta,
+  .tea-result-note {
+    min-width: 0 !important;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
