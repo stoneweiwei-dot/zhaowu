@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.08.31-r16",
-  updateNumber: 16,
-  publishedAt: "2026-08-31T20:36:00+10:00",
-  latestSummary: "完整報告加入「修心與環境」建議模組：依題目最多調用兩條，把境隨心轉、慈悲不傷、孝親界線、口德敬物、習慣投射、放下執念、家人各自課題與無為不妄為轉成可執行建議，並禁止魔法因果。",
+  version: "ZW-WEB-2026.08.31-r17",
+  updateNumber: 17,
+  publishedAt: "2026-08-31T21:24:00+10:00",
+  latestSummary: "昭梧·觀世錄新增《從黃泉到輪迴：中國人如何重新想像死亡》，把魂魄、黃泉、泰山、佛教業報輪迴、十王、目連與後世民間幽冥敘事按歷史層次分開，不把不同時代信仰拼成單一固定地府體系。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {
