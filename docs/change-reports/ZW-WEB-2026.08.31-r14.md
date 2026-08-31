@@ -1,7 +1,7 @@
 # 昭梧更新報告｜ZW-WEB-2026.08.31-r14
 
 日期：2026-08-31（AEST）
-狀態：待 CI、main 合併與 Vercel Production 驗證
+狀態：Production 已驗證
 
 ## 本次改動
 
@@ -36,8 +36,10 @@
 ## Production 驗證欄
 
 - GitHub PR：#179
-- Merge commit：待 CI 通過後確認
-- Vercel deployment：待 Production READY 後確認
+- Merge commit：`e4aaebd1a4eceddc188a27da157ea1e331411d06`
+- CI：Production CI #837 通過（283 項 deterministic tests、TypeScript、Vite build、24/24 iPhone Safari）
+- Vercel deployment：`dpl_FvHBmYxbxVHd1mqiYzsRFQEQpEe9`（READY，production alias 已指向）
+- Supabase Edge Function：`site-guide` v8（ACTIVE，`verify_jwt=true`）
 - Production routes：`/`
 - 驗證重點：iPhone 390×844 下小龍收合與展開均不覆蓋表單/正文；小龍無「性格兩面」；觀世錄只顯示裁切小圖且無橫向溢出
-- 結果：待驗證
+- 結果：正式站 r14 可見；無 Vite error overlay、無橫向溢出；小龍不含舊入口；觀世錄已無整張大圖，正文使用左右錯落的裁切小圖。Supabase `release_history` 已寫入 r14。
