@@ -1,7 +1,7 @@
 # 昭梧更新報告｜ZW-WEB-2026.09.01-r20
 
 日期：2026-09-01（AEST）
-狀態：待 Production 驗證
+狀態：Production 驗證完成
 
 ## 本次改動
 
@@ -35,10 +35,10 @@
 
 ## Production 驗證欄
 
-- GitHub PR：待建立
-- Merge commit：待合併
-- CI / Build：待驗證
-- Vercel deployment：待驗證
-- Production assets：待驗證 `/apple-touch-icon-r20.png`、`/icons/zhaowu-lotus-192.png`、`/icons/zhaowu-lotus-512.png`
-- iPhone 驗證：待確認加入主畫面預覽顯示蓮花圖標
-- Supabase：Production 驗證後寫入 `release_history`；無 schema 變更
+- GitHub PR：[#187](https://github.com/stoneweiwei-dot/zhaowu/pull/187)
+- Merge commit：`bbc9ab0e8ce340cbfef2ff0a59b5b63158a25b78`
+- CI / Build：Production CI #866 PASS；299/299 tests、TypeScript、Vite production build 與 iPhone Safari regression 全部通過
+- Vercel deployment：`dpl_7YrFv3dUeuLXZygm4dX3pGKUQKbQ`，Production READY，來源 commit 與 merge commit 一致
+- Production assets：`/apple-touch-icon-r20.png`、`/icons/zhaowu-lotus-192.png`、`/icons/zhaowu-lotus-512.png` 均回傳 HTTP 200；PNG IHDR 尺寸分別為 180×180、192×192、512×512，內容來自同一蓮花圖標來源
+- iPhone 驗證：正式首頁已輸出新的版本化 Apple Touch Icon URL；iOS 已開啟的「加入主畫面」視窗不會即時刷新，須關閉後重新開啟；已安裝的舊捷徑須刪除後再加入
+- Supabase：`release_history` 已寫入 `ZW-WEB-2026.09.01-r20`；無 schema 變更
