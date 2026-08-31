@@ -35,7 +35,7 @@
 
 ## Production 驗證欄
 
-- GitHub PR：待建立
+- GitHub PR：#179
 - Merge commit：待 CI 通過後確認
 - Vercel deployment：待 Production READY 後確認
 - Production routes：`/`
