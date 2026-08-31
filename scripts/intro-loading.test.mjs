@@ -63,6 +63,8 @@ test('loading gate hard-exits inside the three-second bloom budget', () => {
 
 test('intro uses the uploaded twin-lotus animation as the loading page', () => {
   assert.match(gate, /loading-v13\.mp4/);
+  assert.match(gate, /loading-poster\.jpg/);
+  assert.match(gate, /onError=\{\(\) => setVideoFailed\(true\)\}/);
   assert.match(gate, /LOTUS_BLOOM_MS = 2734/);
   assert.match(gate, /playbackRate/);
   assert.match(gate, /正在準備昭梧/);
@@ -72,8 +74,10 @@ test('intro uses the uploaded twin-lotus animation as the loading page', () => {
   assert.doesNotMatch(css, /zhaowu-four-hua/);
   assert.match(css, /uploaded twin-lotus loading animation/);
   assert.match(css, /#131b15 79%/);
-  assert.match(mediaWriter, /loading-user-20260831\.part\./);
-  assert.match(mediaWriter, /VIDEO_PART_COUNT = 12/);
+  assert.match(mediaWriter, /loading-v13\.part\./);
+  assert.match(mediaWriter, /VIDEO_PART_COUNT = 2/);
+  assert.match(mediaWriter, /VIDEO_SHA256/);
+  assert.doesNotMatch(mediaWriter, /loading-user-20260831\.part\./);
   assert.match(mediaWriter, /loading-v13\.mp4/);
   assert.doesNotMatch(gate, /loading-v10\.mp4/);
   assert.doesNotMatch(gate, /loading-v11\.mp4/);

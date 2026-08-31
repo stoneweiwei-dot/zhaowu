@@ -88,7 +88,7 @@
 - iPhone 关键流程最终实机验收。
 - 八字 chart：完整刑冲合害库、正式病药通关、完整岁运作用链仍未实现。
 - 正式「制作我的命诰图」按钮已改为请求 `force=true` 的供应商个性化图；真实 provider 成功仍依赖图片 API credits，失败时必须回退 Gallery-direct，且不得阻塞文字报告。
-- 3s dawn-lotus loading 分片尚未全部上 main；production 仍可能服务旧 loading-v11.mp4。
+- 3s 雙生蓮 loading 改由 `loading-v13.part.00/.01` 校驗後重建；損壞的舊上傳分片不再進入 build，影片失敗時回退宣紙山水靜態圖，最遲三秒放行。
 
 ## 8. 生产优先级
 

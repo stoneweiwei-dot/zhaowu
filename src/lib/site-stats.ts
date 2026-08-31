@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.08.31-r18",
-  updateNumber: 18,
-  publishedAt: "2026-08-31T21:35:00+10:00",
-  latestSummary: "正式「製作我的命誥圖」按鈕改為優先呼叫 OpenAI 圖像 provider；供應商失敗或額度不足時仍回退站主圖庫，不阻塞文字報告。",
+  version: "ZW-WEB-2026.09.01-r19",
+  updateNumber: 19,
+  publishedAt: "2026-09-01T01:30:00+10:00",
+  latestSummary: "修復 iPhone 載入頁破圖：改用校驗通過的雙生蓮動畫分片，影片失敗時自動退回宣紙山水靜態圖，最遲三秒進站。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {

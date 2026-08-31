@@ -42,8 +42,8 @@ test("website keeps the app concept base while homepage specialist cards shed lo
   assert.match(finalHome, /\.zhaowu-home-sheet-shell \.zhaowu-specialist-mark/);
   assert.match(login, /stone-login-orbit/);
   assert.doesNotMatch(login, /stone-login-art img|loading-poster/);
-  assert.doesNotMatch(intro, /loading-poster|intro-poster/);
-  assert.match(intro, /\/intro\/lotus-bloom-v12\.webp/);
+  assert.doesNotMatch(intro, /lotus-bloom-v12\.webp/);
+  assert.match(intro, /\/intro\/loading-poster\.jpg/);
   assert.match(intro, /\/intro\/loading-v13\.mp4/);
   assert.match(intro, /LOTUS_BLOOM_MS = 2734/);
 });
