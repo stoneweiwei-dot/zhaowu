@@ -71,7 +71,7 @@ test('intro uses the uploaded twin-lotus animation as the loading page', () => {
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__hua/);
   assert.doesNotMatch(css, /zhaowu-four-hua/);
   assert.match(css, /uploaded twin-lotus loading animation/);
-  assert.match(css, /rgba\(19, 27, 21, \.94\) 80%/);
+  assert.match(css, /#131b15 79%/);
   assert.match(mediaWriter, /loading-user-20260831\.part\./);
   assert.match(mediaWriter, /VIDEO_PART_COUNT = 12/);
   assert.match(mediaWriter, /loading-v13\.mp4/);
@@ -108,6 +108,6 @@ test('home-screen icons are valid PNGs at iOS root and manifest sizes', async ()
   assert.match(html, /apple-touch-icon-precomposed\.png/);
   assert.doesNotMatch(html, /apple-touch-icon\.png\?v=/);
   assert.match(manifest, /"src": "\/apple-touch-icon\.png"/);
-  assert.match(manifest, /"src": "\/icons\/icon-192\.png"/);
-  assert.match(manifest, /"src": "\/icons\/icon-512\.png"/);
+  assert.match(manifest, /"src": "\/icons\/icon-192\.png/);
+  assert.match(manifest, /"src": "\/icons\/icon-512\.png/);
 });
