@@ -3,8 +3,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const VIDEO_PART_PREFIX = "loading-v13.part.";
-const VIDEO_PART_COUNT = 2;
+const VIDEO_PART_PREFIX = "loading-user-20260831.part.";
+const VIDEO_PART_COUNT = 12;
 
 function decodeNumberedParts(dirRel, prefix, destRel, magicHex, expectedCount) {
   const dir = resolve(ROOT, dirRel);
