@@ -7,6 +7,7 @@ const section = readFileSync(new URL("../src/components/life-view-section.tsx", 
 const source = readFileSync(new URL("../src/lib/life-view.ts", import.meta.url), "utf8");
 const fileSource = readFileSync(new URL("../src/lib/life-view-from-files.ts", import.meta.url), "utf8");
 const practiceSource = readFileSync(new URL("../src/lib/life-view-practice-manual.ts", import.meta.url), "utf8");
+const intakeSource = readFileSync(new URL("../src/lib/life-view-20260831.ts", import.meta.url), "utf8");
 
 test("home exposes Zhaowu Guan Shi Lu with stable multilingual article sources", () => {
   assert.match(home, /LifeViewSection/);
@@ -20,7 +21,7 @@ test("home exposes Zhaowu Guan Shi Lu with stable multilingual article sources",
   assert.match(section, /LIFE_VIEW_ARTICLES/);
   assert.match(section, /LIFE_VIEW_FILE_ARTICLES/);
   assert.match(section, /LIFE_VIEW_PRACTICE_ARTICLES/);
-  assert.match(section, /const ARTICLES = \[\.\.\.LIFE_VIEW_PRACTICE_ARTICLES, \.\.\.LIFE_VIEW_FILE_ARTICLES, \.\.\.LIFE_VIEW_ARTICLES\]/);
+  assert.match(section, /LIFE_VIEW_20260831_ARTICLES/);
   assert.match(source, /export const LIFE_VIEW_ARTICLES/);
   assert.match(source, /id: "break-the-deadlock"/);
   assert.match(source, /id: "long-term-practice"/);
@@ -35,4 +36,8 @@ test("home exposes Zhaowu Guan Shi Lu with stable multilingual article sources",
   assert.match(practiceSource, /id: "five-pillars-of-practice"/);
   assert.match(practiceSource, /人生修行的五個支柱/);
   assert.match(practiceSource, /Five Pillars for Living With More Clarity/);
+  assert.match(intakeSource, /export const LIFE_VIEW_20260831_ARTICLES/);
+  assert.match(intakeSource, /id: "world-as-mirror-not-physics"/);
+  assert.match(intakeSource, /id: "karma-is-not-blame"/);
+  assert.match(intakeSource, /因果不是指責/);
 });

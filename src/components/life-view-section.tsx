@@ -3,8 +3,14 @@ import { useI18n, type Locale } from "@/lib/i18n";
 import { LIFE_VIEW_ARTICLES } from "@/lib/life-view";
 import { LIFE_VIEW_FILE_ARTICLES } from "@/lib/life-view-from-files";
 import { LIFE_VIEW_PRACTICE_ARTICLES } from "@/lib/life-view-practice-manual";
+import { LIFE_VIEW_20260831_ARTICLES } from "@/lib/life-view-20260831";
 
-const ARTICLES = [...LIFE_VIEW_PRACTICE_ARTICLES, ...LIFE_VIEW_FILE_ARTICLES, ...LIFE_VIEW_ARTICLES];
+const ARTICLES = [
+  ...LIFE_VIEW_20260831_ARTICLES,
+  ...LIFE_VIEW_PRACTICE_ARTICLES,
+  ...LIFE_VIEW_FILE_ARTICLES,
+  ...LIFE_VIEW_ARTICLES,
+];
 
 type ArticleArt = {
   src: string;

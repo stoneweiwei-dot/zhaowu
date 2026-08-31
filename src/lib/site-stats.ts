@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.08.31-r11",
-  updateNumber: 11,
-  publishedAt: "2026-08-31T04:37:00+10:00",
-  latestSummary: "完整報告加入原局→大運→流年疊加；付費五行／靈光視覺先做歲運覆核；恢復版本與更新報告制度。",
+  version: "ZW-WEB-2026.08.31-r12",
+  updateNumber: 12,
+  publishedAt: "2026-08-31T10:35:00+10:00",
+  latestSummary: "觀世錄新增心識鏡像與因果責任文章；研究資料完成分層入庫；恢復最後已驗證的完整命誥圖後端，移除未上線的截斷版本。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {
