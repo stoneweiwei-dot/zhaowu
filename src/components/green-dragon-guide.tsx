@@ -178,13 +178,6 @@ export function GreenDragonGuide() {
             <button type="button" onClick={() => go("/ziwei")}>
               {locale === "en" ? "Zi Wei" : locale === "zh-Hans" ? "紫微斗数" : "紫微斗數"}
             </button>
-            <button type="button" onClick={() => go("/tianji-dual")}>
-              {locale === "en"
-                ? "Two sides"
-                : locale === "zh-Hans"
-                  ? "性格两面"
-                  : "性格兩面"}
-            </button>
             <button type="button" onClick={() => go("/history")}>
               {locale === "en"
                 ? "My history"

@@ -26,6 +26,7 @@ import './visual-readability-lock-v4.css';
 import './home-sheet-ui-v5.css';
 import './typography-lock-v6.css';
 import './home-quiz-paper.css';
+import './content-layout-fixes.css';
 
 const router = createRouter({ routeTree });
 

@@ -121,11 +121,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </header>
       ) : null}
 
+      {!isLogin ? <GreenDragonGuide /> : null}
+
       <div className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>
         {children}
       </div>
-
-      {!isLogin ? <GreenDragonGuide /> : null}
 
       {!isLogin ? (
         <footer className="relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
