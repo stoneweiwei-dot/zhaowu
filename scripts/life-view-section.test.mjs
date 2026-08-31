@@ -8,6 +8,7 @@ const source = readFileSync(new URL("../src/lib/life-view.ts", import.meta.url),
 const fileSource = readFileSync(new URL("../src/lib/life-view-from-files.ts", import.meta.url), "utf8");
 const practiceSource = readFileSync(new URL("../src/lib/life-view-practice-manual.ts", import.meta.url), "utf8");
 const intakeSource = readFileSync(new URL("../src/lib/life-view-20260831.ts", import.meta.url), "utf8");
+const layout = readFileSync(new URL("../src/content-layout-fixes.css", import.meta.url), "utf8");
 
 test("home exposes Zhaowu Guan Shi Lu with stable multilingual article sources", () => {
   assert.match(home, /LifeViewSection/);
@@ -40,4 +41,12 @@ test("home exposes Zhaowu Guan Shi Lu with stable multilingual article sources",
   assert.match(intakeSource, /id: "world-as-mirror-not-physics"/);
   assert.match(intakeSource, /id: "karma-is-not-blame"/);
   assert.match(intakeSource, /因果不是指責/);
+  assert.match(section, /data-life-view-art-fragment/);
+  assert.match(section, /stableCrop/);
+  assert.match(section, /objectPosition/);
+  assert.doesNotMatch(section, /Math\.random/);
+  assert.doesNotMatch(section, /max-w-\[380px\]/);
+  assert.match(layout, /life-view-art-fragment/);
+  assert.match(layout, /object-fit: cover/);
+  assert.match(layout, /transform: scale\(1\.34\)/);
 });

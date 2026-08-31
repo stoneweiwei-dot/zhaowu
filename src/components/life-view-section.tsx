@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { LIFE_VIEW_ARTICLES } from "@/lib/life-view";
 import { LIFE_VIEW_FILE_ARTICLES } from "@/lib/life-view-from-files";
@@ -16,6 +16,25 @@ type ArticleArt = {
   src: string;
   alt: Record<Locale, string>;
 };
+
+const ART_CROPS = [
+  { className: "is-left is-portrait", objectPosition: "22% 18%" },
+  { className: "is-right is-landscape", objectPosition: "72% 36%" },
+  { className: "is-left is-square", objectPosition: "38% 68%" },
+  { className: "is-right is-portrait", objectPosition: "64% 82%" },
+] as const;
+
+function stableCrop(articleId: string, offset: number) {
+  const seed = [...articleId].reduce((total, char) => total + char.charCodeAt(0), 0);
+  return ART_CROPS[(seed + offset) % ART_CROPS.length];
+}
+
+function fragmentIndexes(paragraphCount: number) {
+  if (paragraphCount < 2) return [];
+  const first = 1;
+  const second = Math.max(3, Math.floor(paragraphCount * 0.62));
+  return second < paragraphCount && second !== first ? [first, second] : [first];
+}
 
 /**
  * "觀世錄" illustration system.
@@ -131,21 +150,13 @@ export function LifeViewSection() {
         <div className="mt-6 divide-y divide-line/70 border-y border-line/70">
           {ARTICLES.map((article) => {
             const art = ARTICLE_ART[article.id];
+            const paragraphs = article.body[locale].split(/\n\n+/);
+            const artIndexes = fragmentIndexes(paragraphs.length);
 
             return (
               <details key={article.id} className="group py-5">
                 <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
                   <div className="flex items-start gap-4">
-                    {art ? (
-                      <img
-                        src={art.src}
-                        alt=""
-                        aria-hidden="true"
-                        loading="lazy"
-                        decoding="async"
-                        className="h-28 w-[63px] shrink-0 rounded-xl border border-line/70 object-cover shadow-[0_6px_18px_rgba(86,62,31,0.10)] sm:h-32 sm:w-[72px]"
-                      />
-                    ) : null}
                     <div className="min-w-0 flex-1">
                       <time className="text-[10px] tracking-[0.16em] text-ink-mute" dateTime={article.publishedAt}>
                         {article.publishedAt}
@@ -158,22 +169,31 @@ export function LifeViewSection() {
                   </div>
                 </summary>
 
-                {art ? (
-                  <figure className="mt-5 rounded-[1.5rem] border border-line/70 bg-[#f5eddf] p-2 shadow-[0_12px_30px_rgba(86,62,31,0.08)] sm:p-3">
-                    <img
-                      src={art.src}
-                      alt={art.alt[locale]}
-                      loading="lazy"
-                      decoding="async"
-                      className="mx-auto block h-auto w-full max-w-[380px] rounded-[1.15rem]"
-                    />
-                  </figure>
-                ) : null}
+                <div className="life-view-prose mt-5 border-l border-cinnabar/25 pl-4 text-[15px] leading-8 text-ink">
+                  {paragraphs.map((paragraph, index) => {
+                    const fragmentOffset = artIndexes.indexOf(index);
+                    const crop = fragmentOffset >= 0 ? stableCrop(article.id, fragmentOffset) : null;
 
-                <div className="mt-5 space-y-4 border-l border-cinnabar/25 pl-4 text-[15px] leading-8 text-ink">
-                  {article.body[locale].split(/\n\n+/).map((paragraph, index) => (
-                    <p key={`${article.id}-${index}`}>{paragraph}</p>
-                  ))}
+                    return (
+                      <Fragment key={`${article.id}-${index}`}>
+                        {art && crop ? (
+                          <figure
+                            className={`life-view-art-fragment ${crop.className}`}
+                            data-life-view-art-fragment
+                          >
+                            <img
+                              src={art.src}
+                              alt={art.alt[locale]}
+                              loading="lazy"
+                              decoding="async"
+                              style={{ objectPosition: crop.objectPosition }}
+                            />
+                          </figure>
+                        ) : null}
+                        <p>{paragraph}</p>
+                      </Fragment>
+                    );
+                  })}
                 </div>
               </details>
             );

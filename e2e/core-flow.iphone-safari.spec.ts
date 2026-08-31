@@ -26,6 +26,24 @@ async function expectMobileViewportHealthy(page: Page) {
   ).toBe(true);
 }
 
+async function expectNoOverlap(page: Page, upperSelector: string, lowerSelector: string) {
+  const overlaps = await page.evaluate(
+    ({ upperSelector, lowerSelector }) => {
+      const upper = document.querySelector(upperSelector)?.getBoundingClientRect();
+      const lower = document.querySelector(lowerSelector)?.getBoundingClientRect();
+      if (!upper || !lower) return true;
+      return !(
+        upper.right <= lower.left ||
+        upper.left >= lower.right ||
+        upper.bottom <= lower.top ||
+        upper.top >= lower.bottom
+      );
+    },
+    { upperSelector, lowerSelector },
+  );
+  expect(overlaps).toBe(false);
+}
+
 async function fillKnownBirthData(page: Page) {
   await page.locator("#analysis-question").fill("我現在最應該先處理什麼？");
   await page.locator("#birth-year").fill("1988");
@@ -103,6 +121,37 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(
       page.locator('#analysisForm button[type="submit"]'),
     ).toBeVisible();
+    await expectMobileViewportHealthy(page);
+  });
+
+  test("Jade Dragon stays in flow and never covers the quiz or article prose", async ({
+    page,
+  }) => {
+    await makeAppOfflineSafe(page);
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    const guide = page.locator("[data-site-guide]");
+    await expect(guide).toBeVisible();
+    await expect(guide).toHaveCSS("position", "relative");
+    await expectNoOverlap(page, "[data-site-guide]", "#analysisForm");
+
+    await page.getByRole("button", { name: "打開青玉小龍導覽", exact: true }).click();
+    const panel = page.getByRole("dialog", { name: "青玉小龍導覽", exact: true });
+    await expect(panel).toBeVisible();
+    await expect(panel).toHaveCSS("position", "static");
+    await expectNoOverlap(page, ".zhaowu-dragon-guide-panel", "#analysisForm");
+    await expect(panel.getByText("性格兩面", { exact: true })).toHaveCount(0);
+
+    await panel.getByRole("button", { name: "關閉導覽", exact: true }).click();
+    const firstIllustratedArticle = page.locator("#life-view details").filter({
+      has: page.locator("[data-life-view-art-fragment]"),
+    }).first();
+    await firstIllustratedArticle.locator("summary").click();
+    const fragment = firstIllustratedArticle.locator("[data-life-view-art-fragment]").first();
+    await expect(fragment).toBeVisible();
+    await expect(fragment.locator("img")).toHaveCSS("object-fit", "cover");
+    const fragmentBox = await fragment.boundingBox();
+    expect(fragmentBox?.width ?? 999).toBeLessThan(160);
     await expectMobileViewportHealthy(page);
   });
 

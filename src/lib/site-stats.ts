@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.08.31-r13",
-  updateNumber: 13,
-  publishedAt: "2026-08-31T10:45:00+10:00",
-  latestSummary: "命誥圖的『為什麼是這張圖』改為成圖即常駐；歷史報告即使缺少完整命盤資料，也會保留客戶可讀的選圖理由。",
+  version: "ZW-WEB-2026.08.31-r14",
+  updateNumber: 14,
+  publishedAt: "2026-08-31T12:37:00+10:00",
+  latestSummary: "手機端問小龍改為頁面內展開，不再遮擋表單與正文；移除舊性格兩面入口，觀世錄配圖改為段落間的小幅裁切片段。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {
