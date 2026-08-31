@@ -44,7 +44,8 @@ test("website keeps the app concept base while homepage specialist cards shed lo
   assert.doesNotMatch(login, /stone-login-art img|loading-poster/);
   assert.doesNotMatch(intro, /loading-poster|intro-poster/);
   assert.match(intro, /\/intro\/lotus-bloom-v12\.webp/);
-  assert.match(intro, /LOTUS_BLOOM_MS = 2600/);
+  assert.match(intro, /\/intro\/loading-v13\.mp4/);
+  assert.match(intro, /LOTUS_BLOOM_MS = 2734/);
 });
 
 test("background assets remain manageable but no longer render as application wallpaper", async () => {
