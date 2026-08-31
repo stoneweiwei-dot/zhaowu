@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.08.31-r17",
-  updateNumber: 17,
-  publishedAt: "2026-08-31T21:24:00+10:00",
-  latestSummary: "昭梧·觀世錄新增《從黃泉到輪迴：中國人如何重新想像死亡》，把魂魄、黃泉、泰山、佛教業報輪迴、十王、目連與後世民間幽冥敘事按歷史層次分開，不把不同時代信仰拼成單一固定地府體系。",
+  version: "ZW-WEB-2026.08.31-r18",
+  updateNumber: 18,
+  publishedAt: "2026-08-31T21:35:00+10:00",
+  latestSummary: "正式「製作我的命誥圖」按鈕改為優先呼叫 OpenAI 圖像 provider；供應商失敗或額度不足時仍回退站主圖庫，不阻塞文字報告。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {

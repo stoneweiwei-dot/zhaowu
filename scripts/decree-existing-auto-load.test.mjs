@@ -58,3 +58,10 @@ test("result view automatically restores both the stored image and its Gallery r
   assert.ok(resultView.includes("setImageReferenceAssetId(out.galleryReferenceAssetId ?? null)"));
   assert.ok(resultView.includes("selectedAssetId={imageReferenceAssetId}"));
 });
+
+test("result view customer generation requests the provider path while preserving backend fallback", () => {
+  assert.ok(resultView.includes("generateDecreeImage(session, reportId, true)"));
+  assert.ok(generationEdge.includes("deliverGalleryDirect"));
+  assert.ok(generationEdge.includes("galleryDirect: true"));
+  assert.ok(generationEdge.includes("degraded: true"));
+});

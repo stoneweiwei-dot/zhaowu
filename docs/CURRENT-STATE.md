@@ -87,7 +87,7 @@
 - 正式子域名 `zhaowu.soul-terminal.com` DNS 收口。
 - iPhone 关键流程最终实机验收。
 - 八字 chart：完整刑冲合害库、正式病药通关、完整岁运作用链仍未实现。
-- `force=true` 的供应商个性化命诰图仍依赖图片 API credits；默认 Gallery-direct 交付不得被其阻塞。
+- 正式「制作我的命诰图」按钮已改为请求 `force=true` 的供应商个性化图；真实 provider 成功仍依赖图片 API credits，失败时必须回退 Gallery-direct，且不得阻塞文字报告。
 - 3s dawn-lotus loading 分片尚未全部上 main；production 仍可能服务旧 loading-v11.mp4。
 
 ## 8. 生产优先级
@@ -140,9 +140,9 @@
 - 青玉小龙三语导航只列出八字、七政、前世今生、紫微和我的纪录；不再提供「性格两面」入口，也不把达摩一掌经误导到旧功能。
 - 客户修心报告移除小型 Gallery reference 图标与内部「交叉引用图库」说明；真实命诰图与其专属选择理由不受影响。
 
-## 2026-08-31 — 最高档订制画四柱一画接入 force=true
+## 2026-08-31 — 正式命诰图按钮接入 force=true
 
 - 规格锁在 `docs/PAID-REPORT-STYLE-v1.0.md` 与 `src/lib/report/paid-report-style.ts`。
 - 运行时指令在 `supabase/functions/generate-decree-image/premium-composition.ts`。
 - `force=true` 的 provider prompt 必须使用 year=sky / month=place / day=subject / hour=implement，合成一幅 9:16 宋册页，不是 15 页册子，也不是干支物件死表。
-- 默认客户路径仍是 Gallery-direct；provider 失败必须回退 Gallery，不得让文字报告消失。
+- 正式客户结果页按钮优先请求 provider；provider 失败或额度不足必须回退 Gallery，不得让文字报告消失。后台保留明确的 Gallery 重新匹配能力。
