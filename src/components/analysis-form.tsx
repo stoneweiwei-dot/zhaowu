@@ -6,15 +6,6 @@ import { useAppStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { createEngineReportRecord, updateBirthData } from "@/lib/supabase-rest";
 import { CityPicker } from "@/components/city-picker";
-import {
-  composeQuizQuestion,
-  QUIZ_STATES,
-  QUIZ_TOPICS,
-  stateLabel,
-  topicLabel,
-  type QuizState,
-  type QuizTopic,
-} from "@/lib/report/quiz-paper";
 
 function asCity(value: unknown): CityHit | null {
   if (!value || typeof value !== "object") return null;
@@ -46,8 +37,6 @@ export function AnalysisForm() {
   const [error, setError] = useState<string | null>(null);
   const [remembered, setRemembered] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(true);
-  const [topic, setTopic] = useState<QuizTopic | null>(null);
-  const [mood, setMood] = useState<QuizState | null>(null);
 
   const compact = Boolean(current) && !detailsOpen;
   const compactCopy =
@@ -101,7 +90,7 @@ export function AnalysisForm() {
     setBusy(true);
     try {
       const payload: AnalyzeInput = {
-        question: composeQuizQuestion({ question, topic, state: mood, locale }),
+        question: question.trim(),
         locale,
         year: Number(year),
         month: Number(month),
@@ -158,10 +147,10 @@ export function AnalysisForm() {
       {!compact ? (
         <p className="mt-3 max-w-2xl text-sm leading-7 text-ink-soft">
           {locale === "en"
-            ? "Treat this like handing in a paper: choose a direction, mark your current state, write the real question, then add birth details. You get the answer first; the full report comes after."
+            ? "Write the question you actually want answered, then add birth details. You get the answer first; the full report comes after."
             : locale === "zh-Hans"
-              ? "像交卷一样：先选方向与状态，写下真正想问的事，再填出生资料。交卷后先给答案，再生成完整报告。"
-              : "像交卷一樣：先選方向與狀態，寫下真正想問的事，再填出生資料。交卷後先給答案，再生成完整報告。"}
+              ? "把真正想问的事直接写下，再填出生资料。交卷后先给答案，再生成完整报告。"
+              : "把真正想問的事直接寫下，再填出生資料。交卷後先給答案，再生成完整報告。"}
         </p>
       ) : null}
       {!compact && remembered ? <p className="mt-2 text-xs text-wood">{t("remembered")}</p> : null}
@@ -169,35 +158,9 @@ export function AnalysisForm() {
       <form className={compact ? "zhaowu-analysis-compact-form" : "mt-6 space-y-6"} onSubmit={(e) => void submit(e)}>
         {!compact ? (
           <div className="zhaowu-analysis-core zhaowu-quiz-paper space-y-6">
-            <fieldset className="zhaowu-quiz-block">
-              <legend className="zhaowu-quiz-legend">
-                <em>01</em>
-                {locale === "en" ? "What are you trying to see clearly?" : locale === "zh-Hans" ? "这次想弄清的方向" : "這次想弄清的方向"}
-              </legend>
-              <div className="zhaowu-quiz-topics" role="group">
-                {QUIZ_TOPICS.map((key) => (
-                  <button key={key} type="button" aria-pressed={topic === key} className={`zhaowu-quiz-chip${topic === key ? " is-on" : ""}`} onClick={() => setTopic(key)}>
-                    {topicLabel(key, locale)}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
-            <fieldset className="zhaowu-quiz-block">
-              <legend className="zhaowu-quiz-legend">
-                <em>02</em>
-                {locale === "en" ? "Which state is closest to now?" : locale === "zh-Hans" ? "最近更接近哪种状态" : "最近更接近哪種狀態"}
-              </legend>
-              <div className="zhaowu-quiz-states">
-                {QUIZ_STATES.map((key) => (
-                  <button key={key} type="button" aria-pressed={mood === key} className={`zhaowu-quiz-choice${mood === key ? " is-on" : ""}`} onClick={() => setMood(key)}>
-                    {stateLabel(key, locale)}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
             <div className="zhaowu-quiz-block">
               <label htmlFor="analysis-question" className="zhaowu-quiz-legend mb-2 block">
-                <em>03</em>
+                <em>01</em>
                 {t("question")}
               </label>
               <textarea id="analysis-question" value={question} maxLength={400} rows={3} required placeholder={t("qPh")} className="w-full resize-y rounded-md border border-line bg-cream px-4 py-3 text-base leading-7 outline-none transition focus:border-cinnabar" onChange={(e) => setQuestion(e.target.value)} />
@@ -205,7 +168,7 @@ export function AnalysisForm() {
             </div>
             <div className="zhaowu-quiz-block">
               <p className="zhaowu-quiz-legend">
-                <em>04</em>
+                <em>02</em>
                 {locale === "en" ? "Birth details for the chart" : locale === "zh-Hans" ? "排盘用的出生资料" : "排盤用的出生資料"}
               </p>
               <div className="grid grid-cols-3 gap-3">

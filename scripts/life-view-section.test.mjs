@@ -48,5 +48,6 @@ test("home exposes Zhaowu Guan Shi Lu with stable multilingual article sources",
   assert.doesNotMatch(section, /max-w-\[380px\]/);
   assert.match(layout, /life-view-art-fragment/);
   assert.match(layout, /object-fit: cover/);
-  assert.match(layout, /transform: scale\(1\.34\)/);
+  assert.match(layout, /width: min\(72%, 14\.5rem\)/);
+  assert.match(layout, /transform: scale\(1\.16\)/);
 });
