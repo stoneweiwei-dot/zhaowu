@@ -16,6 +16,7 @@ export function IntroGate() {
   const [minimumDone, setMinimumDone] = useState(false);
   const [runtimeReady, setRuntimeReady] = useState(false);
   const [visualDone, setVisualDone] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
   const finishedRef = useRef(false);
   const exitTimerRef = useRef<number | null>(null);
 
@@ -106,26 +107,30 @@ export function IntroGate() {
     >
       <img
         className="zhaowu-lotus-intro__still"
-        src="/intro/lotus-bloom-v12.webp"
+        src="/intro/loading-poster.jpg"
         alt=""
         aria-hidden
         draggable={false}
       />
-      <video
-        className="zhaowu-lotus-intro__art"
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-        onLoadedMetadata={(event) => {
-          const media = event.currentTarget;
-          if (media.duration > 0) {
-            media.playbackRate = Math.max(1, media.duration / (LOTUS_BLOOM_MS / 1000));
-          }
-        }}
-      >
-        <source src="/intro/loading-v13.mp4" type="video/mp4" />
-      </video>
+      {!videoFailed ? (
+        <video
+          className="zhaowu-lotus-intro__art"
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          poster="/intro/loading-poster.jpg"
+          onError={() => setVideoFailed(true)}
+          onLoadedMetadata={(event) => {
+            const media = event.currentTarget;
+            if (media.duration > 0) {
+              media.playbackRate = Math.max(1, media.duration / (LOTUS_BLOOM_MS / 1000));
+            }
+          }}
+        >
+          <source src="/intro/loading-v13.mp4" type="video/mp4" />
+        </video>
+      ) : null}
       <div className="zhaowu-lotus-intro__veil" aria-hidden />
 
       <div className="zhaowu-lotus-intro__copy">

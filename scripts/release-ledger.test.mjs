@@ -8,8 +8,8 @@ const report = await readFile(new URL("../docs/change-reports/ZW-WEB-2026.08.31-
 const agents = await readFile(new URL("../AGENTS.md", import.meta.url), "utf8");
 
 test("public footer always exposes current release and cumulative update count", () => {
-  assert.match(stats, /ZW-WEB-2026\.08\.31-r18/);
-  assert.match(stats, /updateNumber:\s*18/);
+  assert.match(stats, /ZW-WEB-2026\.09\.01-r19/);
+  assert.match(stats, /updateNumber:\s*19/);
   assert.match(shell, /data-site-release/);
   assert.match(shell, /累計更新/);
   assert.match(shell, /data-latest-change-report/);
