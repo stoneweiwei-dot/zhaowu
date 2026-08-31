@@ -1,7 +1,7 @@
 # 昭梧更新報告｜ZW-WEB-2026.08.31-r15
 
 日期：2026-08-31（AEST）
-狀態：Production 待驗證
+狀態：Production 已驗證
 
 ## 本次改動
 
@@ -35,11 +35,11 @@
 
 ## Production 驗證欄
 
-- GitHub PR：待建立
-- Merge commit：待合併
-- CI：待執行
-- Vercel deployment：待部署
-- Supabase：production verified 後寫入 `release_history`；無 schema / Edge Function 變更
+- GitHub PR：#181
+- Merge commit：`306903842b80bcd6262f65d3dfa4ee807a690e14`
+- CI：Production CI #841 通過（283 項 deterministic tests、TypeScript、Vite build、iPhone Safari）
+- Vercel deployment：`dpl_HyyzbHp1PGDwBoHe5kUEhwBHbz8v`（READY，production alias 已指向）
+- Supabase：`release_history` 已寫入 r15；無 schema / Edge Function 變更
 - Production routes：`/`
 - 驗證重點：iPhone 390×844 下首頁無方向/近況選項；問題與出生資料保留；點開觀世錄文章後插圖清晰可見、仍為裁切片段、無橫向溢出
-- 結果：待 production 實際點擊驗證
+- 結果：正式站 r15 可見；首頁方向/近況選項為 0，問題框與出生資料仍可見；已實際點開《人生修行的五個支柱》，文章顯示兩張 `object-fit: cover` 裁切插圖且無橫向溢出。iPhone Safari 回歸鎖定 390px 視窗下插圖寬度為 180–240px。
