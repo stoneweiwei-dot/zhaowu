@@ -21,10 +21,10 @@ test("修心與環境模組鎖定總綱、八主題與非 Truth Layer 邊界", (
 });
 
 test("住家與風水問題只回兩條可執行修心環境建議", () => {
-  const lines = buildMindAdviceLines(result("home", "我最近住家風水和房間環境要怎麼調整？"));
+  const lines = buildMindAdviceLines(result("home", "我最近住家风水和房间环境要怎么调整？"));
   assert.equal(lines.length, 2);
-  assert.match(lines[0], /外在格局會影響生活，但不是唯一決定因素/);
-  assert.match(lines[1], /不是性格或命運的診斷/);
+  assert.match(lines[0], /外在格局会影响生活，但不是唯一决定因素/);
+  assert.match(lines[1], /不是性格或命运的诊断/);
 });
 
 test("家人問題合併孝親與各自課題但保留界線", () => {
@@ -35,14 +35,14 @@ test("家人問題合併孝親與各自課題但保留界線", () => {
 });
 
 test("口舌衝突不要求壓抑情緒，改成需求與界線", () => {
-  const lines = buildMindAdviceLines(result("love", "我們最近一直吵架，我很生氣，怎麼處理？"));
+  const lines = buildMindAdviceLines(result("love", "我们最近一直吵架，我很生气，怎么处理？"));
   assert.equal(lines.length, 2);
   assert.match(lines[0], /口德不是把情绪吞回去/);
   assert.match(lines[0], /需求与边界/);
 });
 
 test("慈悲不傷生不交換財運或保證福報", () => {
-  const lines = buildCultivationEnvironmentAdviceLines(result("self", "我想從不殺生和慈悲開始調整生活"));
+  const lines = buildCultivationEnvironmentAdviceLines(result("self", "我想从不杀生和慈悲开始调整生活"));
   assert.ok(lines);
   assert.equal(lines.length, 2);
   assert.match(lines[0], /不拿来交换财运或保证福报/);
