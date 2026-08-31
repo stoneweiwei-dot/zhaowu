@@ -19,12 +19,14 @@ test("the obsolete static selection-mechanism fallback stays removed", () => {
   assert.match(reasonComponent, /data-testid="decree-image-reason"/);
 });
 
-test("every delivered decree image gets a React reason even when Gallery metadata is unavailable", () => {
+test("every delivered decree image gets a React reason even when Gallery metadata or legacy chart metadata is unavailable", () => {
   assert.match(preview, /generatedImageUrl \? \(/);
   assert.match(preview, /<DecreeImageReason chart=\{chart\} question=\{question\} selectedAssetId=\{selectedAssetId\}/);
   assert.match(reasonComponent, /selectedCandidate\s*\?\s*explainCustomerDecreeImageChoice/);
-  assert.match(reasonComponent, /:\s*fallbackReason\(chart, question, locale\)/);
+  assert.match(reasonComponent, /chartForReason:\s*ReasonChart\s*=\s*chart\s*\?\?/);
+  assert.match(reasonComponent, /:\s*fallbackReason\(chartForReason, question, locale\)/);
   assert.match(account, /<DecreeImageReason/);
+  assert.match(account, /chart=\{snapshot\?\.chart \?\? null\}/);
   assert.match(account, /reportGalleryReferenceAssetId\(detail\)/);
 });
 
