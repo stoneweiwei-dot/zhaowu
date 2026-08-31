@@ -88,6 +88,19 @@ test("passive existing decree image is reused unless Gallery reselection or forc
   assert.match(source, /A failed refresh must never make an already-generated personal image disappear/);
 });
 
+test("force=true provider prompt uses four-pillar one-painting composition, not a booklet or object table", async () => {
+  const source = await read("supabase/functions/generate-decree-image/index.ts");
+  const composition = await read("supabase/functions/generate-decree-image/premium-composition.ts");
+  assert.match(source, /premiumCompositionDirective\(chart\)/);
+  assert.match(source, /four-pillar-one-painting-v1-20260831/);
+  assert.match(source, /year=sky \/ month=place \/ day=subject \/ hour=implement/);
+  assert.match(composition, /Year .* = SKY \+ DISTANT WORLD/);
+  assert.match(composition, /Month .* = PLACE/);
+  assert.match(composition, /Day .* = SUBJECT/);
+  assert.match(composition, /PATH \+ ONE IMPLEMENT/);
+  assert.match(composition, /never “壬寅=compass”/);
+});
+
 test("provider personalization remains optional and falls back to the matched Gallery image", async () => {
   const source = await read("supabase/functions/generate-decree-image/index.ts");
   assert.match(source, /new FormData\(\)/);
