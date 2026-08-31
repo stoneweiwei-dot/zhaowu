@@ -81,11 +81,11 @@
   z-index: 2;
   overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(8.8rem, .74fr) minmax(0, 1.26fr);
+  grid-template-columns: 1fr;
   gap: 0;
   border: 1px solid rgba(129, 88, 43, .29);
   border-radius: 1rem;
-  background: rgba(250, 245, 232, .83);
+  background: #fbf5e9;
   box-shadow: 0 12px 28px rgba(60, 41, 22, .09);
 }
 
@@ -95,16 +95,18 @@
 }
 
 .tea-result-image-wrap {
-  aspect-ratio: 9 / 16;
-  min-height: 17rem;
-  padding: .55rem;
-  background: rgba(181, 152, 105, .14);
+  aspect-ratio: auto;
+  min-height: 0;
+  padding: .75rem .75rem 0;
+  background: #f3e6c8;
 }
 
 .tea-result-image {
+  display: block;
   width: 100%;
-  height: 100%;
-  min-height: 16rem;
+  height: auto;
+  max-height: 24rem;
+  min-height: 0;
   object-fit: contain;
   object-position: center;
   border: 1px solid rgba(113, 77, 39, .22);
@@ -116,8 +118,8 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
-  justify-content: center;
-  padding: 1rem;
+  justify-content: flex-start;
+  padding: 1rem .95rem 1.15rem;
 }
 
 .tea-result-copy h3 {
@@ -127,6 +129,7 @@
   font-size: clamp(1.35rem, 5vw, 2rem);
   line-height: 1.25;
   letter-spacing: .05em;
+  overflow-wrap: anywhere;
 }
 
 .tea-result-guardian {
@@ -382,7 +385,6 @@
   }
 
   .tea-result-image {
-    aspect-ratio: 3 / 4;
     width: 100%;
     height: auto;
     max-height: 22rem;
@@ -405,6 +407,28 @@
 
   .tea-options {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 900px) {
+  .tea-result-card {
+    grid-template-columns: minmax(13rem, .58fr) minmax(0, 1.42fr);
+    align-items: stretch;
+  }
+
+  .tea-result-image-wrap {
+    display: flex;
+    align-items: center;
+    padding: .75rem 0 .75rem .75rem;
+  }
+
+  .tea-result-image {
+    max-height: 28rem;
+  }
+
+  .tea-result-copy {
+    justify-content: center;
+    padding: 1.15rem 1.2rem;
   }
 }
 
