@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { existsSync, statSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import {
@@ -60,4 +61,12 @@ test("report-only chart recommendation is available without quiz answers", () =>
   const result = recommendGuardianFromChart(chart);
   assert.ok(result.guardian);
   assert.ok(result.chartEvidence.some((line) => line["zh-Hant"].includes("月令")));
+});
+
+test("mobile tea portrait card stacks image above copy so titles stay whole", async () => {
+  const css = await readFile(new URL("../src/tea-guardian.css", import.meta.url), "utf8");
+  const mobile = css.slice(css.indexOf("@media (max-width: 720px)"));
+  assert.match(mobile, /\.tea-result-card \{[\s\S]*grid-template-columns:\s*1fr;/);
+  assert.match(mobile, /\.tea-result-copy h3 \{[\s\S]*overflow-wrap:\s*anywhere;/);
+  assert.doesNotMatch(mobile, /minmax\(7\.2rem/);
 });

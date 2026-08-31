@@ -370,48 +370,41 @@
   font-size: .75rem;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 720px) {
   .tea-result-card {
-    grid-template-columns: minmax(7.2rem, .82fr) minmax(0, 1.18fr);
+    grid-template-columns: 1fr;
   }
 
   .tea-result-image-wrap {
-    aspect-ratio: 9 / 16;
-    min-height: 15rem;
-    padding: .38rem;
+    aspect-ratio: auto;
+    min-height: 0;
+    padding: .7rem .7rem 0;
   }
 
   .tea-result-image {
-    min-height: 14.2rem;
+    aspect-ratio: 3 / 4;
+    width: 100%;
+    height: auto;
+    max-height: 22rem;
+    min-height: 0;
+    object-fit: contain;
   }
 
   .tea-result-copy {
-    padding: .75rem;
+    padding: .95rem .85rem 1.1rem;
+  }
+
+  .tea-result-copy h3 {
+    overflow-wrap: anywhere;
   }
 
   .tea-result-note {
-    font-size: .7rem;
-    line-height: 1.62;
+    font-size: .78rem;
+    line-height: 1.7;
   }
 
   .tea-options {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 360px) {
-  .tea-result-card {
-    grid-template-columns: 1fr;
-  }
-
-  .tea-result-image-wrap {
-    aspect-ratio: 9 / 16;
-    min-height: auto;
-  }
-
-  .tea-result-image {
-    aspect-ratio: 9 / 16;
-    min-height: auto;
   }
 }
 
