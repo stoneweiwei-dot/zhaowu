@@ -1,4 +1,5 @@
 import type { AnalysisResult, AppLocale } from "@/lib/bazi/types";
+import { buildCultivationEnvironmentAdviceLines } from "@/lib/report/cultivation-environment-advice";
 
 type AdvicePack = Record<AppLocale, readonly string[]>;
 
@@ -124,9 +125,12 @@ function advicePack(result: AnalysisResult): AdvicePack {
 
 /**
  * Compact owner-curated reflection copy for the existing summary block.
+ * The targeted 「修心與環境」 module gets first refusal when the question clearly matches it.
  * This never creates a new report session and never overrides the calculated reading.
  */
 export function buildMindAdviceLines(result: AnalysisResult): string[] {
+  const targeted = buildCultivationEnvironmentAdviceLines(result);
+  if (targeted?.length) return targeted.slice(0, 2);
   const locale = result.locale ?? "zh-Hans";
-  return [...advicePack(result)[locale]];
+  return [...advicePack(result)[locale]].slice(0, 2);
 }

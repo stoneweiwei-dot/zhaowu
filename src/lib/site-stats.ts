@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.08.31-r15",
-  updateNumber: 15,
-  publishedAt: "2026-08-31T13:10:00+10:00",
-  latestSummary: "首頁答卷移除方向與近況選項，只保留直接提問和出生資料；觀世錄手機配圖放大為清晰可讀的段落插圖。",
+  version: "ZW-WEB-2026.08.31-r16",
+  updateNumber: 16,
+  publishedAt: "2026-08-31T20:36:00+10:00",
+  latestSummary: "完整報告加入「修心與環境」建議模組：依題目最多調用兩條，把境隨心轉、慈悲不傷、孝親界線、口德敬物、習慣投射、放下執念、家人各自課題與無為不妄為轉成可執行建議，並禁止魔法因果。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {
