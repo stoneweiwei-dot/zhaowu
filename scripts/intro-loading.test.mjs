@@ -72,7 +72,8 @@ test('intro uses the uploaded twin-lotus animation as the loading page', () => {
   assert.doesNotMatch(css, /zhaowu-four-hua/);
   assert.match(css, /uploaded twin-lotus loading animation/);
   assert.match(css, /rgba\(19, 27, 21, \.94\) 80%/);
-  assert.match(mediaWriter, /loading-v13\.part\./);
+  assert.match(mediaWriter, /loading-user-20260831\.part\./);
+  assert.match(mediaWriter, /VIDEO_PART_COUNT = 12/);
   assert.match(mediaWriter, /loading-v13\.mp4/);
   assert.doesNotMatch(gate, /loading-v10\.mp4/);
   assert.doesNotMatch(gate, /loading-v11\.mp4/);
