@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.01-r19",
-  updateNumber: 19,
-  publishedAt: "2026-09-01T01:30:00+10:00",
-  latestSummary: "修復 iPhone 載入頁破圖：改用校驗通過的雙生蓮動畫分片，影片失敗時自動退回宣紙山水靜態圖，最遲三秒進站。",
+  version: "ZW-WEB-2026.09.01-r20",
+  updateNumber: 20,
+  publishedAt: "2026-09-01T05:32:00+10:00",
+  latestSummary: "iPhone 加入主畫面圖標改為昭梧金線蓮花；移除會在建置時重畫舊棕色圖標的產生器，並以新網址避開 iOS 舊快取。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {
