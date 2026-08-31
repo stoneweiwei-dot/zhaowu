@@ -9,9 +9,10 @@ import type { GalleryAsset } from "@/lib/gallery-assets";
 import { explainCustomerDecreeImageChoice } from "@/lib/report/decree-selection-copy";
 
 type GalleryCandidate = { asset: GalleryAsset; knowledge: GalleryArtKnowledge };
+type ReasonChart = Pick<Chart, "useful" | "drain">;
 
 type Props = {
-  chart: Pick<Chart, "useful" | "drain">;
+  chart?: ReasonChart | null;
   question: string;
   selectedAssetId?: string | null;
   compact?: boolean;
@@ -63,11 +64,11 @@ function theme(question: string, locale: Locale): string {
   return love ? "感情與關係" : travel ? "移動與方向" : work ? "工作與資源" : health ? "修復與身心狀態" : "你現在面對的這件事";
 }
 
-function fallbackReason(chart: Pick<Chart, "useful">, question: string, locale: Locale): string {
-  const needs = [...new Set(chart.useful)].slice(0, 2).map((element) => NEED[element]?.[locale]).filter(Boolean);
+function fallbackReason(chart: ReasonChart, question: string, locale: Locale): string {
+  const needs = [...new Set(chart.useful ?? [])].slice(0, 2).map((element) => NEED[element]?.[locale]).filter(Boolean);
   const state = needs.length
     ? locale === "en" ? needs.join(" and ") : needs.join("、")
-    : locale === "en" ? "make the next step clearer" : locale === "zh-Hans" ? "把下一步看清楚" : "把下一步看清楚";
+    : locale === "en" ? "make the next step clearer" : "把下一步看清楚";
   const topic = theme(question, locale);
 
   if (locale === "en") {
@@ -82,6 +83,7 @@ function fallbackReason(chart: Pick<Chart, "useful">, question: string, locale: 
 export function DecreeImageReason({ chart, question, selectedAssetId = null, compact = false }: Props) {
   const { locale } = useI18n();
   const [candidates, setCandidates] = useState<GalleryCandidate[]>([]);
+  const chartForReason: ReasonChart = chart ?? { useful: [], drain: [] };
 
   useEffect(() => {
     let active = true;
@@ -109,8 +111,8 @@ export function DecreeImageReason({ chart, question, selectedAssetId = null, com
   );
 
   const reason = selectedCandidate
-    ? explainCustomerDecreeImageChoice(chart, question, selectedCandidate, locale)
-    : fallbackReason(chart, question, locale);
+    ? explainCustomerDecreeImageChoice(chartForReason, question, selectedCandidate, locale)
+    : fallbackReason(chartForReason, question, locale);
 
   return (
     <div
