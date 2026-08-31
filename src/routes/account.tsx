@@ -510,14 +510,12 @@ function AccountPage() {
                             <div className="overflow-hidden rounded-xl border border-line bg-cream p-2">
                               <img src={imageUrls[row.id]} alt={c.imageDone} className="aspect-[9/16] w-full rounded-lg object-cover" />
                             </div>
-                            {snapshot?.chart ? (
-                              <DecreeImageReason
-                                chart={snapshot.chart}
-                                question={String(row.alias || row.context?.question || c.reportFallback)}
-                                selectedAssetId={reportGalleryReferenceAssetId(detail)}
-                                compact
-                              />
-                            ) : null}
+                            <DecreeImageReason
+                              chart={snapshot?.chart ?? null}
+                              question={String(row.alias || row.context?.question || c.reportFallback)}
+                              selectedAssetId={reportGalleryReferenceAssetId(detail)}
+                              compact
+                            />
                           </div>
                         ) : null}
 
