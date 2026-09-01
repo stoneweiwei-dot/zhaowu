@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { writeHomeIcons } from './write-home-icons.mjs';
 import test from 'node:test';
+import { createHash } from 'node:crypto';
 
 const shell = await readFile(new URL('../src/components/site-shell.tsx', import.meta.url), 'utf8');
 const bootstrap = await readFile(new URL('../src/lib/bootstrap-readiness.ts', import.meta.url), 'utf8');
@@ -61,11 +62,13 @@ test('loading gate hard-exits inside the three-second bloom budget', () => {
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro uses the uploaded twin-lotus animation as the loading page', () => {
-  assert.match(gate, /loading-v13\.mp4/);
-  assert.match(gate, /loading-poster\.jpg/);
+test('intro restores the original Song-paper twin-lotus opening and falling flowers', async () => {
+  assert.match(gate, /twin-lotus-restored-r26\.mp4/);
+  assert.match(gate, /twin-lotus-restored-r26\.jpg/);
   assert.match(gate, /onError=\{\(\) => setVideoFailed\(true\)\}/);
   assert.match(gate, /LOTUS_BLOOM_MS = 2734/);
+  assert.equal(createHash('sha256').update(await readFile(new URL('../public/intro/twin-lotus-restored-r26.mp4', import.meta.url))).digest('hex'), '748211c8a82f7bbcc0aa1e8f51944a0d1412e5852b269be77240775357eebdda');
+  assert.equal(createHash('sha256').update(await readFile(new URL('../public/intro/twin-lotus-restored-r26.jpg', import.meta.url))).digest('hex'), 'e90dcdbf132a9c1e7d4a09f9f8560a5f9aa944c49dd9376d6fffc04d3adf96bc');
   assert.match(gate, /playbackRate/);
   assert.match(gate, /正在準備昭梧/);
   assert.match(gate, /STONE 原創/);
@@ -73,7 +76,8 @@ test('intro uses the uploaded twin-lotus animation as the loading page', () => {
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__hua/);
   assert.doesNotMatch(css, /zhaowu-four-hua/);
   assert.match(css, /uploaded twin-lotus loading animation/);
-  assert.match(css, /#131b15 79%/);
+  assert.doesNotMatch(css, /#131b15 79%/);
+  assert.doesNotMatch(gate, /loading-v13\.mp4|loading-poster\.jpg/);
   assert.match(mediaWriter, /loading-v13\.part\./);
   assert.match(mediaWriter, /VIDEO_PART_COUNT = 2/);
   assert.match(mediaWriter, /VIDEO_SHA256/);

@@ -11,11 +11,11 @@
   background-size: 30px 30px, 30px 30px, auto, auto, auto, auto;
 }
 
-/* Zhaowu · uploaded twin-lotus loading animation.
+/* Zhaowu · uploaded twin-lotus loading animation, restored from the original Song-paper clip.
    The artwork carries the heavenly flowers and lotus bloom itself; UI stays minimal. */
 .zhaowu-lotus-intro {
-  background: #172019;
-  color: #fff8e9;
+  background: #c7b18d;
+  color: #493c2b;
   isolation: isolate;
 }
 
@@ -33,12 +33,12 @@
 
 .zhaowu-lotus-intro__still {
   z-index: 0;
-  filter: saturate(.82) contrast(.96) brightness(.86);
+  filter: none;
 }
 
 .zhaowu-lotus-intro__art {
   z-index: 1;
-  filter: saturate(.97) contrast(1.02) brightness(.98);
+  filter: none;
 }
 
 .zhaowu-lotus-intro__veil {
@@ -46,18 +46,7 @@
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(19, 27, 21, .08) 0%,
-      rgba(19, 27, 21, 0) 64%,
-      rgba(19, 27, 21, .16) 68%,
-      rgba(19, 27, 21, .72) 74%,
-      rgba(19, 27, 21, .96) 77%,
-      #131b15 79%,
-      #131b15 100%
-    ),
-    radial-gradient(circle at 50% 48%, rgba(255, 223, 158, .045), transparent 46%);
+  background: linear-gradient(180deg, transparent 0%, transparent 72%, rgba(222, 205, 173, .62) 88%, rgba(222, 205, 173, .94) 100%);
 }
 
 .zhaowu-lotus-intro__copy {
@@ -71,7 +60,7 @@
   justify-content: flex-end;
   padding: 0 26px max(34px, env(safe-area-inset-bottom));
   text-align: center;
-  text-shadow: 0 2px 18px rgba(0, 0, 0, .3);
+  text-shadow: 0 1px 8px rgba(244, 231, 207, .55);
 }
 
 .zhaowu-lotus-intro__status {
@@ -84,7 +73,7 @@
   margin: 0 auto 14px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(255, 240, 205, .2);
+  background: rgba(73, 60, 43, .18);
   box-shadow: 0 0 18px rgba(255, 215, 145, .08);
 }
 
@@ -92,7 +81,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: rgba(255, 236, 188, .96);
+  background: rgba(92, 71, 40, .96);
   box-shadow: 0 0 14px rgba(255, 218, 142, .45);
   transition: width 220ms ease-out;
 }
@@ -102,7 +91,7 @@
   font-family: var(--font-display);
   font-size: 14px;
   letter-spacing: .18em;
-  color: rgba(255, 248, 231, .94);
+  color: rgba(57, 45, 30, .96);
 }
 
 .zhaowu-lotus-intro__status > span {
@@ -111,7 +100,7 @@
   font-size: 10px;
   font-variant-numeric: tabular-nums;
   letter-spacing: .18em;
-  color: rgba(255, 244, 218, .68);
+  color: rgba(73, 60, 43, .85);
 }
 
 .zhaowu-lotus-intro__status small {
@@ -119,14 +108,14 @@
   margin-top: 12px;
   font-size: 9px;
   letter-spacing: .22em;
-  color: rgba(255, 244, 218, .58);
+  color: rgba(73, 60, 43, .8);
 }
 
 @media (min-width: 700px) {
   .zhaowu-lotus-intro__art,
   .zhaowu-lotus-intro__still {
     object-fit: contain;
-    background: #172019;
+    background: #c7b18d;
   }
 }
 
