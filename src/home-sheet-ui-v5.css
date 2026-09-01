@@ -1,9 +1,9 @@
 /*
  * ZHAOWU application parchment lock.
- * Every application page uses one locked background composition. The owner
- * background service may replace the packaged Song fallback once per day,
- * while cards, header, login sheet and tool panels stay opaque parchment.
- * Loose emblem scatter stays out of the application shell.
+ * Every application page uses the packaged Song landscape as one locked
+ * background composition. Cards, header, login sheet and tool panels are
+ * fully opaque parchment. Dynamic owner/weekly wallpaper and loose emblem
+ * scatter stay out of the application shell.
  */
 
 :root {
@@ -36,7 +36,7 @@ body:has(.zhaowu-login-shell),
       rgba(246, 235, 216, 0.10) 72%,
       rgba(249, 243, 232, 0.20) 100%
     ),
-    var(--zhaowu-wallpaper-url, none) !important;
+    url("/wallpaper-song.jpg") !important;
   background-size:
     auto,
     980px auto !important;

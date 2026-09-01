@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.01-r24",
-  updateNumber: 24,
-  publishedAt: "2026-09-01T20:42:00+10:00",
-  latestSummary: "完成 STO-13 B 版收口：背景每日輪播並保留固定／排程優先，多圖逐張進度、最近一張先載與每頁 12 張歷史懶載入，QA 記錄隔離，客戶卡片操作維持手機精簡。",
+  version: "ZW-WEB-2026.09.02-r25",
+  updateNumber: 25,
+  publishedAt: "2026-09-02T01:38:36+10:00",
+  latestSummary: "依站主要求還原 r23 的固定宋畫山水背景，撤回 r24 將圖庫海報鋪滿首頁與登入頁的改動；保留帳號修復、報告隔離與後台管理功能。登入動畫版本仍待站主辨認。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {

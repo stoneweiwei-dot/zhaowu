@@ -7,13 +7,13 @@ async function source(path) {
   return readFile(new URL(path, root), "utf8");
 }
 
-test("application shell mounts one daily owner wallpaper without loose scatter", async () => {
+test("application shell restores the fixed Song landscape without loose scatter", async () => {
   const shell = await source("src/components/site-shell.tsx");
   assert.match(shell, /const isHome = pathname === "\/"/);
   assert.match(shell, /const isLogin = pathname === "\/login"/);
   assert.match(shell, /zhaowu-home-sheet-shell/);
-  assert.match(shell, /dailyWallpaperPromise/);
-  assert.match(shell, /--zhaowu-wallpaper-url/);
+  assert.doesNotMatch(shell, /dailyWallpaperPromise/);
+  assert.doesNotMatch(shell, /--zhaowu-wallpaper-url/);
   assert.doesNotMatch(shell, /zhaowu-site-wallpaper/);
   assert.doesNotMatch(shell, /auspicious-emblem-scatter/);
 });
@@ -43,7 +43,7 @@ test("homepage keeps the Song parchment flow and integrates three compact gatewa
 
   assert.match(css, /#analysisForm\.is-compact/);
   assert.match(css, /\.zhaowu-analysis-settings/);
-  assert.match(css, /var\(--zhaowu-wallpaper-url, none\)/);
+  assert.match(css, /url\("\/wallpaper-song\.jpg"\)/);
   assert.match(css, /\.zhaowu-home-sheet-shell \.zhaowu-site-wallpaper/);
   assert.match(css, /background-size:\s*auto,\s*980px auto/);
   assert.match(css, /background-repeat: repeat-y/);

@@ -5,16 +5,16 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("one visible Gallery coexists with the owner-managed daily background library", async () => {
+test("one visible Gallery keeps owner asset management independent of the fixed shell", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const account = await source("src/routes/account.tsx");
   const gallery = await source("src/components/owner-gallery-manager.tsx");
   const main = await source("src/main.tsx");
   const lock = await source("src/gallery-unification.css");
 
-  assert.match(shell, /from "@\/lib\/background-assets"/);
-  assert.match(shell, /listPublicBackgrounds\(\)/);
-  assert.match(shell, /chooseDailyBackground/);
+  assert.doesNotMatch(shell, /from "@\/lib\/background-assets"/);
+  assert.doesNotMatch(shell, /listPublicBackgrounds\(\)/);
+  assert.doesNotMatch(shell, /chooseDailyBackground/);
   assert.doesNotMatch(shell, /zhaowu-site-wallpaper/);
   assert.match(shell, /to="\/gallery"/);
   assert.match(shell, /"图库"/);

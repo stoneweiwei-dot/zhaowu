@@ -54,11 +54,11 @@ test("multi-image upload exposes per-file progress without expanding the mobile 
   assert.match(account, /data-report-secondary-actions/);
 });
 
-test("customer shell resolves one daily wallpaper through the approved parchment layer", () => {
-  assert.match(shell, /chooseDailyBackground/);
-  assert.match(shell, /dailyWallpaperPromise/);
-  assert.match(shell, /--zhaowu-wallpaper-url/);
-  assert.match(sheet, /var\(--zhaowu-wallpaper-url, none\)/);
+test("customer shell keeps gallery posters out of the restored Song landscape", () => {
+  assert.doesNotMatch(shell, /chooseDailyBackground/);
+  assert.doesNotMatch(shell, /dailyWallpaperPromise/);
+  assert.doesNotMatch(shell, /--zhaowu-wallpaper-url/);
+  assert.match(sheet, /url\("\/wallpaper-song\.jpg"\)/);
   assert.doesNotMatch(sheet, /background-attachment:\s*fixed/);
 });
 
