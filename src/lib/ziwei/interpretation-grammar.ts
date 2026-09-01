@@ -1,6 +1,6 @@
-import type { ZiweiScope, ZiweiTransformation } from './horoscope';
+import type { ZiweiBrightness, ZiweiScope, ZiweiTransformation } from './horoscope';
 
-export const ZIWEI_INTERPRETATION_GRAMMAR_VERSION = 'zhaowu_ziwei_interpretation_v1.0' as const;
+export const ZIWEI_INTERPRETATION_GRAMMAR_VERSION = 'zhaowu_ziwei_interpretation_v1.1' as const;
 
 export type ZiweiClaimClass =
   | 'calculation_truth'
@@ -10,6 +10,27 @@ export type ZiweiClaimClass =
   | 'quarantine';
 
 export type ZiweiClaimStrength = 'observation' | 'supported' | 'reinforced';
+
+export const ZIWEI_STAR_FUNCTION = {
+  紫微: ['統籌', '主導', '秩序', '決策中心'],
+  天機: ['機變', '規劃', '資訊', '調度'],
+  太陽: ['顯化', '承擔', '對外', '可見度'],
+  武曲: ['資源', '執行', '財務', '效率'],
+  天同: ['舒緩', '協調', '享受', '適應'],
+  廉貞: ['邊界', '規則', '欲望', '關係複雜度'],
+  天府: ['承載', '保存', '穩定', '資源庫'],
+  太陰: ['內在', '感受', '細節', '積累'],
+  貪狼: ['慾望', '社交', '體驗', '多樣性'],
+  巨門: ['辨析', '語言', '質疑', '問題拆解'],
+  天相: ['協調', '規範', '角色', '公平'],
+  天梁: ['責任', '保護', '原則', '收尾'],
+  七殺: ['決斷', '壓力承擔', '切換', '突破'],
+  破軍: ['重整', '破舊', '改革', '重新建立'],
+  左輔: ['協作', '支援', '轉圜'],
+  右弼: ['協作', '支援', '轉圜'],
+  文昌: ['文字', '表達', '學習', '規範'],
+  文曲: ['文字', '表達', '審美', '學習'],
+} as const;
 
 export const ZIWEI_MUTAGEN_OPERATION: Record<ZiweiTransformation, {
   action: string;
@@ -86,12 +107,27 @@ export const ZIWEI_RELATION_NETWORK = {
   opposite: '對宮＝外部回饋、張力、互補或鏡像',
 } as const;
 
+export const ZIWEI_BRIGHTNESS_SEMANTICS: Record<ZiweiBrightness, string> = {
+  廟: '該星功能較容易穩定、完整地表達',
+  旺: '該星功能較活躍，較容易被看見與使用',
+  得: '該星功能有可用條件，但仍需看組合與場景',
+  利: '該星功能在此位置較容易形成有效表現',
+  平: '該星功能沒有明顯位置加成或削弱，需更依賴組合',
+  不: '該星功能較難自然展開，常需外部條件或其他星曜支援',
+  陷: '該星功能較容易以費力、失衡或不穩定方式表達',
+};
+
 export const ZIWEI_INTERPRETATION_POLICY = {
   primarySystem: '子平八字',
   ziweiRole: '現象／場景驗證層',
   syntax: ['星曜定功能', '宮位定場景', '四化定變化方式', '輔煞定過程性質', '三方四正定結構關聯', '大限流年定觸發時間'],
   minAlignedScopesForStrongClaim: 2,
   natalImmutable: true,
+  multipleMajorStarsCompose: true,
+  emptyPalaceRule: '空宮不等於空白或凶；不得虛構主星，應以本宮場景、對宮與三方四正結構補充觀察。',
+  bodyPalaceRule: '身宮只作人生著力點／後天承接重心的加強，不取代命宮。',
+  brightnessRule: '廟旺利陷只調整星曜功能的可用性、穩定度與表達成本，不直接等同吉凶、富貴或調候。',
+  palaceStemSelfTransformationRule: '宮干飛化／自化屬流派專項；未有明確 profile 前不得混入目前本命年干、大限宮干、流年年干四化。',
   numericSeverityScoringForbidden: true,
   diagnosisForbidden: true,
   deterministicEventGuaranteeForbidden: true,
@@ -134,4 +170,12 @@ export function describeProcessModifier(star: keyof typeof ZIWEI_PROCESS_MODIFIE
 
 export function getPalaceContext(name: ZiweiPalaceName) {
   return ZIWEI_PALACE_CONTEXT[name];
+}
+
+export function getStarFunction(star: keyof typeof ZIWEI_STAR_FUNCTION) {
+  return ZIWEI_STAR_FUNCTION[star];
+}
+
+export function describeBrightness(brightness: ZiweiBrightness) {
+  return ZIWEI_BRIGHTNESS_SEMANTICS[brightness];
 }
