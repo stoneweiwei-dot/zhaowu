@@ -26,7 +26,7 @@
 .zhaowu-quiz-sheet,
 .zhaowu-home-sheet-shell #analysisForm.zhaowu-quiz-sheet {
   position: relative;
-  background-color: #fbf5e9 !important;
+  /* Paper surface is owned by parchment-layout.css; do not cover its landscape. */
 }
 
 .zhaowu-quiz-sheet:not(.is-compact)::after {

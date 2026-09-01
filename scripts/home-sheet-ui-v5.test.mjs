@@ -12,6 +12,8 @@ test("uploaded reference keeps landscape visible behind translucent sheets and r
   assert.match(css, /url\('\/wallpaper-song\.jpg'\)/);
   assert.match(css, /position:fixed; inset:0; z-index:-1; pointer-events:none/);
   assert.match(css, /background:rgba\(250,243,230,\.73\)/);
+  const quiz = await source("src/home-quiz-paper.css");
+  assert.doesNotMatch(quiz, /background-color: #fbf5e9 !important/);
   assert.match(css, /background:#a73727 !important/);
   assert.match(css, /\.stone-login-screen::before,[\s\S]*content:none !important/);
 });
