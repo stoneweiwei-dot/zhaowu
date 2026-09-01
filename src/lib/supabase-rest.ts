@@ -75,6 +75,17 @@ export type ReportListRecord = Pick<
   | "updated_at"
 >;
 
+export function isQaReportRecord(row: Pick<ReportListRecord, "record_kind" | "access_mode" | "context">) {
+  const recordKind = String(row.record_kind ?? "").trim().toLowerCase();
+  const accessMode = String(row.access_mode ?? "").trim().toLowerCase();
+  const context = row.context ?? {};
+  return ["test", "qa", "e2e"].includes(recordKind)
+    || ["test", "qa", "e2e"].includes(accessMode)
+    || context.qa === true
+    || context.isQa === true
+    || context.is_qa === true;
+}
+
 function headers(token?: string | null, extra?: HeadersInit): HeadersInit {
   return {
     apikey: SUPABASE_KEY,
@@ -381,11 +392,12 @@ export async function listReportRecords(session: SupabaseSession, isOwner: boole
   const select = "id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,created_at,updated_at";
   const filter = isOwner ? "" : `&user_id=eq.${encodeURIComponent(session.user.id)}`;
   const limit = isOwner ? 50 : 3;
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests?select=${select}${filter}&order=created_at.desc&limit=${limit}`, {
+  const qaIsolation = "&or=(record_kind.is.null,record_kind.not.in.(test,qa,e2e))";
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/report_requests?select=${select}${filter}${qaIsolation}&order=created_at.desc&limit=${limit}`, {
     headers: headers(session.access_token),
   });
   const rows = await jsonOrError<ReportListRecord[]>(res);
-  return rows.slice(0, limit);
+  return rows.filter((row) => !isQaReportRecord(row)).slice(0, limit);
 }
 
 async function upgradeLegacyRecordOnce(session: SupabaseSession, row: ReportRecord): Promise<ReportRecord> {

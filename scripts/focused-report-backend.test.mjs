@@ -48,21 +48,24 @@ test("website keeps the app concept base while homepage specialist cards shed lo
   assert.match(intro, /LOTUS_BLOOM_MS = 2734/);
 });
 
-test("background assets remain manageable but no longer render as application wallpaper", async () => {
+test("background assets remain manageable and provide one selected daily application wallpaper", async () => {
   const account = await source("src/routes/account.tsx");
   const shell = await source("src/components/site-shell.tsx");
   const main = await source("src/main.tsx");
   const finalHome = await source("src/home-sheet-ui-v5.css");
 
-  assert.doesNotMatch(shell, /@\/lib\/background-assets/);
+  assert.match(shell, /@\/lib\/background-assets/);
+  assert.match(shell, /chooseDailyBackground/);
+  assert.match(shell, /--zhaowu-wallpaper-url/);
   assert.doesNotMatch(shell, /zhaowu-site-wallpaper/);
   assert.doesNotMatch(shell, /auspicious-emblem-scatter/);
   assert.match(shell, /\$\{!isLogin \? "zhaowu-home-sheet-shell" : ""\}/);
-  assert.match(account, /listOwnerBackgrounds/);
+  assert.match(account, /listOwnerBackgroundPage\(session, 0, 1\)/);
   assert.match(account, /uploadBackground/);
   assert.match(account, /setBackgroundWallpaper/);
   assert.match(main, /home-sheet-ui-v5\.css/);
   assert.ok(main.indexOf("visual-readability-lock-v4.css") < main.indexOf("home-sheet-ui-v5.css"));
   assert.match(finalHome, /\.zhaowu-home-sheet-shell \.zhaowu-site-wallpaper/);
   assert.match(finalHome, /display:\s*none\s*!important/);
+  assert.match(finalHome, /var\(--zhaowu-wallpaper-url, none\)/);
 });
