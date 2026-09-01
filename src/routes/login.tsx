@@ -31,8 +31,11 @@ function LoginPage() {
   useEffect(() => {
     void captureOAuthRedirect().then((session) => {
       if (session) void reload();
+    }).catch((err) => {
+      setOauthBusy(null);
+      setError(err instanceof Error ? err.message : t("loginFailed"));
     });
-  }, [reload]);
+  }, [reload, t]);
 
   useEffect(() => {
     if (user) void navigate({ to: "/account" });
@@ -43,7 +46,8 @@ function LoginPage() {
     setInfo(null);
     setOauthBusy(provider);
     try {
-      startOAuth(provider, "/login");
+      // Let startOAuth build the canonical absolute /login callback URL.
+      startOAuth(provider);
     } catch (err) {
       setOauthBusy(null);
       setError(err instanceof Error ? err.message : t("loginUnavailable"));

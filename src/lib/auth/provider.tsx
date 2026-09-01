@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { getProfile, restoreSession, type SupabaseSession, type UserProfile } from "@/lib/supabase-rest";
+import { captureOAuthRedirect, getProfile, restoreSession, type SupabaseSession, type UserProfile } from "@/lib/supabase-rest";
 
 export type CurrentUser = {
   id: string;
@@ -47,10 +47,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    void reload();
+    let cancelled = false;
+
+    const bootstrapAuth = async () => {
+      setPending(true);
+      try {
+        // Supabase can return OAuth/email-confirmation tokens to any allowed site URL.
+        // Capture them before restoring storage so sensitive hash/query tokens never
+        // remain exposed in the address bar as a long "gibberish" string.
+        const callbackSession = await captureOAuthRedirect().catch(() => null);
+        if (cancelled) return;
+
+        const active = callbackSession ?? await restoreSession();
+        if (cancelled) return;
+        setSession(active);
+        if (!active) {
+          setProfile(null);
+          return;
+        }
+        const p = await getProfile(active).catch(() => null);
+        if (!cancelled) setProfile(p);
+      } finally {
+        if (!cancelled) setPending(false);
+      }
+    };
+
+    void bootstrapAuth();
     const onAuth = () => void reload();
     window.addEventListener("zhaowu-auth-change", onAuth);
-    return () => window.removeEventListener("zhaowu-auth-change", onAuth);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("zhaowu-auth-change", onAuth);
+    };
   }, [reload]);
 
   const user = useMemo<CurrentUser | null>(() => {
