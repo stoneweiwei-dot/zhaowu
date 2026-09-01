@@ -17,6 +17,7 @@ import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as QizhengRouteImport } from './routes/qizheng'
+import { Route as QuizSixRealmsRouteImport } from './routes/quiz.six-realms'
 import { Route as TeaGuardianRouteImport } from './routes/tea-guardian'
 import { Route as TianjiDualRouteImport } from './routes/tianji-dual'
 import { Route as TianjiXinggongRouteImport } from './routes/tianji-xinggong'
@@ -63,6 +64,11 @@ const QizhengRoute = QizhengRouteImport.update({
   path: '/qizheng',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuizSixRealmsRoute = QuizSixRealmsRouteImport.update({
+  id: '/quiz/six-realms',
+  path: '/quiz/six-realms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeaGuardianRoute = TeaGuardianRouteImport.update({
   id: '/tea-guardian',
   path: '/tea-guardian',
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/qizheng': typeof QizhengRoute
+  '/quiz/six-realms': typeof QuizSixRealmsRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/qizheng': typeof QizhengRoute
+  '/quiz/six-realms': typeof QuizSixRealmsRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
   '/qizheng': typeof QizhengRoute
+  '/quiz/six-realms': typeof QuizSixRealmsRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/login'
     | '/qizheng'
+    | '/quiz/six-realms'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/login'
     | '/qizheng'
+    | '/quiz/six-realms'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/login'
     | '/qizheng'
+    | '/quiz/six-realms'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
@@ -192,6 +204,7 @@ export interface RootRouteChildren {
   HistoryRoute: typeof HistoryRoute
   LoginRoute: typeof LoginRoute
   QizhengRoute: typeof QizhengRoute
+  QuizSixRealmsRoute: typeof QuizSixRealmsRoute
   TeaGuardianRoute: typeof TeaGuardianRoute
   TianjiDualRoute: typeof TianjiDualRoute
   TianjiXinggongRoute: typeof TianjiXinggongRoute
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QizhengRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quiz/six-realms': {
+      id: '/quiz/six-realms'
+      path: '/quiz/six-realms'
+      fullPath: '/quiz/six-realms'
+      preLoaderRoute: typeof QuizSixRealmsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tea-guardian': {
       id: '/tea-guardian'
       path: '/tea-guardian'
@@ -304,6 +324,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoryRoute: HistoryRoute,
   LoginRoute: LoginRoute,
   QizhengRoute: QizhengRoute,
+  QuizSixRealmsRoute: QuizSixRealmsRoute,
   TeaGuardianRoute: TeaGuardianRoute,
   TianjiDualRoute: TianjiDualRoute,
   TianjiXinggongRoute: TianjiXinggongRoute,
