@@ -305,3 +305,18 @@ After Production is VERIFIED:
 10. Documentation-only changes that do not affect production runtime/configuration may be exempt unless the user explicitly asks to version them.
 
 The release ledger is the canonical answer to: **which version is live, how many recorded production updates have occurred, and what changed in the latest release.**
+
+## 17. CANONICAL METAPHYSICS DEFAULT
+
+For every ZHAOWU metaphysics analysis, report, AI prompt, rule-ingestion task or specialist route, the default doctrine is `docs/METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` unless the site owner explicitly overrides the current task.
+
+Mandatory interpretation boundaries:
+
+1. Zi Ping Bazi remains the primary structural judgement system.
+2. Zi Wei Dou Shu is an independent phenomenon / life-scene validation layer and must follow `docs/ZIWEI-INTERPRETATION-GRAMMAR-v1.0.md`.
+3. Zi Wei calculation truth and interpretation truth are separate. Calculation changes require deterministic tests, source profiles and provenance; interpretation material must never silently alter placements or Four-Transformation tables.
+4. New metaphysics material follows `docs/ANALYSIS-INGESTION-POLICY.md` and must be classified as CALC_TRUTH, CLASSICAL_INTERPRETATION, MODERN_INTERPRETATION, OWNER_MATERIAL or QUARANTINE.
+5. Serious claims cannot be produced from a single star, transformation, malefic or isolated annual signal. Medical diagnosis, death/lifespan claims and unsupported severity scoring remain prohibited.
+6. Deterministic calculation happens first and once; report pages reuse the same engine snapshot/evidence trace. AI may synthesize or translate but must not recalculate the chart.
+
+If an older prompt, document, issue or implementation conflicts with these boundaries, the newer canonical default wins only for the conflicting portion, subject to the safety and regression rules above.

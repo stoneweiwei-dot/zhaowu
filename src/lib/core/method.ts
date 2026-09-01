@@ -1,5 +1,6 @@
 import type { QuestionKind } from "@/lib/bazi/types";
 import type { MethodItem, MethodProtocol, MethodStatus } from "@/lib/core/types";
+import { ZIWEI_ENGINE_READINESS } from "@/lib/ziwei/profiles";
 
 const ZIPING: MethodItem = {
   name: "子平八字",
@@ -10,7 +11,11 @@ const ZIPING: MethodItem = {
 };
 
 const CATALOG: Record<string, Omit<MethodItem, "status" | "role">> = {
-  紫微斗數: { name: "紫微斗數", strength: "十二宮拆人生領域，四化看能量怎麼移動。", bound: "沒有獨立星曜宮位資料時不作判定。" },
+  紫微斗數: {
+    name: "紫微斗數",
+    strength: "星曜定功能、宮位定場景、四化定變化、輔煞定過程、三方四正定關聯、大限流年定觸發。",
+    bound: "必須有可靠出生時辰與獨立排盤；只作現象／場景驗證，不替代子平月令、調候、格局、病藥與承載。",
+  },
   西方占星: { name: "西方占星", strength: "命主星、宮主星與相位描述心理衝突。", bound: "心理敘事不等於客觀事件預測。" },
   吠陀占星: { name: "吠陀占星", strength: "Nakshatra 與 Dasha 連月宿和人生時期。", bound: "必須固定恒星黃道與 Ayanamsa。" },
   宿曜: { name: "宿曜", strength: "月亮本能、人際距離與月宿主星。", bound: "只作關係旁證，不單獨決定婚姻成敗。" },
@@ -28,13 +33,32 @@ const CATALOG: Record<string, Omit<MethodItem, "status" | "role">> = {
 
 const EXCLUDED = ["天使數字", "星際種子身份", "阿卡西客觀斷言", "五格筆畫", "稱骨", "純生肖", "純納音"];
 
+type RouteExtras = {
+  palmReady?: boolean;
+  palmMissing?: string[];
+  ziweiReady?: boolean;
+  ziweiMissing?: string[];
+};
+
 function item(name: string, status: MethodStatus, role: MethodItem["role"] = "專項"): MethodItem {
   const base = CATALOG[name];
   return { name, role, status, strength: base?.strength ?? "", bound: base?.bound ?? "" };
 }
 
-export function routeMethods(kind: QuestionKind, extras?: { palmReady?: boolean; palmMissing?: string[] }): MethodProtocol {
+function ziweiStatus(extras?: RouteExtras): MethodStatus {
+  return ZIWEI_ENGINE_READINESS.calculationDataReady && extras?.ziweiReady ? "已執行" : "資料未接入";
+}
+
+function ziweiReason(extras?: RouteExtras): string {
+  if (!ZIWEI_ENGINE_READINESS.calculationDataReady) return "紫微計算資料層目前未通過 deterministic readiness。";
+  if (extras?.ziweiReady) return "紫微已按獨立命盤進入現象／場景驗證層。";
+  const missing = extras?.ziweiMissing?.length ? extras.ziweiMissing.join("、") : "可靠出生時辰或已標準化紫微輸入";
+  return `紫微仍缺${missing}，不強排、不補假資料。`;
+}
+
+export function routeMethods(kind: QuestionKind, extras?: RouteExtras): MethodProtocol {
   const selected: MethodItem[] = [];
+  const zwStatus = ziweiStatus(extras);
   let reason = "本題以子平八字主判。";
 
   switch (kind) {
@@ -48,16 +72,19 @@ export function routeMethods(kind: QuestionKind, extras?: { palmReady?: boolean;
         : `前世題需要${(extras?.palmMissing ?? ["性別"]).join("、")}才能排四宮，先不填六道。`;
       break;
     case "love":
-      selected.push(item("紫微斗數", "資料未接入"), item("西方占星", "資料未接入"), item("宿曜", "資料未接入"));
-      reason = "感情題：子平看本人關係結構；紫微／西方／宿曜待獨立排盤。";
+      selected.push(item("紫微斗數", zwStatus), item("西方占星", "資料未接入"), item("宿曜", "資料未接入"));
+      reason = `感情題：子平看關係承載與結構；${ziweiReason(extras)}`;
       break;
     case "career":
     case "money":
-      selected.push(item("紫微斗數", "資料未接入"), item("吠陀占星", "資料未接入"), item("西方占星", "資料未接入"));
-      reason = "工作財務題：正文只由子平判斷現實主線。";
+      selected.push(item("紫微斗數", zwStatus), item("吠陀占星", "資料未接入"), item("西方占星", "資料未接入"));
+      reason = `工作財務題：子平主判能力、病藥與承載；${ziweiReason(extras)}`;
       break;
     case "health":
-      reason = "身心題原則上不擴張流派，只作生活節奏提示，並守醫療邊界。";
+      if (zwStatus === "已執行") selected.push(item("紫微斗數", zwStatus));
+      reason = zwStatus === "已執行"
+        ? "身心題仍以子平寒暖燥濕、病藥與生活節奏為主；紫微只補壓力落點與承載場景，禁止疾病診斷。"
+        : "身心題以子平寒暖燥濕、病藥與生活節奏為主；紫微資料不足時不強排，且任何系統都不得取代醫療。";
       break;
     case "home":
       selected.push(item("風水", "資料未接入"), item("奇門遁甲", "資料未接入"));
@@ -65,12 +92,12 @@ export function routeMethods(kind: QuestionKind, extras?: { palmReady?: boolean;
       break;
     case "timing":
     case "choice":
-      selected.push(item("六爻", "資料未接入"), item("大六壬", "資料未接入"));
-      reason = "成敗／何時題：子平給背景；六爻、大六壬須另起卦／課。";
+      selected.push(item("紫微斗數", zwStatus), item("六爻", "資料未接入"), item("大六壬", "資料未接入"));
+      reason = `時間／選擇題：子平看階段結構；${ziweiReason(extras)} 六爻、大六壬若要使用仍須另起卦／課。`;
       break;
     default:
-      selected.push(item("西方占星", "資料未接入"), item("人類圖", "資料未接入"));
-      reason = "性格與總鑑以子平為主；旁證未接入不造假。";
+      selected.push(item("紫微斗數", zwStatus), item("西方占星", "資料未接入"), item("人類圖", "資料未接入"));
+      reason = `性格與總鑑以子平為主；${ziweiReason(extras)}`;
   }
 
   return {

@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.01-r20",
-  updateNumber: 20,
-  publishedAt: "2026-09-01T05:32:00+10:00",
-  latestSummary: "iPhone 加入主畫面圖標改為昭梧金線蓮花；移除會在建置時重畫舊棕色圖標的產生器，並以新網址避開 iOS 舊快取。",
+  version: "ZW-WEB-2026.09.01-r21",
+  updateNumber: 21,
+  publishedAt: "2026-09-01T11:55:00+10:00",
+  latestSummary: "鎖定昭梧命理預設協議與紫微七層解釋語法；四化改為作用方式、輔煞改為過程性質，新增來源分級、歲運疊層與身體醫療邊界，並接入紫微專題報告。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {
