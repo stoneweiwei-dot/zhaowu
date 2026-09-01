@@ -19,6 +19,22 @@ export default defineConfig({
         viewport: { width: 390, height: 844 },
       },
     },
+    {
+      name: "android-chrome",
+      use: {
+        ...devices["Pixel 7"],
+        browserName: "chromium",
+        viewport: { width: 412, height: 915 },
+      },
+    },
+    {
+      name: "desktop-chrome",
+      use: {
+        ...devices["Desktop Chrome"],
+        browserName: "chromium",
+        viewport: { width: 1440, height: 900 },
+      },
+    },
   ],
   webServer: {
     command: "npm exec vite -- --host 127.0.0.1 --port 4173",

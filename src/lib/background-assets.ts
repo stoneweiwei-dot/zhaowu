@@ -1,6 +1,9 @@
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const BUCKET = "zhaowu-backgrounds";
+const BACKGROUND_SELECT = "id,source,name,storage_path,content_type,enabled,days_of_week,start_date,end_date,theme,created_at,updated_at";
+
+export const BACKGROUND_HISTORY_PAGE_SIZE = 12;
 
 export type BackgroundAsset = {
   id: string;
@@ -15,6 +18,13 @@ export type BackgroundAsset = {
   theme: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export type BackgroundPage = {
+  items: BackgroundAsset[];
+  total: number;
+  page: number;
+  pageSize: number;
 };
 
 function apiHeaders(token?: string | null, json = true): HeadersInit {
@@ -60,26 +70,50 @@ export function backgroundPublicUrl(path: string) {
 
 export async function listPublicBackgrounds(): Promise<BackgroundAsset[]> {
   if (!SUPABASE_URL || !SUPABASE_KEY) return [];
-  const select = "id,source,name,storage_path,content_type,enabled,days_of_week,start_date,end_date,theme,created_at,updated_at";
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?enabled=eq.true&select=${select}&order=created_at.desc`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?enabled=eq.true&select=${BACKGROUND_SELECT}&order=created_at.desc`, {
     headers: apiHeaders(),
   });
   if (!res.ok) return [];
   return parse<BackgroundAsset[]>(res);
 }
 
-export async function listOwnerBackgrounds(session: SupabaseSession): Promise<BackgroundAsset[]> {
-  const select = "id,source,name,storage_path,content_type,enabled,days_of_week,start_date,end_date,theme,created_at,updated_at";
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?select=${select}&order=created_at.desc`, {
-    headers: apiHeaders(session.access_token),
-  });
-  return parse<BackgroundAsset[]>(res);
+function totalFromContentRange(value: string | null, fallback: number) {
+  const match = value?.match(/\/(\d+)$/);
+  return match ? Number(match[1]) : fallback;
 }
 
-export async function uploadBackground(session: SupabaseSession, file: File): Promise<BackgroundAsset> {
+export async function listOwnerBackgroundPage(
+  session: SupabaseSession,
+  page = 0,
+  requestedPageSize = BACKGROUND_HISTORY_PAGE_SIZE,
+): Promise<BackgroundPage> {
+  const pageSize = Math.max(1, Math.min(BACKGROUND_HISTORY_PAGE_SIZE, Math.floor(requestedPageSize)));
+  const safePage = Math.max(0, Math.floor(page));
+  const offset = safePage * pageSize;
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?select=${BACKGROUND_SELECT}&order=created_at.desc&limit=${pageSize}&offset=${offset}`, {
+    headers: {
+      ...apiHeaders(session.access_token),
+      Prefer: "count=exact",
+    },
+  });
+  const items = await parse<BackgroundAsset[]>(res);
+  return {
+    items,
+    total: totalFromContentRange(res.headers.get("content-range"), offset + items.length),
+    page: safePage,
+    pageSize,
+  };
+}
+
+export async function uploadBackground(
+  session: SupabaseSession,
+  file: File,
+  onProgress?: (percent: number) => void,
+): Promise<BackgroundAsset> {
   if (!file.type.startsWith("image/")) throw new Error("只接受圖片檔。");
   if (file.size > 10 * 1024 * 1024) throw new Error("單張圖片不可超過 10 MB。");
 
+  onProgress?.(5);
   const ext = (file.name.split(".").pop() || "webp").toLowerCase().replace(/[^a-z0-9]/g, "") || "webp";
   const path = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${ext}`;
   const upload = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
@@ -93,6 +127,7 @@ export async function uploadBackground(session: SupabaseSession, file: File): Pr
     body: file,
   });
   if (!upload.ok) await parse(upload);
+  onProgress?.(75);
 
   const insert = await fetch(`${SUPABASE_URL}/rest/v1/background_assets`, {
     method: "POST",
@@ -112,6 +147,7 @@ export async function uploadBackground(session: SupabaseSession, file: File): Pr
   });
   try {
     const rows = await parse<BackgroundAsset[]>(insert);
+    onProgress?.(100);
     return rows[0];
   } catch (error) {
     await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
@@ -139,19 +175,15 @@ export function isPinnedWallpaper(asset: BackgroundAsset) {
 }
 
 export async function setBackgroundWallpaper(session: SupabaseSession, id: string) {
-  const current = await listOwnerBackgrounds(session);
-  const previous = current.filter((asset) => asset.theme === "wallpaper" && asset.id !== id);
-  for (const asset of previous) {
-    const clear = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?id=eq.${encodeURIComponent(asset.id)}`, {
-      method: "PATCH",
-      headers: {
-        ...apiHeaders(session.access_token),
-        Prefer: "return=minimal",
-      },
-      body: JSON.stringify({ theme: "daily-rotation", updated_at: new Date().toISOString() }),
-    });
-    if (!clear.ok) await parse(clear);
-  }
+  const clear = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?theme=eq.wallpaper&id=neq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: {
+      ...apiHeaders(session.access_token),
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({ theme: "daily-rotation", updated_at: new Date().toISOString() }),
+  });
+  if (!clear.ok) await parse(clear);
 
   const res = await fetch(`${SUPABASE_URL}/rest/v1/background_assets?id=eq.${encodeURIComponent(id)}`, {
     method: "PATCH",
@@ -219,10 +251,10 @@ export function chooseDailyBackground(assets: BackgroundAsset[], now = new Date(
   const pinned = eligible.find((asset) => asset.theme === "wallpaper");
   if (pinned) return pinned;
 
-  const weekday = now.getDay();
-  const explicit = eligible.filter((asset) => asset.days_of_week.includes(weekday));
-  const pool = explicit.length ? explicit : eligible;
-  const yearStart = new Date(now.getFullYear(), 0, 0);
-  const dayOfYear = Math.floor((now.getTime() - yearStart.getTime()) / 86_400_000);
-  return pool[Math.abs(dayOfYear) % pool.length] ?? pool[0] ?? null;
+  const scheduled = eligible.filter((asset) => (
+    asset.days_of_week.length > 0 || Boolean(asset.start_date) || Boolean(asset.end_date)
+  ));
+  const pool = scheduled.length ? scheduled : eligible;
+  const localDay = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86_400_000);
+  return pool[Math.abs(localDay) % pool.length] ?? pool[0] ?? null;
 }

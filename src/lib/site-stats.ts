@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.01-r21",
-  updateNumber: 21,
-  publishedAt: "2026-09-01T11:55:00+10:00",
-  latestSummary: "鎖定昭梧命理預設協議與紫微七層解釋語法；四化改為作用方式、輔煞改為過程性質，新增來源分級、歲運疊層與身體醫療邊界，並接入紫微專題報告。",
+  version: "ZW-WEB-2026.09.01-r24",
+  updateNumber: 24,
+  publishedAt: "2026-09-01T20:42:00+10:00",
+  latestSummary: "完成 STO-13 B 版收口：背景每日輪播並保留固定／排程優先，多圖逐張進度、最近一張先載與每頁 12 張歷史懶載入，QA 記錄隔離，客戶卡片操作維持手機精簡。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {

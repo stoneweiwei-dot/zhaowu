@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
@@ -6,6 +6,25 @@ import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
+import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
+
+const BUILTIN_WALLPAPER = "/wallpaper-song.jpg";
+let dailyWallpaperPromise: Promise<string> | null = null;
+
+function loadDailyWallpaper(force = false) {
+  if (force) dailyWallpaperPromise = null;
+  dailyWallpaperPromise ??= listPublicBackgrounds()
+    .then((assets) => {
+      const selected = chooseDailyBackground(assets);
+      return selected ? backgroundPublicUrl(selected.storage_path) : BUILTIN_WALLPAPER;
+    })
+    .catch(() => BUILTIN_WALLPAPER);
+  return dailyWallpaperPromise;
+}
+
+function wallpaperCssValue(url: string | null) {
+  return url ? `url(${JSON.stringify(url)})` : "none";
+}
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -34,6 +53,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const isHome = pathname === "/";
   const isLogin = pathname === "/login";
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
+  const [wallpaperUrl, setWallpaperUrl] = useState<string | null>(null);
 
   useEffect(() => {
     hydrateLocale();
@@ -52,10 +72,34 @@ export function SiteShell({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    let alive = true;
+    const refreshWallpaper = (force = false) => {
+      void loadDailyWallpaper(force).then((url) => {
+        if (alive) setWallpaperUrl(url);
+      });
+    };
+
+    refreshWallpaper();
+    const onBackgroundChange = () => refreshWallpaper(true);
+    window.addEventListener("zhaowu-background-change", onBackgroundChange);
+    return () => {
+      alive = false;
+      window.removeEventListener("zhaowu-background-change", onBackgroundChange);
+    };
+  }, []);
+
   const releaseDate = formatReleaseDate(stats.publishedAt, locale);
+  const wallpaperStyle = {
+    "--zhaowu-wallpaper-url": wallpaperCssValue(wallpaperUrl),
+  } as CSSProperties;
 
   return (
-    <div className={`relative isolate min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"}`}>
+    <div
+      className={`zhaowu-has-wallpaper relative isolate min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"}`}
+      style={wallpaperStyle}
+      data-daily-wallpaper={wallpaperUrl ? "ready" : "loading"}
+    >
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">
           <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
