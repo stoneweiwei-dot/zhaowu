@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.02-r26",
-  updateNumber: 26,
-  publishedAt: "2026-09-01T15:59:35.450227+00:00",
-  latestSummary: "恢復舊宣紙梧桐蓮池動畫：雙生並蒂蓮由含苞至盛開、天花交錯飄落；載入備援也使用同一原片畫面，保留三秒進站與宋畫首頁。",
+  version: "ZW-WEB-2026.09.02-r27",
+  updateNumber: 27,
+  publishedAt: "2026-09-01T16:27:16.750277+00:00",
+  latestSummary: "恢復米色宣紙與松綠按鈕；問題置頂、登入回八字、顯示四柱命盤與三語細項。吉祥圖每次換一張、文章只展開一篇並取消瀏覽數；命象按盤面配圖並附理由，修正節氣邊界重複套用真太陽時。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {

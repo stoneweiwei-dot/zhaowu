@@ -59,7 +59,7 @@ test("same birth data produces the same character panel", () => {
 test("result view mounts the character panel beside decree delivery", () => {
   const resultView = readFileSync(new URL("../src/components/result-view.tsx", import.meta.url), "utf8");
   assert.match(resultView, /import \{ CharacterPanel \}/);
-  assert.match(resultView, /<CharacterPanel chart=\{chart\} portraitUrl=\{imageUrl\} \/>/);
+  assert.match(resultView, /<CharacterPanel chart=\{chart\} question=\{question\} portraitUrl=\{imageUrl\}/);
 });
 
 const { buildPortraitPanelSvg } = await import("../src/lib/report/character-panel-card.ts");
@@ -99,7 +99,8 @@ test("generic character panel visual contract stores Song Huizong art direction 
 test("generic character panel applies a second tea-art gate before gallery ranking", () => {
   const component = readFileSync(new URL("../src/components/character-panel.tsx", import.meta.url), "utf8");
   assert.match(component, /isCharacterPanelVisualEligible/);
-  assert.match(component, /rows\.filter/);
-  assert.match(component, /storage_path: asset\.storage_path/);
+  const selection = readFileSync(new URL("../src/lib/report/personal-art.ts", import.meta.url), "utf8");
+  assert.match(selection, /rows\.filter/);
+  assert.match(selection, /storage_path:asset\.storage_path/);
   assert.match(component, /9:16/);
 });

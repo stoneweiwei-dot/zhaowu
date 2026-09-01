@@ -38,7 +38,7 @@ function LoginPage() {
   }, [reload, t]);
 
   useEffect(() => {
-    if (user) void navigate({ to: "/account" });
+    if (user) void navigate({ to: "/" });
   }, [navigate, user]);
 
   function onOAuth(provider: "google" | "apple") {
@@ -71,13 +71,13 @@ function LoginPage() {
       if (mode === "signin") {
         await signInWithPassword(email.trim(), password);
         await reload();
-        await navigate({ to: "/account" });
+        await navigate({ to: "/" });
         return;
       }
       const { session } = await signUpWithPassword(email.trim(), password, displayName.trim());
       if (session) {
         await reload();
-        await navigate({ to: "/account" });
+        await navigate({ to: "/" });
         return;
       }
       // Some Supabase projects require one email confirmation after account creation.

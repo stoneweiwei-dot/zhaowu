@@ -56,7 +56,7 @@ const TABLE = {
   chong: ["沖", "冲"],
   sha: ["煞", "煞"],
   lunar: ["農曆", "农历"],
-  formTitle: ["你的命盤資訊", "你的命盘信息"],
+  formTitle: ["四柱八字", "四柱八字"],
   formLead: [
     "填出生證明上的日期、時間和城市，其餘交給系統。",
     "填出生证明上的日期、时间和城市，其余交给系统。",
@@ -327,7 +327,7 @@ const EN: Record<CopyKey, string> = {
   chong: "Clash",
   sha: "Direction",
   lunar: "Lunar date",
-  formTitle: "Your chart details",
+  formTitle: "Four Pillars of Destiny",
   formLead:
     "Enter the date, time and city shown on your birth record. The system handles the rest.",
   question: "What do you most want to know right now?",

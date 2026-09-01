@@ -29,29 +29,6 @@
   background-color: #fbf5e9 !important;
 }
 
-.zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-heading h2 {
-  font-size: 0 !important;
-  line-height: 0 !important;
-}
-
-.zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-heading h2::after {
-  content: "人生試卷";
-  color: #29251f;
-  font-family: var(--font-display, "Songti TC", "PMingLiU", serif);
-  font-size: 1.45rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  line-height: 1.3;
-}
-
-html[lang="zh-Hans"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-heading h2::after {
-  content: "人生试卷";
-}
-
-html[lang="en"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-heading h2::after {
-  content: "Life paper";
-}
-
 .zhaowu-quiz-sheet:not(.is-compact)::after {
   position: absolute;
   top: 14px;

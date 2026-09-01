@@ -7,7 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { CharacterPanel } from "@/components/character-panel";
-import { DecreeGalleryPreview } from "@/components/decree-gallery-preview";
+import { BaziChart } from "@/components/bazi-chart";
 import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/report/decree-image";
@@ -170,9 +170,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <blockquote className="mx-auto max-w-sm whitespace-pre-line text-center font-display text-lg leading-8 tracking-[0.08em] text-ink">{decreeCouplet}</blockquote>
       </article>
 
-      <CharacterPanel chart={chart} portraitUrl={imageUrl} />
+      <BaziChart chart={chart} />
+      <CharacterPanel chart={chart} question={question} portraitUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={user ? () => void onImage() : undefined} generating={busy === "image"} onImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />
 
-      {user ? <DecreeGalleryPreview chart={chart} question={question} busy={busy === "image"} generatedImageUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={() => void onImage()} onGeneratedImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} /> : null}
+
 
       <div className="zhaowu-result-actions flex flex-col gap-3">
         <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">{busy === "full" ? copy.fullGenerating : copy.fullGenerate}</button>

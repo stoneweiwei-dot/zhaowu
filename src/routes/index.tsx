@@ -103,13 +103,7 @@ function Home() {
 
   return (
     <main className="zhaowu-home-sheet-page space-y-7 sm:space-y-12">
-      <HomeScreenInstallPrompt />
-      <section className="zhaowu-home-intro" aria-label={t("heroKicker")}>
-        <p className="zhaowu-home-intro-kicker">ZHAOWU · {locale === "en" ? "LIFE QUIZ" : locale === "zh-Hans" ? "人生测验" : "人生測驗"}</p>
-        <h1 className="zhaowu-home-quiz-title">{locale === "en" ? "Hand in the paper. Read the answer." : "交卷，先看答案"}</h1>
-        <p className="zhaowu-home-intro-quiz">{locale === "en" ? "Write the question you actually want answered. The direct answer comes first; the full report is generated after." : locale === "zh-Hans" ? "把真正想问的事直接写下。交卷后立刻给结论，再生成完整报告。" : "把真正想問的事直接寫下。交卷後立刻給結論，再生成完整報告。"}</p>
-      </section>
-      <section className="relative" aria-label={t("formTitle")}><AnalysisForm /></section>
+      <section id="bazi" className="relative" aria-label={t("formTitle")}><AnalysisForm /></section>
       {current ? <ResultView result={current} /> : null}
       {current ? <FollowUpBox result={current} /> : null}
 
@@ -138,6 +132,7 @@ function Home() {
       </section>
       <AuspiciousGallerySection />
       <LifeViewSection />
+      <HomeScreenInstallPrompt />
     </main>
   );
 }

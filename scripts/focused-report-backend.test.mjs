@@ -67,5 +67,5 @@ test("background assets remain manageable without overriding the restored applic
   assert.ok(main.indexOf("visual-readability-lock-v4.css") < main.indexOf("home-sheet-ui-v5.css"));
   assert.match(finalHome, /\.zhaowu-home-sheet-shell \.zhaowu-site-wallpaper/);
   assert.match(finalHome, /display:\s*none\s*!important/);
-  assert.match(finalHome, /url\("\/wallpaper-song\.jpg"\)/);
+  assert.match(finalHome, /radial-gradient/);
 });

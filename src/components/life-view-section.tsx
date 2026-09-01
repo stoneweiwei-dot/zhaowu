@@ -1,10 +1,9 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { LIFE_VIEW_ARTICLES } from "@/lib/life-view";
 import { LIFE_VIEW_FILE_ARTICLES } from "@/lib/life-view-from-files";
 import { LIFE_VIEW_PRACTICE_ARTICLES } from "@/lib/life-view-practice-manual";
 import { LIFE_VIEW_20260831_ARTICLES } from "@/lib/life-view-20260831";
-import { fetchLifeViewCounts, incrementLifeViewCount, type LifeViewCounts } from "@/lib/life-view-views";
 
 const ARTICLES = [
   ...LIFE_VIEW_20260831_ARTICLES,
@@ -35,13 +34,6 @@ function fragmentIndexes(paragraphCount: number) {
   const first = 1;
   const second = Math.max(3, Math.floor(paragraphCount * 0.62));
   return second < paragraphCount && second !== first ? [first, second] : [first];
-}
-
-function formatViews(value: number, locale: Locale) {
-  return new Intl.NumberFormat(locale === "en" ? "en-AU" : locale === "zh-Hant" ? "zh-Hant" : "zh-Hans", {
-    notation: value >= 10000 ? "compact" : "standard",
-    maximumFractionDigits: 1,
-  }).format(value);
 }
 
 /**
@@ -112,15 +104,7 @@ const ARTICLE_ART: Record<string, ArticleArt> = {
 
 export function LifeViewSection() {
   const { locale } = useI18n();
-  const [viewCounts, setViewCounts] = useState<LifeViewCounts>({});
-
-  useEffect(() => {
-    let cancelled = false;
-    void fetchLifeViewCounts().then((counts) => {
-      if (!cancelled) setViewCounts(counts);
-    });
-    return () => { cancelled = true; };
-  }, []);
+  const [openId, setOpenId] = useState<string | null>(ARTICLES[0]?.id ?? null);
 
   const copy = useMemo(() => {
     if (locale === "en") {
@@ -130,7 +114,6 @@ export function LifeViewSection() {
         lead: "Events leave traces; people act from causes. See the pattern, know the timing.",
         empty: "Articles will be added here over time.",
         open: "Read",
-        views: "views",
       };
     }
     if (locale === "zh-Hans") {
@@ -140,7 +123,6 @@ export function LifeViewSection() {
         lead: "世事有迹，人心有因；见其势，知其时。",
         empty: "文章会在这里持续更新。",
         open: "阅读全文",
-        views: "浏览",
       };
     }
     return {
@@ -149,17 +131,8 @@ export function LifeViewSection() {
       lead: "世事有跡，人心有因；見其勢，知其時。",
       empty: "文章會在這裡持續更新。",
       open: "閱讀全文",
-      views: "瀏覽",
     };
   }, [locale]);
-
-  function onArticleToggle(articleId: string, open: boolean) {
-    if (!open) return;
-    void incrementLifeViewCount(articleId).then((next) => {
-      if (next === null) return;
-      setViewCounts((current) => ({ ...current, [articleId]: next }));
-    });
-  }
 
   return (
     <section
@@ -181,34 +154,22 @@ export function LifeViewSection() {
             const art = ARTICLE_ART[article.id];
             const paragraphs = article.body[locale].split(/\n\n+/);
             const artIndexes = fragmentIndexes(paragraphs.length);
-            const views = viewCounts[article.id] ?? 0;
 
             return (
               <details
                 key={article.id}
                 className="group py-5"
-                onToggle={(event) => onArticleToggle(article.id, event.currentTarget.open)}
+                open={openId === article.id}
               >
-                <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                  <div className="flex items-start gap-4">
-                    <div className="min-w-0 flex-1">
-                      <time className="text-[10px] tracking-[0.16em] text-ink-mute" dateTime={article.publishedAt}>
-                        {article.publishedAt}
-                      </time>
-                      <div className="mt-1 flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
-                        <h3 className="min-w-0 font-display text-lg leading-7 text-ink">{article.title[locale]}</h3>
-                        <span className="shrink-0 whitespace-nowrap text-[10px] tracking-[0.06em] text-ink-mute" aria-label={`${views} ${copy.views}`}>
-                          ◉ {formatViews(views, locale)} {copy.views}
-                        </span>
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-ink-soft">{article.summary[locale]}</p>
-                    </div>
-                    <span className="shrink-0 pt-5 text-xs text-cinnabar group-open:hidden">{copy.open} ＋</span>
-                    <span className="hidden shrink-0 pt-5 text-xs text-cinnabar group-open:inline">−</span>
+                <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden" onClick={(event) => { event.preventDefault(); setOpenId(openId === article.id ? null : article.id); }}>
+                  <div className="flex items-center justify-between gap-4">
+                    <h3 className="min-w-0 font-display text-lg font-semibold leading-7 text-ink">{article.title[locale]}</h3>
+                    <span aria-hidden className="shrink-0 text-cinnabar">{openId === article.id ? "−" : "+"}</span>
                   </div>
                 </summary>
 
                 <div className="life-view-prose mt-5 border-l border-cinnabar/25 pl-4 text-[15px] leading-8 text-ink">
+                  <time className="mb-3 block text-sm text-ink-mute" dateTime={article.publishedAt}>{article.publishedAt}</time>
                   {paragraphs.map((paragraph, index) => {
                     const fragmentOffset = artIndexes.indexOf(index);
                     const crop = fragmentOffset >= 0 ? stableCrop(article.id, fragmentOffset) : null;

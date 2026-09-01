@@ -89,8 +89,8 @@ test("Gallery match is visible at the decree action instead of appearing only af
     read("src/components/decree-gallery-preview.tsx"),
     read("src/components/decree-image-reason.tsx"),
   ]);
-  assert.match(resultView, /<DecreeGalleryPreview/);
-  assert.match(resultView, /generatedImageUrl=\{imageUrl\}/);
+  assert.match(resultView, /<CharacterPanel/);
+  assert.match(resultView, /portraitUrl=\{imageUrl\}/);
   assert.doesNotMatch(resultView, /<CustomerStandardArt/);
   assert.match(resultView, /reportSections \? <FocusedReportSections/);
   assert.match(preview, /loadCustomerGalleryCandidates/);

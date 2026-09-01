@@ -9,8 +9,8 @@ async function source(path) {
 
 test("homepage is a customer-facing entry without a duplicate giant brand hero", async () => {
   const home = await source("src/routes/index.tsx");
-  assert.match(home, /zhaowu-home-intro/);
-  assert.match(home, /heroKicker/);
+  assert.doesNotMatch(home, /zhaowu-home-intro/);
+  assert.match(home, /id="bazi"/);
   assert.match(home, /<AnalysisForm \/>/);
   assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section/);
   assert.doesNotMatch(home, /zhaowu-home-hero/);
@@ -97,7 +97,7 @@ test("tea guardian stays separate from the homepage, report and personal decree 
 test("free decree text remains available when image generation fails", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const decreePosition = resultView.indexOf("{decreeCouplet}");
-  const imagePosition = resultView.indexOf("<DecreeGalleryPreview");
+  const imagePosition = resultView.indexOf("<CharacterPanel");
   assert.ok(decreePosition >= 0, "free decree text must be rendered");
   assert.ok(
     imagePosition > decreePosition,

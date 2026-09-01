@@ -58,7 +58,7 @@ test("customer shell keeps gallery posters out of the restored Song landscape", 
   assert.doesNotMatch(shell, /chooseDailyBackground/);
   assert.doesNotMatch(shell, /dailyWallpaperPromise/);
   assert.doesNotMatch(shell, /--zhaowu-wallpaper-url/);
-  assert.match(sheet, /url\("\/wallpaper-song\.jpg"\)/);
+  assert.match(sheet, /radial-gradient/);
   assert.doesNotMatch(sheet, /background-attachment:\s*fixed/);
 });
 

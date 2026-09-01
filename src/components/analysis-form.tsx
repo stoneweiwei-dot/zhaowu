@@ -1,10 +1,13 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { analyzeLife } from "@/lib/actions";
 import type { AnalyzeInput, CityHit } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { createEngineReportRecord, updateBirthData } from "@/lib/supabase-rest";
+import { buildChart } from "@/lib/bazi/chart";
+import { UNKNOWN_TIME_COPY } from "@/lib/bazi/presentation";
+import { BaziChart } from "@/components/bazi-chart";
 import { CityPicker } from "@/components/city-picker";
 
 function asCity(value: unknown): CityHit | null {
@@ -76,6 +79,14 @@ export function AnalysisForm() {
     setDetailsOpen(!current);
   }, [current?.id]);
 
+  const previewChart = useMemo(() => {
+    if (current || !birthCity || !year || !month || !day || (!timeUnknown && !hour)) return null;
+    const y=Number(year), m=Number(month), d=Number(day), h=Number(hour), min=Number(minute || 0);
+    const date=new Date(Date.UTC(y,m-1,d));
+    if (y<1900 || y>2100 || date.getUTCFullYear()!==y || date.getUTCMonth()!==m-1 || date.getUTCDate()!==d || !Number.isInteger(h) || !Number.isInteger(min) || (!timeUnknown && (h<0 || h>23 || min<0 || min>59))) return null;
+    try { return buildChart({question,locale,year:y,month:m,day:d,hour:timeUnknown?12:h,minute:timeUnknown?0:min,timeUnknown,gender,relation,city:birthCity,liveCity,ziPolicy:"midnight",useTrueSolar:true}); } catch { return null; }
+  }, [current,birthCity,year,month,day,hour,minute,timeUnknown,gender,relation,liveCity,locale]);
+
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -127,6 +138,7 @@ export function AnalysisForm() {
   }
 
   return (
+    <>
     <section id="analysisForm" className={`zhaowu-quiz-sheet seal-border rounded-xl bg-cream/95 p-5 sm:p-7 ${compact ? "is-compact" : ""}`}>
       <div className="zhaowu-analysis-heading">
         <div>
@@ -156,8 +168,6 @@ export function AnalysisForm() {
       {!compact && remembered ? <p className="mt-2 text-xs text-wood">{t("remembered")}</p> : null}
 
       <form className={compact ? "zhaowu-analysis-compact-form" : "mt-6 space-y-6"} onSubmit={(e) => void submit(e)}>
-        {!compact ? (
-          <div className="zhaowu-analysis-core zhaowu-quiz-paper space-y-6">
             <div className="zhaowu-quiz-block">
               <label htmlFor="analysis-question" className="zhaowu-quiz-legend mb-2 block">
                 <em>01</em>
@@ -166,6 +176,9 @@ export function AnalysisForm() {
               <textarea id="analysis-question" value={question} maxLength={400} rows={3} required placeholder={t("qPh")} className="w-full resize-y rounded-md border border-line bg-cream px-4 py-3 text-base leading-7 outline-none transition focus:border-cinnabar" onChange={(e) => setQuestion(e.target.value)} />
               <p className="mt-1 text-right text-xs text-ink-mute">{question.length}/400</p>
             </div>
+
+        {!compact ? (
+          <div className="zhaowu-analysis-core zhaowu-quiz-paper space-y-6">
             <div className="zhaowu-quiz-block">
               <p className="zhaowu-quiz-legend">
                 <em>02</em>
@@ -187,10 +200,11 @@ export function AnalysisForm() {
                 <div className="grid gap-3 sm:flex sm:items-center sm:justify-between sm:gap-4">
                   <p className="text-sm text-ink-soft">{t("time")}</p>
                   <label htmlFor="time-unknown" className="flex min-h-11 items-center gap-2 text-xs leading-5 text-ink-mute">
-                    <input id="time-unknown" type="checkbox" checked={timeUnknown} onChange={(e) => setTimeUnknown(e.target.checked)} />
+                    <input id="time-unknown" aria-describedby="time-importance" type="checkbox" checked={timeUnknown} onChange={(e) => setTimeUnknown(e.target.checked)} />
                     {t("timeUnknown")}
                   </label>
                 </div>
+                <p id="time-importance" className="zhaowu-time-warning">{UNKNOWN_TIME_COPY[locale]}</p>
                 <div className="mt-3 grid grid-cols-2 gap-3">
                   <input id="birth-hour" aria-label={t("hourPh")} type="number" inputMode="numeric" min={0} max={23} required={!timeUnknown} disabled={timeUnknown} value={hour} placeholder={t("hourPh")} onChange={(e) => setHour(e.target.value)} className="h-12 min-w-0 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar" />
                   <input id="birth-minute" aria-label={t("minutePh")} type="number" inputMode="numeric" min={0} max={59} disabled={timeUnknown} value={minute} placeholder={t("minutePh")} onChange={(e) => setMinute(e.target.value)} className="h-12 min-w-0 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar" />
@@ -220,25 +234,14 @@ export function AnalysisForm() {
           </div>
         ) : null}
 
+        {!compact ? <>
         <div className={compact ? "zhaowu-analysis-cities" : "space-y-6"}>
           <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} onSelect={setBirthCity} />
           <CityPicker id="current-city" label={t("liveCity")} placeholder={t("liveCity")} optional optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={liveCity} onSelect={setLiveCity} />
           {!compact ? <p className="-mt-4 text-xs leading-5 text-ink-mute">{t("liveHint")}</p> : null}
         </div>
 
-        {compact ? (
-          <div className="zhaowu-analysis-settings" aria-label={locale === "en" ? "Time calculation settings" : "時間換算設定"}>
-            <span>
-              <b aria-hidden>✓</b>
-              <span>{compactCopy.solar}</span>
-              <i aria-hidden>i</i>
-            </span>
-            <span>
-              <small>{locale === "en" ? "Day boundary" : t("zi")}</small>
-              <span>{compactCopy.zi}</span>
-            </span>
-          </div>
-        ) : null}
+        </> : null}
 
         {error ? (
           <p role="alert" className="rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm leading-6 text-cinnabar-deep">
@@ -250,5 +253,7 @@ export function AnalysisForm() {
         </button>
       </form>
     </section>
+    {!current && previewChart ? <BaziChart chart={previewChart} /> : null}
+    </>
   );
 }

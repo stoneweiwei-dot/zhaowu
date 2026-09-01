@@ -29,7 +29,7 @@ test("homepage keeps the Song parchment flow and integrates three compact gatewa
   assert.ok(v4 >= 0 && v5 > v4, "home sheet lock must import after readability v4");
 
   assert.match(home, /zhaowu-home-sheet-page/);
-  assert.match(home, /zhaowu-home-intro/);
+  assert.doesNotMatch(home, /zhaowu-home-intro/);
   assert.match(home, /zhaowu-home-portals/);
   assert.doesNotMatch(home, /zhaowu-home-hero/);
   assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian/);
@@ -43,10 +43,10 @@ test("homepage keeps the Song parchment flow and integrates three compact gatewa
 
   assert.match(css, /#analysisForm\.is-compact/);
   assert.match(css, /\.zhaowu-analysis-settings/);
-  assert.match(css, /url\("\/wallpaper-song\.jpg"\)/);
+  assert.match(css, /radial-gradient/);
   assert.match(css, /\.zhaowu-home-sheet-shell \.zhaowu-site-wallpaper/);
-  assert.match(css, /background-size:\s*auto,\s*980px auto/);
-  assert.match(css, /background-repeat: repeat-y/);
+  assert.match(css, /background-size:\s*auto/);
+  assert.match(css, /background-repeat: no-repeat/);
   assert.doesNotMatch(css, /background-attachment:\s*fixed/);
 
   assert.match(portals, /\.zhaowu-home-portals/);

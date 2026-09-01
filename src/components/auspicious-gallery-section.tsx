@@ -3,8 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { galleryPublicUrl, listPublicGalleryAssets, type GalleryAsset } from "@/lib/gallery-assets";
 import { isPublicAtlasAsset } from "@/lib/gallery-groups";
 import { useI18n } from "@/lib/i18n";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { nextHomepageArt } from "@/lib/rotating-art";
 
-const PREVIEW_VISIBLE = 6;
+const PREVIEW_VISIBLE = 1;
 const FULL_INITIAL_VISIBLE = 24;
 const LOAD_MORE = 24;
 
@@ -12,6 +14,8 @@ type AuspiciousGalleryMode = "preview" | "full";
 
 export function AuspiciousGallerySection({ mode = "preview" }: { mode?: AuspiciousGalleryMode }) {
   const { locale } = useI18n();
+  const { user } = useCurrentUserState();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [assets, setAssets] = useState<GalleryAsset[]>([]);
   const [visibleCount, setVisibleCount] = useState(FULL_INITIAL_VISIBLE);
   const [failedIds, setFailedIds] = useState<Set<string>>(() => new Set());
@@ -23,7 +27,7 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
         eyebrow: "ZHAOWU · SYMBOLIC ATLAS",
         title: "Zhaowu Auspicious Atlas",
         lead: "Sacred, auspicious, feng shui and destiny-themed imagery selected from the Zhaowu visual archive.",
-        previewNote: "A small preview is shown here so the home page stays light and fast.",
+        previewNote: "One artwork, refreshed each time you reload or sign in.",
         fullNote: "Browse the atlas gradually. Tap any image to view the original artwork.",
         card: "Zhaowu symbol",
         mark: "© STONE",
@@ -39,7 +43,7 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
         eyebrow: "昭梧 · 吉象图鉴",
         title: "昭梧吉象图鉴",
         lead: "从昭梧总图库整理出的结缘圣像、吉祥风水、瑞兽与命理意象。",
-        previewNote: "主页只看少量代表图，完整图库放在独立专区，不拖慢分析入口。",
+        previewNote: "一回一幅。刷新页面或重新登入，会换一张吉祥图。",
         fullNote: "完整图鉴分批展开，点开任一图片即可查看原图。",
         card: "昭梧吉象",
         mark: "STONE 原創",
@@ -54,7 +58,7 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
       eyebrow: "昭梧 · 吉象圖鑑",
       title: "昭梧吉象圖鑑",
       lead: "從昭梧總圖庫整理出的結緣聖像、吉祥風水、瑞獸與命理意象。",
-      previewNote: "主頁只看少量代表圖，完整圖庫放在獨立專區，不拖慢分析入口。",
+      previewNote: "一回一幅。刷新頁面或重新登入，會換一張吉祥圖。",
       fullNote: "完整圖鑑分批展開，點開任一圖片即可查看原圖。",
       card: "昭梧吉象",
       mark: "STONE 原創",
@@ -85,8 +89,12 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
     () => assets.filter((asset) => !failedIds.has(asset.id)),
     [assets, failedIds],
   );
+  useEffect(() => {
+    if (mode !== "preview" || !usableAssets.length) return;
+    setSelectedId(nextHomepageArt(usableAssets)?.id ?? null);
+  }, [usableAssets, mode, user?.id]);
   const visibleLimit = mode === "preview" ? PREVIEW_VISIBLE : visibleCount;
-  const visible = usableAssets.slice(0, visibleLimit);
+  const visible = mode === "preview" ? usableAssets.filter((asset) => asset.id === selectedId) : usableAssets.slice(0, visibleLimit);
 
   return (
     <section
@@ -108,7 +116,7 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
       {!loadFailed && !assets.length ? <p className="mt-5 text-sm text-ink-mute">{copy.empty}</p> : null}
 
       {visible.length ? (
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className={mode === "preview" ? "zhaowu-single-art mt-5" : "mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"}>
           {visible.map((asset) => {
             const imageUrl = galleryPublicUrl(asset.storage_path, asset.bucket_id);
             return (

@@ -16,7 +16,7 @@ test("home keeps a compact mixed atlas preview while the full public atlas has i
   assert.match(home, /AuspiciousGallerySection/);
   assert.match(home, /<AuspiciousGallerySection\s*\/\>/);
   assert.match(atlas, /mode = "preview"/);
-  assert.match(atlas, /PREVIEW_VISIBLE = 6/);
+  assert.match(atlas, /PREVIEW_VISIBLE = 1/);
   assert.match(atlas, /FULL_INITIAL_VISIBLE = 24/);
   assert.match(atlas, /to="\/auspicious-atlas"/);
   assert.match(atlasRoute, /createFileRoute\("\/auspicious-atlas"\)/);

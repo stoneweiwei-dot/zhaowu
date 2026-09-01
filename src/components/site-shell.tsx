@@ -68,7 +68,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </Link>
             <nav className="flex shrink-0 items-center gap-1 text-sm">
               <Link to="/" className={`hidden rounded-full px-2.5 py-2 min-[520px]:inline ${pathname === "/" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
-                {t("navHome")}
+                {user ? (locale === "en" ? "BaZi" : "四柱八字") : t("navHome")}
               </Link>
               {user ? (
                 <Link to="/account" className={`hidden rounded-full px-2 py-2 min-[380px]:inline-flex ${pathname === "/account" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>

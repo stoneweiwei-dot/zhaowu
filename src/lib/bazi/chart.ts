@@ -152,8 +152,11 @@ export function buildChart(input: AnalyzeInput): Chart {
   let h = timeUnknown ? 12 : input.hour;
   let min = timeUnknown ? 0 : input.minute;
 
-  const birthLocal = new Date(y, m - 1, d, h, min, 0);
-  const tzOff = timezoneOffsetHours(input.city.timezone, birthLocal);
+  // Resolve civil time without depending on the browser/server's own timezone.
+  const civilUtc = Date.UTC(y, m - 1, d, h, min);
+  let tzOff = timezoneOffsetHours(input.city.timezone, new Date(civilUtc));
+  tzOff = timezoneOffsetHours(input.city.timezone, new Date(civilUtc - tzOff * 3_600_000));
+  const instant = civilToUtc(y, m, d, h, min, tzOff);
   let shiftMinutes = 0;
   let usedTrueSolar = false;
 
@@ -181,7 +184,8 @@ export function buildChart(input: AnalyzeInput): Chart {
   const dayGz = dayGanzhi(y, m, d);
   const timeGz = timeUnknown ? "" : hourPillar(dayGz, h);
 
-  const instant = civilToUtc(y, m, d, h, min, tzOff);
+  // Solar terms are astronomical instants; longitude/equation-of-time correction
+  // changes the local day/hour clock, never the instant used for year/month or luck onset.
   const ym = yearMonthPillars(instant);
 
   const dayStem = dayGz[0];

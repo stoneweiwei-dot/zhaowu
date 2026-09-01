@@ -1,201 +1,31 @@
-import { useEffect, useState } from "react";
-import type { Chart } from "@/lib/bazi/types";
-import { useI18n, type Locale } from "@/lib/i18n";
-import { loadCustomerGalleryCandidates, rankCustomerGalleryArt } from "@/lib/gallery-match";
-import {
-  DAO_ARTS,
-  FO_ARTS,
-  PANEL_ATTRS,
-  WU_ARTS,
-  buildCharacterPanel,
-  isActiveArt,
-  type ArtKey,
-  type MethodSchool,
-  type PanelAttr,
-} from "@/lib/report/character-panel";
-import {
-  artRows,
-  attrLabel,
-  downloadCharacterPanelImage,
-  panelCaptions,
-  radarVertex,
-  schoolCaption,
-} from "@/lib/report/character-panel-card";
-import { isCharacterPanelVisualEligible } from "@/lib/report/character-panel-visual-contract";
+import { useEffect, useMemo, useState } from 'react';
+import type { Chart } from '@/lib/bazi/types';
+import { useI18n } from '@/lib/i18n';
+import { characterFacts, chartTerm } from '@/lib/bazi/presentation';
+import { loadCustomerGalleryCandidates, type CustomerGalleryArt } from '@/lib/gallery-match';
+import { isCharacterPanelVisualEligible } from '@/lib/report/character-panel-visual-contract';
+import { rankPersonalArt, personalArtReason, downloadPersonalArt } from '@/lib/report/personal-art';
 
-const COPY = {
-  "zh-Hant": {
-    portrait: "為你匹配的宋系人物畫像",
-    empty: "正在按你的命盤匹配宋系人物畫像。",
-    save: "保存這份 9:16 人物屬性圖",
-    saving: "正在製圖…",
-    saved: "9:16 人物屬性圖已保存到此裝置。",
-    failed: "人物屬性圖暫時無法保存，請稍後再試。",
-  },
-  "zh-Hans": {
-    portrait: "为你匹配的宋系人物画像",
-    empty: "正在按你的命盘匹配宋系人物画像。",
-    save: "保存这份 9:16 人物属性图",
-    saving: "正在制图…",
-    saved: "9:16 人物属性图已保存到此装置。",
-    failed: "人物属性图暂时无法保存，请稍后再试。",
-  },
-  en: {
-    portrait: "Song-style portrait matched to this chart",
-    empty: "Matching a Song-style portrait to this chart.",
-    save: "Save this 9:16 character attribute image",
-    saving: "Preparing image…",
-    saved: "The 9:16 character attribute image was saved on this device.",
-    failed: "The character attribute image could not be saved right now.",
-  },
-} as const;
-
-const SCHOOL_MARK: Record<MethodSchool, Record<Locale, string>> = {
-  dao: { "zh-Hant": "道", "zh-Hans": "道", en: "Dao" },
-  fo: { "zh-Hant": "佛", "zh-Hans": "佛", en: "Fo" },
-  wu: { "zh-Hant": "巫", "zh-Hans": "巫", en: "Wu" },
-};
-
-function radarPoints(scores: Record<PanelAttr, number>, cx: number, cy: number, r: number) {
-  return PANEL_ATTRS.map((key, index) => {
-    const point = radarVertex(index, cx, cy, (scores[key] / 10) * r);
-    return `${point.x},${point.y}`;
-  }).join(" ");
-}
-
-function ringPoints(cx: number, cy: number, r: number) {
-  return PANEL_ATTRS.map((_, index) => {
-    const point = radarVertex(index, cx, cy, r);
-    return `${point.x},${point.y}`;
-  }).join(" ");
-}
-
-export function CharacterPanel({
-  chart,
-  portraitUrl,
-}: {
-  chart: Chart;
-  portraitUrl?: string | null;
-}) {
-  const { locale } = useI18n();
-  const copy = COPY[locale];
-  const panel = buildCharacterPanel(chart);
-  const arts = artRows(locale);
-  const captions = panelCaptions(locale);
-  const initialPortrait = portraitUrl && isCharacterPanelVisualEligible({ storage_path: portraitUrl }) ? portraitUrl : null;
-  const [faceUrl, setFaceUrl] = useState<string | null>(initialPortrait);
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (portraitUrl && isCharacterPanelVisualEligible({ storage_path: portraitUrl })) {
-      setFaceUrl(portraitUrl);
-      return;
-    }
-    let live = true;
-    void loadCustomerGalleryCandidates()
-      .then((rows) => rows.filter(({ asset, knowledge }) => isCharacterPanelVisualEligible({
-        category: asset.category,
-        asset_key: asset.asset_key,
-        title: asset.title,
-        storage_path: asset.storage_path,
-        summary: knowledge.summary,
-        subject_labels: knowledge.subject_labels,
-        motifs: knowledge.motifs,
-        use_roles: knowledge.use_roles,
-      })))
-      .then((rows) => rankCustomerGalleryArt(chart, rows)[0]?.imageUrl ?? null)
-      .then((url) => {
-        if (live && url && isCharacterPanelVisualEligible({ storage_path: url })) setFaceUrl(url);
-        else if (live) setFaceUrl(null);
-      })
-      .catch(() => {
-        if (live) setFaceUrl(null);
-      });
-    return () => { live = false; };
-  }, [chart, portraitUrl]);
-
-  async function onSaveImage() {
-    setBusy(true);
-    setMsg(null);
-    try {
-      await downloadCharacterPanelImage(panel, locale, faceUrl);
-      setMsg(copy.saved);
-    } catch {
-      setMsg(copy.failed);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  function artClass(key: ArtKey) {
-    return isActiveArt(panel.artScores[key]) ? "is-active" : undefined;
-  }
-
-  return (
-    <article className="zhaowu-character-panel seal-border" aria-labelledby="zhaowu-character-panel-title">
-      <div className="zhaowu-character-sheet">
-        <div className="zhaowu-character-left">
-          <figure className="zhaowu-character-portrait">
-            {faceUrl ? (
-              <img src={faceUrl} alt={copy.portrait} />
-            ) : (
-              <figcaption>{copy.empty}</figcaption>
-            )}
-          </figure>
-          <table className="zhaowu-character-arts">
-            <tbody>
-              <tr className={panel.school === "dao" ? "is-school" : undefined}>
-                {arts.dao.map((art, index) => <th key={art} className={artClass(DAO_ARTS[index])}>{art}</th>)}
-              </tr>
-              <tr className={panel.school === "fo" ? "is-school" : undefined}>
-                {arts.fo.map((art, index) => <td key={art} className={artClass(FO_ARTS[index])}>{art}</td>)}
-              </tr>
-              <tr className={panel.school === "wu" ? "is-school" : undefined}>
-                {arts.wu.map((art, index) => <td key={art} className={artClass(WU_ARTS[index])}>{art}</td>)}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div className="zhaowu-character-right">
-          <header className="zhaowu-character-nameblock">
-            <h3 id="zhaowu-character-panel-title">{panel.title}</h3>
-            <p>{schoolCaption(panel.school, locale)} · {panel.dayMaster} · {SCHOOL_MARK[panel.school][locale]}</p>
-          </header>
-          <svg className="zhaowu-character-radar" viewBox="0 0 280 280" role="img" aria-label={captions[0]}>
-            <polygon className="zhaowu-character-radar-ring" points={ringPoints(140, 140, 92)} />
-            <polygon className="zhaowu-character-radar-fill" points={radarPoints(panel.scores, 140, 140, 92)} />
-            {PANEL_ATTRS.map((key, index) => {
-              const pos = radarVertex(index, 140, 140, 118);
-              return (
-                <text key={key} x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle">
-                  {attrLabel(key, locale)}
-                </text>
-              );
-            })}
-          </svg>
-          <table className="zhaowu-character-scores">
-            <thead>
-              <tr>{PANEL_ATTRS.map((key) => <th key={key}>{attrLabel(key, locale)}</th>)}</tr>
-            </thead>
-            <tbody>
-              <tr>{PANEL_ATTRS.map((key) => <td key={key}>{panel.scores[key]}</td>)}</tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="zhaowu-character-notes">
-        {captions.map((line) => <p key={line}>{line}</p>)}
-      </div>
-
-      <div className="zhaowu-character-actions">
-        <button type="button" className="zhaowu-character-save" disabled={busy} onClick={() => void onSaveImage()}>
-          {busy ? copy.saving : copy.save}
-        </button>
-        {msg ? <p className="zhaowu-character-msg">{msg}</p> : null}
-      </div>
-    </article>
-  );
+export function CharacterPanel({chart,question='',portraitUrl,selectedAssetId,onGenerate,generating=false,onImageError}:{chart:Chart;question?:string;portraitUrl?:string|null;selectedAssetId?:string|null;onGenerate?:()=>void;generating?:boolean;onImageError?:()=>void}) {
+  const {locale}=useI18n();const en=locale==='en',hans=locale==='zh-Hans';
+  const [matches,setMatches]=useState<CustomerGalleryArt[]>([]);
+  const [loading,setLoading]=useState(true);const [busy,setBusy]=useState(false);const [message,setMessage]=useState('');const [failed,setFailed]=useState<string[]>([]);
+  useEffect(()=>{let active=true;setLoading(true);setMatches([]);setFailed([]);
+    void loadCustomerGalleryCandidates().then(rows=>{if(active)setMatches(rankPersonalArt(chart,rows));}).catch(()=>{}).finally(()=>{if(active)setLoading(false);});
+    return()=>{active=false;};
+  },[chart]);
+  const chosen=useMemo(()=>matches.find(m=>m.asset.id===selectedAssetId&&!failed.includes(m.imageUrl))??matches.find(m=>!failed.includes(m.imageUrl))??null,[matches,selectedAssetId,failed]);
+  const generated=Boolean(portraitUrl && !failed.includes(portraitUrl) && isCharacterPanelVisualEligible({storage_path:portraitUrl}));
+  const src=generated?portraitUrl:chosen?.imageUrl;
+  const title=chartTerm(chart.pillars.find(p=>p.key==='day')?.nayin??'',locale);
+  const generatedReason=en?'This image brings together the birth-chart setting and the question in this report. It is a symbolic interpretation, not a likeness or a confirmed spiritual identity.':hans?'这张图把本次出生盘面与所问之事收进一个画面，作为命局的象征性表达；不代表真实长相，也不认定宗教身份。':'這張圖把本次出生盤面與所問之事收進一個畫面，作為命局的象徵性表達；不代表真實長相，也不認定宗教身份。';
+  const reason=generated?generatedReason:chosen?personalArtReason(chart,question,chosen,locale):'';
+  async function save(){if(!src)return;setBusy(true);setMessage('');try{await downloadPersonalArt(chart,locale,src,reason);setMessage(en?'Image download started.':hans?'已开始下载图片。':'已開始下載圖片。');}catch{setMessage(en?'The image could not be saved. Please try again.':hans?'图片暂时无法保存，请重试。':'圖片暫時無法保存，請重試。');}finally{setBusy(false);}}
+  return <article className="zhaowu-personal-art seal-border" aria-label={en?'Your chart in an image':'你的命象'}>
+    <header><p className="zhaowu-section-kicker">ZHAOWU · {en?'YOUR IMAGE':'命象'}</p><h2>{title}</h2></header>
+    <dl className="zhaowu-facts">{characterFacts(chart,locale).map(([key,value])=><div key={key}><dt>{key}</dt><dd>{value}</dd></div>)}</dl>
+    {src?<figure><img src={src} alt={en?'Artwork accompanying your chart':hans?'与本次命盘相应的画作':'與本次命盤相應的畫作'} loading="lazy" onError={()=>{setFailed(old=>[...old,src]);if(generated)onImageError?.();}}/><figcaption><h3>{en?'Why this image':hans?'为什么是这张图':'為什麼是這張圖'}</h3><p>{reason}</p></figcaption></figure>:<p>{loading?(en?'Finding an image for your chart…':hans?'正在为你的命盘选图…':'正在為你的命盤選圖…'):(en?'No suitable image is available right now. Your chart and reading remain available.':hans?'暂时没有可用的合适图片，命盘与文字报告仍可阅读。':'暫時沒有可用的合適圖片，命盤與文字報告仍可閱讀。')}</p>}
+    <div className="zhaowu-personal-art-actions">{onGenerate?<button type="button" disabled={generating} onClick={onGenerate}>{generating?(en?'Creating your image…':hans?'正在制作命象…':'正在製作命象…'):(en?'Create my personal image':hans?'制作我的专属命象':'製作我的專屬命象')}</button>:null}{src?<button type="button" disabled={busy} onClick={()=>void save()}>{busy?(en?'Preparing…':hans?'正在准备…':'正在準備…'):(en?'Save image · 9:16':hans?'保存命象 · 9:16':'保存命象 · 9:16')}</button>:null}</div>
+    {message?<p role="status">{message}</p>:null}
+  </article>;
 }
