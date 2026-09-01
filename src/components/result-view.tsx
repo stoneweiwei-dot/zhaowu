@@ -26,7 +26,8 @@ const RESULT_COPY = {
     updateSaved: "更新已保存報告",
     fullGenerate: "查看完整報告",
     fullGenerating: "正在整理完整報告…",
-    imageReady: "個人命詰圖已生成並保存。",
+    imageReady: "個人命象已生成並保存。",
+    imageMatched: "已為你配對並保存圖庫命象。",
     imageLoadFailed: "命詰圖未能載入；文字答案與完整報告不受影響。",
   },
   "zh-Hans": {
@@ -38,7 +39,8 @@ const RESULT_COPY = {
     updateSaved: "更新已保存报告",
     fullGenerate: "查看完整报告",
     fullGenerating: "正在整理完整报告…",
-    imageReady: "个人命诰图已生成并保存。",
+    imageReady: "个人命象已生成并保存。",
+    imageMatched: "已为你配对并保存图库命象。",
     imageLoadFailed: "命诰图未能载入；文字答案与完整报告不受影响。",
   },
   en: {
@@ -51,6 +53,7 @@ const RESULT_COPY = {
     fullGenerate: "View full report",
     fullGenerating: "Preparing your full report…",
     imageReady: "Your personal decree image has been generated and saved.",
+    imageMatched: "Your matched gallery artwork has been saved.",
     imageLoadFailed: "The decree image could not be loaded. Your text answer and full report remain available.",
   },
 } as const;
@@ -148,7 +151,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       const out = await generateDecreeImage(session, reportId, true);
       if (out.signedUrl) setImageUrl(out.signedUrl);
       setImageReferenceAssetId(out.galleryReferenceAssetId ?? null);
-      setMsg(copy.imageReady);
+      setMsg(out.galleryDirect ? copy.imageMatched : copy.imageReady);
     } catch (err) { setMsg(err instanceof Error ? err.message : copy.fullFailed); }
     finally { setBusy(null); }
   }

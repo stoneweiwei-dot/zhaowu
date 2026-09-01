@@ -31,7 +31,7 @@ test('question stays ahead of birth details even after a report, login returns t
  const panel=source('src/components/character-panel.tsx');assert.doesNotMatch(panel,/buildCharacterPanel|radar|artScores|SCHOOL_MARK/);
 });
 const chart=buildChart({question:'What is my direction?',year:1988,month:10,day:4,hour:4,minute:40,timeUnknown:false,gender:'male',relation:'unset',city:{name:'Test',display:'Test',country:'China',latitude:30,longitude:120,timezone:'Asia/Shanghai'},useTrueSolar:true,ziPolicy:'midnight'});
-function row(id,title,key='library-report-art-'+id,scores={wood:5,fire:5,earth:5,metal:5,water:5}){return {asset:{id,title,asset_key:key,category:'visual-library',storage_path:id+'.jpg',bucket_id:'zhaowu-gallery',tags:[],enabled:true},knowledge:{...emptyGalleryKnowledge(id),element_scores:scores}};}
+function row(id,title,key='library-report-art-'+id,scores={wood:5,fire:5,earth:5,metal:5,water:5}){return {asset:{id,title,asset_key:key,category:'visual-library',storage_path:id+'.jpg',bucket_id:'zhaowu-gallery',tags:[],enabled:true},knowledge:{...emptyGalleryKnowledge(id),analysis_status:"approved",subject_labels:[title],element_scores:scores}};}
 test('a documented natal-image affinity wins; absent one the elemental companion varies by chart, never tea or reference sheets',()=>{
  const water=row('water','River',undefined,{wood:0,fire:0,earth:0,metal:0,water:100});
  const fire=row('fire','Fire',undefined,{wood:0,fire:100,earth:0,metal:0,water:0});

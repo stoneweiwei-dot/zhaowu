@@ -15,7 +15,7 @@ export function CharacterPanel({chart,question='',portraitUrl,selectedAssetId,on
     return()=>{active=false;};
   },[chart]);
   const chosen=useMemo(()=>matches.find(m=>m.asset.id===selectedAssetId&&!failed.includes(m.imageUrl))??matches.find(m=>!failed.includes(m.imageUrl))??null,[matches,selectedAssetId,failed]);
-  const generated=Boolean(portraitUrl && !failed.includes(portraitUrl) && isCharacterPanelVisualEligible({storage_path:portraitUrl}));
+  const generated=Boolean(portraitUrl && !portraitUrl.includes('decree-gallery-direct') && !failed.includes(portraitUrl) && isCharacterPanelVisualEligible({storage_path:portraitUrl}));
   const src=generated?portraitUrl:chosen?.imageUrl;
   const title=chartTerm(chart.pillars.find(p=>p.key==='day')?.nayin??'',locale);
   const generatedReason=en?'This image brings together the birth-chart setting and the question in this report. It is a symbolic interpretation, not a likeness or a confirmed spiritual identity.':hans?'这张图把本次出生盘面与所问之事收进一个画面，作为命局的象征性表达；不代表真实长相，也不认定宗教身份。':'這張圖把本次出生盤面與所問之事收進一個畫面，作為命局的象徵性表達；不代表真實長相，也不認定宗教身份。';

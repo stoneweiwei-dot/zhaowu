@@ -145,5 +145,5 @@ test("personal decree images hard-exclude Tea Guardian art in both normal and fa
   const edge = await read("supabase/functions/generate-decree-image/index.ts");
   assert.match(edge, /isPersonalDecreeAsset/);
   assert.match(edge, /category.*tea-guardian/);
-  assert.match(edge, /\.filter\(\(asset: any\) => isPersonalDecreeAsset/);
+  assert.match(edge, /\.filter\(\(\{asset,knowledge\}:any\)=>isPersonalDecreeAsset/);
 });

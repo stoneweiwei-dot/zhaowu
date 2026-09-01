@@ -1,3 +1,4 @@
+import { reviewedPersonalKnowledge } from "../_shared/reviewed-personal-art.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
@@ -6,7 +7,7 @@ import {
   type GuardianStyle,
 } from "./style-pool.ts";
 
-const IMAGE_STYLE_VERSION = "gallery-seeded-song-v8-optional-personalization-20260827";
+const IMAGE_STYLE_VERSION = "gallery-seeded-reviewed-r28-20260902";
 const GALLERY_DIRECT_VERSION = "gallery-direct-v1-20260827";
 const GALLERY_BUCKET = "zhaowu-gallery";
 const REPORT_BUCKET = "zhaowu-report-images";
@@ -139,13 +140,10 @@ function isPersonalDecreeAsset(asset: any, knowledge: any): boolean {
 
 function rankGalleryAssets(assets: any[], knowledgeById: Map<string, any>, chart: any, question: string) {
   return assets
-    .filter((asset: any) => isPersonalDecreeAsset(asset, knowledgeById.get(String(asset.id))))
-    .map((asset: any) => ({
-      asset,
-      knowledge: knowledgeById.get(String(asset.id)),
-      score: relaxedReferenceScore(asset, knowledgeById.get(String(asset.id)), chart, question),
-    }))
-    .sort((a: any, b: any) => b.score - a.score || String(a.asset.id).localeCompare(String(b.asset.id)));
+    .flatMap((asset:any)=>{const knowledge=reviewedPersonalKnowledge(asset,knowledgeById.get(String(asset.id))??{});return knowledge?[{asset,knowledge}]:[];})
+    .filter(({asset,knowledge}:any)=>isPersonalDecreeAsset(asset,knowledge))
+    .map(({asset,knowledge}:any)=>({asset,knowledge,score:relaxedReferenceScore(asset,knowledge,chart,question)}))
+    .sort((a:any,b:any)=>b.score-a.score || String(a.asset.id).localeCompare(String(b.asset.id)));
 }
 
 async function chooseGalleryReference(service: any, chart: any, question: string): Promise<GallerySelection | null> {
@@ -165,10 +163,10 @@ async function chooseGalleryReference(service: any, chart: any, question: string
         .filter(([id]) => Boolean(id)),
     );
 
-    // Rank the whole enabled visual library. Approval and semantic knowledge are quality signals,
-    // not hard gates: a closer Gallery image must be allowed to beat the old four-item approved pool.
+    // Consider the enabled library; personal attribution requires reviewed subjects, not pixel colours.
     const winner = rankGalleryAssets(visualAssets, knowledgeById, chart, question)[0];
-    const knowledge = knowledgeById.get(String(winner.asset.id));
+    if (!winner) return null;
+    const knowledge = winner.knowledge;
     const mode: GallerySelection["mode"] = knowledge?.analysis_status === "approved" && knowledge?.client_eligible === true
       ? "strict"
       : knowledge
@@ -184,7 +182,7 @@ async function chooseGalleryReference(service: any, chart: any, question: string
   if (!Array.isArray(anyAssets) || !anyAssets.length) return null;
   const emptyKnowledge = new Map<string, any>();
   const winner = rankGalleryAssets(anyAssets, emptyKnowledge, chart, question)[0];
-  return { asset: winner.asset, mode: "any-enabled-fallback", score: winner.score };
+  return winner ? { asset: winner.asset, mode: "any-enabled-fallback", score: winner.score } : null;
 }
 
 function imageExtension(asset: any): string {
@@ -272,6 +270,7 @@ function visualPrompt(report: any, decree: string, guardianStyle: GuardianStyle,
     `Selected visual mode (${guardianStyle.id} / ${guardianStyle.label}): ${guardianStyle.directive}`,
     `Question direction: ${visualTheme(question)}`,
     "Keep one clear focal subject, generous negative space, and enough tonal contrast for phone viewing. Important objects must translate supported report meanings rather than inventing new fortune conclusions.",
+    "No tea immortal, tea deity, teapot, teacup, tea ceremony or beverage props. The subject must follow the chart and the reviewed reference, never a fixed Tea Guardian identity.",
     "No readable generated text, no fake charts, no gibberish calligraphy, no black full background, no product-photo cutout, no crowded auspicious-object collage.",
     `Question: ${question || "personal destiny report"}.`,
     `Four pillars: ${pillars}.`,

@@ -4,9 +4,10 @@ import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("decree image backend ranks the whole enabled visual library and keeps approval as a signal, not a gate", async () => {
+test("decree image backend reads the full library and requires reviewed subjects for personal attribution", async () => {
   const source = await read("supabase/functions/generate-decree-image/index.ts");
   assert.match(source, /from\("gallery_asset_knowledge"\)/);
+  assert.match(source, /reviewedPersonalKnowledge/);
   assert.match(source, /knowledge\?\.analysis_status === "approved"/);
   assert.match(source, /knowledge\?\.client_eligible === true/);
   assert.match(source, /\.eq\("category", "visual-library"\)/);

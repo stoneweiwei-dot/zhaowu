@@ -6,6 +6,7 @@ export type DecreeImageResult = {
   imagePath: string | null;
   signedUrl: string | null;
   reused?: boolean;
+  galleryDirect?: boolean;
   missing?: boolean;
   galleryReferenceAssetId?: string | null;
 };

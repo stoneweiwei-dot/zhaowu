@@ -1,3 +1,4 @@
+import { reviewedPersonalKnowledge, reviewedPersonalArt } from '../../../supabase/functions/_shared/reviewed-personal-art';
 import type { Chart } from '../bazi/types';
 import type { Locale } from '../i18n';
 import { chartTerm, characterFacts } from '../bazi/presentation';
@@ -13,7 +14,8 @@ function semantic(row:Candidate):string {
 }
 export function rankPersonalArt(chart:Chart, rows:Candidate[]):CustomerGalleryArt[] {
   const nayin=chart.pillars.find(p=>p.key==='day')?.nayin;
-  const eligible=rows.filter(({asset,knowledge})=>isPublicAtlasAsset(asset) && isCharacterPanelVisualEligible({category:asset.category,asset_key:asset.asset_key,title:asset.title,storage_path:asset.storage_path,summary:knowledge.summary,subject_labels:knowledge.subject_labels,motifs:knowledge.motifs,use_roles:knowledge.use_roles}));
+  const reviewed=rows.flatMap(row=>{const knowledge=reviewedPersonalKnowledge(row.asset,row.knowledge);return knowledge?[{...row,knowledge}]:[];});
+  const eligible=reviewed.filter(({asset,knowledge})=>isPublicAtlasAsset(asset) && isCharacterPanelVisualEligible({category:asset.category,asset_key:asset.asset_key,title:asset.title,storage_path:asset.storage_path,summary:knowledge.summary,subject_labels:knowledge.subject_labels,motifs:knowledge.motifs,use_roles:knowledge.use_roles}));
   const ranked=rankCustomerGalleryArt(chart,eligible);
   const affinity=(row:Candidate)=>Boolean(nayin && (semantic(row).includes(nayin) || semantic(row).includes(chartTerm(nayin,'en').toLowerCase())));
   // An explicitly identified natal image first; otherwise use the chart's existing visual direction.
@@ -29,6 +31,11 @@ export function personalArtReason(chart:Chart, question:string, art:Candidate, l
   const symbolKnown=[...art.knowledge.subject_labels,...art.knowledge.motifs].length>0;
   const chartLine=en?`Your day-pillar image is ${title}; your Day Master is ${chartTerm(chart.dayMaster,locale)}.`:hans?`你的日柱纳音为「${title}」，日主为${chart.dayMaster}。`:`你的日柱納音為「${title}」，日主為${chart.dayMaster}。`;
   if (exact) return chartLine+(en?' This artwork shares that traditional image, giving the pattern in your chart a visual form. It is symbolic, rather than a claim about your appearance or religious identity.':hans?' 画作承接了这个传统意象，把盘面特征转成可以观看的画面；它是象征，不代表你的真实长相或宗教身份。':' 畫作承接了這個傳統意象，把盤面特徵轉成可以觀看的畫面；它是象徵，不代表你的真實長相或宗教身份。');
+  const review=reviewedPersonalArt(art.asset);
+  if(review) {
+    const directions=chart.useful.map(e=>chartTerm(e,locale)).join(en?' and ':'、');
+    return chartLine+(en?` The artwork shows ${review.scene.en}. These visible motifs were selected to echo this reading's ${directions} visual direction. This is symbolic companionship, not a claim about your appearance or spiritual identity.`:hans?` 画面中有${review.scene['zh-Hans']}，这些可见意象呼应本次盘面用于配图的「${directions}」方向。这是象征性的陪伴，不认定真实长相或灵性身份。`:` 畫面中有${review.scene['zh-Hant']}，這些可見意象呼應本次盤面用於配圖的「${directions}」方向。這是象徵性的陪伴，不認定真實長相或靈性身份。`)+(chart.usefulProvisional?(en?' The elemental interpretation remains provisional.':hans?' 五行取用仍属初步参考。':' 五行取用仍屬初步參考。'):'');
+  }
   if (symbolKnown) return chartLine+' '+explainCustomerDecreeImageChoice(chart,question,art,locale)+(chart.usefulProvisional?(en?' The elemental interpretation is provisional.':hans?' 五行取用仍属初步参考。':' 五行取用仍屬初步參考。'):'');
   const directions=chart.useful.map(e=>chartTerm(e,locale)).join(en?' and ':'、');
   return chartLine+(en?` This artwork is a symbolic companion to the ${directions || 'overall'} direction in this reading. A specific figure is not identified as your match; the artwork offers a visual reminder of that direction. It does not establish a confirmed favourable element.`:hans?` 这张画作为「${directions || '整体'}」方向的陪伴意象。不把画中人物认作你的固定身份，而以画面的气氛提醒你留意这份盘面的方向；这不等于已确定正式喜用神。`:` 這張畫作為「${directions || '整體'}」方向的陪伴意象。不把畫中人物認作你的固定身份，而以畫面的氣氛提醒你留意這份盤面的方向；這不等於已確定正式喜用神。`);

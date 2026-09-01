@@ -100,7 +100,7 @@ test("generic character panel applies a second tea-art gate before gallery ranki
   const component = readFileSync(new URL("../src/components/character-panel.tsx", import.meta.url), "utf8");
   assert.match(component, /isCharacterPanelVisualEligible/);
   const selection = readFileSync(new URL("../src/lib/report/personal-art.ts", import.meta.url), "utf8");
-  assert.match(selection, /rows\.filter/);
+  assert.match(selection, /reviewed\.filter/);
   assert.match(selection, /storage_path:asset\.storage_path/);
   assert.match(component, /9:16/);
 });
