@@ -16,10 +16,10 @@ export type PublicSiteStats = {
  * Every production runtime/backend change must bump this release and add the matching change report.
  */
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.02-r28",
-  updateNumber: 28,
-  publishedAt: "2026-09-01T16:45:02.969913+00:00",
-  latestSummary: "恢復米色宣紙與松綠按鈕；問題置頂、登入回八字、顯示四柱命盤與三語細項。吉祥圖每次換一張、文章只展開一篇並取消瀏覽數；命象按盤面配圖並附理由，修正節氣邊界重複套用真太陽時；配圖依核對過的畫中題材選擇，排除只靠顏色的錯配。",
+  version: "ZW-WEB-2026.09.02-r29",
+  updateNumber: 29,
+  publishedAt: "2026-09-01T21:15:01.033711+00:00",
+  latestSummary: "依新補參考還原山水宣紙底、半透明細金邊面板與朱紅按鈕；採用站主上傳的梧桐蓮池影片及並蒂蓮靜圖，保留三秒進站和既有四柱、隨機吉祥圖、文章折疊。",
 } as const;
 
 function publicHeaders(extra?: HeadersInit): HeadersInit {

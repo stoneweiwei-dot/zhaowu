@@ -7,6 +7,15 @@ async function source(path) {
   return readFile(new URL(path, root), "utf8");
 }
 
+test("uploaded reference keeps landscape visible behind translucent sheets and removes login grid", async () => {
+  const css = await source("src/parchment-layout.css");
+  assert.match(css, /url\('\/wallpaper-song\.jpg'\)/);
+  assert.match(css, /position:fixed; inset:0; z-index:-1; pointer-events:none/);
+  assert.match(css, /background:rgba\(250,243,230,\.73\)/);
+  assert.match(css, /background:#a73727 !important/);
+  assert.match(css, /\.stone-login-screen::before,[\s\S]*content:none !important/);
+});
+
 test("application shell restores the fixed Song landscape without loose scatter", async () => {
   const shell = await source("src/components/site-shell.tsx");
   assert.match(shell, /const isHome = pathname === "\/"/);

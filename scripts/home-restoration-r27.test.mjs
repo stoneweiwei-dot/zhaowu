@@ -27,7 +27,7 @@ test('question stays ahead of birth details even after a report, login returns t
  assert.match(form,/aria-describedby="time-importance"/);assert.match(form,/UNKNOWN_TIME_COPY\[locale\]/);
  assert.match(form,/!current && previewChart/);
  const login=source('src/routes/login.tsx');assert.doesNotMatch(login,/navigate\(\{ to: "\/account"/);assert.match(login,/navigate\(\{ to: "\/"/);
- const intro=source('src/components/intro-gate.tsx');assert.match(intro,/twin-lotus-restored-r26.mp4/);
+ const intro=source('src/components/intro-gate.tsx');assert.match(intro,/wutong-owner-r29.mp4/);
  const panel=source('src/components/character-panel.tsx');assert.doesNotMatch(panel,/buildCharacterPanel|radar|artScores|SCHOOL_MARK/);
 });
 const chart=buildChart({question:'What is my direction?',year:1988,month:10,day:4,hour:4,minute:40,timeUnknown:false,gender:'male',relation:'unset',city:{name:'Test',display:'Test',country:'China',latitude:30,longitude:120,timezone:'Asia/Shanghai'},useTrueSolar:true,ziPolicy:'midnight'});

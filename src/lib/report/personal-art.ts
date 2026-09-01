@@ -33,8 +33,8 @@ export function personalArtReason(chart:Chart, question:string, art:Candidate, l
   if (exact) return chartLine+(en?' This artwork shares that traditional image, giving the pattern in your chart a visual form. It is symbolic, rather than a claim about your appearance or religious identity.':hans?' 画作承接了这个传统意象，把盘面特征转成可以观看的画面；它是象征，不代表你的真实长相或宗教身份。':' 畫作承接了這個傳統意象，把盤面特徵轉成可以觀看的畫面；它是象徵，不代表你的真實長相或宗教身份。');
   const review=reviewedPersonalArt(art.asset);
   if(review) {
-    const directions=chart.useful.map(e=>chartTerm(e,locale)).join(en?' and ':'、');
-    return chartLine+(en?` The artwork shows ${review.scene.en}. These visible motifs were selected to echo this reading's ${directions} visual direction. This is symbolic companionship, not a claim about your appearance or spiritual identity.`:hans?` 画面中有${review.scene['zh-Hans']}，这些可见意象呼应本次盘面用于配图的「${directions}」方向。这是象征性的陪伴，不认定真实长相或灵性身份。`:` 畫面中有${review.scene['zh-Hant']}，這些可見意象呼應本次盤面用於配圖的「${directions}」方向。這是象徵性的陪伴，不認定真實長相或靈性身份。`)+(chart.usefulProvisional?(en?' The elemental interpretation remains provisional.':hans?' 五行取用仍属初步参考。':' 五行取用仍屬初步參考。'):'');
+    const scene=en?` The artwork shows ${review.scene.en}. `:hans?` 画面中有${review.scene['zh-Hans']}。`:` 畫面中有${review.scene['zh-Hant']}。`;
+    return chartLine+scene+explainCustomerDecreeImageChoice(chart,question,art,locale);
   }
   if (symbolKnown) return chartLine+' '+explainCustomerDecreeImageChoice(chart,question,art,locale)+(chart.usefulProvisional?(en?' The elemental interpretation is provisional.':hans?' 五行取用仍属初步参考。':' 五行取用仍屬初步參考。'):'');
   const directions=chart.useful.map(e=>chartTerm(e,locale)).join(en?' and ':'、');

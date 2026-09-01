@@ -107,7 +107,7 @@ export function IntroGate() {
     >
       <img
         className="zhaowu-lotus-intro__still"
-        src="/intro/twin-lotus-restored-r26.jpg"
+        src="/intro/wutong-owner-r29.jpeg"
         alt=""
         aria-hidden
         draggable={false}
@@ -119,7 +119,7 @@ export function IntroGate() {
           muted
           playsInline
           preload="auto"
-          poster="/intro/twin-lotus-restored-r26.jpg"
+          poster="/intro/wutong-owner-r29.jpeg"
           onError={() => setVideoFailed(true)}
           onLoadedMetadata={(event) => {
             const media = event.currentTarget;
@@ -128,7 +128,7 @@ export function IntroGate() {
             }
           }}
         >
-          <source src="/intro/twin-lotus-restored-r26.mp4" type="video/mp4" />
+          <source src="/intro/wutong-owner-r29.mp4" type="video/mp4" />
         </video>
       ) : null}
       <div className="zhaowu-lotus-intro__veil" aria-hidden />
