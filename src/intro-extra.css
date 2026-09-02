@@ -12,7 +12,7 @@
 }
 
 /* Zhaowu · uploaded twin-lotus loading animation, restored from the original Song-paper clip.
-   r34 uses the owner dawn-lotus bloom still + video. No percent bar. */
+   r35 uses the owner dawn-lotus bloom still + video. No percent bar. */
 .zhaowu-lotus-intro {
   background: #c7b18d;
   color: #493c2b;
@@ -31,16 +31,8 @@
   -webkit-user-drag: none;
 }
 
-.zhaowu-lotus-intro__still {
-  z-index: 0;
-  filter: none;
-}
-
-.zhaowu-lotus-intro__art {
-  z-index: 1;
-  filter: none;
-}
-
+.zhaowu-lotus-intro__still { z-index: 0; filter: none; }
+.zhaowu-lotus-intro__art { z-index: 1; filter: none; }
 .zhaowu-lotus-intro__veil {
   position: absolute;
   inset: 0;
@@ -48,7 +40,6 @@
   pointer-events: none;
   background: linear-gradient(180deg, transparent 0%, transparent 72%, rgba(222, 205, 173, .62) 88%, rgba(222, 205, 173, .94) 100%);
 }
-
 .zhaowu-lotus-intro__copy {
   position: relative;
   z-index: 3;
@@ -62,15 +53,8 @@
   text-align: center;
   text-shadow: 0 1px 8px rgba(244, 231, 207, .55);
 }
-
-.zhaowu-lotus-intro__status {
-  padding-bottom: 2px;
-}
-
-.zhaowu-lotus-intro__bar {
-  display: none;
-}
-
+.zhaowu-lotus-intro__status { padding-bottom: 2px; }
+.zhaowu-lotus-intro__bar { display: none; }
 .zhaowu-lotus-intro__slogan {
   margin: 0 0 8px;
   font-family: var(--font-display);
@@ -78,7 +62,6 @@
   letter-spacing: .22em;
   color: rgba(57, 45, 30, .96);
 }
-
 .zhaowu-lotus-intro__status p {
   margin: 0;
   font-family: var(--font-display);
@@ -86,11 +69,7 @@
   letter-spacing: .18em;
   color: rgba(57, 45, 30, .96);
 }
-
-.zhaowu-lotus-intro__status > span {
-  display: none;
-}
-
+.zhaowu-lotus-intro__status > span { display: none; }
 .zhaowu-lotus-intro__status small {
   display: block;
   margin-top: 12px;
@@ -98,7 +77,6 @@
   letter-spacing: .22em;
   color: rgba(73, 60, 43, .8);
 }
-
 .zhaowu-lotus-intro__skip {
   display: inline-flex;
   margin: 14px auto 0;
@@ -110,7 +88,6 @@
   font-size: 12px;
   letter-spacing: .18em;
 }
-
 @media (min-width: 700px) {
   .zhaowu-lotus-intro__art,
   .zhaowu-lotus-intro__still {
@@ -118,9 +95,6 @@
     background: #c7b18d;
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  .zhaowu-lotus-intro__art {
-    display: none;
-  }
+  .zhaowu-lotus-intro__art { display: none; }
 }

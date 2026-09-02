@@ -53,6 +53,7 @@ export function IntroGate() {
       window.setTimeout,
       window.clearTimeout,
       () => {
+        // The loading art is decorative. Never let it block the usable site.
         if (!cancelled) forceOff();
       },
     );
@@ -62,6 +63,7 @@ export function IntroGate() {
         if (!cancelled) setRuntimeReady(true);
       })
       .catch(() => {
+        // Do not fade here: bootstrap failure must reveal the already-mounted site immediately.
         if (!cancelled) forceOff();
       });
 
@@ -102,13 +104,7 @@ export function IntroGate() {
       aria-live="polite"
       aria-label={loadingLabel}
     >
-      <img
-        className="zhaowu-lotus-intro__still"
-        src={INTRO_STILL}
-        alt=""
-        aria-hidden
-        draggable={false}
-      />
+      <img className="zhaowu-lotus-intro__still" src={INTRO_STILL} alt="" aria-hidden draggable={false} />
       {!videoFailed ? (
         <video
           className="zhaowu-lotus-intro__art"
@@ -129,7 +125,6 @@ export function IntroGate() {
         </video>
       ) : null}
       <div className="zhaowu-lotus-intro__veil" aria-hidden />
-
       <div className="zhaowu-lotus-intro__copy">
         <div className="zhaowu-lotus-intro__status">
           <p className="zhaowu-lotus-intro__slogan">{slogan}</p>
