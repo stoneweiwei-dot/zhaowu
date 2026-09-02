@@ -63,75 +63,71 @@ const COPY = {
   "zh-Hant": {
     kicker: "昭梧 · 西洋占星",
     title: "星座不是只看太陽",
-    lead: "同一張西洋本命盤，現代心理占星、傳統／希臘化占星、Placidus 宮制與 Whole Sign 宮制本來就會看出不同重點。昭梧分開計算，再把共識、獨立結論與衝突列清楚，不強行揉成一套。",
+    lead: "同一張西洋本命盤，現代心理占星、傳統／希臘化占星，以及不同宮制本來就會看出不同重點。昭梧分開運算，再列出共識、各自結論與分歧，不把不同流派硬揉成一套。",
     lenses: ["熱帶黃道本命盤", "現代心理占星", "傳統／希臘化占星", "Placidus × Whole Sign × Equal 宮制對照"],
-    formTitle: "排西洋本命盤",
-    formLead: "完整盤需要出生日期、出生地與分鐘級時間；不知道時間仍可看太陽與行星，但不計上升、宮位與日夜盤。",
-    year: "年", month: "月", day: "日", hour: "時", minute: "分", city: "出生地", cityPh: "搜尋城市",
+    formTitle: "排西洋本命盤", formLead: "完整盤需要出生日期、出生地與分鐘級時間；不知道時間仍可看太陽與行星，但不判上升、宮位與日夜盤。",
+    year: "年", month: "月", dateDay: "日", hour: "時", minute: "分", city: "出生地", cityPh: "搜尋城市",
     unknown: "不知道出生時間", submit: "生成多流派星盤", calculating: "正在計算…", needCity: "請先選擇出生地。", invalid: "請檢查出生日期與時間。", engineError: "天文計算模組暫時無法載入。",
-    baseTitle: "本命盤骨架", bigThree: "太陽・月亮・上升", noAsc: "未知出生時間：上升、MC、宮位與日夜盤不判。月亮按當地中午估算，不當作邊界附近的硬結論。",
-    psychTitle: "現代心理占星", psychLead: "重點放在內在動機、情緒需求、溝通、關係、行動，以及緊密相位形成的心理拉力。",
-    traditionalTitle: "傳統／希臘化視角", traditionalLead: "使用熱帶黃道，但以七曜、Whole Sign 宮、日夜盤、命主星與傳統尊貴／失勢狀態為主。",
-    housesTitle: "宮制差異｜不要假裝它們一樣", housesLead: "同一顆行星可能因宮制不同落到不同人生領域。星座位置不變，宮位結論可能變。",
-    planet: "星體", placidus: "Placidus", whole: "Whole Sign", equal: "Equal", house: "宮", same: "三制一致", different: "宮位有分歧",
-    aspectsTitle: "主要相位", aspectsLead: "現代層採主要相位：合、六合、刑、拱、沖；只列允許度內較緊的相位。",
-    extensionsTitle: "現代延伸點", extensionsLead: "天王、海王、冥王作世代／深層背景；北交點使用 Mean Node，Lilith 使用 Mean Black Moon（平均月遠點）。",
+    baseTitle: "本命盤骨架", noAsc: "未知出生時間：上升、MC、宮位與日夜盤不判。月亮按當地中午估算，若接近換座邊界不作硬結論。",
+    psychTitle: "現代心理占星", psychLead: "重點放在內在動機、情緒需要、溝通、關係、行動，以及緊密相位形成的心理拉力。",
+    traditionalTitle: "傳統／希臘化視角", traditionalLead: "同樣使用熱帶黃道，但以七曜、Whole Sign 宮、日夜盤、命主星與傳統尊貴／失勢狀態為重。",
+    housesTitle: "宮制差異｜分歧直接列出", housesLead: "行星星座不因宮制改變，但它落入哪個人生領域可能不同。Placidus、Whole Sign、Equal 分開計算。",
+    planet: "星體", placidus: "Placidus", whole: "Whole Sign", equal: "Equal", same: "三制一致", different: "宮位有分歧",
+    aspectsTitle: "主要相位", aspectsLead: "現代層計算合、六合、刑、拱、沖，按固定允許度只列有效相位。",
+    extensionsTitle: "現代延伸點", extensionsLead: "天王、海王、冥王作世代／深層背景；北交點採 Mean Node，Lilith 採 Mean Black Moon（平均月遠點）。",
     compareTitle: "多流派合看", consensus: "共同點", independent: "各自最強的地方", conflicts: "分歧", incomparable: "不可混算",
-    consensusBody: "所有西洋視角共用同一個熱帶黃道天文位置；太陽、月亮與行星落座不因宮制而改變。",
-    independentBody: "心理占星讀內在模式與相位；傳統占星讀七曜、日夜盤、命主星與 Whole Sign 結構；宮制比較只處理『事情落在哪個人生領域』。",
-    noConflict: "這張盤在目前列出的核心星體上，Placidus／Whole Sign／Equal 沒有出現宮位分歧。",
-    incomparableBody: "印度 Jyotish 的 Lahiri 恆星黃道、D1／D9／D60 不和這裡的熱帶黃道換算後硬合併；需要印度盤時另走獨立引擎。",
-    chartRuler: "命主星", sect: "日夜盤", day: "日盤", night: "夜盤", dignity: "傳統狀態", dominant: "主導元素／模式",
-    profile: "計算規格", back: "回首頁", vedic: "前世今生 D60",
-    boundary: "占星作為文化與自我觀察工具；不把象徵解讀當作科學診斷或現實決策的唯一依據。",
+    consensusBody: "西洋各視角共用同一套熱帶黃道天文位置；行星落座不因宮制而改變。",
+    independentBody: "心理占星讀內在模式與相位；傳統占星讀七曜、日夜盤、命主星與 Whole Sign 結構；宮制比較只判事情落在哪個人生領域。",
+    noConflict: "目前列出的七曜在三種宮制下沒有出現宮位分歧。",
+    incomparableBody: "印度 Jyotish 的 Lahiri 恆星黃道與 D1／D9／D60 保持獨立，不換算後強行併入這張熱帶黃道盤。",
+    chartRuler: "命主星", sect: "日夜盤", sectDay: "日盤", sectNight: "夜盤", dominant: "主導元素／模式",
+    profile: "計算規格", back: "回首頁", vedic: "前世今生 D60", boundary: "占星作為文化與自我觀察工具，不作科學診斷，也不作現實決策的唯一依據。",
   },
   "zh-Hans": {
     kicker: "昭梧 · 西洋占星",
     title: "星座不是只看太阳",
-    lead: "同一张西洋本命盘，现代心理占星、传统／希腊化占星、Placidus 宫制与 Whole Sign 宫制本来就会看出不同重点。昭梧分开计算，再把共识、独立结论与冲突列清楚，不强行揉成一套。",
+    lead: "同一张西洋本命盘，现代心理占星、传统／希腊化占星，以及不同宫制本来就会看出不同重点。昭梧分开运算，再列出共识、各自结论与分歧，不把不同流派硬揉成一套。",
     lenses: ["热带黄道本命盘", "现代心理占星", "传统／希腊化占星", "Placidus × Whole Sign × Equal 宫制对照"],
-    formTitle: "排西洋本命盘", formLead: "完整盘需要出生日期、出生地与分钟级时间；不知道时间仍可看太阳与行星，但不计上升、宫位与日夜盘。",
-    year: "年", month: "月", day: "日", hour: "时", minute: "分", city: "出生地", cityPh: "搜索城市",
+    formTitle: "排西洋本命盘", formLead: "完整盘需要出生日期、出生地与分钟级时间；不知道时间仍可看太阳与行星，但不判上升、宫位与日夜盘。",
+    year: "年", month: "月", dateDay: "日", hour: "时", minute: "分", city: "出生地", cityPh: "搜索城市",
     unknown: "不知道出生时间", submit: "生成多流派星盘", calculating: "正在计算…", needCity: "请先选择出生地。", invalid: "请检查出生日期与时间。", engineError: "天文计算模块暂时无法加载。",
-    baseTitle: "本命盘骨架", bigThree: "太阳・月亮・上升", noAsc: "未知出生时间：上升、MC、宫位与日夜盘不判。月亮按当地中午估算，不当作边界附近的硬结论。",
-    psychTitle: "现代心理占星", psychLead: "重点放在内在动机、情绪需求、沟通、关系、行动，以及紧密相位形成的心理拉力。",
-    traditionalTitle: "传统／希腊化视角", traditionalLead: "使用热带黄道，但以七曜、Whole Sign 宫、日夜盘、命主星与传统尊贵／失势状态为主。",
-    housesTitle: "宫制差异｜不要假装它们一样", housesLead: "同一颗行星可能因宫制不同落到不同人生领域。星座位置不变，宫位结论可能变。",
-    planet: "星体", placidus: "Placidus", whole: "Whole Sign", equal: "Equal", house: "宫", same: "三制一致", different: "宫位有分歧",
-    aspectsTitle: "主要相位", aspectsLead: "现代层采用主要相位：合、六合、刑、拱、冲；只列允许度内较紧的相位。",
-    extensionsTitle: "现代延伸点", extensionsLead: "天王、海王、冥王作世代／深层背景；北交点使用 Mean Node，Lilith 使用 Mean Black Moon（平均月远点）。",
+    baseTitle: "本命盘骨架", noAsc: "未知出生时间：上升、MC、宫位与日夜盘不判。月亮按当地中午估算，若接近换座边界不作硬结论。",
+    psychTitle: "现代心理占星", psychLead: "重点放在内在动机、情绪需要、沟通、关系、行动，以及紧密相位形成的心理拉力。",
+    traditionalTitle: "传统／希腊化视角", traditionalLead: "同样使用热带黄道，但以七曜、Whole Sign 宫、日夜盘、命主星与传统尊贵／失势状态为重。",
+    housesTitle: "宫制差异｜分歧直接列出", housesLead: "行星星座不因宫制改变，但它落入哪个人生领域可能不同。Placidus、Whole Sign、Equal 分开计算。",
+    planet: "星体", placidus: "Placidus", whole: "Whole Sign", equal: "Equal", same: "三制一致", different: "宫位有分歧",
+    aspectsTitle: "主要相位", aspectsLead: "现代层计算合、六合、刑、拱、冲，按固定允许度只列有效相位。",
+    extensionsTitle: "现代延伸点", extensionsLead: "天王、海王、冥王作世代／深层背景；北交点采用 Mean Node，Lilith 采用 Mean Black Moon（平均月远点）。",
     compareTitle: "多流派合看", consensus: "共同点", independent: "各自最强的地方", conflicts: "分歧", incomparable: "不可混算",
-    consensusBody: "所有西洋视角共用同一个热带黄道天文位置；太阳、月亮与行星落座不因宫制而改变。",
-    independentBody: "心理占星读内在模式与相位；传统占星读七曜、日夜盘、命主星与 Whole Sign 结构；宫制比较只处理‘事情落在哪个人生领域’。",
-    noConflict: "这张盘在目前列出的核心星体上，Placidus／Whole Sign／Equal 没有出现宫位分歧。",
-    incomparableBody: "印度 Jyotish 的 Lahiri 恒星黄道、D1／D9／D60 不和这里的热带黄道换算后硬合并；需要印度盘时另走独立引擎。",
-    chartRuler: "命主星", sect: "日夜盘", day: "日盘", night: "夜盘", dignity: "传统状态", dominant: "主导元素／模式",
-    profile: "计算规格", back: "回首页", vedic: "前世今生 D60",
-    boundary: "占星作为文化与自我观察工具；不把象征解读当作科学诊断或现实决策的唯一依据。",
+    consensusBody: "西洋各视角共用同一套热带黄道天文位置；行星落座不因宫制而改变。",
+    independentBody: "心理占星读内在模式与相位；传统占星读七曜、日夜盘、命主星与 Whole Sign 结构；宫制比较只判断事情落在哪个人生领域。",
+    noConflict: "目前列出的七曜在三种宫制下没有出现宫位分歧。",
+    incomparableBody: "印度 Jyotish 的 Lahiri 恒星黄道与 D1／D9／D60 保持独立，不换算后强行并入这张热带黄道盘。",
+    chartRuler: "命主星", sect: "日夜盘", sectDay: "日盘", sectNight: "夜盘", dominant: "主导元素／模式",
+    profile: "计算规格", back: "回首页", vedic: "前世今生 D60", boundary: "占星作为文化与自我观察工具，不作科学诊断，也不作现实决定的唯一依据。",
   },
   en: {
     kicker: "Zhaowu · Western astrology",
     title: "A birth chart is more than a Sun sign",
-    lead: "Modern psychological astrology, traditional/Hellenistic astrology, Placidus houses and Whole Sign houses can legitimately emphasise different things in the same natal chart. Zhaowu calculates them separately, then shows agreement, independent conclusions and conflicts instead of forcing one blended answer.",
+    lead: "Modern psychological astrology, traditional/Hellenistic astrology and different house systems can legitimately emphasise different things in the same natal chart. Zhaowu calculates them separately, then shows agreement, independent conclusions and conflicts instead of forcing one blended answer.",
     lenses: ["Tropical natal chart", "Modern psychological astrology", "Traditional / Hellenistic astrology", "Placidus × Whole Sign × Equal-house comparison"],
     formTitle: "Calculate a Western natal chart", formLead: "A full chart needs date, birthplace and a birth time recorded to the minute. With unknown time, planetary signs remain available, but Ascendant, houses and sect are withheld.",
-    year: "Year", month: "Month", day: "Day", hour: "Hour", minute: "Minute", city: "Birthplace", cityPh: "Search city",
+    year: "Year", month: "Month", dateDay: "Day", hour: "Hour", minute: "Minute", city: "Birthplace", cityPh: "Search city",
     unknown: "Birth time unknown", submit: "Generate multi-lens chart", calculating: "Calculating…", needCity: "Choose a birthplace first.", invalid: "Check the birth date and time.", engineError: "The astronomy module could not load.",
-    baseTitle: "Natal chart structure", bigThree: "Sun · Moon · Rising", noAsc: "Unknown birth time: Ascendant, MC, houses and sect are withheld. The Moon is sampled at local noon and is not treated as definitive near a sign boundary.",
+    baseTitle: "Natal chart structure", noAsc: "Unknown birth time: Ascendant, MC, houses and sect are withheld. The Moon is sampled at local noon and is not treated as definitive near a sign boundary.",
     psychTitle: "Modern psychological lens", psychLead: "Focuses on motivation, emotional needs, communication, relating, action and the psychological tension created by close aspects.",
-    traditionalTitle: "Traditional / Hellenistic lens", traditionalLead: "Uses the tropical zodiac but prioritises the seven classical planets, Whole Sign houses, sect, chart ruler and traditional dignity/debility.",
-    housesTitle: "House-system differences", housesLead: "A planet can land in a different life area under another house system. Its zodiac sign stays the same; its house interpretation may not.",
-    planet: "Body", placidus: "Placidus", whole: "Whole Sign", equal: "Equal", house: "House", same: "all three agree", different: "house conflict",
-    aspectsTitle: "Major aspects", aspectsLead: "The modern layer uses conjunction, sextile, square, trine and opposition, showing the tighter aspects within the selected orb profile.",
-    extensionsTitle: "Modern extensions", extensionsLead: "Uranus, Neptune and Pluto are treated as generational/deep-background factors. The North Node is Mean Node; Lilith is Mean Black Moon (mean lunar apogee).",
+    traditionalTitle: "Traditional / Hellenistic lens", traditionalLead: "Uses the same tropical zodiac but prioritises the seven classical planets, Whole Sign houses, sect, chart ruler and traditional dignity/debility.",
+    housesTitle: "House-system differences", housesLead: "A planet's zodiac sign stays the same, but the life area it occupies can change. Placidus, Whole Sign and Equal houses are calculated separately.",
+    planet: "Body", placidus: "Placidus", whole: "Whole Sign", equal: "Equal", same: "all three agree", different: "house conflict",
+    aspectsTitle: "Major aspects", aspectsLead: "The modern layer calculates conjunction, sextile, square, trine and opposition using a fixed orb profile.",
+    extensionsTitle: "Modern extensions", extensionsLead: "Uranus, Neptune and Pluto are treated as generational/deep-background factors. North Node is Mean Node; Lilith is Mean Black Moon (mean lunar apogee).",
     compareTitle: "Cross-reading", consensus: "Agreement", independent: "What each lens does best", conflicts: "Conflicts", incomparable: "Do not merge",
-    consensusBody: "All Western lenses use the same tropical astronomical positions. Planetary signs do not change when the house system changes.",
+    consensusBody: "All Western lenses share the same tropical astronomical positions. Planetary signs do not change when the house system changes.",
     independentBody: "Psychological astrology reads inner patterns and aspects; traditional astrology reads the seven planets, sect, chart ruler and Whole Sign structure; house comparison only asks where a topic lands in life.",
-    noConflict: "No house-system disagreement appears among the core bodies listed here.",
-    incomparableBody: "Jyotish uses a separate Lahiri sidereal framework. D1/D9/D60 are not converted and blended into this tropical chart; they stay in their own engine.",
-    chartRuler: "Chart ruler", sect: "Sect", day: "Day chart", night: "Night chart", dignity: "Traditional condition", dominant: "Dominant element / mode",
-    profile: "Calculation profile", back: "Home", vedic: "Past & Present D60",
-    boundary: "Astrology is presented as a cultural and self-reflection framework, not a scientific diagnosis or the sole basis for real-world decisions.",
+    noConflict: "No house-system disagreement appears among the seven classical planets listed here.",
+    incomparableBody: "Jyotish keeps its separate Lahiri sidereal framework. D1/D9/D60 are not converted and blended into this tropical chart.",
+    chartRuler: "Chart ruler", sect: "Sect", sectDay: "Day chart", sectNight: "Night chart", dominant: "Dominant element / mode",
+    profile: "Calculation profile", back: "Home", vedic: "Past & Present D60", boundary: "Astrology is presented as a cultural and self-reflection framework, not a scientific diagnosis or the sole basis for real-world decisions.",
   },
 } as const;
 
@@ -210,13 +206,8 @@ function calculatePlanet(api: AstronomyApi, key: ModernPlanetKey, date: Date) {
   return decoratePosition(key, longitude, delta < 0);
 }
 
-function signName(position: ZodiacPosition, locale: Locale) {
-  return SIGN_NAMES[locale][position.signIndex];
-}
-
-function pointLabel(key: PointKey, locale: Locale) {
-  return LABELS[locale][key];
-}
+function signName(position: ZodiacPosition, locale: Locale) { return SIGN_NAMES[locale][position.signIndex]; }
+function pointLabel(key: PointKey, locale: Locale) { return LABELS[locale][key]; }
 
 function CityField({ locale, city, onSelect, label, placeholder }: { locale: Locale; city: CityHit | null; onSelect: (city: CityHit | null) => void; label: string; placeholder: string }) {
   const [query, setQuery] = useState(city?.display ?? "");
@@ -232,7 +223,6 @@ function CityField({ locale, city, onSelect, label, placeholder }: { locale: Loc
     }, 220);
     return () => { alive = false; window.clearTimeout(timer); };
   }, [city, locale, query]);
-
   return <label className="relative block text-sm font-medium text-ink">{label}
     <input value={query} onChange={(event) => { setQuery(event.target.value); if (city) onSelect(null); }} placeholder={placeholder} autoComplete="off" className="mt-2 min-h-12 w-full rounded-xl border border-line bg-white/75 px-4 text-base outline-none focus:border-[#7e5268]" />
     {hits.length ? <div className="absolute z-30 mt-1 max-h-56 w-full overflow-auto rounded-xl border border-line bg-[#fffaf0] p-1 shadow-xl">{hits.map((hit) => <button type="button" key={`${hit.latitude}-${hit.longitude}`} onClick={() => { onSelect(hit); setQuery(hit.display); setHits([]); }} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-[#f1e3c9]"><b className="block text-sm text-ink">{hit.display}</b><small className="text-ink-mute">{hit.timezone}</small></button>)}</div> : null}
@@ -270,13 +260,9 @@ function WesternAstrologyPage() {
       let ascendant: ZodiacPosition | undefined; let mc: ZodiacPosition | undefined; let placidus: HouseChart | undefined; let whole: HouseChart | undefined; let equal: HouseChart | undefined; let sect: "day" | "night" | undefined; let chartRuler: ClassicalPlanetKey | undefined;
       const aspectPoints: ZodiacPosition[] = [...planets, ...extras];
       if (!unknownTime) {
-        const gmst = api.SiderealTime(utc) * 15;
-        const angles = computeAngles({ date: utc, gmstDegrees: gmst, latitude: city.latitude, longitude: city.longitude });
-        ascendant = decoratePosition("Ascendant", angles.ascendant);
-        mc = decoratePosition("MC", angles.mc);
-        placidus = computeHouses(angles, city.latitude, "placidus");
-        whole = computeHouses(angles, city.latitude, "whole");
-        equal = computeHouses(angles, city.latitude, "equal");
+        const angles = computeAngles({ date: utc, gmstDegrees: api.SiderealTime(utc) * 15, latitude: city.latitude, longitude: city.longitude });
+        ascendant = decoratePosition("Ascendant", angles.ascendant); mc = decoratePosition("MC", angles.mc);
+        placidus = computeHouses(angles, city.latitude, "placidus"); whole = computeHouses(angles, city.latitude, "whole"); equal = computeHouses(angles, city.latitude, "equal");
         chartRuler = traditionalRuler(ascendant.signIndex);
         const sun = planets.find((point) => point.key === "Sun")!;
         const altitude = solarAltitude({ sunLongitude: sun.longitude, localSiderealDegrees: angles.ramc, latitude: city.latitude, obliquity: angles.obliquity });
@@ -284,11 +270,8 @@ function WesternAstrologyPage() {
         aspectPoints.push(ascendant, mc);
       }
       const aspects = calculateMajorAspects(aspectPoints).filter((aspect) => PERSONAL_KEYS.includes(aspect.a) || PERSONAL_KEYS.includes(aspect.b));
-      const personalBalance = summarizeBalance([
-        ...planets.filter((point) => ["Sun", "Moon", "Mercury", "Venus", "Mars"].includes(point.key)),
-        ...(ascendant ? [ascendant] : []),
-      ]);
-      setResult({ exactTime: !unknownTime, utcIso: utc.toISOString(), city, planets, extras, ascendant, mc, placidus, whole, equal, aspects, balance: personalBalance, sect, chartRuler });
+      const balance = summarizeBalance([...planets.filter((point) => ["Sun", "Moon", "Mercury", "Venus", "Mars"].includes(point.key)), ...(ascendant ? [ascendant] : [])]);
+      setResult({ exactTime: !unknownTime, utcIso: utc.toISOString(), city, planets, extras, ascendant, mc, placidus, whole, equal, aspects, balance, sect, chartRuler });
       window.setTimeout(() => document.getElementById("western-result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 30);
     } catch { setError(copy.engineError); }
     finally { setBusy(false); }
@@ -298,37 +281,26 @@ function WesternAstrologyPage() {
   const bigSix = useMemo(() => {
     if (!result) return [];
     const keys: Array<"Sun" | "Moon" | "Ascendant" | "Mercury" | "Venus" | "Mars"> = ["Sun", "Moon", "Ascendant", "Mercury", "Venus", "Mars"];
-    return keys.flatMap((key) => {
-      const position = key === "Ascendant" ? result.ascendant : byKey[key];
-      return position ? [{ key, position }] : [];
-    });
+    return keys.flatMap((key) => { const position = key === "Ascendant" ? result.ascendant : byKey[key]; return position ? [{ key, position }] : []; });
   }, [byKey, result]);
-
   const houseRows = useMemo(() => {
     if (!result?.placidus || !result.whole || !result.equal) return [];
-    return CLASSICAL_KEYS.map((key) => {
-      const position = byKey[key]!;
-      const p = houseOf(position.longitude, result.placidus!); const w = houseOf(position.longitude, result.whole!); const e = houseOf(position.longitude, result.equal!);
-      return { key, position, p, w, e, differs: new Set([p, w, e]).size > 1 };
-    });
+    return CLASSICAL_KEYS.map((key) => { const position = byKey[key]!; const p = houseOf(position.longitude, result.placidus!); const w = houseOf(position.longitude, result.whole!); const e = houseOf(position.longitude, result.equal!); return { key, p, w, e, differs: new Set([p, w, e]).size > 1 }; });
   }, [byKey, result]);
   const conflicts = houseRows.filter((row) => row.differs);
   const topAspects = result?.aspects.slice(0, 12) ?? [];
 
   return <main className="mx-auto max-w-5xl space-y-6 pb-12 sm:space-y-8">
     <section className="relative overflow-hidden rounded-[2rem] border border-[#9f7b4d]/30 bg-[#f4ead6]/92 p-5 shadow-[0_24px_80px_rgba(68,49,30,.12)] sm:p-8">
-      <div aria-hidden className="absolute -right-24 -top-24 h-72 w-72 rounded-full border border-[#7e5268]/12" />
-      <div aria-hidden className="absolute right-7 top-7 text-5xl text-[#7e5268]/10">♎︎</div>
-      <p className="relative text-[10px] font-semibold tracking-[0.24em] text-[#7e5268]">{copy.kicker}</p>
-      <h1 className="relative mt-3 max-w-3xl font-display text-3xl font-semibold tracking-[0.05em] text-ink sm:text-5xl">{copy.title}</h1>
-      <p className="relative mt-4 max-w-3xl text-sm leading-7 text-ink-soft sm:text-base sm:leading-8">{copy.lead}</p>
+      <div aria-hidden className="absolute -right-24 -top-24 h-72 w-72 rounded-full border border-[#7e5268]/12" /><div aria-hidden className="absolute right-7 top-7 text-5xl text-[#7e5268]/10">♎︎</div>
+      <p className="relative text-[10px] font-semibold tracking-[0.24em] text-[#7e5268]">{copy.kicker}</p><h1 className="relative mt-3 max-w-3xl font-display text-3xl font-semibold tracking-[0.05em] text-ink sm:text-5xl">{copy.title}</h1><p className="relative mt-4 max-w-3xl text-sm leading-7 text-ink-soft sm:text-base sm:leading-8">{copy.lead}</p>
       <div className="relative mt-5 grid gap-2 sm:grid-cols-2">{copy.lenses.map((lens, index) => <div key={lens} className="rounded-xl border border-[#9f7b4d]/22 bg-white/45 px-3 py-2 text-xs leading-5 text-ink-soft"><b className="mr-2 text-[#7e5268]">{String(index + 1).padStart(2, "0")}</b>{lens}</div>)}</div>
     </section>
 
     <section className="rounded-[1.75rem] border border-[#9f7b4d]/28 bg-[#fffaf0]/92 p-4 shadow-[0_18px_52px_rgba(70,49,26,.09)] sm:p-6">
       <h2 className="font-display text-2xl font-semibold text-ink">{copy.formTitle}</h2><p className="mt-2 text-sm leading-7 text-ink-soft">{copy.formLead}</p>
       <form onSubmit={submit} className="mt-5 rounded-2xl border border-line bg-cream/80 p-4 sm:p-5">
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">{[[copy.year, year, setYear, 1900, maxYear], [copy.month, month, setMonth, 1, 12], [copy.day, day, setDay, 1, 31], [copy.hour, hour, setHour, 0, 23], [copy.minute, minute, setMinute, 0, 59]].map(([label, value, setter, min, max], index) => <label key={String(label)} className={`text-xs font-medium text-ink ${unknownTime && index >= 3 ? "opacity-40" : ""}`}><span className="block pb-1">{label as string}</span><input required={!unknownTime || index < 3} disabled={unknownTime && index >= 3} type="number" inputMode="numeric" min={min as number} max={max as number} value={value as string} onChange={(event) => (setter as (value: string) => void)(event.target.value)} className="min-h-12 w-full rounded-xl border border-line bg-white/75 px-2 text-base outline-none focus:border-[#7e5268] disabled:bg-black/[0.03]" /></label>)}</div>
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">{[[copy.year, year, setYear, 1900, maxYear], [copy.month, month, setMonth, 1, 12], [copy.dateDay, day, setDay, 1, 31], [copy.hour, hour, setHour, 0, 23], [copy.minute, minute, setMinute, 0, 59]].map(([label, value, setter, min, max], index) => <label key={`${String(label)}-${index}`} className={`text-xs font-medium text-ink ${unknownTime && index >= 3 ? "opacity-40" : ""}`}><span className="block pb-1">{label as string}</span><input required={!unknownTime || index < 3} disabled={unknownTime && index >= 3} type="number" inputMode="numeric" min={min as number} max={max as number} value={value as string} onChange={(event) => (setter as (value: string) => void)(event.target.value)} className="min-h-12 w-full rounded-xl border border-line bg-white/75 px-2 text-base outline-none focus:border-[#7e5268] disabled:bg-black/[0.03]" /></label>)}</div>
         <div className="mt-4"><CityField locale={locale} city={city} onSelect={setCity} label={copy.city} placeholder={copy.cityPh} /></div>
         <label className="mt-4 flex items-center gap-2 rounded-xl border border-[#9f7b4d]/22 bg-white/45 px-3 py-3 text-sm text-ink-soft"><input type="checkbox" checked={unknownTime} onChange={(event) => setUnknownTime(event.target.checked)} className="h-4 w-4 accent-[#7e5268]" />{copy.unknown}</label>
         {error ? <p role="alert" className="mt-3 rounded-xl border border-cinnabar/25 bg-cinnabar/6 px-3 py-2 text-sm text-cinnabar-deep">{error}</p> : null}
@@ -346,7 +318,7 @@ function WesternAstrologyPage() {
 
       <div className="grid gap-5 lg:grid-cols-2">
         <article className="rounded-[1.5rem] border border-[#7e5268]/22 bg-[#f4ebdf]/92 p-4 sm:p-5"><p className="text-[10px] font-semibold tracking-[0.18em] text-[#7e5268]">MODERN</p><h3 className="mt-1 font-display text-xl font-semibold text-ink">{copy.psychTitle}</h3><p className="mt-2 text-sm leading-7 text-ink-soft">{copy.psychLead}</p><p className="mt-4 rounded-xl bg-white/50 px-3 py-2 text-sm text-ink-soft"><b className="text-ink">{copy.dominant}：</b>{BALANCE_LABELS[locale][result.balance.dominantElement]} × {BALANCE_LABELS[locale][result.balance.dominantModality]}</p><div className="mt-3 space-y-2">{topAspects.slice(0, 5).map((aspect) => <p key={`${aspect.a}-${aspect.b}-${aspect.type}`} className="rounded-xl border border-line/60 bg-white/44 px-3 py-2 text-xs leading-5 text-ink-soft"><b className="text-ink">{pointLabel(aspect.a, locale)} {ASPECT_LABELS[locale][aspect.type]} {pointLabel(aspect.b, locale)}</b> · orb {aspect.orb.toFixed(1)}°</p>)}</div></article>
-        <article className="rounded-[1.5rem] border border-[#8b6a3d]/24 bg-[#f5ecd8]/92 p-4 sm:p-5"><p className="text-[10px] font-semibold tracking-[0.18em] text-[#8b6a3d]">TRADITIONAL</p><h3 className="mt-1 font-display text-xl font-semibold text-ink">{copy.traditionalTitle}</h3><p className="mt-2 text-sm leading-7 text-ink-soft">{copy.traditionalLead}</p>{result.chartRuler ? <p className="mt-4 rounded-xl bg-white/50 px-3 py-2 text-sm text-ink-soft"><b className="text-ink">{copy.chartRuler}：</b>{pointLabel(result.chartRuler, locale)} · <b className="ml-2 text-ink">{copy.sect}：</b>{result.sect === "day" ? copy.day : copy.night}</p> : null}<div className="mt-3 grid grid-cols-2 gap-2">{CLASSICAL_KEYS.map((key) => { const position = byKey[key]; if (!position) return null; const dignity = traditionalDignity(key, position.signIndex); return <div key={key} className="rounded-xl border border-line/60 bg-white/44 px-3 py-2 text-xs text-ink-soft"><b className="text-ink">{pointLabel(key, locale)}</b><span className="block mt-1">{signName(position, locale)} · {DIGNITY_LABELS[locale][dignity]}</span></div>; })}</div></article>
+        <article className="rounded-[1.5rem] border border-[#8b6a3d]/24 bg-[#f5ecd8]/92 p-4 sm:p-5"><p className="text-[10px] font-semibold tracking-[0.18em] text-[#8b6a3d]">TRADITIONAL</p><h3 className="mt-1 font-display text-xl font-semibold text-ink">{copy.traditionalTitle}</h3><p className="mt-2 text-sm leading-7 text-ink-soft">{copy.traditionalLead}</p>{result.chartRuler ? <p className="mt-4 rounded-xl bg-white/50 px-3 py-2 text-sm text-ink-soft"><b className="text-ink">{copy.chartRuler}：</b>{pointLabel(result.chartRuler, locale)} · <b className="ml-2 text-ink">{copy.sect}：</b>{result.sect === "day" ? copy.sectDay : copy.sectNight}</p> : null}<div className="mt-3 grid grid-cols-2 gap-2">{CLASSICAL_KEYS.map((key) => { const position = byKey[key]; if (!position) return null; const dignity = traditionalDignity(key, position.signIndex); return <div key={key} className="rounded-xl border border-line/60 bg-white/44 px-3 py-2 text-xs text-ink-soft"><b className="text-ink">{pointLabel(key, locale)}</b><span className="mt-1 block">{signName(position, locale)} · {DIGNITY_LABELS[locale][dignity]}</span></div>; })}</div></article>
       </div>
 
       {result.exactTime ? <article className="overflow-hidden rounded-[1.5rem] border border-[#9f7b4d]/28 bg-[#fffaf0]/94 p-4 sm:p-5"><h3 className="font-display text-xl font-semibold text-ink">{copy.housesTitle}</h3><p className="mt-2 text-sm leading-7 text-ink-soft">{copy.housesLead}</p>{result.placidus?.fallback ? <p className="mt-3 rounded-xl border border-cinnabar/20 bg-cinnabar/5 px-3 py-2 text-xs text-cinnabar-deep">{result.placidus.fallback}</p> : null}<div className="mt-4 overflow-x-auto"><table className="w-full min-w-[560px] border-collapse text-left text-xs"><thead><tr className="border-b border-line text-ink-mute"><th className="py-2 pr-3">{copy.planet}</th><th className="py-2 pr-3">{copy.placidus}</th><th className="py-2 pr-3">{copy.whole}</th><th className="py-2 pr-3">{copy.equal}</th><th className="py-2"> </th></tr></thead><tbody>{houseRows.map((row) => <tr key={row.key} className="border-b border-line/60"><td className="py-2.5 pr-3 font-medium text-ink">{pointLabel(row.key, locale)}</td><td className="py-2.5 pr-3">{locale === "en" ? `H${row.p}` : `${row.p}宮`}</td><td className="py-2.5 pr-3">{locale === "en" ? `H${row.w}` : `${row.w}宮`}</td><td className="py-2.5 pr-3">{locale === "en" ? `H${row.e}` : `${row.e}宮`}</td><td className={`py-2.5 ${row.differs ? "text-cinnabar" : "text-[#55735f]"}`}>{row.differs ? copy.different : copy.same}</td></tr>)}</tbody></table></div></article> : null}
