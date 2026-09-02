@@ -4,12 +4,12 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const VIDEO_PART_PREFIX = "dawn-lotus-r34.mp4.b64.";
-const STILL_PART_PREFIX = "dawn-lotus-r34.jpg.b64.";
-const VIDEO_PART_COUNT = 8;
-const STILL_PART_COUNT = 2;
-const VIDEO_SHA256 = "1c90d5fe5eb6b71757f1b884f2f75b924ef1efc141ade752ce8accd09769e473";
-const STILL_SHA256 = "058af8622797a58a2b84e001e52e3ae239a9237b021e262816ef07eb2b1479a0";
+const VIDEO_PART_PREFIX = "dawn-lotus-r35.mp4.b64.";
+const STILL_PART_PREFIX = "dawn-lotus-r35.jpg.b64.";
+const VIDEO_PART_COUNT = 12;
+const STILL_PART_COUNT = 3;
+const VIDEO_SHA256 = "e509b30e66dccec8a2a3fddfc52baa4b810adc726141f89388a03760123c798a";
+const STILL_SHA256 = "e2125dba4ea764bd95277722efa7479079d8884fb4803908b4465682f5150e41";
 
 function decodeNumberedParts(dirRel, prefix, destRel, magicHex, expectedCount, expectedSha256) {
   const dir = resolve(ROOT, dirRel);
@@ -43,7 +43,7 @@ export function writeIntroMedia() {
   const video = decodeNumberedParts(
     "public/intro",
     VIDEO_PART_PREFIX,
-    "public/intro/dawn-lotus-r34.mp4",
+    "public/intro/dawn-lotus-r35.mp4",
     "0000002066747970",
     VIDEO_PART_COUNT,
     VIDEO_SHA256,
@@ -51,7 +51,7 @@ export function writeIntroMedia() {
   const still = decodeNumberedParts(
     "public/intro",
     STILL_PART_PREFIX,
-    "public/intro/dawn-lotus-r34.jpg",
+    "public/intro/dawn-lotus-r35.jpg",
     "ffd8ffe0",
     STILL_PART_COUNT,
     STILL_SHA256,
