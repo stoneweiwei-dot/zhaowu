@@ -8,8 +8,8 @@ import {
 } from "@/lib/intro-gate-policy";
 
 const LOTUS_BLOOM_MS = 2734;
-const INTRO_STILL = "/intro/dawn-lotus-r34.jpg";
-const INTRO_VIDEO = "/intro/dawn-lotus-r34.mp4";
+const INTRO_STILL = "/intro/dawn-lotus-r35.jpg";
+const INTRO_VIDEO = "/intro/dawn-lotus-r35.mp4";
 
 export function IntroGate() {
   const { locale } = useI18n();
@@ -53,7 +53,6 @@ export function IntroGate() {
       window.setTimeout,
       window.clearTimeout,
       () => {
-        // The loading art is decorative. Never let it block the usable site.
         if (!cancelled) forceOff();
       },
     );
@@ -63,7 +62,6 @@ export function IntroGate() {
         if (!cancelled) setRuntimeReady(true);
       })
       .catch(() => {
-        // Do not fade here: bootstrap failure must reveal the already-mounted site immediately.
         if (!cancelled) forceOff();
       });
 
