@@ -11,8 +11,8 @@
   background-size: 30px 30px, 30px 30px, auto, auto, auto, auto;
 }
 
-/* Zhaowu · original Song-paper twin-lotus intro. Video is preferred; the same
-   artwork also carries an obvious CSS bloom so iPhone video stalls never look static. */
+/* Zhaowu · uploaded twin-lotus loading animation, using the original Song-paper artwork.
+   Video is preferred; the same artwork also carries an obvious CSS bloom so iPhone video stalls never look static. */
 .zhaowu-lotus-intro {
   background: #c7b18d;
   color: #493c2b;
