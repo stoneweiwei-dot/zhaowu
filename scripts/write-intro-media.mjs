@@ -8,6 +8,9 @@ const VIDEO_PART_PREFIX = "loading-v13.part.";
 const VIDEO_PART_COUNT = 2;
 const VIDEO_SHA256 = "44fbc42a7623c5974deb590cbe05ff2dd140847440aee78f5f8d3ffc9f2dc7ae";
 
+const R32_VIDEO_SHA256 = "b345c3981f5205b9e19dfcd9a021ad774714d10e5eb9ee4868a997184ffcd5a4";
+const R32_POSTER_SHA256 = "02cabd5c5338feee1c2c97c4f06a437cd030fbad35932559aa70bb5d66da7f1a";
+
 function decodeNumberedParts(dirRel, prefix, destRel, magicHex, expectedCount, expectedSha256) {
   const dir = resolve(ROOT, dirRel);
   if (!existsSync(dir)) return false;
@@ -45,7 +48,23 @@ export function writeIntroMedia() {
     VIDEO_PART_COUNT,
     VIDEO_SHA256,
   );
-  return { video };
+  const r32Video = decodeNumberedParts(
+    "public/intro/r32",
+    "lotus-bloom-r32.part.",
+    "public/intro/lotus-bloom-r32.mp4",
+    "0000002066747970",
+    3,
+    R32_VIDEO_SHA256,
+  );
+  const r32Poster = decodeNumberedParts(
+    "public/intro/r32",
+    "lotus-bloom-r32-poster.part.",
+    "public/intro/lotus-bloom-r32.jpg",
+    "ffd8ffe0",
+    2,
+    R32_POSTER_SHA256,
+  );
+  return { video, r32Video, r32Poster };
 }
 
 writeIntroMedia();
