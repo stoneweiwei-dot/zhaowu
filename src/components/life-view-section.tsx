@@ -4,8 +4,10 @@ import { LIFE_VIEW_ARTICLES } from "@/lib/life-view";
 import { LIFE_VIEW_FILE_ARTICLES } from "@/lib/life-view-from-files";
 import { LIFE_VIEW_PRACTICE_ARTICLES } from "@/lib/life-view-practice-manual";
 import { LIFE_VIEW_20260831_ARTICLES } from "@/lib/life-view-20260831";
+import { LIFE_VIEW_20260903_ARTICLES } from "@/lib/life-view-20260903";
 
 const ARTICLES = [
+  ...LIFE_VIEW_20260903_ARTICLES,
   ...LIFE_VIEW_20260831_ARTICLES,
   ...LIFE_VIEW_PRACTICE_ARTICLES,
   ...LIFE_VIEW_FILE_ARTICLES,
@@ -44,6 +46,54 @@ function fragmentIndexes(paragraphCount: number) {
  * stay inside this same art family rather than introducing unrelated styles.
  */
 const ARTICLE_ART: Record<string, ArticleArt> = {
+  "six-hearts-daily-practice": {
+    src: "/images/life-view/clear-awakening.webp",
+    alt: {
+      "zh-Hant": "六種日常心功與清醒自持的古畫漫畫圖",
+      "zh-Hans": "六种日常心功与清醒自持的古画漫画图",
+      en: "Illustrated manuscript about six practical ways to steady the mind",
+    },
+  },
+  "care-without-taking-over": {
+    src: "/images/life-view/clear-awakening.webp",
+    alt: {
+      "zh-Hant": "家人關係、關心與邊界的古畫漫畫圖",
+      "zh-Hans": "家人关系、关心与边界的古画漫画图",
+      en: "Illustrated manuscript about care and boundaries in family relationships",
+    },
+  },
+  "stop-loss-is-clarity": {
+    src: "/images/life-view/courage-rebirth.webp",
+    alt: {
+      "zh-Hant": "止損、離開沉沒成本與重新選擇的古畫漫畫圖",
+      "zh-Hans": "止损、离开沉没成本与重新选择的古画漫画图",
+      en: "Illustrated manuscript about cutting losses and choosing again",
+    },
+  },
+  "know-fate-keep-choice": {
+    src: "/images/life-view/courage-rebirth.webp",
+    alt: {
+      "zh-Hant": "知命而不失去選擇權的古畫漫畫圖",
+      "zh-Hans": "知命而不失去选择权的古画漫画图",
+      en: "Illustrated manuscript about reading timing without surrendering choice",
+    },
+  },
+  "money-needs-order-not-anxiety": {
+    src: "/images/life-view/belief-world.webp",
+    alt: {
+      "zh-Hant": "財運、秩序與現金流的古畫漫畫圖",
+      "zh-Hans": "财运、秩序与现金流的古画漫画图",
+      en: "Illustrated manuscript about financial order and cash flow",
+    },
+  },
+  "five-elements-as-movement": {
+    src: "/images/life-view/belief-world.webp",
+    alt: {
+      "zh-Hant": "五行動勢、流通與轉化的古畫漫畫圖",
+      "zh-Hans": "五行动势、流通与转化的古画漫画图",
+      en: "Illustrated manuscript about Five Element movement, flow and transformation",
+    },
+  },
   "break-the-deadlock": {
     src: "/images/life-view/courage-rebirth.webp",
     alt: {

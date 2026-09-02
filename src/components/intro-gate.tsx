@@ -19,6 +19,7 @@ export function IntroGate() {
   const [videoFailed, setVideoFailed] = useState(false);
   const finishedRef = useRef(false);
   const exitTimerRef = useRef<number | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const forceOff = useCallback(() => {
     if (finishedRef.current && exitTimerRef.current === null) return;
@@ -40,6 +41,16 @@ export function IntroGate() {
       exitTimerRef.current = null;
       setPhase("off");
     }, INTRO_GATE_FADE_MS);
+  }, []);
+
+  const startVideo = useCallback((media: HTMLVideoElement) => {
+    if (media.duration > 0) {
+      media.playbackRate = Math.max(1, media.duration / (LOTUS_BLOOM_MS / 1000));
+    }
+    const playback = media.play();
+    if (playback && typeof playback.catch === "function") {
+      void playback.catch(() => setVideoFailed(true));
+    }
   }, []);
 
   useEffect(() => {
@@ -84,6 +95,15 @@ export function IntroGate() {
   }, [forceOff]);
 
   useEffect(() => {
+    const resumePlayback = () => {
+      if (document.visibilityState !== "visible" || videoFailed || !videoRef.current) return;
+      startVideo(videoRef.current);
+    };
+    document.addEventListener("visibilitychange", resumePlayback);
+    return () => document.removeEventListener("visibilitychange", resumePlayback);
+  }, [startVideo, videoFailed]);
+
+  useEffect(() => {
     if (minimumDone && runtimeReady && visualDone) finish();
   }, [finish, minimumDone, runtimeReady, visualDone]);
 
@@ -114,19 +134,17 @@ export function IntroGate() {
       />
       {!videoFailed ? (
         <video
+          ref={videoRef}
           className="zhaowu-lotus-intro__art"
           autoPlay
           muted
           playsInline
           preload="auto"
           poster="/intro/wutong-owner-r29.jpeg"
+          aria-hidden
           onError={() => setVideoFailed(true)}
-          onLoadedMetadata={(event) => {
-            const media = event.currentTarget;
-            if (media.duration > 0) {
-              media.playbackRate = Math.max(1, media.duration / (LOTUS_BLOOM_MS / 1000));
-            }
-          }}
+          onLoadedMetadata={(event) => startVideo(event.currentTarget)}
+          onCanPlay={(event) => startVideo(event.currentTarget)}
         >
           <source src="/intro/wutong-owner-r29.mp4" type="video/mp4" />
         </video>

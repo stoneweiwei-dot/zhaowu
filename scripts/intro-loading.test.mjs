@@ -62,7 +62,7 @@ test('loading gate hard-exits inside the three-second bloom budget', () => {
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro restores the original Song-paper twin-lotus opening and falling flowers', async () => {
+test('intro restores the original Song-paper twin-lotus opening and stays visibly animated on iPhone', async () => {
   assert.match(gate, /wutong-owner-r29\.mp4/);
   assert.match(gate, /wutong-owner-r29\.jpeg/);
   assert.match(gate, /onError=\{\(\) => setVideoFailed\(true\)\}/);
@@ -70,6 +70,11 @@ test('intro restores the original Song-paper twin-lotus opening and falling flow
   assert.equal(createHash('sha256').update(await readFile(new URL('../public/intro/wutong-owner-r29.mp4', import.meta.url))).digest('hex'), 'e59f2957b31835b7be8cf440cdbc1fbe33977b7c921c74efb7ff6815f7ac2197');
   assert.equal(createHash('sha256').update(await readFile(new URL('../public/intro/wutong-owner-r29.jpeg', import.meta.url))).digest('hex'), 'd5c73ff32c1fc3cab80eb2f53bba714bd247846643eaf788a475bb1c0c9df2ec');
   assert.match(gate, /playbackRate/);
+  assert.match(gate, /media\.play\(\)/);
+  assert.match(gate, /onCanPlay=\{\(event\) => startVideo\(event\.currentTarget\)\}/);
+  assert.match(gate, /visibilitychange/);
+  assert.match(css, /@keyframes zhaowu-lotus-bloom-drift/);
+  assert.match(css, /animation: zhaowu-lotus-bloom-drift 2734ms/);
   assert.match(gate, /正在準備昭梧/);
   assert.match(gate, /STONE 原創/);
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__heaven/);
