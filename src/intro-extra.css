@@ -12,7 +12,7 @@
 }
 
 /* Zhaowu · uploaded twin-lotus loading animation, restored from the original Song-paper clip.
-   The artwork carries the heavenly flowers and lotus bloom itself; UI stays minimal. */
+   r34 uses the owner dawn-lotus bloom still + video. No percent bar. */
 .zhaowu-lotus-intro {
   background: #c7b18d;
   color: #493c2b;
@@ -26,7 +26,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 48%;
+  object-position: 50% 58%;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -68,22 +68,15 @@
 }
 
 .zhaowu-lotus-intro__bar {
-  width: 152px;
-  height: 2px;
-  margin: 0 auto 14px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: rgba(73, 60, 43, .18);
-  box-shadow: 0 0 18px rgba(255, 215, 145, .08);
+  display: none;
 }
 
-.zhaowu-lotus-intro__bar i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: rgba(92, 71, 40, .96);
-  box-shadow: 0 0 14px rgba(255, 218, 142, .45);
-  transition: width 220ms ease-out;
+.zhaowu-lotus-intro__slogan {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: .22em;
+  color: rgba(57, 45, 30, .96);
 }
 
 .zhaowu-lotus-intro__status p {
@@ -95,12 +88,7 @@
 }
 
 .zhaowu-lotus-intro__status > span {
-  display: block;
-  margin-top: 7px;
-  font-size: 10px;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: .18em;
-  color: rgba(73, 60, 43, .85);
+  display: none;
 }
 
 .zhaowu-lotus-intro__status small {
@@ -109,6 +97,18 @@
   font-size: 9px;
   letter-spacing: .22em;
   color: rgba(73, 60, 43, .8);
+}
+
+.zhaowu-lotus-intro__skip {
+  display: inline-flex;
+  margin: 14px auto 0;
+  padding: 8px 16px;
+  border: 1px solid rgba(73, 60, 43, .28);
+  border-radius: 999px;
+  background: rgba(251, 245, 233, .72);
+  color: rgba(57, 45, 30, .92);
+  font-size: 12px;
+  letter-spacing: .18em;
 }
 
 @media (min-width: 700px) {
