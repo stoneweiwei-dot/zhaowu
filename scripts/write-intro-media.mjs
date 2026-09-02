@@ -8,8 +8,8 @@ const VIDEO_PART_PREFIX = "loading-v13.part.";
 const VIDEO_PART_COUNT = 2;
 const VIDEO_SHA256 = "44fbc42a7623c5974deb590cbe05ff2dd140847440aee78f5f8d3ffc9f2dc7ae";
 
-const R32_VIDEO_SHA256 = "b345c3981f5205b9e19dfcd9a021ad774714d10e5eb9ee4868a997184ffcd5a4";
-const R32_POSTER_SHA256 = "02cabd5c5338feee1c2c97c4f06a437cd030fbad35932559aa70bb5d66da7f1a";
+const R32_VIDEO_SHA256 = "9cfe7795fad687f929b6c2ac5dc762ed81515a64a627299b52e9eb7f82c4fb6f";
+const R32_POSTER_SHA256 = "62eaa890a3c1f43695362f88aabce8ef8d6f817a275715846b53f34694769852";
 
 function decodeNumberedParts(dirRel, prefix, destRel, magicHex, expectedCount, expectedSha256) {
   const dir = resolve(ROOT, dirRel);
