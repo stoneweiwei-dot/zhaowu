@@ -1,4 +1,4 @@
-import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -20,6 +20,7 @@ function assertPng(path) {
 }
 
 function decodeJoined(prefix, dest) {
+  if (!existsSync(B64_DIR)) return false;
   const names = readdirSync(B64_DIR)
     .filter((n) => n === prefix || n.startsWith(prefix))
     .sort();
