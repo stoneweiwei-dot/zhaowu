@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "npm run test:engine && vite build && tsc --noEmit",
+    "build": "node scripts/write-home-icons.mjs && node scripts/write-intro-media.mjs && npm run test:engine && vite build && tsc --noEmit",
     "preview": "vite preview",
     "check": "tsc --noEmit",
     "test:engine": "tsx --test scripts/*.test.mjs",
