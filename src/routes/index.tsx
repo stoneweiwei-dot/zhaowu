@@ -9,6 +9,7 @@ import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import "@/home-polish-v3.css";
 import "@/home-portals.css";
+import "@/home-portals-astrology.css";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -18,42 +19,45 @@ function Home() {
   const portalCopy =
     locale === "en"
       ? {
-          kicker: "THREE LENSES",
-          label: "Three ways to know yourself",
-          lead: "Each method focuses on a different part of you.",
+          kicker: "FOUR LENSES",
+          label: "Four ways to know yourself",
+          lead: "Each method focuses on a different part of you and keeps its own calculation rules.",
           learn: "You’ll learn",
           best: "Best for",
           action: "Open",
           items: [
             { to: "/qizheng" as const, eyebrow: "CLASSICAL SKY", title: "Seven Luminaries", know: "Your natural rhythm, response style and instinctive pattern under pressure.", bestAt: "Temperament, action style, pressure response and shifts in timing.", mark: "曜", tone: "sky" },
-            { to: "/yizhangjing" as const, eyebrow: "PAST-LIFE PATTERNS", title: "Past & Present", know: "Which personal traits and habits tend to repeat or feel unusually familiar.", bestAt: "Four prior-life realms in Dharma Palm, carried habits and repeated themes.", mark: "世", tone: "fate" },
+            { to: "/astrology" as const, eyebrow: "WESTERN NATAL CHART", title: "Western Astrology", know: "Your Sun, Moon, Rising, personal planets, major aspects and the life areas they activate.", bestAt: "Modern psychological + traditional/Hellenistic readings, with Placidus, Whole Sign and Equal houses compared instead of blended.", mark: "星", tone: "astrology" },
+            { to: "/yizhangjing" as const, eyebrow: "PAST-LIFE PATTERNS", title: "Past & Present", know: "Which personal traits and habits tend to repeat or feel unusually familiar.", bestAt: "Four prior-life realms in Dharma Palm, carried habits and repeated themes, plus D60 when the birth time is precise enough.", mark: "世", tone: "fate" },
             { to: "/ziwei" as const, eyebrow: "PALACE PATTERNS", title: "Zi Wei Dou Shu", know: "Your core character and how you tend to operate in relationships, work and money.", bestAt: "Life-area structure and the main focus of your current decade.", mark: "斗", tone: "ziwei" },
           ],
         }
       : locale === "zh-Hans"
         ? {
-            kicker: "三门",
-            label: "三门分观",
-            lead: "每一门看的是你不同的一部分。",
+            kicker: "四门",
+            label: "四门分观",
+            lead: "每一门看的是你不同的一部分，各自按自己的规则计算，不强行混成一套。",
             learn: "你会知道",
             best: "最擅长看",
             action: "进入分门",
             items: [
               { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四余", know: "你的天生节奏、反应方式，以及压力下最自然的应对。", bestAt: "性情节奏、行动模式、压力反应，以及天时变化。", mark: "曜", tone: "sky" },
-              { to: "/yizhangjing" as const, eyebrow: "前尘习气", title: "前世今生", know: "哪些个人特征与习惯容易反复出现，或让你有很强的熟悉感。", bestAt: "达摩一掌经的前四世六道、所留习性与重复主题。", mark: "世", tone: "fate" },
+              { to: "/astrology" as const, eyebrow: "西洋本命盘", title: "西洋星盘", know: "太阳、月亮、上升、个人行星、主要相位，以及这些力量落在哪些人生领域。", bestAt: "现代心理占星＋传统／希腊化占星，并对照 Placidus、Whole Sign、Equal 三种宫制，不把分歧硬揉在一起。", mark: "星", tone: "astrology" },
+              { to: "/yizhangjing" as const, eyebrow: "前尘习气", title: "前世今生", know: "哪些个人特征与习惯容易反复出现，或让你有很强的熟悉感。", bestAt: "达摩一掌经前四世六道、所留习性与重复主题；出生时间够准时再加 D60。", mark: "世", tone: "fate" },
               { to: "/ziwei" as const, eyebrow: "宫位格局", title: "紫微斗数", know: "你的性格底色，以及关系、事业、财务里常见的运作方式。", bestAt: "不同人生领域的结构，以及当前十年的重点课题。", mark: "斗", tone: "ziwei" },
             ],
           }
         : {
-            kicker: "三門",
-            label: "三門分觀",
-            lead: "每一門看的是你不同的一部分。",
+            kicker: "四門",
+            label: "四門分觀",
+            lead: "每一門看的是你不同的一部分，各自按自己的規則計算，不強行混成一套。",
             learn: "你會知道",
             best: "最擅長看",
             action: "進入分門",
             items: [
               { to: "/qizheng" as const, eyebrow: "古法天象", title: "七政四餘", know: "你的天生節奏、反應方式，以及壓力下最自然的應對。", bestAt: "性情節奏、行動模式、壓力反應，以及天時變化。", mark: "曜", tone: "sky" },
-              { to: "/yizhangjing" as const, eyebrow: "前塵習氣", title: "前世今生", know: "哪些個人特徵與習慣容易反覆出現，或讓你有很強的熟悉感。", bestAt: "達摩一掌經的前四世六道、所留習性與重複主題。", mark: "世", tone: "fate" },
+              { to: "/astrology" as const, eyebrow: "西洋本命盤", title: "西洋星盤", know: "太陽、月亮、上升、個人行星、主要相位，以及這些力量落在哪些人生領域。", bestAt: "現代心理占星＋傳統／希臘化占星，並對照 Placidus、Whole Sign、Equal 三種宮制，不把分歧硬揉在一起。", mark: "星", tone: "astrology" },
+              { to: "/yizhangjing" as const, eyebrow: "前塵習氣", title: "前世今生", know: "哪些個人特徵與習慣容易反覆出現，或讓你有很強的熟悉感。", bestAt: "達摩一掌經前四世六道、所留習性與重複主題；出生時間夠準時再加 D60。", mark: "世", tone: "fate" },
               { to: "/ziwei" as const, eyebrow: "宮位格局", title: "紫微斗數", know: "你的性格底色，以及關係、事業、財務裡常見的運作方式。", bestAt: "不同人生領域的結構，以及當前十年的重點課題。", mark: "斗", tone: "ziwei" },
             ],
           };
