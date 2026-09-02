@@ -8,6 +8,8 @@ import {
 } from "@/lib/intro-gate-policy";
 
 const LOTUS_BLOOM_MS = 2734;
+const VIDEO_MOTION_CHECK_MS = 480;
+const VIDEO_MIN_PROGRESS_SECONDS = 0.06;
 
 export function IntroGate() {
   const { locale } = useI18n();
@@ -19,39 +21,64 @@ export function IntroGate() {
   const [videoFailed, setVideoFailed] = useState(false);
   const finishedRef = useRef(false);
   const exitTimerRef = useRef<number | null>(null);
+  const motionWatchdogRef = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const clearMotionWatchdog = useCallback(() => {
+    if (motionWatchdogRef.current !== null) {
+      window.clearTimeout(motionWatchdogRef.current);
+      motionWatchdogRef.current = null;
+    }
+  }, []);
 
   const forceOff = useCallback(() => {
     if (finishedRef.current && exitTimerRef.current === null) return;
     finishedRef.current = true;
+    clearMotionWatchdog();
     if (exitTimerRef.current !== null) {
       window.clearTimeout(exitTimerRef.current);
       exitTimerRef.current = null;
     }
     setPercent(100);
     setPhase("off");
-  }, []);
+  }, [clearMotionWatchdog]);
 
   const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
+    clearMotionWatchdog();
     setPercent(100);
     setPhase("leaving");
     exitTimerRef.current = window.setTimeout(() => {
       exitTimerRef.current = null;
       setPhase("off");
     }, INTRO_GATE_FADE_MS);
-  }, []);
+  }, [clearMotionWatchdog]);
+
+  const watchForRealVideoMotion = useCallback((media: HTMLVideoElement) => {
+    clearMotionWatchdog();
+    const baseline = media.currentTime;
+    motionWatchdogRef.current = window.setTimeout(() => {
+      motionWatchdogRef.current = null;
+      if (finishedRef.current) return;
+      const advanced = media.currentTime >= baseline + VIDEO_MIN_PROGRESS_SECONDS;
+      if (media.paused || media.ended || !advanced) setVideoFailed(true);
+    }, VIDEO_MOTION_CHECK_MS);
+  }, [clearMotionWatchdog]);
 
   const startVideo = useCallback((media: HTMLVideoElement) => {
     if (media.duration > 0) {
       media.playbackRate = Math.max(1, media.duration / (LOTUS_BLOOM_MS / 1000));
     }
     const playback = media.play();
-    if (playback && typeof playback.catch === "function") {
-      void playback.catch(() => setVideoFailed(true));
+    if (playback && typeof playback.then === "function") {
+      void playback
+        .then(() => watchForRealVideoMotion(media))
+        .catch(() => setVideoFailed(true));
+      return;
     }
-  }, []);
+    watchForRealVideoMotion(media);
+  }, [watchForRealVideoMotion]);
 
   useEffect(() => {
     let cancelled = false;
@@ -87,12 +114,13 @@ export function IntroGate() {
       window.clearTimeout(minimumTimer);
       window.clearTimeout(visualTimer);
       cancelHardExit();
+      clearMotionWatchdog();
       if (exitTimerRef.current !== null) {
         window.clearTimeout(exitTimerRef.current);
         exitTimerRef.current = null;
       }
     };
-  }, [forceOff]);
+  }, [clearMotionWatchdog, forceOff]);
 
   useEffect(() => {
     const resumePlayback = () => {
@@ -124,6 +152,7 @@ export function IntroGate() {
       role="status"
       aria-live="polite"
       aria-label={loadingLabel}
+      data-intro-motion={videoFailed ? "fallback" : "video"}
     >
       <img
         className="zhaowu-lotus-intro__still"
@@ -149,6 +178,7 @@ export function IntroGate() {
           <source src="/intro/wutong-owner-r29.mp4" type="video/mp4" />
         </video>
       ) : null}
+      <div className="zhaowu-lotus-intro__motion-proof" aria-hidden />
       <div className="zhaowu-lotus-intro__veil" aria-hidden />
 
       <div className="zhaowu-lotus-intro__copy">

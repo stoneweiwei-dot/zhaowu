@@ -11,8 +11,8 @@
   background-size: 30px 30px, 30px 30px, auto, auto, auto, auto;
 }
 
-/* Zhaowu · uploaded twin-lotus loading animation, restored from the original Song-paper clip.
-   The artwork carries the heavenly flowers and lotus bloom itself; UI stays minimal. */
+/* Zhaowu · original Song-paper twin-lotus intro. Video is preferred; the same
+   artwork also carries an obvious CSS bloom so iPhone video stalls never look static. */
 .zhaowu-lotus-intro {
   background: #c7b18d;
   color: #493c2b;
@@ -30,7 +30,8 @@
   user-select: none;
   -webkit-user-drag: none;
   transform-origin: 50% 58%;
-  animation: zhaowu-lotus-bloom-drift 2734ms ease-in-out both;
+  animation: zhaowu-lotus-bloom-drift 2734ms cubic-bezier(.22,.74,.28,1) both;
+  backface-visibility: hidden;
   will-change: transform;
 }
 
@@ -45,22 +46,41 @@
 }
 
 @keyframes zhaowu-lotus-bloom-drift {
-  0% { transform: scale(1.015) translate3d(0, .25%, 0); }
-  52% { transform: scale(1.065) translate3d(0, -.7%, 0); }
-  100% { transform: scale(1.038) translate3d(0, -.2%, 0); }
+  0% { transform: scale(1) translate3d(0, 1.05%, 0); }
+  54% { transform: scale(1.075) translate3d(0, -1.25%, 0); }
+  100% { transform: scale(1.035) translate3d(0, -.2%, 0); }
+}
+
+.zhaowu-lotus-intro__motion-proof {
+  position: absolute;
+  inset: -8%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transform-origin: 50% 61%;
+  background: radial-gradient(ellipse at 50% 61%, rgba(255,246,205,.48) 0%, rgba(255,235,165,.25) 22%, rgba(255,230,150,.08) 44%, transparent 68%);
+  mix-blend-mode: screen;
+  animation: zhaowu-lotus-light-bloom 2734ms ease-out both;
+  will-change: transform, opacity;
+}
+
+@keyframes zhaowu-lotus-light-bloom {
+  0% { opacity: .04; transform: scale(.88); }
+  48% { opacity: .38; transform: scale(1.04); }
+  100% { opacity: .09; transform: scale(1.13); }
 }
 
 .zhaowu-lotus-intro__veil {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
   background: linear-gradient(180deg, transparent 0%, transparent 72%, rgba(222, 205, 173, .62) 88%, rgba(222, 205, 173, .94) 100%);
 }
 
 .zhaowu-lotus-intro__copy {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   width: min(100%, 430px);
   min-height: 100dvh;
   margin: 0 auto;
@@ -128,11 +148,21 @@
   }
 }
 
+@keyframes zhaowu-lotus-light-bloom-reduced {
+  0% { opacity: .04; }
+  50% { opacity: .24; }
+  100% { opacity: .08; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .zhaowu-lotus-intro__art {
     display: none;
   }
   .zhaowu-lotus-intro__still {
     animation: none;
+  }
+  .zhaowu-lotus-intro__motion-proof {
+    transform: none;
+    animation: zhaowu-lotus-light-bloom-reduced 2734ms ease-out both;
   }
 }

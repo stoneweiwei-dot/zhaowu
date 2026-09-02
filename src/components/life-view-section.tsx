@@ -5,8 +5,10 @@ import { LIFE_VIEW_FILE_ARTICLES } from "@/lib/life-view-from-files";
 import { LIFE_VIEW_PRACTICE_ARTICLES } from "@/lib/life-view-practice-manual";
 import { LIFE_VIEW_20260831_ARTICLES } from "@/lib/life-view-20260831";
 import { LIFE_VIEW_20260903_ARTICLES } from "@/lib/life-view-20260903";
+import { LIFE_VIEW_20260903_LATE_ARTICLES } from "@/lib/life-view-20260903-late";
 
 const ARTICLES = [
+  ...LIFE_VIEW_20260903_LATE_ARTICLES,
   ...LIFE_VIEW_20260903_ARTICLES,
   ...LIFE_VIEW_20260831_ARTICLES,
   ...LIFE_VIEW_PRACTICE_ARTICLES,
@@ -46,6 +48,38 @@ function fragmentIndexes(paragraphCount: number) {
  * stay inside this same art family rather than introducing unrelated styles.
  */
 const ARTICLE_ART: Record<string, ArticleArt> = {
+  "feng-shui-begins-in-conduct": {
+    src: "/images/life-view/clear-awakening.webp",
+    alt: {
+      "zh-Hant": "孝親、口德、柔軟與日常修心的古畫漫畫圖",
+      "zh-Hans": "孝亲、口德、柔软与日常修心的古画漫画图",
+      en: "Illustrated manuscript about conduct, family care, speech and flexibility",
+    },
+  },
+  "do-not-take-it-as-final": {
+    src: "/images/life-view/belief-world.webp",
+    alt: {
+      "zh-Hant": "不把一刻當成終局、接納無常的古畫漫畫圖",
+      "zh-Hans": "不把一刻当成终局、接纳无常的古画漫画图",
+      en: "Illustrated manuscript about impermanence and not treating one moment as final",
+    },
+  },
+  "emotion-does-not-run-the-decision": {
+    src: "/images/life-view/courage-rebirth.webp",
+    alt: {
+      "zh-Hant": "情緒與解決問題分線處理的古畫漫畫圖",
+      "zh-Hans": "情绪与解决问题分线处理的古画漫画图",
+      en: "Illustrated manuscript about feeling emotion without letting it run decisions",
+    },
+  },
+  "clarity-studies-patterns-rules-people": {
+    src: "/images/life-view/clear-awakening.webp",
+    alt: {
+      "zh-Hant": "看清規律、規則、人性與自己的古畫漫畫圖",
+      "zh-Hans": "看清规律、规则、人性与自己的古画漫画图",
+      en: "Illustrated manuscript about seeing patterns, rules, people and oneself clearly",
+    },
+  },
   "six-hearts-daily-practice": {
     src: "/images/life-view/clear-awakening.webp",
     alt: {
