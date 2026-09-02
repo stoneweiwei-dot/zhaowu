@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as AstrologyRouteImport } from './routes/astrology'
 import { Route as AuspiciousAtlasRouteImport } from './routes/auspicious-atlas'
 import { Route as FunTestsRouteImport } from './routes/fun-tests'
 import { Route as GalleryRouteImport } from './routes/gallery'
@@ -32,6 +33,11 @@ const IndexRoute = IndexRouteImport.update({
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AstrologyRoute = AstrologyRouteImport.update({
+  id: '/astrology',
+  path: '/astrology',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuspiciousAtlasRoute = AuspiciousAtlasRouteImport.update({
@@ -98,6 +104,7 @@ const ZiweiRoute = ZiweiRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
   '/fun-tests': typeof FunTestsRoute
   '/gallery': typeof GalleryRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
   '/fun-tests': typeof FunTestsRoute
   '/gallery': typeof GalleryRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
   '/fun-tests': typeof FunTestsRoute
   '/gallery': typeof GalleryRoute
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
+    | '/astrology'
     | '/auspicious-atlas'
     | '/fun-tests'
     | '/gallery'
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/account'
+    | '/astrology'
     | '/auspicious-atlas'
     | '/fun-tests'
     | '/gallery'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/account'
+    | '/astrology'
     | '/auspicious-atlas'
     | '/fun-tests'
     | '/gallery'
@@ -198,6 +210,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
+  AstrologyRoute: typeof AstrologyRoute
   AuspiciousAtlasRoute: typeof AuspiciousAtlasRoute
   FunTestsRoute: typeof FunTestsRoute
   GalleryRoute: typeof GalleryRoute
@@ -226,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/astrology': {
+      id: '/astrology'
+      path: '/astrology'
+      fullPath: '/astrology'
+      preLoaderRoute: typeof AstrologyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auspicious-atlas': {
@@ -318,6 +338,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
+  AstrologyRoute: AstrologyRoute,
   AuspiciousAtlasRoute: AuspiciousAtlasRoute,
   FunTestsRoute: FunTestsRoute,
   GalleryRoute: GalleryRoute,
