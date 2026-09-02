@@ -28,7 +28,7 @@ body {
     url('/wallpaper-song.jpg') !important;
   background-size: cover !important;
   background-position: center top !important;
-  background-attachment: fixed !important;
+  background-attachment: scroll !important;
 }
 
 /* soft paper fibre, not a modern glass UI */
@@ -36,7 +36,7 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
   opacity: .26;
   background-image:
@@ -56,7 +56,6 @@ body::before {
 .zhaowu-home-sheet-page > div,
 .zhaowu-home-portals-block,
 .zhaowu-home-sheet-page .seal-border,
-.zhaowu-home-sheet-shell,
 #analysisForm.zhaowu-quiz-sheet {
   border: 1px solid var(--zw-line) !important;
   border-radius: 18px !important;
@@ -251,7 +250,7 @@ header[role='banner'] {
   background: rgba(247, 241, 227, .94) !important;
   border-bottom: 1px solid var(--zw-line) !important;
   box-shadow: none !important;
-  backdrop-filter: blur(7px) !important;
+  backdrop-filter: none !important;
 }
 
 nav a,
