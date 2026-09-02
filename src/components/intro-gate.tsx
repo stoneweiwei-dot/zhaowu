@@ -12,7 +12,6 @@ const LOTUS_BLOOM_MS = 2734;
 export function IntroGate() {
   const { locale } = useI18n();
   const [phase, setPhase] = useState<"in" | "leaving" | "off">("in");
-  const [percent, setPercent] = useState(4);
   const [minimumDone, setMinimumDone] = useState(false);
   const [runtimeReady, setRuntimeReady] = useState(false);
   const [visualDone, setVisualDone] = useState(false);
@@ -27,14 +26,12 @@ export function IntroGate() {
       window.clearTimeout(exitTimerRef.current);
       exitTimerRef.current = null;
     }
-    setPercent(100);
     setPhase("off");
   }, []);
 
   const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
-    setPercent(100);
     setPhase("leaving");
     exitTimerRef.current = window.setTimeout(() => {
       exitTimerRef.current = null;
@@ -59,10 +56,7 @@ export function IntroGate() {
       },
     );
 
-    void runBootstrapReadiness((progress) => {
-      if (cancelled) return;
-      setPercent(Math.min(96, Math.max(4, progress.percent)));
-    })
+    void runBootstrapReadiness(() => undefined)
       .then(() => {
         if (!cancelled) setRuntimeReady(true);
       })
@@ -95,6 +89,9 @@ export function IntroGate() {
       : locale === "zh-Hans"
         ? "正在准备昭梧"
         : "正在準備昭梧";
+  const slogan =
+    locale === "en" ? "See the unseen. Rest where you belong." : "昭于未见，梧有所栖";
+  const skipLabel = locale === "en" ? "Skip" : locale === "zh-Hans" ? "跳过" : "跳過";
 
   return (
     <div
@@ -135,12 +132,12 @@ export function IntroGate() {
 
       <div className="zhaowu-lotus-intro__copy">
         <div className="zhaowu-lotus-intro__status">
-          <div className="zhaowu-lotus-intro__bar" aria-hidden>
-            <i style={{ width: `${percent}%` }} />
-          </div>
+          <p className="zhaowu-lotus-intro__slogan">{slogan}</p>
           <p>{loadingLabel}</p>
-          <span>{percent}%</span>
           <small>STONE 原創 · 2026</small>
+          <button type="button" className="zhaowu-lotus-intro__skip" onClick={forceOff}>
+            {skipLabel}
+          </button>
         </div>
       </div>
     </div>
