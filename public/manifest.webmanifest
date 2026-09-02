@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "昭梧｜人生節奏與選擇分析",
   "short_name": "昭梧",
   "description": "昭梧｜人生節奏與選擇分析",
@@ -8,29 +9,9 @@
   "background_color": "#fffaf0",
   "theme_color": "#fffaf0",
   "icons": [
-    {
-      "src": "/apple-touch-icon-r20.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/zhaowu-lotus-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/zhaowu-lotus-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/zhaowu-lotus-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
+    { "src": "/apple-touch-icon-r20.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/zhaowu-lotus-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/zhaowu-lotus-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/zhaowu-lotus-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
