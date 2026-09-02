@@ -1,0 +1,71 @@
+/* iPhone Safari: landscape wallpaper must stay behind header and section forms.
+   Visual-only lock. Do not change engines, auth, payment, or schema. */
+
+.zhaowu-home-sheet-shell,
+.zhaowu-login-shell {
+  isolation: auto;
+  overflow-x: hidden;
+}
+
+.zhaowu-home-sheet-shell::before,
+.zhaowu-login-shell::before,
+body::before {
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+.zhaowu-site-header {
+  position: relative !important;
+  z-index: 30 !important;
+  background: #f7f1e3 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-site-header,
+.zhaowu-site-header a,
+.zhaowu-site-header button,
+.zhaowu-site-header span {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.zhaowu-dragon-guide {
+  z-index: 40 !important;
+}
+
+.zhaowu-app-frame {
+  position: relative !important;
+  z-index: 10 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  min-height: 0 !important;
+}
+
+.zhaowu-app-frame > * {
+  position: relative;
+  z-index: 1;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.qz-hero,
+.qz-form-card,
+.qz-report-paper {
+  background: #fbf6e9 !important;
+  color: #28221b !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 720px) {
+  html, body, #root {
+    background-attachment: scroll !important;
+  }
+
+  .zhaowu-site-header {
+    background: #f4ead6 !important;
+  }
+}

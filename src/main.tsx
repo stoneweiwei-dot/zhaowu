@@ -29,6 +29,7 @@ import './home-quiz-paper.css';
 import './content-layout-fixes.css';
 import './parchment-layout.css';
 import './zhaowu-paper-reference-v31.css';
+import './ios-section-visibility.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }

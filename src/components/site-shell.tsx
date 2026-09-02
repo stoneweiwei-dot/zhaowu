@@ -55,9 +55,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const releaseDate = formatReleaseDate(stats.publishedAt, locale);
 
   return (
-    <div className={`relative isolate min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-clip"}`}>
+    <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
       {!isLogin ? (
-        <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70 backdrop-blur-md">
+        <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70">
           <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
             <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
               <BrandSeal />
