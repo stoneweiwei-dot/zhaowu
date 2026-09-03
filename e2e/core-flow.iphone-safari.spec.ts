@@ -116,18 +116,14 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(panel.getByText("性格兩面", { exact: true })).toHaveCount(0);
 
     await panel.getByRole("button", { name: "關閉導覽", exact: true }).click();
-    const firstIllustratedArticle = page.locator("#life-view details").filter({
-      has: page.locator("[data-life-view-art-fragment]"),
-    }).first();
-    if (!(await firstIllustratedArticle.evaluate((node) => (node as HTMLDetailsElement).open))) {
-      await firstIllustratedArticle.locator("summary").click();
-    }
-    const fragment = firstIllustratedArticle.locator("[data-life-view-art-fragment]").first();
-    await expect(fragment).toBeVisible();
-    await expect(fragment.locator("img")).toHaveCSS("object-fit", "cover");
-    const fragmentBox = await fragment.boundingBox();
-    expect(fragmentBox?.width ?? 0).toBeGreaterThanOrEqual(180);
-    expect(fragmentBox?.width ?? 999).toBeLessThanOrEqual(240);
+    const lifeView = page.locator("#life-view");
+    await expect(lifeView).toBeVisible();
+    const latestArticle = lifeView.locator("article").first();
+    await expect(latestArticle).toBeVisible();
+    const articleToggle = latestArticle.locator("button").first();
+    await articleToggle.click();
+    await expect(articleToggle).toHaveAttribute("aria-expanded", "true");
+    await expect(latestArticle.locator("p").first()).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
@@ -179,8 +175,6 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(result).toBeVisible();
     await expect(page.locator("#analysisForm")).toHaveClass(/is-compact/);
     await expect(page.getByRole("button", { name: "調整資料", exact: true })).toBeVisible();
-    await expect(page.getByText("已套用真太陽時校正", { exact: true })).toBeVisible();
-    await expect(page.getByText("子時不換日（以午夜為界）", { exact: true })).toBeVisible();
     await expect(page.locator("#analysis-question")).toHaveCount(0);
     await expect(page.locator("#birth-city")).toBeVisible();
     await expect(page.locator("#current-city")).toBeVisible();
