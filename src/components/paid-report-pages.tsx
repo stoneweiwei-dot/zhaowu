@@ -2,6 +2,7 @@ import { useI18n, type Locale } from "@/lib/i18n";
 import type { AnalysisResult } from "@/lib/bazi/types";
 import type { ReportSection } from "@/lib/report/focused-report";
 import { MindAdviceComic } from "@/components/mind-advice-comic";
+import { ReportVisualBook } from "@/components/report-visual-book";
 
 const COPY = {
   "zh-Hant": {
@@ -93,6 +94,8 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
         <h3 id="focused-report-title" className="zhaowu-report-title">{copy.title}</h3>
         <p className="zhaowu-report-lead">{copy.lead}</p>
       </header>
+
+      {result ? <ReportVisualBook result={result} /> : null}
 
       <div className="zhaowu-report-flow">
         {content.summary.length ? (
