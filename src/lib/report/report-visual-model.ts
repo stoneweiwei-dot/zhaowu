@@ -95,15 +95,15 @@ const DAY_META: Record<string, DayMeta> = {
   },
   庚: {
     element: "金", yinYang: "陽", visualKey: "geng-metal",
-    heaven: { "zh-Hant": "秋金礦石", "zh-Hans": "秋金矿石", en: "decisive autumn metal" },
+    heaven: { "zh-Hant": "礦鐵鋒刃", "zh-Hans": "矿铁锋刃", en: "ore, iron and a decisive edge" },
     keywords: { "zh-Hant": ["果決", "整頓", "原則", "效率"], "zh-Hans": ["果决", "整顿", "原则", "效率"], en: ["decisiveness", "order", "principle", "efficiency"] },
-    summary: { "zh-Hant": "庚金取象重切分與整頓，遇到混亂時傾向先找規則、去蕪存菁，再推進。", "zh-Hans": "庚金取象重切分与整顿，遇到混乱时倾向先找规则、去芜存菁，再推进。", en: "This pattern responds to disorder by defining rules, cutting away excess and moving decisively." },
+    summary: { "zh-Hant": "庚金取象重礦鐵、鋒刃、切分與整頓；弦月或殘月的鋒稜可借作庚氣視覺，但不把月亮本體判作庚金，也不據月相判旺衰。", "zh-Hans": "庚金取象重矿铁、锋刃、切分与整顿；弦月或残月的锋棱可借作庚气视觉，但不把月亮本体判作庚金，也不据月相判旺衰。", en: "Geng Metal is shown through ore, iron, edges and decisive cutting. A crescent or waning edge may be borrowed as a visual metaphor, but lunar phase is not used to judge Metal strength." },
   },
   辛: {
     element: "金", yinYang: "陰", visualKey: "xin-metal",
-    heaven: { "zh-Hant": "珠玉霜露", "zh-Hans": "珠玉霜露", en: "refined metal and frost" },
+    heaven: { "zh-Hant": "珠玉月華", "zh-Hans": "珠玉月华", en: "jade, pearl and moonlight" },
     keywords: { "zh-Hant": ["精準", "審美", "分辨", "克制"], "zh-Hans": ["精准", "审美", "分辨", "克制"], en: ["precision", "taste", "discernment", "restraint"] },
-    summary: { "zh-Hant": "辛金取象如珠玉精工，重品質、尺度與辨識力；細節是否到位往往比聲量更重要。", "zh-Hans": "辛金取象如珠玉精工，重品质、尺度与辨识力；细节是否到位往往比声量更重要。", en: "This pattern values precision, quality and discernment; getting the detail right matters more than volume." },
+    summary: { "zh-Hant": "辛金本象取珠玉精金，視覺延伸以月輪、月華表其清冷精微；滿月重清輝與圓成，眉月重初露，弦月與殘月可兼見庚的鋒稜。月相只作命象表現，不據出生月相判金旺衰。", "zh-Hans": "辛金本象取珠玉精金，视觉延伸以月轮、月华表其清冷精微；满月重清辉与圆成，眉月重初露，弦月与残月可兼见庚的锋棱。月相只作命象表现，不据出生月相判金旺衰。", en: "Xin Metal keeps its classical pearl-and-jade core, with the moon and moonlight used as a visual extension for cool refinement. Full, young, crescent and waning forms vary the imagery only; lunar phase never determines Metal strength." },
   },
   壬: {
     element: "水", yinYang: "陽", visualKey: "ren-water",

@@ -56,6 +56,17 @@ test("English visual layer stays plain-language while keeping the same data", ()
   assert.equal(model.elements.rows.reduce((sum, row) => sum + row.percent, 0), 100);
 });
 
+test("Geng and Xin metal keep lunar imagery in the visual layer only", () => {
+  const xin = buildReportVisualModel({ ...chart, dayMaster: "辛", dayMasterElement: "金" }, "zh-Hant");
+  const geng = buildReportVisualModel({ ...chart, dayMaster: "庚", dayMasterElement: "金" }, "zh-Hant");
+  assert.equal(xin.dayMaster.heavenImage, "珠玉月華");
+  assert.match(xin.dayMaster.summary, /月相只作命象表現/);
+  assert.match(xin.dayMaster.summary, /不據出生月相判金旺衰/);
+  assert.equal(geng.dayMaster.heavenImage, "礦鐵鋒刃");
+  assert.match(geng.dayMaster.summary, /弦月或殘月的鋒稜可借作庚氣視覺/);
+  assert.match(geng.dayMaster.summary, /不據月相判旺衰/);
+});
+
 test("provisional useful-element output is visibly marked as provisional", () => {
   const model = buildReportVisualModel({ ...chart, usefulProvisional: true }, "zh-Hant");
   assert.equal(model.elements.provisional, true);
