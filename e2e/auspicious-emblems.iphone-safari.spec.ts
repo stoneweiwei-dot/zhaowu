@@ -32,7 +32,7 @@ test.describe("iPhone Safari parchment application shell", () => {
     }
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator(".zhaowu-home-intro").first()).toBeVisible();
+    await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
 
