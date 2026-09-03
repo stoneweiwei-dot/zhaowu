@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { LIFE_VIEW_CURATED_ARTICLES } from "@/lib/life-view-curated";
+import { LIFE_VIEW_SHORT_FORM_ARTICLES } from "@/lib/life-view-short-form";
 
-const ARTICLES = LIFE_VIEW_CURATED_ARTICLES;
+const ARTICLES = [...LIFE_VIEW_SHORT_FORM_ARTICLES, ...LIFE_VIEW_CURATED_ARTICLES];
 
 export function LifeViewHomeSection() {
   const { locale } = useI18n();
