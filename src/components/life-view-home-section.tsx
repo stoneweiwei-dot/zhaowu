@@ -3,7 +3,9 @@ import { useI18n } from "@/lib/i18n";
 import { LIFE_VIEW_CURATED_ARTICLES } from "@/lib/life-view-curated";
 import { LIFE_VIEW_SHORT_FORM_ARTICLES } from "@/lib/life-view-short-form";
 
+// 「觀世錄」沒有文章數量上限。內容可持續新增；首頁只折疊顯示方式，不截斷資料。
 const ARTICLES = [...LIFE_VIEW_SHORT_FORM_ARTICLES, ...LIFE_VIEW_CURATED_ARTICLES];
+ARTICLES.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
 export function LifeViewHomeSection() {
   const { locale } = useI18n();
@@ -16,7 +18,7 @@ export function LifeViewHomeSection() {
       return {
         kicker: "STONE · NOTES",
         title: "Zhaowu · Notes on Life",
-        lead: "Latest note first. Open the section to browse the curated archive.",
+        lead: "Latest note first. Open the section to browse all published notes.",
         latest: "Latest",
         all: "All notes",
         collapse: "Show less",
@@ -28,7 +30,7 @@ export function LifeViewHomeSection() {
       return {
         kicker: "STONE · 观世",
         title: "昭梧 · 观世录",
-        lead: "首页只看最新一篇；点开这里再看精简后的文章。",
+        lead: "首页只看最新一篇；点开这里查看全部已发布文章。",
         latest: "最新",
         all: "全部文章",
         collapse: "收起",
@@ -39,7 +41,7 @@ export function LifeViewHomeSection() {
     return {
       kicker: "STONE · 觀世",
       title: "昭梧 · 觀世錄",
-      lead: "首頁只看最新一篇；點開這裡再看精簡後的文章。",
+      lead: "首頁只看最新一篇；點開這裡查看全部已發布文章。",
       latest: "最新",
       all: "全部文章",
       collapse: "收起",
