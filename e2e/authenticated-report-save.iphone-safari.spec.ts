@@ -131,21 +131,22 @@ test("Signed-in member can generate and persist one full report record", async (
   await expect(page.locator("#result")).toBeVisible();
   const saveButton = page.getByRole("button", { name: "更新已保存報告", exact: true });
   await expect(saveButton).toBeVisible();
-  await expect.poll(() => writes.some((call) => call.method === "POST" && call.status === "engine_ready")).toBe(true);
-  const engineReady = writes.find((call) => call.method === "POST" && call.status === "engine_ready");
-  expect(engineReady?.id).toBeTruthy();
 
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
   await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "report_ready")).toBe(true);
-  const reportReady = writes.find((call) => call.method === "PATCH" && call.status === "report_ready");
-  expect(reportReady?.id).toBe(engineReady?.id);
 
   await expect(saveButton).toBeEnabled();
   await saveButton.click();
+  await expect.poll(() => writes.some((call) => call.method === "POST" && call.status === "engine_ready")).toBe(true);
   await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "full_ready")).toBe(true);
+
+  const reportReady = writes.find((call) => call.method === "PATCH" && call.status === "report_ready");
   const fullReady = writes.find((call) => call.method === "PATCH" && call.status === "full_ready");
-  expect(fullReady?.id).toBe(engineReady?.id);
+  expect(reportReady?.id).toBeTruthy();
+  expect(fullReady?.id).toBe(reportReady?.id);
+  expect(writes.some((call) => call.method === "POST" && call.status === "engine_ready" && call.id === fullReady?.id)).toBe(true);
+
   await expect(page.getByText("完整報告已保存到同一筆記錄。", { exact: true })).toBeVisible();
   await expect(page.getByText(/雲端同步暫時失敗/)).toHaveCount(0);
   await mobileHealthy(page);
