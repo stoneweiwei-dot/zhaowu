@@ -97,10 +97,6 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
         <p className="zhaowu-report-lead">{copy.lead}</p>
       </header>
 
-      {result ? <ReportVisualBook result={result} /> : null}
-      {result ? <ReportLuckBook result={result} /> : null}
-      {result ? <ReportShareCard result={result} /> : null}
-
       <div className="zhaowu-report-flow">
         {content.summary.length ? (
           <div className="zhaowu-report-summary-block">
@@ -121,6 +117,10 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
           </div>
         ) : null}
       </div>
+
+      {result ? <ReportVisualBook result={result} /> : null}
+      {result ? <ReportLuckBook result={result} /> : null}
+      {result ? <ReportShareCard result={result} /> : null}
     </section>
   );
 }
