@@ -1,0 +1,249 @@
+/* REPORT-VISUAL-SYSTEM Phase 2: actual calculated timing map. */
+.zhaowu-luck-book {
+  position: relative;
+  margin: 0 18px 22px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(154, 111, 60, .24);
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, rgba(244, 233, 212, .62), transparent 44%),
+    linear-gradient(180deg, rgba(252, 247, 236, .98), rgba(246, 236, 217, .97));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.42);
+  color: #2d2923;
+}
+
+.zhaowu-luck-book::before {
+  content: "";
+  position: absolute;
+  inset: auto -8% -9% 38%;
+  height: 46%;
+  pointer-events: none;
+  opacity: .09;
+  background: url("/wallpaper-song.jpg") center / cover no-repeat;
+  filter: grayscale(.35) sepia(.18);
+  mask-image: linear-gradient(to bottom, transparent, #000 30%);
+}
+
+.zhaowu-luck-book > * { position: relative; z-index: 1; }
+
+.zhaowu-luck-head > p {
+  margin: 0;
+  color: #966e3d;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .22em;
+}
+
+.zhaowu-luck-head h4 {
+  margin: 6px 0 0;
+  font-family: var(--font-display, "Songti TC", "PMingLiU", serif);
+  font-size: 1.42rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+}
+
+.zhaowu-luck-head > span {
+  display: block;
+  max-width: 42rem;
+  margin-top: 7px;
+  color: #685d50;
+  font-size: 11.5px;
+  line-height: 1.75;
+}
+
+.zhaowu-luck-current-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.zhaowu-luck-current-card {
+  min-width: 0;
+  min-height: 126px;
+  border: 1px solid rgba(143, 109, 67, .22);
+  border-radius: 14px;
+  padding: 13px;
+  background: rgba(255, 251, 242, .76);
+}
+
+.zhaowu-luck-current-card.is-year {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(181,58,46,.08), transparent 36%),
+    rgba(255,251,242,.8);
+}
+
+.zhaowu-luck-current-card > span {
+  display: block;
+  color: #927044;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.zhaowu-luck-current-card > b {
+  display: block;
+  margin-top: 9px;
+  color: #2d2923;
+  font-family: var(--font-display, serif);
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+
+.zhaowu-luck-current-card p {
+  margin: 7px 0 0;
+  color: #5f5447;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.zhaowu-luck-current-card small {
+  display: block;
+  margin-top: 4px;
+  color: #87745d;
+  font-size: 9px;
+}
+
+.zhaowu-luck-timeline-block {
+  margin-top: 15px;
+  border-top: 1px solid rgba(141,106,63,.18);
+  padding-top: 13px;
+}
+
+.zhaowu-luck-timeline-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.zhaowu-luck-timeline-head h5 {
+  margin: 0;
+  font-family: var(--font-display, serif);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.zhaowu-luck-timeline-head span {
+  color: #8e7658;
+  font-size: 9px;
+}
+
+.zhaowu-luck-timeline {
+  display: flex;
+  gap: 8px;
+  margin: 11px -3px 0;
+  padding: 3px 3px 9px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.zhaowu-luck-period {
+  position: relative;
+  flex: 0 0 126px;
+  min-height: 112px;
+  scroll-snap-align: start;
+  border: 1px solid rgba(143,109,67,.2);
+  border-radius: 13px;
+  padding: 13px 10px 10px;
+  background: rgba(250,243,229,.86);
+}
+
+.zhaowu-luck-period > i {
+  position: absolute;
+  top: 13px;
+  right: 11px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #9e8056;
+  border-radius: 50%;
+  background: #efe1c8;
+}
+
+.zhaowu-luck-period.is-current {
+  border-color: rgba(64,93,78,.55);
+  background: linear-gradient(180deg, rgba(227,237,228,.88), rgba(248,242,229,.94));
+}
+
+.zhaowu-luck-period.is-current > i { border-color: #405d4e; background: #405d4e; }
+.zhaowu-luck-period b {
+  display: block;
+  color: #302b25;
+  font-family: var(--font-display, serif);
+  font-size: 1.08rem;
+  letter-spacing: .08em;
+}
+.zhaowu-luck-period > span {
+  display: block;
+  margin-top: 8px;
+  color: #62574a;
+  font-size: 9.5px;
+}
+.zhaowu-luck-period small {
+  display: block;
+  margin-top: 4px;
+  color: #89755a;
+  font-size: 8.5px;
+}
+.zhaowu-luck-period em {
+  display: inline-block;
+  margin-top: 8px;
+  border-radius: 999px;
+  padding: 3px 7px;
+  background: #405d4e;
+  color: #fff8ec;
+  font-size: 7px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+
+.zhaowu-luck-unavailable {
+  margin-top: 10px;
+  border: 1px dashed rgba(143,109,67,.25);
+  border-radius: 12px;
+  padding: 13px;
+  background: rgba(255,250,241,.56);
+}
+.zhaowu-luck-unavailable p {
+  margin: 0;
+  color: #706354;
+  font-size: 10.5px;
+  line-height: 1.7;
+}
+
+.zhaowu-luck-boundary {
+  margin: 12px 0 0;
+  border-left: 2px solid rgba(69,93,77,.46);
+  padding-left: 9px;
+  color: #716354;
+  font-size: 9.5px;
+  line-height: 1.65;
+}
+
+.zhaowu-luck-watermark {
+  margin: 10px 2px -3px;
+  color: rgba(76,59,40,.32);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-align: right;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-luck-book { margin: 0 0 19px; padding: 14px; border-radius: 17px; }
+  .zhaowu-luck-head h4 { font-size: 1.28rem; }
+  .zhaowu-luck-head > span { font-size: 10.8px; line-height: 1.68; }
+  .zhaowu-luck-current-card { min-height: 118px; padding: 11px; }
+  .zhaowu-luck-current-card > b { font-size: 1.4rem; }
+  .zhaowu-luck-period { flex-basis: 118px; }
+}
+
+@media (max-width: 350px) {
+  .zhaowu-luck-current-grid { grid-template-columns: 1fr; }
+}
