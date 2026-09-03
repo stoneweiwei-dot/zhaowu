@@ -1,20 +1,8 @@
 import { useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
-import { LIFE_VIEW_ARTICLES } from "@/lib/life-view";
-import { LIFE_VIEW_FILE_ARTICLES } from "@/lib/life-view-from-files";
-import { LIFE_VIEW_PRACTICE_ARTICLES } from "@/lib/life-view-practice-manual";
-import { LIFE_VIEW_20260831_ARTICLES } from "@/lib/life-view-20260831";
-import { LIFE_VIEW_20260903_ARTICLES } from "@/lib/life-view-20260903";
-import { LIFE_VIEW_20260903_LATE_ARTICLES } from "@/lib/life-view-20260903-late";
+import { LIFE_VIEW_CURATED_ARTICLES } from "@/lib/life-view-curated";
 
-const ARTICLES = [
-  ...LIFE_VIEW_20260903_LATE_ARTICLES,
-  ...LIFE_VIEW_20260903_ARTICLES,
-  ...LIFE_VIEW_20260831_ARTICLES,
-  ...LIFE_VIEW_PRACTICE_ARTICLES,
-  ...LIFE_VIEW_FILE_ARTICLES,
-  ...LIFE_VIEW_ARTICLES,
-];
+const ARTICLES = LIFE_VIEW_CURATED_ARTICLES;
 
 export function LifeViewHomeSection() {
   const { locale } = useI18n();
@@ -27,7 +15,7 @@ export function LifeViewHomeSection() {
       return {
         kicker: "STONE · NOTES",
         title: "Zhaowu · Notes on Life",
-        lead: "Latest note first. Open the section to browse the full archive.",
+        lead: "Latest note first. Open the section to browse the curated archive.",
         latest: "Latest",
         all: "All notes",
         collapse: "Show less",
@@ -39,7 +27,7 @@ export function LifeViewHomeSection() {
       return {
         kicker: "STONE · 观世",
         title: "昭梧 · 观世录",
-        lead: "首页只看最新一篇；点开这里再看全部文章。",
+        lead: "首页只看最新一篇；点开这里再看精简后的文章。",
         latest: "最新",
         all: "全部文章",
         collapse: "收起",
@@ -50,7 +38,7 @@ export function LifeViewHomeSection() {
     return {
       kicker: "STONE · 觀世",
       title: "昭梧 · 觀世錄",
-      lead: "首頁只看最新一篇；點開這裡再看全部文章。",
+      lead: "首頁只看最新一篇；點開這裡再看精簡後的文章。",
       latest: "最新",
       all: "全部文章",
       collapse: "收起",
