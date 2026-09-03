@@ -16,6 +16,7 @@ for (const [input, winners] of cases) {
   test(`six realms score ${input}`, () => {
     const result = scoreSixRealmAnswers([...input]);
     assert.deepEqual(result.winners, winners);
+    assert.deepEqual(result.primary, winners);
     assert.equal(result.tied, winners.length > 1);
   });
 }
@@ -23,4 +24,16 @@ for (const [input, winners] of cases) {
 test("six realms scoring keeps all six counts", () => {
   const result = scoreSixRealmAnswers(["A", "B", "C", "D", "E", "F"]);
   assert.deepEqual(result.counts, { A: 1, B: 1, C: 1, D: 1, E: 1, F: 1 });
+});
+
+test("six realms exposes a secondary score band without forcing a single type", () => {
+  const result = scoreSixRealmAnswers(["A", "A", "A", "B", "B", "C"]);
+  assert.deepEqual(result.primary, ["A"]);
+  assert.deepEqual(result.secondary, ["B"]);
+});
+
+test("a full top-score tie stays mixed and has no invented secondary realm", () => {
+  const result = scoreSixRealmAnswers(["A", "A", "B", "B", "C", "C"]);
+  assert.deepEqual(result.primary, ["A", "B", "C"]);
+  assert.deepEqual(result.secondary, []);
 });

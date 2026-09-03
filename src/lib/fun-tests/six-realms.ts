@@ -77,6 +77,18 @@ export const SIX_REALM_RESULTS: Record<Locale, Record<SixRealmKey, SixRealmResul
 export function scoreSixRealmAnswers(answers: SixRealmKey[]) {
   const counts = Object.fromEntries(keys.map((key) => [key, 0])) as Record<SixRealmKey, number>;
   for (const answer of answers) counts[answer] += 1;
-  const max = Math.max(...keys.map((key) => counts[key]));
-  return { counts, winners: keys.filter((key) => counts[key] === max && max > 0), tied: keys.filter((key) => counts[key] === max && max > 0).length > 1 };
+
+  const scoreBands = [...new Set(keys.map((key) => counts[key]).filter((value) => value > 0))].sort((a, b) => b - a);
+  const primaryScore = scoreBands[0] ?? 0;
+  const secondaryScore = scoreBands[1] ?? 0;
+  const primary = primaryScore > 0 ? keys.filter((key) => counts[key] === primaryScore) : [];
+  const secondary = secondaryScore > 0 ? keys.filter((key) => counts[key] === secondaryScore) : [];
+
+  return {
+    counts,
+    winners: primary,
+    tied: primary.length > 1,
+    primary,
+    secondary,
+  };
 }

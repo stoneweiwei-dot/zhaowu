@@ -9,17 +9,19 @@ const UI = {
   "zh-Hant": {
     kicker: "趣味測驗 · SERIES 03",
     title: "六道習氣測驗",
-    subtitle: "你從哪道來，看身上即知",
-    lead: "用 6 個日常直覺情境，看你現在最常出現的習氣方向。憑第一直覺選最接近自己的答案，不必想太久。",
-    boundary: "這個測驗不是在斷定『你前世就是哪一道』，也不替代昭梧的達摩一掌經排盤。它只用日常選擇觀察你目前最明顯的習氣方向，重點是觀自身、斷惡習。",
+    subtitle: "你今天正在經歷哪一道？",
+    lead: "每一天、甚至每一瞬間，都可能在六種心境之間輪轉。用 6 個日常情境，看你此刻較常落入的主導心境與次要心境。憑第一直覺選最接近自己的答案，不必想太久。",
+    boundary: "這裡把六道作為日常意識與情緒的觀察框架：天道是喜悅與執著，阿修羅道是瞋恨與好勝，人道是忙碌與理性，畜生道是愚痴與本能，餓鬼道是貪婪與匱乏，地獄道是極怒與煎熬。不是在斷定死後去處或前世身分，也不替代昭梧的正式一掌經排盤。",
     question: "題",
     next: "下一題",
     result: "查看結果",
-    mixed: "習氣混合",
+    mixed: "主導心境並列",
+    primary: "主導心境",
+    secondary: "次要心境",
     score: "本次計分",
-    watch: "需留意的習氣",
-    practice: "觀自身重點",
-    reminder: "這個測驗不是在給你貼標籤，更不是在說『你前世就是某一道』。它只是一面鏡子，讓你看見自己日常最常出現的習氣方向。真正重要的是：看見之後，開始調整習慣與行為。",
+    watch: "容易卡住的地方",
+    practice: "轉念方向",
+    reminder: "外在境遇未必由人，但面對境遇時的心念可以被覺察與調整。這個測驗要看的不是『你是哪一道』，而是『此刻哪種心念最常接管你』；看見它，就是從無意識輪轉回到主動選擇的第一步。",
     restart: "重新測驗",
     formal: "查看我的正式一掌經六道",
     formalNote: "正式排盤需要出生資料，且不會讀取這次趣味測驗結果。",
@@ -28,17 +30,19 @@ const UI = {
   "zh-Hans": {
     kicker: "趣味测验 · SERIES 03",
     title: "六道习气测验",
-    subtitle: "你从哪道来，看身上即知",
-    lead: "用 6 个日常直觉情境，看你现在最常出现的习气方向。凭第一直觉选最接近自己的答案，不必想太久。",
-    boundary: "这个测验不是在断定『你前世就是哪一道』，也不替代昭梧的达摩一掌经排盘。它只用日常选择观察你目前最明显的习气方向，重点是观自身、断恶习。",
+    subtitle: "你今天正在经历哪一道？",
+    lead: "每一天、甚至每一瞬间，都可能在六种心境之间轮转。用 6 个日常情境，看你此刻较常落入的主导心境与次要心境。凭第一直觉选最接近自己的答案，不必想太久。",
+    boundary: "这里把六道作为日常意识与情绪的观察框架：天道是喜悦与执着，阿修罗道是瞋恨与好胜，人道是忙碌与理性，畜生道是愚痴与本能，饿鬼道是贪婪与匮乏，地狱道是极怒与煎熬。不是在断定死后去处或前世身份，也不替代昭梧的正式一掌经排盘。",
     question: "题",
     next: "下一题",
     result: "查看结果",
-    mixed: "习气混合",
+    mixed: "主导心境并列",
+    primary: "主导心境",
+    secondary: "次要心境",
     score: "本次计分",
-    watch: "需留意的习气",
-    practice: "观自身重点",
-    reminder: "这个测验不是在给你贴标签，更不是在说『你前世就是某一道』。它只是一面镜子，让你看见自己日常最常出现的习气方向。真正重要的是：看见之后，开始调整习惯与行为。",
+    watch: "容易卡住的地方",
+    practice: "转念方向",
+    reminder: "外在境遇未必由人，但面对境遇时的心念可以被觉察与调整。这个测验要看的不是『你是哪一道』，而是『此刻哪种心念最常接管你』；看见它，就是从无意识轮转回到主动选择的第一步。",
     restart: "重新测验",
     formal: "查看我的正式一掌经六道",
     formalNote: "正式排盘需要出生资料，且不会读取这次趣味测验结果。",
@@ -47,17 +51,19 @@ const UI = {
   en: {
     kicker: "FUN TEST · SERIES 03",
     title: "Six Realms Habit Test",
-    subtitle: "A mirror for the habits showing up most strongly now",
-    lead: "Six everyday situations highlight the behavioural pattern you are leaning on most right now. Choose the closest answer by instinct rather than overthinking it.",
-    boundary: "This test does not claim to identify a past-life realm and it does not replace Zhaowu's Dharma Palm calculation. It only uses everyday choices as a self-reflection tool for current habits.",
+    subtitle: "Which state are you moving through today?",
+    lead: "Across a day, even moment to moment, your mind can move through very different states. Six everyday situations show the dominant and secondary pattern appearing most often for you right now. Choose by instinct rather than overthinking it.",
+    boundary: "This test uses the Six Realms as a reflection framework for everyday states: pleasure and attachment, rivalry and anger, busyness and reason, unexamined instinct, scarcity and craving, or intense anger and distress. It does not claim to identify a literal afterlife or past-life realm, and it does not replace Zhaowu's formal Dharma Palm calculation.",
     question: "Question",
     next: "Next question",
     result: "See result",
-    mixed: "Mixed pattern",
+    mixed: "Tied dominant states",
+    primary: "Dominant state",
+    secondary: "Secondary state",
     score: "Score",
-    watch: "Watch for",
-    practice: "Practice",
-    reminder: "This test is not a label and it is not a claim about where you came from in a past life. It is only a mirror for the habits that appear most often now. What matters is what you choose to change after noticing them.",
+    watch: "Where it can trap you",
+    practice: "Shift to practise",
+    reminder: "You cannot control every circumstance, but you can notice and adjust how your mind responds. The point is not to label you as one realm; it is to notice which state is taking over most often now. Awareness is the first step back toward deliberate choice.",
     restart: "Retake test",
     formal: "View my formal Dharma Palm reading",
     formalNote: "The formal reading needs birth details and does not use this quiz result.",
@@ -93,6 +99,18 @@ function SixRealmsQuiz() {
       return;
     }
     setIndex((value) => value + 1);
+  }
+
+  function realmCard(key: SixRealmKey, level: "primary" | "secondary") {
+    const result = results[key];
+    return (
+      <div key={`${level}-${key}`} className={`rounded-xl border bg-paper p-4 sm:p-5 ${level === "primary" ? "border-cinnabar/35" : "border-line"}`}>
+        <h2 className="font-display text-2xl text-ink">{key} · {result.name}</h2>
+        <p className="mt-3 text-sm leading-7 text-ink-soft">{result.summary}</p>
+        <p className="mt-4 text-sm leading-7 text-ink-soft"><b className="text-ink">{copy.watch}：</b>{result.watch}</p>
+        <p className="mt-2 text-sm leading-7 text-ink-soft"><b className="text-ink">{copy.practice}：</b>{result.practice}</p>
+      </div>
+    );
   }
 
   const finalScore = done ? scoreSixRealmAnswers(answers) : score;
@@ -139,20 +157,20 @@ function SixRealmsQuiz() {
       ) : (
         <section className="space-y-4">
           <article className="seal-border rounded-2xl bg-cream/95 p-5 sm:p-8">
-            <p className="text-xs tracking-[0.24em] text-cinnabar">{finalScore.tied ? copy.mixed : copy.title}</p>
+            <p className="text-xs tracking-[0.24em] text-cinnabar">{finalScore.tied ? copy.mixed : copy.primary}</p>
             <div className="mt-4 grid gap-4">
-              {finalScore.winners.map((key) => {
-                const result = results[key];
-                return (
-                  <div key={key} className="rounded-xl border border-line bg-paper p-4 sm:p-5">
-                    <h2 className="font-display text-2xl text-ink">{key} · {result.name}</h2>
-                    <p className="mt-3 text-sm leading-7 text-ink-soft">{result.summary}</p>
-                    <p className="mt-4 text-sm leading-7 text-ink-soft"><b className="text-ink">{copy.watch}：</b>{result.watch}</p>
-                    <p className="mt-2 text-sm leading-7 text-ink-soft"><b className="text-ink">{copy.practice}：</b>{result.practice}</p>
-                  </div>
-                );
-              })}
+              {finalScore.primary.map((key) => realmCard(key, "primary"))}
             </div>
+
+            {finalScore.secondary.length > 0 ? (
+              <div className="mt-6 border-t border-line pt-5">
+                <p className="text-xs tracking-[0.2em] text-ink-mute">{copy.secondary}</p>
+                <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                  {finalScore.secondary.map((key) => realmCard(key, "secondary"))}
+                </div>
+              </div>
+            ) : null}
+
             <p className="mt-5 text-sm text-ink-soft"><b className="text-ink">{copy.score}：</b>{(["A", "B", "C", "D", "E", "F"] as SixRealmKey[]).map((key) => `${key} ${finalScore.counts[key]}`).join(" · ")}</p>
           </article>
 
