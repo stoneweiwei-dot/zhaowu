@@ -1,22 +1,16 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { searchCities } from "@/lib/actions";
-import { localizeCityHit } from "@/lib/bazi/cities";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { CityHit } from "@/lib/bazi/types";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { localBirthToUtc } from "@/lib/qizheng/engine";
+import { readSpecialistHistory, saveSpecialistHistory } from "@/lib/specialist-history";
 
 const ASTRO_SCRIPT_ID = "zhaowu-astronomy-engine-d60";
 const ASTRO_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js";
-const D60_PROFILE = "ZW-D60-LAHIRI-AE2.1.19-1.0";
-
-const SIGNS = [
-  ["Aries", "白羊", "白羊"], ["Taurus", "金牛", "金牛"], ["Gemini", "雙子", "双子"], ["Cancer", "巨蟹", "巨蟹"],
-  ["Leo", "獅子", "狮子"], ["Virgo", "處女", "处女"], ["Libra", "天秤", "天秤"], ["Scorpio", "天蠍", "天蝎"],
-  ["Sagittarius", "射手", "射手"], ["Capricorn", "摩羯", "摩羯"], ["Aquarius", "水瓶", "水瓶"], ["Pisces", "雙魚", "双鱼"],
-] as const;
-
 const BODY_KEYS = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"] as const;
 type BodyKey = (typeof BODY_KEYS)[number];
+type D60Key = "Ascendant" | BodyKey;
 
 type AstronomyApi = {
   EclipticLongitude: (body: string, date: Date) => number;
@@ -24,78 +18,85 @@ type AstronomyApi = {
 };
 
 type D60Placement = {
-  key: "Ascendant" | BodyKey;
-  siderealLongitude: number;
+  key: D60Key;
   d60Sign: number;
   segment: number;
 };
 
 type D60Result = {
   utcIso: string;
-  ayanamsa: number;
   placements: D60Placement[];
   stableMinus2: boolean;
   stablePlus2: boolean;
 };
 
-const COPY = {
-  "zh-Hant": {
-    eyebrow: "印度占星 · D60 SHASHTIAMSA", title: "D60 業力細分層", badge: "高精度時間限定",
-    lead: "作為「前世今生」的第二視角，D60 用來觀察更細的業力傾向、慣性與今生容易反覆遇到的課題；它不取代子平八字，也不把象徵解讀說成可驗證的前世史實。",
-    precisionTitle: "出生時間必須非常準確", precisionBody: "D60 把每個 30° 星座再切成 60 份，每份只有 0.5°。尤其 D60 上升點對時間極敏感；請優先使用出生證明、醫院紀錄或其他可核對到分鐘的紀錄。",
-    exact: "可用：出生日期＋出生地＋可核對到分鐘的出生時間", uncertain: "不直接下結論：家人回憶、只知道時辰、四捨五入到 5／10／15 分鐘、時間不確定",
-    formTitle: "排你的 D60", formLead: "只有在時間來源可靠時才計算。昭梧會同時做 ±2 分鐘敏感度檢查。",
-    year: "年", month: "月", day: "日", hour: "時", minute: "分", city: "出生地", cityPh: "搜尋城市",
-    source: "出生時間來源", recorded: "出生證明／醫院紀錄／可核對到分鐘", remembered: "家人回憶或大概時間", confirm: "我確認這個時間不是估算或四捨五入值",
-    submit: "生成 D60 業力層", calculating: "正在排 D60…", needCity: "請選擇出生地。", needExact: "D60 已跳過：這個出生時間不是可核對到分鐘的可靠紀錄。", invalid: "請檢查出生日期與時間。", engineError: "D60 天文計算暫時無法載入；一掌經與其他報告不受影響。",
-    resultTitle: "你的 D60 業力骨架", resultLead: "以下顯示 D60 上升點與七曜落座。它讀的是反覆模式，不是具體前世故事。", lagna: "D60 上升", segment: "第 {n} 細分", sidereal: "Lahiri 恆星黃道", profile: "計算規格", sensitivity: "時間敏感度",
-    stable: "±2 分鐘內 D60 上升仍在同一星座；仍只代表這個小範圍內較穩定。", unstable: "±2 分鐘內 D60 上升已換星座；這張 D60 對出生分鐘高度敏感，解讀必須保守。",
-    themeTitle: "業力主題合看", core: "核心慣性", emotion: "情緒殘留", duty: "反覆責任", resource: "可帶走的資源", action: "行動課題", relation: "關係價值", mind: "思考習性",
-    rulesTitle: "使用邊界", rules: ["只讀業力主題、反覆模式與今生傾向；不編造前世姓名、身份、年代或具體事件。", "時間精度不足時直接跳過，不用猜測時間硬排。", "D60 是印度 Jyotish 輔助層；昭梧的人生節奏與選擇主判仍以子平八字為核心。"],
-    footer: "Shashtiamsa · Lahiri sidereal · symbolic karmic layer",
-  },
-  "zh-Hans": {
-    eyebrow: "印度占星 · D60 SHASHTIAMSA", title: "D60 业力细分层", badge: "高精度时间限定",
-    lead: "作为“前世今生”的第二视角，D60 用来观察更细的业力倾向、惯性与今生容易反复遇到的课题；它不取代子平八字，也不把象征解读说成可验证的前世史实。",
-    precisionTitle: "出生时间必须非常准确", precisionBody: "D60 把每个 30° 星座再切成 60 份，每份只有 0.5°。尤其 D60 上升点对时间极敏感；请优先使用出生证明、医院记录或其他可核对到分钟的记录。",
-    exact: "可用：出生日期＋出生地＋可核对到分钟的出生时间", uncertain: "不直接下结论：家人回忆、只知道时辰、四舍五入到 5／10／15 分钟、时间不确定",
-    formTitle: "排你的 D60", formLead: "只有在时间来源可靠时才计算。昭梧会同时做 ±2 分钟敏感度检查。",
-    year: "年", month: "月", day: "日", hour: "时", minute: "分", city: "出生地", cityPh: "搜索城市",
-    source: "出生时间来源", recorded: "出生证明／医院记录／可核对到分钟", remembered: "家人回忆或大概时间", confirm: "我确认这个时间不是估算或四舍五入值",
-    submit: "生成 D60 业力层", calculating: "正在排 D60…", needCity: "请选择出生地。", needExact: "D60 已跳过：这个出生时间不是可核对到分钟的可靠记录。", invalid: "请检查出生日期与时间。", engineError: "D60 天文计算暂时无法加载；一掌经与其他报告不受影响。",
-    resultTitle: "你的 D60 业力骨架", resultLead: "以下显示 D60 上升点与七曜落座。它读的是反复模式，不是具体前世故事。", lagna: "D60 上升", segment: "第 {n} 细分", sidereal: "Lahiri 恒星黄道", profile: "计算规格", sensitivity: "时间敏感度",
-    stable: "±2 分钟内 D60 上升仍在同一星座；仍只代表这个小范围内较稳定。", unstable: "±2 分钟内 D60 上升已换星座；这张 D60 对出生分钟高度敏感，解读必须保守。",
-    themeTitle: "业力主题合看", core: "核心惯性", emotion: "情绪残留", duty: "反复责任", resource: "可带走的资源", action: "行动课题", relation: "关系价值", mind: "思考习性",
-    rulesTitle: "使用边界", rules: ["只读业力主题、反复模式与今生倾向；不编造前世姓名、身份、年代或具体事件。", "时间精度不足时直接跳过，不用猜测时间硬排。", "D60 是印度 Jyotish 辅助层；昭梧的人生节奏与选择主判仍以子平八字为核心。"],
-    footer: "Shashtiamsa · Lahiri sidereal · symbolic karmic layer",
-  },
-  en: {
-    eyebrow: "VEDIC ASTROLOGY · D60 SHASHTIAMSA", title: "D60 karmic layer", badge: "PRECISION-TIME ONLY",
-    lead: "A second lens inside Past & Present. D60 is used for subtle karmic themes, persistent patterns and tendencies carried into the present. It does not replace BaZi, and it is not presented as proof of a literal past-life biography.",
-    precisionTitle: "Birth time must be highly reliable", precisionBody: "D60 divides each 30° zodiac sign into 60 sections of only 0.5° each. The D60 Ascendant is especially time-sensitive. Prefer a birth certificate, hospital record or another source recorded to the minute.",
-    exact: "Usable: birth date + birthplace + a recorded birth time to the minute", uncertain: "No definitive reading: family memory, only a two-hour birth branch, a time rounded to 5/10/15 minutes, or an uncertain time",
-    formTitle: "Calculate your D60", formLead: "Calculation opens only for a reliable recorded time. Zhaowu also checks the D60 Ascendant at ±2 minutes.",
-    year: "Year", month: "Month", day: "Day", hour: "Hour", minute: "Minute", city: "Birthplace", cityPh: "Search city",
-    source: "Birth-time source", recorded: "Birth certificate / hospital record / verified to the minute", remembered: "Family memory or approximate time", confirm: "I confirm this time is not estimated or rounded",
-    submit: "Generate D60 layer", calculating: "Calculating D60…", needCity: "Choose a birthplace.", needExact: "D60 skipped: this birth time is not a reliable minute-level record.", invalid: "Check the birth date and time.", engineError: "The D60 astronomy engine could not load. The Palm reading and other reports remain available.",
-    resultTitle: "Your D60 karmic structure", resultLead: "This shows the D60 Ascendant and seven classical planets. It describes recurring patterns, not a literal past-life story.", lagna: "D60 Ascendant", segment: "segment {n}", sidereal: "Lahiri sidereal zodiac", profile: "Calculation profile", sensitivity: "Time sensitivity",
-    stable: "The D60 Ascendant stays in the same sign at ±2 minutes. That only indicates relative stability inside this narrow window.", unstable: "The D60 Ascendant changes sign within ±2 minutes. This chart is highly birth-minute sensitive and should be read conservatively.",
-    themeTitle: "Combined karmic themes", core: "Core pattern", emotion: "Emotional residue", duty: "Repeated duty", resource: "Carried resource", action: "Action lesson", relation: "Relationship values", mind: "Mental habit",
-    rulesTitle: "Reading boundary", rules: ["Read karmic themes, repeated patterns and present-life tendencies only; never invent past-life names, identities, dates or specific events.", "If birth-time quality is insufficient, D60 is skipped rather than forcing a chart from guessed data.", "D60 is an auxiliary Jyotish layer. Zhaowu keeps classical BaZi as the primary framework for life rhythm and choice analysis."],
-    footer: "Shashtiamsa · Lahiri sidereal · symbolic karmic layer",
-  },
-} as const satisfies Record<Locale, Record<string, string | readonly string[]>>;
+type SavedBirth = {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  city: CityHit;
+};
 
-const SIGN_THEMES = {
-  "zh-Hant": ["先行、開創、自己扛起第一步", "守成、價值、資源與安全感", "學習、轉譯、雙向溝通", "照顧、歸屬、情緒記憶", "自我表達、榮譽、創造", "修正、服務、秩序與技藝", "關係、公平、協商與取捨", "深層轉化、界線、信任與控制", "信念、遠行、教導與視野", "責任、結構、耐力與成就", "群體、制度更新、獨立思考", "慈悲、想像、界線溶解與放下"],
-  "zh-Hans": ["先行、开创、自己扛起第一步", "守成、价值、资源与安全感", "学习、转译、双向沟通", "照顾、归属、情绪记忆", "自我表达、荣誉、创造", "修正、服务、秩序与技艺", "关系、公平、协商与取舍", "深层转化、界线、信任与控制", "信念、远行、教导与视野", "责任、结构、耐力与成就", "群体、制度更新、独立思考", "慈悲、想象、界线溶解与放下"],
-  en: ["initiative, beginnings and taking the first step", "stability, values, resources and security", "learning, translation and two-way communication", "care, belonging and emotional memory", "self-expression, pride and creation", "refinement, service, order and craft", "relationships, fairness, negotiation and choice", "deep change, boundaries, trust and control", "belief, travel, teaching and perspective", "duty, structure, endurance and achievement", "community, reform and independent thought", "compassion, imagination, porous boundaries and release"],
+const SIGNS = {
+  "zh-Hant": ["白羊", "金牛", "雙子", "巨蟹", "獅子", "處女", "天秤", "天蠍", "射手", "摩羯", "水瓶", "雙魚"],
+  "zh-Hans": ["白羊", "金牛", "双子", "巨蟹", "狮子", "处女", "天秤", "天蝎", "射手", "摩羯", "水瓶", "双鱼"],
+  en: ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"],
 } as const satisfies Record<Locale, readonly string[]>;
 
-const BODY_LABELS = {
-  "zh-Hant": { Ascendant: "上升", Sun: "太陽", Moon: "月亮", Mercury: "水星", Venus: "金星", Mars: "火星", Jupiter: "木星", Saturn: "土星" },
-  "zh-Hans": { Ascendant: "上升", Sun: "太阳", Moon: "月亮", Mercury: "水星", Venus: "金星", Mars: "火星", Jupiter: "木星", Saturn: "土星" },
-  en: { Ascendant: "Ascendant", Sun: "Sun", Moon: "Moon", Mercury: "Mercury", Venus: "Venus", Mars: "Mars", Jupiter: "Jupiter", Saturn: "Saturn" },
+const SIGN_THEMES = {
+  "zh-Hant": ["先行與開創", "穩定與價值", "學習與溝通", "歸屬與情緒記憶", "表達與創造", "修正與技藝", "關係與取捨", "界線與深層轉化", "信念與視野", "責任與耐力", "獨立思考與群體", "共感、想像與放下"],
+  "zh-Hans": ["先行与开创", "稳定与价值", "学习与沟通", "归属与情绪记忆", "表达与创造", "修正与技艺", "关系与取舍", "界线与深层转化", "信念与视野", "责任与耐力", "独立思考与群体", "共感、想象与放下"],
+  en: ["initiative and beginnings", "stability and values", "learning and communication", "belonging and emotional memory", "expression and creativity", "refinement and craft", "relationships and choice", "boundaries and deep change", "belief and perspective", "duty and endurance", "independent thought and community", "empathy, imagination and release"],
+} as const satisfies Record<Locale, readonly string[]>;
+
+const COPY = {
+  "zh-Hant": {
+    title: "D60 業力旁證",
+    note: "（D60 對出生分鐘非常敏感：每個分區只有 0.5°；上升點平均約每 4 分鐘移動 1°，因此大約 2 分鐘就可能跨過一個 D60 分區。實際速度會隨出生地、緯度與當時的上升速度改變。若你提供的是估算時間、整點時間或家人回憶，這部分只能作低置信度參考，不是絕對答案。）",
+    unavailable: "目前沒有可核對到分鐘的出生時間與出生地，因此 D60 不作判定，也不另外要求你再填一次資料。",
+    calculating: "正在把 D60 併入這份報告…",
+    failed: "D60 暫時無法計算；前四世報告不受影響。",
+    stable: "以你提供的時間前後各移動 2 分鐘測試，D60 上升仍在同一星座。這只代表這個很小的時間範圍相對穩定，仍不是絕對結論。",
+    unstable: "以你提供的時間前後各移動 2 分鐘測試，D60 上升已發生變化，因此這一段只作弱旁證。",
+    core: "核心慣性",
+    emotion: "情緒慣性",
+    duty: "反覆責任",
+    resource: "帶得走的資源",
+    relation: "關係價值",
+    synthesis: "把它和前四世合起來看：重複出現的主題可以視為比較值得留意的慣性；只在 D60 單獨出現的內容，不升級成確定結論。",
+  },
+  "zh-Hans": {
+    title: "D60 业力旁证",
+    note: "（D60 对出生分钟非常敏感：每个分区只有 0.5°；上升点平均约每 4 分钟移动 1°，因此大约 2 分钟就可能跨过一个 D60 分区。实际速度会随出生地、纬度与当时的上升速度改变。如果你提供的是估算时间、整点时间或家人回忆，这部分只能作低置信度参考，不是绝对答案。）",
+    unavailable: "目前没有可核对到分钟的出生时间与出生地，因此 D60 不作判断，也不另外要求你再填一次资料。",
+    calculating: "正在把 D60 合并进这份报告…",
+    failed: "D60 暂时无法计算；前四世报告不受影响。",
+    stable: "以你提供的时间前后各移动 2 分钟测试，D60 上升仍在同一星座。这只代表这个很小的时间范围相对稳定，仍不是绝对结论。",
+    unstable: "以你提供的时间前后各移动 2 分钟测试，D60 上升已经发生变化，因此这一段只作弱旁证。",
+    core: "核心惯性",
+    emotion: "情绪惯性",
+    duty: "反复责任",
+    resource: "带得走的资源",
+    relation: "关系价值",
+    synthesis: "把它和前四世合起来看：重复出现的主题可以视为比较值得留意的惯性；只在 D60 单独出现的内容，不升级成确定结论。",
+  },
+  en: {
+    title: "D60 karmic cross-check",
+    note: "(D60 is extremely birth-time sensitive. Each division is only 0.5°. The Ascendant moves about 1° every four minutes on average, so a D60 division can change in roughly two minutes. The real rate varies with birthplace, latitude and the rising speed at that moment. If your time is estimated, rounded or remembered by family, treat this section as low-confidence context rather than a definite answer.)",
+    unavailable: "There is no saved minute-level birth time and birthplace for this report, so D60 is withheld rather than asking you to enter the same details again.",
+    calculating: "Adding the D60 cross-check to this report…",
+    failed: "D60 could not be calculated right now. The four-life report is unaffected.",
+    stable: "Moving the supplied birth time two minutes earlier and later keeps the D60 Ascendant in the same sign. That only suggests relative stability inside this very small window; it is still not absolute.",
+    unstable: "Moving the supplied birth time two minutes earlier and later changes the D60 Ascendant, so this section is treated only as weak supporting context.",
+    core: "Core pattern",
+    emotion: "Emotional habit",
+    duty: "Repeated duty",
+    resource: "Carried resource",
+    relation: "Relationship values",
+    synthesis: "Read this beside the four prior-life patterns. Themes that repeat across both can be treated as more noteworthy; a theme appearing only in D60 is not promoted into a definite conclusion.",
+  },
 } as const;
 
 function normalize(value: number) { return ((value % 360) + 360) % 360; }
@@ -128,7 +129,6 @@ function tropicalAscendant(api: AstronomyApi, date: Date, latitude: number, long
     const altitude = Math.sin(phi) * Math.sin(dec) + Math.cos(phi) * Math.cos(dec) * Math.cos(h);
     return { altitude, hourAngle };
   };
-
   const roots: number[] = [];
   let previousX = 0;
   let previous = altitudeTerm(previousX).altitude;
@@ -153,12 +153,12 @@ function tropicalAscendant(api: AstronomyApi, date: Date, latitude: number, long
   return roots[0];
 }
 
-function d60Placement(key: D60Placement["key"], siderealLongitude: number): D60Placement {
+function d60Placement(key: D60Key, siderealLongitude: number): D60Placement {
   const lon = normalize(siderealLongitude);
   const natalSign = Math.floor(lon / 30);
   const within = lon % 30;
   const part = Math.min(59, Math.floor(within / 0.5));
-  return { key, siderealLongitude: lon, d60Sign: (natalSign + part) % 12, segment: part + 1 };
+  return { key, d60Sign: (natalSign + part) % 12, segment: part + 1 };
 }
 
 function calculateD60(api: AstronomyApi, date: Date, city: CityHit): D60Result {
@@ -166,15 +166,14 @@ function calculateD60(api: AstronomyApi, date: Date, city: CityHit): D60Result {
   const ascTropical = tropicalAscendant(api, date, city.latitude, city.longitude);
   const asc = d60Placement("Ascendant", normalize(ascTropical - ayanamsa));
   const planets = BODY_KEYS.map((key) => d60Placement(key, normalize(api.EclipticLongitude(key, date) - ayanamsa)));
-
   const lagnaAt = (deltaMinutes: number) => {
     const shifted = new Date(date.getTime() + deltaMinutes * 60_000);
-    const aya = lahiriAyanamsa(shifted);
-    return d60Placement("Ascendant", normalize(tropicalAscendant(api, shifted, city.latitude, city.longitude) - aya)).d60Sign;
+    const shiftedAyanamsa = lahiriAyanamsa(shifted);
+    return d60Placement("Ascendant", normalize(tropicalAscendant(api, shifted, city.latitude, city.longitude) - shiftedAyanamsa)).d60Sign;
   };
-
   return {
-    utcIso: date.toISOString(), ayanamsa, placements: [asc, ...planets],
+    utcIso: date.toISOString(),
+    placements: [asc, ...planets],
     stableMinus2: lagnaAt(-2) === asc.d60Sign,
     stablePlus2: lagnaAt(2) === asc.d60Sign,
   };
@@ -182,13 +181,13 @@ function calculateD60(api: AstronomyApi, date: Date, city: CityHit): D60Result {
 
 let astronomyPromise: Promise<AstronomyApi> | null = null;
 function loadAstronomy() {
-  const w = window as typeof window & { Astronomy?: AstronomyApi };
-  if (w.Astronomy) return Promise.resolve(w.Astronomy);
+  const browser = window as typeof window & { Astronomy?: AstronomyApi };
+  if (browser.Astronomy) return Promise.resolve(browser.Astronomy);
   if (astronomyPromise) return astronomyPromise;
   astronomyPromise = new Promise<AstronomyApi>((resolve, reject) => {
     const existing = document.getElementById(ASTRO_SCRIPT_ID) as HTMLScriptElement | null;
     const script = existing ?? document.createElement("script");
-    const finish = () => w.Astronomy ? resolve(w.Astronomy) : reject(new Error("astronomy-global"));
+    const finish = () => browser.Astronomy ? resolve(browser.Astronomy) : reject(new Error("astronomy-global"));
     script.addEventListener("load", finish, { once: true });
     script.addEventListener("error", () => reject(new Error("astronomy-load")), { once: true });
     if (!existing) {
@@ -202,110 +201,148 @@ function loadAstronomy() {
   return astronomyPromise;
 }
 
-function signName(index: number, locale: Locale) {
-  const row = SIGNS[index];
-  return locale === "en" ? row[0] : locale === "zh-Hans" ? row[2] : row[1];
+function asCity(value: unknown): CityHit | null {
+  if (!value || typeof value !== "object") return null;
+  const city = value as Partial<CityHit>;
+  if (typeof city.display !== "string" || typeof city.name !== "string" || typeof city.timezone !== "string") return null;
+  if (!Number.isFinite(city.latitude) || !Number.isFinite(city.longitude)) return null;
+  return city as CityHit;
 }
 
-function CityField({ locale, city, onSelect, label, placeholder }: { locale: Locale; city: CityHit | null; onSelect: (city: CityHit | null) => void; label: string; placeholder: string }) {
-  const [query, setQuery] = useState(city?.display ?? "");
-  const [hits, setHits] = useState<CityHit[]>([]);
-  useEffect(() => { setQuery(city ? localizeCityHit(city, locale).display : ""); }, [city, locale]);
+function parseSavedBirth(value: unknown): SavedBirth | null {
+  if (!value || typeof value !== "object") return null;
+  const raw = value as Record<string, unknown>;
+  if (raw.timeUnknown) return null;
+  const city = asCity(raw.city);
+  if (!city || raw.hour == null || raw.minute == null || raw.minute === "") return null;
+  const year = Number(raw.year), month = Number(raw.month), day = Number(raw.day), hour = Number(raw.hour), minute = Number(raw.minute);
+  const civil = new Date(Date.UTC(year, month - 1, day, hour, minute));
+  if (![year, month, day, hour, minute].every(Number.isFinite)) return null;
+  if (civil.getUTCFullYear() !== year || civil.getUTCMonth() !== month - 1 || civil.getUTCDate() !== day) return null;
+  if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
+  return { year, month, day, hour, minute, city };
+}
+
+function usePalmReportPortalTarget() {
+  const [target, setTarget] = useState<HTMLElement | null>(null);
   useEffect(() => {
-    const trimmed = query.trim();
-    if (city && trimmed === localizeCityHit(city, locale).display) { setHits([]); return; }
-    if (trimmed.length < 2) { setHits([]); return; }
-    let alive = true;
-    const timer = window.setTimeout(() => {
-      void searchCities({ data: trimmed }).then((rows) => { if (alive) setHits(rows.map((row) => localizeCityHit(row, locale))); }).catch(() => { if (alive) setHits([]); });
-    }, 220);
-    return () => { alive = false; window.clearTimeout(timer); };
-  }, [city, locale, query]);
-  return (
-    <label className="relative block text-sm font-medium text-ink">
-      {label}
-      <input value={query} placeholder={placeholder} autoComplete="off" className="mt-2 min-h-12 w-full rounded-xl border border-line bg-white/75 px-4 text-base outline-none focus:border-[#8e4538]" onChange={(event) => { setQuery(event.target.value); if (city) onSelect(null); }} />
-      {hits.length ? <div className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-xl border border-line bg-[#fffaf0] p-1 shadow-xl">{hits.map((hit) => <button type="button" key={`${hit.latitude}-${hit.longitude}`} onClick={() => { onSelect(hit); setQuery(hit.display); setHits([]); }} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-[#f1e3c9]"><b className="block text-sm text-ink">{hit.display}</b><small className="text-ink-mute">{hit.timezone}</small></button>)}</div> : null}
-    </label>
-  );
+    let slot: HTMLDivElement | null = null;
+    const locate = () => {
+      if (slot?.isConnected) return;
+      const container = document.querySelector<HTMLElement>(".palm-result > .space-y-5");
+      if (!container) return;
+      slot = document.createElement("div");
+      slot.className = "palm-d60-slot";
+      const synthesis = container.querySelector(".palm-synthesis-grid");
+      const history = container.querySelector(".palm-history-note");
+      if (synthesis) container.insertBefore(slot, synthesis.nextSibling);
+      else if (history) container.insertBefore(slot, history);
+      else container.appendChild(slot);
+      setTarget(slot);
+    };
+    locate();
+    const observer = new MutationObserver(locate);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+      if (slot?.isConnected) slot.remove();
+      setTarget(null);
+    };
+  }, []);
+  return target;
+}
+
+function signName(index: number, locale: Locale) {
+  return SIGNS[locale][index];
 }
 
 export function D60KarmaSection() {
   const { locale } = useI18n();
   const copy = COPY[locale];
-  const [year, setYear] = useState(""); const [month, setMonth] = useState(""); const [day, setDay] = useState("");
-  const [hour, setHour] = useState(""); const [minute, setMinute] = useState(""); const [city, setCity] = useState<CityHit | null>(null);
-  const [source, setSource] = useState<"recorded" | "remembered">("recorded"); const [confirmed, setConfirmed] = useState(false);
-  const [busy, setBusy] = useState(false); const [error, setError] = useState(""); const [result, setResult] = useState<D60Result | null>(null);
-  const labels = BODY_LABELS[locale];
-  const maxYear = new Date().getFullYear();
+  const { user, isPending } = useCurrentUserState();
+  const target = usePalmReportPortalTarget();
+  const birth = useMemo(() => parseSavedBirth(user?.birthData), [user?.birthData]);
+  const [result, setResult] = useState<D60Result | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const syncedRef = useRef("");
+
+  useEffect(() => {
+    if (isPending) return;
+    if (!birth) { setResult(null); setStatus("idle"); return; }
+    let alive = true;
+    setStatus("loading");
+    void loadAstronomy().then((api) => {
+      const utc = localBirthToUtc({ year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute, timezone: birth.city.timezone });
+      const next = calculateD60(api, utc, birth.city);
+      if (alive) { setResult(next); setStatus("ready"); }
+    }).catch(() => { if (alive) { setResult(null); setStatus("error"); } });
+    return () => { alive = false; };
+  }, [birth, isPending]);
 
   const themes = useMemo(() => {
     if (!result) return [];
-    const byKey = Object.fromEntries(result.placements.map((p) => [p.key, p])) as Partial<Record<D60Placement["key"], D60Placement>>;
-    const rows: Array<[string, D60Placement["key"]]> = [[copy.core as string, "Ascendant"], [copy.emotion as string, "Moon"], [copy.duty as string, "Saturn"], [copy.resource as string, "Jupiter"], [copy.action as string, "Mars"], [copy.relation as string, "Venus"], [copy.mind as string, "Mercury"]];
-    return rows.map(([title, key]) => ({ title, key, placement: byKey[key]! }));
+    const byKey = Object.fromEntries(result.placements.map((placement) => [placement.key, placement])) as Partial<Record<D60Key, D60Placement>>;
+    return [
+      [copy.core, byKey.Ascendant],
+      [copy.emotion, byKey.Moon],
+      [copy.duty, byKey.Saturn],
+      [copy.resource, byKey.Jupiter],
+      [copy.relation, byKey.Venus],
+    ].flatMap(([label, placement]) => placement ? [{ label: label as string, placement: placement as D60Placement }] : []);
   }, [copy, result]);
 
-  async function submit(event: FormEvent) {
-    event.preventDefault(); setError(""); setResult(null);
-    if (!city) { setError(copy.needCity as string); return; }
-    if (source !== "recorded" || !confirmed) { setError(copy.needExact as string); return; }
-    const y = Number(year), m = Number(month), d = Number(day), h = Number(hour), min = Number(minute);
-    const civil = new Date(Date.UTC(y, m - 1, d, h, min));
-    if (![y, m, d, h, min].every(Number.isFinite) || civil.getUTCFullYear() !== y || civil.getUTCMonth() !== m - 1 || civil.getUTCDate() !== d || h < 0 || h > 23 || min < 0 || min > 59) { setError(copy.invalid as string); return; }
-    setBusy(true);
-    try {
-      const api = await loadAstronomy();
-      const utc = localBirthToUtc({ year: y, month: m, day: d, hour: h, minute: min, timezone: city.timezone });
-      setResult(calculateD60(api, utc, city));
-      window.setTimeout(() => document.getElementById("d60-result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 20);
-    } catch { setError(copy.engineError as string); }
-    finally { setBusy(false); }
-  }
+  const stable = Boolean(result?.stableMinus2 && result?.stablePlus2);
+  const historyBody = useMemo(() => {
+    if (!birth) return `${copy.note}\n${copy.unavailable}`;
+    if (!result) return `${copy.note}\n${status === "error" ? copy.failed : copy.calculating}`;
+    return [
+      copy.note,
+      ...themes.map(({ label, placement }) => `${label}：${signName(placement.d60Sign, locale)} · ${SIGN_THEMES[locale][placement.d60Sign]}`),
+      stable ? copy.stable : copy.unstable,
+      copy.synthesis,
+    ].join("\n");
+  }, [birth, copy, locale, result, stable, status, themes]);
 
-  const isStable = result ? result.stableMinus2 && result.stablePlus2 : false;
+  useEffect(() => {
+    if (!target || isPending || status === "loading") return;
+    const key = `${locale}:${result?.utcIso ?? "no-d60"}:${historyBody}`;
+    if (syncedRef.current === key) return;
+    const latest = readSpecialistHistory()[0];
+    if (!latest || latest.kind !== "yizhangjing") return;
+    const sections = latest.sections.filter((section) => !/^D60\b|^D60\s|D60 業力|D60 业力/i.test(section.title));
+    const saved = saveSpecialistHistory({ ...latest, sections: [...sections, { title: copy.title, body: historyBody }] });
+    if (saved) syncedRef.current = key;
+  }, [copy.title, historyBody, isPending, locale, result?.utcIso, status, target]);
 
-  return (
-    <section id="d60-karma" className="mx-auto w-full max-w-4xl px-4 pb-12 sm:px-6">
-      <div className="relative overflow-hidden rounded-[28px] border border-[#b99755]/35 bg-[#f5ead6]/88 p-5 shadow-[0_18px_55px_rgba(70,55,35,0.08)] sm:p-7">
-        <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full border border-[#a94639]/15" />
-        <div aria-hidden className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full border border-[#324b66]/15" />
-        <div className="relative">
-          <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-[10px] font-semibold tracking-[0.2em] text-[#6f523b]">{copy.eyebrow}</p><span className="rounded-full border border-[#8e4538]/25 bg-[#8e4538]/5 px-3 py-1 text-[10px] font-semibold tracking-[0.12em] text-[#8e4538]">{copy.badge}</span></div>
-          <h2 className="mt-4 font-display text-2xl font-semibold tracking-[0.06em] text-ink sm:text-3xl">{copy.title}</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-ink-soft">{copy.lead}</p>
+  if (!target) return null;
 
-          <div className="mt-6 rounded-2xl border border-[#8e4538]/25 bg-[#fff8ea]/82 p-4 sm:p-5">
-            <h3 className="font-display text-lg font-semibold text-[#8e4538]">{copy.precisionTitle}</h3><p className="mt-2 text-sm leading-7 text-ink-soft">{copy.precisionBody}</p>
-            <div className="mt-4 grid gap-2 text-xs leading-6 sm:grid-cols-2"><p className="rounded-xl border border-[#55735f]/25 bg-[#55735f]/7 px-3 py-2 text-ink-soft">✓ {copy.exact}</p><p className="rounded-xl border border-[#8e4538]/20 bg-[#8e4538]/5 px-3 py-2 text-ink-soft">× {copy.uncertain}</p></div>
+  const card = (
+    <article className="relative overflow-hidden rounded-2xl border border-[#b99755]/35 bg-[#fffaf2] p-5 shadow-[inset_4px_0_0_rgba(111,82,59,.55)]" aria-label={copy.title}>
+      <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full border border-[#8e4538]/10" />
+      <div className="relative">
+        <p className="text-[10px] font-semibold tracking-[0.18em] text-[#7c5b43]">D60 · SHASHTIAMSA</p>
+        <h3 className="mt-1 font-display text-xl font-semibold tracking-[0.05em] text-ink">{copy.title}</h3>
+        <p className="mt-3 text-xs leading-6 text-ink-mute">{copy.note}</p>
+
+        {!birth ? <p className="mt-4 text-sm leading-7 text-ink-soft">{copy.unavailable}</p> : null}
+        {birth && status === "loading" ? <p className="mt-4 text-sm leading-7 text-ink-soft">{copy.calculating}</p> : null}
+        {birth && status === "error" ? <p className="mt-4 text-sm leading-7 text-ink-soft">{copy.failed}</p> : null}
+        {result ? <>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {themes.map(({ label, placement }) => (
+              <div key={label} className="rounded-xl border border-line/70 bg-paper/65 px-3 py-3">
+                <p className="text-[10px] font-semibold tracking-[0.12em] text-cinnabar">{label}</p>
+                <p className="mt-1 text-sm font-medium text-ink">{signName(placement.d60Sign, locale)}</p>
+                <p className="mt-1 text-xs leading-5 text-ink-soft">{SIGN_THEMES[locale][placement.d60Sign]}</p>
+              </div>
+            ))}
           </div>
-
-          <form onSubmit={submit} className="mt-6 rounded-2xl border border-[#b99755]/30 bg-paper/65 p-4 sm:p-5">
-            <h3 className="font-display text-xl font-semibold text-ink">{copy.formTitle}</h3><p className="mt-1 text-xs leading-6 text-ink-soft sm:text-sm">{copy.formLead}</p>
-            <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5">
-              {[[copy.year, year, setYear, 1900, maxYear], [copy.month, month, setMonth, 1, 12], [copy.day, day, setDay, 1, 31], [copy.hour, hour, setHour, 0, 23], [copy.minute, minute, setMinute, 0, 59]].map(([label, value, setter, min, max]) => <label key={String(label)} className="text-xs font-medium text-ink"><span className="block pb-1">{label as string}</span><input required type="number" inputMode="numeric" min={min as number} max={max as number} value={value as string} onChange={(e) => (setter as (v: string) => void)(e.target.value)} className="min-h-12 w-full rounded-xl border border-line bg-white/75 px-2 text-base outline-none focus:border-[#8e4538]" /></label>)}
-            </div>
-            <div className="mt-4"><CityField locale={locale} city={city} onSelect={setCity} label={copy.city as string} placeholder={copy.cityPh as string} /></div>
-            <fieldset className="mt-4"><legend className="text-sm font-medium text-ink">{copy.source}</legend><div className="mt-2 grid gap-2 sm:grid-cols-2">{(["recorded", "remembered"] as const).map((value) => <label key={value} className={`flex min-h-12 items-center gap-2 rounded-xl border px-3 py-2 text-xs leading-5 ${source === value ? "border-[#8e4538]/50 bg-[#8e4538]/6" : "border-line bg-white/50"}`}><input type="radio" name="d60-source" checked={source === value} onChange={() => { setSource(value); if (value === "remembered") setConfirmed(false); }} className="accent-[#8e4538]" /><span>{value === "recorded" ? copy.recorded : copy.remembered}</span></label>)}</div></fieldset>
-            <label className={`mt-4 flex items-start gap-2 rounded-xl border px-3 py-3 text-xs leading-5 ${source === "recorded" ? "border-[#55735f]/25 bg-[#55735f]/5" : "border-line bg-black/[0.02] opacity-60"}`}><input type="checkbox" disabled={source !== "recorded"} checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} className="mt-0.5 h-4 w-4 accent-[#55735f]" /><span>{copy.confirm}</span></label>
-            {error ? <p role="alert" className="mt-3 rounded-xl border border-[#8e4538]/25 bg-[#8e4538]/6 px-3 py-2 text-xs leading-6 text-[#7a342e]">{error}</p> : null}
-            <button type="submit" disabled={busy} className="mt-5 min-h-13 w-full rounded-full bg-[#7f352d] px-5 text-sm font-semibold tracking-[0.08em] text-[#fff8e8] disabled:opacity-55">{busy ? copy.calculating : copy.submit}</button>
-          </form>
-
-          {result ? <div id="d60-result" className="mt-6 scroll-mt-20 rounded-2xl border border-[#324b66]/25 bg-[#f7f0df]/92 p-4 sm:p-5">
-            <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-[10px] font-semibold tracking-[0.18em] text-[#324b66]">D60 · SHASHTIAMSA</p><h3 className="mt-1 font-display text-xl font-semibold text-ink">{copy.resultTitle}</h3></div><span className="rounded-full bg-[#324b66]/8 px-3 py-1 text-[10px] font-semibold text-[#324b66]">{copy.sidereal}</span></div>
-            <p className="mt-2 text-sm leading-7 text-ink-soft">{copy.resultLead}</p>
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">{result.placements.map((p) => <article key={p.key} className="rounded-xl border border-[#b99755]/25 bg-white/62 p-3"><p className="text-[10px] font-semibold tracking-[0.12em] text-ink-mute">{p.key === "Ascendant" ? copy.lagna : labels[p.key]}</p><p className="mt-1 font-display text-lg font-semibold text-[#7f352d]">{signName(p.d60Sign, locale)}</p><p className="mt-1 text-[11px] text-ink-soft">{(copy.segment as string).replace("{n}", String(p.segment))}</p></article>)}</div>
-            <article className={`mt-4 rounded-xl border p-3 ${isStable ? "border-[#55735f]/25 bg-[#55735f]/6" : "border-[#8e4538]/30 bg-[#8e4538]/6"}`}><p className="text-[10px] font-semibold tracking-[0.12em] text-ink-mute">{copy.sensitivity}</p><p className="mt-1 text-sm leading-6 text-ink-soft">{isStable ? copy.stable : copy.unstable}</p></article>
-            <div className="mt-5"><h4 className="font-display text-lg font-semibold text-ink">{copy.themeTitle}</h4><div className="mt-3 grid gap-2 sm:grid-cols-2">{themes.map(({ title, key, placement }) => <article key={key} className="rounded-xl border border-[#b99755]/25 bg-white/55 p-3"><p className="text-[10px] font-semibold tracking-[0.12em] text-[#7f352d]">{title} · {key === "Ascendant" ? labels.Ascendant : labels[key]}</p><p className="mt-1 text-sm leading-6 text-ink-soft">{signName(placement.d60Sign, locale)}：{SIGN_THEMES[locale][placement.d60Sign]}</p></article>)}</div></div>
-            <div className="mt-4 border-t border-[#b99755]/20 pt-3 text-[10px] leading-5 text-ink-mute"><p>{copy.profile}：{D60_PROFILE}</p><p>UTC：{result.utcIso}</p><p>Ayanamsa：{result.ayanamsa.toFixed(6)}°</p></div>
-          </div> : null}
-
-          <div className="mt-6"><h3 className="font-display text-lg font-semibold tracking-[0.04em] text-ink">{copy.rulesTitle}</h3><div className="mt-3 grid gap-3 sm:grid-cols-3">{(copy.rules as readonly string[]).map((rule, index) => <article key={rule} className="rounded-2xl border border-[#b99755]/25 bg-paper/55 p-4"><span className="text-[10px] font-semibold tracking-[0.16em] text-[#8e4538]">{String(index + 1).padStart(2, "0")}</span><p className="mt-2 text-sm leading-6 text-ink-soft">{rule}</p></article>)}</div></div>
-          <p className="mt-5 text-[10px] tracking-[0.14em] text-ink-mute">{copy.footer}</p>
-        </div>
+          <p className={`mt-4 rounded-xl border px-3 py-2 text-xs leading-6 ${stable ? "border-wood/25 bg-wood/5 text-ink-soft" : "border-cinnabar/25 bg-cinnabar/5 text-ink-soft"}`}>{stable ? copy.stable : copy.unstable}</p>
+          <p className="mt-3 text-sm leading-7 text-ink-soft">{copy.synthesis}</p>
+        </> : null}
       </div>
-    </section>
+    </article>
   );
+
+  return createPortal(card, target);
 }
