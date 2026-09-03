@@ -29,7 +29,7 @@ test("application shell restores the fixed Song landscape without loose scatter"
   assert.doesNotMatch(shell, /auspicious-emblem-scatter/);
 });
 
-test("homepage keeps the Song parchment flow and integrates three compact gateways", async () => {
+test("homepage keeps the Song parchment flow and uses a compact method directory", async () => {
   const main = await source("src/main.tsx");
   const css = await source("src/home-sheet-ui-v5.css");
   const portals = await source("src/home-portals.css");
@@ -45,11 +45,15 @@ test("homepage keeps the Song parchment flow and integrates three compact gatewa
   assert.doesNotMatch(home, /zhaowu-home-hero/);
   assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian/);
   assert.match(home, /to: "\/qizheng"/);
+  assert.match(home, /to: "\/astrology"/);
   assert.match(home, /to: "\/yizhangjing"/);
   assert.match(home, /to: "\/ziwei"/);
   assert.match(home, /七政四餘/);
+  assert.match(home, /西洋星盤/);
   assert.match(home, /前世今生/);
   assert.match(home, /紫微斗數/);
+  assert.match(home, /zhaowu-home-portal-hint/);
+  assert.doesNotMatch(home, /portalCopy\.learn|portalCopy\.best/);
   assert.doesNotMatch(home, /zhaowu-home-dual-entry|性格兩面|<QizhengHomePanel/);
 
   assert.match(css, /#analysisForm\.is-compact/);
@@ -61,9 +65,8 @@ test("homepage keeps the Song parchment flow and integrates three compact gatewa
   assert.doesNotMatch(css, /background-attachment:\s*fixed/);
 
   assert.match(portals, /\.zhaowu-home-portals/);
-  assert.match(portals, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(portals, /\.zhaowu-home-portal--sky/);
-  assert.match(portals, /\.zhaowu-home-portal--fate/);
-  assert.match(portals, /\.zhaowu-home-portal--ziwei/);
-  assert.match(portals, /@media \(max-width: 430px\)/);
+  assert.match(portals, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(portals, /min-height:\s*74px/);
+  assert.match(portals, /@media \(max-width: 640px\)/);
+  assert.match(portals, /grid-template-columns:\s*1fr/);
 });

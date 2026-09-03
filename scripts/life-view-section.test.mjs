@@ -3,26 +3,33 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const home = readFileSync(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
-const section = readFileSync(new URL("../src/components/life-view-section.tsx", import.meta.url), "utf8");
+const section = readFileSync(new URL("../src/components/life-view-home-section.tsx", import.meta.url), "utf8");
+const fullSection = readFileSync(new URL("../src/components/life-view-section.tsx", import.meta.url), "utf8");
 const source = readFileSync(new URL("../src/lib/life-view.ts", import.meta.url), "utf8");
 const fileSource = readFileSync(new URL("../src/lib/life-view-from-files.ts", import.meta.url), "utf8");
 const practiceSource = readFileSync(new URL("../src/lib/life-view-practice-manual.ts", import.meta.url), "utf8");
 const intakeSource = readFileSync(new URL("../src/lib/life-view-20260831.ts", import.meta.url), "utf8");
 const layout = readFileSync(new URL("../src/content-layout-fixes.css", import.meta.url), "utf8");
 
-test("home exposes Zhaowu Guan Shi Lu with stable multilingual article sources", () => {
-  assert.match(home, /LifeViewSection/);
-  assert.match(home, /<LifeViewSection \/>/);
+test("home exposes Zhaowu Guan Shi Lu as a latest-first compact archive", () => {
+  assert.match(home, /LifeViewHomeSection/);
+  assert.match(home, /<LifeViewHomeSection \/>/);
   assert.match(section, /id="life-view"/);
   assert.match(section, /昭梧 · 觀世錄/);
   assert.match(section, /昭梧 · 观世录/);
   assert.match(section, /Zhaowu · Notes on Life/);
-  assert.match(section, /世事有跡，人心有因；見其勢，知其時。/);
-  assert.match(section, /世事有迹，人心有因；见其势，知其时。/);
+  assert.match(section, /首頁只看最新一篇/);
+  assert.match(section, /首页只看最新一篇/);
+  assert.match(section, /Latest note first/);
   assert.match(section, /LIFE_VIEW_ARTICLES/);
   assert.match(section, /LIFE_VIEW_FILE_ARTICLES/);
   assert.match(section, /LIFE_VIEW_PRACTICE_ARTICLES/);
   assert.match(section, /LIFE_VIEW_20260831_ARTICLES/);
+  assert.match(section, /LIFE_VIEW_20260903_ARTICLES/);
+  assert.match(section, /LIFE_VIEW_20260903_LATE_ARTICLES/);
+  assert.match(section, /const latest = ARTICLES\[0\]/);
+  assert.match(section, /const visibleArticles = showAll \? ARTICLES : \[latest\]/);
+  assert.match(section, /aria-expanded=\{showAll\}/);
   assert.match(source, /export const LIFE_VIEW_ARTICLES/);
   assert.match(source, /id: "break-the-deadlock"/);
   assert.match(source, /id: "long-term-practice"/);
@@ -35,19 +42,15 @@ test("home exposes Zhaowu Guan Shi Lu with stable multilingual article sources",
   assert.match(fileSource, /id: "follow-the-flow-not-surrender"/);
   assert.match(practiceSource, /export const LIFE_VIEW_PRACTICE_ARTICLES/);
   assert.match(practiceSource, /id: "five-pillars-of-practice"/);
-  assert.match(practiceSource, /人生修行的五個支柱/);
-  assert.match(practiceSource, /Five Pillars for Living With More Clarity/);
   assert.match(intakeSource, /export const LIFE_VIEW_20260831_ARTICLES/);
   assert.match(intakeSource, /id: "world-as-mirror-not-physics"/);
   assert.match(intakeSource, /id: "karma-is-not-blame"/);
-  assert.match(intakeSource, /因果不是指責/);
-  assert.match(section, /data-life-view-art-fragment/);
-  assert.match(section, /stableCrop/);
-  assert.match(section, /objectPosition/);
-  assert.doesNotMatch(section, /Math\.random/);
-  assert.doesNotMatch(section, /max-w-\[380px\]/);
+
+  // Keep the richer art reader available as a retained component, even though the homepage defaults to the compact archive.
+  assert.match(fullSection, /data-life-view-art-fragment/);
+  assert.match(fullSection, /stableCrop/);
+  assert.match(fullSection, /objectPosition/);
+  assert.doesNotMatch(fullSection, /Math\.random/);
   assert.match(layout, /life-view-art-fragment/);
   assert.match(layout, /object-fit: cover/);
-  assert.match(layout, /width: min\(72%, 14\.5rem\)/);
-  assert.match(layout, /transform: scale\(1\.16\)/);
 });
