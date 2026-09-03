@@ -1,0 +1,153 @@
+/* REPORT-VISUAL-SYSTEM Phase 3: client-side 9:16 share-card composition. */
+.zhaowu-share-card-panel {
+  position: relative;
+  margin: 0 18px 22px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(154,111,60,.24);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(146,113,69,.08), transparent 30%),
+    linear-gradient(180deg, rgba(252,247,236,.98), rgba(246,236,217,.97));
+  color: #2c2822;
+}
+
+.zhaowu-share-card-panel > header > p {
+  margin: 0;
+  color: #966e3d;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .22em;
+}
+
+.zhaowu-share-card-panel > header h4 {
+  margin: 6px 0 0;
+  font-family: var(--font-display, "Songti TC", "PMingLiU", serif);
+  font-size: 1.42rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+}
+
+.zhaowu-share-card-panel > header span {
+  display: block;
+  max-width: 42rem;
+  margin-top: 7px;
+  color: #685d50;
+  font-size: 11.5px;
+  line-height: 1.75;
+}
+
+.zhaowu-share-preview,
+.zhaowu-share-placeholder {
+  width: min(100%, 310px);
+  aspect-ratio: 9 / 16;
+  margin: 16px auto 0;
+  overflow: hidden;
+  border: 1px solid rgba(143,109,67,.28);
+  border-radius: 17px;
+  background: #eadfc9;
+  box-shadow: 0 12px 28px rgba(76,57,34,.09);
+}
+
+.zhaowu-share-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zhaowu-share-placeholder {
+  position: relative;
+  display: grid;
+  place-items: end stretch;
+  background:
+    linear-gradient(180deg, rgba(244,234,215,.12), rgba(244,234,215,.86)),
+    url("/wallpaper-song.jpg") center / cover no-repeat;
+  filter: saturate(.78) sepia(.06);
+}
+
+.zhaowu-share-placeholder > div {
+  padding: 25px 20px 30px;
+  background: linear-gradient(180deg, transparent, rgba(245,235,216,.94) 28%);
+}
+
+.zhaowu-share-placeholder small {
+  display: block;
+  color: #8e6a3e;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .17em;
+}
+
+.zhaowu-share-placeholder b {
+  display: block;
+  margin-top: 7px;
+  color: #2e2923;
+  font-family: var(--font-display, serif);
+  font-size: 1.22rem;
+  font-weight: 600;
+}
+
+.zhaowu-share-placeholder span {
+  display: block;
+  margin-top: 8px;
+  color: #65594b;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.zhaowu-share-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.zhaowu-share-actions button {
+  min-height: 43px;
+  border-radius: 999px;
+  padding: 9px 17px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.zhaowu-share-actions button:disabled { opacity: .55; }
+
+.zhaowu-share-primary {
+  border: 1px solid #26352d;
+  background: #2f493d;
+  color: #fff8ed;
+}
+
+.zhaowu-share-secondary {
+  border: 1px solid rgba(143,109,67,.28);
+  background: rgba(255,250,241,.8);
+  color: #574b3e;
+}
+
+.zhaowu-share-fallback {
+  margin: 10px auto 0;
+  max-width: 31rem;
+  color: #786957;
+  font-size: 9px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.zhaowu-share-watermark {
+  margin: 10px 2px -3px;
+  color: rgba(76,59,40,.32);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-align: right;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-share-card-panel { margin: 0 0 19px; padding: 14px; border-radius: 17px; }
+  .zhaowu-share-card-panel > header h4 { font-size: 1.28rem; }
+  .zhaowu-share-card-panel > header span { font-size: 10.8px; line-height: 1.68; }
+  .zhaowu-share-preview,
+  .zhaowu-share-placeholder { width: min(82vw, 292px); }
+  .zhaowu-share-actions { flex-wrap: wrap; }
+}

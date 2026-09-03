@@ -4,6 +4,7 @@ import type { ReportSection } from "@/lib/report/focused-report";
 import { MindAdviceComic } from "@/components/mind-advice-comic";
 import { ReportVisualBook } from "@/components/report-visual-book";
 import { ReportLuckBook } from "@/components/report-luck-book";
+import { ReportShareCard } from "@/components/report-share-card";
 
 const COPY = {
   "zh-Hant": {
@@ -98,6 +99,7 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
 
       {result ? <ReportVisualBook result={result} /> : null}
       {result ? <ReportLuckBook result={result} /> : null}
+      {result ? <ReportShareCard result={result} /> : null}
 
       <div className="zhaowu-report-flow">
         {content.summary.length ? (
