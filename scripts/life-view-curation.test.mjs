@@ -21,8 +21,8 @@ test("homepage life-view uses one curated source instead of stacking legacy arti
 });
 
 test("curated archive is concise, unique and tri-lingual", () => {
-  assert.equal(LIFE_VIEW_CURATED_ARTICLES.length, 7);
-  assert.equal(new Set(LIFE_VIEW_CURATED_ARTICLES.map((article) => article.id)).size, 7);
+  assert.equal(LIFE_VIEW_CURATED_ARTICLES.length, 8);
+  assert.equal(new Set(LIFE_VIEW_CURATED_ARTICLES.map((article) => article.id)).size, 8);
   for (const article of LIFE_VIEW_CURATED_ARTICLES) {
     for (const locale of ["zh-Hant", "zh-Hans", "en"]) {
       assert.ok(article.title[locale]?.trim());
