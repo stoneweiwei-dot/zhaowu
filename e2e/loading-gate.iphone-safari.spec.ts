@@ -37,26 +37,20 @@ async function gateDuration(page: Page) {
 }
 
 const routes = [
-  {
-    path: "/",
-    heading: "四柱八字",
-    action: "交卷，看答案",
-    actionRole: "button",
-  },
-  {
-    path: "/login",
-    heading: "登入昭梧",
-    action: "Email",
-    actionRole: "textbox",
-  },
+  { path: "/", heading: "四柱八字", action: "交卷，看答案", actionRole: "button" },
+  { path: "/login", heading: "登入昭梧", action: "Email", actionRole: "textbox" },
   { path: "/account", heading: "我的昭梧", action: "登入", actionRole: "link" },
 ] as const;
 
 test.describe("iPhone Safari startup fallback", () => {
   for (const route of routes) {
-    test(`${route.path} stays usable when Supabase readiness hangs`, async ({ page }) => {
+    test(`${route.path} releases loading independently of Supabase readiness`, async ({ page }) => {
       await traceGateLifecycle(page);
-      await page.route("**/rest/v1/site_settings?**", () => new Promise<void>(() => undefined));
+      let migrationReadinessCalls = 0;
+      await page.route(/\/rest\/v1\/site_settings\?.*migration_state/, async () => {
+        migrationReadinessCalls += 1;
+        await new Promise<void>(() => undefined);
+      });
 
       await page.goto(route.path, { waitUntil: "domcontentloaded" });
       const heading = page.getByRole("heading", { name: route.heading, exact: true });
@@ -68,6 +62,7 @@ test.describe("iPhone Safari startup fallback", () => {
       await expect(heading).toBeVisible();
       await expect(page.getByRole(route.actionRole, { name: route.action, exact: true }).first()).toBeVisible();
 
+      expect(migrationReadinessCalls).toBe(0);
       const duration = await gateDuration(page);
       expect(duration).not.toBeNull();
       expect(duration!).toBeLessThanOrEqual(3_000);
@@ -76,12 +71,15 @@ test.describe("iPhone Safari startup fallback", () => {
     });
   }
 
-  test("a failed readiness response reveals Home immediately", async ({ page }) => {
+  test("backend failure cannot control Home loading release", async ({ page }) => {
     await traceGateLifecycle(page);
-    await page.route("**/rest/v1/site_settings?**", (route) => route.fulfill({ status: 503, body: "unavailable" }));
+    await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "unavailable" }));
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator(GATE)).toHaveCount(0, { timeout: 1_500 });
+    await expect(page.locator(GATE)).toHaveCount(0, { timeout: 3_000 });
     await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
+    const duration = await gateDuration(page);
+    expect(duration).not.toBeNull();
+    expect(duration!).toBeLessThanOrEqual(3_000);
   });
 });

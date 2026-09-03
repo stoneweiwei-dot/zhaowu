@@ -5,6 +5,7 @@ import { MindAdviceComic } from "@/components/mind-advice-comic";
 import { ReportVisualBook } from "@/components/report-visual-book";
 import { ReportLuckBook } from "@/components/report-luck-book";
 import { ReportShareCard } from "@/components/report-share-card";
+import { ClassicPassageLine } from "@/components/classic-passage-line";
 
 const COPY = {
   "zh-Hant": {
@@ -103,6 +104,7 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
             <h4>{copy.summary}</h4>
             <div className="zhaowu-report-copy">
               {content.summary.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+              {result ? <ClassicPassageLine result={result} /> : null}
             </div>
             {result ? <MindAdviceComic result={result} /> : null}
           </div>
