@@ -26,6 +26,7 @@ import {
 } from "./calendar";
 import type {
   AnalyzeInput,
+  BirthTimeReview,
   Chart,
   DayunPeriod,
   Element,
@@ -144,6 +145,60 @@ function civilToUtc(y: number, m: number, d: number, h: number, min: number, tzO
   return new Date(Date.UTC(y, m - 1, d, h, min) - tzOffsetHours * 3_600_000);
 }
 
+function buildBirthTimeReview(input: AnalyzeInput, corrected: {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  timeGz: string;
+  usedTrueSolar: boolean;
+}): BirthTimeReview {
+  if (input.timeUnknown || !corrected.usedTrueSolar) {
+    return {
+      status: "not-needed",
+      required: false,
+      crossesShichenBoundary: false,
+      crossesDayBoundary: false,
+      reason: null,
+      civil: null,
+      trueSolar: null,
+    };
+  }
+
+  const civilDayGz = dayGanzhi(input.year, input.month, input.day);
+  const civilTimeGz = hourPillar(civilDayGz, input.hour);
+  const correctedDayGz = dayGanzhi(corrected.year, corrected.month, corrected.day);
+  const crossesShichenBoundary = civilTimeGz[1] !== corrected.timeGz[1];
+  const crossesDayBoundary =
+    input.year !== corrected.year || input.month !== corrected.month || input.day !== corrected.day;
+  const required = crossesShichenBoundary || crossesDayBoundary;
+
+  return {
+    status: required ? "needs-verification" : "not-needed",
+    required,
+    crossesShichenBoundary,
+    crossesDayBoundary,
+    reason: crossesDayBoundary
+      ? "true-solar-crosses-day"
+      : crossesShichenBoundary
+        ? "true-solar-crosses-shichen"
+        : null,
+    civil: {
+      source: "civil",
+      stamp: stamp(input.year, input.month, input.day, input.hour, input.minute),
+      dayGanZhi: civilDayGz,
+      timeGanZhi: civilTimeGz,
+    },
+    trueSolar: {
+      source: "true-solar",
+      stamp: stamp(corrected.year, corrected.month, corrected.day, corrected.hour, corrected.minute),
+      dayGanZhi: correctedDayGz,
+      timeGanZhi: corrected.timeGz,
+    },
+  };
+}
+
 export function buildChart(input: AnalyzeInput): Chart {
   const timeUnknown = input.timeUnknown;
   let y = input.year;
@@ -183,6 +238,15 @@ export function buildChart(input: AnalyzeInput): Chart {
   // authoritative: 23:xx stays on that date and 00:xx belongs to the next date.
   const dayGz = dayGanzhi(y, m, d);
   const timeGz = timeUnknown ? "" : hourPillar(dayGz, h);
+  const birthTimeReview = buildBirthTimeReview(input, {
+    year: y,
+    month: m,
+    day: d,
+    hour: h,
+    minute: min,
+    timeGz,
+    usedTrueSolar,
+  });
 
   // Solar terms are astronomical instants; longitude/equation-of-time correction
   // changes the local day/hour clock, never the instant used for year/month or luck onset.
@@ -222,10 +286,13 @@ export function buildChart(input: AnalyzeInput): Chart {
     : stamp(input.year, input.month, input.day, input.hour, input.minute);
   const trueSolarStamp = timeUnknown ? "時辰未定，真太陽時不作校正" : stamp(y, m, d, h, min);
   const minggong = timeUnknown || !timeGz ? "未定" : mingGong(ym.year, monthBranch, timeGz[1]);
+  const reviewNote = birthTimeReview.required && birthTimeReview.civil && birthTimeReview.trueSolar
+    ? ` 民用候選日/時柱 ${birthTimeReview.civil.dayGanZhi}/${birthTimeReview.civil.timeGanZhi} 與真太陽候選 ${birthTimeReview.trueSolar.dayGanZhi}/${birthTimeReview.trueSolar.timeGanZhi} 不同，已啟動出生時辰候選驗證；主盤暫按真太陽時，正式定盤須以出生記錄與有明確年份的已發生事件反證，不得只憑性格描述選盤。`
+    : "";
   const provenance = timeUnknown
     ? `時辰未定：年月柱按當日正午取節氣，日柱按公曆日，時柱、命宮、大運起運留白，不偽造午時柱。子時政策不套用。`
     : usedTrueSolar
-      ? `民用時間 ${stamp(input.year, input.month, input.day, input.hour, input.minute)}（${input.city.timezone}）經經度 ${input.city.longitude.toFixed(2)}°、均時差與時區校正，真太陽時 ${stamp(y, m, d, h, min)}，偏移約 ${shiftMinutes} 分鐘。節氣取太陽黃經，換日固定以真太陽時午夜為界。`
+      ? `民用時間 ${stamp(input.year, input.month, input.day, input.hour, input.minute)}（${input.city.timezone}）經經度 ${input.city.longitude.toFixed(2)}°、均時差與時區校正，真太陽時 ${stamp(y, m, d, h, min)}，偏移約 ${shiftMinutes} 分鐘。節氣取太陽黃經，換日固定以真太陽時午夜為界。${reviewNote}`
       : `按出生地民用時間排盤，換日固定以午夜為界。`;
 
   return {
@@ -244,6 +311,7 @@ export function buildChart(input: AnalyzeInput): Chart {
     ziPolicy: "midnight",
     usedTrueSolar,
     timeUnknown,
+    birthTimeReview,
     gender: input.gender,
     elements,
     elementPercents: percents(elements),
