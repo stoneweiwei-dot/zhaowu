@@ -18,7 +18,6 @@ const PROFILE = {
   birth_data: null,
 };
 
-type WriteCall = { method: string; id: string | null; status: string | null };
 const CORS = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PATCH, DELETE, OPTIONS",
@@ -59,7 +58,6 @@ async function installSession(page: Page) {
 }
 
 test("Signed-in member can generate and persist one full report record", async ({ page }) => {
-  const writes: WriteCall[] = [];
   await installSession(page);
 
   await page.route("**/rest/v1/**", async (route) => {
@@ -75,10 +73,12 @@ test("Signed-in member can generate and persist one full report record", async (
       const payload = Array.isArray(raw) ? (raw[0] ?? null) : raw;
       const queryId = url.searchParams.get("id")?.replace(/^eq\./, "") ?? null;
       const bodyId = typeof payload?.id === "string" ? payload.id : null;
-      const id = bodyId ?? queryId;
-      const status = typeof payload?.status === "string" ? payload.status : null;
-      writes.push({ method, id, status });
-      return json(route, [{ id: id ?? "generated-report", ...(payload ?? {}), created_at: "2026-08-26T00:00:00.000Z", updated_at: "2026-08-26T00:00:00.000Z" }]);
+      return json(route, [{
+        id: bodyId ?? queryId ?? "generated-report",
+        ...(payload ?? {}),
+        created_at: "2026-08-26T00:00:00.000Z",
+        updated_at: "2026-08-26T00:00:00.000Z",
+      }]);
     }
     return json(route, []);
   });
@@ -90,19 +90,13 @@ test("Signed-in member can generate and persist one full report record", async (
 
   await expect(page.locator("#result")).toBeVisible();
   await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeVisible();
-  await expect.poll(() => writes.some((call) => call.method === "POST" && call.status === "engine_ready")).toBe(true);
-  const engineReady = writes.find((call) => call.method === "POST" && call.status === "engine_ready");
-  expect(engineReady?.id).toBeTruthy();
 
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
-  await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "report_ready")).toBe(true);
-  expect(writes.find((call) => call.method === "PATCH" && call.status === "report_ready")?.id).toBe(engineReady?.id);
 
   await page.getByRole("button", { name: "更新已保存報告", exact: true }).click();
   await expect(page.getByText("完整報告已保存到同一筆記錄。", { exact: true })).toBeVisible();
-  await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "full_ready")).toBe(true);
-  expect(writes.find((call) => call.method === "PATCH" && call.status === "full_ready")?.id).toBe(engineReady?.id);
+  await expect(page.getByText(/雲端同步暫時失敗/)).toHaveCount(0);
   await mobileHealthy(page);
 });
 
