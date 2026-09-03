@@ -53,11 +53,12 @@ test("homepage and Jade Dragon do not revive the retired public group", async ()
   const guide = await readFile(new URL("../src/components/green-dragon-guide.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(home, /性格兩面|性格两面|Two sides of character|tianji-dual/);
   assert.doesNotMatch(guide, /性格兩面|性格两面|Two sides of character|tianji-dual/);
-  assert.match(home, /你會知道/);
-  assert.match(home, /最擅長看/);
-  assert.match(home, /You’ll learn/);
-  assert.match(home, /Best for/);
-  assert.match(home, /你現在最需要練哪一行/);
+  assert.doesNotMatch(home, /你會知道|你会知道|You’ll learn/);
+  assert.doesNotMatch(home, /最擅長看|最擅长看|Best for/);
+  assert.match(home, /五行功能測驗/);
+  assert.match(home, /五行功能测验/);
+  assert.match(home, /Five-Element Function Test/);
+  assert.match(home, /zhaowu-home-portal-hint/);
   assert.match(guide, /趣味測驗/);
 });
 
