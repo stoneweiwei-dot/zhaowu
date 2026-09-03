@@ -29,6 +29,9 @@ export function writeHomeIcons() {
     ["public/icons/icon-512.png", 512],
     ["public/icons/zhaowu-lotus-192.png", 192],
     ["public/icons/zhaowu-lotus-512.png", 512],
+    ["public/icons/zhaowu-green-lotus-r39-180.png", 180],
+    ["public/icons/zhaowu-green-lotus-r39-192.png", 192],
+    ["public/icons/zhaowu-green-lotus-r39-512.png", 512],
   ];
 
   Object.values(ICON_SOURCES).forEach(assertPng);
