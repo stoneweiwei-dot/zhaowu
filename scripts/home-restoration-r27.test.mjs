@@ -21,13 +21,13 @@ test('one article opens initially; other summaries contain only titles, with no 
  assert.match(summary,/article.title\[locale\]/);assert.doesNotMatch(summary,/article.summary|publishedAt|views|瀏覽/);
  assert.doesNotMatch(s,/fetchLifeViewCounts|incrementLifeViewCount|life-view-views/);
 });
-test('question stays ahead of birth details even after a report, login returns to BaZi and intro asset stays intact',()=>{
+test('question stays ahead of birth details even after a report, login returns to BaZi and intro stays intact',()=>{
  const form=source('src/components/analysis-form.tsx');
  assert.ok(form.indexOf('id="analysis-question"')<form.indexOf('id: "birth-year"'));
  assert.match(form,/aria-describedby="time-importance"/);assert.match(form,/UNKNOWN_TIME_COPY\[locale\]/);
  assert.match(form,/!current && previewChart/);
  const login=source('src/routes/login.tsx');assert.doesNotMatch(login,/navigate\(\{ to: "\/account"/);assert.match(login,/navigate\(\{ to: "\/"/);
- const intro=source('src/components/intro-gate.tsx');assert.match(intro,/wutong-owner-r29.mp4/);
+ const intro=source('src/components/intro-gate.tsx');assert.match(intro,/IntroLotusArt/);assert.match(intro,/data-intro-motion="vector"/);assert.doesNotMatch(intro,/wutong-owner-r29|<video/);
  const panel=source('src/components/character-panel.tsx');assert.doesNotMatch(panel,/buildCharacterPanel|radar|artScores|SCHOOL_MARK/);
 });
 const chart=buildChart({question:'What is my direction?',year:1988,month:10,day:4,hour:4,minute:40,timeUnknown:false,gender:'male',relation:'unset',city:{name:'Test',display:'Test',country:'China',latitude:30,longitude:120,timezone:'Asia/Shanghai'},useTrueSolar:true,ziPolicy:'midnight'});
