@@ -81,6 +81,23 @@ export type Strength = {
   deShi: boolean;
 };
 
+export type BirthTimeCandidate = {
+  source: "civil" | "true-solar";
+  stamp: string;
+  dayGanZhi: string;
+  timeGanZhi: string;
+};
+
+export type BirthTimeReview = {
+  status: "not-needed" | "needs-verification";
+  required: boolean;
+  crossesShichenBoundary: boolean;
+  crossesDayBoundary: boolean;
+  reason: "true-solar-crosses-shichen" | "true-solar-crosses-day" | null;
+  civil: BirthTimeCandidate | null;
+  trueSolar: BirthTimeCandidate | null;
+};
+
 export type Chart = {
   pillars: Pillar[];
   dayMaster: string;
@@ -97,6 +114,7 @@ export type Chart = {
   ziPolicy: ZiPolicy;
   usedTrueSolar: boolean;
   timeUnknown: boolean;
+  birthTimeReview: BirthTimeReview;
   gender: Gender;
   elements: ElementScores;
   elementPercents: ElementScores;
