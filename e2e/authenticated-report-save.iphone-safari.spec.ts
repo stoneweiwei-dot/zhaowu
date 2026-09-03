@@ -18,15 +18,30 @@ const PROFILE = {
   birth_data: null,
 };
 
+type WriteCall = {
+  method: string;
+  id: string | null;
+  status: string | null;
+};
+
 const CORS = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PATCH, DELETE, OPTIONS",
-  "access-control-allow-headers": "authorization, apikey, content-type, prefer",
+  "access-control-allow-headers": "authorization, apikey, content-type, prefer, x-client-info",
   "access-control-expose-headers": "content-range",
 };
 
 async function json(route: Route, body: unknown, status = 200) {
-  await route.fulfill({ status, contentType: "application/json", headers: CORS, body: status === 204 ? "" : JSON.stringify(body) });
+  await route.fulfill({
+    status,
+    contentType: "application/json",
+    headers: CORS,
+    body: JSON.stringify(body),
+  });
+}
+
+async function noContent(route: Route) {
+  await route.fulfill({ status: 204, headers: CORS, body: "" });
 }
 
 async function fillKnownBirthData(page: Page) {
@@ -57,24 +72,43 @@ async function installSession(page: Page) {
   await page.addInitScript((session) => localStorage.setItem("zhaowu.supabase.session.v1", JSON.stringify(session)), SESSION);
 }
 
-test("Signed-in member can generate and persist one full report record", async ({ page }) => {
-  await installSession(page);
+function parsePayload(rawText: string | null) {
+  if (!rawText) return null;
+  try {
+    const raw = JSON.parse(rawText) as Record<string, unknown> | Array<Record<string, unknown>> | null;
+    return Array.isArray(raw) ? (raw[0] ?? null) : raw;
+  } catch {
+    return null;
+  }
+}
+
+async function mockAuthenticatedCloud(page: Page, writes: WriteCall[]) {
+  await page.route("**/auth/v1/**", async (route) => {
+    const request = route.request();
+    if (request.method() === "OPTIONS") return noContent(route);
+    const url = new URL(request.url());
+    if (url.pathname.endsWith("/user")) return json(route, USER);
+    if (url.pathname.endsWith("/token")) return json(route, SESSION);
+    return json(route, {});
+  });
 
   await page.route("**/rest/v1/**", async (route) => {
     const request = route.request();
-    if (request.method() === "OPTIONS") return json(route, {}, 204);
+    if (request.method() === "OPTIONS") return noContent(route);
     const url = new URL(request.url());
     if (url.pathname.endsWith("/profiles")) return json(route, [PROFILE]);
     if (url.pathname.endsWith("/site_settings")) return json(route, [{ key: "migration_state", value: { ready: true } }]);
     if (url.pathname.endsWith("/report_requests")) {
       const method = request.method();
       if (method === "GET") return json(route, []);
-      const raw = request.postDataJSON() as Record<string, unknown> | Array<Record<string, unknown>> | null;
-      const payload = Array.isArray(raw) ? (raw[0] ?? null) : raw;
+      const payload = parsePayload(request.postData());
       const queryId = url.searchParams.get("id")?.replace(/^eq\./, "") ?? null;
       const bodyId = typeof payload?.id === "string" ? payload.id : null;
+      const id = bodyId ?? queryId;
+      const status = typeof payload?.status === "string" ? payload.status : null;
+      writes.push({ method, id, status });
       return json(route, [{
-        id: bodyId ?? queryId ?? "generated-report",
+        id: id ?? "generated-report",
         ...(payload ?? {}),
         created_at: "2026-08-26T00:00:00.000Z",
         updated_at: "2026-08-26T00:00:00.000Z",
@@ -82,6 +116,12 @@ test("Signed-in member can generate and persist one full report record", async (
     }
     return json(route, []);
   });
+}
+
+test("Signed-in member can generate and persist one full report record", async ({ page }) => {
+  const writes: WriteCall[] = [];
+  await installSession(page);
+  await mockAuthenticatedCloud(page, writes);
 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
@@ -89,12 +129,23 @@ test("Signed-in member can generate and persist one full report record", async (
   await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
 
   await expect(page.locator("#result")).toBeVisible();
-  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeVisible();
+  const saveButton = page.getByRole("button", { name: "更新已保存報告", exact: true });
+  await expect(saveButton).toBeVisible();
+  await expect.poll(() => writes.some((call) => call.method === "POST" && call.status === "engine_ready")).toBe(true);
+  const engineReady = writes.find((call) => call.method === "POST" && call.status === "engine_ready");
+  expect(engineReady?.id).toBeTruthy();
 
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
+  await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "report_ready")).toBe(true);
+  const reportReady = writes.find((call) => call.method === "PATCH" && call.status === "report_ready");
+  expect(reportReady?.id).toBe(engineReady?.id);
 
-  await page.getByRole("button", { name: "更新已保存報告", exact: true }).click();
+  await expect(saveButton).toBeEnabled();
+  await saveButton.click();
+  await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "full_ready")).toBe(true);
+  const fullReady = writes.find((call) => call.method === "PATCH" && call.status === "full_ready");
+  expect(fullReady?.id).toBe(engineReady?.id);
   await expect(page.getByText("完整報告已保存到同一筆記錄。", { exact: true })).toBeVisible();
   await expect(page.getByText(/雲端同步暫時失敗/)).toHaveCount(0);
   await mobileHealthy(page);
@@ -102,9 +153,17 @@ test("Signed-in member can generate and persist one full report record", async (
 
 test("Full report stays available when Supabase persistence fails", async ({ page }) => {
   await installSession(page);
+  await page.route("**/auth/v1/**", async (route) => {
+    const request = route.request();
+    if (request.method() === "OPTIONS") return noContent(route);
+    const url = new URL(request.url());
+    if (url.pathname.endsWith("/user")) return json(route, USER);
+    if (url.pathname.endsWith("/token")) return json(route, SESSION);
+    return json(route, {});
+  });
   await page.route("**/rest/v1/**", async (route) => {
     const request = route.request();
-    if (request.method() === "OPTIONS") return json(route, {}, 204);
+    if (request.method() === "OPTIONS") return noContent(route);
     const url = new URL(request.url());
     if (url.pathname.endsWith("/profiles")) return json(route, [PROFILE]);
     if (url.pathname.endsWith("/site_settings")) return json(route, [{ key: "migration_state", value: { ready: true } }]);

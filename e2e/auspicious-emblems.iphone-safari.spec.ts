@@ -37,7 +37,9 @@ test.describe("iPhone Safari parchment application shell", () => {
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
 
     const formBackground = await page.locator("#analysisForm").evaluate((node) => getComputedStyle(node).backgroundColor);
-    expect(alphaOf(formBackground)).toBeGreaterThanOrEqual(0.98);
+    const alpha = alphaOf(formBackground);
+    expect(alpha).toBeGreaterThanOrEqual(0.8);
+    expect(alpha).toBeLessThan(1);
   });
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {

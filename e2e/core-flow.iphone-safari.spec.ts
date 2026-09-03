@@ -174,12 +174,19 @@ test.describe("iPhone Safari core customer flow", () => {
     const result = page.locator("#result");
     await expect(result).toBeVisible();
     await expect(page.locator("#analysisForm")).toHaveClass(/is-compact/);
-    await expect(page.getByRole("button", { name: "調整資料", exact: true })).toBeVisible();
-    await expect(page.locator("#birth-city")).toBeVisible();
-    await expect(page.locator("#current-city")).toBeVisible();
+    const adjustButton = page.getByRole("button", { name: "調整資料", exact: true });
+    await expect(adjustButton).toBeVisible();
+    await expect(page.locator("#analysis-question")).toHaveCount(0);
+    await expect(page.locator("#birth-city")).toHaveCount(0);
+    await expect(page.locator("#current-city")).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "我現在最應該先處理什麼？", exact: true })).toBeVisible();
     await expect(result.locator("article").first()).not.toBeEmpty();
     await expect(page.getByRole("button", { name: "查看完整報告", exact: true })).toBeVisible();
+
+    await adjustButton.click();
+    await expect(page.locator("#analysisForm")).not.toHaveClass(/is-compact/);
+    await expect(page.locator("#birth-city")).toBeVisible();
+    await expect(page.locator("#current-city")).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 });
