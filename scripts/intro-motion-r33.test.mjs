@@ -3,23 +3,26 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const gate = await readFile(new URL("../src/components/intro-gate.tsx", import.meta.url), "utf8");
+const art = await readFile(new URL("../src/components/intro-lotus-art.tsx", import.meta.url), "utf8");
 const css = await readFile(new URL("../src/intro-extra.css", import.meta.url), "utf8");
 
-test("intro detects a video that claims to play but does not advance", () => {
-  assert.match(gate, /VIDEO_MOTION_CHECK_MS = 480/);
-  assert.match(gate, /VIDEO_MIN_PROGRESS_SECONDS = 0\.06/);
-  assert.match(gate, /const baseline = media\.currentTime/);
-  assert.match(gate, /media\.currentTime >= baseline \+ VIDEO_MIN_PROGRESS_SECONDS/);
-  assert.match(gate, /media\.paused \|\| media\.ended \|\| !advanced/);
-  assert.match(gate, /setVideoFailed\(true\)/);
-  assert.match(gate, /data-intro-motion=\{videoFailed \? "fallback" : "video"\}/);
+test("intro uses resolution-independent vector art instead of low-frame-rate video playback", () => {
+  assert.match(gate, /IntroLotusArt/);
+  assert.match(gate, /data-intro-motion="vector"/);
+  assert.match(art, /viewBox="0 0 1080 1920"/);
+  assert.match(art, /preserveAspectRatio="xMidYMid slice"/);
+  assert.doesNotMatch(gate, /<video|playbackRate|VIDEO_MOTION_CHECK_MS|VIDEO_MIN_PROGRESS_SECONDS/);
 });
 
-test("intro has an obvious visual bloom even when video is stalled", () => {
-  assert.match(gate, /zhaowu-lotus-intro__motion-proof/);
-  assert.match(css, /54% \{ transform: scale\(1\.075\) translate3d\(0, -1\.25%, 0\); \}/);
-  assert.match(css, /@keyframes zhaowu-lotus-light-bloom/);
-  assert.match(css, /48% \{ opacity: \.38; transform: scale\(1\.04\); \}/);
-  assert.match(css, /@keyframes zhaowu-lotus-light-bloom-reduced/);
-  assert.match(css, /animation: zhaowu-lotus-light-bloom-reduced 2734ms/);
+test("intro cross-fades four bloom stages at display refresh rate with reduced-motion support", () => {
+  assert.match(art, /intro-lotus-stage--1/);
+  assert.match(art, /intro-lotus-stage--2/);
+  assert.match(art, /intro-lotus-stage--3/);
+  assert.match(art, /intro-lotus-stage--4/);
+  assert.match(css, /animation-duration: 2734ms/);
+  assert.match(css, /@keyframes intro-lotus-stage-1/);
+  assert.match(css, /@keyframes intro-lotus-stage-4/);
+  assert.match(css, /@keyframes intro-vector-ripple/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.doesNotMatch(gate, /zhaowu-lotus-intro__copy|zhaowu-lotus-intro__status|zhaowu-lotus-intro__bar/);
 });

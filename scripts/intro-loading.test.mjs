@@ -2,14 +2,13 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { writeHomeIcons } from './write-home-icons.mjs';
 import test from 'node:test';
-import { createHash } from 'node:crypto';
 
 const shell = await readFile(new URL('../src/components/site-shell.tsx', import.meta.url), 'utf8');
 const bootstrap = await readFile(new URL('../src/lib/bootstrap-readiness.ts', import.meta.url), 'utf8');
 const root = await readFile(new URL('../src/routes/__root.tsx', import.meta.url), 'utf8');
 const gate = await readFile(new URL('../src/components/intro-gate.tsx', import.meta.url), 'utf8');
+const art = await readFile(new URL('../src/components/intro-lotus-art.tsx', import.meta.url), 'utf8');
 const css = await readFile(new URL('../src/intro-extra.css', import.meta.url), 'utf8');
-const mediaWriter = await readFile(new URL('./write-intro-media.mjs', import.meta.url), 'utf8');
 const {
   INTRO_GATE_HARD_EXIT_MS,
   scheduleIntroGateHardExit,
@@ -62,34 +61,19 @@ test('loading gate hard-exits inside the three-second bloom budget', () => {
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro restores the original Song-paper twin-lotus opening and stays visibly animated on iPhone', async () => {
-  assert.match(gate, /wutong-owner-r29\.mp4/);
-  assert.match(gate, /wutong-owner-r29\.jpeg/);
-  assert.match(gate, /onError=\{\(\) => setVideoFailed\(true\)\}/);
+test('intro is crisp, text-free and visually minimal', () => {
+  assert.match(gate, /IntroLotusArt/);
   assert.match(gate, /LOTUS_BLOOM_MS = 2734/);
-  assert.equal(createHash('sha256').update(await readFile(new URL('../public/intro/wutong-owner-r29.mp4', import.meta.url))).digest('hex'), 'e59f2957b31835b7be8cf440cdbc1fbe33977b7c921c74efb7ff6815f7ac2197');
-  assert.equal(createHash('sha256').update(await readFile(new URL('../public/intro/wutong-owner-r29.jpeg', import.meta.url))).digest('hex'), 'd5c73ff32c1fc3cab80eb2f53bba714bd247846643eaf788a475bb1c0c9df2ec');
-  assert.match(gate, /playbackRate/);
-  assert.match(gate, /media\.play\(\)/);
-  assert.match(gate, /onCanPlay=\{\(event\) => startVideo\(event\.currentTarget\)\}/);
-  assert.match(gate, /visibilitychange/);
-  assert.match(css, /@keyframes zhaowu-lotus-bloom-drift/);
-  assert.match(css, /animation: zhaowu-lotus-bloom-drift 2734ms/);
-  assert.match(gate, /正在準備昭梧/);
-  assert.match(gate, /STONE 原創/);
-  assert.doesNotMatch(gate, /zhaowu-lotus-intro__heaven/);
-  assert.doesNotMatch(gate, /zhaowu-lotus-intro__hua/);
-  assert.doesNotMatch(css, /zhaowu-four-hua/);
-  assert.match(css, /uploaded twin-lotus loading animation/);
-  assert.doesNotMatch(css, /#131b15 79%/);
-  assert.doesNotMatch(gate, /loading-v13\.mp4|loading-poster\.jpg/);
-  assert.match(mediaWriter, /loading-v13\.part\./);
-  assert.match(mediaWriter, /VIDEO_PART_COUNT = 2/);
-  assert.match(mediaWriter, /VIDEO_SHA256/);
-  assert.doesNotMatch(mediaWriter, /loading-user-20260831\.part\./);
-  assert.match(mediaWriter, /loading-v13\.mp4/);
-  assert.doesNotMatch(gate, /loading-v10\.mp4/);
-  assert.doesNotMatch(gate, /loading-v11\.mp4/);
+  assert.match(gate, /data-intro-motion="vector"/);
+  assert.match(art, /viewBox="0 0 1080 1920"/);
+  assert.match(art, /intro-vector-ripples/);
+  assert.match(art, /intro-vector-branch/);
+  assert.match(css, /resolution-independent twin-lotus loading animation/);
+  assert.match(css, /device refresh rate/);
+  assert.doesNotMatch(gate, /<video|wutong-owner-r29|loading-poster/);
+  assert.doesNotMatch(gate, /STONE 原創/);
+  assert.doesNotMatch(gate, /zhaowu-lotus-intro__copy|zhaowu-lotus-intro__status|zhaowu-lotus-intro__bar/);
+  assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
 });
 
 test('iPhone Safari routes stay mounted and usable when bootstrap fails', () => {
