@@ -1,20 +1,14 @@
 import { expect, test, type Page, type Route } from "@playwright/test";
 
-const OWNER = {
-  id: "owner-sto13",
-  email: "owner-sto13@zhaowu.test",
-  user_metadata: { name: "STO-13 Owner" },
-};
-
+const OWNER = { id: "owner-test", email: "owner@example.test", user_metadata: { name: "STO-13 Owner" } };
 const SESSION = {
-  access_token: "sto13-owner-access-token",
-  refresh_token: "sto13-owner-refresh-token",
+  access_token: "test",
+  refresh_token: "test",
   expires_in: 3600,
   expires_at: Math.floor(Date.now() / 1000) + 3600,
   token_type: "bearer",
   user: OWNER,
 };
-
 const PROFILE = {
   id: OWNER.id,
   email: OWNER.email,
@@ -46,7 +40,7 @@ const REAL_REPORT = {
   id: "report-real",
   public_code: "REAL-STO13",
   user_id: "customer-real",
-  user_email: "real-customer@zhaowu.test",
+  user_email: "real-customer@example.test",
   alias: "正式客戶報告",
   record_kind: "analysis",
   status: "full_ready",
@@ -63,24 +57,30 @@ const REAL_REPORT = {
   created_at: "2026-08-31T12:00:00.000Z",
   updated_at: "2026-08-31T12:00:00.000Z",
 };
-
 const QA_REPORT = {
   ...REAL_REPORT,
   id: "report-qa",
   public_code: "QA-STO13",
-  user_email: "qa-only@zhaowu.test",
+  user_email: "qa-only@example.test",
   alias: "QA 隔離報告",
   record_kind: "qa",
   access_mode: "test",
   context: { question: "不得出現在正式清單", qa: true },
 };
 
-async function json(route: Route, body: unknown, headers?: Record<string, string>) {
+const CORS = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "GET, POST, PATCH, DELETE, OPTIONS",
+  "access-control-allow-headers": "authorization, apikey, content-type, prefer, x-client-info",
+  "access-control-expose-headers": "content-range",
+};
+
+async function json(route: Route, body: unknown, headers: Record<string, string> = {}, status = 200) {
   await route.fulfill({
-    status: 200,
+    status,
     contentType: "application/json",
-    headers,
-    body: JSON.stringify(body),
+    headers: { ...CORS, ...headers },
+    body: status === 204 ? "" : JSON.stringify(body),
   });
 }
 
@@ -90,20 +90,21 @@ async function mockOwnerBackend(page: Page) {
   let storedImagesRequested = 0;
   let uploadCount = 0;
 
-  await page.addInitScript((session) => {
-    localStorage.setItem("zhaowu.supabase.session.v1", JSON.stringify(session));
-  }, SESSION);
+  await page.addInitScript((session) => localStorage.setItem("zhaowu.supabase.session.v1", JSON.stringify(session)), SESSION);
 
   await page.route("**/storage/v1/object/**", async (route) => {
-    if (route.request().method() === "POST") {
+    const method = route.request().method();
+    if (method === "OPTIONS") return json(route, {}, {}, 204);
+    if (method === "POST") {
       uploadCount += 1;
       return json(route, { Key: `sto13-upload-${uploadCount}.png` });
     }
-    if (route.request().method() === "GET") {
+    if (method === "GET") {
       storedImagesRequested += 1;
       return route.fulfill({
         status: 200,
         contentType: "image/svg+xml",
+        headers: CORS,
         body: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="16" height="16" fill="#c9b693"/></svg>',
       });
     }
@@ -112,6 +113,7 @@ async function mockOwnerBackend(page: Page) {
 
   await page.route("**/rest/v1/**", async (route) => {
     const request = route.request();
+    if (request.method() === "OPTIONS") return json(route, {}, {}, 204);
     const url = new URL(request.url());
 
     if (url.pathname.endsWith("/profiles")) return json(route, [PROFILE]);
@@ -148,30 +150,32 @@ async function mockOwnerBackend(page: Page) {
   return { backgroundPages, reportQueries, getStoredImagesRequested: () => storedImagesRequested, getUploadCount: () => uploadCount };
 }
 
+function visibleHeading(page: Page, text: string) {
+  return page.locator("h2:visible").filter({ hasText: text }).first();
+}
+
 test.describe("STO-13 approved B variant", () => {
   test("keeps owner and customer surfaces simple, lazy and QA-isolated", async ({ page }) => {
     const consoleErrors: string[] = [];
     const pageErrors: string[] = [];
     const failedRequests: string[] = [];
-    page.on("console", (message) => {
-      if (message.type() === "error") consoleErrors.push(message.text());
-    });
+    page.on("console", (message) => { if (message.type() === "error") consoleErrors.push(message.text()); });
     page.on("pageerror", (error) => pageErrors.push(error.message));
     page.on("requestfailed", (request) => failedRequests.push(`${request.method()} ${request.url()}`));
 
     const backend = await mockOwnerBackend(page);
     await page.goto("/account", { waitUntil: "networkidle" });
 
-    await expect(page.getByText("首頁背景管理", { exact: true })).toBeVisible();
-    await expect(page.locator("[data-background-card]")).toHaveCount(1);
+    await expect(visibleHeading(page, "首頁背景管理")).toBeVisible();
+    await expect(page.locator("[data-background-card]:visible")).toHaveCount(1);
     expect(backend.backgroundPages[0]).toEqual({ limit: "1", offset: "0" });
     expect(backend.getStoredImagesRequested()).toBeLessThanOrEqual(2);
 
-    await page.getByRole("button", { name: /查看上傳歷史/ }).click();
-    await expect(page.locator("[data-background-card]")).toHaveCount(12);
+    await page.getByRole("button", { name: /查看上傳歷史/ }).filter({ visible: true }).first().click();
+    await expect(page.locator("[data-background-card]:visible")).toHaveCount(12);
     expect(backend.backgroundPages.some((query) => query.limit === "12" && query.offset === "0")).toBe(true);
 
-    const uploadInput = page.locator('input[type="file"][multiple]');
+    const uploadInput = page.locator('input[type="file"][multiple]:visible').first();
     await uploadInput.setInputFiles([
       { name: "sto13-a.png", mimeType: "image/png", buffer: Buffer.from("a") },
       { name: "sto13-b.png", mimeType: "image/png", buffer: Buffer.from("b") },
@@ -179,26 +183,24 @@ test.describe("STO-13 approved B variant", () => {
     ]);
     await expect(page.getByRole("progressbar")).toHaveCount(3);
     await expect.poll(() => backend.getUploadCount()).toBe(3);
-    for (const progress of await page.getByRole("progressbar").all()) {
-      await expect(progress).toHaveAttribute("aria-valuenow", "100");
-    }
+    for (const progress of await page.getByRole("progressbar").all()) await expect(progress).toHaveAttribute("aria-valuenow", "100");
 
-    await expect(page.getByText("正式客戶報告", { exact: true })).toBeVisible();
+    await expect(page.getByText("正式客戶報告", { exact: true }).filter({ visible: true }).first()).toBeVisible();
     await expect(page.getByText("QA 隔離報告", { exact: true })).toHaveCount(0);
     expect(backend.reportQueries.some((query) => query.includes("record_kind.not.in.%28test%2Cqa%2Ce2e%29") || query.includes("record_kind.not.in.(test,qa,e2e)"))).toBe(true);
 
-    const primary = page.locator("[data-report-primary-actions]").first();
+    const primary = page.locator("[data-report-primary-actions]:visible").first();
     await expect(primary.locator(":scope > button")).toHaveCount(2);
     await primary.locator("button").first().click();
-    const secondary = page.locator("[data-report-secondary-actions]").first();
+    const secondary = page.locator("[data-report-secondary-actions]:visible").first();
     await expect(secondary).toBeVisible();
     await expect(secondary).not.toHaveAttribute("open", /.*/);
 
-    await page.getByRole("button", { name: "简中" }).click();
-    await expect(page.getByText("首页背景管理", { exact: true })).toBeVisible();
-    await page.getByRole("button", { name: "EN" }).click();
-    await expect(page.getByText("Homepage backgrounds", { exact: true })).toBeVisible();
-    await page.getByRole("button", { name: "繁中" }).click();
+    await page.getByRole("button", { name: "简中" }).filter({ visible: true }).first().click();
+    await expect(visibleHeading(page, "首页背景管理")).toBeVisible();
+    await page.getByRole("button", { name: "EN" }).filter({ visible: true }).first().click();
+    await expect(visibleHeading(page, "Homepage backgrounds")).toBeVisible();
+    await page.getByRole("button", { name: "繁中" }).filter({ visible: true }).first().click();
 
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     expect(consoleErrors).toEqual([]);
