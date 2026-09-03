@@ -31,6 +31,10 @@ export function CityPicker({
   const [hits, setHits] = useState<CityHit[]>([]);
   const [selected, setSelected] = useState<CityHit | null>(value);
   const listId = `${id}-results`;
+  const optionalToken = optionalLabel.trim().toLowerCase();
+  const showOptionalLabel = optional
+    && Boolean(optionalToken)
+    && !label.toLowerCase().includes(optionalToken);
 
   useEffect(() => {
     const localized = value ? localizeCityHit(value, locale) : null;
@@ -65,7 +69,7 @@ export function CityPicker({
     <div className="relative">
       <label htmlFor={id} className="mb-2 block text-sm text-ink-soft">
         {label}
-        {optional ? <span className="ml-2 text-xs text-ink-mute">{optionalLabel}</span> : null}
+        {showOptionalLabel ? <span className="ml-2 text-xs text-ink-mute">{optionalLabel}</span> : null}
       </label>
       <input
         id={id}

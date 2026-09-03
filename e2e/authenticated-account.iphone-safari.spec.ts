@@ -84,11 +84,11 @@ async function expectMobileViewportHealthy(page: Page) {
 }
 
 test.describe("iPhone Safari authenticated member flow", () => {
-  test("Password login persists the session and reaches the member account", async ({ page }) => {
+  test("Password login persists the session, returns to BaZi, and keeps Account available", async ({ page }) => {
     await mockMemberBackend(page);
 
     let passwordGrantCalled = false;
-    await page.route("**/auth/v1/token?grant_type=password", async (route) => {
+    await page.route(/\/auth\/v1\/token\?grant_type=password$/, async (route) => {
       passwordGrantCalled = true;
       await fulfillJson(route, {
         access_token: TEST_SESSION.access_token,
@@ -125,13 +125,16 @@ test.describe("iPhone Safari authenticated member flow", () => {
     await page.locator("#login-password").fill("correct-password");
     await page.locator(".stone-login-form button[type=submit]").click();
 
+    await expect.poll(() => passwordGrantCalled).toBe(true);
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
+    const stored = await page.evaluate(() => localStorage.getItem("zhaowu.supabase.session.v1"));
+    expect(stored).toContain(TEST_SESSION.access_token);
+
+    await page.goto("/account", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/\/account$/);
     await expect(page.getByText("會員流程測試報告", { exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
-    expect(passwordGrantCalled).toBe(true);
-
-    const stored = await page.evaluate(() => localStorage.getItem("zhaowu.supabase.session.v1"));
-    expect(stored).toContain(TEST_SESSION.access_token);
     await expectMobileViewportHealthy(page);
   });
 
@@ -144,6 +147,7 @@ test.describe("iPhone Safari authenticated member flow", () => {
     await page.goto("/account", { waitUntil: "domcontentloaded" });
 
     await expect(page).toHaveURL(/\/account$/);
+    await expect(page.getByRole("heading", { name: "我的昭梧", exact: true })).toBeVisible();
     await expect(page.getByText("會員流程測試報告", { exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
     await expectMobileViewportHealthy(page);

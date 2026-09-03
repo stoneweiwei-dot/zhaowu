@@ -52,6 +52,15 @@ body::before {
   visibility: visible !important;
 }
 
+/* Account sections must never inherit a hidden/transparent state on iPhone.
+   This is deliberately scoped to the signed-in account layout so the owner
+   background console cannot be visually present in the DOM but inaccessible. */
+.zhaowu-app-frame main.mx-auto.max-w-3xl.space-y-5 > section {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 .qz-hero,
 .qz-form-card,
 .qz-report-paper {

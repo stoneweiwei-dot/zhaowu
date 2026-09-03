@@ -52,7 +52,7 @@ async function fillKnownBirthData(page: Page) {
 }
 
 async function dismissInstallPrompt(page: Page) {
-  const dismiss = page.getByRole("button", { name: "已加入，不再提示", exact: true });
+  const dismiss = page.getByRole("button", { name: "稍後再說", exact: true });
   await expect(dismiss).toBeVisible();
   await dismiss.click();
 }

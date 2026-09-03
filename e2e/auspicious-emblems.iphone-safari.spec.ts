@@ -22,12 +22,11 @@ test.describe("iPhone Safari parchment application shell", () => {
     }
   });
 
-  test("every application page locks the Song landscape behind opaque parchment cards", async ({ page }) => {
+  test("every application page keeps the approved Song landscape on the page background", async ({ page }) => {
     await makeAppOfflineSafe(page);
     for (const route of PAPER_ROUTES) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
-      const shell = page.locator(".zhaowu-home-sheet-shell").first();
-      const backgroundImage = await shell.evaluate((node) => getComputedStyle(node).backgroundImage);
+      const backgroundImage = await page.locator("body").evaluate((node) => getComputedStyle(node).backgroundImage);
       expect(backgroundImage).toContain("wallpaper-song.jpg");
     }
 

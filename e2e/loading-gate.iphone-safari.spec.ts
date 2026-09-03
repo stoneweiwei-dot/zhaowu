@@ -30,8 +30,7 @@ async function traceGateLifecycle(page: Page) {
 
 async function gateDuration(page: Page) {
   return page.evaluate(() => {
-    const trace = (window as typeof window & { __zhaowuGateTrace: GateTrace })
-      .__zhaowuGateTrace;
+    const trace = (window as typeof window & { __zhaowuGateTrace: GateTrace }).__zhaowuGateTrace;
     if (trace.mountedAt === null || trace.removedAt === null) return null;
     return trace.removedAt - trace.mountedAt;
   });
@@ -40,7 +39,7 @@ async function gateDuration(page: Page) {
 const routes = [
   {
     path: "/",
-    heading: "交卷，先看答案",
+    heading: "四柱八字",
     action: "交卷，看答案",
     actionRole: "button",
   },
@@ -55,58 +54,34 @@ const routes = [
 
 test.describe("iPhone Safari startup fallback", () => {
   for (const route of routes) {
-    test(`${route.path} stays usable when Supabase readiness hangs`, async ({
-      page,
-    }) => {
+    test(`${route.path} stays usable when Supabase readiness hangs`, async ({ page }) => {
       await traceGateLifecycle(page);
-      await page.route(
-        "**/rest/v1/site_settings?**",
-        () => new Promise<void>(() => undefined),
-      );
+      await page.route("**/rest/v1/site_settings?**", () => new Promise<void>(() => undefined));
 
       await page.goto(route.path, { waitUntil: "domcontentloaded" });
-      const heading = page.getByRole("heading", {
-        name: route.heading,
-        exact: true,
-      });
+      const heading = page.getByRole("heading", { name: route.heading, exact: true });
       const gate = page.locator(GATE);
 
       await expect(gate).toBeVisible();
       await expect(heading).toBeAttached();
       await expect(gate).toHaveCount(0, { timeout: 3_000 });
       await expect(heading).toBeVisible();
-      await expect(
-        page
-          .getByRole(route.actionRole, { name: route.action, exact: true })
-          .first(),
-      ).toBeVisible();
+      await expect(page.getByRole(route.actionRole, { name: route.action, exact: true }).first()).toBeVisible();
 
       const duration = await gateDuration(page);
       expect(duration).not.toBeNull();
       expect(duration!).toBeLessThanOrEqual(3_000);
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
-      expect(
-        await page.evaluate(
-          () =>
-            document.documentElement.scrollWidth <=
-            document.documentElement.clientWidth,
-        ),
-      ).toBe(true);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
   }
 
-  test("a failed readiness response reveals Home immediately", async ({
-    page,
-  }) => {
+  test("a failed readiness response reveals Home immediately", async ({ page }) => {
     await traceGateLifecycle(page);
-    await page.route("**/rest/v1/site_settings?**", (route) =>
-      route.fulfill({ status: 503, body: "unavailable" }),
-    );
+    await page.route("**/rest/v1/site_settings?**", (route) => route.fulfill({ status: 503, body: "unavailable" }));
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator(GATE)).toHaveCount(0, { timeout: 1_500 });
-    await expect(
-      page.getByRole("heading", { name: "交卷，先看答案", exact: true }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
   });
 });
