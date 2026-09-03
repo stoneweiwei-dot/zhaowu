@@ -6,6 +6,7 @@ const home = readFileSync(new URL("../src/routes/index.tsx", import.meta.url), "
 const section = readFileSync(new URL("../src/components/life-view-home-section.tsx", import.meta.url), "utf8");
 const fullSection = readFileSync(new URL("../src/components/life-view-section.tsx", import.meta.url), "utf8");
 const curatedSource = readFileSync(new URL("../src/lib/life-view-curated.ts", import.meta.url), "utf8");
+const shortFormSource = readFileSync(new URL("../src/lib/life-view-short-form.ts", import.meta.url), "utf8");
 const source = readFileSync(new URL("../src/lib/life-view.ts", import.meta.url), "utf8");
 const fileSource = readFileSync(new URL("../src/lib/life-view-from-files.ts", import.meta.url), "utf8");
 const practiceSource = readFileSync(new URL("../src/lib/life-view-practice-manual.ts", import.meta.url), "utf8");
@@ -23,12 +24,15 @@ test("home exposes Zhaowu Guan Shi Lu as a latest-first curated archive", () => 
   assert.match(section, /首页只看最新一篇/);
   assert.match(section, /Latest note first/);
   assert.match(section, /LIFE_VIEW_CURATED_ARTICLES/);
-  assert.match(section, /const ARTICLES = LIFE_VIEW_CURATED_ARTICLES/);
+  assert.match(section, /LIFE_VIEW_SHORT_FORM_ARTICLES/);
+  assert.match(section, /const ARTICLES = \[\.\.\.LIFE_VIEW_SHORT_FORM_ARTICLES, \.\.\.LIFE_VIEW_CURATED_ARTICLES\]/);
   assert.doesNotMatch(section, /LIFE_VIEW_FILE_ARTICLES|LIFE_VIEW_PRACTICE_ARTICLES|LIFE_VIEW_20260831_ARTICLES|LIFE_VIEW_20260903_ARTICLES|LIFE_VIEW_20260903_LATE_ARTICLES/);
   assert.match(section, /const latest = ARTICLES\[0\]/);
   assert.match(section, /const visibleArticles = showAll \? ARTICLES : \[latest\]/);
   assert.match(section, /aria-expanded=\{showAll\}/);
 
+  assert.match(shortFormSource, /export const LIFE_VIEW_SHORT_FORM_ARTICLES/);
+  assert.match(shortFormSource, /id: "flowers-fall-mind-stays-steady"/);
   assert.match(curatedSource, /export const LIFE_VIEW_CURATED_ARTICLES/);
   assert.match(curatedSource, /id: "practice-lives-in-daily-choices"/);
   assert.match(curatedSource, /id: "kindness-needs-boundaries"/);
