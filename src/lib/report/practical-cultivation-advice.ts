@@ -89,48 +89,43 @@ const THEME_MAP = new Map(
 
 function selectThemeIds(result: AnalysisResult): PracticalCultivationThemeId[] {
   const question = String(result.question ?? "");
-  const kind = result.reading.kind;
   const ids: PracticalCultivationThemeId[] = [];
   const add = (id: PracticalCultivationThemeId) => {
     if (!ids.includes(id)) ids.push(id);
   };
 
   if (
-    kind === "love" ||
-    /感情|關係|关系|伴侶|伴侣|婚姻|家人|付出|幫忙|帮忙|善良|界線|边界|縱容|纵容|relationship|partner|marriage|family|boundary|overgiv/i.test(question)
+    /過度付出|过度付出|一直付出|幫太多|帮太多|替.*承擔|替.*承担|善良.*界線|善良.*边界|沒有界線|没有边界|縱容|纵容|overgiv|boundary|boundaries|carry.*responsib|enabl(?:e|ing)/i.test(question)
   ) {
     add("bounded-kindness");
   }
 
   if (
-    ["career", "money", "timing", "choice"].includes(kind) ||
-    /改變|改变|拖延|三分鐘|三分钟|計畫|计划|行動|行动|執行|执行|卡住|選擇|选择|工作|事業|事业|career|money|plan|action|procrastinat|stuck|choice/i.test(question)
+    /想改變|想改变|改不了|拖延|三分鐘熱度|三分钟热度|具體計畫|具体计划|執行不了|执行不了|故態復萌|故态复萌|老毛病|procrastinat|follow.?through|change.*habit|habit.*change|concrete plan/i.test(question)
   ) {
     add("concrete-plan");
   }
 
   if (
-    kind === "self" ||
-    kind === "past" ||
-    /修心|修行|反省|懺悔|忏悔|我執|我执|嗔|嫉妒|怨|評判|评判|念經|念经|法會|法会|儀式|仪式|self|reflection|resent|jealous|ritual/i.test(question)
+    /修心|修行|反省|懺悔|忏悔|我執|我执|嗔|嫉妒|怨恨|評判心|评判心|念經|念经|法會|法会|儀式|仪式|ritual|resent|jealous|self.?reflection/i.test(question)
   ) {
     add("inner-over-form");
   }
 
   if (
-    /逆境|低谷|失敗|失败|受阻|被拒|挫折|不順|不顺|壓力|压力|setback|failure|rejection|blocked|pressure/i.test(question)
+    /逆境|低谷|失敗|失败|受阻|被拒|挫折|不順|不顺|失去控制|setback|failure|rejection|blocked|adversity/i.test(question)
   ) {
     add("adversity-mirror");
   }
 
   if (
-    /占有|失去|捨不得|舍不得|執念|执念|欲望|控制|一定要|離不開|离不开|possess|loss|attachment|control/i.test(question)
+    /占有|害怕失去|捨不得|舍不得|執念|执念|欲望|控制欲|一定要屬於我|一定要属于我|possess|fear.*loss|attachment|controlling/i.test(question)
   ) {
     add("having-not-possessing");
   }
 
   if (
-    /都是我的錯|都是我的错|全怪自己|只怪自己|外在|環境|环境|制度|資源|资源|self.?blame|environment|system|resources/i.test(question)
+    /都是我的錯|都是我的错|全怪自己|只怪自己|什麼都怪自己|什么都怪自己|外在條件|外在条件|制度問題|制度问题|環境因素|环境因素|self.?blame|external factors|systemic|environmental factors/i.test(question)
   ) {
     add("inner-outer-balance");
   }
