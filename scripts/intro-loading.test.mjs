@@ -21,18 +21,11 @@ test('home opens without a blocking loading gate', () => {
   assert.doesNotMatch(shell, /loading-v13\.mp4/);
 });
 
-test('bootstrap still checks nine-page report runtime', () => {
-  assert.match(bootstrap, /site_settings\?key=eq\.migration_state/);
-  assert.match(bootstrap, /import\("@\/lib\/actions"\)/);
-  assert.match(bootstrap, /import\("@\/lib\/report\/nine-page"\)/);
-  assert.match(bootstrap, /import\("@\/lib\/report\/paid-report-style"\)/);
-  assert.match(bootstrap, /reportStyle\.status !== "production"/);
-  assert.match(bootstrap, /正在待命四柱繪意/);
-});
-
-test('bootstrap does not preload customer report copy that belongs to result rendering', () => {
-  assert.doesNotMatch(bootstrap, /import\("@\/lib\/report\/customer-copy"\)/);
-  assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
+test('bootstrap is local-only and never gates startup on backend, report or image readiness', () => {
+  assert.match(bootstrap, /DOMContentLoaded/);
+  assert.match(bootstrap, /No network or report\/image warmup belongs here/);
+  assert.doesNotMatch(bootstrap, /SUPABASE|site_settings|fetch\s*\(/);
+  assert.doesNotMatch(bootstrap, /@\/lib\/actions|nine-page|paid-report-style|customer-copy/);
 });
 
 test('loading gate hard-exits inside the three-second bloom budget', () => {
