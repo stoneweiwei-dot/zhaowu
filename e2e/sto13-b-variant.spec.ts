@@ -154,6 +154,10 @@ function visibleHeading(page: Page, text: string) {
   return page.locator("h2:visible").filter({ hasText: text }).first();
 }
 
+function visibleLanguageButton(page: Page, text: string) {
+  return page.locator("button:visible").filter({ hasText: text }).first();
+}
+
 test.describe("STO-13 approved B variant", () => {
   test("keeps owner and customer surfaces simple, lazy and QA-isolated", async ({ page }) => {
     const consoleErrors: string[] = [];
@@ -166,41 +170,44 @@ test.describe("STO-13 approved B variant", () => {
     const backend = await mockOwnerBackend(page);
     await page.goto("/account", { waitUntil: "networkidle" });
 
-    await expect(visibleHeading(page, "首頁背景管理")).toBeVisible();
-    await expect(page.locator("[data-background-card]:visible")).toHaveCount(1);
+    const backgroundHeading = visibleHeading(page, "首頁背景管理");
+    await expect(backgroundHeading).toBeVisible();
+    const backgroundSection = backgroundHeading.locator("xpath=ancestor::section[1]");
+    await expect(backgroundSection.locator("[data-background-card]")).toHaveCount(1);
     expect(backend.backgroundPages[0]).toEqual({ limit: "1", offset: "0" });
     expect(backend.getStoredImagesRequested()).toBeLessThanOrEqual(2);
 
-    await page.getByRole("button", { name: /查看上傳歷史/ }).filter({ visible: true }).first().click();
-    await expect(page.locator("[data-background-card]:visible")).toHaveCount(12);
+    await backgroundSection.getByRole("button", { name: /查看上傳歷史/ }).click();
+    await expect(backgroundSection.locator("[data-background-card]")).toHaveCount(12);
     expect(backend.backgroundPages.some((query) => query.limit === "12" && query.offset === "0")).toBe(true);
 
-    const uploadInput = page.locator('input[type="file"][multiple]:visible').first();
+    const uploadInput = backgroundSection.locator('input[type="file"][multiple]');
     await uploadInput.setInputFiles([
       { name: "sto13-a.png", mimeType: "image/png", buffer: Buffer.from("a") },
       { name: "sto13-b.png", mimeType: "image/png", buffer: Buffer.from("b") },
       { name: "sto13-c.png", mimeType: "image/png", buffer: Buffer.from("c") },
     ]);
-    await expect(page.getByRole("progressbar")).toHaveCount(3);
+    await expect(backgroundSection.getByRole("progressbar")).toHaveCount(3);
     await expect.poll(() => backend.getUploadCount()).toBe(3);
-    for (const progress of await page.getByRole("progressbar").all()) await expect(progress).toHaveAttribute("aria-valuenow", "100");
+    for (const progress of await backgroundSection.getByRole("progressbar").all()) await expect(progress).toHaveAttribute("aria-valuenow", "100");
 
-    await expect(page.getByText("正式客戶報告", { exact: true }).filter({ visible: true }).first()).toBeVisible();
-    await expect(page.getByText("QA 隔離報告", { exact: true })).toHaveCount(0);
+    const accountMain = page.locator("main:visible").last();
+    await expect(accountMain.getByText("正式客戶報告", { exact: true })).toBeVisible();
+    await expect(accountMain.getByText("QA 隔離報告", { exact: true })).toHaveCount(0);
     expect(backend.reportQueries.some((query) => query.includes("record_kind.not.in.%28test%2Cqa%2Ce2e%29") || query.includes("record_kind.not.in.(test,qa,e2e)"))).toBe(true);
 
-    const primary = page.locator("[data-report-primary-actions]:visible").first();
+    const primary = accountMain.locator("[data-report-primary-actions]").first();
     await expect(primary.locator(":scope > button")).toHaveCount(2);
     await primary.locator("button").first().click();
-    const secondary = page.locator("[data-report-secondary-actions]:visible").first();
+    const secondary = accountMain.locator("[data-report-secondary-actions]").first();
     await expect(secondary).toBeVisible();
     await expect(secondary).not.toHaveAttribute("open", /.*/);
 
-    await page.getByRole("button", { name: "简中" }).filter({ visible: true }).first().click();
+    await visibleLanguageButton(page, "简中").click();
     await expect(visibleHeading(page, "首页背景管理")).toBeVisible();
-    await page.getByRole("button", { name: "EN" }).filter({ visible: true }).first().click();
+    await visibleLanguageButton(page, "EN").click();
     await expect(visibleHeading(page, "Homepage backgrounds")).toBeVisible();
-    await page.getByRole("button", { name: "繁中" }).filter({ visible: true }).first().click();
+    await visibleLanguageButton(page, "繁中").click();
 
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     expect(consoleErrors).toEqual([]);
