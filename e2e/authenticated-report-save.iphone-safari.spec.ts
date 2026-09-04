@@ -63,6 +63,13 @@ async function dismissInstallPrompt(page: Page) {
   await dismiss.click();
 }
 
+async function waitForRestoredMember(page: Page) {
+  // This is the same customer-visible auth signal used by the dedicated
+  // authenticated Safari regression. It waits for AuthProvider to expose the
+  // stored session without depending on whether profile metadata is available.
+  await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
+}
+
 async function mobileHealthy(page: Page) {
   expect(await page.evaluate(() => window.innerWidth)).toBe(390);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
@@ -83,8 +90,6 @@ function parsePayload(rawText: string | null) {
 }
 
 async function mockAuthenticatedCloud(page: Page, writes: WriteCall[]) {
-  let profileReads = 0;
-
   await page.route("**/auth/v1/**", async (route) => {
     const request = route.request();
     if (request.method() === "OPTIONS") return noContent(route);
@@ -98,10 +103,7 @@ async function mockAuthenticatedCloud(page: Page, writes: WriteCall[]) {
     const request = route.request();
     if (request.method() === "OPTIONS") return noContent(route);
     const url = new URL(request.url());
-    if (url.pathname.endsWith("/profiles")) {
-      profileReads += 1;
-      return json(route, [PROFILE]);
-    }
+    if (url.pathname.endsWith("/profiles")) return json(route, [PROFILE]);
     if (url.pathname.endsWith("/site_settings")) return json(route, [{ key: "migration_state", value: { ready: true } }]);
     if (url.pathname.endsWith("/report_requests")) {
       const method = request.method();
@@ -121,21 +123,16 @@ async function mockAuthenticatedCloud(page: Page, writes: WriteCall[]) {
     }
     return json(route, []);
   });
-
-  return { getProfileReads: () => profileReads };
 }
 
 test("Signed-in member can generate and persist one full report record", async ({ page }) => {
   const writes: WriteCall[] = [];
   await installSession(page);
-  const backend = await mockAuthenticatedCloud(page, writes);
+  await mockAuthenticatedCloud(page, writes);
 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
-  // A stored session is restored asynchronously. Do not submit before the
-  // authenticated profile has been read, otherwise WebKit can race the form
-  // ahead of auth and turn this into a signed-out persistence test.
-  await expect.poll(() => backend.getProfileReads()).toBeGreaterThan(0);
+  await waitForRestoredMember(page);
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
 
@@ -163,7 +160,6 @@ test("Signed-in member can generate and persist one full report record", async (
 });
 
 test("Full report stays available when Supabase persistence fails", async ({ page }) => {
-  let profileReads = 0;
   await installSession(page);
   await page.route("**/auth/v1/**", async (route) => {
     const request = route.request();
@@ -177,10 +173,7 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
     const request = route.request();
     if (request.method() === "OPTIONS") return noContent(route);
     const url = new URL(request.url());
-    if (url.pathname.endsWith("/profiles")) {
-      profileReads += 1;
-      return json(route, [PROFILE]);
-    }
+    if (url.pathname.endsWith("/profiles")) return json(route, [PROFILE]);
     if (url.pathname.endsWith("/site_settings")) return json(route, [{ key: "migration_state", value: { ready: true } }]);
     if (url.pathname.endsWith("/report_requests")) return json(route, { message: "temporary persistence outage" }, 503);
     return json(route, []);
@@ -188,7 +181,7 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
-  await expect.poll(() => profileReads).toBeGreaterThan(0);
+  await waitForRestoredMember(page);
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
   await expect(page.locator("#result")).toBeVisible();
