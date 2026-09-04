@@ -65,7 +65,7 @@ test('intro plays the owner twin-lotus video without status text', () => {
   assert.match(gate, /OWNER_LOADING_VIDEO/);
   assert.match(gate, /LOTUS_BLOOM_MS = 5000/);
   assert.match(gate, /data-intro-motion="owner-video"/);
-  assert.match(gate, /loading-owner-r40\.mp4/);
+  assert.match(gate, /loading-owner-r41\.mp4/);
   assert.match(css, /zhaowu-lotus-intro__video/);
   assert.match(css, /object-fit: cover/);
   assert.match(css, /prefers-reduced-motion/);
