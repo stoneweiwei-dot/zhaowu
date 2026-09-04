@@ -115,8 +115,8 @@ test("Signed-in member can generate and persist one full report record", async (
 
   const result = page.locator("#result");
   await expect(result).toBeVisible();
-  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeVisible();
   await expect.poll(() => writes.some((call) => call.method === "POST" && call.status === "engine_ready")).toBe(true);
+  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeVisible();
 
   const engineReady = writes.find((call) => call.method === "POST" && call.status === "engine_ready");
   expect(engineReady?.id).toBeTruthy();
