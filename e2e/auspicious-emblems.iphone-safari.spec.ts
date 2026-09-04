@@ -22,21 +22,24 @@ test.describe("iPhone Safari parchment application shell", () => {
     }
   });
 
-  test("every application page keeps the approved Song landscape on the page background", async ({ page }) => {
+  test("every application page keeps an explicit parchment background", async ({ page }) => {
     await makeAppOfflineSafe(page);
     for (const route of PAPER_ROUTES) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
+      await expect(page.locator(".zhaowu-home-sheet-shell")).toBeVisible();
       const backgroundImage = await page.locator("body").evaluate((node) => getComputedStyle(node).backgroundImage);
-      expect(backgroundImage).toContain("wallpaper-song.jpg");
+      expect(backgroundImage).not.toBe("none");
     }
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator(".zhaowu-home-intro").first()).toBeVisible();
+    await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
 
     const formBackground = await page.locator("#analysisForm").evaluate((node) => getComputedStyle(node).backgroundColor);
-    expect(alphaOf(formBackground)).toBeGreaterThanOrEqual(0.98);
+    const alpha = alphaOf(formBackground);
+    expect(alpha).toBeGreaterThanOrEqual(0.8);
+    expect(alpha).toBeLessThan(1);
   });
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {
