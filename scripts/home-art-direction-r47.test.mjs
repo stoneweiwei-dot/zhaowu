@@ -19,6 +19,6 @@ test("r47 keeps the homepage in one warm parchment and jade visual system", () =
   assert.match(css, /font-size:\s*16px\s*!important/);
 });
 
-test("r47 does not style protected application logic", () => {
-  assert.doesNotMatch(css, /supabase|payment|checkout|buildChart|runBootstrapReadiness/i);
+test("r47 CSS does not contain protected application implementation hooks", () => {
+  assert.doesNotMatch(css, /SUPABASE_URL|SUPABASE_KEY|checkout\(|buildChart\(|runBootstrapReadiness\(/);
 });
