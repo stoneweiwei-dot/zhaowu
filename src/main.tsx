@@ -32,6 +32,7 @@ import './zhaowu-paper-reference-v31.css';
 import './ios-section-visibility.css';
 import './report-visual-book.css';
 import './report-luck-book.css';
+import './report-visual-assets.css';
 import './report-share-card.css';
 
 const router = createRouter({ routeTree });
