@@ -62,8 +62,8 @@ export function IntroGate() {
         if (!cancelled) setRuntimeReady(true);
       })
       .catch(() => {
-        // Do not fade here: bootstrap failure must reveal the already-mounted site immediately.
-        if (!cancelled) forceOff();
+        // Readiness is fail-open, but a transient backend error must not erase the visible Loading sequence.
+        if (!cancelled) setRuntimeReady(true);
       });
 
     return () => {
