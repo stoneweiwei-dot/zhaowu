@@ -11,6 +11,7 @@ import { useAppStore } from "@/lib/store";
 import "@/home-polish-v3.css";
 import "@/home-portals.css";
 import "@/home-portals-astrology.css";
+import "@/home-layout-r46.css";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -82,13 +83,17 @@ function Home() {
         };
 
   return (
-    <main className="zhaowu-home-sheet-page space-y-7 sm:space-y-10">
-      <DailyAlmanacWidget />
-      <section id="bazi" className="relative" aria-label={t("formTitle")}><AnalysisForm /></section>
-      {current ? <ResultView result={current} /> : null}
-      {current ? <FollowUpBox result={current} /> : null}
+    <main className="zhaowu-home-sheet-page zhaowu-home-layout">
+      <div className="zhaowu-home-stage zhaowu-home-stage--daily"><DailyAlmanacWidget /></div>
 
-      <section className="zhaowu-home-portals-block" aria-label={portalCopy.label}>
+      <section id="bazi" className="zhaowu-home-stage zhaowu-home-stage--primary relative" aria-label={t("formTitle")}>
+        <AnalysisForm />
+      </section>
+
+      {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><ResultView result={current} /></div> : null}
+      {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div> : null}
+
+      <section className="zhaowu-home-stage zhaowu-home-stage--directory zhaowu-home-portals-block" aria-label={portalCopy.label}>
         <header className="zhaowu-home-portals-heading">
           <h2>{portalCopy.label}</h2>
           <span>{portalCopy.lead}</span>
@@ -106,23 +111,27 @@ function Home() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-line/80 bg-[#fbf5e9] px-5 py-5" aria-label={funCopy.title}>
-        <header className="flex items-end justify-between gap-3 border-b border-line/70 pb-3">
-          <div><h2 className="font-display text-xl text-ink">{funCopy.title}</h2><p className="mt-1 text-xs text-ink-mute">{funCopy.lead}</p></div>
+      <section className="zhaowu-home-stage zhaowu-home-stage--directory zhaowu-home-fun-section" aria-label={funCopy.title}>
+        <header className="zhaowu-home-fun-heading">
+          <h2>{funCopy.title}</h2>
+          <p>{funCopy.lead}</p>
         </header>
-        <div className="mt-2 divide-y divide-line/60">
+        <div className="zhaowu-home-fun-grid">
           {funCopy.cards.map((card) => (
-            <Link key={card.title} to={card.to} className="flex min-h-16 items-center justify-between gap-4 py-3" aria-label={card.title}>
-              <span className="min-w-0"><strong className="block font-display text-base text-ink">{card.title}</strong><small className="mt-1 block text-xs leading-5 text-ink-mute">（{card.hint}）</small></span>
-              <span className="shrink-0 text-cinnabar" aria-hidden>›</span>
+            <Link key={card.title} to={card.to} className="zhaowu-home-fun-card" aria-label={card.title}>
+              <span className="min-w-0">
+                <strong>{card.title}</strong>
+                <small>（{card.hint}）</small>
+              </span>
+              <span className="zhaowu-home-fun-arrow" aria-hidden>›</span>
             </Link>
           ))}
         </div>
       </section>
 
-      <AuspiciousGallerySection />
-      <LifeViewHomeSection />
-      <HomeScreenInstallPrompt />
+      <div className="zhaowu-home-stage zhaowu-home-stage--gallery"><AuspiciousGallerySection /></div>
+      <div className="zhaowu-home-stage zhaowu-home-stage--notes"><LifeViewHomeSection /></div>
+      <div className="zhaowu-home-stage"><HomeScreenInstallPrompt /></div>
     </main>
   );
 }
