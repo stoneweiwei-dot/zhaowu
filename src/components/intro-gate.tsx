@@ -7,7 +7,7 @@ import {
   scheduleIntroGateHardExit,
 } from "@/lib/intro-gate-policy";
 
-const LOTUS_BLOOM_MS = 2400;
+const LOTUS_BLOOM_MS = 5000;
 const OWNER_LOADING_VIDEO = "/intro/loading-owner-r40.mp4";
 const OWNER_LOADING_POSTER = "/intro/loading-owner-r40.jpg";
 
@@ -62,7 +62,7 @@ export function IntroGate() {
         if (!cancelled) setRuntimeReady(true);
       })
       .catch(() => {
-        // Bootstrap failure reveals the already-mounted site immediately.
+        // Do not fade here: bootstrap failure must reveal the already-mounted site immediately.
         if (!cancelled) forceOff();
       });
 

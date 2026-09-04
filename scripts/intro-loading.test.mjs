@@ -35,7 +35,7 @@ test('bootstrap does not preload customer report copy that belongs to result ren
   assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
 });
 
-test('loading gate hard-exits after the owner five-second bloom', () => {
+test('loading gate hard-exits within the three-second P0 limit even if the owner bloom is longer', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
   let cancelledTimer = null;
@@ -51,10 +51,10 @@ test('loading gate hard-exits after the owner five-second bloom', () => {
     () => { exited = true; },
   );
 
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 5300);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS >= 5000);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 5300);
-  assert.equal(scheduledDelay, 5300);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 2800);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS > 0);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 3000);
+  assert.equal(scheduledDelay, 2800);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
