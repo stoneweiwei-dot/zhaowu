@@ -2,6 +2,10 @@ import type { Locale } from '@/lib/i18n';
 import type { ZiweiCoreChart } from './core';
 import type { ZiweiMutagenEvent, ZiweiScope, ZiweiTruthExtension } from './horoscope';
 import {
+  ZIWEI_ADVANCED_ANALYSIS_POLICY,
+  ZIWEI_ADVANCED_ANALYSIS_ROUTE_VERSION,
+} from './analysis-route';
+import {
   ZIWEI_MUTAGEN_OPERATION,
   ZIWEI_PALACE_CONTEXT,
   ZIWEI_PROCESS_MODIFIER,
@@ -18,6 +22,7 @@ export type ZiweiGrammarEvidence = {
 
 export type ZiweiGrammarSummary = {
   version: 'zhaowu_ziwei_grammar_summary_v1';
+  analysisRouteVersion: typeof ZIWEI_ADVANCED_ANALYSIS_ROUTE_VERSION;
   title: string;
   paragraph: string;
   evidence: ZiweiGrammarEvidence[];
@@ -92,8 +97,8 @@ function zhParagraph(input: Input, hans: boolean): ZiweiGrammarSummary {
     .map((event) => ({ scope: event.scope, palace: event.natalPalaceName ?? '', signal: `${event.targetStar}化${event.transformation}` }));
 
   const intro = hans
-    ? '这里不把四化当成吉凶表，而是看哪一种星曜功能在什么人生场景里被增加、推动、显化或形成成本。'
-    : '這裡不把四化當成吉凶表，而是看哪一種星曜功能在什麼人生場景裡被增加、推動、顯化或形成成本。';
+    ? '这里不把四化当成吉凶表，而是先看本命结构，再看哪一种星曜功能在什么人生场景里被增加、推动、显化或形成成本。'
+    : '這裡不把四化當成吉凶表，而是先看本命結構，再看哪一種星曜功能在什麼人生場景裡被增加、推動、顯化或形成成本。';
   const natalText = natalBits.length
     ? (hans ? `本命四化的结构是：${natalBits.join('；')}。` : `本命四化的結構是：${natalBits.join('；').replaceAll('这组', '這組').replaceAll('进入', '進入').replaceAll('作用方式', '作用方式')}。`)
     : '';
@@ -111,15 +116,27 @@ function zhParagraph(input: Input, hans: boolean): ZiweiGrammarSummary {
       : `${focus.palace}這一場景（${context.domain}）${scopeLabel}。這表示它是當前更值得留意的主題，但仍不是具體事件保證${process.length ? `；同宮過程修飾可見${process.join('、')}` : ''}。`;
   }
 
+  const boundary = hans
+    ? '宫干飞化、欽天自化、来因宫或专业版流月流日等资料，只有来源明示或对应规则已经验证时才进入结论；缺失资料不补造。'
+    : '宮干飛化、欽天自化、來因宮或專業版流月流日等資料，只有來源明示或對應規則已經驗證時才進入結論；缺失資料不補造。';
+
   return {
     version: 'zhaowu_ziwei_grammar_summary_v1',
+    analysisRouteVersion: ZIWEI_ADVANCED_ANALYSIS_ROUTE_VERSION,
     title: hans ? '四化与岁运结构' : '四化與歲運結構',
-    paragraph: `${intro}${natalText}${timing}`,
+    paragraph: `${intro}${natalText}${timing}${boundary}`,
     evidence,
   };
 }
 
 export function buildZiweiGrammarSummary(input: Input): ZiweiGrammarSummary {
+  // Keep the live report tied to the same policy used by the advanced analysis route.
+  // This guard is intentionally explicit so future refactors cannot silently lower the
+  // cross-layer evidence requirement below the locked policy.
+  if (ZIWEI_ADVANCED_ANALYSIS_POLICY.minimumAlignedLayersForMajorClaim < 2) {
+    throw new Error('Ziwei advanced analysis policy requires cross-layer validation');
+  }
+
   if (input.locale === 'en') {
     const events = activeEvents(input);
     const focus = strongestPalace(events);
@@ -138,8 +155,9 @@ export function buildZiweiGrammarSummary(input: Input): ZiweiGrammarSummary {
     }
     return {
       version: 'zhaowu_ziwei_grammar_summary_v1',
+      analysisRouteVersion: ZIWEI_ADVANCED_ANALYSIS_ROUTE_VERSION,
       title: 'Transformations and timing structure',
-      paragraph: `The Four Transformations are treated as operations, not good/bad scores. Natal structure: ${natal}. ${timing}`,
+      paragraph: `The Four Transformations are treated as operations, not good/bad scores, and natal structure is read before timing layers. Natal structure: ${natal}. ${timing} Palace-stem flying transformations, Qin Tian self-transformations, cause-palace material, or professional monthly/daily timing are used only when explicitly supplied or backed by a verified profile; missing data is not invented.`,
       evidence,
     };
   }

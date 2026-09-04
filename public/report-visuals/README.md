@@ -1,12 +1,19 @@
 # REPORT VISUALS
 
-Phase 1 mother-image paths are intentionally deterministic and optional at runtime.
+The report artwork layer is deterministic and symbolic only. It never changes BaZi calculations, structure judgement, timing, paid-report text, or delivery state.
 
-Expected directories:
+Seven lightweight grouped WebP assets are used so mobile clients do not have to request 27 separate mother images:
 
-- `day-master/` — `jia-wood.webp`, `yi-wood.webp`, `bing-fire.webp`, `ding-fire.webp`, `wu-earth.webp`, `ji-earth.webp`, `geng-metal.webp`, `xin-metal.webp`, `ren-water.webp`, `gui-water.webp`
-- `month/` — `yin-spring.webp`, `mao-spring.webp`, `chen-spring.webp`, `si-summer.webp`, `wu-summer.webp`, `wei-summer.webp`, `shen-autumn.webp`, `you-autumn.webp`, `xu-autumn.webp`, `hai-winter.webp`, `zi-winter.webp`, `chou-winter.webp`
+- `groups/day-0.webp` — 甲、乙、丙、丁、戊
+- `groups/day-1.webp` — 己、庚、辛、壬、癸
+- `groups/month-0.webp` — 寅、卯、辰
+- `groups/month-1.webp` — 巳、午、未
+- `groups/month-2.webp` — 申、酉、戌
+- `groups/month-3.webp` — 亥、子、丑
+- `groups/luck-0.webp` — 木、火、土、金、水
 
-Until a mother image exists, the UI falls back to `/wallpaper-song.jpg`. Missing art must never block report text or charts.
+Every visible crop is locked to a 9:16 cell. The frontend registry selects the exact cell by an already-calculated visual key. Luck artwork uses only the first heavenly stem of the already-calculated GanZhi: 甲乙木、丙丁火、戊己土、庚辛金、壬癸水.
 
-Artwork files contain no customer-facing report text. All titles, descriptions, labels and watermarking are rendered by the frontend.
+If an asset is missing or fails to load, the UI falls back to `/wallpaper-song.jpg`. Artwork failure must never block report text, charts, timing, payment flow, or report delivery.
+
+Customer-facing titles, explanations, charts and `STONE 原創` watermarking remain frontend-rendered rather than embedded into these sprite files.

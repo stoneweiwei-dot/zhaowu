@@ -178,57 +178,17 @@ Check the real production path(s) involved in the task. For UI tasks, verify at 
 - target static assets
 - mobile behavior where the tooling can verify it
 
-If tooling cannot visually render a behavior, say so explicitly and do not invent a visual PASS. In that case report the task as technically deployed but visually unverified until direct evidence exists.
+## 10. CONTINUE WORK AFTER QUOTA SUPERSESSION
 
-## 10. Mobile first
+The previous project-side Vercel throttle of **40** builds/deployments per day (including any stale 40/44/50-era variants) is superseded for ZHAOWU website work.
 
-For UI work, prioritize mobile widths around 390–430 px.
+The active project-side budget is now **80 Vercel builds/deployments per day** for the single production project `stone-zhaowu-official`.
 
-Check for:
+This is a **maximum safety budget, not a target**. Agents must still use the minimum necessary deployments, batch compatible changes, avoid redundant rebuilds, and never create another Vercel project.
 
-- horizontal overflow
-- clipped content
-- blocked buttons
-- non-clickable controls
-- oversized art
-- text/background contrast
-- safe-area issues
-- layering/z-index problems
+When the owner explicitly authorizes work that was previously deferred solely because of the old 40-limit, the agent may proceed within the active 80 maximum, subject to all other regression, production, auth, data and safety gates in this protocol.
 
-## 11. Regression rule
-
-Every fix must consider whether it breaks adjacent behavior.
-
-At minimum, when relevant, check:
-
-- home
-- login/auth
-- account/admin
-- report output
-- background system
-- header/navigation
-- language selector/copy
-- mobile layout
-- static assets
-
-Fixing A by silently breaking B is a failed task.
-
-## 12. No shortcuts / no clever evasions
-
-Forbidden behaviors:
-
-- reporting a generated patch as a completed website change
-- saying permissions/tools are unavailable before actually checking
-- saying "should work" as "works"
-- stopping at problem discovery when the fix is within available tools
-- skipping CI/production checks to save time or tokens
-- asking the user to manually do work that the connected tools can perform safely
-- hiding a failed build behind a long explanation
-- relying on stale previous-state claims after the repository has changed
-
-When a user reports "I cannot see it", "it is still wrong", "it is old", "it is blank", or equivalent, production evidence outranks model assumptions. Re-check production first.
-
-## 13. Failure handling
+## 11. Failure handling
 
 When a step fails:
 
@@ -246,7 +206,7 @@ If blocked, state exactly:
 - why current tools cannot resolve it
 - the smallest user action required, if any
 
-## 14. Required completion report
+## 12. Required completion report
 
 For every website task, final status must include:
 
@@ -272,19 +232,19 @@ List affected routes/assets as `PASS`, `FAIL`, or `NOT VISUALLY VERIFIED`.
 ### Final conclusion
 Only one of:
 
-- `✅ VERIFIED COMPLETE`
-- `🟡 MODIFIED BUT NOT LIVE/VERIFIED`
-- `❌ INCOMPLETE — BLOCKED BY: <exact reason>`
+- `VERIFIED COMPLETE`
+- `MODIFIED BUT NOT LIVE/VERIFIED`
+- `INCOMPLETE — BLOCKED BY: <exact reason>`
 
 Never use ambiguous completion language.
 
-## 15. Absolute rule
+## 13. Absolute rule
 
 For ZHAOWU work, facts beat assumptions, production beats local state, and verification beats implementation.
 
 If there is no production evidence, there is no completion claim.
 
-## 16. MANDATORY RELEASE LEDGER
+## 14. MANDATORY RELEASE LEDGER
 
 Every change that reaches ZHAOWU production and modifies runtime behavior, backend behavior, customer-facing UI, report output, deployment behavior, or production data/configuration must leave a release record. This applies to every AI, APP, agent and manual maintainer.
 
@@ -306,7 +266,7 @@ After Production is VERIFIED:
 
 The release ledger is the canonical answer to: **which version is live, how many recorded production updates have occurred, and what changed in the latest release.**
 
-## 17. CANONICAL METAPHYSICS DEFAULT
+## 15. CANONICAL METAPHYSICS DEFAULT
 
 For every ZHAOWU metaphysics analysis, report, AI prompt, rule-ingestion task or specialist route, the default doctrine is `docs/METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` unless the site owner explicitly overrides the current task.
 

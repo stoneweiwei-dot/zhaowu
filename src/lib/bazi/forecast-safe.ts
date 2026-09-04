@@ -1,4 +1,5 @@
 import { analyzeForecastYear, type ForecastPeriod, type ForecastTopic } from "@/lib/bazi/forecast";
+import { analyzeCycleChain, cycleChainEvidence } from "@/lib/bazi/cycle-chain";
 import type { Chart } from "@/lib/bazi/types";
 
 function normalizedMonths(months?: number[]): number[] {
@@ -32,7 +33,28 @@ function rankDistinct(periods: ForecastPeriod[]) {
   return { best, caution };
 }
 
-/** Customer timing output: a month can never be both best and caution. */
+function withCycleAdjustment(chart: Chart, topic: ForecastTopic, period: ForecastPeriod): ForecastPeriod {
+  const chain = analyzeCycleChain(chart, period.year, period.yearGanZhi, period.monthGanZhi, topic);
+  return {
+    ...period,
+    score: Math.round((period.score + chain.crossLayerAdjustment) * 100) / 100,
+    notes: [...period.notes, ...chain.notes.filter((note) => /層：/.test(note)).slice(0, 4)],
+  };
+}
+
+function adjustedYearScore(chart: Chart, topic: ForecastTopic, baseScore: number, periods: ForecastPeriod[]): number {
+  if (!periods.length) return baseScore;
+  const delta = periods.reduce((sum, period) => {
+    const chain = analyzeCycleChain(chart, period.year, period.yearGanZhi, period.monthGanZhi, topic);
+    return sum + chain.crossLayerAdjustment;
+  }, 0) / periods.length;
+  return Math.round((baseScore + delta) * 10) / 10;
+}
+
+/**
+ * Customer timing output. A month can never be both best and caution, and the
+ * ranking now includes the missing 大運→流年→流月 cross-layer interactions.
+ */
 export function buildDistinctTimingAnswer(
   chart: Chart,
   topic: ForecastTopic,
@@ -45,28 +67,34 @@ export function buildDistinctTimingAnswer(
 
   const blocks = years.map((year) => {
     const forecast = analyzeForecastYear(chart, year, topic);
-    const periods = scope.length ? forecast.months.filter((period) => scope.includes(period.month)) : forecast.months;
+    const source = scope.length ? forecast.months.filter((period) => scope.includes(period.month)) : forecast.months;
+    const periods = source.map((period) => withCycleAdjustment(chart, topic, period));
     if (!periods.length) return `${year} 暫無可比較月份。`;
+    const overallScore = adjustedYearScore(chart, topic, forecast.score, periods);
 
     if (periods.length === 1) {
       const only = periods[0];
       const tone = only.score >= 2 ? "偏順" : only.score <= -2 ? "阻力偏高" : "中性可用";
-      return `${yearVerdict(topic, forecast.score, year)}你指定的月份範圍內，${monthLabel(only)} 為${tone}。`;
+      const chain = analyzeCycleChain(chart, only.year, only.yearGanZhi, only.monthGanZhi, topic);
+      return `${yearVerdict(topic, overallScore, year)}你指定的月份範圍內，${monthLabel(only)} 為${tone}。${cycleChainEvidence(chain)}`;
     }
 
     const ranked = rankDistinct(periods);
     const best = ranked.best.map(monthLabel).join("、");
     const caution = ranked.caution.map(monthLabel).join("、");
+    const anchor = ranked.best[0] ?? periods[0];
+    const chain = analyzeCycleChain(chart, anchor.year, anchor.yearGanZhi, anchor.monthGanZhi, topic);
     return [
-      yearVerdict(topic, forecast.score, year),
+      yearVerdict(topic, overallScore, year),
       scope.length ? "你指定的月份範圍內，" : "",
       `較順的窗口：${best || "—"}。`,
       caution ? `較需要保守安排：${caution}。` : "",
+      cycleChainEvidence(chain),
     ].filter(Boolean).join("");
   });
 
   const precision = chart.timeUnknown
-    ? "出生時間未確定，所以月份判斷會較寬。"
-    : "這些月份只代表行動先後順序，不保證結果。";
+    ? "出生時間未確定，所以時柱與大運不做滿格推斷，月份判斷會較寬。"
+    : "排序依序核對原局、大運、流年、流月；支合只先論牽制，支沖刑害只先論引動與摩擦，不把任何單一關係當作結果保證。";
   return `${blocks.join(" ")} ${precision}`.trim();
 }

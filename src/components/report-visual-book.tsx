@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { AnalysisResult, Element } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { buildReportVisualModel, type ReportVisualTab } from "@/lib/report/report-visual-model";
+import { getReportVisualAsset } from "@/lib/report/report-visual-assets";
+import { ReportSpriteArtwork } from "@/components/report-sprite-artwork";
 
 const COPY: Record<Locale, {
   kicker: string;
@@ -81,36 +83,7 @@ const WHEEL_POINTS: Record<Element, { x: number; y: number }> = {
   水: { x: 56, y: 116 },
 };
 
-function Artwork({ src, alt, fallbackText }: { src: string; alt: string; fallbackText: string }) {
-  const [currentSrc, setCurrentSrc] = useState(src);
-  const [fallback, setFallback] = useState(false);
-
-  useEffect(() => {
-    setCurrentSrc(src);
-    setFallback(false);
-  }, [src]);
-
-  return (
-    <figure className="zhaowu-visual-artwork">
-      <img
-        src={currentSrc}
-        alt={alt}
-        loading="lazy"
-        decoding="async"
-        onError={() => {
-          if (currentSrc !== "/wallpaper-song.jpg") {
-            setCurrentSrc("/wallpaper-song.jpg");
-            setFallback(true);
-          }
-        }}
-      />
-      {fallback ? <figcaption>{fallbackText}</figcaption> : null}
-    </figure>
-  );
-}
-
 function FiveElementWheel({ rows, ariaLabel }: { rows: ReturnType<typeof buildReportVisualModel>["elements"]["rows"]; ariaLabel: string }) {
-  const byElement = useMemo(() => Object.fromEntries(rows.map((row) => [row.element, row])) as Record<Element, (typeof rows)[number]>, [rows]);
   const generation: Array<[Element, Element]> = [["木", "火"], ["火", "土"], ["土", "金"], ["金", "水"], ["水", "木"]];
   const control: Array<[Element, Element]> = [["木", "土"], ["土", "水"], ["水", "火"], ["火", "金"], ["金", "木"]];
 
@@ -140,6 +113,8 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const model = useMemo(() => buildReportVisualModel(result.chart, locale), [result.chart, locale]);
+  const dayAsset = useMemo(() => getReportVisualAsset("day-master", model.dayMaster.visualKey), [model.dayMaster.visualKey]);
+  const seasonAsset = useMemo(() => getReportVisualAsset("month", model.season.visualKey), [model.season.visualKey]);
   const [active, setActive] = useState<ReportVisualTab>("overview");
 
   useEffect(() => setActive("overview"), [result.id]);
@@ -198,7 +173,7 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
               <p>{copy.day}</p>
               <h5>{model.dayMaster.title}</h5>
             </div>
-            <Artwork src={model.dayMaster.imagePath} alt={model.dayMaster.imageAlt} fallbackText={copy.imageFallback} />
+            <ReportSpriteArtwork asset={dayAsset} alt={model.dayMaster.imageAlt} fallbackText={copy.imageFallback} />
             <p className="zhaowu-visual-summary">{model.dayMaster.summary}</p>
             <div className="zhaowu-visual-tags">{model.dayMaster.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}</div>
             <dl className="zhaowu-visual-facts">
@@ -216,7 +191,7 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
               <h5>{model.season.title}</h5>
               <span>{model.season.seasonLabel}</span>
             </div>
-            <Artwork src={model.season.imagePath} alt={model.season.imageAlt} fallbackText={copy.imageFallback} />
+            <ReportSpriteArtwork asset={seasonAsset} alt={model.season.imageAlt} fallbackText={copy.imageFallback} />
             <p className="zhaowu-visual-summary">{model.season.summary}</p>
             <div className="zhaowu-season-period">
               <span>{copy.period}</span>

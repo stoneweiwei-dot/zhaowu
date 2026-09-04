@@ -1,0 +1,341 @@
+/* ZHAOWU v41 visual structure lock — 2026-09-05
+ * Purpose: replace the accumulated layered/card-heavy shell with one clear
+ * parchment reading surface. Mobile first; desktop expands without changing hierarchy.
+ * No auth, calculation, routing, payment or Supabase behavior changes.
+ */
+
+:root {
+  --z41-paper: #fbf5e9;
+  --z41-paper-2: #fffaf1;
+  --z41-ink: #27251f;
+  --z41-muted: #777064;
+  --z41-line: rgba(108, 89, 57, .20);
+  --z41-gold: #b59a68;
+  --z41-jade: #254b3e;
+  --z41-red: #9f342b;
+}
+
+/* One reading column, not a floating glass application inside another page. */
+.zhaowu-app-frame {
+  width: min(calc(100% - 24px), 760px) !important;
+  max-width: 760px !important;
+  margin: 0 auto 30px !important;
+  padding: 14px 0 34px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-site-header > div {
+  max-width: 760px !important;
+}
+
+/* Header: brand, language, account. Nothing competes with the primary action. */
+.zhaowu-site-header nav {
+  gap: 4px !important;
+}
+
+.zhaowu-site-header nav > a,
+.zhaowu-site-header nav > button {
+  min-height: 38px;
+}
+
+.zhaowu-site-header nav a[href="/login"] {
+  border-radius: 10px !important;
+  padding-inline: 14px !important;
+  background: var(--z41-jade) !important;
+}
+
+/* Homepage opening: direct, calm, editorial. */
+.zhaowu-home-hero,
+.zhaowu-has-wallpaper .zhaowu-home-hero {
+  border: 0 !important;
+  border-radius: 0 !important;
+  border-top: 1px solid var(--z41-line) !important;
+  border-bottom: 1px solid var(--z41-line) !important;
+  padding: 30px 6px 28px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-home-hero h1 {
+  font-size: clamp(3rem, 13vw, 5.2rem) !important;
+  letter-spacing: .14em !important;
+  line-height: .94 !important;
+}
+
+/* Main analysis form: one sheet, clear labels, one dominant CTA. */
+#analysisForm,
+.zhaowu-app-frame .seal-border,
+.zhaowu-app-frame section.seal-border,
+.zhaowu-app-frame .zhaowu-tool-card {
+  border: 1px solid var(--z41-line) !important;
+  border-radius: 14px !important;
+  background: var(--z41-paper) !important;
+  background-image: none !important;
+  box-shadow: 0 8px 24px rgba(60, 48, 31, .045) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+#analysisForm {
+  padding: 22px 18px !important;
+}
+
+#analysisForm input,
+#analysisForm textarea,
+#analysisForm select {
+  min-height: 46px !important;
+  border: 1px solid var(--z41-line) !important;
+  border-radius: 9px !important;
+  background: var(--z41-paper-2) !important;
+}
+
+#analysisForm button[type="submit"] {
+  min-height: 48px !important;
+  border-radius: 10px !important;
+  background: var(--z41-jade) !important;
+  box-shadow: none !important;
+}
+
+/* Specialist portals: consistent rows, no oversized poster-card competition. */
+.zhaowu-home-portals-block {
+  margin-top: 4px !important;
+}
+
+.zhaowu-home-portals-heading {
+  margin-bottom: 10px !important;
+  padding: 0 2px 12px !important;
+  border-bottom: 1px solid var(--z41-line) !important;
+}
+
+.zhaowu-home-portals-heading h2 {
+  color: var(--z41-ink) !important;
+  font-size: 1.35rem !important;
+  letter-spacing: .06em !important;
+}
+
+.zhaowu-home-portals-heading span {
+  display: block !important;
+  margin-top: 5px !important;
+  color: var(--z41-muted) !important;
+  font-size: .78rem !important;
+  line-height: 1.6 !important;
+}
+
+.zhaowu-home-portals {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+  border-top: 1px solid var(--z41-line) !important;
+}
+
+.zhaowu-home-portal {
+  min-height: 72px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 13px 4px !important;
+  border-bottom: 1px solid var(--z41-line) !important;
+  color: var(--z41-ink) !important;
+  background: transparent !important;
+}
+
+.zhaowu-home-portal-copy strong {
+  display: block !important;
+  font-family: inherit !important;
+  font-size: 1rem !important;
+  line-height: 1.35 !important;
+}
+
+.zhaowu-home-portal-hint {
+  display: block !important;
+  margin-top: 4px !important;
+  color: var(--z41-muted) !important;
+  font-size: .72rem !important;
+  line-height: 1.55 !important;
+}
+
+.zhaowu-home-portal-arrow {
+  flex: 0 0 auto !important;
+  font-size: 1.45rem !important;
+  color: var(--z41-red) !important;
+}
+
+/* Fun tests and lower sections use the same editorial rhythm. */
+.zhaowu-app-frame > main > section.rounded-2xl {
+  border: 1px solid var(--z41-line) !important;
+  border-radius: 14px !important;
+  background: var(--z41-paper) !important;
+  box-shadow: 0 8px 24px rgba(60,48,31,.045) !important;
+}
+
+/* Login: no floating fantasy poster, no excessive motion, no competing chrome. */
+.zhaowu-login-shell {
+  background: var(--z41-paper) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen {
+  min-height: 100dvh !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: max(76px, calc(env(safe-area-inset-top) + 68px)) 16px max(28px, env(safe-area-inset-bottom)) !important;
+  background: var(--z41-paper) !important;
+}
+
+.zhaowu-login-shell .stone-login-sheet {
+  width: min(100%, 430px) !important;
+  margin: 0 auto !important;
+  padding: 30px 22px 22px !important;
+  border: 1px solid var(--z41-line) !important;
+  border-radius: 14px !important;
+  background: var(--z41-paper-2) !important;
+  box-shadow: 0 16px 42px rgba(60,48,31,.07) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-login-shell .stone-login-title {
+  display: block !important;
+  font-size: clamp(2rem, 9vw, 2.7rem) !important;
+  line-height: 1.08 !important;
+  letter-spacing: .05em !important;
+}
+
+.zhaowu-login-shell .stone-login-lead {
+  max-width: 31rem !important;
+  margin-top: 9px !important;
+  color: var(--z41-muted) !important;
+  line-height: 1.65 !important;
+}
+
+.zhaowu-login-shell .stone-login-tabs {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0 !important;
+  margin-top: 22px !important;
+  border-bottom: 1px solid var(--z41-line) !important;
+}
+
+.zhaowu-login-shell .stone-login-tabs button {
+  min-height: 46px !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--z41-muted) !important;
+}
+
+.zhaowu-login-shell .stone-login-tabs button.is-active {
+  border-bottom-color: var(--z41-red) !important;
+  color: var(--z41-ink) !important;
+}
+
+.zhaowu-login-shell .stone-login-form {
+  display: grid !important;
+  gap: 14px !important;
+}
+
+.zhaowu-login-shell .stone-login-form label {
+  display: grid !important;
+  gap: 7px !important;
+}
+
+.zhaowu-login-shell .stone-login-form label > span {
+  color: var(--z41-ink) !important;
+  font-size: .78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .03em !important;
+}
+
+.zhaowu-login-shell .stone-login-form input {
+  width: 100% !important;
+  min-height: 48px !important;
+  border: 1px solid var(--z41-line) !important;
+  border-radius: 9px !important;
+  background: #fffdf8 !important;
+  color: var(--z41-ink) !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-login-shell .stone-login-form input:focus {
+  border-color: rgba(37,75,62,.75) !important;
+  outline: 2px solid rgba(37,75,62,.10) !important;
+  outline-offset: 1px !important;
+}
+
+.zhaowu-login-shell .stone-login-primary {
+  width: 100% !important;
+  min-height: 50px !important;
+  margin-top: 3px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: var(--z41-jade) !important;
+  color: #fffaf1 !important;
+  box-shadow: none !important;
+  font-weight: 650 !important;
+}
+
+.zhaowu-login-shell .stone-login-signature {
+  margin-top: 18px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid var(--z41-line) !important;
+  color: var(--z41-muted) !important;
+  text-align: center !important;
+  font-size: .72rem !important;
+  line-height: 1.6 !important;
+}
+
+.zhaowu-login-shell .stone-login-error,
+.zhaowu-login-shell .stone-login-message {
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  font-size: .78rem !important;
+  line-height: 1.55 !important;
+}
+
+@media (min-width: 700px) {
+  .zhaowu-home-portals {
+    grid-template-columns: 1fr 1fr !important;
+    column-gap: 26px !important;
+  }
+
+  .zhaowu-home-portal {
+    min-height: 82px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .zhaowu-app-frame {
+    width: min(calc(100% - 20px), 760px) !important;
+    padding-top: 8px !important;
+  }
+
+  .zhaowu-site-header > div {
+    padding-inline: 10px !important;
+  }
+
+  .zhaowu-site-header nav a[href="/login"] {
+    padding-inline: 11px !important;
+  }
+
+  .zhaowu-login-shell .stone-login-sheet {
+    padding: 26px 18px 19px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-login-shell .stone-login-sheet,
+  .zhaowu-login-shell .stone-login-title::after,
+  .stone-login-screen,
+  .stone-login-sheet {
+    animation: none !important;
+  }
+}

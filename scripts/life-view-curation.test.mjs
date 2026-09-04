@@ -38,8 +38,8 @@ test("curated archive remains concise, unique and tri-lingual", () => {
 });
 
 test("long-form archive preserves full-depth source material in all three languages", () => {
-  assert.equal(LIFE_VIEW_LONG_FORM_ARTICLES.length, 7);
-  assert.equal(new Set(LIFE_VIEW_LONG_FORM_ARTICLES.map((article) => article.id)).size, 7);
+  assert.equal(LIFE_VIEW_LONG_FORM_ARTICLES.length, 8);
+  assert.equal(new Set(LIFE_VIEW_LONG_FORM_ARTICLES.map((article) => article.id)).size, 8);
   for (const article of LIFE_VIEW_LONG_FORM_ARTICLES) {
     for (const locale of ["zh-Hant", "zh-Hans", "en"]) {
       assert.ok(article.title[locale]?.trim());
@@ -76,6 +76,7 @@ test("new source is merged into meaningful themes instead of published as duplic
   assert.match(longTitles, /知因了果/);
   assert.match(longTitles, /行功立德/);
   assert.match(longTitles, /知命不认命/);
+  assert.match(longTitles, /宇宙真谛.*阴阳进化论/);
 });
 
 test("curated customer articles keep unsupported supernatural claims out", () => {
@@ -90,14 +91,22 @@ test("long-form religious and cultivation material keeps evidence boundaries exp
   const fiveEyes = LIFE_VIEW_LONG_FORM_ARTICLES.find((article) => article.id === "five-eyes-buddhist-tradition-and-modern-boundaries");
   const karma = LIFE_VIEW_LONG_FORM_ARTICLES.find((article) => article.id === "karma-cause-result-responsibility-without-judging-others");
   const wealth = LIFE_VIEW_LONG_FORM_ARTICLES.find((article) => article.id === "wealth-store-fortune-responsibility-and-contentment");
+  const evolution = LIFE_VIEW_LONG_FORM_ARTICLES.find((article) => article.id === "cosmic-truth-yinyang-evolution-and-consciousness");
   assert.ok(fiveEyes);
   assert.ok(karma);
   assert.ok(wealth);
+  assert.ok(evolution);
   assert.match(fiveEyes.body["zh-Hant"], /沒有被現代科學確立|未被現代科學確立/);
   assert.match(fiveEyes.body["zh-Hans"], /没有被现代科学确立|未被现代科学确立/);
   assert.match(karma.body["zh-Hant"], /不是醫學診斷/);
   assert.match(karma.body["zh-Hans"], /不是医学诊断/);
   assert.match(wealth.body["zh-Hant"], /不能替代.*預算|不能替代.*投資|不替代.*投資/);
   assert.match(wealth.body["zh-Hans"], /不能替代.*预算|不能替代.*投资|不替代.*投资/);
+  assert.match(evolution.body["zh-Hant"], /目前沒有科學定論證明/);
+  assert.match(evolution.body["zh-Hans"], /目前没有科学定论证明/);
+  assert.match(evolution.body["zh-Hant"], /不是量子醫學，也不是物理療法/);
+  assert.match(evolution.body["zh-Hans"], /不是量子医学，也不是物理疗法/);
+  assert.match(evolution.body.en, /no established scientific result/i);
+  assert.match(evolution.body.en, /neither quantum medicine nor a physical therapy/i);
   assert.match(longFormSource, /傳統|传统/);
 });
