@@ -1,0 +1,488 @@
+/* ZHAOWU r46 homepage composition
+ * Mobile-first single reading flow inspired by the owner's reference screenshots:
+ * generous whitespace, one hero daily card, clear section rhythm, restrained parchment.
+ * This stylesheet intentionally loads after the older v5 shell lock and only overrides
+ * homepage composition; calculation, auth, report, payment and specialist routes stay untouched.
+ */
+
+.zhaowu-home-sheet-shell:has(.zhaowu-home-layout) .zhaowu-home-app-frame {
+  max-width: 900px !important;
+  padding: 18px clamp(14px, 3vw, 24px) 44px !important;
+}
+
+.zhaowu-home-layout {
+  display: flex !important;
+  width: 100% !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+}
+
+.zhaowu-home-layout > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0 !important;
+}
+
+.zhaowu-home-stage {
+  min-width: 0;
+  width: 100%;
+  margin-top: 22px !important;
+}
+
+.zhaowu-home-stage:first-child {
+  margin-top: 4px !important;
+}
+
+.zhaowu-home-stage--primary {
+  margin-top: 18px !important;
+}
+
+.zhaowu-home-stage--result {
+  margin-top: 12px !important;
+}
+
+.zhaowu-home-stage--directory,
+.zhaowu-home-stage--gallery,
+.zhaowu-home-stage--notes {
+  margin-top: 26px !important;
+}
+
+/* Daily almanac hero */
+.zhaowu-daily-almanac {
+  --daily-ink: #30312e;
+  --daily-soft: #62635f;
+  --daily-line: rgba(72, 72, 66, 0.14);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 420px;
+  border: 1px solid rgba(118, 111, 98, 0.18);
+  border-radius: 34px;
+  padding: 26px 28px 22px;
+  color: var(--daily-ink);
+  background:
+    radial-gradient(circle at 78% 12%, rgba(214, 193, 159, 0.55), transparent 27%),
+    radial-gradient(circle at 96% 39%, rgba(150, 177, 158, 0.42), transparent 31%),
+    radial-gradient(circle at 24% 98%, rgba(255, 255, 255, 0.92), transparent 38%),
+    linear-gradient(145deg, rgba(247, 247, 244, 0.98), rgba(229, 228, 224, 0.98));
+  box-shadow: 0 24px 58px rgba(52, 50, 44, 0.10), inset 0 1px rgba(255, 255, 255, 0.82);
+}
+
+.zhaowu-daily-almanac::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(118deg, rgba(255, 255, 255, 0.45), transparent 34%),
+    repeating-linear-gradient(0deg, rgba(60, 56, 47, 0.012) 0 1px, transparent 1px 7px);
+}
+
+.zhaowu-daily-watermark {
+  position: absolute;
+  z-index: -1;
+  left: 20px;
+  top: 38px;
+  color: rgba(75, 75, 70, 0.075);
+  font-family: var(--font-display, serif);
+  font-size: clamp(6.4rem, 18vw, 9rem);
+  font-weight: 700;
+  line-height: 0.8;
+  pointer-events: none;
+}
+
+.zhaowu-daily-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.zhaowu-daily-eyebrow {
+  margin: 0;
+  color: #8e4a37;
+  font-size: 10px;
+  font-weight: 720;
+  letter-spacing: 0.22em;
+}
+
+.zhaowu-daily-date {
+  margin: 7px 0 0;
+  color: #4e4f4b;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+
+.zhaowu-daily-energy {
+  min-width: 92px;
+  text-align: right;
+}
+
+.zhaowu-daily-energy span {
+  display: block;
+  color: #6d6e69;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.zhaowu-daily-energy strong {
+  display: block;
+  margin-top: 5px;
+  color: #252724;
+  font-family: var(--font-display, serif);
+  font-size: 1.38rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.zhaowu-daily-main {
+  position: relative;
+  max-width: 680px;
+  margin-top: 64px;
+}
+
+.zhaowu-daily-daymark {
+  margin: 0 0 10px;
+  color: #767770;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.zhaowu-daily-headline {
+  max-width: 650px;
+  margin: 0;
+  color: #262825;
+  font-family: var(--font-display, serif);
+  font-size: clamp(2rem, 6vw, 3.15rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0.025em;
+}
+
+.zhaowu-daily-lead {
+  max-width: 520px;
+  margin: 13px 0 0;
+  color: #64655f;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.zhaowu-daily-pairs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--daily-line);
+}
+
+.zhaowu-daily-pair-title {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 0;
+}
+
+.zhaowu-daily-pair-title b {
+  color: #4e504b;
+  font-family: var(--font-display, serif);
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.zhaowu-daily-pair-title small {
+  color: #7c7d77;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.zhaowu-daily-list {
+  display: grid;
+  gap: 3px;
+  margin: 11px 0 0;
+  padding: 0;
+  color: #51534f;
+  font-size: 13px;
+  font-weight: 620;
+  line-height: 1.65;
+  list-style: none;
+}
+
+.zhaowu-daily-list li {
+  position: relative;
+  padding-left: 12px;
+}
+
+.zhaowu-daily-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(77, 93, 83, 0.62);
+}
+
+.zhaowu-daily-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.zhaowu-daily-note {
+  max-width: 520px;
+  margin: 0;
+  color: #797a74;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.zhaowu-daily-cta {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 999px;
+  padding: 5px 6px 5px 15px;
+  color: #4f504c;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.zhaowu-daily-cta:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.zhaowu-daily-cta b {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(77, 78, 73, 0.22);
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: 450;
+}
+
+/* Homepage sections: one visual grammar, no random card sizing. */
+.zhaowu-home-layout .zhaowu-home-portals-block,
+.zhaowu-home-fun-section {
+  overflow: hidden;
+  border: 1px solid rgba(151, 111, 62, 0.24) !important;
+  border-radius: 26px !important;
+  padding: 22px !important;
+  background: rgba(251, 245, 233, 0.96) !important;
+  box-shadow: 0 14px 34px rgba(76, 55, 31, 0.07) !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-portals-heading,
+.zhaowu-home-fun-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0;
+  padding: 0 0 14px;
+  border-bottom: 1px solid rgba(151, 111, 62, 0.18);
+}
+
+.zhaowu-home-layout .zhaowu-home-portals-heading h2,
+.zhaowu-home-fun-heading h2 {
+  margin: 0;
+  color: #2e2b26;
+  font-family: var(--font-display, serif);
+  font-size: 1.45rem;
+  line-height: 1.2;
+}
+
+.zhaowu-home-layout .zhaowu-home-portals-heading span,
+.zhaowu-home-fun-heading p {
+  max-width: 440px;
+  margin: 0;
+  color: #777067;
+  font-size: 11px;
+  line-height: 1.65;
+  text-align: right;
+}
+
+.zhaowu-home-layout .zhaowu-home-portals,
+.zhaowu-home-fun-grid {
+  display: grid;
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.zhaowu-home-layout .zhaowu-home-portal,
+.zhaowu-home-fun-card {
+  min-width: 0;
+  border: 1px solid rgba(151, 111, 62, 0.15);
+  border-radius: 17px;
+  color: #302d28;
+  background: rgba(255, 251, 243, 0.66);
+}
+
+.zhaowu-home-layout .zhaowu-home-portal {
+  padding: 13px 14px;
+}
+
+.zhaowu-home-fun-card {
+  display: flex;
+  min-height: 92px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+}
+
+.zhaowu-home-fun-card strong {
+  display: block;
+  color: #302d28;
+  font-family: var(--font-display, serif);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.zhaowu-home-fun-card small {
+  display: block;
+  margin-top: 5px;
+  color: #7a7268;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.zhaowu-home-fun-arrow {
+  flex: 0 0 auto;
+  color: #9d4434;
+  font-size: 1.05rem;
+}
+
+.zhaowu-home-stage--gallery > *,
+.zhaowu-home-stage--notes > * {
+  margin-inline: 0 !important;
+}
+
+@media (min-width: 720px) {
+  .zhaowu-home-layout .zhaowu-home-portals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .zhaowu-home-fun-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .zhaowu-home-sheet-shell:has(.zhaowu-home-layout) .zhaowu-home-app-frame {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px 12px 30px !important;
+  }
+
+  .zhaowu-home-stage {
+    margin-top: 16px !important;
+  }
+
+  .zhaowu-home-stage:first-child {
+    margin-top: 3px !important;
+  }
+
+  .zhaowu-home-stage--directory,
+  .zhaowu-home-stage--gallery,
+  .zhaowu-home-stage--notes {
+    margin-top: 20px !important;
+  }
+
+  .zhaowu-daily-almanac {
+    min-height: 455px;
+    border-radius: 30px;
+    padding: 23px 21px 19px;
+  }
+
+  .zhaowu-daily-watermark {
+    left: 16px;
+    top: 44px;
+    font-size: 6.7rem;
+  }
+
+  .zhaowu-daily-top {
+    gap: 14px;
+  }
+
+  .zhaowu-daily-main {
+    margin-top: 70px;
+  }
+
+  .zhaowu-daily-headline {
+    font-size: clamp(1.9rem, 9vw, 2.45rem);
+    line-height: 1.17;
+  }
+
+  .zhaowu-daily-lead {
+    font-size: 12px;
+  }
+
+  .zhaowu-daily-pairs {
+    gap: 22px;
+    margin-top: 48px;
+    padding-top: 18px;
+  }
+
+  .zhaowu-daily-pair-title b {
+    font-size: 1.8rem;
+  }
+
+  .zhaowu-daily-list {
+    font-size: 12px;
+  }
+
+  .zhaowu-daily-footer {
+    align-items: center;
+    margin-top: 26px;
+  }
+
+  .zhaowu-daily-note {
+    max-width: 58%;
+    font-size: 9px;
+  }
+
+  .zhaowu-daily-cta {
+    padding-left: 11px;
+  }
+
+  .zhaowu-daily-cta > span {
+    display: none;
+  }
+
+  .zhaowu-home-layout .zhaowu-home-portals-block,
+  .zhaowu-home-fun-section {
+    border-radius: 22px !important;
+    padding: 17px !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-home-portals-heading,
+  .zhaowu-home-fun-heading {
+    display: block;
+  }
+
+  .zhaowu-home-layout .zhaowu-home-portals-heading span,
+  .zhaowu-home-fun-heading p {
+    margin-top: 6px;
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-daily-cta {
+    transition: none;
+  }
+}
