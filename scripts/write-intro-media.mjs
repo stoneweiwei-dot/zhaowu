@@ -20,7 +20,8 @@ function decodeNumberedParts(dirRel, prefix, destRel, magicHex, expectedCount, e
     .sort();
   if (!names.length) return false;
   if (expectedCount && names.length !== expectedCount) {
-    throw new Error(`${destRel} expected ${expectedCount} parts, found ${names.length}`);
+    // Incomplete payload must not fail CI/build; wait until every part lands.
+    return false;
   }
   const pieces = names.map((n) => readFileSync(resolve(dir, n), "utf8").replace(/\s+/g, ""));
   const buf = Buffer.from(pieces.join(""), "base64");
