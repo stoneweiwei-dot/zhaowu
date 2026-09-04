@@ -1,0 +1,46 @@
+/* Final client-side stability lock for the approved parchment UI.
+ * Imported last so route-level styles cannot remove the Song wallpaper or leave
+ * interactive login content partly transparent on iPhone/WebKit.
+ */
+html,
+body,
+#root {
+  min-height: 100%;
+  background-color: #f3ecdc !important;
+}
+
+body {
+  background-image:
+    linear-gradient(rgba(246, 239, 224, .90), rgba(246, 239, 224, .90)),
+    url('/wallpaper-song.jpg') !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+  background-attachment: scroll !important;
+}
+
+/* Login must be fully readable and clickable as soon as the route is mounted.
+ * The previous opacity entrance animation could leave WebKit around 0.90 opacity
+ * during the first interaction window. Keep the breathing background, not an
+ * opacity gate on the form itself.
+ */
+.stone-login-sheet {
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+/* iPhone/WebKit must never inherit a hidden account or report surface from an
+ * entrance animation or translucent reset layer. */
+.zhaowu-app-frame,
+.zhaowu-app-frame > main,
+.zhaowu-app-frame > main > section,
+.zhaowu-result-flow,
+.zhaowu-result-flow > * {
+  visibility: visible !important;
+}
+
+@media (max-width: 720px) {
+  body {
+    background-position: center top !important;
+  }
+}

@@ -8,7 +8,7 @@ test("iPhone Safari opens the real Dharma Palm Past & Present report", async ({ 
   const year = birthDate.getByLabel("年", { exact: true });
   const month = birthDate.getByLabel("月", { exact: true });
   const day = birthDate.getByLabel("日", { exact: true });
-  const hour = page.getByLabel("出生時辰", { exact: true });
+  const hour = page.getByLabel(/^出生時辰/);
   await year.fill("1988");
   await month.fill("10");
   await day.fill("4");

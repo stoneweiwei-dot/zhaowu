@@ -34,6 +34,7 @@ import './report-visual-book.css';
 import './report-luck-book.css';
 import './report-visual-assets.css';
 import './report-share-card.css';
+import './safari-release-lock.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
