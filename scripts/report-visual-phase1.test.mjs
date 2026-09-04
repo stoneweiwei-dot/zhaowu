@@ -75,6 +75,7 @@ test("provisional useful-element output is visibly marked as provisional", () =>
 
 test("Phase 1 UI is programmatic and does not revive numbered multi-session report pages", async () => {
   const component = await source("src/components/report-visual-book.tsx");
+  const artwork = await source("src/components/report-sprite-artwork.tsx");
   const model = await source("src/lib/report/report-visual-model.ts");
   const report = await source("src/components/paid-report-pages.tsx");
   const css = await source("src/report-visual-book.css");
@@ -82,7 +83,8 @@ test("Phase 1 UI is programmatic and does not revive numbered multi-session repo
   assert.match(component, /<svg className="zhaowu-five-wheel"/);
   assert.match(model, /\/report-visuals\/day-master\//);
   assert.match(model, /\/report-visuals\/month\//);
-  assert.match(component, /wallpaper-song\.jpg/);
+  assert.match(artwork, /wallpaper-song\.jpg/);
+  assert.match(component, /ReportSpriteArtwork/);
   assert.match(component, /structurePending/);
   assert.doesNotMatch(component, /01|02|03|ninePages/);
   assert.match(report, /<ReportVisualBook result=\{result\}/);
