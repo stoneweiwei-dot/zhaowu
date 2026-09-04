@@ -61,16 +61,41 @@ async function mockMemberBackend(page: Page) {
       return fulfillJson(route, [TEST_PROFILE]);
     }
 
-    if (url.pathname.endsWith("/report_requests")) {
-      if (request.method() === "GET") return fulfillJson(route, [TEST_REPORT]);
-      return fulfillJson(route, []);
-    }
-
     if (url.pathname.endsWith("/site_settings")) {
       return fulfillJson(route, [{ key: "migration_state", value: { ready: true } }]);
     }
 
     return fulfillJson(route, []);
+  });
+
+  await page.route("**/rest/v1/report_requests**", async (route) => {
+    if (route.request().method() === "GET") return fulfillJson(route, [TEST_REPORT]);
+    return fulfillJson(route, []);
+  });
+}
+
+async function mockAuthBackend(page: Page, onPasswordGrant?: () => void) {
+  await page.route("**/auth/v1/**", async (route) => {
+    const request = route.request();
+    const url = new URL(request.url());
+
+    if (url.pathname.endsWith("/token")) {
+      const grantType = url.searchParams.get("grant_type");
+      if (grantType === "password") onPasswordGrant?.();
+      if (grantType === "password" || grantType === "refresh_token") {
+        return fulfillJson(route, {
+          access_token: TEST_SESSION.access_token,
+          refresh_token: TEST_SESSION.refresh_token,
+          expires_in: TEST_SESSION.expires_in,
+          token_type: TEST_SESSION.token_type,
+          user: TEST_USER,
+        });
+      }
+    }
+
+    if (url.pathname.endsWith("/user")) return fulfillJson(route, TEST_USER);
+    if (url.pathname.endsWith("/logout")) return fulfillJson(route, {});
+    return fulfillJson(route, {});
   });
 }
 
@@ -88,16 +113,7 @@ test.describe("iPhone Safari authenticated member flow", () => {
     await mockMemberBackend(page);
 
     let passwordGrantCalled = false;
-    await page.route(/\/auth\/v1\/token\?grant_type=password$/, async (route) => {
-      passwordGrantCalled = true;
-      await fulfillJson(route, {
-        access_token: TEST_SESSION.access_token,
-        refresh_token: TEST_SESSION.refresh_token,
-        expires_in: TEST_SESSION.expires_in,
-        token_type: TEST_SESSION.token_type,
-        user: TEST_USER,
-      });
-    });
+    await mockAuthBackend(page, () => { passwordGrantCalled = true; });
 
     await page.goto("/login", { waitUntil: "domcontentloaded" });
     const loginSheet = page.locator(".stone-login-sheet");
@@ -143,6 +159,7 @@ test.describe("iPhone Safari authenticated member flow", () => {
       localStorage.setItem("zhaowu.supabase.session.v1", JSON.stringify(session));
     }, TEST_SESSION);
     await mockMemberBackend(page);
+    await mockAuthBackend(page);
 
     await page.goto("/account", { waitUntil: "domcontentloaded" });
 
