@@ -187,14 +187,14 @@ test("active full-report renderer has no report dragon or ornament rail", async 
   assert.match(active, /display: none !important/);
 });
 
-test("Dharma Palm standalone uses a four-life trail and symbolic six-realm presentation", async () => {
+test("Dharma Palm standalone keeps the four-life trail without decorative emblem logos", async () => {
   const route = await source("src/routes/yizhangjing.tsx");
   const palm = await source("src/components/palm-standalone.tsx");
   assert.match(route, /PalmStandalone/);
   assert.match(palm, /traceTitle/);
   assert.match(palm, /four-life symbolic trail/);
-  assert.match(palm, /AUSPICIOUS_EMBLEMS/);
-  assert.match(palm, /dharma-wheel-emblem\.svg/);
+  assert.match(palm, /zhaowu:d60-birth/);
+  assert.doesNotMatch(palm, /AUSPICIOUS_EMBLEMS|\/emblems\/|BrandSeal/);
 });
 
 test("customer birth form shows fixed time-policy status without exposing controls", async () => {
