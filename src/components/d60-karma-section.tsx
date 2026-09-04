@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { CityHit } from "@/lib/bazi/types";
-import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { localBirthToUtc } from "@/lib/qizheng/engine";
 import { readSpecialistHistory, saveSpecialistHistory } from "@/lib/specialist-history";
 
 const ASTRO_SCRIPT_ID = "zhaowu-astronomy-engine-d60";
 const ASTRO_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js";
+const D60_BIRTH_EVENT = "zhaowu:d60-birth";
 const BODY_KEYS = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"] as const;
 type BodyKey = (typeof BODY_KEYS)[number];
 type D60Key = "Ascendant" | BodyKey;
@@ -30,7 +30,7 @@ type D60Result = {
   stablePlus2: boolean;
 };
 
-type SavedBirth = {
+type ReportBirth = {
   year: number;
   month: number;
   day: number;
@@ -55,46 +55,34 @@ const COPY = {
   "zh-Hant": {
     title: "D60 業力旁證",
     note: "（D60 對出生分鐘非常敏感：每個分區只有 0.5°；上升點平均約每 4 分鐘移動 1°，因此大約 2 分鐘就可能跨過一個 D60 分區。實際速度會隨出生地、緯度與當時的上升速度改變。若你提供的是估算時間、整點時間或家人回憶，這部分只能作低置信度參考，不是絕對答案。）",
-    unavailable: "目前沒有可核對到分鐘的出生時間與出生地，因此 D60 不作判定，也不另外要求你再填一次資料。",
-    calculating: "正在把 D60 併入這份報告…",
+    unavailable: "本次報告沒有同時提供「可核對到分鐘的出生時間＋出生地」，因此 D60 不作判定。系統不會再從帳戶舊資料或其他報告自動補算。",
+    calculating: "正在用本次報告的出生時間與出生地計算 D60…",
     failed: "D60 暫時無法計算；前四世報告不受影響。",
-    stable: "以你提供的時間前後各移動 2 分鐘測試，D60 上升仍在同一星座。這只代表這個很小的時間範圍相對穩定，仍不是絕對結論。",
-    unstable: "以你提供的時間前後各移動 2 分鐘測試，D60 上升已發生變化，因此這一段只作弱旁證。",
-    core: "核心慣性",
-    emotion: "情緒慣性",
-    duty: "反覆責任",
-    resource: "帶得走的資源",
-    relation: "關係價值",
+    stable: "以本次提供的時間前後各移動 2 分鐘測試，D60 上升仍在同一星座。這只代表這個很小的時間範圍相對穩定，仍不是絕對結論。",
+    unstable: "以本次提供的時間前後各移動 2 分鐘測試，D60 上升已發生變化，因此這一段只作弱旁證。",
+    core: "核心慣性", emotion: "情緒慣性", duty: "反覆責任", resource: "帶得走的資源", relation: "關係價值",
     synthesis: "把它和前四世合起來看：重複出現的主題可以視為比較值得留意的慣性；只在 D60 單獨出現的內容，不升級成確定結論。",
   },
   "zh-Hans": {
     title: "D60 业力旁证",
     note: "（D60 对出生分钟非常敏感：每个分区只有 0.5°；上升点平均约每 4 分钟移动 1°，因此大约 2 分钟就可能跨过一个 D60 分区。实际速度会随出生地、纬度与当时的上升速度改变。如果你提供的是估算时间、整点时间或家人回忆，这部分只能作低置信度参考，不是绝对答案。）",
-    unavailable: "目前没有可核对到分钟的出生时间与出生地，因此 D60 不作判断，也不另外要求你再填一次资料。",
-    calculating: "正在把 D60 合并进这份报告…",
+    unavailable: "本次报告没有同时提供“可核对到分钟的出生时间＋出生地”，因此 D60 不作判断。系统不会再从账户旧资料或其他报告自动补算。",
+    calculating: "正在用本次报告的出生时间与出生地计算 D60…",
     failed: "D60 暂时无法计算；前四世报告不受影响。",
-    stable: "以你提供的时间前后各移动 2 分钟测试，D60 上升仍在同一星座。这只代表这个很小的时间范围相对稳定，仍不是绝对结论。",
-    unstable: "以你提供的时间前后各移动 2 分钟测试，D60 上升已经发生变化，因此这一段只作弱旁证。",
-    core: "核心惯性",
-    emotion: "情绪惯性",
-    duty: "反复责任",
-    resource: "带得走的资源",
-    relation: "关系价值",
+    stable: "以本次提供的时间前后各移动 2 分钟测试，D60 上升仍在同一星座。这只代表这个很小的时间范围相对稳定，仍不是绝对结论。",
+    unstable: "以本次提供的时间前后各移动 2 分钟测试，D60 上升已经发生变化，因此这一段只作弱旁证。",
+    core: "核心惯性", emotion: "情绪惯性", duty: "反复责任", resource: "带得走的资源", relation: "关系价值",
     synthesis: "把它和前四世合起来看：重复出现的主题可以视为比较值得留意的惯性；只在 D60 单独出现的内容，不升级成确定结论。",
   },
   en: {
     title: "D60 karmic cross-check",
     note: "(D60 is extremely birth-time sensitive. Each division is only 0.5°. The Ascendant moves about 1° every four minutes on average, so a D60 division can change in roughly two minutes. The real rate varies with birthplace, latitude and the rising speed at that moment. If your time is estimated, rounded or remembered by family, treat this section as low-confidence context rather than a definite answer.)",
-    unavailable: "There is no saved minute-level birth time and birthplace for this report, so D60 is withheld rather than asking you to enter the same details again.",
-    calculating: "Adding the D60 cross-check to this report…",
+    unavailable: "This report does not contain both a documented minute-level birth time and a birthplace, so D60 is withheld. The system no longer falls back to old account data or another report.",
+    calculating: "Calculating D60 from this report's birth time and birthplace…",
     failed: "D60 could not be calculated right now. The four-life report is unaffected.",
-    stable: "Moving the supplied birth time two minutes earlier and later keeps the D60 Ascendant in the same sign. That only suggests relative stability inside this very small window; it is still not absolute.",
-    unstable: "Moving the supplied birth time two minutes earlier and later changes the D60 Ascendant, so this section is treated only as weak supporting context.",
-    core: "Core pattern",
-    emotion: "Emotional habit",
-    duty: "Repeated duty",
-    resource: "Carried resource",
-    relation: "Relationship values",
+    stable: "Moving this report's supplied birth time two minutes earlier and later keeps the D60 Ascendant in the same sign. That only suggests relative stability inside this very small window; it is still not absolute.",
+    unstable: "Moving this report's supplied birth time two minutes earlier and later changes the D60 Ascendant, so this section is treated only as weak supporting context.",
+    core: "Core pattern", emotion: "Emotional habit", duty: "Repeated duty", resource: "Carried resource", relation: "Relationship values",
     synthesis: "Read this beside the four prior-life patterns. Themes that repeat across both can be treated as more noteworthy; a theme appearing only in D60 is not promoted into a definite conclusion.",
   },
 } as const;
@@ -201,28 +189,6 @@ function loadAstronomy() {
   return astronomyPromise;
 }
 
-function asCity(value: unknown): CityHit | null {
-  if (!value || typeof value !== "object") return null;
-  const city = value as Partial<CityHit>;
-  if (typeof city.display !== "string" || typeof city.name !== "string" || typeof city.timezone !== "string") return null;
-  if (!Number.isFinite(city.latitude) || !Number.isFinite(city.longitude)) return null;
-  return city as CityHit;
-}
-
-function parseSavedBirth(value: unknown): SavedBirth | null {
-  if (!value || typeof value !== "object") return null;
-  const raw = value as Record<string, unknown>;
-  if (raw.timeUnknown) return null;
-  const city = asCity(raw.city);
-  if (!city || raw.hour == null || raw.minute == null || raw.minute === "") return null;
-  const year = Number(raw.year), month = Number(raw.month), day = Number(raw.day), hour = Number(raw.hour), minute = Number(raw.minute);
-  const civil = new Date(Date.UTC(year, month - 1, day, hour, minute));
-  if (![year, month, day, hour, minute].every(Number.isFinite)) return null;
-  if (civil.getUTCFullYear() !== year || civil.getUTCMonth() !== month - 1 || civil.getUTCDate() !== day) return null;
-  if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
-  return { year, month, day, hour, minute, city };
-}
-
 function usePalmReportPortalTarget() {
   const [target, setTarget] = useState<HTMLElement | null>(null);
   useEffect(() => {
@@ -259,15 +225,26 @@ function signName(index: number, locale: Locale) {
 export function D60KarmaSection() {
   const { locale } = useI18n();
   const copy = COPY[locale];
-  const { user, isPending } = useCurrentUserState();
   const target = usePalmReportPortalTarget();
-  const birth = useMemo(() => parseSavedBirth(user?.birthData), [user?.birthData]);
+  const [birth, setBirth] = useState<ReportBirth | null>(null);
   const [result, setResult] = useState<D60Result | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const syncedRef = useRef("");
 
   useEffect(() => {
-    if (isPending) return;
+    const receiveBirth = (event: Event) => {
+      const detail = (event as CustomEvent<ReportBirth | null>).detail;
+      setBirth(detail ?? null);
+      if (!detail) {
+        setResult(null);
+        setStatus("idle");
+      }
+    };
+    window.addEventListener(D60_BIRTH_EVENT, receiveBirth);
+    return () => window.removeEventListener(D60_BIRTH_EVENT, receiveBirth);
+  }, []);
+
+  useEffect(() => {
     if (!birth) { setResult(null); setStatus("idle"); return; }
     let alive = true;
     setStatus("loading");
@@ -277,7 +254,7 @@ export function D60KarmaSection() {
       if (alive) { setResult(next); setStatus("ready"); }
     }).catch(() => { if (alive) { setResult(null); setStatus("error"); } });
     return () => { alive = false; };
-  }, [birth, isPending]);
+  }, [birth]);
 
   const themes = useMemo(() => {
     if (!result) return [];
@@ -304,7 +281,7 @@ export function D60KarmaSection() {
   }, [birth, copy, locale, result, stable, status, themes]);
 
   useEffect(() => {
-    if (!target || isPending || status === "loading") return;
+    if (!target || status === "loading") return;
     const key = `${locale}:${result?.utcIso ?? "no-d60"}:${historyBody}`;
     if (syncedRef.current === key) return;
     const latest = readSpecialistHistory()[0];
@@ -312,7 +289,7 @@ export function D60KarmaSection() {
     const sections = latest.sections.filter((section) => !/^D60\b|^D60\s|D60 業力|D60 业力/i.test(section.title));
     const saved = saveSpecialistHistory({ ...latest, sections: [...sections, { title: copy.title, body: historyBody }] });
     if (saved) syncedRef.current = key;
-  }, [copy.title, historyBody, isPending, locale, result?.utcIso, status, target]);
+  }, [copy.title, historyBody, locale, result?.utcIso, status, target]);
 
   if (!target) return null;
 
@@ -324,7 +301,7 @@ export function D60KarmaSection() {
         <h3 className="mt-1 font-display text-xl font-semibold tracking-[0.05em] text-ink">{copy.title}</h3>
         <p className="mt-3 text-xs leading-6 text-ink-mute">{copy.note}</p>
 
-        {!birth ? <p className="mt-4 text-sm leading-7 text-ink-soft">{copy.unavailable}</p> : null}
+        {!birth ? <p className="mt-4 rounded-xl border border-cinnabar/20 bg-cinnabar/5 px-3 py-3 text-sm leading-7 text-ink-soft">{copy.unavailable}</p> : null}
         {birth && status === "loading" ? <p className="mt-4 text-sm leading-7 text-ink-soft">{copy.calculating}</p> : null}
         {birth && status === "error" ? <p className="mt-4 text-sm leading-7 text-ink-soft">{copy.failed}</p> : null}
         {result ? <>
