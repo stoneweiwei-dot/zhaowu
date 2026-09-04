@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { BackgroundMusic } from './components/background-music';
 import { routeTree } from './routeTree.gen';
 import './styles.css';
 import './intro-extra.css';
@@ -41,4 +42,4 @@ declare module '@tanstack/react-router' { interface Register { router: typeof ro
 const root = document.getElementById('root');
 if (!root) throw new Error('Missing root element');
 if ('serviceWorker' in navigator) { window.addEventListener('load', () => { void navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => undefined); }); }
-createRoot(root).render(<StrictMode><RouterProvider router={router} /></StrictMode>);
+createRoot(root).render(<StrictMode><RouterProvider router={router} /><BackgroundMusic /></StrictMode>);
