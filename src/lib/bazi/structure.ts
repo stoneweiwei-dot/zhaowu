@@ -1,4 +1,6 @@
 import { HIDDEN, tenGod } from "@/lib/bazi/calendar";
+import { analyzeBranchRelations, natalBranchPoints, summarizeBranchRelations, type BranchRelation } from "@/lib/bazi/branch-relations";
+import { analyzeStructuralRemedy, type StructuralRemedy } from "@/lib/bazi/structural-remedy";
 import type { Chart } from "@/lib/bazi/types";
 
 const STRUCTURE_QUESTION_RE = /(八字|命局|命盤|命盘)?\s*(是|屬於|属于|算|走)?\s*(什麼|什么|哪一種|哪一种)?\s*(格局|格)|(格局|立格|成格|破格|殺印相生|杀印相生|食神制殺|食神制杀|傷官配印|伤官配印)/;
@@ -22,6 +24,8 @@ export type StructureSummary = {
   monthTenGod: string;
   established: boolean;
   supportingPattern: string | null;
+  branchRelations: BranchRelation[];
+  remedy: StructuralRemedy;
   evidenceLines: string[];
   directAnswer: string;
 };
@@ -31,9 +35,10 @@ export function isStructureQuestion(question: string): boolean {
 }
 
 /**
- * Conservative 子平 structure summary from data the current engine actually has:
- * month-command main qi, whether it is exposed, and a small set of visible
- * stem chains. It deliberately does not claim transformation or a full 病藥 verdict.
+ * 子平 structure summary in a fixed order:
+ * 月令 → 立格 → 可見制化 → 地支作用 → 病藥／通關.
+ * Transformation and auspicious-event claims remain conservative unless the
+ * current engine has enough evidence to support them.
  */
 export function analyzeStructure(chart: Chart): StructureSummary {
   const monthPillar = chart.pillars.find((pillar) => pillar.key === "month");
@@ -60,6 +65,8 @@ export function analyzeStructure(chart: Chart): StructureSummary {
     supportingPattern = "殺印相生的可見主線";
   }
 
+  const branchRelations = analyzeBranchRelations(natalBranchPoints(chart));
+  const remedy = analyzeStructuralRemedy(chart);
   const exposureText = exposedMonthQi
     ? `月令主氣${monthMainStem}${monthTenGod}透干，立格依據清楚。`
     : `月令主氣為${monthMainStem}${monthTenGod}，但未直接透干，因此先按「${label}方向」判，不把成格程度說滿。`;
@@ -67,8 +74,10 @@ export function analyzeStructure(chart: Chart): StructureSummary {
     ? `天干可見：${visible.map((item) => `${item.stem}${item.god}`).join("、")}。`
     : "其餘天干資訊不足，不追加複合格局。";
   const supportText = supportingPattern ? `同時可見${supportingPattern}。` : "目前不追加第二個複合格局名稱。";
+  const relationText = `地支作用：${summarizeBranchRelations(branchRelations)}。合、三合、三會只先記結構條件，不自動等同合化。`;
+  const remedyText = `病藥層：${remedy.disease}；${remedy.medicine}${remedy.bridge ? ` 通關鏈：${remedy.bridge}。` : ""}`;
   const opening = exposedMonthQi ? `你的八字以「${label}」立格` : `你的八字以「${label}方向」為主`;
-  const directAnswer = `直接答案：${opening}${supportingPattern ? `，並以「${supportingPattern}」為主要結構` : ""}。${exposureText}${visibleText}這回答的是原局格局，不拿身強身弱或性格描述代替。`;
+  const directAnswer = `直接答案：${opening}${supportingPattern ? `，並以「${supportingPattern}」為主要結構` : ""}。${exposureText}${visibleText}${relationText}${remedyText}這回答的是原局格局，不拿身強身弱、五行百分比或性格描述代替。`;
 
   return {
     label,
@@ -76,11 +85,16 @@ export function analyzeStructure(chart: Chart): StructureSummary {
     monthTenGod,
     established: exposedMonthQi,
     supportingPattern,
+    branchRelations,
+    remedy,
     evidenceLines: [
       `月令：${chart.monthBranch}；月令主氣：${monthMainStem}${monthTenGod}。`,
       exposureText,
       visibleText,
       supportText,
+      relationText,
+      remedyText,
+      ...remedy.evidence,
     ],
     directAnswer,
   };

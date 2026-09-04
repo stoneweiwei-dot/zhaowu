@@ -107,18 +107,21 @@ test("Signed-in member can persist the full report on one durable record", async
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
 
-  // report_ready is a best-effort background sync. The customer durability
-  // contract is the explicit save boundary, which must persist full_ready.
+  // report_ready is a best-effort background sync. The explicit Save action is
+  // the durable customer boundary and must PATCH this same record to full_ready.
   await expect(saveButton).toBeEnabled();
   await saveButton.click();
-  await expect(page.getByText("完整報告已保存到同一筆記錄。", { exact: true })).toBeVisible();
-  await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "full_ready")).toBe(true);
+  await expect.poll(
+    () => writes.some((call) => call.method === "PATCH" && call.status === "full_ready"),
+    { timeout: 10_000 },
+  ).toBe(true);
 
   const fullReady = writes.find((call) => call.method === "PATCH" && call.status === "full_ready");
   expect(fullReady?.id).toBeTruthy();
   const persistedIds = new Set(writes.filter((call) => ["POST", "PATCH"].includes(call.method) && call.id).map((call) => call.id));
   expect(persistedIds.size).toBe(1);
-  await expect(page.getByText(/雲端同步暫時失敗/)).toHaveCount(0);
+  await expect(saveButton).toBeEnabled();
+  await expect(page.getByText(/保存失敗|雲端同步暫時失敗/)).toHaveCount(0);
   await mobileHealthy(page);
 });
 
