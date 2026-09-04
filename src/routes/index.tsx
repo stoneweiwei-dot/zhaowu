@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnalysisForm } from "@/components/analysis-form";
 import { AuspiciousGallerySection } from "@/components/auspicious-gallery-section";
+import { DailyAlmanacWidget } from "@/components/daily-almanac-widget";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
 import { LifeViewHomeSection } from "@/components/life-view-home-section";
@@ -82,6 +83,7 @@ function Home() {
 
   return (
     <main className="zhaowu-home-sheet-page space-y-7 sm:space-y-10">
+      <DailyAlmanacWidget />
       <section id="bazi" className="relative" aria-label={t("formTitle")}><AnalysisForm /></section>
       {current ? <ResultView result={current} /> : null}
       {current ? <FollowUpBox result={current} /> : null}
