@@ -20,17 +20,24 @@ test("homepage keeps short-form notes active alongside the new long-form series 
   }
 });
 
-test("short-form article is unique, tri-lingual and preserves the approved core lines", () => {
-  assert.equal(LIFE_VIEW_SHORT_FORM_ARTICLES.length, 1);
-  const article = LIFE_VIEW_SHORT_FORM_ARTICLES[0];
-  assert.equal(article.id, "flowers-fall-mind-stays-steady");
-  for (const locale of ["zh-Hant", "zh-Hans", "en"]) {
-    assert.ok(article.title[locale]?.trim());
-    assert.ok(article.summary[locale]?.trim());
-    assert.ok(article.body[locale]?.trim());
+test("short-form articles stay unique, tri-lingual and preserve the approved core lines as the collection expands", () => {
+  assert.ok(LIFE_VIEW_SHORT_FORM_ARTICLES.length >= 1);
+
+  const ids = LIFE_VIEW_SHORT_FORM_ARTICLES.map((article) => article.id);
+  assert.equal(new Set(ids).size, ids.length);
+  assert.ok(ids.includes("flowers-fall-mind-stays-steady"));
+
+  for (const article of LIFE_VIEW_SHORT_FORM_ARTICLES) {
+    for (const locale of ["zh-Hant", "zh-Hans", "en"]) {
+      assert.ok(article.title[locale]?.trim(), `${article.id} missing ${locale} title`);
+      assert.ok(article.summary[locale]?.trim(), `${article.id} missing ${locale} summary`);
+      assert.ok(article.body[locale]?.trim(), `${article.id} missing ${locale} body`);
+    }
   }
-  assert.match(article.body["zh-Hans"], /花开不喜，花落不悲，缘来不拒，缘去不追/);
-  assert.match(article.body["zh-Hans"], /不以人言乱其神，不以世事动其心/);
-  assert.match(article.body["zh-Hans"], /因上努力，果上随缘/);
-  assert.match(article.body["zh-Hans"], /知人，是看懂世界；自知，是看懂自己/);
+
+  const approvedHans = LIFE_VIEW_SHORT_FORM_ARTICLES.map((article) => article.body["zh-Hans"]).join("\n\n");
+  assert.match(approvedHans, /花开不喜，花落不悲，缘来不拒，缘去不追/);
+  assert.match(approvedHans, /不以人言乱其神，不以世事动其心/);
+  assert.match(approvedHans, /因上努力，果上随缘/);
+  assert.match(approvedHans, /知人，是看懂世界；自知，是看懂自己/);
 });
