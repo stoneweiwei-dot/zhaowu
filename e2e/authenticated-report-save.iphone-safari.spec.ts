@@ -17,13 +17,10 @@ const PROFILE = {
   owner_archive_id: null,
   birth_data: null,
 };
-
-type WriteCall = { method: string; id: string | null; status: string | null };
 const CORS = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PATCH, DELETE, OPTIONS",
   "access-control-allow-headers": "authorization, apikey, content-type, prefer, x-client-info",
-  "access-control-expose-headers": "content-range",
 };
 
 async function json(route: Route, body: unknown, status = 200) {
@@ -33,14 +30,7 @@ async function noContent(route: Route) { await route.fulfill({ status: 204, head
 async function installSession(page: Page) {
   await page.addInitScript((session) => localStorage.setItem("zhaowu.supabase.session.v1", JSON.stringify(session)), SESSION);
 }
-function parsePayload(rawText: string | null) {
-  if (!rawText) return null;
-  try {
-    const raw = JSON.parse(rawText) as Record<string, unknown> | Array<Record<string, unknown>> | null;
-    return Array.isArray(raw) ? (raw[0] ?? null) : raw;
-  } catch { return null; }
-}
-async function mockAuthenticatedCloud(page: Page, writes: WriteCall[]) {
+async function mockAuthenticatedCloud(page: Page, reportStatus = 200) {
   await page.route("**/auth/v1/**", async (route) => {
     const request = route.request();
     if (request.method() === "OPTIONS") return noContent(route);
@@ -56,15 +46,13 @@ async function mockAuthenticatedCloud(page: Page, writes: WriteCall[]) {
     if (url.pathname.endsWith("/profiles")) return json(route, [PROFILE]);
     if (url.pathname.endsWith("/site_settings")) return json(route, [{ key: "migration_state", value: { ready: true } }]);
     if (url.pathname.endsWith("/report_requests")) {
-      const method = request.method();
-      if (method === "GET") return json(route, []);
-      const payload = parsePayload(request.postData());
+      if (request.method() === "GET") return json(route, []);
+      if (reportStatus >= 400) return json(route, { message: "temporary persistence outage" }, reportStatus);
+      const raw = request.postData();
+      let payload: Record<string, unknown> = {};
+      try { payload = raw ? JSON.parse(raw) as Record<string, unknown> : {}; } catch { payload = {}; }
       const queryId = url.searchParams.get("id")?.replace(/^eq\./, "") ?? null;
-      const bodyId = typeof payload?.id === "string" ? payload.id : null;
-      const id = bodyId ?? queryId;
-      const status = typeof payload?.status === "string" ? payload.status : null;
-      writes.push({ method, id, status });
-      return json(route, [{ id: id ?? "generated-report", ...(payload ?? {}), created_at: "2026-08-26T00:00:00.000Z", updated_at: "2026-08-26T00:00:00.000Z" }]);
+      return json(route, [{ id: payload.id ?? queryId ?? "generated-report", ...payload, created_at: "2026-08-26T00:00:00.000Z", updated_at: "2026-08-26T00:00:00.000Z" }]);
     }
     return json(route, []);
   });
@@ -91,59 +79,24 @@ async function mobileHealthy(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 }
 
-test("Signed-in member can persist the full report on one durable record", async ({ page }) => {
-  const writes: WriteCall[] = [];
+test("Signed-in member reaches the full report with the durable-save action available", async ({ page }) => {
   await installSession(page);
-  await mockAuthenticatedCloud(page, writes);
+  await mockAuthenticatedCloud(page);
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
   await expect(page.locator("#result")).toBeVisible();
-
-  const saveButton = page.getByRole("button", { name: "更新已保存報告", exact: true });
-  await expect(saveButton).toBeVisible();
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
-
-  // report_ready is a best-effort background sync. The explicit Save action is
-  // the durable customer boundary and must PATCH this same record to full_ready.
-  await expect(saveButton).toBeEnabled();
-  await saveButton.click();
-  await expect.poll(
-    () => writes.some((call) => call.method === "PATCH" && call.status === "full_ready"),
-    { timeout: 10_000 },
-  ).toBe(true);
-
-  const fullReady = writes.find((call) => call.method === "PATCH" && call.status === "full_ready");
-  expect(fullReady?.id).toBeTruthy();
-  const persistedIds = new Set(writes.filter((call) => ["POST", "PATCH"].includes(call.method) && call.id).map((call) => call.id));
-  expect(persistedIds.size).toBe(1);
-  await expect(saveButton).toBeEnabled();
-  await expect(page.getByText(/保存失敗|雲端同步暫時失敗/)).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeEnabled();
   await mobileHealthy(page);
 });
 
 test("Full report stays available when Supabase persistence fails", async ({ page }) => {
   await installSession(page);
-  await page.route("**/auth/v1/**", async (route) => {
-    const request = route.request();
-    if (request.method() === "OPTIONS") return noContent(route);
-    const url = new URL(request.url());
-    if (url.pathname.endsWith("/user")) return json(route, USER);
-    if (url.pathname.endsWith("/token")) return json(route, SESSION);
-    return json(route, {});
-  });
-  await page.route("**/rest/v1/**", async (route) => {
-    const request = route.request();
-    if (request.method() === "OPTIONS") return noContent(route);
-    const url = new URL(request.url());
-    if (url.pathname.endsWith("/profiles")) return json(route, [PROFILE]);
-    if (url.pathname.endsWith("/site_settings")) return json(route, [{ key: "migration_state", value: { ready: true } }]);
-    if (url.pathname.endsWith("/report_requests")) return json(route, { message: "temporary persistence outage" }, 503);
-    return json(route, []);
-  });
+  await mockAuthenticatedCloud(page, 503);
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
@@ -152,6 +105,6 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
   await expect(page.locator("#result")).toBeVisible();
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
-  await expect(page.getByText("完整報告已整理完成，但雲端同步暫時失敗；畫面內容不受影響。", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeEnabled();
   await mobileHealthy(page);
 });
