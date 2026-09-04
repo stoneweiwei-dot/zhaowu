@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import type { AnalysisResult } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import { buildReportLuckModel } from "@/lib/report/report-luck-model";
+import { getLuckVisualAsset } from "@/lib/report/report-visual-assets";
+import { ReportSpriteArtwork } from "@/components/report-sprite-artwork";
 
 function periodAge(locale: "zh-Hant" | "zh-Hans" | "en", startAge: number, endAge: number) {
   if (locale === "en") return `age ${startAge}–${endAge}`;
@@ -15,6 +17,13 @@ function periodYears(startYear: number, endYear: number) {
 export function ReportLuckBook({ result }: { result: AnalysisResult }) {
   const { locale } = useI18n();
   const model = useMemo(() => buildReportLuckModel(result.chart, locale), [result.chart, locale]);
+  const currentAsset = model.current && model.timingAvailable ? getLuckVisualAsset(model.current.ganZhi) : null;
+  const annualAsset = getLuckVisualAsset(model.annualStemBranch);
+  const imageFallback = locale === "en"
+    ? "The matching timing artwork did not load. Timing and report text are unaffected."
+    : locale === "zh-Hans"
+      ? "运势母图未载入，时间线与报告文字不受影响。"
+      : "運勢母圖未載入，時間線與報告文字不受影響。";
 
   return (
     <section className="zhaowu-luck-book" aria-labelledby="zhaowu-luck-book-title">
@@ -47,6 +56,23 @@ export function ReportLuckBook({ result }: { result: AnalysisResult }) {
           <p>{locale === "en" ? "Year layer from the existing chart" : locale === "zh-Hans" ? "沿用现有排盘的当年层" : "沿用現有排盤的當年層"}</p>
         </article>
       </div>
+
+      {currentAsset || annualAsset ? (
+        <div className="zhaowu-luck-visual-grid" aria-label={locale === "en" ? "Symbolic timing artwork" : locale === "zh-Hans" ? "运势意象图" : "運勢意象圖"}>
+          {currentAsset && model.current ? (
+            <article className="zhaowu-luck-visual-card">
+              <span>{model.currentLabel} · {model.current.ganZhi}</span>
+              <ReportSpriteArtwork asset={currentAsset} alt={`${model.currentLabel} ${model.current.ganZhi}`} fallbackText={imageFallback} compact />
+            </article>
+          ) : null}
+          {annualAsset ? (
+            <article className="zhaowu-luck-visual-card">
+              <span>{model.annualLabel} · {model.annualStemBranch}</span>
+              <ReportSpriteArtwork asset={annualAsset} alt={`${model.annualLabel} ${model.annualStemBranch}`} fallbackText={imageFallback} compact />
+            </article>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="zhaowu-luck-timeline-block">
         <div className="zhaowu-luck-timeline-head">
