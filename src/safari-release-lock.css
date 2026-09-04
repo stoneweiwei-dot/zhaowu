@@ -37,6 +37,19 @@ body {
 .zhaowu-result-flow,
 .zhaowu-result-flow > * {
   visibility: visible !important;
+  opacity: 1 !important;
+  content-visibility: visible !important;
+}
+
+/* The owner console has several direct sibling sections. Older visual layers
+ * used display-based hiding on mobile; keep the signed-in account surface
+ * mounted and measurable in WebKit without affecting nested disclosure UI. */
+.zhaowu-app-frame > main.mx-auto.max-w-3xl.space-y-5,
+.zhaowu-app-frame > main.mx-auto.max-w-3xl.space-y-5 > section {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  content-visibility: visible !important;
 }
 
 @media (max-width: 720px) {
