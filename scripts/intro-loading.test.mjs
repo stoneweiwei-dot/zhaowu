@@ -35,7 +35,7 @@ test('bootstrap does not preload customer report copy that belongs to result ren
   assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
 });
 
-test('loading gate hard-exits inside the three-second bloom budget', () => {
+test('loading gate hard-exits after the owner five-second bloom', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
   let cancelledTimer = null;
@@ -51,26 +51,26 @@ test('loading gate hard-exits inside the three-second bloom budget', () => {
     () => { exited = true; },
   );
 
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 3000);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS >= 2734);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 3000);
-  assert.equal(scheduledDelay, 3000);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 5300);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS >= 5000);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 5300);
+  assert.equal(scheduledDelay, 5300);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro is crisp, text-free and visually minimal', () => {
-  assert.match(gate, /IntroLotusArt/);
-  assert.match(gate, /LOTUS_BLOOM_MS = 2734/);
-  assert.match(gate, /data-intro-motion="vector"/);
-  assert.match(art, /viewBox="0 0 1080 1920"/);
-  assert.match(art, /intro-vector-ripples/);
-  assert.match(art, /intro-vector-branch/);
-  assert.match(css, /resolution-independent twin-lotus loading animation/);
-  assert.match(css, /device refresh rate/);
-  assert.doesNotMatch(gate, /<video|wutong-owner-r29|loading-poster/);
+test('intro plays the owner twin-lotus video without status text', () => {
+  assert.match(gate, /OWNER_LOADING_VIDEO/);
+  assert.match(gate, /LOTUS_BLOOM_MS = 5000/);
+  assert.match(gate, /data-intro-motion="owner-video"/);
+  assert.match(gate, /loading-owner-r40\.mp4/);
+  assert.match(css, /zhaowu-lotus-intro__video/);
+  assert.match(css, /object-fit: cover/);
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(gate, /playsInline/);
+  assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp/);
   assert.doesNotMatch(gate, /STONE 原創/);
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__copy|zhaowu-lotus-intro__status|zhaowu-lotus-intro__bar/);
   assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
