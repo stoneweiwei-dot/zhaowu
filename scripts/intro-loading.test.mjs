@@ -61,16 +61,17 @@ test('loading gate hard-exits after the owner five-second bloom', () => {
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro plays the owner twin-lotus video without status text', () => {
+test('intro plays the committed twin-lotus video without status text', () => {
   assert.match(gate, /OWNER_LOADING_VIDEO/);
   assert.match(gate, /LOTUS_BLOOM_MS = 5000/);
   assert.match(gate, /data-intro-motion="owner-video"/);
-  assert.match(gate, /loading-owner-r40\.mp4/);
+  assert.match(gate, /twin-lotus-restored-r26\.mp4/);
+  assert.match(gate, /twin-lotus-restored-r26\.jpg/);
   assert.match(css, /zhaowu-lotus-intro__video/);
   assert.match(css, /object-fit: cover/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(gate, /playsInline/);
-  assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp/);
+  assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp|loading-owner-r40/);
   assert.doesNotMatch(gate, /STONE 原創/);
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__copy|zhaowu-lotus-intro__status|zhaowu-lotus-intro__bar/);
   assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
