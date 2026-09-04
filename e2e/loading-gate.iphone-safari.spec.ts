@@ -64,13 +64,13 @@ test.describe("iPhone Safari startup fallback", () => {
 
       await expect(gate).toBeVisible();
       await expect(heading).toBeAttached();
-      await expect(gate).toHaveCount(0, { timeout: 5_500 });
+      await expect(gate).toHaveCount(0, { timeout: 4_300 });
       await expect(heading).toBeVisible();
       await expect(page.getByRole(route.actionRole, { name: route.action, exact: true }).first()).toBeVisible();
 
       const duration = await gateDuration(page);
       expect(duration).not.toBeNull();
-      expect(duration!).toBeLessThanOrEqual(5_300);
+      expect(duration!).toBeLessThanOrEqual(4_000);
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
@@ -86,12 +86,12 @@ test.describe("iPhone Safari startup fallback", () => {
     await expect(gate.locator("video")).toHaveAttribute("src", "/intro/twin-lotus-restored-r26.mp4");
     await page.waitForTimeout(900);
     await expect(gate).toBeVisible();
-    await expect(gate).toHaveCount(0, { timeout: 4_600 });
+    await expect(gate).toHaveCount(0, { timeout: 3_400 });
     await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
 
     const duration = await gateDuration(page);
     expect(duration).not.toBeNull();
     expect(duration!).toBeGreaterThanOrEqual(1_100);
-    expect(duration!).toBeLessThanOrEqual(5_300);
+    expect(duration!).toBeLessThanOrEqual(4_000);
   });
 });
