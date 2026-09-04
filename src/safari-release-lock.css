@@ -9,7 +9,12 @@ body,
   background-color: #f3ecdc !important;
 }
 
-body {
+/* Match the specificity of the older :has() parchment reset so the packaged
+ * Song landscape remains the final application background on every route. */
+body,
+body:has(.zhaowu-home-sheet-shell),
+body:has(.zhaowu-login-shell) {
+  background-color: #f3ecdc !important;
   background-image:
     linear-gradient(rgba(246, 239, 224, .90), rgba(246, 239, 224, .90)),
     url('/wallpaper-song.jpg') !important;
@@ -45,7 +50,10 @@ body {
  * used display-based hiding on mobile; keep the signed-in account surface
  * mounted and measurable in WebKit without affecting nested disclosure UI. */
 .zhaowu-app-frame > main.mx-auto.max-w-3xl.space-y-5,
-.zhaowu-app-frame > main.mx-auto.max-w-3xl.space-y-5 > section {
+.zhaowu-app-frame > main.mx-auto.max-w-3xl.space-y-5 > section,
+.zhaowu-app-frame > main.mx-auto.max-w-3xl.space-y-5 h1,
+.zhaowu-app-frame > main.mx-auto.max-w-3xl.space-y-5 h2,
+.zhaowu-app-frame > main.mx-auto.max-w-3xl.space-y-5 h3 {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
@@ -53,7 +61,9 @@ body {
 }
 
 @media (max-width: 720px) {
-  body {
+  body,
+  body:has(.zhaowu-home-sheet-shell),
+  body:has(.zhaowu-login-shell) {
     background-position: center top !important;
   }
 }
