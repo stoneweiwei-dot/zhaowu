@@ -8,8 +8,8 @@ import {
 } from "@/lib/intro-gate-policy";
 
 const LOTUS_BLOOM_MS = 5000;
-const OWNER_LOADING_VIDEO = "/intro/twin-lotus-restored-r26.mp4";
-const OWNER_LOADING_POSTER = "/intro/twin-lotus-restored-r26.jpg";
+const OWNER_LOADING_VIDEO = "/intro/loading-owner-r41.mp4";
+const OWNER_LOADING_POSTER = "/intro/loading-owner-r41.jpg";
 
 export function IntroGate() {
   const { locale } = useI18n();
@@ -17,6 +17,7 @@ export function IntroGate() {
   const [minimumDone, setMinimumDone] = useState(false);
   const [runtimeReady, setRuntimeReady] = useState(false);
   const [visualDone, setVisualDone] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
   const finishedRef = useRef(false);
   const exitTimerRef = useRef<number | null>(null);
 
@@ -101,17 +102,29 @@ export function IntroGate() {
       aria-label={loadingLabel}
       data-intro-motion="owner-video"
     >
-      <video
+      <img
         className="zhaowu-lotus-intro__video"
-        src={OWNER_LOADING_VIDEO}
-        poster={OWNER_LOADING_POSTER}
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-        onEnded={() => setVisualDone(true)}
-        onError={() => setVisualDone(true)}
+        src={OWNER_LOADING_POSTER}
+        alt=""
+        aria-hidden
+        draggable={false}
       />
+      {!videoFailed ? (
+        <video
+          className="zhaowu-lotus-intro__video"
+          src={OWNER_LOADING_VIDEO}
+          poster={OWNER_LOADING_POSTER}
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          onEnded={() => setVisualDone(true)}
+          onError={() => {
+            setVideoFailed(true);
+            setVisualDone(true);
+          }}
+        />
+      ) : null}
     </div>
   );
 }

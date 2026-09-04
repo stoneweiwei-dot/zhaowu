@@ -61,17 +61,16 @@ test('loading gate hard-exits after the owner five-second bloom', () => {
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro plays the committed twin-lotus video without status text', () => {
+test('intro plays the owner twin-lotus video without status text', () => {
   assert.match(gate, /OWNER_LOADING_VIDEO/);
   assert.match(gate, /LOTUS_BLOOM_MS = 5000/);
   assert.match(gate, /data-intro-motion="owner-video"/);
-  assert.match(gate, /twin-lotus-restored-r26\.mp4/);
-  assert.match(gate, /twin-lotus-restored-r26\.jpg/);
+  assert.match(gate, /loading-owner-r41\.mp4/);
   assert.match(css, /zhaowu-lotus-intro__video/);
   assert.match(css, /object-fit: cover/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(gate, /playsInline/);
-  assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp|loading-owner-r40/);
+  assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp/);
   assert.doesNotMatch(gate, /STONE 原創/);
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__copy|zhaowu-lotus-intro__status|zhaowu-lotus-intro__bar/);
   assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
@@ -89,7 +88,7 @@ test('iPhone Safari routes stay mounted and usable when bootstrap fails', () => 
   assert.doesNotMatch(root, /runtimeReady\s*\?\s*<SiteShell/);
 });
 
-test('home-screen icons are valid PNGs at iOS root and manifest sizes', async () => {
+test('home-screen icons are valid PNGs at stable iOS root and manifest sizes', async () => {
   const written = writeHomeIcons();
   assert.equal(written.length, 9);
   const rootIcon = await readFile(new URL('../public/apple-touch-icon.png', import.meta.url));
@@ -102,6 +101,7 @@ test('home-screen icons are valid PNGs at iOS root and manifest sizes', async ()
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const manifest = await readFile(new URL('../public/manifest.webmanifest', import.meta.url), 'utf8');
   const iconWriter = await readFile(new URL('./write-home-icons.mjs', import.meta.url), 'utf8');
+  const worker = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
   assert.equal(rootIcon.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
   assert.equal(precomposed.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
   assert.equal(icon192.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
@@ -117,10 +117,12 @@ test('home-screen icons are valid PNGs at iOS root and manifest sizes', async ()
   assert.equal(icon512.readUInt32BE(16), 512);
   assert.equal(icon512.readUInt32BE(20), 512);
   assert.doesNotMatch(iconWriter, /paintSeal|barW|barH/);
-  assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon-r20\.png"/);
-  assert.match(html, /apple-touch-icon-r20-precomposed\.png/);
-  assert.doesNotMatch(html, /apple-touch-icon-r20\.png\?v=/);
-  assert.match(manifest, /"src": "\/apple-touch-icon-r20\.png"/);
+  assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon\.png"/);
+  assert.match(html, /apple-touch-icon-precomposed\.png/);
+  assert.doesNotMatch(html, /apple-touch-icon-r\d+/);
+  assert.match(manifest, /"src": "\/apple-touch-icon\.png"/);
+  assert.doesNotMatch(manifest, /apple-touch-icon-r\d+/);
   assert.match(manifest, /"src": "\/icons\/zhaowu-lotus-192\.png/);
   assert.match(manifest, /"src": "\/icons\/zhaowu-lotus-512\.png/);
+  assert.doesNotMatch(worker, /apple-touch-icon|manifest\.webmanifest|zhaowu-lotus-192|zhaowu-lotus-512/);
 });
