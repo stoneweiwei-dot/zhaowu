@@ -1,0 +1,92 @@
+.zhaowu-sprite-artwork {
+  position: relative;
+  width: min(100%, 22rem);
+  aspect-ratio: 9 / 16;
+  margin: 14px auto 0;
+  overflow: hidden;
+  border: 1px solid rgba(142, 108, 62, .28);
+  border-radius: 15px;
+  background: #ede2cd;
+  box-shadow: inset 0 0 34px rgba(75, 56, 34, .13);
+  isolation: isolate;
+}
+
+.zhaowu-sprite-artwork::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 24px rgba(63, 47, 28, .10);
+  z-index: 2;
+}
+
+.zhaowu-sprite-image {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  max-width: none;
+  object-fit: fill;
+  filter: saturate(.76) sepia(.06) contrast(.94);
+  z-index: 1;
+}
+
+.zhaowu-sprite-image.is-fallback {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zhaowu-sprite-artwork figcaption {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 3;
+  padding: 7px 9px;
+  border-radius: 10px;
+  background: rgba(244, 234, 214, .82);
+  color: rgba(68, 54, 38, .82);
+  font-size: 11px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.zhaowu-luck-visual-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0 18px;
+}
+
+.zhaowu-luck-visual-card {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(142, 108, 62, .22);
+  border-radius: 16px;
+  background: rgba(247, 238, 220, .32);
+}
+
+.zhaowu-luck-visual-card > span {
+  display: block;
+  color: rgba(71, 58, 42, .72);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-align: center;
+}
+
+.zhaowu-luck-visual-card .zhaowu-sprite-artwork {
+  width: 100%;
+  margin-top: 8px;
+  border-radius: 12px;
+}
+
+@media (max-width: 350px) {
+  .zhaowu-luck-visual-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .zhaowu-luck-visual-card .zhaowu-sprite-artwork {
+    width: min(100%, 18rem);
+  }
+}
