@@ -6,10 +6,10 @@ const gate = await readFile(new URL("../src/components/intro-gate.tsx", import.m
 const css = await readFile(new URL("../src/intro-extra.css", import.meta.url), "utf8");
 const writer = await readFile(new URL("./write-intro-media.mjs", import.meta.url), "utf8");
 
-test("intro plays the owner pond video full-bleed instead of vector stages", () => {
+test("intro plays the committed twin-lotus video full-bleed instead of vector stages", () => {
   assert.match(gate, /OWNER_LOADING_VIDEO/);
   assert.match(gate, /data-intro-motion="owner-video"/);
-  assert.match(gate, /loading-owner-r40\.mp4/);
+  assert.match(gate, /twin-lotus-restored-r26\.mp4/);
   assert.match(gate, /<video/);
   assert.match(gate, /playsInline/);
 });
