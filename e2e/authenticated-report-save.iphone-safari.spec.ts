@@ -105,6 +105,7 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
   await expect(page.locator("#result")).toBeVisible();
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeEnabled();
+  await expect(page.getByText("完整報告已整理完成，但雲端同步暫時失敗；畫面內容不受影響。", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toHaveCount(0);
   await mobileHealthy(page);
 });

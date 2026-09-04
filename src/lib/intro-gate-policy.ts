@@ -1,5 +1,5 @@
 export const INTRO_GATE_MIN_VISIBLE_MS = 1200;
-export const INTRO_GATE_HARD_EXIT_MS = 5300;
+export const INTRO_GATE_HARD_EXIT_MS = 4000;
 export const INTRO_GATE_FADE_MS = 180;
 
 type TimerId = number;
