@@ -1,3 +1,30 @@
+.zhaowu-lotus-intro__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #0b120e;
+  display: block;
+}
+
+@media (min-width: 700px) {
+  .zhaowu-lotus-intro__video {
+    object-fit: contain;
+    background: #0b120e;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-lotus-intro__video {
+    display: none;
+  }
+  .zhaowu-lotus-intro {
+    background:
+      #0b120e url("/intro/loading-owner-r40.jpg") center / cover no-repeat;
+  }
+}
+
 .intro-paper-field {
   position: absolute;
   inset: 0;
