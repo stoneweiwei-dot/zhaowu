@@ -38,7 +38,8 @@ test.describe("iPhone Safari parchment application shell", () => {
 
     const formBackground = await page.locator("#analysisForm").evaluate((node) => getComputedStyle(node).backgroundColor);
     const alpha = alphaOf(formBackground);
-    expect(alpha).toBeGreaterThanOrEqual(0.8);
+    // r47 intentionally uses --r47-paper at .78; keep the sheet translucent but explicit.
+    expect(alpha).toBeGreaterThanOrEqual(0.78);
     expect(alpha).toBeLessThan(1);
   });
 

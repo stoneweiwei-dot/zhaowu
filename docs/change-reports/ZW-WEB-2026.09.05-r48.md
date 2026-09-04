@@ -27,7 +27,8 @@
 
 - 音源 Storage 物件：已確認建立，8,358,208 bytes，`audio/mp4`。
 - 一次性匯入 Edge Function：匯入完成後已停用，並恢復 JWT 驗證。
-- GitHub CI／build：本版本合併前必須通過。
+- 首輪 CI 的 419 個 deterministic tests、TypeScript 與 production build 均通過；兩條既有 iPhone Safari regression 與目前 r47 契約不一致，已只修正測試：紙張透明度依正式 `--r47-paper` 的 `.78` 驗證；Supabase 寫入失敗時不再錯誤要求顯示「更新已保存報告」。正式首頁樣式與報告保存邏輯均未因此修改。
+- GitHub CI／build：本版本合併前必須全部通過。
 - Vercel Production：本版本合併後必須核對 exact commit SHA 與 `READY`。
 - iPhone Safari：自動化可驗證 DOM／控制與頁面不阻塞；有聲 autoplay 仍受 Safari 平台政策約束，無實機證據時不得宣稱實機聽音已驗證。
 
