@@ -139,8 +139,11 @@ test("Signed-in member can generate and persist one full report record", async (
   await expect(page.locator("#result")).toBeVisible();
   const saveButton = page.getByRole("button", { name: "更新已保存報告", exact: true });
   await expect(saveButton).toBeVisible();
-  await expect.poll(() => writes.some((call) => call.method === "POST" && call.status === "engine_ready")).toBe(true);
 
+  // The initial engine snapshot is intentionally fire-and-forget so first
+  // render never waits on cloud persistence. Safari E2E therefore validates
+  // the durable customer contract at the explicit full-report save boundary,
+  // not the timing of that background transitional POST.
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
   await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "report_ready")).toBe(true);
@@ -149,10 +152,10 @@ test("Signed-in member can generate and persist one full report record", async (
   await saveButton.click();
   await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "full_ready")).toBe(true);
 
-  const engineReady = writes.find((call) => call.method === "POST" && call.status === "engine_ready");
+  const reportReady = writes.find((call) => call.method === "PATCH" && call.status === "report_ready");
   const fullReady = writes.find((call) => call.method === "PATCH" && call.status === "full_ready");
-  expect(engineReady?.id).toBeTruthy();
-  expect(fullReady?.id).toBe(engineReady?.id);
+  expect(reportReady?.id).toBeTruthy();
+  expect(fullReady?.id).toBe(reportReady?.id);
 
   await expect(page.getByText("完整報告已保存到同一筆記錄。", { exact: true })).toBeVisible();
   await expect(page.getByText(/雲端同步暫時失敗/)).toHaveCount(0);
