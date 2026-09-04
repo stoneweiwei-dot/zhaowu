@@ -77,14 +77,15 @@ test('intro plays the committed twin-lotus video without status text', () => {
   assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
 });
 
-test('iPhone Safari routes stay mounted and usable when bootstrap fails', () => {
+test('iPhone Safari routes stay mounted and Loading remains perceptible when bootstrap fails', () => {
   const gatePosition = root.indexOf('<IntroGate />');
   const shellPosition = root.indexOf('<SiteShell>');
 
   assert.ok(gatePosition >= 0, 'the optional intro may still render');
   assert.ok(shellPosition > gatePosition, 'home, login and account content mount independently beneath the intro');
-  assert.match(gate, /\.catch\(\(\) => \{[\s\S]*forceOff\(\)/);
-  assert.match(gate, /Do not fade here:[\s\S]*forceOff\(\)/);
+  assert.match(gate, /\.catch\(\(\) => \{[\s\S]*setRuntimeReady\(true\)/);
+  assert.match(gate, /transient backend error[\s\S]*setRuntimeReady\(true\)/);
+  assert.doesNotMatch(gate, /\.catch\(\(\) => \{[\s\S]*forceOff\(\)/);
   assert.match(gate, /pointer-events-none opacity-0/);
   assert.doesNotMatch(root, /runtimeReady\s*\?\s*<SiteShell/);
 });
