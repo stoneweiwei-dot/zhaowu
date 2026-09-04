@@ -1,1 +1,309 @@
-TEMP
+/* ZHAOWU r47 art-direction refinement.
+ * Home-only visual layer: warmer xuan paper, pine-jade actions, cinnabar accents,
+ * fewer floating white cards, stronger type rhythm, and tighter iPhone composition.
+ * No calculation, auth, payment, report-data, routing, or Loading logic lives here.
+ */
+
+.zhaowu-home-layout {
+  --r47-paper: rgba(246, 236, 216, .78);
+  --r47-paper-soft: rgba(250, 243, 229, .62);
+  --r47-paper-field: rgba(255, 250, 239, .76);
+  --r47-ink: #2d2a24;
+  --r47-ink-soft: #665f53;
+  --r47-ink-mute: #897e6d;
+  --r47-jade: #315f50;
+  --r47-jade-deep: #264d42;
+  --r47-cinnabar: #a64333;
+  --r47-gold: #9a7444;
+  --r47-line: rgba(139, 99, 55, .24);
+  --r47-line-soft: rgba(139, 99, 55, .14);
+  color: var(--r47-ink);
+}
+
+body:has(.zhaowu-home-layout) .zhaowu-site-header {
+  border-bottom-color: rgba(133, 97, 55, .18) !important;
+  background: rgba(242, 232, 212, .86) !important;
+  box-shadow: 0 9px 30px rgba(70, 50, 29, .035) !important;
+  backdrop-filter: blur(12px) saturate(105%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(105%) !important;
+}
+
+body:has(.zhaowu-home-layout) .zhaowu-site-header .bg-wood,
+body:has(.zhaowu-home-layout) .zhaowu-site-header button[aria-pressed="true"] {
+  background: var(--r47-jade) !important;
+  color: #fff9ec !important;
+}
+
+body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
+  border-color: rgba(139, 99, 55, .22) !important;
+  background: rgba(250, 243, 229, .56) !important;
+}
+
+.zhaowu-home-sheet-shell:has(.zhaowu-home-layout) .zhaowu-home-app-frame {
+  max-width: 880px !important;
+  padding-top: 16px !important;
+}
+
+/* Daily card becomes warm paper rather than a cool grey app card. */
+.zhaowu-home-layout .zhaowu-daily-almanac {
+  border-color: rgba(142, 105, 64, .24) !important;
+  border-radius: 30px !important;
+  color: var(--r47-ink) !important;
+  background:
+    radial-gradient(circle at 89% 12%, rgba(91, 126, 105, .16), transparent 28%),
+    radial-gradient(circle at 8% 86%, rgba(171, 111, 70, .08), transparent 34%),
+    linear-gradient(145deg, rgba(250, 244, 232, .94), rgba(232, 217, 190, .88)) !important;
+  box-shadow: 0 20px 48px rgba(78, 57, 33, .075), inset 0 0 0 1px rgba(255,255,255,.28) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-almanac::before {
+  background:
+    linear-gradient(115deg, rgba(255,255,255,.28), transparent 34%),
+    repeating-linear-gradient(0deg, rgba(85, 65, 42, .014) 0 1px, transparent 1px 7px) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-watermark {
+  color: rgba(96, 72, 44, .075) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-eyebrow,
+.zhaowu-home-layout .zhaowu-home-fun-arrow,
+.zhaowu-home-layout .zhaowu-home-portal-arrow {
+  color: var(--r47-cinnabar) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-headline,
+.zhaowu-home-layout .zhaowu-daily-energy strong,
+.zhaowu-home-layout .zhaowu-daily-pair-title b {
+  color: var(--r47-ink) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-lead,
+.zhaowu-home-layout .zhaowu-daily-list,
+.zhaowu-home-layout .zhaowu-daily-date,
+.zhaowu-home-layout .zhaowu-daily-daymark {
+  color: var(--r47-ink-soft) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-pairs {
+  border-top-color: var(--r47-line-soft) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-list li::before {
+  background: rgba(49, 95, 80, .72) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-cta {
+  border-color: rgba(49, 95, 80, .24) !important;
+  color: #fff9ec !important;
+  background: linear-gradient(180deg, var(--r47-jade), var(--r47-jade-deep)) !important;
+  box-shadow: 0 8px 18px rgba(38, 77, 66, .11) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-cta b {
+  border-color: rgba(255, 249, 236, .38) !important;
+}
+
+/* Main question sheet: one continuous paper surface, not a white card stack. */
+.zhaowu-home-layout #analysisForm {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--r47-line) !important;
+  border-radius: 28px !important;
+  padding: 28px 24px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 249, 238, .24), rgba(232, 216, 188, .09)),
+    var(--r47-paper) !important;
+  box-shadow: 0 16px 42px rgba(74, 53, 30, .055), inset 0 0 0 1px rgba(255,255,255,.18) !important;
+  backdrop-filter: blur(1px) saturate(101%) !important;
+  -webkit-backdrop-filter: blur(1px) saturate(101%) !important;
+}
+
+.zhaowu-home-layout #analysisForm::before {
+  content: "";
+  position: absolute;
+  inset: 11px;
+  border: 1px solid rgba(143, 103, 59, .10);
+  border-radius: 20px;
+  pointer-events: none;
+}
+
+.zhaowu-home-layout #analysisForm .zhaowu-quiz-kicker {
+  color: var(--r47-cinnabar) !important;
+  font-weight: 720;
+}
+
+.zhaowu-home-layout #analysisForm h2 {
+  color: var(--r47-ink) !important;
+  font-size: clamp(1.8rem, 6vw, 2.35rem) !important;
+  letter-spacing: .04em;
+}
+
+.zhaowu-home-layout #analysisForm .zhaowu-quiz-paper,
+.zhaowu-home-layout #analysisForm .zhaowu-analysis-core,
+.zhaowu-home-layout #analysisForm .zhaowu-quiz-block {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-home-layout #analysisForm .zhaowu-quiz-legend {
+  color: var(--r47-ink) !important;
+  font-weight: 720;
+  letter-spacing: .025em;
+}
+
+.zhaowu-home-layout #analysisForm .zhaowu-quiz-legend em {
+  color: var(--r47-cinnabar) !important;
+  font-style: normal;
+  font-weight: 760;
+}
+
+.zhaowu-home-layout #analysisForm textarea,
+.zhaowu-home-layout #analysisForm input,
+.zhaowu-home-layout #analysisForm select {
+  border-color: rgba(139, 99, 55, .30) !important;
+  background: var(--r47-paper-field) !important;
+  color: var(--r47-ink) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.32) !important;
+}
+
+.zhaowu-home-layout #analysisForm textarea {
+  min-height: 9.5rem !important;
+  border-radius: 18px !important;
+  font-size: 1rem !important;
+  line-height: 1.75 !important;
+}
+
+.zhaowu-home-layout #analysisForm input,
+.zhaowu-home-layout #analysisForm select {
+  border-radius: 13px !important;
+}
+
+.zhaowu-home-layout #analysisForm textarea:focus,
+.zhaowu-home-layout #analysisForm input:focus,
+.zhaowu-home-layout #analysisForm select:focus {
+  border-color: rgba(49, 95, 80, .62) !important;
+  box-shadow: 0 0 0 3px rgba(49, 95, 80, .075) !important;
+}
+
+.zhaowu-home-layout #analysisForm button[type="submit"] {
+  min-height: 52px !important;
+  border: 1px solid rgba(38, 77, 66, .76) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(180deg, #386c5b, var(--r47-jade-deep)) !important;
+  color: #fff9ec !important;
+  box-shadow: 0 10px 22px rgba(38, 77, 66, .13) !important;
+  font-weight: 720 !important;
+  letter-spacing: .08em;
+}
+
+/* Directory areas read as sections on the same sheet, not large white boxes. */
+.zhaowu-home-layout .zhaowu-home-portals-block,
+.zhaowu-home-layout .zhaowu-home-fun-section {
+  border-color: var(--r47-line) !important;
+  border-radius: 24px !important;
+  background: rgba(246, 235, 214, .48) !important;
+  box-shadow: 0 11px 28px rgba(74, 53, 30, .04) !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-portals-heading,
+.zhaowu-home-layout .zhaowu-home-fun-heading {
+  border-bottom-color: var(--r47-line-soft) !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-portals-heading h2,
+.zhaowu-home-layout .zhaowu-home-fun-heading h2,
+.zhaowu-home-layout .zhaowu-home-portal strong,
+.zhaowu-home-layout .zhaowu-home-fun-card strong {
+  color: var(--r47-ink) !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-portals-heading span,
+.zhaowu-home-layout .zhaowu-home-fun-heading p,
+.zhaowu-home-layout .zhaowu-home-portal-hint,
+.zhaowu-home-layout .zhaowu-home-fun-card small {
+  color: var(--r47-ink-mute) !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-portal,
+.zhaowu-home-layout .zhaowu-home-fun-card {
+  border-color: rgba(139, 99, 55, .14) !important;
+  background: rgba(255, 249, 238, .34) !important;
+  box-shadow: none !important;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.zhaowu-home-layout .zhaowu-home-portal:hover,
+.zhaowu-home-layout .zhaowu-home-fun-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(49, 95, 80, .30) !important;
+  background: rgba(252, 244, 228, .62) !important;
+}
+
+body:has(.zhaowu-home-layout) footer {
+  color: var(--r47-ink-mute) !important;
+}
+
+@media (max-width: 560px) {
+  .zhaowu-home-sheet-shell:has(.zhaowu-home-layout) .zhaowu-home-app-frame {
+    padding: 8px 9px 28px !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-home-stage {
+    margin-top: 14px !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-daily-almanac {
+    min-height: 438px !important;
+    border-radius: 24px !important;
+    padding: 22px 18px 18px !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-daily-main {
+    margin-top: 58px !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-daily-headline {
+    font-size: clamp(1.85rem, 8.8vw, 2.35rem) !important;
+    line-height: 1.18 !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-daily-pairs {
+    gap: 16px !important;
+    margin-top: 38px !important;
+  }
+
+  .zhaowu-home-layout #analysisForm {
+    border-radius: 23px !important;
+    padding: 22px 17px !important;
+  }
+
+  .zhaowu-home-layout #analysisForm::before {
+    inset: 8px;
+    border-radius: 17px;
+  }
+
+  .zhaowu-home-layout #analysisForm input,
+  .zhaowu-home-layout #analysisForm select,
+  .zhaowu-home-layout #analysisForm textarea {
+    font-size: 16px !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-home-portals-block,
+  .zhaowu-home-layout .zhaowu-home-fun-section {
+    border-radius: 20px !important;
+    padding: 16px !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-home-portal,
+  .zhaowu-home-layout .zhaowu-home-fun-card {
+    border-radius: 15px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-home-layout .zhaowu-home-portal,
+  .zhaowu-home-layout .zhaowu-home-fun-card {
+    transition: none;
+  }
+}

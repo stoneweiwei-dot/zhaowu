@@ -34,6 +34,7 @@ import './report-visual-book.css';
 import './report-luck-book.css';
 import './report-share-card.css';
 import './zhaowu-layout-v41.css';
+import './home-art-direction-r47.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
