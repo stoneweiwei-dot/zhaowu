@@ -83,6 +83,8 @@ function parsePayload(rawText: string | null) {
 }
 
 async function mockAuthenticatedCloud(page: Page, writes: WriteCall[]) {
+  let profileReads = 0;
+
   await page.route("**/auth/v1/**", async (route) => {
     const request = route.request();
     if (request.method() === "OPTIONS") return noContent(route);
@@ -96,7 +98,10 @@ async function mockAuthenticatedCloud(page: Page, writes: WriteCall[]) {
     const request = route.request();
     if (request.method() === "OPTIONS") return noContent(route);
     const url = new URL(request.url());
-    if (url.pathname.endsWith("/profiles")) return json(route, [PROFILE]);
+    if (url.pathname.endsWith("/profiles")) {
+      profileReads += 1;
+      return json(route, [PROFILE]);
+    }
     if (url.pathname.endsWith("/site_settings")) return json(route, [{ key: "migration_state", value: { ready: true } }]);
     if (url.pathname.endsWith("/report_requests")) {
       const method = request.method();
@@ -116,28 +121,35 @@ async function mockAuthenticatedCloud(page: Page, writes: WriteCall[]) {
     }
     return json(route, []);
   });
+
+  return { getProfileReads: () => profileReads };
 }
 
 test("Signed-in member can generate and persist one full report record", async ({ page }) => {
   const writes: WriteCall[] = [];
   await installSession(page);
-  await mockAuthenticatedCloud(page, writes);
+  const backend = await mockAuthenticatedCloud(page, writes);
 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
+  // A stored session is restored asynchronously. Do not submit before the
+  // authenticated profile has been read, otherwise WebKit can race the form
+  // ahead of auth and turn this into a signed-out persistence test.
+  await expect.poll(() => backend.getProfileReads()).toBeGreaterThan(0);
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
 
   await expect(page.locator("#result")).toBeVisible();
   const saveButton = page.getByRole("button", { name: "更新已保存報告", exact: true });
   await expect(saveButton).toBeVisible();
+  await expect.poll(() => writes.some((call) => call.method === "POST" && call.status === "engine_ready")).toBe(true);
 
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
+  await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "report_ready")).toBe(true);
 
   await expect(saveButton).toBeEnabled();
   await saveButton.click();
-  await expect.poll(() => writes.some((call) => call.method === "POST" && call.status === "engine_ready")).toBe(true);
   await expect.poll(() => writes.some((call) => call.method === "PATCH" && call.status === "full_ready")).toBe(true);
 
   const engineReady = writes.find((call) => call.method === "POST" && call.status === "engine_ready");
@@ -151,6 +163,7 @@ test("Signed-in member can generate and persist one full report record", async (
 });
 
 test("Full report stays available when Supabase persistence fails", async ({ page }) => {
+  let profileReads = 0;
   await installSession(page);
   await page.route("**/auth/v1/**", async (route) => {
     const request = route.request();
@@ -164,7 +177,10 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
     const request = route.request();
     if (request.method() === "OPTIONS") return noContent(route);
     const url = new URL(request.url());
-    if (url.pathname.endsWith("/profiles")) return json(route, [PROFILE]);
+    if (url.pathname.endsWith("/profiles")) {
+      profileReads += 1;
+      return json(route, [PROFILE]);
+    }
     if (url.pathname.endsWith("/site_settings")) return json(route, [{ key: "migration_state", value: { ready: true } }]);
     if (url.pathname.endsWith("/report_requests")) return json(route, { message: "temporary persistence outage" }, 503);
     return json(route, []);
@@ -172,6 +188,7 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
+  await expect.poll(() => profileReads).toBeGreaterThan(0);
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
   await expect(page.locator("#result")).toBeVisible();
