@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { IntroLotusArt } from "@/components/intro-lotus-art";
 import { useI18n } from "@/lib/i18n";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 import {
@@ -8,7 +7,9 @@ import {
   scheduleIntroGateHardExit,
 } from "@/lib/intro-gate-policy";
 
-const LOTUS_BLOOM_MS = 2734;
+const LOTUS_BLOOM_MS = 5000;
+const OWNER_LOADING_VIDEO = "/intro/loading-owner-r40.mp4";
+const OWNER_LOADING_POSTER = "/intro/loading-owner-r40.jpg";
 
 export function IntroGate() {
   const { locale } = useI18n();
@@ -98,9 +99,19 @@ export function IntroGate() {
       role="status"
       aria-live="polite"
       aria-label={loadingLabel}
-      data-intro-motion="vector"
+      data-intro-motion="owner-video"
     >
-      <IntroLotusArt />
+      <video
+        className="zhaowu-lotus-intro__video"
+        src={OWNER_LOADING_VIDEO}
+        poster={OWNER_LOADING_POSTER}
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        onEnded={() => setVisualDone(true)}
+        onError={() => setVisualDone(true)}
+      />
     </div>
   );
 }
