@@ -4,7 +4,7 @@ import type { AnalyzeInput, CityHit } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { createEngineReportRecord, updateBirthData } from "@/lib/supabase-rest";
+import { createEngineReportRecord, restoreSession, updateBirthData } from "@/lib/supabase-rest";
 import { buildChart } from "@/lib/bazi/chart";
 import { UNKNOWN_TIME_COPY } from "@/lib/bazi/presentation";
 import { BaziChart } from "@/components/bazi-chart";
@@ -123,18 +123,22 @@ export function AnalysisForm() {
       const result = await analyzeLife({ data: payload });
       setCurrent(result);
 
-      if (session) {
+      // Auth bootstrap is deliberately non-blocking. A returning member can submit
+      // before React has copied a still-valid stored session into context, so read
+      // that same session once here rather than silently dropping the cloud save.
+      const persistenceSession = session ?? await restoreSession();
+      if (persistenceSession) {
         const { question: _question, ...birthData } = payload;
 
         // Free text delivery never waits for cloud persistence. Mark a report as saved
         // only after the engine snapshot POST has actually succeeded.
-        void createEngineReportRecord({ session, profile, result })
+        void createEngineReportRecord({ session: persistenceSession, profile, result })
           .then((row) => setSavedId(row?.id ?? result.id))
           .catch(() => undefined);
 
         // Birth-profile persistence is independent of the report write. A failed
         // report sync must not prevent the remembered profile from refreshing.
-        void updateBirthData(session, birthData as unknown as Record<string, unknown>)
+        void updateBirthData(persistenceSession, birthData as unknown as Record<string, unknown>)
           .then(() => {
             window.dispatchEvent(new Event("zhaowu-auth-change"));
             setRemembered(true);
@@ -207,78 +211,58 @@ export function AnalysisForm() {
                     {locale === "en" ? "Birth details for the chart" : locale === "zh-Hans" ? "排盘用的出生资料" : "排盤用的出生資料"}
                   </p>
                   <div className="grid grid-cols-3 gap-3">
-                    {[
-                      { id: "birth-year", label: t("year"), value: year, set: setYear, min: 1900, max: 2100 },
-                      { id: "birth-month", label: t("month"), value: month, set: setMonth, min: 1, max: 12 },
-                      { id: "birth-day", label: t("day"), value: day, set: setDay, min: 1, max: 31 },
-                    ].map((f) => (
-                      <label htmlFor={f.id} key={f.id} className="text-sm text-ink-soft">
-                        <span className="mb-2 block">{f.label}</span>
-                        <input id={f.id} type="number" inputMode="numeric" min={f.min} max={f.max} required value={f.value} onChange={(e) => f.set(e.target.value)} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar" />
-                      </label>
-                    ))}
+                    {["year", "month", "day"].map((k) => {
+                      const value = k === "year" ? year : k === "month" ? month : day;
+                      const set = k === "year" ? setYear : k === "month" ? setMonth : setDay;
+                      const label = t(k);
+                      const ph = k === "year" ? "1988" : k === "month" ? "10" : "04";
+                      const id = `birth-${k}`;
+                      return <label key={k} className="block"><span className="mb-2 block text-sm text-ink-soft">{label}</span><input id={id} value={value} required inputMode="numeric" placeholder={ph} className="w-full rounded-md border border-line bg-cream px-3 py-3 text-base outline-none focus:border-cinnabar" onChange={(e) => set(e.target.value.replace(/\D/g, "").slice(0, 4))} /></label>;
+                    })}
                   </div>
-
-                  <div className="mt-4 rounded-lg border border-line bg-paper/45 p-4">
-                    <div className="grid gap-3 sm:flex sm:items-center sm:justify-between sm:gap-4">
-                      <p className="text-sm text-ink-soft">{t("time")}</p>
-                      <label htmlFor="time-unknown" className="flex min-h-11 items-center gap-2 text-xs leading-5 text-ink-mute">
-                        <input id="time-unknown" aria-describedby="time-importance" type="checkbox" checked={timeUnknown} onChange={(e) => setTimeUnknown(e.target.checked)} />
-                        {t("timeUnknown")}
-                      </label>
-                    </div>
-                    <p id="time-importance" className="zhaowu-time-warning">{UNKNOWN_TIME_COPY[locale]}</p>
+                  {!timeUnknown ? (
                     <div className="mt-3 grid grid-cols-2 gap-3">
-                      <input id="birth-hour" aria-label={t("hourPh")} type="number" inputMode="numeric" min={0} max={23} required={!timeUnknown} disabled={timeUnknown} value={hour} placeholder={t("hourPh")} onChange={(e) => setHour(e.target.value)} className="h-12 min-w-0 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar" />
-                      <input id="birth-minute" aria-label={t("minutePh")} type="number" inputMode="numeric" min={0} max={59} disabled={timeUnknown} value={minute} placeholder={t("minutePh")} onChange={(e) => setMinute(e.target.value)} className="h-12 min-w-0 rounded-md border border-line bg-cream px-3 text-base outline-none disabled:opacity-40 focus:border-cinnabar" />
+                      <label><span className="mb-2 block text-sm text-ink-soft">{t("hour")}</span><input id="birth-hour" value={hour} required inputMode="numeric" placeholder="04" className="w-full rounded-md border border-line bg-cream px-3 py-3 text-base outline-none focus:border-cinnabar" onChange={(e) => setHour(e.target.value.replace(/\D/g, "").slice(0, 2))} /></label>
+                      <label><span className="mb-2 block text-sm text-ink-soft">{t("minute")}</span><input id="birth-minute" value={minute} required inputMode="numeric" placeholder="40" className="w-full rounded-md border border-line bg-cream px-3 py-3 text-base outline-none focus:border-cinnabar" onChange={(e) => setMinute(e.target.value.replace(/\D/g, "").slice(0, 2))} /></label>
                     </div>
-                  </div>
+                  ) : null}
+                  <label className="mt-3 flex items-start gap-3 rounded-md border border-line bg-paper/55 px-3 py-3 text-sm text-ink-soft"><input type="checkbox" checked={timeUnknown} className="mt-0.5" onChange={(e) => setTimeUnknown(e.target.checked)} /><span><strong className="block text-ink">{t("timeUnknown")}</strong><span className="mt-1 block text-xs leading-5 text-ink-mute">{UNKNOWN_TIME_COPY[locale]}</span></span></label>
+                </div>
 
-                  <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                    <label htmlFor="birth-gender" className="text-sm text-ink-soft">
-                      <span className="mb-2 block">{t("gender")}</span>
-                      <select id="birth-gender" value={gender} onChange={(e) => setGender(e.target.value as AnalyzeInput["gender"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar">
-                        <option value="unspecified">{t("unset")}</option>
-                        <option value="male">{t("male")}</option>
-                        <option value="female">{t("female")}</option>
-                      </select>
-                    </label>
-                    <label htmlFor="relationship-preference" className="text-sm text-ink-soft">
-                      <span className="mb-2 block">{t("relation")}</span>
-                      <select id="relationship-preference" value={relation} onChange={(e) => setRelation(e.target.value as AnalyzeInput["relation"])} className="h-12 w-full rounded-md border border-line bg-cream px-3 text-base outline-none focus:border-cinnabar">
-                        <option value="unset">{t("unset")}</option>
-                        <option value="any">{t("relAny")}</option>
-                        <option value="hetero">{t("relHet")}</option>
-                        <option value="same">{t("relSame")}</option>
-                      </select>
-                      <span className="mt-1 block text-xs leading-5 text-ink-mute">{t("relHint")}</span>
-                    </label>
+                <div className="zhaowu-quiz-block">
+                  <p className="zhaowu-quiz-legend"><em>03</em>{t("birthCity")}</p>
+                  <CityPicker id="birth-city" value={birthCity} onChange={setBirthCity} placeholder={t("birthCityPh")} />
+                </div>
+
+                <div className="zhaowu-quiz-block">
+                  <p className="zhaowu-quiz-legend"><em>04</em>{t("gender")}</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(["male", "female", "unspecified"] as const).map((value) => <button key={value} type="button" aria-pressed={gender === value} onClick={() => setGender(value)} className={`min-h-11 rounded-full border px-3 text-sm ${gender === value ? "border-wood bg-wood text-cream" : "border-line bg-cream text-ink-soft"}`}>{t(value)}</button>)}
                   </div>
+                </div>
+
+                <div className="zhaowu-quiz-block">
+                  <p className="zhaowu-quiz-legend"><em>05</em>{t("relation")}</p>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {(["unset", "any", "hetero", "same"] as const).map((value) => <button key={value} type="button" aria-pressed={relation === value} onClick={() => setRelation(value)} className={`min-h-11 rounded-full border px-3 text-sm ${relation === value ? "border-wood bg-wood text-cream" : "border-line bg-cream text-ink-soft"}`}>{t(`relation_${value}`)}</button>)}
+                  </div>
+                </div>
+
+                <div className="zhaowu-quiz-block">
+                  <p className="zhaowu-quiz-legend"><em>06</em>{t("liveCity")}</p>
+                  <CityPicker id="live-city" value={liveCity} onChange={setLiveCity} placeholder={t("liveCityPh")} optional />
                 </div>
               </div>
             </>
           ) : null}
 
-          <div className={compact ? "zhaowu-analysis-cities grid gap-4" : "space-y-6"}>
-            <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} onSelect={setBirthCity} />
-            <CityPicker id="current-city" label={t("liveCity")} placeholder={t("liveCity")} optional optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={liveCity} onSelect={setLiveCity} />
-            {!compact ? <p className="-mt-4 text-xs leading-5 text-ink-mute">{t("liveHint")}</p> : null}
-          </div>
-
-          {error ? (
-            <p role="alert" className="rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm leading-6 text-cinnabar-deep">
-              {error}
-            </p>
-          ) : null}
-
-          {!compact ? (
-            <button type="submit" disabled={busy} className="h-12 w-full rounded-full bg-cinnabar px-6 text-base font-medium text-cream disabled:opacity-55">
-              {busy ? (locale === "en" ? "Reading your paper…" : locale === "zh-Hans" ? "正在阅卷…" : "正在閱卷…") : locale === "en" ? "Hand in the paper" : "交卷，看答案"}
-            </button>
-          ) : null}
+          <button type="submit" disabled={busy} className="zhaowu-quiz-submit w-full rounded-full bg-wood px-5 py-3 text-base font-semibold text-cream transition hover:bg-wood-light disabled:opacity-50">
+            {busy ? t("processing") : current ? t("reanalyze") : t("submit")}
+          </button>
         </form>
       </section>
-      {!current && previewChart ? <BaziChart chart={previewChart} /> : null}
+
+      {previewChart && !current ? <BaziChart chart={previewChart} locale={locale} /> : null}
     </>
   );
 }
