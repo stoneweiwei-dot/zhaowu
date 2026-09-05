@@ -18,6 +18,11 @@ jobs:
         with:
           ref: fix/ios-background-music-aac
           fetch-depth: 0
+      - name: Install ffmpeg
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
       - name: Fetch source and create Safari-safe AAC
         shell: bash
         run: |
