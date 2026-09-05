@@ -8,8 +8,8 @@ import {
 } from "@/lib/intro-gate-policy";
 
 const LOTUS_BLOOM_MS = 5000;
-const OWNER_LOADING_VIDEO = "/intro/twin-lotus-restored-r26.mp4";
-const OWNER_LOADING_POSTER = "/intro/twin-lotus-restored-r26.jpg";
+const OWNER_LOADING_VIDEO = "/intro/owner-lotus-bloom-r53.mp4";
+const OWNER_LOADING_POSTER = "/intro/owner-lotus-bloom-r53.jpg";
 
 export function IntroGate() {
   const { locale } = useI18n();

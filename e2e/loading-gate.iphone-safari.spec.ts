@@ -83,7 +83,7 @@ test.describe("iPhone Safari startup fallback", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const gate = page.locator(GATE);
     await expect(gate).toBeVisible();
-    await expect(gate.locator("video")).toHaveAttribute("src", "/intro/twin-lotus-restored-r26.mp4");
+    await expect(gate.locator("video")).toHaveAttribute("src", "/intro/owner-lotus-bloom-r53.mp4");
     await page.waitForTimeout(900);
     await expect(gate).toBeVisible();
     await expect(gate).toHaveCount(0, { timeout: 5_500 });
