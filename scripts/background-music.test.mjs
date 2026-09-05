@@ -6,6 +6,7 @@ const music = await readFile(new URL("../src/components/background-music.tsx", i
 const manager = await readFile(new URL("../src/components/owner-background-music-manager.tsx", import.meta.url), "utf8");
 const assets = await readFile(new URL("../src/lib/background-music-assets.ts", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
+const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
 
 test("background music keeps the verified AAC as a safe fallback and reads the active Supabase asset", () => {
   assert.match(music, /jingfo-shengyuan-aac\.m4a/);
@@ -30,10 +31,17 @@ test("background music is mounted globally and unlocks on an iPhone Safari user 
   assert.match(music, /data-background-music-control/);
 });
 
-test("owner console exposes upload, local normalization and no-deploy track switching", () => {
-  assert.match(music, /OwnerBackgroundMusicManager/);
+test("owner music manager is mounted inside AuthProvider so owner session is visible", () => {
+  assert.doesNotMatch(music, /OwnerBackgroundMusicManager/);
+  assert.match(root, /import \{ OwnerBackgroundMusicManager \}/);
+  assert.match(root, /<AuthProvider>[\s\S]*<OwnerBackgroundMusicManager \/>[\s\S]*<\/AuthProvider>/);
   assert.match(manager, /data-owner-background-music-manager/);
   assert.match(manager, /\/account/);
+  assert.match(manager, /user\?\.isOwner/);
+  assert.match(manager, /session/);
+});
+
+test("owner console exposes upload, local normalization and no-deploy track switching", () => {
   assert.match(manager, /uploadBackgroundMusic/);
   assert.match(manager, /activateBackgroundMusic/);
   assert.match(manager, /AAC-LC/);
