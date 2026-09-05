@@ -70,21 +70,24 @@ test('intro plays the committed twin-lotus video without status text', () => {
   assert.match(css, /zhaowu-lotus-intro__video/);
   assert.match(css, /object-fit: cover/);
   assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /twin-lotus-restored-r26\.jpg/);
   assert.match(gate, /playsInline/);
   assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp|loading-owner-r40/);
+  assert.doesNotMatch(css, /loading-owner-r40/);
   assert.doesNotMatch(gate, /STONE 原創/);
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__copy|zhaowu-lotus-intro__status|zhaowu-lotus-intro__bar/);
   assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
 });
 
-test('iPhone Safari routes stay mounted and usable when bootstrap fails', () => {
+test('iPhone Safari routes stay mounted and Loading remains perceptible when bootstrap fails', () => {
   const gatePosition = root.indexOf('<IntroGate />');
   const shellPosition = root.indexOf('<SiteShell>');
 
   assert.ok(gatePosition >= 0, 'the optional intro may still render');
   assert.ok(shellPosition > gatePosition, 'home, login and account content mount independently beneath the intro');
-  assert.match(gate, /\.catch\(\(\) => \{[\s\S]*forceOff\(\)/);
-  assert.match(gate, /Do not fade here:[\s\S]*forceOff\(\)/);
+  assert.match(gate, /\.catch\(\(\) => \{[\s\S]*setRuntimeReady\(true\)/);
+  assert.match(gate, /transient backend error[\s\S]*setRuntimeReady\(true\)/);
+  assert.doesNotMatch(gate, /\.catch\(\(\) => \{[\s\S]*forceOff\(\)/);
   assert.match(gate, /pointer-events-none opacity-0/);
   assert.doesNotMatch(root, /runtimeReady\s*\?\s*<SiteShell/);
 });
