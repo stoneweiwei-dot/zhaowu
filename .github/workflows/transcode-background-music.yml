@@ -1,0 +1,38 @@
+name: Transcode background music AAC
+
+on:
+  push:
+    branches:
+      - fix/ios-background-music-aac
+    paths:
+      - .github/workflows/transcode-background-music.yml
+
+permissions:
+  contents: write
+
+jobs:
+  transcode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/ios-background-music-aac
+          fetch-depth: 0
+      - name: Fetch source and create Safari-safe AAC
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/audio
+          curl -fsSL "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-audio/background/jingfo-shengyuan.m4a" -o /tmp/jingfo-source.m4a
+          ffmpeg -hide_banner -loglevel error -y -i /tmp/jingfo-source.m4a -vn -c:a aac -profile:a aac_low -b:a 96k -ar 48000 -movflags +faststart public/audio/jingfo-shengyuan-aac.m4a
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,profile,sample_rate,channels -of default=nw=1 public/audio/jingfo-shengyuan-aac.m4a
+      - name: Commit generated asset and remove one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "zhaowu-release-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/audio/jingfo-shengyuan-aac.m4a
+          git rm .github/workflows/transcode-background-music.yml
+          git commit -m "chore: add Safari-safe AAC background music"
+          git push origin HEAD:fix/ios-background-music-aac
