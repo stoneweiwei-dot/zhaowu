@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { OwnerBackgroundMusicManager } from "@/components/owner-background-music-manager";
+import { getActiveBackgroundMusic, musicPublicUrl, type BackgroundMusicAsset } from "@/lib/background-music-assets";
 
-const MUSIC_SRC = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-audio/background/jingfo-shengyuan-aac.m4a";
+const FALLBACK_PRIMARY = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-audio/background/jingfo-shengyuan-aac.m4a";
 const STORAGE_KEY = "zhaowu.backgroundMusic.v1";
 const DEFAULT_VOLUME = 0.24;
 
@@ -17,6 +19,34 @@ export function BackgroundMusic() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [enabled, setEnabled] = useState(readInitialPreference);
   const [playing, setPlaying] = useState(false);
+  const [asset, setAsset] = useState<BackgroundMusicAsset | null>(null);
+
+  async function refreshAsset() {
+    const next = await getActiveBackgroundMusic().catch(() => null);
+    setAsset(next);
+  }
+
+  useEffect(() => {
+    void refreshAsset();
+    const onChange = () => void refreshAsset();
+    window.addEventListener("zhaowu-music-change", onChange);
+    return () => window.removeEventListener("zhaowu-music-change", onChange);
+  }, []);
+
+  const primarySrc = musicPublicUrl(asset?.storage_path) || FALLBACK_PRIMARY;
+  const fallbackSrc = musicPublicUrl(asset?.fallback_storage_path);
+  const musicTitle = asset?.name || "淨佛聖願";
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.load();
+    setPlaying(false);
+    if (enabled) {
+      audio.volume = DEFAULT_VOLUME;
+      void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    }
+  }, [primarySrc, fallbackSrc]);
 
   useEffect(() => {
     try {
@@ -43,14 +73,11 @@ export function BackgroundMusic() {
       void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
     };
 
-    // Browsers that permit audible autoplay can start immediately. iPhone Safari
-    // normally needs a real user activation, so the first ordinary touch/pointer
-    // interaction retries play synchronously from that gesture.
     tryPlay();
 
     const unlockOnInteraction = (event: Event) => {
       const target = event.target;
-      if (target instanceof Element && target.closest("[data-background-music-control]")) return;
+      if (target instanceof Element && target.closest("[data-background-music-control],[data-owner-background-music-manager]")) return;
       tryPlay();
     };
 
@@ -65,7 +92,7 @@ export function BackgroundMusic() {
       window.removeEventListener("touchend", unlockOnInteraction);
       window.removeEventListener("keydown", unlockOnInteraction);
     };
-  }, [enabled]);
+  }, [enabled, primarySrc, fallbackSrc]);
 
   const toggle = () => {
     const audio = audioRef.current;
@@ -80,13 +107,12 @@ export function BackgroundMusic() {
     void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
   };
 
-  const label = playing ? "暫停背景音樂《淨佛聖願》" : "播放背景音樂《淨佛聖願》";
+  const label = playing ? `暫停背景音樂《${musicTitle}》` : `播放背景音樂《${musicTitle}》`;
 
   return (
     <>
       <audio
         ref={audioRef}
-        src={MUSIC_SRC}
         loop
         playsInline
         preload="metadata"
@@ -94,7 +120,10 @@ export function BackgroundMusic() {
         onPause={() => setPlaying(false)}
         onEnded={() => setPlaying(false)}
         onError={() => setPlaying(false)}
-      />
+      >
+        <source src={primarySrc} type="audio/mp4" />
+        {fallbackSrc ? <source src={fallbackSrc} type="audio/mpeg" /> : null}
+      </audio>
       <button
         type="button"
         data-background-music-control
@@ -111,6 +140,7 @@ export function BackgroundMusic() {
         <span aria-hidden="true" className="text-sm leading-none">{playing ? "♫" : "♪"}</span>
         <span className="inline whitespace-nowrap">{playing ? "音樂播放中" : "播放音樂"}</span>
       </button>
+      <OwnerBackgroundMusicManager />
     </>
   );
 }

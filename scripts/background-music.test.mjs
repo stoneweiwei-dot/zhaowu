@@ -3,12 +3,17 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const music = await readFile(new URL("../src/components/background-music.tsx", import.meta.url), "utf8");
+const manager = await readFile(new URL("../src/components/owner-background-music-manager.tsx", import.meta.url), "utf8");
+const assets = await readFile(new URL("../src/lib/background-music-assets.ts", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 
-test("background music uses the verified Safari-safe Zhaowu AAC asset", () => {
-  assert.match(music, /zhaowu-audio\/background\/jingfo-shengyuan-aac\.m4a/);
-  assert.doesNotMatch(music, /background\/jingfo-shengyuan\.m4a/);
+test("background music keeps the verified AAC as a safe fallback and reads the active Supabase asset", () => {
+  assert.match(music, /jingfo-shengyuan-aac\.m4a/);
+  assert.match(music, /getActiveBackgroundMusic/);
+  assert.match(music, /musicPublicUrl/);
   assert.match(music, /DEFAULT_VOLUME = 0\.24/);
+  assert.match(music, /audio\/mp4/);
+  assert.match(music, /audio\/mpeg/);
   assert.match(music, /loop/);
   assert.match(music, /playsInline/);
   assert.match(music, /preload="metadata"/);
@@ -23,6 +28,24 @@ test("background music is mounted globally and unlocks on an iPhone Safari user 
   assert.match(music, /touchend/);
   assert.match(music, /keydown/);
   assert.match(music, /data-background-music-control/);
+});
+
+test("owner console exposes upload, local normalization and no-deploy track switching", () => {
+  assert.match(music, /OwnerBackgroundMusicManager/);
+  assert.match(manager, /data-owner-background-music-manager/);
+  assert.match(manager, /\/account/);
+  assert.match(manager, /uploadBackgroundMusic/);
+  assert.match(manager, /activateBackgroundMusic/);
+  assert.match(manager, /AAC-LC/);
+  assert.match(manager, /MP3/);
+  assert.match(assets, /@ffmpeg\/ffmpeg@0\.12\.15/);
+  assert.match(assets, /@ffmpeg\/core@0\.12\.10/);
+  assert.match(assets, /aac_low/);
+  assert.match(assets, /128k/);
+  assert.match(assets, /48000/);
+  assert.match(assets, /libmp3lame/);
+  assert.match(assets, /activate_background_music/);
+  assert.match(assets, /zhaowu-music-change/);
 });
 
 test("mobile keeps an explicit music control visible when autoplay is blocked", () => {
