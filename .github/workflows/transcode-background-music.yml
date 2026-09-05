@@ -28,9 +28,11 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p public/audio
-          curl -fsSL "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-audio/background/jingfo-shengyuan.m4a" -o /tmp/jingfo-source.m4a
+          curl -fL --retry 3 --retry-delay 2 -H "Range: bytes=0-" "https://d2lwuy8qc234o3.cloudfront.net/1/clip/ea42299a-8e18-44e8-91da-bd521a3cef61.m4a" -o /tmp/jingfo-source.m4a
+          test "$(stat -c%s /tmp/jingfo-source.m4a)" -gt 8000000
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,profile,sample_rate,channels,duration -of default=nw=1 /tmp/jingfo-source.m4a
           ffmpeg -hide_banner -loglevel error -y -i /tmp/jingfo-source.m4a -vn -c:a aac -profile:a aac_low -b:a 96k -ar 48000 -movflags +faststart public/audio/jingfo-shengyuan-aac.m4a
-          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,profile,sample_rate,channels -of default=nw=1 public/audio/jingfo-shengyuan-aac.m4a
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,profile,sample_rate,channels,duration -of default=nw=1 public/audio/jingfo-shengyuan-aac.m4a
       - name: Commit generated asset and remove one-shot workflow
         shell: bash
         run: |
