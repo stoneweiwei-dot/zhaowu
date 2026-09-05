@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最后核对：2026-09-04 12:20 AEST
+最后核对：2026-09-05 20:30 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -90,7 +90,7 @@
 - iPhone 关键流程最终实机验收。
 - 八字 chart：完整刑冲合害库、正式病药通关、完整岁运作用链仍未实现。
 - 正式「制作我的命请图」按钮已改为请求 `force=true` 的供应商个性化图；真实 provider 成功仍依赖图片 API credits，失败时必须回退 Gallery-direct，且不得阻塞文字报告。
-- Loading 目标已接线但**尚未上线完成**：站主原片 FCA79DBB 5.04s 720×1280 已编码为 786587B CRF26 mp4（sha256 e07dd134…）。`IntroGate` 指向 `/intro/loading-owner-r40.mp4`，`LOTUS_BLOOM_MS=5000`，`HARD_EXIT_MS=5300`。解码器等 80 个 `loading-owner-r40.part.NN`。**main 上还没有这 80 个分片**，因此 production `/intro/loading-owner-r40.mp4` 仍是 SPA HTML 404。影片 onError 会放行站点，首页可用，但播的不是这支双生莲。
+- Loading 已上線站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 與同名 JPEG 海報，`LOTUS_BLOOM_MS=5000`，`HARD_EXIT_MS=5300`。主畫面圖標為站主宋畫金蓮 `/apple-touch-icon-r53.png`。舊 r40 分片與 r26 路徑不再作為現行 Loading。
 
 ## 8. 生产优先级
 

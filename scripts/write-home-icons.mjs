@@ -24,6 +24,8 @@ export function writeHomeIcons() {
     ["public/apple-touch-icon-precomposed.png", 180],
     ["public/apple-touch-icon-r20.png", 180],
     ["public/apple-touch-icon-r20-precomposed.png", 180],
+    ["public/apple-touch-icon-r53.png", 180],
+    ["public/apple-touch-icon-r53-precomposed.png", 180],
     ["public/icons/apple-touch-icon.png", 180],
     ["public/icons/icon-192.png", 192],
     ["public/icons/icon-512.png", 512],

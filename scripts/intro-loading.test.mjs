@@ -61,19 +61,19 @@ test('loading gate hard-exits after the owner five-second bloom', () => {
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro plays the committed twin-lotus video without status text', () => {
+test('intro plays the committed owner lotus bloom without status text', () => {
   assert.match(gate, /OWNER_LOADING_VIDEO/);
   assert.match(gate, /LOTUS_BLOOM_MS = 5000/);
   assert.match(gate, /data-intro-motion="owner-video"/);
-  assert.match(gate, /twin-lotus-restored-r26\.mp4/);
-  assert.match(gate, /twin-lotus-restored-r26\.jpg/);
+  assert.match(gate, /owner-lotus-bloom-r53\.mp4/);
+  assert.match(gate, /owner-lotus-bloom-r53\.jpg/);
   assert.match(css, /zhaowu-lotus-intro__video/);
   assert.match(css, /object-fit: cover/);
   assert.match(css, /prefers-reduced-motion/);
-  assert.match(css, /twin-lotus-restored-r26\.jpg/);
+  assert.match(css, /owner-lotus-bloom-r53\.jpg/);
   assert.match(gate, /playsInline/);
-  assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp|loading-owner-r40/);
-  assert.doesNotMatch(css, /loading-owner-r40/);
+  assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp|loading-owner-r40|twin-lotus-restored-r26/);
+  assert.doesNotMatch(css, /loading-owner-r40|twin-lotus-restored-r26/);
   assert.doesNotMatch(gate, /STONE 原創/);
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__copy|zhaowu-lotus-intro__status|zhaowu-lotus-intro__bar/);
   assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
@@ -94,7 +94,7 @@ test('iPhone Safari routes stay mounted and Loading remains perceptible when boo
 
 test('home-screen icons are valid PNGs at iOS root and manifest sizes', async () => {
   const written = writeHomeIcons();
-  assert.equal(written.length, 9);
+  assert.equal(written.length, 11);
   const rootIcon = await readFile(new URL('../public/apple-touch-icon.png', import.meta.url));
   const precomposed = await readFile(new URL('../public/apple-touch-icon-precomposed.png', import.meta.url));
   const icon192 = await readFile(new URL('../public/icons/icon-192.png', import.meta.url));
@@ -120,10 +120,20 @@ test('home-screen icons are valid PNGs at iOS root and manifest sizes', async ()
   assert.equal(icon512.readUInt32BE(16), 512);
   assert.equal(icon512.readUInt32BE(20), 512);
   assert.doesNotMatch(iconWriter, /paintSeal|barW|barH/);
-  assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon-r20\.png"/);
-  assert.match(html, /apple-touch-icon-r20-precomposed\.png/);
-  assert.doesNotMatch(html, /apple-touch-icon-r20\.png\?v=/);
-  assert.match(manifest, /"src": "\/apple-touch-icon-r20\.png"/);
+  assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon-r53\.png"/);
+  assert.match(html, /apple-touch-icon-r53-precomposed\.png/);
+  assert.doesNotMatch(html, /apple-touch-icon-r53\.png\?v=/);
+  assert.match(manifest, /"src": "\/apple-touch-icon-r53\.png"/);
   assert.match(manifest, /"src": "\/icons\/zhaowu-lotus-192\.png/);
   assert.match(manifest, /"src": "\/icons\/zhaowu-lotus-512\.png/);
+});
+
+test('owner loading video is a committed H.264 file, not a rewrite 404', async () => {
+  const video = await readFile(new URL('../public/intro/owner-lotus-bloom-r53.mp4', import.meta.url));
+  const poster = await readFile(new URL('../public/intro/owner-lotus-bloom-r53.jpg', import.meta.url));
+  assert.equal(video.subarray(4, 8).toString('ascii'), 'ftyp');
+  assert.ok(video.length > 400_000, 'owner bloom must be a real encoded clip');
+  assert.ok(video.length < 1_500_000, 'owner bloom must stay small enough for iPhone first paint');
+  assert.equal(poster[0], 0xff);
+  assert.equal(poster[1], 0xd8);
 });
