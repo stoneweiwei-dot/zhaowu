@@ -35,11 +35,7 @@ jobs:
             -o /tmp/jingfo-source.mp3
           test "$(stat -c%s /tmp/jingfo-source.mp3)" -gt 2000000
           SOURCE_DURATION="$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 /tmp/jingfo-source.mp3)"
-          python3 - "$SOURCE_DURATION" <<'PY'
-import sys
-d=float(sys.argv[1])
-assert 460 < d < 470, f"unexpected source duration: {d}"
-PY
+          python3 -c 'import sys; d=float(sys.argv[1]); assert 460 < d < 470, f"unexpected source duration: {d}"' "$SOURCE_DURATION"
           ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,profile,sample_rate,channels,duration -of default=nw=1 /tmp/jingfo-source.mp3
           ffmpeg -hide_banner -loglevel error -y -i /tmp/jingfo-source.mp3 -vn -c:a aac -profile:a aac_low -b:a 96k -ar 48000 -movflags +faststart public/audio/jingfo-shengyuan-aac.m4a
           ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,profile,sample_rate,channels,duration -of default=nw=1 public/audio/jingfo-shengyuan-aac.m4a
