@@ -26,7 +26,7 @@ function Home() {
         items: [
           { to: "/qizheng" as const, title: "Seven Luminaries", hint: "temperament · rhythm · pressure response · timing" },
           { to: "/astrology" as const, title: "Western Astrology", hint: "Sun · Moon · Rising · aspects · life areas" },
-          { to: "/yizhangjing" as const, title: "Past & Present", hint: "carried patterns · prior-life symbolism · D60 cross-check" },
+          { to: "/yizhangjing" as const, title: "Past & Present", hint: "carried patterns · prior-life symbolism · Indian classical astrology cross-check" },
           { to: "/ziwei" as const, title: "Zi Wei Dou Shu", hint: "character · relationships · work · money · decade focus" },
         ],
       }
@@ -37,7 +37,7 @@ function Home() {
           items: [
             { to: "/qizheng" as const, title: "七政四余", hint: "看性情、节奏、压力反应与天时变化" },
             { to: "/astrology" as const, title: "西洋星盘", hint: "看太阳、月亮、上升、相位与人生领域" },
-            { to: "/yizhangjing" as const, title: "前世今生", hint: "看前四世象意、反复习性与 D60 旁证" },
+            { to: "/yizhangjing" as const, title: "前世今生", hint: "看前四世象意、反复习性与印度古法占星旁证" },
             { to: "/ziwei" as const, title: "紫微斗数", hint: "看性格、关系、事业、财务与十年主轴" },
           ],
         }
@@ -47,7 +47,7 @@ function Home() {
           items: [
             { to: "/qizheng" as const, title: "七政四餘", hint: "看性情、節奏、壓力反應與天時變化" },
             { to: "/astrology" as const, title: "西洋星盤", hint: "看太陽、月亮、上升、相位與人生領域" },
-            { to: "/yizhangjing" as const, title: "前世今生", hint: "看前四世象意、反覆習性與 D60 旁證" },
+            { to: "/yizhangjing" as const, title: "前世今生", hint: "看前四世象意、反覆習性與印度古法占星旁證" },
             { to: "/ziwei" as const, title: "紫微斗數", hint: "看性格、關係、事業、財務與十年主軸" },
           ],
         };
