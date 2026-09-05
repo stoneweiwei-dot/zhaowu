@@ -13,10 +13,11 @@ test("homepage exposes the daily almanac before the BaZi question flow", () => {
   assert.match(route, /home-layout-r46\.css/);
 });
 
-test("daily almanac is a lightweight local-day cue with a real path into the question flow", () => {
+test("daily almanac is a lightweight local-day cue with gated personalised spirit-slip paths", () => {
   assert.match(widget, /REFERENCE_UTC/);
-  assert.match(widget, /href="#bazi"/);
-  assert.match(widget, /不替代完整八字、流日或傳統擇日/);
+  assert.match(widget, /drawSlip/);
+  assert.match(widget, /href=\{!user \? "\/login" : "#analysisForm"\}/);
+  assert.match(widget, /按你當地日期給輕量日節奏提示/);
   assert.match(widget, /setHours\(24, 0, 0, 80\)/);
 });
 
