@@ -1,151 +1,37 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { buildChart } from "@/lib/bazi/chart";
+import type { AnalyzeInput, CityHit, Element } from "@/lib/bazi/types";
 
 const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"] as const;
 const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"] as const;
 const DAY_MS = 86_400_000;
-const REFERENCE_UTC = Date.UTC(2024, 1, 10); // Verified 2024-02-10 甲辰 anchor; lightweight local-day cue only.
+const REFERENCE_UTC = Date.UTC(2024, 1, 10);
+const STEM_ELEMENT: Record<string, Element> = { 甲:"木",乙:"木",丙:"火",丁:"火",戊:"土",己:"土",庚:"金",辛:"金",壬:"水",癸:"水" };
 
-function ganzhiForDay(date: Date) {
-  const utc = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
-  const offset = Math.round((utc - REFERENCE_UTC) / DAY_MS);
-  const index = ((40 + offset) % 60 + 60) % 60;
-  return `${STEMS[index % 10]}${BRANCHES[index % 12]}`;
-}
+function ganzhiForDay(date: Date) { const utc=Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()); const offset=Math.round((utc-REFERENCE_UTC)/DAY_MS); const index=((40+offset)%60+60)%60; return `${STEMS[index%10]}${BRANCHES[index%12]}`; }
+function weekdayLabel(date: Date, locale: "zh-Hant"|"zh-Hans"|"en") { return locale==="en"?new Intl.DateTimeFormat("en-AU",{weekday:"long"}).format(date):["星期日","星期一","星期二","星期三","星期四","星期五","星期六"][date.getDay()]; }
+function monthDayLabel(date: Date, locale: "zh-Hant"|"zh-Hans"|"en") { return locale==="en"?new Intl.DateTimeFormat("en-AU",{day:"numeric",month:"long"}).format(date):`${date.getMonth()+1}月${date.getDate()}日`; }
+function asCity(value: unknown): CityHit|null { if(!value||typeof value!=="object")return null; const c=value as Partial<CityHit>; return typeof c.display==="string"&&typeof c.name==="string"&&typeof c.timezone==="string"&&Number.isFinite(c.latitude)&&Number.isFinite(c.longitude)?c as CityHit:null; }
+function useLocalDay(){const[now,setNow]=useState(()=>new Date());const key=`${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;useEffect(()=>{const current=new Date();const next=new Date(current);next.setHours(24,0,0,80);const timer=window.setTimeout(()=>setNow(new Date()),Math.max(1000,next.getTime()-current.getTime()));return()=>window.clearTimeout(timer)},[key]);return now;}
 
-function weekdayLabel(date: Date, locale: "zh-Hant" | "zh-Hans" | "en") {
-  if (locale === "en") return new Intl.DateTimeFormat("en-AU", { weekday: "long" }).format(date);
-  return ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"][date.getDay()];
-}
-
-function monthDayLabel(date: Date, locale: "zh-Hant" | "zh-Hans" | "en") {
-  if (locale === "en") return new Intl.DateTimeFormat("en-AU", { day: "numeric", month: "long" }).format(date);
-  return `${date.getMonth() + 1}月${date.getDate()}日`;
-}
-
-function useLocalDay() {
-  const [now, setNow] = useState(() => new Date());
-  const dayKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
-
-  useEffect(() => {
-    const current = new Date();
-    const next = new Date(current);
-    next.setHours(24, 0, 0, 80);
-    const timer = window.setTimeout(
-      () => setNow(new Date()),
-      Math.max(1_000, next.getTime() - current.getTime()),
-    );
-    return () => window.clearTimeout(timer);
-  }, [dayKey]);
-
-  return now;
-}
-
-export function DailyAlmanacWidget() {
-  const { locale } = useI18n();
-  const now = useLocalDay();
-  const data = useMemo(() => {
-    const day = ganzhiForDay(now);
-    const branch = day[1];
-    const lowEnergy = ["子", "丑", "亥", "未"].includes(branch);
-    const highMotion = ["寅", "巳", "申", "午"].includes(branch);
-    const tone = lowEnergy ? "low" : highMotion ? "motion" : "steady";
-
-    const copy = locale === "en"
-      ? {
-          eyebrow: "TODAY · ALMANAC",
-          title: `${weekdayLabel(now, locale)} · ${monthDayLabel(now, locale)}`,
-          energy: lowEnergy ? "Lower" : highMotion ? "Active" : "Steady",
-          energyLabel: "Today’s rhythm",
-          headline: lowEnergy ? "Keep the day light and deliberate" : highMotion ? "Move, but do not scatter" : "Keep one clear centre",
-          lead: lowEnergy ? "Protect your capacity first; fewer well-finished things are enough today." : highMotion ? "Momentum helps when it has a target. Finish before opening another front." : "A steady day works best when you keep priorities simple and leave some margin.",
-          good: lowEnergy ? ["finish one important task", "eat on time", "tidy one small area"] : highMotion ? ["move one key task forward", "speak clearly", "finish before adding more"] : ["focus on the core task", "keep plans simple", "leave buffer time"],
-          avoid: lowEnergy ? ["overcommitting", "late-night decisions", "absorbing other people’s urgency"] : highMotion ? ["starting too many things", "arguing from impulse", "rushing commitments"] : ["constant switching", "needless comparison", "overexplaining"],
-          goodLabel: "Good for",
-          avoidLabel: "Avoid",
-          goodRoman: "YI",
-          avoidRoman: "JI",
-          foot: "Ask Zhaowu",
-          note: `Day marker ${day} · a light daily rhythm cue based on your local date, not a substitute for a full BaZi reading or traditional date selection.`,
-          dayMark: `${day} day · daily reference`,
-        }
-      : locale === "zh-Hans"
-        ? {
-            eyebrow: "今日黄历",
-            title: `${weekdayLabel(now, locale)} · ${monthDayLabel(now, locale)}`,
-            energy: lowEnergy ? "偏低" : highMotion ? "偏动" : "平稳",
-            energyLabel: "今日能量",
-            headline: lowEnergy ? "把今天过得轻一点、稳一点" : highMotion ? "可以推进，但不要把自己打散" : "守住一个中心就够了",
-            lead: lowEnergy ? "先保护自己的容量，今天少做一点、做完整一点就够。" : highMotion ? "今天有推进力，但要给它一个明确方向；做完一件，再开下一件。" : "平稳的日子最适合把优先级收窄，也给自己留一点余量。",
-            good: lowEnergy ? ["完成一件重要的事", "按时吃饭", "整理一个小区域"] : highMotion ? ["推进一个关键任务", "把话说清楚", "做完再加下一件"] : ["专注核心任务", "计划简单一点", "给自己留余量"],
-            avoid: lowEnergy ? ["过度答应别人", "深夜做重大决定", "替别人承接焦虑"] : highMotion ? ["同时开太多任务", "冲动争辩", "匆忙承诺"] : ["反复切换任务", "无谓比较", "过度解释"],
-            goodLabel: "宜",
-            avoidLabel: "忌",
-            goodRoman: "yí",
-            avoidRoman: "jì",
-            foot: "去问昭梧",
-            note: `今日日柱提示 ${day} · 按你当地日期给轻量日节奏提示，不替代完整八字、流日或传统择日。`,
-            dayMark: `${day}日 · 日常参考`,
-          }
-        : {
-            eyebrow: "今日黃曆",
-            title: `${weekdayLabel(now, locale)} · ${monthDayLabel(now, locale)}`,
-            energy: lowEnergy ? "偏低" : highMotion ? "偏動" : "平穩",
-            energyLabel: "今日能量",
-            headline: lowEnergy ? "把今天過得輕一點、穩一點" : highMotion ? "可以推進，但不要把自己打散" : "守住一個中心就夠了",
-            lead: lowEnergy ? "先保護自己的容量，今天少做一點、做完整一點就夠。" : highMotion ? "今天有推進力，但要給它一個明確方向；做完一件，再開下一件。" : "平穩的日子最適合把優先級收窄，也給自己留一點餘量。",
-            good: lowEnergy ? ["完成一件重要的事", "按時吃飯", "整理一個小區域"] : highMotion ? ["推進一個關鍵任務", "把話說清楚", "做完再加下一件"] : ["專注核心任務", "計畫簡單一點", "給自己留餘量"],
-            avoid: lowEnergy ? ["過度答應別人", "深夜做重大決定", "替別人承接焦慮"] : highMotion ? ["同時開太多任務", "衝動爭辯", "匆忙承諾"] : ["反覆切換任務", "無謂比較", "過度解釋"],
-            goodLabel: "宜",
-            avoidLabel: "忌",
-            goodRoman: "yí",
-            avoidRoman: "jì",
-            foot: "去問昭梧",
-            note: `今日日柱提示 ${day} · 按你當地日期給輕量日節奏提示，不替代完整八字、流日或傳統擇日。`,
-            dayMark: `${day}日 · 日常參考`,
-          };
-
-    return { ...copy, tone };
-  }, [locale, now]);
-
-  return (
-    <section id="daily-almanac" className="zhaowu-daily-almanac" data-tone={data.tone} aria-label={data.eyebrow}>
+export function DailyAlmanacWidget(){
+  const { locale }=useI18n(); const { user }=useCurrentUserState(); const navigate=useNavigate(); const now=useLocalDay(); const[slipOpen,setSlipOpen]=useState(false);
+  const data=useMemo(()=>{const day=ganzhiForDay(now);const element=STEM_ELEMENT[day[0]]??"土";const branch=day[1];const low=["子","丑","亥","未"].includes(branch);const motion=["寅","巳","申","午"].includes(branch);
+    const copy=locale==="en"?{eyebrow:"TODAY · ALMANAC",title:`${weekdayLabel(now,locale)} · ${monthDayLabel(now,locale)}`,energy:low?"Lower":motion?"Active":"Steady",energyLabel:"Today’s rhythm",headline:low?"Keep the day light and deliberate":motion?"Move, but do not scatter":"Keep one clear centre",lead:low?"Protect your capacity first; fewer well-finished things are enough today.":motion?"Momentum helps when it has a target. Finish before opening another front.":"A steady day works best when priorities stay simple.",good:low?["finish one important task","eat on time","tidy one small area"]:motion?["move one key task forward","speak clearly","finish before adding more"]:["focus on the core task","keep plans simple","leave buffer time"],avoid:low?["overcommitting","late-night decisions","absorbing other people’s urgency"]:motion?["starting too many things","arguing from impulse","rushing commitments"]:["constant switching","needless comparison","overexplaining"],goodLabel:"Good for",avoidLabel:"Avoid",foot:"Your daily slip",note:`${day} day · ${element} element. Daily colour follows the day stem; this is a light rhythm cue, not a substitute for a full reading.`}:locale==="zh-Hans"?{eyebrow:"今日黄历",title:`${weekdayLabel(now,locale)} · ${monthDayLabel(now,locale)}`,energy:low?"偏低":motion?"偏动":"平稳",energyLabel:"今日能量",headline:low?"把今天过得轻一点、稳一点":motion?"可以推进，但不要把自己打散":"守住一个中心就够了",lead:low?"先保护自己的容量，今天少做一点、做完整一点就够。":motion?"今天有推进力，但要给它一个明确方向；做完一件，再开下一件。":"平稳的日子最适合把优先级收窄，也给自己留一点余量。",good:low?["完成一件重要的事","按时吃饭","整理一个小区域"]:motion?["推进一个关键任务","把话说清楚","做完再加下一件"]:["专注核心任务","计划简单一点","给自己留余量"],avoid:low?["过度答应别人","深夜做重大决定","替别人承接焦虑"]:motion?["同时开太多任务","冲动争辩","匆忙承诺"]:["反复切换任务","无谓比较","过度解释"],goodLabel:"宜",avoidLabel:"忌",foot:"今日灵签",note:`${day}日 · ${element}行当值。小程序色调随当日日干五行变化；这里只给轻量日节奏提示。`}:{eyebrow:"今日黃曆",title:`${weekdayLabel(now,locale)} · ${monthDayLabel(now,locale)}`,energy:low?"偏低":motion?"偏動":"平穩",energyLabel:"今日能量",headline:low?"把今天過得輕一點、穩一點":motion?"可以推進，但不要把自己打散":"守住一個中心就夠了",lead:low?"先保護自己的容量，今天少做一點、做完整一點就夠。":motion?"今天有推進力，但要給它一個明確方向；做完一件，再開下一件。":"平穩的日子最適合把優先級收窄，也給自己留一點餘量。",good:low?["完成一件重要的事","按時吃飯","整理一個小區域"]:motion?["推進一個關鍵任務","把話說清楚","做完再加下一件"]:["專注核心任務","計畫簡單一點","給自己留餘量"],avoid:low?["過度答應別人","深夜做重大決定","替別人承接焦慮"]:motion?["同時開太多任務","衝動爭辯","匆忙承諾"]:["反覆切換任務","無謂比較","過度解釋"],goodLabel:"宜",avoidLabel:"忌",foot:"今日靈籤",note:`${day}日 · ${element}行當值。小程式色調隨當日日干五行變化；這裡只給輕量日節奏提示。`};return{...copy,day,element};},[locale,now]);
+  const personal=useMemo(()=>{const raw=user?.birthData as Record<string,unknown>|undefined;if(!raw)return null;const city=asCity(raw.city);if(!city)return null;const year=Number(raw.year),month=Number(raw.month),day=Number(raw.day),hour=Number(raw.hour),minute=Number(raw.minute??0);if(!year||!month||!day||!Number.isFinite(hour))return null;try{return buildChart({question:"daily",locale,year,month,day,hour,minute,timeUnknown:Boolean(raw.timeUnknown),gender:(raw.gender as AnalyzeInput["gender"])??"unspecified",relation:(raw.relation as AnalyzeInput["relation"])??"unset",city,liveCity:asCity(raw.liveCity),ziPolicy:"midnight",useTrueSolar:true});}catch{return null}},[user?.birthData,locale]);
+  const slip=useMemo(()=>{if(!personal)return null;const supportive=personal.useful.includes(data.element);const same=personal.dayMasterElement===data.element; if(locale==="en")return{title:supportive?"Use today’s current; do not force it":"Keep your centre before you push",body:supportive?`Today carries ${data.element}. Against your chart, that current is relatively supportive. Put it into one concrete task rather than spreading it across many starts.`:same?`Today repeats your own ${data.element} quality. That can make your usual style louder, so use it deliberately and leave room before reacting.`:`Today’s ${data.element} current is not one of your chart’s first supportive cues. Keep commitments clean and do not borrow urgency from other people.`,action:supportive?"Best use: finish one important thing and make one clear decision.":"Best use: simplify, protect recovery time, and delay unnecessary escalation."}; if(locale==="zh-Hans")return{title:supportive?"借今日之势，不必硬冲":"先守住自己，再往前走",body:supportive?`今日${data.element}气与你命局当前较需要的方向有呼应。把这股力用在一件具体的事上，比同时开很多头更有效。`:same?`今日${data.element}气与你本身的${data.element}性重复，你惯常的做事方式会更明显。越熟悉的反应，今天越要有意识地使用。`:`今日${data.element}气不是你命局当前最优先需要的方向。今天更适合守边界、减干扰，不要替别人承接过多急迫感。`,action:supportive?"今日宜：完成一件重要的事，做一个清楚的决定。":"今日宜：收窄任务、保留体力，不把小事升级。"};return{title:supportive?"借今日之勢，不必硬衝":"先守住自己，再往前走",body:supportive?`今日${data.element}氣與你命局當前較需要的方向有呼應。把這股力用在一件具體的事上，比同時開很多頭更有效。`:same?`今日${data.element}氣與你本身的${data.element}性重複，你慣常的做事方式會更明顯。越熟悉的反應，今天越要有意識地使用。`:`今日${data.element}氣不是你命局當前最優先需要的方向。今天更適合守邊界、減干擾，不要替別人承接過多急迫感。`,action:supportive?"今日宜：完成一件重要的事，做一個清楚的決定。":"今日宜：收窄任務、保留體力，不把小事升級。"}},[personal,data.element,locale]);
+  function openSlip(){if(!user){void navigate({to:"/login"});return;}setSlipOpen(true)}
+  return <>
+    <section id="daily-almanac" className="zhaowu-daily-almanac" data-element={data.element} aria-label={data.eyebrow}>
       <span className="zhaowu-daily-watermark" aria-hidden>{now.getDate()}</span>
-
-      <div className="zhaowu-daily-top">
-        <div>
-          <p className="zhaowu-daily-eyebrow">{data.eyebrow}</p>
-          <p className="zhaowu-daily-date">{data.title}</p>
-        </div>
-        <div className="zhaowu-daily-energy">
-          <span>{data.energyLabel}</span>
-          <strong>{data.energy}</strong>
-        </div>
-      </div>
-
-      <div className="zhaowu-daily-main">
-        <p className="zhaowu-daily-daymark">{data.dayMark}</p>
-        <h2 className="zhaowu-daily-headline">{data.headline}</h2>
-        <p className="zhaowu-daily-lead">{data.lead}</p>
-      </div>
-
-      <div className="zhaowu-daily-pairs">
-        <section aria-label={data.goodLabel}>
-          <p className="zhaowu-daily-pair-title"><small>{data.goodRoman}</small><b>{data.goodLabel}</b></p>
-          <ul className="zhaowu-daily-list">{data.good.map((item) => <li key={item}>{item}</li>)}</ul>
-        </section>
-        <section aria-label={data.avoidLabel}>
-          <p className="zhaowu-daily-pair-title"><small>{data.avoidRoman}</small><b>{data.avoidLabel}</b></p>
-          <ul className="zhaowu-daily-list">{data.avoid.map((item) => <li key={item}>{item}</li>)}</ul>
-        </section>
-      </div>
-
-      <footer className="zhaowu-daily-footer">
-        <p className="zhaowu-daily-note">{data.note}</p>
-        <a className="zhaowu-daily-cta" href="#bazi" aria-label={data.foot}>
-          <span>{data.foot}</span><b aria-hidden>→</b>
-        </a>
-      </footer>
+      <div className="zhaowu-daily-top"><div><p className="zhaowu-daily-eyebrow">{data.eyebrow}</p><p className="zhaowu-daily-date">{data.title}</p></div><div className="zhaowu-daily-energy"><span>{data.energyLabel}</span><strong>{data.energy}</strong></div></div>
+      <div className="zhaowu-daily-main"><p className="zhaowu-daily-daymark">{data.day} · {data.element}</p><h2 className="zhaowu-daily-headline">{data.headline}</h2><p className="zhaowu-daily-lead">{data.lead}</p></div>
+      <div className="zhaowu-daily-pairs"><section><p className="zhaowu-daily-pair-title"><b>{data.goodLabel}</b></p><ul className="zhaowu-daily-list">{data.good.map(x=><li key={x}>{x}</li>)}</ul></section><section><p className="zhaowu-daily-pair-title"><b>{data.avoidLabel}</b></p><ul className="zhaowu-daily-list">{data.avoid.map(x=><li key={x}>{x}</li>)}</ul></section></div>
+      <footer className="zhaowu-daily-footer"><p className="zhaowu-daily-note">{data.note}</p><button type="button" className="zhaowu-daily-cta" onClick={openSlip}><span>{data.foot}</span><b aria-hidden>→</b></button></footer>
     </section>
-  );
+    {slipOpen?<div className="zhaowu-daily-slip-backdrop" role="dialog" aria-modal="true" onClick={()=>setSlipOpen(false)}><article className="zhaowu-daily-slip" data-element={data.element} onClick={e=>e.stopPropagation()}><button className="zhaowu-daily-slip-close" onClick={()=>setSlipOpen(false)} aria-label="Close">×</button><p className="zhaowu-daily-slip-kicker">{locale==="en"?"TODAY · PERSONAL SLIP":"今日靈籤"}</p><h3>{slip?.title??(locale==="en"?"Add your birth details first":"先補全出生資料")}</h3><p>{slip?.body??(locale==="en"?"Your account is signed in, but there is not enough birth data to personalise today’s slip yet.":locale==="zh-Hans"?"你已经登录，但出生资料还不完整。请先在主页最上方补全出生时间与地点。":"你已經登入，但出生資料還不完整。請先在主頁最上方補全出生時間與地點。")}</p>{slip?<p><strong>{slip.action}</strong></p>:null}<p className="zhaowu-daily-slip-foot">{locale==="en"?"Generated from today’s day element and your saved BaZi profile. Traditional symbolic guidance only.":locale==="zh-Hans"?"依据今日五行与已保存的个人八字属性生成；属于传统象意提示，不是确定事实。":"依據今日五行與已保存的個人八字屬性生成；屬於傳統象意提示，不是確定事實。"}</p></article></div>:null}
+  </>;
 }
