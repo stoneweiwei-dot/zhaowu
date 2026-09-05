@@ -36,9 +36,20 @@ test("owner music manager is mounted inside AuthProvider so owner session is vis
   assert.match(root, /import \{ OwnerBackgroundMusicManager \}/);
   assert.match(root, /<AuthProvider>[\s\S]*<OwnerBackgroundMusicManager \/>[\s\S]*<\/AuthProvider>/);
   assert.match(manager, /data-owner-background-music-manager/);
-  assert.match(manager, /\/account/);
   assert.match(manager, /user\?\.isOwner/);
   assert.match(manager, /session/);
+});
+
+test("owner music manager is visibly embedded in the account console with a high-z fallback", () => {
+  assert.match(manager, /createPortal/);
+  assert.match(manager, /main > section:first-child/);
+  assert.match(manager, /data-owner-background-music-inline/);
+  assert.match(manager, /startsWith\("\/account\/"\)/);
+  assert.match(manager, /w-full/);
+  assert.match(manager, /z-\[88\]/);
+  assert.match(manager, /z-\[100\]/);
+  assert.match(manager, /背景音樂管理/);
+  assert.match(manager, /站主專用/);
 });
 
 test("owner console exposes upload, local normalization and no-deploy track switching", () => {
