@@ -76,12 +76,22 @@ test.describe("iPhone Safari startup fallback", () => {
     });
   }
 
-  test("a failed readiness response reveals Home immediately", async ({ page }) => {
+  test("a failed readiness response keeps Loading visible before failing open", async ({ page }) => {
     await traceGateLifecycle(page);
     await page.route("**/rest/v1/site_settings?**", (route) => route.fulfill({ status: 503, body: "unavailable" }));
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator(GATE)).toHaveCount(0, { timeout: 1_500 });
+    const gate = page.locator(GATE);
+    await expect(gate).toBeVisible();
+    await expect(gate.locator("video")).toHaveAttribute("src", "/intro/twin-lotus-restored-r26.mp4");
+    await page.waitForTimeout(900);
+    await expect(gate).toBeVisible();
+    await expect(gate).toHaveCount(0, { timeout: 5_500 });
     await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
+
+    const duration = await gateDuration(page);
+    expect(duration).not.toBeNull();
+    expect(duration!).toBeGreaterThanOrEqual(1_100);
+    expect(duration!).toBeLessThanOrEqual(5_300);
   });
 });
