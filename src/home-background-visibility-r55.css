@@ -1,0 +1,138 @@
+/* ZHAOWU r55 home background visibility lock.
+ * Home-only: keep the current information architecture and functionality, but let the
+ * selected daily artwork read as the page's main visual through thin xuan-paper layers.
+ * No calculation, auth, payment, report-data, routing or background-selection logic lives here.
+ */
+
+body:has(.zhaowu-home-layout).zhaowu-has-wallpaper .zhaowu-site-wallpaper::after,
+body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper .zhaowu-site-wallpaper::after {
+  background: linear-gradient(180deg, rgba(247, 241, 228, .025), rgba(244, 236, 218, .055)) !important;
+}
+
+body:has(.zhaowu-home-layout).zhaowu-has-wallpaper .zhaowu-home-app-frame,
+body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper .zhaowu-home-app-frame {
+  background: rgba(250, 244, 232, .09) !important;
+  background-image: none !important;
+  backdrop-filter: saturate(102%) blur(.45px) !important;
+  -webkit-backdrop-filter: saturate(102%) blur(.45px) !important;
+}
+
+body:has(.zhaowu-home-layout) .zhaowu-site-header {
+  background: rgba(242, 232, 212, .68) !important;
+  backdrop-filter: blur(7px) saturate(106%) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(106%) !important;
+}
+
+/* Daily slip: still a defined paper object, but no longer an opaque wall over the artwork. */
+.zhaowu-home-layout .zhaowu-daily-almanac {
+  background:
+    radial-gradient(circle at 89% 12%, rgba(91, 126, 105, .12), transparent 30%),
+    radial-gradient(circle at 8% 86%, rgba(171, 111, 70, .055), transparent 36%),
+    linear-gradient(145deg, rgba(250, 244, 232, .57), rgba(232, 217, 190, .48)) !important;
+  box-shadow: 0 16px 38px rgba(66, 48, 29, .065), inset 0 0 0 1px rgba(255,255,255,.22) !important;
+  backdrop-filter: blur(.75px) saturate(102%) !important;
+  -webkit-backdrop-filter: blur(.75px) saturate(102%) !important;
+}
+
+/* Main BaZi paper: thin xuan-paper instead of the former 0.78 opacity surface. */
+.zhaowu-home-layout #analysisForm {
+  background:
+    linear-gradient(180deg, rgba(255, 249, 238, .13), rgba(232, 216, 188, .055)),
+    rgba(246, 236, 216, .54) !important;
+  box-shadow: 0 14px 34px rgba(74, 53, 30, .05), inset 0 0 0 1px rgba(255,255,255,.15) !important;
+  backdrop-filter: blur(.65px) saturate(101%) !important;
+  -webkit-backdrop-filter: blur(.65px) saturate(101%) !important;
+}
+
+/* Typing controls keep enough paper body for iPhone legibility. */
+.zhaowu-home-layout #analysisForm textarea,
+.zhaowu-home-layout #analysisForm input,
+.zhaowu-home-layout #analysisForm select,
+body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm textarea,
+body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm input,
+body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm select {
+  background: rgba(255, 251, 242, .80) !important;
+}
+
+/* Directory blocks and their cards sit on the same artwork rather than becoming new white panels. */
+.zhaowu-home-layout .zhaowu-home-portals-block,
+.zhaowu-home-layout .zhaowu-home-fun-section {
+  background: rgba(246, 235, 214, .40) !important;
+  box-shadow: 0 9px 24px rgba(74, 53, 30, .035) !important;
+  backdrop-filter: blur(.55px) saturate(101%) !important;
+  -webkit-backdrop-filter: blur(.55px) saturate(101%) !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-portal,
+.zhaowu-home-layout .zhaowu-home-fun-card {
+  background: rgba(255, 249, 238, .27) !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-portal:hover,
+.zhaowu-home-layout .zhaowu-home-fun-card:hover {
+  background: rgba(252, 244, 228, .50) !important;
+}
+
+/* Homepage atlas / notes: readable paper framing without erasing the selected artwork. */
+.zhaowu-home-layout #auspicious-atlas,
+.zhaowu-home-layout .zhaowu-home-stage--notes > section,
+.zhaowu-home-layout .zhaowu-home-stage--notes > div {
+  background: rgba(249, 241, 225, .47) !important;
+  background-image: none !important;
+  backdrop-filter: blur(.65px) saturate(101%) !important;
+  -webkit-backdrop-filter: blur(.65px) saturate(101%) !important;
+}
+
+.zhaowu-home-layout #auspicious-atlas article,
+.zhaowu-home-layout #auspicious-atlas .bg-paper\/55,
+.zhaowu-home-layout #auspicious-atlas .bg-cream\/60 {
+  background: rgba(252, 246, 234, .48) !important;
+}
+
+/* Preserve answer/report readability. Results are not made transparent just to expose art. */
+.zhaowu-home-layout .zhaowu-home-stage--result {
+  isolation: isolate;
+}
+
+@media (max-width: 640px) {
+  body:has(.zhaowu-home-layout).zhaowu-has-wallpaper .zhaowu-home-app-frame,
+  body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper .zhaowu-home-app-frame {
+    background: rgba(250, 244, 232, .07) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  body:has(.zhaowu-home-layout) .zhaowu-site-header {
+    background: rgba(242, 232, 212, .72) !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-daily-almanac {
+    background:
+      radial-gradient(circle at 89% 12%, rgba(91, 126, 105, .12), transparent 30%),
+      radial-gradient(circle at 8% 86%, rgba(171, 111, 70, .055), transparent 36%),
+      linear-gradient(145deg, rgba(250, 244, 232, .60), rgba(232, 217, 190, .52)) !important;
+  }
+
+  .zhaowu-home-layout #analysisForm {
+    background:
+      linear-gradient(180deg, rgba(255, 249, 238, .14), rgba(232, 216, 188, .06)),
+      rgba(246, 236, 216, .58) !important;
+  }
+
+  .zhaowu-home-layout #analysisForm textarea,
+  .zhaowu-home-layout #analysisForm input,
+  .zhaowu-home-layout #analysisForm select {
+    background: rgba(255, 251, 242, .84) !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-home-portals-block,
+  .zhaowu-home-layout .zhaowu-home-fun-section {
+    background: rgba(246, 235, 214, .43) !important;
+  }
+
+  .zhaowu-home-layout #auspicious-atlas,
+  .zhaowu-home-layout .zhaowu-home-stage--notes > section,
+  .zhaowu-home-layout .zhaowu-home-stage--notes > div {
+    background: rgba(249, 241, 225, .50) !important;
+  }
+}

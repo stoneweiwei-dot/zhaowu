@@ -37,6 +37,7 @@ import './report-share-card.css';
 import './zhaowu-layout-v41.css';
 import './home-art-direction-r47.css';
 import './daily-spirit-slip-r52.css';
+import './home-background-visibility-r55.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
