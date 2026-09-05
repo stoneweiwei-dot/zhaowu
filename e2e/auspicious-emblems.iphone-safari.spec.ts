@@ -38,9 +38,9 @@ test.describe("iPhone Safari parchment application shell", () => {
 
     const formBackground = await page.locator("#analysisForm").evaluate((node) => getComputedStyle(node).backgroundColor);
     const alpha = alphaOf(formBackground);
-    // r47 intentionally uses --r47-paper at .78; keep the sheet translucent but explicit.
-    expect(alpha).toBeGreaterThanOrEqual(0.78);
-    expect(alpha).toBeLessThan(1);
+    // r55 deliberately thins only the homepage paper so the selected artwork remains visible.
+    expect(alpha).toBeGreaterThanOrEqual(0.55);
+    expect(alpha).toBeLessThanOrEqual(0.62);
   });
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {
