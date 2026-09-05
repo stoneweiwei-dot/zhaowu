@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
-const MUSIC_SRC = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-audio/background/jingfo-shengyuan.m4a";
+const MUSIC_SRC = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-audio/background/jingfo-shengyuan-aac.m4a";
 const STORAGE_KEY = "zhaowu.backgroundMusic.v1";
-const DEFAULT_VOLUME = 0.18;
+const DEFAULT_VOLUME = 0.24;
 
 function readInitialPreference() {
   if (typeof window === "undefined") return true;
@@ -36,11 +36,16 @@ export function BackgroundMusic() {
     }
 
     const tryPlay = () => {
+      if (!audio.paused) {
+        setPlaying(true);
+        return;
+      }
       void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
     };
 
-    // Browsers that allow autoplay will start here. iPhone Safari normally
-    // requires a user gesture, so the first ordinary interaction unlocks it.
+    // Browsers that permit audible autoplay can start immediately. iPhone Safari
+    // normally needs a real user activation, so the first ordinary touch/pointer
+    // interaction retries play synchronously from that gesture.
     tryPlay();
 
     const unlockOnInteraction = (event: Event) => {
@@ -49,11 +54,13 @@ export function BackgroundMusic() {
       tryPlay();
     };
 
+    window.addEventListener("touchstart", unlockOnInteraction, { passive: true });
     window.addEventListener("pointerdown", unlockOnInteraction, { passive: true });
     window.addEventListener("touchend", unlockOnInteraction, { passive: true });
     window.addEventListener("keydown", unlockOnInteraction);
 
     return () => {
+      window.removeEventListener("touchstart", unlockOnInteraction);
       window.removeEventListener("pointerdown", unlockOnInteraction);
       window.removeEventListener("touchend", unlockOnInteraction);
       window.removeEventListener("keydown", unlockOnInteraction);
@@ -86,6 +93,7 @@ export function BackgroundMusic() {
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onEnded={() => setPlaying(false)}
+        onError={() => setPlaying(false)}
       />
       <button
         type="button"
@@ -94,14 +102,14 @@ export function BackgroundMusic() {
         aria-pressed={playing}
         title={label}
         onClick={toggle}
-        className="fixed z-[55] inline-flex h-9 items-center gap-1.5 rounded-full border border-line/80 bg-cream/90 px-2.5 text-xs text-ink-soft shadow-sm backdrop-blur transition hover:text-ink"
+        className="fixed z-[55] inline-flex h-10 items-center gap-1.5 rounded-full border border-line/90 bg-cream/95 px-3 text-xs font-medium text-ink-soft shadow-sm backdrop-blur transition hover:text-ink"
         style={{
           left: "max(0.75rem, env(safe-area-inset-left))",
           bottom: "max(0.75rem, env(safe-area-inset-bottom))",
         }}
       >
         <span aria-hidden="true" className="text-sm leading-none">{playing ? "♫" : "♪"}</span>
-        <span className="hidden min-[430px]:inline">{playing ? "音樂播放中" : "背景音樂"}</span>
+        <span className="inline whitespace-nowrap">{playing ? "音樂播放中" : "播放音樂"}</span>
       </button>
     </>
   );
