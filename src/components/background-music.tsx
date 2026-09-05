@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { OwnerBackgroundMusicManager } from "@/components/owner-background-music-manager";
 import { getActiveBackgroundMusic, musicPublicUrl, type BackgroundMusicAsset } from "@/lib/background-music-assets";
 
 const FALLBACK_PRIMARY = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-audio/background/jingfo-shengyuan-aac.m4a";
@@ -140,7 +139,6 @@ export function BackgroundMusic() {
         <span aria-hidden="true" className="text-sm leading-none">{playing ? "♫" : "♪"}</span>
         <span className="inline whitespace-nowrap">{playing ? "音樂播放中" : "播放音樂"}</span>
       </button>
-      <OwnerBackgroundMusicManager />
     </>
   );
 }
