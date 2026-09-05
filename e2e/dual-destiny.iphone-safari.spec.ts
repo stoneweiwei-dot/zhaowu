@@ -8,15 +8,18 @@ test("iPhone Safari opens the real Dharma Palm Past & Present report", async ({ 
   const year = birthDate.getByLabel("年", { exact: true });
   const month = birthDate.getByLabel("月", { exact: true });
   const day = birthDate.getByLabel("日", { exact: true });
-  const hour = page.locator(".palm-form select").first();
+  const birthTime = page.getByRole("group", { name: "出生時間（精確到分鐘）", exact: true });
+  const hour = birthTime.getByLabel("時", { exact: true });
+  const minute = birthTime.getByLabel("分", { exact: true });
   await year.fill("1988");
   await month.fill("10");
   await day.fill("4");
+  await hour.fill("4");
+  await minute.fill("40");
   await page.getByLabel("順行（傳統男命）").check();
-  await expect(hour).toBeVisible();
-  await hour.selectOption("3");
 
-  for (const field of [year, month, day, hour]) {
+  for (const field of [year, month, day, hour, minute]) {
+    await expect(field).toBeVisible();
     expect((await field.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(56);
   }
 
