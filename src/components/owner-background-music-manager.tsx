@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { createPortal } from "react-dom";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n, type Locale } from "@/lib/i18n";
 import {
@@ -25,7 +26,8 @@ export function OwnerBackgroundMusicManager() {
   const { locale } = useI18n();
   const { user, session } = useCurrentUserState();
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [onAccount, setOnAccount] = useState(() => typeof window !== "undefined" && window.location.pathname === "/account");
+  const [onAccount, setOnAccount] = useState(() => typeof window !== "undefined" && (window.location.pathname === "/account" || window.location.pathname.startsWith("/account/")));
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const [assets, setAssets] = useState<BackgroundMusicAsset[]>([]);
   const [busy, setBusy] = useState(false);
@@ -36,6 +38,7 @@ export function OwnerBackgroundMusicManager() {
     manage: tr(locale, "背景音樂管理", "背景音乐管理", "Background music"),
     title: tr(locale, "網站背景音樂", "网站背景音乐", "Website background music"),
     lead: tr(locale, "上傳常見音訊後，會在你的瀏覽器本地轉成 AAC-LC .m4a 主檔與 MP3 備援，再存入昭梧 Supabase。換歌不需要重新部署網站。", "上传常见音频后，会在你的浏览器本地转成 AAC-LC .m4a 主文件与 MP3 备用，再存入昭梧 Supabase。换歌不需要重新部署网站。", "Uploads are converted locally in your browser to AAC-LC M4A plus an MP3 fallback, then stored in Zhaowu Supabase. Changing tracks does not redeploy the site."),
+    entryLead: tr(locale, "站主專用 · 上傳、轉碼、切換網站背景音樂", "站主专用 · 上传、转码、切换网站背景音乐", "Owner only · upload, convert and switch website background music"),
     upload: tr(locale, "＋ 上傳音樂並自動轉碼", "＋ 上传音乐并自动转码", "+ Upload and convert"),
     converting: tr(locale, "處理中…", "处理中…", "Processing…"),
     current: tr(locale, "目前播放", "当前播放", "Currently playing"),
@@ -51,11 +54,18 @@ export function OwnerBackgroundMusicManager() {
   }), [locale]);
 
   useEffect(() => {
-    if (!user?.isOwner) return;
-    const sync = () => setOnAccount(window.location.pathname === "/account");
+    if (!user?.isOwner) {
+      setPortalTarget(null);
+      return;
+    }
+    const sync = () => {
+      const active = window.location.pathname === "/account" || window.location.pathname.startsWith("/account/");
+      setOnAccount(active);
+      setPortalTarget(active ? document.querySelector<HTMLElement>("main > section:first-child") : null);
+    };
     sync();
     window.addEventListener("popstate", sync);
-    const timer = window.setInterval(sync, 800);
+    const timer = window.setInterval(sync, 300);
     return () => {
       window.removeEventListener("popstate", sync);
       window.clearInterval(timer);
@@ -124,20 +134,28 @@ export function OwnerBackgroundMusicManager() {
 
   if (!user?.isOwner || !session || !onAccount) return null;
 
-  return (
+  const manager = (
     <>
       <button
         type="button"
         data-owner-background-music-manager
-        className="fixed z-[58] inline-flex min-h-10 items-center rounded-full border border-wood/35 bg-cream/95 px-4 text-xs font-medium text-ink-soft shadow-sm backdrop-blur"
-        style={{ right: "max(0.75rem, env(safe-area-inset-right))", bottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+        data-owner-background-music-inline={portalTarget ? "true" : "fallback"}
+        className={portalTarget
+          ? "mt-5 flex w-full items-center justify-between gap-4 rounded-xl border border-cinnabar/25 bg-paper/55 px-4 py-4 text-left shadow-sm"
+          : "fixed left-3 right-3 z-[88] flex min-h-14 items-center justify-between gap-4 rounded-xl border border-cinnabar/30 bg-cream/98 px-4 py-3 text-left shadow-xl backdrop-blur"}
+        style={portalTarget ? undefined : { top: "max(0.75rem, env(safe-area-inset-top))" }}
         onClick={() => setOpen(true)}
       >
-        {c.manage}
+        <span className="min-w-0">
+          <span className="block text-[10px] tracking-[0.22em] text-cinnabar">OWNER · AUDIO</span>
+          <span className="mt-1 block font-display text-lg text-ink">{c.manage}</span>
+          <span className="mt-1 block text-xs leading-5 text-ink-mute">{c.entryLead}</span>
+        </span>
+        <span aria-hidden="true" className="shrink-0 rounded-full bg-cinnabar px-3 py-2 text-sm text-cream">＋</span>
       </button>
 
       {open ? (
-        <div className="fixed inset-0 z-[90] overflow-y-auto bg-ink/35 p-3 backdrop-blur-sm sm:p-6" role="dialog" aria-modal="true" aria-label={c.title}>
+        <div className="fixed inset-0 z-[100] overflow-y-auto bg-ink/35 p-3 backdrop-blur-sm sm:p-6" role="dialog" aria-modal="true" aria-label={c.title}>
           <section className="mx-auto max-w-2xl rounded-2xl border border-line bg-cream p-5 shadow-2xl sm:p-7">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -204,4 +222,6 @@ export function OwnerBackgroundMusicManager() {
       ) : null}
     </>
   );
+
+  return portalTarget ? createPortal(manager, portalTarget) : manager;
 }
