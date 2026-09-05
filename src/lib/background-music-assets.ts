@@ -147,6 +147,12 @@ function asBytes(data: FfmpegFileData) {
   return data;
 }
 
+function asArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const copy = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(copy).set(bytes);
+  return copy;
+}
+
 export async function transcodeBackgroundMusic(
   file: File,
   onProgress?: (progress: MusicUploadProgress) => void,
@@ -198,8 +204,8 @@ export async function transcodeBackgroundMusic(
     }
 
     return {
-      primary: new Blob([primaryBytes], { type: "audio/mp4" }),
-      fallback: new Blob([fallbackBytes], { type: "audio/mpeg" }),
+      primary: new Blob([asArrayBuffer(primaryBytes)], { type: "audio/mp4" }),
+      fallback: new Blob([asArrayBuffer(fallbackBytes)], { type: "audio/mpeg" }),
     };
   } finally {
     ffmpeg.off("progress", progressListener);
