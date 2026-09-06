@@ -7,6 +7,7 @@ const route = await readFile(new URL("../src/routes/index.tsx", import.meta.url)
 const form = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
 const layout = await readFile(new URL("../src/home-layout-r46.css", import.meta.url), "utf8");
 const hub = await readFile(new URL("../src/home-birth-hub-r60.css", import.meta.url), "utf8");
+const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", import.meta.url), "utf8");
 
 test("homepage puts the shared birth hub before the daily almanac", () => {
   const formMount = route.indexOf("<AnalysisForm />");
@@ -17,16 +18,30 @@ test("homepage puts the shared birth hub before the daily almanac", () => {
   assert.match(route, /home-birth-hub-r60\.css/);
 });
 
-test("daily almanac is a lightweight local-day cue with gated personalised spirit-slip paths", () => {
-  assert.match(widget, /REFERENCE_UTC/);
-  assert.match(widget, /ganzhiForDay/);
+test("daily almanac uses the canonical calendar and shows current year month day hour pillars", () => {
+  assert.match(widget, /dayGanzhi, hourPillar, yearMonthPillars/);
+  assert.doesNotMatch(widget, /REFERENCE_UTC/);
+  assert.doesNotMatch(widget, /function ganzhiForDay/);
+  assert.match(widget, /const values = \[pillars\.year, pillars\.month, pillars\.day, pillars\.hour\]/);
+  assert.match(widget, /zhaowu-daily-pillars/);
+  assert.match(widget, /當下年月日時干支/);
+  assert.match(widget, /jieName/);
+  assert.match(widget, /setInterval\(\(\) => setNow\(new Date\(\)\), 30_000\)/);
+});
+
+test("daily almanac keeps the personalised spirit slip gated by saved birth data", () => {
   assert.match(widget, /stableHash/);
   assert.match(widget, /user\?\.birthData/);
   assert.match(widget, /drawSlip/);
   assert.match(widget, /listPublicGalleryAssets/);
   assert.match(widget, /href=\{!user \? "\/login" : "#analysisForm"\}/);
-  assert.match(widget, /按你當地日期給輕量日節奏提示/);
-  assert.match(widget, /setHours\(24, 0, 0, 80\)/);
+});
+
+test("r69 almanac style uses bright paper and Song-style pillar typography", () => {
+  assert.match(almanacStyle, /linear-gradient\(148deg, rgba\(255,253,246/);
+  assert.match(almanacStyle, /Songti TC/);
+  assert.match(almanacStyle, /grid-template-columns:\s*repeat\(4/);
+  assert.match(almanacStyle, /#2f6f5f/);
 });
 
 test("r46 preserves mobile-first whitespace and responsive directory grids", () => {
