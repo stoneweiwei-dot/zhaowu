@@ -38,9 +38,9 @@ test.describe("iPhone Safari parchment application shell", () => {
 
     const baziBackground = await page.locator(".zhaowu-bazi-hub").evaluate((node) => getComputedStyle(node).backgroundColor);
     const alpha = alphaOf(baziBackground);
-    // r63 intentionally keeps the overall form transparent while each independent paper section carries its own parchment.
-    expect(alpha).toBeGreaterThanOrEqual(0.8);
-    expect(alpha).toBeLessThanOrEqual(0.86);
+    // r75 final visual lock intentionally integrates the Four Pillars atlas into the page with a light 52% parchment wash.
+    expect(alpha).toBeGreaterThanOrEqual(0.5);
+    expect(alpha).toBeLessThanOrEqual(0.56);
   });
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {

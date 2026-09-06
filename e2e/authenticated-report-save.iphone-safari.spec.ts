@@ -86,7 +86,7 @@ test("Signed-in member reaches the full report with the durable-save action avai
   await dismissInstallPrompt(page);
   await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
+  await page.getByRole("button", { name: "開始命理分析 · 看答案", exact: true }).click();
   await expect(page.locator("#result")).toBeVisible();
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
@@ -101,7 +101,7 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
   await dismissInstallPrompt(page);
   await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "交卷，看答案", exact: true }).click();
+  await page.getByRole("button", { name: "開始命理分析 · 看答案", exact: true }).click();
   await expect(page.locator("#result")).toBeVisible();
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   // Persistence is asynchronous and may expose a retry/update action at different times.
