@@ -8,6 +8,7 @@ export type ReportVisualAssetKind = "day-master" | "month";
 export type LuckVisualElement = "木" | "火" | "土" | "金" | "水";
 
 const REPORT_VISUAL_CDN_BASE = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r57";
+const REPORT_LUCK_CDN_BASE = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r59";
 
 const DAY_MASTER_ASSETS: Record<string, ReportVisualAsset> = {
   "jia-wood": { src: `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, index: 0, count: 5 },
@@ -38,11 +39,11 @@ const MONTH_ASSETS: Record<string, ReportVisualAsset> = {
 };
 
 const LUCK_ASSETS: Record<LuckVisualElement, ReportVisualAsset> = {
-  木: { src: "/report-visuals/groups/luck-0.webp", index: 0, count: 5 },
-  火: { src: "/report-visuals/groups/luck-0.webp", index: 1, count: 5 },
-  土: { src: "/report-visuals/groups/luck-0.webp", index: 2, count: 5 },
-  金: { src: "/report-visuals/groups/luck-0.webp", index: 3, count: 5 },
-  水: { src: "/report-visuals/groups/luck-0.webp", index: 4, count: 5 },
+  木: { src: `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, index: 0, count: 5 },
+  火: { src: `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, index: 1, count: 5 },
+  土: { src: `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, index: 2, count: 5 },
+  金: { src: `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, index: 3, count: 5 },
+  水: { src: `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, index: 4, count: 5 },
 };
 
 export function getReportVisualAsset(kind: ReportVisualAssetKind, key: string): ReportVisualAsset | null {

@@ -24,7 +24,9 @@ test("report artwork keeps lazy loading and fail-open paper fallback", () => {
   assert.match(sprite, /onError/);
 });
 
-test("luck artwork remains on the verified local five-element sprite", () => {
-  assert.match(assets, /\/report-visuals\/groups\/luck-0\.webp/);
+test("luck artwork uses the completed five-element Supabase CDN sprite", () => {
+  assert.match(assets, /zhaowu-gallery\/report-visuals\/r59/);
+  assert.match(assets, /luck-0\.webp/);
+  assert.doesNotMatch(assets, /\/report-visuals\/groups\/luck-0\.webp/);
   assert.match(assets, /luckElement:\s*5/);
 });
