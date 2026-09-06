@@ -17,17 +17,16 @@ import "@/home-birth-hub-r60.css";
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
-  const { t, locale } = useI18n();
+  const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
 
   const portalCopy = locale === "en"
     ? {
-        label: "Seven ways to read one birth record",
-        lead: "Fill birth details once above. These areas only explain what each system looks at.",
+        label: "Six other readings from the same birth record",
+        lead: "Zi Ping BaZi now has its own section above. These other systems reuse the same saved birth record and should not ask you to enter it again.",
         items: [
-          { title: "Zi Ping BaZi", hint: "four pillars · timing · useful next step" },
           { title: "Classical Indian Astrology", hint: "karmic pattern · D60 minute-sensitive cross-check" },
-          { title: "Western Astrology", hint: "Sun · Moon · Rising · aspects · life areas · 西洋星盤" },
+          { title: "Western Astrology", hint: "Sun · Moon · Rising · aspects · life areas" },
           { title: "Zi Wei Dou Shu", hint: "character · relationships · work · money · decade focus" },
           { title: "Seven Luminaries", hint: "temperament · rhythm · pressure response · timing" },
           { title: "Past & Present", hint: "carried patterns · prior-life symbolism · Indian classical astrology cross-check" },
@@ -36,25 +35,23 @@ function Home() {
       }
     : locale === "zh-Hans"
       ? {
-          label: "一份生辰，七种看法",
-          lead: "出生资料只在上方填写一次。下面只说明各体系主要看什么，不再另开完整内页表单。",
+          label: "同一份生辰，其他六种看法",
+          lead: "四柱八字已经独立成上方专属分区。其他需要出生资料的体系直接沿用同一份记录，不再重复填写。",
           items: [
-            { title: "四柱八字", hint: "看性情节奏、时间窗口与现在该怎么做" },
-            { title: "印度古法占星", hint: "看业力细分层；D60 需要分钟级出生时间，大约 2 分钟就可能跨区" },
-            { title: "西洋星座", hint: "看太阳、月亮、上升、相位与人生领域（西洋星盤）" },
+            { title: "印度古法占星", hint: "看业力细分层；D60 对出生分钟非常敏感" },
+            { title: "西洋星座", hint: "看太阳、月亮、上升、相位与人生领域" },
             { title: "紫微斗数", hint: "看性格、关系、事业、财务与十年主轴" },
             { title: "七政四余", hint: "看性情、节奏、压力反应与天时变化" },
-            { title: "前世今生", hint: "看前四世象意、反复习性与印度古法占星旁證" },
+            { title: "前世今生", hint: "看前四世象意、反复习性与印度古法占星旁证" },
             { title: "达摩一掌经", hint: "看前四世来路，以及被重复加强、留到今生的习惯" },
           ],
         }
       : {
-          label: "一份生辰，七種看法",
-          lead: "出生資料只在上方填寫一次。下面只說明各體系主要看什麼，不再另開完整內頁表單。",
+          label: "同一份生辰，其他六種看法",
+          lead: "四柱八字已經獨立成上方專屬分區。其他需要出生資料的體系直接沿用同一份記錄，不再重複填寫。",
           items: [
-            { title: "四柱八字", hint: "看性情節奏、時間窗口與現在該怎麼做" },
-            { title: "印度古法占星", hint: "看業力細分層；D60 需要分鐘級出生時間，大約 2 分鐘就可能跨區" },
-            { title: "西洋星座", hint: "看太陽、月亮、上升、相位與人生領域（西洋星盤）" },
+            { title: "印度古法占星", hint: "看業力細分層；D60 對出生分鐘非常敏感" },
+            { title: "西洋星座", hint: "看太陽、月亮、上升、相位與人生領域" },
             { title: "紫微斗數", hint: "看性格、關係、事業、財務與十年主軸" },
             { title: "七政四餘", hint: "看性情、節奏、壓力反應與天時變化" },
             { title: "前世今生", hint: "看前四世象意、反覆習性與印度古法占星旁證" },
@@ -94,9 +91,9 @@ function Home() {
 
   return (
     <main className="zhaowu-home-sheet-page zhaowu-home-layout">
-      <section id="bazi" className="zhaowu-home-stage zhaowu-home-stage--primary relative" aria-label={t("formTitle")}>
+      <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
         <AnalysisForm />
-      </section>
+      </div>
 
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><ResultView result={current} /></div> : null}
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div> : null}
