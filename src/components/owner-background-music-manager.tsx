@@ -45,9 +45,9 @@ export function OwnerBackgroundMusicManager() {
     title: tr(locale, "網站背景音樂", "网站背景音乐", "Website background music"),
     lead: tr(
       locale,
-      "現在改成手機優先流程：MP3 直接上傳；其他常見音訊只轉成一份高相容 MP3，不再同時做 AAC＋MP3 雙轉碼。轉碼核心有逾時保護，失敗會停止等待，不會一直卡在 3%。換歌仍不需要重新部署網站。",
-      "现在改成手机优先流程：MP3 直接上传；其他常见音频只转成一份高兼容 MP3，不再同时做 AAC＋MP3 双转码。转码核心有超时保护，失败会停止等待，不会一直卡在 3%。换歌仍不需要重新部署网站。",
-      "The mobile-first flow now uploads MP3 files directly and converts other common audio formats into one highly compatible MP3 instead of doing two encodes. The converter has a timeout guard, so it stops instead of hanging at 3%. Track changes still do not redeploy the site.",
+      "現在改成手機優先流程：MP3 直接上傳；標準 AAC/M4A 直接上傳；其他常見音訊只轉成一份高相容 MP3，不再同時做 AAC＋MP3 雙轉碼。轉碼核心有逾時保護，失敗會停止等待，不會一直卡在 3%。換歌仍不需要重新部署網站。",
+      "现在改成手机优先流程：MP3 直接上传；标准 AAC/M4A 直接上传；其他常见音频只转成一份高兼容 MP3，不再同时做 AAC＋MP3 双转码。转码核心有超时保护，失败会停止等待，不会一直卡在 3%。换歌仍不需要重新部署网站。",
+      "The mobile-first flow uploads MP3 and standard AAC/M4A directly and converts other common formats into one compatible MP3 instead of doing two encodes. The converter has a timeout guard, so it stops instead of hanging at 3%. Track changes still do not redeploy the site.",
     ),
     entryLead: tr(locale, "站主專用 · 上傳、轉碼、切換網站背景音樂", "站主专用 · 上传、转码、切换网站背景音乐", "Owner only · upload, convert and switch website background music"),
     upload: tr(locale, "＋ 上傳音樂", "＋ 上传音乐", "+ Upload music"),
@@ -62,7 +62,7 @@ export function OwnerBackgroundMusicManager() {
     uploaded: tr(locale, "新音樂已處理、上傳並啟用。", "新音乐已处理、上传并启用。", "New music processed, uploaded and activated."),
     confirmDelete: tr(locale, "刪除這首背景音樂？", "删除这首背景音乐？", "Delete this background track?"),
     loadFailed: tr(locale, "背景音樂讀取失敗。", "背景音乐读取失败。", "Could not load background music."),
-    formatHint: tr(locale, "支援 MP3、M4A、AAC、WAV、FLAC、OGG、OPUS 等；單檔上限 80 MB。MP3 不轉碼，最快也最穩。", "支持 MP3、M4A、AAC、WAV、FLAC、OGG、OPUS 等；单文件上限 80 MB。MP3 不转码，最快也最稳。", "Supports MP3, M4A, AAC, WAV, FLAC, OGG and OPUS up to 80 MB. MP3 skips transcoding for the fastest, most reliable path."),
+    formatHint: tr(locale, "支援 MP3、M4A、AAC、WAV、FLAC、OGG、OPUS 等；原始檔最高 80 MB，但最後上傳到網站的音訊需在 15 MB 內。MP3 與標準 AAC/M4A 不轉碼，最快也最穩。", "支持 MP3、M4A、AAC、WAV、FLAC、OGG、OPUS 等；原始文件最高 80 MB，但最终上传到网站的音频需在 15 MB 内。MP3 与标准 AAC/M4A 不转码，最快也最稳。", "Supports MP3, M4A, AAC, WAV, FLAC, OGG and OPUS. Source files can be up to 80 MB, but the final website audio must be 15 MB or less. MP3 and standard AAC/M4A skip transcoding."),
     pipeline: tr(locale, "檢查格式 → 必要時轉 MP3 → 上傳 → 啟用", "检查格式 → 必要时转 MP3 → 上传 → 启用", "Check format → convert if needed → upload → activate"),
   }), [locale]);
 
