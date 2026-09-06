@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { D60KarmaSection } from "@/components/d60-karma-section";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
@@ -44,44 +44,38 @@ const PAGE = {
     en: { title: "Seven Luminaries", hint: "Temperament, rhythm, pressure response and timing." },
   },
   past: {
-    "zh-Hant": { title: "前世今生", hint: "看前四世象意、反覆習性與印度古法占星旁證。" },
-    "zh-Hans": { title: "前世今生", hint: "看前四世象意、反复习性与印度古法占星旁证。" },
-    en: { title: "Past & Present", hint: "Carried patterns, prior-life symbolism, and an Indian classical cross-check." },
+    "zh-Hant": { title: "前世今生", hint: "看前四世文化象意、反覆習性與獨立旁證。" },
+    "zh-Hans": { title: "前世今生", hint: "看前四世文化象意、反复习性与独立旁证。" },
+    en: { title: "Past & Present", hint: "Carried patterns, prior-life symbolism and an independent supporting layer." },
   },
   dharma: {
-    "zh-Hant": { title: "達摩一掌經", hint: "看前四世來路，以及被重複加強、留到今生的習慣。" },
-    "zh-Hans": { title: "达摩一掌经", hint: "看前四世来路，以及被重复加强、留到今生的习惯。" },
-    en: { title: "Dharma One-Palm Classic", hint: "Four prior lives and the habits that stay in this life." },
+    "zh-Hant": { title: "達摩一掌經", hint: "看四世象意，以及被重複加強、留到今生的習慣。" },
+    "zh-Hans": { title: "达摩一掌经", hint: "看四世象意，以及被重复加强、留到今生的习惯。" },
+    en: { title: "Dharma One-Palm Classic", hint: "Four-life symbolism and repeated habits carried into this life." },
   },
 } as const;
 
 const COPY = {
   "zh-Hant": {
     ready: "已讀取共享出生資料",
+    auto: "已依同一份生辰自動生成本體系結果",
     missing: "目前還沒有共享出生資料。請先在首頁四柱八字分區填寫一次。",
     edit: "修改出生資料",
     add: "去填寫一次出生資料",
-    view: "查看",
-    start: "開始分析",
-    needTime: "需補出生時間",
   },
   "zh-Hans": {
     ready: "已读取共享出生资料",
+    auto: "已依同一份生辰自动生成本体系结果",
     missing: "目前还没有共享出生资料。请先在首页四柱八字分区填写一次。",
     edit: "修改出生资料",
     add: "去填写一次出生资料",
-    view: "查看",
-    start: "开始分析",
-    needTime: "需补出生时间",
   },
   en: {
     ready: "Shared birth record ready",
+    auto: "This system has automatically generated its result from the same birth record",
     missing: "No shared birth record yet. Add it once in the Zi Ping BaZi section on the homepage.",
     edit: "Edit birth record",
     add: "Add birth record once",
-    view: "View",
-    start: "Start reading",
-    needTime: "Birth time needed",
   },
 } as const;
 
@@ -99,7 +93,6 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
   const page = PAGE[id][locale];
   const { user } = useCurrentUserState();
   const [birth, setBirth] = useState<SharedBirthRecord | null>(null);
-  const [reading, setReading] = useState<SpecialistReading | null>(null);
 
   useEffect(() => {
     const server = sharedBirthFromUnknown(user?.birthData);
@@ -108,20 +101,18 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
     if (server) writeSharedBirthRecord(server);
   }, [user?.id, user?.birthData]);
 
-  function start() {
-    if (!birth) return;
-    const next = buildReading(id, birth, locale);
-    setReading(next);
-    if (id === "indian" || id === "past" || id === "dharma") {
-      const detail = !birth.timeUnknown && birth.city
-        ? { year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute, city: birth.city }
-        : null;
-      window.dispatchEvent(new CustomEvent(D60_BIRTH_EVENT, { detail }));
-    }
-  }
+  const reading = useMemo(() => {
+    if (!birth) return null;
+    return buildReading(id, birth, locale);
+  }, [birth, id, locale]);
 
-  const needsTime = Boolean(birth?.timeUnknown && (id === "ziwei" || id === "qizheng" || id === "western" || id === "indian"));
-  const cta = !birth ? copy.add : needsTime && !reading ? copy.needTime : reading ? copy.view : copy.start;
+  useEffect(() => {
+    if (!birth || (id !== "indian" && id !== "past" && id !== "dharma")) return;
+    const detail = !birth.timeUnknown && birth.city
+      ? { year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute, city: birth.city }
+      : null;
+    window.dispatchEvent(new CustomEvent(D60_BIRTH_EVENT, { detail }));
+  }, [birth, id]);
 
   return (
     <main className="zhaowu-specialist-page">
@@ -132,20 +123,20 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
           <div className="zhaowu-specialist-birth">
             <span>{copy.ready}</span>
             <strong>{formatSharedBirthRecord(birth, locale)}</strong>
+            <small className="mt-1 block text-ink-soft">{copy.auto}</small>
           </div>
         ) : (
           <p className="zhaowu-specialist-warning">{copy.missing}</p>
         )}
         {reading?.warning ? <p className="zhaowu-specialist-warning">{reading.warning}</p> : null}
         <div className="zhaowu-specialist-actions">
-          {birth ? <button type="button" onClick={start}>{cta}</button> : null}
           <a href="/#bazi">{birth ? copy.edit : copy.add}</a>
         </div>
         {reading ? (
           <div className="zhaowu-specialist-sections">
             {reading.lead ? <article><h2>{reading.title}</h2><p>{reading.lead}</p></article> : null}
             {reading.sections.map((section) => (
-              <article key={section.title}><h2>{section.title}</h2><p>{section.body}</p></article>
+              <article key={`${section.title}-${section.body.slice(0, 24)}`}><h2>{section.title}</h2><p>{section.body}</p></article>
             ))}
           </div>
         ) : null}
