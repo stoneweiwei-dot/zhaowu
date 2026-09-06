@@ -4,10 +4,10 @@ import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 import {
   INTRO_GATE_FADE_MS,
   INTRO_GATE_MIN_VISIBLE_MS,
+  INTRO_GATE_TARGET_MS,
   scheduleIntroGateHardExit,
 } from "@/lib/intro-gate-policy";
 
-const LOTUS_BLOOM_MS = 5000;
 const OWNER_LOADING_VIDEO = "/intro/owner-lotus-bloom-r53.mp4";
 const OWNER_LOADING_POSTER = "/intro/owner-lotus-bloom-r53.jpg";
 
@@ -15,6 +15,7 @@ export function IntroGate() {
   const { locale } = useI18n();
   const [phase, setPhase] = useState<"in" | "leaving" | "off">("in");
   const [minimumDone, setMinimumDone] = useState(false);
+  const [targetDone, setTargetDone] = useState(false);
   const [runtimeReady, setRuntimeReady] = useState(false);
   const [visualDone, setVisualDone] = useState(false);
   const finishedRef = useRef(false);
@@ -45,14 +46,14 @@ export function IntroGate() {
     const minimumTimer = window.setTimeout(() => {
       if (!cancelled) setMinimumDone(true);
     }, INTRO_GATE_MIN_VISIBLE_MS);
-    const visualTimer = window.setTimeout(() => {
-      if (!cancelled) setVisualDone(true);
-    }, LOTUS_BLOOM_MS);
+    const targetTimer = window.setTimeout(() => {
+      if (!cancelled) setTargetDone(true);
+    }, INTRO_GATE_TARGET_MS);
     const cancelHardExit = scheduleIntroGateHardExit(
       window.setTimeout,
       window.clearTimeout,
       () => {
-        // Decorative loading art must never block the usable site.
+        // Five seconds is the maximum blocking window, not a mandatory duration.
         if (!cancelled) forceOff();
       },
     );
@@ -62,14 +63,14 @@ export function IntroGate() {
         if (!cancelled) setRuntimeReady(true);
       })
       .catch(() => {
-        // Readiness is fail-open, but a transient backend error must not erase the visible Loading sequence.
+        // Readiness is fail-open: backend trouble must not trap the user behind decoration.
         if (!cancelled) setRuntimeReady(true);
       });
 
     return () => {
       cancelled = true;
       window.clearTimeout(minimumTimer);
-      window.clearTimeout(visualTimer);
+      window.clearTimeout(targetTimer);
       cancelHardExit();
       if (exitTimerRef.current !== null) {
         window.clearTimeout(exitTimerRef.current);
@@ -79,8 +80,10 @@ export function IntroGate() {
   }, [forceOff]);
 
   useEffect(() => {
-    if (minimumDone && runtimeReady && visualDone) finish();
-  }, [finish, minimumDone, runtimeReady, visualDone]);
+    // Prefer roughly three seconds when runtime is ready, but allow the owner animation
+    // to finish earlier and allow slower readiness to extend naturally up to five seconds.
+    if (minimumDone && runtimeReady && (targetDone || visualDone)) finish();
+  }, [finish, minimumDone, runtimeReady, targetDone, visualDone]);
 
   if (phase === "off") return null;
 
