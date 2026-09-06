@@ -20,8 +20,18 @@
 - `background + site-wallpaper`
 - `visual-library + <asset_key>`
 - `dragon-sticker + happy`
+- `loading + loading-song-parchment-dragon`
 
 茶仙报告与茶仙测验优先读取 `tea-guardian + <tea.id>` 的当前主图；没有主图或网络加载失败时退回 repo 内置 WebP，不阻塞报告。
+
+## 登入動画分组
+
+Owner `/gallery` 增加第三个检视：吉象图鉴 / 登入動画 / 全部图片。
+
+- `category = loading`，或 `loading` / `login-background` tag，或 `loading-*` key，都进这组。
+- 不进入公开吉象图鉴，也不参与命请图匹配。
+- 站内 fallback 在 `public/gallery/loading/`，供登入静图与蓮花動画海报使用。
+- 在此检视上传会标成 `loading` 分组。
 
 ## 昭梧吉象图鉴
 
@@ -31,7 +41,7 @@
 
 - 所有 `enabled` 的 `visual-library` 主视觉图均可进入图鉴，包括既有圣像／道韵／瑞兽／吉祥／报告图，以及后续 `img-*` 上传图。
 - `reference-*` 纯参考图继续只留后台，不进入客户图鉴。
-- `background`、`dragon-sticker`、`tea-guardian` 保持各自原用途，不混入吉象图鉴。
+- `background`、`dragon-sticker`、`tea-guardian`、`loading` 保持各自原用途，不混入吉象图鉴。
 - 前台只呈现一个混合图鉴，不向客户暴露佛／道等人工硬分类。
 
 展示方式固定为两层：
@@ -41,7 +51,7 @@
 
 任一图片或图库请求失败都不得阻塞首页、分析、登入、账户或报告。图鉴是增强内容，不是核心分析依赖。
 
-Owner UI `/gallery` 仍是唯一上传入口，并保留「吉象图鉴／全部图片」两个检视。系统内部可继续利用既有键位、语义审计与匹配资料做自动整理，但不要求站主手工维护宗教分类，也不改变 Supabase schema 或反向影响八字判断。
+Owner UI `/gallery` 仍是唯一上传入口，并保留「吉象图鉴／登入動画／全部图片」三个检视。系统内部可继续利用既有键位、语义审计与匹配资料做自动整理，但不要求站主手工维护宗教分类，也不改变 Supabase schema 或反向影响八字判断。
 
 ## 客户可见的选图解释
 
