@@ -46,7 +46,8 @@ test("website keeps the app concept base while homepage specialist cards shed lo
   assert.match(intro, /OWNER_LOADING_VIDEO/);
   assert.match(intro, /data-intro-motion="owner-video"/);
   assert.doesNotMatch(intro, /wutong-owner-r29/);
-  assert.match(intro, /LOTUS_BLOOM_MS = 5000/);
+  assert.match(intro, /INTRO_GATE_TARGET_MS/);
+  assert.doesNotMatch(intro, /LOTUS_BLOOM_MS = 5000/);
 });
 
 test("background assets remain manageable without overriding the restored application wallpaper", async () => {
