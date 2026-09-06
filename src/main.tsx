@@ -43,10 +43,18 @@ import './report-art-final-r62.css';
 import './site-ux-r63.css';
 import './site-ux-r63-lock.css';
 import './daily-almanac-r69.css';
+import './site-ux-r75-final.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
 const root = document.getElementById('root');
 if (!root) throw new Error('Missing root element');
-if ('serviceWorker' in navigator) { window.addEventListener('load', () => { void navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => undefined); }); }
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    void navigator.serviceWorker
+      .register('/sw.js', { scope: '/', updateViaCache: 'none' })
+      .then((registration) => registration.update())
+      .catch(() => undefined);
+  });
+}
 createRoot(root).render(<StrictMode><RouterProvider router={router} /><BackgroundMusic /></StrictMode>);
