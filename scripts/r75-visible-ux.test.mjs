@@ -30,11 +30,21 @@ test("report mother art has no photo-card frame", async () => {
   assert.match(lock, /mix-blend-mode:\s*multiply/);
 });
 
-test("installed iPhone app actively refreshes the r75 shell", async () => {
+test("installed iPhone app actively refreshes the current production shell", async () => {
   const main = await source("src/main.tsx");
   const sw = await source("public/sw.js");
+  const vercel = await source("vercel.json");
   assert.match(main, /updateViaCache:\s*'none'/);
   assert.match(main, /registration\.update\(\)/);
-  assert.match(sw, /zhaowu-shell-r75/);
+  assert.match(main, /controllerchange/);
+  assert.match(main, /pageshow/);
+  assert.match(main, /visibilitychange/);
+  assert.match(main, /checkForFreshShell/);
+  assert.match(main, /current !== fresh/);
+  assert.match(sw, /zhaowu-shell-r\d+/);
+  assert.match(sw, /skipWaiting\(\)/);
+  assert.match(sw, /clients\.claim\(\)/);
   assert.match(sw, /cache:\s*"no-store"/);
+  assert.match(vercel, /"source": "\/sw\.js"[\s\S]*"Cache-Control"[\s\S]*"no-store, no-cache, must-revalidate, max-age=0"/);
+  assert.match(vercel, /"source": "\/"[\s\S]*"Cache-Control"[\s\S]*"no-store, max-age=0"/);
 });
