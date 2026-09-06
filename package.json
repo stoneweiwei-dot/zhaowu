@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "node scripts/write-og-preview.mjs && tsx --test scripts/og-preview.test.mjs && vite build && tsc --noEmit",
+    "prebuild": "node scripts/write-og-preview.mjs",
+    "test:deploy": "tsx --test scripts/og-preview.test.mjs scripts/vercel-deployment.test.mjs scripts/vercel-deployment-policy.test.mjs scripts/deploy-gate.test.mjs scripts/release-ledger.test.mjs",
+    "test:engine": "tsx --test scripts/*.test.mjs",
+    "build": "npm run prebuild && npm run test:deploy && vite build && tsc --noEmit",
     "preview": "vite preview",
     "check": "tsc --noEmit",
-    "test:engine": "tsx --test scripts/*.test.mjs",
     "test:iphone-safari": "playwright test --project=iphone-safari"
   },
   "dependencies": {
