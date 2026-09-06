@@ -5,6 +5,7 @@ import test from "node:test";
 const music = await readFile(new URL("../src/components/background-music.tsx", import.meta.url), "utf8");
 const manager = await readFile(new URL("../src/components/owner-background-music-manager.tsx", import.meta.url), "utf8");
 const assets = await readFile(new URL("../src/lib/background-music-assets.ts", import.meta.url), "utf8");
+const upload = await readFile(new URL("../src/lib/background-music-upload.ts", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
 
@@ -52,17 +53,16 @@ test("owner music manager is visibly embedded in the account console with a high
   assert.match(manager, /站主專用/);
 });
 
-test("owner console exposes upload, local normalization and no-deploy track switching", () => {
-  assert.match(manager, /uploadBackgroundMusic/);
+test("owner console exposes direct native upload and no-deploy track switching", () => {
+  assert.match(manager, /uploadBackgroundMusicResilient/);
   assert.match(manager, /activateBackgroundMusic/);
-  assert.match(manager, /AAC-LC/);
   assert.match(manager, /MP3/);
-  assert.match(assets, /@ffmpeg\/ffmpeg@0\.12\.15/);
-  assert.match(assets, /@ffmpeg\/core@0\.12\.10/);
-  assert.match(assets, /aac_low/);
-  assert.match(assets, /128k/);
-  assert.match(assets, /48000/);
-  assert.match(assets, /libmp3lame/);
+  assert.match(manager, /M4A \/ AAC/);
+  assert.match(manager, /15 MB/);
+  assert.match(upload, /native-mp3/);
+  assert.match(upload, /native-aac-m4a/);
+  assert.match(upload, /native-aac/);
+  assert.doesNotMatch(upload, /@ffmpeg\/ffmpeg/);
   assert.match(assets, /activate_background_music/);
   assert.match(assets, /zhaowu-music-change/);
 });

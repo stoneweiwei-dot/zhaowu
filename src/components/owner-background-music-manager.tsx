@@ -23,8 +23,11 @@ function formatSize(bytes: number | null) {
 }
 
 function formatCodec(asset: BackgroundMusicAsset) {
-  if (asset.content_type === "audio/mpeg" || asset.codec.startsWith("mp3")) return "MP3";
-  if (asset.fallback_storage_path) return "AAC-LC + MP3";
+  if (asset.content_type === "audio/mpeg") return "MP3";
+  if (asset.content_type === "audio/mp4") return "M4A / AAC";
+  if (asset.content_type === "audio/aac") return "AAC";
+  if (asset.content_type === "audio/wav") return "WAV";
+  if (asset.content_type === "audio/flac") return "FLAC";
   return asset.codec || "Audio";
 }
 
@@ -45,13 +48,13 @@ export function OwnerBackgroundMusicManager() {
     title: tr(locale, "網站背景音樂", "网站背景音乐", "Website background music"),
     lead: tr(
       locale,
-      "現在改成手機優先流程：MP3 直接上傳；標準 AAC/M4A 直接上傳；其他常見音訊只轉成一份高相容 MP3，不再同時做 AAC＋MP3 雙轉碼。轉碼核心有逾時保護，失敗會停止等待，不會一直卡在 3%。換歌仍不需要重新部署網站。",
-      "现在改成手机优先流程：MP3 直接上传；标准 AAC/M4A 直接上传；其他常见音频只转成一份高兼容 MP3，不再同时做 AAC＋MP3 双转码。转码核心有超时保护，失败会停止等待，不会一直卡在 3%。换歌仍不需要重新部署网站。",
-      "The mobile-first flow uploads MP3 and standard AAC/M4A directly and converts other common formats into one compatible MP3 instead of doing two encodes. The converter has a timeout guard, so it stops instead of hanging at 3%. Track changes still do not redeploy the site.",
+      "手機版不再做瀏覽器轉碼。MP3、M4A/AAC、WAV、FLAC 在 15 MB 內直接上傳到網站，完成後立即切換；不再載入大型轉碼核心，也不會卡在 3% 或 7%。",
+      "手机版不再做浏览器转码。MP3、M4A/AAC、WAV、FLAC 在 15 MB 内直接上传到网站，完成后立即切换；不再加载大型转码核心，也不会卡在 3% 或 7%。",
+      "Mobile upload no longer transcodes in the browser. MP3, M4A/AAC, WAV and FLAC up to 15 MB upload directly and become active immediately.",
     ),
-    entryLead: tr(locale, "站主專用 · 上傳、轉碼、切換網站背景音樂", "站主专用 · 上传、转码、切换网站背景音乐", "Owner only · upload, convert and switch website background music"),
+    entryLead: tr(locale, "站主專用 · 直接上傳、切換網站背景音樂", "站主专用 · 直接上传、切换网站背景音乐", "Owner only · upload and switch website background music"),
     upload: tr(locale, "＋ 上傳音樂", "＋ 上传音乐", "+ Upload music"),
-    processing: tr(locale, "處理中…", "处理中…", "Processing…"),
+    processing: tr(locale, "上傳中…", "上传中…", "Uploading…"),
     current: tr(locale, "目前播放", "当前播放", "Currently playing"),
     use: tr(locale, "設為背景音樂", "设为背景音乐", "Use as background music"),
     delete: tr(locale, "刪除", "删除", "Delete"),
@@ -59,11 +62,11 @@ export function OwnerBackgroundMusicManager() {
     refresh: tr(locale, "刷新", "刷新", "Refresh"),
     empty: tr(locale, "尚未有背景音樂。", "尚未有背景音乐。", "No background music yet."),
     changed: tr(locale, "已切換背景音樂。", "已切换背景音乐。", "Background music changed."),
-    uploaded: tr(locale, "新音樂已處理、上傳並啟用。", "新音乐已处理、上传并启用。", "New music processed, uploaded and activated."),
+    uploaded: tr(locale, "新音樂已直接上傳並啟用。", "新音乐已直接上传并启用。", "New music uploaded and activated."),
     confirmDelete: tr(locale, "刪除這首背景音樂？", "删除这首背景音乐？", "Delete this background track?"),
     loadFailed: tr(locale, "背景音樂讀取失敗。", "背景音乐读取失败。", "Could not load background music."),
-    formatHint: tr(locale, "支援 MP3、M4A、AAC、WAV、FLAC、OGG、OPUS 等；原始檔最高 80 MB，但最後上傳到網站的音訊需在 15 MB 內。MP3 與標準 AAC/M4A 不轉碼，最快也最穩。", "支持 MP3、M4A、AAC、WAV、FLAC、OGG、OPUS 等；原始文件最高 80 MB，但最终上传到网站的音频需在 15 MB 内。MP3 与标准 AAC/M4A 不转码，最快也最稳。", "Supports MP3, M4A, AAC, WAV, FLAC, OGG and OPUS. Source files can be up to 80 MB, but the final website audio must be 15 MB or less. MP3 and standard AAC/M4A skip transcoding."),
-    pipeline: tr(locale, "檢查格式 → 必要時轉 MP3 → 上傳 → 啟用", "检查格式 → 必要时转 MP3 → 上传 → 启用", "Check format → convert if needed → upload → activate"),
+    formatHint: tr(locale, "支援 MP3、M4A、AAC、WAV、FLAC；單檔最多 15 MB。建議優先用 MP3 或 M4A/AAC，iPhone Safari 最穩。", "支持 MP3、M4A、AAC、WAV、FLAC；单文件最多 15 MB。建议优先用 MP3 或 M4A/AAC，iPhone Safari 最稳。", "Supports MP3, M4A, AAC, WAV and FLAC up to 15 MB. MP3 or M4A/AAC is recommended for iPhone Safari."),
+    pipeline: tr(locale, "檢查格式 → 直接上傳 → 保存 → 啟用", "检查格式 → 直接上传 → 保存 → 启用", "Check format → upload → save → activate"),
   }), [locale]);
 
   useEffect(() => {
@@ -178,9 +181,9 @@ export function OwnerBackgroundMusicManager() {
               <button type="button" className="rounded-full border border-line bg-paper/60 px-4 py-2 text-xs" onClick={() => setOpen(false)}>{c.close}</button>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-line bg-paper/40 p-4">
+            <div className="mt-4 border-y border-line/70 py-4">
               <p className="text-sm leading-7 text-ink-soft">{c.lead}</p>
-              <p className="mt-3 text-xs leading-6 text-ink-mute">{c.formatHint}</p>
+              <p className="mt-2 text-xs leading-6 text-ink-mute">{c.formatHint}</p>
               <p className="mt-2 text-[11px] tracking-[0.08em] text-cinnabar/80">{c.pipeline}</p>
             </div>
 
@@ -189,7 +192,7 @@ export function OwnerBackgroundMusicManager() {
                 ref={inputRef}
                 type="file"
                 className="hidden"
-                accept="audio/*,.mp3,.m4a,.aac,.wav,.flac,.ogg,.opus,.wma"
+                accept="audio/mpeg,audio/mp3,audio/mp4,audio/x-m4a,audio/aac,audio/x-aac,audio/wav,audio/x-wav,audio/flac,audio/x-flac,.mp3,.m4a,.aac,.wav,.flac"
                 onChange={(event) => void onUpload(event)}
               />
               <button type="button" disabled={busy} className="min-h-11 rounded-full bg-cinnabar px-5 text-sm text-cream disabled:opacity-50" onClick={() => inputRef.current?.click()}>
@@ -199,12 +202,12 @@ export function OwnerBackgroundMusicManager() {
             </div>
 
             {progress ? (
-              <div className="mt-4 rounded-2xl border border-line bg-paper/45 p-4" aria-live="polite">
+              <div className="mt-4 border-y border-line/60 py-3" aria-live="polite">
                 <div className="flex items-center justify-between gap-3 text-xs text-ink-soft"><span>{progress.label}</span><span>{progress.percent}%</span></div>
-                <div className="mt-2 h-2 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${progress.percent}%` }} /></div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${progress.percent}%` }} /></div>
               </div>
             ) : null}
-            {message ? <p className="mt-4 rounded-xl border border-line bg-paper/45 px-4 py-3 text-sm text-cinnabar">{message}</p> : null}
+            {message ? <p className="mt-4 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
 
             <div className="mt-5 space-y-3">
               {!assets.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
@@ -212,7 +215,7 @@ export function OwnerBackgroundMusicManager() {
                 const primary = musicPublicUrl(asset.storage_path);
                 const fallback = musicPublicUrl(asset.fallback_storage_path);
                 return (
-                  <article key={asset.id} className="rounded-2xl border border-line bg-paper/35 p-4">
+                  <article key={asset.id} className="border-t border-line/70 pt-4">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
