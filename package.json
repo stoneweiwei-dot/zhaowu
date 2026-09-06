@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "prebuild": "node scripts/write-og-preview.mjs && node scripts/write-official-mark.mjs",
+    "prebuild": "node scripts/write-og-preview.mjs",
     "test:deploy": "tsx --test scripts/og-preview.test.mjs scripts/vercel-deployment.test.mjs scripts/vercel-deployment-policy.test.mjs scripts/deploy-gate.test.mjs scripts/release-ledger.test.mjs",
     "test:engine": "tsx --test scripts/*.test.mjs",
     "build": "npm run prebuild && npm run test:deploy && vite build && tsc --noEmit",
