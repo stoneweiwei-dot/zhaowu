@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最后核对：2026-09-05 20:30 AEST
+最后核对：2026-09-06 16:15 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -62,7 +62,7 @@
 - 身体栏属于传统象义提醒，不是医疗诊断。
 - 图失败不能拖死文字报告。
 
-## 5. 当前视觉系统（2026-08-29 最新）
+## 5. 当前视觉系统（2026-09-06 最新）
 
 视觉母版是暖米宣纸／宋式图谱体系。全站应用页按「一幅锁死在页面里的东方长卷」处理：
 
@@ -74,6 +74,7 @@
 - 动态 owner 背景不再参与前台 shell；图库、后台上传与管理独立保留。
 - 完整报告为一张连续暖宣纸阅读面，不再使用紫黑大底、ornament rail、龙贴纸或多张 section 卡。
 - 青玉小龙 AI 导览、Gallery 命请匹配与真实命请图生成逻辑不因 UI 改版改变。
+- 品牌識別使用 r59 翡翠金蓮＋朱印「昭梧」透明 Logo；iPhone／PWA 使用 r59 亮版祥雲翡翠金蓮 180/192/512 圖標。正式 PNG 保存在 Supabase `zhaowu-backgrounds/brand/r59/`，由 Vercel 同源路徑代理，不依賴第三方臨時分享網址。
 
 最终视觉覆盖层：`src/home-sheet-ui-v5.css`；报告层：`src/focused-report.css`。
 
@@ -90,7 +91,7 @@
 - iPhone 关键流程最终实机验收。
 - 八字 chart：完整刑冲合害库、正式病药通关、完整岁运作用链仍未实现。
 - 正式「制作我的命请图」按钮已改为请求 `force=true` 的供应商个性化图；真实 provider 成功仍依赖图片 API credits，失败时必须回退 Gallery-direct，且不得阻塞文字报告。
-- Loading 已上線站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 與同名 JPEG 海報，`LOTUS_BLOOM_MS=5000`，`HARD_EXIT_MS=5300`。主畫面圖標為站主宋畫金蓮 `/apple-touch-icon-r53.png`。舊 r40 分片與 r26 路徑不再作為現行 Loading。
+- Loading 已上線站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 與同名 JPEG 海報，`LOTUS_BLOOM_MS=5000`，`HARD_EXIT_MS=5300`。Loading 影片版本仍為 r53；主畫面圖標已由 r59 亮版祥雲翡翠金蓮取代舊 `/apple-touch-icon-r53.png`。
 
 ## 8. 生产优先级
 
