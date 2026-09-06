@@ -76,7 +76,7 @@ type LoadedArtwork = { image: HTMLImageElement; asset: ReportVisualAsset | null 
 async function loadArtwork(primary: ReportVisualAsset | null, fallback: string): Promise<LoadedArtwork | null> {
   if (primary) {
     try {
-      return { image: await loadImage(primary.src), asset: primary };
+      return { image: await loadImage(primary.fullImageUrl || primary.thumbnailUrl || primary.src), asset: { ...primary, count: 1, index: 0, src: primary.fullImageUrl || primary.thumbnailUrl || primary.src } };
     } catch {
       // fall through to paper background
     }

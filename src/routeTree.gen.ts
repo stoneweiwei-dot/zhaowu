@@ -16,14 +16,15 @@ import { Route as AuspiciousAtlasRouteImport } from './routes/auspicious-atlas'
 import { Route as FunTestsRouteImport } from './routes/fun-tests'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as IndianAstrologyRouteImport } from './routes/indian-astrology'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as QizhengRouteImport } from './routes/qizheng'
-import { Route as QuizSixRealmsRouteImport } from './routes/quiz.six-realms'
 import { Route as TeaGuardianRouteImport } from './routes/tea-guardian'
 import { Route as TianjiDualRouteImport } from './routes/tianji-dual'
 import { Route as TianjiXinggongRouteImport } from './routes/tianji-xinggong'
 import { Route as YizhangjingRouteImport } from './routes/yizhangjing'
 import { Route as ZiweiRouteImport } from './routes/ziwei'
+import { Route as QuizSixRealmsRouteImport } from './routes/quiz.six-realms'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -60,6 +61,11 @@ const HistoryRoute = HistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndianAstrologyRoute = IndianAstrologyRouteImport.update({
+  id: '/indian-astrology',
+  path: '/indian-astrology',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -68,11 +74,6 @@ const LoginRoute = LoginRouteImport.update({
 const QizhengRoute = QizhengRouteImport.update({
   id: '/qizheng',
   path: '/qizheng',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QuizSixRealmsRoute = QuizSixRealmsRouteImport.update({
-  id: '/quiz/six-realms',
-  path: '/quiz/six-realms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeaGuardianRoute = TeaGuardianRouteImport.update({
@@ -100,6 +101,11 @@ const ZiweiRoute = ZiweiRouteImport.update({
   path: '/ziwei',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuizSixRealmsRoute = QuizSixRealmsRouteImport.update({
+  id: '/quiz/six-realms',
+  path: '/quiz/six-realms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -109,14 +115,15 @@ export interface FileRoutesByFullPath {
   '/fun-tests': typeof FunTestsRoute
   '/gallery': typeof GalleryRoute
   '/history': typeof HistoryRoute
+  '/indian-astrology': typeof IndianAstrologyRoute
   '/login': typeof LoginRoute
   '/qizheng': typeof QizhengRoute
-  '/quiz/six-realms': typeof QuizSixRealmsRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/yizhangjing': typeof YizhangjingRoute
   '/ziwei': typeof ZiweiRoute
+  '/quiz/six-realms': typeof QuizSixRealmsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,14 +133,15 @@ export interface FileRoutesByTo {
   '/fun-tests': typeof FunTestsRoute
   '/gallery': typeof GalleryRoute
   '/history': typeof HistoryRoute
+  '/indian-astrology': typeof IndianAstrologyRoute
   '/login': typeof LoginRoute
   '/qizheng': typeof QizhengRoute
-  '/quiz/six-realms': typeof QuizSixRealmsRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/yizhangjing': typeof YizhangjingRoute
   '/ziwei': typeof ZiweiRoute
+  '/quiz/six-realms': typeof QuizSixRealmsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -144,14 +152,15 @@ export interface FileRoutesById {
   '/fun-tests': typeof FunTestsRoute
   '/gallery': typeof GalleryRoute
   '/history': typeof HistoryRoute
+  '/indian-astrology': typeof IndianAstrologyRoute
   '/login': typeof LoginRoute
   '/qizheng': typeof QizhengRoute
-  '/quiz/six-realms': typeof QuizSixRealmsRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/yizhangjing': typeof YizhangjingRoute
   '/ziwei': typeof ZiweiRoute
+  '/quiz/six-realms': typeof QuizSixRealmsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -163,14 +172,15 @@ export interface FileRouteTypes {
     | '/fun-tests'
     | '/gallery'
     | '/history'
+    | '/indian-astrology'
     | '/login'
     | '/qizheng'
-    | '/quiz/six-realms'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
     | '/yizhangjing'
     | '/ziwei'
+    | '/quiz/six-realms'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -180,14 +190,15 @@ export interface FileRouteTypes {
     | '/fun-tests'
     | '/gallery'
     | '/history'
+    | '/indian-astrology'
     | '/login'
     | '/qizheng'
-    | '/quiz/six-realms'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
     | '/yizhangjing'
     | '/ziwei'
+    | '/quiz/six-realms'
   id:
     | '__root__'
     | '/'
@@ -197,14 +208,15 @@ export interface FileRouteTypes {
     | '/fun-tests'
     | '/gallery'
     | '/history'
+    | '/indian-astrology'
     | '/login'
     | '/qizheng'
-    | '/quiz/six-realms'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
     | '/yizhangjing'
     | '/ziwei'
+    | '/quiz/six-realms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -215,14 +227,15 @@ export interface RootRouteChildren {
   FunTestsRoute: typeof FunTestsRoute
   GalleryRoute: typeof GalleryRoute
   HistoryRoute: typeof HistoryRoute
+  IndianAstrologyRoute: typeof IndianAstrologyRoute
   LoginRoute: typeof LoginRoute
   QizhengRoute: typeof QizhengRoute
-  QuizSixRealmsRoute: typeof QuizSixRealmsRoute
   TeaGuardianRoute: typeof TeaGuardianRoute
   TianjiDualRoute: typeof TianjiDualRoute
   TianjiXinggongRoute: typeof TianjiXinggongRoute
   YizhangjingRoute: typeof YizhangjingRoute
   ZiweiRoute: typeof ZiweiRoute
+  QuizSixRealmsRoute: typeof QuizSixRealmsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -276,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/indian-astrology': {
+      id: '/indian-astrology'
+      path: '/indian-astrology'
+      fullPath: '/indian-astrology'
+      preLoaderRoute: typeof IndianAstrologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -288,13 +308,6 @@ declare module '@tanstack/react-router' {
       path: '/qizheng'
       fullPath: '/qizheng'
       preLoaderRoute: typeof QizhengRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/quiz/six-realms': {
-      id: '/quiz/six-realms'
-      path: '/quiz/six-realms'
-      fullPath: '/quiz/six-realms'
-      preLoaderRoute: typeof QuizSixRealmsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tea-guardian': {
@@ -332,6 +345,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ZiweiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quiz/six-realms': {
+      id: '/quiz/six-realms'
+      path: '/quiz/six-realms'
+      fullPath: '/quiz/six-realms'
+      preLoaderRoute: typeof QuizSixRealmsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -343,14 +363,15 @@ const rootRouteChildren: RootRouteChildren = {
   FunTestsRoute: FunTestsRoute,
   GalleryRoute: GalleryRoute,
   HistoryRoute: HistoryRoute,
+  IndianAstrologyRoute: IndianAstrologyRoute,
   LoginRoute: LoginRoute,
   QizhengRoute: QizhengRoute,
-  QuizSixRealmsRoute: QuizSixRealmsRoute,
   TeaGuardianRoute: TeaGuardianRoute,
   TianjiDualRoute: TianjiDualRoute,
   TianjiXinggongRoute: TianjiXinggongRoute,
   YizhangjingRoute: YizhangjingRoute,
   ZiweiRoute: ZiweiRoute,
+  QuizSixRealmsRoute: QuizSixRealmsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

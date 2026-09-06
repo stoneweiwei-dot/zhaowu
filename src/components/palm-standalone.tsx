@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { CityPicker } from "@/components/city-picker";
 import { useI18n, type Locale } from "@/lib/i18n";
@@ -7,6 +7,7 @@ import { buildPalmSynthesis, palmDaoTone, presentLunarLabel, presentPalmPalace, 
 import { saveSpecialistHistory } from "@/lib/specialist-history";
 import type { CityHit, Gender } from "@/lib/bazi/types";
 import type { PalmReading } from "@/lib/core/types";
+import { readSharedBirthRecord, writeSharedBirthRecord } from "@/lib/shared-birth";
 
 type D60BirthPayload = {
   year: number;
@@ -24,7 +25,7 @@ const COPY = {
     kicker: "昭梧 · 前世今生專題", title: "前世今生・達摩一掌經", lead: "一掌經最迷人的地方，不只在四個宮位，而在它把四宮串成一條前世到今生的因果線：從哪一道來、留下什麼習氣、今生又該怎麼把這份本事用好。",
     scopeTitle: "一掌之間，看四世來處", scopeFour: "四宮｜年宮、月宮、日宮、時宮依序排出四世輪迴足跡。", scopeStars: "十二星｜每一宮都有主星，說明這一世留下的性格與能力。", scopeRealms: "六道來處｜佛、仙、人、修羅、鬼、畜生六類象意，讀的是習氣與修行課題。",
     note: "它不替你證明一段無法驗證的前世歷史，而是給『我為什麼會成為現在的我』一個有秩序、可閱讀的因果框架。",
-    formTitle: "填寫出生資料", formLead: "同一份資料同時給一掌經與印度古法占星使用。印度古法占星旁證必須有精確到分鐘的出生時間與出生地；資料不足時只生成一掌經，不會硬算旁證。",
+    formTitle: "出生資料（沿用共享記錄）", formLead: "同一份生辰由首頁四柱八字保存。本頁不再要求從頭填寫；只有順逆與分鐘精度需要在這裡確認。",
     name: "稱呼（選填）", namePh: "用來標記這台裝置裡的報告", direction: "一掌經順逆（必填）", directionHelp: "這是傳統算法的順逆參數，不用來定義你的性別身份。",
     forward: "順行（傳統男命）", reverse: "逆行（傳統女命）", date: "出生日期（國曆）", year: "年", month: "月", day: "日",
     time: "出生時間（精確到分鐘）", hour: "時", minute: "分", timeUnknown: "不知道出生時間（時宮留白；印度古法占星不判定）",
@@ -38,7 +39,7 @@ const COPY = {
     kicker: "昭梧 · 前世今生专题", title: "前世今生・达摩一掌经", lead: "一掌经最迷人的地方，不只在四个宫位，而在它把四宫串成一条前世到今生的因果线：从哪一道来、留下什么习气、今生又该怎么把这份本事用好。",
     scopeTitle: "一掌之间，看四世来处", scopeFour: "四宫｜年宫、月宫、日宫、时宫依序排出四世轮回足迹。", scopeStars: "十二星｜每一宫都有主星，说明这一世留下的性格与能力。", scopeRealms: "六道来处｜佛、仙、人、修罗、鬼、畜生六类象意，读的是习气与修行课题。",
     note: "它不替你证明一段无法验证的前世历史，而是给‘我为什么会成为现在的我’一个有秩序、可阅读的因果框架。",
-    formTitle: "填写出生资料", formLead: "同一份资料同时给一掌经与印度古法占星使用。印度古法占星旁证必须有精确到分钟的出生时间与出生地；资料不足时只生成一掌经，不会硬算旁证。",
+    formTitle: "出生资料（沿用共享记录）", formLead: "同一份生辰由首页四柱八字保存。本页不再要求从头填写；只有顺逆与分钟精度需要在这里确认。",
     name: "称呼（选填）", namePh: "用来标记这台设备里的报告", direction: "一掌经顺逆（必填）", directionHelp: "这是传统算法的顺逆参数，不用来定义你的性别身份。",
     forward: "顺行（传统男命）", reverse: "逆行（传统女命）", date: "出生日期（公历）", year: "年", month: "月", day: "日",
     time: "出生时间（精确到分钟）", hour: "时", minute: "分", timeUnknown: "不知道出生时间（时宫留白；印度古法占星不判断）",
@@ -52,7 +53,7 @@ const COPY = {
     kicker: "Zhaowu · Past & Present", title: "Dharma Palm · Four-Palace Reading", lead: "The appeal of the Dharma Palm is not only its four palaces, but the way they form a symbolic line from prior lives into the present: the realm a pattern comes from, what it leaves behind, and how that gift is handled now.",
     scopeTitle: "Four prior-life palaces in one palm", scopeFour: "Four palaces · Year, month, day and hour form a four-life symbolic trail.", scopeStars: "Twelve stars · Each palace carries a star describing the ability and pattern it leaves behind.", scopeRealms: "Six realms · Buddha, immortal, human, Asura, ghost and animal imagery frame the recurring lesson.",
     note: "This does not prove unverifiable past-life history. It offers a coherent symbolic framework for asking why certain strengths and habits feel so persistent.",
-    formTitle: "Birth details", formLead: "One set of birth data now feeds both the Palm reading and Indian classical astrology. The astrology cross-check requires a minute-accurate birth time and birthplace; without them, the Palm reading still runs and the cross-check is withheld.",
+    formTitle: "Shared birth record", formLead: "The same birth record is reused from Zi Ping BaZi. This page does not ask you to enter it again; only the traditional sequence and minute-accuracy confirmation stay here.",
     name: "Name (optional)", namePh: "Used to label this report on your device", direction: "Palm sequence (required)", directionHelp: "This is the traditional method's calculation parameter; it does not define your gender identity.",
     forward: "Forward sequence (traditional male chart)", reverse: "Reverse sequence (traditional female chart)", date: "Date of birth (Gregorian)", year: "Year", month: "Month", day: "Day",
     time: "Birth time (to the minute)", hour: "Hour", minute: "Minute", timeUnknown: "Birth time unknown — leave the hour palace blank and withhold Indian classical astrology",
@@ -82,6 +83,19 @@ export function PalmStandalone() {
   const [historySaved, setHistorySaved] = useState(false);
   const resultRef = useRef<HTMLElement>(null);
   const maxYear = new Date().getFullYear();
+
+  useEffect(() => {
+    const record = readSharedBirthRecord();
+    if (!record) return;
+    setYear(String(record.year));
+    setMonth(String(record.month));
+    setDay(String(record.day));
+    setTimeUnknown(record.timeUnknown);
+    setBirthHour(record.timeUnknown ? "" : String(record.hour));
+    setBirthMinute(record.timeUnknown ? "" : String(record.minute));
+    setCity(record.city);
+    if (record.gender === "male" || record.gender === "female") setGender(record.gender);
+  }, []);
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -118,6 +132,24 @@ export function PalmStandalone() {
       ? { year: y, month: m, day: d, hour: h, minute: min, city }
       : null;
     window.dispatchEvent(new CustomEvent<D60BirthPayload | null>(D60_BIRTH_EVENT, { detail: d60Birth }));
+
+    const existing = readSharedBirthRecord();
+    if (city) {
+      writeSharedBirthRecord({
+        year: y,
+        month: m,
+        day: d,
+        hour: h,
+        minute: min,
+        timeUnknown,
+        gender,
+        relation: existing?.relation ?? "unset",
+        city,
+        liveCity: existing?.liveCity ?? null,
+        ziPolicy: "midnight",
+        useTrueSolar: true,
+      });
+    }
 
     const savedSynthesis = buildPalmSynthesis(reading.palaces, locale);
     const timeLabel = timeUnknown ? copy.timeUnknown : `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;

@@ -3,7 +3,7 @@ import type { AnalysisResult } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import { buildReportLuckModel } from "@/lib/report/report-luck-model";
 import { getLuckVisualAsset } from "@/lib/report/report-visual-assets";
-import { ReportSpriteArtwork } from "@/components/report-sprite-artwork";
+import { ReportSpriteArtwork, toViewerItem } from "@/components/report-sprite-artwork";
 
 function periodAge(locale: "zh-Hant" | "zh-Hans" | "en", startAge: number, endAge: number) {
   if (locale === "en") return `age ${startAge}–${endAge}`;
@@ -19,6 +19,7 @@ export function ReportLuckBook({ result }: { result: AnalysisResult }) {
   const model = useMemo(() => buildReportLuckModel(result.chart, locale), [result.chart, locale]);
   const currentAsset = model.current && model.timingAvailable ? getLuckVisualAsset(model.current.ganZhi) : null;
   const annualAsset = getLuckVisualAsset(model.annualStemBranch);
+  const gallery = [currentAsset && model.current ? toViewerItem(currentAsset, `${model.currentLabel} ${model.current.ganZhi}`) : null, annualAsset ? toViewerItem(annualAsset, `${model.annualLabel} ${model.annualStemBranch}`) : null].filter(Boolean) as ReturnType<typeof toViewerItem>[];
   const imageFallback = locale === "en"
     ? "The matching timing artwork did not load. Timing and report text are unaffected."
     : locale === "zh-Hans"
@@ -62,13 +63,13 @@ export function ReportLuckBook({ result }: { result: AnalysisResult }) {
           {currentAsset && model.current ? (
             <article className="zhaowu-luck-visual-card">
               <span>{model.currentLabel} · {model.current.ganZhi}</span>
-              <ReportSpriteArtwork asset={currentAsset} alt={`${model.currentLabel} ${model.current.ganZhi}`} fallbackText={imageFallback} compact />
+              <ReportSpriteArtwork asset={currentAsset} alt={`${model.currentLabel} ${model.current.ganZhi}`} fallbackText={imageFallback} compact gallery={gallery} />
             </article>
           ) : null}
           {annualAsset ? (
             <article className="zhaowu-luck-visual-card">
               <span>{model.annualLabel} · {model.annualStemBranch}</span>
-              <ReportSpriteArtwork asset={annualAsset} alt={`${model.annualLabel} ${model.annualStemBranch}`} fallbackText={imageFallback} compact />
+              <ReportSpriteArtwork asset={annualAsset} alt={`${model.annualLabel} ${model.annualStemBranch}`} fallbackText={imageFallback} compact gallery={gallery} />
             </article>
           ) : null}
         </div>

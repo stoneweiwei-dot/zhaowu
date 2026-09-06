@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { AnalysisResult, Element } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { buildReportVisualModel, type ReportVisualTab } from "@/lib/report/report-visual-model";
-import { getReportVisualAsset } from "@/lib/report/report-visual-assets";
-import { ReportSpriteArtwork } from "@/components/report-sprite-artwork";
+import { getReportVisualAsset, REPORT_OVERVIEW_ASSET } from "@/lib/report/report-visual-assets";
+import { ReportSpriteArtwork, toViewerItem } from "@/components/report-sprite-artwork";
 
 const COPY: Record<Locale, {
   kicker: string;
@@ -115,6 +115,13 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
   const model = useMemo(() => buildReportVisualModel(result.chart, locale), [result.chart, locale]);
   const dayAsset = useMemo(() => getReportVisualAsset("day-master", model.dayMaster.visualKey), [model.dayMaster.visualKey]);
   const seasonAsset = useMemo(() => getReportVisualAsset("month", model.season.visualKey), [model.season.visualKey]);
+  const gallery = useMemo(() => {
+    const items = [];
+    items.push(toViewerItem(REPORT_OVERVIEW_ASSET, copy.title));
+    if (dayAsset) items.push(toViewerItem(dayAsset, model.dayMaster.imageAlt));
+    if (seasonAsset) items.push(toViewerItem(seasonAsset, model.season.imageAlt));
+    return items;
+  }, [copy.title, dayAsset, model.dayMaster.imageAlt, model.season.imageAlt, seasonAsset]);
   const [active, setActive] = useState<ReportVisualTab>("overview");
 
   useEffect(() => setActive("overview"), [result.id]);
@@ -152,7 +159,7 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
       <div className="zhaowu-visual-stage" role="tabpanel" aria-live="polite">
         {active === "overview" ? (
           <article className="zhaowu-visual-card zhaowu-visual-overview">
-            <div className="zhaowu-visual-overview-art" aria-hidden="true" />
+            <ReportSpriteArtwork asset={REPORT_OVERVIEW_ASSET} alt={copy.title} fallbackText={copy.imageFallback} gallery={gallery} />
             <div className="zhaowu-visual-card-copy">
               <p className="zhaowu-visual-eyebrow">{copy.active}</p>
               <h5>{copy.title}</h5>
@@ -173,7 +180,7 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
               <p>{copy.day}</p>
               <h5>{model.dayMaster.title}</h5>
             </div>
-            <ReportSpriteArtwork asset={dayAsset} alt={model.dayMaster.imageAlt} fallbackText={copy.imageFallback} />
+            <ReportSpriteArtwork asset={dayAsset} alt={model.dayMaster.imageAlt} fallbackText={copy.imageFallback} gallery={gallery} />
             <p className="zhaowu-visual-summary">{model.dayMaster.summary}</p>
             <div className="zhaowu-visual-tags">{model.dayMaster.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}</div>
             <dl className="zhaowu-visual-facts">
@@ -191,7 +198,7 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
               <h5>{model.season.title}</h5>
               <span>{model.season.seasonLabel}</span>
             </div>
-            <ReportSpriteArtwork asset={seasonAsset} alt={model.season.imageAlt} fallbackText={copy.imageFallback} />
+            <ReportSpriteArtwork asset={seasonAsset} alt={model.season.imageAlt} fallbackText={copy.imageFallback} gallery={gallery} />
             <p className="zhaowu-visual-summary">{model.season.summary}</p>
             <div className="zhaowu-season-period">
               <span>{copy.period}</span>

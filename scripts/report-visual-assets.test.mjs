@@ -25,10 +25,11 @@ test("sprite rendering stays 9:16, lazy-loads and fails open", async () => {
   const css = await read("src/report-visual-assets.css");
   const component = await read("src/components/report-sprite-artwork.tsx");
   assert.match(css, /aspect-ratio:\s*9\s*\/\s*16/);
-  assert.match(component, /asset\.count \* 100/);
-  assert.match(component, /asset\.index \* -100/);
+  assert.match(component, /thumbnailUrl/);
+  assert.match(component, /fullImageUrl/);
   assert.match(component, /\/wallpaper-song\.jpg/);
   assert.match(component, /loading="lazy"/);
+  assert.match(component, /ImageViewer/);
   assert.match(component, /report-visual-assets\.css/);
 });
 

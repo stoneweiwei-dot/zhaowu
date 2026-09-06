@@ -1,52 +1,77 @@
 export type ReportVisualAsset = {
+  id: string;
   src: string;
   index: number;
   count: number;
+  thumbnailUrl: string;
+  fullImageUrl: string;
 };
 
-export type ReportVisualAssetKind = "day-master" | "month";
+export type ReportVisualAssetKind = "day-master" | "month" | "overview";
 export type LuckVisualElement = "木" | "火" | "土" | "金" | "水";
 
 const REPORT_VISUAL_CDN_BASE = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r57";
 const REPORT_LUCK_CDN_BASE = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r59";
+const REPORT_OVERVIEW_CDN = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r62/overview-bg.webp";
+
+function localPair(id: string, sprite: string, index: number, count: number): ReportVisualAsset {
+  return {
+    id,
+    src: sprite,
+    index,
+    count,
+    thumbnailUrl: `/report-visuals/thumb/${id}.webp`,
+    fullImageUrl: `/report-visuals/full/${id}.webp`,
+  };
+}
 
 const DAY_MASTER_ASSETS: Record<string, ReportVisualAsset> = {
-  "jia-wood": { src: `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, index: 0, count: 5 },
-  "yi-wood": { src: `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, index: 1, count: 5 },
-  "bing-fire": { src: `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, index: 2, count: 5 },
-  "ding-fire": { src: `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, index: 3, count: 5 },
-  "wu-earth": { src: `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, index: 4, count: 5 },
-  "ji-earth": { src: `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, index: 0, count: 5 },
-  "geng-metal": { src: `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, index: 1, count: 5 },
-  "xin-metal": { src: `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, index: 2, count: 5 },
-  "ren-water": { src: `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, index: 3, count: 5 },
-  "gui-water": { src: `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, index: 4, count: 5 },
+  "jia-wood": localPair("jia-wood", `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, 0, 5),
+  "yi-wood": localPair("yi-wood", `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, 1, 5),
+  "bing-fire": localPair("bing-fire", `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, 2, 5),
+  "ding-fire": localPair("ding-fire", `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, 3, 5),
+  "wu-earth": localPair("wu-earth", `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, 4, 5),
+  "ji-earth": localPair("ji-earth", `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, 0, 5),
+  "geng-metal": localPair("geng-metal", `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, 1, 5),
+  "xin-metal": localPair("xin-metal", `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, 2, 5),
+  "ren-water": localPair("ren-water", `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, 3, 5),
+  "gui-water": localPair("gui-water", `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, 4, 5),
 };
 
 const MONTH_ASSETS: Record<string, ReportVisualAsset> = {
-  "yin-spring": { src: `${REPORT_VISUAL_CDN_BASE}/month-0.webp`, index: 0, count: 3 },
-  "mao-spring": { src: `${REPORT_VISUAL_CDN_BASE}/month-0.webp`, index: 1, count: 3 },
-  "chen-spring": { src: `${REPORT_VISUAL_CDN_BASE}/month-0.webp`, index: 2, count: 3 },
-  "si-summer": { src: `${REPORT_VISUAL_CDN_BASE}/month-1.webp`, index: 0, count: 3 },
-  "wu-summer": { src: `${REPORT_VISUAL_CDN_BASE}/month-1.webp`, index: 1, count: 3 },
-  "wei-summer": { src: `${REPORT_VISUAL_CDN_BASE}/month-1.webp`, index: 2, count: 3 },
-  "shen-autumn": { src: `${REPORT_VISUAL_CDN_BASE}/month-2.webp`, index: 0, count: 3 },
-  "you-autumn": { src: `${REPORT_VISUAL_CDN_BASE}/month-2.webp`, index: 1, count: 3 },
-  "xu-autumn": { src: `${REPORT_VISUAL_CDN_BASE}/month-2.webp`, index: 2, count: 3 },
-  "hai-winter": { src: `${REPORT_VISUAL_CDN_BASE}/month-3.webp`, index: 0, count: 3 },
-  "zi-winter": { src: `${REPORT_VISUAL_CDN_BASE}/month-3.webp`, index: 1, count: 3 },
-  "chou-winter": { src: `${REPORT_VISUAL_CDN_BASE}/month-3.webp`, index: 2, count: 3 },
+  "yin-spring": localPair("yin-spring", `${REPORT_VISUAL_CDN_BASE}/month-0.webp`, 0, 3),
+  "mao-spring": localPair("mao-spring", `${REPORT_VISUAL_CDN_BASE}/month-0.webp`, 1, 3),
+  "chen-spring": localPair("chen-spring", `${REPORT_VISUAL_CDN_BASE}/month-0.webp`, 2, 3),
+  "si-summer": localPair("si-summer", `${REPORT_VISUAL_CDN_BASE}/month-1.webp`, 0, 3),
+  "wu-summer": localPair("wu-summer", `${REPORT_VISUAL_CDN_BASE}/month-1.webp`, 1, 3),
+  "wei-summer": localPair("wei-summer", `${REPORT_VISUAL_CDN_BASE}/month-1.webp`, 2, 3),
+  "shen-autumn": localPair("shen-autumn", `${REPORT_VISUAL_CDN_BASE}/month-2.webp`, 0, 3),
+  "you-autumn": localPair("you-autumn", `${REPORT_VISUAL_CDN_BASE}/month-2.webp`, 1, 3),
+  "xu-autumn": localPair("xu-autumn", `${REPORT_VISUAL_CDN_BASE}/month-2.webp`, 2, 3),
+  "hai-winter": localPair("hai-winter", `${REPORT_VISUAL_CDN_BASE}/month-3.webp`, 0, 3),
+  "zi-winter": localPair("zi-winter", `${REPORT_VISUAL_CDN_BASE}/month-3.webp`, 1, 3),
+  "chou-winter": localPair("chou-winter", `${REPORT_VISUAL_CDN_BASE}/month-3.webp`, 2, 3),
 };
 
 const LUCK_ASSETS: Record<LuckVisualElement, ReportVisualAsset> = {
-  木: { src: `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, index: 0, count: 5 },
-  火: { src: `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, index: 1, count: 5 },
-  土: { src: `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, index: 2, count: 5 },
-  金: { src: `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, index: 3, count: 5 },
-  水: { src: `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, index: 4, count: 5 },
+  木: localPair("luck-wood", `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, 0, 5),
+  火: localPair("luck-fire", `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, 1, 5),
+  土: localPair("luck-earth", `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, 2, 5),
+  金: localPair("luck-metal", `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, 3, 5),
+  水: localPair("luck-water", `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, 4, 5),
+};
+
+export const REPORT_OVERVIEW_ASSET: ReportVisualAsset = {
+  id: "overview",
+  src: REPORT_OVERVIEW_CDN,
+  index: 0,
+  count: 1,
+  thumbnailUrl: "/report-visuals/thumb/overview.webp",
+  fullImageUrl: "/report-visuals/full/overview.webp",
 };
 
 export function getReportVisualAsset(kind: ReportVisualAssetKind, key: string): ReportVisualAsset | null {
+  if (kind === "overview") return REPORT_OVERVIEW_ASSET;
   return (kind === "day-master" ? DAY_MASTER_ASSETS[key] : MONTH_ASSETS[key]) ?? null;
 }
 

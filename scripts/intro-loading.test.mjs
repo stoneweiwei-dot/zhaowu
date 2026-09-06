@@ -94,7 +94,7 @@ test('iPhone Safari routes stay mounted and Loading remains perceptible when boo
 
 test('home-screen icons are valid PNGs at iOS root and manifest sizes', async () => {
   const written = writeHomeIcons();
-  assert.equal(written.length, 11);
+  assert.equal(written.length, 17);
   const rootIcon = await readFile(new URL('../public/apple-touch-icon.png', import.meta.url));
   const precomposed = await readFile(new URL('../public/apple-touch-icon-precomposed.png', import.meta.url));
   const icon192 = await readFile(new URL('../public/icons/icon-192.png', import.meta.url));
@@ -120,12 +120,12 @@ test('home-screen icons are valid PNGs at iOS root and manifest sizes', async ()
   assert.equal(icon512.readUInt32BE(16), 512);
   assert.equal(icon512.readUInt32BE(20), 512);
   assert.doesNotMatch(iconWriter, /paintSeal|barW|barH/);
-  assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon-r53\.png"/);
-  assert.match(html, /apple-touch-icon-r53-precomposed\.png/);
-  assert.doesNotMatch(html, /apple-touch-icon-r53\.png\?v=/);
-  assert.match(manifest, /"src": "\/apple-touch-icon-r53\.png"/);
-  assert.match(manifest, /"src": "\/icons\/zhaowu-lotus-192\.png/);
-  assert.match(manifest, /"src": "\/icons\/zhaowu-lotus-512\.png/);
+  assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon-v3\.png"/);
+  assert.match(html, /apple-touch-icon-v3-precomposed\.png/);
+  assert.doesNotMatch(html, /apple-touch-icon-r53\.png/);
+  assert.match(manifest, /"src": "\/apple-touch-icon-v3\.png"/);
+  assert.match(manifest, /"src": "\/android-chrome-192x192\.png/);
+  assert.match(manifest, /"src": "\/android-chrome-512x512\.png/);
 });
 
 test('owner loading video is a committed H.264 file, not a rewrite 404', async () => {

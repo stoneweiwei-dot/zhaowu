@@ -126,7 +126,7 @@ test("site shell keeps the approved Zhaowu lotus brand mark without random page-
   assert.doesNotMatch(shell, /SealScatter/);
   assert.doesNotMatch(shell, /auspicious-emblem-scatter/);
   assert.match(shell, /zhaowu-app-frame/);
-  assert.match(seal, /\/icons\/zhaowu-lotus-192\.png/);
+  assert.match(seal, /zhaowu-brand-seal/);
   assert.match(seal, /aria-label=\{decorative \? undefined : "昭梧"\}/);
 });
 
@@ -154,7 +154,7 @@ test("active full-report renderer has no report dragon or ornament rail", async 
 test("Dharma Palm standalone keeps the four-life trail without decorative emblem logos", async () => {
   const route = await source("src/routes/yizhangjing.tsx");
   const palm = await source("src/components/palm-standalone.tsx");
-  assert.match(route, /MethodExplainPage/);
+  assert.match(route, /PalmStandalone/);
   assert.match(palm, /traceTitle/);
   assert.match(palm, /four-life symbolic trail/);
   assert.match(palm, /zhaowu:d60-birth/);

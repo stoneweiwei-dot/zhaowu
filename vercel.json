@@ -8,6 +8,7 @@
   "git": {
     "deploymentEnabled": {
       "main": true,
+      "feat/r67-report-lightbox-six-views-homescreen": true,
       "*": false
     }
   },
