@@ -15,7 +15,7 @@ const UPLOAD_TIMEOUT_MS = 120_000;
 const FFMPEG_PROVIDERS = [
   {
     moduleUrl: "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/index.js",
-    classWorkerUrl: "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/worker.js",
+    classWorkerUrl: "https://esm.sh/@ffmpeg/ffmpeg@0.12.15/dist/esm/worker.js?bundle",
     coreUrl: "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js",
     wasmUrl: "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm",
   },
@@ -284,6 +284,17 @@ async function deleteObject(session: SupabaseSession, path: string) {
   if (!res.ok && res.status !== 404) await parse(res);
 }
 
+async function deleteMetadata(session: SupabaseSession, id: string) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/background_music_assets?id=eq.${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: {
+      ...apiHeaders(session.access_token),
+      Prefer: "return=minimal",
+    },
+  });
+  if (!res.ok) await parse(res);
+}
+
 export async function uploadBackgroundMusicResilient(
   session: SupabaseSession,
   file: File,
@@ -337,7 +348,10 @@ export async function uploadBackgroundMusicResilient(
     onProgress?.({ stage: "saving", percent: 98, label: "切換目前背景音樂" });
     await activateBackgroundMusic(session, asset.id);
   } catch (error) {
-    await deleteObject(session, storagePath).catch(() => undefined);
+    await Promise.allSettled([
+      deleteObject(session, storagePath),
+      deleteMetadata(session, asset.id),
+    ]);
     throw error;
   }
 
