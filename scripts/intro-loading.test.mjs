@@ -92,7 +92,7 @@ test('iPhone Safari routes stay mounted and Loading remains perceptible when boo
   assert.doesNotMatch(root, /runtimeReady\s*\?\s*<SiteShell/);
 });
 
-test('home-screen icons are valid PNGs at iOS root and manifest sizes', async () => {
+test('home-screen source icons remain valid PNGs and active metadata uses r59', async () => {
   const written = writeHomeIcons();
   assert.equal(written.length, 11);
   const rootIcon = await readFile(new URL('../public/apple-touch-icon.png', import.meta.url));
@@ -120,12 +120,12 @@ test('home-screen icons are valid PNGs at iOS root and manifest sizes', async ()
   assert.equal(icon512.readUInt32BE(16), 512);
   assert.equal(icon512.readUInt32BE(20), 512);
   assert.doesNotMatch(iconWriter, /paintSeal|barW|barH/);
-  assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon-r53\.png"/);
-  assert.match(html, /apple-touch-icon-r53-precomposed\.png/);
-  assert.doesNotMatch(html, /apple-touch-icon-r53\.png\?v=/);
-  assert.match(manifest, /"src": "\/apple-touch-icon-r53\.png"/);
-  assert.match(manifest, /"src": "\/icons\/zhaowu-lotus-192\.png/);
-  assert.match(manifest, /"src": "\/icons\/zhaowu-lotus-512\.png/);
+  assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon-r59\.png"/);
+  assert.match(html, /apple-touch-icon-r59-precomposed\.png/);
+  assert.match(html, /\/brand\/zhaowu-logo-r59\.png/);
+  assert.match(manifest, /"src": "\/apple-touch-icon-r59\.png"/);
+  assert.match(manifest, /"src": "\/icons\/zhaowu-lotus-r59-192\.png/);
+  assert.match(manifest, /"src": "\/icons\/zhaowu-lotus-r59-512\.png/);
 });
 
 test('owner loading video is a committed H.264 file, not a rewrite 404', async () => {
