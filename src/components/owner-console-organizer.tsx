@@ -38,59 +38,69 @@ export function OwnerConsoleOrganizer() {
   }), [locale]);
 
   useEffect(() => {
-    let observer: MutationObserver | null = null;
+    if (!user?.isOwner) {
+      setPortalTarget(null);
+      setBackgroundSection(null);
+      setReportsSection(null);
+      return;
+    }
+
     let disposed = false;
-
-    const cleanupSections = () => {
-      if (backgroundSection) backgroundSection.hidden = false;
-      if (reportsSection) reportsSection.hidden = false;
-    };
-
     const sync = () => {
-      if (disposed || !user?.isOwner || !accountPath()) {
+      if (disposed || !accountPath()) {
         setPortalTarget(null);
+        setBackgroundSection(null);
+        setReportsSection(null);
         return;
       }
-      const main = document.querySelector<HTMLElement>("main");
-      if (!main) return;
-      const sections = Array.from(main.children).filter((node): node is HTMLElement => node instanceof HTMLElement && node.tagName === "SECTION");
-      const first = sections[0] ?? null;
-      const backgrounds = sections.find((section) => section.textContent?.includes("BACKGROUND LIBRARY")) ?? sections[1] ?? null;
-      const reports = sections.find((section) => section.textContent?.includes("REPORTS")) ?? sections[2] ?? null;
-      setPortalTarget(first);
-      setBackgroundSection(backgrounds);
-      setReportsSection(reports);
+
+      const sections = Array.from(document.querySelectorAll<HTMLElement>("main > section"));
+      const ownerHeader = sections.find((section) => section.textContent?.includes("OWNER CONSOLE")) ?? null;
+      const backgrounds = sections.find((section) => section !== ownerHeader && section.textContent?.includes("BACKGROUND LIBRARY")) ?? null;
+      const reports = sections.find((section) => section !== ownerHeader && section.textContent?.includes("REPORTS")) ?? null;
+
+      // Never portal into a transient loading section and never hide the header that owns this dashboard.
+      setPortalTarget(ownerHeader && ownerHeader.isConnected ? ownerHeader : null);
+      setBackgroundSection(backgrounds && backgrounds.isConnected ? backgrounds : null);
+      setReportsSection(reports && reports.isConnected ? reports : null);
     };
 
     sync();
-    observer = new MutationObserver(sync);
+    const observer = new MutationObserver(sync);
     observer.observe(document.body, { childList: true, subtree: true });
     window.addEventListener("popstate", sync);
 
     return () => {
       disposed = true;
-      observer?.disconnect();
+      observer.disconnect();
       window.removeEventListener("popstate", sync);
-      cleanupSections();
     };
   }, [user?.isOwner]);
 
   useEffect(() => {
     if (!user?.isOwner || !accountPath()) return;
-    if (backgroundSection) backgroundSection.hidden = expanded !== "backgrounds";
-    if (reportsSection) reportsSection.hidden = expanded !== "reports";
+
+    if (backgroundSection && backgroundSection !== portalTarget) {
+      backgroundSection.hidden = expanded !== "backgrounds";
+    }
+    if (reportsSection && reportsSection !== portalTarget) {
+      reportsSection.hidden = expanded !== "reports";
+    }
+
     return () => {
-      if (backgroundSection) backgroundSection.hidden = false;
-      if (reportsSection) reportsSection.hidden = false;
+      if (backgroundSection && backgroundSection !== portalTarget) backgroundSection.hidden = false;
+      if (reportsSection && reportsSection !== portalTarget) reportsSection.hidden = false;
     };
-  }, [expanded, backgroundSection, reportsSection, user?.isOwner]);
+  }, [expanded, backgroundSection, reportsSection, portalTarget, user?.isOwner]);
 
   if (!user?.isOwner || !portalTarget || !accountPath()) return null;
 
   const openGroup = (group: Exclude<OwnerGroup, null>, section: HTMLElement | null) => {
     const next = expanded === group ? null : group;
     setExpanded(next);
-    if (next && section) window.setTimeout(() => section.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+    if (next && section && section !== portalTarget) {
+      window.setTimeout(() => section.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+    }
   };
 
   const openAudio = () => {
