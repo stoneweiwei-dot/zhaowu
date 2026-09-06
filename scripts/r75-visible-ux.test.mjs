@@ -30,13 +30,15 @@ test("report mother art has no photo-card frame", async () => {
   assert.match(lock, /mix-blend-mode:\s*multiply/);
 });
 
-test("installed iPhone app actively refreshes the current production shell", async () => {
+test("installed iPhone app actively refreshes the current production shell without reloading first-time visitors", async () => {
   const main = await source("src/main.tsx");
   const sw = await source("public/sw.js");
   const vercel = await source("vercel.json");
   assert.match(main, /updateViaCache:\s*'none'/);
   assert.match(main, /registration\.update\(\)/);
   assert.match(main, /controllerchange/);
+  assert.match(main, /hadControllerAtBoot = Boolean\(navigator\.serviceWorker\.controller\)/);
+  assert.match(main, /if \(!hadControllerAtBoot \|\| reloadedForControllerChange\) return/);
   assert.match(main, /pageshow/);
   assert.match(main, /visibilitychange/);
   assert.match(main, /checkForFreshShell/);
