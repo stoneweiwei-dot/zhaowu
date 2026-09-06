@@ -1,41 +1,17 @@
 import { expect, test } from "@playwright/test";
 
-test("iPhone Safari opens the real Dharma Palm Past & Present report", async ({ page }) => {
+test("iPhone Safari opens the Dharma One-Palm explanation and returns to the shared birth form", async ({ page }) => {
   await page.goto("/yizhangjing", { waitUntil: "domcontentloaded" });
 
-  await expect(page.getByRole("heading", { name: "前世今生・達摩一掌經" })).toBeVisible();
-  const birthDate = page.getByRole("group", { name: "出生日期（國曆）", exact: true });
-  const year = birthDate.getByLabel("年", { exact: true });
-  const month = birthDate.getByLabel("月", { exact: true });
-  const day = birthDate.getByLabel("日", { exact: true });
-  const birthTime = page.getByRole("group", { name: "出生時間（精確到分鐘）", exact: true });
-  const hour = birthTime.getByLabel("時", { exact: true });
-  const minute = birthTime.getByLabel("分", { exact: true });
-  await year.fill("1988");
-  await month.fill("10");
-  await day.fill("4");
-  await hour.fill("4");
-  await minute.fill("40");
-  await page.getByLabel("順行（傳統男命）").check();
+  await expect(page.getByRole("heading", { name: "達摩一掌經 · 前世今生", exact: true })).toBeVisible();
+  await expect(page.getByText("主要看前四世來路、反覆習性，以及被重複加強、留到今生的習慣。", { exact: true })).toBeVisible();
+  await expect(page.getByText("出生資料只在首頁填寫一次。本頁只說明這個體系主要看什麼。", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("年", { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("時", { exact: true })).toHaveCount(0);
 
-  for (const field of [year, month, day, hour, minute]) {
-    await expect(field).toBeVisible();
-    expect((await field.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(56);
-  }
-
-  await page.getByRole("button", { name: "生成我的報告" }).click();
-
-  await expect(page.getByRole("heading", { name: "前四世・六道習性報告" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "前四世來自哪一道" })).toBeVisible();
-  await expect(page.getByText("前四世", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("前三世", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("前二世", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("前一世", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText(/修羅道在四世中出現2次/)).toBeVisible();
-  await expect(page.getByText(/被重複加強/)).toBeVisible();
-  await expect(page.getByText("這一世的特徵", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("留到今生的習性", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("這份報告已保存在本裝置。")).toBeVisible();
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("zhaowu.specialist-history.v1") || "[]").length)).toBe(1);
+  const back = page.getByRole("link", { name: "回到出生資料", exact: true });
+  await expect(back).toBeVisible();
+  await back.click();
+  await expect(page.locator("#analysisForm")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
