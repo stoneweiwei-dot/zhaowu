@@ -11,6 +11,7 @@ export type GalleryDisplayGroup =
   | "background"
   | "dragon-sticker"
   | "tea-guardian"
+  | "loading"
   | "other";
 
 export const PUBLIC_ATLAS_GROUPS = [
@@ -25,6 +26,7 @@ export const PUBLIC_ATLAS_GROUPS = [
 export type PublicAtlasGroup = (typeof PUBLIC_ATLAS_GROUPS)[number];
 
 export const GALLERY_GROUP_ORDER: readonly GalleryDisplayGroup[] = [
+  "loading",
   "buddhist",
   "daoist",
   "guardian-beast",
@@ -40,13 +42,20 @@ export const GALLERY_GROUP_ORDER: readonly GalleryDisplayGroup[] = [
 
 const PUBLIC_ATLAS_SET = new Set<GalleryDisplayGroup>(PUBLIC_ATLAS_GROUPS);
 
+function hasTag(asset: GalleryAsset, tag: string) {
+  return (asset.tags ?? []).some((item) => item.trim().toLowerCase() === tag);
+}
+
 export function galleryDisplayGroup(asset: GalleryAsset): GalleryDisplayGroup {
+  if (asset.category === "loading") return "loading";
+  if (hasTag(asset, "loading") || hasTag(asset, "login-background")) return "loading";
   if (asset.category === "background") return "background";
   if (asset.category === "dragon-sticker") return "dragon-sticker";
   if (asset.category === "tea-guardian") return "tea-guardian";
   if (asset.category !== "visual-library") return "other";
 
   const key = asset.asset_key.toLowerCase();
+  if (key.startsWith("library-loading-") || key.startsWith("loading-")) return "loading";
   if (key.startsWith("library-buddhist-")) return "buddhist";
   if (key.startsWith("library-daoist-")) return "daoist";
   if (key.startsWith("library-guardian-beast-")) return "guardian-beast";
@@ -59,6 +68,10 @@ export function galleryDisplayGroup(asset: GalleryAsset): GalleryDisplayGroup {
 
 export function isPublicAtlasAsset(asset: GalleryAsset): boolean {
   return asset.category === "visual-library" && PUBLIC_ATLAS_SET.has(galleryDisplayGroup(asset));
+}
+
+export function isLoadingGalleryAsset(asset: GalleryAsset): boolean {
+  return galleryDisplayGroup(asset) === "loading";
 }
 
 export function sortGalleryAssets<T extends GalleryAsset>(assets: T[]): T[] {

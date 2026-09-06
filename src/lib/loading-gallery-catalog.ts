@@ -1,0 +1,65 @@
+export type LoadingCatalogKind = "image" | "animation";
+
+export type LoadingCatalogItem = {
+  asset_key: string;
+  title: string;
+  kind: LoadingCatalogKind;
+  publicPath: string;
+  tags: string[];
+  created_at: string;
+};
+
+/**
+ * Built-in login / loading library. These stay out of the public atlas
+ * and out of decree matching. Owner /gallery shows them in the Loading group.
+ */
+export const LOADING_GALLERY_CATALOG: readonly LoadingCatalogItem[] = [
+  {
+    asset_key: "loading-song-parchment-dragon",
+    title: "宋畫龍鶴蓮",
+    kind: "image",
+    publicPath: "/gallery/loading/song-parchment-dragon.jpg",
+    tags: ["loading", "login-background", "song-atlas", "dragon", "crane", "lotus"],
+    created_at: "2026-09-07T00:00:00.000Z",
+  },
+  {
+    asset_key: "loading-song-parchment-anim",
+    title: "宋畫龍鶴蓮動畫",
+    kind: "animation",
+    publicPath: "/gallery/loading/song-parchment-dragon.jpg",
+    tags: ["loading", "login-background", "animation", "song-atlas", "dragon", "lotus"],
+    created_at: "2026-09-07T00:00:01.000Z",
+  },
+  {
+    asset_key: "loading-dawn-dragon-lotus",
+    title: "晨光龍蓮",
+    kind: "image",
+    publicPath: "/gallery/loading/dawn-dragon-lotus.jpg",
+    tags: ["loading", "login-background", "dawn", "dragon", "lotus", "koi"],
+    created_at: "2026-09-07T00:00:02.000Z",
+  },
+  {
+    asset_key: "loading-dawn-dragon-anim",
+    title: "晨光龍蓮動畫",
+    kind: "animation",
+    publicPath: "/gallery/loading/dawn-dragon-lotus.jpg",
+    tags: ["loading", "login-background", "animation", "dawn", "dragon", "lotus"],
+    created_at: "2026-09-07T00:00:03.000Z",
+  },
+  {
+    asset_key: "loading-live-lotus-bloom",
+    title: "實拍蓮花經開",
+    kind: "animation",
+    publicPath: "/gallery/loading/anim-live-lotus-poster.jpg",
+    tags: ["loading", "login-background", "animation", "lotus", "live-bloom"],
+    created_at: "2026-09-07T00:00:04.000Z",
+  },
+  {
+    asset_key: "loading-official-monitor-cat",
+    title: "昭梧 Official 運營監控",
+    kind: "image",
+    publicPath: "/gallery/loading/official-monitor-cat.jpg",
+    tags: ["loading", "official", "monitor"],
+    created_at: "2026-09-07T00:00:05.000Z",
+  },
+];
