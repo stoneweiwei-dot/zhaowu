@@ -6,6 +6,7 @@ import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
+import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -37,6 +38,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     hydrateLocale();
+    runLocalHousekeeping();
     let alive = true;
 
     void recordVisit()
