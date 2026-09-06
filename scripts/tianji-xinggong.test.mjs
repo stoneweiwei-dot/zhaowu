@@ -96,7 +96,7 @@ test("前台不再要求客人手动判断中气", () => {
   const source = readFileSync(new URL("../src/routes/tianji-xinggong.tsx", import.meta.url), "utf8");
   assert.equal(source.includes('type="checkbox"'), false);
   assert.equal(source.includes("setAfterMiddleQi"), false);
-  assert.equal(source.includes("calculateTianjiFromSolar"), true);
+  assert.equal(source.includes("resolveTianjiBirth"), true);
   assert.equal(source.includes("readSharedBirthRecord"), true);
   assert.equal(source.includes("switchCalendar"), false);
   assert.equal(source.includes("CityPicker"), false);
