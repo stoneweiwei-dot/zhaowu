@@ -107,10 +107,10 @@ test("Gallery match is visible at the decree action instead of appearing only af
   assert.match(preview, /\.catch\(\(\) =>/);
 });
 
-test("owner Gallery is one upload surface with no manual religious taxonomy", async () => {
+test("owner Gallery keeps one normal upload path plus the explicit loading-assets group, with no manual religious taxonomy", async () => {
   const manager = await read("src/components/owner-gallery-manager.tsx");
-  assert.match(manager, /category:\s*"visual-library"/);
-  assert.match(manager, /tags:\s*\["owner-upload", "auto-classify"\]/);
+  assert.match(manager, /category:\s*view === "loading" \? "loading" : "visual-library"/);
+  assert.match(manager, /tags:\s*view === "loading" \? \["loading", "login-background", "owner-upload"\] : \["owner-upload", "auto-classify"\]/);
   assert.match(manager, /分類、五行、用途、客戶匹配與背景調用都由系統在後台處理/);
   assert.doesNotMatch(manager, /const CATEGORIES/);
   assert.doesNotMatch(manager, /<select[^>]*>[^]*buddhist|<select[^>]*>[^]*daoist/);
