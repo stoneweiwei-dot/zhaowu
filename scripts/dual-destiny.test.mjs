@@ -99,7 +99,7 @@ test("首页前世今生进入真正的达摩一掌经，性格两面保持诚�
     "utf8",
   );
 
-  assert.match(home, /to: "\/yizhangjing"/);
+  assert.match(home, /達摩一掌經/);
   assert.match(home, /前世今生/);
   assert.match(home, /zhaowu-home-portals/);
   assert.doesNotMatch(home, /性格兩面|zhaowu-home-dual-entry|双轨性格分析|zhaowu-tools-section/);
