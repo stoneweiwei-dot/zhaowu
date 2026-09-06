@@ -8,7 +8,8 @@ test("report visual registry covers 10 day masters, 12 months and grouped assets
   const registry = await read("src/lib/report/report-visual-assets.ts");
   for (const key of ["jia-wood", "yi-wood", "bing-fire", "ding-fire", "wu-earth", "ji-earth", "geng-metal", "xin-metal", "ren-water", "gui-water"]) assert.match(registry, new RegExp(`\\"${key}\\"`));
   for (const key of ["yin-spring", "mao-spring", "chen-spring", "si-summer", "wu-summer", "wei-summer", "shen-autumn", "you-autumn", "xu-autumn", "hai-winter", "zi-winter", "chou-winter"]) assert.match(registry, new RegExp(`\\"${key}\\"`));
-  for (const file of ["day-0.webp", "day-1.webp", "month-0.webp", "month-1.webp", "month-2.webp", "month-3.webp", "luck-0.webp"]) assert.match(registry, new RegExp(file.replace(".", "\\.")));
+  for (const file of ["day-0.webp", "day-1.webp", "month-0.webp", "month-1.webp", "month-2.webp", "month-3.webp"]) assert.match(registry, new RegExp(file.replace(".", "\\.")));
+  assert.doesNotMatch(registry, /luck-0\.webp/);
   assert.match(registry, /dayMaster:\s*10/);
   assert.match(registry, /month:\s*12/);
   assert.match(registry, /luckElement:\s*5/);
