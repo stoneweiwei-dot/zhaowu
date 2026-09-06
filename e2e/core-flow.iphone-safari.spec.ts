@@ -61,7 +61,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#analysisForm .zhaowu-quiz-topics")).toHaveCount(0);
     await expect(page.locator("#analysisForm .zhaowu-quiz-states")).toHaveCount(0);
     await expect(page.locator("#analysisForm")).toBeVisible();
-    await expect(page.getByRole("link", { name: "前世今生", exact: true })).toBeVisible();
+    await expect(page.getByRole("article", { name: "前世今生", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
     await expect(page.getByText("子時換日", { exact: true })).toHaveCount(0);
     await expect(page.getByText("套用真太陽時校正", { exact: true })).toHaveCount(0);
@@ -82,7 +82,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.getByRole("button", { name: "简中", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "前世今生", exact: true })).toBeVisible();
+    await expect(page.getByRole("article", { name: "前世今生", exact: true })).toBeVisible();
 
     await page.getByRole("button", { name: "EN", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();
@@ -91,7 +91,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#birth-year")).toBeVisible();
     await expect(page.locator("#birth-month")).toBeVisible();
     await expect(page.locator("#birth-day")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Past & Present", exact: true })).toBeVisible();
+    await expect(page.getByRole("article", { name: "Past & Present", exact: true })).toBeVisible();
 
     await page.getByRole("button", { name: "繁中", exact: true }).click();
     await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();

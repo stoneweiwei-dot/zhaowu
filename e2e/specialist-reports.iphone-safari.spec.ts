@@ -1,48 +1,21 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-async function fillBirth(page: Page, prefix: "qz" | "ziwei") {
-  await page.getByLabel("年", { exact: true }).fill("1988");
-  await page.getByLabel("月", { exact: true }).fill("10");
-  await page.getByLabel("日", { exact: true }).fill("4");
-  await page.getByLabel("時", { exact: true }).fill("4");
-  await page.getByLabel("分", { exact: true }).fill("40");
-  const city = page.getByLabel("出生地");
-  await city.fill("Sydney");
-  await expect(page.locator("." + prefix + "-city-results button").first()).toBeVisible();
-  await page.locator("." + prefix + "-city-results button").first().click();
-  await expect(city).toHaveValue("雪梨，澳洲");
-}
-
-test("Seven Luminaries uses one large mobile form and returns only a plain report", async ({ page }) => {
+test("Seven Luminaries uses the shared homepage birth record and keeps its explanation readable", async ({ page }) => {
   await page.goto("/qizheng", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: "你的七政命局報告" })).toBeVisible();
-  await fillBirth(page, "qz");
-  expect((await page.getByLabel("年", { exact: true }).boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(56);
-  await page.getByRole("button", { name: "生成我的報告" }).click();
-  await expect(page.getByRole("heading", { name: "你的個人報告" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "命局性情" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "被加強的慣性" })).toBeVisible();
-  await expect(page.locator(".qz-wheel, .qz-body, .qz-policy")).toHaveCount(0);
-  await expect(page.getByText("已自動保存在這台裝置。")).toBeVisible();
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("zhaowu.specialist-history.v1") || "[]").length)).toBe(1);
-  await page.getByRole("link", { name: "查看我的紀錄" }).click();
-  await expect(page.getByRole("heading", { name: "我的紀錄" })).toBeVisible();
-  await expect(page.getByText("七政四餘", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("1988-10-04 · 04:40", { exact: false })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "七政四餘", exact: true })).toBeVisible();
+  await expect(page.getByText("主要看性情、節奏、壓力反應與天時變化。", { exact: true })).toBeVisible();
+  await expect(page.getByText("出生資料只在首頁填寫一次。本頁只說明這個體系主要看什麼。", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("年", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "回到出生資料", exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
-test("Zi Wei opens normally and returns a customer report without a technical chart", async ({ page }) => {
+test("Zi Wei uses the shared homepage birth record and keeps its explanation readable", async ({ page }) => {
   await page.goto("/ziwei", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: "你的紫微報告" })).toBeVisible();
-  await fillBirth(page, "ziwei");
-  expect((await page.getByLabel("年", { exact: true }).boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(56);
-  await page.getByRole("button", { name: "生成我的報告" }).click();
-  await expect(page.getByRole("heading", { name: "性格底色" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "事業與做事方式" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "當前人生階段" })).toBeVisible();
-  await expect(page.locator(".ziwei-chart-board, .ziwei-technical")).toHaveCount(0);
-  await expect(page.getByText("已自動保存在這台裝置。")).toBeVisible();
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("zhaowu.specialist-history.v1") || "[]").length)).toBe(1);
+  await expect(page.getByRole("heading", { name: "紫微斗數", exact: true })).toBeVisible();
+  await expect(page.getByText("主要看性格、關係、事業、財務與十年主軸。", { exact: true })).toBeVisible();
+  await expect(page.getByText("出生資料只在首頁填寫一次。本頁只說明這個體系主要看什麼。", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("年", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "回到出生資料", exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
