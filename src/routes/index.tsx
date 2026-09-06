@@ -149,7 +149,7 @@ function Home() {
 
   return (
     <main className="zhaowu-home-sheet-page zhaowu-home-layout">
-      <div className="zhaowu-home-stage zhaowu-home-stage--primary relative" id="bazi">
+      <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
         <AnalysisForm />
       </div>
 
