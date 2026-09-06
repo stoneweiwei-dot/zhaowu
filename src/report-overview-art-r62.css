@@ -1,0 +1,7 @@
+.zhaowu-visual-overview-art {
+  opacity: .18;
+  background:
+    linear-gradient(180deg, rgba(255,251,242,.04) 0%, rgba(255,251,242,.18) 48%, rgba(255,251,242,.92) 84%),
+    url("https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r62/overview-bg.webp") center 46% / cover no-repeat;
+  filter: saturate(.78) sepia(.08) contrast(.94);
+}
