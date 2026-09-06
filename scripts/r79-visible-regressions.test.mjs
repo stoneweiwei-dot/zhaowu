@@ -21,7 +21,7 @@ test("homepage specialist systems render real reports inline instead of dead por
   assert.match(visible, /\.zhaowu-home-portals \{ display: none !important; \}/);
 });
 
-test("One-Palm route no longer stacks a duplicate specialist page and D60 reacts to the shared birth record", () => {
+test("One-Palm and D60 react both on first load and every later direction change", () => {
   assert.doesNotMatch(yizhang, /SpecialistSystemPage/);
   assert.match(yizhang, /<PalmStandalone \/>/);
   assert.match(yizhang, /<D60KarmaSection \/>/);
@@ -29,8 +29,8 @@ test("One-Palm route no longer stacks a duplicate specialist page and D60 reacts
   assert.match(runtime, /zhaowu:d60-birth/);
   assert.match(runtime, /readSharedBirthRecord/);
   assert.match(runtime, /palm-direction/);
-  assert.match(runtime, /button\[type="submit"\]/);
-  assert.match(runtime, /tryAutoGeneratePalm/);
+  assert.match(runtime, /submitPalm\(false\)/);
+  assert.match(runtime, /submitPalm\(true\)/);
 });
 
 test("owner audio upload cannot hang on a remote browser transcoder anymore", () => {

@@ -1,24 +1,50 @@
 import { expect, test } from "@playwright/test";
 
-test("iPhone Safari opens the Dharma One-Palm explanation and recovers cleanly when no shared birth record exists", async ({ page }) => {
+const SHARED_BIRTH = {
+  year: 1988,
+  month: 10,
+  day: 4,
+  hour: 4,
+  minute: 40,
+  timeUnknown: false,
+  gender: "male",
+  relation: "unset",
+  city: {
+    name: "Sydney",
+    country: "Australia",
+    display: "Sydney, Australia",
+    timezone: "Australia/Sydney",
+    latitude: -33.8688,
+    longitude: 151.2093,
+  },
+  liveCity: null,
+  ziPolicy: "midnight",
+  useTrueSolar: true,
+};
+
+test("iPhone Safari One-Palm page is usable without the removed duplicate specialist shell", async ({ page }) => {
   await page.goto("/yizhangjing", { waitUntil: "domcontentloaded" });
-
-  await expect(page.getByRole("heading", { name: "達摩一掌經", exact: true })).toBeVisible();
-  await expect(page.getByText("看四世象意，以及被重複加強、留到今生的習慣。", { exact: true })).toBeVisible();
-  await expect(page.getByText("目前還沒有共享出生資料。請先在首頁四柱八字分區填寫一次。", { exact: true })).toBeVisible();
-
-  // No shared record exists in this isolated Safari run, so the specialist page keeps its
-  // documented recovery fields visible instead of pretending it has birth data. The main
-  // contract is that the user is explicitly told the shared record is missing and can return
-  // to the single homepage birth source.
+  await expect(page.getByRole("heading", { name: "前世今生・達摩一掌經", exact: true })).toBeVisible();
+  await expect(page.locator("form.palm-form")).toBeVisible();
   await expect(page.getByLabel("年", { exact: true })).toBeVisible();
   await expect(page.getByLabel("時", { exact: true })).toBeVisible();
+  await expect(page.locator("main.palm-standalone")).toHaveCount(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+});
 
-  const back = page.getByRole("link", { name: "去填寫一次出生資料", exact: true });
-  await expect(back).toBeVisible();
-  await expect(back).toHaveAttribute("href", "/#bazi");
-  await back.click();
-  await expect(page.locator("#analysisForm")).toBeVisible();
-  await expect(page.locator("#bazi")).toBeVisible();
+test("shared birth auto-generates the report and changing direction regenerates it", async ({ page }) => {
+  await page.addInitScript((record) => {
+    localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify(record));
+  }, SHARED_BIRTH);
+  await page.goto("/yizhangjing", { waitUntil: "domcontentloaded" });
+
+  const result = page.locator(".palm-result");
+  await expect(result).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('article[aria-label="印度古法占星"]')).toBeVisible({ timeout: 10_000 });
+  const before = await result.innerText();
+
+  await page.getByLabel("逆行（傳統女命）", { exact: true }).check();
+  await expect.poll(async () => result.innerText(), { timeout: 10_000 }).not.toBe(before);
+  await expect(result).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
