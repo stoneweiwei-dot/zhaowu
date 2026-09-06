@@ -1,6 +1,7 @@
 import type { AnalysisResult } from "@/lib/bazi/types";
 import type { Locale } from "@/lib/i18n";
 import { buildReportVisualModel } from "@/lib/report/report-visual-model";
+import { getReportVisualAsset, type ReportVisualAsset } from "@/lib/report/report-visual-assets";
 
 export type ShareCardModel = {
   brand: string;
@@ -9,7 +10,7 @@ export type ShareCardModel = {
   summary: string;
   keywords: string[];
   facts: Array<{ label: string; value: string }>;
-  artworkPath: string;
+  artwork: ReportVisualAsset | null;
   artworkFallback: string;
   watermark: string;
 };
@@ -21,6 +22,7 @@ function compactSummary(text: string): string {
 export function buildShareCardModel(result: AnalysisResult, locale: Locale): ShareCardModel {
   const visual = buildReportVisualModel(result.chart, locale);
   const summary = compactSummary(result.reading.directAnswer || visual.dayMaster.summary);
+  const artwork = getReportVisualAsset("day-master", visual.dayMaster.visualKey);
 
   if (locale === "en") {
     return {
@@ -34,7 +36,7 @@ export function buildShareCardModel(result: AnalysisResult, locale: Locale): Sha
         { label: "Element", value: visual.dayMaster.elementLabel },
         { label: "Birth season", value: visual.season.seasonLabel },
       ],
-      artworkPath: visual.dayMaster.imagePath,
+      artwork,
       artworkFallback: "/wallpaper-song.jpg",
       watermark: "© STONE",
     };
@@ -52,7 +54,7 @@ export function buildShareCardModel(result: AnalysisResult, locale: Locale): Sha
       { label: "五行", value: visual.dayMaster.elementLabel },
       { label: hans ? "月令时节" : "月令時節", value: visual.season.seasonLabel },
     ],
-    artworkPath: visual.dayMaster.imagePath,
+    artwork,
     artworkFallback: "/wallpaper-song.jpg",
     watermark: "STONE 原創",
   };
@@ -61,6 +63,7 @@ export function buildShareCardModel(result: AnalysisResult, locale: Locale): Sha
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image();
+    if (/^https?:\/\//.test(src)) image.crossOrigin = "anonymous";
     image.decoding = "async";
     image.onload = () => resolve(image);
     image.onerror = () => reject(new Error(`Unable to load ${src}`));
@@ -68,15 +71,20 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-async function loadArtwork(primary: string, fallback: string): Promise<HTMLImageElement | null> {
-  try {
-    return await loadImage(primary);
-  } catch {
+type LoadedArtwork = { image: HTMLImageElement; asset: ReportVisualAsset | null };
+
+async function loadArtwork(primary: ReportVisualAsset | null, fallback: string): Promise<LoadedArtwork | null> {
+  if (primary) {
     try {
-      return await loadImage(fallback);
+      return { image: await loadImage(primary.src), asset: primary };
     } catch {
-      return null;
+      // fall through to paper background
     }
+  }
+  try {
+    return { image: await loadImage(fallback), asset: null };
+  } catch {
+    return null;
   }
 }
 
@@ -91,13 +99,25 @@ function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, width:
   ctx.closePath();
 }
 
-function drawCoverImage(ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, width: number, height: number) {
-  const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
-  const drawWidth = image.naturalWidth * scale;
-  const drawHeight = image.naturalHeight * scale;
-  const dx = x + (width - drawWidth) / 2;
-  const dy = y + (height - drawHeight) / 2;
-  ctx.drawImage(image, dx, dy, drawWidth, drawHeight);
+function drawCoverImage(
+  ctx: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  asset: ReportVisualAsset | null,
+) {
+  const sourceWidth = asset ? image.naturalWidth / asset.count : image.naturalWidth;
+  const sourceHeight = image.naturalHeight;
+  const sourceX = asset ? asset.index * sourceWidth : 0;
+  const sourceY = 0;
+  const scale = Math.max(width / sourceWidth, height / sourceHeight);
+  const cropWidth = width / scale;
+  const cropHeight = height / scale;
+  const sx = sourceX + (sourceWidth - cropWidth) / 2;
+  const sy = sourceY + (sourceHeight - cropHeight) / 2;
+  ctx.drawImage(image, sx, sy, cropWidth, cropHeight, x, y, width, height);
 }
 
 function splitText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
@@ -142,8 +162,8 @@ export async function renderShareCardPng(model: ShareCardModel): Promise<Blob> {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas is unavailable");
 
-  const serif = '"Songti TC", "Songti SC", "STSong", "Noto Serif CJK TC", serif';
-  const artwork = await loadArtwork(model.artworkPath, model.artworkFallback);
+  const serif = '\"Songti TC\", \"Songti SC\", \"STSong\", \"Noto Serif CJK TC\", serif';
+  const artwork = await loadArtwork(model.artwork, model.artworkFallback);
 
   ctx.fillStyle = "#f4ead7";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -172,7 +192,7 @@ export async function renderShareCardPng(model: ShareCardModel): Promise<Blob> {
   ctx.save();
   ctx.clip();
   if (artwork) {
-    drawCoverImage(ctx, artwork, 70, 318, 940, 650);
+    drawCoverImage(ctx, artwork.image, 70, 318, 940, 650, artwork.asset);
   } else {
     const gradient = ctx.createLinearGradient(70, 318, 1010, 968);
     gradient.addColorStop(0, "#e7dcc6");
