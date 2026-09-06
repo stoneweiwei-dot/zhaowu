@@ -11,6 +11,7 @@ const MAX_SOURCE_BYTES = 80 * 1024 * 1024;
 const MAX_OUTPUT_BYTES = 20 * 1024 * 1024;
 const CORE_LOAD_TIMEOUT_MS = 28_000;
 const UPLOAD_TIMEOUT_MS = 120_000;
+const MP4_PROBE_BYTES = 2 * 1024 * 1024;
 
 const FFMPEG_PROVIDERS = [
   {
@@ -38,6 +39,15 @@ type FfmpegLike = {
   off(event: "progress", listener: (event: { progress: number }) => void): void;
 };
 type FfmpegConstructor = new () => FfmpegLike;
+type PreparedTrack = {
+  blob: Blob;
+  extension: "mp3" | "m4a";
+  contentType: "audio/mpeg" | "audio/mp4";
+  codec: "mp3-direct" | "aac-m4a-direct" | "mp3-normalized";
+  bitrateKbps: number | null;
+  sampleRateHz: number | null;
+  channels: number | null;
+};
 
 let ffmpegCache: FfmpegLike | null = null;
 let ffmpegLoading: Promise<FfmpegLike> | null = null;
@@ -63,12 +73,7 @@ async function parse<T>(res: Response): Promise<T> {
   }
   if (!res.ok) {
     const message = body && typeof body === "object"
-      ? String(
-        (body as Record<string, unknown>).message
-        ?? (body as Record<string, unknown>).error_description
-        ?? (body as Record<string, unknown>).error
-        ?? `HTTP ${res.status}`,
-      )
+      ? String((body as Record<string, unknown>).message ?? (body as Record<string, unknown>).error_description ?? (body as Record<string, unknown>).error ?? `HTTP ${res.status}`)
       : `HTTP ${res.status}`;
     throw new Error(message);
   }
@@ -101,9 +106,7 @@ async function toBlobUrl(url: string, mimeType: string) {
   return URL.createObjectURL(new Blob([await res.arrayBuffer()], { type: mimeType }));
 }
 
-async function loadFromProvider(
-  provider: (typeof FFMPEG_PROVIDERS)[number],
-): Promise<FfmpegLike> {
+async function loadFromProvider(provider: (typeof FFMPEG_PROVIDERS)[number]): Promise<FfmpegLike> {
   const imported = await withTimeout(
     import(/* @vite-ignore */ provider.moduleUrl) as Promise<{ FFmpeg?: FfmpegConstructor }>,
     CORE_LOAD_TIMEOUT_MS,
@@ -123,11 +126,7 @@ async function loadFromProvider(
   );
 
   try {
-    await withTimeout(
-      ffmpeg.load({ coreURL, wasmURL, classWorkerURL }),
-      CORE_LOAD_TIMEOUT_MS,
-      "音訊轉碼核心啟動逾時。",
-    );
+    await withTimeout(ffmpeg.load({ coreURL, wasmURL, classWorkerURL }), CORE_LOAD_TIMEOUT_MS, "音訊轉碼核心啟動逾時。");
   } finally {
     URL.revokeObjectURL(coreURL);
     URL.revokeObjectURL(wasmURL);
@@ -143,11 +142,7 @@ async function getFfmpeg(onProgress?: (progress: MusicUploadProgress) => void) {
   ffmpegLoading = (async () => {
     let lastError: unknown = null;
     for (let index = 0; index < FFMPEG_PROVIDERS.length; index += 1) {
-      onProgress?.({
-        stage: "loading",
-        percent: index === 0 ? 4 : 7,
-        label: index === 0 ? "準備音訊轉碼器" : "切換備援轉碼來源",
-      });
+      onProgress?.({ stage: "loading", percent: index === 0 ? 4 : 7, label: index === 0 ? "準備音訊轉碼器" : "切換備援轉碼來源" });
       try {
         const loaded = await loadFromProvider(FFMPEG_PROVIDERS[index]);
         ffmpegCache = loaded;
@@ -177,6 +172,25 @@ function isDirectMp3(file: File) {
   return fileExtension(file) === "mp3" || file.type === "audio/mpeg" || file.type === "audio/mp3";
 }
 
+function containsAscii(bytes: Uint8Array, needle: string) {
+  const target = Array.from(needle, (char) => char.charCodeAt(0));
+  outer: for (let index = 0; index <= bytes.length - target.length; index += 1) {
+    for (let offset = 0; offset < target.length; offset += 1) {
+      if (bytes[index + offset] !== target[offset]) continue outer;
+    }
+    return true;
+  }
+  return false;
+}
+
+async function isDirectAacM4a(file: File) {
+  const ext = fileExtension(file);
+  const looksLikeM4a = ext === "m4a" || ext === "mp4" || file.type === "audio/mp4" || file.type === "audio/x-m4a";
+  if (!looksLikeM4a) return false;
+  const probe = new Uint8Array(await file.slice(0, Math.min(file.size, MP4_PROBE_BYTES)).arrayBuffer());
+  return containsAscii(probe, "ftyp") && containsAscii(probe, "mp4a");
+}
+
 function asBytes(data: FfmpegFileData) {
   return typeof data === "string" ? new TextEncoder().encode(data) : data;
 }
@@ -187,15 +201,7 @@ function asArrayBuffer(bytes: Uint8Array): ArrayBuffer {
   return copy;
 }
 
-async function normalizeToMp3(
-  file: File,
-  onProgress?: (progress: MusicUploadProgress) => void,
-): Promise<Blob> {
-  if (isDirectMp3(file)) {
-    onProgress?.({ stage: "transcoding", percent: 68, label: "檔案已是相容 MP3，略過轉碼" });
-    return file.slice(0, file.size, "audio/mpeg");
-  }
-
+async function normalizeToMp3(file: File, onProgress?: (progress: MusicUploadProgress) => void): Promise<Blob> {
   const ffmpeg = await getFfmpeg(onProgress);
   const inputName = `input-${crypto.randomUUID()}.${fileExtension(file)}`;
   const outputName = `output-${crypto.randomUUID()}.mp3`;
@@ -226,17 +232,30 @@ async function normalizeToMp3(
     return new Blob([asArrayBuffer(bytes)], { type: "audio/mpeg" });
   } finally {
     ffmpeg.off("progress", progressListener);
-    await Promise.allSettled([
-      ffmpeg.deleteFile(inputName),
-      ffmpeg.deleteFile(outputName),
-    ]);
+    await Promise.allSettled([ffmpeg.deleteFile(inputName), ffmpeg.deleteFile(outputName)]);
   }
+}
+
+async function prepareTrack(file: File, onProgress?: (progress: MusicUploadProgress) => void): Promise<PreparedTrack> {
+  if (isDirectMp3(file)) {
+    onProgress?.({ stage: "transcoding", percent: 68, label: "MP3 已是網站高相容格式，略過轉碼" });
+    return { blob: file.slice(0, file.size, "audio/mpeg"), extension: "mp3", contentType: "audio/mpeg", codec: "mp3-direct", bitrateKbps: null, sampleRateHz: null, channels: null };
+  }
+
+  if (await isDirectAacM4a(file)) {
+    onProgress?.({ stage: "transcoding", percent: 68, label: "偵測到標準 AAC/M4A，略過手機轉碼" });
+    return { blob: file.slice(0, file.size, "audio/mp4"), extension: "m4a", contentType: "audio/mp4", codec: "aac-m4a-direct", bitrateKbps: null, sampleRateHz: null, channels: null };
+  }
+
+  const blob = await normalizeToMp3(file, onProgress);
+  return { blob, extension: "mp3", contentType: "audio/mpeg", codec: "mp3-normalized", bitrateKbps: 128, sampleRateHz: 48000, channels: 2 };
 }
 
 function uploadObjectWithProgress(
   session: SupabaseSession,
   path: string,
   body: Blob,
+  contentType: string,
   onProgress?: (progress: MusicUploadProgress) => void,
 ) {
   return new Promise<void>((resolve, reject) => {
@@ -245,7 +264,7 @@ function uploadObjectWithProgress(
     xhr.timeout = UPLOAD_TIMEOUT_MS;
     xhr.setRequestHeader("apikey", SUPABASE_KEY);
     xhr.setRequestHeader("Authorization", `Bearer ${session.access_token}`);
-    xhr.setRequestHeader("Content-Type", "audio/mpeg");
+    xhr.setRequestHeader("Content-Type", contentType);
     xhr.setRequestHeader("x-upsert", "false");
     xhr.upload.onprogress = (event) => {
       if (!event.lengthComputable) return;
@@ -253,7 +272,7 @@ function uploadObjectWithProgress(
       onProgress?.({
         stage: "uploading",
         percent: Math.max(72, Math.min(92, Math.round(72 + ratio * 20))),
-        label: "上傳標準 MP3",
+        label: contentType === "audio/mp4" ? "上傳標準 AAC/M4A" : "上傳網站相容 MP3",
       });
     };
     xhr.onerror = () => reject(new Error("背景音樂上傳連線失敗。"));
@@ -265,8 +284,8 @@ function uploadObjectWithProgress(
       }
       let message = `背景音樂上傳失敗（HTTP ${xhr.status}）。`;
       try {
-        const body = JSON.parse(xhr.responseText) as Record<string, unknown>;
-        message = String(body.message ?? body.error ?? message);
+        const response = JSON.parse(xhr.responseText) as Record<string, unknown>;
+        message = String(response.message ?? response.error ?? message);
       } catch {
         // Keep the HTTP fallback message.
       }
@@ -287,10 +306,7 @@ async function deleteObject(session: SupabaseSession, path: string) {
 async function deleteMetadata(session: SupabaseSession, id: string) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/background_music_assets?id=eq.${encodeURIComponent(id)}`, {
     method: "DELETE",
-    headers: {
-      ...apiHeaders(session.access_token),
-      Prefer: "return=minimal",
-    },
+    headers: { ...apiHeaders(session.access_token), Prefer: "return=minimal" },
   });
   if (!res.ok) await parse(res);
 }
@@ -304,32 +320,29 @@ export async function uploadBackgroundMusicResilient(
   if (file.size > MAX_SOURCE_BYTES) throw new Error("原始音訊請控制在 80 MB 以內，避免手機記憶體不足。");
 
   onProgress?.({ stage: "loading", percent: 1, label: "檢查音訊格式" });
-  const normalized = await normalizeToMp3(file, onProgress);
+  const prepared = await prepareTrack(file, onProgress);
   const folder = `background/uploads/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}`;
-  const storagePath = `${folder}.mp3`;
+  const storagePath = `${folder}.${prepared.extension}`;
 
-  onProgress?.({ stage: "uploading", percent: 72, label: "開始上傳標準 MP3" });
-  await uploadObjectWithProgress(session, storagePath, normalized, onProgress);
+  onProgress?.({ stage: "uploading", percent: 72, label: prepared.contentType === "audio/mp4" ? "開始上傳標準 AAC/M4A" : "開始上傳網站相容 MP3" });
+  await uploadObjectWithProgress(session, storagePath, prepared.blob, prepared.contentType, onProgress);
 
   onProgress?.({ stage: "saving", percent: 94, label: "保存曲目資料" });
   const insert = await fetch(`${SUPABASE_URL}/rest/v1/background_music_assets`, {
     method: "POST",
-    headers: {
-      ...apiHeaders(session.access_token),
-      Prefer: "return=representation",
-    },
+    headers: { ...apiHeaders(session.access_token), Prefer: "return=representation" },
     body: JSON.stringify({
       name: file.name.replace(/\.[^.]+$/, "").slice(0, 120) || "背景音樂",
       original_name: file.name.slice(0, 180),
       storage_path: storagePath,
       fallback_storage_path: null,
-      content_type: "audio/mpeg",
+      content_type: prepared.contentType,
       fallback_content_type: null,
-      codec: isDirectMp3(file) ? "mp3-direct" : "mp3-normalized",
-      bitrate_kbps: isDirectMp3(file) ? null : 128,
-      sample_rate_hz: isDirectMp3(file) ? null : 48000,
-      channels: isDirectMp3(file) ? null : 2,
-      file_size: normalized.size,
+      codec: prepared.codec,
+      bitrate_kbps: prepared.bitrateKbps,
+      sample_rate_hz: prepared.sampleRateHz,
+      channels: prepared.channels,
+      file_size: prepared.blob.size,
       enabled: false,
     }),
   });
@@ -348,10 +361,7 @@ export async function uploadBackgroundMusicResilient(
     onProgress?.({ stage: "saving", percent: 98, label: "切換目前背景音樂" });
     await activateBackgroundMusic(session, asset.id);
   } catch (error) {
-    await Promise.allSettled([
-      deleteObject(session, storagePath),
-      deleteMetadata(session, asset.id),
-    ]);
+    await Promise.allSettled([deleteObject(session, storagePath), deleteMetadata(session, asset.id)]);
     throw error;
   }
 
