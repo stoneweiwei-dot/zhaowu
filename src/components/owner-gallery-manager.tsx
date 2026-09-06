@@ -9,7 +9,8 @@ import {
   uploadGalleryAsset,
   type GalleryAsset,
 } from "@/lib/gallery-assets";
-import { isPublicAtlasAsset } from "@/lib/gallery-groups";
+import { isLoadingGalleryAsset, isPublicAtlasAsset } from "@/lib/gallery-groups";
+import { LOADING_GALLERY_CATALOG } from "@/lib/loading-gallery-catalog";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -19,7 +20,29 @@ function notifyGalleryChanged() {
   if (typeof window !== "undefined") window.dispatchEvent(new Event("zhaowu-gallery-change"));
 }
 
-type OwnerView = "atlas" | "all";
+type OwnerView = "atlas" | "all" | "loading";
+
+function catalogAssets(): GalleryAsset[] {
+  return LOADING_GALLERY_CATALOG.map((item) => ({
+    id: `catalog:${item.asset_key}`,
+    category: "loading",
+    asset_key: item.asset_key,
+    title: item.title,
+    storage_path: item.publicPath,
+    bucket_id: "public-fallback",
+    content_type: item.kind === "animation" ? "image/jpeg+animation" : "image/jpeg",
+    tags: [...item.tags],
+    enabled: true,
+    is_primary: false,
+    created_at: item.created_at,
+    updated_at: item.created_at,
+  }));
+}
+
+function assetSrc(asset: GalleryAsset) {
+  if (asset.bucket_id === "public-fallback") return asset.storage_path;
+  return galleryPublicUrl(asset.storage_path, asset.bucket_id);
+}
 
 export function OwnerGalleryManager({ session, locale }: { session: SupabaseSession; locale: Locale }) {
   const [assets, setAssets] = useState<GalleryAsset[]>([]);
@@ -36,12 +59,15 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       "Just add the images you want to keep. Internal classification, visual tags, client matching and background use are handled automatically behind the scenes.",
     ),
     upload: tr(locale, "選圖並加入總圖庫", "选图并加入总图库", "Add images"),
+    uploadLoading: tr(locale, "加入登入動畫分組", "加入登录动画分组", "Add to Loading group"),
     uploading: tr(locale, "加入中…", "加入中…", "Adding…"),
     atlas: tr(locale, "吉象圖鑑", "吉象图鉴", "Public atlas"),
     all: tr(locale, "全部圖片", "全部图片", "All images"),
+    loading: tr(locale, "登入動畫", "登录动画", "Loading"),
     empty: tr(locale, "這個檢視目前沒有圖片。", "这个检视目前没有图片。", "No images in this view."),
     enabled: tr(locale, "可使用", "可使用", "Available"),
     remove: tr(locale, "刪除", "删除", "Delete"),
+    catalogLock: tr(locale, "內置登入素材", "内置登录素材", "Built-in loading asset"),
     failed: tr(locale, "圖庫操作失敗。", "图库操作失败。", "Gallery operation failed."),
   }), [locale]);
 
@@ -65,13 +91,12 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     try {
       for (const file of files) {
         await uploadGalleryAsset(session, file, {
-          category: "visual-library",
-          tags: ["owner-upload", "auto-classify"],
+          category: view === "loading" ? "loading" : "visual-library",
+          tags: view === "loading" ? ["loading", "login-background", "owner-upload"] : ["owner-upload", "auto-classify"],
           primary: false,
         });
       }
       await load();
-      setView("all");
       notifyGalleryChanged();
       setMessage(tr(locale, `已加入 ${files.length} 張。`, `已加入 ${files.length} 张。`, `Added ${files.length} image${files.length === 1 ? "" : "s"}.`));
     } catch (error) {
@@ -82,7 +107,13 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   }
 
   const atlasAssets = useMemo(() => assets.filter(isPublicAtlasAsset), [assets]);
-  const visibleAssets = view === "atlas" ? atlasAssets : assets;
+  const loadingRemote = useMemo(() => assets.filter(isLoadingGalleryAsset), [assets]);
+  const loadingAssets = useMemo(() => {
+    const remoteKeys = new Set(loadingRemote.map((asset) => asset.asset_key));
+    const builtin = catalogAssets().filter((asset) => !remoteKeys.has(asset.asset_key));
+    return [...builtin, ...loadingRemote];
+  }, [loadingRemote]);
+  const visibleAssets = view === "atlas" ? atlasAssets : view === "loading" ? loadingAssets : assets;
 
   return (
     <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
@@ -97,13 +128,13 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
 
       <div className="mt-5 flex justify-end rounded-lg border border-line bg-paper/45 p-3">
         <label className={`inline-flex min-h-11 cursor-pointer items-center rounded-full bg-cinnabar px-5 text-sm text-cream ${busy ? "pointer-events-none opacity-50" : ""}`}>
-          {busy ? copy.uploading : copy.upload}
+          {busy ? copy.uploading : view === "loading" ? copy.uploadLoading : copy.upload}
           <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => void onUpload(e)} />
         </label>
       </div>
 
-      <div className="mt-4 flex gap-2" aria-label={tr(locale, "圖庫檢視", "图库检视", "Gallery view")}>
-        {(["atlas", "all"] as OwnerView[]).map((item) => (
+      <div className="mt-4 flex flex-wrap gap-2" aria-label={tr(locale, "圖庫檢視", "图库检视", "Gallery view")}>
+        {(["atlas", "loading", "all"] as OwnerView[]).map((item) => (
           <button
             key={item}
             type="button"
@@ -111,8 +142,8 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
             aria-pressed={view === item}
             className={`min-h-11 rounded-full border px-4 text-sm ${view === item ? "border-cinnabar/50 bg-cinnabar text-cream" : "border-line bg-paper text-ink-soft"}`}
           >
-            {item === "atlas" ? copy.atlas : copy.all}
-            <span className="ml-2 opacity-70">{item === "atlas" ? atlasAssets.length : assets.length}</span>
+            {item === "atlas" ? copy.atlas : item === "loading" ? copy.loading : copy.all}
+            <span className="ml-2 opacity-70">{item === "atlas" ? atlasAssets.length : item === "loading" ? loadingAssets.length : assets.length}</span>
           </button>
         ))}
       </div>
@@ -121,54 +152,65 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       {!visibleAssets.length ? <p className="mt-4 text-sm text-ink-mute">{copy.empty}</p> : null}
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {visibleAssets.map((asset) => (
-          <article key={asset.id} className="overflow-hidden rounded-xl border border-line bg-paper/35">
-            <img
-              src={galleryPublicUrl(asset.storage_path, asset.bucket_id)}
-              alt={asset.title || "gallery image"}
-              loading="lazy"
-              decoding="async"
-              className="aspect-[4/3] w-full object-cover object-top"
-            />
-            <div className="p-3">
-              <p className="truncate text-sm font-medium">{asset.title}</p>
-              <div className="mt-3 flex items-center justify-between gap-2">
-                <label className="flex items-center gap-2 text-xs">
-                  <input
-                    type="checkbox"
-                    checked={asset.enabled}
-                    onChange={async (event) => {
-                      try {
-                        await setGalleryAssetEnabled(session, asset.id, event.target.checked);
-                        await load();
-                        notifyGalleryChanged();
-                      } catch (error) {
-                        setMessage(error instanceof Error ? error.message : copy.failed);
-                      }
-                    }}
-                  />
-                  {copy.enabled}
-                </label>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    if (!window.confirm(`${copy.remove} ${asset.title}?`)) return;
-                    try {
-                      await deleteGalleryAsset(session, asset);
-                      await load();
-                      notifyGalleryChanged();
-                    } catch (error) {
-                      setMessage(error instanceof Error ? error.message : copy.failed);
-                    }
-                  }}
-                  className="rounded-full px-3 py-1.5 text-xs text-cinnabar"
-                >
-                  {copy.remove}
-                </button>
+        {visibleAssets.map((asset) => {
+          const catalogLocked = asset.id.startsWith("catalog:");
+          const animation = (asset.tags ?? []).includes("animation") || (asset.content_type ?? "").includes("animation");
+          return (
+            <article key={asset.id} className="overflow-hidden rounded-xl border border-line bg-paper/35">
+              <img
+                src={assetSrc(asset)}
+                alt={asset.title || "gallery image"}
+                loading="lazy"
+                decoding="async"
+                className="aspect-[4/3] w-full object-cover object-top"
+              />
+              <div className="p-3">
+                <p className="truncate text-sm font-medium">{asset.title}</p>
+                {animation ? <p className="mt-1 text-[11px] tracking-[0.18em] text-ink-mute">ANIMATION</p> : null}
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  {catalogLocked ? (
+                    <span className="text-xs text-ink-mute">{copy.catalogLock}</span>
+                  ) : (
+                    <>
+                      <label className="flex items-center gap-2 text-xs">
+                        <input
+                          type="checkbox"
+                          checked={asset.enabled}
+                          onChange={async (event) => {
+                            try {
+                              await setGalleryAssetEnabled(session, asset.id, event.target.checked);
+                              await load();
+                              notifyGalleryChanged();
+                            } catch (error) {
+                              setMessage(error instanceof Error ? error.message : copy.failed);
+                            }
+                          }}
+                        />
+                        {copy.enabled}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!window.confirm(`${copy.remove} ${asset.title}?`)) return;
+                          try {
+                            await deleteGalleryAsset(session, asset);
+                            await load();
+                            notifyGalleryChanged();
+                          } catch (error) {
+                            setMessage(error instanceof Error ? error.message : copy.failed);
+                          }
+                        }}
+                        className="rounded-full px-3 py-1.5 text-xs text-cinnabar"
+                      >
+                        {copy.remove}
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
     </section>
   );

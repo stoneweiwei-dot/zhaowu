@@ -13,6 +13,9 @@ function writeGeneratedPublicAssets(): Plugin {
     execFileSync(process.execPath, ["scripts/write-intro-media.mjs"], {
       stdio: "inherit",
     });
+    execFileSync(process.execPath, ["scripts/write-loading-gallery.mjs"], {
+      stdio: "inherit",
+    });
   };
   return {
     name: "zhaowu-generated-public-assets",
