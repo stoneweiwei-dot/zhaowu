@@ -17,12 +17,14 @@ test("homepage puts the shared birth hub before the daily almanac", () => {
 
 test("daily almanac is a lightweight local-day cue with gated personalised spirit-slip paths", () => {
   assert.match(widget, /REFERENCE_UTC/);
-  assert.match(widget, /STEM_ELEMENT/);
+  assert.match(widget, /ganzhiForDay/);
+  assert.match(widget, /stableHash/);
+  assert.match(widget, /user\?\.birthData/);
   assert.match(widget, /drawSlip/);
+  assert.match(widget, /listPublicGalleryAssets/);
   assert.match(widget, /href=\{!user \? "\/login" : "#analysisForm"\}/);
   assert.match(widget, /按你當地日期給輕量日節奏提示/);
   assert.match(widget, /setHours\(24, 0, 0, 80\)/);
-  assert.match(widget, /buildChart/);
 });
 
 test("r46 preserves mobile-first whitespace and responsive directory grids", () => {
