@@ -5,6 +5,7 @@ import {
   clearSpecialistHistory,
   deleteSpecialistHistory,
   readSpecialistHistory,
+  touchSpecialistHistoryOpened,
   type SpecialistHistoryEntry,
   type SpecialistHistoryKind,
 } from "@/lib/specialist-history";
@@ -36,9 +37,9 @@ function HistoryPage() {
     kicker: tr(locale, "昭梧 · 個人紀錄", "昭梧 · 个人记录", "ZHAOWU · MY HISTORY"),
     title: tr(locale, "我的紀錄", "我的记录", "My history"),
     lead: tr(locale,
-      "七政、紫微、前世今生與五行功能測驗會自動保存在這台裝置。點開任何一筆，就能重看當時的完整結果。",
-      "七政、紫微、前世今生与五行功能测验会自动保存在这台设备。点开任何一条，就能重看当时的完整结果。",
-      "Your Seven Luminaries, Zi Wei, Past & Present and Five-Element Function results are saved automatically on this device. Open any entry to read it again."),
+      "七政、紫微、前世今生與五行功能測驗會自動保存在這台裝置。點開任何一筆，就能重看當時的完整結果。超過七天沒有再打開的本機紀錄會自動清掉。",
+      "七政、紫微、前世今生与五行功能测验会自勘保存在这台设备。点开任何一条，就能重看当时的完整结果。超过七天没有再打开的本机记录会自勘清掉。",
+      "Your Seven Luminaries, Zi Wei, Past & Present and Five-Element Function results are saved automatically on this device. Open any entry to read it again. Local records unused for seven days are removed automatically."),
     local: tr(locale, "僅保存在這台裝置", "仅保存在这台设备", "Saved on this device only"),
     cloudTitle: tr(locale, "八字提問與雲端報告", "八字提问与云端报告", "BaZi questions and cloud reports"),
     cloudBody: tr(locale,
@@ -46,7 +47,7 @@ function HistoryPage() {
       "登录后产生的八字提问与完整报告，继续保存在“我的昭梧”。",
       "BaZi questions and full reports created while signed in remain in My Zhaowu."),
     cloudCta: tr(locale, "查看我的昭梧", "查看我的昭梧", "Open My Zhaowu"),
-    empty: tr(locale, "還沒有紀錄。完成一次分析或測驗後，結果會自動出現在這裡。", "还没有记录。完成一次分析或测验后，结果会自动出现在这里。", "No saved results yet. Complete an analysis or test and it will appear here automatically."),
+    empty: tr(locale, "還沒有紀錄。完成一次分析或測驗後，結果會自動出現在這裡。", "还没有记录。完成一次分析或测验后，结果会自勘出现在这里。", "No saved results yet. Complete an analysis or test and it will appear here automatically."),
     generated: tr(locale, "生成時間", "生成时间", "Created"),
     open: tr(locale, "展開完整內容", "展开完整内容", "Open full result"),
     close: tr(locale, "收起內容", "收起内容", "Collapse result"),
@@ -57,6 +58,11 @@ function HistoryPage() {
     confirmAll: tr(locale, "確定清除這台裝置上的全部本機紀錄？此動作無法復原。", "确定清除这台设备上的全部本机记录？此操作无法恢复。", "Clear all local history from this device? This cannot be undone."),
     start: tr(locale, "開始新的分析或測驗", "开始新的分析或测验", "Start a new analysis or test"),
   }), [locale]);
+
+  function markOpened(id: string, open: boolean) {
+    if (!open) return;
+    touchSpecialistHistoryOpened(id);
+  }
 
   function removeEntry(id: string) {
     if (!window.confirm(copy.confirmOne)) return;
@@ -83,7 +89,7 @@ function HistoryPage() {
       ) : (
         <section className="history-list" aria-label={copy.title}>
           {entries.map((entry) => (
-            <details key={entry.id} className="history-entry">
+            <details key={entry.id} className="history-entry" onToggle={(event) => markOpened(entry.id, event.currentTarget.open)}>
               <summary><span className={`history-kind is-${entry.kind}`}>{kindLabel(entry.kind, locale)}</span><h2>{entry.title}</h2><p>{entry.inputSummary}</p><small>{copy.generated} · {new Date(entry.createdAt).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")}</small><b className="history-toggle"><span className="is-open">{copy.open}</span><span className="is-close">{copy.close}</span><i aria-hidden>＋</i></b></summary>
               <div className="history-entry-report">
                 {entry.sections.map((section, index) => <article key={`${entry.id}-${index}`}><i aria-hidden>{String(index + 1).padStart(2, "0")}</i><div><h3>{section.title}</h3><p>{section.body}</p></div></article>)}
