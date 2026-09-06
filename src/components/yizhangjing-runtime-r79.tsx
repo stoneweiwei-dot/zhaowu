@@ -25,6 +25,10 @@ function tryAutoGeneratePalm() {
   if (!checkedDirection) return;
   const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
   submit?.click();
+  // PalmStandalone keeps its own explicit D60 confirmation switch and may emit null
+  // during submit. Re-emit the shared minute-accurate birth on the next frame so the
+  // already-mounted D60 section never gets cleared by sibling effect ordering.
+  window.requestAnimationFrame(emitD60Birth);
 }
 
 export function YizhangjingRuntimeR79() {
