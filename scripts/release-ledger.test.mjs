@@ -19,7 +19,7 @@ test("every production backend change requires a matching change report", () => 
   assert.match(report, /## 影響範圍/);
   assert.match(report, /## 回滾/);
   assert.match(agents, /MANDATORY RELEASE LEDGER/);
-  assert.match(agents, /docs\\/change-reports/);
+  assert.match(agents, /docs\/change-reports/);
   assert.match(agents, /release_history/);
   assert.match(agents, /CANONICAL METAPHYSICS DEFAULT/);
 });
