@@ -151,7 +151,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await fillKnownBirthData(page);
 
-    await page.locator("#analysisForm form").evaluate((form) => (form as HTMLFormElement).requestSubmit());
+    await page.locator("#analysisForm").evaluate((form) => (form as HTMLFormElement).requestSubmit());
 
     await expect(page.getByText("請從搜尋結果選擇出生城市與國家。", { exact: true })).toBeVisible();
     await expect(page.locator("#analysisForm")).toBeVisible();
@@ -173,21 +173,13 @@ test.describe("iPhone Safari core customer flow", () => {
 
     const result = page.locator("#result");
     await expect(result).toBeVisible();
-    await expect(page.locator("#analysisForm")).toHaveClass(/is-compact/);
-    const adjustButton = page.getByRole("button", { name: "調整資料", exact: true });
-    await expect(adjustButton).toBeVisible();
+    await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
     await expect(page.locator("#analysis-question")).toBeVisible();
     await expect(page.locator("#birth-city")).toHaveCount(0);
     await expect(page.locator("#current-city")).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "我現在最應該先處理什麼？", exact: true })).toBeVisible();
     await expect(result.locator("article").first()).not.toBeEmpty();
     await expect(page.getByRole("button", { name: "查看完整報告", exact: true })).toBeVisible();
-
-    await adjustButton.click();
-    await expect(page.locator("#analysisForm")).not.toHaveClass(/is-compact/);
-    await expect(page.locator("#analysis-question")).toBeVisible();
-    await expect(page.locator("#birth-city")).toBeVisible();
-    await expect(page.locator("#current-city")).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 });

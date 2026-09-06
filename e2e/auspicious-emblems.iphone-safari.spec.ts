@@ -36,11 +36,11 @@ test.describe("iPhone Safari parchment application shell", () => {
     await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
 
-    const formBackground = await page.locator("#analysisForm").evaluate((node) => getComputedStyle(node).backgroundColor);
-    const alpha = alphaOf(formBackground);
-    // r55 deliberately thins only the homepage paper so the selected artwork remains visible.
-    expect(alpha).toBeGreaterThanOrEqual(0.55);
-    expect(alpha).toBeLessThanOrEqual(0.62);
+    const baziBackground = await page.locator(".zhaowu-bazi-hub").evaluate((node) => getComputedStyle(node).backgroundColor);
+    const alpha = alphaOf(baziBackground);
+    // r63 intentionally keeps the overall form transparent while each independent paper section carries its own parchment.
+    expect(alpha).toBeGreaterThanOrEqual(0.8);
+    expect(alpha).toBeLessThanOrEqual(0.86);
   });
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {
