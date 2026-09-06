@@ -56,17 +56,27 @@ test("owner music upload no longer waits forever at three percent", () => {
   assert.match(upload, /頁面已停止等待，不會一直卡在 3%/);
 });
 
-test("owner music upload uses the lightest compatible path on mobile", () => {
+test("owner music upload bypasses transcoding for already web-safe MP3 and AAC M4A", () => {
   assert.match(upload, /isDirectMp3/);
-  assert.match(upload, /檔案已是相容 MP3，略過轉碼/);
+  assert.match(upload, /isDirectAacM4a/);
+  assert.match(upload, /containsAscii\(probe, "ftyp"\)/);
+  assert.match(upload, /containsAscii\(probe, "mp4a"\)/);
+  assert.match(upload, /MP3 已是網站高相容格式，略過轉碼/);
+  assert.match(upload, /偵測到標準 AAC\/M4A，略過手機轉碼/);
+  assert.match(upload, /aac-m4a-direct/);
+  assert.match(upload, /audio\/mp4/);
+});
+
+test("non-web-safe owner audio uses one bounded MP3 normalization and real upload progress", () => {
   assert.match(upload, /libmp3lame/);
   assert.match(upload, /128k/);
   assert.match(upload, /48000/);
   assert.match(upload, /XMLHttpRequest/);
   assert.match(upload, /UPLOAD_TIMEOUT_MS = 120_000/);
-  assert.match(upload, /content_type: "audio\/mpeg"/);
+  assert.match(upload, /content_type: prepared\.contentType/);
   assert.match(upload, /fallback_storage_path: null/);
   assert.match(upload, /activate_background_music|activateBackgroundMusic/);
+  assert.match(upload, /deleteMetadata/);
   assert.match(assets, /zhaowu-music-change/);
 });
 
@@ -74,12 +84,15 @@ test("owner console groups heavy management sections instead of spreading them d
   assert.match(root, /import \{ OwnerConsoleOrganizer \}/);
   assert.match(root, /<AuthProvider>[\s\S]*<OwnerConsoleOrganizer \/>[\s\S]*<\/AuthProvider>/);
   assert.match(organizer, /data-owner-console-dashboard/);
+  assert.match(organizer, /OWNER CONSOLE/);
   assert.match(organizer, /BACKGROUND LIBRARY/);
   assert.match(organizer, /REPORTS/);
   assert.match(organizer, /backgroundSection\.hidden/);
   assert.match(organizer, /reportsSection\.hidden/);
   assert.match(organizer, /href="\/gallery"/);
   assert.match(organizer, /站主管理分組/);
+  assert.doesNotMatch(organizer, /sections\[1\]/);
+  assert.doesNotMatch(organizer, /sections\[2\]/);
 });
 
 test("owner gallery is collapsed by default and renders images in small batches", () => {
