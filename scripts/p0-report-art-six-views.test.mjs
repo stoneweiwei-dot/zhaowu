@@ -39,8 +39,10 @@ test("failed full image does not block text and six secondary cards stay clickab
   assert.match(home, /to: "\/qizheng"/);
   assert.match(home, /to: "\/yizhangjing"/);
   assert.match(home, /role="button"/);
-  assert.match(home, /需補出生時間/);
-  assert.match(home, /開始分析/);
+  assert.match(home, /已自動讀取 · 需時辰/);
+  assert.match(home, /已自动读取 · 需时辰/);
+  assert.match(home, /Auto-read · time needed/);
+  assert.match(home, /已自動生成 · 查看完整/);
   assert.match(page, /readSharedBirthRecord/);
   assert.match(page, /buildZiweiReading|buildWesternReading/);
   assert.match(page, /D60KarmaSection/);
