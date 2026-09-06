@@ -100,6 +100,62 @@
   image-rendering: auto;
 }
 
+.zhaowu-home-portal {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.zhaowu-home-portal-arrow {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-size: 30px;
+  line-height: 1;
+  color: rgba(52, 48, 38, .56);
+}
+
+.zhaowu-method-generated {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(63, 55, 40, .13);
+}
+
+.zhaowu-method-generated-lead,
+.zhaowu-method-generated-note {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.85;
+  color: rgba(49, 45, 36, .78);
+}
+
+.zhaowu-method-generated-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.zhaowu-method-generated-card {
+  padding: 15px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(73, 65, 48, .12);
+  background: rgba(255, 252, 242, .58);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
+}
+
+.zhaowu-method-generated-card h2 {
+  margin: 0 0 7px;
+  font-family: var(--font-display, serif);
+  font-size: 17px;
+  font-weight: 700;
+  color: rgba(35, 32, 26, .94);
+}
+
+.zhaowu-method-generated-card p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(48, 44, 36, .78);
+}
+
 @media (max-width: 560px) {
   .zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-sprite-artwork,
   .zhaowu-sprite-artwork {
