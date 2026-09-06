@@ -34,6 +34,8 @@ export function BackgroundMusic() {
 
   const primarySrc = musicPublicUrl(asset?.storage_path) || FALLBACK_PRIMARY;
   const fallbackSrc = musicPublicUrl(asset?.fallback_storage_path);
+  const primaryType = asset?.content_type || "audio/mp4";
+  const fallbackType = asset?.fallback_content_type || "audio/mpeg";
   const musicTitle = asset?.name || "淨佛聖願";
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export function BackgroundMusic() {
       audio.volume = DEFAULT_VOLUME;
       void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
     }
-  }, [primarySrc, fallbackSrc]);
+  }, [enabled, primarySrc, fallbackSrc, primaryType, fallbackType]);
 
   useEffect(() => {
     try {
@@ -120,8 +122,8 @@ export function BackgroundMusic() {
         onEnded={() => setPlaying(false)}
         onError={() => setPlaying(false)}
       >
-        <source src={primarySrc} type="audio/mp4" />
-        {fallbackSrc ? <source src={fallbackSrc} type="audio/mpeg" /> : null}
+        <source src={primarySrc} type={primaryType} />
+        {fallbackSrc ? <source src={fallbackSrc} type={fallbackType} /> : null}
       </audio>
       <button
         type="button"
