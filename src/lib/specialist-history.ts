@@ -2,6 +2,7 @@ import type { Locale } from "@/lib/i18n";
 
 export const SPECIALIST_HISTORY_KEY = "zhaowu.specialist-history.v1";
 export const SPECIALIST_HISTORY_LIMIT = 100;
+export const SPECIALIST_HISTORY_MAX_IDLE_MS = 7 * 24 * 60 * 60 * 1000;
 
 export type SpecialistHistoryKind = "qizheng" | "ziwei" | "yizhangjing" | "fun-five-element";
 export type SpecialistHistorySourcePath = "/qizheng" | "/ziwei" | "/yizhangjing" | "/fun-tests";
@@ -16,6 +17,7 @@ export type SpecialistHistoryEntry = {
   kind: SpecialistHistoryKind;
   locale: Locale;
   createdAt: string;
+  lastOpenedAt: string;
   sourcePath: SpecialistHistorySourcePath;
   title: string;
   inputSummary: string;
@@ -23,9 +25,10 @@ export type SpecialistHistoryEntry = {
   closing: string;
 };
 
-type SpecialistHistoryDraft = Omit<SpecialistHistoryEntry, "id" | "createdAt"> & {
+type SpecialistHistoryDraft = Omit<SpecialistHistoryEntry, "id" | "createdAt" | "lastOpenedAt"> & {
   id?: string;
   createdAt?: string;
+  lastOpenedAt?: string;
 };
 
 function browserStorage(storage?: Storage) {
@@ -53,6 +56,11 @@ function sourcePathForKind(kind: SpecialistHistoryKind): SpecialistHistorySource
   return "/yizhangjing";
 }
 
+function normalizeStamp(value: unknown, fallback: string) {
+  const stamp = cleanText(value, 50);
+  return Number.isFinite(Date.parse(stamp)) ? stamp : fallback;
+}
+
 function normalizeEntry(value: unknown): SpecialistHistoryEntry | null {
   if (!value || typeof value !== "object") return null;
   const raw = value as Record<string, unknown>;
@@ -67,12 +75,13 @@ function normalizeEntry(value: unknown): SpecialistHistoryEntry | null {
   const id = cleanText(raw.id, 100);
   const title = cleanText(raw.title, 160);
   if (!id || !title || !sections.length) return null;
-  const createdAt = cleanText(raw.createdAt, 50);
+  const createdAt = normalizeStamp(raw.createdAt, new Date().toISOString());
   return {
     id,
     kind: raw.kind,
     locale: raw.locale,
-    createdAt: Number.isFinite(Date.parse(createdAt)) ? createdAt : new Date().toISOString(),
+    createdAt,
+    lastOpenedAt: normalizeStamp(raw.lastOpenedAt, createdAt),
     sourcePath,
     title,
     inputSummary: cleanText(raw.inputSummary, 320),
@@ -100,7 +109,6 @@ function writeSpecialistHistory(entries: SpecialistHistoryEntry[], storage?: Sto
     target.setItem(SPECIALIST_HISTORY_KEY, JSON.stringify(entries.slice(0, SPECIALIST_HISTORY_LIMIT)));
     return true;
   } catch {
-    // Reports still render when private browsing blocks local storage.
     return false;
   }
 }
@@ -111,10 +119,29 @@ export function saveSpecialistHistory(draft: SpecialistHistoryDraft, storage?: S
     ...draft,
     id: draft.id ?? `${draft.kind}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     createdAt,
+    lastOpenedAt: draft.lastOpenedAt ?? createdAt,
   });
   if (!candidate) return null;
   const current = readSpecialistHistory(storage).filter((entry) => entry.id !== candidate.id);
   return writeSpecialistHistory([candidate, ...current], storage) ? candidate : null;
+}
+
+export function touchSpecialistHistoryOpened(id: string, openedAt = new Date().toISOString(), storage?: Storage) {
+  const stamp = Number.isFinite(Date.parse(openedAt)) ? openedAt : new Date().toISOString();
+  const next = readSpecialistHistory(storage).map((entry) => (
+    entry.id === id ? { ...entry, lastOpenedAt: stamp } : entry
+  ));
+  writeSpecialistHistory(next, storage);
+}
+
+export function pruneSpecialistHistory(now = Date.now(), storage?: Storage) {
+  const current = readSpecialistHistory(storage);
+  const kept = current.filter((entry) => {
+    const stamp = Date.parse(entry.lastOpenedAt || entry.createdAt);
+    return Number.isFinite(stamp) && now - stamp <= SPECIALIST_HISTORY_MAX_IDLE_MS;
+  });
+  if (kept.length !== current.length) writeSpecialistHistory(kept, storage);
+  return { kept: kept.length, removed: current.length - kept.length };
 }
 
 export function deleteSpecialistHistory(id: string, storage?: Storage) {
