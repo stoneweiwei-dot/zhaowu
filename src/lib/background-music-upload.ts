@@ -8,7 +8,7 @@ import {
 
 const BUCKET = "zhaowu-audio";
 const MAX_SOURCE_BYTES = 80 * 1024 * 1024;
-const MAX_OUTPUT_BYTES = 20 * 1024 * 1024;
+const MAX_OUTPUT_BYTES = 15 * 1024 * 1024;
 const CORE_LOAD_TIMEOUT_MS = 28_000;
 const UPLOAD_TIMEOUT_MS = 120_000;
 const MP4_PROBE_BYTES = 2 * 1024 * 1024;
@@ -228,7 +228,7 @@ async function normalizeToMp3(file: File, onProgress?: (progress: MusicUploadPro
 
     const bytes = asBytes(await ffmpeg.readFile(outputName));
     if (!bytes.byteLength) throw new Error("MP3 轉碼結果為空。");
-    if (bytes.byteLength > MAX_OUTPUT_BYTES) throw new Error("轉碼後檔案超過 20 MB，請縮短音樂後再上傳。");
+    if (bytes.byteLength > MAX_OUTPUT_BYTES) throw new Error("轉碼後檔案超過 15 MB，請縮短音樂後再上傳。");
     return new Blob([asArrayBuffer(bytes)], { type: "audio/mpeg" });
   } finally {
     ffmpeg.off("progress", progressListener);
@@ -321,6 +321,7 @@ export async function uploadBackgroundMusicResilient(
 
   onProgress?.({ stage: "loading", percent: 1, label: "檢查音訊格式" });
   const prepared = await prepareTrack(file, onProgress);
+  if (prepared.blob.size > MAX_OUTPUT_BYTES) throw new Error("網站音訊檔需在 15 MB 以內；若原檔已是 MP3 或 AAC/M4A，請先壓縮或縮短後再上傳。");
   const folder = `background/uploads/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}`;
   const storagePath = `${folder}.${prepared.extension}`;
 
