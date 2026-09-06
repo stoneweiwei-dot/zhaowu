@@ -1,0 +1,209 @@
+/* r75 FINAL VISUAL LOCK
+   One visible system: direct question is a light paper passage; Four Pillars is its own atlas section;
+   report mother art dissolves into the paper instead of sitting inside a photo-card frame.
+   This file is intentionally imported last. */
+
+.zhaowu-home-layout #analysisForm.zhaowu-analysis-flow,
+.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+  display: grid !important;
+  gap: clamp(34px, 7vw, 58px) !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-home-layout .zhaowu-question-sheet,
+.zhaowu-home-sheet-shell .zhaowu-question-sheet {
+  position: relative;
+  overflow: visible;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(139, 99, 55, .24) !important;
+  border-radius: 0 !important;
+  padding: 18px 4px 30px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-home-layout .zhaowu-question-sheet::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 74px;
+  height: 2px;
+  background: rgba(166, 67, 51, .58);
+}
+
+.zhaowu-home-layout .zhaowu-question-sheet::after,
+.zhaowu-home-sheet-shell .zhaowu-question-sheet::after {
+  right: .02em !important;
+  top: -.22em !important;
+  color: rgba(142, 91, 49, .045) !important;
+  font-size: clamp(6.5rem, 20vw, 10rem) !important;
+}
+
+.zhaowu-home-layout .zhaowu-bazi-hub,
+.zhaowu-home-sheet-shell .zhaowu-bazi-hub {
+  position: relative;
+  overflow: hidden;
+  margin: 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(49, 95, 80, .34) !important;
+  border-bottom: 1px solid rgba(49, 95, 80, .24) !important;
+  border-radius: 0 !important;
+  padding: clamp(26px, 5vw, 38px) clamp(12px, 3vw, 26px) 30px !important;
+  background:
+    linear-gradient(90deg, rgba(49, 95, 80, .055), transparent 14%, transparent 86%, rgba(154, 113, 61, .04)),
+    rgba(249, 241, 225, .52) !important;
+  box-shadow: inset 4px 0 0 rgba(49, 95, 80, .44) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-home-layout .zhaowu-bazi-hub::after,
+.zhaowu-home-sheet-shell .zhaowu-bazi-hub::after {
+  content: "子平";
+  position: absolute;
+  right: .08em;
+  top: -.18em;
+  color: rgba(49, 95, 80, .04);
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: clamp(6rem, 20vw, 10rem);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.zhaowu-home-layout .zhaowu-bazi-hub::before,
+.zhaowu-home-sheet-shell .zhaowu-bazi-hub::before {
+  right: .25rem !important;
+  bottom: -.15em !important;
+  color: rgba(49, 95, 80, .04) !important;
+}
+
+.zhaowu-bazi-head {
+  border-bottom: 0 !important;
+  padding-bottom: 12px !important;
+}
+
+.zhaowu-bazi-preview {
+  border-top: 1px solid rgba(49, 95, 80, .16) !important;
+  margin-top: 24px !important;
+  padding-top: 22px !important;
+}
+
+/* Mother art belongs to the page. Never render it as a framed photograph. */
+.zhaowu-visual-card:not(.zhaowu-visual-overview),
+.zhaowu-luck-visual-card {
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 16px 2px 12px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-sprite-artwork,
+.zhaowu-luck-visual-card .zhaowu-sprite-artwork,
+.zhaowu-visual-artwork {
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  isolation: isolate;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 5%, #000 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 5%, #000 90%, transparent 100%);
+}
+
+.zhaowu-sprite-artwork::after,
+.zhaowu-visual-artwork::after {
+  box-shadow: none !important;
+  background: linear-gradient(180deg, rgba(249, 241, 225, .22), transparent 15%, transparent 76%, rgba(249, 241, 225, .5)) !important;
+}
+
+.zhaowu-sprite-open {
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  cursor: zoom-in;
+}
+
+.zhaowu-sprite-image,
+.zhaowu-visual-artwork img {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: saturate(.72) sepia(.08) contrast(.93) !important;
+  mix-blend-mode: multiply;
+}
+
+.zhaowu-image-viewer-hint {
+  display: none !important;
+}
+
+.zhaowu-sprite-artwork figcaption,
+.zhaowu-visual-artwork figcaption {
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 3px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 5px 4px !important;
+  color: rgba(68, 54, 38, .68) !important;
+  background: linear-gradient(180deg, transparent, rgba(249, 241, 225, .82)) !important;
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: 9px !important;
+  letter-spacing: .04em;
+}
+
+.zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-sprite-artwork {
+  float: right;
+  width: min(45%, 13.5rem) !important;
+  margin: 2px 0 14px 20px !important;
+}
+
+.zhaowu-luck-visual-card .zhaowu-sprite-artwork {
+  float: none;
+  width: 100% !important;
+  margin: 8px auto 0 !important;
+}
+
+@media (max-width: 560px) {
+  .zhaowu-home-layout #analysisForm.zhaowu-analysis-flow,
+  .zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+    gap: 34px !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-question-sheet,
+  .zhaowu-home-sheet-shell .zhaowu-question-sheet {
+    padding: 12px 2px 26px !important;
+  }
+
+  .zhaowu-home-layout .zhaowu-bazi-hub,
+  .zhaowu-home-sheet-shell .zhaowu-bazi-hub {
+    padding: 24px 12px 24px 16px !important;
+  }
+
+  .zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-sprite-artwork {
+    width: min(52%, 12rem) !important;
+    margin: 2px 0 12px 14px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-sprite-artwork {
+    float: none;
+    width: min(82%, 15rem) !important;
+    margin: 12px auto 16px !important;
+  }
+}
