@@ -1,0 +1,19 @@
+/* r62 — final fixed background for the programmatic report-art system.
+   Art is symbolic only; calculated text/charts remain HTML/SVG. */
+.zhaowu-visual-overview-art {
+  opacity: .2;
+  background-image:
+    linear-gradient(180deg, rgba(255, 251, 242, .04) 18%, rgba(255, 251, 242, .28) 55%, rgba(255, 251, 242, .92) 86%),
+    url("https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r62/overview-bg.webp"),
+    url("/wallpaper-song.jpg");
+  background-position: center, center, center;
+  background-size: cover, cover, cover;
+  background-repeat: no-repeat;
+  filter: grayscale(.08) sepia(.08) saturate(.78) contrast(.94);
+}
+
+@media (max-width: 430px) {
+  .zhaowu-visual-overview-art {
+    background-position: center, 50% 48%, center;
+  }
+}
