@@ -12,7 +12,6 @@ import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-
 import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/report/decree-image";
 import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
-import { buildFreeDirectAnswer } from "@/lib/report/final-reading";
 import { buildFreeChartMelody } from "@/lib/report/free-chart-melody";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
@@ -69,7 +68,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageReferenceAssetId, setImageReferenceAssetId] = useState<string | null>(null);
   const { chart, reading, question } = result;
-  const answer = customerDirectAnswer(question, buildFreeDirectAnswer(question, chart, reading, locale));
+  const answer = customerDirectAnswer(question, reading.directAnswer);
   const answerParagraphs = customerParagraphs(answer);
   const decreeCouplet = buildFreeDecreeCouplet(chart, locale);
   const chartMelody = buildFreeChartMelody(chart, locale);
@@ -145,9 +144,6 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setMsg(null);
     try {
       const reportId = await ensureSavedReport();
-      // The customer-facing production button must attempt the real provider image first.
-      // The Edge Function still falls back to the matched Gallery image when provider
-      // credentials, credits, or generation are unavailable, so text delivery stays intact.
       const out = await generateDecreeImage(session, reportId, true);
       if (out.signedUrl) setImageUrl(out.signedUrl);
       setImageReferenceAssetId(out.galleryReferenceAssetId ?? null);
@@ -175,8 +171,6 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       <BaziChart chart={chart} />
       <CharacterPanel chart={chart} question={question} portraitUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={user ? () => void onImage() : undefined} generating={busy === "image"} onImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />
-
-
 
       <div className="zhaowu-result-actions flex flex-col gap-3">
         <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">{busy === "full" ? copy.fullGenerating : copy.fullGenerate}</button>
