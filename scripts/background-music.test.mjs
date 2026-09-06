@@ -5,16 +5,21 @@ import test from "node:test";
 const music = await readFile(new URL("../src/components/background-music.tsx", import.meta.url), "utf8");
 const manager = await readFile(new URL("../src/components/owner-background-music-manager.tsx", import.meta.url), "utf8");
 const assets = await readFile(new URL("../src/lib/background-music-assets.ts", import.meta.url), "utf8");
+const upload = await readFile(new URL("../src/lib/background-music-upload.ts", import.meta.url), "utf8");
+const organizer = await readFile(new URL("../src/components/owner-console-organizer.tsx", import.meta.url), "utf8");
+const gallery = await readFile(new URL("../src/components/owner-gallery-manager.tsx", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
 
-test("background music keeps the verified AAC as a safe fallback and reads the active Supabase asset", () => {
+test("background music keeps the verified AAC fallback and honors the active asset MIME type", () => {
   assert.match(music, /jingfo-shengyuan-aac\.m4a/);
   assert.match(music, /getActiveBackgroundMusic/);
   assert.match(music, /musicPublicUrl/);
   assert.match(music, /DEFAULT_VOLUME = 0\.24/);
-  assert.match(music, /audio\/mp4/);
-  assert.match(music, /audio\/mpeg/);
+  assert.match(music, /primaryType = asset\?\.content_type/);
+  assert.match(music, /fallbackType = asset\?\.fallback_content_type/);
+  assert.match(music, /type=\{primaryType\}/);
+  assert.match(music, /type=\{fallbackType\}/);
   assert.match(music, /loop/);
   assert.match(music, /playsInline/);
   assert.match(music, /preload="metadata"/);
@@ -31,7 +36,7 @@ test("background music is mounted globally and unlocks on an iPhone Safari user 
   assert.match(music, /data-background-music-control/);
 });
 
-test("owner music manager is mounted inside AuthProvider so owner session is visible", () => {
+test("owner music manager stays inside AuthProvider so the owner session is visible", () => {
   assert.doesNotMatch(music, /OwnerBackgroundMusicManager/);
   assert.match(root, /import \{ OwnerBackgroundMusicManager \}/);
   assert.match(root, /<AuthProvider>[\s\S]*<OwnerBackgroundMusicManager \/>[\s\S]*<\/AuthProvider>/);
@@ -40,31 +45,51 @@ test("owner music manager is mounted inside AuthProvider so owner session is vis
   assert.match(manager, /session/);
 });
 
-test("owner music manager is visibly embedded in the account console with a high-z fallback", () => {
-  assert.match(manager, /createPortal/);
-  assert.match(manager, /main > section:first-child/);
-  assert.match(manager, /data-owner-background-music-inline/);
-  assert.match(manager, /startsWith\("\/account\/"\)/);
-  assert.match(manager, /w-full/);
-  assert.match(manager, /z-\[88\]/);
-  assert.match(manager, /z-\[100\]/);
-  assert.match(manager, /背景音樂管理/);
-  assert.match(manager, /站主專用/);
+test("owner music upload no longer waits forever at three percent", () => {
+  assert.match(manager, /uploadBackgroundMusicResilient/);
+  assert.match(manager, /不會一直卡在 3%/);
+  assert.match(upload, /CORE_LOAD_TIMEOUT_MS = 28_000/);
+  assert.match(upload, /FFMPEG_PROVIDERS/);
+  assert.match(upload, /cdn\.jsdelivr\.net/);
+  assert.match(upload, /esm\.sh/);
+  assert.match(upload, /withTimeout/);
+  assert.match(upload, /頁面已停止等待，不會一直卡在 3%/);
 });
 
-test("owner console exposes upload, local normalization and no-deploy track switching", () => {
-  assert.match(manager, /uploadBackgroundMusic/);
-  assert.match(manager, /activateBackgroundMusic/);
-  assert.match(manager, /AAC-LC/);
-  assert.match(manager, /MP3/);
-  assert.match(assets, /@ffmpeg\/ffmpeg@0\.12\.15/);
-  assert.match(assets, /@ffmpeg\/core@0\.12\.10/);
-  assert.match(assets, /aac_low/);
-  assert.match(assets, /128k/);
-  assert.match(assets, /48000/);
-  assert.match(assets, /libmp3lame/);
-  assert.match(assets, /activate_background_music/);
+test("owner music upload uses the lightest compatible path on mobile", () => {
+  assert.match(upload, /isDirectMp3/);
+  assert.match(upload, /檔案已是相容 MP3，略過轉碼/);
+  assert.match(upload, /libmp3lame/);
+  assert.match(upload, /128k/);
+  assert.match(upload, /48000/);
+  assert.match(upload, /XMLHttpRequest/);
+  assert.match(upload, /UPLOAD_TIMEOUT_MS = 120_000/);
+  assert.match(upload, /content_type: "audio\/mpeg"/);
+  assert.match(upload, /fallback_storage_path: null/);
+  assert.match(upload, /activate_background_music|activateBackgroundMusic/);
   assert.match(assets, /zhaowu-music-change/);
+});
+
+test("owner console groups heavy management sections instead of spreading them down the page", () => {
+  assert.match(root, /import \{ OwnerConsoleOrganizer \}/);
+  assert.match(root, /<AuthProvider>[\s\S]*<OwnerConsoleOrganizer \/>[\s\S]*<\/AuthProvider>/);
+  assert.match(organizer, /data-owner-console-dashboard/);
+  assert.match(organizer, /BACKGROUND LIBRARY/);
+  assert.match(organizer, /REPORTS/);
+  assert.match(organizer, /backgroundSection\.hidden/);
+  assert.match(organizer, /reportsSection\.hidden/);
+  assert.match(organizer, /href="\/gallery"/);
+  assert.match(organizer, /站主管理分組/);
+});
+
+test("owner gallery is collapsed by default and renders images in small batches", () => {
+  assert.match(gallery, /const PAGE_SIZE = 18/);
+  assert.match(gallery, /useState\(false\)/);
+  assert.match(gallery, /data-owner-gallery-drawer/);
+  assert.match(gallery, /<details/);
+  assert.match(gallery, /renderedAssets = visibleAssets\.slice\(0, shown\)/);
+  assert.match(gallery, /載入更多/);
+  assert.match(gallery, /圖片預設收合，不再整頁鋪開/);
 });
 
 test("mobile keeps an explicit music control visible when autoplay is blocked", () => {
