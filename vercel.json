@@ -4,7 +4,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm ci",
-  "ignoreCommand": "git cat-file -e \"$VERCEL_GIT_PREVIOUS_SHA^{commit}\" 2>/dev/null && git diff --quiet \"$VERCEL_GIT_PREVIOUS_SHA\" HEAD -- . ':(exclude).github/**' ':(exclude)docs/**' ':(exclude)e2e/**'",
+  "ignoreCommand": "git cat-file -e \"$VERCEL_GIT_PREVIOUS_SHA^{commit}\" >/dev/null 2>&1 && git diff --quiet \"$VERCEL_GIT_PREVIOUS_SHA\" HEAD -- . ':(exclude).github/**' ':(exclude)docs/**' ':(exclude)e2e/**' || false",
   "git": {
     "deploymentEnabled": {
       "main": true,
