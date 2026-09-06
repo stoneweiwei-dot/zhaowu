@@ -1,48 +1,49 @@
-# ZW-WEB-2026.09.06-r59
+# 昭梧更新報告｜ZW-WEB-2026.09.06-r59
 
-## Scope
+日期：2026-09-06 AEST
 
-Owner-console repair focused on the issue reproduced on iPhone: background-music upload stopped at 3%, and owner administration pages were visually over-expanded.
+## 本次改動
 
-## Audio upload repair
+- 修復站主在 iPhone 後台上傳背景音樂時停在 3% 的流程。舊流程在 3% 開始載入 FFmpeg/WASM，之後還要連續輸出 AAC-LC 與 MP3，手機端負擔過重。
+- 新流程改成手機優先：MP3 原檔直接上傳；M4A、AAC、WAV、FLAC、OGG、OPUS 等其他常見音訊只做一次標準 MP3 轉碼（128 kbps、48 kHz、stereo）。
+- FFmpeg 載入加入雙來源與 28 秒載入／啟動逾時；若轉碼核心無法啟動，明確失敗返回，不再讓頁面無限停留在 3%。
+- Supabase Storage 上傳改用 XMLHttpRequest 真實 upload progress，並加入 120 秒傳輸逾時。
+- 新曲目只有在檔案與 metadata 都成功後才呼叫既有 `activate_background_music`；若啟用失敗，新物件與 metadata 都回滾。
+- 前台播放器改按目前曲目的真實 MIME type 建立 `<source>`，因此既有已驗證 AAC 與新 MP3 可並存；r52 的《淨佛聖願》AAC fallback 不變。
+- `/account` 新增站主管理分組，把背景音樂、首頁背景、總圖庫、客戶報告整理為四個清楚入口；首頁背景與客戶報告預設收合，只展開正在管理的一組。
+- `/gallery` 總圖庫改為預設收合的 drawer，不再一進頁面就把所有圖片整片鋪開；每次先呈現 18 張，再以「載入更多」分批顯示。
 
-- Replaced the heavy dual-output owner upload path with a mobile-first normalization path.
-- MP3 input skips transcoding completely and uploads directly.
-- Other common audio inputs are normalized once to MP3 128 kbps / 48 kHz / stereo.
-- The FFmpeg loader now has two CDN providers and explicit load/start timeouts instead of waiting indefinitely at the old 3% loader stage.
-- Storage upload now uses XMLHttpRequest upload progress and a 120-second upload timeout.
-- A new track is activated only after storage and metadata writes succeed.
-- Existing verified AAC background music remains valid; the player now honors each active asset's real MIME type so both legacy AAC and new MP3 tracks play correctly.
-- No Vercel deployment is required when the owner changes tracks after this release.
+## 為什麼改
 
-## Owner console layout
+Stone 真機重現音樂上傳停在 3%。原程式的 3% 正好是遠端 FFmpeg/WASM 載入階段，且同一次手機操作還要做 AAC 與 MP3 雙轉碼，容易造成 iPhone Safari 長時間無回應。後台同時把背景、圖庫與報告大區塊全部攤開，也增加了手機頁面的視覺與渲染負擔。r59 收斂這兩個問題：降低單次上傳工作量、加入明確 timeout 與真實傳輸進度，並將站主操作改成收合式資訊架構。
 
-- Added an owner-only compact management dashboard to `/account`.
-- The dashboard groups Background Music, Homepage Backgrounds, Gallery, and Customer Reports into four clear management cards.
-- Homepage-background and report sections are collapsed by default; only the group being managed is expanded.
-- Existing owner permissions and report/background logic are unchanged.
+## 影響範圍
 
-## Gallery layout
+- `src/lib/background-music-upload.ts`
+- `src/components/owner-background-music-manager.tsx`
+- `src/components/background-music.tsx`
+- `src/components/owner-console-organizer.tsx`
+- `src/components/owner-gallery-manager.tsx`
+- `src/routes/__root.tsx`
+- `scripts/background-music.test.mjs`
+- `scripts/release-ledger.test.mjs`
+- `e2e/owner-console.iphone-safari.spec.ts`
+- `src/lib/site-stats.ts`
+- `docs/change-reports/ZW-WEB-2026.09.06-r59.md`
 
-- Owner Gallery no longer renders the entire image library as a permanently open wall.
-- The image grid is inside a collapsed drawer by default.
-- Opening the drawer renders images in batches of 18 with a Load more control.
-- Upload remains immediately available above the collapsed drawer.
+保護範圍：不修改 owner 身分、RLS、Supabase schema、登入、付款、報告計算／文字契約、首頁命理流程或既有使用者資料。既有背景音樂 activation RPC 與 r52 AAC fallback 保留。
 
-## Protected behavior
+## 驗證要求
 
-- Owner gating remains `user.isOwner` + authenticated session.
-- Existing background-music activation RPC remains the authority for the active track.
-- Existing r52 verified AAC fallback is preserved.
-- Existing report, background, auth, multilingual and paid-report flows are not modified by this release.
+- `npm run test:engine` 必須 PASS。
+- TypeScript `npm run check` 必須 PASS。
+- Production Vite build 必須 PASS。
+- iPhone Safari regression 必須 PASS，並包含 owner `/account` 收合分組與 `/gallery` 預設收合檢查。
+- 合併前重新確認 `main` 沒有並行衝突。
+- 合併後 Production `githubCommitSha` 必須等於 `main` HEAD。
+- Production `/`、`/login`、`/account`、`/gallery` 必須可讀。
+- Physical owner-device upload 只有 Stone 真機實際重試後才能標記通過；自動 Safari 不得冒充真機音訊轉碼驗證。
 
-## Verification required before Production
+## 回滾
 
-1. Deterministic contract tests.
-2. TypeScript check.
-3. Production Vite build.
-4. iPhone Safari regression suite.
-5. Fresh-main preflight before merge.
-6. Production `githubCommitSha` must exactly match merged `main`.
-7. Production `/`, `/login`, `/account`, `/gallery` must respond successfully.
-8. Physical owner-device upload remains a real-device check and must not be claimed until Stone performs it.
+若新 MP3 upload path、管理分組或 Gallery drawer 在 Production 出現回歸，只回退 r59 對應 UI／upload files，恢復 r58 的 owner console；不得回滾 r58 報告母圖、r52 已驗證 AAC 資產、Supabase 資料、排盤引擎或其他無關功能。
