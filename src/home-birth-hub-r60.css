@@ -1,0 +1,143 @@
+/* r60 homepage birth hub + five-element daily widget. Loads after r46. */
+
+.zhaowu-quiz-sheet input[type="number"],
+.zhaowu-quiz-sheet select,
+.zhaowu-quiz-sheet textarea {
+  border: 1px solid rgba(142, 112, 72, 0.28) !important;
+  border-radius: 14px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, 0.96), rgba(248, 241, 226, 0.92)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.zhaowu-quiz-sheet input[type="number"]:focus,
+.zhaowu-quiz-sheet select:focus,
+.zhaowu-quiz-sheet textarea:focus {
+  border-color: #8f342a !important;
+  box-shadow: 0 0 0 3px rgba(143, 52, 42, 0.12);
+}
+
+.zhaowu-birth-policy {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0 4px;
+  padding: 12px 14px;
+  border: 1px solid rgba(142, 112, 72, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 250, 241, 0.72);
+}
+
+.zhaowu-birth-policy b,
+.zhaowu-birth-policy i {
+  font-style: normal;
+  font-weight: 650;
+  color: #5c4632;
+  font-size: 12px;
+}
+
+.zhaowu-birth-policy small {
+  color: #7a6a55;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.zhaowu-home-portals {
+  grid-template-columns: 1fr !important;
+}
+
+.zhaowu-home-portal {
+  cursor: default;
+  pointer-events: none;
+}
+
+.zhaowu-home-portal-arrow {
+  display: none;
+}
+
+.zhaowu-site-header .zhaowu-brand-seal {
+  width: 48px;
+  height: 48px;
+  font-size: 14px;
+}
+
+@media (min-width: 640px) {
+  .zhaowu-site-header .zhaowu-brand-seal {
+    width: 56px;
+    height: 56px;
+    font-size: 16px;
+  }
+}
+
+.zhaowu-site-header .zhaowu-brand-name {
+  font-size: 1.15rem !important;
+  letter-spacing: 0.2em !important;
+}
+
+.zhaowu-lang-switch {
+  height: 44px !important;
+}
+
+.zhaowu-lang-switch button {
+  min-width: 2.7rem !important;
+  padding: 0 10px !important;
+  font-size: 12px !important;
+}
+
+.zhaowu-daily-almanac[data-element="木"] {
+  background:
+    radial-gradient(circle at 78% 12%, rgba(176, 204, 164, 0.58), transparent 27%),
+    radial-gradient(circle at 24% 98%, rgba(255, 255, 255, 0.92), transparent 38%),
+    linear-gradient(145deg, #eef6ea, #d7e6d2) !important;
+}
+.zhaowu-daily-almanac[data-element="火"] {
+  background:
+    radial-gradient(circle at 78% 12%, rgba(232, 176, 142, 0.58), transparent 27%),
+    radial-gradient(circle at 24% 98%, rgba(255, 255, 255, 0.92), transparent 38%),
+    linear-gradient(145deg, #f8eee6, #efd3c4) !important;
+}
+.zhaowu-daily-almanac[data-element="土"] {
+  background:
+    radial-gradient(circle at 78% 12%, rgba(214, 193, 159, 0.62), transparent 27%),
+    radial-gradient(circle at 24% 98%, rgba(255, 255, 255, 0.92), transparent 38%),
+    linear-gradient(145deg, #f6f1e6, #e6d7be) !important;
+}
+.zhaowu-daily-almanac[data-element="金"] {
+  background:
+    radial-gradient(circle at 78% 12%, rgba(214, 205, 168, 0.62), transparent 27%),
+    radial-gradient(circle at 24% 98%, rgba(255, 255, 255, 0.92), transparent 38%),
+    linear-gradient(145deg, #f7f5ee, #e8e1cc) !important;
+}
+.zhaowu-daily-almanac[data-element="水"] {
+  background:
+    radial-gradient(circle at 78% 12%, rgba(164, 186, 204, 0.58), transparent 27%),
+    radial-gradient(circle at 24% 98%, rgba(255, 255, 255, 0.92), transparent 38%),
+    linear-gradient(145deg, #eef3f6, #d2dee8) !important;
+}
+
+.zhaowu-time-correction {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border: 1px solid rgba(142, 112, 72, 0.2);
+  border-radius: 14px;
+  background: rgba(255, 250, 241, 0.8);
+  color: #5c4632;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.zhaowu-time-correction strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-quiz-sheet input[type="number"],
+  .zhaowu-quiz-sheet select {
+    min-height: 48px;
+  }
+  .zhaowu-site-header .zhaowu-brand-seal {
+    width: 46px;
+    height: 46px;
+  }
+}

@@ -5,11 +5,11 @@ type BrandSealProps = {
 };
 
 export function BrandSeal({ size = "sm", className = "", decorative = false }: BrandSealProps) {
-  const sizeClass = size === "lg" ? "h-24 w-24 text-[25px] sm:h-28 sm:w-28 sm:text-[29px]" : "h-9 w-9 text-[11px] sm:h-10 sm:w-10 sm:text-xs";
+  const sizeClass = size === "lg" ? "h-24 w-24 text-[25px] sm:h-28 sm:w-28 sm:text-[29px]" : "h-12 w-12 text-[14px] sm:h-14 sm:w-14 sm:text-[16px]";
 
   return (
     <span
-      className={`inline-grid shrink-0 place-items-center border border-[#8f342a] bg-[#9d4033] p-[3px] shadow-[0_5px_14px_rgba(84,38,29,.16)] ${sizeClass} ${className}`}
+      className={`zhaowu-brand-seal inline-grid shrink-0 place-items-center border border-[#8f342a] bg-[#9d4033] p-[3px] shadow-[0_5px_14px_rgba(84,38,29,.16)] ${sizeClass} ${className}`}
       role={decorative ? undefined : "img"}
       aria-label={decorative ? undefined : "昭梧"}
       aria-hidden={decorative || undefined}
