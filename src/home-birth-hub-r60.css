@@ -131,6 +131,28 @@
   font-size: 13px;
 }
 
+.zhaowu-question-promise {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0 18px;
+}
+
+.zhaowu-question-promise span {
+  display: grid;
+  min-height: 44px;
+  place-items: center;
+  padding: 8px 10px;
+  border: 1px solid rgba(142, 112, 72, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 250, 241, 0.66);
+  color: #5c4632;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-align: center;
+}
+
 @media (max-width: 430px) {
   .zhaowu-quiz-sheet input[type="number"],
   .zhaowu-quiz-sheet select {
@@ -139,5 +161,12 @@
   .zhaowu-site-header .zhaowu-brand-seal {
     width: 46px;
     height: 46px;
+  }
+  .zhaowu-question-promise {
+    gap: 6px;
+  }
+  .zhaowu-question-promise span {
+    padding-inline: 6px;
+    font-size: 11px;
   }
 }

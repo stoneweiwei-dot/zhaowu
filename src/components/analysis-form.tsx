@@ -43,9 +43,11 @@ export function AnalysisForm() {
 
   const copy = locale === "en"
     ? {
-        questionKicker: "ZHAOWU · DIRECT QUESTION",
-        questionTitle: "What do you want answered?",
-        questionLead: "Ask the real question first. Your birth record is kept separately below and reused across the site.",
+        questionKicker: "ZHAOWU · BAZI DECISION ANALYSIS",
+        questionTitle: "Ask the question that actually matters.",
+        questionLead: "Zhaowu uses BaZi as the primary system: first a direct answer, then your chart structure and timing. Enter your birth record once, then ask what you actually need to decide.",
+        promiseLabel: "What Zhaowu gives you",
+        promise: ["Direct answer first", "BaZi structure", "Timing & decision rhythm"],
         baziKicker: "ZHAOWU · FOUR PILLARS",
         baziTitle: "Four Pillars of Destiny",
         baziLead: "Enter birth details once. Zhaowu reuses this same record for other birth-based systems, so you do not have to type it again.",
@@ -53,15 +55,17 @@ export function AnalysisForm() {
         birthReadyLead: "This record will be reused across Zhaowu. Edit it only when the birth details themselves need changing.",
         edit: "Edit birth record",
         useRecord: "Using this birth record",
-        submit: "Submit · See answer",
-        busy: "Reading…",
+        submit: "Start BaZi analysis · See answer",
+        busy: "Analysing…",
         birthData: "Birth record",
       }
     : locale === "zh-Hans"
       ? {
-          questionKicker: "昭梧 · 直接问事",
-          questionTitle: "你现在真正想问什么？",
-          questionLead: "问题单独问；出生资料放在下面的四柱八字区。填过一次之后，其他需要生辰的系统直接沿用，不再重复填写。",
+          questionKicker: "昭梧 · 子平八字命理分析",
+          questionTitle: "把你真正想问的事，直接拿来分析",
+          questionLead: "昭梧以子平四柱为主判：先回答你真正的问题，再展开命局结构与大运节奏。生辰只填一次，之后直接问事。",
+          promiseLabel: "你会得到",
+          promise: ["问题直答", "命局结构", "大运节奏"],
           baziKicker: "昭梧 · 子平四柱",
           baziTitle: "四柱八字",
           baziLead: "出生资料只填一次。昭梧会把同一份生辰资料沿用到其他需要排盘的系统，不再每个页面重新问你一遍。",
@@ -69,14 +73,16 @@ export function AnalysisForm() {
           birthReadyLead: "之后其他命理分区直接使用这份资料；只有出生资料本身要改时才需要编辑。",
           edit: "修改出生资料",
           useRecord: "正在使用这份出生资料",
-          submit: "交卷，看答案",
+          submit: "开始命理分析 · 看答案",
           busy: "正在推演…",
           birthData: "出生资料",
         }
       : {
-          questionKicker: "昭梧 · 直接問事",
-          questionTitle: "你現在真正想問什麼？",
-          questionLead: "問題單獨問；出生資料放在下面的四柱八字區。填過一次之後，其他需要生辰的系統直接沿用，不再重複填寫。",
+          questionKicker: "昭梧 · 子平八字命理分析",
+          questionTitle: "把你真正想問的事，直接拿來分析",
+          questionLead: "昭梧以子平四柱為主判：先回答你真正的問題，再展開命局結構與大運節奏。生辰只填一次，之後直接問事。",
+          promiseLabel: "你會得到",
+          promise: ["問題直答", "命局結構", "大運節奏"],
           baziKicker: "昭梧 · 子平四柱",
           baziTitle: "四柱八字",
           baziLead: "出生資料只填一次。昭梧會把同一份生辰資料沿用到其他需要排盤的系統，不再每個頁面重新問你一遍。",
@@ -84,7 +90,7 @@ export function AnalysisForm() {
           birthReadyLead: "之後其他命理分區直接使用這份資料；只有出生資料本身要改時才需要編輯。",
           edit: "修改出生資料",
           useRecord: "正在使用這份出生資料",
-          submit: "交卷，看答案",
+          submit: "開始命理分析 · 看答案",
           busy: "正在推演…",
           birthData: "出生資料",
         };
@@ -187,6 +193,9 @@ export function AnalysisForm() {
         <p className="zhaowu-section-kicker">{copy.questionKicker}</p>
         <h2 id="zhaowu-question-title">{copy.questionTitle}</h2>
         <p className="zhaowu-section-lead">{copy.questionLead}</p>
+        <div className="zhaowu-question-promise" aria-label={copy.promiseLabel}>
+          {copy.promise.map((item) => <span key={item}>{item}</span>)}
+        </div>
         <label htmlFor="analysis-question" className="zhaowu-question-label">{t("question")}</label>
         <textarea
           id="analysis-question"
