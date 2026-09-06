@@ -4,6 +4,7 @@ import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { IntroGate } from "@/components/intro-gate";
 import { SiteShell } from "@/components/site-shell";
 import { OwnerBackgroundMusicManager } from "@/components/owner-background-music-manager";
+import { OwnerConsoleOrganizer } from "@/components/owner-console-organizer";
 
 export const Route = createRootRoute({
   component: () => (
@@ -15,6 +16,7 @@ export const Route = createRootRoute({
           <Outlet />
         </SiteShell>
         <OwnerBackgroundMusicManager />
+        <OwnerConsoleOrganizer />
       </AuthProvider>
     </>
   ),

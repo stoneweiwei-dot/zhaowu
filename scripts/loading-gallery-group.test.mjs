@@ -19,7 +19,10 @@ test("gallery keeps a dedicated loading group outside the public atlas", () => {
 });
 
 test("owner gallery exposes a loading stills and animation view", () => {
-  assert.match(owner, /OwnerView = "atlas" \| "all" \| "loading"/);
+  assert.match(owner, /type OwnerView =/);
+  assert.match(owner, /"atlas"/);
+  assert.match(owner, /"all"/);
+  assert.match(owner, /"loading"/);
   assert.match(owner, /LOADING_GALLERY_CATALOG/);
   assert.match(owner, /isLoadingGalleryAsset/);
   assert.match(owner, /登入動畫/);

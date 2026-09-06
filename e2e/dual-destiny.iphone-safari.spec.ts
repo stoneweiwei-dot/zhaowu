@@ -3,9 +3,9 @@ import { expect, test } from "@playwright/test";
 test("iPhone Safari opens the Dharma One-Palm explanation and returns to the shared birth form", async ({ page }) => {
   await page.goto("/yizhangjing", { waitUntil: "domcontentloaded" });
 
-  await expect(page.getByRole("heading", { name: "達摩一掌經 · 前世今生", exact: true })).toBeVisible();
-  await expect(page.getByText("主要看前四世來路、反覆習性，以及被重複加強、留到今生的習慣。", { exact: true })).toBeVisible();
-  await expect(page.getByText("出生資料由昭梧統一保存為一份共享記錄。本頁不會再讓你重複填寫。", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "達摩一掌經", exact: true })).toBeVisible();
+  await expect(page.getByText("看四世象意，以及被重複加強、留到今生的習慣。", { exact: true })).toBeVisible();
+  await expect(page.getByText("目前還沒有共享出生資料。請先在首頁四柱八字分區填寫一次。", { exact: true })).toBeVisible();
   await expect(page.getByLabel("年", { exact: true })).toHaveCount(0);
   await expect(page.getByLabel("時", { exact: true })).toHaveCount(0);
 
