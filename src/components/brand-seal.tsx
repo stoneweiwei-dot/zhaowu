@@ -18,7 +18,7 @@ export function BrandSeal({ size = "sm", className = "", decorative = false }: B
       aria-hidden={decorative || undefined}
     >
       <img
-        src="/icons/zhaowu-lotus-192.png"
+        src="/icons/zhaowu-official-mark.jpg"
         alt=""
         width={112}
         height={112}
