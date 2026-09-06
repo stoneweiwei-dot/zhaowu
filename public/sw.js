@@ -1,4 +1,4 @@
-const CACHE = "zhaowu-shell-r53";
+const CACHE = "zhaowu-shell-r67";
 const SHELL = ["/", "/manifest.webmanifest", "/apple-touch-icon-r53.png", "/icons/zhaowu-lotus-192.png", "/icons/zhaowu-lotus-512.png"];
 self.addEventListener("install", (event) => { event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).catch(() => undefined)); self.skipWaiting(); });
 self.addEventListener("activate", (event) => { event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith("zhaowu-shell-") && key !== CACHE).map((key) => caches.delete(key)))).then(() => self.clients.claim())); });
