@@ -12,7 +12,6 @@ import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-
 import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/report/decree-image";
 import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
-import { buildFreeDirectAnswer } from "@/lib/report/final-reading";
 import { buildFreeChartMelody } from "@/lib/report/free-chart-melody";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
@@ -69,7 +68,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageReferenceAssetId, setImageReferenceAssetId] = useState<string | null>(null);
   const { chart, reading, question } = result;
-  const answer = customerDirectAnswer(question, buildFreeDirectAnswer(question, chart, reading, locale));
+  // The result page must answer the question that was actually asked. Do not replace
+  // the engine's question-specific conclusion with a generic topic template.
+  const answer = customerDirectAnswer(question, reading.directAnswer);
   const answerParagraphs = customerParagraphs(answer);
   const decreeCouplet = buildFreeDecreeCouplet(chart, locale);
   const chartMelody = buildFreeChartMelody(chart, locale);
@@ -176,11 +177,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       <BaziChart chart={chart} />
       <CharacterPanel chart={chart} question={question} portraitUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={user ? () => void onImage() : undefined} generating={busy === "image"} onImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />
 
-
-
       <div className="zhaowu-result-actions flex flex-col gap-3">
         <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">{busy === "full" ? copy.fullGenerating : copy.fullGenerate}</button>
-        {isPending ? <span className="h-12 animate-pulse rounded-full bg-paper-deep" /> : user ? <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">{busy === "save" ? copy.saving : savedId ? copy.updateSaved : t("save")}</button> : <Link to="/login" className="zhaowu-result-secondary grid h-12 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
+        {isPending ? <span className="h-12 animate-pulse rounded-full bg-paper-deep" /> : user ? <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-50">{busy === "save" ? copy.saving : savedId ? copy.updateSaved : t("save")}</button> : <Link to="/login" className="zhaowu-result-secondary grid h-12 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
         <button type="button" onClick={() => reset()} className="zhaowu-result-reset h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
       </div>
 
