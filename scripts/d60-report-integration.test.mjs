@@ -15,12 +15,13 @@ test("Indian classical astrology reuses only the current report birth input and 
   assert.doesNotMatch(source, /searchCities|<form|formTitle|Generate D60|生成 D60|排你的 D60/);
 });
 
-test("customer-facing copy names Indian classical astrology instead of D60", () => {
+test("customer-facing title names Indian classical astrology while D60 stays an explicit minute-sensitive sublayer", () => {
   assert.match(source, /title: "印度古法占星"/);
-  assert.match(home, /印度古法占星旁證/);
-  assert.match(home, /Indian classical astrology cross-check/);
+  assert.match(home, /title: "印度古法占星"/);
+  assert.match(home, /title: "Classical Indian Astrology"/);
+  assert.match(home, /D60 對出生分鐘非常敏感|D60 对出生分钟非常敏感/);
+  assert.match(home, /D60 minute-sensitive cross-check/);
   assert.doesNotMatch(source, /D60 · SHASHTIAMSA|title: "D60 業力旁證"|title: "D60 业力旁证"|title: "D60 karmic cross-check"/);
-  assert.doesNotMatch(home, /D60 旁證|D60 旁证|D60 cross-check/);
 });
 
 test("every Indian classical astrology result card can reveal a plain-language explanation", () => {
