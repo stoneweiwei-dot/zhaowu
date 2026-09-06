@@ -23,39 +23,39 @@ function Home() {
   const portalCopy = locale === "en"
     ? {
         label: "Six other readings from the same birth record",
-        lead: "Zi Ping BaZi now has its own section above. These other systems reuse the same saved birth record and should not ask you to enter it again.",
+        lead: "Zi Ping BaZi has its own section above. Tap any method below: it reuses the same saved birth record and generates its own available result without making you type it again.",
         items: [
-          { title: "Classical Indian Astrology", hint: "karmic pattern · D60 minute-sensitive cross-check" },
-          { title: "Western Astrology", hint: "Sun · Moon · Rising · aspects · life areas" },
-          { title: "Zi Wei Dou Shu", hint: "character · relationships · work · money · decade focus" },
-          { title: "Seven Luminaries", hint: "temperament · rhythm · pressure response · timing" },
-          { title: "Past & Present", hint: "carried patterns · prior-life symbolism · Indian classical astrology cross-check" },
-          { title: "Dharma One-Palm Classic", hint: "four prior lives · repeated habits that stay in this life" },
+          { href: "/astrology?mode=vedic", title: "Classical Indian Astrology", hint: "karmic pattern · D60 minute-sensitive accuracy check" },
+          { href: "/astrology", title: "Western Astrology", hint: "Sun · Moon · Rising · aspects · life areas" },
+          { href: "/ziwei", title: "Zi Wei Dou Shu", hint: "Life/Body palaces · bureau · major stars · natal transformations" },
+          { href: "/qizheng", title: "Seven Luminaries", hint: "temperament · rhythm · pressure response · timing" },
+          { href: "/yizhangjing?mode=integrated", title: "Past & Present", hint: "four-palace symbolism · repeated habits · Seven-Luminaries cross-check" },
+          { href: "/yizhangjing", title: "Dharma One-Palm Classic", hint: "four prior-life palaces · repeated habits carried into this life" },
         ],
       }
     : locale === "zh-Hans"
       ? {
           label: "同一份生辰，其他六种看法",
-          lead: "四柱八字已经独立成上方专属分区。其他需要出生资料的体系直接沿用同一份记录，不再重复填写。",
+          lead: "四柱八字已经独立成上方专属分区。下面六种看法都可以直接点开，自动沿用同一份出生记录生成各自可验证的内容，不再重复填写。",
           items: [
-            { title: "印度古法占星", hint: "看业力细分层；D60 对出生分钟非常敏感" },
-            { title: "西洋星座", hint: "看太阳、月亮、上升、相位与人生领域" },
-            { title: "紫微斗数", hint: "看性格、关系、事业、财务与十年主轴" },
-            { title: "七政四余", hint: "看性情、节奏、压力反应与天时变化" },
-            { title: "前世今生", hint: "看前四世象意、反复习性与印度古法占星旁证" },
-            { title: "达摩一掌经", hint: "看前四世来路，以及被重复加强、留到今生的习惯" },
+            { href: "/astrology?mode=vedic", title: "印度古法占星", hint: "业力细分层；D60 对出生分钟非常敏感，先做精度检查" },
+            { href: "/astrology", title: "西洋星座", hint: "太阳、月亮、上升、相位与人生领域" },
+            { href: "/ziwei", title: "紫微斗数", hint: "命身宫、五行局、命宫主星与生年四化" },
+            { href: "/qizheng", title: "七政四余", hint: "性情、节奏、压力反应、关系与天时变化" },
+            { href: "/yizhangjing?mode=integrated", title: "前世今生", hint: "四宫象意、反复习性与七政旁证" },
+            { href: "/yizhangjing", title: "达摩一掌经", hint: "前四世来路与被重复加强、留到今生的习惯" },
           ],
         }
       : {
           label: "同一份生辰，其他六種看法",
-          lead: "四柱八字已經獨立成上方專屬分區。其他需要出生資料的體系直接沿用同一份記錄，不再重複填寫。",
+          lead: "四柱八字已經獨立成上方專屬分區。下面六種看法都可以直接點開，自動沿用同一份出生記錄生成各自可驗證的內容，不再重複填寫。",
           items: [
-            { title: "印度古法占星", hint: "看業力細分層；D60 對出生分鐘非常敏感" },
-            { title: "西洋星座", hint: "看太陽、月亮、上升、相位與人生領域" },
-            { title: "紫微斗數", hint: "看性格、關係、事業、財務與十年主軸" },
-            { title: "七政四餘", hint: "看性情、節奏、壓力反應與天時變化" },
-            { title: "前世今生", hint: "看前四世象意、反覆習性與印度古法占星旁證" },
-            { title: "達摩一掌經", hint: "看前四世來路，以及被重複加強、留到今生的習慣" },
+            { href: "/astrology?mode=vedic", title: "印度古法占星", hint: "業力細分層；D60 對出生分鐘非常敏感，先做精度檢查" },
+            { href: "/astrology", title: "西洋星座", hint: "太陽、月亮、上升、相位與人生領域" },
+            { href: "/ziwei", title: "紫微斗數", hint: "命身宮、五行局、命宮主星與生年四化" },
+            { href: "/qizheng", title: "七政四餘", hint: "性情、節奏、壓力反應、關係與天時變化" },
+            { href: "/yizhangjing?mode=integrated", title: "前世今生", hint: "四宮象意、反覆習性與七政旁證" },
+            { href: "/yizhangjing", title: "達摩一掌經", hint: "前四世來路與被重複加強、留到今生的習慣" },
           ],
         };
 
@@ -107,12 +107,13 @@ function Home() {
         </header>
         <div className="zhaowu-home-portals">
           {portalCopy.items.map((item) => (
-            <article key={item.title} className="zhaowu-home-portal" aria-label={item.title}>
+            <a key={item.title} href={item.href} className="zhaowu-home-portal" aria-label={item.title}>
               <span className="zhaowu-home-portal-copy">
                 <strong>{item.title}</strong>
                 <small className="zhaowu-home-portal-hint">（{item.hint}）</small>
               </span>
-            </article>
+              <span className="zhaowu-home-portal-arrow" aria-hidden>›</span>
+            </a>
           ))}
         </div>
       </section>
