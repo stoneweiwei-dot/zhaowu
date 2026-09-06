@@ -302,7 +302,7 @@ function plainExplanation(key: ThemeKey, signIndex: number, locale: Locale) {
   return `${DIMENSION_PLAIN[locale][key]} ${SIGN_PLAIN[locale][signIndex]}`;
 }
 
-export function D60KarmaSection() {
+export function D60KarmaSection({ variant = "palm" }: { variant?: "palm" | "standalone" }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const target = usePalmReportPortalTarget();
@@ -373,7 +373,7 @@ export function D60KarmaSection() {
     if (saved) syncedRef.current = key;
   }, [copy.title, historyBody, locale, result?.utcIso, status, target]);
 
-  if (!target) return null;
+  if (variant !== "standalone" && !target) return null;
 
   const card = (
     <article className="relative overflow-hidden rounded-2xl border border-[#b99755]/35 bg-[#fffaf2] p-5 shadow-[inset_4px_0_0_rgba(111,82,59,.55)]" aria-label={copy.title}>
@@ -426,5 +426,7 @@ export function D60KarmaSection() {
     </article>
   );
 
+  if (variant === "standalone") return card;
+  if (!target) return null;
   return createPortal(card, target);
 }

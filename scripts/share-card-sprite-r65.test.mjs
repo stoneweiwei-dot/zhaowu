@@ -15,4 +15,5 @@ test("share card crops the selected sprite frame and keeps Canvas export CORS-sa
   assert.match(share, /asset\.index \* sourceWidth/);
   assert.match(share, /image\.crossOrigin = "anonymous"/);
   assert.match(share, /\/wallpaper-song\.jpg/);
+  assert.match(share, /fullImageUrl/);
 });

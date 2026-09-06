@@ -22,6 +22,8 @@ test("report artwork keeps lazy loading and fail-open paper fallback", () => {
   assert.match(sprite, /decoding="async"/);
   assert.match(sprite, /\/wallpaper-song\.jpg/);
   assert.match(sprite, /onError/);
+  assert.match(sprite, /fullImageUrl/);
+  assert.match(sprite, /thumbnailUrl/);
 });
 
 test("luck artwork uses the completed five-element Supabase CDN sprite", () => {

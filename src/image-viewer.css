@@ -1,0 +1,92 @@
+.zhaowu-image-viewer {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  background: rgba(18, 14, 10, 0.78);
+  touch-action: none;
+}
+
+.zhaowu-image-viewer-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.zhaowu-image-viewer img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transform-origin: center center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.zhaowu-image-viewer-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(10px + env(safe-area-inset-top)) 16px 12px;
+}
+
+.zhaowu-image-viewer-toolbar button,
+.zhaowu-image-viewer-nav button {
+  min-height: 44px;
+  min-width: 44px;
+  border: 1px solid rgba(232, 214, 178, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 248, 234, 0.12);
+  color: #f7ecd4;
+  font-size: 14px;
+}
+
+.zhaowu-image-viewer-nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px calc(14px + env(safe-area-inset-bottom));
+}
+
+.zhaowu-image-viewer-status {
+  margin: 0 18px 12px;
+  color: #f3e6c8;
+  font-size: 13px;
+  text-align: center;
+}
+
+.zhaowu-image-viewer-hint {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 3;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(249, 242, 228, 0.72);
+  color: rgba(88, 68, 46, 0.78);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+}
+
+.zhaowu-sprite-open {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.zhaowu-sprite-open:focus-visible {
+  outline: 2px solid rgba(143, 47, 39, 0.45);
+  outline-offset: 2px;
+}

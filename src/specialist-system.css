@@ -1,0 +1,112 @@
+.zhaowu-specialist-page {
+  margin: 0 auto;
+  max-width: 42rem;
+  padding: 18px 4px 40px;
+}
+
+.zhaowu-specialist-sheet {
+  border: 1px solid rgba(139, 99, 55, 0.22);
+  border-radius: 22px;
+  padding: 22px 18px 20px;
+  background: #fbf5e9;
+}
+
+.zhaowu-specialist-sheet h1 {
+  margin: 0;
+  font-family: var(--font-display, "Noto Serif TC", serif);
+  font-size: 1.7rem;
+  letter-spacing: 0.06em;
+}
+
+.zhaowu-specialist-sheet .lead {
+  margin: 10px 0 0;
+  color: rgba(80, 67, 51, 0.78);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.zhaowu-specialist-birth {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid rgba(139, 99, 55, 0.18);
+  border-radius: 14px;
+  background: #fffaf1;
+}
+
+.zhaowu-specialist-birth span {
+  display: block;
+  color: rgba(124, 91, 67, 0.86);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.zhaowu-specialist-birth strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.zhaowu-specialist-warning {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(143, 47, 39, 0.18);
+  border-radius: 14px;
+  background: rgba(143, 47, 39, 0.05);
+  color: #5d3a32;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.zhaowu-specialist-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.zhaowu-specialist-actions a,
+.zhaowu-specialist-actions button {
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.zhaowu-specialist-actions button {
+  border: 0;
+  background: #3f5c4d;
+  color: #fff8eb;
+}
+
+.zhaowu-specialist-actions a {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(139, 99, 55, 0.24);
+  color: #3d3429;
+}
+
+.zhaowu-specialist-sections {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.zhaowu-specialist-sections article {
+  padding: 14px;
+  border: 1px solid rgba(139, 99, 55, 0.16);
+  border-radius: 16px;
+  background: #fffaf1;
+}
+
+.zhaowu-specialist-sections h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.zhaowu-specialist-sections p {
+  margin: 0;
+  color: rgba(62, 52, 40, 0.86);
+  font-size: 14px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}

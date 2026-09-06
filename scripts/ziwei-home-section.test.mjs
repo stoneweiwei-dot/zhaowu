@@ -9,7 +9,8 @@ test('紫微保留独立页面，但不再占据核心分析首页', async () =>
     read('../src/routes/index.tsx'),
     read('../src/routes/ziwei.tsx'),
   ]);
-  assert.doesNotMatch(home, /ZiweiHomeFeature|to="\/ziwei"/);
+  assert.doesNotMatch(home, /ZiweiHomeFeature/);
+  assert.match(home, /to: "\/ziwei"/);
   assert.match(route, /createFileRoute\("\/ziwei"\)/);
 });
 
@@ -23,8 +24,8 @@ test('紫微页面只交付客户白话报告，不呈现专业命盘', async ()
     read('../src/lib/ziwei/plain-summary.ts'),
   ]);
   assert.match(route, /createFileRoute\("\/ziwei"\)/);
-  assert.match(route, /MethodExplainPage/);
-  assert.match(route, /主要看性格/);
+  assert.match(route, /SpecialistSystemPage/);
+  assert.match(route, /id="ziwei"/);
   assert.doesNotMatch(route, /<details className="ziwei-technical">|ziwei-chart-board|technicalChart|真太阳时|真太陽時/);
   assert.doesNotMatch(route, /排盤事實已鎖定版本|排盘事实已锁定版本|Calculation facts are version-locked/);
   assert.doesNotMatch(route, /productionReady=false/);

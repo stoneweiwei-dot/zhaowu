@@ -59,7 +59,7 @@ const result = {
 test("share card model reuses calculated visual fields and existing customer answer", () => {
   const model = buildShareCardModel(result, "zh-Hant");
   assert.equal(model.title, "日主·壬");
-  assert.equal(model.artworkPath, "/report-visuals/day-master/ren-water.webp");
+  assert.equal(model.artwork?.fullImageUrl, "/report-visuals/full/ren-water.webp");
   assert.match(model.summary, /正式報告/);
   assert.equal(model.keywords.length, 4);
   assert.equal(model.watermark, "STONE 原創");

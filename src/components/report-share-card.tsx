@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { AnalysisResult } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { ImageViewer, viewerCopy } from "@/components/image-viewer";
 import { buildShareCardModel, renderShareCardPng } from "@/lib/report/share-card";
 
 const COPY: Record<Locale, {
@@ -65,6 +66,7 @@ export function ReportShareCard({ result }: { result: AnalysisResult }) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
+  const [openPreview, setOpenPreview] = useState(false);
 
   useEffect(() => {
     setBlob(null);
@@ -131,7 +133,10 @@ export function ReportShareCard({ result }: { result: AnalysisResult }) {
 
       {previewUrl ? (
         <div className="zhaowu-share-preview">
-          <img src={previewUrl} alt={copy.previewAlt} />
+          <button type="button" className="zhaowu-sprite-open" aria-label={`${copy.previewAlt} · ${viewerCopy(locale).hint}`} onClick={() => setOpenPreview(true)}>
+            <img src={previewUrl} alt={copy.previewAlt} />
+            <span className="zhaowu-image-viewer-hint">{viewerCopy(locale).hint}</span>
+          </button>
         </div>
       ) : (
         <div className="zhaowu-share-placeholder" aria-hidden="true">
@@ -152,6 +157,14 @@ export function ReportShareCard({ result }: { result: AnalysisResult }) {
 
       <p className="zhaowu-share-fallback">{error ? copy.failed : copy.fallback}</p>
       <p className="zhaowu-share-watermark" aria-hidden="true">STONE 原創</p>
+      {openPreview && previewUrl ? (
+        <ImageViewer
+          items={[{ id: "share-card", alt: copy.previewAlt, thumbnailUrl: previewUrl, fullImageUrl: previewUrl }]}
+          index={0}
+          onClose={() => setOpenPreview(false)}
+          onIndexChange={() => undefined}
+        />
+      ) : null}
     </section>
   );
 }

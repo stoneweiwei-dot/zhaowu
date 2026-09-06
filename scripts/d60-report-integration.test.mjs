@@ -35,7 +35,7 @@ test("every Indian classical astrology result card can reveal a plain-language e
 });
 
 test("Indian classical astrology is injected into the existing Past & Present report with a visible uncertainty note", () => {
-  assert.match(route, /MethodExplainPage/);
+  assert.match(route, /PalmStandalone/);
   assert.match(palm, /export function PalmStandalone/);
   assert.match(source, /export function D60KarmaSection/);
   assert.match(source, /大約 2 分鐘就可能跨過一個細分區/);
