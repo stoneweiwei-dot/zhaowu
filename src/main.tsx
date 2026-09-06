@@ -96,10 +96,14 @@ const checkForFreshShell = async () => {
 };
 
 if ('serviceWorker' in navigator) {
+  const hadControllerAtBoot = Boolean(navigator.serviceWorker.controller);
   let reloadedForControllerChange = false;
 
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (reloadedForControllerChange) return;
+    // A first-time visitor can become controlled when the new worker calls clients.claim().
+    // That initial acquisition does not need a reload and was racing deep-route/Safari startup.
+    // Existing installed clients still reload once when an updated worker takes control.
+    if (!hadControllerAtBoot || reloadedForControllerChange) return;
     reloadedForControllerChange = true;
     window.location.reload();
   });
