@@ -1,0 +1,416 @@
+/* r63 — shared birth hub + integrated Song-paper artwork.
+   Loaded after r62 so the approved Song visual direction remains the site baseline. */
+
+.zhaowu-analysis-flow {
+  display: grid;
+  gap: 18px;
+}
+
+.zhaowu-question-sheet,
+.zhaowu-bazi-hub {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(139, 99, 55, .25);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 251, 242, .58), rgba(237, 222, 194, .18)),
+    rgba(247, 237, 218, .82);
+  box-shadow: 0 14px 36px rgba(70, 51, 29, .07), inset 0 0 0 1px rgba(255, 255, 255, .28);
+}
+
+.zhaowu-question-sheet {
+  padding: 24px 22px 20px;
+}
+
+.zhaowu-question-sheet::after {
+  content: "問";
+  position: absolute;
+  right: -1.2rem;
+  top: -.75rem;
+  color: rgba(142, 91, 49, .055);
+  font-family: var(--font-display, serif);
+  font-size: 8rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.zhaowu-section-kicker {
+  margin: 0;
+  color: #8b6438;
+  font-size: 10px;
+  font-weight: 720;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+.zhaowu-question-sheet h2,
+.zhaowu-bazi-hub h2 {
+  margin: 7px 0 0;
+  color: #2b2924;
+  font-family: var(--font-display, serif);
+  font-size: clamp(1.65rem, 6vw, 2.35rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: .045em;
+}
+
+.zhaowu-section-lead {
+  max-width: 44rem;
+  margin: 8px 0 0;
+  color: #675e51;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.zhaowu-question-label {
+  display: block;
+  margin-top: 20px;
+  color: #3f392f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.zhaowu-question-sheet textarea {
+  width: 100%;
+  min-height: 126px;
+  margin-top: 8px;
+  border: 1px solid rgba(127, 96, 57, .34);
+  border-radius: 16px;
+  padding: 14px 15px;
+  color: #2d2923;
+  background: rgba(255, 251, 242, .88);
+  font-size: 16px;
+  line-height: 1.75;
+  outline: none;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .55);
+}
+
+.zhaowu-question-sheet textarea:focus {
+  border-color: rgba(49, 95, 80, .7);
+  box-shadow: 0 0 0 3px rgba(49, 95, 80, .09);
+}
+
+.zhaowu-question-count {
+  display: block;
+  margin-top: 5px;
+  color: #8a7d6c;
+  font-size: 10px;
+  text-align: right;
+}
+
+.zhaowu-bazi-hub {
+  padding: 26px 22px 22px;
+  border-color: rgba(49, 95, 80, .28);
+  background:
+    radial-gradient(circle at 90% 5%, rgba(73, 111, 87, .11), transparent 28%),
+    linear-gradient(180deg, rgba(255, 251, 242, .62), rgba(233, 221, 197, .18)),
+    rgba(247, 237, 218, .84);
+}
+
+.zhaowu-bazi-hub::before {
+  content: "四柱";
+  position: absolute;
+  right: -.35rem;
+  bottom: -1.2rem;
+  color: rgba(49, 95, 80, .05);
+  font-family: var(--font-display, serif);
+  font-size: clamp(5rem, 18vw, 9rem);
+  line-height: 1;
+  letter-spacing: .05em;
+  pointer-events: none;
+}
+
+.zhaowu-bazi-hub > * {
+  position: relative;
+  z-index: 1;
+}
+
+.zhaowu-bazi-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(126, 96, 59, .17);
+}
+
+.zhaowu-birth-edit,
+.zhaowu-method-birth-action,
+.dual-edit-birth,
+.tianji-edit-birth {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(49, 95, 80, .38);
+  border-radius: 999px;
+  padding: 0 13px;
+  color: #315f50;
+  background: rgba(255, 251, 242, .72);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.zhaowu-birth-summary,
+.zhaowu-method-birth-ready,
+.dual-shared-birth-record,
+.tianji-shared-birth-record {
+  display: grid;
+  gap: 6px;
+  margin-top: 17px;
+  border-left: 3px solid rgba(49, 95, 80, .62);
+  padding: 11px 14px;
+  background: rgba(235, 241, 231, .52);
+}
+
+.zhaowu-birth-summary span,
+.zhaowu-method-birth-ready span,
+.dual-shared-birth-record span,
+.tianji-shared-birth-record span {
+  color: #6a806c;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.zhaowu-birth-summary strong,
+.zhaowu-method-birth-ready strong,
+.dual-shared-birth-record strong,
+.tianji-shared-birth-record strong {
+  color: #2f4638;
+  font-family: var(--font-display, serif);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.zhaowu-birth-summary p {
+  margin: 0;
+  color: #6b6458;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.zhaowu-birth-fields {
+  margin-top: 18px;
+}
+
+.zhaowu-birth-fields-title {
+  margin: 0 0 10px;
+  color: #72583d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.zhaowu-birth-date-grid,
+.zhaowu-birth-time-grid,
+.zhaowu-birth-select-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.zhaowu-birth-date-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.zhaowu-birth-time-grid,
+.zhaowu-birth-select-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.zhaowu-birth-fields label {
+  min-width: 0;
+  color: #5e5548;
+  font-size: 12px;
+}
+
+.zhaowu-birth-fields label > span {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.zhaowu-birth-fields input[type="number"],
+.zhaowu-birth-fields select {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  border: 1px solid rgba(127, 96, 57, .32);
+  border-radius: 12px;
+  padding: 0 12px;
+  color: #2d2923;
+  background: rgba(255, 251, 242, .88);
+  font-size: 16px;
+  outline: none;
+}
+
+.zhaowu-birth-time-block {
+  margin-top: 14px;
+  border-top: 1px solid rgba(126, 96, 59, .14);
+  border-bottom: 1px solid rgba(126, 96, 59, .14);
+  padding: 14px 0;
+}
+
+.zhaowu-birth-time-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #5e5548;
+  font-size: 12px;
+}
+
+.zhaowu-birth-time-line label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.zhaowu-birth-time-line label > input { width: auto; min-height: auto; }
+.zhaowu-birth-select-grid { margin-top: 14px; }
+.zhaowu-birth-select-grid small { display: block; margin-top: 5px; color: #8a7b68; font-size: 10px; line-height: 1.5; }
+.zhaowu-birth-cities { display: grid; gap: 14px; margin-top: 15px; }
+.zhaowu-birth-cities > p { margin: -8px 0 0; color: #8a7b68; font-size: 10px; line-height: 1.55; }
+
+.zhaowu-bazi-preview {
+  margin-top: 20px;
+  border-top: 1px solid rgba(49, 95, 80, .18);
+  padding-top: 18px;
+}
+
+.zhaowu-bazi-preview > * {
+  margin-inline: 0 !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-analysis-error {
+  margin: 0;
+  border-left: 3px solid #a64333;
+  padding: 10px 13px;
+  color: #8f342a;
+  background: rgba(250, 235, 224, .65);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.zhaowu-analysis-submit-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 4px 3px 0;
+}
+
+.zhaowu-analysis-submit-wrap p {
+  max-width: 34rem;
+  margin: 0;
+  color: #7d7161;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.zhaowu-analysis-submit-wrap button {
+  min-width: 9.5rem;
+  min-height: 50px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 20px;
+  color: #fff9ee;
+  background: linear-gradient(180deg, #386c5b, #264d42);
+  font-size: 14px;
+  font-weight: 720;
+  box-shadow: 0 10px 22px rgba(38, 77, 66, .16);
+}
+
+.zhaowu-analysis-submit-wrap button:disabled { opacity: .55; }
+
+.zhaowu-method-sheet {
+  background: linear-gradient(180deg, rgba(255, 251, 242, .72), rgba(239, 226, 202, .36)) !important;
+}
+.zhaowu-method-birth-ready { margin-bottom: 16px; }
+.zhaowu-method-birth-missing { margin: 16px 0; border-left: 3px solid rgba(166, 67, 51, .55); padding: 10px 13px; color: #6e5d4d; background: rgba(250, 238, 221, .62); font-size: 12px; line-height: 1.65; }
+
+/* The report artwork is part of the paper composition, not a framed photo card. */
+.zhaowu-visual-card:not(.zhaowu-visual-overview) {
+  display: flow-root;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 18px 3px 10px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-sprite-artwork {
+  float: right;
+  width: min(43%, 13rem);
+  margin: 4px 0 14px 18px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-sprite-artwork::after {
+  box-shadow: none !important;
+  background: linear-gradient(180deg, transparent 68%, rgba(249, 241, 225, .42));
+}
+
+.zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-sprite-image {
+  filter: saturate(.72) sepia(.08) contrast(.93) !important;
+}
+
+.zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-visual-summary {
+  margin-top: 12px;
+  color: #554b3f;
+  font-size: 12.5px;
+  line-height: 1.9;
+}
+
+.zhaowu-visual-tags,
+.zhaowu-visual-facts,
+.zhaowu-season-period,
+.zhaowu-element-bars,
+.zhaowu-element-judgement,
+.zhaowu-visual-note {
+  clear: both;
+}
+
+.zhaowu-luck-book .zhaowu-sprite-artwork,
+.zhaowu-luck-visual-card .zhaowu-sprite-artwork {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.dual-shared-birth,
+.tianji-shared-birth {
+  min-height: 0 !important;
+}
+.dual-shared-birth-record,
+.tianji-shared-birth-record { margin: 4px 0 13px; }
+.dual-edit-birth,
+.tianji-edit-birth { margin-top: 4px; }
+.tianji-grid-shared { align-items: start; }
+
+@media (max-width: 560px) {
+  .zhaowu-analysis-flow { gap: 14px; }
+  .zhaowu-question-sheet,
+  .zhaowu-bazi-hub { border-radius: 20px; }
+  .zhaowu-question-sheet { padding: 20px 16px 17px; }
+  .zhaowu-bazi-hub { padding: 21px 16px 18px; }
+  .zhaowu-bazi-head { display: block; }
+  .zhaowu-birth-edit { margin-top: 12px; }
+  .zhaowu-birth-date-grid { gap: 7px; }
+  .zhaowu-birth-time-grid,
+  .zhaowu-birth-select-grid { gap: 8px; }
+  .zhaowu-analysis-submit-wrap { align-items: stretch; flex-direction: column; }
+  .zhaowu-analysis-submit-wrap button { width: 100%; }
+  .zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-sprite-artwork {
+    width: min(48%, 11.5rem);
+    margin: 4px 0 12px 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .zhaowu-birth-select-grid { grid-template-columns: 1fr; }
+  .zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-sprite-artwork {
+    float: none;
+    width: min(72%, 12rem);
+    margin: 12px auto 14px;
+  }
+}
