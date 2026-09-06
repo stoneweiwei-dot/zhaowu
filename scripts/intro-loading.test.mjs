@@ -10,6 +10,7 @@ const gate = await readFile(new URL('../src/components/intro-gate.tsx', import.m
 const art = await readFile(new URL('../src/components/intro-lotus-art.tsx', import.meta.url), 'utf8');
 const css = await readFile(new URL('../src/intro-extra.css', import.meta.url), 'utf8');
 const {
+  INTRO_GATE_TARGET_MS,
   INTRO_GATE_HARD_EXIT_MS,
   scheduleIntroGateHardExit,
 } = await import('../src/lib/intro-gate-policy.ts');
@@ -35,7 +36,7 @@ test('bootstrap does not preload customer report copy that belongs to result ren
   assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
 });
 
-test('loading gate hard-exits after the owner five-second bloom', () => {
+test('loading gate uses a flexible three-second target with a five-second ceiling', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
   let cancelledTimer = null;
@@ -51,19 +52,25 @@ test('loading gate hard-exits after the owner five-second bloom', () => {
     () => { exited = true; },
   );
 
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 5300);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS >= 5000);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS <= 5300);
-  assert.equal(scheduledDelay, 5300);
+  assert.equal(INTRO_GATE_TARGET_MS, 3000);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 5000);
+  assert.ok(INTRO_GATE_TARGET_MS < INTRO_GATE_HARD_EXIT_MS);
+  assert.equal(scheduledDelay, 5000);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
   assert.equal(cancelledTimer, 17);
 });
 
+test('intro exits when runtime is ready at the target or when the visual finishes, whichever is appropriate', () => {
+  assert.match(gate, /INTRO_GATE_TARGET_MS/);
+  assert.match(gate, /setTargetDone\(true\)/);
+  assert.match(gate, /minimumDone && runtimeReady && \(targetDone \|\| visualDone\)/);
+  assert.match(gate, /Five seconds is the maximum blocking window, not a mandatory duration/);
+});
+
 test('intro plays the committed owner lotus bloom without status text', () => {
   assert.match(gate, /OWNER_LOADING_VIDEO/);
-  assert.match(gate, /LOTUS_BLOOM_MS = 5000/);
   assert.match(gate, /data-intro-motion="owner-video"/);
   assert.match(gate, /owner-lotus-bloom-r53\.mp4/);
   assert.match(gate, /owner-lotus-bloom-r53\.jpg/);
@@ -86,7 +93,7 @@ test('iPhone Safari routes stay mounted and Loading remains perceptible when boo
   assert.ok(gatePosition >= 0, 'the optional intro may still render');
   assert.ok(shellPosition > gatePosition, 'home, login and account content mount independently beneath the intro');
   assert.match(gate, /\.catch\(\(\) => \{[\s\S]*setRuntimeReady\(true\)/);
-  assert.match(gate, /transient backend error[\s\S]*setRuntimeReady\(true\)/);
+  assert.match(gate, /backend trouble[\s\S]*setRuntimeReady\(true\)/);
   assert.doesNotMatch(gate, /\.catch\(\(\) => \{[\s\S]*forceOff\(\)/);
   assert.match(gate, /pointer-events-none opacity-0/);
   assert.doesNotMatch(root, /runtimeReady\s*\?\s*<SiteShell/);
