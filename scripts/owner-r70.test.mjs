@@ -9,17 +9,17 @@ const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url)
 const organizer = await readFile(new URL("../src/components/owner-console-organizer.tsx", import.meta.url), "utf8");
 const gallery = await readFile(new URL("../src/components/owner-gallery-manager.tsx", import.meta.url), "utf8");
 
-test("owner music upload avoids unnecessary mobile transcoding and times out cleanly", () => {
-  assert.match(upload, /CORE_LOAD_TIMEOUT_MS = 28_000/);
+test("owner music upload uses a deterministic native mobile path instead of browser ffmpeg", () => {
+  assert.match(upload, /MAX_OUTPUT_BYTES = 15 \* 1024 \* 1024/);
   assert.match(upload, /UPLOAD_TIMEOUT_MS = 120_000/);
-  assert.match(upload, /isDirectMp3/);
-  assert.match(upload, /isDirectAacM4a/);
-  assert.match(upload, /containsAscii\(probe, "ftyp"\).*containsAscii\(probe, "mp4a"\)/s);
-  assert.match(upload, /codec: "mp3-direct"/);
-  assert.match(upload, /codec: "aac-m4a-direct"/);
-  assert.match(upload, /libmp3lame/);
-  assert.match(upload, /128k/);
-  assert.match(upload, /頁面已停止等待，不會一直卡在 3%/);
+  assert.match(upload, /native-mp3/);
+  assert.match(upload, /native-aac-m4a/);
+  assert.match(upload, /native-aac/);
+  assert.match(upload, /native-wav/);
+  assert.match(upload, /native-flac/);
+  assert.match(upload, /不再在 iPhone 內載入大型轉碼器/);
+  assert.doesNotMatch(upload, /@ffmpeg\/ffmpeg/);
+  assert.doesNotMatch(upload, /libmp3lame/);
   assert.match(upload, /uploadBackgroundMusicResilient/);
   assert.match(manager, /uploadBackgroundMusicResilient/);
 });
