@@ -37,12 +37,13 @@ const MONTH_ASSETS: Record<string, ReportVisualAsset> = {
   "chou-winter": { src: `${REPORT_VISUAL_CDN_BASE}/month-3.webp`, index: 2, count: 3 },
 };
 
+// 運之書直接重用已核准的十天干正式母圖；不再維護第二套重複五行圖片。
 const LUCK_ASSETS: Record<LuckVisualElement, ReportVisualAsset> = {
-  木: { src: "/report-visuals/groups/luck-0.webp", index: 0, count: 5 },
-  火: { src: "/report-visuals/groups/luck-0.webp", index: 1, count: 5 },
-  土: { src: "/report-visuals/groups/luck-0.webp", index: 2, count: 5 },
-  金: { src: "/report-visuals/groups/luck-0.webp", index: 3, count: 5 },
-  水: { src: "/report-visuals/groups/luck-0.webp", index: 4, count: 5 },
+  木: { src: `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, index: 0, count: 5 }, // 甲木
+  火: { src: `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, index: 2, count: 5 }, // 丙火
+  土: { src: `${REPORT_VISUAL_CDN_BASE}/day-0.webp`, index: 4, count: 5 }, // 戊土
+  金: { src: `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, index: 2, count: 5 }, // 辛金
+  水: { src: `${REPORT_VISUAL_CDN_BASE}/day-1.webp`, index: 3, count: 5 }, // 壬水
 };
 
 export function getReportVisualAsset(kind: ReportVisualAssetKind, key: string): ReportVisualAsset | null {

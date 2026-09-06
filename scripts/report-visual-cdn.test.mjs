@@ -24,7 +24,12 @@ test("report artwork keeps lazy loading and fail-open paper fallback", () => {
   assert.match(sprite, /onError/);
 });
 
-test("luck artwork remains on the verified local five-element sprite", () => {
-  assert.match(assets, /\/report-visuals\/groups\/luck-0\.webp/);
+test("luck artwork reuses approved day-master CDN art instead of the old placeholder sprite", () => {
+  assert.doesNotMatch(assets, /\/report-visuals\/groups\/luck-0\.webp/);
+  assert.match(assets, /木:\s*\{ src: `\$\{REPORT_VISUAL_CDN_BASE\}\/day-0\.webp`, index: 0, count: 5 \}/);
+  assert.match(assets, /火:\s*\{ src: `\$\{REPORT_VISUAL_CDN_BASE\}\/day-0\.webp`, index: 2, count: 5 \}/);
+  assert.match(assets, /土:\s*\{ src: `\$\{REPORT_VISUAL_CDN_BASE\}\/day-0\.webp`, index: 4, count: 5 \}/);
+  assert.match(assets, /金:\s*\{ src: `\$\{REPORT_VISUAL_CDN_BASE\}\/day-1\.webp`, index: 2, count: 5 \}/);
+  assert.match(assets, /水:\s*\{ src: `\$\{REPORT_VISUAL_CDN_BASE\}\/day-1\.webp`, index: 3, count: 5 \}/);
   assert.match(assets, /luckElement:\s*5/);
 });
