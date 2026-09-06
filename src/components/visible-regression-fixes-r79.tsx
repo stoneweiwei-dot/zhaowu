@@ -63,24 +63,24 @@ function buildReading(id: InlineReportId, birth: SharedBirthRecord, locale: Loca
 function copy(locale: Locale) {
   if (locale === "en") {
     return {
-      open: "Open report",
-      close: "Close report",
-      missing: "Add your birth data once in the Zi Ping BaZi section above. This report will then appear here directly.",
+      open: "Show full report",
+      close: "Collapse",
+      missing: "Add your birth data once in the Zi Ping BaZi section above. The report will then appear directly inside this section.",
       report: "Report",
     };
   }
   if (locale === "zh-Hans") {
     return {
-      open: "展开报告",
-      close: "收起报告",
-      missing: "先在上方四柱八字填写一次出生资料。完成后，这个分区会直接显示本体系报告，不再跳去另一个空页面。",
+      open: "显示完整报告",
+      close: "收起",
+      missing: "先在上方四柱八字填写一次出生资料。完成后，本体系报告会直接显示在这个分区里，不再跳去另一个空页面。",
       report: "分析报告",
     };
   }
   return {
-    open: "展開報告",
-    close: "收起報告",
-    missing: "先在上方四柱八字填寫一次出生資料。完成後，這個分區會直接顯示本體系報告，不再跳去另一個空頁面。",
+    open: "顯示完整報告",
+    close: "收起",
+    missing: "先在上方四柱八字填寫一次出生資料。完成後，本體系報告會直接顯示在這個分區裡，不再跳去另一個空頁面。",
     report: "分析報告",
   };
 }
@@ -90,7 +90,7 @@ export function VisibleRegressionFixesR79() {
   const c = copy(locale);
   const [host, setHost] = useState<HTMLElement | null>(null);
   const [birth, setBirth] = useState<SharedBirthRecord | null>(null);
-  const [openId, setOpenId] = useState<InlineReportId | null>(null);
+  const [collapsed, setCollapsed] = useState<Partial<Record<InlineReportId, boolean>>>({});
 
   useEffect(() => {
     const syncBirth = () => setBirth(readSharedBirthRecord());
@@ -151,12 +151,12 @@ export function VisibleRegressionFixesR79() {
       .r79-inline-report-row { border-bottom: 1px solid rgba(139,99,55,.22); }
       .r79-inline-report-toggle {
         width: 100%; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 14px; align-items: center;
-        padding: 18px 3px; text-align: left; background: transparent; color: #29251f;
+        padding: 18px 3px 12px; text-align: left; background: transparent; color: #29251f;
       }
       .r79-inline-report-toggle strong { display: block; font-family: var(--font-display, serif); font-size: 1.25rem; line-height: 1.35; letter-spacing: .045em; }
       .r79-inline-report-toggle small { display: block; margin-top: 5px; color: rgba(76,65,52,.68); font-size: .76rem; line-height: 1.6; }
       .r79-inline-report-action { color: rgba(143,48,39,.9); font-size: .77rem; white-space: nowrap; }
-      .r79-inline-report-body { padding: 2px 4px 22px; }
+      .r79-inline-report-body { padding: 0 4px 22px; }
       .r79-inline-report-lead { margin: 0 0 14px; color: #5a554c; font-size: .92rem; line-height: 1.9; }
       .r79-inline-report-warning { margin: 0 0 14px; border-left: 3px solid rgba(167,53,43,.55); padding: 7px 0 7px 12px; color: #6f3d35; font-size: .82rem; line-height: 1.75; }
       .r79-inline-report-section { padding: 13px 0; border-top: 1px solid rgba(139,99,55,.14); }
@@ -174,7 +174,7 @@ export function VisibleRegressionFixesR79() {
         min-height: 44px !important; border-radius: 9px !important; padding: 9px 10px !important; font-size: .78rem !important; line-height: 1.45 !important;
       }
       @media (max-width: 390px) {
-        .r79-inline-report-toggle { padding: 16px 1px; }
+        .r79-inline-report-toggle { padding: 16px 1px 11px; }
         .r79-inline-report-toggle strong { font-size: 1.1rem; }
         section[data-r79-scent="true"] > div.mt-3.grid > button { font-size: .74rem !important; }
       }
@@ -186,7 +186,7 @@ export function VisibleRegressionFixesR79() {
       {ORDER.map((id) => {
         const meta = META[locale][id];
         const reading = readings[id];
-        const isOpen = openId === id;
+        const isOpen = Boolean(birth) && !collapsed[id];
         return (
           <section key={id} className="r79-inline-report-row" data-inline-report-id={id}>
             <button
@@ -198,7 +198,7 @@ export function VisibleRegressionFixesR79() {
                   document.getElementById("bazi")?.scrollIntoView({ behavior: "smooth", block: "start" });
                   return;
                 }
-                setOpenId((current) => current === id ? null : id);
+                setCollapsed((current) => ({ ...current, [id]: !current[id] }));
               }}
             >
               <span>
@@ -221,7 +221,7 @@ export function VisibleRegressionFixesR79() {
               </div>
             ) : null}
 
-            {isOpen && !birth ? <p className="r79-inline-report-missing">{c.missing}</p> : null}
+            {!birth ? <p className="r79-inline-report-missing">{c.missing}</p> : null}
           </section>
         );
       })}
