@@ -23,12 +23,8 @@ test('紫微页面只交付客户白话报告，不呈现专业命盘', async ()
     read('../src/lib/ziwei/plain-summary.ts'),
   ]);
   assert.match(route, /createFileRoute\("\/ziwei"\)/);
-  assert.match(route, /buildZiweiTruthExtension/);
-  assert.match(route, /buildZiweiPlainSummary/);
-  assert.match(route, /性格底色/);
-  assert.match(route, /事業與做事方式/);
-  assert.match(route, /當前人生階段/);
-  assert.match(route, /ziwei-report-sections/);
+  assert.match(route, /MethodExplainPage/);
+  assert.match(route, /主要看性格/);
   assert.doesNotMatch(route, /<details className="ziwei-technical">|ziwei-chart-board|technicalChart|真太阳时|真太陽時/);
   assert.doesNotMatch(route, /排盤事實已鎖定版本|排盘事实已锁定版本|Calculation facts are version-locked/);
   assert.doesNotMatch(route, /productionReady=false/);

@@ -41,9 +41,9 @@ test("qizheng lives behind its own homepage gateway instead of inside the main r
   assert.doesNotMatch(home, /to: "\/qizheng"/);
   assert.doesNotMatch(home, /<QizhengHomePanel/);
   assert.match(route, /createFileRoute\("\/qizheng"\)/);
-  assert.match(route, /buildQizhengPlainSummary/);
-  assert.match(route, /qz-report-sections/);
-  assert.doesNotMatch(route, /<AnalysisForm|<QizhengHomePanel|qz-wheel/);
+  assert.match(route, /MethodExplainPage/);
+  assert.match(route, /主要看性情/);
+  assert.doesNotMatch(route, /<AnalysisForm|<QizhengHomePanel|qz-wheel|qz-report-sections|searchCities/);
 });
 
 test("qizheng customer report uses the seven luminaries' own strengths without exposing a chart", () => {
