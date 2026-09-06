@@ -25,7 +25,8 @@ test("one visible Gallery keeps owner asset management independent of the fixed 
 
   assert.match(gallery, /你只需要把喜欢的图放进来/);
   assert.match(gallery, /分类、五行、用途、客户匹配与背景调用都由系统在后台处理/);
-  assert.match(gallery, /category:\s*"visual-library"/);
+  assert.match(gallery, /category:\s*view === "loading" \? "loading" : "visual-library"/);
+  assert.match(gallery, /auto-classify/);
   assert.doesNotMatch(gallery, /category === "background" \? "site-wallpaper"/);
 
   assert.match(main, /gallery-unification\.css/);
