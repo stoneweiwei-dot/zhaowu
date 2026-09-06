@@ -1,0 +1,20 @@
+/* r63 final override: remove the legacy outer question-card shell so 問事 and 四柱八字 are visibly separate. */
+.zhaowu-home-layout #analysisForm.zhaowu-analysis-flow,
+.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  overflow: visible !important;
+}
+.zhaowu-home-layout #analysisForm.zhaowu-analysis-flow::before,
+.zhaowu-home-layout #analysisForm.zhaowu-analysis-flow::after,
+.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow::before,
+.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow::after {
+  content: none !important;
+  display: none !important;
+}
