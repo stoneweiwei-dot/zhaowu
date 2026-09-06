@@ -4,13 +4,15 @@ import test from "node:test";
 
 const widget = await readFile(new URL("../src/components/daily-almanac-widget.tsx", import.meta.url), "utf8");
 const route = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
+const form = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
 const layout = await readFile(new URL("../src/home-layout-r46.css", import.meta.url), "utf8");
 const hub = await readFile(new URL("../src/home-birth-hub-r60.css", import.meta.url), "utf8");
 
 test("homepage puts the shared birth hub before the daily almanac", () => {
+  const formMount = route.indexOf("<AnalysisForm />");
   const daily = route.indexOf("<DailyAlmanacWidget />");
-  const bazi = route.indexOf('id="bazi"');
-  assert.ok(bazi >= 0 && daily > bazi);
+  assert.ok(formMount >= 0 && daily > formMount);
+  assert.match(form, /id="bazi"/);
   assert.match(route, /home-layout-r46\.css/);
   assert.match(route, /home-birth-hub-r60\.css/);
 });

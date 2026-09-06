@@ -15,8 +15,8 @@ test("homepage life paper keeps one analysis form and quiz skin", async () => {
   const quiz = await source("src/lib/report/quiz-paper.ts");
   const copy = await source("src/lib/report/quiz-copy.ts");
 
-  assert.match(home, /<AnalysisForm \/>/);
-  assert.match(home, /id="bazi"/);
+  assert.equal((home.match(/<AnalysisForm \/>/g) ?? []).length, 1);
+  assert.match(form, /id="bazi"/);
   assert.doesNotMatch(home, /zhaowu-home-quiz-title/);
   assert.match(form, /id="analysisForm"/);
   assert.match(form, /id="analysis-question"/);

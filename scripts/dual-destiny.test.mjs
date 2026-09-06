@@ -71,7 +71,7 @@ test("客户页把结果说清楚，并彻底删除融合长文与系统话术",
     "utf8",
   );
 
-  assert.match(route, /一个人，两种反应/);
+  assert.match(route, /一个人，两种自然反应/);
   assert.match(route, /平时怎样做事/);
   assert.match(route, /压力来时的反应/);
   assert.match(route, /查看传统盘面/);
@@ -105,7 +105,7 @@ test("首页前世今生进入真正的达摩一掌经，性格两面保持诚�
   assert.doesNotMatch(home, /性格兩面|zhaowu-home-dual-entry|双轨性格分析|zhaowu-tools-section/);
   assert.doesNotMatch(home, /to="\/tianji-xinggong"/);
   assert.match(dualRoute, /calculateDualDestiny/);
-  assert.match(dualRoute, /一个人，两种反应/);
+  assert.match(dualRoute, /一个人，两种自然反应/);
   assert.match(palmRoute, /buildPalm/);
   assert.match(palmRoute, /buildPalmSynthesis/);
   assert.match(palmRoute, /前四世來自哪一道/);

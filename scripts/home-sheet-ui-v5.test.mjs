@@ -46,7 +46,7 @@ test("homepage keeps the Song parchment flow and uses a compact method directory
   assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian/);
   assert.doesNotMatch(home, /to: "\/(qizheng|astrology|yizhangjing|ziwei)"/);
   assert.match(home, /七政四餘/);
-  assert.match(home, /西洋星盤/);
+  assert.match(home, /西洋星座/);
   assert.match(home, /前世今生/);
   assert.match(home, /紫微斗數/);
   assert.match(home, /zhaowu-home-portal-hint/);

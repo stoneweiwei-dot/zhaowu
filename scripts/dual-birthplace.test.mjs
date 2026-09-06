@@ -4,16 +4,18 @@ import test from "node:test";
 import { timezoneOffsetHours } from "../src/lib/bazi/cities.ts";
 import { toTrueSolar } from "../src/lib/bazi/solar-time.ts";
 
-test("双轨出生资料要求地点与分钟，并由系统自动校正时间", () => {
+test("双轨复用共享出生资料，并由系统自动校正时间", () => {
   const route = readFileSync(new URL("../src/routes/tianji-dual.tsx", import.meta.url), "utf8");
   const form = readFileSync(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
   const actions = readFileSync(new URL("../src/lib/actions.ts", import.meta.url), "utf8");
 
-  assert.match(route, /birthCity/);
-  assert.match(route, /MINUTES/);
+  assert.match(route, /readSharedBirthRecord/);
+  assert.match(route, /sharedBirthFromUnknown/);
+  assert.match(route, /user\?\.birthData/);
   assert.match(route, /timezoneOffsetHours/);
   assert.match(route, /toTrueSolar/);
-  assert.match(route, /时间会按出生地自动校正/);
+  assert.match(route, /出生資料直接沿用首頁四柱八字區，不再重填/);
+  assert.doesNotMatch(route, /CityPicker|const MINUTES/);
   assert.match(form, /ziPolicy: "midnight"/);
   assert.match(form, /useTrueSolar: true/);
   assert.match(actions, /ziPolicy: "midnight"/);
