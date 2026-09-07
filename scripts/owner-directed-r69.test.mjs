@@ -4,6 +4,7 @@ import test from "node:test";
 
 const resultView = await readFile(new URL("../src/components/result-view.tsx", import.meta.url), "utf8");
 const brand = await readFile(new URL("../src/components/brand-seal.tsx", import.meta.url), "utf8");
+const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 
 test("free direct-answer card delivers the engine's question-specific answer without generic template replacement", () => {
@@ -11,12 +12,11 @@ test("free direct-answer card delivers the engine's question-specific answer wit
   assert.doesNotMatch(resultView, /buildFreeDirectAnswer/);
 });
 
-test("header uses the current versioned static owner mark without iPhone crop artefacts", () => {
-  assert.match(brand, /const OFFICIAL_MARK = "\/apple-touch-icon-v3\.png"/);
-  assert.match(brand, /src=\{OFFICIAL_MARK\}/);
-  assert.match(brand, /object-contain/);
-  assert.doesNotMatch(brand, /data:image\/jpeg;base64,/);
-  assert.doesNotMatch(brand, /<svg[\s>]/);
+test("header uses a crisp typographic seal instead of shrinking the home-screen icon", () => {
+  assert.match(brand, /zhaowu-brand-seal__character/);
+  assert.match(brand, />昭<\/span>/);
+  assert.doesNotMatch(brand, /apple-touch-icon|data:image|<img|<svg/);
+  assert.match(design, /zhaowu-brand-seal__character/);
 });
 
 test("r69 almanac refinement loads after earlier site locks", () => {

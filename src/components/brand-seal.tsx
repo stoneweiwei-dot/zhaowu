@@ -4,33 +4,20 @@ type BrandSealProps = {
   decorative?: boolean;
 };
 
-const SIZE_CLASS = {
-  sm: "h-12 w-12 sm:h-14 sm:w-14",
-  lg: "h-24 w-24 sm:h-28 sm:w-28",
-} as const;
-
 /**
- * Reuse the same versioned static mark as the current iPhone home-screen icon.
- * Keep the logo inspectable and uncropped instead of embedding a JPEG data URI.
+ * Header mark is intentionally typographic rather than the home-screen app icon.
+ * A single crisp seal survives iPhone scaling better than a miniature poster/logo asset.
  */
-const OFFICIAL_MARK = "/apple-touch-icon-v3.png";
-
 export function BrandSeal({ size = "sm", className = "", decorative = false }: BrandSealProps) {
   return (
     <span
-      className={`zhaowu-brand-seal inline-grid shrink-0 place-items-center overflow-hidden rounded-[10px] bg-[#fbf5e9] ${SIZE_CLASS[size]} ${className}`}
+      className={`zhaowu-brand-seal zhaowu-brand-seal--${size} ${className}`}
       role={decorative ? undefined : "img"}
       aria-label={decorative ? undefined : "昭梧"}
       aria-hidden={decorative || undefined}
     >
-      <img
-        src={OFFICIAL_MARK}
-        alt=""
-        width={180}
-        height={180}
-        className="h-full w-full object-contain"
-        decoding="async"
-      />
+      <span className="zhaowu-brand-seal__character" aria-hidden="true">昭</span>
+      <span className="zhaowu-brand-seal__corner" aria-hidden="true" />
     </span>
   );
 }

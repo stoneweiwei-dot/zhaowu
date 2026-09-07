@@ -1,112 +1,162 @@
 .zhaowu-specialist-page {
+  width: min(100%, 760px);
   margin: 0 auto;
-  max-width: 42rem;
-  padding: 18px 4px 40px;
+  padding: 12px 0 48px;
 }
 
 .zhaowu-specialist-sheet {
-  border: 1px solid rgba(139, 99, 55, 0.22);
-  border-radius: 22px;
-  padding: 22px 18px 20px;
-  background: #fbf5e9;
+  overflow: hidden;
+  border: 1px solid rgba(88, 69, 43, .15);
+  border-radius: 26px;
+  padding: clamp(24px, 5vw, 40px);
+  background: rgba(250, 246, 236, .90);
+  box-shadow: 0 18px 52px rgba(57, 45, 29, .07);
+}
+
+.zhaowu-specialist-hero {
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(88, 69, 43, .15);
+}
+
+.zhaowu-specialist-kicker {
+  margin: 0 0 8px;
+  color: #944036;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .16em;
 }
 
 .zhaowu-specialist-sheet h1 {
   margin: 0;
-  font-family: var(--font-display, "Noto Serif TC", serif);
-  font-size: 1.7rem;
-  letter-spacing: 0.06em;
+  color: #27231e;
+  font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif);
+  font-size: clamp(30px, 7vw, 42px);
+  font-weight: 650;
+  line-height: 1.18;
+  letter-spacing: .045em;
 }
 
 .zhaowu-specialist-sheet .lead {
-  margin: 10px 0 0;
-  color: rgba(80, 67, 51, 0.78);
-  font-size: 14px;
-  line-height: 1.75;
+  margin: 12px 0 0;
+  max-width: 42rem;
+  color: #685f55;
+  font-size: 16px;
+  line-height: 1.8;
 }
 
 .zhaowu-specialist-birth {
-  margin-top: 16px;
-  padding: 12px 14px;
-  border: 1px solid rgba(139, 99, 55, 0.18);
-  border-radius: 14px;
-  background: #fffaf1;
+  margin-top: 20px;
+  padding: 16px 17px;
+  border-left: 3px solid rgba(42, 76, 63, .58);
+  border-radius: 4px 15px 15px 4px;
+  background: rgba(239, 241, 230, .72);
 }
 
-.zhaowu-specialist-birth span {
+.zhaowu-specialist-birth span,
+.zhaowu-specialist-birth small {
   display: block;
-  color: rgba(124, 91, 67, 0.86);
-  font-size: 11px;
-  letter-spacing: 0.12em;
+  color: #71665a;
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 .zhaowu-specialist-birth strong {
   display: block;
-  margin-top: 4px;
-  font-size: 15px;
+  margin: 5px 0;
+  color: #29251f;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 .zhaowu-specialist-warning {
-  margin-top: 14px;
-  padding: 12px 14px;
-  border: 1px solid rgba(143, 47, 39, 0.18);
+  margin: 18px 0 0;
+  padding: 15px 16px;
+  border: 1px solid rgba(143, 47, 39, .17);
   border-radius: 14px;
-  background: rgba(143, 47, 39, 0.05);
-  color: #5d3a32;
-  font-size: 14px;
-  line-height: 1.7;
+  background: rgba(143, 47, 39, .045);
+  color: #5b3832;
+  font-size: 15px;
+  line-height: 1.75;
 }
 
 .zhaowu-specialist-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 .zhaowu-specialist-actions a,
 .zhaowu-specialist-actions button {
+  display: inline-grid;
   min-height: 46px;
-  padding: 0 16px;
-  border-radius: 999px;
-  font-size: 14px;
-}
-
-.zhaowu-specialist-actions button {
-  border: 0;
-  background: #3f5c4d;
-  color: #fff8eb;
-}
-
-.zhaowu-specialist-actions a {
-  display: grid;
   place-items: center;
-  border: 1px solid rgba(139, 99, 55, 0.24);
-  color: #3d3429;
+  padding: 0 18px;
+  border: 1px solid rgba(42, 76, 63, .24);
+  border-radius: 12px;
+  color: #294b3f;
+  background: rgba(255, 252, 244, .78);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
 }
 
 .zhaowu-specialist-sections {
   display: grid;
-  gap: 12px;
-  margin-top: 18px;
+  gap: 0;
+  margin-top: 28px;
 }
 
 .zhaowu-specialist-sections article {
-  padding: 14px;
-  border: 1px solid rgba(139, 99, 55, 0.16);
-  border-radius: 16px;
-  background: #fffaf1;
+  padding: 22px 2px;
+  border: 0;
+  border-top: 1px solid rgba(88, 69, 43, .14);
+  background: transparent;
+}
+
+.zhaowu-specialist-sections article:first-child {
+  border-top: 0;
+  padding-top: 0;
 }
 
 .zhaowu-specialist-sections h2 {
-  margin: 0 0 6px;
-  font-size: 15px;
+  margin: 0 0 9px;
+  color: #2d2923;
+  font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif);
+  font-size: 21px;
+  font-weight: 650;
+  line-height: 1.4;
+  letter-spacing: .025em;
 }
 
 .zhaowu-specialist-sections p {
   margin: 0;
-  color: rgba(62, 52, 40, 0.86);
-  font-size: 14px;
-  line-height: 1.75;
+  color: #514a42;
+  font-size: 16px;
+  line-height: 1.88;
   white-space: pre-wrap;
+}
+
+.zhaowu-specialist-overview {
+  padding-bottom: 26px !important;
+}
+
+@media (max-width: 560px) {
+  .zhaowu-specialist-page {
+    padding-top: 2px;
+  }
+
+  .zhaowu-specialist-sheet {
+    border-radius: 20px;
+    padding: 24px 18px 30px;
+  }
+
+  .zhaowu-specialist-sheet .lead,
+  .zhaowu-specialist-sections p {
+    font-size: 16px;
+  }
+
+  .zhaowu-specialist-sections h2 {
+    font-size: 20px;
+  }
 }

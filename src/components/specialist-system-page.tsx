@@ -24,29 +24,29 @@ const D60_BIRTH_EVENT = "zhaowu:d60-birth";
 
 const PAGE = {
   indian: {
-    "zh-Hant": { title: "印度古法占星", hint: "看業力細分層；D60 對出生分鐘非常敏感。" },
-    "zh-Hans": { title: "印度古法占星", hint: "看业力细分层；D60 对出生分钟非常敏感。" },
-    en: { title: "Classical Indian astrology", hint: "Karmic pattern. D60 is highly sensitive to the birth minute." },
+    "zh-Hant": { title: "印度古法占星", hint: "古典印度占星的獨立旁證。D60 對出生分鐘非常敏感。" },
+    "zh-Hans": { title: "印度古法占星", hint: "古典印度占星的独立旁证。D60 对出生分钟非常敏感。" },
+    en: { title: "Classical Indian astrology", hint: "An independent classical Indian reading. D60 is highly sensitive to the birth minute." },
   },
   western: {
-    "zh-Hant": { title: "西洋星座", hint: "主要看太陽、月亮、上升、相位與人生領域（西洋星盤）。" },
-    "zh-Hans": { title: "西洋星座", hint: "主要看太阳、月亮、上升、相位与人生领域（西洋星盘）。" },
-    en: { title: "Western astrology", hint: "Sun, Moon, Rising, aspects and life areas." },
+    "zh-Hant": { title: "西洋星座", hint: "從太陽、月亮、上升、相位與人生領域看另一種性格與生活視角。" },
+    "zh-Hans": { title: "西洋星座", hint: "从太阳、月亮、上升、相位与人生领域看另一种性格与生活视角。" },
+    en: { title: "Western astrology", hint: "A separate view through the Sun, Moon, Rising sign, aspects and life areas." },
   },
   ziwei: {
-    "zh-Hant": { title: "紫微斗數", hint: "主要看性格、關係、事業、財務與十年主軸。" },
-    "zh-Hans": { title: "紫微斗数", hint: "主要看性格、关系、事业、财务与十年主轴。" },
-    en: { title: "Zi Wei Dou Shu", hint: "Character, relationships, work, money and the decade focus." },
+    "zh-Hant": { title: "紫微斗數", hint: "以宮位與時限作獨立旁證，重點看性格、關係、事業、財務與階段主軸。" },
+    "zh-Hans": { title: "紫微斗数", hint: "以宫位与时限作独立旁证，重点看性格、关系、事业、财务与阶段主轴。" },
+    en: { title: "Zi Wei Dou Shu", hint: "An independent palace-and-timing view of character, relationships, work, money and life phases." },
   },
   qizheng: {
-    "zh-Hant": { title: "七政四餘", hint: "主要看性情、節奏、壓力反應與天時變化。" },
-    "zh-Hans": { title: "七政四余", hint: "主要看性情、节奏、压力反应与天时变化。" },
-    en: { title: "Seven Luminaries", hint: "Temperament, rhythm, pressure response and timing." },
+    "zh-Hant": { title: "七政四餘", hint: "從七曜運行看性情、節奏、壓力反應與天時變化。" },
+    "zh-Hans": { title: "七政四余", hint: "从七曜运行看性情、节奏、压力反应与天时变化。" },
+    en: { title: "Seven Luminaries", hint: "A separate reading of temperament, rhythm, pressure response and timing." },
   },
   past: {
-    "zh-Hant": { title: "前世今生", hint: "看前四世文化象意、反覆習性與獨立旁證。" },
-    "zh-Hans": { title: "前世今生", hint: "看前四世文化象意、反复习性与独立旁证。" },
-    en: { title: "Past & Present", hint: "Carried patterns, prior-life symbolism and an independent supporting layer." },
+    "zh-Hant": { title: "前世今生", hint: "以文化象意看反覆出現的習性與課題，只作獨立旁證。" },
+    "zh-Hans": { title: "前世今生", hint: "以文化象意看反复出现的习性与课题，只作独立旁证。" },
+    en: { title: "Past & Present", hint: "Cultural symbolism for recurring habits and themes, kept as an independent supporting layer." },
   },
   dharma: {
     "zh-Hant": { title: "達摩一掌經", hint: "看四世象意，以及被重複加強、留到今生的習慣。" },
@@ -56,27 +56,9 @@ const PAGE = {
 } as const;
 
 const COPY = {
-  "zh-Hant": {
-    ready: "已讀取共享出生資料",
-    auto: "已依同一份生辰自動生成本體系結果",
-    missing: "目前還沒有共享出生資料。請先在首頁四柱八字分區填寫一次。",
-    edit: "修改出生資料",
-    add: "去填寫一次出生資料",
-  },
-  "zh-Hans": {
-    ready: "已读取共享出生资料",
-    auto: "已依同一份生辰自动生成本体系结果",
-    missing: "目前还没有共享出生资料。请先在首页四柱八字分区填写一次。",
-    edit: "修改出生资料",
-    add: "去填写一次出生资料",
-  },
-  en: {
-    ready: "Shared birth record ready",
-    auto: "This system has automatically generated its result from the same birth record",
-    missing: "No shared birth record yet. Add it once in the Zi Ping BaZi section on the homepage.",
-    edit: "Edit birth record",
-    add: "Add birth record once",
-  },
+  "zh-Hant": { ready: "本次使用的出生資料", auto: "已用同一份生辰完成這一體系的獨立分析", missing: "還沒有出生資料。先回首頁填寫一次，之後所有分析都會共用。", edit: "修改出生資料", add: "填寫出生資料" },
+  "zh-Hans": { ready: "本次使用的出生资料", auto: "已用同一份生辰完成这一体系的独立分析", missing: "还没有出生资料。先回首页填写一次，之后所有分析都会共用。", edit: "修改出生资料", add: "填写出生资料" },
+  en: { ready: "Birth record used for this reading", auto: "This independent reading has been generated from the same birth record", missing: "No birth record yet. Add it once on the homepage and every analysis can reuse it.", edit: "Edit birth record", add: "Add birth record" },
 } as const;
 
 function buildReading(id: SpecialistId, birth: SharedBirthRecord, locale: "zh-Hant" | "zh-Hans" | "en"): SpecialistReading {
@@ -92,7 +74,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
   const copy = COPY[locale];
   const page = PAGE[id][locale];
   const { user } = useCurrentUserState();
-  const [birth, setBirth] = useState<SharedBirthRecord | null>(null);
+  const [birth, setBirth] = useState<SharedBirthRecord | null>(() => readSharedBirthRecord());
 
   useEffect(() => {
     const server = sharedBirthFromUnknown(user?.birthData);
@@ -101,10 +83,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
     if (server) writeSharedBirthRecord(server);
   }, [user?.id, user?.birthData]);
 
-  const reading = useMemo(() => {
-    if (!birth) return null;
-    return buildReading(id, birth, locale);
-  }, [birth, id, locale]);
+  const reading = useMemo(() => birth ? buildReading(id, birth, locale) : null, [birth, id, locale]);
 
   useEffect(() => {
     if (!birth || (id !== "indian" && id !== "past" && id !== "dharma")) return;
@@ -115,32 +94,35 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
   }, [birth, id]);
 
   return (
-    <main className="zhaowu-specialist-page">
+    <main className="zhaowu-specialist-page" data-specialist-report={id}>
       <section className="zhaowu-specialist-sheet" aria-labelledby="specialist-title">
-        <h1 id="specialist-title">{page.title}</h1>
-        <p className="lead">{page.hint}</p>
+        <header className="zhaowu-specialist-hero">
+          <p className="zhaowu-specialist-kicker">{locale === "en" ? "INDEPENDENT READING" : locale === "zh-Hans" ? "独立分析" : "獨立分析"}</p>
+          <h1 id="specialist-title">{page.title}</h1>
+          <p className="lead">{page.hint}</p>
+        </header>
+
         {birth ? (
           <div className="zhaowu-specialist-birth">
             <span>{copy.ready}</span>
             <strong>{formatSharedBirthRecord(birth, locale)}</strong>
-            <small className="mt-1 block text-ink-soft">{copy.auto}</small>
+            <small>{copy.auto}</small>
           </div>
-        ) : (
-          <p className="zhaowu-specialist-warning">{copy.missing}</p>
-        )}
+        ) : <p className="zhaowu-specialist-warning">{copy.missing}</p>}
+
         {reading?.warning ? <p className="zhaowu-specialist-warning">{reading.warning}</p> : null}
-        <div className="zhaowu-specialist-actions">
-          <a href="/#bazi">{birth ? copy.edit : copy.add}</a>
-        </div>
+
+        <div className="zhaowu-specialist-actions"><a href="/#bazi">{birth ? copy.edit : copy.add}</a></div>
+
         {reading ? (
           <div className="zhaowu-specialist-sections">
-            {reading.lead ? <article><h2>{reading.title}</h2><p>{reading.lead}</p></article> : null}
+            {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{reading.title}</h2><p>{reading.lead}</p></article> : null}
             {reading.sections.map((section) => (
               <article key={`${section.title}-${section.body.slice(0, 24)}`}><h2>{section.title}</h2><p>{section.body}</p></article>
             ))}
           </div>
         ) : null}
-        {id === "indian" ? <div className="mt-5"><D60KarmaSection variant="standalone" /></div> : null}
+        {id === "indian" ? <div className="mt-6"><D60KarmaSection variant="standalone" /></div> : null}
       </section>
     </main>
   );
