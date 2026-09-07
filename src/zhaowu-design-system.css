@@ -1,0 +1,197 @@
+/*
+ * 昭梧 canonical visual contract.
+ * This file is intentionally imported after all legacy styles.
+ * Future global visual overrides belong here until legacy layers can be removed safely.
+ * No portal, DOM mutation, viewport clipping, scroll locking, or runtime style injection.
+ */
+
+:root {
+  --zw-card-radius: 22px;
+  --zw-control-radius: 999px;
+  --zw-mobile-inline: 14px;
+  --zw-readable: 44rem;
+}
+
+.brand-seal {
+  flex: 0 0 auto;
+}
+
+/* Saved reports: generation state is owner metadata, not reading content. */
+[data-report-primary-actions] ~ div > [class~="mb-4"][class~="rounded-lg"][class~="bg-cream/70"]:first-child {
+  display: none !important;
+}
+
+[data-report-secondary-actions] {
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.46) !important;
+}
+
+[data-report-secondary-actions] > summary {
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  list-style: none;
+  cursor: pointer;
+}
+
+[data-report-secondary-actions] > summary::-webkit-details-marker {
+  display: none;
+}
+
+[data-report-primary-actions] button,
+[data-report-secondary-actions] button {
+  min-height: 44px;
+}
+
+/* The scent test is an optional activity, not a second homepage. */
+[data-scent-panel] {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid rgba(155, 125, 76, 0.18);
+  border-radius: var(--zw-card-radius);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+[data-scent-panel][hidden] {
+  display: none !important;
+}
+
+[data-scent-panel] .scent-option-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 520px) {
+  /* Header becomes two deliberate rows instead of crushing desktop controls together. */
+  .zhaowu-site-header > div {
+    flex-wrap: wrap;
+    min-height: auto;
+    gap: 8px 10px;
+    padding: 8px 12px 9px;
+  }
+
+  .zhaowu-site-header > div > a[href="/"] {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .zhaowu-site-header nav {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 6px;
+    border-top: 1px solid rgba(86, 78, 62, 0.14);
+    padding-top: 7px;
+  }
+
+  .brand-seal {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 12px !important;
+    padding: 1px !important;
+  }
+
+  .brand-seal img {
+    border-radius: 9px !important;
+  }
+
+  .zhaowu-site-header a[href="/"] > span {
+    font-size: 1rem !important;
+  }
+
+  .zhaowu-site-header a[href="/gallery"],
+  .zhaowu-site-header a[href="/account"],
+  .zhaowu-site-header a[href="/profile"] {
+    min-height: 38px !important;
+    padding-inline: 10px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .site-lang-group {
+    min-height: 38px !important;
+  }
+
+  .site-lang-button {
+    min-height: 36px !important;
+    min-width: 36px !important;
+    padding-inline: 8px !important;
+    font-size: 0.82rem !important;
+  }
+
+  .zhaowu-site-header nav > span > button:not(.site-lang-button) {
+    min-height: 38px !important;
+    padding-inline: 7px !important;
+    font-size: 0.86rem !important;
+  }
+
+  .zhaowu-mobile-hide {
+    display: none !important;
+  }
+
+  .zhaowu-app-frame {
+    padding-inline: 12px;
+  }
+
+  /* Four Pillars details read vertically on a phone; luck periods may stay two-up. */
+  .bazi-detail-pillars {
+    grid-template-columns: 1fr !important;
+  }
+
+  .bazi-detail-card {
+    padding: 14px 16px !important;
+  }
+
+  .bazi-detail-card > div {
+    display: grid !important;
+    grid-template-columns: minmax(4.5rem, 5.5rem) minmax(0, 1fr) !important;
+    gap: 8px 12px !important;
+    align-items: start !important;
+  }
+
+  .bazi-detail-card > div > p,
+  .bazi-detail-card > div > div {
+    margin: 0 !important;
+  }
+
+  .bazi-detail-card .text-charcoal\/50 {
+    grid-column: 1;
+  }
+
+  .bazi-detail-card .text-charcoal,
+  .bazi-detail-card .font-medium:not(.text-charcoal\/50) {
+    grid-column: 2;
+  }
+
+  .bazi-luck-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .bazi-luck-card {
+    min-height: 96px;
+  }
+}
+
+@media (max-width: 430px) {
+  [data-scent-panel] .scent-option-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 360px) {
+  .zhaowu-site-header > div {
+    padding-inline: 8px;
+  }
+
+  .site-lang-button {
+    min-width: 33px !important;
+    padding-inline: 6px !important;
+  }
+
+  .zhaowu-site-header nav > span > button:not(.site-lang-button) {
+    padding-inline: 5px !important;
+  }
+
+  .bazi-luck-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

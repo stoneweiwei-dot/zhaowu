@@ -44,6 +44,7 @@ import './site-ux-r63.css';
 import './site-ux-r63-lock.css';
 import './daily-almanac-r69.css';
 import './site-ux-r75-final.css';
+import './zhaowu-design-system.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }

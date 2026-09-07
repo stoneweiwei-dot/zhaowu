@@ -5,7 +5,6 @@ import { IntroGate } from "@/components/intro-gate";
 import { SiteShell } from "@/components/site-shell";
 import { OwnerBackgroundMusicManager } from "@/components/owner-background-music-manager";
 import { OwnerConsoleOrganizer } from "@/components/owner-console-organizer";
-import "@/mobile-foundation-r81.css";
 
 export const Route = createRootRoute({
   component: () => (
