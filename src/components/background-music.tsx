@@ -139,6 +139,7 @@ export function BackgroundMusic() {
         }}
       >
         <span aria-hidden="true" className="text-base leading-none">{playing ? "♫" : "♪"}</span>
+        <span className="sr-only">{playing ? "音樂播放中" : "播放音樂"}</span>
       </button>
     </>
   );
