@@ -11,8 +11,8 @@ test("free direct-answer card delivers the engine's question-specific answer wit
   assert.doesNotMatch(resultView, /buildFreeDirectAnswer/);
 });
 
-test("header uses one inspectable static owner mark without iPhone crop artefacts", () => {
-  assert.match(brand, /const OFFICIAL_MARK = "\/apple-touch-icon\.png"/);
+test("header uses the current versioned static owner mark without iPhone crop artefacts", () => {
+  assert.match(brand, /const OFFICIAL_MARK = "\/apple-touch-icon-v3\.png"/);
   assert.match(brand, /src=\{OFFICIAL_MARK\}/);
   assert.match(brand, /object-contain/);
   assert.doesNotMatch(brand, /data:image\/jpeg;base64,/);
