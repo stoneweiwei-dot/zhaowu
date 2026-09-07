@@ -29,7 +29,7 @@ test("application shell restores the fixed Song landscape without loose scatter"
   assert.doesNotMatch(shell, /auspicious-emblem-scatter/);
 });
 
-test("homepage keeps the Song parchment flow and uses a compact method directory", async () => {
+test("homepage keeps the Song parchment flow and uses a readable report directory", async () => {
   const main = await source("src/main.tsx");
   const css = await source("src/home-sheet-ui-v5.css");
   const portals = await source("src/home-portals.css");
@@ -49,7 +49,9 @@ test("homepage keeps the Song parchment flow and uses a compact method directory
   assert.match(home, /西洋星座/);
   assert.match(home, /前世今生/);
   assert.match(home, /紫微斗數/);
+  assert.match(home, /八字主分析/);
   assert.match(home, /zhaowu-home-portal-hint/);
+  assert.match(home, /data-specialist-link/);
   assert.doesNotMatch(home, /portalCopy\.learn|portalCopy\.best/);
   assert.doesNotMatch(home, /zhaowu-home-dual-entry|性格兩面|<QizhengHomePanel/);
 
@@ -63,7 +65,9 @@ test("homepage keeps the Song parchment flow and uses a compact method directory
 
   assert.match(portals, /\.zhaowu-home-portals/);
   assert.match(portals, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(portals, /min-height:\s*74px/);
+  assert.match(portals, /min-height:\s*150px/);
+  assert.match(portals, /font-size:\s*21px/);
+  assert.match(portals, /pointer-events:\s*auto\s*!important/);
   assert.match(portals, /@media \(max-width: 640px\)/);
   assert.match(portals, /grid-template-columns:\s*1fr/);
 });

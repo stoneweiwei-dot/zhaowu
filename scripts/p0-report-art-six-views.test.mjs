@@ -28,7 +28,7 @@ test("report image is clickable and opens a closable viewer with distinct full s
   }
 });
 
-test("failed full image does not block text and six secondary cards stay clickable", async () => {
+test("failed full image does not block text and six report entries stay semantically clickable", async () => {
   const paid = await read("src/components/paid-report-pages.tsx");
   const home = await read("src/routes/index.tsx");
   const page = await read("src/components/specialist-system-page.tsx");
@@ -38,11 +38,12 @@ test("failed full image does not block text and six secondary cards stay clickab
   assert.match(home, /to: "\/ziwei"/);
   assert.match(home, /to: "\/qizheng"/);
   assert.match(home, /to: "\/yizhangjing"/);
-  assert.match(home, /role="button"/);
-  assert.match(home, /已自動讀取 · 需時辰/);
-  assert.match(home, /已自动读取 · 需时辰/);
-  assert.match(home, /Auto-read · time needed/);
-  assert.match(home, /已自動生成 · 查看完整/);
+  assert.match(home, /data-specialist-link="bazi"/);
+  assert.match(home, /data-specialist-link=\{item\.id\}/);
+  assert.match(home, /<Link[\s\S]*to=\{item\.to!\}/);
+  assert.doesNotMatch(home, /role="button"/);
+  assert.match(home, /填寫生辰|填写生辰|Add birth data/);
+  assert.match(home, /查看分析|Open analysis/);
   assert.match(page, /readSharedBirthRecord/);
   assert.match(page, /buildZiweiReading|buildWesternReading/);
   assert.match(page, /D60KarmaSection/);

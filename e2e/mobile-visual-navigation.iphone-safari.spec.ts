@@ -63,7 +63,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await expect(english).toHaveAttribute("aria-pressed", "true");
   });
 
-  test("every analysis portal is a real navigation target and opens its report", async ({ page }) => {
+  test("every analysis portal is a real navigation target and opens its corresponding page", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.addInitScript((birth) => {
       window.localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify(birth));
@@ -73,15 +73,14 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await dismissInstallPromptIfVisible(page);
     await expect(page.locator('[data-specialist-link="bazi"]')).toHaveAttribute("href", /#analysisForm|#result/);
 
-    const routes = [
+    const specialistRoutes = [
       ["ziwei", "/ziwei", "紫微斗數"],
       ["western", "/astrology", "西洋星座"],
       ["indian", "/indian-astrology", "印度古法占星"],
       ["qizheng", "/qizheng", "七政四餘"],
-      ["past", "/yizhangjing", "前世今生"],
     ] as const;
 
-    for (const [id, path, title] of routes) {
+    for (const [id, path, title] of specialistRoutes) {
       await page.goto("/", { waitUntil: "domcontentloaded" });
       await page.locator(`[data-specialist-link="${id}"]`).scrollIntoViewIfNeeded();
       await page.locator(`[data-specialist-link="${id}"]`).click();
@@ -89,5 +88,12 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
       await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
       await expect(page.locator(".zhaowu-specialist-sections article").first()).toBeVisible();
     }
+
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.locator('[data-specialist-link="past"]').scrollIntoViewIfNeeded();
+    await page.locator('[data-specialist-link="past"]').click();
+    await expect(page).toHaveURL(/\/yizhangjing$/);
+    await expect(page.getByRole("heading", { name: /前世今生/ }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "生成我的報告", exact: true })).toBeVisible();
   });
 });
