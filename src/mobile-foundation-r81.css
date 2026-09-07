@@ -1,0 +1,141 @@
+/* R81: one static mobile correction layer replacing the R79 runtime DOM/style injector.
+   Keep this file limited to layout and hierarchy; content logic stays in React. */
+
+@media (max-width: 520px) {
+  .zhaowu-site-header > div {
+    min-height: 58px !important;
+    padding: 7px 10px !important;
+    gap: 6px !important;
+  }
+
+  .zhaowu-site-header .zhaowu-brand-seal {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 9px !important;
+    box-shadow: none !important;
+  }
+
+  .zhaowu-site-header a.flex.min-w-0 {
+    gap: 7px !important;
+  }
+
+  .zhaowu-site-header a.flex.min-w-0 .font-display {
+    font-size: 16px !important;
+    letter-spacing: .12em !important;
+    white-space: nowrap !important;
+  }
+
+  .zhaowu-site-header nav {
+    gap: 2px !important;
+  }
+
+  .zhaowu-site-header nav > a[href="/gallery"] {
+    height: 34px !important;
+    padding-inline: 9px !important;
+    font-size: 10px !important;
+    box-shadow: none !important;
+  }
+
+  .zhaowu-site-header nav > div[role="group"] {
+    height: 34px !important;
+  }
+
+  .zhaowu-site-header nav > div[role="group"] button {
+    min-width: 34px !important;
+    padding-inline: 6px !important;
+    font-size: 10px !important;
+  }
+
+  .zhaowu-site-header nav > button {
+    max-width: 46px !important;
+    padding-inline: 6px !important;
+    font-size: 11px !important;
+  }
+
+  .zhaowu-home-app-frame {
+    padding-inline: 12px !important;
+  }
+
+  .zhaowu-home-stage {
+    margin-bottom: 26px !important;
+  }
+
+  .zhaowu-result-flow .zhaowu-bazi-chart > header {
+    display: none !important;
+  }
+
+  .zhaowu-pillar-grid {
+    gap: 6px !important;
+  }
+
+  .zhaowu-pillar-grid > section {
+    min-width: 0 !important;
+    padding: 13px 7px !important;
+    border-radius: 12px !important;
+  }
+
+  .zhaowu-pillar-grid > section > strong {
+    font-size: clamp(22px, 7.3vw, 30px) !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+  }
+
+  .zhaowu-pillar-detail-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+
+  .zhaowu-pillar-detail-grid > section {
+    padding: 16px 2px !important;
+    border: 0 !important;
+    border-top: 1px solid rgba(139, 99, 55, .18) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .zhaowu-pillar-detail-grid dl {
+    display: grid !important;
+    grid-template-columns: 88px minmax(0, 1fr) !important;
+    column-gap: 14px !important;
+    row-gap: 9px !important;
+  }
+
+  .zhaowu-pillar-detail-grid dt,
+  .zhaowu-pillar-detail-grid dd {
+    margin: 0 !important;
+    line-height: 1.65 !important;
+  }
+
+  .zhaowu-cycle-list {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .zhaowu-cycle-list > li {
+    padding: 13px 10px !important;
+    border-radius: 10px !important;
+  }
+
+  .zhaowu-result-card,
+  .zhaowu-decree-couplet,
+  .zhaowu-bazi-chart {
+    border-radius: 18px !important;
+  }
+
+  [data-background-music-control] {
+    left: auto !important;
+    right: max(.7rem, env(safe-area-inset-right)) !important;
+    bottom: max(.7rem, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* The scent test now opens only on request; when visible it reads as one module, not twenty loose tiles. */
+[data-scent-panel] {
+  margin-top: 12px;
+  overflow: hidden;
+  border-top: 1px solid rgba(139, 99, 55, .2);
+}
+
+[data-scent-panel][hidden] {
+  display: none !important;
+}
