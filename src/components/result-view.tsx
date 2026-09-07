@@ -9,7 +9,8 @@ import { FocusedReportSections } from "@/components/paid-report-pages";
 import { CharacterPanel } from "@/components/character-panel";
 import { BaziChart } from "@/components/bazi-chart";
 import { customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
-import { composeFocusedReport, type ReportSection } from "@/lib/report/focused-report";
+import { composeFocusedReport, renderFocusedReportText, type ReportSection } from "@/lib/report/focused-report";
+import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/report/decree-image";
 import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
 import { buildFreeChartMelody } from "@/lib/report/free-chart-melody";
@@ -68,7 +69,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageReferenceAssetId, setImageReferenceAssetId] = useState<string | null>(null);
   const { chart, reading, question } = result;
-  const answer = customerDirectAnswer(question, reading.directAnswer);
+  const petDecision = isPetDecisionQuestion(question) ? buildPetDecision(result, result.locale ?? locale) : null;
+  const answer = petDecision?.directAnswer ?? customerDirectAnswer(question, reading.directAnswer);
   const answerParagraphs = customerParagraphs(answer);
   const decreeCouplet = buildFreeDecreeCouplet(chart, locale);
   const chartMelody = buildFreeChartMelody(chart, locale);
@@ -92,6 +94,11 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
   async function ensureFullReport() {
     if (fullReport) return fullReport;
+    if (petDecision) {
+      const text = renderFocusedReportText(petDecision.sections, result.locale ?? locale);
+      setFullReport(text);
+      return text;
+    }
     const out = await writeFullReport({ data: { question, chart, reading, palm: result.palm ?? null, locale: result.locale ?? locale } });
     setFullReport(out.text);
     return out.text;
@@ -100,7 +107,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   async function ensureSavedReport() {
     if (!session || !user) throw new Error(t("needLogin"));
     const reportText = await ensureFullReport();
-    const sections = reportSections ?? composeFocusedReport(result);
+    const sections = reportSections ?? petDecision?.sections ?? composeFocusedReport(result);
     setReportSections(sections);
     const row = await saveReportRecord({ session, profile, result, fullReport: reportText, ninePages: sections });
     setSavedId(row?.id ?? result.id);
@@ -111,7 +118,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setBusy("full");
     setMsg(null);
     try {
-      const sections = composeFocusedReport(result);
+      const sections = petDecision?.sections ?? composeFocusedReport(result);
       const text = await ensureFullReport();
       setReportSections(sections);
       if (session && user) {
