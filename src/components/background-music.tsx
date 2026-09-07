@@ -132,14 +132,13 @@ export function BackgroundMusic() {
         aria-pressed={playing}
         title={label}
         onClick={toggle}
-        className="fixed z-[55] inline-flex h-10 items-center gap-1.5 rounded-full border border-line/90 bg-cream/95 px-3 text-xs font-medium text-ink-soft shadow-sm backdrop-blur transition hover:text-ink"
+        className="fixed z-[55] inline-grid h-11 w-11 place-items-center rounded-full border border-line/90 bg-cream/95 p-0 text-ink-soft shadow-sm backdrop-blur transition hover:text-ink"
         style={{
-          left: "max(0.75rem, env(safe-area-inset-left))",
+          right: "max(0.75rem, env(safe-area-inset-right))",
           bottom: "max(0.75rem, env(safe-area-inset-bottom))",
         }}
       >
-        <span aria-hidden="true" className="text-sm leading-none">{playing ? "♫" : "♪"}</span>
-        <span className="inline whitespace-nowrap">{playing ? "音樂播放中" : "播放音樂"}</span>
+        <span aria-hidden="true" className="text-base leading-none">{playing ? "♫" : "♪"}</span>
       </button>
     </>
   );
