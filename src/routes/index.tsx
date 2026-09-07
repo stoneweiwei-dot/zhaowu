@@ -54,6 +54,7 @@ function Home() {
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
   const [birth, setBirth] = useState<SharedBirthRecord | null>(null);
+  const [scentOpen, setScentOpen] = useState(false);
 
   useEffect(() => {
     const sync = () => setBirth(readSharedBirthRecord());
@@ -74,53 +75,51 @@ function Home() {
       ziwei: buildPortalReading("ziwei", birth, locale),
       qizheng: buildPortalReading("qizheng", birth, locale),
       past: buildPortalReading("past", birth, locale),
-      dharma: buildPortalReading("dharma", birth, locale),
     };
   }, [birth, locale]);
 
   const portalCopy = locale === "en"
     ? {
-        label: "Six other readings from the same birth record",
-        lead: "Enter your birth details once above. Every system below automatically reuses that record and shows its own result preview; no repeated forms.",
+        label: "Five other readings from the same birth record",
+        lead: "Enter your birth details once above. Each system below reuses the same record and keeps its own method separate.",
         items: [
           { id: "indian" as const, to: "/indian-astrology" as const, title: "Classical Indian Astrology", hint: "karmic pattern · D60 minute-sensitive cross-check", needsTime: true },
           { id: "western" as const, to: "/astrology" as const, title: "Western Astrology", hint: "Sun · Moon · Rising · aspects · life areas", needsTime: false },
           { id: "ziwei" as const, to: "/ziwei" as const, title: "Zi Wei Dou Shu", hint: "character · relationships · work · money · decade focus", needsTime: true },
           { id: "qizheng" as const, to: "/qizheng" as const, title: "Seven Luminaries", hint: "temperament · rhythm · pressure response · timing", needsTime: true },
-          { id: "past" as const, to: "/yizhangjing" as const, title: "Past & Present", hint: "carried patterns · prior-life symbolism · independent supporting layer", needsTime: false },
-          { id: "dharma" as const, to: "/yizhangjing" as const, title: "Dharma One-Palm Classic", hint: "four-life symbolism · repeated habits carried into this life", needsTime: false },
+          { id: "past" as const, to: "/yizhangjing" as const, title: "Past & Present", hint: "four-life cultural symbolism · recurring habits · independent supporting layer", needsTime: false },
         ],
       }
     : locale === "zh-Hans"
       ? {
-          label: "同一份生辰，其他六种看法",
-          lead: "上方出生资料只填一次。下面每个体系都会自动沿用同一份资料，并直接显示各自的结果摘要，不再让你重复填写。",
+          label: "同一份生辰，其他五种看法",
+          lead: "上方出生资料只填一次。下面每个体系沿用同一份资料，但各自独立判断，不重复造一套相同报告。",
           items: [
             { id: "indian" as const, to: "/indian-astrology" as const, title: "印度古法占星", hint: "看业力细分层；D60 对出生分钟非常敏感", needsTime: true },
             { id: "western" as const, to: "/astrology" as const, title: "西洋星座", hint: "看太阳、月亮、上升、相位与人生领域", needsTime: false },
             { id: "ziwei" as const, to: "/ziwei" as const, title: "紫微斗数", hint: "看性格、关系、事业、财务与十年主轴", needsTime: true },
             { id: "qizheng" as const, to: "/qizheng" as const, title: "七政四余", hint: "看性情、节奏、压力反应与天时变化", needsTime: true },
             { id: "past" as const, to: "/yizhangjing" as const, title: "前世今生", hint: "看前四世文化象意、反复习性与独立旁证", needsTime: false },
-            { id: "dharma" as const, to: "/yizhangjing" as const, title: "达摩一掌经", hint: "看四世象意，以及被重复加强、留到今生的习惯", needsTime: false },
           ],
         }
       : {
-          label: "同一份生辰，其他六種看法",
-          lead: "上方出生資料只填一次。下面每個體系都會自動沿用同一份資料，並直接顯示各自的結果摘要，不再讓你重複填寫。",
+          label: "同一份生辰，其他五種看法",
+          lead: "上方出生資料只填一次。下面每個體系沿用同一份資料，但各自獨立判斷，不重複造一套相同報告。",
           items: [
             { id: "indian" as const, to: "/indian-astrology" as const, title: "印度古法占星", hint: "看業力細分層；D60 對出生分鐘非常敏感", needsTime: true },
             { id: "western" as const, to: "/astrology" as const, title: "西洋星座", hint: "看太陽、月亮、上升、相位與人生領域", needsTime: false },
             { id: "ziwei" as const, to: "/ziwei" as const, title: "紫微斗數", hint: "看性格、關係、事業、財務與十年主軸", needsTime: true },
             { id: "qizheng" as const, to: "/qizheng" as const, title: "七政四餘", hint: "看性情、節奏、壓力反應與天時變化", needsTime: true },
             { id: "past" as const, to: "/yizhangjing" as const, title: "前世今生", hint: "看前四世文化象意、反覆習性與獨立旁證", needsTime: false },
-            { id: "dharma" as const, to: "/yizhangjing" as const, title: "達摩一掌經", hint: "看四世象意，以及被重複加強、留到今生的習慣", needsTime: false },
           ],
         };
 
   const funCopy = locale === "en"
     ? {
         title: "Playful self-tests",
-        lead: "Short self-tests you can use on their own. If a BaZi result already exists, the scent test adds a low-weight structural comparison automatically.",
+        lead: "Short self-tests you can use on their own. They stay compact until you choose one.",
+        scentTitle: "Five-Element Scent Map",
+        scentHint: "sensory preference compared with five-element cultural imagery",
         cards: [
           { to: "/fun-tests" as const, title: "Inner Animal × Guardian Beast", hint: "current personality strategy and instinctive response" },
           { to: "/fun-tests" as const, title: "Five-Element Function Test", hint: "which function you currently want to strengthen" },
@@ -130,7 +129,9 @@ function Home() {
     : locale === "zh-Hans"
       ? {
           title: "趣味测验",
-          lead: "可以独立玩的轻量自评；若上方已经有八字结果，香气测验会自动多一层命局结构对照。",
+          lead: "轻量自评统一收在这里。先选项目，再展开，不让某一个测验把整页撑散。",
+          scentTitle: "五行香气谱",
+          scentHint: "看嗅觉偏好与五行文化象意，不当成身体缺什么",
           cards: [
             { to: "/fun-tests" as const, title: "内在动物 × 命局瑞兽", hint: "看现在常用的人格策略与本能反应" },
             { to: "/fun-tests" as const, title: "五行功能测验", hint: "看现在主观上最想加强哪一种功能" },
@@ -139,7 +140,9 @@ function Home() {
         }
       : {
           title: "趣味測驗",
-          lead: "可以獨立玩的輕量自評；若上方已經有八字結果，香氣測驗會自動多一層命局結構對照。",
+          lead: "輕量自評統一收在這裡。先選項目，再展開，不讓某一個測驗把整頁撐散。",
+          scentTitle: "五行香氣譜",
+          scentHint: "看嗅覺偏好與五行文化象意，不當成身體缺什麼",
           cards: [
             { to: "/fun-tests" as const, title: "內在動物 × 命局瑞獸", hint: "看現在常用的人格策略與本能反應" },
             { to: "/fun-tests" as const, title: "五行功能測驗", hint: "看現在主觀上最想加強哪一種功能" },
@@ -203,8 +206,23 @@ function Home() {
               <span className="zhaowu-home-fun-arrow" aria-hidden>›</span>
             </Link>
           ))}
+          <button
+            type="button"
+            className="zhaowu-home-fun-card text-left"
+            aria-expanded={scentOpen}
+            aria-controls="home-scent-test"
+            onClick={() => setScentOpen((value) => !value)}
+          >
+            <span className="min-w-0">
+              <strong>{funCopy.scentTitle}</strong>
+              <small>（{funCopy.scentHint}）</small>
+            </span>
+            <span className="zhaowu-home-fun-arrow" aria-hidden>{scentOpen ? "⌃" : "›"}</span>
+          </button>
         </div>
-        <ScentFiveElementTest result={current} />
+        <div id="home-scent-test" data-scent-panel hidden={!scentOpen}>
+          {scentOpen ? <ScentFiveElementTest result={current} /> : null}
+        </div>
       </section>
 
       <div className="zhaowu-home-stage zhaowu-home-stage--gallery"><AuspiciousGallerySection /></div>

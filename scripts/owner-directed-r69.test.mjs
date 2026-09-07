@@ -11,9 +11,11 @@ test("free direct-answer card delivers the engine's question-specific answer wit
   assert.doesNotMatch(resultView, /buildFreeDirectAnswer/);
 });
 
-test("header uses the official embedded green-gold owner mark rather than legacy line-art markup", () => {
-  assert.match(brand, /const OFFICIAL_MARK = "data:image\/jpeg;base64,/);
+test("header uses the current versioned static owner mark without iPhone crop artefacts", () => {
+  assert.match(brand, /const OFFICIAL_MARK = "\/apple-touch-icon-v3\.png"/);
   assert.match(brand, /src=\{OFFICIAL_MARK\}/);
+  assert.match(brand, /object-contain/);
+  assert.doesNotMatch(brand, /data:image\/jpeg;base64,/);
   assert.doesNotMatch(brand, /<svg[\s>]/);
 });
 

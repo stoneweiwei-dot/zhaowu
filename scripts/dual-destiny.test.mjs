@@ -81,7 +81,7 @@ test("客户页把结果说清楚，并彻底删除融合长文与系统话术",
   );
 });
 
-test("首页前世今生进入真正的达摩一掌经，性格两面保持诚实命名", () => {
+test("首页只保留一个前世今生入口，底层仍使用一掌经计算", () => {
   const home = readFileSync(
     new URL("../src/routes/index.tsx", import.meta.url),
     "utf8",
@@ -99,9 +99,10 @@ test("首页前世今生进入真正的达摩一掌经，性格两面保持诚�
     "utf8",
   );
 
-  assert.match(home, /達摩一掌經/);
   assert.match(home, /前世今生/);
+  assert.match(home, /buildPalmReading/);
   assert.match(home, /zhaowu-home-portals/);
+  assert.doesNotMatch(home, /id: "dharma"|title: "達摩一掌經"|title: "达摩一掌经"|Dharma One-Palm Classic/);
   assert.doesNotMatch(home, /性格兩面|zhaowu-home-dual-entry|双轨性格分析|zhaowu-tools-section/);
   assert.doesNotMatch(home, /to="\/tianji-xinggong"/);
   assert.match(dualRoute, /calculateDualDestiny/);

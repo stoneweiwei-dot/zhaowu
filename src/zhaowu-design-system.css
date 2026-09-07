@@ -1,0 +1,283 @@
+/*
+ * 昭梧 canonical visual contract.
+ * Imported after every legacy stylesheet so this is the final visual authority.
+ * Keep content logic in React. Never add DOM mutation, portals, viewport clipping,
+ * scroll locking, or runtime style injection here.
+ */
+
+:root {
+  --zw-card-radius: 22px;
+  --zw-control-radius: 999px;
+  --zw-mobile-inline: 14px;
+  --zw-readable: 44rem;
+}
+
+.brand-seal,
+.zhaowu-brand-seal {
+  flex: 0 0 auto;
+}
+
+/* Saved reports: generation state is owner metadata, not reading content. */
+[data-report-primary-actions] ~ div > [class~="mb-4"][class~="rounded-lg"][class~="bg-cream/70"]:first-child {
+  display: none !important;
+}
+
+[data-report-secondary-actions] {
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.46) !important;
+}
+
+[data-report-secondary-actions] > summary {
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  list-style: none;
+  cursor: pointer;
+}
+
+[data-report-secondary-actions] > summary::-webkit-details-marker {
+  display: none;
+}
+
+[data-report-primary-actions] button,
+[data-report-secondary-actions] button {
+  min-height: 44px;
+}
+
+/* The scent test is an optional activity, not a second homepage. */
+[data-scent-panel] {
+  margin-top: 14px;
+  padding: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(155, 125, 76, 0.18);
+  border-radius: var(--zw-card-radius);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+[data-scent-panel][hidden] {
+  display: none !important;
+}
+
+[data-scent-panel] .scent-option-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 520px) {
+  /* Header becomes two deliberate rows instead of crushing desktop controls together. */
+  .zhaowu-site-header > div {
+    flex-wrap: wrap !important;
+    min-height: auto !important;
+    gap: 8px 10px !important;
+    padding: 8px 12px 9px !important;
+  }
+
+  .zhaowu-site-header > div > a[href="/"],
+  .zhaowu-site-header a.flex.min-w-0 {
+    min-width: 0;
+    flex: 1 1 auto;
+    gap: 7px !important;
+  }
+
+  .zhaowu-site-header nav {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 6px !important;
+    border-top: 1px solid rgba(86, 78, 62, 0.14);
+    padding-top: 7px;
+  }
+
+  .brand-seal,
+  .zhaowu-site-header .zhaowu-brand-seal {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 12px !important;
+    padding: 1px !important;
+    box-shadow: none !important;
+  }
+
+  .brand-seal img,
+  .zhaowu-brand-seal img {
+    border-radius: 9px !important;
+  }
+
+  .zhaowu-site-header a[href="/"] > span,
+  .zhaowu-site-header a.flex.min-w-0 .font-display {
+    font-size: 1rem !important;
+    letter-spacing: .12em !important;
+    white-space: nowrap !important;
+  }
+
+  .zhaowu-site-header a[href="/gallery"],
+  .zhaowu-site-header a[href="/account"],
+  .zhaowu-site-header a[href="/profile"] {
+    min-height: 38px !important;
+    height: 38px !important;
+    padding-inline: 10px !important;
+    font-size: 0.9rem !important;
+    box-shadow: none !important;
+  }
+
+  .site-lang-group,
+  .zhaowu-site-header nav > div[role="group"] {
+    min-height: 38px !important;
+    height: 38px !important;
+  }
+
+  .site-lang-button,
+  .zhaowu-site-header nav > div[role="group"] button {
+    min-height: 36px !important;
+    min-width: 36px !important;
+    padding-inline: 8px !important;
+    font-size: 0.82rem !important;
+  }
+
+  .zhaowu-site-header nav > span > button:not(.site-lang-button),
+  .zhaowu-site-header nav > button {
+    min-height: 38px !important;
+    max-width: 58px !important;
+    padding-inline: 7px !important;
+    font-size: 0.86rem !important;
+  }
+
+  .zhaowu-mobile-hide {
+    display: none !important;
+  }
+
+  .zhaowu-app-frame,
+  .zhaowu-home-app-frame {
+    padding-inline: 12px !important;
+  }
+
+  .zhaowu-home-stage {
+    margin-bottom: 26px !important;
+  }
+
+  /* Do not repeat a second Four Pillars heading inside the result card. */
+  .zhaowu-result-flow .zhaowu-bazi-chart > header {
+    display: none !important;
+  }
+
+  .zhaowu-pillar-grid {
+    gap: 6px !important;
+  }
+
+  .zhaowu-pillar-grid > section {
+    min-width: 0 !important;
+    padding: 13px 7px !important;
+    border-radius: 12px !important;
+  }
+
+  .zhaowu-pillar-grid > section > strong {
+    font-size: clamp(22px, 7.3vw, 30px) !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+  }
+
+  /* Four Pillars details read vertically on a phone. */
+  .zhaowu-pillar-detail-grid,
+  .bazi-detail-pillars {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+
+  .zhaowu-pillar-detail-grid > section {
+    padding: 16px 2px !important;
+    border: 0 !important;
+    border-top: 1px solid rgba(139, 99, 55, .18) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .zhaowu-pillar-detail-grid dl {
+    display: grid !important;
+    grid-template-columns: 88px minmax(0, 1fr) !important;
+    column-gap: 14px !important;
+    row-gap: 9px !important;
+  }
+
+  .zhaowu-pillar-detail-grid dt,
+  .zhaowu-pillar-detail-grid dd {
+    margin: 0 !important;
+    line-height: 1.65 !important;
+  }
+
+  .bazi-detail-card {
+    padding: 14px 16px !important;
+  }
+
+  .bazi-detail-card > div {
+    display: grid !important;
+    grid-template-columns: minmax(4.5rem, 5.5rem) minmax(0, 1fr) !important;
+    gap: 8px 12px !important;
+    align-items: start !important;
+  }
+
+  .bazi-detail-card > div > p,
+  .bazi-detail-card > div > div {
+    margin: 0 !important;
+  }
+
+  .bazi-detail-card .text-charcoal\/50 {
+    grid-column: 1;
+  }
+
+  .bazi-detail-card .text-charcoal,
+  .bazi-detail-card .font-medium:not(.text-charcoal\/50) {
+    grid-column: 2;
+  }
+
+  .zhaowu-cycle-list,
+  .bazi-luck-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .zhaowu-cycle-list > li {
+    padding: 13px 10px !important;
+    border-radius: 10px !important;
+  }
+
+  .bazi-luck-card {
+    min-height: 96px;
+  }
+
+  .zhaowu-result-card,
+  .zhaowu-decree-couplet,
+  .zhaowu-bazi-chart {
+    border-radius: 18px !important;
+  }
+
+  /* A single small audio control stays clear of the iPhone safe area. */
+  [data-background-music-control] {
+    left: auto !important;
+    right: max(.7rem, env(safe-area-inset-right)) !important;
+    bottom: max(.7rem, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (max-width: 430px) {
+  [data-scent-panel] .scent-option-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 360px) {
+  .zhaowu-site-header > div {
+    padding-inline: 8px !important;
+  }
+
+  .site-lang-button {
+    min-width: 33px !important;
+    padding-inline: 6px !important;
+  }
+
+  .zhaowu-site-header nav > span > button:not(.site-lang-button) {
+    padding-inline: 5px !important;
+  }
+
+  .zhaowu-cycle-list,
+  .bazi-luck-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
