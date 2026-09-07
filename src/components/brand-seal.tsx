@@ -10,11 +10,10 @@ const SIZE_CLASS = {
 } as const;
 
 /**
- * Use the same static brand asset as the installed-site icon.
- * Do not embed a JPEG data URI here: it makes the header logo hard to inspect,
- * easy to crop incorrectly on iOS, and duplicates tens of KB in the JS bundle.
+ * Reuse the same versioned static mark as the current iPhone home-screen icon.
+ * Keep the logo inspectable and uncropped instead of embedding a JPEG data URI.
  */
-const OFFICIAL_MARK = "/apple-touch-icon.png";
+const OFFICIAL_MARK = "/apple-touch-icon-v3.png";
 
 export function BrandSeal({ size = "sm", className = "", decorative = false }: BrandSealProps) {
   return (
