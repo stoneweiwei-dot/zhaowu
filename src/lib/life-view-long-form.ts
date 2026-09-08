@@ -6,6 +6,7 @@ import { KARMA_LONG_FORM } from "@/lib/life-view-long-form/karma";
 import { MERIT_WISDOM_LONG_FORM } from "@/lib/life-view-long-form/merit-wisdom";
 import { MINGXIN_LONG_FORM } from "@/lib/life-view-long-form/mingxin";
 import { PRACTICE_MERIT_LONG_FORM } from "@/lib/life-view-long-form/practice-merit";
+import { USEFUL_ELEMENTS_AND_AESTHETIC_PREFERENCE_LONG_FORM } from "@/lib/life-view-long-form/useful-elements-and-aesthetic-preference";
 import { WEALTH_LONG_FORM } from "@/lib/life-view-long-form/wealth";
 
 const SEVEN_KILLINGS_TIGER_LONG_FORM: LifeViewArticle = {
@@ -117,6 +118,7 @@ If you still want to remember Seven Killings as a tiger, keep one final image. T
  * 宗教、輪迴、神通與內丹內容維持傳統／象徵語境，不冒充科學、醫學或財務事實。
  */
 export const LIFE_VIEW_LONG_FORM_ARTICLES: LifeViewArticle[] = [
+  USEFUL_ELEMENTS_AND_AESTHETIC_PREFERENCE_LONG_FORM,
   SEVEN_KILLINGS_TIGER_LONG_FORM,
   COSMIC_YINYANG_EVOLUTION_LONG_FORM,
   MINGXIN_LONG_FORM,
