@@ -68,7 +68,10 @@ test("owner console exposes direct native upload and no-deploy track switching",
 });
 
 test("mobile keeps an explicit music control visible when autoplay is blocked", () => {
-  assert.match(music, /\{playing \? "音樂播放中" : "播放音樂"\}/);
+  assert.match(music, /Music playing/);
+  assert.match(music, /音乐播放中/);
+  assert.match(music, /音樂播放中/);
+  assert.match(music, /useI18n/);
   assert.doesNotMatch(music, /hidden min-\[430px\]:inline/);
   assert.match(music, /onError=\{\(\) => setPlaying\(false\)\}/);
 });

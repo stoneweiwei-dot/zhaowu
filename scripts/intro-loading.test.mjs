@@ -36,7 +36,7 @@ test('bootstrap does not preload customer report copy that belongs to result ren
   assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
 });
 
-test('loading gate uses a flexible three-second target with a five-second ceiling', () => {
+test('loading gate has a target and hard exit below three seconds', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
   let cancelledTimer = null;
@@ -52,10 +52,11 @@ test('loading gate uses a flexible three-second target with a five-second ceilin
     () => { exited = true; },
   );
 
-  assert.equal(INTRO_GATE_TARGET_MS, 3000);
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 5000);
+  assert.equal(INTRO_GATE_TARGET_MS, 2400);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 2800);
   assert.ok(INTRO_GATE_TARGET_MS < INTRO_GATE_HARD_EXIT_MS);
-  assert.equal(scheduledDelay, 5000);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS < 3000);
+  assert.equal(scheduledDelay, 2800);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
@@ -66,7 +67,7 @@ test('intro exits when runtime is ready at the target or when the visual finishe
   assert.match(gate, /INTRO_GATE_TARGET_MS/);
   assert.match(gate, /setTargetDone\(true\)/);
   assert.match(gate, /minimumDone && runtimeReady && \(targetDone \|\| visualDone\)/);
-  assert.match(gate, /Five seconds is the maximum blocking window, not a mandatory duration/);
+  assert.match(gate, /must never block access for three seconds/);
 });
 
 test('intro plays the committed owner lotus bloom and keeps an animated vector fallback', () => {

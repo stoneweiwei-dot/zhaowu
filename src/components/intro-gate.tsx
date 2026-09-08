@@ -54,7 +54,7 @@ export function IntroGate() {
       window.setTimeout,
       window.clearTimeout,
       () => {
-        // Five seconds is the maximum blocking window, not a mandatory duration.
+        // The intro is decorative: it must never block access for three seconds.
         if (!cancelled) forceOff();
       },
     );

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getActiveBackgroundMusic, musicPublicUrl, type BackgroundMusicAsset } from "@/lib/background-music-assets";
+import { useI18n } from "@/lib/i18n";
 
 const FALLBACK_PRIMARY = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-audio/background/jingfo-shengyuan-aac.m4a";
 const STORAGE_KEY = "zhaowu.backgroundMusic.v1";
@@ -15,6 +16,7 @@ function readInitialPreference() {
 }
 
 export function BackgroundMusic() {
+  const { locale } = useI18n();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [enabled, setEnabled] = useState(readInitialPreference);
   const [playing, setPlaying] = useState(false);
@@ -36,7 +38,7 @@ export function BackgroundMusic() {
   const fallbackSrc = musicPublicUrl(asset?.fallback_storage_path);
   const primaryType = asset?.content_type || "audio/mp4";
   const fallbackType = asset?.fallback_content_type || "audio/mpeg";
-  const musicTitle = asset?.name || "淨佛聖願";
+  const musicTitle = asset?.name || (locale === "en" ? "Zhaowu background music" : "淨佛聖願");
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -108,7 +110,16 @@ export function BackgroundMusic() {
     void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
   };
 
-  const label = playing ? `暫停背景音樂《${musicTitle}》` : `播放背景音樂《${musicTitle}》`;
+  const label = locale === "en"
+    ? `${playing ? "Pause" : "Play"} background music: ${musicTitle}`
+    : locale === "zh-Hans"
+      ? `${playing ? "暂停" : "播放"}背景音乐《${musicTitle}》`
+      : `${playing ? "暫停" : "播放"}背景音樂《${musicTitle}》`;
+  const statusLabel = locale === "en"
+    ? (playing ? "Music playing" : "Play music")
+    : locale === "zh-Hans"
+      ? (playing ? "音乐播放中" : "播放音乐")
+      : (playing ? "音樂播放中" : "播放音樂");
 
   return (
     <>
@@ -139,7 +150,7 @@ export function BackgroundMusic() {
         }}
       >
         <span aria-hidden="true" className="text-base leading-none">{playing ? "♫" : "♪"}</span>
-        <span className="sr-only">{playing ? "音樂播放中" : "播放音樂"}</span>
+        <span className="sr-only">{statusLabel}</span>
       </button>
     </>
   );

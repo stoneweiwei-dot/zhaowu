@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最后核对：2026-09-05 20:30 AEST
+最后核对：2026-09-08 15:10 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -22,7 +22,7 @@
 
 - GitHub `main` → Vercel Production 自动同步。
 - Supabase 登录、报告存档、图库/背景资产、访问统计统一使用当前项目配置。
-- 三语 Locale：`zh-Hant / zh-Hans / en`；X 登录已移除。
+- 三语 Locale：`zh-Hant / zh-Hans / en`；登入方式为 Google、Apple、X、Email＋密码。
 - Loading ghost overlay 已移除。
 - `finalizeReading` 是最终 Reading 单一来源；已保存报告不重新 live 算出另一套答案。
 - 个人命请文字为证据型文案；真实命请图走私有 report image delivery，失败不得阻塞文字答案。
@@ -32,6 +32,7 @@
 - `/qizheng` 与 `/ziwei` 都只向客户交付出生资料表单 + 白话专题报告；技术盘、星位轮、宫位表、计算 profile 与内部状态不进入客户画面。
 - 首页各分组必须用简短三语说明回答两件事：用户“会知道自己的什么”与“这个体系最擅长看什么”；英文必须自然简洁，不做逐字直译。
 - 「趣味测验」是独立的轻量自评系列，不冒充命盘；包含「内在动物 × 命局瑞兽」与「五行功能测验」。五行功能测验只判断当前需要训练的生长、启动、落地、收敛或恢复功能，不等同八字喜用神。
+- 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
 
 没有新的可复现 FAIL 时，不得因为旧 Issue / 旧聊天复活已废止实现。
 
@@ -85,12 +86,11 @@
 
 ## 7. 当前真正未完成
 
-- 六道轮回习气测验仍未落地。
 - 正式子域名 `zhaowu.soul-terminal.com` DNS 收口。
 - iPhone 关键流程最终实机验收。
-- 八字 chart：完整刑冲合害库、正式病药通关、完整岁运作用链仍未实现。
+- 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 正式「制作我的命请图」按钮已改为请求 `force=true` 的供应商个性化图；真实 provider 成功仍依赖图片 API credits，失败时必须回退 Gallery-direct，且不得阻塞文字报告。
-- Loading 已上線站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 與同名 JPEG 海報，`LOTUS_BLOOM_MS=5000`，`HARD_EXIT_MS=5300`。主畫面圖標為站主宋畫金蓮 `/apple-touch-icon-r53.png`。舊 r40 分片與 r26 路徑不再作為現行 Loading。
+- Loading 使用站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 与同名 JPEG 海报；目标退出为 2.4 秒、硬退出为 2.8 秒，初始化异常不得阻塞首页、登入或账户入口。主画面图标为站主宋画金莲 `/apple-touch-icon-r53.png`。
 
 ## 8. 生产优先级
 
