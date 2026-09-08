@@ -24,10 +24,11 @@ test("cycle chain resolves natal → dayun → year → month instead of scoring
   assert.match(cycleChainEvidence(chain), /大運乙丑 → 流年丙午 → 流月戊子/);
 });
 
-test("customer timing layer actually consumes the cycle chain", async () => {
+test("customer timing layer consumes the cycle chain for scoring only", async () => {
   const source = await readFile(new URL("../src/lib/bazi/forecast-safe.ts", import.meta.url), "utf8");
   assert.match(source, /analyzeCycleChain/);
   assert.match(source, /crossLayerAdjustment/);
-  assert.match(source, /cycleChainEvidence/);
-  assert.match(source, /原局、大運、流年、流月/);
+  assert.doesNotMatch(source, /cycleChainEvidence/);
+  assert.doesNotMatch(source, /歲運作用鏈/);
+  assert.doesNotMatch(source, /排序依序核對原局/);
 });
