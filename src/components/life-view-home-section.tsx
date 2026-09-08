@@ -6,9 +6,10 @@ import { THREE_AGES_SPIRITUAL_WORLD_LONG_FORM } from "@/lib/life-view-long-form/
 import { LIFE_VIEW_SHORT_FORM_ARTICLES } from "@/lib/life-view-short-form";
 import { DAO_SELF_MASTERY_LONG_FORM } from "@/lib/life-view-long-form/dao-self-mastery";
 import { THREE_TEACHINGS_CULTIVATION_LONG_FORM } from "@/lib/life-view-long-form/three-teachings-cultivation";
+import { INNER_FENGSHUI_LONG_FORM } from "@/lib/life-view-long-form/inner-fengshui";
 
 // 「觀世錄」沒有文章數量上限。內容可持續新增；首頁只折疊顯示方式，不截斷資料。
-const ARTICLES = [DAO_SELF_MASTERY_LONG_FORM, THREE_AGES_SPIRITUAL_WORLD_LONG_FORM, THREE_TEACHINGS_CULTIVATION_LONG_FORM, ...LIFE_VIEW_LONG_FORM_ARTICLES, ...LIFE_VIEW_SHORT_FORM_ARTICLES, ...LIFE_VIEW_CURATED_ARTICLES];
+const ARTICLES = [INNER_FENGSHUI_LONG_FORM, DAO_SELF_MASTERY_LONG_FORM, THREE_AGES_SPIRITUAL_WORLD_LONG_FORM, THREE_TEACHINGS_CULTIVATION_LONG_FORM, ...LIFE_VIEW_LONG_FORM_ARTICLES, ...LIFE_VIEW_SHORT_FORM_ARTICLES, ...LIFE_VIEW_CURATED_ARTICLES];
 ARTICLES.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
 export function LifeViewHomeSection() {
