@@ -180,4 +180,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-08-31T08:22:00Z';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-05T00:00:00+10:00';
