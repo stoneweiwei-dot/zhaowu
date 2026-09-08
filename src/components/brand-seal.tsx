@@ -4,9 +4,9 @@ type BrandSealProps = {
   decorative?: boolean;
 };
 
-const OFFICIAL_MARK = "/apple-touch-icon-v3.png";
+const OFFICIAL_MARK = "/brand/logo-icon-gourd.png";
 
-/** Reuse the owner-approved green-gold lotus mark instead of drawing a substitute logo. */
+/** Official gold gourd mark. Wordmark stays text; do not bake 昭梧 into the icon. */
 export function BrandSeal({ size = "sm", className = "", decorative = false }: BrandSealProps) {
   return (
     <span
