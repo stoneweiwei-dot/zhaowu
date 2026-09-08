@@ -5,6 +5,8 @@ export type LoadingCatalogItem = {
   title: string;
   kind: LoadingCatalogKind;
   publicPath: string;
+  videoPath?: string;
+  durationMs?: number;
   tags: string[];
   created_at: string;
 };
@@ -61,5 +63,15 @@ export const LOADING_GALLERY_CATALOG: readonly LoadingCatalogItem[] = [
     publicPath: "/gallery/loading/official-monitor-cat.jpg",
     tags: ["loading", "official", "monitor"],
     created_at: "2026-09-07T00:00:05.000Z",
+  },
+  {
+    asset_key: "loading-jade-lotus-bloom-r96",
+    title: "金邊青蓮綿放",
+    kind: "animation",
+    publicPath: "/gallery/loading/jade-lotus-bloom-r96-poster.jpg",
+    videoPath: "/gallery/loading/jade-lotus-bloom-r96.mp4",
+    durationMs: 4770,
+    tags: ["loading", "login-background", "animation", "lotus", "jade-bloom"],
+    created_at: "2026-09-09T00:00:06.000Z",
   },
 ];

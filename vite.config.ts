@@ -7,6 +7,9 @@ import { defineConfig, type Plugin } from "vite";
 
 function writeGeneratedPublicAssets(): Plugin {
   const write = () => {
+    execFileSync(process.execPath, ["scripts/write-r96-assets.mjs"], {
+      stdio: "inherit",
+    });
     execFileSync(process.execPath, ["scripts/write-home-icons.mjs"], {
       stdio: "inherit",
     });
