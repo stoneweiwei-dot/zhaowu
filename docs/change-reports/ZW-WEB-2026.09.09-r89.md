@@ -6,17 +6,20 @@
 - 保留 Google、Apple、X、Email + 密碼四種既有登入方式與原本 Supabase Auth 呼叫，未更改登入權限或 OAuth callback。
 - 新增只作用於 `.zhaowu-login-shell` 的 r89 視覺覆寫，避免舊 v41 純宣紙／青玉主按鈕規則再次覆蓋登入定稿；其他頁面繼續由現行 canonical design system 管理。
 - 新增 UI contract，鎖定正式 Logo、`/wallpaper-song.jpg`、四種登入路徑與手機 Safari 安全的 `background-attachment: scroll`。
+- 修正六份命理專卷的共用生辰缺省文案：程式實際為六種專卷，繁中、簡中、英文統一由誤寫的七份／七種改回六份／六種；七政四餘與紫微斗數在沒有共用生辰時恢復既定「回首頁填寫生辰」提示。
 - 公開版本號更新至 r89。
 
 ## 為什麼改
 - 目前程式仍有後期 v41 登入規則，明確把登入頁改成純宣紙背景、不透明面板與青玉綠主按鈕，與站主已確認的宋式山水登入版式衝突。
 - 本次依最新站主要求恢復既有定稿，而不是另做一套新登入設計。
+- iPhone Safari hard gate 另發現共用專卷缺省文案把實際六種專卷誤寫為七種，造成七政四餘與紫微斗數缺省狀態契約失敗；本次只修正文案與既定缺省提示，不更動兩套命理引擎。
 
 ## 影響範圍
 - `src/routes/login.tsx`
 - `src/login-approved-r89.css`
 - `src/main.tsx`
 - `src/lib/site-stats.ts`
+- `src/components/specialist-system-page.tsx`
 - `scripts/sto17-ui-contract.test.mjs`
 - `scripts/release-ledger.test.mjs`
 - `docs/change-reports/ZW-WEB-2026.09.09-r89.md`
@@ -24,11 +27,12 @@
 - 不修改 Supabase schema、資料表、Auth provider 設定、權限、OAuth callback、付款、報告、命理引擎、D60 計算或生命靈數邏輯。
 
 ## 回滾
-- 回滾本次單一提交即可恢復 r88；不涉及資料庫 schema rollback。
+- 回滾 r89 相關提交即可恢復 r88；不涉及資料庫 schema rollback。
 - 若已寫入 `release_history` 的 r89 紀錄，可在回滾正式站時同步移除該單筆版本紀錄。
 
 ## 驗證要求
 - GitHub build / TypeScript / deploy gate 必須通過。
+- Engine suite 必須通過。
 - iPhone Safari gate 必須通過。
-- Vercel Production 必須為本提交 SHA 且狀態 `READY`。
+- Vercel Production 必須為最終提交 SHA 且狀態 `READY`。
 - 正式 `/login` 與 `/wallpaper-song.jpg` 必須可讀；Production runtime errors 不得出現新增錯誤。
