@@ -1,5 +1,19 @@
 import { expect, test, type Page } from "@playwright/test";
 
+const TEST_USER_ID = "visual-nav-member-test";
+const SESSION = {
+  access_token: "e2e-visual-nav-session",
+  refresh_token: "e2e-visual-nav-refresh",
+  expires_in: 3600,
+  expires_at: Math.floor(Date.now() / 1000) + 3600,
+  token_type: "bearer",
+  user: {
+    id: TEST_USER_ID,
+    email: "visual-nav@example.test",
+    user_metadata: { name: "導航測試會員" },
+  },
+};
+
 const BIRTH = {
   year: 1988,
   month: 10,
@@ -26,6 +40,14 @@ async function makeAppOfflineSafe(page: Page) {
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
 }
 
+async function installProtectedBirth(page: Page, birth = BIRTH) {
+  await page.addInitScript(({ record, session, userId }) => {
+    localStorage.setItem("zhaowu.supabase.session.v1", JSON.stringify(session));
+    localStorage.setItem("zhaowu.birth-record-owner.v1", userId);
+    localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify(record));
+  }, { record: birth, session: SESSION, userId: TEST_USER_ID });
+}
+
 async function dismissInstallPromptIfVisible(page: Page) {
   const button = page.getByRole("button", { name: "稍後再說", exact: true });
   if (await button.isVisible().catch(() => false)) await button.click();
@@ -47,15 +69,15 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
 
   test("D60 renders and expands using the current precise birth record", async ({ page }) => {
     await makeAppOfflineSafe(page);
-    await page.addInitScript((birth) => {
-      localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify(birth));
+    await installProtectedBirth(page);
+    await page.addInitScript(() => {
       // Stub only the external ephemeris boundary, not the application's D60 flow.
       Object.assign(window, { Astronomy: {
         GeoVector: (body: string) => ({ body }),
         Ecliptic: () => ({ elon: 125 }),
         SiderealTime: () => 3,
       } });
-    }, BIRTH);
+    });
     await page.goto('/indian-astrology');
     const theme = page.getByRole('button', { name: /核心慣性/ });
     await expect(theme).toBeVisible();
@@ -66,9 +88,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
 
   test("master number insight is part of the personal numerology reading", async ({ page }) => {
     await makeAppOfflineSafe(page);
-    await page.addInitScript((birth) => {
-      localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify({ ...birth, year: 2000, month: 1, day: 8 }));
-    }, BIRTH);
+    await installProtectedBirth(page, { ...BIRTH, year: 2000, month: 1, day: 8 });
     await page.goto('/numerology');
     await expect(page.locator('[data-master-number-insight]')).toContainText('11／2');
     await expect(page.getByRole('heading', { name: '强项', exact: true }).or(page.getByRole('heading', { name: '強項', exact: true }))).toBeVisible();
@@ -110,9 +130,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
 
   test("every analysis portal is a real navigation target and opens its corresponding page", async ({ page }) => {
     await makeAppOfflineSafe(page);
-    await page.addInitScript((birth) => {
-      window.localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify(birth));
-    }, BIRTH);
+    await installProtectedBirth(page);
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await dismissInstallPromptIfVisible(page);
