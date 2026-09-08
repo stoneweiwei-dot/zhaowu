@@ -102,23 +102,11 @@ export function IntroGate() {
       aria-live="polite"
       aria-label={loadingLabel}
       data-intro-motion="owner-video"
-      data-intro-fallback-mode="animated-vector"
+      data-intro-fallback-mode="owner-poster"
     >
       <div className={`zhaowu-lotus-intro__fallback ${videoPlaying ? "is-covered" : ""}`} data-intro-fallback aria-hidden="true">
         <div className="zhaowu-lotus-intro__fallback-lockup">
-          <svg className="zhaowu-lotus-intro__fallback-art" viewBox="0 0 240 240" focusable="false">
-            <circle className="zhaowu-lotus-intro__halo" cx="120" cy="119" r="72" />
-            <g className="zhaowu-lotus-intro__flower">
-              <path d="M120 48C139 71 141 96 120 121C99 96 101 71 120 48Z" />
-              <path d="M77 70C105 79 119 98 120 125C92 118 77 99 77 70Z" />
-              <path d="M163 70C135 79 121 98 120 125C148 118 163 99 163 70Z" />
-              <path d="M57 110C85 106 106 117 120 137C91 143 69 134 57 110Z" />
-              <path d="M183 110C155 106 134 117 120 137C149 143 171 134 183 110Z" />
-              <path d="M82 143C99 135 111 136 120 143C129 136 141 135 158 143C147 164 134 175 120 178C106 175 93 164 82 143Z" />
-            </g>
-            <ellipse className="zhaowu-lotus-intro__ripple ripple-one" cx="120" cy="185" rx="58" ry="10" />
-            <ellipse className="zhaowu-lotus-intro__ripple ripple-two" cx="120" cy="185" rx="78" ry="14" />
-          </svg>
+          <img src={OWNER_LOADING_POSTER} alt="" className="h-64 w-48 object-contain" />
           <div className="zhaowu-lotus-intro__fallback-copy">
             <strong>{locale === "en" ? "ZHAOWU" : "昭梧"}</strong>
             <span>{loadingLabel}</span>

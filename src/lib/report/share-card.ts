@@ -2,6 +2,7 @@ import type { AnalysisResult } from "@/lib/bazi/types";
 import type { Locale } from "@/lib/i18n";
 import { buildReportVisualModel } from "@/lib/report/report-visual-model";
 import { getReportVisualAsset, type ReportVisualAsset } from "@/lib/report/report-visual-assets";
+import { customerCopy } from "@/lib/report/customer-copy";
 
 export type ShareCardModel = {
   brand: string;
@@ -16,7 +17,7 @@ export type ShareCardModel = {
 };
 
 function compactSummary(text: string): string {
-  return text.replace(/\s+/g, " ").trim().slice(0, 220);
+  return customerCopy(text).replace(/\s+/g, " ").trim().slice(0, 220);
 }
 
 export function buildShareCardModel(result: AnalysisResult, locale: Locale): ShareCardModel {
@@ -112,12 +113,11 @@ function drawCoverImage(
   const sourceHeight = image.naturalHeight;
   const sourceX = asset ? asset.index * sourceWidth : 0;
   const sourceY = 0;
-  const scale = Math.max(width / sourceWidth, height / sourceHeight);
-  const cropWidth = width / scale;
-  const cropHeight = height / scale;
-  const sx = sourceX + (sourceWidth - cropWidth) / 2;
-  const sy = sourceY + (sourceHeight - cropHeight) / 2;
-  ctx.drawImage(image, sx, sy, cropWidth, cropHeight, x, y, width, height);
+  const scale = Math.min(width / sourceWidth, height / sourceHeight);
+  const drawWidth = sourceWidth * scale;
+  const drawHeight = sourceHeight * scale;
+  ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight,
+    x + (width - drawWidth) / 2, y + (height - drawHeight) / 2, drawWidth, drawHeight);
 }
 
 function splitText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {

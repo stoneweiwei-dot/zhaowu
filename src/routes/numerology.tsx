@@ -168,6 +168,12 @@ function NumerologyPage() {
           </div>
         </div>
         <p className="mt-5 text-[15px] leading-7 text-ink-soft">{reading.core}</p>
+        {isMaster ? <p className="mt-3 text-[15px] leading-7 text-ink-soft" data-master-number-insight>
+          {tr(locale,
+            `你的生命靈數是 ${result.number}／${sumDigits(result.number)}。${result.number} 的大師數特質與 ${sumDigits(result.number)} 的基礎特質要一起理解：${profile(locale, sumDigits(result.number) as LifeNumber).core}以下強項、課題與行動建議已按你的大師數解讀；它不是另一個命格，也不代表比別人優越。`,
+            `你的生命灵数是 ${result.number}／${sumDigits(result.number)}。${result.number} 的大师数特质与 ${sumDigits(result.number)} 的基础特质要一起理解：${profile(locale, sumDigits(result.number) as LifeNumber).core}以下强项、课题与行动建议已按你的大师数解读；它不是另一个命格，也不代表比别人优越。`,
+            `Your life number is ${result.number}/${sumDigits(result.number)}. Read the Master Number together with its underlying ${sumDigits(result.number)}: ${profile(locale, sumDigits(result.number) as LifeNumber).core} The strengths, challenges and actions below reflect your Master Number. This is part of the same reading, not a separate chart or a claim of superiority.`)}
+        </p> : null}
         <div className="mt-5 rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink-soft">
           <b className="text-ink">{copy.calculation}：</b>{calculation}
         </div>

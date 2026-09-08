@@ -6,7 +6,6 @@ import { THREE_AGES_SPIRITUAL_WORLD_LONG_FORM } from "@/lib/life-view-long-form/
 import { LIFE_VIEW_SHORT_FORM_ARTICLES } from "@/lib/life-view-short-form";
 import { DAO_SELF_MASTERY_LONG_FORM } from "@/lib/life-view-long-form/dao-self-mastery";
 import { THREE_TEACHINGS_CULTIVATION_LONG_FORM } from "@/lib/life-view-long-form/three-teachings-cultivation";
-import { NumerologyHomeSection } from "@/components/numerology-home-section";
 
 // 「觀世錄」沒有文章數量上限。內容可持續新增；首頁只折疊顯示方式，不截斷資料。
 const ARTICLES = [DAO_SELF_MASTERY_LONG_FORM, THREE_AGES_SPIRITUAL_WORLD_LONG_FORM, THREE_TEACHINGS_CULTIVATION_LONG_FORM, ...LIFE_VIEW_LONG_FORM_ARTICLES, ...LIFE_VIEW_SHORT_FORM_ARTICLES, ...LIFE_VIEW_CURATED_ARTICLES];
@@ -58,7 +57,6 @@ export function LifeViewHomeSection() {
   if (!latest) {
     return (
       <>
-        <NumerologyHomeSection />
         <section id="life-view" className="rounded-2xl border border-line/80 bg-[#fbf5e9] px-5 py-5"><p className="text-sm text-ink-mute">{copy.empty}</p></section>
       </>
     );
@@ -69,7 +67,6 @@ export function LifeViewHomeSection() {
 
   return (
     <>
-      <NumerologyHomeSection />
       <section id="life-view" className="scroll-mt-20 rounded-2xl border border-line/80 bg-[#fbf5e9] px-5 py-5 shadow-[0_10px_28px_rgba(86,62,31,0.06)] sm:px-7">
         <button
           type="button"

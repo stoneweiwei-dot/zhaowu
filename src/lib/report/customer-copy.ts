@@ -6,6 +6,9 @@ const ASK_CITIES = /再放入\s*2|給出\s*2|给出\s*2|具體城市|具体城�
 export function customerCopy(value: string): string {
   const text = String(value ?? "")
     .trim()
+    // Keep the next year's answer when an internal trace lacks its closing full stop.
+    .replace(/歲運作用鏈[：:][\s\S]*?(?=\b20\d{2}\s*屬於|[。\n]|$)/g, "")
+    .replace(/岁运作用链[：:][\s\S]*?(?=\b20\d{2}\s*属于|[。\n]|$)/g, "")
     .replace(/[，,；;]\s*不再用通用性格句代替答案/g, "。")
     .replace(/[，,；;]\s*不把它包裝成必然事件或保證日期/g, "。")
     .replace(/[，,；;]\s*不把它包装成必然事件或保证日期/g, "。");

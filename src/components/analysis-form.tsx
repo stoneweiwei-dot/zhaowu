@@ -44,7 +44,7 @@ export function AnalysisForm() {
   const copy = locale === "en"
     ? {
         questionKicker: "ZHAOWU · CONSULTATION",
-        questionTitle: "What would you like clarity on now?",
+        questionTitle: "What would you like to understand now?",
         questionLead: "A direct answer first, followed by the chart evidence, timing, and practical choices.",
         questionLabel: "Your question",
         questionPlaceholder: "For example: Is this role worth continuing? What should I prioritise now?",
@@ -68,7 +68,7 @@ export function AnalysisForm() {
     : locale === "zh-Hans"
       ? {
           questionKicker: "昭梧 · 问事",
-          questionTitle: "此刻，你最想厘清什么？",
+          questionTitle: "此刻，你最想了解什么？",
           questionLead: "先给结论，再依据命局与时间节奏说明可行选择。",
           questionLabel: "你的问题",
           questionPlaceholder: "例如：这份工作是否值得继续？我现在应优先处理什么？",
@@ -91,7 +91,7 @@ export function AnalysisForm() {
         }
       : {
           questionKicker: "昭梧 · 問事",
-          questionTitle: "此刻，你最想釐清什麼？",
+          questionTitle: "此刻，你最想了解什麼？",
           questionLead: "先給結論，再依據命局與時間節奏說明可行選擇。",
           questionLabel: "你的問題",
           questionPlaceholder: "例如：這份工作是否值得繼續？我現在應優先處理什麼？",

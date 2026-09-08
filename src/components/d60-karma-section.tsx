@@ -14,7 +14,8 @@ type D60Key = "Ascendant" | BodyKey;
 type ThemeKey = "core" | "emotion" | "duty" | "resource" | "relation";
 
 type AstronomyApi = {
-  EclipticLongitude: (body: string, date: Date) => number;
+  GeoVector: (body: string, date: Date, aberration: boolean) => unknown;
+  Ecliptic: (vector: unknown) => { elon: number };
   SiderealTime: (date: Date) => number;
 };
 
@@ -229,7 +230,8 @@ function calculateD60(api: AstronomyApi, date: Date, city: CityHit): D60Result {
   const ayanamsa = lahiriAyanamsa(date);
   const ascTropical = tropicalAscendant(api, date, city.latitude, city.longitude);
   const asc = d60Placement("Ascendant", normalize(ascTropical - ayanamsa));
-  const planets = BODY_KEYS.map((key) => d60Placement(key, normalize(api.EclipticLongitude(key, date) - ayanamsa)));
+  // Chart positions are geocentric. EclipticLongitude is heliocentric and rejects the Sun.
+  const planets = BODY_KEYS.map((key) => d60Placement(key, normalize(api.Ecliptic(api.GeoVector(key, date, true)).elon - ayanamsa)));
   const lagnaAt = (deltaMinutes: number) => {
     const shifted = new Date(date.getTime() + deltaMinutes * 60_000);
     const shiftedAyanamsa = lahiriAyanamsa(shifted);
@@ -302,11 +304,12 @@ function plainExplanation(key: ThemeKey, signIndex: number, locale: Locale) {
   return `${DIMENSION_PLAIN[locale][key]} ${SIGN_PLAIN[locale][signIndex]}`;
 }
 
-export function D60KarmaSection({ variant = "palm" }: { variant?: "palm" | "standalone" }) {
+export function D60KarmaSection({ variant = "palm", reportBirth }: { variant?: "palm" | "standalone"; reportBirth?: ReportBirth | null }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const target = usePalmReportPortalTarget();
-  const [birth, setBirth] = useState<ReportBirth | null>(null);
+  const [eventBirth, setBirth] = useState<ReportBirth | null>(null);
+  const birth = reportBirth === undefined ? eventBirth : reportBirth;
   const [result, setResult] = useState<D60Result | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [openTheme, setOpenTheme] = useState<ThemeKey | null>(null);

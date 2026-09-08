@@ -130,7 +130,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
           <div className="zhaowu-specialist-birth">
             <span>{copy.ready}</span>
             <strong>{formatSharedBirthRecord(birth, locale)}</strong>
-            <small>{copy.auto}</small>
+            {id !== "indian" ? <small>{copy.auto}</small> : null}
           </div>
         ) : <p className="zhaowu-specialist-warning">{copy.missing}</p>}
 
@@ -149,7 +149,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
             ))}
           </div>
         ) : null}
-        {id === "indian" ? <div className="mt-6"><D60KarmaSection variant="standalone" /></div> : null}
+        {id === "indian" ? <div className="mt-6"><D60KarmaSection variant="standalone" reportBirth={birth && !birth.timeUnknown ? birth : null} /></div> : null}
       </section>
     </main>
   );
