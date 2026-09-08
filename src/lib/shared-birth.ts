@@ -1,9 +1,12 @@
 import type { AnalyzeInput, AppLocale, CityHit, Gender, RelationPref } from "@/lib/bazi/types";
 
 export const SHARED_BIRTH_STORAGE_KEY = "zhaowu.birth-record.v1";
+export const SHARED_BIRTH_OWNER_KEY = "zhaowu.birth-record-owner.v1";
 export const SHARED_BIRTH_EVENT = "zhaowu-birth-record-change";
 
 export type SharedBirthRecord = Omit<AnalyzeInput, "question" | "locale">;
+
+let activeSharedBirthUserId: string | null = null;
 
 function asCity(value: unknown): CityHit | null {
   if (!value || typeof value !== "object") return null;
@@ -61,9 +64,40 @@ export function sharedBirthFromUnknown(value: unknown): SharedBirthRecord | null
   };
 }
 
-export function readSharedBirthRecord(): SharedBirthRecord | null {
-  if (typeof window === "undefined") return null;
+export function setSharedBirthAccessUser(userId: string | null) {
+  activeSharedBirthUserId = userId;
+  if (typeof window === "undefined") return;
   try {
+    const storedOwner = window.localStorage.getItem(SHARED_BIRTH_OWNER_KEY);
+    if (!userId) {
+      window.localStorage.removeItem(SHARED_BIRTH_STORAGE_KEY);
+      window.localStorage.removeItem(SHARED_BIRTH_OWNER_KEY);
+      return;
+    }
+    if (storedOwner !== userId) {
+      window.localStorage.removeItem(SHARED_BIRTH_STORAGE_KEY);
+      window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, userId);
+    }
+  } catch {
+    // Restricted/private browser storage must never make a birth record visible to a logged-out visitor.
+  }
+}
+
+export function clearSharedBirthRecord() {
+  activeSharedBirthUserId = null;
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(SHARED_BIRTH_STORAGE_KEY);
+    window.localStorage.removeItem(SHARED_BIRTH_OWNER_KEY);
+  } catch {
+    // Ignore unavailable storage; access remains disabled in memory.
+  }
+}
+
+export function readSharedBirthRecord(): SharedBirthRecord | null {
+  if (typeof window === "undefined" || !activeSharedBirthUserId) return null;
+  try {
+    if (window.localStorage.getItem(SHARED_BIRTH_OWNER_KEY) !== activeSharedBirthUserId) return null;
     const raw = window.localStorage.getItem(SHARED_BIRTH_STORAGE_KEY);
     return raw ? sharedBirthFromUnknown(JSON.parse(raw)) : null;
   } catch {
@@ -72,10 +106,11 @@ export function readSharedBirthRecord(): SharedBirthRecord | null {
 }
 
 export function writeSharedBirthRecord(record: SharedBirthRecord) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !activeSharedBirthUserId) return;
   const safe = sharedBirthFromUnknown(record);
   if (!safe) return;
   try {
+    window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, activeSharedBirthUserId);
     window.localStorage.setItem(SHARED_BIRTH_STORAGE_KEY, JSON.stringify(safe));
     window.dispatchEvent(new CustomEvent<SharedBirthRecord>(SHARED_BIRTH_EVENT, { detail: safe }));
   } catch {

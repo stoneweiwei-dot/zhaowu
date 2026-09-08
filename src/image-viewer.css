@@ -1,12 +1,17 @@
 .zhaowu-image-viewer {
   position: fixed;
   inset: 0;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
   height: 100dvh;
-  z-index: 240;
+  z-index: 10000;
   display: flex;
   flex-direction: column;
-  background: rgba(18, 14, 10, 0.94);
+  background: #100e0c;
+  opacity: 1;
+  isolation: isolate;
+  overflow: hidden;
+  overscroll-behavior: contain;
   touch-action: none;
 }
 
@@ -17,6 +22,7 @@
   overflow: hidden;
   display: grid;
   place-items: center;
+  background: #100e0c;
 }
 
 .zhaowu-image-viewer img {
@@ -36,6 +42,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: calc(10px + env(safe-area-inset-top)) 16px 12px;
+  background: #100e0c;
 }
 
 .zhaowu-image-viewer-toolbar button,
@@ -53,10 +60,13 @@
   display: flex;
   justify-content: space-between;
   padding: 0 16px calc(14px + env(safe-area-inset-bottom));
+  background: #100e0c;
 }
 
 .zhaowu-image-viewer-status {
-  margin: 0 18px 12px;
+  margin: 0;
+  padding: 0 18px 12px;
+  background: #100e0c;
   color: #f3e6c8;
   font-size: 13px;
   text-align: center;

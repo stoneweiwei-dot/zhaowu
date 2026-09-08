@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { captureOAuthRedirect, getProfile, restoreSession, type SupabaseSession, type UserProfile } from "@/lib/supabase-rest";
+import { setSharedBirthAccessUser } from "@/lib/shared-birth";
 
 export type CurrentUser = {
   id: string;
@@ -34,6 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPending(true);
     try {
       const active = await restoreSession();
+      setSharedBirthAccessUser(active?.user.id ?? null);
       setSession(active);
       if (!active) {
         setProfile(null);
@@ -60,6 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const active = callbackSession ?? await restoreSession();
         if (cancelled) return;
+        setSharedBirthAccessUser(active?.user.id ?? null);
         setSession(active);
         if (!active) {
           setProfile(null);
