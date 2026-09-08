@@ -14,10 +14,10 @@ const articleAssets = await Promise.all([
 
 test("customer-facing birth section is rewritten before the app paints back-office wording", () => {
   assert.match(index, /customer-facing-copy-r93\.js/);
-  assert.match(runtimeCopy, /建立你的命盤/);
-  assert.match(runtimeCopy, /建立你的命盘/);
-  assert.match(runtimeCopy, /Build your chart/);
-  assert.doesNotMatch(runtimeCopy, /customerTitle:\s*"客人|Client details|SHARED RECORD/);
+  assert.match(runtimeCopy, /title:\s*"建立你的命盤"/);
+  assert.match(runtimeCopy, /title:\s*"建立你的命盘"/);
+  assert.match(runtimeCopy, /title:\s*"Build your chart"/);
+  assert.doesNotMatch(runtimeCopy, /title:\s*"(?:客人資料|客人资料|Client details|SHARED RECORD)"/);
 });
 
 test("intro fallback restores animated lotus composition rather than tiny poster lockup", () => {
