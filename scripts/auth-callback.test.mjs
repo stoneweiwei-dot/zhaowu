@@ -6,9 +6,10 @@ const login = await readFile(new URL('../src/routes/login.tsx', import.meta.url)
 const provider = await readFile(new URL('../src/lib/auth/provider.tsx', import.meta.url), 'utf8');
 const rest = await readFile(new URL('../src/lib/supabase-rest.ts', import.meta.url), 'utf8');
 
-test('OAuth buttons use the canonical absolute callback builder', () => {
-  assert.match(login, /startOAuth\(provider\)/);
-  assert.doesNotMatch(login, /startOAuth\(provider,\s*["']\/login["']\)/);
+test('legacy OAuth callback builder stays canonical while login exposes no OAuth entry', () => {
+  assert.doesNotMatch(login, /startOAuth/);
+  assert.doesNotMatch(login, /onOAuth\(/);
+  assert.match(rest, /export function startOAuth/);
   assert.match(rest, /window\.location\.origin/);
   assert.match(rest, /\/login/);
 });
