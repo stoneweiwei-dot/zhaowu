@@ -25,7 +25,8 @@ test('question stays ahead of birth details even after a report, login returns t
  const form=source('src/components/analysis-form.tsx');
  assert.ok(form.indexOf('id="analysis-question"')<form.indexOf('id: "birth-year"'));
  assert.match(form,/aria-describedby="time-importance"/);assert.match(form,/UNKNOWN_TIME_COPY\[locale\]/);
- assert.match(form,/!current && previewChart/);
+ assert.match(form,/\{!current \? \(/);assert.match(form,/\{previewChart \? \(/);
+ assert.match(form,/BaziChart chart=\{previewChart\} showHeader=\{false\}/);
  const login=source('src/routes/login.tsx');assert.doesNotMatch(login,/navigate\(\{ to: "\/account"/);assert.match(login,/navigate\(\{ to: "\/"/);
  const intro=source('src/components/intro-gate.tsx');assert.match(intro,/OWNER_LOADING_VIDEO/);assert.match(intro,/data-intro-motion="owner-video"/);assert.doesNotMatch(intro,/wutong-owner-r29/);
  const panel=source('src/components/character-panel.tsx');assert.doesNotMatch(panel,/buildCharacterPanel|radar|artScores|SCHOOL_MARK/);

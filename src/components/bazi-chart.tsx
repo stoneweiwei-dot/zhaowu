@@ -3,12 +3,12 @@ import { useI18n, type Locale } from '@/lib/i18n';
 import { chartTerm, emptyBranches, ganzhiLabel, pillarName, UNKNOWN_TIME_COPY } from '@/lib/bazi/presentation';
 
 /** Presentation only: every value comes from the same immutable report snapshot. */
-export function BaziChart({ chart }: { chart: Chart }) {
+export function BaziChart({ chart, showHeader = true }: { chart: Chart; showHeader?: boolean }) {
   const { locale } = useI18n();
-  return <BaziChartContent chart={chart} locale={locale} />;
+  return <BaziChartContent chart={chart} locale={locale} showHeader={showHeader} />;
 }
 
-export function BaziChartContent({ chart, locale }: { chart: Chart; locale: Locale }) {
+export function BaziChartContent({ chart, locale, showHeader = true }: { chart: Chart; locale: Locale; showHeader?: boolean }) {
   const en = locale === 'en';
   const hans = locale === 'zh-Hans';
   const c = en
@@ -61,11 +61,11 @@ export function BaziChartContent({ chart, locale }: { chart: Chart; locale: Loca
 
   return (
     <article className="zhaowu-bazi-chart seal-border" aria-label={c.title} data-bazi-chart>
-      <header>
+      {showHeader ? <header>
         <p className="zhaowu-section-kicker">ZHAOWU · BAZI</p>
         <h2>{c.title}</h2>
         <p>{c.lead}</p>
-      </header>
+      </header> : null}
       {chart.timeUnknown ? <p className="zhaowu-time-warning">{UNKNOWN_TIME_COPY[locale]}</p> : null}
       {review?.required && review.civil && review.trueSolar ? (
         <aside className="zhaowu-time-warning" data-birth-time-review="needs-verification">

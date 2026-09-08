@@ -12,13 +12,12 @@ test("free direct-answer card delivers the engine's question-specific answer wit
   assert.doesNotMatch(resultView, /buildFreeDirectAnswer/);
 });
 
-test("header uses a crisp Wutong vector mark instead of a shrunken app icon or boxed character", () => {
-  assert.match(brand, /<svg className="zhaowu-brand-seal__mark"/);
-  assert.match(brand, /zhaowu-brand-seal__canopy/);
-  assert.match(brand, /zhaowu-brand-seal__sun/);
-  assert.doesNotMatch(brand, /apple-touch-icon|data:image|<img|__character/);
-  assert.match(design, /zhaowu-brand-seal__mark/);
-  assert.match(design, /zhaowu-brand-seal__canopy/);
+test("header reuses the owner-approved green-gold lotus instead of an invented vector", () => {
+  assert.match(brand, /OFFICIAL_MARK = "\/apple-touch-icon-v3\.png"/);
+  assert.match(brand, /<img className="zhaowu-brand-seal__image"/);
+  assert.doesNotMatch(brand, /<svg|zhaowu-brand-seal__canopy|__character/);
+  assert.match(design, /zhaowu-brand-seal__image/);
+  assert.doesNotMatch(design, /zhaowu-brand-seal__canopy/);
 });
 
 test("r69 almanac refinement loads after earlier site locks", () => {

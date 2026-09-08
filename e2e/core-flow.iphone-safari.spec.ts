@@ -169,7 +169,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(firstCity).toBeVisible();
     await firstCity.click();
 
-    await page.getByRole("button", { name: "開始命理分析 · 看答案", exact: true }).click();
+    await page.getByRole("button", { name: "開始分析", exact: true }).click();
 
     const result = page.locator("#result");
     await expect(result).toBeVisible();

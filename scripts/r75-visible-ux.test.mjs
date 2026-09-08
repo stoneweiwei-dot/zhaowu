@@ -5,21 +5,24 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("r75 visual lock is imported last so legacy card layers cannot win", async () => {
+test("the canonical design system loads after the r75 visual lock", async () => {
   const main = await source("src/main.tsx");
   const daily = main.indexOf("./daily-almanac-r69.css");
-  const finalLock = main.indexOf("./site-ux-r75-final.css");
-  assert.ok(daily >= 0 && finalLock > daily);
+  const r75 = main.indexOf("./site-ux-r75-final.css");
+  const canonical = main.indexOf("./zhaowu-design-system.css");
+  assert.ok(daily >= 0 && r75 > daily && canonical > r75);
 });
 
-test("direct question and Four Pillars are visibly independent paper sections", async () => {
+test("question, client details, and Four Pillars are visibly independent sections", async () => {
   const form = await source("src/components/analysis-form.tsx");
-  const css = await source("src/site-ux-r75-final.css");
+  const css = await source("src/zhaowu-design-system.css");
   assert.match(form, /className="zhaowu-question-sheet"/);
+  assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
   assert.match(form, /id="bazi" className="zhaowu-bazi-hub"/);
   assert.match(css, /#analysisForm\.zhaowu-analysis-flow[\s\S]*background:\s*transparent !important/);
   assert.match(css, /\.zhaowu-question-sheet[\s\S]*border-radius:\s*0 !important/);
-  assert.match(css, /\.zhaowu-bazi-hub[\s\S]*box-shadow:\s*inset 4px 0 0/);
+  assert.match(css, /\.zhaowu-customer-record[\s\S]*border-radius:\s*12px !important/);
+  assert.match(css, /\.zhaowu-bazi-hub[\s\S]*border-top:\s*1px solid/);
 });
 
 test("report mother art has no photo-card frame", async () => {

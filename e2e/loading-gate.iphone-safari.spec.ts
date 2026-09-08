@@ -40,7 +40,7 @@ const routes = [
   {
     path: "/",
     heading: "四柱八字",
-    action: "開始命理分析 · 看答案",
+    action: "開始分析",
     actionRole: "button",
   },
   {

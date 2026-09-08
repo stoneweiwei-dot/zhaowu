@@ -43,54 +43,72 @@ export function AnalysisForm() {
 
   const copy = locale === "en"
     ? {
-        questionKicker: "ZHAOWU · BAZI READING",
-        questionTitle: "Ask what you need to decide.",
-        questionLead: "Start with the answer. Then see the chart logic, timing, and the choice you can act on now.",
-        promiseLabel: "What Zhaowu gives you",
-        promise: ["Direct answer", "Chart logic", "Timing & next move"],
-        baziKicker: "ZHAOWU · FOUR PILLARS",
-        baziTitle: "Four Pillars of Destiny",
-        baziLead: "Add your birth record once. Every specialist report can reuse it.",
-        birthReady: "Birth record saved",
-        birthReadyLead: "Your specialist reports will use the same record. Edit only when the birth details change.",
-        edit: "Edit birth record",
-        useRecord: "Using this birth record",
-        submit: "Start BaZi analysis · See answer",
+        questionKicker: "ZHAOWU · CONSULTATION",
+        questionTitle: "What would you like clarity on now?",
+        questionLead: "A direct answer first, followed by the chart evidence, timing, and practical choices.",
+        questionLabel: "Your question",
+        questionPlaceholder: "For example: Is this role worth continuing? What should I prioritise now?",
+        promiseLabel: "Reading order",
+        promise: ["Answer", "Evidence", "Timing"],
+        customerKicker: "SHARED RECORD",
+        customerTitle: "Client details",
+        customerLead: "Enter the birth record once. Every personal reading can reuse it.",
+        baziKicker: "ZI PING · FOUR PILLARS",
+        baziTitle: "Four Pillars chart",
+        baziLead: "Calculated from the client details above.",
+        chartPending: "Complete the client details to preview the Four Pillars chart.",
+        birthReady: "Client record saved",
+        birthReadyLead: "The other personal readings will reuse this record.",
+        edit: "Edit details",
+        useRecord: "The analysis will use the client record shown above.",
+        submit: "Begin analysis",
         busy: "Analysing…",
         birthData: "Birth record",
       }
     : locale === "zh-Hans"
       ? {
-          questionKicker: "昭梧 · 子平问事",
-          questionTitle: "你想问什么，就直接问",
-          questionLead: "先给结论，再说明命局依据、时间节奏，以及现在能做的选择。",
-          promiseLabel: "你会得到",
-          promise: ["先答问题", "再讲依据", "最后给时机"],
-          baziKicker: "昭梧 · 子平四柱",
+          questionKicker: "昭梧 · 问事",
+          questionTitle: "此刻，你最想厘清什么？",
+          questionLead: "先给结论，再依据命局与时间节奏说明可行选择。",
+          questionLabel: "你的问题",
+          questionPlaceholder: "例如：这份工作是否值得继续？我现在应优先处理什么？",
+          promiseLabel: "解读顺序",
+          promise: ["结论", "依据", "时机"],
+          customerKicker: "共用资料",
+          customerTitle: "客人资料",
+          customerLead: "生辰只需填写一次，各命理专卷将共用这份资料。",
+          baziKicker: "子平 · 四柱",
           baziTitle: "四柱八字",
-          baziLead: "生辰只填一次，之后六份命理专卷都会直接共用。",
-          birthReady: "出生资料已记住",
-          birthReadyLead: "其他命理专卷会直接使用这份资料；生辰有误时再修改。",
-          edit: "修改出生资料",
-          useRecord: "正在使用这份出生资料",
-          submit: "开始命理分析 · 看答案",
+          baziLead: "命盘依据上方客人资料自动排出。",
+          chartPending: "完成客人资料后，这里会显示四柱命盘。",
+          birthReady: "资料已保存",
+          birthReadyLead: "其他命理专卷将沿用这份资料。",
+          edit: "修改",
+          useRecord: "将使用上方客人资料进行分析。",
+          submit: "开始分析",
           busy: "正在推演…",
           birthData: "出生资料",
         }
       : {
-          questionKicker: "昭梧 · 子平問事",
-          questionTitle: "你想問什麼，就直接問",
-          questionLead: "先給結論，再說明命局依據、時間節奏，以及現在能做的選擇。",
-          promiseLabel: "你會得到",
-          promise: ["先答問題", "再講依據", "最後給時機"],
-          baziKicker: "昭梧 · 子平四柱",
+          questionKicker: "昭梧 · 問事",
+          questionTitle: "此刻，你最想釐清什麼？",
+          questionLead: "先給結論，再依據命局與時間節奏說明可行選擇。",
+          questionLabel: "你的問題",
+          questionPlaceholder: "例如：這份工作是否值得繼續？我現在應優先處理什麼？",
+          promiseLabel: "解讀順序",
+          promise: ["結論", "依據", "時機"],
+          customerKicker: "共用資料",
+          customerTitle: "客人資料",
+          customerLead: "生辰只需填寫一次，各命理專卷將共用這份資料。",
+          baziKicker: "子平 · 四柱",
           baziTitle: "四柱八字",
-          baziLead: "生辰只填一次，之後六份命理專卷都會直接共用。",
-          birthReady: "出生資料已記住",
-          birthReadyLead: "其他命理專卷會直接使用這份資料；生辰有誤時再修改。",
-          edit: "修改出生資料",
-          useRecord: "正在使用這份出生資料",
-          submit: "開始命理分析 · 看答案",
+          baziLead: "命盤依據上方客人資料自動排出。",
+          chartPending: "完成客人資料後，這裡會顯示四柱命盤。",
+          birthReady: "資料已保存",
+          birthReadyLead: "其他命理專卷將沿用這份資料。",
+          edit: "修改",
+          useRecord: "將使用上方客人資料進行分析。",
+          submit: "開始分析",
           busy: "正在推演…",
           birthData: "出生資料",
         };
@@ -196,25 +214,25 @@ export function AnalysisForm() {
         <div className="zhaowu-question-promise" aria-label={copy.promiseLabel}>
           {copy.promise.map((item) => <span key={item}>{item}</span>)}
         </div>
-        <label htmlFor="analysis-question" className="zhaowu-question-label">{t("question")}</label>
+        <label htmlFor="analysis-question" className="zhaowu-question-label">{copy.questionLabel}</label>
         <textarea
           id="analysis-question"
           value={question}
           maxLength={400}
           rows={4}
           required
-          placeholder={t("qPh")}
+          placeholder={copy.questionPlaceholder}
           onChange={(event) => setQuestion(event.target.value)}
         />
         <span className="zhaowu-question-count">{question.length}/400</span>
       </section>
 
-      <section id="bazi" className="zhaowu-bazi-hub" aria-labelledby="zhaowu-bazi-title">
-        <header className="zhaowu-bazi-head">
+      <section id="customer-record" className="zhaowu-customer-record" aria-labelledby="zhaowu-customer-title">
+        <header className="zhaowu-customer-head">
           <div>
-            <p className="zhaowu-section-kicker">{copy.baziKicker}</p>
-            <h2 id="zhaowu-bazi-title">{copy.baziTitle}</h2>
-            <p className="zhaowu-section-lead">{copy.baziLead}</p>
+            <p className="zhaowu-section-kicker">{copy.customerKicker}</p>
+            <h2 id="zhaowu-customer-title">{copy.customerTitle}</h2>
+            <p className="zhaowu-section-lead">{copy.customerLead}</p>
           </div>
           {rememberedRecord && !detailsOpen ? (
             <button type="button" className="zhaowu-birth-edit" onClick={() => setDetailsOpen(true)}>{copy.edit}</button>
@@ -287,8 +305,24 @@ export function AnalysisForm() {
           </div>
         )}
 
-        {!current && previewChart ? <div className="zhaowu-bazi-preview"><BaziChart chart={previewChart} /></div> : null}
       </section>
+
+      {!current ? (
+        <section id="bazi" className="zhaowu-bazi-hub" aria-labelledby="zhaowu-bazi-title">
+          <header className="zhaowu-bazi-head">
+            <div>
+              <p className="zhaowu-section-kicker">{copy.baziKicker}</p>
+              <h2 id="zhaowu-bazi-title">{copy.baziTitle}</h2>
+              <p className="zhaowu-section-lead">{copy.baziLead}</p>
+            </div>
+          </header>
+          {previewChart ? (
+            <div className="zhaowu-bazi-preview"><BaziChart chart={previewChart} showHeader={false} /></div>
+          ) : (
+            <p className="zhaowu-bazi-pending">{copy.chartPending}</p>
+          )}
+        </section>
+      ) : null}
 
       {error ? <p role="alert" className="zhaowu-analysis-error">{error}</p> : null}
       <div className="zhaowu-analysis-submit-wrap">

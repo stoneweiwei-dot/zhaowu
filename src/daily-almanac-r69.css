@@ -1,91 +1,269 @@
-/* r69 owner-directed homepage almanac: bright Song-paper treatment with explicit current Four Pillars. */
+/* Compact daily almanac: first on the homepage, quiet when closed, complete on demand. */
 .zhaowu-home-layout .zhaowu-daily-almanac {
   position: relative;
   overflow: hidden;
   min-height: 0 !important;
-  padding: clamp(22px, 4vw, 34px) !important;
-  border: 1px solid rgba(191, 151, 72, .34) !important;
-  border-radius: 28px !important;
-  color: #302a20 !important;
-  background:
-    radial-gradient(circle at 88% 7%, rgba(255,255,255,.94), transparent 28%),
-    radial-gradient(circle at 13% 92%, rgba(66,115,86,.08), transparent 34%),
-    linear-gradient(148deg, rgba(255,253,246,.97), rgba(248,238,214,.93)) !important;
-  box-shadow: 0 20px 48px rgba(94,66,27,.08), inset 0 0 0 1px rgba(255,255,255,.76), inset 0 0 38px rgba(226,191,111,.08) !important;
-  font-family: var(--font-display) !important;
+  padding: 16px 18px 12px !important;
+  border: 1px solid rgba(67, 77, 63, .16) !important;
+  border-radius: 14px !important;
+  color: #302e29 !important;
+  background: rgba(249, 246, 237, .92) !important;
+  box-shadow: 0 8px 24px rgba(54, 47, 35, .045) !important;
 }
+
 .zhaowu-home-layout .zhaowu-daily-almanac::before {
   content: "";
   position: absolute;
-  inset: 10px;
-  border: 1px solid rgba(191,151,72,.12);
-  border-radius: 20px;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: rgba(49, 86, 72, .48) !important;
   pointer-events: none;
-  background: none !important;
 }
+
 .zhaowu-home-layout .zhaowu-daily-watermark {
-  right: -0.03em !important;
-  top: -.13em !important;
+  position: absolute;
+  right: 10px !important;
+  top: -12px !important;
+  color: rgba(76, 92, 72, .035) !important;
   font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important;
-  font-size: clamp(9rem, 32vw, 15rem) !important;
+  font-size: 5.5rem !important;
   font-weight: 400 !important;
-  color: rgba(190,153,80,.055) !important;
+  line-height: 1 !important;
+  pointer-events: none;
 }
-.zhaowu-home-layout .zhaowu-daily-top { position: relative; z-index: 1; align-items: flex-start !important; }
-.zhaowu-home-layout .zhaowu-daily-eyebrow {
-  color: #8e692a !important;
-  font-family: var(--font-display) !important;
-  font-size: .72rem !important;
-  font-weight: 700 !important;
-  letter-spacing: .22em !important;
-}
-.zhaowu-home-layout .zhaowu-daily-date {
-  margin-top: 5px !important;
-  color: #6f6555 !important;
-  font-family: var(--font-display) !important;
-  font-size: .9rem !important;
-  font-weight: 500 !important;
-  letter-spacing: .04em !important;
-}
-.zhaowu-home-layout .zhaowu-daily-energy { min-width: 78px; border-left: 1px solid rgba(187,145,62,.22); padding-left: 14px; text-align: right; }
-.zhaowu-home-layout .zhaowu-daily-energy span { color: #8c7a5c !important; font-family: var(--font-display) !important; font-size: .68rem !important; letter-spacing: .08em !important; }
-.zhaowu-home-layout .zhaowu-daily-energy strong { display: block; margin-top: 4px; color: #2f6f5f !important; font-family: var(--font-display) !important; font-size: 1.05rem !important; font-weight: 700 !important; letter-spacing: .12em !important; }
-.zhaowu-home-layout .zhaowu-daily-pillars {
+
+.zhaowu-home-layout .zhaowu-daily-top {
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: flex-start !important;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.zhaowu-home-layout .zhaowu-daily-eyebrow {
+  margin: 0 !important;
+  color: #456c5e !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: .16em !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-date {
+  margin: 3px 0 0 !important;
+  color: #6d675e !important;
+  font-size: 13px !important;
+  font-weight: 450 !important;
+  letter-spacing: .015em !important;
+  line-height: 1.45 !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-energy {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding-left: 12px;
+  border-left: 1px solid rgba(67, 77, 63, .13);
+  text-align: right;
+}
+
+.zhaowu-home-layout .zhaowu-daily-energy span {
+  display: block;
+  color: #817a6e !important;
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-energy strong {
+  display: block;
+  margin-top: 3px;
+  color: #315b4e !important;
+  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  letter-spacing: .08em !important;
+  line-height: 1.2 !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-main {
+  position: relative;
+  z-index: 1;
+  margin-top: 13px !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-headline {
+  margin: 0 !important;
+  color: #302e29 !important;
+  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important;
+  font-size: clamp(19px, 4.8vw, 23px) !important;
+  font-weight: 500 !important;
+  letter-spacing: .035em !important;
+  line-height: 1.38 !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-note {
+  margin: 5px 0 0 !important;
+  color: #7a7369 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.55 !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-details {
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+  border-top: 1px solid rgba(67, 77, 63, .12);
+}
+
+.zhaowu-home-layout .zhaowu-daily-details > summary {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  list-style: none;
+  color: #315b4e;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.zhaowu-home-layout .zhaowu-daily-details > summary::-webkit-details-marker { display: none; }
+.zhaowu-home-layout .zhaowu-daily-details > summary b { font-size: 17px; font-weight: 400; transition: transform 160ms ease; }
+.zhaowu-home-layout .zhaowu-daily-details[open] > summary b { transform: rotate(45deg); }
+.zhaowu-home-layout .zhaowu-daily-details-body { padding: 2px 0 7px; }
+
+.zhaowu-home-layout .zhaowu-daily-pillars {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-top: 22px;
   overflow: hidden;
-  border-top: 1px solid rgba(182,140,57,.25);
-  border-bottom: 1px solid rgba(182,140,57,.25);
-  background: rgba(255,255,255,.28);
+  border-block: 1px solid rgba(67, 77, 63, .11);
+  background: rgba(255, 253, 247, .48);
 }
-.zhaowu-home-layout .zhaowu-daily-pillar { position: relative; min-width: 0; padding: 13px 5px 14px; text-align: center; }
-.zhaowu-home-layout .zhaowu-daily-pillar + .zhaowu-daily-pillar::before { content: ""; position: absolute; left: 0; top: 17%; bottom: 17%; width: 1px; background: rgba(182,140,57,.17); }
-.zhaowu-home-layout .zhaowu-daily-pillar span { display: block; color: #927a50; font-family: var(--font-display) !important; font-size: .66rem; font-weight: 600; letter-spacing: .18em; }
-.zhaowu-home-layout .zhaowu-daily-pillar strong { display: block; margin-top: 6px; color: #2f3328; font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important; font-size: clamp(1.28rem, 5vw, 1.72rem); font-weight: 650; line-height: 1; letter-spacing: .08em; }
-.zhaowu-home-layout .zhaowu-daily-term { position: relative; z-index: 1; display: flex; align-items: baseline; justify-content: flex-end; gap: 8px; margin-top: 8px; color: #81725b; font-family: var(--font-display) !important; font-size: .72rem; }
-.zhaowu-home-layout .zhaowu-daily-term b { color: #8d6728; font-weight: 700; letter-spacing: .08em; }
-.zhaowu-home-layout .zhaowu-daily-main { position: relative; z-index: 1; margin-top: 26px !important; }
-.zhaowu-home-layout .zhaowu-daily-daymark { color: #8e692a !important; font-family: var(--font-display) !important; font-size: .76rem !important; font-weight: 600 !important; letter-spacing: .13em !important; }
-.zhaowu-home-layout .zhaowu-daily-headline { max-width: 17em; margin-top: 8px !important; color: #29251f !important; font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important; font-size: clamp(1.75rem, 6.8vw, 2.45rem) !important; font-weight: 650 !important; line-height: 1.28 !important; letter-spacing: .055em !important; }
-.zhaowu-home-layout .zhaowu-daily-lead { max-width: 40rem; margin-top: 10px !important; color: #665d50 !important; font-family: var(--font-display) !important; font-size: .98rem !important; font-weight: 450 !important; line-height: 1.82 !important; letter-spacing: .02em !important; }
-.zhaowu-home-layout .zhaowu-daily-pairs { position: relative; z-index: 1; margin-top: 26px !important; padding-top: 20px !important; gap: 22px !important; border-top: 1px solid rgba(182,140,57,.19) !important; }
-.zhaowu-home-layout .zhaowu-daily-pair-title small, .zhaowu-home-layout .zhaowu-daily-pair-title b, .zhaowu-home-layout .zhaowu-daily-list { font-family: var(--font-display) !important; }
-.zhaowu-home-layout .zhaowu-daily-pair-title small { color: #a77b31 !important; font-size: .68rem !important; letter-spacing: .12em !important; }
-.zhaowu-home-layout .zhaowu-daily-pair-title b { color: #302a20 !important; font-size: 1.08rem !important; font-weight: 700 !important; }
-.zhaowu-home-layout .zhaowu-daily-list { color: #62594c !important; font-size: .9rem !important; line-height: 1.75 !important; }
-.zhaowu-home-layout .zhaowu-daily-footer { position: relative; z-index: 1; margin-top: 22px !important; padding-top: 15px !important; border-top: 1px solid rgba(182,140,57,.14) !important; }
-.zhaowu-home-layout .zhaowu-daily-note { color: #81735e !important; font-family: var(--font-display) !important; font-size: .72rem !important; line-height: 1.6 !important; }
-.zhaowu-home-layout .zhaowu-daily-cta { border: 1px solid rgba(176,132,49,.34) !important; color: #fffdf3 !important; background: linear-gradient(180deg, #3b7864, #275847) !important; box-shadow: 0 8px 18px rgba(36,77,61,.12) !important; font-family: var(--font-display) !important; letter-spacing: .06em !important; }
-@media (max-width: 560px) {
-  .zhaowu-home-layout .zhaowu-daily-almanac { min-height: 0 !important; padding: 20px 17px 18px !important; border-radius: 23px !important; }
-  .zhaowu-home-layout .zhaowu-daily-almanac::before { inset: 7px; border-radius: 17px; }
-  .zhaowu-home-layout .zhaowu-daily-pillars { margin-top: 18px; }
-  .zhaowu-home-layout .zhaowu-daily-pillar { padding: 12px 2px 13px; }
-  .zhaowu-home-layout .zhaowu-daily-pillar span { font-size: .6rem; letter-spacing: .1em; }
-  .zhaowu-home-layout .zhaowu-daily-pillar strong { font-size: 1.22rem; letter-spacing: .03em; }
-  .zhaowu-home-layout .zhaowu-daily-main { margin-top: 22px !important; }
-  .zhaowu-home-layout .zhaowu-daily-pairs { margin-top: 22px !important; gap: 14px !important; }
+
+.zhaowu-home-layout .zhaowu-daily-pillar {
+  position: relative;
+  min-width: 0;
+  padding: 10px 3px 11px;
+  text-align: center;
+}
+
+.zhaowu-home-layout .zhaowu-daily-pillar + .zhaowu-daily-pillar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 1px;
+  background: rgba(67, 77, 63, .10);
+}
+
+.zhaowu-home-layout .zhaowu-daily-pillar span {
+  display: block;
+  color: #8a8174 !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  letter-spacing: .10em !important;
+  line-height: 1.2 !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-pillar strong {
+  display: block;
+  margin-top: 5px;
+  color: #34433b !important;
+  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important;
+  font-size: 20px !important;
+  font-weight: 550 !important;
+  letter-spacing: .025em !important;
+  line-height: 1.1 !important;
+  white-space: nowrap;
+}
+
+.zhaowu-home-layout .zhaowu-daily-term {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+  margin-top: 7px;
+  color: #847b6e;
+  font-size: 11px;
+}
+
+.zhaowu-home-layout .zhaowu-daily-term b { color: #566f61; font-weight: 600; }
+
+.zhaowu-home-layout .zhaowu-daily-lead {
+  margin: 15px 0 0 !important;
+  color: #625d55 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.75 !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-pairs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px !important;
+  margin-top: 15px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid rgba(67, 77, 63, .10) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-pair-title {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0 !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-pair-title small { color: #8c7d68 !important; font-size: 10px !important; }
+.zhaowu-home-layout .zhaowu-daily-pair-title b { color: #3b3934 !important; font-family: "Songti TC", "Songti SC", "STSong", serif; font-size: 18px !important; font-weight: 550 !important; }
+
+.zhaowu-home-layout .zhaowu-daily-list {
+  display: grid;
+  gap: 3px;
+  margin: 7px 0 0 !important;
+  padding: 0;
+  color: #69635b !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  list-style: none;
+}
+
+.zhaowu-home-layout .zhaowu-daily-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid rgba(67, 77, 63, .10) !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-cta {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(49, 91, 78, .28) !important;
+  border-radius: 8px !important;
+  padding: 0 7px 0 13px;
+  color: #315b4e !important;
+  background: rgba(255, 253, 247, .66) !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.zhaowu-home-layout .zhaowu-daily-cta b {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-home-layout .zhaowu-daily-almanac { padding: 14px 15px 9px !important; border-radius: 12px !important; }
+  .zhaowu-home-layout .zhaowu-daily-watermark { font-size: 4.8rem !important; }
+  .zhaowu-home-layout .zhaowu-daily-pairs { gap: 12px !important; }
+  .zhaowu-home-layout .zhaowu-daily-list { font-size: 12px !important; }
 }

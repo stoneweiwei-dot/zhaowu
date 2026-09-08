@@ -8,11 +8,14 @@ const form = await readFile(new URL("../src/components/analysis-form.tsx", impor
 const layout = await readFile(new URL("../src/home-layout-r46.css", import.meta.url), "utf8");
 const hub = await readFile(new URL("../src/home-birth-hub-r60.css", import.meta.url), "utf8");
 const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", import.meta.url), "utf8");
+const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 
-test("homepage puts the shared birth hub before the daily almanac", () => {
+test("homepage puts a compact daily almanac first and keeps client details separate", () => {
   const formMount = route.indexOf("<AnalysisForm />");
   const daily = route.indexOf("<DailyAlmanacWidget />");
-  assert.ok(formMount >= 0 && daily > formMount);
+  assert.ok(daily >= 0 && formMount > daily);
+  assert.match(widget, /<details className="zhaowu-daily-details">/);
+  assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
   assert.match(form, /id="bazi"/);
   assert.match(route, /home-layout-r46\.css/);
   assert.match(route, /home-birth-hub-r60\.css/);
@@ -37,11 +40,13 @@ test("daily almanac keeps the personalised spirit slip gated by saved birth data
   assert.match(widget, /href=\{!user \? "\/login" : "#analysisForm"\}/);
 });
 
-test("r69 almanac style uses bright paper and Song-style pillar typography", () => {
-  assert.match(almanacStyle, /linear-gradient\(148deg, rgba\(255,253,246/);
+test("r69 almanac style is compact, quiet, and keeps Song-style pillar typography", () => {
+  assert.match(almanacStyle, /min-height:\s*0 !important/);
+  assert.match(almanacStyle, /border-radius:\s*14px !important/);
   assert.match(almanacStyle, /Songti TC/);
   assert.match(almanacStyle, /grid-template-columns:\s*repeat\(4/);
-  assert.match(almanacStyle, /#2f6f5f/);
+  assert.match(almanacStyle, /zhaowu-daily-details/);
+  assert.match(design, /zhaowu-home-stage--daily[\s\S]*margin-top:\s*0 !important/);
 });
 
 test("r46 preserves mobile-first whitespace and responsive directory grids", () => {

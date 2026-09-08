@@ -165,14 +165,14 @@ function Home() {
 
   return (
     <main className="zhaowu-home-sheet-page zhaowu-home-layout">
-      <div className="zhaowu-home-stage zhaowu-home-stage--primary relative" id="bazi">
+      <div className="zhaowu-home-stage zhaowu-home-stage--daily"><DailyAlmanacWidget /></div>
+
+      <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
         <AnalysisForm />
       </div>
 
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><ResultView result={current} /></div> : null}
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div> : null}
-
-      <div className="zhaowu-home-stage zhaowu-home-stage--daily"><DailyAlmanacWidget /></div>
 
       <section id="analysis-reports" className="zhaowu-home-stage zhaowu-home-stage--directory zhaowu-home-portals-block" aria-label={portalCopy.label}>
         <header className="zhaowu-home-portals-heading">

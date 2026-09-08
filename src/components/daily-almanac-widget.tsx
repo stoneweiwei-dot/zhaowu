@@ -104,38 +104,41 @@ export function DailyAlmanacWidget() {
     const copy = locale === "en" ? {
       eyebrow: "TODAY · FOUR PILLARS", title: `${weekdayLabel(now, locale)} · ${monthDayLabel(now, locale)}`,
       energy: lowEnergy ? "Lower" : highMotion ? "Active" : "Steady", energyLabel: "Today’s rhythm",
-      headline: lowEnergy ? "Keep the day light and deliberate" : highMotion ? "Move, but do not scatter" : "Keep one clear centre",
-      lead: lowEnergy ? "Protect your capacity first; fewer well-finished things are enough today." : highMotion ? "Momentum helps when it has a target. Finish before opening another front." : "A steady day works best when you keep priorities simple and leave some margin.",
+      headline: lowEnergy ? "Conserve your attention and finish calmly" : highMotion ? "Choose a direction before you move" : "Move forward with a steady centre",
+      lead: lowEnergy ? "Keep some capacity in reserve. Fewer well-finished things are enough today." : highMotion ? "There is momentum today; give it one clear direction and finish in sequence." : "The rhythm is steady. Narrow the priority list and leave room for the unexpected.",
       good: lowEnergy ? ["finish one important task", "eat on time", "tidy one small area"] : highMotion ? ["move one key task forward", "speak clearly", "finish before adding more"] : ["focus on the core task", "keep plans simple", "leave buffer time"],
       avoid: lowEnergy ? ["overcommitting", "late-night decisions", "absorbing other people’s urgency"] : highMotion ? ["starting too many things", "arguing from impulse", "rushing commitments"] : ["constant switching", "needless comparison", "overexplaining"],
       goodLabel: "Good for", avoidLabel: "Avoid", goodRoman: "YI", avoidRoman: "JI", foot: "Daily spirit slip",
       note: `${four} · Current solar-term month: ${jieLabel(pillars.jieName, locale)}.`, dayMark: `${pillars.day} day · ${timeLabel(now)}`,
       pillarLabels: ["YEAR", "MONTH", "DAY", "HOUR"],
       needLogin: "Sign in first to draw your daily spirit slip.", needBirth: "Complete your birth details on Zhaowu first, then return here to draw your personalised daily slip.",
+      detailsLabel: "View today’s pillars & guidance",
       slipTitle: "Today’s Spirit Slip", basis: "Based on your saved birth profile + today’s rhythm", close: "Close", goLogin: "Sign in", goBirth: "Add birth details",
     } : locale === "zh-Hans" ? {
       eyebrow: "今日干支", title: `${weekdayLabel(now, locale)} · ${monthDayLabel(now, locale)}`,
       energy: lowEnergy ? "偏低" : highMotion ? "偏动" : "平稳", energyLabel: "今日节奏",
-      headline: lowEnergy ? "把今天过得轻一点、稳一点" : highMotion ? "可以推进，但不要把自己打散" : "守住一个中心就够了",
-      lead: lowEnergy ? "先保护自己的容量，今天少做一点、做完整一点就够。" : highMotion ? "今天有推进力，但要给它一个明确方向；做完一件，再开下一件。" : "平稳的日子最适合把优先级收窄，也给自己留一点余量。",
+      headline: lowEnergy ? "宜收敛心力，从容完成" : highMotion ? "宜定向而行，不宜分散" : "守中有序，从容推进",
+      lead: lowEnergy ? "先保留心力，宁可少做，也要把重要的事完整收好。" : highMotion ? "今日有推进之势，先定方向，再逐项完成。" : "节奏平稳，适合收窄优先次序，为临时变化留下余地。",
       good: lowEnergy ? ["完成一件重要的事", "按时吃饭", "整理一个小区域"] : highMotion ? ["推进一个关键任务", "把话说清楚", "做完再加下一件"] : ["专注核心任务", "计划简单一点", "给自己留余量"],
       avoid: lowEnergy ? ["过度答应别人", "深夜做重大决定", "替别人承接焦虑"] : highMotion ? ["同时开太多任务", "冲动争辩", "匆忙承诺"] : ["反复切换任务", "无谓比较", "过度解释"],
       goodLabel: "宜", avoidLabel: "忌", goodRoman: "宜", avoidRoman: "忌", foot: "今日灵签",
       note: `${four} · 当前节令：${jieLabel(pillars.jieName, locale)}。`, dayMark: `${pillars.day}日 · ${timeLabel(now)}`,
       pillarLabels: ["年", "月", "日", "时"],
       needLogin: "先登入，才可以领取你的今日灵签。", needBirth: "你还没有保存出生资料。先在昭梧输入并保存资料，再回来领取个人灵签。",
+      detailsLabel: "展开今日干支与宜忌",
       slipTitle: "今日灵签", basis: "依据你已保存的命盘资料 × 今日节奏", close: "收起", goLogin: "去登入", goBirth: "去填写资料",
     } : {
       eyebrow: "今日干支", title: `${weekdayLabel(now, locale)} · ${monthDayLabel(now, locale)}`,
       energy: lowEnergy ? "偏低" : highMotion ? "偏動" : "平穩", energyLabel: "今日節奏",
-      headline: lowEnergy ? "把今天過得輕一點、穩一點" : highMotion ? "可以推進，但不要把自己打散" : "守住一個中心就夠了",
-      lead: lowEnergy ? "先保護自己的容量，今天少做一點、做完整一點就夠。" : highMotion ? "今天有推進力，但要給它一個明確方向；做完一件，再開下一件。" : "平穩的日子最適合把優先級收窄，也給自己留一點餘量。",
+      headline: lowEnergy ? "宜收斂心力，從容完成" : highMotion ? "宜定向而行，不宜分散" : "守中有序，從容推進",
+      lead: lowEnergy ? "先保留心力，寧可少做，也要把重要的事完整收好。" : highMotion ? "今日有推進之勢，先定方向，再逐項完成。" : "節奏平穩，適合收窄優先次序，為臨時變化留下餘地。",
       good: lowEnergy ? ["完成一件重要的事", "按時吃飯", "整理一個小區域"] : highMotion ? ["推進一個關鍵任務", "把話說清楚", "做完再加下一件"] : ["專注核心任務", "計畫簡單一點", "給自己留餘量"],
       avoid: lowEnergy ? ["過度答應別人", "深夜做重大決定", "替別人承接焦慮"] : highMotion ? ["同時開太多任務", "衝動爭辯", "匆忙承諾"] : ["反覆切換任務", "無謂比較", "過度解釋"],
       goodLabel: "宜", avoidLabel: "忌", goodRoman: "宜", avoidRoman: "忌", foot: "今日靈籤",
       note: `${four} · 當前節令：${jieLabel(pillars.jieName, locale)}。`, dayMark: `${pillars.day}日 · ${timeLabel(now)}`,
       pillarLabels: ["年", "月", "日", "時"],
       needLogin: "先登入，才可以領取你的今日靈籤。", needBirth: "你還沒有保存出生資料。先在昭梧輸入並保存資料，再回來領取個人靈籤。",
+      detailsLabel: "展開今日干支與宜忌",
       slipTitle: "今日靈籤", basis: "依據你已保存的命盤資料 × 今日節奏", close: "收起", goLogin: "去登入", goBirth: "去填寫資料",
     };
     return { ...copy, tone, day };
@@ -184,18 +187,27 @@ export function DailyAlmanacWidget() {
           <div><p className="zhaowu-daily-eyebrow">{data.eyebrow}</p><p className="zhaowu-daily-date">{data.title} · {timeLabel(now)}</p></div>
           <div className="zhaowu-daily-energy"><span>{data.energyLabel}</span><strong>{data.energy}</strong></div>
         </div>
-        <div className="zhaowu-daily-pillars" aria-label={locale === "en" ? "Current Four Pillars" : "當下年月日時干支"}>
-          {values.map((value, index) => (
-            <div className="zhaowu-daily-pillar" key={`${data.pillarLabels[index]}-${value}`}>
-              <span>{data.pillarLabels[index]}</span>
-              <strong>{value}</strong>
-            </div>
-          ))}
+        <div className="zhaowu-daily-main">
+          <h2 className="zhaowu-daily-headline">{data.headline}</h2>
+          <p className="zhaowu-daily-note">{data.note}</p>
         </div>
-        <div className="zhaowu-daily-term"><span>{locale === "en" ? "Solar term" : locale === "zh-Hans" ? "节令" : "節令"}</span><b>{jieLabel(pillars.jieName, locale)}</b></div>
-        <div className="zhaowu-daily-main"><p className="zhaowu-daily-daymark">{data.dayMark}</p><h2 className="zhaowu-daily-headline">{data.headline}</h2><p className="zhaowu-daily-lead">{data.lead}</p></div>
-        <div className="zhaowu-daily-pairs"><section aria-label={data.goodLabel}><p className="zhaowu-daily-pair-title"><small>{data.goodRoman}</small><b>{data.goodLabel}</b></p><ul className="zhaowu-daily-list">{data.good.map((item) => <li key={item}>{item}</li>)}</ul></section><section aria-label={data.avoidLabel}><p className="zhaowu-daily-pair-title"><small>{data.avoidRoman}</small><b>{data.avoidLabel}</b></p><ul className="zhaowu-daily-list">{data.avoid.map((item) => <li key={item}>{item}</li>)}</ul></section></div>
-        <footer className="zhaowu-daily-footer"><p className="zhaowu-daily-note">{data.note}</p><button type="button" className="zhaowu-daily-cta" onClick={() => void drawSlip()} disabled={loadingSlip || isPending} aria-label={data.foot}><span>{loadingSlip ? "…" : data.foot}</span><b aria-hidden>→</b></button></footer>
+        <details className="zhaowu-daily-details">
+          <summary><span>{data.detailsLabel}</span><b aria-hidden>＋</b></summary>
+          <div className="zhaowu-daily-details-body">
+            <div className="zhaowu-daily-pillars" aria-label={locale === "en" ? "Current Four Pillars" : "當下年月日時干支"}>
+              {values.map((value, index) => (
+                <div className="zhaowu-daily-pillar" key={`${data.pillarLabels[index]}-${value}`}>
+                  <span>{data.pillarLabels[index]}</span>
+                  <strong>{value}</strong>
+                </div>
+              ))}
+            </div>
+            <div className="zhaowu-daily-term"><span>{locale === "en" ? "Solar term" : locale === "zh-Hans" ? "节令" : "節令"}</span><b>{jieLabel(pillars.jieName, locale)}</b></div>
+            <p className="zhaowu-daily-lead">{data.lead}</p>
+            <div className="zhaowu-daily-pairs"><section aria-label={data.goodLabel}><p className="zhaowu-daily-pair-title"><small>{data.goodRoman}</small><b>{data.goodLabel}</b></p><ul className="zhaowu-daily-list">{data.good.map((item) => <li key={item}>{item}</li>)}</ul></section><section aria-label={data.avoidLabel}><p className="zhaowu-daily-pair-title"><small>{data.avoidRoman}</small><b>{data.avoidLabel}</b></p><ul className="zhaowu-daily-list">{data.avoid.map((item) => <li key={item}>{item}</li>)}</ul></section></div>
+            <footer className="zhaowu-daily-footer"><button type="button" className="zhaowu-daily-cta" onClick={() => void drawSlip()} disabled={loadingSlip || isPending} aria-label={data.foot}><span>{loadingSlip ? "…" : data.foot}</span><b aria-hidden>→</b></button></footer>
+          </div>
+        </details>
         {slipMessage ? <div className="zhaowu-slip-gate"><p>{slipMessage}</p><a href={!user ? "/login" : "#analysisForm"}>{!user ? data.goLogin : data.goBirth} →</a></div> : null}
       </section>
 

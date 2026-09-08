@@ -61,22 +61,22 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
         backgroundColor: style.backgroundColor,
       };
     });
-    expect(metrics.height).toBeGreaterThanOrEqual(48);
-    expect(metrics.fontSize).toBeGreaterThanOrEqual(16);
-    expect(metrics.color).toBe("rgb(33, 31, 26)");
-    expect(metrics.backgroundColor).toBe("rgb(234, 220, 194)");
+    expect(metrics.height).toBeGreaterThanOrEqual(40);
+    expect(metrics.fontSize).toBeGreaterThanOrEqual(11);
+    expect(metrics.color).toBe("rgb(32, 61, 52)");
+    expect(metrics.backgroundColor).toBe("rgba(62, 103, 86, 0.1)");
 
     const simplified = page.getByRole("button", { name: "简中", exact: true });
     await simplified.click();
     await expect(simplified).toContainText("簡體");
     await expect(simplified).toHaveAttribute("aria-pressed", "true");
-    await expect(simplified).toHaveCSS("color", "rgb(33, 31, 26)");
+    await expect(simplified).toHaveCSS("color", "rgb(32, 61, 52)");
 
     const english = page.getByRole("button", { name: "EN", exact: true });
     await english.click();
     await expect(english).toContainText("ENG");
     await expect(english).toHaveAttribute("aria-pressed", "true");
-    await expect(english).toHaveCSS("color", "rgb(33, 31, 26)");
+    await expect(english).toHaveCSS("color", "rgb(32, 61, 52)");
   });
 
   test("every analysis portal is a real navigation target and opens its corresponding page", async ({ page }) => {
