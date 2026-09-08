@@ -1,5 +1,19 @@
 import { expect, test } from "@playwright/test";
 
+const TEST_USER_ID = "specialist-member-test";
+const SESSION = {
+  access_token: "e2e-specialist-session",
+  refresh_token: "e2e-specialist-refresh",
+  expires_in: 3600,
+  expires_at: Math.floor(Date.now() / 1000) + 3600,
+  token_type: "bearer",
+  user: {
+    id: TEST_USER_ID,
+    email: "specialist@example.test",
+    user_metadata: { name: "專題測試會員" },
+  },
+};
+
 const SHARED_BIRTH = {
   year: 1988,
   month: 10,
@@ -32,10 +46,13 @@ test("iPhone Safari One-Palm page is usable without the removed duplicate specia
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
-test("shared birth auto-generates the report and changing direction regenerates it", async ({ page }) => {
-  await page.addInitScript((record) => {
+test("signed-in shared birth auto-generates the report and changing direction regenerates it", async ({ page }) => {
+  await page.addInitScript(({ record, session, userId }) => {
+    localStorage.setItem("zhaowu.supabase.session.v1", JSON.stringify(session));
+    localStorage.setItem("zhaowu.birth-record-owner.v1", userId);
     localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify(record));
-  }, SHARED_BIRTH);
+  }, { record: SHARED_BIRTH, session: SESSION, userId: TEST_USER_ID });
+  await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
   await page.goto("/yizhangjing", { waitUntil: "domcontentloaded" });
 
   const result = page.locator(".palm-result");
