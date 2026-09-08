@@ -34,4 +34,6 @@
 - Source：黃曆 DOM 位於問事表單之前；問事、客人資料與四柱命盤為三個獨立 section；命盤預覽不再輸出第二組標題；Header 使用 `/apple-touch-icon-v3.png`。
 - Local：Vite production build、TypeScript 與更新後的首頁／品牌／黃曆視覺契約測試通過。
 - Production：以 r85 最終 commit 的 GitHub 狀態、Vercel Production 與正式站 390px／430px 實際驗證結果為準。
+- 首次正式部署：`0492876ff70770c981d3ce8c7c7390113d1d8672` → `dpl_AnUhGKp7VvYHxA6VSGPdCB5712gv` 為 READY，正式 alias SHA 一致；首頁與 `/login` 實際可讀，Logo 正常載入，黃曆收合／客資修改入口通過瀏覽器操作檢查。
+- CI 跟進：首次 iPhone Safari 27／29 通過；兩個失敗項仍要求 r75 的八字背景透明度與已移除的重複英文標題。同步為 r85 的扁平八字區、獨立客資背景與新英文標題，並增加 390px／430px 的黃曆高度、段落順序、標題字級、Logo 與橫向溢出測試；沒有改動執行時程式或停用測試。最終重跑結果另記於 release ledger。
 - iPhone 實機：自動瀏覽器檢查不能取代站主實機，若未由真機確認則保持「未實機驗證」。

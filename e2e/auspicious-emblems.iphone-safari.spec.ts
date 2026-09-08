@@ -37,10 +37,12 @@ test.describe("iPhone Safari parchment application shell", () => {
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
 
     const baziBackground = await page.locator(".zhaowu-bazi-hub").evaluate((node) => getComputedStyle(node).backgroundColor);
-    const alpha = alphaOf(baziBackground);
-    // r75 final visual lock intentionally integrates the Four Pillars atlas into the page with a light 52% parchment wash.
-    expect(alpha).toBeGreaterThanOrEqual(0.5);
-    expect(alpha).toBeLessThanOrEqual(0.56);
+    // r85 replaces the nested tinted Bazi card with a flat section below a
+    // separate parchment-backed client record. The page wallpaper is retained.
+    expect(alphaOf(baziBackground)).toBe(0);
+    const customerBackground = await page.locator("#customer-record").evaluate((node) => getComputedStyle(node).backgroundColor);
+    expect(alphaOf(customerBackground)).toBeCloseTo(0.78, 2);
+    await expect(page.locator("#customer-record .zhaowu-bazi-hub")).toHaveCount(0);
   });
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {
@@ -54,4 +56,30 @@ test.describe("iPhone Safari parchment application shell", () => {
     await page.waitForTimeout(250);
     expect(backgroundReads).toBe(0);
   });
+
+  for (const width of [390, 430]) {
+    test(`r85 keeps the almanac compact and client details separate at ${width}px`, async ({ page }) => {
+      await makeAppOfflineSafe(page);
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto("/", { waitUntil: "domcontentloaded" });
+      const almanac = page.locator("#daily-almanac");
+      const question = page.locator(".zhaowu-question-sheet");
+      const customer = page.locator("#customer-record");
+      const bazi = page.locator("#bazi");
+      for (const section of [almanac, question, customer, bazi]) {
+        await expect(section).toBeVisible();
+      }
+      await expect(almanac.locator("details[open]")).toHaveCount(0);
+      const boxes = await Promise.all([almanac, question, customer, bazi].map((section) => section.boundingBox()));
+      expect(boxes.every(Boolean)).toBe(true);
+      expect(boxes[0]!.height).toBeLessThan(260);
+      for (let i = 1; i < boxes.length; i += 1) {
+        expect(boxes[i]!.y).toBeGreaterThanOrEqual(boxes[i - 1]!.y + boxes[i - 1]!.height);
+      }
+      const titleSize = await question.locator("h2").evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
+      expect(titleSize).toBeLessThanOrEqual(28);
+      await expect(page.locator('header img[alt="昭梧"]')).toHaveAttribute("src", "/apple-touch-icon-v3.png");
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    });
+  }
 });
