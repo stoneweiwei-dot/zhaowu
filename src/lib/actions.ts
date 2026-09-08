@@ -5,6 +5,7 @@ import { classifyQuestion, interpret } from "@/lib/bazi/interpret";
 import { applyMonthStageFeedbackPolicy } from "@/lib/bazi/month-stage-feedback";
 import { applyFourTombsRuntimePolicy } from "@/lib/bazi/four-tombs-runtime";
 import { applyTenGodFiveElementRuntimePolicy } from "@/lib/bazi/ten-god-five-element-runtime";
+import { applyKinshipRuntimePolicy } from "@/lib/bazi/kinship-runtime";
 import { buildPalm } from "@/lib/palm/engine";
 import { routeMethods } from "@/lib/core/method";
 import { inferQuestionKind } from "@/lib/core/answer-contract";
@@ -136,9 +137,17 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
       interpret(data.question, chart, data.relation, palm),
     ),
   );
+  const finalizedReading = finalizeReading(data.question, chart, rawReading, data.locale);
+  const kinshipReading = applyKinshipRuntimePolicy(
+    data.question,
+    chart,
+    data.relation,
+    finalizedReading,
+    data.locale,
+  );
   const reading = applyTenGodFiveElementRuntimePolicy(
     chart,
-    finalizeReading(data.question, chart, rawReading, data.locale),
+    kinshipReading,
     data.locale,
   );
 
@@ -171,17 +180,26 @@ export async function followUpLife({
     palmReady: Boolean(palm?.ready),
     palmMissing: palm?.missing ?? [],
   });
+  const relation = data.relation ?? "unset";
   const rawReading = applyFourTombsRuntimePolicy(
     data.base.chart,
     applyMonthStageFeedbackPolicy(
       question,
       data.base.chart,
-      interpret(question, data.base.chart, data.relation ?? "unset", palm),
+      interpret(question, data.base.chart, relation, palm),
     ),
+  );
+  const finalizedReading = finalizeReading(question, data.base.chart, rawReading, data.base.locale);
+  const kinshipReading = applyKinshipRuntimePolicy(
+    question,
+    data.base.chart,
+    relation,
+    finalizedReading,
+    data.base.locale,
   );
   const reading = applyTenGodFiveElementRuntimePolicy(
     data.base.chart,
-    finalizeReading(question, data.base.chart, rawReading, data.base.locale),
+    kinshipReading,
     data.base.locale,
   );
   return {
