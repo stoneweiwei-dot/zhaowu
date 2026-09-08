@@ -28,7 +28,7 @@ import "@/home-birth-hub-r60.css";
 
 export const Route = createFileRoute("/")({ component: Home });
 
-type PortalId = SpecialistId | "bazi";
+type PortalId = SpecialistId | "bazi" | "numerology";
 
 function portalAction(locale: Locale, birth: SharedBirthRecord | null, needsTime: boolean) {
   if (!birth) return locale === "en" ? "Add birth data" : locale === "zh-Hans" ? "填写生辰" : "填寫生辰";
@@ -85,10 +85,10 @@ function Home() {
     };
   }, [birth, locale]);
 
-  const portalCopy: { label: string; lead: string; items: Array<{ id: PortalId; to?: "/indian-astrology" | "/astrology" | "/ziwei" | "/qizheng" | "/yizhangjing"; title: string; hint: string; needsTime: boolean }> } = locale === "en"
+  const portalCopy: { label: string; lead: string; items: Array<{ id: PortalId; to?: "/indian-astrology" | "/astrology" | "/ziwei" | "/qizheng" | "/yizhangjing" | "/numerology"; title: string; hint: string; needsTime: boolean }> } = locale === "en"
     ? {
-        label: "Six specialist readings",
-        lead: "One birth record, six independent lenses. Open any volume to read its own analysis.",
+        label: "Seven personal readings",
+        lead: "One birth record, seven independent lenses. Open any volume to read its own analysis.",
         items: [
           { id: "bazi", title: "Four Pillars · BaZi", hint: "structure, balance, timing, and the question in front of you", needsTime: false },
           { id: "ziwei", to: "/ziwei", title: "Zi Wei Dou Shu", hint: "palaces, relationships, work, wealth, and life phases", needsTime: true },
@@ -96,12 +96,13 @@ function Home() {
           { id: "indian", to: "/indian-astrology", title: "Classical Indian astrology", hint: "classical karmic patterns; D60 needs an accurate birth minute", needsTime: true },
           { id: "qizheng", to: "/qizheng", title: "Seven Luminaries", hint: "temperament, pressure response, rhythm, and timing", needsTime: true },
           { id: "past", to: "/yizhangjing", title: "Past & Present", hint: "cultural symbolism for recurring habits and themes", needsTime: false },
+          { id: "numerology", to: "/numerology", title: "Numerology", hint: "your life number, strengths, pressure points, and Master Number pattern", needsTime: false },
         ],
       }
     : locale === "zh-Hans"
       ? {
-          label: "六种命理专卷",
-          lead: "同一份生辰，各自成卷。点开任何一卷，直接阅读对应分析。",
+          label: "七种个人分析",
+          lead: "同一份出生资料，各自独立判断。点开任何一卷，直接阅读对应分析。",
           items: [
             { id: "bazi", title: "子平八字", hint: "格局、旺衰、取用、岁运，以及你正在问的事", needsTime: false },
             { id: "ziwei", to: "/ziwei", title: "紫微斗数", hint: "宫位、关系、事业、财务与人生阶段", needsTime: true },
@@ -109,11 +110,12 @@ function Home() {
             { id: "indian", to: "/indian-astrology", title: "印度古法占星", hint: "古典业力结构；D60 需要准确出生分钟", needsTime: true },
             { id: "qizheng", to: "/qizheng", title: "七政四余", hint: "性情、压力反应、节奏与天时变化", needsTime: true },
             { id: "past", to: "/yizhangjing", title: "前世今生", hint: "以文化象意阅读反复出现的习性与课题", needsTime: false },
+            { id: "numerology", to: "/numerology", title: "生命灵数", hint: "自动计算生命灵数，并看强项、课题与大师数 11／22／33", needsTime: false },
           ],
         }
       : {
-          label: "六種命理專卷",
-          lead: "同一份生辰，各自成卷。點開任何一卷，直接閱讀對應分析。",
+          label: "七種個人分析",
+          lead: "同一份出生資料，各自獨立判斷。點開任何一卷，直接閱讀對應分析。",
           items: [
             { id: "bazi", title: "子平八字", hint: "格局、旺衰、取用、歲運，以及你正在問的事", needsTime: false },
             { id: "ziwei", to: "/ziwei", title: "紫微斗數", hint: "宮位、關係、事業、財務與人生階段", needsTime: true },
@@ -121,6 +123,7 @@ function Home() {
             { id: "indian", to: "/indian-astrology", title: "印度古法占星", hint: "古典業力結構；D60 需要準確出生分鐘", needsTime: true },
             { id: "qizheng", to: "/qizheng", title: "七政四餘", hint: "性情、壓力反應、節奏與天時變化", needsTime: true },
             { id: "past", to: "/yizhangjing", title: "前世今生", hint: "以文化象意閱讀反覆出現的習性與課題", needsTime: false },
+            { id: "numerology", to: "/numerology", title: "生命靈數", hint: "自動計算生命靈數，並看強項、課題與大師數 11／22／33", needsTime: false },
           ],
         };
 
@@ -178,7 +181,7 @@ function Home() {
         </header>
         <div className="zhaowu-home-portals">
           {portalCopy.items.map((item, itemIndex) => {
-            const reading = item.id === "bazi" ? undefined : portalReadings[item.id];
+            const reading = item.id === "bazi" || item.id === "numerology" ? undefined : portalReadings[item.id];
             const preview = readingPreview(reading, locale);
             const content = (
               <>
