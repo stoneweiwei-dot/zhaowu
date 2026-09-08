@@ -4,6 +4,7 @@ import { buildChart, currentAlmanac } from "@/lib/bazi/chart";
 import { classifyQuestion, interpret } from "@/lib/bazi/interpret";
 import { applyMonthStageFeedbackPolicy } from "@/lib/bazi/month-stage-feedback";
 import { applyFourTombsRuntimePolicy } from "@/lib/bazi/four-tombs-runtime";
+import { applyTenGodFiveElementRuntimePolicy } from "@/lib/bazi/ten-god-five-element-runtime";
 import { buildPalm } from "@/lib/palm/engine";
 import { routeMethods } from "@/lib/core/method";
 import { inferQuestionKind } from "@/lib/core/answer-contract";
@@ -135,10 +136,9 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
       interpret(data.question, chart, data.relation, palm),
     ),
   );
-  const reading = finalizeReading(
-    data.question,
+  const reading = applyTenGodFiveElementRuntimePolicy(
     chart,
-    rawReading,
+    finalizeReading(data.question, chart, rawReading, data.locale),
     data.locale,
   );
 
@@ -179,10 +179,9 @@ export async function followUpLife({
       interpret(question, data.base.chart, data.relation ?? "unset", palm),
     ),
   );
-  const reading = finalizeReading(
-    question,
+  const reading = applyTenGodFiveElementRuntimePolicy(
     data.base.chart,
-    rawReading,
+    finalizeReading(question, data.base.chart, rawReading, data.base.locale),
     data.base.locale,
   );
   return {
@@ -212,7 +211,11 @@ export async function writeFullReport({
     data.chart,
     applyMonthStageFeedbackPolicy(data.question, data.chart, data.reading),
   );
-  const reading = finalizeReading(data.question, data.chart, governedReading, data.locale);
+  const reading = applyTenGodFiveElementRuntimePolicy(
+    data.chart,
+    finalizeReading(data.question, data.chart, governedReading, data.locale),
+    data.locale,
+  );
   const palm = data.palm ?? null;
   const methodProtocol = routeMethods(reading.kind, {
     palmReady: Boolean(palm?.ready),
