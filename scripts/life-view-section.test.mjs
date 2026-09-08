@@ -30,7 +30,7 @@ test("home exposes Zhaowu Guan Shi Lu as a latest-first expandable archive", () 
   assert.match(section, /LIFE_VIEW_CURATED_ARTICLES/);
   assert.match(section, /LIFE_VIEW_SHORT_FORM_ARTICLES/);
   assert.match(section, /LIFE_VIEW_LONG_FORM_ARTICLES/);
-  assert.match(section, /const ARTICLES = \[/);
+  assert.match(section, /const ARTICLES(?:\s*:\s*IllustratedArticle\[\])? = \[/);
   assert.match(section, /ARTICLES\.sort\(\(a, b\) => b\.publishedAt\.localeCompare\(a\.publishedAt\)\)/);
   assert.doesNotMatch(section, /LIFE_VIEW_FILE_ARTICLES|LIFE_VIEW_PRACTICE_ARTICLES|LIFE_VIEW_20260831_ARTICLES|LIFE_VIEW_20260903_ARTICLES|LIFE_VIEW_20260903_LATE_ARTICLES/);
   assert.match(section, /const latest = ARTICLES\[0\]/);

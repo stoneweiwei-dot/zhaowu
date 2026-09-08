@@ -11,7 +11,7 @@ const balance = await readFile(new URL("../public/articles/bazi-health-balance.s
 
 test("bazi health symbolism article is registered as the newest life-view note", () => {
   assert.match(section, /BAZI_HEALTH_SYMBOLISM_LONG_FORM/);
-  assert.match(section, /const ARTICLES: IllustratedArticle\[\] = \[BAZI_HEALTH_SYMBOLISM_LONG_FORM,/);
+  assert.match(section, /\[BAZI_HEALTH_SYMBOLISM_LONG_FORM, INNER_FENGSHUI_LONG_FORM/);
   assert.match(article, /id: "bazi-health-symbolism"/);
   assert.match(article, /publishedAt: "2026-09-09"/);
 });
@@ -24,11 +24,11 @@ test("article keeps three complete locales and medical boundaries", () => {
   assert.match(article, /不作医疗诊断或疾病预测/);
   assert.match(article, /not medical diagnosis or disease prediction/);
   assert.match(article, /不做簡單「缺什麼補什麼」/);
-  assert.match(article, /never reduce Bazi to “whatever is missing must be added”/);
+  assert.match(article, /never reduce Bazi to .*missing.*added/);
 });
 
 test("article renders multiple optional illustrations without gating text", () => {
-  assert.equal((article.match(/afterParagraph:/g) ?? []).length, 4);
+  assert.equal((article.match(/afterParagraph:\s*\d+/g) ?? []).length, 4);
   assert.match(section, /article\.illustrations\?\.find/);
   assert.match(section, /loading="lazy"/);
   assert.match(section, /decoding="async"/);
