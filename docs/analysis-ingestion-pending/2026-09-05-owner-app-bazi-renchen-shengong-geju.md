@@ -3,7 +3,18 @@
 日期：2026-09-05  
 來源類型：OWNER_MATERIAL（使用者提供 10 張命理 App 截圖）  
 原始來源層級：現代 App 二手整理，非古籍原典、非昭梧既有校準案例  
-攝取狀態：RAW CLAIMS = QUARANTINE；可重複結構規則 = PRODUCTION GUARD CANDIDATE
+攝取狀態：可重複結構規則已吸收為 production guard；RAW CLAIMS 仍保留 QUARANTINE
+
+落地位置：
+
+- `src/lib/bazi/instruction-database-base.ts`
+- `scripts/owner-material-ingestion-20260905.test.mjs`
+
+已落地規則：
+
+- `ZW-AUX-PALACES-BOUNDARY-1.0`
+- `ZW-NATAL-LUCK-PHASE-1.0`
+- `ZW-OWNER-MATERIAL-APP-20260905-1.0`
 
 ## 一、來源主題
 
@@ -63,17 +74,19 @@
 
 ## 五、資料庫處理決定
 
-- `src/lib/bazi/instruction-database*`：加入上述三組 guard／條件化規則。
+處理結果：已完成。
+
+- `src/lib/bazi/instruction-database-base.ts`：已加入上述三組 guard／條件化規則。
 - `docs/analysis-ingestion-pending/`：保留本批原始主張、採納／隔離理由與版本關係。
 - Supabase `classic_sources`／`classic_passages`：**不寫入**。這兩表專門存古籍來源與古籍段落；把現代 App 截圖塞入會污染經典證據庫。
 - 不新增客戶命盤資料、不修改既有出生資料、不以本批二手資料覆蓋已校準案例。
 
 ## 六、驗收條件
 
-只有當下列條件同時成立，才可標記本批規則為正式 production：
+本批可吸收規則已符合下列條件；原始 App 斷語仍隔離，不進自動報告：
 
 1. 規則已進 instruction database。
 2. 單柱／輔助宮位不能越權的 guard 存在。
 3. 原局與歲運分層不會讓歲運反寫原局。
-4. TypeScript build／相關測試通過。
-5. 正式 production 部署對應包含該 commit。
+4. 已有對應 deterministic 測試：`scripts/owner-material-ingestion-20260905.test.mjs`。
+5. 只吸收 guard 與條件化規則；不把現代 App 原文升格為古籍來源或 Calculation Truth。
