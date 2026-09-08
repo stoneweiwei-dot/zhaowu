@@ -74,6 +74,7 @@ function LoginPage() {
         await navigate({ to: "/" });
         return;
       }
+      // Email signup stays one-step; backend decides whether confirmation is required.
       const { session } = await signUpWithPassword(email.trim(), password, displayName.trim());
       if (session) {
         await reload();
