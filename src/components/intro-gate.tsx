@@ -54,7 +54,6 @@ export function IntroGate() {
       window.setTimeout,
       window.clearTimeout,
       () => {
-        // The intro is decorative: it must never block access for three seconds.
         if (!cancelled) forceOff();
       },
     );
@@ -64,7 +63,6 @@ export function IntroGate() {
         if (!cancelled) setRuntimeReady(true);
       })
       .catch(() => {
-        // Readiness is fail-open: backend trouble must not trap the user behind decoration.
         if (!cancelled) setRuntimeReady(true);
       });
 
@@ -102,16 +100,22 @@ export function IntroGate() {
       aria-live="polite"
       aria-label={loadingLabel}
       data-intro-motion="owner-video"
-      data-intro-fallback-mode="owner-poster"
+      data-intro-fallback-mode="animated-lotus"
     >
       <div className={`zhaowu-lotus-intro__fallback ${videoPlaying ? "is-covered" : ""}`} data-intro-fallback aria-hidden="true">
-        <div className="zhaowu-lotus-intro__fallback-lockup">
-          <img src={OWNER_LOADING_POSTER} alt="" className="h-64 w-48 object-contain" />
-          <div className="zhaowu-lotus-intro__fallback-copy">
-            <strong>{locale === "en" ? "ZHAOWU" : "昭梧"}</strong>
-            <span>{loadingLabel}</span>
-            <i />
+        <div className="zhaowu-lotus-intro__fallback-art">
+          <div className="zhaowu-lotus-intro__pond" />
+          <div className="zhaowu-lotus-intro__lotus zhaowu-lotus-intro__lotus--1">
+            <span className="zhaowu-lotus-intro__stem" />
+            <span className="zhaowu-lotus-intro__leaf" />
+            <span className="zhaowu-lotus-intro__flower" />
           </div>
+          <div className="zhaowu-lotus-intro__lotus zhaowu-lotus-intro__lotus--2">
+            <span className="zhaowu-lotus-intro__stem" />
+            <span className="zhaowu-lotus-intro__leaf" />
+            <span className="zhaowu-lotus-intro__flower" />
+          </div>
+          <div className="zhaowu-lotus-intro__ink" />
         </div>
       </div>
       <video

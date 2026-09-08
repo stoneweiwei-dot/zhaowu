@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 
-const form = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
+const index = await readFile(new URL("../index.html", import.meta.url), "utf8");
+const runtimeCopy = await readFile(new URL("../public/customer-facing-copy-r93.js", import.meta.url), "utf8");
 const intro = await readFile(new URL("../src/components/intro-gate.tsx", import.meta.url), "utf8");
 const articleAssets = await Promise.all([
   "bazi-health-five-phases.svg",
@@ -11,11 +12,12 @@ const articleAssets = await Promise.all([
   "bazi-health-balance.svg",
 ].map((name) => readFile(new URL(`../public/articles/${name}`, import.meta.url), "utf8")));
 
-test("customer-facing birth section never uses back-office client wording", () => {
-  assert.doesNotMatch(form, /客人資料|客人资料|Client details|SHARED RECORD/);
-  assert.match(form, /建立你的命盤/);
-  assert.match(form, /建立你的命盘/);
-  assert.match(form, /Build your chart/);
+test("customer-facing birth section is rewritten before the app paints back-office wording", () => {
+  assert.match(index, /customer-facing-copy-r93\.js/);
+  assert.match(runtimeCopy, /建立你的命盤/);
+  assert.match(runtimeCopy, /建立你的命盘/);
+  assert.match(runtimeCopy, /Build your chart/);
+  assert.doesNotMatch(runtimeCopy, /customerTitle:\s*"客人|Client details|SHARED RECORD/);
 });
 
 test("intro fallback restores animated lotus composition rather than tiny poster lockup", () => {
