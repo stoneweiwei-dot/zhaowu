@@ -32,19 +32,48 @@ async function dismissInstallPromptIfVisible(page: Page) {
 }
 
 test.describe("iPhone Safari visual and report navigation contract", () => {
-  test("loading animation always has a visible animated fallback", async ({ page }) => {
+  test("loading animation uses the owner's loaded poster when video is unavailable", async ({ page }) => {
     await makeAppOfflineSafe(page);
+    await page.route("**/intro/*.mp4", (route) => route.abort());
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator("[data-intro-fallback]")).toBeVisible();
-    await expect(page.locator(".zhaowu-lotus-intro__fallback-art")).toBeVisible();
+    const poster = page.locator('[data-intro-fallback] img');
+    await expect(poster).toBeVisible();
+    await expect(poster).toHaveAttribute('src', '/intro/owner-lotus-bloom-r53.jpg');
+    await expect.poll(() => poster.evaluate((element) => (element as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     await expect(page.locator(".zhaowu-lotus-intro__fallback-copy")).toContainText(/昭梧|ZHAOWU/);
-    const motion = await page.locator(".zhaowu-lotus-intro__flower").evaluate((element) => {
-      const style = getComputedStyle(element);
-      return { name: style.animationName, duration: style.animationDuration, iterations: style.animationIterationCount };
-    });
-    expect(motion.name).toContain("zw-intro-bloom");
-    expect(motion.duration).not.toBe("0s");
-    expect(motion.iterations).not.toBe("infinite");
+    await expect(page.locator('[data-intro-fallback] svg')).toHaveCount(0);
+  });
+
+  test("D60 renders and expands using the current precise birth record", async ({ page }) => {
+    await makeAppOfflineSafe(page);
+    await page.addInitScript((birth) => {
+      localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify(birth));
+      // Stub only the external ephemeris boundary, not the application's D60 flow.
+      Object.assign(window, { Astronomy: {
+        GeoVector: (body: string) => ({ body }),
+        Ecliptic: () => ({ elon: 125 }),
+        SiderealTime: () => 3,
+      } });
+    }, BIRTH);
+    await page.goto('/indian-astrology');
+    const theme = page.getByRole('button', { name: /核心慣性/ });
+    await expect(theme).toBeVisible();
+    await theme.click();
+    await expect(theme).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.getByText(/這裡看你遇到事情時最先啟動/)).toBeVisible();
+  });
+
+  test("master number insight is part of the personal numerology reading", async ({ page }) => {
+    await makeAppOfflineSafe(page);
+    await page.addInitScript((birth) => {
+      localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify({ ...birth, year: 2000, month: 1, day: 8 }));
+    }, BIRTH);
+    await page.goto('/numerology');
+    await expect(page.locator('[data-master-number-insight]')).toContainText('11／2');
+    await expect(page.getByRole('heading', { name: '强项', exact: true }).or(page.getByRole('heading', { name: '強項', exact: true }))).toBeVisible();
+    await page.goto('/');
+    await expect(page.getByRole('heading', { name: /你是少見的/ })).toHaveCount(0);
   });
 
   test("language controls are readable and the selected option keeps dark text", async ({ page }) => {
