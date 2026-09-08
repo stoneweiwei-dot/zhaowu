@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
-import { useI18n } from "@/lib/i18n";
+import { Fragment, useMemo, useState } from "react";
+import { useI18n, type Locale } from "@/lib/i18n";
+import type { LifeViewArticle } from "@/lib/life-view";
 import { LIFE_VIEW_CURATED_ARTICLES } from "@/lib/life-view-curated";
 import { LIFE_VIEW_LONG_FORM_ARTICLES } from "@/lib/life-view-long-form";
 import { THREE_AGES_SPIRITUAL_WORLD_LONG_FORM } from "@/lib/life-view-long-form/three-ages-spiritual-world";
@@ -7,9 +8,18 @@ import { LIFE_VIEW_SHORT_FORM_ARTICLES } from "@/lib/life-view-short-form";
 import { DAO_SELF_MASTERY_LONG_FORM } from "@/lib/life-view-long-form/dao-self-mastery";
 import { THREE_TEACHINGS_CULTIVATION_LONG_FORM } from "@/lib/life-view-long-form/three-teachings-cultivation";
 import { INNER_FENGSHUI_LONG_FORM } from "@/lib/life-view-long-form/inner-fengshui";
+import { BAZI_HEALTH_SYMBOLISM_LONG_FORM } from "@/lib/life-view-long-form/bazi-health-symbolism";
+
+type IllustratedArticle = LifeViewArticle & {
+  illustrations?: Array<{
+    src: string;
+    afterParagraph: number;
+    alt: Record<Locale, string>;
+  }>;
+};
 
 // 「觀世錄」沒有文章數量上限。內容可持續新增；首頁只折疊顯示方式，不截斷資料。
-const ARTICLES = [INNER_FENGSHUI_LONG_FORM, DAO_SELF_MASTERY_LONG_FORM, THREE_AGES_SPIRITUAL_WORLD_LONG_FORM, THREE_TEACHINGS_CULTIVATION_LONG_FORM, ...LIFE_VIEW_LONG_FORM_ARTICLES, ...LIFE_VIEW_SHORT_FORM_ARTICLES, ...LIFE_VIEW_CURATED_ARTICLES];
+const ARTICLES: IllustratedArticle[] = [BAZI_HEALTH_SYMBOLISM_LONG_FORM, INNER_FENGSHUI_LONG_FORM, DAO_SELF_MASTERY_LONG_FORM, THREE_AGES_SPIRITUAL_WORLD_LONG_FORM, THREE_TEACHINGS_CULTIVATION_LONG_FORM, ...LIFE_VIEW_LONG_FORM_ARTICLES, ...LIFE_VIEW_SHORT_FORM_ARTICLES, ...LIFE_VIEW_CURATED_ARTICLES];
 ARTICLES.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
 export function LifeViewHomeSection() {
@@ -106,7 +116,19 @@ export function LifeViewHomeSection() {
                 {isOpen ? (
                   <div className="mt-4 border-l border-cinnabar/20 pl-4 text-[15px] leading-8 text-ink">
                     <time className="mb-3 block text-xs text-ink-mute" dateTime={article.publishedAt}>{article.publishedAt}</time>
-                    {paragraphs.map((paragraph, paragraphIndex) => <p key={`${article.id}-${paragraphIndex}`} className={paragraphIndex ? "mt-4" : ""}>{paragraph}</p>)}
+                    {paragraphs.map((paragraph, paragraphIndex) => {
+                      const illustration = article.illustrations?.find((item) => item.afterParagraph === paragraphIndex + 1);
+                      return (
+                        <Fragment key={`${article.id}-${paragraphIndex}`}>
+                          <p className={paragraphIndex ? "mt-4" : ""}>{paragraph}</p>
+                          {illustration ? (
+                            <figure className="mx-auto my-6 w-[72%] max-w-[300px] overflow-hidden rounded-[28px] border border-line/70 bg-[#fffaf1] shadow-[0_8px_24px_rgba(86,62,31,0.06)]">
+                              <img src={illustration.src} alt={illustration.alt[locale]} loading="lazy" decoding="async" className="block h-auto w-full" />
+                            </figure>
+                          ) : null}
+                        </Fragment>
+                      );
+                    })}
                   </div>
                 ) : null}
               </article>
