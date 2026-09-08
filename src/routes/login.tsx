@@ -3,7 +3,25 @@ import { FormEvent, useEffect, useState } from "react";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
+import { listActiveLoginAnimations, pickLoginAnimation, type LoginAnimationAsset } from "@/lib/login-animation";
 import { captureOAuthRedirect, signInWithPassword, signUpWithPassword, supabaseConfigured } from "@/lib/supabase-rest";
+
+function LoginStageBackdrop() {
+  const [asset, setAsset] = useState<LoginAnimationAsset | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    void listActiveLoginAnimations().then((rows) => { if (alive) setAsset(pickLoginAnimation(rows)); });
+    return () => { alive = false; };
+  }, []);
+  if (!asset || failed) return null;
+  if (asset.type === "video") {
+    return (
+      <video className="stone-login-stage-media" src={asset.fileUrl} poster={asset.posterUrl} autoPlay muted playsInline loop preload="metadata" onError={() => setFailed(true)} />
+    );
+  }
+  return <img className="stone-login-stage-media" src={asset.fileUrl} alt="" onError={() => setFailed(true)} />;
+}
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
@@ -22,8 +40,6 @@ function LoginPage() {
   const [info, setInfo] = useState<string | null>(null);
 
   useEffect(() => {
-    // Keep legacy callback capture so an in-flight old OAuth redirect cannot strand a session.
-    // No third-party OAuth entry is exposed on the current login screen.
     void captureOAuthRedirect().then((session) => {
       if (session) void reload();
     }).catch((err) => {
@@ -55,7 +71,6 @@ function LoginPage() {
         await navigate({ to: "/" });
         return;
       }
-      // Email signup stays one-step; backend decides whether confirmation is required.
       const { session } = await signUpWithPassword(email.trim(), password, displayName.trim());
       if (session) {
         await reload();
@@ -73,6 +88,7 @@ function LoginPage() {
 
   return (
     <main className="stone-login-screen" aria-labelledby="login-title">
+      <LoginStageBackdrop />
       <section className="stone-login-sheet seal-border">
         <div className="stone-login-brand" aria-label={`${t("brand")} ZHAOWU`}>
           <BrandSeal size="lg" decorative />
@@ -81,16 +97,13 @@ function LoginPage() {
             <p className="stone-login-brand-latin">ZHAOWU</p>
           </div>
         </div>
-
         <p className="stone-login-kicker">ZHAOWU · ACCOUNT</p>
         <h1 id="login-title" className="stone-login-title">{mode === "signin" ? t("loginTitle") : t("signupTitle")}</h1>
         <p className="stone-login-lead">{mode === "signin" ? t("loginLead") : t("loginPageLead")}</p>
-
         <div className="stone-login-tabs" role="tablist" aria-label={t("loginTitle")}>
           <button type="button" role="tab" aria-selected={mode === "signin"} className={mode === "signin" ? "is-active" : undefined} onClick={() => setMode("signin")}>{t("loginTab")}</button>
           <button type="button" role="tab" aria-selected={mode === "signup"} className={mode === "signup" ? "is-active" : undefined} onClick={() => setMode("signup")}>{t("signupTab")}</button>
         </div>
-
         <form onSubmit={onSubmit} className="stone-login-form">
           {mode === "signup" ? (
             <label>
@@ -106,15 +119,12 @@ function LoginPage() {
             <span>{t("password")}</span>
             <input id="login-password" type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={t("passwordPh")} />
           </label>
-
           {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
           {info ? <p className="stone-login-message" role="status">{info}</p> : null}
-
           <button type="submit" disabled={busy} className="stone-login-primary">
             {busy ? t("processing") : mode === "signin" ? t("loginTab") : t("createAccount")}
           </button>
         </form>
-
         <p className="stone-login-signature">{t("tagline")}</p>
       </section>
     </main>
