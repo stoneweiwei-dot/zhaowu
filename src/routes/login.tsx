@@ -3,20 +3,14 @@ import { FormEvent, useEffect, useState } from "react";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
-import { captureOAuthRedirect, signInWithPassword, signUpWithPassword, startOAuth, supabaseConfigured, type OAuthProvider } from "@/lib/supabase-rest";
+import { captureOAuthRedirect, signInWithPassword, signUpWithPassword, supabaseConfigured } from "@/lib/supabase-rest";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
 type Mode = "signin" | "signup";
 
-const OAUTH_COPY = {
-  "zh-Hant": { quick: "快速登入", email: "或使用電子郵件", google: "使用 Google 繼續", apple: "使用 Apple 繼續", x: "使用 X 繼續" },
-  "zh-Hans": { quick: "快速登录", email: "或使用电子邮箱", google: "使用 Google 继续", apple: "使用 Apple 继续", x: "使用 X 继续" },
-  en: { quick: "Quick sign in", email: "or use email", google: "Continue with Google", apple: "Continue with Apple", x: "Continue with X" },
-} as const;
-
 function LoginPage() {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { user, reload } = useCurrentUserState();
   const [mode, setMode] = useState<Mode>("signin");
@@ -24,16 +18,15 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
-  const [oauthBusy, setOauthBusy] = useState<OAuthProvider | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
-  const oauthCopy = OAUTH_COPY[locale];
 
   useEffect(() => {
+    // Keep legacy callback capture so an in-flight old OAuth redirect cannot strand a session.
+    // No third-party OAuth entry is exposed on the current login screen.
     void captureOAuthRedirect().then((session) => {
       if (session) void reload();
     }).catch((err) => {
-      setOauthBusy(null);
       setError(err instanceof Error ? err.message : t("loginFailed"));
     });
   }, [reload, t]);
@@ -41,18 +34,6 @@ function LoginPage() {
   useEffect(() => {
     if (user) void navigate({ to: "/" });
   }, [navigate, user]);
-
-  function onOAuth(provider: OAuthProvider) {
-    setError(null);
-    setInfo(null);
-    setOauthBusy(provider);
-    try {
-      startOAuth(provider);
-    } catch (err) {
-      setOauthBusy(null);
-      setError(err instanceof Error ? err.message : t("loginUnavailable"));
-    }
-  }
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -110,22 +91,6 @@ function LoginPage() {
           <button type="button" role="tab" aria-selected={mode === "signup"} className={mode === "signup" ? "is-active" : undefined} onClick={() => setMode("signup")}>{t("signupTab")}</button>
         </div>
 
-        <div className="stone-login-oauth-group">
-          <p className="stone-login-oauth-label">{oauthCopy.quick}</p>
-          <div className="stone-login-oauth-grid">
-            <button type="button" data-provider="google" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("google")} className="stone-login-oauth">
-              {oauthCopy.google}
-            </button>
-            <button type="button" data-provider="apple" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("apple")} className="stone-login-oauth">
-              {oauthCopy.apple}
-            </button>
-            <button type="button" data-provider="x" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("twitter")} className="stone-login-oauth">
-              {oauthCopy.x}
-            </button>
-          </div>
-          <p className="stone-login-email-divider"><span>{oauthCopy.email}</span></p>
-        </div>
-
         <form onSubmit={onSubmit} className="stone-login-form">
           {mode === "signup" ? (
             <label>
@@ -145,7 +110,7 @@ function LoginPage() {
           {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
           {info ? <p className="stone-login-message" role="status">{info}</p> : null}
 
-          <button type="submit" disabled={busy || oauthBusy !== null} className="stone-login-primary">
+          <button type="submit" disabled={busy} className="stone-login-primary">
             {busy ? t("processing") : mode === "signin" ? t("loginTab") : t("createAccount")}
           </button>
         </form>

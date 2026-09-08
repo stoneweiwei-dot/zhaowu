@@ -5,12 +5,13 @@ import test from "node:test";
 const login = readFileSync(new URL("../src/routes/login.tsx", import.meta.url), "utf8");
 const report = readFileSync(new URL("../src/components/paid-report-pages.tsx", import.meta.url), "utf8");
 
-test("login exposes Google, Apple, X and email", () => {
-  assert.match(login, /onOAuth\("google"\)/);
-  assert.match(login, /onOAuth\("apple"\)/);
-  assert.match(login, /onOAuth\("twitter"\)/);
-  assert.match(login, /oauthCopy\.x/);
+test("login exposes email credentials without third-party OAuth buttons", () => {
   assert.match(login, /type="email"/);
+  assert.match(login, /type="password"/);
+  assert.doesNotMatch(login, /onOAuth\(/);
+  assert.doesNotMatch(login, /startOAuth/);
+  assert.doesNotMatch(login, /data-provider=/);
+  assert.doesNotMatch(login, /oauthCopy/);
 });
 
 test("email signup has no separate verification-code screen", () => {
