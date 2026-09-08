@@ -18,9 +18,9 @@ test("Indian classical astrology reuses only the current report birth input and 
 test("customer-facing title names Indian classical astrology while D60 stays an explicit minute-sensitive sublayer", () => {
   assert.match(source, /title: "印度古法占星"/);
   assert.match(home, /title: "印度古法占星"/);
-  assert.match(home, /title: "Classical Indian Astrology"/);
-  assert.match(home, /D60 對出生分鐘非常敏感|D60 对出生分钟非常敏感/);
-  assert.match(home, /D60 minute-sensitive cross-check/);
+  assert.match(home, /title: "Classical Indian astrology"/);
+  assert.match(home, /D60 需要準確出生分鐘|D60 需要准确出生分钟/);
+  assert.match(home, /D60 needs an accurate birth minute/);
   assert.doesNotMatch(source, /D60 · SHASHTIAMSA|title: "D60 業力旁證"|title: "D60 业力旁证"|title: "D60 karmic cross-check"/);
 });
 

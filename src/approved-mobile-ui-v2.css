@@ -53,8 +53,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   -webkit-backdrop-filter: blur(8px) saturate(106%) !important;
 }
 
-.zhaowu-site-header .bg-wood,
-.zhaowu-site-header button[aria-pressed="true"] {
+.zhaowu-site-header .bg-wood {
   background: var(--zv2-jade) !important;
   color: #fffaf0 !important;
 }

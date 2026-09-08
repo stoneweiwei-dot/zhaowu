@@ -66,8 +66,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   min-height: 64px !important;
 }
 
-.zhaowu-site-header .bg-wood,
-.zhaowu-site-header button[aria-pressed="true"] {
+.zhaowu-site-header .bg-wood {
   background: var(--zv3-jade) !important;
   color: #fffaf0 !important;
 }

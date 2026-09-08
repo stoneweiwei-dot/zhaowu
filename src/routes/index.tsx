@@ -28,10 +28,17 @@ import "@/home-birth-hub-r60.css";
 
 export const Route = createFileRoute("/")({ component: Home });
 
+type PortalId = SpecialistId | "bazi";
+
 function portalAction(locale: Locale, birth: SharedBirthRecord | null, needsTime: boolean) {
   if (!birth) return locale === "en" ? "Add birth data" : locale === "zh-Hans" ? "填写生辰" : "填寫生辰";
-  if (needsTime && birth.timeUnknown) return locale === "en" ? "Auto-read · time needed" : locale === "zh-Hans" ? "已自动读取 · 需时辰" : "已自動讀取 · 需時辰";
-  return locale === "en" ? "Auto-generated · view full" : locale === "zh-Hans" ? "已自动生成 · 查看完整" : "已自動生成 · 查看完整";
+  if (needsTime && birth.timeUnknown) return locale === "en" ? "View · birth time needed for full precision" : locale === "zh-Hans" ? "查看分析 · 完整精度需时辰" : "查看分析 · 完整精度需時辰";
+  return locale === "en" ? "Open analysis" : locale === "zh-Hans" ? "查看分析" : "查看分析";
+}
+
+function baziAction(locale: Locale, hasResult: boolean) {
+  if (hasResult) return locale === "en" ? "Open BaZi analysis" : locale === "zh-Hans" ? "查看八字分析" : "查看八字分析";
+  return locale === "en" ? "Start BaZi analysis" : locale === "zh-Hans" ? "开始八字分析" : "開始八字分析";
 }
 
 function buildPortalReading(id: SpecialistId, birth: SharedBirthRecord, locale: Locale): SpecialistReading {
@@ -46,14 +53,14 @@ function readingPreview(reading: SpecialistReading | undefined, locale: Locale) 
   if (!reading) return "";
   const raw = reading.warning || reading.sections.find((section) => section.body.trim())?.body || reading.lead;
   const clean = raw.replace(/\s+/g, " ").trim();
-  if (clean.length <= 168) return clean;
-  return `${clean.slice(0, 166)}${locale === "en" ? "…" : "……"}`;
+  if (clean.length <= 132) return clean;
+  return `${clean.slice(0, 130)}${locale === "en" ? "…" : "……"}`;
 }
 
 function Home() {
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
-  const [birth, setBirth] = useState<SharedBirthRecord | null>(null);
+  const [birth, setBirth] = useState<SharedBirthRecord | null>(() => readSharedBirthRecord());
   const [scentOpen, setScentOpen] = useState(false);
 
   useEffect(() => {
@@ -78,46 +85,49 @@ function Home() {
     };
   }, [birth, locale]);
 
-  const portalCopy = locale === "en"
+  const portalCopy: { label: string; lead: string; items: Array<{ id: PortalId; to?: "/indian-astrology" | "/astrology" | "/ziwei" | "/qizheng" | "/yizhangjing"; title: string; hint: string; needsTime: boolean }> } = locale === "en"
     ? {
-        label: "Five other readings from the same birth record",
-        lead: "Enter your birth details once above. Each system below reuses the same record and keeps its own method separate.",
+        label: "Six specialist readings",
+        lead: "One birth record, six independent lenses. Open any volume to read its own analysis.",
         items: [
-          { id: "indian" as const, to: "/indian-astrology" as const, title: "Classical Indian Astrology", hint: "karmic pattern · D60 minute-sensitive cross-check", needsTime: true },
-          { id: "western" as const, to: "/astrology" as const, title: "Western Astrology", hint: "Sun · Moon · Rising · aspects · life areas", needsTime: false },
-          { id: "ziwei" as const, to: "/ziwei" as const, title: "Zi Wei Dou Shu", hint: "character · relationships · work · money · decade focus", needsTime: true },
-          { id: "qizheng" as const, to: "/qizheng" as const, title: "Seven Luminaries", hint: "temperament · rhythm · pressure response · timing", needsTime: true },
-          { id: "past" as const, to: "/yizhangjing" as const, title: "Past & Present", hint: "four-life cultural symbolism · recurring habits · independent supporting layer", needsTime: false },
+          { id: "bazi", title: "Four Pillars · BaZi", hint: "structure, balance, timing, and the question in front of you", needsTime: false },
+          { id: "ziwei", to: "/ziwei", title: "Zi Wei Dou Shu", hint: "palaces, relationships, work, wealth, and life phases", needsTime: true },
+          { id: "western", to: "/astrology", title: "Western astrology", hint: "Sun, Moon, Rising, aspects, and life areas", needsTime: false },
+          { id: "indian", to: "/indian-astrology", title: "Classical Indian astrology", hint: "classical karmic patterns; D60 needs an accurate birth minute", needsTime: true },
+          { id: "qizheng", to: "/qizheng", title: "Seven Luminaries", hint: "temperament, pressure response, rhythm, and timing", needsTime: true },
+          { id: "past", to: "/yizhangjing", title: "Past & Present", hint: "cultural symbolism for recurring habits and themes", needsTime: false },
         ],
       }
     : locale === "zh-Hans"
       ? {
-          label: "同一份生辰，其他五种看法",
-          lead: "上方出生资料只填一次。下面每个体系沿用同一份资料，但各自独立判断，不重复造一套相同报告。",
+          label: "六种命理专卷",
+          lead: "同一份生辰，各自成卷。点开任何一卷，直接阅读对应分析。",
           items: [
-            { id: "indian" as const, to: "/indian-astrology" as const, title: "印度古法占星", hint: "看业力细分层；D60 对出生分钟非常敏感", needsTime: true },
-            { id: "western" as const, to: "/astrology" as const, title: "西洋星座", hint: "看太阳、月亮、上升、相位与人生领域", needsTime: false },
-            { id: "ziwei" as const, to: "/ziwei" as const, title: "紫微斗数", hint: "看性格、关系、事业、财务与十年主轴", needsTime: true },
-            { id: "qizheng" as const, to: "/qizheng" as const, title: "七政四余", hint: "看性情、节奏、压力反应与天时变化", needsTime: true },
-            { id: "past" as const, to: "/yizhangjing" as const, title: "前世今生", hint: "看前四世文化象意、反复习性与独立旁证", needsTime: false },
+            { id: "bazi", title: "子平八字", hint: "格局、旺衰、取用、岁运，以及你正在问的事", needsTime: false },
+            { id: "ziwei", to: "/ziwei", title: "紫微斗数", hint: "宫位、关系、事业、财务与人生阶段", needsTime: true },
+            { id: "western", to: "/astrology", title: "西洋星座", hint: "太阳、月亮、上升、相位与人生领域", needsTime: false },
+            { id: "indian", to: "/indian-astrology", title: "印度古法占星", hint: "古典业力结构；D60 需要准确出生分钟", needsTime: true },
+            { id: "qizheng", to: "/qizheng", title: "七政四余", hint: "性情、压力反应、节奏与天时变化", needsTime: true },
+            { id: "past", to: "/yizhangjing", title: "前世今生", hint: "以文化象意阅读反复出现的习性与课题", needsTime: false },
           ],
         }
       : {
-          label: "同一份生辰，其他五種看法",
-          lead: "上方出生資料只填一次。下面每個體系沿用同一份資料，但各自獨立判斷，不重複造一套相同報告。",
+          label: "六種命理專卷",
+          lead: "同一份生辰，各自成卷。點開任何一卷，直接閱讀對應分析。",
           items: [
-            { id: "indian" as const, to: "/indian-astrology" as const, title: "印度古法占星", hint: "看業力細分層；D60 對出生分鐘非常敏感", needsTime: true },
-            { id: "western" as const, to: "/astrology" as const, title: "西洋星座", hint: "看太陽、月亮、上升、相位與人生領域", needsTime: false },
-            { id: "ziwei" as const, to: "/ziwei" as const, title: "紫微斗數", hint: "看性格、關係、事業、財務與十年主軸", needsTime: true },
-            { id: "qizheng" as const, to: "/qizheng" as const, title: "七政四餘", hint: "看性情、節奏、壓力反應與天時變化", needsTime: true },
-            { id: "past" as const, to: "/yizhangjing" as const, title: "前世今生", hint: "看前四世文化象意、反覆習性與獨立旁證", needsTime: false },
+            { id: "bazi", title: "子平八字", hint: "格局、旺衰、取用、歲運，以及你正在問的事", needsTime: false },
+            { id: "ziwei", to: "/ziwei", title: "紫微斗數", hint: "宮位、關係、事業、財務與人生階段", needsTime: true },
+            { id: "western", to: "/astrology", title: "西洋星座", hint: "太陽、月亮、上升、相位與人生領域", needsTime: false },
+            { id: "indian", to: "/indian-astrology", title: "印度古法占星", hint: "古典業力結構；D60 需要準確出生分鐘", needsTime: true },
+            { id: "qizheng", to: "/qizheng", title: "七政四餘", hint: "性情、壓力反應、節奏與天時變化", needsTime: true },
+            { id: "past", to: "/yizhangjing", title: "前世今生", hint: "以文化象意閱讀反覆出現的習性與課題", needsTime: false },
           ],
         };
 
   const funCopy = locale === "en"
     ? {
-        title: "Playful self-tests",
-        lead: "Short self-tests you can use on their own. They stay compact until you choose one.",
+        title: "Light self-reflection",
+        lead: "Optional short tests. Nothing expands until you choose it.",
         scentTitle: "Five-Element Scent Map",
         scentHint: "sensory preference compared with five-element cultural imagery",
         cards: [
@@ -128,8 +138,8 @@ function Home() {
       }
     : locale === "zh-Hans"
       ? {
-          title: "趣味测验",
-          lead: "轻量自评统一收在这里。先选项目，再展开，不让某一个测验把整页撑散。",
+          title: "轻测验",
+          lead: "想玩再打开；未选择的内容不会占满页面。",
           scentTitle: "五行香气谱",
           scentHint: "看嗅觉偏好与五行文化象意，不当成身体缺什么",
           cards: [
@@ -139,8 +149,8 @@ function Home() {
           ],
         }
       : {
-          title: "趣味測驗",
-          lead: "輕量自評統一收在這裡。先選項目，再展開，不讓某一個測驗把整頁撐散。",
+          title: "輕測驗",
+          lead: "想玩再打開；未選擇的內容不會佔滿頁面。",
           scentTitle: "五行香氣譜",
           scentHint: "看嗅覺偏好與五行文化象意，不當成身體缺什麼",
           cards: [
@@ -152,7 +162,7 @@ function Home() {
 
   return (
     <main className="zhaowu-home-sheet-page zhaowu-home-layout">
-      <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
+      <div className="zhaowu-home-stage zhaowu-home-stage--primary relative" id="bazi">
         <AnalysisForm />
       </div>
 
@@ -161,30 +171,43 @@ function Home() {
 
       <div className="zhaowu-home-stage zhaowu-home-stage--daily"><DailyAlmanacWidget /></div>
 
-      <section className="zhaowu-home-stage zhaowu-home-stage--directory zhaowu-home-portals-block" aria-label={portalCopy.label}>
+      <section id="analysis-reports" className="zhaowu-home-stage zhaowu-home-stage--directory zhaowu-home-portals-block" aria-label={portalCopy.label}>
         <header className="zhaowu-home-portals-heading">
           <h2>{portalCopy.label}</h2>
           <span>{portalCopy.lead}</span>
         </header>
         <div className="zhaowu-home-portals">
-          {portalCopy.items.map((item) => {
-            const reading = portalReadings[item.id];
+          {portalCopy.items.map((item, itemIndex) => {
+            const reading = item.id === "bazi" ? undefined : portalReadings[item.id];
             const preview = readingPreview(reading, locale);
-            return (
+            const content = (
+              <>
+                <span className="zhaowu-home-portal-copy">
+                  <strong>{item.title}</strong>
+                  <small className="zhaowu-home-portal-hint">{item.hint}</small>
+                  {birth && preview ? <small className="zhaowu-home-portal-preview">{preview}</small> : null}
+                </span>
+                <span className="zhaowu-home-portal-action">
+                  {item.id === "bazi" ? baziAction(locale, Boolean(current)) : portalAction(locale, birth, item.needsTime)}
+                  <span aria-hidden="true">›</span>
+                </span>
+              </>
+            );
+
+            return item.id === "bazi" ? (
+              <a key={item.id} href={current ? "#result" : "#analysisForm"} data-index={String(itemIndex + 1).padStart(2, "0")} data-specialist-link="bazi" className="zhaowu-home-portal is-bazi">
+                {content}
+              </a>
+            ) : (
               <Link
                 key={item.id}
-                to={item.to}
-                role="button"
-                tabIndex={0}
+                to={item.to!}
+                data-index={String(itemIndex + 1).padStart(2, "0")}
+                data-specialist-link={item.id}
                 className="zhaowu-home-portal"
                 aria-label={`${item.title} · ${portalAction(locale, birth, item.needsTime)}`}
               >
-                <span className="zhaowu-home-portal-copy">
-                  <strong>{item.title}</strong>
-                  <small className="zhaowu-home-portal-hint">（{item.hint}）</small>
-                  {birth && preview ? <small className="mt-2 block text-[13px] leading-6 text-ink-soft">{preview}</small> : null}
-                </span>
-                <span className="zhaowu-home-portal-action">{portalAction(locale, birth, item.needsTime)}</span>
+                {content}
               </Link>
             );
           })}
@@ -199,24 +222,12 @@ function Home() {
         <div className="zhaowu-home-fun-grid">
           {funCopy.cards.map((card) => (
             <Link key={card.title} to={card.to} className="zhaowu-home-fun-card" aria-label={card.title}>
-              <span className="min-w-0">
-                <strong>{card.title}</strong>
-                <small>（{card.hint}）</small>
-              </span>
+              <span className="min-w-0"><strong>{card.title}</strong><small>{card.hint}</small></span>
               <span className="zhaowu-home-fun-arrow" aria-hidden>›</span>
             </Link>
           ))}
-          <button
-            type="button"
-            className="zhaowu-home-fun-card text-left"
-            aria-expanded={scentOpen}
-            aria-controls="home-scent-test"
-            onClick={() => setScentOpen((value) => !value)}
-          >
-            <span className="min-w-0">
-              <strong>{funCopy.scentTitle}</strong>
-              <small>（{funCopy.scentHint}）</small>
-            </span>
+          <button type="button" className="zhaowu-home-fun-card text-left" aria-expanded={scentOpen} aria-controls="home-scent-test" onClick={() => setScentOpen((value) => !value)}>
+            <span className="min-w-0"><strong>{funCopy.scentTitle}</strong><small>{funCopy.scentHint}</small></span>
             <span className="zhaowu-home-fun-arrow" aria-hidden>{scentOpen ? "⌃" : "›"}</span>
           </button>
         </div>

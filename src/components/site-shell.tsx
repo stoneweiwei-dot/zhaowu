@@ -40,7 +40,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
     hydrateLocale();
     runLocalHousekeeping();
     let alive = true;
-
     void recordVisit()
       .catch(() => undefined)
       .finally(() => {
@@ -48,76 +47,72 @@ export function SiteShell({ children }: { children: ReactNode }) {
           .then((value) => { if (alive) setStats(value); })
           .catch(() => undefined);
       });
-
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, []);
 
   const releaseDate = formatReleaseDate(stats.publishedAt, locale);
+  const languageOptions = [
+    { value: "zh-Hant" as const, label: "繁體", aria: "繁中" },
+    { value: "zh-Hans" as const, label: "簡體", aria: "简中" },
+    { value: "en" as const, label: "ENG", aria: "EN" },
+  ];
 
   return (
     <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
       {!isLogin ? (
-        <header className="zhaowu-site-header sticky top-0 z-30 border-b border-line/70">
-          <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-2 px-3 py-2 sm:px-4">
-            <Link to="/" className="flex min-w-0 items-center gap-2 text-ink">
-              <BrandSeal />
-              <span className="min-w-0 leading-none">
-                <span className="block font-display text-base tracking-[0.18em] sm:text-lg sm:tracking-[0.2em]">{t("brand")}</span>
-                <span className="hidden max-w-[16rem] truncate text-[10px] tracking-[0.15em] text-ink-mute sm:block">{t("tagline")}</span>
-              </span>
-            </Link>
-            <nav className="flex shrink-0 items-center gap-1 text-sm">
-              <Link to="/" className={`hidden rounded-full px-2.5 py-2 min-[520px]:inline ${pathname === "/" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
-                {user ? (locale === "en" ? "BaZi" : "四柱八字") : t("navHome")}
+        <header className="zhaowu-site-header sticky top-0 z-30">
+          <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">
+            <div className="zhaowu-header-primary">
+              <Link to="/" className="zhaowu-brand-link text-ink" aria-label={t("brand")}>
+                <BrandSeal />
+                <span className="zhaowu-brand-copy">
+                  <span className="zhaowu-brand-name font-display">{t("brand")}</span>
+                  <span className="zhaowu-brand-tagline">{t("tagline")}</span>
+                </span>
               </Link>
-              {user ? (
-                <Link to="/account" className={`hidden rounded-full px-2 py-2 min-[380px]:inline-flex ${pathname === "/account" ? "text-cinnabar" : "text-ink-soft hover:text-ink"}`}>
-                  {user.isOwner ? t("navAdmin") : t("navMine")}
-                </Link>
-              ) : null}
-              {user?.isOwner ? (
-                <Link
-                  to="/gallery"
-                  aria-label={locale === "en" ? "Open Gallery" : locale === "zh-Hans" ? "打开图库" : "打開圖庫"}
-                  className={`inline-flex h-9 items-center rounded-full border px-2.5 text-[11px] font-medium shadow-sm ${pathname === "/gallery" ? "border-cinnabar/50 bg-cinnabar text-cream" : "border-line bg-cream/95 text-ink-soft"}`}
-                >
-                  {locale === "en" ? "Gallery" : locale === "zh-Hans" ? "图库" : "圖庫"}
-                </Link>
-              ) : null}
-              <div
-                role="group"
-                aria-label={t("language")}
-                className="flex h-9 shrink-0 items-stretch overflow-hidden rounded-full border border-line/80 bg-cream/95"
-              >
-                {([
-                  ["zh-Hant", "繁中"],
-                  ["zh-Hans", "简中"],
-                  ["en", "EN"],
-                ] as const).map(([value, label]) => (
+
+              <div className="zhaowu-header-account-actions">
+                {user?.isOwner ? (
+                  <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={locale === "en" ? "Open Gallery" : locale === "zh-Hans" ? "打开图库" : "打開圖庫"}>
+                    {locale === "en" ? "Gallery" : locale === "zh-Hans" ? "图库" : "圖庫"}
+                  </Link>
+                ) : null}
+                {isPending ? (
+                  <span className="zhaowu-header-pending" />
+                ) : user ? (
+                  <>
+                    <Link to="/account" className="zhaowu-header-utility">
+                      {user.isOwner ? t("navAdmin") : t("navMine")}
+                    </Link>
+                    <button type="button" onClick={() => void signOut()} className="zhaowu-header-utility zhaowu-header-signout">
+                      {authEnabled ? t("logout") : user.displayName}
+                    </button>
+                  </>
+                ) : (
+                  <Link to="/login" className="zhaowu-header-login">{t("navLogin")}</Link>
+                )}
+              </div>
+            </div>
+
+            <nav className="zhaowu-header-nav" aria-label={locale === "en" ? "Site controls" : locale === "zh-Hans" ? "网站控制" : "網站控制"}>
+              <div role="group" aria-label={t("language")} className="site-lang-group">
+                {languageOptions.map(({ value, label, aria }) => (
                   <button
                     key={value}
                     type="button"
                     onClick={() => setLocale(value)}
+                    aria-label={aria}
                     aria-pressed={locale === value}
-                    className={`min-w-[2.25rem] border-r border-line/60 px-1.5 text-[10px] font-medium transition last:border-r-0 sm:min-w-[2.6rem] sm:px-2 sm:text-[11px] ${
-                      locale === value ? "bg-wood text-cream" : "text-ink-soft hover:bg-paper-deep hover:text-ink"
-                    }`}
+                    data-active={locale === value ? "true" : "false"}
+                    className="site-lang-button"
                   >
                     {label}
                   </button>
                 ))}
               </div>
-              {isPending ? (
-                <span className="h-8 w-14 animate-pulse rounded-full bg-paper-deep" />
-              ) : user ? (
-                <button type="button" onClick={() => void signOut()} className="max-w-20 truncate rounded-full px-2.5 py-2 text-ink-soft hover:text-ink">
-                  {authEnabled ? t("logout") : user.displayName}
-                </button>
-              ) : (
-                <Link to="/login" className="rounded-full bg-wood px-3 py-2 text-cream">{t("navLogin")}</Link>
-              )}
+              <Link to="/" aria-current={pathname === "/" ? "page" : undefined} className={`zhaowu-header-home-link ${pathname === "/" ? "is-active" : ""}`}>
+                {user ? (locale === "en" ? "BaZi" : "四柱八字") : t("navHome")}
+              </Link>
             </nav>
           </div>
         </header>
@@ -130,19 +125,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
       </div>
 
       {!isLogin ? (
-        <footer className="relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
-          <p className="font-display text-sm tracking-[0.28em] text-ink-mute">
-            {t("brand")}<span className="ml-2 tracking-[0.2em]">ZHAOWU</span>
+        <footer className="zhaowu-site-footer relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
+          <p className="font-display text-sm tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
+          <p className="mt-2 text-xs text-ink-mute" data-site-release>
+            {stats.version} · {locale === "en" ? "Updates" : locale === "zh-Hans" ? "累计更新" : "累計更新"} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}
           </p>
-          <p className="mt-2 text-[10px] tracking-[0.08em] text-ink-mute" data-site-release>
-            {stats.version}
-            {" · "}{locale === "en" ? "Updates" : locale === "zh-Hans" ? "累计更新" : "累計更新"} {stats.updateNumber}
-            {releaseDate ? ` · ${releaseDate}` : ""}
-          </p>
-          <p className="mt-1 text-[10px] tracking-[0.08em] text-ink-mute">
+          <p className="mt-1 text-xs text-ink-mute">
             {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total visits" : locale === "zh-Hans" ? "累计访问" : "累計訪問"} {stats.totalVisits.toLocaleString()}
           </p>
-          <details className="mx-auto mt-3 max-w-xl border-t border-line/60 pt-3 text-left text-[11px] leading-5 text-ink-mute" data-latest-change-report>
+          <details className="mx-auto mt-4 max-w-xl border-t border-line/60 pt-3 text-left text-sm leading-6 text-ink-mute" data-latest-change-report>
             <summary className="cursor-pointer list-none text-center font-medium text-ink-soft [&::-webkit-details-marker]:hidden">
               {locale === "en" ? "Latest update report ＋" : locale === "zh-Hans" ? "最新更新报告 ＋" : "最新更新報告 ＋"}
             </summary>

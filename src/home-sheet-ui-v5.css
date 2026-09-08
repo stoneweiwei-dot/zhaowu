@@ -186,8 +186,7 @@ body:has(.zhaowu-login-shell),
   box-shadow: none !important;
 }
 
-.zhaowu-home-sheet-shell .zhaowu-site-header .bg-wood,
-.zhaowu-home-sheet-shell .zhaowu-site-header button[aria-pressed="true"] {
+.zhaowu-home-sheet-shell .zhaowu-site-header .bg-wood {
   background: var(--zv5-jade) !important;
   color: #fffaf2 !important;
 }

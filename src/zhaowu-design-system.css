@@ -1,283 +1,670 @@
 /*
- * 昭梧 canonical visual contract.
- * Imported after every legacy stylesheet so this is the final visual authority.
- * Keep content logic in React. Never add DOM mutation, portals, viewport clipping,
- * scroll locking, or runtime style injection here.
+ * 昭梧 canonical visual contract — mobile readability refresh.
+ * This is the final CSS authority. No runtime DOM mutation or extra final-final layer.
  */
 
 :root {
+  --zw-paper: #f7f0e2;
+  --zw-paper-soft: rgba(252, 248, 238, .86);
+  --zw-paper-strong: #fcf8ee;
+  --zw-ink: #29251f;
+  --zw-ink-soft: #554e45;
+  --zw-muted: #74695d;
+  --zw-jade: #294b3f;
+  --zw-jade-deep: #203d34;
+  --zw-cinnabar: #963b32;
+  --zw-cinnabar-soft: #b66a5c;
+  --zw-gold: #a88652;
+  --zw-line: rgba(82, 65, 42, .16);
+  --zw-shadow: 0 16px 52px rgba(55, 44, 29, .07);
   --zw-card-radius: 22px;
-  --zw-control-radius: 999px;
+  --zw-control-radius: 12px;
   --zw-mobile-inline: 14px;
-  --zw-readable: 44rem;
+  --zw-readable: 46rem;
 }
 
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  color: var(--zw-ink) !important;
+  font-size: 16px;
+  line-height: 1.72;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* Loading: video remains preferred, animated vector fallback is always available on iPhone. */
+.zhaowu-lotus-intro {
+  background: radial-gradient(circle at 50% 43%, #f7ead1 0%, #e7d4b2 52%, #cdb692 100%) !important;
+}
+
+.zhaowu-lotus-intro__video {
+  opacity: 0 !important;
+  transition: opacity 260ms ease !important;
+}
+
+.zhaowu-lotus-intro__video.is-playing {
+  opacity: 1 !important;
+}
+
+.zhaowu-lotus-intro__fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  opacity: 1;
+  transition: opacity 240ms ease;
+}
+
+.zhaowu-lotus-intro__fallback.is-covered {
+  opacity: 0;
+}
+
+.zhaowu-lotus-intro__fallback-lockup {
+  display: grid;
+  justify-items: center;
+  width: min(78vw, 330px);
+  transform: translateY(-2vh);
+}
+
+.zhaowu-lotus-intro__fallback-art {
+  width: min(60vw, 248px);
+  height: auto;
+  overflow: visible;
+}
+
+.zhaowu-lotus-intro__fallback-copy {
+  display: grid;
+  justify-items: center;
+  margin-top: -18px;
+  color: #473d32;
+}
+
+.zhaowu-lotus-intro__fallback-copy strong {
+  font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif);
+  font-size: 25px;
+  font-weight: 650;
+  letter-spacing: .28em;
+  text-indent: .28em;
+}
+
+.zhaowu-lotus-intro__fallback-copy span {
+  margin-top: 7px;
+  color: #766655;
+  font-size: 13px;
+  letter-spacing: .12em;
+}
+
+.zhaowu-lotus-intro__fallback-copy i {
+  position: relative;
+  width: 124px;
+  height: 1px;
+  margin-top: 18px;
+  overflow: hidden;
+  background: rgba(42, 76, 63, .16);
+}
+
+.zhaowu-lotus-intro__fallback-copy i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--zw-cinnabar), transparent);
+  transform: translateX(-100%);
+  animation: zw-intro-progress 1.45s cubic-bezier(.4,0,.2,1) 3;
+}
+
+.zhaowu-lotus-intro__halo {
+  fill: none;
+  stroke: rgba(155, 59, 49, .14);
+  stroke-width: 1.5;
+  transform-origin: center;
+  animation: zw-intro-breathe 2.1s ease-in-out 3;
+}
+
+.zhaowu-lotus-intro__flower {
+  fill: rgba(250, 244, 227, .76);
+  stroke: rgba(124, 70, 51, .86);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  transform-origin: 120px 142px;
+  animation: zw-intro-bloom 2.35s cubic-bezier(.22,.72,.25,1) both;
+}
+
+.zhaowu-lotus-intro__ripple {
+  fill: none;
+  stroke: rgba(42, 76, 63, .34);
+  stroke-width: 1.4;
+  transform-origin: center;
+  animation: zw-intro-ripple 1.8s ease-out 3;
+}
+
+.zhaowu-lotus-intro__ripple.ripple-two { animation-delay: .55s; }
+
+@keyframes zw-intro-bloom {
+  0% { opacity: 0; transform: translateY(18px) scale(.68); }
+  52% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes zw-intro-breathe {
+  0%,100% { opacity: .34; transform: scale(.94); }
+  50% { opacity: .88; transform: scale(1.04); }
+}
+
+@keyframes zw-intro-ripple {
+  0% { opacity: .55; transform: scale(.72); }
+  100% { opacity: 0; transform: scale(1.22); }
+}
+
+@keyframes zw-intro-progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Brand: a clean Wutong-tree mark that remains legible at header scale. */
 .brand-seal,
 .zhaowu-brand-seal {
   flex: 0 0 auto;
-}
-
-/* Saved reports: generation state is owner metadata, not reading content. */
-[data-report-primary-actions] ~ div > [class~="mb-4"][class~="rounded-lg"][class~="bg-cream/70"]:first-child {
-  display: none !important;
-}
-
-[data-report-secondary-actions] {
-  border-radius: 18px !important;
-  background: rgba(255, 255, 255, 0.46) !important;
-}
-
-[data-report-secondary-actions] > summary {
-  min-height: 44px;
-  display: grid;
+  display: inline-grid;
   place-items: center;
-  list-style: none;
-  cursor: pointer;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  filter: drop-shadow(0 5px 9px rgba(43, 52, 40, .10));
 }
 
-[data-report-secondary-actions] > summary::-webkit-details-marker {
-  display: none;
+.zhaowu-brand-seal--sm { width: 48px; height: 48px; }
+.zhaowu-brand-seal--lg { width: 96px; height: 96px; }
+.zhaowu-site-header .zhaowu-brand-seal--sm { width: 48px !important; height: 48px !important; }
+
+.zhaowu-brand-seal__mark {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-[data-report-primary-actions] button,
-[data-report-secondary-actions] button {
-  min-height: 44px;
+.zhaowu-brand-seal__paper {
+  fill: #f8f0df;
+  stroke: #294b3f;
+  stroke-width: 1.35;
 }
 
-/* The scent test is an optional activity, not a second homepage. */
-[data-scent-panel] {
-  margin-top: 14px;
-  padding: 14px;
-  overflow: hidden;
-  border: 1px solid rgba(155, 125, 76, 0.18);
-  border-radius: var(--zw-card-radius);
-  background: rgba(255, 255, 255, 0.4);
+.zhaowu-brand-seal__sun { fill: #9a3e34; }
+.zhaowu-brand-seal__canopy {
+  fill: rgba(41, 75, 63, .10);
+  stroke: #294b3f;
+  stroke-width: 1.55;
+  stroke-linejoin: round;
+}
+.zhaowu-brand-seal__branch,
+.zhaowu-brand-seal__ground {
+  fill: none;
+  stroke: #8f7044;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-[data-scent-panel][hidden] {
-  display: none !important;
+/* Header: one calm line on wide screens, two deliberate rows on phones. */
+.zhaowu-site-header {
+  border-bottom: 1px solid var(--zw-line) !important;
+  background: rgba(248, 242, 229, .94) !important;
+  box-shadow: 0 7px 22px rgba(48, 39, 26, .045) !important;
+  backdrop-filter: blur(15px) saturate(105%);
+  -webkit-backdrop-filter: blur(15px) saturate(105%);
 }
 
-[data-scent-panel] .scent-option-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.zhaowu-site-header > div,
+.zhaowu-header-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px 20px;
+  width: min(100%, 980px);
+  padding-block: 10px !important;
+}
+
+.zhaowu-header-primary {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
-@media (max-width: 520px) {
-  /* Header becomes two deliberate rows instead of crushing desktop controls together. */
-  .zhaowu-site-header > div {
-    flex-wrap: wrap !important;
-    min-height: auto !important;
-    gap: 8px 10px !important;
+.zhaowu-brand-link {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.zhaowu-brand-copy { min-width: 0; line-height: 1.12; }
+
+.zhaowu-brand-name {
+  display: block;
+  color: var(--zw-ink);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  white-space: nowrap;
+}
+
+.zhaowu-brand-tagline {
+  display: block;
+  margin-top: 4px;
+  max-width: 22rem;
+  overflow: hidden;
+  color: var(--zw-muted);
+  font-size: 12px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zhaowu-header-account-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.zhaowu-header-utility,
+.zhaowu-header-login,
+.zhaowu-header-home-link {
+  display: inline-grid;
+  min-height: 42px;
+  place-items: center;
+  border-radius: 10px;
+  padding: 0 12px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.zhaowu-header-utility,
+.zhaowu-header-home-link {
+  border: 1px solid var(--zw-line);
+  color: var(--zw-ink-soft);
+  background: rgba(255, 252, 244, .68);
+}
+
+.zhaowu-header-login {
+  border: 1px solid rgba(150, 59, 50, .30);
+  color: #7e302a;
+  background: rgba(255, 248, 236, .82);
+}
+
+.zhaowu-header-signout { max-width: 76px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.zhaowu-header-pending { width: 58px; height: 40px; border-radius: 10px; background: rgba(78, 65, 47, .08); }
+
+.zhaowu-header-nav {
+  display: flex;
+  width: auto;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.site-lang-group {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 286px;
+  min-height: 46px;
+  overflow: hidden;
+  border: 1px solid rgba(71, 61, 47, .20);
+  border-radius: 12px;
+  background: rgba(255, 252, 244, .70);
+}
+
+.site-lang-button {
+  min-width: 0;
+  min-height: 46px;
+  border: 0;
+  border-right: 1px solid rgba(71, 61, 47, .14);
+  padding: 0 12px;
+  color: #5e554a;
+  background: transparent;
+  font-size: 15px !important;
+  font-weight: 700;
+  letter-spacing: .035em;
+  cursor: pointer;
+}
+
+.site-lang-button:last-child { border-right: 0; }
+
+.site-lang-button[data-active="true"],
+.site-lang-button[aria-pressed="true"] {
+  color: #211f1a !important;
+  background: #eadcc2 !important;
+  box-shadow: inset 0 -3px 0 var(--zw-cinnabar);
+}
+
+.site-lang-button:focus-visible {
+  position: relative;
+  z-index: 2;
+  outline: 3px solid rgba(150, 59, 50, .20);
+  outline-offset: -3px;
+}
+
+.zhaowu-header-home-link.is-active { color: var(--zw-cinnabar); }
+
+/* Page width and typography. */
+.zhaowu-app-frame,
+.zhaowu-home-app-frame {
+  width: min(calc(100% - 24px), 780px) !important;
+  max-width: 780px !important;
+  margin: 20px auto 28px !important;
+  padding: 0 8px 38px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.zhaowu-home-stage { margin-bottom: 34px !important; }
+
+.zhaowu-analysis-flow {
+  display: grid;
+  gap: 18px;
+}
+
+.zhaowu-question-sheet,
+.zhaowu-bazi-hub {
+  position: relative;
+  overflow: hidden;
+  margin: 0 !important;
+  padding: clamp(24px, 5vw, 38px) !important;
+  border: 1px solid rgba(80, 65, 44, .15) !important;
+  border-radius: 26px !important;
+  background: linear-gradient(145deg, rgba(253,249,239,.96), rgba(245,236,218,.90)) !important;
+  box-shadow: var(--zw-shadow) !important;
+}
+
+.zhaowu-question-sheet::before,
+.zhaowu-bazi-hub::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 10px !important;
+  z-index: 0 !important;
+  border: 1px solid rgba(151, 104, 55, .075) !important;
+  border-radius: 19px !important;
+  background: none !important;
+  pointer-events: none !important;
+}
+
+.zhaowu-question-sheet > *,
+.zhaowu-bazi-hub > * { position: relative; z-index: 1; }
+
+.zhaowu-section-kicker {
+  margin: 0 0 10px !important;
+  color: var(--zw-cinnabar) !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+  letter-spacing: .17em !important;
+}
+
+.zhaowu-question-sheet h2,
+.zhaowu-bazi-hub h2 {
+  margin: 0 !important;
+  font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif) !important;
+  font-size: clamp(30px, 6vw, 42px) !important;
+  font-weight: 620 !important;
+  line-height: 1.24 !important;
+  letter-spacing: .035em !important;
+}
+
+.zhaowu-section-lead {
+  max-width: 42rem;
+  margin: 14px 0 0 !important;
+  color: var(--zw-ink-soft) !important;
+  font-size: 16px !important;
+  line-height: 1.85 !important;
+}
+
+.zhaowu-question-promise span {
+  min-height: 46px !important;
+  padding: 9px 11px !important;
+  border-color: rgba(79, 65, 45, .14) !important;
+  background: rgba(255, 253, 246, .65) !important;
+  color: #544b40 !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+.zhaowu-question-label,
+.zhaowu-birth-fields-title {
+  color: var(--zw-ink) !important;
+  font-size: 15px !important;
+  font-weight: 720 !important;
+}
+
+.zhaowu-question-sheet textarea {
+  width: 100%;
+  min-height: 132px !important;
+  margin-top: 8px !important;
+  padding: 15px 16px !important;
+  border: 1px solid rgba(73, 61, 45, .20) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 253, 247, .90) !important;
+  color: var(--zw-ink) !important;
+  font-size: 16px !important;
+  line-height: 1.72 !important;
+  box-shadow: inset 0 1px 2px rgba(67, 52, 34, .035) !important;
+}
+
+.zhaowu-analysis-submit-wrap {
+  display: grid !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  padding: 18px 20px !important;
+  border: 1px solid rgba(42, 76, 63, .17) !important;
+  border-radius: 18px !important;
+  background: rgba(239, 241, 229, .84) !important;
+}
+
+.zhaowu-analysis-submit-wrap p {
+  margin: 0 !important;
+  color: var(--zw-muted) !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+.zhaowu-home-layout h1,
+.zhaowu-home-layout h2,
+.zhaowu-home-layout h3,
+.zhaowu-result-flow h1,
+.zhaowu-result-flow h2,
+.zhaowu-result-flow h3 {
+  color: var(--zw-ink) !important;
+  text-wrap: balance;
+}
+
+.zhaowu-home-layout p,
+.zhaowu-home-layout li,
+.zhaowu-home-layout label,
+.zhaowu-result-flow p,
+.zhaowu-result-flow li {
+  font-size: max(15px, 1rem);
+  line-height: 1.78;
+}
+
+#analysisForm input,
+#analysisForm textarea,
+#analysisForm select,
+#analysisForm button {
+  min-height: 46px;
+  font-size: 16px !important;
+}
+
+#analysisForm label { color: var(--zw-ink-soft) !important; font-weight: 650; }
+
+#analysisForm input,
+#analysisForm textarea,
+#analysisForm select {
+  border-radius: 12px !important;
+  border-color: rgba(81, 67, 48, .19) !important;
+  background: rgba(255, 252, 245, .88) !important;
+}
+
+#analysisForm button[type="submit"] {
+  min-height: 52px;
+  border-radius: 13px !important;
+  color: #fffaf1 !important;
+  background: var(--zw-jade) !important;
+  font-weight: 750;
+  letter-spacing: .03em;
+  box-shadow: 0 8px 20px rgba(32, 61, 52, .13) !important;
+}
+
+/* Fun tests should read as a directory, not a pile of miniature text. */
+.zhaowu-home-fun-heading h2 { font-size: clamp(24px, 5.7vw, 31px) !important; }
+.zhaowu-home-fun-heading p { color: var(--zw-muted) !important; font-size: 15px !important; }
+.zhaowu-home-fun-grid { gap: 10px !important; }
+.zhaowu-home-fun-card {
+  min-height: 72px !important;
+  border-radius: 16px !important;
+  padding: 15px 16px !important;
+  border-color: var(--zw-line) !important;
+  background: rgba(252, 248, 238, .78) !important;
+}
+.zhaowu-home-fun-card strong { font-size: 17px !important; line-height: 1.4 !important; }
+.zhaowu-home-fun-card small { display: block; margin-top: 4px; color: var(--zw-muted) !important; font-size: 14px !important; line-height: 1.55 !important; }
+
+/* Saved reports: generation state is owner metadata, not reading content. */
+[data-report-primary-actions] ~ div > [class~="mb-4"][class~="rounded-lg"][class~="bg-cream/70"]:first-child { display: none !important; }
+[data-report-secondary-actions] { border-radius: 18px !important; background: rgba(255,255,255,.46) !important; }
+[data-report-secondary-actions] > summary { min-height: 44px; display: grid; place-items: center; list-style: none; cursor: pointer; }
+[data-report-secondary-actions] > summary::-webkit-details-marker { display: none; }
+[data-report-primary-actions] button,
+[data-report-secondary-actions] button { min-height: 44px; }
+
+/* The scent test is optional and collapsed until requested. */
+[data-scent-panel] { margin-top: 14px; padding: 16px; overflow: hidden; border: 1px solid var(--zw-line); border-radius: 18px; background: rgba(255,255,255,.38); }
+[data-scent-panel][hidden] { display: none !important; }
+[data-scent-panel] .scent-option-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+
+/* Result readability. */
+.zhaowu-result-flow .zhaowu-bazi-chart > header { display: none !important; }
+.zhaowu-result-card,
+.zhaowu-decree-couplet,
+.zhaowu-bazi-chart { border-radius: 18px !important; }
+.zhaowu-pillar-grid { gap: 8px !important; }
+.zhaowu-pillar-grid > section { min-width: 0 !important; padding: 15px 8px !important; }
+.zhaowu-pillar-grid > section > strong { font-size: clamp(24px, 6vw, 31px) !important; line-height: 1.15 !important; white-space: nowrap !important; }
+.zhaowu-pillar-detail-grid,
+.bazi-detail-pillars { grid-template-columns: 1fr !important; gap: 0 !important; }
+.zhaowu-pillar-detail-grid > section { padding: 18px 2px !important; border: 0 !important; border-top: 1px solid var(--zw-line) !important; border-radius: 0 !important; background: transparent !important; }
+.zhaowu-pillar-detail-grid dl { display: grid !important; grid-template-columns: 96px minmax(0,1fr) !important; column-gap: 14px !important; row-gap: 10px !important; }
+.zhaowu-pillar-detail-grid dt,
+.zhaowu-pillar-detail-grid dd { margin: 0 !important; font-size: 15px !important; line-height: 1.65 !important; }
+.bazi-detail-card { padding: 15px 16px !important; }
+.zhaowu-cycle-list,
+.bazi-luck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 9px !important; }
+
+[data-background-music-control] {
+  left: auto !important;
+  right: max(.75rem, env(safe-area-inset-right)) !important;
+  bottom: max(.75rem, env(safe-area-inset-bottom)) !important;
+}
+
+.zhaowu-site-footer { width: min(100%, 760px); }
+
+@media (max-width: 780px) {
+  .zhaowu-site-header > div,
+  .zhaowu-header-shell {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
     padding: 8px 12px 9px !important;
   }
 
-  .zhaowu-site-header > div > a[href="/"],
-  .zhaowu-site-header a.flex.min-w-0 {
-    min-width: 0;
-    flex: 1 1 auto;
-    gap: 7px !important;
-  }
+  .zhaowu-brand-tagline { max-width: 10.5rem; font-size: 11px; }
+  .zhaowu-brand-name { font-size: 18px; }
+  .zhaowu-header-account-actions { gap: 5px; }
+  .zhaowu-header-utility,
+  .zhaowu-header-login { min-height: 40px; padding-inline: 10px; font-size: 13px; }
 
-  .zhaowu-site-header nav {
+  .zhaowu-header-nav {
     width: 100%;
-    justify-content: flex-end;
-    gap: 6px !important;
-    border-top: 1px solid rgba(86, 78, 62, 0.14);
-    padding-top: 7px;
+    align-items: stretch;
+    padding-top: 8px;
+    border-top: 1px solid rgba(82, 65, 42, .12);
   }
-
-  .brand-seal,
-  .zhaowu-site-header .zhaowu-brand-seal {
-    width: 42px !important;
-    height: 42px !important;
-    border-radius: 12px !important;
-    padding: 1px !important;
-    box-shadow: none !important;
-  }
-
-  .brand-seal img,
-  .zhaowu-brand-seal img {
-    border-radius: 9px !important;
-  }
-
-  .zhaowu-site-header a[href="/"] > span,
-  .zhaowu-site-header a.flex.min-w-0 .font-display {
-    font-size: 1rem !important;
-    letter-spacing: .12em !important;
-    white-space: nowrap !important;
-  }
-
-  .zhaowu-site-header a[href="/gallery"],
-  .zhaowu-site-header a[href="/account"],
-  .zhaowu-site-header a[href="/profile"] {
-    min-height: 38px !important;
-    height: 38px !important;
-    padding-inline: 10px !important;
-    font-size: 0.9rem !important;
-    box-shadow: none !important;
-  }
-
-  .site-lang-group,
-  .zhaowu-site-header nav > div[role="group"] {
-    min-height: 38px !important;
-    height: 38px !important;
-  }
-
-  .site-lang-button,
-  .zhaowu-site-header nav > div[role="group"] button {
-    min-height: 36px !important;
-    min-width: 36px !important;
-    padding-inline: 8px !important;
-    font-size: 0.82rem !important;
-  }
-
-  .zhaowu-site-header nav > span > button:not(.site-lang-button),
-  .zhaowu-site-header nav > button {
-    min-height: 38px !important;
-    max-width: 58px !important;
-    padding-inline: 7px !important;
-    font-size: 0.86rem !important;
-  }
-
-  .zhaowu-mobile-hide {
-    display: none !important;
-  }
+  .site-lang-group { flex: 1 1 auto; width: auto; max-width: none; }
+  .site-lang-button { min-width: 0 !important; min-height: 46px !important; font-size: 15px !important; }
+  .zhaowu-header-home-link { min-height: 46px; min-width: 78px; }
 
   .zhaowu-app-frame,
   .zhaowu-home-app-frame {
-    padding-inline: 12px !important;
+    width: 100% !important;
+    margin-top: 7px !important;
+    padding: 0 12px 28px !important;
   }
 
-  .zhaowu-home-stage {
-    margin-bottom: 26px !important;
-  }
-
-  /* Do not repeat a second Four Pillars heading inside the result card. */
-  .zhaowu-result-flow .zhaowu-bazi-chart > header {
-    display: none !important;
-  }
-
-  .zhaowu-pillar-grid {
-    gap: 6px !important;
-  }
-
-  .zhaowu-pillar-grid > section {
-    min-width: 0 !important;
-    padding: 13px 7px !important;
-    border-radius: 12px !important;
-  }
-
-  .zhaowu-pillar-grid > section > strong {
-    font-size: clamp(22px, 7.3vw, 30px) !important;
-    line-height: 1.15 !important;
-    white-space: nowrap !important;
-  }
-
-  /* Four Pillars details read vertically on a phone. */
-  .zhaowu-pillar-detail-grid,
-  .bazi-detail-pillars {
-    grid-template-columns: 1fr !important;
-    gap: 0 !important;
-  }
-
-  .zhaowu-pillar-detail-grid > section {
-    padding: 16px 2px !important;
-    border: 0 !important;
-    border-top: 1px solid rgba(139, 99, 55, .18) !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-  }
-
-  .zhaowu-pillar-detail-grid dl {
-    display: grid !important;
-    grid-template-columns: 88px minmax(0, 1fr) !important;
-    column-gap: 14px !important;
-    row-gap: 9px !important;
-  }
-
-  .zhaowu-pillar-detail-grid dt,
-  .zhaowu-pillar-detail-grid dd {
-    margin: 0 !important;
-    line-height: 1.65 !important;
-  }
-
-  .bazi-detail-card {
-    padding: 14px 16px !important;
-  }
-
-  .bazi-detail-card > div {
-    display: grid !important;
-    grid-template-columns: minmax(4.5rem, 5.5rem) minmax(0, 1fr) !important;
-    gap: 8px 12px !important;
-    align-items: start !important;
-  }
-
-  .bazi-detail-card > div > p,
-  .bazi-detail-card > div > div {
-    margin: 0 !important;
-  }
-
-  .bazi-detail-card .text-charcoal\/50 {
-    grid-column: 1;
-  }
-
-  .bazi-detail-card .text-charcoal,
-  .bazi-detail-card .font-medium:not(.text-charcoal\/50) {
-    grid-column: 2;
-  }
+  .zhaowu-home-stage { margin-bottom: 30px !important; }
+  .zhaowu-home-layout p,
+  .zhaowu-home-layout li,
+  .zhaowu-result-flow p,
+  .zhaowu-result-flow li { font-size: 16px !important; }
 
   .zhaowu-cycle-list,
-  .bazi-luck-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 8px !important;
-  }
-
-  .zhaowu-cycle-list > li {
-    padding: 13px 10px !important;
-    border-radius: 10px !important;
-  }
-
-  .bazi-luck-card {
-    min-height: 96px;
-  }
-
-  .zhaowu-result-card,
-  .zhaowu-decree-couplet,
-  .zhaowu-bazi-chart {
-    border-radius: 18px !important;
-  }
-
-  /* A single small audio control stays clear of the iPhone safe area. */
-  [data-background-music-control] {
-    left: auto !important;
-    right: max(.7rem, env(safe-area-inset-right)) !important;
-    bottom: max(.7rem, env(safe-area-inset-bottom)) !important;
-  }
+  .bazi-luck-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
 }
 
-@media (max-width: 430px) {
-  [data-scent-panel] .scent-option-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 520px) {
+  .zhaowu-brand-tagline { display: none; }
+  .zhaowu-brand-name { font-size: 19px; }
+  .zhaowu-site-header .zhaowu-brand-seal--sm { width: 46px; height: 46px; }
+  .site-lang-button { min-height: 48px !important; font-size: 16px !important; }
+  .zhaowu-header-home-link { min-height: 48px; }
+
+  .zhaowu-question-sheet,
+  .zhaowu-bazi-hub { padding: 24px 18px !important; border-radius: 22px !important; }
+  .zhaowu-question-sheet::before,
+  .zhaowu-bazi-hub::before { inset: 8px !important; border-radius: 16px !important; }
+  .zhaowu-question-promise { grid-template-columns: 1fr !important; gap: 7px !important; }
+  .zhaowu-question-promise span { min-height: 42px !important; justify-items: start !important; text-align: left !important; }
+}
+
+@media (max-width: 390px) {
+  .zhaowu-header-gallery { display: none; }
+  .zhaowu-header-signout { max-width: 60px; }
+  .site-lang-button { padding-inline: 5px; }
+  [data-scent-panel] .scent-option-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 360px) {
-  .zhaowu-site-header > div {
-    padding-inline: 8px !important;
-  }
-
-  .site-lang-button {
-    min-width: 33px !important;
-    padding-inline: 6px !important;
-  }
-
-  .zhaowu-site-header nav > span > button:not(.site-lang-button) {
-    padding-inline: 5px !important;
-  }
-
+  .zhaowu-site-header .zhaowu-brand-seal--sm { width: 42px; height: 42px; }
+  .zhaowu-brand-name { font-size: 17px; }
+  .zhaowu-header-utility,
+  .zhaowu-header-login { padding-inline: 8px; font-size: 12px; }
+  .zhaowu-header-home-link { min-width: 68px; padding-inline: 8px; font-size: 13px; }
   .zhaowu-cycle-list,
-  .bazi-luck-grid {
-    grid-template-columns: 1fr !important;
-  }
+  .bazi-luck-grid { grid-template-columns: 1fr !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-lotus-intro__halo,
+  .zhaowu-lotus-intro__flower,
+  .zhaowu-lotus-intro__ripple { animation: none !important; }
 }

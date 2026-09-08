@@ -28,8 +28,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
   -webkit-backdrop-filter: blur(12px) saturate(105%) !important;
 }
 
-body:has(.zhaowu-home-layout) .zhaowu-site-header .bg-wood,
-body:has(.zhaowu-home-layout) .zhaowu-site-header button[aria-pressed="true"] {
+body:has(.zhaowu-home-layout) .zhaowu-site-header .bg-wood {
   background: var(--r47-jade) !important;
   color: #fff9ec !important;
 }
