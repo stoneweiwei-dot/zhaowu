@@ -9,9 +9,9 @@ export const Route = createFileRoute("/login")({ component: LoginPage });
 type Mode = "signin" | "signup";
 
 const OAUTH_COPY = {
-  "zh-Hant": { quick: "快速登入", email: "或使用電子郵件", google: "使用 Google 繼續", apple: "使用 Apple 繼續" },
-  "zh-Hans": { quick: "快速登录", email: "或使用电子邮箱", google: "使用 Google 继续", apple: "使用 Apple 继续" },
-  en: { quick: "Quick sign in", email: "or use email", google: "Continue with Google", apple: "Continue with Apple" },
+  "zh-Hant": { quick: "快速登入", email: "或使用電子郵件", google: "使用 Google 繼續", apple: "使用 Apple 繼續", x: "使用 X 繼續" },
+  "zh-Hans": { quick: "快速登录", email: "或使用电子邮箱", google: "使用 Google 继续", apple: "使用 Apple 继续", x: "使用 X 继续" },
+  en: { quick: "Quick sign in", email: "or use email", google: "Continue with Google", apple: "Continue with Apple", x: "Continue with X" },
 } as const;
 
 function LoginPage() {
@@ -41,7 +41,7 @@ function LoginPage() {
     if (user) void navigate({ to: "/" });
   }, [navigate, user]);
 
-  function onOAuth(provider: "google" | "apple") {
+  function onOAuth(provider: OAuthProvider) {
     setError(null);
     setInfo(null);
     setOauthBusy(provider);
@@ -105,12 +105,15 @@ function LoginPage() {
 
         <div className="mt-5">
           <p className="mb-3 text-center text-xs tracking-[0.12em] text-ink-mute">{oauthCopy.quick}</p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <button type="button" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("google")} className="min-h-12 rounded-xl border border-line bg-cream/70 px-3 text-sm text-ink disabled:opacity-50">
               {oauthCopy.google}
             </button>
             <button type="button" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("apple")} className="min-h-12 rounded-xl border border-line bg-cream/70 px-3 text-sm text-ink disabled:opacity-50">
               {oauthCopy.apple}
+            </button>
+            <button type="button" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("twitter")} className="min-h-12 rounded-xl border border-line bg-cream/70 px-3 text-sm text-ink disabled:opacity-50">
+              {oauthCopy.x}
             </button>
           </div>
           <p className="my-4 text-center text-xs text-ink-mute">{oauthCopy.email}</p>
