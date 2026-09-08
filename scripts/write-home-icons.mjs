@@ -1,4 +1,4 @@
-import { copyFileSync, mkdirSync, readFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -49,6 +49,18 @@ export function writeHomeIcons() {
     mkdirSync(dirname(path), { recursive: true });
     copyFileSync(ICON_SOURCES[size], path);
     written.push({ rel, bytes: readFileSync(path).length });
+  }
+  try {
+    const b64Path = resolve(HERE, "r96-assets/gourd-180.png.b64");
+    const buf = Buffer.from(readFileSync(b64Path, "utf8").replace(/\s+/g, ""), "base64");
+    if (buf.subarray(0, 8).toString("hex") === "89504e470d0a1a0a") {
+      const brandDir = resolve(ROOT, "public/brand");
+      mkdirSync(brandDir, { recursive: true });
+      writeFileSync(resolve(brandDir, "logo-icon-gourd-180.png"), buf);
+      writeFileSync(resolve(brandDir, "logo-icon-gourd.png"), buf);
+    }
+  } catch {
+    // Gourd pack is optional until the asset file is on main.
   }
   return written;
 }

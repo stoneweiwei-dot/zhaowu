@@ -12,8 +12,8 @@ test("free direct-answer card delivers the engine's question-specific answer wit
   assert.doesNotMatch(resultView, /buildFreeDirectAnswer/);
 });
 
-test("header reuses the owner-approved green-gold lotus instead of an invented vector", () => {
-  assert.match(brand, /OFFICIAL_MARK = "\/apple-touch-icon-v3\.png"/);
+test("header reuses the official gold gourd instead of an invented vector", () => {
+  assert.match(brand, /OFFICIAL_MARK = "\/brand\/logo-icon-gourd-180\.png"/);
   assert.match(brand, /<img className="zhaowu-brand-seal__image"/);
   assert.doesNotMatch(brand, /<svg|zhaowu-brand-seal__canopy|__character/);
   assert.match(design, /zhaowu-brand-seal__image/);
