@@ -31,12 +31,13 @@ test("internal timing traces are removed without losing the following year's ans
   );
 });
 
-test("share artwork contains the whole panel and bootstrap keeps the r93 owner loading treatment", () => {
+test("share artwork contains the whole panel and bootstrap keeps the approved owner loading treatment", () => {
   assert.match(source("src/lib/report/share-card.ts"), /Math.min\(width \/ sourceWidth, height \/ sourceHeight\)/);
   const intro = source("src/components/intro-gate.tsx");
-  assert.match(intro, /data-intro-fallback-mode="animated-lotus"/);
+  assert.match(intro, /data-intro-fallback-mode="fullscreen-owner-poster"/);
   assert.match(intro, /owner-lotus-bloom-r53\.mp4/);
   assert.match(intro, /owner-lotus-bloom-r53\.jpg/);
+  assert.match(intro, /zhaowu-lotus-intro__poster/);
   assert.match(intro, /zhaowu-lotus-intro__fallback-art/);
   assert.doesNotMatch(intro, /<svg/);
 });
