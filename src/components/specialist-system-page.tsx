@@ -56,9 +56,33 @@ const PAGE = {
 } as const;
 
 const COPY = {
-  "zh-Hant": { ready: "本次使用的出生資料", auto: "已用同一份生辰完成這一體系的獨立分析", missing: "還沒有出生資料。先回首頁填寫一次，之後所有分析都會共用。", edit: "修改出生資料", add: "填寫出生資料" },
-  "zh-Hans": { ready: "本次使用的出生资料", auto: "已用同一份生辰完成这一体系的独立分析", missing: "还没有出生资料。先回首页填写一次，之后所有分析都会共用。", edit: "修改出生资料", add: "填写出生资料" },
-  en: { ready: "Birth record used for this reading", auto: "This independent reading has been generated from the same birth record", missing: "No birth record yet. Add it once on the homepage and every analysis can reuse it.", edit: "Edit birth record", add: "Add birth record" },
+  "zh-Hant": {
+    ready: "本卷使用的生辰",
+    auto: "分析已依同一份生辰自動完成",
+    missing: "尚未找到生辰資料。回首頁填寫一次，六份命理專卷即可共用。",
+    edit: "回首頁修改生辰",
+    add: "回首頁填寫生辰",
+    back: "返回六種專卷",
+    overview: "本卷總覽",
+  },
+  "zh-Hans": {
+    ready: "本卷使用的生辰",
+    auto: "分析已依同一份生辰自动完成",
+    missing: "尚未找到生辰资料。回首页填写一次，六份命理专卷即可共用。",
+    edit: "回首页修改生辰",
+    add: "回首页填写生辰",
+    back: "返回六种专卷",
+    overview: "本卷总览",
+  },
+  en: {
+    ready: "Birth record for this volume",
+    auto: "This reading was generated from the same saved birth record",
+    missing: "No birth record yet. Add it once on the homepage and all six specialist readings can reuse it.",
+    edit: "Edit birth record",
+    add: "Add birth record",
+    back: "Back to six readings",
+    overview: "Reading overview",
+  },
 } as const;
 
 function buildReading(id: SpecialistId, birth: SharedBirthRecord, locale: "zh-Hant" | "zh-Hans" | "en"): SpecialistReading {
@@ -112,11 +136,14 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
 
         {reading?.warning ? <p className="zhaowu-specialist-warning">{reading.warning}</p> : null}
 
-        <div className="zhaowu-specialist-actions"><a href="/#bazi">{birth ? copy.edit : copy.add}</a></div>
+        <div className="zhaowu-specialist-actions">
+          <a href="/#bazi">{birth ? copy.edit : copy.add}</a>
+          <a href="/#analysis-reports" className="is-secondary">{copy.back}</a>
+        </div>
 
         {reading ? (
           <div className="zhaowu-specialist-sections">
-            {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{reading.title}</h2><p>{reading.lead}</p></article> : null}
+            {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
             {reading.sections.map((section) => (
               <article key={`${section.title}-${section.body.slice(0, 24)}`}><h2>{section.title}</h2><p>{section.body}</p></article>
             ))}

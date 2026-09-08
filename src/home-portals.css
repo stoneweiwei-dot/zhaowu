@@ -2,13 +2,17 @@
 .zhaowu-home-portals-block {
   position: relative;
   z-index: 2;
-  padding: 6px 0 2px;
+  padding: 28px 26px 26px;
+  border: 1px solid rgba(80, 65, 44, .15);
+  border-radius: 26px;
+  background: rgba(247, 240, 225, .72);
+  box-shadow: 0 16px 50px rgba(55, 44, 29, .055);
   pointer-events: auto;
 }
 
 .zhaowu-home-portals-heading {
-  margin: 0 0 18px;
-  padding: 0 2px 16px;
+  margin: 0 0 20px;
+  padding: 0 2px 18px;
   border-bottom: 1px solid rgba(79, 64, 43, .18);
 }
 
@@ -16,19 +20,19 @@
   margin: 0;
   color: #29251f;
   font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif);
-  font-size: clamp(25px, 5.8vw, 32px);
-  font-weight: 650;
+  font-size: clamp(29px, 5.8vw, 37px);
+  font-weight: 620;
   line-height: 1.22;
   letter-spacing: .045em;
 }
 
 .zhaowu-home-portals-heading span {
   display: block;
-  margin-top: 9px;
+  margin-top: 10px;
   max-width: 42rem;
   color: #6d6256;
-  font-size: 15px;
-  line-height: 1.75;
+  font-size: 16px;
+  line-height: 1.8;
 }
 
 .zhaowu-home-portals {
@@ -37,29 +41,50 @@
   gap: 12px;
 }
 
-.zhaowu-home-portal {
+.zhaowu-home-layout .zhaowu-home-portal {
   position: relative;
   z-index: 2;
   display: flex;
   min-width: 0;
-  min-height: 150px;
+  min-height: 164px;
   flex-direction: column;
   justify-content: space-between;
-  gap: 18px;
-  padding: 20px 18px 17px;
+  gap: 22px;
+  padding: 22px 20px 18px !important;
   border: 1px solid rgba(94, 76, 51, .16);
-  border-radius: 18px;
+  border-radius: 17px;
   color: #29251f;
-  background: rgba(252, 248, 238, .83);
-  box-shadow: 0 8px 28px rgba(66, 52, 34, .05);
+  background: rgba(255, 252, 244, .82) !important;
+  box-shadow: 0 7px 22px rgba(66, 52, 34, .045);
   text-decoration: none;
   pointer-events: auto !important;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
-.zhaowu-home-portal::before,
-.zhaowu-home-portal::after {
+.zhaowu-home-layout .zhaowu-home-portal::before {
+  content: attr(data-index);
+  position: absolute;
+  top: 15px;
+  right: 17px;
+  color: rgba(42, 76, 63, .42);
+  font-family: "Iowan Old Style", "Baskerville", serif;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .12em;
+}
+
+.zhaowu-home-layout .zhaowu-home-portal::after {
+  content: "";
+  position: absolute;
+  inset: 14px auto 14px 0;
+  width: 2px;
+  border-radius: 99px;
+  background: rgba(42, 76, 63, .48);
+}
+
+.zhaowu-home-layout .zhaowu-home-portal::before,
+.zhaowu-home-layout .zhaowu-home-portal::after {
   pointer-events: none !important;
 }
 
@@ -74,8 +99,11 @@
 
 .zhaowu-home-portal.is-bazi {
   border-color: rgba(42, 76, 63, .30);
-  background: linear-gradient(150deg, rgba(235, 241, 232, .92), rgba(252, 248, 238, .88));
+  background: linear-gradient(150deg, rgba(235, 241, 232, .95), rgba(253, 249, 239, .90)) !important;
 }
+
+.zhaowu-home-layout .zhaowu-home-portal:nth-child(3n + 2)::after { background: rgba(150, 59, 50, .48); }
+.zhaowu-home-layout .zhaowu-home-portal:nth-child(3n)::after { background: rgba(168, 134, 82, .56); }
 
 .zhaowu-home-portal-copy {
   display: block;
@@ -86,26 +114,29 @@
   display: block;
   color: #29251f;
   font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif);
-  font-size: 21px;
-  font-weight: 650;
+  padding-right: 34px;
+  font-size: 22px;
+  font-weight: 620;
   line-height: 1.35;
   letter-spacing: .025em;
 }
 
 .zhaowu-home-portal-hint {
   display: block;
-  margin-top: 7px;
+  margin-top: 8px;
   color: #6d6256;
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .zhaowu-home-portal-preview {
   display: block;
   margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(79, 64, 43, .11);
   color: #514a41;
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .zhaowu-home-portal-action {
@@ -114,7 +145,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  color: #8b342d;
+  color: #82372f;
   font-size: 15px;
   font-weight: 700;
   line-height: 1.4;
@@ -135,19 +166,24 @@
 }
 
 @media (max-width: 640px) {
+  .zhaowu-home-portals-block {
+    padding: 24px 18px 20px;
+    border-radius: 22px;
+  }
+
   .zhaowu-home-portals {
     grid-template-columns: 1fr;
     gap: 10px;
   }
 
-  .zhaowu-home-portal {
+  .zhaowu-home-layout .zhaowu-home-portal {
     min-height: 0;
-    padding: 18px 16px 15px;
-    gap: 14px;
+    padding: 19px 17px 16px !important;
+    gap: 16px;
   }
 
   .zhaowu-home-portal-copy strong {
-    font-size: 20px;
+    font-size: 21px;
   }
 
   .zhaowu-home-portal-hint,

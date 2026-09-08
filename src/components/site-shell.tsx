@@ -73,7 +73,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
               <div className="zhaowu-header-account-actions">
                 {user?.isOwner ? (
-                  <Link to="/gallery" className="zhaowu-header-utility" aria-label={locale === "en" ? "Open Gallery" : locale === "zh-Hans" ? "打开图库" : "打開圖庫"}>
+                  <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={locale === "en" ? "Open Gallery" : locale === "zh-Hans" ? "打开图库" : "打開圖庫"}>
                     {locale === "en" ? "Gallery" : locale === "zh-Hans" ? "图库" : "圖庫"}
                   </Link>
                 ) : null}
@@ -110,7 +110,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   </button>
                 ))}
               </div>
-              <Link to="/" className={`zhaowu-header-home-link ${pathname === "/" ? "is-active" : ""}`}>
+              <Link to="/" aria-current={pathname === "/" ? "page" : undefined} className={`zhaowu-header-home-link ${pathname === "/" ? "is-active" : ""}`}>
                 {user ? (locale === "en" ? "BaZi" : "四柱八字") : t("navHome")}
               </Link>
             </nav>

@@ -46,8 +46,8 @@
 }
 
 .zhaowu-home-portal {
-  cursor: default;
-  pointer-events: none;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .zhaowu-home-portal-arrow {

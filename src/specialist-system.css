@@ -1,5 +1,5 @@
 .zhaowu-specialist-page {
-  width: min(100%, 760px);
+  width: min(100%, 780px);
   margin: 0 auto;
   padding: 12px 0 48px;
 }
@@ -7,14 +7,14 @@
 .zhaowu-specialist-sheet {
   overflow: hidden;
   border: 1px solid rgba(88, 69, 43, .15);
-  border-radius: 26px;
-  padding: clamp(24px, 5vw, 40px);
-  background: rgba(250, 246, 236, .90);
-  box-shadow: 0 18px 52px rgba(57, 45, 29, .07);
+  border-radius: 28px;
+  padding: clamp(26px, 5vw, 44px);
+  background: linear-gradient(145deg, rgba(253,249,239,.97), rgba(245,236,218,.92));
+  box-shadow: 0 20px 58px rgba(57, 45, 29, .075);
 }
 
 .zhaowu-specialist-hero {
-  padding-bottom: 22px;
+  padding-bottom: 25px;
   border-bottom: 1px solid rgba(88, 69, 43, .15);
 }
 
@@ -30,8 +30,8 @@
   margin: 0;
   color: #27231e;
   font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif);
-  font-size: clamp(30px, 7vw, 42px);
-  font-weight: 650;
+  font-size: clamp(34px, 7vw, 46px);
+  font-weight: 620;
   line-height: 1.18;
   letter-spacing: .045em;
 }
@@ -40,13 +40,13 @@
   margin: 12px 0 0;
   max-width: 42rem;
   color: #685f55;
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: 17px;
+  line-height: 1.86;
 }
 
 .zhaowu-specialist-birth {
   margin-top: 20px;
-  padding: 16px 17px;
+  padding: 18px 19px;
   border-left: 3px solid rgba(42, 76, 63, .58);
   border-radius: 4px 15px 15px 4px;
   background: rgba(239, 241, 230, .72);
@@ -56,7 +56,7 @@
 .zhaowu-specialist-birth small {
   display: block;
   color: #71665a;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -64,7 +64,7 @@
   display: block;
   margin: 5px 0;
   color: #29251f;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.6;
 }
 
@@ -94,21 +94,27 @@
   padding: 0 18px;
   border: 1px solid rgba(42, 76, 63, .24);
   border-radius: 12px;
-  color: #294b3f;
-  background: rgba(255, 252, 244, .78);
+  color: #fffaf0;
+  background: #294b3f;
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
 }
 
+.zhaowu-specialist-actions a.is-secondary {
+  border-color: rgba(82, 65, 42, .17);
+  color: #5a5044;
+  background: rgba(255, 252, 244, .62);
+}
+
 .zhaowu-specialist-sections {
   display: grid;
   gap: 0;
-  margin-top: 28px;
+  margin-top: 32px;
 }
 
 .zhaowu-specialist-sections article {
-  padding: 22px 2px;
+  padding: 25px 2px;
   border: 0;
   border-top: 1px solid rgba(88, 69, 43, .14);
   background: transparent;
@@ -123,8 +129,8 @@
   margin: 0 0 9px;
   color: #2d2923;
   font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif);
-  font-size: 21px;
-  font-weight: 650;
+  font-size: 23px;
+  font-weight: 620;
   line-height: 1.4;
   letter-spacing: .025em;
 }
@@ -132,13 +138,17 @@
 .zhaowu-specialist-sections p {
   margin: 0;
   color: #514a42;
-  font-size: 16px;
-  line-height: 1.88;
+  font-size: 16.5px;
+  line-height: 1.92;
   white-space: pre-wrap;
 }
 
 .zhaowu-specialist-overview {
-  padding-bottom: 26px !important;
+  margin-bottom: 4px;
+  padding: 22px 21px 24px !important;
+  border: 1px solid rgba(42, 76, 63, .15) !important;
+  border-radius: 17px;
+  background: rgba(237, 241, 229, .68) !important;
 }
 
 @media (max-width: 560px) {
@@ -147,8 +157,8 @@
   }
 
   .zhaowu-specialist-sheet {
-    border-radius: 20px;
-    padding: 24px 18px 30px;
+    border-radius: 22px;
+    padding: 25px 19px 32px;
   }
 
   .zhaowu-specialist-sheet .lead,
@@ -157,6 +167,9 @@
   }
 
   .zhaowu-specialist-sections h2 {
-    font-size: 20px;
+    font-size: 21px;
   }
+
+  .zhaowu-specialist-actions { display: grid; grid-template-columns: 1fr; }
+  .zhaowu-specialist-actions a { width: 100%; }
 }

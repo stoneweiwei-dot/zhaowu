@@ -8,12 +8,12 @@ const articles = readFileSync(new URL("../src/components/life-view-home-section.
 
 test("homepage method directory stays concise but uses readable tappable report cards", () => {
   assert.match(home, /zhaowu-home-portal-hint/);
-  assert.match(home, /你的六種分析報告/);
+  assert.match(home, /六種命理專卷/);
   assert.match(home, /data-specialist-link/);
   assert.doesNotMatch(home, /portalCopy\.learn/);
   assert.doesNotMatch(home, /portalCopy\.best/);
-  assert.match(portals, /min-height:\s*150px/);
-  assert.match(portals, /font-size:\s*21px/);
+  assert.match(portals, /min-height:\s*164px/);
+  assert.match(portals, /font-size:\s*22px/);
   assert.match(portals, /pointer-events:\s*auto\s*!important/);
   assert.match(portals, /touch-action:\s*manipulation/);
   assert.match(portals, /@media \(max-width: 640px\)/);

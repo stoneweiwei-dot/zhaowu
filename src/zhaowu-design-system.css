@@ -72,10 +72,57 @@ textarea {
   opacity: 0;
 }
 
+.zhaowu-lotus-intro__fallback-lockup {
+  display: grid;
+  justify-items: center;
+  width: min(78vw, 330px);
+  transform: translateY(-2vh);
+}
+
 .zhaowu-lotus-intro__fallback-art {
-  width: min(64vw, 280px);
+  width: min(60vw, 248px);
   height: auto;
   overflow: visible;
+}
+
+.zhaowu-lotus-intro__fallback-copy {
+  display: grid;
+  justify-items: center;
+  margin-top: -18px;
+  color: #473d32;
+}
+
+.zhaowu-lotus-intro__fallback-copy strong {
+  font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif);
+  font-size: 25px;
+  font-weight: 650;
+  letter-spacing: .28em;
+  text-indent: .28em;
+}
+
+.zhaowu-lotus-intro__fallback-copy span {
+  margin-top: 7px;
+  color: #766655;
+  font-size: 13px;
+  letter-spacing: .12em;
+}
+
+.zhaowu-lotus-intro__fallback-copy i {
+  position: relative;
+  width: 124px;
+  height: 1px;
+  margin-top: 18px;
+  overflow: hidden;
+  background: rgba(42, 76, 63, .16);
+}
+
+.zhaowu-lotus-intro__fallback-copy i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--zw-cinnabar), transparent);
+  transform: translateX(-100%);
+  animation: zw-intro-progress 1.45s cubic-bezier(.4,0,.2,1) 3;
 }
 
 .zhaowu-lotus-intro__halo {
@@ -83,7 +130,7 @@ textarea {
   stroke: rgba(155, 59, 49, .14);
   stroke-width: 1.5;
   transform-origin: center;
-  animation: zw-intro-breathe 2.1s ease-in-out infinite;
+  animation: zw-intro-breathe 2.1s ease-in-out 3;
 }
 
 .zhaowu-lotus-intro__flower {
@@ -100,7 +147,7 @@ textarea {
   stroke: rgba(42, 76, 63, .34);
   stroke-width: 1.4;
   transform-origin: center;
-  animation: zw-intro-ripple 1.8s ease-out infinite;
+  animation: zw-intro-ripple 1.8s ease-out 3;
 }
 
 .zhaowu-lotus-intro__ripple.ripple-two { animation-delay: .55s; }
@@ -121,44 +168,57 @@ textarea {
   100% { opacity: 0; transform: scale(1.22); }
 }
 
-/* Brand: a restrained cinnabar text seal, not a shrunken home-screen icon. */
+@keyframes zw-intro-progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Brand: a clean Wutong-tree mark that remains legible at header scale. */
 .brand-seal,
 .zhaowu-brand-seal {
-  position: relative;
   flex: 0 0 auto;
   display: inline-grid;
   place-items: center;
-  border: 1.5px solid rgba(150, 59, 50, .86);
-  border-radius: 8px;
-  color: #8e342d;
-  background: rgba(252, 247, 235, .88);
-  box-shadow: inset 0 0 0 2px rgba(150, 59, 50, .08);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  filter: drop-shadow(0 5px 9px rgba(43, 52, 40, .10));
 }
 
-.zhaowu-brand-seal--sm { width: 43px; height: 43px; }
-.zhaowu-brand-seal--lg { width: 88px; height: 88px; }
+.zhaowu-brand-seal--sm { width: 48px; height: 48px; }
+.zhaowu-brand-seal--lg { width: 96px; height: 96px; }
+.zhaowu-site-header .zhaowu-brand-seal--sm { width: 48px !important; height: 48px !important; }
 
-.zhaowu-brand-seal__character {
-  font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif);
-  font-size: 25px;
-  font-weight: 750;
-  line-height: 1;
-  transform: translateY(-1px);
+.zhaowu-brand-seal__mark {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.zhaowu-brand-seal--lg .zhaowu-brand-seal__character { font-size: 50px; }
-
-.zhaowu-brand-seal__corner {
-  position: absolute;
-  right: 3px;
-  bottom: 3px;
-  width: 5px;
-  height: 5px;
-  border-right: 1px solid rgba(150, 59, 50, .72);
-  border-bottom: 1px solid rgba(150, 59, 50, .72);
+.zhaowu-brand-seal__paper {
+  fill: #f8f0df;
+  stroke: #294b3f;
+  stroke-width: 1.35;
 }
 
-/* Header uses two deliberate rows on phones. */
+.zhaowu-brand-seal__sun { fill: #9a3e34; }
+.zhaowu-brand-seal__canopy {
+  fill: rgba(41, 75, 63, .10);
+  stroke: #294b3f;
+  stroke-width: 1.55;
+  stroke-linejoin: round;
+}
+.zhaowu-brand-seal__branch,
+.zhaowu-brand-seal__ground {
+  fill: none;
+  stroke: #8f7044;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Header: one calm line on wide screens, two deliberate rows on phones. */
 .zhaowu-site-header {
   border-bottom: 1px solid var(--zw-line) !important;
   background: rgba(248, 242, 229, .94) !important;
@@ -169,10 +229,12 @@ textarea {
 
 .zhaowu-site-header > div,
 .zhaowu-header-shell {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 14px;
-  width: min(100%, 760px);
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px 20px;
+  width: min(100%, 980px);
+  padding-block: 10px !important;
 }
 
 .zhaowu-header-primary {
@@ -253,19 +315,19 @@ textarea {
 
 .zhaowu-header-nav {
   display: flex;
-  width: 100%;
+  width: auto;
   min-width: 0;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(82, 65, 42, .12);
+  padding-top: 0;
+  border-top: 0;
 }
 
 .site-lang-group {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  width: min(100%, 330px);
+  width: 286px;
   min-height: 46px;
   overflow: hidden;
   border: 1px solid rgba(71, 61, 47, .20);
@@ -274,14 +336,14 @@ textarea {
 }
 
 .site-lang-button {
-  min-width: 82px;
-  min-height: 44px;
+  min-width: 0;
+  min-height: 46px;
   border: 0;
   border-right: 1px solid rgba(71, 61, 47, .14);
   padding: 0 12px;
   color: #5e554a;
   background: transparent;
-  font-size: 15px;
+  font-size: 15px !important;
   font-weight: 700;
   letter-spacing: .035em;
   cursor: pointer;
@@ -291,8 +353,8 @@ textarea {
 
 .site-lang-button[data-active="true"],
 .site-lang-button[aria-pressed="true"] {
-  color: #29251f !important;
-  background: #e2d3b7 !important;
+  color: #211f1a !important;
+  background: #eadcc2 !important;
   box-shadow: inset 0 -3px 0 var(--zw-cinnabar);
 }
 
@@ -308,19 +370,125 @@ textarea {
 /* Page width and typography. */
 .zhaowu-app-frame,
 .zhaowu-home-app-frame {
-  width: min(calc(100% - 18px), 760px) !important;
-  max-width: 760px !important;
-  margin: 12px auto 26px !important;
-  padding: 16px 16px 34px !important;
-  border: 1px solid rgba(255, 255, 255, .55) !important;
-  border-radius: 28px !important;
-  background: rgba(248, 242, 229, .74) !important;
-  box-shadow: 0 18px 62px rgba(45, 38, 27, .09) !important;
-  backdrop-filter: blur(10px) saturate(102%);
-  -webkit-backdrop-filter: blur(10px) saturate(102%);
+  width: min(calc(100% - 24px), 780px) !important;
+  max-width: 780px !important;
+  margin: 20px auto 28px !important;
+  padding: 0 8px 38px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .zhaowu-home-stage { margin-bottom: 34px !important; }
+
+.zhaowu-analysis-flow {
+  display: grid;
+  gap: 18px;
+}
+
+.zhaowu-question-sheet,
+.zhaowu-bazi-hub {
+  position: relative;
+  overflow: hidden;
+  margin: 0 !important;
+  padding: clamp(24px, 5vw, 38px) !important;
+  border: 1px solid rgba(80, 65, 44, .15) !important;
+  border-radius: 26px !important;
+  background: linear-gradient(145deg, rgba(253,249,239,.96), rgba(245,236,218,.90)) !important;
+  box-shadow: var(--zw-shadow) !important;
+}
+
+.zhaowu-question-sheet::before,
+.zhaowu-bazi-hub::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 10px !important;
+  z-index: 0 !important;
+  border: 1px solid rgba(151, 104, 55, .075) !important;
+  border-radius: 19px !important;
+  background: none !important;
+  pointer-events: none !important;
+}
+
+.zhaowu-question-sheet > *,
+.zhaowu-bazi-hub > * { position: relative; z-index: 1; }
+
+.zhaowu-section-kicker {
+  margin: 0 0 10px !important;
+  color: var(--zw-cinnabar) !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+  letter-spacing: .17em !important;
+}
+
+.zhaowu-question-sheet h2,
+.zhaowu-bazi-hub h2 {
+  margin: 0 !important;
+  font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif) !important;
+  font-size: clamp(30px, 6vw, 42px) !important;
+  font-weight: 620 !important;
+  line-height: 1.24 !important;
+  letter-spacing: .035em !important;
+}
+
+.zhaowu-section-lead {
+  max-width: 42rem;
+  margin: 14px 0 0 !important;
+  color: var(--zw-ink-soft) !important;
+  font-size: 16px !important;
+  line-height: 1.85 !important;
+}
+
+.zhaowu-question-promise span {
+  min-height: 46px !important;
+  padding: 9px 11px !important;
+  border-color: rgba(79, 65, 45, .14) !important;
+  background: rgba(255, 253, 246, .65) !important;
+  color: #544b40 !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+.zhaowu-question-label,
+.zhaowu-birth-fields-title {
+  color: var(--zw-ink) !important;
+  font-size: 15px !important;
+  font-weight: 720 !important;
+}
+
+.zhaowu-question-sheet textarea {
+  width: 100%;
+  min-height: 132px !important;
+  margin-top: 8px !important;
+  padding: 15px 16px !important;
+  border: 1px solid rgba(73, 61, 45, .20) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 253, 247, .90) !important;
+  color: var(--zw-ink) !important;
+  font-size: 16px !important;
+  line-height: 1.72 !important;
+  box-shadow: inset 0 1px 2px rgba(67, 52, 34, .035) !important;
+}
+
+.zhaowu-analysis-submit-wrap {
+  display: grid !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  padding: 18px 20px !important;
+  border: 1px solid rgba(42, 76, 63, .17) !important;
+  border-radius: 18px !important;
+  background: rgba(239, 241, 229, .84) !important;
+}
+
+.zhaowu-analysis-submit-wrap p {
+  margin: 0 !important;
+  color: var(--zw-muted) !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
 
 .zhaowu-home-layout h1,
 .zhaowu-home-layout h2,
@@ -422,10 +590,11 @@ textarea {
 
 .zhaowu-site-footer { width: min(100%, 760px); }
 
-@media (max-width: 620px) {
+@media (max-width: 780px) {
   .zhaowu-site-header > div,
   .zhaowu-header-shell {
-    flex-wrap: wrap !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
     padding: 8px 12px 9px !important;
   }
 
@@ -435,17 +604,21 @@ textarea {
   .zhaowu-header-utility,
   .zhaowu-header-login { min-height: 40px; padding-inline: 10px; font-size: 13px; }
 
-  .zhaowu-header-nav { align-items: stretch; }
+  .zhaowu-header-nav {
+    width: 100%;
+    align-items: stretch;
+    padding-top: 8px;
+    border-top: 1px solid rgba(82, 65, 42, .12);
+  }
   .site-lang-group { flex: 1 1 auto; width: auto; max-width: none; }
   .site-lang-button { min-width: 0 !important; min-height: 46px !important; font-size: 15px !important; }
   .zhaowu-header-home-link { min-height: 46px; min-width: 78px; }
 
   .zhaowu-app-frame,
   .zhaowu-home-app-frame {
-    width: calc(100% - 12px) !important;
+    width: 100% !important;
     margin-top: 7px !important;
-    padding: 14px 12px 28px !important;
-    border-radius: 22px !important;
+    padding: 0 12px 28px !important;
   }
 
   .zhaowu-home-stage { margin-bottom: 30px !important; }
@@ -458,17 +631,33 @@ textarea {
   .bazi-luck-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
 }
 
-@media (max-width: 390px) {
+@media (max-width: 520px) {
   .zhaowu-brand-tagline { display: none; }
-  .zhaowu-header-utility:not(.zhaowu-header-signout) { display: none; }
+  .zhaowu-brand-name { font-size: 19px; }
+  .zhaowu-site-header .zhaowu-brand-seal--sm { width: 46px; height: 46px; }
+  .site-lang-button { min-height: 48px !important; font-size: 16px !important; }
+  .zhaowu-header-home-link { min-height: 48px; }
+
+  .zhaowu-question-sheet,
+  .zhaowu-bazi-hub { padding: 24px 18px !important; border-radius: 22px !important; }
+  .zhaowu-question-sheet::before,
+  .zhaowu-bazi-hub::before { inset: 8px !important; border-radius: 16px !important; }
+  .zhaowu-question-promise { grid-template-columns: 1fr !important; gap: 7px !important; }
+  .zhaowu-question-promise span { min-height: 42px !important; justify-items: start !important; text-align: left !important; }
+}
+
+@media (max-width: 390px) {
+  .zhaowu-header-gallery { display: none; }
   .zhaowu-header-signout { max-width: 60px; }
   .site-lang-button { padding-inline: 5px; }
   [data-scent-panel] .scent-option-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 360px) {
-  .zhaowu-brand-seal--sm { width: 39px; height: 39px; }
-  .zhaowu-brand-seal__character { font-size: 23px; }
+  .zhaowu-site-header .zhaowu-brand-seal--sm { width: 42px; height: 42px; }
+  .zhaowu-brand-name { font-size: 17px; }
+  .zhaowu-header-utility,
+  .zhaowu-header-login { padding-inline: 8px; font-size: 12px; }
   .zhaowu-header-home-link { min-width: 68px; padding-inline: 8px; font-size: 13px; }
   .zhaowu-cycle-list,
   .bazi-luck-grid { grid-template-columns: 1fr !important; }

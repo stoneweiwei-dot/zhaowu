@@ -36,7 +36,10 @@ test('scent test stays collapsed until explicitly opened', () => {
 
 test('mobile header and Bazi layout are governed by canonical responsive rules', () => {
   assert.match(design, /\.zhaowu-site-header > div/);
-  assert.match(design, /flex-wrap: wrap/);
+  assert.match(design, /@media \(max-width: 780px\)/);
+  assert.match(design, /grid-template-columns: 1fr !important/);
+  assert.match(design, /\.zhaowu-header-gallery \{ display: none; \}/);
+  assert.doesNotMatch(design, /\.zhaowu-header-utility:not\(\.zhaowu-header-signout\)/);
   assert.match(design, /\.bazi-detail-pillars/);
   assert.match(design, /grid-template-columns: 1fr !important/);
 });

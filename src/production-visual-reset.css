@@ -94,8 +94,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   padding-inline: 12px !important;
 }
 
-.zhaowu-site-header .bg-wood,
-.zhaowu-site-header button[aria-pressed="true"] {
+.zhaowu-site-header .bg-wood {
   background: var(--zv-jade) !important;
   color: #fffaf0 !important;
 }

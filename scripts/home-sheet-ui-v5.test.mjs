@@ -49,7 +49,7 @@ test("homepage keeps the Song parchment flow and uses a readable report director
   assert.match(home, /西洋星座/);
   assert.match(home, /前世今生/);
   assert.match(home, /紫微斗數/);
-  assert.match(home, /八字主分析/);
+  assert.match(home, /子平八字/);
   assert.match(home, /zhaowu-home-portal-hint/);
   assert.match(home, /data-specialist-link/);
   assert.doesNotMatch(home, /portalCopy\.learn|portalCopy\.best/);
@@ -65,8 +65,8 @@ test("homepage keeps the Song parchment flow and uses a readable report director
 
   assert.match(portals, /\.zhaowu-home-portals/);
   assert.match(portals, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(portals, /min-height:\s*150px/);
-  assert.match(portals, /font-size:\s*21px/);
+  assert.match(portals, /min-height:\s*164px/);
+  assert.match(portals, /font-size:\s*22px/);
   assert.match(portals, /pointer-events:\s*auto\s*!important/);
   assert.match(portals, /@media \(max-width: 640px\)/);
   assert.match(portals, /grid-template-columns:\s*1fr/);
