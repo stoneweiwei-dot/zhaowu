@@ -53,7 +53,7 @@ test("壬日主的偏財按實際生剋落火，不把木固定當財", () => {
   assert.match(text, /火偏財/);
   assert.match(text, /十神決定/);
   assert.match(text, /絕不是木固定等於財/);
-  assert.match(text, /正\/偏、喜忌旺衰、透藏根氣與坐支/);
+  assert.match(text, /正[／\/]偏、喜忌旺衰、透藏根氣與坐支/);
 });
 
 test("顯著度只標可見度，不冒充正式旺衰", () => {
