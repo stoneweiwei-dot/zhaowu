@@ -87,7 +87,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.getByRole("button", { name: "EN", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Four Pillars chart", exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Client details", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Build your chart", exact: true })).toBeVisible();
     await expect(page.locator("#analysis-question")).toBeVisible();
     await expect(page.locator("#birth-year")).toBeVisible();
     await expect(page.locator("#birth-month")).toBeVisible();
