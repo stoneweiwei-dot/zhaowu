@@ -61,13 +61,15 @@ test("unknown birth time does not disable a whole section and D60 warns instead 
   assert.match(d60, /unavailable/);
 });
 
-test("apple-touch-icon and manifest point to versioned new icons with no old active HTML favicon", async () => {
+test("apple-touch-icon and manifest point to the owner-provided r86 gourd wordmark", async () => {
   const html = await read("index.html");
   const manifest = await read("public/manifest.webmanifest");
   const gate = await read("src/components/intro-gate.tsx");
   const paid = await read("src/components/paid-report-pages.tsx");
-  assert.match(html, /apple-touch-icon-v3\.png/);
-  assert.match(manifest, /apple-touch-icon-v3\.png/);
+  assert.match(html, /apple-touch-icon-r86\.png/);
+  assert.match(manifest, /apple-touch-icon-r86\.png/);
+  assert.match(manifest, /zhaowu-gourd-wordmark-r86-192\.png/);
+  assert.match(manifest, /zhaowu-gourd-wordmark-r86-512\.png/);
   assert.match(manifest, /any maskable/);
   assert.doesNotMatch(html, /apple-touch-icon-r53\.png/);
   assert.doesNotMatch(html, /icons\/zhaowu-lotus-192\.png/);

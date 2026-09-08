@@ -1,5 +1,5 @@
-const CACHE = "zhaowu-shell-r85";
-const SHELL = ["/", "/manifest.webmanifest", "/apple-touch-icon-v3.png", "/icons/zhaowu-lotus-192.png", "/icons/zhaowu-lotus-512.png"];
+const CACHE = "zhaowu-shell-r86";
+const SHELL = ["/", "/manifest.webmanifest", "/apple-touch-icon-r86.png", "/icons/zhaowu-gourd-wordmark-r86-192.png", "/icons/zhaowu-gourd-wordmark-r86-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

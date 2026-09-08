@@ -90,7 +90,7 @@
 - iPhone 关键流程最终实机验收。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 正式「制作我的命请图」按钮已改为请求 `force=true` 的供应商个性化图；真实 provider 成功仍依赖图片 API credits，失败时必须回退 Gallery-direct，且不得阻塞文字报告。
-- Loading 使用站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 与同名 JPEG 海报；目标退出为 2.4 秒、硬退出为 2.8 秒，初始化异常不得阻塞首页、登入或账户入口。主画面图标为站主宋画金莲 `/apple-touch-icon-r53.png`。
+- Loading 使用站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 与同名 JPEG 海報；目標退出為 2.4 秒、硬退出為 2.8 秒，初始化異常不得阻塞首頁、登入或帳戶入口。App／手機主畫面圖示使用站主提供的金色葫蘆與深藍「昭梧」原圖 `/apple-touch-icon-r86.png`；Header 蓮花標記為獨立介面資產，不得覆蓋手機圖示。
 
 ## 8. 生产优先级
 
