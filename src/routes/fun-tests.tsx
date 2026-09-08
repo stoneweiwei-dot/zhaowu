@@ -148,7 +148,11 @@ function scoreAnimal(answers: AnimalKey[]) {
 function FunTests() {
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
-  const [mode, setMode] = useState<QuizMode>("menu");
+  const [mode, setMode] = useState<QuizMode>(() => {
+    if (typeof window === "undefined") return "menu";
+    const requested = new URLSearchParams(window.location.search).get("test");
+    return requested === "animal" || requested === "element" ? requested : "menu";
+  });
   const [animalIndex, setAnimalIndex] = useState(0);
   const [animalAnswers, setAnimalAnswers] = useState<AnimalKey[]>([]);
   const [elementIndex, setElementIndex] = useState(0);
@@ -250,6 +254,11 @@ function FunTests() {
 
   function backToMenu() {
     setMode("menu");
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("test");
+      window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    }
   }
 
   return (
