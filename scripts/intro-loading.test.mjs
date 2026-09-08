@@ -70,7 +70,7 @@ test('intro exits when runtime is ready at the target or when the visual finishe
   assert.match(gate, /scheduleIntroGateHardExit/);
 });
 
-test('intro plays the committed owner lotus bloom and keeps the animated lotus fallback', () => {
+test('intro plays owner lotus video with the approved full-screen owner-poster fallback', () => {
   assert.match(gate, /OWNER_LOADING_VIDEO/);
   assert.match(gate, /data-intro-motion="owner-video"/);
   assert.match(gate, /owner-lotus-bloom-r53\.mp4/);
@@ -80,10 +80,12 @@ test('intro plays the committed owner lotus bloom and keeps the animated lotus f
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /owner-lotus-bloom-r53\.jpg/);
   assert.match(gate, /playsInline/);
-  assert.match(gate, /data-intro-fallback-mode="animated-lotus"/);
+  assert.match(gate, /data-intro-fallback-mode="fullscreen-owner-poster"/);
+  assert.match(gate, /zhaowu-lotus-intro__poster/);
   assert.match(gate, /zhaowu-lotus-intro__fallback-art/);
   assert.match(gate, /zhaowu-lotus-intro__lotus--1/);
   assert.match(gate, /zhaowu-lotus-intro__lotus--2/);
+  assert.match(gate, /zhaowu-lotus-intro__fallback-copy/);
   assert.doesNotMatch(gate, /<svg/);
   assert.match(gate, /data-intro-fallback/);
   assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp|loading-owner-r40|twin-lotus-restored-r26/);
