@@ -17,6 +17,17 @@
 
 首頁、全站 Header、Loading gate、六份命理專卷入口與專項報告頁。八字計算、問答引擎、會員資料、付款、Supabase 儲存與命理算法均未變更。
 
+## 保護範圍
+
+本次只調整顧客可見的視覺、文案與導覽層。子平排盤、命理解讀規則、完整報告生成、登入權限、付款、歷史報告與 Supabase 資料結構均保持原有契約。
+
+## 驗證狀態
+
+- PR #268 已 squash merge；Production commit：`326008cb1a1ea258f28bc6b20f1238ebbcc887e3`。
+- Deploy gate、Engine suite 均通過；iPhone Safari 29/29 通過。
+- Vercel Production `dpl_ATJuRjv9ndi4Munb4AomDBk99eGi` 為 READY，正式網域指向同一 commit。
+- 正式首頁已驗證 r81、Loading gate、梧桐標誌、三語選中對比與六條專卷入口，未見應用程式錯誤。
+
 ## 回滾
 
 回滾本版本 commit，可恢復 r80 的 Header、Loading fallback、首頁目錄樣式與專項頁呈現；Supabase 的既有資料與音檔 bucket 不需回滾。
