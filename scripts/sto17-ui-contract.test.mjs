@@ -5,16 +5,36 @@ import { readFileSync } from 'node:fs';
 const main = readFileSync(new URL('../src/main.tsx', import.meta.url), 'utf8');
 const root = readFileSync(new URL('../src/routes/__root.tsx', import.meta.url), 'utf8');
 const design = readFileSync(new URL('../src/zhaowu-design-system.css', import.meta.url), 'utf8');
+const login = readFileSync(new URL('../src/routes/login.tsx', import.meta.url), 'utf8');
+const loginApproved = readFileSync(new URL('../src/login-approved-r89.css', import.meta.url), 'utf8');
 const account = readFileSync(new URL('../src/routes/account.tsx', import.meta.url), 'utf8');
 const home = readFileSync(new URL('../src/routes/index.tsx', import.meta.url), 'utf8');
 
 const canonicalImport = "import './zhaowu-design-system.css';";
+const loginApprovedImport = "import './login-approved-r89.css';";
 const legacyLastImport = "import './site-ux-r75-final.css';";
 
-test('canonical design system is the final global CSS layer', () => {
+test('canonical design system stays the final global base and r89 overrides login only', () => {
   assert.match(main, /zhaowu-design-system\.css/);
+  assert.match(main, /login-approved-r89\.css/);
   assert.ok(main.lastIndexOf(canonicalImport) > main.lastIndexOf(legacyLastImport));
+  assert.ok(main.lastIndexOf(loginApprovedImport) > main.lastIndexOf(canonicalImport));
+  assert.match(loginApproved, /\.zhaowu-login-shell/);
+  assert.doesNotMatch(loginApproved, /\.zhaowu-home-sheet-shell/);
   assert.doesNotMatch(root, /mobile-foundation-r81\.css/);
+});
+
+test('approved login restores official mark, Song wallpaper and existing four sign-in paths', () => {
+  assert.match(login, /BrandSeal/);
+  assert.match(login, /stone-login-brand/);
+  assert.match(login, /onOAuth\("google"\)/);
+  assert.match(login, /onOAuth\("apple"\)/);
+  assert.match(login, /onOAuth\("twitter"\)/);
+  assert.match(login, /id="login-email"/);
+  assert.match(loginApproved, /url\("\/wallpaper-song\.jpg"\)/);
+  assert.match(loginApproved, /rgba\(255, 252, 244, \.91\)/);
+  assert.match(loginApproved, /#ac473b/);
+  assert.match(loginApproved, /background-attachment:\s*scroll/);
 });
 
 test('runtime R79 visual injector stays removed', () => {

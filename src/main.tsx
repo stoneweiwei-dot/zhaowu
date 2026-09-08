@@ -45,6 +45,7 @@ import './site-ux-r63-lock.css';
 import './daily-almanac-r69.css';
 import './site-ux-r75-final.css';
 import './zhaowu-design-system.css';
+import './login-approved-r89.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
@@ -101,9 +102,6 @@ if ('serviceWorker' in navigator) {
   let reloadedForControllerChange = false;
 
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    // A first-time visitor can become controlled when the new worker calls clients.claim().
-    // That initial acquisition does not need a reload and was racing deep-route/Safari startup.
-    // Existing installed clients still reload once when an updated worker takes control.
     if (!hadControllerAtBoot || reloadedForControllerChange) return;
     reloadedForControllerChange = true;
     window.location.reload();

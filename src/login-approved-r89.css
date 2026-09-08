@@ -1,0 +1,308 @@
+/* ZHAOWU r89 — restore the owner-approved login visual only.
+ * Supersedes the conflicting v41 login presentation while leaving auth,
+ * routing, calculations, payments, Supabase behavior and the rest of the
+ * canonical design system unchanged.
+ */
+
+.zhaowu-login-shell {
+  background: #eee1cc !important;
+}
+
+.zhaowu-login-shell .stone-login-screen {
+  min-height: 100dvh !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: max(72px, calc(env(safe-area-inset-top) + 58px)) 16px max(30px, calc(env(safe-area-inset-bottom) + 18px)) !important;
+  background:
+    linear-gradient(180deg, rgba(249, 242, 226, .26), rgba(238, 224, 197, .34)),
+    linear-gradient(90deg, rgba(251, 245, 232, .14), rgba(251, 245, 232, .03)),
+    url("/wallpaper-song.jpg") center top / cover no-repeat !important;
+  background-attachment: scroll !important;
+  animation: none !important;
+}
+
+.zhaowu-login-shell .stone-login-sheet {
+  width: min(100%, 438px) !important;
+  margin: 0 auto !important;
+  padding: 26px 22px 22px !important;
+  border: 1px solid rgba(163, 119, 57, .48) !important;
+  border-radius: 20px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 244, .91), rgba(248, 237, 217, .86)) !important;
+  box-shadow:
+    0 22px 58px rgba(63, 46, 27, .14),
+    inset 0 0 0 1px rgba(255, 255, 255, .34) !important;
+  backdrop-filter: blur(4px) saturate(.94) !important;
+  -webkit-backdrop-filter: blur(4px) saturate(.94) !important;
+  animation: stone-login-sheet-enter .46s cubic-bezier(.22, 1, .36, 1) both !important;
+}
+
+.zhaowu-login-shell .stone-login-brand {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  margin: 0 auto 16px !important;
+  text-align: left !important;
+}
+
+.zhaowu-login-shell .stone-login-brand .zhaowu-brand-seal {
+  width: 58px !important;
+  height: 58px !important;
+  flex: 0 0 58px !important;
+}
+
+.zhaowu-login-shell .stone-login-brand .zhaowu-brand-seal__image {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: contain !important;
+}
+
+.zhaowu-login-shell .stone-login-brand-copy p {
+  margin: 0 !important;
+}
+
+.zhaowu-login-shell .stone-login-brand-name {
+  color: #263f34 !important;
+  font-family: var(--font-display, serif) !important;
+  font-size: 1.55rem !important;
+  font-weight: 650 !important;
+  line-height: 1.05 !important;
+  letter-spacing: .16em !important;
+}
+
+.zhaowu-login-shell .stone-login-brand-latin {
+  margin-top: 5px !important;
+  color: #98703d !important;
+  font-size: .64rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: .28em !important;
+}
+
+.zhaowu-login-shell .stone-login-kicker {
+  margin: 0 !important;
+  color: #936d3e !important;
+  font-size: .62rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .24em !important;
+  text-align: center !important;
+  text-shadow: none !important;
+}
+
+.zhaowu-login-shell .stone-login-title {
+  display: block !important;
+  margin: 9px 0 0 !important;
+  padding: 0 !important;
+  color: #29261f !important;
+  font-family: var(--font-display, serif) !important;
+  font-size: clamp(2rem, 9vw, 2.75rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.08 !important;
+  letter-spacing: .055em !important;
+  text-align: center !important;
+}
+
+.zhaowu-login-shell .stone-login-title::after {
+  display: none !important;
+}
+
+.zhaowu-login-shell .stone-login-lead {
+  max-width: 30rem !important;
+  margin: 9px auto 0 !important;
+  color: #675e51 !important;
+  font-size: .83rem !important;
+  line-height: 1.72 !important;
+  text-align: center !important;
+}
+
+.zhaowu-login-shell .stone-login-tabs {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0 !important;
+  margin-top: 21px !important;
+  border-bottom: 1px solid rgba(151, 111, 62, .25) !important;
+}
+
+.zhaowu-login-shell .stone-login-tabs button {
+  min-height: 46px !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  padding: 0 8px !important;
+  color: #746a5e !important;
+  background: transparent !important;
+  font-size: .88rem !important;
+  font-weight: 650 !important;
+}
+
+.zhaowu-login-shell .stone-login-tabs button.is-active {
+  border-bottom-color: #a23b31 !important;
+  color: #8f3028 !important;
+}
+
+.zhaowu-login-shell .stone-login-oauth-group {
+  margin-top: 18px !important;
+}
+
+.zhaowu-login-shell .stone-login-oauth-label {
+  margin: 0 0 10px !important;
+  color: #817465 !important;
+  font-size: .68rem !important;
+  font-weight: 650 !important;
+  letter-spacing: .11em !important;
+  text-align: center !important;
+}
+
+.zhaowu-login-shell .stone-login-oauth-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 9px !important;
+}
+
+.zhaowu-login-shell .stone-login-oauth {
+  width: 100% !important;
+  min-height: 48px !important;
+  border: 1px solid rgba(151, 111, 62, .34) !important;
+  border-radius: 11px !important;
+  padding: 0 14px !important;
+  color: #302c25 !important;
+  background: rgba(255, 251, 242, .82) !important;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .48) !important;
+  font-size: .86rem !important;
+  font-weight: 620 !important;
+}
+
+.zhaowu-login-shell .stone-login-oauth:disabled,
+.zhaowu-login-shell .stone-login-primary:disabled {
+  cursor: default !important;
+  opacity: .52 !important;
+}
+
+.zhaowu-login-shell .stone-login-email-divider {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 15px 0 0 !important;
+  color: #8a7d6d !important;
+  font-size: .68rem !important;
+  text-align: center !important;
+}
+
+.zhaowu-login-shell .stone-login-email-divider::before,
+.zhaowu-login-shell .stone-login-email-divider::after {
+  content: "" !important;
+  height: 1px !important;
+  flex: 1 !important;
+  background: rgba(151, 111, 62, .22) !important;
+}
+
+.zhaowu-login-shell .stone-login-form {
+  display: grid !important;
+  gap: 13px !important;
+  margin-top: 15px !important;
+}
+
+.zhaowu-login-shell .stone-login-form label {
+  display: grid !important;
+  gap: 7px !important;
+}
+
+.zhaowu-login-shell .stone-login-form label > span {
+  color: #4b4338 !important;
+  font-size: .76rem !important;
+  font-weight: 680 !important;
+  letter-spacing: .025em !important;
+}
+
+.zhaowu-login-shell .stone-login-form input {
+  width: 100% !important;
+  min-height: 49px !important;
+  border: 1px solid rgba(145, 106, 58, .36) !important;
+  border-radius: 11px !important;
+  padding: 0 13px !important;
+  color: #2c2924 !important;
+  background: rgba(255, 252, 246, .92) !important;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .62) !important;
+  font-size: 16px !important;
+}
+
+.zhaowu-login-shell .stone-login-form input:focus {
+  border-color: rgba(162, 59, 49, .68) !important;
+  outline: 3px solid rgba(162, 59, 49, .09) !important;
+  outline-offset: 1px !important;
+}
+
+.zhaowu-login-shell .stone-login-primary {
+  width: 100% !important;
+  min-height: 51px !important;
+  margin-top: 3px !important;
+  border: 1px solid rgba(126, 40, 34, .42) !important;
+  border-radius: 11px !important;
+  color: #fff8ed !important;
+  background: linear-gradient(180deg, #ac473b 0%, #8f3028 100%) !important;
+  box-shadow: 0 10px 22px rgba(123, 41, 33, .17) !important;
+  font-size: .93rem !important;
+  font-weight: 720 !important;
+  letter-spacing: .04em !important;
+}
+
+.zhaowu-login-shell .stone-login-error,
+.zhaowu-login-shell .stone-login-message {
+  margin: 0 !important;
+  border-radius: 9px !important;
+  padding: 10px 12px !important;
+  font-size: .76rem !important;
+  line-height: 1.55 !important;
+}
+
+.zhaowu-login-shell .stone-login-signature {
+  margin: 18px 0 0 !important;
+  padding-top: 13px !important;
+  border-top: 1px solid rgba(151, 111, 62, .22) !important;
+  color: #7c7061 !important;
+  font-size: .69rem !important;
+  line-height: 1.6 !important;
+  text-align: center !important;
+}
+
+@media (min-width: 620px) {
+  .zhaowu-login-shell .stone-login-oauth-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  .zhaowu-login-shell .stone-login-oauth {
+    min-height: 52px !important;
+    padding-inline: 9px !important;
+    font-size: .76rem !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .zhaowu-login-shell .stone-login-screen {
+    align-items: start !important;
+    padding: max(44px, calc(env(safe-area-inset-top) + 30px)) 12px max(24px, calc(env(safe-area-inset-bottom) + 14px)) !important;
+    background-position: 57% top !important;
+  }
+  .zhaowu-login-shell .stone-login-sheet {
+    padding: 22px 17px 18px !important;
+    border-radius: 18px !important;
+  }
+  .zhaowu-login-shell .stone-login-brand {
+    margin-bottom: 13px !important;
+  }
+  .zhaowu-login-shell .stone-login-brand .zhaowu-brand-seal {
+    width: 52px !important;
+    height: 52px !important;
+    flex-basis: 52px !important;
+  }
+  .zhaowu-login-shell .stone-login-brand-name {
+    font-size: 1.38rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-login-shell .stone-login-sheet {
+    animation: none !important;
+  }
+}

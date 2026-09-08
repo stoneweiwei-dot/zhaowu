@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FormEvent, useEffect, useState } from "react";
+import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { captureOAuthRedirect, signInWithPassword, signUpWithPassword, startOAuth, supabaseConfigured, type OAuthProvider } from "@/lib/supabase-rest";
@@ -46,7 +47,6 @@ function LoginPage() {
     setInfo(null);
     setOauthBusy(provider);
     try {
-      // Let startOAuth build the canonical absolute /login callback URL.
       startOAuth(provider);
     } catch (err) {
       setOauthBusy(null);
@@ -80,8 +80,6 @@ function LoginPage() {
         await navigate({ to: "/" });
         return;
       }
-      // Some Supabase projects require one email confirmation after account creation.
-      // No extra confirmation UI is added here; the backend decides whether confirmation is required.
       setInfo(t("accountCreated"));
       setMode("signin");
     } catch (err) {
@@ -94,29 +92,37 @@ function LoginPage() {
   return (
     <main className="stone-login-screen" aria-labelledby="login-title">
       <section className="stone-login-sheet seal-border">
+        <div className="stone-login-brand" aria-label={`${t("brand")} ZHAOWU`}>
+          <BrandSeal size="lg" decorative />
+          <div className="stone-login-brand-copy">
+            <p className="stone-login-brand-name">{t("brand")}</p>
+            <p className="stone-login-brand-latin">ZHAOWU</p>
+          </div>
+        </div>
+
         <p className="stone-login-kicker">ZHAOWU · ACCOUNT</p>
         <h1 id="login-title" className="stone-login-title">{mode === "signin" ? t("loginTitle") : t("signupTitle")}</h1>
         <p className="stone-login-lead">{mode === "signin" ? t("loginLead") : t("loginPageLead")}</p>
 
-        <div className="stone-login-tabs" role="tablist" aria-label={t("loginTitle")}> 
+        <div className="stone-login-tabs" role="tablist" aria-label={t("loginTitle")}>
           <button type="button" role="tab" aria-selected={mode === "signin"} className={mode === "signin" ? "is-active" : undefined} onClick={() => setMode("signin")}>{t("loginTab")}</button>
           <button type="button" role="tab" aria-selected={mode === "signup"} className={mode === "signup" ? "is-active" : undefined} onClick={() => setMode("signup")}>{t("signupTab")}</button>
         </div>
 
-        <div className="mt-5">
-          <p className="mb-3 text-center text-xs tracking-[0.12em] text-ink-mute">{oauthCopy.quick}</p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <button type="button" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("google")} className="min-h-12 rounded-xl border border-line bg-cream/70 px-3 text-sm text-ink disabled:opacity-50">
+        <div className="stone-login-oauth-group">
+          <p className="stone-login-oauth-label">{oauthCopy.quick}</p>
+          <div className="stone-login-oauth-grid">
+            <button type="button" data-provider="google" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("google")} className="stone-login-oauth">
               {oauthCopy.google}
             </button>
-            <button type="button" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("apple")} className="min-h-12 rounded-xl border border-line bg-cream/70 px-3 text-sm text-ink disabled:opacity-50">
+            <button type="button" data-provider="apple" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("apple")} className="stone-login-oauth">
               {oauthCopy.apple}
             </button>
-            <button type="button" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("twitter")} className="min-h-12 rounded-xl border border-line bg-cream/70 px-3 text-sm text-ink disabled:opacity-50">
+            <button type="button" data-provider="x" disabled={busy || oauthBusy !== null} onClick={() => onOAuth("twitter")} className="stone-login-oauth">
               {oauthCopy.x}
             </button>
           </div>
-          <p className="my-4 text-center text-xs text-ink-mute">{oauthCopy.email}</p>
+          <p className="stone-login-email-divider"><span>{oauthCopy.email}</span></p>
         </div>
 
         <form onSubmit={onSubmit} className="stone-login-form">
@@ -143,7 +149,7 @@ function LoginPage() {
           </button>
         </form>
 
-        <p className="stone-login-signature">{t("loginPageLead")}</p>
+        <p className="stone-login-signature">{t("tagline")}</p>
       </section>
     </main>
   );
