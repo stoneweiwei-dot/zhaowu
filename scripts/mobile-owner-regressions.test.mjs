@@ -23,8 +23,12 @@ test("internal timing traces are removed without losing the following year's ans
   const clean = customerCopy(text);
   assert.match(clean, /2026/);
   assert.match(clean, /2027/);
-  assert.doesNotMatch(clean, /歲運作用鏈|酉酉自刑/);
+  assert.doesNotMatch(clean, /歲運作用鏈|酉酉自刑|大運層|流年層|流月層|排序依序核對/);
   assert.match(customerCopy("2026 属于可做的年份。岁运作用链：乙丑 2027 属于可做的年份。"), /2027/);
+  assert.doesNotMatch(
+    customerCopy("較順的窗口：9月。排序依序核對原局、大運、流年、流月；不把任何單一關係當作結果保證。"),
+    /排序依序核對|結果保證/,
+  );
 });
 
 test("share artwork contains the whole panel and bootstrap uses owner artwork", () => {
