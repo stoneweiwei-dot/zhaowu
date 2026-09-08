@@ -1,5 +1,5 @@
 import { analyzeForecastYear, type ForecastPeriod, type ForecastTopic } from "@/lib/bazi/forecast";
-import { analyzeCycleChain, cycleChainEvidence } from "@/lib/bazi/cycle-chain";
+import { analyzeCycleChain } from "@/lib/bazi/cycle-chain";
 import type { Chart } from "@/lib/bazi/types";
 
 function normalizedMonths(months?: number[]): number[] {
@@ -75,26 +75,22 @@ export function buildDistinctTimingAnswer(
     if (periods.length === 1) {
       const only = periods[0];
       const tone = only.score >= 2 ? "偏順" : only.score <= -2 ? "阻力偏高" : "中性可用";
-      const chain = analyzeCycleChain(chart, only.year, only.yearGanZhi, only.monthGanZhi, topic);
-      return `${yearVerdict(topic, overallScore, year)}你指定的月份範圍內，${monthLabel(only)} 為${tone}。${cycleChainEvidence(chain)}`;
+      return `${yearVerdict(topic, overallScore, year)}你指定的月份範圍內，${monthLabel(only)} 為${tone}。`;
     }
 
     const ranked = rankDistinct(periods);
     const best = ranked.best.map(monthLabel).join("、");
     const caution = ranked.caution.map(monthLabel).join("、");
-    const anchor = ranked.best[0] ?? periods[0];
-    const chain = analyzeCycleChain(chart, anchor.year, anchor.yearGanZhi, anchor.monthGanZhi, topic);
     return [
       yearVerdict(topic, overallScore, year),
       scope.length ? "你指定的月份範圍內，" : "",
       `較順的窗口：${best || "—"}。`,
       caution ? `較需要保守安排：${caution}。` : "",
-      cycleChainEvidence(chain),
     ].filter(Boolean).join("");
   });
 
   const precision = chart.timeUnknown
     ? "出生時間未確定，所以時柱與大運不做滿格推斷，月份判斷會較寬。"
-    : "排序依序核對原局、大運、流年、流月；支合只先論牽制，支沖刑害只先論引動與摩擦，不把任何單一關係當作結果保證。";
+    : "";
   return `${blocks.join(" ")} ${precision}`.trim();
 }

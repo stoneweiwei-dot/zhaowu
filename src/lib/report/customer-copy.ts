@@ -9,9 +9,12 @@ export function customerCopy(value: string): string {
     // Keep the next year's answer when an internal trace lacks its closing full stop.
     .replace(/歲運作用鏈[：:][\s\S]*?(?=\b20\d{2}\s*屬於|[。\n]|$)/g, "")
     .replace(/岁运作用链[：:][\s\S]*?(?=\b20\d{2}\s*属于|[。\n]|$)/g, "")
-    .replace(/[，,；;]\s*不再用通用性格句代替答案/g, "。")
-    .replace(/[，,；;]\s*不把它包裝成必然事件或保證日期/g, "。")
-    .replace(/[，,；;]\s*不把它包装成必然事件或保证日期/g, "。");
+    .replace(/(?:大運層|大运层|流年層|流年层|流月層|流月层)[：:][^。\n]*?(?=\b20\d{2}|[。\n]|$)/g, "")
+    .replace(/排序依序核對原局[\s\S]*?(?:結果保證|结果保证)[。]?/g, "")
+    .replace(/排序依序核对原局[\s\S]*?(?:結果保證|结果保证)[。]?/g, "")
+    .replace(/[，,;；]\s*不再用通用性格句代替答案/g, "。")
+    .replace(/[，,;；]\s*不把它包裝成必然事件或保證日期/g, "。")
+    .replace(/[，,;；]\s*不把它包装成必然事件或保证日期/g, "。");
 
   const cleaned = (text.match(/[^。！？!?\n]+[。！？!?]?/g) ?? [text])
     .map((part) => part.trim())
