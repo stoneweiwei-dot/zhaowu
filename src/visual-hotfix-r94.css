@@ -1,0 +1,167 @@
+/* r94 — fixes verified against the 2026-09-09 iPhone screenshots. */
+
+.zhaowu-lotus-intro__fallback {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #ead9b8;
+  transition: opacity 160ms ease-out;
+}
+
+.zhaowu-lotus-intro__fallback.is-covered {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.zhaowu-lotus-intro__poster,
+.zhaowu-lotus-intro__fallback-art,
+.zhaowu-lotus-intro__fallback-shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.zhaowu-lotus-intro__poster {
+  display: block;
+  object-fit: cover;
+  object-position: 50% 48%;
+  transform: scale(1.012);
+  filter: saturate(.92) contrast(.97) brightness(.98);
+}
+
+.zhaowu-lotus-intro__fallback-art {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.zhaowu-lotus-intro__pond {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: 20%;
+  height: 11%;
+  border-radius: 50%;
+  border: 1px solid rgba(203, 177, 126, .34);
+  box-shadow: 0 0 46px rgba(241, 213, 166, .18);
+}
+
+.zhaowu-lotus-intro__lotus {
+  position: absolute;
+  bottom: 26%;
+  width: 112px;
+  height: 180px;
+  opacity: .24;
+}
+
+.zhaowu-lotus-intro__lotus--1 { left: calc(50% - 105px); transform: scale(.82); }
+.zhaowu-lotus-intro__lotus--2 { left: calc(50% + 8px); transform: scale(.7); opacity: .18; }
+
+.zhaowu-lotus-intro__stem {
+  position: absolute;
+  left: 54px;
+  bottom: 0;
+  width: 2px;
+  height: 118px;
+  background: rgba(66, 91, 70, .78);
+}
+
+.zhaowu-lotus-intro__leaf {
+  position: absolute;
+  left: 22px;
+  bottom: 43px;
+  width: 62px;
+  height: 24px;
+  border-radius: 70% 30% 65% 35%;
+  background: rgba(71, 99, 76, .6);
+  transform: rotate(-12deg);
+}
+
+.zhaowu-lotus-intro__flower {
+  position: absolute;
+  left: 24px;
+  top: 8px;
+  width: 64px;
+  height: 52px;
+  border-radius: 58% 58% 48% 48%;
+  background:
+    radial-gradient(ellipse at 50% 80%, rgba(244, 215, 185, .82) 0 18%, transparent 19%),
+    linear-gradient(135deg, rgba(167, 86, 75, .78), rgba(229, 178, 153, .74));
+  clip-path: polygon(50% 0, 63% 32%, 91% 18%, 78% 58%, 100% 67%, 65% 78%, 50% 100%, 35% 78%, 0 67%, 22% 58%, 9% 18%, 37% 32%);
+}
+
+.zhaowu-lotus-intro__ink {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 62%, transparent 0 28%, rgba(39, 46, 37, .04) 62%, rgba(30, 31, 26, .12) 100%);
+}
+
+.zhaowu-lotus-intro__fallback-shade {
+  z-index: 2;
+  background: linear-gradient(180deg, rgba(28, 34, 27, .02) 0%, rgba(35, 29, 22, .01) 50%, rgba(29, 24, 18, .34) 100%);
+}
+
+.zhaowu-lotus-intro__fallback-copy {
+  position: absolute;
+  z-index: 3;
+  left: 24px;
+  right: 24px;
+  bottom: max(11vh, calc(env(safe-area-inset-bottom, 0px) + 66px));
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  color: #fff9ed;
+  text-align: center;
+  text-shadow: 0 2px 14px rgba(34, 27, 20, .48);
+}
+
+.zhaowu-lotus-intro__fallback-copy strong {
+  font-family: var(--font-display, serif);
+  font-size: clamp(2.15rem, 10vw, 3.15rem);
+  font-weight: 600;
+  letter-spacing: .16em;
+  line-height: 1;
+}
+
+.zhaowu-lotus-intro__fallback-copy span {
+  font-size: .82rem;
+  letter-spacing: .18em;
+}
+
+.zhaowu-lotus-intro__fallback-copy i {
+  display: block;
+  width: 92px;
+  height: 1px;
+  margin-top: 7px;
+  background: linear-gradient(90deg, transparent, rgba(255, 244, 222, .78), transparent);
+}
+
+/* ChatGPT/Safari in-app chrome can occupy far more than safe-area-inset-bottom.
+   Keep the controls above it and give each control its own horizontal slot. */
+@media (max-width: 780px) {
+  [class*="z-[89]"][class*="right-3"] {
+    right: calc(max(.75rem, env(safe-area-inset-right, 0px)) + 3.75rem) !important;
+    bottom: max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4rem)) !important;
+  }
+
+  [class*="z-[90]"][class*="bottom-0"] {
+    bottom: max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4rem)) !important;
+    padding-bottom: 0 !important;
+  }
+
+  [data-mobile-floating-control="music"] {
+    bottom: max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4rem)) !important;
+  }
+}
+
+@media (display-mode: standalone) and (max-width: 780px) {
+  [class*="z-[89]"][class*="right-3"],
+  [class*="z-[90]"][class*="bottom-0"],
+  [data-mobile-floating-control="music"] {
+    bottom: max(.9rem, env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-lotus-intro__fallback-art { display: none; }
+}

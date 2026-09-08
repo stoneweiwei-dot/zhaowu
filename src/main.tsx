@@ -46,6 +46,7 @@ import './daily-almanac-r69.css';
 import './site-ux-r75-final.css';
 import './zhaowu-design-system.css';
 import './login-approved-r89.css';
+import './visual-hotfix-r94.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
@@ -55,21 +56,13 @@ if (!root) throw new Error('Missing root element');
 const currentBundlePath = () => {
   const script = document.querySelector<HTMLScriptElement>('script[type="module"][src*="/assets/"]');
   if (!script?.src) return null;
-  try {
-    return new URL(script.src, window.location.href).pathname;
-  } catch {
-    return null;
-  }
+  try { return new URL(script.src, window.location.href).pathname; } catch { return null; }
 };
 
 const freshBundlePath = (html: string) => {
   const match = html.match(/<script[^>]+src=["']([^"']*\/assets\/index-[^"']+\.js)["']/i);
   if (!match?.[1]) return null;
-  try {
-    return new URL(match[1], window.location.origin).pathname;
-  } catch {
-    return null;
-  }
+  try { return new URL(match[1], window.location.origin).pathname; } catch { return null; }
 };
 
 let refreshCheckInFlight = false;
@@ -80,11 +73,7 @@ const checkForFreshShell = async () => {
   refreshCheckInFlight = true;
   lastRefreshCheckAt = now;
   try {
-    const response = await fetch('/', {
-      cache: 'no-store',
-      credentials: 'same-origin',
-      headers: { 'Cache-Control': 'no-cache' },
-    });
+    const response = await fetch('/', { cache: 'no-store', credentials: 'same-origin', headers: { 'Cache-Control': 'no-cache' } });
     if (!response.ok) return;
     const html = await response.text();
     const current = currentBundlePath();
@@ -92,33 +81,24 @@ const checkForFreshShell = async () => {
     if (current && fresh && current !== fresh) window.location.reload();
   } catch {
     // Fail open: never block the app just because an update check failed.
-  } finally {
-    refreshCheckInFlight = false;
-  }
+  } finally { refreshCheckInFlight = false; }
 };
 
 if ('serviceWorker' in navigator) {
   const hadControllerAtBoot = Boolean(navigator.serviceWorker.controller);
   let reloadedForControllerChange = false;
-
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (!hadControllerAtBoot || reloadedForControllerChange) return;
     reloadedForControllerChange = true;
     window.location.reload();
   });
-
   const refreshServiceWorker = () => {
-    void navigator.serviceWorker.register('/sw.js', { scope: '/', updateViaCache: 'none' })
-      .then((registration) => registration.update())
-      .catch(() => undefined);
+    void navigator.serviceWorker.register('/sw.js', { scope: '/', updateViaCache: 'none' }).then((registration) => registration.update()).catch(() => undefined);
     void checkForFreshShell();
   };
-
   refreshServiceWorker();
   window.addEventListener('pageshow', refreshServiceWorker);
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') refreshServiceWorker();
-  });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refreshServiceWorker(); });
 }
 
 createRoot(root).render(<StrictMode><RouterProvider router={router} /><BackgroundMusic /></StrictMode>);

@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
-import {
-  INTRO_GATE_FADE_MS,
-  INTRO_GATE_MIN_VISIBLE_MS,
-  INTRO_GATE_TARGET_MS,
-  scheduleIntroGateHardExit,
-} from "@/lib/intro-gate-policy";
+import { INTRO_GATE_FADE_MS, INTRO_GATE_MIN_VISIBLE_MS, INTRO_GATE_TARGET_MS, scheduleIntroGateHardExit } from "@/lib/intro-gate-policy";
 
 const OWNER_LOADING_VIDEO = "/intro/owner-lotus-bloom-r53.mp4";
 const OWNER_LOADING_POSTER = "/intro/owner-lotus-bloom-r53.jpg";
@@ -25,10 +20,7 @@ export function IntroGate() {
   const forceOff = useCallback(() => {
     if (finishedRef.current && exitTimerRef.current === null) return;
     finishedRef.current = true;
-    if (exitTimerRef.current !== null) {
-      window.clearTimeout(exitTimerRef.current);
-      exitTimerRef.current = null;
-    }
+    if (exitTimerRef.current !== null) { window.clearTimeout(exitTimerRef.current); exitTimerRef.current = null; }
     setPhase("off");
   }, []);
 
@@ -36,101 +28,45 @@ export function IntroGate() {
     if (finishedRef.current) return;
     finishedRef.current = true;
     setPhase("leaving");
-    exitTimerRef.current = window.setTimeout(() => {
-      exitTimerRef.current = null;
-      setPhase("off");
-    }, INTRO_GATE_FADE_MS);
+    exitTimerRef.current = window.setTimeout(() => { exitTimerRef.current = null; setPhase("off"); }, INTRO_GATE_FADE_MS);
   }, []);
 
   useEffect(() => {
     let cancelled = false;
-    const minimumTimer = window.setTimeout(() => {
-      if (!cancelled) setMinimumDone(true);
-    }, INTRO_GATE_MIN_VISIBLE_MS);
-    const targetTimer = window.setTimeout(() => {
-      if (!cancelled) setTargetDone(true);
-    }, INTRO_GATE_TARGET_MS);
-    const cancelHardExit = scheduleIntroGateHardExit(
-      window.setTimeout,
-      window.clearTimeout,
-      () => {
-        if (!cancelled) forceOff();
-      },
-    );
-
-    void runBootstrapReadiness(() => {})
-      .then(() => {
-        if (!cancelled) setRuntimeReady(true);
-      })
-      .catch(() => {
-        if (!cancelled) setRuntimeReady(true);
-      });
-
+    const minimumTimer = window.setTimeout(() => { if (!cancelled) setMinimumDone(true); }, INTRO_GATE_MIN_VISIBLE_MS);
+    const targetTimer = window.setTimeout(() => { if (!cancelled) setTargetDone(true); }, INTRO_GATE_TARGET_MS);
+    const cancelHardExit = scheduleIntroGateHardExit(window.setTimeout, window.clearTimeout, () => { if (!cancelled) forceOff(); });
+    void runBootstrapReadiness(() => {}).then(() => { if (!cancelled) setRuntimeReady(true); }).catch(() => { if (!cancelled) setRuntimeReady(true); });
     return () => {
       cancelled = true;
       window.clearTimeout(minimumTimer);
       window.clearTimeout(targetTimer);
       cancelHardExit();
-      if (exitTimerRef.current !== null) {
-        window.clearTimeout(exitTimerRef.current);
-        exitTimerRef.current = null;
-      }
+      if (exitTimerRef.current !== null) { window.clearTimeout(exitTimerRef.current); exitTimerRef.current = null; }
     };
   }, [forceOff]);
 
-  useEffect(() => {
-    if (minimumDone && runtimeReady && (targetDone || visualDone)) finish();
-  }, [finish, minimumDone, runtimeReady, targetDone, visualDone]);
-
+  useEffect(() => { if (minimumDone && runtimeReady && (targetDone || visualDone)) finish(); }, [finish, minimumDone, runtimeReady, targetDone, visualDone]);
   if (phase === "off") return null;
 
-  const loadingLabel =
-    locale === "en"
-      ? "Preparing Zhaowu"
-      : locale === "zh-Hans"
-        ? "正在准备昭梧"
-        : "正在準備昭梧";
+  const loadingLabel = locale === "en" ? "Preparing Zhaowu" : locale === "zh-Hans" ? "正在准备昭梧" : "正在準備昭梧";
 
   return (
-    <div
-      className={`zhaowu-lotus-intro fixed inset-0 z-[100] overflow-hidden transition-opacity duration-180 ease-out ${
-        phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"
-      }`}
-      role="status"
-      aria-live="polite"
-      aria-label={loadingLabel}
-      data-intro-motion="owner-video"
-      data-intro-fallback-mode="animated-lotus"
-    >
+    <div className={`zhaowu-lotus-intro fixed inset-0 z-[100] overflow-hidden transition-opacity duration-180 ease-out ${phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"}`}
+      role="status" aria-live="polite" aria-label={loadingLabel} data-intro-motion="owner-video" data-intro-fallback-mode="fullscreen-owner-poster">
       <div className={`zhaowu-lotus-intro__fallback ${videoPlaying ? "is-covered" : ""}`} data-intro-fallback aria-hidden="true">
+        <img src={OWNER_LOADING_POSTER} alt="" className="zhaowu-lotus-intro__poster" />
         <div className="zhaowu-lotus-intro__fallback-art">
           <div className="zhaowu-lotus-intro__pond" />
-          <div className="zhaowu-lotus-intro__lotus zhaowu-lotus-intro__lotus--1">
-            <span className="zhaowu-lotus-intro__stem" />
-            <span className="zhaowu-lotus-intro__leaf" />
-            <span className="zhaowu-lotus-intro__flower" />
-          </div>
-          <div className="zhaowu-lotus-intro__lotus zhaowu-lotus-intro__lotus--2">
-            <span className="zhaowu-lotus-intro__stem" />
-            <span className="zhaowu-lotus-intro__leaf" />
-            <span className="zhaowu-lotus-intro__flower" />
-          </div>
+          <div className="zhaowu-lotus-intro__lotus zhaowu-lotus-intro__lotus--1"><span className="zhaowu-lotus-intro__stem"/><span className="zhaowu-lotus-intro__leaf"/><span className="zhaowu-lotus-intro__flower"/></div>
+          <div className="zhaowu-lotus-intro__lotus zhaowu-lotus-intro__lotus--2"><span className="zhaowu-lotus-intro__stem"/><span className="zhaowu-lotus-intro__leaf"/><span className="zhaowu-lotus-intro__flower"/></div>
           <div className="zhaowu-lotus-intro__ink" />
         </div>
+        <div className="zhaowu-lotus-intro__fallback-shade" />
+        <div className="zhaowu-lotus-intro__fallback-copy"><strong>{locale === "en" ? "ZHAOWU" : "昭梧"}</strong><span>{loadingLabel}</span><i /></div>
       </div>
-      <video
-        className={`zhaowu-lotus-intro__video ${videoPlaying ? "is-playing" : ""}`}
-        src={OWNER_LOADING_VIDEO}
-        poster={OWNER_LOADING_POSTER}
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-        onPlaying={() => setVideoPlaying(true)}
-        onEnded={() => setVisualDone(true)}
-        onStalled={() => setVideoPlaying(false)}
-        onError={() => setVideoPlaying(false)}
-      />
+      <video className={`zhaowu-lotus-intro__video ${videoPlaying ? "is-playing" : ""}`} src={OWNER_LOADING_VIDEO} poster={OWNER_LOADING_POSTER} autoPlay muted playsInline preload="auto"
+        onPlaying={() => setVideoPlaying(true)} onEnded={() => setVisualDone(true)} onStalled={() => setVideoPlaying(false)} onError={() => setVideoPlaying(false)} />
     </div>
   );
 }
