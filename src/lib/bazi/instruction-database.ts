@@ -90,6 +90,47 @@ export const pathologyRemedyInstructionRule: InstructionRule = {
   ],
 };
 
+/**
+ * 六親定位補充：吸收「十神不離宮位、六親先分層」的原則，
+ * 並以傳統子平六親對應作人物層參照；人物層不得反向改寫十神本身的功能層。
+ */
+export const kinshipGenderInstructionRule: InstructionRule = {
+  id: 'ZW-BAZI-KINSHIP-GENDER-1.0',
+  title: '男女十神／六親人物定位協議',
+  status: 'production',
+  layer: 'relationship',
+  priority: 24,
+  purpose: '處理同一十神在功能、人物、事件三層的不同含義；涉及父母、手足、配偶、子女時，先按傳統六親映射建立候選，再由宮位、透藏根氣、做功、刑沖合害與歲運引動確認，不以單一十神名稱直接斷人。',
+  rules: [
+    '十神先保留「功能身份」，再另建「人物身份」與「事件身份」。性別只影響六親人物映射，不改變十神本身的五行生剋功能、格局作用與喜忌。',
+    '六親定位固定順序：先問正在判哪一類人物 → 看命主性別與已知關係資料 → 看十神候選 → 看所在宮位 → 看透干／藏支、根氣、得令失令、清濁真假 → 看合沖刑害與制化做功 → 再看大運流年是否引動。',
+    '父母層按傳統子平常用映射：正印以母親為第一候選，偏財以父親為第一候選；偏印、正財可在原候選缺位、再婚／繼親或具體結構成立時作次級候選，不得自動替代。父母判斷仍須結合年柱、月柱及相應宮位。',
+    '手足層以比肩、劫財共同作兄弟姐妹候選，不把比肩／劫財的陰陽差異單獨硬斷成某一位兄或姐。若採特定流派的同性／異性手足細分，只能標為流派附加規則，且不得高於宮位與實際家庭資料。',
+    '傳統男命配偶層以財星為主要人物候選：正財為正式配偶第一候選，偏財可作其他伴侶／關係人物或父星等多重候選；不得見偏財便直接斷婚外情。日支配偶宮、財星實際狀態與歲運引動必須同看。',
+    '傳統女命配偶層以官殺為主要人物候選：正官為正式配偶第一候選，七殺可作其他伴侶／關係人物或壓力角色候選；不得見七殺便直接斷情人、二婚或暴力關係。日支配偶宮、官殺實際狀態與歲運引動必須同看。',
+    '子女層保留經典子平的男女命差異作傳統候選：男命以官殺為子女場，七殺偏兒、正官偏女；女命以食傷為子女場，食神偏兒、傷官偏女。此一「子女性別細分」屬古典人物映射，現代實占權重低於時柱子女宮、實際生育資料與原局做功，資料不足時只判「子女場」不硬分兒女。',
+    '同一十神可同時對應多個人物與事件。例如偏財既可涉及父親，也可能涉及資源、交易或男命關係人物；必須由問題主題、宮位落點、與哪一柱發生作用及歲運觸發決定本次應象，禁止一星多斷。',
+    '宮位是人物定位的重要證據但不是固定身份表。年柱偏祖上／長輩／遠端背景，月柱偏父母手足與成長／社會環境，日支為配偶與貼身關係核心位置，時柱偏子女／晚輩／晚景與結果；任何宮位象都須與十神及結構共同成立。',
+    '同性關係、雙性／泛性關係或使用者已明示伴侶性別時，不得強迫套用異性婚配稱謂。保留傳統財／官人物映射為歷史參照，但實際伴侶判斷以日支配偶宮、關係結構、已知伴侶角色與歲運引動為主，輸出使用「伴侶／配偶」等中性稱謂。',
+    '若命主性別未定、關係類型未定或資料互相衝突，人物映射保持候選層，不得自行補出生理性別、性傾向、婚姻狀態或親屬身份。',
+    '判六親吉凶不得只看該人物星旺衰。要同時判它是否為喜忌、是否有根可承、是否受制化、是否與關鍵宮位發生有效作用，以及歲運是否真正觸發。旺不等於好，弱不等於壞。',
+    '涉及某位親屬的具體事件，至少需要「人物候選成立 + 宮位／作用關係成立 + 歲運引動」三層證據；不足三層時只談關係傾向，不下具體事件斷語。',
+  ],
+  guards: [
+    '禁止把正財固定等同妻、正官固定等同夫而忽略命主性別、關係類型與日支配偶宮。',
+    '禁止把偏財直接等同外遇、七殺直接等同第三者或危險伴侶。',
+    '禁止只因某六親星缺失就斷無父、無母、無婚姻、無子女；缺星只能表示該十神不顯，仍須看宮位、代用、歲運與現實資料。',
+    '禁止用單一十神或單一宮位斷親屬死亡、疾病、離婚、出軌、刑傷、失聯等重大事件。',
+    '禁止把古典「兒／女」細分當成現代生育結果保證；性別細分僅作低權重傳統象義。',
+    '禁止因命主為同性戀或其他非異性關係，直接刪除財星／官殺的原始功能；只調整人物層稱謂與配偶映射方式。',
+  ],
+  outputContract: [
+    '六親題至少輸出：人物候選 → 對應十神 → 宮位落點 → 根氣／透藏／清濁 → 合沖刑害與做功 → 歲運觸發 → 現實關係表現 → 限制與驗證點。',
+    '若同一十神具有兩個以上合理人物身份，必須明列候選並說明為何本題採其中一個，不得暗中替換。',
+    '同性／非傳統關係輸出使用中性人物稱謂，並明確區分「傳統六親映射」與「本題實際伴侶定位」。',
+  ],
+};
+
 export const fourTombsInstructionRule: InstructionRule = {
   id: 'ZW-FOUR-TOMBS-MUKU-1.0',
   title: '辰戌丑未四庫／墓庫動態分析協議',
@@ -136,6 +177,7 @@ export const zhaowuInstructionDatabase: InstructionRule[] = [
   ...baseInstructionDatabase,
   pathologyRemedyInstructionRule,
   fourTombsInstructionRule,
+  kinshipGenderInstructionRule,
 ];
 
 export type InstructionContext = {
@@ -165,6 +207,7 @@ function triggerMatches(rule: InstructionRule, context: InstructionContext): boo
  * Canonical instruction router for BaZi analysis.
  * ZW-HUMAN-GUIDANCE-CORE-1.0 is always injected first as the human-centered response layer.
  * ZW-BAZI-PATHOLOGY-REMEDY-1.0 is always injected as the generic pathology/remedy layer.
+ * ZW-BAZI-KINSHIP-GENDER-1.0 is always injected for gender-aware kinship/person-role disambiguation.
  * Any 辰／戌／丑／未 in natal branches or active luck/year branches additionally injects
  * ZW-FOUR-TOMBS-MUKU-1.0 before the generic event-inference protocol.
  */
@@ -180,4 +223,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-05T00:00:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-09T04:34:00+10:00';
