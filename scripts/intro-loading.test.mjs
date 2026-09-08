@@ -67,10 +67,10 @@ test('intro exits when runtime is ready at the target or when the visual finishe
   assert.match(gate, /INTRO_GATE_TARGET_MS/);
   assert.match(gate, /setTargetDone\(true\)/);
   assert.match(gate, /minimumDone && runtimeReady && \(targetDone \|\| visualDone\)/);
-  assert.match(gate, /must never block access for three seconds/);
+  assert.match(gate, /scheduleIntroGateHardExit/);
 });
 
-test('intro plays the committed owner lotus bloom and keeps the owner poster fallback', () => {
+test('intro plays the committed owner lotus bloom and keeps the animated lotus fallback', () => {
   assert.match(gate, /OWNER_LOADING_VIDEO/);
   assert.match(gate, /data-intro-motion="owner-video"/);
   assert.match(gate, /owner-lotus-bloom-r53\.mp4/);
@@ -80,9 +80,11 @@ test('intro plays the committed owner lotus bloom and keeps the owner poster fal
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /owner-lotus-bloom-r53\.jpg/);
   assert.match(gate, /playsInline/);
-  assert.match(gate, /data-intro-fallback-mode="owner-poster"/);
+  assert.match(gate, /data-intro-fallback-mode="animated-lotus"/);
+  assert.match(gate, /zhaowu-lotus-intro__fallback-art/);
+  assert.match(gate, /zhaowu-lotus-intro__lotus--1/);
+  assert.match(gate, /zhaowu-lotus-intro__lotus--2/);
   assert.doesNotMatch(gate, /<svg/);
-  assert.match(gate, /zhaowu-lotus-intro__fallback-copy/);
   assert.match(gate, /data-intro-fallback/);
   assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp|loading-owner-r40|twin-lotus-restored-r26/);
   assert.doesNotMatch(css, /loading-owner-r40|twin-lotus-restored-r26/);
@@ -91,14 +93,13 @@ test('intro plays the committed owner lotus bloom and keeps the owner poster fal
   assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
 });
 
-test('iPhone Safari routes stay mounted and Loading remains perceptible when bootstrap fails', () => {
+test('iPhone Safari routes stay mounted and Loading fails open when bootstrap fails', () => {
   const gatePosition = root.indexOf('<IntroGate />');
   const shellPosition = root.indexOf('<SiteShell>');
 
   assert.ok(gatePosition >= 0, 'the optional intro may still render');
   assert.ok(shellPosition > gatePosition, 'home, login and account content mount independently beneath the intro');
   assert.match(gate, /\.catch\(\(\) => \{[\s\S]*setRuntimeReady\(true\)/);
-  assert.match(gate, /backend trouble[\s\S]*setRuntimeReady\(true\)/);
   assert.doesNotMatch(gate, /\.catch\(\(\) => \{[\s\S]*forceOff\(\)/);
   assert.match(gate, /pointer-events-none opacity-0/);
   assert.doesNotMatch(root, /runtimeReady\s*\?\s*<SiteShell/);
