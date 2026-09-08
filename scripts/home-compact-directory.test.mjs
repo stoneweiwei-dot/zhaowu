@@ -8,7 +8,9 @@ const articles = readFileSync(new URL("../src/components/life-view-home-section.
 
 test("homepage method directory stays concise but uses readable tappable report cards", () => {
   assert.match(home, /zhaowu-home-portal-hint/);
-  assert.match(home, /六種命理專卷/);
+  assert.match(home, /七種個人分析/);
+  assert.match(home, /to: "\/numerology"/);
+  assert.match(home, /生命靈數/);
   assert.match(home, /data-specialist-link/);
   assert.doesNotMatch(home, /portalCopy\.learn/);
   assert.doesNotMatch(home, /portalCopy\.best/);
