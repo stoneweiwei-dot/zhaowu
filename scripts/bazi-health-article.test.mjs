@@ -27,15 +27,17 @@ test("article keeps three complete locales and medical boundaries", () => {
   assert.match(article, /never reduce Bazi to .*missing.*added/);
 });
 
-test("article renders multiple optional r93 illustrations without gating text", () => {
+test("article renders multiple optional approved illustrations without gating text", () => {
   assert.equal((article.match(/afterParagraph:\s*\d+/g) ?? []).length, 4);
   assert.match(section, /article\.illustrations\?\.find/);
   assert.match(section, /loading="lazy"/);
   assert.match(section, /decoding="async"/);
   assert.match(section, /<p className=/);
+
+  assert.match(fivePhases, /viewBox="0 0 800 800"/);
+  for (const svg of [bodyMap, timing, balance]) assert.match(svg, /viewBox="0 0 720 960"/);
   for (const svg of [fivePhases, bodyMap, timing, balance]) {
-    assert.match(svg, /viewBox="0 0 720 960"/);
     assert.match(svg, /data-zhaowu-article-art="r93"/);
-    assert.match(svg, /<title>/);
+    assert.match(svg, /<title/);
   }
 });
