@@ -93,8 +93,17 @@ export async function uploadGalleryAsset(
   file: File,
   meta: { category: string; assetKey?: string; title?: string; tags?: string[]; primary?: boolean },
 ): Promise<GalleryAsset> {
-  if (!file.type.startsWith("image/")) throw new Error("只接受圖片檔。");
-  if (file.size > 10 * 1024 * 1024) throw new Error("單張圖片不可超過 10 MB。");
+  const isImage = file.type.startsWith("image/");
+  const isVideo = file.type === "video/mp4" || file.type === "video/webm";
+  const loading = meta.category === "loading";
+  if (loading) {
+    if (!isImage && !isVideo) throw new Error("登入動畫庫只接受圖片或 MP4／WebM。");
+    if (isVideo && file.size > 6 * 1024 * 1024) throw new Error("登入動畫影片不可超過 6 MB。");
+    if (isImage && file.size > 10 * 1024 * 1024) throw new Error("單張圖片不可超過 10 MB。");
+  } else {
+    if (!isImage) throw new Error("只接受圖片檔。");
+    if (file.size > 10 * 1024 * 1024) throw new Error("單張圖片不可超過 10 MB。");
+  }
 
   const category = safeSlug(meta.category, "uncategorized");
   const baseName = file.name.replace(/\.[^.]+$/, "");
