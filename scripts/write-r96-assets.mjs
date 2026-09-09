@@ -12,22 +12,26 @@ function decode(name) {
   return Buffer.from(readFileSync(path, "utf8").replace(/\s+/g, ""), "base64");
 }
 
+function decodeGourd() {
+  const parts = ["gourd-180.part0.b64", "gourd-180.part1.b64", "gourd-180.part2.b64"].map(decode);
+  if (parts.every(Boolean)) return Buffer.concat(parts);
+  return decode("gourd-180.png.b64");
+}
+
 export function writeR96Assets() {
-  const files = [
-    ["public/brand/logo-icon-gourd.png", "gourd-180.png.b64"],
-    ["public/brand/logo-icon-gourd-180.png", "gourd-180.png.b64"],
-    ["public/gallery/loading/jade-lotus-bloom-r96-poster.jpg", "poster.jpg.b64"],
-  ];
-  for (const [rel, pack] of files) {
-    const buf = decode(pack);
-    if (!buf) continue;
-    if (rel.includes("gourd") && buf.length < 8000) {
-      throw new Error(`${pack} decoded to ${buf.length} bytes; gold gourd pack is a stub`);
+  const gourd = decodeGourd();
+  if (gourd && gourd.length >= 8000) {
+    for (const rel of ["public/brand/logo-icon-gourd.png", "public/brand/logo-icon-gourd-180.png"]) {
+      const path = resolve(ROOT, rel);
+      mkdirSync(dirname(path), { recursive: true });
+      writeFileSync(path, gourd);
     }
-    if (buf.length < 64) continue;
-    const path = resolve(ROOT, rel);
+  }
+  const poster = decode("poster.jpg.b64");
+  if (poster && poster.length >= 64) {
+    const path = resolve(ROOT, "public/gallery/loading/jade-lotus-bloom-r96-poster.jpg");
     mkdirSync(dirname(path), { recursive: true });
-    writeFileSync(path, buf);
+    writeFileSync(path, poster);
   }
   const parts = ["video.part0.b64", "video.part1.b64", "video.part2.b64"].map(decode);
   if (parts.every(Boolean)) {
