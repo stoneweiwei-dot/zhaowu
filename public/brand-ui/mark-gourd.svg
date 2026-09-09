@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 200" role="img" aria-label="葫蘆吉祥標">
+  <g fill="none" stroke="#D4B074" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M80 18c0-6 8-10 14-6" stroke-width="4"/>
+    <path d="M80 22c-18 8-28 28-22 46 3 10 12 18 22 22 10-4 19-12 22-22 6-18-4-38-22-46Z" stroke-width="5" fill="#F3E6C4"/>
+    <path d="M58 92c-24 14-34 40-26 64 8 24 36 36 48 36s40-12 48-36c8-24-2-50-26-64-7 8-15 12-22 12s-15-4-22-12Z" stroke-width="5" fill="#F3E6C4"/>
+    <path d="M62 54c8-6 16-4 22 2" stroke-width="2.4"/>
+    <path d="M86 48c8-5 16-2 20 6" stroke-width="2.4"/>
+    <path d="M56 128c14-10 28-8 40 2" stroke-width="2.4"/>
+    <path d="M92 122c12-8 24-6 32 4" stroke-width="2.4"/>
+  </g>
+</svg>

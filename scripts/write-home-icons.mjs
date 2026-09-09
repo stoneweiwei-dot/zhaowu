@@ -6,11 +6,11 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..");
 
 const ICON_SOURCES = {
-  16: resolve(HERE, "home-icons/zhaowu-lotus-16.png"),
-  32: resolve(HERE, "home-icons/zhaowu-lotus-32.png"),
-  180: resolve(HERE, "home-icons/zhaowu-lotus-180.png"),
-  192: resolve(HERE, "home-icons/zhaowu-lotus-192.png"),
-  512: resolve(HERE, "home-icons/zhaowu-lotus-512.png"),
+  16: resolve(HERE, "home-icons/zhaowu-app-16.png"),
+  32: resolve(HERE, "home-icons/zhaowu-app-32.png"),
+  180: resolve(HERE, "home-icons/zhaowu-app-180.png"),
+  192: resolve(HERE, "home-icons/zhaowu-app-192.png"),
+  512: resolve(HERE, "home-icons/zhaowu-app-512.png"),
 };
 
 function assertPng(path) {
@@ -22,6 +22,8 @@ function assertPng(path) {
 
 export function writeHomeIcons() {
   const files = [
+    ["public/apple-touch-icon-r97.png", 180],
+    ["public/apple-touch-icon-r97-precomposed.png", 180],
     ["public/apple-touch-icon-v3.png", 180],
     ["public/apple-touch-icon-v3-precomposed.png", 180],
     ["public/apple-touch-icon.png", 180],
@@ -33,8 +35,6 @@ export function writeHomeIcons() {
     ["public/icons/apple-touch-icon.png", 180],
     ["public/icons/icon-192.png", 192],
     ["public/icons/icon-512.png", 512],
-    ["public/icons/zhaowu-lotus-192.png", 192],
-    ["public/icons/zhaowu-lotus-512.png", 512],
     ["public/android-chrome-192x192.png", 192],
     ["public/android-chrome-512x512.png", 512],
     ["public/favicon-32x32.png", 32],
@@ -60,7 +60,7 @@ export function writeHomeIcons() {
       writeFileSync(resolve(brandDir, "logo-icon-gourd.png"), buf);
     }
   } catch {
-    // Gourd pack is optional until the asset file is on main.
+    // Gourd pack remains a special-function asset, not the header mark.
   }
   return written;
 }

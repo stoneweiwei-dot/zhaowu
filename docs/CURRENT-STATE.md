@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最后核对：2026-09-09 02:10 AEST
+最后核对：2026-09-09 21:20 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -20,7 +20,7 @@
 
 ## 2. 已完成且默认锁住
 
-- GitHub `main` → Vercel Production 自动同步。
+- GitHub `main` 是唯一源码真相。Vercel Git 自动部署已关闭（`vercel.json` `git.deploymentEnabled=false`），生产发布需手动部署到 `stone-zhaowu-official`。
 - Supabase 登录、报告存档、图库/背景资产、访问统计统一使用当前项目配置。
 - 三语 Locale：`zh-Hant / zh-Hans / en`；前台登入只提供 Email＋密码，不再显示 Google、Apple、X 或其他第三方 OAuth 按钮。
 - Loading ghost overlay 已移除。
@@ -63,20 +63,23 @@
 - 身体栏属于传统象义提醒，不是医疗诊断。
 - 图失败不能拖死文字报告。
 
-## 5. 当前视觉系统（2026-08-29 最新）
+## 5. 当前视觉系统（2026-09-09 r97）
 
-视觉母版是暖米宣纸／宋式图谱体系。全站应用页按「一幅锁死在页面里的东方长卷」处理：
+视觉母版是暖米宣纸／宋式图谱体系，品牌主體鎖定為松、日／月、山、水、雲。
 
-- Header 已承担品牌识别，正文不再重复一张巨大的「昭梧」品牌 Hero 卡；只保留紧凑引导后直接进入分析表单。
-- r27：全站应用页与登入页使用米色宣纸底、松绿主按钮、朱印。固定山水背景已被站主本次指令取代；图鉴海报不参与背景。
-- 表单、结果、命请、登入纸面与工具卡一律使用不透明暖米宣纸 `#fbf5e9` / `#fffaf1`，禁止玻璃拟态与半透明卡。山水只从卡片四周的页面背景露出。
-- 主 CTA 松绿、语言选中青玉绿、正文墨色、边线淡金茶色。
-- iPhone 390–430 px 优先；不使用 `background-attachment: fixed`，避免移动 Safari 滚动问题。
-- 动态 owner 背景不再参与前台 shell；图库、后台上传与管理独立保留。
-- 完整报告为一张连续暖宣纸阅读面，不再使用紫黑大底、ornament rail、龙贴纸或多张 section 卡。
-- 青玉小龙 AI 导览、Gallery 命请匹配与真实命请图生成逻辑不因 UI 改版改变。
+- Header 使用圓形「昭梧＋松＋日＋雲紋」主 Logo（`/brand-ui/logo-primary.svg`），旁側文字字標保留。
+- PWA／加入主畫面使用深松綠圓角 App Icon（`/apple-touch-icon-r97.png`）；瀏覽器 tab 使用簡化松日 favicon。
+- 葫蘆只作靈籤／吉祥功能標（`/brand-ui/mark-gourd.svg`），不重新搶主 Logo。青玉小龍不是品牌 Logo。
+- 同一畫面最多兩種裝飾母題。首頁現用「松枝＋山日分隔」；禁止松、月、山、雲、水、印章同時出現。
+- 主按鈕金底松綠字膠囊；次按鈕象牙白＋金框。
+- r27：全站應用頁與登入頁使用米色宣紙底、朱印。固定山水背景已被站主本次指令取代；圖鑑海報不參與背景。
+- 表單、結果、命請、登入紙面與工具卡一律使用不透明暖米宣紙 `#faf8f1` / `#fffaf1`，禁止玻璃擬態與半透明卡。
+- iPhone 390–430 px 優先；不使用 `background-attachment: fixed`。
+- 動態 owner 背景不再參與前台 shell；圖庫、後台上傳與管理獨立保留。
+- 完整報告為一張連續暖宣紙閱讀面。
+- 青玉小龍 AI 導覽、Gallery 命請匹配與真實命請圖生成邏輯不因 UI 改版改變。
 
-最终视觉覆盖层：`src/home-sheet-ui-v5.css`；报告层：`src/focused-report.css`。
+最終視覺覆蓋層：`src/home-sheet-ui-v5.css` + `src/brand-ui-r97.css`；報告層：`src/focused-report.css`。
 
 ## 6. 专题报告与 Calculation Truth Layer
 
@@ -90,7 +93,7 @@
 - iPhone 关键流程最终实机验收。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 正式「制作我的命请图」按钮已改为请求 `force=true` 的供应商个性化图；真实 provider 成功仍依赖图片 API credits，失败时必须回退 Gallery-direct，且不得阻塞文字报告。
-- Loading 使用站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 与同名 JPEG 海报；目标退出为 2.4 秒、硬退出为 2.8 秒，初始化异常不得阻塞首页、登入或账户入口。主画面图标为站主宋画金莲 `/apple-touch-icon-r53.png`。
+- Loading 使用站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 與同名 JPEG 海報；目標退出為 2.4 秒、硬退出為 2.8 秒，初始化異常不得阻塞首頁、登入或賬戶入口。主畫面圖標為深松綠 App Icon `/apple-touch-icon-r97.png`。
 
 ## 8. 生产优先级
 

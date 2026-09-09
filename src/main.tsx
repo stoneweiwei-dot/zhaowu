@@ -47,6 +47,7 @@ import './site-ux-r75-final.css';
 import './zhaowu-design-system.css';
 import './login-approved-r89.css';
 import './visual-hotfix-r94.css';
+import './brand-ui-r97.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }

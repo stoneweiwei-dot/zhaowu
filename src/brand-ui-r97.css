@@ -1,27 +1,33 @@
-/* 昭梧 brand UI r97 — production art assets derived from the approved pine/sun/moon visual system. */
+/* 昭梧 brand UI r97 — pine / sun / moon system. One screen, at most two decorative motifs. */
 :root {
+  --zw-brand-ivory: #faf8f1;
+  --zw-brand-gold: #d4b074;
+  --zw-brand-pine: #1f4e3a;
+  --zw-brand-sage: #8a9c88;
   --zw-brand-divider-mountain: url("/brand-ui/divider-mountain.svg");
-  --zw-brand-divider-river: url("/brand-ui/divider-river.svg");
   --zw-brand-ornament-pine: url("/brand-ui/ornament-pine.svg");
-  --zw-brand-ornament-sun-cloud: url("/brand-ui/ornament-sun-cloud.svg");
-  --zw-brand-spark: url("/brand-ui/icon-spark.svg");
 }
 
-/* Header mark: use the approved emblem as a real scalable brand asset. */
 .zhaowu-brand-seal,
 .brand-seal {
+  overflow: hidden;
   border-radius: 50% !important;
   background: transparent !important;
+  box-shadow: none !important;
 }
 
 .zhaowu-brand-seal__image {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: contain !important;
   border-radius: 50% !important;
 }
 
 .zhaowu-site-header .zhaowu-brand-seal--sm {
-  width: 46px !important;
-  height: 46px !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
 }
 
 .zhaowu-site-header {
@@ -30,26 +36,15 @@
 }
 
 .zhaowu-site-header::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -7px;
-  width: min(72vw, 520px);
-  height: 18px;
-  transform: translateX(-50%);
-  background: var(--zw-brand-divider-river) center / contain no-repeat;
-  opacity: .34;
-  pointer-events: none;
-  z-index: -1;
+  content: none;
 }
 
-/* Home: art stays subordinate to copy and controls. */
 .zhaowu-home-layout .zhaowu-question-sheet,
 .zhaowu-home-sheet-shell .zhaowu-question-sheet {
   background-image: var(--zw-brand-ornament-pine) !important;
   background-position: right -28px top 6px !important;
   background-repeat: no-repeat !important;
-  background-size: min(35vw, 210px) auto !important;
+  background-size: min(32vw, 180px) auto !important;
 }
 
 .zhaowu-home-portals-heading {
@@ -66,50 +61,42 @@
   height: 38px;
   transform: translateX(-50%);
   background: var(--zw-brand-divider-mountain) center / contain no-repeat;
-  opacity: .66;
+  opacity: .58;
   pointer-events: none;
 }
 
-.zhaowu-home-portals > * {
-  position: relative;
-}
-
-.zhaowu-home-portals > *::after {
-  content: "";
-  position: absolute;
-  right: 13px;
-  top: 13px;
-  width: 14px;
-  height: 14px;
-  background: var(--zw-brand-spark) center / contain no-repeat;
-  opacity: .24;
-  pointer-events: none;
-}
-
-.zhaowu-home-portals > *:hover::after,
-.zhaowu-home-portals > *:focus-within::after {
-  opacity: .62;
-}
-
-.zhaowu-site-footer {
-  position: relative;
-  padding-top: 54px !important;
-}
-
+.zhaowu-home-portals > *::after,
 .zhaowu-site-footer::before {
-  content: "";
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  width: min(78vw, 420px);
-  height: 40px;
-  transform: translateX(-50%);
-  background: var(--zw-brand-ornament-sun-cloud) center / contain no-repeat;
-  opacity: .52;
-  pointer-events: none;
+  content: none !important;
+  background: none !important;
 }
 
-/* Owner backstage: built-in visual library. */
+.zhaowu-home-layout #analysisForm button[type="submit"],
+.zhaowu-home-sheet-shell #analysisForm button[type="submit"],
+.zhaowu-home-sheet-shell .zhaowu-result-primary,
+.zhaowu-login-shell .stone-login-primary,
+.zhaowu-analysis-submit-wrap button {
+  min-height: 48px !important;
+  border: 1px solid #c4a05a !important;
+  border-radius: 999px !important;
+  color: #1f4e3a !important;
+  background: #d4b074 !important;
+  background-image: none !important;
+  box-shadow: 0 8px 18px rgba(212, 176, 116, .28) !important;
+  font-weight: 720 !important;
+  letter-spacing: .04em;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-decree-generate,
+.zhaowu-home-sheet-shell .zhaowu-specialist-action,
+.zhaowu-home-sheet-shell .zhaowu-ziwei-action {
+  border: 1px solid #d4b074 !important;
+  border-radius: 999px !important;
+  color: #1f4e3a !important;
+  background: #faf8f1 !important;
+  box-shadow: none !important;
+}
+
 [data-owner-brand-ui] {
   overflow: hidden;
 }
@@ -144,6 +131,10 @@
   background: linear-gradient(180deg, rgba(252, 248, 238, .88), rgba(246, 239, 224, .5));
 }
 
+.zhaowu-brand-ui-library__preview.is-night {
+  background: linear-gradient(180deg, #0b2f26, #0a1311);
+}
+
 .zhaowu-brand-ui-library__preview img {
   display: block;
   width: 100%;
@@ -170,7 +161,7 @@
   overflow: hidden;
   color: var(--zw-muted, #74695d);
   font-size: 10px;
-  letter-spacing: .05em;
+  letter-spacing: .04em;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -180,17 +171,16 @@
 }
 
 @media (max-width: 640px) {
-  .zhaowu-site-header .zhaowu-brand-seal--sm { width: 43px !important; height: 43px !important; }
-  .zhaowu-site-header::after { width: 86vw; opacity: .24; }
+  .zhaowu-site-header .zhaowu-brand-seal--sm { width: 44px !important; height: 44px !important; }
   .zhaowu-home-layout .zhaowu-question-sheet,
   .zhaowu-home-sheet-shell .zhaowu-question-sheet {
     background-position: right -42px top 10px !important;
-    background-size: 170px auto !important;
+    background-size: 150px auto !important;
+    background-image: var(--zw-brand-ornament-pine) !important;
   }
-  .zhaowu-home-portals-heading::after { width: 92%; opacity: .54; }
-  .zhaowu-site-footer::before { width: 88vw; opacity: .42; }
+  .zhaowu-home-portals-heading::after { width: 92%; opacity: .46; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zhaowu-home-portals > *::after { transition: none !important; }
+  .zhaowu-home-portals-heading::after { transition: none !important; }
 }

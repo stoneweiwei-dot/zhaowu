@@ -1,1 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="8" y="8" width="184" height="184" rx="40" fill="#fbf7ec" stroke="#b58a45" stroke-width="4"/><circle cx="143" cy="45" r="12" fill="#c7a05a"/><g fill="#8d6b34" font-family="Songti TC,Noto Serif TC,PMingLiU,serif" font-size="45" font-weight="600"><text x="38" y="90">昭</text><text x="38" y="139">梧</text></g><g fill="none" stroke="#315846" stroke-linecap="round" stroke-linejoin="round"><path d="M122 153c6-30 18-51 43-72" stroke-width="7"/><path d="M138 116c-12-12-24-15-36-11" stroke-width="4"/></g><g fill="#315846"><path d="M100 103c8-14 26-14 34 0-9 8-25 8-34 0Z"/><path d="M124 87c8-14 26-14 34 0-9 8-25 8-34 0Z"/><path d="M151 77c8-14 26-14 34 0-9 8-25 8-34 0Z"/></g><g fill="none" stroke="#b58a45" stroke-width="4" stroke-linecap="round"><path d="M18 155h29c8 0 8 9 0 9H31"/><path d="M82 162h47c12 0 12 12 0 12H96c-10 0-10 11 0 11h37"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="昭梧">
+  <rect x="6" y="6" width="188" height="188" rx="44" fill="#1F4E3A"/>
+  <rect x="14" y="14" width="172" height="172" rx="38" fill="none" stroke="#D4B074" stroke-width="3"/>
+  <circle cx="132" cy="44" r="12" fill="#D4B074"/>
+  <g fill="#F3E6C4" font-family="Songti TC, Songti SC, STSong, 'Noto Serif CJK TC', PMingLiU, serif" font-weight="650">
+    <text x="36" y="94" font-size="46">昭</text>
+    <text x="36" y="144" font-size="46">梧</text>
+  </g>
+  <g fill="none" stroke="#C5D5C4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M124 152c7-30 20-52 44-70" stroke-width="6"/>
+    <path d="M140 118c-12-13-24-16-36-12" stroke-width="3.6"/>
+  </g>
+  <g fill="#8A9C88">
+    <path d="M104 104c8-15 26-15 34 0-9 8-25 8-34 0Z"/>
+    <path d="M126 88c8-15 26-15 34 0-9 8-25 8-34 0Z"/>
+    <path d="M152 78c8-15 26-15 34 0-9 8-25 8-34 0Z"/>
+    <path d="M136 116c8-15 26-15 34 0-9 8-25 8-34 0Z"/>
+  </g>
+  <g fill="none" stroke="#D4B074" stroke-width="3.2" stroke-linecap="round">
+    <path d="M28 154c12-8 26-8 38 2 8-9 22-10 34 0 10-8 22-7 36 4"/>
+  </g>
+</svg>

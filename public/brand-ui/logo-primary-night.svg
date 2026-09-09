@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="昭梧">
-  <circle cx="100" cy="100" r="93" fill="#FAF8F1" stroke="#D4B074" stroke-width="6"/>
+  <circle cx="100" cy="100" r="93" fill="#0B2F26" stroke="#D4B074" stroke-width="6"/>
   <circle cx="122" cy="40" r="13" fill="#D4B074"/>
-  <g fill="#C4A05A" font-family="Songti TC, Songti SC, STSong, 'Noto Serif CJK TC', PMingLiU, serif" font-weight="650">
+  <g fill="#EAE6D7" font-family="Songti TC, Songti SC, STSong, 'Noto Serif CJK TC', PMingLiU, serif" font-weight="650">
     <text x="34" y="92" font-size="50">昭</text>
     <text x="34" y="144" font-size="50">梧</text>
   </g>
-  <g fill="none" stroke="#1F4E3A" stroke-linecap="round" stroke-linejoin="round">
+  <g fill="none" stroke="#8A9C88" stroke-linecap="round" stroke-linejoin="round">
     <path d="M126 150c8-32 22-50 46-68" stroke-width="7"/>
     <path d="M140 118c-12-14-24-17-36-13" stroke-width="4"/>
     <path d="M154 100c10-14 22-20 34-18" stroke-width="4"/>
   </g>
-  <g fill="#1F4E3A">
+  <g fill="#2F5D4F">
     <path d="M104 102c9-16 28-16 37 0-10 9-27 9-37 0Z"/>
     <path d="M126 86c9-16 28-16 37 0-10 9-27 9-37 0Z"/>
     <path d="M154 78c9-16 28-16 37 0-10 9-27 9-37 0Z"/>

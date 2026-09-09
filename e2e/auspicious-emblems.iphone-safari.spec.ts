@@ -78,7 +78,7 @@ test.describe("iPhone Safari parchment application shell", () => {
       }
       const titleSize = await question.locator("h2").evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
       expect(titleSize).toBeLessThanOrEqual(28);
-      await expect(page.locator("header .zhaowu-brand-seal__image")).toHaveAttribute("src", "/apple-touch-icon-v3.png");
+      await expect(page.locator("header .zhaowu-brand-seal__image")).toHaveAttribute("src", "/brand-ui/logo-primary.svg");
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
   }

@@ -5,12 +5,16 @@ function titleFor(locale: Locale, item: (typeof BRAND_UI_CATALOG)[number]) {
   return locale === "en" ? item.titleEn : locale === "zh-Hans" ? item.titleHans : item.titleHant;
 }
 
+function purposeFor(locale: Locale, item: (typeof BRAND_UI_CATALOG)[number]) {
+  return locale === "en" ? item.purposeEn : locale === "zh-Hans" ? item.purposeHans : item.purposeHant;
+}
+
 export function BrandUiLibrary({ locale }: { locale: Locale }) {
   const copy = locale === "en"
-    ? { eyebrow: "BUILT-IN BRAND UI", title: "Zhaowu website art assets", lead: "Production SVG assets derived from the approved pine, sun, moon, mountain and flowing-line system. They are built into the site and are not part of the upload library." }
+    ? { eyebrow: "BUILT-IN BRAND UI", title: "Zhaowu design system", lead: "Locked pine / sun / moon / mountain / cloud assets. Gourd is a special auspicious mark only and never replaces the primary logo. One screen uses at most two decorative motifs.", using: "in use", spare: "library only" }
     : locale === "zh-Hans"
-      ? { eyebrow: "内置品牌美术", title: "昭梧网站美术元件", lead: "按已确认的松、日、月、山与流云线条体系整理为可缩放 SVG。它们直接内置于网站，不占用上传图库。" }
-      : { eyebrow: "內置品牌美術", title: "昭梧網站美術元件", lead: "按已確認的松、日、月、山與流雲線條體系整理為可縮放 SVG。它們直接內置於網站，不佔用上傳圖庫。" };
+      ? { eyebrow: "内置品牌美术", title: "昭梧设计系统", lead: "锁定松、日、月、山、云资产。葫芦只作吉祥功能标，不抢主 Logo。同一画面最多使用两种装饰母题。", using: "正在使用", spare: "仅库存" }
+      : { eyebrow: "內置品牌美術", title: "昭梧設計系統", lead: "鎖定松、日、月、山、雲資產。葫蘆只作吉祥功能標，不搶主 Logo。同一畫面最多使用兩種裝飾母題。", using: "正在使用", spare: "僅庫存" };
 
   return (
     <section className="seal-border rounded-[1.6rem] bg-cream/95 p-5 sm:p-7" data-owner-brand-ui>
@@ -25,13 +29,14 @@ export function BrandUiLibrary({ locale }: { locale: Locale }) {
 
       <div className="zhaowu-brand-ui-library__grid mt-5">
         {BRAND_UI_CATALOG.map((item) => (
-          <article key={item.key} className="zhaowu-brand-ui-library__asset">
-            <div className="zhaowu-brand-ui-library__preview">
+          <article key={item.key} className="zhaowu-brand-ui-library__asset" data-brand-group={item.group} data-in-use={item.inUse ? "true" : "false"}>
+            <div className={`zhaowu-brand-ui-library__preview${item.theme === "night" ? " is-night" : ""}`}>
               <img src={item.publicPath} alt={titleFor(locale, item)} loading="lazy" decoding="async" />
             </div>
             <div className="zhaowu-brand-ui-library__meta">
               <strong>{titleFor(locale, item)}</strong>
-              <small>{item.tags.join(" · ")}</small>
+              <small>{purposeFor(locale, item)}</small>
+              <small>{item.theme} · {item.inUse ? copy.using : copy.spare}</small>
             </div>
           </article>
         ))}

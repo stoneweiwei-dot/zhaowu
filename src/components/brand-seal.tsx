@@ -1,5 +1,4 @@
 import "@/brand-ui-r97.css";
-import gourdB64 from "../../scripts/r96-assets/gourd-180.png.b64?raw";
 
 type BrandSealProps = {
   size?: "sm" | "lg";
@@ -7,9 +6,9 @@ type BrandSealProps = {
   decorative?: boolean;
 };
 
-const OFFICIAL_MARK = `data:image/png;base64,${gourdB64.replace(/\s+/g, "")}`;
+const OFFICIAL_MARK = "/brand-ui/logo-primary.svg";
 
-/** Official gold gourd mark. Wordmark stays text; do not bake 昭梧 into the icon. */
+/** Official circular 昭梧 lockup: pine, sun, cloud. Gourd is a special auspicious mark only. */
 export function BrandSeal({ size = "sm", className = "", decorative = false }: BrandSealProps) {
   return (
     <span
@@ -18,7 +17,7 @@ export function BrandSeal({ size = "sm", className = "", decorative = false }: B
       aria-label={decorative ? undefined : "昭梧"}
       aria-hidden={decorative || undefined}
     >
-      <img className="zhaowu-brand-seal__image" src={OFFICIAL_MARK} alt="" width={180} height={180} decoding="async" />
+      <img className="zhaowu-brand-seal__image" src={OFFICIAL_MARK} alt="" width={200} height={200} decoding="async" />
     </span>
   );
 }

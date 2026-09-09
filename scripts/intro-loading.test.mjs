@@ -111,9 +111,9 @@ test('home-screen icons are valid PNGs at iOS root and manifest sizes', async ()
   const precomposed = await readFile(new URL('../public/apple-touch-icon-precomposed.png', import.meta.url));
   const icon192 = await readFile(new URL('../public/icons/icon-192.png', import.meta.url));
   const icon512 = await readFile(new URL('../public/icons/icon-512.png', import.meta.url));
-  const source180 = await readFile(new URL('./home-icons/zhaowu-lotus-180.png', import.meta.url));
-  const source192 = await readFile(new URL('./home-icons/zhaowu-lotus-192.png', import.meta.url));
-  const source512 = await readFile(new URL('./home-icons/zhaowu-lotus-512.png', import.meta.url));
+  const source180 = await readFile(new URL('./home-icons/zhaowu-app-180.png', import.meta.url));
+  const source192 = await readFile(new URL('./home-icons/zhaowu-app-192.png', import.meta.url));
+  const source512 = await readFile(new URL('./home-icons/zhaowu-app-512.png', import.meta.url));
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const manifest = await readFile(new URL('../public/manifest.webmanifest', import.meta.url), 'utf8');
   const iconWriter = await readFile(new URL('./write-home-icons.mjs', import.meta.url), 'utf8');
@@ -132,10 +132,10 @@ test('home-screen icons are valid PNGs at iOS root and manifest sizes', async ()
   assert.equal(icon512.readUInt32BE(16), 512);
   assert.equal(icon512.readUInt32BE(20), 512);
   assert.doesNotMatch(iconWriter, /paintSeal|barW|barH/);
-  assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon-v3\.png"/);
-  assert.match(html, /apple-touch-icon-v3-precomposed\.png/);
+  assert.match(html, /rel="apple-touch-icon" href="\/apple-touch-icon-r97\.png"/);
+  assert.match(html, /apple-touch-icon-r97-precomposed\.png/);
   assert.doesNotMatch(html, /apple-touch-icon-r53\.png/);
-  assert.match(manifest, /"src": "\/apple-touch-icon-v3\.png"/);
+  assert.match(manifest, /"src": "\/apple-touch-icon-r97\.png"/);
   assert.match(manifest, /"src": "\/android-chrome-192x192\.png/);
   assert.match(manifest, /"src": "\/android-chrome-512x512\.png/);
 });
