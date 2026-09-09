@@ -65,6 +65,16 @@ export const LOADING_GALLERY_CATALOG: readonly LoadingCatalogItem[] = [
     created_at: "2026-09-07T00:00:05.000Z",
   },
   {
+    asset_key: "loading-owner-lotus-bloom-r53",
+    title: "站主蓮開",
+    kind: "animation",
+    publicPath: "/intro/owner-lotus-bloom-r53.jpg",
+    videoPath: "/intro/owner-lotus-bloom-r53.mp4",
+    durationMs: 2800,
+    tags: ["loading", "login-background", "animation", "lotus", "current-default"],
+    created_at: "2026-09-09T12:00:00.000Z",
+  },
+  {
     asset_key: "loading-jade-lotus-bloom-r96",
     title: "金邊青蓮綿放",
     kind: "animation",

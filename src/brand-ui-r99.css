@@ -1,0 +1,120 @@
+/* 昭梧 brand UI r99 — element colors, translucent paper, pine CTAs, almanac motifs. Last-wins. */
+:root {
+  --zw-el-wood: #2f6b5a;
+  --zw-el-fire: #b23a2f;
+  --zw-el-earth: #b06a2b;
+  --zw-el-metal: #b39858;
+  --zw-el-water: #355a73;
+  --zw-card-day: rgba(250, 248, 241, 0.78);
+  --zw-card-night: rgba(15, 32, 28, 0.72);
+}
+
+.zhaowu-home-layout .zhaowu-daily-almanac {
+  position: relative;
+  overflow: hidden;
+}
+.zhaowu-home-layout .zhaowu-daily-almanac::before {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  width: 42px;
+  height: 42px;
+  background: url("/brand-ui/motif-sun.svg") center / contain no-repeat;
+  opacity: .28;
+  pointer-events: none;
+}
+.zhaowu-home-layout .zhaowu-daily-pillars {
+  position: relative;
+  z-index: 1;
+}
+
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar] strong,
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar] strong b,
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar] strong i {
+  color: inherit !important;
+}
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element="木"] strong b { color: var(--zw-el-wood) !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element="木"] strong i { color: #5a8a78 !important; opacity: .78; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element="火"] strong b { color: var(--zw-el-fire) !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element="火"] strong i { color: #c45b3a !important; opacity: .78; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element="土"] strong b { color: var(--zw-el-earth) !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element="土"] strong i { color: #c4843a !important; opacity: .78; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element="金"] strong b { color: var(--zw-el-metal) !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element="金"] strong i { color: #c4b07a !important; opacity: .78; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element="水"] strong b { color: var(--zw-el-water) !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element="水"] strong i { color: #4d738c !important; opacity: .78; }
+.zhaowu-home-layout .zhaowu-daily-pillar > span {
+  color: #7a7369 !important;
+}
+
+.zhaowu-home-layout .zhaowu-question-sheet,
+.zhaowu-home-sheet-shell .zhaowu-question-sheet,
+.zhaowu-home-layout .zhaowu-daily-almanac,
+.zhaowu-home-sheet-shell .zhaowu-home-portal,
+.zhaowu-home-sheet-shell #analysisForm,
+.zhaowu-login-sheet,
+.stone-login-sheet {
+  background-color: var(--zw-card-day) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: rgba(196, 160, 90, 0.28) !important;
+  box-shadow: 0 10px 28px rgba(76, 55, 33, 0.06) !important;
+}
+
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-question-sheet,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-question-sheet,
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-almanac,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-home-portal,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm,
+[data-zw-theme="night"] .zhaowu-login-sheet,
+[data-zw-theme="night"] .stone-login-sheet {
+  background-color: var(--zw-card-night) !important;
+  border-color: rgba(212, 176, 116, 0.28) !important;
+  color: #eae6d7;
+}
+
+.zhaowu-home-layout #analysisForm button[type="submit"],
+.zhaowu-home-sheet-shell #analysisForm button[type="submit"],
+.zhaowu-home-sheet-shell .zhaowu-result-primary,
+.zhaowu-login-shell .stone-login-primary,
+.stone-login-primary,
+.zhaowu-analysis-submit-wrap button,
+.zhaowu-home-portal .zhaowu-home-portal-cta {
+  width: auto !important;
+  min-width: 12rem;
+  max-width: calc(100% - 1.5rem);
+  min-height: 44px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.25rem !important;
+  border: 1px solid #c4a05a !important;
+  border-radius: 999px !important;
+  background: #1f4e3a !important;
+  background-image: none !important;
+  color: #faf8f1 !important;
+  box-shadow: none !important;
+  font-weight: 650 !important;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-decree-generate,
+.zhaowu-home-sheet-shell .zhaowu-specialist-action,
+.zhaowu-home-sheet-shell .zhaowu-ziwei-action,
+.zhaowu-header-signout {
+  background: transparent !important;
+  border: 1px solid #c4a05a !important;
+  color: #1f4e3a !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-home-layout .zhaowu-daily-almanac::before { width: 32px; height: 32px; opacity: .22; }
+  .zhaowu-home-layout #analysisForm button[type="submit"],
+  .zhaowu-home-sheet-shell #analysisForm button[type="submit"],
+  .zhaowu-analysis-submit-wrap button {
+    min-width: 10.5rem;
+  }
+}
