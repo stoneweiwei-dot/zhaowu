@@ -185,6 +185,32 @@ export async function setGalleryAssetPrimary(session: SupabaseSession, asset: Ga
   if (!set.ok) await parse(set);
 }
 
+export async function setGalleryAssetTags(session: SupabaseSession, id: string, tags: string[]) {
+  const cleaned = tags.map((tag) => tag.trim()).filter(Boolean).slice(0, 20);
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/gallery_assets?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: { ...headers(session.access_token), Prefer: "return=minimal" },
+    body: JSON.stringify({ tags: cleaned, updated_at: new Date().toISOString() }),
+  });
+  if (!res.ok) await parse(res);
+}
+
+export async function setLoginVisualCurrent(session: SupabaseSession, asset: GalleryAsset) {
+  const clear = await fetch(`${SUPABASE_URL}/rest/v1/gallery_assets?category=eq.loading&is_primary=eq.true`, {
+    method: "PATCH",
+    headers: { ...headers(session.access_token), Prefer: "return=minimal" },
+    body: JSON.stringify({ is_primary: false, updated_at: new Date().toISOString() }),
+  });
+  if (!clear.ok) await parse(clear);
+
+  const set = await fetch(`${SUPABASE_URL}/rest/v1/gallery_assets?id=eq.${encodeURIComponent(asset.id)}`, {
+    method: "PATCH",
+    headers: { ...headers(session.access_token), Prefer: "return=minimal" },
+    body: JSON.stringify({ enabled: true, is_primary: true, updated_at: new Date().toISOString() }),
+  });
+  if (!set.ok) await parse(set);
+}
+
 export async function deleteGalleryAsset(session: SupabaseSession, asset: GalleryAsset) {
   const bucketId = asset.bucket_id || BUCKET;
   const storage = await fetch(`${SUPABASE_URL}/storage/v1/object/${encodeURIComponent(bucketId)}/${safePath(asset.storage_path)}`, {
