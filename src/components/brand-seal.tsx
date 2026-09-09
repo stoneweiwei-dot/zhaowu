@@ -1,4 +1,5 @@
 import "@/brand-ui-r97.css";
+import gourdB64 from "../../scripts/r96-assets/gourd-180.png.b64?raw";
 
 type BrandSealProps = {
   size?: "sm" | "lg";
@@ -6,7 +7,7 @@ type BrandSealProps = {
   decorative?: boolean;
 };
 
-const OFFICIAL_MARK = "/brand/logo-icon-gourd-180.png";
+const OFFICIAL_MARK = `data:image/png;base64,${gourdB64.replace(/\s+/g, "")}`;
 
 /** Official gold gourd mark. Wordmark stays text; do not bake 昭梧 into the icon. */
 export function BrandSeal({ size = "sm", className = "", decorative = false }: BrandSealProps) {
