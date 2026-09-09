@@ -6,9 +6,9 @@ type BrandSealProps = {
   decorative?: boolean;
 };
 
-const OFFICIAL_MARK = "/brand-ui/logo-primary.svg";
+const OFFICIAL_MARK = "/brand/logo-icon-gourd-180.png";
 
-/** Owner-approved pine, sun and flowing-line emblem. The adjacent wordmark remains live text. */
+/** Official gold gourd mark. Wordmark stays text; do not bake 昭梧 into the icon. */
 export function BrandSeal({ size = "sm", className = "", decorative = false }: BrandSealProps) {
   return (
     <span
