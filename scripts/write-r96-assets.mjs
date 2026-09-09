@@ -21,6 +21,10 @@ export function writeR96Assets() {
   for (const [rel, pack] of files) {
     const buf = decode(pack);
     if (!buf) continue;
+    if (rel.includes("gourd") && buf.length < 8000) {
+      throw new Error(`${pack} decoded to ${buf.length} bytes; gold gourd pack is a stub`);
+    }
+    if (buf.length < 64) continue;
     const path = resolve(ROOT, rel);
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, buf);
