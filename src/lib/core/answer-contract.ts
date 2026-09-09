@@ -1,5 +1,6 @@
 import { buildTimingAnswer, buildTravelDestinationAnswer, pickTravelDestinations, type ForecastTopic } from "@/lib/bazi/forecast";
 import { HIDDEN, tenGod } from "@/lib/bazi/calendar";
+import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import type { Chart, QuestionKind, Reading } from "@/lib/bazi/types";
 import { customerDirectAnswer } from "@/lib/report/customer-copy";
 
@@ -34,6 +35,7 @@ const HEALTH_TOPIC_RE = /(健康|病|痛|醫療|医疗|手術|手术|失眠|身�
 const LOVE_TOPIC_RE = /(感情|戀愛|恋爱|愛情|爱情|交往|正緣|正缘|婚姻|結婚|结婚|伴侶|伴侣|桃花|復合|复合|分手|緣分|缘分|喜歡|喜欢|男友|女友|約會|约会|曖昧|暧昧|對象|对象)/;
 const CAREER_TOPIC_RE = /(工作|職業|职业|事業|事业|轉職|转职|跳槽|離職|离职|辭職|辞职|升遷|升迁|升職|升职|職場|职场|公司|職位|职位|上班|面試|面试|創業|创业|老闆|老板|offer|薪水|薪資|薪资|工資|工资|學業|学业|學習|学习|考試|考试|升學|升学|留學|留学|學校|学校|大學|大学|研究所|博士|證照|证照)/i;
 const MONEY_TOPIC_RE = /(財運|财运|財務|财务|錢|钱|收入|投資|投资|理財|理财|債務|债务|存錢|存钱|虧|亏|賺|赚|股票|基金|ETF|加密|比特幣|比特币)/i;
+const EXPLICIT_MULTI_TOPIC_RE = /(分別|分别|各自|同時問|同时问|都想問|都想问|一起看|兩方面|两方面|三方面|都幫我看|都帮我看)/;
 
 const TOPIC_LABEL: Partial<Record<ForecastTopic, string>> = {
   love: "感情",
@@ -120,13 +122,13 @@ function specialTopic(question: string): SpecialTopic {
 
 export function inferQuestionKind(question: string, fallback: QuestionKind = "self"): QuestionKind {
   if (PAST_TOPIC_RE.test(question)) return "past";
+  if (STRENGTH_RE.test(question)) return "self";
+  if (isRealComparison(question)) return "choice";
   if (HOME_TOPIC_RE.test(question)) return "home";
   if (HEALTH_TOPIC_RE.test(question)) return "health";
   if (LOVE_TOPIC_RE.test(question)) return "love";
   if (CAREER_TOPIC_RE.test(question)) return "career";
   if (MONEY_TOPIC_RE.test(question)) return "money";
-  if (STRENGTH_RE.test(question)) return "self";
-  if (isRealComparison(question)) return "choice";
   if (WHEN_RE.test(question) || targetYears(question).length > 0 || targetMonths(question).length > 0) return "timing";
   return fallback;
 }
@@ -161,7 +163,13 @@ function detectedTopics(question: string): ForecastTopic[] {
 
 function topicFor(question: string, kind: QuestionKind, req: AnswerRequirements): ForecastTopic {
   if (req.asksTravel) return "travel";
-  return detectedTopics(question)[0] ?? kind;
+  const topics = detectedTopics(question);
+  if (kind === "career" && topics.includes("career")) return "career";
+  if (kind === "money" && topics.includes("money")) return "money";
+  if (kind === "love" && topics.includes("love")) return "love";
+  if (kind === "health" && topics.includes("health")) return "health";
+  if (kind === "home" && topics.includes("home")) return "home";
+  return topics[0] ?? kind;
 }
 
 function readingForTopic(topic: ForecastTopic, reading: Reading): string {
@@ -177,8 +185,8 @@ function readingForTopic(topic: ForecastTopic, reading: Reading): string {
 
 function godEffect(god: string): { score: number; verb: string } {
   if (SUPPORT_GODS.has(god)) return { score: 1, verb: "扶身" };
-  if (OUTPUT_GODS.has(god)) return { score: -0.9, verb: "泄身" };
-  if (WEALTH_GODS.has(god)) return { score: -0.8, verb: "耗身" };
+  if (OUTPUT_GODS.has(god)) return { score: -1, verb: "泄身" };
+  if (WEALTH_GODS.has(god)) return { score: -1, verb: "耗身" };
   if (OFFICER_GODS.has(god)) return { score: -1, verb: "制身" };
   return { score: 0, verb: "中性" };
 }
@@ -190,48 +198,45 @@ function ganZhiStrengthEffect(gz: string, dayStem: string): { score: number; det
   const stemGod = tenGod(dayStem, gan);
   const stemEffect = godEffect(stemGod);
   const hidden = HIDDEN[zhi] ?? [];
-  const hiddenWeights = [1.2, 0.6, 0.35];
-  let score = stemEffect.score;
-  const hiddenDetails = hidden.map((hiddenGan, index) => {
+  const hiddenEffects = hidden.map((hiddenGan) => {
     const god = tenGod(dayStem, hiddenGan);
     const effect = godEffect(god);
-    score += effect.score * (hiddenWeights[index] ?? 0.25);
-    return `${hiddenGan}${god}${effect.verb}`;
+    return { god, effect, text: `${hiddenGan}${god}${effect.verb}` };
   });
+  const hiddenDirection = hiddenEffects.reduce((sum, item) => sum + Math.sign(item.effect.score), 0);
+  const score = Math.sign(stemEffect.score) + Math.sign(hiddenDirection);
   return {
     score,
-    detail: `${gz}：天干${gan}${stemGod}${stemEffect.verb}${hiddenDetails.length ? `；地支${zhi}藏${hiddenDetails.join("、")}` : ""}`,
+    detail: `${gz}：天干${gan}${stemGod}${stemEffect.verb}${hiddenEffects.length ? `；地支${zhi}藏${hiddenEffects.map((x) => x.text).join("、")}` : ""}`,
   };
 }
 
-function currentStrengthConclusion(base: string, net: number): string {
+function currentStrengthConclusion(base: string, dayunScore: number, yearScore: number): string {
+  const netDirection = Math.sign(dayunScore) + Math.sign(yearScore);
   if (base.includes("旺")) {
-    if (net <= -1.5) return "原局偏旺正在被大運與流年明顯泄耗、耗身或制約，當前更接近中和偏旺；不能因此直接判成身弱。";
-    if (net >= 1.2) return "原局偏旺又得到歲運扶身，當前仍屬偏旺，而且旺度比原局更容易被放大。";
-    return "原局仍以偏旺為主，歲運有拉回但幅度不足以改判為身弱。";
+    if (netDirection <= -2) return "原局偏旺，当前大运与流年都偏向泄耗／制约，旺势被明显拉回，但仍不能只靠岁运改判原局。";
+    if (netDirection >= 2) return "原局偏旺，当前大运与流年又偏向扶身，旺势更容易被放大。";
+    return "原局仍以偏旺为底，岁运方向有分歧或力度不足，不改判原局。";
   }
   if (base.includes("弱")) {
-    if (net >= 1.5) return "原局偏弱得到歲運明顯扶助，當前向中和靠近；是否真正轉旺仍要看月令與根氣，不能只看一個流年。";
-    if (net <= -1.2) return "原局偏弱又遇泄耗或制約，當前弱勢更明顯。";
-    return "原局偏弱，歲運雖有增減，但目前不足以改變底層判定。";
+    if (netDirection >= 2) return "原局偏弱，当前大运与流年都偏向扶身，承载正在改善，但不因此倒改原局。";
+    if (netDirection <= -2) return "原局偏弱，当前大运与流年又偏向泄耗／制约，承载压力更明显。";
+    return "原局仍以偏弱为底，岁运方向有分歧或力度不足，不改判原局。";
   }
-  if (net >= 1.5) return "原局接近中和，歲運扶身後目前偏向中和偏旺。";
-  if (net <= -1.5) return "原局接近中和，歲運泄耗／制約後目前偏向中和偏弱。";
-  return "原局接近中和，歲運目前沒有把旺衰推到明顯另一端。";
+  if (netDirection >= 2) return "原局接近中和，当前岁运整体偏向扶身。";
+  if (netDirection <= -2) return "原局接近中和，当前岁运整体偏向泄耗／制约。";
+  return "原局接近中和，当前岁运方向不一致，不强行改判。";
 }
 
 function strengthAnswer(question: string, chart: Chart): string {
   const dayunGz = chart.currentDayun?.ganZhi ?? "";
   const dayun = ganZhiStrengthEffect(dayunGz, chart.dayMaster);
   const year = ganZhiStrengthEffect(chart.currentYear, chart.dayMaster);
-  const net = dayun.score * 1.15 + year.score;
-  const pct = chart.elementPercents;
-  const pctLine = `五行結構計數占比（天干＋藏干，不等同旺衰權重）：木${pct.木}%、火${pct.火}%、土${pct.土}%、金${pct.金}%、水${pct.水}%。`;
   const dayunLine = chart.currentDayun
-    ? `當前大運 ${dayun.detail}。`
-    : "當前大運未能可靠排出，因此不拿它改判旺衰。";
-  const yearLine = `流年 ${year.detail}。`;
-  return `直接結論：原局日主${chart.dayMaster}${chart.dayMasterElement}的旺衰底盤是「${chart.strength.tendency}」。${dayunLine}${yearLine}${currentStrengthConclusion(chart.strength.tendency, net)} ${pctLine}判身強身弱的順序必須是原局月令與根氣 → 大運 → 流年，不能把五行個數或一句「還是」當成二選一題。`;
+    ? `当前大运：${dayun.detail}。`
+    : "当前大运未能可靠排出，因此不拿它改判旺衰。";
+  const yearLine = `流年：${year.detail}。`;
+  return `直接结论：原局日主${chart.dayMaster}${chart.dayMasterElement}的旺衰底盘是「${chart.strength.tendency}」。${currentStrengthConclusion(chart.strength.tendency, dayun.score, year.score)} ${dayunLine}${yearLine}判身强身弱只走月令与根气 → 大运 → 流年；不再输出五行计数百分比，也不把数量当旺衰。`;
 }
 
 function medicalTimingAnswer(question: string, reading: Reading): string {
@@ -274,21 +279,15 @@ function homeLocationAnswer(question: string, chart: Chart, reading: Reading): s
   return `你問的是「${q}」。先回答能回答的部分：${reading.home}${extra}`;
 }
 
-function topicalAnswer(question: string, kind: QuestionKind, reading: Reading): string {
-  const q = cleanQuestion(question);
-  switch (kind) {
-    case "love": return `你問的是「${q}」。${reading.love}`;
-    case "career": return `你問的是「${q}」。${reading.work}`;
-    case "money": return `你問的是「${q}」。${reading.money}`;
-    case "health": return `你問的是「${q}」。${reading.body}`;
-    case "home": return `你問的是「${q}」。${reading.home}`;
-    default: return reading.directAnswer;
-  }
+function topicalAnswer(reading: Reading): string {
+  // R6.1: interpret.directAnswer 已经是按原问题生成的主回答，不能再被
+  // reading.work / love / money 等“整盘主题摘要”覆盖。
+  return reading.directAnswer;
 }
 
 function multiTopicAnswer(question: string, topics: ForecastTopic[], reading: Reading): string {
   const parts = topics.map((topic) => `${TOPIC_LABEL[topic] ?? topic}｜${readingForTopic(topic, reading)}`);
-  return `你問的是「${cleanQuestion(question)}」。這題同時包含多個主題，我分開回答，不把它們混成一句：${parts.join("　")}`;
+  return `你問的是「${cleanQuestion(question)}」。你明确要求同时看多个领域，所以分开回答：${parts.join("　")}`;
 }
 
 function multiTopicTimingAnswer(
@@ -301,21 +300,15 @@ function multiTopicTimingAnswer(
     const answer = buildTimingAnswer(chart, topic, req.targetYears, { months: req.targetMonths });
     return `${TOPIC_LABEL[topic] ?? topic}｜${answer}`;
   });
-  return `你問的是「${cleanQuestion(question)}」。這題同時問了不同領域的時間，我分開排，不用一個月份套全部：${parts.join("　")}`;
-}
-
-function compareNote(kind: QuestionKind, reading: Reading): string {
-  const base = kind === "career" ? reading.work
-    : kind === "love" ? reading.love
-      : kind === "money" ? reading.money
-        : kind === "home" ? reading.home
-          : reading.directAnswer;
-  return `這題同時有二選一／比較要求。命盤可以先給你的承載背景：${base}；但如果兩個選項本身的收入、距離、責任、關係狀態或其他現實條件沒有分開提供，就不能假裝已經比較過兩邊。`;
+  return `你問的是「${cleanQuestion(question)}」。你明确要求同时看多个领域的时间，所以分开排：${parts.join("　")}`;
 }
 
 function actionFor(question: string, kind: QuestionKind, req: AnswerRequirements, chart: Chart): string {
+  if (isStructureQuestion(question)) {
+    return "先核对主格的月令、透干、根气、病药与反证；格局名称只是结果，不用多个格名堆出专业感。";
+  }
   if (STRENGTH_RE.test(question)) {
-    return "旺衰只按三層核對：先定原局月令與根氣，再看大運扶泄制化，最后看流年是否把趋势放大或拉回；不要再用五行个数直接等同身强身弱。";
+    return "旺衰只按三层核对：先定原局月令与根气，再看大运扶泄制化，最后看流年是否把趋势放大或拉回；不要再用五行个数直接等同身强身弱。";
   }
   if (req.asksMedicalTiming) {
     return "把症狀、持續時間、已做檢查與醫生建議放在同一頁；命盤只補充生活節奏，不代替醫療時間表。";
@@ -342,7 +335,7 @@ function actionFor(question: string, kind: QuestionKind, req: AnswerRequirements
     case "money": return "先列主收入、固定支出、可承受風險與退出成本，再談擴張。";
     case "health": return "把症狀頻率與作息記錄下來；持續或加重就就醫。";
     case "home": return "真實住宅要補平面圖、坐向、採光與周邊道路，不憑一句八字亂定風水。";
-    case "choice": return "把兩個選項的現實條件放在同一張表，只比較同一組標準。";
+    case "choice": return "先按命盘给出的倾向选一边；再把两个选项的收入、距离、责任和退出成本放在同一张表复核。";
     case "past": return "只核對已排出的四宮，不追加沒有來源的前世故事。";
     default: return "把這個結論拿最近三次真實事件核對，對不上就不要硬套。";
   }
@@ -354,11 +347,18 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
   const topic = topicFor(question, kind, req);
   const topics = detectedTopics(question);
   const special = specialTopic(question);
-  let directAnswer = topics.length > 1
-    ? multiTopicAnswer(question, topics, reading)
-    : topicalAnswer(question, kind, reading);
+  const explicitMultiTopic = topics.length > 1 && EXPLICIT_MULTI_TOPIC_RE.test(question);
 
-  if (STRENGTH_RE.test(question)) {
+  // R6.1 默认保留 interpret() 对原问题生成的直接答案；只有明确需要的
+  // 专项模块才覆盖。过去这里把 directAnswer 替换成 reading.work/love/money
+  // 的通用摘要，是“问什么不答什么”的主要来源之一。
+  let directAnswer = explicitMultiTopic
+    ? multiTopicAnswer(question, topics, reading)
+    : topicalAnswer(reading);
+
+  if (isStructureQuestion(question)) {
+    directAnswer = analyzeStructure(chart).directAnswer;
+  } else if (STRENGTH_RE.test(question)) {
     directAnswer = strengthAnswer(question, chart);
   } else if (req.asksMedicalTiming) {
     directAnswer = medicalTimingAnswer(question, reading);
@@ -381,14 +381,15 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
     directAnswer = `你問的是「${cleanQuestion(question)}」。先直接回答：${[where, timing].filter(Boolean).join(" ")}`;
   } else if (special === "relation") {
     directAnswer = relationAnswer(question, chart, reading, req);
-  } else if (req.asksWhen && topics.length > 1) {
+  } else if (req.asksWhen && explicitMultiTopic) {
     directAnswer = multiTopicTimingAnswer(question, chart, topics, req);
   } else if (req.asksWhen) {
     directAnswer = `你問的是「${cleanQuestion(question)}」。先直接回答時間：${buildTimingAnswer(chart, topic, req.targetYears, { months: req.targetMonths })}`;
   } else if (kind === "home" && req.asksWhere) {
     directAnswer = homeLocationAnswer(question, chart, reading);
   } else if (req.asksCompare) {
-    directAnswer = `你問的是「${cleanQuestion(question)}」。${compareNote(kind, reading)}`;
+    // interpret() 的 choice 分支已经实际选边；这里不得再用“条件不足”把答案覆盖掉。
+    directAnswer = reading.directAnswer;
   }
 
   return {
