@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最后核对：2026-09-09 19:40 AEST
+最后核对：2026-09-09 19:50 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -20,7 +20,7 @@
 
 ## 2. 已完成且默认锁住
 
-- GitHub `main` 是唯一源码真相。Vercel Git 自动部署已关闭（`vercel.json` `git.deploymentEnabled=false`），生产发布需手动部署到 `stone-zhaowu-official`。
+- GitHub `main` 是唯一源码真相。Vercel Git 自动部署仅对 `main` 开启（`vercel.json` `git.deploymentEnabled.main=true`），正式生产只认 `stone-zhaowu-official`。
 - Supabase 登录、报告存档、图库/背景资产、访问统计统一使用当前项目配置。
 - 三语 Locale：`zh-Hant / zh-Hans / en`；前台登入只提供 Email＋密码，不再显示 Google、Apple、X 或其他第三方 OAuth 按钮。
 - Loading ghost overlay 已移除。
@@ -70,7 +70,7 @@
 - Header 使用圓形「昭梧＋松＋日＋雲紋」主 Logo（`/brand-ui/logo-primary.svg`），旁側文字字標保留；登入／帳戶／首頁使用同一套細圓框功能 Icon。
 - PWA／加入主畫面使用深松綠圓角 App Icon（`/apple-touch-icon-r97.png`）；瀏覽器 tab 使用簡化松日 favicon。
 - Footer 使用橫版「昭梧＋雲紋」標誌。
-- 葫蘆只作靈籤／吉祥功能標（`/brand-ui/mark-gourd.svg`），不重新搶主 Logo。青玉小龍不是品牌 Logo。
+- 葡蘆只作靈籤／吉祥功能標（`/brand-ui/mark-gourd.svg`），不重新搶主 Logo。青玉小龙不是品牌 Logo。
 - 同一畫面最多兩種裝飾母題。首頁現用「松枝＋山日分隔」；禁止松、月、山、雲、水、印章同時出現。
 - 主按鈕金底松綠字膠囊；次按鈕／登出為 Ghost 金框。
 - 夜間模式：深松綠／玄黑底、金線、月白字，Header 切換至 `logo-primary-night.svg`；禁止亮白大面積。
@@ -79,7 +79,7 @@
 - iPhone 390–430 px 優先；不使用 `background-attachment: fixed`。
 - 動態 owner 背景不再參與前台 shell；圖庫、後台上傳與管理獨立保留。
 - 完整報告為一張連續暖宣紙閱讀面。
-- 青玉小龍 AI 導覽、Gallery 命請匹配與真實命請圖生成邏輯不因 UI 改版改變。
+- 青玉小龙 AI 導覽、Gallery 命請匹配與真實命請圖生成邏輯不因 UI 改版改變。
 
 最終視覺覆蓋層：`src/home-sheet-ui-v5.css` + `src/brand-ui-r97.css` + `src/brand-ui-r98.css`；報告層：`src/focused-report.css`。
 
@@ -95,7 +95,7 @@
 - iPhone 关键流程最终实机验收。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 正式「制作我的命请图」按钮已改为请求 `force=true` 的供应商个性化图；真实 provider 成功仍依赖图片 API credits，失败时必须回退 Gallery-direct，且不得阻塞文字报告。
-- Loading 使用站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 與同名 JPEG 海報；目標退出為 2.4 秒、硬退出為 2.8 秒，初始化異常不得阻塞首頁、登入或賬戶入口。主畫面圖標為深松綠 App Icon `/apple-touch-icon-r97.png`。
+- Loading 使用站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 與同名 JPEG 海報；目標退出為 2.4 秒、硬退出為 2.8 秒，初始化异常不得阻塞首页、登入或账户入口。主画面图标为深松绿 App Icon `/apple-touch-icon-r97.png`。
 
 ## 8. 生产优先级
 
