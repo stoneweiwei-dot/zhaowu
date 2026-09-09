@@ -4,6 +4,7 @@ import { useI18n } from "@/lib/i18n";
 
 const FALLBACK_PRIMARY = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-audio/background/jingfo-shengyuan-aac.m4a";
 const STORAGE_KEY = "zhaowu.backgroundMusic.v1";
+const TRACK_KEY = "zhaowu.backgroundMusic.track.v1";
 const DEFAULT_VOLUME = 0.24;
 const MOBILE_DOCK_BOTTOM = "max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4rem))";
 
@@ -19,7 +20,7 @@ export function BackgroundMusic() {
   const [playing, setPlaying] = useState(false);
   const [asset, setAsset] = useState<BackgroundMusicAsset | null>(null);
 
-  async function refreshAsset() { const next = await getActiveBackgroundMusic().catch(() => null); setAsset(next); }
+  async function refreshAsset() { const next = await getActiveBackgroundMusic().catch(() => null); setAsset(next); if (next?.id) { try { window.localStorage.setItem(TRACK_KEY, next.id); } catch {} } }
   useEffect(() => { void refreshAsset(); const onChange = () => void refreshAsset(); window.addEventListener("zhaowu-music-change", onChange); return () => window.removeEventListener("zhaowu-music-change", onChange); }, []);
 
   const primarySrc = musicPublicUrl(asset?.storage_path) || FALLBACK_PRIMARY;
@@ -29,7 +30,7 @@ export function BackgroundMusic() {
   const musicTitle = asset?.name || (locale === "en" ? "Zhaowu background music" : "淨佛聖願");
 
   useEffect(() => {
-    const audio = audioRef.current; if (!audio) return; audio.load(); setPlaying(false);
+    const audio = audioRef.current; if (!audio) return; audio.loop = true; audio.load(); setPlaying(false);
     if (enabled) { audio.volume = DEFAULT_VOLUME; void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false)); }
   }, [enabled, primarySrc, fallbackSrc, primaryType, fallbackType]);
 
@@ -57,7 +58,7 @@ export function BackgroundMusic() {
   const statusLabel = locale === "en" ? (playing ? "Music playing" : "Play music") : locale === "zh-Hans" ? (playing ? "音乐播放中" : "播放音乐") : (playing ? "音樂播放中" : "播放音樂");
 
   return <>
-    <audio ref={audioRef} loop playsInline preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)} onError={() => setPlaying(false)}>
+    <audio ref={audioRef} loop playsInline data-music-loop="single" preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)} onError={() => setPlaying(false)}>
       <source src={primarySrc} type={primaryType} />{fallbackSrc ? <source src={fallbackSrc} type={fallbackType} /> : null}
     </audio>
     <button type="button" data-background-music-control data-mobile-floating-control="music" aria-label={label} aria-pressed={playing} title={label} onClick={toggle}
