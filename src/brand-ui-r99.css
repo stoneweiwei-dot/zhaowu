@@ -29,23 +29,28 @@
   z-index: 1;
 }
 
+/* The heavenly stem carries the five-element accent. The branch stays quieter so
+   the four pillars do not become a high-saturation colour strip. */
 .zhaowu-home-layout .zhaowu-daily-pillar[data-pillar] strong,
 .zhaowu-home-layout .zhaowu-daily-pillar[data-pillar] strong b,
 .zhaowu-home-layout .zhaowu-daily-pillar[data-pillar] strong i {
   color: inherit !important;
 }
 .zhaowu-home-layout .zhaowu-daily-pillar[data-element="木"] strong b { color: var(--zw-el-wood) !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-element="木"] strong i { color: #5a8a78 !important; opacity: .78; }
 .zhaowu-home-layout .zhaowu-daily-pillar[data-element="火"] strong b { color: var(--zw-el-fire) !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-element="火"] strong i { color: #c45b3a !important; opacity: .78; }
 .zhaowu-home-layout .zhaowu-daily-pillar[data-element="土"] strong b { color: var(--zw-el-earth) !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-element="土"] strong i { color: #c4843a !important; opacity: .78; }
 .zhaowu-home-layout .zhaowu-daily-pillar[data-element="金"] strong b { color: var(--zw-el-metal) !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-element="金"] strong i { color: #c4b07a !important; opacity: .78; }
 .zhaowu-home-layout .zhaowu-daily-pillar[data-element="水"] strong b { color: var(--zw-el-water) !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-element="水"] strong i { color: #4d738c !important; opacity: .78; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-element] strong i {
+  color: #756e63 !important;
+  opacity: .72;
+}
 .zhaowu-home-layout .zhaowu-daily-pillar > span {
   color: #7a7369 !important;
+}
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-pillar[data-element] strong i,
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-pillar > span {
+  color: #b9b1a2 !important;
 }
 
 .zhaowu-home-layout .zhaowu-question-sheet,
@@ -205,8 +210,17 @@
 }
 
 @media (max-width: 430px) {
+  /* Keep the closed almanac compact enough to remain a header-like daily module. */
+  .zhaowu-home-layout .zhaowu-daily-almanac {
+    padding: 10px 13px 6px !important;
+  }
+  .zhaowu-home-layout .zhaowu-daily-pillars { margin-top: 8px !important; }
+  .zhaowu-home-layout .zhaowu-daily-pillar { padding: 7px 2px 8px !important; }
+  .zhaowu-home-layout .zhaowu-daily-meta { margin-top: 5px !important; line-height: 1.35 !important; }
+  .zhaowu-home-layout .zhaowu-daily-details { margin-top: 7px !important; }
+  .zhaowu-home-layout .zhaowu-daily-details > summary { min-height: 40px !important; }
   .zhaowu-home-layout .zhaowu-daily-almanac::before { width: 32px; height: 32px; opacity: .22; }
-  .zhaowu-home-layout .zhaowu-daily-almanac::after { width: 72px; height: 24px; opacity: .14; }
+  .zhaowu-home-layout .zhaowu-daily-almanac::after { width: 72px; height: 24px; bottom: 7px; opacity: .14; }
   .zhaowu-home-layout #analysisForm button[type="submit"],
   .zhaowu-home-sheet-shell #analysisForm button[type="submit"],
   .zhaowu-analysis-submit-wrap button {
