@@ -27,6 +27,9 @@ test("owner gallery exposes a loading stills and animation view", () => {
   assert.match(owner, /isLoadingGalleryAsset/);
   assert.match(owner, /登入動畫/);
   assert.match(owner, /category: view === "loading" \? "loading" : "visual-library"/);
+  assert.match(owner, /setPreview/);
+  assert.match(owner, /video\/mp4/);
+  assert.match(owner, /tooLong/);
 });
 
 test("loading catalog covers the owner stills and bloom animations", () => {
