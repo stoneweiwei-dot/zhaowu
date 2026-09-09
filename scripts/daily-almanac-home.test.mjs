@@ -54,7 +54,17 @@ test("r46 preserves mobile-first whitespace and responsive directory grids", () 
   assert.match(layout, /border-radius:\s*34px/);
   assert.match(layout, /@media \(max-width: 560px\)/);
   assert.match(layout, /grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
-  for (const e of ["木", "火", "土", "金", "水"]) {
+  for (const e of ["\u6728", "\u706b", "\u571f", "\u91d1", "\u6c34"]) {
     assert.match(hub, new RegExp(`data-element="${e}"`));
   }
+});
+
+test("r96 almanac paints four distinct pillar colours and hides duplicate yi labels", () => {
+  assert.match(widget, /data-pillar=\{PILLAR_KEYS\[index\]\}/);
+  assert.match(widget, /lunarDateLabel/);
+  assert.match(almanacStyle, /data-pillar="year"/);
+  assert.match(almanacStyle, /data-pillar="hour"/);
+  assert.match(almanacStyle, /#b23a2f/);
+  assert.match(almanacStyle, /#2f6b5a/);
+  assert.match(almanacStyle, /small:empty/);
 });
