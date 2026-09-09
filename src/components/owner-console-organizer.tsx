@@ -29,6 +29,8 @@ export function OwnerConsoleOrganizer() {
     audioLead: tr(locale, "上傳、轉碼、切換", "上传、转码、切换", "Upload, convert, switch"),
     backgrounds: tr(locale, "首頁背景", "首页背景", "Homepage backgrounds"),
     backgroundsLead: tr(locale, "輪播、固定壁紙、上傳", "轮播、固定壁纸、上传", "Rotation, wallpaper, upload"),
+    loginVisuals: tr(locale, "登入動畫", "登录动画", "Login visuals"),
+    loginVisualsLead: tr(locale, "上傳、預覽、日夜切換", "上传、预览、日夜切换", "Upload, preview, day/night"),
     gallery: tr(locale, "總圖庫", "总图库", "Gallery"),
     galleryLead: tr(locale, "圖片預設收合，按需打開", "图片默认收合，按需打开", "Collapsed by default; open when needed"),
     reports: tr(locale, "客戶報告", "客户报告", "Customer reports"),
@@ -120,7 +122,7 @@ export function OwnerConsoleOrganizer() {
         ) : null}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-5">
         <button type="button" onClick={openAudio} className="min-h-[92px] rounded-2xl border border-cinnabar/20 bg-cream/72 p-3 text-left shadow-[0_10px_28px_rgba(76,55,33,0.05)] transition active:scale-[0.99]">
           <span className="block text-[10px] tracking-[0.16em] text-cinnabar">AUDIO</span>
           <span className="mt-2 block font-display text-base text-ink">{c.audio}</span>
@@ -132,6 +134,12 @@ export function OwnerConsoleOrganizer() {
           <span className="mt-2 block font-display text-base text-ink">{c.backgrounds}</span>
           <span className="mt-1 block text-[11px] leading-4 text-ink-mute">{c.backgroundsLead}</span>
         </button>
+
+        <a href="/gallery#login-visuals" className="min-h-[92px] rounded-2xl border border-line bg-cream/72 p-3 text-left shadow-[0_10px_28px_rgba(76,55,33,0.05)] transition active:scale-[0.99]">
+          <span className="block text-[10px] tracking-[0.16em] text-cinnabar">LOGIN</span>
+          <span className="mt-2 block font-display text-base text-ink">{c.loginVisuals}</span>
+          <span className="mt-1 block text-[11px] leading-4 text-ink-mute">{c.loginVisualsLead}</span>
+        </a>
 
         <a href="/gallery" className="min-h-[92px] rounded-2xl border border-line bg-cream/72 p-3 text-left shadow-[0_10px_28px_rgba(76,55,33,0.05)] transition active:scale-[0.99]">
           <span className="block text-[10px] tracking-[0.16em] text-wood">GALLERY</span>
