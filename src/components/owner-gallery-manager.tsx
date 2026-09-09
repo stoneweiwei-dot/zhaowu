@@ -45,6 +45,38 @@ function assetSrc(asset: GalleryAsset) {
   return galleryPublicUrl(asset.storage_path, asset.bucket_id);
 }
 
+function catalogItemFor(asset: GalleryAsset) {
+  const key = asset.id.startsWith("catalog:") ? asset.id.slice("catalog:".length) : asset.asset_key;
+  return LOADING_GALLERY_CATALOG.find((item) => item.asset_key === key);
+}
+
+function previewMedia(asset: GalleryAsset) {
+  const catalog = catalogItemFor(asset);
+  const videoPath = catalog?.videoPath;
+  const poster = catalog?.publicPath || assetSrc(asset);
+  if (videoPath) return { type: "video" as const, src: videoPath, poster };
+  if ((asset.content_type ?? "").startsWith("video/")) return { type: "video" as const, src: assetSrc(asset), poster };
+  return { type: "image" as const, src: poster, poster };
+}
+
+function readVideoDuration(file: File): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const node = document.createElement("video");
+    node.preload = "metadata";
+    node.onloadedmetadata = () => {
+      const duration = Number.isFinite(node.duration) ? node.duration : 0;
+      URL.revokeObjectURL(url);
+      resolve(duration);
+    };
+    node.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("video"));
+    };
+    node.src = url;
+  });
+}
+
 export function OwnerGalleryManager({ session, locale }: { session: SupabaseSession; locale: Locale }) {
   const [assets, setAssets] = useState<GalleryAsset[]>([]);
   const [busy, setBusy] = useState(false);
@@ -52,6 +84,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   const [view, setView] = useState<OwnerView>("atlas");
   const [open, setOpen] = useState(false);
   const [shown, setShown] = useState(PAGE_SIZE);
+  const [preview, setPreview] = useState<GalleryAsset | null>(null);
 
   const copy = useMemo(() => ({
     title: tr(locale, "昭梧總圖庫", "昭梧总图库", "Zhaowu Gallery"),
@@ -75,6 +108,9 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     remove: tr(locale, "刪除", "删除", "Delete"),
     more: tr(locale, "載入更多", "加载更多", "Load more"),
     catalogLock: tr(locale, "內置登入素材", "内置登录素材", "Built-in loading asset"),
+    preview: tr(locale, "預覽", "预览", "Preview"),
+    closePreview: tr(locale, "關閉預覽", "关闭预览", "Close preview"),
+    tooLong: tr(locale, "登入動畫不可超過 5 秒。", "登录动画不可超过 5 秒。", "Login animation must be 5 seconds or shorter."),
     failed: tr(locale, "圖庫操作失敗。", "图库操作失败。", "Gallery operation failed."),
   }), [locale]);
 
@@ -97,6 +133,10 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     setMessage(null);
     try {
       for (const file of files) {
+        if (view === "loading" && (file.type === "video/mp4" || file.type === "video/webm")) {
+          const duration = await readVideoDuration(file);
+          if (duration > 5) throw new Error(copy.tooLong);
+        }
         await uploadGalleryAsset(session, file, {
           category: view === "loading" ? "loading" : "visual-library",
           tags: view === "loading" ? ["loading", "login-background", "owner-upload"] : ["owner-upload", "auto-classify"],
@@ -148,7 +188,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
         </div>
         <label className={`inline-flex min-h-12 cursor-pointer items-center justify-center rounded-2xl bg-cinnabar px-5 text-sm text-cream shadow-sm ${busy ? "pointer-events-none opacity-50" : ""}`}>
           {busy ? copy.uploading : view === "loading" ? copy.uploadLoading : copy.upload}
-          <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => void onUpload(e)} />
+          <input type="file" multiple accept={view === "loading" ? "image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm" : "image/jpeg,image/png,image/webp,image/avif"} className="hidden" onChange={(e) => void onUpload(e)} />
         </label>
       </div>
 
@@ -185,12 +225,19 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
                 const animation = (asset.tags ?? []).includes("animation") || (asset.content_type ?? "").includes("animation");
                 return (
                   <article key={asset.id} className="overflow-hidden rounded-xl border border-line bg-cream/72">
-                    <img src={assetSrc(asset)} alt={asset.title || "gallery image"} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover object-top" />
+                    <button type="button" className="block w-full" onClick={() => setPreview(asset)} aria-label={`${copy.preview} ${asset.title}`}>
+                      <img src={assetSrc(asset)} alt={asset.title || "gallery image"} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover object-top" />
+                    </button>
                     <div className="p-3">
                       <p className="truncate text-xs font-medium sm:text-sm">{asset.title}</p>
                       {animation ? <p className="mt-1 text-[11px] tracking-[0.18em] text-ink-mute">ANIMATION</p> : null}
                       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-                        {catalogLocked ? <span className="text-[11px] text-ink-mute">{copy.catalogLock}</span> : (
+                        {catalogLocked ? (
+                          <>
+                            <span className="text-[11px] text-ink-mute">{copy.catalogLock}</span>
+                            <button type="button" className="rounded-full px-2 py-1 text-[11px] text-wood" onClick={() => setPreview(asset)}>{copy.preview}</button>
+                          </>
+                        ) : (
                           <>
                             <label className="flex items-center gap-1.5 text-[11px]">
                               <input type="checkbox" checked={asset.enabled} onChange={async (event) => {
@@ -229,6 +276,24 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
           </div>
         ) : null}
       </details>
+
+      {preview ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/55 px-4" role="dialog" aria-modal="true" aria-label={copy.preview} onClick={() => setPreview(null)}>
+          <div className="max-h-[86vh] w-full max-w-lg overflow-hidden rounded-2xl border border-line bg-cream p-4" onClick={(event) => event.stopPropagation()}>
+            <div className="flex items-center justify-between gap-3">
+              <p className="truncate font-display text-lg">{preview.title}</p>
+              <button type="button" className="rounded-full border border-line px-3 py-1 text-xs" onClick={() => setPreview(null)}>{copy.closePreview}</button>
+            </div>
+            <div className="mt-3 overflow-hidden rounded-xl bg-paper">
+              {previewMedia(preview).type === "video" ? (
+                <video className="max-h-[70vh] w-full object-contain" src={previewMedia(preview).src} poster={previewMedia(preview).poster} controls autoPlay muted playsInline />
+              ) : (
+                <img className="max-h-[70vh] w-full object-contain" src={previewMedia(preview).src} alt={preview.title} />
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
