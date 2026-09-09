@@ -110,11 +110,120 @@
   box-shadow: none !important;
 }
 
+/* r100 visible placement — use the existing approved Brand UI Kit in the real site. */
+.zhaowu-home-layout .zhaowu-daily-almanac::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  width: 104px;
+  height: 32px;
+  background: url("/brand-ui/motif-cloud.svg") left bottom / contain no-repeat;
+  opacity: .2;
+  pointer-events: none;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-home-layout .zhaowu-home-portals > .zhaowu-home-portal::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: auto !important;
+  top: 42px !important;
+  right: 16px !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+  opacity: .24 !important;
+  pointer-events: none !important;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="bazi"]::after {
+  width: 54px !important;
+  background-image: url("/brand-ui/mark-pine.svg") !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="ziwei"]::after {
+  background-image: url("/brand-ui/motif-star.svg") !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="western"]::after {
+  background-image: url("/brand-ui/motif-moon.svg") !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="indian"]::after {
+  background-image: url("/brand-ui/motif-sun.svg") !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="qizheng"]::after {
+  width: 52px !important;
+  background-image: url("/brand-ui/ornament-sun-cloud.svg") !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="past"]::after {
+  width: 52px !important;
+  background-image: url("/brand-ui/motif-water.svg") !important;
+}
+.zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="numerology"]::after {
+  background-image: url("/brand-ui/motif-diamond.svg") !important;
+}
+
+.zhaowu-home-fun-heading::after {
+  content: "";
+  display: block;
+  width: min(72%, 280px);
+  height: 24px;
+  margin: 14px auto 0;
+  background: url("/brand-ui/divider-diamond.svg") center / contain no-repeat;
+  opacity: .34;
+  pointer-events: none;
+}
+
+.zhaowu-site-footer::before {
+  content: "" !important;
+  display: block !important;
+  width: min(340px, 72vw) !important;
+  height: 34px !important;
+  margin: 0 auto 10px !important;
+  background: url("/brand-ui/divider-river.svg") center / contain no-repeat !important;
+  opacity: .34 !important;
+  pointer-events: none !important;
+}
+
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-almanac::before {
+  background-image: url("/brand-ui/motif-moon.svg");
+  opacity: .42;
+}
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-almanac::after {
+  opacity: .32;
+}
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="bazi"]::after {
+  background-image: url("/brand-ui/mark-night.svg") !important;
+  opacity: .42 !important;
+}
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-home-portal::after,
+[data-zw-theme="night"] .zhaowu-home-fun-heading::after,
+[data-zw-theme="night"] .zhaowu-site-footer::before {
+  opacity: .42 !important;
+}
+
 @media (max-width: 430px) {
   .zhaowu-home-layout .zhaowu-daily-almanac::before { width: 32px; height: 32px; opacity: .22; }
+  .zhaowu-home-layout .zhaowu-daily-almanac::after { width: 72px; height: 24px; opacity: .14; }
   .zhaowu-home-layout #analysisForm button[type="submit"],
   .zhaowu-home-sheet-shell #analysisForm button[type="submit"],
   .zhaowu-analysis-submit-wrap button {
     min-width: 10.5rem;
   }
+  .zhaowu-home-sheet-shell .zhaowu-home-layout .zhaowu-home-portals > .zhaowu-home-portal::after {
+    top: 40px !important;
+    right: 14px !important;
+    width: 28px !important;
+    height: 28px !important;
+    opacity: .18 !important;
+  }
+  .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="bazi"]::after,
+  .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="qizheng"]::after,
+  .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="past"]::after {
+    width: 38px !important;
+  }
+  .zhaowu-home-fun-heading::after { width: 62%; height: 18px; opacity: .24; }
+  .zhaowu-site-footer::before { width: min(240px, 68vw) !important; height: 26px !important; opacity: .25 !important; }
 }
