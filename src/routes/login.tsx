@@ -4,6 +4,7 @@ import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { listActiveLoginAnimations, pickLoginAnimation, type LoginAnimationAsset } from "@/lib/login-animation";
+import { readBrandTheme } from "@/lib/brand-theme";
 import { captureOAuthRedirect, signInWithPassword, signUpWithPassword, supabaseConfigured } from "@/lib/supabase-rest";
 
 function LoginStageBackdrop() {
@@ -11,7 +12,7 @@ function LoginStageBackdrop() {
   const [failed, setFailed] = useState(false);
   useEffect(() => {
     let alive = true;
-    void listActiveLoginAnimations().then((rows) => { if (alive) setAsset(pickLoginAnimation(rows)); });
+    void listActiveLoginAnimations().then((rows) => { if (alive) setAsset(pickLoginAnimation(rows, readBrandTheme())); });
     return () => { alive = false; };
   }, []);
   if (!asset || failed) return null;
