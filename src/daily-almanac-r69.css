@@ -267,3 +267,53 @@
   .zhaowu-home-layout .zhaowu-daily-pairs { gap: 12px !important; }
   .zhaowu-home-layout .zhaowu-daily-list { font-size: 12px !important; }
 }
+
+.zhaowu-home-layout .zhaowu-daily-dateblock { min-width: 0; }
+.zhaowu-home-layout .zhaowu-daily-dom {
+  margin: 2px 0 0 !important;
+  color: #2c2a26 !important;
+  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important;
+  font-size: clamp(34px, 9vw, 44px) !important;
+  font-weight: 500 !important;
+  line-height: .9 !important;
+}
+.zhaowu-home-layout .zhaowu-daily-weekday,
+.zhaowu-home-layout .zhaowu-daily-md {
+  margin: 4px 0 0 !important;
+  color: #6d675e !important;
+  font-size: 12px !important;
+  line-height: 1.3 !important;
+}
+.zhaowu-home-layout .zhaowu-daily-energy em {
+  display: block;
+  margin-top: 6px;
+  max-width: 11rem;
+  color: #5d675f !important;
+  font-size: 12px !important;
+  font-style: normal !important;
+  line-height: 1.45 !important;
+}
+.zhaowu-home-layout .zhaowu-daily-pillars { margin-top: 12px !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar strong { display: flex !important; justify-content: center; gap: 1px; }
+.zhaowu-home-layout .zhaowu-daily-pillar strong b,
+.zhaowu-home-layout .zhaowu-daily-pillar strong i { font-style: normal; font-weight: 550; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="year"] strong { color: #b23a2f !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="year"] strong i { color: #c45b3a !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="month"] strong { color: #b06a2b !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="month"] strong i { color: #c4843a !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="day"] strong { color: #8e2a3b !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="day"] strong i { color: #b23d52 !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="hour"] strong { color: #2f6b5a !important; }
+.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="hour"] strong i { color: #3f8571 !important; }
+.zhaowu-home-layout .zhaowu-daily-meta {
+  position: relative;
+  z-index: 1;
+  margin: 8px 0 0 !important;
+  color: #7a7369 !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+.zhaowu-home-layout .zhaowu-daily-pair-title small:empty { display: none !important; }
+@media (max-width: 430px) {
+  .zhaowu-home-layout .zhaowu-daily-pillar strong { font-size: 18px !important; }
+}
