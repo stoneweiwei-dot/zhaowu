@@ -53,21 +53,20 @@ function completionOf(params: {
   established: boolean;
   supportingPattern: string | null;
   remedy: StructuralRemedy;
-  exposedMonthQi: boolean;
   directMonthDamage: boolean;
 }): StructureCompletion {
-  const { established, supportingPattern, remedy, exposedMonthQi, directMonthDamage } = params;
+  const { established, supportingPattern, remedy, directMonthDamage } = params;
   const reasons: string[] = [];
 
-  if (!established && !exposedMonthQi) {
-    reasons.push("月令主氣未直接透干，先保留格局方向，不把成格程度說滿。"];
+  if (!established) {
+    reasons.push("月令主氣未直接透干，先保留格局方向，不把成格程度說滿。");
   }
 
-  if (directMonthDamage) reasons.push("月令相關地支存在直接沖／刑／破，結構穩定度需要降級。"];
+  if (directMonthDamage) reasons.push("月令相關地支存在直接沖／刑／破，結構穩定度需要降級。");
   if (supportingPattern) reasons.push(`可見第二層做功主線：${supportingPattern}。`);
-  if (remedy.status === "clear") reasons.push("病藥／通關鏈已有可見結構支持。"];
-  if (remedy.status === "provisional") reasons.push("病藥方向可見，但根、路或承接條件尚未完全成立。"];
-  if (remedy.status === "insufficient") reasons.push("目前沒有足夠證據把病藥說滿。"];
+  if (remedy.status === "clear") reasons.push("病藥／通關鏈已有可見結構支持。");
+  if (remedy.status === "provisional") reasons.push("病藥方向可見，但根、路或承接條件尚未完全成立。");
+  if (remedy.status === "insufficient") reasons.push("目前沒有足夠證據把病藥說滿。");
 
   if (!established) {
     return { grade: "G1", label: "格局方向", capacity: "局部結構／容量有限", reasons };
@@ -130,7 +129,6 @@ export function analyzeStructure(chart: Chart): StructureSummary {
     established: exposedMonthQi,
     supportingPattern,
     remedy,
-    exposedMonthQi,
     directMonthDamage,
   });
 
