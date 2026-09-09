@@ -3,10 +3,14 @@ import type { AnalyzeInput, AppLocale, CityHit, Gender, RelationPref } from "@/l
 export const SHARED_BIRTH_STORAGE_KEY = "zhaowu.birth-record.v1";
 export const SHARED_BIRTH_OWNER_KEY = "zhaowu.birth-record-owner.v1";
 export const SHARED_BIRTH_EVENT = "zhaowu-birth-record-change";
+const GUEST_BIRTH_OWNER_ID = "__zhaowu_guest__";
 
 export type SharedBirthRecord = Omit<AnalyzeInput, "question" | "locale">;
 
-let activeSharedBirthUserId: string | null = null;
+// Guest visitors may reuse one birth record across public specialist routes on the
+// same device. Signed-in records remain isolated by user id and never leak back to
+// guest mode after sign-out.
+let activeSharedBirthUserId: string = GUEST_BIRTH_OWNER_ID;
 
 function asCity(value: unknown): CityHit | null {
   if (!value || typeof value !== "object") return null;
@@ -65,48 +69,63 @@ export function sharedBirthFromUnknown(value: unknown): SharedBirthRecord | null
 }
 
 export function setSharedBirthAccessUser(userId: string | null) {
-  activeSharedBirthUserId = userId;
+  const nextOwner = userId ?? GUEST_BIRTH_OWNER_ID;
+  activeSharedBirthUserId = nextOwner;
   if (typeof window === "undefined") return;
   try {
     const storedOwner = window.localStorage.getItem(SHARED_BIRTH_OWNER_KEY);
-    if (!userId) {
-      window.localStorage.removeItem(SHARED_BIRTH_STORAGE_KEY);
-      window.localStorage.removeItem(SHARED_BIRTH_OWNER_KEY);
+    const raw = window.localStorage.getItem(SHARED_BIRTH_STORAGE_KEY);
+
+    // Older guest records predate the owner marker. Adopt them only into guest
+    // scope; a signed-in user never inherits an unowned browser record.
+    if (!storedOwner && raw && nextOwner === GUEST_BIRTH_OWNER_ID) {
+      window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, GUEST_BIRTH_OWNER_ID);
       return;
     }
-    if (storedOwner !== userId) {
+
+    if (storedOwner !== nextOwner) {
       window.localStorage.removeItem(SHARED_BIRTH_STORAGE_KEY);
-      window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, userId);
+      window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, nextOwner);
     }
   } catch {
-    // Restricted/private browser storage must never make a birth record visible to a logged-out visitor.
+    // Restricted/private browser storage must never block the current page.
   }
 }
 
 export function clearSharedBirthRecord() {
-  activeSharedBirthUserId = null;
+  activeSharedBirthUserId = GUEST_BIRTH_OWNER_ID;
   if (typeof window === "undefined") return;
   try {
     window.localStorage.removeItem(SHARED_BIRTH_STORAGE_KEY);
-    window.localStorage.removeItem(SHARED_BIRTH_OWNER_KEY);
+    window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, GUEST_BIRTH_OWNER_ID);
   } catch {
-    // Ignore unavailable storage; access remains disabled in memory.
+    // Ignore unavailable storage; the current page can still operate in memory.
   }
 }
 
 export function readSharedBirthRecord(): SharedBirthRecord | null {
-  if (typeof window === "undefined" || !activeSharedBirthUserId) return null;
+  if (typeof window === "undefined") return null;
   try {
-    if (window.localStorage.getItem(SHARED_BIRTH_OWNER_KEY) !== activeSharedBirthUserId) return null;
     const raw = window.localStorage.getItem(SHARED_BIRTH_STORAGE_KEY);
-    return raw ? sharedBirthFromUnknown(JSON.parse(raw)) : null;
+    if (!raw) return null;
+    const storedOwner = window.localStorage.getItem(SHARED_BIRTH_OWNER_KEY);
+
+    // Adopt legacy unowned data only for a guest visitor. This preserves the
+    // original public flow while keeping authenticated records isolated.
+    if (!storedOwner && activeSharedBirthUserId === GUEST_BIRTH_OWNER_ID) {
+      window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, GUEST_BIRTH_OWNER_ID);
+      return sharedBirthFromUnknown(JSON.parse(raw));
+    }
+
+    if (storedOwner !== activeSharedBirthUserId) return null;
+    return sharedBirthFromUnknown(JSON.parse(raw));
   } catch {
     return null;
   }
 }
 
 export function writeSharedBirthRecord(record: SharedBirthRecord) {
-  if (typeof window === "undefined" || !activeSharedBirthUserId) return;
+  if (typeof window === "undefined") return;
   const safe = sharedBirthFromUnknown(record);
   if (!safe) return;
   try {
