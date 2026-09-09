@@ -57,6 +57,159 @@ function readingPreview(reading: SpecialistReading | undefined, locale: Locale) 
   return `${clean.slice(0, 130)}${locale === "en" ? "…" : "……"}`;
 }
 
+function FiveElementWardrobe({ locale }: { locale: Locale }) {
+  const [selected, setSelected] = useState<number | null>(null);
+  const copy = locale === "en"
+    ? {
+        kicker: "Daily dressing · Five-element colour",
+        title: "Which state do you want to wear today?",
+        lead: "Choose the state you need, then use one main colour as a cue. This is a daily colour prompt, not a BaZi favourable-element judgement.",
+        prompt: "Choose one state above. The colour card will give you a simple dressing cue for today.",
+        footer: "Wood · Fire · Earth · Metal · Water — everyday colour symbolism only; your personal BaZi colour use is judged separately.",
+        items: [
+          { element: "Wood", state: "Strength", colorName: "Qingyun 青雲", color: "#4d7567", phrase: "When you need strength, wear Qingyun.", note: "Ground yourself, gather your attention, and move upward with steadiness." },
+          { element: "Fire", state: "Shine", colorName: "Jianghua 絳華", color: "#9b4a45", phrase: "When you want to shine, wear Jianghua.", note: "Bring forward presence, warmth, and a clearer sense of action." },
+          { element: "Earth", state: "Ease", colorName: "Kunning 坤寧", color: "#9a7b59", phrase: "When you are tired and want to relax, wear Kunning.", note: "Slow the rhythm down and return to a steadier, more settled pace." },
+          { element: "Metal", state: "Clarity", colorName: "Liujin 鎏金", color: "#ad8949", phrase: "When you need clarity, wear Liujin.", note: "Reduce noise, make distinctions, and remind yourself what matters most." },
+          { element: "Water", state: "Stillness", colorName: "Hanxu 涵虛", color: "#587383", phrase: "When you want a quieter mind, wear Hanxu.", note: "Lower the inner volume and leave some room for reflection." },
+        ],
+      }
+    : locale === "zh-Hans"
+      ? {
+          kicker: "每日穿衣 · 五行色彩",
+          title: "今天想把哪一种状态穿在身上？",
+          lead: "先选你今天最需要的状态，再用一种主色做提醒。这里是日常色彩提示，不等同于命局喜忌。",
+          prompt: "先选一个你今天需要的状态，下方会给出对应的穿衣色彩提示。",
+          footer: "木 · 火 · 土 · 金 · 水｜这里按日常色彩象意呈现；个人命盘用色仍按命局另判。",
+          items: [
+            { element: "木", state: "力量", colorName: "青云", color: "#4d7567", phrase: "当你需要力量的时候，穿青云。", note: "沉着、向上，把心力重新聚回自己。" },
+            { element: "火", state: "发光", colorName: "绛华", color: "#9b4a45", phrase: "当你想要发光的时候，穿绛华。", note: "提高存在感与行动感，让自己更愿意向前一步。" },
+            { element: "土", state: "放松", colorName: "坤宁", color: "#9a7b59", phrase: "当你累了想放松的时候，穿坤宁。", note: "让节奏慢下来，把身心重新放回稳定的位置。" },
+            { element: "金", state: "清晰", colorName: "鎏金", color: "#ad8949", phrase: "当你需要清晰的时候，穿鎏金。", note: "收敛杂讯，提醒自己做取舍、抓重点。" },
+            { element: "水", state: "静心", colorName: "涵虚", color: "#587383", phrase: "当你想要静心的时候，穿涵虚。", note: "降低躁动，为思考与恢复留一点空白。" },
+          ],
+        }
+      : {
+          kicker: "每日穿衣 · 五行色彩",
+          title: "今天想把哪一種狀態穿在身上？",
+          lead: "先選你今天最需要的狀態，再用一種主色做提醒。這裡是日常色彩提示，不等同於命局喜忌。",
+          prompt: "先選一個你今天需要的狀態，下方會給出對應的穿衣色彩提示。",
+          footer: "木 · 火 · 土 · 金 · 水｜這裡按日常色彩象意呈現；個人命盤用色仍按命局另判。",
+          items: [
+            { element: "木", state: "力量", colorName: "青雲", color: "#4d7567", phrase: "當你需要力量的時候，穿青雲。", note: "沉著、向上，把心力重新聚回自己。" },
+            { element: "火", state: "發光", colorName: "絳華", color: "#9b4a45", phrase: "當你想要發光的時候，穿絳華。", note: "提高存在感與行動感，讓自己更願意向前一步。" },
+            { element: "土", state: "放鬆", colorName: "坤寧", color: "#9a7b59", phrase: "當你累了想放鬆的時候，穿坤寧。", note: "讓節奏慢下來，把身心重新放回穩定的位置。" },
+            { element: "金", state: "清晰", colorName: "鎏金", color: "#ad8949", phrase: "當你需要清晰的時候，穿鎏金。", note: "收斂雜訊，提醒自己做取捨、抓重點。" },
+            { element: "水", state: "靜心", colorName: "涵虛", color: "#587383", phrase: "當你想要靜心的時候，穿涵虛。", note: "降低躁動，為思考與恢復留一點空白。" },
+          ],
+        };
+  const active = selected === null ? null : copy.items[selected];
+
+  return (
+    <section
+      id="five-element-wardrobe"
+      aria-label={copy.title}
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        border: "1px solid var(--zw-line)",
+        borderRadius: "var(--zw-card-radius, 22px)",
+        background: "linear-gradient(145deg, var(--zw-paper-strong), var(--zw-paper-soft))",
+        boxShadow: "var(--zw-shadow)",
+        padding: "clamp(18px, 4vw, 28px)",
+        color: "var(--zw-ink)",
+      }}
+    >
+      <span
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          width: 190,
+          height: 190,
+          right: -82,
+          top: -92,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(168, 134, 82, .16), rgba(168, 134, 82, 0) 70%)",
+          pointerEvents: "none",
+        }}
+      />
+      <header style={{ position: "relative", display: "flex", flexWrap: "wrap", alignItems: "flex-start", justifyContent: "space-between", gap: 14 }}>
+        <div style={{ maxWidth: 650 }}>
+          <p style={{ margin: 0, color: "var(--zw-cinnabar)", fontSize: 12, fontWeight: 750, letterSpacing: ".16em" }}>{copy.kicker}</p>
+          <h2 style={{ margin: "7px 0 0", fontFamily: 'var(--font-display, "Songti TC", "Noto Serif TC", serif)', fontSize: "clamp(24px, 5vw, 34px)", lineHeight: 1.22, fontWeight: 650, letterSpacing: ".02em" }}>{copy.title}</h2>
+          <p style={{ margin: "10px 0 0", maxWidth: 620, color: "var(--zw-ink-soft)", fontSize: 14, lineHeight: 1.75 }}>{copy.lead}</p>
+        </div>
+        <div aria-hidden="true" style={{ display: "flex", gap: 6, paddingTop: 3 }}>
+          {copy.items.map((item) => (
+            <span key={item.element} style={{ display: "grid", placeItems: "center", width: 31, height: 31, borderRadius: 999, border: "1px solid var(--zw-line)", background: "var(--zw-paper-strong)", color: "var(--zw-muted)", fontFamily: 'var(--font-display, "Songti TC", serif)', fontSize: 13 }}>{item.element.slice(0, 1)}</span>
+          ))}
+        </div>
+      </header>
+
+      <div role="list" style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(126px, 1fr))", gap: 9, marginTop: 18 }}>
+        {copy.items.map((item, index) => {
+          const isActive = selected === index;
+          return (
+            <button
+              key={item.colorName}
+              type="button"
+              aria-pressed={isActive}
+              onClick={() => setSelected((value) => value === index ? null : index)}
+              style={{
+                minWidth: 0,
+                minHeight: 78,
+                display: "flex",
+                alignItems: "center",
+                gap: 11,
+                padding: "11px 12px",
+                borderRadius: 15,
+                border: isActive ? `1.5px solid ${item.color}` : "1px solid var(--zw-line)",
+                background: isActive ? "var(--zw-paper-strong)" : "rgba(255, 255, 255, .18)",
+                boxShadow: isActive ? "0 10px 26px rgba(55, 44, 29, .09)" : "none",
+                color: "var(--zw-ink)",
+                textAlign: "left",
+                cursor: "pointer",
+                transition: "transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease",
+              }}
+            >
+              <span aria-hidden="true" style={{ flex: "0 0 auto", width: 37, height: 37, borderRadius: 999, background: item.color, border: "1px solid rgba(255,255,255,.52)", boxShadow: "inset 0 0 0 1px rgba(40,32,24,.08), 0 4px 12px rgba(40,32,24,.10)" }} />
+              <span style={{ minWidth: 0, display: "grid", gap: 2 }}>
+                <strong style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: 'var(--font-display, "Songti TC", "Noto Serif TC", serif)', fontSize: 17, lineHeight: 1.2, fontWeight: 650 }}>{item.colorName}</strong>
+                <small style={{ color: "var(--zw-muted)", fontSize: 12, lineHeight: 1.3 }}>{item.element} · {item.state}</small>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div
+        aria-live="polite"
+        style={{
+          position: "relative",
+          minHeight: 82,
+          marginTop: 14,
+          padding: "14px 15px 13px",
+          borderRadius: 15,
+          border: "1px solid var(--zw-line)",
+          borderLeft: active ? `4px solid ${active.color}` : "4px solid var(--zw-jade)",
+          background: "rgba(255, 255, 255, .16)",
+        }}
+      >
+        {active ? (
+          <>
+            <p style={{ margin: 0, fontFamily: 'var(--font-display, "Songti TC", "Noto Serif TC", serif)', fontSize: "clamp(18px, 4.4vw, 22px)", lineHeight: 1.45, fontWeight: 650 }}>{active.phrase}</p>
+            <p style={{ margin: "6px 0 0", color: "var(--zw-ink-soft)", fontSize: 13, lineHeight: 1.65 }}>{active.note}</p>
+          </>
+        ) : (
+          <p style={{ margin: 0, color: "var(--zw-ink-soft)", fontSize: 14, lineHeight: 1.7 }}>{copy.prompt}</p>
+        )}
+      </div>
+
+      <p style={{ position: "relative", margin: "10px 0 0", color: "var(--zw-muted)", fontSize: 11.5, lineHeight: 1.55 }}>{copy.footer}</p>
+    </section>
+  );
+}
+
 function Home() {
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
@@ -166,6 +319,7 @@ function Home() {
   return (
     <main className="zhaowu-home-sheet-page zhaowu-home-layout">
       <div className="zhaowu-home-stage zhaowu-home-stage--daily"><DailyAlmanacWidget /></div>
+      <div className="zhaowu-home-stage"><FiveElementWardrobe locale={locale} /></div>
 
       <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
         <AnalysisForm />
