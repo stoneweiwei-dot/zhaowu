@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最后核对：2026-09-09 21:20 AEST
+最后核对：2026-09-09 19:40 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -63,15 +63,17 @@
 - 身体栏属于传统象义提醒，不是医疗诊断。
 - 图失败不能拖死文字报告。
 
-## 5. 当前视觉系统（2026-09-09 r97）
+## 5. 当前视觉系统（2026-09-09 r98）
 
 视觉母版是暖米宣纸／宋式图谱体系，品牌主體鎖定為松、日／月、山、水、雲。
 
-- Header 使用圓形「昭梧＋松＋日＋雲紋」主 Logo（`/brand-ui/logo-primary.svg`），旁側文字字標保留。
+- Header 使用圓形「昭梧＋松＋日＋雲紋」主 Logo（`/brand-ui/logo-primary.svg`），旁側文字字標保留；登入／帳戶／首頁使用同一套細圓框功能 Icon。
 - PWA／加入主畫面使用深松綠圓角 App Icon（`/apple-touch-icon-r97.png`）；瀏覽器 tab 使用簡化松日 favicon。
+- Footer 使用橫版「昭梧＋雲紋」標誌。
 - 葫蘆只作靈籤／吉祥功能標（`/brand-ui/mark-gourd.svg`），不重新搶主 Logo。青玉小龍不是品牌 Logo。
 - 同一畫面最多兩種裝飾母題。首頁現用「松枝＋山日分隔」；禁止松、月、山、雲、水、印章同時出現。
-- 主按鈕金底松綠字膠囊；次按鈕象牙白＋金框。
+- 主按鈕金底松綠字膠囊；次按鈕／登出為 Ghost 金框。
+- 夜間模式：深松綠／玄黑底、金線、月白字，Header 切換至 `logo-primary-night.svg`；禁止亮白大面積。
 - r27：全站應用頁與登入頁使用米色宣紙底、朱印。固定山水背景已被站主本次指令取代；圖鑑海報不參與背景。
 - 表單、結果、命請、登入紙面與工具卡一律使用不透明暖米宣紙 `#faf8f1` / `#fffaf1`，禁止玻璃擬態與半透明卡。
 - iPhone 390–430 px 優先；不使用 `background-attachment: fixed`。
@@ -79,7 +81,7 @@
 - 完整報告為一張連續暖宣紙閱讀面。
 - 青玉小龍 AI 導覽、Gallery 命請匹配與真實命請圖生成邏輯不因 UI 改版改變。
 
-最終視覺覆蓋層：`src/home-sheet-ui-v5.css` + `src/brand-ui-r97.css`；報告層：`src/focused-report.css`。
+最終視覺覆蓋層：`src/home-sheet-ui-v5.css` + `src/brand-ui-r97.css` + `src/brand-ui-r98.css`；報告層：`src/focused-report.css`。
 
 ## 6. 专题报告与 Calculation Truth Layer
 

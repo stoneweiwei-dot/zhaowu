@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { AnalysisResult } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { ImageViewer, viewerCopy } from "@/components/image-viewer";
+import { BrandIcon } from "@/components/brand-icon";
 import { buildShareCardModel, renderShareCardPng } from "@/lib/report/share-card";
 
 const COPY: Record<Locale, {
@@ -150,6 +151,7 @@ export function ReportShareCard({ result }: { result: AnalysisResult }) {
 
       <div className="zhaowu-share-actions">
         <button type="button" className="zhaowu-share-primary" onClick={previewUrl ? shareCard : createCard} disabled={busy}>
+          {previewUrl ? <BrandIcon name="share" /> : <BrandIcon name="insight" />}
           {busy ? copy.making : previewUrl ? copy.share : copy.make}
         </button>
         {previewUrl ? <button type="button" className="zhaowu-share-secondary" onClick={createCard} disabled={busy}>{copy.remake}</button> : null}

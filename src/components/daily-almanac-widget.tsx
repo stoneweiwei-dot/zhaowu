@@ -239,7 +239,7 @@ export function DailyAlmanacWidget() {
         <section className="zhaowu-spirit-slip" aria-label={data.slipTitle}>
           <button type="button" className="zhaowu-spirit-slip-close" onClick={() => setSlipOpen(false)} aria-label={data.close}>×</button>
           {asset ? <figure className="zhaowu-spirit-slip-art"><img src={galleryPublicUrl(asset.storage_path, asset.bucket_id)} alt={asset.title || data.slipTitle} /></figure> : <div className="zhaowu-spirit-slip-art is-empty" aria-hidden>昭梧</div>}
-          <p className="zhaowu-spirit-slip-kicker">{data.slipTitle}</p>
+          <p className="zhaowu-spirit-slip-kicker"><img className="zhaowu-spirit-slip-gourd" src="/brand-ui/mark-gourd.svg" alt="" width={28} height={28} decoding="async" />{data.slipTitle}</p>
           <h2>{slip[0]}</h2>
           <div className="zhaowu-spirit-slip-copy"><p><strong>{slip[1]}</strong></p><p>{slip[2]}</p></div>
           <div className="zhaowu-spirit-slip-rule" aria-hidden />

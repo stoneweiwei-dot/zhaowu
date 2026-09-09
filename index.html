@@ -17,6 +17,17 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
     <link rel="icon" href="/brand-ui/favicon.svg" type="image/svg+xml" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("zhaowu.theme.v1") === "night") {
+            document.documentElement.setAttribute("data-zw-theme", "night");
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute("content", "#0A1311");
+          }
+        } catch (e) {}
+      })();
+    </script>
     <title>昭梧｜昭於未見，梧於有歸</title>
     <meta name="description" content="看見命運的節奏，選擇屬於你的道路" />
     <link rel="canonical" href="https://stone-zhaowu-official.vercel.app/" />

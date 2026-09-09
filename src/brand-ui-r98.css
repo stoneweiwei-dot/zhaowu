@@ -1,0 +1,266 @@
+/* 昭梧 brand UI r98 — P1 icons, night theme, ghost buttons. Last-wins over r97. */
+:root {
+  --zw-brand-ivory: #faf8f1;
+  --zw-brand-gold: #d4b074;
+  --zw-brand-pine: #1f4e3a;
+  --zw-brand-sage: #8a9c88;
+  --zw-brand-night: #0b2f26;
+  --zw-brand-jade: #2f5d4f;
+  --zw-brand-mist: #80998b;
+  --zw-brand-moon: #eae6d7;
+  --zw-brand-black: #0a1311;
+}
+
+.zw-brand-icon {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+.zw-brand-icon__ring { stroke: #d4b074; }
+.zw-brand-icon__glyph { fill: #1f4e3a; color: #1f4e3a; }
+
+.zhaowu-header-login,
+.zhaowu-header-utility,
+.zhaowu-header-home-link {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.zhaowu-theme-toggle {
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid #d4b074;
+  border-radius: 999px;
+  background: transparent;
+  color: #1f4e3a;
+  cursor: pointer;
+}
+
+.zhaowu-header-signout {
+  background: transparent !important;
+  border: 1px solid #d4b074 !important;
+  color: #1f4e3a !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-share-primary,
+.zhaowu-share-secondary {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.zhaowu-footer-logo {
+  display: block;
+  width: min(220px, 58vw);
+  height: auto;
+  margin: 0 auto 10px;
+}
+
+.zhaowu-footer-logo.is-night { display: none; }
+
+.zhaowu-lang-icon {
+  margin-right: 8px;
+}
+
+.zhaowu-header-nav {
+  align-items: center;
+}
+
+.zhaowu-brand-ui-library__section {
+  margin-top: 28px;
+}
+
+.zhaowu-brand-ui-library__section-title {
+  margin: 0 0 12px;
+  color: var(--zw-jade, #294b3f);
+  font-family: "Noto Serif TC", "Songti TC", serif;
+  font-size: 15px;
+  letter-spacing: .18em;
+}
+
+.zhaowu-spirit-slip-kicker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.zhaowu-spirit-slip-gourd {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.zw-btn-ghost,
+.zhaowu-home-sheet-shell a.zw-btn-ghost {
+  min-height: 44px;
+  border: 1px solid #d4b074 !important;
+  border-radius: 999px !important;
+  padding: 0 18px;
+  color: #1f4e3a !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.zw-pill {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #d4b074;
+  border-radius: 999px;
+  padding: 0 14px;
+  color: #1f4e3a;
+  background: #faf8f1;
+  font-size: 13px;
+}
+
+.zw-pill.is-active {
+  border-color: #1f4e3a;
+  color: #faf8f1;
+  background: #1f4e3a;
+}
+
+@media (max-width: 640px) {
+  .zw-brand-icon { width: 18px; height: 18px; }
+  .zhaowu-header-login .zw-brand-icon,
+  .zhaowu-header-utility .zw-brand-icon,
+  .zhaowu-header-home-link .zw-brand-icon { display: none; }
+  .zhaowu-theme-toggle { width: 36px; height: 36px; }
+  .zhaowu-footer-logo { width: min(168px, 64vw); }
+  .zhaowu-home-layout .zhaowu-question-sheet,
+  .zhaowu-home-sheet-shell .zhaowu-question-sheet {
+    background-size: 128px auto !important;
+    opacity: 1;
+  }
+}
+
+html[data-zw-theme="night"] {
+  --zw-paper: #0b2f26;
+  --zw-paper-soft: #0b2f26;
+  --zw-paper-strong: #0f332b;
+  --zw-ink: #eae6d7;
+  --zw-ink-soft: #c9c4b2;
+  --zw-muted: #80998b;
+  --zw-jade: #8a9c88;
+  --zw-jade-deep: #eae6d7;
+  --zw-gold: #d4b074;
+  --zw-line: rgba(212, 176, 116, .28);
+  --zw-shadow: 0 16px 52px rgba(0, 0, 0, .4);
+  --color-paper: #0b2f26;
+  --color-paper-deep: #0a1311;
+  --color-cream: #0f332b;
+  --color-ink: #eae6d7;
+  --color-ink-soft: #c9c4b2;
+  --color-ink-mute: #80998b;
+  --color-line: #2f5d4f;
+  color-scheme: dark;
+}
+
+html[data-zw-theme="night"],
+html[data-zw-theme="night"] body {
+  background: #0a1311 !important;
+  color: #eae6d7 !important;
+}
+
+html[data-zw-theme="night"] body {
+  background-image: none !important;
+  background-attachment: scroll !important;
+}
+
+html[data-zw-theme="night"] .zw-brand-icon__glyph { fill: #eae6d7; color: #eae6d7; }
+
+html[data-zw-theme="night"] .zhaowu-site-header,
+html[data-zw-theme="night"] body:has(.zhaowu-home-layout) .zhaowu-site-header,
+html[data-zw-theme="night"] .zhaowu-header-shell {
+  background: rgba(11, 47, 38, .94) !important;
+  color: #eae6d7 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-header-utility,
+html[data-zw-theme="night"] .zhaowu-header-home-link,
+html[data-zw-theme="night"] .site-lang-group,
+html[data-zw-theme="night"] .zhaowu-header-login {
+  border-color: rgba(212, 176, 116, .35) !important;
+  color: #eae6d7 !important;
+  background: rgba(15, 51, 43, .72) !important;
+}
+
+html[data-zw-theme="night"] .site-lang-button { color: #c9c4b2 !important; }
+html[data-zw-theme="night"] .site-lang-button[data-active="true"],
+html[data-zw-theme="night"] .site-lang-button[aria-pressed="true"] {
+  color: #eae6d7 !important;
+  background: rgba(47, 93, 79, .55) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-theme-toggle {
+  background: transparent;
+  color: #eae6d7;
+}
+
+html[data-zw-theme="night"] .zhaowu-brand-name,
+html[data-zw-theme="night"] .zhaowu-brand-tagline,
+html[data-zw-theme="night"] .zhaowu-site-footer,
+html[data-zw-theme="night"] .zhaowu-site-footer p {
+  color: #eae6d7 !important;
+}
+
+html[data-zw-theme="night"] .seal-border,
+html[data-zw-theme="night"] [class*="bg-cream"],
+html[data-zw-theme="night"] [class*="bg-paper"],
+html[data-zw-theme="night"] .zhaowu-question-sheet,
+html[data-zw-theme="night"] .zhaowu-daily-almanac,
+html[data-zw-theme="night"] .stone-login-sheet,
+html[data-zw-theme="night"] .zhaowu-home-portals a,
+html[data-zw-theme="night"] .zhaowu-brand-ui-library__asset {
+  background: #0f332b !important;
+  background-color: #0f332b !important;
+  color: #eae6d7 !important;
+  border-color: rgba(212, 176, 116, .28) !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .28) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-brand-ui-library__preview {
+  background: linear-gradient(180deg, #0b2f26, #0a1311) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm button[type="submit"],
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm button[type="submit"],
+html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-primary,
+html[data-zw-theme="night"] .zhaowu-analysis-submit-wrap button,
+html[data-zw-theme="night"] .zhaowu-share-primary {
+  background: #d4b074 !important;
+  color: #0b2f26 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-decree-generate,
+html[data-zw-theme="night"] .zhaowu-share-secondary,
+html[data-zw-theme="night"] .zw-btn-ghost {
+  background: transparent !important;
+  color: #eae6d7 !important;
+  border-color: #d4b074 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-footer-logo.is-day { display: none; }
+html[data-zw-theme="night"] .zhaowu-footer-logo.is-night { display: block; }
+
+html[data-zw-theme="night"] .stone-login-screen {
+  background: #0a1311 !important;
+}
+
+html[data-zw-theme="night"] .stone-login-title,
+html[data-zw-theme="night"] .stone-login-lead,
+html[data-zw-theme="night"] .stone-login-kicker,
+html[data-zw-theme="night"] .stone-login-brand-name,
+html[data-zw-theme="night"] .stone-login-signature {
+  color: #eae6d7 !important;
+}

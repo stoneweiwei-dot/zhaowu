@@ -1,12 +1,15 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
+import { BrandIcon } from "@/components/brand-icon";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
+import { hydrateBrandTheme, useBrandTheme } from "@/lib/brand-theme";
+import { BRAND_ASSETS } from "@/lib/brand-assets";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -31,6 +34,7 @@ function formatReleaseDate(value: string | null, locale: "zh-Hant" | "zh-Hans" |
 export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
+  const { night, toggle } = useBrandTheme();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const isLogin = pathname === "/login";
@@ -38,6 +42,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     hydrateLocale();
+    hydrateBrandTheme();
     runLocalHousekeeping();
     let alive = true;
     void recordVisit()
@@ -72,6 +77,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </Link>
 
               <div className="zhaowu-header-account-actions">
+                <button
+                  type="button"
+                  className="zhaowu-theme-toggle"
+                  onClick={toggle}
+                  aria-pressed={night}
+                  aria-label={night ? (locale === "en" ? "Switch to day mode" : locale === "zh-Hans" ? "切换日间模式" : "切換日間模式") : (locale === "en" ? "Switch to night mode" : locale === "zh-Hans" ? "切换夜间模式" : "切換夜間模式")}
+                >
+                  <BrandIcon name={night ? "day" : "night"} />
+                </button>
                 {user?.isOwner ? (
                   <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={locale === "en" ? "Open Gallery" : locale === "zh-Hans" ? "打开图库" : "打開圖庫"}>
                     {locale === "en" ? "Gallery" : locale === "zh-Hans" ? "图库" : "圖庫"}
@@ -82,6 +96,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 ) : user ? (
                   <>
                     <Link to="/account" className="zhaowu-header-utility">
+                      <BrandIcon name="account" />
                       {user.isOwner ? t("navAdmin") : t("navMine")}
                     </Link>
                     <button type="button" onClick={() => void signOut()} className="zhaowu-header-utility zhaowu-header-signout">
@@ -89,7 +104,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
                     </button>
                   </>
                 ) : (
-                  <Link to="/login" className="zhaowu-header-login">{t("navLogin")}</Link>
+                  <Link to="/login" className="zhaowu-header-login">
+                    <BrandIcon name="login" />
+                    {t("navLogin")}
+                  </Link>
                 )}
               </div>
             </div>
@@ -111,6 +129,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 ))}
               </div>
               <Link to="/" aria-current={pathname === "/" ? "page" : undefined} className={`zhaowu-header-home-link ${pathname === "/" ? "is-active" : ""}`}>
+                <BrandIcon name="home" />
                 {user ? (locale === "en" ? "BaZi" : "四柱八字") : t("navHome")}
               </Link>
             </nav>
@@ -126,6 +145,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
       {!isLogin ? (
         <footer className="zhaowu-site-footer relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
+          <img className="zhaowu-footer-logo is-day" src={BRAND_ASSETS.logoHorizontal} alt="" width={360} height={96} decoding="async" />
+          <img className="zhaowu-footer-logo is-night" src={BRAND_ASSETS.logoHorizontalNight} alt="" width={360} height={96} decoding="async" />
           <p className="font-display text-sm tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
           <p className="mt-2 text-xs text-ink-mute" data-site-release>
             {stats.version} · {locale === "en" ? "Updates" : locale === "zh-Hans" ? "累计更新" : "累計更新"} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}

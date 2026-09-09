@@ -3,6 +3,8 @@ export const BRAND_ASSETS = {
   logoPrimary: "/brand-ui/logo-primary.svg",
   logoPrimaryNight: "/brand-ui/logo-primary-night.svg",
   logoApp: "/brand-ui/logo-app.svg",
+  logoHorizontal: "/brand-ui/logo-horizontal.svg",
+  logoHorizontalNight: "/brand-ui/logo-horizontal-night.svg",
   favicon: "/brand-ui/favicon.svg",
   markPine: "/brand-ui/mark-pine.svg",
   markGourd: "/brand-ui/mark-gourd.svg",
