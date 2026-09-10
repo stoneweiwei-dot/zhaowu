@@ -1,5 +1,17 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const TRADITIONAL_CHINESE_STORAGE = {
+  cookies: [],
+  origins: [
+    {
+      origin: "http://127.0.0.1:4173",
+      localStorage: [
+        { name: "zhaowu.display-language", value: "zh-Hant" },
+      ],
+    },
+  ],
+};
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: false,
@@ -17,6 +29,7 @@ export default defineConfig({
         ...devices["iPhone 13"],
         browserName: "webkit",
         viewport: { width: 390, height: 844 },
+        storageState: TRADITIONAL_CHINESE_STORAGE,
       },
     },
     {
