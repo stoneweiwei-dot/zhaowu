@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { useI18n, type CopyKey, type Locale } from "@/lib/i18n";
 
-export type DisplayLanguage = Locale | "ja" | "ko";
+export type DisplayLanguage = Locale | "ja" | "ko" | "hi";
 
 type UiDictionary = Partial<Record<CopyKey, string>>;
 
@@ -365,6 +365,186 @@ const KO: UiDictionary = {
   guest: "방문자",
 };
 
+const HI: UiDictionary = {
+  brand: "昭梧",
+  tagline: "जो अभी अनदेखा है उसे देखें, और अपना स्थान खोजें",
+  manifesto: "जो अभी अनदेखा है उसे देखें। अपना स्थान खोजें।",
+  introAria: "Zhaowu लोड हो रहा है",
+  introLoadingAuth: "खाता और रिपोर्ट डेटा लोड हो रहा है",
+  introLoadingPage: "पेज तैयार हो रहा है",
+  introSkip: "एनीमेशन छोड़ें",
+  heroKicker: "जीवन-पैटर्न · समय · चुनाव",
+  heroSlogan: "जो अभी अनदेखा है उसे देखें। अपना स्थान खोजें।",
+  heroLead: "अपने जीवन के पैटर्न को जानना समर्पण नहीं है; यह इतनी स्पष्टता पाना है कि अगला कदम समझ आए।",
+  heroBody: "Zhaowu पारंपरिक चीनी जीवन-पैटर्न विश्लेषण को एक दर्पण की तरह उपयोग करता है—समय को समझने, दिशा पहचानने और अधिक स्पष्ट चुनाव करने के लिए।",
+  heroEnglish: "See what lies unseen. Find where you belong.",
+  heroSign: "रुझान देखें · समय समझें · अपना स्थान खोजें",
+  m1: "यह भाग्यवाद नहीं, अपने पैटर्न को समझने का एक तरीका है।",
+  m2: "समय कोई तय उत्तर नहीं, अवसर पहचानने का संकेत है।",
+  m3: "जीवन को बदलने वाली चीज़ अंततः आपके जागरूक चुनाव हैं।",
+  product: "जीवन की लय और निर्णय विश्लेषण",
+  start: "अपना विश्लेषण शुरू करें",
+  navHome: "होम",
+  navMine: "मेरा Zhaowu",
+  navLogin: "साइन इन",
+  navAdmin: "एडमिन",
+  logout: "साइन आउट",
+  language: "भाषा",
+  today: "आज का अवलोकन",
+  todayStem: "आज का दिन-चक्र",
+  todayTheme: "आज का विषय",
+  yi: "अनुकूल",
+  ji: "बचें",
+  jieqi: "सौर अवधि",
+  chong: "टकराव",
+  sha: "दिशा",
+  lunar: "चंद्र तिथि",
+  formTitle: "चार स्तंभ (BaZi)",
+  formLead: "जन्म प्रमाण में दर्ज तारीख, समय और शहर भरें। बाकी गणना सिस्टम करेगा।",
+  question: "अभी आप सबसे ज़्यादा क्या जानना चाहते हैं?",
+  qPh: "उदाहरण: क्या मुझे यह नौकरी जारी रखनी चाहिए? अभी मेरी पहली प्राथमिकता क्या हो?",
+  year: "वर्ष",
+  month: "माह",
+  day: "दिन",
+  time: "जन्म समय",
+  timeUnknown: "समय अनिश्चित — घंटे का स्तंभ और जीवन-स्थान खाली रहेगा",
+  gender: "लिंग (दीर्घकालिक चक्र की गणना के लिए)",
+  male: "पुरुष",
+  female: "महिला",
+  unset: "न बताना पसंद करें",
+  relation: "संबंध की पसंद",
+  relAny: "कोई भी",
+  relHet: "विपरीत लिंग",
+  relSame: "समान लिंग / विविध",
+  relHint: "केवल संबंध से जुड़े प्रश्नों की दिशा तय करने के लिए। इससे चार्ट नहीं बदलता।",
+  city: "जन्म शहर / देश",
+  cityPh: "जन्म शहर और देश दर्ज करें",
+  popularCities: "लोकप्रिय शहर",
+  liveCity: "वर्तमान शहर (वैकल्पिक)",
+  optional: "वैकल्पिक",
+  liveHint: "केवल गोलार्ध, मौसम और जीवन-लय के संदर्भ के लिए; जन्म चार्ट नहीं बदलता।",
+  hourPh: "घंटा 0–23",
+  minutePh: "मिनट 0–59",
+  solar: "सच्चे सौर समय का सुधार लागू करें",
+  zi: "Zi-hour तिथि नियम",
+  ziLate: "23:00 से अगले दिन की गणना",
+  ziMid: "तारीख आधी रात 00:00 पर बदलें",
+  analyze: "विश्लेषण करें",
+  analyzing: "आपका चार्ट बन रहा है…",
+  locating: "जन्म स्थान का समय समायोजित हो रहा है…",
+  remembered: "आपकी पिछली सहेजी हुई जन्म जानकारी भर दी गई है। आप इसे बदल सकते हैं।",
+  errCity: "खोज परिणामों से जन्म शहर और देश चुनें।",
+  errQuestion: "पहले वह प्रश्न लिखें जिसका उत्तर आप वास्तव में चाहते हैं।",
+  errAnalyze: "विश्लेषण पूरा नहीं हो सका। जानकारी जाँचकर फिर प्रयास करें।",
+  faq: "सामान्य प्रश्न",
+  faq1q: "यह विश्लेषण किस पर आधारित है?",
+  faq1a: "Zhaowu में पारंपरिक Zi Ping BaZi मुख्य निर्णय-पद्धति है। अन्य प्रतीकात्मक मॉड्यूल अपनी स्वतंत्र गणना-सीमा के भीतर ही उपयोग होते हैं।",
+  faq2q: "क्या परिणाम निश्चित रूप से सही होंगे?",
+  faq2a: "किसी घटना की गारंटी नहीं है। चार्ट संरचना, समय और अधिक संभावित पैटर्न समझने में मदद करता है; वास्तविक संसाधन, चुनाव और कार्रवाई परिणाम बदल सकते हैं।",
+  faq3q: "क्या मेरा डेटा सहेजा जाता है?",
+  faq3a: "साइन इन करने पर रिपोर्ट My Zhaowu में सहेजी जा सकती है। साइन आउट स्थिति में विश्लेषण केवल वर्तमान सत्र में रहता है।",
+  resultQ: "आपका विश्लेषण",
+  resultA: "सीधा उत्तर",
+  chart: "आपका BaZi चार्ट",
+  dayMaster: "Day Master",
+  monthLing: "मासिक प्रभाव",
+  nayin: "Na Yin",
+  shishen: "Ten Gods",
+  hide: "छिपे हुए तने",
+  dishi: "12 जीवन अवस्थाएँ",
+  xunkong: "रिक्तता (Void)",
+  wuxing: "तत्व-संतुलन का आधार",
+  favorEl: "प्रवाह के अस्थायी सहायक तत्व",
+  drainEl: "अभी अधिक न बढ़ाएँ",
+  useful: "प्रवाह के सहायक तत्व (समीक्षा बाकी)",
+  drain: "अभी अधिक न बढ़ाएँ (समीक्षा बाकी)",
+  strength: "तत्व-संतुलन का आधार",
+  dayun: "दीर्घकालिक भाग्य-चक्र",
+  rhythm: "आपकी समग्र जीवन-लय",
+  life: "व्यावहारिक उपयोग",
+  work: "करियर",
+  love: "रिश्ते",
+  money: "धन",
+  body: "शरीर और मन",
+  home: "घर",
+  action: "सबसे महत्वपूर्ण अगला कदम",
+  guide: "रंग, दिशा और समय",
+  favor: "अधिक सहायक",
+  rest: "अभी ज़्यादा न बढ़ाएँ",
+  pet: "पालतू पशु का प्रतीकात्मक अर्थ",
+  provenance: "गणना का आधार",
+  full: "सरल भाषा में पूरी रिपोर्ट",
+  genFull: "पूरी रिपोर्ट देखें",
+  generating: "पूरी रिपोर्ट तैयार हो रही है…",
+  save: "My Zhaowu में सहेजें",
+  saved: "सहेजा गया",
+  needLogin: "सहेजने और आगे पढ़ने के लिए साइन इन करें।",
+  reset: "फिर से शुरू करें",
+  disclaimer: "यह पारंपरिक संस्कृति और प्रतीकात्मक व्याख्या पर आधारित है, ताकि जीवन के पैटर्न और विकल्प समझे जा सकें। यह चिकित्सा, कानूनी या वित्तीय सलाह का विकल्प नहीं है।",
+  mineLead: "एक ही खाते में जन्म प्रोफ़ाइल, प्रश्न और पूरी रिपोर्ट रखें।",
+  emptyMine: "अभी कोई रिपोर्ट नहीं है। एक विश्लेषण पूरा करके यहाँ सहेजें।",
+  open: "खोलें",
+  del: "हटाएँ",
+  loginTitle: "Zhaowu में साइन इन करें",
+  loginLead: "पूरी रिपोर्ट My Zhaowu में सहेजने के लिए साइन इन करें।",
+  loginPageLead: "साइन इन करने पर जन्म जानकारी और हाल की रिपोर्ट सहेजी जा सकती हैं। सत्यापित मालिक खाते से ग्राहक की उपलब्ध सर्वोच्च रिपोर्ट देखी जा सकती है।",
+  loginTab: "साइन इन",
+  signupTab: "खाता बनाएँ",
+  signupTitle: "Zhaowu खाता बनाएँ",
+  displayName: "नाम",
+  displayNamePh: "हम आपको किस नाम से बुलाएँ?",
+  password: "पासवर्ड",
+  passwordPh: "कम से कम 8 अक्षर",
+  processing: "प्रक्रिया जारी…",
+  createAccount: "खाता बनाएँ",
+  loginUnavailable: "साइन-इन सेवा अभी कॉन्फ़िगर नहीं है।",
+  loginValidation: "मान्य ईमेल और कम से कम 8 अक्षरों का पासवर्ड दर्ज करें।",
+  accountCreated: "खाता बन गया है। ईमेल सत्यापित करें, फिर वापस आकर साइन इन करें।",
+  invalidCredentials: "ईमेल या पासवर्ड सही नहीं है।",
+  loginFailed: "साइन इन नहीं हो सका।",
+  loggedInTitle: "Zhaowu में साइन इन है",
+  enterMine: "My Zhaowu खोलें",
+  owner: "मालिक",
+  withGoogle: "Google से जारी रखें",
+  withApple: "Apple से जारी रखें",
+  withX: "X से जारी रखें",
+  orEmail: "या ईमेल का उपयोग करें",
+  backHome: "होम पर लौटें",
+  steps: "तीन चरण — पहले से BaZi जानना आवश्यक नहीं",
+  s1: "वह प्रश्न लिखें जिसका उत्तर वास्तव में चाहिए",
+  s2: "जन्म तारीख, समय और शहर दर्ज करें",
+  s3: "पहले सीधा उत्तर पढ़ें, फिर पूरी रिपोर्ट",
+  accountAdmin: "खाता / एडमिन",
+  methodKicker: "पारदर्शी पद्धति · स्पष्ट सीमाएँ",
+  methodTitle: "पहले स्पष्ट करें कि क्या गणना की जा सकती है और क्या नहीं",
+  methodLead: "Zhaowu बताता है कि कौन-सी पद्धतियाँ सक्रिय हैं, कौन-सा डेटा जुड़ा नहीं है और निष्कर्ष की सीमा कहाँ है।",
+  proofPrimaryTitle: "Zi Ping मुख्य पद्धति",
+  proofPrimaryBody: "Zi Ping BaZi मुख्य निर्णय-पद्धति है। पहले प्रश्न का उत्तर दिया जाता है, फिर चार्ट और उसका आधार दिखाया जाता है।",
+  proofPastTitle: "स्वतंत्र प्रतीकात्मक गणना",
+  proofPastBody: "पूर्व-जन्म / छह-लोक जैसे मॉड्यूल अपनी निश्चित स्वतंत्र गणना का उपयोग करते हैं; अतिरिक्त AI अनुमान नहीं जोड़ा जाता।",
+  galleryKicker: "स्वतंत्र उपकरण",
+  galleryTitle: "एक पेज, एक स्पष्ट उद्देश्य",
+  galleryBody: "स्वतंत्र गणनाएँ और क्विज़ यहाँ रखे गए हैं। हर पेज केवल उद्देश्य, इनपुट और परिणाम दिखाता है और पूरी रिपोर्ट से अलग रहता है।",
+  palmToolKicker: "मुफ़्त उपकरण · बिना AI",
+  palmToolTitle: "Dharma Palm · चार महल और छह लोक",
+  palmToolBody: "जन्म तारीख, समय और पारंपरिक क्रम दर्ज करके वर्ष, माह, दिन और घंटे के चार महल देखें। गणना डिवाइस पर होती है; साइन इन या सेव की जरूरत नहीं।",
+  palmToolScope: "उपयोग · चार प्रतीकात्मक पूर्व-जीवन महल, बारह तारे, छह लोक और वर्तमान जीवन की धुरी देखें",
+  palmToolButton: "मुफ़्त गणना खोलें",
+  proofBoundaryTitle: "अजुड़ी पद्धतियों का अनुमान नहीं",
+  proofBoundaryBody: "Zi Wei, Western astrology, Liu Yao और अन्य प्रणालियाँ अपनी स्वतंत्र गणना जुड़ने तक ‘not connected’ रहेंगी।",
+  myTitle: "My Zhaowu",
+  mySignedOutLead: "जन्म प्रोफ़ाइल और हाल की तीन रिपोर्ट देखने के लिए साइन इन करें।",
+  followTitle: "इसी चार्ट से अगला प्रश्न पूछें",
+  followGuestLead: "साइन इन करने पर वही चार्ट दोबारा जन्म जानकारी भरे बिना उपयोग कर सकते हैं।",
+  followLead: "चार स्तंभ, मासिक प्रभाव, सच्चा सौर समय और दीर्घकालिक चक्र वही रहेंगे; केवल नए प्रश्न का विश्लेषण होगा।",
+  followLogin: "साइन इन करके आगे पूछें",
+  followButton: "अगला प्रश्न",
+  followBusy: "विश्लेषण हो रहा है…",
+  followPh: "उदाहरण: क्या मुझे पहले नौकरी बदलनी चाहिए या वर्तमान काम पूरा करना चाहिए?",
+  followError: "अगले प्रश्न का विश्लेषण पूरा नहीं हो सका।",
+  guest: "अतिथि",
+};
+
 const BASE_TRANSLATOR = useI18n.getState().t;
 
 export function engineLocaleFor(language: DisplayLanguage): Locale {
@@ -378,9 +558,11 @@ export function displayText(
   en: string,
   ja: string,
   ko: string,
+  hi = en,
 ) {
   if (language === "ja") return ja;
   if (language === "ko") return ko;
+  if (language === "hi") return hi;
   if (language === "en") return en;
   return language === "zh-Hans" ? hans : hant;
 }
@@ -388,21 +570,22 @@ export function displayText(
 export function intlTagFor(language: DisplayLanguage) {
   if (language === "ja") return "ja-JP";
   if (language === "ko") return "ko-KR";
+  if (language === "hi") return "hi-IN";
   if (language === "en") return "en-AU";
   return language === "zh-Hans" ? "zh-CN" : "zh-TW";
 }
 
 function readDisplayLanguage(): DisplayLanguage {
-  if (typeof window === "undefined") return "zh-Hant";
+  if (typeof window === "undefined") return "zh-Hans";
   try {
     const value = window.localStorage.getItem("zhaowu.display-language");
-    if (value === "zh-Hant" || value === "zh-Hans" || value === "en" || value === "ja" || value === "ko") return value;
+    if (value === "zh-Hant" || value === "zh-Hans" || value === "en" || value === "ja" || value === "ko" || value === "hi") return value;
     const legacy = window.localStorage.getItem("zhaowu.locale");
-    if (legacy === "zh-Hans" || legacy === "en") return legacy;
+    if (legacy === "zh-Hant" || legacy === "zh-Hans" || legacy === "en") return legacy;
   } catch {
     /* ignore */
   }
-  return "zh-Hant";
+  return "zh-Hans";
 }
 
 function applyLanguage(language: DisplayLanguage) {
@@ -412,6 +595,8 @@ function applyLanguage(language: DisplayLanguage) {
     useI18n.setState({ t: (key) => JA[key] ?? BASE_TRANSLATOR(key) });
   } else if (language === "ko") {
     useI18n.setState({ t: (key) => KO[key] ?? BASE_TRANSLATOR(key) });
+  } else if (language === "hi") {
+    useI18n.setState({ t: (key) => HI[key] ?? BASE_TRANSLATOR(key) });
   } else {
     useI18n.setState({ t: BASE_TRANSLATOR });
   }

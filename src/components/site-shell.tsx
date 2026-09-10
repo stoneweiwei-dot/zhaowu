@@ -42,6 +42,7 @@ function releaseSummaryForLanguage(summary: string, version: string, language: D
   if (language === "zh-Hant" || language === "zh-Hans") return summary;
   if (language === "ja") return `最新の本番更新：${version} には、現在のUI・コンテンツ・安定性に関する修正が含まれています。`;
   if (language === "ko") return `최신 프로덕션 업데이트: ${version}에는 현재 UI, 콘텐츠 및 안정성 수정 사항이 포함되어 있습니다.`;
+  if (language === "hi") return `नवीनतम प्रोडक्शन अपडेट: ${version} में वर्तमान इंटरफ़ेस, सामग्री और स्थिरता से जुड़े सुधार शामिल हैं।`;
   if (!/[\u3400-\u9fff]/u.test(summary)) return summary;
   return `Latest production update: ${version} includes the current interface, content and reliability fixes.`;
 }
@@ -76,23 +77,24 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const releaseSummary = releaseSummaryForLanguage(stats.latestSummary, stats.version, language);
   const numberLocale = intlTagFor(language);
   const languageOptions = [
-    { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
+    { value: "en" as const, label: "English", aria: "English" },
     { value: "zh-Hans" as const, label: "简体", aria: "简体中文" },
-    { value: "en" as const, label: "EN", aria: "English" },
+    { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
     { value: "ja" as const, label: "日本語", aria: "日本語" },
     { value: "ko" as const, label: "한국어", aria: "한국어" },
+    { value: "hi" as const, label: "हिन्दी", aria: "हिन्दी" },
   ];
 
-  const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트");
-  const todayLabel = displayText(language, "今日", "今日", "Today", "本日", "오늘");
-  const totalLabel = displayText(language, "累計訪問", "累计访问", "Total visits", "累計訪問", "누적 방문");
-  const latestLabel = displayText(language, "最新更新 ＋", "最新更新 ＋", "Latest update ＋", "最新更新 ＋", "최신 업데이트 ＋");
-  const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴");
-  const galleryLabel = displayText(language, "圖庫", "图库", "Gallery", "ギャラリー", "갤러리");
-  const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기");
-  const homeProductLabel = displayText(language, "四柱八字", "四柱八字", "BaZi", "四柱推命", "사주팔자");
-  const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환");
-  const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환");
+  const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
+  const todayLabel = displayText(language, "今日", "今日", "Today", "本日", "오늘", "आज");
+  const totalLabel = displayText(language, "累計訪問", "累计访问", "Total visits", "累計訪問", "누적 방문", "कुल विज़िट");
+  const latestLabel = displayText(language, "最新更新 ＋", "最新更新 ＋", "Latest update ＋", "最新更新 ＋", "최신 업데이트 ＋", "नवीनतम अपडेट ＋");
+  const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
+  const galleryLabel = displayText(language, "圖庫", "图库", "Gallery", "ギャラリー", "갤러리", "गैलरी");
+  const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기", "गैलरी खोलें");
+  const homeProductLabel = displayText(language, "四柱八字", "四柱八字", "BaZi", "四柱推命", "사주팔자", "BaZi");
+  const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
+  const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
 
   return (
     <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
@@ -179,7 +181,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   WebkitBackdropFilter: "blur(9px)",
                 }}
               >
-                <span aria-hidden="true" style={{ display: "grid", placeItems: "center", flex: "0 0 auto", width: 34, height: 34, color: night ? "#d4b074" : "#1f4e3a" }}>
+                <span aria-hidden="true" style={{ display: "grid", placeItems: "center", flex: "0 0 auto", width: 36, height: 40, color: night ? "#d4b074" : "#1f4e3a" }}>
                   <BrandIcon name="language" />
                 </span>
                 {languageOptions.map(({ value, label, aria }) => {
@@ -195,16 +197,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
                       className="site-lang-button"
                       style={{
                         flex: "0 0 auto",
-                        minHeight: 34,
-                        padding: "0 10px",
+                        minHeight: 40,
+                        padding: "0 11px",
                         borderRadius: 999,
                         border: active ? "1px solid #c4a05a" : "1px solid transparent",
                         background: active ? (night ? "rgba(212,176,116,.15)" : "#1f4e3a") : "transparent",
                         color: active ? (night ? "#f1dfba" : "#fffaf0") : (night ? "#e7e0d1" : "#4f4a42"),
-                        fontSize: 11,
+                        fontSize: 12,
                         lineHeight: 1,
                         fontWeight: active ? 700 : 600,
-                        letterSpacing: value === "en" ? ".08em" : ".02em",
+                        letterSpacing: value === "en" ? ".04em" : ".01em",
                         whiteSpace: "nowrap",
                         boxShadow: active && !night ? "inset 0 0 0 1px rgba(255,255,255,.08)" : "none",
                       }}
