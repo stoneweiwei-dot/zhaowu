@@ -66,6 +66,7 @@ export function DailyColorsModule({ variant }: { variant: Variant }) {
               type="button"
               role="listitem"
               data-daily-color-id={state.id}
+              data-testid={`daily-color-${state.id}`}
               aria-pressed={pressed}
               onClick={() => setSelectedId(state.id)}
               style={{ ["--daily-color-ink" as string]: state.ink }}
