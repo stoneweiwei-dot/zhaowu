@@ -1,7 +1,18 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const PAPER_ROUTES = ["/", "/account", "/tianji-dual", "/yizhangjing"] as const;
+const PAPER_ROUTES = ["/", "/tianji-dual", "/yizhangjing", "/daily-colors"] as const;
+const SHARED_BIRTH = {
+  year: 1988, month: 10, day: 4, hour: 4, minute: 40, timeUnknown: false, gender: "male", relation: "unset",
+  city: { name: "Sydney", country: "Australia", display: "Sydney, Australia", timezone: "Australia/Sydney", latitude: -33.8688, longitude: 151.2093 },
+  liveCity: null, ziPolicy: "midnight", useTrueSolar: true,
+};
 async function makeAppOfflineSafe(page: Page) { await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" })); }
+async function seedPublicBirth(page: Page) {
+  await page.addInitScript((record) => {
+    localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify(record));
+    localStorage.setItem("zhaowu.birth-record-owner.v1", "__zhaowu_guest__");
+  }, SHARED_BIRTH);
+}
 function alphaOf(value: string) {
   const rgba = value.match(/rgba?\(([^)]+)\)/);
   if (!rgba) return 1;
@@ -12,6 +23,7 @@ function alphaOf(value: string) {
 test.describe("iPhone Safari parchment application shell", () => {
   test("keeps dynamic wallpaper and loose scatter out of every application route", async ({ page }) => {
     await makeAppOfflineSafe(page);
+    await seedPublicBirth(page);
     for (const route of PAPER_ROUTES) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
@@ -24,6 +36,7 @@ test.describe("iPhone Safari parchment application shell", () => {
 
   test("every application page keeps an explicit parchment background", async ({ page }) => {
     await makeAppOfflineSafe(page);
+    await seedPublicBirth(page);
     for (const route of PAPER_ROUTES) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
       const backgroundImage = await page.locator("body").evaluate((node) => getComputedStyle(node).backgroundImage);
@@ -36,8 +49,6 @@ test.describe("iPhone Safari parchment application shell", () => {
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
 
     const baziBackground = await page.locator(".zhaowu-bazi-hub").evaluate((node) => getComputedStyle(node).backgroundColor);
-    // r85 replaces the nested tinted Bazi card with a flat section below a
-    // separate parchment-backed client record. The page wallpaper is retained.
     expect(alphaOf(baziBackground)).toBe(0);
     const customerBackground = await page.locator("#customer-record").evaluate((node) => getComputedStyle(node).backgroundColor);
     expect(alphaOf(customerBackground)).toBeCloseTo(0.78, 2);
@@ -81,4 +92,23 @@ test.describe("iPhone Safari parchment application shell", () => {
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
   }
+
+  test("home colour card opens the full daily-colors guide and lets the visitor override today's cue", async ({ page }) => {
+    await makeAppOfflineSafe(page);
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    const homeCard = page.locator("#five-element-wardrobe");
+    await expect(homeCard).toBeVisible();
+    await expect(homeCard.getByRole("heading", { name: "每日穿衣｜五行色彩", exact: true })).toBeVisible();
+    await expect(homeCard.getByText("今日適合", { exact: false })).toBeVisible();
+    await homeCard.locator('[data-daily-color-id="hanxu"]').click();
+    await expect(homeCard.locator("[data-daily-colors-quote]")).toContainText("涵虛");
+    await homeCard.getByRole("link", { name: "查看完整建議", exact: true }).click();
+    await expect(page).toHaveURL(/\/daily-colors$/);
+    const pageCard = page.locator("#five-element-wardrobe");
+    await expect(pageCard).toBeVisible();
+    await expect(pageCard.getByText("不是改運、招財或古籍穿著律令")).toBeVisible();
+    await pageCard.locator('[data-daily-color-id="liujin"]').click();
+    await expect(pageCard.locator("[data-daily-colors-quote]")).toContainText("鏤金");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  });
 });
