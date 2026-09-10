@@ -28,7 +28,7 @@ const RESULT_COPY = {
     fullGenerating: "正在整理完整報告…",
     imageReady: "個人命象已生成並保存。",
     imageMatched: "已為你配對並保存圖庫命象。",
-    imageLoadFailed: "命詰圖未能載入；文字答案與完整報告不受影響。",
+    imageLoadFailed: "命詀圖未能載入；文字答案與完整報告不受影響。",
   },
   "zh-Hans": {
     syncFailed: "完整报告已整理完成，但云端同步暂时失败；画面内容不受影响。",
@@ -121,7 +121,6 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setBusy("full");
     setMsg(null);
     const sections = petDecision?.sections ?? composeFocusedReport(result);
-    // The customer report is local output. Reveal it immediately; cloud text generation or persistence may enrich/sync it but must never gate visibility.
     setReportSections(sections);
     try {
       const text = await ensureFullReport();
@@ -190,7 +189,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       <div className="zhaowu-result-actions flex flex-col gap-3">
         <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">{busy === "full" ? copy.fullGenerating : copy.fullGenerate}</button>
-        {user ? <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">{busy === "save" ? copy.saving : hasDurableRecord ? copy.updateSaved : t("save")}</button> : isPending ? <span className="h-12 animate-pulse rounded-full bg-paper-deep" /> : <Link to="/login" className="zhaowu-result-secondary grid h-12 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
+        {user ? <button type="button" data-testid="durable-save-action" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">{busy === "save" ? copy.saving : hasDurableRecord ? copy.updateSaved : t("save")}</button> : isPending ? <span className="h-12 animate-pulse rounded-full bg-paper-deep" /> : <Link to="/login" className="zhaowu-result-secondary grid h-12 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
         <button type="button" onClick={() => reset()} className="zhaowu-result-reset h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
       </div>
 
