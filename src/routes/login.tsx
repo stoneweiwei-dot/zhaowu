@@ -2,10 +2,11 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FormEvent, useEffect, useState } from "react";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { signUpWithPassword } from "@/lib/auth/signup";
 import { useI18n } from "@/lib/i18n";
 import { listActiveLoginAnimations, pickLoginAnimation, type LoginAnimationAsset } from "@/lib/login-animation";
 import { readBrandTheme } from "@/lib/brand-theme";
-import { captureOAuthRedirect, signInWithPassword, signUpWithPassword, supabaseConfigured } from "@/lib/supabase-rest";
+import { captureOAuthRedirect, signInWithPassword, supabaseConfigured } from "@/lib/supabase-rest";
 
 function LoginStageBackdrop() {
   const [asset, setAsset] = useState<LoginAnimationAsset | null>(null);
@@ -72,7 +73,7 @@ function LoginPage() {
         await navigate({ to: "/" });
         return;
       }
-      // The backend decides whether confirmation is required; the UI does not add a separate confirmation step.
+      // The backend decides whether confirmation is required; when it is, the confirmation redirect is pinned to the official production site.
       const { session } = await signUpWithPassword(email.trim(), password, displayName.trim());
       if (session) {
         await reload();
