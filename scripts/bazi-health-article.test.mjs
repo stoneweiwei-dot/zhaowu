@@ -34,7 +34,8 @@ test("article renders multiple optional illustrations without gating text", () =
   assert.match(section, /decoding="async"/);
   assert.match(section, /<p className=/);
   for (const svg of [fivePhases, bodyMap, timing, balance]) {
-    assert.match(svg, /viewBox="0 0 720 1280"/);
-    assert.doesNotMatch(svg, /<text/);
+    assert.match(svg, /viewBox="0 0 (?:720 960|800 800)"/);
+    assert.match(svg, /data-zhaowu-article-art="r93"/);
   }
+  assert.match(bodyMap, /傳統象徵 ≠ 醫療診斷/);
 });

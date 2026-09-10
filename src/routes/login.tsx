@@ -72,6 +72,7 @@ function LoginPage() {
         await navigate({ to: "/" });
         return;
       }
+      // The backend decides whether confirmation is required; the UI does not add a separate confirmation step.
       const { session } = await signUpWithPassword(email.trim(), password, displayName.trim());
       if (session) {
         await reload();

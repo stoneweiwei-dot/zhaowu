@@ -3,7 +3,7 @@ import { analyzeBranchRelations, natalBranchPoints, summarizeBranchRelations, ty
 import { analyzeStructuralRemedy, type StructuralRemedy } from "@/lib/bazi/structural-remedy";
 import type { Chart } from "@/lib/bazi/types";
 
-const STRUCTURE_QUESTION_RE = /(八字|命局|命盤|命盘)?\s*(是|屬於|属于|算|走)?\s*(什麼|什么|哪一種|哪一种)?\s*(格局|格)|(格局|立格|成格|破格|殺印相生|杀印相生|食神制殺|食神制杀|傷官配印|伤官配印)/;
+const STRUCTURE_QUESTION_RE = /(八字|命局|命盤|命盘)?\s*(是|屬於|属于|算|走)?\s*(什麼|什么|哪一種|哪一种)?\s*(格局)|(格局|立格|成格|破格|殺印相生|杀印相生|食神制殺|食神制杀|傷官配印|伤官配印)/;
 
 const STRUCTURE_BY_TEN_GOD: Record<string, string> = {
   正官: "正官格",
@@ -142,7 +142,10 @@ export function analyzeStructure(chart: Chart): StructureSummary {
   const relationText = `地支作用：${summarizeBranchRelations(branchRelations)}。合、三合、三會只先記結構條件，不自動等同合化。`;
   const remedyText = `病藥層：${remedy.disease}；${remedy.medicine}${remedy.bridge ? ` 通關鏈：${remedy.bridge}。` : ""}`;
   const opening = exposedMonthQi ? `以「${label}」立格` : `以「${label}方向」為主`;
-  const directAnswer = `直接答案：這個命局${opening}${supportingPattern ? `，第二層做功以「${supportingPattern}」為主` : ""}；目前結構判為「${completion.label}」，容量為「${completion.capacity}」。這裡的容量只指格局完成度，不等於財富、地位或人的高低。`;
+  const monthEvidence = exposedMonthQi
+    ? `月令主氣${monthMainStem}${monthTenGod}透干，這是立格的第一層證據。`
+    : `月令主氣${monthMainStem}${monthTenGod}未直接透干，所以只先定格局方向。`;
+  const directAnswer = `直接答案：這個命局${opening}${supportingPattern ? `，第二層做功以「${supportingPattern}」為主` : ""}；${monthEvidence}目前結構判為「${completion.label}」，容量為「${completion.capacity}」。這裡的容量只指格局完成度，不等於財富、地位或人的高低。`;
 
   return {
     label,
