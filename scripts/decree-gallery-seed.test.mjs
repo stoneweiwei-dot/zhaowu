@@ -54,7 +54,7 @@ test("new reports copy the best matched Gallery artwork directly without requiri
   const directIndex = source.indexOf("if (!force)");
   const providerIndex = source.indexOf('fetch("https://api.openai.com/v1/images/edits"');
   assert.ok(directIndex >= 0, "default Gallery-direct delivery branch is required");
-  assert.ok(providerIndex > directIndex, "Gallery-direct delivery must happen before optional provider personalization");
+  assert.ok(providerIndex > directIndex, "Gallery-direct delivery must happen before optional owner personalization");
   assert.match(source, /deliverGalleryDirect/);
   assert.match(source, /imageSource: "gallery-direct"/);
   assert.match(source, /GALLERY_DIRECT_VERSION/);
@@ -62,11 +62,12 @@ test("new reports copy the best matched Gallery artwork directly without requiri
   assert.match(source, /gallerySelectionMode/);
 });
 
-test("explicit decree generation reselects Gallery without requiring provider credits", async () => {
+test("explicit customer decree generation reselects Gallery without requiring provider credits", async () => {
   const backend = await read("supabase/functions/generate-decree-image/index.ts");
   const client = await read("src/lib/report/decree-image.ts");
   assert.match(backend, /const reselectGallery = payload\?\.reselectGallery === true/);
   assert.match(backend, /if \(report\.image_path && !force && !reselectGallery\)/);
+  assert.match(backend, /const force = forceRequested && isOwner/);
   const directIndex = backend.indexOf("if (!force)");
   const providerIndex = backend.indexOf('fetch("https://api.openai.com/v1/images/edits"');
   assert.ok(directIndex >= 0 && providerIndex > directIndex, "Gallery reselection must remain on the no-provider direct path");
@@ -77,7 +78,7 @@ test("explicit decree generation reselects Gallery without requiring provider cr
   assert.doesNotMatch(generateBody, /loadExistingDecreeImage\(session, reportId\)/);
 });
 
-test("passive existing decree image is reused unless Gallery reselection or force was requested", async () => {
+test("passive existing decree image is reused unless Gallery reselection or verified-owner force was requested", async () => {
   const source = await read("supabase/functions/generate-decree-image/index.ts");
   const reuseIndex = source.indexOf("if (report.image_path && !force && !reselectGallery)");
   const galleryIndex = source.indexOf("chooseGalleryReference(service, chart, question)");
@@ -86,24 +87,28 @@ test("passive existing decree image is reused unless Gallery reselection or forc
   assert.ok(galleryIndex > reuseIndex, "passive existing image must be returned before Gallery selection");
   assert.ok(providerIndex > reuseIndex, "passive existing image must be returned before provider generation");
   assert.match(source, /createSignedUrl\(imagePath, 3600\)/);
-  assert.match(source, /A failed refresh must never make an already-generated personal image disappear/);
 });
 
-test("provider personalization remains optional and falls back to the matched Gallery image", async () => {
+test("provider personalization is owner-only and Gallery remains the customer fallback", async () => {
   const source = await read("supabase/functions/generate-decree-image/index.ts");
+  assert.match(source, /authClient\.auth\.getUser\(token\)/);
+  assert.match(source, /select\("is_owner"\)/);
+  assert.match(source, /const isOwner = actorProfile\?\.is_owner === true/);
+  assert.match(source, /const force = forceRequested && isOwner/);
+  assert.match(source, /const openaiKey = isOwner \? Deno\.env\.get\("OPENAI_API_KEY"\) : null/);
   assert.match(source, /new FormData\(\)/);
   assert.match(source, /form\.append\("image", referenceBlob/);
   assert.match(source, /https:\/\/api\.openai\.com\/v1\/images\/edits/);
   assert.doesNotMatch(source, /\/v1\/images\/generations/);
-  assert.match(source, /Explicit force=true keeps the optional provider-personalized path/);
   assert.match(source, /galleryDirect: true/);
   assert.match(source, /degraded: true/);
 });
 
-test("the customer-facing production button explicitly requests provider personalization", async () => {
-  const resultView = await read("src/components/result-view.tsx");
-  assert.match(resultView, /generateDecreeImage\(session, reportId, true\)/);
-  assert.doesNotMatch(resultView, /generateDecreeImage\(session, reportId\);/);
+test("customer force requests are fail-closed on the server", async () => {
+  const backend = await read("supabase/functions/generate-decree-image/index.ts");
+  assert.match(backend, /const providerBlocked = forceRequested && !isOwner/);
+  assert.match(backend, /if \(!force\)/);
+  assert.match(backend, /deliverGalleryDirect/);
 });
 
 test("provider billing details are never exposed to customers", async () => {

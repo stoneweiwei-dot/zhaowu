@@ -79,11 +79,10 @@ function fallback(locale: Locale) {
 }
 
 /**
- * Cost-isolation rule:
- * this customer-facing endpoint is deliberately provider-free.
- * Never add OPENAI_API_KEY, another owner-funded provider key, or a remote
- * translation/model fallback here. The browser implementation is local-only;
- * this endpoint remains only as a safe compatibility fallback for old clients.
+ * Cost-isolation rule: this customer-facing compatibility endpoint is
+ * deliberately provider-free. Do not add a private owner-funded provider,
+ * remote translation service, or model fallback here. The browser guide is
+ * local-only; this endpoint exists only for compatibility with old clients.
  */
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors(req) });
