@@ -1,10 +1,10 @@
 # 昭梧命理默认分析协议 v1.0
 
-状态：`SUPERSEDED`
+状态：`SUPERSEDED / REDIRECT ONLY`
 
-> 本文件自 2026-09-10 起不再作为最高优先母指令。当前唯一主协议为：`docs/STONE-R6.1-CURRENT-MASTER.md`。
+> 本文件不再作为最高优先母指令。当前唯一主协议为：`docs/STONE-R6.2.1-CURRENT-MASTER.md`。
 >
-> 任何网站、报告生成器、站主客户分析、内部 QA、AI / Agent 若读取到本文件，必须继续加载 R6.1 Current Master，并以 R6.1 覆盖本文件中冲突或较旧的规则。
+> 任何网站、报告生成器、站主客户分析、内部 QA、AI / Agent 若读取到本文件，必须继续加载 R6.2.1 Current Master；不得停在 R6.1，也不得从本历史文件恢复已被后续版本取代的规则。
 
 历史基线保留如下：
 
@@ -23,4 +23,4 @@
 
 禁止：五行计数平均、缺什么补什么、生肖性格、单一日柱定性、神煞凌驾结构、SSS／稀有度／命格等级、无依据的绝对吉凶。
 
-其余历史内容不再维护；当前执行规范以 `STONE-R6.1-CURRENT-MASTER.md` 为准。
+其余历史内容不再维护；当前执行规范以 `STONE-R6.2.1-CURRENT-MASTER.md` 为准。
