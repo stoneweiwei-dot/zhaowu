@@ -33,10 +33,16 @@ export function IntroGate() {
 
   useEffect(() => {
     let cancelled = false;
+    // The intro may be perceptible, but it must never block access for three seconds just to finish its artwork.
     const minimumTimer = window.setTimeout(() => { if (!cancelled) setMinimumDone(true); }, INTRO_GATE_MIN_VISIBLE_MS);
     const targetTimer = window.setTimeout(() => { if (!cancelled) setTargetDone(true); }, INTRO_GATE_TARGET_MS);
     const cancelHardExit = scheduleIntroGateHardExit(window.setTimeout, window.clearTimeout, () => { if (!cancelled) forceOff(); });
-    void runBootstrapReadiness(() => {}).then(() => { if (!cancelled) setRuntimeReady(true); }).catch(() => { if (!cancelled) setRuntimeReady(true); });
+    void runBootstrapReadiness(() => {})
+      .then(() => { if (!cancelled) setRuntimeReady(true); })
+      .catch(() => {
+        // backend trouble must fail open: keep the route mounted and let the visual exit normally.
+        if (!cancelled) setRuntimeReady(true);
+      });
     return () => {
       cancelled = true;
       window.clearTimeout(minimumTimer);
@@ -53,7 +59,7 @@ export function IntroGate() {
 
   return (
     <div className={`zhaowu-lotus-intro fixed inset-0 z-[100] overflow-hidden transition-opacity duration-180 ease-out ${phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"}`}
-      role="status" aria-live="polite" aria-label={loadingLabel} data-intro-motion="owner-video" data-intro-fallback-mode="fullscreen-owner-poster">
+      role="status" aria-live="polite" aria-label={loadingLabel} data-intro-motion="owner-video" data-intro-fallback-mode="owner-poster">
       <div className={`zhaowu-lotus-intro__fallback ${videoPlaying ? "is-covered" : ""}`} data-intro-fallback aria-hidden="true">
         <img src={OWNER_LOADING_POSTER} alt="" className="zhaowu-lotus-intro__poster" />
         <div className="zhaowu-lotus-intro__fallback-art">

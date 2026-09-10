@@ -4,6 +4,7 @@ import { test } from "node:test";
 
 const index = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const runtimeCopy = await readFile(new URL("../public/customer-facing-copy-r93.js", import.meta.url), "utf8");
+const analysisForm = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
 const intro = await readFile(new URL("../src/components/intro-gate.tsx", import.meta.url), "utf8");
 const articleAssets = await Promise.all([
   "bazi-health-five-phases.svg",
@@ -12,12 +13,13 @@ const articleAssets = await Promise.all([
   "bazi-health-balance.svg",
 ].map((name) => readFile(new URL(`../public/articles/${name}`, import.meta.url), "utf8")));
 
-test("customer-facing birth section is rewritten before the app paints back-office wording", () => {
-  assert.match(index, /customer-facing-copy-r93\.js/);
-  assert.match(runtimeCopy, /建立你的命盤/);
-  assert.match(runtimeCopy, /建立你的命盘/);
-  assert.match(runtimeCopy, /Build your chart/);
-  assert.doesNotMatch(runtimeCopy, /customerTitle:\s*"客人|Client details|SHARED RECORD/);
+test("customer-facing birth copy is owned by React with no legacy DOM rewrite", () => {
+  assert.doesNotMatch(index, /customer-facing-copy-r93\.js/);
+  assert.match(runtimeCopy, /intentionally inert/);
+  assert.doesNotMatch(runtimeCopy, /MutationObserver|querySelector|setText/);
+  assert.match(analysisForm, /customerTitle:\s*"客人資料"/);
+  assert.match(analysisForm, /customerTitle:\s*"客人资料"/);
+  assert.match(analysisForm, /customerTitle:\s*"Client details"/);
 });
 
 test("intro fallback restores animated lotus composition rather than tiny poster lockup", () => {

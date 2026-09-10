@@ -120,10 +120,11 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   async function onFull() {
     setBusy("full");
     setMsg(null);
+    const sections = petDecision?.sections ?? composeFocusedReport(result);
+    // The customer report is local output. Reveal it immediately; cloud text generation or persistence may enrich/sync it but must never gate visibility.
+    setReportSections(sections);
     try {
-      const sections = petDecision?.sections ?? composeFocusedReport(result);
       const text = await ensureFullReport();
-      setReportSections(sections);
       if (session && user) {
         try {
           const row = await patchReportRecord({ session, profile, result, status: "report_ready", fullReport: text, ninePages: sections });
