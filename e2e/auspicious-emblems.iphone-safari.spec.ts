@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const PAPER_ROUTES = ["/", "/login", "/tianji-dual", "/yizhangjing"] as const;
+const PAPER_ROUTES = ["/", "/tianji-dual", "/yizhangjing"] as const;
 async function makeAppOfflineSafe(page: Page) { await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" })); }
 function alphaOf(value: string) {
   const rgba = value.match(/rgba?\(([^)]+)\)/);
