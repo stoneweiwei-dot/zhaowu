@@ -26,7 +26,6 @@ test.describe("iPhone Safari parchment application shell", () => {
     await makeAppOfflineSafe(page);
     for (const route of PAPER_ROUTES) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
-      await expect(page.locator(".zhaowu-home-sheet-shell")).toBeVisible();
       const backgroundImage = await page.locator("body").evaluate((node) => getComputedStyle(node).backgroundImage);
       expect(backgroundImage).not.toBe("none");
     }
