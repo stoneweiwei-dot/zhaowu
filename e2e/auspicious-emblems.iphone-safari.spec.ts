@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const PAPER_ROUTES = ["/", "/tianji-dual", "/yizhangjing"] as const;
+const PAPER_ROUTES = ["/", "/yizhangjing", "/ziwei", "/qizheng"] as const;
 async function makeAppOfflineSafe(page: Page) { await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" })); }
 function alphaOf(value: string) {
   const rgba = value.match(/rgba?\(([^)]+)\)/);
@@ -10,7 +10,7 @@ function alphaOf(value: string) {
 }
 
 test.describe("iPhone Safari parchment application shell", () => {
-  test("keeps dynamic wallpaper and loose scatter out of every application route", async ({ page }) => {
+  test("keeps dynamic wallpaper and loose scatter out of representative application routes", async ({ page }) => {
     await makeAppOfflineSafe(page);
     for (const route of PAPER_ROUTES) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
@@ -22,7 +22,7 @@ test.describe("iPhone Safari parchment application shell", () => {
     }
   });
 
-  test("every application page keeps an explicit parchment background", async ({ page }) => {
+  test("representative application pages keep an explicit parchment background", async ({ page }) => {
     await makeAppOfflineSafe(page);
     for (const route of PAPER_ROUTES) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
