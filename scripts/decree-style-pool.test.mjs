@@ -7,9 +7,9 @@ import {
 } from "../supabase/functions/generate-decree-image/style-pool.ts";
 
 test("guardian style pool keeps concealed sacred icon as an active weighted option", () => {
-  const concealed = GUARDIAN_STYLE_POOL.find((style) => style.id === "concealed_sacred_icon_v1");
+  const concealed = GUARDIAN_STYLE_POOL.find((style) => style.id === "concealed_sacred_icon_v2");
   assert.ok(concealed);
-  assert.equal(concealed.label, "含藏聖相・遮面護法");
+  assert.equal(concealed.label, "含藏聖相・濃郁宋彩遮面護法");
   assert.ok(concealed.weight > 0);
   assert.match(concealed.directive, /30–55%/);
 });
@@ -20,7 +20,7 @@ test("guardian style selection is deterministic for the same report attempt", ()
 });
 
 test("guardian style pool preserves the saturated Song style as the primary weight", () => {
-  const primary = GUARDIAN_STYLE_POOL.find((style) => style.id === "song_saturated_sacred_v1");
+  const primary = GUARDIAN_STYLE_POOL.find((style) => style.id === "song_saturated_sacred_v2");
   assert.ok(primary);
   assert.equal(Math.max(...GUARDIAN_STYLE_POOL.map((style) => style.weight)), primary.weight);
 });
@@ -31,5 +31,5 @@ test("guardian style pool can produce more than one style across attempts", () =
     ids.add(chooseGuardianStyle(`report-123:${attempt}:${GUARDIAN_STYLE_POOL_VERSION}`).id);
   }
   assert.ok(ids.size >= 2);
-  assert.ok(ids.has("concealed_sacred_icon_v1"));
+  assert.ok(ids.has("concealed_sacred_icon_v2"));
 });
