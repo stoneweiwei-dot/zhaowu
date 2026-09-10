@@ -1,5 +1,4 @@
 import type { Locale } from "@/lib/i18n";
-import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 
 export const SITE_GUIDE_ROUTES = [
   "/",
@@ -116,43 +115,14 @@ export function defaultSiteGuide(locale: Locale): SiteGuideAnswer {
   return { reply: COPY[locale].home[0], route: null, cta: null, source: "local" };
 }
 
-function isAllowedRoute(value: unknown): value is SiteGuideRoute {
-  return (
-    typeof value === "string" &&
-    (SITE_GUIDE_ROUTES as readonly string[]).includes(value)
-  );
-}
-
+/**
+ * Customer-facing site guidance is intentionally local-only.
+ * It must never fall back to an owner-funded model/API call.
+ */
 export async function askSiteGuide(
   message: string,
   locale: Locale,
-  pathname: string,
+  _pathname: string,
 ): Promise<SiteGuideAnswer> {
-  const local = resolveLocalSiteGuide(message, locale);
-  if (local) return local;
-
-  const response = await fetch(`${SUPABASE_URL}/functions/v1/site-guide`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ message: message.slice(0, 400), locale, pathname }),
-  });
-  if (!response.ok) return defaultSiteGuide(locale);
-
-  const body = (await response.json()) as Partial<SiteGuideAnswer>;
-  return {
-    reply:
-      typeof body.reply === "string" && body.reply.trim()
-        ? body.reply.trim().slice(0, 500)
-        : defaultSiteGuide(locale).reply,
-    route: isAllowedRoute(body.route) ? body.route : null,
-    cta:
-      typeof body.cta === "string" && body.cta.trim()
-        ? body.cta.trim().slice(0, 80)
-        : null,
-    source: body.source === "ai" ? "ai" : "fallback",
-  };
+  return resolveLocalSiteGuide(message, locale) ?? defaultSiteGuide(locale);
 }

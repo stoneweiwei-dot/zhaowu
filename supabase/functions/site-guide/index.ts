@@ -10,6 +10,8 @@ const ALLOWED_ROUTES = [
 ] as const;
 type AllowedRoute = (typeof ALLOWED_ROUTES)[number];
 
+type Locale = "zh-Hant" | "zh-Hans" | "en";
+
 function allowedOrigin(origin: string | null) {
   if (!origin) return "https://stone-zhaowu-official.vercel.app";
   try {
@@ -20,8 +22,7 @@ function allowedOrigin(origin: string | null) {
         url.hostname.endsWith(".vercel.app")) ||
       url.hostname === "localhost" ||
       url.hostname === "127.0.0.1"
-    )
-      return origin;
+    ) return origin;
   } catch {
     /* ignore */
   }
@@ -31,8 +32,7 @@ function allowedOrigin(origin: string | null) {
 function cors(req: Request) {
   return {
     "Access-Control-Allow-Origin": allowedOrigin(req.headers.get("origin")),
-    "Access-Control-Allow-Headers":
-      "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     Vary: "Origin",
   };
@@ -49,135 +49,52 @@ function json(req: Request, body: unknown, status = 200) {
   });
 }
 
-function safeRoute(value: unknown): AllowedRoute | null {
-  return typeof value === "string" &&
-    (ALLOWED_ROUTES as readonly string[]).includes(value)
-    ? (value as AllowedRoute)
-    : null;
+function normalizeLocale(value: unknown): Locale {
+  return value === "en" || value === "zh-Hant" ? value : "zh-Hans";
 }
 
-function fallback(locale: string) {
-  if (locale === "en")
+function fallback(locale: Locale) {
+  if (locale === "en") {
     return {
-      reply:
-        "Choose BaZi, Seven Luminaries, Past & Present, Zi Wei, or My history.",
-      route: "/",
+      reply: "Choose BaZi, Seven Luminaries, Past & Present, Zi Wei, or My history.",
+      route: "/" as AllowedRoute,
       cta: "Go home",
-      source: "fallback",
+      source: "local",
     };
-  if (locale === "zh-Hant")
+  }
+  if (locale === "zh-Hant") {
     return {
       reply: "請選擇八字、七政、前世今生、紫微或我的紀錄。",
-      route: "/",
+      route: "/" as AllowedRoute,
       cta: "返回首頁",
-      source: "fallback",
+      source: "local",
     };
+  }
   return {
     reply: "请选择八字、七政、前世今生、紫微或我的记录。",
-    route: "/",
+    route: "/" as AllowedRoute,
     cta: "返回首页",
-    source: "fallback",
+    source: "local",
   };
 }
 
-function outputText(body: any): string {
-  if (typeof body?.output_text === "string") return body.output_text;
-  for (const item of body?.output ?? [])
-    for (const part of item?.content ?? [])
-      if (typeof part?.text === "string") return part.text;
-  return "";
-}
-
+/**
+ * Cost-isolation rule:
+ * this customer-facing endpoint is deliberately provider-free.
+ * Never add OPENAI_API_KEY, another owner-funded provider key, or a remote
+ * translation/model fallback here. The browser implementation is local-only;
+ * this endpoint remains only as a safe compatibility fallback for old clients.
+ */
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS")
-    return new Response("ok", { headers: cors(req) });
-  if (req.method !== "POST")
-    return json(req, { error: "METHOD_NOT_ALLOWED" }, 405);
+  if (req.method === "OPTIONS") return new Response("ok", { headers: cors(req) });
+  if (req.method !== "POST") return json(req, { error: "METHOD_NOT_ALLOWED" }, 405);
 
-  let payload: { message?: unknown; locale?: unknown; pathname?: unknown };
+  let payload: { locale?: unknown } = {};
   try {
     payload = await req.json();
   } catch {
     return json(req, { error: "INVALID_JSON" }, 400);
   }
-  const message =
-    typeof payload.message === "string"
-      ? payload.message.trim().slice(0, 400)
-      : "";
-  const locale =
-    payload.locale === "en" || payload.locale === "zh-Hant"
-      ? payload.locale
-      : "zh-Hans";
-  const pathname =
-    typeof payload.pathname === "string" ? payload.pathname.slice(0, 80) : "/";
-  if (!message) return json(req, { error: "MESSAGE_REQUIRED" }, 400);
 
-  const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key) return json(req, fallback(locale));
-
-  try {
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4.1-nano",
-        max_output_tokens: 360,
-        text: {
-          format: {
-            type: "json_schema",
-            name: "site_guide",
-            strict: true,
-            schema: {
-              type: "object",
-              additionalProperties: false,
-              properties: {
-                reply: { type: "string" },
-                route: {
-                  type: ["string", "null"],
-                  enum: [...ALLOWED_ROUTES, null],
-                },
-                cta: { type: ["string", "null"] },
-              },
-              required: ["reply", "route", "cta"],
-            },
-          },
-        },
-        instructions: `You are the Jade Dragon navigation guide for Zhaowu. You ONLY help visitors choose an existing page. Never perform BaZi readings, medical/legal/financial advice, or invent routes. Available routes: / = home; /#analysisForm = BaZi questions about work, relationships, timing or choices; /qizheng = Seven Luminaries plain-language report; /yizhangjing = Past & Present Dharma Palm report; /ziwei = Zi Wei plain-language report; /history = specialist reports saved on this device; /account = signed-in BaZi questions and cloud reports; /login = sign in/register. Reply naturally and completely in ${locale}. Return only compact JSON with keys reply, route, cta. route must be one available route or null. Keep reply under 55 words.`,
-        input: `Current page: ${pathname}\nVisitor: ${message}`,
-      }),
-    });
-    if (!response.ok) {
-      const errorBody = await response.json().catch(() => ({}));
-      console.error(
-        "site-guide OpenAI request failed",
-        response.status,
-        errorBody?.error?.type ?? "unknown",
-        errorBody?.error?.code ?? "unknown",
-      );
-      return json(req, fallback(locale));
-    }
-    const data = await response.json();
-    const raw = outputText(data)
-      .replace(/^```json\s*|\s*```$/g, "")
-      .trim();
-    const parsed = JSON.parse(raw);
-    return json(req, {
-      reply:
-        typeof parsed.reply === "string"
-          ? parsed.reply.slice(0, 500)
-          : fallback(locale).reply,
-      route: safeRoute(parsed.route),
-      cta: typeof parsed.cta === "string" ? parsed.cta.slice(0, 80) : null,
-      source: "ai",
-    });
-  } catch (error) {
-    console.error(
-      "site-guide response handling failed",
-      error instanceof Error ? error.message : String(error),
-    );
-    return json(req, fallback(locale));
-  }
+  return json(req, fallback(normalizeLocale(payload.locale)));
 });
