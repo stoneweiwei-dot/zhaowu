@@ -31,6 +31,12 @@ function formatReleaseDate(value: string | null, locale: "zh-Hant" | "zh-Hans" |
   }).format(date);
 }
 
+function releaseSummaryForLocale(summary: string, version: string, locale: "zh-Hant" | "zh-Hans" | "en") {
+  if (locale !== "en") return summary;
+  if (!/[\u3400-\u9fff]/u.test(summary)) return summary;
+  return `Latest production update: ${version} includes the current interface, content and reliability fixes.`;
+}
+
 export function SiteShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isPending } = useCurrentUserState();
@@ -56,6 +62,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, []);
 
   const releaseDate = formatReleaseDate(stats.publishedAt, locale);
+  const releaseSummary = releaseSummaryForLocale(stats.latestSummary, stats.version, locale);
   const languageOptions = [
     { value: "zh-Hant" as const, label: "繁體", aria: "繁中" },
     { value: "zh-Hans" as const, label: "簡體", aria: "简中" },
@@ -67,6 +74,21 @@ export function SiteShell({ children }: { children: ReactNode }) {
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30">
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">
+            <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
+              <span data-site-release>
+                {stats.version} · {locale === "en" ? "Updates" : locale === "zh-Hans" ? "累计更新" : "累計更新"} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}
+              </span>
+              <span>
+                {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total visits" : locale === "zh-Hans" ? "累计访问" : "累計訪問"} {stats.totalVisits.toLocaleString()}
+              </span>
+              <details className="group basis-full text-center" data-latest-change-report>
+                <summary className="cursor-pointer list-none font-medium text-ink-soft [&::-webkit-details-marker]:hidden">
+                  {locale === "en" ? "Latest update ＋" : locale === "zh-Hans" ? "最新更新 ＋" : "最新更新 ＋"}
+                </summary>
+                <p className="mx-auto mt-1 max-w-2xl px-2 text-center leading-5">{releaseSummary}</p>
+              </details>
+            </div>
+
             <div className="zhaowu-header-primary">
               <Link to="/" className="zhaowu-brand-link text-ink" aria-label={t("brand")}>
                 <BrandSeal />
@@ -148,18 +170,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <img className="zhaowu-footer-logo is-day" src={BRAND_ASSETS.logoHorizontal} alt="" width={360} height={96} decoding="async" />
           <img className="zhaowu-footer-logo is-night" src={BRAND_ASSETS.logoHorizontalNight} alt="" width={360} height={96} decoding="async" />
           <p className="font-display text-sm tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
-          <p className="mt-2 text-xs text-ink-mute" data-site-release>
-            {stats.version} · {locale === "en" ? "Updates" : locale === "zh-Hans" ? "累计更新" : "累計更新"} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}
-          </p>
-          <p className="mt-1 text-xs text-ink-mute">
-            {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total visits" : locale === "zh-Hans" ? "累计访问" : "累計訪問"} {stats.totalVisits.toLocaleString()}
-          </p>
-          <details className="mx-auto mt-4 max-w-xl border-t border-line/60 pt-3 text-left text-sm leading-6 text-ink-mute" data-latest-change-report>
-            <summary className="cursor-pointer list-none text-center font-medium text-ink-soft [&::-webkit-details-marker]:hidden">
-              {locale === "en" ? "Latest update report ＋" : locale === "zh-Hans" ? "最新更新报告 ＋" : "最新更新報告 ＋"}
-            </summary>
-            <p className="mt-2 text-center">{stats.latestSummary}</p>
-          </details>
         </footer>
       ) : null}
     </div>
