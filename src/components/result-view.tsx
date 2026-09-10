@@ -66,6 +66,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [busy, setBusy] = useState<"full" | "save" | "image" | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [reportSections, setReportSections] = useState<ReportSection[] | null>(null);
+  const [reportSyncedId, setReportSyncedId] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageReferenceAssetId, setImageReferenceAssetId] = useState<string | null>(null);
   const { chart, reading, question } = result;
@@ -110,8 +111,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     const sections = reportSections ?? petDecision?.sections ?? composeFocusedReport(result);
     setReportSections(sections);
     const row = await saveReportRecord({ session, profile, result, fullReport: reportText, ninePages: sections });
-    setSavedId(row?.id ?? result.id);
-    return row?.id ?? result.id;
+    const reportId = row?.id ?? result.id;
+    setSavedId(reportId);
+    setReportSyncedId(reportId);
+    return reportId;
   }
 
   async function onFull() {
@@ -123,9 +126,12 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       setReportSections(sections);
       if (session && user) {
         try {
-          await patchReportRecord({ session, profile, result, status: "report_ready", fullReport: text, ninePages: sections });
-          setSavedId(result.id);
+          const row = await patchReportRecord({ session, profile, result, status: "report_ready", fullReport: text, ninePages: sections });
+          const reportId = row?.id ?? result.id;
+          setSavedId(reportId);
+          setReportSyncedId(reportId);
         } catch {
+          setReportSyncedId(null);
           setMsg(copy.syncFailed);
         }
       }
@@ -141,7 +147,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setBusy("save");
     setMsg(null);
     try { await ensureSavedReport(); setMsg(copy.saved); }
-    catch (err) { setMsg(err instanceof Error && locale !== "en" ? err.message : copy.saveFailed); }
+    catch (err) { setReportSyncedId(null); setMsg(err instanceof Error && locale !== "en" ? err.message : copy.saveFailed); }
     finally { setBusy(null); }
   }
 
@@ -158,6 +164,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     } catch (err) { setMsg(err instanceof Error ? err.message : copy.fullFailed); }
     finally { setBusy(null); }
   }
+
+  const hasDurableRecord = savedId === result.id || reportSyncedId === result.id;
 
   return (
     <section id="result" className="zhaowu-result-flow space-y-5">
@@ -181,7 +189,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       <div className="zhaowu-result-actions flex flex-col gap-3">
         <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">{busy === "full" ? copy.fullGenerating : copy.fullGenerate}</button>
-        {isPending ? <span className="h-12 animate-pulse rounded-full bg-paper-deep" /> : user ? <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">{busy === "save" ? copy.saving : savedId ? copy.updateSaved : t("save")}</button> : <Link to="/login" className="zhaowu-result-secondary grid h-12 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
+        {user ? <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">{busy === "save" ? copy.saving : hasDurableRecord ? copy.updateSaved : t("save")}</button> : isPending ? <span className="h-12 animate-pulse rounded-full bg-paper-deep" /> : <Link to="/login" className="zhaowu-result-secondary grid h-12 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
         <button type="button" onClick={() => reset()} className="zhaowu-result-reset h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
       </div>
 
