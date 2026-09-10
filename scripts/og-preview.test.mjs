@@ -20,7 +20,9 @@ test("index.html exposes Open Graph and large-image Twitter cards for og.jpg", (
   assert.match(html, /property="og:image:width" content="1200"/);
   assert.match(html, /property="og:image:height" content="630"/);
   assert.match(html, /property="og:image:type" content="image\/jpeg"/);
-  assert.match(html, /property="og:title" content="昭梧｜昭於未見，梧於有歸"/);
+  assert.match(html, /property="og:locale" content="zh_CN"/);
+  assert.match(html, /property="og:title" content="昭梧｜昭于未见，梧于有归"/);
+  assert.match(html, /property="og:description" content="看见命运的节奏，选择属于你的道路"/);
   assert.match(html, /name="twitter:card" content="summary_large_image"/);
   assert.match(html, /name="twitter:image" content="https:\/\/stone-zhaowu-official\.vercel\.app\/og\.jpg"/);
   assert.doesNotMatch(html, /x-banner|twitter-banner|feed-banner/);
