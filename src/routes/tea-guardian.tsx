@@ -153,13 +153,16 @@ function TeaGuardianPage() {
             <div className="tea-options">
               {question.options.map((option) => {
                 const checked = answers[question.key] === option.value;
+                const inputId = `tea-${question.key}-${option.value}`;
                 return (
-                  <label key={option.value} className={checked ? "is-selected" : ""}>
+                  <label key={option.value} htmlFor={inputId} className={checked ? "is-selected" : ""}>
                     <input
+                      id={inputId}
                       type="radio"
                       name={question.key}
                       value={option.value}
                       checked={checked}
+                      onClick={() => setAnswers((previous) => ({ ...previous, [question.key]: option.value }))}
                       onChange={() => setAnswers((previous) => ({ ...previous, [question.key]: option.value }))}
                     />
                     <span>{option.label[locale]}</span>
