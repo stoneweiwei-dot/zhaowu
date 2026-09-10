@@ -166,7 +166,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     finally { setBusy(null); }
   }
 
-  const hasDurableRecord = savedId === result.id || reportSyncedId === result.id;
+  const hasDurableRecord = reportSyncedId !== null || (Boolean(result.id) && savedId === result.id);
 
   return (
     <section id="result" className="zhaowu-result-flow space-y-5">
@@ -190,7 +190,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       <div className="zhaowu-result-actions flex flex-col gap-3">
         <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">{busy === "full" ? copy.fullGenerating : copy.fullGenerate}</button>
-        {user ? <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">{busy === "save" ? copy.saving : hasDurableRecord ? copy.updateSaved : t("save")}</button> : isPending ? <span className="h-12 animate-pulse rounded-full bg-paper-deep" /> : <Link to="/login" className="zhaowu-result-secondary grid h-12 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
+        {user ? <button data-testid="result-save-report" type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">{busy === "save" ? copy.saving : hasDurableRecord ? copy.updateSaved : t("save")}</button> : isPending ? <span className="h-12 animate-pulse rounded-full bg-paper-deep" /> : <Link to="/login" className="zhaowu-result-secondary grid h-12 place-items-center rounded-full border border-line bg-cream px-5">{t("needLogin")}</Link>}
         <button type="button" onClick={() => reset()} className="zhaowu-result-reset h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
       </div>
 
