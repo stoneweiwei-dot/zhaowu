@@ -9,7 +9,13 @@ test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }
   await expect(page.locator(".tea-question")).toHaveCount(7);
 
   for (const name of ["aroma", "body", "bite", "warmth", "caffeine", "moment", "intention"]) {
-    await page.locator(`input[name="${name}"]`).first().check();
+    const input = page.locator(`input[name="${name}"]`).first();
+    const inputId = await input.getAttribute("id");
+    expect(inputId).toBeTruthy();
+    const option = page.locator(`label[for="${inputId}"]`);
+    await option.scrollIntoViewIfNeeded();
+    await option.click();
+    await expect(input).toBeChecked();
   }
   await page.getByRole("button", { name: "查看我的三個茶答案" }).click();
   await expect(page.getByRole("heading", { name: "你的茶仙評估" })).toBeVisible();

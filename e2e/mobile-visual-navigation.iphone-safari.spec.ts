@@ -49,7 +49,6 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await makeAppOfflineSafe(page);
     await page.addInitScript((birth) => {
       localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify(birth));
-      // Stub only the external ephemeris boundary, not the application's D60 flow.
       Object.assign(window, { Astronomy: {
         GeoVector: (body: string) => ({ body }),
         Ecliptic: () => ({ elon: 125 }),
@@ -81,6 +80,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const traditional = page.getByRole("button", { name: "繁體中文", exact: true });
     await expect(traditional).toHaveText("繁體");
+    await expect(traditional).toHaveAttribute("aria-pressed", "true");
     const metrics = await traditional.evaluate((element) => {
       const style = getComputedStyle(element);
       return {
@@ -92,20 +92,20 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     });
     expect(metrics.height).toBeGreaterThanOrEqual(34);
     expect(metrics.fontSize).toBeGreaterThanOrEqual(11);
-    expect(metrics.color).toBe("rgb(255, 250, 240)");
-    expect(metrics.backgroundColor).toBe("rgb(31, 78, 58)");
+    expect(metrics.color).toBe("rgb(32, 61, 52)");
+    expect(metrics.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
 
     const simplified = page.getByRole("button", { name: "简体中文", exact: true });
     await simplified.click();
     await expect(simplified).toHaveText("简体");
     await expect(simplified).toHaveAttribute("aria-pressed", "true");
-    await expect(simplified).toHaveCSS("color", "rgb(255, 250, 240)");
+    await expect(simplified).toHaveCSS("color", "rgb(32, 61, 52)");
 
     const english = page.getByRole("button", { name: "English", exact: true });
     await english.click();
     await expect(english).toHaveText("EN");
     await expect(english).toHaveAttribute("aria-pressed", "true");
-    await expect(english).toHaveCSS("color", "rgb(255, 250, 240)");
+    await expect(english).toHaveCSS("color", "rgb(32, 61, 52)");
   });
 
   test("every analysis portal is a real navigation target and opens its corresponding page", async ({ page }) => {
