@@ -1,38 +1,49 @@
-# 昭梧系統核心摘錄（ZW-METHOD-1.1 / ZW-PALM-1.0 / STONE Core）
+# 昭梧系统核心规范｜Current Constitution Index
 
-本檔是憲法。技術接口與「已實現／未實現」見 [CONTRACT.md](./CONTRACT.md)。  
-改算法必須升版本，不得在聊天裡悄悄改。
+状态：`CURRENT INDEX`  
+旧 `ZW-METHOD-1.1 / ZW-PALM-1.0 / STONE Core` 摘录是历史基线，不再作为“唯一宪法”覆盖 current main、当前测试或 R6.2.1。旧内容完整保留在 Git history。
 
-正式域名：https://zhaowu.soul-terminal.com  
-共同倉庫：https://github.com/stoneweiwei-dot/zhaowu
+## 1. 当前最高规则
 
-## 已接入（程式已跑）
-- 子平八字：唯一主判。確定性排盤，零 AI。月令取節氣，不是公曆月。
-- 達摩一掌經 ZW-PALM-1.0：前世／六道。農曆四宮、男順女逆、閏月十五日切。零 AI。
+- 项目治理：`../AGENTS.md`
+- 指令版本状态：`INSTRUCTION-REGISTRY.md`
+- 当前产品／生产状态：`CURRENT-STATE.md` + current `main` + Production evidence
+- 当前命理母指令：`STONE-R6.2.1-CURRENT-MASTER.md`
+- 当前技术契约索引：`CONTRACT.md`
+- 当前完整报告：`FOCUSED-REPORT.md`
+- 当前报告视觉：`REPORT-VISUAL-SYSTEM.md`
+- 新命理素材入库：`ANALYSIS-INGESTION-POLICY.md`
+- Zi Wei 解释：当前 Zi Wei interpretation grammar / calculation profiles
 
-## 憲法要求、引擎尚未逐步落地
-從化、月令司令細則、寒暖燥濕全文、格局體用、正式病藥、刑沖合害庫、歲運作用鏈。  
-現況只有旺衰三旗＋喜用簡表。審查時標「簡陋」，不要標「已執行 12 步」。
+## 2. 永久核心边界
 
-## 未接入（可路由、不可冒充分析）
-紫微、西方、吠陀、七政、十二次、宿曜、六爻、奇門、大六壬、風水、人類圖、數字學。
+1. 子平八字为主判；其他体系是独立验证、旁证或象征层，不得反向覆盖。
+2. deterministic-first：计算真值先由代码／版本化 profile 完成，AI 不重算。
+3. UNKNOWN 即 UNKNOWN；资料不足时不靠叙事补洞。
+4. 月令按节气，不按公历月；南北半球居住季节不得反转出生四柱五行。
+5. 禁止五行数量主判、缺什么补什么、合必化、冲必凶、单神煞重大事件直断、医疗诊断、投资保证。
+6. 解释规则与 calculation truth 分层；改解释不能偷改盘。
+7. 当前报告必须先回答用户真正问的问题，不自动扩写无关主题。
+8. 旧固定九页／固定编号 session 已废止；内容契约以 `summary / body` 为核心，视觉阅读层可以程序化分卡但不得重复生成不同答案。
+9. 图片与文字解耦；图片失败不能拖死文字结果。
+10. 新规则执行 R6.2.1 的 Progressive Execution、Stage Checkpoint、No Silent Reinterpretation、Regression Test、Dual-Axis Evidence、Tie Procedure 与 Governance Stop Rule。
 
-## 剔除（不進付費主判）
-天使數字、星際種子、阿卡西客觀斷言、五格筆畫、稱骨、純生肖、純納音。  
-客單禁止調用 Stone 本人命盤、經歷或「靛淵龍星」。
+## 3. 历史算法资料如何使用
 
-## 生成
-方法路由 < 5ms，0 AI，0 外部 API。前世報告禁止再調模型。圖像與文字解耦。  
-客人可見正文：判斷＋依據＋一條行動。方法區預設折疊，最多四卡。  
-STONE Core 12 步未完成、`usefulProvisional=true` 時，流通粗候選不得派生為幸運色、方位、時段、寵物、擺設或其他「正式取用」結論；只能標待覆核。
+旧版本里的 Palm 验收向量、旧 method route、旧字段名、旧 `usefulProvisional`、旧实现完成度表等，只能在 current main 仍有对应代码／测试时作为参考。
 
-## 一掌經
-年支＝年宮 → 起正月數至生月＝月宮 → 起初一數至生日＝日宮 → 起子時數至生時＝時宮。  
-`step` 的位移是 `count-1`。缺性別：整盤不作判定。缺時辰：時宮留白。  
-第一句給六道與主星；邊界後置。
+不得因为旧 SPEC 写着“未接入”就把现在已经接入的专题降级；也不得因为旧 SPEC 写着“已接入”就跳过 current main / test verification。
 
-驗收：1988-10-04 寅時男命 → 年辰天奸修羅、月亥天壽仙、日戌天藝修羅、時子天貴佛。
+## 4. 权限规则
 
-## 子平禁令
-禁止五行計數主判、缺什麼補什麼、合必化、沖必凶、醫療診斷、投資保證。  
-月令錯＝整份作廢。南半球不反轉五行。
+不再按“只有 Grok 能改”“GPT 只能写文案”设角色权限墙。任何有真实写权限的 Agent 都可以在站主明确授权范围内处理，但必须遵守：
+
+- 当前锁文件与 dependency check；
+- 版本升级／测试要求；
+- AGENTS supersession 规则；
+- runtime 变更的 release ledger；
+- Production 验证。
+
+## 5. 当前判定
+
+旧 SPEC 是历史证据，不是待办清单。任何曾因没有权限而只生成补丁／接入说明的内容，必须先经 `INSTRUCTION-REGISTRY.md` 判断是否仍有效，才能进入 current execution path。
