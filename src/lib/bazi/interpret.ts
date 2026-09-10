@@ -172,7 +172,10 @@ function leanChoice(q: string, chart: Chart): string {
   const parts = q.split(/還是|还是|或者/).map((x) => x.trim()).filter(Boolean);
   const strong = chart.strength.tendency.includes("旺");
   if (parts.length >= 2) {
-    const a = parts[0].replace(/^.*[，,、：:]/, "").trim();
+    const a = parts[0]
+      .replace(/^(?:我)?(?:應該|应该)?/, "")
+      .replace(/^.*[，,、：:]/, "")
+      .trim();
     const b = parts[1].replace(/[？?。！!].*$/, "").trim();
     const aMove = moveScore(a);
     const bMove = moveScore(b);
@@ -181,20 +184,20 @@ function leanChoice(q: string, chart: Chart): string {
       const moveChoice = aMove > bMove ? a : b;
       const stayChoice = moveChoice === a ? b : a;
       return strong
-        ? `仅从命盘承载角度，偏向「${moveChoice}」。原因是原局偏满时，更需要形成有效输出与转场；但最终仍要用收入、责任、地点、时间与退出成本复核。`
-        : `仅从命盘承载角度，偏向「${stayChoice}」。原因是原局承载偏弱时，优先保住稳定资源与可持续节奏；但最终仍要用收入、责任、地点、时间与退出成本复核。`;
+        ? `僅從命盤承載角度，偏向「${moveChoice}」。原因是原局偏滿時，更需要形成有效輸出與轉場；但最終仍要用收入、責任、地點、時間與退出成本復核。`
+        : `僅從命盤承載角度，偏向「${stayChoice}」。原因是原局承載偏弱時，優先保住穩定資源與可持續節奏；但最終仍要用收入、責任、地點、時間與退出成本復核。`;
     }
 
-    return `这两个选项仅凭名称无法可靠区分，暂不强选。请把「${a || "A"}」与「${b || "B"}」的收入、责任、地点、时间投入、稳定性和退出成本放在同一组条件下，我再按同一命盘结构比较。`;
+    return `這是二選一比較要求，但你沒有分開提供兩個選項的可比較條件，所以暫不強選。請把「${a || "選項 A"}」與「${b || "選項 B"}」的收入、責任、地點、時間投入、穩定性和退出成本放在同一組條件下，再按同一命盤結構比較。`;
   }
 
   if (q.includes("該不該") || q.includes("该不该") || q.includes("要不要")) {
     return strong
-      ? "盘面偏满，原则上可以动，但先控制退出成本，用小规模试行代替一次性全押。"
-      : "盘面承载优先，暂不建议一次性全押；先补稳定资源，再用小规模试行验证。";
+      ? "盤面偏滿，原則上可以動，但先控制退出成本，用小規模試行代替一次性全押。"
+      : "盤面承載優先，暫不建議一次性全押；先補穩定資源，再用小規模試行驗證。";
   }
 
-  return "当前问题缺少可比较的两个明确选项，不作强行二选一。";
+  return "目前問題缺少可比較的兩個明確選項，不作強行二選一。";
 }
 
 function loveLens(chart: Chart, relation: RelationPref): string {
@@ -329,6 +332,9 @@ export function composeFullReport(question: string, chart: Chart, reading: Readi
   const pillars = chart.pillars
     .map((col) => `${col.label} ${col.ganZhi}（${col.nayin}／${col.shiShenGan}／十二長生${col.diShi}）`)
     .join("\n");
+  const usefulLimit = chart.usefulProvisional
+    ? "正式取用尚未完成，因此不由流通候選派生顏色、方位、時段或寵物結論。"
+    : null;
   return [
     "昭梧｜白话完整报告",
     "",
@@ -360,6 +366,7 @@ export function composeFullReport(question: string, chart: Chart, reading: Readi
     reading.action,
     "",
     "六、限制",
+    usefulLimit,
     reading.lastLine,
   ]
     .filter((line): line is string => line !== null)
