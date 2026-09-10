@@ -16,7 +16,7 @@ Before executing **every new user instruction**, the agent must first perform an
 Required process:
 
 1. Identify the new instruction's exact scope and intended result.
-2. Search the active repository truth for older overlapping instructions, implementations, flags, automations, docs, issues, branches, tests, contracts and legacy code that could enforce a conflicting behavior.
+2. Read `docs/INSTRUCTION-REGISTRY.md`, then search the active repository truth for older overlapping instructions, implementations, flags, automations, docs, issues, branches, tests, contracts and legacy code that could enforce a conflicting behavior.
 3. Classify each older item as:
    - **Compatible** — keep it.
    - **Independent** — outside the new instruction's scope; keep it untouched.
@@ -38,7 +38,7 @@ Required process:
 
 Instruction precedence for overlapping project behavior:
 
-**latest explicit user instruction → current `main` / production truth → this repository protocol and current contracts → older active docs/issues → stale chats/branches/deployments.**
+**latest explicit user instruction → current `main` / production truth → this repository protocol + `docs/INSTRUCTION-REGISTRY.md` + current contracts → older active docs/issues → stale chats/branches/deployments.**
 
 Safety exception: a newer instruction does not automatically authorize breaking locked core logic, data integrity, security, auth, payment, production routing or other protected contracts. Those may change only when the user explicitly requests that scope and the dependency/regression checks pass.
 
@@ -66,7 +66,7 @@ Only **Verified** may be reported as complete.
 Before changing anything, check the current truth:
 
 1. Current `main` HEAD SHA.
-2. Current contents of relevant files.
+2. `docs/INSTRUCTION-REGISTRY.md` plus current contents of relevant files.
 3. Recent related commits.
 4. Existing implementation, assets, tests and duplicate/legacy paths.
 5. Current Vercel production deployment and its GitHub commit SHA.
@@ -87,7 +87,7 @@ Use the smallest safe change surface. Do not refactor unrelated code, redesign u
 High-risk areas that must not be touched incidentally:
 
 - Bazi / destiny calculation logic
-- report generation and nine-page report contracts
+- report generation and current focused-report contracts
 - auth/login permissions
 - owner/admin permissions
 - Supabase data and schema
@@ -268,7 +268,7 @@ The release ledger is the canonical answer to: **which version is live, how many
 
 ## 15. CANONICAL METAPHYSICS DEFAULT
 
-For every ZHAOWU metaphysics analysis, report, AI prompt, rule-ingestion task or specialist route, the default doctrine is `docs/METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` unless the site owner explicitly overrides the current task.
+For every ZHAOWU metaphysics analysis, report, AI prompt, rule-ingestion task or specialist route, the current doctrine is `docs/STONE-R6.2.1-CURRENT-MASTER.md` unless the site owner explicitly overrides the current task. `docs/METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` is retained only as a historical redirect and must never stop at R6.1.
 
 Mandatory interpretation boundaries:
 
@@ -278,5 +278,6 @@ Mandatory interpretation boundaries:
 4. New metaphysics material follows `docs/ANALYSIS-INGESTION-POLICY.md` and must be classified as CALC_TRUTH, CLASSICAL_INTERPRETATION, MODERN_INTERPRETATION, OWNER_MATERIAL or QUARANTINE.
 5. Serious claims cannot be produced from a single star, transformation, malefic or isolated annual signal. Medical diagnosis, death/lifespan claims and unsupported severity scoring remain prohibited.
 6. Deterministic calculation happens first and once; report pages reuse the same engine snapshot/evidence trace. AI may synthesize or translate but must not recalculate the chart.
+7. R6.2.1 Governance Layer and Runtime Layer remain separate; Progressive Execution, Stage Checkpoint, No Silent Reinterpretation, dual-axis evidence, Tie Procedure, Regression Test and Governance Stop Rule are mandatory.
 
 If an older prompt, document, issue or implementation conflicts with these boundaries, the newer canonical default wins only for the conflicting portion, subject to the safety and regression rules above.
