@@ -1,10 +1,14 @@
 # STONE 命理研究院｜子平多流派兼容決策引擎 vFinal UR + LBX · R6.1
 
-状态：`CURRENT_MASTER`
+状态：`SUPERSEDED_BASE`
 
-适用范围：昭梧网站、报告生成器、站主客户分析、内部 QA、未来 AI / Agent。
+> R6.1 自 R6.2.1 生效后不再是当前最高母指令。当前唯一入口：`docs/STONE-R6.2.1-CURRENT-MASTER.md`。
+>
+> 本文件完整保留为 R6.2.1 的继承基线与历史审计版本。任何 AI / Agent 读取本文件时必须继续加载 R6.2.1；不得把本文件单独提升为 `CURRENT_MASTER`。
 
-优先级：`R6.1 > R6 > R5 > R4 > R3 > R2 > legacy`。
+适用历史范围：昭梧网站、报告生成器、站主客户分析、内部 QA、未来 AI / Agent。
+
+历史优先级：`R6.1 > R6 > R5 > R4 > R3 > R2 > legacy`；现行总优先级见 R6.2.1。
 
 ## 0. 核心总则
 
