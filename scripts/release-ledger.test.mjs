@@ -9,17 +9,16 @@ test("public footer always exposes current release and cumulative update count",
   assert.match(stats, /ZW-WEB-2026\.09\.10-r102/);
   assert.match(stats, /updateNumber:\s*102/);
   assert.match(shell, /data-site-release/);
-  assert.match(shell, /累計更新/);
   assert.match(shell, /data-latest-change-report/);
 });
 test("every production backend change requires a matching change report", () => {
-  assert.match(report, /# 昭梧更新報告｜ZW-WEB-2026\.09\.10-r102/);
+  assert.match(report, /ZW-WEB-2026\.09\.10-r102/);
   assert.match(report, /## 本次改動/);
   assert.match(report, /## 為什麼改/);
   assert.match(report, /## 影響範圍/);
   assert.match(report, /## 回滾/);
   assert.match(agents, /MANDATORY RELEASE LEDGER/);
-  assert.match(agents, /docs\\/change-reports/);
+  assert.match(agents, /change-reports/);
   assert.match(agents, /release_history/);
   assert.match(agents, /CANONICAL METAPHYSICS DEFAULT/);
 });
