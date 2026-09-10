@@ -6,14 +6,14 @@ type Entry = readonly [string, string];
 
 const TABLE = {
   brand: ["昭梧", "昭梧"],
-  tagline: ["昭於未見，棲於有梧", "昭于未见，栖于有梧"],
-  manifesto: ["昭於未見，棲於有梧。", "昭于未见，栖于有梧。"],
+  tagline: ["昭於未見，梧於有歸", "昭于未见，梧于有归"],
+  manifesto: ["昭於未見，梧於有歸。", "昭于未见，梧于有归。"],
   introAria: ["昭梧正在載入", "昭梧正在载入"],
   introLoadingAuth: ["正在載入帳號與報告資料", "正在载入账号与报告资料"],
   introLoadingPage: ["正在完成頁面準備", "正在完成页面准备"],
   introSkip: ["跳過動畫", "跳过动画"],
   heroKicker: ["命理 · 時機 · 選擇", "命理 · 时机 · 选择"],
-  heroSlogan: ["昭於未見，棲於有梧。", "昭于未见，栖于有梧。"],
+  heroSlogan: ["昭於未見，梧於有歸。", "昭于未见，梧于有归。"],
   heroLead: [
     "知命，不是認命；是看清之後，知道往哪裡走。",
     "知命，不是认命；是看清之后，知道往哪里走。",
