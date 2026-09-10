@@ -4,7 +4,7 @@ import { stemElement } from "@/lib/element-colors";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { galleryPublicUrl, listPublicGalleryAssets, type GalleryAsset } from "@/lib/gallery-assets";
 import { isPublicAtlasAsset } from "@/lib/gallery-groups";
-import { dayGanzhi, hourPillar, yearMonthPillars, lunarDateLabel } from "@/lib/bazi/calendar";
+import { dayGanzhi, hourPillar, yearMonthPillars, lunarDateLabel, toLunar } from "@/lib/bazi/calendar";
 
 const PILLAR_KEYS = ["year", "month", "day", "hour"] as const;
 
@@ -31,6 +31,19 @@ function monthDayLabel(date: Date, locale: "zh-Hant" | "zh-Hans" | "en") {
 
 function timeLabel(date: Date) {
   return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+function lunarLabel(date: Date, locale: "zh-Hant" | "zh-Hans" | "en") {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  if (locale === "en") {
+    const lunar = toLunar(year, month, day);
+    if (!lunar) return new Intl.DateTimeFormat("en-AU", { year: "numeric", month: "short", day: "numeric" }).format(date);
+    return `${lunar.isLeap ? "Leap lunar month" : "Lunar month"} ${lunar.month}, day ${lunar.day}`;
+  }
+  const label = lunarDateLabel(year, month, day);
+  return locale === "zh-Hans" ? label.replace("農曆", "农历").replace("閏", "闰") : label;
 }
 
 function jieLabel(name: string, locale: "zh-Hant" | "zh-Hans" | "en") {
@@ -125,7 +138,7 @@ export function DailyAlmanacWidget() {
       goodLabel: "Good for", avoidLabel: "Avoid", goodRoman: "YI", avoidRoman: "JI", foot: "Daily spirit slip",
       note: `${four} · Current solar-term month: ${jieLabel(pillars.jieName, locale)}.`, dayMark: `${pillars.day} day · ${timeLabel(now)}`,
       dateNum: String(now.getDate()), weekday: weekdayLabel(now, locale), monthDay: monthDayLabel(now, locale),
-      lunar: lunarDateLabel(now.getFullYear(), now.getMonth() + 1, now.getDate()).replace("農曆", ""),
+      lunar: lunarLabel(now, locale),
       moon: moonGlyph(now), detailsLabelClosed: "Today's guidance",
       pillarLabels: ["YEAR", "MONTH", "DAY", "HOUR"],
       needLogin: "Sign in first to draw your daily spirit slip.", needBirth: "Complete your birth details on Zhaowu first, then return here to draw your personalised daily slip.",
@@ -141,7 +154,7 @@ export function DailyAlmanacWidget() {
       goodLabel: "宜", avoidLabel: "忌", goodRoman: "", avoidRoman: "", foot: "今日灵签",
       note: `${four} · 当前节令：${jieLabel(pillars.jieName, locale)}。`, dayMark: `${pillars.day}日 · ${timeLabel(now)}`,
       dateNum: String(now.getDate()), weekday: weekdayLabel(now, locale), monthDay: monthDayLabel(now, locale),
-      lunar: lunarDateLabel(now.getFullYear(), now.getMonth() + 1, now.getDate()).replace("農曆", "农历"),
+      lunar: lunarLabel(now, locale),
       moon: moonGlyph(now), detailsLabelClosed: "今日指引",
       pillarLabels: ["年", "月", "日", "时"],
       needLogin: "先登入，才可以领取你的今日灵签。", needBirth: "你还没有保存出生资料。先在昭梧输入并保存资料，再回来领取个人灵签。",
@@ -157,7 +170,7 @@ export function DailyAlmanacWidget() {
       goodLabel: "宜", avoidLabel: "忌", goodRoman: "", avoidRoman: "", foot: "今日靈籤",
       note: `${four} · 當前節令：${jieLabel(pillars.jieName, locale)}。`, dayMark: `${pillars.day}日 · ${timeLabel(now)}`,
       dateNum: String(now.getDate()), weekday: weekdayLabel(now, locale), monthDay: monthDayLabel(now, locale),
-      lunar: lunarDateLabel(now.getFullYear(), now.getMonth() + 1, now.getDate()),
+      lunar: lunarLabel(now, locale),
       moon: moonGlyph(now), detailsLabelClosed: "今日指引",
       pillarLabels: ["年", "月", "日", "時"],
       needLogin: "先登入，才可以領取你的今日靈籤。", needBirth: "你還沒有保存出生資料。先在昭梧輸入並保存資料，再回來領取個人靈籤。",
@@ -245,7 +258,7 @@ export function DailyAlmanacWidget() {
           <div className="zhaowu-spirit-slip-copy"><p><strong>{slip[1]}</strong></p><p>{slip[2]}</p></div>
           <div className="zhaowu-spirit-slip-rule" aria-hidden />
           <p className="zhaowu-spirit-slip-basis">{data.basis} · {data.day}</p>
-          <p className="zhaowu-spirit-slip-mark">STONE 原創</p>
+          <p className="zhaowu-spirit-slip-mark">{locale === "en" ? "STONE ORIGINAL" : locale === "zh-Hans" ? "STONE 原创" : "STONE 原創"}</p>
         </section>
       ) : null}
     </>
