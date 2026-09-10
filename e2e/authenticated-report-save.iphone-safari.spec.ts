@@ -90,7 +90,11 @@ test("Signed-in member reaches the full report with the durable-save action avai
   await expect(page.locator("#result")).toBeVisible();
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
+  const saveAction = page.getByRole("button", { name: /^(保存到我的昭梧|更新已保存報告)$/ });
+  await expect(saveAction).toBeEnabled({ timeout: 15_000 });
+  await saveAction.click();
   await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeEnabled();
+  await expect(page.getByText("完整報告已保存到同一筆記錄。", { exact: true })).toBeVisible();
   await mobileHealthy(page);
 });
 
