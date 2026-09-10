@@ -5,6 +5,13 @@ import { BrandIcon } from "@/components/brand-icon";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
+import {
+  displayText,
+  hydrateDisplayLanguage,
+  intlTagFor,
+  useDisplayLanguage,
+  type DisplayLanguage,
+} from "@/lib/display-language";
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
@@ -20,25 +27,28 @@ const EMPTY_STATS: PublicSiteStats = {
   latestSummary: SITE_RELEASE_FALLBACK.latestSummary,
 };
 
-function formatReleaseDate(value: string | null, locale: "zh-Hant" | "zh-Hans" | "en") {
+function formatReleaseDate(value: string | null, language: DisplayLanguage) {
   if (!value) return "";
   const date = new Date(value);
   if (!Number.isFinite(date.getTime())) return "";
-  return new Intl.DateTimeFormat(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW", {
+  return new Intl.DateTimeFormat(intlTagFor(language), {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   }).format(date);
 }
 
-function releaseSummaryForLocale(summary: string, version: string, locale: "zh-Hant" | "zh-Hans" | "en") {
-  if (locale !== "en") return summary;
+function releaseSummaryForLanguage(summary: string, version: string, language: DisplayLanguage) {
+  if (language === "zh-Hant" || language === "zh-Hans") return summary;
+  if (language === "ja") return `最新の本番更新：${version} には、現在のUI・コンテンツ・安定性に関する修正が含まれています。`;
+  if (language === "ko") return `최신 프로덕션 업데이트: ${version}에는 현재 UI, 콘텐츠 및 안정성 수정 사항이 포함되어 있습니다.`;
   if (!/[\u3400-\u9fff]/u.test(summary)) return summary;
   return `Latest production update: ${version} includes the current interface, content and reliability fixes.`;
 }
 
 export function SiteShell({ children }: { children: ReactNode }) {
-  const { t, locale, setLocale } = useI18n();
+  const { t } = useI18n();
+  const { language, setLanguage } = useDisplayLanguage();
   const { user, isPending } = useCurrentUserState();
   const { night, toggle } = useBrandTheme();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -48,6 +58,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     hydrateLocale();
+    hydrateDisplayLanguage();
     hydrateBrandTheme();
     runLocalHousekeeping();
     let alive = true;
@@ -61,13 +72,27 @@ export function SiteShell({ children }: { children: ReactNode }) {
     return () => { alive = false; };
   }, []);
 
-  const releaseDate = formatReleaseDate(stats.publishedAt, locale);
-  const releaseSummary = releaseSummaryForLocale(stats.latestSummary, stats.version, locale);
+  const releaseDate = formatReleaseDate(stats.publishedAt, language);
+  const releaseSummary = releaseSummaryForLanguage(stats.latestSummary, stats.version, language);
+  const numberLocale = intlTagFor(language);
   const languageOptions = [
-    { value: "zh-Hant" as const, label: "繁體", aria: "繁中" },
-    { value: "zh-Hans" as const, label: "簡體", aria: "简中" },
-    { value: "en" as const, label: "ENG", aria: "EN" },
+    { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
+    { value: "zh-Hans" as const, label: "简体", aria: "简体中文" },
+    { value: "en" as const, label: "EN", aria: "English" },
+    { value: "ja" as const, label: "日本語", aria: "日本語" },
+    { value: "ko" as const, label: "한국어", aria: "한국어" },
   ];
+
+  const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트");
+  const todayLabel = displayText(language, "今日", "今日", "Today", "本日", "오늘");
+  const totalLabel = displayText(language, "累計訪問", "累计访问", "Total visits", "累計訪問", "누적 방문");
+  const latestLabel = displayText(language, "最新更新 ＋", "最新更新 ＋", "Latest update ＋", "最新更新 ＋", "최신 업데이트 ＋");
+  const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴");
+  const galleryLabel = displayText(language, "圖庫", "图库", "Gallery", "ギャラリー", "갤러리");
+  const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기");
+  const homeProductLabel = displayText(language, "四柱八字", "四柱八字", "BaZi", "四柱推命", "사주팔자");
+  const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환");
+  const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환");
 
   return (
     <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
@@ -76,14 +101,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">
             <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
               <span data-site-release>
-                {stats.version} · {locale === "en" ? "Updates" : locale === "zh-Hans" ? "累计更新" : "累計更新"} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}
+                {stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}
               </span>
               <span>
-                {locale === "en" ? "Today" : "今日"} {stats.todayVisits.toLocaleString()} · {locale === "en" ? "Total visits" : locale === "zh-Hans" ? "累计访问" : "累計訪問"} {stats.totalVisits.toLocaleString()}
+                {todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}
               </span>
               <details className="group basis-full text-center" data-latest-change-report>
                 <summary className="cursor-pointer list-none font-medium text-ink-soft [&::-webkit-details-marker]:hidden">
-                  {locale === "en" ? "Latest update ＋" : locale === "zh-Hans" ? "最新更新 ＋" : "最新更新 ＋"}
+                  {latestLabel}
                 </summary>
                 <p className="mx-auto mt-1 max-w-2xl px-2 text-center leading-5">{releaseSummary}</p>
               </details>
@@ -104,13 +129,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   className="zhaowu-theme-toggle"
                   onClick={toggle}
                   aria-pressed={night}
-                  aria-label={night ? (locale === "en" ? "Switch to day mode" : locale === "zh-Hans" ? "切换日间模式" : "切換日間模式") : (locale === "en" ? "Switch to night mode" : locale === "zh-Hans" ? "切换夜间模式" : "切換夜間模式")}
+                  aria-label={night ? dayModeLabel : nightModeLabel}
                 >
                   <BrandIcon name={night ? "day" : "night"} />
                 </button>
                 {user?.isOwner ? (
-                  <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={locale === "en" ? "Open Gallery" : locale === "zh-Hans" ? "打开图库" : "打開圖庫"}>
-                    {locale === "en" ? "Gallery" : locale === "zh-Hans" ? "图库" : "圖庫"}
+                  <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={openGalleryLabel}>
+                    {galleryLabel}
                   </Link>
                 ) : null}
                 {isPending ? (
@@ -134,25 +159,64 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </div>
             </div>
 
-            <nav className="zhaowu-header-nav" aria-label={locale === "en" ? "Site controls" : locale === "zh-Hans" ? "网站控制" : "網站控制"}>
-              <div role="group" aria-label={t("language")} className="site-lang-group">
-                {languageOptions.map(({ value, label, aria }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setLocale(value)}
-                    aria-label={aria}
-                    aria-pressed={locale === value}
-                    data-active={locale === value ? "true" : "false"}
-                    className="site-lang-button"
-                  >
-                    {label}
-                  </button>
-                ))}
+            <nav className="zhaowu-header-nav" aria-label={siteControlsLabel}>
+              <div
+                role="group"
+                aria-label={t("language")}
+                className="site-lang-group"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  maxWidth: "100%",
+                  overflowX: "auto",
+                  padding: 4,
+                  border: "1px solid rgba(196,160,90,.62)",
+                  borderRadius: 999,
+                  background: night ? "rgba(15,32,28,.72)" : "rgba(250,248,241,.76)",
+                  boxShadow: "0 6px 18px rgba(60,46,28,.06)",
+                  backdropFilter: "blur(9px)",
+                  WebkitBackdropFilter: "blur(9px)",
+                }}
+              >
+                <span aria-hidden="true" style={{ display: "grid", placeItems: "center", flex: "0 0 auto", width: 34, height: 34, color: night ? "#d4b074" : "#1f4e3a" }}>
+                  <BrandIcon name="language" />
+                </span>
+                {languageOptions.map(({ value, label, aria }) => {
+                  const active = language === value;
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setLanguage(value)}
+                      aria-label={aria}
+                      aria-pressed={active}
+                      data-active={active ? "true" : "false"}
+                      className="site-lang-button"
+                      style={{
+                        flex: "0 0 auto",
+                        minHeight: 34,
+                        padding: "0 10px",
+                        borderRadius: 999,
+                        border: active ? "1px solid #c4a05a" : "1px solid transparent",
+                        background: active ? (night ? "rgba(212,176,116,.15)" : "#1f4e3a") : "transparent",
+                        color: active ? (night ? "#f1dfba" : "#fffaf0") : (night ? "#e7e0d1" : "#4f4a42"),
+                        fontSize: 11,
+                        lineHeight: 1,
+                        fontWeight: active ? 700 : 600,
+                        letterSpacing: value === "en" ? ".08em" : ".02em",
+                        whiteSpace: "nowrap",
+                        boxShadow: active && !night ? "inset 0 0 0 1px rgba(255,255,255,.08)" : "none",
+                      }}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
               </div>
               <Link to="/" aria-current={pathname === "/" ? "page" : undefined} className={`zhaowu-header-home-link ${pathname === "/" ? "is-active" : ""}`}>
                 <BrandIcon name="home" />
-                {user ? (locale === "en" ? "BaZi" : "四柱八字") : t("navHome")}
+                {user ? homeProductLabel : t("navHome")}
               </Link>
             </nav>
           </div>
