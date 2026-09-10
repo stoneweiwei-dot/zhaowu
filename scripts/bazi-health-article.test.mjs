@@ -36,6 +36,6 @@ test("article renders multiple optional illustrations without gating text", () =
   for (const svg of [fivePhases, bodyMap, timing, balance]) {
     assert.match(svg, /viewBox="0 0 (?:720 960|800 800)"/);
     assert.match(svg, /data-zhaowu-article-art="r93"/);
-    assert.doesNotMatch(svg, /<text/);
   }
+  assert.match(bodyMap, /傳統象徵 ≠ 醫療診斷/);
 });
