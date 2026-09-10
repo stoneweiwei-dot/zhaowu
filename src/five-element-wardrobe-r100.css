@@ -1,0 +1,467 @@
+/*
+ * ZW-WEB-2026.09.10-r100
+ * Song-style art direction for the existing FiveElementWardrobe module only.
+ * Keep the module truthful: the visitor chooses a desired state; this is not a
+ * personalised Bazi favourable-element recommendation.
+ */
+
+#five-element-wardrobe {
+  isolation: isolate;
+  overflow: hidden !important;
+  padding: clamp(20px, 4vw, 34px) !important;
+  border: 1px solid rgba(168, 134, 82, .34) !important;
+  border-radius: 26px !important;
+  background:
+    radial-gradient(circle at 88% 11%, rgba(180, 136, 66, .13) 0 7%, transparent 22%),
+    radial-gradient(circle at 10% 92%, rgba(47, 107, 90, .09), transparent 30%),
+    linear-gradient(150deg, rgba(252, 248, 238, .95), rgba(247, 240, 226, .84)) !important;
+  box-shadow: 0 18px 48px rgba(70, 52, 31, .08) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#five-element-wardrobe::before,
+#five-element-wardrobe::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+#five-element-wardrobe::before {
+  top: -8px;
+  right: -28px;
+  width: 164px;
+  height: 118px;
+  background-image: url("/brand-ui/ornament-pine.svg");
+  opacity: .105;
+}
+
+#five-element-wardrobe::after {
+  left: 4%;
+  right: 4%;
+  bottom: 9px;
+  height: 36px;
+  background-image: url("/brand-ui/divider-river.svg");
+  background-size: min(390px, 82%) 100%;
+  opacity: .13;
+}
+
+#five-element-wardrobe > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Retire the old generic glow now that the module has real Song-style scenery. */
+#five-element-wardrobe > span[aria-hidden="true"]:first-child {
+  display: none !important;
+}
+
+#five-element-wardrobe > header {
+  align-items: flex-start !important;
+  gap: 16px !important;
+  padding: 0 0 17px;
+  border-bottom: 1px solid rgba(168, 134, 82, .18);
+}
+
+#five-element-wardrobe > header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 118px;
+  height: 17px;
+  background: url("/brand-ui/motif-cloud.svg") left center / contain no-repeat;
+  opacity: .2;
+  pointer-events: none;
+}
+
+#five-element-wardrobe > header > div:first-child > p:first-child {
+  color: var(--zw-cinnabar) !important;
+  font-size: 12px !important;
+  font-weight: 760 !important;
+  letter-spacing: .18em !important;
+}
+
+#five-element-wardrobe > header h2 {
+  max-width: 680px;
+  margin-top: 8px !important;
+  color: #27231e !important;
+  font-size: clamp(25px, 5.3vw, 36px) !important;
+  line-height: 1.2 !important;
+  letter-spacing: .018em !important;
+  text-wrap: balance;
+}
+
+#five-element-wardrobe > header > div:first-child > p:last-child {
+  max-width: 650px !important;
+  margin-top: 10px !important;
+  color: var(--zw-ink-soft) !important;
+  font-size: 14px !important;
+  line-height: 1.78 !important;
+}
+
+#five-element-wardrobe > header > div[aria-hidden="true"] {
+  gap: 5px !important;
+  padding: 4px 3px 0 0 !important;
+}
+
+#five-element-wardrobe > header > div[aria-hidden="true"] > span {
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid rgba(168, 134, 82, .22) !important;
+  background: rgba(252, 248, 238, .72) !important;
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,.24);
+  font-size: 13px !important;
+}
+
+#five-element-wardrobe > header > div[aria-hidden="true"] > span:nth-child(1) { color: var(--zw-el-wood) !important; }
+#five-element-wardrobe > header > div[aria-hidden="true"] > span:nth-child(2) { color: var(--zw-el-fire) !important; }
+#five-element-wardrobe > header > div[aria-hidden="true"] > span:nth-child(3) { color: var(--zw-el-earth) !important; }
+#five-element-wardrobe > header > div[aria-hidden="true"] > span:nth-child(4) { color: var(--zw-el-metal) !important; }
+#five-element-wardrobe > header > div[aria-hidden="true"] > span:nth-child(5) { color: var(--zw-el-water) !important; }
+
+/* Five state cards: medallion-first, quiet paper, one restrained element accent. */
+#five-element-wardrobe > div[role="list"] {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin-top: 21px !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button {
+  position: relative;
+  min-width: 0 !important;
+  min-height: 150px !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 9px !important;
+  padding: 13px 8px 12px !important;
+  overflow: hidden;
+  border: 1px solid rgba(114, 91, 58, .14) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 253, 247, .48) !important;
+  box-shadow: 0 7px 22px rgba(64, 48, 29, .035) !important;
+  text-align: center !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#five-element-wardrobe > div[role="list"] > button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .42;
+  background: linear-gradient(180deg, var(--zw-card-tint, rgba(47,107,90,.08)), transparent 62%);
+}
+
+#five-element-wardrobe > div[role="list"] > button::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 0;
+  height: 1px;
+  background: var(--zw-card-accent, var(--zw-jade));
+  opacity: .5;
+}
+
+#five-element-wardrobe > div[role="list"] > button:nth-child(1) { --zw-card-accent: var(--zw-el-wood); --zw-card-tint: rgba(47,107,90,.13); }
+#five-element-wardrobe > div[role="list"] > button:nth-child(2) { --zw-card-accent: var(--zw-el-fire); --zw-card-tint: rgba(178,58,47,.105); }
+#five-element-wardrobe > div[role="list"] > button:nth-child(3) { --zw-card-accent: var(--zw-el-earth); --zw-card-tint: rgba(176,106,43,.11); }
+#five-element-wardrobe > div[role="list"] > button:nth-child(4) { --zw-card-accent: var(--zw-el-metal); --zw-card-tint: rgba(179,152,88,.13); }
+#five-element-wardrobe > div[role="list"] > button:nth-child(5) { --zw-card-accent: var(--zw-el-water); --zw-card-tint: rgba(53,90,115,.11); }
+
+#five-element-wardrobe > div[role="list"] > button > span:first-child {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto !important;
+  width: 68px !important;
+  height: 68px !important;
+  border: 1px solid rgba(255,255,255,.72) !important;
+  background-color: rgba(252, 248, 238, .78) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 74% !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(73, 56, 35, .09),
+    0 7px 20px rgba(55, 42, 27, .09) !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button:nth-child(1) > span:first-child {
+  background-image:
+    radial-gradient(circle, rgba(47,107,90,.13), rgba(252,248,238,.15) 68%),
+    url("/brand-ui/mark-pine.svg") !important;
+  background-size: 100%, 76% !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button:nth-child(2) > span:first-child {
+  background-image:
+    radial-gradient(circle, rgba(178,58,47,.16), rgba(252,248,238,.08) 68%),
+    url("/brand-ui/motif-sun.svg") !important;
+  background-size: 100%, 56% !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button:nth-child(3) > span:first-child {
+  background-image:
+    linear-gradient(180deg, rgba(176,106,43,.08), rgba(252,248,238,.18)),
+    url("/brand-ui/motif-mountain.svg") !important;
+  background-size: 100%, 76% !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button:nth-child(4) > span:first-child {
+  background-image:
+    radial-gradient(circle, rgba(179,152,88,.14), rgba(252,248,238,.12) 70%),
+    url("/brand-ui/motif-diamond.svg") !important;
+  background-size: 100%, 54% !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button:nth-child(5) > span:first-child {
+  background-image:
+    radial-gradient(circle, rgba(53,90,115,.13), rgba(252,248,238,.10) 70%),
+    url("/brand-ui/motif-water.svg") !important;
+  background-size: 100%, 72% !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button > span:last-child {
+  position: relative;
+  z-index: 1;
+  justify-items: center;
+  gap: 4px !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button strong {
+  max-width: 100%;
+  color: var(--zw-card-accent) !important;
+  font-size: 18px !important;
+  line-height: 1.16 !important;
+  letter-spacing: .035em;
+}
+
+#five-element-wardrobe > div[role="list"] > button small {
+  color: var(--zw-ink-soft) !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+@media (hover: hover) {
+  #five-element-wardrobe > div[role="list"] > button:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--zw-card-accent) 48%, transparent) !important;
+    box-shadow: 0 12px 26px rgba(64, 48, 29, .075) !important;
+  }
+}
+
+#five-element-wardrobe > div[role="list"] > button:focus-visible {
+  outline: 2px solid var(--zw-card-accent);
+  outline-offset: 3px;
+}
+
+#five-element-wardrobe > div[role="list"] > button[aria-pressed="true"] {
+  transform: translateY(-2px);
+  border: 1.5px solid var(--zw-card-accent) !important;
+  background: rgba(255, 253, 247, .82) !important;
+  box-shadow: 0 14px 30px rgba(64, 48, 29, .10) !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button[aria-pressed="true"] > span:first-child {
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--zw-card-accent) 30%, transparent),
+    0 8px 22px rgba(55, 42, 27, .12) !important;
+}
+
+/* The selected-state panel is the website equivalent of the poster's main callout. */
+#five-element-wardrobe > div[aria-live="polite"] {
+  min-height: 104px !important;
+  margin-top: 15px !important;
+  padding: 17px 18px 15px !important;
+  overflow: hidden;
+  border-top: 1px solid rgba(168, 134, 82, .16) !important;
+  border-right: 1px solid rgba(168, 134, 82, .16) !important;
+  border-bottom: 1px solid rgba(168, 134, 82, .16) !important;
+  border-radius: 16px !important;
+  background:
+    linear-gradient(90deg, rgba(255,253,247,.78), rgba(255,253,247,.46)),
+    url("/brand-ui/divider-mountain.svg") right 12px bottom 7px / 150px auto no-repeat !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.5);
+}
+
+#five-element-wardrobe > div[aria-live="polite"]::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 13px;
+  width: 29px;
+  height: 29px;
+  background: url("/brand-ui/seal-red.svg") center / contain no-repeat;
+  opacity: .14;
+  pointer-events: none;
+}
+
+#five-element-wardrobe > div[aria-live="polite"] p:first-child {
+  max-width: 76%;
+  color: var(--zw-ink) !important;
+  font-size: clamp(19px, 4.6vw, 24px) !important;
+  line-height: 1.45 !important;
+}
+
+#five-element-wardrobe > div[aria-live="polite"] p + p {
+  max-width: 78%;
+  margin-top: 7px !important;
+  color: var(--zw-ink-soft) !important;
+  font-size: 13.5px !important;
+  line-height: 1.7 !important;
+}
+
+#five-element-wardrobe > p:last-child {
+  max-width: 760px;
+  margin: 11px 0 22px !important;
+  padding-left: 20px;
+  color: var(--zw-muted) !important;
+  font-size: 11.5px !important;
+  line-height: 1.62 !important;
+}
+
+#five-element-wardrobe > p:last-child::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .28em;
+  width: 13px;
+  height: 13px;
+  background: url("/brand-ui/motif-diamond.svg") center / contain no-repeat;
+  opacity: .55;
+}
+
+/* Night theme stays aligned with the existing site contract rather than becoming black. */
+[data-zw-theme="night"] #five-element-wardrobe {
+  border-color: rgba(212, 176, 116, .30) !important;
+  background:
+    radial-gradient(circle at 88% 11%, rgba(212,176,116,.11) 0 7%, transparent 23%),
+    radial-gradient(circle at 10% 92%, rgba(64,111,91,.16), transparent 31%),
+    linear-gradient(150deg, rgba(18,38,32,.80), rgba(13,29,25,.72)) !important;
+  color: #eae6d7 !important;
+}
+
+[data-zw-theme="night"] #five-element-wardrobe > header h2,
+[data-zw-theme="night"] #five-element-wardrobe > div[aria-live="polite"] p:first-child {
+  color: #f2ecdc !important;
+}
+
+[data-zw-theme="night"] #five-element-wardrobe > header > div:first-child > p:last-child,
+[data-zw-theme="night"] #five-element-wardrobe > div[role="list"] > button small,
+[data-zw-theme="night"] #five-element-wardrobe > div[aria-live="polite"] p + p {
+  color: #c8c0b1 !important;
+}
+
+[data-zw-theme="night"] #five-element-wardrobe > p:last-child {
+  color: #aea596 !important;
+}
+
+[data-zw-theme="night"] #five-element-wardrobe > div[role="list"] > button,
+[data-zw-theme="night"] #five-element-wardrobe > div[role="list"] > button[aria-pressed="true"] {
+  background: rgba(17, 37, 31, .55) !important;
+  border-color: rgba(212,176,116,.18) !important;
+}
+
+[data-zw-theme="night"] #five-element-wardrobe > div[role="list"] > button[aria-pressed="true"] {
+  border-color: var(--zw-card-accent) !important;
+}
+
+[data-zw-theme="night"] #five-element-wardrobe > div[role="list"] > button > span:first-child {
+  background-color: rgba(235,226,203,.12) !important;
+  border-color: rgba(229,215,182,.22) !important;
+}
+
+[data-zw-theme="night"] #five-element-wardrobe > div[aria-live="polite"] {
+  border-top-color: rgba(212,176,116,.18) !important;
+  border-right-color: rgba(212,176,116,.18) !important;
+  border-bottom-color: rgba(212,176,116,.18) !important;
+  background:
+    linear-gradient(90deg, rgba(17,37,31,.72), rgba(17,37,31,.46)),
+    url("/brand-ui/divider-mountain.svg") right 12px bottom 7px / 150px auto no-repeat !important;
+}
+
+[data-zw-theme="night"] #five-element-wardrobe::before,
+[data-zw-theme="night"] #five-element-wardrobe::after {
+  opacity: .22;
+}
+
+/* On iPhone, keep the five choices large by making only the card rail scroll. */
+@media (max-width: 640px) {
+  #five-element-wardrobe {
+    padding: 19px 14px 26px !important;
+    border-radius: 22px !important;
+  }
+
+  #five-element-wardrobe > header {
+    display: block !important;
+    padding-bottom: 15px;
+  }
+
+  #five-element-wardrobe > header > div[aria-hidden="true"] {
+    margin-top: 13px;
+    justify-content: flex-start;
+  }
+
+  #five-element-wardrobe > div[role="list"] {
+    display: grid !important;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(132px, 40vw);
+    grid-template-columns: none !important;
+    gap: 9px !important;
+    margin: 18px -14px 0 !important;
+    padding: 2px 14px 12px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #five-element-wardrobe > div[role="list"]::-webkit-scrollbar { display: none; }
+
+  #five-element-wardrobe > div[role="list"] > button {
+    min-height: 148px !important;
+    scroll-snap-align: start;
+  }
+
+  #five-element-wardrobe > div[role="list"] > button > span:first-child {
+    width: 64px !important;
+    height: 64px !important;
+  }
+
+  #five-element-wardrobe > div[aria-live="polite"] {
+    min-height: 118px !important;
+    padding: 15px 14px 14px !important;
+    background-size: auto, 124px auto !important;
+  }
+
+  #five-element-wardrobe > div[aria-live="polite"] p:first-child,
+  #five-element-wardrobe > div[aria-live="polite"] p + p {
+    max-width: calc(100% - 42px);
+  }
+
+  #five-element-wardrobe > p:last-child {
+    margin-bottom: 16px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #five-element-wardrobe > header h2 {
+    font-size: 25px !important;
+  }
+
+  #five-element-wardrobe > div[role="list"] {
+    grid-auto-columns: 136px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #five-element-wardrobe > div[role="list"] > button {
+    transition: none !important;
+  }
+}
