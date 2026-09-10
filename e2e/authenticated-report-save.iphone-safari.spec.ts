@@ -90,7 +90,11 @@ test("Signed-in member reaches the full report with the durable-save action avai
   await expect(page.locator("#result")).toBeVisible();
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeEnabled();
+  const saveAction = page.getByTestId("durable-save-action");
+  await expect(saveAction).toBeVisible({ timeout: 15_000 });
+  await expect(saveAction).toBeEnabled({ timeout: 15_000 });
+  await saveAction.click();
+  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeEnabled({ timeout: 15_000 });
   await mobileHealthy(page);
 });
 
@@ -104,8 +108,6 @@ test("Full report stays available when Supabase persistence fails", async ({ pag
   await page.getByRole("button", { name: "開始分析", exact: true }).click();
   await expect(page.locator("#result")).toBeVisible();
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
-  // Persistence is asynchronous and may expose a retry/update action at different times.
-  // The protected contract here is that a cloud failure never removes the delivered report.
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
   await mobileHealthy(page);
 });
