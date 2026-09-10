@@ -73,7 +73,7 @@ function LoginPage() {
         await navigate({ to: "/" });
         return;
       }
-      // Email confirmation is allowed to happen, but its redirect is pinned to the official production site.
+      // The backend decides whether confirmation is required; when it is, the confirmation redirect is pinned to the official production site.
       const { session } = await signUpWithPassword(email.trim(), password, displayName.trim());
       if (session) {
         await reload();
