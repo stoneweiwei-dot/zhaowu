@@ -3,7 +3,7 @@ import { analyzeBranchRelations, natalBranchPoints, summarizeBranchRelations, ty
 import { analyzeStructuralRemedy, type StructuralRemedy } from "@/lib/bazi/structural-remedy";
 import type { Chart } from "@/lib/bazi/types";
 
-const STRUCTURE_QUESTION_RE = /(八字|命局|命盤|命盘)?\s*(是|屬於|属于|算|走)?\s*(什麼|什么|哪一種|哪一种)?\s*(格局|格)|(格局|立格|成格|破格|殺印相生|杀印相生|食神制殺|食神制杀|傷官配印|伤官配印)/;
+const STRUCTURE_QUESTION_RE = /(八字|命局|命盤|命盘)?\s*(是|屬於|属于|算|走)?\s*(什麼|什么|哪一種|哪一种)?\s*(格局)|(格局|立格|成格|破格|殺印相生|杀印相生|食神制殺|食神制杀|傷官配印|伤官配印)/;
 
 const STRUCTURE_BY_TEN_GOD: Record<string, string> = {
   正官: "正官格",
