@@ -9,11 +9,14 @@ const resultView = await readFile(new URL("../src/components/result-view.tsx", i
 const shareCard = await readFile(new URL("../src/lib/report/share-card.ts", import.meta.url), "utf8");
 const { customerCopy } = await import("../src/lib/report/customer-copy.ts");
 
-test("logged-out visitors cannot read or persist a previous account birth record", () => {
+test("guest birth reuse stays available while signed-in account records remain isolated", () => {
+  assert.match(sharedBirth, /GUEST_BIRTH_OWNER_ID/);
   assert.match(sharedBirth, /activeSharedBirthUserId/);
-  assert.match(sharedBirth, /typeof window === "undefined" \|\| !activeSharedBirthUserId/);
   assert.match(sharedBirth, /SHARED_BIRTH_OWNER_KEY/);
+  assert.match(sharedBirth, /storedOwner !== nextOwner/);
   assert.match(sharedBirth, /localStorage\.removeItem\(SHARED_BIRTH_STORAGE_KEY\)/);
+  assert.match(sharedBirth, /!storedOwner && activeSharedBirthUserId === GUEST_BIRTH_OWNER_ID/);
+  assert.match(sharedBirth, /storedOwner !== activeSharedBirthUserId/);
   assert.match(authProvider, /setSharedBirthAccessUser\(active\?\.user\.id \?\? null\)/);
 });
 
