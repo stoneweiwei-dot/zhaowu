@@ -5,29 +5,29 @@ export type GuardianStyle = {
   directive: string;
 };
 
-export const GUARDIAN_STYLE_POOL_VERSION = "guardian-style-pool-v1-20260825";
+export const GUARDIAN_STYLE_POOL_VERSION = "guardian-style-pool-v2-20260911";
 
 export const GUARDIAN_STYLE_POOL: GuardianStyle[] = [
   {
-    id: "song_saturated_sacred_v1",
+    id: "song_saturated_sacred_v2",
     label: "濃郁版宋氏聖相風",
     weight: 55,
     directive:
-      "Use a concentrated Song-inspired sacred portrait treatment: richer mineral pigments than the old pale version, especially celadon, jade green, turquoise, azurite blue, warm ochre-gold and restrained cinnabar. Keep the image luminous and elegant, but with clearer contour separation, more visible garment detail and stronger subject/background contrast. Avoid washed-out cream fog, chalky low saturation or overexposed pastel haze.",
+      "Primary Zhaowu sacred-image direction. Use a richer, deeper Song-inspired sacred portrait treatment than the old pale Song look: refined gongbi linework, silk/xuan-paper atmosphere, mineral celadon, jade green, turquoise, azurite blue, warm ochre-gold and restrained cinnabar. Keep the image luminous, elegant and museum-like, with stronger subject/background separation, clear garment detail and phone-readable contrast. Avoid washed-out cream fog, chalky pastel haze, childish styling, glossy CG and game-card rendering.",
   },
   {
-    id: "concealed_sacred_icon_v1",
-    label: "含藏聖相・遮面護法",
+    id: "concealed_sacred_icon_v2",
+    label: "含藏聖相・濃郁宋彩遮面護法",
     weight: 30,
     directive:
-      "Use the concealed-sacred-icon composition. If a celestial guardian or sacred figure appears, place it within a thin antique-gold circular moon-disc or mandala frame and let ONE meaningful object naturally conceal roughly 30–55% of the face. The concealing object must be semantically grounded in the report theme and the figure: for example a jade tablet, ritual book, fan, sword guard, round talisman, lotus, medicine vessel, cloud veil, moon-disc or other refined East Asian sacred implement. The pose should feel inward, calm, protective and dignified rather than shy-cute. Keep a neutral-to-masculine sacred presence unless the subject itself calls for a feminine archetype. Do not cover the entire face and do not repeat the same object mechanically across generations.",
+      "Use the concealed-sacred-icon composition on the richer saturated Song-mineral base. Place the guardian or sacred figure within a thin antique-gold circular moon-disc or mandala frame, with a clean single mineral-color field and generous negative space. Let ONE deity-specific meaningful object naturally conceal about 30–55% of the face. Derive the object from that figure's own mythology, scripture, seal, implement, mount, plant or emblem rather than repeating a generic book: examples include a jade decree/tablet, celestial register, ritual fan, sword guard, round talisman or bi-disc, lotus, medicine vessel, cloud veil, water orb/mirror, phoenix-feather screen, or Xuanwu/dragon emblem. The pose must feel inward, calm, protective, dignified and sacred rather than shy-cute. Keep a neutral-to-masculine sacred presence unless the subject itself requires otherwise. Do not hide the entire face. Do not mechanically reuse the same concealing object. Maintain richer mineral saturation, slightly firmer gold linework and clear phone-readable contrast; never return to the washed-out pale version.",
   },
   {
-    id: "song_mineral_guardian_v1",
+    id: "song_mineral_guardian_v2",
     label: "宋氏岩彩護法風",
     weight: 15,
     directive:
-      "Use a protective guardian-archetype treatment with slightly deeper Song-inspired mineral colors, firmer gold linework and a more grounded protective posture. Keep it museum-like and painterly, not martial-game art. The figure may hold one symbolic implement tied to the report, but avoid weapon spectacle, aggressive combat staging or generic fantasy armor.",
+      "Use a protective guardian-archetype treatment with deeper Song-inspired mineral colors, firmer antique-gold linework and a grounded protective posture. Keep it museum-like and painterly, not martial-game art. One symbolic implement may be tied to the guardian/report, but avoid weapon spectacle, aggressive combat staging, generic fantasy armor, neon or muddy full-black backgrounds.",
   },
 ];
 
