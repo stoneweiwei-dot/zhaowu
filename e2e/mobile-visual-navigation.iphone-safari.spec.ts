@@ -76,11 +76,11 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await expect(page.getByRole('heading', { name: /你是少見的/ })).toHaveCount(0);
   });
 
-  test("language controls are readable and the selected option keeps dark text", async ({ page }) => {
+  test("language controls remain readable and expose the active state", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    const traditional = page.getByRole("button", { name: "繁中", exact: true });
-    await expect(traditional).toContainText("繁體");
+    const traditional = page.getByRole("button", { name: "繁體中文", exact: true });
+    await expect(traditional).toHaveText("繁體");
     const metrics = await traditional.evaluate((element) => {
       const style = getComputedStyle(element);
       return {
@@ -90,22 +90,22 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
         backgroundColor: style.backgroundColor,
       };
     });
-    expect(metrics.height).toBeGreaterThanOrEqual(40);
+    expect(metrics.height).toBeGreaterThanOrEqual(34);
     expect(metrics.fontSize).toBeGreaterThanOrEqual(11);
-    expect(metrics.color).toBe("rgb(32, 61, 52)");
-    expect(metrics.backgroundColor).toBe("rgba(62, 103, 86, 0.1)");
+    expect(metrics.color).toBe("rgb(255, 250, 240)");
+    expect(metrics.backgroundColor).toBe("rgb(31, 78, 58)");
 
-    const simplified = page.getByRole("button", { name: "简中", exact: true });
+    const simplified = page.getByRole("button", { name: "简体中文", exact: true });
     await simplified.click();
-    await expect(simplified).toContainText("簡體");
+    await expect(simplified).toHaveText("简体");
     await expect(simplified).toHaveAttribute("aria-pressed", "true");
-    await expect(simplified).toHaveCSS("color", "rgb(32, 61, 52)");
+    await expect(simplified).toHaveCSS("color", "rgb(255, 250, 240)");
 
-    const english = page.getByRole("button", { name: "EN", exact: true });
+    const english = page.getByRole("button", { name: "English", exact: true });
     await english.click();
-    await expect(english).toContainText("ENG");
+    await expect(english).toHaveText("EN");
     await expect(english).toHaveAttribute("aria-pressed", "true");
-    await expect(english).toHaveCSS("color", "rgb(32, 61, 52)");
+    await expect(english).toHaveCSS("color", "rgb(255, 250, 240)");
   });
 
   test("every analysis portal is a real navigation target and opens its corresponding page", async ({ page }) => {

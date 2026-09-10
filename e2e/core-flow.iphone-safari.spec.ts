@@ -79,12 +79,12 @@ test.describe("iPhone Safari core customer flow", () => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await page.getByRole("button", { name: "简中", exact: true }).click();
+    await page.getByRole("button", { name: "简体中文", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: /前世今生/ })).toBeVisible();
 
-    await page.getByRole("button", { name: "EN", exact: true }).click();
+    await page.getByRole("button", { name: "English", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Four Pillars chart", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Client details", exact: true })).toBeVisible();
@@ -94,7 +94,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#birth-day")).toBeVisible();
     await expect(page.getByRole("link", { name: /Past & Present/ })).toBeVisible();
 
-    await page.getByRole("button", { name: "繁中", exact: true }).click();
+    await page.getByRole("button", { name: "繁體中文", exact: true }).click();
     await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
     await expect(page.locator('#analysisForm button[type="submit"]')).toBeVisible();
     await expectMobileViewportHealthy(page);

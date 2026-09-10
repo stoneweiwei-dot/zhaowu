@@ -21,28 +21,24 @@ function alphaOf(value: string) {
 }
 
 test.describe("iPhone Safari parchment application shell", () => {
-  test("keeps dynamic wallpaper and loose scatter out of every application route", async ({ page }) => {
-    await makeAppOfflineSafe(page);
-    await seedPublicBirth(page);
-    for (const route of PAPER_ROUTES) {
+  for (const route of PAPER_ROUTES) {
+    test(`keeps the parchment shell contract on ${route}`, async ({ page }) => {
+      await makeAppOfflineSafe(page);
+      await seedPublicBirth(page);
       await page.goto(route, { waitUntil: "domcontentloaded" });
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
       await expect(page.locator(".zhaowu-home-sheet-shell")).toBeVisible();
       await expect(page.locator(".zhaowu-site-wallpaper")).toHaveCount(0);
       await expect(page.getByTestId("auspicious-emblem-scatter")).toHaveCount(0);
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
-    }
-  });
-
-  test("every application page keeps an explicit parchment background", async ({ page }) => {
-    await makeAppOfflineSafe(page);
-    await seedPublicBirth(page);
-    for (const route of PAPER_ROUTES) {
-      await page.goto(route, { waitUntil: "domcontentloaded" });
       const backgroundImage = await page.locator("body").evaluate((node) => getComputedStyle(node).backgroundImage);
       expect(backgroundImage).not.toBe("none");
-    }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    });
+  }
 
+  test("home keeps the transparent BaZi hub and separate client-details paper card", async ({ page }) => {
+    await makeAppOfflineSafe(page);
+    await seedPublicBirth(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
@@ -99,7 +95,7 @@ test.describe("iPhone Safari parchment application shell", () => {
     const homeCard = page.locator("#five-element-wardrobe");
     await expect(homeCard).toBeVisible();
     await expect(homeCard.getByRole("heading", { name: "每日穿衣｜五行色彩", exact: true })).toBeVisible();
-    await expect(homeCard.getByText("今日適合", { exact: false })).toBeVisible();
+    await expect(homeCard.locator("[data-daily-colors-today] > p").first()).toContainText("今日適合：");
     await homeCard.locator('[data-daily-color-id="hanxu"]').click();
     await expect(homeCard.locator("[data-daily-colors-quote]")).toContainText("涵虛");
     await homeCard.getByRole("link", { name: "查看完整建議", exact: true }).click();
