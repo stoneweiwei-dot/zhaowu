@@ -184,3 +184,17 @@
     color: #353b36 !important;
   }
 }
+
+/* r102 — language selector contract: selected day-mode option is pine with light text.
+   This intentionally wins over older readability locks that used !important. */
+.site-lang-button[aria-pressed="true"] {
+  background: #1f4e3a !important;
+  color: #fffaf0 !important;
+  border-color: #c4a05a !important;
+}
+
+[data-zw-theme="night"] .site-lang-button[aria-pressed="true"] {
+  background: rgba(212, 176, 116, .15) !important;
+  color: #f1dfba !important;
+  border-color: #c4a05a !important;
+}

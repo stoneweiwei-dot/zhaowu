@@ -1,7 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 
 const PAPER_ROUTES = ["/", "/ziwei", "/qizheng"] as const;
-async function makeAppOfflineSafe(page: Page) { await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" })); }
+async function makeAppOfflineSafe(page: Page) {
+  await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
+  await page.route("**/sw.js", (route) => route.abort());
+}
 function alphaOf(value: string) {
   const rgba = value.match(/rgba?\(([^)]+)\)/);
   if (!rgba) return 1;
@@ -36,8 +39,6 @@ test.describe("iPhone Safari parchment application shell", () => {
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
 
     const baziBackground = await page.locator(".zhaowu-bazi-hub").evaluate((node) => getComputedStyle(node).backgroundColor);
-    // r85 replaces the nested tinted Bazi card with a flat section below a
-    // separate parchment-backed client record. The page wallpaper is retained.
     expect(alphaOf(baziBackground)).toBe(0);
     const customerBackground = await page.locator("#customer-record").evaluate((node) => getComputedStyle(node).backgroundColor);
     expect(alphaOf(customerBackground)).toBeCloseTo(0.78, 2);
@@ -65,16 +66,12 @@ test.describe("iPhone Safari parchment application shell", () => {
       const question = page.locator(".zhaowu-question-sheet");
       const customer = page.locator("#customer-record");
       const bazi = page.locator("#bazi");
-      for (const section of [almanac, question, customer, bazi]) {
-        await expect(section).toBeVisible();
-      }
+      for (const section of [almanac, question, customer, bazi]) await expect(section).toBeVisible();
       await expect(almanac.locator("details[open]")).toHaveCount(0);
       const boxes = await Promise.all([almanac, question, customer, bazi].map((section) => section.boundingBox()));
       expect(boxes.every(Boolean)).toBe(true);
       expect(boxes[0]!.height).toBeLessThan(260);
-      for (let i = 1; i < boxes.length; i += 1) {
-        expect(boxes[i]!.y).toBeGreaterThanOrEqual(boxes[i - 1]!.y + boxes[i - 1]!.height);
-      }
+      for (let i = 1; i < boxes.length; i += 1) expect(boxes[i]!.y).toBeGreaterThanOrEqual(boxes[i - 1]!.y + boxes[i - 1]!.height);
       const titleSize = await question.locator("h2").evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
       expect(titleSize).toBeLessThanOrEqual(28);
       await expect(page.locator("header .zhaowu-brand-seal__image")).toHaveAttribute("src", "/brand-ui/logo-primary.svg");
