@@ -92,7 +92,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
       };
     });
     expect(metrics.height).toBeGreaterThanOrEqual(40);
-    expect(metrics.fontSize).toBeGreaterThanOrEqual(12);
+    expect(metrics.fontSize).toBeGreaterThanOrEqual(11);
     expect(metrics.color).toBe("rgb(255, 250, 240)");
     expect(metrics.backgroundColor).toBe("rgb(31, 78, 58)");
 

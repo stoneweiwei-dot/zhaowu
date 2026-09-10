@@ -24,7 +24,10 @@ test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }
 });
 
 test("tea guardian English copy is complete and does not mix Chinese UI", async ({ page }) => {
-  await page.addInitScript(() => window.localStorage.setItem("zhaowu.locale", "en"));
+  await page.addInitScript(() => {
+    window.localStorage.setItem("zhaowu.display-language", "en");
+    window.localStorage.setItem("zhaowu.locale", "en");
+  });
   await page.goto("/tea-guardian");
   await expect(page.getByRole("heading", { name: "Seven questions to find your tea" })).toBeVisible();
   await expect(page.getByText("Which aroma should arrive first?")).toBeVisible();
