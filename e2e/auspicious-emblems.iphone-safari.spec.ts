@@ -1,10 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 const PAPER_ROUTES = ["/", "/ziwei", "/qizheng"] as const;
-async function makeAppOfflineSafe(page: Page) {
-  await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
-  await page.route("**/sw.js", (route) => route.abort());
-}
+async function makeAppOfflineSafe(page: Page) { await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" })); }
 function alphaOf(value: string) {
   const rgba = value.match(/rgba?\(([^)]+)\)/);
   if (!rgba) return 1;
@@ -13,31 +10,26 @@ function alphaOf(value: string) {
 }
 
 test.describe("iPhone Safari parchment application shell", () => {
-  test("keeps dynamic wallpaper and loose scatter out of representative application routes", async ({ page }) => {
-    await makeAppOfflineSafe(page);
-    for (const route of PAPER_ROUTES) {
+  for (const route of PAPER_ROUTES) {
+    test(`keeps wallpaper/scatter out and parchment present on ${route}`, async ({ page }) => {
+      await makeAppOfflineSafe(page);
       await page.goto(route, { waitUntil: "domcontentloaded" });
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
       await expect(page.locator(".zhaowu-home-sheet-shell")).toBeVisible();
       await expect(page.locator(".zhaowu-site-wallpaper")).toHaveCount(0);
       await expect(page.getByTestId("auspicious-emblem-scatter")).toHaveCount(0);
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
-    }
-  });
-
-  test("representative application pages keep an explicit parchment background", async ({ page }) => {
-    await makeAppOfflineSafe(page);
-    for (const route of PAPER_ROUTES) {
-      await page.goto(route, { waitUntil: "domcontentloaded" });
       const backgroundImage = await page.locator("body").evaluate((node) => getComputedStyle(node).backgroundImage);
       expect(backgroundImage).not.toBe("none");
-    }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    });
+  }
 
+  test("home keeps the flat Bazi section and separate client record", async ({ page }) => {
+    await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
-
     const baziBackground = await page.locator(".zhaowu-bazi-hub").evaluate((node) => getComputedStyle(node).backgroundColor);
     expect(alphaOf(baziBackground)).toBe(0);
     const customerBackground = await page.locator("#customer-record").evaluate((node) => getComputedStyle(node).backgroundColor);
