@@ -1,21 +1,21 @@
 /* r101 — Night readability + daily spirit slip refinement.
-   Final override for the production UI issues visible on iPhone. */
+   Final override for the production UI issues visible on iPhone.
+   2026-09-10 STO-19: remove washed oracle artwork + harden night contrast. */
 
 /* ---------- Daily almanac: night mode must stay readable ---------- */
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-almanac {
-  color: #f7f0e2 !important;
-  background:
-    linear-gradient(180deg, rgba(15, 54, 43, .97), rgba(8, 32, 27, .98)) !important;
-  border-color: rgba(212, 176, 116, .42) !important;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, .28) !important;
+  color: #fffaf0 !important;
+  background: linear-gradient(180deg, #10372c 0%, #08221c 100%) !important;
+  border-color: rgba(212, 176, 116, .56) !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .30) !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-watermark {
-  color: rgba(247, 240, 226, .055) !important;
+  color: rgba(255, 250, 240, .045) !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-eyebrow {
-  color: #dfbd79 !important;
+  color: #e5c47f !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-dom,
@@ -32,106 +32,111 @@
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-note,
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-details-body,
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-pair-list {
-  color: #ddd4c3 !important;
+  color: #eee5d6 !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-energy {
-  border-left-color: rgba(219, 185, 116, .35) !important;
+  border-left-color: rgba(229, 196, 127, .42) !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-energy span {
-  color: #d8cfbe !important;
+  color: #e8dfcf !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-energy strong {
-  color: #78cfb2 !important;
+  color: #84d9bb !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-energy em {
-  color: #eee6d6 !important;
+  color: #fff7e8 !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-term,
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-pair-title small {
-  color: #d8cfbe !important;
+  color: #e5dccb !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-term b {
-  color: #efd59a !important;
+  color: #f2d99f !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-details,
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-pairs {
-  border-color: rgba(229, 215, 181, .18) !important;
+  border-color: rgba(239, 220, 181, .24) !important;
 }
 
 /* Pillars remain parchment-light in night mode for maximum contrast. */
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-pillars {
-  background: rgba(255, 250, 240, .95) !important;
-  border-color: rgba(226, 210, 176, .34) !important;
-  box-shadow: 0 5px 18px rgba(0, 0, 0, .12) !important;
+  background: #fffaf0 !important;
+  border-color: rgba(226, 210, 176, .50) !important;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, .14) !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-pillar {
-  border-color: rgba(89, 75, 56, .16) !important;
+  border-color: rgba(89, 75, 56, .18) !important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-pillar > span,
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-pillar strong i {
-  color: #655e54 !important;
-  opacity: .98 !important;
+  color: #5c554c !important;
+  opacity: 1 !important;
 }
 
 /* ---------- Daily spirit slip: coherent parchment card ---------- */
 .zhaowu-spirit-slip {
-  color: #2c332f !important;
-  border: 1px solid rgba(168, 134, 82, .38) !important;
+  color: #2b312d !important;
+  border: 1px solid rgba(168, 134, 82, .42) !important;
   border-radius: 28px !important;
-  background:
-    radial-gradient(circle at 82% 10%, rgba(168, 134, 82, .09), transparent 27%),
-    linear-gradient(180deg, #fffaf0 0%, #f6eddc 100%) !important;
+  background: linear-gradient(180deg, #fffaf0 0%, #f5ead7 100%) !important;
   box-shadow: 0 24px 58px rgba(19, 37, 31, .22) !important;
 }
 
 [data-zw-theme="night"] .zhaowu-spirit-slip {
-  border-color: rgba(212, 176, 116, .48) !important;
-  box-shadow: 0 28px 70px rgba(0, 0, 0, .42) !important;
+  color: #29302c !important;
+  background: linear-gradient(180deg, #fffaf0 0%, #f5ead7 100%) !important;
+  border-color: rgba(212, 176, 116, .58) !important;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, .44) !important;
 }
 
 .zhaowu-spirit-slip-close {
-  border: 1px solid rgba(168, 134, 82, .44) !important;
-  background: rgba(255, 250, 240, .98) !important;
-  color: #214b3d !important;
-  box-shadow: 0 4px 14px rgba(20, 42, 35, .12) !important;
+  border: 1px solid rgba(168, 134, 82, .50) !important;
+  background: #fffaf0 !important;
+  color: #173f34 !important;
+  box-shadow: 0 4px 14px rgba(20, 42, 35, .14) !important;
 }
 
-/* Remove the old pixel/notched mask completely. */
+/* The old R52 pixel/notched polygon must never reappear. */
 .zhaowu-spirit-slip-art {
   position: relative !important;
-  width: min(84%, 560px) !important;
+  width: min(92%, 600px) !important;
   aspect-ratio: 16 / 10 !important;
   margin: 8px auto 24px !important;
   overflow: hidden !important;
-  border: 1px solid rgba(168, 134, 82, .46) !important;
+  border: 1px solid rgba(168, 134, 82, .52) !important;
   border-radius: 20px !important;
-  background:
-    radial-gradient(circle at 76% 22%, rgba(247, 226, 176, .76) 0 8%, transparent 9%),
-    url('/brand-ui/mark-pine.svg') left bottom / 44% auto no-repeat,
-    linear-gradient(155deg, #173d34 0%, #53786d 58%, #d4c8aa 100%) !important;
+  background: linear-gradient(155deg, #d9d1bf 0%, #eee5d3 100%) !important;
   clip-path: none !important;
-  box-shadow: 0 8px 22px rgba(22, 49, 40, .14) !important;
+  -webkit-clip-path: none !important;
+  mask: none !important;
+  -webkit-mask: none !important;
+  box-shadow: 0 8px 22px rgba(22, 49, 40, .15) !important;
 }
 
-/* Random gallery art is only an atmospheric layer here so a dark guardian
-   image can no longer dominate the oracle card. */
+/* Preserve the artwork itself. Do not wash it into a translucent soft-light layer. */
 .zhaowu-spirit-slip-art img {
+  display: block !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
-  opacity: .46 !important;
-  mix-blend-mode: soft-light !important;
-  filter: grayscale(.28) sepia(.10) saturate(.58) contrast(.94) brightness(.92) !important;
-  transform: scale(1.025) !important;
+  object-position: center !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  filter: saturate(.90) contrast(1.03) brightness(.96) !important;
+  transform: none !important;
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
+  mask: none !important;
+  -webkit-mask: none !important;
 }
 
 .zhaowu-spirit-slip-art::after {
@@ -139,7 +144,8 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(12, 47, 39, .02), rgba(12, 47, 39, .18));
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(10, 37, 30, 0), rgba(10, 37, 30, .07));
 }
 
 .zhaowu-spirit-slip-kicker {
@@ -147,19 +153,19 @@
 }
 
 .zhaowu-spirit-slip h2 {
-  color: #163f34 !important;
+  color: #123c31 !important;
 }
 
 .zhaowu-spirit-slip-copy p {
-  color: #3c403b !important;
+  color: #353b36 !important;
 }
 
 .zhaowu-spirit-slip-basis {
-  color: #6d6559 !important;
+  color: #625b51 !important;
 }
 
 .zhaowu-spirit-slip-mark {
-  color: #214b3d !important;
+  color: #173f34 !important;
 }
 
 @media (max-width: 760px) {
@@ -168,8 +174,13 @@
   }
 
   .zhaowu-spirit-slip-art {
-    width: 88% !important;
+    width: 92% !important;
     margin-top: 4px !important;
+    margin-bottom: 20px !important;
     border-radius: 17px !important;
+  }
+
+  .zhaowu-spirit-slip-copy p {
+    color: #353b36 !important;
   }
 }
