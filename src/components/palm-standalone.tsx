@@ -94,6 +94,7 @@ export function PalmStandalone() {
     setBirthHour(record.timeUnknown ? "" : String(record.hour));
     setBirthMinute(record.timeUnknown ? "" : String(record.minute));
     setCity(record.city);
+    setD60Exact(!record.timeUnknown && Number.isInteger(record.minute) && Boolean(record.city));
     if (record.gender === "male" || record.gender === "female") setGender(record.gender);
   }, []);
 
@@ -223,7 +224,7 @@ export function PalmStandalone() {
               <legend className="text-sm font-medium text-ink">{copy.date}</legend>
               <div className="palm-birth-grid mt-2">
                 {([[copy.year, year, setYear, 1900, maxYear], [copy.month, month, setMonth, 1, 12], [copy.day, day, setDay, 1, 31]] as const).map(([label, value, setter, minValue, maxValue]) => (
-                  <label key={label}><span>{label}</span><input required type="number" inputMode="numeric" min={minValue} max={maxValue} value={value} onChange={(event) => setter(event.target.value)} /></label>
+                  <label key={label}><span>{label}</span><input required type="number" inputMode="numeric" min={minValue} max={maxValue} value={value} onChange={(event) => { setter(event.target.value); setD60Exact(false); }} /></label>
                 ))}
               </div>
             </fieldset>
@@ -231,8 +232,8 @@ export function PalmStandalone() {
             <fieldset className="mt-5">
               <legend className="text-sm font-medium text-ink">{copy.time}</legend>
               <div className="mt-2 grid grid-cols-2 gap-3">
-                <label className="text-xs text-ink-soft"><span>{copy.hour}</span><input disabled={timeUnknown} type="number" inputMode="numeric" min={0} max={23} value={birthHour} onChange={(event) => setBirthHour(event.target.value)} className="mt-2 min-h-14 w-full rounded-xl border border-line bg-white/72 px-4 text-base text-ink outline-none disabled:opacity-45" /></label>
-                <label className="text-xs text-ink-soft"><span>{copy.minute}</span><input disabled={timeUnknown} type="number" inputMode="numeric" min={0} max={59} value={birthMinute} onChange={(event) => setBirthMinute(event.target.value)} className="mt-2 min-h-14 w-full rounded-xl border border-line bg-white/72 px-4 text-base text-ink outline-none disabled:opacity-45" /></label>
+                <label className="text-xs text-ink-soft"><span>{copy.hour}</span><input disabled={timeUnknown} type="number" inputMode="numeric" min={0} max={23} value={birthHour} onChange={(event) => { setBirthHour(event.target.value); setD60Exact(false); }} className="mt-2 min-h-14 w-full rounded-xl border border-line bg-white/72 px-4 text-base text-ink outline-none disabled:opacity-45" /></label>
+                <label className="text-xs text-ink-soft"><span>{copy.minute}</span><input disabled={timeUnknown} type="number" inputMode="numeric" min={0} max={59} value={birthMinute} onChange={(event) => { setBirthMinute(event.target.value); setD60Exact(false); }} className="mt-2 min-h-14 w-full rounded-xl border border-line bg-white/72 px-4 text-base text-ink outline-none disabled:opacity-45" /></label>
               </div>
               <label className="mt-3 flex items-start gap-3 rounded-xl border border-line/70 bg-white/50 px-4 py-3 text-sm text-ink-soft">
                 <input type="checkbox" checked={timeUnknown} onChange={(event) => { setTimeUnknown(event.target.checked); if (event.target.checked) { setD60Exact(false); } }} className="mt-0.5 h-4 w-4 accent-cinnabar" />
@@ -241,7 +242,7 @@ export function PalmStandalone() {
             </fieldset>
 
             <div className="mt-5">
-              <CityPicker id="palm-birth-city" label={copy.city} placeholder={copy.cityPh} optional optionalLabel={copy.optional} popularLabel={copy.popular} locale={locale} value={city} onSelect={setCity} />
+              <CityPicker id="palm-birth-city" label={copy.city} placeholder={copy.cityPh} optional optionalLabel={copy.optional} popularLabel={copy.popular} locale={locale} value={city} onSelect={(next) => { setCity(next); setD60Exact(false); }} />
             </div>
 
             <fieldset className="palm-direction mt-5">
