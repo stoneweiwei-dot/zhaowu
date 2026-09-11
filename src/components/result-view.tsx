@@ -28,7 +28,7 @@ const RESULT_COPY = {
     fullGenerating: "正在整理完整報告…",
     imageReady: "個人命象已生成並保存。",
     imageMatched: "已為你配對並保存圖庫命象。",
-    imageLoadFailed: "命詰圖未能載入；文字答案與完整報告不受影響。",
+    imageLoadFailed: "命象圖未能載入；文字答案與完整報告不受影響。",
   },
   "zh-Hans": {
     syncFailed: "完整报告已整理完成，但云端同步暂时失败；画面内容不受影响。",
@@ -41,7 +41,7 @@ const RESULT_COPY = {
     fullGenerating: "正在整理完整报告…",
     imageReady: "个人命象已生成并保存。",
     imageMatched: "已为你配对并保存图库命象。",
-    imageLoadFailed: "命诰图未能载入；文字答案与完整报告不受影响。",
+    imageLoadFailed: "命象图未能载入；文字答案与完整报告不受影响。",
   },
   en: {
     syncFailed: "The full report is ready, but cloud sync failed temporarily. The report remains available on this page.",
