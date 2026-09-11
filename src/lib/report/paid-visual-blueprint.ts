@@ -1,5 +1,4 @@
-import type { FunctionalTrainingResult } from "@/lib/report/five-element-functional-training";
-import { mayActivelyTrainElement } from "@/lib/report/five-element-functional-training";
+import type { FunctionalTrainingResult, FunctionalElementState } from "@/lib/report/five-element-functional-training";
 import type { AuraBlueprint } from "@/lib/report/aura-chakra-blueprint";
 
 export type PaidReportTier = "free" | "full" | "paid_basic" | "paid_full";
@@ -13,6 +12,7 @@ export type PaymentContext = {
 export type PaidVisualBlueprint = {
   version: "ZW-PAID-VISUAL-1.0";
   enabled: boolean;
+  paidVisualsEnabled: boolean;
   tierRequired: "paid_basic" | "paid_full";
   selectedElement: FunctionalTrainingResult["selectedElement"];
   selectedState: FunctionalTrainingResult["selectedState"];
@@ -26,15 +26,33 @@ export function canGeneratePaidVisuals(payment: PaymentContext): boolean {
   return payment.tier === "paid_basic" || payment.tier === "paid_full";
 }
 
+function stateInstruction(state: FunctionalElementState): string {
+  switch (state) {
+    case "beneficial_but_insufficient":
+      return "This is an active training theme: strengthen the real-life function in a moderate, sustainable way.";
+    case "beneficial_but_blocked":
+      return "This is a blocked training theme: show clearing the blockage first, then moderate practice; do not portray blind supplementation.";
+    case "already_sufficient":
+      return "This function is already sufficient: portray maintenance and steadiness, not adding more intensity.";
+    case "overactive":
+      return "This function is overactive: portray draining, balancing or redirecting it; explicitly avoid strengthening the same function.";
+    case "apparently_missing_but_not_to_add":
+      return "This function may look sparse but must not be supplemented: portray restraint and the reason not to chase surface deficiency.";
+    case "needs_mother_qi_or_bridging":
+      return "Support or bridging comes first: portray the supporting condition or circulation path before any direct strengthening.";
+  }
+}
+
 export function buildElementImagePrompt(training: FunctionalTrainingResult): string | null {
-  if (!training.selectedElement || !training.selectedState || !mayActivelyTrainElement(training.selectedState)) return null;
+  if (!training.selectedElement || !training.selectedState) return null;
   return [
     "Create one premium vertical 9:16 ZHAOWU five-element functional-training artwork.",
     `Selected functional element: ${training.selectedElement}.`,
     `Current functional theme: ${training.functionalTheme}.`,
     `Current state: ${training.selectedState}.`,
+    stateInstruction(training.selectedState),
     `Why now: ${training.whySelected}.`,
-    `Practical training: ${training.howToUse.join("; ")}.`,
+    `Practical training or regulation: ${training.howToUse.join("; ")}.`,
     `Observation marker: ${training.observationMarker}.`,
     `Avoid overdoing: ${training.excessWarning}.`,
     "Visual language: old xuan-paper / Song-inspired atlas, refined East Asian mineral colour, modern premium mobile infographic composition, clear information hierarchy, no glossy CG, no game-card UI, no cheap children's-poster look.",
@@ -63,25 +81,27 @@ export function buildPaidVisualBlueprint(
   aura: AuraBlueprint | null,
   payment: PaymentContext,
 ): PaidVisualBlueprint {
-  const paid = canGeneratePaidVisuals(payment);
-  const actionable = Boolean(training.selectedState && mayActivelyTrainElement(training.selectedState));
-  const enabled = paid && actionable && Boolean(training.selectedElement) && Boolean(aura);
+  const hasBlueprint = Boolean(training.selectedElement && training.selectedState && aura);
+  const paidVisualsEnabled = canGeneratePaidVisuals(payment) && hasBlueprint;
+  const elementPrompt = hasBlueprint ? buildElementImagePrompt(training) : null;
+  const auraPrompt = hasBlueprint && aura ? buildAuraImagePrompt(aura) : null;
   return {
     version: "ZW-PAID-VISUAL-1.0",
-    enabled,
+    enabled: paidVisualsEnabled,
+    paidVisualsEnabled,
     tierRequired: "paid_basic",
     selectedElement: training.selectedElement,
     selectedState: training.selectedState,
     functionalTheme: training.functionalTheme,
     elementImage: {
-      enabled,
-      prompt: enabled ? buildElementImagePrompt(training) : null,
+      enabled: paidVisualsEnabled,
+      prompt: elementPrompt,
       aspectRatio: "9:16",
       watermark: "STONE 原創",
     },
     auraImage: {
-      enabled,
-      prompt: enabled && aura ? buildAuraImagePrompt(aura) : null,
+      enabled: paidVisualsEnabled,
+      prompt: auraPrompt,
       aspectRatio: "9:16",
       watermark: "STONE 原創",
     },
@@ -94,11 +114,11 @@ export type PaidVisualGenerationResult =
 
 /**
  * This prepares server-side jobs only. It does not call an image provider.
- * A future paid backend must re-check payment state server-side before executing the jobs.
+ * The executing backend must re-check payment state immediately before any provider request.
  */
 export function preparePaidVisualJobs(payment: PaymentContext, blueprint: PaidVisualBlueprint): PaidVisualGenerationResult {
   if (!canGeneratePaidVisuals(payment)) return { generated: false, reason: "PAYMENT_REQUIRED", jobs: [] };
-  if (!blueprint.enabled) return { generated: false, reason: "VISUAL_BLUEPRINT_DISABLED", jobs: [] };
+  if (!blueprint.enabled || !blueprint.paidVisualsEnabled) return { generated: false, reason: "VISUAL_BLUEPRINT_DISABLED", jobs: [] };
   const jobs: { type: "five_element" | "aura"; prompt: string; aspectRatio: "9:16" }[] = [];
   if (blueprint.elementImage.enabled && blueprint.elementImage.prompt) jobs.push({ type: "five_element", prompt: blueprint.elementImage.prompt, aspectRatio: "9:16" });
   if (blueprint.auraImage.enabled && blueprint.auraImage.prompt) jobs.push({ type: "aura", prompt: blueprint.auraImage.prompt, aspectRatio: "9:16" });
