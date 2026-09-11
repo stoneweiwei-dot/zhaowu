@@ -21,7 +21,7 @@ const KIND_PATTERNS: Array<[QuestionKind, RegExp[]]> = [
   ["timing", [/何時|何时|什麼時候|什么时候|哪一年|哪年|幾月|几月|應期|应期|when\b|timing\b/i]],
   ["love", [/感情|戀愛|恋爱|婚姻|伴侶|伴侣|男友|女友|對象|对象|復合|复合|love|relationship|marriage|partner/i]],
   ["career", [/工作|事業|事业|職業|职业|轉職|转职|跳槽|升職|升职|老闆|老板|公司|職場|职场|career|job|work|role|business/i]],
-  ["money", [/財運|财运|收入|賺錢|赚钱|投資|投资|資產|资产|房產|房产|金錢|金钱|money|finance|income|investment|wealth/i]],
+  ["money", [/財運|财运|財務|财务|收入|賺錢|赚钱|投資|投资|資產|资产|房產|房产|金錢|金钱|money|finance|financial|income|investment|wealth/i]],
   ["health", [/健康|身體|身体|睡眠|壓力|压力|疲勞|疲劳|生病|疾病|health|body|sleep|stress/i]],
   ["home", [/家宅|住宅|住哪|搬家|搬遷|搬迁|房間|房间|風水|风水|home|house|move house|feng shui/i]],
   ["past", [/前世|今生|六道|一掌經|一掌经|past life|past-life/i]],
@@ -167,6 +167,13 @@ export function normalizeQuestion(value: string): string {
   return value
     .toLowerCase()
     .replace(/^(?:請問|请问|想問|想问|我想問|我想问|那|所以|那麼|那么)+/g, "")
+    .replace(/到底/g, "")
+    .replace(/值不值得/g, "值得")
+    .replace(/該不該/g, "該")
+    .replace(/该不该/g, "该")
+    .replace(/能不能/g, "能")
+    .replace(/可不可以/g, "可以")
+    .replace(/[嗎吗呢吧啊呀]$/g, "")
     .replace(/[\s\p{P}\p{S}]/gu, "")
     .trim();
 }
@@ -183,7 +190,7 @@ export function questionsAreEquivalent(a: string, b: string): boolean {
   let intersection = 0;
   for (const token of aTokens) if (bTokens.has(token)) intersection += 1;
   const union = new Set([...aTokens, ...bTokens]).size;
-  return union > 0 && intersection / union >= 0.72;
+  return union > 0 && intersection / union >= 0.68;
 }
 
 export function redactQuestion(value: string): string {
