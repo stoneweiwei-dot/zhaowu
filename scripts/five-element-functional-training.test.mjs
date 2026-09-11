@@ -103,14 +103,15 @@ test("insufficient structure fails closed without assigning a lucky element", ()
   }
 });
 
-test("aura is symbolic, contains no pseudo-precision and returns no medical claim", () => {
+test("aura is symbolic, contains no pseudo-precision and states the medical/energy boundary", () => {
   const training = buildFunctionalTraining(baseChart(), "en");
   const aura = buildAuraBlueprint(training);
   assert.ok(aura);
   assert.equal(aura.symbolicOnly, true);
   const text = JSON.stringify(aura);
-  assert.doesNotMatch(text, /\d+%|diagnos|disease|energy measurement/i);
-  assert.match(aura.disclaimer, /not a medical test/i);
+  assert.doesNotMatch(text, /\d+%/);
+  assert.match(aura.disclaimer, /This is a symbolic personality and life-theme map/i);
+  assert.match(aura.disclaimer, /It is not a medical test, energy measurement, religious ranking or objective chakra diagnosis\./i);
 });
 
 test("free or not-required reports can retain private prompt blueprints but can never prepare image-generation jobs", () => {
