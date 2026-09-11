@@ -38,7 +38,7 @@ test("the guide can only recommend real public site routes", () => {
   ]);
 });
 
-test("the shell mounts a non-blocking green dragon guide and the AI endpoint validates routes", async () => {
+test("the shell mounts a non-blocking local-only green dragon guide", async () => {
   const shell = await readFile(
     new URL("../src/components/site-shell.tsx", import.meta.url),
     "utf8",
@@ -60,10 +60,12 @@ test("the shell mounts a non-blocking green dragon guide and the AI endpoint val
     "utf8",
   );
   assert.match(shell, /<GreenDragonGuide \/>/);
-  assert.match(guide, /data-site-guide|DAILY_AI_LIMIT/);
+  assert.match(guide, /data-site-guide/);
+  assert.doesNotMatch(guide, /DAILY_AI_LIMIT|needsAI|spendCall|AI questions|每天可問 AI|每天可问 AI/);
   assert.match(styles, /volume-01\.webp|volume-03\.webp/);
-  assert.match(edge, /ALLOWED_ROUTES|safeRoute|gpt-4\.1-nano/);
-  assert.match(edge, /source: "ai"|source: "fallback"/);
+  assert.match(edge, /ALLOWED_ROUTES|provider-free/);
+  assert.match(edge, /source: "local"/);
+  assert.doesNotMatch(edge, /gpt-4\.1-nano|api\.openai\.com|\/v1\/responses/);
   assert.doesNotMatch(guide, /性格兩面|性格两面|Two sides|tianji-dual/);
   assert.match(guide, /七政四餘/);
   assert.match(guide, /前世今生/);
