@@ -11,6 +11,7 @@ import { routeMethods } from "@/lib/core/method";
 import { inferQuestionKind } from "@/lib/core/answer-contract";
 import { composeFocusedReportText } from "@/lib/report/focused-report";
 import { finalizeReading } from "@/lib/report/final-reading";
+import { enforceDirectAnswerGuard } from "@/lib/qa/direct-answer-guard";
 import { trackAnswerError, trackAnswerResult } from "@/lib/observability/answer-quality-telemetry";
 
 function newId(): string {
@@ -148,11 +149,12 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
       finalizedReading,
       data.locale,
     );
-    const reading = applyTenGodFiveElementRuntimePolicy(
+    const policyReading = applyTenGodFiveElementRuntimePolicy(
       chart,
       kinshipReading,
       data.locale,
     );
+    const reading = enforceDirectAnswerGuard(data.question, chart, policyReading, data.locale);
 
     const result: AnalysisResult = {
       id: newId(),
@@ -208,11 +210,12 @@ export async function followUpLife({
       finalizedReading,
       data.base.locale,
     );
-    const reading = applyTenGodFiveElementRuntimePolicy(
+    const policyReading = applyTenGodFiveElementRuntimePolicy(
       data.base.chart,
       kinshipReading,
       data.base.locale,
     );
+    const reading = enforceDirectAnswerGuard(question, data.base.chart, policyReading, data.base.locale);
     const result: AnalysisResult = {
       id: newId(),
       locale: data.base.locale,
@@ -248,11 +251,12 @@ export async function writeFullReport({
       data.chart,
       applyMonthStageFeedbackPolicy(data.question, data.chart, data.reading),
     );
-    const reading = applyTenGodFiveElementRuntimePolicy(
+    const policyReading = applyTenGodFiveElementRuntimePolicy(
       data.chart,
       finalizeReading(data.question, data.chart, governedReading, data.locale),
       data.locale,
     );
+    const reading = enforceDirectAnswerGuard(data.question, data.chart, policyReading, data.locale);
     const palm = data.palm ?? null;
     const methodProtocol = routeMethods(reading.kind, {
       palmReady: Boolean(palm?.ready),

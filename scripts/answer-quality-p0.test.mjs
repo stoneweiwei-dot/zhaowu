@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import { ANSWER_QUALITY_CORPUS } from "../src/lib/qa/answer-quality-corpus.ts";
 import {
   detectQaIntent,
+  detectQuestionFocus,
+  directAnswerCoversQuestion,
   questionsAreEquivalent,
   redactQuestion,
 } from "../src/lib/qa/answer-quality.ts";
@@ -35,4 +37,18 @@ test("analytics text redacts obvious contact and birth-like numeric data", () =>
   assert.equal(redacted.includes("test@example.com"), false);
   assert.equal(redacted.includes("1988-10-04"), false);
   assert.equal(redacted.includes("0412345678"), false);
+});
+
+test("decision questions require an actual decision or explicit cannot-judge statement", () => {
+  const q = "這份工作還值得繼續做嗎？";
+  assert.equal(detectQuestionFocus(q), "decision");
+  assert.equal(directAnswerCoversQuestion(q, "職業判斷以能否形成穩定做功與承載為核心。"), false);
+  assert.equal(directAnswerCoversQuestion(q, "直接回答：目前不能可靠判成值得繼續或不值得繼續；需要現職條件。"), true);
+});
+
+test("self subtopics require matching answer coverage", () => {
+  assert.equal(detectQuestionFocus("這個命局的用神到底是什麼？"), "useful");
+  assert.equal(directAnswerCoversQuestion("這個命局的用神到底是什麼？", "目前主格是正官格。"), false);
+  assert.equal(directAnswerCoversQuestion("這個命局的用神到底是什麼？", "正式取用未定，目前只有調候候選。"), true);
+  assert.equal(detectQuestionFocus("D60 能不能作旁證？"), "d60");
 });

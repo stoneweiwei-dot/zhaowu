@@ -1,5 +1,6 @@
 import type { AnalysisResult, QuestionKind } from "@/lib/bazi/types";
 import {
+  detectQuestionFocus,
   evaluateAnswerQuality,
   getUsedModules,
   questionsAreEquivalent,
@@ -9,6 +10,13 @@ import {
 
 const POSTHOG_KEY = String(import.meta.env.VITE_POSTHOG_KEY || "phc_w6rhtrMQLLBczV4uNvsDWGb4zq2GCknyeqa2YWScrs3G").trim();
 const POSTHOG_HOST = String(import.meta.env.VITE_POSTHOG_HOST || "https://us.i.posthog.com").replace(/\/$/, "");
+const DEFAULT_ALLOWED_HOSTS = ["stone-zhaowu-official.vercel.app"];
+const ALLOWED_HOSTS = new Set(
+  String(import.meta.env.VITE_POSTHOG_ALLOWED_HOSTS || DEFAULT_ALLOWED_HOSTS.join(","))
+    .split(",")
+    .map((host) => host.trim().toLowerCase())
+    .filter(Boolean),
+);
 const SESSION_KEY = "zhaowu:qa-session-id";
 const REASK_KEY = "zhaowu:qa-reask-state";
 
@@ -30,6 +38,11 @@ type TrackErrorArgs = {
 
 function browserReady() {
   return typeof window !== "undefined" && typeof window.fetch === "function";
+}
+
+function telemetryAllowed() {
+  if (!browserReady()) return false;
+  return ALLOWED_HOSTS.has(window.location.hostname.toLowerCase());
 }
 
 function randomId() {
@@ -72,7 +85,7 @@ function updateReaskState(question: string, kind: QuestionKind) {
 }
 
 function capture(event: string, properties: Record<string, unknown>) {
-  if (!browserReady() || !POSTHOG_KEY) return;
+  if (!telemetryAllowed() || !POSTHOG_KEY) return;
   const sid = sessionId();
   const payload = {
     api_key: POSTHOG_KEY,
@@ -81,6 +94,7 @@ function capture(event: string, properties: Record<string, unknown>) {
       distinct_id: `zhaowu:${sid}`,
       $session_id: sid,
       $process_person_profile: false,
+      $geoip_disable: true,
       $current_url: window.location.href,
       $host: window.location.host,
       app: "zhaowu",
@@ -105,7 +119,7 @@ function compactError(error: unknown) {
 }
 
 export function trackAnswerResult({ result, expectedKind, startedAt, source }: TrackResultArgs) {
-  if (!browserReady()) return;
+  if (!telemetryAllowed()) return;
   const evaluation = evaluateAnswerQuality(result, expectedKind);
   const reaskCount = updateReaskState(result.question, evaluation.detectedIntent);
   const failReasons = [...evaluation.failReasons];
@@ -119,6 +133,7 @@ export function trackAnswerResult({ result, expectedKind, startedAt, source }: T
     runtime_mode: protocol?.mode ?? "unknown",
     engine_version: protocol?.version ?? "unknown",
     detected_intent: evaluation.detectedIntent,
+    question_focus: evaluation.questionFocus ?? detectQuestionFocus(result.question),
     answer_route: result.reading.kind,
     modules_used: modulesUsed,
     latency_ms: Math.max(0, Date.now() - startedAt),
@@ -140,7 +155,7 @@ export function trackAnswerResult({ result, expectedKind, startedAt, source }: T
       regression_id: result.id,
       original_question_redacted: redactQuestion(result.question),
       incorrect_answer_redacted: redactQuestion(result.reading.directAnswer ?? ""),
-      expected_coverage: `direct answer for ${evaluation.detectedIntent}; only relevant R6.1 modules`,
+      expected_coverage: `direct answer for ${evaluation.detectedIntent}/${evaluation.questionFocus}; only relevant R6.1 modules`,
       fixing_commit: "pending",
       post_fix_retest: "pending",
     });
@@ -148,9 +163,10 @@ export function trackAnswerResult({ result, expectedKind, startedAt, source }: T
 }
 
 export function trackAnswerError({ question, source, error, startedAt }: TrackErrorArgs) {
-  if (!browserReady()) return;
+  if (!telemetryAllowed()) return;
   capture("zhaowu_answer_error", {
     source,
+    question_focus: detectQuestionFocus(question),
     latency_ms: Math.max(0, Date.now() - startedAt),
     question_fingerprint: stableQuestionFingerprint(question),
     question_redacted: redactQuestion(question),

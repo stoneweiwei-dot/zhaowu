@@ -11,6 +11,7 @@ export type AnswerQualityScores = {
 
 export type AnswerQualityEvaluation = {
   detectedIntent: QuestionKind;
+  questionFocus: string;
   scores: AnswerQualityScores;
   failed: boolean;
   failReasons: string[];
@@ -26,6 +27,17 @@ const KIND_PATTERNS: Array<[QuestionKind, RegExp[]]> = [
   ["home", [/家宅|住宅|住哪|搬家|搬遷|搬迁|房間|房间|風水|风水|home|house|move house|feng shui/i]],
   ["past", [/前世|今生|六道|一掌經|一掌经|past life|past-life/i]],
   ["self", [/格局|身強|身强|身弱|用神|病藥|病药|調候|调候|日主|命局|八字|性格|自己|self|bazi|day master|structure/i]],
+];
+
+const FOCUS_RULES: Array<[string, RegExp, RegExp]> = [
+  ["d60", /(D60|六十[分份]盤|六十[分份]盘|沙斯提安沙|shashtiamsa)/i, /(D60|旁證|旁证|時間|时间|time|corroborat)/i],
+  ["ziwei", /(紫微|紫微斗數|紫微斗数|zi\s*wei)/i, /(紫微|旁證|旁证|驗證|验证|時辰|时辰|zi\s*wei|validat)/i],
+  ["unknown_time", /(不知道.{0,8}(時辰|时辰|出生時間|出生时间)|時辰.{0,8}(不知|未知|不確定|不确定)|时辰.{0,8}(不知|未知|不确定)|unknown.{0,8}(birth\s*time|time of birth))/i, /(時辰|时辰|出生時間|出生时间|不作判定|降級|降级|unknown|birth\s*time)/i],
+  ["structure", /(格局|成格|破格|格局大小|pattern|structure)/i, /(格局|主格|結構|结构|完成度|pattern|structure)/i],
+  ["strength", /(身強|身强|身弱|旺衰|日主.{0,8}(強|强|弱)|strong|weak|strength)/i, /(身強|身强|身弱|旺衰|承載|承载|強|强|弱|strength|capacity)/i],
+  ["remedy", /(病藥|病药|藥神|药神|主病|病在哪|remedy|structural disease)/i, /(主病|病藥|病药|藥|药|對治|对治|remedy|disease)/i],
+  ["useful", /(用神|喜用|取用|useful god|favourable element|favorable element)/i, /(用神|取用|候選|候选|流通|調候|调候|useful|candidate)/i],
+  ["decision", /(值不值得|要不要|該不該|该不该|能不能|是否值得|是否應該|是否应该|繼續.{0,8}[嗎吗]|继续.{0,8}[嗎吗]|should\s+i|worth\s+(?:staying|continuing))/i, /(直接回答|偏向|建議|建议|不建議|不建议|值得|不值得|可以|不能|不宜|暫不能|暂不能|不作判定|stay|leave|cannot|should|lean)/i],
 ];
 
 const KIND_ANSWER_HINTS: Record<QuestionKind, RegExp> = {
@@ -72,6 +84,20 @@ export function detectQaIntent(question: string, fallback: QuestionKind = "self"
   return fallback;
 }
 
+export function detectQuestionFocus(question: string): string {
+  for (const [name, questionPattern] of FOCUS_RULES) {
+    if (questionPattern.test(question)) return name;
+  }
+  return "general";
+}
+
+export function directAnswerCoversQuestion(question: string, directAnswer: string): boolean {
+  for (const [, questionPattern, answerPattern] of FOCUS_RULES) {
+    if (questionPattern.test(question)) return answerPattern.test(directAnswer);
+  }
+  return directAnswer.trim().length >= 8;
+}
+
 function sentenceParts(text: string): string[] {
   return text
     .split(/[。！？!?;；\n]+/)
@@ -111,13 +137,15 @@ export function evaluateAnswerQuality(result: AnalysisResult, expectedKind?: Que
   const answerText = [direct, result.reading.rhythm, result.reading.action, result.reading.lastLine].filter(Boolean).join("\n");
   const routedKind = result.reading.kind;
   const detectedIntent = detectQaIntent(result.question, expectedKind ?? routedKind);
+  const questionFocus = detectQuestionFocus(result.question);
   const kindMatch = routedKind === detectedIntent;
   const hintMatch = KIND_ANSWER_HINTS[detectedIntent].test(direct);
+  const coverageMatch = directAnswerCoversQuestion(result.question, direct);
   const protocol = result.methodProtocol;
   const usedModules = modulesActuallyUsed(result);
 
-  const directAnswer = direct.length >= 8 ? 1 : direct.length >= 3 ? 0.7 : 0;
-  const relevance = clamp((kindMatch ? 0.85 : 0.25) + (hintMatch ? 0.15 : 0));
+  const directAnswer = direct.length >= 8 && coverageMatch ? 1 : direct.length >= 3 ? 0.55 : 0;
+  const relevance = clamp((kindMatch ? 0.75 : 0.2) + (hintMatch ? 0.1 : 0) + (coverageMatch ? 0.15 : 0));
   const structure = clamp(
     (direct ? 0.35 : 0) +
       (result.reading.action?.trim() ? 0.25 : 0) +
@@ -130,6 +158,7 @@ export function evaluateAnswerQuality(result: AnalysisResult, expectedKind?: Que
   let r61 = 1;
   if (!direct) r61 -= 0.35;
   if (!kindMatch) r61 -= 0.3;
+  if (!coverageMatch) r61 -= 0.2;
   if (protocol?.primary?.name !== "子平八字" || protocol.primary.role !== "主判") r61 -= 0.25;
   if (protocol?.mode && protocol.mode !== "deterministic-zero-ai") r61 -= 0.1;
   if (!usedModules.includes("子平八字")) r61 -= 0.15;
@@ -150,7 +179,7 @@ export function evaluateAnswerQuality(result: AnalysisResult, expectedKind?: Que
   if (scores.r6_1_compliance < 0.9) failReasons.push("r6_1_compliance_below_0.9");
   if (scores.unsupported_claim_score > 0) failReasons.push("unsupported_claim_present");
 
-  return { detectedIntent, scores, failed: failReasons.length > 0, failReasons };
+  return { detectedIntent, questionFocus, scores, failed: failReasons.length > 0, failReasons };
 }
 
 function fingerprintTokens(value: string): Set<string> {
