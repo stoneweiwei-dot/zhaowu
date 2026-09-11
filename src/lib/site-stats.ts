@@ -1,4 +1,5 @@
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+// Deployment retrigger only: no runtime behavior change.
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = { version: "ZW-WEB-2026.09.11-r113", updateNumber: 113, publishedAt: "2026-09-11T16:00:30+00:00", latestSummary: "修正一掌經共享出生資料的 D60 分鐘確認旁路：精確分鐘資料可自動帶入，但改動日期、時間或出生地會重新要求確認；圖片失敗提示同步修正，文字報告仍獨立可用。" } as const;
