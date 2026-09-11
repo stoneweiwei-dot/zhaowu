@@ -26,13 +26,13 @@ test("owner gallery route is owner-gated and registered", async () => {
   assert.match(manager, /galleryPublicUrl\(asset\.storage_path, asset\.bucket_id\)/);
 });
 
-test("tea portrait resolves current owner gallery art with static fallback", async () => {
+test("fixed Tea Guardian portraits stay on bundled static artwork while Owner Gallery remains independent", async () => {
   const [report, image] = await Promise.all([
     read("src/components/tea-guardian-report.tsx"),
     read("src/components/tea-gallery-image.tsx"),
   ]);
   assert.match(report, /TeaGalleryImage teaId=\{tea\.id\}/);
-  assert.match(image, /resolvePrimaryGalleryAssets\("tea-guardian", \[teaId\]\)/);
-  assert.match(image, /galleryPublicUrl\(asset\.storage_path, asset\.bucket_id\)/);
-  assert.match(image, /setSrc\(fallback\)/);
+  assert.match(image, /src=\{fallback\}/);
+  assert.match(image, /data-tea-id=\{teaId\}/);
+  assert.doesNotMatch(image, /resolvePrimaryGalleryAssets|galleryPublicUrl|supabase/i);
 });
