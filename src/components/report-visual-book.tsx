@@ -19,6 +19,8 @@ const COPY: Record<Locale, {
   period: string;
   ratio: string;
   active: string;
+  flowTitle: string;
+  flowNote: string;
 }> = {
   "zh-Hant": {
     kicker: "ZHAOWU · 命之書",
@@ -27,13 +29,15 @@ const COPY: Record<Locale, {
     overview: "總覽",
     day: "日主命象",
     season: "月令時節",
-    elements: "五行喜忌",
+    elements: "五行與流通",
     structure: "格局病藥",
     structurePending: "正式病藥判定尚未通過完整驗證，暫不以模板猜結果。",
     imageFallback: "母圖載入失敗，已使用宣紙山水備援；文字判定不受影響。",
     period: "節氣區間",
     ratio: "五行氣勢",
     active: "目前閱讀",
+    flowTitle: "相生路徑",
+    flowNote: "此處只顯示五行相生順序與原局比例；是否真正流通，仍須看月令、根氣、透藏與實際合沖制化，不能由百分比單獨決定。",
   },
   "zh-Hans": {
     kicker: "ZHAOWU · 命之书",
@@ -42,13 +46,15 @@ const COPY: Record<Locale, {
     overview: "总览",
     day: "日主命象",
     season: "月令时节",
-    elements: "五行喜忌",
+    elements: "五行与流通",
     structure: "格局病药",
     structurePending: "正式病药判定尚未通过完整验证，暂不以模板猜结果。",
     imageFallback: "母图载入失败，已使用宣纸山水备援；文字判断不受影响。",
     period: "节气区间",
     ratio: "五行气势",
     active: "目前阅读",
+    flowTitle: "相生路径",
+    flowNote: "此处只显示五行相生顺序与原局比例；是否真正流通，仍须看月令、根气、透藏与实际合冲制化，不能由百分比单独决定。",
   },
   en: {
     kicker: "ZHAOWU · VISUAL READING",
@@ -57,13 +63,15 @@ const COPY: Record<Locale, {
     overview: "Overview",
     day: "Core nature",
     season: "Birth season",
-    elements: "Five-element pattern",
+    elements: "Elements & flow",
     structure: "Structure & remedy",
     structurePending: "A formal structure-and-remedy result is not shown until that calculation layer has been fully verified.",
     imageFallback: "The matching artwork did not load, so the paper-landscape fallback is shown. Your calculated text is unaffected.",
     period: "Seasonal interval",
     ratio: "Element pattern",
     active: "Current view",
+    flowTitle: "Generating sequence",
+    flowNote: "This line shows only the generating order and natal proportions. Whether the chart actually flows cleanly still depends on seasonal strength, roots, visible/hidden stems and verified interactions; percentages alone do not decide it.",
   },
 };
 
@@ -82,6 +90,8 @@ const WHEEL_POINTS: Record<Element, { x: number; y: number }> = {
   金: { x: 96, y: 240 },
   水: { x: 56, y: 116 },
 };
+
+const FLOW_ORDER: Element[] = ["木", "火", "土", "金", "水"];
 
 function FiveElementWheel({ rows, ariaLabel }: { rows: ReturnType<typeof buildReportVisualModel>["elements"]["rows"]; ariaLabel: string }) {
   const generation: Array<[Element, Element]> = [["木", "火"], ["火", "土"], ["土", "金"], ["金", "水"], ["水", "木"]];
@@ -106,6 +116,35 @@ function FiveElementWheel({ rows, ariaLabel }: { rows: ReturnType<typeof buildRe
         );
       })}
     </svg>
+  );
+}
+
+function FiveElementFlow({ rows, title, note }: {
+  rows: ReturnType<typeof buildReportVisualModel>["elements"]["rows"];
+  title: string;
+  note: string;
+}) {
+  const byElement = new Map(rows.map((row) => [row.element, row]));
+  return (
+    <div className="zhaowu-element-flow">
+      <h6>{title}</h6>
+      <div className="zhaowu-element-flow-track">
+        {FLOW_ORDER.map((element, index) => {
+          const row = byElement.get(element);
+          if (!row) return null;
+          return (
+            <div className="zhaowu-element-flow-step" key={element}>
+              <span className={`zhaowu-element-flow-node ${ELEMENT_CLASS[element]}`}>
+                <b>{row.label}</b>
+                <small>{row.percent}%</small>
+              </span>
+              {index < FLOW_ORDER.length - 1 ? <i aria-hidden="true">→</i> : null}
+            </div>
+          );
+        })}
+      </div>
+      <p>{note}</p>
+    </div>
   );
 }
 
@@ -226,6 +265,7 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
                 </div>
               ))}
             </div>
+            <FiveElementFlow rows={model.elements.rows} title={copy.flowTitle} note={copy.flowNote} />
             <div className="zhaowu-element-judgement">
               <div><span>{model.elements.usefulLabel}</span><b>{model.elements.useful}</b></div>
               <div><span>{model.elements.restraintLabel}</span><b>{model.elements.restraint}</b></div>
