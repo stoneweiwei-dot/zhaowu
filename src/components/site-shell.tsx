@@ -78,9 +78,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const numberLocale = intlTagFor(language);
   const languageOptions = [
     { value: "en" as const, label: "English", aria: "English" },
-    { value: "zh-Hans" as const, label: "简体", aria: "简体中文" },
     { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
-    { value: "ja" as const, label: "日本語", aria: "日本語" },
     { value: "ko" as const, label: "한국어", aria: "한국어" },
     { value: "hi" as const, label: "हिन्दी", aria: "हिन्दी" },
   ];
