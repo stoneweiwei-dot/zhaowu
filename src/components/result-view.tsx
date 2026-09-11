@@ -14,6 +14,9 @@ import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decisi
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/report/decree-image";
 import { buildFreeDecreeCouplet } from "@/lib/report/decree-copy";
 import { buildFreeChartMelody } from "@/lib/report/free-chart-melody";
+import { buildAuraBlueprint } from "@/lib/report/aura-chakra-blueprint";
+import { buildFunctionalTraining } from "@/lib/report/five-element-functional-training";
+import { preparePaidAuraVisual } from "@/lib/report/paid-visual";
 import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
 
 const RESULT_COPY = {
@@ -114,6 +117,20 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     const reportId = row?.id ?? result.id;
     setSavedId(reportId);
     setReportSyncedId(reportId);
+
+    // Paid visual preparation is supplementary. Persist the symbolic blueprint only after the
+    // durable full-report save has promoted the record to the server-checked full tier. Failure
+    // here must never undo or hide the saved text report, and this endpoint never calls a provider.
+    const training = buildFunctionalTraining(result.chart, result.locale ?? locale);
+    const aura = buildAuraBlueprint(training);
+    if (aura) {
+      try {
+        await preparePaidAuraVisual(session, reportId, aura);
+      } catch {
+        // Text/report persistence is the product truth; visual preparation remains fail-open.
+      }
+    }
+
     return reportId;
   }
 
