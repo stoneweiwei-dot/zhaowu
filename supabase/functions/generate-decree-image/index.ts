@@ -163,7 +163,6 @@ async function chooseGalleryReference(service: any, chart: any, question: string
         .filter(([id]) => Boolean(id)),
     );
 
-    // Consider the enabled library; personal attribution requires reviewed subjects, not pixel colours.
     const winner = rankGalleryAssets(visualAssets, knowledgeById, chart, question)[0];
     if (!winner) return null;
     const knowledge = winner.knowledge;
@@ -283,8 +282,9 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "POST") return json({ ok: false, error: "METHOD_NOT_ALLOWED" }, 405);
 
-  const auth = req.headers.get("Authorization");
-  if (!auth) return json({ ok: false, error: "UNAUTHORIZED" }, 401);
+  const auth = req.headers.get("Authorization") ?? "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7).trim() : "";
+  if (!token) return json({ ok: false, error: "UNAUTHORIZED" }, 401);
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
@@ -296,24 +296,47 @@ Deno.serve(async (req: Request) => {
   catch { return json({ ok: false, error: "INVALID_JSON" }, 400); }
 
   const reportId = String(payload?.reportId ?? "").trim();
-  const force = payload?.force === true;
+  const forceRequested = payload?.force === true;
   const viewOnly = payload?.viewOnly === true;
   const reselectGallery = payload?.reselectGallery === true;
   if (!reportId) return json({ ok: false, error: "REPORT_ID_REQUIRED" }, 400);
 
-  const userClient = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: auth } } });
-  const service = createClient(supabaseUrl, serviceKey);
-  const { data: report, error: readError } = await userClient
-    .from("report_requests")
-    .select("id,user_id,alias,engine_snapshot,mother_draft,paid_report,visual_profile,image_path,image_error,generation_attempts")
-    .eq("id", reportId)
-    .single();
+  const authClient = createClient(supabaseUrl, anonKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const { data: authData, error: authError } = await authClient.auth.getUser(token);
+  const actor = authData?.user;
+  if (authError || !actor?.id) return json({ ok: false, error: "UNAUTHORIZED" }, 401);
+
+  const userClient = createClient(supabaseUrl, anonKey, {
+    global: { headers: { Authorization: auth } },
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const service = createClient(supabaseUrl, serviceKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+
+  const [{ data: actorProfile }, { data: report, error: readError }] = await Promise.all([
+    service.from("profiles").select("is_owner").eq("id", actor.id).maybeSingle(),
+    userClient
+      .from("report_requests")
+      .select("id,user_id,alias,engine_snapshot,mother_draft,paid_report,visual_profile,image_path,image_error,generation_attempts")
+      .eq("id", reportId)
+      .single(),
+  ]);
   if (readError || !report) return json({ ok: false, error: "REPORT_NOT_FOUND" }, 404);
+
+  const isOwner = actorProfile?.is_owner === true;
+  if (!isOwner && report.user_id !== actor.id) return json({ ok: false, error: "REPORT_NOT_FOUND" }, 404);
+
+  // Customer cost isolation is fail-closed: only a server-verified owner may enter
+  // the owner-funded provider path. A customer who sends force=true is silently
+  // downgraded to the deterministic Gallery-direct path and cannot spend owner tokens.
+  const force = forceRequested && isOwner;
+  const providerBlocked = forceRequested && !isOwner;
 
   const profile = report.visual_profile && typeof report.visual_profile === "object" ? report.visual_profile : {};
 
-  // Passive report loading reuses the saved image. Explicit Gallery reselection skips this guard
-  // but still stays on the no-provider Gallery-direct path unless force=true was separately requested.
   if (report.image_path && !force && !reselectGallery) {
     const signedUrl = await signExisting(service, report.image_path);
     if (signedUrl) {
@@ -322,6 +345,7 @@ Deno.serve(async (req: Request) => {
         imagePath: report.image_path,
         signedUrl,
         reused: true,
+        providerBlocked,
         styleVersion: String((profile as any)?.imageStyleVersion ?? "legacy"),
         guardianStyleId: (profile as any)?.guardianStyleId ?? null,
         galleryReferenceAssetId: (profile as any)?.galleryReferenceAssetId ?? null,
@@ -329,10 +353,9 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  // Result pages use this mode on mount. It is strictly delivery-only.
   if (viewOnly) {
     if (report.image_path) return json({ ok: false, error: "IMAGE_LOAD_FAILED" }, 502);
-    return json({ ok: true, imagePath: null, signedUrl: null, reused: false, missing: true });
+    return json({ ok: true, imagePath: null, signedUrl: null, reused: false, missing: true, providerBlocked });
   }
 
   const chart = report?.engine_snapshot?.chart ?? {};
@@ -349,8 +372,6 @@ Deno.serve(async (req: Request) => {
 
   const attempts = Number(report.generation_attempts ?? 0) + 1;
 
-  // New reports and explicit Gallery reselection no longer depend on image-provider credits. The
-  // action selects the best available owner Gallery artwork and stores a report-scoped copy immediately.
   if (!force) {
     try {
       const direct = await deliverGalleryDirect(service, report, profile, gallerySelection, referenceBlob, attempts);
@@ -360,6 +381,7 @@ Deno.serve(async (req: Request) => {
         signedUrl: direct.signedUrl,
         reused: false,
         galleryDirect: true,
+        providerBlocked,
         styleVersion: GALLERY_DIRECT_VERSION,
         guardianStyleId: null,
         galleryReferenceAssetId: galleryReference.id,
@@ -370,8 +392,6 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  // Explicit force=true keeps the optional provider-personalized path. If it fails, Gallery direct
-  // delivery is still the fallback, so a new report never loses its image merely because credits are unavailable.
   const decree = decreeFrom(report);
   if (!decree) {
     try {
@@ -394,7 +414,7 @@ Deno.serve(async (req: Request) => {
   }
 
   const guardianStyle = chooseGuardianStyle(`${report.id}:${galleryReference.id}:${attempts}:${GUARDIAN_STYLE_POOL_VERSION}`);
-  const openaiKey = Deno.env.get("OPENAI_API_KEY");
+  const openaiKey = isOwner ? Deno.env.get("OPENAI_API_KEY") : null;
   if (!openaiKey) {
     try {
       const direct = await deliverGalleryDirect(service, report, profile, gallerySelection, referenceBlob, attempts, "IMAGE_GENERATION_NOT_CONFIGURED");
@@ -482,7 +502,6 @@ Deno.serve(async (req: Request) => {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
 
-    // A failed refresh must never make an already-generated personal image disappear.
     if (report.image_path) {
       const signedUrl = await signExisting(service, report.image_path);
       if (signedUrl) {

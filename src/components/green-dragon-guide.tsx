@@ -3,33 +3,10 @@ import { useRouterState } from "@tanstack/react-router";
 import {
   askSiteGuide,
   defaultSiteGuide,
-  resolveLocalSiteGuide,
   type SiteGuideAnswer,
   type SiteGuideRoute,
 } from "@/lib/site-guide";
 import { useI18n } from "@/lib/i18n";
-
-const DAILY_AI_LIMIT = 3;
-const LIMIT_KEY = "zhaowu.site-guide.calls.v1";
-
-function callBudget() {
-  const today = new Date().toISOString().slice(0, 10);
-  try {
-    const raw = JSON.parse(localStorage.getItem(LIMIT_KEY) || "null") as { day?: string; count?: number } | null;
-    return raw?.day === today ? { day: today, count: Math.max(0, Number(raw.count) || 0) } : { day: today, count: 0 };
-  } catch {
-    return { day: today, count: 0 };
-  }
-}
-
-function spendCall() {
-  const budget = callBudget();
-  try {
-    localStorage.setItem(LIMIT_KEY, JSON.stringify({ day: budget.day, count: budget.count + 1 }));
-  } catch {
-    // Private browsing may disable storage; navigation still remains available.
-  }
-}
 
 function go(route: SiteGuideRoute) {
   if (route === "/#analysisForm") {
@@ -51,24 +28,18 @@ export function GreenDragonGuide() {
   useEffect(() => { setAnswer(defaultSiteGuide(locale)); }, [locale]);
 
   const copy = locale === "en"
-    ? { title: "Jade Dragon guide", intro: "Choose a reading, a self-test, or reopen a report. I will take you straight there.", placeholder: "For example: show my previous Zi Wei report", ask: "Ask", close: "Close guide", open: "Open Jade Dragon guide", limit: "AI questions are limited to three per browser each day. The quick links still work." }
+    ? { title: "Jade Dragon guide", intro: "Choose a reading, a self-test, or reopen a report. I will take you straight there.", placeholder: "For example: show my previous Zi Wei report", ask: "Ask", close: "Close guide", open: "Open Jade Dragon guide" }
     : locale === "zh-Hans"
-      ? { title: "青玉小龙导航", intro: "选择一种分析、趣味测验，或重看以前的报告，我带你直接前往。", placeholder: "例如：我想看以前的紫微报告", ask: "问小龙", close: "关闭导航", open: "打开青玉小龙导航", limit: "每个浏览器每天可问 AI 三次；下方快捷入口仍可使用。" }
-      : { title: "青玉小龍導覽", intro: "選擇一種分析、趣味測驗，或重看以前的報告，我帶你直接前往。", placeholder: "例如：我想看以前的紫微報告", ask: "問小龍", close: "關閉導覽", open: "打開青玉小龍導覽", limit: "每個瀏覽器每天可問 AI 三次；下方快捷入口仍可使用。" };
+      ? { title: "青玉小龙导航", intro: "选择一种分析、趣味测验，或重看以前的报告，我带你直接前往。", placeholder: "例如：我想看以前的紫微报告", ask: "问小龙", close: "关闭导航", open: "打开青玉小龙导航" }
+      : { title: "青玉小龍導覽", intro: "選擇一種分析、趣味測驗，或重看以前的報告，我帶你直接前往。", placeholder: "例如：我想看以前的紫微報告", ask: "問小龍", close: "關閉導覽", open: "打開青玉小龍導覽" };
 
   async function submit(event: FormEvent) {
     event.preventDefault();
     const message = input.trim();
     if (!message || busy) return;
-    const needsAI = resolveLocalSiteGuide(message, locale) === null;
-    if (needsAI && callBudget().count >= DAILY_AI_LIMIT) {
-      setAnswer({ ...defaultSiteGuide(locale), reply: copy.limit });
-      return;
-    }
     setBusy(true);
     try {
       const next = await askSiteGuide(message, locale, pathname);
-      if (needsAI) spendCall();
       setAnswer(next);
       setInput("");
     } finally {
