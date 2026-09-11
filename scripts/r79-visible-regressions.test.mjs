@@ -22,13 +22,13 @@ test("homepage specialist systems stay in React instead of the R79 runtime DOM i
   assert.match(home, /zhaowu-home-portals/);
 });
 
-test("One-Palm and D60 react both on first load and every later direction change", () => {
+test("One-Palm runtime submits on first load and direction changes while D60 stays form-owned", () => {
   assert.doesNotMatch(yizhang, /SpecialistSystemPage/);
   assert.match(yizhang, /<PalmStandalone \/>/);
   assert.match(yizhang, /<D60KarmaSection \/>/);
   assert.match(yizhang, /<YizhangjingRuntimeR79 \/>/);
-  assert.match(runtime, /zhaowu:d60-birth/);
-  assert.match(runtime, /readSharedBirthRecord/);
+  assert.doesNotMatch(runtime, /zhaowu:d60-birth/);
+  assert.doesNotMatch(runtime, /readSharedBirthRecord/);
   assert.match(runtime, /palm-direction/);
   assert.match(runtime, /submitPalm\(false\)/);
   assert.match(runtime, /submitPalm\(true\)/);
