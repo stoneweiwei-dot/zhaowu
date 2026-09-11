@@ -9,7 +9,10 @@ test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }
   });
   page.on("request", (request) => {
     const url = request.url();
-    if (url.includes("plgpxusmemnmzckbwtiv.supabase.co") && (url.includes("gallery_assets") || url.includes("/storage/v1/object/public/"))) {
+    if (
+      url.includes("plgpxusmemnmzckbwtiv.supabase.co") &&
+      (url.includes("gallery_assets") || url.includes("/storage/v1/object/public/zhaowu-gallery/"))
+    ) {
       supabaseGalleryRequests.push(url);
     }
   });
