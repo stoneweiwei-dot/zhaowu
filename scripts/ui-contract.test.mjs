@@ -28,7 +28,7 @@ test("homepage keeps one analysis path and does not inject a second art-product 
   assert.doesNotMatch(home, /PaidReportShowcase|paid-report-showcase/);
 });
 
-test("full reports render one continuous summary then body attention, while decree image delivery stays server-side", async () => {
+test("full reports render answer first, then supporting detail and body attention, while decree image delivery stays server-side", async () => {
   const resultView = await source("src/components/result-view.tsx");
   const renderer = await source("src/components/paid-report-pages.tsx");
   const focused = await source("src/lib/report/focused-report.ts");
@@ -45,7 +45,9 @@ test("full reports render one continuous summary then body attention, while decr
 
   assert.match(renderer, /zhaowu-report-continuous-sheet/);
   assert.match(renderer, /continuousReportContent/);
-  assert.match(renderer, /zhaowu-report-summary-block/);
+  assert.match(renderer, /zhaowu-question-contract/);
+  assert.match(renderer, /zhaowu-direct-answer/);
+  assert.match(renderer, /zhaowu-report-detail/);
   assert.match(renderer, /zhaowu-report-body-block/);
   assert.doesNotMatch(renderer, /REPORT_ORNAMENTS|ReportDragonSticker|zhaowu-report-ornament|zhaowu-auspicious-rail/);
   assert.doesNotMatch(renderer, /padStart\(2, "0"\)/);
@@ -95,11 +97,14 @@ test("free result keeps technical chart evidence inside the unified overall summ
   assert.match(focused, /Overall summary/);
 });
 
-test("report visual system is one warm paper sheet without legacy purple or ornamental layers", async () => {
+test("report visual system is one warm r110 paper sheet without legacy purple or ornamental layers", async () => {
   const styles = await source("src/focused-report.css");
   const renderer = await source("src/components/paid-report-pages.tsx");
   assert.match(styles, /zhaowu-report-continuous-sheet/);
-  assert.match(styles, /#f8efdf/);
+  assert.match(styles, /--zw-paper: #f6f1e7/);
+  assert.match(styles, /--zw-pine: #355e50/);
+  assert.match(styles, /--zw-cinnabar: #a64d3e/);
+  assert.match(styles, /zhaowu-question-contract/);
   assert.match(styles, /zhaowu-report-body-block/);
   assert.doesNotMatch(styles, /#2b123d|#180a27|#100719/);
   assert.doesNotMatch(renderer, /phoenix\.webp|celestial-pearl\.webp|lotus\.webp|dragon\.webp/);
