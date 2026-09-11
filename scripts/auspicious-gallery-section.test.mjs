@@ -23,7 +23,7 @@ test("home keeps a compact mixed atlas preview while the full public atlas has i
   assert.match(atlasRoute, /mode="full"/);
   assert.match(atlas, /昭梧吉象圖鑑/);
   assert.match(atlas, /Zhaowu Auspicious Atlas/);
-  assert.match(atlas, /listPublicGalleryAssets\("visual-library"\)/);
+  assert.match(atlas, /PUBLIC_ATLAS_ASSETS/);
   assert.match(atlas, /aspect-\[9\/16\]/);
   assert.match(atlas, /loading="lazy"/);
   assert.doesNotMatch(atlas, /role="tablist"/);
