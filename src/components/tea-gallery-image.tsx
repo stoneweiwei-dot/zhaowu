@@ -1,41 +1,17 @@
-import { useEffect, useState } from "react";
-import { galleryPublicUrl, resolvePrimaryGalleryAssets } from "@/lib/gallery-assets";
-
 export function TeaGalleryImage({ teaId, fallback, alt, className }: { teaId: string; fallback: string; alt: string; className: string }) {
-  const [src, setSrc] = useState(fallback);
-  const [usingFallback, setUsingFallback] = useState(true);
-
-  useEffect(() => {
-    let alive = true;
-    setSrc(fallback);
-    setUsingFallback(true);
-
-    void resolvePrimaryGalleryAssets("tea-guardian", [teaId])
-      .then((assets) => {
-        if (!alive) return;
-        const asset = assets[teaId];
-        if (!asset) return;
-        setSrc(galleryPublicUrl(asset.storage_path, asset.bucket_id));
-        setUsingFallback(false);
-      })
-      .catch(() => undefined);
-
-    return () => { alive = false; };
-  }, [fallback, teaId]);
-
+  // Tea Guardian is a fixed catalogue. Its canonical artwork ships with the
+  // application under /public/tea-guardians, so public result cards should not
+  // spend a Supabase table lookup + Storage request just to replace an asset we
+  // already own in the production bundle. Owner Gallery management remains
+  // available for genuinely dynamic categories elsewhere.
   return (
     <img
-      src={src}
+      src={fallback}
       alt={alt}
       className={className}
+      data-tea-id={teaId}
       loading="lazy"
       decoding="async"
-      onError={() => {
-        if (!usingFallback && src !== fallback) {
-          setSrc(fallback);
-          setUsingFallback(true);
-        }
-      }}
     />
   );
 }

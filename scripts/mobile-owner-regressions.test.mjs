@@ -15,7 +15,11 @@ test("D60 uses geocentric positions including the Sun and receives the active bi
 
 test("master numbers are interpreted inside the personal numerology result, not the article area", () => {
   assert.doesNotMatch(source("src/components/life-view-home-section.tsx"), /NumerologyHomeSection/);
-  assert.match(source("src/routes/numerology.tsx"), /isMaster \? <p[^>]+data-master-number-insight/);
+  const numerology = source("src/routes/numerology.tsx");
+  assert.match(numerology, /isMaster=MASTER_NUMBERS\.has\(result\.number\)/);
+  assert.match(numerology, /base=isMaster\?sumDigits\(result\.number\):null/);
+  assert.match(numerology, /不是較高等級/);
+  assert.match(numerology, /Master Number/);
 });
 
 test("internal timing traces are removed without losing the following year's answer", () => {

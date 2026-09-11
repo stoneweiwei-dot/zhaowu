@@ -69,8 +69,9 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
       localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify({ ...birth, year: 2000, month: 1, day: 8 }));
     }, BIRTH);
     await page.goto('/numerology');
-    await expect(page.locator('[data-master-number-insight]')).toContainText('11／2');
-    await expect(page.getByRole('heading', { name: '强项', exact: true }).or(page.getByRole('heading', { name: '強項', exact: true }))).toBeVisible();
+    await expect(page.getByText(/11.*基礎數.*2|11.*基础数.*2/).first()).toBeVisible();
+    await expect(page.getByText(/不是較高等級|不是较高等级/).first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: '五项天赋', exact: true }).or(page.getByRole('heading', { name: '五項天賦', exact: true }))).toBeVisible();
     await page.goto('/');
     await expect(page.getByRole('heading', { name: /你是少見的/ })).toHaveCount(0);
   });
@@ -96,12 +97,8 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     expect(metrics.color).toBe("rgb(255, 250, 240)");
     expect(metrics.backgroundColor).toBe("rgb(31, 78, 58)");
 
-    const simplified = page.getByRole("button", { name: "简体中文", exact: true });
-    await simplified.click();
-    await expect(simplified).toHaveText("简体");
-    await expect(simplified).toHaveAttribute("aria-pressed", "true");
-    await expect(simplified).toHaveCSS("color", "rgb(255, 250, 240)");
-    await expect(simplified).toHaveCSS("background-color", "rgb(31, 78, 58)");
+    await expect(page.getByRole("button", { name: "简体中文", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "日本語", exact: true })).toHaveCount(0);
 
     const english = page.getByRole("button", { name: "English", exact: true });
     await english.click();
@@ -110,7 +107,6 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await expect(english).toHaveCSS("color", "rgb(255, 250, 240)");
     await expect(english).toHaveCSS("background-color", "rgb(31, 78, 58)");
 
-    await expect(page.getByRole("button", { name: "日本語", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "한국어", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "हिन्दी", exact: true })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);

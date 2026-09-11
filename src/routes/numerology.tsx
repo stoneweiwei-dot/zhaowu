@@ -6,189 +6,53 @@ import { readSharedBirthRecord, SHARED_BIRTH_EVENT, type SharedBirthRecord } fro
 export const Route = createFileRoute("/numerology")({ component: NumerologyPage });
 
 type LifeNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 11 | 22 | 33;
+type T = readonly [string, string, string];
+type Profile = { name:T; core:T; words:readonly T[]; challenge:T; action:T; directions:readonly T[] };
+const MASTER_NUMBERS = new Set<LifeNumber>([11,22,33]);
+const tx = (locale:Locale, text:T) => locale === "en" ? text[2] : locale === "zh-Hans" ? text[1] : text[0];
+const t = (a:string,b:string,c:string):T => [a,b,c];
 
-type Profile = {
-  name: string;
-  keywords: string;
-  core: string;
-  strength: string;
-  challenge: string;
-  action: string;
+function sumDigits(value:number){ return String(Math.abs(value)).split("").reduce((s,d)=>s+Number(d),0); }
+function calculateLifeNumber(year:number,month:number,day:number){
+  const digits=`${String(year).padStart(4,"0")}${String(month).padStart(2,"0")}${String(day).padStart(2,"0")}`.split("").map(Number);
+  const steps=[digits.reduce((s,d)=>s+d,0)]; let value=steps[0];
+  while(value>9 && value!==11 && value!==22 && value!==33){ value=sumDigits(value); steps.push(value); }
+  return {number:value as LifeNumber,digits,steps};
+}
+
+const P:Record<LifeNumber,Profile> = {
+  1:{name:t("開創者","开创者","Pioneer"),core:t("你在能自己判斷方向、先走第一步時最有力量。成熟的主導不是什麼都自己扛，而是清楚哪些決定必須由你負責。","你在能自己判断方向、先走第一步时最有力量。成熟的主导不是什么都自己扛，而是清楚哪些决定必须由你负责。","You are strongest when you can choose a direction and take the first step. Mature independence means owning the decisions that truly belong to you."),words:[t("自主","自主","autonomy"),t("開創","开创","initiative"),t("決斷","决断","decision"),t("勇氣","勇气","courage"),t("主導","主导","ownership")],challenge:t("太急著證明自己、拒絕協助，或把不同意見直接視為阻力。","太急着证明自己、拒绝协助，或把不同意见直接视为阻力。","Proving yourself too quickly, refusing help, or treating disagreement as obstruction."),action:t("保留主導權，但把真正需要合作的部分講清楚。","保留主导权，但把真正需要合作的部分讲清楚。","Keep ownership of the direction, but make the parts that need collaboration explicit."),directions:[t("創業／主理","创业／主理","founding / ownership"),t("專案決策","项目决策","project leadership"),t("自主型專業工作","自主型专业工作","autonomous specialist work")]},
+  2:{name:t("協調者","协调者","Diplomat"),core:t("你很容易先讀到人與人之間的氣氛，再決定怎麼推進。敏銳是優勢，但不能長期把自己的需要放到最後。","你很容易先读到人与人之间的气氛，再决定怎么推进。敏锐是优势，但不能长期把自己的需要放到最后。","You read the atmosphere between people before deciding how to move. Sensitivity is useful, but your own needs cannot always come last."),words:[t("敏銳","敏锐","sensitivity"),t("協調","协调","coordination"),t("傾聽","倾听","listening"),t("合作","合作","cooperation"),t("平衡","平衡","balance")],challenge:t("為了和諧而延後表態、過度迎合，或把別人的情緒當成自己的責任。","为了和谐而延后表态、过度迎合，或把别人的情绪当成自己的责任。","Delaying your position to preserve harmony, over-accommodating, or carrying other people's emotions."),action:t("先說清楚自己的底線，再談配合。","先说清楚自己的底线，再谈配合。","State your boundary first, then negotiate the compromise."),directions:[t("協作／顧問","协作／顾问","collaboration / advisory"),t("關係型服務","关系型服务","relationship-based service"),t("細膩判斷工作","细腻判断工作","nuance-heavy work")]},
+  3:{name:t("表達者","表达者","Communicator"),core:t("你的能量要透過表達流動。想法被說出、寫出、做成作品時，比只留在腦中更有生命力。","你的能量要通过表达流动。想法被说出、写出、做成作品时，比只留在脑中更有生命力。","Your energy moves through expression. Ideas gain force when they are spoken, written, performed, or made real."),words:[t("表達","表达","expression"),t("創意","创意","creativity"),t("語言","语言","language"),t("感染力","感染力","influence"),t("活力","活力","vitality")],challenge:t("分心、只追求新鮮感，或用輕鬆與幽默避開真正需要處理的問題。","分心、只追求新鲜感，或用轻松与幽默避开真正需要处理的问题。","Distraction, chasing novelty, or using lightness to avoid what still needs attention."),action:t("把靈感變成固定輸出，而不是只等狀態來。","把灵感变成固定输出，而不是只等状态来。","Turn inspiration into repeatable output instead of waiting for the mood."),directions:[t("內容／創作","内容／创作","content / creative work"),t("傳播／教學","传播／教学","communication / teaching"),t("品牌與表達","品牌与表达","brand / expressive work")]},
+  4:{name:t("建構者","建构者","Builder"),core:t("你重視可執行、可持續、真正站得住的東西，擅長把混亂整理成秩序，再一層一層建立。","你重视可执行、可持续、真正站得住的东西，擅长把混乱整理成秩序，再一层一层建立。","You value workable, durable things and are good at turning disorder into structure, then building layer by layer."),words:[t("秩序","秩序","order"),t("穩定","稳定","stability"),t("耐性","耐性","patience"),t("規劃","规划","planning"),t("落地","落地","execution")],challenge:t("把穩定變成僵化，或因為過度求完整而拖慢開始與調整。","把稳定变成僵化，或因为过度求完整而拖慢开始与调整。","Turning stability into rigidity, or delaying action because the structure never feels complete enough."),action:t("保留結構，但替變化預留空間。","保留结构，但替变化预留空间。","Keep the structure, but deliberately leave room for revision."),directions:[t("營運／系統","运营／系统","operations / systems"),t("工程／技術","工程／技术","engineering / technical work"),t("長週期建設","长周期建设","long-cycle building work")]},
+  5:{name:t("探索者","探索者","Explorer"),core:t("你透過移動、變化與親身經驗理解世界。真正適合你的自由，是保有調整方法的能力，而不是一直換掉目標。","你通过移动、变化与亲身经验理解世界。真正适合你的自由，是保有调整方法的能力，而不是一直换掉目标。","You understand the world through movement and direct experience. Real freedom is adapting the method rather than constantly replacing the goal."),words:[t("自由","自由","freedom"),t("變化","变化","change"),t("探索","探索","exploration"),t("適應","适应","adaptation"),t("經驗","经验","experience")],challenge:t("因為厭倦而過早離開、同時開太多方向，或把承諾誤認成失去自由。","因为厌倦而过早离开、同时开太多方向，或把承诺误认成失去自由。","Leaving too early from boredom, opening too many paths, or confusing commitment with loss of freedom."),action:t("留下真正值得累積的主線，把變化用在方法。","留下真正值得积累的主线，把变化用在方法。","Keep one path worth compounding and use flexibility on the method."),directions:[t("跨域／旅行型工作","跨域／旅行型工作","cross-domain / travel-heavy work"),t("市場／探索","市场／探索","market / exploration"),t("快速變化專案","快速变化项目","fast-changing projects")]},
+  6:{name:t("守護者","守护者","Guardian"),core:t("你容易把照顧、品質、美感與責任放進同一件事裡。你擅長讓環境與關係變好，但不代表所有問題都該由你收拾。","你容易把照顾、品质、美感与责任放进同一件事里。你擅长让环境与关系变好，但不代表所有问题都该由你收拾。","You combine care, quality, aesthetics, and responsibility. You improve people and environments, but not every problem is yours to fix."),words:[t("照顧","照顾","care"),t("責任","责任","responsibility"),t("品質","品质","quality"),t("美感","美感","aesthetics"),t("守護","守护","stewardship")],challenge:t("責任感過量、完美主義，或在照顧別人時把自己的能量消耗到最後。","责任感过量、完美主义，或在照顾别人时把自己的能量消耗到最后。","Excess responsibility, perfectionism, or depleting yourself while caring for everyone else."),action:t("幫助別人之前，先確認這件事是不是你的責任。","帮助别人之前，先确认这件事是不是你的责任。","Before helping, check whether the responsibility is actually yours."),directions:[t("設計／美感服務","设计／美感服务","design / aesthetic service"),t("教育／照顧","教育／照顾","education / care"),t("品質與客戶關係","品质与客户关系","quality / client relationships")]},
+  7:{name:t("探究者","探究者","Seeker"),core:t("你不滿足於表面答案，通常要理解到底層邏輯才會真正相信。深度是優勢，但最後要回到現實判斷。","你不满足于表面答案，通常要理解到底层逻辑才会真正相信。深度是优势，但最后要回到现实判断。","Surface answers rarely satisfy you. Depth is a strength, but it eventually needs to return to a real-world decision."),words:[t("分析","分析","analysis"),t("深度","深度","depth"),t("研究","研究","research"),t("內省","内省","reflection"),t("洞察","洞察","insight")],challenge:t("想得太深而抽離現實、一直研究不下結論，或因標準太高而遲遲不行動。","想得太深而抽离现实、一直研究不下结论，或因标准太高而迟迟不行动。","Going so deep that you detach from reality, researching without deciding, or delaying action because certainty never feels high enough."),action:t("給研究設定截止點，之後把理解轉成一次具體決定。","给研究设置截止点，之后把理解转成一次具体决定。","Give research a deadline, then convert what you know into one concrete decision."),directions:[t("研究／分析","研究／分析","research / analysis"),t("技術／策略","技术／策略","technical / strategy"),t("深度專業領域","深度专业领域","deep-specialist fields")]},
+  8:{name:t("掌舵者","掌舵者","Executive"),core:t("你對成果、效率、資源配置與權責很敏感，力量在於把分散資源集中到真正有回報的地方。","你对成果、效率、资源配置与权责很敏感，力量在于把分散资源集中到真正有回报的地方。","You are highly aware of outcomes, efficiency, resources, and authority. Your strength is concentrating resources where they matter."),words:[t("成果","成果","results"),t("資源","资源","resources"),t("權責","权责","authority"),t("效率","效率","efficiency"),t("掌控","掌控","control")],challenge:t("把價值只看成成果、過度控制，或在壓力下忽略人與恢復成本。","把价值只看成成果、过度控制，或在压力下忽略人与恢复成本。","Reducing value to outcomes alone, over-controlling, or ignoring people and recovery costs under pressure."),action:t("用權責創造成果，但不要讓成果成為唯一的自我評價。","用权责创造成果，但不要让成果成为唯一的自我评价。","Use authority to create outcomes without making outcomes your only measure of self-worth."),directions:[t("管理／商業","管理／商业","management / business"),t("資源配置／談判","资源配置／谈判","allocation / negotiation"),t("結果導向專案","结果导向项目","results-driven projects")]},
+  9:{name:t("整合者","整合者","Integrator"),core:t("你容易把個人經驗放進更大的背景裡看，對人性、意義與整體影響較敏感，也需要學會真正完成與放手。","你容易把个人经验放进更大的背景里看，对人性、意义与整体影响较敏感，也需要学会真正完成与放手。","You naturally place personal experience inside a larger picture and notice meaning, humanity, and wider impact. You also need to know when a cycle is complete."),words:[t("整合","整合","integration"),t("同理","同理","empathy"),t("視野","视野","perspective"),t("完成","完成","completion"),t("意義","意义","meaning")],challenge:t("對人或理想投入過多、捨不得結束已完成的階段，或把同理心變成替別人承擔。","对人或理想投入过多、舍不得结束已完成的阶段，或把同理心变成替别人承担。","Remaining invested after a cycle has ended, or turning empathy into carrying what belongs to others."),action:t("保留善意，但接受有些完成就是放手。","保留善意，但接受有些完成就是放手。","Keep the goodwill, but accept that some forms of completion require letting go."),directions:[t("文化／公共內容","文化／公共内容","culture / public content"),t("跨域整合","跨域整合","cross-domain integration"),t("人文視角工作","人文视角工作","human-centred work")]},
+  11:{name:t("啟蒙者","启蒙者","Inspirer"),core:t("11 的核心是高敏銳度：你常較早感到氣氛、細微變化與尚未成形的可能。敏感要落地成作品、決定或清楚表達，才會變成力量。","11 的核心是高敏锐度：你常较早感到气氛、细微变化与尚未成形的可能。敏感要落地成作品、决定或清楚表达，才会变成力量。","11 centres on heightened sensitivity. You may notice atmosphere and emerging possibilities early; the signal becomes useful when it turns into clear expression or action."),words:[t("直覺","直觉","intuition"),t("靈感","灵感","inspiration"),t("敏銳","敏锐","sensitivity"),t("洞察","洞察","insight"),t("啟發","启发","influence")],challenge:t("感受太多而過度思考、緊張、自我懷疑，或把每個細微信號都放大。","感受太多而过度思考、紧张、自我怀疑，或把每个细微信号都放大。","Overthinking, tension, self-doubt, or treating every subtle signal as equally important."),action:t("建立情緒邊界，用現實驗證把敏銳轉成具體輸出。","建立情绪边界，用现实验证把敏锐转成具体输出。","Build emotional boundaries and use reality checks to turn sensitivity into concrete output."),directions:[t("創作／內容","创作／内容","creative / content"),t("洞察型顧問","洞察型顾问","insight-led advisory"),t("感知與表達工作","感知与表达工作","sensitivity-and-expression work")]},
+  22:{name:t("築夢者","筑梦者","Master Builder"),core:t("22 的重點不是只會做大夢，而是把大願景拆成能落地、能協作、能長期維持的結構。真正優勢在長線建設。","22 的重点不是只会做大梦，而是把大愿景拆成能落地、能协作、能长期维持的结构。真正优势在长线建设。","22 is not just about large dreams. Its strength is turning a big vision into a structure that can be built, shared, and sustained over time."),words:[t("願景","愿景","vision"),t("建設","建设","building"),t("組織","组织","organisation"),t("執行","执行","execution"),t("長線","长线","long-range")],challenge:t("目標太大、標準太高而拖延，或一開始就想承擔整個工程。","目标太大、标准太高而拖延，或一开始就想承担整个工程。","Delay caused by huge goals, very high standards, or trying to carry the whole project from day one."),action:t("拆成階段、責任與里程碑，一步一步把願景蓋出來。","拆成阶段、责任与里程碑，一步一步把愿景盖出来。","Break the vision into stages, responsibilities, and milestones, then build it step by step."),directions:[t("大型專案／平台","大型项目／平台","large projects / platforms"),t("組織與系統建設","组织与系统建设","organisational systems"),t("長期創業／產品","长期创业／产品","long-term ventures / products")]},
+  33:{name:t("療癒者／導師","疗愈者／导师","Healer / Guide"),core:t("33 的核心是高度關懷與影響力。你可能自然成為傾聽、教導或引導的人；真正課題是關懷而不自我耗盡。","33 的核心是高度关怀与影响力。你可能自然成为倾听、教导或引导的人；真正课题是关怀而不自我耗尽。","33 centres on care and influence. You may naturally listen, teach, or guide; the real task is caring without depleting yourself."),words:[t("關懷","关怀","care"),t("同理","同理","empathy"),t("教導","教导","teaching"),t("療癒","疗愈","healing"),t("影響","影响","influence")],challenge:t("替別人承擔太多、把愛等同犧牲，或因為想照顧所有人而失去自己的節奏。","替别人承担太多、把爱等同牺牲，或因为想照顾所有人而失去自己的节奏。","Carrying too much for others, equating care with sacrifice, or losing your own rhythm while supporting everyone else."),action:t("先保留自己的能量與邊界，再把關懷變成可持續的支持。","先保留自己的能量与边界，再把关怀变成可持续的支持。","Protect your energy and boundaries first, then turn care into sustainable support."),directions:[t("教育／引導","教育／引导","education / guidance"),t("服務／照顧","服务／照顾","service / care"),t("以人為核心的專業","以人为核心的专业","human-centred professional work")]},
 };
 
-const MASTER_NUMBERS = new Set<LifeNumber>([11, 22, 33]);
-
-function tr(locale: Locale, hant: string, hans: string, en: string) {
-  if (locale === "en") return en;
-  return locale === "zh-Hans" ? hans : hant;
-}
-
-function sumDigits(value: number) {
-  return String(Math.abs(value)).split("").reduce((sum, digit) => sum + Number(digit), 0);
-}
-
-function calculateLifeNumber(year: number, month: number, day: number) {
-  const digits = `${String(year).padStart(4, "0")}${String(month).padStart(2, "0")}${String(day).padStart(2, "0")}`.split("").map(Number);
-  const steps: number[] = [digits.reduce((sum, digit) => sum + digit, 0)];
-  let value = steps[0];
-  while (value > 9 && value !== 11 && value !== 22 && value !== 33) {
-    value = sumDigits(value);
-    steps.push(value);
-  }
-  return { number: value as LifeNumber, digits, steps };
-}
-
-function profile(locale: Locale, number: LifeNumber): Profile {
-  const p = (hant: Profile, hans: Profile, en: Profile) => locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
-  const profiles: Record<LifeNumber, Profile> = {
-    1: p(
-      { name: "開創者", keywords: "自主・決斷・起步", core: "你的數字重點在「自己先動」。比起等待共識，你更容易在有主導權時進入狀態。", strength: "敢開始、能獨立判斷、遇到空白時能先走出第一步。", challenge: "過度時會變成什麼都自己扛，或把不同意見理解成阻礙。", action: "保留主導權，但把真正需要合作的部分說清楚。" },
-      { name: "开创者", keywords: "自主・决断・起步", core: "你的数字重点在「自己先动」。比起等待共识，你更容易在有主导权时进入状态。", strength: "敢开始、能独立判断、遇到空白时能先走出第一步。", challenge: "过度时会变成什么都自己扛，或把不同意见理解成阻碍。", action: "保留主导权，但把真正需要合作的部分说清楚。" },
-      { name: "Pioneer", keywords: "independence · initiative · decisions", core: "Your pattern is strongest when you can initiate rather than wait for consensus.", strength: "Starting, independent judgement and moving first when the path is unclear.", challenge: "Overuse can become carrying everything alone or treating disagreement as obstruction.", action: "Keep ownership of the direction, but make the parts that genuinely need collaboration explicit." },
-    ),
-    2: p(
-      { name: "協調者", keywords: "感受・合作・平衡", core: "你很容易先讀到人與人之間的氣氛，再決定怎麼推進事情。", strength: "察覺細節、維持合作、理解雙方真正介意的地方。", challenge: "太在意和諧時，容易延後表態或把自己的需要放到最後。", action: "先說清楚自己的底線，再談配合。" },
-      { name: "协调者", keywords: "感受・合作・平衡", core: "你很容易先读到人与人之间的气氛，再决定怎么推进事情。", strength: "察觉细节、维持合作、理解双方真正介意的地方。", challenge: "太在意和谐时，容易延后表态或把自己的需要放到最后。", action: "先说清楚自己的底线，再谈配合。" },
-      { name: "Diplomat", keywords: "sensitivity · cooperation · balance", core: "You tend to read the atmosphere between people before deciding how to move.", strength: "Noticing nuance, maintaining cooperation and understanding what each side actually cares about.", challenge: "Protecting harmony can delay your own position or push your needs to the end.", action: "State your boundary first, then negotiate the compromise." },
-    ),
-    3: p(
-      { name: "表達者", keywords: "創意・語言・感染力", core: "你的能量通常要透過表達才會真正流動，想法放在心裡太久反而容易失去力道。", strength: "創意、溝通、把複雜內容說得有感覺。", challenge: "容易分心，或因為想保持輕鬆而避開真正需要處理的沉重問題。", action: "把靈感變成固定輸出，而不是只等狀態來。" },
-      { name: "表达者", keywords: "创意・语言・感染力", core: "你的能量通常要通过表达才会真正流动，想法放在心里太久反而容易失去力道。", strength: "创意、沟通、把复杂内容说得有感觉。", challenge: "容易分心，或因为想保持轻松而避开真正需要处理的沉重问题。", action: "把灵感变成固定输出，而不是只等状态来。" },
-      { name: "Communicator", keywords: "creativity · expression · influence", core: "Your energy tends to move through expression. Ideas lose force when they stay internal for too long.", strength: "Creativity, communication and making complex things emotionally clear.", challenge: "Distraction or using lightness to avoid the heavier issue that still needs attention.", action: "Turn inspiration into a repeatable output habit instead of waiting for the mood." },
-    ),
-    4: p(
-      { name: "建造者", keywords: "秩序・穩定・落地", core: "你重視可執行、可持續、能真正站得住的東西。", strength: "規劃、耐性、把混亂整理成可重複的流程。", challenge: "過度追求穩定時，容易卡在既定方法，不願意太早調整。", action: "保留結構，但替變化預留空間。" },
-      { name: "建造者", keywords: "秩序・稳定・落地", core: "你重视可执行、可持续、能真正站得住的东西。", strength: "规划、耐性、把混乱整理成可重复的流程。", challenge: "过度追求稳定时，容易卡在既定方法，不愿意太早调整。", action: "保留结构，但替变化预留空间。" },
-      { name: "Builder", keywords: "structure · stability · follow-through", core: "You value things that are workable, durable and able to stand up in real life.", strength: "Planning, patience and turning disorder into repeatable systems.", challenge: "A strong need for stability can keep you attached to a method after the situation has changed.", action: "Keep the structure, but deliberately leave room for revision." },
-    ),
-    5: p(
-      { name: "探索者", keywords: "自由・變化・體驗", core: "你透過移動、變化與親身經驗理解世界，很難長期忍受完全沒有選擇的狀態。", strength: "適應快、敢試、能在變局裡找到新路。", challenge: "容易因為厭倦而過早離開，或同時打開太多方向。", action: "自由不是一直換路，而是知道哪條路值得你留下。" },
-      { name: "探索者", keywords: "自由・变化・体验", core: "你通过移动、变化与亲身经验理解世界，很难长期忍受完全没有选择的状态。", strength: "适应快、敢试、能在变局里找到新路。", challenge: "容易因为厌倦而过早离开，或同时打开太多方向。", action: "自由不是一直换路，而是知道哪条路值得你留下。" },
-      { name: "Explorer", keywords: "freedom · change · experience", core: "You understand the world through movement, change and direct experience, and dislike being trapped without options.", strength: "Fast adaptation, experimentation and finding new routes in changing conditions.", challenge: "Boredom can make you leave too early or open too many directions at once.", action: "Freedom is not constant switching. It is knowing which path is worth staying with." },
-    ),
-    6: p(
-      { name: "守護者", keywords: "責任・照顧・美感", core: "你很容易把「讓事情與人變得更好」當成自己的責任。", strength: "照顧、審美、維持品質與關係中的可靠感。", challenge: "責任感過量時，會替別人收拾太多，最後自己累。", action: "幫助別人之前，先確認這件事是不是你的責任。" },
-      { name: "守护者", keywords: "责任・照顾・美感", core: "你很容易把「让事情与人变得更好」当成自己的责任。", strength: "照顾、审美、维持品质与关系中的可靠感。", challenge: "责任感过量时，会替别人收拾太多，最后自己累。", action: "帮助别人之前，先确认这件事是不是你的责任。" },
-      { name: "Guardian", keywords: "responsibility · care · aesthetics", core: "You easily take responsibility for making people, relationships or environments better.", strength: "Care, aesthetic judgement, quality and reliability in relationships.", challenge: "Too much responsibility turns into cleaning up problems that were never yours to carry.", action: "Before helping, check whether the responsibility is actually yours." },
-    ),
-    7: p(
-      { name: "探究者", keywords: "分析・深度・內省", core: "你不太滿足於表面答案，通常要自己理解到底層邏輯才會真正相信。", strength: "研究、分析、獨立思考、在複雜資訊裡找本質。", challenge: "想得太深時容易抽離現實，或因為標準太高而一直不下判斷。", action: "給研究設定截止點，之後把理解轉成一次具體決定。" },
-      { name: "探究者", keywords: "分析・深度・内省", core: "你不太满足于表面答案，通常要自己理解到底层逻辑才会真正相信。", strength: "研究、分析、独立思考、在复杂信息里找本质。", challenge: "想得太深时容易抽离现实，或因为标准太高而一直不下判断。", action: "给研究设置截止点，之后把理解转成一次具体决定。" },
-      { name: "Seeker", keywords: "analysis · depth · reflection", core: "Surface answers rarely satisfy you. You usually need to understand the underlying logic before you trust it.", strength: "Research, analysis, independent thought and finding the core inside complex information.", challenge: "Depth can become detachment or endless analysis when the standard for certainty is too high.", action: "Give research a deadline, then convert what you know into one concrete decision." },
-    ),
-    8: p(
-      { name: "掌舵者", keywords: "成果・資源・權責", core: "你對結果、效率、資源配置與控制感通常比一般人更敏感。", strength: "管理、決策、談判、把資源集中到真正有回報的地方。", challenge: "過度時會把價值只看成成果，或讓控制取代信任。", action: "用權責創造成果，但不要讓成果成為唯一的自我評價。" },
-      { name: "掌舵者", keywords: "成果・资源・权责", core: "你对结果、效率、资源配置与控制感通常比一般人更敏感。", strength: "管理、决策、谈判、把资源集中到真正有回报的地方。", challenge: "过度时会把价值只看成成果，或让控制取代信任。", action: "用权责创造成果，但不要让成果成为唯一的自我评价。" },
-      { name: "Executive", keywords: "results · resources · authority", core: "You are often highly aware of outcomes, efficiency, resource allocation and control.", strength: "Management, decisions, negotiation and concentrating resources where they matter.", challenge: "Overuse can reduce value to results alone or replace trust with control.", action: "Use authority to create outcomes without making outcomes your only measure of self-worth." },
-    ),
-    9: p(
-      { name: "理想者", keywords: "同理・視野・完成", core: "你容易把個人經驗放進更大的背景裡看，對人性、意義與整體影響較敏感。", strength: "同理、整合、看大局、替一段歷程收尾。", challenge: "容易對人或理想投入過多，該結束時仍捨不得放。", action: "保留善意，但接受有些完成就是放手。" },
-      { name: "理想者", keywords: "同理・视野・完成", core: "你容易把个人经验放进更大的背景里看，对人性、意义与整体影响较敏感。", strength: "同理、整合、看大局、替一段历程收尾。", challenge: "容易对人或理想投入过多，该结束时仍舍不得放。", action: "保留善意，但接受有些完成就是放手。" },
-      { name: "Humanitarian", keywords: "empathy · perspective · completion", core: "You often place personal experience inside a bigger picture and notice meaning, humanity and wider impact.", strength: "Empathy, integration, broad perspective and bringing a chapter to completion.", challenge: "You can remain invested in a person or ideal after the cycle has already ended.", action: "Keep the goodwill, but accept that some forms of completion require letting go." },
-    ),
-    11: p(
-      { name: "啟蒙者", keywords: "直覺・靈感・洞察・創造", core: "11 的重點是高敏銳度。你更容易捕捉氣氛、細微變化與尚未成形的可能。", strength: "直覺、創造力、洞察與啟發他人的能力。", challenge: "感受得越多，也越容易過度思考、緊張或懷疑自己。", action: "相信直覺，但建立情緒邊界，把敏銳轉成具體作品或決定。" },
-      { name: "启蒙者", keywords: "直觉・灵感・洞察・创造", core: "11 的重点是高敏锐度。你更容易捕捉气氛、细微变化与尚未成形的可能。", strength: "直觉、创造力、洞察与启发他人的能力。", challenge: "感受得越多，也越容易过度思考、紧张或怀疑自己。", action: "相信直觉，但建立情绪边界，把敏锐转成具体作品或决定。" },
-      { name: "The Inspirer", keywords: "intuition · inspiration · insight · creativity", core: "11 points to heightened sensitivity. You may notice atmosphere, subtle changes and possibilities before they are fully formed.", strength: "Intuition, creativity, insight and the ability to inspire others.", challenge: "Greater sensitivity can also mean overthinking, tension and self-doubt.", action: "Trust the signal, build emotional boundaries, then turn sensitivity into a concrete work or decision." },
-    ),
-    22: p(
-      { name: "建造者", keywords: "願景・組織・執行・落地", core: "22 的核心不是只會做大夢，而是把大願景拆成能落地的結構。", strength: "長線視野、組織能力、執行力與把抽象概念變成現實。", challenge: "目標太大、標準太高時，反而會因怕失敗而拖延。", action: "不要只看終點。拆成階段，一步一步把夢想蓋成現實。" },
-      { name: "建造者", keywords: "愿景・组织・执行・落地", core: "22 的核心不是只会做大梦，而是把大愿景拆成能落地的结构。", strength: "长线视野、组织能力、执行力与把抽象概念变成现实。", challenge: "目标太大、标准太高时，反而会因怕失败而拖延。", action: "不要只看终点。拆成阶段，一步一步把梦想盖成现实。" },
-      { name: "The Builder", keywords: "vision · organisation · execution · building", core: "22 is less about dreaming big than about turning a large vision into a workable structure.", strength: "Long-range vision, organisation, execution and making abstract ideas real.", challenge: "When the plan feels enormous and standards are high, fear of failure can become delay.", action: "Stop staring only at the finish line. Break the vision into stages and build it step by step." },
-    ),
-    33: p(
-      { name: "療癒者／導師", keywords: "愛・同理・奉獻・療癒", core: "33 的核心是高度關懷與影響力。你容易察覺別人的需要，也容易自然成為傾聽或引導的人。", strength: "同理、表達、照顧、教導與讓別人感到被理解。", challenge: "最容易出現的是替別人承擔太多，最後耗盡自己。", action: "愛別人不等於犧牲自己。先保留自己的能量，再去支持別人。" },
-      { name: "疗愈者／导师", keywords: "爱・同理・奉献・疗愈", core: "33 的核心是高度关怀与影响力。你容易察觉别人的需要，也容易自然成为倾听或引导的人。", strength: "同理、表达、照顾、教导与让别人感到被理解。", challenge: "最容易出现的是替别人承担太多，最后耗尽自己。", action: "爱别人不等于牺牲自己。先保留自己的能量，再去支持别人。" },
-      { name: "The Healer / Guide", keywords: "love · empathy · service · healing", core: "33 centres on care and influence. You may notice what others need and naturally become a listener, teacher or guide.", strength: "Empathy, expression, care, teaching and making people feel understood.", challenge: "The common shadow is carrying too much for other people until you are depleted.", action: "Caring does not require self-sacrifice. Protect your own energy before supporting everyone else." },
-    ),
-  };
-  return profiles[number];
-}
-
-function NumerologyPage() {
-  const { locale } = useI18n();
-  const [birth, setBirth] = useState<SharedBirthRecord | null>(() => readSharedBirthRecord());
-
-  useEffect(() => {
-    const sync = () => setBirth(readSharedBirthRecord());
-    window.addEventListener(SHARED_BIRTH_EVENT, sync);
-    window.addEventListener("storage", sync);
-    return () => {
-      window.removeEventListener(SHARED_BIRTH_EVENT, sync);
-      window.removeEventListener("storage", sync);
-    };
-  }, []);
-
-  const result = useMemo(() => birth ? calculateLifeNumber(birth.year, birth.month, birth.day) : null, [birth]);
-  const copy = useMemo(() => ({
-    kicker: tr(locale, "生命靈數", "生命灵数", "NUMEROLOGY"),
-    title: tr(locale, "生命靈數報告", "生命灵数报告", "Numerology report"),
-    intro: tr(locale, "直接用你已填寫的出生年月日計算，不需要再輸入一次。", "直接用你已填写的出生年月日计算，不需要再输入一次。", "Calculated automatically from the birth date you already entered."),
-    noBirth: tr(locale, "還沒有出生年月日資料。先回首頁填寫一次，這裡就會自動生成。", "还没有出生年月日资料。先回首页填写一次，这里就会自动生成。", "No birth date is available yet. Enter it once on the home page and this report will generate automatically."),
-    home: tr(locale, "回首頁填寫", "回首页填写", "Enter birth date"),
-    yourNumber: tr(locale, "你的生命靈數", "你的生命灵数", "Your life number"),
-    master: tr(locale, "大師數／卓越數", "大师数／卓越数", "Master Number"),
-    calculation: tr(locale, "計算", "计算", "Calculation"),
-    strength: tr(locale, "強項", "强项", "Strength"),
-    challenge: tr(locale, "課題", "课题", "Challenge"),
-    action: tr(locale, "怎麼用這個數字", "怎么用这个数字", "How to use it"),
-    note: tr(locale, "生命靈數屬於象徵性的自我探索工具，不是命運定論，也不取代昭梧的子平八字主判。", "生命灵数属于象征性的自我探索工具，不是命运定论，也不取代昭梧的子平八字主判。", "Numerology is a symbolic self-reflection tool. It is not a fixed prediction and does not replace Zhaowu’s BaZi reading."),
-  }), [locale]);
-
-  if (!birth || !result) {
-    return (
-      <main className="mx-auto max-w-3xl space-y-5 pb-16">
-        <section className="seal-border rounded-2xl bg-cream/95 p-5 sm:p-8">
-          <p className="text-xs tracking-[0.26em] text-cinnabar">ZHAOWU · {copy.kicker}</p>
-          <h1 className="mt-2 font-display text-3xl text-ink">{copy.title}</h1>
-          <p className="mt-4 text-[15px] leading-7 text-ink-soft">{copy.noBirth}</p>
-          <Link to="/" className="mt-5 inline-flex min-h-12 items-center rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.home}</Link>
-        </section>
-      </main>
-    );
-  }
-
-  const reading = profile(locale, result.number);
-  const calculation = `${result.digits.join("+")}=${result.steps.join(" → ")}`;
-  const isMaster = MASTER_NUMBERS.has(result.number);
-
-  return (
-    <main className="mx-auto max-w-3xl space-y-5 pb-16">
-      <section className="seal-border rounded-2xl bg-cream/95 p-5 sm:p-8">
-        <p className="text-xs tracking-[0.26em] text-cinnabar">ZHAOWU · {copy.kicker}</p>
-        <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-sm text-ink-mute">{copy.yourNumber}</p>
-            <h1 className="mt-1 font-display text-5xl leading-none text-ink">{result.number}</h1>
-          </div>
-          <div className="text-right">
-            {isMaster ? <span className="inline-flex rounded-full border border-cinnabar/30 bg-paper px-3 py-1 text-xs font-semibold text-cinnabar">{copy.master}</span> : null}
-            <h2 className="mt-2 font-display text-2xl text-ink">{reading.name}</h2>
-            <p className="mt-1 text-xs tracking-[0.12em] text-ink-mute">{reading.keywords}</p>
-          </div>
-        </div>
-        <p className="mt-5 text-[15px] leading-7 text-ink-soft">{reading.core}</p>
-        {isMaster ? <p className="mt-3 text-[15px] leading-7 text-ink-soft" data-master-number-insight>
-          {tr(locale,
-            `你的生命靈數是 ${result.number}／${sumDigits(result.number)}。${result.number} 的大師數特質與 ${sumDigits(result.number)} 的基礎特質要一起理解：${profile(locale, sumDigits(result.number) as LifeNumber).core}以下強項、課題與行動建議已按你的大師數解讀；它不是另一個命格，也不代表比別人優越。`,
-            `你的生命灵数是 ${result.number}／${sumDigits(result.number)}。${result.number} 的大师数特质与 ${sumDigits(result.number)} 的基础特质要一起理解：${profile(locale, sumDigits(result.number) as LifeNumber).core}以下强项、课题与行动建议已按你的大师数解读；它不是另一个命格，也不代表比别人优越。`,
-            `Your life number is ${result.number}/${sumDigits(result.number)}. Read the Master Number together with its underlying ${sumDigits(result.number)}: ${profile(locale, sumDigits(result.number) as LifeNumber).core} The strengths, challenges and actions below reflect your Master Number. This is part of the same reading, not a separate chart or a claim of superiority.`)}
-        </p> : null}
-        <div className="mt-5 rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink-soft">
-          <b className="text-ink">{copy.calculation}：</b>{calculation}
-        </div>
-      </section>
-
-      <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
-        <h3 className="font-display text-xl text-ink">{copy.strength}</h3>
-        <p className="mt-2 text-[15px] leading-7 text-ink-soft">{reading.strength}</p>
-        <h3 className="mt-6 font-display text-xl text-ink">{copy.challenge}</h3>
-        <p className="mt-2 text-[15px] leading-7 text-ink-soft">{reading.challenge}</p>
-        <h3 className="mt-6 font-display text-xl text-ink">{copy.action}</h3>
-        <p className="mt-2 text-[15px] leading-7 text-ink-soft">{reading.action}</p>
-      </section>
-
-      <p className="px-1 text-xs leading-6 text-ink-mute">{copy.note}</p>
-    </main>
-  );
+function NumerologyPage(){
+  const {locale}=useI18n();
+  const [birth,setBirth]=useState<SharedBirthRecord|null>(()=>readSharedBirthRecord());
+  useEffect(()=>{ const sync=()=>setBirth(readSharedBirthRecord()); window.addEventListener(SHARED_BIRTH_EVENT,sync); window.addEventListener("storage",sync); return()=>{window.removeEventListener(SHARED_BIRTH_EVENT,sync);window.removeEventListener("storage",sync);}; },[]);
+  const result=useMemo(()=>birth?calculateLifeNumber(birth.year,birth.month,birth.day):null,[birth]);
+  const c={title:tx(locale,t("生命靈數報告","生命灵数报告","Numerology report")),noBirth:tx(locale,t("還沒有出生年月日資料。先回首頁填寫一次，這裡就會自動生成。","还没有出生年月日资料。先回首页填写一次，这里就会自动生成。","No birth date is available yet. Enter it once on the home page and this report will generate automatically.")),home:tx(locale,t("回首頁填寫","回首页填写","Enter birth date")),master:tx(locale,t("大師數／卓越數","大师数／卓越数","Master Number")),calc:tx(locale,t("計算","计算","Calculation")),who:tx(locale,t("你是怎樣的人","你是怎样的人","How this tends to show up")),talents:tx(locale,t("五項天賦","五项天赋","Five strengths")),challenge:tx(locale,t("容易卡在哪裡","容易卡在哪里","Where it can get stuck")),lesson:tx(locale,t("真正的人生課題","真正的人生课题","Core life lesson")),directions:tx(locale,t("適合發展方向","适合发展方向","Useful directions")),action:tx(locale,t("現實行動","现实行动","Practical action")),knowledge:tx(locale,t("看昭梧知識圖鑑","看昭梧知识图鉴","Open Zhaowu field notes"))};
+  if(!birth||!result) return <main className="mx-auto max-w-3xl pb-16"><section className="seal-border rounded-2xl bg-cream p-5 sm:p-8"><p className="text-xs tracking-[0.26em] text-cinnabar">ZHAOWU · NUMEROLOGY</p><h1 className="mt-2 font-display text-3xl text-ink">{c.title}</h1><p className="mt-4 text-[15px] leading-7 text-ink-soft">{c.noBirth}</p><Link to="/" className="mt-5 inline-flex min-h-12 items-center rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{c.home}</Link></section></main>;
+  const p=P[result.number], isMaster=MASTER_NUMBERS.has(result.number), base=isMaster?sumDigits(result.number):null;
+  const calculation=`${result.digits.join("+")}=${result.steps.join(" → ")}`;
+  return <main className="mx-auto max-w-4xl space-y-5 pb-16">
+    <section className="seal-border rounded-2xl bg-cream p-5 sm:p-8"><p className="text-xs tracking-[0.26em] text-cinnabar">ZHAOWU · NUMEROLOGY</p><div className="mt-4 flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm text-ink-mute">{tx(locale,t("你的生命靈數","你的生命灵数","Your life number"))}</p><h1 className="mt-1 font-display text-7xl leading-none text-ink sm:text-8xl">{result.number}</h1></div><div className="max-w-sm text-right">{isMaster?<span className="inline-flex rounded-full border border-cinnabar/30 bg-paper px-3 py-1 text-xs font-semibold text-cinnabar">{c.master}</span>:null}<h2 className="mt-2 font-display text-3xl text-ink">{tx(locale,p.name)}</h2>{base?<p className="mt-2 text-sm leading-6 text-ink-soft">{tx(locale,t(`${result.number} 同時要與基礎數 ${base} 一起理解；它不是較高等級，也不是另一個命格。`,`${result.number} 同时要与基础数 ${base} 一起理解；它不是较高等级，也不是另一个命格。`,`${result.number} is read together with its underlying ${base}. It is not a higher rank or a separate destiny.`))}</p>:null}</div></div><p className="mt-6 max-w-2xl text-[15px] leading-7 text-ink-soft">{tx(locale,p.core)}</p><div className="mt-5 rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink-soft"><b className="text-ink">{c.calc}：</b>{calculation}</div></section>
+    <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8"><h3 className="font-display text-xl text-ink">{tx(locale,t("五個核心詞","五个核心词","Five core words"))}</h3><div className="mt-4 flex flex-wrap gap-2">{p.words.map(w=><span key={tx(locale,w)} className="rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink-soft">{tx(locale,w)}</span>)}</div></section>
+    <section className="seal-border rounded-2xl bg-cream p-5 text-center sm:p-8"><p className="text-xs tracking-[0.22em] text-ink-mute">{tx(locale,t("中央命象","中央命象","Central pattern"))}</p><div className="mx-auto mt-5 flex h-40 w-40 items-center justify-center rounded-full border border-line bg-paper sm:h-48 sm:w-48"><span className="font-display text-7xl text-cinnabar sm:text-8xl">{result.number}</span></div><h3 className="mt-5 font-display text-2xl text-ink">{tx(locale,p.name)}</h3></section>
+    <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8"><h3 className="font-display text-xl text-ink">{c.who}</h3><p className="mt-3 text-[15px] leading-7 text-ink-soft">{tx(locale,p.core)}</p></section>
+    <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8"><div className="flex items-end justify-between gap-4"><h3 className="font-display text-xl text-ink">{c.talents}</h3><span className="text-xs text-ink-mute sm:hidden">← swipe →</span></div><div className="mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-5 sm:overflow-visible">{p.words.map((w,i)=><article key={tx(locale,w)} className="min-w-[78%] snap-start rounded-xl border border-line bg-cream p-4 sm:min-w-0"><span className="text-xs text-cinnabar">0{i+1}</span><h4 className="mt-2 font-display text-lg text-ink">{tx(locale,w)}</h4><p className="mt-2 text-sm leading-6 text-ink-soft">{tx(locale,t("這是你較容易調動、也值得持續打磨的一種能力。","这是你较容易调动、也值得持续打磨的一种能力。","This is a capacity you can access relatively easily and keep refining."))}</p></article>)}</div></section>
+    <section className="grid gap-4 sm:grid-cols-2"><article className="seal-border rounded-2xl bg-paper p-5 sm:p-7"><h3 className="font-display text-xl text-ink">{c.challenge}</h3><p className="mt-3 text-[15px] leading-7 text-ink-soft">{tx(locale,p.challenge)}</p></article><article className="seal-border rounded-2xl bg-paper p-5 sm:p-7"><h3 className="font-display text-xl text-ink">{c.lesson}</h3><p className="mt-3 text-[15px] leading-7 text-ink-soft">{tx(locale,t("真正課題不是消除你的特質，而是看見它失衡時會怎樣，然後有意識地把它用回正確的位置。","真正课题不是消除你的特质，而是看见它失衡时会怎样，然后有意识地把它用回正确的位置。","The lesson is not to erase your traits, but to notice when they become unbalanced and use them more deliberately."))}</p></article></section>
+    <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8"><h3 className="font-display text-xl text-ink">{c.directions}</h3><div className="mt-4 grid gap-3 sm:grid-cols-3">{p.directions.map(d=><div key={tx(locale,d)} className="rounded-xl border border-line bg-cream px-4 py-4 text-sm leading-6 text-ink-soft">{tx(locale,d)}</div>)}</div><p className="mt-3 text-xs leading-6 text-ink-mute">{tx(locale,t("這裡是能力傾向，不是職業命定。","这里是能力倾向，不是职业命定。","These are ability tendencies, not a fixed career prescription."))}</p></section>
+    <section className="seal-border rounded-2xl bg-cream p-5 sm:p-8"><h3 className="font-display text-xl text-ink">{c.action}</h3><p className="mt-3 text-[15px] leading-7 text-ink-soft">{tx(locale,p.action)}</p><div className="mt-5 border-t border-line pt-5"><p className="font-display text-xl leading-8 text-ink">{tx(locale,t("數字不是人生等級；真正重要的是你怎麼使用自己的特質。","数字不是人生等级；真正重要的是你怎么使用自己的特质。","A number is not a life rank. What matters is how you use the traits it describes."))}</p></div></section>
+    <div className="flex flex-wrap items-center justify-between gap-3 px-1"><p className="max-w-2xl text-xs leading-6 text-ink-mute">{tx(locale,t("生命靈數是象徵性的自我探索工具，不是命運定論，也不取代昭梧的子平八字主判。","生命灵数是象征性的自我探索工具，不是命运定论，也不取代昭梧的子平八字主判。","Numerology is a symbolic self-reflection tool. It is not a fixed prediction and does not replace Zhaowu's BaZi judgement."))}</p><Link to="/knowledge" className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-4 py-2 text-sm text-ink-soft">{c.knowledge}</Link></div>
+  </main>;
 }
