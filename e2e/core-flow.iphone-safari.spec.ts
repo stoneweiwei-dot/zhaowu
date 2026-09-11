@@ -79,7 +79,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await page.getByRole("button", { name: "简体中文", exact: true }).click();
+    await expect(page.getByRole("button", { name: "繁體中文", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByRole("button", { name: "简体中文", exact: true })).toHaveCount(0);
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: /前世今生/ })).toBeVisible();
