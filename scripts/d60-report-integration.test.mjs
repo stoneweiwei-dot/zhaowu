@@ -6,6 +6,7 @@ const source = fs.readFileSync(new URL("../src/components/d60-karma-section.tsx"
 const palm = fs.readFileSync(new URL("../src/components/palm-standalone.tsx", import.meta.url), "utf8");
 const route = fs.readFileSync(new URL("../src/routes/yizhangjing.tsx", import.meta.url), "utf8");
 const home = fs.readFileSync(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
+const runtime = fs.readFileSync(new URL("../src/components/yizhangjing-runtime-r79.tsx", import.meta.url), "utf8");
 
 test("Indian classical astrology reuses only the current report birth input and exposes no second customer form", () => {
   assert.match(source, /zhaowu:d60-birth/);
@@ -51,4 +52,17 @@ test("Indian classical astrology remains fail-closed and never blocks the four-l
   assert.match(source, /no longer falls back to old account data or another report/);
   assert.match(source, /只作弱旁證/);
   assert.match(source, /not promoted into a definite conclusion/);
+});
+
+test("shared minute-level records hydrate the D60 confirmation before automatic submission", () => {
+  assert.match(palm, /setD60Exact\(!record\.timeUnknown && Number\.isInteger\(record\.minute\) && Boolean\(record\.city\)\)/);
+  assert.match(palm, /setBirthMinute\(record\.timeUnknown \? "" : String\(record\.minute\)\)/);
+  assert.match(runtime, /submitPalm\(false\)/);
+});
+
+test("D60 events come from the submitted form and cannot be reintroduced by shared-record refreshes", () => {
+  assert.doesNotMatch(runtime, /readSharedBirthRecord|SHARED_BIRTH_EVENT|emitD60Birth|zhaowu:d60-birth/);
+  assert.match(palm, /setBirthHour\(event\.target\.value\); setD60Exact\(false\)/);
+  assert.match(palm, /setBirthMinute\(event\.target\.value\); setD60Exact\(false\)/);
+  assert.match(palm, /setCity\(next\); setD60Exact\(false\)/);
 });
