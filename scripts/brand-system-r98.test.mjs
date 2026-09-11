@@ -35,15 +35,14 @@ test("r98 CSS is last-wins after r97 and wires night tokens", () => {
   assert.match(html, /zhaowu\.theme\.v1/);
 });
 
-test("header uses kit icons and night toggle; gourd stays off the header", () => {
+test("header uses kit icons, night toggle and the STO-12 header artwork", () => {
   assert.match(shell, /BrandIcon name="login"/);
   assert.match(shell, /BrandIcon name="account"/);
   assert.match(shell, /BrandIcon name="home"/);
   assert.match(shell, /zhaowu-theme-toggle/);
   assert.match(shell, /logoHorizontal/);
-  assert.doesNotMatch(shell, /mark-gourd/);
-  assert.match(brand, /OFFICIAL_MARK = "\/brand-ui\/logo-primary\.svg"/);
-  assert.match(brand, /NIGHT_MARK = "\/brand-ui\/logo-primary-night\.svg"/);
+  assert.match(brand, /HEADER_MARK = "\/brand-ui\/header-gourd-wordmark-r113\.png"/);
+  assert.doesNotMatch(brand, /logo-primary\.svg/);
 });
 
 test("gourd is reserved for the spirit slip and catalog special function", () => {
