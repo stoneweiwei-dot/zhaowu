@@ -13,10 +13,10 @@ test("evidence governance keeps explicit A/B/C/D levels and withheld outcomes", 
   assert.match(model, /usefulProvisional/);
 });
 
-test("paid report surfaces the governance panel before visual and luck books", () => {
+test("paid report keeps governance as supporting evidence after the answer-first reading flow", () => {
+  const answer = report.indexOf("<DecisionCards");
+  const chart = report.indexOf("<ChartSnapshot");
   const governance = report.indexOf("<EvidenceGovernancePanel");
-  const visual = report.indexOf("<ReportVisualBook");
-  const luck = report.indexOf("<ReportLuckBook");
-  assert.ok(governance >= 0 && visual > governance && luck > visual);
+  assert.ok(answer >= 0 && chart > answer && governance > chart);
   assert.match(panel, /NEXUS|證據治理|证据治理|EVIDENCE GOVERNANCE/);
 });
