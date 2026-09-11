@@ -1,11 +1,13 @@
 export type PublicAtlasAsset = {
   id: string;
   url: string;
+  thumbnailUrl?: string;
 };
 
 const reportVisual = (id: string, file: string): PublicAtlasAsset => ({
   id,
   url: `/report-visuals/full/${file}.webp`,
+  thumbnailUrl: `/report-visuals/thumb/${file}.webp`,
 });
 
 const ornament = (id: string, file: string): PublicAtlasAsset => ({
@@ -14,9 +16,12 @@ const ornament = (id: string, file: string): PublicAtlasAsset => ({
 });
 
 /**
- * Customer-facing atlas assets are deliberately same-origin and immutable.
+ * Customer-facing atlas assets are deliberately same-origin and cacheable.
  * Owner uploads may continue to live in Supabase, but the public atlas must
  * not make gallery_assets or zhaowu-gallery requests at runtime.
+ *
+ * Grid/list views should use thumbnailUrl when available. The original `url`
+ * remains the click-through/full-resolution artwork.
  */
 export const PUBLIC_ATLAS_ASSETS: readonly PublicAtlasAsset[] = [
   ornament("ornament-celestial-pearl", "celestial-pearl"),
