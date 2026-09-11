@@ -1,71 +1,99 @@
-# 昭梧统一图库
+# 昭梧图库与公开媒体交付
 
-## 唯一资源库
+## 当前架构
+
+昭梧图库采用「Supabase 管理源 + Vercel 同源公开交付」的混合架构，不再把所有客户公开浏览流量直接打到 Supabase Storage。
 
 - Supabase project: `plgpxusmemnmzckbwtiv`
-- Storage bucket: `zhaowu-gallery`
+- Owner 图库 bucket: `zhaowu-gallery`
+- Owner 背景 bucket: `zhaowu-backgrounds`
+- 私有报告图 bucket: `zhaowu-report-images`
+- 音频 bucket: `zhaowu-audio`
 - Metadata table: `public.gallery_assets`
 - Owner UI: `/gallery`
+- 客户公开吉象图鉴：Vercel same-origin 静态资源
 
-图库用于长期内容资产，不把可替换图片写死进程序。GitHub `public/` 内现有图片只保留为必要的稳定 fallback。
+Supabase 继续承担站主上传、启用/停用、元数据、私人报告图与需要权限控制的资产；客户公开图鉴优先读取 repo `public/` 内已经优化的 WebP/缩图，不在浏览阶段读取 `gallery_assets` 或 `zhaowu-gallery` 原图。
 
-## 寻址规则
+## 公开吉象图鉴
 
-网站按 `category + asset_key` 找图。同一组合可以保留多张历史图，但最多只有一张 `enabled + is_primary` 当前主图。
+客户公开图鉴由 `src/lib/public-atlas.ts` 的静态 registry 控制。目前正式公开素材来自：
 
-示例：
+- `/report-visuals/full/*.webp`
+- `/report-visuals/thumb/*.webp`
+- `/ornaments/generated/*.webp`
 
-- `tea-guardian + dahongpao`
-- `tea-guardian + longjing`
-- `background + site-wallpaper`
-- `visual-library + <asset_key>`
-- `dragon-sticker + happy`
-- `loading + loading-song-parchment-dragon`
+展示规则：
 
-茶仙报告与茶仙测验优先读取 `tea-guardian + <tea.id>` 的当前主图；没有主图或网络加载失败时退回 repo 内置 WebP，不阻塞报告。
+1. 首页 `#auspicious-atlas` 每次只显示 1 张代表图，不展开整库。
+2. `/auspicious-atlas` 首次显示 24 张，其余每次再加载 24 张。
+3. 列表/网格优先使用 `thumbnailUrl`；用户点开才进入 `url` 对应的完整图。
+4. 图片继续使用 lazy loading 与 async decoding。
+5. 图鉴请求失败不得阻塞首页、分析、登入、账户或文字报告。
+6. 客户公开图鉴不得在运行时请求 Supabase `gallery_assets` 或 `/storage/v1/object/public/zhaowu-gallery/`。
 
-## 登入動画分组
+Owner `/gallery` 仍是站主上传与管理入口。Owner 上传不等于自动进入客户公开图鉴；公开发布前应先生成轻量 WebP/AVIF 与缩图，再更新 same-origin registry/manifest。
 
-Owner `/gallery` 增加第三个检视：吉象图鉴 / 登入動画 / 全部图片。
+## 静态资源缓存
 
-- `category = loading`，或 `loading` / `login-background` tag，或 `loading-*` key，都进这组。
-- 不进入公开吉象图鉴，也不参与命请图匹配。
-- 站内 fallback 在 `public/gallery/loading/`，供登入静图与蓮花動画海报使用。
-- 在此检视上传会标成 `loading` 分组。
+Vercel 对公开视觉静态目录使用浏览器缓存与 stale-while-revalidate：
 
-## 昭梧吉象图鉴
+- `/report-visuals/*`
+- `/ornaments/*`
+- `/gallery/loading/*`
+- `/tea-guardians/*`
 
-公开「昭梧吉象图鉴」继续复用同一个 `visual-library`，不新建第二图库，也不复制 Storage 对象。
+HTML、manifest 与 service worker 继续使用 no-store/no-cache 策略，避免应用壳长期卡旧版本。
 
-当前公开候选规则：
+## 背景库现况与清理边界
 
-- 所有 `enabled` 的 `visual-library` 主视觉图均可进入图鉴，包括既有圣像／道韵／瑞兽／吉祥／报告图，以及后续 `img-*` 上传图。
-- `reference-*` 纯参考图继续只留后台，不进入客户图鉴。
-- `background`、`dragon-sticker`、`tea-guardian`、`loading` 保持各自原用途，不混入吉象图鉴。
-- 前台只呈现一个混合图鉴，不向客户暴露佛／道等人工硬分类。
+`zhaowu-backgrounds` 不再参与客户前台 shell 的动态背景轮播，但 Storage 中仍存在历史资产。2026-09-11 实际盘点为 291 个对象、约 598.19 MB；其中 196 张 PNG 约 552.38 MB。
 
-展示方式固定为两层：
+数据库 `public.background_assets` 仍有多条 `enabled = true` 的历史 daily-rotation 记录，因此不得仅凭「前台已停用动态背景」直接物理删除 bucket。清理顺序固定为：
 
-1. 首页 `#auspicious-atlas` 只显示 6 张代表图和「进入完整图鉴」入口，禁止把整库在主页一次展开。
-2. 独立 `/auspicious-atlas` 才是完整浏览页，首次显示 24 张，其余每次再加载 24 张；所有图片继续 lazy loading。
+1. 确认代码与生产页面没有运行时引用。
+2. 核对 `background_assets` 元数据与仍需保留的品牌/后台资产。
+3. 先将需保留资产迁移/压缩到明确的新位置。
+4. 再停用历史 metadata。
+5. 最后才通过 Storage API 删除确认无引用的对象。
 
-任一图片或图库请求失败都不得阻塞首页、分析、登入、账户或报告。图鉴是增强内容，不是核心分析依赖。
+禁止直接对 `storage.objects` 做 SQL 删除来代替 Storage API。
 
-Owner UI `/gallery` 仍是唯一上传入口，并保留「吉象图鉴／登入動画／全部图片」三个检视。系统内部可继续利用既有键位、语义审计与匹配资料做自动整理，但不要求站主手工维护宗教分类，也不改变 Supabase schema 或反向影响八字判断。
+## 音频现况
+
+2026-09-11 `zhaowu-audio` 仍有 4 个 WAV，合计约 30.28 MB：
+
+- `background/uploads/2026-09-08/28f2257c-a653-4d26-b10a-e6625b0a49d0.wav`
+- `background/uploads/2026-09-08/393d7fb9-2712-44fd-8506-54a4eb74fcf4.wav`
+- `background/uploads/2026-09-07/c7bee6de-d5ef-4d83-b437-4c796d5be45a.wav`
+- `background/uploads/2026-09-07/2fcdf80e-f345-4172-8f0c-5cf5094e06c6.wav`
+
+这批 WAV 需要先确认实际引用，再转为 AAC/M4A 并切换引用；验证新格式播放正常后才能删除旧 WAV。
+
+## 私有报告图
+
+`zhaowu-report-images` 保持 Supabase 私有交付，不并入公开 Vercel 图鉴，也不进入公开静态 registry。报告图失败不得让文字报告消失。
+
+## 图库寻址与分组
+
+Owner 侧继续按 `category + asset_key` 管理。同一组合可保留历史图，但应只有一个当前主图。常见类别包括：
+
+- `tea-guardian`
+- `background`
+- `visual-library`
+- `dragon-sticker`
+- `loading`
+
+`reference-*` 纯参考图只留后台；`loading`、`background`、`tea-guardian` 等各自保留用途，不因公开图鉴改为 same-origin 而改变后台分类。
 
 ## 客户可见的选图解释
 
-「为什么选这张图」只解释这张图本身的象征，以及它如何呼应该次用户的问题、分析核心和当下需要。文案要让用户理解「这张图为什么属于我这次的分析」。
+「为什么选这张图」只解释图像本身的象征，以及它如何呼应该次问题、分析核心与当下需要。客户界面不得展示内部匹配算法、提示词、评分、图库比较或实现说明。
 
-客户界面不得展示系统选图流程、五行视觉匹配、作品库比较、算法、提示词、内部评分，或「图片不会反过来改动命理判断」之类的实现说明。若旧报告缺少足够且可验证的图像语义资料，宁可不显示理由，也不要用内部机制说明补位。
+## 权限与格式
 
-## 权限
-
-- 公共网站：只读已启用图片。
-- 站主：可上传、启用/停用、设为主图、删除。
-- 单图限制：10 MB。
-- MIME：JPEG / PNG / WebP / AVIF。
-
-## 旧背景库清理
-
-2026-08-27 按站主明确指示清空旧 `zhaowu-backgrounds`：251 个对象及对应 251 条 `background_assets` 元数据均已删除；私有 `zhaowu-report-images` 未动。
+- 公共网站：读取已发布的 same-origin 静态资源。
+- 站主：通过 Owner UI 管理 Supabase 资产。
+- 私人报告图：继续走受控 Supabase 交付。
+- 新公共美工素材优先 WebP/AVIF；列表必须提供 thumbnail。
+- 原始 PNG/JPEG 只作为源文件或确有必要的 fallback，不应成为高频公开浏览默认格式。
