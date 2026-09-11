@@ -16,7 +16,7 @@ test("public atlas uses same-origin thumbnails for report visuals", () => {
   assert.match(atlas, /url:\s*`\/report-visuals\/full\/\$\{file\}\.webp`/);
   assert.match(gallery, /src=\{asset\.thumbnailUrl \?\? asset\.url\}/);
   assert.match(gallery, /href=\{asset\.url\}/);
-  assert.doesNotMatch(`${atlas}\n${gallery}`, /storage\/v1\/object\/public\/zhaowu-gallery|gallery_assets/);
+  assert.doesNotMatch(gallery, /galleryPublicUrl|listPublicGalleryAssets|SUPABASE_URL|storage\/v1\/object\/public\/zhaowu-gallery/);
 });
 
 test("public visual directories receive reusable cache headers", () => {
