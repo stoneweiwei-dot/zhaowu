@@ -21,11 +21,11 @@
       (function () {
         try {
           var savedLanguage = localStorage.getItem("zhaowu.display-language");
-          if (savedLanguage === "zh-Hans" || savedLanguage === "ja") {
-            document.documentElement.lang = "zh-Hant";
-          } else if (["zh-Hant", "en", "ko", "hi"].indexOf(savedLanguage) !== -1) {
-            document.documentElement.lang = savedLanguage;
+          if (["zh-Hant", "en", "ko", "hi"].indexOf(savedLanguage) === -1) {
+            savedLanguage = "zh-Hant";
+            localStorage.setItem("zhaowu.display-language", savedLanguage);
           }
+          document.documentElement.lang = savedLanguage;
           if (localStorage.getItem("zhaowu.theme.v1") === "night") {
             document.documentElement.setAttribute("data-zw-theme", "night");
             var meta = document.querySelector('meta[name="theme-color"]');
