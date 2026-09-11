@@ -1,3 +1,5 @@
+const env = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env ?? {};
+
 import type { AnalysisResult, QuestionKind } from "@/lib/bazi/types";
 import {
   detectQuestionFocus,
@@ -8,11 +10,11 @@ import {
   stableQuestionFingerprint,
 } from "@/lib/qa/answer-quality";
 
-const POSTHOG_KEY = String(import.meta.env.VITE_POSTHOG_KEY || "phc_w6rhtrMQLLBczV4uNvsDWGb4zq2GCknyeqa2YWScrs3G").trim();
-const POSTHOG_HOST = String(import.meta.env.VITE_POSTHOG_HOST || "https://us.i.posthog.com").replace(/\/$/, "");
+const POSTHOG_KEY = String(env.VITE_POSTHOG_KEY || "phc_w6rhtrMQLLBczV4uNvsDWGb4zq2GCknyeqa2YWScrs3G").trim();
+const POSTHOG_HOST = String(env.VITE_POSTHOG_HOST || "https://us.i.posthog.com").replace(/\/$/, "");
 const DEFAULT_ALLOWED_HOSTS = ["stone-zhaowu-official.vercel.app"];
 const ALLOWED_HOSTS = new Set(
-  String(import.meta.env.VITE_POSTHOG_ALLOWED_HOSTS || DEFAULT_ALLOWED_HOSTS.join(","))
+  String(env.VITE_POSTHOG_ALLOWED_HOSTS || DEFAULT_ALLOWED_HOSTS.join(","))
     .split(",")
     .map((host) => host.trim().toLowerCase())
     .filter(Boolean),
