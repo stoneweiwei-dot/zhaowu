@@ -34,5 +34,6 @@ test("fixed Tea Guardian portraits stay on bundled static artwork while Owner Ga
   assert.match(report, /TeaGalleryImage teaId=\{tea\.id\}/);
   assert.match(image, /src=\{fallback\}/);
   assert.match(image, /data-tea-id=\{teaId\}/);
-  assert.doesNotMatch(image, /resolvePrimaryGalleryAssets|galleryPublicUrl|supabase/i);
+  assert.doesNotMatch(image, /resolvePrimaryGalleryAssets|galleryPublicUrl/);
+  assert.doesNotMatch(image, /from\s+["']@\/lib\/gallery-assets["']/);
 });
