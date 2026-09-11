@@ -10,9 +10,7 @@ const COPY = {
     how: "現在怎麼用",
     observe: "先看什麼結果",
     avoid: "不要過頭",
-    evidence: "判斷依據",
     status: "目前狀態",
-    provisional: "待覆核",
     auraEyebrow: "個人靈光提示",
     auraTitle: "象徵色與脈輪主題",
     mainColour: "主色",
@@ -26,9 +24,7 @@ const COPY = {
     how: "现在怎么用",
     observe: "先看什么结果",
     avoid: "不要过头",
-    evidence: "判断依据",
     status: "目前状态",
-    provisional: "待覆核",
     auraEyebrow: "个人灵光提示",
     auraTitle: "象征色与脉轮主题",
     mainColour: "主色",
@@ -42,9 +38,7 @@ const COPY = {
     how: "What to practise",
     observe: "What to watch first",
     avoid: "Do not overdo it",
-    evidence: "Evidence used",
     status: "Current status",
-    provisional: "Provisional",
     auraEyebrow: "Personal aura cue",
     auraTitle: "Symbolic colour and chakra themes",
     mainColour: "Main colour",
@@ -61,13 +55,6 @@ export function FiveElementTrainingBlock({ result }: { result: AnalysisResult })
   const training = buildFunctionalTraining(result.chart, reportLocale);
   const aura = buildAuraBlueprint(training);
   const elementCopy = training.selectedElement ? FIVE_ELEMENT_FUNCTIONS[training.selectedElement][reportLocale] : null;
-  const evidence = [
-    training.evidence.monthCommand,
-    training.evidence.dayMasterCapacity,
-    training.evidence.structuralIssue,
-    training.evidence.circulation,
-    training.evidence.luckCycle,
-  ].filter((item): item is string => Boolean(item));
 
   return (
     <section className="zhaowu-five-element-training grid gap-4" data-five-element-training data-analysis-status={training.analysisStatus}>
@@ -104,15 +91,6 @@ export function FiveElementTrainingBlock({ result }: { result: AnalysisResult })
           <p className="mt-1 text-sm leading-6 text-ink-soft">{training.excessWarning}</p>
           <p className="mt-3 text-xs leading-5 text-ink-mute">{training.warnings.join(" ")}</p>
         </div>
-
-        {evidence.length ? (
-          <details className="mt-4 text-xs text-ink-mute">
-            <summary className="cursor-pointer">{copy.evidence}</summary>
-            <ul className="mt-2 grid gap-1 pl-4">
-              {evidence.map((item) => <li key={item}>{item}</li>)}
-            </ul>
-          </details>
-        ) : null}
       </article>
 
       {aura ? (
