@@ -1,17 +1,17 @@
 import { expect, test } from "@playwright/test";
 
-const SUPABASE_HOST = "plgpxusmemnmzckbwtiv.supabase.co";
-const PAYMENT_REQUIRED_MESSAGE = "Failed to load resource: the server responded with a status of 402 (Payment Required)";
-
 test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }) => {
   const consoleErrors: string[] = [];
-  const paymentRequiredResponses: string[] = [];
+  const supabaseGalleryRequests: string[] = [];
 
   page.on("console", (message) => {
     if (message.type() === "error") consoleErrors.push(message.text());
   });
-  page.on("response", (response) => {
-    if (response.status() === 402) paymentRequiredResponses.push(response.url());
+  page.on("request", (request) => {
+    const url = request.url();
+    if (url.includes("plgpxusmemnmzckbwtiv.supabase.co") && (url.includes("gallery_assets") || url.includes("/storage/v1/object/public/"))) {
+      supabaseGalleryRequests.push(url);
+    }
   });
 
   await page.goto("/tea-guardian");
@@ -24,27 +24,18 @@ test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }
   await page.getByRole("button", { name: "查看我的三個茶答案" }).click();
   await expect(page.getByRole("heading", { name: "你的茶仙評估" })).toBeVisible();
   await expect(page.locator(".tea-result-card")).toHaveCount(2);
-  await expect(page.locator(".tea-result-image").first()).toBeVisible();
-  await expect.poll(async () => page.locator(".tea-result-image").first().evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+
+  const firstImage = page.locator(".tea-result-image").first();
+  await expect(firstImage).toBeVisible();
+  await expect.poll(async () => firstImage.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+  const imageUrl = await firstImage.evaluate((image: HTMLImageElement) => image.currentSrc || image.src);
+  expect(new URL(imageUrl).origin).toBe(new URL(page.url()).origin);
+  expect(new URL(imageUrl).pathname).toMatch(/^\/tea-guardians\/[a-z0-9-]+\.webp$/);
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
-
-  const unexpectedPaymentRequiredResponses = paymentRequiredResponses.filter((url) => {
-    try {
-      return new URL(url).hostname !== SUPABASE_HOST;
-    } catch {
-      return true;
-    }
-  });
-  expect(unexpectedPaymentRequiredResponses).toEqual([]);
-
-  const expectedPaymentRequiredErrors = consoleErrors.filter((message) => message === PAYMENT_REQUIRED_MESSAGE);
-  if (expectedPaymentRequiredErrors.length > 0) {
-    expect(paymentRequiredResponses.length).toBeGreaterThan(0);
-  }
-  const unexpectedConsoleErrors = consoleErrors.filter((message) => message !== PAYMENT_REQUIRED_MESSAGE);
-  expect(unexpectedConsoleErrors).toEqual([]);
+  expect(supabaseGalleryRequests).toEqual([]);
+  expect(consoleErrors).toEqual([]);
 
   await page.screenshot({ path: "test-results/tea-guardian-iphone.png", fullPage: true });
 });
