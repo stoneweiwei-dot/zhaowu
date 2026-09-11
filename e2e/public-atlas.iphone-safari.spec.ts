@@ -37,10 +37,11 @@ test.describe("iPhone Safari public atlas", () => {
     await expect(images.first()).toBeVisible();
     expect(await images.count()).toBeGreaterThan(0);
 
+    const origin = await page.evaluate(() => window.location.origin);
     const urls = await images.evaluateAll((nodes) =>
       nodes.map((node) => (node as HTMLImageElement).currentSrc || (node as HTMLImageElement).src),
     );
-    expect(urls.every((url) => new URL(url).origin === window.location.origin)).toBe(true);
+    expect(urls.every((url) => new URL(url).origin === origin)).toBe(true);
     expect(urls.some((url) => url.includes("/report-visuals/full/") || url.includes("/ornaments/generated/"))).toBe(true);
 
     await expect.poll(async () =>
