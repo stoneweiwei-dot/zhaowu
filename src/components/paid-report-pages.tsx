@@ -7,6 +7,7 @@ import { ReportVisualBook } from "@/components/report-visual-book";
 import { ReportLuckBook } from "@/components/report-luck-book";
 import { ReportShareCard } from "@/components/report-share-card";
 import { EvidenceGovernancePanel } from "@/components/evidence-governance-panel";
+import { FiveElementTrainingBlock } from "@/components/five-element-training-block";
 
 const COPY = {
   "zh-Hant": {
@@ -286,6 +287,7 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
       </div>
 
       {result ? <ReportVisualBook result={result} /> : null}
+      {result ? <FiveElementTrainingBlock result={result} /> : null}
       {result && showLuck ? <ReportLuckBook result={result} /> : null}
 
       <div className="zhaowu-report-flow zhaowu-report-supporting-flow">
