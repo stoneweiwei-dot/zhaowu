@@ -113,15 +113,18 @@ test("aura is symbolic, contains no pseudo-precision and returns no medical clai
   assert.match(aura.disclaimer, /not a medical test/i);
 });
 
-test("free or not-required reports can never prepare image-generation jobs", () => {
+test("free or not-required reports can retain private prompt blueprints but can never prepare image-generation jobs", () => {
   const training = buildFunctionalTraining(baseChart(), "zh-Hant");
   const aura = buildAuraBlueprint(training);
   const freePayment = { tier: "free", paymentStatus: "not_required" };
   assert.equal(canGeneratePaidVisuals(freePayment), false);
   const freeBlueprint = buildPaidVisualBlueprint(training, aura, freePayment);
   assert.equal(freeBlueprint.enabled, false);
-  assert.equal(freeBlueprint.elementImage.prompt, null);
-  assert.equal(freeBlueprint.auraImage.prompt, null);
+  assert.equal(freeBlueprint.paidVisualsEnabled, false);
+  assert.equal(freeBlueprint.elementImage.enabled, false);
+  assert.equal(freeBlueprint.auraImage.enabled, false);
+  assert.match(freeBlueprint.elementImage.prompt ?? "", /9:16 ZHAOWU five-element/);
+  assert.match(freeBlueprint.auraImage.prompt ?? "", /9:16 symbolic aura/);
   assert.deepEqual(preparePaidVisualJobs(freePayment, freeBlueprint), { generated: false, reason: "PAYMENT_REQUIRED", jobs: [] });
 });
 
@@ -131,10 +134,31 @@ test("only an explicit paid tier can prepare the two 9:16 visual jobs", () => {
   const payment = { tier: "paid_basic", paymentStatus: "paid" };
   const blueprint = buildPaidVisualBlueprint(training, aura, payment);
   assert.equal(blueprint.enabled, true);
+  assert.equal(blueprint.paidVisualsEnabled, true);
   const prepared = preparePaidVisualJobs(payment, blueprint);
   assert.equal(prepared.generated, true);
   assert.equal(prepared.jobs.length, 2);
   assert.ok(prepared.jobs.every((job) => job.aspectRatio === "9:16"));
+});
+
+test("paid support-first visuals preserve the no-strengthening instruction", () => {
+  const chart = baseChart({
+    monthBranch: "酉",
+    strength: { tendency: "偏旺" },
+    pillars: [
+      pillar("year", "庚", "申"),
+      pillar("month", "辛", "酉"),
+      pillar("day", "壬", "亥"),
+      pillar("time", "壬", "子"),
+    ],
+  });
+  const training = buildFunctionalTraining(chart, "en");
+  assert.equal(training.selectedState, "needs_mother_qi_or_bridging");
+  const aura = buildAuraBlueprint(training);
+  const blueprint = buildPaidVisualBlueprint(training, aura, { tier: "paid_full", paymentStatus: "paid" });
+  assert.equal(blueprint.enabled, true);
+  assert.match(blueprint.elementImage.prompt ?? "", /Support or bridging comes first/i);
+  assert.match(blueprint.elementImage.prompt ?? "", /before any direct strengthening/i);
 });
 
 test("customer report renders text-only functional training and imports no image generator", async () => {
