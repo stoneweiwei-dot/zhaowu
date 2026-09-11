@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { BackgroundMusic } from './components/background-music';
+import { KoHiLocalizationBridge } from './components/ko-hi-localization-bridge';
 import { routeTree } from './routeTree.gen';
 import './styles.css';
 import './intro-extra.css';
@@ -107,4 +108,4 @@ if ('serviceWorker' in navigator) {
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refreshServiceWorker(); });
 }
 
-createRoot(root).render(<StrictMode><RouterProvider router={router} /><BackgroundMusic /></StrictMode>);
+createRoot(root).render(<StrictMode><RouterProvider router={router} /><KoHiLocalizationBridge /><BackgroundMusic /></StrictMode>);
