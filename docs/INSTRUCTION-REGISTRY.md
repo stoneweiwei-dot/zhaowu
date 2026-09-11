@@ -16,6 +16,7 @@
    - `docs/FOCUSED-REPORT.md`
    - `docs/REPORT-VISUAL-SYSTEM.md`
    - `docs/ZIWEI-INTERPRETATION-GRAMMAR-v1.0.md`
+   - `docs/VEDIC-INTERPRETATION-PROTOCOL-v1.0.md` — 印度吠陀占星当前解释协议；计算层未接线前不得伪造具体分盘结果。
    - 以及当前 `main` 中对应的 calculation/profile/test contract。
 
 冲突时遵循 `AGENTS.md` 的优先级：最新明确站主指令 → 当前 main / production truth → 当前治理与契约 → 旧文档／Issue → 旧聊天／旧部署。
@@ -68,6 +69,20 @@
 ### 3.4 旧 AppDeploy / Netlify / Grok temporary production briefings
 
 当前处理：`REFERENCE ONLY`。唯一 production 继续由 `AGENTS.md` / `CURRENT-STATE.md` 指定的 Vercel `stone-zhaowu-official` 管理。
+
+### 3.5 印度吠陀占星分散指令（v4.0 + 后续补丁）
+
+历史状态：Library 中曾分散保存 `Vedic Deep Karma Matrix v4.0`、Rasi / Bhava / Moon / Transit / D2 补丁，以及 D3、D4、D5、D6、D7、D8、D11、D16、D20、D24、D27、D30、D40、D45、D60 等后续分盘补充；它们长期没有形成一个 current repo 协议，也没有独立 deterministic Jyotish calculation engine。
+
+当前处理：`CONSOLIDATED INTERPRETATION / CALCULATION NOT WIRED`。
+
+已统一整理为 `docs/VEDIC-INTERPRETATION-PROTOCOL-v1.0.md`。有效部分按最新治理重写：
+- D1 为根，Bhava 定事件落点，Moon Chart 定主观体验，Dasha 定阶段，Transit 只作触发；
+- 专项分盘只在 D1 已有主题且与本题有关时调用；
+- D60 加入严格出生时间可靠度 Gate，不得用 D60 循环论证考时；
+- Starseed／星际种子／银河种族／高维身份等旧 v4.0 内容从 active scope 移除；
+- 前世、业力、灵魂等只能作传统／象征性解释，不得写成已证实历史事实；
+- 在确定性 calculation layer、test vectors 与 profile 未接线前，不得生成具体 D1/D9/D60 盘面并宣称为网站已实现功能。
 
 ## 4. 当前发现的“旧指令仍在仓库里但会误导未来 Agent”
 
