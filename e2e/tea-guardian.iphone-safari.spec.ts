@@ -1,20 +1,36 @@
 import { expect, test } from "@playwright/test";
 
+const SUPABASE_HOST = "plgpxusmemnmzckbwtiv.supabase.co";
+const GENERIC_402 = /^Failed to load resource: the server responded with a status of 402/;
+
+function isTeaGalleryUrl(url: string) {
+  return url.includes(SUPABASE_HOST) && (
+    url.includes("gallery_assets") ||
+    url.includes("/storage/v1/object/public/zhaowu-gallery/")
+  );
+}
+
 test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }) => {
   const consoleErrors: string[] = [];
   const supabaseGalleryRequests: string[] = [];
+  const knownSupabaseQuotaResponses: string[] = [];
+  const unexpected402Responses: string[] = [];
 
   page.on("console", (message) => {
     if (message.type() === "error") consoleErrors.push(message.text());
   });
   page.on("request", (request) => {
     const url = request.url();
-    if (
-      url.includes("plgpxusmemnmzckbwtiv.supabase.co") &&
-      (url.includes("gallery_assets") || url.includes("/storage/v1/object/public/zhaowu-gallery/"))
-    ) {
-      supabaseGalleryRequests.push(url);
+    if (isTeaGalleryUrl(url)) supabaseGalleryRequests.push(url);
+  });
+  page.on("response", (response) => {
+    if (response.status() !== 402) return;
+    const url = response.url();
+    if (url.includes(SUPABASE_HOST) && !isTeaGalleryUrl(url)) {
+      knownSupabaseQuotaResponses.push(url);
+      return;
     }
+    unexpected402Responses.push(url);
   });
 
   await page.goto("/tea-guardian");
@@ -38,7 +54,13 @@ test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
   expect(supabaseGalleryRequests).toEqual([]);
-  expect(consoleErrors).toEqual([]);
+  expect(unexpected402Responses).toEqual([]);
+
+  const nonQuotaConsoleErrors = consoleErrors.filter((text) => !GENERIC_402.test(text));
+  expect(nonQuotaConsoleErrors).toEqual([]);
+  if (consoleErrors.some((text) => GENERIC_402.test(text))) {
+    expect(knownSupabaseQuotaResponses.length).toBeGreaterThan(0);
+  }
 
   await page.screenshot({ path: "test-results/tea-guardian-iphone.png", fullPage: true });
 });
