@@ -104,7 +104,7 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
               <a href={asset.url} target="_blank" rel="noreferrer" className="block" aria-label={copy.card}>
                 <div className="aspect-[9/16] bg-cream/60 p-1.5">
                   <img
-                    src={asset.url}
+                    src={asset.thumbnailUrl ?? asset.url}
                     alt={copy.card}
                     loading="lazy"
                     decoding="async"
