@@ -11,6 +11,7 @@ import { routeMethods } from "@/lib/core/method";
 import { inferQuestionKind } from "@/lib/core/answer-contract";
 import { composeFocusedReportText } from "@/lib/report/focused-report";
 import { finalizeReading } from "@/lib/report/final-reading";
+import { trackAnswerError, trackAnswerResult } from "@/lib/observability/answer-quality-telemetry";
 
 function newId(): string {
   return crypto.randomUUID();
@@ -114,53 +115,61 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
 }
 
 export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promise<AnalysisResult> {
-  const data = parseInput(raw);
-  const chart = buildChart(data);
-  const palm = buildPalm({
-    year: data.year,
-    month: data.month,
-    day: data.day,
-    hour: data.hour,
-    timeUnknown: data.timeUnknown,
-    gender: data.gender,
-  });
-  const kind = inferQuestionKind(data.question, classifyQuestion(data.question));
-  const methodProtocol = routeMethods(kind, {
-    palmReady: palm.ready,
-    palmMissing: palm.missing,
-  });
-  const rawReading = applyFourTombsRuntimePolicy(
-    chart,
-    applyMonthStageFeedbackPolicy(
+  const startedAt = Date.now();
+  try {
+    const data = parseInput(raw);
+    const chart = buildChart(data);
+    const palm = buildPalm({
+      year: data.year,
+      month: data.month,
+      day: data.day,
+      hour: data.hour,
+      timeUnknown: data.timeUnknown,
+      gender: data.gender,
+    });
+    const kind = inferQuestionKind(data.question, classifyQuestion(data.question));
+    const methodProtocol = routeMethods(kind, {
+      palmReady: palm.ready,
+      palmMissing: palm.missing,
+    });
+    const rawReading = applyFourTombsRuntimePolicy(
+      chart,
+      applyMonthStageFeedbackPolicy(
+        data.question,
+        chart,
+        interpret(data.question, chart, data.relation, palm),
+      ),
+    );
+    const finalizedReading = finalizeReading(data.question, chart, rawReading, data.locale);
+    const kinshipReading = applyKinshipRuntimePolicy(
       data.question,
       chart,
-      interpret(data.question, chart, data.relation, palm),
-    ),
-  );
-  const finalizedReading = finalizeReading(data.question, chart, rawReading, data.locale);
-  const kinshipReading = applyKinshipRuntimePolicy(
-    data.question,
-    chart,
-    data.relation,
-    finalizedReading,
-    data.locale,
-  );
-  const reading = applyTenGodFiveElementRuntimePolicy(
-    chart,
-    kinshipReading,
-    data.locale,
-  );
+      data.relation,
+      finalizedReading,
+      data.locale,
+    );
+    const reading = applyTenGodFiveElementRuntimePolicy(
+      chart,
+      kinshipReading,
+      data.locale,
+    );
 
-  return {
-    id: newId(),
-    locale: data.locale,
-    question: data.question,
-    chart,
-    reading,
-    createdAt: new Date().toISOString(),
-    methodProtocol,
-    palm,
-  };
+    const result: AnalysisResult = {
+      id: newId(),
+      locale: data.locale,
+      question: data.question,
+      chart,
+      reading,
+      createdAt: new Date().toISOString(),
+      methodProtocol,
+      palm,
+    };
+    trackAnswerResult({ result, expectedKind: kind, startedAt, source: "initial" });
+    return result;
+  } catch (error) {
+    trackAnswerError({ question: raw.question ?? "", source: "initial", error, startedAt });
+    throw error;
+  }
 }
 
 export async function followUpLife({
@@ -172,46 +181,54 @@ export async function followUpLife({
     relation?: RelationPref;
   };
 }): Promise<AnalysisResult> {
+  const startedAt = Date.now();
   const question = String(data.question ?? "").trim().slice(0, 400);
-  if (!question) throw new Error("請先寫下你想繼續問的問題。");
-  const palm = data.base.palm ?? null;
-  const kind = inferQuestionKind(question, classifyQuestion(question));
-  const methodProtocol = routeMethods(kind, {
-    palmReady: Boolean(palm?.ready),
-    palmMissing: palm?.missing ?? [],
-  });
-  const relation = data.relation ?? "unset";
-  const rawReading = applyFourTombsRuntimePolicy(
-    data.base.chart,
-    applyMonthStageFeedbackPolicy(
+  try {
+    if (!question) throw new Error("請先寫下你想繼續問的問題。");
+    const palm = data.base.palm ?? null;
+    const kind = inferQuestionKind(question, classifyQuestion(question));
+    const methodProtocol = routeMethods(kind, {
+      palmReady: Boolean(palm?.ready),
+      palmMissing: palm?.missing ?? [],
+    });
+    const relation = data.relation ?? "unset";
+    const rawReading = applyFourTombsRuntimePolicy(
+      data.base.chart,
+      applyMonthStageFeedbackPolicy(
+        question,
+        data.base.chart,
+        interpret(question, data.base.chart, relation, palm),
+      ),
+    );
+    const finalizedReading = finalizeReading(question, data.base.chart, rawReading, data.base.locale);
+    const kinshipReading = applyKinshipRuntimePolicy(
       question,
       data.base.chart,
-      interpret(question, data.base.chart, relation, palm),
-    ),
-  );
-  const finalizedReading = finalizeReading(question, data.base.chart, rawReading, data.base.locale);
-  const kinshipReading = applyKinshipRuntimePolicy(
-    question,
-    data.base.chart,
-    relation,
-    finalizedReading,
-    data.base.locale,
-  );
-  const reading = applyTenGodFiveElementRuntimePolicy(
-    data.base.chart,
-    kinshipReading,
-    data.base.locale,
-  );
-  return {
-    id: newId(),
-    locale: data.base.locale,
-    question,
-    chart: data.base.chart,
-    reading,
-    createdAt: new Date().toISOString(),
-    methodProtocol,
-    palm,
-  };
+      relation,
+      finalizedReading,
+      data.base.locale,
+    );
+    const reading = applyTenGodFiveElementRuntimePolicy(
+      data.base.chart,
+      kinshipReading,
+      data.base.locale,
+    );
+    const result: AnalysisResult = {
+      id: newId(),
+      locale: data.base.locale,
+      question,
+      chart: data.base.chart,
+      reading,
+      createdAt: new Date().toISOString(),
+      methodProtocol,
+      palm,
+    };
+    trackAnswerResult({ result, expectedKind: kind, startedAt, source: "follow-up" });
+    return result;
+  } catch (error) {
+    trackAnswerError({ question, source: "follow-up", error, startedAt });
+    throw error;
+  }
 }
 
 export async function writeFullReport({
@@ -225,30 +242,37 @@ export async function writeFullReport({
     locale?: AnalysisResult["locale"];
   };
 }) {
-  const governedReading = applyFourTombsRuntimePolicy(
-    data.chart,
-    applyMonthStageFeedbackPolicy(data.question, data.chart, data.reading),
-  );
-  const reading = applyTenGodFiveElementRuntimePolicy(
-    data.chart,
-    finalizeReading(data.question, data.chart, governedReading, data.locale),
-    data.locale,
-  );
-  const palm = data.palm ?? null;
-  const methodProtocol = routeMethods(reading.kind, {
-    palmReady: Boolean(palm?.ready),
-    palmMissing: palm?.missing ?? [],
-  });
-  const result: AnalysisResult = {
-    id: newId(),
-    locale: data.locale,
-    question: data.question,
-    chart: data.chart,
-    reading,
-    createdAt: new Date().toISOString(),
-    methodProtocol,
-    palm,
-  };
-  const text = composeFocusedReportText(result);
-  return { text, source: "rule" as const };
+  const startedAt = Date.now();
+  try {
+    const governedReading = applyFourTombsRuntimePolicy(
+      data.chart,
+      applyMonthStageFeedbackPolicy(data.question, data.chart, data.reading),
+    );
+    const reading = applyTenGodFiveElementRuntimePolicy(
+      data.chart,
+      finalizeReading(data.question, data.chart, governedReading, data.locale),
+      data.locale,
+    );
+    const palm = data.palm ?? null;
+    const methodProtocol = routeMethods(reading.kind, {
+      palmReady: Boolean(palm?.ready),
+      palmMissing: palm?.missing ?? [],
+    });
+    const result: AnalysisResult = {
+      id: newId(),
+      locale: data.locale,
+      question: data.question,
+      chart: data.chart,
+      reading,
+      createdAt: new Date().toISOString(),
+      methodProtocol,
+      palm,
+    };
+    const text = composeFocusedReportText(result);
+    trackAnswerResult({ result, expectedKind: reading.kind, startedAt, source: "report" });
+    return { text, source: "rule" as const };
+  } catch (error) {
+    trackAnswerError({ question: data.question, source: "report", error, startedAt });
+    throw error;
+  }
 }

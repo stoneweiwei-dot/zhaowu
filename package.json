@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "prebuild": "node scripts/write-og-preview.mjs",
-    "test:deploy": "tsx --test scripts/og-preview.test.mjs scripts/vercel-deployment.test.mjs scripts/vercel-deployment-policy.test.mjs scripts/deploy-gate.test.mjs scripts/release-ledger.test.mjs scripts/brand-system-r98.test.mjs scripts/local-housekeeping.test.mjs scripts/sto17-ui-contract.test.mjs scripts/daily-colors.test.mjs scripts/report-answer-first-r110.test.mjs scripts/customer-cost-isolation.test.mjs",
+    "test:deploy": "tsx --test scripts/og-preview.test.mjs scripts/vercel-deployment.test.mjs scripts/vercel-deployment-policy.test.mjs scripts/deploy-gate.test.mjs scripts/release-ledger.test.mjs scripts/brand-system-r98.test.mjs scripts/local-housekeeping.test.mjs scripts/sto17-ui-contract.test.mjs scripts/daily-colors.test.mjs scripts/report-answer-first-r110.test.mjs scripts/customer-cost-isolation.test.mjs scripts/answer-quality-p0.test.mjs",
     "test:engine": "tsx --test scripts/*.test.mjs",
     "build": "npm run prebuild && npm run test:deploy && vite build && tsc --noEmit",
     "preview": "vite preview",
