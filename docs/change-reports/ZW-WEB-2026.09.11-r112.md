@@ -10,6 +10,7 @@
 - 付費視覺 Blueprint 可先建立兩個 9:16 prompt，但真正準備圖片生成 job 前必須再次通過 `paid_basic|paid_full + paymentStatus=paid` Gate。
 - support-first／過度／不宜增加等狀態的付費圖不得偷改成直接補元素；prompt 必須保留「先通關／疏導／維持／不增強」語義。
 - 新增 `docs/FIVE-ELEMENT-FUNCTIONAL-TRAINING.md` 作為本模組當前契約，並把 regression test 納入 deploy gate。
+- 新增 `docs/INSTRUCTION-REGISTRY-NOTE-r112.md`，明確區分命盤派生的五行功能訓練與既有獨立自評「五行功能測驗」。
 
 ## 為什麼改
 
