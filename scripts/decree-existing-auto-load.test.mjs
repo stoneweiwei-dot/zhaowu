@@ -42,12 +42,13 @@ test("decree delivery refreshes an expired access token once before surfacing 40
   assert.equal((refreshBlock.match(/refreshSession\(/g) ?? []).length, 1);
 });
 
-test("generation endpoint preserves passive reuse and protects an existing image on provider failure", () => {
+test("generation endpoint preserves passive reuse before any provider path", () => {
   const reuseIndex = generationEdge.indexOf("if (report.image_path && !force && !reselectGallery)");
   const providerIndex = generationEdge.indexOf("https://api.openai.com/v1/images/edits");
   assert.ok(reuseIndex >= 0);
   assert.ok(providerIndex > reuseIndex);
-  assert.ok(generationEdge.includes("A failed refresh must never make an already-generated personal image disappear"));
+  assert.ok(generationEdge.includes("if (report.image_path)"));
+  assert.ok(generationEdge.includes("signedUrl = await signExisting(service, report.image_path)"));
 });
 
 test("result view automatically restores both the stored image and its Gallery reference", () => {
@@ -59,9 +60,11 @@ test("result view automatically restores both the stored image and its Gallery r
   assert.ok(resultView.includes("selectedAssetId={imageReferenceAssetId}"));
 });
 
-test("result view customer generation requests the provider path while preserving backend fallback", () => {
-  assert.ok(resultView.includes("generateDecreeImage(session, reportId, true)"));
+test("customer force requests cannot unlock owner-funded decree generation", () => {
+  assert.ok(generationEdge.includes("const forceRequested = payload?.force === true"));
+  assert.ok(generationEdge.includes("const isOwner = actorProfile?.is_owner === true"));
+  assert.ok(generationEdge.includes("const force = forceRequested && isOwner"));
+  assert.ok(generationEdge.includes("const openaiKey = isOwner ? Deno.env.get(\"OPENAI_API_KEY\") : null"));
   assert.ok(generationEdge.includes("deliverGalleryDirect"));
   assert.ok(generationEdge.includes("galleryDirect: true"));
-  assert.ok(generationEdge.includes("degraded: true"));
 });
