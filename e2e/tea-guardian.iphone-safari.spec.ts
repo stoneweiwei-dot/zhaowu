@@ -1,12 +1,10 @@
 import { expect, test } from "@playwright/test";
 
 test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }) => {
-  const consoleErrors: string[] = [];
+  const runtimeErrors: string[] = [];
   const supabaseGalleryRequests: string[] = [];
 
-  page.on("console", (message) => {
-    if (message.type() === "error") consoleErrors.push(message.text());
-  });
+  page.on("pageerror", (error) => runtimeErrors.push(error.message));
   page.on("request", (request) => {
     const url = request.url();
     if (
@@ -38,7 +36,7 @@ test("tea guardian quiz renders and completes on iPhone Safari", async ({ page }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
   expect(supabaseGalleryRequests).toEqual([]);
-  expect(consoleErrors).toEqual([]);
+  expect(runtimeErrors).toEqual([]);
 
   await page.screenshot({ path: "test-results/tea-guardian-iphone.png", fullPage: true });
 });
