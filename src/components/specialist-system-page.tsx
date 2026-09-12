@@ -1,3 +1,4 @@
+import { SpecialistChart } from "@/components/specialist-chart";
 import { useEffect, useMemo, useState } from "react";
 import { D60KarmaSection } from "@/components/d60-karma-section";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
@@ -140,6 +141,8 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
           <a href="/#bazi">{birth ? copy.edit : copy.add}</a>
           <a href="/#analysis-reports" className="is-secondary">{copy.back}</a>
         </div>
+
+        {reading?.chart ? <SpecialistChart chart={reading.chart} locale={locale} /> : null}
 
         {reading ? (
           <div className="zhaowu-specialist-sections">

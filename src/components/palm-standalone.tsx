@@ -1,3 +1,4 @@
+import { ChartTable } from "@/components/specialist-chart";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { CityPicker } from "@/components/city-picker";
@@ -292,6 +293,8 @@ export function PalmStandalone() {
           </div>
 
           <div className="space-y-5 px-5 pb-5 sm:px-8 sm:pb-8">
+            <div data-natal-chart="past"><ChartTable title={locale === "en" ? "Four-palace chart" : "一掌經 · 四宮命盤表"} headers={[locale === "en" ? "Life" : "世次", locale === "en" ? "Branch" : "宮支", locale === "en" ? "Star" : "星曜", locale === "en" ? "Path" : "六道"]} rows={result.palaces.map(p => { const item=presentPalmPalace(p,locale);return [item.lifeLabel,item.zhi,item.star,item.dao]; })}/></div>
+
             <article className="relative overflow-hidden rounded-2xl border border-[#b99755]/35 p-4 sm:p-5" style={{ background: "linear-gradient(135deg, rgba(255,250,242,.98), rgba(242,231,207,.84))" }}>
               <h3 className="font-display text-lg font-semibold tracking-[0.06em] text-ink">{copy.traceTitle}</h3>
               <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">

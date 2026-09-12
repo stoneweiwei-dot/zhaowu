@@ -28,6 +28,7 @@ export type SpecialistReading = {
   lead: string;
   warning?: string;
   sections: SpecialistSection[];
+  chart?: { kind: "western"; bodies: NonNullable<ReturnType<typeof calculateQizheng>>["bodies"]; houses?: ReturnType<typeof computeHouses>; angles?: ReturnType<typeof computeAngles> } | { kind: "qizheng"; data: NonNullable<ReturnType<typeof calculateQizheng>> } | { kind: "ziwei"; data: ReturnType<typeof buildZiweiCoreChart> };
 };
 
 function gmstDegrees(date: Date) {
@@ -72,6 +73,8 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
         : "出生時間不足，暫不判定上升與宮位。")
     : "";
 
+  let chartHouses: ReturnType<typeof computeHouses> | undefined;
+  let chartAngles: ReturnType<typeof computeAngles> | undefined;
   let rising = "";
   let houses = "";
   if (!birth.timeUnknown) {
@@ -82,6 +85,8 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
       longitude: birth.city.longitude,
     });
     const houseChart = computeHouses(angles, birth.city.latitude, "placidus");
+    chartHouses = houseChart;
+    chartAngles = angles;
     const asc = decoratePosition("Ascendant", angles.ascendant);
     rising = `${signLabel(asc.sign, locale)} ${formatDegree(asc)}`;
     if (sunPos) houses = locale === "en"
@@ -103,6 +108,7 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
         ? "太阳、月亮与主要行星沿用同一份出生资料。宫位只在出生时间足够时判定。"
         : "太陽、月亮與主要行星沿用同一份出生資料。宮位只在出生時間足夠時判定。",
     warning: timeNote || undefined,
+    chart: !birth.timeUnknown && qizheng ? { kind: "western", bodies: qizheng.bodies.filter(body => !body.virtual), houses: chartHouses, angles: chartAngles } : undefined,
     sections: [
       { title: locale === "en" ? "Sun" : locale === "zh-Hans" ? "太阳" : "太陽", body: sunPos ? `${signLabel(sunPos.sign, locale)} ${formatDegree(sunPos)}` : "—" },
       { title: locale === "en" ? "Moon" : locale === "zh-Hans" ? "月亮" : "月亮", body: birth.timeUnknown ? timeNote : (moonPos ? `${signLabel(moonPos.sign, locale)} ${formatDegree(moonPos)}` : "—") },
@@ -140,6 +146,7 @@ export function buildQizhengReading(birth: SharedBirthRecord, locale: Locale): S
   const summary = buildQizhengPlainSummary(chart, locale);
   return {
     title: summary.title,
+    chart: { kind: "qizheng", data: chart },
     lead: summary.lead,
     sections: summary.sections.map((section) => ({ title: section.title, body: section.body })),
   };
@@ -196,6 +203,7 @@ export function buildZiweiReading(birth: SharedBirthRecord, locale: Locale): Spe
   });
   return {
     title: summary.title,
+    chart: { kind: "ziwei", data: chart },
     lead: summary.paragraphs[0] ?? "",
     sections: summary.paragraphs.slice(1).map((body, index) => ({ title: `${index + 1}`, body })),
   };

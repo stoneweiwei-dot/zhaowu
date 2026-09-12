@@ -1,4 +1,4 @@
-const CACHE = "zhaowu-shell-r117";
+const CACHE = "zhaowu-shell-r118";
 const SHELL = ["/", "/manifest.webmanifest", "/apple-touch-icon-r113.png", "/brand-ui/header-gourd-wordmark-r113.png", "/brand-ui/logo-horizontal.svg", "/brand-ui/favicon.svg"];
 
 self.addEventListener("install", (event) => {
