@@ -5,11 +5,11 @@ const stats = await readFile(new URL("../src/lib/site-stats.ts", import.meta.url
 const shell = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
 const indexHtml = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const manifest = await readFile(new URL("../public/manifest.webmanifest", import.meta.url), "utf8");
-const report = await readFile(new URL("../docs/change-reports/ZW-WEB-2026.09.12-r116.md", import.meta.url), "utf8");
+const report = await readFile(new URL("../docs/change-reports/ZW-WEB-2026.09.12-r117.md", import.meta.url), "utf8");
 const agents = await readFile(new URL("../AGENTS.md", import.meta.url), "utf8");
 test("public footer always exposes current release and cumulative update count", () => {
-  assert.match(stats, /ZW-WEB-2026\.09\.12-r116/);
-  assert.match(stats, /updateNumber:\s*116/);
+  assert.match(stats, /ZW-WEB-2026\.09\.12-r117/);
+  assert.match(stats, /updateNumber:\s*117/);
   assert.match(shell, /data-site-release/);
   assert.match(shell, /累計更新/);
   assert.match(shell, /data-latest-change-report/);
@@ -24,7 +24,7 @@ test("fresh static shell defaults to Traditional Chinese before hydration", () =
   assert.match(manifest, /人生節奏與選擇分析/);
 });
 test("every production frontend change requires a matching change report", () => {
-  assert.match(report, /# 昭梧更新報告｜ZW-WEB-2026\.09\.12-r116/);
+  assert.match(report, /# 昭梧更新報告｜ZW-WEB-2026\.09\.12-r117/);
   assert.match(report, /## 本次改動/);
   assert.match(report, /## 為什麼改/);
   assert.match(report, /## 影響範圍/);

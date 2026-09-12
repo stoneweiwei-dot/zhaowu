@@ -10,12 +10,15 @@
 
 /* Preserve the supplied horizontal wordmark without the old circular clipping. */
 .zhaowu-site-header .zhaowu-brand-seal--sm {
+  display: block !important;
   width: 132px !important;
   height: 54px !important;
   flex: 0 0 132px;
   border-radius: 8px !important;
 }
 .zhaowu-site-header .zhaowu-brand-seal__image {
+  width: 100% !important;
+  height: 100% !important;
   object-fit: cover !important;
   object-position: center !important;
   border-radius: 8px !important;
