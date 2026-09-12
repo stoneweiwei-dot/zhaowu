@@ -1,6 +1,6 @@
 import { SpecialistChart } from "@/components/specialist-chart";
 import { useEffect, useMemo, useState } from "react";
-import { D60KarmaSection } from "@/components/d60-karma-section";
+import { D60ReliabilityGate } from "@/components/d60-reliability-gate";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import {
@@ -152,7 +152,11 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
             ))}
           </div>
         ) : null}
-        {id === "indian" ? <div className="mt-6"><D60KarmaSection variant="standalone" reportBirth={birth && !birth.timeUnknown ? birth : null} /></div> : null}
+        {id === "indian" ? (
+          <div className="mt-6">
+            <D60ReliabilityGate reportBirth={birth && !birth.timeUnknown ? birth : null} />
+          </div>
+        ) : null}
       </section>
     </main>
   );
