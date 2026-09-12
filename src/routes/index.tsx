@@ -9,6 +9,7 @@ import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt
 import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { ResultView } from "@/components/result-view";
 import { ScentFiveElementTest } from "@/components/scent-five-element-test";
+import { SkyEventsHomeSection } from "@/components/sky-events-home-section";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { readSharedBirthRecord, SHARED_BIRTH_EVENT, type SharedBirthRecord } from "@/lib/shared-birth";
 import {
@@ -168,6 +169,7 @@ function Home() {
     <main className="zhaowu-home-sheet-page zhaowu-home-layout">
       <div className="zhaowu-home-stage zhaowu-home-stage--daily"><DailyAlmanacWidget /></div>
       <div className="zhaowu-home-stage"><DailyColorsModule variant="home" /></div>
+      <div className="zhaowu-home-stage"><SkyEventsHomeSection /></div>
 
       <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
         <AnalysisForm />
