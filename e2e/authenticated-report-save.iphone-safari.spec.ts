@@ -79,27 +79,21 @@ async function mobileHealthy(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 }
 
-test("Signed-in member reaches the full report with the durable-save action available", async ({ page }) => {
-  await installSession(page);
-  await mockAuthenticatedCloud(page);
+test("Guest reaches the full report without a member-save action", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
-  await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "開始分析", exact: true }).click();
   await expect(page.locator("#result")).toBeVisible();
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toHaveCount(0);
   await mobileHealthy(page);
 });
 
-test("Full report stays available when Supabase persistence fails", async ({ page }) => {
-  await installSession(page);
-  await mockAuthenticatedCloud(page, 503);
+test("Guest full report stays available without Supabase persistence", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
-  await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "開始分析", exact: true }).click();
   await expect(page.locator("#result")).toBeVisible();
