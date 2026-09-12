@@ -25,8 +25,11 @@ r114 已把客戶端公開媒體從 Supabase 移出，但目前 repository 的 l
 
 ## 驗證
 
-- 靜態契約檢查會確認 catalog 只使用已提交的 `/intro` 檔案，且公開媒體程式碼不重新引用 Supabase storage。
-- GitHub Production CI、Vercel READY 與正式 URL 檢查將在本版完成部署後補記。
+- 靜態契約檢查確認 catalog 只使用已提交的 `/intro` 檔案，且公開媒體程式碼不重新引用 Supabase storage。
+- GitHub Production CI #1502：Deploy gate、Engine suite、iPhone Safari 全部成功。
+- Vercel deployment `dpl_GkSkWiEVStTHBnWZNdVi5jdXmAcL` 為 READY，production commit `276f490f437cab53baa6250c45b3f630efafe092` 精確對應 main。
+- 正式首頁與 `/auspicious-atlas` 回 HTTP 200；`/sw.js` 回 HTTP 200 並使用 `zhaowu-shell-r115`；登入素材與報告 sprite 由 Vercel 同源路徑提供。
+- 已寫入 Supabase `public.release_history` 的 r115 記錄；未刪除任何 storage 物件。
 
 ## 回滾
 
