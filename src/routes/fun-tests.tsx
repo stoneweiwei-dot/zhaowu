@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ConcealedSacredResultArt } from "@/components/concealed-sacred-result-art";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { deriveGuardianBeast } from "@/lib/report/guardian-beast";
@@ -313,6 +314,8 @@ function FunTests() {
             <p className="mt-4 text-sm leading-7 text-ink-soft"><b className="text-ink">{pageCopy.animalShadow}：</b>{inner.shadow}</p>
           </article>
 
+          <ConcealedSacredResultArt locale={locale} seed={`animal:${animalResultKey ?? inner.name}`} title={`${inner.name} · ${inner.subtitle}`} kind="animal" />
+
           {guardian && relation ? (
             <article className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
               <p className="text-xs tracking-[0.25em] text-cinnabar">INNATE GUARDIAN BEAST</p>
@@ -360,6 +363,8 @@ function FunTests() {
             <p className="mt-4 text-[15px] leading-7 text-ink-soft">{elementResult.core}</p>
             {elementScore.overdrive ? <p className="mt-4 rounded-xl border border-cinnabar/25 bg-paper px-4 py-3 text-sm leading-6 text-ink">{elementUi.overdrive}</p> : null}
           </article>
+
+          <ConcealedSacredResultArt locale={locale} seed={`element:${elementScore.primary}`} title={`${elementResult.name}｜${elementResult.title}`} kind="element" />
 
           <article className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
             <h3 className="font-display text-xl text-ink">{elementUi.actionsTitle}</h3>
