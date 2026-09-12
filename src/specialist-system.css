@@ -151,6 +151,38 @@
   background: rgba(237, 241, 229, .68) !important;
 }
 
+/* Western positions are compact reference data, not full-size essay sections. */
+[data-specialist-report="western"] .zhaowu-specialist-sections {
+  margin-top: 20px;
+}
+[data-specialist-report="western"] .zhaowu-specialist-sections article:not(.zhaowu-specialist-overview) {
+  padding: 14px 0;
+}
+[data-specialist-report="western"] .zhaowu-specialist-sections article:not(.zhaowu-specialist-overview):not([data-summary-table]) {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 8px;
+}
+[data-specialist-report="western"] .zhaowu-specialist-sections h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+}
+[data-specialist-report="western"] .zhaowu-specialist-sections p {
+  font-size: 16px;
+  line-height: 1.65;
+}
+[data-specialist-report="western"] [data-summary-table] .zw-chart-scroll { margin: 0; }
+[data-specialist-report="western"] [data-summary-table] .zw-chart-table { font-size: 16px; }
+[data-specialist-report="western"] [data-summary-table] .zw-chart-table caption { font-size: 18px; padding: 0 0 10px; }
+[data-specialist-report="western"] [data-summary-table] .zw-chart-table th,
+[data-specialist-report="western"] [data-summary-table] .zw-chart-table td {
+  min-width: 0;
+  padding: 10px 4px;
+  white-space: nowrap;
+}
+
 @media (max-width: 560px) {
   .zhaowu-specialist-page {
     padding-top: 2px;
