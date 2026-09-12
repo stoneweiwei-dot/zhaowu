@@ -22,7 +22,7 @@
 
 - GitHub `main` 是唯一源码真相。Vercel Git 自动部署仅对 `main` 开启（`vercel.json` `git.deploymentEnabled.main=true`），正式生产只认 `stone-zhaowu-official`。
 - Supabase 登录、报告存档、图库/背景资产、访问统计统一使用当前项目配置。
-- 三语 Locale：`zh-Hant / zh-Hans / en`；前台登入只提供 Email＋密码，不再显示 Google、Apple、X 或其他第三方 OAuth 按钮。
+- 登入：普通用戶不提供登入、註冊、Google／Apple／X／Email 會員入口；唯一 `/login` 為站主 Email＋密碼入口，前端只接受 `profiles.is_owner=true` 的 session，既有非 Owner session 會清除。
 - Loading ghost overlay 已移除。
 - `finalizeReading` 是最终 Reading 单一来源；已保存报告不重新 live 算出另一套答案。
 - 个人命请文字为证据型文案；真实命请图走私有 report image delivery，失败不得阻塞文字答案。

@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { captureOAuthRedirect, getProfile, restoreSession, type SupabaseSession, type UserProfile } from "@/lib/supabase-rest";
+import { captureOAuthRedirect, getProfile, restoreSession, signOutRemote, type SupabaseSession, type UserProfile } from "@/lib/supabase-rest";
 import { setSharedBirthAccessUser } from "@/lib/shared-birth";
 
 export type CurrentUser = {
@@ -26,6 +26,16 @@ const AuthContext = createContext<AuthState>({
   reload: async () => undefined,
 });
 
+async function resolveOwnerSession(active: SupabaseSession | null): Promise<{ session: SupabaseSession | null; profile: UserProfile | null }> {
+  if (!active) return { session: null, profile: null };
+  const profile = await getProfile(active).catch(() => null);
+  if (!profile?.is_owner) {
+    await signOutRemote(active).catch(() => undefined);
+    return { session: null, profile: null };
+  }
+  return { session: active, profile };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<SupabaseSession | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -34,15 +44,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const reload = useCallback(async () => {
     setPending(true);
     try {
-      const active = await restoreSession();
-      setSharedBirthAccessUser(active?.user.id ?? null);
-      setSession(active);
-      if (!active) {
-        setProfile(null);
-        return;
-      }
-      const p = await getProfile(active).catch(() => null);
-      setProfile(p);
+      const restored = await restoreSession();
+      const owner = await resolveOwnerSession(restored);
+      setSharedBirthAccessUser(owner.session?.user.id ?? null);
+      setSession(owner.session);
+      setProfile(owner.profile);
     } finally {
       setPending(false);
     }
@@ -54,22 +60,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const bootstrapAuth = async () => {
       setPending(true);
       try {
-        // Supabase can return OAuth/email-confirmation tokens to any allowed site URL.
-        // Capture them before restoring storage so sensitive hash/query tokens never
-        // remain exposed in the address bar as a long "gibberish" string.
+        // Legacy OAuth/email-confirmation callbacks are consumed only to remove
+        // tokens from the URL. The session is accepted only when the profile is Owner.
         const callbackSession = await captureOAuthRedirect().catch(() => null);
         if (cancelled) return;
 
-        const active = callbackSession ?? await restoreSession();
+        const restored = callbackSession ?? await restoreSession();
         if (cancelled) return;
-        setSharedBirthAccessUser(active?.user.id ?? null);
-        setSession(active);
-        if (!active) {
-          setProfile(null);
-          return;
-        }
-        const p = await getProfile(active).catch(() => null);
-        if (!cancelled) setProfile(p);
+        const owner = await resolveOwnerSession(restored);
+        if (cancelled) return;
+
+        setSharedBirthAccessUser(owner.session?.user.id ?? null);
+        setSession(owner.session);
+        setProfile(owner.profile);
       } finally {
         if (!cancelled) setPending(false);
       }
@@ -85,15 +88,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [reload]);
 
   const user = useMemo<CurrentUser | null>(() => {
-    if (!session) return null;
-    const email = profile?.email ?? session.user.email ?? "";
+    if (!session || !profile?.is_owner) return null;
+    const email = profile.email ?? session.user.email ?? "";
     const metaName = typeof session.user.user_metadata?.name === "string" ? session.user.user_metadata.name : "";
     return {
       id: session.user.id,
-      displayName: profile?.display_name?.trim() || metaName || email.split("@")[0] || "會員",
+      displayName: profile.display_name?.trim() || metaName || email.split("@")[0] || "站主",
       email,
-      isOwner: Boolean(profile?.is_owner),
-      birthData: profile?.birth_data ?? null,
+      isOwner: true,
+      birthData: profile.birth_data ?? null,
     };
   }, [profile, session]);
 

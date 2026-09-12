@@ -5,11 +5,11 @@ const stats = await readFile(new URL("../src/lib/site-stats.ts", import.meta.url
 const shell = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
 const indexHtml = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const manifest = await readFile(new URL("../public/manifest.webmanifest", import.meta.url), "utf8");
-const report = await readFile(new URL("../docs/change-reports/ZW-WEB-2026.09.12-r118.md", import.meta.url), "utf8");
+const report = await readFile(new URL("../docs/change-reports/ZW-WEB-2026.09.13-r119.md", import.meta.url), "utf8");
 const agents = await readFile(new URL("../AGENTS.md", import.meta.url), "utf8");
 test("public footer always exposes current release and cumulative update count", () => {
   assert.match(stats, /ZW-WEB-2026\.09\.12-r118/);
-  assert.match(stats, /updateNumber:\s*118/);
+  assert.match(stats, /updateNumber:\s*119/);
   assert.match(shell, /data-site-release/);
   assert.match(shell, /累計更新/);
   assert.match(shell, /data-latest-change-report/);
