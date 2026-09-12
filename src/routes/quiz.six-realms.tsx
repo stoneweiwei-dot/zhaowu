@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ConcealedSacredResultArt } from "@/components/concealed-sacred-result-art";
 import { useI18n } from "@/lib/i18n";
 import { SIX_REALM_QUESTIONS, SIX_REALM_RESULTS, scoreSixRealmAnswers, type SixRealmKey } from "@/lib/fun-tests/six-realms";
 
@@ -114,6 +115,7 @@ function SixRealmsQuiz() {
   }
 
   const finalScore = done ? scoreSixRealmAnswers(answers) : score;
+  const sacredTitle = finalScore.primary.map((key) => `${key} · ${results[key].name}`).join(" · ");
 
   return (
     <main className="mx-auto max-w-3xl space-y-5 pb-16">
@@ -156,6 +158,8 @@ function SixRealmsQuiz() {
         </section>
       ) : (
         <section className="space-y-4">
+          <ConcealedSacredResultArt locale={locale} seed={`six-realms:${finalScore.primary.join("-")}`} title={sacredTitle} kind="realm" />
+
           <article className="seal-border rounded-2xl bg-cream/95 p-5 sm:p-8">
             <p className="text-xs tracking-[0.24em] text-cinnabar">{finalScore.tied ? copy.mixed : copy.primary}</p>
             <div className="mt-4 grid gap-4">
