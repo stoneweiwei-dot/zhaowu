@@ -468,10 +468,10 @@ function AccountPage() {
     return (
       <main className="mx-auto max-w-xl">
         <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
-          <p className="text-xs tracking-[0.28em] text-cinnabar">MY ZHAOWU</p>
-          <h1 className="mt-2 font-display text-3xl">{t("myTitle")}</h1>
-          <p className="mt-4 text-sm leading-7 text-ink-soft">{t("mySignedOutLead")}</p>
-          <Link to="/login" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{t("loginTab")}</Link>
+          <p className="text-xs tracking-[0.28em] text-cinnabar">OWNER CONSOLE</p>
+          <h1 className="mt-2 font-display text-3xl">{c.ownerTitle}</h1>
+          <p className="mt-4 text-sm leading-7 text-ink-soft">{tr(locale, "此入口僅供站主管理使用。", "此入口仅供站主管理使用。", "This entrance is reserved for the site owner.")}</p>
+          <Link to="/login" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{tr(locale, "站主登入", "站主登录", "Owner sign-in")}</Link>
         </section>
       </main>
     );

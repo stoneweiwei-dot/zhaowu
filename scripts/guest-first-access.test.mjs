@@ -36,6 +36,9 @@ test("login route is owner-only and ordinary sessions are rejected", () => {
   assert.match(provider, /if \(!session \|\| !profile\?\.is_owner\) return null/);
   assert.match(account, /if \(!user \|\| !session\)/);
   assert.match(account, /<Link to="\/login"/);
+  assert.match(account, /OWNER CONSOLE/);
+  assert.match(account, /站主登入/);
+  assert.doesNotMatch(account, /<p className="mt-4 text-sm leading-7 text-ink-soft">\{t\("mySignedOutLead"\)\}<\/p>/);
 });
 
 test("guest birth data stays local and account-scoped data remains isolated", () => {

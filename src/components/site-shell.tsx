@@ -93,6 +93,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const homeProductLabel = displayText(language, "四柱八字", "四柱八字", "BaZi", "四柱推命", "사주팔자", "BaZi");
   const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
+  const ownerLoginLabel = displayText(language, "站主登入", "站主登录", "Owner sign-in", "管理者ログイン", "사이트 소유자 로그인", "मालिक लॉगिन");
 
   return (
     <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
@@ -153,7 +154,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 ) : (
                   <Link to="/login" className="zhaowu-header-login">
                     <BrandIcon name="login" />
-                    {t("navLogin")}
+                    {ownerLoginLabel}
                   </Link>
                 )}
               </div>
