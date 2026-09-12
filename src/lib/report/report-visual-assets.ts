@@ -10,9 +10,9 @@ export type ReportVisualAsset = {
 export type ReportVisualAssetKind = "day-master" | "month" | "overview";
 export type LuckVisualElement = "木" | "火" | "土" | "金" | "水";
 
-const REPORT_VISUAL_CDN_BASE = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r57";
-const REPORT_LUCK_CDN_BASE = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r59";
-const REPORT_OVERVIEW_CDN = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r62/overview-bg.webp";
+const REPORT_VISUAL_CDN_BASE = "/report-visuals/groups";
+const REPORT_LUCK_CDN_BASE = "/report-visuals/groups";
+const REPORT_OVERVIEW_CDN = "/report-visuals/full/overview.webp";
 
 function localPair(id: string, sprite: string, index: number, count: number): ReportVisualAsset {
   return {

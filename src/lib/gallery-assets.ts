@@ -56,6 +56,8 @@ function safeSlug(value: string, fallback = "asset") {
 }
 
 export function galleryPublicUrl(path: string, bucketId = BUCKET) {
+  // Static customer assets are same-origin; Supabase remains the owner/admin source.
+  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("//") || path.startsWith("/")) return path;
   return `${SUPABASE_URL}/storage/v1/object/public/${encodeURIComponent(bucketId || BUCKET)}/${safePath(path)}`;
 }
 

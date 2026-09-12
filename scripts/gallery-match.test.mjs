@@ -27,19 +27,20 @@ function fakeAsset(id) {
   };
 }
 
-test("customer Gallery matching ranks the whole enabled visual library without approval gates", async () => {
+test("customer Gallery matching uses the Vercel static visual library without Supabase reads", async () => {
   const source = await read("src/lib/gallery-match.ts");
   assert.doesNotMatch(source, /analysis_status=eq\.approved/);
   assert.doesNotMatch(source, /client_eligible=eq\.true/);
-  assert.match(source, /enabled=eq\.true&category=eq\.visual-library/);
-  assert.match(source, /Whole enabled visual-library first/);
+  assert.match(source, /PUBLIC_ATLAS_ASSETS/);
+  assert.match(source, /staticGalleryAsset/);
+  assert.match(source, /Customer artwork is served from the Vercel build/);
+  assert.doesNotMatch(source, /SUPABASE_URL|SUPABASE_KEY|rest\/v1/);
   assert.match(source, /Approval is a ranking signal only/);
   assert.match(source, /chart\.useful/);
   assert.match(source, /chart\.drain/);
   assert.match(source, /rankCustomerGalleryArt/);
   assert.match(source, /a\.asset\.id\.localeCompare\(b\.asset\.id\)/);
 });
-
 test("an unapproved closer image beats an approved weaker image", () => {
   const chart = { useful: ["木"], drain: ["金"] };
   const approvedLow = {
