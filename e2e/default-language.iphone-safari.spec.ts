@@ -35,7 +35,7 @@ test.describe("iPhone Safari display-language contract", () => {
     await expect(page.getByRole("button", { name: "繁體中文", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByRole("button", { name: "简体中文", exact: true })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "日本語", exact: true })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: "登入", exact: true }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
     await expect.poll(() => page.evaluate(() => document.documentElement.lang)).toBe("zh-Hant");
 
     const labels = await page.locator(".site-lang-button").evaluateAll((nodes) =>
