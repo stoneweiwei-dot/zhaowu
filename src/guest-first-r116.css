@@ -1,0 +1,14 @@
+/* ZHAOWU r116 — guest-first public entry.
+   Public visitors should never be blocked by account UI. The owner/admin login route
+   remains available at /login and authenticated account controls remain unchanged. */
+
+/* Logged-out header login is intentionally removed from the customer-facing shell.
+   display:none also removes the link from keyboard/accessibility navigation. */
+.zhaowu-site-header .zhaowu-header-login {
+  display: none !important;
+}
+
+/* When no account actions are present, do not reserve a visibly empty customer slot. */
+.zhaowu-header-account-actions:has(.zhaowu-header-login:not([style*="display: none"])) {
+  min-width: 0;
+}
