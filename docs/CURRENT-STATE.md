@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最后核对：2026-09-09 19:50 AEST
+最後核對：2026-09-13 08:55 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -18,11 +18,14 @@
 
 每次接手实时检查 `main` 与 Vercel Production 的 `githubCommitSha`，禁止另建第二条 production 主线。Netlify、AppDeploy、Lovable standby、旧临时站只读参考。
 
+目前已核對：GitHub `main` 與 Vercel Production 均為 `4487edd0f921b04ad84f09636ed83838c1000dd0`；deployment `dpl_A8zzyGVSyekFpCDB5kK8FUTsmi7C` 為 `READY / production`。r117 的正式首頁、`/login`、`/account` 公開 URL 驗證仍有具日期記錄；r118/r119 與後續趣味測驗圖像改動已上線，但本次未重新執行完整瀏覽器、真實 iPhone、已安裝 PWA、真實登入或付費流程驗收，不得把 exact SHA 或部署 READY 等同完整上線驗收。
+
 ## 2. 已完成且默认锁住
 
 - GitHub `main` 是唯一源码真相。Vercel Git 自动部署仅对 `main` 开启（`vercel.json` `git.deploymentEnabled.main=true`），正式生产只认 `stone-zhaowu-official`。
 - Supabase 登录、报告存档、图库/背景资产、访问统计统一使用当前项目配置。
 - 登入：普通用戶不提供登入、註冊、Google／Apple／X／Email 會員入口；唯一 `/login` 為站主 Email＋密碼入口，前端只接受 `profiles.is_owner=true` 的 session，既有非 Owner session 會清除。
+- 現行公開語言：`zh-Hant / en / ko / hi`；`zh-Hans / ja` 僅保留歷史偏好相容並折回繁中，不再是公開選項。
 - Loading ghost overlay 已移除。
 - `finalizeReading` 是最终 Reading 单一来源；已保存报告不重新 live 算出另一套答案。
 - 个人命请文字为证据型文案；真实命请图走私有 report image delivery，失败不得阻塞文字答案。
@@ -33,6 +36,7 @@
 - 首页各分组必须用简短三语说明回答两件事：用户“会知道自己的什么”与“这个体系最擅长看什么”；英文必须自然简洁，不做逐字直译。
 - 「趣味测验」是独立的轻量自评系列，不冒充命盘；包含「内在动物 × 命局瑞兽」与「五行功能测验」。五行功能测验只判断当前需要训练的生长、启动、落地、收敛或恢复功能，不等同八字喜用神。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
+- 趣味測驗結果可顯示已核准的隱藏神聖圖像；這是結果頁視覺補充，不改命盤計算、報告契約或付費圖片流程。
 
 没有新的可复现 FAIL 时，不得因为旧 Issue / 旧聊天复活已废止实现。
 
@@ -63,14 +67,14 @@
 - 身体栏属于传统象义提醒，不是医疗诊断。
 - 图失败不能拖死文字报告。
 
-## 5. 当前视觉系统（2026-09-09 r98）
+## 5. 當前視覺系統（2026-09-13；r117 品牌基線）
 
 视觉母版是暖米宣纸／宋式图谱体系，品牌主體鎖定為松、日／月、山、水、雲。
 
-- Header 使用圓形「昭梧＋松＋日＋雲紋」主 Logo（`/brand-ui/logo-primary.svg`），旁側文字字標保留；登入／帳戶／首頁使用同一套細圓框功能 Icon。
-- PWA／加入主畫面使用深松綠圓角 App Icon（`/apple-touch-icon-r97.png`）；瀏覽器 tab 使用簡化松日 favicon。
+- Header 使用站主核准的金葫蘆＋深藍「昭梧」橫向原圖（`/brand-ui/header-gourd-wordmark-r113.png`），固定在 132 × 54 容器內；r117 已修正舊 CSS 導致的裁切。登入／帳戶／首頁功能 Icon 仍沿用細圓框系統。
+- PWA／加入主畫面使用獨立裁切與縮放的 r113 App Icon（`/apple-touch-icon-r113.png` 與 manifest 192／512 尺寸），不得拿 Header 長字標直接替代；瀏覽器 favicon 亦使用獨立輸出。
 - Footer 使用橫版「昭梧＋雲紋」標誌。
-- 葡蘆只作靈籤／吉祥功能標（`/brand-ui/mark-gourd.svg`），不重新搶主 Logo。青玉小龙不是品牌 Logo。
+- 金葫蘆現為核准品牌主體；功能松系圖示仍保留，但不得覆蓋 Header／App Icon。青玉小龍不是品牌 Logo。
 - 同一畫面最多兩種裝飾母題。首頁現用「松枝＋山日分隔」；禁止松、月、山、雲、水、印章同時出現。
 - 主按鈕金底松綠字膠囊；次按鈕／登出為 Ghost 金框。
 - 夜間模式：深松綠／玄黑底、金線、月白字，Header 切換至 `logo-primary-night.svg`；禁止亮白大面積。
@@ -81,7 +85,7 @@
 - 完整報告為一張連續暖宣紙閱讀面。
 - 青玉小龙 AI 導覽、Gallery 命請匹配與真實命請圖生成邏輯不因 UI 改版改變。
 
-最終視覺覆蓋層：`src/home-sheet-ui-v5.css` + `src/brand-ui-r97.css` + `src/brand-ui-r98.css`；報告層：`src/focused-report.css`。
+最終視覺覆蓋層：`src/home-sheet-ui-v5.css` + `src/brand-ui-r97.css` + `src/brand-ui-r98.css` + `src/brand-ui-r99.css` + `src/guest-first-r116.css`；報告層：`src/focused-report.css`。
 
 ## 6. 专题报告与 Calculation Truth Layer
 
@@ -92,10 +96,11 @@
 ## 7. 当前真正未完成
 
 - 正式子域名 `zhaowu.soul-terminal.com` DNS 收口。
-- iPhone 关键流程最终实机验收。
+- 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub r117 的 41 項 iPhone Safari CI 已通過；這不等於實機完成，亦不覆蓋 r118/r119 後續畫面。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
-- 正式「制作我的命请图」按钮已改为请求 `force=true` 的供应商个性化图；真实 provider 成功仍依赖图片 API credits，失败时必须回退 Gallery-direct，且不得阻塞文字报告。
-- Loading 使用站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 與同名 JPEG 海報；目標退出為 2.4 秒、硬退出為 2.8 秒，初始化异常不得阻塞首页、登入或账户入口。主画面图标为深松绿 App Icon `/apple-touch-icon-r97.png`。
+- 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
+- 站主 Email 登入、帳戶／報告重開，以及付款與 provider 成功／失敗流程仍缺 r119 owner-only 邊界下的端到端實證；普通用戶不再有註冊或會員登入流程。
+- Loading 使用站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 與同名 JPEG 海報；目標退出為 2.4 秒、硬退出為 2.8 秒，初始化異常不得阻塞首頁、登入或帳戶入口。主畫面圖示使用 r113 獨立 App Icon。
 
 ## 8. 生产优先级
 
