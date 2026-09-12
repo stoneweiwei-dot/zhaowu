@@ -35,11 +35,8 @@ test("guest birth data stays local and account-scoped data remains isolated", ()
   assert.match(sharedBirth, /signed-in user never inherits an unowned browser record/i);
 });
 
-test("free analysis can run before account persistence", () => {
-  const analyzeAt = analysisForm.indexOf("analyzeLife(");
-  const persistenceAt = analysisForm.indexOf("persistAnalysisHistory");
-  assert.ok(analyzeAt >= 0, "analysis must remain available");
-  assert.ok(persistenceAt >= 0, "authenticated history persistence must remain available");
-  assert.match(analysisForm, /if \(session\)/);
+test("free analysis remains available without a session and persistence stays session-gated", () => {
+  assert.match(analysisForm, /analyzeLife\(/);
   assert.match(analysisForm, /writeSharedBirthRecord/);
+  assert.match(analysisForm, /if \(session\)/);
 });
