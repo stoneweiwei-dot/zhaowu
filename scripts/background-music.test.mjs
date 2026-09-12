@@ -9,7 +9,7 @@ const upload = await readFile(new URL("../src/lib/background-music-upload.ts", i
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
 
-test("background music keeps the verified AAC as a safe fallback and reads the active Supabase asset", () => {
+test("background music keeps the verified AAC fallback but loads only after explicit opt-in", () => {
   assert.match(music, /jingfo-shengyuan-aac\.m4a/);
   assert.match(music, /getActiveBackgroundMusic/);
   assert.match(music, /musicPublicUrl/);
@@ -18,17 +18,16 @@ test("background music keeps the verified AAC as a safe fallback and reads the a
   assert.match(music, /audio\/mpeg/);
   assert.match(music, /loop/);
   assert.match(music, /playsInline/);
-  assert.match(music, /preload="metadata"/);
+  assert.match(music, /preload="none"/);
+  assert.match(music, /const primarySrc = requested \?/);
 });
 
-test("background music is mounted globally and unlocks on an iPhone Safari user gesture", () => {
+test("background music is mounted globally with explicit playback opt-in", () => {
   assert.match(main, /import \{ BackgroundMusic \}/);
   assert.match(main, /<BackgroundMusic \/>/);
-  assert.match(music, /zhaowu\.backgroundMusic\.v1/);
-  assert.match(music, /touchstart/);
-  assert.match(music, /pointerdown/);
-  assert.match(music, /touchend/);
-  assert.match(music, /keydown/);
+  assert.match(music, /zhaowu\.backgroundMusic\.v2/);
+  assert.match(music, /SESSION_REQUEST_KEY/);
+  assert.match(music, /if \(!requested\) return;/);
   assert.match(music, /data-background-music-control/);
 });
 
