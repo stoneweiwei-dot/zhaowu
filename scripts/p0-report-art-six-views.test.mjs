@@ -66,8 +66,8 @@ test("apple-touch-icon and manifest point to versioned new icons with no old act
   const manifest = await read("public/manifest.webmanifest");
   const gate = await read("src/components/intro-gate.tsx");
   const paid = await read("src/components/paid-report-pages.tsx");
-  assert.match(html, /apple-touch-icon-r97\.png/);
-  assert.match(manifest, /apple-touch-icon-r97\.png/);
+  assert.match(html, /apple-touch-icon-r113\.png/);
+  assert.match(manifest, /apple-touch-icon-r113\.png/);
   assert.match(manifest, /any maskable/);
   assert.doesNotMatch(html, /apple-touch-icon-r53\.png/);
   assert.doesNotMatch(html, /icons\/zhaowu-lotus-192\.png/);

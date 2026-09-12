@@ -119,3 +119,12 @@
 5. 能通过当前 QA / CI / production 规则。
 
 否则一律归档为历史证据，不重新激活。
+
+## 2026-09-12 實碼對帳補充
+
+- D60：`src/components/d60-karma-section.tsx` 已有 Astronomy Engine 與分鐘確認 Gate，r113 又修正了共享資料的確認旁路；上文「CALCULATION NOT WIRED」是歷史狀態，不能再用來聲稱網站沒有元件。現有計算不等於已完成獨立星曆／流派 test-vector 認證，後者仍需驗證，不得擅改公式。
+- Logo：本批採站主金葫蘆＋深藍昭梧來源，Header 與 App 尺寸分開，取代 CURRENT-STATE 的 r98 松系主 Logo 限制；功能松系圖示仍保留。
+- 登入：一般訪客免費入口隱藏 Header 登入；直接 `/login` 與已登入帳戶、站主權限維持。
+- 付費圖片 PR #295 於 2026-09-12 明確暫停，保持暫停。
+- 語言：現行公開語言選項為繁中／英文／韓文／印地文；簡中為相容層。舊三語任務不得直接恢復已移除的公開選項。
+- 待辦及證據分類見 `docs/OPEN-INSTRUCTIONS-2026-09-12.md`。
