@@ -1,0 +1,363 @@
+/* ZHAOWU r114 — free experience closeout.
+   Scope: non-paid report/UI polish only. Paid gating and payment logic are intentionally untouched. */
+
+:root {
+  --zw-paper: #f2eadf;
+  --zw-paper-light: #fbf7ef;
+  --zw-ink: #2b2824;
+  --zw-ink-soft: #686157;
+  --zw-cinnabar: #8f3f36;
+  --zw-pine: #355e50;
+  --zw-gold: #a8844d;
+  --zw-hairline: rgba(60, 45, 30, .12);
+}
+
+/* Preserve readable text sizing on iPhone Safari without unwanted zoom. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  overflow-wrap: anywhere;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+/* Visual book: more editorial, less dashboard-like. */
+.zhaowu-visual-book {
+  max-width: 980px;
+  margin-inline: auto;
+  border-color: var(--zw-hairline);
+  background:
+    radial-gradient(circle at 88% 6%, rgba(168, 132, 77, .075), transparent 31%),
+    radial-gradient(circle at 8% 92%, rgba(53, 94, 80, .045), transparent 29%),
+    linear-gradient(180deg, rgba(251, 247, 239, .985), rgba(242, 234, 223, .97));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, .42),
+    0 18px 48px rgba(60, 45, 30, .055);
+}
+
+.zhaowu-visual-book-head {
+  max-width: 720px;
+}
+
+.zhaowu-visual-book-head h4,
+.zhaowu-visual-card-title h5,
+.zhaowu-visual-overview h5 {
+  color: var(--zw-ink);
+  text-wrap: balance;
+}
+
+.zhaowu-visual-book-head > span,
+.zhaowu-visual-summary,
+.zhaowu-visual-card-copy > p:last-child,
+.zhaowu-element-flow > p,
+.zhaowu-visual-note {
+  color: var(--zw-ink-soft);
+  text-wrap: pretty;
+}
+
+/* Native horizontal browsing on touch screens. */
+.zhaowu-visual-tabs {
+  scroll-snap-type: x proximity;
+  overscroll-behavior-inline: contain;
+  padding-bottom: 4px;
+}
+
+.zhaowu-visual-tabs button {
+  scroll-snap-align: start;
+  min-width: max-content;
+  border-radius: 14px;
+  background: rgba(251, 247, 239, .86);
+  box-shadow: none;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.zhaowu-visual-tabs button.is-active {
+  border-color: rgba(53, 94, 80, .72);
+  background: var(--zw-pine);
+}
+
+.zhaowu-visual-tabs button:focus-visible,
+.zhaowu-visual-module-grid button:focus-visible {
+  outline: 3px solid rgba(143, 63, 54, .24);
+  outline-offset: 3px;
+}
+
+.zhaowu-visual-card {
+  border-color: var(--zw-hairline);
+  background: rgba(251, 247, 239, .88);
+  box-shadow: 0 12px 36px rgba(60, 45, 30, .045);
+}
+
+/* The source artworks are vertical. Keep their character instead of forcing 16:9. */
+.zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-visual-artwork {
+  width: min(100%, 620px);
+  aspect-ratio: 3 / 4;
+  margin-inline: auto;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(242, 234, 223, .92), rgba(226, 215, 197, .9));
+}
+
+.zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-visual-artwork img {
+  object-position: 50% 42%;
+  filter: saturate(.9) sepia(.025) contrast(.98);
+}
+
+.zhaowu-visual-artwork figcaption {
+  right: 10px;
+  bottom: 10px;
+  max-width: calc(100% - 20px);
+  border: 1px solid rgba(60, 45, 30, .1);
+  border-radius: 10px;
+  background: rgba(251, 247, 239, .9);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.zhaowu-visual-tags {
+  gap: 7px;
+}
+
+.zhaowu-visual-tags span {
+  border-radius: 10px;
+  background: rgba(242, 234, 223, .7);
+}
+
+.zhaowu-visual-facts,
+.zhaowu-element-judgement > div,
+.zhaowu-visual-module-grid button,
+.zhaowu-visual-module-grid > div {
+  border-color: var(--zw-hairline);
+}
+
+.zhaowu-visual-module-grid button {
+  box-shadow: none;
+  transition: border-color 160ms ease, background-color 160ms ease, transform 120ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .zhaowu-visual-module-grid button:hover {
+    border-color: rgba(53, 94, 80, .35);
+    background: rgba(255, 253, 248, .96);
+  }
+}
+
+.zhaowu-visual-module-grid .is-disabled {
+  opacity: .7;
+  background: rgba(242, 234, 223, .44);
+}
+
+/* Month-season and five-element blocks retain exact frontend text even when art fails. */
+.zhaowu-season-period {
+  border-top-color: rgba(60, 45, 30, .16);
+}
+
+.zhaowu-season-period b,
+.zhaowu-element-judgement b {
+  color: var(--zw-ink);
+}
+
+.zhaowu-five-wheel {
+  max-width: 340px;
+  contain: layout paint;
+}
+
+.zhaowu-element-bar > div {
+  background: rgba(60, 45, 30, .085);
+}
+
+.zhaowu-visual-note {
+  border-left-color: rgba(53, 94, 80, .58);
+}
+
+.zhaowu-visual-note.is-provisional {
+  border-left-color: rgba(143, 63, 54, .6);
+}
+
+.zhaowu-visual-watermark {
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Lazy sections below the first screen can skip offscreen rendering safely. */
+@supports (content-visibility: auto) {
+  .zhaowu-visual-book,
+  .report-luck-book,
+  .zhaowu-share-card {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 760px;
+  }
+}
+
+/* Long Traditional/Simplified/English strings must never force horizontal overflow. */
+.zhaowu-visual-book :where(h4, h5, p, span, b, small, dt, dd),
+.report-luck-book :where(h4, h5, p, span, b, small),
+.zhaowu-share-card :where(h4, h5, p, span, b, small) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Mobile Safari is the primary report viewport. */
+@media (max-width: 640px) {
+  .zhaowu-visual-book {
+    width: auto;
+    margin: 0 max(14px, env(safe-area-inset-left)) 28px max(14px, env(safe-area-inset-right));
+    padding: 17px;
+    border-radius: 20px;
+  }
+
+  .zhaowu-visual-book-head p,
+  .zhaowu-visual-card-title p,
+  .zhaowu-visual-eyebrow {
+    font-size: 12px;
+    letter-spacing: .13em;
+  }
+
+  .zhaowu-visual-book-head h4 {
+    margin-top: 5px;
+    font-size: clamp(25px, 7.4vw, 30px);
+    line-height: 1.28;
+  }
+
+  .zhaowu-visual-book-head > span {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.68;
+  }
+
+  .zhaowu-visual-tabs {
+    gap: 8px;
+    margin-inline: -4px;
+    padding-inline: 4px;
+  }
+
+  .zhaowu-visual-tabs button {
+    min-height: 44px;
+    padding: 10px 13px;
+    font-size: 14px;
+  }
+
+  .zhaowu-visual-card {
+    padding: 15px;
+    border-radius: 17px;
+  }
+
+  .zhaowu-visual-card-title h5,
+  .zhaowu-visual-overview h5 {
+    font-size: clamp(22px, 6.3vw, 27px);
+    line-height: 1.34;
+  }
+
+  .zhaowu-visual-card:not(.zhaowu-visual-overview) .zhaowu-visual-artwork {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    margin-top: 14px;
+    border-radius: 15px;
+  }
+
+  .zhaowu-visual-summary {
+    margin-top: 14px;
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .zhaowu-visual-module-grid {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin-top: 18px;
+  }
+
+  .zhaowu-visual-module-grid button,
+  .zhaowu-visual-module-grid > div {
+    min-height: 82px;
+    padding: 13px 14px;
+    border-radius: 14px;
+  }
+
+  .zhaowu-visual-facts {
+    grid-template-columns: 1fr;
+    border-radius: 13px;
+  }
+
+  .zhaowu-visual-facts div {
+    display: grid;
+    grid-template-columns: minmax(88px, .8fr) minmax(0, 1.2fr);
+    align-items: baseline;
+    gap: 12px;
+    padding: 11px 12px;
+    text-align: left;
+  }
+
+  .zhaowu-visual-facts dd {
+    margin-top: 0;
+    text-align: right;
+  }
+
+  .zhaowu-season-period {
+    grid-template-columns: 1fr auto 20px auto;
+    gap: 7px;
+    font-size: 13px;
+  }
+
+  .zhaowu-element-judgement {
+    grid-template-columns: 1fr;
+  }
+
+  .zhaowu-five-wheel {
+    width: min(100%, 312px);
+  }
+
+  .zhaowu-element-bar {
+    grid-template-columns: 38px minmax(0, 1fr) 40px;
+    gap: 8px;
+  }
+}
+
+/* Narrow iPhones: protect the page from one-pixel sideways scroll. */
+@media (max-width: 380px) {
+  .zhaowu-visual-book {
+    margin-inline: 10px;
+    padding: 14px;
+  }
+
+  .zhaowu-visual-card {
+    padding: 13px;
+  }
+
+  .zhaowu-season-period {
+    grid-template-columns: 1fr auto;
+  }
+
+  .zhaowu-season-period > span {
+    grid-column: 1 / -1;
+  }
+
+  .zhaowu-season-period i {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-visual-book *,
+  .report-luck-book *,
+  .zhaowu-share-card * {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
