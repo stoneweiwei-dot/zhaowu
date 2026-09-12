@@ -10,6 +10,7 @@
 
 /* Preserve the supplied horizontal wordmark without the old circular clipping. */
 .zhaowu-site-header .zhaowu-brand-seal--sm {
+  display: block !important;
   width: 132px !important;
   height: 54px !important;
   flex: 0 0 132px;
