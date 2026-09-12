@@ -148,7 +148,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
           <div className="zhaowu-specialist-sections">
             {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
             {reading.sections.map((section) => (
-              <article key={`${section.title}-${section.body.slice(0, 24)}`} data-summary-table={section.table ? "true" : undefined}>
+              <article key={`${section.title}-${section.body.slice(0, 24)}`} data-summary-table={section.table ? "true" : undefined} data-summary-description={section.layout === "description" ? "true" : undefined}>
                 {section.table ? <ChartTable title={section.title} headers={section.table.headers} rows={section.table.rows} /> : <><h2>{section.title}</h2><p>{section.body}</p></>}
               </article>
             ))}

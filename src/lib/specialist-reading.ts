@@ -21,7 +21,7 @@ import {
 
 export type SpecialistId = "indian" | "western" | "ziwei" | "qizheng" | "past" | "dharma";
 
-export type SpecialistSection = { title: string; body: string; table?: { headers: string[]; rows: string[][] } };
+export type SpecialistSection = { title: string; body: string; layout?: "description"; table?: { headers: string[]; rows: string[][] } };
 
 export type SpecialistReading = {
   title: string;
@@ -89,9 +89,22 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
     chartAngles = angles;
     const asc = decoratePosition("Ascendant", angles.ascendant);
     rising = `${signLabel(asc.sign, locale)} ${formatDegree(asc)}`;
-    if (sunPos) houses = locale === "en"
-      ? `Sun in house ${houseOf(sunPos.longitude, houseChart)}`
-      : locale === "zh-Hans" ? `太阳落在第 ${houseOf(sunPos.longitude, houseChart)} 宫` : `太陽落在第 ${houseOf(sunPos.longitude, houseChart)} 宮`;
+    if (sunPos) {
+      const house = houseOf(sunPos.longitude, houseChart);
+      // Modern Western house topics; an explanatory label, not a personality verdict.
+      // References: https://www.chani.com/blogs/the-12-houses-in-astrology
+      // https://en.wikipedia.org/wiki/House_(astrology) (modern topic labels only)
+      const topics = locale === "en"
+        ? ["self-presentation and first impressions", "personal resources and values", "communication and everyday learning", "home and family roots", "creativity, enjoyment and romance", "daily work and routines", "close partnerships and cooperation", "shared resources and obligations", "higher learning, travel and beliefs", "career and public role", "friendships, groups and shared goals", "solitude, reflection and private life"]
+        : locale === "zh-Hans"
+          ? ["自我展现与第一印象", "个人资源与价值观", "沟通与日常学习", "家庭与成长根基", "创作、乐趣与恋爱", "日常工作与生活习惯", "亲密关系与合作", "共同资源与责任", "进修、远行与信念", "事业与社会角色", "朋友、群体与共同目标", "独处、反思与内在生活"]
+          : ["自我展現與第一印象", "個人資源與價值觀", "溝通與日常學習", "家庭與成長根基", "創作、樂趣與戀愛", "日常工作與生活習慣", "親密關係與合作", "共同資源與責任", "進修、遠行與信念", "事業與社會角色", "朋友、群體與共同目標", "獨處、反思與內在生活"];
+      houses = locale === "en"
+        ? `Sun in house ${house}\nHouse topic: ${topics[house - 1]}.\nIn modern Western astrology, this names the life area associated with the Sun's placement. It is a symbolic reference; one placement alone does not determine personality or life outcomes.`
+        : locale === "zh-Hans"
+          ? `太阳落在第 ${house} 宫\n此宫主题：${topics[house - 1]}。\n在现代西洋占星中，这表示太阳所在宫位对应的生活主题。属于象征性参考，不能只凭这一项判定性格或人生吉凶。`
+          : `太陽落在第 ${house} 宮\n此宮主題：${topics[house - 1]}。\n在現代西洋占星中，這表示太陽所在宮位對應的生活主題。屬於象徵性參考，不能只憑這一項判定性格或人生吉凶。`;
+    }
   }
 
   const planetNames: Record<string, string> = { mercury: "水星", venus: "金星", mars: "火星", jupiter: "木星", saturn: "土星" };
@@ -116,7 +129,7 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
       { title: locale === "en" ? "Moon" : locale === "zh-Hans" ? "月亮" : "月亮", body: birth.timeUnknown ? timeNote : (moonPos ? `${signLabel(moonPos.sign, locale)} ${formatDegree(moonPos)}` : "—") },
       { title: locale === "en" ? "Rising" : locale === "zh-Hans" ? "上升" : "上升", body: rising || timeNote || "—" },
       { title: locale === "en" ? "Main planets" : "主要行星", body: planetLine || "—", table: { headers: locale === "en" ? ["Planet", "Sign", "Degree", "House"] : ["行星", "星座", "度數", "落宮"], rows: planetRows } },
-      { title: locale === "en" ? "Life areas" : locale === "zh-Hans" ? "人生领域" : "人生領域", body: houses || timeNote || "—" },
+      { title: locale === "en" ? "Sun's house" : locale === "zh-Hans" ? "太阳落宫" : "太陽落宮", body: houses || timeNote || "—", layout: "description" },
     ],
   };
 }
