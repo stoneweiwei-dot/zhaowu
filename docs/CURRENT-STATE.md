@@ -18,7 +18,7 @@
 
 每次接手实时检查 `main` 与 Vercel Production 的 `githubCommitSha`，禁止另建第二条 production 主线。Netlify、AppDeploy、Lovable standby、旧临时站只读参考。
 
-目前已核對：GitHub `main` 與 Vercel Production 均為 `4487edd0f921b04ad84f09636ed83838c1000dd0`；deployment `dpl_A8zzyGVSyekFpCDB5kK8FUTsmi7C` 為 `READY / production`。r117 的正式首頁、`/login`、`/account` 公開 URL 驗證仍有具日期記錄；r118/r119 與後續趣味測驗圖像改動已上線，但本次未重新執行完整瀏覽器、真實 iPhone、已安裝 PWA、真實登入或付費流程驗收，不得把 exact SHA 或部署 READY 等同完整上線驗收。
+目前已核對：最後一個 `READY / production` runtime deployment 是 `dpl_A8zzyGVSyekFpCDB5kK8FUTsmi7C`，精確對應 `4487edd0f921b04ad84f09636ed83838c1000dd0`。PR #306 起的 docs-only 合併會讓 GitHub `main` 前進，Vercel 依 ignore 規則把對應 deployment 標為 `CANCELED`，不代表 runtime Production 已變更或失敗。r117 的正式首頁、`/login`、`/account` 公開 URL 驗證仍有具日期記錄；r118/r119 與後續趣味測驗圖像改動已上線，但本次未重新執行完整瀏覽器、真實 iPhone、已安裝 PWA、真實登入或付費流程驗收，不得把 exact SHA 或部署 READY 等同完整上線驗收。
 
 ## 2. 已完成且默认锁住
 

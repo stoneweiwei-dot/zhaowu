@@ -1,6 +1,6 @@
 # 昭梧未完成指令對帳｜2026-09-12
 
-最新核對基底 main / Production：`4487edd0f921b04ad84f09636ed83838c1000dd0`，Vercel deployment `dpl_A8zzyGVSyekFpCDB5kK8FUTsmi7C` 為 READY／production。Sites appgprj_6aa51f3fb7e881919ef1b3ac22ce416a 是私人管理入口，並非第二個正式站。
+最新 runtime 核對基底：Production `4487edd0f921b04ad84f09636ed83838c1000dd0`，Vercel deployment `dpl_A8zzyGVSyekFpCDB5kK8FUTsmi7C` 為 READY／production。PR #306 起的 docs-only 合併會讓 GitHub `main` 前進，但不改 runtime Production；對應 Vercel deployment 依 ignore 規則標為 CANCELED。Sites appgprj_6aa51f3fb7e881919ef1b3ac22ce416a 是私人管理入口，並非第二個正式站。
 
 | 指令 | 判定與處理 | 證據／剩餘驗證 |
 |---|---|---|
