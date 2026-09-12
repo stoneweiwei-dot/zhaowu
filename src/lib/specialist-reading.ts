@@ -21,7 +21,7 @@ import {
 
 export type SpecialistId = "indian" | "western" | "ziwei" | "qizheng" | "past" | "dharma";
 
-export type SpecialistSection = { title: string; body: string };
+export type SpecialistSection = { title: string; body: string; table?: { headers: string[]; rows: string[][] } };
 
 export type SpecialistReading = {
   title: string;
@@ -94,11 +94,13 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
       : locale === "zh-Hans" ? `太阳落在第 ${houseOf(sunPos.longitude, houseChart)} 宫` : `太陽落在第 ${houseOf(sunPos.longitude, houseChart)} 宮`;
   }
 
-  const planetLine = planets.map((body) => {
+  const planetNames: Record<string, string> = { mercury: "水星", venus: "金星", mars: "火星", jupiter: "木星", saturn: "土星" };
+  const planetRows = planets.map((body) => {
     const pos = decoratePosition("Sun", body.longitude);
-    const name = body.key;
-    return `${name} · ${signLabel(pos.sign, locale)}`;
-  }).join(locale === "en" ? "; " : "；");
+    const name = locale === "en" ? body.key[0].toUpperCase() + body.key.slice(1) : planetNames[body.key];
+    return [name, signLabel(pos.sign, locale), birth.timeUnknown ? "—" : formatDegree(pos), chartHouses ? String(houseOf(body.longitude, chartHouses)) : "—"];
+  });
+  const planetLine = planetRows.map(row => row.join(" · ")).join("\n");
 
   return {
     title: locale === "en" ? "Western astrology" : locale === "zh-Hans" ? "西洋星座" : "西洋星座",
@@ -113,7 +115,7 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
       { title: locale === "en" ? "Sun" : locale === "zh-Hans" ? "太阳" : "太陽", body: sunPos ? `${signLabel(sunPos.sign, locale)} ${formatDegree(sunPos)}` : "—" },
       { title: locale === "en" ? "Moon" : locale === "zh-Hans" ? "月亮" : "月亮", body: birth.timeUnknown ? timeNote : (moonPos ? `${signLabel(moonPos.sign, locale)} ${formatDegree(moonPos)}` : "—") },
       { title: locale === "en" ? "Rising" : locale === "zh-Hans" ? "上升" : "上升", body: rising || timeNote || "—" },
-      { title: locale === "en" ? "Main planets" : locale === "zh-Hans" ? "主要行星" : "主要行星", body: planetLine || "—" },
+      { title: locale === "en" ? "Main planets" : "主要行星", body: planetLine || "—", table: { headers: locale === "en" ? ["Planet", "Sign", "Degree", "House"] : ["行星", "星座", "度數", "落宮"], rows: planetRows } },
       { title: locale === "en" ? "Life areas" : locale === "zh-Hans" ? "人生领域" : "人生領域", body: houses || timeNote || "—" },
     ],
   };

@@ -1,4 +1,4 @@
-import { SpecialistChart } from "@/components/specialist-chart";
+import { ChartTable, SpecialistChart } from "@/components/specialist-chart";
 import { useEffect, useMemo, useState } from "react";
 import { D60KarmaSection } from "@/components/d60-karma-section";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
@@ -148,7 +148,9 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
           <div className="zhaowu-specialist-sections">
             {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
             {reading.sections.map((section) => (
-              <article key={`${section.title}-${section.body.slice(0, 24)}`}><h2>{section.title}</h2><p>{section.body}</p></article>
+              <article key={`${section.title}-${section.body.slice(0, 24)}`} data-summary-table={section.table ? "true" : undefined}>
+                {section.table ? <ChartTable title={section.title} headers={section.table.headers} rows={section.table.rows} /> : <><h2>{section.title}</h2><p>{section.body}</p></>}
+              </article>
             ))}
           </div>
         ) : null}
