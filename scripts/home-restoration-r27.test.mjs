@@ -21,13 +21,13 @@ test('one article opens initially; other summaries contain only titles, with no 
  assert.match(summary,/article.title\[locale\]/);assert.doesNotMatch(summary,/article.summary|publishedAt|views|瀏覽/);
  assert.doesNotMatch(s,/fetchLifeViewCounts|incrementLifeViewCount|life-view-views/);
 });
-test('question stays ahead of birth details even after a report, login returns to BaZi and intro stays intact',()=>{
+test('question stays ahead of birth details, owner login returns to the owner account, and intro stays intact',()=>{
  const form=source('src/components/analysis-form.tsx');
  assert.ok(form.indexOf('id="analysis-question"')<form.indexOf('id: "birth-year"'));
  assert.match(form,/aria-describedby="time-importance"/);assert.match(form,/UNKNOWN_TIME_COPY\[locale\]/);
  assert.match(form,/\{!current \? \(/);assert.match(form,/\{previewChart \? \(/);
  assert.match(form,/BaziChart chart=\{previewChart\} showHeader=\{false\}/);
- const login=source('src/routes/login.tsx');assert.doesNotMatch(login,/navigate\(\{ to: "\/account"/);assert.match(login,/navigate\(\{ to: "\/"/);
+ const login=source('src/routes/login.tsx');assert.match(login,/navigate\(\{ to: "\/account"/);assert.match(login,/profile\?\.is_owner/);assert.doesNotMatch(login,/signUp|signup|register/i);
  const intro=source('src/components/intro-gate.tsx');assert.match(intro,/OWNER_LOADING_VIDEO/);assert.match(intro,/data-intro-motion="owner-video"/);assert.doesNotMatch(intro,/wutong-owner-r29/);
  const panel=source('src/components/character-panel.tsx');assert.doesNotMatch(panel,/buildCharacterPanel|radar|artScores|SCHOOL_MARK/);
 });

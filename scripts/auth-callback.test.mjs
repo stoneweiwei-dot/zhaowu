@@ -7,7 +7,7 @@ const provider = await readFile(new URL('../src/lib/auth/provider.tsx', import.m
 const rest = await readFile(new URL('../src/lib/supabase-rest.ts', import.meta.url), 'utf8');
 const signup = await readFile(new URL('../src/lib/auth/signup.ts', import.meta.url), 'utf8');
 
-test('legacy OAuth callback builder stays canonical while login exposes no OAuth entry', () => {
+test('legacy OAuth callback builder stays canonical while owner login exposes no OAuth entry', () => {
   assert.doesNotMatch(login, /startOAuth/);
   assert.doesNotMatch(login, /onOAuth\(/);
   assert.match(rest, /export function startOAuth/);
@@ -27,9 +27,11 @@ test('OAuth callback cleanup removes sensitive tokens from the address bar', () 
   assert.match(rest, /window\.location\.pathname/);
 });
 
-test('email signup confirmation returns to the official production site instead of a stale Auth Site URL', () => {
-  assert.match(login, /@\/lib\/auth\/signup/);
+test('retired signup helper remains production-bound while the active login exposes owner sign-in only', () => {
+  assert.doesNotMatch(login, /@\/lib\/auth\/signup/);
+  assert.doesNotMatch(login, /signUp|signup|register/i);
+  assert.match(login, /ZHAOWU · OWNER/);
+  assert.match(login, /profile\?\.is_owner/);
   assert.match(signup, /https:\/\/stone-zhaowu-official\.vercel\.app\//);
   assert.match(signup, /searchParams\.set\("redirect_to", PRODUCTION_AUTH_REDIRECT\)/);
-  assert.match(signup, /zhaowu\.supabase\.session\.v1/);
 });

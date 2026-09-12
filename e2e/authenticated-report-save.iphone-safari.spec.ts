@@ -1,6 +1,6 @@
 import { expect, test, type Page, type Route } from "@playwright/test";
 
-const USER = { id: "save-test", email: "save@example.test", user_metadata: { name: "保存流程測試會員" } };
+const USER = { id: "save-test", email: "save@example.test", user_metadata: { name: "保存流程測試站主" } };
 const SESSION = {
   access_token: "test",
   refresh_token: "test",
@@ -12,8 +12,8 @@ const SESSION = {
 const PROFILE = {
   id: USER.id,
   email: USER.email,
-  display_name: "保存流程測試會員",
-  is_owner: false,
+  display_name: "保存流程測試站主",
+  is_owner: true,
   owner_archive_id: null,
   birth_data: null,
 };
@@ -79,12 +79,12 @@ async function mobileHealthy(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 }
 
-test("Signed-in member reaches the full report with the durable-save action available", async ({ page }) => {
+test("Signed-in owner reaches the full report with the durable-save action available", async ({ page }) => {
   await installSession(page);
   await mockAuthenticatedCloud(page);
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
-  await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
+  await expect(page.locator('a[href="/account"]').first()).toBeVisible();
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "開始分析", exact: true }).click();
   await expect(page.locator("#result")).toBeVisible();
@@ -94,18 +94,16 @@ test("Signed-in member reaches the full report with the durable-save action avai
   await mobileHealthy(page);
 });
 
-test("Full report stays available when Supabase persistence fails", async ({ page }) => {
+test("Full report stays available when owner persistence fails", async ({ page }) => {
   await installSession(page);
   await mockAuthenticatedCloud(page, 503);
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
-  await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
+  await expect(page.locator('a[href="/account"]').first()).toBeVisible();
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "開始分析", exact: true }).click();
   await expect(page.locator("#result")).toBeVisible();
   await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
-  // Persistence is asynchronous and may expose a retry/update action at different times.
-  // The protected contract here is that a cloud failure never removes the delivered report.
   await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
   await mobileHealthy(page);
 });

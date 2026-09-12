@@ -1,0 +1,45 @@
+# 昭梧更新報告｜ZW-WEB-2026.09.13-r120
+
+## 本次改動
+
+- 印度古法占星／D60 新增明確的「出生分鐘可靠度 Gate」：先顯示本次使用的年月日、精確時分與出生地，使用者必須確認這是可核對到分鐘的出生時間，才會開始 D60 穩定性檢查。
+- 確認綁定當次出生記錄；年月日時分、時區或出生地變動後，原確認立即失效，必須重新確認。
+- 確認後先沿用現有 D60 上升點算法做 ±2 分鐘檢查；若前後兩側任一足以改變 D60 上升細分，直接標示「不作判定」，不渲染 D60 盤面／五項解讀。
+- 若穩定性檢查本身失敗，同樣 fail-closed：D60 不作判定，其他分析照常保留。
+- 新增 iPhone Safari D60 Gate 契約，鎖定精確分鐘顯示、確認前不得顯示 D60 解讀，確認後才可進入穩定性結果。
+- 同批對齊已被 r119 owner-only Auth／r120 Gate 取代的 Engine 與 iPhone Safari 舊測試斷言；只更新測試契約，不恢復普通會員登入，也不改其他 runtime 行為。
+
+## 為什麼改
+
+正式站以 `1988-10-04 04:40 · Sydney, Australia` 的合成訪客資料驗證時，確認共享生辰與精確分鐘均能正確保留，但 `/indian-astrology` 沒有出現 Instruction Registry 所宣告的分鐘確認 Gate；而且 ±2 分鐘不穩定時仍可看到 D60 解讀內容。其後 r118 新增盤面表格、r119 收緊為站主登入，均未改變這個可靠度缺口。
+
+這與現行 `VEDIC-INTERPRETATION-PROTOCOL-v1.0.md` 的時間可靠度 Gate 衝突。本版只補可靠度與輸出 Gate，不改 D60 計算公式，不用 D60 反向考時，也不把 D60 升級為子平主判。
+
+首輪 CI 另發現部分舊測試仍在期待已被 r119 明確取消的普通會員登入／註冊、舊 account 文案與舊 D60 直接渲染路徑。這些不是新 runtime regression，而是測試仍停在舊產品契約；本版將它們改為驗證 owner-only Auth、guest／owner 生辰隔離，以及 `D60ReliabilityGate → D60KarmaSection` 的新鏈路。
+
+## 影響範圍
+
+- `/indian-astrology` 的 D60 公開補充區。
+- D60 使用者確認與 ±2 分鐘穩定性前置流程。
+- iPhone Safari D60／owner-only Auth 回歸測試。
+- Engine contract 中 owner-only Auth、guest data、specialist route 的舊測試對帳。
+- public release fallback 與 PWA shell cache。
+
+## 保護範圍
+
+- 保留 r118 的 specialist chart／D1-D60 表格功能；只有在 Gate 通過且 ±2 分鐘穩定時才讓 D60 表格進入可見輸出。
+- 不修改現有 Astronomy Engine、Lahiri ayanamsa、上升點與 D60 分段公式。
+- 不修改子平八字、紫微、七政、一掌經等主計算與判法。
+- 不修改 r119 的 owner-only Auth runtime、Supabase schema、RLS、使用者資料、報告歷史、payment、paywall 或任何付費 PR。
+- PR #295 按站主指令繼續暫停，不納入本批。
+- D60 仍只作印度古法占星的輔助旁證；時間不可靠即停止，不以 D60 反向修正出生時間。
+
+## 驗證
+
+發布前：Deploy gate、Engine suite、iPhone Safari 必須全部通過。
+
+發布後：使用未登入的合成出生記錄 `1988-10-04 04:40 · Sydney, Australia` 驗證 `/indian-astrology`：頁面必須先顯示 04:40 的分鐘確認 Gate；確認前不得出現 D60 解讀；確認後若 ±2 分鐘不穩定，必須只顯示「不作判定」而不顯示 D60 盤面解讀。另重新核對免費訪客核心分析不被 r119 owner-only Auth 阻斷，以及 Production READY、GitHub main exact SHA、PWA cache 與 runtime errors。
+
+## 回滾
+
+完整回滾本批 commit 即恢復 r119／當前 main 的 D60 行為。站主登入、specialist chart、公開免費流程均保留，但 D60 會重新缺少可靠度 Gate；因此回滾僅可作緊急技術回退，不應視為符合現行 D60 規範的長期狀態。
