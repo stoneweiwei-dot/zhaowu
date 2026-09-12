@@ -7,8 +7,3 @@
 .zhaowu-site-header .zhaowu-header-login {
   display: none !important;
 }
-
-/* When no account actions are present, do not reserve a visibly empty customer slot. */
-.zhaowu-header-account-actions:has(.zhaowu-header-login:not([style*="display: none"])) {
-  min-width: 0;
-}
