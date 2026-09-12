@@ -27,30 +27,25 @@ async function mobileHealthy(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 }
 
-test.describe("iPhone Safari authenticated member flow", () => {
-  test("a valid stored session restores Account without redirecting to login", async ({ page }) => {
+test.describe("iPhone Safari owner-only authentication boundary", () => {
+  test("an unverified legacy member session is rejected from Account", async ({ page }) => {
     await installStoredSession(page);
     await page.goto("/account", { waitUntil: "domcontentloaded" });
 
     await expect(page).toHaveURL(/\/account$/);
-    await expect(page.getByRole("heading", { name: "我的昭梧", exact: true })).toBeVisible();
-    await expect(page.getByText(USER.email, { exact: false }).first()).toBeVisible();
-    await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "昭梧站主後台", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "站主登入", exact: true })).toBeVisible();
+    await expect(page.getByText(USER.email, { exact: false })).toHaveCount(0);
     await mobileHealthy(page);
   });
 
-  test("the restored session remains available after returning through Home", async ({ page }) => {
+  test("an unverified legacy member session does not create an Account entry on Home", async ({ page }) => {
     await installStoredSession(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("link", { name: "我的昭梧", exact: true }).first()).toBeVisible();
-    const stored = await page.evaluate(() => localStorage.getItem("zhaowu.supabase.session.v1"));
-    expect(stored).toContain(USER.id);
-
-    await page.goto("/account", { waitUntil: "domcontentloaded" });
-    await expect(page).toHaveURL(/\/account$/);
-    await expect(page.getByRole("heading", { name: "我的昭梧", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "站主登入", exact: true }).first()).toBeVisible();
+    await expect(page.locator('a[href="/account"]')).toHaveCount(0);
+    await expect(page.getByText(USER.email, { exact: false })).toHaveCount(0);
     await mobileHealthy(page);
   });
 });

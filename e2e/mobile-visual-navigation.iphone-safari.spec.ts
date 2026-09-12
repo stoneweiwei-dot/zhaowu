@@ -45,7 +45,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await expect(page.locator('[data-intro-fallback] svg')).toHaveCount(0);
   });
 
-  test("D60 renders and expands using the current precise birth record", async ({ page }) => {
+  test("D60 confirms the precise birth minute before rendering the stable interpretation", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.addInitScript((birth) => {
       localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify(birth));
@@ -56,7 +56,13 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
       } });
     }, BIRTH);
     await page.goto('/indian-astrology');
+    const gate = page.locator('[data-d60-minute-gate]');
+    await expect(gate).toBeVisible();
+    await expect(gate.locator('[data-d60-confirmed-record]')).toContainText('04:40');
     const theme = page.getByRole('button', { name: /核心慣性/ });
+    await expect(theme).toHaveCount(0);
+    await page.getByRole('button', { name: /我確認這是可核對到分鐘的出生時間/ }).click();
+    await expect(gate).toHaveCount(0);
     await expect(theme).toBeVisible();
     await theme.click();
     await expect(theme).toHaveAttribute('aria-expanded', 'true');

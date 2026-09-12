@@ -32,6 +32,7 @@ test("failed full image does not block text and six report entries stay semantic
   const paid = await read("src/components/paid-report-pages.tsx");
   const home = await read("src/routes/index.tsx");
   const page = await read("src/components/specialist-system-page.tsx");
+  const d60Gate = await read("src/components/d60-reliability-gate.tsx");
   assert.match(paid, /ReportVisualBook/);
   assert.match(home, /to: "\/indian-astrology"/);
   assert.match(home, /to: "\/astrology"/);
@@ -46,7 +47,9 @@ test("failed full image does not block text and six report entries stay semantic
   assert.match(home, /查看分析|Open analysis/);
   assert.match(page, /readSharedBirthRecord/);
   assert.match(page, /buildZiweiReading|buildWesternReading/);
-  assert.match(page, /D60KarmaSection/);
+  assert.match(page, /D60ReliabilityGate/);
+  assert.match(d60Gate, /D60KarmaSection/);
+  assert.match(d60Gate, /data-d60-minute-gate/);
   assert.doesNotMatch(home, /disabled/);
 });
 
@@ -54,11 +57,14 @@ test("unknown birth time does not disable a whole section and D60 warns instead 
   const reading = await read("src/lib/specialist-reading.ts");
   const indian = await read("src/routes/indian-astrology.tsx");
   const d60 = await read("src/components/d60-karma-section.tsx");
+  const d60Gate = await read("src/components/d60-reliability-gate.tsx");
   assert.match(reading, /目前無法確定命宮|Life Palace/);
   assert.match(reading, /不生成 D60 結論|no D60 conclusion/);
   assert.match(indian, /id="indian"/);
   assert.match(d60, /variant === "standalone"/);
   assert.match(d60, /unavailable/);
+  assert.match(d60Gate, /reportBirth: D60GateBirth \| null/);
+  assert.match(d60Gate, /reportBirth=\{null\}/);
 });
 
 test("apple-touch-icon and manifest point to versioned new icons with no old active HTML favicon", async () => {

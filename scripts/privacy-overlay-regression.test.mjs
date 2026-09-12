@@ -9,7 +9,7 @@ const resultView = await readFile(new URL("../src/components/result-view.tsx", i
 const shareCard = await readFile(new URL("../src/lib/report/share-card.ts", import.meta.url), "utf8");
 const { customerCopy } = await import("../src/lib/report/customer-copy.ts");
 
-test("guest birth reuse stays available while signed-in account records remain isolated", () => {
+test("guest birth reuse stays available while owner account records remain isolated", () => {
   assert.match(sharedBirth, /GUEST_BIRTH_OWNER_ID/);
   assert.match(sharedBirth, /activeSharedBirthUserId/);
   assert.match(sharedBirth, /SHARED_BIRTH_OWNER_KEY/);
@@ -17,7 +17,8 @@ test("guest birth reuse stays available while signed-in account records remain i
   assert.match(sharedBirth, /localStorage\.removeItem\(SHARED_BIRTH_STORAGE_KEY\)/);
   assert.match(sharedBirth, /!storedOwner && activeSharedBirthUserId === GUEST_BIRTH_OWNER_ID/);
   assert.match(sharedBirth, /storedOwner !== activeSharedBirthUserId/);
-  assert.match(authProvider, /setSharedBirthAccessUser\(active\?\.user\.id \?\? null\)/);
+  assert.match(authProvider, /setSharedBirthAccessUser\(owner\.session\?\.user\.id \?\? null\)/);
+  assert.match(authProvider, /if \(!profile\?\.is_owner\)/);
 });
 
 test("image viewer is fully opaque so the report beneath cannot ghost through", () => {

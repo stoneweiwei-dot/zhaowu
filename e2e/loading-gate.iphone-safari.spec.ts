@@ -45,11 +45,11 @@ const routes = [
   },
   {
     path: "/login",
-    heading: "登入昭梧",
+    heading: "站主登入",
     action: "Email",
     actionRole: "textbox",
   },
-  { path: "/account", heading: "我的昭梧", action: "登入", actionRole: "link" },
+  { path: "/account", heading: "昭梧站主後台", action: "站主登入", actionRole: "link" },
 ] as const;
 
 test.describe("iPhone Safari startup fallback", () => {

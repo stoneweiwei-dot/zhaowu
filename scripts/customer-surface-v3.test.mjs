@@ -5,26 +5,31 @@ import test from "node:test";
 const login = readFileSync(new URL("../src/routes/login.tsx", import.meta.url), "utf8");
 const report = readFileSync(new URL("../src/components/paid-report-pages.tsx", import.meta.url), "utf8");
 
-test("login exposes email credentials without third-party OAuth buttons", () => {
+test("owner login exposes email credentials without third-party OAuth or signup controls", () => {
   assert.match(login, /type="email"/);
   assert.match(login, /type="password"/);
+  assert.match(login, /ZHAOWU · OWNER/);
+  assert.match(login, /站主登入/);
+  assert.match(login, /profile\?\.is_owner/);
   assert.doesNotMatch(login, /onOAuth\(/);
   assert.doesNotMatch(login, /startOAuth/);
   assert.doesNotMatch(login, /data-provider=/);
   assert.doesNotMatch(login, /oauthCopy/);
+  assert.doesNotMatch(login, /verification[-_ ]?code|otp|signUp|signup|register/i);
 });
 
-test("email signup has no separate verification-code screen", () => {
+test("owner-only login has no separate verification or registration screen", () => {
   assert.doesNotMatch(login, /verification[-_ ]?code/i);
   assert.doesNotMatch(login, /otp/i);
-  assert.match(login, /backend decides whether confirmation is required/);
+  assert.match(login, /Owner sign-in only/);
+  assert.match(login, /signInWithPassword/);
 });
 
-test("mobile login uses the full-width sheet instead of the decorative mini panel", () => {
+test("mobile owner login uses the full-width sheet instead of the decorative mini panel", () => {
   assert.match(login, /className="stone-login-sheet seal-border"/);
   assert.doesNotMatch(login, /className="stone-login-panel seal-border"/);
   assert.match(login, /className="stone-login-primary"/);
-  assert.match(login, /className="stone-login-message"/);
+  assert.match(login, /className="stone-login-lead"/);
   assert.match(login, /className="stone-login-signature"/);
 });
 
