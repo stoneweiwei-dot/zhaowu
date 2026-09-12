@@ -16,6 +16,8 @@
   border-radius: 8px !important;
 }
 .zhaowu-site-header .zhaowu-brand-seal__image {
+  width: 100% !important;
+  height: 100% !important;
   object-fit: cover !important;
   object-position: center !important;
   border-radius: 8px !important;
