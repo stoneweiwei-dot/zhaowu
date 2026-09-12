@@ -65,7 +65,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
     await expect(page.getByText("子時換日", { exact: true })).toHaveCount(0);
     await expect(page.getByText("套用真太陽時校正", { exact: true })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: "登入", exact: true }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
 
     await expect(page.getByRole("dialog", { name: "把昭梧存到手機桌面", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "顯示 iPhone 保存步驟", exact: true })).toBeVisible();
