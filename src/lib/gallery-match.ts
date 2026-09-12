@@ -1,6 +1,6 @@
 import type { Chart, Element } from "@/lib/bazi/types";
 import { galleryPublicUrl, type GalleryAsset } from "@/lib/gallery-assets";
-import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+import { PUBLIC_ATLAS_ASSETS, type PublicAtlasAsset } from "@/lib/public-atlas";
 
 export type VisualElementScores = {
   wood: number;
@@ -59,35 +59,6 @@ const HEALTH_QUESTION_RE = /(健康|清理|淨化|净化|修復|修复|療癒|�
 const DESTINY_QUESTION_RE = /(格局|命格|命局|命理|亮點|亮点|八字|命盤|命盘|自己|性格|人生|destiny|chart|self|life)/i;
 const HISTORICAL_STYLE_RE = /(宋|song|宣紙|宣纸|xuan|絹|绢|silk|工筆|工笔|gongbi|岩彩|mineral|古畫|古画|historical|圖譜|图谱|atlas|山水|landscape|東方|东方|east.asian)/i;
 
-const ASSET_SELECT = "id,category,asset_key,title,storage_path,bucket_id,content_type,tags,enabled,is_primary,created_at,updated_at";
-
-function publicHeaders(): HeadersInit {
-  return {
-    apikey: SUPABASE_KEY,
-    ...(SUPABASE_KEY ? { Authorization: `Bearer ${SUPABASE_KEY}` } : {}),
-    "Content-Type": "application/json",
-    Prefer: "count=exact",
-    Range: "0-999",
-  };
-}
-
-function clampScore(value: unknown): number {
-  const numeric = Number(value);
-  if (!Number.isFinite(numeric)) return 0;
-  return Math.max(0, Math.min(100, numeric));
-}
-
-function normalizeElementScores(value: unknown): VisualElementScores {
-  const row = value && typeof value === "object" ? value as Record<string, unknown> : {};
-  return {
-    wood: clampScore(row.wood),
-    fire: clampScore(row.fire),
-    earth: clampScore(row.earth),
-    metal: clampScore(row.metal),
-    water: clampScore(row.water),
-  };
-}
-
 function stringList(value: unknown): string[] {
   return Array.isArray(value) ? value.map(String).map((item) => item.trim()).filter(Boolean) : [];
 }
@@ -105,32 +76,6 @@ export function emptyGalleryKnowledge(assetId = ""): GalleryArtKnowledge {
     style_labels: [],
     motifs: [],
     use_roles: [],
-  };
-}
-
-function normalizeKnowledge(row: Record<string, unknown>): GalleryArtKnowledge {
-  const climate = row.climate_scores && typeof row.climate_scores === "object"
-    ? row.climate_scores as Record<string, unknown>
-    : {};
-  return {
-    asset_id: String(row.asset_id ?? ""),
-    element_scores: normalizeElementScores(row.element_scores),
-    climate_scores: {
-      warm: clampScore(climate.warm),
-      cool: clampScore(climate.cool),
-      dry: clampScore(climate.dry),
-      moist: clampScore(climate.moist),
-    },
-    palette: stringList(row.palette),
-    mood_labels: stringList(row.mood_labels),
-    summary: String(row.summary ?? ""),
-    confidence: Math.max(0, Math.min(1, Number(row.confidence) || 0)),
-    analysis_status: String(row.analysis_status ?? ""),
-    client_eligible: row.client_eligible === true,
-    subject_labels: stringList(row.subject_labels),
-    style_labels: stringList(row.style_labels),
-    motifs: stringList(row.motifs),
-    use_roles: stringList(row.use_roles),
   };
 }
 
@@ -321,34 +266,68 @@ export function explainCustomerGalleryChoice(
   ].filter(Boolean).join("");
 }
 
+const STATIC_ATLAS_DATE = "2026-09-12T00:00:00.000Z";
+
+function staticElementFor(asset: PublicAtlasAsset): keyof VisualElementScores | null {
+  const text = asset.id.toLowerCase();
+  if (/(?:wood|spring)/.test(text)) return "wood";
+  if (/(?:fire|summer)/.test(text)) return "fire";
+  if (/(?:earth)/.test(text)) return "earth";
+  if (/(?:metal|autumn)/.test(text)) return "metal";
+  if (/(?:water|winter)/.test(text)) return "water";
+  return null;
+}
+
+function staticGalleryAsset(asset: PublicAtlasAsset, index: number): GalleryAsset {
+  const semanticName = asset.id.replace(/[-_]+/g, " ");
+  const groupPrefix = asset.id.startsWith("report-") ? "library-report-art-" : "library-auspicious-";
+  const id = `static:${asset.id}`;
+  return {
+    id,
+    category: "visual-library",
+    asset_key: `${groupPrefix}${asset.id}`,
+    title: `Zhaowu ${semanticName}`,
+    storage_path: asset.url,
+    bucket_id: "public-fallback",
+    content_type: "image/webp",
+    tags: ["visual-library", "static-public", semanticName],
+    enabled: true,
+    is_primary: index === 0,
+    created_at: STATIC_ATLAS_DATE,
+    updated_at: STATIC_ATLAS_DATE,
+  };
+}
+
+function staticGalleryKnowledge(asset: PublicAtlasAsset, assetId: string): GalleryArtKnowledge {
+  const selected = staticElementFor(asset);
+  const element_scores: VisualElementScores = {
+    wood: 52,
+    fire: 52,
+    earth: 52,
+    metal: 52,
+    water: 52,
+  };
+  if (selected) element_scores[selected] = 92;
+  const semanticName = asset.id.replace(/[-_]+/g, " ");
+  return {
+    ...emptyGalleryKnowledge(assetId),
+    asset_id: assetId,
+    element_scores,
+    confidence: 1,
+    analysis_status: "approved",
+    client_eligible: true,
+    subject_labels: [semanticName],
+    style_labels: ["static public atlas"],
+    motifs: [semanticName],
+    use_roles: ["decree", "public atlas"],
+  };
+}
+
 export async function loadCustomerGalleryCandidates(): Promise<Array<{ asset: GalleryAsset; knowledge: GalleryArtKnowledge }>> {
-  if (!SUPABASE_URL || !SUPABASE_KEY) return [];
-
-  // Whole enabled visual-library first. Knowledge is optional enrichment, not an eligibility gate.
-  const assetsResponse = await fetch(
-    `${SUPABASE_URL}/rest/v1/gallery_assets?enabled=eq.true&category=eq.visual-library&select=${ASSET_SELECT}&order=id.asc`,
-    { headers: publicHeaders() },
-  );
-  if (!assetsResponse.ok) return [];
-  const assets = await assetsResponse.json() as GalleryAsset[];
-  if (!Array.isArray(assets) || !assets.length) return [];
-
-  const knowledgeResponse = await fetch(
-    `${SUPABASE_URL}/rest/v1/gallery_asset_knowledge?select=asset_id,element_scores,climate_scores,palette,mood_labels,summary,confidence,analysis_status,client_eligible,subject_labels,style_labels,motifs,use_roles&order=asset_id.asc`,
-    { headers: publicHeaders() },
-  );
-  const rawKnowledge = knowledgeResponse.ok
-    ? await knowledgeResponse.json() as Array<Record<string, unknown>>
-    : [];
-  const knowledgeById = new Map(
-    (Array.isArray(rawKnowledge) ? rawKnowledge : [])
-      .map(normalizeKnowledge)
-      .filter((row) => row.asset_id)
-      .map((row) => [row.asset_id, row]),
-  );
-
-  return assets.map((asset) => ({
-    asset,
-    knowledge: knowledgeById.get(asset.id) ?? emptyGalleryKnowledge(asset.id),
-  }));
+  // Customer artwork is served from the Vercel build. Supabase remains the owner/admin source
+  // and is intentionally not queried from public report or gallery surfaces.
+  return PUBLIC_ATLAS_ASSETS.map((asset, index) => {
+    const row = staticGalleryAsset(asset, index);
+    return { asset: row, knowledge: staticGalleryKnowledge(asset, row.id) };
+  });
 }

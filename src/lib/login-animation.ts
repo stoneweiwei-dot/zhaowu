@@ -1,5 +1,3 @@
-import { galleryPublicUrl, listPublicGalleryAssets, type GalleryAsset } from "@/lib/gallery-assets";
-import { isLoadingGalleryAsset } from "@/lib/gallery-groups";
 import { LOADING_GALLERY_CATALOG } from "@/lib/loading-gallery-catalog";
 
 export type LoginVisualTheme = "day" | "night" | "common";
@@ -44,36 +42,15 @@ function catalogToAsset(item: (typeof LOADING_GALLERY_CATALOG)[number], index: n
   };
 }
 
-function remoteToAsset(asset: GalleryAsset, index: number): LoginAnimationAsset {
-  const video = (asset.content_type ?? "").startsWith("video/") || (asset.tags ?? []).includes("animation");
-  const url = asset.bucket_id === "public-fallback" ? asset.storage_path : galleryPublicUrl(asset.storage_path, asset.bucket_id);
-  return {
-    id: asset.id,
-    title: asset.title,
-    type: (asset.content_type ?? "").startsWith("video/") ? "video" : "image",
-    fileUrl: url,
-    posterUrl: url,
-    active: asset.enabled,
-    current: Boolean(asset.is_primary && asset.enabled),
-    theme: loginVisualThemeFromTags(asset.tags),
-    sortOrder: 100 + index,
-    createdAt: asset.created_at,
-  };
-}
 
 export function catalogLoginAnimations(): LoginAnimationAsset[] {
   return LOADING_GALLERY_CATALOG.map(catalogToAsset);
 }
 
 export async function listLoginVisuals(): Promise<LoginAnimationAsset[]> {
-  const catalog = catalogLoginAnimations();
-  let remote: GalleryAsset[] = [];
-  try { remote = (await listPublicGalleryAssets("loading")).filter(isLoadingGalleryAsset); } catch { remote = []; }
-  const remoteKeys = new Set(remote.map((row) => row.asset_key));
-  return [
-    ...catalog.filter((item) => !remoteKeys.has(item.id.replace(/^catalog:/, ""))),
-    ...remote.map(remoteToAsset),
-  ].sort((a, b) => a.sortOrder - b.sortOrder);
+  // Login artwork is a small same-origin catalog. Owner uploads stay in the admin
+  // library until they are explicitly promoted into the public build.
+  return catalogLoginAnimations();
 }
 
 export async function listActiveLoginAnimations(): Promise<LoginAnimationAsset[]> {
