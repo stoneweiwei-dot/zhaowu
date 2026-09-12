@@ -133,18 +133,17 @@ test.describe("iPhone Safari core customer flow", () => {
     await makeAppOfflineSafe(page);
     await page.goto("/login", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("heading", { name: "登入昭梧", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "站主登入", exact: true })).toBeVisible();
     await expect(page.getByRole("textbox", { name: "Email", exact: true })).toBeVisible();
     await expect(page.locator('input[type="password"]')).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
-  test("Signed-out Account degrades to a clear login path", async ({ page }) => {
+  test("Signed-out Account exposes the owner sign-in path", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/account", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("heading", { name: "我的昭梧", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "登入", exact: true }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "站主登入", exact: true }).first()).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
