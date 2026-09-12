@@ -1,4 +1,4 @@
-/* ZHAOWU r118 — guest-first public entry.
+/* ZHAOWU r119 — guest-first public entry.
    Public visitors do not use accounts. The sole visible authentication entry is /login,
    reserved for the owner/admin; ordinary-user sessions are rejected by AuthProvider. */
 
