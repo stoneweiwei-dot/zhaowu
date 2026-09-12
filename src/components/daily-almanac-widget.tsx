@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { stemElement } from "@/lib/element-colors";
-import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { galleryPublicUrl, listPublicGalleryAssets, type GalleryAsset } from "@/lib/gallery-assets";
 import { isPublicAtlasAsset } from "@/lib/gallery-groups";
 import { dayGanzhi, hourPillar, yearMonthPillars, lunarDateLabel, toLunar } from "@/lib/bazi/calendar";
@@ -101,10 +100,8 @@ const SLIPS = {
 
 export function DailyAlmanacWidget() {
   const { locale } = useI18n();
-  const { user, isPending } = useCurrentUserState();
   const now = useLocalNow();
   const [slipOpen, setSlipOpen] = useState(false);
-  const [slipMessage, setSlipMessage] = useState<string | null>(null);
   const [asset, setAsset] = useState<GalleryAsset | null>(null);
   const [loadingSlip, setLoadingSlip] = useState(false);
 
@@ -141,9 +138,8 @@ export function DailyAlmanacWidget() {
       lunar: lunarLabel(now, locale),
       moon: moonGlyph(now), detailsLabelClosed: "Today's guidance",
       pillarLabels: ["YEAR", "MONTH", "DAY", "HOUR"],
-      needLogin: "Sign in first to draw your daily spirit slip.", needBirth: "Complete your birth details on Zhaowu first, then return here to draw your personalised daily slip.",
       detailsLabel: "View today’s pillars & guidance",
-      slipTitle: "Today’s Spirit Slip", basis: "Based on your saved birth profile + today’s rhythm", close: "Close", goLogin: "Sign in", goBirth: "Add birth details",
+      slipTitle: "Today’s Spirit Slip", basis: "Today’s rhythm", close: "Close",
     } : locale === "zh-Hans" ? {
       eyebrow: "今日干支", title: `${weekdayLabel(now, locale)} · ${monthDayLabel(now, locale)}`,
       energy: lowEnergy ? "偏低" : highMotion ? "偏动" : "平稳", energyLabel: "今日节奏",
@@ -157,9 +153,8 @@ export function DailyAlmanacWidget() {
       lunar: lunarLabel(now, locale),
       moon: moonGlyph(now), detailsLabelClosed: "今日指引",
       pillarLabels: ["年", "月", "日", "时"],
-      needLogin: "先登入，才可以领取你的今日灵签。", needBirth: "你还没有保存出生资料。先在昭梧输入并保存资料，再回来领取个人灵签。",
       detailsLabel: "展开今日干支与宜忌",
-      slipTitle: "今日灵签", basis: "依据你已保存的命盘资料 × 今日节奏", close: "收起", goLogin: "去登入", goBirth: "去填写资料",
+      slipTitle: "今日灵签", basis: "今日节奏", close: "收起",
     } : {
       eyebrow: "今日干支", title: `${weekdayLabel(now, locale)} · ${monthDayLabel(now, locale)}`,
       energy: lowEnergy ? "偏低" : highMotion ? "偏動" : "平穩", energyLabel: "今日節奏",
@@ -173,41 +168,32 @@ export function DailyAlmanacWidget() {
       lunar: lunarLabel(now, locale),
       moon: moonGlyph(now), detailsLabelClosed: "今日指引",
       pillarLabels: ["年", "月", "日", "時"],
-      needLogin: "先登入，才可以領取你的今日靈籤。", needBirth: "你還沒有保存出生資料。先在昭梧輸入並保存資料，再回來領取個人靈籤。",
       detailsLabel: "展開今日干支與宜忌",
-      slipTitle: "今日靈籤", basis: "依據你已保存的命盤資料 × 今日節奏", close: "收起", goLogin: "去登入", goBirth: "去填寫資料",
+      slipTitle: "今日靈籤", basis: "今日節奏", close: "收起",
     };
     return { ...copy, tone, day };
   }, [locale, now, pillars]);
 
   const slip = useMemo(() => {
-    const seed = stableHash(`${user?.id ?? "guest"}|${JSON.stringify(user?.birthData ?? {})}|${dayKey}`);
+    const seed = stableHash(`${dayKey}|daily-spirit-slip`);
     return SLIPS[locale][seed % SLIPS[locale].length];
-  }, [dayKey, locale, user?.birthData, user?.id]);
+  }, [dayKey, locale]);
 
   async function drawSlip() {
-    if (isPending) return;
-    if (!user) {
-      setSlipOpen(false);
-      setSlipMessage(data.needLogin);
-      return;
-    }
-    if (!user.birthData || Object.keys(user.birthData).length === 0) {
-      setSlipOpen(false);
-      setSlipMessage(data.needBirth);
-      return;
-    }
-    setSlipMessage(null);
     setLoadingSlip(true);
+    setSlipOpen(true);
     try {
       if (!asset) {
-        const rows = (await listPublicGalleryAssets("visual-library")).filter(isPublicAtlasAsset);
-        if (rows.length) {
-          const seed = stableHash(`${user.id}|${JSON.stringify(user.birthData)}|${dayKey}|image`);
-          setAsset(rows[seed % rows.length]);
+        try {
+          const rows = (await listPublicGalleryAssets("visual-library")).filter(isPublicAtlasAsset);
+          if (rows.length) {
+            const seed = stableHash(`${dayKey}|daily-spirit-slip|image`);
+            setAsset(rows[seed % rows.length]);
+          }
+        } catch {
+          // The public image is optional; the daily guidance must remain readable.
         }
       }
-      setSlipOpen(true);
     } finally {
       setLoadingSlip(false);
     }
@@ -243,10 +229,9 @@ export function DailyAlmanacWidget() {
             <div className="zhaowu-daily-term"><span>{locale === "en" ? "Solar term" : locale === "zh-Hans" ? "节令" : "節令"}</span><b>{jieLabel(pillars.jieName, locale)}</b></div>
             <p className="zhaowu-daily-lead">{data.lead}</p>
             <div className="zhaowu-daily-pairs"><section aria-label={data.goodLabel}><p className="zhaowu-daily-pair-title"><small>{data.goodRoman}</small><b>{data.goodLabel}</b></p><ul className="zhaowu-daily-list">{data.good.map((item) => <li key={item}>{item}</li>)}</ul></section><section aria-label={data.avoidLabel}><p className="zhaowu-daily-pair-title"><small>{data.avoidRoman}</small><b>{data.avoidLabel}</b></p><ul className="zhaowu-daily-list">{data.avoid.map((item) => <li key={item}>{item}</li>)}</ul></section></div>
-            <footer className="zhaowu-daily-footer"><button type="button" className="zhaowu-daily-cta" onClick={() => void drawSlip()} disabled={loadingSlip || isPending} aria-label={data.foot}><span>{loadingSlip ? "…" : data.foot}</span><b aria-hidden>→</b></button></footer>
+            <footer className="zhaowu-daily-footer"><button type="button" className="zhaowu-daily-cta" onClick={() => void drawSlip()} disabled={loadingSlip} aria-label={data.foot}><span>{loadingSlip ? "…" : data.foot}</span><b aria-hidden>→</b></button></footer>
           </div>
         </details>
-        {slipMessage ? <div className="zhaowu-slip-gate"><p>{slipMessage}</p><a href={!user ? "/login" : "#analysisForm"}>{!user ? data.goLogin : data.goBirth} →</a></div> : null}
       </section>
 
       {slipOpen ? (

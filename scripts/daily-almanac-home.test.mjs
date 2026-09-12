@@ -32,12 +32,14 @@ test("daily almanac uses the canonical calendar and shows current year month day
   assert.match(widget, /setInterval\(\(\) => setNow\(new Date\(\)\), 30_000\)/);
 });
 
-test("daily almanac keeps the personalised spirit slip gated by saved birth data", () => {
+test("daily almanac keeps the daily spirit slip available to guests", () => {
   assert.match(widget, /stableHash/);
-  assert.match(widget, /user\?\.birthData/);
   assert.match(widget, /drawSlip/);
   assert.match(widget, /listPublicGalleryAssets/);
-  assert.match(widget, /href=\{!user \? "\/login" : "#analysisForm"\}/);
+  assert.doesNotMatch(widget, /needLogin|needBirth|goLogin|goBirth|slip-gate/);
+  assert.doesNotMatch(widget, /useCurrentUserState/);
+  assert.match(widget, /stableHash\(`\$\{dayKey\}\|daily-spirit-slip`\)/);
+  assert.match(widget, /async function drawSlip\(\) \{[\s\S]*setSlipOpen\(true\);[\s\S]*listPublicGalleryAssets/);
 });
 
 test("r69 almanac style is compact, quiet, and keeps Song-style pillar typography", () => {

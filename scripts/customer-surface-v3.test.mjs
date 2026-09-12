@@ -14,17 +14,18 @@ test("login exposes email credentials without third-party OAuth buttons", () => 
   assert.doesNotMatch(login, /oauthCopy/);
 });
 
-test("email signup has no separate verification-code screen", () => {
+test("owner sign-in has no signup or verification-code screen", () => {
   assert.doesNotMatch(login, /verification[-_ ]?code/i);
   assert.doesNotMatch(login, /otp/i);
-  assert.match(login, /backend decides whether confirmation is required/);
+  assert.doesNotMatch(login, /signUp|sign up|註冊|注册/i);
+  assert.match(login, /站主登入/);
 });
 
 test("mobile login uses the full-width sheet instead of the decorative mini panel", () => {
   assert.match(login, /className="stone-login-sheet seal-border"/);
   assert.doesNotMatch(login, /className="stone-login-panel seal-border"/);
   assert.match(login, /className="stone-login-primary"/);
-  assert.match(login, /className="stone-login-message"/);
+  assert.match(login, /className="stone-login-lead"/);
   assert.match(login, /className="stone-login-signature"/);
 });
 
