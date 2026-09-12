@@ -32,6 +32,25 @@ test("owner gallery exposes a loading stills and animation view", () => {
   assert.match(owner, /tooLong/);
 });
 
+
+test("public login catalog only references committed same-origin files", async () => {
+  const committedFiles = [
+    "../public/intro/loading-poster.jpg",
+    "../public/intro/owner-lotus-bloom-r53.jpg",
+    "../public/intro/owner-lotus-bloom-r53.mp4",
+    "../public/intro/lotus-bloom-v12.webp",
+    "../public/intro/twin-lotus-restored-r26.jpg",
+    "../public/intro/twin-lotus-restored-r26.mp4",
+    "../public/intro/wutong-owner-r29.jpeg",
+  ];
+  for (const file of committedFiles) {
+    const bytes = await readFile(new URL(file, import.meta.url));
+    assert.ok(bytes.length > 0, file);
+  }
+  assert.match(catalog, /publicPath: "\/intro\//);
+  assert.doesNotMatch(catalog, /\/gallery\/loading\/(?:song-parchment|dawn-dragon|anim-live|official-monitor|jade-lotus)/);
+});
+
 test("loading catalog covers the owner stills and bloom animations", () => {
   assert.match(catalog, /loading-song-parchment-dragon/);
   assert.match(catalog, /loading-dawn-dragon-lotus/);
