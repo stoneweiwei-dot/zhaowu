@@ -1,8 +1,8 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 
 export const OWNER_COOKIE = "__Host-zhaowu_owner_session";
-// SHA-256 of the high-entropy owner key. The raw key is never committed.
-const OWNER_KEY_SHA256 = "ab535831ae942e32e9c00f2181ba70d7aea3eca8678199c647a3fa609321efca";
+// SHA-256 of the owner passcode. The raw passcode is never committed.
+const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 
 function hash(value: string) {
@@ -10,7 +10,7 @@ function hash(value: string) {
 }
 
 export function isValidOwnerSecret(value: string | null | undefined) {
-  if (!value || value.length < 32 || value.length > 256) return false;
+  if (!value || value.length < 8 || value.length > 256) return false;
   const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
   const actual = hash(value);
   return actual.length === expected.length && timingSafeEqual(actual, expected);
