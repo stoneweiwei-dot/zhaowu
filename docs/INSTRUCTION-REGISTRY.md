@@ -153,3 +153,10 @@
 - Loading 維持 r126，不重做 intro。
 - PR #295 Paid Visual：維持暫停。
 
+## 2026-09-14 十項收口對帳（不重做已上線項）
+
+- 正式站 `main` = Vercel Production `88179198301b6682f56140ddbde79b15556473f4` / `dpl_278KTmc5vkQEPa1TCxNoWKYfhf6Y`。
+- D60 gate、西洋完整盤、專卷命盤、branch protection、Netlify skip、#295 暫停均已在 r123–r127。不得 merge #304。不得因舊清單再發一輪功能 build。
+- 仍需站主：Supabase spend cap、DNS `zhaowu.soul-terminal.com`、真實 iPhone、Dashboard security 勾選。Linear 未接入。
+- PR #322 獨立站主登入未綠燈，不得當本批收口合併。
+
