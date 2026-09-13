@@ -18,7 +18,7 @@ test("question, client details, and Four Pillars are visibly independent section
   const css = await source("src/zhaowu-design-system.css");
   assert.match(form, /className="zhaowu-question-sheet"/);
   assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
-  assert.match(form, /id="bazi" className="zhaowu-bazi-hub"/);
+  assert.match(form, /id="bazi" className="zhaowu-bazi-hub/);
   assert.match(css, /#analysisForm\.zhaowu-analysis-flow[\s\S]*background:\s*transparent !important/);
   assert.match(css, /\.zhaowu-question-sheet[\s\S]*border-radius:\s*0 !important/);
   assert.match(css, /\.zhaowu-customer-record[\s\S]*border-radius:\s*12px !important/);

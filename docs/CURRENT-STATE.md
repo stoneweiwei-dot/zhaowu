@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-14 00:40 AEST
+最後核對：2026-09-14 03:20 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -13,19 +13,19 @@
 | Hosting        | **Vercel**                                                             |
 | Vercel project | `stone-zhaowu-official` (`prj_81IIJjyeM3l47ZPsiIE7d6eOrp9I`)           |
 | Production URL | `https://stone-zhaowu-official.vercel.app/`                            |
-| Database/Auth  | **Supabase** project `plgpxusmemnmzckbwtiv`                            |
+| Database/Auth  | **Supabase** project `plgpxusmemnmzckbwtiv`（報告／圖庫／統計）。站主登入不走 Supabase Auth。 |
 | 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前继续使用 Vercel production URL |
 
 每次接手实时检查 `main` 与 Vercel Production 的 `githubCommitSha`，禁止另建第二条 production 主线。Netlify、AppDeploy、Lovable standby、旧临时站只读参考。
 
-目前已核對：最後一個 `READY / production` runtime deployment 是 `dpl_278KTmc5vkQEPa1TCxNoWKYfhf6Y`，精確對應 GitHub `main` `88179198301b6682f56140ddbde79b15556473f4`（r127）。PWA cache `zhaowu-shell-r127`。CI：Deploy gate／Engine suite／iPhone Safari 全綠。不得把 exact SHA 或部署 READY 等同真實 iPhone／已安裝 PWA／站主登入驗收。
+目前已核對：最後一個 `READY / production` runtime deployment 是 `dpl_FtfGFpaweLcpuX966R9ZspUrWfvo`，精確對應 GitHub `main` `58ee4a9bd923a790b42a954b7764c753a7887454`（r128）。PWA cache 當時仍是 `zhaowu-shell-r127`，因為 r128 沒 bump ledger。r129 正在修音樂／登入 API 500／首頁重疊八字／夜間排版／觀世錄，合併後必須把 Production SHA 與 `zhaowu-shell-r129` 再核一次。不得把 exact SHA 或部署 READY 等同真實 iPhone／已安裝 PWA／站主登入驗收。
 
 ## 2. 已完成且默认锁住
 
 - GitHub `main` 是唯一源码真相。Vercel Git 自动部署仅对 `main` 开启（`vercel.json` `git.deploymentEnabled.main=true`），正式生产只认 `stone-zhaowu-official`。
 - GitHub `main` branch protection 已開啟：required checks = Deploy gate／Engine suite／iPhone Safari；`enforce_admins=true`；禁止 force push。
-- Supabase 登录、报告存档、图库/背景资产、访问统计统一使用当前项目配置。
-- 登入：普通用戶不提供登入、註冊、Google／Apple／X／Email 會員入口；唯一 `/login` 為站主 Email＋密碼入口，前端只接受 `profiles.is_owner=true` 的 session，既有非 Owner session 會清除。
+- Supabase 报告存档、图库/背景资产、访问统计统一使用当前项目配置。站主登入改為獨立 Cookie `__Host-zhaowu_owner_session`，不經 Supabase Auth。
+- 登入：普通用戶不提供登入、註冊、Google／Apple／X／Email 會員入口；唯一 `/login` 為站主密鑰入口（32+ 字元，hash 在 repo，明文不進 repo）。前端只接受獨立 Cookie 驗證的 `isOwner`。Email＋密碼 + `profiles.is_owner` 舊契約已廢止。
 - 現行公開語言：`zh-Hant / en / ko / hi`；`zh-Hans / ja` 僅保留歷史偏好相容並折回繁中，不再是公開選項。
 - Loading ghost overlay 已移除。
 - `finalizeReading` 是最终 Reading 单一来源；已保存报告不重新 live 算出另一套答案。
@@ -38,7 +38,10 @@
 - `/astrology` 完整盤：七曜星座與宮位、十二宮宮頭與宮內行星、ASC／MC／DSC／IC、主要相位；未知出生時間對宮位／四軸 fail-closed。來源為已合併的 #310，不是舊 release 基底。
 - Loading：`IntroGate` 指向 `/intro/owner-immortal-ascent-r123.mp4`（原時長 10.04 秒、720×1280，不降解析度）與同名 JPEG 海報；一進站影片可見並主動 `play()`，右下角 Skip；真正影片錯誤才約 1.6 秒 fail-open；硬退出 12 秒。r126 拿掉「opacity:0 直到 is-playing」與 buffering 時 `onStalled` 再把片藏起來。舊 2.4／2.8／3 秒 Loading 契約已廢止。
 - 夜間問事標題必須月白可讀；客人資料卡維持宣紙深字。五行穿衣併入首頁「今日指引」展開區，方塊顯示木青／火紅紫／土黄棕／金白金銀／水黑藍。完整指南在 `/daily-colors`。
+- r129：首頁不得在客人資料下再疊一份即時四柱預覽。八字排盤只在開始分析後的報告出現。「七種個人分析」與輕測驗區塊必須實色底，壁紙不得透字。四柱卡只顯示柱名＋干支＋十神，不得疊天干／地支／十神三層。
 - `/numerology` 含靈魂獨白、人生角色、五項天賦分述與 11／22／33 區塊分析。首頁不得出現大師數文章標題「你是少見的」。
+- 研究札記與《術數的邊界》放在 `/knowledge`「昭梧 · 觀世錄」。首頁觀世錄只留最新一篇與「進入觀世錄」入口。
+- 背景音樂走同源 `/audio/zhaowu-background.m4a`（mp3 備援）。不得把公開播放綁回 Supabase `zhaowu-audio` 公開桶（該桶 live HEAD 回 402）。
 - 首页各分组必须用简短三语说明回答两件事：用户“会知道自己的什么”与“这个体系最擅长看什么”；英文必须自然简洁，不做逐字直译。
 - 「趣味测验」是独立的轻量自评系列，不冒充命盘；包含「内在动物 × 命局瑞兽」与「五行功能测验」。五行功能测验只判断当前需要训练的生长、启动、落地、收敛或恢复功能，不等同八字喜用神。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
@@ -75,7 +78,7 @@
 - 身体栏属于传统象义提醒，不是医疗诊断。
 - 图失败不能拖死文字报告。
 
-## 5. 當前視覺系統（2026-09-13；r117 品牌基線）
+## 5. 當前視覺系統（2026-09-14；r129 夜間／首頁結構）
 
 视觉母版是暖米宣纸／宋式图谱体系，品牌主體鎖定為松、日／月、山、水、雲。
 
@@ -85,7 +88,7 @@
 - 金葫蘆現為核准品牌主體；功能松系圖示仍保留，但不得覆蓋 Header／App Icon。青玉小龍不是品牌 Logo。
 - 同一畫面最多兩種裝飾母題。首頁現用「松枝＋山日分隔」；禁止松、月、山、雲、水、印章同時出現。
 - 主按鈕金底松綠字膠囊；次按鈕／登出為 Ghost 金框。
-- 夜間模式：深松綠／玄黑底、金線、月白字，Header 切換至 `logo-primary-night.svg`；禁止亮白大面積。
+- 夜間模式：深松綠／玄黑底、金線、月白字，Header 切換至 `logo-primary-night.svg`；禁止亮白大面積。七種個人分析、輕測驗、命盤細項必須實色底＋月白字，禁止壁紙透字。
 - r27：全站應用頁與登入頁使用米色宣紙底、朱印。固定山水背景已被站主本次指令取代；圖鑑海報不參與背景。
 - 表單、結果、命請、登入紙面與工具卡一律使用不透明暖米宣紙 `#faf8f1` / `#fffaf1`，禁止玻璃擬態與半透明卡。
 - iPhone 390–430 px 優先；不使用 `background-attachment: fixed`。
@@ -93,7 +96,7 @@
 - 完整報告為一張連續暖宣紙閱讀面。
 - 青玉小龙 AI 導覽、Gallery 命請匹配與真實命請圖生成邏輯不因 UI 改版改變。
 
-最終視覺覆蓋層：`src/home-sheet-ui-v5.css` + `src/brand-ui-r97.css` + `src/brand-ui-r98.css` + `src/brand-ui-r99.css` + `src/guest-first-r116.css` + `src/night-readability-r127.css`；報告層：`src/focused-report.css`。
+最終視覺覆蓋層：`src/home-sheet-ui-v5.css` + `src/brand-ui-r97.css` + `src/brand-ui-r98.css` + `src/brand-ui-r99.css` + `src/guest-first-r116.css` + `src/night-readability-r127.css` + `src/night-home-r129.css`；報告層：`src/focused-report.css`。
 
 ## 6. 专题报告与 Calculation Truth Layer
 
@@ -107,18 +110,18 @@
 
 | # | 項 | 狀態 |
 | --- | --- | --- |
-| 1 | Production CI Safari | **PASS** on `8817919`（Deploy gate／Engine／iPhone Safari 全綠） |
+| 1 | Production CI Safari | **PASS** on `58ee4a9`（Deploy gate／Engine／iPhone Safari 全綠）；r129 合併後再核一次 |
 | 2 | D60 minute gate，不 merge #304 | **DONE** on main；#304 CLOSED 未合併 |
 | 3 | 西洋完整盤（#310 內容在最新 main）+ 專卷命盤 | **DONE**；未知時辰四軸 fail-closed |
-| 4 | 真實 iPhone／PWA／登入／報告重開 | **未完成**（CI ≠ 真機）。站主登入另被 Supabase spend cap 擋住 |
+| 4 | 真實 iPhone／PWA／登入／報告重開 | **未完成**（CI ≠ 真機）。r128 站主 API 在正式線 500；r129 改獨立 `.js` 函式後須再核 |
 | 5 | GitHub main protection | **DONE**（三項 required checks + enforce_admins） |
 | 6 | Supabase advisor／Edge Functions | **文件化**，Dashboard 勾選仍需站主 |
 | 7 | 停 Netlify 當 production | **DONE**（`ignore = "exit 0"`）；archive webhook 仍可能 canceled，不是正式站 |
-| 8 | Linear STO-12／STO-5、CURRENT-STATE SHA | Logo／舊會員入口已鎖；Linear 未接入無法寫卡。SHA 已對到 `8817919` |
+| 8 | Linear STO-12／STO-5、CURRENT-STATE SHA | Logo／舊會員入口已鎖；Linear 未接入無法寫卡。live SHA 對到 `58ee4a9`（r128） |
 | 9 | `zhaowu.soul-terminal.com` | **未完成**；Vercel 專案尚未綁此域名，DNS 無法解析 |
 | 10 | PR #295 Paid Visual | **維持暫停**；不 merge、不 rebase |
 
-PR #322（獨立站主登入、不走 Supabase Auth）是另一條未綠燈實驗，**不得當本批收口合併**。正式登入契約仍是 `/login` Email＋密碼 + `profiles.is_owner`。
+PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行契約。r128 的 `/api/owner-*.ts` 在 Vite+Vercel 上 FUNCTION_INVOCATION_FAILED；r129 改 `api/*.js` 自包含 Node handler，並把 SPA rewrite 改成不吞 `/api/*`。
 
 ## 8. 当前真正未完成
 
@@ -126,7 +129,7 @@ PR #322（獨立站主登入、不走 Supabase Auth）是另一條未綠燈實�
 - 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub iPhone Safari CI 已通過；這不等於實機完成。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
-- 站主 Email 登入仍走 Supabase `plgpxusmemnmzckbwtiv`。若 Auth/REST 回 402 `exceed_cached_egress_quota`，不是帳密表單壞掉，必須在 Supabase Dashboard → Billing 取消 spend cap。程式只能把原因講清楚，無法從網站端解除額度。
+- Supabase spend cap（402 `exceed_cached_egress_quota`）仍擋住報告存檔、圖庫／背景上傳與舊公開音訊桶。解除額度只能由站主在 Supabase Dashboard → Billing 操作。r129 起：站主登入與背景音樂不再依賴它。
 - Supabase dashboard 仍需站主勾：`get_customer_classic_passage` EXECUTE 邊界、`search_path`、leaked-password protection、live Edge Functions 對帳。見 `docs/supabase-security-r123.md`。
 - Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo，不復活普通會員 Google／Apple／註冊。
 
@@ -158,4 +161,3 @@ PR #322（獨立站主登入、不走 Supabase Auth）是另一條未綠燈實�
 ## 11. 接手规则
 
 每次改网站之前：读 `AGENTS.md` 与本文件；查实时 main + Vercel Production；只处理当前可复现问题。新指令与旧指令冲突时，按 AGENTS 的安全 supersession 规则使旧 active path 失效，但不得破坏运行依赖。
-

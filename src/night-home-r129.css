@@ -1,0 +1,186 @@
+/* r129 — last-wins home structure + night surfaces.
+   Stop wallpaper leaking through BaZi / portals, stop pillar-card overlap,
+   keep customer record parchment, keep question sheet cream-on-pine. */
+
+.zhaowu-pillar-grid > section {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  min-height: 124px !important;
+  padding: 12px 6px 10px !important;
+}
+
+.zhaowu-pillar-grid > section > h3 {
+  position: relative !important;
+  z-index: 2 !important;
+  margin: 0 !important;
+  color: #735d43 !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  letter-spacing: .12em !important;
+}
+
+.zhaowu-pillar-grid > section > strong {
+  position: relative !important;
+  z-index: 2 !important;
+  display: block !important;
+  margin: 4px 0 0 !important;
+  color: #294e3c !important;
+  font-size: clamp(22px, 6vw, 30px) !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+}
+
+.zhaowu-pillar-grid > section > small {
+  position: relative !important;
+  z-index: 2 !important;
+  display: block !important;
+  margin-top: auto !important;
+  color: #5d564c !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  opacity: 1 !important;
+}
+
+.zhaowu-pillar-grid > section > p {
+  display: none !important;
+}
+
+.zhaowu-chart-details summary {
+  color: #315a4c !important;
+  font-size: 15px !important;
+  font-weight: 650 !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-portals-block,
+.zhaowu-home-layout .zhaowu-home-fun-section {
+  background: #f7f0e1 !important;
+  border: 1px solid rgba(80, 65, 44, .18) !important;
+  box-shadow: 0 16px 40px rgba(55, 44, 29, .08) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-portals-heading h2,
+.zhaowu-home-layout .zhaowu-home-fun-heading h2 {
+  color: #29251f !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-portals-heading span,
+.zhaowu-home-layout .zhaowu-home-fun-heading p {
+  color: #5d564c !important;
+  opacity: 1 !important;
+}
+
+.zhaowu-home-layout .zhaowu-bazi-hub,
+.zhaowu-home-sheet-shell .zhaowu-bazi-hub {
+  padding: 18px 4px 8px !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(41, 75, 63, .22) !important;
+  background: transparent !important;
+}
+
+.zhaowu-home-layout .zhaowu-analysis-submit-wrap {
+  padding: 8px 0 4px !important;
+  background: transparent !important;
+}
+
+.zhaowu-home-layout .zhaowu-analysis-submit-wrap p {
+  color: #5d564c !important;
+}
+
+.zhaowu-bazi-chart {
+  background: #fffaf0 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-bazi-hub,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-hub {
+  color: #fffaf0 !important;
+  background: #12352c !important;
+  border-top-color: rgba(212, 176, 116, .28) !important;
+  border-radius: 16px !important;
+  padding: 18px 18px 14px !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-analysis-submit-wrap p,
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-bazi-hub p {
+  color: #eee5d6 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-chart-details summary {
+  color: #fffaf0 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-bazi-chart {
+  background: #12352c !important;
+  color: #fffaf0 !important;
+  border-color: rgba(212, 176, 116, .32) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-portals-block,
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-fun-section,
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--directory {
+  background: #12352c !important;
+  border-color: rgba(212, 176, 116, .32) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .28) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-portals-heading h2,
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-fun-heading h2 {
+  color: #fffaf0 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-portals-heading span,
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-fun-heading p {
+  color: #d7d0c1 !important;
+  opacity: 1 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-pillar-grid > section {
+  background: #fffaf0 !important;
+  border-color: rgba(212, 176, 116, .38) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-pillar-grid > section > h3 {
+  color: #6a5b46 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-pillar-grid > section > strong {
+  color: #1f4e3a !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-pillar-grid > section > small {
+  color: #5d564c !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--notes > section,
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--notes > div {
+  background: #f7f0e1 !important;
+  color: #2d2a25 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-guanshilu-teaser {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.zhaowu-guanshilu-teaser a {
+  flex: 0 0 auto;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: #a64a38;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .04em;
+}

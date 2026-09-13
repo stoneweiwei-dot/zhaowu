@@ -50,7 +50,7 @@ function releaseSummaryForLanguage(summary: string, version: string, language: D
 export function SiteShell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
   const { language, setLanguage } = useDisplayLanguage();
-  const { user, session, isPending } = useCurrentUserState();
+  const { user, isPending } = useCurrentUserState();
   const { night, toggle } = useBrandTheme();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
@@ -134,7 +134,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 >
                   <BrandIcon name={night ? "day" : "night"} />
                 </button>
-                {user?.isOwner && session ? (
+                {user?.isOwner ? (
                   <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={openGalleryLabel}>
                     {galleryLabel}
                   </Link>

@@ -24,9 +24,11 @@ test("owner music upload uses a deterministic native mobile path instead of brow
   assert.match(manager, /uploadBackgroundMusicResilient/);
 });
 
-test("background player respects the active asset MIME instead of hard-coding mp4", () => {
-  assert.match(player, /const primaryType = asset\?\.content_type \|\| "audio\/mp4"/);
-  assert.match(player, /const fallbackType = asset\?\.fallback_content_type \|\| "audio\/mpeg"/);
+test("background player plays same-origin audio with explicit MIME types", () => {
+  assert.match(player, /const LOCAL_PRIMARY = "\/audio\/zhaowu-background\.m4a"/);
+  assert.match(player, /const LOCAL_FALLBACK = "\/audio\/zhaowu-background\.mp3"/);
+  assert.match(player, /const primaryType = "audio\/mp4"/);
+  assert.match(player, /const fallbackType = "audio\/mpeg"/);
   assert.match(player, /<source src=\{primarySrc\} type=\{primaryType\}/);
 });
 

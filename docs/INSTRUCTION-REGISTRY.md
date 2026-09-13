@@ -124,7 +124,7 @@
 
 - D60：`src/components/d60-karma-section.tsx` 已有 Astronomy Engine 與分鐘確認 Gate，r113 又修正了共享資料的確認旁路；上文「CALCULATION NOT WIRED」是歷史狀態，不能再用來聲稱網站沒有元件。現有計算不等於已完成獨立星曆／流派 test-vector 認證，後者仍需驗證，不得擅改公式。
 - Logo：本批採站主金葫蘆＋深藍昭梧來源，Header 與 App 尺寸分開，取代 CURRENT-STATE 的 r98 松系主 Logo 限制；功能松系圖示仍保留。
-- 登入：2026-09-13 站主最新指令取代 r116 舊口徑。普通用戶登入、註冊與既有非 Owner session 全部退出 active path；唯一登入入口為 `/login` 站主專用 Email＋密碼，僅接受 `profiles.is_owner=true`，站主權限維持。
+- 登入：2026-09-14 r128／r129 取代 Email＋密碼契約。普通用戶登入、註冊與既有非 Owner session 全部退出 active path；唯一登入入口為 `/login` 站主密鑰 + 獨立 Cookie `__Host-zhaowu_owner_session`。不經 Supabase Auth。Email＋密碼 + `profiles.is_owner` 舊契約 `SUPERSEDED`。
 - 付費圖片 PR #295 於 2026-09-12 明確暫停，保持暫停。
 - 語言：現行公開語言選項為繁中／英文／韓文／印地文；簡中為相容層。舊三語任務不得直接恢復已移除的公開選項。
 - 待辦及證據分類見 `docs/OPEN-INSTRUCTIONS-2026-09-12.md`。
@@ -155,8 +155,23 @@
 
 ## 2026-09-14 十項收口對帳（不重做已上線項）
 
-- 正式站 `main` = Vercel Production `88179198301b6682f56140ddbde79b15556473f4` / `dpl_278KTmc5vkQEPa1TCxNoWKYfhf6Y`。
+- 正式站 r128 `main` = Vercel Production `58ee4a9bd923a790b42a954b7764c753a7887454` / `dpl_FtfGFpaweLcpuX966R9ZspUrWfvo`。r129 合併後再核 SHA。
 - D60 gate、西洋完整盤、專卷命盤、branch protection、Netlify skip、#295 暫停均已在 r123–r127。不得 merge #304。不得因舊清單再發一輪功能 build。
-- 仍需站主：Supabase spend cap、DNS `zhaowu.soul-terminal.com`、真實 iPhone、Dashboard security 勾選。Linear 未接入。
-- PR #322 獨立站主登入未綠燈，不得當本批收口合併。
+- 仍需站主：Supabase spend cap（報告／圖庫）、DNS `zhaowu.soul-terminal.com`、真實 iPhone、Dashboard security 勾選。Linear 未接入。
+- PR #322 已合併為 r128；不得再當「未綠燈實驗」擋獨立登入。
+
+## 2026-09-14 r128 independent owner login
+
+- PR #322 已合併為 r128（`58ee4a9`）。獨立站主密鑰登入是現行契約。
+- r128 的 `api/owner-*.ts` 在正式線 FUNCTION_INVOCATION_FAILED（Vite 無法跑 `../src` import）。不得把「Email＋密碼仍是正式登入」從舊 CURRENT-STATE 復活。
+
+## 2026-09-14 r129 home / music / login / 觀世錄
+
+- 背景音樂同源 `/audio/zhaowu-background.m4a`（mp3 備援）。Supabase 公開音訊桶 402 不得再當播放來源。
+- 站主 API 改自包含 `api/owner-*.js`。SPA rewrite 不得吞 `/api/*`。
+- 首頁拿掉客人資料下的即時四柱預覽。八字排盤只在開始分析後出現。四柱卡不得疊天干／地支／十神。
+- 《術數的邊界》與研究札記在 `/knowledge`「昭梧 · 觀世錄」。不得把資料庫文章鋪回主分析流。
+- 夜間「七種個人分析」、輕測驗、命盤細項必須實色底＋月白字。
+- Loading 維持 r126。不 merge #304。PR #295 維持暫停。
+- PWA cache `zhaowu-shell-r129`。
 

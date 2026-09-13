@@ -41,7 +41,7 @@ test.describe("iPhone Safari owner-only account flow", () => {
     await installStoredSession(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: "我的昭梧", exact: true })).toHaveCount(0);
     await mobileHealthy(page);
   });

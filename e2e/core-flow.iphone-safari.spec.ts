@@ -62,7 +62,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#analysisForm .zhaowu-quiz-states")).toHaveCount(0);
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.getByRole("link", { name: /前世今生/ })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
     await expect(page.getByText("子時換日", { exact: true })).toHaveCount(0);
     await expect(page.getByText("套用真太陽時校正", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
@@ -82,12 +82,11 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("button", { name: "繁體中文", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByRole("button", { name: "简体中文", exact: true })).toHaveCount(0);
     await expect(page.locator("#analysisForm")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: /前世今生/ })).toBeVisible();
 
     await page.getByRole("button", { name: "English", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Four Pillars chart", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Client details", exact: true })).toBeVisible();
     await expect(page.locator("#analysis-question")).toBeVisible();
     await expect(page.locator("#birth-year")).toBeVisible();
@@ -96,7 +95,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("link", { name: /Past & Present/ })).toBeVisible();
 
     await page.getByRole("button", { name: "繁體中文", exact: true }).click();
-    await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
     await expect(page.locator('#analysisForm button[type="submit"]')).toBeVisible();
     await expectMobileViewportHealthy(page);
   });

@@ -5,7 +5,6 @@ import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { createEngineReportRecord, updateBirthData } from "@/lib/supabase-rest";
-import { buildChart } from "@/lib/bazi/chart";
 import { UNKNOWN_TIME_COPY } from "@/lib/bazi/presentation";
 import {
   formatSharedBirthRecord,
@@ -14,7 +13,6 @@ import {
   writeSharedBirthRecord,
   type SharedBirthRecord,
 } from "@/lib/shared-birth";
-import { BaziChart } from "@/components/bazi-chart";
 import { CityPicker } from "@/components/city-picker";
 
 export function AnalysisForm() {
@@ -23,7 +21,6 @@ export function AnalysisForm() {
   const setCurrent = useAppStore((s) => s.setCurrent);
   const setSavedId = useAppStore((s) => s.setSavedId);
   const reset = useAppStore((s) => s.reset);
-  const current = useAppStore((s) => s.current);
 
   const [question, setQuestion] = useState("");
   const [year, setYear] = useState("");
@@ -53,10 +50,6 @@ export function AnalysisForm() {
         customerKicker: "SHARED RECORD",
         customerTitle: "Client details",
         customerLead: "Enter the birth record once. Every personal reading can reuse it.",
-        baziKicker: "ZI PING · FOUR PILLARS",
-        baziTitle: "Four Pillars chart",
-        baziLead: "Calculated from the client details above.",
-        chartPending: "Complete the client details to preview the Four Pillars chart.",
         birthReady: "Client record saved",
         birthReadyLead: "The other personal readings will reuse this record.",
         edit: "Edit details",
@@ -77,10 +70,6 @@ export function AnalysisForm() {
           customerKicker: "共用资料",
           customerTitle: "客人资料",
           customerLead: "生辰只需填写一次，各命理专卷将共用这份资料。",
-          baziKicker: "子平 · 四柱",
-          baziTitle: "四柱八字",
-          baziLead: "命盘依据上方客人资料自动排出。",
-          chartPending: "完成客人资料后，这里会显示四柱命盘。",
           birthReady: "资料已保存",
           birthReadyLead: "其他命理专卷将沿用这份资料。",
           edit: "修改",
@@ -100,10 +89,6 @@ export function AnalysisForm() {
           customerKicker: "共用資料",
           customerTitle: "客人資料",
           customerLead: "生辰只需填寫一次，各命理專卷將共用這份資料。",
-          baziKicker: "子平 · 四柱",
-          baziTitle: "四柱八字",
-          baziLead: "命盤依據上方客人資料自動排出。",
-          chartPending: "完成客人資料後，這裡會顯示四柱命盤。",
           birthReady: "資料已保存",
           birthReadyLead: "其他命理專卷將沿用這份資料。",
           edit: "修改",
@@ -157,15 +142,6 @@ export function AnalysisForm() {
     ziPolicy: "midnight",
     useTrueSolar: true,
   }), [year, month, day, hour, minute, timeUnknown, gender, relation, birthCity, liveCity]);
-
-  const previewChart = useMemo(() => {
-    if (current || !draftBirth) return null;
-    try {
-      return buildChart({ ...draftBirth, question, locale });
-    } catch {
-      return null;
-    }
-  }, [current, draftBirth, question, locale]);
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -307,26 +283,9 @@ export function AnalysisForm() {
 
       </section>
 
-      {!current ? (
-        <section id="bazi" className="zhaowu-bazi-hub" aria-labelledby="zhaowu-bazi-title">
-          <header className="zhaowu-bazi-head">
-            <div>
-              <p className="zhaowu-section-kicker">{copy.baziKicker}</p>
-              <h2 id="zhaowu-bazi-title">{copy.baziTitle}</h2>
-              <p className="zhaowu-section-lead">{copy.baziLead}</p>
-            </div>
-          </header>
-          {previewChart ? (
-            <div className="zhaowu-bazi-preview"><BaziChart chart={previewChart} showHeader={false} /></div>
-          ) : (
-            <p className="zhaowu-bazi-pending">{copy.chartPending}</p>
-          )}
-        </section>
-      ) : null}
-
       {error ? <p role="alert" className="zhaowu-analysis-error">{error}</p> : null}
-      <div className="zhaowu-analysis-submit-wrap">
-        <p>{rememberedRecord ? copy.useRecord : copy.baziLead}</p>
+      <div id="bazi" className="zhaowu-bazi-hub zhaowu-analysis-submit-wrap">
+        <p>{rememberedRecord ? copy.useRecord : copy.customerLead}</p>
         <button type="submit" disabled={busy}>{busy ? copy.busy : copy.submit}</button>
       </div>
     </form>

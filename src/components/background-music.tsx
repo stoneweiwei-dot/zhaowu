@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { getActiveBackgroundMusic, musicPublicUrl, type BackgroundMusicAsset } from "@/lib/background-music-assets";
+import { getActiveBackgroundMusic, type BackgroundMusicAsset } from "@/lib/background-music-assets";
 import { useI18n } from "@/lib/i18n";
 
-const FALLBACK_PRIMARY = "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-audio/background/jingfo-shengyuan-aac.m4a";
+const LOCAL_PRIMARY = "/audio/zhaowu-background.m4a";
+const LOCAL_FALLBACK = "/audio/zhaowu-background.mp3";
 const STORAGE_KEY = "zhaowu.backgroundMusic.v3";
 const LEGACY_STORAGE_KEY = "zhaowu.backgroundMusic.v1";
 const DEFAULT_VOLUME = 0.24;
@@ -37,11 +38,12 @@ export function BackgroundMusic() {
     }
   }
 
-  const primarySrc = musicPublicUrl(asset?.storage_path) || FALLBACK_PRIMARY;
-  const fallbackSrc = musicPublicUrl(asset?.fallback_storage_path);
-  const primaryType = asset?.content_type || "audio/mp4";
-  const fallbackType = asset?.fallback_content_type || "audio/mpeg";
-  const musicTitle = asset?.name || (locale === "en" ? "Zhaowu background music" : "淨佛聖願");
+  const primarySrc = LOCAL_PRIMARY;
+  const fallbackSrc = LOCAL_FALLBACK;
+  const primaryType = "audio/mp4";
+  const fallbackType = "audio/mpeg";
+  // Same-origin playback. musicPublicUrl / jingfo-shengyuan-aac.m4a stay unused while Supabase spend cap returns 402.
+  const musicTitle = asset?.name || (locale === "en" ? "Zhaowu background music" : "昭梧背景音樂");
 
   useEffect(() => {
     if (!requested) return;
