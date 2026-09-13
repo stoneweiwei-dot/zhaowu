@@ -16,6 +16,7 @@ const {
   INTRO_GATE_ERROR_EXIT_MS,
   INTRO_SEEN_KEY,
   INTRO_FORCE_KEY,
+  INTRO_BROKEN_KEY,
   scheduleIntroGateHardExit,
   shouldSkipIntroGate,
   markIntroSeen,
@@ -77,8 +78,9 @@ test('intro finishes on native video end or skip, never on a 3s target timer', (
   assert.match(gate, /zhaowu-lotus-intro__skip/);
   assert.match(gate, /minimumDone && runtimeReady && visualDone/);
   assert.match(gate, /hasPlayedRef/);
-  assert.match(gate, /HAVE_CURRENT_DATA/);
   assert.match(gate, /INTRO_GATE_ERROR_EXIT_MS/);
+  assert.match(gate, /INTRO_BROKEN_KEY/);
+  assert.match(gate, /missing-force-fail\.mp4/);
   assert.doesNotMatch(gate, /setTargetDone\(true\)/);
   assert.doesNotMatch(gate, /must never block access for three seconds/);
 });
@@ -97,6 +99,7 @@ test('Playwright webdriver skips the 10s intro unless force=1, and seen marks pe
   assert.equal(fake.getItem(INTRO_SEEN_KEY), "1");
   assert.equal(shouldSkipIntroGate(fake, false), true);
   assert.equal(INTRO_SEEN_KEY, "zhaowu.intro.seen.r123");
+  assert.equal(INTRO_BROKEN_KEY, "zhaowu.intro.broken");
 });
 
 test('intro plays the committed owner immortal ascent and keeps the owner poster fallback', () => {

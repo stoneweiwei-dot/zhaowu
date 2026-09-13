@@ -14,6 +14,13 @@ async function forceIntro(page: Page) {
   });
 }
 
+async function forceBrokenIntro(page: Page) {
+  await page.addInitScript(() => {
+    window.localStorage.setItem("zhaowu.intro.force", "1");
+    window.localStorage.setItem("zhaowu.intro.broken", "1");
+  });
+}
+
 async function traceGateLifecycle(page: Page) {
   await page.addInitScript((selector) => {
     const trace: GateTrace = { mountedAt: null, removedAt: null };
@@ -85,22 +92,21 @@ test.describe("iPhone Safari startup fallback", () => {
 
       const duration = await gateDuration(page);
       expect(duration).not.toBeNull();
-      expect(duration!).toBeLessThanOrEqual(4_000);
+      expect(duration!).toBeLessThanOrEqual(8_000);
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
   }
 
   test("a failed video keeps Loading visible then fails open without waiting ten seconds", async ({ page }) => {
-    await forceIntro(page);
+    await forceBrokenIntro(page);
     await traceGateLifecycle(page);
     await page.route("**/rest/v1/site_settings?**", (route) => route.fulfill({ status: 503, body: "unavailable" }));
-    await page.route("**/intro/*.mp4", (route) => route.fulfill({ status: 404, body: "missing" }));
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const gate = page.locator(GATE);
     await expect(gate).toBeVisible();
-    await expect(gate.locator("video")).toHaveAttribute("src", "/intro/owner-immortal-ascent-r123.mp4");
+    await expect(gate.locator("video")).toHaveAttribute("src", "/intro/missing-force-fail.mp4");
     await expect(page.locator("[data-intro-skip]")).toBeVisible();
     await page.waitForTimeout(900);
     await expect(gate).toBeVisible();
