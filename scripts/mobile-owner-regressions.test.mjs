@@ -10,7 +10,10 @@ test("D60 uses geocentric positions including the Sun and receives the active bi
   assert.match(d60, /api\.Ecliptic\(api\.GeoVector\(key, date, true\)\)\.elon/);
   assert.doesNotMatch(d60, /api\.EclipticLongitude\(/);
   assert.match(d60, /reportBirth === undefined \? eventBirth : reportBirth/);
-  assert.match(source("src/components/specialist-system-page.tsx"), /reportBirth=\{birth && !birth.timeUnknown \? birth : null\}/);
+  const page = source("src/components/specialist-system-page.tsx");
+  assert.match(page, /D60ReliabilityGate/);
+  assert.match(page, /!birth.timeUnknown && birth.city/);
+  assert.match(page, /reportBirth=\{birth && !birth.timeUnknown && birth.city \? \{ year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute, city: birth.city \} : null\}/);
 });
 
 test("master numbers are interpreted inside the personal numerology result, not the article area", () => {
