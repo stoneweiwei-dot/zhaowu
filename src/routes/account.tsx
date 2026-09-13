@@ -464,7 +464,7 @@ function AccountPage() {
 
   if (isPending) return <div className="mx-auto h-52 max-w-xl animate-pulse rounded-xl bg-cream/70" />;
 
-  if (!user || !session) {
+  if (!user) {
     return (
       <main className="mx-auto max-w-xl">
         <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
@@ -472,6 +472,26 @@ function AccountPage() {
           <h1 className="mt-2 font-display text-3xl">{c.ownerTitle}</h1>
           <p className="mt-4 text-sm leading-7 text-ink-soft">{tr(locale, "此入口僅供站主管理使用。", "此入口仅供站主管理使用。", "This entrance is reserved for the site owner.")}</p>
           <Link to="/login" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{tr(locale, "站主登入", "站主登录", "Owner sign-in")}</Link>
+        </section>
+      </main>
+    );
+  }
+
+  if (user.isOwner && !session) {
+    return (
+      <main className="mx-auto max-w-3xl space-y-5" data-owner-independent-console>
+        <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
+          <p className="text-xs tracking-[0.28em] text-cinnabar">OWNER CONSOLE</p>
+          <h1 className="mt-2 font-display text-3xl">{c.ownerTitle}</h1>
+          <p className="mt-4 text-sm leading-7 text-ink-soft">
+            {tr(locale, "站主身份已由昭梧獨立 Cookie 驗證，登入不再經 Supabase Auth。", "站主身份已由昭梧独立 Cookie 验证，登录不再经 Supabase Auth。", "Owner access is verified by Zhaowu's independent secure cookie. Supabase Auth is not used.")}
+          </p>
+          <div className="mt-5 rounded-lg border border-cinnabar/20 bg-paper/55 p-4">
+            <p className="text-sm font-medium text-ink">{tr(locale, "資料服務狀態", "数据服务状态", "Data service status")}</p>
+            <p className="mt-2 text-sm leading-7 text-ink-soft">
+              {tr(locale, "目前 Supabase 專案受 402 egress quota／spend cap 影響。報告、圖庫、背景等資料面板暫停，但不影響你進入站主後台與站主身份。", "目前 Supabase 项目受 402 egress quota／spend cap 影响。报告、图库、背景等数据面板暂停，但不影响你进入站主后台与站主身份。", "Supabase data is currently affected by the 402 egress quota/spend cap. Reports, gallery and background data panels remain paused, but owner access itself is independent and available.")}
+            </p>
+          </div>
         </section>
       </main>
     );
