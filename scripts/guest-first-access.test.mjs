@@ -7,11 +7,16 @@ const guestCss = await readFile(new URL("../src/guest-first-r116.css", import.me
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 const login = await readFile(new URL("../src/routes/login.tsx", import.meta.url), "utf8");
 const provider = await readFile(new URL("../src/lib/auth/provider.tsx", import.meta.url), "utf8");
+const client = await readFile(new URL("../src/lib/auth/client.ts", import.meta.url), "utf8");
+const ownerApi = await readFile(new URL("../src/lib/auth/owner-api.ts", import.meta.url), "utf8");
+const ownerLoginApi = await readFile(new URL("../api/owner-login.ts", import.meta.url), "utf8");
+const ownerSessionApi = await readFile(new URL("../api/owner-session.ts", import.meta.url), "utf8");
+const ownerServer = await readFile(new URL("../src/server/owner-auth.ts", import.meta.url), "utf8");
 const account = await readFile(new URL("../src/routes/account.tsx", import.meta.url), "utf8");
 const sharedBirth = await readFile(new URL("../src/lib/shared-birth.ts", import.meta.url), "utf8");
 const analysisForm = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
 
-test("public shell exposes one owner login entry and preserves authenticated owner controls", () => {
+test("public shell exposes one owner login entry and preserves owner controls", () => {
   assert.match(shell, /className="zhaowu-header-login"/);
   assert.doesNotMatch(guestCss, /\.zhaowu-site-header \.zhaowu-header-login[\s\S]*display:\s*none\s*!important/);
   assert.match(main, /import ['"]\.\/guest-first-r116\.css['"]/);
@@ -20,25 +25,22 @@ test("public shell exposes one owner login entry and preserves authenticated own
   assert.match(shell, /signOut/);
 });
 
-test("login route is owner-only and ordinary sessions are rejected", () => {
-  assert.match(login, /createFileRoute\("\/login"\)/);
-  assert.match(login, /signInWithPassword/);
-  assert.match(login, /getProfile/);
-  assert.match(login, /!profile\?\.is_owner/);
-  assert.match(login, /signOutRemote/);
-  assert.match(login, /login-email/);
-  assert.match(login, /login-password/);
-  assert.doesNotMatch(login, /signUpWithPassword/);
-  assert.doesNotMatch(login, /signupTab/);
-  assert.match(provider, /resolveOwnerSession/);
-  assert.match(provider, /!profile\?\.is_owner/);
-  assert.match(provider, /signOutRemote\(active\)/);
-  assert.match(provider, /if \(!session \|\| !profile\?\.is_owner\) return null/);
-  assert.match(account, /if \(!user \|\| !session\)/);
-  assert.match(account, /<Link to="\/login"/);
-  assert.match(account, /OWNER CONSOLE/);
-  assert.match(account, /站主登入/);
-  assert.doesNotMatch(account, /<p className="mt-4 text-sm leading-7 text-ink-soft">\{t\("mySignedOutLead"\)\}<\/p>/);
+test("owner login is independent of Supabase Auth and uses a secure HttpOnly cookie", () => {
+  assert.match(login, /ownerSignIn/);
+  assert.match(login, /data-login-backend="vercel-owner-cookie"/);
+  assert.doesNotMatch(login, /signInWithPassword|getProfile|signOutRemote|supabaseConfigured|login-email/);
+  assert.match(provider, /readOwnerSession/);
+  assert.doesNotMatch(provider, /restoreSession|getProfile|captureOAuthRedirect|signOutRemote/);
+  assert.match(client, /ownerSignOut/);
+  assert.match(ownerApi, /\/api\/owner-login/);
+  assert.match(ownerSessionApi, /requestHasOwnerSession/);
+  assert.match(ownerLoginApi, /Set-Cookie/);
+  assert.match(ownerServer, /HttpOnly/);
+  assert.match(ownerServer, /Secure/);
+  assert.match(ownerServer, /SameSite=Strict/);
+  assert.match(ownerServer, /timingSafeEqual/);
+  assert.match(account, /data-owner-independent-console/);
+  assert.match(account, /Supabase Auth/);
 });
 
 test("guest birth data stays local and account-scoped data remains isolated", () => {
