@@ -138,3 +138,10 @@
 - Netlify：`netlify.toml` `ignore = "exit 0"`。Netlify 不是 production。
 - PR #295 Paid Visual：維持暫停。
 - Logo：STO-12 已完成，不重新製作。
+
+## 2026-09-13 r126 intro visibility + spend-cap copy
+
+- Loading 原片必須一進站就可見並播放。`opacity: 0 until .is-playing` 與 `onStalled` 把片再藏起來均 `SUPERSEDED`。成功播放仍走原時長 10.04 秒，右下角 Skip，硬退出 12 秒；真正缺片才 1.6 秒 fail-open。
+- 站主登入：Supabase 402 / spend cap / egress quota 必須顯示中文原因。解除額度只能由站主在 Supabase Billing 操作，網站程式不能代替。
+- PR #295 Paid Visual：維持暫停。
+

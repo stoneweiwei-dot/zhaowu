@@ -86,6 +86,14 @@ function LoginPage() {
         <p className="stone-login-kicker">ZHAOWU · OWNER</p>
         <h1 id="login-title" className="stone-login-title">{ownerText(locale, "站主登入", "站主登录", "Owner sign-in")}</h1>
         <p className="stone-login-lead">{ownerText(locale, "此入口僅供站主管理使用。", "此入口仅供站主管理使用。", "This entrance is reserved for the site owner.")}</p>
+        <p className="stone-login-lead" data-login-backend="supabase">
+          {ownerText(
+            locale,
+            "登入走 Supabase。若出現流量額度／spend cap 暫停，請到 Supabase Dashboard 的 Billing 取消上限後再試。",
+            "登录走 Supabase。如果出现流量额度／spend cap 暂停，请到 Supabase Dashboard 的 Billing 取消上限后再试。",
+            "Owner sign-in uses Supabase. If the project is paused for spend cap / egress quota, lift the cap in Supabase Billing first.",
+          )}
+        </p>
         <form onSubmit={onSubmit} className="stone-login-form">
           <label>
             <span>Email</span>

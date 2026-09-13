@@ -107,8 +107,11 @@ async function jsonOrError<T>(res: Response): Promise<T> {
   }
   if (!res.ok) {
     const rec = parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : null;
-    const message = String(rec?.msg ?? rec?.message ?? rec?.error_description ?? rec?.error ?? `HTTP ${res.status}`);
-    throw new Error(message);
+    const raw = String(rec?.msg ?? rec?.message ?? rec?.error_description ?? rec?.error ?? `HTTP ${res.status}`);
+    if (res.status === 402 || /egress_quota|spend cap|restricted due to the following violations/i.test(raw)) {
+      throw new Error("Supabase 因流量額度（spend cap）已暫停，站主登入暫時無法使用。請到 Supabase Dashboard → Billing 取消額度上限或升級方案後再登入。");
+    }
+    throw new Error(raw);
   }
   return parsed as T;
 }
