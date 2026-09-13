@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 
 export const Route = createFileRoute("/knowledge")({ component: KnowledgePage });
@@ -34,6 +34,9 @@ function indexFor(locale: Locale) { return locale === "en" ? 2 : locale === "zh-
 
 function KnowledgePage() {
   const { locale } = useI18n();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  if (pathname.startsWith("/knowledge/")) return <Outlet />;
+
   const i = indexFor(locale);
   const steps = [
     [tr(locale,"概念","概念","Concept"),tr(locale,"先說它是什麼，不先下吉凶。","先说它是什么，不先下吉凶。","Define it before judging it.")],
@@ -56,6 +59,19 @@ function KnowledgePage() {
         <h1 className="mt-2 font-display text-3xl leading-tight text-ink sm:text-4xl">{tr(locale,"看懂本象，不把比喻當命運","看懂本象，不把比喻当命运","Learn the symbols without turning metaphors into fate")}</h1>
         <p className="mt-4 max-w-2xl text-[15px] leading-7 text-ink-soft">{tr(locale,"把複雜術語先翻成人話，再標清楚它能用到哪裡、不能越過哪條線。","把复杂术语先翻成人话，再标清楚它能用到哪里、不能越过哪条线。","Translate technical ideas into plain language, then mark what they can and cannot be used to infer.")}</p>
       </section>
+
+      <a href="/knowledge/shushu-boundary" className="seal-border group block overflow-hidden rounded-2xl bg-paper">
+        <img src="/article-shushu-boundary.svg" alt={tr(locale,"《術數的邊界》文章主圖","《术数的边界》文章主图","Hero image for The Boundary of Divination")} className="aspect-video w-full object-cover" />
+        <div className="p-5 sm:p-7">
+          <div className="flex items-center justify-between gap-4">
+            <span className="rounded-full border border-cinnabar/25 bg-cream px-3 py-1 text-xs text-cinnabar">{tr(locale,"最新文章","最新文章","Latest article")}</span>
+            <span className="text-xs text-ink-mute">2026-09-13</span>
+          </div>
+          <h2 className="mt-3 font-display text-2xl leading-tight text-ink">{tr(locale,"術數的邊界：事實求真，模型求證，認知去執，決策自主","术数的边界：事实求真，模型求证，认知去执，决策自主","The boundary of divination: verify facts, test models, release fixation, keep agency")}</h2>
+          <p className="mt-3 text-sm leading-7 text-ink-soft">{tr(locale,"從《荀子》「善為易者不占」出發，分清事實、模型、證據與選擇；術數可以作分析工具，但不替人決定人生。","从《荀子》“善为易者不占”出发，分清事实、模型、证据与选择；术数可以作分析工具，但不替人决定人生。","Starting from Xunzi, separate facts, models, evidence and choice. Divination may support analysis, but it does not make the final decision for a person.")}</p>
+          <span className="mt-4 inline-flex text-sm text-cinnabar">{tr(locale,"閱讀全文","阅读全文","Read article")} →</span>
+        </div>
+      </a>
 
       <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
         <h2 className="font-display text-2xl text-ink">{tr(locale,"十天干本象","十天干本象","Ten Heavenly Stems")}</h2>
