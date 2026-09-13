@@ -3,15 +3,20 @@ import assert from 'node:assert/strict';
 import { buildWesternReading, buildZiweiReading, buildQizhengReading } from '../src/lib/specialist-reading.ts';
 import { houseOf } from '../src/lib/western-astrology/engine.ts';
 const birth={year:1990,month:6,day:15,hour:10,minute:30,timeUnknown:false,gender:'male',relation:'unset',city:{name:'Sydney',display:'Sydney',country:'AU',timezone:'Australia/Sydney',latitude:-33.87,longitude:151.21}};
-test('Western summary localizes planet names and separates positions into columns',()=>{
+test('Western reading localizes all seven classical planets and expands houses, angles and aspects',()=>{
  const reading=buildWesternReading(birth,'zh-Hant');
- const table=reading.sections.find(s=>s.table).table;
- assert.deepEqual(table.headers,['行星','星座','度數','落宮']);
- assert.deepEqual(table.rows.map(r=>r[0]),['水星','金星','火星','木星','土星']);
- for(const row of table.rows){assert.equal(row.length,4);assert.match(row[2],/°/);assert.ok(Number(row[3])>=1&&Number(row[3])<=12);}
- assert.equal(buildWesternReading(birth,'en').sections.find(s=>s.table).table.rows[0][0],'Mercury');
- const unknown=buildWesternReading({...birth,timeUnknown:true},'zh-Hant').sections.find(s=>s.table).table;
- for(const row of unknown.rows){assert.equal(row[2],'—');assert.equal(row[3],'—');}
+ const planets=reading.sections.find(s=>s.title==='七曜星座與落宮解讀').table;
+ assert.deepEqual(planets.headers,['行星','星座／度分','落宮','運行','解讀']);
+ assert.deepEqual(planets.rows.map(r=>r[0]),['太陽','月亮','水星','金星','火星','木星','土星']);
+ for(const row of planets.rows){assert.equal(row.length,5);assert.match(row[1],/°/);assert.match(row[2],/^第 \d+ 宮$/);assert.ok(row[4].length>10);}
+ const houses=reading.sections.find(s=>s.title==='十二宮完整解讀').table;
+ assert.equal(houses.rows.length,12);assert.deepEqual(houses.headers,['宮位','宮頭','傳統主星','宮內行星','生活主題','解讀']);
+ const angles=reading.sections.find(s=>s.title==='四軸解讀').table;assert.equal(angles.rows.length,4);
+ const aspects=reading.sections.find(s=>s.title==='主要相位').table;assert.ok(aspects.rows.length>0);
+ assert.equal(reading.sections.some(s=>s.title==='太陽落宮'),false);
+ assert.equal(buildWesternReading(birth,'en').sections.find(s=>s.title==='Seven planets · signs and houses').table.rows[0][0],'Sun');
+ const unknown=buildWesternReading({...birth,timeUnknown:true},'zh-Hant');
+ assert.equal(unknown.chart,undefined);assert.equal(unknown.sections.some(s=>s.title==='十二宮完整解讀'),false);assert.equal(unknown.sections.some(s=>s.title==='四軸解讀'),false);
 });
 test('Western snapshot includes all twelve cusps and every computed classical planet once',()=>{const c=buildWesternReading(birth,'en').chart;assert.equal(c.kind,'western');assert.equal(c.houses.cusps.length,12);assert.equal(c.bodies.length,7);for(const b of c.bodies){assert.ok(Number.isFinite(b.longitude));assert.ok(houseOf(b.longitude,c.houses)>=1&&houseOf(b.longitude,c.houses)<=12);}assert.ok(c.angles);});
 test('Zi Wei snapshot preserves fourteen major stars and twelve distinct palace branches',()=>{const c=buildZiweiReading(birth,'zh-Hant').chart.data;assert.equal(c.palaces.length,12);assert.equal(new Set(c.palaces.map(p=>p.branch)).size,12);assert.equal(Object.keys(c.majorStars).length,14);});

@@ -43,7 +43,11 @@ test("shared birth auto-generates the report and changing direction regenerates 
   await expect(page.locator('article[aria-label="印度古法占星"]')).toBeVisible({ timeout: 10_000 });
   const before = await result.innerText();
 
-  await page.getByLabel("逆行（傳統女命）", { exact: true }).check();
+  const reverse = page.getByLabel("逆行（傳統女命）", { exact: true });
+  await reverse.scrollIntoViewIfNeeded();
+  // Use the element's native click path: WebKit pointer emulation can miss the tiny controlled radio target after the smooth result scroll/reflow.
+  await reverse.evaluate((node) => (node as HTMLInputElement).click());
+  await expect(reverse).toBeChecked();
   await expect.poll(async () => result.innerText(), { timeout: 10_000 }).not.toBe(before);
   await expect(result).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
