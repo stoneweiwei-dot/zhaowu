@@ -1,4 +1,4 @@
-export const INTRO_SEEN_KEY = "zhaowu.intro.seen.r125";
+export const INTRO_SEEN_KEY = "zhaowu.intro.seen.r126";
 export const INTRO_FORCE_KEY = "zhaowu.intro.force";
 export const INTRO_BROKEN_KEY = "zhaowu.intro.broken";
 export const INTRO_GATE_MIN_VISIBLE_MS = 400;

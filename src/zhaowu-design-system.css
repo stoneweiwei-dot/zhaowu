@@ -50,7 +50,7 @@ textarea {
 }
 
 .zhaowu-lotus-intro__video {
-  opacity: 0 !important;
+  opacity: 1 !important;
   transition: opacity 260ms ease !important;
 }
 

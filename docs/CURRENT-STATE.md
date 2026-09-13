@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-13 16:20 AEST
+最後核對：2026-09-13 21:50 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -34,7 +34,7 @@
 - `/yizhangjing` 是首页唯一「前世今生」入口：以达摩一掌经排前四世六道、逐世特征与留到今生的习性，并明确合并重复六道的加强影响。
 - `/qizheng`、`/ziwei`、`/astrology`、`/indian-astrology` 在有完整生辰時顯示各自對應命盤（`data-natal-chart`）；內部 calculation profile、原始 debug 狀態仍不進客戶畫面。舊「技術盤一律不向客戶顯示」已廢止。
 - `/indian-astrology` 的 D60 必須先顯示年月日＋精確時分＋出生地，經明確分鐘確認（綁定 birth fingerprint）並通過 ±2 分鐘穩定性後才輸出盤面與解讀；不穩定或檢查失敗一律「不作判定」，不用 D60 反向考時。
-- Loading：`IntroGate` 指向 `/intro/owner-immortal-ascent-r123.mp4`（原時長 10.04 秒、720×1280，不降解析度）與同名 JPEG 海報；右下角 Skip；錯誤約 1.6 秒 fail-open；硬退出 12 秒。舊 2.4／2.8／3 秒 Loading 契約已廢止。
+- Loading：`IntroGate` 指向 `/intro/owner-immortal-ascent-r123.mp4`（原時長 10.04 秒、720×1280，不降解析度）與同名 JPEG 海報；一進站影片可見並主動 `play()`，右下角 Skip；真正影片錯誤才約 1.6 秒 fail-open；硬退出 12 秒。r126 拿掉「opacity:0 直到 is-playing」與 buffering 時 `onStalled` 再把片藏起來。舊 2.4／2.8／3 秒 Loading 契約已廢止。
 - 首页各分组必须用简短三语说明回答两件事：用户“会知道自己的什么”与“这个体系最擅长看什么”；英文必须自然简洁，不做逐字直译。
 - 「趣味测验」是独立的轻量自评系列，不冒充命盘；包含「内在动物 × 命局瑞兽」与「五行功能测验」。五行功能测验只判断当前需要训练的生长、启动、落地、收敛或恢复功能，不等同八字喜用神。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
@@ -102,7 +102,8 @@
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
 - 站主 Email 登入、帳戶／報告重開，以及付款與 provider 成功／失敗流程仍缺 r119 owner-only 邊界下的端到端實證；普通用戶不再有註冊或會員登入流程。
-- Loading 已改為 r123 原片 10.04 秒 + Skip；見第 2 節。主畫面圖示使用 r113 獨立 App Icon。
+- Loading 已改為 r126：原片 10.04 秒一進站就看得見並播放 + Skip；見第 2 節。主畫面圖示使用 r113 獨立 App Icon。
+- 站主登入仍走 Supabase `plgpxusmemnmzckbwtiv`。若 Auth/REST 回 402 `exceed_cached_egress_quota`，不是帳密表單壞掉，必須在 Supabase Dashboard → Billing 取消 spend cap。程式只能把原因講清楚，無法從網站端解除額度。
 - GitHub `main` branch protection：Deploy gate／Engine suite／iPhone Safari 必須列為 required checks。若 API 權限不足，站主需在 GitHub Settings 手動打開。
 - Supabase dashboard 仍需站主勾：`get_customer_classic_passage` EXECUTE 邊界、`search_path`、leaked-password protection、live Edge Functions 對帳。見 `docs/supabase-security-r123.md`。
 - Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo，不復活普通會員 Google／Apple／註冊。

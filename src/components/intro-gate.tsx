@@ -93,9 +93,18 @@ export function IntroGate() {
   useEffect(() => {
     const node = videoRef.current;
     if (!node || isForcedBrokenIntro()) return;
+    node.muted = true;
+    node.defaultMuted = true;
+    node.playsInline = true;
+    node.setAttribute("webkit-playsinline", "true");
     const tryPlay = () => {
       const play = node.play();
-      if (play && typeof play.catch === "function") play.catch(() => undefined);
+      if (play && typeof play.then === "function") {
+        play.then(() => {
+          hasPlayedRef.current = true;
+          setVideoPlaying(true);
+        }).catch(() => undefined);
+      }
     };
     tryPlay();
     node.addEventListener("canplay", tryPlay);
@@ -149,8 +158,8 @@ export function IntroGate() {
         <div className="zhaowu-lotus-intro__fallback-shade" />
         <div className="zhaowu-lotus-intro__fallback-copy"><strong>{locale === "en" ? "ZHAOWU" : "昭梧"}</strong><span>{loadingLabel}</span><i /></div>
       </div>
-      <video ref={videoRef} className={`zhaowu-lotus-intro__video ${videoPlaying ? "is-playing" : ""}`} src={ownerVideoSrc()} poster={OWNER_LOADING_POSTER} autoPlay muted playsInline preload="auto"
-        onPlaying={() => { hasPlayedRef.current = true; setVideoPlaying(true); }} onEnded={() => setVisualDone(true)} onStalled={() => setVideoPlaying(false)} onAbort={() => { if (!hasPlayedRef.current) { setVideoPlaying(false); setVideoFailed(true); } }} onError={() => { if (!hasPlayedRef.current) { setVideoPlaying(false); setVideoFailed(true); } }} />
+      <video ref={videoRef} className="zhaowu-lotus-intro__video is-playing" src={ownerVideoSrc()} poster={OWNER_LOADING_POSTER} autoPlay muted playsInline preload="auto"
+        onPlaying={() => { hasPlayedRef.current = true; setVideoPlaying(true); }} onEnded={() => setVisualDone(true)} onAbort={() => { if (!hasPlayedRef.current) { setVideoPlaying(false); setVideoFailed(true); } }} onError={() => { if (!hasPlayedRef.current) { setVideoPlaying(false); setVideoFailed(true); } }} />
       {phase === "in" ? (
         <button
           type="button"

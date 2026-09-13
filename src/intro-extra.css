@@ -1,11 +1,13 @@
 .zhaowu-lotus-intro__video {
   position: absolute;
   inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;
   background: #0b120e;
   display: block;
+  opacity: 1;
 }
 
 @media (min-width: 700px) {
@@ -37,7 +39,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .zhaowu-lotus-intro__video {
-    display: none;
+    display: block;
+    opacity: 1;
   }
   .zhaowu-lotus-intro {
     background:

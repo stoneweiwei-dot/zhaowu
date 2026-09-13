@@ -83,6 +83,8 @@ test('intro finishes on native video end or skip, never on a 3s target timer', (
   assert.match(gate, /missing-force-fail\.mp4/);
   assert.match(gate, /isForcedBrokenIntro/);
   assert.match(gate, /if \(!isForcedBrokenIntro\(\)\) return/);
+  assert.doesNotMatch(gate, /onStalled=\{\(\) => setVideoPlaying\(false\)\}/);
+  assert.match(gate, /className="zhaowu-lotus-intro__video is-playing"/);
   assert.doesNotMatch(gate, /setTargetDone\(true\)/);
   assert.doesNotMatch(gate, /must never block access for three seconds/);
 });
@@ -100,7 +102,7 @@ test('Playwright webdriver skips the 10s intro unless force=1, and seen marks pe
   markIntroSeen(fake);
   assert.equal(fake.getItem(INTRO_SEEN_KEY), "1");
   assert.equal(shouldSkipIntroGate(fake, false), true);
-  assert.equal(INTRO_SEEN_KEY, "zhaowu.intro.seen.r125");
+  assert.equal(INTRO_SEEN_KEY, "zhaowu.intro.seen.r126");
   assert.equal(INTRO_BROKEN_KEY, "zhaowu.intro.broken");
 });
 
@@ -127,6 +129,20 @@ test('intro plays the committed owner immortal ascent and keeps the owner poster
   assert.doesNotMatch(gate, /STONE 原創/);
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__copy|zhaowu-lotus-intro__status|zhaowu-lotus-intro__bar/);
   assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
+});
+
+test('intro video stays visible even before the playing event, and login names a spend-cap freeze', async () => {
+  const design = await readFile(new URL('../src/zhaowu-design-system.css', import.meta.url), 'utf8');
+  const rest = await readFile(new URL('../src/lib/supabase-rest.ts', import.meta.url), 'utf8');
+  const login = await readFile(new URL('../src/routes/login.tsx', import.meta.url), 'utf8');
+  assert.match(design, /\.zhaowu-lotus-intro__video \{\s*opacity: 1 !important;/);
+  assert.doesNotMatch(design, /\.zhaowu-lotus-intro__video \{\s*opacity: 0 !important;/);
+  assert.match(css, /opacity: 1;/);
+  assert.doesNotMatch(css, /\.zhaowu-lotus-intro__video \{\s*display: none;/);
+  assert.match(rest, /res\.status === 402/);
+  assert.match(rest, /Supabase 因流量額度（spend cap）已暫停/);
+  assert.match(login, /data-login-backend="supabase"/);
+  assert.match(login, /spend cap/);
 });
 
 test('iPhone Safari routes stay mounted and Loading remains perceptible when bootstrap fails', () => {
