@@ -11,12 +11,14 @@ import { buildZiweiPlainSummary } from "@/lib/ziwei/plain-summary";
 import { buildZiweiTruthExtension } from "@/lib/ziwei/horoscope";
 import { ZHAOWU_ZIWEI_CALCULATION_PROFILE } from "@/lib/ziwei/profiles";
 import {
+  calculateMajorAspects,
   computeAngles,
+  computeHouses,
   decoratePosition,
   formatDegree,
   houseOf,
-  computeHouses,
   julianDay,
+  traditionalRuler,
 } from "@/lib/western-astrology/engine";
 
 export type SpecialistId = "indian" | "western" | "ziwei" | "qizheng" | "past" | "dharma";
@@ -29,6 +31,18 @@ export type SpecialistReading = {
   warning?: string;
   sections: SpecialistSection[];
   chart?: { kind: "western"; bodies: NonNullable<ReturnType<typeof calculateQizheng>>["bodies"]; houses?: ReturnType<typeof computeHouses>; angles?: ReturnType<typeof computeAngles> } | { kind: "qizheng"; data: NonNullable<ReturnType<typeof calculateQizheng>> } | { kind: "ziwei"; data: ReturnType<typeof buildZiweiCoreChart> };
+};
+
+const WESTERN_BODY_KEYS = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"] as const;
+type WesternBodyKey = (typeof WESTERN_BODY_KEYS)[number];
+const WESTERN_POINT_KEYS: Record<WesternBodyKey, "Sun" | "Moon" | "Mercury" | "Venus" | "Mars" | "Jupiter" | "Saturn"> = {
+  sun: "Sun",
+  moon: "Moon",
+  mercury: "Mercury",
+  venus: "Venus",
+  mars: "Mars",
+  jupiter: "Jupiter",
+  saturn: "Saturn",
 };
 
 function gmstDegrees(date: Date) {
@@ -48,6 +62,175 @@ function signLabel(sign: string, locale: Locale) {
   return pair ? (locale === "zh-Hans" ? pair[1] : pair[0]) : sign;
 }
 
+function westernPlanetLabel(key: WesternBodyKey, locale: Locale) {
+  if (locale === "en") {
+    const en: Record<WesternBodyKey, string> = { sun: "Sun", moon: "Moon", mercury: "Mercury", venus: "Venus", mars: "Mars", jupiter: "Jupiter", saturn: "Saturn" };
+    return en[key];
+  }
+  const zhHant: Record<WesternBodyKey, string> = { sun: "太陽", moon: "月亮", mercury: "水星", venus: "金星", mars: "火星", jupiter: "木星", saturn: "土星" };
+  const zhHans: Record<WesternBodyKey, string> = { sun: "太阳", moon: "月亮", mercury: "水星", venus: "金星", mars: "火星", jupiter: "木星", saturn: "土星" };
+  return locale === "zh-Hans" ? zhHans[key] : zhHant[key];
+}
+
+function westernPlanetFocus(key: WesternBodyKey, locale: Locale) {
+  const en: Record<WesternBodyKey, string> = {
+    sun: "identity, will and visibility",
+    moon: "emotional needs, habits and felt safety",
+    mercury: "thinking, learning and communication",
+    venus: "values, attraction, aesthetics and relating",
+    mars: "drive, assertion and action",
+    jupiter: "growth, meaning and expansion",
+    saturn: "responsibility, boundaries and long-term structure",
+  };
+  const zhHant: Record<WesternBodyKey, string> = {
+    sun: "核心意志、自我認同與展現方式",
+    moon: "情緒需要、習慣反應與安全感",
+    mercury: "思考、學習與溝通方式",
+    venus: "價值感、吸引力、審美與關係偏好",
+    mars: "行動力、主張與競爭方式",
+    jupiter: "成長、信念與擴張方式",
+    saturn: "責任、界線與長期結構",
+  };
+  const zhHans: Record<WesternBodyKey, string> = {
+    sun: "核心意志、自我认同与展现方式",
+    moon: "情绪需要、习惯反应与安全感",
+    mercury: "思考、学习与沟通方式",
+    venus: "价值感、吸引力、审美与关系偏好",
+    mars: "行动力、主张与竞争方式",
+    jupiter: "成长、信念与扩张方式",
+    saturn: "责任、界线与长期结构",
+  };
+  return locale === "en" ? en[key] : locale === "zh-Hans" ? zhHans[key] : zhHant[key];
+}
+
+function westernSignTone(sign: string, locale: Locale) {
+  const en: Record<string, string> = {
+    Aries: "direct, initiating and fast-moving",
+    Taurus: "steady, tangible and security-minded",
+    Gemini: "curious, verbal and adaptable",
+    Cancer: "protective, feeling-led and memory-oriented",
+    Leo: "expressive, creative and self-directed",
+    Virgo: "analytical, practical and improvement-oriented",
+    Libra: "relational, balancing and comparison-aware",
+    Scorpio: "intense, private and depth-seeking",
+    Sagittarius: "exploratory, candid and meaning-seeking",
+    Capricorn: "structured, disciplined and goal-focused",
+    Aquarius: "independent, systemic and group-aware",
+    Pisces: "receptive, imaginative and boundary-softening",
+  };
+  const zhHant: Record<string, string> = {
+    Aries: "直接、先行與快速啟動",
+    Taurus: "穩定、具體與重視安全感",
+    Gemini: "好奇、善於交換資訊與靈活切換",
+    Cancer: "保護、感受導向與重視記憶",
+    Leo: "表達、創造與自我主導",
+    Virgo: "分析、實用與持續修正",
+    Libra: "關係、平衡與比較協調",
+    Scorpio: "深入、私密與高強度投入",
+    Sagittarius: "探索、直率與追尋意義",
+    Capricorn: "結構、紀律與目標導向",
+    Aquarius: "獨立、系統思考與群體視角",
+    Pisces: "感受、想像與邊界較柔軟",
+  };
+  const zhHans: Record<string, string> = {
+    Aries: "直接、先行与快速启动",
+    Taurus: "稳定、具体与重视安全感",
+    Gemini: "好奇、善于交换信息与灵活切换",
+    Cancer: "保护、感受导向与重视记忆",
+    Leo: "表达、创造与自我主导",
+    Virgo: "分析、实用与持续修正",
+    Libra: "关系、平衡与比较协调",
+    Scorpio: "深入、私密与高强度投入",
+    Sagittarius: "探索、直率与追寻意义",
+    Capricorn: "结构、纪律与目标导向",
+    Aquarius: "独立、系统思考与群体视角",
+    Pisces: "感受、想象与边界较柔软",
+  };
+  return locale === "en" ? en[sign] : locale === "zh-Hans" ? zhHans[sign] : zhHant[sign];
+}
+
+function westernHouseTopics(locale: Locale) {
+  if (locale === "en") return [
+    "self-presentation and first impressions",
+    "personal resources and values",
+    "communication and everyday learning",
+    "home and family roots",
+    "creativity, enjoyment and romance",
+    "daily work, health habits and routines",
+    "close partnerships and cooperation",
+    "shared resources, intimacy and obligations",
+    "higher learning, travel and beliefs",
+    "career, vocation and public role",
+    "friendships, groups and shared goals",
+    "solitude, reflection and private life",
+  ];
+  if (locale === "zh-Hans") return [
+    "自我展现与第一印象",
+    "个人资源、金钱与价值观",
+    "沟通、手足与日常学习",
+    "家庭、居所与成长根基",
+    "创作、乐趣、恋爱与自我表达",
+    "日常工作、健康习惯与生活秩序",
+    "亲密关系、伴侣与合作",
+    "共同资源、亲密、债务与责任",
+    "进修、远行、信念与世界观",
+    "事业、志业与社会角色",
+    "朋友、群体、社群与共同目标",
+    "独处、反思、隐退与内在生活",
+  ];
+  return [
+    "自我展現與第一印象",
+    "個人資源、金錢與價值觀",
+    "溝通、手足與日常學習",
+    "家庭、居所與成長根基",
+    "創作、樂趣、戀愛與自我表達",
+    "日常工作、健康習慣與生活秩序",
+    "親密關係、伴侶與合作",
+    "共同資源、親密、債務與責任",
+    "進修、遠行、信念與世界觀",
+    "事業、志業與社會角色",
+    "朋友、群體、社群與共同目標",
+    "獨處、反思、隱退與內在生活",
+  ];
+}
+
+function westernHouseLabel(house: number, locale: Locale) {
+  if (locale === "en") return `House ${house}`;
+  return locale === "zh-Hans" ? `第 ${house} 宫` : `第 ${house} 宮`;
+}
+
+function westernAspectLabel(type: "conjunction" | "sextile" | "square" | "trine" | "opposition", locale: Locale) {
+  const en = { conjunction: "conjunction", sextile: "sextile", square: "square", trine: "trine", opposition: "opposition" } as const;
+  const zhHant = { conjunction: "合相", sextile: "六合", square: "刑相", trine: "拱相", opposition: "對分" } as const;
+  const zhHans = { conjunction: "合相", sextile: "六合", square: "刑相", trine: "拱相", opposition: "对分" } as const;
+  return locale === "en" ? en[type] : locale === "zh-Hans" ? zhHans[type] : zhHant[type];
+}
+
+function westernAspectMeaning(type: "conjunction" | "sextile" | "square" | "trine" | "opposition", locale: Locale) {
+  const en = {
+    conjunction: "The two functions are fused and tend to act together.",
+    sextile: "The two functions can support one another when deliberately used.",
+    square: "The two functions create friction that asks for adjustment and skill.",
+    trine: "The two functions tend to flow easily and can become an automatic strength.",
+    opposition: "The two functions pull toward opposite poles and need conscious balancing.",
+  } as const;
+  const zhHant = {
+    conjunction: "兩股功能彼此疊加，往往需要一起看。",
+    sextile: "兩股功能較容易互相支援，但仍需要主動運用。",
+    square: "兩股功能較容易形成拉扯，重點在調整節奏與用法。",
+    trine: "兩股功能較容易自然流通，也可能因太順而被忽略。",
+    opposition: "兩股功能分居兩端，課題在協調、取捨與平衡。",
+  } as const;
+  const zhHans = {
+    conjunction: "两股功能彼此叠加，往往需要一起看。",
+    sextile: "两股功能较容易互相支援，但仍需要主动运用。",
+    square: "两股功能较容易形成拉扯，重点在调整节奏与用法。",
+    trine: "两股功能较容易自然流通，也可能因太顺而被忽略。",
+    opposition: "两股功能分居两端，课题在协调、取舍与平衡。",
+  } as const;
+  return locale === "en" ? en[type] : locale === "zh-Hans" ? zhHans[type] : zhHant[type];
+}
+
 export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): SpecialistReading {
   const hour = birth.timeUnknown ? 12 : birth.hour;
   const minute = birth.timeUnknown ? 0 : birth.minute;
@@ -59,24 +242,21 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
     year: birth.year, month: birth.month, day: birth.day, hour, minute,
     timezone: birth.city.timezone,
   });
-  const sun = qizheng?.bodies.find((body) => body.key === "sun");
-  const moon = qizheng?.bodies.find((body) => body.key === "moon");
-  const planets = (qizheng?.bodies ?? []).filter((body) => ["mercury", "venus", "mars", "jupiter", "saturn"].includes(body.key));
-  const sunPos = sun ? decoratePosition("Sun", sun.longitude) : null;
-  const moonPos = moon ? decoratePosition("Moon", moon.longitude) : null;
+  const classicalBodies = (qizheng?.bodies ?? []).filter((body) =>
+    !body.virtual && WESTERN_BODY_KEYS.includes(body.key as WesternBodyKey),
+  );
+  const topics = westernHouseTopics(locale);
 
   const timeNote = birth.timeUnknown
     ? (locale === "en"
-      ? "Birth time is not complete, so Rising and houses are not judged."
+      ? "Birth time is not complete, so Rising, houses, angles and house-based interpretation are not judged."
       : locale === "zh-Hans"
-        ? "出生时间不足，暂不判定上升与宫位。"
-        : "出生時間不足，暫不判定上升與宮位。")
+        ? "出生时间不足，暂不判定上升、十二宫、四轴与落宫解读。"
+        : "出生時間不足，暫不判定上升、十二宮、四軸與落宮解讀。")
     : "";
 
   let chartHouses: ReturnType<typeof computeHouses> | undefined;
   let chartAngles: ReturnType<typeof computeAngles> | undefined;
-  let rising = "";
-  let houses = "";
   if (!birth.timeUnknown) {
     const angles = computeAngles({
       date: utc,
@@ -84,53 +264,180 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
       latitude: birth.city.latitude,
       longitude: birth.city.longitude,
     });
-    const houseChart = computeHouses(angles, birth.city.latitude, "placidus");
-    chartHouses = houseChart;
+    chartHouses = computeHouses(angles, birth.city.latitude, "placidus");
     chartAngles = angles;
-    const asc = decoratePosition("Ascendant", angles.ascendant);
-    rising = `${signLabel(asc.sign, locale)} ${formatDegree(asc)}`;
-    if (sunPos) {
-      const house = houseOf(sunPos.longitude, houseChart);
-      // Modern Western house topics; an explanatory label, not a personality verdict.
-      // References: https://www.chani.com/blogs/the-12-houses-in-astrology
-      // https://en.wikipedia.org/wiki/House_(astrology) (modern topic labels only)
-      const topics = locale === "en"
-        ? ["self-presentation and first impressions", "personal resources and values", "communication and everyday learning", "home and family roots", "creativity, enjoyment and romance", "daily work and routines", "close partnerships and cooperation", "shared resources and obligations", "higher learning, travel and beliefs", "career and public role", "friendships, groups and shared goals", "solitude, reflection and private life"]
-        : locale === "zh-Hans"
-          ? ["自我展现与第一印象", "个人资源与价值观", "沟通与日常学习", "家庭与成长根基", "创作、乐趣与恋爱", "日常工作与生活习惯", "亲密关系与合作", "共同资源与责任", "进修、远行与信念", "事业与社会角色", "朋友、群体与共同目标", "独处、反思与内在生活"]
-          : ["自我展現與第一印象", "個人資源與價值觀", "溝通與日常學習", "家庭與成長根基", "創作、樂趣與戀愛", "日常工作與生活習慣", "親密關係與合作", "共同資源與責任", "進修、遠行與信念", "事業與社會角色", "朋友、群體與共同目標", "獨處、反思與內在生活"];
-      houses = locale === "en"
-        ? `Sun in house ${house}\nHouse topic: ${topics[house - 1]}.\nIn modern Western astrology, this names the life area associated with the Sun's placement. It is a symbolic reference; one placement alone does not determine personality or life outcomes.`
-        : locale === "zh-Hans"
-          ? `太阳落在第 ${house} 宫\n此宫主题：${topics[house - 1]}。\n在现代西洋占星中，这表示太阳所在宫位对应的生活主题。属于象征性参考，不能只凭这一项判定性格或人生吉凶。`
-          : `太陽落在第 ${house} 宮\n此宮主題：${topics[house - 1]}。\n在現代西洋占星中，這表示太陽所在宮位對應的生活主題。屬於象徵性參考，不能只憑這一項判定性格或人生吉凶。`;
-    }
   }
 
-  const planetNames: Record<string, string> = { mercury: "水星", venus: "金星", mars: "火星", jupiter: "木星", saturn: "土星" };
-  const planetRows = planets.map((body) => {
-    const pos = decoratePosition("Sun", body.longitude);
-    const name = locale === "en" ? body.key[0].toUpperCase() + body.key.slice(1) : planetNames[body.key];
-    return [name, signLabel(pos.sign, locale), birth.timeUnknown ? "—" : formatDegree(pos), chartHouses ? String(houseOf(body.longitude, chartHouses)) : "—"];
+  const planetRows = classicalBodies.map((body) => {
+    const key = body.key as WesternBodyKey;
+    const pos = decoratePosition(WESTERN_POINT_KEYS[key], body.longitude, body.retrograde);
+    const house = chartHouses ? houseOf(body.longitude, chartHouses) : null;
+    const movement = body.retrograde
+      ? (locale === "en" ? "Retrograde" : locale === "zh-Hans" ? "逆行" : "逆行")
+      : (locale === "en" ? "Direct" : locale === "zh-Hans" ? "顺行" : "順行");
+    const interpretation = house
+      ? (locale === "en"
+        ? `${westernPlanetFocus(key, locale)} is expressed in a ${westernSignTone(pos.sign, locale)} style, with its main life-area emphasis in ${westernHouseLabel(house, locale)}: ${topics[house - 1]}.`
+        : locale === "zh-Hans"
+          ? `${westernPlanetFocus(key, locale)}以「${westernSignTone(pos.sign, locale)}」的方式表现，主要落在${westernHouseLabel(house, locale)}的「${topics[house - 1]}」领域。`
+          : `${westernPlanetFocus(key, locale)}以「${westernSignTone(pos.sign, locale)}」的方式表現，主要落在${westernHouseLabel(house, locale)}的「${topics[house - 1]}」領域。`)
+      : timeNote;
+    return [
+      westernPlanetLabel(key, locale),
+      `${signLabel(pos.sign, locale)} ${birth.timeUnknown ? "—" : formatDegree(pos)}`,
+      house ? westernHouseLabel(house, locale) : "—",
+      movement,
+      interpretation || "—",
+    ];
   });
-  const planetLine = planetRows.map(row => row.join(" · ")).join("\n");
+
+  const houseRows = chartHouses ? chartHouses.cusps.map((cusp, index) => {
+    const house = index + 1;
+    const cuspPos = decoratePosition("Ascendant", cusp);
+    const ruler = traditionalRuler(cuspPos.signIndex);
+    const rulerKey = ruler.toLowerCase() as WesternBodyKey;
+    const rulerBody = classicalBodies.find((body) => body.key === rulerKey);
+    const rulerHouse = rulerBody ? houseOf(rulerBody.longitude, chartHouses!) : null;
+    const occupants = classicalBodies.filter((body) => houseOf(body.longitude, chartHouses!) === house);
+    const occupantNames = occupants.map((body) => westernPlanetLabel(body.key as WesternBodyKey, locale));
+    const occupantFocus = occupants.map((body) => westernPlanetFocus(body.key as WesternBodyKey, locale));
+    const rulerName = westernPlanetLabel(rulerKey, locale);
+    const cuspTone = westernSignTone(cuspPos.sign, locale);
+
+    const interpretation = locale === "en"
+      ? occupants.length
+        ? `${topics[index]} is directly occupied by ${occupantNames.join(", ")}; the active functions here are ${occupantFocus.join("; ")}. The ${signLabel(cuspPos.sign, locale)} cusp gives the area a ${cuspTone} style, while traditional ruler ${rulerName}${rulerHouse ? ` in ${westernHouseLabel(rulerHouse, locale)}` : ""} links this house to another life area.`
+        : `${topics[index]} is an empty house, which does not mean the topic is absent. The ${signLabel(cuspPos.sign, locale)} cusp gives it a ${cuspTone} style, and traditional ruler ${rulerName}${rulerHouse ? ` in ${westernHouseLabel(rulerHouse, locale)}` : ""} is the main route used to connect the topic elsewhere in the chart.`
+      : locale === "zh-Hans"
+        ? occupants.length
+          ? `「${topics[index]}」有${occupantNames.join("、")}直接落入；重点同时参考${occupantFocus.join("、")}。宫头${signLabel(cuspPos.sign, locale)}让这一领域偏向「${cuspTone}」的运作方式，传统主星${rulerName}${rulerHouse ? `落${westernHouseLabel(rulerHouse, locale)}` : ""}，形成进一步联动。`
+          : `「${topics[index]}」为空宫，不等于这个领域不存在。宫头${signLabel(cuspPos.sign, locale)}让它偏向「${cuspTone}」的运作方式；传统主星${rulerName}${rulerHouse ? `落${westernHouseLabel(rulerHouse, locale)}` : ""}，是这个宫位与其他生活领域连接的主要线索。`
+        : occupants.length
+          ? `「${topics[index]}」有${occupantNames.join("、")}直接落入；重點同時參考${occupantFocus.join("、")}。宮頭${signLabel(cuspPos.sign, locale)}讓這一領域偏向「${cuspTone}」的運作方式，傳統主星${rulerName}${rulerHouse ? `落${westernHouseLabel(rulerHouse, locale)}` : ""}，形成進一步聯動。`
+          : `「${topics[index]}」為空宮，不等於這個領域不存在。宮頭${signLabel(cuspPos.sign, locale)}讓它偏向「${cuspTone}」的運作方式；傳統主星${rulerName}${rulerHouse ? `落${westernHouseLabel(rulerHouse, locale)}` : ""}，是這個宮位與其他生活領域連接的主要線索。`;
+
+    return [
+      westernHouseLabel(house, locale),
+      `${signLabel(cuspPos.sign, locale)} ${formatDegree(cuspPos)}`,
+      `${rulerName}${rulerHouse ? ` · ${westernHouseLabel(rulerHouse, locale)}` : ""}`,
+      occupantNames.join("、") || (locale === "en" ? "Empty" : locale === "zh-Hans" ? "空宫" : "空宮"),
+      topics[index],
+      interpretation,
+    ];
+  }) : [];
+
+  const angleRows = chartAngles ? [
+    ["ASC", chartAngles.ascendant, locale === "en" ? "self-presentation and first approach" : locale === "zh-Hans" ? "自我呈现与第一反应" : "自我呈現與第一反應"],
+    ["DSC", chartAngles.descendant, locale === "en" ? "partnership and the other person" : locale === "zh-Hans" ? "伴侣、合作与他人" : "伴侶、合作與他人"],
+    ["MC", chartAngles.mc, locale === "en" ? "public role, vocation and visibility" : locale === "zh-Hans" ? "社会角色、志业与可见度" : "社會角色、志業與可見度"],
+    ["IC", chartAngles.ic, locale === "en" ? "home, roots and private foundation" : locale === "zh-Hans" ? "家庭、根基与私人基础" : "家庭、根基與私人基礎"],
+  ].map(([label, longitude, theme]) => {
+    const pos = decoratePosition("Ascendant", Number(longitude));
+    const tone = westernSignTone(pos.sign, locale);
+    return [
+      String(label),
+      `${signLabel(pos.sign, locale)} ${formatDegree(pos)}`,
+      String(theme),
+      locale === "en"
+        ? `${String(theme)} tends to be approached in a ${tone} style.`
+        : locale === "zh-Hans"
+          ? `${String(theme)}较常以「${tone}」的方式展开。`
+          : `${String(theme)}較常以「${tone}」的方式展開。`,
+    ];
+  }) : [];
+
+  const aspectPoints = !birth.timeUnknown
+    ? classicalBodies.map((body) => {
+      const key = body.key as WesternBodyKey;
+      return decoratePosition(WESTERN_POINT_KEYS[key], body.longitude, body.retrograde);
+    })
+    : [];
+  const aspectRows = calculateMajorAspects(aspectPoints).map((aspect) => {
+    const aKey = aspect.a.toLowerCase() as WesternBodyKey;
+    const bKey = aspect.b.toLowerCase() as WesternBodyKey;
+    return [
+      `${westernPlanetLabel(aKey, locale)} ${westernAspectLabel(aspect.type, locale)} ${westernPlanetLabel(bKey, locale)}`,
+      `${aspect.orb.toFixed(1)}°`,
+      locale === "en"
+        ? `${westernPlanetFocus(aKey, locale)} meets ${westernPlanetFocus(bKey, locale)}. ${westernAspectMeaning(aspect.type, locale)}`
+        : locale === "zh-Hans"
+          ? `${westernPlanetFocus(aKey, locale)}与${westernPlanetFocus(bKey, locale)}发生互动。${westernAspectMeaning(aspect.type, locale)}`
+          : `${westernPlanetFocus(aKey, locale)}與${westernPlanetFocus(bKey, locale)}發生互動。${westernAspectMeaning(aspect.type, locale)}`,
+    ];
+  });
+
+  const sections: SpecialistSection[] = [
+    {
+      title: locale === "en" ? "Seven planets · signs and houses" : locale === "zh-Hans" ? "七曜星座与落宫解读" : "七曜星座與落宮解讀",
+      body: "",
+      table: {
+        headers: locale === "en"
+          ? ["Planet", "Sign / degree", "House", "Motion", "Interpretation"]
+          : locale === "zh-Hans"
+            ? ["行星", "星座／度分", "落宫", "运行", "解读"]
+            : ["行星", "星座／度分", "落宮", "運行", "解讀"],
+        rows: planetRows,
+      },
+    },
+  ];
+
+  if (chartHouses) {
+    sections.push({
+      title: locale === "en" ? "All twelve houses" : locale === "zh-Hans" ? "十二宫完整解读" : "十二宮完整解讀",
+      body: "",
+      table: {
+        headers: locale === "en"
+          ? ["House", "Cusp", "Traditional ruler", "Planets inside", "Life topic", "Interpretation"]
+          : locale === "zh-Hans"
+            ? ["宫位", "宫头", "传统主星", "宫内行星", "生活主题", "解读"]
+            : ["宮位", "宮頭", "傳統主星", "宮內行星", "生活主題", "解讀"],
+        rows: houseRows,
+      },
+    });
+  }
+
+  if (chartAngles) {
+    sections.push({
+      title: locale === "en" ? "Four angles" : locale === "zh-Hans" ? "四轴解读" : "四軸解讀",
+      body: "",
+      table: {
+        headers: locale === "en" ? ["Angle", "Position", "Theme", "Interpretation"] : locale === "zh-Hans" ? ["四轴", "位置", "主题", "解读"] : ["四軸", "位置", "主題", "解讀"],
+        rows: angleRows,
+      },
+    });
+  }
+
+  if (!birth.timeUnknown) {
+    sections.push({
+      title: locale === "en" ? "Major aspects" : locale === "zh-Hans" ? "主要相位" : "主要相位",
+      body: "",
+      table: {
+        headers: locale === "en" ? ["Aspect", "Orb", "Interpretation"] : locale === "zh-Hans" ? ["相位", "容许度", "解读"] : ["相位", "容許度", "解讀"],
+        rows: aspectRows.length
+          ? aspectRows
+          : [[
+            "—",
+            "—",
+            locale === "en"
+              ? "No major aspect falls inside the current orb settings."
+              : locale === "zh-Hans"
+                ? "目前设定的容许度内没有检测到主要相位。"
+                : "目前設定的容許度內沒有偵測到主要相位。",
+          ]],
+      },
+    });
+  }
 
   return {
-    title: locale === "en" ? "Western astrology" : locale === "zh-Hans" ? "西洋星座" : "西洋星座",
+    title: locale === "en" ? "Western astrology" : "西洋星座",
     lead: locale === "en"
-      ? "Sun, Moon and the main planets are read from the shared birth record. Houses wait for a documented birth time."
+      ? "This page no longer isolates one Sun-house line. With a documented birth time it reads the seven classical planets by sign and house, all twelve houses, the four angles and the major aspects together."
       : locale === "zh-Hans"
-        ? "太阳、月亮与主要行星沿用同一份出生资料。宫位只在出生时间足够时判定。"
-        : "太陽、月亮與主要行星沿用同一份出生資料。宮位只在出生時間足夠時判定。",
+        ? "本页不再只抽一个太阳落宫。出生时间完整时，会一起看七曜星座与落宫、十二宫宫头与传统主星、四轴和主要相位。"
+        : "本頁不再只抽一個太陽落宮。出生時間完整時，會一起看七曜星座與落宮、十二宮宮頭與傳統主星、四軸和主要相位。",
     warning: timeNote || undefined,
-    chart: !birth.timeUnknown && qizheng ? { kind: "western", bodies: qizheng.bodies.filter(body => !body.virtual), houses: chartHouses, angles: chartAngles } : undefined,
-    sections: [
-      { title: locale === "en" ? "Sun" : locale === "zh-Hans" ? "太阳" : "太陽", body: sunPos ? `${signLabel(sunPos.sign, locale)} ${formatDegree(sunPos)}` : "—" },
-      { title: locale === "en" ? "Moon" : locale === "zh-Hans" ? "月亮" : "月亮", body: birth.timeUnknown ? timeNote : (moonPos ? `${signLabel(moonPos.sign, locale)} ${formatDegree(moonPos)}` : "—") },
-      { title: locale === "en" ? "Rising" : locale === "zh-Hans" ? "上升" : "上升", body: rising || timeNote || "—" },
-      { title: locale === "en" ? "Main planets" : "主要行星", body: planetLine || "—", table: { headers: locale === "en" ? ["Planet", "Sign", "Degree", "House"] : ["行星", "星座", "度數", "落宮"], rows: planetRows } },
-      { title: locale === "en" ? "Sun's house" : locale === "zh-Hans" ? "太阳落宫" : "太陽落宮", body: houses || timeNote || "—", layout: "description" },
-    ],
+    chart: !birth.timeUnknown && qizheng ? { kind: "western", bodies: classicalBodies, houses: chartHouses, angles: chartAngles } : undefined,
+    sections,
   };
 }
 

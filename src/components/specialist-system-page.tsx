@@ -30,9 +30,9 @@ const PAGE = {
     en: { title: "Classical Indian astrology", hint: "An independent classical Indian reading. D60 is highly sensitive to the birth minute." },
   },
   western: {
-    "zh-Hant": { title: "西洋星座", hint: "從太陽、月亮、上升、相位與人生領域看另一種性格與生活視角。" },
-    "zh-Hans": { title: "西洋星座", hint: "从太阳、月亮、上升、相位与人生领域看另一种性格与生活视角。" },
-    en: { title: "Western astrology", hint: "A separate view through the Sun, Moon, Rising sign, aspects and life areas." },
+    "zh-Hant": { title: "西洋星座", hint: "從完整本命盤、七曜落宮、十二宮、四軸與主要相位看另一種性格與生活視角。" },
+    "zh-Hans": { title: "西洋星座", hint: "从完整本命盘、七曜落宫、十二宫、四轴与主要相位看另一种性格与生活视角。" },
+    en: { title: "Western astrology", hint: "A separate view through the full natal chart, seven classical planets, twelve houses, four angles and major aspects." },
   },
   ziwei: {
     "zh-Hant": { title: "紫微斗數", hint: "以宮位與時限作獨立旁證，重點看性格、關係、事業、財務與階段主軸。" },

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const missingSharedBirth = "尚未找到生辰資料。回首頁填寫一次，六份命理專卷即可共用。";
 
-test("Western house explanation stays below an unbroken heading on narrow phones", async ({ page }) => {
+test("Western astrology gives a complete house analysis instead of one Sun-house fragment", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.addInitScript(() => {
     localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify({
@@ -12,17 +12,15 @@ test("Western house explanation stays below an unbroken heading on narrow phones
     }));
   });
   await page.goto("/astrology", { waitUntil: "domcontentloaded" });
-  const heading = page.getByRole("heading", { name: "太陽落宮", exact: true });
-  const explanation = page.getByText(/太陽落在第 10 宮\s+此宮主題：事業與社會角色/);
-  await expect(heading).toBeVisible();
-  await expect(explanation).toBeVisible();
-  const h = await heading.boundingBox();
-  const p = await explanation.boundingBox();
-  expect(h).not.toBeNull();
-  expect(p).not.toBeNull();
-  expect(p!.y).toBeGreaterThanOrEqual(h!.y + h!.height);
-  const lineHeight = await heading.evaluate(el => parseFloat(getComputedStyle(el).lineHeight));
-  expect(h!.height).toBeLessThanOrEqual(lineHeight + 2);
+
+  await expect(page.getByText("本頁不再只抽一個太陽落宮。", { exact: false })).toBeVisible();
+  await expect(page.getByRole("region", { name: "七曜星座與落宮解讀" }).locator("tbody tr")).toHaveCount(7);
+  await expect(page.getByRole("region", { name: "十二宮完整解讀" }).locator("tbody tr")).toHaveCount(12);
+  await expect(page.getByRole("region", { name: "四軸解讀" }).locator("tbody tr")).toHaveCount(4);
+  expect(await page.getByRole("region", { name: "主要相位" }).locator("tbody tr").count()).toBeGreaterThan(0);
+  await expect(page.getByRole("heading", { name: "太陽落宮", exact: true })).toHaveCount(0);
+  await expect(page.getByText(/^mercury\b/i)).toHaveCount(0);
+  await expect(page.getByText(/^venus\b/i)).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
