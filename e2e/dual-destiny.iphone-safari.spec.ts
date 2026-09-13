@@ -45,7 +45,7 @@ test("shared birth auto-generates the report and changing direction regenerates 
 
   const reverse = page.getByLabel("逆行（傳統女命）", { exact: true });
   await reverse.scrollIntoViewIfNeeded();
-  await reverse.click({ force: true });
+  await reverse.evaluate((node) => (node as HTMLInputElement).click());
   await expect(reverse).toBeChecked();
   await expect.poll(async () => result.innerText(), { timeout: 10_000 }).not.toBe(before);
   await expect(result).toBeVisible();
