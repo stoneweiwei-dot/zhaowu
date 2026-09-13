@@ -128,3 +128,13 @@
 - 付費圖片 PR #295 於 2026-09-12 明確暫停，保持暫停。
 - 語言：現行公開語言選項為繁中／英文／韓文／印地文；簡中為相容層。舊三語任務不得直接恢復已移除的公開選項。
 - 待辦及證據分類見 `docs/OPEN-INSTRUCTIONS-2026-09-12.md`。
+
+## 2026-09-13 r123 收口 supersession
+
+- Loading：站主原片 `/intro/owner-immortal-ascent-r123.mp4` 原時長 10.04 秒 + 右下角 Skip。舊 2.4／2.8／「低於三秒」Loading 契約 `SUPERSEDED`。CI 用 `navigator.webdriver` 跳過 intro；驗證 Loading 必須設 `zhaowu.intro.force=1`。
+- 專卷命盤：有生辰時顯示對應 `data-natal-chart`。舊「技術盤一律不向客戶顯示」`SUPERSEDED`。內部 calculation profile 仍不進客戶畫面。
+- D60：`/indian-astrology` 使用 `D60ReliabilityGate`（分鐘確認 + fingerprint + ±2 分鐘）。不得 merge 舊 PR #304。不得用 D60 反向考時。不得改 Astronomy Engine／Lahiri／Ascendant／D60 分段公式。
+- Production CI：Engine suite 為必要檢查，不再 `continue-on-error`。
+- Netlify：`netlify.toml` `ignore = "exit 0"`。Netlify 不是 production。
+- PR #295 Paid Visual：維持暫停。
+- Logo：STO-12 已完成，不重新製作。

@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-13 08:55 AEST
+最後核對：2026-09-13 16:20 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -32,7 +32,9 @@
 - Gallery/背景资产管理能力保留；全站应用页恢复 r23 固定宋画背景；后台资产管理保留，不能覆盖前台页面。
 - 首页只保留一个主分析表单；三个专题入口分别进入 `/qizheng`、`/yizhangjing`、`/ziwei`。旧 `/tianji-dual` 仅保留运行兼容，不再作为“性格两面”独立分组、首页入口、青玉小龙入口或客户产品名称；不得复活旧入口。
 - `/yizhangjing` 是首页唯一「前世今生」入口：以达摩一掌经排前四世六道、逐世特征与留到今生的习性，并明确合并重复六道的加强影响。
-- `/qizheng` 与 `/ziwei` 都只向客户交付出生资料表单 + 白话专题报告；技术盘、星位轮、宫位表、计算 profile 与内部状态不进入客户画面。
+- `/qizheng`、`/ziwei`、`/astrology`、`/indian-astrology` 在有完整生辰時顯示各自對應命盤（`data-natal-chart`）；內部 calculation profile、原始 debug 狀態仍不進客戶畫面。舊「技術盤一律不向客戶顯示」已廢止。
+- `/indian-astrology` 的 D60 必須先顯示年月日＋精確時分＋出生地，經明確分鐘確認（綁定 birth fingerprint）並通過 ±2 分鐘穩定性後才輸出盤面與解讀；不穩定或檢查失敗一律「不作判定」，不用 D60 反向考時。
+- Loading：`IntroGate` 指向 `/intro/owner-immortal-ascent-r123.mp4`（原時長 10.04 秒、720×1280，不降解析度）與同名 JPEG 海報；右下角 Skip；錯誤約 1.6 秒 fail-open；硬退出 12 秒。舊 2.4／2.8／3 秒 Loading 契約已廢止。
 - 首页各分组必须用简短三语说明回答两件事：用户“会知道自己的什么”与“这个体系最擅长看什么”；英文必须自然简洁，不做逐字直译。
 - 「趣味测验」是独立的轻量自评系列，不冒充命盘；包含「内在动物 × 命局瑞兽」与「五行功能测验」。五行功能测验只判断当前需要训练的生长、启动、落地、收敛或恢复功能，不等同八字喜用神。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
@@ -89,9 +91,9 @@
 
 ## 6. 专题报告与 Calculation Truth Layer
 
-`src/lib/ziwei/` 已进入确定性计算数据可用于生产的阶段；`/ziwei` 在后台保留版本化 calculation profile 和证据层，但客户只看到性格、事业、财务、关系、压力和当前人生阶段的白话报告。primary-source unanimity 仍为 false，紫微计算事实与八字核心保持分层，不得反向覆盖八字锁定逻辑。
+`src/lib/ziwei/` 已进入确定性计算数据可用于生产的阶段；`/ziwei` 向客户交付白话专题报告 **以及** 十二宮命盤。primary-source unanimity 仍为 false，紫微计算事实与八字核心保持分层，不得反向覆盖八字锁定逻辑。内部 calculation profile 不进客户画面。
 
-`src/lib/qizheng/engine.ts` 继续负责七政真天象计算；`src/lib/qizheng/plain-summary.ts` 只做客户报告组合，不改动星体计算。客户报告发挥七政对性情、情绪节奏、行动压力、关系取向和机会落地的观察优势，不显示黄经轮盘与技术口径。
+`src/lib/qizheng/engine.ts` 继续负责七政真天象计算；`src/lib/qizheng/plain-summary.ts` 只做客户报告组合，不改动星体计算。客户报告发挥七政对性情、情绪节奏、行动压力、关系取向和机会落地的观察优势，并显示七政命盤表。内部 debug 口径不进客户画面。
 
 ## 7. 当前真正未完成
 
@@ -100,7 +102,11 @@
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
 - 站主 Email 登入、帳戶／報告重開，以及付款與 provider 成功／失敗流程仍缺 r119 owner-only 邊界下的端到端實證；普通用戶不再有註冊或會員登入流程。
-- Loading 使用站主原片：`IntroGate` 指向 `/intro/owner-lotus-bloom-r53.mp4` 與同名 JPEG 海報；目標退出為 2.4 秒、硬退出為 2.8 秒，初始化異常不得阻塞首頁、登入或帳戶入口。主畫面圖示使用 r113 獨立 App Icon。
+- Loading 已改為 r123 原片 10.04 秒 + Skip；見第 2 節。主畫面圖示使用 r113 獨立 App Icon。
+- GitHub `main` branch protection：Deploy gate／Engine suite／iPhone Safari 必須列為 required checks。若 API 權限不足，站主需在 GitHub Settings 手動打開。
+- Supabase dashboard 仍需站主勾：`get_customer_classic_passage` EXECUTE 邊界、`search_path`、leaked-password protection、live Edge Functions 對帳。見 `docs/supabase-security-r123.md`。
+- Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo，不復活普通會員 Google／Apple／註冊。
+- 舊 Netlify 自動 Preview／Deploy 已用 `netlify.toml` `ignore = "exit 0"` 停掉；Netlify 不是 production。
 
 ## 8. 生产优先级
 

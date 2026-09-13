@@ -35,11 +35,10 @@ jobs:
       - name: Production deploy gate and build
         run: npm run build
 
-  engine-observe:
-    name: Engine suite (observe)
+  engine:
+    name: Engine suite
     runs-on: ubuntu-latest
     timeout-minutes: 12
-    continue-on-error: true
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v4

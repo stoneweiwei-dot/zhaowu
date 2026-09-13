@@ -1,5 +1,6 @@
 [build]
-  command = "npm run build"
+  ignore = "exit 0"
+  command = "echo 'Netlify is not Zhaowu production; skip.'"
   publish = "dist"
 
 [build.environment]

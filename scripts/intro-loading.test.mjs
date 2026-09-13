@@ -10,9 +10,15 @@ const gate = await readFile(new URL('../src/components/intro-gate.tsx', import.m
 const art = await readFile(new URL('../src/components/intro-lotus-art.tsx', import.meta.url), 'utf8');
 const css = await readFile(new URL('../src/intro-extra.css', import.meta.url), 'utf8');
 const {
+  INTRO_GATE_NATIVE_MS,
   INTRO_GATE_TARGET_MS,
   INTRO_GATE_HARD_EXIT_MS,
+  INTRO_GATE_ERROR_EXIT_MS,
+  INTRO_SEEN_KEY,
+  INTRO_FORCE_KEY,
   scheduleIntroGateHardExit,
+  shouldSkipIntroGate,
+  markIntroSeen,
 } = await import('../src/lib/intro-gate-policy.ts');
 
 test('home opens without a blocking loading gate', () => {
@@ -36,7 +42,7 @@ test('bootstrap does not preload customer report copy that belongs to result ren
   assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
 });
 
-test('loading gate has a target and hard exit below three seconds', () => {
+test('loading gate uses native owner duration, skip, and a hard exit above ten seconds', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
   let cancelledTimer = null;
@@ -52,40 +58,64 @@ test('loading gate has a target and hard exit below three seconds', () => {
     () => { exited = true; },
   );
 
-  assert.equal(INTRO_GATE_TARGET_MS, 2400);
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 2800);
-  assert.ok(INTRO_GATE_TARGET_MS < INTRO_GATE_HARD_EXIT_MS);
-  assert.ok(INTRO_GATE_HARD_EXIT_MS < 3000);
-  assert.equal(scheduledDelay, 2800);
+  assert.equal(INTRO_GATE_NATIVE_MS, 10040);
+  assert.equal(INTRO_GATE_TARGET_MS, 10040);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 12000);
+  assert.equal(INTRO_GATE_ERROR_EXIT_MS, 1600);
+  assert.ok(INTRO_GATE_NATIVE_MS < INTRO_GATE_HARD_EXIT_MS);
+  assert.ok(INTRO_GATE_HARD_EXIT_MS > 10000);
+  assert.equal(scheduledDelay, 12000);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro exits when runtime is ready at the target or when the visual finishes, whichever is appropriate', () => {
-  assert.match(gate, /INTRO_GATE_TARGET_MS/);
-  assert.match(gate, /setTargetDone\(true\)/);
-  assert.match(gate, /minimumDone && runtimeReady && \(targetDone \|\| visualDone\)/);
-  assert.match(gate, /must never block access for three seconds/);
+test('intro finishes on native video end or skip, never on a 3s target timer', () => {
+  assert.match(gate, /onEnded=\{\(\) => setVisualDone\(true\)\}/);
+  assert.match(gate, /data-intro-skip/);
+  assert.match(gate, /zhaowu-lotus-intro__skip/);
+  assert.match(gate, /minimumDone && runtimeReady && visualDone/);
+  assert.doesNotMatch(gate, /setTargetDone\(true\)/);
+  assert.doesNotMatch(gate, /must never block access for three seconds/);
 });
 
-test('intro plays the committed owner lotus bloom and keeps the owner poster fallback', () => {
+test('Playwright webdriver skips the 10s intro unless force=1, and seen marks persist per release', () => {
+  const storage = new Map();
+  const fake = {
+    getItem: (key) => storage.get(key) ?? null,
+    setItem: (key, value) => { storage.set(key, value); },
+  };
+  assert.equal(shouldSkipIntroGate(fake, true), true);
+  fake.setItem(INTRO_FORCE_KEY, "1");
+  assert.equal(shouldSkipIntroGate(fake, true), false);
+  fake.setItem(INTRO_FORCE_KEY, "0");
+  markIntroSeen(fake);
+  assert.equal(fake.getItem(INTRO_SEEN_KEY), "1");
+  assert.equal(shouldSkipIntroGate(fake, false), true);
+  assert.equal(INTRO_SEEN_KEY, "zhaowu.intro.seen.r123");
+});
+
+test('intro plays the committed owner immortal ascent and keeps the owner poster fallback', () => {
   assert.match(gate, /OWNER_LOADING_VIDEO/);
   assert.match(gate, /data-intro-motion="owner-video"/);
-  assert.match(gate, /owner-lotus-bloom-r53\.mp4/);
-  assert.match(gate, /owner-lotus-bloom-r53\.jpg/);
+  assert.match(gate, /owner-immortal-ascent-r123\.mp4/);
+  assert.match(gate, /owner-immortal-ascent-r123\.jpg/);
   assert.match(css, /zhaowu-lotus-intro__video/);
   assert.match(css, /object-fit: cover/);
   assert.match(css, /prefers-reduced-motion/);
-  assert.match(css, /owner-lotus-bloom-r53\.jpg/);
+  assert.match(css, /owner-immortal-ascent-r123\.jpg/);
+  assert.match(css, /zhaowu-lotus-intro__skip/);
+  assert.match(css, /min-height: 44px/);
+  assert.match(css, /bottom: max\(20px/);
+  assert.match(css, /right: max\(16px/);
   assert.match(gate, /playsInline/);
   assert.match(gate, /data-intro-fallback-mode="owner-poster"/);
   assert.doesNotMatch(gate, /<svg/);
   assert.match(gate, /zhaowu-lotus-intro__fallback-copy/);
   assert.match(gate, /data-intro-fallback/);
-  assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp|loading-owner-r40|twin-lotus-restored-r26/);
-  assert.doesNotMatch(css, /loading-owner-r40|twin-lotus-restored-r26/);
+  assert.doesNotMatch(gate, /wutong-owner-r29|lotus-bloom-v12\.webp|loading-owner-r40|twin-lotus-restored-r26|owner-lotus-bloom-r53/);
+  assert.doesNotMatch(css, /loading-owner-r40|twin-lotus-restored-r26|owner-lotus-bloom-r53/);
   assert.doesNotMatch(gate, /STONE 原創/);
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__copy|zhaowu-lotus-intro__status|zhaowu-lotus-intro__bar/);
   assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
@@ -140,12 +170,12 @@ test('home-screen icons are valid PNGs at iOS root and manifest sizes', async ()
   assert.match(manifest, /"src": "\/icons\/zhaowu-gourd-wordmark-r113-512\.png/);
 });
 
-test('owner loading video is a committed H.264 file, not a rewrite 404', async () => {
-  const video = await readFile(new URL('../public/intro/owner-lotus-bloom-r53.mp4', import.meta.url));
-  const poster = await readFile(new URL('../public/intro/owner-lotus-bloom-r53.jpg', import.meta.url));
+test('owner loading video is the native 720x1280 H.264 clip, not a downscaled rewrite', async () => {
+  const video = await readFile(new URL('../public/intro/owner-immortal-ascent-r123.mp4', import.meta.url));
+  const poster = await readFile(new URL('../public/intro/owner-immortal-ascent-r123.jpg', import.meta.url));
   assert.equal(video.subarray(4, 8).toString('ascii'), 'ftyp');
-  assert.ok(video.length > 400_000, 'owner bloom must be a real encoded clip');
-  assert.ok(video.length < 1_500_000, 'owner bloom must stay small enough for iPhone first paint');
+  assert.ok(video.length > 8_000_000, 'native 720x1280 clip must not be downscaled');
+  assert.ok(video.length < 12_000_000, 'clip stays within GitHub file budget');
   assert.equal(poster[0], 0xff);
   assert.equal(poster[1], 0xd8);
 });

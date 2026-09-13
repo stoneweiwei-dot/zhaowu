@@ -38,6 +38,8 @@ test("public login catalog only references committed same-origin files", async (
     "../public/intro/loading-poster.jpg",
     "../public/intro/owner-lotus-bloom-r53.jpg",
     "../public/intro/owner-lotus-bloom-r53.mp4",
+    "../public/intro/owner-immortal-ascent-r123.jpg",
+    "../public/intro/owner-immortal-ascent-r123.mp4",
     "../public/intro/lotus-bloom-v12.webp",
     "../public/intro/twin-lotus-restored-r26.jpg",
     "../public/intro/twin-lotus-restored-r26.mp4",
@@ -56,6 +58,9 @@ test("loading catalog covers the owner stills and bloom animations", () => {
   assert.match(catalog, /loading-dawn-dragon-lotus/);
   assert.match(catalog, /loading-live-lotus-bloom/);
   assert.match(catalog, /loading-official-monitor-cat/);
+  assert.match(catalog, /loading-owner-lotus-bloom-r53/);
+  assert.match(catalog, /loading-owner-lotus-bloom-r53/);
+  assert.match(catalog, /loading-owner-immortal-ascent-r123/);
   assert.match(catalog, /kind: "animation"/);
   assert.match(writer, /loading-pack\.part\./);
   assert.match(writer, /EXPECTED_COUNT = 19/);

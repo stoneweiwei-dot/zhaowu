@@ -34,18 +34,22 @@ async function dismissInstallPromptIfVisible(page: Page) {
 test.describe("iPhone Safari visual and report navigation contract", () => {
   test("loading animation uses the owner's loaded poster when video is unavailable", async ({ page }) => {
     await makeAppOfflineSafe(page);
+    await page.addInitScript(() => {
+      window.localStorage.setItem("zhaowu.intro.force", "1");
+    });
     await page.route("**/intro/*.mp4", (route) => route.abort());
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator("[data-intro-fallback]")).toBeVisible();
     const poster = page.locator('[data-intro-fallback] img');
     await expect(poster).toBeVisible();
-    await expect(poster).toHaveAttribute('src', '/intro/owner-lotus-bloom-r53.jpg');
+    await expect(poster).toHaveAttribute('src', '/intro/owner-immortal-ascent-r123.jpg');
     await expect.poll(() => poster.evaluate((element) => (element as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     await expect(page.locator(".zhaowu-lotus-intro__fallback-copy")).toContainText(/昭梧|ZHAOWU/);
     await expect(page.locator('[data-intro-fallback] svg')).toHaveCount(0);
+    await expect(page.locator("[data-intro-skip]")).toBeVisible();
   });
 
-  test("D60 renders and expands using the current precise birth record", async ({ page }) => {
+  test("D60 withholds interpretation until the recorded minute is confirmed", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.addInitScript((birth) => {
       localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify(birth));
@@ -56,11 +60,21 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
       } });
     }, BIRTH);
     await page.goto('/indian-astrology');
+    await expect(page.locator('[data-d60-minute-gate]')).toBeVisible();
+    await expect(page.locator('[data-d60-confirmed-record]')).toContainText('1988-10-04 · 04:40');
+    await expect(page.locator('[data-d60-confirmed-record]')).toContainText('Sanming');
+    await expect(page.getByRole('button', { name: /核心慣性/ })).toHaveCount(0);
+    await page.getByRole('button', { name: /我確認這是可核對到分鐘的出生時間/ }).click();
     const theme = page.getByRole('button', { name: /核心慣性/ });
-    await expect(theme).toBeVisible();
-    await theme.click();
-    await expect(theme).toHaveAttribute('aria-expanded', 'true');
-    await expect(page.getByText(/這裡看你遇到事情時最先啟動/)).toBeVisible();
+    const withheld = page.locator('[data-d60-withheld]');
+    await expect(theme.or(withheld)).toBeVisible({ timeout: 15_000 });
+    if (await theme.count()) {
+      await theme.click();
+      await expect(theme).toHaveAttribute('aria-expanded', 'true');
+      await expect(page.getByText(/這裡看你遇到事情時最先啟動/)).toBeVisible();
+    } else {
+      await expect(withheld).toContainText(/不作判定/);
+    }
   });
 
   test("master number insight is part of the personal numerology reading", async ({ page }) => {

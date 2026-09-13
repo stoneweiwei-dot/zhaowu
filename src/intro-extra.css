@@ -15,13 +15,33 @@
   }
 }
 
+.zhaowu-lotus-intro__skip {
+  position: absolute;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 4;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 250, 240, 0.55);
+  border-radius: 999px;
+  background: rgba(11, 18, 14, 0.58);
+  color: #fffaf0;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .zhaowu-lotus-intro__video {
     display: none;
   }
   .zhaowu-lotus-intro {
     background:
-      #0b120e url("/intro/owner-lotus-bloom-r53.jpg") center / cover no-repeat;
+      #0b120e url("/intro/owner-immortal-ascent-r123.jpg") center / cover no-repeat;
   }
 }
 
