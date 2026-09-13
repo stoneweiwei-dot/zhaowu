@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-13 21:50 AEST
+最後核對：2026-09-13 22:23 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -23,8 +23,8 @@
 ## 2. 已完成且默认锁住
 
 - GitHub `main` 是唯一源码真相。Vercel Git 自动部署仅对 `main` 开启（`vercel.json` `git.deploymentEnabled.main=true`），正式生产只认 `stone-zhaowu-official`。
-- Supabase 登录、报告存档、图库/背景资产、访问统计统一使用当前项目配置。
-- 登入：普通用戶不提供登入、註冊、Google／Apple／X／Email 會員入口；唯一 `/login` 為站主 Email＋密碼入口，前端只接受 `profiles.is_owner=true` 的 session，既有非 Owner session 會清除。
+- Supabase 仍負責報告存檔、圖庫／背景資產、訪問統計；站主身份驗證已自 r127 從 Supabase Auth 拆離，改由 Vercel Serverless + HttpOnly/Secure Owner Cookie。
+- 登入：普通用戶不提供任何登入／註冊。唯一 `/login` 為昭梧獨立站主密碼入口，不再呼叫 Supabase Auth；成功後由 `/api/owner-login` 發 HttpOnly + Secure + SameSite=Strict Owner Cookie，`/api/owner-session` 驗證站主身份。
 - 現行公開語言：`zh-Hant / en / ko / hi`；`zh-Hans / ja` 僅保留歷史偏好相容並折回繁中，不再是公開選項。
 - Loading ghost overlay 已移除。
 - `finalizeReading` 是最终 Reading 单一来源；已保存报告不重新 live 算出另一套答案。
@@ -103,7 +103,7 @@
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
 - 站主 Email 登入、帳戶／報告重開，以及付款與 provider 成功／失敗流程仍缺 r119 owner-only 邊界下的端到端實證；普通用戶不再有註冊或會員登入流程。
 - Loading 已改為 r126：原片 10.04 秒一進站就看得見並播放 + Skip；見第 2 節。主畫面圖示使用 r113 獨立 App Icon。
-- 站主登入仍走 Supabase `plgpxusmemnmzckbwtiv`。若 Auth/REST 回 402 `exceed_cached_egress_quota`，不是帳密表單壞掉，必須在 Supabase Dashboard → Billing 取消 spend cap。程式只能把原因講清楚，無法從網站端解除額度。
+- r127 起站主登入不再依賴 Supabase Auth，因此 Supabase 402 `exceed_cached_egress_quota` 不再阻止進入 Owner Console。資料面板（報告／圖庫／背景等）仍依賴 Supabase，額度未恢復前保持暫停，不把資料層失敗冒充登入失敗。
 - GitHub `main` branch protection：Deploy gate／Engine suite／iPhone Safari 必須列為 required checks。若 API 權限不足，站主需在 GitHub Settings 手動打開。
 - Supabase dashboard 仍需站主勾：`get_customer_classic_passage` EXECUTE 邊界、`search_path`、leaked-password protection、live Edge Functions 對帳。見 `docs/supabase-security-r123.md`。
 - Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo，不復活普通會員 Google／Apple／註冊。

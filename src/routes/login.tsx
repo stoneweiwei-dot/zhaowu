@@ -2,10 +2,10 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FormEvent, useEffect, useState } from "react";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { ownerSignIn } from "@/lib/auth/owner-api";
 import { useI18n } from "@/lib/i18n";
 import { listActiveLoginAnimations, pickLoginAnimation, type LoginAnimationAsset } from "@/lib/login-animation";
 import { readBrandTheme } from "@/lib/brand-theme";
-import { getProfile, signInWithPassword, signOutRemote, supabaseConfigured } from "@/lib/supabase-rest";
 
 function ownerText(locale: string, hant: string, hans: string, en: string) {
   if (locale === "en") return en;
@@ -33,7 +33,6 @@ function LoginPage() {
   const { t, locale } = useI18n();
   const navigate = useNavigate();
   const { user, reload } = useCurrentUserState();
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,24 +44,13 @@ function LoginPage() {
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
-    if (!email.trim() || password.length < 8) {
-      setError(t("loginValidation"));
-      return;
-    }
-    if (!supabaseConfigured) {
-      setError(t("loginUnavailable"));
+    if (password.length < 12) {
+      setError(ownerText(locale, "請輸入站主密碼。", "请输入站主密码。", "Enter the owner password."));
       return;
     }
     setBusy(true);
     try {
-      const session = await signInWithPassword(email.trim(), password);
-      const profile = await getProfile(session).catch(() => null);
-      if (!profile?.is_owner) {
-        await signOutRemote(session).catch(() => undefined);
-        await reload();
-        setError(ownerText(locale, "僅限站主登入。", "仅限站主登录。", "Owner sign-in only."));
-        return;
-      }
+      await ownerSignIn(password);
       await reload();
       await navigate({ to: "/account" });
     } catch (err) {
@@ -85,27 +73,17 @@ function LoginPage() {
         </div>
         <p className="stone-login-kicker">ZHAOWU · OWNER</p>
         <h1 id="login-title" className="stone-login-title">{ownerText(locale, "站主登入", "站主登录", "Owner sign-in")}</h1>
-        <p className="stone-login-lead">{ownerText(locale, "此入口僅供站主管理使用。", "此入口仅供站主管理使用。", "This entrance is reserved for the site owner.")}</p>
-        <p className="stone-login-lead" data-login-backend="supabase">
-          {ownerText(
-            locale,
-            "登入走 Supabase。若出現流量額度／spend cap 暫停，請到 Supabase Dashboard 的 Billing 取消上限後再試。",
-            "登录走 Supabase。如果出现流量额度／spend cap 暂停，请到 Supabase Dashboard 的 Billing 取消上限后再试。",
-            "Owner sign-in uses Supabase. If the project is paused for spend cap / egress quota, lift the cap in Supabase Billing first.",
-          )}
+        <p className="stone-login-lead" data-login-backend="vercel-owner-cookie">
+          {ownerText(locale, "獨立站主登入，不經 Supabase Auth。", "独立站主登录，不经 Supabase Auth。", "Independent owner sign-in. Supabase Auth is not used.")}
         </p>
         <form onSubmit={onSubmit} className="stone-login-form">
           <label>
-            <span>Email</span>
-            <input id="login-email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@example.com" />
-          </label>
-          <label>
-            <span>{t("password")}</span>
+            <span>{ownerText(locale, "站主密碼", "站主密码", "Owner password")}</span>
             <input id="login-password" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder={t("passwordPh")} />
           </label>
           {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
           <button type="submit" disabled={busy} className="stone-login-primary">
-            {busy ? t("processing") : ownerText(locale, "站主登入", "站主登录", "Owner sign-in")}
+            {busy ? t("processing") : ownerText(locale, "進入站主後台", "进入站主后台", "Enter owner console")}
           </button>
         </form>
         <p className="stone-login-signature">{t("tagline")}</p>
