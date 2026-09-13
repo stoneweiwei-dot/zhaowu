@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">術數的邊界</title>
+  <desc id="desc">宣紙色晨光、遠山與靜坐人物，象徵事實求真、模型求證、認知去執、決策自主。</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#efe5d3"/>
+      <stop offset="0.55" stop-color="#e7dcc8"/>
+      <stop offset="1" stop-color="#d8d1c3"/>
+    </linearGradient>
+    <linearGradient id="mountain" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#77868a"/>
+      <stop offset="1" stop-color="#4c6268"/>
+    </linearGradient>
+    <linearGradient id="robe" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#23373d"/>
+      <stop offset="1" stop-color="#132a31"/>
+    </linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="1.5"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="395" cy="325" r="74" fill="#f6eed9" opacity="0.95"/>
+  <path d="M0 585 L165 445 L300 555 L470 395 L615 535 L785 410 L965 555 L1120 430 L1290 565 L1430 455 L1600 585 L1600 900 L0 900 Z" fill="#98a5a5" opacity="0.36"/>
+  <path d="M0 655 L210 500 L355 625 L545 455 L705 610 L875 480 L1035 625 L1225 490 L1395 630 L1600 515 L1600 900 L0 900 Z" fill="url(#mountain)" opacity="0.52"/>
+  <path d="M0 735 C175 680 290 695 430 660 C605 615 720 685 885 650 C1080 610 1260 670 1600 625 L1600 900 L0 900 Z" fill="#3f555b" opacity="0.32" filter="url(#soft)"/>
+  <g transform="translate(1015 135)">
+    <circle cx="120" cy="95" r="46" fill="#1b2c31"/>
+    <circle cx="130" cy="42" r="29" fill="#18272c"/>
+    <path d="M85 145 C52 205 25 295 10 420 C5 505 58 610 118 675 C175 620 250 555 278 460 C296 375 270 280 225 205 C198 160 155 138 85 145 Z" fill="url(#robe)"/>
+    <path d="M118 675 C52 705 10 730 -32 748 C65 775 205 790 342 770 C300 735 245 705 205 675 Z" fill="#132a31"/>
+    <path d="M92 178 C126 255 147 332 151 430" stroke="#486169" stroke-width="14" opacity="0.45" fill="none"/>
+    <path d="M211 205 C195 285 202 365 230 450" stroke="#486169" stroke-width="12" opacity="0.35" fill="none"/>
+  </g>
+  <g opacity="0.18" stroke="#9d382f" stroke-width="2" fill="none">
+    <circle cx="205" cy="150" r="44"/>
+    <circle cx="205" cy="150" r="31"/>
+    <path d="M180 150h50M205 125v50"/>
+  </g>
+  <text x="70" y="825" font-family="'Noto Serif TC','Songti TC',serif" font-size="26" letter-spacing="5" fill="#7d302a" opacity="0.58">STONE 原創</text>
+  <text x="1315" y="824" font-family="'Noto Serif TC','Songti TC',serif" font-size="22" letter-spacing="3" fill="#23373d" opacity="0.28">昭梧 · 觀變而不受其役</text>
+</svg>
