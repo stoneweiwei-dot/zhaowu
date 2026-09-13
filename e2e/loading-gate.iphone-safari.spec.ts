@@ -95,7 +95,7 @@ test.describe("iPhone Safari startup fallback", () => {
     await forceIntro(page);
     await traceGateLifecycle(page);
     await page.route("**/rest/v1/site_settings?**", (route) => route.fulfill({ status: 503, body: "unavailable" }));
-    await page.route("**/intro/*.mp4", (route) => route.abort());
+    await page.route("**/intro/*.mp4", (route) => route.fulfill({ status: 404, body: "missing" }));
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const gate = page.locator(GATE);

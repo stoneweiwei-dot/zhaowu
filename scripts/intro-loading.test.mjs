@@ -76,6 +76,9 @@ test('intro finishes on native video end or skip, never on a 3s target timer', (
   assert.match(gate, /data-intro-skip/);
   assert.match(gate, /zhaowu-lotus-intro__skip/);
   assert.match(gate, /minimumDone && runtimeReady && visualDone/);
+  assert.match(gate, /hasPlayedRef/);
+  assert.match(gate, /HAVE_CURRENT_DATA/);
+  assert.match(gate, /INTRO_GATE_ERROR_EXIT_MS/);
   assert.doesNotMatch(gate, /setTargetDone\(true\)/);
   assert.doesNotMatch(gate, /must never block access for three seconds/);
 });

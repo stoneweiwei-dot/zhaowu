@@ -24,7 +24,9 @@ export function IntroGate() {
   const [videoPlaying, setVideoPlaying] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const finishedRef = useRef(false);
+  const hasPlayedRef = useRef(false);
   const exitTimerRef = useRef<number | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const forceOff = useCallback(() => {
     if (finishedRef.current && exitTimerRef.current === null) return;
@@ -66,10 +68,32 @@ export function IntroGate() {
   }, [forceOff]);
 
   useEffect(() => {
-    if (!videoFailed) return;
-    const timer = window.setTimeout(() => setVisualDone(true), INTRO_GATE_ERROR_EXIT_MS);
-    return () => window.clearTimeout(timer);
-  }, [videoFailed]);
+    if (hasPlayedRef.current || videoPlaying || visualDone) return;
+    const el = videoRef.current;
+    const failOpen = () => {
+      if (hasPlayedRef.current || finishedRef.current) return;
+      setVideoPlaying(false);
+      setVideoFailed(true);
+      setVisualDone(true);
+    };
+    const inspect = () => Boolean(el && (el.error || el.networkState === HTMLMediaElement.NETWORK_NO_SOURCE));
+    const poll = window.setInterval(() => {
+      if (inspect()) {
+        setVideoPlaying(false);
+        setVideoFailed(true);
+      }
+    }, 120);
+    // WebKit often swallows video error events on request abort; if no frame arrived, fail-open at 1.6s instead of waiting 10s.
+    const watchdog = window.setTimeout(() => {
+      if (hasPlayedRef.current) return;
+      if (el && el.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) return;
+      failOpen();
+    }, INTRO_GATE_ERROR_EXIT_MS);
+    return () => {
+      window.clearInterval(poll);
+      window.clearTimeout(watchdog);
+    };
+  }, [videoPlaying, visualDone]);
 
   useEffect(() => {
     if (minimumDone && runtimeReady && visualDone) finish();
@@ -94,8 +118,8 @@ export function IntroGate() {
         <div className="zhaowu-lotus-intro__fallback-shade" />
         <div className="zhaowu-lotus-intro__fallback-copy"><strong>{locale === "en" ? "ZHAOWU" : "昭梧"}</strong><span>{loadingLabel}</span><i /></div>
       </div>
-      <video className={`zhaowu-lotus-intro__video ${videoPlaying ? "is-playing" : ""}`} src={OWNER_LOADING_VIDEO} poster={OWNER_LOADING_POSTER} autoPlay muted playsInline preload="auto"
-        onPlaying={() => setVideoPlaying(true)} onEnded={() => setVisualDone(true)} onStalled={() => setVideoPlaying(false)} onError={() => { setVideoPlaying(false); setVideoFailed(true); }} />
+      <video ref={videoRef} className={`zhaowu-lotus-intro__video ${videoPlaying ? "is-playing" : ""}`} src={OWNER_LOADING_VIDEO} poster={OWNER_LOADING_POSTER} autoPlay muted playsInline preload="auto"
+        onPlaying={() => { hasPlayedRef.current = true; setVideoPlaying(true); }} onEnded={() => setVisualDone(true)} onStalled={() => setVideoPlaying(false)} onAbort={() => { if (!hasPlayedRef.current) { setVideoPlaying(false); setVideoFailed(true); } }} onError={() => { if (!hasPlayedRef.current) { setVideoPlaying(false); setVideoFailed(true); } }} />
       {phase === "in" ? (
         <button
           type="button"
