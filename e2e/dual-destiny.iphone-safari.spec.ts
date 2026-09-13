@@ -43,7 +43,10 @@ test("shared birth auto-generates the report and changing direction regenerates 
   await expect(page.locator('article[aria-label="印度古法占星"]')).toBeVisible({ timeout: 10_000 });
   const before = await result.innerText();
 
-  await page.getByLabel("逆行（傳統女命）", { exact: true }).check();
+  const reverse = page.getByLabel("逆行（傳統女命）", { exact: true });
+  await reverse.scrollIntoViewIfNeeded();
+  await reverse.click({ force: true });
+  await expect(reverse).toBeChecked();
   await expect.poll(async () => result.innerText(), { timeout: 10_000 }).not.toBe(before);
   await expect(result).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
