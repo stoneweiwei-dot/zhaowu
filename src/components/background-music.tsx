@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { getActiveBackgroundMusic, type BackgroundMusicAsset } from "@/lib/background-music-assets";
+import { loadOwnerMusic } from "@/lib/owner-music-client";
 import { useI18n } from "@/lib/i18n";
 
-const LOCAL_PRIMARY = "/audio/zhaowu-background.m4a";
-const LOCAL_FALLBACK = "/audio/zhaowu-background.mp3";
 const STORAGE_KEY = "zhaowu.backgroundMusic.v3";
 const LEGACY_STORAGE_KEY = "zhaowu.backgroundMusic.v1";
 const DEFAULT_VOLUME = 0.24;
@@ -28,22 +26,22 @@ export function BackgroundMusic() {
   const [enabled, setEnabled] = useState(readInitialPreference);
   const [requested, setRequested] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [asset, setAsset] = useState<BackgroundMusicAsset | null>(null);
+  const [track, setTrack] = useState<{ id: string; name: string; url: string; contentType: string } | null>(null);
 
   async function refreshAsset() {
-    const next = await getActiveBackgroundMusic().catch(() => null);
-    setAsset(next);
-    if (next?.id) {
-      try { window.localStorage.setItem(`${STORAGE_KEY}.track`, next.id); } catch {}
+    const next = await loadOwnerMusic().catch(() => null);
+    const active = next?.active ?? null;
+    setTrack(active);
+    if (active?.id) {
+      try { window.localStorage.setItem(`${STORAGE_KEY}.track`, active.id); } catch {}
     }
+    return active;
   }
 
-  const primarySrc = LOCAL_PRIMARY;
-  const fallbackSrc = LOCAL_FALLBACK;
-  const primaryType = "audio/mp4";
-  const fallbackType = "audio/mpeg";
-  // Same-origin playback. musicPublicUrl / jingfo-shengyuan-aac.m4a stay unused while Supabase spend cap returns 402.
-  const musicTitle = asset?.name || (locale === "en" ? "Zhaowu background music" : "昭梧背景音樂");
+  const primarySrc = track?.url || "";
+  const primaryType = track?.contentType || "audio/mpeg";
+  // Owner uploads play from /api/owner-music. jingfo-shengyuan-aac.m4a / musicPublicUrl stay unused while Supabase spend cap returns 402.
+  const musicTitle = track?.name || (locale === "en" ? "Zhaowu background music" : "昭梧背景音樂");
 
   useEffect(() => {
     if (!requested) return;
@@ -61,13 +59,18 @@ export function BackgroundMusic() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !requested) return;
+    if (!primarySrc) {
+      audio.pause();
+      setPlaying(false);
+      return;
+    }
     audio.loop = true;
     audio.volume = DEFAULT_VOLUME;
     audio.load();
     if (enabled) {
       void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
     }
-  }, [enabled, requested, primarySrc, fallbackSrc, primaryType, fallbackType]);
+  }, [enabled, requested, primarySrc, primaryType]);
 
   useEffect(() => {
     try {
@@ -92,7 +95,13 @@ export function BackgroundMusic() {
       setRequested(true);
       audio.loop = true;
       audio.volume = DEFAULT_VOLUME;
-      void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      void refreshAsset().then((active) => {
+        if (!active?.url) {
+          setPlaying(false);
+          return;
+        }
+        void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      });
     };
 
     const opts: AddEventListenerOptions = { once: true, passive: true };
@@ -119,11 +128,15 @@ export function BackgroundMusic() {
 
     setEnabled(true);
     setRequested(true);
-    if (audio) {
+    void refreshAsset().then((active) => {
+      if (!audio || !active?.url) {
+        setPlaying(false);
+        return;
+      }
       audio.loop = true;
       audio.volume = DEFAULT_VOLUME;
       void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
-    }
+    });
   };
 
   const label = locale === "en"
@@ -149,8 +162,7 @@ export function BackgroundMusic() {
       onEnded={() => setPlaying(false)}
       onError={() => setPlaying(false)}
     >
-      <source src={primarySrc} type={primaryType} />
-      {fallbackSrc ? <source src={fallbackSrc} type={fallbackType} /> : null}
+      {primarySrc ? <source src={primarySrc} type={primaryType} /> : null}
     </audio>
     <button
       type="button"

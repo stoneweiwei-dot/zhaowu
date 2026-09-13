@@ -490,7 +490,7 @@ function AccountPage() {
           <div className="mt-5 rounded-lg border border-cinnabar/20 bg-paper/55 p-4">
             <p className="text-sm font-medium text-ink">{tr(locale, "資料服務狀態", "数据服务状态", "Data service status")}</p>
             <p className="mt-2 text-sm leading-7 text-ink-soft">
-              {tr(locale, "報告、圖庫與背景上傳仍走 Supabase，目前若被 402 spend cap 擋住，那些面板會暫停。站主登入、後台入口與背景音樂播放不再依賴它。", "报告、图库与背景上传仍走 Supabase，目前若被 402 spend cap 挡住，那些面板会暂停。站主登录、后台入口与背景音乐播放不再依赖它。", "Reports, gallery and wallpaper uploads still use Supabase. If the 402 spend cap is active those panels pause. Owner login, the console itself and background music playback do not depend on it.")}
+              {tr(locale, "報告、圖庫與壁紙上傳仍走 Supabase，目前若被 402 spend cap 擋住，那些面板會暫停。站主登入、後台入口與背景音樂改由後台直接上傳，不再依賴它。先前上傳的曲子仍鎖在 Supabase 流量上限裡，請在本頁「背景音樂管理」重新上傳。", "报告、图库与壁纸上传仍走 Supabase，目前若被 402 spend cap 挡住，那些面板会暂停。站主登录、后台入口与背景音乐改由后台直接上传，不再依赖它。先前上传的曲子仍锁在 Supabase 流量上限里，请在本页「背景音乐管理」重新上传。", "Reports, gallery and wallpaper uploads still use Supabase. Owner login, the console and background-music uploads no longer depend on it. Re-upload your tracks in Background music on this page.")}
             </p>
           </div>
           <div className="mt-5 flex flex-wrap gap-3">

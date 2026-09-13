@@ -21,15 +21,15 @@ test("owner music upload uses a deterministic native mobile path instead of brow
   assert.doesNotMatch(upload, /@ffmpeg\/ffmpeg/);
   assert.doesNotMatch(upload, /libmp3lame/);
   assert.match(upload, /uploadBackgroundMusicResilient/);
-  assert.match(manager, /uploadBackgroundMusicResilient/);
+  assert.match(manager, /uploadOwnerMusic/);
 });
 
-test("background player plays same-origin audio with explicit MIME types", () => {
-  assert.match(player, /const LOCAL_PRIMARY = "\/audio\/zhaowu-background\.m4a"/);
-  assert.match(player, /const LOCAL_FALLBACK = "\/audio\/zhaowu-background\.mp3"/);
-  assert.match(player, /const primaryType = "audio\/mp4"/);
-  assert.match(player, /const fallbackType = "audio\/mpeg"/);
+test("background player plays owner-uploaded audio with explicit MIME types", () => {
+  assert.match(player, /loadOwnerMusic/);
+  assert.match(player, /\/api\/owner-music/);
+  assert.match(player, /primaryType/);
   assert.match(player, /<source src=\{primarySrc\} type=\{primaryType\}/);
+  assert.doesNotMatch(player, /LOCAL_PRIMARY/);
 });
 
 test("owner console is mounted inside auth and keeps long account sections collapsed", () => {

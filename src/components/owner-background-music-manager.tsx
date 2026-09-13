@@ -3,14 +3,14 @@ import { createPortal } from "react-dom";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n, type Locale } from "@/lib/i18n";
 import {
-  activateBackgroundMusic,
-  deleteBackgroundMusic,
-  listOwnerBackgroundMusic,
-  musicPublicUrl,
-  type BackgroundMusicAsset,
-  type MusicUploadProgress,
-} from "@/lib/background-music-assets";
-import { uploadBackgroundMusicResilient } from "@/lib/background-music-upload";
+  activateOwnerMusic,
+  deleteOwnerMusic,
+  loadOwnerMusic,
+  uploadOwnerMusic,
+  type OwnerMusicTrack,
+} from "@/lib/owner-music-client";
+
+// Cookie-gated uploads go to /api/owner-music; playback never uses the r129 pad.
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   if (locale === "en") return en;
@@ -22,25 +22,25 @@ function formatSize(bytes: number | null) {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-function formatCodec(asset: BackgroundMusicAsset) {
-  if (asset.content_type === "audio/mpeg") return "MP3";
-  if (asset.content_type === "audio/mp4") return "M4A / AAC";
-  if (asset.content_type === "audio/aac") return "AAC";
-  if (asset.content_type === "audio/wav") return "WAV";
-  if (asset.content_type === "audio/flac") return "FLAC";
-  return asset.codec || "Audio";
+function formatCodec(track: OwnerMusicTrack) {
+  if (track.contentType === "audio/mpeg") return "MP3";
+  if (track.contentType === "audio/mp4") return "M4A / AAC";
+  if (track.contentType === "audio/aac") return "AAC";
+  if (track.contentType === "audio/wav") return "WAV";
+  if (track.contentType === "audio/flac") return "FLAC";
+  return "Audio";
 }
 
 export function OwnerBackgroundMusicManager() {
   const { locale } = useI18n();
-  const { user, session } = useCurrentUserState();
+  const { user } = useCurrentUserState();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [onAccount, setOnAccount] = useState(() => typeof window !== "undefined" && (window.location.pathname === "/account" || window.location.pathname.startsWith("/account/")));
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
-  const [assets, setAssets] = useState<BackgroundMusicAsset[]>([]);
+  const [tracks, setTracks] = useState<OwnerMusicTrack[]>([]);
   const [busy, setBusy] = useState(false);
-  const [progress, setProgress] = useState<MusicUploadProgress | null>(null);
+  const [percent, setPercent] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   const c = useMemo(() => ({
@@ -48,9 +48,9 @@ export function OwnerBackgroundMusicManager() {
     title: tr(locale, "網站背景音樂", "网站背景音乐", "Website background music"),
     lead: tr(
       locale,
-      "手機版不再做瀏覽器轉碼。MP3、M4A/AAC、WAV、FLAC 在 15 MB 內直接上傳到網站，完成後立即切換；不再載入大型轉碼核心，也不會卡在 3% 或 7%。",
-      "手机版不再做浏览器转码。MP3、M4A/AAC、WAV、FLAC 在 15 MB 内直接上传到网站，完成后立即切换；不再加载大型转码核心，也不会卡在 3% 或 7%。",
-      "Mobile upload no longer transcodes in the browser. MP3, M4A/AAC, WAV and FLAC up to 15 MB upload directly and become active immediately.",
+      "站主登入後即可直接上傳。MP3、M4A/AAC、WAV、FLAC 在 4 MB 內寫入昭梧曲庫，完成後全站立即改播；不再經過 Supabase，也不再播放網站內建的佔位音。",
+      "站主登录后即可直接上传。MP3、M4A/AAC、WAV、FLAC 在 4 MB 内写入昭梧曲库，完成后全站立即改播；不再经过 Supabase，也不再播放网站内建的占位音。",
+      "After owner sign-in, upload MP3, M4A/AAC, WAV or FLAC up to 4 MB. The track becomes the live site music without Supabase.",
     ),
     entryLead: tr(locale, "站主專用 · 直接上傳、切換網站背景音樂", "站主专用 · 直接上传、切换网站背景音乐", "Owner only · upload and switch website background music"),
     upload: tr(locale, "＋ 上傳音樂", "＋ 上传音乐", "+ Upload music"),
@@ -60,13 +60,13 @@ export function OwnerBackgroundMusicManager() {
     delete: tr(locale, "刪除", "删除", "Delete"),
     close: tr(locale, "關閉", "关闭", "Close"),
     refresh: tr(locale, "刷新", "刷新", "Refresh"),
-    empty: tr(locale, "尚未有背景音樂。", "尚未有背景音乐。", "No background music yet."),
+    empty: tr(locale, "尚未有背景音樂。請上傳你要的曲子。", "尚未有背景音乐。请上传你要的曲子。", "No background music yet. Upload a track."),
     changed: tr(locale, "已切換背景音樂。", "已切换背景音乐。", "Background music changed."),
-    uploaded: tr(locale, "新音樂已直接上傳並啟用。", "新音乐已直接上传并启用。", "New music uploaded and activated."),
+    uploaded: tr(locale, "新音樂已上傳並啟用。", "新音乐已上传并启用。", "New music uploaded and activated."),
     confirmDelete: tr(locale, "刪除這首背景音樂？", "删除这首背景音乐？", "Delete this background track?"),
     loadFailed: tr(locale, "背景音樂讀取失敗。", "背景音乐读取失败。", "Could not load background music."),
-    formatHint: tr(locale, "支援 MP3、M4A、AAC、WAV、FLAC；單檔最多 15 MB。建議優先用 MP3 或 M4A/AAC，iPhone Safari 最穩。", "支持 MP3、M4A、AAC、WAV、FLAC；单文件最多 15 MB。建议优先用 MP3 或 M4A/AAC，iPhone Safari 最稳。", "Supports MP3, M4A, AAC, WAV and FLAC up to 15 MB. MP3 or M4A/AAC is recommended for iPhone Safari."),
-    pipeline: tr(locale, "檢查格式 → 直接上傳 → 保存 → 啟用", "检查格式 → 直接上传 → 保存 → 启用", "Check format → upload → save → activate"),
+    formatHint: tr(locale, "支援 MP3、M4A、AAC、WAV、FLAC；單檔最多 4 MB。建議 MP3 或 M4A，iPhone Safari 最穩。先前上傳在 Supabase 的曲子仍鎖在流量上限裡，這裡可以重新上傳。", "支持 MP3、M4A、AAC、WAV、FLAC；单文件最多 4 MB。建议 MP3 或 M4A，iPhone Safari 最稳。先前上传在 Supabase 的曲子仍锁在流量上限里，这里可以重新上传。", "Supports MP3, M4A, AAC, WAV and FLAC up to 4 MB. Re-upload here; older Supabase files stay locked until the spend cap is lifted."),
+    pipeline: tr(locale, "檢查格式 → 上傳到昭梧曲庫 → 全站啟用", "检查格式 → 上传到昭梧曲库 → 全站启用", "Check format → upload to Zhaowu library → activate"),
   }), [locale]);
 
   useEffect(() => {
@@ -89,9 +89,10 @@ export function OwnerBackgroundMusicManager() {
   }, [user?.isOwner]);
 
   async function load() {
-    if (!session || !user?.isOwner) return;
+    if (!user?.isOwner) return;
     try {
-      setAssets(await listOwnerBackgroundMusic(session));
+      const state = await loadOwnerMusic();
+      setTracks(state.tracks);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : c.loadFailed);
     }
@@ -99,32 +100,33 @@ export function OwnerBackgroundMusicManager() {
 
   useEffect(() => {
     if (open) void load();
-  }, [open, session?.access_token]);
+  }, [open, user?.isOwner]);
 
   async function onUpload(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
-    if (!file || !session || !user?.isOwner || busy) return;
+    if (!file || !user?.isOwner || busy) return;
     setBusy(true);
     setMessage(null);
-    setProgress({ stage: "loading", percent: 1, label: tr(locale, "檢查音訊格式", "检查音频格式", "Checking audio format") });
+    setPercent(4);
     try {
-      await uploadBackgroundMusicResilient(session, file, setProgress);
+      await uploadOwnerMusic(file, setPercent);
       await load();
       setMessage(c.uploaded);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : c.loadFailed);
     } finally {
       setBusy(false);
+      setPercent(null);
     }
   }
 
-  async function onActivate(asset: BackgroundMusicAsset) {
-    if (!session || busy) return;
+  async function onActivate(track: OwnerMusicTrack) {
+    if (busy) return;
     setBusy(true);
     setMessage(null);
     try {
-      await activateBackgroundMusic(session, asset.id);
+      await activateOwnerMusic(track.id);
       await load();
       setMessage(c.changed);
     } catch (error) {
@@ -134,12 +136,12 @@ export function OwnerBackgroundMusicManager() {
     }
   }
 
-  async function onDelete(asset: BackgroundMusicAsset) {
-    if (!session || busy || asset.enabled || !window.confirm(c.confirmDelete)) return;
+  async function onDelete(track: OwnerMusicTrack) {
+    if (busy || track.enabled || !window.confirm(c.confirmDelete)) return;
     setBusy(true);
     setMessage(null);
     try {
-      await deleteBackgroundMusic(session, asset);
+      await deleteOwnerMusic(track.id);
       await load();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : c.loadFailed);
@@ -148,7 +150,7 @@ export function OwnerBackgroundMusicManager() {
     }
   }
 
-  if (!user?.isOwner || !session || !onAccount) return null;
+  if (!user?.isOwner || !onAccount) return null;
 
   const manager = (
     <>
@@ -201,41 +203,36 @@ export function OwnerBackgroundMusicManager() {
               <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line bg-paper/60 px-4 text-sm text-ink-soft disabled:opacity-50" onClick={() => void load()}>{c.refresh}</button>
             </div>
 
-            {progress ? (
+            {percent != null ? (
               <div className="mt-4 border-y border-line/60 py-3" aria-live="polite">
-                <div className="flex items-center justify-between gap-3 text-xs text-ink-soft"><span>{progress.label}</span><span>{progress.percent}%</span></div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${progress.percent}%` }} /></div>
+                <div className="flex items-center justify-between gap-3 text-xs text-ink-soft"><span>{c.processing}</span><span>{percent}%</span></div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${percent}%` }} /></div>
               </div>
             ) : null}
             {message ? <p className="mt-4 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
 
             <div className="mt-5 space-y-3">
-              {!assets.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
-              {assets.map((asset) => {
-                const primary = musicPublicUrl(asset.storage_path);
-                const fallback = musicPublicUrl(asset.fallback_storage_path);
-                return (
-                  <article key={asset.id} className="border-t border-line/70 pt-4">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="truncate font-medium text-ink">{asset.name}</h3>
-                          {asset.enabled ? <span className="rounded-full border border-emerald-700/25 bg-emerald-700/5 px-2.5 py-1 text-[11px] text-emerald-800">{c.current}</span> : null}
-                        </div>
-                        <p className="mt-1 text-xs text-ink-mute">{formatCodec(asset)} · {formatSize(asset.file_size)}</p>
+              {!tracks.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
+              {tracks.map((track) => (
+                <article key={track.id} className="border-t border-line/70 pt-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="truncate font-medium text-ink">{track.name}</h3>
+                        {track.enabled ? <span className="rounded-full border border-emerald-700/25 bg-emerald-700/5 px-2.5 py-1 text-[11px] text-emerald-800">{c.current}</span> : null}
                       </div>
-                      <div className="flex flex-wrap gap-2">
-                        {!asset.enabled ? <button type="button" disabled={busy} className="rounded-full bg-wood px-3 py-2 text-xs text-cream disabled:opacity-50" onClick={() => void onActivate(asset)}>{c.use}</button> : null}
-                        <button type="button" disabled={busy || asset.enabled} className="rounded-full px-3 py-2 text-xs text-cinnabar disabled:opacity-30" onClick={() => void onDelete(asset)}>{c.delete}</button>
-                      </div>
+                      <p className="mt-1 text-xs text-ink-mute">{formatCodec(track)} · {formatSize(track.fileSize)}</p>
                     </div>
-                    <audio className="mt-3 w-full" controls preload="none">
-                      {primary ? <source src={primary} type={asset.content_type || "audio/mp4"} /> : null}
-                      {fallback ? <source src={fallback} type={asset.fallback_content_type || "audio/mpeg"} /> : null}
-                    </audio>
-                  </article>
-                );
-              })}
+                    <div className="flex flex-wrap gap-2">
+                      {!track.enabled ? <button type="button" disabled={busy} className="rounded-full bg-wood px-3 py-2 text-xs text-cream disabled:opacity-50" onClick={() => void onActivate(track)}>{c.use}</button> : null}
+                      <button type="button" disabled={busy || track.enabled} className="rounded-full px-3 py-2 text-xs text-cinnabar disabled:opacity-30" onClick={() => void onDelete(track)}>{c.delete}</button>
+                    </div>
+                  </div>
+                  <audio className="mt-3 w-full" controls preload="none">
+                    <source src={track.url} type={track.contentType || "audio/mpeg"} />
+                  </audio>
+                </article>
+              ))}
             </div>
           </section>
         </div>
