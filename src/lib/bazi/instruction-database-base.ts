@@ -3,6 +3,10 @@ import {
   type InstructionRule,
 } from './instruction-database-base-legacy';
 import { HUAGAI_KNOWLEDGE } from '../knowledge/huagai';
+import {
+  lifestyleFiveElementSymbolismInstructionRule,
+  wealthEnvironmentSymbolismInstructionRule,
+} from './folk-environment-symbolism';
 
 export type { InstructionRule } from './instruction-database-base-legacy';
 
@@ -86,10 +90,12 @@ export const zhaowuInstructionDatabase: InstructionRule[] = [
   directAnswerRoutingInstructionRule,
   ...legacyInstructionDatabase,
   huagaiAuxiliaryInstructionRule,
+  wealthEnvironmentSymbolismInstructionRule,
+  lifestyleFiveElementSymbolismInstructionRule,
 ];
 
 export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-10T23:58:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-13T21:16:00+10:00';
