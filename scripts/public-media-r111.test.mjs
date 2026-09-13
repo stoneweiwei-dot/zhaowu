@@ -31,7 +31,7 @@ test("public visual directories receive reusable cache headers", () => {
   }
 });
 
-test("customer media paths stay on same-origin assets and opt in to audio", () => {
+test("customer media paths stay on same-origin assets and music keeps idle preload off", () => {
   for (const source of [customerMatch, loginAnimation, reportVisualAssets]) {
     assert.doesNotMatch(source, /SUPABASE_URL|SUPABASE_KEY/, "customer media references Supabase client configuration");
     assert.doesNotMatch(source, new RegExp("rest/v1|storage/v1/object/public"), "customer media reads public Supabase assets at runtime");
@@ -40,9 +40,11 @@ test("customer media paths stay on same-origin assets and opt in to audio", () =
   assert.match(loginAnimation, /LOADING_GALLERY_CATALOG/);
   assert.ok(reportVisualAssets.includes('const REPORT_VISUAL_CDN_BASE = "/report-visuals/groups"'));
   assert.ok(music.includes('preload="none"'));
-  assert.ok(music.includes("const primarySrc = requested ?"));
-  assert.ok(music.includes("if (!requested) return;"));
+  assert.ok(music.includes('window.addEventListener("pointerdown", unlock'));
+  assert.ok(music.includes('window.addEventListener("touchend", unlock'));
+  assert.ok(music.includes('if (!enabled || requested) return;'));
 });
+
 test("dynamic application shell remains no-store", () => {
   assert.match(cacheValue("/"), /no-store/);
   assert.match(cacheValue("/index.html"), /no-store/);
