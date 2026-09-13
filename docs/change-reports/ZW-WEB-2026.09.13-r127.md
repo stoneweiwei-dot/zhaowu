@@ -4,6 +4,8 @@
 站主登入完全脫離 Supabase Auth。新增 Vercel Serverless `/api/owner-login`、`/api/owner-session`、`/api/owner-logout`；成功登入後使用 HttpOnly + Secure + SameSite=Strict Owner Cookie。登入頁只保留站主密碼，不再要求 Email，也不呼叫 Supabase Auth。
 
 ## 為什麼改
+此版本明確取代 r126「站主登入仍走 Supabase Auth」的登入依賴。
+
 Supabase 目前可出現 402 egress quota／spend cap，原本會連站主入口一起封死。站主已明確要求：即使 Supabase Auth 不可用，也必須能進入 Owner Console。
 
 ## 影響範圍
