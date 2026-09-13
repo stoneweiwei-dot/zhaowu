@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-13 22:20 AEST
+最後核對：2026-09-14 00:40 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -18,11 +18,12 @@
 
 每次接手实时检查 `main` 与 Vercel Production 的 `githubCommitSha`，禁止另建第二条 production 主线。Netlify、AppDeploy、Lovable standby、旧临时站只读参考。
 
-目前已核對：最後一個 `READY / production` runtime deployment 是 `dpl_A8zzyGVSyekFpCDB5kK8FUTsmi7C`，精確對應 `4487edd0f921b04ad84f09636ed83838c1000dd0`。PR #306 起的 docs-only 合併會讓 GitHub `main` 前進，Vercel 依 ignore 規則把對應 deployment 標為 `CANCELED`，不代表 runtime Production 已變更或失敗。r117 的正式首頁、`/login`、`/account` 公開 URL 驗證仍有具日期記錄；r118/r119 與後續趣味測驗圖像改動已上線，但本次未重新執行完整瀏覽器、真實 iPhone、已安裝 PWA、真實登入或付費流程驗收，不得把 exact SHA 或部署 READY 等同完整上線驗收。
+目前已核對：最後一個 `READY / production` runtime deployment 是 `dpl_278KTmc5vkQEPa1TCxNoWKYfhf6Y`，精確對應 GitHub `main` `88179198301b6682f56140ddbde79b15556473f4`（r127）。PWA cache `zhaowu-shell-r127`。CI：Deploy gate／Engine suite／iPhone Safari 全綠。不得把 exact SHA 或部署 READY 等同真實 iPhone／已安裝 PWA／站主登入驗收。
 
 ## 2. 已完成且默认锁住
 
 - GitHub `main` 是唯一源码真相。Vercel Git 自动部署仅对 `main` 开启（`vercel.json` `git.deploymentEnabled.main=true`），正式生产只认 `stone-zhaowu-official`。
+- GitHub `main` branch protection 已開啟：required checks = Deploy gate／Engine suite／iPhone Safari；`enforce_admins=true`；禁止 force push。
 - Supabase 登录、报告存档、图库/背景资产、访问统计统一使用当前项目配置。
 - 登入：普通用戶不提供登入、註冊、Google／Apple／X／Email 會員入口；唯一 `/login` 為站主 Email＋密碼入口，前端只接受 `profiles.is_owner=true` 的 session，既有非 Owner session 會清除。
 - 現行公開語言：`zh-Hant / en / ko / hi`；`zh-Hans / ja` 僅保留歷史偏好相容並折回繁中，不再是公開選項。
@@ -33,14 +34,17 @@
 - 首页只保留一个主分析表单；三个专题入口分别进入 `/qizheng`、`/yizhangjing`、`/ziwei`。旧 `/tianji-dual` 仅保留运行兼容，不再作为“性格两面”独立分组、首页入口、青玉小龙入口或客户产品名称；不得复活旧入口。
 - `/yizhangjing` 是首页唯一「前世今生」入口：以达摩一掌经排前四世六道、逐世特征与留到今生的习性，并明确合并重复六道的加强影响。
 - `/qizheng`、`/ziwei`、`/astrology`、`/indian-astrology` 在有完整生辰時顯示各自對應命盤（`data-natal-chart`）；內部 calculation profile、原始 debug 狀態仍不進客戶畫面。舊「技術盤一律不向客戶顯示」已廢止。
-- `/indian-astrology` 的 D60 必須先顯示年月日＋精確時分＋出生地，經明確分鐘確認（綁定 birth fingerprint）並通過 ±2 分鐘穩定性後才輸出盤面與解讀；不穩定或檢查失敗一律「不作判定」，不用 D60 反向考時。
+- `/indian-astrology` 的 D60 必須先顯示年月日＋精確時分＋出生地，經明確分鐘確認（綁定 birth fingerprint）並通過 ±2 分鐘穩定性後才輸出盤面與解讀；不穩定或檢查失敗一律「不作判定」，不用 D60 反向考時。已從最新 `main` 重建，**不得 merge 舊 PR #304**（該 PR 已 CLOSED、未合併）。
+- `/astrology` 完整盤：七曜星座與宮位、十二宮宮頭與宮內行星、ASC／MC／DSC／IC、主要相位；未知出生時間對宮位／四軸 fail-closed。來源為已合併的 #310，不是舊 release 基底。
 - Loading：`IntroGate` 指向 `/intro/owner-immortal-ascent-r123.mp4`（原時長 10.04 秒、720×1280，不降解析度）與同名 JPEG 海報；一進站影片可見並主動 `play()`，右下角 Skip；真正影片錯誤才約 1.6 秒 fail-open；硬退出 12 秒。r126 拿掉「opacity:0 直到 is-playing」與 buffering 時 `onStalled` 再把片藏起來。舊 2.4／2.8／3 秒 Loading 契約已廢止。
-- 夜間問事標題必須月白可讀；客人資料卡維持宣紙深字。五行穿衣併入首頁「今日指引」展開區，方塊顯示木青／火紅紫／土黃棕／金白金銀／水黑藍。完整指南在 `/daily-colors`。
+- 夜間問事標題必須月白可讀；客人資料卡維持宣紙深字。五行穿衣併入首頁「今日指引」展開區，方塊顯示木青／火紅紫／土黄棕／金白金銀／水黑藍。完整指南在 `/daily-colors`。
 - `/numerology` 含靈魂獨白、人生角色、五項天賦分述與 11／22／33 區塊分析。首頁不得出現大師數文章標題「你是少見的」。
 - 首页各分组必须用简短三语说明回答两件事：用户“会知道自己的什么”与“这个体系最擅长看什么”；英文必须自然简洁，不做逐字直译。
 - 「趣味测验」是独立的轻量自评系列，不冒充命盘；包含「内在动物 × 命局瑞兽」与「五行功能测验」。五行功能测验只判断当前需要训练的生长、启动、落地、收敛或恢复功能，不等同八字喜用神。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
 - 趣味測驗結果可顯示已核准的隱藏神聖圖像；這是結果頁視覺補充，不改命盤計算、報告契約或付費圖片流程。
+- Logo／STO-12 已完成，不重新製作。STO-5 普通會員 Google／Apple／註冊驗收已廢止，不得復活。
+- 舊 Netlify 自動 Preview／Deploy 已用 `netlify.toml` `ignore = "exit 0"` 停掉；Netlify 不是 production。archive 專案若仍接到 GitHub webhook，只會 canceled，不得當正式站。
 
 没有新的可复现 FAIL 时，不得因为旧 Issue / 旧聊天复活已废止实现。
 
@@ -97,21 +101,36 @@
 
 `src/lib/qizheng/engine.ts` 继续负责七政真天象计算；`src/lib/qizheng/plain-summary.ts` 只做客户报告组合，不改动星体计算。客户报告发挥七政对性情、情绪节奏、行动压力、关系取向和机会落地的观察优势，并显示七政命盤表。内部 debug 口径不进客户画面。
 
-## 7. 当前真正未完成
+## 7. 2026-09-13 十項收口對帳
 
-- 正式子域名 `zhaowu.soul-terminal.com` DNS 收口。
-- 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub r117 的 41 項 iPhone Safari CI 已通過；這不等於實機完成，亦不覆蓋 r118/r119 後續畫面。
+舊聊天「先修 Safari、重建 D60、西洋完整盤、真機 Gate、branch protection、Supabase、停 Netlify、Linear、DNS、#295 暫停」不得再當未做任務重做。對帳如下：
+
+| # | 項 | 狀態 |
+| --- | --- | --- |
+| 1 | Production CI Safari | **PASS** on `8817919`（Deploy gate／Engine／iPhone Safari 全綠） |
+| 2 | D60 minute gate，不 merge #304 | **DONE** on main；#304 CLOSED 未合併 |
+| 3 | 西洋完整盤（#310 內容在最新 main）+ 專卷命盤 | **DONE**；未知時辰四軸 fail-closed |
+| 4 | 真實 iPhone／PWA／登入／報告重開 | **未完成**（CI ≠ 真機）。站主登入另被 Supabase spend cap 擋住 |
+| 5 | GitHub main protection | **DONE**（三項 required checks + enforce_admins） |
+| 6 | Supabase advisor／Edge Functions | **文件化**，Dashboard 勾選仍需站主 |
+| 7 | 停 Netlify 當 production | **DONE**（`ignore = "exit 0"`）；archive webhook 仍可能 canceled，不是正式站 |
+| 8 | Linear STO-12／STO-5、CURRENT-STATE SHA | Logo／舊會員入口已鎖；Linear 未接入無法寫卡。SHA 已對到 `8817919` |
+| 9 | `zhaowu.soul-terminal.com` | **未完成**；Vercel 專案尚未綁此域名，DNS 無法解析 |
+| 10 | PR #295 Paid Visual | **維持暫停**；不 merge、不 rebase |
+
+PR #322（獨立站主登入、不走 Supabase Auth）是另一條未綠燈實驗，**不得當本批收口合併**。正式登入契約仍是 `/login` Email＋密碼 + `profiles.is_owner`。
+
+## 8. 当前真正未完成
+
+- 正式子域名 `zhaowu.soul-terminal.com` DNS → Vercel 綁定與 SSL。完成前唯一正式地址是 `https://stone-zhaowu-official.vercel.app/`。
+- 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub iPhone Safari CI 已通過；這不等於實機完成。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
-- 站主 Email 登入、帳戶／報告重開，以及付款與 provider 成功／失敗流程仍缺 r119 owner-only 邊界下的端到端實證；普通用戶不再有註冊或會員登入流程。
-- Loading 已改為 r126：原片 10.04 秒一進站就看得見並播放 + Skip；見第 2 節。主畫面圖示使用 r113 獨立 App Icon。
-- 站主登入仍走 Supabase `plgpxusmemnmzckbwtiv`。若 Auth/REST 回 402 `exceed_cached_egress_quota`，不是帳密表單壞掉，必須在 Supabase Dashboard → Billing 取消 spend cap。程式只能把原因講清楚，無法從網站端解除額度。
-- GitHub `main` branch protection：Deploy gate／Engine suite／iPhone Safari 必須列為 required checks。若 API 權限不足，站主需在 GitHub Settings 手動打開。
+- 站主 Email 登入仍走 Supabase `plgpxusmemnmzckbwtiv`。若 Auth/REST 回 402 `exceed_cached_egress_quota`，不是帳密表單壞掉，必須在 Supabase Dashboard → Billing 取消 spend cap。程式只能把原因講清楚，無法從網站端解除額度。
 - Supabase dashboard 仍需站主勾：`get_customer_classic_passage` EXECUTE 邊界、`search_path`、leaked-password protection、live Edge Functions 對帳。見 `docs/supabase-security-r123.md`。
 - Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo，不復活普通會員 Google／Apple／註冊。
-- 舊 Netlify 自動 Preview／Deploy 已用 `netlify.toml` `ignore = "exit 0"` 停掉；Netlify 不是 production。
 
-## 8. 生产优先级
+## 9. 生产优先级
 
 1. 白屏 / 无法进入 / 无法分析
 2. 排盘或核心结论错误
@@ -123,7 +142,7 @@
 
 低优先级不得阻塞高优先级。
 
-## 9. 锁定边界
+## 10. 锁定边界
 
 没有独立版本升级与明确验收时，不重写：
 
@@ -136,6 +155,7 @@
 
 报告结构与首页视觉允许改组合层、UI、相关测试与兼容读取；不得借机改排盘核心、auth、payment 或 Supabase schema。
 
-## 10. 接手规则
+## 11. 接手规则
 
 每次改网站之前：读 `AGENTS.md` 与本文件；查实时 main + Vercel Production；只处理当前可复现问题。新指令与旧指令冲突时，按 AGENTS 的安全 supersession 规则使旧 active path 失效，但不得破坏运行依赖。
+
