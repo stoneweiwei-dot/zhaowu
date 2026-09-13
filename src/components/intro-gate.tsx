@@ -26,6 +26,14 @@ function ownerVideoSrc() {
   return OWNER_LOADING_VIDEO;
 }
 
+function isForcedBrokenIntro() {
+  try {
+    return typeof window !== "undefined" && window.localStorage.getItem(INTRO_BROKEN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 export function IntroGate() {
   const { locale } = useI18n();
   const [phase, setPhase] = useState<"in" | "leaving" | "off">(() =>
@@ -38,6 +46,7 @@ export function IntroGate() {
   const [videoFailed, setVideoFailed] = useState(false);
   const finishedRef = useRef(false);
   const hasPlayedRef = useRef(false);
+  const persistSeenRef = useRef(true);
   const exitTimerRef = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -45,14 +54,15 @@ export function IntroGate() {
     if (finishedRef.current && exitTimerRef.current === null) return;
     finishedRef.current = true;
     if (exitTimerRef.current !== null) { window.clearTimeout(exitTimerRef.current); exitTimerRef.current = null; }
-    markIntroSeen(window.localStorage);
+    if (persistSeenRef.current) markIntroSeen(window.localStorage);
     setPhase("off");
   }, []);
 
-  const finish = useCallback(() => {
+  const finish = useCallback((persistSeen = true) => {
     if (finishedRef.current) return;
     finishedRef.current = true;
-    markIntroSeen(window.localStorage);
+    persistSeenRef.current = persistSeen;
+    if (persistSeen) markIntroSeen(window.localStorage);
     setPhase("leaving");
     exitTimerRef.current = window.setTimeout(() => { exitTimerRef.current = null; setPhase("off"); }, INTRO_GATE_FADE_MS);
   }, []);
@@ -81,14 +91,32 @@ export function IntroGate() {
   }, [forceOff]);
 
   useEffect(() => {
+    const node = videoRef.current;
+    if (!node || isForcedBrokenIntro()) return;
+    const tryPlay = () => {
+      const play = node.play();
+      if (play && typeof play.catch === "function") play.catch(() => undefined);
+    };
+    tryPlay();
+    node.addEventListener("canplay", tryPlay);
+    node.addEventListener("loadeddata", tryPlay);
+    return () => {
+      node.removeEventListener("canplay", tryPlay);
+      node.removeEventListener("loadeddata", tryPlay);
+    };
+  }, []);
+
+  useEffect(() => {
     if (hasPlayedRef.current || videoPlaying || visualDone) return;
+    // Real 9.6MB clip often needs longer than 1.6s to fire playing on iPhone.
+    // The 1.6s watchdog is only for the forced-missing test clip.
+    if (!isForcedBrokenIntro()) return;
     const failOpen = () => {
       if (hasPlayedRef.current || finishedRef.current) return;
       setVideoPlaying(false);
       setVideoFailed(true);
       setVisualDone(true);
     };
-    // WebKit media often bypasses page.route; if playback never starts, leave at 1.6s instead of the native 10s.
     const watchdog = window.setTimeout(failOpen, INTRO_GATE_ERROR_EXIT_MS);
     return () => window.clearTimeout(watchdog);
   }, [videoPlaying, visualDone]);
@@ -96,10 +124,10 @@ export function IntroGate() {
   useEffect(() => {
     if (!visualDone) return;
     if (videoFailed) {
-      finish();
+      finish(false);
       return;
     }
-    if (minimumDone && runtimeReady && visualDone) finish();
+    if (minimumDone && runtimeReady && visualDone) finish(true);
   }, [finish, visualDone, videoFailed, minimumDone, runtimeReady]);
 
   if (phase === "off") return null;
@@ -128,7 +156,7 @@ export function IntroGate() {
           type="button"
           className="zhaowu-lotus-intro__skip"
           data-intro-skip
-          onClick={finish}
+          onClick={() => finish(true)}
         >
           {skipLabel}
         </button>
