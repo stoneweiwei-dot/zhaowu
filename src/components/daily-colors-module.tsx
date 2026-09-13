@@ -10,7 +10,7 @@ import {
 } from "@/lib/daily-colors";
 import { useI18n } from "@/lib/i18n";
 
-type Variant = "home" | "page";
+type Variant = "home" | "page" | "embed";
 
 export function DailyColorsModule({ variant }: { variant: Variant }) {
   const { locale } = useI18n();
@@ -21,6 +21,7 @@ export function DailyColorsModule({ variant }: { variant: Variant }) {
   const copy = active.copy[locale];
   const recommended = dailyColorById(almanac.recommendedId).copy[locale];
   const isUserOverride = selectedId !== almanac.recommendedId;
+  const compact = variant === "embed";
 
   return (
     <section
@@ -30,32 +31,49 @@ export function DailyColorsModule({ variant }: { variant: Variant }) {
     >
       <header>
         <p data-daily-colors-date>{formatDailyColorDate(almanac.date, locale)}</p>
-        <h2>{page.title}</h2>
-        <p>{page.subtitle}</p>
+        <h2>{compact ? (locale === "en" ? "Today's dress colour" : locale === "zh-Hans" ? "今日穿衣" : "今日穿衣") : page.title}</h2>
+        <p>{compact ? `${page.todaySuit}：${recommended.name} · ${recommended.colorsLabel}` : page.subtitle}</p>
       </header>
 
-      <article data-daily-colors-today aria-live="polite">
-        <p>
-          {page.todaySuit}：{recommended.name}
-        </p>
-        <p>
-          {page.element} {copy.elementLabel}
-          {" · "}
-          {page.mood} {copy.keywords}
-        </p>
-        <p>
-          {page.colors}：{copy.colorsLabel}
-        </p>
-        <p data-daily-colors-quote>{copy.quote}</p>
-        <p>{copy.englishExplain}</p>
-        {variant === "home" ? (
-          <Link to="/daily-colors">{page.openFull}</Link>
-        ) : (
-          <p>{copy.description}</p>
-        )}
-      </article>
+      {compact ? null : (
+        <article data-daily-colors-today aria-live="polite">
+          <p>
+            {page.todaySuit}：{recommended.name}
+          </p>
+          <p>
+            {page.element} {copy.elementLabel}
+            {" · "}
+            {page.mood} {copy.keywords}
+          </p>
+          <p>
+            {page.colors}：{copy.colorsLabel}
+          </p>
+          <p data-daily-colors-quote>{copy.quote}</p>
+          <p>{copy.englishExplain}</p>
+          {variant === "home" ? (
+            <Link to="/daily-colors">{page.openFull}</Link>
+          ) : (
+            <p>{copy.description}</p>
+          )}
+        </article>
+      )}
 
-      <p>{page.pick}</p>
+      {compact ? (
+        <article data-daily-colors-today aria-live="polite">
+          <p data-daily-colors-quote>{copy.quote}</p>
+          <p>
+            {page.element} {copy.elementLabel}
+            {" · "}
+            {copy.keywords}
+            {" · "}
+            {page.colors}：{copy.colorsLabel}
+          </p>
+          <Link to="/daily-colors">{page.openFull}</Link>
+        </article>
+      ) : (
+        <p>{page.pick}</p>
+      )}
+
       <div role="list" data-daily-colors-choices>
         {DAILY_COLOR_STATES.map((state) => {
           const item = state.copy[locale];
@@ -71,7 +89,11 @@ export function DailyColorsModule({ variant }: { variant: Variant }) {
               onClick={() => setSelectedId(state.id)}
               style={{ ["--daily-color-ink" as string]: state.ink }}
             >
-              <span aria-hidden="true" />
+              <span aria-hidden="true" data-daily-color-swatch>
+                {state.swatches.map((hex) => (
+                  <i key={hex} style={{ ["--swatch" as string]: hex }} />
+                ))}
+              </span>
               <strong>{item.name}</strong>
               <small>
                 {item.wantLabel} · {item.elementLabel}
@@ -81,8 +103,8 @@ export function DailyColorsModule({ variant }: { variant: Variant }) {
         })}
       </div>
 
-      {isUserOverride ? <p>{page.userNote}</p> : <p>{page.almanacNote}</p>}
-      <p>{page.boundary}</p>
+      {compact ? null : isUserOverride ? <p>{page.userNote}</p> : <p>{page.almanacNote}</p>}
+      {compact ? null : <p>{page.boundary}</p>}
       {variant === "page" ? (
         <p>
           <Link to="/">{page.back}</Link>

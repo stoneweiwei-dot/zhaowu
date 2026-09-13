@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { DailyColorsModule } from "@/components/daily-colors-module";
 import { useI18n } from "@/lib/i18n";
 import { stemElement } from "@/lib/element-colors";
 import { galleryPublicUrl, listPublicGalleryAssets, type GalleryAsset } from "@/lib/gallery-assets";
@@ -229,6 +230,7 @@ export function DailyAlmanacWidget() {
             <div className="zhaowu-daily-term"><span>{locale === "en" ? "Solar term" : locale === "zh-Hans" ? "节令" : "節令"}</span><b>{jieLabel(pillars.jieName, locale)}</b></div>
             <p className="zhaowu-daily-lead">{data.lead}</p>
             <div className="zhaowu-daily-pairs"><section aria-label={data.goodLabel}><p className="zhaowu-daily-pair-title"><small>{data.goodRoman}</small><b>{data.goodLabel}</b></p><ul className="zhaowu-daily-list">{data.good.map((item) => <li key={item}>{item}</li>)}</ul></section><section aria-label={data.avoidLabel}><p className="zhaowu-daily-pair-title"><small>{data.avoidRoman}</small><b>{data.avoidLabel}</b></p><ul className="zhaowu-daily-list">{data.avoid.map((item) => <li key={item}>{item}</li>)}</ul></section></div>
+            <DailyColorsModule variant="embed" />
             <footer className="zhaowu-daily-footer"><button type="button" className="zhaowu-daily-cta" onClick={() => void drawSlip()} disabled={loadingSlip} aria-label={data.foot}><span>{loadingSlip ? "…" : data.foot}</span><b aria-hidden>→</b></button></footer>
           </div>
         </details>
