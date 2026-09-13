@@ -18,6 +18,8 @@ repo 只保存高熵站主密碼的 SHA-256 verifier，不保存明碼。真正�
 本次只解除「站主登入」對 Supabase Auth 的依賴。報告、圖庫、背景等資料面板仍依賴 Supabase；目前 402 egress quota 未解除前，Owner Console 會明確標示資料服務暫停。
 
 ## 驗證
+此 PR 以新的 head SHA 重新執行所有 required checks，不沿用舊失敗 check suite。
+
 Deploy gate、engine suite、build/typecheck、Production SHA 對齊，以及正式站未登入／錯誤密碼／正確站主密碼／登出流程。
 
 ## 回滾
