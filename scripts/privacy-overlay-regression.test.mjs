@@ -17,7 +17,9 @@ test("guest birth reuse stays available while owner records remain isolated", ()
   assert.match(sharedBirth, /localStorage\.removeItem\(SHARED_BIRTH_STORAGE_KEY\)/);
   assert.match(sharedBirth, /!storedOwner && activeSharedBirthUserId === GUEST_BIRTH_OWNER_ID/);
   assert.match(sharedBirth, /storedOwner !== activeSharedBirthUserId/);
-  assert.match(authProvider, /setSharedBirthAccessUser\(owner\.session\?\.user\.id \?\? null\)/);
+  assert.match(authProvider, /readOwnerSession/);
+  assert.match(authProvider, /setSharedBirthAccessUser/);
+  assert.match(authProvider, /OWNER_USER\.id/);
 });
 
 test("image viewer is fully opaque so the report beneath cannot ghost through", () => {

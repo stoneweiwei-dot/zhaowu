@@ -14,14 +14,13 @@ test('legacy OAuth callback builder stays canonical while login exposes no OAuth
   assert.match(rest, /\/login/);
 });
 
-test('auth callback tokens are captured globally before session restore', () => {
-  assert.match(provider, /captureOAuthRedirect/);
-  const captureIndex = provider.indexOf('captureOAuthRedirect');
-  const restoreIndex = provider.indexOf('restoreSession', captureIndex);
-  assert.ok(captureIndex >= 0 && restoreIndex > captureIndex);
+test('owner session restore is independent from Supabase OAuth callbacks', () => {
+  assert.match(provider, /readOwnerSession/);
+  assert.match(provider, /OWNER_USER/);
+  assert.doesNotMatch(provider, /captureOAuthRedirect|restoreSession/);
 });
 
-test('OAuth callback cleanup removes sensitive tokens from the address bar', () => {
+test('legacy OAuth callback cleanup still removes sensitive tokens from the address bar', () => {
   assert.match(rest, /window\.history\.replaceState/);
   assert.match(rest, /window\.location\.pathname/);
 });
@@ -30,4 +29,5 @@ test('login is reserved for the owner and does not expose signup confirmation', 
   assert.doesNotMatch(login, /@\/lib\/auth\/signup/);
   assert.doesNotMatch(login, /signUp|sign up|註冊|注册/i);
   assert.match(login, /站主登入/);
+  assert.match(login, /data-login-backend="vercel-owner-cookie"/);
 });
