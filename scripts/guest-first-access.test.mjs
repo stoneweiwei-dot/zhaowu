@@ -10,6 +10,7 @@ const provider = await readFile(new URL("../src/lib/auth/provider.tsx", import.m
 const client = await readFile(new URL("../src/lib/auth/client.ts", import.meta.url), "utf8");
 const ownerApi = await readFile(new URL("../src/lib/auth/owner-api.ts", import.meta.url), "utf8");
 const ownerLoginApi = await readFile(new URL("../api/owner-login.ts", import.meta.url), "utf8");
+const ownerLogoutApi = await readFile(new URL("../api/owner-logout.ts", import.meta.url), "utf8");
 const ownerSessionApi = await readFile(new URL("../api/owner-session.ts", import.meta.url), "utf8");
 const ownerServer = await readFile(new URL("../src/server/owner-auth.ts", import.meta.url), "utf8");
 const account = await readFile(new URL("../src/routes/account.tsx", import.meta.url), "utf8");
@@ -25,20 +26,29 @@ test("public shell exposes one owner login entry and preserves owner controls", 
   assert.match(shell, /signOut/);
 });
 
-test("owner login is independent of Supabase Auth and uses a secure HttpOnly cookie", () => {
+test("owner login is independent of Supabase Auth and uses a secure host-only cookie", () => {
   assert.match(login, /ownerSignIn/);
   assert.match(login, /data-login-backend="vercel-owner-cookie"/);
+  assert.match(login, /login-secret/);
+  assert.match(login, /站主密鑰/);
   assert.doesNotMatch(login, /signInWithPassword|getProfile|signOutRemote|supabaseConfigured|login-email/);
   assert.match(provider, /readOwnerSession/);
   assert.doesNotMatch(provider, /restoreSession|getProfile|captureOAuthRedirect|signOutRemote/);
   assert.match(client, /ownerSignOut/);
+  assert.match(ownerApi, /JSON\.stringify\(\{ secret \}\)/);
   assert.match(ownerApi, /\/api\/owner-login/);
   assert.match(ownerSessionApi, /requestHasOwnerSession/);
+  assert.match(ownerLoginApi, /req\.body\?\.secret/);
+  assert.match(ownerLoginApi, /requestIsSameOrigin/);
+  assert.match(ownerLogoutApi, /requestIsSameOrigin/);
   assert.match(ownerLoginApi, /Set-Cookie/);
+  assert.match(ownerServer, /__Host-zhaowu_owner_session/);
+  assert.match(ownerServer, /OWNER_KEY_SHA256/);
   assert.match(ownerServer, /HttpOnly/);
   assert.match(ownerServer, /Secure/);
   assert.match(ownerServer, /SameSite=Strict/);
   assert.match(ownerServer, /timingSafeEqual/);
+  assert.match(ownerServer, /requestIsSameOrigin/);
   assert.match(account, /data-owner-independent-console/);
   assert.match(account, /Supabase Auth/);
 });

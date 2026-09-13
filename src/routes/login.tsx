@@ -33,7 +33,7 @@ function LoginPage() {
   const { t, locale } = useI18n();
   const navigate = useNavigate();
   const { user, reload } = useCurrentUserState();
-  const [password, setPassword] = useState("");
+  const [secret, setSecret] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,13 +44,14 @@ function LoginPage() {
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
-    if (password.length < 12) {
-      setError(ownerText(locale, "請輸入站主密碼。", "请输入站主密码。", "Enter the owner password."));
+    if (secret.length < 32) {
+      setError(ownerText(locale, "請輸入完整站主密鑰。", "请输入完整站主密钥。", "Enter the full owner key."));
       return;
     }
     setBusy(true);
     try {
-      await ownerSignIn(password);
+      await ownerSignIn(secret);
+      setSecret("");
       await reload();
       await navigate({ to: "/account" });
     } catch (err) {
@@ -78,8 +79,8 @@ function LoginPage() {
         </p>
         <form onSubmit={onSubmit} className="stone-login-form">
           <label>
-            <span>{ownerText(locale, "站主密碼", "站主密码", "Owner password")}</span>
-            <input id="login-password" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder={t("passwordPh")} />
+            <span>{ownerText(locale, "站主密鑰", "站主密钥", "Owner key")}</span>
+            <input id="login-secret" type="password" autoComplete="off" value={secret} onChange={(event) => setSecret(event.target.value)} placeholder={ownerText(locale, "貼上站主密鑰", "粘贴站主密钥", "Paste owner key")} />
           </label>
           {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
           <button type="submit" disabled={busy} className="stone-login-primary">

@@ -1,7 +1,8 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 
-export const OWNER_COOKIE = "zhaowu_owner_session";
-const OWNER_PASSWORD_SHA256 = "09c4406d450d7c55976bf2f3563a46edf6fae3b1a47c565fa7c734073e8c2e28";
+export const OWNER_COOKIE = "__Host-zhaowu_owner_session";
+// SHA-256 of the high-entropy owner key. The raw key is never committed.
+const OWNER_KEY_SHA256 = "bb592d6b2642c5e0fa692ca12e8c976bc69240d27753cb8e9e373ab69e580333";
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 
 function hash(value: string) {
@@ -9,8 +10,8 @@ function hash(value: string) {
 }
 
 export function isValidOwnerSecret(value: string | null | undefined) {
-  if (!value) return false;
-  const expected = Buffer.from(OWNER_PASSWORD_SHA256, "hex");
+  if (!value || value.length < 32 || value.length > 256) return false;
+  const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
   const actual = hash(value);
   return actual.length === expected.length && timingSafeEqual(actual, expected);
 }
@@ -37,4 +38,18 @@ export function clearOwnerCookie() {
 
 export function requestHasOwnerSession(req: any) {
   return isValidOwnerSecret(readCookie(req, OWNER_COOKIE));
+}
+
+export function requestIsSameOrigin(req: any) {
+  const origin = String(req?.headers?.origin ?? "").trim();
+  if (!origin) return true;
+  const forwardedHost = String(req?.headers?.["x-forwarded-host"] ?? req?.headers?.host ?? "")
+    .split(",")[0]
+    .trim();
+  if (!forwardedHost) return false;
+  try {
+    return new URL(origin).host === forwardedHost;
+  } catch {
+    return false;
+  }
 }
