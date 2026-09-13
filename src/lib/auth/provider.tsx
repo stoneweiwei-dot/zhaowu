@@ -1,5 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { captureOAuthRedirect, getProfile, restoreSession, signOutRemote, type SupabaseSession, type UserProfile } from "@/lib/supabase-rest";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { readOwnerSession } from "@/lib/auth/owner-api";
+import type { SupabaseSession, UserProfile } from "@/lib/supabase-rest";
 import { setSharedBirthAccessUser } from "@/lib/shared-birth";
 
 export type CurrentUser = {
@@ -26,29 +27,24 @@ const AuthContext = createContext<AuthState>({
   reload: async () => undefined,
 });
 
-async function resolveOwnerSession(active: SupabaseSession | null): Promise<{ session: SupabaseSession | null; profile: UserProfile | null }> {
-  if (!active) return { session: null, profile: null };
-  const profile = await getProfile(active).catch(() => null);
-  if (!profile?.is_owner) {
-    await signOutRemote(active).catch(() => undefined);
-    return { session: null, profile: null };
-  }
-  return { session: active, profile };
-}
+const OWNER_USER: CurrentUser = {
+  id: "zhaowu-owner",
+  displayName: "站主",
+  email: "",
+  isOwner: true,
+  birthData: null,
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<SupabaseSession | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<CurrentUser | null>(null);
   const [isPending, setPending] = useState(true);
 
   const reload = useCallback(async () => {
     setPending(true);
     try {
-      const restored = await restoreSession();
-      const owner = await resolveOwnerSession(restored);
-      setSharedBirthAccessUser(owner.session?.user.id ?? null);
-      setSession(owner.session);
-      setProfile(owner.profile);
+      const authenticated = await readOwnerSession();
+      setUser(authenticated ? OWNER_USER : null);
+      setSharedBirthAccessUser(authenticated ? OWNER_USER.id : null);
     } finally {
       setPending(false);
     }
@@ -56,29 +52,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-
-    const bootstrapAuth = async () => {
-      setPending(true);
-      try {
-        // Legacy OAuth/email-confirmation callbacks are consumed only to remove
-        // tokens from the URL. The session is accepted only when the profile is Owner.
-        const callbackSession = await captureOAuthRedirect().catch(() => null);
+    void readOwnerSession()
+      .then((authenticated) => {
         if (cancelled) return;
+        setUser(authenticated ? OWNER_USER : null);
+        setSharedBirthAccessUser(authenticated ? OWNER_USER.id : null);
+      })
+      .finally(() => { if (!cancelled) setPending(false); });
 
-        const restored = callbackSession ?? await restoreSession();
-        if (cancelled) return;
-        const owner = await resolveOwnerSession(restored);
-        if (cancelled) return;
-
-        setSharedBirthAccessUser(owner.session?.user.id ?? null);
-        setSession(owner.session);
-        setProfile(owner.profile);
-      } finally {
-        if (!cancelled) setPending(false);
-      }
-    };
-
-    void bootstrapAuth();
     const onAuth = () => void reload();
     window.addEventListener("zhaowu-auth-change", onAuth);
     return () => {
@@ -87,21 +68,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [reload]);
 
-  const user = useMemo<CurrentUser | null>(() => {
-    if (!session || !profile?.is_owner) return null;
-    const email = profile.email ?? session.user.email ?? "";
-    const metaName = typeof session.user.user_metadata?.name === "string" ? session.user.user_metadata.name : "";
-    return {
-      id: session.user.id,
-      displayName: profile.display_name?.trim() || metaName || email.split("@")[0] || "站主",
-      email,
-      isOwner: true,
-      birthData: profile.birth_data ?? null,
-    };
-  }, [profile, session]);
-
   return (
-    <AuthContext.Provider value={{ user, profile, session, isPending, reload }}>
+    <AuthContext.Provider value={{ user, profile: null, session: null, isPending, reload }}>
       {children}
     </AuthContext.Provider>
   );
