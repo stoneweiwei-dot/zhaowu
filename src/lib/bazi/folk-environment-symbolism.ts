@@ -1,4 +1,4 @@
-import type { InstructionRule } from './instruction-database-base';
+import type { InstructionRule } from './instruction-database-base-legacy';
 
 /**
  * 站主提供的月支三組求財環境口訣。
