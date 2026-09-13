@@ -5,9 +5,12 @@ import test from "node:test";
 const login = readFileSync(new URL("../src/routes/login.tsx", import.meta.url), "utf8");
 const report = readFileSync(new URL("../src/components/paid-report-pages.tsx", import.meta.url), "utf8");
 
-test("login exposes email credentials without third-party OAuth buttons", () => {
-  assert.match(login, /type="email"/);
+test("login exposes an independent owner key without third-party OAuth buttons", () => {
+  assert.doesNotMatch(login, /type="email"|id="login-email"/);
+  assert.match(login, /id="login-secret"/);
   assert.match(login, /type="password"/);
+  assert.match(login, /ownerSignIn/);
+  assert.match(login, /data-login-backend="vercel-owner-cookie"/);
   assert.doesNotMatch(login, /onOAuth\(/);
   assert.doesNotMatch(login, /startOAuth/);
   assert.doesNotMatch(login, /data-provider=/);
