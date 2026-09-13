@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 import { AnalysisForm } from "@/components/analysis-form";
 import { AuspiciousGallerySection } from "@/components/auspicious-gallery-section";
 import { DailyAlmanacWidget } from "@/components/daily-almanac-widget";
-import { DailyColorsModule } from "@/components/daily-colors-module";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
 import { LifeViewHomeSection } from "@/components/life-view-home-section";
@@ -171,7 +170,6 @@ function Home() {
   return (
     <main className="zhaowu-home-sheet-page zhaowu-home-layout">
       <div className="zhaowu-home-stage zhaowu-home-stage--daily"><DailyAlmanacWidget /></div>
-      <div className="zhaowu-home-stage"><DailyColorsModule variant="home" /></div>
       <div className="zhaowu-home-stage"><SkyEventsHomeSection /></div>
 
       <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">

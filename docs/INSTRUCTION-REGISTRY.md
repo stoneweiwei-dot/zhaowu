@@ -145,3 +145,11 @@
 - 站主登入：Supabase 402 / spend cap / egress quota 必須顯示中文原因。解除額度只能由站主在 Supabase Billing 操作，網站程式不能代替。
 - PR #295 Paid Visual：維持暫停。
 
+## 2026-09-13 r127 night readability + dress-in-almanac + numerology blocks
+
+- 夜間問事標題／導語必須月白可讀。客人資料卡維持宣紙深字，不得被夜間 token 洗成淺灰。
+- 五行穿衣併入「今日指引」展開區；關閉的 `#daily-almanac` 高度仍須 < 260px。方塊內必須看見木青／火紅紫／土黃棕／金白金銀／水黑藍，不得再是空心深色方。
+- 靈數分析加靈魂獨白與 11／22／33 區塊結構。不得把大師數文章標題放到首頁。不得複製第三方海報／浮水印。
+- Loading 維持 r126，不重做 intro。
+- PR #295 Paid Visual：維持暫停。
+

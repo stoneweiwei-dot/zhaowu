@@ -28,7 +28,7 @@ export const DAILY_COLOR_STATES: readonly DailyColorState[] = [
     id: "qingyun",
     element: "木",
     ink: "#4d7567",
-    swatches: ["#2f6b5a", "#5a8a78", "#8aa89a"],
+    swatches: ["#1f6b4a", "#3d8f5c", "#8fb89a"],
     copy: {
       "zh-Hant": {
         name: "青雲",
@@ -66,7 +66,7 @@ export const DAILY_COLOR_STATES: readonly DailyColorState[] = [
     id: "jianghua",
     element: "火",
     ink: "#9b4a45",
-    swatches: ["#b23a2f", "#c45b3a", "#8a3d6a"],
+    swatches: ["#c0392b", "#a8324a", "#7a3d7a"],
     copy: {
       "zh-Hant": {
         name: "絳華",
@@ -104,7 +104,7 @@ export const DAILY_COLOR_STATES: readonly DailyColorState[] = [
     id: "kunning",
     element: "土",
     ink: "#9a7b59",
-    swatches: ["#b06a2b", "#c4843a", "#8b6a4a"],
+    swatches: ["#d4a017", "#c4843a", "#8b5a2b"],
     copy: {
       "zh-Hant": {
         name: "坤寧",
@@ -142,7 +142,7 @@ export const DAILY_COLOR_STATES: readonly DailyColorState[] = [
     id: "liujin",
     element: "金",
     ink: "#ad8949",
-    swatches: ["#f4f1e8", "#c4b07a", "#9a8a68"],
+    swatches: ["#f7f4ea", "#d4b074", "#b8b8bc"],
     copy: {
       "zh-Hant": {
         name: "鎏金",
@@ -180,7 +180,7 @@ export const DAILY_COLOR_STATES: readonly DailyColorState[] = [
     id: "hanxu",
     element: "水",
     ink: "#587383",
-    swatches: ["#1d2a33", "#355a73", "#4d738c"],
+    swatches: ["#14181c", "#1e4d7b", "#3d6f99"],
     copy: {
       "zh-Hant": {
         name: "涵虛",

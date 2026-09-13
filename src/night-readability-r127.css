@@ -1,0 +1,226 @@
+/* r127 — last-wins night readability + five-element colour fills.
+   Night must not leave dark ink on pine, or wash the 五行 swatches into empty squares. */
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet {
+  color: #fffaf0 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet h2,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet h2 {
+  color: #fffaf0 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet .zhaowu-section-kicker,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet .zhaowu-section-kicker {
+  color: #e5c47f !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet .zhaowu-section-lead,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet .zhaowu-question-promise span,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet .zhaowu-question-label,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet .zhaowu-question-count,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet .zhaowu-section-lead,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet .zhaowu-question-promise span,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet .zhaowu-question-label,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet .zhaowu-question-count {
+  color: #eee5d6 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-question-promise span + span::before {
+  color: rgba(229, 196, 127, .62) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet textarea,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet textarea {
+  background: #fffaf0 !important;
+  color: #1b241f !important;
+  border-color: rgba(212, 176, 116, .46) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet textarea::placeholder,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet textarea::placeholder {
+  color: #6d675e !important;
+  opacity: 1 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-bazi-hub h2,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-bazi-hub .zhaowu-section-lead,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-bazi-pending,
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-analysis-submit-wrap p {
+  color: #eee5d6 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-bazi-hub .zhaowu-section-kicker {
+  color: #e5c47f !important;
+}
+
+/* Customer record stays parchment. Night tokens must not leak pale ink onto cream. */
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-customer-record {
+  background: rgba(250, 247, 238, .92) !important;
+  color: #2d2a25 !important;
+  border-color: rgba(78, 68, 53, .22) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record h2,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-birth-fields-title,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-birth-summary strong {
+  color: #2d2a25 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-section-kicker {
+  color: #2c6654 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-section-lead,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record label,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record label span,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record p,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record small,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-time-warning,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-birth-time-line span {
+  color: #4a453d !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record input,
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record select {
+  background: #fffaf0 !important;
+  color: #1b241f !important;
+  border-color: rgba(81, 67, 48, .28) !important;
+}
+
+/* Five-element tiles: the empty first span must show the actual 五行 colours. */
+#five-element-wardrobe [data-daily-color-swatch] {
+  display: grid !important;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  align-self: stretch;
+  width: 100% !important;
+  height: 72px !important;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .55) !important;
+  border-radius: 12px !important;
+  background: none !important;
+  background-image: none !important;
+  box-shadow: inset 0 0 0 1px rgba(73, 56, 35, .08), 0 6px 16px rgba(55, 42, 27, .08) !important;
+}
+
+#five-element-wardrobe [data-daily-color-swatch] i {
+  display: block;
+  min-width: 0;
+  height: 100%;
+  background: var(--swatch) !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  text-align: left !important;
+}
+
+#five-element-wardrobe > div[role="list"] > button strong,
+#five-element-wardrobe > div[role="list"] > button small {
+  padding-inline: 2px;
+}
+
+html[data-zw-theme="night"] #five-element-wardrobe > header h2,
+html[data-zw-theme="night"] #five-element-wardrobe > header p,
+html[data-zw-theme="night"] #five-element-wardrobe [data-daily-colors-today],
+html[data-zw-theme="night"] #five-element-wardrobe [data-daily-colors-today] p,
+html[data-zw-theme="night"] #five-element-wardrobe [data-daily-colors-today] a,
+html[data-zw-theme="night"] #five-element-wardrobe > p {
+  color: #fffaf0 !important;
+}
+
+html[data-zw-theme="night"] #five-element-wardrobe > header p:first-child {
+  color: #e5c47f !important;
+}
+
+html[data-zw-theme="night"] #five-element-wardrobe > div[role="list"] > button > span:first-child,
+html[data-zw-theme="night"] #five-element-wardrobe [data-daily-color-swatch] {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: rgba(229, 215, 182, .28) !important;
+}
+
+html[data-zw-theme="night"] #five-element-wardrobe > div[role="list"] > button small {
+  color: #d7d0c1 !important;
+}
+
+/* Compact wardrobe inside 今日指引. Closed almanac height must stay untouched. */
+#five-element-wardrobe[data-daily-colors="embed"] {
+  isolation: isolate;
+  margin: 16px 0 4px !important;
+  padding: 16px 0 8px !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(239, 220, 181, .22) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+#five-element-wardrobe[data-daily-colors="embed"]::before,
+#five-element-wardrobe[data-daily-colors="embed"]::after {
+  display: none !important;
+}
+
+#five-element-wardrobe[data-daily-colors="embed"] > header {
+  padding: 0 0 10px !important;
+  border-bottom: 1px solid rgba(168, 134, 82, .16);
+}
+
+#five-element-wardrobe[data-daily-colors="embed"] > header h2 {
+  margin-top: 4px !important;
+  font-size: 20px !important;
+  color: inherit !important;
+}
+
+#five-element-wardrobe[data-daily-colors="embed"] > header p {
+  margin: 0 !important;
+  font-size: 12.5px !important;
+  line-height: 1.55 !important;
+}
+
+#five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-date] {
+  display: none !important;
+}
+
+#five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  margin-top: 12px !important;
+}
+
+#five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button {
+  min-height: 118px !important;
+  padding: 10px 8px 10px !important;
+}
+
+#five-element-wardrobe[data-daily-colors="embed"] [data-daily-color-swatch] {
+  height: 44px !important;
+}
+
+html[data-zw-theme="night"] #five-element-wardrobe[data-daily-colors="embed"] {
+  background: transparent !important;
+  color: #fffaf0 !important;
+  border-top-color: rgba(239, 220, 181, .24) !important;
+}
+
+html[data-zw-theme="night"] #five-element-wardrobe[data-daily-colors="embed"] > header h2 {
+  color: #fffaf0 !important;
+}
+
+@media (max-width: 640px) {
+  #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] {
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+  }
+
+  #five-element-wardrobe [data-daily-color-swatch] {
+    height: 56px !important;
+  }
+}
