@@ -9,7 +9,7 @@ const upload = await readFile(new URL("../src/lib/background-music-upload.ts", i
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
 
-test("background music keeps the verified AAC fallback but loads only after explicit opt-in", () => {
+test("background music keeps the verified AAC fallback and defers asset fetch until a playback request", () => {
   assert.match(music, /jingfo-shengyuan-aac\.m4a/);
   assert.match(music, /getActiveBackgroundMusic/);
   assert.match(music, /musicPublicUrl/);
@@ -19,15 +19,17 @@ test("background music keeps the verified AAC fallback but loads only after expl
   assert.match(music, /loop/);
   assert.match(music, /playsInline/);
   assert.match(music, /preload="none"/);
-  assert.match(music, /const primarySrc = requested \?/);
+  assert.match(music, /if \(!requested\) return;[\s\S]*void refreshAsset\(\)/);
 });
 
-test("background music is mounted globally with explicit playback opt-in", () => {
+test("background music is mounted globally and can unlock on the first user gesture", () => {
   assert.match(main, /import \{ BackgroundMusic \}/);
   assert.match(main, /<BackgroundMusic \/>/);
-  assert.match(music, /zhaowu\.backgroundMusic\.v2/);
-  assert.match(music, /SESSION_REQUEST_KEY/);
-  assert.match(music, /if \(!requested\) return;/);
+  assert.match(music, /zhaowu\.backgroundMusic\.v3/);
+  assert.match(music, /const \[requested, setRequested\] = useState\(false\)/);
+  assert.match(music, /window\.addEventListener\("pointerdown", unlock/);
+  assert.match(music, /window\.addEventListener\("touchend", unlock/);
+  assert.match(music, /setRequested\(true\)/);
   assert.match(music, /data-background-music-control/);
 });
 
