@@ -131,7 +131,7 @@ test('intro plays the committed owner immortal ascent and keeps the owner poster
   assert.doesNotMatch(art, /zhaowu-four-hua|天界四華|天界四华/);
 });
 
-test('intro video stays visible even before the playing event, and login names a spend-cap freeze', async () => {
+test('intro video stays visible even before the playing event, and owner login stays independent from a Supabase spend-cap freeze', async () => {
   const design = await readFile(new URL('../src/zhaowu-design-system.css', import.meta.url), 'utf8');
   const rest = await readFile(new URL('../src/lib/supabase-rest.ts', import.meta.url), 'utf8');
   const login = await readFile(new URL('../src/routes/login.tsx', import.meta.url), 'utf8');
@@ -141,8 +141,9 @@ test('intro video stays visible even before the playing event, and login names a
   assert.doesNotMatch(css, /\.zhaowu-lotus-intro__video \{\s*display: none;/);
   assert.match(rest, /res\.status === 402/);
   assert.match(rest, /Supabase 因流量額度（spend cap）已暫停/);
-  assert.match(login, /data-login-backend="supabase"/);
-  assert.match(login, /spend cap/);
+  assert.match(login, /data-login-backend="vercel-owner-cookie"/);
+  assert.match(login, /不經 Supabase Auth/);
+  assert.doesNotMatch(login, /data-login-backend="supabase"/);
 });
 
 test('iPhone Safari routes stay mounted and Loading remains perceptible when bootstrap fails', () => {
