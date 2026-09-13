@@ -129,13 +129,13 @@ test.describe("iPhone Safari core customer flow", () => {
     await expectMobileViewportHealthy(page);
   });
 
-  test("Login page remains reachable and exposes email credentials", async ({ page }) => {
+  test("Login page remains reachable and exposes owner-key credentials", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/login", { waitUntil: "domcontentloaded" });
 
     await expect(page.getByRole("heading", { name: "站主登入", exact: true })).toBeVisible();
-    await expect(page.getByRole("textbox", { name: "Email", exact: true })).toBeVisible();
-    await expect(page.locator('input[type="password"]')).toBeVisible();
+    await expect(page.getByLabel("站主密鑰", { exact: true })).toBeVisible();
+    await expect(page.locator('#login-secret[type="password"]')).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 

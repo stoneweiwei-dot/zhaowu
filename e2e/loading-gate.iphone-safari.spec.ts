@@ -53,7 +53,7 @@ const routes = [
   {
     path: "/login",
     heading: "站主登入",
-    action: "Email",
+    action: "站主密鑰",
     actionRole: "textbox",
   },
 ] as const;
