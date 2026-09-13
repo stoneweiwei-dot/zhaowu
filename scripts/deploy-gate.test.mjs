@@ -20,8 +20,12 @@ test("Vercel build stays on npm run build and git auto-deploy is main-only", () 
   assert.deepEqual(vercel.git.deploymentEnabled, { main: true });
 });
 
-test("GitHub Production CI keeps a blocking deploy-gate job", () => {
+test("GitHub Production CI keeps blocking deploy-gate, engine, and iPhone Safari jobs", () => {
   assert.match(workflow, /deploy-gate:/);
   assert.match(workflow, /npm run build/);
-  assert.match(workflow, /engine-observe:/);
+  assert.match(workflow, / {2}engine:/);
+  assert.match(workflow, /name: Engine suite/);
+  assert.match(workflow, /name: iPhone Safari/);
+  assert.doesNotMatch(workflow, /engine-observe:/);
+  assert.doesNotMatch(workflow, /continue-on-error:\s*true/);
 });

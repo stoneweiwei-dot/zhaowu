@@ -46,7 +46,7 @@ test("failed full image does not block text and six report entries stay semantic
   assert.match(home, /查看分析|Open analysis/);
   assert.match(page, /readSharedBirthRecord/);
   assert.match(page, /buildZiweiReading|buildWesternReading/);
-  assert.match(page, /D60KarmaSection/);
+  assert.match(page, /D60ReliabilityGate/);
   assert.doesNotMatch(home, /disabled/);
 });
 
