@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { signOut } from "@/lib/auth/client";
 import {
   deleteReportRecord,
   getReportRecord,
@@ -489,8 +490,12 @@ function AccountPage() {
           <div className="mt-5 rounded-lg border border-cinnabar/20 bg-paper/55 p-4">
             <p className="text-sm font-medium text-ink">{tr(locale, "資料服務狀態", "数据服务状态", "Data service status")}</p>
             <p className="mt-2 text-sm leading-7 text-ink-soft">
-              {tr(locale, "目前 Supabase 專案受 402 egress quota／spend cap 影響。報告、圖庫、背景等資料面板暫停，但不影響你進入站主後台與站主身份。", "目前 Supabase 项目受 402 egress quota／spend cap 影响。报告、图库、背景等数据面板暂停，但不影响你进入站主后台与站主身份。", "Supabase data is currently affected by the 402 egress quota/spend cap. Reports, gallery and background data panels remain paused, but owner access itself is independent and available.")}
+              {tr(locale, "報告、圖庫與背景上傳仍走 Supabase，目前若被 402 spend cap 擋住，那些面板會暫停。站主登入、後台入口與背景音樂播放不再依賴它。", "报告、图库与背景上传仍走 Supabase，目前若被 402 spend cap 挡住，那些面板会暂停。站主登录、后台入口与背景音乐播放不再依赖它。", "Reports, gallery and wallpaper uploads still use Supabase. If the 402 spend cap is active those panels pause. Owner login, the console itself and background music playback do not depend on it.")}
             </p>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link to="/gallery" className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-5 text-sm">{tr(locale, "圖庫", "图库", "Gallery")}</Link>
+            <button type="button" onClick={() => void signOut()} className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-5 text-sm">{tr(locale, "登出", "登出", "Sign out")}</button>
           </div>
         </section>
       </main>

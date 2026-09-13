@@ -10,6 +10,11 @@
       "main": true
     }
   },
+  "functions": {
+    "api/owner-login.js": { "maxDuration": 10 },
+    "api/owner-logout.js": { "maxDuration": 10 },
+    "api/owner-session.js": { "maxDuration": 10 }
+  },
   "headers": [
     {
       "source": "/sw.js",
@@ -29,6 +34,12 @@
     {
       "source": "/manifest.webmanifest",
       "headers": [ { "key": "Cache-Control", "value": "no-store, max-age=0" } ]
+    },
+    {
+      "source": "/audio/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+      ]
     },
     {
       "source": "/tea-guardians/(.*)",
@@ -61,7 +72,7 @@
       "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ]

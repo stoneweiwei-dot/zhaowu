@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 import type { LifeViewArticle } from "@/lib/life-view";
 import { LIFE_VIEW_CURATED_ARTICLES } from "@/lib/life-view-curated";
@@ -33,11 +34,12 @@ export function LifeViewHomeSection() {
       return {
         kicker: "STONE · NOTES",
         title: "Zhaowu · Notes on Life",
-        lead: "Latest note first. Open the section to browse all published notes.",
+        lead: "Latest note first. Open 觀世錄 for the full archive, including research notes.",
         latest: "Latest",
         all: "All notes",
         collapse: "Show less",
         read: "Read",
+        archive: "Open 觀世錄",
         empty: "Articles will be added here over time.",
       };
     }
@@ -45,22 +47,24 @@ export function LifeViewHomeSection() {
       return {
         kicker: "STONE · 观世",
         title: "昭梧 · 观世录",
-        lead: "首页只看最新一篇；点开这里查看全部已发布文章。",
+        lead: "首页只看最新一篇；研究札记与全部文章在观世录。",
         latest: "最新",
         all: "全部文章",
         collapse: "收起",
         read: "阅读全文",
+        archive: "进入观世录",
         empty: "文章会在这里持续更新。",
       };
     }
     return {
       kicker: "STONE · 觀世",
       title: "昭梧 · 觀世錄",
-      lead: "首頁只看最新一篇；點開這裡查看全部已發布文章。",
+      lead: "首頁只看最新一篇；研究札記與全部文章在觀世錄。",
       latest: "最新",
       all: "全部文章",
       collapse: "收起",
       read: "閱讀全文",
+      archive: "進入觀世錄",
       empty: "文章會在這裡持續更新。",
     };
   }, [locale]);
@@ -136,9 +140,12 @@ export function LifeViewHomeSection() {
           })}
         </div>
 
-        <button type="button" onClick={() => { setShowAll((value) => !value); setOpenId(null); }} className="mt-1 text-xs font-medium tracking-[0.08em] text-cinnabar">
-          {showAll ? copy.collapse : `${copy.all} ›`}
-        </button>
+        <div className="zhaowu-guanshilu-teaser mt-3">
+          <button type="button" onClick={() => { setShowAll((value) => !value); setOpenId(null); }} className="text-xs font-medium tracking-[0.08em] text-cinnabar">
+            {showAll ? copy.collapse : `${copy.all} ›`}
+          </button>
+          <Link to="/knowledge" className="text-xs font-medium tracking-[0.08em] text-cinnabar">{copy.archive} ›</Link>
+        </div>
       </section>
     </>
   );

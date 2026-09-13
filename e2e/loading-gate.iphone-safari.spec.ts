@@ -46,7 +46,7 @@ async function gateDuration(page: Page) {
 const routes = [
   {
     path: "/",
-    heading: "四柱八字",
+    heading: "客人資料",
     action: "開始分析",
     actionRole: "button",
   },
@@ -105,7 +105,7 @@ test.describe("iPhone Safari startup fallback", () => {
     await expect(gate.locator("video")).toHaveAttribute("src", "/intro/missing-force-fail.mp4");
     await expect(page.locator("[data-intro-skip]")).toBeVisible();
     await expect(gate).toHaveCount(0, { timeout: 5_000 });
-    await expect(page.getByRole("heading", { name: "四柱八字", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
 
     const duration = await gateDuration(page);
     expect(duration).not.toBeNull();

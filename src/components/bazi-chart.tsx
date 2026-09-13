@@ -86,8 +86,6 @@ export function BaziChartContent({ chart, locale, showHeader = true }: { chart: 
             {ready(p) ? (
               <>
                 <strong>{ganzhiLabel(p.ganZhi, locale)}</strong>
-                <p>{chartTerm(p.gan, locale)}</p>
-                <p>{chartTerm(p.zhi, locale)}</p>
                 <small>{chartTerm(p.shiShenGan, locale)}</small>
               </>
             ) : (

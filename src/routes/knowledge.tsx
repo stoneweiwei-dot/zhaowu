@@ -1,4 +1,5 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { useI18n, type Locale } from "@/lib/i18n";
 
 export const Route = createFileRoute("/knowledge")({ component: KnowledgePage });
@@ -73,9 +74,9 @@ function KnowledgePage() {
   return (
     <main className="mx-auto max-w-4xl space-y-5 pb-16">
       <section className="seal-border rounded-2xl bg-cream p-5 sm:p-8">
-        <p className="text-xs tracking-[0.26em] text-cinnabar">{tr(locale,"昭梧知識圖鑑","昭梧知识图鉴","ZHAOWU FIELD NOTES")}</p>
-        <h1 className="mt-2 font-display text-3xl leading-tight text-ink sm:text-4xl">{tr(locale,"看懂本象，不把比喻當命運","看懂本象，不把比喻当命运","Learn the symbols without turning metaphors into fate")}</h1>
-        <p className="mt-4 max-w-2xl text-[15px] leading-7 text-ink-soft">{tr(locale,"把複雜術語先翻成人話，再標清楚它能用到哪裡、不能越過哪條線。","把复杂术语先翻成人话，再标清楚它能用到哪里、不能越过哪条线。","Translate technical ideas into plain language, then mark what they can and cannot be used to infer.")}</p>
+        <p className="text-xs tracking-[0.26em] text-cinnabar">{tr(locale,"昭梧 · 觀世錄","昭梧 · 观世录","ZHAOWU · NOTES ON LIFE")}</p>
+        <h1 className="mt-2 font-display text-3xl leading-tight text-ink sm:text-4xl">{tr(locale,"觀世錄","观世录","Notes on Life")}</h1>
+        <p className="mt-4 max-w-2xl text-[15px] leading-7 text-ink-soft">{tr(locale,"研究札記與站主文章都放在這裡。術數可以作分析工具，但不替人決定人生。","研究札记与站主文章都放在这里。术数可以作分析工具，但不替人决定人生。","Research notes and owner essays live here. Divination may support analysis, but it does not make the final decision.")}</p>
       </section>
 
       <section id="bazi-decision-tool" className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
@@ -103,6 +104,8 @@ function KnowledgePage() {
           <span className="mt-4 inline-flex text-sm text-cinnabar">{tr(locale,"閱讀全文","阅读全文","Read article")} →</span>
         </div>
       </a>
+
+      <LifeViewHomeSection />
 
       <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
         <p className="text-xs tracking-[0.22em] text-cinnabar">{tr(locale,"實際用途","实际用途","PRACTICAL APPLICATIONS")}</p>

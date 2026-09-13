@@ -122,7 +122,7 @@ function ShushuBoundaryArticle() {
         </div>
       </section>
 
-      <Link to="/knowledge" className="seal-border flex min-h-14 items-center justify-between rounded-2xl bg-cream px-5 py-4 text-sm text-ink"><span>{tr(locale,"返回昭梧知識圖鑑","返回昭梧知识图鉴","Back to Zhaowu Field Notes")}</span><span className="text-cinnabar">→</span></Link>
+      <Link to="/knowledge" className="seal-border flex min-h-14 items-center justify-between rounded-2xl bg-cream px-5 py-4 text-sm text-ink"><span>{tr(locale,"返回昭梧 · 觀世錄","返回昭梧 · 观世录","Back to Zhaowu Notes on Life")}</span><span className="text-cinnabar">→</span></Link>
     </main>
   );
 }
