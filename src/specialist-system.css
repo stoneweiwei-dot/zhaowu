@@ -158,11 +158,18 @@
 [data-specialist-report="western"] .zhaowu-specialist-sections article:not(.zhaowu-specialist-overview) {
   padding: 14px 0;
 }
-[data-specialist-report="western"] .zhaowu-specialist-sections article:not(.zhaowu-specialist-overview):not([data-summary-table]) {
+[data-specialist-report="western"] .zhaowu-specialist-sections article:not(.zhaowu-specialist-overview):not([data-summary-table]):not([data-summary-description]) {
   display: grid;
   grid-template-columns: 5.5rem minmax(0, 1fr);
   align-items: baseline;
   gap: 8px;
+}
+[data-specialist-report="western"] [data-summary-description] h2 {
+  font-size: 20px !important;
+  margin-bottom: 10px;
+}
+[data-specialist-report="western"] [data-summary-description] p {
+  white-space: pre-line;
 }
 [data-specialist-report="western"] .zhaowu-specialist-sections h2 {
   margin: 0;
