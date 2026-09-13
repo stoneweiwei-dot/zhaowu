@@ -1,0 +1,206 @@
+import { createHash, timingSafeEqual } from "node:crypto";
+import {
+  activateOwnerMusicTrack,
+  deleteOwnerMusicTrack,
+  emptyManifest,
+  MAX_BYTES,
+  readOwnerMusicManifest,
+  saveOwnerMusicTrack,
+} from "../lib/owner-music-git.js";
+
+const OWNER_COOKIE = "__Host-zhaowu_owner_session";
+const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
+
+const ALLOWED_TYPES = {
+  "audio/mpeg": ".mp3",
+  "audio/mp3": ".mp3",
+  "audio/mp4": ".m4a",
+  "audio/x-m4a": ".m4a",
+  "audio/aac": ".aac",
+  "audio/x-aac": ".aac",
+  "audio/wav": ".wav",
+  "audio/x-wav": ".wav",
+  "audio/flac": ".flac",
+  "audio/x-flac": ".flac",
+};
+
+const ALLOWED_EXT = {
+  ".mp3": "audio/mpeg",
+  ".m4a": "audio/mp4",
+  ".aac": "audio/aac",
+  ".wav": "audio/wav",
+  ".flac": "audio/flac",
+};
+
+function hash(value) {
+  return createHash("sha256").update(String(value), "utf8").digest();
+}
+
+function isValidOwnerSecret(value) {
+  if (!value || value.length < 8 || value.length > 256) return false;
+  const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
+  const actual = hash(value);
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
+
+function headerValue(req, name) {
+  const headers = req?.headers;
+  if (!headers) return "";
+  if (typeof headers.get === "function") return String(headers.get(name) ?? "");
+  const raw = headers[name] ?? headers[name.toLowerCase()];
+  return String(Array.isArray(raw) ? raw[0] : raw ?? "");
+}
+
+function readCookie(req, name) {
+  const raw = headerValue(req, "cookie");
+  for (const part of raw.split(";")) {
+    const index = part.indexOf("=");
+    if (index < 0) continue;
+    const key = part.slice(0, index).trim();
+    if (key !== name) continue;
+    try { return decodeURIComponent(part.slice(index + 1)); } catch { return ""; }
+  }
+  return "";
+}
+
+function ownerSecretFrom(req) {
+  const secret = readCookie(req, OWNER_COOKIE);
+  return isValidOwnerSecret(secret) ? secret : "";
+}
+
+function requestIsSameOrigin(req) {
+  const origin = headerValue(req, "origin").trim();
+  if (!origin) return true;
+  const forwardedHost = (headerValue(req, "x-forwarded-host") || headerValue(req, "host")).split(",")[0].trim();
+  if (!forwardedHost) return false;
+  try { return new URL(origin).host === forwardedHost; } catch { return false; }
+}
+
+function json(res, status, body) {
+  const headers = {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
+  };
+  if (res && typeof res.status === "function" && typeof res.setHeader === "function") {
+    for (const [key, value] of Object.entries(headers)) res.setHeader(key, value);
+    return res.status(status).json(body);
+  }
+  return new Response(JSON.stringify(body), { status, headers });
+}
+
+async function readJsonBody(req) {
+  if (req?.body && typeof req.body === "object" && !Buffer.isBuffer(req.body) && !ArrayBuffer.isView(req.body)) return req.body;
+  if (typeof req?.body === "string") {
+    try { return JSON.parse(req.body); } catch { return {}; }
+  }
+  if (typeof req?.json === "function") {
+    try { return await req.json(); } catch { return {}; }
+  }
+  return {};
+}
+
+async function readBinaryBody(req) {
+  if (Buffer.isBuffer(req?.body)) return req.body;
+  if (typeof req?.arrayBuffer === "function") {
+    const buf = await req.arrayBuffer();
+    return Buffer.from(buf);
+  }
+  if (req?.body && typeof req.body[Symbol.asyncIterator] === "function") {
+    const chunks = [];
+    for await (const chunk of req.body) chunks.push(Buffer.from(chunk));
+    return Buffer.concat(chunks);
+  }
+  return Buffer.alloc(0);
+}
+
+function filenameOf(name, contentType) {
+  const raw = String(name || "background").trim() || "background";
+  const base = raw.replace(/[/\\]/g, "").slice(0, 80);
+  const lower = base.toLowerCase();
+  const extFromName = Object.keys(ALLOWED_EXT).find((ext) => lower.endsWith(ext));
+  if (extFromName) return { name: base.replace(/\.[^.]+$/, "") || "background", ext: extFromName, contentType: ALLOWED_EXT[extFromName] };
+  const ext = ALLOWED_TYPES[contentType];
+  if (!ext) return null;
+  return { name: base.replace(/\.[^.]+$/, "") || "background", ext, contentType: ALLOWED_EXT[ext] };
+}
+
+function publicPayload(manifest) {
+  const tracks = Array.isArray(manifest?.tracks) ? manifest.tracks : [];
+  const active = tracks.find((row) => row.id === manifest?.activeId) || tracks.find((row) => row.enabled) || null;
+  return {
+    ok: true,
+    active: active ? {
+      id: active.id,
+      name: active.name,
+      url: active.url,
+      contentType: active.contentType || "audio/mpeg",
+    } : null,
+    tracks: tracks.map((row) => ({
+      id: row.id,
+      name: row.name,
+      url: row.url,
+      contentType: row.contentType || "audio/mpeg",
+      fileSize: row.fileSize ?? null,
+      enabled: row.id === (manifest.activeId || active?.id),
+      createdAt: row.createdAt || null,
+    })),
+  };
+}
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "4mb",
+    },
+  },
+};
+
+export default async function handler(req, res) {
+  try {
+    const method = req.method || "GET";
+    if (method === "GET") {
+      const manifest = await readOwnerMusicManifest().catch(() => emptyManifest());
+      return json(res, 200, publicPayload(manifest));
+    }
+    if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
+    const secret = ownerSecretFrom(req);
+    if (!secret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+
+    if (method === "POST") {
+      const declaredType = headerValue(req, "content-type").split(";")[0].trim().toLowerCase();
+      const rawName = decodeURIComponent(headerValue(req, "x-zhaowu-music-name") || "background");
+      const parsed = filenameOf(rawName, declaredType);
+      if (!parsed) return json(res, 415, { ok: false, error: "UNSUPPORTED_AUDIO" });
+      const buffer = await readBinaryBody(req);
+      if (!buffer.length) return json(res, 400, { ok: false, error: "EMPTY_AUDIO" });
+      if (buffer.length > MAX_BYTES) return json(res, 413, { ok: false, error: "AUDIO_TOO_LARGE" });
+      const manifest = await saveOwnerMusicTrack(secret, {
+        name: parsed.name,
+        ext: parsed.ext,
+        contentType: parsed.contentType,
+        buffer,
+      });
+      return json(res, 200, { ...publicPayload(manifest), uploaded: true });
+    }
+
+    const body = await readJsonBody(req);
+    const id = String(body?.id ?? "").trim();
+    if (!id) return json(res, 400, { ok: false, error: "TRACK_REQUIRED" });
+    if (method === "PATCH") {
+      const manifest = await activateOwnerMusicTrack(secret, id);
+      return json(res, 200, { ...publicPayload(manifest), changed: true });
+    }
+    if (method === "DELETE") {
+      const manifest = await deleteOwnerMusicTrack(secret, id);
+      return json(res, 200, { ...publicPayload(manifest), deleted: true });
+    }
+    return json(res, 405, { ok: false });
+  } catch (error) {
+    return json(res, 500, {
+      ok: false,
+      error: "OWNER_MUSIC_FAILED",
+      detail: error instanceof Error ? error.message : "unknown",
+    });
+  }
+}

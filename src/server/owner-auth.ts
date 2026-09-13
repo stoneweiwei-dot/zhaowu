@@ -2,7 +2,7 @@ import { createHash, timingSafeEqual } from "node:crypto";
 
 export const OWNER_COOKIE = "__Host-zhaowu_owner_session";
 // SHA-256 of the owner passcode. The raw passcode is never committed.
-const OWNER_KEY_SHA256 = "cd448e56d6e7ea73ac6ff973646a5e40448df447e2a625f1b782440e0f704270";
+const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 
 function hash(value: string) {

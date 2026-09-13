@@ -18,14 +18,14 @@
 
 每次接手实时检查 `main` 与 Vercel Production 的 `githubCommitSha`，禁止另建第二条 production 主线。Netlify、AppDeploy、Lovable standby、旧临时站只读参考。
 
-目前已核對：最後一個 `READY / production` runtime deployment 是 `dpl_FtfGFpaweLcpuX966R9ZspUrWfvo`，精確對應 GitHub `main` `58ee4a9bd923a790b42a954b7764c753a7887454`（r128）。PWA cache 當時仍是 `zhaowu-shell-r127`，因為 r128 沒 bump ledger。r129 正在修音樂／登入 API 500／首頁重疊八字／夜間排版／觀世錄，合併後必須把 Production SHA 與 `zhaowu-shell-r129` 再核一次。不得把 exact SHA 或部署 READY 等同真實 iPhone／已安裝 PWA／站主登入驗收。
+目前已核對：r129 Production 為 `7a35307d1d2a2873f529e81e7989b2a742ffd155` / `dpl_3PkQB7ngSMbYdziwgRx3gpr5gqir`。r130 合併後必須把 Production SHA 與 `zhaowu-shell-r130` 再核一次。不得把 exact SHA 或部署 READY 等同真實 iPhone／已安裝 PWA／站主登入驗收。
 
 ## 2. 已完成且默认锁住
 
 - GitHub `main` 是唯一源码真相。Vercel Git 自动部署仅对 `main` 开启（`vercel.json` `git.deploymentEnabled.main=true`），正式生产只认 `stone-zhaowu-official`。
 - GitHub `main` branch protection 已開啟：required checks = Deploy gate／Engine suite／iPhone Safari；`enforce_admins=true`；禁止 force push。
 - Supabase 报告存档、图库/背景资产、访问统计统一使用当前项目配置。站主登入改為獨立 Cookie `__Host-zhaowu_owner_session`，不經 Supabase Auth。
-- 登入：普通用戶不提供登入、註冊、Google／Apple／X／Email 會員入口；唯一 `/login` 為站主密鑰入口（32+ 字元，hash 在 repo，明文不進 repo）。前端只接受獨立 Cookie 驗證的 `isOwner`。Email＋密碼 + `profiles.is_owner` 舊契約已廢止。
+- 登入：普通用戶不提供登入、註冊、Google／Apple／X／Email 會員入口；唯一 `/login` 為站主密碼入口（8 位以上，hash 在 repo，明文不進 repo）。真正驗密是 `api/owner-login.js`，不是 `src/server/owner-auth.ts`。前端只接受獨立 Cookie 驗證的 `isOwner`。Email＋密碼 + `profiles.is_owner` 舊契約已廢止。
 - 現行公開語言：`zh-Hant / en / ko / hi`；`zh-Hans / ja` 僅保留歷史偏好相容並折回繁中，不再是公開選項。
 - Loading ghost overlay 已移除。
 - `finalizeReading` 是最终 Reading 单一来源；已保存报告不重新 live 算出另一套答案。
@@ -41,7 +41,7 @@
 - r129：首頁不得在客人資料下再疊一份即時四柱預覽。八字排盤只在開始分析後的報告出現。「七種個人分析」與輕測驗區塊必須實色底，壁紙不得透字。四柱卡只顯示柱名＋干支＋十神，不得疊天干／地支／十神三層。
 - `/numerology` 含靈魂獨白、人生角色、五項天賦分述與 11／22／33 區塊分析。首頁不得出現大師數文章標題「你是少見的」。
 - 研究札記與《術數的邊界》放在 `/knowledge`「昭梧 · 觀世錄」。首頁觀世錄只留最新一篇與「進入觀世錄」入口。
-- 背景音樂走同源 `/audio/zhaowu-background.m4a`（mp3 備援）。不得把公開播放綁回 Supabase `zhaowu-audio` 公開桶（該桶 live HEAD 回 402）。
+- r130：背景音樂只播站主後台上傳的曲子（`/api/owner-music`）。不得再播 r129 內建佔位音，也不得把公開播放綁回 Supabase `zhaowu-audio` 公開桶（該桶 live HEAD 回 402）。後台上傳不經 Supabase session。舊檔仍在原桶，解除 spend cap 前無法自動撈回。
 - 首页各分组必须用简短三语说明回答两件事：用户“会知道自己的什么”与“这个体系最擅长看什么”；英文必须自然简洁，不做逐字直译。
 - 「趣味测验」是独立的轻量自评系列，不冒充命盘；包含「内在动物 × 命局瑞兽」与「五行功能测验」。五行功能测验只判断当前需要训练的生长、启动、落地、收敛或恢复功能，不等同八字喜用神。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
@@ -110,14 +110,14 @@
 
 | # | 項 | 狀態 |
 | --- | --- | --- |
-| 1 | Production CI Safari | **PASS** on `58ee4a9`（Deploy gate／Engine／iPhone Safari 全綠）；r129 合併後再核一次 |
+| 1 | Production CI Safari | **PASS** on r129 `7a35307`（Deploy gate／Engine／iPhone Safari 全綠）；r130 合併後再核一次 |
 | 2 | D60 minute gate，不 merge #304 | **DONE** on main；#304 CLOSED 未合併 |
 | 3 | 西洋完整盤（#310 內容在最新 main）+ 專卷命盤 | **DONE**；未知時辰四軸 fail-closed |
-| 4 | 真實 iPhone／PWA／登入／報告重開 | **未完成**（CI ≠ 真機）。r128 站主 API 在正式線 500；r129 改獨立 `.js` 函式後須再核 |
+| 4 | 真實 iPhone／PWA／登入／報告重開 | **未完成**（CI ≠ 真機）。r129 獨立 `.js` 登入已上線；r130 後台上傳背景音樂須再核 |
 | 5 | GitHub main protection | **DONE**（三項 required checks + enforce_admins） |
 | 6 | Supabase advisor／Edge Functions | **文件化**，Dashboard 勾選仍需站主 |
 | 7 | 停 Netlify 當 production | **DONE**（`ignore = "exit 0"`）；archive webhook 仍可能 canceled，不是正式站 |
-| 8 | Linear STO-12／STO-5、CURRENT-STATE SHA | Logo／舊會員入口已鎖；Linear 未接入無法寫卡。live SHA 對到 `58ee4a9`（r128） |
+| 8 | Linear STO-12／STO-5、CURRENT-STATE SHA | Logo／舊會員入口已鎖；Linear 未接入無法寫卡。live SHA 對到 `7a35307`（r129） |
 | 9 | `zhaowu.soul-terminal.com` | **未完成**；Vercel 專案尚未綁此域名，DNS 無法解析 |
 | 10 | PR #295 Paid Visual | **維持暫停**；不 merge、不 rebase |
 
@@ -129,7 +129,7 @@ PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行�
 - 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub iPhone Safari CI 已通過；這不等於實機完成。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
-- Supabase spend cap（402 `exceed_cached_egress_quota`）仍擋住報告存檔、圖庫／背景上傳與舊公開音訊桶。解除額度只能由站主在 Supabase Dashboard → Billing 操作。r129 起：站主登入與背景音樂不再依賴它。
+- Supabase spend cap（402 `exceed_cached_egress_quota`）仍擋住報告存檔、圖庫／壁紙上傳與舊公開音訊桶。解除額度只能由站主在 Supabase Dashboard → Billing 操作。r130 起：站主登入、後台上傳背景音樂與播放不再依賴它。舊 `zhaowu-audio` 曲子要等額度解除才能撈回，現可在後台重新上傳。
 - Supabase dashboard 仍需站主勾：`get_customer_classic_passage` EXECUTE 邊界、`search_path`、leaked-password protection、live Edge Functions 對帳。見 `docs/supabase-security-r123.md`。
 - Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo，不復活普通會員 Google／Apple／註冊。
 

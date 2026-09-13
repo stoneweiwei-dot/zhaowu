@@ -175,3 +175,14 @@
 - Loading 維持 r126。不 merge #304。PR #295 維持暫停。
 - PWA cache `zhaowu-shell-r129`。
 
+
+
+## 2026-09-14 r130 owner music upload + key rotation
+
+- 背景音樂只播站主後台上傳的曲子。r129 內建佔位音不得再當正式曲。
+- 後台「背景音樂管理」在獨立 Cookie 站主登入後顯示，不需要 Supabase session。
+- 上傳寫入 `owner-music` 分支，Vercel 不得部署該分支。播放走 `/api/owner-music`。
+- Supabase `zhaowu-audio` 舊檔（含《淨佛聖願》）仍在，但 402 spend cap 期間無法下載；站主在後台重新上傳。
+- 站主密碼改接到真正生效的 `api/owner-*.js`（hash `6236d83b…`，最短 8 位）。只改 `src/server/owner-auth.ts` 不能登入。舊 32 位密鑰與 r129 hash `SUPERSEDED`。明文不進 repo。
+- Loading 維持 r126。不 merge #304。PR #295 維持暫停。
+- PWA cache `zhaowu-shell-r130`。

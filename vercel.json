@@ -7,13 +7,15 @@
   "ignoreCommand": "[ \"${VERCEL_GIT_COMMIT_REF:-main}\" != main ] && exit 0; git cat-file -e \"$VERCEL_GIT_PREVIOUS_SHA^{commit}\"&&git diff --quiet \"$VERCEL_GIT_PREVIOUS_SHA\" HEAD -- . ':(exclude).github/**' ':(exclude)docs/**' ':(exclude)e2e/**'||false",
   "git": {
     "deploymentEnabled": {
-      "main": true
+      "main": true,
+      "owner-music": false
     }
   },
   "functions": {
     "api/owner-login.js": { "maxDuration": 10 },
     "api/owner-logout.js": { "maxDuration": 10 },
-    "api/owner-session.js": { "maxDuration": 10 }
+    "api/owner-session.js": { "maxDuration": 10 },
+    "api/owner-music.js": { "maxDuration": 30, "includeFiles": "lib/owner-music-ssh.json" }
   },
   "headers": [
     {

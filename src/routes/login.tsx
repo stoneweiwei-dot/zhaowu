@@ -44,8 +44,8 @@ function LoginPage() {
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
-    if (secret.length < 32) {
-      setError(ownerText(locale, "請輸入完整站主密鑰。", "请输入完整站主密钥。", "Enter the full owner key."));
+    if (secret.length < 8) {
+      setError(ownerText(locale, "請輸入站主密碼。", "请输入站主密码。", "Enter the owner passcode."));
       return;
     }
     setBusy(true);

@@ -1,14 +1,14 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 
 const OWNER_COOKIE = "__Host-zhaowu_owner_session";
-const OWNER_KEY_SHA256 = "ab535831ae942e32e9c00f2181ba70d7aea3eca8678199c647a3fa609321efca";
+const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
 
 function hash(value) {
   return createHash("sha256").update(String(value), "utf8").digest();
 }
 
 function isValidOwnerSecret(value) {
-  if (!value || value.length < 32 || value.length > 256) return false;
+  if (!value || value.length < 8 || value.length > 256) return false;
   const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
   const actual = hash(value);
   return actual.length === expected.length && timingSafeEqual(actual, expected);

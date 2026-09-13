@@ -1,18 +1,15 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { access } from "node:fs/promises";
 import test from "node:test";
 
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("background music plays from same-origin files instead of the 402 Supabase bucket", async () => {
+test("background music no longer plays the generated placeholder or the 402 Supabase bucket", async () => {
   const music = await source("src/components/background-music.tsx");
-  await access(new URL("public/audio/zhaowu-background.m4a", root));
-  await access(new URL("public/audio/zhaowu-background.mp3", root));
-  assert.match(music, /\/audio\/zhaowu-background\.m4a/);
-  assert.match(music, /\/audio\/zhaowu-background\.mp3/);
-  assert.match(music, /getActiveBackgroundMusic/);
+  assert.match(music, /\/api\/owner-music/);
+  assert.match(music, /loadOwnerMusic/);
+  assert.doesNotMatch(music, /\/audio\/zhaowu-background\.m4a/);
   assert.doesNotMatch(music, /supabase\.co\/storage\/v1\/object\/public\/zhaowu-audio/);
 });
 

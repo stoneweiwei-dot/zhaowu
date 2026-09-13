@@ -9,17 +9,19 @@ const upload = await readFile(new URL("../src/lib/background-music-upload.ts", i
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
 
-test("background music keeps the verified AAC fallback and defers asset fetch until a playback request", () => {
+test("background music plays the owner-uploaded track from /api/owner-music and defers fetch until a playback request", () => {
+  assert.match(music, /\/api\/owner-music/);
+  assert.match(music, /loadOwnerMusic/);
   assert.match(music, /jingfo-shengyuan-aac\.m4a/);
-  assert.match(music, /getActiveBackgroundMusic/);
   assert.match(music, /musicPublicUrl/);
   assert.match(music, /DEFAULT_VOLUME = 0\.24/);
-  assert.match(music, /audio\/mp4/);
   assert.match(music, /audio\/mpeg/);
   assert.match(music, /loop/);
   assert.match(music, /playsInline/);
   assert.match(music, /preload="none"/);
   assert.match(music, /if \(!requested\) return;[\s\S]*void refreshAsset\(\)/);
+  assert.doesNotMatch(music, /\/audio\/zhaowu-background\.m4a/);
+  assert.doesNotMatch(music, /supabase\.co\/storage\/v1\/object\/public\/zhaowu-audio/);
 });
 
 test("background music is mounted globally and can unlock on the first user gesture", () => {
@@ -33,13 +35,13 @@ test("background music is mounted globally and can unlock on the first user gest
   assert.match(music, /data-background-music-control/);
 });
 
-test("owner music manager is mounted inside AuthProvider so owner session is visible", () => {
+test("owner music manager is mounted inside AuthProvider so owner cookie login is visible", () => {
   assert.doesNotMatch(music, /OwnerBackgroundMusicManager/);
   assert.match(root, /import \{ OwnerBackgroundMusicManager \}/);
   assert.match(root, /<AuthProvider>[\s\S]*<OwnerBackgroundMusicManager \/>[\s\S]*<\/AuthProvider>/);
   assert.match(manager, /data-owner-background-music-manager/);
   assert.match(manager, /user\?\.isOwner/);
-  assert.match(manager, /session/);
+  assert.doesNotMatch(manager, /session\?\.access_token/);
 });
 
 test("owner music manager is visibly embedded in the account console with a high-z fallback", () => {
@@ -54,12 +56,14 @@ test("owner music manager is visibly embedded in the account console with a high
   assert.match(manager, /站主專用/);
 });
 
-test("owner console exposes direct native upload and no-deploy track switching", () => {
-  assert.match(manager, /uploadBackgroundMusicResilient/);
-  assert.match(manager, /activateBackgroundMusic/);
+test("owner console exposes cookie-gated upload without a Supabase session", () => {
+  assert.match(manager, /uploadOwnerMusic/);
+  assert.match(manager, /activateOwnerMusic/);
+  assert.match(manager, /\/api\/owner-music/);
   assert.match(manager, /MP3/);
   assert.match(manager, /M4A \/ AAC/);
-  assert.match(manager, /15 MB/);
+  assert.match(manager, /4 MB/);
+  assert.doesNotMatch(manager, /uploadBackgroundMusicResilient/);
   assert.match(upload, /native-mp3/);
   assert.match(upload, /native-aac-m4a/);
   assert.match(upload, /native-aac/);
