@@ -45,6 +45,7 @@ test("shared birth auto-generates the report and changing direction regenerates 
 
   const reverse = page.getByLabel("逆行（傳統女命）", { exact: true });
   await reverse.scrollIntoViewIfNeeded();
+  // Use the element's native click path: WebKit pointer emulation can miss the tiny controlled radio target after the smooth result scroll/reflow.
   await reverse.evaluate((node) => (node as HTMLInputElement).click());
   await expect(reverse).toBeChecked();
   await expect.poll(async () => result.innerText(), { timeout: 10_000 }).not.toBe(before);
