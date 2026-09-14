@@ -42,17 +42,35 @@ test("owner key hash is rotated and the raw secret is not in the repo", async ()
   assert.doesNotMatch(server, /BEGIN OPENSSH PRIVATE KEY/);
 });
 
-test("account console and player use the owner-music API instead of a generated pad", async () => {
+test("account console and player use owner music with browser-side format optimization", async () => {
   const manager = await source("src/components/owner-background-music-manager.tsx");
   const player = await source("src/components/background-music.tsx");
   const account = await source("src/routes/account.tsx");
   const client = await source("src/lib/owner-music-client.ts");
+  const transcoder = await source("src/lib/owner-music-transcode.ts");
   assert.match(manager, /uploadOwnerMusic/);
   assert.match(manager, /user\?\.isOwner \|\| !onAccount/);
+  assert.doesNotMatch(manager, /單檔最多 4 MB/);
+  assert.match(manager, /自動轉碼|自動轉換/);
   assert.doesNotMatch(manager, /uploadBackgroundMusicResilient/);
   assert.match(player, /loadOwnerMusic/);
   assert.doesNotMatch(player, /zhaowu-background\.m4a/);
   assert.match(account, /背景音樂管理/);
+  assert.match(client, /optimizeOwnerMusic/);
   assert.match(client, /x-zhaowu-music-name/);
   assert.match(client, /zhaowu-music-change/);
+  assert.match(transcoder, /TARGET_UPLOAD_BYTES = 3_550_000/);
+  assert.match(transcoder, /aac_low/);
+  assert.match(transcoder, /INITIAL_AAC_KBPS = 96/);
+  assert.match(transcoder, /MIN_AAC_KBPS = 32/);
+  assert.match(transcoder, /MAX_SOURCE_BYTES = 200 \* 1024 \* 1024/);
+});
+
+test("independent owner cookie does not get falsely sent back to login on gallery", async () => {
+  const gallery = await source("src/routes/gallery.tsx");
+  assert.doesNotMatch(gallery, /if \(!user \|\| !session\)/);
+  assert.match(gallery, /if \(!user\)/);
+  assert.match(gallery, /if \(!user\.isOwner\)/);
+  assert.match(gallery, /站主已登入，不需要重新登入/);
+  assert.match(gallery, /session \? <>/);
 });
