@@ -1,319 +1,382 @@
-/* Compact daily almanac: first on the homepage, quiet when closed, complete on demand. */
-.zhaowu-home-layout .zhaowu-daily-almanac {
+/* R130 — Today Guide: approved parchment + moss-green mobile editorial UI. */
+.zhaowu-home-layout .zhaowu-today-guide {
+  --tg-green: #173f35;
+  --tg-green-2: #214b40;
+  --tg-ink: #233833;
+  --tg-paper: #f5f0e4;
+  --tg-paper-2: #fffaf0;
+  --tg-gold: #b99a62;
+  --tg-red: #a7473d;
   position: relative;
   overflow: hidden;
-  min-height: 0 !important;
-  padding: 16px 18px 12px !important;
-  border: 1px solid rgba(67, 77, 63, .16) !important;
-  border-radius: 14px !important;
-  color: #302e29 !important;
-  background: rgba(249, 246, 237, .92) !important;
-  box-shadow: 0 8px 24px rgba(54, 47, 35, .045) !important;
+  border: 1px solid rgba(164, 132, 74, .48);
+  border-radius: 24px;
+  color: #f5f0e4;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(213, 190, 132, .12), transparent 28%),
+    linear-gradient(145deg, rgba(255,255,255,.025), transparent 45%),
+    var(--tg-green);
+  box-shadow: 0 18px 42px rgba(35, 45, 38, .13), inset 0 0 0 1px rgba(255,255,255,.025);
 }
 
-.zhaowu-home-layout .zhaowu-daily-almanac::before {
+.zhaowu-home-layout .zhaowu-today-guide::after {
   content: "";
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 3px;
-  background: rgba(49, 86, 72, .48) !important;
+  inset: auto -30px -62px auto;
+  width: 250px;
+  height: 180px;
+  opacity: .1;
   pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 70%, transparent 50%, rgba(222,205,164,.7) 51%, transparent 53%) 0 0/80px 38px,
+    radial-gradient(ellipse at 60% 75%, transparent 50%, rgba(222,205,164,.5) 51%, transparent 53%) 0 0/105px 48px;
 }
 
-.zhaowu-home-layout .zhaowu-daily-watermark {
-  position: absolute;
-  right: 10px !important;
-  top: -12px !important;
-  color: rgba(76, 92, 72, .035) !important;
-  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important;
-  font-size: 5.5rem !important;
-  font-weight: 400 !important;
-  line-height: 1 !important;
-  pointer-events: none;
-}
+.zhaowu-today-guide__hero,
+.zhaowu-today-guide__page-title,
+.zhaowu-today-guide__grid,
+.zhaowu-today-guide__wardrobe,
+.zhaowu-today-guide__spirit,
+.zhaowu-today-guide__footer { position: relative; z-index: 1; }
 
-.zhaowu-home-layout .zhaowu-daily-top {
-  position: relative;
-  z-index: 1;
+.zhaowu-home-layout .zhaowu-today-guide__hero {
   display: flex;
-  align-items: flex-start !important;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
+  padding: 22px 22px 15px;
+  border-bottom: 1px solid rgba(213, 190, 132, .2);
 }
 
-.zhaowu-home-layout .zhaowu-daily-eyebrow {
-  margin: 0 !important;
-  color: #456c5e !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  letter-spacing: .16em !important;
+.zhaowu-home-layout .zhaowu-today-guide__hero p {
+  margin: 0;
+  color: #f2dfad;
+  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif;
+  font-size: clamp(26px, 6vw, 36px);
+  font-weight: 600;
+  letter-spacing: .045em;
+  line-height: 1.05;
 }
 
-.zhaowu-home-layout .zhaowu-daily-date {
-  margin: 3px 0 0 !important;
-  color: #6d675e !important;
-  font-size: 13px !important;
-  font-weight: 450 !important;
-  letter-spacing: .015em !important;
-  line-height: 1.45 !important;
+.zhaowu-home-layout .zhaowu-today-guide__hero span {
+  display: block;
+  margin-top: 7px;
+  color: rgba(245,240,228,.72);
+  font-size: 13px;
+  letter-spacing: .04em;
+  line-height: 1.45;
 }
 
-.zhaowu-home-layout .zhaowu-daily-energy {
+.zhaowu-home-layout .zhaowu-today-guide__pager {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   flex: 0 0 auto;
-  min-width: 0;
-  padding-left: 12px;
-  border-left: 1px solid rgba(67, 77, 63, .13);
+}
+.zhaowu-home-layout .zhaowu-today-guide__pager b {
+  color: rgba(245,240,228,.72);
+  font-size: 13px;
+  font-weight: 500;
+}
+.zhaowu-home-layout .zhaowu-today-guide__pager button {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(226,198,137,.75);
+  border-radius: 999px;
+  color: #f3dfab;
+  background: rgba(8,35,29,.26);
+  box-shadow: none;
+  font-size: 22px;
+  line-height: 1;
+}
+.zhaowu-home-layout .zhaowu-today-guide__pager button:active { transform: scale(.97); }
+
+.zhaowu-home-layout .zhaowu-today-guide__page-title {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 22px 13px;
+}
+.zhaowu-home-layout .zhaowu-today-guide__page-title strong {
+  color: #fff9e9;
+  font-family: "Songti TC", "Songti SC", "STSong", serif;
+  font-size: 20px;
+  font-weight: 600;
+}
+.zhaowu-home-layout .zhaowu-today-guide__page-title span {
+  color: rgba(245,240,228,.63);
+  font-size: 11px;
   text-align: right;
 }
 
-.zhaowu-home-layout .zhaowu-daily-energy span {
+.zhaowu-home-layout .zhaowu-today-guide__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 14px 16px;
+}
+
+.zhaowu-home-layout .zhaowu-today-card {
+  min-width: 0;
+  min-height: 100px;
+  padding: 14px 14px 13px;
+  border: 1px solid rgba(185,154,98,.48);
+  border-radius: 15px;
+  color: var(--tg-ink);
+  background:
+    linear-gradient(rgba(255,253,247,.93), rgba(247,242,230,.93)),
+    var(--tg-paper);
+  box-shadow: inset 0 1px rgba(255,255,255,.8);
+}
+.zhaowu-home-layout .zhaowu-today-card small {
   display: block;
-  color: #817a6e !important;
-  font-size: 11px !important;
-  line-height: 1.25 !important;
+  margin-bottom: 7px;
+  color: #7f6b48;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
 }
-
-.zhaowu-home-layout .zhaowu-daily-energy strong {
+.zhaowu-home-layout .zhaowu-today-card > strong {
   display: block;
-  margin-top: 3px;
-  color: #315b4e !important;
-  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important;
-  font-size: 17px !important;
-  font-weight: 600 !important;
-  letter-spacing: .08em !important;
-  line-height: 1.2 !important;
+  color: #263c35;
+  font-family: "Songti TC", "Songti SC", "STSong", serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
 }
-
-.zhaowu-home-layout .zhaowu-daily-main {
-  position: relative;
-  z-index: 1;
-  margin-top: 13px !important;
+.zhaowu-home-layout .zhaowu-today-card > span {
+  display: block;
+  margin-top: 6px;
+  color: #6c756f;
+  font-size: 11px;
+  line-height: 1.45;
 }
+.zhaowu-home-layout .zhaowu-today-card.is-date strong { font-size: 21px; letter-spacing: .025em; }
+.zhaowu-home-layout .zhaowu-today-card.is-date span { color: #2f6656; font-size: 18px; font-weight: 650; }
+.zhaowu-home-layout .zhaowu-today-card.is-sacred,
+.zhaowu-home-layout .zhaowu-today-card.is-pillars,
+.zhaowu-home-layout .zhaowu-today-card.is-core,
+.zhaowu-home-layout .zhaowu-today-card.is-guidance,
+.zhaowu-home-layout .zhaowu-today-card.is-relation,
+.zhaowu-home-layout .zhaowu-today-card.is-hours { grid-column: 1 / -1; }
 
-.zhaowu-home-layout .zhaowu-daily-headline {
-  margin: 0 !important;
-  color: #302e29 !important;
-  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important;
-  font-size: clamp(19px, 4.8vw, 23px) !important;
-  font-weight: 500 !important;
-  letter-spacing: .035em !important;
-  line-height: 1.38 !important;
+.zhaowu-home-layout .zhaowu-today-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
 }
-
-.zhaowu-home-layout .zhaowu-daily-note {
-  margin: 5px 0 0 !important;
-  color: #7a7369 !important;
-  font-size: 12px !important;
-  font-weight: 400 !important;
-  line-height: 1.55 !important;
-}
-
-.zhaowu-home-layout .zhaowu-daily-details {
-  position: relative;
-  z-index: 1;
-  margin-top: 10px;
-  border-top: 1px solid rgba(67, 77, 63, .12);
-}
-
-.zhaowu-home-layout .zhaowu-daily-details > summary {
+.zhaowu-home-layout .zhaowu-today-pillars span {
   display: flex;
-  min-height: 44px;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  padding: 9px 4px;
+  border: 1px solid rgba(40,68,58,.12);
+  border-radius: 10px;
+  background: rgba(236,231,216,.55);
+}
+.zhaowu-home-layout .zhaowu-today-pillars b {
+  color: #224a3d;
+  font-family: "Songti TC", "Songti SC", "STSong", serif;
+  font-size: 19px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.zhaowu-home-layout .zhaowu-today-pillars i {
+  margin-top: 4px;
+  color: #8a795c;
+  font-size: 9px;
+  font-style: normal;
+  letter-spacing: .12em;
+}
+
+.zhaowu-home-layout .zhaowu-today-card.is-guidance p,
+.zhaowu-home-layout .zhaowu-today-card.is-hours p {
+  display: flex;
+  gap: 9px;
+  margin: 6px 0 0;
+  color: #384a43;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.zhaowu-home-layout .zhaowu-today-card.is-guidance p b,
+.zhaowu-home-layout .zhaowu-today-card.is-hours p b {
+  min-width: 30px;
+  color: #2c6c58;
+}
+.zhaowu-home-layout .zhaowu-today-card.is-guidance .is-ji b { color: var(--tg-red); }
+
+.zhaowu-home-layout .zhaowu-today-guide__chips {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.zhaowu-home-layout .zhaowu-today-guide__chips article {
+  min-width: 0;
+  padding: 12px 10px;
+  border: 1px solid rgba(185,154,98,.48);
+  border-radius: 13px;
+  background: rgba(249,245,235,.96);
+}
+.zhaowu-home-layout .zhaowu-today-guide__chips small {
+  display: block;
+  color: #8a7652;
+  font-size: 10px;
+}
+.zhaowu-home-layout .zhaowu-today-guide__chips strong {
+  display: block;
+  margin-top: 5px;
+  color: #253b34;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+/* Page 2 — keep the existing Five-Element Wardrobe logic, but present it inside the approved green card. */
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe { padding: 0 14px 18px; }
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="home"] {
+  margin: 0 !important;
+  padding: 18px !important;
+  border: 1px solid rgba(225,198,138,.32) !important;
+  border-radius: 17px !important;
+  color: #f7f0dd !important;
+  background: rgba(8,39,32,.38) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.018) !important;
+}
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="home"] header,
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="home"] article,
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="home"] p { color: #f2ead7 !important; }
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="home"] h2 {
+  color: #f2dfad !important;
+  font-family: "Songti TC", "Songti SC", "STSong", serif !important;
+}
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] {
+  gap: 8px !important;
+}
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button {
+  min-height: 102px !important;
+  border: 1px solid rgba(226,204,159,.22) !important;
+  border-radius: 13px !important;
+  color: #f4ecda !important;
+  background: rgba(14,54,45,.74) !important;
+  box-shadow: none !important;
+}
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button[aria-pressed="true"] {
+  border-color: rgba(241,209,139,.78) !important;
+  background: rgba(95,83,47,.42) !important;
+  box-shadow: inset 0 0 0 1px rgba(241,209,139,.2) !important;
+}
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe a { color: #f0d89e !important; }
+
+/* Page 3 — dignified reflection card, explicitly not a prediction. */
+.zhaowu-home-layout .zhaowu-today-guide__spirit {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 18px;
+  margin: 0 14px 18px;
+  padding: 20px;
+  border: 1px solid rgba(185,154,98,.48);
+  border-radius: 17px;
+  color: var(--tg-ink);
+  background: linear-gradient(135deg, rgba(255,252,244,.98), rgba(239,231,211,.96));
+}
+.zhaowu-home-layout .zhaowu-today-slip-mark {
+  display: grid;
+  width: 74px;
+  height: 150px;
+  place-items: center;
+  border: 1px solid rgba(160,72,60,.4);
+  border-radius: 8px;
+  color: #9a4038;
+  background: #ead8b8;
+  font-family: "Songti TC", "Songti SC", "STSong", serif;
+  font-size: 34px;
+  box-shadow: inset 0 0 0 5px rgba(255,248,231,.52);
+}
+.zhaowu-home-layout .zhaowu-today-guide__spirit p { margin: 0; color: #7c715e; font-size: 11px; }
+.zhaowu-home-layout .zhaowu-today-guide__spirit h3 {
+  margin: 7px 0 9px;
+  color: #263d35;
+  font-family: "Songti TC", "Songti SC", "STSong", serif;
+  font-size: 26px;
+  font-weight: 600;
+}
+.zhaowu-home-layout .zhaowu-today-guide__spirit strong,
+.zhaowu-home-layout .zhaowu-today-guide__spirit span {
+  display: block;
+  color: #34433d;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.zhaowu-home-layout .zhaowu-today-guide__spirit span { margin-top: 6px; color: #68716b; }
+.zhaowu-home-layout .zhaowu-today-guide__spirit button {
+  margin-top: 14px;
+  min-height: 38px;
+  border: 1px solid rgba(39,78,65,.22);
+  border-radius: 999px;
+  padding: 0 14px;
+  color: #f7f1df;
+  background: #285a4b;
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.zhaowu-home-layout .zhaowu-today-guide__footer {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  list-style: none;
-  color: #315b4e;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
+  padding: 11px 18px 14px;
+  border-top: 1px solid rgba(213,190,132,.17);
 }
-
-.zhaowu-home-layout .zhaowu-daily-details > summary::-webkit-details-marker { display: none; }
-.zhaowu-home-layout .zhaowu-daily-details > summary b { font-size: 17px; font-weight: 400; transition: transform 160ms ease; }
-.zhaowu-home-layout .zhaowu-daily-details[open] > summary b { transform: rotate(45deg); }
-.zhaowu-home-layout .zhaowu-daily-details-body { padding: 2px 0 7px; }
-
-.zhaowu-home-layout .zhaowu-daily-pillars {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  overflow: hidden;
-  border-block: 1px solid rgba(67, 77, 63, .11);
-  background: rgba(255, 253, 247, .48);
+.zhaowu-home-layout .zhaowu-today-guide__footer > span {
+  max-width: 80%;
+  color: rgba(245,240,228,.48);
+  font-size: 9px;
+  line-height: 1.45;
 }
-
-.zhaowu-home-layout .zhaowu-daily-pillar {
-  position: relative;
-  min-width: 0;
-  padding: 10px 3px 11px;
-  text-align: center;
-}
-
-.zhaowu-home-layout .zhaowu-daily-pillar + .zhaowu-daily-pillar::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 20%;
-  bottom: 20%;
-  width: 1px;
-  background: rgba(67, 77, 63, .10);
-}
-
-.zhaowu-home-layout .zhaowu-daily-pillar span {
-  display: block;
-  color: #8a8174 !important;
-  font-size: 10px !important;
-  font-weight: 500 !important;
-  letter-spacing: .10em !important;
-  line-height: 1.2 !important;
-}
-
-.zhaowu-home-layout .zhaowu-daily-pillar strong {
-  display: block;
-  margin-top: 5px;
-  color: #34433b !important;
-  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important;
-  font-size: 20px !important;
-  font-weight: 550 !important;
-  letter-spacing: .025em !important;
-  line-height: 1.1 !important;
-  white-space: nowrap;
-}
-
-.zhaowu-home-layout .zhaowu-daily-term {
-  display: flex;
-  justify-content: flex-end;
-  gap: 7px;
-  margin-top: 7px;
-  color: #847b6e;
-  font-size: 11px;
-}
-
-.zhaowu-home-layout .zhaowu-daily-term b { color: #566f61; font-weight: 600; }
-
-.zhaowu-home-layout .zhaowu-daily-lead {
-  margin: 15px 0 0 !important;
-  color: #625d55 !important;
-  font-size: 14px !important;
-  font-weight: 400 !important;
-  line-height: 1.75 !important;
-}
-
-.zhaowu-home-layout .zhaowu-daily-pairs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px !important;
-  margin-top: 15px !important;
-  padding-top: 14px !important;
-  border-top: 1px solid rgba(67, 77, 63, .10) !important;
-}
-
-.zhaowu-home-layout .zhaowu-daily-pair-title {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  margin: 0 !important;
-}
-
-.zhaowu-home-layout .zhaowu-daily-pair-title small { color: #8c7d68 !important; font-size: 10px !important; }
-.zhaowu-home-layout .zhaowu-daily-pair-title b { color: #3b3934 !important; font-family: "Songti TC", "Songti SC", "STSong", serif; font-size: 18px !important; font-weight: 550 !important; }
-
-.zhaowu-home-layout .zhaowu-daily-list {
-  display: grid;
-  gap: 3px;
-  margin: 7px 0 0 !important;
+.zhaowu-home-layout .zhaowu-today-guide__footer > div { display: flex; gap: 6px; }
+.zhaowu-home-layout .zhaowu-today-guide__footer button {
+  width: 7px;
+  height: 7px;
   padding: 0;
-  color: #69635b !important;
-  font-size: 13px !important;
-  font-weight: 400 !important;
-  line-height: 1.6 !important;
-  list-style: none;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(245,240,228,.28);
+  box-shadow: none;
+}
+.zhaowu-home-layout .zhaowu-today-guide__footer button.is-active { width: 18px; background: #e5c988; }
+
+/* Visually tie the existing astronomy section to the same editorial system without changing its data logic. */
+.zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage {
+  margin-top: 14px !important;
+}
+.zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage > section {
+  border-radius: 22px !important;
 }
 
-.zhaowu-home-layout .zhaowu-daily-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 15px !important;
-  padding-top: 12px !important;
-  border-top: 1px solid rgba(67, 77, 63, .10) !important;
+@media (max-width: 560px) {
+  .zhaowu-home-layout .zhaowu-today-guide { border-radius: 20px; }
+  .zhaowu-home-layout .zhaowu-today-guide__hero { padding: 19px 16px 13px; }
+  .zhaowu-home-layout .zhaowu-today-guide__page-title { padding: 13px 16px 11px; }
+  .zhaowu-home-layout .zhaowu-today-guide__grid { gap: 8px; padding: 0 9px 12px; }
+  .zhaowu-home-layout .zhaowu-today-card { min-height: 92px; padding: 12px 11px; border-radius: 12px; }
+  .zhaowu-home-layout .zhaowu-today-card.is-date strong { font-size: 18px; }
+  .zhaowu-home-layout .zhaowu-today-pillars { gap: 5px; }
+  .zhaowu-home-layout .zhaowu-today-pillars b { font-size: 17px; }
+  .zhaowu-home-layout .zhaowu-today-guide__chips { grid-template-columns: 1fr; }
+  .zhaowu-home-layout .zhaowu-today-guide__wardrobe { padding: 0 9px 12px; }
+  .zhaowu-home-layout .zhaowu-today-guide__spirit { grid-template-columns: 64px minmax(0, 1fr); gap: 13px; margin: 0 9px 12px; padding: 15px 13px; }
+  .zhaowu-home-layout .zhaowu-today-slip-mark { width: 58px; height: 122px; font-size: 28px; }
+  .zhaowu-home-layout .zhaowu-today-guide__spirit h3 { font-size: 23px; }
+  .zhaowu-home-layout .zhaowu-today-guide__footer { padding: 10px 13px 12px; }
 }
 
-.zhaowu-home-layout .zhaowu-daily-cta {
-  display: inline-flex;
-  min-height: 42px;
-  align-items: center;
-  gap: 9px;
-  border: 1px solid rgba(49, 91, 78, .28) !important;
-  border-radius: 8px !important;
-  padding: 0 7px 0 13px;
-  color: #315b4e !important;
-  background: rgba(255, 253, 247, .66) !important;
-  box-shadow: none !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-}
-
-.zhaowu-home-layout .zhaowu-daily-cta b {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
-  font-size: 16px;
-  font-weight: 400;
-}
-
-@media (max-width: 430px) {
-  .zhaowu-home-layout .zhaowu-daily-almanac { padding: 14px 15px 9px !important; border-radius: 12px !important; }
-  .zhaowu-home-layout .zhaowu-daily-watermark { font-size: 4.8rem !important; }
-  .zhaowu-home-layout .zhaowu-daily-pairs { gap: 12px !important; }
-  .zhaowu-home-layout .zhaowu-daily-list { font-size: 12px !important; }
-}
-
-.zhaowu-home-layout .zhaowu-daily-dateblock { min-width: 0; }
-.zhaowu-home-layout .zhaowu-daily-dom {
-  margin: 2px 0 0 !important;
-  color: #2c2a26 !important;
-  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif !important;
-  font-size: clamp(34px, 9vw, 44px) !important;
-  font-weight: 500 !important;
-  line-height: .9 !important;
-}
-.zhaowu-home-layout .zhaowu-daily-weekday,
-.zhaowu-home-layout .zhaowu-daily-md {
-  margin: 4px 0 0 !important;
-  color: #6d675e !important;
-  font-size: 12px !important;
-  line-height: 1.3 !important;
-}
-.zhaowu-home-layout .zhaowu-daily-energy em {
-  display: block;
-  margin-top: 6px;
-  max-width: 11rem;
-  color: #5d675f !important;
-  font-size: 12px !important;
-  font-style: normal !important;
-  line-height: 1.45 !important;
-}
-.zhaowu-home-layout .zhaowu-daily-pillars { margin-top: 12px !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar strong { display: flex !important; justify-content: center; gap: 1px; }
-.zhaowu-home-layout .zhaowu-daily-pillar strong b,
-.zhaowu-home-layout .zhaowu-daily-pillar strong i { font-style: normal; font-weight: 550; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="year"] strong { color: #b23a2f !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="year"] strong i { color: #c45b3a !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="month"] strong { color: #b06a2b !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="month"] strong i { color: #c4843a !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="day"] strong { color: #8e2a3b !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="day"] strong i { color: #b23d52 !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="hour"] strong { color: #2f6b5a !important; }
-.zhaowu-home-layout .zhaowu-daily-pillar[data-pillar="hour"] strong i { color: #3f8571 !important; }
-.zhaowu-home-layout .zhaowu-daily-meta {
-  position: relative;
-  z-index: 1;
-  margin: 8px 0 0 !important;
-  color: #7a7369 !important;
-  font-size: 12px !important;
-  line-height: 1.5 !important;
-}
-.zhaowu-home-layout .zhaowu-daily-pair-title small:empty { display: none !important; }
-@media (max-width: 430px) {
-  .zhaowu-home-layout .zhaowu-daily-pillar strong { font-size: 18px !important; }
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-home-layout .zhaowu-today-guide button { transition: none !important; }
 }
