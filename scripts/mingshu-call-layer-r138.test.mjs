@@ -74,12 +74,12 @@ test("r138 release ledger and contract docs exist", async () => {
   const stats = await source("src/lib/site-stats.ts");
   const report = await source("docs/change-reports/ZW-WEB-2026.09.15-r138.md");
   const docs = await source("docs/MINGSHU-CALL-LAYER.md");
-  const registry = await source("docs/INSTRUCTION-REGISTRY.md");
-  const current = await source("docs/CURRENT-STATE.md");
+  const note = await source("docs/INSTRUCTION-REGISTRY-NOTE-r138.md");
   assert.match(stats, /ZW-WEB-2026\.09\.15-r138/);
   assert.match(stats, /updateNumber:\s*138/);
   assert.match(report, /# 昭梧更新報告｜ZW-WEB-2026.09.15-r138/);
   assert.match(docs, /SIDE_CHANNEL/);
-  assert.match(registry, /MINGSHU-CALL-LAYER/);
-  assert.match(current, /\/api\/mingshu-doctor/);
+  assert.match(docs, /\/api\/mingshu-doctor/);
+  assert.match(note, /MINGSHU-CALL-LAYER/);
+  assert.match(note, /SIDE_CHANNEL/);
 });
