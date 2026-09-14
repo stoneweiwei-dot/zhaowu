@@ -89,6 +89,10 @@ function blankTimePillar(): Pillar {
   };
 }
 
+/**
+ * Descriptive inventory only. These values may be shown as raw chart data but
+ * MUST NOT be used to decide strength, structure, disease/medicine or useful gods.
+ */
 function scoreElements(pillars: Pillar[]): ElementScores {
   const s = EMPTY_ELEMENTS();
   for (const p of pillars) {
@@ -109,36 +113,31 @@ function percents(scores: ElementScores): ElementScores {
   return out;
 }
 
+/**
+ * R6.2.1 carrying-capacity baseline.
+ * 旺衰的时令进退与承载分开表达，不再用「满足几个条件」的票数算法。
+ */
 function judgeStrength(dayEl: Element, monthZhi: string, pillars: Pillar[]): Strength {
   const monthEl = BRANCH_ELEMENT[monthZhi] ?? "土";
   const deLing = monthEl === dayEl || ELEMENT_GENERATES[monthEl] === dayEl;
   const known = pillars.filter((p) => p.ready);
-  const dayP = known.find((p) => p.key === "day");
-  const deDi = Boolean(
-    dayP && (dayP.zhiElement === dayEl || dayP.hide.some((h) => h.element === dayEl)),
+  const deDi = known.some(
+    (p) => p.zhiElement === dayEl || p.hide.some((h) => h.element === dayEl),
   );
-  const helpers = known
+  const deShi = known
     .filter((p) => p.key !== "day")
-    .filter((p) => p.ganElement === dayEl || p.ganElement === ELEMENT_MOTHER[dayEl]).length;
-  const deShi = helpers >= 2;
-  const hits = [deLing, deDi, deShi].filter(Boolean).length;
-  const tendency = hits >= 2 ? "偏旺" : hits === 1 ? "中和偏旺或中和" : "偏弱";
-  const season = SEASON_OF_BRANCH[monthZhi] ?? "四季";
-  const summary = `日主得令${deLing ? "成立" : "不足"}、得地${deDi ? "成立" : "不足"}、得勢${deShi ? "成立" : "不足"}；月令屬${season}。此為旺衰底盤，不是完整子平，仍須看調候、格局與流通。`;
-  return { tendency, summary, deLing, deDi, deShi };
-}
+    .some((p) => p.ganElement === dayEl || p.ganElement === ELEMENT_MOTHER[dayEl]);
 
-function usefulElements(dayEl: Element, monthZhi: string, strength: Strength): { useful: Element[]; drain: Element[] } {
-  const season = SEASON_OF_BRANCH[monthZhi];
-  let useful: Element[] = [];
-  if (season === "冬" && (dayEl === "水" || dayEl === "金")) useful = ["火", "木"];
-  else if (season === "夏" && (dayEl === "火" || dayEl === "木")) useful = ["水", "金"];
-  else if (season === "秋" && dayEl === "金") useful = ["水", "木"];
-  else if (season === "春" && dayEl === "木") useful = ["火", "水"];
-  else if (strength.tendency === "偏旺") useful = [ELEMENT_GENERATES[dayEl], ELEMENT_GENERATES[ELEMENT_GENERATES[dayEl]]];
-  else useful = [ELEMENT_MOTHER[dayEl], dayEl];
-  const drain = (["木", "火", "土", "金", "水"] as Element[]).filter((e) => !useful.includes(e)).slice(-2);
-  return { useful, drain };
+  let tendency: string;
+  if (deLing && deDi) tendency = "得令有根，承載偏穩";
+  else if (deLing && !deDi) tendency = "得令但根氣不足，承載未定";
+  else if (!deLing && deDi && deShi) tendency = "失令有根有援，承載不弱";
+  else if (!deLing && deDi) tendency = "失令有根，承載待制化";
+  else tendency = "失令且根援不足，承載偏弱";
+
+  const season = SEASON_OF_BRANCH[monthZhi] ?? "四季";
+  const summary = `時令：${deLing ? "得令／得生" : "失令"}；根氣：${deDi ? "有根" : "根氣不足"}；透干援助：${deShi ? "可見" : "未見明確援助"}；月令屬${season}。承載結論為「${tendency}」。這不是五行計數，也不等同最終格局或用神，仍須經調候、格局、病藥、流通與有路判定。`;
+  return { tendency, summary, deLing, deDi, deShi };
 }
 
 function civilToUtc(y: number, m: number, d: number, h: number, min: number, tzOffsetHours: number): Date {
@@ -265,7 +264,14 @@ export function buildChart(input: AnalyzeInput): Chart {
   const monthBranch = ym.month[1];
   const elements = scoreElements(pillars);
   const strength = judgeStrength(dayMasterElement, monthBranch, pillars);
-  const { useful, drain } = usefulElements(dayMasterElement, monthBranch, strength);
+
+  // R6.2.1: do not emit a simplified lucky/useful-element answer from season +
+  // carrying capacity alone. The authoritative answer belongs to the later
+  // structure / climate / disease-medicine / flow chain. Keep these arrays empty
+  // until that resolver has passed its gates; downstream lifestyle mapping is
+  // therefore forced to stay provisional.
+  const useful: Element[] = [];
+  const drain: Element[] = [];
 
   const nowYear = new Date().getFullYear();
   let dayun: DayunPeriod[] = [];
@@ -287,7 +293,7 @@ export function buildChart(input: AnalyzeInput): Chart {
   const trueSolarStamp = timeUnknown ? "時辰未定，真太陽時不作校正" : stamp(y, m, d, h, min);
   const minggong = timeUnknown || !timeGz ? "未定" : mingGong(ym.year, monthBranch, timeGz[1]);
   const reviewNote = birthTimeReview.required && birthTimeReview.civil && birthTimeReview.trueSolar
-    ? ` 民用候選日/時柱 ${birthTimeReview.civil.dayGanZhi}/${birthTimeReview.civil.timeGanZhi} 與真太陽候選 ${birthTimeReview.trueSolar.dayGanZhi}/${birthTimeReview.trueSolar.timeGanZhi} 不同，已啟動出生時辰候選驗證；主盤暫按真太陽時，正式定盤須以出生記錄與有明確年份的已發生事件反證，不得只憑性格描述選盤。`
+    ? ` 民用候選日/時柱 ${birthTimeReview.civil.dayGanZhi}/${birthTimeReview.civil.timeGanZhi} 與真太陽候選 ${birthTimeReview.trueSolar.dayGanZhi}/${birthTimeReview.trueSolar.timeGanzi} 不同，已啟動出生時辰候選驗證；主盤暫按真太陽時，正式定盤須以出生記錄與有明確年份的已發生事件反證，不得只憑性格描述選盤。`
     : "";
   const provenance = timeUnknown
     ? `時辰未定：年月柱按當日正午取節氣，日柱按公曆日，時柱、命宮、大運起運留白，不偽造午時柱。子時政策不套用。`
