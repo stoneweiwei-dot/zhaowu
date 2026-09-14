@@ -103,7 +103,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <Link to="/" className="zhaowu-brand-link text-ink" aria-label={t("brand")}>
                 <BrandSeal />
                 <span className="zhaowu-brand-copy">
-                  <span className="zhaowu-brand-name font-display">{t("brand")}</span>
+                  <span className="zhaowu-brand-name font-display" aria-hidden="true">{t("brand")}</span>
                   <span className="zhaowu-brand-tagline">{t("tagline")}</span>
                 </span>
               </Link>

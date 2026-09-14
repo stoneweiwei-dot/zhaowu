@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 900" role="img" aria-labelledby="title desc">
+  <title id="title">相由心生</title>
+  <desc id="desc">同一人由緊繃走向安定的水墨意象</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4ead6"/>
+      <stop offset="1" stop-color="#e8d7b8"/>
+    </linearGradient>
+    <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d7c4a3" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#cbb892" stop-opacity=".42"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="900" fill="url(#paper)"/>
+  <rect x="18" y="18" width="684" height="864" fill="none" stroke="#6d5636" stroke-opacity=".28" stroke-width="1.5"/>
+  <path d="M40 690 C160 640 250 700 360 650 C470 600 560 680 690 630 L690 870 L40 870 Z" fill="#c4b089" opacity=".35"/>
+  <path d="M0 760 C120 720 240 780 360 730 C500 670 620 760 720 720 L720 900 L0 900 Z" fill="#b39a70" opacity=".28"/>
+  <path d="M80 430 C140 360 190 300 250 250 C290 220 320 210 350 230 C380 250 390 300 370 350 C350 400 300 450 240 500 C180 550 120 560 80 520 Z" fill="#2c3f36" opacity=".55"/>
+  <path d="M430 260 C500 210 580 200 640 240 C690 270 700 330 670 390 C640 450 560 500 500 520 C440 540 400 500 400 440 C400 370 370 310 430 260 Z" fill="#31463c" opacity=".42"/>
+  <circle cx="250" cy="575" r="78" fill="#efe4cc"/>
+  <path d="M215 555 C225 545 240 548 248 560 C256 548 272 544 284 556 C276 572 262 585 250 588 C238 585 224 572 215 555 Z" fill="#5a4030"/>
+  <path d="M232 572 C238 568 244 568 248 574" fill="none" stroke="#2a241c" stroke-width="3" stroke-linecap="round"/>
+  <path d="M258 574 C262 568 270 568 276 573" fill="none" stroke="#2a241c" stroke-width="3" stroke-linecap="round"/>
+  <path d="M242 598 C248 592 256 592 262 598" fill="none" stroke="#7a3a2e" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M228 618 C250 700 250 760 250 820" fill="none" stroke="#2c3f36" stroke-width="10" stroke-linecap="round"/>
+  <path d="M250 660 C200 690 180 720 160 760" fill="none" stroke="#2c3f36" stroke-width="8" stroke-linecap="round"/>
+  <path d="M250 660 C300 690 330 710 360 740" fill="none" stroke="#2c3f36" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="500" cy="575" r="78" fill="#f7f0e0"/>
+  <path d="M468 548 C480 536 500 538 508 552 C516 538 536 536 548 550 C538 572 522 590 500 592 C478 590 462 572 468 548 Z" fill="#4e3a2c"/>
+  <circle cx="486" cy="572" r="3.2" fill="#1f1a14"/>
+  <circle cx="516" cy="572" r="3.2" fill="#1f1a14"/>
+  <path d="M488 598 C496 606 508 606 516 598" fill="none" stroke="#2a241c" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M500 656 C500 710 500 770 500 822" fill="none" stroke="#385248" stroke-width="10" stroke-linecap="round"/>
+  <path d="M500 668 C458 700 430 742 418 788" fill="none" stroke="#385248" stroke-width="8" stroke-linecap="round"/>
+  <path d="M500 668 C542 700 570 742 582 788" fill="none" stroke="#385248" stroke-width="8" stroke-linecap="round"/>
+  <path d="M330 640 C360 628 390 628 420 640" fill="none" stroke="#8a5a38" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+  <text x="360" y="868" text-anchor="middle" font-family="Songti TC, STSong, serif" font-size="22" fill="#6b4f32" letter-spacing="6">STONE · 觀世</text>
+</svg>

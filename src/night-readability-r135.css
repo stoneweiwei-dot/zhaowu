@@ -1,0 +1,206 @@
+/* r135 — last-wins readability.
+   Night was inverting --color-ink to moon-white while later layers restored
+   cream/translucent paper, so 觀世錄 / knowledge titles vanished.
+   Paper cards stay opaque xuan-paper with dark ink. Question sheet on pine
+   stays moon-white (r127). Header chrome stays dark. */
+
+.zhaowu-header-primary .zhaowu-brand-name {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.zhaowu-header-primary .zhaowu-brand-tagline {
+  display: none !important;
+}
+
+@media (min-width: 720px) {
+  .zhaowu-header-primary .zhaowu-brand-tagline {
+    display: block !important;
+    max-width: 16rem;
+    font-size: 11px;
+    line-height: 1.3;
+    letter-spacing: .02em;
+  }
+}
+
+/* Opaque paper on every text card — wallpaper may live in gutters only. */
+.zhaowu-home-layout .zhaowu-home-stage--notes > section,
+.zhaowu-home-layout .zhaowu-home-stage--notes > div,
+.zhaowu-app-frame #life-view,
+.zhaowu-app-frame .seal-border,
+.zhaowu-app-frame section.seal-border,
+.zhaowu-app-frame article.seal-border,
+.zhaowu-app-frame a.seal-border,
+.zhaowu-app-frame .seal-border.rounded-2xl,
+.zhaowu-app-frame [class*="bg-[#fbf5e9]"],
+.zhaowu-has-wallpaper .zhaowu-app-frame #life-view,
+.zhaowu-has-wallpaper .zhaowu-app-frame .seal-border,
+.zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border,
+.zhaowu-has-wallpaper .zhaowu-app-frame article.seal-border {
+  background: #f6eee0 !important;
+  background-color: #f6eee0 !important;
+  background-image: none !important;
+  color: #1c1915 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  opacity: 1 !important;
+}
+
+#life-view .font-display,
+#life-view strong,
+#life-view h2,
+#life-view h3,
+#life-view .text-ink,
+.zhaowu-app-frame .seal-border h1,
+.zhaowu-app-frame .seal-border h2,
+.zhaowu-app-frame .seal-border h3,
+.zhaowu-app-frame .seal-border .font-display,
+.zhaowu-app-frame .seal-border .text-ink,
+.zhaowu-app-frame section.seal-border h1,
+.zhaowu-app-frame section.seal-border h2,
+.zhaowu-app-frame section.seal-border h3 {
+  color: #1a1814 !important;
+  -webkit-text-fill-color: #1a1814 !important;
+  opacity: 1 !important;
+}
+
+#life-view .text-ink-soft,
+#life-view .text-ink-mute,
+.zhaowu-app-frame .seal-border .text-ink-soft,
+.zhaowu-app-frame .seal-border .text-ink-mute,
+.zhaowu-app-frame section.seal-border .text-ink-soft,
+.zhaowu-app-frame section.seal-border .text-ink-mute {
+  color: #4d473e !important;
+  opacity: 1 !important;
+}
+
+.life-view-broken-image {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .zhaowu-app-frame h1.font-display,
+  .zhaowu-app-frame .seal-border h1,
+  .zhaowu-app-frame section.seal-border h1 {
+    font-size: 1.5rem !important;
+    letter-spacing: .04em !important;
+    line-height: 1.28 !important;
+  }
+
+  .zhaowu-app-frame h2.font-display,
+  .zhaowu-app-frame .seal-border h2,
+  .zhaowu-app-frame section.seal-border h2,
+  #life-view .font-display.text-2xl,
+  #life-view .font-display.text-lg {
+    font-size: 1.22rem !important;
+    letter-spacing: .03em !important;
+    line-height: 1.32 !important;
+  }
+
+  #life-view strong.font-display {
+    font-size: 1.05rem !important;
+    letter-spacing: .02em !important;
+    line-height: 1.4 !important;
+    font-weight: 650 !important;
+  }
+}
+
+/* Night: paper cards keep dark ink. Do not inherit moon-white --color-ink. */
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--notes > section,
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--notes > div,
+html[data-zw-theme="night"] .zhaowu-app-frame #life-view,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border,
+html[data-zw-theme="night"] .zhaowu-app-frame article.seal-border,
+html[data-zw-theme="night"] .zhaowu-app-frame a.seal-border,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border.rounded-2xl,
+html[data-zw-theme="night"] .zhaowu-app-frame [class*="bg-[#fbf5e9]"],
+html[data-zw-theme="night"] .zhaowu-app-frame [class*="bg-[#fffaf1]"],
+html[data-zw-theme="night"] .zhaowu-app-frame [class*="bg-cream"],
+html[data-zw-theme="night"] .zhaowu-app-frame [class*="bg-paper"],
+html[data-zw-theme="night"] .zhaowu-has-wallpaper .zhaowu-app-frame .seal-border,
+html[data-zw-theme="night"] .zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border,
+html[data-zw-theme="night"] .zhaowu-has-wallpaper .zhaowu-app-frame article.seal-border,
+html[data-zw-theme="night"] .life-view-art-fragment {
+  background: #f3ead8 !important;
+  background-color: #f3ead8 !important;
+  background-image: none !important;
+  color: #1c1915 !important;
+  border-color: rgba(90, 72, 48, .28) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .22) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  opacity: 1 !important;
+}
+
+html[data-zw-theme="night"] #life-view .font-display,
+html[data-zw-theme="night"] #life-view strong,
+html[data-zw-theme="night"] #life-view h2,
+html[data-zw-theme="night"] #life-view h3,
+html[data-zw-theme="night"] #life-view .text-ink,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border h1,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border h2,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border h3,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border .font-display,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border .text-ink,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border blockquote,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border h1,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border h2,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border h3,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border .font-display,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border .text-ink,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border blockquote,
+html[data-zw-theme="night"] .zhaowu-app-frame [class*="bg-paper"] .text-ink,
+html[data-zw-theme="night"] .zhaowu-app-frame [class*="bg-cream"] .text-ink,
+html[data-zw-theme="night"] .zhaowu-app-frame [class*="bg-paper"] .font-display,
+html[data-zw-theme="night"] .zhaowu-app-frame [class*="bg-cream"] .font-display {
+  color: #1a1814 !important;
+  -webkit-text-fill-color: #1a1814 !important;
+  opacity: 1 !important;
+}
+
+html[data-zw-theme="night"] #life-view .text-ink-soft,
+html[data-zw-theme="night"] #life-view .text-ink-mute,
+html[data-zw-theme="night"] #life-view .life-view-prose,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border .text-ink-soft,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border .text-ink-mute,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border p,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border .text-ink-soft,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border .text-ink-mute,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border p {
+  color: #3f3a33 !important;
+  opacity: 1 !important;
+}
+
+html[data-zw-theme="night"] #life-view .text-cinnabar,
+html[data-zw-theme="night"] .zhaowu-app-frame .seal-border .text-cinnabar,
+html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border .text-cinnabar {
+  color: #9d3f30 !important;
+  opacity: 1 !important;
+}
+
+/* Keep r129 portal / question-sheet night (dark pine + moon-white) intact. */
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-portals-block,
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-fun-section,
+html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--directory {
+  background: #12352c !important;
+  color: #fffaf0 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet h2 {
+  color: #fffaf0 !important;
+  -webkit-text-fill-color: #fffaf0 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-daily-almanac,
+html[data-zw-theme="night"] .zhaowu-question-sheet {
+  background: #12352c !important;
+  color: #fffaf0 !important;
+}

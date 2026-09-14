@@ -72,7 +72,7 @@ export function LifeViewHomeSection() {
   if (!latest) {
     return (
       <>
-        <section id="life-view" className="rounded-2xl border border-line/80 bg-[#fbf5e9] px-5 py-5"><p className="text-sm text-ink-mute">{copy.empty}</p></section>
+        <section id="life-view" className="rounded-2xl border border-line/80 bg-paper px-5 py-5"><p className="text-sm text-ink-mute">{copy.empty}</p></section>
       </>
     );
   }
@@ -82,7 +82,7 @@ export function LifeViewHomeSection() {
 
   return (
     <>
-      <section id="life-view" className="scroll-mt-20 rounded-2xl border border-line/80 bg-[#fbf5e9] px-5 py-5 shadow-[0_10px_28px_rgba(86,62,31,0.06)] sm:px-7">
+      <section id="life-view" className="scroll-mt-20 rounded-2xl border border-line/80 bg-paper px-5 py-5 shadow-[0_10px_28px_rgba(86,62,31,0.06)] sm:px-7">
         <button
           type="button"
           onClick={() => { setShowAll((value) => !value); setOpenId(null); }}
@@ -111,7 +111,7 @@ export function LifeViewHomeSection() {
                 >
                   <span className="min-w-0">
                     <span className="text-[10px] font-semibold tracking-[0.14em] text-cinnabar">{index === 0 ? copy.latest : article.publishedAt}</span>
-                    <strong className="mt-1 block font-display text-lg font-semibold leading-7 text-ink">{article.title[locale]}</strong>
+                    <strong className="mt-1 block font-display text-[1.05rem] font-semibold leading-6 text-ink sm:text-lg">{article.title[locale]}</strong>
                     {!showAll && !isOpen ? <span className="mt-2 line-clamp-2 block text-sm leading-6 text-ink-soft">{latestParagraph}</span> : null}
                   </span>
                   <span className="shrink-0 pt-1 text-sm text-cinnabar">{isOpen ? "−" : "+"}</span>
@@ -126,8 +126,8 @@ export function LifeViewHomeSection() {
                         <Fragment key={`${article.id}-${paragraphIndex}`}>
                           <p className={paragraphIndex ? "mt-4" : ""}>{paragraph}</p>
                           {illustration ? (
-                            <figure className="mx-auto my-6 w-[72%] max-w-[300px] overflow-hidden rounded-[28px] border border-line/70 bg-[#fffaf1] shadow-[0_8px_24px_rgba(86,62,31,0.06)]">
-                              <img src={illustration.src} alt={illustration.alt[locale]} loading="lazy" decoding="async" className="block h-auto w-full" />
+                            <figure className="mx-auto my-6 w-[72%] max-w-[300px] overflow-hidden rounded-[28px] border border-line/70 bg-paper shadow-[0_8px_24px_rgba(86,62,31,0.06)]">
+                              <img src={illustration.src} alt={illustration.alt[locale]} loading="lazy" decoding="async" className="block h-auto w-full" onError={(event) => { event.currentTarget.classList.add("life-view-broken-image"); const figure = event.currentTarget.closest("figure"); if (figure) figure.classList.add("life-view-broken-image"); }} />
                             </figure>
                           ) : null}
                         </Fragment>
