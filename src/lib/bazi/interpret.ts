@@ -214,6 +214,23 @@ function loveLens(chart: Chart, relation: RelationPref): string {
   return `关系判断以日支${day.zhi}、互动连续性、边界与现实投入为主。`;
 }
 
+function fiveElementWealthBehaviorHint(element: Element): string {
+  switch (element) {
+    case "木":
+      return "木日主重誠信：少承諾、多兌現，維持條件一致，以信用承接資源與訂單";
+    case "火":
+      return "火日主重情義與使命感：重視送往迎來、關係溫度與帶動力，以人際熱度承接結果與資源";
+    case "土":
+      return "土日主重不抱怨、流動與多元策略：安全感建立在備案，不因怕變而鎖死財路；保留多客戶、多渠道與多收入來源";
+    case "金":
+      return "金日主重保有初衷：可以重效率與利益，但不要為短利犧牲產品、專業、承諾與長期成長本體";
+    case "水":
+      return "水日主重熱情與交際：讓資訊、交易與判斷能力接上互動、曝光與實際連結，避免只分析而不輸出、不露面";
+    default:
+      return "五行取財提示需回到完整命盤校正";
+  }
+}
+
 export function interpret(question: string, chart: Chart, relation: RelationPref = "unset", palm: PalmReading | null = null): Reading {
   const kind = classifyQuestion(question);
   const nature = DAY_MASTER_NATURE[chart.dayMaster] ?? "以日主功能为轴";
@@ -266,7 +283,7 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
       directAnswer = `结论：职业判断以“能否形成稳定做功与承载”为核心。当前主格为${structure.label}${structure.established ? "" : "方向"}，结构完成度为${structure.completion.label}；可见十神侧重${god}，对应${GOD_WORK[god] ?? "把判断转成可验证成果"}。${strong ? "原局偏满时优先增加有效输出与减少无效负荷。" : "原局承载偏弱时优先选择资源、规则和支持条件更完整的岗位。"} ${now}`;
       break;
     case "money":
-      directAnswer = `结论：财务不能只看“财星多不多”，先看日主能否承财、有没有稳定输出和可重复变现路径。当前主格为${structure.label}${structure.established ? "" : "方向"}，${structure.remedy.disease}；因此先处理结构上的承载与流通，再谈扩张。${usefulLine}`;
+      directAnswer = `结论：财务不能只看“财星多不多”，先看日主能否承财、有没有稳定输出和可重复变现路径。当前主格为${structure.label}${structure.established ? "" : "方向"}，${structure.remedy.disease}；因此先处理结构上的承载与流通，再谈扩张。${usefulLine} 五行取財行為提示（男女共用）：${fiveElementWealthBehaviorHint(chart.dayMasterElement)}。此層只作五行應象輔助；仍須服從財星喜忌、承載、格局病藥、流通制化與歲運觸發，不可單獨判富貧、發財時間或投資成敗。`;
       break;
     case "choice":
       directAnswer = leanChoice(question, chart);
@@ -282,7 +299,7 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
 
   const work = `${GOD_WORK[god] ?? "把判断转成可验证成果"}。职业选择优先比较：责任是否清楚、成果是否可衡量、资源是否足够、退出成本是否可控。`;
   const love = `${loveLens(chart, relation)}关系只看可验证行为：联系是否连续、投入是否对等、边界是否清楚、下一步是否明确。`;
-  const money = `财务优先看承载、现金流与退出成本。命盘只提供结构节奏，不替代真实收入、成本和风险数据。`;
+  const money = `财务优先看承载、现金流与退出成本。命盘只提供结构节奏，不替代真实收入、成本和风险数据。${kind === "money" ? ` 五行取財行為提示（男女共用）：${fiveElementWealthBehaviorHint(chart.dayMasterElement)}。此提示不取代財星喜忌、格局、制化與歲運判斷。` : ""}`;
   const body = `身体层只谈承载与生活节奏，不下疾病诊断。现实症状持续或加重时，以医疗评估优先。`;
   const home = chart.usefulProvisional
     ? "空间建议暂不指定颜色或方位。具体住宅必须结合坐向、采光、道路、动线与实际居住感受。"
