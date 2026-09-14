@@ -15,7 +15,9 @@
     "api/owner-login.js": { "maxDuration": 10 },
     "api/owner-logout.js": { "maxDuration": 10 },
     "api/owner-session.js": { "maxDuration": 10 },
-    "api/owner-music.js": { "maxDuration": 60, "includeFiles": "lib/owner-music-ssh.json" }
+    "api/owner-music.js": { "maxDuration": 60, "includeFiles": "lib/owner-music-ssh.json" },
+    "api/mingshu-doctor.js": { "maxDuration": 10 },
+    "api/mingshu-chart.js": { "maxDuration": 15 }
   },
   "headers": [
     {
