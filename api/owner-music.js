@@ -11,16 +11,14 @@ import {
 
 const OWNER_COOKIE = "__Host-zhaowu_owner_session";
 const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
-const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
-const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7prU26nA0AX7dny0PW_ReA_GKwI588H";
-const SUPABASE_AUDIO_BUCKET = "zhaowu-audio";
-const SUPABASE_BOOTSTRAP_TRACK = {
-  id: "1cac87db-23b6-4861-8e79-59ec5bde18c8",
-  name: "River In My Breathing 2",
-  storagePath: "background/uploads/2026-09-09/16bf293f-bf59-4b79-b4ce-92b67f6d534d.m4a",
-  contentType: "audio/mp4",
-  fileSize: 3869936,
-  createdAt: "2026-09-09T12:22:47.500335Z",
+const STATIC_FALLBACK_TRACK = {
+  id: "zhaowu-static-fallback",
+  name: "昭梧背景音樂",
+  url: "/audio/zhaowu-background.mp3",
+  contentType: "audio/mpeg",
+  fileSize: 336710,
+  enabled: true,
+  createdAt: null,
 };
 
 const ALLOWED_TYPES = {
@@ -115,11 +113,16 @@ function queryValue(req, name) {
 }
 
 function redirectAudio(res, url) {
+  const raw = String(url || "").trim();
   let destination = "";
-  try {
-    const parsed = new URL(String(url || ""));
-    if (parsed.protocol === "https:" || parsed.protocol === "http:") destination = parsed.toString();
-  } catch {}
+  if (raw.startsWith("/") && !raw.startsWith("//")) {
+    destination = raw;
+  } else {
+    try {
+      const parsed = new URL(raw);
+      if (parsed.protocol === "https:" || parsed.protocol === "http:") destination = parsed.toString();
+    } catch {}
+  }
   if (!destination) return json(res, 404, { ok: false, error: "ACTIVE_AUDIO_UNAVAILABLE" });
   const headers = {
     Location: destination,
@@ -138,29 +141,40 @@ function redirectAudio(res, url) {
   return new Response(null, { status: 307, headers });
 }
 
-async function readJsonBody(req) {
-  if (req?.body && typeof req.body === "object" && !Buffer.isBuffer(req.body) && !ArrayBuffer.isView(req.body)) return req.body;
-  if (typeof req?.body === "string") {
-    try { return JSON.parse(req.body); } catch { return {}; }
-  }
-  if (typeof req?.json === "function") {
-    try { return await req.json(); } catch { return {}; }
-  }
-  return {};
-}
-
-async function readBinaryBody(req) {
+async function readRawBody(req) {
   if (Buffer.isBuffer(req?.body)) return req.body;
+  if (req?.body instanceof ArrayBuffer) return Buffer.from(req.body);
+  if (ArrayBuffer.isView(req?.body)) {
+    return Buffer.from(req.body.buffer, req.body.byteOffset, req.body.byteLength);
+  }
+  if (typeof req?.body === "string") return Buffer.from(req.body, "utf8");
   if (typeof req?.arrayBuffer === "function") {
     const buf = await req.arrayBuffer();
     return Buffer.from(buf);
   }
-  if (req?.body && typeof req.body[Symbol.asyncIterator] === "function") {
+  if (req && typeof req[Symbol.asyncIterator] === "function") {
     const chunks = [];
-    for await (const chunk of req.body) chunks.push(Buffer.from(chunk));
+    for await (const chunk of req) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
     return Buffer.concat(chunks);
   }
   return Buffer.alloc(0);
+}
+
+async function readJsonBody(req) {
+  if (req?.body && typeof req.body === "object" && !Buffer.isBuffer(req.body) && !ArrayBuffer.isView(req.body) && !(req.body instanceof ArrayBuffer)) return req.body;
+  if (typeof req?.body === "string") {
+    try { return JSON.parse(req.body); } catch { return {}; }
+  }
+  if (typeof req?.json === "function") {
+    try { return await req.json(); } catch {}
+  }
+  const raw = await readRawBody(req);
+  if (!raw.length) return {};
+  try { return JSON.parse(raw.toString("utf8")); } catch { return {}; }
+}
+
+async function readBinaryBody(req) {
+  return readRawBody(req);
 }
 
 function filenameOf(name, contentType) {
@@ -197,62 +211,24 @@ function publicPayload(manifest) {
   };
 }
 
-function supabaseRuntimeConfig() {
-  const url = String(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "");
-  const key = String(process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || DEFAULT_SUPABASE_PUBLISHABLE_KEY);
-  return { url, key };
-}
-
-function storagePublicUrl(baseUrl, path) {
-  const encoded = String(path || "").split("/").map(encodeURIComponent).join("/");
-  return encoded ? `${baseUrl}/storage/v1/object/public/${SUPABASE_AUDIO_BUCKET}/${encoded}` : "";
-}
-
-function bootstrapSupabaseTrack() {
+function staticFallbackPayload() {
   return {
-    id: SUPABASE_BOOTSTRAP_TRACK.id,
-    name: SUPABASE_BOOTSTRAP_TRACK.name,
-    url: storagePublicUrl(DEFAULT_SUPABASE_URL, SUPABASE_BOOTSTRAP_TRACK.storagePath),
-    contentType: SUPABASE_BOOTSTRAP_TRACK.contentType,
-    fileSize: SUPABASE_BOOTSTRAP_TRACK.fileSize,
-    enabled: true,
-    createdAt: SUPABASE_BOOTSTRAP_TRACK.createdAt,
-  };
-}
-
-async function readSupabaseActiveTrack() {
-  const { url, key } = supabaseRuntimeConfig();
-  if (!url || !key) return null;
-  const endpoint = new URL(`${url}/rest/v1/background_music_assets`);
-  endpoint.searchParams.set("enabled", "eq.true");
-  endpoint.searchParams.set("select", "id,name,storage_path,content_type,file_size,created_at,updated_at");
-  endpoint.searchParams.set("order", "updated_at.desc");
-  endpoint.searchParams.set("limit", "1");
-  const response = await fetch(endpoint, {
-    headers: { apikey: key },
-    cache: "no-store",
-  });
-  if (!response.ok) return null;
-  const rows = await response.json().catch(() => []);
-  const row = Array.isArray(rows) ? rows[0] : null;
-  const publicUrl = storagePublicUrl(url, row?.storage_path);
-  if (!row?.id || !publicUrl) return null;
-  return {
-    id: String(row.id),
-    name: String(row.name || "背景音樂"),
-    url: publicUrl,
-    contentType: String(row.content_type || "audio/mp4"),
-    fileSize: Number.isFinite(Number(row.file_size)) ? Number(row.file_size) : null,
-    enabled: true,
-    createdAt: row.created_at || null,
+    ok: true,
+    active: {
+      id: STATIC_FALLBACK_TRACK.id,
+      name: STATIC_FALLBACK_TRACK.name,
+      url: STATIC_FALLBACK_TRACK.url,
+      contentType: STATIC_FALLBACK_TRACK.contentType,
+    },
+    tracks: [STATIC_FALLBACK_TRACK],
+    source: "static-fallback",
   };
 }
 
 export const config = {
+  maxDuration: 60,
   api: {
-    bodyParser: {
-      sizeLimit: "4mb",
-    },
+    bodyParser: false,
   },
 };
 
@@ -267,20 +243,8 @@ export default async function handler(req, res) {
         if (wantsStream) return redirectAudio(res, gitPayload.active.url);
         return json(res, 200, gitPayload);
       }
-      const dynamicSupabaseTrack = await readSupabaseActiveTrack().catch(() => null);
-      const supabaseTrack = dynamicSupabaseTrack || bootstrapSupabaseTrack();
-      if (wantsStream) return redirectAudio(res, supabaseTrack.url);
-      return json(res, 200, {
-        ok: true,
-        active: {
-          id: supabaseTrack.id,
-          name: supabaseTrack.name,
-          url: supabaseTrack.url,
-          contentType: supabaseTrack.contentType,
-        },
-        tracks: [supabaseTrack],
-        source: dynamicSupabaseTrack ? "supabase-fallback" : "supabase-bootstrap",
-      });
+      if (wantsStream) return redirectAudio(res, STATIC_FALLBACK_TRACK.url);
+      return json(res, 200, staticFallbackPayload());
     }
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const secret = ownerSecretFrom(req);
