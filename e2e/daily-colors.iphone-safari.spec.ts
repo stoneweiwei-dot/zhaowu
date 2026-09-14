@@ -30,11 +30,13 @@ test("home keeps dress colour inside today's guidance and the closed almanac com
   const almanac = page.locator("#daily-almanac");
   await expect(almanac).toBeVisible();
   await expect(almanac.locator("details[open]")).toHaveCount(0);
+  await expect(almanac.locator("summary")).toBeVisible();
   const closedHeight = await almanac.evaluate((node) => node.getBoundingClientRect().height);
   expect(closedHeight).toBeLessThan(260);
 
   await almanac.locator("summary").click();
   await expect(almanac.locator("details")).toHaveAttribute("open", "");
+  await almanac.getByRole("button", { name: "下一頁" }).click();
   const embed = almanac.locator('#five-element-wardrobe[data-daily-colors="embed"]');
   await expect(embed).toBeVisible();
   await expect(embed.locator("[data-daily-color-swatch] i").first()).toBeVisible();
