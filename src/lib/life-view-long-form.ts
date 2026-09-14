@@ -1,6 +1,7 @@
 import type { LifeViewArticle } from "@/lib/life-view";
 import { LIFE_VIEW_LONG_FORM_ARTICLES as legacyLongFormArticles } from "@/lib/life-view-long-form-legacy";
 import { HUAGAI_LONG_FORM } from "@/lib/life-view-long-form/huagai";
+import { TEN_GODS_RELATIONSHIP_FRICTION_LONG_FORM } from "@/lib/life-view-long-form/ten-gods-relationship-friction";
 import { WEALTH_ENVIRONMENT_SYMBOLISM_LONG_FORM } from "@/lib/life-view-long-form/wealth-environment-symbolism";
 
 /**
@@ -9,6 +10,7 @@ import { WEALTH_ENVIRONMENT_SYMBOLISM_LONG_FORM } from "@/lib/life-view-long-for
  * 傳統／传统宗教與修行材料只作文化、哲學與歷史脈絡整理；未經驗證的主張不得包裝成科學事實。
  */
 export const LIFE_VIEW_LONG_FORM_ARTICLES: LifeViewArticle[] = [
+  TEN_GODS_RELATIONSHIP_FRICTION_LONG_FORM,
   WEALTH_ENVIRONMENT_SYMBOLISM_LONG_FORM,
   HUAGAI_LONG_FORM,
   ...legacyLongFormArticles,
