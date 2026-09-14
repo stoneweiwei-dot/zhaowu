@@ -11,12 +11,49 @@ import {
 export type { InstructionRule } from './instruction-database-base-legacy';
 
 /**
- * R6.1 直接回答契约：任何命理模块运行前，先锁定用户真正问的问题，
+ * R6.2.1 runtime governance lock.
+ * Governance never creates命理结论；它只限制版本、执行层级、证据、UNKNOWN、
+ * stop rule 与禁止静默改口。Runtime 仍按继承的 R6.1 子平主链工作。
+ */
+export const r621GovernanceInstructionRule: InstructionRule = {
+  id: 'ZW-BAZI-R6.2.1-GOVERNANCE',
+  title: 'R6.2.1 CURRENT MASTER｜治理／Runtime 分层与证据硬约束',
+  status: 'production',
+  layer: 'core',
+  priority: -1,
+  purpose: '把网站运行版本锁定到 STONE R6.2.1，并强制执行渐进层级、双轴证据、平手保留、停止规则与禁止事后静默改口。',
+  rules: [
+    '当前唯一命理母指令为 STONE vFinal UR + LBX · R6.2.1；R6.1 及更早版本只作继承基线与历史审计。',
+    'Governance Layer 只管理版本、Gate、证据、冲突、停止条件与回归；不得替 Runtime 创造命理结论。',
+    'Runtime Layer 按固定主链执行：资料校验 → 特殊格局候选 Gate → 月令 → 调候 → 根气透藏与有路 → 格局体用 → 完成度／容量 → 病药 → 流通 → 承载 → 官杀 → 十神战局 → 刑冲合害破 → 墓库 → 六亲 → 大运 → 交运 → 流年 → LBX → 事件 → 应期 → 可信度 → 白话策略。',
+    'L1／L2／L3 必须渐进执行；上一层关键 Gate 未通过时，不得靠更多旁证把主结论救活。',
+    '结构证据 S 轴与现实验证 V 轴分开记录；C 级解释性回溯不得冒充 A／B 级验证。',
+    '同一 calculation snapshot 的既有结论只允许 UNCHANGED、REVISED、WITHDRAWN；资料修正必须标 CALCULATION_CORRECTION。',
+    '候选解释无法决胜时执行 Tie Procedure；仍平手则保留 UNRESOLVED TIE，不为了漂亮结论强选。',
+    '触发出生资料不足、上游 Gate 未完成、强反证抵消、时间粒度过细、只能靠低权重旁证维持等条件时，必须 Stop Rule，输出不作判定／并列候选／较高概率或更粗窗口。',
+    '新规则进入 active path 前必须通过 regression；不能用“新版更聪明”掩盖同输入无理由漂移。',
+    'UNKNOWN 必须保留。资料、规则或证据不足时不得用模板补齐答案。',
+  ],
+  guards: [
+    '禁止把治理规则本身当作命理证据。',
+    '禁止把五行数量、十神出现次数、软件百分比或票数最高直接当作格局、旺衰、病药、用神或人格结论。',
+    '禁止事后静默改口，禁止 C 级回溯冒充已验证预测。',
+    '禁止旁证平权投票推翻子平主判。',
+  ],
+  outputContract: [
+    '默认先直接回答用户真正问题，再给可信度与 2–5 条核心依据。',
+    '证据不足必须明确 UNKNOWN／不作判定，并写出下一条最能区分候选的资料或验证点。',
+    '普通客户不展示内部治理日志；只有在解释不确定性或内部 QA 时才显示 Stage Checkpoint／Tie／Regression。',
+  ],
+};
+
+/**
+ * R6.2.1 直接回答契约：任何命理模块运行前，先锁定用户真正问的问题，
  * 防止“问 A 答 B”、整盘倾倒、旁证越权和用术语制造专业感。
  */
 export const directAnswerRoutingInstructionRule: InstructionRule = {
-  id: 'ZW-DIRECT-ANSWER-ROUTING-R6.1',
-  title: 'R6.1 问题定位／直接回答最高优先协议',
+  id: 'ZW-DIRECT-ANSWER-ROUTING-R6.2.1',
+  title: 'R6.2.1 问题定位／直接回答最高优先协议',
   status: 'production',
   layer: 'core',
   priority: 0,
@@ -87,6 +124,7 @@ export const huagaiAuxiliaryInstructionRule: InstructionRule = {
 };
 
 export const zhaowuInstructionDatabase: InstructionRule[] = [
+  r621GovernanceInstructionRule,
   directAnswerRoutingInstructionRule,
   ...legacyInstructionDatabase,
   huagaiAuxiliaryInstructionRule,
@@ -98,4 +136,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-13T21:16:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-14T00:00:00+10:00';
