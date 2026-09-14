@@ -78,34 +78,6 @@ const GOD_WORK: Record<string, string> = {
   偏印: "适合冷门专业、复杂判断与高专门化任务，但不宜同时开启过多方向",
 };
 
-function countGods(chart: Chart): Record<string, number> {
-  const bag: Record<string, number> = {};
-  for (const col of chart.pillars) {
-    if (!isReady(col)) continue;
-    if (col.key !== "day") {
-      bag[col.shiShenGan] = (bag[col.shiShenGan] ?? 0) + 2;
-    }
-    for (const h of col.hide) {
-      bag[h.shiShen] = (bag[h.shiShen] ?? 0) + 1;
-    }
-  }
-  return bag;
-}
-
-function topGod(chart: Chart): string {
-  const bag = countGods(chart);
-  let best = "食神";
-  let n = -1;
-  for (const [k, v] of Object.entries(bag)) {
-    if (k === "日主") continue;
-    if (v > n) {
-      best = k;
-      n = v;
-    }
-  }
-  return best;
-}
-
 function guideFrom(chart: Chart): LifeGuide {
   if (chart.usefulProvisional) {
     return {
@@ -244,13 +216,13 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
   const guideLine = chart.usefulProvisional
     ? "颜色、方位、时段与宠物取象暂不下定论。"
     : `生活取象可参考${guide.colors[0]}这一系，但只作辅助。`;
-  const god = topGod(chart);
   const stemTell = STEM_TELL[chart.dayMaster] ?? nature;
   const branchTell = BRANCH_TELL[dayP.zhi] ?? "日支用于观察贴身关系与日常承载。";
   const q = clipQuestion(question);
   const now = weather(chart);
   const strong = chart.strength.tendency.includes("旺");
   const structure = analyzeStructure(chart);
+  const monthFunctionGod = structure.monthTenGod !== "未定" ? structure.monthTenGod : "食神";
 
   let directAnswer = "";
   switch (kind) {
@@ -280,7 +252,7 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
       directAnswer = `结论：这段关系是否值得推进，不看“桃花词”本身，先看对方是否持续回应、是否有现实投入、是否愿意明确下一步。${loveLens(chart, relation)}${now}若连续性与投入不足，就不把短期情绪升格为稳定关系。`;
       break;
     case "career":
-      directAnswer = `结论：职业判断以“能否形成稳定做功与承载”为核心。当前主格为${structure.label}${structure.established ? "" : "方向"}，结构完成度为${structure.completion.label}；可见十神侧重${god}，对应${GOD_WORK[god] ?? "把判断转成可验证成果"}。${strong ? "原局偏满时优先增加有效输出与减少无效负荷。" : "原局承载偏弱时优先选择资源、规则和支持条件更完整的岗位。"} ${now}`;
+      directAnswer = `结论：职业判断以“能否形成稳定做功与承载”为核心。当前主格为${structure.label}${structure.established ? "" : "方向"}，结构完成度为${structure.completion.label}；月令主气功能为${monthFunctionGod}，它只作结构入口，不直接贴人格标签，对应工作侧可优先观察：${GOD_WORK[monthFunctionGod] ?? "把判断转成可验证成果"}。${strong ? "原局偏满时优先增加有效输出与减少无效负荷。" : "原局承载偏弱时优先选择资源、规则和支持条件更完整的岗位。"} ${now}`;
       break;
     case "money":
       directAnswer = `结论：财务不能只看“财星多不多”，先看日主能否承财、有没有稳定输出和可重复变现路径。当前主格为${structure.label}${structure.established ? "" : "方向"}，${structure.remedy.disease}；因此先处理结构上的承载与流通，再谈扩张。${usefulLine} 五行取財行為提示（男女共用）：${fiveElementWealthBehaviorHint(chart.dayMasterElement)}。此層只作五行應象輔助；仍須服從財星喜忌、承載、格局病藥、流通制化與歲運觸發，不可單獨判富貧、發財時間或投資成敗。`;
@@ -297,7 +269,7 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
 
   const rhythm = `结构摘要：日主${chart.dayMaster}${chart.dayMasterElement}，月令${monthP.zhi}，主格${structure.label}${structure.established ? "" : "方向"}，完成度${structure.completion.label}。${structure.remedy.disease}；${structure.remedy.medicine}${timeLine}`;
 
-  const work = `${GOD_WORK[god] ?? "把判断转成可验证成果"}。职业选择优先比较：责任是否清楚、成果是否可衡量、资源是否足够、退出成本是否可控。`;
+  const work = `月令主气功能为${monthFunctionGod}，${GOD_WORK[monthFunctionGod] ?? "把判断转成可验证成果"}。这是结构入口，不是按十神数量贴职业标签；职业选择仍优先比较：责任是否清楚、成果是否可衡量、资源是否足够、退出成本是否可控。`;
   const love = `${loveLens(chart, relation)}关系只看可验证行为：联系是否连续、投入是否对等、边界是否清楚、下一步是否明确。`;
   const money = `财务优先看承载、现金流与退出成本。命盘只提供结构节奏，不替代真实收入、成本和风险数据。${kind === "money" ? ` 五行取財行為提示（男女共用）：${fiveElementWealthBehaviorHint(chart.dayMasterElement)}。此提示不取代財星喜忌、格局、制化與歲運判斷。` : ""}`;
   const body = `身体层只谈承载与生活节奏，不下疾病诊断。现实症状持续或加重时，以医疗评估优先。`;
