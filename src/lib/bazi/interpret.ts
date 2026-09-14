@@ -1,4 +1,4 @@
-import { COLOR_OF_ELEMENT, DAY_MASTER_NATURE, DIRECTION_OF_ELEMENT, ELEMENT_LABEL, HOUR_OF_ELEMENT } from "./constants";
+import { COLOR_OF_ELEMENT, DIRECTION_OF_ELEMENT, HOUR_OF_ELEMENT } from "./constants";
 import type { Chart, Element, LifeGuide, Pillar, QuestionKind, Reading, RelationPref } from "./types";
 import type { PalmReading } from "@/lib/core/types";
 import { composePalmReport } from "@/lib/palm/engine";
@@ -37,73 +37,30 @@ function p(chart: Chart, key: Pillar["key"]): Pillar {
   return chart.pillars.find((x) => x.key === key) ?? chart.pillars[0];
 }
 
-const BRANCH_TELL: Record<string, string> = {
-  子: "信息与情绪更容易在安静环境中继续加工，决策需要明确截止点",
-  丑: "倾向先承接再表达，容易把问题留到负荷已经累积之后才处理",
-  寅: "行动一旦启动会比较直接，适合先确认方向再集中推进",
-  卯: "对环境与关系变化较敏感，适合保留弹性但避免长期含糊",
-  辰: "信息容易反复归纳，适合把复杂问题写成结构后再决策",
-  巳: "判断速度快但容易持续高负荷，重要事项需要预留恢复时间",
-  午: "外部反馈会明显影响行动速度，适合把目标与边界公开说清楚",
-  未: "容易优先处理他人或环境需求，需要主动保留自己的资源位置",
-  申: "擅长拆解问题，沟通时需要补上对关系与执行成本的考虑",
-  酉: "标准与筛选能力强，适合明确最低接受条件，避免过度精细化",
-  戌: "重视承诺与一致性，关系和合作中需要把责任边界写清楚",
-  亥: "内在处理量较大，适合减少噪音并保留稳定的独处恢复时段",
-};
-
-const STEM_TELL: Record<string, string> = {
-  甲: "处理问题时倾向先建立框架，再持续推进；风险是长期承担过多",
-  乙: "适应与协调能力较强，优势在迂回解决问题；风险是边界表达过晚",
-  丙: "外显推动力较强，适合需要表达与带动的任务；风险是持续过热",
-  丁: "适合连续、精细、需要耐心的推进方式；风险是长期被拖延与含糊消耗",
-  戊: "稳定与承载能力是主要优势；风险是调整速度偏慢、过度固守旧结构",
-  己: "擅长整理与整合资源；风险是杂务和他人责任不断堆积到自己身上",
-  庚: "切分问题与做决定的能力较强；风险是处理过快时忽略关系与后续成本",
-  辛: "辨别细节与质量的能力较强；风险是标准过高导致推进速度下降",
-  壬: "信息吸收与连接能力较强；风险是输入过多、输出不足造成内耗",
-  癸: "观察、归纳与长期酝酿能力较强；风险是等待确定性过久而延迟行动",
-};
-
 const GOD_WORK: Record<string, string> = {
-  比肩: "适合拥有明确责任边界、可独立交付与可署名的工作",
-  劫財: "适合协作与资源整合，但合作规则、收益与退出机制必须先写清楚",
-  食神: "适合把知识、技术或想法转成稳定可交付的产品、服务或流程",
-  傷官: "适合改进、表达、设计、优化与需要自主判断的岗位",
-  正財: "适合稳定变现、专业服务、可重复计价与长期客户关系",
-  偏財: "适合机会型收入与资源连接，但必须控制风险与退出成本",
-  正官: "适合责任、资格、公开标准明确的职业结构",
-  七殺: "适合高压、快速决策、结果导向且权责清楚的工作环境",
-  正印: "适合研究、教学、知识管理与专业支撑，但要设交付截止点",
-  偏印: "适合冷门专业、复杂判断与高专门化任务，但不宜同时开启过多方向",
+  比肩: "適合擁有明確責任邊界、可獨立交付與可署名的工作",
+  劫財: "適合協作與資源整合，但合作規則、收益與退出機制必須先寫清楚",
+  食神: "適合把知識、技術或想法轉成穩定可交付的產品、服務或流程",
+  傷官: "適合改進、表達、設計、優化與需要自主判斷的崗位",
+  正財: "適合穩定變現、專業服務、可重複計價與長期客戶關係",
+  偏財: "適合機會型收入與資源連接，但必須控制風險與退出成本",
+  正官: "適合責任、資格、公開標準明確的職業結構",
+  七殺: "適合高壓、快速決策、結果導向且權責清楚的工作環境",
+  正印: "適合研究、教學、知識管理與專業支撐，但要設交付截止點",
+  偏印: "適合冷門專業、複雜判斷與高專門化任務，但不宜同時開啟過多方向",
 };
 
-function countGods(chart: Chart): Record<string, number> {
-  const bag: Record<string, number> = {};
-  for (const col of chart.pillars) {
-    if (!isReady(col)) continue;
-    if (col.key !== "day") {
-      bag[col.shiShenGan] = (bag[col.shiShenGan] ?? 0) + 2;
-    }
-    for (const h of col.hide) {
-      bag[h.shiShen] = (bag[h.shiShen] ?? 0) + 1;
-    }
-  }
-  return bag;
-}
-
-function topGod(chart: Chart): string {
-  const bag = countGods(chart);
-  let best = "食神";
-  let n = -1;
-  for (const [k, v] of Object.entries(bag)) {
-    if (k === "日主") continue;
-    if (v > n) {
-      best = k;
-      n = v;
-    }
-  }
-  return best;
+/**
+ * 用月令主氣功能作「工作功能入口」，不再用十神出現次數選 top god。
+ * 這只是現實映射入口，不能取代格局、病藥、承載與流通。
+ */
+function structuralFocusGod(chart: Chart): string {
+  const month = p(chart, "month");
+  const mainQiGod = month.hide[0]?.shiShen;
+  if (mainQiGod && mainQiGod !== "日主") return mainQiGod;
+  if (month.shiShenGan && month.shiShenGan !== "日主" && month.shiShenGan !== "—") return month.shiShenGan;
+  const day = p(chart, "day");
+  return day.hide[0]?.shiShen ?? "食神";
 }
 
 function guideFrom(chart: Chart): LifeGuide {
@@ -132,31 +89,26 @@ function guideFrom(chart: Chart): LifeGuide {
     },
     pet:
       favorEl === "火"
-        ? "偏互动型的猫或小型犬可作象征参考；现实仍以空间、时间与照护能力为准。"
+        ? "偏互動型的貓或小型犬可作象徵參考；現實仍以空間、時間與照護能力為準。"
         : favorEl === "水"
-          ? "偏安静陪伴型的动物可作象征参考；现实仍以空间、时间与照护能力为准。"
+          ? "偏安靜陪伴型的動物可作象徵參考；現實仍以空間、時間與照護能力為準。"
           : favorEl === "木"
-            ? "活动量适中的动物可作象征参考；现实仍以空间、时间与照护能力为准。"
+            ? "活動量適中的動物可作象徵參考；現實仍以空間、時間與照護能力為準。"
             : favorEl === "金"
-              ? "照护节奏稳定、边界清楚的动物可作象征参考；现实条件优先。"
-              : "作息稳定、照护需求明确的动物可作象征参考；现实条件优先。",
+              ? "照護節奏穩定、邊界清楚的動物可作象徵參考；現實條件優先。"
+              : "作息穩定、照護需求明確的動物可作象徵參考；現實條件優先。",
   };
 }
 
 function weather(chart: Chart): string {
   if (chart.currentDayun) {
     const d = chart.currentDayun;
-    return `当前为${d.ganZhi}大运（${d.startYear}–${d.endYear}），流年${chart.currentYear}在此基础上触发原局。`;
+    return `當前為${d.ganZhi}大運（${d.startYear}–${d.endYear}），流年${chart.currentYear}在此基礎上觸發原局。`;
   }
   if (chart.timeUnknown) {
-    return `当前流年为${chart.currentYear}。时辰未定，大运与时柱相关判断降级。`;
+    return `當前流年為${chart.currentYear}。時辰未定，大運與時柱相關判斷降級。`;
   }
-  return `当前流年为${chart.currentYear}。`;
-}
-
-function clipQuestion(q: string): string {
-  const t = q.trim().replace(/[？?。！!]+$/g, "");
-  return t.length > 52 ? `${t.slice(0, 52)}…` : t;
+  return `當前流年為${chart.currentYear}。`;
 }
 
 function moveScore(text: string): number {
@@ -168,9 +120,16 @@ function moveScore(text: string): number {
   return n;
 }
 
+function decisionBias(chart: Chart): "move" | "hold" | "unknown" {
+  const disease = analyzeStructure(chart).remedy.disease;
+  if (/壅滯|出口不足|需要出口/.test(disease)) return "move";
+  if (/承載不足|壓身|耗身|洩身|根援不足/.test(disease)) return "hold";
+  return "unknown";
+}
+
 function leanChoice(q: string, chart: Chart): string {
   const parts = q.split(/還是|还是|或者/).map((x) => x.trim()).filter(Boolean);
-  const strong = chart.strength.tendency.includes("旺");
+  const bias = decisionBias(chart);
   if (parts.length >= 2) {
     const a = parts[0]
       .replace(/^(?:我)?(?:應該|应该)?/, "")
@@ -180,21 +139,23 @@ function leanChoice(q: string, chart: Chart): string {
     const aMove = moveScore(a);
     const bMove = moveScore(b);
 
-    if (a && b && aMove !== bMove) {
+    if (a && b && aMove !== bMove && bias !== "unknown") {
       const moveChoice = aMove > bMove ? a : b;
       const stayChoice = moveChoice === a ? b : a;
-      return strong
-        ? `僅從命盤承載角度，偏向「${moveChoice}」。原因是原局偏滿時，更需要形成有效輸出與轉場；但最終仍要用收入、責任、地點、時間與退出成本復核。`
-        : `僅從命盤承載角度，偏向「${stayChoice}」。原因是原局承載偏弱時，優先保住穩定資源與可持續節奏；但最終仍要用收入、責任、地點、時間與退出成本復核。`;
+      const picked = bias === "move" ? moveChoice : stayChoice;
+      const why = bias === "move"
+        ? "目前結構病位更偏向壅滯／出口不足，需要的是有效輸出或轉場，而不是單純因為『身旺』就動。"
+        : "目前結構病位更偏向承載不足，先保住穩定資源與退出空間，而不是單純因為『身弱』就守。";
+      return `僅從已成立的結構病位比較，偏向「${picked}」。${why}最後仍要用收入、責任、地點、時間與退出成本復核。`;
     }
 
-    return `這是二選一比較要求，但你沒有分開提供兩個選項的可比較條件，所以暫不強選。請把「${a || "選項 A"}」與「${b || "選項 B"}」的收入、責任、地點、時間投入、穩定性和退出成本放在同一組條件下，再按同一命盤結構比較。`;
+    return `這是二選一比較要求，但目前命盤結構沒有足夠證據只靠「動／不動」分出勝負。請把「${a || "選項 A"}」與「${b || "選項 B"}」的收入、責任、地點、時間投入、穩定性和退出成本放在同一組條件下，再做同盤比較。`;
   }
 
   if (q.includes("該不該") || q.includes("该不该") || q.includes("要不要")) {
-    return strong
-      ? "盤面偏滿，原則上可以動，但先控制退出成本，用小規模試行代替一次性全押。"
-      : "盤面承載優先，暫不建議一次性全押；先補穩定資源，再用小規模試行驗證。";
+    if (bias === "move") return "目前結構較需要形成有效出口，可以動，但先用小規模試行控制退出成本，不作一次性全押。";
+    if (bias === "hold") return "目前結構先處理承載，暫不建議一次性全押；先補穩定資源，再用小規模試行驗證。";
+    return "目前結構不足以只靠命盤判定『該／不該』，不強行選邊；先補現實條件再比較。";
   }
 
   return "目前問題缺少可比較的兩個明確選項，不作強行二選一。";
@@ -203,37 +164,39 @@ function leanChoice(q: string, chart: Chart): string {
 function loveLens(chart: Chart, relation: RelationPref): string {
   const day = p(chart, "day");
   if (relation === "same") {
-    return `同性／非传统关系不硬套异性婚配公式；本题以日支${day.zhi}的关系承载、互动连续性与现实投入为主。`;
+    return `同性／非傳統關係不硬套異性婚配公式；本題以日支${day.zhi}的關係承載、互動連續性與現實投入為主。`;
   }
   if (chart.gender === "female") {
-    return `传统女命官杀只作伴侣功能候选，实际仍要结合日支${day.zhi}、关系连续性与现实投入。`;
+    return `傳統女命官殺只作伴侶功能候選，實際仍要結合日支${day.zhi}、關係連續性與現實投入。`;
   }
   if (chart.gender === "male") {
-    return `传统男命财星只作伴侣功能候选，实际仍要结合日支${day.zhi}、关系连续性与现实投入。`;
+    return `傳統男命財星只作伴侶功能候選，實際仍要結合日支${day.zhi}、關係連續性與現實投入。`;
   }
-  return `关系判断以日支${day.zhi}、互动连续性、边界与现实投入为主。`;
+  return `關係判斷以日支${day.zhi}、互動連續性、邊界與現實投入為主。`;
+}
+
+function capacityAdvice(disease: string): string {
+  if (/壅滯|出口不足/.test(disease)) return "優先建立可驗證輸出與清楚退出路徑，減少無效囤積。";
+  if (/承載不足|壓身|耗身|洩身|根援不足/.test(disease)) return "優先選擇資源、規則和支持條件完整的環境，避免超額承擔。";
+  return "先保持責任、資源與退出成本可控，再用實際成果驗證是否適配。";
 }
 
 export function interpret(question: string, chart: Chart, relation: RelationPref = "unset", palm: PalmReading | null = null): Reading {
   const kind = classifyQuestion(question);
-  const nature = DAY_MASTER_NATURE[chart.dayMaster] ?? "以日主功能为轴";
   const dayP = p(chart, "day");
   const monthP = p(chart, "month");
   const timeP = p(chart, "time");
   const useful = joinEl(chart.useful);
-  const usefulLine = useful ? `当前仅有流通／调候候选：${useful}；在完整病药与格局链未完成前，不直接等同喜用神。` : "当前正式取用仍未定。";
-  const timeLine = isReady(timeP) ? `时柱${timeP.ganZhi}可用于观察输出与结果层。` : "时柱未定，涉及输出方式与晚期结果的判断降级。";
+  const usefulLine = useful ? `當前僅有流通／調候候選：${useful}；在完整病藥與格局鏈未完成前，不直接等同喜用神。` : "當前正式取用仍未定。";
+  const timeLine = isReady(timeP) ? `時柱${timeP.ganZhi}可用於觀察輸出與結果層。` : "時柱未定，涉及輸出方式與晚期結果的判斷降級。";
   const guide = guideFrom(chart);
   const guideLine = chart.usefulProvisional
-    ? "颜色、方位、时段与宠物取象暂不下定论。"
-    : `生活取象可参考${guide.colors[0]}这一系，但只作辅助。`;
-  const god = topGod(chart);
-  const stemTell = STEM_TELL[chart.dayMaster] ?? nature;
-  const branchTell = BRANCH_TELL[dayP.zhi] ?? "日支用于观察贴身关系与日常承载。";
-  const q = clipQuestion(question);
-  const now = weather(chart);
-  const strong = chart.strength.tendency.includes("旺");
+    ? "顏色、方位、時段與寵物取象暫不下定論。"
+    : `生活取象可參考${guide.colors[0]}這一系，但只作輔助。`;
   const structure = analyzeStructure(chart);
+  const god = structuralFocusGod(chart);
+  const now = weather(chart);
+  const advice = capacityAdvice(structure.remedy.disease);
 
   let directAnswer = "";
   switch (kind) {
@@ -242,7 +205,7 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
         const lives = palm.palaces.map((x) => `${x.lifeLabel}：${x.zhi}・${x.star}｜${x.dao}`).join("；");
         directAnswer = [
           palm.firstSentence,
-          lives ? `四宫：${lives}。` : "",
+          lives ? `四宮：${lives}。` : "",
           palm.minggongNote,
           palm.cause,
           palm.fruit,
@@ -250,60 +213,59 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
           palm.boundary,
         ].filter(Boolean).join(" ");
       } else {
-        directAnswer = `这题需要按一掌经四宫独立排，不用子平反推六道。当前资料不足时直接不作判定。`;
+        directAnswer = "這題需要按一掌經四宮獨立排，不用子平反推六道。當前資料不足時直接不作判定。";
       }
       break;
     case "home":
-      directAnswer = `结论：现有出生盘只能判断个人承载与环境偏好，不能代替具体住宅的坐向、采光、道路与动线。若你问的是某套房或店面是否适合，必须补该空间资料；在此之前不硬定方位。${guideLine}`;
+      directAnswer = `結論：現有出生盤只能判斷個人承載與環境偏好，不能代替具體住宅的坐向、採光、道路與動線。若你問的是某套房或店面是否適合，必須補該空間資料；在此之前不硬定方位。${guideLine}`;
       break;
     case "health":
-      directAnswer = `结论：命盘不能诊断疾病。当前只能从承载层看，日主${chart.dayMaster}${chart.dayMasterElement}在${monthP.zhi}月令下的底盘为${chart.strength.tendency}，${now}若现实已经出现持续疼痛、失眠、明显乏力或其他症状，先按医疗路径处理；命理只补充作息与压力管理。`;
+      directAnswer = `結論：命盤不能診斷疾病。當前只能從承載層看，日主${chart.dayMaster}${chart.dayMasterElement}在${monthP.zhi}月令下為「${chart.strength.tendency}」。${now}若現實已出現持續疼痛、失眠、明顯乏力或其他症狀，先按醫療路徑處理；命理只補充作息與壓力管理。`;
       break;
     case "love":
-      directAnswer = `结论：这段关系是否值得推进，不看“桃花词”本身，先看对方是否持续回应、是否有现实投入、是否愿意明确下一步。${loveLens(chart, relation)}${now}若连续性与投入不足，就不把短期情绪升格为稳定关系。`;
+      directAnswer = `結論：這段關係是否值得推進，不看「桃花詞」本身，先看對方是否持續回應、是否有現實投入、是否願意明確下一步。${loveLens(chart, relation)}${now}若連續性與投入不足，就不把短期情緒升格為穩定關係。`;
       break;
     case "career":
-      directAnswer = `结论：职业判断以“能否形成稳定做功与承载”为核心。当前主格为${structure.label}${structure.established ? "" : "方向"}，结构完成度为${structure.completion.label}；可见十神侧重${god}，对应${GOD_WORK[god] ?? "把判断转成可验证成果"}。${strong ? "原局偏满时优先增加有效输出与减少无效负荷。" : "原局承载偏弱时优先选择资源、规则和支持条件更完整的岗位。"} ${now}`;
+      directAnswer = `結論：職業判斷以「能否形成穩定做功與承載」為核心。當前主格為${structure.label}${structure.established ? "" : "方向"}，結構完成度為${structure.completion.label}；月令主氣功能落在${god}，可參考「${GOD_WORK[god] ?? "把判斷轉成可驗證成果"}」。${advice} ${now}`;
       break;
     case "money":
-      directAnswer = `结论：财务不能只看“财星多不多”，先看日主能否承财、有没有稳定输出和可重复变现路径。当前主格为${structure.label}${structure.established ? "" : "方向"}，${structure.remedy.disease}；因此先处理结构上的承载与流通，再谈扩张。${usefulLine}`;
+      directAnswer = `結論：財務不能只看「財星多不多」，先看日主能否承財、是否有穩定輸出和可重複變現路徑。當前主格為${structure.label}${structure.established ? "" : "方向"}，${structure.remedy.disease}；因此先處理結構上的承載與流通，再談擴張。${usefulLine}`;
       break;
     case "choice":
       directAnswer = leanChoice(question, chart);
       break;
     case "timing":
-      directAnswer = `结论：时间题必须用原局 + 大运 + 流年判断，不能单凭一个流年字直接定“必成日期”。${now}${chart.currentDayun ? ` 当前大运提供的是${chart.currentDayun.ganZhi}这一阶段背景；具体到月份，需要再看该问题所属领域与流月是否形成同向触发。` : " 大运资料不足时，时间结论降级。"}`;
+      directAnswer = `結論：時間題必須用原局 + 大運 + 流年判斷，不能單憑一個流年字直接定「必成日期」。${now}${chart.currentDayun ? ` 當前大運提供的是${chart.currentDayun.ganZhi}這一階段背景；具體到月份，需要再看該問題所屬領域與流月是否形成同向觸發。` : " 大運資料不足時，時間結論降級。"}`;
       break;
     default:
-      directAnswer = `结论：这张盘当前以${structure.label}${structure.established ? "" : "方向"}为主，结构完成度为${structure.completion.label}，日主${chart.dayMaster}${chart.dayMasterElement}的承载底盘为${chart.strength.tendency}。核心不是罗列更多术语，而是看格局、病药、流通与承载是否能形成同一条有效链。`;
+      directAnswer = `結論：這張盤當前以${structure.label}${structure.established ? "" : "方向"}為主，結構完成度為${structure.completion.label}，日主${chart.dayMaster}${chart.dayMasterElement}的承載基線為「${chart.strength.tendency}」。核心不是羅列更多術語，而是看格局、病藥、流通與承載是否形成同一條有效鏈。`;
   }
 
-  const rhythm = `结构摘要：日主${chart.dayMaster}${chart.dayMasterElement}，月令${monthP.zhi}，主格${structure.label}${structure.established ? "" : "方向"}，完成度${structure.completion.label}。${structure.remedy.disease}；${structure.remedy.medicine}${timeLine}`;
-
-  const work = `${GOD_WORK[god] ?? "把判断转成可验证成果"}。职业选择优先比较：责任是否清楚、成果是否可衡量、资源是否足够、退出成本是否可控。`;
-  const love = `${loveLens(chart, relation)}关系只看可验证行为：联系是否连续、投入是否对等、边界是否清楚、下一步是否明确。`;
-  const money = `财务优先看承载、现金流与退出成本。命盘只提供结构节奏，不替代真实收入、成本和风险数据。`;
-  const body = `身体层只谈承载与生活节奏，不下疾病诊断。现实症状持续或加重时，以医疗评估优先。`;
+  const rhythm = `結構摘要：日主${chart.dayMaster}${chart.dayMasterElement}，月令${monthP.zhi}，主格${structure.label}${structure.established ? "" : "方向"}，完成度${structure.completion.label}。${structure.remedy.disease}；${structure.remedy.medicine}${timeLine}`;
+  const work = `${GOD_WORK[god] ?? "把判斷轉成可驗證成果"}。職業選擇優先比較：責任是否清楚、成果是否可衡量、資源是否足夠、退出成本是否可控。`;
+  const love = `${loveLens(chart, relation)}關係只看可驗證行為：聯繫是否連續、投入是否對等、邊界是否清楚、下一步是否明確。`;
+  const money = "財務優先看承載、現金流與退出成本。命盤只提供結構節奏，不替代真實收入、成本和風險數據。";
+  const body = "身體層只談承載與生活節奏，不下疾病診斷。現實症狀持續或加重時，以醫療評估優先。";
   const home = chart.usefulProvisional
-    ? "空间建议暂不指定颜色或方位。具体住宅必须结合坐向、采光、道路、动线与实际居住感受。"
-    : `空间取象可参考${guide.colors[0]}这一系，但具体住宅仍以坐向、采光、道路、动线与实际居住感受为准。`;
+    ? "空間建議暫不指定顏色或方位。具體住宅必須結合坐向、採光、道路、動線與實際居住感受。"
+    : `空間取象可參考${guide.colors[0]}這一系，但具體住宅仍以坐向、採光、道路、動線與實際居住感受為準。`;
   const action = kind === "choice"
-    ? "把两个选项放进同一张比较表：收入／资源、责任、时间、地点、稳定性、退出成本；命盘倾向只作为其中一列。"
+    ? "把兩個選項放進同一張比較表：收入／資源、責任、時間、地點、穩定性、退出成本；命盤傾向只作其中一列。"
     : kind === "career"
-      ? "把当前工作或候选岗位写成四项：责任、可交付成果、资源支持、退出成本；优先处理最明显的结构短板。"
+      ? "把當前工作或候選崗位寫成四項：責任、可交付成果、資源支持、退出成本；優先處理最明顯的結構短板。"
       : kind === "money"
-        ? "先列主收入、固定支出、可承受风险与退出成本，再决定是否扩张。"
+        ? "先列主收入、固定支出、可承受風險與退出成本，再決定是否擴張。"
         : kind === "love"
-          ? "只核对对方连续三次实际行为，不用宣言代替投入。"
+          ? "只核對對方連續三次實際行為，不用宣言代替投入。"
           : kind === "health"
-            ? "记录睡眠、症状与负荷变化；持续或加重时优先就医。"
-            : "把本题最核心的一个结论转成一个可验证动作，执行后再用现实反馈复核。";
-  const decree = `命理结论只用于识别结构、条件与风险；真正能改变结果的，是资源配置、边界、技能、行动与现实反馈。`;
+            ? "記錄睡眠、症狀與負荷變化；持續或加重時優先就醫。"
+            : "把本題最核心的一個結論轉成一個可驗證動作，執行後再用現實反饋復核。";
+  const decree = "命理結論只用於識別結構、條件與風險；真正能改變結果的，是資源配置、邊界、技能、行動與現實反饋。";
   const lastLine = kind === "choice"
-    ? "若两个选项缺少可比较条件，宁可不强选，也不制造一个看似确定的答案。"
+    ? "若兩個選項缺少可比較條件，寧可不強選，也不製造一個看似確定的答案。"
     : kind === "timing"
-      ? "时间结论必须等结构与岁运同向触发，不能把单一流年当保证。"
-      : `本题以${structure.label}${structure.established ? "" : "方向"}、${structure.remedy.disease}与实际承载作为主要判断轴。`;
+      ? "時間結論必須等結構與歲運同向觸發，不能把單一流年當保證。"
+      : `本題以${structure.label}${structure.established ? "" : "方向"}、${structure.remedy.disease}與實際承載作為主要判斷軸。`;
 
   return {
     kind,
@@ -336,33 +298,33 @@ export function composeFullReport(question: string, chart: Chart, reading: Readi
     ? "正式取用尚未完成，因此不由流通候選派生顏色、方位、時段或寵物結論。"
     : null;
   return [
-    "昭梧｜白话完整报告",
+    "昭梧｜白話完整報告",
     "",
     "一、直接回答",
     reading.directAnswer,
     "",
-    "二、排盘资料",
+    "二、排盤資料",
     chart.provenance,
-    `农历：${chart.lunarDate}`,
+    `農曆：${chart.lunarDate}`,
     `出生地：${chart.cityLabel}`,
-    chart.liveCityLabel ? `现居地：${chart.liveCityLabel}（只作环境层参考，不改四柱）` : null,
-    chart.hemisphere === "S" ? "南半球季相只作环境校正，不反转月令与四柱。" : null,
+    chart.liveCityLabel ? `現居地：${chart.liveCityLabel}（只作環境層參考，不改四柱）` : null,
+    chart.hemisphere === "S" ? "南半球季相只作環境校正，不反轉月令與四柱。" : null,
     "",
     pillars,
-    `日主 ${chart.dayMaster}${chart.dayMasterElement}　月令 ${chart.monthBranch}　胎元 ${chart.taiyuan}　命宫 ${chart.minggong}`,
+    `日主 ${chart.dayMaster}${chart.dayMasterElement}　月令 ${chart.monthBranch}　胎元 ${chart.taiyuan}　命宮 ${chart.minggong}`,
     chart.strength.summary,
     "",
-    "三、核心结构",
+    "三、核心結構",
     reading.rhythm,
     "",
-    "四、与本题直接相关的现实解释",
+    "四、與本題直接相關的現實解釋",
     reading.kind === "career" ? `工作｜${reading.work}` : null,
     reading.kind === "love" ? `感情｜${reading.love}` : null,
-    reading.kind === "money" ? `财务｜${reading.money}` : null,
+    reading.kind === "money" ? `財務｜${reading.money}` : null,
     reading.kind === "health" ? `身心｜${reading.body}` : null,
     reading.kind === "home" ? `家宅｜${reading.home}` : null,
     "",
-    "五、一个优先行动",
+    "五、一個優先行動",
     reading.action,
     "",
     "六、限制",
