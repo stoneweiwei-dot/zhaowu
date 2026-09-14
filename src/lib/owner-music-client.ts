@@ -48,11 +48,17 @@ export async function loadOwnerMusic(): Promise<OwnerMusicState> {
   };
 }
 
-function uploadError(body: Record<string, unknown>) {
+function uploadError(body: Record<string, unknown>, status?: number) {
   if (body.error === "AUDIO_TOO_LARGE") return "音檔仍超過安全上傳大小，請裁短曲目後再試。";
-  if (body.error === "UNSUPPORTED_AUDIO") return "這個音檔無法轉成網站播放格式。";
+  if (body.error === "UNSUPPORTED_AUDIO") return "這個音檔無法轉成網站播放格式。請改用 MP3 或 M4A。";
   if (body.error === "OWNER_REQUIRED") return "站主登入狀態已失效，請重新登入。";
-  return typeof body.detail === "string" ? body.detail : "背景音樂上傳失敗。";
+  if (body.error === "ORIGIN_REJECTED") return "上傳來源被拒絕，請從正式站重新登入後再試。";
+  if (body.error === "EMPTY_AUDIO") return "音檔是空的。";
+  const detail = typeof body.detail === "string" && body.detail.trim() ? body.detail.trim() : "";
+  const error = typeof body.error === "string" && body.error.trim() ? body.error.trim() : "";
+  const http = status ? `HTTP ${status}` : "";
+  const parts = [detail, error, http].filter(Boolean);
+  return parts.length ? `背景音樂上傳失敗（${parts.join(" · ")}）。` : "背景音樂上傳失敗。";
 }
 
 async function postMusicBlob(file: Blob, name: string, contentType: string, extra: Record<string, string> = {}) {
@@ -83,7 +89,7 @@ async function uploadInChunks(file: File, onProgress?: (progress: OwnerMusicOpti
       "x-zhaowu-music-chunk-total": String(total),
     });
     lastBody = await parseBody(response);
-    if (!response.ok) throw new Error(uploadError(lastBody));
+    if (!response.ok) throw new Error(uploadError(lastBody, response.status));
     onProgress?.({ percent: Math.min(98, 82 + Math.round(((index + 1) / total) * 16)), label: index + 1 === total ? "保存並切換網站背景音樂" : `已收第 ${index + 1} 段` });
   }
   if (lastBody.pending) throw new Error("分塊尚未收齊，請再試一次。");
@@ -102,7 +108,7 @@ export async function uploadOwnerMusic(
   } else {
     const response = await postMusicBlob(file, file.name, file.type || "audio/mp4");
     const body = await parseBody(response);
-    if (!response.ok) throw new Error(uploadError(body));
+    if (!response.ok) throw new Error(uploadError(body, response.status));
   }
   onProgress?.({ percent: 100, label: "完成" });
   window.dispatchEvent(new Event("zhaowu-music-change"));

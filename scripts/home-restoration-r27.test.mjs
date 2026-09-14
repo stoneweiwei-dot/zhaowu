@@ -23,7 +23,9 @@ test('one article opens initially; other summaries contain only titles, with no 
 });
 test('question stays ahead of birth details, owner login lands in account and intro stays intact',()=>{
  const form=source('src/components/analysis-form.tsx');
- assert.ok(form.indexOf('id="analysis-question"')<form.indexOf('id: "birth-year"'));
+ assert.match(form,/id="customer-record"/);
+ assert.doesNotMatch(form,/id="analysis-question"/);
+ assert.doesNotMatch(form,/zhaowu-question-sheet/);
  assert.match(form,/aria-describedby="time-importance"/);assert.match(form,/UNKNOWN_TIME_COPY\[locale\]/);
  assert.match(form,/id="bazi"/);assert.match(form,/zhaowu-bazi-hub/);
  assert.doesNotMatch(form,/BaziChart chart=\{previewChart\}/);

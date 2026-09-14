@@ -5,22 +5,20 @@ import test from "node:test";
 const login = readFileSync(new URL("../src/routes/login.tsx", import.meta.url), "utf8");
 const report = readFileSync(new URL("../src/components/paid-report-pages.tsx", import.meta.url), "utf8");
 
-test("login exposes an independent owner key without third-party OAuth buttons", () => {
-  assert.doesNotMatch(login, /type="email"|id="login-email"/);
+test("login keeps the independent owner key and restores member email fields", () => {
+  assert.match(login, /type="email"|id="login-email"/);
   assert.match(login, /id="login-secret"/);
   assert.match(login, /type="password"/);
   assert.match(login, /ownerSignIn/);
-  assert.match(login, /data-login-backend="vercel-owner-cookie"/);
-  assert.doesNotMatch(login, /onOAuth\(/);
-  assert.doesNotMatch(login, /startOAuth/);
-  assert.doesNotMatch(login, /data-provider=/);
-  assert.doesNotMatch(login, /oauthCopy/);
+  assert.match(login, /vercel-owner-cookie/);
+  assert.match(login, /startOAuth/);
+  assert.match(login, /data-provider=/);
 });
 
-test("owner sign-in has no signup or verification-code screen", () => {
+test("owner tab remains a passcode form without a verification-code screen", () => {
   assert.doesNotMatch(login, /verification[-_ ]?code/i);
   assert.doesNotMatch(login, /otp/i);
-  assert.doesNotMatch(login, /signUp|sign up|註冊|注册/i);
+  assert.match(login, /signupTab/);
   assert.match(login, /站主登入/);
 });
 
@@ -30,6 +28,7 @@ test("mobile login uses the full-width sheet instead of the decorative mini pane
   assert.match(login, /className="stone-login-primary"/);
   assert.match(login, /className="stone-login-lead"/);
   assert.match(login, /className="stone-login-signature"/);
+  assert.match(login, /stone-login-stage-media/);
 });
 
 test("one-sheet report removes customer-facing metaphysical jargon", () => {

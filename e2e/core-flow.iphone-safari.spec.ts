@@ -45,7 +45,6 @@ async function expectNoOverlap(page: Page, upperSelector: string, lowerSelector:
 }
 
 async function fillKnownBirthData(page: Page) {
-  await page.locator("#analysis-question").fill("我現在最應該先處理什麼？");
   await page.locator("#birth-year").fill("1988");
   await page.locator("#birth-month").fill("10");
   await page.locator("#birth-day").fill("4");
@@ -65,7 +64,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
     await expect(page.getByText("子時換日", { exact: true })).toHaveCount(0);
     await expect(page.getByText("套用真太陽時校正", { exact: true })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "登入", exact: true })).toBeVisible();
 
     await expect(page.getByRole("dialog", { name: "把昭梧存到手機桌面", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "顯示 iPhone 保存步驟", exact: true })).toBeVisible();
@@ -88,7 +87,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.getByRole("button", { name: "English", exact: true }).click();
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Client details", exact: true })).toBeVisible();
-    await expect(page.locator("#analysis-question")).toBeVisible();
+    await expect(page.locator("#analysis-question")).toHaveCount(0);
     await expect(page.locator("#birth-year")).toBeVisible();
     await expect(page.locator("#birth-month")).toBeVisible();
     await expect(page.locator("#birth-day")).toBeVisible();
@@ -142,7 +141,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await makeAppOfflineSafe(page);
     await page.goto("/account", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("link", { name: "站主登入", exact: true }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "會員登入／註冊", exact: true }).first()).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
@@ -158,7 +157,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expectMobileViewportHealthy(page);
   });
 
-  test("Free analysis completes end-to-end without cloud availability", async ({ page }) => {
+  test("Saving birth completes on this phone without a self-Q&A sheet", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await dismissInstallPrompt(page);
@@ -169,17 +168,12 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(firstCity).toBeVisible();
     await firstCity.click();
 
-    await page.getByRole("button", { name: "開始分析", exact: true }).click();
+    await page.getByRole("button", { name: "保存生辰", exact: true }).click();
 
-    const result = page.locator("#result");
-    await expect(result).toBeVisible();
     await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
-    await expect(page.locator("#analysis-question")).toBeVisible();
-    await expect(page.locator("#birth-city")).toHaveCount(0);
-    await expect(page.locator("#current-city")).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: "我現在最應該先處理什麼？", exact: true })).toBeVisible();
-    await expect(result.locator("article").first()).not.toBeEmpty();
-    await expect(page.getByRole("button", { name: "查看完整報告", exact: true })).toBeVisible();
+    await expect(page.locator("#analysis-question")).toHaveCount(0);
+    await expect(page.getByText("此刻，你最想了解什麼？", { exact: true })).toHaveCount(0);
+    await expect(page.locator('[data-specialist-link="indian"]')).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 });

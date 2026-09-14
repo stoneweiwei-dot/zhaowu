@@ -2,7 +2,7 @@ import { SUPABASE_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase-c
 import type { SupabaseSession, SupabaseUser } from "@/lib/supabase-rest";
 
 const SESSION_KEY = "zhaowu.supabase.session.v1";
-export const PRODUCTION_AUTH_REDIRECT = "https://stone-zhaowu-official.vercel.app/";
+export const PRODUCTION_AUTH_REDIRECT = "https://stone-zhaowu-official.vercel.app/auth/callback";
 
 type SignupPayload = {
   access_token?: string;
@@ -35,13 +35,18 @@ function saveSignupSession(out: SignupPayload): SupabaseSession | null {
   return session;
 }
 
+function callbackRedirect() {
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return `${window.location.origin}/auth/callback`;
+  }
+  return PRODUCTION_AUTH_REDIRECT;
+}
+
 /**
- * Email signup with an explicit production redirect.
+ * Email signup with an explicit production callback.
  *
- * Supabase otherwise falls back to the Auth Site URL. If that dashboard value is
- * stale (for example an old preview or localhost URL), the confirmation email can
- * verify successfully and then dump the customer onto a blank/error page. Pinning
- * redirect_to here keeps confirmation links returning to the one official site.
+ * Confirmation links must land on /auth/callback, never the homepage hash dump
+ * that used to render as a blank/error page.
  */
 export async function signUpWithPassword(
   email: string,
@@ -51,7 +56,7 @@ export async function signUpWithPassword(
   if (!supabaseConfigured) throw new Error("登入服務尚未配置。");
 
   const endpoint = new URL(`${SUPABASE_URL}/auth/v1/signup`);
-  endpoint.searchParams.set("redirect_to", PRODUCTION_AUTH_REDIRECT);
+  endpoint.searchParams.set("redirect_to", callbackRedirect());
   const res = await fetch(endpoint.toString(), {
     method: "POST",
     headers: {

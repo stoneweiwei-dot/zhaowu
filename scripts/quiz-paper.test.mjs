@@ -19,12 +19,13 @@ test("homepage life paper keeps one analysis form and quiz skin", async () => {
   assert.match(form, /id="bazi"/);
   assert.doesNotMatch(home, /zhaowu-home-quiz-title/);
   assert.match(form, /id="analysisForm"/);
-  assert.match(form, /id="analysis-question"/);
+  assert.doesNotMatch(form, /id="analysis-question"/);
+  assert.doesNotMatch(form, /zhaowu-question-sheet/);
   assert.match(form, /birth-year/);
   assert.doesNotMatch(form, /zhaowu-quiz-chip/);
   assert.doesNotMatch(form, /zhaowu-quiz-choice/);
   assert.doesNotMatch(form, /composeQuizQuestion/);
-  assert.match(form, /question: question\.trim\(\)/);
+  assert.doesNotMatch(form, /question: question\.trim\(\)/);
   assert.match(main, /home-quiz-paper\.css/);
   assert.match(css, /\.zhaowu-quiz-sheet/);
   assert.match(css, /display: grid !important/);

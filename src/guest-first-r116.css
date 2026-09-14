@@ -1,6 +1,5 @@
-/* ZHAOWU r119 — guest-first public entry.
-   Public visitors do not use accounts. The sole visible authentication entry is /login,
-   reserved for the owner/admin; ordinary-user sessions are rejected by AuthProvider. */
+/* ZHAOWU r139 — public entry keeps member login/register plus independent owner cookie.
+   Ordinary-user sessions are accepted as members. Owner privilege is never granted from profiles.is_owner. */
 
 /* Preserve the supplied horizontal wordmark without the old circular clipping. */
 .zhaowu-site-header .zhaowu-brand-seal--sm {

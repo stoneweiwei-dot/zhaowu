@@ -24,19 +24,21 @@ test('canonical design system stays the final global base and r89 overrides logi
   assert.doesNotMatch(root, /mobile-foundation-r81\.css/);
 });
 
-test('approved login restores official mark, Song wallpaper and owner-key credentials only', () => {
+test('approved login restores official mark, Song wallpaper, member email and owner-key credentials', () => {
   assert.match(login, /BrandSeal/);
   assert.match(login, /stone-login-brand/);
   assert.match(login, /id="login-secret"/);
-  assert.match(login, /data-login-backend="vercel-owner-cookie"/);
-  assert.doesNotMatch(login, /id="login-email"|id="login-password"/);
-  assert.doesNotMatch(login, /onOAuth\(/);
-  assert.doesNotMatch(login, /startOAuth/);
-  assert.doesNotMatch(login, /data-provider=/);
+  assert.match(login, /vercel-owner-cookie/);
+  assert.match(login, /id="login-email"/);
+  assert.match(login, /id="login-password"/);
+  assert.match(login, /onOAuth\(/);
+  assert.match(login, /startOAuth/);
+  assert.match(login, /data-provider=/);
   assert.match(loginApproved, /url\("\/wallpaper-song\.jpg"\)/);
   assert.match(loginApproved, /rgba\(255, 252, 244, \.91\)/);
   assert.match(loginApproved, /#ac473b/);
   assert.match(loginApproved, /background-attachment:\s*scroll/);
+  assert.match(loginApproved, /\.stone-login-stage-media/);
 });
 
 test('runtime R79 visual injector stays removed', () => {

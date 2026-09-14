@@ -17,24 +17,31 @@ const account = await readFile(new URL("../src/routes/account.tsx", import.meta.
 const sharedBirth = await readFile(new URL("../src/lib/shared-birth.ts", import.meta.url), "utf8");
 const analysisForm = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
 
-test("public shell exposes one owner login entry and preserves owner controls", () => {
+test("public shell exposes login and preserves owner controls", () => {
   assert.match(shell, /className="zhaowu-header-login"/);
   assert.doesNotMatch(guestCss, /\.zhaowu-site-header \.zhaowu-header-login[\s\S]*display:\s*none\s*!important/);
   assert.match(main, /import ['"]\.\/guest-first-r116\.css['"]/);
   assert.match(shell, /user\?\.isOwner/);
   assert.match(shell, /to="\/account"/);
   assert.match(shell, /signOut/);
+  assert.match(shell, /t\("navLogin"\)/);
 });
 
-test("owner login is independent of Supabase Auth and uses a secure host-only cookie", () => {
+test("owner cookie stays independent while member email login is restored", () => {
   assert.match(login, /ownerSignIn/);
-  assert.match(login, /data-login-backend="vercel-owner-cookie"/);
+  assert.match(login, /vercel-owner-cookie/);
   assert.match(login, /login-secret/);
   assert.match(login, /站主密鑰/);
-  assert.doesNotMatch(login, /signInWithPassword|getProfile|signOutRemote|supabaseConfigured|login-email/);
+  assert.match(login, /signInWithPassword/);
+  assert.match(login, /signUpWithPassword/);
+  assert.match(login, /signupTab/);
+  assert.match(login, /login-email/);
   assert.match(provider, /readOwnerSession/);
-  assert.doesNotMatch(provider, /restoreSession|getProfile|captureOAuthRedirect|signOutRemote/);
+  assert.match(provider, /restoreSession/);
+  assert.match(provider, /captureOAuthRedirect/);
+  assert.match(provider, /isOwner: false/);
   assert.match(client, /ownerSignOut/);
+  assert.match(client, /signOutRemote/);
   assert.match(ownerApi, /JSON\.stringify\(\{ secret \}\)/);
   assert.match(ownerApi, /\/api\/owner-login/);
   assert.match(ownerSessionApi, /requestHasOwnerSession/);
@@ -53,15 +60,19 @@ test("owner login is independent of Supabase Auth and uses a secure host-only co
   assert.match(account, /Supabase Auth/);
 });
 
-test("guest birth data stays local and account-scoped data remains isolated", () => {
+test("device birth data is never wiped on login or logout", () => {
   assert.match(sharedBirth, /GUEST_BIRTH_OWNER_ID/);
   assert.match(sharedBirth, /localStorage\.setItem\(SHARED_BIRTH_STORAGE_KEY/);
-  assert.match(sharedBirth, /storedOwner !== activeSharedBirthUserId/);
-  assert.match(sharedBirth, /signed-in user never inherits an unowned browser record/i);
+  assert.doesNotMatch(sharedBirth, /removeItem\(SHARED_BIRTH_STORAGE_KEY\)[\s\S]{0,80}setItem\(SHARED_BIRTH_OWNER_KEY, nextOwner\)/);
+  assert.match(sharedBirth, /Never delete the device birth on login or logout/);
+  assert.match(sharedBirth, /Device record wins regardless of the current login marker/);
 });
 
-test("free analysis remains available without a session and persistence stays session-gated", () => {
-  assert.match(analysisForm, /analyzeLife\(/);
+test("free birth save remains available without a session and persistence stays session-gated", () => {
   assert.match(analysisForm, /writeSharedBirthRecord/);
   assert.match(analysisForm, /if \(session\)/);
+  assert.match(analysisForm, /updateBirthData/);
+  assert.doesNotMatch(analysisForm, /analyzeLife\(/);
+  assert.doesNotMatch(analysisForm, /zhaowu-question-sheet/);
+  assert.doesNotMatch(analysisForm, /此刻，你最想了解/);
 });

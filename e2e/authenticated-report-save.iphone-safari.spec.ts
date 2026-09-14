@@ -58,7 +58,6 @@ async function mockAuthenticatedCloud(page: Page, reportStatus = 200) {
   });
 }
 async function fillKnownBirthData(page: Page) {
-  await page.locator("#analysis-question").fill("我現在最應該先處理什麼？");
   await page.locator("#birth-year").fill("1988");
   await page.locator("#birth-month").fill("10");
   await page.locator("#birth-day").fill("4");
@@ -79,27 +78,24 @@ async function mobileHealthy(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 }
 
-test("Guest reaches the full report without a member-save action", async ({ page }) => {
+test("Guest saves the birth record without a self-Q&A sheet", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "開始分析", exact: true }).click();
-  await expect(page.locator("#result")).toBeVisible();
-  await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "更新已保存報告", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "保存生辰", exact: true }).click();
+  await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
+  await expect(page.locator("#analysis-question")).toHaveCount(0);
+  await expect(page.getByText("此刻，你最想了解什麼？", { exact: true })).toHaveCount(0);
   await mobileHealthy(page);
 });
 
-test("Guest full report stays available without Supabase persistence", async ({ page }) => {
+test("Guest birth record stays on the phone without Supabase persistence", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "開始分析", exact: true }).click();
-  await expect(page.locator("#result")).toBeVisible();
-  await page.getByRole("button", { name: "查看完整報告", exact: true }).click();
-  // Persistence is asynchronous and may expose a retry/update action at different times.
-  // The protected contract here is that a cloud failure never removes the delivered report.
-  await expect(page.getByRole("heading", { name: "你的完整分析", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "保存生辰", exact: true }).click();
+  await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
+  await expect(page.locator('[data-specialist-link="indian"]')).toBeVisible();
   await mobileHealthy(page);
+});
 });

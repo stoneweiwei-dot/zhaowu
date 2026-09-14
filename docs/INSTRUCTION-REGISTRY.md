@@ -124,7 +124,19 @@
 
 - D60：`src/components/d60-karma-section.tsx` 已有 Astronomy Engine 與分鐘確認 Gate，r113 又修正了共享資料的確認旁路；上文「CALCULATION NOT WIRED」是歷史狀態，不能再用來聲稱網站沒有元件。現有計算不等於已完成獨立星曆／流派 test-vector 認證，後者仍需驗證，不得擅改公式。
 - Logo：本批採站主金葫蘆＋深藍昭梧來源，Header 與 App 尺寸分開，取代 CURRENT-STATE 的 r98 松系主 Logo 限制；功能松系圖示仍保留。
-- 登入：2026-09-14 r128／r129 取代 Email＋密碼契約。普通用戶登入、註冊與既有非 Owner session 全部退出 active path；唯一登入入口為 `/login` 站主密鑰 + 獨立 Cookie `__Host-zhaowu_owner_session`。不經 Supabase Auth。Email＋密碼 + `profiles.is_owner` 舊契約 `SUPERSEDED`。
+- 登入：2026-09-15 r139 依站主最新指令恢復會員登入／註冊，並新增 `/auth/callback`。r128／r129「普通用戶登入全部退出 active path」僅就**站主不得走 Supabase Auth、會員不得靠 `profiles.is_owner` 升成站主**仍然有效；「不得放出註冊」已被取代。
+
+## 2026-09-15 r139 homepage / D60 grouping / member auth / login animation / music error
+
+- 首頁拿掉問事標語與 textarea；只留客人資料與保存生辰。不得再發明隱藏預設問題。
+- D60 分析全部離開 `/yizhangjing`，只留在 `/indian-astrology` 的 `D60ReliabilityGate`。不得改計算公式，不得 merge #304。
+- 本機 `zhaowu.birth-record.v1` 登入／登出不得刪。每台手機自動讀取先前紀錄。
+- `/login` 登入動畫必須全螢幕可見。IntroGate 仍維持 r126 skip-after-seen。
+- 西洋十二宮完整解讀不得 `nowrap` 裁欄。
+- 音樂上傳對 iPhone AAC／octet-stream 做 magic-byte 辨識，失敗必須帶 HTTP／detail。
+- PWA cache `zhaowu-shell-r139`。
+- Loading 維持 r126。不 merge #304。PR #295 維持暫停。
+
 - 付費圖片 PR #295 於 2026-09-12 明確暫停，保持暫停。
 - 語言：現行公開語言選項為繁中／英文／韓文／印地文；簡中為相容層。舊三語任務不得直接恢復已移除的公開選項。
 - 待辦及證據分類見 `docs/OPEN-INSTRUCTIONS-2026-09-12.md`。

@@ -156,14 +156,19 @@ test("active full-report renderer has no report dragon or ornament rail", async 
   assert.match(active, /display: none !important/);
 });
 
-test("Dharma Palm standalone keeps the four-life trail without decorative emblem logos", async () => {
+test("Dharma Palm standalone keeps the four-life trail without D60 or decorative emblem logos", async () => {
   const route = await source("src/routes/yizhangjing.tsx");
   const palm = await source("src/components/palm-standalone.tsx");
+  const indian = await source("src/routes/indian-astrology.tsx");
+  const page = await source("src/components/specialist-system-page.tsx");
   assert.match(route, /PalmStandalone/);
+  assert.doesNotMatch(route, /D60KarmaSection/);
   assert.match(palm, /traceTitle/);
   assert.match(palm, /four-life symbolic trail/);
-  assert.match(palm, /zhaowu:d60-birth/);
+  assert.doesNotMatch(palm, /zhaowu:d60-birth/);
   assert.doesNotMatch(palm, /AUSPICIOUS_EMBLEMS|\/emblems\/|BrandSeal/);
+  assert.match(indian, /SpecialistSystemPage id="indian"/);
+  assert.match(page, /D60ReliabilityGate/);
 });
 
 test("customer birth form keeps fixed time policy without exposing controls", async () => {

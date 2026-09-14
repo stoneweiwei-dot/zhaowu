@@ -7,9 +7,8 @@ const GUEST_BIRTH_OWNER_ID = "__zhaowu_guest__";
 
 export type SharedBirthRecord = Omit<AnalyzeInput, "question" | "locale">;
 
-// Guest visitors may reuse one birth record across public specialist routes on the
-// same device. Signed-in records remain isolated by user id and never leak back to
-// guest mode after sign-out.
+// One device keeps one birth record. Login, logout and owner-cookie changes must
+// never wipe it — the owner asked each phone to restore the previous record automatically.
 let activeSharedBirthUserId: string = GUEST_BIRTH_OWNER_ID;
 
 function asCity(value: unknown): CityHit | null {
@@ -76,17 +75,11 @@ export function setSharedBirthAccessUser(userId: string | null) {
     const storedOwner = window.localStorage.getItem(SHARED_BIRTH_OWNER_KEY);
     const raw = window.localStorage.getItem(SHARED_BIRTH_STORAGE_KEY);
 
-    // Older guest records predate the owner marker. Adopt them only into guest
-    // scope; a signed-in user never inherits an unowned browser record.
-    if (!storedOwner && raw && nextOwner === GUEST_BIRTH_OWNER_ID) {
+    // Adopt a legacy unowned record. Never delete the device birth on login or logout.
+    if (!storedOwner && raw) {
       window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, GUEST_BIRTH_OWNER_ID);
-      return;
     }
-
-    if (storedOwner !== nextOwner) {
-      window.localStorage.removeItem(SHARED_BIRTH_STORAGE_KEY);
-      window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, nextOwner);
-    }
+    window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, nextOwner);
   } catch {
     // Restricted/private browser storage must never block the current page.
   }
@@ -110,14 +103,11 @@ export function readSharedBirthRecord(): SharedBirthRecord | null {
     if (!raw) return null;
     const storedOwner = window.localStorage.getItem(SHARED_BIRTH_OWNER_KEY);
 
-    // Adopt legacy unowned data only for a guest visitor. This preserves the
-    // original public flow while keeping authenticated records isolated.
-    if (!storedOwner && activeSharedBirthUserId === GUEST_BIRTH_OWNER_ID) {
-      window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, GUEST_BIRTH_OWNER_ID);
-      return sharedBirthFromUnknown(JSON.parse(raw));
+    if (!storedOwner) {
+      window.localStorage.setItem(SHARED_BIRTH_OWNER_KEY, activeSharedBirthUserId || GUEST_BIRTH_OWNER_ID);
     }
 
-    if (storedOwner !== activeSharedBirthUserId) return null;
+    // Device record wins regardless of the current login marker.
     return sharedBirthFromUnknown(JSON.parse(raw));
   } catch {
     return null;

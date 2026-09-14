@@ -188,6 +188,24 @@ function filenameOf(name, contentType) {
   return { name: base.replace(/\.[^.]+$/, "") || "background", ext, contentType: ALLOWED_EXT[ext] };
 }
 
+function sniffAudioExt(buffer) {
+  if (!buffer || buffer.length < 4) return null;
+  if (buffer[0] === 0x49 && buffer[1] === 0x44 && buffer[2] === 0x33) return { ext: ".mp3", contentType: "audio/mpeg" };
+  if (buffer[0] === 0xff && (buffer[1] & 0xe0) === 0xe0) return { ext: ".mp3", contentType: "audio/mpeg" };
+  if (buffer.length >= 8 && buffer.slice(4, 8).toString("ascii") === "ftyp") return { ext: ".m4a", contentType: "audio/mp4" };
+  return null;
+}
+
+function resolveAudioFile(name, contentType, buffer) {
+  const parsed = filenameOf(name, contentType);
+  if (parsed) return parsed;
+  const sniffed = sniffAudioExt(buffer);
+  if (!sniffed) return null;
+  const raw = String(name || "background").trim() || "background";
+  const base = raw.replace(/[/\\]/g, "").replace(/\.[^.]+$/, "") || "background";
+  return { name: base.slice(0, 80), ext: sniffed.ext, contentType: sniffed.contentType };
+}
+
 function publicPayload(manifest) {
   const tracks = Array.isArray(manifest?.tracks) ? manifest.tracks : [];
   const active = tracks.find((row) => row.id === manifest?.activeId) || tracks.find((row) => row.enabled) || null;
@@ -253,9 +271,9 @@ export default async function handler(req, res) {
     if (method === "POST") {
       const declaredType = headerValue(req, "content-type").split(";")[0].trim().toLowerCase();
       const rawName = decodeURIComponent(headerValue(req, "x-zhaowu-music-name") || "background");
-      const parsed = filenameOf(rawName, declaredType);
-      if (!parsed) return json(res, 415, { ok: false, error: "UNSUPPORTED_AUDIO" });
       const buffer = await readBinaryBody(req);
+      const parsed = resolveAudioFile(rawName, declaredType, buffer);
+      if (!parsed) return json(res, 415, { ok: false, error: "UNSUPPORTED_AUDIO", detail: `type=${declaredType || "empty"} name=${rawName}` });
       if (!buffer.length) return json(res, 400, { ok: false, error: "EMPTY_AUDIO" });
       const uploadId = headerValue(req, "x-zhaowu-music-upload-id").trim();
       const chunkIndex = headerValue(req, "x-zhaowu-music-chunk-index").trim();

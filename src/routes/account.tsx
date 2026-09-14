@@ -469,10 +469,10 @@ function AccountPage() {
     return (
       <main className="mx-auto max-w-xl">
         <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
-          <p className="text-xs tracking-[0.28em] text-cinnabar">OWNER CONSOLE</p>
-          <h1 className="mt-2 font-display text-3xl">{c.ownerTitle}</h1>
-          <p className="mt-4 text-sm leading-7 text-ink-soft">{tr(locale, "此入口僅供站主管理使用。", "此入口仅供站主管理使用。", "This entrance is reserved for the site owner.")}</p>
-          <Link to="/login" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{tr(locale, "站主登入", "站主登录", "Owner sign-in")}</Link>
+          <p className="text-xs tracking-[0.28em] text-cinnabar">ZHAOWU ACCOUNT</p>
+          <h1 className="mt-2 font-display text-3xl">{c.memberTitle}</h1>
+          <p className="mt-4 text-sm leading-7 text-ink-soft">{tr(locale, "登入或註冊後可保存這台手機的生辰與報告。站主請改用登入頁的「站主」分頁。", "登录或注册后可保存这台手机的生辰与报告。站主请改用登录页的「站主」分页。", "Sign in or create an account to keep this phone's birth record and reports. Owners use the Owner tab on the sign-in page.")}</p>
+          <Link to="/login" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{tr(locale, "會員登入／註冊", "会员登录／注册", "Sign in / Register")}</Link>
         </section>
       </main>
     );
