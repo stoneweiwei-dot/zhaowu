@@ -37,9 +37,10 @@ test("curated archive remains concise, unique and tri-lingual", () => {
   }
 });
 
-test("long-form archive preserves the current fourteen full-depth source articles in all three languages", () => {
-  assert.equal(LIFE_VIEW_LONG_FORM_ARTICLES.length, 14);
-  assert.equal(new Set(LIFE_VIEW_LONG_FORM_ARTICLES.map((article) => article.id)).size, 14);
+test("long-form archive preserves the current fifteen full-depth source articles in all three languages", () => {
+  assert.equal(LIFE_VIEW_LONG_FORM_ARTICLES.length, 15);
+  assert.equal(new Set(LIFE_VIEW_LONG_FORM_ARTICLES.map((article) => article.id)).size, 15);
+  assert.ok(LIFE_VIEW_LONG_FORM_ARTICLES.some((article) => article.id === "strength-overdrive-five-elements"));
   for (const article of LIFE_VIEW_LONG_FORM_ARTICLES) {
     for (const locale of ["zh-Hant", "zh-Hans", "en"]) {
       assert.ok(article.title[locale]?.trim());
