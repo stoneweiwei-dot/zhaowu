@@ -77,13 +77,15 @@ test("owner console exposes cookie-gated upload without a Supabase session", () 
 });
 
 test("owner audio optimizer is bounded and refuses destructive low-bitrate compression", () => {
-  assert.match(ownerTranscode, /CORE_LOAD_TIMEOUT_MS = 25_000/);
+  assert.match(ownerTranscode, /CORE_LOAD_TIMEOUT_MS = 90_000/);
   assert.match(ownerTranscode, /TRANSCODE_TIMEOUT_MS = 180_000/);
   assert.match(ownerTranscode, /withTimeout/);
   assert.match(ownerTranscode, /terminate\?/);
   assert.match(ownerTranscode, /INITIAL_AAC_KBPS = 96/);
   assert.match(ownerTranscode, /MIN_AAC_KBPS = 64/);
   assert.match(ownerTranscode, /aac_low/);
+  assert.match(ownerTranscode, /decodeOwnerAudioPcm/);
+  assert.match(ownerTranscode, /isIosOwnerDevice/);
   assert.match(ownerTranscode, /為避免把音質壓到明顯變差/);
 });
 

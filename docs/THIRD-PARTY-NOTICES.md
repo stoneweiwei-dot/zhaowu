@@ -1,5 +1,11 @@
 # Third-party notices
 
+## lamejs MP3 encoder
+
+`src/lib/vendor/lamejs.js` vendors `lamejs` 1.2.1 for on-device owner-music compression on iPhone Safari, where FFmpeg WASM initialization is unreliable. The original library is LGPL-2.1.
+
+Copyright (c) 2013-2017 Yago Pérez Valls and lamejs contributors.
+
 ## Placidus house cusp solver
 
 `src/lib/western-astrology/engine.ts` adapts the iterative Placidus intermediate-cusp method from `adamblvck/free-human-design` (`src/hd/houses.js`). The adaptation removes Human Design-specific mapping and supplies Zhaowu's own sidereal-time input while preserving the standard semi-arc construction and polar-latitude fallback behaviour.
