@@ -104,7 +104,12 @@ export async function decodeOwnerAudioPcm(
   if (!AudioCtx) return null;
   const ctx = new AudioCtx();
   try {
-    if (ctx.state === "suspended") await ctx.resume().catch(() => undefined);
+    if (ctx.state === "suspended") {
+      await Promise.race([
+        ctx.resume().catch(() => undefined),
+        new Promise<void>((resolve) => { setTimeout(resolve, 1200); }),
+      ]);
+    }
     onProgress?.({ percent: 12, label: "本機解碼音樂（不下載大型轉碼器）" });
     const buffer = await decodeAudioBuffer(ctx, (await source.arrayBuffer()).slice(0));
     const sampleRate = pickLameSampleRate(buffer.sampleRate);

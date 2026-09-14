@@ -221,7 +221,7 @@ export function LifeViewSection() {
   return (
     <section
       id="life-view"
-      className="scroll-mt-20 rounded-[1.75rem] border border-line/80 bg-[#fbf5e9] px-5 py-6 shadow-[0_14px_38px_rgba(86,62,31,0.08)] sm:px-8 sm:py-8"
+      className="scroll-mt-20 rounded-[1.75rem] border border-line/80 bg-paper px-5 py-6 shadow-[0_14px_38px_rgba(86,62,31,0.08)] sm:px-8 sm:py-8"
       aria-labelledby="life-view-title"
     >
       <header className="max-w-2xl">
@@ -271,6 +271,7 @@ export function LifeViewSection() {
                               loading="lazy"
                               decoding="async"
                               style={{ objectPosition: crop.objectPosition }}
+                              onError={(event) => { event.currentTarget.classList.add("life-view-broken-image"); const figure = event.currentTarget.closest("figure"); if (figure) figure.classList.add("life-view-broken-image"); }}
                             />
                           </figure>
                         ) : null}

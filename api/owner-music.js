@@ -6,6 +6,7 @@ import {
   MAX_BYTES,
   readOwnerMusicManifest,
   saveOwnerMusicTrack,
+  saveOwnerMusicChunk,
 } from "../lib/owner-music-git.js";
 
 const OWNER_COOKIE = "__Host-zhaowu_owner_session";
@@ -174,6 +175,22 @@ export default async function handler(req, res) {
       if (!parsed) return json(res, 415, { ok: false, error: "UNSUPPORTED_AUDIO" });
       const buffer = await readBinaryBody(req);
       if (!buffer.length) return json(res, 400, { ok: false, error: "EMPTY_AUDIO" });
+      const uploadId = headerValue(req, "x-zhaowu-music-upload-id").trim();
+      const chunkIndex = headerValue(req, "x-zhaowu-music-chunk-index").trim();
+      const chunkTotal = headerValue(req, "x-zhaowu-music-chunk-total").trim();
+      if (uploadId || chunkIndex || chunkTotal) {
+        const saved = await saveOwnerMusicChunk(secret, {
+          name: parsed.name,
+          ext: parsed.ext,
+          contentType: parsed.contentType,
+          buffer,
+          uploadId,
+          chunkIndex,
+          chunkTotal,
+        });
+        if (saved?.pending) return json(res, 200, { ok: true, pending: true, received: saved.received, total: saved.total });
+        return json(res, 200, { ...publicPayload(saved), uploaded: true });
+      }
       if (buffer.length > MAX_BYTES) return json(res, 413, { ok: false, error: "AUDIO_TOO_LARGE" });
       const manifest = await saveOwnerMusicTrack(secret, {
         name: parsed.name,

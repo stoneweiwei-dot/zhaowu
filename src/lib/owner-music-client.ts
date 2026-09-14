@@ -1,4 +1,4 @@
-import { optimizeOwnerMusic, type OwnerMusicOptimizeProgress } from "@/lib/owner-music-transcode";
+import { MAX_OWNER_UPLOAD_BYTES, optimizeOwnerMusic, type OwnerMusicOptimizeProgress } from "@/lib/owner-music-transcode";
 
 export type OwnerMusicTrack = {
   id: string;
@@ -21,6 +21,8 @@ export type OwnerMusicUploadResult = {
   bitrateKbps: number | null;
   transcoded: boolean;
 };
+
+export const OWNER_MUSIC_CHUNK_BYTES = 3_000_000;
 
 async function parseBody(response: Response) {
   return response.json().catch(() => ({})) as Promise<Record<string, unknown>>;
@@ -46,29 +48,61 @@ export async function loadOwnerMusic(): Promise<OwnerMusicState> {
   };
 }
 
+function uploadError(body: Record<string, unknown>) {
+  if (body.error === "AUDIO_TOO_LARGE") return "音檔仍超過安全上傳大小，請裁短曲目後再試。";
+  if (body.error === "UNSUPPORTED_AUDIO") return "這個音檔無法轉成網站播放格式。";
+  if (body.error === "OWNER_REQUIRED") return "站主登入狀態已失效，請重新登入。";
+  return typeof body.detail === "string" ? body.detail : "背景音樂上傳失敗。";
+}
+
+async function postMusicBlob(file: Blob, name: string, contentType: string, extra: Record<string, string> = {}) {
+  return fetch("/api/owner-music", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": contentType || "audio/mpeg",
+      "x-zhaowu-music-name": encodeURIComponent(name || "background.mp3"),
+      ...extra,
+    },
+    body: file,
+  });
+}
+
+async function uploadInChunks(file: File, onProgress?: (progress: OwnerMusicOptimizeProgress) => void) {
+  if (file.size > MAX_OWNER_UPLOAD_BYTES) throw new Error("音檔超過 12 MB。請先轉成較小的 MP3／M4A 或裁短曲目。");
+  const total = Math.max(1, Math.ceil(file.size / OWNER_MUSIC_CHUNK_BYTES));
+  const uploadId = (crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`).replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 48);
+  let lastBody: Record<string, unknown> = {};
+  for (let index = 0; index < total; index += 1) {
+    const start = index * OWNER_MUSIC_CHUNK_BYTES;
+    const blob = file.slice(start, start + OWNER_MUSIC_CHUNK_BYTES);
+    onProgress?.({ percent: Math.min(96, 82 + Math.round(((index + 0.35) / total) * 16)), label: `上傳音樂 ${index + 1}/${total}` });
+    const response = await postMusicBlob(blob, file.name, file.type || "audio/mpeg", {
+      "x-zhaowu-music-upload-id": uploadId,
+      "x-zhaowu-music-chunk-index": String(index),
+      "x-zhaowu-music-chunk-total": String(total),
+    });
+    lastBody = await parseBody(response);
+    if (!response.ok) throw new Error(uploadError(lastBody));
+    onProgress?.({ percent: Math.min(98, 82 + Math.round(((index + 1) / total) * 16)), label: index + 1 === total ? "保存並切換網站背景音樂" : `已收第 ${index + 1} 段` });
+  }
+  if (lastBody.pending) throw new Error("分塊尚未收齊，請再試一次。");
+  return lastBody;
+}
+
 export async function uploadOwnerMusic(
   source: File,
   onProgress?: (progress: OwnerMusicOptimizeProgress) => void,
 ): Promise<OwnerMusicUploadResult> {
   const optimized = await optimizeOwnerMusic(source, onProgress);
-  onProgress?.({ percent: 82, label: "上傳優化後音樂" });
+  onProgress?.({ percent: 82, label: "上傳音樂" });
   const file = optimized.file;
-  const response = await fetch("/api/owner-music", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": file.type || "audio/mp4",
-      "x-zhaowu-music-name": encodeURIComponent(file.name || "background.m4a"),
-    },
-    body: file,
-  });
-  onProgress?.({ percent: 94, label: "保存並切換網站背景音樂" });
-  const body = await parseBody(response);
-  if (!response.ok) {
-    if (body.error === "AUDIO_TOO_LARGE") throw new Error("優化後音檔仍超過安全上傳大小，請裁短曲目後再試。");
-    if (body.error === "UNSUPPORTED_AUDIO") throw new Error("這個音檔無法轉成網站播放格式。");
-    if (body.error === "OWNER_REQUIRED") throw new Error("站主登入狀態已失效，請重新登入。");
-    throw new Error(typeof body.detail === "string" ? body.detail : "背景音樂上傳失敗。");
+  if (file.size > OWNER_MUSIC_CHUNK_BYTES) {
+    await uploadInChunks(file, onProgress);
+  } else {
+    const response = await postMusicBlob(file, file.name, file.type || "audio/mp4");
+    const body = await parseBody(response);
+    if (!response.ok) throw new Error(uploadError(body));
   }
   onProgress?.({ percent: 100, label: "完成" });
   window.dispatchEvent(new Event("zhaowu-music-change"));

@@ -19,7 +19,7 @@ test("owner music API is a self-contained cookie-gated function off the SPA rewr
   assert.match(git, /decryptOwnerSshKey/);
   assert.doesNotMatch(ssh, /BEGIN OPENSSH PRIVATE KEY/);
   assert.match(ssh, /aes-256-gcm/);
-  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 30);
+  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 60);
   assert.equal(vercel.git.deploymentEnabled["owner-music"], false);
   assert.equal(vercel.rewrites.at(-1).source, "/((?!api/).*)");
 });
@@ -60,6 +60,7 @@ test("account console and player use owner music with browser-side format optimi
   assert.match(client, /x-zhaowu-music-name/);
   assert.match(client, /zhaowu-music-change/);
   assert.match(transcoder, /TARGET_UPLOAD_BYTES = 3_550_000/);
+  assert.match(transcoder, /MAX_OWNER_UPLOAD_BYTES = 12 \* 1024 \* 1024/);
   assert.match(transcoder, /aac_low/);
   assert.match(transcoder, /INITIAL_AAC_KBPS = 96/);
   assert.match(transcoder, /MIN_AAC_KBPS = 64/);
@@ -69,6 +70,7 @@ test("account console and player use owner music with browser-side format optimi
   assert.match(transcoder, /decodeOwnerAudioPcm/);
   assert.match(transcoder, /isIosOwnerDevice/);
   assert.match(transcoder, /本機壓縮音樂，避免 iPhone 卡住/);
+  assert.match(client, /x-zhaowu-music-upload-id/);
 });
 
 test("independent owner cookie does not get falsely sent back to login on gallery", async () => {

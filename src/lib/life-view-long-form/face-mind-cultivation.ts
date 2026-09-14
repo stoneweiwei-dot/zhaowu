@@ -140,7 +140,7 @@ Physiognomy cannot decide your destiny. Long-term patterns of mind and life can,
   },
   illustrations: [
     {
-      src: "/articles/face-mind-cultivation-2026-09-14.webp",
+      src: "/articles/face-mind-cultivation-2026-09-14.svg",
       afterParagraph: 5,
       alt: {
         "zh-Hant": "同一名男子由緊繃走向安定的宋式水墨意象，象徵心境、身體與環境的長期回饋",

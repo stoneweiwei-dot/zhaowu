@@ -6,11 +6,13 @@ const FFMPEG_CORE_URL = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/
 const FFMPEG_WASM_URL = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm";
 
 const TARGET_UPLOAD_BYTES = 3_550_000;
+export const MAX_OWNER_UPLOAD_BYTES = 12 * 1024 * 1024;
 const MAX_SOURCE_BYTES = 200 * 1024 * 1024;
 const INITIAL_AAC_KBPS = 96;
 const MIN_AAC_KBPS = 64;
 const CORE_LOAD_TIMEOUT_MS = 90_000;
 const TRANSCODE_TIMEOUT_MS = 180_000;
+const NATIVE_DECODE_TIMEOUT_MS = 12_000;
 const TOO_LONG = "曲目太長；為避免把音質壓到明顯變差，AAC 64 kbps 後仍超過安全上傳大小。請裁短曲目後再試。";
 
 export type OwnerMusicOptimizeProgress = { percent: number; label: string };
@@ -31,9 +33,9 @@ type FfmpegConstructor = new () => FfmpegLike;
 
 function extensionOf(file: File) { const ext = (file.name.split(".").pop() || "audio").toLowerCase().replace(/[^a-z0-9]/g, ""); return ext || "audio"; }
 function baseName(file: File) { return (file.name.replace(/\.[^.]+$/, "").trim() || "background").slice(0, 100); }
-function isCompactBrowserSafeAudio(file: File) {
+export function isBrowserSafeAudio(file: File) {
   const type = file.type.toLowerCase(); const ext = extensionOf(file);
-  return file.size <= TARGET_UPLOAD_BYTES && (["audio/mp4","audio/x-m4a","audio/mpeg","audio/mp3"].includes(type) || ["m4a","mp3"].includes(ext));
+  return ["audio/mp4","audio/x-m4a","audio/mpeg","audio/mp3"].includes(type) || ["m4a","mp3"].includes(ext);
 }
 function asBytes(data: FfmpegFileData) { return typeof data === "string" ? new TextEncoder().encode(data) : data; }
 function asArrayBuffer(bytes: Uint8Array): ArrayBuffer { const copy = new ArrayBuffer(bytes.byteLength); new Uint8Array(copy).set(bytes); return copy; }
@@ -160,12 +162,19 @@ async function ffmpegFit(source: File, onProgress?: (p: OwnerMusicOptimizeProgre
 export async function optimizeOwnerMusic(source: File, onProgress?: (p: OwnerMusicOptimizeProgress) => void): Promise<OptimizedOwnerMusic> {
   if (!source.size) throw new Error("音檔是空的。");
   if (source.size > MAX_SOURCE_BYTES) throw new Error("原始音檔超過 200 MB；請先裁短曲目後再上傳。");
-  if (isCompactBrowserSafeAudio(source)) {
-    onProgress?.({ percent: 58, label: "已是適合網站播放的格式，保留原音質" });
+  if (isBrowserSafeAudio(source)) {
+    if (source.size > MAX_OWNER_UPLOAD_BYTES) throw new Error("MP3／M4A 超過 12 MB。請先轉成較小檔案或裁短曲目後再傳，不必在 iPhone 上解碼壓縮。");
+    onProgress?.({ percent: 58, label: "已是網站可播放格式，直接上傳原檔" });
     return { file: source, sourceBytes: source.size, outputBytes: source.size, bitrateKbps: null, transcoded: false };
   }
   onProgress?.({ percent: 6, label: "本機壓縮音樂，避免 iPhone 卡住" });
-  const native = await nativeFit(source, onProgress);
+  let native: OptimizedOwnerMusic | null = null;
+  try {
+    native = await withTimeout(nativeFit(source, onProgress), NATIVE_DECODE_TIMEOUT_MS, "本機解碼逾時，已停止以免卡住。請改選 12MB 以內的 MP3 或 M4A 直接上傳。");
+  } catch (error) {
+    if (isIosOwnerDevice()) throw error instanceof Error ? error : new Error("本機解碼失敗。請改選 MP3 或 M4A。");
+    native = null;
+  }
   if (native) return native;
   if (isIosOwnerDevice()) {
     throw new Error("iPhone 無法解碼這個格式，已停止載入大型轉碼器以免卡住。請改選 MP3 或 M4A，或用電腦上傳 FLAC／WAV。");

@@ -47,11 +47,11 @@ export function OwnerBackgroundMusicManager() {
     title: tr(locale, "網站背景音樂", "网站背景音乐", "Website background music"),
     lead: tr(
       locale,
-      "直接選原始音樂即可。iPhone 會先在本機解碼並壓成可上傳的 MP3，不再下載 20MB 轉碼器、也不再卡在「初始化逾時」。WAV、FLAC 請用電腦上傳，會轉成 Safari 穩定的 AAC-LC / M4A。",
-      "直接选择原始音乐即可。iPhone 会先在本机解码并压成可上传的 MP3，不再下载 20MB 转码器、也不再卡在“初始化超时”。WAV、FLAC 请用电脑上传，会转成 Safari 稳定的 AAC-LC / M4A。",
-      "Choose the original track. iPhone compresses it on-device to an uploadable MP3 and will not download the large FFmpeg runtime. Use a computer for FLAC/WAV if needed.",
+      "直接選 MP3 或 M4A 即可，12MB 以內會原檔上傳，不再在 iPhone 上解碼壓縮，也不會卡在 6%。WAV、FLAC 請用電腦上傳。",
+      "直接选 MP3 或 M4A 即可，12MB 以内会原文件上传，不再在 iPhone 上解码压缩，也不会卡在 6%。WAV、FLAC 请用电脑上传。",
+      "Choose MP3 or M4A up to 12MB. iPhone uploads the original file and will not hang on local decode. Use a computer for FLAC/WAV.",
     ),
-    entryLead: tr(locale, "站主專用 · 自動轉碼、壓縮、上傳、切換", "站主专用 · 自动转码、压缩、上传、切换", "Owner only · optimize, upload and switch music"),
+    entryLead: tr(locale, "站主專用 · 自動轉碼、分段上傳、切換", "站主专用 · 自动转码、分段上传、切换", "Owner only · auto-detect, chunked upload and switch"),
     upload: tr(locale, "＋ 選擇音樂", "＋ 选择音乐", "+ Choose music"),
     processing: tr(locale, "處理中…", "处理中…", "Processing…"),
     current: tr(locale, "目前播放", "当前播放", "Currently playing"),
@@ -64,8 +64,8 @@ export function OwnerBackgroundMusicManager() {
     uploaded: tr(locale, "新音樂已優化、上傳並啟用。", "新音乐已优化、上传并启用。", "The new track was optimized, uploaded and activated."),
     confirmDelete: tr(locale, "刪除這首背景音樂？", "删除这首背景音乐？", "Delete this background track?"),
     loadFailed: tr(locale, "背景音樂讀取失敗。", "背景音乐读取失败。", "Could not load background music."),
-    formatHint: tr(locale, "可直接選一般音訊原檔，來源檔最高 200 MB。已經很小且相容的 MP3／M4A 會保留原音質；5–10 MB 的 MP3／M4A 在 iPhone 上改走本機壓縮。極端超長曲目若壓到最低安全品質仍無法容納，才會要求裁短。", "可直接选择一般音频原文件，来源文件最高 200 MB。已经很小且兼容的 MP3／M4A 会保留原音质；5–10 MB 的 MP3／M4A 在 iPhone 上改走本机压缩。极端超长曲目若压到最低安全质量仍无法容纳，才会要求裁短。", "Select a normal audio source up to 200 MB. Small compatible MP3/M4A files stay untouched; 5–10 MB files are compressed on iPhone without the large optimizer. Only exceptionally long tracks that still cannot fit safely after compression need trimming."),
-    pipeline: tr(locale, "本機解碼壓縮 → 尺寸優化 → 上傳曲庫 → 全站啟用", "本机解码压缩 → 尺寸优化 → 上传曲库 → 全站启用", "On-device compress → size-fit → upload → activate"),
+    formatHint: tr(locale, "可直接選一般音訊原檔，來源檔最高 200 MB。12MB 以內的 MP3／M4A 會保留原音質並分段上傳；不必在 iPhone 上解碼。超過 12MB 或 WAV／FLAC 請先轉成較小 MP3／M4A，或用電腦上傳。", "可直接选择一般音频原文件，来源文件最高 200 MB。12MB 以内的 MP3／M4A 会保留原音质并分段上传；不必在 iPhone 上解码。超过 12MB 或 WAV／FLAC 请先转成较小 MP3／M4A，或用电脑上传。", "Select a normal audio source up to 200 MB. MP3/M4A up to 12MB uploads as-is in chunks. Convert larger files or WAV/FLAC first."),
+    pipeline: tr(locale, "辨識格式 → 原檔分段上傳 → 全站啟用", "识别格式 → 原文件分段上传 → 全站启用", "Detect format → chunked original upload → activate"),
   }), [locale]);
 
   useEffect(() => {

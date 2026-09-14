@@ -15,7 +15,7 @@
     "api/owner-login.js": { "maxDuration": 10 },
     "api/owner-logout.js": { "maxDuration": 10 },
     "api/owner-session.js": { "maxDuration": 10 },
-    "api/owner-music.js": { "maxDuration": 30, "includeFiles": "lib/owner-music-ssh.json" }
+    "api/owner-music.js": { "maxDuration": 60, "includeFiles": "lib/owner-music-ssh.json" }
   },
   "headers": [
     {
