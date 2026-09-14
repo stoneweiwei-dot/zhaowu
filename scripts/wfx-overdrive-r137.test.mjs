@@ -47,13 +47,10 @@ test("Five-Element Strength Overdrive quiz stays subjective and separate from fo
   assert.match(contract, /不建立 Supabase 新表/);
 });
 
-test("r137 release and PWA cache are advanced together", async () => {
-  const stats = await source("src/lib/site-stats.ts");
+test("r137 WFX artifacts remain after later releases", async () => {
   const sw = await source("public/sw.js");
   const report = await source("docs/change-reports/ZW-WEB-2026.09.15-r137.md");
-  assert.match(stats, /ZW-WEB-2026\.09\.15-r137/);
-  assert.match(stats, /updateNumber:\s*137/);
-  assert.match(sw, /zhaowu-shell-r137/);
   assert.match(report, /WFX/);
   assert.match(report, /five-element-overdrive/);
+  assert.match(sw, /zhaowu-shell-r1\d+/);
 });
