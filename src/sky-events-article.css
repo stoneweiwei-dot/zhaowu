@@ -1,0 +1,9 @@
+.sky-events-feature-mark.is-saturn,.sky-event-orbit.is-saturn{background:radial-gradient(circle at 35% 30%,#b69b72,#5e5142 58%,#1c211f)}
+.sky-event-essay{margin-top:34px;padding-top:8px}
+.sky-event-essay-intro{font-size:1rem;line-height:1.9;color:#4f5b54;padding:18px 20px;border-radius:18px;background:rgba(240,234,218,.68);border:1px solid rgba(126,94,47,.16)}
+.sky-event-essay-section{padding:26px 0;border-bottom:1px solid rgba(88,74,53,.12)}
+.sky-event-essay-section:last-child{border-bottom:0}
+.sky-event-essay-section h3{font-size:clamp(1.2rem,3.4vw,1.65rem);margin:0 0 14px;line-height:1.35}
+.sky-event-essay-section p{margin:0 0 12px;line-height:1.95;color:#3f4c46;font-size:.98rem}
+.sky-event-essay-section blockquote{margin:18px 0 2px;padding:15px 18px;border-left:3px solid var(--sky-gold);background:rgba(255,255,255,.58);font-family:"Noto Serif TC","Songti TC",serif;font-size:1.02rem;line-height:1.8;color:#5d4a30}
+@media(max-width:600px){.sky-event-essay{margin-top:26px}.sky-event-essay-intro{padding:15px 16px}.sky-event-essay-section{padding:22px 0}.sky-event-essay-section p{font-size:.96rem;line-height:1.85}}

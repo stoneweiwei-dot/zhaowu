@@ -13,6 +13,70 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    id: "saturn-opposition-2026",
+    published: "2026-09-15",
+    status: "upcoming",
+    title: {
+      "zh-Hant": "土星衝｜當人生的舊結構，再也無法靠修補維持",
+      "zh-Hans": "土星冲｜当人生的旧结构，再也无法靠修补维持",
+      en: "Saturn at opposition | When the old structure can no longer be patched"
+    },
+    subtitle: {
+      "zh-Hant": "2026.10.04｜天文現象 × 土星逆行白羊的占星象意",
+      "zh-Hans": "2026.10.04｜天文现象 × 土星逆行白羊的占星象意",
+      en: "2026.10.04 | Astronomy × the symbolic astrology of Saturn retrograde in Aries"
+    },
+    facts: [
+      { date: "2026-02-13", label: { "zh-Hant": "土星再次進入熱帶黃道白羊座", "zh-Hans": "土星再次进入热带黄道白羊座", en: "Saturn re-enters tropical Aries" } },
+      { date: "2026-02-20", label: { "zh-Hant": "土星與海王星於白羊約 0°45′合相", "zh-Hans": "土星与海王星于白羊约 0°45′合相", en: "Saturn conjuncts Neptune near 0°45′ Aries" } },
+      { date: "2026-07-26", label: { "zh-Hant": "土星於白羊約 14°45′開始視逆行", "zh-Hans": "土星于白羊约 14°45′开始视逆行", en: "Saturn stations retrograde near 14°45′ Aries" } },
+      { date: "2026-08-31", label: { "zh-Hant": "土星與木星形成三分相", "zh-Hans": "土星与木星形成三分相", en: "Saturn forms a trine with Jupiter" } },
+      { date: "2026-10-04", label: { "zh-Hant": "土星衝；悉尼約 23:21 AEDT，接近全年最佳觀測期", "zh-Hans": "土星冲；悉尼约 23:21 AEDT，接近全年最佳观测期", en: "Saturn reaches opposition; about 23:21 AEDT in Sydney, near its best observing period of the year" } },
+      { date: "2026-12-10", label: { "zh-Hant": "土星於白羊約 7°56′恢復順行", "zh-Hans": "土星于白羊约 7°56′恢复顺行", en: "Saturn stations direct near 7°56′ Aries" } }
+    ],
+    science: {
+      "zh-Hant": [
+        "「土星衝」是可驗證的天文幾何事件：從地球看，土星位於接近太陽正對面的天空方向，地球大致位於太陽與土星之間。",
+        "衝日前後土星接近本年度距離地球最近、視直徑較大與亮度較高的觀測階段，視星等約 0.3，幾乎整夜可見。",
+        "「土星在白羊座」在本站占星語境指熱帶黃道座標；逆行是地球觀測造成的視運動現象，不代表土星真的倒著繞太陽。"
+      ],
+      "zh-Hans": [
+        "“土星冲”是可验证的天文几何事件：从地球看，土星位于接近太阳正对面的天空方向，地球大致位于太阳与土星之间。",
+        "冲日前后土星接近本年度距离地球最近、视直径较大与亮度较高的观测阶段，视星等约 0.3，几乎整夜可见。",
+        "“土星在白羊座”在本站占星语境指热带黄道坐标；逆行是地球观测造成的视运动现象，不代表土星真的倒着绕太阳。"
+      ],
+      en: [
+        "Saturn at opposition is a verifiable astronomical geometry: from Earth, Saturn appears nearly opposite the Sun in the sky, with Earth roughly between the Sun and Saturn.",
+        "Around opposition Saturn is near its closest, largest-looking and brightest observing phase of the year, around magnitude 0.3, and is visible for almost the whole night.",
+        "‘Saturn in Aries’ here refers to the tropical-zodiac coordinate convention. Retrograde is apparent motion as seen from Earth, not Saturn literally orbiting backwards."
+      ]
+    },
+    interpretation: {
+      "zh-Hant": [
+        "占星傳統把土星與結構、責任、界線、時間、限制、承諾及長期建設聯繫；白羊座則涉及開始、主體性、行動與自我意志。",
+        "把兩者放在一起，可作為一個象徵性提問：你正在維持的人生，是自己真正選擇的，還是照著別人留下的藍圖繼續施工？",
+        "土星逆行更適合被理解成回顧既有結構，而不是預告懲罰。重點是辨認哪些問題只是換了外殼，底層選擇模式卻沒有改。"
+      ],
+      "zh-Hans": [
+        "占星传统把土星与结构、责任、界线、时间、限制、承诺及长期建设联系；白羊座则涉及开始、主体性、行动与自我意志。",
+        "把两者放在一起，可作为一个象征性提问：你正在维持的人生，是自己真正选择的，还是照着别人留下的蓝图继续施工？",
+        "土星逆行更适合被理解成回顾既有结构，而不是预告惩罚。重点是辨认哪些问题只是换了外壳，底层选择模式却没有改。"
+      ],
+      en: [
+        "Astrological tradition links Saturn with structure, responsibility, boundaries, time, limits, commitments and long-term construction; Aries with initiation, agency, action and personal will.",
+        "Together they offer a symbolic question: is the life you are maintaining genuinely chosen by you, or are you still building from a blueprint inherited from someone else?",
+        "Saturn retrograde is more useful here as a symbol for reviewing existing structures than as a prediction of punishment. The key is to notice problems whose surface changed while the underlying choice pattern did not."
+      ]
+    },
+    houses: [],
+    sources: [
+      { label: "In-The-Sky.org · Saturn at opposition 2026", url: "https://in-the-sky.org/news.php?id=20261004_12_100" },
+      { label: "Cafe Astrology · Saturn in Aries transit", url: "https://cafeastrology.com/saturn-aries-transit.html" },
+      { label: "Cafe Astrology · Astrology of 2026", url: "https://cafeastrology.com/astrology-of-2026.html" },
+      { label: "Cafe Astrology · Saturn retrograde 2026", url: "https://cafeastrology.com/events/saturn-turns-retrograde-in-aries-2026/" }
+    ]
+  },
+  {
     id: "venus-scorpio-2026",
     published: "2026-09-12",
     status: "active",
