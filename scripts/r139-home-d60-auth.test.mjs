@@ -76,4 +76,6 @@ test("iPhone music upload sniffs AAC/octet-stream and surfaces the real HTTP err
   assert.match(client, /body\.detail/);
   assert.match(api, /sniffAudioExt/);
   assert.match(api, /resolveAudioFile/);
+  assert.match(api, /cdn\.jsdelivr\.net\/gh/);
+  assert.match(api, /method === "GET" \|\| method === "HEAD"/);
 });
