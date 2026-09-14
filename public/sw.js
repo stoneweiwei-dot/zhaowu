@@ -1,28 +1,18 @@
-const CACHE = "zhaowu-shell-r130";
+const CACHE = "zhaowu-shell-r131";
 const SHELL = ["/", "/manifest.webmanifest", "/apple-touch-icon-r113.png", "/brand-ui/header-gourd-wordmark-r113.png", "/brand-ui/logo-horizontal.svg", "/brand-ui/favicon.svg"];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then((cache) => cache.addAll(SHELL))
-      .catch(() => undefined),
-  );
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).catch(() => undefined));
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(
-        keys
-          .filter((key) => key.startsWith("zhaowu-shell-") && key !== CACHE)
-          .map((key) => caches.delete(key)),
-      ))
+      .then((keys) => Promise.all(keys.filter((key) => key.startsWith("zhaowu-shell-") && key !== CACHE).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
       .then(() => self.clients.matchAll({ type: "window", includeUncontrolled: true }))
-      .then((clients) => {
-        clients.forEach((client) => client.postMessage({ type: "ZHAOWU_SW_READY", cache: CACHE }));
-      }),
+      .then((clients) => { clients.forEach((client) => client.postMessage({ type: "ZHAOWU_SW_READY", cache: CACHE })); }),
   );
 });
 
@@ -36,11 +26,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request, { cache: "no-store" })
         .then((response) => {
-          if (response.ok) {
-            caches.open(CACHE)
-              .then((cache) => cache.put("/", response.clone()))
-              .catch(() => undefined);
-          }
+          if (response.ok) caches.open(CACHE).then((cache) => cache.put("/", response.clone())).catch(() => undefined);
           return response;
         })
         .catch(async () => (await caches.match(request)) || (await caches.match("/")) || Response.error()),
@@ -52,11 +38,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request, { cache: "no-store" })
         .then((response) => {
-          if (response.ok) {
-            caches.open(CACHE)
-              .then((cache) => cache.put(request, response.clone()))
-              .catch(() => undefined);
-          }
+          if (response.ok) caches.open(CACHE).then((cache) => cache.put(request, response.clone())).catch(() => undefined);
           return response;
         })
         .catch(async () => (await caches.match(request)) || Response.error()),

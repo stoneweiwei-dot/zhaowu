@@ -16,7 +16,6 @@ import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSite
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { hydrateBrandTheme, useBrandTheme } from "@/lib/brand-theme";
-import { BRAND_ASSETS } from "@/lib/brand-assets";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -31,11 +30,7 @@ function formatReleaseDate(value: string | null, language: DisplayLanguage) {
   if (!value) return "";
   const date = new Date(value);
   if (!Number.isFinite(date.getTime())) return "";
-  return new Intl.DateTimeFormat(intlTagFor(language), {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
+  return new Intl.DateTimeFormat(intlTagFor(language), { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 }
 
 function releaseSummaryForLanguage(summary: string, version: string, language: DisplayLanguage) {
@@ -63,13 +58,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
     hydrateBrandTheme();
     runLocalHousekeeping();
     let alive = true;
-    void recordVisit()
-      .catch(() => undefined)
-      .finally(() => {
-        void getPublicSiteStats()
-          .then((value) => { if (alive) setStats(value); })
-          .catch(() => undefined);
-      });
+    void recordVisit().catch(() => undefined).finally(() => {
+      void getPublicSiteStats().then((value) => { if (alive) setStats(value); }).catch(() => undefined);
+    });
     return () => { alive = false; };
   }, []);
 
@@ -90,7 +81,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
   const galleryLabel = displayText(language, "圖庫", "图库", "Gallery", "ギャラリー", "갤러리", "गैलरी");
   const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기", "गैलरी खोलें");
-  const homeProductLabel = displayText(language, "四柱八字", "四柱八字", "BaZi", "四柱推命", "사주팔자", "BaZi");
   const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
   const ownerLoginLabel = displayText(language, "站主登入", "站主登录", "Owner sign-in", "管理者ログイン", "사이트 소유자 로그인", "मालिक लॉगिन");
@@ -101,16 +91,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <header className="zhaowu-site-header sticky top-0 z-30">
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">
             <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
-              <span data-site-release>
-                {stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}
-              </span>
-              <span>
-                {todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}
-              </span>
+              <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
+              <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
               <details className="group basis-full text-center" data-latest-change-report>
-                <summary className="cursor-pointer list-none font-medium text-ink-soft [&::-webkit-details-marker]:hidden">
-                  {latestLabel}
-                </summary>
+                <summary className="cursor-pointer list-none font-medium text-ink-soft [&::-webkit-details-marker]:hidden">{latestLabel}</summary>
                 <p className="mx-auto mt-1 max-w-2xl px-2 text-center leading-5">{releaseSummary}</p>
               </details>
             </div>
@@ -125,118 +109,36 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </Link>
 
               <div className="zhaowu-header-account-actions">
-                <button
-                  type="button"
-                  className="zhaowu-theme-toggle"
-                  onClick={toggle}
-                  aria-pressed={night}
-                  aria-label={night ? dayModeLabel : nightModeLabel}
-                >
-                  <BrandIcon name={night ? "day" : "night"} />
-                </button>
-                {user?.isOwner ? (
-                  <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={openGalleryLabel}>
-                    {galleryLabel}
-                  </Link>
-                ) : null}
-                {isPending ? (
-                  <span className="zhaowu-header-pending" />
-                ) : user ? (
-                  <>
-                    <Link to="/account" className="zhaowu-header-utility">
-                      <BrandIcon name="account" />
-                      {user.isOwner ? t("navAdmin") : t("navMine")}
-                    </Link>
-                    <button type="button" onClick={() => void signOut()} className="zhaowu-header-utility zhaowu-header-signout">
-                      {authEnabled ? t("logout") : user.displayName}
-                    </button>
-                  </>
-                ) : (
-                  <Link to="/login" className="zhaowu-header-login">
-                    <BrandIcon name="login" />
-                    {ownerLoginLabel}
-                  </Link>
-                )}
+                {user?.isOwner ? <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={openGalleryLabel}>{galleryLabel}</Link> : null}
+                {isPending ? <span className="zhaowu-header-pending" /> : user ? <>
+                  <Link to="/account" className="zhaowu-header-utility"><BrandIcon name="account" />{user.isOwner ? t("navAdmin") : t("navMine")}</Link>
+                  <button type="button" onClick={() => void signOut()} className="zhaowu-header-utility zhaowu-header-signout">{authEnabled ? t("logout") : user.displayName}</button>
+                </> : <Link to="/login" className="zhaowu-header-login"><BrandIcon name="login" />{ownerLoginLabel}</Link>}
               </div>
             </div>
 
             <nav className="zhaowu-header-nav" aria-label={siteControlsLabel}>
-              <div
-                role="group"
-                aria-label={t("language")}
-                className="site-lang-group"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
-                  maxWidth: "100%",
-                  overflowX: "auto",
-                  padding: 4,
-                  border: "1px solid rgba(196,160,90,.62)",
-                  borderRadius: 999,
-                  background: night ? "rgba(15,32,28,.72)" : "rgba(250,248,241,.76)",
-                  boxShadow: "0 6px 18px rgba(60,46,28,.06)",
-                  backdropFilter: "blur(9px)",
-                  WebkitBackdropFilter: "blur(9px)",
-                }}
-              >
-                <span aria-hidden="true" style={{ display: "grid", placeItems: "center", flex: "0 0 auto", width: 36, height: 40, color: night ? "#d4b074" : "#1f4e3a" }}>
-                  <BrandIcon name="language" />
-                </span>
+              <div role="group" aria-label={t("language")} className="site-lang-group" style={{ display: "flex", alignItems: "center", gap: 4, maxWidth: "100%", overflowX: "auto", padding: 4, border: "1px solid rgba(196,160,90,.62)", borderRadius: 999, background: night ? "rgba(15,32,28,.72)" : "rgba(250,248,241,.76)", boxShadow: "0 6px 18px rgba(60,46,28,.06)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)" }}>
+                <span aria-hidden="true" style={{ display: "grid", placeItems: "center", flex: "0 0 auto", width: 36, height: 40, color: night ? "#d4b074" : "#1f4e3a" }}><BrandIcon name="language" /></span>
                 {languageOptions.map(({ value, label, aria }) => {
                   const active = language === value;
-                  return (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setLanguage(value)}
-                      aria-label={aria}
-                      aria-pressed={active}
-                      data-active={active ? "true" : "false"}
-                      className="site-lang-button"
-                      style={{
-                        flex: "0 0 auto",
-                        minHeight: 40,
-                        padding: "0 11px",
-                        borderRadius: 999,
-                        border: active ? "1px solid #c4a05a" : "1px solid transparent",
-                        background: active ? (night ? "rgba(212,176,116,.15)" : "#1f4e3a") : "transparent",
-                        color: active ? (night ? "#f1dfba" : "#fffaf0") : (night ? "#e7e0d1" : "#4f4a42"),
-                        fontSize: 12,
-                        lineHeight: 1,
-                        fontWeight: active ? 700 : 600,
-                        letterSpacing: value === "en" ? ".04em" : ".01em",
-                        whiteSpace: "nowrap",
-                        boxShadow: active && !night ? "inset 0 0 0 1px rgba(255,255,255,.08)" : "none",
-                      }}
-                    >
-                      {label}
-                    </button>
-                  );
+                  return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button" style={{ flex: "0 0 auto", minHeight: 40, padding: "0 11px", borderRadius: 999, border: active ? "1px solid #c4a05a" : "1px solid transparent", background: active ? (night ? "rgba(212,176,116,.15)" : "#1f4e3a") : "transparent", color: active ? (night ? "#f1dfba" : "#fffaf0") : (night ? "#e7e0d1" : "#4f4a42"), fontSize: 12, lineHeight: 1, fontWeight: active ? 700 : 600, letterSpacing: value === "en" ? ".04em" : ".01em", whiteSpace: "nowrap", boxShadow: active && !night ? "inset 0 0 0 1px rgba(255,255,255,.08)" : "none" }}>{label}</button>;
                 })}
               </div>
-              <Link to="/" aria-current={pathname === "/" ? "page" : undefined} className={`zhaowu-header-home-link ${pathname === "/" ? "is-active" : ""}`}>
-                <BrandIcon name="home" />
-                {user ? homeProductLabel : t("navHome")}
-              </Link>
+              <button type="button" className="zhaowu-theme-toggle zhaowu-header-mode-toggle" onClick={toggle} aria-pressed={night} aria-label={night ? dayModeLabel : nightModeLabel} title={night ? dayModeLabel : nightModeLabel}>
+                <BrandIcon name={night ? "day" : "night"} />
+              </button>
             </nav>
           </div>
         </header>
       ) : null}
 
       {!isLogin ? <GreenDragonGuide /> : null}
+      <div className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
 
-      <div className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>
-        {children}
-      </div>
-
-      {!isLogin ? (
-        <footer className="zhaowu-site-footer relative z-10 mx-auto max-w-5xl px-4 pb-10 pt-4 text-center">
-          <img className="zhaowu-footer-logo is-day" src={BRAND_ASSETS.logoHorizontal} alt="" width={360} height={96} decoding="async" />
-          <img className="zhaowu-footer-logo is-night" src={BRAND_ASSETS.logoHorizontalNight} alt="" width={360} height={96} decoding="async" />
-          <p className="font-display text-sm tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
-        </footer>
-      ) : null}
+      {!isLogin ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
+        <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
+      </footer> : null}
     </div>
   );
 }

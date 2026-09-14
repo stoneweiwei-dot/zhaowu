@@ -35,12 +35,13 @@ test("r98 CSS is last-wins after r97 and wires night tokens", () => {
   assert.match(html, /zhaowu\.theme\.v1/);
 });
 
-test("header uses kit icons, night toggle and the STO-12 header artwork", () => {
+test("header uses kit icons, a single owner-approved brand lockup and a clean night toggle", () => {
   assert.match(shell, /BrandIcon name="login"/);
   assert.match(shell, /BrandIcon name="account"/);
-  assert.match(shell, /BrandIcon name="home"/);
+  assert.match(shell, /BrandIcon name=\{night \? "day" : "night"\}/);
   assert.match(shell, /zhaowu-theme-toggle/);
-  assert.match(shell, /logoHorizontal/);
+  assert.match(shell, /<BrandSeal \/>/);
+  assert.doesNotMatch(shell, /BRAND_ASSETS\.logoHorizontal/);
   assert.match(brand, /HEADER_MARK = "\/brand-ui\/header-gourd-wordmark-r113\.png"/);
   assert.doesNotMatch(brand, /logo-primary\.svg/);
 });
