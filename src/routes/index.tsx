@@ -136,6 +136,7 @@ function Home() {
         scentHint: "sensory preference compared with five-element cultural imagery",
         cards: [
           { href: "/quiz/divine-affinity", title: "Divine Affinity Scan", hint: "16 questions across Soul Pattern, symbolic lineage and Celestial Mandate" },
+          { href: "/fun-tests/earth-online", title: "Earth Online · Classics Guide", hint: "8 questions to match your current stuck point with a Chinese classic" },
           { href: "/fun-tests?test=animal", title: "Inner Animal × Guardian Beast", hint: "current personality strategy and instinctive response" },
           { href: "/fun-tests?test=element", title: "Five-Element Function Test", hint: "which function you currently want to strengthen" },
           { href: "/quiz/six-realms", title: "Six Realms Habit Test", hint: "which everyday habit pattern is strongest now" },
@@ -149,6 +150,7 @@ function Home() {
           scentHint: "看嗅觉偏好与五行文化象意，不当成身体缺什么",
           cards: [
             { href: "/quiz/divine-affinity", title: "仙佛渊源本缘测试", hint: "16 题从魂格、象征脉象、能量体、前世象征、命格深层与天命六层交叉判读" },
+            { href: "/fun-tests/earth-online", title: "地球 Online · 古籍攻略", hint: "8 道题看你现在卡在哪一关，再推荐最适合此刻读的古籍" },
             { href: "/fun-tests?test=animal", title: "内在动物 × 命局瑞兽", hint: "看现在常用的人格策略与本能反应" },
             { href: "/fun-tests?test=element", title: "五行功能测验", hint: "看现在主观上最想加强哪一种功能" },
             { href: "/quiz/six-realms", title: "六道习气测验", hint: "看目前最明显的日常惯性" },
@@ -161,6 +163,7 @@ function Home() {
           scentHint: "看嗅覺偏好與五行文化象意，不當成身體缺什麼",
           cards: [
             { href: "/quiz/divine-affinity", title: "仙佛淵源本緣測試", hint: "16 題從魂格、象徵脈象、能量體、前世象徵、命格深層與天命六層交叉判讀" },
+            { href: "/fun-tests/earth-online", title: "地球 Online · 古籍攻略", hint: "8 道題看你現在卡在哪一關，再推薦最適合此刻讀的古籍" },
             { href: "/fun-tests?test=animal", title: "內在動物 × 命局瑞獸", hint: "看現在常用的人格策略與本能反應" },
             { href: "/fun-tests?test=element", title: "五行功能測驗", hint: "看現在主觀上最想加強哪一種功能" },
             { href: "/quiz/six-realms", title: "六道習氣測驗", hint: "看目前最明顯的日常慣性" },
