@@ -44,11 +44,30 @@ r138 從單純「個人命書 HTTP 呼叫層」收口為一套可驗證、可追
 doctor 即使 Mingshu 失效仍保持昭梧本地 `ok: true`，並把外部服務標為非必要 side channel。
 
 ### 6. Mingshu v1 契約修正
-修正真太陽時 `placeId`：官方要求 `geonames:<id>` 字串，不再錯誤轉成數字。補上城市查詢端點，讓真太陽時旁證流程可以完整走通。
+修正真太陽時 `placeId`：官方要求 `geonames:<id>` 字串，不再錯誤轉成數字。補上城市查詢端點，讓真太陽時旁證流程可以完整走通。農曆日期只做格式與閏月旗標檢查，實際農曆日期合法性由 Mingshu 服務端判定，不套用 Gregorian 日期規則。
 
-## 安全邊界
+## 為什麼改
 
-本次不修改：
+個人命書最有價值的部分不是取代昭梧子平主判，而是提供一個可獨立查詢的外部判斷來源，以及清楚的 discovery／doctor／digest 契約。r138 因此採取「旁證而不奪權」：昭梧 R6.2.1 繼續是唯一主判，外部引擎只負責交叉驗證與暴露差異。這樣既能利用另一套引擎發現四柱、旺衰、用神等差異，也不會讓第三方固定表格反向污染昭梧的月令、調候、病藥、承載、流通與歲運判斷。
+
+同時補上 ZW Chart Fingerprint 與昭梧自己的 capabilities／doctor，目的是讓不同語言、不同部署版本與外部 AI 都能確認自己面對的是同一套底層命盤與同一個 R6.2.1 runtime，而不是依賴自然語言文案猜測版本。
+
+## 影響範圍
+
+新增／更新的範圍限定在：
+- `api/zhaowu-capabilities.js`
+- `api/zhaowu-doctor.js`
+- `api/mingshu-doctor.js`
+- `api/mingshu-locations.js`
+- `api/mingshu-chart.js`
+- `api/mingshu-compare.js`
+- `lib/mingshu-client.js`
+- `lib/zhaowu-verification.js`
+- `src/lib/mingshu/client.ts`
+- r138 契約、變更報告、release ledger 與回歸測試
+- `vercel.json` 對上述 Serverless Function 的 duration 宣告
+
+明確不修改：
 - `src/lib/bazi/chart.ts`
 - `src/lib/bazi/calendar.ts`
 - `src/lib/bazi/interpret.ts`
@@ -56,7 +75,9 @@ doctor 即使 Mingshu 失效仍保持昭梧本地 `ok: true`，並把外部服�
 - auth / payment / Supabase schema
 - 免費／付費客人報告內容
 
-Mingshu 失敗時 fail-open；昭梧本地 R6.2.1 照常工作。
+## 安全邊界
+
+Mingshu 失敗時 fail-open；昭梧本地 R6.2.1 照常工作。任何 `CONFLICT` 只顯示差異，不自動採納 Mingshu 判斷，固定以 `ZHAOWU_REMAINS_AUTHORITATIVE` 收束。
 
 ## 隱私
 
@@ -75,3 +96,7 @@ Mingshu 失敗時 fail-open；昭梧本地 R6.2.1 照常工作。
 - Production `/api/zhaowu-doctor`：200，即使 side channel 掛掉仍不得拖垮本地
 - Production `/api/mingshu-doctor`：回報實際外部狀態
 - 未登入 `/api/mingshu-locations`、`/api/mingshu-chart`、`/api/mingshu-compare`：401
+
+## 回滾
+
+若 r138 的旁證層造成任何正式站退化，回退 r138 merge commit 即可移除新增的 Mingshu／Zhaowu discovery 與 compare API。由於本次沒有修改 `chart.ts`、`calendar.ts`、`interpret.ts`、客戶報告組裝、auth、payment 或 Supabase schema，回滾不需要資料庫遷移，也不會改變既有命盤 Calculation Truth。
