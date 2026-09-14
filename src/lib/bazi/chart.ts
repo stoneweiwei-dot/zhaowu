@@ -16,14 +16,13 @@ import {
   hourPillar,
   jieqiAround,
   lunarDateLabel,
-  mingGong,
   nayinOf,
-  taiYuan,
   tenGod,
   xunKong,
   yearMonthPillars,
   yiJi,
 } from "./calendar";
+import { buildThreeYuanAuxiliary } from "./three-yuan";
 import type {
   AnalyzeInput,
   BirthTimeReview,
@@ -285,15 +284,26 @@ export function buildChart(input: AnalyzeInput): Chart {
     ? `${input.year}-${String(input.month).padStart(2, "0")}-${String(input.day).padStart(2, "0")} 時辰未定`
     : stamp(input.year, input.month, input.day, input.hour, input.minute);
   const trueSolarStamp = timeUnknown ? "時辰未定，真太陽時不作校正" : stamp(y, m, d, h, min);
-  const minggong = timeUnknown || !timeGz ? "未定" : mingGong(ym.year, monthBranch, timeGz[1]);
+  const threeYuan = buildThreeYuanAuxiliary({
+    yearGz: ym.year,
+    monthGz: ym.month,
+    localYear: y,
+    localMonth: m,
+    localDay: d,
+    hourBranch: timeUnknown || !timeGz ? null : timeGz[1],
+    timeUnknown,
+  });
   const reviewNote = birthTimeReview.required && birthTimeReview.civil && birthTimeReview.trueSolar
     ? ` 民用候選日/時柱 ${birthTimeReview.civil.dayGanZhi}/${birthTimeReview.civil.timeGanZhi} 與真太陽候選 ${birthTimeReview.trueSolar.dayGanZhi}/${birthTimeReview.trueSolar.timeGanZhi} 不同，已啟動出生時辰候選驗證；主盤暫按真太陽時，正式定盤須以出生記錄與有明確年份的已發生事件反證，不得只憑性格描述選盤。`
     : "";
+  const threeYuanProvenance = timeUnknown
+    ? " 胎元仍可按月柱固定推得；命宮、身宮因時辰未定而留白。"
+    : " 胎元按月干進一、月支進三；命宮採農曆月古法並保留節令月敏感度；身宮按逢酉安身，完整干支僅作後世低權重研究口徑。";
   const provenance = timeUnknown
-    ? `時辰未定：年月柱按當日正午取節氣，日柱按公曆日，時柱、命宮、大運起運留白，不偽造午時柱。子時政策不套用。`
+    ? `時辰未定：年月柱按當日正午取節氣，日柱按公曆日，時柱、命宮、身宮、大運起運留白，不偽造午時柱。子時政策不套用。${threeYuanProvenance}`
     : usedTrueSolar
-      ? `民用時間 ${stamp(input.year, input.month, input.day, input.hour, input.minute)}（${input.city.timezone}）經經度 ${input.city.longitude.toFixed(2)}°、均時差與時區校正，真太陽時 ${stamp(y, m, d, h, min)}，偏移約 ${shiftMinutes} 分鐘。節氣取太陽黃經，換日固定以真太陽時午夜為界。${reviewNote}`
-      : `按出生地民用時間排盤，換日固定以午夜為界。`;
+      ? `民用時間 ${stamp(input.year, input.month, input.day, input.hour, input.minute)}（${input.city.timezone}）經經度 ${input.city.longitude.toFixed(2)}°、均時差與時區校正，真太陽時 ${stamp(y, m, d, h, min)}，偏移約 ${shiftMinutes} 分鐘。節氣取太陽黃經，換日固定以真太陽時午夜為界。${reviewNote}${threeYuanProvenance}`
+      : `按出生地民用時間排盤，換日固定以午夜為界。${threeYuanProvenance}`;
 
   return {
     pillars,
@@ -322,8 +332,14 @@ export function buildChart(input: AnalyzeInput): Chart {
     dayun,
     currentDayun,
     currentYear: yearMonthPillars(new Date()).year,
-    taiyuan: taiYuan(ym.month),
-    minggong,
+    taiyuan: threeYuan.taiyuan,
+    minggong: threeYuan.minggong,
+    minggongSolar: threeYuan.minggongSolar,
+    minggongReliability: threeYuan.minggongReliability,
+    shengong: threeYuan.shengong,
+    shengongBranch: threeYuan.shengongBranch,
+    shengongReliability: threeYuan.shengongReliability,
+    threeYuanNote: threeYuan.note,
     provenance,
   };
 }

@@ -6,6 +6,7 @@ import { applyMonthStageFeedbackPolicy } from "@/lib/bazi/month-stage-feedback";
 import { applyFourTombsRuntimePolicy } from "@/lib/bazi/four-tombs-runtime";
 import { applyTenGodFiveElementRuntimePolicy } from "@/lib/bazi/ten-god-five-element-runtime";
 import { applyKinshipRuntimePolicy } from "@/lib/bazi/kinship-runtime";
+import { applyThreeYuanAuxiliaryPolicy } from "@/lib/bazi/three-yuan-runtime";
 import { buildPalm } from "@/lib/palm/engine";
 import { routeMethods } from "@/lib/core/method";
 import { inferQuestionKind } from "@/lib/core/answer-contract";
@@ -115,6 +116,11 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
   }
 }
 
+function finishReading(question: string, chart: AnalysisResult["chart"], reading: AnalysisResult["reading"], locale?: AnalysisResult["locale"]) {
+  const auxiliaryReading = applyThreeYuanAuxiliaryPolicy(question, chart, reading, locale);
+  return enforceDirectAnswerGuard(question, chart, auxiliaryReading, locale);
+}
+
 export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promise<AnalysisResult> {
   const startedAt = Date.now();
   try {
@@ -154,7 +160,7 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
       kinshipReading,
       data.locale,
     );
-    const reading = enforceDirectAnswerGuard(data.question, chart, policyReading, data.locale);
+    const reading = finishReading(data.question, chart, policyReading, data.locale);
 
     const result: AnalysisResult = {
       id: newId(),
@@ -215,7 +221,7 @@ export async function followUpLife({
       kinshipReading,
       data.base.locale,
     );
-    const reading = enforceDirectAnswerGuard(question, data.base.chart, policyReading, data.base.locale);
+    const reading = finishReading(question, data.base.chart, policyReading, data.base.locale);
     const result: AnalysisResult = {
       id: newId(),
       locale: data.base.locale,
@@ -256,7 +262,7 @@ export async function writeFullReport({
       finalizeReading(data.question, data.chart, governedReading, data.locale),
       data.locale,
     );
-    const reading = enforceDirectAnswerGuard(data.question, data.chart, policyReading, data.locale);
+    const reading = finishReading(data.question, data.chart, policyReading, data.locale);
     const palm = data.palm ?? null;
     const methodProtocol = routeMethods(reading.kind, {
       palmReady: Boolean(palm?.ready),

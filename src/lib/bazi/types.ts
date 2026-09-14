@@ -98,6 +98,8 @@ export type BirthTimeReview = {
   trueSolar: BirthTimeCandidate | null;
 };
 
+export type ThreeYuanReliability = "medium-low" | "low-medium" | "low" | "unavailable";
+
 export type Chart = {
   pillars: Pillar[];
   dayMaster: string;
@@ -127,6 +129,12 @@ export type Chart = {
   currentYear: string;
   taiyuan: string;
   minggong: string;
+  minggongSolar?: string;
+  minggongReliability?: ThreeYuanReliability;
+  shengong?: string;
+  shengongBranch?: string;
+  shengongReliability?: ThreeYuanReliability;
+  threeYuanNote?: string;
   provenance: string;
 };
 
