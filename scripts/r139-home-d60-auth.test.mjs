@@ -54,6 +54,16 @@ test("login animation is full-bleed and member register has a real callback page
   assert.match(provider, /isOwner: false/);
 });
 
+test("existing member login does not reuse the signup password-length gate", async () => {
+  const login = await source("src/routes/login.tsx");
+  const memberLogin = login.match(/async function onMemberLogin[\s\S]*?async function onSignup/)?.[0] ?? "";
+  const signup = login.match(/async function onSignup[\s\S]*?async function onOwnerSubmit/)?.[0] ?? "";
+  assert.match(memberLogin, /!email\.trim\(\) \|\| !password/);
+  assert.doesNotMatch(memberLogin, /password\.length\s*<\s*8/);
+  assert.match(memberLogin, /signInWithPassword\(email, password\)/);
+  assert.match(signup, /password\.length\s*<\s*8/);
+});
+
 test("device birth survives login and western house table wraps on iPhone", async () => {
   const birth = await source("src/lib/shared-birth.ts");
   const css = await source("src/specialist-system.css");
