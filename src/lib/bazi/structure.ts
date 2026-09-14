@@ -1,6 +1,11 @@
 import { HIDDEN, tenGod } from "@/lib/bazi/calendar";
 import { analyzeBranchRelations, natalBranchPoints, summarizeBranchRelations, type BranchRelation } from "@/lib/bazi/branch-relations";
 import { analyzeStructuralRemedy, type StructuralRemedy } from "@/lib/bazi/structural-remedy";
+import {
+  BAZI_ANALYSIS_MAINLINE,
+  BAZI_CURRENT_MASTER_SOURCE,
+  BAZI_RUNTIME_CONTRACT_VERSION,
+} from "@/lib/bazi/runtime-contract";
 import type { Chart } from "@/lib/bazi/types";
 
 const STRUCTURE_QUESTION_RE = /(八字|命局|命盤|命盘)?\s*(是|屬於|属于|算|走)?\s*(什麼|什么|哪一種|哪一种)?\s*(格局)|(格局|立格|成格|破格|殺印相生|杀印相生|食神制殺|食神制杀|傷官配印|伤官配印)/;
@@ -26,6 +31,9 @@ export type StructureCompletion = {
 };
 
 export type StructureSummary = {
+  runtimeContractVersion: typeof BAZI_RUNTIME_CONTRACT_VERSION;
+  runtimeMasterSource: typeof BAZI_CURRENT_MASTER_SOURCE;
+  requiredAnalysisOrder: typeof BAZI_ANALYSIS_MAINLINE;
   label: string;
   monthMainStem: string;
   monthTenGod: string;
@@ -84,11 +92,12 @@ function completionOf(params: {
 }
 
 /**
- * R6.1 子平 structure summary（網站 runtime 版）：
- * 月令 → 立格 → 可見制化 → 地支作用 → 病藥／通關 → 結構完成度／容量。
+ * R6.2.1 子平 structure summary（網站 runtime 版）：
+ * 此函式只負責「月令 → 立格 → 可見制化 → 地支作用 → 病藥／通關 → 結構完成度／容量」這一段，
+ * 上層完整分析仍必須依 BAZI_ANALYSIS_MAINLINE 的 23 步順序執行。
  *
  * 注意：G0–G4 只評結構完成度，不等同財富、地位或人的高低。
- * 從格／化氣／專旺的最終確認仍由上層 R6.1 Gate 負責；此函式不因字面組合自動判真化或真從。
+ * 從格／化氣／專旺的最終確認仍由上層 Gate 負責；此函式不因字面組合自動判真化或真從。
  */
 export function analyzeStructure(chart: Chart): StructureSummary {
   const monthPillar = chart.pillars.find((pillar) => pillar.key === "month");
@@ -148,6 +157,9 @@ export function analyzeStructure(chart: Chart): StructureSummary {
   const directAnswer = `直接答案：這個命局${opening}${supportingPattern ? `，第二層做功以「${supportingPattern}」為主` : ""}；${monthEvidence}目前結構判為「${completion.label}」，容量為「${completion.capacity}」。這裡的容量只指格局完成度，不等於財富、地位或人的高低。`;
 
   return {
+    runtimeContractVersion: BAZI_RUNTIME_CONTRACT_VERSION,
+    runtimeMasterSource: BAZI_CURRENT_MASTER_SOURCE,
+    requiredAnalysisOrder: BAZI_ANALYSIS_MAINLINE,
     label,
     monthMainStem,
     monthTenGod,
