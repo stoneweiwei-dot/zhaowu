@@ -129,7 +129,7 @@
 ## 2026-09-15 r139 homepage / D60 grouping / member auth / login animation / music error
 
 - 首頁拿掉問事標語與 textarea；只留客人資料與保存生辰。不得再發明隱藏預設問題。
-- D60 分析全部離開 `/yizhangjing`，只留在 `/indian-astrology` 的 `D60ReliabilityGate`。不得改計算公式，不得 merge #304。
+- D60 分析全部離開 `/yizhangjing`，只留在 `/indian-astrology` 的 `D60ReliabilityGate`。確認分鐘後必須生成 D60 分組；±2 分鐘不穩改標弱旁證，不再空白【不作判定】。不得改計算公式，不得 merge #304。
 - 本機 `zhaowu.birth-record.v1` 登入／登出不得刪。每台手機自動讀取先前紀錄。
 - `/login` 登入動畫必須全螢幕可見。IntroGate 仍維持 r126 skip-after-seen。
 - 西洋十二宮完整解讀不得 `nowrap` 裁欄。

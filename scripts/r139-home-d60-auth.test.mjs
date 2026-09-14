@@ -24,12 +24,15 @@ test("D60 belongs to Indian astrology and is gone from Past & Present", async ()
   const indian = await source("src/routes/indian-astrology.tsx");
   const page = await source("src/components/specialist-system-page.tsx");
   const karma = await source("src/components/d60-karma-section.tsx");
+  const gate = await source("src/components/d60-reliability-gate.tsx");
   assert.doesNotMatch(past, /D60KarmaSection/);
   assert.match(indian, /SpecialistSystemPage id="indian"/);
   assert.match(page, /D60ReliabilityGate/);
   assert.match(karma, /function calculateD60/);
   assert.match(karma, /lahiriAyanamsa/);
   assert.match(karma, /kicker: "D60 · 印度古法占星"/);
+  assert.doesNotMatch(gate, /state === "unstable" \|\| state === "error"/);
+  assert.match(gate, /variant="standalone"/);
 });
 
 test("login animation is full-bleed and member register has a real callback page", async () => {

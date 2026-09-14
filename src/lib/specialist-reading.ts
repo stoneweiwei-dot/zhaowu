@@ -579,10 +579,10 @@ export function buildIndianReading(birth: SharedBirthRecord, locale: Locale): Sp
   return {
     title: locale === "en" ? "Classical Indian astrology" : locale === "zh-Hans" ? "印度古法占星" : "印度古法占星",
     lead: locale === "en"
-      ? "This page reuses the shared birth record. D60 is only generated when the birth minute is documented."
+      ? "This page reuses the shared birth record. After you confirm the recorded minute, D60 generates its own grouping here. If ±2 minutes would change the rising subdivision, the grouping is still shown as weak supporting evidence and is never used to rectify time."
       : locale === "zh-Hans"
-        ? "本页沿用同一份出生资料。D60 对出生分钟非常敏感，时间不足时不生成 D60 结论。"
-        : "本頁沿用同一份出生資料。D60 對出生分鐘非常敏感，時間不足時不生成 D60 結論。",
+        ? "本页沿用同一份出生资料。确认出生分钟后，D60 会在本卷生成自己的分组；若前后 ±2 分钟会改上升细分，仍输出盘面，只作弱旁证，不用 D60 反向考时。"
+        : "本頁沿用同一份出生資料。確認出生分鐘後，D60 會在本卷生成自己的分組；若前後 ±2 分鐘會改上升細分，仍輸出盤面，只作弱旁證，不用 D60 反向考時。",
     warning: precise
       ? undefined
       : (locale === "en"
