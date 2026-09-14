@@ -2,35 +2,76 @@
 
 ## 本次改動
 
-- 新增個人命書 HTTP 呼叫層：`GET /api/mingshu-doctor`、`POST /api/mingshu-chart`。
-- 正式站不安裝 CLI；由 Vercel function 轉送 `https://mingshu.help`。
-- doctor 只探測能力介面，不送出生資料。
-- chart 僅站主 Cookie 可呼叫，輸入先消毒再轉發；回傳標為旁證，並寫明未接入 `finalizeReading`。
-- 文件化為 `docs/MINGSHU-CALL-LAYER.md`。客人報告、首頁版式、PWA cache 不變。
+r138 從單純「個人命書 HTTP 呼叫層」收口為一套可驗證、可追蹤、不可反向污染主判的旁證架構。
 
-## 為什麼改
+### 1. 個人命書 HTTP 旁路
+- `GET /api/mingshu-doctor`
+- `GET /api/mingshu-locations`（站主限定）
+- `POST /api/mingshu-chart`（站主限定）
+- `POST /api/mingshu-compare`（站主限定）
+- 正式站不安裝 Mingshu CLI；Vercel function 只透過 HTTPS 呼叫公開 API。
 
-站主要求把已安裝的個人命書接到昭梧，且只加呼叫層、不改鎖定核心。命書引擎是外部固定表，不能 silently 變成昭梧 Calculation Truth；出生資料預設也不可上傳給第三方。因此先做可驗證、可關閉、不進報告的伺服器旁路。
+### 2. 雙引擎驗證
+新增 `lib/zhaowu-verification.js`，可逐項比較昭梧與 Mingshu：
+- 四柱
+- 日主
+- 旺衰
+- 用神
+- 格局（有資料才比較）
 
-## 影響範圍
+輸出 `MATCH / PARTIAL / CONFLICT / UNAVAILABLE`，但永遠固定：
+`ZHAOWU_REMAINS_AUTHORITATIVE`。
 
-- `api/mingshu-doctor.js`
-- `api/mingshu-chart.js`
-- `lib/mingshu-client.js`
-- `src/lib/mingshu/client.ts`
-- `docs/MINGSHU-CALL-LAYER.md`
-- 公開 release ledger fallback
+### 3. 四級來源標籤
+正式鎖定：
+- `CALC_TRUTH`
+- `ZHAOWU_DERIVED`
+- `SIDE_CHANNEL`
+- `AI_INTERPRETATION`
 
-不修改：`src/lib/bazi/chart.ts`、`calendar.ts`、`interpret.ts` 分類順序、`palm/engine.ts`、`core/method.ts`、auth 契約、payment、Supabase schema、Focused Report、首頁版式。
+外部 Mingshu 只能落在 `SIDE_CHANNEL`。
+
+### 4. ZW Chart Fingerprint
+新增匿名命盤摘要：
+`ZW-R6.2.1-<16位摘要>`
+
+只基於命盤核心結構，不包含原始出生日期、城市顯示文字、問題、AI 文案或 locale。用於版本漂移、語言一致性與交叉驗證。
+
+### 5. 昭梧 discovery / health
+- `GET /api/zhaowu-capabilities`
+- `GET /api/zhaowu-doctor`
+
+doctor 即使 Mingshu 失效仍保持昭梧本地 `ok: true`，並把外部服務標為非必要 side channel。
+
+### 6. Mingshu v1 契約修正
+修正真太陽時 `placeId`：官方要求 `geonames:<id>` 字串，不再錯誤轉成數字。補上城市查詢端點，讓真太陽時旁證流程可以完整走通。
+
+## 安全邊界
+
+本次不修改：
+- `src/lib/bazi/chart.ts`
+- `src/lib/bazi/calendar.ts`
+- `src/lib/bazi/interpret.ts`
+- `finalizeReading`
+- auth / payment / Supabase schema
+- 免費／付費客人報告內容
+
+Mingshu 失敗時 fail-open；昭梧本地 R6.2.1 照常工作。
+
+## 隱私
+
+- capabilities / doctor 不接收出生資料。
+- locations 只傳地名。
+- chart / compare 只有站主 Cookie 可呼叫。
+- 第三方回傳不寫 Supabase、不建立檔案、不進普通客人報告。
+- Fingerprint 不含原始出生資料與自然語言文案。
 
 ## 驗證要求
 
-- Deploy gate：必須 PASS
-- Engine suite：必須 PASS
-- iPhone Safari：既有必要檢查不得退化
-- Production：`GET /api/mingshu-doctor` 回 JSON；未登入 `POST /api/mingshu-chart` 回 401
-- 首頁與既有分析路徑行為不變
-
-## 回滾
-
-回退 r138 merge commit 即可移除兩個 API 與呼叫層文件。昭梧本機排盤不受影響。
+- Deploy gate：PASS
+- Engine suite：PASS
+- iPhone Safari：PASS
+- Production `/api/zhaowu-capabilities`：200
+- Production `/api/zhaowu-doctor`：200，即使 side channel 掛掉仍不得拖垮本地
+- Production `/api/mingshu-doctor`：回報實際外部狀態
+- 未登入 `/api/mingshu-locations`、`/api/mingshu-chart`、`/api/mingshu-compare`：401

@@ -17,7 +17,11 @@
     "api/owner-session.js": { "maxDuration": 10 },
     "api/owner-music.js": { "maxDuration": 60, "includeFiles": "lib/owner-music-ssh.json" },
     "api/mingshu-doctor.js": { "maxDuration": 10 },
-    "api/mingshu-chart.js": { "maxDuration": 15 }
+    "api/mingshu-locations.js": { "maxDuration": 10 },
+    "api/mingshu-chart.js": { "maxDuration": 15 },
+    "api/mingshu-compare.js": { "maxDuration": 15 },
+    "api/zhaowu-capabilities.js": { "maxDuration": 10 },
+    "api/zhaowu-doctor.js": { "maxDuration": 10 }
   },
   "headers": [
     {
