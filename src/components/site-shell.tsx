@@ -86,7 +86,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
   const todayLabel = displayText(language, "今日", "今日", "Today", "本日", "오늘", "आज");
   const totalLabel = displayText(language, "累計訪問", "累计访问", "Total visits", "累計訪問", "누적 방문", "कुल विज़िट");
-  const latestLabel = displayText(language, "最新更新 ＋", "最新更新 ＋", "Latest update ＋", "最新更新 ＋", "최신 업데이트 ＋", "नवीनतम अपडेट ＋");
+  const latestLabel = displayText(language, "最新版本更新內容 →", "最新版本更新内容 →", "Latest updates →", "最新アップデート →", "최신 업데이트 →", "नवीनतम अपडेट →");
   const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
   const galleryLabel = displayText(language, "圖庫", "图库", "Gallery", "ギャラリー", "갤러리", "गैलरी");
   const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기", "गैलरी खोलें");
@@ -107,12 +107,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span>
                 {todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}
               </span>
-              <details className="group basis-full text-center" data-latest-change-report>
-                <summary className="cursor-pointer list-none font-medium text-ink-soft [&::-webkit-details-marker]:hidden">
-                  {latestLabel}
-                </summary>
-                <p className="mx-auto mt-1 max-w-2xl px-2 text-center leading-5">{releaseSummary}</p>
-              </details>
+              <Link
+                to="/updates"
+                className="basis-full text-center font-medium text-ink-soft hover:text-ink"
+                data-latest-change-report
+                title={releaseSummary}
+              >
+                {latestLabel}
+              </Link>
             </div>
 
             <div className="zhaowu-header-primary">
