@@ -112,8 +112,18 @@ function queryValue(req, name) {
   }
 }
 
-function redirectAudio(res, url) {
+function playbackUrl(url) {
   const raw = String(url || "").trim();
+  const githubRaw = raw.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/?#]+)\/(.+?)(?:[?#].*)?$/);
+  if (githubRaw) {
+    const [, owner, repo, ref, path] = githubRaw;
+    return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${ref}/${path}`;
+  }
+  return raw;
+}
+
+function redirectAudio(res, url) {
+  const raw = playbackUrl(url);
   let destination = "";
   if (raw.startsWith("/") && !raw.startsWith("//")) {
     destination = raw;
@@ -214,13 +224,13 @@ function publicPayload(manifest) {
     active: active ? {
       id: active.id,
       name: active.name,
-      url: active.url,
+      url: playbackUrl(active.url),
       contentType: active.contentType || "audio/mpeg",
     } : null,
     tracks: tracks.map((row) => ({
       id: row.id,
       name: row.name,
-      url: row.url,
+      url: playbackUrl(row.url),
       contentType: row.contentType || "audio/mpeg",
       fileSize: row.fileSize ?? null,
       enabled: row.id === (manifest.activeId || active?.id),
@@ -253,7 +263,7 @@ export const config = {
 export default async function handler(req, res) {
   try {
     const method = req.method || "GET";
-    if (method === "GET") {
+    if (method === "GET" || method === "HEAD") {
       const wantsStream = queryValue(req, "stream") === "1";
       const manifest = await readOwnerMusicManifest().catch(() => emptyManifest());
       const gitPayload = publicPayload(manifest);
