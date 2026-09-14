@@ -42,7 +42,7 @@ test("Guan Shi Lu titles stay in the collapsed row and hex cream is gone", async
   assert.match(svg, /STONE/);
 });
 
-test("owner music skips iPhone decode for MP3/M4A and uploads in chunks", async () => {
+test("owner music skips iPhone decode for MP3/M4A, uploads in chunks, and can fall back to restored Supabase audio", async () => {
   const transcoder = await source("src/lib/owner-music-transcode.ts");
   const native = await source("src/lib/owner-music-native-encode.ts");
   const client = await source("src/lib/owner-music-client.ts");
@@ -61,6 +61,9 @@ test("owner music skips iPhone decode for MP3/M4A and uploads in chunks", async 
   assert.match(client, /uploadInChunks/);
   assert.match(api, /saveOwnerMusicChunk/);
   assert.match(api, /x-zhaowu-music-chunk-index/);
+  assert.match(api, /readSupabaseActiveTrack/);
+  assert.match(api, /SUPABASE_AUDIO_BUCKET = "zhaowu-audio"/);
+  assert.match(api, /source: "supabase-fallback"/);
   assert.match(git, /MAX_BYTES = 12 \* 1024 \* 1024/);
   assert.match(git, /saveOwnerMusicChunk/);
   assert.match(git, /SCRATCH_DIR/);
