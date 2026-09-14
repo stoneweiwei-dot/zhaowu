@@ -14,7 +14,7 @@ test("WFX interpretation guards prevent count-based and stereotype shortcuts", a
   assert.match(runtime, /印旺不得直接等於有福/);
   assert.match(runtime, /城市、地理、髮色、衣著、方位與日柱俗訣/);
   assert.match(doc, /不得因某五行或十神「出現三個以上」直接判定/);
-  assert.match(doc, /缺，不是處方/);
+  assert.match(doc, /不能做五行集點式配平/);
   assert.match(doc, /戊辰日的辰藏戊、乙、癸/);
 });
 
