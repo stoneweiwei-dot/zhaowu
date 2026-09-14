@@ -40,6 +40,7 @@ export function LifeViewHomeSection() {
         collapse: "Show less",
         read: "Read",
         archive: "Open 觀世錄",
+        quizCta: "Take the Five-Element Strength Overdrive test",
         empty: "Articles will be added here over time.",
       };
     }
@@ -53,6 +54,7 @@ export function LifeViewHomeSection() {
         collapse: "收起",
         read: "阅读全文",
         archive: "进入观世录",
+        quizCta: "做五行优势内耗测验",
         empty: "文章会在这里持续更新。",
       };
     }
@@ -65,6 +67,7 @@ export function LifeViewHomeSection() {
       collapse: "收起",
       read: "閱讀全文",
       archive: "進入觀世錄",
+      quizCta: "做五行優勢內耗測驗",
       empty: "文章會在這裡持續更新。",
     };
   }, [locale]);
@@ -133,6 +136,11 @@ export function LifeViewHomeSection() {
                         </Fragment>
                       );
                     })}
+                    {article.id === "strength-overdrive-five-elements" ? (
+                      <Link to="/quiz/five-element-overdrive" className="mt-6 inline-flex min-h-11 items-center rounded-full border border-cinnabar/30 bg-cream px-5 py-2 text-sm font-medium text-cinnabar">
+                        {copy.quizCta} →
+                      </Link>
+                    ) : null}
                   </div>
                 ) : null}
               </article>
