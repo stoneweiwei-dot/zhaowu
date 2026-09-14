@@ -1,22 +1,48 @@
-# 昭梧未完成指令對帳｜2026-09-12
+# 昭梧未完成指令對帳｜CURRENT 2026-09-14
 
-最新 runtime 核對基底：Production `4487edd0f921b04ad84f09636ed83838c1000dd0`，Vercel deployment `dpl_A8zzyGVSyekFpCDB5kK8FUTsmi7C` 為 READY／production。PR #306 起的 docs-only 合併會讓 GitHub `main` 前進，但不改 runtime Production；對應 Vercel deployment 依 ignore 規則標為 CANCELED。Sites appgprj_6aa51f3fb7e881919ef1b3ac22ce416a 是私人管理入口，並非第二個正式站。
+本文件保留原檔名，只作唯一未完成指令對帳。凡與本文件衝突的舊聊天、舊 Issue、舊 PR、舊部署、舊 AppDeploy／Netlify 說明均不得重新激活。
 
-| 指令 | 判定與處理 | 證據／剩餘驗證 |
+## 正式來源
+
+- GitHub：`stoneweiwei-dot/zhaowu` → `main`
+- Runtime Production：Vercel `stone-zhaowu-official`
+- 清理前最新正式 runtime SHA：`b71e9054f73f28ddcc6b7ad1937a3105c14c20f0`（r130）
+- Supabase：`plgpxusmemnmzckbwtiv`
+- docs-only commit 可使 `main` 前進但由 `vercel.json` ignore 規則跳過 runtime build；不得因此誤判 Production 未對齊。
+
+## 唯一仍有效的待辦
+
+| 來源 | 狀態 | 唯一剩餘範圍 |
 |---|---|---|
-| 訪客直接免費使用、保留站主登入 | r116 訪客入口；r119 收斂為 owner-only | 普通用戶無登入／註冊入口；唯一 `/login` 為站主 Email＋密碼，真實 owner session 仍待端到端驗證 |
-| 金葫蘆＋深藍昭梧 Logo | r116 重整、r117 修正裁切；未合併 #269 | r117 正式 Header 132 × 54 完整顯示；Apple／Android／favicon 分別引用 |
-| PWA 自動更新 | 保留並升 cache r117 | skipWaiting、clients.claim、舊 cache 清除保留；真 iPhone 已安裝更新仍待實測 |
-| 五行穿衣與近日天象 | 已存在，不重做 | 正式首頁已顯示；/daily-colors、/sky-events；天象自動更新尚無本次證據 |
-| 首頁各分組完整說明、客資與八字獨立、大師數合併 | 已有實作 | 正式首頁可讀；完整使用者報告仍須端到端驗證 |
-| Supabase 公共美工節流、圖庫縮圖、延遲載入 | r111-r115 已有實作 | 公共媒體改同源；r115 發布記錄存在。未刪 storage 資料 |
-| D60 精確分鐘與順逆切換 | 已有元件與 r113 修復 | 尚缺獨立星曆比對與真機完整流程；不捏造計算驗證 |
-| 圖片失敗仍交付文字 | 已有 fallback 與測試 | 真 provider 成功、額度及登入存檔仍需真實流程證據 |
-| 多語 | 現行公開繁中/en/ko/hi | 不復活舊公開簡中選項；各語完整報告仍需驗證 |
-| 登入、私人歷史、付費流程 | r119 鎖為站主專用 | 缺真實 owner 登入／帳戶／報告重開／付費端到端證據，不能以頁面 HTTP 200 代替 |
-| 付費圖片持久化 #295 | 站主明確暫停 | 不合併，不阻擋免費工作 |
-| Netlify/AppDeploy 遷移、舊 23:00 換日 | 已取消／被取代 | Linear STO-16/STO-15，不恢復 |
-| 正式自訂域名 DNS | 舊文件列待辦，未確認仍需要 | 唯一有效正式地址沿用 Vercel，無必要不改 DNS |
-| 八字全格局取用驗證 | 研究驗證未完成 | 不以顏色數量模板取代現有判法 |
+| Linear `STO-5` | In Progress | 真 iPhone Safari、站主獨立 Cookie 登入／帳戶、完整公開語言報告、D60 Gate/test-vector、PWA 已安裝更新、圖片失敗仍交付文字 |
+| Linear `STO-14` | Backlog | 使用者主動命誥圖、真實 image provider、Gallery fallback、保存與權限；未重啟前不得消耗 provider 額度 |
+| Linear `STO-11` | Todo | 公開版本號＋「最新版本更新內容」頁 |
 
-r117 的畫面驗證依 PR CI、Vercel Production、正式 URL 與發布帳更新；目前 main／Production exact SHA 已前進到 `4487edd…`。後續版本未重新驗證的項目不標完成，不得把這份對帳視為真機、真實登入或付費測試通過證明。
+除此之外不得再建立同題平行待辦。
+
+## 已完成／已收口
+
+- Logo rollout：Linear `STO-12` 已 Done；不復活 PR #269。
+- GitHub #59：已整合至 `STO-5`／`STO-14` 並關閉。
+- 舊 paid visual PR #295：已歸檔關閉；未來如重啟必須從當時最新 main 新建分支。
+- D60 舊 PR #304：不得合併；現行使用 current main 的 `D60ReliabilityGate`。
+- Vercel 非 main Preview 節流：已存在；`owner-music` deployment disabled。
+- 普通用戶登入／註冊：已退出 active path；唯一登入為站主密鑰＋`__Host-zhaowu_owner_session`，不依賴 Supabase Auth。
+- 公共 Gallery／美工資產：已改同源靜態路徑；不得再把公開圖片流量搬回 Supabase。
+- 背景音樂：r130 owner-music 路線；不得復活舊 Supabase 音訊 CDN。
+- 舊 Supabase admin/temp one-shot functions：現行 retirement policy 為 JWT + HTTP 410 tombstone，不視為可執行待辦。
+- AppDeploy／Netlify 作正式站：永久取消。
+- 固定九頁／四卡／23 頁報告：永久被 focused `summary/body` 契約取代。
+- 舊 23:00 子初直接換日：永久取消；仍以 23:00–23:59:59 當日、00:00 後次日的現行規則為準。
+
+## 待命推理分支
+
+`standby/reasoning-engine-v1` 已標記 `ARCHIVED / DO NOT MERGE`。其原始概念可留作研究來源，但分支嚴重落後 current main，任何 Transformation Gate、Rule Registry、Relation Arbitrator、Evidence Graph、Prediction Ledger 都只能依當時最新 R6.2.1+、Calculation Truth 與 current runtime 逐模組重新設計、測試與驗證，不得整支 merge／rebase／復活。
+
+## Supabase 付費視覺基建
+
+`paid_visual_blueprints` 與 `prepare-paid-visual` 可保留為 dormant infrastructure；未來只有在 `STO-14` 明確重啟且重新通過 server-side tier/payment gate 後才可接真實 provider。文字報告永遠不得依賴圖片生成成功。
+
+## 永久完成標準
+
+CI／Vercel READY 只作技術證據，不能代替真 iPhone、真站主登入、真報告重開與真實 provider 成功／失敗流程。任何新 Agent 必須先看 GitHub Issue #1、本文件、Linear `STO-5`／`STO-14`／`STO-11`，不得從歷史資料另起一條執行線。
