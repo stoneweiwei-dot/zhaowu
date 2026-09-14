@@ -163,7 +163,6 @@ export function PalmStandalone() {
     setResult(null);
     setHistorySaved(false);
     setError("");
-    window.dispatchEvent(new CustomEvent<D60BirthPayload | null>(D60_BIRTH_EVENT, { detail: null }));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
