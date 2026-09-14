@@ -18,6 +18,7 @@ import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as IndianAstrologyRouteImport } from './routes/indian-astrology'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as NumerologyRouteImport } from './routes/numerology'
 import { Route as QizhengRouteImport } from './routes/qizheng'
 import { Route as TeaGuardianRouteImport } from './routes/tea-guardian'
@@ -72,6 +73,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NumerologyRoute = NumerologyRouteImport.update({
   id: '/numerology',
   path: '/numerology',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
   '/login': typeof LoginRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/numerology': typeof NumerologyRoute
   '/qizheng': typeof QizhengRoute
   '/tea-guardian': typeof TeaGuardianRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
   '/login': typeof LoginRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/numerology': typeof NumerologyRoute
   '/qizheng': typeof QizhengRoute
   '/tea-guardian': typeof TeaGuardianRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
   '/login': typeof LoginRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/numerology': typeof NumerologyRoute
   '/qizheng': typeof QizhengRoute
   '/tea-guardian': typeof TeaGuardianRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/indian-astrology'
     | '/login'
+    | '/auth/callback'
     | '/numerology'
     | '/qizheng'
     | '/tea-guardian'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/indian-astrology'
     | '/login'
+    | '/auth/callback'
     | '/numerology'
     | '/qizheng'
     | '/tea-guardian'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/indian-astrology'
     | '/login'
+    | '/auth/callback'
     | '/numerology'
     | '/qizheng'
     | '/tea-guardian'
@@ -241,6 +253,7 @@ export interface RootRouteChildren {
   HistoryRoute: typeof HistoryRoute
   IndianAstrologyRoute: typeof IndianAstrologyRoute
   LoginRoute: typeof LoginRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   NumerologyRoute: typeof NumerologyRoute
   QizhengRoute: typeof QizhengRoute
   TeaGuardianRoute: typeof TeaGuardianRoute
@@ -316,6 +329,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/numerology': {
       id: '/numerology'
       path: '/numerology'
@@ -385,6 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoryRoute: HistoryRoute,
   IndianAstrologyRoute: IndianAstrologyRoute,
   LoginRoute: LoginRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   NumerologyRoute: NumerologyRoute,
   QizhengRoute: QizhengRoute,
   TeaGuardianRoute: TeaGuardianRoute,

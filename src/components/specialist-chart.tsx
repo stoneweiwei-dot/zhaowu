@@ -7,7 +7,7 @@ import "@/specialist-chart.css";
 const signs = ["白羊", "金牛", "雙子", "巨蟹", "獅子", "處女", "天秤", "天蠍", "射手", "摩羯", "水瓶", "雙魚"];
 const names: Record<string, string> = { sun: "太陽", moon: "太陰", mercury: "水星", venus: "金星", mars: "火星", jupiter: "木星", saturn: "土星", ji: "計都", luo: "羅睺", bei: "月孛", ziqi: "紫氣" };
 export function ChartTable({ title, headers, rows }: { title: string; headers: string[]; rows: ReactNode[][] }) {
-  return <div className="zw-chart-scroll" tabIndex={0} role="region" aria-label={title}><table className="zw-chart-table"><caption>{title}</caption><thead><tr>{headers.map(h => <th scope="col" key={h}>{h}</th>)}</tr></thead><tbody>{rows.map((row, i) => <tr key={i}>{row.map((cell, j) => j === 0 ? <th scope="row" key={j}>{cell}</th> : <td key={j}>{cell}</td>)}</tr>)}</tbody></table></div>;
+  return <div className="zw-chart-scroll" tabIndex={0} role="region" aria-label={title}><table className="zw-chart-table"><caption>{title}</caption><thead><tr>{headers.map(h => <th scope="col" key={h}>{h}</th>)}</tr></thead><tbody>{rows.map((row, i) => <tr key={i}>{row.map((cell, j) => j === 0 ? <th scope="row" key={j} data-label={headers[j] ?? ""}>{cell}</th> : <td key={j} data-label={headers[j] ?? ""}>{cell}</td>)}</tr>)}</tbody></table></div>;
 }
 function position(lon: number, locale: Locale) { const p = decoratePosition("Sun", lon); return `${locale === "en" ? p.sign : signs[p.signIndex]} ${formatDegree(p)}`; }
 const xy = (degree: number, radius: number) => ({ x: 220 - radius * Math.cos(degree * Math.PI / 180), y: 220 + radius * Math.sin(degree * Math.PI / 180) });

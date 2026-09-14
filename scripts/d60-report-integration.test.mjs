@@ -5,12 +5,14 @@ import test from "node:test";
 const source = fs.readFileSync(new URL("../src/components/d60-karma-section.tsx", import.meta.url), "utf8");
 const palm = fs.readFileSync(new URL("../src/components/palm-standalone.tsx", import.meta.url), "utf8");
 const route = fs.readFileSync(new URL("../src/routes/yizhangjing.tsx", import.meta.url), "utf8");
+const indian = fs.readFileSync(new URL("../src/routes/indian-astrology.tsx", import.meta.url), "utf8");
+const specialist = fs.readFileSync(new URL("../src/components/specialist-system-page.tsx", import.meta.url), "utf8");
 const home = fs.readFileSync(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
 const runtime = fs.readFileSync(new URL("../src/components/yizhangjing-runtime-r79.tsx", import.meta.url), "utf8");
 
 test("Indian classical astrology reuses only the current report birth input and exposes no second customer form", () => {
   assert.match(source, /zhaowu:d60-birth/);
-  assert.match(palm, /zhaowu:d60-birth/);
+  assert.doesNotMatch(palm, /zhaowu:d60-birth/);
   assert.doesNotMatch(source, /useCurrentUserState|user\?\.birthData/);
   assert.match(source, /createPortal/);
   assert.doesNotMatch(source, /searchCities|<form|formTitle|Generate D60|生成 D60|排你的 D60/);
@@ -36,8 +38,12 @@ test("every Indian classical astrology result card can reveal a plain-language e
   }
 });
 
-test("Indian classical astrology is injected into the existing Past & Present report with a visible uncertainty note", () => {
+test("D60 lives in its own Indian grouping and is no longer injected into Past & Present", () => {
   assert.match(route, /PalmStandalone/);
+  assert.doesNotMatch(route, /D60KarmaSection/);
+  assert.match(indian, /SpecialistSystemPage id="indian"/);
+  assert.match(specialist, /D60ReliabilityGate/);
+  assert.match(specialist, /id === "indian"/);
   assert.match(palm, /export function PalmStandalone/);
   assert.match(source, /export function D60KarmaSection/);
   assert.match(source, /大約 2 分鐘就可能跨過一個細分區/);
@@ -46,23 +52,21 @@ test("Indian classical astrology is injected into the existing Past & Present re
   assert.match(source, /stablePlus2/);
 });
 
-test("Indian classical astrology remains fail-closed and never blocks the four-life report", () => {
-  assert.match(source, /前四世報告不受影響/);
+test("Indian classical astrology remains fail-closed and never blocks other readings", () => {
+  assert.match(source, /本卷其他分析不受影響/);
   assert.match(source, /不會再從帳戶舊資料或其他報告自動補算/);
   assert.match(source, /no longer falls back to old account data or another report/);
   assert.match(source, /只作弱旁證/);
   assert.match(source, /not promoted into a definite conclusion/);
 });
 
-test("shared minute-level records hydrate the D60 confirmation before automatic submission", () => {
-  assert.match(palm, /setD60Exact\(!record\.timeUnknown && Number\.isInteger\(record\.minute\) && Boolean\(record\.city\)\)/);
+test("shared minute-level records hydrate the palm page without a D60 confirmation checkbox", () => {
   assert.match(palm, /setBirthMinute\(record\.timeUnknown \? "" : String\(record\.minute\)\)/);
+  assert.doesNotMatch(palm, /d60Confirm|setD60Exact|d60Exact/);
   assert.match(runtime, /submitPalm\(false\)/);
 });
 
-test("D60 events come from the submitted form and cannot be reintroduced by shared-record refreshes", () => {
+test("D60 events cannot be reintroduced by the Past & Present form", () => {
   assert.doesNotMatch(runtime, /readSharedBirthRecord|SHARED_BIRTH_EVENT|emitD60Birth|zhaowu:d60-birth/);
-  assert.match(palm, /setBirthHour\(event\.target\.value\); setD60Exact\(false\)/);
-  assert.match(palm, /setBirthMinute\(event\.target\.value\); setD60Exact\(false\)/);
-  assert.match(palm, /setCity\(next\); setD60Exact\(false\)/);
+  assert.doesNotMatch(palm, /zhaowu:d60-birth/);
 });

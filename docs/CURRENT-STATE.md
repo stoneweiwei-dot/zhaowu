@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-15 01:00 AEST
+最後核對：2026-09-15 07:20 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
@@ -25,19 +25,20 @@
 - GitHub `main` 是唯一源码真相。Vercel Git 自动部署仅对 `main` 开启（`vercel.json` `git.deploymentEnabled.main=true`），正式生产只认 `stone-zhaowu-official`。
 - GitHub `main` branch protection 已開啟：required checks = Deploy gate／Engine suite／iPhone Safari；`enforce_admins=true`；禁止 force push。
 - Supabase 报告存档、图库/背景资产、访问统计统一使用当前项目配置。站主登入改為獨立 Cookie `__Host-zhaowu_owner_session`，不經 Supabase Auth。
-- 登入：普通用戶不提供登入、註冊、Google／Apple／X／Email 會員入口；唯一 `/login` 為站主密碼入口（8 位以上，hash 在 repo，明文不進 repo）。真正驗密是 `api/owner-login.js`，不是 `src/server/owner-auth.ts`。前端只接受獨立 Cookie 驗證的 `isOwner`。Email＋密碼 + `profiles.is_owner` 舊契約已廢止。
+- 登入：`/login` 提供會員登入、註冊與獨立站主密鑰三分頁。會員走 Supabase Auth，確認信與 OAuth 必須回到 `/auth/callback`，不得把 token 倒在首頁變成空白頁。站主仍只認獨立 Cookie `__Host-zhaowu_owner_session`；`profiles.is_owner` 不得讓會員變成站主。Email＋密碼廢止契約已被 2026-09-15 站主最新指令取代。
 - 現行公開語言：`zh-Hant / en / ko / hi`；`zh-Hans / ja` 僅保留歷史偏好相容並折回繁中，不再是公開選項。
 - Loading ghost overlay 已移除。
 - `finalizeReading` 是最终 Reading 单一来源；已保存报告不重新 live 算出另一套答案。
 - 个人命请文字为证据型文案；真实命请图走私有 report image delivery，失败不得阻塞文字答案。
 - Gallery/背景资产管理能力保留；全站应用页恢复 r23 固定宋画背景；后台资产管理保留，不能覆盖前台页面。
 - 首页只保留一个主分析表单；三个专题入口分别进入 `/qizheng`、`/yizhangjing`、`/ziwei`。旧 `/tianji-dual` 仅保留运行兼容，不再作为“性格两面”独立分组、首页入口、青玉小龙入口或客户产品名称；不得复活旧入口。
-- `/yizhangjing` 是首页唯一「前世今生」入口：以达摩一掌经排前四世六道、逐世特征与留到今生的习性，并明确合并重复六道的加强影响。
+- `/yizhangjing` 是首页唯一「前世今生」入口：以达摩一掌经排前四世六道、逐世特征与留到今生的习性。D60 不在此页。
+- `/indian-astrology` 的 D60 必須先顯示年月日＋精確時分＋出生地，經明確分鐘確認（綁定 birth fingerprint）並通過 ±2 分鐘穩定性後才輸出盤面與解讀；不穩定或檢查失敗一律「不作判定」，不用 D60 反向考時。已從最新 `main` 重建，**不得 merge 舊 PR #304**。D60 分析只掛在這一卷，不得再嵌回前世今生。
 - `/qizheng`、`/ziwei`、`/astrology`、`/indian-astrology` 在有完整生辰時顯示各自對應命盤（`data-natal-chart`）；內部 calculation profile、原始 debug 狀態仍不進客戶畫面。舊「技術盤一律不向客戶顯示」已廢止。
-- `/indian-astrology` 的 D60 必須先顯示年月日＋精確時分＋出生地，經明確分鐘確認（綁定 birth fingerprint）並通過 ±2 分鐘穩定性後才輸出盤面與解讀；不穩定或檢查失敗一律「不作判定」，不用 D60 反向考時。已從最新 `main` 重建，**不得 merge 舊 PR #304**（該 PR 已 CLOSED、未合併）。
 - `/astrology` 完整盤：七曜星座與宮位、十二宮宮頭與宮內行星、ASC／MC／DSC／IC、主要相位；未知出生時間對宮位／四軸 fail-closed。來源為已合併的 #310，不是舊 release 基底。
 - Loading：`IntroGate` 指向 `/intro/owner-immortal-ascent-r123.mp4`（原時長 10.04 秒、720×1280，不降解析度）與同名 JPEG 海報；一進站影片可見並主動 `play()`，右下角 Skip；真正影片錯誤才約 1.6 秒 fail-open；硬退出 12 秒。r126 拿掉「opacity:0 直到 is-playing」與 buffering 時 `onStalled` 再把片藏起來。舊 2.4／2.8／3 秒 Loading 契約已廢止。
 - 夜間問事標題必須月白可讀；客人資料卡與觀世錄／知識頁宣紙維持深字。五行穿衣併入首頁「今日指引」展開區，方塊顯示木青／火紅紫／土黄棕／金白金銀／水黑藍。完整指南在 `/daily-colors`。
+- r139：首頁只留客人資料，不得再放自問自答標語或問事 textarea。生辰寫在這台手機的 `zhaowu.birth-record.v1`，登入／登出不得刪。西洋十二宮表在 iPhone 必須換行／卡片，不得 `nowrap` 裁欄。登入頁必須看得見全螢幕登入動畫。PWA cache `zhaowu-shell-r139`。
 - r135：Header 字標 PNG 已含「昭梧」，不得再並列第二個文字「昭梧」。夜色不得把宣紙標題反成月白。12MB 以內 MP3／M4A 原檔分段上傳，禁止再把相容音檔送進無逾時的 iPhone `decodeAudioData`。
 - r129：首頁不得在客人資料下再疊一份即時四柱預覽。八字排盤只在開始分析後的報告出現。「七種個人分析」與輕測驗區塊必須實色底，壁紙不得透字。四柱卡只顯示柱名＋干支＋十神，不得疊天干／地支／十神三層。
 - `/numerology` 含靈魂獨白、人生角色、五項天賦分述與 11／22／33 區塊分析。首頁不得出現大師數文章標題「你是少見的」。
@@ -47,7 +48,7 @@
 - 「趣味测验」是独立的轻量自评系列，不冒充命盘；包含「内在动物 × 命局瑞兽」与「五行功能测验」。五行功能测验只判断当前需要训练的生长、启动、落地、收敛或恢复功能，不等同八字喜用神。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
 - 趣味測驗結果可顯示已核准的隱藏神聖圖像；這是結果頁視覺補充，不改命盤計算、報告契約或付費圖片流程。
-- Logo／STO-12 已完成，不重新製作。STO-5 普通會員 Google／Apple／註冊驗收已廢止，不得復活。
+- Logo／STO-12 已完成，不重新製作。STO-5 普通會員入口廢止已被 2026-09-15 站主最新指令取代：會員登入／註冊必須存在且確認信不得掉進空白頁。
 - 舊 Netlify 自動 Preview／Deploy 已用 `netlify.toml` `ignore = "exit 0"` 停掉；Netlify 不是 production。archive 專案若仍接到 GitHub webhook，只會 canceled，不得當正式站。
 
 没有新的可复现 FAIL 时，不得因为旧 Issue / 旧聊天复活已废止实现。
@@ -132,7 +133,7 @@ PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行�
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
 - Supabase spend cap（402 `exceed_cached_egress_quota`）仍擋住報告存檔、圖庫／壁紙上傳與舊公開音訊桶。解除額度只能由站主在 Supabase Dashboard → Billing 操作。r130 起：站主登入、後台上傳背景音樂與播放不再依賴它。舊 `zhaowu-audio` 曲子要等額度解除才能撈回，現可在後台重新上傳。
 - Supabase dashboard 仍需站主勾：`get_customer_classic_passage` EXECUTE 邊界、`search_path`、leaked-password protection、live Edge Functions 對帳。見 `docs/supabase-security-r123.md`。
-- Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo，不復活普通會員 Google／Apple／註冊。
+- Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo。會員登入／註冊以 r139 為準。
 
 ## 9. 生产优先级
 

@@ -219,15 +219,12 @@ test("API handlers are discoverable, owner-gated where needed, and stay off calc
   }
 });
 
-test("r138 release ledger and contract docs cover verification architecture", async () => {
-  const stats = await source("src/lib/site-stats.ts");
+test("r138 verification artifacts remain after later releases", async () => {
   const runtime = await source("src/lib/bazi/runtime-contract.ts");
   const report = await source("docs/change-reports/ZW-WEB-2026.09.15-r138.md");
   const docs = await source("docs/MINGSHU-CALL-LAYER.md");
   const note = await source("docs/INSTRUCTION-REGISTRY-NOTE-r138.md");
 
-  assert.match(stats, /ZW-WEB-2026\.09\.15-r138/);
-  assert.match(stats, /updateNumber:\s*138/);
   assert.match(runtime, /BAZI_RUNTIME_CONTRACT_VERSION = 'R6\.2\.1'/);
   assert.match(report, /Chart Fingerprint/);
   assert.match(report, /雙引擎/);

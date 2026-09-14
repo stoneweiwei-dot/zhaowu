@@ -4,16 +4,23 @@ import test from "node:test";
 
 const palm = await readFile(new URL("../src/components/palm-standalone.tsx", import.meta.url), "utf8");
 const d60 = await readFile(new URL("../src/components/d60-karma-section.tsx", import.meta.url), "utf8");
+const indian = await readFile(new URL("../src/routes/indian-astrology.tsx", import.meta.url), "utf8");
+const page = await readFile(new URL("../src/components/specialist-system-page.tsx", import.meta.url), "utf8");
+const past = await readFile(new URL("../src/routes/yizhangjing.tsx", import.meta.url), "utf8");
 
-test("Past & Present collects minute-level time and birthplace for Indian classical astrology", () => {
+test("Past & Present collects minute-level time and birthplace without owning D60", () => {
   assert.match(palm, /出生時間（精確到分鐘）/);
   assert.match(palm, /CityPicker/);
-  assert.match(palm, /印度古法占星時間精度確認/);
-  assert.match(palm, /zhaowu:d60-birth/);
-  assert.doesNotMatch(palm, /D60 時間精度確認|D60 时间精度确认|D60 time-accuracy confirmation/);
+  assert.doesNotMatch(palm, /印度古法占星時間精度確認/);
+  assert.doesNotMatch(palm, /zhaowu:d60-birth/);
+  assert.doesNotMatch(palm, /d60Confirm|setD60Exact|d60Exact/);
+  assert.doesNotMatch(past, /D60KarmaSection/);
 });
 
-test("Indian classical astrology uses only the birth data submitted by the current report", () => {
+test("D60 lives on Classical Indian astrology behind the reliability gate", () => {
+  assert.match(indian, /SpecialistSystemPage id="indian"/);
+  assert.match(page, /D60ReliabilityGate/);
+  assert.match(page, /id === "indian"/);
   assert.match(d60, /zhaowu:d60-birth/);
   assert.doesNotMatch(d60, /useCurrentUserState/);
   assert.doesNotMatch(d60, /user\?\.birthData/);

@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { analyzeLife } from "@/lib/actions";
 import type { AnalyzeInput, CityHit } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { createEngineReportRecord, updateBirthData } from "@/lib/supabase-rest";
+import { updateBirthData } from "@/lib/supabase-rest";
 import { UNKNOWN_TIME_COPY } from "@/lib/bazi/presentation";
 import {
   formatSharedBirthRecord,
@@ -17,12 +16,9 @@ import { CityPicker } from "@/components/city-picker";
 
 export function AnalysisForm() {
   const { t, locale } = useI18n();
-  const { user, profile, session } = useCurrentUserState();
-  const setCurrent = useAppStore((s) => s.setCurrent);
-  const setSavedId = useAppStore((s) => s.setSavedId);
+  const { user, session } = useCurrentUserState();
   const reset = useAppStore((s) => s.reset);
 
-  const [question, setQuestion] = useState("");
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
@@ -40,62 +36,44 @@ export function AnalysisForm() {
 
   const copy = locale === "en"
     ? {
-        questionKicker: "ZHAOWU · CONSULTATION",
-        questionTitle: "What would you like to understand now?",
-        questionLead: "A direct answer first, followed by the chart evidence, timing, and practical choices.",
-        questionLabel: "Your question",
-        questionPlaceholder: "For example: Is this role worth continuing? What should I prioritise now?",
-        promiseLabel: "Reading order",
-        promise: ["Answer", "Evidence", "Timing"],
         customerKicker: "SHARED RECORD",
         customerTitle: "Client details",
-        customerLead: "Enter the birth record once. Every personal reading can reuse it.",
+        customerLead: "Enter the birth record once on this phone. Every personal reading reuses it, including after sign-in.",
         birthReady: "Client record saved",
         birthReadyLead: "The other personal readings will reuse this record.",
         edit: "Edit details",
-        useRecord: "The analysis will use the client record shown above.",
-        submit: "Begin analysis",
-        busy: "Analysing…",
+        useRecord: "This phone already has a birth record. Open any personal reading to use it.",
+        submit: "Save birth record",
+        busy: "Saving…",
         birthData: "Birth record",
+        saved: "Birth record saved on this phone.",
       }
     : locale === "zh-Hans"
       ? {
-          questionKicker: "昭梧 · 问事",
-          questionTitle: "此刻，你最想了解什么？",
-          questionLead: "先给结论，再依据命局与时间节奏说明可行选择。",
-          questionLabel: "你的问题",
-          questionPlaceholder: "例如：这份工作是否值得继续？我现在应优先处理什么？",
-          promiseLabel: "解读顺序",
-          promise: ["结论", "依据", "时机"],
           customerKicker: "共用资料",
           customerTitle: "客人资料",
-          customerLead: "生辰只需填写一次，各命理专卷将共用这份资料。",
+          customerLead: "生辰在这台手机填写一次即可。各命理专卷会共用，登录后也不会清空。",
           birthReady: "资料已保存",
           birthReadyLead: "其他命理专卷将沿用这份资料。",
           edit: "修改",
-          useRecord: "将使用上方客人资料进行分析。",
-          submit: "开始分析",
-          busy: "正在推演…",
+          useRecord: "这台手机已有生辰。打开任一命理专卷即可沿用。",
+          submit: "保存生辰",
+          busy: "正在保存…",
           birthData: "出生资料",
+          saved: "生辰已保存在这台手机。",
         }
       : {
-          questionKicker: "昭梧 · 問事",
-          questionTitle: "此刻，你最想了解什麼？",
-          questionLead: "先給結論，再依據命局與時間節奏說明可行選擇。",
-          questionLabel: "你的問題",
-          questionPlaceholder: "例如：這份工作是否值得繼續？我現在應優先處理什麼？",
-          promiseLabel: "解讀順序",
-          promise: ["結論", "依據", "時機"],
           customerKicker: "共用資料",
           customerTitle: "客人資料",
-          customerLead: "生辰只需填寫一次，各命理專卷將共用這份資料。",
+          customerLead: "生辰在這台手機填寫一次即可。各命理專卷會共用，登入後也不會清空。",
           birthReady: "資料已保存",
           birthReadyLead: "其他命理專卷將沿用這份資料。",
           edit: "修改",
-          useRecord: "將使用上方客人資料進行分析。",
-          submit: "開始分析",
-          busy: "正在推演…",
+          useRecord: "這台手機已有生辰。打開任一命理專卷即可沿用。",
+          submit: "保存生辰",
+          busy: "正在保存…",
           birthData: "出生資料",
+          saved: "生辰已保存在這台手機。",
         };
 
   function applyBirth(record: SharedBirthRecord) {
@@ -120,12 +98,13 @@ export function AnalysisForm() {
 
   useEffect(() => {
     const serverRecord = sharedBirthFromUnknown(user?.birthData);
-    const record = serverRecord ?? readSharedBirthRecord();
+    const localRecord = readSharedBirthRecord();
+    const record = localRecord ?? serverRecord;
     if (!record) return;
     applyBirth(record);
     setRememberedRecord(record);
     setDetailsOpen(false);
-    if (serverRecord) writeSharedBirthRecord(serverRecord);
+    if (!localRecord && serverRecord) writeSharedBirthRecord(serverRecord);
   }, [user?.id, user?.birthData]);
 
   const draftBirth = useMemo(() => sharedBirthFromUnknown({
@@ -151,10 +130,6 @@ export function AnalysisForm() {
       setDetailsOpen(true);
       return;
     }
-    if (!question.trim()) {
-      setError(t("errQuestion"));
-      return;
-    }
 
     writeSharedBirthRecord(draftBirth);
     setRememberedRecord(draftBirth);
@@ -162,20 +137,13 @@ export function AnalysisForm() {
     setBusy(true);
 
     try {
-      const payload: AnalyzeInput = { ...draftBirth, question: question.trim(), locale };
-      const result = await analyzeLife({ data: payload });
-      setCurrent(result);
       if (session) {
-        setSavedId(result.id);
-        const { question: _question, locale: _locale, ...birthData } = payload;
-        void Promise.allSettled([
-          createEngineReportRecord({ session, profile, result }),
-          updateBirthData(session, birthData as unknown as Record<string, unknown>),
-        ]).then(() => window.dispatchEvent(new Event("zhaowu-auth-change")));
+        void updateBirthData(session, draftBirth as unknown as Record<string, unknown>)
+          .then(() => window.dispatchEvent(new Event("zhaowu-auth-change")));
       }
-      window.setTimeout(() => document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+      window.setTimeout(() => document.getElementById("analysis-reports")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
     } catch (err) {
-      setError(locale === "en" ? t("errAnalyze") : err instanceof Error ? err.message : t("errAnalyze"));
+      setError(locale === "en" ? "Could not save the birth record." : err instanceof Error ? err.message : copy.saved);
     } finally {
       setBusy(false);
     }
@@ -183,26 +151,6 @@ export function AnalysisForm() {
 
   return (
     <form id="analysisForm" className="zhaowu-analysis-flow" onSubmit={(event) => void submit(event)}>
-      <section className="zhaowu-question-sheet" aria-labelledby="zhaowu-question-title">
-        <p className="zhaowu-section-kicker">{copy.questionKicker}</p>
-        <h2 id="zhaowu-question-title">{copy.questionTitle}</h2>
-        <p className="zhaowu-section-lead">{copy.questionLead}</p>
-        <div className="zhaowu-question-promise" aria-label={copy.promiseLabel}>
-          {copy.promise.map((item) => <span key={item}>{item}</span>)}
-        </div>
-        <label htmlFor="analysis-question" className="zhaowu-question-label">{copy.questionLabel}</label>
-        <textarea
-          id="analysis-question"
-          value={question}
-          maxLength={400}
-          rows={4}
-          required
-          placeholder={copy.questionPlaceholder}
-          onChange={(event) => setQuestion(event.target.value)}
-        />
-        <span className="zhaowu-question-count">{question.length}/400</span>
-      </section>
-
       <section id="customer-record" className="zhaowu-customer-record" aria-labelledby="zhaowu-customer-title">
         <header className="zhaowu-customer-head">
           <div>

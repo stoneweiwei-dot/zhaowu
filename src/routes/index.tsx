@@ -37,9 +37,9 @@ function portalAction(locale: Locale, birth: SharedBirthRecord | null, needsTime
   return locale === "en" ? "Open analysis" : locale === "zh-Hans" ? "查看分析" : "查看分析";
 }
 
-function baziAction(locale: Locale, hasResult: boolean) {
-  if (hasResult) return locale === "en" ? "Open BaZi analysis" : locale === "zh-Hans" ? "查看八字分析" : "查看八字分析";
-  return locale === "en" ? "Start BaZi analysis" : locale === "zh-Hans" ? "开始八字分析" : "開始八字分析";
+function baziAction(locale: Locale, hasBirth: boolean) {
+  if (hasBirth) return locale === "en" ? "Open birth record" : locale === "zh-Hans" ? "查看生辰" : "查看生辰";
+  return locale === "en" ? "Add birth data" : locale === "zh-Hans" ? "填写生辰" : "填寫生辰";
 }
 
 function buildPortalReading(id: SpecialistId, birth: SharedBirthRecord, locale: Locale): SpecialistReading {
@@ -91,7 +91,7 @@ function Home() {
         label: "Seven personal readings",
         lead: "One birth record, seven independent lenses. Open any volume to read its own analysis.",
         items: [
-          { id: "bazi", title: "Four Pillars · BaZi", hint: "structure, balance, timing, and the question in front of you", needsTime: false },
+          { id: "bazi", title: "Four Pillars · BaZi", hint: "structure, balance, useful gods, and timing from the birth record", needsTime: false },
           { id: "ziwei", to: "/ziwei", title: "Zi Wei Dou Shu", hint: "palaces, relationships, work, wealth, and life phases", needsTime: true },
           { id: "western", to: "/astrology", title: "Western astrology", hint: "Sun, Moon, Rising, aspects, and life areas", needsTime: false },
           { id: "indian", to: "/indian-astrology", title: "Classical Indian astrology", hint: "classical karmic patterns; D60 needs an accurate birth minute", needsTime: true },
@@ -105,7 +105,7 @@ function Home() {
           label: "七种个人分析",
           lead: "同一份出生资料，各自独立判断。点开任何一卷，直接阅读对应分析。",
           items: [
-            { id: "bazi", title: "子平八字", hint: "格局、旺衰、取用、岁运，以及你正在问的事", needsTime: false },
+            { id: "bazi", title: "子平八字", hint: "格局、旺衰、取用、岁运，沿用这份生辰", needsTime: false },
             { id: "ziwei", to: "/ziwei", title: "紫微斗数", hint: "宫位、关系、事业、财务与人生阶段", needsTime: true },
             { id: "western", to: "/astrology", title: "西洋星座", hint: "太阳、月亮、上升、相位与人生领域", needsTime: false },
             { id: "indian", to: "/indian-astrology", title: "印度古法占星", hint: "古典业力结构；D60 需要准确出生分钟", needsTime: true },
@@ -118,7 +118,7 @@ function Home() {
           label: "七種個人分析",
           lead: "同一份出生資料，各自獨立判斷。點開任何一卷，直接閱讀對應分析。",
           items: [
-            { id: "bazi", title: "子平八字", hint: "格局、旺衰、取用、歲運，以及你正在問的事", needsTime: false },
+            { id: "bazi", title: "子平八字", hint: "格局、旺衰、取用、歲運，沿用這份生辰", needsTime: false },
             { id: "ziwei", to: "/ziwei", title: "紫微斗數", hint: "宮位、關係、事業、財務與人生階段", needsTime: true },
             { id: "western", to: "/astrology", title: "西洋星座", hint: "太陽、月亮、上升、相位與人生領域", needsTime: false },
             { id: "indian", to: "/indian-astrology", title: "印度古法占星", hint: "古典業力結構；D60 需要準確出生分鐘", needsTime: true },
@@ -199,14 +199,14 @@ function Home() {
                   {birth && preview ? <small className="zhaowu-home-portal-preview">{preview}</small> : null}
                 </span>
                 <span className="zhaowu-home-portal-action">
-                  {item.id === "bazi" ? baziAction(locale, Boolean(current)) : portalAction(locale, birth, item.needsTime)}
+                  {item.id === "bazi" ? baziAction(locale, Boolean(birth)) : portalAction(locale, birth, item.needsTime)}
                   <span aria-hidden="true">›</span>
                 </span>
               </>
             );
 
             return item.id === "bazi" ? (
-              <a key={item.id} href={current ? "#result" : "#analysisForm"} data-index={String(itemIndex + 1).padStart(2, "0")} data-specialist-link="bazi" className="zhaowu-home-portal is-bazi">
+              <a key={item.id} href="#customer-record" data-index={String(itemIndex + 1).padStart(2, "0")} data-specialist-link="bazi" className="zhaowu-home-portal is-bazi">
                 {content}
               </a>
             ) : (

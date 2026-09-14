@@ -1,6 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { readOwnerSession } from "@/lib/auth/owner-api";
-import type { SupabaseSession, UserProfile } from "@/lib/supabase-rest";
+import {
+  captureOAuthRedirect,
+  getProfile,
+  restoreSession,
+  type SupabaseSession,
+  type UserProfile,
+} from "@/lib/supabase-rest";
 import { setSharedBirthAccessUser } from "@/lib/shared-birth";
 
 export type CurrentUser = {
@@ -35,41 +41,71 @@ const OWNER_USER: CurrentUser = {
   birthData: null,
 };
 
+function memberFrom(session: SupabaseSession, profile: UserProfile | null): CurrentUser {
+  return {
+    id: session.user.id,
+    displayName: profile?.display_name || session.user.email || "會員",
+    email: profile?.email || session.user.email || "",
+    isOwner: false,
+    birthData: profile?.birth_data ?? null,
+  };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<CurrentUser | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [session, setSession] = useState<SupabaseSession | null>(null);
   const [isPending, setPending] = useState(true);
 
   const reload = useCallback(async () => {
     setPending(true);
     try {
-      const authenticated = await readOwnerSession();
-      setUser(authenticated ? OWNER_USER : null);
-      setSharedBirthAccessUser(authenticated ? OWNER_USER.id : null);
+      let memberSession: SupabaseSession | null = null;
+      try {
+        memberSession = await captureOAuthRedirect();
+      } catch {
+        memberSession = null;
+      }
+      if (!memberSession) memberSession = await restoreSession();
+      const owner = await readOwnerSession();
+
+      if (owner) {
+        setUser(OWNER_USER);
+        setProfile(null);
+        setSession(null);
+        setSharedBirthAccessUser(OWNER_USER.id);
+        return;
+      }
+
+      if (memberSession) {
+        const nextProfile = await getProfile(memberSession).catch(() => null);
+        setSession(memberSession);
+        setProfile(nextProfile);
+        setUser(memberFrom(memberSession, nextProfile));
+        setSharedBirthAccessUser(memberSession.user.id);
+        return;
+      }
+
+      setUser(null);
+      setProfile(null);
+      setSession(null);
+      setSharedBirthAccessUser(null);
     } finally {
       setPending(false);
     }
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    void readOwnerSession()
-      .then((authenticated) => {
-        if (cancelled) return;
-        setUser(authenticated ? OWNER_USER : null);
-        setSharedBirthAccessUser(authenticated ? OWNER_USER.id : null);
-      })
-      .finally(() => { if (!cancelled) setPending(false); });
-
+    void reload();
     const onAuth = () => void reload();
     window.addEventListener("zhaowu-auth-change", onAuth);
     return () => {
-      cancelled = true;
       window.removeEventListener("zhaowu-auth-change", onAuth);
     };
   }, [reload]);
 
   return (
-    <AuthContext.Provider value={{ user, profile: null, session: null, isPending, reload }}>
+    <AuthContext.Provider value={{ user, profile, session, isPending, reload }}>
       {children}
     </AuthContext.Provider>
   );

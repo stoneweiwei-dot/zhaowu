@@ -29,6 +29,7 @@ test("iPhone Safari One-Palm page is usable without the removed duplicate specia
   await expect(page.getByLabel("年", { exact: true })).toBeVisible();
   await expect(page.getByLabel("時", { exact: true })).toBeVisible();
   await expect(page.locator("main.palm-standalone")).toHaveCount(1);
+  await expect(page.locator('article[aria-label="印度古法占星"]')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
@@ -40,7 +41,7 @@ test("shared birth auto-generates the report and changing direction regenerates 
 
   const result = page.locator(".palm-result");
   await expect(result).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator('article[aria-label="印度古法占星"]')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('article[aria-label="印度古法占星"]')).toHaveCount(0);
   const before = await result.innerText();
 
   const reverse = page.getByLabel("逆行（傳統女命）", { exact: true });

@@ -126,43 +126,43 @@ const DIMENSION_PLAIN = {
 
 const COPY = {
   "zh-Hant": {
-    kicker: "前世今生 · 補充旁證",
+    kicker: "D60 · 印度古法占星",
     title: "印度古法占星",
     note: "（這一段採用印度古法占星的細分方法作為輔助旁證，對出生分鐘非常敏感：每個細分區只有 0.5°；上升點平均約每 4 分鐘移動 1°，因此大約 2 分鐘就可能跨過一個細分區。實際速度會隨出生地、緯度與當時的上升速度改變。若你提供的是估算時間、整點時間或家人回憶，這部分只能作低置信度參考，不是絕對答案。）",
     unavailable: "本次報告沒有同時提供「可核對到分鐘的出生時間＋出生地」，因此印度古法占星不作判定。系統不會再從帳戶舊資料或其他報告自動補算。",
     calculating: "正在用本次報告的出生時間與出生地計算印度古法占星旁證…",
-    failed: "印度古法占星暫時無法計算；前四世報告不受影響。",
+    failed: "印度古法占星暫時無法計算；本卷其他分析不受影響。",
     stable: "以本次提供的時間前後各移動 2 分鐘測試，上升細分結果仍一致。這只代表這個很小的時間範圍相對穩定，仍不是絕對結論。",
     unstable: "以本次提供的時間前後各移動 2 分鐘測試，上升細分結果已發生變化，因此這一段只作弱旁證。",
     core: "核心慣性", emotion: "情緒慣性", duty: "反覆責任", resource: "帶得走的資源", relation: "關係價值",
     expand: "點開看白話解釋", collapse: "收起白話解釋",
-    synthesis: "把它和前四世合起來看：重複出現的主題可以視為比較值得留意的慣性；只在印度古法占星單獨出現的內容，不升級成確定結論。"
+    synthesis: "D60 是印度古法占星的細分盤。只在出生分鐘通過可靠度 Gate 後才輸出；單獨出現的內容不升級成確定結論。"
   },
   "zh-Hans": {
-    kicker: "前世今生 · 补充旁证",
+    kicker: "D60 · 印度古法占星",
     title: "印度古法占星",
     note: "（这一段采用印度古法占星的细分方法作为辅助旁证，对出生分钟非常敏感：每个细分区只有 0.5°；上升点平均约每 4 分钟移动 1°，因此大约 2 分钟就可能跨过一个细分区。实际速度会随出生地、纬度与当时的上升速度改变。如果你提供的是估算时间、整点时间或家人回忆，这部分只能作低置信度参考，不是绝对答案。）",
     unavailable: "本次报告没有同时提供“可核对到分钟的出生时间＋出生地”，因此印度古法占星不作判断。系统不会再从账户旧资料或其他报告自动补算。",
     calculating: "正在用本次报告的出生时间与出生地计算印度古法占星旁证…",
-    failed: "印度古法占星暂时无法计算；前四世报告不受影响。",
+    failed: "印度古法占星暂时无法计算；本卷其他分析不受影响。",
     stable: "以本次提供的时间前后各移动 2 分钟测试，上升细分结果仍一致。这只代表这个很小的时间范围相对稳定，仍不是绝对结论。",
     unstable: "以本次提供的时间前后各移动 2 分钟测试，上升细分结果已经发生变化，因此这一段只作弱旁证。",
     core: "核心惯性", emotion: "情绪惯性", duty: "反复责任", resource: "带得走的资源", relation: "关系价值",
     expand: "点开看白话解释", collapse: "收起白话解释",
-    synthesis: "把它和前四世合起来看：重复出现的主题可以视为比较值得留意的惯性；只在印度古法占星单独出现的内容，不升级成确定结论。"
+    synthesis: "D60 是印度古法占星的细分盘。只在出生分钟通过可靠度 Gate 后才输出；单独出现的内容不升级成确定结论。"
   },
   en: {
-    kicker: "PAST & PRESENT · SUPPORTING VIEW",
+    kicker: "D60 · INDIAN CLASSICAL ASTROLOGY",
     title: "Indian Classical Astrology",
     note: "(This section uses a fine-division method from Indian classical astrology as supporting context. It is extremely sensitive to the recorded birth minute: each division is only 0.5°, and the Ascendant moves about 1° every four minutes on average, so a division can change in roughly two minutes. The real rate varies with birthplace, latitude and the rising speed at that moment. If your time is estimated, rounded or remembered by family, treat this as low-confidence context rather than a definite answer.)",
     unavailable: "This report does not contain both a documented minute-level birth time and a birthplace, so Indian classical astrology is withheld. The system no longer falls back to old account data or another report.",
     calculating: "Calculating the Indian classical astrology cross-check from this report's birth time and birthplace…",
-    failed: "Indian classical astrology could not be calculated right now. The four-life report is unaffected.",
+    failed: "Indian classical astrology could not be calculated right now. Other readings on this page are unaffected.",
     stable: "Moving this report's supplied birth time two minutes earlier and later keeps the rising fine-division result unchanged. That only suggests relative stability inside this very small window; it is still not absolute.",
     unstable: "Moving this report's supplied birth time two minutes earlier and later changes the rising fine-division result, so this section is treated only as weak supporting context.",
     core: "Core pattern", emotion: "Emotional habit", duty: "Repeated duty", resource: "Carried resource", relation: "Relationship values",
     expand: "Tap for a plain-language explanation", collapse: "Hide plain-language explanation",
-    synthesis: "Read this beside the four prior-life patterns. Themes that repeat across both can be treated as more noteworthy; a theme appearing only in Indian classical astrology is not promoted into a definite conclusion."
+    synthesis: "D60 is the fine-division chart of Indian classical astrology. It is shown only after the birth-minute reliability gate passes; a theme appearing only here is not promoted into a definite conclusion."
   },
 } as const;
 

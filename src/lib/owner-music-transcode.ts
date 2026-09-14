@@ -35,7 +35,31 @@ function extensionOf(file: File) { const ext = (file.name.split(".").pop() || "a
 function baseName(file: File) { return (file.name.replace(/\.[^.]+$/, "").trim() || "background").slice(0, 100); }
 export function isBrowserSafeAudio(file: File) {
   const type = file.type.toLowerCase(); const ext = extensionOf(file);
-  return ["audio/mp4","audio/x-m4a","audio/mpeg","audio/mp3"].includes(type) || ["m4a","mp3"].includes(ext);
+  return ["audio/mp4","audio/x-m4a","audio/mpeg","audio/mp3","audio/aac","audio/x-aac","audio/mp4a-latm"].includes(type) || ["m4a","mp3","aac","mp4"].includes(ext);
+}
+export function sniffAudioContainer(bytes: Uint8Array): "mp3" | "m4a" | null {
+  if (bytes.length >= 3 && bytes[0] === 0x49 && bytes[1] === 0x44 && bytes[2] === 0x33) return "mp3";
+  if (bytes.length >= 2 && bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0) return "mp3";
+  if (bytes.length >= 8 && bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) return "m4a";
+  return null;
+}
+async function asBrowserSafeFile(file: File): Promise<File | null> {
+  if (isBrowserSafeAudio(file)) {
+    const type = file.type.toLowerCase();
+    if (type === "audio/aac" || type === "audio/x-aac") {
+      const ext = extensionOf(file);
+      if (ext === "m4a" || ext === "mp4") return new File([file], `${baseName(file)}.m4a`, { type: "audio/mp4" });
+      return new File([file], `${baseName(file)}.aac`, { type: "audio/aac" });
+    }
+    return file;
+  }
+  const type = file.type.toLowerCase();
+  if (type && type !== "application/octet-stream") return null;
+  const head = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+  const kind = sniffAudioContainer(head);
+  if (kind === "mp3") return new File([file], `${baseName(file)}.mp3`, { type: "audio/mpeg" });
+  if (kind === "m4a") return new File([file], `${baseName(file)}.m4a`, { type: "audio/mp4" });
+  return null;
 }
 function asBytes(data: FfmpegFileData) { return typeof data === "string" ? new TextEncoder().encode(data) : data; }
 function asArrayBuffer(bytes: Uint8Array): ArrayBuffer { const copy = new ArrayBuffer(bytes.byteLength); new Uint8Array(copy).set(bytes); return copy; }
@@ -162,10 +186,11 @@ async function ffmpegFit(source: File, onProgress?: (p: OwnerMusicOptimizeProgre
 export async function optimizeOwnerMusic(source: File, onProgress?: (p: OwnerMusicOptimizeProgress) => void): Promise<OptimizedOwnerMusic> {
   if (!source.size) throw new Error("音檔是空的。");
   if (source.size > MAX_SOURCE_BYTES) throw new Error("原始音檔超過 200 MB；請先裁短曲目後再上傳。");
-  if (isBrowserSafeAudio(source)) {
-    if (source.size > MAX_OWNER_UPLOAD_BYTES) throw new Error("MP3／M4A 超過 12 MB。請先轉成較小檔案或裁短曲目後再傳，不必在 iPhone 上解碼壓縮。");
+  const safe = await asBrowserSafeFile(source);
+  if (safe) {
+    if (safe.size > MAX_OWNER_UPLOAD_BYTES) throw new Error("MP3／M4A 超過 12 MB。請先轉成較小檔案或裁短曲目後再傳，不必在 iPhone 上解碼壓縮。");
     onProgress?.({ percent: 58, label: "已是網站可播放格式，直接上傳原檔" });
-    return { file: source, sourceBytes: source.size, outputBytes: source.size, bitrateKbps: null, transcoded: false };
+    return { file: safe, sourceBytes: source.size, outputBytes: safe.size, bitrateKbps: null, transcoded: false };
   }
   onProgress?.({ percent: 6, label: "本機壓縮音樂，避免 iPhone 卡住" });
   let native: OptimizedOwnerMusic | null = null;

@@ -13,14 +13,15 @@ test("guest birth reuse stays available while owner records remain isolated", ()
   assert.match(sharedBirth, /GUEST_BIRTH_OWNER_ID/);
   assert.match(sharedBirth, /activeSharedBirthUserId/);
   assert.match(sharedBirth, /SHARED_BIRTH_OWNER_KEY/);
-  assert.match(sharedBirth, /storedOwner !== nextOwner/);
-  assert.match(sharedBirth, /localStorage\.removeItem\(SHARED_BIRTH_STORAGE_KEY\)/);
-  assert.match(sharedBirth, /!storedOwner && activeSharedBirthUserId === GUEST_BIRTH_OWNER_ID/);
-  assert.match(sharedBirth, /storedOwner !== activeSharedBirthUserId/);
+  assert.match(sharedBirth, /Never delete the device birth on login or logout/);
+  assert.match(sharedBirth, /Device record wins regardless of the current login marker/);
+  assert.doesNotMatch(sharedBirth, /if \(storedOwner !== nextOwner\) \{[\s\S]*removeItem\(SHARED_BIRTH_STORAGE_KEY\)/);
+  assert.match(sharedBirth, /clearSharedBirthRecord/);
   assert.match(authProvider, /readOwnerSession/);
   assert.match(authProvider, /setSharedBirthAccessUser/);
   assert.match(authProvider, /OWNER_USER\.id/);
 });
+
 
 test("image viewer is fully opaque so the report beneath cannot ghost through", () => {
   assert.match(viewerCss, /\.zhaowu-image-viewer\s*\{[\s\S]*background:\s*#100e0c/);

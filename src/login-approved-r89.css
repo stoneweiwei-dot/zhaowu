@@ -9,6 +9,8 @@
 }
 
 .zhaowu-login-shell .stone-login-screen {
+  position: relative !important;
+  isolation: isolate !important;
   min-height: 100dvh !important;
   display: grid !important;
   place-items: center !important;
@@ -21,7 +23,31 @@
   animation: none !important;
 }
 
+.zhaowu-login-shell .stone-login-stage-media {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  pointer-events: none !important;
+}
+
+.zhaowu-login-shell .stone-login-screen::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(180deg, rgba(18, 14, 10, .42), rgba(42, 30, 18, .46)),
+    linear-gradient(90deg, rgba(18, 14, 10, .18), transparent 42%) !important;
+}
+
 .zhaowu-login-shell .stone-login-sheet {
+  position: relative !important;
+  z-index: 2 !important;
   width: min(100%, 438px) !important;
   margin: 0 auto !important;
   padding: 26px 22px 22px !important;
@@ -119,7 +145,7 @@
 
 .zhaowu-login-shell .stone-login-tabs {
   display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
+  grid-template-columns: 1fr 1fr 1fr !important;
   gap: 0 !important;
   margin-top: 21px !important;
   border-bottom: 1px solid rgba(151, 111, 62, .25) !important;

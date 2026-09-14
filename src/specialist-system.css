@@ -180,14 +180,58 @@
   font-size: 16px;
   line-height: 1.65;
 }
-[data-specialist-report="western"] [data-summary-table] .zw-chart-scroll { margin: 0; }
-[data-specialist-report="western"] [data-summary-table] .zw-chart-table { font-size: 16px; }
+[data-specialist-report="western"] [data-summary-table] .zw-chart-scroll { margin: 0; overflow-x: visible; }
+[data-specialist-report="western"] [data-summary-table] .zw-chart-table { font-size: 16px; width: 100%; table-layout: auto; }
 [data-specialist-report="western"] [data-summary-table] .zw-chart-table caption { font-size: 18px; padding: 0 0 10px; }
 [data-specialist-report="western"] [data-summary-table] .zw-chart-table th,
 [data-specialist-report="western"] [data-summary-table] .zw-chart-table td {
   min-width: 0;
-  padding: 10px 4px;
-  white-space: nowrap;
+  max-width: none;
+  padding: 10px 8px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 640px) {
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table,
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table thead,
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table tbody,
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table tr,
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table th,
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table td {
+    display: block;
+    width: 100%;
+  }
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table tr {
+    margin: 0 0 14px;
+    padding: 8px 0 10px;
+    border-bottom: 1px solid rgba(183, 164, 132, .45);
+  }
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table th[scope="row"],
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table td {
+    display: grid;
+    grid-template-columns: 7.2rem minmax(0, 1fr);
+    gap: 8px;
+    padding: 5px 0;
+    min-width: 0;
+    white-space: normal;
+  }
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table th[scope="row"]::before,
+  [data-specialist-report="western"] [data-summary-table] .zw-chart-table td::before {
+    content: attr(data-label);
+    color: #6d6458;
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: .04em;
+  }
 }
 
 @media (max-width: 560px) {
