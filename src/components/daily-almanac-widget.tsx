@@ -121,9 +121,9 @@ export function DailyAlmanacWidget() {
         </summary>
 
         <div className="zhaowu-today-guide__expanded">
-          <header className="zhaowu-today-guide__hero"><div><p>{labels.title}</p><span>{labels.sub}</span></div><div className="zhaowu-today-guide__pager"><b>{page + 1}/3</b><button type="button" onClick={(event) => { event.preventDefault(); event.stopPropagation(); setPage((page + 1) % 3); }} aria-label={locale === "en" ? "Next page" : "下一頁"}>→</button></div></header>
+          <header className="zhaowu-today-guide__hero"><div><p>{labels.title}</p><span>{labels.sub}</span></div><div className="zhaowu-today-guide__pager"><button type="button" onClick={(event) => { event.preventDefault(); event.stopPropagation(); setPage((page + 2) % 3); }} aria-label={locale === "en" ? "Previous page" : "上一頁"}>←</button><b>{page + 1}/3</b><button type="button" onClick={(event) => { event.preventDefault(); event.stopPropagation(); setPage((page + 1) % 3); }} aria-label={locale === "en" ? "Next page" : "下一頁"}>→</button></div></header>
           <div className="zhaowu-today-guide__page-title"><strong>{pageTitles[page]}</strong><span>{lunarLabel(now, locale)} · {timeLabel(now)}</span></div>
-          {page === 0 ? <div className="zhaowu-today-guide__grid">
+          <div className="zhaowu-today-guide__grid" hidden={page !== 0}>
             <article className="zhaowu-today-card is-date"><small>{weekdayLabel(now, locale)}</small><strong>{now.getFullYear()}.{String(now.getMonth() + 1).padStart(2, "0")}.{String(now.getDate()).padStart(2, "0")}</strong><span>{timeLabel(now)}</span></article>
             <article className="zhaowu-today-card is-weather"><small>{labels.location}</small><strong>{locationName} · {weather}</strong><span>{season}</span></article>
             <article className="zhaowu-today-card is-sacred"><small>{labels.sacred}</small><strong>{sacredDay(now, pillars.jieName, locale)}</strong><span>{locale === "en" ? "Unverified observances stay marked for verification." : locale === "zh-Hans" ? "未核实圣日不作确定结论。" : "未核實聖日不作確定結論。"}</span></article>
@@ -133,9 +133,9 @@ export function DailyAlmanacWidget() {
             <article className="zhaowu-today-card is-relation"><small>{labels.relation}</small><strong>{relationText(branch, locale)}</strong></article>
             <article className="zhaowu-today-card is-hours"><small>{labels.good} / {labels.caution}</small><p><b>{labels.good}</b>{windows.good.join("・") || "—"}</p><p><b>{labels.caution}</b>{windows.caution.join("・") || "—"}</p><span>{locale === "en" ? "Light reference from branch harmony/clash only." : locale === "zh-Hans" ? "仅按日支合冲刑作轻量参考。" : "僅按日支合沖刑作輕量參考。"}</span></article>
             <div className="zhaowu-today-guide__chips"><article><small>{labels.colors}</small><strong>{tone.colors}</strong></article><article><small>{labels.jewellery}</small><strong>{tone.jewellery}</strong></article><article><small>{labels.mask}</small><strong>{tone.mask}</strong></article></div>
-          </div> : null}
-          {page === 1 ? <div className="zhaowu-today-guide__wardrobe"><DailyColorsModule variant="embed" /></div> : null}
-          {page === 2 ? <div className="zhaowu-today-guide__spirit"><div className="zhaowu-today-slip-mark" aria-hidden>籤</div><div><p>{locale === "en" ? "Reflection, not prediction" : locale === "zh-Hans" ? "一支签，照见当下；不作宿命判断" : "一支籤，照見當下；不作宿命判斷"}</p><h3>{slip[0]}</h3><strong>{slip[1]}</strong><span>{slip[2]}</span><button type="button" onClick={() => void drawSlip()} disabled={loadingSlip}>{loadingSlip ? "…" : locale === "en" ? "Open full slip" : locale === "zh-Hans" ? "查看完整签文" : "查看完整籤文"} →</button></div></div> : null}
+          </div>
+          <div className="zhaowu-today-guide__wardrobe" hidden={page !== 1}><DailyColorsModule variant="embed" /></div>
+          <div className="zhaowu-today-guide__spirit" hidden={page !== 2}><div className="zhaowu-today-slip-mark" aria-hidden>籤</div><div><p>{locale === "en" ? "Reflection, not prediction" : locale === "zh-Hans" ? "一支签，照见当下；不作宿命判断" : "一支籤，照見當下；不作宿命判斷"}</p><h3>{slip[0]}</h3><strong>{slip[1]}</strong><span>{slip[2]}</span><button type="button" onClick={() => void drawSlip()} disabled={loadingSlip}>{loadingSlip ? "…" : locale === "en" ? "Open full slip" : locale === "zh-Hans" ? "查看完整签文" : "查看完整籤文"} →</button></div></div>
           <footer className="zhaowu-today-guide__footer"><span>{locale === "en" ? "Location and weather are fetched in the visitor browser; no private API key is exposed." : locale === "zh-Hans" ? "位置与天气由访客浏览器直接读取，优先使用访客自己的网络流量；不暴露私钥。" : "位置與天氣由訪客瀏覽器直接讀取，優先使用訪客自己的網路流量；不暴露私鑰。"}</span><div>{[0,1,2].map((item) => <button key={item} type="button" className={page === item ? "is-active" : ""} onClick={() => setPage(item)} aria-label={`${item + 1}/3`} />)}</div></footer>
         </div>
       </details>

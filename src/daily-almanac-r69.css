@@ -180,13 +180,106 @@
 .zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage { margin-top:14px !important; }
 .zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage > section { border-radius:22px !important; }
 
-/* 舊版首頁測試契約：隱藏，不影響新版 UI。 */
-.zhaowu-home-layout .zhaowu-daily-details { display:none; min-height: 0 !important; border-radius: 14px !important; }
-.zhaowu-home-layout .zhaowu-daily-details small:empty { display:none; }
+.zhaowu-home-layout .zhaowu-daily-details {
+  display: block;
+  min-height: 0 !important;
+  border-radius: 14px !important;
+}
+.zhaowu-home-layout .zhaowu-daily-details small:empty { display: none; }
+.zhaowu-home-layout .zhaowu-today-guide__summary {
+  display: block;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+  list-style: none;
+  padding: 16px 18px 14px;
+}
+.zhaowu-home-layout .zhaowu-today-guide__summary::-webkit-details-marker,
+.zhaowu-home-layout .zhaowu-today-guide__summary::marker { display: none; content: none; }
+.zhaowu-home-layout .zhaowu-today-guide__summary-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.zhaowu-home-layout .zhaowu-today-guide__summary-head p {
+  margin: 0;
+  color: #f2dfad;
+  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif;
+  font-size: clamp(22px, 5.6vw, 30px);
+  font-weight: 600;
+  letter-spacing: .045em;
+  line-height: 1.1;
+}
+.zhaowu-home-layout .zhaowu-today-guide__summary-head span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(245,240,228,.72);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.zhaowu-home-layout .zhaowu-today-guide__summary-head b {
+  display: grid;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(226,198,137,.75);
+  border-radius: 999px;
+  color: #f3dfab;
+  font-size: 18px;
+  font-weight: 500;
+}
+.zhaowu-home-layout .zhaowu-today-guide__summary-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+.zhaowu-home-layout .zhaowu-today-guide__summary-row strong {
+  color: #fff9e9;
+  font-family: "Songti TC", "Songti SC", "STSong", serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+.zhaowu-home-layout .zhaowu-today-guide__summary-row span {
+  color: rgba(245,240,228,.7);
+  font-size: 12px;
+  text-align: right;
+}
+.zhaowu-home-layout .zhaowu-today-guide__summary-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 8px;
+  color: rgba(245,240,228,.68);
+  font-size: 11px;
+}
+.zhaowu-home-layout .zhaowu-today-guide__summary-meta em {
+  margin-left: auto;
+  color: #e5c988;
+  font-style: normal;
+  letter-spacing: .06em;
+}
+.zhaowu-home-layout .zhaowu-daily-details:not([open]) .zhaowu-today-guide__expanded {
+  display: none !important;
+}
+.zhaowu-home-layout .zhaowu-daily-details[open] > .zhaowu-today-guide__summary {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(213,190,132,.18);
+}
+.zhaowu-home-layout .zhaowu-daily-details[open] .zhaowu-today-guide__summary-row,
+.zhaowu-home-layout .zhaowu-daily-details[open] .zhaowu-today-guide__summary-meta { display: none; }
+.zhaowu-home-layout .zhaowu-daily-details[open] .zhaowu-today-guide__summary-head b { transform: rotate(90deg); }
+.zhaowu-home-layout .zhaowu-today-guide [hidden] { display: none !important; }
 .zhaowu-contract-label { position:absolute !important; width:1px !important; height:1px !important; overflow:hidden !important; clip:rect(0 0 0 0) !important; white-space:nowrap !important; }
 
 @media (max-width:560px) {
   .zhaowu-home-layout .zhaowu-today-guide { border-radius:20px; }
+  .zhaowu-home-layout .zhaowu-today-guide__summary { padding:14px 14px 12px; }
+  .zhaowu-home-layout .zhaowu-today-guide__summary-head p { font-size:22px; }
   .zhaowu-home-layout .zhaowu-today-guide__hero { padding:19px 16px 13px; }
   .zhaowu-home-layout .zhaowu-today-guide__page-title { padding:13px 16px 11px; }
   .zhaowu-home-layout .zhaowu-today-guide__grid { gap:8px; padding:0 9px 12px; }

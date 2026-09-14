@@ -48,6 +48,9 @@ test("r69 almanac style is compact, quiet, and keeps Song-style pillar typograph
   assert.match(almanacStyle, /Songti TC/);
   assert.match(almanacStyle, /grid-template-columns:\s*repeat\(4/);
   assert.match(almanacStyle, /zhaowu-daily-details/);
+  assert.match(almanacStyle, /zhaowu-today-guide__summary/);
+  assert.match(almanacStyle, /:not\(\[open\]\) \.zhaowu-today-guide__expanded/);
+  assert.doesNotMatch(almanacStyle, /\.zhaowu-home-layout \.zhaowu-daily-details \{ display:none/);
   assert.match(design, /zhaowu-home-stage--daily[\s\S]*margin-top:\s*0 !important/);
 });
 
