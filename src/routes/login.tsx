@@ -96,7 +96,9 @@ function LoginPage() {
   async function onMemberLogin(event: FormEvent) {
     event.preventDefault();
     resetAlerts();
-    if (!email.trim() || password.length < 8) {
+    // Existing members must be authenticated against the password already on
+    // their Supabase account. Do not reuse today's signup length policy here.
+    if (!email.trim() || !password) {
       setError(t("loginValidation"));
       return;
     }
