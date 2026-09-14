@@ -11,6 +11,9 @@ import {
 
 const OWNER_COOKIE = "__Host-zhaowu_owner_session";
 const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
+const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7prU26nA0AX7dny0PW_ReA_GKwI588H";
+const SUPABASE_AUDIO_BUCKET = "zhaowu-audio";
 
 const ALLOWED_TYPES = {
   "audio/mpeg": ".mp3",
@@ -149,6 +152,48 @@ function publicPayload(manifest) {
   };
 }
 
+function supabaseRuntimeConfig() {
+  const url = String(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "");
+  const key = String(process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || DEFAULT_SUPABASE_PUBLISHABLE_KEY);
+  return { url, key };
+}
+
+function storagePublicUrl(baseUrl, path) {
+  const encoded = String(path || "").split("/").map(encodeURIComponent).join("/");
+  return encoded ? `${baseUrl}/storage/v1/object/public/${SUPABASE_AUDIO_BUCKET}/${encoded}` : "";
+}
+
+async function readSupabaseActiveTrack() {
+  const { url, key } = supabaseRuntimeConfig();
+  if (!url || !key) return null;
+  const endpoint = new URL(`${url}/rest/v1/background_music_assets`);
+  endpoint.searchParams.set("enabled", "eq.true");
+  endpoint.searchParams.set("select", "id,name,storage_path,content_type,file_size,created_at,updated_at");
+  endpoint.searchParams.set("order", "updated_at.desc");
+  endpoint.searchParams.set("limit", "1");
+  const response = await fetch(endpoint, {
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+    },
+    cache: "no-store",
+  });
+  if (!response.ok) return null;
+  const rows = await response.json().catch(() => []);
+  const row = Array.isArray(rows) ? rows[0] : null;
+  const publicUrl = storagePublicUrl(url, row?.storage_path);
+  if (!row?.id || !publicUrl) return null;
+  return {
+    id: String(row.id),
+    name: String(row.name || "背景音樂"),
+    url: publicUrl,
+    contentType: String(row.content_type || "audio/mp4"),
+    fileSize: Number.isFinite(Number(row.file_size)) ? Number(row.file_size) : null,
+    enabled: true,
+    createdAt: row.created_at || null,
+  };
+}
+
 export const config = {
   api: {
     bodyParser: {
@@ -162,7 +207,23 @@ export default async function handler(req, res) {
     const method = req.method || "GET";
     if (method === "GET") {
       const manifest = await readOwnerMusicManifest().catch(() => emptyManifest());
-      return json(res, 200, publicPayload(manifest));
+      const gitPayload = publicPayload(manifest);
+      if (gitPayload.active) return json(res, 200, gitPayload);
+      const supabaseTrack = await readSupabaseActiveTrack().catch(() => null);
+      if (supabaseTrack) {
+        return json(res, 200, {
+          ok: true,
+          active: {
+            id: supabaseTrack.id,
+            name: supabaseTrack.name,
+            url: supabaseTrack.url,
+            contentType: supabaseTrack.contentType,
+          },
+          tracks: [supabaseTrack],
+          source: "supabase-fallback",
+        });
+      }
+      return json(res, 200, gitPayload);
     }
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const secret = ownerSecretFrom(req);
