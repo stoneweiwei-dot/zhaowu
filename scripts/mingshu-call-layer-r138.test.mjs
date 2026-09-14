@@ -89,6 +89,17 @@ test("chart input follows Mingshu v1 GeoNames and time contracts", () => {
     locale: "zh-TW",
   });
   assert.equal(numericPlace.ok, false);
+
+  const lunarServiceValidated = sanitizeChartInput({
+    birthDate: "2023-02-30",
+    birthTime: "04:40",
+    birthCalendar: "lunar",
+    birthLeapMonth: false,
+    gender: "male",
+    timeMode: "clock",
+    locale: "zh-TW",
+  });
+  assert.equal(lunarServiceValidated.ok, true);
 });
 
 test("location discovery query is bounded and locale-aware", () => {
