@@ -63,9 +63,12 @@ test("account console and player use owner music with browser-side format optimi
   assert.match(transcoder, /aac_low/);
   assert.match(transcoder, /INITIAL_AAC_KBPS = 96/);
   assert.match(transcoder, /MIN_AAC_KBPS = 64/);
-  assert.match(transcoder, /CORE_LOAD_TIMEOUT_MS = 25_000/);
+  assert.match(transcoder, /CORE_LOAD_TIMEOUT_MS = 90_000/);
   assert.match(transcoder, /TRANSCODE_TIMEOUT_MS = 180_000/);
   assert.match(transcoder, /MAX_SOURCE_BYTES = 200 \* 1024 \* 1024/);
+  assert.match(transcoder, /decodeOwnerAudioPcm/);
+  assert.match(transcoder, /isIosOwnerDevice/);
+  assert.match(transcoder, /本機壓縮音樂，避免 iPhone 卡住/);
 });
 
 test("independent owner cookie does not get falsely sent back to login on gallery", async () => {
