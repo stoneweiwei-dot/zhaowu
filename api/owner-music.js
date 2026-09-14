@@ -14,6 +14,14 @@ const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2
 const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
 const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7prU26nA0AX7dny0PW_ReA_GKwI588H";
 const SUPABASE_AUDIO_BUCKET = "zhaowu-audio";
+const SUPABASE_BOOTSTRAP_TRACK = {
+  id: "1cac87db-23b6-4861-8e79-59ec5bde18c8",
+  name: "River In My Breathing 2",
+  storagePath: "background/uploads/2026-09-09/16bf293f-bf59-4b79-b4ce-92b67f6d534d.m4a",
+  contentType: "audio/mp4",
+  fileSize: 3869936,
+  createdAt: "2026-09-09T12:22:47.500335Z",
+};
 
 const ALLOWED_TYPES = {
   "audio/mpeg": ".mp3",
@@ -163,6 +171,18 @@ function storagePublicUrl(baseUrl, path) {
   return encoded ? `${baseUrl}/storage/v1/object/public/${SUPABASE_AUDIO_BUCKET}/${encoded}` : "";
 }
 
+function bootstrapSupabaseTrack() {
+  return {
+    id: SUPABASE_BOOTSTRAP_TRACK.id,
+    name: SUPABASE_BOOTSTRAP_TRACK.name,
+    url: storagePublicUrl(DEFAULT_SUPABASE_URL, SUPABASE_BOOTSTRAP_TRACK.storagePath),
+    contentType: SUPABASE_BOOTSTRAP_TRACK.contentType,
+    fileSize: SUPABASE_BOOTSTRAP_TRACK.fileSize,
+    enabled: true,
+    createdAt: SUPABASE_BOOTSTRAP_TRACK.createdAt,
+  };
+}
+
 async function readSupabaseActiveTrack() {
   const { url, key } = supabaseRuntimeConfig();
   if (!url || !key) return null;
@@ -172,10 +192,7 @@ async function readSupabaseActiveTrack() {
   endpoint.searchParams.set("order", "updated_at.desc");
   endpoint.searchParams.set("limit", "1");
   const response = await fetch(endpoint, {
-    headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
-    },
+    headers: { apikey: key },
     cache: "no-store",
   });
   if (!response.ok) return null;
@@ -209,21 +226,19 @@ export default async function handler(req, res) {
       const manifest = await readOwnerMusicManifest().catch(() => emptyManifest());
       const gitPayload = publicPayload(manifest);
       if (gitPayload.active) return json(res, 200, gitPayload);
-      const supabaseTrack = await readSupabaseActiveTrack().catch(() => null);
-      if (supabaseTrack) {
-        return json(res, 200, {
-          ok: true,
-          active: {
-            id: supabaseTrack.id,
-            name: supabaseTrack.name,
-            url: supabaseTrack.url,
-            contentType: supabaseTrack.contentType,
-          },
-          tracks: [supabaseTrack],
-          source: "supabase-fallback",
-        });
-      }
-      return json(res, 200, gitPayload);
+      const dynamicSupabaseTrack = await readSupabaseActiveTrack().catch(() => null);
+      const supabaseTrack = dynamicSupabaseTrack || bootstrapSupabaseTrack();
+      return json(res, 200, {
+        ok: true,
+        active: {
+          id: supabaseTrack.id,
+          name: supabaseTrack.name,
+          url: supabaseTrack.url,
+          contentType: supabaseTrack.contentType,
+        },
+        tracks: [supabaseTrack],
+        source: dynamicSupabaseTrack ? "supabase-fallback" : "supabase-bootstrap",
+      });
     }
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const secret = ownerSecretFrom(req);
