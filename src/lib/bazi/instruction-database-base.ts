@@ -13,6 +13,7 @@ import {
   lifestyleFiveElementSymbolismInstructionRule,
   wealthEnvironmentSymbolismInstructionRule,
 } from './folk-environment-symbolism';
+import { threeYuanAuxiliaryInstructionRule } from './three-yuan-instruction';
 
 export type { InstructionRule } from './instruction-database-base-legacy';
 
@@ -135,6 +136,7 @@ export const zhaowuInstructionDatabase: InstructionRule[] = [
   directAnswerRoutingInstructionRule,
   ...legacyInstructionDatabase,
   huagaiAuxiliaryInstructionRule,
+  threeYuanAuxiliaryInstructionRule,
   wealthEnvironmentSymbolismInstructionRule,
   lifestyleFiveElementSymbolismInstructionRule,
 ];
@@ -143,4 +145,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-15T00:35:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-15T06:26:00+10:00';

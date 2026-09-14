@@ -2,6 +2,7 @@ export const BAZI_RUNTIME_CONTRACT_VERSION = 'R6.2.1' as const;
 export const BAZI_CURRENT_MASTER_SOURCE = 'docs/STONE-R6.2.1-CURRENT-MASTER.md' as const;
 export const BAZI_INTERPRETATION_GUARD_SOURCES = [
   'docs/WFX-WANGSHI-ZHIHUA-v1.0.md',
+  'docs/THREE-YUAN-AUXILIARY-RULE.md',
 ] as const;
 
 /**
@@ -42,6 +43,7 @@ export const BAZI_HARD_GUARDS = [
   '五行五常只作文化象義與教學旁證；不得以「缺金」「火多」等直接作人格、道德或可否深交的判決。',
   '印旺不得直接等於有福；必須判斷印的喜忌、來源、作用鏈、承載與出口。',
   '城市、地理、髮色、衣著、方位與日柱俗訣只作環境應象或文化旁證，不得覆蓋子平主判或獨立推出吉凶。',
+  '胎元、命宮、身宮只作四柱主判完成後的低權重補證；不得併入四柱旺衰、五行票數、格局計分或用神裁決，也不得合成所謂七柱重新主判。',
   '合不等於化；必須檢查月令、透干、根氣、環境與歲運引動。',
   '病藥是核心分析層，不得被單一格局名稱取代。',
   '資料不足時必須降級信度或標示不作判定，不得用旁證補成確定結論。',
