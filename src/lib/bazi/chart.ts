@@ -206,7 +206,6 @@ export function buildChart(input: AnalyzeInput): Chart {
   let h = timeUnknown ? 12 : input.hour;
   let min = timeUnknown ? 0 : input.minute;
 
-  // Resolve civil time without depending on the browser/server's own timezone.
   const civilUtc = Date.UTC(y, m - 1, d, h, min);
   let tzOff = timezoneOffsetHours(input.city.timezone, new Date(civilUtc));
   tzOff = timezoneOffsetHours(input.city.timezone, new Date(civilUtc - tzOff * 3_600_000));
@@ -233,8 +232,6 @@ export function buildChart(input: AnalyzeInput): Chart {
     usedTrueSolar = true;
   }
 
-  // True-solar correction above may cross midnight. The corrected civil date is
-  // authoritative: 23:xx stays on that date and 00:xx belongs to the next date.
   const dayGz = dayGanzhi(y, m, d);
   const timeGz = timeUnknown ? "" : hourPillar(dayGz, h);
   const birthTimeReview = buildBirthTimeReview(input, {
@@ -247,8 +244,6 @@ export function buildChart(input: AnalyzeInput): Chart {
     usedTrueSolar,
   });
 
-  // Solar terms are astronomical instants; longitude/equation-of-time correction
-  // changes the local day/hour clock, never the instant used for year/month or luck onset.
   const ym = yearMonthPillars(instant);
 
   const dayStem = dayGz[0];
@@ -265,11 +260,6 @@ export function buildChart(input: AnalyzeInput): Chart {
   const elements = scoreElements(pillars);
   const strength = judgeStrength(dayMasterElement, monthBranch, pillars);
 
-  // R6.2.1: do not emit a simplified lucky/useful-element answer from season +
-  // carrying capacity alone. The authoritative answer belongs to the later
-  // structure / climate / disease-medicine / flow chain. Keep these arrays empty
-  // until that resolver has passed its gates; downstream lifestyle mapping is
-  // therefore forced to stay provisional.
   const useful: Element[] = [];
   const drain: Element[] = [];
 
@@ -293,7 +283,7 @@ export function buildChart(input: AnalyzeInput): Chart {
   const trueSolarStamp = timeUnknown ? "時辰未定，真太陽時不作校正" : stamp(y, m, d, h, min);
   const minggong = timeUnknown || !timeGz ? "未定" : mingGong(ym.year, monthBranch, timeGz[1]);
   const reviewNote = birthTimeReview.required && birthTimeReview.civil && birthTimeReview.trueSolar
-    ? ` 民用候選日/時柱 ${birthTimeReview.civil.dayGanZhi}/${birthTimeReview.civil.timeGanZhi} 與真太陽候選 ${birthTimeReview.trueSolar.dayGanZhi}/${birthTimeReview.trueSolar.timeGanzi} 不同，已啟動出生時辰候選驗證；主盤暫按真太陽時，正式定盤須以出生記錄與有明確年份的已發生事件反證，不得只憑性格描述選盤。`
+    ? ` 民用候選日/時柱 ${birthTimeReview.civil.dayGanZhi}/${birthTimeReview.civil.timeGanZhi} 與真太陽候選 ${birthTimeReview.trueSolar.dayGanZhi}/${birthTimeReview.trueSolar.timeGanZhi} 不同，已啟動出生時辰候選驗證；主盤暫按真太陽時，正式定盤須以出生記錄與有明確年份的已發生事件反證，不得只憑性格描述選盤。`
     : "";
   const provenance = timeUnknown
     ? `時辰未定：年月柱按當日正午取節氣，日柱按公曆日，時柱、命宮、大運起運留白，不偽造午時柱。子時政策不套用。`
