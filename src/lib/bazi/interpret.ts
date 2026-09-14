@@ -233,7 +233,7 @@ function fiveElementWealthBehaviorHint(element: Element): string {
 
 export function interpret(question: string, chart: Chart, relation: RelationPref = "unset", palm: PalmReading | null = null): Reading {
   const kind = classifyQuestion(question);
-  const nature = DAY_MASTER_NATURE[chart.dayMaster] ?? "以日主功能為軸";
+  const nature = DAY_MASTER_NATURE[chart.dayMaster] ?? "以日主功能为轴";
   const dayP = p(chart, "day");
   const monthP = p(chart, "month");
   const timeP = p(chart, "time");
@@ -320,7 +320,7 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
     ? "若两个选项缺少可比较条件，宁可不强选，也不制造一个看似确定的答案。"
     : kind === "timing"
       ? "时间结论必须等结构与岁运同向触发，不能把单一流年当保证。"
-      : `本题以${structure.label}${structure.established ? "" : "方向"}、${structure.remedy.disease}與实际承载作为主要判断轴。`;
+      : `本题以${structure.label}${structure.established ? "" : "方向"}、${structure.remedy.disease}与实际承载作为主要判断轴。`;
 
   return {
     kind,
