@@ -1,4 +1,5 @@
 /* R130 — Today Guide: approved parchment + moss-green mobile editorial UI. */
+/* Production note: the module keeps existing astronomy, wardrobe and spirit-slip data flows intact. */
 .zhaowu-home-layout .zhaowu-today-guide {
   --tg-green: #173f35;
   --tg-green-2: #214b40;
@@ -236,7 +237,6 @@
   line-height: 1.45;
 }
 
-/* Page 2 — keep the existing Five-Element Wardrobe logic, but present it inside the approved green card. */
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe { padding: 0 14px 18px; }
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="home"] {
   margin: 0 !important;
@@ -254,9 +254,7 @@
   color: #f2dfad !important;
   font-family: "Songti TC", "Songti SC", "STSong", serif !important;
 }
-.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] {
-  gap: 8px !important;
-}
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] { gap: 8px !important; }
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button {
   min-height: 102px !important;
   border: 1px solid rgba(226,204,159,.22) !important;
@@ -272,7 +270,6 @@
 }
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe a { color: #f0d89e !important; }
 
-/* Page 3 — dignified reflection card, explicitly not a prediction. */
 .zhaowu-home-layout .zhaowu-today-guide__spirit {
   display: grid;
   grid-template-columns: 86px minmax(0, 1fr);
@@ -352,13 +349,8 @@
 }
 .zhaowu-home-layout .zhaowu-today-guide__footer button.is-active { width: 18px; background: #e5c988; }
 
-/* Visually tie the existing astronomy section to the same editorial system without changing its data logic. */
-.zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage {
-  margin-top: 14px !important;
-}
-.zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage > section {
-  border-radius: 22px !important;
-}
+.zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage { margin-top: 14px !important; }
+.zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage > section { border-radius: 22px !important; }
 
 @media (max-width: 560px) {
   .zhaowu-home-layout .zhaowu-today-guide { border-radius: 20px; }
