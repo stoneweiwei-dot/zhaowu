@@ -10,8 +10,8 @@ r139 依站主最新 iPhone 截圖與明示指令，一次收口首頁、D60 分
 
 ### 2. D60 歸入自己的分組
 - `/yizhangjing` 不再掛 `D60KarmaSection`。
-- D60 只在 `/indian-astrology` 經既有 `D60ReliabilityGate`（分鐘確認、fingerprint、±2 分鐘）後輸出。
-- 不改 Astronomy Engine／Lahiri／Ascendant／D60 分段公式。不作判定仍是 Gate 正常結果。
+- D60 只在 `/indian-astrology` 經 `D60ReliabilityGate`：先確認分鐘，再跑 ±2 分鐘檢查。確認後一律生成 D60 分組（D1／D60 表、十二宮、五個主題）。±2 分鐘不穩時仍輸出盤面，標為弱旁證；計算失敗才維持【不作判定】。
+- 不改 Astronomy Engine／Lahiri／Ascendant／D60 分段公式。不用 D60 反向考時。
 
 ### 3. 會員登入／註冊重新放出
 - `/login` 恢復「登入／註冊／站主」三分頁。站主仍走獨立 Cookie `__Host-zhaowu_owner_session`。

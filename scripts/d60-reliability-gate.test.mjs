@@ -26,12 +26,14 @@ test("confirmation is bound to a birth fingerprint that includes time, timezone 
   assert.match(gate, /padStart\(2, "0"\)\}:\$\{String\(reportBirth.minute\).padStart\(2, "0"\)/);
 });
 
-test("unstable or failed D60 checks withhold the chart and never rectify time", () => {
+test("after minute confirmation D60 grouping still generates; unstable is weak evidence; never rectify time", () => {
   assert.match(gate, /signAt\(-2\) === base && signAt\(2\) === base/);
   assert.match(gate, /data-d60-withheld/);
   assert.match(gate, /不作判定|不作判断|WITHHELD/);
   assert.match(gate, /不用 D60 反向考時|不用 D60 反向考时|not used to rectify/);
-  assert.match(gate, /state === "unstable" \|\| state === "error"/);
+  assert.match(gate, /state === "error"/);
+  assert.match(gate, /variant="standalone"/);
+  assert.doesNotMatch(gate, /state === "unstable" \|\| state === "error"/);
   assert.doesNotMatch(gate, /Astronomy Engine formula change|rectifyBirth|suggestBetterMinute/);
 });
 
