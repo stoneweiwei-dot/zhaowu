@@ -37,9 +37,9 @@ test("curated archive remains concise, unique and tri-lingual", () => {
   }
 });
 
-test("long-form archive preserves the current thirteen full-depth source articles in all three languages", () => {
-  assert.equal(LIFE_VIEW_LONG_FORM_ARTICLES.length, 13);
-  assert.equal(new Set(LIFE_VIEW_LONG_FORM_ARTICLES.map((article) => article.id)).size, 13);
+test("long-form archive preserves the current fourteen full-depth source articles in all three languages", () => {
+  assert.equal(LIFE_VIEW_LONG_FORM_ARTICLES.length, 14);
+  assert.equal(new Set(LIFE_VIEW_LONG_FORM_ARTICLES.map((article) => article.id)).size, 14);
   for (const article of LIFE_VIEW_LONG_FORM_ARTICLES) {
     for (const locale of ["zh-Hant", "zh-Hans", "en"]) {
       assert.ok(article.title[locale]?.trim());
@@ -79,6 +79,7 @@ test("new source is merged into meaningful themes instead of published as duplic
   assert.match(longTitles, /喜用神不等于审美偏好/);
   assert.match(longTitles, /宇宙真谛.*阴阳进化论/);
   assert.match(longTitles, /去哪里求财/);
+  assert.match(longTitles, /相由心生，不是命由脸定/);
 });
 
 test("curated customer articles keep unsupported supernatural claims out", () => {
