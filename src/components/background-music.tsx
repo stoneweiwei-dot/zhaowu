@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { loadOwnerMusic } from "@/lib/owner-music-client";
 import { useI18n } from "@/lib/i18n";
 
 const STORAGE_KEY = "zhaowu.backgroundMusic.v3";
 const LEGACY_STORAGE_KEY = "zhaowu.backgroundMusic.v1";
 const DEFAULT_VOLUME = 0.24;
+const MUSIC_STREAM_URL = "/api/owner-music?stream=1";
 const MOBILE_DOCK_BOTTOM = "max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4rem))";
 
 function readInitialPreference() {
@@ -23,12 +24,13 @@ function readInitialPreference() {
 export function BackgroundMusic() {
   const { locale } = useI18n();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const unlockStartedRef = useRef(false);
   const [enabled, setEnabled] = useState(readInitialPreference);
   const [requested, setRequested] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [track, setTrack] = useState<{ id: string; name: string; url: string; contentType: string } | null>(null);
 
-  async function refreshAsset() {
+  const refreshAsset = useCallback(async () => {
     const next = await loadOwnerMusic().catch(() => null);
     const active = next?.active ?? null;
     setTrack(active);
@@ -36,41 +38,36 @@ export function BackgroundMusic() {
       try { window.localStorage.setItem(`${STORAGE_KEY}.track`, active.id); } catch {}
     }
     return active;
-  }
+  }, []);
 
-  const primarySrc = track?.url || "";
-  const primaryType = track?.contentType || "audio/mpeg";
+  const primarySrc = MUSIC_STREAM_URL;
+  const primaryType = track?.contentType || undefined;
+  const activeMusicType = primaryType || "audio/mpeg";
   // Owner uploads play from /api/owner-music. jingfo-shengyuan-aac.m4a / musicPublicUrl stay unused while Supabase spend cap returns 402.
   const musicTitle = track?.name || (locale === "en" ? "Zhaowu background music" : "昭梧背景音樂");
 
+  // Keep metadata/API work idle until playback is actually requested. The audio
+  // element already owns a same-origin stream URL, so Safari can start it inside
+  // the original gesture without waiting for this JSON request.
   useEffect(() => {
     if (!requested) return;
     void refreshAsset();
-  }, [requested]);
+  }, [requested, refreshAsset]);
 
   useEffect(() => {
     const onChange = () => {
-      if (requested) void refreshAsset();
+      if (!requested) return;
+      const audio = audioRef.current;
+      if (!audio) return;
+      const resume = enabled && !audio.paused;
+      void refreshAsset().finally(() => {
+        audio.load();
+        if (resume) void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      });
     };
     window.addEventListener("zhaowu-music-change", onChange);
     return () => window.removeEventListener("zhaowu-music-change", onChange);
-  }, [requested]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !requested) return;
-    if (!primarySrc) {
-      audio.pause();
-      setPlaying(false);
-      return;
-    }
-    audio.loop = true;
-    audio.volume = DEFAULT_VOLUME;
-    audio.load();
-    if (enabled) {
-      void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
-    }
-  }, [enabled, requested, primarySrc, primaryType]);
+  }, [enabled, requested, refreshAsset]);
 
   useEffect(() => {
     try {
@@ -86,21 +83,23 @@ export function BackgroundMusic() {
     }
   }, [enabled]);
 
+  // iPhone/iPad Safari requires play() to run while the user gesture is still
+  // active. MUSIC_STREAM_URL resolves the active owner track server-side, so no
+  // client fetch/await is allowed before this play() call.
   useEffect(() => {
     if (!enabled || requested) return;
 
     const unlock = () => {
+      if (unlockStartedRef.current) return;
       const audio = audioRef.current;
       if (!audio) return;
+      unlockStartedRef.current = true;
       setRequested(true);
       audio.loop = true;
       audio.volume = DEFAULT_VOLUME;
-      void refreshAsset().then((active) => {
-        if (!active?.url) {
-          setPlaying(false);
-          return;
-        }
-        void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      void audio.play().then(() => setPlaying(true)).catch(() => {
+        unlockStartedRef.current = false;
+        setPlaying(false);
       });
     };
 
@@ -121,6 +120,7 @@ export function BackgroundMusic() {
     if (playing || (enabled && requested && audio && !audio.paused)) {
       setEnabled(false);
       setRequested(false);
+      unlockStartedRef.current = false;
       audio?.pause();
       setPlaying(false);
       return;
@@ -128,14 +128,17 @@ export function BackgroundMusic() {
 
     setEnabled(true);
     setRequested(true);
-    void refreshAsset().then((active) => {
-      if (!audio || !active?.url) {
-        setPlaying(false);
-        return;
-      }
-      audio.loop = true;
-      audio.volume = DEFAULT_VOLUME;
-      void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    unlockStartedRef.current = true;
+    if (!audio) {
+      setPlaying(false);
+      return;
+    }
+    audio.loop = true;
+    audio.volume = DEFAULT_VOLUME;
+    // Keep play() synchronous with the button click for iPhone/iPad Safari.
+    void audio.play().then(() => setPlaying(true)).catch(() => {
+      unlockStartedRef.current = false;
+      setPlaying(false);
     });
   };
 
@@ -156,13 +159,14 @@ export function BackgroundMusic() {
       loop
       playsInline
       data-music-loop="single"
+      data-active-music-type={activeMusicType}
       preload="none"
       onPlay={() => setPlaying(true)}
       onPause={() => setPlaying(false)}
       onEnded={() => setPlaying(false)}
       onError={() => setPlaying(false)}
     >
-      {primarySrc ? <source src={primarySrc} type={primaryType} /> : null}
+      <source src={primarySrc} type={primaryType} />
     </audio>
     <button
       type="button"

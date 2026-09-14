@@ -101,6 +101,43 @@ function json(res, status, body) {
   return new Response(JSON.stringify(body), { status, headers });
 }
 
+function queryValue(req, name) {
+  const direct = req?.query?.[name];
+  if (Array.isArray(direct)) return String(direct[0] ?? "");
+  if (direct != null) return String(direct);
+  try {
+    const host = (headerValue(req, "x-forwarded-host") || headerValue(req, "host") || "localhost").split(",")[0].trim();
+    const proto = (headerValue(req, "x-forwarded-proto") || "https").split(",")[0].trim();
+    return new URL(String(req?.url || "/"), `${proto}://${host}`).searchParams.get(name) || "";
+  } catch {
+    return "";
+  }
+}
+
+function redirectAudio(res, url) {
+  let destination = "";
+  try {
+    const parsed = new URL(String(url || ""));
+    if (parsed.protocol === "https:" || parsed.protocol === "http:") destination = parsed.toString();
+  } catch {}
+  if (!destination) return json(res, 404, { ok: false, error: "ACTIVE_AUDIO_UNAVAILABLE" });
+  const headers = {
+    Location: destination,
+    "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
+  };
+  if (res && typeof res.setHeader === "function") {
+    for (const [key, value] of Object.entries(headers)) res.setHeader(key, value);
+    if (typeof res.status === "function") {
+      const response = res.status(307);
+      return typeof response.end === "function" ? response.end() : response;
+    }
+    res.statusCode = 307;
+    return typeof res.end === "function" ? res.end() : undefined;
+  }
+  return new Response(null, { status: 307, headers });
+}
+
 async function readJsonBody(req) {
   if (req?.body && typeof req.body === "object" && !Buffer.isBuffer(req.body) && !ArrayBuffer.isView(req.body)) return req.body;
   if (typeof req?.body === "string") {
@@ -223,11 +260,16 @@ export default async function handler(req, res) {
   try {
     const method = req.method || "GET";
     if (method === "GET") {
+      const wantsStream = queryValue(req, "stream") === "1";
       const manifest = await readOwnerMusicManifest().catch(() => emptyManifest());
       const gitPayload = publicPayload(manifest);
-      if (gitPayload.active) return json(res, 200, gitPayload);
+      if (gitPayload.active) {
+        if (wantsStream) return redirectAudio(res, gitPayload.active.url);
+        return json(res, 200, gitPayload);
+      }
       const dynamicSupabaseTrack = await readSupabaseActiveTrack().catch(() => null);
       const supabaseTrack = dynamicSupabaseTrack || bootstrapSupabaseTrack();
+      if (wantsStream) return redirectAudio(res, supabaseTrack.url);
       return json(res, 200, {
         ok: true,
         active: {
