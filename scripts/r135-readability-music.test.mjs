@@ -42,7 +42,7 @@ test("Guan Shi Lu titles stay in the collapsed row and hex cream is gone", async
   assert.match(svg, /STONE/);
 });
 
-test("owner music skips iPhone decode for MP3/M4A, uploads in chunks, and guarantees restored Supabase audio", async () => {
+test("owner music skips iPhone decode for MP3/M4A, uploads in chunks, accepts raw request bytes, and guarantees same-origin fallback audio", async () => {
   const transcoder = await source("src/lib/owner-music-transcode.ts");
   const native = await source("src/lib/owner-music-native-encode.ts");
   const client = await source("src/lib/owner-music-client.ts");
@@ -61,12 +61,14 @@ test("owner music skips iPhone decode for MP3/M4A, uploads in chunks, and guaran
   assert.match(client, /uploadInChunks/);
   assert.match(api, /saveOwnerMusicChunk/);
   assert.match(api, /x-zhaowu-music-chunk-index/);
-  assert.match(api, /readSupabaseActiveTrack/);
-  assert.match(api, /SUPABASE_AUDIO_BUCKET = "zhaowu-audio"/);
-  assert.match(api, /SUPABASE_BOOTSTRAP_TRACK/);
-  assert.match(api, /River In My Breathing 2/);
-  assert.match(api, /dynamicSupabaseTrack \|\| bootstrapSupabaseTrack\(\)/);
-  assert.match(api, /supabase-bootstrap/);
+  assert.match(api, /bodyParser: false/);
+  assert.match(api, /req\[Symbol\.asyncIterator\]/);
+  assert.match(api, /STATIC_FALLBACK_TRACK/);
+  assert.match(api, /\/audio\/zhaowu-background\.mp3/);
+  assert.match(api, /source: "static-fallback"/);
+  assert.doesNotMatch(api, /readSupabaseActiveTrack/);
+  assert.doesNotMatch(api, /SUPABASE_AUDIO_BUCKET/);
+  assert.doesNotMatch(api, /supabase-bootstrap/);
   assert.match(git, /MAX_BYTES = 12 \* 1024 \* 1024/);
   assert.match(git, /saveOwnerMusicChunk/);
   assert.match(git, /SCRATCH_DIR/);

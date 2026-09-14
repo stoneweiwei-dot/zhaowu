@@ -8,22 +8,33 @@ const ownerClient = await readFile(new URL("../src/lib/owner-music-client.ts", i
 const ownerTranscode = await readFile(new URL("../src/lib/owner-music-transcode.ts", import.meta.url), "utf8");
 const assets = await readFile(new URL("../src/lib/background-music-assets.ts", import.meta.url), "utf8");
 const upload = await readFile(new URL("../src/lib/background-music-upload.ts", import.meta.url), "utf8");
+const api = await readFile(new URL("../api/owner-music.js", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
 
-test("background music plays the owner-uploaded track from /api/owner-music and defers fetch until a playback request", () => {
-  assert.match(music, /\/api\/owner-music/);
+test("background music resolves the active owner track through /api/owner-music and defers fetch until playback is requested", () => {
+  assert.match(music, /MUSIC_STREAM_URL = "\/api\/owner-music\?stream=1"/);
   assert.match(music, /loadOwnerMusic/);
-  assert.match(music, /jingfo-shengyuan-aac\.m4a/);
-  assert.match(music, /musicPublicUrl/);
   assert.match(music, /DEFAULT_VOLUME = 0\.24/);
   assert.match(music, /audio\/mpeg/);
   assert.match(music, /loop/);
   assert.match(music, /playsInline/);
   assert.match(music, /preload="none"/);
   assert.match(music, /if \(!requested\) return;[\s\S]*void refreshAsset\(\)/);
-  assert.doesNotMatch(music, /\/audio\/zhaowu-background\.m4a/);
-  assert.doesNotMatch(music, /supabase\.co\/storage\/v1\/object\/public\/zhaowu-audio/);
+  assert.match(api, /STATIC_FALLBACK_TRACK/);
+  assert.match(api, /\/audio\/zhaowu-background\.mp3/);
+  assert.doesNotMatch(api, /SUPABASE_AUDIO_BUCKET/);
+  assert.doesNotMatch(api, /readSupabaseActiveTrack/);
+});
+
+test("background music reports playing only after real media playback events", () => {
+  assert.match(music, /onPlaying=\{markPlaybackStarted\}/);
+  assert.match(music, /onTimeUpdate=\{markPlaybackStarted\}/);
+  assert.match(music, /readyState < HTMLMediaElement\.HAVE_CURRENT_DATA/);
+  assert.match(music, /onWaiting=\{markPlaybackUnavailable\}/);
+  assert.match(music, /onStalled=\{markPlaybackUnavailable\}/);
+  assert.match(music, /onError=\{markPlaybackUnavailable\}/);
+  assert.doesNotMatch(music, /\.then\(\(\) => setPlaying\(true\)\)/);
 });
 
 test("background music is mounted globally and can unlock on the first user gesture", () => {
@@ -89,11 +100,12 @@ test("owner audio optimizer is bounded and refuses destructive low-bitrate compr
   assert.match(ownerTranscode, /為避免把音質壓到明顯變差/);
 });
 
-test("mobile keeps an explicit music control visible when autoplay is blocked", () => {
+test("mobile keeps an explicit music control visible when autoplay is blocked or media is unavailable", () => {
   assert.match(music, /Music playing/);
   assert.match(music, /音乐播放中/);
   assert.match(music, /音樂播放中/);
   assert.match(music, /useI18n/);
   assert.doesNotMatch(music, /hidden min-\[430px\]:inline/);
-  assert.match(music, /onError=\{\(\) => setPlaying\(false\)\}/);
+  assert.match(music, /onError=\{markPlaybackUnavailable\}/);
+  assert.match(music, /aria-pressed=\{playing\}/);
 });

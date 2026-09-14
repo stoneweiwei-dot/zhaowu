@@ -43,12 +43,8 @@ export function BackgroundMusic() {
   const primarySrc = MUSIC_STREAM_URL;
   const primaryType = track?.contentType || undefined;
   const activeMusicType = primaryType || "audio/mpeg";
-  // Owner uploads play from /api/owner-music. jingfo-shengyuan-aac.m4a / musicPublicUrl stay unused while Supabase spend cap returns 402.
   const musicTitle = track?.name || (locale === "en" ? "Zhaowu background music" : "昭梧背景音樂");
 
-  // Keep metadata/API work idle until playback is actually requested. The audio
-  // element already owns a same-origin stream URL, so Safari can start it inside
-  // the original gesture without waiting for this JSON request.
   useEffect(() => {
     if (!requested) return;
     void refreshAsset();
@@ -60,9 +56,15 @@ export function BackgroundMusic() {
       const audio = audioRef.current;
       if (!audio) return;
       const resume = enabled && !audio.paused;
+      setPlaying(false);
       void refreshAsset().finally(() => {
         audio.load();
-        if (resume) void audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+        if (resume) {
+          void audio.play().catch(() => {
+            unlockStartedRef.current = false;
+            setPlaying(false);
+          });
+        }
       });
     };
     window.addEventListener("zhaowu-music-change", onChange);
@@ -84,8 +86,9 @@ export function BackgroundMusic() {
   }, [enabled]);
 
   // iPhone/iPad Safari requires play() to run while the user gesture is still
-  // active. MUSIC_STREAM_URL resolves the active owner track server-side, so no
-  // client fetch/await is allowed before this play() call.
+  // active. The UI does not report "playing" from play() resolving; it waits for
+  // the media element's real playing event so a dead redirect/network source
+  // cannot masquerade as audible playback.
   useEffect(() => {
     if (!enabled || requested) return;
 
@@ -95,9 +98,10 @@ export function BackgroundMusic() {
       if (!audio) return;
       unlockStartedRef.current = true;
       setRequested(true);
+      setPlaying(false);
       audio.loop = true;
       audio.volume = DEFAULT_VOLUME;
-      void audio.play().then(() => setPlaying(true)).catch(() => {
+      void audio.play().catch(() => {
         unlockStartedRef.current = false;
         setPlaying(false);
       });
@@ -128,18 +132,25 @@ export function BackgroundMusic() {
 
     setEnabled(true);
     setRequested(true);
+    setPlaying(false);
     unlockStartedRef.current = true;
-    if (!audio) {
-      setPlaying(false);
-      return;
-    }
+    if (!audio) return;
     audio.loop = true;
     audio.volume = DEFAULT_VOLUME;
-    // Keep play() synchronous with the button click for iPhone/iPad Safari.
-    void audio.play().then(() => setPlaying(true)).catch(() => {
+    void audio.play().catch(() => {
       unlockStartedRef.current = false;
       setPlaying(false);
     });
+  };
+
+  const markPlaybackStarted = () => {
+    const audio = audioRef.current;
+    if (!audio || audio.paused || audio.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+    setPlaying(true);
+  };
+
+  const markPlaybackUnavailable = () => {
+    setPlaying(false);
   };
 
   const label = locale === "en"
@@ -161,10 +172,15 @@ export function BackgroundMusic() {
       data-music-loop="single"
       data-active-music-type={activeMusicType}
       preload="none"
-      onPlay={() => setPlaying(true)}
-      onPause={() => setPlaying(false)}
-      onEnded={() => setPlaying(false)}
-      onError={() => setPlaying(false)}
+      onPlaying={markPlaybackStarted}
+      onTimeUpdate={markPlaybackStarted}
+      onPause={markPlaybackUnavailable}
+      onEnded={markPlaybackUnavailable}
+      onWaiting={markPlaybackUnavailable}
+      onStalled={markPlaybackUnavailable}
+      onAbort={markPlaybackUnavailable}
+      onEmptied={markPlaybackUnavailable}
+      onError={markPlaybackUnavailable}
     >
       <source src={primarySrc} type={primaryType} />
     </audio>
