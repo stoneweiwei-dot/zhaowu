@@ -131,6 +131,9 @@ test.describe("iPhone Safari core customer flow", () => {
     await makeAppOfflineSafe(page);
     await page.goto("/login", { waitUntil: "domcontentloaded" });
 
+    await expect(page.getByRole("heading", { name: "會員登入", exact: true })).toBeVisible();
+    await expect(page.getByRole("tab", { name: "註冊", exact: true })).toBeVisible();
+    await page.getByRole("tab", { name: "站主", exact: true }).click();
     await expect(page.getByRole("heading", { name: "站主登入", exact: true })).toBeVisible();
     await expect(page.getByLabel("站主密鑰", { exact: true })).toBeVisible();
     await expect(page.locator('#login-secret[type="password"]')).toBeVisible();

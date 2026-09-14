@@ -98,4 +98,3 @@ test("Guest birth record stays on the phone without Supabase persistence", async
   await expect(page.locator('[data-specialist-link="indian"]')).toBeVisible();
   await mobileHealthy(page);
 });
-});

@@ -27,22 +27,22 @@ async function mobileHealthy(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 }
 
-test.describe("iPhone Safari owner-only account flow", () => {
-  test("a stored non-owner session cannot unlock the account console", async ({ page }) => {
+test.describe("iPhone Safari member vs owner account flow", () => {
+  test("a stored member session cannot unlock the independent owner console", async ({ page }) => {
     await installStoredSession(page);
     await page.goto("/account", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("link", { name: "站主登入", exact: true }).first()).toBeVisible();
-    await expect(page.getByText(USER.email, { exact: false })).toHaveCount(0);
+    await expect(page.locator("[data-owner-independent-console]")).toHaveCount(0);
+    await expect(page.getByText("OWNER CONSOLE", { exact: true })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: /我的昭梧|會員登入/ })).toBeVisible();
     await mobileHealthy(page);
   });
 
-  test("a stored non-owner session leaves the public home available", async ({ page }) => {
+  test("a stored member session still leaves the public home birth form available", async ({ page }) => {
     await installStoredSession(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
-    await expect(page.getByRole("link", { name: "我的昭梧", exact: true })).toHaveCount(0);
     await mobileHealthy(page);
   });
 });
