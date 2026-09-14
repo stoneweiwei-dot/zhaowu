@@ -1,5 +1,5 @@
-const CACHE = "zhaowu-shell-r130";
-const SHELL = ["/", "/manifest.webmanifest", "/apple-touch-icon-r113.png", "/brand-ui/header-gourd-wordmark-r113.png", "/brand-ui/logo-horizontal.svg", "/brand-ui/favicon.svg"];
+const CACHE = "zhaowu-shell-r131";
+const SHELL = ["/", "/updates", "/manifest.webmanifest", "/apple-touch-icon-r113.png", "/brand-ui/header-gourd-wordmark-r113.png", "/brand-ui/logo-horizontal.svg", "/brand-ui/favicon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -38,12 +38,12 @@ self.addEventListener("fetch", (event) => {
         .then((response) => {
           if (response.ok) {
             caches.open(CACHE)
-              .then((cache) => cache.put("/", response.clone()))
+              .then((cache) => cache.put(url.pathname === "/updates" ? "/updates" : "/", response.clone()))
               .catch(() => undefined);
           }
           return response;
         })
-        .catch(async () => (await caches.match(request)) || (await caches.match("/")) || Response.error()),
+        .catch(async () => (await caches.match(request)) || (await caches.match(url.pathname)) || (await caches.match("/")) || Response.error()),
     );
     return;
   }
