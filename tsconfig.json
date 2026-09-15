@@ -18,6 +18,10 @@
     "baseUrl": ".",
     "types": ["vite/client", "node"],
     "paths": {
+      "@/lib/supabase-rest": ["src/lib/bridge/supabase-rest.ts"],
+      "@/lib/background-assets": ["src/lib/bridge/background-assets.ts"],
+      "@/lib/gallery-assets": ["src/lib/bridge/gallery-assets.ts"],
+      "@/lib/report/decree-image": ["src/lib/bridge/decree-image.ts"],
       "@/*": ["src/*"]
     }
   },

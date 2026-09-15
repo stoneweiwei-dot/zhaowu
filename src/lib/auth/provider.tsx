@@ -36,10 +36,14 @@ const OWNER_USER: CurrentUser = {
 };
 
 /**
- * r144 access contract:
+ * r144 access contract remains protected by r146:
  * - ordinary visitors are device-local guests; no member auth is restored or required;
  * - the birth record stays in the phone/browser through shared-birth.ts;
  * - owner auth remains an independent HttpOnly Vercel cookie and is the only active login.
+ *
+ * r146 deliberately keeps the provider session null for owner everywhere. Owner-only data
+ * access is injected only by use-current-user.ts on the back-office routes, so the public
+ * guest-first analysis flow cannot mistake the owner cookie for a Supabase member session.
  *
  * We deliberately do not use an IP address as identity: mobile IPs rotate and may be shared.
  * The earlier guest-first implementation used device localStorage, which is the stable behavior
