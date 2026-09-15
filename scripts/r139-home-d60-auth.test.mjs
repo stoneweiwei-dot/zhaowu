@@ -5,18 +5,17 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("homepage keeps birth fields and drops the self-Q&A sheet", async () => {
+test("homepage keeps birth first and restores the question stage after birth save", async () => {
   const form = await source("src/components/analysis-form.tsx");
   const home = await source("src/routes/index.tsx");
   assert.match(form, /id="customer-record"/);
-  assert.match(form, /保存生辰/);
-  assert.doesNotMatch(form, /zhaowu-question-sheet/);
-  assert.doesNotMatch(form, /此刻，你最想了解/);
-  assert.doesNotMatch(form, /結論 \/ 依據 \/ 時機|结论 \/ 依据 \/ 时机/);
-  assert.doesNotMatch(form, /這份工作是否值得繼續|这份工作是否值得继续/);
-  assert.doesNotMatch(form, /analyzeLife\(/);
+  assert.match(form, /id="question-stage"/);
+  assert.match(form, /analysis-question/);
+  assert.match(form, /你真正想問的是什麼/);
+  assert.match(form, /analyzeLife\(/);
+  assert.match(form, /const showQuestion = Boolean\(rememberedRecord && !detailsOpen\)/);
+  assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="question-stage"'));
   assert.match(home, /href="#customer-record"/);
-  assert.doesNotMatch(home, /href=\{current \? "#result" : "#analysisForm"\}/);
 });
 
 test("D60 belongs to Indian astrology and is gone from Past & Present", async () => {
@@ -35,41 +34,32 @@ test("D60 belongs to Indian astrology and is gone from Past & Present", async ()
   assert.match(gate, /variant="standalone"/);
 });
 
-test("login animation is full-bleed and member register has a real callback page", async () => {
+test("login animation remains full-bleed while the route is owner-only", async () => {
   const login = await source("src/routes/login.tsx");
   const css = await source("src/login-approved-r89.css");
-  const callback = await source("src/routes/auth.callback.tsx");
-  const signup = await source("src/lib/auth/signup.ts");
   const provider = await source("src/lib/auth/provider.tsx");
   assert.match(login, /stone-login-stage-media/);
   assert.match(login, /owner-immortal-ascent-r123\.mp4/);
   assert.match(css, /\.stone-login-stage-media/);
   assert.match(css, /object-fit: cover/);
-  assert.match(login, /signupTab/);
-  assert.match(login, /signUpWithPassword/);
-  assert.doesNotMatch(login, /startOAuth|OAuthProvider|stone-login-oauth|withGoogle|withApple|withX/);
-  assert.match(login, /const result = await signUpWithPassword/);
-  assert.match(login, /if \(result\.session\)/);
-  assert.match(login, /驗證信已寄到你的 Email/);
-  assert.match(login, /會員 Email 登入目前被 Supabase 額度限制暫停/);
-  assert.match(callback, /createFileRoute\("\/auth\/callback"\)/);
-  assert.match(signup, /\/auth\/callback/);
-  assert.match(provider, /captureOAuthRedirect/);
-  assert.match(provider, /restoreSession/);
-  assert.match(provider, /isOwner: false/);
+  assert.match(login, /data-owner-only-login="true"/);
+  assert.match(login, /ownerSignIn/);
+  assert.match(login, /站主登入/);
+  assert.doesNotMatch(login, /signupTab|signUpWithPassword|signInWithPassword|startOAuth|OAuthProvider|stone-login-oauth/);
+  assert.doesNotMatch(provider, /captureOAuthRedirect|restoreSession|getProfile|memberFrom/);
+  assert.match(provider, /readOwnerSession/);
 });
 
-test("existing member login does not reuse the signup password-length gate", async () => {
-  const login = await source("src/routes/login.tsx");
-  const memberLogin = login.match(/async function onMemberLogin[\s\S]*?async function onSignup/)?.[0] ?? "";
-  const signup = login.match(/async function onSignup[\s\S]*?async function onOwnerSubmit/)?.[0] ?? "";
-  assert.match(memberLogin, /!email\.trim\(\) \|\| !password/);
-  assert.doesNotMatch(memberLogin, /password\.length\s*<\s*8/);
-  assert.match(memberLogin, /signInWithPassword\(email, password\)/);
-  assert.match(signup, /password\.length\s*<\s*8/);
+test("ordinary visitors are device-local guests rather than member sessions", async () => {
+  const provider = await source("src/lib/auth/provider.tsx");
+  const birth = await source("src/lib/shared-birth.ts");
+  assert.match(provider, /setSharedBirthAccessUser\(null\)/);
+  assert.match(provider, /mobile IPs rotate and may be shared/);
+  assert.match(birth, /zhaowu\.birth-record\.v1/);
+  assert.match(birth, /Device record wins regardless of the current login marker/);
 });
 
-test("device birth survives login and western house table wraps on iPhone", async () => {
+test("device birth survives owner login and western house table wraps on iPhone", async () => {
   const birth = await source("src/lib/shared-birth.ts");
   const css = await source("src/specialist-system.css");
   const chart = await source("src/components/specialist-chart.tsx");
