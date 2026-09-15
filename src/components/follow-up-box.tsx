@@ -1,14 +1,11 @@
 import { useState, type FormEvent } from "react";
-import { Link } from "@tanstack/react-router";
 import type { AnalysisResult } from "@/lib/bazi/types";
 import { followUpLife } from "@/lib/actions";
-import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useAppStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
 
 export function FollowUpBox({ result }: { result: AnalysisResult }) {
   const { t } = useI18n();
-  const { user, isPending } = useCurrentUserState();
   const setCurrent = useAppStore((s) => s.setCurrent);
   const [question, setQuestion] = useState("");
   const [busy, setBusy] = useState(false);
@@ -32,20 +29,8 @@ export function FollowUpBox({ result }: { result: AnalysisResult }) {
     }
   }
 
-  if (isPending) return null;
-
-  if (!user) {
-    return (
-      <section className="seal-border rounded-xl bg-cream/90 p-5 text-center">
-        <p className="font-display text-lg">{t("followTitle")}</p>
-        <p className="mt-2 text-sm text-ink-mute">{t("followGuestLead")}</p>
-        <Link to="/login" className="mt-4 inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-4 text-sm text-ink">{t("followLogin")}</Link>
-      </section>
-    );
-  }
-
   return (
-    <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
+    <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7" data-guest-follow-up="true">
       <p className="text-xs tracking-[0.28em] text-cinnabar">FOLLOW UP · SAME CHART</p>
       <h2 className="mt-2 font-display text-2xl">{t("followTitle")}</h2>
       <p className="mt-2 text-sm leading-7 text-ink-mute">{t("followLead")}</p>
