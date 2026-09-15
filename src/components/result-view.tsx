@@ -35,7 +35,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const answer = petDecision?.directAnswer ?? customerDirectAnswer(question, reading.directAnswer);
   const answerParagraphs = customerParagraphs(answer);
   const nextAction = customerCopy(reading.action);
-  const decreeText = customerCopy(reading.decree);
+  const decreeCouplet = customerCopy(reading.decree);
 
   useEffect(() => {
     let cancelled = false;
@@ -138,7 +138,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       <details className="zhaowu-result-evidence seal-border rounded-xl bg-cream/90" data-technical-evidence>
         <summary className="cursor-pointer list-none px-5 py-4 sm:px-6"><strong>{copy.evidence}</strong><span className="mt-1 block text-xs leading-5 text-ink-mute">{copy.evidenceLead}</span></summary>
         <div className="space-y-5 border-t border-line/60 p-4 sm:p-6">
-          {decreeText ? <div className="zhaowu-free-decree rounded-xl border border-line/60 p-4" data-free-decree><strong className="text-sm text-ink">{copy.decree}</strong><p className="mt-2 text-[14px] leading-7 text-ink-soft">{decreeText}</p></div> : null}
+          {decreeCouplet ? <div className="zhaowu-free-decree rounded-xl border border-line/60 p-4" data-free-decree><strong className="text-sm text-ink">{copy.decree}</strong><p className="mt-2 text-[14px] leading-7 text-ink-soft">{decreeCouplet}</p></div> : null}
           <BaziChart chart={chart} />
           <CharacterPanel chart={chart} question={question} portraitUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={session && user ? () => void onImage() : undefined} generating={busy === "image"} onImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />
         </div>
