@@ -13,6 +13,13 @@ export type StructuralRemedy = {
 
 type GodGroup = "resource" | "peer" | "output" | "wealth" | "officer";
 
+type ChannelEvidence = {
+  group: GodGroup;
+  visible: boolean;
+  rooted: boolean;
+  monthCommand: boolean;
+};
+
 const GROUP_LABEL: Record<GodGroup, string> = {
   resource: "印星",
   peer: "比劫",
@@ -30,26 +37,26 @@ function groupOf(god: string): GodGroup | null {
   return null;
 }
 
-function evidenceCounts(chart: Chart): Record<GodGroup, number> {
-  const counts: Record<GodGroup, number> = { resource: 0, peer: 0, output: 0, wealth: 0, officer: 0 };
-  for (const pillar of chart.pillars.filter((item) => item.ready !== false)) {
-    if (pillar.key !== "day" && pillar.gan) {
-      const group = groupOf(tenGod(chart.dayMaster, pillar.gan));
-      if (group) counts[group] += 2;
-    }
-    const mainQi = HIDDEN[pillar.zhi]?.[0];
-    if (mainQi) {
-      const group = groupOf(tenGod(chart.dayMaster, mainQi));
-      if (group) counts[group] += 1;
-    }
-  }
-  return counts;
-}
-
 function visibleGods(chart: Chart): string[] {
   return chart.pillars
     .filter((pillar) => pillar.ready !== false && pillar.key !== "day" && Boolean(pillar.gan))
     .map((pillar) => tenGod(chart.dayMaster, pillar.gan));
+}
+
+function rootedGods(chart: Chart): string[] {
+  return chart.pillars
+    .filter((pillar) => pillar.ready !== false)
+    .flatMap((pillar) => HIDDEN[pillar.zhi] ?? [])
+    .map((stem) => tenGod(chart.dayMaster, stem));
+}
+
+function groupSet(gods: string[]): Set<GodGroup> {
+  const out = new Set<GodGroup>();
+  for (const god of gods) {
+    const group = groupOf(god);
+    if (group) out.add(group);
+  }
+  return out;
 }
 
 function tendency(chart: Chart): "strong" | "weak" | "balanced" {
@@ -59,119 +66,233 @@ function tendency(chart: Chart): "strong" | "weak" | "balanced" {
   return "balanced";
 }
 
-function rankEvidence(counts: Record<GodGroup, number>): string {
-  return (Object.entries(counts) as [GodGroup, number][])
-    .sort((a, b) => b[1] - a[1])
-    .map(([group]) => GROUP_LABEL[group])
-    .join("、");
+function monthCommandGod(chart: Chart): string | null {
+  const monthBranch = chart.monthBranch
+    ?? chart.pillars.find((pillar) => pillar.key === "month" && pillar.ready !== false)?.zhi;
+  const mainQi = monthBranch ? HIDDEN[monthBranch]?.[0] : undefined;
+  return mainQi ? tenGod(chart.dayMaster, mainQi) : null;
+}
+
+function channel(
+  group: GodGroup,
+  visibleGroups: Set<GodGroup>,
+  rootedGroups: Set<GodGroup>,
+  monthGroup: GodGroup | null,
+): ChannelEvidence {
+  return {
+    group,
+    visible: visibleGroups.has(group),
+    rooted: rootedGroups.has(group),
+    monthCommand: monthGroup === group,
+  };
+}
+
+function channelSeen(item: ChannelEvidence) {
+  return item.visible || item.rooted || item.monthCommand;
 }
 
 /**
- * 子平病藥／通關 layer.
- * This is deliberately structural: it starts from month/strength and observable
- * ten-god channels. It never turns a single element count into a lucky-element prescription.
+ * 「成勢」只採結構條件，不做十神票數或加權分數：
+ * - 得月令主氣；或
+ * - 天干透出且地支有根。
+ *
+ * 這不是完整成格判定，只是病藥層判斷某條力量是否足以先進入分析。
+ */
+function structurallyAnchored(item: ChannelEvidence) {
+  return item.monthCommand || (item.visible && item.rooted);
+}
+
+function displayGodList(gods: string[]) {
+  const unique = [...new Set(gods)];
+  return unique.length ? unique.join("、") : "未見明顯通道";
+}
+
+/**
+ * 子平病藥／通關 layer。
+ *
+ * 核心約束：
+ * 1. 月令為綱，透干與根氣分開判；
+ * 2. 不把五行／十神數量、百分比、票數或軟件評分當作力量；
+ * 3. 「有路」不等於「有效流通」；只有透根、位置與承載條件能支持時才提高信度；
+ * 4. 七殺若真正成勢先論制化，但僅暗藏一點七殺不強行升格成主病。
  */
 export function analyzeStructuralRemedy(chart: Chart): StructuralRemedy {
-  const counts = evidenceCounts(chart);
   const visible = visibleGods(chart);
+  const rooted = rootedGods(chart);
+  const visibleGroups = groupSet(visible);
+  const rootedGroups = groupSet(rooted);
+  const monthGod = monthCommandGod(chart);
+  const monthGroup = monthGod ? groupOf(monthGod) : null;
   const state = tendency(chart);
-  const hasSeal = counts.resource > 0;
-  const hasOutput = counts.output > 0;
-  const hasWealth = counts.wealth > 0;
-  const hasOfficer = counts.officer > 0;
-  const hasKill = visible.includes("七殺") || chart.pillars.some((pillar) => (HIDDEN[pillar.zhi] ?? []).some((stem) => tenGod(chart.dayMaster, stem) === "七殺"));
+
+  const seal = channel("resource", visibleGroups, rootedGroups, monthGroup);
+  const peer = channel("peer", visibleGroups, rootedGroups, monthGroup);
+  const output = channel("output", visibleGroups, rootedGroups, monthGroup);
+  const wealth = channel("wealth", visibleGroups, rootedGroups, monthGroup);
+  const officer = channel("officer", visibleGroups, rootedGroups, monthGroup);
+
+  const killVisible = visible.includes("七殺");
+  const killRooted = rooted.includes("七殺");
+  const killAtMonthCommand = monthGod === "七殺";
+  const killAnchored = killAtMonthCommand || (killVisible && killRooted);
+
   const evidence = [
-    `旺衰基線：${chart.strength?.tendency ?? "未定"}。`,
-    `可見十神通道由強到弱：${rankEvidence(counts)}（只作結構比對，不作百分比喜忌）。`,
+    `旺衰承載基線：${chart.strength?.tendency ?? "未定"}。`,
+    `月令主氣十神：${monthGod ?? "未定"}；月令只作全局主氣入口，不以數量替代力量。`,
+    `天干透出通道：${displayGodList(visible)}。`,
+    `地支根氣通道：${displayGodList(rooted)}。`,
+    "本層不作百分比喜忌，也不以十神票數或差額替代結構判斷。",
   ];
 
-  if (state === "weak" && counts.officer >= 3) {
-    if (hasSeal) {
+  if (killAnchored) {
+    if (state === "weak" && seal.rooted && (seal.visible || seal.monthCommand)) {
       return {
         status: "clear",
-        disease: "官殺壓身，日主承載不足",
-        medicine: "先取印星承接官殺之氣，再由印生身；這是結構上的化殺生身，不是簡單補某一五行。",
+        disease: "官殺壓身，日主承載偏弱；其中七殺已具成勢條件",
+        medicine: "印星承接官殺，再轉而生身；原局印星既入局又有根，可先論殺印相生的承接路徑，是否成格仍須回到月令、位置、清濁與受制情況確認。",
         bridge: "官殺 → 印 → 日主",
-        evidence: [...evidence, "原局官殺壓力已見，同時有印星可作承接通道。"],
+        evidence: [
+          ...evidence,
+          `七殺${killAtMonthCommand ? "得月令主氣" : "透出且有根"}，不是僅憑一個藏干判殺旺。`,
+          "日主承載基線偏弱，故先把已成勢的官殺落到『官殺壓身』這一承載問題，而不是只停在七殺標籤。",
+          "印星有根且進入顯性／月令作用鏈，故可把『有路』提高到較可用的承接判斷。",
+        ],
       };
     }
-    return {
-      status: "provisional",
-      disease: "官殺壓身，日主承載不足",
-      medicine: "病位先定在官殺壓力；原局未見足夠印星承接，因此只標需要『化殺／扶身』，不虛構已存在的通關鏈。",
-      bridge: null,
-      evidence: [...evidence, "官殺壓力已見，但原局印星承接不足。"],
-    };
-  }
 
-  if (state === "weak" && counts.output >= 3) {
-    return {
-      status: hasSeal ? "clear" : "provisional",
-      disease: "食傷洩身偏重",
-      medicine: hasSeal
-        ? "以印星約束過洩並回生日主，先恢復承載，再談食傷生財。"
-        : "先控制過度洩出、保住日主承載；原局未見足夠印星，不把通關條件說滿。",
-      bridge: hasSeal ? "印 → 日主 → 食傷" : null,
-      evidence: [...evidence, `食傷結構偏重${hasSeal ? "，且印星通道已見" : "，但印星通道不足"}。`],
-    };
-  }
-
-  if (state === "weak" && counts.wealth >= 3) {
-    return {
-      status: "provisional",
-      disease: "財星耗身偏重",
-      medicine: "先看比劫與印星能否提高承載，再論任財；不得因財星多就直接判富或直接補財。",
-      bridge: counts.peer > 0 || hasSeal ? "印／比劫 → 日主 → 財" : null,
-      evidence: [...evidence, "財星耗身條件較突出，需先核對日主承載。"],
-    };
-  }
-
-  if (state === "strong" && counts.resource + counts.peer > counts.output + counts.wealth + counts.officer + 1) {
-    if (hasOutput) {
+    if (seal.rooted && (seal.visible || seal.monthCommand)) {
       return {
         status: "clear",
-        disease: "印比偏聚，氣機容易壅滯",
-        medicine: hasWealth
-          ? "先以食傷疏泄，再由食傷生財承接，形成從日主向外流通的路徑。"
-          : "先以食傷疏泄，使旺氣有出口；財星承接是否成立再看原局與歲運，不預設。",
-        bridge: hasWealth ? "日主 → 食傷 → 財" : "日主 → 食傷",
-        evidence: [...evidence, `印比偏聚，同時${hasOutput ? "已見食傷出口" : "未見穩定食傷出口"}。`],
+        disease: "七殺成勢，先看壓力是否能被有序承接",
+        medicine: "原局印星既入局又有根，可先論殺印相生的承接路徑；是否成格仍須回到月令、位置、清濁與受制情況確認。",
+        bridge: "七殺 → 印 → 日主",
+        evidence: [
+          ...evidence,
+          `七殺${killAtMonthCommand ? "得月令主氣" : "透出且有根"}，不是僅憑一個藏干判殺旺。`,
+          "印星有根且進入顯性／月令作用鏈，故可把『有路』提高到較可用的承接判斷。",
+        ],
+      };
+    }
+
+    if (output.visible && output.rooted) {
+      return {
+        status: "provisional",
+        disease: "七殺成勢，形成約束與壓力",
+        medicine: "食傷透出且有根，存在制殺路徑；但仍要分食神／傷官、位置、有情無情以及是否反傷官星，不能把『有食傷』直接等同制殺成功。",
+        bridge: "食傷 → 制七殺",
+        evidence: [
+          ...evidence,
+          `七殺${killAtMonthCommand ? "得月令主氣" : "透出且有根"}。`,
+          "食傷同時透出且有根，因此只確認制殺路徑存在，效果仍維持條件性。",
+        ],
+      };
+    }
+
+    return {
+      status: "provisional",
+      disease: "七殺成勢，但制化承接條件尚未完整",
+      medicine: "先核對印是否能化、食傷是否能制、比劫是否能承，以及財星是否反而滋殺；在作用鏈未完整前，不把七殺直接判凶，也不虛構已成立的藥。",
+      bridge: null,
+      evidence: [
+        ...evidence,
+        `七殺${killAtMonthCommand ? "得月令主氣" : "透出且有根"}，因此依『有殺先論殺』先檢查制化。`,
+        "目前未同時確認一條具備根氣與顯性入口的穩定制化鏈。",
+      ],
+    };
+  }
+
+  if (state === "weak" && structurallyAnchored(officer)) {
+    if (channelSeen(seal)) {
+      return {
+        status: seal.rooted ? "clear" : "provisional",
+        disease: "官殺壓身，日主承載偏弱",
+        medicine: seal.rooted
+          ? "印星承接官殺，再轉而生身；仍須檢查印是否受傷、被合鎖或位置失效。"
+          : "印星雖已入局但根氣不足，先標示化官殺／扶身方向，不把尚未站穩的通道說成完成。",
+        bridge: seal.rooted ? "官殺 → 印 → 日主" : null,
+        evidence: [
+          ...evidence,
+          `官殺${officer.monthCommand ? "得月令" : "透出且有根"}，且日主承載基線偏弱。`,
+          `印星${seal.rooted ? "有根" : "根氣不足"}。`,
+        ],
       };
     }
     return {
       status: "provisional",
-      disease: "印比偏聚，氣機容易壅滯",
-      medicine: "病位先定在印比壅滯；原局食傷出口不足，等待歲運引出時再判是否形成有效疏泄。",
+      disease: "官殺壓身，日主承載偏弱",
+      medicine: "先確認能否以印承接、比劫分擔或其他有效制化提高承載；原局尚未確認可用藥，不因官殺出現就直接判凶。",
       bridge: null,
-      evidence: [...evidence, "印比偏聚，但原局未見穩定食傷出口。"],
+      evidence: [...evidence, `官殺${officer.monthCommand ? "得月令" : "透出且有根"}，但尚未確認穩定承接鏈。`],
     };
   }
 
-  if (hasKill && hasSeal) {
+  if (state === "weak" && structurallyAnchored(output)) {
     return {
-      status: "clear",
-      disease: "七殺壓力需要被有序承接",
-      medicine: "原局已見印星承接七殺的路徑；是否足以稱成格，仍須月令、透干、根氣與受制情況共同確認。",
-      bridge: "七殺 → 印 → 日主",
-      evidence: [...evidence, "七殺與印星同時入局，殺印相生的通關路徑可見。"],
+      status: seal.rooted && channelSeen(seal) ? "clear" : "provisional",
+      disease: "食傷洩身，主要輸出通道超過當前承載",
+      medicine: seal.rooted && channelSeen(seal)
+        ? "印星有根，可先恢復承載並約束過洩；之後才判食傷能否有效生財。"
+        : "先保住日主承載並核對印、比劫是否真正可用；沒有根氣支持時，不把『需要印』寫成『原局已有有效印藥』。",
+      bridge: seal.rooted && channelSeen(seal) ? "印 → 日主 → 食傷" : null,
+      evidence: [...evidence, `食傷${output.monthCommand ? "得月令" : "透出且有根"}，與偏弱承載形成需要處理的洩身關係。`],
     };
   }
 
-  if (hasKill && hasOutput) {
+  if (state === "weak" && structurallyAnchored(wealth)) {
+    const supportSeen = channelSeen(seal) || channelSeen(peer);
     return {
       status: "provisional",
-      disease: "七殺形成約束壓力",
-      medicine: "食傷制殺的路徑已見，但要分食神與傷官、強弱與位置，不把『有食傷』直接等同制殺成功。",
-      bridge: "食傷 → 制官殺",
-      evidence: [...evidence, "七殺與食傷同時入局，存在制殺路徑。"],
+      disease: "財星耗身，日主承載偏弱",
+      medicine: "先核對印與比劫能否提高承載，再談任財；財星成勢本身不等於富，也不能以增加財星作補救。",
+      bridge: supportSeen ? "印／比劫 → 日主 → 財" : null,
+      evidence: [
+        ...evidence,
+        `財星${wealth.monthCommand ? "得月令" : "透出且有根"}，且日主承載基線偏弱。`,
+        supportSeen ? "原局可見印／比劫支援通道，但是否有效仍須檢查根氣與位置。" : "原局尚未確認穩定支援通道。",
+      ],
     };
   }
 
+  const supportAtMonth = seal.monthCommand || peer.monthCommand;
+  const outputStable = output.visible && output.rooted;
+  if (state === "strong" && supportAtMonth) {
+    if (outputStable) {
+      const wealthCanReceive = channelSeen(wealth);
+      return {
+        status: "clear",
+        disease: "印比偏聚而日主承載偏強，但已有食傷透根作出口",
+        medicine: wealthCanReceive
+          ? "食傷透出且有根，可先疏泄，再檢查財星是否能承接輸出；有路仍不等於每一段都已有效。"
+          : "食傷透出且有根，可作主要疏泄出口；財星承接是否成立留待原局位置與歲運確認。",
+        bridge: wealthCanReceive ? "日主 → 食傷 → 財" : "日主 → 食傷",
+        evidence: [
+          ...evidence,
+          `${GROUP_LABEL[seal.monthCommand ? "resource" : "peer"]}居月令主氣，日主承載基線偏強。`,
+          "食傷透出且有根，因此可以確認出口存在；是否後續生財仍另行判斷。",
+        ],
+      };
+    }
+    return {
+      status: "provisional",
+      disease: "印比偏聚而日主承載偏強，氣機容易壅滯",
+      medicine: "先找真正能透出且有根的食傷出口，再看財星是否能接續；原局只見藏根或局部訊號時，不把『有食傷』誤寫成有效流通，更不用十神數量差額硬造補法。",
+      bridge: null,
+      evidence: [
+        ...evidence,
+        `${GROUP_LABEL[seal.monthCommand ? "resource" : "peer"]}居月令主氣，但未確認透出且有根的食傷出口。`,
+        "有根不透只代表潛在通道，不能直接當成已完成的洩秀；故先處理支持／通關條件。",
+      ],
+    };
+  }
+
+  const weaklyPresentKill = killVisible || killRooted;
   return {
     status: "insufficient",
     disease: "未見足以單獨定性的主要結構病位",
-    medicine: "維持月令—格局—旺衰—制化的順序，待更明確的失衡或歲運引動再定病藥；不為了湊答案硬指定用神。",
+    medicine: "維持月令—格局—病藥—流通—承載的順序，待更明確的失衡或歲運引動再定病藥；不為了湊答案硬指定用神。",
     bridge: null,
-    evidence,
+    evidence: weaklyPresentKill
+      ? [...evidence, "原局可見七殺訊號，但未同時滿足得月令或透干有根，因此不把弱訊號升格成『七殺成勢』。"]
+      : evidence,
   };
 }

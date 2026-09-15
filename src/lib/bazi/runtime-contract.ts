@@ -1,5 +1,8 @@
 export const BAZI_RUNTIME_CONTRACT_VERSION = 'R6.2.1' as const;
 export const BAZI_CURRENT_MASTER_SOURCE = 'docs/STONE-R6.2.1-CURRENT-MASTER.md' as const;
+export const BAZI_RUNTIME_PATCH_SOURCES = [
+  'docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md',
+] as const;
 export const BAZI_INTERPRETATION_GUARD_SOURCES = [
   'docs/WFX-WANGSHI-ZHIHUA-v1.0.md',
   'docs/THREE-YUAN-AUXILIARY-RULE.md',
@@ -45,6 +48,11 @@ export const BAZI_HARD_GUARDS = [
   '城市、地理、髮色、衣著、方位與日柱俗訣只作環境應象或文化旁證，不得覆蓋子平主判或獨立推出吉凶。',
   '胎元、命宮、身宮只作四柱主判完成後的低權重補證；不得併入四柱旺衰、五行票數、格局計分或用神裁決，也不得合成所謂七柱重新主判。',
   '合不等於化；必須檢查月令、透干、根氣、環境與歲運引動。',
+  '穿／害只表示關係摩擦、暗損或牽制，不得直接等同「控制」「制取」或成功駕馭某十神。',
+  '十神身份不因合、沖、刑、害、穿而變成另一個十神；只能在既有身份上判斷功能是否受制、轉向、失效或被引動。',
+  '墓庫不得機械套用「逢沖必開、逢合必閉」；必須回到月令、透干、根氣、庫中藏干與歲運觸發判斷。',
+  '有路不等於有效流通；僅見相生或中介通道，仍須檢查力量、位置、根氣、阻隔與承載後才能判定通關成立。',
+  '命理取象、職業映射與心理語言不得與單一十神、五行或刑沖關係做一對一硬映射。',
   '病藥是核心分析層，不得被單一格局名稱取代。',
   '資料不足時必須降級信度或標示不作判定，不得用旁證補成確定結論。',
   '子平為主判；紫微斗數與一掌經只能作各自獨立的補充層，不得互相代替。',
