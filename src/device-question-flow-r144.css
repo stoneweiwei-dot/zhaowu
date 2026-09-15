@@ -104,7 +104,6 @@
 }
 
 /* The first answer should read like a professional answer, not a stack of unrelated ornaments. */
-.zhaowu-result-card > .mt-5,
 .zhaowu-result-flow > .zhaowu-decree-couplet {
   display: none !important;
 }
