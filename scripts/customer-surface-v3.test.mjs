@@ -5,14 +5,15 @@ import test from "node:test";
 const login = readFileSync(new URL("../src/routes/login.tsx", import.meta.url), "utf8");
 const report = readFileSync(new URL("../src/components/paid-report-pages.tsx", import.meta.url), "utf8");
 
-test("login keeps the independent owner key and restores member email fields", () => {
+test("login keeps the independent owner key and email-only member fields", () => {
   assert.match(login, /type="email"|id="login-email"/);
   assert.match(login, /id="login-secret"/);
   assert.match(login, /type="password"/);
   assert.match(login, /ownerSignIn/);
   assert.match(login, /vercel-owner-cookie/);
-  assert.match(login, /startOAuth/);
-  assert.match(login, /data-provider=/);
+  assert.match(login, /signInWithPassword\(email, password\)/);
+  assert.match(login, /signUpWithPassword\(email, password, displayName\)/);
+  assert.doesNotMatch(login, /startOAuth|onOAuth\(|data-provider=|withGoogle|withApple|withX/);
 });
 
 test("owner tab remains a passcode form without a verification-code screen", () => {
