@@ -47,6 +47,11 @@ test("login animation is full-bleed and member register has a real callback page
   assert.match(css, /object-fit: cover/);
   assert.match(login, /signupTab/);
   assert.match(login, /signUpWithPassword/);
+  assert.doesNotMatch(login, /startOAuth|OAuthProvider|stone-login-oauth|withGoogle|withApple|withX/);
+  assert.match(login, /const result = await signUpWithPassword/);
+  assert.match(login, /if \(result\.session\)/);
+  assert.match(login, /驗證信已寄到你的 Email/);
+  assert.match(login, /會員 Email 登入目前被 Supabase 額度限制暫停/);
   assert.match(callback, /createFileRoute\("\/auth\/callback"\)/);
   assert.match(signup, /\/auth\/callback/);
   assert.match(provider, /captureOAuthRedirect/);
