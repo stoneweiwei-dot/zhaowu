@@ -10,7 +10,7 @@
 
 1. `AGENTS.md` — 全项目治理、权限、安全 supersession、完成标准。
 2. `docs/CURRENT-STATE.md` + 当前 `main` + 当前 Production — 产品与运行现状。
-3. `docs/STONE-R6.2.1-CURRENT-MASTER.md` — 当前唯一命理母指令。
+3. `docs/STONE-R6.2.1-CURRENT-MASTER.md` + `docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md` — 当前唯一命理母指令及强制 Runtime 补丁。
 4. `docs/ANALYSIS-INGESTION-POLICY.md` — 新命理素材入库规则。
 5. 各专题当前契约：
    - `docs/FOCUSED-REPORT.md`
@@ -25,10 +25,11 @@
 
 | 文件 / 版本 | 状态 | 处理 |
 |---|---|---|
-| `STONE-R6.2.1-CURRENT-MASTER.md` | `CURRENT_MASTER` | 唯一当前入口 |
+| `STONE-R6.2.1-CURRENT-MASTER.md` | `CURRENT_MASTER` | 唯一当前入口；必须同时加载 P2 |
+| `STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md` | `ACTIVE_RUNTIME_PATCH` | 刑冲合害破、墓库、十神功能、ODL/FC 流通、类象与跨术数边界的强制补丁 |
 | `STONE-R6.1-CURRENT-MASTER.md` | `SUPERSEDED_BASE` | 保留完整历史判法，供 R6.2.1 继承与审计；不得单独冒充当前版本 |
 | R6 / R5 / R4 / R3 / R2 | `HISTORICAL` | 只作版本沿革，冲突处不执行 |
-| `METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` | `REDIRECT / HISTORICAL BASELINE` | 仅作为旧入口，必须转到 R6.2.1 |
+| `METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` | `REDIRECT / HISTORICAL BASELINE` | 仅作为旧入口，必须转到 R6.2.1 + P2 |
 
 ## 3. 以前“做了但当时没权限接入”的遗留包
 
@@ -92,7 +93,7 @@
 
 ### `SPEC.md` / `CONTRACT.md`
 
-这些文件包含早期实现快照与历史未完成清单。它们不能覆盖 `CURRENT-STATE.md`、当前代码、当前测试或 R6.2.1。保留它们只为历史接口／算法基线时，必须在文件顶部明确 legacy / partially superseded 状态。
+这些文件包含早期实现快照与历史未完成清单。它们不能覆盖 `CURRENT-STATE.md`、当前代码、当前测试或 R6.2.1 + P2。保留它们只为历史接口／算法基线时，必须在文件顶部明确 legacy / partially superseded 状态。
 
 ## 5. 新资料自动入库规则
 
@@ -102,6 +103,7 @@
 - 找到同一主题的最新版本；
 - 旧版本只保留不冲突部分；
 - 新规则若只是解释层，不得偷改 calculation truth；
+- 涉及刑冲合害破、墓库、十神功能、ODL／流通、万物类象或跨术数同源时，必须通过 P2 边界；
 - 可安全落地的直接进入对应当前文档／代码／测试；
 - 不能安全落地的明确标 `QUARANTINE` / `DEPENDENCY BLOCKED`，不得伪装成已接入；
 - 不再因为旧 Library 文件“曾经写过”就重复实现已被后续版本替代的方案。
@@ -119,6 +121,22 @@
 5. 能通过当前 QA / CI / production 规则。
 
 否则一律归档为历史证据，不重新激活。
+
+## 2026-09-15 r143 命理 P2 結構動力學同步
+
+- 站主提供的《陰陽五行系統動力學與八字理法之結構化解析》已完成清洗，不整份照收。
+- ACTIVE：`docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md`。
+- 固定新增／加固：
+  - 穿／害＝結構性損耗，不等於控制或制取；
+  - `TG-FS`：十神本體不變，功能可偏移；
+  - 六沖＝結構觸發器，不預設吉凶；
+  - 墓庫維持動態判定，禁逢沖必開／逢合必閉；
+  - `FC` Flow Consequence 與 ODL「有路」分開；
+  - 神煞維持三級降權；
+  - 萬物類象採非排他多重映射；
+  - 跨術數同源只作哲學／語義旁證，不互改 calculation truth。
+- 明確淘汰：十神真的變成另一十神、喜忌逢沖公式、一物一行固定映射、固定疾病直斷、把氣機或命例回饋包裝成現代科學實證。
+- 本次只改命理指令／知識治理，不改 Bazi deterministic calculation truth。
 
 ## 2026-09-12 實碼對帳補充
 
@@ -187,8 +205,6 @@
 - 夜間「七種個人分析」、輕測驗、命盤細項必須實色底＋月白字。
 - Loading 維持 r126。不 merge #304。PR #295 維持暫停。
 - PWA cache `zhaowu-shell-r129`。
-
-
 
 ## 2026-09-14 r130 owner music upload + key rotation
 
