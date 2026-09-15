@@ -32,6 +32,14 @@ function ownerText(locale: string, hant: string, hans: string, en: string) {
 
 function memberAuthMessage(locale: string, err: unknown) {
   const raw = err instanceof Error ? err.message : String(err ?? "");
+  if (/spend cap|egress_quota|流量額度|流量额度|restricted due to the following violations/i.test(raw)) {
+    return ownerText(
+      locale,
+      "會員 Email 登入目前被 Supabase 額度限制暫停。這不是你的 Email 或密碼錯誤；站主登入使用獨立路徑，不受影響。",
+      "会员 Email 登录目前被 Supabase 额度限制暂停。这不是你的 Email 或密码错误；站主登录使用独立路径，不受影响。",
+      "Member email sign-in is temporarily blocked by the Supabase quota. Your email or password is not the cause; owner sign-in uses a separate path.",
+    );
+  }
   if (/invalid login credentials/i.test(raw)) {
     return ownerText(locale, "Email 或密碼不正確。", "Email 或密码不正确。", "Incorrect email or password.");
   }
