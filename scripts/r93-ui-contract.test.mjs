@@ -19,7 +19,7 @@ test("customer-facing birth copy is owned by React with no legacy DOM rewrite", 
   assert.doesNotMatch(runtimeCopy, /MutationObserver|querySelector|setText/);
   assert.match(analysisForm, /customerTitle:\s*"客人資料"/);
   assert.match(analysisForm, /customerTitle:\s*"客人资料"/);
-  assert.match(analysisForm, /customerTitle:\s*"Client details"/);
+  assert.match(analysisForm, /customerTitle:\s*"Your birth details"/);
 });
 
 test("intro fallback restores animated lotus composition rather than tiny poster lockup", () => {

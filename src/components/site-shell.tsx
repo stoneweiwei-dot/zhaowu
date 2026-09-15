@@ -112,7 +112,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 {isPending ? <span className="zhaowu-header-pending" /> : user ? <>
                   <Link to="/account" className="zhaowu-header-utility"><BrandIcon name="account" />{user.isOwner ? t("navAdmin") : t("navMine")}</Link>
                   <button type="button" onClick={() => void signOut()} className="zhaowu-header-utility zhaowu-header-signout">{authEnabled ? t("logout") : user.displayName}</button>
-                </> : <Link to="/login" className="zhaowu-header-login"><BrandIcon name="login" />{t("navLogin")}</Link>}
+                </> : null}
               </div>
             </div>
 

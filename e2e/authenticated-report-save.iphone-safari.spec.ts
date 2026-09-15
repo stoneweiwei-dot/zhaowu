@@ -78,23 +78,26 @@ async function mobileHealthy(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 }
 
-test("Guest saves the birth record without a self-Q&A sheet", async ({ page }) => {
+test("Guest saves birth details first and then receives the r144 question stage", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "保存生辰", exact: true }).click();
+  await page.getByRole("button", { name: "下一步 · 輸入問題", exact: true }).click();
   await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
-  await expect(page.locator("#analysis-question")).toHaveCount(0);
-  await expect(page.getByText("此刻，你最想了解什麼？", { exact: true })).toHaveCount(0);
+  await expect(page.locator("#question-stage")).toBeVisible();
+  await expect(page.locator("#analysis-question")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "你真正想問的是什麼？", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "開始分析這個問題", exact: true })).toBeVisible();
   await mobileHealthy(page);
 });
 
-test("Guest birth record stays on the phone without Supabase persistence", async ({ page }) => {
+test("Guest birth record stays on the phone and specialist entry remains available", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "保存生辰", exact: true }).click();
+  await page.getByRole("button", { name: "下一步 · 輸入問題", exact: true }).click();
   await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
+  await expect(page.locator("#question-stage")).toBeVisible();
   await expect(page.locator('[data-specialist-link="indian"]')).toBeVisible();
   await mobileHealthy(page);
 });
