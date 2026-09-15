@@ -7,7 +7,7 @@ import { signUpWithPassword } from "@/lib/auth/signup";
 import { useI18n } from "@/lib/i18n";
 import { listActiveLoginAnimations, pickLoginAnimation, type LoginAnimationAsset } from "@/lib/login-animation";
 import { readBrandTheme } from "@/lib/brand-theme";
-import { signInWithPassword, startOAuth, type OAuthProvider } from "@/lib/supabase-rest";
+import { signInWithPassword } from "@/lib/supabase-rest";
 
 const FALLBACK_LOGIN_VIDEO: LoginAnimationAsset = {
   id: "fallback:owner-immortal",
@@ -30,9 +30,18 @@ function ownerText(locale: string, hant: string, hans: string, en: string) {
   return locale === "zh-Hans" ? hans : hant;
 }
 
-function oauthRedirect() {
-  if (typeof window === "undefined") return "https://stone-zhaowu-official.vercel.app/auth/callback";
-  return `${window.location.origin}/auth/callback`;
+function memberAuthMessage(locale: string, err: unknown) {
+  const raw = err instanceof Error ? err.message : String(err ?? "");
+  if (/invalid login credentials/i.test(raw)) {
+    return ownerText(locale, "Email 或密碼不正確。", "Email 或密码不正确。", "Incorrect email or password.");
+  }
+  if (/email not confirmed/i.test(raw)) {
+    return ownerText(locale, "這個 Email 尚未完成驗證，請先查看驗證信。", "这个 Email 尚未完成验证，请先查看验证邮件。", "This email has not been verified yet. Check your verification email first.");
+  }
+  if (/user already registered|already been registered/i.test(raw)) {
+    return ownerText(locale, "這個 Email 已經註冊，請直接登入。", "这个 Email 已经注册，请直接登录。", "This email is already registered. Sign in instead.");
+  }
+  return raw || ownerText(locale, "登入失敗，請稍後再試。", "登录失败，请稍后再试。", "Sign-in failed. Please try again.");
 }
 
 function LoginStageBackdrop() {
@@ -108,7 +117,7 @@ function LoginPage() {
       await reload();
       await navigate({ to: "/account" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("loginFailed"));
+      setError(memberAuthMessage(locale, err));
     } finally {
       setBusy(false);
     }
@@ -123,12 +132,22 @@ function LoginPage() {
     }
     setBusy(true);
     try {
-      await signUpWithPassword(email, password, displayName);
-      setMessage(t("accountCreated"));
+      const result = await signUpWithPassword(email, password, displayName);
+      if (result.session) {
+        await reload();
+        await navigate({ to: "/account" });
+        return;
+      }
+      setMessage(ownerText(
+        locale,
+        "註冊成功。驗證信已寄到你的 Email；請先完成驗證，再使用同一個 Email 與密碼登入。",
+        "注册成功。验证邮件已发送到你的 Email；请先完成验证，再使用同一个 Email 与密码登录。",
+        "Account created. Check your email to verify it, then sign in with the same email and password.",
+      ));
       setTab("login");
       setPassword("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("loginFailed"));
+      setError(memberAuthMessage(locale, err));
     } finally {
       setBusy(false);
     }
@@ -151,15 +170,6 @@ function LoginPage() {
       setError(err instanceof Error ? err.message : t("loginFailed"));
     } finally {
       setBusy(false);
-    }
-  }
-
-  function onOAuth(provider: OAuthProvider) {
-    resetAlerts();
-    try {
-      startOAuth(provider, oauthRedirect());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("loginUnavailable"));
     }
   }
 
@@ -195,20 +205,6 @@ function LoginPage() {
           <button type="button" role="tab" aria-selected={tab === "signup"} className={tab === "signup" ? "is-active" : ""} onClick={() => { setTab("signup"); resetAlerts(); }}>{t("signupTab")}</button>
           <button type="button" role="tab" aria-selected={tab === "owner"} className={tab === "owner" ? "is-active" : ""} onClick={() => { setTab("owner"); resetAlerts(); }}>{ownerText(locale, "站主", "站主", "Owner")}</button>
         </div>
-
-        {tab !== "owner" ? (
-          <>
-            <div className="stone-login-oauth-group">
-              <p className="stone-login-oauth-label">{t("orEmail") === "或使用 Email" ? ownerText(locale, "社交帳號", "社交账号", "Continue with") : "Continue with"}</p>
-              <div className="stone-login-oauth-grid">
-                <button type="button" className="stone-login-oauth" data-provider="google" onClick={() => onOAuth("google")} disabled={busy}>{t("withGoogle")}</button>
-                <button type="button" className="stone-login-oauth" data-provider="apple" onClick={() => onOAuth("apple")} disabled={busy}>{t("withApple")}</button>
-                <button type="button" className="stone-login-oauth" data-provider="twitter" onClick={() => onOAuth("twitter")} disabled={busy}>{t("withX")}</button>
-              </div>
-            </div>
-            <p className="stone-login-email-divider">{t("orEmail")}</p>
-          </>
-        ) : null}
 
         {tab === "login" ? (
           <form onSubmit={onMemberLogin} className="stone-login-form">
