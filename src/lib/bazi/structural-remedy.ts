@@ -67,7 +67,9 @@ function tendency(chart: Chart): "strong" | "weak" | "balanced" {
 }
 
 function monthCommandGod(chart: Chart): string | null {
-  const mainQi = HIDDEN[chart.monthBranch]?.[0];
+  const monthBranch = chart.monthBranch
+    ?? chart.pillars.find((pillar) => pillar.key === "month" && pillar.ready !== false)?.zhi;
+  const mainQi = monthBranch ? HIDDEN[monthBranch]?.[0] : undefined;
   return mainQi ? tenGod(chart.dayMaster, mainQi) : null;
 }
 
@@ -139,9 +141,25 @@ export function analyzeStructuralRemedy(chart: Chart): StructuralRemedy {
     `月令主氣十神：${monthGod ?? "未定"}；月令只作全局主氣入口，不以數量替代力量。`,
     `天干透出通道：${displayGodList(visible)}。`,
     `地支根氣通道：${displayGodList(rooted)}。`,
+    "本層不作百分比喜忌，也不以十神票數或差額替代結構判斷。",
   ];
 
   if (killAnchored) {
+    if (state === "weak" && seal.rooted && (seal.visible || seal.monthCommand)) {
+      return {
+        status: "clear",
+        disease: "官殺壓身，日主承載偏弱；其中七殺已具成勢條件",
+        medicine: "印星承接官殺，再轉而生身；原局印星既入局又有根，可先論殺印相生的承接路徑，是否成格仍須回到月令、位置、清濁與受制情況確認。",
+        bridge: "官殺 → 印 → 日主",
+        evidence: [
+          ...evidence,
+          `七殺${killAtMonthCommand ? "得月令主氣" : "透出且有根"}，不是僅憑一個藏干判殺旺。`,
+          "日主承載基線偏弱，故先把已成勢的官殺落到『官殺壓身』這一承載問題，而不是只停在七殺標籤。",
+          "印星有根且進入顯性／月令作用鏈，故可把『有路』提高到較可用的承接判斷。",
+        ],
+      };
+    }
+
     if (seal.rooted && (seal.visible || seal.monthCommand)) {
       return {
         status: "clear",
@@ -187,9 +205,9 @@ export function analyzeStructuralRemedy(chart: Chart): StructuralRemedy {
     if (channelSeen(seal)) {
       return {
         status: seal.rooted ? "clear" : "provisional",
-        disease: "官殺成為主要外在壓力，而日主承載偏弱",
+        disease: "官殺壓身，日主承載偏弱",
         medicine: seal.rooted
-          ? "印星入局且有根，可先承接官殺之氣再生身；仍須檢查印是否受傷、被合鎖或位置失效。"
+          ? "印星承接官殺，再轉而生身；仍須檢查印是否受傷、被合鎖或位置失效。"
           : "印星雖已入局但根氣不足，先標示化官殺／扶身方向，不把尚未站穩的通道說成完成。",
         bridge: seal.rooted ? "官殺 → 印 → 日主" : null,
         evidence: [
@@ -201,7 +219,7 @@ export function analyzeStructuralRemedy(chart: Chart): StructuralRemedy {
     }
     return {
       status: "provisional",
-      disease: "官殺成為主要外在壓力，而日主承載偏弱",
+      disease: "官殺壓身，日主承載偏弱",
       medicine: "先確認能否以印承接、比劫分擔或其他有效制化提高承載；原局尚未確認可用藥，不因官殺出現就直接判凶。",
       bridge: null,
       evidence: [...evidence, `官殺${officer.monthCommand ? "得月令" : "透出且有根"}，但尚未確認穩定承接鏈。`],
@@ -211,7 +229,7 @@ export function analyzeStructuralRemedy(chart: Chart): StructuralRemedy {
   if (state === "weak" && structurallyAnchored(output)) {
     return {
       status: seal.rooted && channelSeen(seal) ? "clear" : "provisional",
-      disease: "食傷成為主要洩出通道，而日主承載偏弱",
+      disease: "食傷洩身，主要輸出通道超過當前承載",
       medicine: seal.rooted && channelSeen(seal)
         ? "印星有根，可先恢復承載並約束過洩；之後才判食傷能否有效生財。"
         : "先保住日主承載並核對印、比劫是否真正可用；沒有根氣支持時，不把『需要印』寫成『原局已有有效印藥』。",
@@ -224,7 +242,7 @@ export function analyzeStructuralRemedy(chart: Chart): StructuralRemedy {
     const supportSeen = channelSeen(seal) || channelSeen(peer);
     return {
       status: "provisional",
-      disease: "財星成為主要耗身／責任承接通道，而日主承載偏弱",
+      disease: "財星耗身，日主承載偏弱",
       medicine: "先核對印與比劫能否提高承載，再談任財；財星成勢本身不等於富，也不能以增加財星作補救。",
       bridge: supportSeen ? "印／比劫 → 日主 → 財" : null,
       evidence: [
@@ -236,33 +254,34 @@ export function analyzeStructuralRemedy(chart: Chart): StructuralRemedy {
   }
 
   const supportAtMonth = seal.monthCommand || peer.monthCommand;
-  const supportHasOutlet = channelSeen(output);
+  const outputStable = output.visible && output.rooted;
   if (state === "strong" && supportAtMonth) {
-    if (supportHasOutlet) {
-      const outputStable = output.visible && output.rooted;
+    if (outputStable) {
       const wealthCanReceive = channelSeen(wealth);
       return {
-        status: outputStable ? "clear" : "provisional",
-        disease: "印比得令而日主承載偏強，氣機需要有效出口",
-        medicine: outputStable
-          ? wealthCanReceive
-            ? "食傷透出且有根，可先疏泄，再檢查財星是否能承接輸出；有路仍不等於每一段都已有效。"
-            : "食傷透出且有根，可作主要疏泄出口；財星承接是否成立留待原局位置與歲運確認。"
-          : "食傷雖入局但尚未同時確認透根，先視為出口候選，不把弱通道硬判成完成流通。",
-        bridge: outputStable ? (wealthCanReceive ? "日主 → 食傷 → 財" : "日主 → 食傷") : null,
+        status: "clear",
+        disease: "印比偏聚而日主承載偏強，但已有食傷透根作出口",
+        medicine: wealthCanReceive
+          ? "食傷透出且有根，可先疏泄，再檢查財星是否能承接輸出；有路仍不等於每一段都已有效。"
+          : "食傷透出且有根，可作主要疏泄出口；財星承接是否成立留待原局位置與歲運確認。",
+        bridge: wealthCanReceive ? "日主 → 食傷 → 財" : "日主 → 食傷",
         evidence: [
           ...evidence,
           `${GROUP_LABEL[seal.monthCommand ? "resource" : "peer"]}居月令主氣，日主承載基線偏強。`,
-          `食傷${outputStable ? "透出且有根" : "僅見部分入口／根氣"}。`,
+          "食傷透出且有根，因此可以確認出口存在；是否後續生財仍另行判斷。",
         ],
       };
     }
     return {
       status: "provisional",
-      disease: "印比得令而日主承載偏強，氣機容易壅滯",
-      medicine: "先找真正能承載的食傷出口，再看財星是否能接續；原局未確認出口時，不用十神數量差額硬造『印比過多』結論。",
+      disease: "印比偏聚而日主承載偏強，氣機容易壅滯",
+      medicine: "先找真正能透出且有根的食傷出口，再看財星是否能接續；原局只見藏根或局部訊號時，不把『有食傷』誤寫成有效流通，更不用十神數量差額硬造補法。",
       bridge: null,
-      evidence: [...evidence, `${GROUP_LABEL[seal.monthCommand ? "resource" : "peer"]}居月令主氣，但未確認可用食傷出口。`],
+      evidence: [
+        ...evidence,
+        `${GROUP_LABEL[seal.monthCommand ? "resource" : "peer"]}居月令主氣，但未確認透出且有根的食傷出口。`,
+        "有根不透只代表潛在通道，不能直接當成已完成的洩秀；故先處理支持／通關條件。",
+      ],
     };
   }
 
