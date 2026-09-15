@@ -7,8 +7,6 @@ const ACTIONS = new Set([
   "report.list",
   "report.get",
   "report.delete",
-  "report.upsert",
-  "report.patch",
   "report.viewImage",
   "report.generateImage",
   "background.list",

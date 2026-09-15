@@ -51,6 +51,13 @@ function errorMessage(body: OwnerDataFailure | null, status: number) {
       return "無法建立安全上傳通道。";
     case "UPLOAD_FINALIZE_FAILED":
       return "檔案已傳送，但素材資料無法完成保存。";
+    case "NO_GALLERY_ASSET_AVAILABLE":
+      return "目前圖庫沒有可用圖片。";
+    case "DECREE_NOT_READY":
+      return "請先生成並保存完整報告，再生成命誥圖。";
+    case "IMAGE_LOAD_FAILED":
+    case "IMAGE_GENERATION_FAILED":
+      return "命誥圖暫時無法建立或載入。";
     default:
       return String(body?.detail ?? body?.error ?? `HTTP ${status}`);
   }
@@ -76,15 +83,16 @@ export type OwnerUploadTicket = {
   token?: string | null;
 };
 
+/** Upload bytes directly to Supabase Storage using a short-lived signed upload URL. No owner cookie or Supabase credential leaves the same-origin server boundary. */
 export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: File, onProgress?: (percent: number) => void) {
   onProgress?.(10);
+  const body = new FormData();
+  body.append("cacheControl", "3600");
+  body.append("", file);
   const res = await fetch(ticket.signedUrl, {
     method: "PUT",
-    headers: {
-      "Content-Type": file.type || "application/octet-stream",
-      "x-upsert": "false",
-    },
-    body: file,
+    headers: { "x-upsert": "false" },
+    body,
   });
   if (!res.ok) {
     let detail = "";

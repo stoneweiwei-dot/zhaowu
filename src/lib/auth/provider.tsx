@@ -1,7 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { readOwnerSession } from "@/lib/auth/owner-api";
 import type { SupabaseSession, UserProfile } from "@/lib/supabase-rest";
-import { createOwnerCookieSession } from "@/lib/owner-data-client";
 import { setSharedBirthAccessUser } from "@/lib/shared-birth";
 
 export type CurrentUser = {
@@ -36,17 +35,19 @@ const OWNER_USER: CurrentUser = {
   birthData: null,
 };
 
-const OWNER_DATA_SESSION = createOwnerCookieSession() as SupabaseSession;
-
 /**
- * r146 access contract:
- * - ordinary visitors stay device-local guests; public member auth is not restored;
- * - owner identity still comes only from the independent HttpOnly Vercel cookie;
- * - the synthetic owner data session contains no Supabase credential. Its sentinel access token
- *   is intercepted by the owner bridge modules and every privileged operation goes through
- *   /api/owner-data -> the custom-auth Supabase server function.
+ * r144 access contract remains protected by r146:
+ * - ordinary visitors are device-local guests; no member auth is restored or required;
+ * - the birth record stays in the phone/browser through shared-birth.ts;
+ * - owner auth remains an independent HttpOnly Vercel cookie and is the only active login.
+ *
+ * r146 deliberately keeps the provider session null for owner everywhere. Owner-only data
+ * access is injected only by use-current-user.ts on the back-office routes, so the public
+ * guest-first analysis flow cannot mistake the owner cookie for a Supabase member session.
  *
  * We deliberately do not use an IP address as identity: mobile IPs rotate and may be shared.
+ * The earlier guest-first implementation used device localStorage, which is the stable behavior
+ * the owner asked to restore.
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<CurrentUser | null>(null);
@@ -61,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (owner) {
         setUser(OWNER_USER);
         setProfile(null);
-        setSession(OWNER_DATA_SESSION);
+        setSession(null);
         setSharedBirthAccessUser(OWNER_USER.id);
         return;
       }
