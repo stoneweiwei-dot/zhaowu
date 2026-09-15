@@ -1,0 +1,171 @@
+/* r144 — device-first visitor flow, two-step consultation, cleaner first answer. */
+
+/* Ordinary visitors no longer enter an account flow. Owner login remains available at /login. */
+.zhaowu-site-header .zhaowu-header-login { display: none !important; }
+
+.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+  gap: 18px !important;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-customer-record,
+.zhaowu-home-sheet-shell .zhaowu-question-stage {
+  border: 1px solid rgba(82, 65, 42, .14) !important;
+  border-radius: 24px !important;
+  padding: clamp(20px, 5vw, 32px) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(196,160,90,.10), transparent 34%),
+    linear-gradient(155deg, rgba(255,252,244,.96), rgba(247,240,226,.92)) !important;
+  box-shadow: 0 18px 52px rgba(55,44,29,.07) !important;
+}
+
+.zhaowu-question-stage {
+  scroll-margin-top: 128px;
+}
+
+.zhaowu-question-stage-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.zhaowu-question-birth-edit {
+  flex: 0 0 auto;
+  min-height: 38px;
+  border: 1px solid rgba(41,75,63,.22);
+  border-radius: 999px;
+  padding: 0 13px;
+  background: rgba(41,75,63,.06);
+  color: #294b3f;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.zhaowu-question-stage textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  border: 1px solid rgba(82,65,42,.22) !important;
+  border-radius: 18px !important;
+  padding: 16px 17px !important;
+  background: rgba(255,253,248,.95) !important;
+  color: #29251f !important;
+  font-size: 16px !important;
+  line-height: 1.7 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7) !important;
+}
+
+.zhaowu-question-stage textarea:focus {
+  outline: none;
+  border-color: rgba(41,75,63,.62) !important;
+  box-shadow: 0 0 0 3px rgba(41,75,63,.10) !important;
+}
+
+.zhaowu-question-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+  color: #74695d;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.zhaowu-question-meta span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zhaowu-analysis-submit-wrap {
+  display: flex !important;
+  justify-content: center !important;
+  padding: 4px 0 10px !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.zhaowu-analysis-submit-wrap button[type="submit"] {
+  width: min(100%, 520px);
+  min-height: 54px;
+  border: 1px solid rgba(31,78,58,.18) !important;
+  border-radius: 999px !important;
+  padding: 0 24px !important;
+  background: #294b3f !important;
+  color: #fffaf0 !important;
+  box-shadow: 0 10px 28px rgba(31,78,58,.16) !important;
+  font-size: 16px !important;
+  font-weight: 720 !important;
+  letter-spacing: .03em !important;
+}
+
+.zhaowu-analysis-submit-wrap button[type="submit"]:disabled {
+  opacity: .58;
+}
+
+/* The first answer should read like a professional answer, not a stack of unrelated ornaments. */
+.zhaowu-result-card > .mt-5,
+.zhaowu-result-flow > .zhaowu-decree-couplet {
+  display: none !important;
+}
+
+.zhaowu-result-card {
+  border: 1px solid rgba(82,65,42,.14) !important;
+  border-radius: 24px !important;
+  background: rgba(255,252,244,.97) !important;
+  box-shadow: 0 18px 52px rgba(55,44,29,.07) !important;
+}
+
+.zhaowu-result-card h2 {
+  max-width: 42rem;
+  line-height: 1.42 !important;
+}
+
+.zhaowu-result-card p {
+  max-width: 46rem;
+}
+
+@media (max-width: 560px) {
+  .zhaowu-home-sheet-shell .zhaowu-customer-record,
+  .zhaowu-home-sheet-shell .zhaowu-question-stage {
+    border-radius: 20px !important;
+    padding: 20px 16px !important;
+  }
+  .zhaowu-question-stage-head {
+    display: grid;
+  }
+  .zhaowu-question-birth-edit {
+    width: fit-content;
+  }
+  .zhaowu-question-promise {
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+  }
+  .zhaowu-question-promise span {
+    min-height: 38px !important;
+    justify-items: start !important;
+    padding-inline: 12px !important;
+    text-align: left !important;
+  }
+  .zhaowu-question-meta {
+    align-items: flex-end;
+  }
+}
+
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-customer-record,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-question-stage,
+html[data-zw-theme="night"] .zhaowu-result-card {
+  border-color: rgba(212,176,116,.26) !important;
+  background: linear-gradient(155deg, rgba(19,39,34,.96), rgba(24,45,38,.92)) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-question-stage textarea {
+  border-color: rgba(212,176,116,.30) !important;
+  background: rgba(11,28,24,.82) !important;
+  color: #f3ecdf !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-question-meta,
+html[data-zw-theme="night"] .zhaowu-question-stage .zhaowu-section-lead {
+  color: #d8d0c1 !important;
+}
