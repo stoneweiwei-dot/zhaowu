@@ -1,12 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { readOwnerSession } from "@/lib/auth/owner-api";
-import {
-  captureOAuthRedirect,
-  getProfile,
-  restoreSession,
-  type SupabaseSession,
-  type UserProfile,
-} from "@/lib/supabase-rest";
+import type { SupabaseSession, UserProfile } from "@/lib/supabase-rest";
 import { setSharedBirthAccessUser } from "@/lib/shared-birth";
 
 export type CurrentUser = {
@@ -41,16 +35,16 @@ const OWNER_USER: CurrentUser = {
   birthData: null,
 };
 
-function memberFrom(session: SupabaseSession, profile: UserProfile | null): CurrentUser {
-  return {
-    id: session.user.id,
-    displayName: profile?.display_name || session.user.email || "會員",
-    email: profile?.email || session.user.email || "",
-    isOwner: false,
-    birthData: profile?.birth_data ?? null,
-  };
-}
-
+/**
+ * r144 access contract:
+ * - ordinary visitors are device-local guests; no member auth is restored or required;
+ * - the birth record stays in the phone/browser through shared-birth.ts;
+ * - owner auth remains an independent HttpOnly Vercel cookie and is the only active login.
+ *
+ * We deliberately do not use an IP address as identity: mobile IPs rotate and may be shared.
+ * The earlier guest-first implementation used device localStorage, which is the stable behavior
+ * the owner asked to restore.
+ */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -60,29 +54,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const reload = useCallback(async () => {
     setPending(true);
     try {
-      let memberSession: SupabaseSession | null = null;
-      try {
-        memberSession = await captureOAuthRedirect();
-      } catch {
-        memberSession = null;
-      }
-      if (!memberSession) memberSession = await restoreSession();
-      const owner = await readOwnerSession();
-
+      const owner = await readOwnerSession().catch(() => false);
       if (owner) {
         setUser(OWNER_USER);
         setProfile(null);
         setSession(null);
         setSharedBirthAccessUser(OWNER_USER.id);
-        return;
-      }
-
-      if (memberSession) {
-        const nextProfile = await getProfile(memberSession).catch(() => null);
-        setSession(memberSession);
-        setProfile(nextProfile);
-        setUser(memberFrom(memberSession, nextProfile));
-        setSharedBirthAccessUser(memberSession.user.id);
         return;
       }
 
