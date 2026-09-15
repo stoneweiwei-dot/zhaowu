@@ -24,16 +24,16 @@ test('canonical design system stays the final global base and r89 overrides logi
   assert.doesNotMatch(root, /mobile-foundation-r81\.css/);
 });
 
-test('approved login restores official mark, Song wallpaper, member email and owner-key credentials', () => {
+test('approved login keeps official mark, Song wallpaper, email-only members and independent owner credentials', () => {
   assert.match(login, /BrandSeal/);
   assert.match(login, /stone-login-brand/);
   assert.match(login, /id="login-secret"/);
   assert.match(login, /vercel-owner-cookie/);
   assert.match(login, /id="login-email"/);
   assert.match(login, /id="login-password"/);
-  assert.match(login, /onOAuth\(/);
-  assert.match(login, /startOAuth/);
-  assert.match(login, /data-provider=/);
+  assert.match(login, /signInWithPassword\(email, password\)/);
+  assert.match(login, /signUpWithPassword\(email, password, displayName\)/);
+  assert.doesNotMatch(login, /onOAuth\(|startOAuth|data-provider=|withGoogle|withApple|withX/);
   assert.match(loginApproved, /url\("\/wallpaper-song\.jpg"\)/);
   assert.match(loginApproved, /rgba\(255, 252, 244, \.91\)/);
   assert.match(loginApproved, /#ac473b/);

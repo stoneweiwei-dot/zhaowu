@@ -8,17 +8,20 @@ const provider = await readFile(new URL('../src/lib/auth/provider.tsx', import.m
 const rest = await readFile(new URL('../src/lib/supabase-rest.ts', import.meta.url), 'utf8');
 const signup = await readFile(new URL('../src/lib/auth/signup.ts', import.meta.url), 'utf8');
 
-test('login restores member OAuth and email signup while keeping the owner tab', () => {
-  assert.match(login, /startOAuth/);
-  assert.match(login, /onOAuth\(/);
+test('login exposes email-only member auth while keeping the owner tab', () => {
+  assert.match(login, /signInWithPassword\(email, password\)/);
+  assert.match(login, /signUpWithPassword\(email, password, displayName\)/);
   assert.match(login, /signupTab/);
   assert.match(login, /createFileRoute\("\/login"\)/);
+  assert.doesNotMatch(login, /startOAuth|onOAuth\(|data-provider=|withGoogle|withApple|withX/);
+  // Legacy OAuth/callback helpers remain available for old links and for the
+  // email-confirmation redirect parser, but they are no longer customer UI.
   assert.match(rest, /export function startOAuth/);
   assert.match(rest, /window\.location\.origin/);
   assert.match(rest, /\/auth\/callback/);
 });
 
-test('owner session restore stays independent and member restore captures OAuth hashes', () => {
+test('owner session restore stays independent and member restore captures legacy callback hashes', () => {
   assert.match(provider, /readOwnerSession/);
   assert.match(provider, /OWNER_USER/);
   assert.match(provider, /captureOAuthRedirect/);
