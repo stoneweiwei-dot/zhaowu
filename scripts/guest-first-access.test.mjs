@@ -16,8 +16,9 @@ const ownerServer = await readFile(new URL("../src/server/owner-auth.ts", import
 const sharedBirth = await readFile(new URL("../src/lib/shared-birth.ts", import.meta.url), "utf8");
 const analysisForm = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
 
-test("ordinary visitors use device-local access and the public login CTA is inactive", () => {
-  assert.match(shell, /className="zhaowu-header-login"/);
+test("ordinary visitors use device-local access and the public login CTA is absent", () => {
+  assert.doesNotMatch(shell, /className="zhaowu-header-login"/);
+  assert.doesNotMatch(shell, /BrandIcon name="login"/);
   assert.match(guestCss, /\.zhaowu-site-header \.zhaowu-header-login \{ display: none !important; \}/);
   assert.match(main, /device-question-flow-r144\.css/);
   assert.doesNotMatch(provider, /captureOAuthRedirect|restoreSession|getProfile/);

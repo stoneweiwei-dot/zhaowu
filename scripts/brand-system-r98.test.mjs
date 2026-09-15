@@ -36,7 +36,8 @@ test("r98 CSS is last-wins after r97 and wires night tokens", () => {
 });
 
 test("header uses kit icons, a single owner-approved brand lockup and a clean night toggle", () => {
-  assert.match(shell, /BrandIcon name="login"/);
+  assert.doesNotMatch(shell, /BrandIcon name="login"/);
+  assert.doesNotMatch(shell, /className="zhaowu-header-login"/);
   assert.match(shell, /BrandIcon name="account"/);
   assert.match(shell, /BrandIcon name=\{night \? "day" : "night"\}/);
   assert.match(shell, /zhaowu-theme-toggle/);
