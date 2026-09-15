@@ -15,6 +15,7 @@
   background:
     radial-gradient(circle at 100% 0%, rgba(196,160,90,.10), transparent 34%),
     linear-gradient(155deg, rgba(255,252,244,.96), rgba(247,240,226,.92)) !important;
+  background-color: rgba(255, 252, 244, .78) !important;
   box-shadow: 0 18px 52px rgba(55,44,29,.07) !important;
 }
 
@@ -156,6 +157,7 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-question-stage,
 html[data-zw-theme="night"] .zhaowu-result-card {
   border-color: rgba(212,176,116,.26) !important;
   background: linear-gradient(155deg, rgba(19,39,34,.96), rgba(24,45,38,.92)) !important;
+  background-color: rgba(19, 39, 34, .92) !important;
 }
 
 html[data-zw-theme="night"] .zhaowu-question-stage textarea {

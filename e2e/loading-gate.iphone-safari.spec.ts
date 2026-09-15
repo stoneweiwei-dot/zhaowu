@@ -47,13 +47,13 @@ const routes = [
   {
     path: "/",
     heading: "客人資料",
-    action: "保存生辰",
+    action: "下一步 · 輸入問題",
     actionRole: "button",
   },
   {
     path: "/login",
-    heading: "會員登入",
-    action: "Email",
+    heading: "站主登入",
+    action: "站主密鑰",
     actionRole: "textbox",
   },
 ] as const;
