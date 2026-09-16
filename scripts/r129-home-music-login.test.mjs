@@ -43,13 +43,20 @@ test("home no longer stacks a live Four Pillars preview under client details", a
   assert.ok(main.indexOf("night-readability-r127.css") < main.indexOf("night-home-r129.css"));
 });
 
-test("research notes belong to 觀世錄 rather than the analysis home dump", async () => {
+test("knowledge hub keeps 觀世錄 editorial content separate from 昭梧命理小知識", async () => {
   const knowledge = await source("src/routes/knowledge.tsx");
   const article = await source("src/routes/knowledge.shushu-boundary.tsx");
   const homeNotes = await source("src/components/life-view-home-section.tsx");
+  const knowledgeNotes = await source("src/components/bazi-knowledge-notes-section.tsx");
   const home = await source("src/routes/index.tsx");
-  assert.match(knowledge, /昭梧 · 觀世錄/);
-  assert.match(knowledge, /LifeViewHomeSection/);
+
+  assert.match(knowledge, /觀世錄與命理小知識，分開看/);
+  assert.match(knowledge, /id="guanshilu-articles"/);
+  assert.match(knowledge, /id="#?mingli-knowledge"|BaziKnowledgeNotesSection/);
+  assert.match(knowledge, /LifeViewHomeSection archiveMode/);
+  assert.match(knowledge, /昭梧 · 命理小知識/);
+  assert.match(knowledge, /文章就是文章，教學就是教學/);
+  assert.match(knowledgeNotes, /命理知識就是知識，不混進觀世錄文章/);
   assert.match(article, /返回昭梧 · 觀世錄/);
   assert.match(homeNotes, /to="\/knowledge"/);
   assert.match(home, /LifeViewHomeSection/);
