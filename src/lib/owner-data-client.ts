@@ -40,6 +40,10 @@ function errorMessage(body: OwnerDataFailure | null, status: number) {
     case "OWNER_REQUIRED":
     case "INVALID_OWNER_CREDENTIAL":
       return "站主登入狀態已失效，請重新登入。";
+    case "BRIDGE_UNAUTHORIZED":
+    case "BRIDGE_REQUIRED":
+    case "BRIDGE_NOT_CONFIGURED":
+      return "站主資料橋接尚未正確設定。";
     case "SUPABASE_UNAVAILABLE":
     case "SUPABASE_ENV_MISSING":
       return "資料服務暫時無法使用。";
@@ -49,6 +53,9 @@ function errorMessage(body: OwnerDataFailure | null, status: number) {
       return "找不到這個素材。";
     case "UPLOAD_PREPARE_FAILED":
       return "無法建立安全上傳通道。";
+    case "UPLOAD_TICKET_INVALID":
+    case "UPLOAD_TICKET_EXPIRED":
+      return "上傳授權已失效，請重新選擇檔案上傳。";
     case "UPLOAD_FINALIZE_FAILED":
       return "檔案已傳送，但素材資料無法完成保存。";
     case "NO_GALLERY_ASSET_AVAILABLE":
@@ -78,12 +85,19 @@ export async function ownerData<T>(action: string, payload: Record<string, unkno
 
 export type OwnerUploadTicket = {
   ok: true;
+  bucket: string;
   path: string;
+  category: string;
+  assetKey: string;
+  contentType: string;
+  expectedSizeBytes: number;
+  uploadType: "background" | "gallery";
+  uploadTicket: string;
   signedUrl: string;
   token?: string | null;
 };
 
-/** Upload bytes directly to Supabase Storage using a short-lived signed upload URL. No owner cookie or Supabase credential leaves the same-origin server boundary. */
+/** Upload bytes directly to Supabase Storage. Supabase createSignedUploadUrl URLs are valid for 2 hours; the separate server-signed uploadTicket binds finalize to this exact object. */
 export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: File, onProgress?: (percent: number) => void) {
   onProgress?.(10);
   const body = new FormData();
