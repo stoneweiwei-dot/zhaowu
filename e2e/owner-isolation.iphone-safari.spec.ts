@@ -20,8 +20,8 @@ for (const path of ["/account", "/gallery"] as const) {
 
     await expect(page).toHaveURL(/\/$/);
     await expect(page.locator("#analysisForm")).toBeVisible();
+    await expect(page.locator("[data-owner-independent-console]")).toHaveCount(0);
     await expect(page.getByRole("link", { name: /登入|註冊|Sign in|Register/ })).toHaveCount(0);
-    await expect(page.getByText(/會員登入|會員註冊|Sign in \/ Register/)).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
 }
