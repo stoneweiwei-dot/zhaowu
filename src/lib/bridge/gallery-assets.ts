@@ -51,17 +51,19 @@ export async function uploadGalleryAsset(
   try {
     await uploadOwnerSignedFile(prep, file);
     const out = await ownerData<{ ok: true; item: base.GalleryAsset }>("gallery.finalizeUpload", {
+      uploadTicket: prep.uploadTicket,
       path: prep.path,
-      category,
-      assetKey,
+      category: prep.category,
+      assetKey: prep.assetKey,
       title: (meta.title || file.name).slice(0, 180),
-      contentType: file.type || null,
+      contentType: prep.contentType,
+      size: prep.expectedSizeBytes,
       tags: (meta.tags ?? []).map((tag) => tag.trim()).filter(Boolean).slice(0, 20),
       primary: Boolean(meta.primary),
     });
     return out.item;
   } catch (error) {
-    await ownerData("upload.abort", { bucket: "zhaowu-gallery", path: prep.path }).catch(() => undefined);
+    await ownerData("upload.abort", { uploadTicket: prep.uploadTicket }).catch(() => undefined);
     throw error;
   }
 }
@@ -73,7 +75,7 @@ export async function setGalleryAssetEnabled(session: SupabaseSession, id: strin
 
 export async function setGalleryAssetPrimary(session: SupabaseSession, asset: base.GalleryAsset) {
   if (!isOwnerCookieSession(session)) return base.setGalleryAssetPrimary(session, asset);
-  await ownerData("gallery.setPrimary", { id: asset.id, category: asset.category, assetKey: asset.asset_key });
+  await ownerData("gallery.setPrimary", { id: asset.id });
 }
 
 export async function setGalleryAssetTags(session: SupabaseSession, id: string, tags: string[]) {
@@ -88,9 +90,5 @@ export async function setLoginVisualCurrent(session: SupabaseSession, asset: bas
 
 export async function deleteGalleryAsset(session: SupabaseSession, asset: base.GalleryAsset) {
   if (!isOwnerCookieSession(session)) return base.deleteGalleryAsset(session, asset);
-  await ownerData("gallery.delete", {
-    id: asset.id,
-    bucket: asset.bucket_id || "zhaowu-gallery",
-    path: asset.storage_path,
-  });
+  await ownerData("gallery.delete", { id: asset.id });
 }
