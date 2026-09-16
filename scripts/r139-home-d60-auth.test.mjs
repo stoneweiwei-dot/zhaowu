@@ -30,7 +30,8 @@ test("D60 belongs to Indian astrology and is gone from Past & Present", async ()
   assert.match(karma, /function calculateD60/);
   assert.match(karma, /lahiriAyanamsa/);
   assert.match(karma, /kicker: "D60 · 印度古法占星"/);
-  assert.doesNotMatch(gate, /state === "unstable" \|\| state === "error"/);
+  assert.match(gate, /state === "unstable" \|\| state === "error"/);
+  assert.match(gate, /data-d60-withheld/);
   assert.match(gate, /variant="standalone"/);
 });
 
