@@ -1,7 +1,13 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import {
+  assertUploadTicketBinding,
+  authorizeBridgeHeaders,
+  createUploadTicket,
+  validateUploadedObject,
+  verifyUploadTicket,
+} from "./security.mjs";
 
-const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
 const BACKGROUND_BUCKET = "zhaowu-backgrounds";
 const GALLERY_BUCKET = "zhaowu-gallery";
 const REPORT_BUCKET = "zhaowu-report-images";
@@ -11,6 +17,10 @@ const REPORT_LIST_SELECT = "id,user_email,alias,record_kind,status,access_mode,p
 const REPORT_DETAIL_SELECT = "id,public_code,user_id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,engine_snapshot,mother_draft,paid_report,visual_profile,image_path,image_error,created_at,updated_at";
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const MAX_LOADING_VIDEO_BYTES = 6 * 1024 * 1024;
+const MAX_REPORT_IMAGE_BYTES = 15 * 1024 * 1024;
+const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+const REPORT_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const LOADING_VIDEO_TYPES = ["video/mp4", "video/webm"];
 
 const ALLOWED_ACTIONS = new Set([
   "report.list",
@@ -121,11 +131,11 @@ function safeExtension(name: string, contentType: string) {
 }
 
 function isImageType(contentType: string) {
-  return ["image/jpeg", "image/png", "image/webp", "image/avif"].includes(contentType);
+  return IMAGE_TYPES.includes(contentType);
 }
 
 function isLoadingVideoType(contentType: string) {
-  return contentType === "video/mp4" || contentType === "video/webm";
+  return LOADING_VIDEO_TYPES.includes(contentType);
 }
 
 function isQaReport(row: Record<string, unknown>) {
@@ -139,29 +149,20 @@ function isQaReport(row: Record<string, unknown>) {
     || context.is_qa === true;
 }
 
-async function sha256Hex(value: string) {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
-  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
-}
-
-function constantTimeEqual(a: string, b: string) {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let index = 0; index < a.length; index += 1) diff |= a.charCodeAt(index) ^ b.charCodeAt(index);
-  return diff === 0;
-}
-
-async function validOwnerSecret(req: Request) {
-  const secret = text(req.headers.get("x-zhaowu-owner-secret"));
-  if (secret.length < 8 || secret.length > 256) return false;
-  const actual = await sha256Hex(secret);
-  return constantTimeEqual(actual, OWNER_KEY_SHA256);
-}
-
 function requireId(payload: Payload, field = "id") {
   const value = text(payload[field]);
   if (!value) throw new OwnerDataError("INVALID_REQUEST", 400, `${field} is required`);
   return value;
+}
+
+function bridgeSecret() {
+  return Deno.env.get("ZHAOWU_OWNER_BRIDGE_SECRET") ?? "";
+}
+
+function uploadTicketSecret() {
+  const secret = Deno.env.get("ZHAOWU_OWNER_UPLOAD_TICKET_SECRET") ?? "";
+  if (secret.length < 32) throw new OwnerDataError("UPLOAD_TICKET_NOT_CONFIGURED", 503);
+  return secret;
 }
 
 function requireService() {
@@ -173,20 +174,56 @@ function requireService() {
   });
 }
 
-async function ensureObject(service: ReturnType<typeof createClient>, bucket: string, path: string) {
-  const clean = path.replace(/^\/+/, "");
-  const slash = clean.lastIndexOf("/");
-  const folder = slash >= 0 ? clean.slice(0, slash) : "";
-  const name = slash >= 0 ? clean.slice(slash + 1) : clean;
-  if (!name) throw new OwnerDataError("UPLOAD_FINALIZE_FAILED", 400, "Invalid object path");
-  const { data, error } = await service.storage.from(bucket).list(folder, { limit: 20, search: name });
-  if (error) throw new OwnerDataError("UPLOAD_FINALIZE_FAILED", 502, error.message);
-  if (!(data ?? []).some((item) => item.name === name)) throw new OwnerDataError("UPLOAD_FINALIZE_FAILED", 409, "Uploaded object was not found");
+function ticketError(error: unknown): OwnerDataError {
+  const code = error instanceof Error ? error.message : "UPLOAD_TICKET_INVALID";
+  if (code === "UPLOAD_TICKET_EXPIRED") return new OwnerDataError(code, 410);
+  if (code === "SERVER_SECRET_NOT_CONFIGURED") return new OwnerDataError("UPLOAD_TICKET_NOT_CONFIGURED", 503);
+  return new OwnerDataError("UPLOAD_TICKET_INVALID", 400, code);
+}
+
+async function verifiedTicket(payload: Payload, expected: Record<string, unknown>) {
+  try {
+    const ticket = await verifyUploadTicket(text(payload.uploadTicket), uploadTicketSecret());
+    assertUploadTicketBinding(ticket, expected);
+    return ticket;
+  } catch (error) {
+    throw ticketError(error);
+  }
+}
+
+async function verifyStoredObject(
+  service: ReturnType<typeof createClient>,
+  bucket: string,
+  path: string,
+  ticket: Record<string, unknown>,
+  maxSizeBytes: number,
+  allowedContentTypes: string[],
+) {
+  const { data, error } = await service.storage.from(bucket).info(path);
+  if (error || !data) throw new OwnerDataError("UPLOAD_FINALIZE_FAILED", 409, error?.message ?? "Uploaded object was not found");
+  try {
+    return validateUploadedObject(data, ticket, { maxSizeBytes, allowedContentTypes });
+  } catch (validationError) {
+    throw new OwnerDataError(
+      "UPLOAD_FINALIZE_FAILED",
+      validationError instanceof Error && validationError.message === "UPLOADED_OBJECT_TOO_LARGE" ? 413 : 409,
+      validationError instanceof Error ? validationError.message : "Uploaded object validation failed",
+    );
+  }
 }
 
 async function removeObject(service: ReturnType<typeof createClient>, bucket: string, path: string) {
   const { error } = await service.storage.from(bucket).remove([path]);
   if (error && !/not found/i.test(error.message)) throw new OwnerDataError("STORAGE_DELETE_FAILED", 502, error.message);
+}
+
+async function bestEffortRemoveObject(service: ReturnType<typeof createClient>, bucket: string, path: string) {
+  try {
+    await removeObject(service, bucket, path);
+    return false;
+  } catch {
+    return true;
+  }
 }
 
 async function reportList(service: ReturnType<typeof createClient>, payload: Payload) {
@@ -276,11 +313,12 @@ async function reportGenerateImage(service: ReturnType<typeof createClient>, pay
 
   const { data: report, error: reportError } = await service
     .from("report_requests")
-    .select("id,user_id,engine_snapshot,visual_profile,generation_attempts")
+    .select("id,user_id,engine_snapshot,visual_profile,generation_attempts,image_path")
     .eq("id", reportId)
     .maybeSingle();
   if (reportError) throw new OwnerDataError("REPORT_READ_FAILED", 502, reportError.message);
   if (!report) throw new OwnerDataError("REPORT_NOT_FOUND", 404);
+  if (payload.force !== true && text(report.image_path)) return reportViewImage(service, { reportId });
   if (!report.engine_snapshot) throw new OwnerDataError("DECREE_NOT_READY", 409);
 
   const { data: assets, error: assetsError } = await service
@@ -320,16 +358,31 @@ async function reportGenerateImage(service: ReturnType<typeof createClient>, pay
   const { data: sourceBlob, error: sourceError } = await service.storage.from(sourceBucket).download(selected.storage_path);
   if (sourceError || !sourceBlob) throw new OwnerDataError("GALLERY_REFERENCE_LOAD_FAILED", 502, sourceError?.message ?? "Unable to read gallery asset");
 
-  const contentType = selected.content_type || sourceBlob.type || "image/webp";
+  const contentType = (selected.content_type || sourceBlob.type || "image/webp").toLowerCase();
+  if (!REPORT_IMAGE_TYPES.includes(contentType)) throw new OwnerDataError("IMAGE_GENERATION_FAILED", 415, "Gallery reference is not a supported report image type");
+  if (!sourceBlob.size || sourceBlob.size > MAX_REPORT_IMAGE_BYTES) throw new OwnerDataError("IMAGE_GENERATION_FAILED", 413, "Generated report image exceeds 15 MB");
+
   const ext = safeExtension(selected.storage_path, contentType);
   const ownerFolder = text(report.user_id) || "owner";
-  const targetPath = `${ownerFolder}/${report.id}/decree-owner-r146-${selected.id}.${ext}`;
+  const targetPath = `${ownerFolder}/${report.id}/decree-owner-r146-${Date.now()}-${crypto.randomUUID()}.${ext}`;
   const { error: uploadError } = await service.storage.from(REPORT_BUCKET).upload(targetPath, sourceBlob, {
     contentType,
     cacheControl: "3600",
-    upsert: true,
+    upsert: false,
   });
   if (uploadError) throw new OwnerDataError("IMAGE_GENERATION_FAILED", 502, uploadError.message);
+
+  try {
+    const { data: stored, error: infoError } = await service.storage.from(REPORT_BUCKET).info(targetPath);
+    if (infoError || !stored) throw new Error(infoError?.message ?? "Generated object was not found");
+    validateUploadedObject(stored, { contentType, expectedSizeBytes: sourceBlob.size }, {
+      maxSizeBytes: MAX_REPORT_IMAGE_BYTES,
+      allowedContentTypes: REPORT_IMAGE_TYPES,
+    });
+  } catch (validationError) {
+    await bestEffortRemoveObject(service, REPORT_BUCKET, targetPath);
+    throw new OwnerDataError("IMAGE_GENERATION_FAILED", 502, validationError instanceof Error ? validationError.message : "Generated object validation failed");
+  }
 
   const previousProfile = report.visual_profile && typeof report.visual_profile === "object"
     ? report.visual_profile as Record<string, unknown>
@@ -344,6 +397,7 @@ async function reportGenerateImage(service: ReturnType<typeof createClient>, pay
     customerProviderIsolated: true,
   };
   const attempts = Number(report.generation_attempts ?? 0) + 1;
+  const previousPath = text(report.image_path);
   const { error: patchError } = await service
     .from("report_requests")
     .update({
@@ -356,9 +410,13 @@ async function reportGenerateImage(service: ReturnType<typeof createClient>, pay
     })
     .eq("id", report.id);
   if (patchError) {
-    await service.storage.from(REPORT_BUCKET).remove([targetPath]).catch(() => undefined);
+    await bestEffortRemoveObject(service, REPORT_BUCKET, targetPath);
     throw new OwnerDataError("IMAGE_GENERATION_FAILED", 502, patchError.message);
   }
+
+  const previousImageCleanupPending = previousPath && previousPath !== targetPath
+    ? await bestEffortRemoveObject(service, REPORT_BUCKET, previousPath)
+    : false;
 
   const { data: signed, error: signError } = await service.storage.from(REPORT_BUCKET).createSignedUrl(targetPath, 3600);
   if (signError || !signed?.signedUrl) throw new OwnerDataError("IMAGE_LOAD_FAILED", 502, signError?.message ?? "Unable to sign generated image");
@@ -369,6 +427,7 @@ async function reportGenerateImage(service: ReturnType<typeof createClient>, pay
     reused: false,
     galleryDirect: true,
     galleryReferenceAssetId: selected.id,
+    previousImageCleanupPending,
   };
 }
 
@@ -393,29 +452,63 @@ async function backgroundPrepareUpload(service: ReturnType<typeof createClient>,
   if (!isImageType(contentType)) throw new OwnerDataError("UPLOAD_PREPARE_FAILED", 415, "Only JPEG, PNG, WebP and AVIF are accepted");
   if (!size || size > MAX_IMAGE_BYTES) throw new OwnerDataError("UPLOAD_PREPARE_FAILED", 413, "Image exceeds 10 MB");
   const ext = safeExtension(name, contentType);
+  const category = "background";
+  const assetKey = safeSlug(name.replace(/\.[^.]+$/, ""), crypto.randomUUID());
   const path = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${ext}`;
   const { data, error } = await service.storage.from(BACKGROUND_BUCKET).createSignedUploadUrl(path, { upsert: false });
   if (error || !data?.signedUrl) throw new OwnerDataError("UPLOAD_PREPARE_FAILED", 502, error?.message ?? "Unable to sign upload");
-  return { ok: true, path, signedUrl: data.signedUrl, token: data.token ?? null };
+  const uploadTicket = await createUploadTicket({
+    bucket: BACKGROUND_BUCKET,
+    path,
+    category,
+    assetKey,
+    contentType,
+    expectedSizeBytes: size,
+    uploadType: "background",
+  }, uploadTicketSecret());
+  return {
+    ok: true,
+    bucket: BACKGROUND_BUCKET,
+    path,
+    category,
+    assetKey,
+    contentType,
+    expectedSizeBytes: size,
+    uploadType: "background",
+    uploadTicket,
+    signedUrl: data.signedUrl,
+    token: data.token ?? null,
+  };
 }
 
 async function backgroundFinalizeUpload(service: ReturnType<typeof createClient>, payload: Payload) {
   const path = text(payload.path);
   const name = text(payload.name).slice(0, 160) || "background";
-  const contentType = text(payload.contentType) || null;
-  if (!path) throw new OwnerDataError("UPLOAD_FINALIZE_FAILED", 400);
-  await ensureObject(service, BACKGROUND_BUCKET, path);
+  const category = text(payload.category);
+  const assetKey = text(payload.assetKey);
+  const contentType = text(payload.contentType).toLowerCase();
+  const size = Number(payload.size);
+  const ticket = await verifiedTicket(payload, {
+    bucket: BACKGROUND_BUCKET,
+    path,
+    category,
+    assetKey,
+    contentType,
+    expectedSizeBytes: size,
+    uploadType: "background",
+  });
+  const actual = await verifyStoredObject(service, BACKGROUND_BUCKET, path, ticket, MAX_IMAGE_BYTES, IMAGE_TYPES);
   const { data, error } = await service.from("background_assets").insert({
     source: "upload",
     name,
     storage_path: path,
-    content_type: contentType,
+    content_type: actual.contentType,
     enabled: true,
     days_of_week: [],
     theme: "daily-rotation",
   }).select(BACKGROUND_SELECT).single();
   if (error || !data) {
-    await service.storage.from(BACKGROUND_BUCKET).remove([path]).catch(() => undefined);
+    await bestEffortRemoveObject(service, BACKGROUND_BUCKET, path);
     throw new OwnerDataError("UPLOAD_FINALIZE_FAILED", 502, error?.message ?? "Unable to save background metadata");
   }
   return { ok: true, item: data };
@@ -451,10 +544,10 @@ async function backgroundDelete(service: ReturnType<typeof createClient>, payloa
   const { data: asset, error: readError } = await service.from("background_assets").select("id,storage_path").eq("id", id).maybeSingle();
   if (readError) throw new OwnerDataError("BACKGROUND_DELETE_FAILED", 502, readError.message);
   if (!asset) throw new OwnerDataError("ASSET_NOT_FOUND", 404);
-  await removeObject(service, BACKGROUND_BUCKET, asset.storage_path);
   const { error } = await service.from("background_assets").delete().eq("id", id);
   if (error) throw new OwnerDataError("BACKGROUND_DELETE_FAILED", 502, error.message);
-  return { ok: true };
+  const storageCleanupPending = await bestEffortRemoveObject(service, BACKGROUND_BUCKET, asset.storage_path);
+  return { ok: true, storageCleanupPending };
 }
 
 async function galleryList(service: ReturnType<typeof createClient>, payload: Payload) {
@@ -481,7 +574,28 @@ async function galleryPrepareUpload(service: ReturnType<typeof createClient>, pa
   const path = `${category}/${assetKey}/${new Date().toISOString().slice(0, 10)}-${crypto.randomUUID()}.${ext}`;
   const { data, error } = await service.storage.from(GALLERY_BUCKET).createSignedUploadUrl(path, { upsert: false });
   if (error || !data?.signedUrl) throw new OwnerDataError("UPLOAD_PREPARE_FAILED", 502, error?.message ?? "Unable to sign upload");
-  return { ok: true, path, signedUrl: data.signedUrl, token: data.token ?? null };
+  const uploadTicket = await createUploadTicket({
+    bucket: GALLERY_BUCKET,
+    path,
+    category,
+    assetKey,
+    contentType,
+    expectedSizeBytes: size,
+    uploadType: "gallery",
+  }, uploadTicketSecret());
+  return {
+    ok: true,
+    bucket: GALLERY_BUCKET,
+    path,
+    category,
+    assetKey,
+    contentType,
+    expectedSizeBytes: size,
+    uploadType: "gallery",
+    uploadTicket,
+    signedUrl: data.signedUrl,
+    token: data.token ?? null,
+  };
 }
 
 async function galleryFinalizeUpload(service: ReturnType<typeof createClient>, payload: Payload) {
@@ -489,30 +603,45 @@ async function galleryFinalizeUpload(service: ReturnType<typeof createClient>, p
   const category = safeSlug(text(payload.category), "uncategorized");
   const assetKey = safeSlug(text(payload.assetKey), "asset");
   const title = text(payload.title).slice(0, 180);
-  const contentType = text(payload.contentType) || null;
+  const contentType = text(payload.contentType).toLowerCase();
+  const size = Number(payload.size);
   const tags = safeTags(payload.tags);
   const primary = payload.primary === true;
-  if (!path) throw new OwnerDataError("UPLOAD_FINALIZE_FAILED", 400);
-  await ensureObject(service, GALLERY_BUCKET, path);
+  const ticket = await verifiedTicket(payload, {
+    bucket: GALLERY_BUCKET,
+    path,
+    category,
+    assetKey,
+    contentType,
+    expectedSizeBytes: size,
+    uploadType: "gallery",
+  });
+  const loadingVideo = category === "loading" && isLoadingVideoType(contentType);
+  const allowedTypes = category === "loading" ? [...IMAGE_TYPES, ...LOADING_VIDEO_TYPES] : IMAGE_TYPES;
+  const maxBytes = loadingVideo ? MAX_LOADING_VIDEO_BYTES : MAX_IMAGE_BYTES;
+  const actual = await verifyStoredObject(service, GALLERY_BUCKET, path, ticket, maxBytes, allowedTypes);
   const now = new Date().toISOString();
-  if (primary) {
-    const { error: clearError } = await service.from("gallery_assets").update({ is_primary: false, updated_at: now }).eq("category", category).eq("asset_key", assetKey).eq("is_primary", true);
-    if (clearError) throw new OwnerDataError("UPLOAD_FINALIZE_FAILED", 502, clearError.message);
-  }
   const { data, error } = await service.from("gallery_assets").insert({
     category,
     asset_key: assetKey,
     title,
     storage_path: path,
     bucket_id: GALLERY_BUCKET,
-    content_type: contentType,
+    content_type: actual.contentType,
     tags,
     enabled: true,
-    is_primary: primary,
+    is_primary: false,
   }).select(GALLERY_SELECT).single();
   if (error || !data) {
-    await service.storage.from(GALLERY_BUCKET).remove([path]).catch(() => undefined);
+    await bestEffortRemoveObject(service, GALLERY_BUCKET, path);
     throw new OwnerDataError("UPLOAD_FINALIZE_FAILED", 502, error?.message ?? "Unable to save gallery metadata");
+  }
+  if (primary) {
+    const { error: clearError } = await service.from("gallery_assets").update({ is_primary: false, updated_at: now }).eq("category", category).eq("asset_key", assetKey).eq("is_primary", true).neq("id", data.id);
+    if (clearError) throw new OwnerDataError("GALLERY_UPDATE_FAILED", 502, clearError.message);
+    const { error: primaryError } = await service.from("gallery_assets").update({ is_primary: true, updated_at: now }).eq("id", data.id);
+    if (primaryError) throw new OwnerDataError("GALLERY_UPDATE_FAILED", 502, primaryError.message);
+    data.is_primary = true;
   }
   return { ok: true, item: data };
 }
@@ -563,18 +692,22 @@ async function galleryDelete(service: ReturnType<typeof createClient>, payload: 
   const { data: asset, error: readError } = await service.from("gallery_assets").select("id,bucket_id,storage_path").eq("id", id).maybeSingle();
   if (readError) throw new OwnerDataError("GALLERY_DELETE_FAILED", 502, readError.message);
   if (!asset) throw new OwnerDataError("ASSET_NOT_FOUND", 404);
-  await removeObject(service, asset.bucket_id || GALLERY_BUCKET, asset.storage_path);
   const { error } = await service.from("gallery_assets").delete().eq("id", id);
   if (error) throw new OwnerDataError("GALLERY_DELETE_FAILED", 502, error.message);
-  return { ok: true };
+  const storageCleanupPending = await bestEffortRemoveObject(service, asset.bucket_id || GALLERY_BUCKET, asset.storage_path);
+  return { ok: true, storageCleanupPending };
 }
 
 async function abortUpload(service: ReturnType<typeof createClient>, payload: Payload) {
-  const bucket = text(payload.bucket);
-  const path = text(payload.path);
-  if (![BACKGROUND_BUCKET, GALLERY_BUCKET].includes(bucket) || !path) throw new OwnerDataError("INVALID_REQUEST", 400);
-  await service.storage.from(bucket).remove([path]);
-  return { ok: true };
+  let ticket;
+  try {
+    ticket = await verifyUploadTicket(text(payload.uploadTicket), uploadTicketSecret());
+  } catch (error) {
+    throw ticketError(error);
+  }
+  if (![BACKGROUND_BUCKET, GALLERY_BUCKET].includes(text(ticket.bucket))) throw new OwnerDataError("INVALID_REQUEST", 400);
+  const storageCleanupPending = await bestEffortRemoveObject(service, text(ticket.bucket), text(ticket.path));
+  return { ok: true, storageCleanupPending };
 }
 
 async function dispatch(service: ReturnType<typeof createClient>, action: string, payload: Payload) {
@@ -607,8 +740,9 @@ async function dispatch(service: ReturnType<typeof createClient>, action: string
 Deno.serve(async (req: Request) => {
   try {
     if (req.method !== "POST") return json({ ok: false, error: "METHOD_NOT_ALLOWED" }, 405);
-    if (text(req.headers.get("x-zhaowu-server-bridge")) !== "r146") return json({ ok: false, error: "BRIDGE_REQUIRED" }, 403);
-    if (!(await validOwnerSecret(req))) return json({ ok: false, error: "OWNER_REQUIRED" }, 401);
+
+    const auth = authorizeBridgeHeaders(req.headers, bridgeSecret());
+    if (!auth.ok) return json({ ok: false, error: auth.error }, auth.status);
 
     let payload: Payload;
     try { payload = await req.json() as Payload; } catch { return json({ ok: false, error: "INVALID_JSON" }, 400); }
