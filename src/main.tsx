@@ -45,7 +45,6 @@ import './site-ux-r63.css';
 import './site-ux-r63-lock.css';
 import './daily-almanac-r69.css';
 import './site-ux-r75-final.css';
-import './zhaowu-design-system.css';
 import './login-approved-r89.css';
 import './visual-hotfix-r94.css';
 import './brand-ui-r97.css';
@@ -61,58 +60,112 @@ import './night-home-r129.css';
 import './night-readability-r135.css';
 import './sky-events-article.css';
 import './device-question-flow-r144.css';
+import './zhaowu-design-system.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
+declare const __ZHAOWU_RELEASE_ID__: string;
+
 const root = document.getElementById('root');
 if (!root) throw new Error('Missing root element');
 
-const currentBundlePath = () => {
-  const script = document.querySelector<HTMLScriptElement>('script[type="module"][src*="/assets/"]');
-  if (!script?.src) return null;
-  try { return new URL(script.src, window.location.href).pathname; } catch { return null; }
-};
-
-const freshBundlePath = (html: string) => {
-  const match = html.match(/<script[^>]+src=["']([^"']*\/assets\/index-[^"']+\.js)["']/i);
-  if (!match?.[1]) return null;
-  try { return new URL(match[1], window.location.origin).pathname; } catch { return null; }
-};
-
+const LOCAL_RELEASE = String(__ZHAOWU_RELEASE_ID__ || 'dev').trim();
+const RELEASE_PARAM = '_zwv';
+const RELOAD_GUARD_KEY = 'zhaowu.release.reload.v1';
 let refreshCheckInFlight = false;
 let lastRefreshCheckAt = 0;
-const checkForFreshShell = async () => {
+
+function cleanReleaseParam() {
+  try {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has(RELEASE_PARAM)) return;
+    url.searchParams.delete(RELEASE_PARAM);
+    window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+  } catch {
+    // Cosmetic cleanup only.
+  }
+}
+
+function activateRelease(remoteRelease: string) {
+  const remote = remoteRelease.trim();
+  if (!remote || remote === LOCAL_RELEASE) {
+    cleanReleaseParam();
+    try { sessionStorage.removeItem(RELOAD_GUARD_KEY); } catch {}
+    return;
+  }
+
+  try {
+    if (sessionStorage.getItem(RELOAD_GUARD_KEY) === remote) return;
+    sessionStorage.setItem(RELOAD_GUARD_KEY, remote);
+  } catch {
+    // Session storage is optional; the URL cache-buster still forces a fresh navigation.
+  }
+
+  const target = new URL(window.location.href);
+  target.searchParams.set(RELEASE_PARAM, remote.slice(0, 16));
+  window.location.replace(target.toString());
+}
+
+async function checkForFreshRelease() {
   const now = Date.now();
   if (refreshCheckInFlight || now - lastRefreshCheckAt < 15_000) return;
   refreshCheckInFlight = true;
   lastRefreshCheckAt = now;
   try {
-    const response = await fetch('/', { cache: 'no-store', credentials: 'same-origin', headers: { 'Cache-Control': 'no-cache' } });
+    const response = await fetch(`/release.json?t=${now}`, {
+      cache: 'no-store',
+      credentials: 'same-origin',
+      headers: { 'Cache-Control': 'no-cache' },
+    });
     if (!response.ok) return;
-    const html = await response.text();
-    const current = currentBundlePath();
-    const fresh = freshBundlePath(html);
-    if (current && fresh && current !== fresh) window.location.reload();
+    const payload = await response.json() as { release?: unknown };
+    activateRelease(String(payload.release ?? ''));
   } catch {
-    // Fail open: never block the app just because an update check failed.
-  } finally { refreshCheckInFlight = false; }
-};
-
-if ('serviceWorker' in navigator) {
-  const hadControllerAtBoot = Boolean(navigator.serviceWorker.controller);
-  let reloadedForControllerChange = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!hadControllerAtBoot || reloadedForControllerChange) return;
-    reloadedForControllerChange = true;
-    window.location.reload();
-  });
-  const refreshServiceWorker = () => {
-    void navigator.serviceWorker.register('/sw.js', { scope: '/', updateViaCache: 'none' }).then((registration) => registration.update()).catch(() => undefined);
-    void checkForFreshShell();
-  };
-  refreshServiceWorker();
-  window.addEventListener('pageshow', refreshServiceWorker);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refreshServiceWorker(); });
+    // Fail open: update checks must never block the site.
+  } finally {
+    refreshCheckInFlight = false;
+  }
 }
 
-createRoot(root).render(<StrictMode><RouterProvider router={router} /><KoHiLocalizationBridge /><BackgroundMusic /></StrictMode>);
+function refreshInstalledApp() {
+  if ('serviceWorker' in navigator) {
+    void navigator.serviceWorker
+      .register('/sw.js', { scope: '/', updateViaCache: 'none' })
+      .then((registration) => registration.update())
+      .catch(() => undefined);
+  }
+  void checkForFreshRelease();
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    const data = event.data as { type?: string; release?: string } | null;
+    if (data?.type === 'ZHAOWU_RELEASE_READY' && data.release) activateRelease(data.release);
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    void checkForFreshRelease();
+  });
+
+  refreshInstalledApp();
+  window.addEventListener('pageshow', refreshInstalledApp);
+  window.addEventListener('focus', refreshInstalledApp);
+  window.addEventListener('online', refreshInstalledApp);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') refreshInstalledApp();
+  });
+
+  window.setInterval(() => {
+    if (document.visibilityState === 'visible') void checkForFreshRelease();
+  }, 5 * 60 * 1000);
+} else {
+  void checkForFreshRelease();
+}
+
+createRoot(root).render(
+  <StrictMode>
+    <RouterProvider router={router} />
+    <KoHiLocalizationBridge />
+    <BackgroundMusic />
+  </StrictMode>,
+);

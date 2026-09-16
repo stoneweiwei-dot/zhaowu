@@ -77,7 +77,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
   const todayLabel = displayText(language, "今日", "今日", "Today", "本日", "오늘", "आज");
   const totalLabel = displayText(language, "累計訪問", "累计访问", "Total visits", "累計訪問", "누적 방문", "कुल विज़िट");
-  const latestLabel = displayText(language, "最新更新 ＋", "最新更新 ＋", "Latest update ＋", "最新更新 ＋", "최신 업데이트 ＋", "नवीनतम अपडेट ＋");
+  const latestLabel = displayText(language, "本次更新", "本次更新", "What changed", "今回の更新", "이번 업데이트", "इस अपडेट में");
   const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
   const galleryLabel = displayText(language, "圖庫", "图库", "Gallery", "ギャラリー", "갤러리", "गैलरी");
   const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기", "गैलरी खोलें");
@@ -88,21 +88,25 @@ export function SiteShell({ children }: { children: ReactNode }) {
     <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30">
-          <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">
-            <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
-              <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
-              <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
-              <details className="group basis-full text-center" data-latest-change-report>
-                <summary className="cursor-pointer list-none font-medium text-ink-soft [&::-webkit-details-marker]:hidden">{latestLabel}</summary>
-                <p className="mx-auto mt-1 max-w-2xl px-2 text-center leading-5">{releaseSummary}</p>
+          <div className="zhaowu-header-shell">
+            <div className="zhaowu-status-strip" data-site-status-strip>
+              <span className="zhaowu-status-release" data-site-release>
+                {stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}
+              </span>
+              <span className="zhaowu-status-visits">
+                {todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}
+              </span>
+              <details className="zhaowu-status-details" data-latest-change-report>
+                <summary>{latestLabel}</summary>
+                <p>{releaseSummary}</p>
               </details>
             </div>
 
             <div className="zhaowu-header-primary">
-              <Link to="/" className="zhaowu-brand-link text-ink" aria-label={t("brand")}>
+              <Link to="/" className="zhaowu-brand-link" aria-label={t("brand")}>
                 <BrandSeal />
                 <span className="zhaowu-brand-copy">
-                  <span className="zhaowu-brand-name font-display" aria-hidden="true">{t("brand")}</span>
+                  <span className="zhaowu-brand-name" aria-hidden="true">{t("brand")}</span>
                   <span className="zhaowu-brand-tagline">{t("tagline")}</span>
                 </span>
               </Link>
@@ -117,11 +121,23 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </div>
 
             <nav className="zhaowu-header-nav" aria-label={siteControlsLabel}>
-              <div role="group" aria-label={t("language")} className="site-lang-group" style={{ display: "flex", alignItems: "center", gap: 4, maxWidth: "100%", overflowX: "auto", padding: 4, border: "1px solid rgba(196,160,90,.62)", borderRadius: 999, background: night ? "rgba(15,32,28,.72)" : "rgba(250,248,241,.76)", boxShadow: "0 6px 18px rgba(60,46,28,.06)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)" }}>
-                <span aria-hidden="true" style={{ display: "grid", placeItems: "center", flex: "0 0 auto", width: 36, height: 40, color: night ? "#d4b074" : "#1f4e3a" }}><BrandIcon name="language" /></span>
+              <div role="group" aria-label={t("language")} className="zhaowu-language-switcher">
+                <span className="zhaowu-language-icon" aria-hidden="true"><BrandIcon name="language" /></span>
                 {languageOptions.map(({ value, label, aria }) => {
                   const active = language === value;
-                  return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button" style={{ flex: "0 0 auto", minHeight: 40, padding: "0 11px", borderRadius: 999, border: active ? "1px solid #c4a05a" : "1px solid transparent", background: active ? (night ? "rgba(212,176,116,.15)" : "#1f4e3a") : "transparent", color: active ? (night ? "#f1dfba" : "#fffaf0") : (night ? "#e7e0d1" : "#4f4a42"), fontSize: 12, lineHeight: 1, fontWeight: active ? 700 : 600, letterSpacing: value === "en" ? ".04em" : ".01em", whiteSpace: "nowrap", boxShadow: active && !night ? "inset 0 0 0 1px rgba(255,255,255,.08)" : "none" }}>{label}</button>;
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setLanguage(value)}
+                      aria-label={aria}
+                      aria-pressed={active}
+                      data-active={active ? "true" : "false"}
+                      className="zhaowu-language-option"
+                    >
+                      {label}
+                    </button>
+                  );
                 })}
               </div>
               <button type="button" className="zhaowu-theme-toggle zhaowu-header-mode-toggle" onClick={toggle} aria-pressed={night} aria-label={night ? dayModeLabel : nightModeLabel} title={night ? dayModeLabel : nightModeLabel}>
@@ -133,11 +149,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
       ) : null}
 
       {!isLogin ? <GreenDragonGuide /> : null}
-      <div className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
+      <div className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
 
-      {!isLogin ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
-        <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
-      </footer> : null}
+      {!isLogin ? (
+        <footer className="zhaowu-site-footer zhaowu-site-footer--minimal">
+          <p>{t("brand")}<span>ZHAOWU</span></p>
+        </footer>
+      ) : null}
     </div>
   );
 }
