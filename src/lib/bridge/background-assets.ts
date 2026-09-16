@@ -34,14 +34,18 @@ export async function uploadBackground(
   try {
     await uploadOwnerSignedFile(prep, file, onProgress);
     const out = await ownerData<{ ok: true; item: base.BackgroundAsset }>("background.finalizeUpload", {
+      uploadTicket: prep.uploadTicket,
       path: prep.path,
+      category: prep.category,
+      assetKey: prep.assetKey,
       name: file.name,
-      contentType: file.type || null,
+      contentType: prep.contentType,
+      size: prep.expectedSizeBytes,
     });
     onProgress?.(100);
     return out.item;
   } catch (error) {
-    await ownerData("upload.abort", { bucket: "zhaowu-backgrounds", path: prep.path }).catch(() => undefined);
+    await ownerData("upload.abort", { uploadTicket: prep.uploadTicket }).catch(() => undefined);
     throw error;
   }
 }
@@ -65,5 +69,5 @@ export async function clearBackgroundWallpaper(session: SupabaseSession, id: str
 
 export async function deleteBackground(session: SupabaseSession, asset: base.BackgroundAsset) {
   if (!isOwnerCookieSession(session)) return base.deleteBackground(session, asset);
-  await ownerData("background.delete", { id: asset.id, path: asset.storage_path });
+  await ownerData("background.delete", { id: asset.id });
 }
