@@ -1,8 +1,8 @@
 /*
  * 昭梧 canonical visual system.
  * One shared authority for shell + homepage hierarchy.
- * Feature-specific CSS may define component internals; this file is imported last
- * so shared chrome, spacing and surfaces remain visually coherent.
+ * Feature-specific CSS loads before this file; approved login r89 is the only
+ * intentional global override and is scoped to the login surface.
  */
 
 :root {
@@ -48,6 +48,11 @@ button, a, input, select, textarea { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 ::selection { color: #fffaf0; background: rgba(33, 72, 58, .84); }
 
+/* Intro must never disappear while iOS is waiting for the video playing event. */
+.zhaowu-lotus-intro__video {
+  opacity: 1 !important;
+}
+
 .zhaowu-home-sheet-shell { min-height: 100dvh; }
 .zhaowu-site-header {
   border-bottom: 1px solid var(--zw-line);
@@ -56,6 +61,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   backdrop-filter: blur(18px) saturate(115%);
   -webkit-backdrop-filter: blur(18px) saturate(115%);
 }
+.zhaowu-site-header > div,
 .zhaowu-header-shell {
   display: grid;
   gap: 8px;
@@ -299,6 +305,16 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .zhaowu-home-stage--daily { overflow: hidden; border: 1px solid rgba(72, 58, 39, .12) !important; border-radius: var(--zw-radius-lg) !important; background: rgba(251, 247, 237, .60) !important; box-shadow: 0 8px 24px rgba(56, 43, 27, .04) !important; }
 .zhaowu-home-stage--primary { margin-top: 2px !important; }
 
+[data-scent-panel][hidden] { display: none !important; }
+
+/* Saved reports: generation state is owner metadata, so controls stay secondary to the reading. */
+[data-report-secondary-actions] {
+  opacity: .72;
+  font-size: .92em;
+}
+[data-report-secondary-actions] button,
+[data-report-secondary-actions] a { box-shadow: none !important; }
+
 .stone-login-screen { background: linear-gradient(180deg, rgba(20, 46, 38, .10), transparent 42%), var(--zw-paper); }
 .stone-login-sheet { border: 1px solid rgba(196, 160, 90, .32) !important; border-radius: 28px !important; background: rgba(251, 247, 237, .94) !important; box-shadow: 0 24px 70px rgba(26, 37, 31, .16) !important; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
 .stone-login-stage-media { filter: saturate(.82) contrast(.96) brightness(.96); }
@@ -335,7 +351,8 @@ html[data-zw-theme="night"] .zhaowu-home-fun-card { color: var(--zw-ink) !import
 html[data-zw-theme="night"] .zhaowu-home-portal.is-bazi { background: linear-gradient(145deg, rgba(44, 73, 60, .82), rgba(31, 49, 42, .76)) !important; }
 html[data-zw-theme="night"] .stone-login-sheet { background: rgba(25, 41, 34, .94) !important; }
 
-@media (max-width: 720px) {
+@media (max-width: 780px) {
+  .zhaowu-site-header > div,
   .zhaowu-header-shell { width: min(calc(100% - 18px), 980px); gap: 7px; }
   .zhaowu-status-strip { gap: 7px; padding-bottom: 6px; }
   .zhaowu-status-visits { display: none; }
@@ -355,7 +372,9 @@ html[data-zw-theme="night"] .stone-login-sheet { background: rgba(25, 41, 34, .9
   .zhaowu-home-stage--gallery,
   .zhaowu-home-stage--notes,
   .zhaowu-home-stage--result { border-radius: 22px !important; padding: 17px 14px !important; }
-  .zhaowu-home-portals, .zhaowu-home-fun-grid { grid-template-columns: 1fr !important; }
+  .zhaowu-home-portals,
+  .zhaowu-home-fun-grid,
+  .bazi-detail-pillars { grid-template-columns: 1fr !important; }
   .zhaowu-home-portal { min-height: 98px; padding: 14px 12px 13px 41px !important; }
   .zhaowu-home-portal::before { top: 14px; left: 12px; }
   .zhaowu-home-fun-card { min-height: 76px; }

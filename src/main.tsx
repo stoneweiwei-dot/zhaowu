@@ -45,7 +45,6 @@ import './site-ux-r63.css';
 import './site-ux-r63-lock.css';
 import './daily-almanac-r69.css';
 import './site-ux-r75-final.css';
-import './login-approved-r89.css';
 import './visual-hotfix-r94.css';
 import './brand-ui-r97.css';
 import './brand-ui-r98.css';
@@ -61,6 +60,7 @@ import './night-readability-r135.css';
 import './sky-events-article.css';
 import './device-question-flow-r144.css';
 import './zhaowu-design-system.css';
+import './login-approved-r89.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
