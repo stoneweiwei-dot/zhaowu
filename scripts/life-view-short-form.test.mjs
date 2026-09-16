@@ -5,11 +5,15 @@ import test from "node:test";
 const homeSection = readFileSync("src/components/life-view-home-section.tsx", "utf8");
 const { LIFE_VIEW_SHORT_FORM_ARTICLES } = await import("../src/lib/life-view-short-form.ts");
 
-test("homepage keeps short-form notes active alongside the long-form series without reviving legacy article packs", () => {
+test("homepage keeps short-form notes active and explicitly separate from long-form articles", () => {
   assert.match(homeSection, /LIFE_VIEW_SHORT_FORM_ARTICLES/);
   assert.match(homeSection, /LIFE_VIEW_LONG_FORM_ARTICLES/);
   assert.match(homeSection, /LIFE_VIEW_CURATED_ARTICLES/);
-  assert.match(homeSection, /ARTICLES\.sort\(\(a, b\) => b\.publishedAt\.localeCompare\(a\.publishedAt\)\)/);
+  assert.match(homeSection, /const LONG_ARTICLES: IllustratedArticle\[\] = \[/);
+  assert.match(homeSection, /const SHORT_NOTES: IllustratedArticle\[\] = LIFE_VIEW_SHORT_FORM_ARTICLES\.map/);
+  assert.match(homeSection, /contentKind: "short-note"/);
+  assert.match(homeSection, /const CONTENTS: IllustratedArticle\[\] = \[\.\.\.LONG_ARTICLES, \.\.\.SHORT_NOTES\]/);
+  assert.match(homeSection, /CONTENTS\.sort\(\(a, b\) => b\.publishedAt\.localeCompare\(a\.publishedAt\)\)/);
   for (const legacy of [
     "LIFE_VIEW_20260903_LATE_ARTICLES",
     "LIFE_VIEW_20260903_ARTICLES",
