@@ -74,8 +74,9 @@ for (const config of [
 
     await expect(page.locator("#analysis-question")).toBeVisible();
     await page.locator("#analysis-question").fill(config.question);
-    await expect(page.locator('#question-stage button[type="submit"]')).toHaveText(config.analyse);
-    await page.locator("#analysisForm").evaluate((form) => (form as HTMLFormElement).requestSubmit());
+    const analyse = page.getByRole("button", { name: config.analyse, exact: true });
+    await expect(analyse).toBeVisible();
+    await analyse.click();
 
     await expect(page.locator("#result")).toBeVisible({ timeout: 15_000 });
     await expect(page.locator("[data-primary-answer]")).toBeVisible();
