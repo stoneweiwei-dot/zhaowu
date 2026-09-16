@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useDisplayLanguage } from "@/lib/display-language";
 import { translateKoHiVisibleText, type KoHiLanguage } from "@/lib/ko-hi-localization";
+import { translateKoHiCurrentReportText } from "@/lib/ko-hi-current-report-localization";
 
 const TEXT_ORIGINAL = new WeakMap<Text, string>();
 const TEXT_TRANSLATED = new WeakMap<Text, string>();
@@ -14,13 +15,17 @@ function shouldSkip(node: Node) {
   return Boolean(parent?.closest(SKIP_SELECTOR));
 }
 
+function translateCurrent(value: string, language: KoHiLanguage) {
+  return translateKoHiCurrentReportText(translateKoHiVisibleText(value, language), language);
+}
+
 function localizeTextNode(node: Text, language: KoHiLanguage | null) {
   if (shouldSkip(node)) return;
   const current = node.nodeValue ?? "";
   const lastTranslated = TEXT_TRANSLATED.get(node);
   if (lastTranslated === undefined || current !== lastTranslated) TEXT_ORIGINAL.set(node, current);
   const original = TEXT_ORIGINAL.get(node) ?? current;
-  const next = language ? translateKoHiVisibleText(original, language) : original;
+  const next = language ? translateCurrent(original, language) : original;
   if (current !== next) node.nodeValue = next;
   TEXT_TRANSLATED.set(node, next);
 }
@@ -38,7 +43,7 @@ function localizeAttributes(element: Element, language: KoHiLanguage | null) {
     const last = translated.get(attr);
     if (last === undefined || current !== last) originals.set(attr, current);
     const original = originals.get(attr) ?? current;
-    const next = language ? translateKoHiVisibleText(original, language) : original;
+    const next = language ? translateCurrent(original, language) : original;
     if (current !== next) element.setAttribute(attr, next);
     translated.set(attr, next);
   }
