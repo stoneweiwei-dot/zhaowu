@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { translateKoHiVisibleText } from "../src/lib/ko-hi-localization.ts";
+import { translateKoHiCurrentReportText } from "../src/lib/ko-hi-current-report-localization.ts";
 
 const read = (path) => readFileSync(path, "utf8");
 
@@ -39,14 +40,34 @@ test("Hindi localizes the production strings that previously leaked English", ()
   for (const [source, expected] of cases) assert.equal(translateKoHiVisibleText(source, "hi"), expected);
 });
 
-test("the runtime bridge is mounted globally and remains local-only", () => {
+test("current guest-first and full-analysis wording is localized for Korean and Hindi", () => {
+  const cases = [
+    ["STEP 1 · BIRTH RECORD", "1단계 · 출생 정보", "चरण 1 · जन्म-जानकारी"],
+    ["What do you actually want answered?", "지금 실제로 답을 받고 싶은 질문은 무엇인가요?", "आप वास्तव में किस प्रश्न का उत्तर चाहते हैं?"],
+    ["Analyse this question", "이 질문 분석하기", "इस प्रश्न का विश्लेषण करें"],
+    ["Best next step", "가장 먼저 할 일", "सबसे उपयोगी अगला कदम"],
+    ["View full analysis", "전체 분석 보기", "पूरा विश्लेषण देखें"],
+    ["Your full analysis", "전체 분석", "आपका पूरा विश्लेषण"],
+    ["The answer first", "먼저 답부터", "पहले उत्तर"],
+    ["What to do now", "지금 할 일", "अभी क्या करें"],
+    ["Full explanation", "전체 설명", "पूरा विवरण"],
+  ];
+  for (const [source, ko, hi] of cases) {
+    assert.equal(translateKoHiCurrentReportText(source, "ko"), ko);
+    assert.equal(translateKoHiCurrentReportText(source, "hi"), hi);
+  }
+});
+
+test("the runtime bridge is mounted globally, includes the current report layer, and remains local-only", () => {
   const main = read("src/main.tsx");
   const bridge = read("src/components/ko-hi-localization-bridge.tsx");
   const localizer = read("src/lib/ko-hi-localization.ts");
+  const currentReport = read("src/lib/ko-hi-current-report-localization.ts");
   assert.match(main, /KoHiLocalizationBridge/);
   assert.match(bridge, /MutationObserver/);
   assert.match(bridge, /useDisplayLanguage/);
-  assert.doesNotMatch(`${bridge}\n${localizer}`, /fetch\(|OPENAI_API_KEY|api\.openai\.com|translate\.google|SUPABASE_SERVICE_ROLE_KEY/);
+  assert.match(bridge, /translateKoHiCurrentReportText/);
+  assert.doesNotMatch(`${bridge}\n${localizer}\n${currentReport}`, /fetch\(|OPENAI_API_KEY|api\.openai\.com|translate\.google|SUPABASE_SERVICE_ROLE_KEY/);
 });
 
 test("customer-cost isolation deploy gate is preserved", () => {
