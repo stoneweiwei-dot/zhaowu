@@ -27,7 +27,10 @@ test("r146 preserves r144 guest-first auth and scopes the synthetic data session
   assert.match(currentUser, /"\/gallery"/);
   assert.match(currentUser, /createOwnerCookieSession/);
   assert.match(currentUser, /state\.user\?\.isOwner/);
-  assert.match(currentUser, /OWNER_DATA_ROUTES\.has\(currentPathname\(\)\)/);
+  assert.match(currentUser, /OWNER_DATA_ROUTES\.has\(pathname\)/);
+  assert.match(currentUser, /window\.location\.replace\("\/"\)/);
+  assert.match(currentUser, /ownerDataRoute && !state\.isPending && !isOwner/);
+  assert.match(currentUser, /return \{ \.\.\.state, isPending: true \}/);
 });
 
 test("the browser sentinel never contains a Supabase secret and privileged data crosses only the same-origin owner API", () => {
