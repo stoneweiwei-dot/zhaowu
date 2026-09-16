@@ -31,7 +31,7 @@ function hash(value) {
   return createHash("sha256").update(String(value), "utf8").digest();
 }
 
-function isValidOwnerSecret(value) {
+export function isValidOwnerSecret(value) {
   if (!value || value.length < 8 || value.length > 256) return false;
   const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
   const actual = hash(value);
@@ -63,12 +63,40 @@ function ownerSecretFrom(req) {
   return isValidOwnerSecret(secret) ? secret : "";
 }
 
-function requestIsSameOrigin(req) {
-  const origin = headerValue(req, "origin").trim();
-  if (!origin) return true;
-  const forwardedHost = (headerValue(req, "x-forwarded-host") || headerValue(req, "host")).split(",")[0].trim();
-  if (!forwardedHost) return false;
-  try { return new URL(origin).host === forwardedHost; } catch { return false; }
+function normalizeOrigin(value) {
+  const raw = String(value ?? "").trim();
+  if (!raw) return "";
+  try {
+    const url = new URL(raw.includes("://") ? raw : `https://${raw}`);
+    if (url.protocol !== "https:" && url.protocol !== "http:") return "";
+    return url.origin;
+  } catch {
+    return "";
+  }
+}
+
+export function allowedOwnerOrigins(env = process.env) {
+  const origins = new Set();
+  for (const raw of String(env.ZHAOWU_OWNER_ALLOWED_ORIGINS ?? "").split(",")) {
+    const origin = normalizeOrigin(raw);
+    if (origin) origins.add(origin);
+  }
+  for (const key of ["VERCEL_URL", "VERCEL_BRANCH_URL", "VERCEL_PROJECT_PRODUCTION_URL"]) {
+    const origin = normalizeOrigin(env[key]);
+    if (origin) origins.add(origin);
+  }
+  return origins;
+}
+
+export function requestIsSameOrigin(req, env = process.env) {
+  const origin = normalizeOrigin(headerValue(req, "origin"));
+  if (!origin) return false;
+  const allowed = allowedOwnerOrigins(env);
+  if (!allowed.has(origin)) return false;
+
+  const fetchSite = headerValue(req, "sec-fetch-site").trim().toLowerCase();
+  if (fetchSite && fetchSite !== "same-origin") return false;
+  return true;
 }
 
 function json(res, status, body) {
@@ -99,12 +127,18 @@ function supabaseUrl() {
   return String(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "");
 }
 
+function bridgeSecret() {
+  return String(process.env.ZHAOWU_OWNER_BRIDGE_SECRET ?? "").trim();
+}
+
 export default async function handler(req, res) {
   try {
     if ((req.method || "GET") !== "POST") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
-    const secret = ownerSecretFrom(req);
-    if (!secret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+    if (!ownerSecretFrom(req)) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+
+    const serverBridgeSecret = bridgeSecret();
+    if (serverBridgeSecret.length < 32) return json(res, 503, { ok: false, error: "OWNER_BRIDGE_NOT_CONFIGURED" });
 
     const payload = await readJsonBody(req);
     const action = String(payload?.action ?? "").trim();
@@ -114,7 +148,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Zhaowu-Owner-Secret": secret,
+        "X-Zhaowu-Bridge-Secret": serverBridgeSecret,
         "X-Zhaowu-Server-Bridge": "r146",
       },
       body: JSON.stringify(payload),
