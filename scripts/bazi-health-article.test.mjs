@@ -9,9 +9,9 @@ const bodyMap = await readFile(new URL("../public/articles/bazi-health-body-map.
 const timing = await readFile(new URL("../public/articles/bazi-health-timing-rings.svg", import.meta.url), "utf8");
 const balance = await readFile(new URL("../public/articles/bazi-health-balance.svg", import.meta.url), "utf8");
 
-test("bazi health symbolism article is registered as the newest life-view note", () => {
+test("bazi health symbolism article remains registered in the long-form editorial archive", () => {
   assert.match(section, /BAZI_HEALTH_SYMBOLISM_LONG_FORM/);
-  assert.match(section, /\[BAZI_HEALTH_SYMBOLISM_LONG_FORM, INNER_FENGSHUI_LONG_FORM/);
+  assert.match(section, /const LONG_ARTICLES: IllustratedArticle\[\] = \[/);
   assert.match(article, /id: "bazi-health-symbolism"/);
   assert.match(article, /publishedAt: "2026-09-09"/);
 });

@@ -13,28 +13,32 @@ const practiceSource = readFileSync(new URL("../src/lib/life-view-practice-manua
 const intakeSource = readFileSync(new URL("../src/lib/life-view-20260831.ts", import.meta.url), "utf8");
 const layout = readFileSync(new URL("../src/content-layout-fixes.css", import.meta.url), "utf8");
 
-test("home exposes Zhaowu Guan Shi Lu as a latest-first expandable archive", () => {
+test("home exposes Zhaowu Guan Shi Lu as a latest-first expandable editorial archive", () => {
   assert.match(home, /LifeViewHomeSection/);
   assert.match(home, /<LifeViewHomeSection \/>/);
   assert.match(section, /id="life-view"/);
   assert.match(section, /昭梧 · 觀世錄/);
   assert.match(section, /昭梧 · 观世录/);
   assert.match(section, /Zhaowu · Notes on Life/);
-  assert.match(section, /首頁只看最新一篇/);
-  assert.match(section, /首页只看最新一篇/);
-  assert.match(section, /Latest note first/);
+  assert.match(section, /完整文章與觀世短札都收在觀世錄/);
+  assert.match(section, /完整文章与观世短札都收在观世录/);
+  assert.match(section, /full archive of essays and reflective short notes/);
 
-  // The public archive may keep growing. Do not lock its article count or the
-  // exact number/order of source collections in this regression test.
-  assert.match(section, /沒有文章數量上限/);
+  // Editorial content may keep growing. Keep long articles and short notes
+  // explicitly classified without locking an exact count or source order.
   assert.match(section, /LIFE_VIEW_CURATED_ARTICLES/);
   assert.match(section, /LIFE_VIEW_SHORT_FORM_ARTICLES/);
   assert.match(section, /LIFE_VIEW_LONG_FORM_ARTICLES/);
-  assert.match(section, /const ARTICLES(?:\s*:\s*IllustratedArticle\[\])? = \[/);
-  assert.match(section, /ARTICLES\.sort\(\(a, b\) => b\.publishedAt\.localeCompare\(a\.publishedAt\)\)/);
+  assert.match(section, /const LONG_ARTICLES: IllustratedArticle\[\] = \[/);
+  assert.match(section, /const SHORT_NOTES: IllustratedArticle\[\] = LIFE_VIEW_SHORT_FORM_ARTICLES\.map/);
+  assert.match(section, /contentKind: "article"/);
+  assert.match(section, /contentKind: "short-note"/);
+  assert.match(section, /const CONTENTS: IllustratedArticle\[\] = \[\.\.\.LONG_ARTICLES, \.\.\.SHORT_NOTES\]/);
+  assert.match(section, /CONTENTS\.sort\(\(a, b\) => b\.publishedAt\.localeCompare\(a\.publishedAt\)\)/);
   assert.doesNotMatch(section, /LIFE_VIEW_FILE_ARTICLES|LIFE_VIEW_PRACTICE_ARTICLES|LIFE_VIEW_20260831_ARTICLES|LIFE_VIEW_20260903_ARTICLES|LIFE_VIEW_20260903_LATE_ARTICLES/);
-  assert.match(section, /const latest = ARTICLES\[0\]/);
-  assert.match(section, /const visibleArticles = showAll \? ARTICLES : \[latest\]/);
+  assert.match(section, /const latest = CONTENTS\[0\] \?\? null/);
+  assert.match(section, /const visibleArticles = archiveMode \|\| showAll \? CONTENTS : \[latest\]/);
+  assert.match(section, /archiveMode/);
   assert.match(section, /aria-expanded=\{showAll\}/);
 
   assert.match(shortFormSource, /export const LIFE_VIEW_SHORT_FORM_ARTICLES/);

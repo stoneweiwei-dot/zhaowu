@@ -22,8 +22,9 @@ test("homepage method directory stays concise but uses readable tappable report 
   assert.match(portals, /grid-template-columns:\s*1fr/);
 });
 
-test("homepage shows only the latest article until the archive is opened", () => {
-  assert.match(articles, /const latest = ARTICLES\[0\]/);
-  assert.match(articles, /const visibleArticles = showAll \? ARTICLES : \[latest\]/);
+test("homepage shows only the latest editorial item until the archive is opened", () => {
+  assert.match(articles, /const latest = CONTENTS\[0\] \?\? null/);
+  assert.match(articles, /const visibleArticles = archiveMode \|\| showAll \? CONTENTS : \[latest\]/);
   assert.match(articles, /aria-expanded=\{showAll\}/);
+  assert.match(articles, /archiveMode/);
 });
