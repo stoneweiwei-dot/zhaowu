@@ -5,6 +5,7 @@ import { createOwnerCookieSession } from "@/lib/owner-data-client";
 
 const OWNER_DATA_ROUTES = new Set(["/account", "/gallery"]);
 const OWNER_DATA_SESSION = createOwnerCookieSession() as SupabaseSession;
+const OWNER_ROUTE_REDIRECT_GRACE_MS = 120;
 
 function currentPathname() {
   if (typeof window === "undefined") return "";
@@ -21,6 +22,11 @@ function currentPathname() {
  * /account and /gallery are owner-only operational surfaces. Once the owner-session probe has
  * completed, an ordinary guest is kept in a pending shell and redirected to the public home
  * route so retired member/login UI cannot flash or become an active public path.
+ *
+ * React may briefly commit a non-pending guest snapshot while the successful owner probe is
+ * publishing its user state. Defer the redirect by one short grace window so that a confirmed
+ * owner render can cancel it. A real guest still leaves the owner-only route immediately from
+ * the user's perspective and never receives an owner data session.
  */
 export function useCurrentUserState() {
   const state = useAuthState();
@@ -30,7 +36,10 @@ export function useCurrentUserState() {
 
   useEffect(() => {
     if (!ownerDataRoute || state.isPending || isOwner || typeof window === "undefined") return;
-    window.location.replace("/");
+    const timer = window.setTimeout(() => {
+      window.location.replace("/");
+    }, OWNER_ROUTE_REDIRECT_GRACE_MS);
+    return () => window.clearTimeout(timer);
   }, [ownerDataRoute, state.isPending, isOwner]);
 
   if (ownerDataRoute && !state.isPending && !isOwner) {
