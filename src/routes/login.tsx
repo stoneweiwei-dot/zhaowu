@@ -11,6 +11,12 @@ const LOGIN_NIGHT_IMAGE = "/login/login-night-r147.webp";
 const FALLBACK_LOGIN_VIDEO = "/intro/owner-immortal-ascent-r123.mp4";
 const FALLBACK_LOGIN_POSTER = "/intro/owner-immortal-ascent-r123.jpg";
 
+type SolarLocationPayload = {
+  latitude: number | null;
+  longitude: number | null;
+  source?: "vercel-ip" | "clock";
+};
+
 function ownerText(locale: string, hant: string, hans: string, en: string) {
   if (locale === "en") return en;
   return locale === "zh-Hans" ? hans : hant;
@@ -18,7 +24,7 @@ function ownerText(locale: string, hant: string, hans: string, en: string) {
 
 function LoginStageBackdrop() {
   const [phase, setPhase] = useState<LoginSolarPhase>(() => clockFallbackPhase(new Date()));
-  const [source, setSource] = useState<"clock" | "solar">("clock");
+  const [source, setSource] = useState<"clock" | "vercel-ip">("clock");
   const [failed, setFailed] = useState<Record<LoginSolarPhase, boolean>>({ day: false, night: false });
 
   useEffect(() => {
@@ -31,7 +37,7 @@ function LoginStageBackdrop() {
       const now = new Date();
       if (coordinates) {
         setPhase(loginSolarPhaseAt(now, coordinates.latitude, coordinates.longitude));
-        setSource("solar");
+        setSource("vercel-ip");
       } else {
         setPhase(clockFallbackPhase(now));
         setSource("clock");
@@ -56,27 +62,36 @@ function LoginStageBackdrop() {
     });
 
     document.addEventListener("visibilitychange", onVisibilityChange);
+    startRefreshTimer();
 
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          if (!alive) return;
-          coordinates = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          };
-          startRefreshTimer();
-        },
-        () => startRefreshTimer(),
-        {
-          enableHighAccuracy: false,
-          timeout: 4500,
-          maximumAge: 6 * 60 * 60 * 1000,
-        },
-      );
-    } else {
-      startRefreshTimer();
-    }
+    void fetch("/api/login-solar-location", {
+      cache: "no-store",
+      credentials: "same-origin",
+      headers: { Accept: "application/json" },
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`solar location ${response.status}`);
+        return response.json() as Promise<SolarLocationPayload>;
+      })
+      .then((payload) => {
+        if (!alive) return;
+        const latitude = Number(payload.latitude);
+        const longitude = Number(payload.longitude);
+        if (
+          Number.isFinite(latitude)
+          && Number.isFinite(longitude)
+          && latitude >= -90
+          && latitude <= 90
+          && longitude >= -180
+          && longitude <= 180
+        ) {
+          coordinates = { latitude, longitude };
+        }
+        refreshPhase();
+      })
+      .catch(() => {
+        // Fail open: device clock still chooses a reasonable day/night scene.
+      });
 
     return () => {
       alive = false;
