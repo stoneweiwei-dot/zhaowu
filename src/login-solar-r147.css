@@ -1,0 +1,43 @@
+/* ZHAOWU r147 — solar-aware owner login backdrop. */
+.zhaowu-login-shell .stone-login-stage {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  background: #15231f !important;
+}
+
+.zhaowu-login-shell .stone-login-stage .stone-login-stage-media {
+  opacity: 0 !important;
+  transform: scale(1.006) !important;
+  transition: opacity 900ms ease, transform 1400ms ease !important;
+  will-change: opacity !important;
+}
+
+.zhaowu-login-shell .stone-login-stage .stone-login-stage-media.is-active {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+.zhaowu-login-shell .stone-login-stage-media--day {
+  object-position: 50% 48% !important;
+}
+
+.zhaowu-login-shell .stone-login-stage-media--night {
+  object-position: 50% 48% !important;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-login-shell .stone-login-stage-media--day,
+  .zhaowu-login-shell .stone-login-stage-media--night {
+    object-position: 50% 42% !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-login-shell .stone-login-stage .stone-login-stage-media {
+    transition: none !important;
+    transform: none !important;
+  }
+}
