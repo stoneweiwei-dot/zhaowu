@@ -72,9 +72,7 @@ test.describe("iPhone Safari five-second opening", () => {
     await expect(page.locator("[data-intro-skip]")).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeAttached();
 
-    await page.waitForTimeout(4_700);
-    await expect(gate).toBeVisible();
-    await expect(gate).toHaveCount(0, { timeout: 4_000 });
+    await expect(gate).toHaveCount(0, { timeout: 8_500 });
     await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
 
     const duration = await gateDuration(page);
@@ -100,9 +98,7 @@ test.describe("iPhone Safari five-second opening", () => {
       await expect(gate.locator("video")).toHaveAttribute("src", "/intro/missing-force-fail.mp4");
       await expect(page.locator("[data-intro-skip]")).toHaveCount(0);
 
-      await page.waitForTimeout(4_700);
-      await expect(gate).toBeVisible();
-      await expect(gate).toHaveCount(0, { timeout: 4_000 });
+      await expect(gate).toHaveCount(0, { timeout: 8_500 });
       await expect(heading).toBeVisible();
       await expect(page.getByRole(route.actionRole, { name: route.action, exact: true }).first()).toBeVisible();
 
