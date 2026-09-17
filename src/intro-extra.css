@@ -17,26 +17,6 @@
   }
 }
 
-.zhaowu-lotus-intro__skip {
-  position: absolute;
-  right: max(16px, env(safe-area-inset-right));
-  bottom: max(20px, env(safe-area-inset-bottom));
-  z-index: 4;
-  min-height: 44px;
-  min-width: 44px;
-  padding: 10px 16px;
-  border: 1px solid rgba(255, 250, 240, 0.55);
-  border-radius: 999px;
-  background: rgba(11, 18, 14, 0.58);
-  color: #fffaf0;
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  line-height: 1;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  cursor: pointer;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .zhaowu-lotus-intro__video {
     display: block;
@@ -44,7 +24,7 @@
   }
   .zhaowu-lotus-intro {
     background:
-      #0b120e url("/intro/owner-immortal-ascent-r123.jpg") center / cover no-repeat;
+      #0b120e url("/intro/zhaowu-opening-r148.jpg") center / cover no-repeat;
   }
 }
 
@@ -61,9 +41,7 @@
   background-size: 30px 30px, 30px 30px, auto, auto, auto, auto;
 }
 
-/* Zhaowu · resolution-independent twin-lotus loading animation.
-   The SVG stages cross-fade at the device refresh rate, so the opening remains crisp
-   on Retina screens without relying on a low-frame-rate video. */
+/* Legacy vector fallback remains available for older shells, but r148 uses the committed video + poster. */
 .zhaowu-lotus-intro {
   background: #ead9b8;
   isolation: isolate;
