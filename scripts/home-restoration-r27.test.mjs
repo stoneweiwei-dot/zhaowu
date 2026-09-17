@@ -28,5 +28,5 @@ test('r144 keeps birth first, restores question second, and owner login still la
  assert.match(form,/aria-describedby="time-importance"/);assert.match(form,/UNKNOWN_TIME_COPY\[locale\]/);
  assert.match(form,/id="bazi"/);assert.match(form,/zhaowu-bazi-hub/);
  const login=source('src/routes/login.tsx');assert.match(login,/navigate\(\{ to: "\/account"/);assert.match(login,/data-owner-only-login="true"/);
- const intro=source('src/components/intro-gate.tsx');assert.match(intro,/OWNER_LOADING_VIDEO/);assert.match(intro,/data-intro-motion="owner-video"/);
+ const intro=source('src/components/intro-gate.tsx');assert.match(intro,/OWNER_LOADING_VIDEO/);assert.match(intro,/data-intro-motion="zhaowu-opening-r148"/);assert.match(intro,/zhaowu-opening-r148\.mp4/);
 });
