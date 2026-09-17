@@ -1,5 +1,13 @@
 import { expect, test, type Page } from "@playwright/test";
 
+// This suite validates the owner-cookie frontend bridge with mocked same-origin Vercel APIs.
+// The app registers its production service worker before React mounts; a controlled page can
+// hide requests from Playwright routing even though the service worker itself does not handle
+// /api paths. Block service workers only for this mocked API suite so the acceptance test
+// measures the owner bridge rather than Vite's lack of Vercel serverless routes. PWA suites
+// continue to run with service workers enabled.
+test.use({ serviceWorkers: "block" });
+
 async function installOwnerBridgeMocks(page: Page) {
   const actions: string[] = [];
   await page.route("**/api/owner-session", (route) =>
