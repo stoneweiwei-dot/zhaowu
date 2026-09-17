@@ -32,7 +32,7 @@ async function dismissInstallPromptIfVisible(page: Page) {
 }
 
 test.describe("iPhone Safari visual and report navigation contract", () => {
-  test("loading animation uses the owner's loaded poster when video is unavailable", async ({ page }) => {
+  test("loading animation uses the r148 poster when video is unavailable", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.addInitScript(() => {
       window.localStorage.setItem("zhaowu.intro.force", "1");
@@ -42,11 +42,11 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await expect(page.locator("[data-intro-fallback]")).toBeVisible();
     const poster = page.locator('[data-intro-fallback] img');
     await expect(poster).toBeVisible();
-    await expect(poster).toHaveAttribute('src', '/intro/owner-immortal-ascent-r123.jpg');
+    await expect(poster).toHaveAttribute('src', '/intro/zhaowu-opening-r148.jpg');
     await expect.poll(() => poster.evaluate((element) => (element as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     await expect(page.locator(".zhaowu-lotus-intro__fallback-copy")).toContainText(/昭梧|ZHAOWU/);
     await expect(page.locator('[data-intro-fallback] svg')).toHaveCount(0);
-    await expect(page.locator("[data-intro-skip]")).toBeVisible();
+    await expect(page.locator("[data-intro-skip]")).toHaveCount(0);
   });
 
   test("D60 withholds interpretation until the recorded minute is confirmed", async ({ page }) => {
