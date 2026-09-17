@@ -22,10 +22,10 @@ test("customer-facing birth copy is owned by React with no legacy DOM rewrite", 
   assert.match(analysisForm, /customerTitle:\s*"Your birth details"/);
 });
 
-test("intro fallback restores animated lotus composition rather than tiny poster lockup", () => {
-  assert.match(intro, /zhaowu-lotus-intro__fallback-art/);
-  assert.match(intro, /zhaowu-lotus-intro__lotus--1/);
-  assert.match(intro, /zhaowu-lotus-intro__lotus--2/);
+test("intro fallback uses the matching full-frame r148 poster rather than a tiny lockup", () => {
+  assert.match(intro, /zhaowu-lotus-intro__poster/);
+  assert.match(intro, /zhaowu-opening-r148\.jpg/);
+  assert.match(intro, /data-intro-fallback-mode="r148-poster"/);
   assert.doesNotMatch(intro, /zhaowu-lotus-intro__fallback-lockup/);
 });
 

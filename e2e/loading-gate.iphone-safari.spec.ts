@@ -8,11 +8,12 @@ type GateTrace = {
   removedAt: number | null;
 };
 
-async function forceBrokenIntro(page: Page) {
-  await page.addInitScript(() => {
+async function forceIntro(page: Page, broken = false) {
+  await page.addInitScript(({ broken }) => {
     window.localStorage.setItem("zhaowu.intro.force", "1");
-    window.localStorage.setItem("zhaowu.intro.broken", "1");
-  });
+    if (broken) window.localStorage.setItem("zhaowu.intro.broken", "1");
+    else window.localStorage.removeItem("zhaowu.intro.broken");
+  }, { broken });
 }
 
 async function traceGateLifecycle(page: Page) {
@@ -58,58 +59,55 @@ const routes = [
   },
 ] as const;
 
-test.describe("iPhone Safari startup fallback", () => {
+test.describe("iPhone Safari five-second opening", () => {
+  test("plays the r148 opening for at least five seconds and exposes no skip control", async ({ page }) => {
+    await forceIntro(page);
+    await traceGateLifecycle(page);
+
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    const gate = page.locator(GATE);
+    await expect(gate).toBeVisible();
+    await expect(gate).toHaveAttribute("data-intro-motion", "zhaowu-opening-r148");
+    await expect(gate.locator("video")).toHaveAttribute("src", "/intro/zhaowu-opening-r148.mp4");
+    await expect(page.locator("[data-intro-skip]")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeAttached();
+
+    await expect(gate).toHaveCount(0, { timeout: 8_500 });
+    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
+
+    const duration = await gateDuration(page);
+    expect(duration).not.toBeNull();
+    expect(duration!).toBeGreaterThanOrEqual(5_000);
+    expect(duration!).toBeLessThanOrEqual(8_500);
+    expect(await page.evaluate(() => window.innerWidth)).toBe(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  });
+
   for (const route of routes) {
-    test(`${route.path} stays usable when Supabase readiness hangs if the user skips`, async ({ page }) => {
-      await forceBrokenIntro(page);
+    test(`${route.path} keeps the full five-second poster fallback when video/bootstrap fail`, async ({ page }) => {
+      await forceIntro(page, true);
       await traceGateLifecycle(page);
       await page.route("**/rest/v1/site_settings?**", () => new Promise<void>(() => undefined));
 
       await page.goto(route.path, { waitUntil: "domcontentloaded" });
       const heading = page.getByRole("heading", { name: route.heading, exact: true });
       const gate = page.locator(GATE);
-      const skip = page.locator("[data-intro-skip]");
 
       await expect(gate).toBeVisible();
       await expect(heading).toBeAttached();
-      await expect(skip).toBeVisible();
-      const box = await skip.boundingBox();
-      expect(box).not.toBeNull();
-      expect(box!.height).toBeGreaterThanOrEqual(44);
-      expect(box!.width).toBeGreaterThanOrEqual(44);
-      expect(box!.x + box!.width).toBeGreaterThan(300);
-      expect(box!.y).toBeGreaterThan(700);
-      if (await skip.isVisible().catch(() => false)) {
-        await skip.click({ force: true, timeout: 2_000 }).catch(() => undefined);
-      }
-      await expect(gate).toHaveCount(0, { timeout: 4_000 });
+      await expect(gate.locator("video")).toHaveAttribute("src", "/intro/missing-force-fail.mp4");
+      await expect(page.locator("[data-intro-skip]")).toHaveCount(0);
+
+      await expect(gate).toHaveCount(0, { timeout: 8_500 });
       await expect(heading).toBeVisible();
       await expect(page.getByRole(route.actionRole, { name: route.action, exact: true }).first()).toBeVisible();
 
       const duration = await gateDuration(page);
       expect(duration).not.toBeNull();
-      expect(duration!).toBeLessThanOrEqual(8_000);
+      expect(duration!).toBeGreaterThanOrEqual(5_000);
+      expect(duration!).toBeLessThanOrEqual(8_500);
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
   }
-
-  test("a failed video keeps Loading visible then fails open without waiting ten seconds", async ({ page }) => {
-    await forceBrokenIntro(page);
-    await traceGateLifecycle(page);
-    await page.route("**/rest/v1/site_settings?**", (route) => route.fulfill({ status: 503, body: "unavailable" }));
-
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-    const gate = page.locator(GATE);
-    await expect(gate).toBeVisible();
-    await expect(gate.locator("video")).toHaveAttribute("src", "/intro/missing-force-fail.mp4");
-    await expect(page.locator("[data-intro-skip]")).toBeVisible();
-    await expect(gate).toHaveCount(0, { timeout: 5_000 });
-    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
-
-    const duration = await gateDuration(page);
-    expect(duration).not.toBeNull();
-    expect(duration!).toBeGreaterThanOrEqual(1_100);
-    expect(duration!).toBeLessThanOrEqual(4_000);
-  });
 });

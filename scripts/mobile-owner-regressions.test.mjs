@@ -38,8 +38,9 @@ test("internal timing traces are removed without losing the following year's ans
   );
 });
 
-test("share artwork contains the whole panel and bootstrap uses owner artwork", () => {
+test("share artwork contains the whole panel and bootstrap uses the r148 poster fallback", () => {
   assert.match(source("src/lib/report/share-card.ts"), /Math.min\(width \/ sourceWidth, height \/ sourceHeight\)/);
-  assert.match(source("src/components/intro-gate.tsx"), /data-intro-fallback-mode="owner-poster"/);
+  assert.match(source("src/components/intro-gate.tsx"), /data-intro-fallback-mode="r148-poster"/);
+  assert.match(source("src/components/intro-gate.tsx"), /zhaowu-opening-r148\.jpg/);
   assert.doesNotMatch(source("src/components/intro-gate.tsx"), /<svg/);
 });
