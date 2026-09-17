@@ -41,12 +41,6 @@ const solarTransitJulian = (transit: number, meanAnomaly: number, longitude: num
   - 0.0069 * Math.sin(2 * longitude)
 );
 
-function normalizedLocalNoon(date: Date) {
-  const noon = new Date(date);
-  noon.setHours(12, 0, 0, 0);
-  return noon;
-}
-
 export function clockFallbackPhase(date = new Date()): LoginSolarPhase {
   const hour = date.getHours();
   return hour >= 6 && hour < 18 ? "day" : "night";
@@ -57,10 +51,11 @@ export function loginSolarWindowAt(date: Date, latitude: number, longitude: numb
     return { phase: clockFallbackPhase(date), sunrise: null, sunset: null };
   }
 
-  const localNoon = normalizedLocalNoon(date);
   const westLongitude = -longitude * RAD;
   const latitudeRad = latitude * RAD;
-  const days = toDays(localNoon);
+  // Work from the actual instant rather than the browser's local-noon timezone.
+  // This keeps an IP-derived location correct even when device timezone and location differ.
+  const days = toDays(date);
   const cycle = julianCycle(days, westLongitude);
   const transit = approxTransit(0, westLongitude, cycle);
   const meanAnomaly = solarMeanAnomaly(transit);
