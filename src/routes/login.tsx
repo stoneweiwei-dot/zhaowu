@@ -4,22 +4,12 @@ import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { ownerSignIn } from "@/lib/auth/owner-api";
 import { useI18n } from "@/lib/i18n";
-import { listActiveLoginAnimations, pickLoginAnimation, type LoginAnimationAsset } from "@/lib/login-animation";
-import { readBrandTheme } from "@/lib/brand-theme";
+import { clockFallbackPhase, loginSolarPhaseAt, type LoginSolarPhase } from "@/lib/login-solar-phase";
 
-const FALLBACK_LOGIN_VIDEO: LoginAnimationAsset = {
-  id: "fallback:owner-immortal",
-  title: "登入動畫",
-  type: "video",
-  fileUrl: "/intro/owner-immortal-ascent-r123.mp4",
-  posterUrl: "/intro/owner-immortal-ascent-r123.jpg",
-  durationMs: 10040,
-  active: true,
-  current: true,
-  theme: "common",
-  sortOrder: 0,
-  createdAt: "2026-09-13T00:00:00.000Z",
-};
+const LOGIN_DAY_IMAGE = "/login/login-day-r147.webp";
+const LOGIN_NIGHT_IMAGE = "/login/login-night-r147.webp";
+const FALLBACK_LOGIN_VIDEO = "/intro/owner-immortal-ascent-r123.mp4";
+const FALLBACK_LOGIN_POSTER = "/intro/owner-immortal-ascent-r123.jpg";
 
 function ownerText(locale: string, hant: string, hans: string, en: string) {
   if (locale === "en") return en;
@@ -27,37 +17,116 @@ function ownerText(locale: string, hant: string, hans: string, en: string) {
 }
 
 function LoginStageBackdrop() {
-  const [asset, setAsset] = useState<LoginAnimationAsset | null>(FALLBACK_LOGIN_VIDEO);
-  const [failed, setFailed] = useState(false);
+  const [phase, setPhase] = useState<LoginSolarPhase>(() => clockFallbackPhase(new Date()));
+  const [source, setSource] = useState<"clock" | "solar">("clock");
+  const [failed, setFailed] = useState<Record<LoginSolarPhase, boolean>>({ day: false, night: false });
+
   useEffect(() => {
     let alive = true;
-    void listActiveLoginAnimations().then((rows) => {
+    let refreshTimer: number | null = null;
+    let coordinates: { latitude: number; longitude: number } | null = null;
+
+    const refreshPhase = () => {
       if (!alive) return;
-      setAsset(pickLoginAnimation(rows, readBrandTheme()) ?? FALLBACK_LOGIN_VIDEO);
-    }).catch(() => {
-      if (alive) setAsset(FALLBACK_LOGIN_VIDEO);
+      const now = new Date();
+      if (coordinates) {
+        setPhase(loginSolarPhaseAt(now, coordinates.latitude, coordinates.longitude));
+        setSource("solar");
+      } else {
+        setPhase(clockFallbackPhase(now));
+        setSource("clock");
+      }
+    };
+
+    const startRefreshTimer = () => {
+      refreshPhase();
+      if (refreshTimer !== null) window.clearInterval(refreshTimer);
+      refreshTimer = window.setInterval(refreshPhase, 60_000);
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") refreshPhase();
+    };
+
+    // Load both scenes up front so a sunrise/sunset transition does not flash a blank frame.
+    [LOGIN_DAY_IMAGE, LOGIN_NIGHT_IMAGE].forEach((src) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = src;
     });
-    return () => { alive = false; };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (!alive) return;
+          coordinates = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+          startRefreshTimer();
+        },
+        () => startRefreshTimer(),
+        {
+          enableHighAccuracy: false,
+          timeout: 4500,
+          maximumAge: 6 * 60 * 60 * 1000,
+        },
+      );
+    } else {
+      startRefreshTimer();
+    }
+
+    return () => {
+      alive = false;
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      if (refreshTimer !== null) window.clearInterval(refreshTimer);
+    };
   }, []);
-  const media = failed || !asset ? FALLBACK_LOGIN_VIDEO : asset;
-  if (media.type === "video") {
+
+  if (failed[phase]) {
     return (
       <video
         className="stone-login-stage-media"
-        src={media.fileUrl}
-        poster={media.posterUrl}
+        src={FALLBACK_LOGIN_VIDEO}
+        poster={FALLBACK_LOGIN_POSTER}
         autoPlay
         muted
         playsInline
         loop
-        preload="auto"
-        onError={() => {
-          if (media.fileUrl !== FALLBACK_LOGIN_VIDEO.fileUrl) setFailed(true);
-        }}
+        preload="metadata"
       />
     );
   }
-  return <img className="stone-login-stage-media" src={media.fileUrl} alt="" onError={() => setFailed(true)} />;
+
+  return (
+    <div
+      className={`stone-login-stage stone-login-stage--${phase}`}
+      data-solar-phase={phase}
+      data-solar-source={source}
+      aria-hidden="true"
+    >
+      <img
+        className={`stone-login-stage-media stone-login-stage-media--day ${phase === "day" ? "is-active" : ""}`}
+        src={LOGIN_DAY_IMAGE}
+        alt=""
+        loading="eager"
+        decoding="async"
+        draggable={false}
+        onError={() => setFailed((current) => ({ ...current, day: true }))}
+      />
+      <img
+        className={`stone-login-stage-media stone-login-stage-media--night ${phase === "night" ? "is-active" : ""}`}
+        src={LOGIN_NIGHT_IMAGE}
+        alt=""
+        loading="eager"
+        decoding="async"
+        draggable={false}
+        onError={() => setFailed((current) => ({ ...current, night: true }))}
+      />
+    </div>
+  );
 }
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
