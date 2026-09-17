@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { authorizeBridgeHeaders } from "../supabase/functions/zhaowu-owner-data/security.mjs";
 
 const provider = await readFile(new URL("../src/lib/auth/provider.tsx", import.meta.url), "utf8");
 const currentUser = await readFile(new URL("../src/lib/auth/use-current-user.ts", import.meta.url), "utf8");
@@ -8,6 +10,7 @@ const ownerClient = await readFile(new URL("../src/lib/owner-data-client.ts", im
 const ownerApi = await readFile(new URL("../api/owner-data.js", import.meta.url), "utf8");
 const ownerLogin = await readFile(new URL("../api/owner-login.js", import.meta.url), "utf8");
 const ownerEdge = await readFile(new URL("../supabase/functions/zhaowu-owner-data/index.ts", import.meta.url), "utf8");
+const ownerSecurity = await readFile(new URL("../supabase/functions/zhaowu-owner-data/security.mjs", import.meta.url), "utf8");
 const bridgeReports = await readFile(new URL("../src/lib/bridge/supabase-rest.ts", import.meta.url), "utf8");
 const bridgeBackgrounds = await readFile(new URL("../src/lib/bridge/background-assets.ts", import.meta.url), "utf8");
 const bridgeGallery = await readFile(new URL("../src/lib/bridge/gallery-assets.ts", import.meta.url), "utf8");
@@ -17,6 +20,14 @@ const vercel = await readFile(new URL("../vercel.json", import.meta.url), "utf8"
 
 function ownerHash(source) {
   return source.match(/OWNER_KEY_SHA256\s*=\s*"([a-f0-9]{64})"/)?.[1] ?? "";
+}
+
+function bridgeHeaders({ bridge, owner, marker = "r146" }) {
+  return new Headers({
+    "x-zhaowu-server-bridge": marker,
+    "x-zhaowu-bridge-secret": bridge,
+    "x-zhaowu-owner-secret": owner,
+  });
 }
 
 test("r146 preserves r144 guest-first auth and scopes the synthetic data session to owner back-office routes", () => {
@@ -41,20 +52,34 @@ test("the browser sentinel never contains a Supabase secret and privileged data 
   assert.match(ownerApi, /requestIsSameOrigin/);
   assert.match(ownerApi, /ownerSecretFrom/);
   assert.match(ownerApi, /\/functions\/v1\/zhaowu-owner-data/);
+  assert.match(ownerApi, /X-Zhaowu-Owner-Secret/i);
   assert.doesNotMatch(ownerApi, /SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SECRET_KEY/);
 });
 
 test("Vercel and Supabase independently validate the same owner credential before service-role access", () => {
   const loginHash = ownerHash(ownerLogin);
-  const edgeHash = ownerHash(ownerEdge);
+  const edgeHash = ownerHash(ownerSecurity);
   assert.equal(loginHash.length, 64);
   assert.equal(edgeHash, loginHash);
   assert.match(ownerApi, /timingSafeEqual/);
-  assert.match(ownerEdge, /constantTimeEqual/);
-  assert.match(ownerEdge, /x-zhaowu-owner-secret/i);
-  assert.match(ownerEdge, /x-zhaowu-server-bridge/i);
+  assert.match(ownerSecurity, /constantTimeEqual/);
+  assert.match(ownerSecurity, /x-zhaowu-owner-secret/i);
+  assert.match(ownerSecurity, /x-zhaowu-server-bridge/i);
   assert.match(ownerEdge, /SUPABASE_SERVICE_ROLE_KEY/);
   assert.match(ownerEdge, /ALLOWED_ACTIONS/);
+});
+
+test("Supabase rejects missing or incorrect owner and bridge credentials before service-role access", () => {
+  const bridgeSecret = "b".repeat(32);
+  const ownerSecret = "test-owner-secret";
+  const testOwnerHash = createHash("sha256").update(ownerSecret, "utf8").digest("hex");
+
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ bridge: bridgeSecret, owner: ownerSecret }), bridgeSecret, testOwnerHash).ok, true);
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ bridge: bridgeSecret, owner: "wrong-owner" }), bridgeSecret, testOwnerHash).error, "OWNER_UNAUTHORIZED");
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ bridge: bridgeSecret, owner: "" }), bridgeSecret, testOwnerHash).error, "OWNER_UNAUTHORIZED");
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ bridge: "x".repeat(32), owner: ownerSecret }), bridgeSecret, testOwnerHash).error, "BRIDGE_UNAUTHORIZED");
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ bridge: "", owner: ownerSecret }), bridgeSecret, testOwnerHash).error, "BRIDGE_UNAUTHORIZED");
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ bridge: bridgeSecret, owner: ownerSecret, marker: "" }), bridgeSecret, testOwnerHash).error, "BRIDGE_REQUIRED");
 });
 
 test("owner reports, backgrounds, gallery and decree actions are routed through bridge modules", () => {

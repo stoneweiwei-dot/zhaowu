@@ -135,7 +135,8 @@ export default async function handler(req, res) {
   try {
     if ((req.method || "GET") !== "POST") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
-    if (!ownerSecretFrom(req)) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+    const ownerSecret = ownerSecretFrom(req);
+    if (!ownerSecret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
 
     const serverBridgeSecret = bridgeSecret();
     if (serverBridgeSecret.length < 32) return json(res, 503, { ok: false, error: "OWNER_BRIDGE_NOT_CONFIGURED" });
@@ -149,6 +150,7 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         "X-Zhaowu-Bridge-Secret": serverBridgeSecret,
+        "X-Zhaowu-Owner-Secret": ownerSecret,
         "X-Zhaowu-Server-Bridge": "r146",
       },
       body: JSON.stringify(payload),

@@ -1,4 +1,7 @@
+import { createHash, timingSafeEqual } from "node:crypto";
+
 const encoder = new TextEncoder();
+const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
 
 function text(value) {
   return String(value ?? "").trim();
@@ -17,6 +20,26 @@ function fromBase64Url(value) {
   return Uint8Array.from(binary, (character) => character.charCodeAt(0));
 }
 
+function expectedHashBytes(expectedHash) {
+  const value = text(expectedHash).toLowerCase();
+  if (!/^[a-f0-9]{64}$/.test(value)) return new Uint8Array();
+  return Uint8Array.from(value.match(/.{2}/g) ?? [], (pair) => Number.parseInt(pair, 16));
+}
+
+function constantTimeEqual(actual, expected) {
+  if (!(actual instanceof Uint8Array) || !(expected instanceof Uint8Array) || actual.length !== expected.length) return false;
+  return timingSafeEqual(actual, expected);
+}
+
+function isValidOwnerSecret(value, expectedHash = OWNER_KEY_SHA256) {
+  const secret = text(value);
+  if (secret.length < 8 || secret.length > 256) return false;
+  const expected = expectedHashBytes(expectedHash);
+  if (expected.length !== 32) return false;
+  const actual = createHash("sha256").update(secret, "utf8").digest();
+  return constantTimeEqual(actual, expected);
+}
+
 async function importHmacKey(secret, usage) {
   const value = text(secret);
   if (value.length < 32) throw new Error("SERVER_SECRET_NOT_CONFIGURED");
@@ -33,7 +56,7 @@ async function hmacVerify(value, signature, secret) {
   return crypto.subtle.verify("HMAC", key, signature, encoder.encode(value));
 }
 
-export function authorizeBridgeHeaders(headers, expectedSecret) {
+export function authorizeBridgeHeaders(headers, expectedSecret, expectedOwnerHash = OWNER_KEY_SHA256) {
   if (text(headers?.get?.("x-zhaowu-server-bridge")) !== "r146") {
     return { ok: false, status: 403, error: "BRIDGE_REQUIRED" };
   }
@@ -43,9 +66,13 @@ export function authorizeBridgeHeaders(headers, expectedSecret) {
   if (actual.length !== expected.length) return { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
   let diff = 0;
   for (let index = 0; index < actual.length; index += 1) diff |= actual.charCodeAt(index) ^ expected.charCodeAt(index);
-  return diff === 0
-    ? { ok: true }
-    : { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
+  if (diff !== 0) return { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
+
+  const ownerSecret = text(headers?.get?.("x-zhaowu-owner-secret"));
+  if (!isValidOwnerSecret(ownerSecret, expectedOwnerHash)) {
+    return { ok: false, status: 401, error: "OWNER_UNAUTHORIZED" };
+  }
+  return { ok: true };
 }
 
 export async function createUploadTicket(fields, secret, nowSeconds = Math.floor(Date.now() / 1000), ttlSeconds = 7200) {
