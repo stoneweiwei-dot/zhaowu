@@ -1,0 +1,67 @@
+name: Ingest r148 intro asset
+
+on:
+  push:
+    branches: [feat/intro-r148-five-sec]
+    paths:
+      - .github/workflows/ingest-r148-intro.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/intro-r148-five-sec
+          fetch-depth: 0
+
+      - name: Ensure ffmpeg is available
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+
+      - name: Download cleaned source clip
+        env:
+          SOURCE_URL: "https://d2jqrm6oza8nb6.cloudfront.net/datasets/aea4ad1a-28d3-4917-8889-2210cef2f9bb.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZWY0OWYzNzJiMjIyNDQ5YyIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc4OTgwMTA3NH0.Rr04dfOO3wckLBNXWj-yLbiw6NsQwuxdkLypVb9W6tA"
+        run: |
+          curl --fail --location --retry 3 --output /tmp/r148-source.mp4 "$SOURCE_URL"
+          test -s /tmp/r148-source.mp4
+
+      - name: Encode exact five-second 1080x1920 web master
+        run: |
+          mkdir -p public/intro
+          ffmpeg -y -i /tmp/r148-source.mp4 \
+            -vf "scale=1126:1920:flags=lanczos,crop=1080:1920:(in_w-1080)/2:0,unsharp=5:5:0.35:5:5:0" \
+            -t 5.000 -an -c:v libx264 -preset slow -crf 18 -profile:v high -level 4.2 \
+            -pix_fmt yuv420p -r 30 -movflags +faststart public/intro/zhaowu-opening-r148.mp4
+          ffmpeg -y -ss 0.10 -i public/intro/zhaowu-opening-r148.mp4 -frames:v 1 -q:v 2 public/intro/zhaowu-opening-r148.jpg
+
+      - name: Verify asset contract
+        run: |
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 public/intro/zhaowu-opening-r148.mp4)" = "1080"
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 public/intro/zhaowu-opening-r148.mp4)" = "1920"
+          python - <<'PY'
+          import os, subprocess
+          path='public/intro/zhaowu-opening-r148.mp4'
+          duration=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','default=nk=1:nw=1',path], text=True).strip())
+          size=os.path.getsize(path)
+          assert 4.99 <= duration <= 5.01, duration
+          assert 5_000_000 <= size < 12_000_000, size
+          print({'duration': duration, 'bytes': size})
+          PY
+
+      - name: Commit binary asset and remove one-shot workflow
+        run: |
+          git config user.name "zhaowu-asset-bot"
+          git config user.email "owner@zhaowu.local"
+          git add public/intro/zhaowu-opening-r148.mp4 public/intro/zhaowu-opening-r148.jpg
+          git rm .github/workflows/ingest-r148-intro.yml
+          git commit -m "asset(intro): add five-second 1080p r148 opening"
+          git push origin HEAD:feat/intro-r148-five-sec
