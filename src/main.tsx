@@ -61,6 +61,7 @@ import './night-home-r129.css';
 import './night-readability-r135.css';
 import './sky-events-article.css';
 import './device-question-flow-r144.css';
+import './login-solar-r147.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
