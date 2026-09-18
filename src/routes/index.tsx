@@ -38,7 +38,7 @@ function portalAction(locale: Locale, birth: SharedBirthRecord | null, needsTime
 }
 
 function baziAction(locale: Locale, hasBirth: boolean) {
-  if (hasBirth) return locale === "en" ? "Open birth record" : locale === "zh-Hans" ? "查看生辰" : "查看生辰";
+  if (hasBirth) return locale === "en" ? "Open chart" : locale === "zh-Hans" ? "查看命盘" : "查看命盤";
   return locale === "en" ? "Add birth data" : locale === "zh-Hans" ? "填写生辰" : "填寫生辰";
 }
 
@@ -206,7 +206,7 @@ function Home() {
             );
 
             return item.id === "bazi" ? (
-              <a key={item.id} href="#customer-record" data-index={String(itemIndex + 1).padStart(2, "0")} data-specialist-link="bazi" className="zhaowu-home-portal is-bazi">
+              <a key={item.id} href={birth ? "#bazi" : "#customer-record"} data-index={String(itemIndex + 1).padStart(2, "0")} data-specialist-link="bazi" className="zhaowu-home-portal is-bazi">
                 {content}
               </a>
             ) : (
