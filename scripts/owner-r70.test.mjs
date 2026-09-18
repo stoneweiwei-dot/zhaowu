@@ -41,12 +41,12 @@ test("owner console is mounted inside auth and keeps long account sections colla
   assert.match(organizer, /data-owner-background-music-manager/);
 });
 
-test("owner Gallery is collapsed by default, paginates by 18 and preserves Loading assets", () => {
-  assert.match(gallery, /type OwnerView = "atlas" \| "loading" \| "all"/);
+test("owner Gallery keeps content media separate from login/loading assets", () => {
+  assert.match(gallery, /type OwnerView = "atlas" \| "all"/);
   assert.match(gallery, /const PAGE_SIZE = 18/);
-  assert.match(gallery, /data-owner-gallery-drawer/);
-  assert.match(gallery, /LOADING_GALLERY_CATALOG/);
   assert.match(gallery, /isLoadingGalleryAsset/);
-  assert.match(gallery, /category: view === "loading" \? "loading" : "visual-library"/);
+  assert.match(gallery, /!isLoadingGalleryAsset\(asset\)/);
+  assert.doesNotMatch(gallery, /LOADING_GALLERY_CATALOG/);
+  assert.doesNotMatch(gallery, /view === "loading"/);
   assert.match(gallery, /setShown\(\(current\) => current \+ PAGE_SIZE\)/);
 });
