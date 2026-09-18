@@ -31,17 +31,17 @@ test.describe("iPhone Safari parchment application shell", () => {
     });
   }
 
-  test("home keeps the flat Bazi section and separate client record", async ({ page }) => {
+  test("home keeps a non-empty Bazi stage separate from the client record", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#analysisForm")).toBeVisible();
     await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
-    const baziBackground = await page.locator(".zhaowu-bazi-hub").evaluate((node) => getComputedStyle(node).backgroundColor);
-    expect(alphaOf(baziBackground)).toBe(0);
+    await expect(page.locator("#bazi.zhaowu-bazi-stage")).toBeVisible();
+    await expect(page.locator("#bazi .zhaowu-bazi-pending")).toContainText("先保存完整出生資料");
     const customerBackground = await page.locator("#customer-record").evaluate((node) => getComputedStyle(node).backgroundColor);
     expect(alphaOf(customerBackground)).toBeCloseTo(0.78, 2);
-    await expect(page.locator("#customer-record .zhaowu-bazi-hub")).toHaveCount(0);
+    await expect(page.locator("#customer-record #bazi")).toHaveCount(0);
   });
 
   test("does not fetch owner wallpaper assets for application shell rendering", async ({ page }) => {

@@ -48,7 +48,7 @@ const routes = [
   {
     path: "/",
     heading: "客人資料",
-    action: "下一步 · 輸入問題",
+    action: "保存並排出四柱命盤",
     actionRole: "button",
   },
   {

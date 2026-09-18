@@ -82,7 +82,7 @@ test("Guest saves birth details first and then receives the r144 question stage"
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "下一步 · 輸入問題", exact: true }).click();
+  await page.getByRole("button", { name: "保存並排出四柱命盤", exact: true }).click();
   await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
   await expect(page.locator("#question-stage")).toBeVisible();
   await expect(page.locator("#analysis-question")).toBeVisible();
@@ -95,7 +95,7 @@ test("Guest birth record stays on the phone and specialist entry remains availab
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "下一步 · 輸入問題", exact: true }).click();
+  await page.getByRole("button", { name: "保存並排出四柱命盤", exact: true }).click();
   await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
   await expect(page.locator("#question-stage")).toBeVisible();
   await expect(page.locator('[data-specialist-link="indian"]')).toBeVisible();
