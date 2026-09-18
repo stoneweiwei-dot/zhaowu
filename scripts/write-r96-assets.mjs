@@ -45,21 +45,6 @@ export function writeR96Assets() {
       writeFileSync(path, gourd);
     }
   }
-  const poster = decode("poster.jpg.b64");
-  if (poster && poster.length >= 64) {
-    const path = resolve(ROOT, "public/gallery/loading/jade-lotus-bloom-r96-poster.jpg");
-    mkdirSync(dirname(path), { recursive: true });
-    writeFileSync(path, poster);
-  }
-  const video = decode("video.b64") || (() => {
-    const parts = ["video.part0.b64", "video.part1.b64", "video.part2.b64"].map(decode);
-    return parts.every(Boolean) ? Buffer.concat(parts) : null;
-  })();
-  if (video && video.length >= 1024) {
-    const videoPath = resolve(ROOT, "public/gallery/loading/jade-lotus-bloom-r96.mp4");
-    mkdirSync(dirname(videoPath), { recursive: true });
-    writeFileSync(videoPath, video);
-  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) writeR96Assets();
