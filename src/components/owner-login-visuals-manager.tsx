@@ -11,8 +11,7 @@ import {
   uploadGalleryAsset,
   type GalleryAsset,
 } from "@/lib/gallery-assets";
-import { isLoadingGalleryAsset } from "@/lib/gallery-groups";
-import { LOADING_GALLERY_CATALOG } from "@/lib/loading-gallery-catalog";
+import { LOGIN_VISUAL_CATALOG } from "@/lib/loading-gallery-catalog";
 import { loginVisualThemeFromTags, type LoginVisualTheme } from "@/lib/login-animation";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
@@ -24,7 +23,7 @@ function notifyChanged() {
 }
 
 function catalogRows(): GalleryAsset[] {
-  return LOADING_GALLERY_CATALOG.map((item) => ({
+  return LOGIN_VISUAL_CATALOG.map((item) => ({
     id: `catalog:${item.asset_key}`,
     category: "loading",
     asset_key: item.asset_key,
@@ -46,12 +45,12 @@ function srcOf(asset: GalleryAsset) {
 }
 
 function posterOf(asset: GalleryAsset) {
-  const catalog = LOADING_GALLERY_CATALOG.find((item) => item.asset_key === asset.asset_key || asset.id === `catalog:${item.asset_key}`);
+  const catalog = LOGIN_VISUAL_CATALOG.find((item) => item.asset_key === asset.asset_key || asset.id === `catalog:${item.asset_key}`);
   return catalog?.publicPath || srcOf(asset);
 }
 
 function isVideo(asset: GalleryAsset) {
-  return (asset.content_type ?? "").startsWith("video/") || Boolean(LOADING_GALLERY_CATALOG.find((item) => item.asset_key === asset.asset_key)?.videoPath);
+  return (asset.content_type ?? "").startsWith("video/") || Boolean(LOGIN_VISUAL_CATALOG.find((item) => item.asset_key === asset.asset_key)?.videoPath);
 }
 
 function readDuration(file: File): Promise<number> {
@@ -81,7 +80,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   const copy = useMemo(() => ({
     kicker: "LOGIN VISUALS",
     title: tr(locale, "登入動畫管理", "登录动画管理", "Login visuals"),
-    lead: tr(locale, "獨立管理登入畫面影片／封面，不與首頁背景或總圖庫混用。設為目前使用後，前台登入頁立即讀取該項。", "独立管理登录画面影片／封面，不与首页背景或总图库混用。设为目前使用后，前台登录页立即读取该项。", "Manage login videos separately from homepage backgrounds and the public atlas. The frontend reads the current item immediately."),
+    lead: tr(locale, "這裡只顯示真正用於登入頁的影片與封面；網站 Loading、營運圖與介面小素材不會出現在這裡。", "这里只显示真正用于登录页的影片与封面；网站 Loading、运营图与界面小素材不会出现在这里。", "Only actual login-page videos and posters appear here. Loading assets, operational screenshots and UI artwork stay out of this list."),
     upload: tr(locale, "上傳登入動畫", "上传登录动画", "Upload login visual"),
     current: tr(locale, "目前使用中", "目前使用中", "Currently in use"),
     use: tr(locale, "設為目前使用", "设为目前使用", "Set as current"),
@@ -101,7 +100,9 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
 
   async function load() {
     try {
-      const rows = (await listOwnerGalleryAssets(session, "loading")).filter(isLoadingGalleryAsset);
+      const rows = (await listOwnerGalleryAssets(session, "loading")).filter((asset) =>
+        (asset.tags ?? []).some((tag) => tag.trim().toLowerCase() === "login-background"),
+      );
       setAssets(rows);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : copy.failed);
