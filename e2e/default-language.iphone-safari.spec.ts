@@ -21,7 +21,7 @@ const LANGUAGE_SWITCHES = [
 ] as const;
 
 test.describe("iPhone Safari display-language contract", () => {
-  test("fresh visit defaults to Traditional Chinese, keeps approved languages and exposes no public login CTA", async ({ page }) => {
+  test("fresh visit defaults to Traditional Chinese, keeps approved languages and exposes only the owner login entry", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.addInitScript(() => {
       localStorage.removeItem("zhaowu.display-language");
@@ -35,7 +35,7 @@ test.describe("iPhone Safari display-language contract", () => {
     await expect(page.getByRole("button", { name: "日本語", exact: true })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "한국어", exact: true })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "हिन्दी", exact: true })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /登入|註冊/ })).toHaveCount(0);
+    await expect(page.locator('[data-owner-login-entry="true"]')).toHaveCount(1);\n    await expect(page.getByRole("link", { name: "站主登入", exact: true })).toHaveAttribute("href", "/login");\n    await expect(page.locator(".zhaowu-header-login")).toHaveCount(0);
     await expect.poll(() => page.evaluate(() => document.documentElement.lang)).toBe("zh-Hant");
 
     const labels = await page.locator(".site-lang-button").evaluateAll((nodes) =>
