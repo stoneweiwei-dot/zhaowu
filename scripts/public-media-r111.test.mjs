@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { preferVerifiedPublicMedia, verifiedPublicMediaUrl } from "../src/lib/public-media-preference.ts";
 
 const atlas = await readFile(new URL("../src/lib/public-atlas.ts", import.meta.url), "utf8");
 const gallery = await readFile(new URL("../src/components/auspicious-gallery-section.tsx", import.meta.url), "utf8");
@@ -10,6 +11,7 @@ const reportVisualAssets = await readFile(new URL("../src/lib/report/report-visu
 const music = await readFile(new URL("../src/components/background-music.tsx", import.meta.url), "utf8");
 const backgroundAssets = await readFile(new URL("../src/lib/background-assets.ts", import.meta.url), "utf8");
 const galleryAssets = await readFile(new URL("../src/lib/gallery-assets.ts", import.meta.url), "utf8");
+const dailyAlmanac = await readFile(new URL("../src/components/daily-almanac-widget.tsx", import.meta.url), "utf8");
 const vercel = JSON.parse(await readFile(new URL("../vercel.json", import.meta.url), "utf8"));
 
 function cacheValue(source) {
@@ -54,10 +56,29 @@ test("dynamic application shell remains no-store", () => {
 });
 
 
-test("public Supabase-managed media prefers verified external mappings when present", () => {
+test("public Supabase-managed media requires a verified safe URL and preserves origin", () => {
+  const source = { storage_path: "source/original.webp", cdn_url: "https://cdn.example.test/media.webp", cdn_verified_at: "2026-09-19T00:00:00Z" };
+  const resolved = preferVerifiedPublicMedia(source);
+  assert.equal(resolved.storage_path, "https://cdn.example.test/media.webp");
+  assert.equal(resolved.origin_storage_path, "source/original.webp");
+  assert.notStrictEqual(resolved, source);
+
+  for (const candidate of [
+    { ...source, cdn_verified_at: null },
+    { ...source, cdn_verified_at: "not-a-date" },
+    { ...source, cdn_url: "http://cdn.example.test/media.webp" },
+    { ...source, cdn_url: "//cdn.example.test/media.webp" },
+    { ...source, cdn_url: "javascript:alert(1)" },
+  ]) {
+    assert.strictEqual(preferVerifiedPublicMedia(candidate), candidate);
+  }
+  assert.equal(verifiedPublicMediaUrl("/report-visuals/full/overview.webp", "2026-09-19T00:00:00Z"), "/report-visuals/full/overview.webp");
+
   assert.match(backgroundAssets, /cdn_url,cdn_provider,cdn_verified_at/);
-  assert.match(backgroundAssets, /row\.cdn_url \? \{ \.\.\.row, storage_path: row\.cdn_url \} : row/);
-  assert.match(backgroundAssets, /path\.startsWith\("\/"\)/);
+  assert.match(backgroundAssets, /rows\.map\(preferVerifiedPublicMedia\)/);
+  assert.match(backgroundAssets, /backgroundFallbackUrl/);
   assert.match(galleryAssets, /cdn_url,cdn_provider,cdn_verified_at/);
-  assert.match(galleryAssets, /row\.cdn_url \? \{ \.\.\.row, storage_path: row\.cdn_url \} : row/);
+  assert.match(galleryAssets, /rows\.map\(preferVerifiedPublicMedia\)/);
+  assert.match(galleryAssets, /galleryFallbackUrl/);
+  assert.match(dailyAlmanac, /onError=.*galleryFallbackUrl/);
 });

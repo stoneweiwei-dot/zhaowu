@@ -1,5 +1,6 @@
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+import { preferVerifiedPublicMedia } from "@/lib/public-media-preference";
 const BUCKET = "zhaowu-backgrounds";
 const BACKGROUND_SELECT = "id,source,name,storage_path,content_type,enabled,days_of_week,start_date,end_date,theme,created_at,updated_at,cdn_url,cdn_provider,cdn_verified_at";
 
@@ -21,6 +22,7 @@ export type BackgroundAsset = {
   cdn_url?: string | null;
   cdn_provider?: string | null;
   cdn_verified_at?: string | null;
+  origin_storage_path?: string | null;
 };
 
 export type BackgroundPage = {
@@ -68,8 +70,12 @@ function safePath(path: string) {
 }
 
 export function backgroundPublicUrl(path: string) {
-  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("//") || path.startsWith("/")) return path;
+  if (path.startsWith("https://") || (path.startsWith("/") && !path.startsWith("//"))) return path;
   return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${safePath(path)}`;
+}
+
+export function backgroundFallbackUrl(asset: BackgroundAsset) {
+  return asset.origin_storage_path ? backgroundPublicUrl(asset.origin_storage_path) : null;
 }
 
 export async function listPublicBackgrounds(): Promise<BackgroundAsset[]> {
@@ -79,7 +85,7 @@ export async function listPublicBackgrounds(): Promise<BackgroundAsset[]> {
   });
   if (!res.ok) return [];
   const rows = await parse<BackgroundAsset[]>(res);
-  return rows.map((row) => row.cdn_url ? { ...row, storage_path: row.cdn_url } : row);
+  return rows.map(preferVerifiedPublicMedia);
 }
 
 function totalFromContentRange(value: string | null, fallback: number) {

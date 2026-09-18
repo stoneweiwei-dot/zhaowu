@@ -1,16 +1,10 @@
 name: One-time Supabase public media migration
 
 on:
-  push:
-    branches:
-      - supabase-static-cutover-2026-09-19
-    paths:
-      - scripts/materialize-supabase-static-media.py
-      - .github/workflows/supabase-static-media-migration.yml
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: supabase-static-media-migration
@@ -21,10 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - name: Checkout migration branch
+      - name: Checkout selected workflow revision
         uses: actions/checkout@v4
         with:
-          ref: supabase-static-cutover-2026-09-19
           fetch-depth: 1
 
       - name: Set up Python
@@ -38,16 +31,22 @@ jobs:
       - name: Materialize public media from Supabase
         run: python scripts/materialize-supabase-static-media.py
 
-      - name: Commit optimized static media
+      - name: Validate generated media
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name "zhaowu-media-migration"
-          git config user.email "zhaowu-media-migration@users.noreply.github.com"
-          git add public/backgrounds/supabase-migrated public/audio/river-in-my-breathing-2.m4a docs/backups/supabase-static-media-migration-2026-09-19.json
-          if git diff --cached --quiet; then
-            echo "No media changes to commit."
-            exit 0
-          fi
-          git commit -m "assets: migrate Supabase public media to Vercel static"
-          git push origin HEAD:supabase-static-cutover-2026-09-19
+          test -s public/audio/river-in-my-breathing-2.m4a
+          test -s docs/backups/supabase-static-media-migration-2026-09-19.json
+          test "$(find public/backgrounds/supabase-migrated -type f -name '*.webp' | wc -l)" -gt 0
+          python -m json.tool docs/backups/supabase-static-media-migration-2026-09-19.json >/dev/null
+
+      - name: Upload migration output for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-static-media-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            public/backgrounds/supabase-migrated
+            public/audio/river-in-my-breathing-2.m4a
+            docs/backups/supabase-static-media-migration-2026-09-19.json
