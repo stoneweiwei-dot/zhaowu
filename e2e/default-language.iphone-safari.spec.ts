@@ -14,12 +14,10 @@ async function expectNoHorizontalOverflow(page: Page) {
   ).toBe(true);
 }
 
-const LANGUAGE_ORDER = ["English", "繁體", "한국어", "हिन्दी"];
+const LANGUAGE_ORDER = ["English", "繁體"];
 const LANGUAGE_SWITCHES = [
   { aria: "English", lang: "en" },
   { aria: "繁體中文", lang: "zh-Hant" },
-  { aria: "한국어", lang: "ko" },
-  { aria: "हिन्दी", lang: "hi" },
 ] as const;
 
 test.describe("iPhone Safari display-language contract", () => {
@@ -35,6 +33,8 @@ test.describe("iPhone Safari display-language contract", () => {
     await expect(page.getByRole("button", { name: "繁體中文", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByRole("button", { name: "简体中文", exact: true })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "日本語", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "한국어", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "हिन्दी", exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: /登入|註冊/ })).toHaveCount(0);
     await expect.poll(() => page.evaluate(() => document.documentElement.lang)).toBe("zh-Hant");
 
@@ -45,7 +45,7 @@ test.describe("iPhone Safari display-language contract", () => {
     await expectNoHorizontalOverflow(page);
   });
 
-  test("all four public language controls switch cleanly without breaking the iPhone viewport", async ({ page }) => {
+  test("the two active public language controls switch cleanly without breaking the iPhone viewport", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
@@ -59,22 +59,9 @@ test.describe("iPhone Safari display-language contract", () => {
     }
   });
 
-  test("a saved Hindi preference is restored instead of being overwritten by the Traditional Chinese default", async ({ page }) => {
+  test("saved hidden or retired language preferences fold to Traditional Chinese", async ({ page }) => {
     await makeAppOfflineSafe(page);
-    await page.addInitScript(() => {
-      localStorage.setItem("zhaowu.display-language", "hi");
-    });
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-
-    await expect(page.getByRole("button", { name: "हिन्दी", exact: true })).toHaveAttribute("aria-pressed", "true");
-    await expect.poll(() => page.evaluate(() => document.documentElement.lang)).toBe("hi");
-    await expect(page.locator("#analysisForm")).toBeVisible();
-    await expectNoHorizontalOverflow(page);
-  });
-
-  test("retired Simplified Chinese and Japanese preferences fold to Traditional Chinese", async ({ page }) => {
-    await makeAppOfflineSafe(page);
-    for (const retired of ["zh-Hans", "ja"] as const) {
+    for (const retired of ["ko", "hi", "zh-Hans", "ja"] as const) {
       await page.addInitScript((value) => {
         localStorage.setItem("zhaowu.display-language", value);
       }, retired);
