@@ -49,7 +49,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("dialog", { name: "把昭梧存到手機桌面", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "顯示 iPhone 保存步驟", exact: true })).toBeVisible();
     await page.locator("#analysisForm").scrollIntoViewIfNeeded();
-    await expect(page.locator('#analysisForm button[type="submit"]')).toHaveText("下一步 · 輸入問題");
+    await expect(page.locator('#analysisForm button[type="submit"]')).toHaveText("儲存並排出八字");
     await expectMobileViewportHealthy(page);
   });
 
@@ -118,11 +118,23 @@ test.describe("iPhone Safari core customer flow", () => {
     const firstCity = page.locator('#birth-city-results [role="option"]').first();
     await expect(firstCity).toBeVisible();
     await firstCity.click();
-    await page.getByRole("button", { name: "下一步 · 輸入問題", exact: true }).click();
+    await page.getByRole("button", { name: "儲存並排出八字", exact: true }).click();
 
     await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "客人八字命盤", exact: true })).toBeVisible();
+    await expect(page.locator("#bazi .zhaowu-bazi-chart")).toBeVisible();
+    await expect(page.locator("[data-home-bazi-explanation]")).toBeVisible();
     await expect(page.getByRole("heading", { name: "你真正想問的是什麼？", exact: true })).toBeVisible();
     await expect(page.locator("#analysis-question")).toBeVisible();
+    const sectionOrder = await page.evaluate(() => {
+      const birth = document.querySelector("#customer-record");
+      const bazi = document.querySelector("#bazi");
+      const question = document.querySelector("#question-stage");
+      if (!birth || !bazi || !question) return false;
+      return Boolean(birth.compareDocumentPosition(bazi) & Node.DOCUMENT_POSITION_FOLLOWING)
+        && Boolean(bazi.compareDocumentPosition(question) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    expect(sectionOrder).toBe(true);
     await page.locator("#analysis-question").fill("這份工作我應該繼續還是離開？");
     await page.getByRole("button", { name: "開始分析這個問題", exact: true }).click();
 
