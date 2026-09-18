@@ -268,7 +268,7 @@ The release ledger is the canonical answer to: **which version is live, how many
 
 ## 15. CANONICAL METAPHYSICS DEFAULT
 
-For every ZHAOWU metaphysics analysis, report, AI prompt, rule-ingestion task or specialist route, the current doctrine is `docs/STONE-R6.2.1-CURRENT-MASTER.md` unless the site owner explicitly overrides the current task. `docs/METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` is retained only as a historical redirect and must never stop at R6.1.
+For every ZHAOWU metaphysics analysis, report, AI prompt, rule-ingestion task or specialist route, the current doctrine is `docs/STONE-R6.2.1-CURRENT-MASTER.md` together with mandatory runtime patches `docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md` and `docs/STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md`, unless the site owner explicitly overrides the current task. `docs/METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` is retained only as a historical redirect and must never stop at R6.1.
 
 Mandatory interpretation boundaries:
 
@@ -279,5 +279,7 @@ Mandatory interpretation boundaries:
 5. Serious claims cannot be produced from a single star, transformation, malefic or isolated annual signal. Medical diagnosis, death/lifespan claims and unsupported severity scoring remain prohibited.
 6. Deterministic calculation happens first and once; report pages reuse the same engine snapshot/evidence trace. AI may synthesize or translate but must not recalculate the chart.
 7. R6.2.1 Governance Layer and Runtime Layer remain separate; Progressive Execution, Stage Checkpoint, No Silent Reinterpretation, dual-axis evidence, Tie Procedure, Regression Test and Governance Stop Rule are mandatory.
+8. P2 is mandatory for branch relations, Ten-God functional state, dynamic tomb/storage logic, ODL/FC flow, symbolism and cross-system boundaries.
+9. P3 is mandatory for 偏枯／病藥: no element-count diagnosis, special-pattern Gate first, six-state 偏枯 output, functional disease/remedy, ODL → FC, and no direct element-to-personality/disease/occupation or object-to-destiny mapping.
 
 If an older prompt, document, issue or implementation conflicts with these boundaries, the newer canonical default wins only for the conflicting portion, subject to the safety and regression rules above.

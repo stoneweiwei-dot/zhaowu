@@ -5,6 +5,7 @@ import {
   BAZI_ANALYSIS_MAINLINE,
   BAZI_CURRENT_MASTER_SOURCE,
   BAZI_RUNTIME_CONTRACT_VERSION,
+  BAZI_RUNTIME_PATCH_SOURCES,
 } from "@/lib/bazi/runtime-contract";
 import type { Chart } from "@/lib/bazi/types";
 
@@ -33,6 +34,7 @@ export type StructureCompletion = {
 export type StructureSummary = {
   runtimeContractVersion: typeof BAZI_RUNTIME_CONTRACT_VERSION;
   runtimeMasterSource: typeof BAZI_CURRENT_MASTER_SOURCE;
+  runtimePatchSources: typeof BAZI_RUNTIME_PATCH_SOURCES;
   requiredAnalysisOrder: typeof BAZI_ANALYSIS_MAINLINE;
   label: string;
   monthMainStem: string;
@@ -159,6 +161,7 @@ export function analyzeStructure(chart: Chart): StructureSummary {
   return {
     runtimeContractVersion: BAZI_RUNTIME_CONTRACT_VERSION,
     runtimeMasterSource: BAZI_CURRENT_MASTER_SOURCE,
+    runtimePatchSources: BAZI_RUNTIME_PATCH_SOURCES,
     requiredAnalysisOrder: BAZI_ANALYSIS_MAINLINE,
     label,
     monthMainStem,

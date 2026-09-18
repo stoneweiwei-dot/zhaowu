@@ -2,6 +2,7 @@ export const BAZI_RUNTIME_CONTRACT_VERSION = 'R6.2.1' as const;
 export const BAZI_CURRENT_MASTER_SOURCE = 'docs/STONE-R6.2.1-CURRENT-MASTER.md' as const;
 export const BAZI_RUNTIME_PATCH_SOURCES = [
   'docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md',
+  'docs/STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md',
 ] as const;
 export const BAZI_INTERPRETATION_GUARD_SOURCES = [
   'docs/WFX-WANGSHI-ZHIHUA-v1.0.md',
@@ -26,6 +27,7 @@ export const BAZI_ANALYSIS_MAINLINE = [
   '寒暖燥濕調候',
   '根氣透藏',
   '體用',
+  '偏枯病藥 Gate',
   '病藥',
   '流通制化',
   '承載旺衰',
@@ -53,6 +55,15 @@ export const BAZI_HARD_GUARDS = [
   '墓庫不得機械套用「逢沖必開、逢合必閉」；必須回到月令、透干、根氣、庫中藏干與歲運觸發判斷。',
   '有路不等於有效流通；僅見相生或中介通道，仍須檢查力量、位置、根氣、阻隔與承載後才能判定通關成立。',
   '命理取象、職業映射與心理語言不得與單一十神、五行或刑沖關係做一對一硬映射。',
+  '偏枯只作結構診斷，不得直接等同命差、貧命、大格或任何價值判決。',
+  '不得以五行字數、百分比、不透干或單純強弱直接判偏枯；弱而有根、有源、有路時不得判死枯。',
+  '極旺／極弱不得直接升格為從旺、從弱、專旺或化氣；特殊格必須先過獨立真假 Gate。',
+  '病藥必須功能化：病是阻斷、壅滯、過載、失衡、承載不足或作用鏈失效；藥是能真正修復功能的結構，不等同固定某一五行。',
+  '偏枯 Gate 後必須先判 ODL，再判 FC；有路不等於有效流通。',
+  '墓庫藏干不得直接視為可用藥神，逢沖也不得自動視為出庫。',
+  '五行象義不得直接推出人格、疾病、職業、婚姻或財富；至少須經十神、位置、格局、制化、流通、承載與歲運。',
+  '顏色、家具、材質、水景、方位、寵物、植物等只作低權重文化／生活象義，不得作核心補命算法。',
+  '通根與十二長生分開判定，不得建立固定倍數或固定位置權重。',
   '病藥是核心分析層，不得被單一格局名稱取代。',
   '資料不足時必須降級信度或標示不作判定，不得用旁證補成確定結論。',
   '子平為主判；紫微斗數與一掌經只能作各自獨立的補充層，不得互相代替。',

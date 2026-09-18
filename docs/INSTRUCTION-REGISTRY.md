@@ -10,7 +10,7 @@
 
 1. `AGENTS.md` — 全项目治理、权限、安全 supersession、完成标准。
 2. `docs/CURRENT-STATE.md` + 当前 `main` + 当前 Production — 产品与运行现状。
-3. `docs/STONE-R6.2.1-CURRENT-MASTER.md` + `docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md` — 当前唯一命理母指令及强制 Runtime 补丁。
+3. `docs/STONE-R6.2.1-CURRENT-MASTER.md` + `docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md` + `docs/STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md` — 当前唯一命理母指令及两份强制 Runtime 补丁。
 4. `docs/ANALYSIS-INGESTION-POLICY.md` — 新命理素材入库规则。
 5. 各专题当前契约：
    - `docs/FOCUSED-REPORT.md`
@@ -27,9 +27,10 @@
 |---|---|---|
 | `STONE-R6.2.1-CURRENT-MASTER.md` | `CURRENT_MASTER` | 唯一当前入口；必须同时加载 P2 |
 | `STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md` | `ACTIVE_RUNTIME_PATCH` | 刑冲合害破、墓库、十神功能、ODL/FC 流通、类象与跨术数边界的强制补丁 |
+| `STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md` | `ACTIVE_RUNTIME_PATCH` | 偏枯六态、特殊格先行、病藥功能化、ODL→FC、五行象义与生活补救边界的强制补丁 |
 | `STONE-R6.1-CURRENT-MASTER.md` | `SUPERSEDED_BASE` | 保留完整历史判法，供 R6.2.1 继承与审计；不得单独冒充当前版本 |
 | R6 / R5 / R4 / R3 / R2 | `HISTORICAL` | 只作版本沿革，冲突处不执行 |
-| `METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` | `REDIRECT / HISTORICAL BASELINE` | 仅作为旧入口，必须转到 R6.2.1 + P2 |
+| `METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` | `REDIRECT / HISTORICAL BASELINE` | 仅作为旧入口，必须转到 R6.2.1 + P2 + P3 |
 
 ## 3. 以前“做了但当时没权限接入”的遗留包
 
@@ -103,7 +104,7 @@
 - 找到同一主题的最新版本；
 - 旧版本只保留不冲突部分；
 - 新规则若只是解释层，不得偷改 calculation truth；
-- 涉及刑冲合害破、墓库、十神功能、ODL／流通、万物类象或跨术数同源时，必须通过 P2 边界；
+- 涉及刑冲合害破、墓库、十神功能、ODL／流通、万物类象或跨术数同源时，必须通过 P2 边界；涉及偏枯、病藥、特殊格极端强弱、五行人格化、风水／生活五行补救时，必须再通过 P3 边界；
 - 可安全落地的直接进入对应当前文档／代码／测试；
 - 不能安全落地的明确标 `QUARANTINE` / `DEPENDENCY BLOCKED`，不得伪装成已接入；
 - 不再因为旧 Library 文件“曾经写过”就重复实现已被后续版本替代的方案。
@@ -137,6 +138,24 @@
   - 跨術數同源只作哲學／語義旁證，不互改 calculation truth。
 - 明確淘汰：十神真的變成另一十神、喜忌逢沖公式、一物一行固定映射、固定疾病直斷、把氣機或命例回饋包裝成現代科學實證。
 - 本次只改命理指令／知識治理，不改 Bazi deterministic calculation truth。
+
+## 2026-09-18 r152 命理 P3 偏枯／病藥 Gate 同步
+
+- 站主提供《八字偏枯的氣機與病藥》并要求对照现行母指令清洗后同步网站后台文字生成规则。
+- ACTIVE：`docs/STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md`。
+- 固定新增／加固：
+  - 偏枯不得按五行字数、百分比、缺字、不透或单纯强弱直接判；
+  - 偏只分「偏而能用／偏而成病」，枯只分「枯而有源／枯而无源」；
+  - 六态输出：不构成偏枯／偏而能用／偏而成病／枯而有源／枯而无源／特殊格另判；
+  - 特殊格先行，极旺／极弱不得自动升格；
+  - 病＝功能故障，药＝功能修复，不固定等同某五行；
+  - 偏枯 Gate 后必须执行 ODL → FC，有路不等于有效流通；
+  - 墓库藏干不得直接视为可用药神，逢冲不自动出库；
+  - 五行象义不得直接推出人格、疾病、职业、婚姻或财富；
+  - 颜色、家具、方位、宠物、植物等降级为文化／生活象义，不作核心补命算法；
+  - 通根与十二长生分离，不设固定倍数或固定位置权重。
+- 明确淘汰：五行人格百科、固定疾病／心理映射、极旺自动从格、长生等同通根、墓库一冲即开、「缺什么补什么」式病药、物件改命。
+- 本次只更新命理指令／文字生成治理与机器可读 runtime contract，不修改 Bazi deterministic calculation truth。
 
 ## 2026-09-12 實碼對帳補充
 
