@@ -20,7 +20,7 @@
       (function () {
         try {
           var savedLanguage = localStorage.getItem("zhaowu.display-language");
-          if (["zh-Hant", "en", "ko", "hi"].indexOf(savedLanguage) === -1) {
+          if (["zh-Hant", "en"].indexOf(savedLanguage) === -1) {
             savedLanguage = "zh-Hant";
             localStorage.setItem("zhaowu.display-language", savedLanguage);
           }
