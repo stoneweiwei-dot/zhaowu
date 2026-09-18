@@ -96,8 +96,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
                 <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
                 <details className="group basis-full text-center" data-latest-change-report>
-                  <summary className="cursor-pointer list-none font-medium text-ink-soft [&::-webkit-details-marker]:hidden">{latestLabel}</summary>
-                  <p className="mx-auto mt-1 max-w-2xl px-2 text-center leading-5">{releaseSummary}</p>
+                  <summary className="inline-flex min-h-[44px] cursor-pointer list-none items-center justify-center px-3 py-2 text-sm font-medium leading-5 text-ink-soft touch-manipulation [&::-webkit-details-marker]:hidden">{latestLabel}</summary>
+                  <p className="mx-auto mt-1 max-w-2xl px-3 text-center text-sm leading-6">{releaseSummary}</p>
                 </details>
               </div>
             ) : null}
