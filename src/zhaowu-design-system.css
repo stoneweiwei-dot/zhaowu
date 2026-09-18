@@ -840,3 +840,51 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
   .zhaowu-lotus-intro__flower,
   .zhaowu-lotus-intro__ripple { animation: none !important; }
 }
+
+
+/* Homepage BaZi result: birth record -> chart -> explanation -> question. */
+.zhaowu-bazi-explanation {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.zhaowu-bazi-explanation > div {
+  min-width: 0;
+  border: 1px solid rgba(41, 75, 63, .14);
+  border-radius: 14px;
+  padding: 14px 15px;
+  background: rgba(249, 246, 237, .72);
+}
+
+.zhaowu-bazi-explanation > div > span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--zw-jade);
+  font-family: var(--font-display, "Songti TC", "Noto Serif TC", serif);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .08em;
+}
+
+.zhaowu-bazi-explanation p {
+  margin: 0 !important;
+  color: var(--zw-ink-soft) !important;
+  font-size: 14px !important;
+  line-height: 1.75 !important;
+}
+
+.zhaowu-bazi-explanation > small {
+  grid-column: 1 / -1;
+  border-left: 2px solid rgba(168, 134, 82, .55);
+  padding: 4px 0 4px 11px;
+  color: var(--zw-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .zhaowu-bazi-explanation { grid-template-columns: 1fr; }
+  .zhaowu-bazi-explanation > div { padding: 13px 14px; }
+}
