@@ -10,7 +10,7 @@
 | -------------- | ---------------------------------------------------------------------- |
 | GitHub         | `stoneweiwei-dot/zhaowu`                                               |
 | Branch         | `main`                                                                 |
-| Hosting        | **Netlify**（2026-09-19 r154 站主明确 supersession）                    |
+| Hosting        | **Netlify**（2026-09-19 r155 站主明确 supersession）                    |
 | Netlify project | `archive-stone-zhaowu-official` (`d1d08003-f225-4749-adcd-fd730b0c07a8`) |
 | Production URL | `https://archive-stone-zhaowu-official.netlify.app/`                   |
 | Legacy fallback | Vercel `stone-zhaowu-official`，目前停在 r151，不代表当前版本          |
@@ -19,7 +19,7 @@
 
 每次接手实时检查 `main` 与 Netlify Production 的 commit；GitHub `main` 仍是唯一源码真相。Vercel 只保留旧版 fallback，当前不得因旧规则自动触发 build。AppDeploy、Lovable standby 与其他旧临时站只读参考。
 
-Vercel 目前实际仍为 r151 `db423a6323d340bbac25cd5ec4457ce1736d7b99` / `dpl_2J1yFSxDCWvhgXReEuqGqt1BcHKu`；r153 已合并但没有进入该 Production。r154 改由 Netlify 承载后仍必须核对 Netlify deploy commit 与主要路由；不得把 exact SHA 或部署 READY 等同真實 iPhone／已安裝 PWA／站主登入验收。
+Vercel 目前实际仍为 r151 `db423a6323d340bbac25cd5ec4457ce1736d7b99` / `dpl_2J1yFSxDCWvhgXReEuqGqt1BcHKu`；r153 已合并但没有进入该 Production。r155 改由 Netlify 承载並修正站主音樂 Function 打包後，仍必须核对 Netlify deploy commit 与主要路由；不得把 exact SHA 或部署 READY 等同真實 iPhone／已安裝 PWA／站主登入验收。
 
 ## 2. 已完成且默认锁住
 
@@ -52,7 +52,7 @@ Vercel 目前实际仍为 r151 `db423a6323d340bbac25cd5ec4457ce1736d7b99` / `dpl
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
 - 趣味測驗結果可顯示已核准的隱藏神聖圖像；這是結果頁視覺補充，不改命盤計算、報告契約或付費圖片流程。
 - Logo／STO-12 已完成，不重新製作。STO-5 普通會員入口廢止已被 2026-09-15 站主最新指令取代：會員登入／註冊必須存在且確認信不得掉進空白頁。
-- r154 已取代舊 Netlify 永久 skip：`netlify.toml` 現在執行正式 build，並由 `netlify/functions` 承載十個 `/api/*`；不得退回只有靜態 `dist` 的舊殼。
+- r155 延續取代舊 Netlify 永久 skip：`netlify.toml` 現在執行正式 build，並由 `netlify/functions` 承載十個 `/api/*`；站主音樂密封金鑰以 JSON module 納入 serverless bundle，不得退回執行期相對檔案讀取或只有靜態 `dist` 的舊殼。
 
 没有新的可复现 FAIL 时，不得因为旧 Issue / 旧聊天复活已废止实现。
 
@@ -123,7 +123,7 @@ Vercel 目前实际仍为 r151 `db423a6323d340bbac25cd5ec4457ce1736d7b99` / `dpl
 | 4 | 真實 iPhone／PWA／登入／報告重開 | **未完成**（CI ≠ 真機）。r129 獨立 `.js` 登入已上線；r130 後台上傳背景音樂須再核 |
 | 5 | GitHub main protection | **DONE**（三項 required checks + enforce_admins） |
 | 6 | Supabase advisor／Edge Functions | **文件化**，Dashboard 勾選仍需站主 |
-| 7 | Netlify 承載 | **r154 SUPERSEDED**：改為 active host，必須連同十個 Functions 驗證 |
+| 7 | Netlify 承載 | **r155 SUPERSEDED**：改為 active host，必須連同十個 Functions 驗證 |
 | 8 | Linear STO-12／STO-5、CURRENT-STATE SHA | Logo／舊會員入口已鎖；Linear 未接入無法寫卡。live SHA 對到 `7a35307`（r129） |
 | 9 | `zhaowu.soul-terminal.com` | **未完成**；尚未綁到目前 Netlify active host，DNS 無法解析 |
 | 10 | PR #295 Paid Visual | **維持暫停**；不 merge、不 rebase |
