@@ -224,4 +224,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-18T23:59:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-19T00:40:00+10:00';
