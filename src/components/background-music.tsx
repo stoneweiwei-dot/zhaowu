@@ -168,7 +168,9 @@ export function BackgroundMusic() {
   useEffect(() => {
     if (!enabled || requested) return;
 
-    const unlock = () => {
+    const unlock = (event: Event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest("[data-background-music-control]")) return;
       if (unlockStartedRef.current) return;
       const audio = audioRef.current;
       if (!audio) return;
