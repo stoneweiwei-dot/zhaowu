@@ -47,9 +47,11 @@ test("Astronomy Engine, Lahiri, Ascendant and D60 segment formulas stay local co
   assert.match(gate, /SiderealTime/);
 });
 
-test("Engine suite is a required Production CI check and Netlify builds are skipped", () => {
+test("Engine suite is required and the Netlify fallback keeps functions enabled", () => {
   assert.match(workflow, /name: Engine suite/);
   assert.doesNotMatch(workflow, /continue-on-error:\s*true/);
   assert.doesNotMatch(workflow, /Engine suite \(observe\)/);
-  assert.match(netlify, /ignore = "exit 0"/);
+  assert.match(netlify, /command = "npm run build"/);
+  assert.match(netlify, /functions = "netlify\/functions"/);
+  assert.doesNotMatch(netlify, /ignore = "exit 0"/);
 });

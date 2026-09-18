@@ -3,9 +3,21 @@
 This file is the highest repository-level execution protocol for all work on **ZHAOWU / 昭梧**.
 
 Repository: `stoneweiwei-dot/zhaowu`
-Production project: `stone-zhaowu-official`
-Production URL: `https://stone-zhaowu-official.vercel.app/`
+Production project: Netlify `archive-stone-zhaowu-official`
+Production URL: `https://archive-stone-zhaowu-official.netlify.app/`
+Legacy live fallback: Vercel `stone-zhaowu-official` (r151 until explicitly re-enabled)
 Primary branch: `main`
+
+## 2026-09-19 r154 HOSTING SUPERSESSION
+
+The owner's latest explicit instruction supersedes only the old rule that forced all production publication through Vercel and disabled Netlify. Until the owner explicitly changes this again:
+
+- GitHub `main` remains the only source of truth.
+- Netlify project `archive-stone-zhaowu-official` is the active production host and must build the same Vite source plus the canonical `/api/*` handlers through Netlify Functions.
+- Do not trigger Vercel builds merely to satisfy older Vercel-specific completion wording while Vercel quota or cancellation is the stated blocker.
+- Existing Vercel production stays as a non-destructive legacy fallback; do not delete it, migrate its data, or claim it serves the current release.
+- In sections 1, 5, 8 and 12 below, read Vercel-specific deployment language as applying to the active production host unless the check is explicitly about the legacy Vercel fallback.
+- This supersession does not authorize duplicate calculation logic, auth logic, Supabase data, payment, report history or media deletion.
 
 ## 0. HIGHEST PRIORITY — SAFE NEW-INSTRUCTION SUPERSESSION
 
@@ -55,7 +67,7 @@ Use these states precisely:
 - **Analysed**: problem understood only.
 - **Modified**: code/assets changed only.
 - **Committed**: change exists in GitHub and has a real commit SHA.
-- **Deployed**: the matching Vercel deployment is `READY`.
+- **Deployed**: the matching active-host deployment is `READY`.
 - **Live**: production alias points to that deployment/commit.
 - **Verified**: the production URL/path and requested behavior were actually checked.
 
@@ -69,7 +81,7 @@ Before changing anything, check the current truth:
 2. `docs/INSTRUCTION-REGISTRY.md` plus current contents of relevant files.
 3. Recent related commits.
 4. Existing implementation, assets, tests and duplicate/legacy paths.
-5. Current Vercel production deployment and its GitHub commit SHA.
+5. Current active-host production deployment and its GitHub commit SHA.
 6. Failed deployments or CI checks relevant to the task.
 7. Open PRs if they may overlap the requested work.
 
@@ -119,7 +131,7 @@ If code changes invalidate an old test/contract, update the test in the same cha
 
 If a request says add/fix/change/update/remove something on the website, the default task scope is:
 
-**source change -> GitHub main -> tests/build -> Vercel production -> production URL verification**
+**source change -> GitHub main -> tests/build -> active production host -> production URL verification**
 
 A ZIP, SVG, PNG, code snippet, patch file, local asset or draft is not "added to the website" until it is actually integrated and verified in production.
 
@@ -154,11 +166,11 @@ If any required gate fails, status is:
 
 Do not claim success because source code "looks correct".
 
-## 8. Vercel production verification
+## 8. Active-host production verification
 
 After a main commit:
 
-1. Find the Vercel deployment for the exact commit SHA.
+1. Find the active-host deployment for the exact commit SHA.
 2. Confirm state is `READY`.
 3. Confirm target/alias is production.
 4. Confirm production is serving that exact commit.
@@ -219,7 +231,7 @@ Commit: `<SHA>`
 ### CI / Build
 `PASS` / `FAIL`
 
-### Vercel
+### Hosting
 `READY` / `ERROR` / `BUILDING`
 Deployment: `<deployment id>`
 

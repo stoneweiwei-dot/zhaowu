@@ -70,7 +70,7 @@
 
 ### 3.4 旧 AppDeploy / Netlify / Grok temporary production briefings
 
-当前处理：`REFERENCE ONLY`。唯一 production 继续由 `AGENTS.md` / `CURRENT-STATE.md` 指定的 Vercel `stone-zhaowu-official` 管理。
+旧 AppDeploy／Grok 临时 production 仍为 `REFERENCE ONLY`。Netlify 的旧 archive／永久 skip 限制已被 2026-09-19 r154 站主明确指令取代：同一 GitHub `main` 由既有 `archive-stone-zhaowu-official` 承载 Vite 前端与十个 canonical API handler；不得复活旧静态壳，也不得另写命理逻辑。
 
 ### 3.5 印度吠陀占星分散指令（v4.0 + 后续补丁）
 
@@ -254,3 +254,11 @@
 - EC-7：气势集中不是人格／方向／成就结论；双强相战不是天然优势；中和≠五行平均；缺项≠病、补项≠藥；通关不得滥用；运动／颜色／饮食／职业等生活五行不得反向修改格局、喜用、病藥或岁运。
 - 固定裁决：气势集中只能作为“主轴可能更明显”的候选，最终由成势、承载、病藥、制化、ODL、FC共同裁决。
 - 本次只更新解释／治理／runtime 路由，不修改四柱、节气、真太阳时、藏干、十神、起运、大运等 deterministic calculation truth。
+
+## 2026-09-19 r154 Netlify 正式承載 supersession
+
+- 站主明确要求 Vercel 额度／取消不得继续阻塞全站美工与发布。
+- ACTIVE HOST：既有 Netlify `archive-stone-zhaowu-official`，源码仍只认 GitHub `main`。
+- r123 的 `netlify.toml ignore = "exit 0"` 与「Netlify 永久不是 production」仅在主机范围内 `SUPERSEDED`。
+- 十个 `/api/*` 必须经 Netlify Functions 重用 canonical handler；禁止退化成只有 `dist` 的静态壳。
+- Vercel r151 保留为非破坏性旧版 fallback，不触发新 build、不删除、不冒充当前 r154。
