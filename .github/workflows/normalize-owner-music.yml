@@ -63,12 +63,12 @@ jobs:
 
             case "$ext" in
               m4a)
-                ffmpeg -y -hide_banner -loglevel error -i "$src" -vn -map_metadata -1 \
+                ffmpeg -nostdin -y -hide_banner -loglevel error -i "$src" -vn -map_metadata -1 \
                   -af "highpass=f=30,treble=g=-1.5:f=4500:w=0.5,loudnorm=I=-21:LRA=8:TP=-2.5" \
                   -c:a aac -profile:a aac_low -b:a 96k -ar 48000 -ac 2 -movflags +faststart "$tmp"
                 ;;
               mp3)
-                ffmpeg -y -hide_banner -loglevel error -i "$src" -vn -map_metadata -1 \
+                ffmpeg -nostdin -y -hide_banner -loglevel error -i "$src" -vn -map_metadata -1 \
                   -af "highpass=f=30,treble=g=-1.5:f=4500:w=0.5,loudnorm=I=-21:LRA=8:TP=-2.5" \
                   -c:a libmp3lame -b:a 112k -ar 48000 -ac 2 "$tmp"
                 ;;
