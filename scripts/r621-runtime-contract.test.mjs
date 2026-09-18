@@ -46,5 +46,6 @@ test('structure output exposes the active runtime contract for auditability', as
   const source = await readFile(new URL('../src/lib/bazi/structure.ts', import.meta.url), 'utf8');
   assert.match(source, /runtimeContractVersion:\s*BAZI_RUNTIME_CONTRACT_VERSION/);
   assert.match(source, /runtimeMasterSource:\s*BAZI_CURRENT_MASTER_SOURCE/);
+  assert.match(source, /runtimePatchSources:\s*BAZI_RUNTIME_PATCH_SOURCES/);
   assert.match(source, /requiredAnalysisOrder:\s*BAZI_ANALYSIS_MAINLINE/);
 });
