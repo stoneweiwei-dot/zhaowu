@@ -1,5 +1,6 @@
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+import { preferVerifiedPublicMedia } from "@/lib/public-media-preference";
 
 const BUCKET = "zhaowu-gallery";
 
@@ -16,6 +17,10 @@ export type GalleryAsset = {
   is_primary: boolean;
   created_at: string;
   updated_at: string;
+  cdn_url?: string | null;
+  cdn_provider?: string | null;
+  cdn_verified_at?: string | null;
+  origin_storage_path?: string | null;
 };
 
 function headers(token?: string | null, json = true): HeadersInit {
@@ -57,18 +62,23 @@ function safeSlug(value: string, fallback = "asset") {
 
 export function galleryPublicUrl(path: string, bucketId = BUCKET) {
   // Static customer assets are same-origin; Supabase remains the owner/admin source.
-  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("//") || path.startsWith("/")) return path;
+  if (path.startsWith("https://") || (path.startsWith("/") && !path.startsWith("//"))) return path;
   return `${SUPABASE_URL}/storage/v1/object/public/${encodeURIComponent(bucketId || BUCKET)}/${safePath(path)}`;
 }
 
-const SELECT = "id,category,asset_key,title,storage_path,bucket_id,content_type,tags,enabled,is_primary,created_at,updated_at";
+export function galleryFallbackUrl(asset: GalleryAsset) {
+  return asset.origin_storage_path ? galleryPublicUrl(asset.origin_storage_path, asset.bucket_id) : null;
+}
+
+const SELECT = "id,category,asset_key,title,storage_path,bucket_id,content_type,tags,enabled,is_primary,created_at,updated_at,cdn_url,cdn_provider,cdn_verified_at";
 
 export async function listPublicGalleryAssets(category?: string): Promise<GalleryAsset[]> {
   if (!SUPABASE_URL || !SUPABASE_KEY) return [];
   const filter = category ? `&category=eq.${encodeURIComponent(category)}` : "";
   const res = await fetch(`${SUPABASE_URL}/rest/v1/gallery_assets?enabled=eq.true${filter}&select=${SELECT}&order=created_at.desc`, { headers: headers() });
   if (!res.ok) return [];
-  return parse<GalleryAsset[]>(res);
+  const rows = await parse<GalleryAsset[]>(res);
+  return rows.map(preferVerifiedPublicMedia);
 }
 
 export async function listOwnerGalleryAssets(session: SupabaseSession, category?: string): Promise<GalleryAsset[]> {
@@ -87,7 +97,7 @@ export async function resolvePrimaryGalleryAssets(category: string, keys: string
   const res = await fetch(url, { headers: headers() });
   if (!res.ok) return {};
   const rows = await parse<GalleryAsset[]>(res);
-  return Object.fromEntries(rows.map((row) => [row.asset_key, row]));
+  return Object.fromEntries(rows.map((row) => [row.asset_key, preferVerifiedPublicMedia(row)]));
 }
 
 export async function uploadGalleryAsset(
