@@ -1,28 +1,7 @@
-/* Mobile navigation stays in document flow so it cannot cover the quiz or prose. */
-@media (max-width: 640px) {
-  .zhaowu-dragon-guide {
-    position: relative;
-    inset: auto;
-    z-index: 20;
-    width: min(100%, 64rem);
-    margin: .65rem auto 0;
-    padding: 0 1rem;
-  }
-
-  .zhaowu-dragon-guide-panel {
-    position: static;
-    width: 100%;
-    max-height: none;
-    margin-bottom: .5rem;
-    overflow: visible;
-  }
-
-  .zhaowu-dragon-guide-trigger {
-    width: 100%;
-    min-height: 3rem;
-    justify-content: flex-start;
-  }
-}
+/* r156: the owner explicitly superseded the old mobile in-flow dragon.
+   The dragon is now the single draggable floating assistant; its positioning
+   is owned by green-dragon-guide.css so this compatibility layer must not
+   force it back into document flow. */
 
 .life-view-prose {
   display: flow-root;
