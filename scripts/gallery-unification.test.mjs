@@ -23,7 +23,7 @@ test("one visible Gallery keeps owner asset management independent of the fixed 
   assert.match(account, /listOwnerBackgroundPage/);
   assert.match(account, /setBackgroundWallpaper/);
 
-  assert.match(gallery, /登录画面与内容图库分开管理|登入畫面與內容圖庫分開管理/);
+  assert.match(gallery, /登录画面在上方独立管理|登入畫面在上方獨立管理/);
   assert.match(gallery, /Loading 与界面小素材不会混进这里|Loading 與介面小素材不會混進這裡/);
   assert.match(gallery, /category:\s*"visual-library"/);
   assert.match(gallery, /auto-classify/);
