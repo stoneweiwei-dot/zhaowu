@@ -16,7 +16,10 @@ const ownerServer = await readFile(new URL("../src/server/owner-auth.ts", import
 const sharedBirth = await readFile(new URL("../src/lib/shared-birth.ts", import.meta.url), "utf8");
 const analysisForm = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
 
-test("ordinary visitors use device-local access and the public login CTA is absent", () => {
+test("ordinary visitors use device-local access while the owner entry remains explicit", () => {
+  assert.match(shell, /data-owner-login-entry="true"/);
+  assert.match(shell, /to="\/login"/);
+  assert.match(shell, /站主登入/);
   assert.doesNotMatch(shell, /className="zhaowu-header-login"/);
   assert.doesNotMatch(shell, /BrandIcon name="login"/);
   assert.match(guestCss, /\.zhaowu-site-header \.zhaowu-header-login \{ display: none !important; \}/);
