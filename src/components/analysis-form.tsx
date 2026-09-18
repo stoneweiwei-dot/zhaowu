@@ -14,6 +14,34 @@ import {
   type SharedBirthRecord,
 } from "@/lib/shared-birth";
 import { CityPicker } from "@/components/city-picker";
+import { BaziChart } from "@/components/bazi-chart";
+import { buildChart } from "@/lib/bazi/chart";
+import { analyzeStructure } from "@/lib/bazi/structure";
+import { chartTerm } from "@/lib/bazi/presentation";
+
+const EN_STRENGTH: Record<string, string> = {
+  "偏旺": "Relatively strong",
+  "中和偏旺或中和": "Balanced to moderately strong",
+  "偏弱": "Relatively weak",
+};
+
+const EN_COMPLETION: Record<string, string> = {
+  "格局未定": "Not yet determined",
+  "格局方向": "Structural direction only",
+  "成格有條件": "Conditional formation",
+  "成格可用": "Usable formation",
+  "結構完成度高": "High structural completion",
+};
+
+const EN_PATTERN: Record<string, string> = {
+  "殺印相生": "Challenge supported by resource",
+  "食神制殺的可見條件": "Visible conditions for expression regulating challenge",
+  "傷官配印的可見條件": "Visible conditions for independent expression supported by resource",
+  "官殺配印的可見主線": "Responsibility and challenge supported by resource",
+  "財生官殺的可見主線": "Resources feeding responsibility and challenge",
+  "食傷生財的可見主線": "Expression generating resources",
+  "殺印相生的可見主線": "Challenge supported by resource",
+};
 
 export function AnalysisForm() {
   const { t, locale } = useI18n();
@@ -47,10 +75,22 @@ export function AnalysisForm() {
         birthReadyLead: "This phone will reuse the same record across personal readings.",
         edit: "Edit details",
         birthData: "Birth record",
-        next: "Continue to your question",
+        next: "Save and generate my chart",
         saving: "Saving…",
         saved: "Birth record saved on this phone.",
-        questionKicker: "STEP 2 · YOUR QUESTION",
+        chartKicker: "STEP 2 · FOUR PILLARS",
+        chartTitle: "Your Four Pillars chart",
+        chartLead: "Generated from the birth record above with Zhaowu's existing chart engine.",
+        chartPending: "Save a complete birth record to generate the year, month, day and hour pillars here.",
+        foundation: "Chart foundation",
+        dayMaster: "Day master",
+        monthOrder: "Month command",
+        strength: "Strength baseline",
+        structure: "Structure direction",
+        features: "Main structural feature",
+        noFeature: "No secondary pattern is stated beyond the primary structure yet.",
+        usefulBoundary: "Flow candidates are not presented here as confirmed useful gods.",
+        questionKicker: "STEP 3 · YOUR QUESTION",
         questionTitle: "What do you actually want answered?",
         questionLead: "Ask one real question in your own words. The answer will lead with the conclusion and only show evidence that helps answer it.",
         questionLabel: "Your question",
@@ -69,10 +109,22 @@ export function AnalysisForm() {
           birthReadyLead: "这台手机会在各个人分析中沿用同一份资料。",
           edit: "修改资料",
           birthData: "出生资料",
-          next: "下一步 · 输入问题",
+          next: "保存并排出四柱命盘",
           saving: "正在保存…",
           saved: "生辰已保存在这台手机。",
-          questionKicker: "第二步 · 提问",
+          chartKicker: "第二步 · 四柱命盘",
+          chartTitle: "你的四柱八字命盘",
+          chartLead: "使用上方出生资料与昭梧现有排盘引擎即时生成。",
+          chartPending: "先保存完整出生资料，这里会立即显示年、月、日、时四柱。",
+          foundation: "基础解释",
+          dayMaster: "日主",
+          monthOrder: "月令",
+          strength: "旺衰底盘",
+          structure: "格局方向",
+          features: "主要结构特点",
+          noFeature: "目前只陈述主格方向，不追加第二个复合格局。",
+          usefulBoundary: "流通候选不在这里冒充正式喜用神。",
+          questionKicker: "第三步 · 提问",
           questionTitle: "你真正想问的是什么？",
           questionLead: "直接写你现在最想解决的一个真实问题。答案先说结论，只保留和这个问题有关的依据与行动。",
           questionLabel: "你的问题",
@@ -90,10 +142,22 @@ export function AnalysisForm() {
           birthReadyLead: "這台手機會在各個人分析中沿用同一份資料。",
           edit: "修改資料",
           birthData: "出生資料",
-          next: "下一步 · 輸入問題",
+          next: "保存並排出四柱命盤",
           saving: "正在保存…",
           saved: "生辰已保存在這台手機。",
-          questionKicker: "第二步 · 提問",
+          chartKicker: "第二步 · 四柱命盤",
+          chartTitle: "你的四柱八字命盤",
+          chartLead: "使用上方出生資料與昭梧現有排盤引擎即時生成。",
+          chartPending: "先保存完整出生資料，這裡會立即顯示年、月、日、時四柱。",
+          foundation: "基礎解釋",
+          dayMaster: "日主",
+          monthOrder: "月令",
+          strength: "旺衰底盤",
+          structure: "格局方向",
+          features: "主要結構特點",
+          noFeature: "目前只陳述主格方向，不追加第二個複合格局。",
+          usefulBoundary: "流通候選不在這裡冒充正式喜用神。",
+          questionKicker: "第三步 · 提問",
           questionTitle: "你真正想問的是什麼？",
           questionLead: "直接寫你現在最想解決的一個真實問題。答案先說結論，只保留和這個問題有關的依據與行動。",
           questionLabel: "你的問題",
@@ -159,7 +223,7 @@ export function AnalysisForm() {
         .then(() => window.dispatchEvent(new Event("zhaowu-auth-change")))
         .catch(() => undefined);
     }
-    window.setTimeout(() => document.getElementById("question-stage")?.scrollIntoView({ behavior: "smooth", block: "center" }), 60);
+    window.setTimeout(() => document.getElementById("bazi")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
   }
 
   async function submit(e: FormEvent<HTMLFormElement>) {
@@ -208,6 +272,32 @@ export function AnalysisForm() {
   }
 
   const showQuestion = Boolean(rememberedRecord && !detailsOpen);
+  const previewChart = useMemo(() => {
+    if (!showQuestion || !rememberedRecord) return null;
+    try {
+      return buildChart({ ...rememberedRecord, question: "", locale });
+    } catch {
+      return null;
+    }
+  }, [locale, rememberedRecord, showQuestion]);
+  const structure = useMemo(() => previewChart ? analyzeStructure(previewChart) : null, [previewChart]);
+  const foundationValues = previewChart && structure
+    ? locale === "en"
+      ? {
+          dayMaster: chartTerm(previewChart.dayMaster, locale),
+          monthOrder: `${chartTerm(previewChart.monthBranch, locale)} · ${chartTerm(structure.monthMainStem, locale)} / ${chartTerm(structure.monthTenGod, locale)}`,
+          strength: `${EN_STRENGTH[previewChart.strength.tendency] ?? "Baseline not determined"}. Seasonal support: ${previewChart.strength.deLing ? "present" : "limited"}; root support: ${previewChart.strength.deDi ? "present" : "limited"}; visible support: ${previewChart.strength.deShi ? "present" : "limited"}. This is a strength baseline, not a complete verdict.`,
+          structure: `${chartTerm(structure.monthTenGod, locale)} structure${structure.established ? "" : " direction"} · ${EN_COMPLETION[structure.completion.label] ?? "Conditional"}`,
+          features: structure.supportingPattern ? (EN_PATTERN[structure.supportingPattern] ?? copy.noFeature) : copy.noFeature,
+        }
+      : {
+          dayMaster: `${previewChart.dayMaster}${previewChart.dayMasterElement}`,
+          monthOrder: `${previewChart.monthBranch} · ${structure.monthMainStem}${structure.monthTenGod}`,
+          strength: `${previewChart.strength.tendency} · ${previewChart.strength.summary}`,
+          structure: `${structure.label}${structure.established ? "" : "方向"} · ${structure.completion.label}`,
+          features: structure.supportingPattern ?? copy.noFeature,
+        }
+    : null;
 
   return (
     <form id="analysisForm" className="zhaowu-analysis-flow" onSubmit={(event) => void submit(event)} data-device-first-flow="true">
@@ -290,6 +380,35 @@ export function AnalysisForm() {
         )}
       </section>
 
+      <section id="bazi" className="zhaowu-bazi-stage" aria-labelledby="zhaowu-bazi-title" aria-live="polite">
+        <header className="zhaowu-bazi-stage-head">
+          <p className="zhaowu-section-kicker">{copy.chartKicker}</p>
+          <h2 id="zhaowu-bazi-title">{copy.chartTitle}</h2>
+          <p className="zhaowu-section-lead">{copy.chartLead}</p>
+        </header>
+        {previewChart && structure && foundationValues ? (
+          <div className="zhaowu-bazi-preview">
+            <BaziChart chart={previewChart} showHeader={false} expandDetails />
+            <section className="zhaowu-bazi-foundation" data-home-bazi-explanation aria-labelledby="zhaowu-bazi-foundation-title">
+              <h3 id="zhaowu-bazi-foundation-title">{copy.foundation}</h3>
+              <dl>
+                <div><dt>{copy.dayMaster}</dt><dd>{foundationValues.dayMaster}</dd></div>
+                <div><dt>{copy.monthOrder}</dt><dd>{foundationValues.monthOrder}</dd></div>
+                <div><dt>{copy.strength}</dt><dd>{foundationValues.strength}</dd></div>
+                <div><dt>{copy.structure}</dt><dd>{foundationValues.structure}</dd></div>
+                <div><dt>{copy.features}</dt><dd>{foundationValues.features}</dd></div>
+              </dl>
+              <p className="zhaowu-useful-boundary">{copy.usefulBoundary}</p>
+            </section>
+          </div>
+        ) : (
+          <div className="zhaowu-bazi-pending">
+            <p>{copy.chartPending}</p>
+            <button type="submit" disabled={busy}>{busy ? copy.saving : copy.next}</button>
+          </div>
+        )}
+      </section>
+
       {showQuestion ? (
         <section id="question-stage" className="zhaowu-question-sheet zhaowu-question-stage" aria-labelledby="zhaowu-question-title">
           <div className="zhaowu-question-stage-head">
@@ -322,11 +441,11 @@ export function AnalysisForm() {
       ) : null}
 
       {error ? <p role="alert" className="zhaowu-analysis-error">{error}</p> : null}
-      <div id="bazi" className="zhaowu-bazi-hub zhaowu-analysis-submit-wrap" data-analysis-stage={showQuestion ? "question" : "birth"}>
-        <button type="submit" disabled={busy}>
-          {busy ? (showQuestion ? copy.analysing : copy.saving) : (showQuestion ? copy.analyze : copy.next)}
-        </button>
-      </div>
+      {showQuestion ? (
+        <div className="zhaowu-analysis-submit-wrap" data-analysis-stage="question">
+          <button type="submit" disabled={busy}>{busy ? copy.analysing : copy.analyze}</button>
+        </div>
+      ) : null}
     </form>
   );
 }

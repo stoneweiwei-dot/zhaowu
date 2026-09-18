@@ -18,15 +18,16 @@ test('one article opens initially; other summaries contain only titles, with no 
  assert.match(summary,/article.title\[locale\]/);assert.doesNotMatch(summary,/article.summary|publishedAt|views|瀏覽/);
  assert.doesNotMatch(s,/fetchLifeViewCounts|incrementLifeViewCount|life-view-views/);
 });
-test('r144 keeps birth first, restores question second, and owner login still lands in account',()=>{
+test('latest flow keeps birth first, chart second, question third, and owner login still lands in account',()=>{
  const form=source('src/components/analysis-form.tsx');
  assert.match(form,/id="customer-record"/);
  assert.match(form,/id="question-stage"/);
  assert.match(form,/id="analysis-question"/);
- assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="question-stage"'));
+ assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="bazi"'));
+ assert.ok(form.indexOf('id="bazi"') < form.indexOf('id="question-stage"'));
  assert.match(form,/const showQuestion = Boolean\(rememberedRecord && !detailsOpen\)/);
  assert.match(form,/aria-describedby="time-importance"/);assert.match(form,/UNKNOWN_TIME_COPY\[locale\]/);
- assert.match(form,/id="bazi"/);assert.match(form,/zhaowu-bazi-hub/);
+ assert.match(form,/id="bazi"/);assert.match(form,/zhaowu-bazi-stage/);assert.match(form,/BaziChart/);
  const login=source('src/routes/login.tsx');assert.match(login,/navigate\(\{ to: "\/account"/);assert.match(login,/data-owner-only-login="true"/);
  const intro=source('src/components/intro-gate.tsx');assert.match(intro,/OWNER_LOADING_VIDEO/);assert.match(intro,/data-intro-motion="zhaowu-opening-r148"/);assert.match(intro,/zhaowu-opening-r148\.mp4/);
 });

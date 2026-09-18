@@ -1,4 +1,4 @@
-/* r144 — device-first visitor flow, two-step consultation, cleaner first answer. */
+/* Device-first visitor flow: birth record -> Four Pillars -> question. */
 
 /* Ordinary visitors no longer enter an account flow. Owner login remains available at /login. */
 .zhaowu-site-header .zhaowu-header-login { display: none !important; }
@@ -8,6 +8,7 @@
 }
 
 .zhaowu-home-sheet-shell .zhaowu-customer-record,
+.zhaowu-home-sheet-shell .zhaowu-bazi-stage,
 .zhaowu-home-sheet-shell .zhaowu-question-stage {
   border: 1px solid rgba(82, 65, 42, .14) !important;
   border-radius: 24px !important;
@@ -17,6 +18,122 @@
     linear-gradient(155deg, rgba(255,252,244,.96), rgba(247,240,226,.92)) !important;
   background-color: rgba(255, 252, 244, .78) !important;
   box-shadow: 0 18px 52px rgba(55,44,29,.07) !important;
+}
+
+.zhaowu-bazi-stage {
+  scroll-margin-top: 104px;
+}
+
+.zhaowu-bazi-stage-head {
+  margin-bottom: 18px;
+}
+
+.zhaowu-bazi-stage .zhaowu-bazi-chart {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.zhaowu-bazi-stage .zhaowu-chart-details {
+  margin-top: 18px;
+}
+
+.zhaowu-bazi-stage .zhaowu-chart-details > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.zhaowu-bazi-stage .zhaowu-pillar-detail-grid dd,
+.zhaowu-bazi-stage .zhaowu-pillar-detail-grid dt,
+.zhaowu-bazi-stage .zhaowu-chart-details p {
+  overflow-wrap: anywhere;
+}
+
+.zhaowu-bazi-pending {
+  display: grid;
+  gap: 14px;
+  margin: 0 !important;
+  border: 1px dashed rgba(41,75,63,.28);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(255,253,248,.72);
+}
+
+.zhaowu-bazi-pending p {
+  margin: 0;
+  color: #675f54;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.zhaowu-bazi-pending button[type="submit"] {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid rgba(31,78,58,.18);
+  border-radius: 999px;
+  padding: 0 20px;
+  background: #294b3f;
+  color: #fffaf0;
+  font-size: 16px;
+  font-weight: 720;
+}
+
+.zhaowu-bazi-foundation {
+  margin-top: 22px;
+  border-top: 1px solid rgba(82,65,42,.16);
+  padding-top: 20px;
+}
+
+.zhaowu-bazi-foundation h3 {
+  margin: 0 0 14px;
+  color: #294b3f;
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.zhaowu-bazi-foundation dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.zhaowu-bazi-foundation dl > div {
+  display: grid;
+  grid-template-columns: minmax(92px, .36fr) minmax(0, 1fr);
+  gap: 12px;
+  border-top: 1px solid rgba(82,65,42,.11);
+  padding: 11px 0;
+}
+
+.zhaowu-bazi-foundation dl > div:first-child {
+  border-top: 0;
+}
+
+.zhaowu-bazi-foundation dt {
+  color: #6b604f;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.zhaowu-bazi-foundation dd {
+  min-width: 0;
+  margin: 0;
+  color: #29251f;
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.zhaowu-useful-boundary {
+  margin: 14px 0 0;
+  border-left: 2px solid rgba(145,91,51,.52);
+  padding: 8px 11px;
+  color: #6f543d;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .zhaowu-question-stage {
@@ -127,9 +244,28 @@
 
 @media (max-width: 560px) {
   .zhaowu-home-sheet-shell .zhaowu-customer-record,
+  .zhaowu-home-sheet-shell .zhaowu-bazi-stage,
   .zhaowu-home-sheet-shell .zhaowu-question-stage {
     border-radius: 20px !important;
     padding: 20px 16px !important;
+  }
+  .zhaowu-bazi-stage .zhaowu-pillar-grid,
+  html[lang="en"] .zhaowu-bazi-stage .zhaowu-pillar-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .zhaowu-bazi-stage .zhaowu-pillar-grid > section {
+    padding: 14px 8px !important;
+  }
+  .zhaowu-bazi-stage .zhaowu-pillar-grid > section > strong {
+    font-size: 25px !important;
+  }
+  .zhaowu-bazi-stage .zhaowu-pillar-detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .zhaowu-bazi-foundation dl > div {
+    grid-template-columns: 1fr;
+    gap: 3px;
   }
   .zhaowu-question-stage-head {
     display: grid;
@@ -153,11 +289,28 @@
 }
 
 html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-customer-record,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage,
 html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-question-stage,
 html[data-zw-theme="night"] .zhaowu-result-card {
   border-color: rgba(212,176,116,.26) !important;
   background: linear-gradient(155deg, rgba(19,39,34,.96), rgba(24,45,38,.92)) !important;
   background-color: rgba(19, 39, 34, .92) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-bazi-foundation h3,
+html[data-zw-theme="night"] .zhaowu-bazi-foundation dd {
+  color: #f3ecdf !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-bazi-foundation dt,
+html[data-zw-theme="night"] .zhaowu-useful-boundary,
+html[data-zw-theme="night"] .zhaowu-bazi-pending p {
+  color: #d8d0c1 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-bazi-pending {
+  border-color: rgba(212,176,116,.30);
+  background: rgba(11,28,24,.55);
 }
 
 html[data-zw-theme="night"] .zhaowu-question-stage textarea {

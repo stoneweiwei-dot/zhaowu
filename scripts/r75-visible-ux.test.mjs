@@ -13,15 +13,20 @@ test("the canonical design system loads after the r75 visual lock", async () => 
   assert.ok(daily >= 0 && r75 > daily && canonical > r75);
 });
 
-test("client details and the BaZi hub are visibly independent sections without a question sheet", async () => {
+test("client details, the real BaZi chart and the question are independent ordered sections", async () => {
   const form = await source("src/components/analysis-form.tsx");
   const css = await source("src/zhaowu-design-system.css");
-  assert.doesNotMatch(form, /className="zhaowu-question-sheet"/);
+  const flow = await source("src/device-question-flow-r144.css");
   assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
-  assert.match(form, /id="bazi" className="zhaowu-bazi-hub/);
+  assert.match(form, /id="bazi" className="zhaowu-bazi-stage"/);
+  assert.match(form, /className="zhaowu-question-sheet zhaowu-question-stage"/);
+  assert.match(form, /<BaziChart chart=\{previewChart\}/);
+  assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="bazi"'));
+  assert.ok(form.indexOf('id="bazi"') < form.indexOf('id="question-stage"'));
   assert.match(css, /#analysisForm\.zhaowu-analysis-flow[\s\S]*background:\s*transparent !important/);
   assert.match(css, /\.zhaowu-customer-record[\s\S]*border-radius:\s*12px !important/);
-  assert.match(css, /\.zhaowu-bazi-hub[\s\S]*border-top:\s*1px solid/);
+  assert.match(flow, /\.zhaowu-bazi-stage/);
+  assert.match(flow, /\.zhaowu-bazi-foundation/);
 });
 
 test("report mother art has no photo-card frame", async () => {

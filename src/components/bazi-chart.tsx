@@ -3,12 +3,12 @@ import { useI18n, type Locale } from '@/lib/i18n';
 import { chartTerm, emptyBranches, ganzhiLabel, pillarName, UNKNOWN_TIME_COPY } from '@/lib/bazi/presentation';
 
 /** Presentation only: every value comes from the same immutable report snapshot. */
-export function BaziChart({ chart, showHeader = true }: { chart: Chart; showHeader?: boolean }) {
+export function BaziChart({ chart, showHeader = true, expandDetails = false }: { chart: Chart; showHeader?: boolean; expandDetails?: boolean }) {
   const { locale } = useI18n();
-  return <BaziChartContent chart={chart} locale={locale} showHeader={showHeader} />;
+  return <BaziChartContent chart={chart} locale={locale} showHeader={showHeader} expandDetails={expandDetails} />;
 }
 
-export function BaziChartContent({ chart, locale, showHeader = true }: { chart: Chart; locale: Locale; showHeader?: boolean }) {
+export function BaziChartContent({ chart, locale, showHeader = true, expandDetails = false }: { chart: Chart; locale: Locale; showHeader?: boolean; expandDetails?: boolean }) {
   const en = locale === 'en';
   const hans = locale === 'zh-Hans';
   const c = en
@@ -94,7 +94,7 @@ export function BaziChartContent({ chart, locale, showHeader = true }: { chart: 
           </section>
         ))}
       </div>
-      <details className="zhaowu-chart-details">
+      <details className="zhaowu-chart-details" open={expandDetails || undefined}>
         <summary>{c.more}</summary>
         <div className="zhaowu-pillar-detail-grid">
           {chart.pillars.map((p) => (

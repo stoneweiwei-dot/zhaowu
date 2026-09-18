@@ -168,6 +168,14 @@
 - Production CI：Engine suite 為必要檢查，不再 `continue-on-error`。
 - Netlify：`netlify.toml` `ignore = "exit 0"`。Netlify 不是 production。
 - PR #295 Paid Visual：維持暫停。
+
+## 2026-09-18 首頁八字命盤流程 supersession
+
+- 最新站主指令將首頁固定為：`#customer-record → #bazi → #question-stage`。
+- 生辰保存後必須立即用現有 `buildChart()`／`BaziChart` 顯示完整四柱、十神、藏干、納音、十二長生與基礎結構解釋；已保存生辰再次開站時直接恢復。
+- r129「首頁不得顯示即時四柱、只在分析報告出現」在首頁這一範圍內正式 `SUPERSEDED`；不得再由舊測試或舊文件恢復。
+- 時辰未知時時柱留白並降級，不得補造；流通候選不得冒充正式喜用神。
+- 此變更只重接首頁展示與流程，不改八字 deterministic calculation truth、D60、付款、站主登入、Supabase／Floot 遷移。
 - Logo：STO-12 已完成，不重新製作。
 
 ## 2026-09-13 r126 intro visibility + spend-cap copy

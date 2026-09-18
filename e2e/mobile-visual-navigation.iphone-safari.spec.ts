@@ -134,7 +134,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await dismissInstallPromptIfVisible(page);
-    await expect(page.locator('[data-specialist-link="bazi"]')).toHaveAttribute("href", /#customer-record|#bazi|#analysisForm/);
+    await expect(page.locator('[data-specialist-link="bazi"]')).toHaveAttribute("href", "#bazi");
     await expect(page.locator('[data-specialist-link="past"]')).toHaveAttribute("href", "/yizhangjing");
 
     const specialistRoutes = [

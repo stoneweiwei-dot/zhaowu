@@ -61,14 +61,18 @@ test("device birth data is never wiped and does not pretend IP is identity", () 
   assert.doesNotMatch(provider, /clientIp|x-forwarded-for|cf-connecting-ip/);
 });
 
-test("birth comes first, question appears after the record is saved, and analysis stays guest-capable", () => {
+test("birth comes first, real chart comes second, question comes third, and analysis stays guest-capable", () => {
   assert.match(analysisForm, /writeSharedBirthRecord/);
   assert.match(analysisForm, /data-device-first-flow="true"/);
   assert.match(analysisForm, /id="question-stage"/);
+  assert.match(analysisForm, /id="bazi"/);
+  assert.match(analysisForm, /buildChart/);
+  assert.match(analysisForm, /BaziChart/);
   assert.match(analysisForm, /zhaowu-question-sheet/);
   assert.match(analysisForm, /analysis-question/);
   assert.match(analysisForm, /const showQuestion = Boolean\(rememberedRecord && !detailsOpen\)/);
   assert.match(analysisForm, /analyzeLife\(/);
   assert.match(analysisForm, /if \(session\)/);
-  assert.ok(analysisForm.indexOf('id="customer-record"') < analysisForm.indexOf('id="question-stage"'));
+  assert.ok(analysisForm.indexOf('id="customer-record"') < analysisForm.indexOf('id="bazi"'));
+  assert.ok(analysisForm.indexOf('id="bazi"') < analysisForm.indexOf('id="question-stage"'));
 });

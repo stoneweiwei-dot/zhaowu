@@ -49,7 +49,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("dialog", { name: "把昭梧存到手機桌面", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "顯示 iPhone 保存步驟", exact: true })).toBeVisible();
     await page.locator("#analysisForm").scrollIntoViewIfNeeded();
-    await expect(page.locator('#analysisForm button[type="submit"]')).toHaveText("下一步 · 輸入問題");
+    await expect(page.locator('#analysisForm button[type="submit"]')).toHaveText("保存並排出四柱命盤");
     await expectMobileViewportHealthy(page);
   });
 
@@ -66,6 +66,31 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("link", { name: /Past & Present/ })).toBeVisible();
     await page.getByRole("button", { name: "繁體中文", exact: true }).click();
     await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
+    await expectMobileViewportHealthy(page);
+  });
+
+  test("Saved guest birth restores the chart immediately and edits replot it", async ({ page }) => {
+    await makeAppOfflineSafe(page);
+    await page.addInitScript(() => {
+      localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify({
+        year: 1988, month: 10, day: 4, hour: 4, minute: 40, timeUnknown: false,
+        gender: "male", relation: "unset", ziPolicy: "midnight", useTrueSolar: true,
+        city: { name: "Sydney", display: "Sydney", country: "AU", timezone: "Australia/Sydney", latitude: -33.87, longitude: 151.21 },
+      }));
+    });
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    const yearPillar = page.locator('#bazi [data-pillar="year"] strong');
+    await expect(page.locator("#bazi [data-bazi-chart]")).toBeVisible();
+    await expect(page.locator("#question-stage")).toBeVisible();
+    await expect(page.locator('[data-specialist-link="bazi"]')).toHaveAttribute("href", "#bazi");
+    const before = await yearPillar.textContent();
+
+    await page.getByRole("button", { name: "修改資料", exact: true }).first().click();
+    await page.locator("#birth-year").fill("1989");
+    await page.getByRole("button", { name: "保存並排出四柱命盤", exact: true }).click();
+    await expect(yearPillar).not.toHaveText(before ?? "");
+    await expect(page.locator("#bazi [data-home-bazi-explanation]")).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
@@ -108,7 +133,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expectMobileViewportHealthy(page);
   });
 
-  test("Birth save reveals question, answer leads, and technical evidence stays secondary", async ({ page }) => {
+  test("Birth save reveals the real chart before the question, then the answer leads", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await dismissInstallPrompt(page);
@@ -118,10 +143,24 @@ test.describe("iPhone Safari core customer flow", () => {
     const firstCity = page.locator('#birth-city-results [role="option"]').first();
     await expect(firstCity).toBeVisible();
     await firstCity.click();
-    await page.getByRole("button", { name: "下一步 · 輸入問題", exact: true }).click();
+    await page.getByRole("button", { name: "保存並排出四柱命盤", exact: true }).click();
 
     await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
+    await expect(page.locator("#bazi [data-bazi-chart]")).toBeVisible();
+    await expect(page.locator("#bazi [data-pillar=year]")).toBeVisible();
+    await expect(page.locator("#bazi [data-pillar=month]")).toBeVisible();
+    await expect(page.locator("#bazi [data-pillar=day]")).toBeVisible();
+    await expect(page.locator("#bazi [data-pillar=time]")).toBeVisible();
+    await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("日主");
+    await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("月令");
+    await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("旺衰底盤");
+    await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("格局方向");
     await expect(page.getByRole("heading", { name: "你真正想問的是什麼？", exact: true })).toBeVisible();
+    const sectionOrder = await page.evaluate(() => ["customer-record", "bazi", "question-stage"].map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? -1));
+    expect(sectionOrder[0]).toBeLessThan(sectionOrder[1]);
+    expect(sectionOrder[1]).toBeLessThan(sectionOrder[2]);
+    const readable = await page.locator("#bazi [data-home-bazi-explanation] dd").first().evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
+    expect(readable).toBeGreaterThanOrEqual(14);
     await expect(page.locator("#analysis-question")).toBeVisible();
     await page.locator("#analysis-question").fill("這份工作我應該繼續還是離開？");
     await page.getByRole("button", { name: "開始分析這個問題", exact: true }).click();
