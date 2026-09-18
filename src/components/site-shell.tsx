@@ -3,7 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
 import { BrandIcon } from "@/components/brand-icon";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { authEnabled, signOut } from "@/lib/auth/client";
+import { signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
 import {
   displayText,
