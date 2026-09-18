@@ -47,7 +47,7 @@ function ShushuBoundaryArticle() {
         <img src="/article-shushu-boundary.svg" alt={tr(locale,"遠山晨光前的靜坐人物，昭梧文章《術數的邊界》主圖","远山晨光前的静坐人物，昭梧文章《术数的边界》主图","A seated figure before distant mountains at dawn, hero image for The Boundary of Divination")} className="aspect-video w-full object-cover" />
         <header className="p-5 sm:p-8">
           <p className="text-xs tracking-[0.26em] text-cinnabar">{tr(locale,"昭梧方法論 · 研究札記","昭梧方法论 · 研究札记","ZHAOWU METHODOLOGY · FIELD NOTE")}</p>
-          <h1 className="mt-3 font-display text-3xl leading-tight text-ink sm:text-4xl">{tr(locale,"術數的邊界：事實求真，模型求證，認知去執，決策自主","术数的边界：事实求真，模型求证，认知去执，决策自主","The boundary of divination: verify facts, test models, release fixation, keep agency")}</h1>
+          <h1 className="mt-3 font-display text-3xl leading-tight text-ink sm:text-4xl">{tr(locale,"術數的邊界：資料求真，規則求明；推論知限，行動自決","术数的边界：资料求真，规则求明；推论知限，行动自决","The boundary of divination: verify data, make rules explicit, limit inference, keep agency")}</h1>
           <p className="mt-4 max-w-3xl text-[15px] leading-7 text-ink-soft">{tr(locale,"從《荀子》「善為易者不占」出發，重新區分事實、模型、證據與選擇。術數可以作為分析工具，但不應被升格成替人決定人生的主人。","从《荀子》“善为易者不占”出发，重新区分事实、模型、证据与选择。术数可以作为分析工具，但不应被升格成替人决定人生的主人。","Starting from Xunzi's line about the skilled student of the Changes not relying on divination, this essay separates facts, models, evidence and choice. A divinatory system may serve as an analytical tool; it should not become the owner of a person's decisions.")}</p>
         </header>
       </article>
@@ -104,8 +104,21 @@ function ShushuBoundaryArticle() {
       </section>
 
       <section className="seal-border rounded-2xl bg-cream p-5 sm:p-8">
-        <p className="font-display text-2xl leading-9 text-ink">{tr(locale,"事實求真，模型求證；認知去執，決策自主。","事实求真，模型求证；认知去执，决策自主。","Verify facts, test models; release fixation, keep agency.")}</p>
+        <p className="text-xs tracking-[0.22em] text-cinnabar">{tr(locale,"昭梧方法論 · 定稿","昭梧方法论 · 定稿","ZHAOWU METHODOLOGY · CANONICAL STATEMENT")}</p>
+        <h2 className="mt-2 font-display text-2xl leading-9 text-ink">{tr(locale,"資料求真，規則求明；推論知限，行動自決。","资料求真，规则求明；推论知限，行动自决。","Verify data, make rules explicit; limit inference, keep agency.")}</h2>
+        <p className="mt-4 rounded-xl border border-cinnabar/20 bg-paper px-5 py-4 text-sm font-medium leading-7 text-ink">
+          {tr(locale,"操作鏈：資料求真 → 規則求明 → 推論分級 → 結論留限 → 去執 → 自決。","操作链：资料求真 → 规则求明 → 推论分级 → 结论留限 → 去执 → 自决。","Operational chain: verify data → make rules explicit → grade inference → bound conclusions → release fixation → decide for yourself.")}
+        </p>
         <div className="mt-4 space-y-4 text-[15px] leading-8 text-ink-soft">
+          <p>{tr(locale,"術數之學，先求資料之真，再求規則之明。可觀察者，據實記錄；可計算者，依則推演；可解釋而未驗證者，明標其為模型判斷；超出證據者，不強作定論。","术数之学，先求资料之真，再求规则之明。可观察者，据实记录；可计算者，依则推演；可解释而未验证者，明标其为模型判断；超出证据者，不强作定论。","Study begins by getting the data right and making the rules explicit. What can be observed should be recorded as observed; what can be calculated should follow stated rules; interpretations not independently validated should be labelled as model judgements; claims beyond the evidence should not be forced into conclusions.")}</p>
+          <p className="font-medium text-ink">{tr(locale,"境不是任人意念改寫的材料，術也不是替人簽發命運的權力。","境不是任人意念改写的材料，术也不是替人签发命运的权力。","Reality is not material to be rewritten by preference, and technique has no authority to issue a person's fate.")}</p>
+          <p>{tr(locale,"術數所能做的，是辨條件、察結構、提出趨勢假設、呈現可能代價；至於如何選擇，主體仍是人。","术数所能做的，是辨条件、察结构、提出趋势假设、呈现可能代价；至于如何选择，主体仍是人。","A divinatory model may distinguish conditions, inspect structure, propose trend hypotheses and surface possible costs. The act of choosing still belongs to the person.")}</p>
+          <p>{tr(locale,"因而，「境如此」不能偷換成「我必如此」；「術如此判」也不能偷換成「世界必然如此」。前者防止宿命，後者防止把模型實體化成世界本身。","因而，“境如此”不能偷换成“我必如此”；“术如此判”也不能偷换成“世界必然如此”。前者防止宿命，后者防止把模型实体化成世界本身。","Therefore, 'the conditions are like this' cannot be converted into 'I must be like this'; nor can 'the method judges it this way' be converted into 'the world must therefore be this way.' The first guards against fatalism; the second guards against reifying a model into reality itself.")}</p>
+          <p>{tr(locale,"「善為易者不占」若借其思想啟發而不冒充荀子原義，可以理解為：學《易》若終究只是把判斷權交給占筮，便仍未盡其用。","“善为易者不占”若借其思想启发而不冒充荀子原义，可以理解为：学《易》若终究只是把判断权交给占筮，便仍未尽其用。","If Xunzi's phrase is borrowed as inspiration without being passed off as his original doctrine, it can be read this way: studying the Changes is not exhausted by handing judgement over to divination.")}</p>
+          <p>{tr(locale,"外在資料須求真，術理規則須求明，模型推論須知限，內心執取須能解，最後行動仍由人自決。","外在资料须求真，术理规则须求明，模型推论须知限，内心执取须能解，最后行动仍由人自决。","External data should be checked, technical rules made explicit, model inference bounded, fixation released, and final action kept under human agency.")}</p>
+          <blockquote className="rounded-xl border border-earth/30 bg-paper px-5 py-4 font-display text-lg leading-8 text-ink">
+            {tr(locale,"術以觀變，道以正心；知其所限，而不受其限；知其所趨，而不把趨勢當成命令。","术以观变，道以正心；知其所限，而不受其限；知其所趋，而不把趋势当成命令。","Use technique to observe change and principle to steady the mind; know the limits without becoming confined by them, and know the trend without turning it into a command.")}
+          </blockquote>
           <p>{tr(locale,"術數萬千，終歸心性。不是因為外境不重要，也不是因為一切皆由心造，而是因為當資料、規則與推演都做到盡處之後，仍有一件事不能由任何盤、課、卦、局代替：人必須自己選擇，並為自己的選擇負責。","术数万千，终归心性。不是因为外境不重要，也不是因为一切皆由心造，而是因为当资料、规则与推演都做到尽处之后，仍有一件事不能由任何盘、课、卦、局代替：人必须自己选择，并为自己的选择负责。","Divinatory traditions may be many, yet the final question returns to character and agency. Not because external conditions are unimportant, nor because mind creates everything, but because no chart or hexagram can replace the final human act of choosing and taking responsibility.")}</p>
           <p className="font-display text-xl leading-8 text-cinnabar">{tr(locale,"返璞歸真，誠正守靜；落子無悔，問心無愧。","返璞归真，诚正守静；落子无悔，问心无愧。","Return to simplicity and truth; stand sincere and still. Choose without evasion, and answer to conscience.")}</p>
         </div>
