@@ -145,7 +145,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </header>
       ) : null}
 
-      {!isLogin && !isOwnerWorkspace ? <GreenDragonGuide /> : null}
+      {!isLogin ? <GreenDragonGuide /> : null}
       <div className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
 
       {!isLogin && !isOwnerWorkspace ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
