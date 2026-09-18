@@ -18,9 +18,9 @@ export type BackgroundAsset = {
   theme: string | null;
   created_at: string;
   updated_at: string;
-  cdn_url: string | null;
-  cdn_provider: string | null;
-  cdn_verified_at: string | null;
+  cdn_url?: string | null;
+  cdn_provider?: string | null;
+  cdn_verified_at?: string | null;
 };
 
 export type BackgroundPage = {
