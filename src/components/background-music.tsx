@@ -9,7 +9,6 @@ const SHUFFLE_STORAGE_KEY = `${STORAGE_KEY}.shuffle`;
 const TRACK_STORAGE_KEY = `${STORAGE_KEY}.track`;
 const DEFAULT_VOLUME = 0.24;
 const MUSIC_STREAM_URL = "/api/owner-music?stream=1";
-const MOBILE_DOCK_BOTTOM = "max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4rem))";
 
 function readInitialPreference() {
   if (typeof window === "undefined") return true;
@@ -57,7 +56,6 @@ export function BackgroundMusic() {
   const [requested, setRequested] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [expanded, setExpanded] = useState(false);
   const [tracks, setTracks] = useState<OwnerMusicTrack[]>([]);
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [playOrder, setPlayOrder] = useState<string[]>([]);
@@ -67,6 +65,19 @@ export function BackgroundMusic() {
   const currentTrack = tracks.find((item) => item.id === currentId) ?? null;
   const primarySrc = currentTrack?.url || MUSIC_STREAM_URL;
   const primaryType = currentTrack?.contentType || "audio/mpeg";
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("zhaowu-music-status", {
+      detail: {
+        playing,
+        loading,
+        trackId: currentTrack?.id ?? null,
+        trackName: currentTrack?.name ?? null,
+        loopEnabled,
+        shuffleEnabled,
+      },
+    }));
+  }, [playing, loading, currentTrack?.id, currentTrack?.name, loopEnabled, shuffleEnabled]);
 
   const syncAudioSource = useCallback((track: OwnerMusicTrack | null) => {
     const audio = audioRef.current;
@@ -349,78 +360,54 @@ export function BackgroundMusic() {
   const transportButton = "inline-grid min-h-11 min-w-11 place-items-center rounded-full border border-line/80 bg-paper/75 text-base leading-none text-ink-soft transition hover:text-ink active:scale-[0.97]";
   const modeButton = (active: boolean) => `${transportButton} ${active ? "border-cinnabar/45 bg-cinnabar/10 text-cinnabar" : ""}`;
 
-  return <>
-    <audio
-      ref={audioRef}
-      playsInline
-      data-music-loop={loopEnabled ? "playlist" : "off"}
-      data-music-shuffle={shuffleEnabled ? "on" : "off"}
-      preload="none"
-      onPlaying={markPlaybackStarted}
-      onTimeUpdate={markPlaybackStarted}
-      onPause={markPlaybackUnavailable}
-      onEnded={() => void moveTrack(1, true)}
-      onWaiting={markPlaybackUnavailable}
-      onStalled={markPlaybackUnavailable}
-      onAbort={markPlaybackUnavailable}
-      onEmptied={markPlaybackUnavailable}
-      onError={markPlaybackUnavailable}
-    >
-      <source src={primarySrc} type={primaryType} />
-    </audio>
-    <div
-      data-background-music-player
-      data-mobile-floating-control="music"
-      data-music-expanded={expanded ? "true" : "false"}
-      className={`fixed z-[91] border border-line/90 bg-cream/96 text-ink-soft shadow-lg backdrop-blur ${expanded ? "rounded-[1.15rem] p-2" : "rounded-full p-0"}`}
-      style={{
-        right: "max(0.75rem, env(safe-area-inset-right, 0px))",
-        bottom: MOBILE_DOCK_BOTTOM,
-        width: expanded ? "min(19.5rem, calc(100vw - 1.5rem))" : "2.75rem",
-      }}
-    >
-      {!expanded ? (
-        <button
-          type="button"
-          data-background-music-control
-          className={`${transportButton} relative border-0 bg-transparent`}
-          aria-label={copy.controls}
-          title={copy.controls}
-          aria-pressed={playing}
-          aria-expanded="false"
-          onClick={() => setExpanded(true)}
-        >
-          <span aria-hidden="true">♫</span>
-          <span aria-hidden="true" className={`absolute right-1 top-1 h-1.5 w-1.5 rounded-full ${playing ? "bg-cinnabar" : "bg-line"}`} />
+  return (
+    <section className="zhaowu-dragon-music" data-background-music-player data-dragon-music-controls aria-label={copy.controls}>
+      <audio
+        ref={audioRef}
+        playsInline
+        data-music-loop={loopEnabled ? "playlist" : "off"}
+        data-music-shuffle={shuffleEnabled ? "on" : "off"}
+        preload="none"
+        onPlaying={markPlaybackStarted}
+        onTimeUpdate={markPlaybackStarted}
+        onPause={markPlaybackUnavailable}
+        onEnded={() => void moveTrack(1, true)}
+        onWaiting={markPlaybackUnavailable}
+        onStalled={markPlaybackUnavailable}
+        onAbort={markPlaybackUnavailable}
+        onEmptied={markPlaybackUnavailable}
+        onError={markPlaybackUnavailable}
+      >
+        <source src={primarySrc} type={primaryType} />
+      </audio>
+
+      <div className="zhaowu-dragon-music-meta">
+        <div className="zhaowu-dragon-music-title">
+          <span aria-hidden="true" className={`zhaowu-dragon-music-dot ${playing ? "is-playing" : ""}`} />
+          <strong>{locale === "en" ? "Music" : locale === "zh-Hans" ? "背景音乐" : "背景音樂"}</strong>
+          <span>{loading && !tracks.length ? copy.loading : playing ? copy.playing : copy.paused}</span>
+        </div>
+        <p data-music-track-title title={musicTitle}>{musicTitle}</p>
+      </div>
+
+      <div className="zhaowu-dragon-music-controls" role="group" aria-label={musicTitle}>
+        <button type="button" className={transportButton} aria-label={`${copy.previous}: ${musicTitle}`} title={copy.previous} onClick={() => void moveTrack(-1)}>
+          <span aria-hidden="true">⏮</span>
         </button>
-      ) : (
-        <>
-          <div className="flex min-w-0 items-center gap-2 px-2 pb-1.5">
-            <span aria-hidden="true" className={`h-1.5 w-1.5 shrink-0 rounded-full ${playing ? "bg-cinnabar" : "bg-line"}`} />
-            <span className="shrink-0 text-[10px] tracking-[0.12em] text-ink-mute">{loading && !tracks.length ? copy.loading : playing ? copy.playing : copy.paused}</span>
-            <span data-music-track-title className="min-w-0 flex-1 truncate text-right text-[11px] text-ink-soft" title={musicTitle}>{musicTitle}</span>
-            <button type="button" className="grid min-h-11 min-w-11 shrink-0 place-items-center rounded-full text-sm text-ink-mute" aria-label={copy.close} title={copy.close} onClick={() => setExpanded(false)}>×</button>
-          </div>
-          <div className="grid grid-cols-5 gap-1" role="group" aria-label={musicTitle}>
-            <button type="button" className={transportButton} aria-label={`${copy.previous}: ${musicTitle}`} title={copy.previous} onClick={() => void moveTrack(-1)}>
-              <span aria-hidden="true">⏮</span>
-            </button>
-            <button type="button" data-background-music-control className={transportButton} aria-label={`${playing ? copy.pause : copy.play}: ${musicTitle}`} title={playing ? copy.pause : copy.play} aria-pressed={playing} onClick={togglePlayback}>
-              <span aria-hidden="true">{playing ? "Ⅱ" : "▶"}</span>
-            </button>
-            <button type="button" className={transportButton} aria-label={`${copy.next}: ${musicTitle}`} title={copy.next} onClick={() => void moveTrack(1)}>
-              <span aria-hidden="true">⏭</span>
-            </button>
-            <button type="button" className={modeButton(loopEnabled)} aria-label={copy.loop} title={copy.loop} aria-pressed={loopEnabled} onClick={toggleLoop}>
-              <span aria-hidden="true">↻</span>
-            </button>
-            <button type="button" className={modeButton(shuffleEnabled)} aria-label={copy.shuffle} title={copy.shuffle} aria-pressed={shuffleEnabled} onClick={toggleShuffle}>
-              <span aria-hidden="true">⇄</span>
-            </button>
-          </div>
-        </>
-      )}
+        <button type="button" data-background-music-control className={transportButton} aria-label={`${playing ? copy.pause : copy.play}: ${musicTitle}`} title={playing ? copy.pause : copy.play} aria-pressed={playing} onClick={togglePlayback}>
+          <span aria-hidden="true">{playing ? "Ⅱ" : "▶"}</span>
+        </button>
+        <button type="button" className={transportButton} aria-label={`${copy.next}: ${musicTitle}`} title={copy.next} onClick={() => void moveTrack(1)}>
+          <span aria-hidden="true">⏭</span>
+        </button>
+        <button type="button" className={modeButton(loopEnabled)} aria-label={copy.loop} title={copy.loop} aria-pressed={loopEnabled} onClick={toggleLoop}>
+          <span aria-hidden="true">↻</span>
+        </button>
+        <button type="button" className={modeButton(shuffleEnabled)} aria-label={copy.shuffle} title={copy.shuffle} aria-pressed={shuffleEnabled} onClick={toggleShuffle}>
+          <span aria-hidden="true">⇄</span>
+        </button>
+      </div>
       <span className="sr-only" aria-live="polite">{playing ? legacyPlayingStatus : copy.paused}</span>
-    </div>
-  </>;
+    </section>
+  );
 }
