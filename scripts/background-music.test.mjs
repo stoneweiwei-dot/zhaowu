@@ -10,6 +10,7 @@ const assets = await readFile(new URL("../src/lib/background-music-assets.ts", i
 const upload = await readFile(new URL("../src/lib/background-music-upload.ts", import.meta.url), "utf8");
 const api = await readFile(new URL("../api/owner-music.js", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
+const guide = await readFile(new URL("../src/components/green-dragon-guide.tsx", import.meta.url), "utf8");
 const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
 
 test("background music resolves the active owner track through /api/owner-music and defers fetch until playback is requested", () => {
@@ -37,9 +38,11 @@ test("background music reports playing only after real media playback events", (
   assert.doesNotMatch(music, /\.then\(\(\) => setPlaying\(true\)\)/);
 });
 
-test("background music is mounted globally and can unlock on the first user gesture", () => {
-  assert.match(main, /import \{ BackgroundMusic \}/);
-  assert.match(main, /<BackgroundMusic \/>/);
+test("background music lives inside the single dragon assistant and can unlock on the first user gesture", () => {
+  assert.doesNotMatch(main, /BackgroundMusic/);
+  assert.match(guide, /import \{ BackgroundMusic \}/);
+  assert.match(guide, /<BackgroundMusic \/>/);
+  assert.match(guide, /data-dragon-assistant/);
   assert.match(music, /zhaowu\.backgroundMusic\.v3/);
   assert.match(music, /const \[requested, setRequested\] = useState\(false\)/);
   assert.match(music, /window\.addEventListener\("pointerdown", unlock/);
@@ -100,12 +103,13 @@ test("owner audio optimizer is bounded and refuses destructive low-bitrate compr
   assert.match(ownerTranscode, /為避免把音質壓到明顯變差/);
 });
 
-test("mobile keeps an explicit music control visible when autoplay is blocked or media is unavailable", () => {
+test("mobile exposes music through the dragon assistant when autoplay is blocked or media is unavailable", () => {
   assert.match(music, /Music playing/);
   assert.match(music, /音乐播放中/);
   assert.match(music, /音樂播放中/);
   assert.match(music, /useI18n/);
-  assert.doesNotMatch(music, /hidden min-\[430px\]:inline/);
+  assert.match(guide, /zhaowu-music-command/);
+  assert.match(guide, /musicStatus\.playing/);
   assert.match(music, /onError=\{markPlaybackUnavailable\}/);
   assert.match(music, /aria-pressed=\{playing\}/);
 });
