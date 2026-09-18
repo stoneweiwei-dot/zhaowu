@@ -8,7 +8,7 @@ const manifest = await readFile(new URL("../public/manifest.webmanifest", import
 const report = await readFile(new URL("../docs/change-reports/ZW-WEB-2026.09.18-r145.md", import.meta.url), "utf8");
 const agents = await readFile(new URL("../AGENTS.md", import.meta.url), "utf8");
 test("public footer always exposes current release and cumulative update count", () => {
-  assert.match(stats, /ZW-WEB-2026\.09\.15-r144/);
+  assert.match(stats, /ZW-WEB-2026\.09\.18-r145/);
   assert.match(stats, /updateNumber:\s*145/);
   assert.match(shell, /data-site-release/);
   assert.match(shell, /累計更新/);
