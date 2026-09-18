@@ -64,6 +64,8 @@ export function BackgroundMusic() {
   const [shuffleEnabled, setShuffleEnabled] = useState(() => readBooleanPreference(SHUFFLE_STORAGE_KEY, false));
 
   const currentTrack = tracks.find((item) => item.id === currentId) ?? null;
+  const primarySrc = currentTrack?.url || MUSIC_STREAM_URL;
+  const primaryType = currentTrack?.contentType || "audio/mpeg";
 
   const syncAudioSource = useCallback((track: OwnerMusicTrack | null) => {
     const audio = audioRef.current;
@@ -300,6 +302,7 @@ export function BackgroundMusic() {
   const markPlaybackUnavailable = () => setPlaying(false);
 
   const musicTitle = currentTrack?.name || (locale === "en" ? "Zhaowu background music" : locale === "zh-Hans" ? "昭梧背景音乐" : "昭梧背景音樂");
+  const legacyPlayingStatus = locale === "en" ? "Music playing" : locale === "zh-Hans" ? "音乐播放中" : "音樂播放中";
   const copy = locale === "en"
     ? {
         playing: "Playing",
@@ -355,7 +358,9 @@ export function BackgroundMusic() {
       onAbort={markPlaybackUnavailable}
       onEmptied={markPlaybackUnavailable}
       onError={markPlaybackUnavailable}
-    />
+    >
+      <source src={primarySrc} type={primaryType} />
+    </audio>
     <div
       data-background-music-player
       data-mobile-floating-control="music"
@@ -375,7 +380,7 @@ export function BackgroundMusic() {
         <button type="button" className={transportButton} aria-label={`${copy.previous}: ${musicTitle}`} title={copy.previous} onClick={() => void moveTrack(-1)}>
           <span aria-hidden="true">⏮</span>
         </button>
-        <button type="button" className={transportButton} aria-label={`${playing ? copy.pause : copy.play}: ${musicTitle}`} title={playing ? copy.pause : copy.play} aria-pressed={playing} onClick={togglePlayback}>
+        <button type="button" data-background-music-control className={transportButton} aria-label={`${playing ? copy.pause : copy.play}: ${musicTitle}`} title={playing ? copy.pause : copy.play} aria-pressed={playing} onClick={togglePlayback}>
           <span aria-hidden="true">{playing ? "Ⅱ" : "▶"}</span>
         </button>
         <button type="button" className={transportButton} aria-label={`${copy.next}: ${musicTitle}`} title={copy.next} onClick={() => void moveTrack(1)}>
@@ -388,6 +393,7 @@ export function BackgroundMusic() {
           <span aria-hidden="true">⇄</span>
         </button>
       </div>
+      <span className="sr-only" aria-live="polite">{playing ? legacyPlayingStatus : copy.paused}</span>
     </div>
   </>;
 }
