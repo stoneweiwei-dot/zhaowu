@@ -40,7 +40,7 @@ test("every production frontend change requires a matching change report", () =>
 
 test("latest update disclosure is iPhone-sized and readable", () => {
   assert.match(shell, /data-latest-change-report/);
-  assert.match(shell, /min-h-\\[44px\\]/);
+  assert.match(shell, /min-h-\[44px\]/);
   assert.match(shell, /text-sm/);
   assert.match(shell, /leading-6/);
 });
