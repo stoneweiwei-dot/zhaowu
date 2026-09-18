@@ -5,7 +5,9 @@ import {
   INTRO_BROKEN_KEY,
   INTRO_GATE_ERROR_EXIT_MS,
   INTRO_GATE_FADE_MS,
+  INTRO_GATE_HARD_EXIT_MS,
   INTRO_GATE_MIN_VISIBLE_MS,
+  INTRO_GATE_TARGET_MS,
   markIntroSeen,
   scheduleIntroGateHardExit,
   shouldSkipIntroGate,
@@ -40,6 +42,8 @@ export function IntroGate() {
     typeof window !== "undefined" && shouldSkipIntroGate(window.localStorage, Boolean(navigator.webdriver)) ? "off" : "in",
   );
   const [minimumDone, setMinimumDone] = useState(false);
+  const [targetDone, setTargetDone] = useState(false);
+  const [runtimeReady, setRuntimeReady] = useState(false);
   const [visualDone, setVisualDone] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(false);
   const finishedRef = useRef(false);
@@ -80,16 +84,26 @@ export function IntroGate() {
     const minimumTimer = window.setTimeout(() => {
       if (!cancelled) setMinimumDone(true);
     }, INTRO_GATE_MIN_VISIBLE_MS);
+    const targetTimer = window.setTimeout(() => {
+      if (!cancelled) setTargetDone(true);
+    }, INTRO_GATE_TARGET_MS);
     const cancelHardExit = scheduleIntroGateHardExit(window.setTimeout, window.clearTimeout, () => {
       if (!cancelled) forceOff();
     });
 
-    // Warm the runtime underneath the intro, but never shorten or extend the five-second visual contract.
-    void runBootstrapReadiness(() => {}).catch(() => undefined);
+    void runBootstrapReadiness(() => {})
+      .then(() => {
+        if (!cancelled) setRuntimeReady(true);
+      })
+      .catch(() => {
+        // Backend/bootstrap trouble must never hold the opening screen.
+        if (!cancelled) setRuntimeReady(true);
+      });
 
     return () => {
       cancelled = true;
       window.clearTimeout(minimumTimer);
+      window.clearTimeout(targetTimer);
       cancelHardExit();
       if (exitTimerRef.current !== null) {
         window.clearTimeout(exitTimerRef.current);
@@ -136,8 +150,12 @@ export function IntroGate() {
   }, [videoPlaying, visualDone]);
 
   useEffect(() => {
-    if (minimumDone && visualDone) finish();
-  }, [finish, minimumDone, visualDone]);
+    if (minimumDone && visualDone) {
+      finish();
+      return;
+    }
+    if (targetDone && runtimeReady) finish();
+  }, [finish, minimumDone, runtimeReady, targetDone, visualDone]);
 
   if (phase === "off") return null;
 
@@ -151,6 +169,8 @@ export function IntroGate() {
       aria-label={loadingLabel}
       data-intro-motion="zhaowu-opening-r148"
       data-intro-fallback-mode="r148-poster"
+      data-intro-target-ms={INTRO_GATE_TARGET_MS}
+      data-intro-hard-exit-ms={INTRO_GATE_HARD_EXIT_MS}
     >
       <div className={`zhaowu-lotus-intro__fallback ${videoPlaying ? "is-covered" : ""}`} data-intro-fallback aria-hidden="true">
         <img src={OWNER_LOADING_POSTER} alt="" className="zhaowu-lotus-intro__poster" />
