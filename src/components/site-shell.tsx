@@ -3,7 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
 import { BrandIcon } from "@/components/brand-icon";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { authEnabled, signOut } from "@/lib/auth/client";
+import { signOut } from "@/lib/auth/client";
 import { hydrateLocale, useI18n } from "@/lib/i18n";
 import {
   displayText,
@@ -50,6 +50,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const isLogin = pathname === "/login" || pathname === "/auth/callback";
+  const isOwnerWorkspace = Boolean(user?.isOwner && (pathname === "/account" || pathname === "/gallery"));
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
 
   useEffect(() => {
@@ -90,14 +91,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30">
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">
-            <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
-              <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
-              <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
-              <details className="group basis-full text-center" data-latest-change-report>
-                <summary className="cursor-pointer list-none font-medium text-ink-soft [&::-webkit-details-marker]:hidden">{latestLabel}</summary>
-                <p className="mx-auto mt-1 max-w-2xl px-2 text-center leading-5">{releaseSummary}</p>
-              </details>
-            </div>
+            {!isOwnerWorkspace ? (
+              <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
+                <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
+                <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
+                <details className="group basis-full text-center" data-latest-change-report>
+                  <summary className="cursor-pointer list-none font-medium text-ink-soft [&::-webkit-details-marker]:hidden">{latestLabel}</summary>
+                  <p className="mx-auto mt-1 max-w-2xl px-2 text-center leading-5">{releaseSummary}</p>
+                </details>
+              </div>
+            ) : null}
 
             <div className="zhaowu-header-primary">
               <Link to="/" className="zhaowu-brand-link text-ink" aria-label={t("brand")}>
@@ -109,10 +112,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </Link>
 
               <div className="zhaowu-header-account-actions">
-                {user?.isOwner ? <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={openGalleryLabel}>{galleryLabel}</Link> : null}
+                {user?.isOwner && pathname !== "/gallery" ? <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={openGalleryLabel}>{galleryLabel}</Link> : null}
                 {isPending ? <span className="zhaowu-header-pending" /> : user ? <>
-                  <Link to="/account" className="zhaowu-header-utility"><BrandIcon name="account" />{user.isOwner ? t("navAdmin") : t("navMine")}</Link>
-                  <button type="button" onClick={() => void signOut()} className="zhaowu-header-utility zhaowu-header-signout">{authEnabled ? t("logout") : user.displayName}</button>
+                  {(!user.isOwner || pathname !== "/account") ? <Link to="/account" className="zhaowu-header-utility"><BrandIcon name="account" />{user.isOwner ? t("navAdmin") : t("navMine")}</Link> : null}
+                  <button type="button" onClick={() => void signOut()} className="zhaowu-header-utility zhaowu-header-signout">{t("logout")}</button>
                 </> : (
                   <Link
                     to="/login"
@@ -143,10 +146,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </header>
       ) : null}
 
-      {!isLogin ? <GreenDragonGuide /> : null}
+      {!isLogin && !isOwnerWorkspace ? <GreenDragonGuide /> : null}
       <div className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
 
-      {!isLogin ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
+      {!isLogin && !isOwnerWorkspace ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
         <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
       </footer> : null}
     </div>

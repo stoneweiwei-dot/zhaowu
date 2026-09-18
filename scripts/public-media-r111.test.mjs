@@ -37,7 +37,7 @@ test("customer media paths stay on same-origin assets and music keeps idle prelo
     assert.doesNotMatch(source, new RegExp("rest/v1|storage/v1/object/public"), "customer media reads public Supabase assets at runtime");
   }
   assert.match(customerMatch, /PUBLIC_ATLAS_ASSETS/);
-  assert.match(loginAnimation, /LOADING_GALLERY_CATALOG/);
+  assert.match(loginAnimation, /LOGIN_VISUAL_CATALOG/);
   assert.ok(reportVisualAssets.includes('const REPORT_VISUAL_CDN_BASE = "/report-visuals/groups"'));
   assert.ok(music.includes('preload="none"'));
   assert.ok(music.includes('window.addEventListener("pointerdown", unlock'));

@@ -1,4 +1,4 @@
-import { LOADING_GALLERY_CATALOG } from "@/lib/loading-gallery-catalog";
+import { LOGIN_VISUAL_CATALOG } from "@/lib/loading-gallery-catalog";
 
 export type LoginVisualTheme = "day" | "night" | "common";
 
@@ -25,7 +25,7 @@ export function loginVisualThemeFromTags(tags: string[] | undefined | null): Log
   return "common";
 }
 
-function catalogToAsset(item: (typeof LOADING_GALLERY_CATALOG)[number], index: number): LoginAnimationAsset {
+function catalogToAsset(item: (typeof LOGIN_VISUAL_CATALOG)[number], index: number): LoginAnimationAsset {
   const video = Boolean(item.videoPath);
   return {
     id: `catalog:${item.asset_key}`,
@@ -44,7 +44,7 @@ function catalogToAsset(item: (typeof LOADING_GALLERY_CATALOG)[number], index: n
 
 
 export function catalogLoginAnimations(): LoginAnimationAsset[] {
-  return LOADING_GALLERY_CATALOG.map(catalogToAsset);
+  return LOGIN_VISUAL_CATALOG.map(catalogToAsset);
 }
 
 export async function listLoginVisuals(): Promise<LoginAnimationAsset[]> {

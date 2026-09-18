@@ -46,6 +46,7 @@ test("account console and player use owner music with browser-side format optimi
   const manager = await source("src/components/owner-background-music-manager.tsx");
   const player = await source("src/components/background-music.tsx");
   const account = await source("src/routes/account.tsx");
+  const organizer = await source("src/components/owner-console-organizer.tsx");
   const client = await source("src/lib/owner-music-client.ts");
   const transcoder = await source("src/lib/owner-music-transcode.ts");
   assert.match(manager, /uploadOwnerMusic/);
@@ -55,7 +56,7 @@ test("account console and player use owner music with browser-side format optimi
   assert.doesNotMatch(manager, /uploadBackgroundMusicResilient/);
   assert.match(player, /loadOwnerMusic/);
   assert.doesNotMatch(player, /zhaowu-background\.m4a/);
-  assert.match(account, /背景音樂管理/);
+  assert.match(organizer, /背景音樂|背景音乐/);
   assert.match(client, /optimizeOwnerMusic/);
   assert.match(client, /x-zhaowu-music-name/);
   assert.match(client, /zhaowu-music-change/);
@@ -78,6 +79,7 @@ test("independent owner cookie does not get falsely sent back to login on galler
   assert.doesNotMatch(gallery, /if \(!user \|\| !session\)/);
   assert.match(gallery, /if \(!user\)/);
   assert.match(gallery, /if \(!user\.isOwner\)/);
-  assert.match(gallery, /站主已登入，不需要重新登入/);
-  assert.match(gallery, /session \? <>/);
+  assert.match(gallery, /data-owner-gallery-data-offline/);
+  assert.match(gallery, /站主登入與其他後台功能仍正常|站主登录与其他后台功能仍正常/);
+  assert.match(gallery, /session \? \(/);
 });
