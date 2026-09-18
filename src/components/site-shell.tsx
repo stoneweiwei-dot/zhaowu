@@ -117,11 +117,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </div>
 
             <nav className="zhaowu-header-nav" aria-label={siteControlsLabel}>
-              <div role="group" aria-label={t("language")} className="site-lang-group" style={{ display: "flex", alignItems: "center", gap: 4, maxWidth: "100%", overflowX: "auto", padding: 4, border: "1px solid rgba(196,160,90,.62)", borderRadius: 999, background: night ? "rgba(15,32,28,.72)" : "rgba(250,248,241,.76)", boxShadow: "0 6px 18px rgba(60,46,28,.06)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)" }}>
-                <span aria-hidden="true" style={{ display: "grid", placeItems: "center", flex: "0 0 auto", width: 36, height: 40, color: night ? "#d4b074" : "#1f4e3a" }}><BrandIcon name="language" /></span>
+              <div role="group" aria-label={t("language")} className="site-lang-group">
+                <span aria-hidden="true" className="zhaowu-language-icon"><BrandIcon name="language" /></span>
                 {languageOptions.map(({ value, label, aria }) => {
                   const active = language === value;
-                  return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button" style={{ flex: "0 0 auto", minHeight: 40, padding: "0 11px", borderRadius: 999, border: active ? "1px solid #c4a05a" : "1px solid transparent", background: active ? (night ? "rgba(212,176,116,.15)" : "#1f4e3a") : "transparent", color: active ? (night ? "#f1dfba" : "#fffaf0") : (night ? "#e7e0d1" : "#4f4a42"), fontSize: 12, lineHeight: 1, fontWeight: active ? 700 : 600, letterSpacing: value === "en" ? ".04em" : ".01em", whiteSpace: "nowrap", boxShadow: active && !night ? "inset 0 0 0 1px rgba(255,255,255,.08)" : "none" }}>{label}</button>;
+                  return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button">{label}</button>;
                 })}
               </div>
               <button type="button" className="zhaowu-theme-toggle zhaowu-header-mode-toggle" onClick={toggle} aria-pressed={night} aria-label={night ? dayModeLabel : nightModeLabel} title={night ? dayModeLabel : nightModeLabel}>
