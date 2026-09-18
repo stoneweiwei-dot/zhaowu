@@ -5,7 +5,7 @@ const stats = await readFile(new URL("../src/lib/site-stats.ts", import.meta.url
 const shell = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
 const indexHtml = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const manifest = await readFile(new URL("../public/manifest.webmanifest", import.meta.url), "utf8");
-const report = await readFile(new URL("../docs/change-reports/ZW-WEB-2026.09.19-r151.md", import.meta.url), "utf8");
+const report = await readFile(new URL("../docs/change-reports/ZW-WEB-2026.09.19-r152.md", import.meta.url), "utf8");
 const agents = await readFile(new URL("../AGENTS.md", import.meta.url), "utf8");
 test("public footer always exposes current release and cumulative update count", () => {
   assert.match(stats, /ZW-WEB-2026\.09\.19-r151/);
@@ -35,4 +35,12 @@ test("every production frontend change requires a matching change report", () =>
   assert.match(agents, /docs\/change-reports/);
   assert.match(agents, /release_history/);
   assert.match(agents, /CANONICAL METAPHYSICS DEFAULT/);
+});
+
+
+test("latest update disclosure is iPhone-sized and readable", () => {
+  assert.match(shell, /data-latest-change-report/);
+  assert.match(shell, /min-h-\\[44px\\]/);
+  assert.match(shell, /text-sm/);
+  assert.match(shell, /leading-6/);
 });
