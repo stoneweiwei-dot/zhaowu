@@ -20,7 +20,8 @@ test("owner music API is a self-contained cookie-gated function off the SPA rewr
   assert.doesNotMatch(ssh, /BEGIN OPENSSH PRIVATE KEY/);
   assert.match(ssh, /aes-256-gcm/);
   assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 60);
-  assert.equal(vercel.git.deploymentEnabled["owner-music"], false);
+  assert.equal(vercel.git.deploymentEnabled["*"], false);
+  assert.equal(vercel.git.deploymentEnabled.main, true);
   assert.equal(vercel.rewrites.at(-1).source, "/((?!api/).*)");
 });
 
