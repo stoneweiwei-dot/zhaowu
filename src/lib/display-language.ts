@@ -576,16 +576,20 @@ export function intlTagFor(language: DisplayLanguage) {
 }
 
 function readDisplayLanguage(): DisplayLanguage {
-  if (typeof window === "undefined") return "zh-Hans";
+  if (typeof window === "undefined") return "zh-Hant";
   try {
     const value = window.localStorage.getItem("zhaowu.display-language");
-    if (value === "zh-Hant" || value === "zh-Hans" || value === "en" || value === "ja" || value === "ko" || value === "hi") return value;
+    if (value === "zh-Hant" || value === "en") return value;
+    if (value === "ko" || value === "hi" || value === "zh-Hans" || value === "ja") {
+      window.localStorage.setItem("zhaowu.display-language", "zh-Hant");
+      return "zh-Hant";
+    }
     const legacy = window.localStorage.getItem("zhaowu.locale");
-    if (legacy === "zh-Hant" || legacy === "zh-Hans" || legacy === "en") return legacy;
+    if (legacy === "zh-Hant" || legacy === "en") return legacy;
   } catch {
     /* ignore */
   }
-  return "zh-Hans";
+  return "zh-Hant";
 }
 
 function applyLanguage(language: DisplayLanguage) {
