@@ -59,8 +59,8 @@ const routes = [
   },
 ] as const;
 
-test.describe("iPhone Safari five-second opening", () => {
-  test("plays the r148 opening for at least five seconds and exposes no skip control", async ({ page }) => {
+test.describe("iPhone Safari adaptive opening", () => {
+  test("plays the r148 opening without blocking beyond the five-second ceiling", async ({ page }) => {
     await forceIntro(page);
     await traceGateLifecycle(page);
 
@@ -77,14 +77,14 @@ test.describe("iPhone Safari five-second opening", () => {
 
     const duration = await gateDuration(page);
     expect(duration).not.toBeNull();
-    expect(duration!).toBeGreaterThanOrEqual(5_000);
-    expect(duration!).toBeLessThanOrEqual(8_500);
+    expect(duration!).toBeGreaterThanOrEqual(2_700);
+    expect(duration!).toBeLessThanOrEqual(5_300);
     expect(await page.evaluate(() => window.innerWidth)).toBe(390);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
 
   for (const route of routes) {
-    test(`${route.path} keeps the full five-second poster fallback when video/bootstrap fail`, async ({ page }) => {
+    test(`${route.path} fails open quickly when video/bootstrap fail`, async ({ page }) => {
       await forceIntro(page, true);
       await traceGateLifecycle(page);
       await page.route("**/rest/v1/site_settings?**", () => new Promise<void>(() => undefined));
@@ -98,14 +98,14 @@ test.describe("iPhone Safari five-second opening", () => {
       await expect(gate.locator("video")).toHaveAttribute("src", "/intro/missing-force-fail.mp4");
       await expect(page.locator("[data-intro-skip]")).toHaveCount(0);
 
-      await expect(gate).toHaveCount(0, { timeout: 8_500 });
+      await expect(gate).toHaveCount(0, { timeout: 5_500 });
       await expect(heading).toBeVisible();
       await expect(page.getByRole(route.actionRole, { name: route.action, exact: true }).first()).toBeVisible();
 
       const duration = await gateDuration(page);
       expect(duration).not.toBeNull();
-      expect(duration!).toBeGreaterThanOrEqual(5_000);
-      expect(duration!).toBeLessThanOrEqual(8_500);
+      expect(duration!).toBeGreaterThanOrEqual(1_000);
+      expect(duration!).toBeLessThanOrEqual(5_300);
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
