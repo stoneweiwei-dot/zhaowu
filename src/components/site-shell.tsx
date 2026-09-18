@@ -67,11 +67,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const releaseDate = formatReleaseDate(stats.publishedAt, language);
   const releaseSummary = releaseSummaryForLanguage(stats.latestSummary, stats.version, language);
   const numberLocale = intlTagFor(language);
+  // Korean and Hindi remain implemented in the codebase but are intentionally
+  // hidden from the public language selector until they are reactivated.
   const languageOptions = [
     { value: "en" as const, label: "English", aria: "English" },
     { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
-    { value: "ko" as const, label: "한국어", aria: "한국어" },
-    { value: "hi" as const, label: "हिन्दी", aria: "हिन्दी" },
   ];
 
   const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
