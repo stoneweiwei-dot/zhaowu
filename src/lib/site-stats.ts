@@ -1,6 +1,7 @@
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
+// r152 deployment retrigger: runtime behavior unchanged.
 export const SITE_RELEASE_FALLBACK = {
   version: "ZW-WEB-2026.09.19-r153",
   updateNumber: 153,
