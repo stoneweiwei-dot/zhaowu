@@ -206,6 +206,7 @@ function triggerMatches(rule: InstructionRule, context: InstructionContext): boo
 /**
  * Canonical instruction router for BaZi analysis.
  * ZW-HUMAN-GUIDANCE-CORE-1.0 is always injected first as the human-centered response layer.
+ * ZW-BAZI-PINKU-BINGYAO-P3 from the base database is always injected before the generic pathology/remedy layer.
  * ZW-BAZI-PATHOLOGY-REMEDY-1.0 is always injected as the generic pathology/remedy layer.
  * ZW-BAZI-KINSHIP-GENDER-1.0 is always injected for gender-aware kinship/person-role disambiguation.
  * Any 辰／戌／丑／未 in natal branches or active luck/year branches additionally injects
@@ -223,4 +224,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-09T04:34:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-19T00:15:00+10:00';
