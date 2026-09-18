@@ -27,16 +27,22 @@ test("owner login APIs are self-contained JavaScript and stay off the SPA rewrit
   assert.equal(vercel.rewrites.at(-1).source, "/((?!api/).*)");
 });
 
-test("home no longer stacks a live Four Pillars preview under client details", async () => {
+test("home restores the Four Pillars chart between birth details and the question", async () => {
   const form = await source("src/components/analysis-form.tsx");
   const chart = await source("src/components/bazi-chart.tsx");
   const css = await source("src/night-home-r129.css");
+  const canonical = await source("src/zhaowu-design-system.css");
   const main = await source("src/main.tsx");
+  assert.match(form, /buildChart/);
+  assert.match(form, /BaziChart/);
+  assert.match(form, /previewChart/);
+  assert.match(form, /data-home-bazi-explanation/);
   assert.match(form, /id="bazi" className="zhaowu-bazi-hub/);
-  assert.doesNotMatch(form, /BaziChart/);
-  assert.doesNotMatch(form, /previewChart/);
+  assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="bazi"'));
+  assert.ok(form.indexOf('id="bazi"') < form.indexOf('id="question-stage"'));
   assert.doesNotMatch(chart, /chartTerm\(p\.gan, locale\)/);
   assert.match(chart, /chartTerm\(p\.shiShenGan, locale\)/);
+  assert.match(canonical, /\.zhaowu-bazi-explanation/);
   assert.match(css, /zhaowu-pillar-grid > section > p/);
   assert.match(css, /html\[data-zw-theme="night"\] \.zhaowu-home-layout \.zhaowu-home-portals-block/);
   assert.match(main, /night-home-r129\.css/);
