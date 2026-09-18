@@ -94,20 +94,33 @@ test.describe("iPhone Safari core customer flow", () => {
     await expectMobileViewportHealthy(page);
   });
 
-  test("Jade Dragon stays in flow and never covers the consultation", async ({ page }) => {
+  test("Jade Dragon is the single movable floating assistant with embedded music", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    const guide = page.locator("[data-site-guide]");
+    const guide = page.locator("[data-dragon-assistant]");
     await expect(guide).toBeVisible();
-    await expect(guide).toHaveCSS("position", "relative");
-    await expectNoOverlap(page, "[data-site-guide]", "#analysisForm");
-    await page.getByRole("button", { name: "打開青玉小龍導覽", exact: true }).click();
-    const panel = page.getByRole("dialog", { name: "青玉小龍導覽", exact: true });
+    await expect(guide).toHaveCSS("position", "fixed");
+    await expect(page.locator('[data-mobile-floating-control="music"]')).toHaveCount(0);
+
+    const trigger = page.getByRole("button", { name: "打開青玉小龍助手", exact: true });
+    await expect(trigger).toBeVisible();
+    const before = await trigger.boundingBox();
+    expect(before).not.toBeNull();
+    expect(before!.width).toBeLessThanOrEqual(72);
+    expect(before!.height).toBeLessThanOrEqual(72);
+
+    await trigger.click();
+    const panel = page.getByRole("dialog", { name: "青玉小龍助手", exact: true });
     await expect(panel).toBeVisible();
-    await expect(panel).toHaveCSS("position", "static");
-    await expectNoOverlap(page, ".zhaowu-dragon-guide-panel", "#analysisForm");
-    await panel.getByRole("button", { name: "關閉導覽", exact: true }).click();
+    await expect(panel).toHaveCSS("position", "absolute");
+    await expect(panel.locator("[data-dragon-music-controls]")).toHaveCount(1);
+    await expect(panel.getByRole("button", { name: /上一首/ })).toBeVisible();
+    await expect(panel.getByRole("button", { name: /下一首/ })).toBeVisible();
+    await expect(panel.getByRole("button", { name: "循環播放", exact: true })).toBeVisible();
+    await expect(panel.getByRole("button", { name: "隨機播放", exact: true })).toBeVisible();
+
+    await panel.getByRole("button", { name: "關閉助手", exact: true }).click();
     await expectMobileViewportHealthy(page);
   });
 
