@@ -56,6 +56,45 @@ export const currentMasterRuntimeInstructionRule: InstructionRule = {
 };
 
 /**
+ * R6.2.1-P3 偏枯／病藥 Gate。
+ * 這是文字生成與分析路由的強制結構層；不修改 deterministic calculation truth。
+ */
+export const pinkuBingyaoRuntimeInstructionRule: InstructionRule = {
+  id: 'ZW-BAZI-PINKU-BINGYAO-P3',
+  title: 'R6.2.1-P3 偏枯／病藥 Gate',
+  status: 'production',
+  layer: 'core',
+  priority: 1,
+  purpose: '把偏枯從元素票數與人格標籤中抽離，改成「特殊格 Gate → 偏枯六態 → 病藥功能化 → ODL → FC」的可審計判定鏈。',
+  rules: [
+    '偏枯只作結構診斷，不直接等同命差、貧命、大格、天才或災命。',
+    '禁止以五行字數、百分比、缺字、不透干或單純強弱直接判偏枯；數量只可描述表面分布。',
+    '偏只允許判為「偏而能用」或「偏而成病」；枯只允許判為「枯而有源」或「枯而無源」。',
+    '偏枯層最終只允許六態：不構成偏枯／偏而能用／偏而成病／枯而有源／枯而無源／特殊格另判。',
+    '特殊格必須先行：極旺不等於從旺、極弱不等於從弱、清純不等於專旺、有合不等於化氣。',
+    '病不是某一五行，而是阻斷、壅滯、過載、失衡、格局破損、承載不足或作用鏈失效。',
+    '藥不是固定某一五行，而是能制病、化病、通關、護格、泄秀或恢復承載，且經 ODL 與 FC 驗證後確實有效的結構。',
+    '偏枯 Gate 後必須依序做 ODL 與 FC；有形式通路不等於有效流通。',
+    '墓庫藏干不能直接當可用藥神；逢沖不能自動視為出庫，仍回到 P2 動態墓庫判定。',
+    '五行象義不得直接推出人格、疾病、職業、婚姻或財富；至少經十神、位置、格局、制化、流通、承載與歲運。',
+    '顏色、家具、材質、水景、方位、寵物、植物等只作低權重文化／生活象義，不得宣稱可直接補命、補用神或改命。',
+    '通根與十二長生分開；不得把長生、祿、帝旺直接等同通根，也不得建立固定位置權重或固定倍數。',
+  ],
+  guards: [
+    '禁止「缺什麼補什麼」「弱什麼補什麼」「某五行一來必吉」。',
+    '禁止「不透＝枯」「字少＝枯」「旺＝病」。',
+    '禁止五行人格百科與固定疾病／心理映射。',
+    '禁止把風水物件、顏色或方位寫成核心病藥。',
+    '禁止用既知事件反向證明偏枯／病藥規則已被科學驗證。',
+  ],
+  outputContract: [
+    '涉及偏枯時，先給六態之一，再說明造成該判定的月令、透根、作用鏈與功能結果。',
+    '涉及病藥時，固定區分「病點」「功能藥」「ODL 是否有路」「FC 是否有效」「副作用／反證」。',
+    '若證據不足，輸出【不作判定】或保留候選，不用元素缺失補成確定答案。',
+  ],
+};
+
+/**
  * 直接回答契約：任何命理模組運行前，先鎖定使用者真正問的問題，
  * 防止「問 A 答 B」、整盤傾倒、旁證越權和用術語製造專業感。
  */
@@ -133,6 +172,7 @@ export const huagaiAuxiliaryInstructionRule: InstructionRule = {
 
 export const zhaowuInstructionDatabase: InstructionRule[] = [
   currentMasterRuntimeInstructionRule,
+  pinkuBingyaoRuntimeInstructionRule,
   directAnswerRoutingInstructionRule,
   ...legacyInstructionDatabase,
   huagaiAuxiliaryInstructionRule,
@@ -145,4 +185,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-15T06:26:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-18T23:59:00+10:00';
