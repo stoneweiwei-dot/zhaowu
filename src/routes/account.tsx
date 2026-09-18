@@ -184,9 +184,9 @@ function AccountPage() {
   const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
 
   const c = useMemo(() => ({
-    ownerTitle: tr(locale, "昭梧站主後台", "昭梧站主后台", "Zhaowu Owner Console"),
+    ownerTitle: tr(locale, "昭梧後台", "昭梧后台", "Zhaowu Console"),
     memberTitle: tr(locale, "我的昭梧", "我的昭梧", "My Zhaowu"),
-    ownerBadge: tr(locale, "站主 · 單一最終答案", "站主 · 单一最终答案", "Owner · one final answer"),
+    ownerBadge: tr(locale, "站主", "站主", "Owner"),
     reportsReadError: tr(locale, "報告讀取失敗。", "报告读取失败。", "Could not load reports."),
     reportReadError: tr(locale, "單筆報告讀取失敗。", "单笔报告读取失败。", "Could not load this report."),
     expired: tr(locale, "登入狀態已失效，請重新登入。", "登录状态已失效，请重新登录。", "Your session has expired. Sign in again."),
@@ -481,22 +481,27 @@ function AccountPage() {
   if (user.isOwner && !session) {
     return (
       <main className="mx-auto max-w-3xl space-y-5" data-owner-independent-console>
-        <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
-          <p className="text-xs tracking-[0.28em] text-cinnabar">OWNER CONSOLE</p>
-          <h1 className="mt-2 font-display text-3xl">{c.ownerTitle}</h1>
-          <p className="mt-4 text-sm leading-7 text-ink-soft">
-            {tr(locale, "站主身份已由昭梧獨立 Cookie 驗證，登入不再經 Supabase Auth。", "站主身份已由昭梧独立 Cookie 验证，登录不再经 Supabase Auth。", "Owner access is verified by Zhaowu's independent secure cookie. Supabase Auth is not used.")}
-          </p>
-          <div className="mt-5 rounded-lg border border-cinnabar/20 bg-paper/55 p-4">
-            <p className="text-sm font-medium text-ink">{tr(locale, "資料服務狀態", "数据服务状态", "Data service status")}</p>
-            <p className="mt-2 text-sm leading-7 text-ink-soft">
-              {tr(locale, "報告、圖庫與壁紙上傳仍走 Supabase，目前若被 402 spend cap 擋住，那些面板會暫停。站主登入、後台入口與背景音樂改由後台直接上傳，不再依賴它。先前上傳的曲子仍鎖在 Supabase 流量上限裡，請在本頁「背景音樂管理」重新上傳。", "报告、图库与壁纸上传仍走 Supabase，目前若被 402 spend cap 挡住，那些面板会暂停。站主登录、后台入口与背景音乐改由后台直接上传，不再依赖它。先前上传的曲子仍锁在 Supabase 流量上限里，请在本页「背景音乐管理」重新上传。", "Reports, gallery and wallpaper uploads still use Supabase. Owner login, the console and background-music uploads no longer depend on it. Re-upload your tracks in Background music on this page.")}
+        <section className="seal-border rounded-[1.35rem] bg-cream/95 p-5 sm:p-7">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[10px] tracking-[0.22em] text-cinnabar">OWNER CONSOLE</p>
+              <h1 className="mt-1 font-display text-3xl">{c.ownerTitle}</h1>
+              <p className="mt-2 text-sm leading-6 text-ink-soft">
+                {tr(locale, "管理網站內容、音樂與素材。技術診斷預設收起。", "管理网站内容、音乐与素材。技术诊断默认收起。", "Manage site content, music and media. Technical diagnostics stay collapsed.")}
+              </p>
+            </div>
+            <button type="button" onClick={() => void signOut()} className="shrink-0 rounded-full border border-line bg-paper/70 px-4 py-2 text-xs text-ink-soft">
+              {tr(locale, "登出", "登出", "Sign out")}
+            </button>
+          </div>
+          <details className="mt-4 rounded-xl border border-line/70 bg-paper/30">
+            <summary className="cursor-pointer list-none px-4 py-3 text-xs text-ink-mute">
+              {tr(locale, "系統狀態", "系统状态", "System status")}
+            </summary>
+            <p className="border-t border-line/60 px-4 py-3 text-xs leading-5 text-ink-mute">
+              {tr(locale, "站主登入正常；部分依賴資料服務的舊功能目前暫停，恢復後會自動重新可用。", "站主登录正常；部分依赖数据服务的旧功能目前暂停，恢复后会自动重新可用。", "Owner sign-in is working. Some legacy data-backed tools are temporarily paused and will return automatically when the data service recovers.")}
             </p>
-          </div>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <Link to="/gallery" className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-5 text-sm">{tr(locale, "圖庫", "图库", "Gallery")}</Link>
-            <button type="button" onClick={() => void signOut()} className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-5 text-sm">{tr(locale, "登出", "登出", "Sign out")}</button>
-          </div>
+          </details>
         </section>
       </main>
     );

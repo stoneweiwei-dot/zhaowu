@@ -8,6 +8,9 @@ const player = await readFile(new URL("../src/components/background-music.tsx", 
 const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
 const organizer = await readFile(new URL("../src/components/owner-console-organizer.tsx", import.meta.url), "utf8");
 const gallery = await readFile(new URL("../src/components/owner-gallery-manager.tsx", import.meta.url), "utf8");
+const shellSource = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
+const account = await readFile(new URL("../src/routes/account.tsx", import.meta.url), "utf8");
+const galleryRoute = await readFile(new URL("../src/routes/gallery.tsx", import.meta.url), "utf8");
 
 test("owner music upload uses a deterministic native mobile path instead of browser ffmpeg", () => {
   assert.match(upload, /MAX_OUTPUT_BYTES = 15 \* 1024 \* 1024/);
@@ -41,12 +44,23 @@ test("owner console is mounted inside auth and keeps long account sections colla
   assert.match(organizer, /data-owner-background-music-manager/);
 });
 
-test("owner Gallery is collapsed by default, paginates by 18 and preserves Loading assets", () => {
-  assert.match(gallery, /type OwnerView = "atlas" \| "loading" \| "all"/);
+test("owner Gallery keeps content media separate from login/loading assets", () => {
+  assert.match(gallery, /type OwnerView = "atlas" \| "all"/);
   assert.match(gallery, /const PAGE_SIZE = 18/);
-  assert.match(gallery, /data-owner-gallery-drawer/);
-  assert.match(gallery, /LOADING_GALLERY_CATALOG/);
   assert.match(gallery, /isLoadingGalleryAsset/);
-  assert.match(gallery, /category: view === "loading" \? "loading" : "visual-library"/);
+  assert.match(gallery, /!isLoadingGalleryAsset\(asset\)/);
+  assert.doesNotMatch(gallery, /LOADING_GALLERY_CATALOG/);
+  assert.doesNotMatch(gallery, /view === "loading"/);
   assert.match(gallery, /setShown\(\(current\) => current \+ PAGE_SIZE\)/);
+});
+
+
+test("owner workspace hides public counters, dragon guide and technical status walls", () => {
+  assert.match(shellSource, /const isOwnerWorkspace = Boolean/);
+  assert.match(shellSource, /!isOwnerWorkspace \? \(/);
+  assert.match(shellSource, /!isLogin && !isOwnerWorkspace \? <GreenDragonGuide/);
+  assert.doesNotMatch(account, /402 spend cap|Supabase Auth/);
+  assert.doesNotMatch(galleryRoute, /BrandUiLibrary/);
+  assert.doesNotMatch(galleryRoute, /spend cap|Supabase data session/);
+  assert.match(galleryRoute, /系統內置小素材不在這裡展示|系统内置小素材不在这里展示/);
 });

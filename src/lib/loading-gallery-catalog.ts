@@ -102,3 +102,20 @@ export const LOADING_GALLERY_CATALOG: readonly LoadingCatalogItem[] = [
     created_at: "2026-09-09T00:00:06.000Z",
   },
 ];
+
+
+/**
+ * Owner login uses an intentionally tiny, curated subset.
+ * Loading posters, operational screenshots and internal UI artwork must never
+ * appear as selectable login media.
+ */
+export const LOGIN_VISUAL_CATALOG_KEYS = [
+  "loading-owner-lotus-bloom-r53",
+  "loading-owner-immortal-ascent-r123",
+] as const;
+
+const LOGIN_VISUAL_CATALOG_KEY_SET = new Set<string>(LOGIN_VISUAL_CATALOG_KEYS);
+
+export const LOGIN_VISUAL_CATALOG = LOADING_GALLERY_CATALOG.filter((item) =>
+  LOGIN_VISUAL_CATALOG_KEY_SET.has(item.asset_key),
+);

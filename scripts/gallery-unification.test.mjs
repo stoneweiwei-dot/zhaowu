@@ -23,9 +23,9 @@ test("one visible Gallery keeps owner asset management independent of the fixed 
   assert.match(account, /listOwnerBackgroundPage/);
   assert.match(account, /setBackgroundWallpaper/);
 
-  assert.match(gallery, /你只需要把喜欢的图放进来/);
-  assert.match(gallery, /分类、五行、用途、客户匹配与背景调用都由系统在后台处理/);
-  assert.match(gallery, /category:\s*view === "loading" \? "loading" : "visual-library"/);
+  assert.match(gallery, /登录画面在上方独立管理|登入畫面在上方獨立管理/);
+  assert.match(gallery, /Loading 与界面小素材不会混进这里|Loading 與介面小素材不會混進這裡/);
+  assert.match(gallery, /category:\s*"visual-library"/);
   assert.match(gallery, /auto-classify/);
   assert.doesNotMatch(gallery, /category === "background" \? "site-wallpaper"/);
 

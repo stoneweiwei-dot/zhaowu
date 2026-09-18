@@ -30,7 +30,8 @@ test("home keeps a compact mixed atlas preview while the full public atlas has i
   assert.match(groups, /"recent-upload",/);
   assert.match(groups, /if \(key\.startsWith\("reference-"\)\) return "reference"/);
   assert.doesNotMatch(groups.match(/PUBLIC_ATLAS_GROUPS = \[([\s\S]*?)\]/)?.[1] ?? "", /"reference"/);
-  assert.match(owner, /分類、五行、用途、客戶匹配與背景調用都由系統在後台處理/);
+  assert.match(owner, /auto-classify/);
+  assert.match(owner, /!isLoadingGalleryAsset\(asset\)/);
   assert.doesNotMatch(owner, /聖像.*道韻.*瑞獸/s);
   assert.match(ownerRoute, /if \(!user\.isOwner\)/);
 });
