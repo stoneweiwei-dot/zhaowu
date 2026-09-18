@@ -315,7 +315,7 @@ export function GreenDragonGuide() {
           </button>
           {bubble.kind === "music" ? (
             <div className="zhaowu-dragon-bubble-player" aria-label={copy.music}>
-              <button type="button" onClick={() => sendMusicCommand("toggle")} aria-label={musicStatus.playing ? (locale === "en" ? "Pause" : "暫停") : (locale === "en" ? "Play" : "播放")}>{musicStatus.playing ? "Ⅱ" : "▶"}</button>
+              <button type="button" data-background-music-control onClick={() => sendMusicCommand("toggle")} aria-label={musicStatus.playing ? (locale === "en" ? "Pause" : "暫停") : (locale === "en" ? "Play" : "播放")}>{musicStatus.playing ? "Ⅱ" : "▶"}</button>
               <button type="button" onClick={() => sendMusicCommand("next")} aria-label={locale === "en" ? "Next track" : locale === "zh-Hans" ? "下一首" : "下一首"}>⏭</button>
             </div>
           ) : null}
