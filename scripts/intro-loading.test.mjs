@@ -46,7 +46,7 @@ test('bootstrap does not preload customer report copy that belongs to result ren
   assert.doesNotMatch(bootstrap, /from ["']@\/lib\/report\/customer-copy["']/);
 });
 
-test('opening contract is a full five seconds with only a later emergency hard exit', () => {
+test('opening targets three seconds, fails open, and never blocks beyond five seconds', () => {
   let scheduledDelay = null;
   let scheduledCallback = null;
   let cancelledTimer = null;
@@ -62,22 +62,23 @@ test('opening contract is a full five seconds with only a later emergency hard e
     () => { exited = true; },
   );
 
-  assert.equal(INTRO_GATE_MIN_VISIBLE_MS, 5000);
+  assert.equal(INTRO_GATE_MIN_VISIBLE_MS, 1000);
   assert.equal(INTRO_GATE_NATIVE_MS, 5000);
-  assert.equal(INTRO_GATE_TARGET_MS, 5000);
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 8000);
+  assert.equal(INTRO_GATE_TARGET_MS, 3000);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 5000);
   assert.equal(INTRO_GATE_ERROR_EXIT_MS, 1600);
   assert.ok(INTRO_GATE_HARD_EXIT_MS > INTRO_GATE_MIN_VISIBLE_MS);
-  assert.equal(scheduledDelay, 8000);
+  assert.equal(scheduledDelay, 5000);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
   assert.equal(cancelledTimer, 17);
 });
 
-test('intro cannot be skipped before five seconds and exits after the visual has completed', () => {
+test('intro can finish around the three-second target and broken media fails open quickly', () => {
   assert.match(gate, /onEnded=\{\(\) => setVisualDone\(true\)\}/);
   assert.match(gate, /minimumDone && visualDone/);
+  assert.match(gate, /targetDone && runtimeReady/);
   assert.match(gate, /INTRO_GATE_MIN_VISIBLE_MS/);
   assert.match(gate, /hasPlayedRef/);
   assert.match(gate, /INTRO_GATE_ERROR_EXIT_MS/);
@@ -87,7 +88,7 @@ test('intro cannot be skipped before five seconds and exits after the visual has
   assert.doesNotMatch(gate, /data-intro-skip/);
   assert.doesNotMatch(gate, /zhaowu-lotus-intro__skip/);
   assert.doesNotMatch(gate, /skipLabel/);
-  assert.doesNotMatch(gate, /runtimeReady/);
+  assert.match(gate, /setRuntimeReady/);
 });
 
 test('real visitors receive the opening on every app boot while Playwright may skip unless force=1', () => {
@@ -103,7 +104,7 @@ test('real visitors receive the opening on every app boot while Playwright may s
   markIntroSeen(fake);
   assert.equal(fake.getItem(INTRO_SEEN_KEY), '1');
   assert.equal(shouldSkipIntroGate(fake, false), false);
-  assert.equal(INTRO_SEEN_KEY, 'zhaowu.intro.seen.r148');
+  assert.equal(INTRO_SEEN_KEY, 'zhaowu.intro.seen.r149');
   assert.equal(INTRO_BROKEN_KEY, 'zhaowu.intro.broken');
 });
 
