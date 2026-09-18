@@ -22,6 +22,8 @@ test("only the dragon assistant owns the floating music entry", async () => {
 
 test("dragon assistant is draggable, snaps to an edge and persists its position", async () => {
   const guide = await source("src/components/green-dragon-guide.tsx");
+  const compatibilityCss = await source("src/content-layout-fixes.css");
+  assert.doesNotMatch(compatibilityCss, /\.zhaowu-dragon-guide\s*\{\s*position:\s*relative/);
   assert.match(guide, /POSITION_STORAGE_KEY/);
   assert.match(guide, /onPointerDown=\{beginDrag\}/);
   assert.match(guide, /onPointerMove=\{continueDrag\}/);
