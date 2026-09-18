@@ -27,7 +27,7 @@ import "@/home-portals-astrology.css";
 import "@/home-layout-r46.css";
 import "@/home-birth-hub-r60.css";
 
-export const Route = createFileRoute("/")({\n  component: Home,\n  errorComponent: ({ error }) => <pre data-home-error>{error instanceof Error ? error.message : String(error)}</pre>,\n});
+export const Route = createFileRoute("/")({ component: Home });
 
 type PortalId = SpecialistId | "bazi" | "numerology";
 
