@@ -50,7 +50,7 @@ test("EC-7 and the universal subgroup mainline are bound into runtime", () => {
   assert.match(instructionBase, /中和不等於五行平均/);
   assert.match(instructionBase, /缺項不等於病、補項不等於藥/);
   assert.match(instructionBase, /通關只在兩神真實相戰/);
-  assert.match(instructionBase, /跑步屬木、游泳屬水、重量訓練屬金/);
+  assert.match(runtime, /跑步屬木、游泳屬水、重量訓練屬金/);
   assert.match(p3, /P3-15｜EC-7/);
   assert.match(p3, /P3-16｜所有分組統一主分析流程/);
 });
