@@ -1,12 +1,39 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { useRouterState } from "@tanstack/react-router";
+import { BackgroundMusic } from "@/components/background-music";
 import {
   askSiteGuide,
   defaultSiteGuide,
   type SiteGuideAnswer,
   type SiteGuideRoute,
 } from "@/lib/site-guide";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, type Locale } from "@/lib/i18n";
+
+const POSITION_STORAGE_KEY = "zhaowu.dragonAssistant.position.v1";
+const DOCK_SIZE = 64;
+const EDGE_GAP = 10;
+const TOP_GAP = 76;
+const BOTTOM_GAP = 78;
+
+type DockPosition = { x: number; y: number };
+type MusicStatus = {
+  playing: boolean;
+  loading: boolean;
+  trackId: string | null;
+  trackName: string | null;
+  loopEnabled: boolean;
+  shuffleEnabled: boolean;
+};
+type BubbleState = { kind: "guide" | "music"; text: string };
+
+const EMPTY_MUSIC_STATUS: MusicStatus = {
+  playing: false,
+  loading: false,
+  trackId: null,
+  trackName: null,
+  loopEnabled: true,
+  shuffleEnabled: false,
+};
 
 function go(route: SiteGuideRoute) {
   if (route === "/#analysisForm") {
@@ -17,6 +44,63 @@ function go(route: SiteGuideRoute) {
   window.location.assign(route);
 }
 
+function clampPosition(position: DockPosition): DockPosition {
+  if (typeof window === "undefined") return position;
+  const maxX = Math.max(EDGE_GAP, window.innerWidth - DOCK_SIZE - EDGE_GAP);
+  const maxY = Math.max(TOP_GAP, window.innerHeight - DOCK_SIZE - BOTTOM_GAP);
+  return {
+    x: Math.min(maxX, Math.max(EDGE_GAP, position.x)),
+    y: Math.min(maxY, Math.max(TOP_GAP, position.y)),
+  };
+}
+
+function readSavedPosition(): DockPosition | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(POSITION_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as DockPosition;
+    if (!Number.isFinite(parsed?.x) || !Number.isFinite(parsed?.y)) return null;
+    return clampPosition(parsed);
+  } catch {
+    return null;
+  }
+}
+
+function savePosition(position: DockPosition) {
+  try {
+    window.localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(position));
+  } catch {}
+}
+
+function guideBubbles(locale: Locale) {
+  if (locale === "en") {
+    return [
+      "Need a reading? Tap me and I’ll take you straight to the right section.",
+      "Your saved reports are one tap away in My history.",
+      "Start with your birth data, then open any of the seven reading paths.",
+      "You can move me. Drag the dragon to either side of the screen.",
+      "Music lives here too — tap me for the full playlist controls.",
+    ];
+  }
+  if (locale === "zh-Hans") {
+    return [
+      "不知道从哪里开始？点我，我直接带你去对应分析。",
+      "以前生成过的报告，可以从「我的记录」重新打开。",
+      "先保存生辰，再进入七种分析，不需要每次重新填写。",
+      "我可以移动：按住小龙拖到屏幕两边都可以。",
+      "播放器也在我这里，点开就能切歌、循环或随机播放。",
+    ];
+  }
+  return [
+    "不知道從哪裡開始？點我，我直接帶你去對應分析。",
+    "以前生成過的報告，可以從「我的紀錄」重新打開。",
+    "先保存生辰，再進入七種分析，不需要每次重新填寫。",
+    "我可以移動：按住小龍拖到螢幕兩邊都可以。",
+    "播放器也在我這裡，點開就能切歌、循環或隨機播放。",
+  ];
+}
+
 export function GreenDragonGuide() {
   const { locale } = useI18n();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
@@ -24,14 +108,122 @@ export function GreenDragonGuide() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [answer, setAnswer] = useState<SiteGuideAnswer>(() => defaultSiteGuide(locale));
+  const [position, setPosition] = useState<DockPosition | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const [bubble, setBubble] = useState<BubbleState | null>(null);
+  const [musicStatus, setMusicStatus] = useState<MusicStatus>(EMPTY_MUSIC_STATUS);
+  const dragRef = useRef<{ pointerId: number; startX: number; startY: number; originX: number; originY: number; moved: boolean } | null>(null);
+  const suppressClickRef = useRef(false);
 
-  useEffect(() => { setAnswer(defaultSiteGuide(locale)); }, [locale]);
+  useEffect(() => {
+    setAnswer(defaultSiteGuide(locale));
+  }, [locale]);
+
+  useEffect(() => {
+    const saved = readSavedPosition();
+    if (saved) {
+      setPosition(saved);
+      return;
+    }
+    const setDefault = () => setPosition(clampPosition({
+      x: window.innerWidth - DOCK_SIZE - EDGE_GAP,
+      y: window.innerHeight - DOCK_SIZE - BOTTOM_GAP,
+    }));
+    setDefault();
+  }, []);
+
+  useEffect(() => {
+    const onResize = () => setPosition((current) => current ? clampPosition(current) : current);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  useEffect(() => {
+    const onStatus = (event: Event) => {
+      const detail = (event as CustomEvent<MusicStatus>).detail;
+      if (!detail) return;
+      setMusicStatus(detail);
+    };
+    window.addEventListener("zhaowu-music-status", onStatus as EventListener);
+    return () => window.removeEventListener("zhaowu-music-status", onStatus as EventListener);
+  }, []);
+
+  useEffect(() => {
+    if (open || dragging) {
+      setBubble(null);
+      return;
+    }
+
+    let showTimer = 0;
+    let hideTimer = 0;
+    let disposed = false;
+
+    const schedule = (delay: number) => {
+      showTimer = window.setTimeout(() => {
+        if (disposed || document.hidden) {
+          schedule(12_000);
+          return;
+        }
+
+        const guidePool = guideBubbles(locale);
+        const showMusic = Math.random() < 0.38;
+        if (showMusic) {
+          const fallback = locale === "en" ? "Background music is ready." : locale === "zh-Hans" ? "背景音乐已经准备好了。" : "背景音樂已經準備好了。";
+          const status = musicStatus.trackName
+            ? (musicStatus.playing
+                ? (locale === "en" ? `Playing · ${musicStatus.trackName}` : locale === "zh-Hans" ? `正在播放 · ${musicStatus.trackName}` : `正在播放 · ${musicStatus.trackName}`)
+                : (locale === "en" ? `Music · ${musicStatus.trackName}` : `音樂 · ${musicStatus.trackName}`))
+            : fallback;
+          setBubble({ kind: "music", text: status });
+        } else {
+          setBubble({ kind: "guide", text: guidePool[Math.floor(Math.random() * guidePool.length)] });
+        }
+
+        hideTimer = window.setTimeout(() => setBubble(null), 5_800);
+        schedule(18_000 + Math.floor(Math.random() * 14_000));
+      }, delay);
+    };
+
+    schedule(4_800);
+    return () => {
+      disposed = true;
+      window.clearTimeout(showTimer);
+      window.clearTimeout(hideTimer);
+    };
+  }, [open, dragging, locale, musicStatus.trackName, musicStatus.playing]);
 
   const copy = locale === "en"
-    ? { title: "Jade Dragon guide", intro: "Choose a reading, a self-test, or reopen a report. I will take you straight there.", placeholder: "For example: show my previous Zi Wei report", ask: "Ask", close: "Close guide", open: "Open Jade Dragon guide" }
+    ? {
+        title: "Jade Dragon guide",
+        intro: "Guide and music are now in one movable assistant.",
+        placeholder: "For example: show my previous Zi Wei report",
+        ask: "Ask",
+        close: "Close guide",
+        open: "Open Jade Dragon guide",
+        drag: "Drag Jade Dragon",
+        music: "Music",
+      }
     : locale === "zh-Hans"
-      ? { title: "青玉小龙导航", intro: "选择一种分析、趣味测验，或重看以前的报告，我带你直接前往。", placeholder: "例如：我想看以前的紫微报告", ask: "问小龙", close: "关闭导航", open: "打开青玉小龙导航" }
-      : { title: "青玉小龍導覽", intro: "選擇一種分析、趣味測驗，或重看以前的報告，我帶你直接前往。", placeholder: "例如：我想看以前的紫微報告", ask: "問小龍", close: "關閉導覽", open: "打開青玉小龍導覽" };
+      ? {
+          title: "青玉小龙助手",
+          intro: "网站导航和背景音乐已经合在这里，也可以拖动到顺手的位置。",
+          placeholder: "例如：我想看以前的紫微报告",
+          ask: "问小龙",
+          close: "关闭助手",
+          open: "打开青玉小龙助手",
+          drag: "拖动青玉小龙",
+          music: "音乐",
+        }
+      : {
+          title: "青玉小龍助手",
+          intro: "網站導覽和背景音樂已經合在這裡，也可以拖動到順手的位置。",
+          placeholder: "例如：我想看以前的紫微報告",
+          ask: "問小龍",
+          close: "關閉助手",
+          open: "打開青玉小龍助手",
+          drag: "拖動青玉小龍",
+          music: "音樂",
+        };
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -47,24 +239,135 @@ export function GreenDragonGuide() {
     }
   }
 
+  const beginDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.button !== 0) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: position?.x ?? rect.left,
+      originY: position?.y ?? rect.top,
+      moved: false,
+    };
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  };
+
+  const continueDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+    if (!drag.moved && Math.hypot(dx, dy) < 5) return;
+    drag.moved = true;
+    setDragging(true);
+    setOpen(false);
+    setBubble(null);
+    setPosition(clampPosition({ x: drag.originX + dx, y: drag.originY + dy }));
+  };
+
+  const endDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    if (!drag.moved) return;
+    suppressClickRef.current = true;
+    setDragging(false);
+    setPosition((current) => {
+      if (!current) return current;
+      const rightX = Math.max(EDGE_GAP, window.innerWidth - DOCK_SIZE - EDGE_GAP);
+      const snapped = clampPosition({
+        x: current.x + DOCK_SIZE / 2 < window.innerWidth / 2 ? EDGE_GAP : rightX,
+        y: current.y,
+      });
+      savePosition(snapped);
+      return snapped;
+    });
+  };
+
+  const onTriggerClick = () => {
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      return;
+    }
+    setBubble(null);
+    setOpen((value) => !value);
+  };
+
+  const sendMusicCommand = (command: "toggle" | "next" | "previous") => {
+    window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command } }));
+  };
+
+  const isLeft = position ? position.x + DOCK_SIZE / 2 < (typeof window === "undefined" ? 0 : window.innerWidth / 2) : false;
+  const opensDown = position ? position.y < (typeof window === "undefined" ? 0 : window.innerHeight * 0.48) : false;
+
   return (
-    <aside className="zhaowu-dragon-guide" data-site-guide>
-      {open ? (
-        <section className="zhaowu-dragon-guide-panel" role="dialog" aria-label={copy.title}>
-          <header><span className="zhaowu-dragon-guide-avatar is-thinking" aria-hidden /><div><strong>{copy.title}</strong><p>{copy.intro}</p></div><button type="button" onClick={() => setOpen(false)} aria-label={copy.close}>×</button></header>
-          <div className="zhaowu-dragon-guide-answer" aria-live="polite"><p>{answer.reply}</p>{answer.route && answer.cta ? <button type="button" onClick={() => answer.route && go(answer.route)}>{answer.cta}<span aria-hidden>→</span></button> : null}</div>
-          <div className="zhaowu-dragon-guide-shortcuts" aria-label={locale === "en" ? "Reading navigation" : locale === "zh-Hans" ? "分析导航" : "分析導覽"}>
-            <button type="button" onClick={() => go("/#analysisForm")}>{locale === "en" ? "BaZi" : "八字分析"}</button>
-            <button type="button" onClick={() => go("/qizheng")}>{locale === "en" ? "Seven Luminaries" : locale === "zh-Hans" ? "七政四余" : "七政四餘"}</button>
-            <button type="button" onClick={() => go("/yizhangjing")}>{locale === "en" ? "Past & Present" : "前世今生"}</button>
-            <button type="button" onClick={() => go("/ziwei")}>{locale === "en" ? "Zi Wei" : locale === "zh-Hans" ? "紫微斗数" : "紫微斗數"}</button>
-            <button type="button" onClick={() => window.location.assign("/fun-tests")}>{locale === "en" ? "Fun tests" : locale === "zh-Hans" ? "趣味测验" : "趣味測驗"}</button>
-            <button type="button" onClick={() => go("/history")}>{locale === "en" ? "My history" : locale === "zh-Hans" ? "我的记录" : "我的紀錄"}</button>
-          </div>
-          <form onSubmit={submit}><input value={input} onChange={(event) => setInput(event.target.value)} maxLength={400} placeholder={copy.placeholder} aria-label={copy.placeholder} /><button type="submit" disabled={busy || !input.trim()}>{busy ? "…" : copy.ask}</button></form>
-        </section>
+    <aside
+      className={`zhaowu-dragon-guide ${isLeft ? "is-left" : "is-right"} ${opensDown ? "opens-down" : "opens-up"} ${dragging ? "is-dragging" : ""}`}
+      data-site-guide
+      data-dragon-assistant
+      data-dragon-side={isLeft ? "left" : "right"}
+      style={position ? { left: position.x, top: position.y, right: "auto", bottom: "auto" } : undefined}
+    >
+      {bubble ? (
+        <div className={`zhaowu-dragon-bubble ${bubble.kind === "music" ? "is-music" : "is-guide"}`} data-dragon-bubble>
+          <button type="button" className="zhaowu-dragon-bubble-main" onClick={() => { setBubble(null); setOpen(true); }} aria-label={copy.open}>
+            <span>{bubble.text}</span>
+          </button>
+          {bubble.kind === "music" ? (
+            <div className="zhaowu-dragon-bubble-player" aria-label={copy.music}>
+              <button type="button" data-background-music-control onClick={() => sendMusicCommand("toggle")} aria-label={musicStatus.playing ? (locale === "en" ? "Pause" : "暫停") : (locale === "en" ? "Play" : "播放")}>{musicStatus.playing ? "Ⅱ" : "▶"}</button>
+              <button type="button" onClick={() => sendMusicCommand("next")} aria-label={locale === "en" ? "Next track" : locale === "zh-Hans" ? "下一首" : "下一首"}>⏭</button>
+            </div>
+          ) : null}
+        </div>
       ) : null}
-      <button className="zhaowu-dragon-guide-trigger" type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label={open ? copy.close : copy.open}><span className="zhaowu-dragon-guide-avatar" aria-hidden /><span>{locale === "en" ? "Guide" : locale === "zh-Hans" ? "问小龙" : "問小龍"}</span></button>
+
+      <section className="zhaowu-dragon-guide-panel" role="dialog" aria-label={copy.title} hidden={!open}>
+        <header>
+          <span className="zhaowu-dragon-guide-avatar is-thinking" aria-hidden />
+          <div><strong>{copy.title}</strong><p>{copy.intro}</p></div>
+          <button type="button" onClick={() => setOpen(false)} aria-label={copy.close}>×</button>
+        </header>
+
+        <BackgroundMusic />
+
+        <div className="zhaowu-dragon-guide-answer" aria-live="polite">
+          <p>{answer.reply}</p>
+          {answer.route && answer.cta ? <button type="button" onClick={() => answer.route && go(answer.route)}>{answer.cta}<span aria-hidden>→</span></button> : null}
+        </div>
+
+        <div className="zhaowu-dragon-guide-shortcuts" aria-label={locale === "en" ? "Reading navigation" : locale === "zh-Hans" ? "分析导航" : "分析導覽"}>
+          <button type="button" onClick={() => go("/#analysisForm")}>{locale === "en" ? "BaZi" : "八字分析"}</button>
+          <button type="button" onClick={() => go("/qizheng")}>{locale === "en" ? "Seven Luminaries" : locale === "zh-Hans" ? "七政四余" : "七政四餘"}</button>
+          <button type="button" onClick={() => go("/yizhangjing")}>{locale === "en" ? "Past & Present" : "前世今生"}</button>
+          <button type="button" onClick={() => go("/ziwei")}>{locale === "en" ? "Zi Wei" : locale === "zh-Hans" ? "紫微斗数" : "紫微斗數"}</button>
+          <button type="button" onClick={() => window.location.assign("/fun-tests")}>{locale === "en" ? "Fun tests" : locale === "zh-Hans" ? "趣味测验" : "趣味測驗"}</button>
+          <button type="button" onClick={() => go("/history")}>{locale === "en" ? "My history" : locale === "zh-Hans" ? "我的记录" : "我的紀錄"}</button>
+        </div>
+
+        <form onSubmit={submit}>
+          <input value={input} onChange={(event) => setInput(event.target.value)} maxLength={400} placeholder={copy.placeholder} aria-label={copy.placeholder} />
+          <button type="submit" disabled={busy || !input.trim()}>{busy ? "…" : copy.ask}</button>
+        </form>
+      </section>
+
+      <button
+        className="zhaowu-dragon-guide-trigger"
+        type="button"
+        onPointerDown={beginDrag}
+        onPointerMove={continueDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onClick={onTriggerClick}
+        aria-expanded={open}
+        aria-label={open ? copy.close : copy.open}
+        title={copy.drag}
+      >
+        <span className="zhaowu-dragon-guide-avatar" aria-hidden />
+        <span className="zhaowu-dragon-guide-label">{locale === "en" ? "Guide" : locale === "zh-Hans" ? "小龙" : "小龍"}</span>
+        {musicStatus.playing ? <span className="zhaowu-dragon-playing-dot" aria-hidden /> : null}
+      </button>
     </aside>
   );
 }

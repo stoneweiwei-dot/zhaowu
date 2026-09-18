@@ -2,22 +2,22 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.19-r156",
-  updateNumber: 156,
-  publishedAt: "2026-09-19T05:24:00+10:00",
-  latestSummary: "後台檔案管理加入統一多選／批量操作；背景音樂可上傳後改名，並可一次刪除多首非播放中曲目。",
+  version: "ZW-WEB-2026.09.19-r157",
+  updateNumber: 157,
+  publishedAt: "2026-09-19T05:27:00+10:00",
+  latestSummary: "右下角播放器與青玉小龍合併成單一可拖動助手：隨機導覽／音樂氣泡與完整歌單控制共用同一入口，移除雙重浮層。",
   details: {
     "zh-Hant": [
-      "背景音樂上傳後可直接改名；曲名只改 manifest 顯示名稱，不重新轉碼、不重傳音檔。",
-      "背景音樂、素材圖庫、登入素材、首頁背景、客戶報告全部加入獨立選取框與批量操作列。",
-      "批量刪除均要求二次確認；音樂目前播放中的曲目不可被批量刪除，避免正在播放資產失效。",
-      "圖庫與背景同時提供批量啟用／停用；所有主要多選控制維持 iPhone 觸控尺寸。",
+      "右下角只保留一個青玉小龍助手；獨立音樂浮層退出 active path，消除重影與 z-index 競爭。",
+      "小龍可拖動並自動吸附左右邊緣，位置保存在本機；未展開時會間歇隨機顯示導覽提示或迷你音樂氣泡。",
+      "點開小龍後保留完整音樂控制：播放／暫停、上一首、下一首、循環與隨機；沿用現有站主歌單與 Safari 手勢解鎖。",
+      "r156 的音樂改名與後台批量操作全部保留，本次只改前台浮層組合與互動。",
     ],
     en: [
-      "Uploaded background tracks can now be renamed without retranscoding or reuploading the audio file.",
-      "Music, media library, login visuals, homepage backgrounds and customer reports now share consistent multi-select batch controls.",
-      "Batch deletion always requires confirmation; the currently active music track cannot be bulk deleted.",
-      "Media and background assets also support batch enable/disable, with mobile-sized controls preserved.",
+      "The bottom-right UI now uses one Jade Dragon assistant; the separate floating music dock is removed from the active path.",
+      "The dragon can be dragged, snaps to either edge, persists its position locally, and occasionally shows a guide tip or compact music bubble.",
+      "Opening the dragon keeps the full playlist controls: play/pause, previous, next, loop and shuffle, using the existing owner playlist and Safari gesture unlock.",
+      "The r156 owner-side music rename and bulk-management tools remain intact; this release only changes the public floating UI composition.",
     ],
   },
 } as const;

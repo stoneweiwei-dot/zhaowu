@@ -5,10 +5,11 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("background music exposes a five-control iPhone-safe playlist transport", async () => {
+test("dragon assistant embeds a five-control iPhone-safe playlist transport", async () => {
   const music = await source("src/components/background-music.tsx");
   assert.match(music, /data-background-music-player/);
-  assert.match(music, /grid-cols-5/);
+  assert.match(music, /data-dragon-music-controls/);
+  assert.match(music, /zhaowu-dragon-music-controls/);
   assert.match(music, /min-h-11 min-w-11/);
   assert.match(music, /上一首/);
   assert.match(music, /下一首/);
