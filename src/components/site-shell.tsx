@@ -81,6 +81,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
   const galleryLabel = displayText(language, "圖庫", "图库", "Gallery", "ギャラリー", "갤러리", "गैलरी");
   const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기", "गैलरी खोलें");
+  const ownerEntryLabel = displayText(language, "站主入口", "站主入口", "Owner", "管理者", "관리자", "स्वामी");
   const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
 
@@ -112,7 +113,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 {isPending ? <span className="zhaowu-header-pending" /> : user ? <>
                   <Link to="/account" className="zhaowu-header-utility"><BrandIcon name="account" />{user.isOwner ? t("navAdmin") : t("navMine")}</Link>
                   <button type="button" onClick={() => void signOut()} className="zhaowu-header-utility zhaowu-header-signout">{authEnabled ? t("logout") : user.displayName}</button>
-                </> : null}
+                </> : <Link to="/login" className="zhaowu-header-utility" data-owner-login-entry="true" aria-label={ownerEntryLabel}><BrandIcon name="account" />{ownerEntryLabel}</Link>}
               </div>
             </div>
 

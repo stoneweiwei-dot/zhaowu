@@ -42,6 +42,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
     await expect(page.locator("#analysis-question")).toHaveCount(0);
     await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "站主入口", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "站主入口", exact: true })).toHaveAttribute("href", "/login");
     await expect(page.getByText("子時換日", { exact: true })).toHaveCount(0);
     await expect(page.getByText("套用真太陽時校正", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: /前世今生/ })).toBeVisible();

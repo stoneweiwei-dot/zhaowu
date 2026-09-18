@@ -3,13 +3,18 @@ import { BrandUiLibrary } from "@/components/brand-ui-library";
 import { OwnerGalleryManager } from "@/components/owner-gallery-manager";
 import { OwnerLoginVisualsManager } from "@/components/owner-login-visuals-manager";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { createOwnerCookieSession } from "@/lib/owner-data-client";
+import type { SupabaseSession } from "@/lib/supabase-rest";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/gallery")({ component: GalleryPage });
 
 function GalleryPage() {
   const { locale } = useI18n();
-  const { user, session, isPending } = useCurrentUserState();
+  const { user, session: authSession, isPending } = useCurrentUserState();
+  const session = user?.isOwner && !authSession
+    ? createOwnerCookieSession() as SupabaseSession
+    : authSession;
   const tx = (hant: string, hans: string, en: string) => locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
 
   if (isPending) return <div className="mx-auto h-52 max-w-3xl animate-pulse rounded-xl bg-cream/70" />;

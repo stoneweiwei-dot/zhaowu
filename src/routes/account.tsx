@@ -8,7 +8,9 @@ import {
   listReportRecords,
   type ReportListRecord,
   type ReportRecord,
-} from "@/lib/supabase-rest";
+  type SupabaseSession,
+} from "@/lib/bridge/supabase-rest";
+import { createOwnerCookieSession } from "@/lib/owner-data-client";
 import {
   backgroundPublicUrl,
   clearBackgroundWallpaper,
@@ -20,12 +22,12 @@ import {
   setBackgroundWallpaper,
   uploadBackground,
   type BackgroundAsset,
-} from "@/lib/background-assets";
+} from "@/lib/bridge/background-assets";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
 import { ReportDragonSticker } from "@/components/report-dragon-sticker";
 import { DecreeImageReason } from "@/components/decree-image-reason";
-import { generateDecreeImage } from "@/lib/report/decree-image";
+import { generateDecreeImage } from "@/lib/bridge/decree-image";
 import type { ReportSection } from "@/lib/report/focused-report";
 import { TeaGuardianReport } from "@/components/tea-guardian-report";
 
@@ -160,7 +162,10 @@ function BackgroundAssetCard({
 
 function AccountPage() {
   const { t, locale } = useI18n();
-  const { user, session, isPending } = useCurrentUserState();
+  const { user, session: authSession, isPending } = useCurrentUserState();
+  const session = user?.isOwner && !authSession
+    ? createOwnerCookieSession() as SupabaseSession
+    : authSession;
   const [rows, setRows] = useState<ReportListRecord[]>([]);
   const [details, setDetails] = useState<Record<string, ReportRecord | null>>({});
   const [openId, setOpenId] = useState<string | null>(null);

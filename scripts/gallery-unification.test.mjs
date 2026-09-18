@@ -19,10 +19,11 @@ test("one visible Gallery keeps owner asset management independent of the fixed 
   assert.match(shell, /to="\/gallery"/);
   assert.match(shell, /"图库"/);
 
-  assert.match(account, /from "@\/lib\/background-assets"/);
+  assert.match(account, /from "@\/lib\/bridge\/background-assets"/);
   assert.match(account, /listOwnerBackgroundPage/);
   assert.match(account, /setBackgroundWallpaper/);
 
+  assert.match(gallery, /from "@\/lib\/bridge\/gallery-assets"/);
   assert.match(gallery, /你只需要把喜欢的图放进来/);
   assert.match(gallery, /分类、五行、用途、客户匹配与背景调用都由系统在后台处理/);
   assert.match(gallery, /category:\s*view === "loading" \? "loading" : "visual-library"/);
