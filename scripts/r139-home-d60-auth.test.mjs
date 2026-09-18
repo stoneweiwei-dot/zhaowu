@@ -14,8 +14,12 @@ test("homepage keeps birth first and restores the question stage after birth sav
   assert.match(form, /你真正想問的是什麼/);
   assert.match(form, /analyzeLife\(/);
   assert.match(form, /const showQuestion = Boolean\(rememberedRecord && !detailsOpen\)/);
-  assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="question-stage"'));
-  assert.match(home, /href="#customer-record"/);
+  assert.match(form, /id="bazi" className="zhaowu-bazi-hub/);
+  assert.match(form, /BaziChart/);
+  assert.match(form, /data-home-bazi-explanation/);
+  assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="bazi"'));
+  assert.ok(form.indexOf('id="bazi"') < form.indexOf('id="question-stage"'));
+  assert.match(home, /href=\{birth \? "#bazi" : "#customer-record"\}/);
 });
 
 test("D60 belongs to Indian astrology and is gone from Past & Present", async () => {
