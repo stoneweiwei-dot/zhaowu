@@ -73,9 +73,13 @@ test("the shell mounts a non-blocking local-only green dragon guide", async () =
   assert.match(guide, /我的紀錄/);
   assert.doesNotMatch(edge, /性格兩面|性格两面|Two sides|tianji-dual/);
   assert.match(shell, /<GreenDragonGuide \/>[\s\S]*zhaowu-app-frame/);
-  assert.match(layout, /@media \(max-width: 640px\)/);
-  assert.match(layout, /\.zhaowu-dragon-guide-panel \{[\s\S]*position: static/);
-  assert.match(layout, /\.zhaowu-dragon-guide \{[\s\S]*position: relative/);
+  assert.match(guide, /data-dragon-assistant/);
+  assert.match(guide, /onPointerDown=\{beginDrag\}/);
+  assert.match(guide, /POSITION_STORAGE_KEY/);
+  assert.match(styles, /\.zhaowu-dragon-guide \{[\s\S]*position: fixed/);
+  assert.match(styles, /\.zhaowu-dragon-guide-panel \{[\s\S]*position: absolute/);
+  assert.doesNotMatch(layout, /\.zhaowu-dragon-guide-panel \{[\s\S]*position: static/);
+  assert.doesNotMatch(layout, /\.zhaowu-dragon-guide \{[\s\S]*position: relative/);
   assert.doesNotMatch(guide, /雙軌命盤|双轨命盘|Dual chart/);
   assert.doesNotMatch(guide, /Suspense|await.*render/);
 });
