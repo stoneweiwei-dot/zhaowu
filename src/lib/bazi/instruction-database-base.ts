@@ -56,6 +56,43 @@ export const currentMasterRuntimeInstructionRule: InstructionRule = {
 };
 
 /**
+ * R6.2.1-P3 / EC-7 全分組繼承 Gate。
+ * 任何八字或命理專項入口都必須先繼承同一條主分析鏈；專項只能放大自己的步驟。
+ */
+export const groupMainlineEc7RuntimeInstructionRule: InstructionRule = {
+  id: 'ZW-BAZI-GROUP-MAINLINE-EC7',
+  title: 'R6.2.1-P3／EC-7 全分組主鏈繼承協議',
+  status: 'production',
+  layer: 'core',
+  priority: 1,
+  purpose: '把所有八字／命理分組鎖回同一條主鏈，並加入氣勢集中、雙強相戰、中和、通關與生活五行的 EC-7 邊界，避免局部分組各自另起算法。',
+  rules: [
+    `所有八字／命理分組固定繼承：${BAZI_ANALYSIS_MAINLINE.join(' → ')}。`,
+    `資料校驗內仍要完成：${BAZI_DATA_VALIDATION_SUBSTEPS.join('、')}；這些是第一步的 deterministic 子檢查，不另起一條平行主線。`,
+    '專項分組只能放大自己的專題步驟，不得跳過其上游 Gate；同一個案中已完成且仍有效的上游結果可壓縮沿用。',
+    '若校時改變、從化真假未定、格局／病藥衝突、版本來源不明或關鍵證據失效，必須退回主鏈重判，不得由局部分組自行補假設。',
+    '紫微、七政、一掌經、D60、吠陀、風水、神煞等旁證保留自身算法；它們不得反向改寫子平格局、用神、病藥、喜忌與歲運，不適用步驟標記 N/A。',
+    '每次分析必須能區分模組狀態：已完成／壓縮沿用／N/A／受阻／降級；不得默認整套流程完成。',
+    '氣勢集中只是「主軸可能更明顯」的候選訊號，最終必須由成勢、承載、病藥、制化、ODL、FC共同裁決。',
+    '雙強相戰只是結構張力訊號；未完成旺衰、根氣、通關、制化與受損對象判定前，不得寫成爆發力、破局能力或高成就動機。',
+    '中和不等於五行平均；五行齊全不等於平庸，偏枯也不等於高級。',
+    '缺項不等於病、補項不等於藥；古典五行象法不得改寫成無條件固定配藥公式。',
+    '通關只在兩神真實相戰且第三者能承接生化時成立；不得把任何失衡都籠統歸為「找通關之神」。',
+    '運動、顏色、飲食、材質、方位、職業等生活五行只可作現代象意／生活旁證，不得反向修改格局、用神、相神、喜忌、病藥或歲運。',
+  ],
+  guards: [
+    '禁止分組跳步、局部算法覆蓋 CURRENT MASTER、或旁證反向改寫子平主判。',
+    '禁止把五行集中直接等同人生方向、人格、能力、成就或吉凶。',
+    '禁止把雙強相戰直接寫成優勢，把數量平均寫成中和，或把缺項寫成病。',
+    '禁止把運動／顏色／物件的五行象意寫成補用神、改命或人格改造機制。',
+  ],
+  outputContract: [
+    '每個專項輸出在內部必須能追溯到主鏈已完成／沿用／N/A／受阻／降級的狀態。',
+    '對外只展示與使用者問題相關的結果，不把內部狀態清單傾倒給客戶；證據不足時明確降級。',
+  ],
+};
+
+/**
  * R6.2.1-P3 偏枯／病藥 Gate。
  * 這是文字生成與分析路由的強制結構層；不修改 deterministic calculation truth。
  */
@@ -172,6 +209,7 @@ export const huagaiAuxiliaryInstructionRule: InstructionRule = {
 
 export const zhaowuInstructionDatabase: InstructionRule[] = [
   currentMasterRuntimeInstructionRule,
+  groupMainlineEc7RuntimeInstructionRule,
   pinkuBingyaoRuntimeInstructionRule,
   directAnswerRoutingInstructionRule,
   ...legacyInstructionDatabase,
