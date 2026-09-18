@@ -163,6 +163,17 @@
 - Logo：本批採站主金葫蘆＋深藍昭梧來源，Header 與 App 尺寸分開，取代 CURRENT-STATE 的 r98 松系主 Logo 限制；功能松系圖示仍保留。
 - 登入：2026-09-15 r139 依站主最新指令恢復會員登入／註冊，並新增 `/auth/callback`。r128／r129「普通用戶登入全部退出 active path」僅就**站主不得走 Supabase Auth、會員不得靠 `profiles.is_owner` 升成站主**仍然有效；「不得放出註冊」已被取代。
 
+## 2026-09-19 r156 青玉小龍 × 音樂播放器 UI supersession
+
+- 站主最新明確指令：右下角獨立音樂播放器與青玉小龍導覽不得再作兩個 fixed 浮層。
+- r149 的播放能力保持：播放／暫停、上一首、下一首、循環、隨機、完整 owner playlist、localStorage 偏好與 iPhone Safari user-gesture unlock 全部保留。
+- r149 的「獨立浮動 music dock」UI 在本範圍正式 `SUPERSEDED`；不得由舊測試、舊聊天或舊 CSS 恢復。
+- 唯一 active 浮層入口是青玉小龍助手：預設右下角，可拖動、吸附左右邊緣、保存位置。
+- 小龍未展開時可間歇隨機顯示單一 speech bubble；內容在站內導覽提示與迷你音樂播放器之間輪換。展開助手後停止 bubble 輪播。
+- 完整歌單控制只在小龍面板內呈現；迷你音樂 bubble 只提供輕量播放／暫停與下一首，點擊可進完整面板。
+- 全站同一時間只能有一個右下角主浮層入口，不得再渲染第二個播放器陰影、第二套 z-index dock 或平行音樂來源。
+- 此 supersession 只改 UI 組合與互動，不改 owner music API、Cookie 驗證、曲目檔案、Supabase schema、命理計算、報告、auth 或 payment。
+
 ## 2026-09-15 r139 homepage / D60 grouping / member auth / login animation / music error
 
 - 首頁拿掉問事標語與 textarea；只留客人資料與保存生辰。不得再發明隱藏預設問題。
