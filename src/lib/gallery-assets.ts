@@ -16,9 +16,9 @@ export type GalleryAsset = {
   is_primary: boolean;
   created_at: string;
   updated_at: string;
-  cdn_url: string | null;
-  cdn_provider: string | null;
-  cdn_verified_at: string | null;
+  cdn_url?: string | null;
+  cdn_provider?: string | null;
+  cdn_verified_at?: string | null;
 };
 
 function headers(token?: string | null, json = true): HeadersInit {
