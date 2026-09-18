@@ -306,6 +306,7 @@ export function GreenDragonGuide() {
       className={`zhaowu-dragon-guide ${isLeft ? "is-left" : "is-right"} ${opensDown ? "opens-down" : "opens-up"} ${dragging ? "is-dragging" : ""}`}
       data-site-guide
       data-dragon-assistant
+      data-dragon-side={isLeft ? "left" : "right"}
       style={position ? { left: position.x, top: position.y, right: "auto", bottom: "auto" } : undefined}
     >
       {bubble ? (
