@@ -27,7 +27,7 @@ export const currentMasterRuntimeInstructionRule: InstructionRule = {
   status: 'production',
   layer: 'core',
   priority: 0,
-  purpose: `把 ${BAZI_CURRENT_MASTER_SOURCE} 綁定到網站 runtime：任何子平分析都先遵守 ${BAZI_RUNTIME_CONTRACT_VERSION} 的 23 步主線與硬性禁區，再調用既有細則。`,
+  purpose: `把 ${BAZI_CURRENT_MASTER_SOURCE} 綁定到網站 runtime：任何子平分析都先遵守 ${BAZI_RUNTIME_CONTRACT_VERSION} 的 ${BAZI_ANALYSIS_MAINLINE.length} 步主線與硬性禁區，再調用既有細則。`,
   rules: [
     `完整子平主線固定依序為：${BAZI_ANALYSIS_MAINLINE.map((step, index) => `${index + 1}.${step}`).join(' → ')}。`,
     '從化判定必須先於一般格局取用；真從、假從、化格、專旺未成立時回到正常子平格局，不得見五行偏多就斷從。',
