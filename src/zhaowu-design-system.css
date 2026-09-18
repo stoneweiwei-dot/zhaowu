@@ -840,3 +840,752 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
   .zhaowu-lotus-intro__flower,
   .zhaowu-lotus-intro__ripple { animation: none !important; }
 }
+
+/*
+ * r152 final visual closure.
+ * This block deliberately lives inside the canonical stylesheet and wins last.
+ * It unifies the public site and owner workspace without creating another hotfix file.
+ */
+
+[data-site-status-strip] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 6px 14px !important;
+  margin: 0 0 8px !important;
+  border-bottom: 1px solid rgba(82, 65, 42, .10) !important;
+  padding: 0 2px 8px !important;
+  color: #6e675d !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+[data-site-status-strip] > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.zhaowu-latest-update-link {
+  display: inline-flex;
+  min-height: 44px !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(41, 75, 63, .16);
+  border-radius: 999px;
+  padding: 0 13px;
+  color: var(--zw-jade-deep);
+  background: rgba(255, 252, 244, .62);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.zhaowu-latest-update-link:hover,
+.zhaowu-latest-update-link:focus-visible {
+  border-color: rgba(41, 75, 63, .36);
+  background: rgba(233, 239, 228, .86);
+}
+
+.zhaowu-site-header > div,
+.zhaowu-header-shell {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  width: min(calc(100% - 24px), 980px) !important;
+  padding-inline: 0 !important;
+}
+
+.zhaowu-header-utility,
+.zhaowu-header-login,
+.zhaowu-header-owner-login,
+.zhaowu-header-home-link,
+.zhaowu-theme-toggle,
+.zhaowu-birth-edit,
+.zhaowu-question-birth-edit {
+  min-height: 44px !important;
+}
+
+.zhaowu-header-utility,
+.zhaowu-header-owner-login,
+.zhaowu-header-home-link {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(82, 65, 42, .14) !important;
+  border-radius: 999px !important;
+  padding: 0 13px !important;
+  color: var(--zw-ink-soft) !important;
+  background: rgba(255, 252, 244, .68) !important;
+  font-size: 13px !important;
+  font-weight: 680 !important;
+  text-decoration: none !important;
+}
+
+.zhaowu-header-owner-login {
+  border-color: rgba(41, 75, 63, .24) !important;
+  color: var(--zw-jade-deep) !important;
+}
+
+.site-lang-group {
+  display: grid !important;
+  grid-template-columns: 40px repeat(2, minmax(0, 1fr)) !important;
+  width: min(100%, 220px) !important;
+  min-height: 44px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(168, 134, 82, .38) !important;
+  border-radius: 999px !important;
+  padding: 0 !important;
+  background: rgba(255, 252, 244, .76) !important;
+  box-shadow: 0 6px 18px rgba(60, 46, 28, .05) !important;
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+}
+
+.zhaowu-language-icon {
+  display: grid;
+  width: 40px;
+  min-height: 44px;
+  place-items: center;
+  color: var(--zw-jade);
+}
+
+.site-lang-button {
+  min-width: 0 !important;
+  min-height: 44px !important;
+  border: 0 !important;
+  border-left: 1px solid rgba(71, 61, 47, .08) !important;
+  border-radius: 0 !important;
+  padding: 0 10px !important;
+  color: #5f584f !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  font-weight: 680 !important;
+  line-height: 1 !important;
+  letter-spacing: .02em !important;
+  white-space: nowrap;
+}
+
+.site-lang-button[data-active="true"],
+.site-lang-button[aria-pressed="true"] {
+  color: #fffaf0 !important;
+  background: #1f4e3a !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) !important;
+}
+
+.zhaowu-header-mode-toggle {
+  flex: 0 0 44px;
+  width: 44px !important;
+  min-width: 44px !important;
+  border: 1px solid rgba(168, 134, 82, .34) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 252, 244, .76) !important;
+  color: var(--zw-jade) !important;
+}
+
+/* Shared paper surfaces: consistent spacing, readable type and one card language. */
+.zhaowu-home-sheet-shell .zhaowu-customer-record,
+.zhaowu-home-sheet-shell .zhaowu-bazi-stage,
+.zhaowu-home-sheet-shell .zhaowu-question-stage,
+.zhaowu-home-layout .zhaowu-home-stage--directory,
+.zhaowu-home-layout .zhaowu-home-stage--gallery,
+.zhaowu-home-layout .zhaowu-home-stage--notes,
+.zhaowu-specialist-sheet,
+[data-owner-independent-console],
+[data-owner-gallery-console],
+.zhaowu-app-frame main > .seal-border {
+  border: 1px solid rgba(82, 65, 42, .14) !important;
+  border-radius: var(--zw-card-radius) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(196,160,90,.08), transparent 34%),
+    linear-gradient(155deg, rgba(255,252,244,.97), rgba(247,240,226,.94)) !important;
+  background-color: rgba(255, 252, 244, .78) !important;
+  box-shadow: var(--zw-shadow) !important;
+}
+
+.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+  gap: 24px !important;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-customer-record,
+.zhaowu-home-sheet-shell .zhaowu-bazi-stage,
+.zhaowu-home-sheet-shell .zhaowu-question-stage {
+  padding: clamp(24px, 4vw, 34px) !important;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-bazi-stage {
+  border-top: 1px solid rgba(82, 65, 42, .14) !important;
+  border-bottom: 1px solid rgba(82, 65, 42, .14) !important;
+}
+
+.zhaowu-section-kicker,
+.zhaowu-specialist-kicker,
+.zhaowu-updates-kicker {
+  color: #46685a !important;
+  font-size: 12px !important;
+  font-weight: 760 !important;
+  letter-spacing: .14em !important;
+}
+
+.zhaowu-section-lead,
+.zhaowu-specialist-sheet .lead,
+.zhaowu-updates-lead {
+  color: #645d54 !important;
+  font-size: 16px !important;
+  line-height: 1.78 !important;
+}
+
+.zhaowu-question-label,
+.zhaowu-birth-fields-title,
+.zhaowu-home-sheet-shell label {
+  font-size: 14px !important;
+}
+
+.zhaowu-question-promise span,
+.zhaowu-question-meta,
+.zhaowu-analysis-submit-wrap p,
+.zhaowu-bazi-pending,
+.zhaowu-useful-boundary {
+  font-size: 13px !important;
+}
+
+.zhaowu-home-sheet-shell input,
+.zhaowu-home-sheet-shell select,
+.zhaowu-home-sheet-shell textarea,
+[data-owner-independent-console] input,
+[data-owner-independent-console] select,
+[data-owner-independent-console] textarea,
+[data-owner-gallery-console] input,
+[data-owner-gallery-console] select,
+[data-owner-gallery-console] textarea,
+.stone-login-form input {
+  font-size: 16px !important;
+}
+
+.zhaowu-home-sheet-shell button,
+.zhaowu-home-sheet-shell a,
+.zhaowu-specialist-page button,
+.zhaowu-specialist-page a,
+[data-owner-independent-console] button,
+[data-owner-independent-console] a,
+[data-owner-gallery-console] button,
+[data-owner-gallery-console] a {
+  min-height: 44px;
+}
+
+.zhaowu-home-portals,
+.zhaowu-home-fun-grid {
+  gap: 12px !important;
+}
+
+.zhaowu-home-portal,
+.zhaowu-home-fun-card {
+  border: 1px solid rgba(82, 65, 42, .14) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 252, 244, .78) !important;
+  box-shadow: 0 8px 24px rgba(55, 44, 29, .045) !important;
+}
+
+.zhaowu-home-portal:hover,
+.zhaowu-home-fun-card:hover {
+  border-color: rgba(41, 75, 63, .28) !important;
+  transform: translateY(-1px);
+}
+
+.zhaowu-home-portal-copy strong,
+.zhaowu-home-fun-card strong {
+  font-size: 18px !important;
+  line-height: 1.42 !important;
+}
+
+.zhaowu-home-portal-copy small,
+.zhaowu-home-fun-card small,
+.zhaowu-home-portal-hint {
+  font-size: 14px !important;
+  line-height: 1.62 !important;
+}
+
+/* Specialist volumes and charts share the same reading rhythm. */
+.zhaowu-specialist-page {
+  width: min(100%, 820px) !important;
+  padding: 4px 0 48px !important;
+}
+
+.zhaowu-specialist-sheet {
+  overflow: hidden;
+  padding: clamp(26px, 5vw, 44px) !important;
+}
+
+.zhaowu-specialist-sheet h1 {
+  font-size: clamp(34px, 6vw, 46px) !important;
+  line-height: 1.2 !important;
+}
+
+.zhaowu-specialist-birth,
+.zhaowu-specialist-overview {
+  border-radius: 16px !important;
+  background: rgba(235, 241, 230, .70) !important;
+}
+
+.zhaowu-specialist-birth span,
+.zhaowu-specialist-birth small {
+  font-size: 14px !important;
+}
+
+.zhaowu-specialist-birth strong {
+  font-size: 17px !important;
+}
+
+.zhaowu-specialist-actions a,
+.zhaowu-specialist-actions button {
+  min-height: 48px !important;
+  border-radius: 999px !important;
+  font-size: 15px !important;
+}
+
+.zhaowu-specialist-sections h2,
+.zw-chart h2 {
+  font-size: 22px !important;
+  line-height: 1.42 !important;
+}
+
+.zhaowu-specialist-sections p,
+.zw-chart > p {
+  font-size: 16px !important;
+  line-height: 1.82 !important;
+}
+
+.zw-chart {
+  margin: 24px 0 !important;
+  border-color: rgba(82, 65, 42, .14) !important;
+  border-radius: 18px !important;
+  padding: 20px !important;
+  background: rgba(255, 252, 244, .82) !important;
+}
+
+.zw-chart-table {
+  font-size: 15px !important;
+}
+
+.zw-chart-table caption {
+  font-size: 18px !important;
+}
+
+.zw-chart-table th,
+.zw-chart-table td {
+  min-width: 0 !important;
+  padding: 10px 8px !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+
+/* Owner tools stay task-first, but no control or status becomes tiny. */
+[data-owner-independent-console],
+[data-owner-gallery-console] {
+  padding: clamp(22px, 4vw, 32px) !important;
+}
+
+[data-owner-independent-console] h1,
+[data-owner-independent-console] h2,
+[data-owner-gallery-console] h1,
+[data-owner-gallery-console] h2 {
+  line-height: 1.25 !important;
+}
+
+[data-owner-independent-console] button,
+[data-owner-independent-console] a,
+[data-owner-gallery-console] button,
+[data-owner-gallery-console] a,
+[data-owner-independent-console] summary,
+[data-owner-gallery-console] summary {
+  font-size: 14px !important;
+}
+
+[data-owner-independent-console] p,
+[data-owner-gallery-console] p {
+  font-size: 15px !important;
+  line-height: 1.7 !important;
+}
+
+/* Dedicated current-release page; metadata is live/fallback release data, never a stale SHA. */
+.zhaowu-updates-page {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 4px 0 56px;
+}
+
+.zhaowu-updates-hero,
+.zhaowu-updates-card {
+  border: 1px solid rgba(82, 65, 42, .14);
+  border-radius: var(--zw-card-radius);
+  padding: clamp(24px, 5vw, 40px);
+  background: rgba(255, 252, 244, .94);
+  box-shadow: var(--zw-shadow);
+}
+
+.zhaowu-updates-hero h1 {
+  margin: 8px 0 0;
+  color: var(--zw-ink);
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: clamp(32px, 7vw, 46px);
+  font-weight: 560;
+  line-height: 1.2;
+}
+
+.zhaowu-updates-lead {
+  margin: 16px 0 0;
+}
+
+.zhaowu-updates-card {
+  margin-top: 18px;
+}
+
+.zhaowu-updates-label {
+  margin: 0;
+  color: var(--zw-jade);
+  font-size: 13px;
+  font-weight: 760;
+  letter-spacing: .1em;
+}
+
+.zhaowu-updates-version-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 18px;
+  margin-top: 12px;
+}
+
+.zhaowu-updates-version-row strong {
+  color: var(--zw-ink);
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: clamp(22px, 5vw, 30px);
+  overflow-wrap: anywhere;
+}
+
+.zhaowu-updates-version-row span,
+.zhaowu-updates-card time {
+  color: var(--zw-muted);
+  font-size: 14px;
+}
+
+.zhaowu-updates-card time {
+  display: block;
+  margin-top: 5px;
+}
+
+.zhaowu-updates-card ul {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0 0;
+  padding: 22px 0 0 1.25rem;
+  border-top: 1px solid var(--zw-line);
+}
+
+.zhaowu-updates-card li {
+  padding-left: 4px;
+  color: var(--zw-ink-soft);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.zhaowu-updates-back {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+  border: 1px solid rgba(41, 75, 63, .24);
+  border-radius: 999px;
+  padding: 0 20px;
+  color: var(--zw-jade-deep);
+  background: rgba(255, 252, 244, .80);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* Night mode uses the same hierarchy instead of a separate visual language. */
+[data-zw-theme="night"] [data-site-status-strip] {
+  border-bottom-color: rgba(212, 176, 116, .16) !important;
+  color: #cfc5b5 !important;
+}
+
+[data-zw-theme="night"] .zhaowu-latest-update-link,
+[data-zw-theme="night"] .site-lang-group,
+[data-zw-theme="night"] .zhaowu-header-mode-toggle,
+[data-zw-theme="night"] .zhaowu-header-utility,
+[data-zw-theme="night"] .zhaowu-header-owner-login,
+[data-zw-theme="night"] .zhaowu-header-home-link {
+  border-color: rgba(212, 176, 116, .28) !important;
+  color: #efe3cd !important;
+  background: rgba(15, 32, 28, .78) !important;
+}
+
+[data-zw-theme="night"] .zhaowu-language-icon { color: #d4b074; }
+
+[data-zw-theme="night"] .site-lang-button {
+  border-left-color: rgba(212, 176, 116, .14) !important;
+  color: #e7e0d1 !important;
+}
+
+[data-zw-theme="night"] .site-lang-button[data-active="true"],
+[data-zw-theme="night"] .site-lang-button[aria-pressed="true"] {
+  color: #17332b !important;
+  background: #d4b074 !important;
+}
+
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-customer-record,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-question-stage,
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--directory,
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--gallery,
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--notes,
+[data-zw-theme="night"] .zhaowu-specialist-sheet,
+[data-zw-theme="night"] .zhaowu-updates-hero,
+[data-zw-theme="night"] .zhaowu-updates-card,
+[data-zw-theme="night"] [data-owner-independent-console],
+[data-zw-theme="night"] [data-owner-gallery-console] {
+  border-color: rgba(212, 176, 116, .25) !important;
+  background: linear-gradient(155deg, rgba(17,36,31,.97), rgba(23,43,36,.94)) !important;
+}
+
+[data-zw-theme="night"] .zhaowu-updates-page h1,
+[data-zw-theme="night"] .zhaowu-updates-version-row strong,
+[data-zw-theme="night"] .zhaowu-updates-card li,
+[data-zw-theme="night"] .zhaowu-specialist-sheet h1,
+[data-zw-theme="night"] .zhaowu-specialist-sections h2 {
+  color: #f4ead9 !important;
+}
+
+[data-zw-theme="night"] .zhaowu-updates-lead,
+[data-zw-theme="night"] .zhaowu-updates-version-row span,
+[data-zw-theme="night"] .zhaowu-updates-card time,
+[data-zw-theme="night"] .zhaowu-specialist-sheet .lead,
+[data-zw-theme="night"] .zhaowu-specialist-sections p {
+  color: #d8d0c1 !important;
+}
+
+@media (max-width: 780px) {
+  [data-site-status-strip] {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    margin-bottom: 6px !important;
+    gap: 3px 10px !important;
+    padding-bottom: 6px !important;
+    font-size: 12px !important;
+  }
+
+  [data-site-status-strip] > span:nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .zhaowu-latest-update-link {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-height: 44px !important;
+    padding-inline: 12px;
+    font-size: 13px;
+  }
+
+  .zhaowu-site-header > div,
+  .zhaowu-header-shell {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    width: min(calc(100% - 20px), 980px) !important;
+    padding: 8px 0 10px !important;
+  }
+
+  .zhaowu-header-primary { gap: 8px; }
+  .zhaowu-brand-name { font-size: 19px !important; }
+  .zhaowu-brand-tagline { max-width: 13rem; font-size: 11px !important; }
+  .zhaowu-site-header .zhaowu-brand-seal--sm { width: 42px !important; height: 42px !important; }
+
+  .zhaowu-header-nav {
+    width: 100% !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    border-top: 1px solid rgba(82, 65, 42, .09) !important;
+    padding-top: 8px !important;
+  }
+
+  .zhaowu-site-header .site-lang-group {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    max-width: 240px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  .zhaowu-site-header .site-lang-group .site-lang-button {
+    min-height: 44px !important;
+    font-size: 13px !important;
+  }
+
+  .zhaowu-app-frame,
+  .zhaowu-home-app-frame,
+  .zhaowu-home-sheet-shell:has(.zhaowu-home-layout) .zhaowu-home-app-frame {
+    width: min(calc(100% - 12px), 820px) !important;
+    margin: 8px auto 24px !important;
+    padding: 0 4px 30px !important;
+  }
+
+  .zhaowu-home-layout #analysisForm .zhaowu-question-sheet h2,
+  .zhaowu-home-layout #analysisForm .zhaowu-customer-record h2,
+  .zhaowu-home-layout #analysisForm .zhaowu-bazi-hub h2,
+  .zhaowu-home-layout #analysisForm .zhaowu-bazi-stage h2,
+  .zhaowu-home-layout #analysisForm .zhaowu-question-stage h2 {
+    font-size: clamp(24px, 6.4vw, 28px) !important;
+    line-height: 1.28 !important;
+  }
+
+  .zhaowu-home-sheet-shell .zhaowu-customer-record,
+  .zhaowu-home-sheet-shell .zhaowu-bazi-stage,
+  .zhaowu-home-sheet-shell .zhaowu-question-stage,
+  .zhaowu-specialist-sheet,
+  [data-owner-independent-console],
+  [data-owner-gallery-console],
+  .zhaowu-updates-hero,
+  .zhaowu-updates-card {
+    border-radius: 19px !important;
+    padding: 21px 16px !important;
+  }
+
+  .zhaowu-section-lead,
+  .zhaowu-specialist-sheet .lead,
+  .zhaowu-updates-lead {
+    font-size: 16px !important;
+  }
+
+  .zhaowu-home-layout p,
+  .zhaowu-home-layout li,
+  .zhaowu-result-flow p,
+  .zhaowu-result-flow li,
+  .zhaowu-specialist-sections p,
+  .zhaowu-updates-card li {
+    font-size: 16px !important;
+    line-height: 1.76 !important;
+  }
+
+  .zhaowu-specialist-sheet h1 {
+    font-size: clamp(30px, 9vw, 38px) !important;
+  }
+
+  .zhaowu-specialist-actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  .zhaowu-specialist-actions a,
+  .zhaowu-specialist-actions button {
+    width: 100%;
+  }
+
+  .zw-chart {
+    padding: 16px 13px !important;
+  }
+
+  .zw-chart-scroll {
+    max-width: 100%;
+    overflow-x: visible !important;
+  }
+
+  .zw-ziwei-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-rows: auto !important;
+    min-width: 0 !important;
+    gap: 8px !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .zw-palace {
+    grid-row: auto !important;
+    grid-column: auto !important;
+    min-width: 0;
+    border: 1px solid rgba(82,65,42,.14);
+    border-radius: 12px;
+    padding: 12px !important;
+  }
+
+  .zw-palace h3 { font-size: 15px !important; }
+  .zw-palace p,
+  .zw-palace small,
+  .zw-palace b { font-size: 13px !important; line-height: 1.62 !important; }
+
+  .zw-ziwei-center {
+    grid-row: auto !important;
+    grid-column: 1 / -1 !important;
+    order: -1;
+    border-radius: 12px;
+    padding: 16px !important;
+  }
+
+  .zw-chart-table,
+  .zw-chart-table thead,
+  .zw-chart-table tbody,
+  .zw-chart-table tr,
+  .zw-chart-table th,
+  .zw-chart-table td {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .zw-chart-table thead {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+  }
+
+  .zw-chart-table tr {
+    margin: 0 0 12px !important;
+    border: 1px solid rgba(82,65,42,.14) !important;
+    border-radius: 12px;
+    padding: 9px 11px !important;
+    background: rgba(255,252,244,.56);
+  }
+
+  .zw-chart-table th[scope="row"],
+  .zw-chart-table td {
+    display: grid !important;
+    grid-template-columns: minmax(5.8rem, .38fr) minmax(0, 1fr) !important;
+    gap: 8px !important;
+    border: 0 !important;
+    padding: 6px 0 !important;
+    font-size: 14px !important;
+  }
+
+  .zw-chart-table th[scope="row"]::before,
+  .zw-chart-table td::before {
+    content: attr(data-label);
+    color: var(--zw-muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .zhaowu-updates-back {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .zhaowu-brand-tagline { display: none !important; }
+  .zhaowu-header-account-actions { gap: 4px; }
+  .zhaowu-header-utility,
+  .zhaowu-header-owner-login,
+  .zhaowu-header-home-link {
+    padding-inline: 10px !important;
+    font-size: 12px !important;
+  }
+
+  .site-lang-group {
+    grid-template-columns: 36px repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .zhaowu-language-icon { width: 36px; }
+  .zhaowu-home-portals { grid-template-columns: 1fr !important; }
+  .zhaowu-updates-version-row { display: grid; }
+}

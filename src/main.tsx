@@ -45,7 +45,6 @@ import './site-ux-r63.css';
 import './site-ux-r63-lock.css';
 import './daily-almanac-r69.css';
 import './site-ux-r75-final.css';
-import './zhaowu-design-system.css';
 import './login-approved-r89.css';
 import './visual-hotfix-r94.css';
 import './brand-ui-r97.css';
@@ -61,6 +60,8 @@ import './night-home-r129.css';
 import './night-readability-r135.css';
 import './sky-events-article.css';
 import './device-question-flow-r144.css';
+// Canonical visual authority must load last. Do not add visual hotfix layers after this import.
+import './zhaowu-design-system.css';
 
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
