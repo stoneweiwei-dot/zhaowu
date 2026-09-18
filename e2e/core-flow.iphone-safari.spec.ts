@@ -130,7 +130,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("[data-primary-answer]")).toBeVisible();
     await expect(page.locator("[data-next-action]")).toBeVisible();
     await expect(page.locator("[data-technical-evidence]")).not.toHaveAttribute("open", "");
-    await expect(page.locator('[data-owner-login-entry="true"]')).toBeVisible();\n    await expect(page.locator(".zhaowu-header-login")).toHaveCount(0);
+    await expect(page.locator('[data-owner-login-entry="true"]')).toBeVisible();
+    await expect(page.locator(".zhaowu-header-login")).toHaveCount(0);
     await expectMobileViewportHealthy(page);
   });
 });
