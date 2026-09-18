@@ -8,7 +8,9 @@ import {
   listReportRecords,
   type ReportListRecord,
   type ReportRecord,
+  type SupabaseSession,
 } from "@/lib/supabase-rest";
+import { createOwnerCookieSession } from "@/lib/owner-data-client";
 import {
   backgroundPublicUrl,
   clearBackgroundWallpaper,
@@ -160,7 +162,10 @@ function BackgroundAssetCard({
 
 function AccountPage() {
   const { t, locale } = useI18n();
-  const { user, session, isPending } = useCurrentUserState();
+  const { user, session: authSession, isPending } = useCurrentUserState();
+  const session = user?.isOwner && !authSession
+    ? createOwnerCookieSession() as SupabaseSession
+    : authSession;
   const [rows, setRows] = useState<ReportListRecord[]>([]);
   const [details, setDetails] = useState<Record<string, ReportRecord | null>>({});
   const [openId, setOpenId] = useState<string | null>(null);
