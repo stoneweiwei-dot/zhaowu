@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import type { Locale } from "@/lib/i18n";
-import type { SupabaseSession } from "@/lib/supabase-rest";
+import type { SupabaseSession } from "@/lib/bridge/supabase-rest";
 import {
   deleteGalleryAsset,
   galleryPublicUrl,
@@ -8,7 +8,7 @@ import {
   setGalleryAssetEnabled,
   uploadGalleryAsset,
   type GalleryAsset,
-} from "@/lib/gallery-assets";
+} from "@/lib/bridge/gallery-assets";
 import { isLoadingGalleryAsset, isPublicAtlasAsset } from "@/lib/gallery-groups";
 import { LOADING_GALLERY_CATALOG } from "@/lib/loading-gallery-catalog";
 
