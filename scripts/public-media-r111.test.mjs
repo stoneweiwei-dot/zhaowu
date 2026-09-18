@@ -8,6 +8,8 @@ const customerMatch = await readFile(new URL("../src/lib/gallery-match.ts", impo
 const loginAnimation = await readFile(new URL("../src/lib/login-animation.ts", import.meta.url), "utf8");
 const reportVisualAssets = await readFile(new URL("../src/lib/report/report-visual-assets.ts", import.meta.url), "utf8");
 const music = await readFile(new URL("../src/components/background-music.tsx", import.meta.url), "utf8");
+const backgroundAssets = await readFile(new URL("../src/lib/background-assets.ts", import.meta.url), "utf8");
+const galleryAssets = await readFile(new URL("../src/lib/gallery-assets.ts", import.meta.url), "utf8");
 const vercel = JSON.parse(await readFile(new URL("../vercel.json", import.meta.url), "utf8"));
 
 function cacheValue(source) {
@@ -49,4 +51,13 @@ test("dynamic application shell remains no-store", () => {
   assert.match(cacheValue("/"), /no-store/);
   assert.match(cacheValue("/index.html"), /no-store/);
   assert.match(cacheValue("/manifest.webmanifest"), /no-store/);
+});
+
+
+test("public Supabase-managed media prefers verified external mappings when present", () => {
+  assert.match(backgroundAssets, /cdn_url,cdn_provider,cdn_verified_at/);
+  assert.match(backgroundAssets, /row\.cdn_url \? \{ \.\.\.row, storage_path: row\.cdn_url \} : row/);
+  assert.match(backgroundAssets, /path\.startsWith\("\/"\)/);
+  assert.match(galleryAssets, /cdn_url,cdn_provider,cdn_verified_at/);
+  assert.match(galleryAssets, /row\.cdn_url \? \{ \.\.\.row, storage_path: row\.cdn_url \} : row/);
 });
