@@ -1,0 +1,151 @@
+name: Normalize Owner Music
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/normalize-owner-music.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: owner-music-normalize
+  cancel-in-progress: false
+
+jobs:
+  normalize:
+    name: Normalize owner music library
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout owner-music branch
+        uses: actions/checkout@v4
+        with:
+          ref: owner-music
+          fetch-depth: 0
+          token: ${{ github.token }}
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Back up originals and master unprocessed tracks
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/audio/originals
+
+          node <<'NODE' > /tmp/tracks.tsv
+          const fs = require('fs');
+          const manifest = JSON.parse(fs.readFileSync('public/audio/owner-manifest.json', 'utf8'));
+          for (const track of manifest.tracks || []) {
+            if (!track?.filename) continue;
+            if (track.mastering?.profile === 'soft-background-v1') continue;
+            process.stdout.write(`${track.id}\t${track.filename}\n`);
+          }
+          NODE
+
+          processed=0
+          while IFS=$'\t' read -r id filename; do
+            [ -n "${filename:-}" ] || continue
+            src="public/audio/tracks/$filename"
+            [ -f "$src" ] || { echo "Missing $src" >&2; exit 1; }
+
+            backup="public/audio/originals/$filename"
+            if [ ! -f "$backup" ]; then
+              cp "$src" "$backup"
+            fi
+
+            ext="${filename##*.}"
+            tmp="/tmp/zhaowu-master-${id}.${ext}"
+
+            case "$ext" in
+              m4a)
+                ffmpeg -y -hide_banner -loglevel error -i "$src" -vn -map_metadata -1 \
+                  -af "highpass=f=30,treble=g=-1.5:f=4500:w=0.5,loudnorm=I=-21:LRA=8:TP=-2.5" \
+                  -c:a aac -profile:a aac_low -b:a 96k -ar 48000 -ac 2 -movflags +faststart "$tmp"
+                ;;
+              mp3)
+                ffmpeg -y -hide_banner -loglevel error -i "$src" -vn -map_metadata -1 \
+                  -af "highpass=f=30,treble=g=-1.5:f=4500:w=0.5,loudnorm=I=-21:LRA=8:TP=-2.5" \
+                  -c:a libmp3lame -b:a 112k -ar 48000 -ac 2 "$tmp"
+                ;;
+              *)
+                echo "Unsupported owner-music extension: $ext" >&2
+                exit 1
+                ;;
+            esac
+
+            ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$tmp" >/dev/null
+            mv "$tmp" "$src"
+            processed=$((processed + 1))
+            echo "Mastered $id $filename"
+          done < /tmp/tracks.tsv
+
+          MASTERED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)" node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const manifestPath = 'public/audio/owner-manifest.json';
+          const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+          const masteredAt = process.env.MASTERED_AT;
+          for (const track of manifest.tracks || []) {
+            if (!track?.filename) continue;
+            const src = path.join('public/audio/tracks', track.filename);
+            if (!fs.existsSync(src)) continue;
+            if (track.mastering?.profile === 'soft-background-v1') continue;
+            track.fileSize = fs.statSync(src).size;
+            track.mastering = {
+              profile: 'soft-background-v1',
+              integratedLufs: -21,
+              truePeakDbtp: -2.5,
+              trebleCutDb: -1.5,
+              treblePivotHz: 4500,
+              highpassHz: 30,
+              masteredAt,
+              originalPath: `/audio/originals/${track.filename}`,
+            };
+          }
+          fs.writeFileSync(manifestPath, JSON.stringify(manifest) + '\n');
+          NODE
+
+          echo "Processed $processed track(s)."
+
+      - name: Verify mastered library
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const manifest = JSON.parse(fs.readFileSync('public/audio/owner-manifest.json', 'utf8'));
+          if (!Array.isArray(manifest.tracks) || !manifest.tracks.length) throw new Error('Empty music manifest');
+          for (const track of manifest.tracks) {
+            if (track.mastering?.profile !== 'soft-background-v1') throw new Error(`Unmastered track: ${track.id}`);
+            const live = path.join('public/audio/tracks', track.filename);
+            const backup = path.join('public/audio/originals', track.filename);
+            if (!fs.existsSync(live) || !fs.existsSync(backup)) throw new Error(`Missing live/backup: ${track.id}`);
+            if (fs.statSync(live).size <= 0 || fs.statSync(backup).size <= 0) throw new Error(`Empty file: ${track.id}`);
+          }
+          console.log(`Verified ${manifest.tracks.length} mastered tracks with original backups.`);
+          NODE
+
+          while IFS= read -r file; do
+            ffprobe -v error "$file" >/dev/null
+          done < <(find public/audio/tracks -maxdepth 1 -type f \( -name '*.mp3' -o -name '*.m4a' \) -print)
+
+      - name: Commit normalized library
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "zhaowu-audio-master"
+          git config user.email "audio-master@zhaowu.local"
+          git add public/audio/owner-manifest.json public/audio/tracks public/audio/originals
+          if git diff --cached --quiet; then
+            echo "No audio changes required."
+            exit 0
+          fi
+          git commit -m "owner-music: soften and normalize full library"
+          git push origin HEAD:owner-music
