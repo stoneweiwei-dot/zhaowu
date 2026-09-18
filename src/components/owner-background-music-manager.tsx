@@ -51,7 +51,7 @@ export function OwnerBackgroundMusicManager() {
       "直接选 MP3 或 M4A 即可，12MB 以内会原文件上传。所有已保留曲目会组成网站歌单，前台播放器可播放／暂停、上一首／下一首、循环与随机播放。WAV、FLAC 请用电脑上传。",
       "Choose MP3 or M4A up to 12MB. Saved tracks form the website playlist, with play/pause, previous/next, loop and shuffle controls. Use a computer for FLAC/WAV.",
     ),
-    entryLead: tr(locale, "站主專用 · 多曲目歌單、分段上傳、全站播放", "站主专用 · 多曲目歌单、分段上传、全站播放", "Owner only · playlist, chunked upload and site-wide playback"),
+    entryLead: tr(locale, "站主專用 · 多曲目歌單、自動轉碼、分段上傳", "站主专用 · 多曲目歌单、自动转码、分段上传", "Owner only · playlist, auto-convert and chunked upload"),
     upload: tr(locale, "＋ 選擇音樂", "＋ 选择音乐", "+ Choose music"),
     processing: tr(locale, "處理中…", "处理中…", "Processing…"),
     current: tr(locale, "目前播放", "当前播放", "Currently playing"),
