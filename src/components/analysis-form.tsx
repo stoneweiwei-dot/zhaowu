@@ -5,7 +5,10 @@ import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { createEngineReportRecord, updateBirthData } from "@/lib/supabase-rest";
+import { buildChart } from "@/lib/bazi/chart";
 import { UNKNOWN_TIME_COPY } from "@/lib/bazi/presentation";
+import { analyzeStructure } from "@/lib/bazi/structure";
+import { buildFreeChartMelody } from "@/lib/report/free-chart-melody";
 import {
   formatSharedBirthRecord,
   readSharedBirthRecord,
@@ -13,6 +16,7 @@ import {
   writeSharedBirthRecord,
   type SharedBirthRecord,
 } from "@/lib/shared-birth";
+import { BaziChart } from "@/components/bazi-chart";
 import { CityPicker } from "@/components/city-picker";
 
 export function AnalysisForm() {
@@ -47,10 +51,17 @@ export function AnalysisForm() {
         birthReadyLead: "This phone will reuse the same record across personal readings.",
         edit: "Edit details",
         birthData: "Birth record",
-        next: "Continue to your question",
+        next: "Save & show Four Pillars",
         saving: "Saving…",
         saved: "Birth record saved on this phone.",
-        questionKicker: "STEP 2 · YOUR QUESTION",
+        baziKicker: "STEP 2 · FOUR PILLARS",
+        baziTitle: "Your Four Pillars chart",
+        baziLead: "Calculated immediately from the saved birth record.",
+        baziExplainTitle: "Birth-chart baseline",
+        baziPatternTitle: "Chart pattern",
+        baziNote: "This is the natal baseline. Use the question below for career, relationships, money or timing.",
+        chartPending: "The birth record is saved, but the chart could not be rendered yet.",
+        questionKicker: "STEP 3 · YOUR QUESTION",
         questionTitle: "What do you actually want answered?",
         questionLead: "Ask one real question in your own words. The answer will lead with the conclusion and only show evidence that helps answer it.",
         questionLabel: "Your question",
@@ -69,10 +80,17 @@ export function AnalysisForm() {
           birthReadyLead: "这台手机会在各个人分析中沿用同一份资料。",
           edit: "修改资料",
           birthData: "出生资料",
-          next: "下一步 · 输入问题",
+          next: "保存并排出八字",
           saving: "正在保存…",
           saved: "生辰已保存在这台手机。",
-          questionKicker: "第二步 · 提问",
+          baziKicker: "第二步 · 四柱八字",
+          baziTitle: "客人八字命盘",
+          baziLead: "保存出生资料后，立即按同一份生辰排出四柱。",
+          baziExplainTitle: "命盘基础解释",
+          baziPatternTitle: "命盘主旋律",
+          baziNote: "这里先看出生结构；事业、感情、财务与时间问题，再在下方提问。",
+          chartPending: "生辰已经保存，但命盘暂时无法显示，请修改资料后再试。",
+          questionKicker: "第三步 · 提问",
           questionTitle: "你真正想问的是什么？",
           questionLead: "直接写你现在最想解决的一个真实问题。答案先说结论，只保留和这个问题有关的依据与行动。",
           questionLabel: "你的问题",
@@ -90,10 +108,17 @@ export function AnalysisForm() {
           birthReadyLead: "這台手機會在各個人分析中沿用同一份資料。",
           edit: "修改資料",
           birthData: "出生資料",
-          next: "下一步 · 輸入問題",
+          next: "儲存並排出八字",
           saving: "正在保存…",
           saved: "生辰已保存在這台手機。",
-          questionKicker: "第二步 · 提問",
+          baziKicker: "第二步 · 四柱八字",
+          baziTitle: "客人八字命盤",
+          baziLead: "儲存出生資料後，立即按同一份生辰排出四柱。",
+          baziExplainTitle: "命盤基礎解釋",
+          baziPatternTitle: "命盤主旋律",
+          baziNote: "這裡先看出生結構；事業、感情、財務與時間問題，再在下方提問。",
+          chartPending: "生辰已經儲存，但命盤暫時無法顯示，請修改資料後再試。",
+          questionKicker: "第三步 · 提問",
           questionTitle: "你真正想問的是什麼？",
           questionLead: "直接寫你現在最想解決的一個真實問題。答案先說結論，只保留和這個問題有關的依據與行動。",
           questionLabel: "你的問題",
@@ -150,6 +175,50 @@ export function AnalysisForm() {
     useTrueSolar: true,
   }), [year, month, day, hour, minute, timeUnknown, gender, relation, birthCity, liveCity]);
 
+  const previewChart = useMemo(() => {
+    if (!rememberedRecord || detailsOpen) return null;
+    try {
+      return buildChart({ ...rememberedRecord, question: "", locale });
+    } catch {
+      return null;
+    }
+  }, [rememberedRecord, detailsOpen, locale]);
+
+  const baziStructure = useMemo(
+    () => previewChart ? analyzeStructure(previewChart) : null,
+    [previewChart],
+  );
+
+  const baziMelody = useMemo(
+    () => previewChart ? buildFreeChartMelody(previewChart, locale).text : "",
+    [previewChart, locale],
+  );
+
+  const baziExplanation = useMemo(() => {
+    if (!previewChart || !baziStructure) return "";
+    if (locale === "en") {
+      const strength = previewChart.strength.tendency === "偏弱"
+        ? "relatively weak"
+        : previewChart.strength.tendency === "偏旺"
+          ? "relatively strong"
+          : "balanced to slightly strong";
+      const timeNote = previewChart.timeUnknown
+        ? " Birth time is unknown, so hour-pillar and luck-cycle evidence is intentionally reduced."
+        : " The recorded birth time is included in the natal chart.";
+      return `Day Master ${previewChart.dayMaster} (${previewChart.dayMasterElement}), born under month branch ${previewChart.monthBranch}. The baseline is ${strength}; structure completion is ${baziStructure.completion.grade}. This describes chart structure, not a fixed outcome.${timeNote}`;
+    }
+    if (locale === "zh-Hans") {
+      const timeNote = previewChart.timeUnknown
+        ? "时辰未知，因此时柱、大运与相关判断会主动降级。"
+        : "已按记录时辰纳入四柱。";
+      return `日主${previewChart.dayMaster}${previewChart.dayMasterElement}，月令${previewChart.monthBranch}；格局先按${baziStructure.label}${baziStructure.established ? "" : "方向"}判断，结构完成度为${baziStructure.completion.grade}。这里说的是出生结构，不是固定命运。${timeNote}`;
+    }
+    const timeNote = previewChart.timeUnknown
+      ? "時辰未知，因此時柱、大運與相關判斷會主動降級。"
+      : "已按記錄時辰納入四柱。";
+    return `${baziStructure.directAnswer.replace(/^直接答案：/, "")} 日主${previewChart.dayMaster}${previewChart.dayMasterElement}，月令${previewChart.monthBranch}。${timeNote}`;
+  }, [previewChart, baziStructure, locale]);
+
   async function saveBirthAndContinue(record: SharedBirthRecord) {
     writeSharedBirthRecord(record);
     setRememberedRecord(record);
@@ -159,7 +228,7 @@ export function AnalysisForm() {
         .then(() => window.dispatchEvent(new Event("zhaowu-auth-change")))
         .catch(() => undefined);
     }
-    window.setTimeout(() => document.getElementById("question-stage")?.scrollIntoView({ behavior: "smooth", block: "center" }), 60);
+    window.setTimeout(() => document.getElementById("bazi")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
   }
 
   async function submit(e: FormEvent<HTMLFormElement>) {
@@ -291,6 +360,38 @@ export function AnalysisForm() {
       </section>
 
       {showQuestion ? (
+        <section id="bazi" className="zhaowu-bazi-hub" aria-labelledby="zhaowu-bazi-title">
+          <header className="zhaowu-bazi-head">
+            <div>
+              <p className="zhaowu-section-kicker">{copy.baziKicker}</p>
+              <h2 id="zhaowu-bazi-title">{copy.baziTitle}</h2>
+              <p className="zhaowu-section-lead">{copy.baziLead}</p>
+            </div>
+          </header>
+          {previewChart ? (
+            <>
+              <div className="zhaowu-bazi-preview">
+                <BaziChart chart={previewChart} showHeader={false} />
+              </div>
+              <div className="zhaowu-bazi-explanation" data-home-bazi-explanation>
+                <div>
+                  <span>{copy.baziExplainTitle}</span>
+                  <p>{baziExplanation}</p>
+                </div>
+                <div>
+                  <span>{copy.baziPatternTitle}</span>
+                  <p>{baziMelody}</p>
+                </div>
+                <small>{copy.baziNote}</small>
+              </div>
+            </>
+          ) : (
+            <p className="zhaowu-bazi-pending">{copy.chartPending}</p>
+          )}
+        </section>
+      ) : null}
+
+      {showQuestion ? (
         <section id="question-stage" className="zhaowu-question-sheet zhaowu-question-stage" aria-labelledby="zhaowu-question-title">
           <div className="zhaowu-question-stage-head">
             <div>
@@ -322,7 +423,7 @@ export function AnalysisForm() {
       ) : null}
 
       {error ? <p role="alert" className="zhaowu-analysis-error">{error}</p> : null}
-      <div id="bazi" className="zhaowu-bazi-hub zhaowu-analysis-submit-wrap" data-analysis-stage={showQuestion ? "question" : "birth"}>
+      <div className="zhaowu-analysis-submit-wrap" data-analysis-stage={showQuestion ? "question" : "birth"}>
         <button type="submit" disabled={busy}>
           {busy ? (showQuestion ? copy.analysing : copy.saving) : (showQuestion ? copy.analyze : copy.next)}
         </button>
