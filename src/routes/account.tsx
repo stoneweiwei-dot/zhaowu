@@ -9,7 +9,7 @@ import {
   type ReportListRecord,
   type ReportRecord,
   type SupabaseSession,
-} from "@/lib/supabase-rest";
+} from "@/lib/bridge/supabase-rest";
 import { createOwnerCookieSession } from "@/lib/owner-data-client";
 import {
   backgroundPublicUrl,
@@ -22,12 +22,12 @@ import {
   setBackgroundWallpaper,
   uploadBackground,
   type BackgroundAsset,
-} from "@/lib/background-assets";
+} from "@/lib/bridge/background-assets";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
 import { ReportDragonSticker } from "@/components/report-dragon-sticker";
 import { DecreeImageReason } from "@/components/decree-image-reason";
-import { generateDecreeImage } from "@/lib/report/decree-image";
+import { generateDecreeImage } from "@/lib/bridge/decree-image";
 import type { ReportSection } from "@/lib/report/focused-report";
 import { TeaGuardianReport } from "@/components/tea-guardian-report";
 
