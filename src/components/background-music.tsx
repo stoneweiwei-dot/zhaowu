@@ -7,7 +7,10 @@ const LEGACY_STORAGE_KEY = "zhaowu.backgroundMusic.v1";
 const LOOP_STORAGE_KEY = `${STORAGE_KEY}.loop`;
 const SHUFFLE_STORAGE_KEY = `${STORAGE_KEY}.shuffle`;
 const TRACK_STORAGE_KEY = `${STORAGE_KEY}.track`;
-const DEFAULT_VOLUME = 0.24;
+// The owner playlist is intentionally ambience, not foreground audio. Keep the
+// element-level gain conservative even after the source files are mastered so
+// a first tap on iPhone speakers cannot arrive as a sharp full-level transient.
+const DEFAULT_VOLUME = 0.16;
 const MUSIC_STREAM_URL = "/api/owner-music?stream=1";
 
 function readInitialPreference() {

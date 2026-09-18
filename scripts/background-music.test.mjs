@@ -16,7 +16,8 @@ const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url)
 test("background music resolves the active owner track through /api/owner-music and defers fetch until playback is requested", () => {
   assert.match(music, /MUSIC_STREAM_URL = "\/api\/owner-music\?stream=1"/);
   assert.match(music, /loadOwnerMusic/);
-  assert.match(music, /DEFAULT_VOLUME = 0\.24/);
+  assert.match(music, /DEFAULT_VOLUME = 0\.16/);
+  assert.match(music, /ambience, not foreground audio/);
   assert.match(music, /audio\/mpeg/);
   assert.match(music, /loop/);
   assert.match(music, /playsInline/);

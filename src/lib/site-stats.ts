@@ -5,18 +5,18 @@ export const SITE_RELEASE_FALLBACK = {
   version: "ZW-WEB-2026.09.19-r157",
   updateNumber: 157,
   publishedAt: "2026-09-19T05:27:00+10:00",
-  latestSummary: "右下角播放器與青玉小龍合併成單一可拖動助手：隨機導覽／音樂氣泡與完整歌單控制共用同一入口，移除雙重浮層。",
+  latestSummary: "播放器與青玉小龍合併為單一可拖動助手；26 首背景曲已統一降低響度、峰值與刺耳高頻，預設音量降至 16%。",
   details: {
     "zh-Hant": [
       "右下角只保留一個青玉小龍助手；獨立音樂浮層退出 active path，消除重影與 z-index 競爭。",
       "小龍可拖動並自動吸附左右邊緣，位置保存在本機；未展開時會間歇隨機顯示導覽提示或迷你音樂氣泡。",
-      "點開小龍後保留完整音樂控制：播放／暫停、上一首、下一首、循環與隨機；沿用現有站主歌單與 Safari 手勢解鎖。",
+      "點開小龍後保留完整音樂控制；26 首曲目已保留原檔並做柔和背景母帶，播放器預設音量由 24% 降至 16%。",
       "r156 的音樂改名與後台批量操作全部保留，本次只改前台浮層組合與互動。",
     ],
     en: [
       "The bottom-right UI now uses one Jade Dragon assistant; the separate floating music dock is removed from the active path.",
       "The dragon can be dragged, snaps to either edge, persists its position locally, and occasionally shows a guide tip or compact music bubble.",
-      "Opening the dragon keeps the full playlist controls: play/pause, previous, next, loop and shuffle, using the existing owner playlist and Safari gesture unlock.",
+      "Opening the dragon keeps the full playlist controls; all 26 tracks now use reversible softer masters and the default player volume is reduced from 24% to 16%.",
       "The r156 owner-side music rename and bulk-management tools remain intact; this release only changes the public floating UI composition.",
     ],
   },

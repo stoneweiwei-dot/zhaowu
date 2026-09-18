@@ -9,6 +9,8 @@
   - 迷你音樂播放器／目前曲目狀態。
 - 迷你音樂氣泡提供播放／暫停與下一首；點擊主氣泡可打開完整助手。
 - 小龍面板內整合完整背景音樂控制：播放／暫停、上一首、下一首、循環播放、隨機播放。
+- 全部 26 首站主曲目已保留原檔並套用柔和背景母帶：統一降低整體響度、限制峰值、收斂刺耳高頻；播放器預設音量再由 24% 降至 16%。
+- `owner-music` 的自動處理流程同步覆蓋未來新上傳曲目，避免新檔再次以過高響度直接進入歌單。
 - 保留現有 owner playlist、`/api/owner-music`、本機 loop／shuffle 偏好與 iPhone Safari 首次 user-gesture unlock。
 - 修正首次點擊明確播放按鈕時，gesture unlock 與 click handler 可能重複 toggle 的競態。
 - 移除舊 mobile compatibility CSS 將小龍強制拉回 document flow 的規則，讓最新可拖動浮層契約真正生效。
@@ -18,7 +20,7 @@
 
 ## 為什麼改
 
-r149 補齊完整音樂控制後，獨立播放器與原有青玉小龍同時佔用右下角，形成兩個固定浮層、重影與 z-index 競爭。站主最新指令要求把播放器與小龍合體，讓小龍成為唯一可移動助手，並由氣泡輪播導覽與音樂內容。
+r149 補齊完整音樂控制後，獨立播放器與原有青玉小龍同時佔用右下角，形成兩個固定浮層、重影與 z-index 競爭。站主最新指令要求把播放器與小龍合體，並指出所有曲目整體太大、音節與高頻頂耳。這次同時收口浮層與實際聽感：小龍成為唯一可移動助手，曲庫改為低干擾背景響度。
 
 ## 影響範圍
 
@@ -27,12 +29,13 @@ r149 補齊完整音樂控制後，獨立播放器與原有青玉小龍同時佔
 - `src/green-dragon-guide.css`
 - `src/content-layout-fixes.css`
 - `src/main.tsx`
+- `owner-music` 分支的 26 首播放檔、原檔備份與自動柔化 workflow
 - iPhone Safari 青玉小龍／音樂 regression
 - 公開 release metadata / CURRENT-STATE / INSTRUCTION-REGISTRY
 
 ## 受保護範圍
 
-- 不修改 owner music API、音樂改名、批量刪除、站主 Cookie 驗證、音檔 manifest、曲目檔案或上傳流程。
+- 不修改 owner music API、音樂改名、批量刪除或站主 Cookie 驗證；曲目只作可回滾的播放母帶處理，原檔完整保留。
 - 不新增第二套音樂來源，不接回舊 Supabase audio bucket。
 - 不修改 Supabase schema、會員／站主 auth、payment、報告資料、命理計算、D60、紫微、七政、一掌經。
 - 不重做青玉小龍的站內導覽判斷邏輯，只改呈現方式與音樂整合。
@@ -44,9 +47,9 @@ r149 補齊完整音樂控制後，獨立播放器與原有青玉小龍同時佔
 - Source 已修改，等待 PR Production CI。
 - 合併前必須通過 Deploy gate、Engine suite、iPhone Safari。
 - 合併後必須確認 Netlify active Production 使用 exact merge SHA。
-- Production 至少驗證：首頁 HTTP 200、青玉小龍唯一浮層存在、舊獨立 music dock 不再渲染、`/api/owner-music` 正常、正式 bundle 包含拖動／bubble／完整歌單控制。
+- Production 至少驗證：首頁 HTTP 200、青玉小龍唯一浮層存在、舊獨立 music dock 不再渲染、`/api/owner-music` 返回 26 首柔化曲目、播放器預設 16%、正式 bundle 包含拖動／bubble／完整歌單控制。
 - 真實手指拖動與氣泡動畫若工具無法做視覺確認，明確標為未做真機人工驗收，不把 CI 等同實機。
 
 ## 回滾
 
-回滾本 release 的 GreenDragonGuide、BackgroundMusic、CSS、main 接線、tests 與 r157 release metadata，即可恢復 r156/r149 的分離式 UI。此變更不涉及資料 migration、音檔刪除或 r156 後台批量管理資料。
+回滾本 release 的 GreenDragonGuide、BackgroundMusic、CSS、main 接線、tests 與 r157 release metadata，即可恢復 r156/r149 的分離式 UI。音檔可由 `public/audio/originals/` 原檔一對一還原；此變更不涉及資料 migration、音檔刪除或 r156 後台批量管理資料。
