@@ -2,6 +2,8 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import {
   activateOwnerMusicTrack,
   deleteOwnerMusicTrack,
+  deleteOwnerMusicTracks,
+  renameOwnerMusicTrack,
   emptyManifest,
   MAX_BYTES,
   readOwnerMusicManifest,
@@ -313,12 +315,25 @@ export default async function handler(req, res) {
 
     const body = await readJsonBody(req);
     const id = String(body?.id ?? "").trim();
-    if (!id) return json(res, 400, { ok: false, error: "TRACK_REQUIRED" });
     if (method === "PATCH") {
+      if (!id) return json(res, 400, { ok: false, error: "TRACK_REQUIRED" });
+      const action = String(body?.action ?? "").trim();
+      if (action === "rename" || Object.prototype.hasOwnProperty.call(body || {}, "name")) {
+        const name = String(body?.name ?? "").trim();
+        if (!name) return json(res, 400, { ok: false, error: "TRACK_NAME_REQUIRED" });
+        const manifest = await renameOwnerMusicTrack(secret, id, name);
+        return json(res, 200, { ...publicPayload(manifest), renamed: true });
+      }
       const manifest = await activateOwnerMusicTrack(secret, id);
       return json(res, 200, { ...publicPayload(manifest), changed: true });
     }
     if (method === "DELETE") {
+      const ids = Array.isArray(body?.ids) ? body.ids.map((value) => String(value ?? "").trim()).filter(Boolean) : [];
+      if (ids.length) {
+        const manifest = await deleteOwnerMusicTracks(secret, ids);
+        return json(res, 200, { ...publicPayload(manifest), deleted: ids.length });
+      }
+      if (!id) return json(res, 400, { ok: false, error: "TRACK_REQUIRED" });
       const manifest = await deleteOwnerMusicTrack(secret, id);
       return json(res, 200, { ...publicPayload(manifest), deleted: true });
     }

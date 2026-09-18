@@ -127,9 +127,37 @@ export async function activateOwnerMusic(id: string) {
   window.dispatchEvent(new Event("zhaowu-music-change"));
 }
 
+export async function renameOwnerMusic(id: string, name: string) {
+  const cleaned = name.trim().replace(/\s+/g, " ").slice(0, 80);
+  if (!cleaned) throw new Error("曲目名稱不能留空。");
+  const response = await fetch("/api/owner-music", {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, action: "rename", name: cleaned }),
+  });
+  const body = await parseBody(response);
+  if (!response.ok) throw new Error(typeof body.detail === "string" ? body.detail : "無法重新命名背景音樂。");
+  window.dispatchEvent(new Event("zhaowu-music-change"));
+}
+
 export async function deleteOwnerMusic(id: string) {
   const response = await fetch("/api/owner-music", { method: "DELETE", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
   const body = await parseBody(response);
   if (!response.ok) throw new Error(typeof body.detail === "string" ? body.detail : "無法刪除背景音樂。");
+  window.dispatchEvent(new Event("zhaowu-music-change"));
+}
+
+export async function deleteOwnerMusicMany(ids: string[]) {
+  const unique = [...new Set(ids.map((id) => id.trim()).filter(Boolean))];
+  if (!unique.length) return;
+  const response = await fetch("/api/owner-music", {
+    method: "DELETE",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids: unique }),
+  });
+  const body = await parseBody(response);
+  if (!response.ok) throw new Error(typeof body.detail === "string" ? body.detail : "無法批量刪除背景音樂。");
   window.dispatchEvent(new Event("zhaowu-music-change"));
 }

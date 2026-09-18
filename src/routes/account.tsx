@@ -110,11 +110,14 @@ type BackgroundCardCopy = {
   currentWallpaper: string;
   unpinWallpaper: string;
   delete: string;
+  select: string;
 };
 
 function BackgroundAssetCard({
   asset,
   copy,
+  selected,
+  onToggleSelected,
   onEnabled,
   onPin,
   onUnpin,
@@ -122,13 +125,18 @@ function BackgroundAssetCard({
 }: {
   asset: BackgroundAsset;
   copy: BackgroundCardCopy;
+  selected: boolean;
+  onToggleSelected: () => void;
   onEnabled: (enabled: boolean) => Promise<void>;
   onPin: () => Promise<void>;
   onUnpin: () => Promise<void>;
   onDelete: () => Promise<void>;
 }) {
   return (
-    <article data-background-card className="overflow-hidden rounded-lg border border-line bg-cream/80">
+    <article data-background-card data-owner-selectable-file="background" className={`relative overflow-hidden rounded-lg border bg-cream/80 ${selected ? "border-cinnabar/45 ring-1 ring-cinnabar/20" : "border-line"}`}>
+      <label className="absolute left-2 top-2 z-10 grid min-h-11 min-w-11 cursor-pointer place-items-center rounded-full border border-line bg-cream/95 shadow-sm" title={copy.select}>
+        <input type="checkbox" className="h-4 w-4" checked={selected} onChange={onToggleSelected} aria-label={`${copy.select} ${asset.name}`} />
+      </label>
       <img
         src={backgroundPublicUrl(asset.storage_path)}
         alt={asset.name}
@@ -182,6 +190,8 @@ function AccountPage() {
   const [backgroundBusy, setBackgroundBusy] = useState(false);
   const [backgroundMsg, setBackgroundMsg] = useState<string | null>(null);
   const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
+  const [selectedBackgroundIds, setSelectedBackgroundIds] = useState<string[]>([]);
+  const [selectedReportIds, setSelectedReportIds] = useState<string[]>([]);
 
   const c = useMemo(() => ({
     ownerTitle: tr(locale, "昭梧後台", "昭梧后台", "Zhaowu Console"),
@@ -233,6 +243,13 @@ function AccountPage() {
     imageReady: tr(locale, "命誥圖已生成並刷新。", "命诰图已生成并刷新。", "Decree image generated and refreshed."),
     deleteRecordConfirm: tr(locale, "刪除這筆報告？", "删除这笔报告？", "Delete this report?"),
     deleteRecord: tr(locale, "刪除記錄", "删除记录", "Delete record"),
+    select: tr(locale, "選取", "选择", "Select"),
+    selected: (n: number) => tr(locale, `已選 ${n} 筆`, `已选 ${n} 笔`, `${n} selected`),
+    selectAllShown: tr(locale, "全選目前顯示", "全选当前显示", "Select shown"),
+    clearSelection: tr(locale, "取消全選", "取消全选", "Clear selection"),
+    deleteSelected: tr(locale, "刪除所選", "删除所选", "Delete selected"),
+    batchDeleteReportsConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 筆報告？此操作不可復原。`, `删除已选的 ${n} 笔报告？此操作不可恢复。`, `Delete ${n} selected reports? This cannot be undone.`),
+    batchReportsDeleted: (n: number) => tr(locale, `已刪除 ${n} 筆報告。`, `已删除 ${n} 笔报告。`, `Deleted ${n} reports.`),
     backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
     backgroundLead: tr(locale, "預設每天輪播一張；固定壁紙與排程圖片仍優先，不會被每日輪播覆蓋。", "默认每天轮播一张；固定壁纸与排程图片仍优先，不会被每日轮播覆盖。", "One image rotates by default each day. Pinned and scheduled backgrounds keep priority."),
     latestImage: tr(locale, "最近一張", "最近一张", "Latest image"),
@@ -257,6 +274,14 @@ function AccountPage() {
     unpinWallpaper: tr(locale, "取消固定", "取消固定", "Unpin"),
     wallpaperSet: tr(locale, "已設為目前壁紙。", "已设为当前壁纸。", "Wallpaper updated."),
     delete: tr(locale, "刪除", "删除", "Delete"),
+    selectBackground: tr(locale, "選取背景", "选择背景", "Select background"),
+    selectedBackgrounds: (n: number) => tr(locale, `已選 ${n} 張`, `已选 ${n} 张`, `${n} selected`),
+    selectVisibleBackgrounds: tr(locale, "全選目前頁面", "全选当前页面", "Select current page"),
+    enableSelectedBackgrounds: tr(locale, "啟用所選", "启用所选", "Enable selected"),
+    disableSelectedBackgrounds: tr(locale, "停用所選", "停用所选", "Disable selected"),
+    deleteSelectedBackgrounds: tr(locale, "刪除所選", "删除所选", "Delete selected"),
+    batchDeleteBackgroundsConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 張背景圖？此操作不可復原。`, `删除已选的 ${n} 张背景图？此操作不可恢复。`, `Delete ${n} selected backgrounds? This cannot be undone.`),
+    batchBackgroundsDone: (n: number) => tr(locale, `已處理 ${n} 張背景圖。`, `已处理 ${n} 张背景图。`, `Updated ${n} backgrounds.`),
     deleteImage: (name: string) => tr(locale, `刪除「${name}」？`, `删除“${name}”？`, `Delete “${name}”?`),
     deleteFailed: tr(locale, "刪除失敗。", "删除失败。", "Delete failed."),
     updateFailed: tr(locale, "更新失敗。", "更新失败。", "Update failed."),
@@ -274,7 +299,10 @@ function AccountPage() {
     setBusy(true);
     setError(null);
     try {
-      setRows(await listReportRecords(session, user.isOwner));
+      const nextRows = await listReportRecords(session, user.isOwner);
+      setRows(nextRows);
+      const ids = new Set(nextRows.map((row) => row.id));
+      setSelectedReportIds((current) => current.filter((id) => ids.has(id)));
     } catch (err) {
       setError(err instanceof Error ? err.message : c.reportsReadError);
     } finally {
@@ -288,6 +316,8 @@ function AccountPage() {
       const result = await listOwnerBackgroundPage(session, 0, 1);
       setLatestBackground(result.items[0] ?? null);
       setBackgroundTotal(result.total);
+      const ids = new Set(result.items.map((asset) => asset.id));
+      setSelectedBackgroundIds((current) => backgroundHistoryOpen ? current : current.filter((id) => ids.has(id)));
     } catch (err) {
       setBackgroundMsg(err instanceof Error ? err.message : c.backgroundsReadError);
     }
@@ -306,6 +336,8 @@ function AccountPage() {
       setBackgroundHistory(result.items);
       setBackgroundTotal(result.total);
       setBackgroundPage(result.page);
+      const ids = new Set(result.items.map((asset) => asset.id));
+      setSelectedBackgroundIds((current) => current.filter((id) => ids.has(id)));
     } catch (err) {
       setBackgroundMsg(err instanceof Error ? err.message : c.backgroundsReadError);
     } finally {
@@ -458,6 +490,62 @@ function AccountPage() {
     }
   }
 
+  function toggleBackgroundSelected(id: string) {
+    setSelectedBackgroundIds((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+  }
+
+  async function setSelectedBackgroundsEnabled(enabled: boolean) {
+    if (!session || backgroundBusy || !selectedBackgroundIds.length) return;
+    setBackgroundBusy(true); setBackgroundMsg(null);
+    try {
+      await Promise.all(selectedBackgroundIds.map((id) => setBackgroundEnabled(session, id, enabled)));
+      const count = selectedBackgroundIds.length;
+      await refreshBackgrounds();
+      notifyBackgroundChanged();
+      setBackgroundMsg(c.batchBackgroundsDone(count));
+    } catch (err) {
+      setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed);
+    } finally { setBackgroundBusy(false); }
+  }
+
+  async function deleteSelectedBackgrounds() {
+    if (!session || backgroundBusy || !selectedBackgroundIds.length || !window.confirm(c.batchDeleteBackgroundsConfirm(selectedBackgroundIds.length))) return;
+    setBackgroundBusy(true); setBackgroundMsg(null);
+    try {
+      const pool = [...backgroundHistory, ...(latestBackground ? [latestBackground] : [])];
+      const unique = new Map(pool.map((asset) => [asset.id, asset]));
+      const chosen = selectedBackgroundIds.map((id) => unique.get(id)).filter((asset): asset is BackgroundAsset => Boolean(asset));
+      for (const asset of chosen) await deleteBackground(session, asset);
+      const count = chosen.length;
+      setSelectedBackgroundIds([]);
+      await refreshBackgrounds();
+      notifyBackgroundChanged();
+      setBackgroundMsg(c.batchBackgroundsDone(count));
+    } catch (err) {
+      setBackgroundMsg(err instanceof Error ? err.message : c.deleteFailed);
+    } finally { setBackgroundBusy(false); }
+  }
+
+  async function deleteSelectedReports() {
+    if (!session || !user?.isOwner || refreshBusy || !selectedReportIds.length || !window.confirm(c.batchDeleteReportsConfirm(selectedReportIds.length))) return;
+    setRefreshBusy(true); setError(null);
+    try {
+      const ids = [...selectedReportIds];
+      for (const id of ids) await deleteReportRecord(session, id);
+      setSelectedReportIds([]);
+      if (openId && ids.includes(openId)) setOpenId(null);
+      setDetails((prev) => {
+        const next = { ...prev };
+        ids.forEach((id) => delete next[id]);
+        return next;
+      });
+      await loadReports();
+      setError(c.batchReportsDeleted(ids.length));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : c.updateFailed);
+    } finally { setRefreshBusy(false); }
+  }
+
   const visibleBackgrounds = backgroundHistoryOpen
     ? backgroundHistory
     : latestBackground ? [latestBackground] : [];
@@ -574,6 +662,14 @@ function AccountPage() {
                 if (next) void loadBackgroundHistory(0);
               }}>{backgroundHistoryOpen ? c.hideHistory : c.viewHistory(backgroundTotal)}</button>
             </div>
+            {visibleBackgrounds.length ? <div data-owner-bulk-toolbar="backgrounds" className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-cream/70 px-3 py-3">
+              <span className="text-xs font-medium text-ink-soft">{c.selectedBackgrounds(selectedBackgroundIds.length)}</span>
+              <button type="button" disabled={backgroundBusy} className="min-h-10 rounded-full border border-line bg-paper/70 px-3 text-xs disabled:opacity-40" onClick={() => setSelectedBackgroundIds(visibleBackgrounds.map((asset) => asset.id))}>{c.selectVisibleBackgrounds}</button>
+              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-10 rounded-full border border-line bg-paper/70 px-3 text-xs disabled:opacity-40" onClick={() => setSelectedBackgroundIds([])}>{c.clearSelection}</button>
+              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-10 rounded-full border border-wood/30 bg-wood/5 px-3 text-xs text-wood disabled:opacity-40" onClick={() => void setSelectedBackgroundsEnabled(true)}>{c.enableSelectedBackgrounds}</button>
+              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-10 rounded-full border border-line bg-paper/70 px-3 text-xs disabled:opacity-40" onClick={() => void setSelectedBackgroundsEnabled(false)}>{c.disableSelectedBackgrounds}</button>
+              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void deleteSelectedBackgrounds()}>{c.deleteSelectedBackgrounds}</button>
+            </div> : null}
             {backgroundHistoryBusy ? <div className="mt-4 h-24 animate-pulse rounded-lg bg-paper-deep" /> : null}
             {!backgroundHistoryBusy && !visibleBackgrounds.length ? <p className="mt-4 text-sm text-ink-mute">{c.noImages}</p> : null}
             {!backgroundHistoryBusy ? (
@@ -582,7 +678,9 @@ function AccountPage() {
                   <BackgroundAssetCard
                     key={asset.id}
                     asset={asset}
-                    copy={c}
+                    copy={{ ...c, select: c.selectBackground }}
+                    selected={selectedBackgroundIds.includes(asset.id)}
+                    onToggleSelected={() => toggleBackgroundSelected(asset.id)}
                     onEnabled={(enabled) => updateBackgroundAsset(() => setBackgroundEnabled(session, asset.id, enabled))}
                     onPin={() => updateBackgroundAsset(() => setBackgroundWallpaper(session, asset.id), c.wallpaperSet)}
                     onUnpin={() => updateBackgroundAsset(() => clearBackgroundWallpaper(session, asset.id))}
@@ -619,6 +717,13 @@ function AccountPage() {
           </div>
         </div>
 
+        {user.isOwner && filtered.length ? <div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
+          <span className="text-xs font-medium text-ink-soft">{c.selected(selectedReportIds.length)}</span>
+          <button type="button" disabled={refreshBusy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedReportIds(filtered.map((row) => row.id))}>{c.selectAllShown}</button>
+          <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedReportIds([])}>{c.clearSelection}</button>
+          <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void deleteSelectedReports()}>{c.deleteSelected}</button>
+        </div> : null}
+
         {busy ? <div className="mt-5 h-20 animate-pulse rounded-lg bg-paper-deep" /> : null}
         {error ? <p className="mt-4 rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm text-cinnabar-deep">{error}</p> : null}
         {!busy && !filtered.length ? <p className="mt-5 text-sm leading-7 text-ink-mute">{c.empty}</p> : null}
@@ -644,7 +749,10 @@ function AccountPage() {
             const rowBusy = detailBusyId === row.id || actionBusyId === row.id;
 
             return (
-              <article key={row.id} className="rounded-lg border border-line bg-paper/35 p-4">
+              <article key={row.id} data-owner-selectable-file="report" className={`relative rounded-lg border bg-paper/35 p-4 ${selectedReportIds.includes(row.id) ? "border-cinnabar/45 ring-1 ring-cinnabar/20" : "border-line"}`}>
+                {user.isOwner ? <label className="absolute left-2 top-2 grid min-h-11 min-w-11 cursor-pointer place-items-center rounded-full border border-line bg-cream/95" title={c.select}>
+                  <input type="checkbox" className="h-4 w-4" checked={selectedReportIds.includes(row.id)} onChange={() => setSelectedReportIds((current) => current.includes(row.id) ? current.filter((id) => id !== row.id) : [...current, row.id])} aria-label={`${c.select} ${row.alias || c.reportFallback}`} />
+                </label> : null}
                 <div className="text-center">
                   <h3 className="truncate font-display text-lg font-semibold">{row.alias || String(row.context?.question ?? c.reportFallback)}</h3>
                   {user.isOwner ? <p className="truncate text-xs text-cinnabar">{row.user_email || c.noEmail}</p> : null}

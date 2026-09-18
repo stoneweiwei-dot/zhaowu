@@ -5,7 +5,9 @@ import { useI18n, type Locale } from "@/lib/i18n";
 import {
   activateOwnerMusic,
   deleteOwnerMusic,
+  deleteOwnerMusicMany,
   loadOwnerMusic,
+  renameOwnerMusic,
   uploadOwnerMusic,
   type OwnerMusicTrack,
 } from "@/lib/owner-music-client";
@@ -41,6 +43,9 @@ export function OwnerBackgroundMusicManager() {
   const [percent, setPercent] = useState<number | null>(null);
   const [stage, setStage] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
 
   const c = useMemo(() => ({
     manage: tr(locale, "背景音樂管理", "背景音乐管理", "Background music"),
@@ -57,6 +62,18 @@ export function OwnerBackgroundMusicManager() {
     current: tr(locale, "目前播放", "当前播放", "Currently playing"),
     use: tr(locale, "設為背景音樂", "设为背景音乐", "Use as background music"),
     delete: tr(locale, "刪除", "删除", "Delete"),
+    rename: tr(locale, "改名", "改名", "Rename"),
+    saveName: tr(locale, "保存名稱", "保存名称", "Save name"),
+    cancel: tr(locale, "取消", "取消", "Cancel"),
+    select: tr(locale, "選取", "选择", "Select"),
+    selected: (n: number) => tr(locale, `已選 ${n} 首`, `已选 ${n} 首`, `${n} selected`),
+    selectAll: tr(locale, "全選可刪除曲目", "全选可删除曲目", "Select deletable"),
+    clearSelection: tr(locale, "取消全選", "取消全选", "Clear selection"),
+    deleteSelected: tr(locale, "刪除所選", "删除所选", "Delete selected"),
+    batchDeleteConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 首音樂？此操作不可復原。`, `删除已选的 ${n} 首音乐？此操作不可恢复。`, `Delete ${n} selected tracks? This cannot be undone.`),
+    renamed: tr(locale, "曲目名稱已更新。", "曲目名称已更新。", "Track name updated."),
+    batchDeleted: (n: number) => tr(locale, `已刪除 ${n} 首音樂。`, `已删除 ${n} 首音乐。`, `Deleted ${n} tracks.`),
+    activeCannotSelect: tr(locale, "目前播放中的曲目不可批量刪除", "当前播放中的曲目不可批量删除", "The active track cannot be bulk deleted"),
     close: tr(locale, "關閉", "关闭", "Close"),
     refresh: tr(locale, "刷新", "刷新", "Refresh"),
     empty: tr(locale, "尚未有背景音樂。請選擇你要的曲子。", "尚未有背景音乐。请选择你要的曲子。", "No background music yet. Choose a track."),
@@ -81,7 +98,12 @@ export function OwnerBackgroundMusicManager() {
 
   async function load() {
     if (!user?.isOwner) return;
-    try { const state = await loadOwnerMusic(); setTracks(state.tracks); }
+    try {
+      const state = await loadOwnerMusic();
+      setTracks(state.tracks);
+      const ids = new Set(state.tracks.map((track) => track.id));
+      setSelectedIds((current) => current.filter((id) => ids.has(id) && !state.tracks.find((track) => track.id === id)?.enabled));
+    }
     catch (error) { setMessage(error instanceof Error ? error.message : c.loadFailed); }
   }
 
@@ -119,6 +141,50 @@ export function OwnerBackgroundMusicManager() {
     finally { setBusy(false); }
   }
 
+  function toggleSelected(track: OwnerMusicTrack) {
+    if (track.enabled) return;
+    setSelectedIds((current) => current.includes(track.id) ? current.filter((id) => id !== track.id) : [...current, track.id]);
+  }
+
+  function selectAllDeletable() {
+    setSelectedIds(tracks.filter((track) => !track.enabled).map((track) => track.id));
+  }
+
+  async function onBatchDelete() {
+    if (busy || !selectedIds.length || !window.confirm(c.batchDeleteConfirm(selectedIds.length))) return;
+    setBusy(true); setMessage(null);
+    try {
+      const count = selectedIds.length;
+      await deleteOwnerMusicMany(selectedIds);
+      setSelectedIds([]);
+      await load();
+      setMessage(c.batchDeleted(count));
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : c.loadFailed);
+    } finally { setBusy(false); }
+  }
+
+  function beginRename(track: OwnerMusicTrack) {
+    setEditingId(track.id);
+    setEditingName(track.name);
+  }
+
+  async function saveRename(track: OwnerMusicTrack) {
+    if (busy) return;
+    const nextName = editingName.trim();
+    if (!nextName) return;
+    setBusy(true); setMessage(null);
+    try {
+      await renameOwnerMusic(track.id, nextName);
+      setEditingId(null);
+      setEditingName("");
+      await load();
+      setMessage(c.renamed);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : c.loadFailed);
+    } finally { setBusy(false); }
+  }
+
   if (!user?.isOwner || !onAccount) return null;
 
   const manager = <>
@@ -140,9 +206,44 @@ export function OwnerBackgroundMusicManager() {
         </div>
         {percent != null ? <div className="mt-4 border-y border-line/60 py-3" aria-live="polite"><div className="flex items-center justify-between gap-3 text-xs text-ink-soft"><span>{stage || c.processing}</span><span>{percent}%</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${percent}%` }} /></div></div> : null}
         {message ? <p className="mt-4 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
+        {tracks.length ? <div data-owner-bulk-toolbar="music" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
+          <span className="text-xs font-medium text-ink-soft">{c.selected(selectedIds.length)}</span>
+          <button type="button" disabled={busy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={selectAllDeletable}>{c.selectAll}</button>
+          <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds([])}>{c.clearSelection}</button>
+          <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void onBatchDelete()}>{c.deleteSelected}</button>
+        </div> : null}
         <div className="mt-5 space-y-3">
           {!tracks.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
-          {tracks.map((track) => <article key={track.id} className="border-t border-line/70 pt-4"><div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="truncate font-medium text-ink">{track.name}</h3>{track.enabled ? <span className="rounded-full border border-emerald-700/25 bg-emerald-700/5 px-2.5 py-1 text-[11px] text-emerald-800">{c.current}</span> : null}</div><p className="mt-1 text-xs text-ink-mute">{formatCodec(track)} · {formatSize(track.fileSize)}</p></div><div className="flex flex-wrap gap-2">{!track.enabled ? <button type="button" disabled={busy} className="rounded-full bg-wood px-3 py-2 text-xs text-cream disabled:opacity-50" onClick={() => void onActivate(track)}>{c.use}</button> : null}<button type="button" disabled={busy || track.enabled} className="rounded-full px-3 py-2 text-xs text-cinnabar disabled:opacity-30" onClick={() => void onDelete(track)}>{c.delete}</button></div></div><audio className="mt-3 w-full" controls preload="none"><source src={track.url} type={track.contentType || "audio/mpeg"} /></audio></article>)}
+          {tracks.map((track) => <article key={track.id} data-owner-selectable-file="music" className={`border-t border-line/70 pt-4 ${selectedIds.includes(track.id) ? "rounded-xl bg-cinnabar/[0.035] px-3 pb-3" : ""}`}>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="flex min-w-0 flex-1 items-start gap-3">
+                <label className={`mt-0.5 grid min-h-11 min-w-11 place-items-center rounded-full border border-line bg-paper/60 ${track.enabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`} title={track.enabled ? c.activeCannotSelect : c.select}>
+                  <input type="checkbox" className="h-4 w-4" disabled={busy || track.enabled} checked={selectedIds.includes(track.id)} onChange={() => toggleSelected(track)} aria-label={`${c.select} ${track.name}`} />
+                </label>
+                <div className="min-w-0 flex-1">
+                  {editingId === track.id ? (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <input autoFocus value={editingName} maxLength={80} onChange={(event) => setEditingName(event.target.value)} onKeyDown={(event) => {
+                        if (event.key === "Enter") void saveRename(track);
+                        if (event.key === "Escape") { setEditingId(null); setEditingName(""); }
+                      }} className="min-h-11 min-w-0 flex-1 rounded-xl border border-line bg-cream px-3 text-base text-ink outline-none focus:border-cinnabar" aria-label={c.rename} />
+                      <button type="button" disabled={busy || !editingName.trim()} className="min-h-11 rounded-full bg-wood px-3 text-xs text-cream disabled:opacity-40" onClick={() => void saveRename(track)}>{c.saveName}</button>
+                      <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line px-3 text-xs" onClick={() => { setEditingId(null); setEditingName(""); }}>{c.cancel}</button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap items-center gap-2"><h3 className="truncate font-medium text-ink">{track.name}</h3>{track.enabled ? <span className="rounded-full border border-emerald-700/25 bg-emerald-700/5 px-2.5 py-1 text-[11px] text-emerald-800">{c.current}</span> : null}</div>
+                  )}
+                  <p className="mt-1 text-xs text-ink-mute">{formatCodec(track)} · {formatSize(track.fileSize)}</p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {!track.enabled ? <button type="button" disabled={busy} className="min-h-10 rounded-full bg-wood px-3 text-xs text-cream disabled:opacity-50" onClick={() => void onActivate(track)}>{c.use}</button> : null}
+                <button type="button" disabled={busy || editingId === track.id} className="min-h-10 rounded-full border border-line bg-paper/60 px-3 text-xs text-ink-soft disabled:opacity-40" onClick={() => beginRename(track)}>{c.rename}</button>
+                <button type="button" disabled={busy || track.enabled} className="min-h-10 rounded-full px-3 text-xs text-cinnabar disabled:opacity-30" onClick={() => void onDelete(track)}>{c.delete}</button>
+              </div>
+            </div>
+            <audio className="mt-3 w-full" controls preload="none"><source src={track.url} type={track.contentType || "audio/mpeg"} /></audio>
+          </article>)}
         </div>
       </section>
     </div> : null}

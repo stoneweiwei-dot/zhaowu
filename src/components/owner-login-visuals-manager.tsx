@@ -76,6 +76,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [preview, setPreview] = useState<GalleryAsset | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const copy = useMemo(() => ({
     kicker: "LOGIN VISUALS",
@@ -87,6 +88,15 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     enable: tr(locale, "啟用", "启用", "Enable"),
     disable: tr(locale, "停用", "停用", "Disable"),
     remove: tr(locale, "刪除", "删除", "Delete"),
+    select: tr(locale, "選取", "选择", "Select"),
+    selected: (n: number) => tr(locale, `已選 ${n} 個`, `已选 ${n} 个`, `${n} selected`),
+    selectAll: tr(locale, "全選可管理素材", "全选可管理素材", "Select editable"),
+    clearSelection: tr(locale, "取消全選", "取消全选", "Clear selection"),
+    enableSelected: tr(locale, "啟用所選", "启用所选", "Enable selected"),
+    disableSelected: tr(locale, "停用所選", "停用所选", "Disable selected"),
+    deleteSelected: tr(locale, "刪除所選", "删除所选", "Delete selected"),
+    batchDeleteConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 個登入素材？此操作不可復原。`, `删除已选的 ${n} 个登录素材？此操作不可恢复。`, `Delete ${n} selected login assets? This cannot be undone.`),
+    batchDone: (n: number) => tr(locale, `已處理 ${n} 個登入素材。`, `已处理 ${n} 个登录素材。`, `Updated ${n} login assets.`),
     preview: tr(locale, "預覽", "预览", "Preview"),
     close: tr(locale, "關閉", "关闭", "Close"),
     day: tr(locale, "日間版", "日间版", "Day"),
@@ -104,6 +114,8 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         (asset.tags ?? []).some((tag) => tag.trim().toLowerCase() === "login-background"),
       );
       setAssets(rows);
+      const ids = new Set(rows.map((asset) => asset.id));
+      setSelectedIds((current) => current.filter((id) => ids.has(id)));
     } catch (error) {
       setMessage(error instanceof Error ? error.message : copy.failed);
     }
@@ -154,6 +166,43 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     }
   }
 
+  const editableRows = rows.filter((asset) => !asset.id.startsWith("catalog:"));
+
+  const toggleSelected = (id: string) => {
+    if (id.startsWith("catalog:")) return;
+    setSelectedIds((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+  };
+
+  async function setSelectedEnabled(enabled: boolean) {
+    if (busy || !selectedIds.length) return;
+    setBusy(true); setMessage(null);
+    try {
+      await Promise.all(selectedIds.map((id) => setGalleryAssetEnabled(session, id, enabled)));
+      const count = selectedIds.length;
+      await load();
+      notifyChanged();
+      setMessage(copy.batchDone(count));
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : copy.failed);
+    } finally { setBusy(false); }
+  }
+
+  async function deleteSelected() {
+    if (busy || !selectedIds.length || !window.confirm(copy.batchDeleteConfirm(selectedIds.length))) return;
+    setBusy(true); setMessage(null);
+    try {
+      const chosen = assets.filter((asset) => selectedIds.includes(asset.id));
+      for (const asset of chosen) await deleteGalleryAsset(session, asset);
+      const count = chosen.length;
+      setSelectedIds([]);
+      await load();
+      notifyChanged();
+      setMessage(copy.batchDone(count));
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : copy.failed);
+    } finally { setBusy(false); }
+  }
+
   return (
     <section id="login-visuals" data-owner-login-visuals className="seal-border rounded-[1.6rem] bg-cream/88 p-5 sm:p-7">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -168,6 +217,14 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         </label>
       </div>
       {message ? <p className="mt-3 rounded-xl border border-line bg-paper/40 px-4 py-3 text-sm text-cinnabar">{message}</p> : null}
+      {editableRows.length ? <div data-owner-bulk-toolbar="login-visuals" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
+        <span className="text-xs font-medium text-ink-soft">{copy.selected(selectedIds.length)}</span>
+        <button type="button" disabled={busy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds(editableRows.map((asset) => asset.id))}>{copy.selectAll}</button>
+        <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds([])}>{copy.clearSelection}</button>
+        <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-wood/30 bg-wood/5 px-3 text-xs text-wood disabled:opacity-40" onClick={() => void setSelectedEnabled(true)}>{copy.enableSelected}</button>
+        <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => void setSelectedEnabled(false)}>{copy.disableSelected}</button>
+        <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void deleteSelected()}>{copy.deleteSelected}</button>
+      </div> : null}
       {!rows.length ? <p className="mt-4 text-sm text-ink-mute">{copy.empty}</p> : null}
       <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {rows.map((asset) => {
@@ -176,7 +233,10 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
           const current = asset.id === currentId;
           const video = isVideo(asset);
           return (
-            <article key={asset.id} className={`overflow-hidden rounded-2xl border ${current ? "border-[#c4a05a] bg-[#fffaf1]" : "border-line bg-cream/72"}`}>
+            <article key={asset.id} data-owner-selectable-file="login-visuals" className={`relative overflow-hidden rounded-2xl border ${selectedIds.includes(asset.id) ? "border-cinnabar/45 ring-1 ring-cinnabar/20" : current ? "border-[#c4a05a] bg-[#fffaf1]" : "border-line bg-cream/72"}`}>
+              {!locked ? <label className="absolute left-2 top-2 z-10 grid min-h-11 min-w-11 cursor-pointer place-items-center rounded-full border border-line bg-cream/95 shadow-sm" title={copy.select}>
+                <input type="checkbox" className="h-4 w-4" checked={selectedIds.includes(asset.id)} onChange={() => toggleSelected(asset.id)} aria-label={`${copy.select} ${asset.title}`} />
+              </label> : null}
               <button type="button" className="block w-full" onClick={() => setPreview(asset)}>
                 {video ? (
                   <video className="aspect-[16/10] w-full object-cover" src={srcOf(asset)} poster={posterOf(asset)} muted playsInline preload="metadata" />
