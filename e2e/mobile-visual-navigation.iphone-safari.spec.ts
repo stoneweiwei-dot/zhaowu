@@ -121,8 +121,8 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await expect(english).toHaveCSS("color", "rgb(255, 250, 240)");
     await expect(english).toHaveCSS("background-color", "rgb(31, 78, 58)");
 
-    await expect(page.getByRole("button", { name: "한국어", exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "हिन्दी", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "한국어", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "हिन्दी", exact: true })).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
 
