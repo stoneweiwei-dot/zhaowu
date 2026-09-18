@@ -305,6 +305,17 @@ export function BackgroundMusic() {
     setPlayOrder(buildPlaybackOrder(tracks, currentId, next));
   };
 
+  useEffect(() => {
+    const onCommand = (event: Event) => {
+      const command = (event as CustomEvent<{ command?: string }>).detail?.command;
+      if (command === "toggle") togglePlayback();
+      else if (command === "next") void moveTrack(1);
+      else if (command === "previous") void moveTrack(-1);
+    };
+    window.addEventListener("zhaowu-music-command", onCommand as EventListener);
+    return () => window.removeEventListener("zhaowu-music-command", onCommand as EventListener);
+  });
+
   const markPlaybackStarted = () => {
     const audio = audioRef.current;
     if (!audio || audio.paused || audio.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
