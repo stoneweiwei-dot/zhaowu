@@ -106,8 +106,8 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
         backgroundColor: style.backgroundColor,
       };
     });
-    expect(metrics.height).toBeGreaterThanOrEqual(40);
-    expect(metrics.fontSize).toBeGreaterThanOrEqual(11);
+    expect(metrics.height).toBeGreaterThanOrEqual(44);
+    expect(metrics.fontSize).toBeGreaterThanOrEqual(13);
     expect(metrics.color).toBe("rgb(255, 250, 240)");
     expect(metrics.backgroundColor).toBe("rgb(31, 78, 58)");
 
@@ -123,6 +123,25 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
 
     await expect(page.getByRole("button", { name: "한국어", exact: true })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "हिन्दी", exact: true })).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  });
+
+  test("latest update is a dedicated readable page in both public languages", async ({ page }) => {
+    await makeAppOfflineSafe(page);
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    const latest = page.getByRole("link", { name: /最新更新/ });
+    await expect(latest).toBeVisible();
+    expect((await latest.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+    await latest.click();
+    await expect(page).toHaveURL(/\/updates$/);
+    await expect(page.locator("[data-updates-page]")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "最新版本更新內容" })).toBeVisible();
+    await expect(page.locator("[data-updates-page]")).not.toContainText(/[a-f0-9]{40}/i);
+
+    await page.getByRole("button", { name: "English", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Latest release" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Back to home" })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
 

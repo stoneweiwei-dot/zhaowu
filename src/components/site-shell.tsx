@@ -78,7 +78,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
   const todayLabel = displayText(language, "今日", "今日", "Today", "本日", "오늘", "आज");
   const totalLabel = displayText(language, "累計訪問", "累计访问", "Total visits", "累計訪問", "누적 방문", "कुल विज़िट");
-  const latestLabel = displayText(language, "最新更新 ＋", "最新更新 ＋", "Latest update ＋", "最新更新 ＋", "최신 업데이트 ＋", "नवीनतम अपडेट ＋");
+  const latestLabel = displayText(language, "最新更新", "最新更新", "Latest update", "最新更新", "최신 업데이트", "नवीनतम अपडेट");
   const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
   const galleryLabel = displayText(language, "圖庫", "图库", "Gallery", "ギャラリー", "갤러리", "गैलरी");
   const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기", "गैलरी खोलें");
@@ -95,10 +95,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
                 <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
                 <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
-                <details className="group basis-full text-center" data-latest-change-report>
-                  <summary className="inline-flex min-h-[44px] cursor-pointer list-none items-center justify-center px-3 py-2 text-sm font-medium leading-5 text-ink-soft touch-manipulation [&::-webkit-details-marker]:hidden">{latestLabel}</summary>
-                  <p className="mx-auto mt-1 max-w-2xl px-3 text-center text-sm leading-6">{releaseSummary}</p>
-                </details>
+                <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>
+                  <span>{latestLabel}</span><span aria-hidden="true">›</span>
+                </Link>
               </div>
             ) : null}
 
@@ -131,11 +130,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </div>
 
             <nav className="zhaowu-header-nav" aria-label={siteControlsLabel}>
-              <div role="group" aria-label={t("language")} className="site-lang-group" style={{ display: "flex", alignItems: "center", gap: 4, maxWidth: "100%", overflowX: "auto", padding: 4, border: "1px solid rgba(196,160,90,.62)", borderRadius: 999, background: night ? "rgba(15,32,28,.72)" : "rgba(250,248,241,.76)", boxShadow: "0 6px 18px rgba(60,46,28,.06)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)" }}>
-                <span aria-hidden="true" style={{ display: "grid", placeItems: "center", flex: "0 0 auto", width: 36, height: 40, color: night ? "#d4b074" : "#1f4e3a" }}><BrandIcon name="language" /></span>
+              <div role="group" aria-label={t("language")} className="site-lang-group">
+                <span aria-hidden="true" className="zhaowu-language-icon"><BrandIcon name="language" /></span>
                 {languageOptions.map(({ value, label, aria }) => {
                   const active = language === value;
-                  return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button" style={{ flex: "0 0 auto", minHeight: 40, padding: "0 11px", borderRadius: 999, border: active ? "1px solid #c4a05a" : "1px solid transparent", background: active ? (night ? "rgba(212,176,116,.15)" : "#1f4e3a") : "transparent", color: active ? (night ? "#f1dfba" : "#fffaf0") : (night ? "#e7e0d1" : "#4f4a42"), fontSize: 12, lineHeight: 1, fontWeight: active ? 700 : 600, letterSpacing: value === "en" ? ".04em" : ".01em", whiteSpace: "nowrap", boxShadow: active && !night ? "inset 0 0 0 1px rgba(255,255,255,.08)" : "none" }}>{label}</button>;
+                  return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button">{label}</button>;
                 })}
               </div>
               <button type="button" className="zhaowu-theme-toggle zhaowu-header-mode-toggle" onClick={toggle} aria-pressed={night} aria-label={night ? dayModeLabel : nightModeLabel} title={night ? dayModeLabel : nightModeLabel}>

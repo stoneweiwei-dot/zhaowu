@@ -13,19 +13,28 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AstrologyRouteImport } from './routes/astrology'
 import { Route as AuspiciousAtlasRouteImport } from './routes/auspicious-atlas'
+import { Route as DailyColorsRouteImport } from './routes/daily-colors'
 import { Route as FunTestsRouteImport } from './routes/fun-tests'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as IndianAstrologyRouteImport } from './routes/indian-astrology'
+import { Route as KnowledgeRouteImport } from './routes/knowledge'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as NumerologyRouteImport } from './routes/numerology'
 import { Route as QizhengRouteImport } from './routes/qizheng'
+import { Route as SkyEventsRouteImport } from './routes/sky-events'
 import { Route as TeaGuardianRouteImport } from './routes/tea-guardian'
 import { Route as TianjiDualRouteImport } from './routes/tianji-dual'
 import { Route as TianjiXinggongRouteImport } from './routes/tianji-xinggong'
+import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as YizhangjingRouteImport } from './routes/yizhangjing'
 import { Route as ZiweiRouteImport } from './routes/ziwei'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as FunTestsEarthOnlineRouteImport } from './routes/fun-tests.earth-online'
+import { Route as KnowledgeShushuBoundaryRouteImport } from './routes/knowledge.shushu-boundary'
+import { Route as KnowledgeSystemMapRouteImport } from './routes/knowledge.system-map'
+import { Route as QuizDivineAffinityRouteImport } from './routes/quiz.divine-affinity'
+import { Route as QuizFiveElementOverdriveRouteImport } from './routes/quiz.five-element-overdrive'
 import { Route as QuizSixRealmsRouteImport } from './routes/quiz.six-realms'
 
 const IndexRoute = IndexRouteImport.update({
@@ -48,6 +57,11 @@ const AuspiciousAtlasRoute = AuspiciousAtlasRouteImport.update({
   path: '/auspicious-atlas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DailyColorsRoute = DailyColorsRouteImport.update({
+  id: '/daily-colors',
+  path: '/daily-colors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FunTestsRoute = FunTestsRouteImport.update({
   id: '/fun-tests',
   path: '/fun-tests',
@@ -68,14 +82,14 @@ const IndianAstrologyRoute = IndianAstrologyRouteImport.update({
   path: '/indian-astrology',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KnowledgeRoute = KnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthCallbackRoute = AuthCallbackRouteImport.update({
-  id: '/auth/callback',
-  path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NumerologyRoute = NumerologyRouteImport.update({
@@ -86,6 +100,11 @@ const NumerologyRoute = NumerologyRouteImport.update({
 const QizhengRoute = QizhengRouteImport.update({
   id: '/qizheng',
   path: '/qizheng',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SkyEventsRoute = SkyEventsRouteImport.update({
+  id: '/sky-events',
+  path: '/sky-events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeaGuardianRoute = TeaGuardianRouteImport.update({
@@ -103,6 +122,11 @@ const TianjiXinggongRoute = TianjiXinggongRouteImport.update({
   path: '/tianji-xinggong',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UpdatesRoute = UpdatesRouteImport.update({
+  id: '/updates',
+  path: '/updates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const YizhangjingRoute = YizhangjingRouteImport.update({
   id: '/yizhangjing',
   path: '/yizhangjing',
@@ -113,6 +137,37 @@ const ZiweiRoute = ZiweiRouteImport.update({
   path: '/ziwei',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FunTestsEarthOnlineRoute = FunTestsEarthOnlineRouteImport.update({
+  id: '/earth-online',
+  path: '/earth-online',
+  getParentRoute: () => FunTestsRoute,
+} as any)
+const KnowledgeShushuBoundaryRoute = KnowledgeShushuBoundaryRouteImport.update({
+  id: '/shushu-boundary',
+  path: '/shushu-boundary',
+  getParentRoute: () => KnowledgeRoute,
+} as any)
+const KnowledgeSystemMapRoute = KnowledgeSystemMapRouteImport.update({
+  id: '/system-map',
+  path: '/system-map',
+  getParentRoute: () => KnowledgeRoute,
+} as any)
+const QuizDivineAffinityRoute = QuizDivineAffinityRouteImport.update({
+  id: '/quiz/divine-affinity',
+  path: '/quiz/divine-affinity',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizFiveElementOverdriveRoute =
+  QuizFiveElementOverdriveRouteImport.update({
+    id: '/quiz/five-element-overdrive',
+    path: '/quiz/five-element-overdrive',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const QuizSixRealmsRoute = QuizSixRealmsRouteImport.update({
   id: '/quiz/six-realms',
   path: '/quiz/six-realms',
@@ -124,19 +179,28 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
-  '/fun-tests': typeof FunTestsRoute
+  '/daily-colors': typeof DailyColorsRoute
+  '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
+  '/knowledge': typeof KnowledgeRouteWithChildren
   '/login': typeof LoginRoute
-  '/auth/callback': typeof AuthCallbackRoute
   '/numerology': typeof NumerologyRoute
   '/qizheng': typeof QizhengRoute
+  '/sky-events': typeof SkyEventsRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
+  '/updates': typeof UpdatesRoute
   '/yizhangjing': typeof YizhangjingRoute
   '/ziwei': typeof ZiweiRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
+  '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
+  '/knowledge/system-map': typeof KnowledgeSystemMapRoute
+  '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
+  '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
   '/quiz/six-realms': typeof QuizSixRealmsRoute
 }
 export interface FileRoutesByTo {
@@ -144,19 +208,28 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
-  '/fun-tests': typeof FunTestsRoute
+  '/daily-colors': typeof DailyColorsRoute
+  '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
+  '/knowledge': typeof KnowledgeRouteWithChildren
   '/login': typeof LoginRoute
-  '/auth/callback': typeof AuthCallbackRoute
   '/numerology': typeof NumerologyRoute
   '/qizheng': typeof QizhengRoute
+  '/sky-events': typeof SkyEventsRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
+  '/updates': typeof UpdatesRoute
   '/yizhangjing': typeof YizhangjingRoute
   '/ziwei': typeof ZiweiRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
+  '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
+  '/knowledge/system-map': typeof KnowledgeSystemMapRoute
+  '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
+  '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
   '/quiz/six-realms': typeof QuizSixRealmsRoute
 }
 export interface FileRoutesById {
@@ -165,19 +238,28 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
-  '/fun-tests': typeof FunTestsRoute
+  '/daily-colors': typeof DailyColorsRoute
+  '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
+  '/knowledge': typeof KnowledgeRouteWithChildren
   '/login': typeof LoginRoute
-  '/auth/callback': typeof AuthCallbackRoute
   '/numerology': typeof NumerologyRoute
   '/qizheng': typeof QizhengRoute
+  '/sky-events': typeof SkyEventsRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
+  '/updates': typeof UpdatesRoute
   '/yizhangjing': typeof YizhangjingRoute
   '/ziwei': typeof ZiweiRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
+  '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
+  '/knowledge/system-map': typeof KnowledgeSystemMapRoute
+  '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
+  '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
   '/quiz/six-realms': typeof QuizSixRealmsRoute
 }
 export interface FileRouteTypes {
@@ -187,19 +269,28 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/daily-colors'
     | '/fun-tests'
     | '/gallery'
     | '/history'
     | '/indian-astrology'
+    | '/knowledge'
     | '/login'
-    | '/auth/callback'
     | '/numerology'
     | '/qizheng'
+    | '/sky-events'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
+    | '/updates'
     | '/yizhangjing'
     | '/ziwei'
+    | '/auth/callback'
+    | '/fun-tests/earth-online'
+    | '/knowledge/shushu-boundary'
+    | '/knowledge/system-map'
+    | '/quiz/divine-affinity'
+    | '/quiz/five-element-overdrive'
     | '/quiz/six-realms'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -207,19 +298,28 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/daily-colors'
     | '/fun-tests'
     | '/gallery'
     | '/history'
     | '/indian-astrology'
+    | '/knowledge'
     | '/login'
-    | '/auth/callback'
     | '/numerology'
     | '/qizheng'
+    | '/sky-events'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
+    | '/updates'
     | '/yizhangjing'
     | '/ziwei'
+    | '/auth/callback'
+    | '/fun-tests/earth-online'
+    | '/knowledge/shushu-boundary'
+    | '/knowledge/system-map'
+    | '/quiz/divine-affinity'
+    | '/quiz/five-element-overdrive'
     | '/quiz/six-realms'
   id:
     | '__root__'
@@ -227,19 +327,28 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/daily-colors'
     | '/fun-tests'
     | '/gallery'
     | '/history'
     | '/indian-astrology'
+    | '/knowledge'
     | '/login'
-    | '/auth/callback'
     | '/numerology'
     | '/qizheng'
+    | '/sky-events'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
+    | '/updates'
     | '/yizhangjing'
     | '/ziwei'
+    | '/auth/callback'
+    | '/fun-tests/earth-online'
+    | '/knowledge/shushu-boundary'
+    | '/knowledge/system-map'
+    | '/quiz/divine-affinity'
+    | '/quiz/five-element-overdrive'
     | '/quiz/six-realms'
   fileRoutesById: FileRoutesById
 }
@@ -248,19 +357,25 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AstrologyRoute: typeof AstrologyRoute
   AuspiciousAtlasRoute: typeof AuspiciousAtlasRoute
-  FunTestsRoute: typeof FunTestsRoute
+  DailyColorsRoute: typeof DailyColorsRoute
+  FunTestsRoute: typeof FunTestsRouteWithChildren
   GalleryRoute: typeof GalleryRoute
   HistoryRoute: typeof HistoryRoute
   IndianAstrologyRoute: typeof IndianAstrologyRoute
+  KnowledgeRoute: typeof KnowledgeRouteWithChildren
   LoginRoute: typeof LoginRoute
-  AuthCallbackRoute: typeof AuthCallbackRoute
   NumerologyRoute: typeof NumerologyRoute
   QizhengRoute: typeof QizhengRoute
+  SkyEventsRoute: typeof SkyEventsRoute
   TeaGuardianRoute: typeof TeaGuardianRoute
   TianjiDualRoute: typeof TianjiDualRoute
   TianjiXinggongRoute: typeof TianjiXinggongRoute
+  UpdatesRoute: typeof UpdatesRoute
   YizhangjingRoute: typeof YizhangjingRoute
   ZiweiRoute: typeof ZiweiRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  QuizDivineAffinityRoute: typeof QuizDivineAffinityRoute
+  QuizFiveElementOverdriveRoute: typeof QuizFiveElementOverdriveRoute
   QuizSixRealmsRoute: typeof QuizSixRealmsRoute
 }
 
@@ -294,6 +409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuspiciousAtlasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/daily-colors': {
+      id: '/daily-colors'
+      path: '/daily-colors'
+      fullPath: '/daily-colors'
+      preLoaderRoute: typeof DailyColorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/fun-tests': {
       id: '/fun-tests'
       path: '/fun-tests'
@@ -322,18 +444,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndianAstrologyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/knowledge': {
+      id: '/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof KnowledgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/callback': {
-      id: '/auth/callback'
-      path: '/auth/callback'
-      fullPath: '/auth/callback'
-      preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/numerology': {
@@ -348,6 +470,13 @@ declare module '@tanstack/react-router' {
       path: '/qizheng'
       fullPath: '/qizheng'
       preLoaderRoute: typeof QizhengRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sky-events': {
+      id: '/sky-events'
+      path: '/sky-events'
+      fullPath: '/sky-events'
+      preLoaderRoute: typeof SkyEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tea-guardian': {
@@ -371,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TianjiXinggongRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/updates': {
+      id: '/updates'
+      path: '/updates'
+      fullPath: '/updates'
+      preLoaderRoute: typeof UpdatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/yizhangjing': {
       id: '/yizhangjing'
       path: '/yizhangjing'
@@ -385,6 +521,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ZiweiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fun-tests/earth-online': {
+      id: '/fun-tests/earth-online'
+      path: '/earth-online'
+      fullPath: '/fun-tests/earth-online'
+      preLoaderRoute: typeof FunTestsEarthOnlineRouteImport
+      parentRoute: typeof FunTestsRoute
+    }
+    '/knowledge/shushu-boundary': {
+      id: '/knowledge/shushu-boundary'
+      path: '/shushu-boundary'
+      fullPath: '/knowledge/shushu-boundary'
+      preLoaderRoute: typeof KnowledgeShushuBoundaryRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/system-map': {
+      id: '/knowledge/system-map'
+      path: '/system-map'
+      fullPath: '/knowledge/system-map'
+      preLoaderRoute: typeof KnowledgeSystemMapRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/quiz/divine-affinity': {
+      id: '/quiz/divine-affinity'
+      path: '/quiz/divine-affinity'
+      fullPath: '/quiz/divine-affinity'
+      preLoaderRoute: typeof QuizDivineAffinityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz/five-element-overdrive': {
+      id: '/quiz/five-element-overdrive'
+      path: '/quiz/five-element-overdrive'
+      fullPath: '/quiz/five-element-overdrive'
+      preLoaderRoute: typeof QuizFiveElementOverdriveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quiz/six-realms': {
       id: '/quiz/six-realms'
       path: '/quiz/six-realms'
@@ -395,24 +573,56 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface FunTestsRouteChildren {
+  FunTestsEarthOnlineRoute: typeof FunTestsEarthOnlineRoute
+}
+
+const FunTestsRouteChildren: FunTestsRouteChildren = {
+  FunTestsEarthOnlineRoute: FunTestsEarthOnlineRoute,
+}
+
+const FunTestsRouteWithChildren = FunTestsRoute._addFileChildren(
+  FunTestsRouteChildren,
+)
+
+interface KnowledgeRouteChildren {
+  KnowledgeShushuBoundaryRoute: typeof KnowledgeShushuBoundaryRoute
+  KnowledgeSystemMapRoute: typeof KnowledgeSystemMapRoute
+}
+
+const KnowledgeRouteChildren: KnowledgeRouteChildren = {
+  KnowledgeShushuBoundaryRoute: KnowledgeShushuBoundaryRoute,
+  KnowledgeSystemMapRoute: KnowledgeSystemMapRoute,
+}
+
+const KnowledgeRouteWithChildren = KnowledgeRoute._addFileChildren(
+  KnowledgeRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
   AstrologyRoute: AstrologyRoute,
   AuspiciousAtlasRoute: AuspiciousAtlasRoute,
-  FunTestsRoute: FunTestsRoute,
+  DailyColorsRoute: DailyColorsRoute,
+  FunTestsRoute: FunTestsRouteWithChildren,
   GalleryRoute: GalleryRoute,
   HistoryRoute: HistoryRoute,
   IndianAstrologyRoute: IndianAstrologyRoute,
+  KnowledgeRoute: KnowledgeRouteWithChildren,
   LoginRoute: LoginRoute,
-  AuthCallbackRoute: AuthCallbackRoute,
   NumerologyRoute: NumerologyRoute,
   QizhengRoute: QizhengRoute,
+  SkyEventsRoute: SkyEventsRoute,
   TeaGuardianRoute: TeaGuardianRoute,
   TianjiDualRoute: TianjiDualRoute,
   TianjiXinggongRoute: TianjiXinggongRoute,
+  UpdatesRoute: UpdatesRoute,
   YizhangjingRoute: YizhangjingRoute,
   ZiweiRoute: ZiweiRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
+  QuizDivineAffinityRoute: QuizDivineAffinityRoute,
+  QuizFiveElementOverdriveRoute: QuizFiveElementOverdriveRoute,
   QuizSixRealmsRoute: QuizSixRealmsRoute,
 }
 export const routeTree = rootRouteImport

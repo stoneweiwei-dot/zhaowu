@@ -10,19 +10,30 @@ const loginApproved = readFileSync(new URL('../src/login-approved-r89.css', impo
 const account = readFileSync(new URL('../src/routes/account.tsx', import.meta.url), 'utf8');
 const home = readFileSync(new URL('../src/routes/index.tsx', import.meta.url), 'utf8');
 const r144 = readFileSync(new URL('../src/device-question-flow-r144.css', import.meta.url), 'utf8');
+const siteShell = readFileSync(new URL('../src/components/site-shell.tsx', import.meta.url), 'utf8');
 
 const canonicalImport = "import './zhaowu-design-system.css';";
 const loginApprovedImport = "import './login-approved-r89.css';";
 const legacyLastImport = "import './site-ux-r75-final.css';";
 
-test('canonical design system stays the final global base and r89 overrides login only', () => {
+test('canonical design system is the final global visual authority', () => {
   assert.match(main, /zhaowu-design-system\.css/);
   assert.match(main, /login-approved-r89\.css/);
   assert.ok(main.lastIndexOf(canonicalImport) > main.lastIndexOf(legacyLastImport));
-  assert.ok(main.lastIndexOf(loginApprovedImport) > main.lastIndexOf(canonicalImport));
+  assert.ok(main.lastIndexOf(canonicalImport) > main.lastIndexOf(loginApprovedImport));
+  assert.equal(main.lastIndexOf(canonicalImport), main.lastIndexOf("import './"));
   assert.match(loginApproved, /\.zhaowu-login-shell/);
   assert.doesNotMatch(loginApproved, /\.zhaowu-home-sheet-shell/);
   assert.doesNotMatch(root, /mobile-foundation-r81\.css/);
+});
+
+test('two-language header uses stylesheet-governed controls without inline visual overrides', () => {
+  assert.match(siteShell, /value: "en" as const/);
+  assert.match(siteShell, /value: "zh-Hant" as const/);
+  assert.doesNotMatch(siteShell, /value: "ko" as const|value: "hi" as const/);
+  assert.doesNotMatch(siteShell, /site-lang-group"\s+style=|site-lang-button"\s+style=/);
+  assert.match(design, /\.site-lang-button[\s\S]*min-height:\s*44px/);
+  assert.match(design, /\.zhaowu-home-sheet-shell input[\s\S]*font-size:\s*16px/);
 });
 
 test('approved login keeps official mark, Song wallpaper and independent owner credentials only', () => {
