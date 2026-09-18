@@ -2,7 +2,7 @@
 
 最後核對：2026-09-15 07:20 AEST
 
-> **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
+> **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Netlify Production + 当前 Supabase 为准。
 
 ## 1. 唯一生产主线
 
@@ -10,19 +10,20 @@
 | -------------- | ---------------------------------------------------------------------- |
 | GitHub         | `stoneweiwei-dot/zhaowu`                                               |
 | Branch         | `main`                                                                 |
-| Hosting        | **Vercel**                                                             |
-| Vercel project | `stone-zhaowu-official` (`prj_81IIJjyeM3l47ZPsiIE7d6eOrp9I`)           |
-| Production URL | `https://stone-zhaowu-official.vercel.app/`                            |
+| Hosting        | **Netlify**（2026-09-19 r154 站主明确 supersession）                    |
+| Netlify project | `archive-stone-zhaowu-official` (`d1d08003-f225-4749-adcd-fd730b0c07a8`) |
+| Production URL | `https://archive-stone-zhaowu-official.netlify.app/`                   |
+| Legacy fallback | Vercel `stone-zhaowu-official`，目前停在 r151，不代表当前版本          |
 | Database/Auth  | **Supabase** project `plgpxusmemnmzckbwtiv`（報告／圖庫／統計）。站主登入不走 Supabase Auth。 |
-| 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前继续使用 Vercel production URL |
+| 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前使用 Netlify production URL   |
 
-每次接手实时检查 `main` 与 Vercel Production 的 `githubCommitSha`，禁止另建第二条 production 主线。Netlify、AppDeploy、Lovable standby、旧临时站只读参考。
+每次接手实时检查 `main` 与 Netlify Production 的 commit；GitHub `main` 仍是唯一源码真相。Vercel 只保留旧版 fallback，当前不得因旧规则自动触发 build。AppDeploy、Lovable standby 与其他旧临时站只读参考。
 
-目前已核對：r129 Production 為 `7a35307d1d2a2873f529e81e7989b2a742ffd155` / `dpl_3PkQB7ngSMbYdziwgRx3gpr5gqir`。r130 合併後必須把 Production SHA 與 `zhaowu-shell-r130` 再核一次。不得把 exact SHA 或部署 READY 等同真實 iPhone／已安裝 PWA／站主登入驗收。
+Vercel 目前实际仍为 r151 `db423a6323d340bbac25cd5ec4457ce1736d7b99` / `dpl_2J1yFSxDCWvhgXReEuqGqt1BcHKu`；r153 已合并但没有进入该 Production。r154 改由 Netlify 承载后仍必须核对 Netlify deploy commit 与主要路由；不得把 exact SHA 或部署 READY 等同真實 iPhone／已安裝 PWA／站主登入验收。
 
 ## 2. 已完成且默认锁住
 
-- GitHub `main` 是唯一源码真相。Vercel Git 自动部署仅对 `main` 开启（`vercel.json` `git.deploymentEnabled.main=true`），正式生产只认 `stone-zhaowu-official`。
+- GitHub `main` 是唯一源码真相。Netlify 只从 `main` 建置同一份 Vite 前端与 canonical API handlers；Vercel 的旧自动部署设定保留但当前不触发。
 - GitHub `main` branch protection 已開啟：required checks = Deploy gate／Engine suite／iPhone Safari；`enforce_admins=true`；禁止 force push。
 - Supabase 报告存档、图库/背景资产、访问统计统一使用当前项目配置。站主登入改為獨立 Cookie `__Host-zhaowu_owner_session`，不經 Supabase Auth。
 - 登入：`/login` 提供會員登入、註冊與獨立站主密鑰三分頁。會員走 Supabase Auth，確認信與 OAuth 必須回到 `/auth/callback`，不得把 token 倒在首頁變成空白頁。站主仍只認獨立 Cookie `__Host-zhaowu_owner_session`；`profiles.is_owner` 不得讓會員變成站主。Email＋密碼廢止契約已被 2026-09-15 站主最新指令取代。
@@ -51,7 +52,7 @@
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
 - 趣味測驗結果可顯示已核准的隱藏神聖圖像；這是結果頁視覺補充，不改命盤計算、報告契約或付費圖片流程。
 - Logo／STO-12 已完成，不重新製作。STO-5 普通會員入口廢止已被 2026-09-15 站主最新指令取代：會員登入／註冊必須存在且確認信不得掉進空白頁。
-- 舊 Netlify 自動 Preview／Deploy 已用 `netlify.toml` `ignore = "exit 0"` 停掉；Netlify 不是 production。archive 專案若仍接到 GitHub webhook，只會 canceled，不得當正式站。
+- r154 已取代舊 Netlify 永久 skip：`netlify.toml` 現在執行正式 build，並由 `netlify/functions` 承載十個 `/api/*`；不得退回只有靜態 `dist` 的舊殼。
 
 没有新的可复现 FAIL 时，不得因为旧 Issue / 旧聊天复活已废止实现。
 
@@ -122,16 +123,16 @@
 | 4 | 真實 iPhone／PWA／登入／報告重開 | **未完成**（CI ≠ 真機）。r129 獨立 `.js` 登入已上線；r130 後台上傳背景音樂須再核 |
 | 5 | GitHub main protection | **DONE**（三項 required checks + enforce_admins） |
 | 6 | Supabase advisor／Edge Functions | **文件化**，Dashboard 勾選仍需站主 |
-| 7 | 停 Netlify 當 production | **DONE**（`ignore = "exit 0"`）；archive webhook 仍可能 canceled，不是正式站 |
+| 7 | Netlify 承載 | **r154 SUPERSEDED**：改為 active host，必須連同十個 Functions 驗證 |
 | 8 | Linear STO-12／STO-5、CURRENT-STATE SHA | Logo／舊會員入口已鎖；Linear 未接入無法寫卡。live SHA 對到 `7a35307`（r129） |
-| 9 | `zhaowu.soul-terminal.com` | **未完成**；Vercel 專案尚未綁此域名，DNS 無法解析 |
+| 9 | `zhaowu.soul-terminal.com` | **未完成**；尚未綁到目前 Netlify active host，DNS 無法解析 |
 | 10 | PR #295 Paid Visual | **維持暫停**；不 merge、不 rebase |
 
 PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行契約。r128 的 `/api/owner-*.ts` 在 Vite+Vercel 上 FUNCTION_INVOCATION_FAILED；r129 改 `api/*.js` 自包含 Node handler，並把 SPA rewrite 改成不吞 `/api/*`。
 
 ## 8. 当前真正未完成
 
-- 正式子域名 `zhaowu.soul-terminal.com` DNS → Vercel 綁定與 SSL。完成前唯一正式地址是 `https://stone-zhaowu-official.vercel.app/`。
+- 正式子域名 `zhaowu.soul-terminal.com` DNS → Netlify 綁定與 SSL。完成前正式地址是 `https://archive-stone-zhaowu-official.netlify.app/`。
 - 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub iPhone Safari CI 已通過；這不等於實機完成。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
@@ -166,4 +167,4 @@ PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行�
 
 ## 11. 接手规则
 
-每次改网站之前：读 `AGENTS.md` 与本文件；查实时 main + Vercel Production；只处理当前可复现问题。新指令与旧指令冲突时，按 AGENTS 的安全 supersession 规则使旧 active path 失效，但不得破坏运行依赖。
+每次改网站之前：读 `AGENTS.md` 与本文件；查实时 main + Netlify Production，并把 Vercel 视为旧版 fallback；只处理当前可复现问题。新指令与旧指令冲突时，按 AGENTS 的安全 supersession 规则使旧 active path 失效，但不得破坏运行依赖。
