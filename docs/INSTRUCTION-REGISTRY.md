@@ -27,7 +27,7 @@
 |---|---|---|
 | `STONE-R6.2.1-CURRENT-MASTER.md` | `CURRENT_MASTER` | 唯一当前入口；必须同时加载 P2 |
 | `STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md` | `ACTIVE_RUNTIME_PATCH` | 刑冲合害破、墓库、十神功能、ODL/FC 流通、类象与跨术数边界的强制补丁 |
-| `STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md` | `ACTIVE_RUNTIME_PATCH` | 偏枯六态、特殊格先行、病藥功能化、ODL→FC、五行象义与生活补救边界的强制补丁 |
+| `STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md` | `ACTIVE_RUNTIME_PATCH` | 偏枯六态、特殊格先行、病藥功能化、ODL→FC、EC-7 氣勢集中／雙強／中和／通關边界，以及所有分組统一主链的强制补丁 |
 | `STONE-R6.1-CURRENT-MASTER.md` | `SUPERSEDED_BASE` | 保留完整历史判法，供 R6.2.1 继承与审计；不得单独冒充当前版本 |
 | R6 / R5 / R4 / R3 / R2 | `HISTORICAL` | 只作版本沿革，冲突处不执行 |
 | `METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` | `REDIRECT / HISTORICAL BASELINE` | 仅作为旧入口，必须转到 R6.2.1 + P2 + P3 |
@@ -242,3 +242,15 @@
 - 站主密碼改接到真正生效的 `api/owner-*.js`（hash `6236d83b…`，最短 8 位）。只改 `src/server/owner-auth.ts` 不能登入。舊 32 位密鑰與 r129 hash `SUPERSEDED`。明文不進 repo。
 - Loading 維持 r126。不 merge #304。PR #295 維持暫停。
 - PWA cache `zhaowu-shell-r130`。
+
+
+## 2026-09-19 r149 全分組主鏈／EC-7 同步
+
+- ACTIVE：网站八字 runtime 顶层主链统一为：`资料校验 → 从化真假／特殊格 → 月令 → 调候 → 根气透藏 → 格局 → PK-6 偏枯病藥 Gate → 病藥 → ODL（是否有路）→ FC（流通结果）→ 承载 → 刑冲合害／四库 → 大运 → 流年 → LBX 四轴 → 事件性质 → 六亲定位 → 流月窗口 → 可信度／依据 → 白话输出`。
+- 所有八字／命理专项目录与 future Agent 都必须继承这条主链；专题只能放大自己的步骤，不得跳过上游 Gate。
+- 同一案件已完成且仍有效的上游结果可压缩沿用；校时改变、从化未定、格局／病藥冲突、版本不明或证据失效时必须退回主链。
+- 紫微、七政、一掌经、D60、吠陀、风水、神煞等保留自身算法；不得反向改写子平主判，不适用的步骤标记 N/A。
+- 内部模块状态必须可区分：`已完成／压缩沿用／N/A／受阻／降级`。
+- EC-7：气势集中不是人格／方向／成就结论；双强相战不是天然优势；中和≠五行平均；缺项≠病、补项≠藥；通关不得滥用；运动／颜色／饮食／职业等生活五行不得反向修改格局、喜用、病藥或岁运。
+- 固定裁决：气势集中只能作为“主轴可能更明显”的候选，最终由成势、承载、病藥、制化、ODL、FC共同裁决。
+- 本次只更新解释／治理／runtime 路由，不修改四柱、节气、真太阳时、藏干、十神、起运、大运等 deterministic calculation truth。
