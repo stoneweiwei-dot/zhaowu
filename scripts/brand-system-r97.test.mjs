@@ -4,7 +4,7 @@ import test from "node:test";
 
 const brand = await readFile(new URL("../src/components/brand-seal.tsx", import.meta.url), "utf8");
 const css = await readFile(new URL("../src/brand-ui-r97.css", import.meta.url), "utf8");
-const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
+const main = await readFile(new URL("../src/legacy-visual-compat.css", import.meta.url), "utf8");
 const catalog = await readFile(new URL("../src/lib/brand-ui-catalog.ts", import.meta.url), "utf8");
 const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const logo = await readFile(new URL("../public/brand-ui/header-gourd-wordmark-r113.png", import.meta.url));
