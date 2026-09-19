@@ -44,7 +44,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
     await expect(page.getByText("子時換日", { exact: true })).toHaveCount(0);
     await expect(page.getByText("套用真太陽時校正", { exact: true })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /前世今生/ })).toBeVisible();
+    await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
 
     await expect(page.getByRole("dialog", { name: "把昭梧存到手機桌面", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "顯示 iPhone 保存步驟", exact: true })).toBeVisible();
@@ -63,7 +63,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("heading", { name: "Your birth details", exact: true })).toBeVisible();
     await expect(page.locator("#analysis-question")).toHaveCount(0);
     await expect(page.locator("#birth-year")).toBeVisible();
-    await expect(page.getByRole("link", { name: /Past & Present/ })).toBeVisible();
+    await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
     await page.getByRole("button", { name: "繁體中文", exact: true }).click();
     await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
     await expectMobileViewportHealthy(page);
@@ -83,7 +83,8 @@ test.describe("iPhone Safari core customer flow", () => {
     const yearPillar = page.locator('#bazi [data-pillar="year"] strong');
     await expect(page.locator("#bazi [data-bazi-chart]")).toBeVisible();
     await expect(page.locator("#question-stage")).toBeVisible();
-    await expect(page.locator('[data-specialist-link="bazi"]')).toHaveAttribute("href", "#bazi");
+    await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
+    await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
     const before = await yearPillar.textContent();
 
     await page.getByRole("button", { name: "修改資料", exact: true }).first().click();
@@ -168,6 +169,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("月令");
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("旺衰底盤");
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("格局方向");
+    await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "你的完整綜合報告", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "你真正想問的是什麼？", exact: true })).toBeVisible();
     const sectionOrder = await page.evaluate(() => ["customer-record", "bazi", "question-stage"].map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? -1));
     expect(sectionOrder[0]).toBeLessThan(sectionOrder[1]);

@@ -5,9 +5,10 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("homepage keeps birth, Four Pillars and question in the required order", async () => {
+test("homepage keeps birth, Four Pillars, unified report and question in the required order", async () => {
   const form = await source("src/components/analysis-form.tsx");
   const home = await source("src/routes/index.tsx");
+  const unified = await source("src/components/unified-birth-report.tsx");
   assert.match(form, /id="customer-record"/);
   assert.match(form, /id="question-stage"/);
   assert.match(form, /id="bazi"/);
@@ -19,7 +20,9 @@ test("homepage keeps birth, Four Pillars and question in the required order", as
   assert.match(form, /const showQuestion = Boolean\(rememberedRecord && !detailsOpen\)/);
   assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="bazi"'));
   assert.ok(form.indexOf('id="bazi"') < form.indexOf('id="question-stage"'));
-  assert.match(home, /href=\{birth \? "#bazi" : "#customer-record"\}/);
+  assert.match(form, /<UnifiedBirthReport/);
+  assert.match(unified, /data-unified-birth-report/);
+  assert.doesNotMatch(home, /data-specialist-link|to: "\/(?:ziwei|qizheng|astrology|indian-astrology|yizhangjing|numerology)"/);
 });
 
 test("D60 belongs to Indian astrology and is gone from Past & Present", async () => {

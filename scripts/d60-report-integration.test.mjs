@@ -8,6 +8,7 @@ const route = fs.readFileSync(new URL("../src/routes/yizhangjing.tsx", import.me
 const indian = fs.readFileSync(new URL("../src/routes/indian-astrology.tsx", import.meta.url), "utf8");
 const specialist = fs.readFileSync(new URL("../src/components/specialist-system-page.tsx", import.meta.url), "utf8");
 const home = fs.readFileSync(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
+const unified = fs.readFileSync(new URL("../src/components/unified-birth-report.tsx", import.meta.url), "utf8");
 const runtime = fs.readFileSync(new URL("../src/components/yizhangjing-runtime-r79.tsx", import.meta.url), "utf8");
 
 test("Indian classical astrology reuses only the current report birth input and exposes no second customer form", () => {
@@ -18,12 +19,12 @@ test("Indian classical astrology reuses only the current report birth input and 
   assert.doesNotMatch(source, /searchCities|<form|formTitle|Generate D60|生成 D60|排你的 D60/);
 });
 
-test("customer-facing title names Indian classical astrology while D60 stays an explicit minute-sensitive sublayer", () => {
+test("Indian classical astrology stays internal on the unified homepage report while D60 remains minute-sensitive", () => {
   assert.match(source, /title: "印度古法占星"/);
-  assert.match(home, /title: "印度古法占星"/);
-  assert.match(home, /title: "Classical Indian astrology"/);
-  assert.match(home, /D60 需要準確出生分鐘|D60 需要准确出生分钟/);
-  assert.match(home, /D60 needs an accurate birth minute/);
+  assert.doesNotMatch(home, /印度古法占星|Classical Indian astrology|D60/);
+  assert.match(unified, /buildIndianReading/);
+  assert.match(unified, /withoutMethodLabels/);
+  assert.match(unified, /時間敏感細分層|时间敏感细分层|Time-sensitive detail/);
   assert.doesNotMatch(source, /D60 · SHASHTIAMSA|title: "D60 業力旁證"|title: "D60 业力旁证"|title: "D60 karmic cross-check"/);
 });
 
