@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.20-r167",
-  updateNumber: 167,
-  publishedAt: "2026-09-20T05:09:00+10:00",
-  latestSummary: "首頁由寡淡米白調整為礦物色宋畫層級：遠山、松綠、鎏金與朱砂重新建立深淺，宣紙內容仍保持清楚可讀。",
+  version: "ZW-WEB-2026.09.20-r168",
+  updateNumber: 168,
+  publishedAt: "2026-09-20T06:46:00+10:00",
+  latestSummary: "修正開場動畫右下角聲音按鈕：不再被全站播放器的 44px 規則壓成直排文字，恢復成手機安全區內的橫向小膠囊。",
   details: {
-    "zh-Hant": ["降低洗白遮罩，讓宋式遠山保留礦物色、墨線與遠近層次。", "主標、卡片、欄位與延伸入口加入深松綠、鎏金細線和少量朱砂；不透明宣紙與手機可讀性維持不變。"],
-    en: ["Reduced the pale wash so the Song-style landscape retains mineral colour, ink detail and depth.", "Deep pine, restrained gold and cinnabar now reinforce hierarchy while opaque paper surfaces and mobile readability remain intact."],
+    "zh-Hant": ["開場動畫的「開啟聲音」從全站播放器尺寸規則中拆開，文字保持單行橫排。", "iPhone 上固定為 44px 高的小膠囊，保留安全區與原本音量／播放邏輯，不再出現圓鈕加直排字。"],
+    en: ["The opening sound control no longer inherits the global 44px music-player width, so its label remains horizontal.", "On iPhone it stays a compact 44px-high safe-area pill while preserving the existing sound behavior."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }
