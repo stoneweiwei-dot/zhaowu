@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import "@/ziwei-home-section.css";
 
@@ -17,7 +16,7 @@ export function ZiweiHomeFeature() {
         lead: "Life Palace, Body Palace, the 14 major stars, transformations, supporting stars, 10-year cycles and annual overlays are calculated first. AI does not invent star positions.",
         points: ["Fixed late-Zi and leap-month policy", "Traceable calculation version", "Chart facts stay separate from interpretation"],
         badge: "NEW · TRUTH LAYER v0.5",
-        action: "Open Zi Wei chart",
+        action: "Create complete chart",
         center: "12\nPALACES",
       }
     : locale === "zh-Hans"
@@ -27,7 +26,7 @@ export function ZiweiHomeFeature() {
           lead: "命宫、身宫、五行局、十四主星、四化、辅煞、大限与流年先由固定算法排出，再交给解读层；不让 AI 猜星位。",
           points: ["晚子时与闰月规则固定", "计算版本与来源可追溯", "排盘事实与命理解读彻底分层"],
           badge: "新增 · 真值层 v0.5",
-          action: "打开紫微命盘",
+          action: "產生完整命盘",
           center: "十二\n星宫",
         }
       : {
@@ -36,7 +35,7 @@ export function ZiweiHomeFeature() {
           lead: "命宮、身宮、五行局、十四主星、四化、輔煞、大限與流年先由固定算法排出，再交給解讀層；不讓 AI 猜星位。",
           points: ["晚子時與閏月規則固定", "計算版本與來源可追溯", "排盤事實與命理解讀徹底分層"],
           badge: "新增 · 真值層 v0.5",
-          action: "打開紫微命盤",
+          action: "產生完整命盤",
           center: "十二\n星宮",
         };
 
@@ -50,9 +49,9 @@ export function ZiweiHomeFeature() {
         <ul>
           {copy.points.map((point) => <li key={point}>{point}</li>)}
         </ul>
-        <Link to="/ziwei" className="zhaowu-ziwei-action">
+        <a href="/#analysisForm" className="zhaowu-ziwei-action">
           <span>{copy.action}</span><b aria-hidden>→</b>
-        </Link>
+        </a>
       </div>
 
       <div className="zhaowu-ziwei-mini-chart" aria-hidden="true">

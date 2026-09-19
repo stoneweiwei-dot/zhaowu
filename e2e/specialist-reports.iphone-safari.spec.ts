@@ -2,6 +2,14 @@ import { expect, test } from "@playwright/test";
 
 const missingSharedBirth = "尚未找到生辰資料。回首頁填寫一次，六份命理專卷即可共用。";
 
+test.beforeEach(async ({ page }) => {
+  await page.route("**/api/owner-session", (route) => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({ authenticated: true }),
+  }));
+});
+
 test("Western astrology gives a complete house analysis instead of one Sun-house fragment", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.addInitScript(() => {
@@ -48,7 +56,7 @@ test("Zi Wei uses the shared homepage birth record and keeps its explanation rea
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
-test("Seven Luminaries and Zi Wei show natal charts when the shared birth record is present", async ({ page }) => {
+async function installSharedBirth(page: import("@playwright/test").Page) {
   await page.addInitScript(() => {
     localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify({
       year: 1990, month: 6, day: 15, hour: 10, minute: 30, timeUnknown: false,
@@ -56,10 +64,17 @@ test("Seven Luminaries and Zi Wei show natal charts when the shared birth record
       city: { name: "Sydney", display: "Sydney", country: "AU", timezone: "Australia/Sydney", latitude: -33.87, longitude: 151.21 },
     }));
   });
+}
+
+test("Seven Luminaries shows its natal chart when the shared birth record is present", async ({ page }) => {
+  await installSharedBirth(page);
   await page.goto("/qizheng", { waitUntil: "domcontentloaded" });
   await expect(page.locator('[data-natal-chart="qizheng"]')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+});
 
+test("Zi Wei shows its natal chart when the shared birth record is present", async ({ page }) => {
+  await installSharedBirth(page);
   await page.goto("/ziwei", { waitUntil: "domcontentloaded" });
   await expect(page.locator('[data-natal-chart="ziwei"]')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);

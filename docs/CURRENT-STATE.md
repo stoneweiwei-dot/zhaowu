@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-19 16:11 AEST
+最後核對：2026-09-19 18:30 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Netlify Production + 当前 Supabase 为准。
 
@@ -55,10 +55,11 @@
 - 「趣味测验」是独立的轻量自评系列，不冒充命盘；包含「内在动物 × 命局瑞兽」与「五行功能测验」。五行功能测验只判断当前需要训练的生长、启动、落地、收敛或恢复功能，不等同八字喜用神。
 - r160：首頁不再直接攤開全部測驗卡，改為預設收起的單一入口「昭梧 · 心境小測」；點開後保留原測驗、計分、紀錄與路由。公開吉象圖鑑與命詮 Gallery-direct 候選只展示無人物祥紋；舊人像報告圖因面部重影退出圖庫展示，但既有報告母圖與原檔不刪除。
 - r161：首頁核心流程置頂；今日、心境小測、吉象圖鑑、觀世錄統一為預設收起且同時只開一區。Header 日夜控制改為文字分段。開場與登入動畫提供使用者手勢聲音控制；Netlify 站主登入修正 Fetch Request body 讀取，站主密碼仍為 `19881004`。
+- r162：專業計算 routes 改為站主 Cookie 前置驗證，公開訪客即使知道網址亦會回首頁；Netlify 新增第十一個 canonical handler `/api/owner-data`，站主報告、背景、圖庫、登入素材與命詮圖統一經同源橋接。公開紀錄、知識庫與青玉小龍只再導向首頁完整命盤或心境小測。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
 - 趣味測驗結果可顯示已核准的隱藏神聖圖像；這是結果頁視覺補充，不改命盤計算、報告契約或付費圖片流程。
 - Logo／STO-12 已完成，不重新製作。STO-5 普通會員入口廢止已被 2026-09-15 站主最新指令取代：會員登入／註冊必須存在且確認信不得掉進空白頁。
-- r155 延續取代舊 Netlify 永久 skip：`netlify.toml` 現在執行正式 build，並由 `netlify/functions` 承載十個 `/api/*`；站主音樂密封金鑰以 JSON module 納入 serverless bundle，不得退回執行期相對檔案讀取或只有靜態 `dist` 的舊殼。
+- r155 延續取代舊 Netlify 永久 skip：`netlify.toml` 現在執行正式 build；r162 起由 `netlify/functions` 承載十一個 `/api/*`。站主音樂密封金鑰以 JSON module 納入 serverless bundle，不得退回執行期相對檔案讀取或只有靜態 `dist` 的舊殼。
 
 没有新的可复现 FAIL 时，不得因为旧 Issue / 旧聊天复活已废止实现。
 
@@ -142,8 +143,8 @@ PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行�
 - 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub iPhone Safari CI 已通過；這不等於實機完成。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
-- Supabase spend cap（402 `exceed_cached_egress_quota`）仍擋住報告存檔、圖庫／壁紙上傳與舊公開音訊桶。解除額度只能由站主在 Supabase Dashboard → Billing 操作。r130 起：站主登入、後台上傳背景音樂與播放不再依賴它。舊 `zhaowu-audio` 曲子要等額度解除才能撈回，現可在後台重新上傳。
-- Supabase dashboard 仍需站主勾：`get_customer_classic_passage` EXECUTE 邊界、`search_path`、leaked-password protection、live Edge Functions 對帳。見 `docs/supabase-security-r123.md`。
+- Supabase Storage 實查約 1.20 GB，超過 Free plan 1 GB；Storage 與 Edge gateway 回 402 `exceed_storage_size_quota`。解除只能由站主升級／調整帳務，或先核准可刪除／外移的至少約 200 MB 媒體；本版不擅自刪資料。r130 起站主音樂不依賴此桶。
+- r162 migration 已把 `get_customer_classic_passage` EXECUTE 限縮為 `service_role`，既有 helper `search_path` 維持 hardened；`zhaowu-owner-data` Edge Function 已部署 v3。Supabase leaked-password protection 仍需站主在 Dashboard 啟用；容量 402 解除前 live Edge gateway 仍不可用。
 - Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo。會員登入／註冊以 r139 為準。
 
 ## 9. 生产优先级

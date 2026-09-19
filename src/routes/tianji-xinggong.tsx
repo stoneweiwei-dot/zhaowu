@@ -11,8 +11,9 @@ import {
   type SharedBirthRecord,
 } from "@/lib/shared-birth";
 import "@/tianji-xinggong.css";
+import { requireOwnerRoute } from "@/lib/auth/owner-route";
 
-export const Route = createFileRoute("/tianji-xinggong")({ component: TianjiXinggongPage });
+export const Route = createFileRoute("/tianji-xinggong")({ beforeLoad: requireOwnerRoute, component: TianjiXinggongPage });
 
 const PALACE_ORDER: TianjiPalace[] = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 

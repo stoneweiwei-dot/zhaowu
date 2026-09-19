@@ -8,7 +8,7 @@ import {
   listReportRecords,
   type ReportListRecord,
   type ReportRecord,
-} from "@/lib/supabase-rest";
+} from "@/lib/bridge/supabase-rest";
 import {
   backgroundPublicUrl,
   clearBackgroundWallpaper,
@@ -20,12 +20,12 @@ import {
   setBackgroundWallpaper,
   uploadBackground,
   type BackgroundAsset,
-} from "@/lib/background-assets";
+} from "@/lib/bridge/background-assets";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
 import { ReportDragonSticker } from "@/components/report-dragon-sticker";
 import { DecreeImageReason } from "@/components/decree-image-reason";
-import { generateDecreeImage } from "@/lib/report/decree-image";
+import { generateDecreeImage } from "@/lib/bridge/decree-image";
 import type { ReportSection } from "@/lib/report/focused-report";
 import { TeaGuardianReport } from "@/components/tea-guardian-report";
 
@@ -681,12 +681,12 @@ function AccountPage() {
                     copy={{ ...c, select: c.selectBackground }}
                     selected={selectedBackgroundIds.includes(asset.id)}
                     onToggleSelected={() => toggleBackgroundSelected(asset.id)}
-                    onEnabled={(enabled) => updateBackgroundAsset(() => setBackgroundEnabled(session, asset.id, enabled))}
-                    onPin={() => updateBackgroundAsset(() => setBackgroundWallpaper(session, asset.id), c.wallpaperSet)}
-                    onUnpin={() => updateBackgroundAsset(() => clearBackgroundWallpaper(session, asset.id))}
+                    onEnabled={(enabled) => updateBackgroundAsset(() => setBackgroundEnabled(session!, asset.id, enabled))}
+                    onPin={() => updateBackgroundAsset(() => setBackgroundWallpaper(session!, asset.id), c.wallpaperSet)}
+                    onUnpin={() => updateBackgroundAsset(() => clearBackgroundWallpaper(session!, asset.id))}
                     onDelete={async () => {
                       if (!window.confirm(c.deleteImage(asset.name))) return;
-                      await updateBackgroundAsset(() => deleteBackground(session, asset));
+                      await updateBackgroundAsset(() => deleteBackground(session!, asset));
                     }}
                   />
                 ))}
@@ -801,7 +801,7 @@ function AccountPage() {
                               {detail.image_path ? <button type="button" disabled={actionBusyId === row.id} className="rounded-full border border-cinnabar/35 bg-cinnabar/5 px-3 py-1.5 text-xs text-cinnabar disabled:opacity-50" onClick={() => void onReportImage(row.id, true)}>{c.regenerateImage}</button> : null}
                               <button type="button" className="rounded-full px-3 py-1.5 text-xs text-cinnabar" onClick={async () => {
                                 if (!window.confirm(c.deleteRecordConfirm)) return;
-                                await deleteReportRecord(session, row.id);
+                                await deleteReportRecord(session!, row.id);
                                 setOpenId(null);
                                 setDetails((prev) => { const next = { ...prev }; delete next[row.id]; return next; });
                                 await loadReports();

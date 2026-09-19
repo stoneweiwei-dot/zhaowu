@@ -18,15 +18,14 @@ function tr(locale: Locale, hant: string, hans: string, en: string) {
 }
 
 function kindLabel(kind: SpecialistHistoryKind, locale: Locale) {
-  if (kind === "qizheng") return tr(locale, "七政四餘", "七政四余", "Seven Luminaries");
-  if (kind === "ziwei") return tr(locale, "紫微斗數", "紫微斗数", "Zi Wei Dou Shu");
   if (kind === "fun-five-element") return tr(locale, "五行功能測驗", "五行功能测验", "Five-Element Function Test");
-  return tr(locale, "前世今生・達摩一掌經", "前世今生・达摩一掌经", "Past & Present · Dharma Palm");
+  return tr(locale, "完整命盤紀錄", "完整命盘记录", "Complete chart record");
 }
 
 function HistoryPage() {
   const { locale } = useI18n();
   const [entries, setEntries] = useState<SpecialistHistoryEntry[]>([]);
+  const publicEntries = entries.filter((entry) => entry.kind === "fun-five-element");
 
   useEffect(() => {
     setEntries(readSpecialistHistory());
@@ -37,9 +36,9 @@ function HistoryPage() {
     kicker: tr(locale, "昭梧 · 個人紀錄", "昭梧 · 个人记录", "ZHAOWU · MY HISTORY"),
     title: tr(locale, "我的紀錄", "我的记录", "My history"),
     lead: tr(locale,
-      "七政、紫微、前世今生與五行功能測驗會自動保存在這台裝置。點開任何一筆，就能重看當時的完整結果。超過七天沒有再打開的本機紀錄會自動清掉。",
-      "七政、紫微、前世今生与五行功能测验会自勘保存在这台设备。点开任何一条，就能重看当时的完整结果。超过七天没有再打开的本机记录会自勘清掉。",
-      "Your Seven Luminaries, Zi Wei, Past & Present and Five-Element Function results are saved automatically on this device. Open any entry to read it again. Local records unused for seven days are removed automatically."),
+      "五行功能測驗會自動保存在這台裝置。完整命盤請從首頁出生資料產生；超過七天沒有再打開的本機紀錄會自動清掉。",
+      "五行功能测验会自动保存在这台设备。完整命盘请从首页出生资料产生；超过七天没有再打开的本机记录会自动清掉。",
+      "Five-Element Function results are saved on this device. Generate the complete chart from the birth form on the home page. Local records unused for seven days are removed automatically."),
     local: tr(locale, "僅保存在這台裝置", "仅保存在这台设备", "Saved on this device only"),
     cloudTitle: tr(locale, "八字提問與雲端報告", "八字提问与云端报告", "BaZi questions and cloud reports"),
     cloudBody: tr(locale,
@@ -81,20 +80,20 @@ function HistoryPage() {
       <div className="history-topline"><Link to="/">← {copy.back}</Link><span>{copy.local}</span></div>
       <section className="history-hero"><p>{copy.kicker}</p><h1>{copy.title}</h1><p>{copy.lead}</p></section>
       <section className="history-cloud-card"><div><p>MY ZHAOWU</p><h2>{copy.cloudTitle}</h2><span>{copy.cloudBody}</span></div><Link to="/account">{copy.cloudCta}<b aria-hidden>→</b></Link></section>
-      {!entries.length ? (
+      {!publicEntries.length ? (
         <section className="history-empty">
           <span aria-hidden>記</span><h2>{copy.empty}</h2><p>{copy.start}</p>
-          <div><Link to="/qizheng">{kindLabel("qizheng", locale)}</Link><Link to="/ziwei">{kindLabel("ziwei", locale)}</Link><Link to="/yizhangjing">{kindLabel("yizhangjing", locale)}</Link><Link to="/fun-tests">{kindLabel("fun-five-element", locale)}</Link></div>
+          <div><a href="/#analysisForm">{tr(locale, "產生完整命盤", "产生完整命盘", "Create complete chart")}</a><Link to="/fun-tests">{kindLabel("fun-five-element", locale)}</Link></div>
         </section>
       ) : (
         <section className="history-list" aria-label={copy.title}>
-          {entries.map((entry) => (
+          {publicEntries.map((entry) => (
             <details key={entry.id} className="history-entry" onToggle={(event) => markOpened(entry.id, event.currentTarget.open)}>
               <summary><span className={`history-kind is-${entry.kind}`}>{kindLabel(entry.kind, locale)}</span><h2>{entry.title}</h2><p>{entry.inputSummary}</p><small>{copy.generated} · {new Date(entry.createdAt).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")}</small><b className="history-toggle"><span className="is-open">{copy.open}</span><span className="is-close">{copy.close}</span><i aria-hidden>＋</i></b></summary>
               <div className="history-entry-report">
                 {entry.sections.map((section, index) => <article key={`${entry.id}-${index}`}><i aria-hidden>{String(index + 1).padStart(2, "0")}</i><div><h3>{section.title}</h3><p>{section.body}</p></div></article>)}
                 {entry.closing ? <blockquote>{entry.closing}</blockquote> : null}
-                <div className="history-entry-actions"><Link to={entry.sourcePath}>{copy.again}</Link><button type="button" onClick={() => removeEntry(entry.id)}>{copy.remove}</button></div>
+                <div className="history-entry-actions"><Link to="/fun-tests">{copy.again}</Link><button type="button" onClick={() => removeEntry(entry.id)}>{copy.remove}</button></div>
               </div>
             </details>
           ))}
