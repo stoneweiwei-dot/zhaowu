@@ -91,13 +91,14 @@ test("Guest saves birth details first and then receives the r144 question stage"
   await mobileHealthy(page);
 });
 
-test("Guest birth record stays on the phone and specialist entry remains available", async ({ page }) => {
+test("Guest birth record stays on the phone and opens one integrated report", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
   await page.getByRole("button", { name: "保存並排出四柱命盤", exact: true }).click();
   await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
   await expect(page.locator("#question-stage")).toBeVisible();
-  await expect(page.locator('[data-specialist-link="indian"]')).toBeVisible();
+  await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
+  await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
   await mobileHealthy(page);
 });

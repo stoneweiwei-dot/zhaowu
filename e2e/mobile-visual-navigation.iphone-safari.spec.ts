@@ -145,7 +145,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
 
-  test("every analysis portal is a real navigation target and opens its corresponding page", async ({ page }) => {
+  test("homepage hides every specialist portal and delivers one integrated report", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.addInitScript((birth) => {
       window.localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify(birth));
@@ -153,33 +153,10 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await dismissInstallPromptIfVisible(page);
-    await expect(page.locator('[data-specialist-link="bazi"]')).toHaveAttribute("href", "#bazi");
-    await expect(page.locator('[data-specialist-link="past"]')).toHaveAttribute("href", "/yizhangjing");
-
-    const specialistRoutes = [
-      ["ziwei", "/ziwei", "紫微斗數"],
-      ["western", "/astrology", "西洋星座"],
-      ["indian", "/indian-astrology", "印度古法占星"],
-      ["qizheng", "/qizheng", "七政四餘"],
-    ] as const;
-
-    for (const [id, path, title] of specialistRoutes) {
-      await page.goto("/", { waitUntil: "domcontentloaded" });
-      const portal = page.locator(`[data-specialist-link="${id}"]`);
-      await expect(portal).toHaveJSProperty("tagName", "A");
-      expect(await portal.evaluate((element) => getComputedStyle(element).pointerEvents)).toBe("auto");
-      await portal.scrollIntoViewIfNeeded();
-      await portal.click();
-      await expect(page).toHaveURL(new RegExp(`${path.replace("/", "\\/")}$`));
-      await expect(page.locator("h1#specialist-title")).toHaveText(title);
-      await expect(page.locator(".zhaowu-specialist-sections article").first()).toBeVisible();
-    }
-
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-    await page.locator('[data-specialist-link="past"]').scrollIntoViewIfNeeded();
-    await page.locator('[data-specialist-link="past"]').click();
-    await expect(page).toHaveURL(/\/yizhangjing$/);
-    await expect(page.getByRole("heading", { name: /前世今生/ }).first()).toBeVisible();
-    await expect(page.getByRole("button", { name: "生成我的報告", exact: true })).toBeVisible();
+    await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
+    await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "你的完整綜合報告", exact: true })).toBeVisible();
+    await expect(page.locator("[data-unified-birth-report]")).not.toContainText(/紫微斗數|西洋星座|印度古法占星|七政四餘|前世今生|生命靈數/);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
 });
