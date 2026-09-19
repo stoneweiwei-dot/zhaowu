@@ -10,7 +10,7 @@ import {
 } from "../src/lib/qa/answer-quality.ts";
 
 test("P0 corpus covers all required answer-quality topics", () => {
-  const required = ["天賦", "格局", "身強身弱", "用神", "病藥", "大運", "流年", "工作", "感情", "財運", "二選一", "應期", "六親", "D60", "紫微", "未知時辰", "多問題混合"];
+  const required = ["天賦", "適合工作", "格局", "身強身弱", "用神", "病藥", "大運", "流年", "工作", "感情", "財運", "二選一", "應期", "六親", "D60", "紫微", "未知時辰", "多問題混合"];
   const topics = new Set(ANSWER_QUALITY_CORPUS.map((item) => item.topic));
   for (const topic of required) assert.equal(topics.has(topic), true, `missing QA topic: ${topic}`);
 });
@@ -52,6 +52,14 @@ test("talent questions require concrete abilities rather than a generic structur
   assert.equal(detectQuestionFocus(q), "talent");
   assert.equal(directAnswerCoversQuestion(q, "這張盤以正印格為主，日主偏旺。"), false);
   assert.equal(directAnswerCoversQuestion(q, "較有依據的能力是研究、整理複雜資訊並建立方法，也常表現在教學與知識管理。"), true);
+});
+
+test("job-fit questions require actual work types rather than a career principle", () => {
+  const q = "我適合什麼工作？";
+  assert.equal(detectQaIntent(q), "career");
+  assert.equal(detectQuestionFocus(q), "job_fit");
+  assert.equal(directAnswerCoversQuestion(q, "職業判斷以能否形成穩定做功與承載為核心。"), false);
+  assert.equal(directAnswerCoversQuestion(q, "較適合優先看的工作類型是研究、教學、知識管理與專業支援。"), true);
 });
 
 test("self subtopics require matching answer coverage", () => {
