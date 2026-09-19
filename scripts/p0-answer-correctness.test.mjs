@@ -123,7 +123,7 @@ test("完整問答流程：天賦、追問工作、感情與月份各自回答�
   assert.doesNotMatch(love.reading.directAnswer, /正印格|天賦|天赋/);
 
   const timing = await actions.followUpLife({ data: { question: "明年幾月適合換工作？", base: talent, relation: "same" } });
-  assert.equal(timing.reading.kind, "career");
+  assert.equal(timing.reading.kind, "timing");
   assert.match(timing.reading.directAnswer, /較順的窗口|较顺的窗口/);
   assert.match(timing.reading.directAnswer, /\d{1,2}月/);
   assert.doesNotMatch(timing.reading.directAnswer, /天賦|天赋|性格盲點|性格盲点/);
