@@ -111,7 +111,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
     await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
     await page.locator(".zhaowu-header-mode-toggle > button").nth(1).click();
-    await expect(page.locator(".zhaowu-bazi-stage-head .zhaowu-section-lead")).toHaveCSS("color", "rgb(216, 208, 193)");
+    await expect(page.locator(".zhaowu-bazi-stage-head .zhaowu-section-lead")).toHaveCount(0);
     await expect(page.locator("[data-unified-birth-report] article p").first()).toHaveCSS("color", "rgb(241, 232, 216)");
     const before = await yearPillar.textContent();
 
@@ -161,7 +161,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("tab", { name: "註冊", exact: true })).toHaveCount(0);
     await expect(page.getByLabel("站主密碼", { exact: true })).toBeVisible();
     await expect(page.locator('#login-secret[type="password"]')).toBeVisible();
-    await expect(page.getByText(/一般使用者不需要登入/)).toBeVisible();
+    await expect(page.getByText(/一般使用者不需要登入/)).toHaveCount(0);
     await expectMobileViewportHealthy(page);
   });
 

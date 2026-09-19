@@ -45,7 +45,8 @@ test.describe("iPhone Safari parchment application shell", () => {
     await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
     await expect(page.locator("#bazi.zhaowu-bazi-stage")).toBeVisible();
-    await expect(page.locator("#bazi .zhaowu-bazi-pending")).toContainText("先保存完整出生資料");
+    await expect(page.locator("#bazi .zhaowu-bazi-pending").getByRole("button", { name: "保存並生成昭梧命書", exact: true })).toBeVisible();
+    await expect(page.locator("#bazi .zhaowu-bazi-pending p")).toHaveCount(0);
     const customerBackground = await page.locator("#customer-record").evaluate((node) => getComputedStyle(node).backgroundColor);
     expect(alphaOf(customerBackground)).toBe(1);
     await expect(page.locator("#customer-record #bazi")).toHaveCount(0);
