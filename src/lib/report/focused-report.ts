@@ -207,7 +207,7 @@ function summaryLines(result: AnalysisResult): string[] {
   return dedupeLines(showCycle ? [...core, ...buildCycleOverlayLines(result)] : core);
 }
 
-/** New reports keep one overall summary plus one body-attention block; mind advice stays inside the summary. */
+/** New reports keep one overall summary plus the persisted body-attention block; UI relevance decides whether body is shown. */
 export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
   const locale = result.locale ?? "zh-Hans";
   const titles = REPORT_TITLES[locale];
@@ -219,10 +219,10 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
       title: titles.summary,
       body: summaryLines(result),
       evidence: {
-        facts: ["final reading", "question-relevant chart facts", "guardian beast symbol", "original chart + target Dayun + target annual year", "timing", "action"],
-        conditions: ["All question-specific content and compact topic-matched mind advice are merged into one continuous summary", "Guardian beast is derived from chart element structure and remains symbolic", "Cycle overlay only consumes canonical chart output; it does not recompute luck-cycle direction"],
-        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Mind advice never overrides the calculated reading", "Guardian beast is not a supernatural claim", "Provisional useful-element conclusions never become hard five-element remedies"],
-        checks: ["Direct answer appears once", "No numbered mini-sections", "Mind advice stays inside summary", "Guardian beast appears once", "Dayun and annual year are read together when birth time is known"],
+        facts: ["final reading", "question-relevant chart facts", "original chart + relevant Dayun / annual timing when requested", "timing", "action"],
+        conditions: ["Only question-specific content is kept in the continuous summary", "Cycle overlay is included only when the question is time-relevant; it consumes canonical chart output and does not recompute luck-cycle direction"],
+        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Provisional useful-element conclusions never become hard five-element remedies"],
+        checks: ["Direct answer appears once", "No numbered mini-sections", "Unrelated body and timing modules stay out of the main reading flow", "Dayun and annual year are read together only when relevant and birth time is usable"],
       },
     },
     {
