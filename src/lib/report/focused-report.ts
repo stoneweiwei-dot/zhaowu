@@ -118,12 +118,12 @@ function chineseSummaryLines(result: AnalysisResult): string[] {
   const locale = result.locale ?? "zh-Hans";
   const req = inspectAnswerRequirements(question);
   const structureQuestion = isStructureQuestion(question);
+  const showCycle = req.asksWhen || ["timing", "career", "love", "money", "home"].includes(reading.kind);
   const lines = [
     customerDirectAnswer(question, reading.directAnswer),
     `命盘落点：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`,
-    guardianLine(chart, locale),
-    chart.currentDayun && !structureQuestion ? `当前阶段：${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
-    chart.timeUnknown ? "出生时间未确定，因此本次不把时柱与大运起运当作硬结论依据。" : "",
+    chart.currentDayun && !structureQuestion && showCycle ? `当前阶段：${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
+    chart.timeUnknown ? "出生时间未确定，因此所有依赖时柱的细节都降级，不补造结论。" : "",
     ...topicLines(question, reading, chart),
     structureQuestion ? "" : customerCopy(reading.rhythm),
     structureQuestion ? "" : customerCopy(reading.action),
@@ -201,12 +201,13 @@ function cosmicSummaryLines(result: AnalysisResult): string[] {
 }
 
 function summaryLines(result: AnalysisResult): string[] {
-  const core = isCosmicSymbolicQuestion(result.question)
-    ? cosmicSummaryLines(result)
-    : (result.locale ?? "zh-Hans") === "en"
-      ? englishSummaryLines(result)
-      : chineseSummaryLines(result);
-  return dedupeLines([...core, ...buildCycleOverlayLines(result), ...buildMindAdviceLines(result)]);
+  if (isCosmicSymbolicQuestion(result.question)) return cosmicSummaryLines(result);
+  const core = (result.locale ?? "zh-Hans") === "en"
+    ? englishSummaryLines(result)
+    : chineseSummaryLines(result);
+  const req = inspectAnswerRequirements(result.question);
+  const showCycle = req.asksWhen || ["timing", "career", "love", "money", "home"].includes(result.reading.kind);
+  return dedupeLines(showCycle ? [...core, ...buildCycleOverlayLines(result)] : core);
 }
 
 /** New reports keep one overall summary plus one body-attention block; mind advice stays inside the summary. */
