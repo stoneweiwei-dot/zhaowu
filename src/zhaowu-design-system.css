@@ -2397,6 +2397,6 @@ html[data-zw-theme="night"] .zhaowu-dragon-guide :is(input, button, .zhaowu-drag
 }
 html[data-zw-theme="night"] .zhaowu-dragon-guide input::placeholder { color: #c9d2c9; opacity: 1; }
 
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell :is(.zhaowu-section-kicker, .zhaowu-section-lead) { color: #d8d0c1 !important; }
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is(.zhaowu-section-kicker, .zhaowu-section-lead) { color: #d8d0c1 !important; }
 html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-birth-summary { background: #16372d; color: #f1e8d8; }
 html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-birth-summary :is(p, strong, span) { color: #f1e8d8 !important; }
