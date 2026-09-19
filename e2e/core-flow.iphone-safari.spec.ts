@@ -131,7 +131,7 @@ test.describe("iPhone Safari core customer flow", () => {
 
     await expect(page.getByRole("heading", { name: "站主登入", exact: true })).toBeVisible();
     await expect(page.getByRole("tab", { name: "註冊", exact: true })).toHaveCount(0);
-    await expect(page.getByLabel("站主密鑰", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("站主密碼", { exact: true })).toBeVisible();
     await expect(page.locator('#login-secret[type="password"]')).toBeVisible();
     await expect(page.getByText(/一般使用者不需要登入/)).toBeVisible();
     await expectMobileViewportHealthy(page);

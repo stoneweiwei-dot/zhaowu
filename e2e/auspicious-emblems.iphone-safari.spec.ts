@@ -57,19 +57,21 @@ test.describe("iPhone Safari parchment application shell", () => {
   });
 
   for (const width of [390, 430]) {
-    test(`r85 keeps the almanac compact and client details separate at ${width}px`, async ({ page }) => {
+    test(`r161 keeps the primary chart flow ahead of the optional almanac at ${width}px`, async ({ page }) => {
       await makeAppOfflineSafe(page);
       await page.setViewportSize({ width, height: 844 });
       await page.goto("/", { waitUntil: "domcontentloaded" });
       const almanac = page.locator("#daily-almanac");
       const customer = page.locator("#customer-record");
       const bazi = page.locator("#bazi");
-      for (const section of [almanac, customer, bazi]) await expect(section).toBeVisible();
+      for (const section of [customer, bazi]) await expect(section).toBeVisible();
+      await expect(almanac).toHaveCount(0);
       await expect(page.locator(".zhaowu-question-sheet")).toHaveCount(0);
-      await expect(almanac.locator("details[open]")).toHaveCount(0);
-      const boxes = await Promise.all([almanac, customer, bazi].map((section) => section.boundingBox()));
+      await page.getByRole("button", { name: /^今日/ }).click();
+      await expect(almanac).toBeVisible();
+      await expect(almanac.locator("details[open]")).toHaveCount(1);
+      const boxes = await Promise.all([customer, bazi, almanac].map((section) => section.boundingBox()));
       expect(boxes.every(Boolean)).toBe(true);
-      expect(boxes[0]!.height).toBeLessThan(260);
       for (let i = 1; i < boxes.length; i += 1) expect(boxes[i]!.y).toBeGreaterThanOrEqual(boxes[i - 1]!.y + boxes[i - 1]!.height);
       const titleSize = await customer.locator("h2").evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
       expect(titleSize).toBeLessThanOrEqual(28);
