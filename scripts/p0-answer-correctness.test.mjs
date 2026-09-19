@@ -148,6 +148,10 @@ test("完整問答流程：天賦、追問工作、感情與月份各自回答�
   assert.match(moneyRisk.reading.directAnswer, /最大損失|最大损失/);
   assert.match(moneyRisk.reading.directAnswer, /退出條件|退出条件/);
 
+  const decisionTiming = await actions.followUpLife({ data: { question: "這份工作還值得繼續做嗎？如果要換，明年幾月比較適合？", base: talent, relation: "same" } });
+  assert.match(decisionTiming.reading.directAnswer, /不能可靠.*值得繼續|不能可靠.*值得继续/);
+  assert.match(decisionTiming.reading.directAnswer, /\d{1,2}月/);
+
   const choice = await actions.followUpLife({ data: { question: "留在現在公司，還是接受新工作？哪個更合適？", base: talent, relation: "same" } });
   assert.equal(choice.reading.kind, "choice");
   assert.match(choice.reading.directAnswer, /暫不強選|暂不强选/);
@@ -160,4 +164,27 @@ test("出生盘 hemisphere 只取出生地，不被现居悉尼覆盖", () => {
   assert.equal(c.cityLabel, SANMING.display);
   assert.equal(c.liveCityLabel, SYDNEY.display);
   assert.equal(c.hemisphere, "N");
+});
+
+
+test("未知時辰＋工作適配：最終回答同時保留限制與具體工作方向", async () => {
+  const actions = await import("../src/lib/actions.ts");
+  const result = await actions.analyzeLife({ data: {
+    question: "不知道出生時辰，我適合什麼工作？",
+    locale: "zh-Hant",
+    year: 1988,
+    month: 10,
+    day: 4,
+    hour: 12,
+    minute: 0,
+    timeUnknown: true,
+    gender: "male",
+    relation: "same",
+    city: SANMING,
+    liveCity: SYDNEY,
+    ziPolicy: "midnight",
+    useTrueSolar: true,
+  } });
+  assert.match(result.reading.directAnswer, /可以判一部分|時柱.*降級|时柱.*降级/);
+  assert.match(result.reading.directAnswer, /研究|教學|知識管理|專業支援|管理|顧問|設計|協作|開拓/);
 });
