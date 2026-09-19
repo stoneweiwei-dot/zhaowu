@@ -38,6 +38,7 @@ test("r165 exposes an auditable AI-readable chart package without reopening a to
   assert.match(trust, /data-chart-ai-copy/);
   assert.match(trust, /昭梧 AI 可讀命盤資料包/);
   assert.match(trust, /不要重新推算或靜默改寫四柱/);
-  assert.doesNotMatch(trust, /固定回歸案例與核心流程檢查/);
+  assert.match(trust, /結果偏離鎖定基準，該版本就不發布/);
+  assert.match(trust, /這只驗證計算一致性，不代表命理解讀必然正確/);
   assert.match(trust, /href="\/updates"/);
 });
