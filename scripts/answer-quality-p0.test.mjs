@@ -51,6 +51,7 @@ test("talent questions require concrete abilities rather than a generic structur
   assert.equal(detectQaIntent(q), "self");
   assert.equal(detectQuestionFocus(q), "talent");
   assert.equal(directAnswerCoversQuestion(q, "這張盤以正印格為主，日主偏旺。"), false);
+  assert.equal(directAnswerCoversQuestion(q, "你的天賦就是能力很強。"), false);
   assert.equal(directAnswerCoversQuestion(q, "較有依據的能力是研究、整理複雜資訊並建立方法，也常表現在教學與知識管理。"), true);
 });
 
@@ -59,6 +60,7 @@ test("job-fit questions require actual work types rather than a career principle
   assert.equal(detectQaIntent(q), "career");
   assert.equal(detectQuestionFocus(q), "job_fit");
   assert.equal(directAnswerCoversQuestion(q, "職業判斷以能否形成穩定做功與承載為核心。"), false);
+  assert.equal(directAnswerCoversQuestion(q, "較適合優先看的工作類型。"), false);
   assert.equal(directAnswerCoversQuestion(q, "較適合優先看的工作類型是研究、教學、知識管理與專業支援。"), true);
 });
 
@@ -120,4 +122,10 @@ test("generic filler is rejected even when the answer is otherwise long enough",
   const result = evaluateAnswerQuality(fake, "career");
   assert.equal(result.failed, true);
   assert.equal(result.failReasons.includes("generic_filler_present"), true);
+});
+
+
+test("customer copy removes generic motivational filler instead of showing it to users", async () => {
+  const { customerCopy } = await import("../src/lib/report/customer-copy.ts");
+  assert.equal(customerCopy("一切都是最好的安排。真正要看的是聯繫是否持續。"), "真正要看的是聯繫是否持續。");
 });
