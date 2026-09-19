@@ -3,20 +3,20 @@
 This file is the highest repository-level execution protocol for all work on **ZHAOWU / 昭梧**.
 
 Repository: `stoneweiwei-dot/zhaowu`
-Production project: Netlify `archive-stone-zhaowu-official`
-Production URL: `https://archive-stone-zhaowu-official.netlify.app/`
-Legacy live fallback: Vercel `stone-zhaowu-official` (r151 until explicitly re-enabled)
+Production project: Vercel `stone-zhaowu-official`
+Production URL: `https://stone-zhaowu-official.vercel.app/`
+Archived compatibility host: Netlify `archive-stone-zhaowu-official` (automatic builds disabled)
 Primary branch: `main`
 
-## 2026-09-19 r154 HOSTING SUPERSESSION
+## 2026-09-20 r171 HOSTING SUPERSESSION
 
-The owner's latest explicit instruction supersedes only the old rule that forced all production publication through Vercel and disabled Netlify. Until the owner explicitly changes this again:
+The owner's latest explicit instruction restores the single-production-host rule and supersedes the temporary r154–r155 Netlify-production exception:
 
 - GitHub `main` remains the only source of truth.
-- Netlify project `archive-stone-zhaowu-official` is the active production host and must build the same Vite source plus the canonical `/api/*` handlers through Netlify Functions.
-- Do not trigger Vercel builds merely to satisfy older Vercel-specific completion wording while Vercel quota or cancellation is the stated blocker.
-- Existing Vercel production stays as a non-destructive legacy fallback; do not delete it, migrate its data, or claim it serves the current release.
-- In sections 1, 5, 8 and 12 below, read Vercel-specific deployment language as applying to the active production host unless the check is explicitly about the legacy Vercel fallback.
+- Vercel project `stone-zhaowu-official` is the only production host and the only canonical public origin.
+- Netlify project `archive-stone-zhaowu-official` is archive/compatibility only. Keep its compatibility functions and files non-destructively, but automatic builds must remain skipped and it must not be used for SEO, social metadata, login callbacks, or production verification.
+- Do not create another Vercel project, do not re-enable Netlify production, and do not deploy AppDeploy/Cloudflare as a second production.
+- Production completion requires the Vercel deployment SHA to match current `main`; CI or merge alone is not deployment proof.
 - This supersession does not authorize duplicate calculation logic, auth logic, Supabase data, payment, report history or media deletion.
 
 ## 0. HIGHEST PRIORITY — SAFE NEW-INSTRUCTION SUPERSESSION
