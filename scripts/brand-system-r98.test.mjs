@@ -35,11 +35,12 @@ test("r98 CSS is last-wins after r97 and wires night tokens", () => {
   assert.match(html, /zhaowu\.theme\.v1/);
 });
 
-test("header uses kit icons, a single owner-approved brand lockup and a clean night toggle", () => {
+test("header uses kit icons, a single owner-approved brand lockup and a labelled night toggle", () => {
   assert.doesNotMatch(shell, /BrandIcon name="login"/);
   assert.doesNotMatch(shell, /className="zhaowu-header-login"/);
   assert.match(shell, /BrandIcon name="account"/);
-  assert.match(shell, /BrandIcon name=\{night \? "day" : "night"\}/);
+  assert.doesNotMatch(shell, /BrandIcon name=\{night \? "day" : "night"\}/);
+  assert.match(shell, /data-active=\{night \? "true" : "false"\}/);
   assert.match(shell, /zhaowu-theme-toggle/);
   assert.match(shell, /<BrandSeal \/>/);
   assert.doesNotMatch(shell, /BRAND_ASSETS\.logoHorizontal/);

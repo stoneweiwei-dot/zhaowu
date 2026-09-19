@@ -23,7 +23,7 @@ function UpdatesPage() {
   }, []);
 
   const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
-  const englishSummary = "This release completes the site-wide visual and mobile layout pass and turns the latest production notes into a clear, dedicated page.";
+  const englishSummary = "This release repairs Netlify owner sign-in, adds explicit animation sound controls, and gives the homepage one clear primary flow with a consistent secondary accordion.";
   const releaseSummary = language === "en" && /[\u3400-\u9fff]/u.test(release.latestSummary)
     ? englishSummary
     : release.latestSummary;

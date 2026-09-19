@@ -194,6 +194,15 @@
 - 公開吉象圖鑑只保留無人物祥紋；Owner 圖庫分組仍可保留原件管理與內部匹配，但不得因此自動進入客戶公開 registry。
 - 不物理刪除 Supabase 原件，不改命理計算、報告文字、付款、認證、資料庫 schema 或使用者紀錄。
 
+## 2026-09-19 r161 首頁層級 × 動畫聲音 × Netlify 登入 supersession
+
+- 首頁唯一常駐主線為出生資料、四柱命盤、完整綜合報告與後續現實問題；它必須排在每日內容與文章之前。
+- 今日、昭梧 · 心境小測、吉象圖鑑、觀世錄統一為四個延伸入口：預設全收起，同一時間只展開一個。舊的「今日收起、天象展開、圖鑑展開、觀世錄半展開」混合狀態在首頁範圍內 `SUPERSEDED`。
+- 首頁五秒開場與站主登入動畫必須提供可見的使用者手勢聲音控制。不得宣稱 iPhone Safari 可在沒有點擊的情況下自動有聲播放。
+- Header 日夜切換改為日／夜文字分段，不恢復原裝飾性太陽／月亮 BrandIcon。
+- 站主密碼仍為 `19881004` 對應的已提交 SHA-256；Netlify Fetch `Request` 必須先用 `request.json()` 讀取，不得把 `ReadableStream` 誤當已解析 JSON。
+- 本次只改首頁呈現、媒體控制與 Netlify body 相容層；不改 Cookie 權限、Supabase Auth、命理計算、報告內容、付款、資料庫或媒體原件。
+
 ## 2026-09-15 r139 homepage / D60 grouping / member auth / login animation / music error
 
 - 首頁拿掉問事標語與 textarea；只留客人資料與保存生辰。不得再發明隱藏預設問題。

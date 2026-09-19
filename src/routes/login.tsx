@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { ownerSignIn } from "@/lib/auth/owner-api";
@@ -27,8 +27,11 @@ function ownerText(locale: string, hant: string, hans: string, en: string) {
 }
 
 function LoginStageBackdrop() {
+  const { locale } = useI18n();
   const [asset, setAsset] = useState<LoginAnimationAsset | null>(FALLBACK_LOGIN_VIDEO);
   const [failed, setFailed] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
     let alive = true;
     void listActiveLoginAnimations().then((rows) => {
@@ -42,19 +45,39 @@ function LoginStageBackdrop() {
   const media = failed || !asset ? FALLBACK_LOGIN_VIDEO : asset;
   if (media.type === "video") {
     return (
-      <video
-        className="stone-login-stage-media"
-        src={media.fileUrl}
-        poster={media.posterUrl}
-        autoPlay
-        muted
-        playsInline
-        loop
-        preload="auto"
-        onError={() => {
-          if (media.fileUrl !== FALLBACK_LOGIN_VIDEO.fileUrl) setFailed(true);
-        }}
-      />
+      <>
+        <video
+          ref={videoRef}
+          className="stone-login-stage-media"
+          src={media.fileUrl}
+          poster={media.posterUrl}
+          autoPlay
+          muted={muted}
+          playsInline
+          loop
+          preload="auto"
+          onError={() => {
+            if (media.fileUrl !== FALLBACK_LOGIN_VIDEO.fileUrl) setFailed(true);
+          }}
+        />
+        <button
+          type="button"
+          className="stone-login-sound"
+          aria-pressed={!muted}
+          onClick={() => {
+            const nextMuted = !muted;
+            setMuted(nextMuted);
+            if (videoRef.current) {
+              videoRef.current.muted = nextMuted;
+              videoRef.current.volume = 0.34;
+              if (!nextMuted) void videoRef.current.play().catch(() => setMuted(true));
+            }
+          }}
+        >
+          <span aria-hidden="true">{muted ? "♪" : "Ⅱ"}</span>
+          {ownerText(locale, muted ? "開啟聲音" : "聲音已開啟", muted ? "开启声音" : "声音已开启", muted ? "Play sound" : "Sound on")}
+        </button>
+      </>
     );
   }
   return <img className="stone-login-stage-media" src={media.fileUrl} alt="" onError={() => setFailed(true)} />;
@@ -113,8 +136,8 @@ function LoginPage() {
 
         <form onSubmit={onOwnerSubmit} className="stone-login-form">
           <label>
-            <span>{ownerText(locale, "站主密鑰", "站主密钥", "Owner key")}</span>
-            <input id="login-secret" type="password" autoComplete="off" value={secret} onChange={(event) => setSecret(event.target.value)} placeholder={ownerText(locale, "貼上站主密鑰", "粘贴站主密钥", "Paste owner key")} />
+            <span>{ownerText(locale, "站主密碼", "站主密码", "Owner password")}</span>
+            <input id="login-secret" type="password" inputMode="numeric" autoComplete="current-password" value={secret} onChange={(event) => setSecret(event.target.value.trim())} placeholder={ownerText(locale, "輸入站主密碼", "输入站主密码", "Enter owner password")} />
           </label>
           {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
           <button type="submit" disabled={busy} className="stone-login-primary">

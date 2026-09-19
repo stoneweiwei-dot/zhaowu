@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { AnalysisForm } from "@/components/analysis-form";
 import { AuspiciousGallerySection } from "@/components/auspicious-gallery-section";
 import { DailyAlmanacWidget } from "@/components/daily-almanac-widget";
@@ -22,12 +22,23 @@ export const Route = createFileRoute("/")({ component: Home });
 function Home() {
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
-  const [quizOpen, setQuizOpen] = useState(false);
+  const [openPanel, setOpenPanel] = useState<"today" | "quiz" | "gallery" | "notes" | null>(null);
   const [scentOpen, setScentOpen] = useState(false);
 
   const funCopy = locale === "en"
     ? {
         title: "ZHAOWU · SELF DISCOVERY",
+        homeKicker: "ZHAOWU · ONE COMPLETE READING",
+        homeTitle: "One birth record. One clear report.",
+        homeLead: "Your chart and integrated reading stay in one continuous flow. Optional daily and editorial material is kept below.",
+        explore: "Explore",
+        todayTitle: "Today",
+        todayHint: "almanac, dress, spirit slip and recent sky events",
+        quizHint: "optional reflective tests, kept separate from the formal chart",
+        galleryTitle: "Auspicious atlas",
+        galleryHint: "one selected symbolic artwork at a time",
+        notesTitle: "Notes on life",
+        notesHint: "the latest essay and the full editorial archive",
         scentTitle: "Five-Element Scent Map",
         scentHint: "sensory preference compared with five-element cultural imagery",
         cards: [
@@ -41,6 +52,17 @@ function Home() {
     : locale === "zh-Hans"
       ? {
           title: "昭梧 · 心境小测",
+          homeKicker: "昭梧 · 一份完整判读",
+          homeTitle: "一份生辰，读成一份完整报告",
+          homeLead: "命盘、基础解释与综合报告保持在同一条主线；每日内容与文章统一收在下方，不再混在核心流程里。",
+          explore: "延伸内容",
+          todayTitle: "今日",
+          todayHint: "黄历、穿衣、灵签与近日天象",
+          quizHint: "可选的自我观察，不混入正式命盘",
+          galleryTitle: "吉象图鉴",
+          galleryHint: "每次只看一幅精选吉祥图",
+          notesTitle: "观世录",
+          notesHint: "最新文章与完整内容档案",
           scentTitle: "五行香气谱",
           scentHint: "看嗅觉偏好与五行文化象意，不当成身体缺什么",
           cards: [
@@ -53,6 +75,17 @@ function Home() {
         }
       : {
           title: "昭梧 · 心境小測",
+          homeKicker: "昭梧 · 一份完整判讀",
+          homeTitle: "一份生辰，讀成一份完整報告",
+          homeLead: "命盤、基礎解釋與綜合報告保持在同一條主線；每日內容與文章統一收在下方，不再混在核心流程裡。",
+          explore: "延伸內容",
+          todayTitle: "今日",
+          todayHint: "黃曆、穿衣、靈籤與近日天象",
+          quizHint: "可選的自我觀察，不混入正式命盤",
+          galleryTitle: "吉象圖鑑",
+          galleryHint: "每次只看一幅精選吉祥圖",
+          notesTitle: "觀世錄",
+          notesHint: "最新文章與完整內容檔案",
           scentTitle: "五行香氣譜",
           scentHint: "看嗅覺偏好與五行文化象意，不當成身體缺什麼",
           cards: [
@@ -66,8 +99,11 @@ function Home() {
 
   return (
     <main className="zhaowu-home-sheet-page zhaowu-home-layout">
-      <div className="zhaowu-home-stage zhaowu-home-stage--daily"><DailyAlmanacWidget /></div>
-      <div className="zhaowu-home-stage"><SkyEventsHomeSection /></div>
+      <header className="zhaowu-home-lead">
+        <p>{funCopy.homeKicker}</p>
+        <h1>{funCopy.homeTitle}</h1>
+        <span>{funCopy.homeLead}</span>
+      </header>
 
       <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
         <AnalysisForm />
@@ -76,19 +112,16 @@ function Home() {
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><ResultView result={current} /></div> : null}
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div> : null}
 
-      <section className="zhaowu-home-stage zhaowu-home-stage--directory zhaowu-home-fun-section" aria-label={funCopy.title}>
-        <button
-          type="button"
-          className="zhaowu-home-fun-gateway"
-          aria-expanded={quizOpen}
-          aria-controls="home-fun-tests"
-          onClick={() => setQuizOpen((value) => !value)}
-        >
-          <span>{funCopy.title}</span>
-          <span aria-hidden>{quizOpen ? "−" : "+"}</span>
-        </button>
-        {quizOpen ? (
-          <div id="home-fun-tests" data-home-fun-tests>
+      <section className="zhaowu-home-explore" aria-label={funCopy.explore}>
+        <p className="zhaowu-home-explore-label">{funCopy.explore}</p>
+
+        <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>
+          <DailyAlmanacWidget embedded />
+          <SkyEventsHomeSection />
+        </HomeDisclosure>
+
+        <HomeDisclosure id="home-fun-tests" title={funCopy.title} hint={funCopy.quizHint} open={openPanel === "quiz"} onToggle={() => setOpenPanel((value) => value === "quiz" ? null : "quiz")}>
+          <div data-home-fun-tests>
             <div className="zhaowu-home-fun-grid">
               {funCopy.cards.map((card) => (
                 <a key={card.title} href={card.href} className="zhaowu-home-fun-card" aria-label={card.title}>
@@ -105,12 +138,30 @@ function Home() {
               {scentOpen ? <ScentFiveElementTest result={current} /> : null}
             </div>
           </div>
-        ) : null}
+        </HomeDisclosure>
+
+        <HomeDisclosure id="home-gallery" title={funCopy.galleryTitle} hint={funCopy.galleryHint} open={openPanel === "gallery"} onToggle={() => setOpenPanel((value) => value === "gallery" ? null : "gallery")}>
+          <AuspiciousGallerySection />
+        </HomeDisclosure>
+
+        <HomeDisclosure id="home-notes" title={funCopy.notesTitle} hint={funCopy.notesHint} open={openPanel === "notes"} onToggle={() => setOpenPanel((value) => value === "notes" ? null : "notes")}>
+          <LifeViewHomeSection />
+        </HomeDisclosure>
       </section>
 
-      <div className="zhaowu-home-stage zhaowu-home-stage--gallery"><AuspiciousGallerySection /></div>
-      <div className="zhaowu-home-stage zhaowu-home-stage--notes"><LifeViewHomeSection /></div>
       <div className="zhaowu-home-stage"><HomeScreenInstallPrompt /></div>
     </main>
+  );
+}
+
+function HomeDisclosure({ id, title, hint, open, onToggle, children }: { id: string; title: string; hint: string; open: boolean; onToggle: () => void; children: ReactNode }) {
+  return (
+    <section className={`zhaowu-home-disclosure${open ? " is-open" : ""}`}>
+      <button type="button" className="zhaowu-home-disclosure-trigger" aria-expanded={open} aria-controls={`${id}-panel`} onClick={onToggle}>
+        <span><strong>{title}</strong><small>{hint}</small></span>
+        <i aria-hidden="true" />
+      </button>
+      {open ? <div id={`${id}-panel`} className="zhaowu-home-disclosure-panel">{children}</div> : null}
+    </section>
   );
 }

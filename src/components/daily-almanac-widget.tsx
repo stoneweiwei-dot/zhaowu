@@ -100,7 +100,7 @@ const SLIPS = {
   en: [["Hold Your Centre", "Protect the one thing that matters most and let the noise fall away.", "Guess less, confirm first, and keep your own pace."], ["Open With Response", "Notice what is genuinely responding to you before you invest more.", "Observe first, then move closer."], ["Set Direction First", "Speed is not the priority; set the direction before moving.", "Confirm the core conditions before acting on emotion."], ["Leave Some Space", "Doing slightly less can preserve the judgement you need next.", "Keep your capacity for decisions only you can make."]]
 } as const;
 
-export function DailyAlmanacWidget() {
+export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean }) {
   const { locale } = useI18n(); const absoluteNow = useNow(); const visitor = useVisitorContext(); const now = useMemo(() => zonedDate(absoluteNow, visitor?.timezone), [absoluteNow, visitor?.timezone]);
   const [page, setPage] = useState(0); const [slipOpen, setSlipOpen] = useState(false); const [asset, setAsset] = useState<GalleryAsset | null>(null); const [loadingSlip, setLoadingSlip] = useState(false);
   const dayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
@@ -113,12 +113,12 @@ export function DailyAlmanacWidget() {
 
   return <>
     <section id="daily-almanac" className="zhaowu-today-guide" aria-label={labels.title}>
-      <details className="zhaowu-daily-details">
-        <summary className="zhaowu-today-guide__summary">
+      <details className={`zhaowu-daily-details${embedded ? " is-embedded-open" : ""}`} open={embedded || undefined}>
+        {!embedded ? <summary className="zhaowu-today-guide__summary">
           <div className="zhaowu-today-guide__summary-head"><div><p>{labels.title}</p><span>{labels.sub}</span></div><b>→</b></div>
           <div className="zhaowu-today-guide__summary-row"><strong>{now.getFullYear()}.{String(now.getMonth() + 1).padStart(2, "0")}.{String(now.getDate()).padStart(2, "0")}</strong><span>{locationName} · {weather}</span></div>
           <div className="zhaowu-today-guide__summary-meta"><span>{pillars.day}</span><span>{season}</span><em>{labels.open}</em></div>
-        </summary>
+        </summary> : null}
 
         <div className="zhaowu-today-guide__expanded">
           <header className="zhaowu-today-guide__hero"><div><p>{labels.title}</p><span>{labels.sub}</span></div><div className="zhaowu-today-guide__pager"><button type="button" onClick={(event) => { event.preventDefault(); event.stopPropagation(); setPage((page + 2) % 3); }} aria-label={locale === "en" ? "Previous page" : "上一頁"}>←</button><b>{page + 1}/3</b><button type="button" onClick={(event) => { event.preventDefault(); event.stopPropagation(); setPage((page + 1) % 3); }} aria-label={locale === "en" ? "Next page" : "下一頁"}>→</button></div></header>

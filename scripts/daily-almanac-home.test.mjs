@@ -10,11 +10,11 @@ const hub = await readFile(new URL("../src/home-birth-hub-r60.css", import.meta.
 const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", import.meta.url), "utf8");
 const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 
-test("homepage puts a compact daily almanac first and keeps client details separate", () => {
+test("homepage keeps the primary birth flow first and moves the almanac into the consistent secondary accordion", () => {
   const formMount = route.indexOf("<AnalysisForm />");
-  const daily = route.indexOf("<DailyAlmanacWidget />");
-  assert.ok(daily >= 0 && formMount > daily);
-  assert.match(widget, /<details className="zhaowu-daily-details">/);
+  const daily = route.indexOf("<DailyAlmanacWidget embedded />");
+  assert.ok(formMount >= 0 && daily > formMount);
+  assert.match(widget, /zhaowu-daily-details\$\{embedded \? " is-embedded-open"/);
   assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
   assert.match(form, /id="bazi"/);
   assert.match(route, /home-layout-r46\.css/);

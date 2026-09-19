@@ -11,7 +11,7 @@ export async function ownerSignIn(secret: string) {
   });
   const body = await jsonOrEmpty(response);
   if (!response.ok) {
-    throw new Error(body.error === "INVALID_OWNER_CREDENTIAL" ? "站主密鑰不正確。" : "站主登入暫時不可用。");
+    throw new Error(body.error === "INVALID_OWNER_CREDENTIAL" ? "站主密碼不正確。" : "站主登入暫時不可用。");
   }
 }
 
