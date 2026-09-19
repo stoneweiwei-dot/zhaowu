@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const css = await readFile(new URL("../src/report-art-final-r62.css", import.meta.url), "utf8");
-const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
+const main = await readFile(new URL("../src/legacy-visual-compat.css", import.meta.url), "utf8");
 const assets = await readFile(new URL("../src/lib/report/report-visual-assets.ts", import.meta.url), "utf8");
 const policy = await readFile(new URL("../docs/GALLERY-AUTO-INGEST-POLICY.md", import.meta.url), "utf8");
 
