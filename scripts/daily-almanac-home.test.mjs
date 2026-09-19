@@ -10,10 +10,12 @@ const hub = await readFile(new URL("../src/home-birth-hub-r60.css", import.meta.
 const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", import.meta.url), "utf8");
 const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 
-test("homepage keeps the primary birth flow first and moves the almanac into the consistent secondary accordion", () => {
+test("homepage puts Today Guide before the primary birth flow while keeping one reading path", () => {
   const formMount = route.indexOf("<AnalysisForm />");
   const daily = route.indexOf("<DailyAlmanacWidget embedded />");
-  assert.ok(formMount >= 0 && daily > formMount);
+  assert.ok(daily >= 0 && formMount > daily);
+  assert.match(route, /todayTitle: "Today Guide"/);
+  assert.match(route, /todayTitle: "今日指引"/);
   assert.match(widget, /zhaowu-daily-details\$\{embedded \? " is-embedded-open"/);
   assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
   assert.match(form, /id="bazi"/);
@@ -42,16 +44,19 @@ test("daily almanac keeps the daily spirit slip available to guests", () => {
   assert.match(widget, /async function drawSlip\(\) \{[\s\S]*setSlipOpen\(true\);[\s\S]*listPublicGalleryAssets/);
 });
 
-test("r69 almanac style is compact, quiet, and keeps Song-style pillar typography", () => {
+test("daily guide uses the canonical type system, readable touch targets and restrained motion", () => {
   assert.match(almanacStyle, /min-height:\s*0 !important/);
   assert.match(almanacStyle, /border-radius:\s*14px !important/);
-  assert.match(almanacStyle, /Songti TC/);
+  assert.match(almanacStyle, /var\(--font-display/);
   assert.match(almanacStyle, /grid-template-columns:\s*repeat\(4/);
   assert.match(almanacStyle, /zhaowu-daily-details/);
   assert.match(almanacStyle, /zhaowu-today-guide__summary/);
+  assert.match(almanacStyle, /width:\s*44px;[\s\S]*height:\s*44px/);
+  assert.match(almanacStyle, /zw-home-panel-enter/);
+  assert.match(almanacStyle, /zhaowu-home-stage--daily-priority/);
   assert.match(almanacStyle, /:not\(\[open\]\) \.zhaowu-today-guide__expanded/);
   assert.doesNotMatch(almanacStyle, /\.zhaowu-home-layout \.zhaowu-daily-details \{ display:none/);
-  assert.match(design, /zhaowu-home-stage--daily[\s\S]*margin-top:\s*0 !important/);
+  assert.match(design, /-webkit-font-smoothing:\s*antialiased/);
 });
 
 test("r46 preserves mobile-first whitespace and responsive directory grids", () => {

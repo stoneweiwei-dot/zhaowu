@@ -31,7 +31,7 @@ function Home() {
         homeTitle: "One birth record. One ZHAOWU Destiny Book.",
 
         explore: "Explore",
-        todayTitle: "Today",
+        todayTitle: "Today Guide",
         todayHint: "almanac, dress, spirit slip and recent sky events",
         quizHint: "optional reflective tests, kept separate from the formal chart",
         notesTitle: "Notes on life",
@@ -53,7 +53,7 @@ function Home() {
           homeTitle: "一份生辰，读成一本昭梧命书",
 
           explore: "延伸内容",
-          todayTitle: "今日",
+          todayTitle: "今日指引",
           todayHint: "黄历、穿衣、灵签与近日天象",
           quizHint: "可选的自我观察，不混入正式命盘",
           notesTitle: "观世录",
@@ -74,7 +74,7 @@ function Home() {
           homeTitle: "一份生辰，讀成一本昭梧命書",
 
           explore: "延伸內容",
-          todayTitle: "今日",
+          todayTitle: "今日指引",
           todayHint: "黃曆、穿衣、靈籤與近日天象",
           quizHint: "可選的自我觀察，不混入正式命盤",
           notesTitle: "觀世錄",
@@ -97,6 +97,13 @@ function Home() {
         <h1>{funCopy.homeTitle}</h1>
       </header>
 
+      <section className="zhaowu-home-stage zhaowu-home-stage--daily-priority" aria-label={funCopy.todayTitle}>
+        <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>
+          <DailyAlmanacWidget embedded />
+          <SkyEventsHomeSection />
+        </HomeDisclosure>
+      </section>
+
       <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
         <AnalysisForm />
       </div>
@@ -106,11 +113,6 @@ function Home() {
 
       <section className="zhaowu-home-explore" aria-label={funCopy.explore}>
         <p className="zhaowu-home-explore-label">{funCopy.explore}</p>
-
-        <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>
-          <DailyAlmanacWidget embedded />
-          <SkyEventsHomeSection />
-        </HomeDisclosure>
 
         <HomeDisclosure id="home-fun-tests" title={funCopy.title} hint={funCopy.quizHint} open={openPanel === "quiz"} onToggle={() => setOpenPanel((value) => value === "quiz" ? null : "quiz")}>
           <div data-home-fun-tests>

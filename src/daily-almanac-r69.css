@@ -45,7 +45,7 @@
 .zhaowu-home-layout .zhaowu-today-guide__hero p {
   margin: 0;
   color: #f2dfad;
-  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
   font-size: clamp(26px,6vw,36px);
   font-weight: 600;
   letter-spacing: .045em;
@@ -55,15 +55,15 @@
   display: block;
   margin-top: 7px;
   color: rgba(245,240,228,.72);
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: 14px;
+  line-height: 1.55;
 }
 .zhaowu-home-layout .zhaowu-today-guide__pager { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
 .zhaowu-home-layout .zhaowu-today-guide__pager b { color: rgba(245,240,228,.72); font-size: 13px; font-weight: 500; }
 .zhaowu-home-layout .zhaowu-today-guide__pager button {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 1px solid rgba(226,198,137,.75);
   border-radius: 999px;
@@ -82,11 +82,11 @@
 }
 .zhaowu-home-layout .zhaowu-today-guide__page-title strong {
   color: #fff9e9;
-  font-family: "Songti TC", "Songti SC", "STSong", serif;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
   font-size: 20px;
   font-weight: 600;
 }
-.zhaowu-home-layout .zhaowu-today-guide__page-title span { color: rgba(245,240,228,.63); font-size: 11px; text-align: right; }
+.zhaowu-home-layout .zhaowu-today-guide__page-title span { color: rgba(245,240,228,.63); font-size: 12px; line-height: 1.45; text-align: right; }
 
 .zhaowu-home-layout .zhaowu-today-guide__grid {
   display: grid;
@@ -104,9 +104,9 @@
   background: linear-gradient(rgba(255,253,247,.95),rgba(247,242,230,.95)), var(--tg-paper);
   box-shadow: inset 0 1px rgba(255,255,255,.8);
 }
-.zhaowu-home-layout .zhaowu-today-card small { display:block; margin-bottom:7px; color:#7f6b48; font-size:11px; font-weight:700; letter-spacing:.08em; }
-.zhaowu-home-layout .zhaowu-today-card > strong { display:block; color:#263c35; font-family:"Songti TC","Songti SC","STSong",serif; font-size:16px; font-weight:600; line-height:1.5; }
-.zhaowu-home-layout .zhaowu-today-card > span { display:block; margin-top:6px; color:#6c756f; font-size:11px; line-height:1.45; }
+.zhaowu-home-layout .zhaowu-today-card small { display:block; margin-bottom:7px; color:#7f6b48; font-size:12px; font-weight:700; letter-spacing:.08em; }
+.zhaowu-home-layout .zhaowu-today-card > strong { display:block; color:#263c35; font-family:var(--font-display, "Noto Serif TC", "Songti TC", serif); font-size:16px; font-weight:600; line-height:1.5; }
+.zhaowu-home-layout .zhaowu-today-card > span { display:block; margin-top:6px; color:#6c756f; font-size:12px; line-height:1.55; }
 .zhaowu-home-layout .zhaowu-today-card.is-date strong { font-size:21px; }
 .zhaowu-home-layout .zhaowu-today-card.is-date span { color:#2f6b5a; font-size:18px; font-weight:650; }
 .zhaowu-home-layout .zhaowu-today-card.is-sacred,
@@ -121,7 +121,7 @@
   display: grid;
   grid-template-columns: repeat(4,minmax(0,1fr));
   gap: 7px;
-  font-family: "Songti TC", "Songti SC", "STSong", serif;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
 }
 .zhaowu-home-layout .zhaowu-today-pillars > span { display:flex; min-width:0; flex-direction:column; align-items:center; padding:9px 4px; border:1px solid rgba(40,68,58,.12); border-radius:10px; background:rgba(236,231,216,.55); }
 .zhaowu-home-layout .zhaowu-today-pillars b { color:#224a3d; font-size:19px; font-weight:650; white-space:nowrap; }
@@ -137,8 +137,8 @@
 
 .zhaowu-home-layout .zhaowu-today-guide__chips { display:grid; grid-column:1 / -1; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
 .zhaowu-home-layout .zhaowu-today-guide__chips article { min-width:0; padding:12px 10px; border:1px solid rgba(185,154,98,.48); border-radius:13px; background:rgba(249,245,235,.96); }
-.zhaowu-home-layout .zhaowu-today-guide__chips small { display:block; color:#8a7652; font-size:10px; }
-.zhaowu-home-layout .zhaowu-today-guide__chips strong { display:block; margin-top:5px; color:#253b34; font-size:12px; font-weight:650; line-height:1.45; }
+.zhaowu-home-layout .zhaowu-today-guide__chips small { display:block; color:#8a7652; font-size:11px; }
+.zhaowu-home-layout .zhaowu-today-guide__chips strong { display:block; margin-top:5px; color:#253b34; font-size:13px; font-weight:650; line-height:1.5; }
 
 /* 2/3 每日穿衣：直接承接既有 DailyColorsModule，不複製計算邏輯。 */
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe { padding: 0 14px 18px; }
@@ -162,16 +162,16 @@
 
 /* 3/3 靈籤：定位為當日反思，不作宿命預測。 */
 .zhaowu-home-layout .zhaowu-today-guide__spirit { display:grid; grid-template-columns:86px minmax(0,1fr); gap:18px; margin:0 14px 18px; padding:20px; border:1px solid rgba(185,154,98,.48); border-radius:17px; color:var(--tg-ink); background:linear-gradient(135deg,rgba(255,252,244,.98),rgba(239,231,211,.96)); }
-.zhaowu-home-layout .zhaowu-today-slip-mark { display:grid; width:74px; height:150px; place-items:center; border:1px solid rgba(160,72,60,.4); border-radius:8px; color:#9a4038; background:#ead8b8; font-family:"Songti TC","Songti SC","STSong",serif; font-size:34px; box-shadow:inset 0 0 0 5px rgba(255,248,231,.52); }
-.zhaowu-home-layout .zhaowu-today-guide__spirit p { margin:0; color:#7c715e; font-size:11px; }
-.zhaowu-home-layout .zhaowu-today-guide__spirit h3 { margin:7px 0 9px; color:#263d35; font-family:"Songti TC","Songti SC","STSong",serif; font-size:26px; font-weight:600; }
+.zhaowu-home-layout .zhaowu-today-slip-mark { display:grid; width:74px; height:150px; place-items:center; border:1px solid rgba(160,72,60,.4); border-radius:8px; color:#9a4038; background:#ead8b8; font-family:var(--font-display, "Noto Serif TC", "Songti TC", serif); font-size:34px; box-shadow:inset 0 0 0 5px rgba(255,248,231,.52); }
+.zhaowu-home-layout .zhaowu-today-guide__spirit p { margin:0; color:#7c715e; font-size:12px; }
+.zhaowu-home-layout .zhaowu-today-guide__spirit h3 { margin:7px 0 9px; color:#263d35; font-family:var(--font-display, "Noto Serif TC", "Songti TC", serif); font-size:26px; font-weight:600; }
 .zhaowu-home-layout .zhaowu-today-guide__spirit strong,
 .zhaowu-home-layout .zhaowu-today-guide__spirit span { display:block; color:#34433d; font-size:13px; line-height:1.65; }
 .zhaowu-home-layout .zhaowu-today-guide__spirit span { margin-top:6px; color:#68716b; }
-.zhaowu-home-layout .zhaowu-today-guide__spirit button { margin-top:14px; min-height:38px; border:1px solid rgba(39,78,65,.22); border-radius:999px; padding:0 14px; color:#f7f1df; background:#285a4b; box-shadow:none; font-size:12px; font-weight:650; }
+.zhaowu-home-layout .zhaowu-today-guide__spirit button { margin-top:14px; min-height:44px; border:1px solid rgba(39,78,65,.22); border-radius:999px; padding:0 14px; color:#f7f1df; background:#285a4b; box-shadow:none; font-size:12px; font-weight:650; }
 
 .zhaowu-home-layout .zhaowu-today-guide__footer { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 18px 14px; border-top:1px solid rgba(213,190,132,.17); }
-.zhaowu-home-layout .zhaowu-today-guide__footer > span { max-width:80%; color:rgba(245,240,228,.48); font-size:9px; line-height:1.45; }
+.zhaowu-home-layout .zhaowu-today-guide__footer > span { max-width:80%; color:rgba(245,240,228,.58); font-size:11px; line-height:1.5; }
 .zhaowu-home-layout .zhaowu-today-guide__footer > div { display:flex; gap:6px; }
 .zhaowu-home-layout .zhaowu-today-guide__footer button { width:7px; height:7px; padding:0; border:0; border-radius:999px; background:rgba(245,240,228,.28); box-shadow:none; }
 .zhaowu-home-layout .zhaowu-today-guide__footer button.is-active { width:18px; background:#e5c988; }
@@ -205,7 +205,7 @@
 .zhaowu-home-layout .zhaowu-today-guide__summary-head p {
   margin: 0;
   color: #f2dfad;
-  font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
   font-size: clamp(22px, 5.6vw, 30px);
   font-weight: 600;
   letter-spacing: .045em;
@@ -215,8 +215,8 @@
   display: block;
   margin-top: 4px;
   color: rgba(245,240,228,.72);
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 1.5;
 }
 .zhaowu-home-layout .zhaowu-today-guide__summary-head b {
   display: grid;
@@ -239,7 +239,7 @@
 }
 .zhaowu-home-layout .zhaowu-today-guide__summary-row strong {
   color: #fff9e9;
-  font-family: "Songti TC", "Songti SC", "STSong", serif;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
   font-size: 16px;
   font-weight: 600;
 }
@@ -255,7 +255,7 @@
   gap: 8px 12px;
   margin-top: 8px;
   color: rgba(245,240,228,.68);
-  font-size: 11px;
+  font-size: 12px;
 }
 .zhaowu-home-layout .zhaowu-today-guide__summary-meta em {
   margin-left: auto;
@@ -295,3 +295,51 @@
 }
 
 @media (prefers-reduced-motion: reduce) { .zhaowu-home-layout .zhaowu-today-guide button { transition:none !important; } }
+
+
+/* Final rhythm polish — keep the daily-return surface prominent without adding
+   another visual layer. Motion stays short and paper-like rather than app-like. */
+.zhaowu-home-layout .zhaowu-home-stage--daily-priority {
+  margin-top: 10px !important;
+  margin-bottom: 34px !important;
+}
+
+.zhaowu-home-layout .zhaowu-home-disclosure-trigger,
+.zhaowu-home-layout .zhaowu-home-disclosure-trigger > i,
+.zhaowu-home-layout .zhaowu-today-guide__pager button,
+.zhaowu-home-layout .zhaowu-today-guide__summary-head b,
+.zhaowu-home-layout .zhaowu-today-guide__spirit button {
+  transition:
+    transform 180ms cubic-bezier(.22,.72,.25,1),
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+.zhaowu-home-layout .zhaowu-home-disclosure-trigger:active,
+.zhaowu-home-layout .zhaowu-today-guide__pager button:active,
+.zhaowu-home-layout .zhaowu-today-guide__spirit button:active {
+  transform: scale(.985);
+}
+
+.zhaowu-home-layout .zhaowu-home-disclosure-panel {
+  transform-origin: top center;
+  animation: zw-home-panel-enter 190ms cubic-bezier(.22,.72,.25,1) both;
+}
+
+.zhaowu-home-layout .zhaowu-daily-details[open] .zhaowu-today-guide__summary-head b {
+  transform: rotate(90deg);
+}
+
+@keyframes zw-home-panel-enter {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width:560px) {
+  .zhaowu-home-layout .zhaowu-home-stage--daily-priority {
+    margin-top: 6px !important;
+    margin-bottom: 28px !important;
+  }
+}
