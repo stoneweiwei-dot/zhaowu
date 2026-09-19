@@ -12,9 +12,9 @@ test("homepage hides the seven-school directory and renders one integrated repor
   assert.doesNotMatch(home, /七種個人分析|Seven personal readings|data-specialist-link|portalCopy/);
   assert.doesNotMatch(home, /to: "\/(?:numerology|ziwei|astrology|indian-astrology|qizheng|yizhangjing)"/);
   assert.match(form, /UnifiedBirthReport/);
-  assert.match(form, /第二步 · 完整綜合報告/);
+  assert.match(form, /第二步 · 昭梧命書/);
   assert.match(report, /data-unified-birth-report/);
-  assert.match(report, /完整綜合報告/);
+  assert.match(report, /你的昭梧命書/);
   assert.match(report, /buildWesternReading/);
   assert.match(report, /buildZiweiReading/);
   assert.match(report, /buildQizhengReading/);

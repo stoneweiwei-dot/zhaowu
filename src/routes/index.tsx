@@ -28,9 +28,9 @@ function Home() {
   const funCopy = locale === "en"
     ? {
         title: "ZHAOWU · SELF DISCOVERY",
-        homeKicker: "ZHAOWU · ONE COMPLETE READING",
-        homeTitle: "One birth record. One clear report.",
-        homeLead: "Your chart and integrated reading stay in one continuous flow. Optional daily and editorial material is kept below.",
+        homeKicker: "ZHAOWU · PERSONAL DESTINY BOOK",
+        homeTitle: "One birth record. One ZHAOWU Destiny Book.",
+        homeLead: "Your Four Pillars are calculated once. Zi Ping leads the structural judgement; specialist systems cross-check quietly in the background and return one continuous reading.",
         explore: "Explore",
         todayTitle: "Today",
         todayHint: "almanac, dress, spirit slip and recent sky events",
@@ -52,9 +52,9 @@ function Home() {
     : locale === "zh-Hans"
       ? {
           title: "昭梧 · 心境小测",
-          homeKicker: "昭梧 · 一份完整判读",
-          homeTitle: "一份生辰，读成一份完整报告",
-          homeLead: "命盘、基础解释与综合报告保持在同一条主线；每日内容与文章统一收在下方，不再混在核心流程里。",
+          homeKicker: "昭梧 · 个人命书",
+          homeTitle: "一份生辰，读成一本昭梧命书",
+          homeLead: "四柱只排一次，子平负责结构主判；其他专项只在后台交叉核验，前台只留下命盘、白话判读与可继续追问的一份命书。",
           explore: "延伸内容",
           todayTitle: "今日",
           todayHint: "黄历、穿衣、灵签与近日天象",
@@ -75,9 +75,9 @@ function Home() {
         }
       : {
           title: "昭梧 · 心境小測",
-          homeKicker: "昭梧 · 一份完整判讀",
-          homeTitle: "一份生辰，讀成一份完整報告",
-          homeLead: "命盤、基礎解釋與綜合報告保持在同一條主線；每日內容與文章統一收在下方，不再混在核心流程裡。",
+          homeKicker: "昭梧 · 個人命書",
+          homeTitle: "一份生辰，讀成一本昭梧命書",
+          homeLead: "四柱只排一次，子平負責結構主判；其他專項只在後台交叉核驗，前台只留下命盤、白話判讀與可繼續追問的一份命書。",
           explore: "延伸內容",
           todayTitle: "今日",
           todayHint: "黃曆、穿衣、靈籤與近日天象",

@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.19-r164",
-  updateNumber: 164,
-  publishedAt: "2026-09-19T22:00:00+10:00",
-  latestSummary: "補齊夜間報告與小龍文字對比，日夜改為直接選擇，保留宋式宣紙與單一報告流程。",
+  version: "ZW-WEB-2026.09.19-r165",
+  updateNumber: 165,
+  publishedAt: "2026-09-19T22:30:00+10:00",
+  latestSummary: "最終產品收線：以昭梧命書統一生辰、命盤、判讀與問答；新增 AI 可讀命盤資料包、計算口徑與版本核對。",
   details: {
-    "zh-Hant": ["日／夜可直接選定，每個按鈕至少 44px。", "補齊夜間報告及青玉小龍文字對比，播放器輔助文字加大。"],
-    en: ["Day and Night can be selected directly with 44px controls.", "Night report and Jade Dragon text contrast are aligned; music labels are larger."],
+    "zh-Hant": ["首頁與核心流程統一為「昭梧命書」，不再以工具站或多流派入口呈現。", "四柱先由規則引擎排盤；可複製 AI 可讀命盤，並查看時間校正、核對方法與版本記錄。"],
+    en: ["The core journey is now one ZHAOWU Destiny Book rather than a collection of tools.", "The calculated chart can be copied for AI use and audited against timing rules, verification notes and the public release record."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }

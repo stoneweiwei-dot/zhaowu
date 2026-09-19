@@ -17,9 +17,9 @@ test("customer-facing birth copy is owned by React with no legacy DOM rewrite", 
   assert.doesNotMatch(index, /customer-facing-copy-r93\.js/);
   assert.match(runtimeCopy, /intentionally inert/);
   assert.doesNotMatch(runtimeCopy, /MutationObserver|querySelector|setText/);
-  assert.match(analysisForm, /customerTitle:\s*"客人資料"/);
-  assert.match(analysisForm, /customerTitle:\s*"客人资料"/);
-  assert.match(analysisForm, /customerTitle:\s*"Your birth details"/);
+  assert.match(analysisForm, /customerTitle:\s*"錄入生辰"/);
+  assert.match(analysisForm, /customerTitle:\s*"录入生辰"/);
+  assert.match(analysisForm, /customerTitle:\s*"Enter your birth record"/);
 });
 
 test("intro fallback uses the matching full-frame r148 poster rather than a tiny lockup", () => {

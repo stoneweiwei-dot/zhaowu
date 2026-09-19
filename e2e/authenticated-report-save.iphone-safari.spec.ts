@@ -82,11 +82,11 @@ test("Guest saves birth details first and then receives the r144 question stage"
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "保存並排出四柱命盤", exact: true }).click();
+  await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
   await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
   await expect(page.locator("#question-stage")).toBeVisible();
   await expect(page.locator("#analysis-question")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "你真正想問的是什麼？", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "沿著這份命書，繼續問你真正關心的事", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "開始分析這個問題", exact: true })).toBeVisible();
   await mobileHealthy(page);
 });
@@ -95,7 +95,7 @@ test("Guest birth record stays on the phone and opens one integrated report", as
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "保存並排出四柱命盤", exact: true }).click();
+  await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
   await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
   await expect(page.locator("#question-stage")).toBeVisible();
   await expect(page.locator("[data-unified-birth-report]")).toBeVisible();

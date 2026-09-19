@@ -47,8 +47,8 @@ async function gateDuration(page: Page) {
 const routes = [
   {
     path: "/",
-    heading: "客人資料",
-    action: "保存並排出四柱命盤",
+    heading: "錄入生辰",
+    action: "保存並生成昭梧命書",
     actionRole: "button",
   },
   {
@@ -70,10 +70,10 @@ test.describe("iPhone Safari five-second opening", () => {
     await expect(gate).toHaveAttribute("data-intro-motion", "zhaowu-opening-r148");
     await expect(gate.locator("video")).toHaveAttribute("src", "/intro/zhaowu-opening-r148.mp4");
     await expect(page.locator("[data-intro-skip]")).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeAttached();
+    await expect(page.getByRole("heading", { name: "錄入生辰", exact: true })).toBeAttached();
 
     await expect(gate).toHaveCount(0, { timeout: 8_500 });
-    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "錄入生辰", exact: true })).toBeVisible();
 
     const duration = await gateDuration(page);
     expect(duration).not.toBeNull();
