@@ -31,14 +31,14 @@ test("wrong owner password is still rejected", async () => {
   assert.equal(response.status, 401);
 });
 
-test("homepage keeps one primary flow and one consistent closed secondary accordion", async () => {
+test("homepage keeps one primary flow and the current closed secondary accordions", async () => {
   const home = await source("src/routes/index.tsx");
-  assert.match(home, /useState<"today" \| "quiz" \| "gallery" \| "notes" \| null>\(null\)/);
-  assert.equal((home.match(/<HomeDisclosure /g) ?? []).length, 4);
+  assert.match(home, /useState<"today" \| "quiz" \| "notes" \| null>\(null\)/);
+  assert.equal((home.match(/<HomeDisclosure /g) ?? []).length, 3);
   assert.match(home, /<AnalysisForm \/>/);
   assert.match(home, /<DailyAlmanacWidget embedded \/>/);
   assert.match(home, /openPanel === "today"/);
-  assert.match(home, /openPanel === "gallery"/);
+  assert.doesNotMatch(home, /openPanel === "gallery"/);
   assert.match(home, /openPanel === "notes"/);
 });
 

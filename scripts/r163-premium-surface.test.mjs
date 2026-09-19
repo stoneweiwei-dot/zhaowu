@@ -10,7 +10,7 @@ test("r163 premium surface stays inside the canonical final stylesheet", async (
   const design = await source("src/zhaowu-design-system.css");
   assert.equal(main.lastIndexOf("import './zhaowu-design-system.css';"), main.lastIndexOf("import './"));
   assert.match(design, /r163 — canonical premium Song-paper surface/);
-  assert.match(design, /linear-gradient\(180deg, rgba\(250, 248, 241, \.94\), rgba\(255, 250, 241, \.90\)\)/);
+  assert.match(design, /url\('\/wallpaper-song\.jpg'\) center 72% \/ cover no-repeat/);
   assert.match(design, /body:has\(\.zhaowu-home-sheet-shell\)[\s\S]*background-image:/);
   assert.match(design, /\.zhaowu-home-sheet-shell \.zhaowu-customer-record[\s\S]*background: #fffaf1 !important;/);
   assert.match(design, /\.zhaowu-home-disclosure,[\s\S]*box-shadow: none;/);
