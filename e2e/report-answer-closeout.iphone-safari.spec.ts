@@ -2,17 +2,34 @@ import { test, expect } from '@playwright/test';
 
 test('report keeps one answer, one prose column and collapsed technical evidence on iPhone', async ({page}) => {
   await page.route('**/rest/v1/**', route => route.fulfill({status:503,body:'offline-test'}));
-  await page.goto('/', {waitUntil:'domcontentloaded'});
-  await page.evaluate(async () => {
-    const actionsPath='/src/lib/actions.ts';
-    const storePath='/src/lib/store.ts';
-    const {analyzeLife}=await import(actionsPath);
-    const {useAppStore}=await import(storePath);
-    const r=await analyzeLife({data:{year:1988,month:10,day:4,hour:4,minute:40,timeUnknown:false,gender:'male',relation:'same',city:{name:'三明',country:'中國',display:'福建三明',latitude:26.263,longitude:117.638,timezone:'Asia/Shanghai'},ziPolicy:'midnight',useTrueSolar:true,locale:'zh-Hant',question:'我的天賦是什麼？'}});
-    useAppStore.getState().setCurrent(r);
+  await page.addInitScript(() => {
+    localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify({
+      year: 1988,
+      month: 10,
+      day: 4,
+      hour: 4,
+      minute: 40,
+      timeUnknown: false,
+      gender: 'male',
+      relation: 'same',
+      ziPolicy: 'midnight',
+      useTrueSolar: true,
+      city: {
+        name: '三明',
+        country: '中國',
+        display: '福建三明',
+        latitude: 26.263,
+        longitude: 117.638,
+        timezone: 'Asia/Shanghai',
+      },
+    }));
   });
+  await page.goto('/', {waitUntil:'domcontentloaded'});
   const later=page.getByRole('button',{name:'稍後再說',exact:true});
   if(await later.isVisible()) await later.click();
+  await expect(page.locator('#analysis-question')).toBeVisible();
+  await page.locator('#analysis-question').fill('我的天賦是什麼？');
+  await page.getByRole('button',{name:'開始分析這個問題',exact:true}).click();
   await expect(page.locator('[data-primary-answer]')).toContainText('學懂複雜方法');
   await page.getByRole('button',{name:'查看完整分析',exact:true}).click();
   await expect(page.locator('[data-primary-answer]')).toHaveCount(0);
