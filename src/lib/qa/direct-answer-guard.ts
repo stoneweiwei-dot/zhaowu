@@ -14,6 +14,18 @@ const CAREER_RE = /(工作|職位|职位|公司|事業|事业|職業|职业|care
 const LOVE_OUTLOOK_RE = /(感情|關係|关系|曖昧|暧昧|復合|复合|對象|对象).{0,18}(有沒有|有没有|還有沒有|还有没有|能不能|會不會|会不会|空間|空间|發展|发展|繼續|继续)|(還有沒有|还有没有|能不能|會不會|会不会).{0,18}(感情|關係|关系|復合|复合|發展|发展)/i;
 const MONEY_RISK_RE = /(財務|财务|財運|财运|錢|钱|收入|投資|投资|現金流|现金流).{0,18}(最該防|最该防|風險|风险|注意|小心|避免|防什麼|防什么)|(最該防|最该防|風險|风险|注意|小心).{0,18}(財務|财务|財運|财运|錢|钱|投資|投资)/i;
 const CHOICE_RE = /(還是|还是|二選一|二选一|選哪|选哪|哪個更|哪个更|哪一個更|which\s+(?:one|option)|\bvs\.?\b)/i;
+const JOB_FIT_RE = /(適合|适合).{0,10}(工作|職業|职业|職位|职位)|(工作|職業|职业).{0,10}(適合|适合)|職業方向|职业方向|career\s+fit|what\s+(?:job|career)/i;
+const TIMING_RE = /(何時|何时|什麼時候|什么时候|哪一年|哪年|幾月|几月|今年|明年|後年|后年|應期|应期|when\b|timing\b|which\s+month|which\s+year)/i;
+const COMPARISON_FACT_PATTERNS = [
+  /(收入|薪水|薪資|薪资|工資|工资|pay|salary|income)/i,
+  /(通勤|距離|距离|commute|distance)/i,
+  /(工時|工时|時數|时数|hours|schedule)/i,
+  /(責任|责任|權限|权限|decision\s+rights|responsibil)/i,
+  /(成長|成长|升遷|升迁|growth|promotion)/i,
+  /(福利|super|pension|benefit|leave)/i,
+  /(成本|代價|代价|cost)/i,
+  /(退出|離開|离开|可逆|reversib|exit)/i,
+];
 
 function isEnglish(locale?: AppLocale) { return locale === "en"; }
 function isHans(locale?: AppLocale) { return locale === "zh-Hans"; }
@@ -82,40 +94,52 @@ function guardZiwei(chart: Chart, locale?: AppLocale): string {
     "Direct answer: yes, but Zi Wei is an independent scene/phenomenon validation layer. It is not co-equal with Ziping and cannot directly overwrite the primary Ziping judgement.");
 }
 
-function guardUnknownTime(question: string, chart: Chart, locale?: AppLocale): string {
+function appendExistingTiming(question: string, base: string, reading: Reading, locale?: AppLocale): string {
+  if (!TIMING_RE.test(question)) return base;
+  const existing = reading.directAnswer?.trim() ?? "";
+  if (!existing || existing === base || !/(\\d{4}年|\\d{1,2}月|窗口|時間|时间|階段|阶段|window|period)/i.test(existing)) return base;
+  const label = zh(locale, "時間部分：", "时间部分：", "Timing: ");
+  return `${base} ${label}${existing}`;
+}
+
+function guardUnknownTime(question: string, chart: Chart, reading: Reading, locale?: AppLocale): string {
   const unknown = chart.timeUnknown;
-  const careerSuffix = CAREER_RE.test(question)
-    ? zh(locale,
-        " 工作仍可先判到工作類型、功能與環境的大方向，但不能用未確認時柱硬定唯一職業或精確應期。",
-        " 工作仍可先判到工作类型、功能与环境的大方向，但不能用未确认时柱硬定唯一职业或精确应期。",
-        " Work can still be judged at the level of job type, function and environment, but an unconfirmed hour cannot justify a single profession or precise timing.")
-    : "";
-  return zh(locale,
-    unknown ? `直接回答：可以判一部分，但不能假裝完整。月令、日主、已確定三柱與不依賴時柱的主結構可以先判；凡直接依賴時柱或精確出生時刻的模組一律降級或【不作判定】。${careerSuffix}` : `直接回答：可以。現在已有出生時辰，因此先按已確認資料判；若時辰可靠性之後被推翻，所有直接依賴時柱或精確時刻的結論都必須同步降級。${careerSuffix}`,
-    unknown ? `直接回答：可以判一部分，但不能假装完整。月令、日主、已确定三柱与不依赖时柱的主结构可以先判；凡直接依赖时柱或精确出生时刻的模块一律降级或【不作判定】。${careerSuffix}` : `直接回答：可以。现在已有出生时辰，因此先按已确认资料判；若时辰可靠性之后被推翻，所有直接依赖时柱或精确时刻的结论都必须同步降级。${careerSuffix}`,
-    unknown ? `Direct answer: partly. The confirmed pillars and structures that do not depend on the hour can still be judged, while hour-dependent or precision-time modules must be downgraded or left undetermined.${careerSuffix}` : `Direct answer: yes. A birth time is currently available; if its reliability is later overturned, every hour- or precision-time-dependent conclusion must be downgraded as well.${careerSuffix}`);
+  const base = zh(locale,
+    unknown ? "直接回答：可以判一部分，但不能假裝完整。月令、日主、已確定三柱與不依賴時柱的主結構可以先判；凡直接依賴時柱或精確出生時刻的模組一律降級或【不作判定】。" : "直接回答：可以。現在已有出生時辰，因此先按已確認資料判；若時辰可靠性之後被推翻，所有直接依賴時柱或精確時刻的結論都必須同步降級。",
+    unknown ? "直接回答：可以判一部分，但不能假装完整。月令、日主、已确定三柱与不依赖时柱的主结构可以先判；凡直接依赖时柱或精确出生时刻的模块一律降级或【不作判定】。" : "直接回答：可以。现在已有出生时辰，因此先按已确认资料判；若时辰可靠性之后被推翻，所有直接依赖时柱或精确时刻的结论都必须同步降级。",
+    unknown ? "Direct answer: partly. The confirmed pillars and structures that do not depend on the hour can still be judged, while hour-dependent or precision-time modules must be downgraded or left undetermined." : "Direct answer: yes. A birth time is currently available; if its reliability is later overturned, every hour- or precision-time-dependent conclusion must be downgraded as well.");
+  if (JOB_FIT_RE.test(question) && reading.directAnswer?.trim()) {
+    const label = zh(locale, " 工作方向仍可先看不依賴時柱的部分：", " 工作方向仍可先看不依赖时柱的部分：", " The hour-independent work direction can still be read: ");
+    return `${base}${label}${reading.directAnswer.trim()}`;
+  }
+  return appendExistingTiming(question, base, reading, locale);
 }
 
 
-function guardLoveOutlook(locale?: AppLocale): string {
-  return zh(locale,
+function guardLoveOutlook(question: string, reading: Reading, locale?: AppLocale): string {
+  const base = zh(locale,
     "直接回答：單靠你的命盤，不能可靠替對方決定這段關係一定有或一定沒有發展空間。能判斷的是條件：若聯繫持續、投入對等，而且願意把下一步說清楚，才算仍有發展空間；若其中兩項長期缺失，就偏向不要再加碼。",
     "直接回答：单靠你的命盘，不能可靠替对方决定这段关系一定有或一定没有发展空间。能判断的是条件：若联系持续、投入对等，而且愿意把下一步说清楚，才算仍有发展空间；若其中两项长期缺失，就偏向不要再加码。",
     "Direct answer: your chart alone cannot reliably decide that this relationship definitely does or does not have room to develop. Treat it as viable only if contact is consistent, effort is reciprocal, and the next step can be discussed clearly; if two of those remain absent, do not keep increasing your investment.");
+  return appendExistingTiming(question, base, reading, locale);
 }
 
-function guardMoneyRisk(locale?: AppLocale): string {
-  return zh(locale,
+function guardMoneyRisk(question: string, reading: Reading, locale?: AppLocale): string {
+  const base = zh(locale,
     "直接回答：在沒有實際現金流與投資資料時，不能可靠把未來一年的風險硬說成某一種「破財事件」。現在最該防的是現金流失控、先承諾固定支出、或在沒有最大損失與退出條件時加碼；命理只能補充節奏，不能把這些寫成必然事件。",
     "直接回答：在没有实际现金流与投资资料时，不能可靠把未来一年的风险硬说成某一种“破财事件”。现在最该防的是现金流失控、先承诺固定支出、或在没有最大损失与退出条件时加码；命理只能补充节奏，不能把这些写成必然事件。",
     "Direct answer: without real cash-flow and investment data, the next year's risk cannot reliably be reduced to a specific predicted loss event. The practical risks to guard first are cash-flow strain, locking in fixed costs too early, and increasing exposure without a maximum-loss and exit rule; the chart may add pacing context, not certainty.");
+  return appendExistingTiming(question, base, reading, locale);
 }
 
-function guardChoice(locale?: AppLocale): string {
-  return zh(locale,
+function guardChoice(question: string, reading: Reading, locale?: AppLocale): string | null {
+  const factCount = COMPARISON_FACT_PATTERNS.filter((pattern) => pattern.test(question)).length;
+  if (factCount >= 2) return null;
+  const base = zh(locale,
     "直接回答：如果兩個選項只有名稱、沒有同一組可比較條件，現在暫不強選 A 或 B。至少把收入／收益、責任、成本、可逆性與退出難度放在同一張表；資料齊後才能給方向，不能用命盤替缺失的現實資料補答案。",
     "直接回答：如果两个选项只有名称、没有同一组可比较条件，现在暂不强选 A 或 B。至少把收入／收益、责任、成本、可逆性与退出难度放在同一张表；资料齐后才能给方向，不能用命盘替缺失的现实资料补答案。",
     "Direct answer: if the two options are only named but not described using the same comparable facts, do not force an A/B choice yet. Compare benefit, responsibility, cost, reversibility and exit difficulty first; a chart should not invent the missing real-world evidence.");
+  return appendExistingTiming(question, base, reading, locale);
 }
 
 function guardDecision(question: string, chart: Chart, reading: Reading, locale?: AppLocale): string | null {
@@ -140,14 +164,14 @@ export function enforceDirectAnswerGuard(question: string, chart: Chart, reading
   let directAnswer: string | null = null;
   if (D60_RE.test(question)) directAnswer = guardD60(chart, locale);
   else if (ZIWEI_RE.test(question)) directAnswer = guardZiwei(chart, locale);
-  else if (UNKNOWN_TIME_RE.test(question)) directAnswer = guardUnknownTime(question, chart, locale);
+  else if (UNKNOWN_TIME_RE.test(question)) directAnswer = guardUnknownTime(question, chart, reading, locale);
   else if (STRUCTURE_RE.test(question)) directAnswer = guardStructure(chart, locale);
   else if (STRENGTH_RE.test(question)) directAnswer = guardStrength(chart, locale);
   else if (REMEDY_RE.test(question)) directAnswer = guardRemedy(chart, locale);
   else if (USEFUL_RE.test(question)) directAnswer = guardUseful(chart, locale);
-  else if (LOVE_OUTLOOK_RE.test(question)) directAnswer = guardLoveOutlook(locale);
-  else if (MONEY_RISK_RE.test(question)) directAnswer = guardMoneyRisk(locale);
-  else if (CHOICE_RE.test(question)) directAnswer = guardChoice(locale);
+  else if (LOVE_OUTLOOK_RE.test(question)) directAnswer = guardLoveOutlook(question, reading, locale);
+  else if (MONEY_RISK_RE.test(question)) directAnswer = guardMoneyRisk(question, reading, locale);
+  else if (CHOICE_RE.test(question)) directAnswer = guardChoice(question, reading, locale);
   else directAnswer = guardDecision(question, chart, reading, locale);
 
   const guarded = directAnswer ? { ...reading, directAnswer } : reading;
