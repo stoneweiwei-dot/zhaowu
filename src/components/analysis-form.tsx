@@ -18,6 +18,7 @@ import { BaziChart } from "@/components/bazi-chart";
 import { buildChart } from "@/lib/bazi/chart";
 import { analyzeStructure } from "@/lib/bazi/structure";
 import { chartTerm } from "@/lib/bazi/presentation";
+import { UnifiedBirthReport } from "@/components/unified-birth-report";
 
 const EN_STRENGTH: Record<string, string> = {
   "偏旺": "Relatively strong",
@@ -72,15 +73,15 @@ export function AnalysisForm() {
         customerTitle: "Your birth details",
         customerLead: "Saved on this phone so you do not need an account before asking a question.",
         birthReady: "Birth record ready",
-        birthReadyLead: "This phone will reuse the same record across personal readings.",
+        birthReadyLead: "This phone will reuse the same record for one complete integrated report.",
         edit: "Edit details",
         birthData: "Birth record",
         next: "Save and generate my chart",
         saving: "Saving…",
         saved: "Birth record saved on this phone.",
-        chartKicker: "STEP 2 · FOUR PILLARS",
-        chartTitle: "Your Four Pillars chart",
-        chartLead: "Generated from the birth record above with Zhaowu's existing chart engine.",
+        chartKicker: "STEP 2 · COMPLETE REPORT",
+        chartTitle: "Your chart and integrated report",
+        chartLead: "The chart is calculated once, then the internal specialist layers are merged into one continuous report.",
         chartPending: "Save a complete birth record to generate the year, month, day and hour pillars here.",
         foundation: "Chart foundation",
         dayMaster: "Day master",
@@ -90,7 +91,7 @@ export function AnalysisForm() {
         features: "Main structural feature",
         noFeature: "No secondary pattern is stated beyond the primary structure yet.",
         usefulBoundary: "Flow candidates are not presented here as confirmed useful gods.",
-        questionKicker: "STEP 3 · YOUR QUESTION",
+        questionKicker: "STEP 3 · FOLLOW-UP QUESTION",
         questionTitle: "What do you actually want answered?",
         questionLead: "Ask one real question in your own words. The answer will lead with the conclusion and only show evidence that helps answer it.",
         questionLabel: "Your question",
@@ -106,15 +107,15 @@ export function AnalysisForm() {
           customerTitle: "客人资料",
           customerLead: "资料保存在这台手机，不需要先注册账号就能提问。",
           birthReady: "生辰已准备好",
-          birthReadyLead: "这台手机会在各个人分析中沿用同一份资料。",
+          birthReadyLead: "这台手机会沿用同一份资料生成完整综合报告。",
           edit: "修改资料",
           birthData: "出生资料",
           next: "保存并排出四柱命盘",
           saving: "正在保存…",
           saved: "生辰已保存在这台手机。",
-          chartKicker: "第二步 · 四柱命盘",
-          chartTitle: "你的四柱八字命盘",
-          chartLead: "使用上方出生资料与昭梧现有排盘引擎即时生成。",
+          chartKicker: "第二步 · 完整综合报告",
+          chartTitle: "你的命盘与完整报告",
+          chartLead: "命盘只计算一次，再把后台各专项判读合并成一份连续报告。",
           chartPending: "先保存完整出生资料，这里会立即显示年、月、日、时四柱。",
           foundation: "基础解释",
           dayMaster: "日主",
@@ -124,7 +125,7 @@ export function AnalysisForm() {
           features: "主要结构特点",
           noFeature: "目前只陈述主格方向，不追加第二个复合格局。",
           usefulBoundary: "流通候选不在这里冒充正式喜用神。",
-          questionKicker: "第三步 · 提问",
+          questionKicker: "第三步 · 继续提问",
           questionTitle: "你真正想问的是什么？",
           questionLead: "直接写你现在最想解决的一个真实问题。答案先说结论，只保留和这个问题有关的依据与行动。",
           questionLabel: "你的问题",
@@ -139,15 +140,15 @@ export function AnalysisForm() {
           customerTitle: "客人資料",
           customerLead: "資料保存在這台手機，不需要先註冊帳號就能提問。",
           birthReady: "生辰已準備好",
-          birthReadyLead: "這台手機會在各個人分析中沿用同一份資料。",
+          birthReadyLead: "這台手機會沿用同一份資料生成完整綜合報告。",
           edit: "修改資料",
           birthData: "出生資料",
           next: "保存並排出四柱命盤",
           saving: "正在保存…",
           saved: "生辰已保存在這台手機。",
-          chartKicker: "第二步 · 四柱命盤",
-          chartTitle: "你的四柱八字命盤",
-          chartLead: "使用上方出生資料與昭梧現有排盤引擎即時生成。",
+          chartKicker: "第二步 · 完整綜合報告",
+          chartTitle: "你的命盤與完整報告",
+          chartLead: "命盤只計算一次，再把後台各專項判讀合併成一份連續報告。",
           chartPending: "先保存完整出生資料，這裡會立即顯示年、月、日、時四柱。",
           foundation: "基礎解釋",
           dayMaster: "日主",
@@ -157,7 +158,7 @@ export function AnalysisForm() {
           features: "主要結構特點",
           noFeature: "目前只陳述主格方向，不追加第二個複合格局。",
           usefulBoundary: "流通候選不在這裡冒充正式喜用神。",
-          questionKicker: "第三步 · 提問",
+          questionKicker: "第三步 · 繼續提問",
           questionTitle: "你真正想問的是什麼？",
           questionLead: "直接寫你現在最想解決的一個真實問題。答案先說結論，只保留和這個問題有關的依據與行動。",
           questionLabel: "你的問題",
@@ -400,6 +401,7 @@ export function AnalysisForm() {
               </dl>
               <p className="zhaowu-useful-boundary">{copy.usefulBoundary}</p>
             </section>
+            <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
           </div>
         ) : (
           <div className="zhaowu-bazi-pending">

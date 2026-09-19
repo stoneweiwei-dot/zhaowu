@@ -4,13 +4,15 @@ import test from 'node:test';
 
 const read = (path) => readFile(new URL(path, import.meta.url), 'utf8');
 
-test('紫微保留独立页面，但不再占据核心分析首页', async () => {
-  const [home, route] = await Promise.all([
+test('紫微保留内部独立页面与引擎，但首页只交付单一综合报告', async () => {
+  const [home, route, unified] = await Promise.all([
     read('../src/routes/index.tsx'),
     read('../src/routes/ziwei.tsx'),
+    read('../src/components/unified-birth-report.tsx'),
   ]);
   assert.doesNotMatch(home, /ZiweiHomeFeature/);
-  assert.match(home, /to: "\/ziwei"/);
+  assert.doesNotMatch(home, /to: "\/ziwei"|紫微斗數|紫微斗数/);
+  assert.match(unified, /buildZiweiReading/);
   assert.match(route, /createFileRoute\("\/ziwei"\)/);
 });
 

@@ -28,22 +28,19 @@ test("report image is clickable and opens a closable viewer with distinct full s
   }
 });
 
-test("failed full image does not block text and six report entries stay semantically clickable", async () => {
+test("failed full image does not block text and specialist systems stay behind one public report", async () => {
   const paid = await read("src/components/paid-report-pages.tsx");
   const home = await read("src/routes/index.tsx");
+  const unified = await read("src/components/unified-birth-report.tsx");
   const page = await read("src/components/specialist-system-page.tsx");
   assert.match(paid, /ReportVisualBook/);
-  assert.match(home, /to: "\/indian-astrology"/);
-  assert.match(home, /to: "\/astrology"/);
-  assert.match(home, /to: "\/ziwei"/);
-  assert.match(home, /to: "\/qizheng"/);
-  assert.match(home, /to: "\/yizhangjing"/);
-  assert.match(home, /data-specialist-link="bazi"/);
-  assert.match(home, /data-specialist-link=\{item\.id\}/);
-  assert.match(home, /<Link[\s\S]*to=\{item\.to!\}/);
-  assert.doesNotMatch(home, /role="button"/);
-  assert.match(home, /填寫生辰|填写生辰|Add birth data/);
-  assert.match(home, /查看分析|Open analysis/);
+  assert.doesNotMatch(home, /data-specialist-link|to: "\/(?:indian-astrology|astrology|ziwei|qizheng|yizhangjing)"/);
+  assert.match(unified, /buildIndianReading/);
+  assert.match(unified, /buildWesternReading/);
+  assert.match(unified, /buildZiweiReading/);
+  assert.match(unified, /buildQizhengReading/);
+  assert.match(unified, /buildPalmReading/);
+  assert.match(unified, /data-unified-birth-report/);
   assert.match(page, /readSharedBirthRecord/);
   assert.match(page, /buildZiweiReading|buildWesternReading/);
   assert.match(page, /D60ReliabilityGate/);

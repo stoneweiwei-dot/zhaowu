@@ -58,7 +58,8 @@ test("homepage and Jade Dragon do not revive the retired public group", async ()
   assert.match(home, /五行功能測驗/);
   assert.match(home, /五行功能测验/);
   assert.match(home, /Five-Element Function Test/);
-  assert.match(home, /zhaowu-home-portal-hint/);
+  assert.doesNotMatch(home, /zhaowu-home-portal-hint|data-specialist-link/);
+  assert.match(home, /zhaowu-home-fun-card/);
   assert.match(guide, /趣味測驗/);
 });
 

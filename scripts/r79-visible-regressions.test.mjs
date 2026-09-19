@@ -9,17 +9,19 @@ const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url),
 const yizhang = await readFile(new URL("../src/routes/yizhangjing.tsx", import.meta.url), "utf8");
 const runtime = await readFile(new URL("../src/components/yizhangjing-runtime-r79.tsx", import.meta.url), "utf8");
 const upload = await readFile(new URL("../src/lib/background-music-upload.ts", import.meta.url), "utf8");
+const unified = await readFile(new URL("../src/components/unified-birth-report.tsx", import.meta.url), "utf8");
 
-test("homepage specialist systems stay in React instead of the R79 runtime DOM injector", () => {
+test("homepage specialist systems stay internal behind one React report instead of the R79 injector", () => {
   assert.doesNotMatch(root, /VisibleRegressionFixesR79/);
   assert.doesNotMatch(root, /mobile-foundation-r81\.css/);
   assert.match(main, /zhaowu-design-system\.css/);
-  assert.match(home, /buildWesternReading/);
-  assert.match(home, /buildZiweiReading/);
-  assert.match(home, /buildQizhengReading/);
-  assert.match(home, /buildIndianReading/);
-  assert.match(home, /buildPalmReading/);
-  assert.match(home, /zhaowu-home-portals/);
+  assert.doesNotMatch(home, /buildWesternReading|buildZiweiReading|zhaowu-home-portals|data-specialist-link/);
+  assert.match(unified, /buildWesternReading/);
+  assert.match(unified, /buildZiweiReading/);
+  assert.match(unified, /buildQizhengReading/);
+  assert.match(unified, /buildIndianReading/);
+  assert.match(unified, /buildPalmReading/);
+  assert.match(unified, /data-unified-birth-report/);
 });
 
 test("One-Palm runtime submits on first load and direction changes while D60 stays on Indian astrology", () => {

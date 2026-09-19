@@ -176,6 +176,15 @@
 - Owner workspace 仍維持既有「隱藏 public dragon guide」契約；本次不以 UI 合併破壞後台專用介面。
 - 此 supersession 只改 UI 組合與互動，不改 owner music API、音樂改名／批量管理、Cookie 驗證、曲目檔案、Supabase schema、命理計算、報告、auth 或 payment。
 
+## 2026-09-19 r158 單一完整綜合報告 supersession
+
+- 站主最新明確指令：首頁不再顯示七種個人分析／七個流派專卷入口；客人不需要自行選派系。
+- ACTIVE 流程：`出生資料 → 四柱命盤與基礎解釋 → 單一完整綜合報告 → 可選的現實問題追問`。
+- 子平八字維持唯一結構主判。紫微、西洋占星、印度古法、七政四餘、一掌象意、生命靈數只在內部專項層運算與交叉旁證，不能反向覆蓋子平主判。
+- 前台報告只按「核心底盤／性格節奏／關係互動／事業資源／人生階段／反覆課題與行動」呈現，不用流派名稱裝飾報告，不恢復多 Session、多卡片或七個可點入口。
+- 原專項 routes 與 deterministic engines 保留作內部能力與回歸驗證；本次只移除首頁公開入口並新增單一組裝閱讀層，不刪計算、資料或歷史報告。
+- r116/r129 與其他要求首頁展示「七種個人分析」卡片的舊 UI 指令，在首頁展示範圍內 `SUPERSEDED`。
+
 ## 2026-09-15 r139 homepage / D60 grouping / member auth / login animation / music error
 
 - 首頁拿掉問事標語與 textarea；只留客人資料與保存生辰。不得再發明隱藏預設問題。

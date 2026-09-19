@@ -2,22 +2,22 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.19-r157",
-  updateNumber: 157,
-  publishedAt: "2026-09-19T05:27:00+10:00",
-  latestSummary: "右下角播放器與青玉小龍合併成單一可拖動助手：隨機導覽／音樂氣泡與完整歌單控制共用同一入口，移除雙重浮層。",
+  version: "ZW-WEB-2026.09.19-r158",
+  updateNumber: 158,
+  publishedAt: "2026-09-19T11:50:00+10:00",
+  latestSummary: "首頁移除七個公開流派入口；客人保存出生資料後，直接得到一份由內部專項系統交叉組裝的完整綜合報告。",
   details: {
     "zh-Hant": [
-      "右下角只保留一個青玉小龍助手；獨立音樂浮層退出 active path，消除重影與 z-index 競爭。",
-      "小龍可拖動並自動吸附左右邊緣，位置保存在本機；未展開時會間歇隨機顯示導覽提示或迷你音樂氣泡。",
-      "點開小龍後保留完整音樂控制：播放／暫停、上一首、下一首、循環與隨機；沿用現有站主歌單與 Safari 手勢解鎖。",
-      "r156 的音樂改名與後台批量操作全部保留，本次只改前台浮層組合與互動。",
+      "首頁不再展示七種個人分析卡或流派入口，避免客人自行選派系與重複閱讀。",
+      "保存出生資料後，同一畫面直接顯示四柱命盤、基礎解釋與完整綜合報告。",
+      "子平維持唯一結構主判；其他方法只在內部提供性情、關係、事業、時間與反覆課題旁證。",
+      "原有專項計算與路由保留作內部能力，本次不改排盤公式、報告問答、登入、付款或資料庫。",
     ],
     en: [
-      "The bottom-right UI now uses one Jade Dragon assistant; the separate floating music dock is removed from the active path.",
-      "The dragon can be dragged, snaps to either edge, persists its position locally, and occasionally shows a guide tip or compact music bubble.",
-      "Opening the dragon keeps the full playlist controls: play/pause, previous, next, loop and shuffle, using the existing owner playlist and Safari gesture unlock.",
-      "The r156 owner-side music rename and bulk-management tools remain intact; this release only changes the public floating UI composition.",
+      "The home page no longer exposes seven separate schools or reading cards.",
+      "After saving birth details, the same page immediately shows the Four Pillars chart, foundation and one complete integrated report.",
+      "Zi Ping remains the primary structural judgement; other methods contribute internal supporting evidence only.",
+      "Specialist calculation capabilities remain available internally; chart maths, question reports, auth, payment and data are unchanged.",
     ],
   },
 } as const;

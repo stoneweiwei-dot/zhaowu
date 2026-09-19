@@ -32,8 +32,9 @@ test("application shell restores the fixed Song landscape without loose scatter"
 test("homepage keeps the Song parchment flow and uses a readable report directory", async () => {
   const main = await source("src/main.tsx");
   const css = await source("src/home-sheet-ui-v5.css");
-  const portals = await source("src/home-portals.css");
   const home = await source("src/routes/index.tsx");
+  const form = await source("src/components/analysis-form.tsx");
+  const report = await source("src/components/unified-birth-report.tsx");
 
   const v4 = main.indexOf("./visual-readability-lock-v4.css");
   const v5 = main.indexOf("./home-sheet-ui-v5.css");
@@ -41,18 +42,12 @@ test("homepage keeps the Song parchment flow and uses a readable report director
 
   assert.match(home, /zhaowu-home-sheet-page/);
   assert.doesNotMatch(home, /zhaowu-home-intro/);
-  assert.match(home, /zhaowu-home-portals/);
+  assert.doesNotMatch(home, /zhaowu-home-portals|data-specialist-link|七種個人分析/);
   assert.doesNotMatch(home, /zhaowu-home-hero/);
   assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian/);
-  assert.match(home, /to: "\/(qizheng|astrology|yizhangjing|ziwei)"/);
-  assert.match(home, /七政四餘/);
-  assert.match(home, /西洋星座/);
-  assert.match(home, /前世今生/);
-  assert.match(home, /紫微斗數/);
-  assert.match(home, /子平八字/);
-  assert.match(home, /zhaowu-home-portal-hint/);
-  assert.match(home, /data-specialist-link/);
-  assert.doesNotMatch(home, /portalCopy\.learn|portalCopy\.best/);
+  assert.match(form, /UnifiedBirthReport/);
+  assert.match(report, /完整綜合報告/);
+  assert.match(report, /子平八字仍是唯一結構主判/);
   assert.doesNotMatch(home, /zhaowu-home-dual-entry|性格兩面|<QizhengHomePanel/);
 
   assert.match(css, /#analysisForm\.is-compact/);
@@ -63,11 +58,4 @@ test("homepage keeps the Song parchment flow and uses a readable report director
   assert.match(css, /background-repeat: no-repeat/);
   assert.doesNotMatch(css, /background-attachment:\s*fixed/);
 
-  assert.match(portals, /\.zhaowu-home-portals/);
-  assert.match(portals, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(portals, /min-height:\s*164px/);
-  assert.match(portals, /font-size:\s*22px/);
-  assert.match(portals, /pointer-events:\s*auto\s*!important/);
-  assert.match(portals, /@media \(max-width: 640px\)/);
-  assert.match(portals, /grid-template-columns:\s*1fr/);
 });

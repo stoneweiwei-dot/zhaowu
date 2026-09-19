@@ -34,11 +34,12 @@ test("qizheng does not invent a chart when birth time is unknown", () => {
   assert.equal(calculateQizheng({ year: 2000, month: 1, day: 1, hour: 12, minute: 0, timezone: "UTC", timeUnknown: true }), null);
 });
 
-test("qizheng lives behind its own homepage gateway instead of inside the main result flow", async () => {
+test("qizheng remains an internal specialist capability behind the unified homepage report", async () => {
   const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
+  const unified = await readFile(new URL("../src/components/unified-birth-report.tsx", import.meta.url), "utf8");
   const route = await readFile(new URL("../src/routes/qizheng.tsx", import.meta.url), "utf8");
-  assert.match(home, /七政四餘/);
-  assert.match(home, /to: "\/qizheng"/);
+  assert.doesNotMatch(home, /七政四餘|七政四余|to: "\/qizheng"/);
+  assert.match(unified, /buildQizhengReading/);
   assert.doesNotMatch(home, /<QizhengHomePanel/);
   assert.match(route, /createFileRoute\("\/qizheng"\)/);
   assert.match(route, /SpecialistSystemPage/);

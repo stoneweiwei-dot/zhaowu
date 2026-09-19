@@ -624,6 +624,93 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
   box-shadow: none !important;
 }
 
+.zhaowu-unified-birth-report {
+  margin-top: 24px;
+  border-top: 1px solid rgba(41, 75, 63, .2);
+  padding-top: 24px;
+}
+
+.zhaowu-unified-birth-report > header {
+  max-width: 720px;
+}
+
+.zhaowu-unified-birth-report > header h3 {
+  margin: 4px 0 9px !important;
+  font-family: var(--font-display, serif);
+  font-size: clamp(24px, 5vw, 31px) !important;
+  line-height: 1.28 !important;
+}
+
+.zhaowu-unified-birth-report > header > p:last-child {
+  margin: 0 !important;
+  color: var(--zw-muted) !important;
+  font-size: 15px !important;
+  line-height: 1.75 !important;
+}
+
+.zhaowu-unified-report-flow {
+  margin-top: 19px;
+}
+
+.zhaowu-unified-report-flow article {
+  border-top: 1px solid rgba(81, 67, 48, .13);
+  padding: 18px 0 16px;
+}
+
+.zhaowu-unified-report-flow article:first-child {
+  border-top-color: rgba(166, 77, 62, .28);
+}
+
+.zhaowu-unified-report-flow h4 {
+  margin: 0 0 9px !important;
+  color: var(--zw-ink) !important;
+  font-family: var(--font-display, serif);
+  font-size: 19px !important;
+  line-height: 1.4 !important;
+}
+
+.zhaowu-unified-report-flow p {
+  margin: 0 0 8px !important;
+  color: var(--zw-ink-soft) !important;
+  font-size: 16px !important;
+  line-height: 1.82 !important;
+}
+
+.zhaowu-unified-report-flow p:last-child { margin-bottom: 0 !important; }
+
+.zhaowu-unified-report-boundary {
+  margin-top: 5px;
+  border-left: 3px solid rgba(166, 77, 62, .55);
+  padding: 11px 0 11px 14px;
+}
+
+.zhaowu-unified-report-boundary strong {
+  display: block;
+  color: var(--zw-ink) !important;
+  font-size: 14px !important;
+}
+
+.zhaowu-unified-report-boundary p {
+  margin: 5px 0 0 !important;
+  color: var(--zw-muted) !important;
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-unified-birth-report {
+  border-top-color: rgba(222, 192, 126, .28);
+}
+
+html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
+  border-top-color: rgba(236, 225, 199, .15);
+}
+
+@media (max-width: 640px) {
+  .zhaowu-unified-birth-report { margin-top: 20px; padding-top: 20px; }
+  .zhaowu-unified-report-flow article { padding: 16px 0 14px; }
+  .zhaowu-unified-report-flow p { font-size: 16px !important; line-height: 1.78 !important; }
+}
+
 .zhaowu-analysis-submit-wrap {
   display: grid !important;
   gap: 10px !important;
