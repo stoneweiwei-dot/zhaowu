@@ -2,22 +2,22 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.19-r159",
-  updateNumber: 159,
-  publishedAt: "2026-09-19T16:11:00+10:00",
-  latestSummary: "青玉小龍同步收起流派入口；正式網址、登入回呼、SEO、遙測與後端版本統一以 Netlify 主站為準。",
+  version: "ZW-WEB-2026.09.19-r160",
+  updateNumber: 160,
+  publishedAt: "2026-09-19T16:40:00+10:00",
+  latestSummary: "首頁測驗收成單一「昭梧 · 心境小測」入口；公開圖鑑隔離有面部重影的人像舊圖，只展示無人物祥紋。",
   details: {
     "zh-Hant": [
-      "首頁與青玉小龍不再展示七種個人分析卡、流派捷徑或流派導覽文案。",
-      "保存出生資料後，同一畫面直接顯示四柱命盤、基礎解釋與完整綜合報告。",
-      "Netlify 是主要正式網址；Vercel 保留同版同步備援，不再作 canonical 網址。",
-      "登入回呼、分享預覽、回答品質遙測與公開 API 版本已同步到本版。",
+      "首頁不再把所有測驗直接攤開，只保留「昭梧 · 心境小測」單一入口，預設收起。",
+      "點開入口後仍可使用原有各項測驗；題目、計分、紀錄與既有路由不變。",
+      "公開吉象圖鑑只展示無人物祥紋，避免面部重影舊圖再次出現在首頁與圖鑑。",
+      "舊圖與報告母圖原檔均未刪除；本次不改排盤、報告內容、登入、付款或資料庫。",
     ],
     en: [
-      "The home page and Jade Dragon guide no longer expose separate schools or reading shortcuts.",
-      "After saving birth details, the same page immediately shows the Four Pillars chart, foundation and one complete integrated report.",
-      "Netlify is the canonical production URL; Vercel remains a same-version fallback.",
-      "Auth callbacks, social metadata, quality telemetry and public API release metadata now follow the canonical host.",
+      "The home page now keeps every optional quiz behind one collapsed ZHAOWU · SELF DISCOVERY entry.",
+      "Opening it preserves the existing quizzes, scoring, saved results and routes.",
+      "The public atlas now displays face-free auspicious ornaments only, preventing legacy portrait artifacts from returning.",
+      "No original media is deleted; chart maths, report content, auth, payment and data are unchanged.",
     ],
   },
 } as const;

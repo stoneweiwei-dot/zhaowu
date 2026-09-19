@@ -790,6 +790,38 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
 }
 .zhaowu-home-fun-card strong { font-size: 17px !important; line-height: 1.4 !important; }
 .zhaowu-home-fun-card small { display: block; margin-top: 4px; color: var(--zw-muted) !important; font-size: 14px !important; line-height: 1.55 !important; }
+.zhaowu-home-fun-section:has(.zhaowu-home-fun-gateway) { padding: 0 !important; }
+.zhaowu-home-fun-gateway {
+  display: flex;
+  width: 100%;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 18px;
+  border: 0;
+  border-radius: inherit;
+  color: var(--zw-ink);
+  background: transparent;
+  font-family: var(--font-display, serif);
+  font-size: clamp(21px, 5.2vw, 28px);
+  line-height: 1.25;
+  text-align: left;
+}
+.zhaowu-home-fun-gateway > span:last-child {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  border: 1px solid var(--zw-line);
+  border-radius: 50%;
+  color: var(--zw-cinnabar);
+  font-family: system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+}
+[data-home-fun-tests] { padding: 0 18px 18px; border-top: 1px solid var(--zw-line); }
 
 /* Saved reports: generation state is owner metadata, not reading content. */
 [data-report-primary-actions] ~ div > [class~="mb-4"][class~="rounded-lg"][class~="bg-cream/70"]:first-child { display: none !important; }
