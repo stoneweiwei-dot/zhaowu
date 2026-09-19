@@ -18,7 +18,8 @@ import { BaziChart } from "@/components/bazi-chart";
 import { buildChart } from "@/lib/bazi/chart";
 import { analyzeStructure } from "@/lib/bazi/structure";
 import { chartTerm } from "@/lib/bazi/presentation";
-import { UnifiedBirthReport } from "@/components/unified-birth-report";\nimport { ChartTrustPanel } from "@/components/chart-trust-panel";
+import { UnifiedBirthReport } from "@/components/unified-birth-report";
+import { ChartTrustPanel } from "@/components/chart-trust-panel";
 
 const EN_STRENGTH: Record<string, string> = {
   "偏旺": "Relatively strong",
