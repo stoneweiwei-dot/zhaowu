@@ -59,7 +59,7 @@
 - r163：首頁與核心流程採「高級宋式宣紙 × 極簡層級 × 大幅留白」。山水降權為遠景，出生資料、命盤、報告與延伸入口改用不透明暖米紙面；canonical 視覺仍只由 `zhaowu-design-system.css` 最後接管。青玉小龍縮至 52px 並把未展開提示降為約 48–72 秒一次；播放器仍只在小龍內。
 - r166：固定宋式遠山背景提高到肉眼可辨識但仍低於內容的權重；首頁暫時移除吉象圖鑑入口與其載入，獨立 `/auspicious-atlas`、素材原件與站主圖庫管理保留。
 - r167：站主認定 r166 仍過於寡淡；首頁改為較有份量的礦物色宋畫層級，降低洗白遮罩並加深遠山、深松綠標題、鎏金細線與少量朱砂。宣紙內容仍不透明，手機可讀性與圖鑑首頁隱藏契約不變。
-- r171：不再新增第 58 層視覺補丁。55 個歷史全域視覺檔改由 `legacy-visual-compat.css` 的 `@layer legacy` 統一載入；`zhaowu-design-system.css` 保持未分層且最後載入，因此 canonical 規則固定高於 legacy layer。這是視覺收斂，不刪元件專用相容樣式。
+- r171：不再新增第 58 層視覺補丁。55 個歷史全域視覺檔改由 `legacy-visual-compat.css` 單一入口依原順序載入；不使用 cascade layer，以免舊 `!important` 產生反向 layer priority。`zhaowu-design-system.css` 仍最後載入。這是安全視覺收斂，不刪元件專用相容樣式。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
 - 趣味測驗結果可顯示已核准的隱藏神聖圖像；這是結果頁視覺補充，不改命盤計算、報告契約或付費圖片流程。
 - Logo／STO-12 已完成，不重新製作。STO-5 普通會員入口廢止已被 2026-09-15 站主最新指令取代：會員登入／註冊必須存在且確認信不得掉進空白頁。
@@ -114,7 +114,7 @@
 - 完整報告為一張連續暖宣紙閱讀面。
 - 青玉小龙 AI 導覽、Gallery 命請匹配與真實命請圖生成邏輯不因 UI 改版改變。
 
-最終視覺權威：`src/zhaowu-design-system.css` 必須最後載入。r171 起 `src/main.tsx` 全域 CSS 僅保留 `styles.css → legacy-visual-compat.css → zhaowu-design-system.css` 三個入口；55 個歷史視覺檔統一置於 CSS `legacy` cascade layer，只保留相容依賴，不能以 specificity 反壓 canonical。報告內容結構仍由 `src/focused-report.css` 與現行 renderer 承載。
+最終視覺權威：`src/zhaowu-design-system.css` 必須最後載入。r171 起 `src/main.tsx` 全域 CSS 僅保留 `styles.css → legacy-visual-compat.css → zhaowu-design-system.css` 三個入口；55 個歷史視覺檔統一收進單一相容 bundle，保持原本載入順序與 cascade 語義；`zhaowu-design-system.css` 仍最後載入，不再讓 `main.tsx` 散落 55 個入口。報告內容結構仍由 `src/focused-report.css` 與現行 renderer 承載。
 
 ## 6. 专题报告与 Calculation Truth Layer
 
