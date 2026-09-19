@@ -10,7 +10,6 @@ const D60_RE = /(D60|六十分盤|六十分盘|沙斯提安沙|shashtiamsa)/i;
 const ZIWEI_RE = /(紫微|紫微斗數|紫微斗数|zi\s*wei)/i;
 const UNKNOWN_TIME_RE = /(不知道.{0,8}(時辰|时辰|出生時間|出生时间)|時辰.{0,8}(不知|未知|不確定|不确定)|时辰.{0,8}(不知|未知|不确定)|unknown.{0,8}(birth\s*time|time of birth))/i;
 const DECISION_RE = /(值不值得|要不要|該不該|该不该|能不能|有沒有必要|有没有必要|是否值得|是否應該|是否应该|繼續.{0,8}[嗎吗]|继续.{0,8}[嗎吗]|should\s+i|worth\s+(?:staying|continuing)|keep\s+(?:doing|working|seeing))/i;
-const CAREER_RE = /(工作|職位|职位|公司|事業|事业|職業|职业|career|job|work|role)/i;
 const LOVE_OUTLOOK_RE = /(感情|關係|关系|曖昧|暧昧|復合|复合|對象|对象).{0,18}(有沒有|有没有|還有沒有|还有没有|能不能|會不會|会不会|空間|空间|發展|发展|繼續|继续)|(還有沒有|还有没有|能不能|會不會|会不会).{0,18}(感情|關係|关系|復合|复合|發展|发展)/i;
 const MONEY_RISK_RE = /(財務|财务|財運|财运|錢|钱|收入|投資|投资|現金流|现金流).{0,18}(最該防|最该防|風險|风险|注意|小心|避免|防什麼|防什么)|(最該防|最该防|風險|风险|注意|小心).{0,18}(財務|财务|財運|财运|錢|钱|投資|投资)/i;
 const CHOICE_RE = /(還是|还是|二選一|二选一|選哪|选哪|哪個更|哪个更|哪一個更|which\s+(?:one|option)|\bvs\.?\b)/i;
@@ -97,7 +96,7 @@ function guardZiwei(chart: Chart, locale?: AppLocale): string {
 function appendExistingTiming(question: string, base: string, reading: Reading, locale?: AppLocale): string {
   if (!TIMING_RE.test(question)) return base;
   const existing = reading.directAnswer?.trim() ?? "";
-  if (!existing || existing === base || !/(\\d{4}年|\\d{1,2}月|窗口|時間|时间|階段|阶段|window|period)/i.test(existing)) return base;
+  if (!existing || existing === base || !/(\d{4}年|\d{1,2}月|窗口|時間|时间|階段|阶段|window|period)/i.test(existing)) return base;
   const label = zh(locale, "時間部分：", "时间部分：", "Timing: ");
   return `${base} ${label}${existing}`;
 }
@@ -172,7 +171,10 @@ export function enforceDirectAnswerGuard(question: string, chart: Chart, reading
   else if (LOVE_OUTLOOK_RE.test(question)) directAnswer = guardLoveOutlook(question, reading, locale);
   else if (MONEY_RISK_RE.test(question)) directAnswer = guardMoneyRisk(question, reading, locale);
   else if (CHOICE_RE.test(question)) directAnswer = guardChoice(question, reading, locale);
-  else directAnswer = guardDecision(question, chart, reading, locale);
+  else {
+    directAnswer = guardDecision(question, chart, reading, locale);
+    if (directAnswer) directAnswer = appendExistingTiming(question, directAnswer, reading, locale);
+  }
 
   const guarded = directAnswer ? { ...reading, directAnswer } : reading;
   return enforceQuestionRelevance(question, chart, guarded, locale);
