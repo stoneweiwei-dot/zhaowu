@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.20-r169",
-  updateNumber: 169,
-  publishedAt: "2026-09-20T06:46:00+10:00",
-  latestSummary: "精簡首頁、命書與安裝提示，移除重複說明。",
+  version: "ZW-WEB-2026.09.20-r170",
+  updateNumber: 170,
+  publishedAt: "2026-09-20T09:03:00+10:00",
+  latestSummary: "強化問答驗收：工作去留、感情發展、財務風險與二選一必須真正回答到題。",
   details: {
-    "zh-Hant": ["首頁與命書移除重複說明。", "手機安裝提示更精簡。"],
-    en: ["Less repeated text on the homepage and in readings.", "Shorter Home Screen instructions."],
+    "zh-Hant": ["回答必須覆蓋問題的所有要求，不能只答其中一半。", "工作去留、感情發展、財務風險與二選一新增專項驗收。"],
+    en: ["Answers must cover every material part of the question.", "Stricter checks now cover work decisions, relationship outlook, financial risk and A/B choices."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }
