@@ -13,7 +13,7 @@ test("r163 premium surface stays inside the canonical final stylesheet", async (
   assert.match(design, /url\('\/wallpaper-song\.jpg'\) center 72% \/ cover no-repeat/);
   assert.match(design, /body:has\(\.zhaowu-home-sheet-shell\)[\s\S]*background-image:/);
   assert.match(design, /\.zhaowu-home-sheet-shell \.zhaowu-customer-record[\s\S]*background: #fffaf1 !important;/);
-  assert.match(design, /\.zhaowu-home-disclosure,[\s\S]*box-shadow: none;/);
+  assert.match(design, /\.zhaowu-home-disclosure,[\s\S]*box-shadow: 0 12px 30px rgba\(58, 43, 24, \.08\);/);
 });
 
 test("mobile fields remain readable and Jade Dragon becomes quieter", async () => {
