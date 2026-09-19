@@ -210,6 +210,14 @@
 - Netlify canonical host 的主人資料操作只經同源 `/api/owner-data`；瀏覽器不得取得 Supabase service-role key。上傳完成前須以簽名票據核對 bucket、path、MIME 與 size。
 - Supabase Storage 超過 Free plan 容量所造成的 402 是帳務／資料保留決策，不以刪除現有素材假裝修復。付費圖片 provider 暫停與正式取用／喜用 fail-closed 邊界均不變。
 
+## 2026-09-19 r163 表面高級化 supersession
+
+- ACTIVE 視覺方向為「高級宋式宣紙 × 極簡層級 × 大幅留白」。背景仍屬宋式山水體系，但山水必須退到更淡、更遠、更低細節的底層，主背景以 `#faf8f1`／`#fffaf1` 暖米宣紙為主。
+- `src/zhaowu-design-system.css` 繼續作唯一最後載入的 canonical 視覺權威；不得再新增 `final-final` CSS、runtime DOM 注入或另一套平行母版。
+- 出生資料、命盤、報告、表單與文字承載面必須不透明、低陰影、乾淨邊界；首頁優先順序固定為留白與呼吸感 → 字體層次 → 背景乾淨度 → 紙面精緻度 → 小龍低存在感。
+- 青玉小龍維持唯一 floating entry、可拖、吸邊與完整五鍵音樂控制；預設尺寸縮小，未展開提示泡泡降頻。禁止復活獨立播放器或第二個固定浮層。
+- 手機 390–430px 優先；16px 表單字與可讀正文不降級。不改登入動畫、後台、命理計算、auth、支付或 Supabase schema。
+
 ## 2026-09-15 r139 homepage / D60 grouping / member auth / login animation / music error
 
 - 首頁拿掉問事標語與 textarea；只留客人資料與保存生辰。不得再發明隱藏預設問題。

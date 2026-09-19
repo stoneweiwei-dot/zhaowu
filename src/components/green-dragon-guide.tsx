@@ -10,10 +10,14 @@ import {
 import { useI18n, type Locale } from "@/lib/i18n";
 
 const POSITION_STORAGE_KEY = "zhaowu.dragonAssistant.position.v1";
-const DOCK_SIZE = 64;
+const DOCK_SIZE = 52;
 const EDGE_GAP = 10;
 const TOP_GAP = 76;
 const BOTTOM_GAP = 78;
+const BUBBLE_INITIAL_DELAY_MS = 18_000;
+const BUBBLE_REPEAT_MIN_MS = 48_000;
+const BUBBLE_REPEAT_JITTER_MS = 24_000;
+const BUBBLE_VISIBLE_MS = 4_800;
 
 type DockPosition = { x: number; y: number };
 type MusicStatus = {
@@ -166,7 +170,7 @@ export function GreenDragonGuide() {
         }
 
         const guidePool = guideBubbles(locale);
-        const showMusic = Math.random() < 0.38;
+        const showMusic = Math.random() < 0.26;
         if (showMusic) {
           const fallback = locale === "en" ? "Background music is ready." : locale === "zh-Hans" ? "背景音乐已经准备好了。" : "背景音樂已經準備好了。";
           const status = musicStatus.trackName
@@ -179,12 +183,12 @@ export function GreenDragonGuide() {
           setBubble({ kind: "guide", text: guidePool[Math.floor(Math.random() * guidePool.length)] });
         }
 
-        hideTimer = window.setTimeout(() => setBubble(null), 5_800);
-        schedule(18_000 + Math.floor(Math.random() * 14_000));
+        hideTimer = window.setTimeout(() => setBubble(null), BUBBLE_VISIBLE_MS);
+        schedule(BUBBLE_REPEAT_MIN_MS + Math.floor(Math.random() * BUBBLE_REPEAT_JITTER_MS));
       }, delay);
     };
 
-    schedule(4_800);
+    schedule(BUBBLE_INITIAL_DELAY_MS);
     return () => {
       disposed = true;
       window.clearTimeout(showTimer);
@@ -196,7 +200,7 @@ export function GreenDragonGuide() {
     ? {
         title: "Jade Dragon guide",
         intro: "Guide and music are now in one movable assistant.",
-        placeholder: "For example: show my previous Zi Wei report",
+        placeholder: "For example: take me to my complete report",
         ask: "Ask",
         close: "Close guide",
         open: "Open Jade Dragon guide",
@@ -207,7 +211,7 @@ export function GreenDragonGuide() {
       ? {
           title: "青玉小龙助手",
           intro: "网站导航和背景音乐已经合在这里，也可以拖动到顺手的位置。",
-          placeholder: "例如：我想看以前的紫微报告",
+          placeholder: "例如：带我去看完整报告",
           ask: "问小龙",
           close: "关闭助手",
           open: "打开青玉小龙助手",
@@ -217,7 +221,7 @@ export function GreenDragonGuide() {
       : {
           title: "青玉小龍助手",
           intro: "網站導覽和背景音樂已經合在這裡，也可以拖動到順手的位置。",
-          placeholder: "例如：我想看以前的紫微報告",
+          placeholder: "例如：帶我去看完整報告",
           ask: "問小龍",
           close: "關閉助手",
           open: "打開青玉小龍助手",

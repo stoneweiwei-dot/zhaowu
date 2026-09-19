@@ -38,7 +38,7 @@ test.describe("iPhone Safari parchment application shell", () => {
     });
   }
 
-  test("home keeps a non-empty Bazi stage separate from the client record", async ({ page }) => {
+  test("r163 keeps an opaque client record separate from the non-empty Bazi stage", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#analysisForm")).toBeVisible();
@@ -47,7 +47,7 @@ test.describe("iPhone Safari parchment application shell", () => {
     await expect(page.locator("#bazi.zhaowu-bazi-stage")).toBeVisible();
     await expect(page.locator("#bazi .zhaowu-bazi-pending")).toContainText("先保存完整出生資料");
     const customerBackground = await page.locator("#customer-record").evaluate((node) => getComputedStyle(node).backgroundColor);
-    expect(alphaOf(customerBackground)).toBeCloseTo(0.78, 2);
+    expect(alphaOf(customerBackground)).toBe(1);
     await expect(page.locator("#customer-record #bazi")).toHaveCount(0);
   });
 
@@ -64,7 +64,7 @@ test.describe("iPhone Safari parchment application shell", () => {
   });
 
   for (const width of [390, 430]) {
-    test(`r161 keeps the primary chart flow ahead of the optional almanac at ${width}px`, async ({ page }) => {
+    test(`r163 keeps the primary chart flow ahead of the optional almanac at ${width}px`, async ({ page }) => {
       await makeAppOfflineSafe(page);
       await page.setViewportSize({ width, height: 844 });
       await page.goto("/", { waitUntil: "domcontentloaded" });
