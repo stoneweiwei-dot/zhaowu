@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.20-r169",
-  updateNumber: 169,
-  publishedAt: "2026-09-20T06:46:00+10:00",
-  latestSummary: "精簡首頁、命書與安裝提示，移除重複說明。",
+  version: "ZW-WEB-2026.09.20-r170",
+  updateNumber: 170,
+  publishedAt: "2026-09-20T08:00:00+10:00",
+  latestSummary: "回答先對準問題；天賦、工作與時間分開處理，刪除重複套話及虛假把握，手機報告改為單欄。",
   details: {
-    "zh-Hant": ["首頁與命書移除重複說明。", "手機安裝提示更精簡。"],
-    en: ["Less repeated text on the homepage and in readings.", "Shorter Home Screen instructions."],
+    "zh-Hant": ["直接答案、追問和完整報告使用同一份內容；具體推論保留依據，不把出生資料完整當成回答可靠。", "月份追問沿用主題並更新年份；長文單欄，技術資料預設收起。"],
+    en: ["Answers address the question with evidence and clear limits; saved reports use the same answer.", "Follow-up timing replaces the old year. Report prose stays in one column with technical detail collapsed."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }

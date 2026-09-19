@@ -1,3 +1,4 @@
+import { withCustomerAnswer } from "@/lib/report/customer-answer";
 import { FEATURED_CITIES, filterFeatured } from "@/lib/bazi/cities";
 import type { AnalysisResult, AnalyzeInput, CityHit, RelationPref } from "@/lib/bazi/types";
 import { buildChart, currentAlmanac } from "@/lib/bazi/chart";
@@ -118,7 +119,7 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
 
 function finishReading(question: string, chart: AnalysisResult["chart"], reading: AnalysisResult["reading"], locale?: AnalysisResult["locale"]) {
   const auxiliaryReading = applyThreeYuanAuxiliaryPolicy(question, chart, reading, locale);
-  return enforceDirectAnswerGuard(question, chart, auxiliaryReading, locale);
+  return withCustomerAnswer(question, chart, enforceDirectAnswerGuard(question, chart, auxiliaryReading, locale), locale);
 }
 
 export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promise<AnalysisResult> {
@@ -193,8 +194,15 @@ export async function followUpLife({
   const question = String(data.question ?? "").trim().slice(0, 400);
   try {
     if (!question) throw new Error("請先寫下你想繼續問的問題。");
+    const shortFollowup = /^(那|所以|然後|然后|接著|接着|那麼|那么|and\b|then\b|what about\b)/i.test(question)
+      && !/天[賦赋]|工作|事業|事业|感情|財|财|健康|搬家|旅行|career|job|love|money|health|travel/i.test(question);
+    const changesTime = /(?:20\d{2}|今年|明年|後年|后年|\d{1,2}月|this year|next year)/i.test(question);
+    const context = changesTime
+      ? data.base.question.replace(/20\d{2}年?|(?:\d{1,2}|[一二三四五六七八九十]+)月|今年|明年|後年|后年|this year|next year/gi, "")
+      : data.base.question;
+    const answerQuestion = shortFollowup ? `${context}\n${question}` : question;
     const palm = data.base.palm ?? null;
-    const kind = inferQuestionKind(question, classifyQuestion(question));
+    const kind = inferQuestionKind(answerQuestion, classifyQuestion(answerQuestion));
     const methodProtocol = routeMethods(kind, {
       palmReady: Boolean(palm?.ready),
       palmMissing: palm?.missing ?? [],
@@ -203,14 +211,14 @@ export async function followUpLife({
     const rawReading = applyFourTombsRuntimePolicy(
       data.base.chart,
       applyMonthStageFeedbackPolicy(
-        question,
+        answerQuestion,
         data.base.chart,
-        interpret(question, data.base.chart, relation, palm),
+        interpret(answerQuestion, data.base.chart, relation, palm),
       ),
     );
-    const finalizedReading = finalizeReading(question, data.base.chart, rawReading, data.base.locale);
+    const finalizedReading = finalizeReading(answerQuestion, data.base.chart, rawReading, data.base.locale);
     const kinshipReading = applyKinshipRuntimePolicy(
-      question,
+      answerQuestion,
       data.base.chart,
       relation,
       finalizedReading,
@@ -221,7 +229,8 @@ export async function followUpLife({
       kinshipReading,
       data.base.locale,
     );
-    const reading = finishReading(question, data.base.chart, policyReading, data.base.locale);
+    const reading = finishReading(answerQuestion, data.base.chart, policyReading, data.base.locale);
+    if (reading.customerAnswer) reading.customerAnswer.question = question;
     const result: AnalysisResult = {
       id: newId(),
       locale: data.base.locale,

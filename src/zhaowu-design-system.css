@@ -2565,3 +2565,23 @@ html[data-zw-theme="night"] .zhaowu-chart-trust-details details > a {
   .zhaowu-chart-trust { padding: 20px 16px; }
   .zhaowu-chart-trust > header h3 { font-size: 24px; }
 }
+
+/* Report prose remains a single reading column at every phone width. */
+.zhaowu-report-continuous-sheet .zhaowu-decision-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+.zhaowu-report-continuous-sheet .zhaowu-decision-card {
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--zw-border, #c6bca7);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 20px 0;
+}
+.zhaowu-report-continuous-sheet :is(.zhaowu-decision-card li, .zhaowu-report-copy p) {
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}

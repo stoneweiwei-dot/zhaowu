@@ -30,6 +30,7 @@ const KIND_PATTERNS: Array<[QuestionKind, RegExp[]]> = [
 ];
 
 const FOCUS_RULES: Array<[string, RegExp, RegExp]> = [
+  ["talent", /天[賦赋]|擅[長长]|才[華华]|\b(?:talents?|good at|strengths)\b/i, /天[賦赋]|擅[長长]|能力|talent|abilit|skill/i],
   ["d60", /(D60|六十[分份]盤|六十[分份]盘|沙斯提安沙|shashtiamsa)/i, /(D60|旁證|旁证|時間|时间|time|corroborat)/i],
   ["ziwei", /(紫微|紫微斗數|紫微斗数|zi\s*wei)/i, /(紫微|旁證|旁证|驗證|验证|時辰|时辰|zi\s*wei|validat)/i],
   ["unknown_time", /(不知道.{0,8}(時辰|时辰|出生時間|出生时间)|時辰.{0,8}(不知|未知|不確定|不确定)|时辰.{0,8}(不知|未知|不确定)|unknown.{0,8}(birth\s*time|time of birth))/i, /(時辰|时辰|出生時間|出生时间|不作判定|降級|降级|unknown|birth\s*time)/i],

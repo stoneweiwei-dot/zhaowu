@@ -147,6 +147,7 @@ export type LifeGuide = {
 };
 
 export type Reading = {
+  customerAnswer?: import("@/lib/report/customer-answer").CustomerAnswer;
   kind: QuestionKind;
   directAnswer: string;
   rhythm: string;

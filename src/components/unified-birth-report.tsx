@@ -1,3 +1,4 @@
+import { plainCustomerLines, uniqueCustomerLines } from "@/lib/report/customer-answer";
 import { useMemo } from "react";
 import type { Locale } from "@/lib/i18n";
 import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
@@ -35,7 +36,7 @@ function tableInterpretations(reading: SpecialistReading, title: RegExp, rows: n
 }
 
 function unique(lines: string[], locale: Locale) {
-  return [...new Set(lines.map((line) => withoutMethodLabels(line, locale)).filter(Boolean))];
+  return plainCustomerLines(lines.map((line) => withoutMethodLabels(line, locale))).slice(0, 3);
 }
 
 function withoutMethodLabels(text: string, locale: Locale) {
@@ -106,13 +107,10 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
     const lifeNumber = calculateLifeNumber(birth.year, birth.month, birth.day).number;
     const numberProfile = NUMEROLOGY_PROFILES[lifeNumber];
 
-    return [
+    const collected = [
       {
         title: copy.basis,
         body: unique([
-          `${foundation.dayMaster}｜${foundation.monthOrder}`,
-          foundation.strength,
-          `${foundation.structure}；${foundation.features}`,
           tx(locale, numberProfile.core),
         ], locale),
       },
@@ -159,6 +157,12 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
         ], locale),
       },
     ];
+    const seen: string[] = [];
+    return collected.map(section => {
+      const body = uniqueCustomerLines(section.body, seen);
+      seen.push(...body);
+      return { ...section, body };
+    }).filter(section => section.body.length);
   }, [birth, copy.basis, copy.lesson, copy.nature, copy.relation, copy.timing, copy.work, foundation, locale]);
 
   return (

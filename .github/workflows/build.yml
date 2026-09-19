@@ -78,3 +78,11 @@ jobs:
 
       - name: iPhone Safari regression suite
         run: npm run test:iphone-safari
+
+      - name: Save report mobile screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-mobile-screenshot
+          path: test-results/**/report-phone.png
+          if-no-files-found: ignore
+          retention-days: 3

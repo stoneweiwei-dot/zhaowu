@@ -1,3 +1,4 @@
+import { uniqueCustomerLines } from "./customer-answer";
 import type { AnalysisResult, AppLocale, Chart, Reading } from "@/lib/bazi/types";
 import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
 import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
@@ -201,6 +202,10 @@ function cosmicSummaryLines(result: AnalysisResult): string[] {
 }
 
 function summaryLines(result: AnalysisResult): string[] {
+  const answer = result.reading.customerAnswer;
+  if (answer?.question === result.question && answer.locale === (result.locale ?? "zh-Hans")) {
+    return uniqueCustomerLines([answer.direct, ...answer.reasons, ...answer.timing, ...answer.limits, ...answer.actions]);
+  }
   const core = isCosmicSymbolicQuestion(result.question)
     ? cosmicSummaryLines(result)
     : (result.locale ?? "zh-Hans") === "en"
@@ -232,7 +237,9 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
       pageNo: 2,
       key: "body",
       title: titles.body,
-      body: buildBodyAttentionLines(result.chart, locale),
+      body: result.reading.customerAnswer
+        ? [locale === "en" ? "Birth details cannot identify a health problem. No symptoms or examination results have been supplied for a health assessment." : locale === "zh-Hant" ? "出生資料不能判定身體哪裡有問題。目前沒有你的症狀或檢查資料，這部分無法作個人健康判斷。" : "出生资料不能判定身体哪里有问题。目前没有你的症状或检查资料，这部分无法作个人健康判断。"]
+        : buildBodyAttentionLines(result.chart, locale),
       evidence: {
         facts: ["four-pillar earthly branches", "month seasonal weighting", "current long-term cycle branch", "six fixed opposition axes"],
         conditions: ["Earthly branch sets the observation area; paired branches are read as one axis"],

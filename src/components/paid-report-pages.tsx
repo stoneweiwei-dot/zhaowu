@@ -1,3 +1,4 @@
+import { plainCustomerLines, uniqueCustomerLines } from "@/lib/report/customer-answer";
 import { useI18n, type Locale } from "@/lib/i18n";
 import type { AnalysisResult, Element, Pillar } from "@/lib/bazi/types";
 import type { ReportSection } from "@/lib/report/focused-report";
@@ -237,10 +238,7 @@ function DecisionCards({ result, locale }: { result: AnalysisResult; locale: Loc
           <span>{copy.answerTitle}</span>
           <p>{model.directAnswer}</p>
         </div>
-        <div className="zhaowu-answer-meta">
-          <div><span>{copy.confidence}</span><b>{model.confidenceLabel}</b><small>{model.confidenceBasis}</small></div>
-          <div><span>{copy.variable}</span><b>{model.biggestVariable}</b></div>
-        </div>
+
       </section>
 
       <section className="zhaowu-decision-grid" aria-label={copy.answerTitle}>
@@ -265,30 +263,37 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
   const content = continuousReportContent(sections, locale);
   const model = result ? buildDecisionReportModel(result) : null;
   const directFull = result ? normalizeReportLine(customerDirectAnswer(result.question, result.reading.directAnswer)) : "";
-  const supportingSummary = content.summary.filter((line) => normalizeReportLine(line) !== directFull);
+  const displayed = model ? [model.directAnswer, ...model.reasons, ...model.risks, ...model.timing, ...model.actions] : [directFull];
+  const supportingSummary = result?.reading.customerAnswer ? [] : uniqueCustomerLines(plainCustomerLines(content.summary), displayed);
   const showLuck = Boolean(model?.supportingModules.includes("luck"));
 
-  if (!content.summary.length && !content.body.length) return null;
+  if (!result && !content.summary.length && !content.body.length) return null;
 
   return (
     <section className="zhaowu-focused-report zhaowu-report-continuous-sheet" aria-labelledby="focused-report-title">
       <header className="zhaowu-report-header">
         <p className="zhaowu-report-kicker">{copy.kicker}</p>
         <h3 id="focused-report-title" className="zhaowu-report-title">{copy.title}</h3>
-        <p className="zhaowu-report-lead">{copy.lead}</p>
-        {timeCorrectionNote(result, locale) ? (
-          <p className="zhaowu-time-correction"><strong>{locale === "en" ? "How time was read" : locale === "zh-Hans" ? "时间怎么换算" : "時間怎麼換算"}</strong>{timeCorrectionNote(result, locale)}</p>
-        ) : null}
+
+
       </header>
 
       <div className="zhaowu-report-flow">
         {result ? <DecisionCards result={result} locale={locale} /> : null}
-        {result ? <ChartSnapshot result={result} locale={locale} /> : null}
+
       </div>
 
-      {result ? <ReportVisualBook result={result} /> : null}
-      {result ? <FiveElementTrainingBlock result={result} /> : null}
-      {result && showLuck ? <ReportLuckBook result={result} /> : null}
+      {result ? (
+        <details className="zhaowu-report-detail" data-report-evidence>
+          <summary>{copy.chart}</summary>
+          <ChartSnapshot result={result} locale={locale} />
+          {timeCorrectionNote(result, locale) ? <p>{timeCorrectionNote(result, locale)}</p> : null}
+          <ReportVisualBook result={result} />
+          <FiveElementTrainingBlock result={result} />
+          {showLuck ? <ReportLuckBook result={result} /> : null}
+          <EvidenceGovernancePanel result={result} />
+        </details>
+      ) : null}
 
       <div className="zhaowu-report-flow zhaowu-report-supporting-flow">
         {supportingSummary.length ? (
@@ -313,7 +318,6 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
         ) : null}
       </div>
 
-      {result ? <EvidenceGovernancePanel result={result} /> : null}
       {result ? <ReportShareCard result={result} /> : null}
     </section>
   );

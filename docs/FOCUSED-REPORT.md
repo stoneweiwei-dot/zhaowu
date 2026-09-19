@@ -175,3 +175,7 @@ iPhone 正文不得低於 16px；主回答 21–24px；模組標題 25–28px；
 - 歷史 Supabase 記錄繼續讀取 `summary / body` 與舊鍵相容層。
 - 本版不做資料庫 migration。
 - 若 answer-first UI 發生 production regression，可回滾 `decision-report-model.ts`、`paid-report-pages.tsx` 與對應 CSS，而不改八字核心、auth、payment 或歷史資料。
+
+## r170 呈現與內容 supersession
+
+上述舊版「出生資料足夠即可標把握高」、強制風險／行動填滿、展開技術視圖規則已被取代。`customerAnswer` 保存同一題的白話答案、理由、限制、時間及有需要的下一步；`summary/body` 持久化不變。可空的欄位不以套話補齊。單欄連續閱讀，命盤細節可展開。完整報告與首答不能各自重新撰寫；身體欄無醫療資料時不推定個人病症。

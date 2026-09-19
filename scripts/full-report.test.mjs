@@ -47,6 +47,7 @@ test("完整报告不会恢复旧的固定人格课题模板", async () => {
   const question = "我現在工作最大的問題是什麼？";
   const { chart, reading, palm } = base(question);
   const out = await writeFullReport({ data: { question, chart, reading, palm } });
-  assert.ok(out.text.includes(reading.work));
+  assert.doesNotMatch(out.text, /承載底盤|承载底盘|核心不是[羅罗]列/);
+  assert.match(out.text, /工作|资料不足|資料不足/);
   assert.doesNotMatch(out.text, /關係裡和工作裡，能控制的事會被你抓得太久|关系里和工作里，能控制的事会被你抓得太久/);
 });
