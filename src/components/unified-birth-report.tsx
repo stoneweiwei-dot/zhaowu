@@ -57,43 +57,43 @@ function withoutMethodLabels(text: string, locale: Locale) {
 
 function reportCopy(locale: Locale) {
   if (locale === "en") return {
-    kicker: "ONE BIRTH RECORD · ONE REPORT",
-    title: "Your complete integrated report",
-    lead: "The specialist systems are cross-checked internally. You receive one continuous plain-language report, not separate schools or repeated cards.",
+    kicker: "ZHAOWU DESTINY BOOK · NATAL VOLUME",
+    title: "Your ZHAOWU Destiny Book",
+    lead: "Your Four Pillars are calculated once by a rule-based engine. Zi Ping makes the primary structural judgement; specialist methods only cross-check in the background. You receive one continuous plain-language Destiny Book.",
     basis: "Core structure",
     nature: "Temperament and inner rhythm",
     relation: "Relationships and interaction",
     work: "Work, resources and real-world direction",
     timing: "Life phase and timing",
     lesson: "Recurring lesson and practical move",
-    boundaryTitle: "How to read this report",
-    boundary: "Zi Ping BaZi remains the primary structural judgement. Other methods only add specialist supporting evidence and cannot overwrite the chart. Time-sensitive detail is reduced when the birth minute is uncertain.",
+    boundaryTitle: "Method and reading boundary",
+    boundary: "Chart calculation and interpretation are separated: the Four Pillars are calculated deterministically first, and the interpretation does not recalculate or rewrite the chart. Zi Ping remains the primary structural judgement; other methods only add supporting evidence. Time-sensitive detail is reduced when the birth minute is uncertain.",
   };
   if (locale === "zh-Hans") return {
-    kicker: "一份生辰 · 一份报告",
-    title: "你的完整综合报告",
-    lead: "不同体系只在后台交叉核对，前台合并成一份连续白话报告，不再显示流派入口或重复卡片。",
+    kicker: "昭梧命书 · 本命卷",
+    title: "你的昭梧命书",
+    lead: "四柱先由规则引擎确定排出；子平负责结构主判，其他方法只在后台交叉旁证。前台只呈现一份连续、可读、可继续追问的白话命书。",
     basis: "核心底盘",
     nature: "性格与内在节奏",
     relation: "关系与互动方式",
     work: "事业、资源与现实方向",
     timing: "人生阶段与时间重点",
     lesson: "反复课题与现实行动",
-    boundaryTitle: "报告边界",
-    boundary: "子平八字仍是唯一结构主判；其他方法只补充各自擅长的旁证，不能反向覆盖主盘。出生分钟不确定时，时间敏感的细节会自动降级。",
+    boundaryTitle: "判读方法与边界",
+    boundary: "排盘与解读分层：四柱先由确定性规则计算，解读不会自行重算或改写命盘。子平八字仍是唯一结构主判；其他方法只补充旁证，不能反向覆盖主盘。出生分钟不确定时，时间敏感细节自动降级。",
   };
   return {
-    kicker: "一份生辰 · 一份報告",
-    title: "你的完整綜合報告",
-    lead: "不同體系只在後台交叉核對，前台合併成一份連續白話報告，不再顯示流派入口或重複卡片。",
+    kicker: "昭梧命書 · 本命卷",
+    title: "你的昭梧命書",
+    lead: "四柱先由規則引擎確定排出；子平負責結構主判，其他方法只在後台交叉旁證。前台只呈現一份連續、可讀、可繼續追問的白話命書。",
     basis: "核心底盤",
     nature: "性格與內在節奏",
     relation: "關係與互動方式",
     work: "事業、資源與現實方向",
     timing: "人生階段與時間重點",
     lesson: "反覆課題與現實行動",
-    boundaryTitle: "報告邊界",
-    boundary: "子平八字仍是唯一結構主判；其他方法只補充各自擅長的旁證，不能反向覆蓋主盤。出生分鐘不確定時，時間敏感的細節會自動降級。",
+    boundaryTitle: "判讀方法與邊界",
+    boundary: "排盤與解讀分層：四柱先由確定性規則計算，解讀不會自行重算或改寫命盤。子平八字仍是唯一結構主判；其他方法只補充旁證，不能反向覆蓋主盤。出生分鐘不確定時，時間敏感細節自動降級。",
   };
 }
 
