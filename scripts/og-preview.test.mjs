@@ -18,7 +18,7 @@ test("link preview card is a committed 1200x630 JPEG", () => {
 test("index.html exposes the Vercel canonical origin and large-image social cards", () => {
   assert.match(html, /rel="canonical" href="https:\\/\\/stone-zhaowu-official\\.vercel\\.app\\/"/);
   assert.match(html, /property="og:url" content="https:\\/\\/stone-zhaowu-official\\.vercel\\.app\\/"/);
-  assert.match(html, /property="og:image" content="https:\/\/archive-stone-zhaowu-official\.netlify\.app\/og\.jpg"/);
+  assert.match(html, /property="og:image" content="https:\/\/stone-zhaowu-official\.vercel\.app\/og\.jpg"/);
   assert.match(html, /property="og:image:width" content="1200"/);
   assert.match(html, /property="og:image:height" content="630"/);
   assert.match(html, /property="og:image:type" content="image\/jpeg"/);
