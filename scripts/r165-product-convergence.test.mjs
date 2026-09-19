@@ -4,7 +4,8 @@ import test from "node:test";
 
 const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
 const form = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
-const report = await readFile(new URL("../src/components/unified-birth-report.tsx", import.meta.url), "utf8");\nconst trust = await readFile(new URL("../src/components/chart-trust-panel.tsx", import.meta.url), "utf8");
+const report = await readFile(new URL("../src/components/unified-birth-report.tsx", import.meta.url), "utf8");
+const trust = await readFile(new URL("../src/components/chart-trust-panel.tsx", import.meta.url), "utf8");
 const state = await readFile(new URL("../docs/CURRENT-STATE.md", import.meta.url), "utf8");
 
 test("r165 locks the public product around one ZHAOWU Destiny Book", () => {
