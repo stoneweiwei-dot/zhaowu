@@ -10,6 +10,9 @@ const D60_RE = /(D60|六十分盤|六十分盘|沙斯提安沙|shashtiamsa)/i;
 const ZIWEI_RE = /(紫微|紫微斗數|紫微斗数|zi\s*wei)/i;
 const UNKNOWN_TIME_RE = /(不知道.{0,8}(時辰|时辰|出生時間|出生时间)|時辰.{0,8}(不知|未知|不確定|不确定)|时辰.{0,8}(不知|未知|不确定)|unknown.{0,8}(birth\s*time|time of birth))/i;
 const DECISION_RE = /(值不值得|要不要|該不該|该不该|能不能|有沒有必要|有没有必要|是否值得|是否應該|是否应该|繼續.{0,8}[嗎吗]|继续.{0,8}[嗎吗]|should\s+i|worth\s+(?:staying|continuing)|keep\s+(?:doing|working|seeing))/i;
+const CAREER_TOPIC_RE = /(工作|職位|职位|公司|事業|事业|職業|职业|轉職|转职|跳槽|career|job|work|role|business)/i;
+const LOVE_TOPIC_RE = /(感情|戀愛|恋爱|婚姻|關係|关系|伴侶|伴侣|對象|对象|復合|复合|love|relationship|marriage|partner)/i;
+const MONEY_TOPIC_RE = /(財務|财务|財運|财运|錢|钱|收入|投資|投资|資產|资产|現金流|现金流|money|finance|income|investment|wealth)/i;
 const LOVE_OUTLOOK_RE = /(感情|關係|关系|曖昧|暧昧|復合|复合|對象|对象).{0,18}(有沒有|有没有|還有沒有|还有没有|能不能|會不會|会不会|空間|空间|發展|发展|繼續|继续)|(還有沒有|还有没有|能不能|會不會|会不会).{0,18}(感情|關係|关系|復合|复合|發展|发展)/i;
 const MONEY_RISK_RE = /(財務|财务|財運|财运|錢|钱|收入|投資|投资|現金流|现金流).{0,18}(最該防|最该防|風險|风险|注意|小心|避免|防什麼|防什么)|(最該防|最该防|風險|风险|注意|小心).{0,18}(財務|财务|財運|财运|錢|钱|投資|投资)/i;
 const CHOICE_RE = /(還是|还是|二選一|二选一|選哪|选哪|哪個更|哪个更|哪一個更|which\s+(?:one|option)|\bvs\.?\b)/i;
@@ -144,15 +147,15 @@ function guardChoice(question: string, reading: Reading, locale?: AppLocale): st
 function guardDecision(question: string, chart: Chart, reading: Reading, locale?: AppLocale): string | null {
   if (!DECISION_RE.test(question)) return null;
   const strong = chart.strength.tendency.includes("旺") || chart.strength.tendency.includes("強") || chart.strength.tendency.includes("强");
-  if (reading.kind === "career") return zh(locale,
+  if (reading.kind === "career" || CAREER_TOPIC_RE.test(question)) return zh(locale,
     `直接回答：目前不能可靠地把這份工作直接判成「值得繼續」或「不值得繼續」，因為命盤沒有包含這份工作的收入、責任、資源支持與退出成本。就命盤承載方向看，${strong ? "如果現職能讓你有自主輸出、成果可衡量，而且無效負荷可控，才偏向續留；若長期壓住輸出又增加負荷，偏向離開。" : "如果現職能提供穩定資源、清楚規則和可持續支持，才偏向續留；若長期資源不足又要求高負荷承擔，偏向離開。"}`,
     `直接回答：目前不能可靠地把这份工作直接判成“值得继续”或“不值得继续”，因为命盘没有包含这份工作的收入、责任、资源支持与退出成本。就命盘承载方向看，${strong ? "如果现职能让你有自主输出、成果可衡量，而且无效负荷可控，才偏向续留；若长期压住输出又增加负荷，偏向离开。" : "如果现职能提供稳定资源、清楚规则和可持续支持，才偏向续留；若长期资源不足又要求高负荷承担，偏向离开。"}`,
     `Direct answer: the chart alone cannot reliably label this job “worth staying in” or “not worth staying in” because the actual pay, responsibility, support and exit cost are not part of the chart. ${strong ? "Stay only if the role gives enough autonomy, measurable output and manageable wasted load; otherwise the direction leans toward leaving." : "Stay only if the role provides stable resources, clear rules and sustainable support; otherwise the direction leans toward leaving."}`);
-  if (reading.kind === "love") return zh(locale,
+  if (reading.kind === "love" || LOVE_TOPIC_RE.test(question)) return zh(locale,
     "直接回答：不能只憑命盤判這段關係「值得繼續」或「不值得繼續」。先看三件可驗證的事：聯繫是否持續、投入是否對等、是否願意說清下一步；三項中若長期缺兩項，偏向不要再加碼，若多數穩定成立才偏向繼續。",
     "直接回答：不能只凭命盘判这段关系“值得继续”或“不值得继续”。先看三件可验证的事：联系是否持续、投入是否对等、是否愿意说清下一步；三项中若长期缺两项，偏向不要再加码，若多数稳定成立才偏向继续。",
     "Direct answer: the chart alone cannot decide whether this relationship is worth continuing. Check three observable facts: consistent contact, reciprocal effort, and willingness to define the next step. If two stay absent, lean toward stopping further investment; if most remain stable, continuing is more defensible.");
-  if (reading.kind === "money") return zh(locale,
+  if (reading.kind === "money" || MONEY_TOPIC_RE.test(question)) return zh(locale,
     "直接回答：不能只憑命盤判某個財務決定「值得」或「不值得」。至少要有實際收益、最大損失、期限、現金流與退出條件；缺這些資料時【不作投資選擇判定】。",
     "直接回答：不能只凭命盘判某个财务决定“值得”或“不值得”。至少要有实际收益、最大损失、期限、现金流与退出条件；缺这些资料时【不作投资选择判定】。",
     "Direct answer: the chart alone cannot decide whether a financial decision is worth taking. Expected return, maximum loss, time horizon, cash flow and exit conditions are required; without them, no investment-choice determination is made.");
