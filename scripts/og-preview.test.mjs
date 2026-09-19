@@ -16,8 +16,8 @@ test("link preview card is a committed 1200x630 JPEG", () => {
 });
 
 test("index.html exposes the Vercel canonical origin and large-image social cards", () => {
-  assert.match(html, /rel="canonical" href="https:\\/\\/stone-zhaowu-official\\.vercel\\.app\\/"/);
-  assert.match(html, /property="og:url" content="https:\\/\\/stone-zhaowu-official\\.vercel\\.app\\/"/);
+  assert.match(html, /rel="canonical" href="https:\/\/stone-zhaowu-official\.vercel\.app\/"/);
+  assert.match(html, /property="og:url" content="https:\/\/stone-zhaowu-official\.vercel\.app\/"/);
   assert.match(html, /property="og:image" content="https:\/\/stone-zhaowu-official\.vercel\.app\/og\.jpg"/);
   assert.match(html, /property="og:image:width" content="1200"/);
   assert.match(html, /property="og:image:height" content="630"/);
@@ -26,7 +26,7 @@ test("index.html exposes the Vercel canonical origin and large-image social card
   assert.match(html, /property="og:title" content="昭梧｜昭於未見，梧於有歸"/);
   assert.match(html, /property="og:description" content="看見命運的節奏，選擇屬於你的道路"/);
   assert.match(html, /name="twitter:card" content="summary_large_image"/);
-  assert.match(html, /name="twitter:image" content="https:\/\/archive-stone-zhaowu-official\.netlify\.app\/og\.jpg"/);
+  assert.match(html, /name="twitter:image" content="https:\/\/stone-zhaowu-official\.vercel\.app\/og\.jpg"/);
   assert.doesNotMatch(html, /x-banner|twitter-banner|feed-banner/);
 });
 
