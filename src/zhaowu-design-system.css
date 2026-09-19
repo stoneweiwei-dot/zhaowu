@@ -2050,6 +2050,12 @@ body:has(.zhaowu-home-sheet-shell),
   background: #faf8f1 !important;
 }
 
+body:has(.zhaowu-home-sheet-shell) {
+  background-image:
+    radial-gradient(circle at 18% 8%, rgba(255, 255, 255, .50), transparent 42%),
+    linear-gradient(180deg, #faf8f1, #fffaf1) !important;
+}
+
 .zhaowu-home-sheet-shell::before {
   background:
     linear-gradient(180deg, rgba(250, 248, 241, .94), rgba(255, 250, 241, .90)),
@@ -2351,7 +2357,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
   .zhaowu-home-layout #analysisForm .zhaowu-bazi-hub h2,
   .zhaowu-home-layout #analysisForm .zhaowu-bazi-stage h2,
   .zhaowu-home-layout #analysisForm .zhaowu-question-stage h2 {
-    font-size: 29px !important;
+    font-size: 28px !important;
   }
 
   .zhaowu-home-disclosure-trigger strong { font-size: 21px; }
