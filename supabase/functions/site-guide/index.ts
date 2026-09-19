@@ -1,9 +1,6 @@
 const ALLOWED_ROUTES = [
   "/",
   "/#analysisForm",
-  "/qizheng",
-  "/yizhangjing",
-  "/ziwei",
   "/history",
   "/account",
   "/login",
@@ -11,17 +8,21 @@ const ALLOWED_ROUTES = [
 type AllowedRoute = (typeof ALLOWED_ROUTES)[number];
 type Locale = "zh-Hant" | "zh-Hans" | "en";
 
+const PRIMARY_ORIGIN = "https://archive-stone-zhaowu-official.netlify.app";
+
 function allowedOrigin(origin: string | null) {
-  if (!origin) return "https://stone-zhaowu-official.vercel.app";
+  if (!origin) return PRIMARY_ORIGIN;
   try {
     const url = new URL(origin);
     if (
+      url.hostname === "archive-stone-zhaowu-official.netlify.app" ||
+      url.hostname === "zhaowu.soul-terminal.com" ||
       url.hostname === "stone-zhaowu-official.vercel.app" ||
       (url.hostname.startsWith("stone-zhaowu-official-") && url.hostname.endsWith(".vercel.app")) ||
       url.hostname === "localhost" || url.hostname === "127.0.0.1"
     ) return origin;
   } catch { /* reject below */ }
-  return "https://stone-zhaowu-official.vercel.app";
+  return PRIMARY_ORIGIN;
 }
 
 function cors(req: Request) {
@@ -45,9 +46,9 @@ function normalizeLocale(value: unknown): Locale {
 }
 
 function fallback(locale: Locale) {
-  if (locale === "en") return { reply: "Choose BaZi, Seven Luminaries, Past & Present, Zi Wei, or My history.", route: "/" as AllowedRoute, cta: "Go home", source: "local" };
-  if (locale === "zh-Hant") return { reply: "請選擇八字、七政、前世今生、紫微或我的紀錄。", route: "/" as AllowedRoute, cta: "返回首頁", source: "local" };
-  return { reply: "请选择八字、七政、前世今生、紫微或我的记录。", route: "/" as AllowedRoute, cta: "返回首页", source: "local" };
+  if (locale === "en") return { reply: "Enter your birth details to receive one complete integrated report.", route: "/#analysisForm" as AllowedRoute, cta: "Start full analysis", source: "local" };
+  if (locale === "zh-Hant") return { reply: "請先填寫出生資料，昭梧會直接產生一份完整綜合報告。", route: "/#analysisForm" as AllowedRoute, cta: "開始完整分析", source: "local" };
+  return { reply: "请先填写出生资料，昭梧会直接生成一份完整综合报告。", route: "/#analysisForm" as AllowedRoute, cta: "开始完整分析", source: "local" };
 }
 
 /**

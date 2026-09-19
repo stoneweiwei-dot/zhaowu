@@ -16,9 +16,9 @@ test("common navigation requests resolve locally in all three languages", () => 
     resolveLocalSiteGuide("Where are my saved reports?", "en")?.route,
     "/history",
   );
-  assert.equal(resolveLocalSiteGuide("我想看七政四餘", "zh-Hant")?.route, "/qizheng");
-  assert.equal(resolveLocalSiteGuide("我想看以前的紫微报告", "zh-Hans")?.route, "/ziwei");
-  assert.equal(resolveLocalSiteGuide("Open Dharma Palm", "en")?.route, "/yizhangjing");
+  assert.equal(resolveLocalSiteGuide("我想看七政四餘", "zh-Hant")?.route, "/#analysisForm");
+  assert.equal(resolveLocalSiteGuide("我想看以前的紫微报告", "zh-Hans")?.route, "/#analysisForm");
+  assert.equal(resolveLocalSiteGuide("Open Dharma Palm", "en")?.route, "/#analysisForm");
   assert.equal(
     resolveLocalSiteGuide("I want a career analysis", "en")?.route,
     "/#analysisForm",
@@ -29,9 +29,6 @@ test("the guide can only recommend real public site routes", () => {
   assert.deepEqual(SITE_GUIDE_ROUTES, [
     "/",
     "/#analysisForm",
-    "/qizheng",
-    "/yizhangjing",
-    "/ziwei",
     "/history",
     "/account",
     "/login",
@@ -67,9 +64,8 @@ test("the shell mounts a non-blocking local-only green dragon guide", async () =
   assert.match(edge, /source: "local"/);
   assert.doesNotMatch(edge, /gpt-4\.1-nano|api\.openai\.com|\/v1\/responses/);
   assert.doesNotMatch(guide, /性格兩面|性格两面|Two sides|tianji-dual/);
-  assert.match(guide, /七政四餘/);
-  assert.match(guide, /前世今生/);
-  assert.match(guide, /紫微斗數/);
+  assert.doesNotMatch(guide, /go\("\/(?:qizheng|yizhangjing|ziwei)"\)/);
+  assert.match(guide, /完整綜合報告/);
   assert.match(guide, /我的紀錄/);
   assert.doesNotMatch(edge, /性格兩面|性格两面|Two sides|tianji-dual/);
   assert.match(shell, /<GreenDragonGuide \/>[\s\S]*zhaowu-app-frame/);

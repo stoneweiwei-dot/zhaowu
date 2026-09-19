@@ -1,14 +1,15 @@
-# 昭梧未完成指令對帳｜CURRENT 2026-09-14
+# 昭梧未完成指令對帳｜CURRENT 2026-09-19
 
 本文件保留原檔名，只作唯一未完成指令對帳。凡與本文件衝突的舊聊天、舊 Issue、舊 PR、舊部署、舊 AppDeploy／Netlify 說明均不得重新激活。
 
 ## 正式來源
 
 - GitHub：`stoneweiwei-dot/zhaowu` → `main`
-- Runtime Production：Vercel `stone-zhaowu-official`
-- 清理前最新正式 runtime SHA：`b71e9054f73f28ddcc6b7ad1937a3105c14c20f0`（r130）
+- Canonical Production：Netlify `archive-stone-zhaowu-official`
+- Synchronized fallback：Vercel `stone-zhaowu-official`（不得作 canonical）
+- 最新已核對 GitHub main：`15afe0ddf220460bfc80270ce5658a7764e80582`（r158）
 - Supabase：`plgpxusmemnmzckbwtiv`
-- docs-only commit 可使 `main` 前進但由 `vercel.json` ignore 規則跳過 runtime build；不得因此誤判 Production 未對齊。
+- 部署狀態必須分別核對 Netlify 與 Vercel；任一 READY 不等於真機驗收完成。
 
 ## 唯一仍有效的待辦
 
@@ -31,7 +32,7 @@
 - 公共 Gallery／美工資產：已改同源靜態路徑；不得再把公開圖片流量搬回 Supabase。
 - 背景音樂：r130 owner-music 路線；不得復活舊 Supabase 音訊 CDN。
 - 舊 Supabase admin/temp one-shot functions：現行 retirement policy 為 JWT + HTTP 410 tombstone，不視為可執行待辦。
-- AppDeploy／Netlify 作正式站：永久取消。
+- AppDeploy 作正式站：永久取消。Netlify 已由 r155 後續指令重新啟用為 canonical Production。
 - 固定九頁／四卡／23 頁報告：永久被 focused `summary/body` 契約取代。
 - 舊 23:00 子初直接換日：永久取消；仍以 23:00–23:59:59 當日、00:00 後次日的現行規則為準。
 

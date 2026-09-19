@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-15 07:20 AEST
+最後核對：2026-09-19 16:11 AEST
 
 > **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Netlify Production + 当前 Supabase 为准。
 
@@ -13,13 +13,13 @@
 | Hosting        | **Netlify**（2026-09-19 r155 站主明确 supersession）                    |
 | Netlify project | `archive-stone-zhaowu-official` (`d1d08003-f225-4749-adcd-fd730b0c07a8`) |
 | Production URL | `https://archive-stone-zhaowu-official.netlify.app/`                   |
-| Legacy fallback | Vercel `stone-zhaowu-official`，目前停在 r151，不代表当前版本          |
+| Synchronized fallback | Vercel `stone-zhaowu-official`，r158 已與 `main` 同步；不作 canonical 主網址 |
 | Database/Auth  | **Supabase** project `plgpxusmemnmzckbwtiv`（報告／圖庫／統計）。站主登入不走 Supabase Auth。 |
 | 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前使用 Netlify production URL   |
 
-每次接手实时检查 `main` 与 Netlify Production 的 commit；GitHub `main` 仍是唯一源码真相。Vercel 只保留旧版 fallback，当前不得因旧规则自动触发 build。AppDeploy、Lovable standby 与其他旧临时站只读参考。
+每次接手实时检查 `main`、Netlify Production 與 Vercel fallback 的 commit；GitHub `main` 仍是唯一源码真相。Netlify 是 canonical 主站；Vercel 可保留同版同步備援，但不得讓 preview 或工具分支浪費建置額度。AppDeploy、Lovable standby 與其他旧临时站只读参考。
 
-Vercel 目前实际仍为 r151 `db423a6323d340bbac25cd5ec4457ce1736d7b99` / `dpl_2J1yFSxDCWvhgXReEuqGqt1BcHKu`；r153 已合并但没有进入该 Production。r155 改由 Netlify 承载並修正站主音樂 Function 打包後，仍必须核对 Netlify deploy commit 与主要路由；不得把 exact SHA 或部署 READY 等同真實 iPhone／已安裝 PWA／站主登入验收。
+2026-09-19 實查：Vercel Production `dpl_HhhNFxpEJvMcWHCP5YUhPoQQhUpd` 已在 r158 commit `15afe0ddf220460bfc80270ce5658a7764e80582` READY；Netlify deploy `6aadf08e321b9f85815b09ec` 亦為 r158。r159 起正式 metadata 與登入回呼指向 Netlify canonical；不得把兩個平台 READY 等同真實 iPhone／已安裝 PWA／站主登入验收。
 
 ## 2. 已完成且默认锁住
 
@@ -32,8 +32,8 @@ Vercel 目前实际仍为 r151 `db423a6323d340bbac25cd5ec4457ce1736d7b99` / `dpl
 - `finalizeReading` 是最终 Reading 单一来源；已保存报告不重新 live 算出另一套答案。
 - 个人命请文字为证据型文案；真实命请图走私有 report image delivery，失败不得阻塞文字答案。
 - Gallery/背景资产管理能力保留；全站应用页恢复 r23 固定宋画背景；后台资产管理保留，不能覆盖前台页面。
-- 首页只保留一个主分析表单；三个专题入口分别进入 `/qizheng`、`/yizhangjing`、`/ziwei`。旧 `/tianji-dual` 仅保留运行兼容，不再作为“性格两面”独立分组、首页入口、青玉小龙入口或客户产品名称；不得复活旧入口。
-- `/yizhangjing` 是首页唯一「前世今生」入口：以达摩一掌经排前四世六道、逐世特征与留到今生的习性。D60 不在此页。
+- 首页只保留一个主分析表单；`/qizheng`、`/yizhangjing`、`/ziwei` 等專項 routes 留作內部能力與回歸驗證，不在首頁或青玉小龍展示。旧 `/tianji-dual` 仅保留运行兼容，不再作为客户产品名称；不得复活旧入口。
+- `/yizhangjing` 內部能力仍以達摩一掌經排前四世六道、逐世特徵與留到今生的習性；不再是首頁入口。D60 不在此能力中。
 - `/indian-astrology` 的 D60 必須先顯示年月日＋精確時分＋出生地，經明確分鐘確認（綁定 birth fingerprint）後生成自己的分組（D1／D60 表、十二宮、五個主題）。±2 分鐘不穩仍輸出盤面，標弱旁證；計算失敗才「不作判定」。不用 D60 反向考時。已從最新 `main` 重建，**不得 merge 舊 PR #304**。D60 分析只掛在這一卷，不得再嵌回前世今生。
 - `/qizheng`、`/ziwei`、`/astrology`、`/indian-astrology` 在有完整生辰時顯示各自對應命盤（`data-natal-chart`）；內部 calculation profile、原始 debug 狀態仍不進客戶畫面。舊「技術盤一律不向客戶顯示」已廢止。
 - `/astrology` 完整盤：七曜星座與宮位、十二宮宮頭與宮內行星、ASC／MC／DSC／IC、主要相位；未知出生時間對宮位／四軸 fail-closed。來源為已合併的 #310，不是舊 release 基底。
@@ -44,6 +44,7 @@ Vercel 目前实际仍为 r151 `db423a6323d340bbac25cd5ec4457ce1736d7b99` / `dpl
 - r135：Header 字標 PNG 已含「昭梧」，不得再並列第二個文字「昭梧」。夜色不得把宣紙標題反成月白。12MB 以內 MP3／M4A 原檔分段上傳，禁止再把相容音檔送進無逾時的 iPhone `decodeAudioData`。
 - 2026-09-18 最新首頁流程：`#customer-record → #bazi → #question-stage`。生辰保存後立即用現有 `buildChart()`／`BaziChart` 顯示完整四柱與基礎解釋；再次開站直接恢復。r129「首頁不得顯示即時四柱」已被此指令取代。四柱主卡仍只顯示柱名＋干支＋十神，藏干／納音／十二長生在同一命盤細項中完整展開。
 - 2026-09-19 r158：首頁七個公開專卷／流派入口退出 active path。生辰保存後，同一個 `#bazi` 區域直接顯示一份連續完整綜合報告；子平是唯一結構主判，紫微、西占、印度古法、七政、一掌象意與生命靈數只作內部專項旁證，不以流派名稱或分卡向客人展示。原專項計算路由保留作內部能力，不反向改寫子平主判。
+- 2026-09-19 r159：青玉小龍的捷徑與語意導覽同步收起七政、一掌經、紫微等流派入口，全部導向首頁單一完整綜合報告；Netlify 為 canonical 主站，Vercel 保留同版備援。原專項 routes 只保留內部能力與回歸用途。
 - `/numerology` 含靈魂獨白、人生角色、五項天賦分述與 11／22／33 區塊分析。首頁不得出現大師數文章標題「你是少見的」。
 - 研究札記與《術數的邊界》放在 `/knowledge`「昭梧 · 觀世錄」。首頁觀世錄只留最新一篇與「進入觀世錄」入口。
 - r130：背景音樂只播站主後台上傳的曲子（`/api/owner-music`）。不得再播 r129 內建佔位音，也不得把公開播放綁回 Supabase `zhaowu-audio` 公開桶（該桶 live HEAD 回 402）。後台上傳不經 Supabase session。舊檔仍在原桶，解除 spend cap 前無法自動撈回。
@@ -110,9 +111,9 @@ Vercel 目前实际仍为 r151 `db423a6323d340bbac25cd5ec4457ce1736d7b99` / `dpl
 
 ## 6. 专题报告与 Calculation Truth Layer
 
-`src/lib/ziwei/` 已进入确定性计算数据可用于生产的阶段；`/ziwei` 向客户交付白话专题报告 **以及** 十二宮命盤。primary-source unanimity 仍为 false，紫微计算事实与八字核心保持分层，不得反向覆盖八字锁定逻辑。内部 calculation profile 不进客户画面。
+`src/lib/ziwei/` 已进入确定性计算数据可用于生产的阶段；其白话专题报告與十二宮命盤保留作內部能力與回歸驗證。primary-source unanimity 仍为 false，紫微计算事实与八字核心保持分层，不得反向覆盖八字锁定逻辑。内部 calculation profile 不进客户画面。
 
-`src/lib/qizheng/engine.ts` 继续负责七政真天象计算；`src/lib/qizheng/plain-summary.ts` 只做客户报告组合，不改动星体计算。客户报告发挥七政对性情、情绪节奏、行动压力、关系取向和机会落地的观察优势，并显示七政命盤表。内部 debug 口径不进客户画面。
+`src/lib/qizheng/engine.ts` 继续负责七政真天象计算；`src/lib/qizheng/plain-summary.ts` 只做內部旁證組合，不改动星体计算。七政對性情、情绪节奏、行动压力、关系取向和机会落地的觀察併入統一報告，不以專卷入口或命盤表向客人展示。内部 debug 口径不进客户画面。
 
 ## 7. 2026-09-13 十項收口對帳
 
