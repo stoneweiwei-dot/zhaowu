@@ -3,9 +3,9 @@
 This file is the highest repository-level execution protocol for all work on **ZHAOWU / 昭梧**.
 
 Repository: `stoneweiwei-dot/zhaowu`
-Production project: Netlify `archive-stone-zhaowu-official`
-Production URL: `https://archive-stone-zhaowu-official.netlify.app/`
-Legacy live fallback: Vercel `stone-zhaowu-official` (r151 until explicitly re-enabled)
+Production project: Vercel `stone-zhaowu-official`
+Production URL: `https://stone-zhaowu-official.vercel.app/`
+Historical archive: Netlify `archive-stone-zhaowu-official` (not Production)
 Primary branch: `main`
 
 ## 2026-09-20 VERCEL HOSTING SUPERSESSION
