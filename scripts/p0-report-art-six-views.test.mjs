@@ -35,7 +35,7 @@ test("failed full image does not block text and specialist systems stay behind o
   const page = await read("src/components/specialist-system-page.tsx");
   assert.match(paid, /ReportVisualBook/);
   assert.doesNotMatch(home, /data-specialist-link|to: "\/(?:indian-astrology|astrology|ziwei|qizheng|yizhangjing)"/);
-  assert.match(unified, /buildIndianReading/);
+  assert.doesNotMatch(unified, /indian\.warning \|\| indian\.lead/);
   assert.match(unified, /buildWesternReading/);
   assert.match(unified, /buildZiweiReading/);
   assert.match(unified, /buildQizhengReading/);

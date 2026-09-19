@@ -80,8 +80,8 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
     ? {
         kicker: "CHART DATA · VERIFIABLE",
         title: "Chart data you can audit and reuse",
-        lead: "Copy the calculated chart into any AI, or inspect the timing rules and release that produced it. Interpretation stays separate from chart calculation.",
-        copyButton: "Copy AI-readable chart",
+
+        copyButton: "Copy chart",
         copied: "Copied",
         failed: "Copy failed",
         method: "Calculation method",
@@ -94,17 +94,17 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
         review: "Birth-hour review",
         reviewNeeded: "True-solar correction crossed a chart boundary, so both candidates must remain available for event-based verification.",
         reviewClear: "No true-solar boundary crossing is currently flagged for this chart.",
-        verifyBody: "ZHAOWU runs fixed regression cases and core-flow checks before production builds. That checks whether calculation and boundary behavior drift from locked baselines; it does not claim that an interpretation is objectively infallible.",
+        gateBody: "When core chart rules change, ZHAOWU reruns locked regression cases. If a result drifts from the locked baseline, that version is not released until the cause is resolved. This checks calculation consistency, not whether an interpretation is infallible.",
         compareBody: "For an independent check, enter the same birth record into another calculator and compare the Four Pillars first. If they differ, compare calendar, timezone, true-solar-time and Zi-hour rules before comparing interpretations.",
-        releaseBody: "The public release number and change record stay visible so a result can be tied to the rules used at that time.",
+
         updates: "View update record",
       }
     : locale === "zh-Hans"
       ? {
           kicker: "命盘资料 · 可核对",
-          title: "这张盘可以复制，也可以核对",
-          lead: "把已经排好的命盘直接复制给任何 AI，或查看这次采用的时间校正与版本。排盘和解读保持分层。",
-          copyButton: "复制 AI 可读命盘",
+          title: "命盘资料",
+
+          copyButton: "复制命盘",
           copied: "已复制",
           failed: "复制失败",
           method: "计算口径",
@@ -117,16 +117,16 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
           review: "时柱校验",
           reviewNeeded: "真太阳时校正跨过命盘边界，两组候选都要保留，并用年份明确的事件反证。",
           reviewClear: "目前没有触发真太阳时跨时辰边界警示。",
-          verifyBody: "昭梧在生产建置前执行固定回归案例与核心流程检查，用来发现计算结果或边界规则是否偏离锁定基准；这不等于宣称任何命理解读必然客观正确。",
+          gateBody: "核心排盘规则变更后，昭梧会重跑锁定的固定回归样例；只要结果偏离锁定基准，该版本就不发布，直到差异原因查清。这只验证计算一致性，不代表命理解读必然正确。",
           compareBody: "独立核对时，把同一份出生资料输入另一个排盘工具，先对四柱；若不同，再逐项比较历法、时区、真太阳时与子时换日口径，不要先比较解读文案。",
-          releaseBody: "公开版本号与更新记录保持可见，让同一张盘可以追溯到当时采用的规则版本。",
+
           updates: "查看更新记录",
         }
       : {
           kicker: "命盤資料 · 可核對",
-          title: "這張盤可以複製，也可以核對",
-          lead: "把已經排好的命盤直接複製給任何 AI，或查看這次採用的時間校正與版本。排盤和解讀保持分層。",
-          copyButton: "複製 AI 可讀命盤",
+          title: "命盤資料",
+
+          copyButton: "複製命盤",
           copied: "已複製",
           failed: "複製失敗",
           method: "計算口徑",
@@ -139,9 +139,9 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
           review: "時柱校驗",
           reviewNeeded: "真太陽時校正跨過命盤邊界，兩組候選都要保留，並用年份明確的事件反證。",
           reviewClear: "目前沒有觸發真太陽時跨時辰邊界警示。",
-          verifyBody: "昭梧在 Production 建置前執行固定回歸案例與核心流程檢查，用來發現計算結果或邊界規則是否偏離鎖定基準；這不等於宣稱任何命理解讀必然客觀正確。",
+          gateBody: "核心排盤規則變更後，昭梧會重跑鎖定的固定回歸樣例；只要結果偏離鎖定基準，該版本就不發布，直到差異原因查清。這只驗證計算一致性，不代表命理解讀必然正確。",
           compareBody: "獨立核對時，把同一份出生資料輸入另一個排盤工具，先對四柱；若不同，再逐項比較曆法、時區、真太陽時與子時換日口徑，不要先比較解讀文案。",
-          releaseBody: "公開版本號與更新記錄保持可見，讓同一張盤可以追溯到當時採用的規則版本。",
+
           updates: "查看更新記錄",
         };
 
@@ -161,7 +161,6 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
       <header>
         <p className="zhaowu-section-kicker">{copy.kicker}</p>
         <h3 id="zhaowu-chart-trust-title">{copy.title}</h3>
-        <p>{copy.lead}</p>
       </header>
 
       <button type="button" className="zhaowu-chart-copy" data-chart-ai-copy onClick={() => void onCopy()}>
@@ -182,14 +181,13 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
 
         <details>
           <summary>{copy.verify}</summary>
-          <p>{copy.verifyBody}</p>
+          <p>{copy.gateBody}</p>
           <p>{copy.compareBody}</p>
         </details>
 
         <details>
           <summary>{copy.release}</summary>
           <p><strong>{SITE_RELEASE_FALLBACK.version}</strong></p>
-          <p>{copy.releaseBody}</p>
           <a href="/updates">{copy.updates} ›</a>
         </details>
       </div>

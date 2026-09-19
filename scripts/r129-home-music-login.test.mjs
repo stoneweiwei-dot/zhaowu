@@ -38,7 +38,7 @@ test("latest homepage contract supersedes r129 and restores the real Four Pillar
   assert.match(form, /expandDetails/);
   assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="bazi"'));
   assert.ok(form.indexOf('id="bazi"') < form.indexOf('id="question-stage"'));
-  assert.match(form, /流通候選不在這裡冒充正式喜用神/);
+  assert.doesNotMatch(form, /流通候選不在這裡冒充正式喜用神/);
   assert.doesNotMatch(chart, /chartTerm\(p\.gan, locale\)/);
   assert.match(chart, /chartTerm\(p\.shiShenGan, locale\)/);
   assert.match(css, /zhaowu-pillar-grid > section > p/);

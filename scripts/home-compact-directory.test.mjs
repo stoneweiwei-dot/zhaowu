@@ -18,7 +18,7 @@ test("homepage hides the seven-school directory and renders one integrated repor
   assert.match(report, /buildWesternReading/);
   assert.match(report, /buildZiweiReading/);
   assert.match(report, /buildQizhengReading/);
-  assert.match(report, /buildIndianReading/);
+  assert.doesNotMatch(report, /indian\.warning \|\| indian\.lead/);
   assert.match(report, /buildPalmReading/);
   assert.match(report, /NUMEROLOGY_PROFILES/);
   assert.match(design, /\.zhaowu-unified-birth-report/);

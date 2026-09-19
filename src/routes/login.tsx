@@ -118,7 +118,7 @@ function LoginPage() {
   }
 
   return (
-    <main className="stone-login-screen" aria-labelledby="login-title" data-owner-only-login="true">
+    <main className="stone-login-screen" aria-labelledby="login-title" data-owner-only-login="true" data-login-backend="vercel-owner-cookie">
       <LoginStageBackdrop />
       <section className="stone-login-sheet seal-border">
         <div className="stone-login-brand" aria-label={`${t("brand")} ZHAOWU`}>
@@ -130,9 +130,6 @@ function LoginPage() {
         </div>
         <p className="stone-login-kicker">ZHAOWU · OWNER</p>
         <h1 id="login-title" className="stone-login-title">{ownerText(locale, "站主登入", "站主登录", "Owner sign-in")}</h1>
-        <p className="stone-login-lead" data-login-backend="vercel-owner-cookie">
-          {ownerText(locale, "一般使用者不需要登入；出生資料會保存在自己的手機。這裡只保留獨立站主入口，站主登入不經 Supabase Auth。", "一般使用者不需要登录；出生资料会保存在自己的手机。这里只保留独立站主入口，站主登录不经 Supabase Auth。", "Visitors do not need an account; birth details stay on their own device. This route is reserved for the independent owner sign-in and does not use Supabase Auth.")}
-        </p>
 
         <form onSubmit={onOwnerSubmit} className="stone-login-form">
           <label>

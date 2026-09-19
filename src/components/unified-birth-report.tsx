@@ -3,7 +3,6 @@ import type { Locale } from "@/lib/i18n";
 import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
 import {
-  buildIndianReading,
   buildPalmReading,
   buildQizhengReading,
   buildWesternReading,
@@ -59,41 +58,41 @@ function reportCopy(locale: Locale) {
   if (locale === "en") return {
     kicker: "ZHAOWU DESTINY BOOK · NATAL VOLUME",
     title: "Your ZHAOWU Destiny Book",
-    lead: "Your Four Pillars are calculated once by a rule-based engine. Zi Ping makes the primary structural judgement; specialist methods only cross-check in the background. You receive one continuous plain-language Destiny Book.",
+
     basis: "Core structure",
     nature: "Temperament and inner rhythm",
     relation: "Relationships and interaction",
     work: "Work, resources and real-world direction",
     timing: "Life phase and timing",
     lesson: "Recurring lesson and practical move",
-    boundaryTitle: "Method and reading boundary",
-    boundary: "Chart calculation and interpretation are separated: the Four Pillars are calculated deterministically first, and the interpretation does not recalculate or rewrite the chart. Zi Ping remains the primary structural judgement; other methods only add supporting evidence. Time-sensitive detail is reduced when the birth minute is uncertain.",
+
+
   };
   if (locale === "zh-Hans") return {
     kicker: "昭梧命书 · 本命卷",
     title: "你的昭梧命书",
-    lead: "四柱先由规则引擎确定排出；子平负责结构主判，其他方法只在后台交叉旁证。前台只呈现一份连续、可读、可继续追问的白话命书。",
+
     basis: "核心底盘",
     nature: "性格与内在节奏",
     relation: "关系与互动方式",
     work: "事业、资源与现实方向",
     timing: "人生阶段与时间重点",
     lesson: "反复课题与现实行动",
-    boundaryTitle: "判读方法与边界",
-    boundary: "排盘与解读分层：四柱先由确定性规则计算，解读不会自行重算或改写命盘。子平八字仍是唯一结构主判；其他方法只补充旁证，不能反向覆盖主盘。出生分钟不确定时，时间敏感细节自动降级。",
+
+
   };
   return {
     kicker: "昭梧命書 · 本命卷",
     title: "你的昭梧命書",
-    lead: "四柱先由規則引擎確定排出；子平負責結構主判，其他方法只在後台交叉旁證。前台只呈現一份連續、可讀、可繼續追問的白話命書。",
+
     basis: "核心底盤",
     nature: "性格與內在節奏",
     relation: "關係與互動方式",
     work: "事業、資源與現實方向",
     timing: "人生階段與時間重點",
     lesson: "反覆課題與現實行動",
-    boundaryTitle: "判讀方法與邊界",
-    boundary: "排盤與解讀分層：四柱先由確定性規則計算，解讀不會自行重算或改寫命盤。子平八字仍是唯一結構主判；其他方法只補充旁證，不能反向覆蓋主盤。出生分鐘不確定時，時間敏感細節自動降級。",
+
+
   };
 }
 
@@ -104,12 +103,8 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
     const ziwei = buildZiweiReading(birth, locale);
     const qizheng = buildQizhengReading(birth, locale);
     const palm = buildPalmReading(birth, locale);
-    const indian = buildIndianReading(birth, locale);
     const lifeNumber = calculateLifeNumber(birth.year, birth.month, birth.day).number;
     const numberProfile = NUMEROLOGY_PROFILES[lifeNumber];
-    const timeBoundary = birth.timeUnknown
-      ? (locale === "en" ? "Birth time is incomplete, so time-sensitive detail is not used as a firm conclusion." : locale === "zh-Hans" ? "出生时间不完整，时间敏感的细节不作为硬结论。" : "出生時間不完整，時間敏感的細節不作為硬結論。")
-      : (locale === "en" ? "Time-sensitive detail is retained only as supporting evidence until the recorded minute is independently confirmed." : locale === "zh-Hans" ? "时间敏感的细分层在出生分钟独立确认前只保留为旁证。" : "時間敏感的細分層在出生分鐘獨立確認前只保留為旁證。");
 
     return [
       {
@@ -144,7 +139,6 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
           numberedBody(ziwei, 1),
           numberedBody(ziwei, 2),
           sectionBody(qizheng, /機會與成長|机会与成长|Opportunity|Growth/),
-          ...tableInterpretations(western, /七曜|planet/i, [0, 2]),
         ], locale),
       },
       {
@@ -152,8 +146,6 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
         body: unique([
           numberedBody(ziwei, 5),
           sectionBody(qizheng, /行動與壓力|行动与压力|Action|Pressure/),
-          withoutMethodLabels(indian.warning || indian.lead, locale),
-          timeBoundary,
         ], locale),
       },
       {
@@ -174,7 +166,6 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
       <header>
         <p className="zhaowu-section-kicker">{copy.kicker}</p>
         <h3 id="zhaowu-unified-report-title">{copy.title}</h3>
-        <p>{copy.lead}</p>
       </header>
       <div className="zhaowu-unified-report-flow">
         {sections.map((section) => (
@@ -184,10 +175,6 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
           </article>
         ))}
       </div>
-      <aside className="zhaowu-unified-report-boundary">
-        <strong>{copy.boundaryTitle}</strong>
-        <p>{copy.boundary}</p>
-      </aside>
     </section>
   );
 }
