@@ -5,7 +5,7 @@ import test from "node:test";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("approved mobile visual lock is loaded after all legacy visual layers", async () => {
-  const main = await read("src/main.tsx");
+  const main = await read("src/legacy-visual-compat.css");
   assert.match(main, /approved-mobile-ui-v2\.css/);
   assert.ok(main.indexOf("approved-mobile-ui-v2.css") > main.indexOf("production-visual-reset.css"));
   assert.ok(main.indexOf("approved-mobile-ui-v2.css") > main.indexOf("gallery-unification.css"));
