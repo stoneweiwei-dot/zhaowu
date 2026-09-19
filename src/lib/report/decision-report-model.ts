@@ -1,5 +1,5 @@
 import type { AnalysisResult, AppLocale, QuestionKind, Reading } from "@/lib/bazi/types";
-import { inferQuestionKind, inspectAnswerRequirements, type AnswerRequirements } from "@/lib/core/answer-contract";
+import { inferQuestionKind, inspectAnswerRequirements, isTalentQuestion, type AnswerRequirements } from "@/lib/core/answer-contract";
 import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
 
 export type AnswerMode = "yes-no" | "comparison" | "timing" | "reason" | "forecast" | "action-plan" | "direct";
@@ -150,30 +150,29 @@ function confidence(result: AnalysisResult, contract: QuestionContract): Pick<De
   const limited = (result.chart.timeUnknown && contract.requirements.asksWhen)
     || contract.requirements.asksMedicalTiming
     || contract.requirements.asksInvestmentPick;
-  const medium = result.chart.timeUnknown;
-  const level = limited ? "limited" : medium ? "medium" : "high";
+  const level: DecisionReportModel["confidence"] = limited ? "limited" : "medium";
 
   if (locale === "en") {
     return {
       confidence: level,
-      confidenceLabel: level === "high" ? "Higher" : level === "medium" ? "Moderate" : "Limited",
+      confidenceLabel: limited ? "Limited" : "Evidence-backed",
       confidenceBasis: limited
-        ? "Some of the requested answer depends on information or real-world evidence that this reading cannot safely make exact."
-        : medium
-          ? "The birth hour is not confirmed, so hour-dependent detail is deliberately downgraded."
-          : "The supplied birth data is complete enough for this answer type. This is still guidance, not an event guarantee.",
+        ? "Part of this question depends on real-world evidence or timing detail that the reading cannot make exact."
+        : result.chart.timeUnknown
+          ? "The answer uses only evidence that does not depend on a confirmed birth hour. Complete birth data is not treated as extra confidence."
+          : "The answer is tied to traceable chart evidence. Complete birth data alone does not increase confidence, and unverified real-world claims are not treated as facts.",
     };
   }
 
   const t = locale === "zh-Hant";
   return {
     confidence: level,
-    confidenceLabel: level === "high" ? (t ? "較高" : "较高") : level === "medium" ? (t ? "中等" : "中等") : (t ? "受限" : "受限"),
+    confidenceLabel: limited ? (t ? "受限" : "受限") : (t ? "有依據" : "有依据"),
     confidenceBasis: limited
-      ? (t ? "本題有部分內容依賴命理無法安全精確化的資料或現實證據，因此主動降級。" : "本题有部分内容依赖命理无法安全精确化的资料或现实证据，因此主动降级。")
-      : medium
-        ? (t ? "出生時辰未確認，所有依賴時柱的細節都已降級。" : "出生时辰未确认，所有依赖时柱的细节都已降级。")
-        : (t ? "出生資料足以支撐本題型的結構判讀；這不等同事件保證。" : "出生资料足以支撑本题型的结构判断；这不等同事件保证。"),
+      ? (t ? "本題有部分內容依賴現實證據或精細時間資料，命理無法安全精確化，因此主動降級。" : "本题有部分内容依赖现实证据或精细时间资料，命理无法安全精确化，因此主动降级。")
+      : result.chart.timeUnknown
+        ? (t ? "本題只使用不依賴已確認時辰的證據；出生資料完整與否本身不等同判斷把握。" : "本题只使用不依赖已确认时辰的证据；出生资料完整与否本身不等同判断把握。")
+        : (t ? "本題只保留可追溯到命盤資料的推論；出生資料完整本身不提高把握，未被現實證明的部分不寫成事實。" : "本题只保留可追溯到命盘资料的推论；出生资料完整本身不提高把握，未被现实证明的部分不写成事实。"),
   };
 }
 
@@ -190,6 +189,9 @@ function biggestVariable(result: AnalysisResult, contract: QuestionContract): st
   }
   if (contract.requirements.asksTravel) {
     return locale === "en" ? "Leave, budget, travel time and entry requirements." : locale === "zh-Hant" ? "假期、預算、交通時間與入境條件。" : "假期、预算、交通时间与入境条件。";
+  }
+  if (isTalentQuestion(contract.sourceText)) {
+    return locale === "en" ? "Repeated real-world performance and external feedback." : locale === "zh-Hant" ? "實際作品、學習速度、穩定輸出與外部回饋。" : "实际作品、学习速度、稳定输出与外部反馈。";
   }
 
   const t = locale === "zh-Hant";
@@ -295,7 +297,8 @@ function sectionOrder(mode: AnswerMode, hasTiming: boolean): DecisionSectionKey[
 function supportingModules(contract: QuestionContract): SupportingModuleKey[] {
   const modules: SupportingModuleKey[] = ["chart", "visual"];
   if (contract.requirements.asksWhen || ["timing", "career", "love", "money", "home"].includes(contract.kind)) modules.push("luck");
-  modules.push("body", "evidence", "share");
+  if (contract.kind === "health") modules.push("body");
+  modules.push("evidence", "share");
   return modules;
 }
 

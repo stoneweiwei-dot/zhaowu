@@ -5,7 +5,6 @@ import { pickTravelDestinations } from "@/lib/bazi/forecast";
 import { buildCosmicProfile, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { buildBodyAttentionLines } from "@/lib/report/body-attention";
-import { buildMindAdviceLines } from "@/lib/report/mind-advice";
 import { deriveGuardianBeast } from "@/lib/report/guardian-beast";
 import { buildCycleOverlayLines } from "@/lib/report/cycle-overlay";
 
@@ -115,15 +114,14 @@ function guardianLine(chart: Chart, locale: AppLocale): string {
 
 function chineseSummaryLines(result: AnalysisResult): string[] {
   const { question, chart, reading } = result;
-  const locale = result.locale ?? "zh-Hans";
   const req = inspectAnswerRequirements(question);
   const structureQuestion = isStructureQuestion(question);
+  const showCycle = req.asksWhen || ["timing", "career", "love", "money", "home"].includes(reading.kind);
   const lines = [
     customerDirectAnswer(question, reading.directAnswer),
     `命盘落点：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`,
-    guardianLine(chart, locale),
-    chart.currentDayun && !structureQuestion ? `当前阶段：${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
-    chart.timeUnknown ? "出生时间未确定，因此本次不把时柱与大运起运当作硬结论依据。" : "",
+    chart.currentDayun && !structureQuestion && showCycle ? `当前阶段：${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
+    chart.timeUnknown ? "出生时间未确定，因此本次不把时柱与大运起运当作硬结论依据；所有依赖时柱的细节都降级，不补造结论。" : "",
     ...topicLines(question, reading, chart),
     structureQuestion ? "" : customerCopy(reading.rhythm),
     structureQuestion ? "" : customerCopy(reading.action),
@@ -169,7 +167,6 @@ function englishSummaryLines(result: AnalysisResult): string[] {
   const req = inspectAnswerRequirements(question);
   const lines = [
     reading.directAnswer,
-    guardianLine(chart, "en"),
     englishTopicBody(reading),
     plainEnglishRhythm(reading.rhythm),
     reading.action,
@@ -201,15 +198,16 @@ function cosmicSummaryLines(result: AnalysisResult): string[] {
 }
 
 function summaryLines(result: AnalysisResult): string[] {
-  const core = isCosmicSymbolicQuestion(result.question)
-    ? cosmicSummaryLines(result)
-    : (result.locale ?? "zh-Hans") === "en"
-      ? englishSummaryLines(result)
-      : chineseSummaryLines(result);
-  return dedupeLines([...core, ...buildCycleOverlayLines(result), ...buildMindAdviceLines(result)]);
+  if (isCosmicSymbolicQuestion(result.question)) return cosmicSummaryLines(result);
+  const core = (result.locale ?? "zh-Hans") === "en"
+    ? englishSummaryLines(result)
+    : chineseSummaryLines(result);
+  const req = inspectAnswerRequirements(result.question);
+  const showCycle = req.asksWhen || ["timing", "career", "love", "money", "home"].includes(result.reading.kind);
+  return dedupeLines(showCycle ? [...core, ...buildCycleOverlayLines(result)] : core);
 }
 
-/** New reports keep one overall summary plus one body-attention block; mind advice stays inside the summary. */
+/** New reports keep one overall summary plus the persisted body-attention block; UI relevance decides whether body is shown. */
 export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
   const locale = result.locale ?? "zh-Hans";
   const titles = REPORT_TITLES[locale];
@@ -221,10 +219,10 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
       title: titles.summary,
       body: summaryLines(result),
       evidence: {
-        facts: ["final reading", "question-relevant chart facts", "guardian beast symbol", "original chart + target Dayun + target annual year", "timing", "action"],
-        conditions: ["All question-specific content and compact topic-matched mind advice are merged into one continuous summary", "Guardian beast is derived from chart element structure and remains symbolic", "Cycle overlay only consumes canonical chart output; it does not recompute luck-cycle direction"],
-        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Mind advice never overrides the calculated reading", "Guardian beast is not a supernatural claim", "Provisional useful-element conclusions never become hard five-element remedies"],
-        checks: ["Direct answer appears once", "No numbered mini-sections", "Mind advice stays inside summary", "Guardian beast appears once", "Dayun and annual year are read together when birth time is known"],
+        facts: ["final reading", "question-relevant chart facts", "original chart + relevant Dayun / annual timing when requested", "timing", "action"],
+        conditions: ["Only question-specific content is kept in the continuous summary", "Cycle overlay is included only when the question is time-relevant; it consumes canonical chart output and does not recompute luck-cycle direction"],
+        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Provisional useful-element conclusions never become hard five-element remedies"],
+        checks: ["Direct answer appears once", "No numbered mini-sections", "Unrelated body and timing modules stay out of the main reading flow", "Dayun and annual year are read together only when relevant and birth time is usable"],
       },
     },
     {
