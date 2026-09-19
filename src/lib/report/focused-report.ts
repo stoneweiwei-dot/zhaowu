@@ -5,7 +5,6 @@ import { pickTravelDestinations } from "@/lib/bazi/forecast";
 import { buildCosmicProfile, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { buildBodyAttentionLines } from "@/lib/report/body-attention";
-import { buildMindAdviceLines } from "@/lib/report/mind-advice";
 import { deriveGuardianBeast } from "@/lib/report/guardian-beast";
 import { buildCycleOverlayLines } from "@/lib/report/cycle-overlay";
 
@@ -115,7 +114,6 @@ function guardianLine(chart: Chart, locale: AppLocale): string {
 
 function chineseSummaryLines(result: AnalysisResult): string[] {
   const { question, chart, reading } = result;
-  const locale = result.locale ?? "zh-Hans";
   const req = inspectAnswerRequirements(question);
   const structureQuestion = isStructureQuestion(question);
   const showCycle = req.asksWhen || ["timing", "career", "love", "money", "home"].includes(reading.kind);
@@ -169,7 +167,6 @@ function englishSummaryLines(result: AnalysisResult): string[] {
   const req = inspectAnswerRequirements(question);
   const lines = [
     reading.directAnswer,
-    guardianLine(chart, "en"),
     englishTopicBody(reading),
     plainEnglishRhythm(reading.rhythm),
     reading.action,
