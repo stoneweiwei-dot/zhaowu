@@ -17,7 +17,7 @@ const COPY = {
     questionKicker: "YOUR QUESTION",
     questionTitle: "你這次問的是",
     answerTitle: "先給答案",
-    confidence: "判斷把握",
+    confidence: "依據狀態",
     variable: "最大變數",
     reasons: "為什麼",
     risks: "要防什麼",
@@ -39,7 +39,7 @@ const COPY = {
     questionKicker: "YOUR QUESTION",
     questionTitle: "你这次问的是",
     answerTitle: "先给答案",
-    confidence: "判断把握",
+    confidence: "依据状态",
     variable: "最大变量",
     reasons: "为什么",
     risks: "要防什么",
@@ -61,7 +61,7 @@ const COPY = {
     questionKicker: "YOUR QUESTION",
     questionTitle: "What you asked",
     answerTitle: "The answer first",
-    confidence: "Reading confidence",
+    confidence: "Evidence status",
     variable: "Biggest variable",
     reasons: "Why",
     risks: "What to watch",
@@ -267,6 +267,7 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
   const directFull = result ? normalizeReportLine(customerDirectAnswer(result.question, result.reading.directAnswer)) : "";
   const supportingSummary = content.summary.filter((line) => normalizeReportLine(line) !== directFull);
   const showLuck = Boolean(model?.supportingModules.includes("luck"));
+  const showBody = !model || model.supportingModules.includes("body");
 
   if (!content.summary.length && !content.body.length) return null;
 
@@ -303,7 +304,7 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
           </details>
         ) : null}
 
-        {content.body.length ? (
+        {showBody && content.body.length ? (
           <div className="zhaowu-report-body-block">
             <h4>{copy.body}</h4>
             <div className="zhaowu-report-copy">
