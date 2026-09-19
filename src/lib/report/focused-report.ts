@@ -121,7 +121,7 @@ function chineseSummaryLines(result: AnalysisResult): string[] {
     customerDirectAnswer(question, reading.directAnswer),
     `命盘落点：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`,
     chart.currentDayun && !structureQuestion && showCycle ? `当前阶段：${chart.currentDayun.ganZhi}大运（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
-    chart.timeUnknown ? "出生时间未确定，因此所有依赖时柱的细节都降级，不补造结论。" : "",
+    chart.timeUnknown ? "出生时间未确定，因此本次不把时柱与大运起运当作硬结论依据；所有依赖时柱的细节都降级，不补造结论。" : "",
     ...topicLines(question, reading, chart),
     structureQuestion ? "" : customerCopy(reading.rhythm),
     structureQuestion ? "" : customerCopy(reading.action),
