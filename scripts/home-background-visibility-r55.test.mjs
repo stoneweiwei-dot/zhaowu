@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const css = readFileSync(new URL("../src/home-background-visibility-r55.css", import.meta.url), "utf8");
-const main = readFileSync(new URL("../src/main.tsx", import.meta.url), "utf8");
+const main = readFileSync(new URL("../src/legacy-visual-compat.css", import.meta.url), "utf8");
 
 function indexOfOrFail(haystack, needle) {
   const index = haystack.indexOf(needle);
