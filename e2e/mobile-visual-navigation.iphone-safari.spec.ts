@@ -161,7 +161,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await dismissInstallPromptIfVisible(page);
     await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
     await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "你的完整綜合報告", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "你的昭梧命書", exact: true })).toBeVisible();
     await expect(page.locator("[data-unified-birth-report]")).not.toContainText(/紫微斗數|西洋星座|印度古法占星|七政四餘|前世今生|生命靈數/);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
