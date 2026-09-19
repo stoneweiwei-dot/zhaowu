@@ -4,7 +4,7 @@ import test from "node:test";
 
 const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
 const form = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
-const report = await readFile(new URL("../src/components/unified-birth-report.tsx", import.meta.url), "utf8");
+const report = await readFile(new URL("../src/components/unified-birth-report.tsx", import.meta.url), "utf8");\nconst trust = await readFile(new URL("../src/components/chart-trust-panel.tsx", import.meta.url), "utf8");
 const state = await readFile(new URL("../docs/CURRENT-STATE.md", import.meta.url), "utf8");
 
 test("r165 locks the public product around one ZHAOWU Destiny Book", () => {
@@ -29,4 +29,14 @@ test("r165 does not reopen public school/tool entrances", () => {
   assert.doesNotMatch(home, /紫微斗數|七政四餘|達摩一掌經|印度古法占星|Western astrology|D60/);
   assert.match(state, /最終產品收線為「昭梧命書」/);
   assert.match(state, /不再以增加流派入口、首頁卡片或獨立工具作為產品主線/);
+});
+
+
+test("r165 exposes an auditable AI-readable chart package without reopening a tool hub", () => {
+  assert.match(form, /<ChartTrustPanel chart=\{previewChart\}/);
+  assert.match(trust, /data-chart-ai-copy/);
+  assert.match(trust, /昭梧 AI 可讀命盤資料包/);
+  assert.match(trust, /不要重新推算或靜默改寫四柱/);
+  assert.match(trust, /固定回歸案例與核心流程檢查/);
+  assert.match(trust, /href="\/updates"/);
 });
