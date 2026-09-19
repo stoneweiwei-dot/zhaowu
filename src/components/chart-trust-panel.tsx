@@ -94,7 +94,7 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
         review: "Birth-hour review",
         reviewNeeded: "True-solar correction crossed a chart boundary, so both candidates must remain available for event-based verification.",
         reviewClear: "No true-solar boundary crossing is currently flagged for this chart.",
-
+        gateBody: "When core chart rules change, ZHAOWU reruns locked regression cases. If a result drifts from the locked baseline, that version is not released until the cause is resolved. This checks calculation consistency, not whether an interpretation is infallible.",
         compareBody: "For an independent check, enter the same birth record into another calculator and compare the Four Pillars first. If they differ, compare calendar, timezone, true-solar-time and Zi-hour rules before comparing interpretations.",
 
         updates: "View update record",
@@ -117,7 +117,7 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
           review: "时柱校验",
           reviewNeeded: "真太阳时校正跨过命盘边界，两组候选都要保留，并用年份明确的事件反证。",
           reviewClear: "目前没有触发真太阳时跨时辰边界警示。",
-
+          gateBody: "核心排盘规则变更后，昭梧会重跑锁定的固定回归样例；只要结果偏离锁定基准，该版本就不发布，直到差异原因查清。这只验证计算一致性，不代表命理解读必然正确。",
           compareBody: "独立核对时，把同一份出生资料输入另一个排盘工具，先对四柱；若不同，再逐项比较历法、时区、真太阳时与子时换日口径，不要先比较解读文案。",
 
           updates: "查看更新记录",
@@ -139,7 +139,7 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
           review: "時柱校驗",
           reviewNeeded: "真太陽時校正跨過命盤邊界，兩組候選都要保留，並用年份明確的事件反證。",
           reviewClear: "目前沒有觸發真太陽時跨時辰邊界警示。",
-
+          gateBody: "核心排盤規則變更後，昭梧會重跑鎖定的固定回歸樣例；只要結果偏離鎖定基準，該版本就不發布，直到差異原因查清。這只驗證計算一致性，不代表命理解讀必然正確。",
           compareBody: "獨立核對時，把同一份出生資料輸入另一個排盤工具，先對四柱；若不同，再逐項比較曆法、時區、真太陽時與子時換日口徑，不要先比較解讀文案。",
 
           updates: "查看更新記錄",
@@ -181,6 +181,7 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
 
         <details>
           <summary>{copy.verify}</summary>
+          <p>{copy.gateBody}</p>
           <p>{copy.compareBody}</p>
         </details>
 
