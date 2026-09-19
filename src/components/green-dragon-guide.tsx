@@ -338,10 +338,7 @@ export function GreenDragonGuide() {
         </div>
 
         <div className="zhaowu-dragon-guide-shortcuts" aria-label={locale === "en" ? "Reading navigation" : locale === "zh-Hans" ? "分析导航" : "分析導覽"}>
-          <button type="button" onClick={() => go("/#analysisForm")}>{locale === "en" ? "BaZi" : "八字分析"}</button>
-          <button type="button" onClick={() => go("/qizheng")}>{locale === "en" ? "Seven Luminaries" : locale === "zh-Hans" ? "七政四余" : "七政四餘"}</button>
-          <button type="button" onClick={() => go("/yizhangjing")}>{locale === "en" ? "Past & Present" : "前世今生"}</button>
-          <button type="button" onClick={() => go("/ziwei")}>{locale === "en" ? "Zi Wei" : locale === "zh-Hans" ? "紫微斗数" : "紫微斗數"}</button>
+          <button type="button" onClick={() => go("/#analysisForm")}>{locale === "en" ? "Full report" : locale === "zh-Hans" ? "完整综合报告" : "完整綜合報告"}</button>
           <button type="button" onClick={() => window.location.assign("/fun-tests")}>{locale === "en" ? "Fun tests" : locale === "zh-Hans" ? "趣味测验" : "趣味測驗"}</button>
           <button type="button" onClick={() => go("/history")}>{locale === "en" ? "My history" : locale === "zh-Hans" ? "我的记录" : "我的紀錄"}</button>
         </div>

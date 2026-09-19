@@ -2,7 +2,7 @@ import { SUPABASE_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase-c
 import type { SupabaseSession, SupabaseUser } from "@/lib/supabase-rest";
 
 const SESSION_KEY = "zhaowu.supabase.session.v1";
-export const PRODUCTION_AUTH_REDIRECT = "https://stone-zhaowu-official.vercel.app/auth/callback";
+export const PRODUCTION_AUTH_REDIRECT = "https://archive-stone-zhaowu-official.netlify.app/auth/callback";
 
 type SignupPayload = {
   access_token?: string;

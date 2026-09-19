@@ -2,22 +2,22 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.19-r158",
-  updateNumber: 158,
-  publishedAt: "2026-09-19T11:50:00+10:00",
-  latestSummary: "首頁移除七個公開流派入口；客人保存出生資料後，直接得到一份由內部專項系統交叉組裝的完整綜合報告。",
+  version: "ZW-WEB-2026.09.19-r159",
+  updateNumber: 159,
+  publishedAt: "2026-09-19T16:11:00+10:00",
+  latestSummary: "青玉小龍同步收起流派入口；正式網址、登入回呼、SEO、遙測與後端版本統一以 Netlify 主站為準。",
   details: {
     "zh-Hant": [
-      "首頁不再展示七種個人分析卡或流派入口，避免客人自行選派系與重複閱讀。",
+      "首頁與青玉小龍不再展示七種個人分析卡、流派捷徑或流派導覽文案。",
       "保存出生資料後，同一畫面直接顯示四柱命盤、基礎解釋與完整綜合報告。",
-      "子平維持唯一結構主判；其他方法只在內部提供性情、關係、事業、時間與反覆課題旁證。",
-      "原有專項計算與路由保留作內部能力，本次不改排盤公式、報告問答、登入、付款或資料庫。",
+      "Netlify 是主要正式網址；Vercel 保留同版同步備援，不再作 canonical 網址。",
+      "登入回呼、分享預覽、回答品質遙測與公開 API 版本已同步到本版。",
     ],
     en: [
-      "The home page no longer exposes seven separate schools or reading cards.",
+      "The home page and Jade Dragon guide no longer expose separate schools or reading shortcuts.",
       "After saving birth details, the same page immediately shows the Four Pillars chart, foundation and one complete integrated report.",
-      "Zi Ping remains the primary structural judgement; other methods contribute internal supporting evidence only.",
-      "Specialist calculation capabilities remain available internally; chart maths, question reports, auth, payment and data are unchanged.",
+      "Netlify is the canonical production URL; Vercel remains a same-version fallback.",
+      "Auth callbacks, social metadata, quality telemetry and public API release metadata now follow the canonical host.",
     ],
   },
 } as const;
