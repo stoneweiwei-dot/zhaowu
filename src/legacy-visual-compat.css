@@ -1,65 +1,64 @@
 /*
- * Legacy visual compatibility layer.
+ * Legacy visual compatibility bundle.
  *
- * These historical styles are still needed for component-specific rules, but they
- * must never outrank the canonical visual contract. CSS cascade layers give the
- * canonical unlayered stylesheet deterministic priority without deleting working
- * component styles in one risky sweep.
+ * Preserve the historical source order exactly, while exposing only one global
+ * compatibility entry from main.tsx. Do not use CSS cascade layers here: many
+ * retained files contain !important declarations, whose layer priority reverses.
+ * The canonical zhaowu-design-system.css remains the final global stylesheet.
  */
-@layer legacy;
 
-@import "./intro-extra.css" layer(legacy);
-@import "./emblems.css" layer(legacy);
-@import "./client-hotfix.css" layer(legacy);
-@import "./visual-refresh.css" layer(legacy);
-@import "./stone-visual-fix.css" layer(legacy);
-@import "./motif-row-lock.css" layer(legacy);
-@import "./focused-report.css" layer(legacy);
-@import "./character-panel.css" layer(legacy);
-@import "./login-breathing.css" layer(legacy);
-@import "./palm-light-refinement.css" layer(legacy);
-@import "./wallpaper-visibility-fix.css" layer(legacy);
-@import "./green-dragon-guide.css" layer(legacy);
-@import "./report-history.css" layer(legacy);
-@import "./tea-guardian.css" layer(legacy);
-@import "./landscape-paper.css" layer(legacy);
-@import "./production-visual-reset.css" layer(legacy);
-@import "./gallery-unification.css" layer(legacy);
-@import "./approved-mobile-ui-v2.css" layer(legacy);
-@import "./approved-parchment-ui-v3.css" layer(legacy);
-@import "./visual-readability-lock-v4.css" layer(legacy);
-@import "./home-sheet-ui-v5.css" layer(legacy);
-@import "./typography-lock-v6.css" layer(legacy);
-@import "./home-quiz-paper.css" layer(legacy);
-@import "./content-layout-fixes.css" layer(legacy);
-@import "./parchment-layout.css" layer(legacy);
-@import "./zhaowu-paper-reference-v31.css" layer(legacy);
-@import "./ios-section-visibility.css" layer(legacy);
-@import "./report-visual-book.css" layer(legacy);
-@import "./report-luck-book.css" layer(legacy);
-@import "./report-share-card.css" layer(legacy);
-@import "./zhaowu-layout-v41.css" layer(legacy);
-@import "./home-art-direction-r47.css" layer(legacy);
-@import "./daily-spirit-slip-r52.css" layer(legacy);
-@import "./home-background-visibility-r55.css" layer(legacy);
-@import "./home-birth-hub-r60.css" layer(legacy);
-@import "./report-art-final-r62.css" layer(legacy);
-@import "./site-ux-r63.css" layer(legacy);
-@import "./site-ux-r63-lock.css" layer(legacy);
-@import "./daily-almanac-r69.css" layer(legacy);
-@import "./site-ux-r75-final.css" layer(legacy);
-@import "./login-approved-r89.css" layer(legacy);
-@import "./visual-hotfix-r94.css" layer(legacy);
-@import "./brand-ui-r97.css" layer(legacy);
-@import "./brand-ui-r98.css" layer(legacy);
-@import "./brand-ui-r99.css" layer(legacy);
-@import "./five-element-wardrobe-r100.css" layer(legacy);
-@import "./night-oracle-readability-r101.css" layer(legacy);
-@import "./report-answer-first-r110.css" layer(legacy);
-@import "./free-experience-r114.css" layer(legacy);
-@import "./guest-first-r116.css" layer(legacy);
-@import "./night-readability-r127.css" layer(legacy);
-@import "./night-home-r129.css" layer(legacy);
-@import "./night-readability-r135.css" layer(legacy);
-@import "./sky-events-article.css" layer(legacy);
-@import "./device-question-flow-r144.css" layer(legacy);
+@import "./intro-extra.css";
+@import "./emblems.css";
+@import "./client-hotfix.css";
+@import "./visual-refresh.css";
+@import "./stone-visual-fix.css";
+@import "./motif-row-lock.css";
+@import "./focused-report.css";
+@import "./character-panel.css";
+@import "./login-breathing.css";
+@import "./palm-light-refinement.css";
+@import "./wallpaper-visibility-fix.css";
+@import "./green-dragon-guide.css";
+@import "./report-history.css";
+@import "./tea-guardian.css";
+@import "./landscape-paper.css";
+@import "./production-visual-reset.css";
+@import "./gallery-unification.css";
+@import "./approved-mobile-ui-v2.css";
+@import "./approved-parchment-ui-v3.css";
+@import "./visual-readability-lock-v4.css";
+@import "./home-sheet-ui-v5.css";
+@import "./typography-lock-v6.css";
+@import "./home-quiz-paper.css";
+@import "./content-layout-fixes.css";
+@import "./parchment-layout.css";
+@import "./zhaowu-paper-reference-v31.css";
+@import "./ios-section-visibility.css";
+@import "./report-visual-book.css";
+@import "./report-luck-book.css";
+@import "./report-share-card.css";
+@import "./zhaowu-layout-v41.css";
+@import "./home-art-direction-r47.css";
+@import "./daily-spirit-slip-r52.css";
+@import "./home-background-visibility-r55.css";
+@import "./home-birth-hub-r60.css";
+@import "./report-art-final-r62.css";
+@import "./site-ux-r63.css";
+@import "./site-ux-r63-lock.css";
+@import "./daily-almanac-r69.css";
+@import "./site-ux-r75-final.css";
+@import "./login-approved-r89.css";
+@import "./visual-hotfix-r94.css";
+@import "./brand-ui-r97.css";
+@import "./brand-ui-r98.css";
+@import "./brand-ui-r99.css";
+@import "./five-element-wardrobe-r100.css";
+@import "./night-oracle-readability-r101.css";
+@import "./report-answer-first-r110.css";
+@import "./free-experience-r114.css";
+@import "./guest-first-r116.css";
+@import "./night-readability-r127.css";
+@import "./night-home-r129.css";
+@import "./night-readability-r135.css";
+@import "./sky-events-article.css";
+@import "./device-question-flow-r144.css";
