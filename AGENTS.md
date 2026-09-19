@@ -8,7 +8,18 @@ Production URL: `https://archive-stone-zhaowu-official.netlify.app/`
 Legacy live fallback: Vercel `stone-zhaowu-official` (r151 until explicitly re-enabled)
 Primary branch: `main`
 
-## 2026-09-19 r154 HOSTING SUPERSESSION
+## 2026-09-20 VERCEL HOSTING SUPERSESSION
+
+The owner's latest explicit instruction and verified production state supersede the 2026-09-19 Netlify-hosting rule for the hosting scope only:
+
+- GitHub `main` remains the only source of truth.
+- Vercel project `stone-zhaowu-official` is the single active Production host.
+- Production URL is `https://stone-zhaowu-official.vercel.app/`.
+- Netlify `archive-stone-zhaowu-official` is historical/archive only and must not be treated as canonical Production.
+- Do not create another Vercel project or re-enable a parallel Production path.
+- Older Netlify-specific hosting language below is retained as history and must not override this supersession.
+
+## 2026-09-19 r154 HOSTING SUPERSESSION — HISTORICAL / SUPERSEDED FOR HOSTING
 
 The owner's latest explicit instruction supersedes only the old rule that forced all production publication through Vercel and disabled Netlify. Until the owner explicitly changes this again:
 
