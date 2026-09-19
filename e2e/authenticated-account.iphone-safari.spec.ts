@@ -34,7 +34,8 @@ test.describe("iPhone Safari member vs owner account flow", () => {
 
     await expect(page.locator("[data-owner-independent-console]")).toHaveCount(0);
     await expect(page.getByText("OWNER CONSOLE", { exact: true })).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: /我的昭梧|會員登入/ })).toBeVisible();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
     await mobileHealthy(page);
   });
 

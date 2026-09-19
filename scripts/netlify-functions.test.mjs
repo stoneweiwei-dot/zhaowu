@@ -12,6 +12,7 @@ const endpoints = [
   "mingshu-locations",
   "owner-login",
   "owner-logout",
+  "owner-data",
   "owner-music",
   "owner-session",
   "zhaowu-capabilities",

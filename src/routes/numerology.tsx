@@ -11,8 +11,9 @@ import {
   t,
 } from "@/lib/numerology";
 import { readSharedBirthRecord, SHARED_BIRTH_EVENT, type SharedBirthRecord } from "@/lib/shared-birth";
+import { requireOwnerRoute } from "@/lib/auth/owner-route";
 
-export const Route = createFileRoute("/numerology")({ component: NumerologyPage });
+export const Route = createFileRoute("/numerology")({ beforeLoad: requireOwnerRoute, component: NumerologyPage });
 
 function NumerologyPage(){
   const {locale}=useI18n();

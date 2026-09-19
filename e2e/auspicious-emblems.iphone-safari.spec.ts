@@ -13,6 +13,13 @@ test.describe("iPhone Safari parchment application shell", () => {
   for (const route of PAPER_ROUTES) {
     test(`keeps wallpaper/scatter out and parchment present on ${route}`, async ({ page }) => {
       await makeAppOfflineSafe(page);
+      if (route !== "/") {
+        await page.route("**/api/owner-session", (request) => request.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ authenticated: true }),
+        }));
+      }
       await page.goto(route, { waitUntil: "domcontentloaded" });
       expect(await page.evaluate(() => window.innerWidth)).toBe(390);
       await expect(page.locator(".zhaowu-home-sheet-shell")).toBeVisible();

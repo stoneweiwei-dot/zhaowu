@@ -2,22 +2,22 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.19-r161",
-  updateNumber: 161,
-  publishedAt: "2026-09-19T17:55:00+10:00",
-  latestSummary: "修復 Netlify 站主密碼讀取；首頁動畫加入聲音控制，核心流程置頂，四個延伸區統一為單一收合系統，日夜切換改為清楚文字分段。",
+  version: "ZW-WEB-2026.09.19-r162",
+  updateNumber: 162,
+  publishedAt: "2026-09-19T18:30:00+10:00",
+  latestSummary: "專業計算路由改為站主專用；Netlify 補上主人資料橋接，公開紀錄與導覽只保留完整命盤及心境小測。",
   details: {
     "zh-Hant": [
-      "修正 Netlify Fetch Request body 判讀，站主密碼 19881004 可由正式站正確驗證。",
-      "首頁開場與站主登入動畫加入明確聲音按鈕；iPhone 依瀏覽器規則由使用者點擊後播放。",
-      "首頁改為命盤與完整報告常駐置頂；今日、心境小測、吉象圖鑑、觀世錄共用同一收合規則，預設全收起且同時只開一區。",
-      "右上角日夜圖示改為日／夜文字分段控制；排盤、報告內容、資料、付款與 Supabase schema 均未變更。",
+      "八個專業計算路由現在先驗證站主 HttpOnly Cookie，未登入的公開訪客會回到首頁。",
+      "站主報告、圖庫、登入素材、首頁背景與命詮圖操作統一經過同源 /api/owner-data 橋接。",
+      "我的紀錄、知識庫與青玉小龍不再露出專業流派入口，只引導至首頁完整命盤或心境小測。",
+      "資料庫 SECURITY DEFINER RPC 已限縮為 service_role；Supabase 儲存額度 402 仍需帳務端處理。",
     ],
     en: [
-      "Netlify now parses the standards-based Request body correctly so the documented owner password can authenticate.",
-      "The opening and owner-login animations expose explicit sound controls; iPhone playback starts after a user tap as required by Safari.",
-      "The chart and integrated report now lead the homepage; Today, Self Discovery, Atlas and Notes use one closed-by-default accordion system.",
-      "The decorative day/night icons are replaced by a clear labelled segment; chart maths, reports, payments and data remain unchanged.",
+      "Eight specialist calculation routes now verify the owner HttpOnly cookie and redirect public visitors home.",
+      "Owner reports, gallery, login visuals, backgrounds and decree images use the same-origin /api/owner-data bridge.",
+      "History, Knowledge and the dragon guide expose only the unified home report and self-discovery test.",
+      "The SECURITY DEFINER RPC is restricted to service_role; Supabase Storage HTTP 402 still requires an account-side quota decision.",
     ],
   },
 } as const;

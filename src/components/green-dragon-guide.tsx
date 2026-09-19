@@ -78,7 +78,7 @@ function guideBubbles(locale: Locale) {
     return [
       "Need a reading? Tap me and I’ll take you straight to the right section.",
       "Your saved reports are one tap away in My history.",
-      "Start with your birth data, then open any of the seven reading paths.",
+      "Save your birth data once and the complete chart will appear automatically.",
       "You can move me. Drag the dragon to either side of the screen.",
       "Music lives here too — tap me for the full playlist controls.",
     ];
@@ -87,7 +87,7 @@ function guideBubbles(locale: Locale) {
     return [
       "不知道从哪里开始？点我，我直接带你去对应分析。",
       "以前生成过的报告，可以从「我的记录」重新打开。",
-      "先保存生辰，再进入七种分析，不需要每次重新填写。",
+      "生辰只要保存一次，完整命盘就会自动出现。",
       "我可以移动：按住小龙拖到屏幕两边都可以。",
       "播放器也在我这里，点开就能切歌、循环或随机播放。",
     ];
@@ -95,7 +95,7 @@ function guideBubbles(locale: Locale) {
   return [
     "不知道從哪裡開始？點我，我直接帶你去對應分析。",
     "以前生成過的報告，可以從「我的紀錄」重新打開。",
-    "先保存生辰，再進入七種分析，不需要每次重新填寫。",
+    "生辰只要保存一次，完整命盤就會自動出現。",
     "我可以移動：按住小龍拖到螢幕兩邊都可以。",
     "播放器也在我這裡，點開就能切歌、循環或隨機播放。",
   ];

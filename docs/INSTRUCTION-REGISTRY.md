@@ -203,6 +203,13 @@
 - 站主密碼仍為 `19881004` 對應的已提交 SHA-256；Netlify Fetch `Request` 必須先用 `request.json()` 讀取，不得把 `ReadableStream` 誤當已解析 JSON。
 - 本次只改首頁呈現、媒體控制與 Netlify body 相容層；不改 Cookie 權限、Supabase Auth、命理計算、報告內容、付款、資料庫或媒體原件。
 
+## 2026-09-19 r162 專業路由與主人資料收口
+
+- 原專業 routes 不只從首頁隱藏，必須以獨立站主 HttpOnly Cookie 作前置驗證；公開訪客直接輸入網址亦不得進入。
+- 公開紀錄、知識庫與青玉小龍只可引導至首頁單一完整命盤或心境小測，不再列出流派名稱與專業 route。
+- Netlify canonical host 的主人資料操作只經同源 `/api/owner-data`；瀏覽器不得取得 Supabase service-role key。上傳完成前須以簽名票據核對 bucket、path、MIME 與 size。
+- Supabase Storage 超過 Free plan 容量所造成的 402 是帳務／資料保留決策，不以刪除現有素材假裝修復。付費圖片 provider 暫停與正式取用／喜用 fail-closed 邊界均不變。
+
 ## 2026-09-15 r139 homepage / D60 grouping / member auth / login animation / music error
 
 - 首頁拿掉問事標語與 textarea；只留客人資料與保存生辰。不得再發明隱藏預設問題。

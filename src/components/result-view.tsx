@@ -10,8 +10,8 @@ import { BaziChart } from "@/components/bazi-chart";
 import { customerCopy, customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, renderFocusedReportText, type ReportSection } from "@/lib/report/focused-report";
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
-import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/report/decree-image";
-import { patchReportRecord, saveReportRecord } from "@/lib/supabase-rest";
+import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
+import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
 
 const RESULT_COPY = {
   "zh-Hant": { syncFailed: "完整報告已整理完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "完整報告暫時未能生成。", saved: "完整報告已保存到同一筆記錄。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "查看完整分析", fullGenerating: "正在整理完整分析…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字答案與完整報告不受影響。", next: "最值得先做", evidence: "查看命盤依據", evidenceLead: "技術盤放在第二層；先看答案，需要時再展開。", decree: "命理解讀" },

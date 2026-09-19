@@ -51,6 +51,9 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
 
   test("D60 withholds interpretation until the recorded minute is confirmed", async ({ page }) => {
     await makeAppOfflineSafe(page);
+    await page.route("**/api/owner-session", (route) => route.fulfill({
+      status: 200, contentType: "application/json", body: JSON.stringify({ authenticated: true }),
+    }));
     await page.addInitScript((birth) => {
       localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify(birth));
       Object.assign(window, { Astronomy: {
@@ -79,6 +82,9 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
 
   test("master number insight is part of the personal numerology reading", async ({ page }) => {
     await makeAppOfflineSafe(page);
+    await page.route("**/api/owner-session", (route) => route.fulfill({
+      status: 200, contentType: "application/json", body: JSON.stringify({ authenticated: true }),
+    }));
     await page.addInitScript((birth) => {
       localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify({ ...birth, year: 2000, month: 1, day: 8 }));
     }, BIRTH);

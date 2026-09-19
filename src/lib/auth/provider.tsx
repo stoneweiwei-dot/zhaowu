@@ -39,7 +39,7 @@ const OWNER_USER: CurrentUser = {
  * r144 access contract:
  * - ordinary visitors are device-local guests; no member auth is restored or required;
  * - the birth record stays in the phone/browser through shared-birth.ts;
- * - owner auth remains an independent HttpOnly Vercel cookie and is the only active login.
+ * - owner auth remains an independent HttpOnly cookie and is the only active login.
  *
  * We deliberately do not use an IP address as identity: mobile IPs rotate and may be shared.
  * The earlier guest-first implementation used device localStorage, which is the stable behavior

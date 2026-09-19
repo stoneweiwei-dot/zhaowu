@@ -22,6 +22,14 @@ const SHARED_BIRTH = {
   useTrueSolar: true,
 };
 
+test.beforeEach(async ({ page }) => {
+  await page.route("**/api/owner-session", (route) => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({ authenticated: true }),
+  }));
+});
+
 test("iPhone Safari One-Palm page is usable without the removed duplicate specialist shell", async ({ page }) => {
   await page.goto("/yizhangjing", { waitUntil: "domcontentloaded" });
   await expect(page.getByRole("heading", { name: "前世今生・達摩一掌經", exact: true })).toBeVisible();

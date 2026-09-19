@@ -16,8 +16,9 @@ import {
   type SharedBirthRecord,
 } from "@/lib/shared-birth";
 import "@/tianji-dual.css";
+import { requireOwnerRoute } from "@/lib/auth/owner-route";
 
-export const Route = createFileRoute("/tianji-dual")({ component: TianjiDualPage });
+export const Route = createFileRoute("/tianji-dual")({ beforeLoad: requireOwnerRoute, component: TianjiDualPage });
 
 const COPY = {
   "zh-Hant": {

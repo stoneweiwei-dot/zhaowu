@@ -19,7 +19,7 @@ test("one visible Gallery keeps owner asset management independent of the fixed 
   assert.match(shell, /to="\/gallery"/);
   assert.match(shell, /"图库"/);
 
-  assert.match(account, /from "@\/lib\/background-assets"/);
+  assert.match(account, /from "@\/lib\/bridge\/background-assets"/);
   assert.match(account, /listOwnerBackgroundPage/);
   assert.match(account, /setBackgroundWallpaper/);
 
