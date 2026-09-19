@@ -47,7 +47,7 @@ test("opening and login animations expose explicit sound controls", async () => 
   const login = await source("src/routes/login.tsx");
   assert.match(intro, /OWNER_LOADING_SOUND/);
   assert.match(intro, /data-intro-sound-control/);
-  assert.match(intro, /data-background-music-control/);
+  assert.doesNotMatch(intro, /data-background-music-control/);
   assert.match(login, /stone-login-sound/);
   assert.match(login, /videoRef\.current\.muted = nextMuted/);
 });
