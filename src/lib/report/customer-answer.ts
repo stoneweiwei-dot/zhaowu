@@ -51,7 +51,8 @@ export function buildCustomerAnswer(question: string, chart: Chart, reading: Rea
   const answer: CustomerAnswer = { version: 1, question, locale, direct: '', reasons: [], limits: [], timing: [], actions: [] };
   const talent = TALENT_QUESTION.test(question);
   const jobFit = /(?:適合|适合|擅長|擅长).{0,10}(?:工作|職業|职业|行業|行业)|\b(?:suitable career|career suits|job suits|suited to)\b/i.test(question);
-  const decision = /值得|要不要|該不該|该不该|是否|繼續|继续|離職|离职|辭職|辞职|\b(?:should|stay|leave|continue)\b/i.test(question);
+  const decision = /值得|要不要|該不該|该不该|是否|繼續|继续|離開|离开|離職|离职|辭職|辞职|\b(?:should|stay|leave|continue)\b/i.test(question);
+  const careerTopic = /工作|職業|职业|事業|事业|轉職|转职|跳槽|離開公司|离开公司|離職|离职|辭職|辞职|升遷|升迁|升職|升职|職場|职场|公司|職位|职位|上班|offer|薪水|薪資|薪资|工資|工资|\b(?:career|job|work|role)\b/i.test(question);
   const timing = req.asksWhen || /\b(?:when|which month|what month|this year|next year)\b/i.test(question);
 
   if (timing && locale === 'en' && !req.asksMedicalTiming && !req.asksInvestmentPick && !req.asksTravel && !technical) {
@@ -104,7 +105,7 @@ export function buildCustomerAnswer(question: string, chart: Chart, reading: Rea
       : tr('目前不能判定這段感情會不會繼續，或對方是否喜歡你。還缺對方近期的實際行動與你們目前的關係狀態。', '目前不能判定这段感情会不会继续，或对方是否喜欢你。还缺对方近期的实际行动与你们目前的关系状态。', 'There is not enough information to tell whether this relationship will continue or how the other person feels. Their recent actions and your current relationship status are missing.');
     answer.reasons = [tr('一個人的出生資料不能證明另一個人的想法，也不能確認某次衝突由誰造成。', '一个人的出生资料不能证明另一个人的想法，也不能确认某次冲突由谁造成。', 'One person’s birth details cannot establish another person’s feelings or who caused a particular conflict.')];
     answer.actions = [tr('補充最近一次讓你困惑的互動：對方做了什麼、你怎麼回應。', '补充最近一次让你困惑的互动：对方做了什么、你怎么回应。', 'Describe the most recent interaction that concerned you: what they did and how you responded.')];
-  } else if (!technical && !timing && reading.kind === 'career') {
+  } else if (!technical && !timing && (reading.kind === 'career' || careerTopic)) {
     answer.direct = decision ? tr('目前不能直接替你決定留職或離開。先要知道現職與新選擇的待遇、工時和離職代價，才能比較哪個更適合。', '目前不能直接替你决定留职或离开。先要知道现职与新选择的待遇、工时和离职代价，才能比较哪个更适合。', 'There is not enough information to choose whether you should stay or leave. The current job and alternative need to be compared on pay, hours and the cost of leaving.') : tr('現有資料不足以判定你工作上的主要問題。需要知道具體卡在哪件事，才能分清是技能、工作安排還是合作上的困難。', '现有资料不足以判定你工作上的主要问题。需要知道具体卡在哪件事，才能分清是技能、工作安排还是合作上的困难。', 'There is not enough information to identify the main problem at work. A specific example would help distinguish a skills gap from workload or a working relationship issue.');
     answer.actions = decision ? [tr('補充兩個選擇的薪資、工時與最不能接受的條件。', '补充两个选择的薪资、工时与最不能接受的条件。', 'Provide the pay, super, hours and deal-breakers for the two options.')] : [tr('說明最近一件工作上卡住的事，以及你已嘗試的做法。', '说明最近一件工作上卡住的事，以及你已尝试的做法。', 'Describe one recent problem at work and what you have already tried.')];
   } else {
