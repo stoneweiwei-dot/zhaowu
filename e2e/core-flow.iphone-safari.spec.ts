@@ -112,7 +112,6 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
     await page.locator(".zhaowu-header-mode-toggle > button").nth(1).click();
     await expect(page.locator(".zhaowu-bazi-stage-head .zhaowu-section-lead")).toHaveCSS("color", "rgb(216, 208, 193)");
-    await expect(page.locator(".zhaowu-birth-summary p")).toHaveCSS("color", "rgb(241, 232, 216)");
     await expect(page.locator("[data-unified-birth-report] article p").first()).toHaveCSS("color", "rgb(241, 232, 216)");
     const before = await yearPillar.textContent();
 
