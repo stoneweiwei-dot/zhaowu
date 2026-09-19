@@ -82,6 +82,51 @@ test("五行结构占比不得继续全部为 0", () => {
   assert.ok(total >= 99.8 && total <= 100.2, `unexpected total ${total}`);
 });
 
+test("完整問答流程：天賦、追問工作、感情與月份各自回答，不回到同一段格局摘要", async () => {
+  const actions = await import("../src/lib/actions.ts");
+  const { buildDecisionReportModel } = await import("../src/lib/report/decision-report-model.ts");
+  const baseInput = {
+    question: "我的天賦是什麼？",
+    locale: "zh-Hant",
+    year: 1988,
+    month: 10,
+    day: 4,
+    hour: 4,
+    minute: 40,
+    timeUnknown: false,
+    gender: "male",
+    relation: "same",
+    city: SANMING,
+    liveCity: SYDNEY,
+    ziPolicy: "midnight",
+    useTrueSolar: true,
+  };
+
+  const talent = await actions.analyzeLife({ data: baseInput });
+  assert.match(talent.reading.directAnswer, /研究、吸收、整理複雜資訊|建立方法/);
+  assert.doesNotMatch((talent.reading.directAnswer.split(/[。！？!?]/)[0] ?? ""), /格局|旺衰|偏旺/);
+  const talentModel = buildDecisionReportModel(talent);
+  assert.equal(talentModel.confidence, "medium");
+  assert.equal(talentModel.confidenceLabel, "有依據");
+  assert.doesNotMatch(talentModel.confidenceBasis, /資料足以支撐|资料足以支撑|較高|较高/);
+
+  const work = await actions.followUpLife({ data: { question: "那我適合什麼工作？", base: talent, relation: "same" } });
+  assert.equal(work.reading.kind, "career");
+  assert.match(work.reading.directAnswer, /工作|職業|岗位|成果|責任|输出|輸出/);
+  assert.doesNotMatch(work.reading.directAnswer, /我的天賦是什麼/);
+
+  const love = await actions.followUpLife({ data: { question: "那感情呢？", base: talent, relation: "same" } });
+  assert.equal(love.reading.kind, "love");
+  assert.match(love.reading.directAnswer, /關係|关系|聯繫|联系|投入|承諾|承诺|下一步/);
+  assert.doesNotMatch(love.reading.directAnswer, /正印格|天賦|天赋/);
+
+  const timing = await actions.followUpLife({ data: { question: "明年幾月適合換工作？", base: talent, relation: "same" } });
+  assert.equal(timing.reading.kind, "career");
+  assert.match(timing.reading.directAnswer, /較順的窗口|较顺的窗口/);
+  assert.match(timing.reading.directAnswer, /\d{1,2}月/);
+  assert.doesNotMatch(timing.reading.directAnswer, /天賦|天赋|性格盲點|性格盲点/);
+});
+
 test("出生盘 hemisphere 只取出生地，不被现居悉尼覆盖", () => {
   const c = chart();
   assert.equal(c.cityLabel, SANMING.display);
