@@ -6,6 +6,7 @@ const main = readFileSync(new URL('../src/main.tsx', import.meta.url), 'utf8');
 const root = readFileSync(new URL('../src/routes/__root.tsx', import.meta.url), 'utf8');
 const design = readFileSync(new URL('../src/zhaowu-design-system.css', import.meta.url), 'utf8');
 const login = readFileSync(new URL('../src/routes/login.tsx', import.meta.url), 'utf8');
+const legacyVisual = readFileSync(new URL('../src/legacy-visual-compat.css', import.meta.url), 'utf8');
 const loginApproved = readFileSync(new URL('../src/login-approved-r89.css', import.meta.url), 'utf8');
 const account = readFileSync(new URL('../src/routes/account.tsx', import.meta.url), 'utf8');
 const home = readFileSync(new URL('../src/routes/index.tsx', import.meta.url), 'utf8');
@@ -13,15 +14,20 @@ const r144 = readFileSync(new URL('../src/device-question-flow-r144.css', import
 const siteShell = readFileSync(new URL('../src/components/site-shell.tsx', import.meta.url), 'utf8');
 
 const canonicalImport = "import './zhaowu-design-system.css';";
-const loginApprovedImport = "import './login-approved-r89.css';";
-const legacyLastImport = "import './site-ux-r75-final.css';";
+const legacyImport = "import './legacy-visual-compat.css';";
 
 test('canonical design system is the final global visual authority', () => {
   assert.match(main, /zhaowu-design-system\.css/);
-  assert.match(main, /login-approved-r89\.css/);
-  assert.ok(main.lastIndexOf(canonicalImport) > main.lastIndexOf(legacyLastImport));
-  assert.ok(main.lastIndexOf(canonicalImport) > main.lastIndexOf(loginApprovedImport));
+  assert.match(main, /legacy-visual-compat\.css/);
+  assert.ok(main.lastIndexOf(canonicalImport) > main.lastIndexOf(legacyImport));
   assert.equal(main.lastIndexOf(canonicalImport), main.lastIndexOf("import './"));
+  assert.deepEqual(
+    main.match(/import '\.\/[^']+\.css';/g),
+    ["import './styles.css';", legacyImport, canonicalImport],
+  );
+  assert.match(legacyVisual, /@layer legacy;/);
+  assert.match(legacyVisual, /@import "\.\/login-approved-r89\.css" layer\(legacy\);/);
+  assert.match(legacyVisual, /@import "\.\/site-ux-r75-final\.css" layer\(legacy\);/);
   assert.match(loginApproved, /\.zhaowu-login-shell/);
   assert.doesNotMatch(loginApproved, /\.zhaowu-home-sheet-shell/);
   assert.doesNotMatch(root, /mobile-foundation-r81\.css/);
