@@ -2043,32 +2043,36 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
   --zw-shadow: none;
   --zw-card-radius: 16px;
   --zw-readable: 47rem;
+  --zw-pine-deep: #174b39;
+  --zw-mineral-gold: #a87731;
+  --zw-cinnabar-deep: #973b2f;
 }
 
 body:has(.zhaowu-home-sheet-shell),
 .zhaowu-home-sheet-shell {
-  background: #faf8f1 !important;
+  background: #f7f2e7 !important;
 }
 
 body:has(.zhaowu-home-sheet-shell) {
   background-image:
-    radial-gradient(circle at 18% 8%, rgba(255, 255, 255, .50), transparent 42%),
-    linear-gradient(180deg, #faf8f1, #fffaf1) !important;
+    radial-gradient(circle at 18% 8%, rgba(255, 255, 255, .34), transparent 42%),
+    linear-gradient(180deg, #f7f2e7, #fbf5e8) !important;
 }
 
 .zhaowu-home-sheet-shell::before {
   background:
-    linear-gradient(180deg, rgba(250, 248, 241, .76), rgba(255, 250, 241, .64)),
-    radial-gradient(circle at 18% 8%, rgba(255, 255, 255, .34), transparent 42%),
+    linear-gradient(180deg, rgba(250, 247, 238, .50), rgba(255, 248, 232, .34)),
+    radial-gradient(circle at 18% 8%, rgba(255, 255, 255, .18), transparent 42%),
     url('/wallpaper-song.jpg') center 72% / cover no-repeat !important;
-  filter: saturate(.62) contrast(.92);
-  opacity: .92;
+  filter: saturate(.92) contrast(1.04) sepia(.08);
+  opacity: .98;
 }
 
 .zhaowu-site-header,
 body:has(.zhaowu-home-layout) .zhaowu-site-header {
-  background: rgba(250, 248, 241, .97) !important;
-  box-shadow: none !important;
+  border-bottom: 1px solid rgba(168, 119, 49, .26) !important;
+  background: rgba(250, 246, 237, .96) !important;
+  box-shadow: 0 8px 28px rgba(58, 43, 24, .07) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
@@ -2085,7 +2089,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 .zhaowu-home-lead {
   margin: 10px 0 38px;
   border-top: 0;
-  border-bottom: 1px solid rgba(168, 134, 82, .24);
+  border-bottom: 1px solid rgba(168, 119, 49, .38);
   padding: clamp(38px, 7vw, 62px) 14px clamp(42px, 7vw, 64px);
 }
 
@@ -2094,16 +2098,18 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 
 .zhaowu-home-lead p,
 .zhaowu-home-explore-label {
-  color: #8b6738 !important;
+  color: #895e24 !important;
   font-size: 12px !important;
+  font-weight: 650;
   letter-spacing: .24em;
 }
 
 .zhaowu-home-lead h1 {
   max-width: 13em;
   margin-top: 13px;
+  color: var(--zw-pine-deep) !important;
   font-size: clamp(36px, 6vw, 52px);
-  font-weight: 560;
+  font-weight: 650;
   line-height: 1.22;
   letter-spacing: .055em;
 }
@@ -2111,6 +2117,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 .zhaowu-home-lead > span {
   max-width: 39rem;
   margin-top: 17px;
+  color: #4b453a !important;
   font-size: 16px;
   line-height: 1.9;
 }
@@ -2132,11 +2139,11 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 .zhaowu-specialist-sheet,
 .zhaowu-updates-hero,
 .zhaowu-updates-card {
-  border: 1px solid rgba(93, 77, 55, .15) !important;
+  border: 1px solid rgba(148, 105, 46, .31) !important;
   border-radius: var(--zw-card-radius) !important;
   background: #fffaf1 !important;
   background-image: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 16px 42px rgba(58, 43, 24, .10), inset 0 3px 0 rgba(23, 75, 57, .86) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
@@ -2159,8 +2166,9 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 .zhaowu-home-layout #analysisForm .zhaowu-bazi-hub h2,
 .zhaowu-home-layout #analysisForm .zhaowu-bazi-stage h2,
 .zhaowu-home-layout #analysisForm .zhaowu-question-stage h2 {
+  color: var(--zw-pine-deep) !important;
   font-size: clamp(29px, 5vw, 38px) !important;
-  font-weight: 540 !important;
+  font-weight: 630 !important;
   line-height: 1.28 !important;
 }
 
@@ -2184,11 +2192,19 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 .zhaowu-login-shell select,
 .zhaowu-login-shell textarea {
   min-height: 48px !important;
-  border-color: rgba(99, 79, 52, .2) !important;
+  border-color: rgba(76, 91, 68, .28) !important;
   border-radius: 10px !important;
-  background: #fffdf8 !important;
+  background: #fffdf6 !important;
   font-size: 16px !important;
   box-shadow: none !important;
+}
+
+.zhaowu-home-sheet-shell input:focus,
+.zhaowu-home-sheet-shell select:focus,
+.zhaowu-home-sheet-shell textarea:focus {
+  border-color: rgba(168, 119, 49, .76) !important;
+  outline: 2px solid rgba(168, 119, 49, .14) !important;
+  outline-offset: 1px;
 }
 
 .zhaowu-home-sheet-shell #analysisForm button[type="submit"],
@@ -2196,8 +2212,11 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 .zhaowu-decree-generate {
   min-height: 50px !important;
   margin-top: 26px !important;
+  border: 1px solid var(--zw-mineral-gold) !important;
   border-radius: 12px !important;
-  box-shadow: none !important;
+  background: var(--zw-pine-deep) !important;
+  color: #fffaf1 !important;
+  box-shadow: 0 8px 20px rgba(23, 75, 57, .18) !important;
 }
 
 .zhaowu-home-explore {
@@ -2209,10 +2228,11 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 
 .zhaowu-home-disclosure,
 .zhaowu-home-disclosure.is-open {
-  border: 1px solid rgba(93, 77, 55, .14);
+  border: 1px solid rgba(148, 105, 46, .30);
+  border-inline-start: 3px solid var(--zw-cinnabar-deep);
   border-radius: 14px;
   background: #fffaf1;
-  box-shadow: none;
+  box-shadow: 0 12px 30px rgba(58, 43, 24, .08);
 }
 
 .zhaowu-home-disclosure-trigger {
@@ -2221,8 +2241,9 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 }
 
 .zhaowu-home-disclosure-trigger strong {
+  color: var(--zw-pine-deep);
   font-size: 22px;
-  font-weight: 560;
+  font-weight: 630;
 }
 
 .zhaowu-home-disclosure-trigger small {
@@ -2235,7 +2256,8 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
   flex-basis: 34px;
   width: 34px;
   height: 34px;
-  background: transparent;
+  border-color: rgba(168, 119, 49, .42);
+  background: rgba(168, 119, 49, .08);
 }
 
 .zhaowu-home-disclosure-trigger > i::before,
@@ -2282,8 +2304,10 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 .zhaowu-dragon-bubble { width: min(13.5rem, calc(100vw - 5rem)); }
 
 [data-zw-theme="night"] .zhaowu-home-sheet-shell::before {
-  background: linear-gradient(180deg, #0a1915, #0d211b) !important;
-  filter: none;
+  background:
+    linear-gradient(180deg, rgba(5, 20, 16, .68), rgba(7, 28, 22, .76)),
+    url('/wallpaper-song.jpg') center 72% / cover no-repeat !important;
+  filter: saturate(.48) brightness(.48) contrast(1.08);
   opacity: 1;
 }
 

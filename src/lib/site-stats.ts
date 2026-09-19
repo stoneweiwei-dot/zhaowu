@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.20-r166",
-  updateNumber: 166,
-  publishedAt: "2026-09-20T03:08:00+10:00",
-  latestSummary: "首頁遠山背景恢復為清楚可見的低權重宋式底景；吉象圖鑑入口暫時退出首頁，原圖與站主管理保留。",
+  version: "ZW-WEB-2026.09.20-r167",
+  updateNumber: 167,
+  publishedAt: "2026-09-20T05:09:00+10:00",
+  latestSummary: "首頁由寡淡米白調整為礦物色宋畫層級：遠山、松綠、鎏金與朱砂重新建立深淺，宣紙內容仍保持清楚可讀。",
   details: {
-    "zh-Hant": ["提高固定宋式遠山的可見度，同時維持文字與表單使用不透明暖米宣紙。", "首頁不再載入吉象圖鑑；獨立圖鑑頁、原始素材與站主管理均未刪除。"],
-    en: ["The fixed Song-style landscape is visible again while all reading surfaces remain opaque and readable.", "The atlas no longer loads on the homepage; its dedicated route, source assets and owner controls remain intact."],
+    "zh-Hant": ["降低洗白遮罩，讓宋式遠山保留礦物色、墨線與遠近層次。", "主標、卡片、欄位與延伸入口加入深松綠、鎏金細線和少量朱砂；不透明宣紙與手機可讀性維持不變。"],
+    en: ["Reduced the pale wash so the Song-style landscape retains mineral colour, ink detail and depth.", "Deep pine, restrained gold and cinnabar now reinforce hierarchy while opaque paper surfaces and mobile readability remain intact."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }

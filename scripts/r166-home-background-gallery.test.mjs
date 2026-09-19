@@ -7,9 +7,8 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 
 test("r166 makes the fixed Song landscape visibly present without weakening paper surfaces", async () => {
   const design = await source("src/zhaowu-design-system.css");
-  assert.match(design, /linear-gradient\(180deg, rgba\(250, 248, 241, \.76\), rgba\(255, 250, 241, \.64\)\)/);
   assert.match(design, /url\('\/wallpaper-song\.jpg'\) center 72% \/ cover no-repeat/);
-  assert.match(design, /filter: saturate\(\.62\) contrast\(\.92\);/);
+  assert.match(design, /\.zhaowu-home-sheet-shell::before[\s\S]*opacity: \.98;/);
   assert.match(design, /\.zhaowu-home-sheet-shell \.zhaowu-customer-record[\s\S]*background: #fffaf1 !important;/);
 });
 
