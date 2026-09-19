@@ -6,7 +6,7 @@ const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
 test("r135 CSS is last-wins and keeps paper cards opaque with dark ink at night", async () => {
-  const main = await source("src/main.tsx");
+  const main = await source("src/legacy-visual-compat.css");
   const css = await source("src/night-readability-r135.css");
   const shell = await source("src/components/site-shell.tsx");
   assert.match(main, /night-readability-r135\.css/);
