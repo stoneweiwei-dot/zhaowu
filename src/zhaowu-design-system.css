@@ -2029,3 +2029,335 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
   .zhaowu-header-mode-toggle { flex-basis: 70px !important; width: 70px !important; min-width: 70px !important; }
   .zhaowu-latest-update-link { padding-inline: 10px !important; }
 }
+
+/* r163 — canonical premium Song-paper surface. This stays inside the single
+   final visual authority: no extra stylesheet or runtime DOM restyling. */
+:root {
+  --zw-paper: #faf8f1;
+  --zw-paper-soft: #fffaf1;
+  --zw-paper-strong: #fffaf1;
+  --zw-ink: #292720;
+  --zw-ink-soft: #565047;
+  --zw-muted: #756d62;
+  --zw-line: rgba(76, 64, 47, .15);
+  --zw-shadow: none;
+  --zw-card-radius: 16px;
+  --zw-readable: 47rem;
+}
+
+body:has(.zhaowu-home-sheet-shell),
+.zhaowu-home-sheet-shell {
+  background: #faf8f1 !important;
+}
+
+.zhaowu-home-sheet-shell::before {
+  background:
+    linear-gradient(180deg, rgba(250, 248, 241, .94), rgba(255, 250, 241, .90)),
+    radial-gradient(circle at 18% 8%, rgba(255, 255, 255, .52), transparent 42%),
+    url('/wallpaper-song.jpg') center 72% / cover no-repeat !important;
+  filter: saturate(.46) contrast(.82);
+  opacity: .82;
+}
+
+.zhaowu-site-header,
+body:has(.zhaowu-home-layout) .zhaowu-site-header {
+  background: rgba(250, 248, 241, .97) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-app-frame,
+.zhaowu-home-app-frame,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-layout) .zhaowu-home-app-frame {
+  width: min(calc(100% - 28px), 780px) !important;
+  max-width: 780px !important;
+  margin: 22px auto 36px !important;
+  padding: 0 14px 52px !important;
+}
+
+.zhaowu-home-lead {
+  margin: 10px 0 38px;
+  border-top: 0;
+  border-bottom: 1px solid rgba(168, 134, 82, .24);
+  padding: clamp(38px, 7vw, 62px) 14px clamp(42px, 7vw, 64px);
+}
+
+.zhaowu-home-lead::before,
+.zhaowu-home-lead::after { content: none; }
+
+.zhaowu-home-lead p,
+.zhaowu-home-explore-label {
+  color: #8b6738 !important;
+  font-size: 12px !important;
+  letter-spacing: .24em;
+}
+
+.zhaowu-home-lead h1 {
+  max-width: 13em;
+  margin-top: 13px;
+  font-size: clamp(36px, 6vw, 52px);
+  font-weight: 560;
+  line-height: 1.22;
+  letter-spacing: .055em;
+}
+
+.zhaowu-home-lead > span {
+  max-width: 39rem;
+  margin-top: 17px;
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.zhaowu-home-stage--primary { margin-top: 0 !important; }
+
+.zhaowu-home-layout #analysisForm.zhaowu-analysis-flow,
+.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+  gap: clamp(46px, 7vw, 64px) !important;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-customer-record,
+.zhaowu-home-sheet-shell .zhaowu-bazi-stage,
+.zhaowu-home-sheet-shell .zhaowu-bazi-hub,
+.zhaowu-home-sheet-shell .zhaowu-question-stage,
+.zhaowu-home-sheet-shell .zhaowu-result-card,
+.zhaowu-home-sheet-shell .zhaowu-focused-report,
+.zhaowu-home-sheet-shell .zhaowu-unified-birth-report,
+.zhaowu-specialist-sheet,
+.zhaowu-updates-hero,
+.zhaowu-updates-card {
+  border: 1px solid rgba(93, 77, 55, .15) !important;
+  border-radius: var(--zw-card-radius) !important;
+  background: #fffaf1 !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-customer-record,
+.zhaowu-home-sheet-shell .zhaowu-bazi-stage,
+.zhaowu-home-sheet-shell .zhaowu-bazi-hub,
+.zhaowu-home-sheet-shell .zhaowu-question-stage {
+  padding: clamp(30px, 5vw, 42px) !important;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-bazi-stage,
+.zhaowu-home-sheet-shell .zhaowu-bazi-hub,
+.zhaowu-home-sheet-shell .zhaowu-question-stage {
+  margin-top: 0 !important;
+}
+
+.zhaowu-home-layout #analysisForm .zhaowu-question-sheet h2,
+.zhaowu-home-layout #analysisForm .zhaowu-customer-record h2,
+.zhaowu-home-layout #analysisForm .zhaowu-bazi-hub h2,
+.zhaowu-home-layout #analysisForm .zhaowu-bazi-stage h2,
+.zhaowu-home-layout #analysisForm .zhaowu-question-stage h2 {
+  font-size: clamp(29px, 5vw, 38px) !important;
+  font-weight: 540 !important;
+  line-height: 1.28 !important;
+}
+
+.zhaowu-section-lead,
+.zhaowu-specialist-sheet .lead,
+.zhaowu-updates-lead {
+  margin-top: 11px !important;
+  font-size: 16px !important;
+  line-height: 1.86 !important;
+}
+
+.zhaowu-customer-record .zhaowu-birth-fields { margin-top: 30px !important; }
+.zhaowu-customer-record .zhaowu-birth-date-grid,
+.zhaowu-customer-record .zhaowu-birth-time-grid,
+.zhaowu-customer-record .zhaowu-birth-select-grid { gap: 12px !important; }
+
+.zhaowu-home-sheet-shell input,
+.zhaowu-home-sheet-shell select,
+.zhaowu-home-sheet-shell textarea,
+.zhaowu-login-shell input,
+.zhaowu-login-shell select,
+.zhaowu-login-shell textarea {
+  min-height: 48px !important;
+  border-color: rgba(99, 79, 52, .2) !important;
+  border-radius: 10px !important;
+  background: #fffdf8 !important;
+  font-size: 16px !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-home-sheet-shell #analysisForm button[type="submit"],
+.zhaowu-result-primary,
+.zhaowu-decree-generate {
+  min-height: 50px !important;
+  margin-top: 26px !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-home-explore {
+  gap: 12px;
+  margin-top: clamp(48px, 8vw, 72px);
+}
+
+.zhaowu-home-explore-label { margin: 0 2px 7px !important; }
+
+.zhaowu-home-disclosure,
+.zhaowu-home-disclosure.is-open {
+  border: 1px solid rgba(93, 77, 55, .14);
+  border-radius: 14px;
+  background: #fffaf1;
+  box-shadow: none;
+}
+
+.zhaowu-home-disclosure-trigger {
+  min-height: 82px;
+  padding: 18px 20px;
+}
+
+.zhaowu-home-disclosure-trigger strong {
+  font-size: 22px;
+  font-weight: 560;
+}
+
+.zhaowu-home-disclosure-trigger small {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.zhaowu-home-disclosure-trigger > i {
+  flex-basis: 34px;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+}
+
+.zhaowu-home-disclosure-trigger > i::before,
+.zhaowu-home-disclosure-trigger > i::after {
+  left: 9px;
+  top: 16px;
+}
+
+.zhaowu-home-disclosure-panel {
+  gap: 20px;
+  padding: 20px;
+}
+
+.zhaowu-dragon-guide {
+  width: 3.25rem;
+  height: 3.25rem;
+}
+
+.zhaowu-dragon-guide-trigger {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-color: rgba(44, 83, 69, .22);
+  background: #fffaf1;
+  padding: .2rem;
+  box-shadow: 0 8px 24px rgba(28, 54, 46, .14);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.zhaowu-dragon-guide-avatar { width: 2.72rem; }
+.zhaowu-dragon-guide-avatar.is-thinking { width: 2.65rem; }
+
+.zhaowu-dragon-bubble,
+.zhaowu-dragon-guide-panel,
+.zhaowu-dragon-music,
+.zhaowu-dragon-guide-answer {
+  background: #fffaf1;
+  background-image: none;
+  box-shadow: 0 12px 34px rgba(39, 49, 42, .14);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.zhaowu-dragon-bubble { width: min(13.5rem, calc(100vw - 5rem)); }
+
+[data-zw-theme="night"] .zhaowu-home-sheet-shell::before {
+  background: linear-gradient(180deg, #0a1915, #0d211b) !important;
+  filter: none;
+  opacity: 1;
+}
+
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-customer-record,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-hub,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-question-stage,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-result-card,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-focused-report,
+[data-zw-theme="night"] .zhaowu-home-disclosure,
+[data-zw-theme="night"] .zhaowu-home-disclosure.is-open,
+[data-zw-theme="night"] .zhaowu-dragon-bubble,
+[data-zw-theme="night"] .zhaowu-dragon-guide-panel,
+[data-zw-theme="night"] .zhaowu-dragon-music,
+[data-zw-theme="night"] .zhaowu-dragon-guide-answer {
+  border-color: rgba(212, 176, 116, .22) !important;
+  background: #102a23 !important;
+  color: #f1e8d8 !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 780px) {
+  .zhaowu-app-frame,
+  .zhaowu-home-app-frame,
+  .zhaowu-home-sheet-shell:has(.zhaowu-home-layout) .zhaowu-home-app-frame {
+    width: 100% !important;
+    margin: 8px auto 24px !important;
+    padding: 0 16px 44px !important;
+  }
+
+  .zhaowu-home-lead {
+    margin-bottom: 30px;
+    padding: 32px 0 38px;
+  }
+
+  .zhaowu-home-lead h1 {
+    max-width: 10em;
+    font-size: clamp(32px, 9vw, 39px);
+    line-height: 1.25;
+  }
+
+  .zhaowu-home-lead > span {
+    max-width: 31rem;
+    font-size: 16px;
+    line-height: 1.82;
+  }
+
+  .zhaowu-home-sheet-shell .zhaowu-customer-record,
+  .zhaowu-home-sheet-shell .zhaowu-bazi-stage,
+  .zhaowu-home-sheet-shell .zhaowu-bazi-hub,
+  .zhaowu-home-sheet-shell .zhaowu-question-stage {
+    padding: 26px 20px !important;
+  }
+
+  .zhaowu-home-layout #analysisForm.zhaowu-analysis-flow,
+  .zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+    gap: 42px !important;
+  }
+
+  .zhaowu-home-disclosure-trigger { padding: 17px 16px; }
+  .zhaowu-home-disclosure-panel { padding: 14px; }
+}
+
+@media (max-width: 430px) {
+  .zhaowu-home-sheet-shell::before {
+    background-position: center, center, 59% bottom !important;
+  }
+
+  .zhaowu-home-layout #analysisForm .zhaowu-question-sheet h2,
+  .zhaowu-home-layout #analysisForm .zhaowu-customer-record h2,
+  .zhaowu-home-layout #analysisForm .zhaowu-bazi-hub h2,
+  .zhaowu-home-layout #analysisForm .zhaowu-bazi-stage h2,
+  .zhaowu-home-layout #analysisForm .zhaowu-question-stage h2 {
+    font-size: 29px !important;
+  }
+
+  .zhaowu-home-disclosure-trigger strong { font-size: 21px; }
+  .zhaowu-dragon-guide,
+  .zhaowu-dragon-guide-trigger { width: 3.25rem; height: 3.25rem; }
+  .zhaowu-dragon-guide-avatar { width: 2.72rem; }
+  .zhaowu-dragon-guide-panel { width: calc(100vw - 1rem); }
+  .zhaowu-dragon-bubble { width: min(13rem, calc(100vw - 4.5rem)); }
+}

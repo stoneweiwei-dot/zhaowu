@@ -36,7 +36,9 @@ test("dragon assistant is draggable, snaps to an edge and persists its position"
 test("dragon bubbles rotate between guidance and compact music controls", async () => {
   const guide = await source("src/components/green-dragon-guide.tsx");
   assert.match(guide, /guideBubbles/);
-  assert.match(guide, /Math\.random\(\) < 0\.38/);
+  assert.match(guide, /Math\.random\(\) < 0\.26/);
+  assert.match(guide, /BUBBLE_INITIAL_DELAY_MS = 18_000/);
+  assert.match(guide, /BUBBLE_REPEAT_MIN_MS = 48_000/);
   assert.match(guide, /data-dragon-bubble/);
   assert.match(guide, /bubble\.kind === "music"/);
   assert.match(guide, /zhaowu-music-command/);

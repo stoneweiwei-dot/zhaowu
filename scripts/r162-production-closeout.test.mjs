@@ -46,13 +46,13 @@ test("owner console data is routed through the same-origin bridge", async () => 
   assert.match(netlify, /path: "\/api\/owner-data"/);
 });
 
-test("r162 release and database hardening are versioned in source", async () => {
+test("r162 database hardening remains present under the current release", async () => {
   const stats = await source("src/lib/site-stats.ts");
   const verification = await source("lib/zhaowu-verification.js");
   const migration = await source("supabase/migrations/20260919075644_restrict_customer_classic_passage_rpc.sql");
-  assert.match(stats, /ZW-WEB-2026\.09\.19-r162/);
-  assert.match(stats, /updateNumber: 162/);
-  assert.match(verification, /ZW-WEB-2026\.09\.19-r162/);
+  assert.match(stats, /ZW-WEB-2026\.09\.19-r163/);
+  assert.match(stats, /updateNumber: 163/);
+  assert.match(verification, /ZW-WEB-2026\.09\.19-r163/);
   assert.match(migration, /revoke all on function public\.get_customer_classic_passage\(jsonb\) from public, anon, authenticated/i);
   assert.match(migration, /grant execute .* service_role/i);
 });
