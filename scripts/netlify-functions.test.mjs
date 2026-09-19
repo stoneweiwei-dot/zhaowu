@@ -19,11 +19,11 @@ const endpoints = [
   "zhaowu-doctor",
 ];
 
-test("Netlify builds the same Vite output and keeps SPA routing", () => {
+test("archived Netlify keeps compatibility config but skips automatic builds", () => {
   assert.match(netlify, /command = "npm run build"/);
   assert.match(netlify, /publish = "dist"/);
   assert.match(netlify, /functions = "netlify\/functions"/);
-  assert.doesNotMatch(netlify, /ignore = "exit 0"/);
+  assert.match(netlify, /ignore = "exit 0"/);
   assert.match(netlify, /from = "\/\*"[\s\S]*to = "\/index\.html"/);
 });
 
@@ -33,7 +33,7 @@ test("owner music bundles its sealed key instead of reading beside the serverles
 });
 
 for (const endpoint of endpoints) {
-  test(`Netlify exposes /api/${endpoint} through the canonical handler`, async () => {
+  test(`archived Netlify retains /api/${endpoint} compatibility handler`, async () => {
     const source = await readFile(new URL(`netlify/functions/${endpoint}.ts`, root), "utf8");
     assert.match(source, new RegExp(`api/${endpoint}\\.js`));
     assert.match(source, new RegExp(`path: "\\/api\\/${endpoint}"`));
