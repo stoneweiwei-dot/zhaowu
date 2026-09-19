@@ -64,7 +64,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await expect(page.locator("#analysisForm")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "錄入生辰", exact: true })).toBeVisible();
     await expect(page.locator("#analysis-question")).toHaveCount(0);
     await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
     await expect(page.getByText("子時換日", { exact: true })).toHaveCount(0);
@@ -74,7 +74,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("dialog", { name: "把昭梧存到手機桌面", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "顯示 iPhone 保存步驟", exact: true })).toBeVisible();
     await page.locator("#analysisForm").scrollIntoViewIfNeeded();
-    await expect(page.locator('#analysisForm button[type="submit"]')).toHaveText("保存並排出四柱命盤");
+    await expect(page.locator('#analysisForm button[type="submit"]')).toHaveText("保存並生成昭梧命書");
     await expectMobileViewportHealthy(page);
   });
 
@@ -83,14 +83,14 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await expect(page.getByRole("button", { name: "繁體中文", exact: true })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "錄入生辰", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "English", exact: true }).click();
-    await expect(page.getByRole("heading", { name: "Your birth details", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Enter your birth record", exact: true })).toBeVisible();
     await expect(page.locator("#analysis-question")).toHaveCount(0);
     await expect(page.locator("#birth-year")).toBeVisible();
     await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
     await page.getByRole("button", { name: "繁體中文", exact: true }).click();
-    await expect(page.getByRole("heading", { name: "客人資料", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "錄入生辰", exact: true })).toBeVisible();
     await expectMobileViewportHealthy(page);
   });
 
@@ -117,7 +117,7 @@ test.describe("iPhone Safari core customer flow", () => {
 
     await page.getByRole("button", { name: "修改資料", exact: true }).first().click();
     await page.locator("#birth-year").fill("1989");
-    await page.getByRole("button", { name: "保存並排出四柱命盤", exact: true }).click();
+    await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
     await expect(yearPillar).not.toHaveText(before ?? "");
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toBeVisible();
     await expectMobileViewportHealthy(page);
@@ -185,7 +185,7 @@ test.describe("iPhone Safari core customer flow", () => {
     const firstCity = page.locator('#birth-city-results [role="option"]').first();
     await expect(firstCity).toBeVisible();
     await firstCity.click();
-    await page.getByRole("button", { name: "保存並排出四柱命盤", exact: true }).click();
+    await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
 
     await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
     await expect(page.locator("#bazi [data-bazi-chart]")).toBeVisible();
@@ -198,8 +198,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("旺衰底盤");
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("格局方向");
     await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "你的完整綜合報告", exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "你真正想問的是什麼？", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "你的昭梧命書", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "沿著這份命書，繼續問你真正關心的事", exact: true })).toBeVisible();
     const sectionOrder = await page.evaluate(() => ["customer-record", "bazi", "question-stage"].map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? -1));
     expect(sectionOrder[0]).toBeLessThan(sectionOrder[1]);
     expect(sectionOrder[1]).toBeLessThan(sectionOrder[2]);
