@@ -18,7 +18,7 @@ export function customerCopy(value: string): string {
 
   const cleaned = (text.match(/[^。！？!?\n]+[。！？!?]?/g) ?? [text])
     .map((part) => part.trim())
-    .filter((part) => part && !INTERNAL_SENTENCE.test(part))
+    .filter((part) => part && !INTERNAL_SENTENCE.test(part) && !GENERIC_FILLER_SENTENCE.test(part))
     .join("")
     .replace(/。{2,}/g, "。")
     .trim();
