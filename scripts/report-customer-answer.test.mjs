@@ -100,3 +100,10 @@ test('a work-problem question does not demand two job offers',async()=>{
   assert.doesNotMatch(r.reading.action,/兩個選擇|两个选择|三次/);
   assert.match(r.reading.action,/工作/);
 });
+
+test('a stay-or-leave career choice keeps a concrete next step even when the contract classifies it as a choice', async()=>{
+  const r=await run('這份工作我應該繼續還是離開？');
+  assert.ok(r.reading.customerAnswer.actions.length > 0);
+  assert.match(r.reading.customerAnswer.direct,/留職|離開|工作/);
+  assert.match(r.reading.customerAnswer.actions.join(''),/薪|工時|選擇/);
+});
