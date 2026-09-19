@@ -25,6 +25,15 @@ test('paid report opens with the exact user question and a two-sentence direct a
   assert.ok(pages.indexOf('<ChartSnapshot') < pages.indexOf('<ReportVisualBook'));
 });
 
+test('customer surface shows evidence status instead of birth-data-based confidence and hides unrelated body content', () => {
+  assert.match(pages, /confidence:\s*"依據狀態"/);
+  assert.doesNotMatch(pages, /confidence:\s*"判斷把握"/);
+  assert.match(model, /confidenceLabel:\s*limited[\s\S]*?"受限"[\s\S]*?"有依據"/);
+  assert.doesNotMatch(model, /"較高"|"Higher"/);
+  assert.match(model, /contract\.kind === "health"\) modules\.push\("body"\)/);
+  assert.match(pages, /showBody\s*&&\s*content\.body\.length/);
+});
+
 test('question relevance controls timing-heavy visual modules', () => {
   assert.match(model, /supportingModules/);
   assert.match(pages, /model\?\.supportingModules\.includes\("luck"\)/);
