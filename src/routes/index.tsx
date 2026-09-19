@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { AnalysisForm } from "@/components/analysis-form";
-import { AuspiciousGallerySection } from "@/components/auspicious-gallery-section";
 import { DailyAlmanacWidget } from "@/components/daily-almanac-widget";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
@@ -22,7 +21,7 @@ export const Route = createFileRoute("/")({ component: Home });
 function Home() {
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
-  const [openPanel, setOpenPanel] = useState<"today" | "quiz" | "gallery" | "notes" | null>(null);
+  const [openPanel, setOpenPanel] = useState<"today" | "quiz" | "notes" | null>(null);
   const [scentOpen, setScentOpen] = useState(false);
 
   const funCopy = locale === "en"
@@ -35,8 +34,6 @@ function Home() {
         todayTitle: "Today",
         todayHint: "almanac, dress, spirit slip and recent sky events",
         quizHint: "optional reflective tests, kept separate from the formal chart",
-        galleryTitle: "Auspicious atlas",
-        galleryHint: "one selected symbolic artwork at a time",
         notesTitle: "Notes on life",
         notesHint: "the latest essay and the full editorial archive",
         scentTitle: "Five-Element Scent Map",
@@ -59,8 +56,6 @@ function Home() {
           todayTitle: "今日",
           todayHint: "黄历、穿衣、灵签与近日天象",
           quizHint: "可选的自我观察，不混入正式命盘",
-          galleryTitle: "吉象图鉴",
-          galleryHint: "每次只看一幅精选吉祥图",
           notesTitle: "观世录",
           notesHint: "最新文章与完整内容档案",
           scentTitle: "五行香气谱",
@@ -82,8 +77,6 @@ function Home() {
           todayTitle: "今日",
           todayHint: "黃曆、穿衣、靈籤與近日天象",
           quizHint: "可選的自我觀察，不混入正式命盤",
-          galleryTitle: "吉象圖鑑",
-          galleryHint: "每次只看一幅精選吉祥圖",
           notesTitle: "觀世錄",
           notesHint: "最新文章與完整內容檔案",
           scentTitle: "五行香氣譜",
@@ -138,10 +131,6 @@ function Home() {
               {scentOpen ? <ScentFiveElementTest result={current} /> : null}
             </div>
           </div>
-        </HomeDisclosure>
-
-        <HomeDisclosure id="home-gallery" title={funCopy.galleryTitle} hint={funCopy.galleryHint} open={openPanel === "gallery"} onToggle={() => setOpenPanel((value) => value === "gallery" ? null : "gallery")}>
-          <AuspiciousGallerySection />
         </HomeDisclosure>
 
         <HomeDisclosure id="home-notes" title={funCopy.notesTitle} hint={funCopy.notesHint} open={openPanel === "notes"} onToggle={() => setOpenPanel((value) => value === "notes" ? null : "notes")}>

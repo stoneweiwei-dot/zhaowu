@@ -5,7 +5,7 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("home keeps a compact face-safe atlas preview while the full public atlas has its own route", async () => {
+test("home hides the atlas while the full public atlas and owner library remain intact", async () => {
   const home = await source("src/routes/index.tsx");
   const atlas = await source("src/components/auspicious-gallery-section.tsx");
   const atlasRoute = await source("src/routes/auspicious-atlas.tsx");
@@ -13,8 +13,8 @@ test("home keeps a compact face-safe atlas preview while the full public atlas h
   const owner = await source("src/components/owner-gallery-manager.tsx");
   const ownerRoute = await source("src/routes/gallery.tsx");
 
-  assert.match(home, /AuspiciousGallerySection/);
-  assert.match(home, /<AuspiciousGallerySection\s*\/\>/);
+  assert.doesNotMatch(home, /AuspiciousGallerySection/);
+  assert.doesNotMatch(home, /home-gallery|galleryTitle|galleryHint/);
   assert.match(atlas, /mode = "preview"/);
   assert.match(atlas, /PREVIEW_VISIBLE = 1/);
   assert.match(atlas, /FULL_INITIAL_VISIBLE = 24/);
