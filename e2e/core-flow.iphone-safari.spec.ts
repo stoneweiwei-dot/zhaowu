@@ -53,7 +53,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.reload();
     await expect(controls.nth(1)).toHaveAttribute("aria-pressed", "true");
     await expectMobileViewportHealthy(page);
-    await page.getByRole("button", { name: "打開青玉小龍助手", exact: true }).click();
+    await page.locator(".zhaowu-dragon-guide-trigger").click();
     const panel = page.getByRole("dialog", { name: "青玉小龍助手", exact: true });
     await expect(panel.locator("header p")).toHaveCSS("color", "rgb(241, 232, 216)");
     await expect(panel.locator("header p")).toHaveCSS("font-size", "14px");

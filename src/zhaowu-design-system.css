@@ -2369,7 +2369,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 }
 
 /* Canonical reading controls: both modes use explicit selection and readable descendants. */
-.zhaowu-header-mode-toggle > button { border: 0; padding: 0 3px; background: transparent; cursor: pointer; }
+.zhaowu-site-header .zhaowu-header-mode-toggle > button { min-height: 44px !important; border: 0; padding: 0 3px; background: transparent; cursor: pointer; }
 .zhaowu-header-mode-toggle > button:focus-visible { outline: 2px solid var(--zw-gold); outline-offset: -3px; }
 @media (max-width: 430px) {
   .zhaowu-header-nav { flex-wrap: wrap; justify-content: flex-end !important; }
