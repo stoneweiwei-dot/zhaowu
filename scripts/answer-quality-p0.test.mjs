@@ -10,7 +10,7 @@ import {
 } from "../src/lib/qa/answer-quality.ts";
 
 test("P0 corpus covers all required answer-quality topics", () => {
-  const required = ["格局", "身強身弱", "用神", "病藥", "大運", "流年", "工作", "感情", "財運", "二選一", "應期", "六親", "D60", "紫微", "未知時辰", "多問題混合"];
+  const required = ["天賦", "格局", "身強身弱", "用神", "病藥", "大運", "流年", "工作", "感情", "財運", "二選一", "應期", "六親", "D60", "紫微", "未知時辰", "多問題混合"];
   const topics = new Set(ANSWER_QUALITY_CORPUS.map((item) => item.topic));
   for (const topic of required) assert.equal(topics.has(topic), true, `missing QA topic: ${topic}`);
 });
@@ -44,6 +44,14 @@ test("decision questions require an actual decision or explicit cannot-judge sta
   assert.equal(detectQuestionFocus(q), "decision");
   assert.equal(directAnswerCoversQuestion(q, "職業判斷以能否形成穩定做功與承載為核心。"), false);
   assert.equal(directAnswerCoversQuestion(q, "直接回答：目前不能可靠判成值得繼續或不值得繼續；需要現職條件。"), true);
+});
+
+test("talent questions require concrete abilities rather than a generic structure summary", () => {
+  const q = "我的天賦是什麼？";
+  assert.equal(detectQaIntent(q), "self");
+  assert.equal(detectQuestionFocus(q), "talent");
+  assert.equal(directAnswerCoversQuestion(q, "這張盤以正印格為主，日主偏旺。"), false);
+  assert.equal(directAnswerCoversQuestion(q, "較有依據的能力是研究、整理複雜資訊並建立方法，也常表現在教學與知識管理。"), true);
 });
 
 test("self subtopics require matching answer coverage", () => {
