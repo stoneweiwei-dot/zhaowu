@@ -9,7 +9,7 @@ test("one visible Gallery keeps owner asset management independent of the fixed 
   const shell = await source("src/components/site-shell.tsx");
   const account = await source("src/routes/account.tsx");
   const gallery = await source("src/components/owner-gallery-manager.tsx");
-  const main = await source("src/main.tsx");
+  const main = await source("src/legacy-visual-compat.css");
   const lock = await source("src/gallery-unification.css");
 
   assert.doesNotMatch(shell, /from "@\/lib\/background-assets"/);
