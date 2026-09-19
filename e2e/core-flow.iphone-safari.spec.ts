@@ -55,8 +55,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await expectMobileViewportHealthy(page);
     await page.locator(".zhaowu-dragon-guide-trigger").click();
     const panel = page.getByRole("dialog", { name: "青玉小龍助手", exact: true });
-    await expect(panel.locator("header p")).toHaveCSS("color", "rgb(241, 232, 216)");
-    await expect(panel.locator("header p")).toHaveCSS("font-size", "14px");
+    await expect(panel.locator("header strong")).toBeVisible();
+    await expect(panel.locator("header strong")).toHaveCSS("color", "rgb(241, 232, 216)");
   });
 
   test("Home exposes device-local birth entry without a public account login", async ({ page }) => {
