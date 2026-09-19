@@ -127,6 +127,32 @@ test("完整問答流程：天賦、追問工作、感情與月份各自回答�
   assert.match(timing.reading.directAnswer, /較順的窗口|较顺的窗口/);
   assert.match(timing.reading.directAnswer, /\d{1,2}月/);
   assert.doesNotMatch(timing.reading.directAnswer, /天賦|天赋|性格盲點|性格盲点/);
+
+
+  const workDecision = await actions.followUpLife({ data: { question: "這份工作還值得繼續做嗎？", base: talent, relation: "same" } });
+  assert.equal(workDecision.reading.kind, "career");
+  assert.match(workDecision.reading.directAnswer, /不能可靠.*值得繼續|不能可靠.*值得继续/);
+  assert.match(workDecision.reading.directAnswer, /收入|責任|责任|退出成本/);
+
+  const loveOutlook = await actions.followUpLife({ data: { question: "這段感情還有沒有繼續發展的空間？", base: talent, relation: "same" } });
+  assert.equal(loveOutlook.reading.kind, "love");
+  assert.match(loveOutlook.reading.directAnswer, /不能可靠.*發展空間|不能可靠.*发展空间/);
+  assert.match(loveOutlook.reading.directAnswer, /聯繫|联系/);
+  assert.match(loveOutlook.reading.directAnswer, /投入/);
+  assert.match(loveOutlook.reading.directAnswer, /下一步/);
+
+  const moneyRisk = await actions.followUpLife({ data: { question: "接下來一年財務上最該防什麼？", base: talent, relation: "same" } });
+  assert.equal(moneyRisk.reading.kind, "money");
+  assert.match(moneyRisk.reading.directAnswer, /最該防|最该防/);
+  assert.match(moneyRisk.reading.directAnswer, /現金流|现金流/);
+  assert.match(moneyRisk.reading.directAnswer, /最大損失|最大损失/);
+  assert.match(moneyRisk.reading.directAnswer, /退出條件|退出条件/);
+
+  const choice = await actions.followUpLife({ data: { question: "留在現在公司，還是接受新工作？哪個更合適？", base: talent, relation: "same" } });
+  assert.equal(choice.reading.kind, "choice");
+  assert.match(choice.reading.directAnswer, /暫不強選|暂不强选/);
+  assert.match(choice.reading.directAnswer, /A.*B|兩個選項|两个选项/);
+  assert.match(choice.reading.directAnswer, /收入|收益|責任|责任|退出/);
 });
 
 test("出生盘 hemisphere 只取出生地，不被现居悉尼覆盖", () => {
