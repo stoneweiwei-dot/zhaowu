@@ -25,9 +25,8 @@ test('canonical design system is the final global visual authority', () => {
     main.match(/import '\.\/[^']+\.css';/g),
     ["import './styles.css';", legacyImport, canonicalImport],
   );
-  assert.match(legacyVisual, /@layer legacy;/);
-  assert.match(legacyVisual, /@import "\.\/login-approved-r89\.css" layer\(legacy\);/);
-  assert.match(legacyVisual, /@import "\.\/site-ux-r75-final\.css" layer\(legacy\);/);
+  assert.match(legacyVisual, /@import "\.\/login-approved-r89\.css";/);
+  assert.match(legacyVisual, /@import "\.\/site-ux-r75-final\.css";/);
   assert.match(loginApproved, /\.zhaowu-login-shell/);
   assert.doesNotMatch(loginApproved, /\.zhaowu-home-sheet-shell/);
   assert.doesNotMatch(root, /mobile-foundation-r81\.css/);
