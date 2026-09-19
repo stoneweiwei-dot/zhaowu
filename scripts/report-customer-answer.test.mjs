@@ -84,3 +84,19 @@ test('historical answers lose internal instructions without manufacturing replac
   assert.deepEqual(a.reasons,[]);
   assert.doesNotMatch(a.direct,/先從|眼前/);
 });
+
+test('a month-only follow-up keeps the year and repeated follow-ups keep the subject',async()=>{
+  const base=await run('2027年3月和5月，什麼時候適合換工作？');
+  const first=await followUpLife({data:{base,question:'那6月呢？'}});
+  assert.match(first.reading.directAnswer,/2027/);
+  assert.match(first.reading.directAnswer,/6月/);
+  const second=await followUpLife({data:{base:first,question:'那2028年呢？'}});
+  assert.match(second.reading.directAnswer,/2028/);
+  assert.match(second.reading.customerAnswer.contextQuestion,/換工作/);
+});
+
+test('a work-problem question does not demand two job offers',async()=>{
+  const r=await run('我工作最大的問題是什麼？');
+  assert.doesNotMatch(r.reading.action,/兩個選擇|两个选择|三次/);
+  assert.match(r.reading.action,/工作/);
+});

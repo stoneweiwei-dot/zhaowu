@@ -196,10 +196,11 @@ export async function followUpLife({
     if (!question) throw new Error("請先寫下你想繼續問的問題。");
     const shortFollowup = /^(那|所以|然後|然后|接著|接着|那麼|那么|and\b|then\b|what about\b)/i.test(question)
       && !/天[賦赋]|工作|事業|事业|感情|財|财|健康|搬家|旅行|career|job|love|money|health|travel/i.test(question);
-    const changesTime = /(?:20\d{2}|今年|明年|後年|后年|\d{1,2}月|this year|next year)/i.test(question);
-    const context = changesTime
-      ? data.base.question.replace(/20\d{2}年?|(?:\d{1,2}|[一二三四五六七八九十]+)月|今年|明年|後年|后年|this year|next year/gi, "")
-      : data.base.question;
+    const changesYear = /20\d{2}|今年|明年|後年|后年|this year|next year/i.test(question);
+    const changesMonth = /(?:\d{1,2}|[一二三四五六七八九十]+)月|January|February|March|April|May|June|July|August|September|October|November|December/i.test(question);
+    let context = data.base.reading.customerAnswer?.contextQuestion ?? data.base.question;
+    if (changesYear) context = context.replace(/20\d{2}年?|今年|明年|後年|后年|this year|next year/gi, "");
+    if (changesMonth) context = context.replace(/(?:\d{1,2}|[一二三四五六七八九十]+)月|January|February|March|April|May|June|July|August|September|October|November|December/gi, "");
     const answerQuestion = shortFollowup ? `${context}\n${question}` : question;
     const palm = data.base.palm ?? null;
     const kind = inferQuestionKind(answerQuestion, classifyQuestion(answerQuestion));
@@ -230,7 +231,10 @@ export async function followUpLife({
       data.base.locale,
     );
     const reading = finishReading(answerQuestion, data.base.chart, policyReading, data.base.locale);
-    if (reading.customerAnswer) reading.customerAnswer.question = question;
+    if (reading.customerAnswer) {
+      reading.customerAnswer.contextQuestion = answerQuestion;
+      reading.customerAnswer.question = question;
+    }
     const result: AnalysisResult = {
       id: newId(),
       locale: data.base.locale,

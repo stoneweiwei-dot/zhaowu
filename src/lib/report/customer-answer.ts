@@ -7,6 +7,7 @@ import { inspectAnswerRequirements } from '@/lib/core/answer-contract';
 export type CustomerAnswer = {
   version: 1;
   question: string;
+  contextQuestion?: string;
   locale: AppLocale;
   direct: string;
   reasons: string[];
@@ -105,7 +106,7 @@ export function buildCustomerAnswer(question: string, chart: Chart, reading: Rea
     answer.actions = [tr('補充最近一次讓你困惑的互動：對方做了什麼、你怎麼回應。', '补充最近一次让你困惑的互动：对方做了什么、你怎么回应。', 'Describe the most recent interaction that concerned you: what they did and how you responded.')];
   } else if (!technical && !timing && reading.kind === 'career') {
     answer.direct = decision ? tr('目前不能直接替你決定留職或離開。先要知道現職與新選擇的待遇、工時和離職代價，才能比較哪個更適合。', '目前不能直接替你决定留职或离开。先要知道现职与新选择的待遇、工时和离职代价，才能比较哪个更适合。', 'There is not enough information to choose whether you should stay or leave. The current job and alternative need to be compared on pay, hours and the cost of leaving.') : tr('現有資料不足以判定你工作上的主要問題。需要知道具體卡在哪件事，才能分清是技能、工作安排還是合作上的困難。', '现有资料不足以判定你工作上的主要问题。需要知道具体卡在哪件事，才能分清是技能、工作安排还是合作上的困难。', 'There is not enough information to identify the main problem at work. A specific example would help distinguish a skills gap from workload or a working relationship issue.');
-    answer.actions = [tr('補充兩個選擇的薪資、工時與最不能接受的條件。', '补充两个选择的薪资、工时与最不能接受的条件。', 'Provide the pay, super, hours and deal-breakers for the two options.')];
+    answer.actions = decision ? [tr('補充兩個選擇的薪資、工時與最不能接受的條件。', '补充两个选择的薪资、工时与最不能接受的条件。', 'Provide the pay, super, hours and deal-breakers for the two options.')] : [tr('說明最近一件工作上卡住的事，以及你已嘗試的做法。', '说明最近一件工作上卡住的事，以及你已尝试的做法。', 'Describe one recent problem at work and what you have already tried.')];
   } else {
     const lines = plainCustomerLines([customerDirectAnswer(question, reading.directAnswer)], technical);
     answer.direct = lines.slice(0, 2).join(locale === 'en' ? ' ' : '');
@@ -133,5 +134,5 @@ export function withCustomerAnswer(question: string, chart: Chart, reading: Read
   const saved = reading.customerAnswer;
   const customerAnswer = saved?.version === 1 && saved.question === question && saved.locale === locale
     ? saved : buildCustomerAnswer(question, chart, reading, locale);
-  return { ...reading, directAnswer: customerAnswer.direct, customerAnswer };
+  return { ...reading, directAnswer: customerAnswer.direct, action: customerAnswer.actions.join(locale === 'en' ? ' ' : ''), customerAnswer };
 }
