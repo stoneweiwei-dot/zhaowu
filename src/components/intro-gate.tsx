@@ -215,7 +215,6 @@ export function IntroGate() {
       <button
         type="button"
         className="zhaowu-intro-sound"
-        data-background-music-control
         data-intro-sound-control
         aria-pressed={soundPlaying}
         onClick={toggleSound}
