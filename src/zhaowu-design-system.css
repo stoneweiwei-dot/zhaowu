@@ -1715,9 +1715,16 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
   position: absolute;
   z-index: 4;
   display: inline-flex;
+  width: auto !important;
+  height: 44px !important;
+  min-width: max-content;
   min-height: 44px;
+  max-width: calc(100vw - 36px);
   align-items: center;
+  justify-content: center;
   gap: 9px;
+  white-space: nowrap;
+  writing-mode: horizontal-tb !important;
   border: 1px solid rgba(255, 247, 226, .45);
   border-radius: 999px;
   padding: 0 16px;
@@ -1732,8 +1739,9 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
 }
 
 .zhaowu-intro-sound {
-  right: max(18px, env(safe-area-inset-right));
-  bottom: max(24px, calc(env(safe-area-inset-bottom) + 16px));
+  right: max(14px, env(safe-area-inset-right));
+  bottom: max(18px, calc(env(safe-area-inset-bottom) + 12px));
+  padding-inline: 14px;
 }
 
 .stone-login-sound {
