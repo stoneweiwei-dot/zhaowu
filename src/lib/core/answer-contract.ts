@@ -319,8 +319,9 @@ const TALENT_BY_PATTERN: Array<[RegExp, string]> = [
 function talentParts(chart: Chart) {
   const structure = analyzeStructure(chart);
   const profile = TALENT_BY_TEN_GOD[structure.monthTenGod];
-  const pattern = structure.supportingPattern
-    ? TALENT_BY_PATTERN.find(([re]) => re.test(structure.supportingPattern))?.[1] ?? ""
+  const supportingPattern = structure.supportingPattern;
+  const pattern = supportingPattern
+    ? TALENT_BY_PATTERN.find(([re]) => re.test(supportingPattern))?.[1] ?? ""
     : "";
   return { structure, profile, pattern };
 }
