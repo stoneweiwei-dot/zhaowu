@@ -22,12 +22,12 @@ export const Route = createFileRoute("/")({ component: Home });
 function Home() {
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
+  const [quizOpen, setQuizOpen] = useState(false);
   const [scentOpen, setScentOpen] = useState(false);
 
   const funCopy = locale === "en"
     ? {
-        title: "Light self-reflection",
-        lead: "Optional short tests. Nothing expands until you choose it.",
+        title: "ZHAOWU · SELF DISCOVERY",
         scentTitle: "Five-Element Scent Map",
         scentHint: "sensory preference compared with five-element cultural imagery",
         cards: [
@@ -40,8 +40,7 @@ function Home() {
       }
     : locale === "zh-Hans"
       ? {
-          title: "轻测验",
-          lead: "想玩再打开；未选择的内容不会占满页面。",
+          title: "昭梧 · 心境小测",
           scentTitle: "五行香气谱",
           scentHint: "看嗅觉偏好与五行文化象意，不当成身体缺什么",
           cards: [
@@ -53,8 +52,7 @@ function Home() {
           ],
         }
       : {
-          title: "輕測驗",
-          lead: "想玩再打開；未選擇的內容不會佔滿頁面。",
+          title: "昭梧 · 心境小測",
           scentTitle: "五行香氣譜",
           scentHint: "看嗅覺偏好與五行文化象意，不當成身體缺什麼",
           cards: [
@@ -79,25 +77,35 @@ function Home() {
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div> : null}
 
       <section className="zhaowu-home-stage zhaowu-home-stage--directory zhaowu-home-fun-section" aria-label={funCopy.title}>
-        <header className="zhaowu-home-fun-heading">
-          <h2>{funCopy.title}</h2>
-          <p>{funCopy.lead}</p>
-        </header>
-        <div className="zhaowu-home-fun-grid">
-          {funCopy.cards.map((card) => (
-            <a key={card.title} href={card.href} className="zhaowu-home-fun-card" aria-label={card.title}>
-              <span className="min-w-0"><strong>{card.title}</strong><small>{card.hint}</small></span>
-              <span className="zhaowu-home-fun-arrow" aria-hidden>›</span>
-            </a>
-          ))}
-          <button type="button" className="zhaowu-home-fun-card text-left" aria-expanded={scentOpen} aria-controls="home-scent-test" onClick={() => setScentOpen((value) => !value)}>
-            <span className="min-w-0"><strong>{funCopy.scentTitle}</strong><small>{funCopy.scentHint}</small></span>
-            <span className="zhaowu-home-fun-arrow" aria-hidden>{scentOpen ? "⌃" : "›"}</span>
-          </button>
-        </div>
-        <div id="home-scent-test" data-scent-panel hidden={!scentOpen}>
-          {scentOpen ? <ScentFiveElementTest result={current} /> : null}
-        </div>
+        <button
+          type="button"
+          className="zhaowu-home-fun-gateway"
+          aria-expanded={quizOpen}
+          aria-controls="home-fun-tests"
+          onClick={() => setQuizOpen((value) => !value)}
+        >
+          <span>{funCopy.title}</span>
+          <span aria-hidden>{quizOpen ? "−" : "+"}</span>
+        </button>
+        {quizOpen ? (
+          <div id="home-fun-tests" data-home-fun-tests>
+            <div className="zhaowu-home-fun-grid">
+              {funCopy.cards.map((card) => (
+                <a key={card.title} href={card.href} className="zhaowu-home-fun-card" aria-label={card.title}>
+                  <span className="min-w-0"><strong>{card.title}</strong><small>{card.hint}</small></span>
+                  <span className="zhaowu-home-fun-arrow" aria-hidden>›</span>
+                </a>
+              ))}
+              <button type="button" className="zhaowu-home-fun-card text-left" aria-expanded={scentOpen} aria-controls="home-scent-test" onClick={() => setScentOpen((value) => !value)}>
+                <span className="min-w-0"><strong>{funCopy.scentTitle}</strong><small>{funCopy.scentHint}</small></span>
+                <span className="zhaowu-home-fun-arrow" aria-hidden>{scentOpen ? "⌃" : "›"}</span>
+              </button>
+            </div>
+            <div id="home-scent-test" data-scent-panel hidden={!scentOpen}>
+              {scentOpen ? <ScentFiveElementTest result={current} /> : null}
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <div className="zhaowu-home-stage zhaowu-home-stage--gallery"><AuspiciousGallerySection /></div>

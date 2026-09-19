@@ -17,11 +17,11 @@ Supabase 继续承担站主上传、启用/停用、元数据、私人报告图�
 
 ## 公开吉象图鉴
 
-客户公开图鉴由 `src/lib/public-atlas.ts` 的静态 registry 控制。目前正式公开素材来自：
+客户公开图鉴由 `src/lib/public-atlas.ts` 的静态 registry 控制。r160 起只展示已核准、无人物面部的祥纹素材：
 
-- `/report-visuals/full/*.webp`
-- `/report-visuals/thumb/*.webp`
 - `/ornaments/generated/*.webp`
+
+旧 `/report-visuals/` 人像母图保留在仓库作报告既有视觉、回滚与审计，但因多张存在明显面部重影，不再进入公开图鉴或客户命诠 Gallery-direct 候选。图鉴只展示逐张确认过的无人物素材。
 
 展示规则：
 
@@ -32,7 +32,7 @@ Supabase 继续承担站主上传、启用/停用、元数据、私人报告图�
 5. 图鉴请求失败不得阻塞首页、分析、登入、账户或文字报告。
 6. 客户公开图鉴不得在运行时请求 Supabase `gallery_assets` 或 `/storage/v1/object/public/zhaowu-gallery/`。
 
-Owner `/gallery` 仍是站主上传与管理入口。Owner 上传不等于自动进入客户公开图鉴；公开发布前应先生成轻量 WebP/AVIF 与缩图，再更新 same-origin registry/manifest。
+Owner `/gallery` 仍是站主上传与管理入口。Owner 上传、旧人物图或自动分类不等于进入客户公开图鉴；公开发布前必须经过逐张视觉核对，再生成轻量 WebP/AVIF 与缩图并更新 same-origin registry/manifest。Owner 侧分组继续保留原件管理与内部匹配用途，不等于客户公开 registry。
 
 ## 静态资源缓存
 
