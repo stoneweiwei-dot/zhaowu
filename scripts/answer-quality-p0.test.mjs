@@ -68,3 +68,56 @@ test("self subtopics require matching answer coverage", () => {
   assert.equal(directAnswerCoversQuestion("這個命局的用神到底是什麼？", "正式取用未定，目前只有調候候選。"), true);
   assert.equal(detectQuestionFocus("D60 能不能作旁證？"), "d60");
 });
+
+test("relationship outlook requires an actual outlook answer, not a generic relationship paragraph", () => {
+  const q = "這段感情還有沒有繼續發展的空間？";
+  assert.equal(detectQaIntent(q), "love");
+  assert.equal(detectQuestionFocus(q), "love_outlook");
+  assert.equal(directAnswerCoversQuestion(q, "感情需要溝通，也要尊重彼此。"), false);
+  assert.equal(directAnswerCoversQuestion(q, "不能可靠直接判成一定有或沒有發展空間；先看聯繫、投入與承諾是否成立。"), true);
+});
+
+test("money-risk questions require the actual risk to be named", () => {
+  const q = "接下來一年財務上最該防什麼？";
+  assert.equal(detectQaIntent(q), "money");
+  assert.equal(detectQuestionFocus(q), "money_risk");
+  assert.equal(directAnswerCoversQuestion(q, "財運有起伏，做事要保守。"), false);
+  assert.equal(directAnswerCoversQuestion(q, "最該防現金流失控，以及沒有最大損失與退出條件時繼續加碼。"), true);
+});
+
+test("choice questions cannot pass with generic advice", () => {
+  const q = "留在現在公司，還是接受新工作？哪個更合適？";
+  assert.equal(detectQaIntent(q), "choice");
+  assert.equal(detectQuestionFocus(q), "choice");
+  assert.equal(directAnswerCoversQuestion(q, "工作上要穩中求進。"), false);
+  assert.equal(directAnswerCoversQuestion(q, "目前條件不足，暫不強選 A 或 B；先用同一組條件比較兩個選項。"), true);
+});
+
+test("compound unknown-time plus job-fit question must answer both halves", () => {
+  const q = "不知道出生時辰，我適合什麼工作？";
+  assert.equal(detectQuestionFocus(q), "unknown_time");
+  assert.equal(directAnswerCoversQuestion(q, "可以判一部分，時辰相關內容要降級。"), false);
+  assert.equal(directAnswerCoversQuestion(q, "可以判一部分，時辰相關內容要降級；工作類型仍可先看研究、教學與專業支援等功能方向。"), true);
+});
+
+test("generic filler is rejected even when the answer is otherwise long enough", async () => {
+  const { evaluateAnswerQuality } = await import("../src/lib/qa/answer-quality.ts");
+  const fake = {
+    question: "這份工作還值得繼續做嗎？",
+    reading: {
+      kind: "career",
+      directAnswer: "直接回答：目前不能可靠判成值得繼續或不值得繼續；需要現職條件。",
+      rhythm: "一切都是最好的安排。",
+      action: "比較收入、責任與退出成本。",
+      lastLine: "",
+    },
+    methodProtocol: {
+      mode: "deterministic-zero-ai",
+      primary: { name: "子平八字", role: "主判" },
+      selected: [],
+    },
+  };
+  const result = evaluateAnswerQuality(fake, "career");
+  assert.equal(result.failed, true);
+  assert.equal(result.failReasons.includes("generic_filler_present"), true);
+});
