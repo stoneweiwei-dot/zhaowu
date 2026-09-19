@@ -8,7 +8,7 @@ async function source(path) { return readFile(new URL(path, root), "utf8"); }
 test("homepage keeps one analysis form and the restored r144 question stage", async () => {
   const home = await source("src/routes/index.tsx");
   const form = await source("src/components/analysis-form.tsx");
-  const main = await source("src/main.tsx");
+  const main = await source("src/legacy-visual-compat.css");
   const css = await source("src/home-quiz-paper.css");
   const quiz = await source("src/lib/report/quiz-paper.ts");
   const copy = await source("src/lib/report/quiz-copy.ts");
