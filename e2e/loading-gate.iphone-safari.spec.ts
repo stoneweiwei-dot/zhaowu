@@ -54,7 +54,7 @@ const routes = [
   {
     path: "/login",
     heading: "站主登入",
-    action: "站主密鑰",
+    action: "站主密碼",
     actionRole: "textbox",
   },
 ] as const;

@@ -14,6 +14,7 @@ import {
 const OWNER_LOADING_VIDEO = "/intro/zhaowu-opening-r148.mp4";
 const OWNER_LOADING_POSTER = "/intro/zhaowu-opening-r148.jpg";
 const OWNER_LOADING_BROKEN = "/intro/missing-force-fail.mp4";
+const OWNER_LOADING_SOUND = "/audio/zhaowu-background.mp3";
 
 function ownerVideoSrc() {
   try {
@@ -42,10 +43,18 @@ export function IntroGate() {
   const [minimumDone, setMinimumDone] = useState(false);
   const [visualDone, setVisualDone] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(false);
+  const [soundPlaying, setSoundPlaying] = useState(false);
   const finishedRef = useRef(false);
   const hasPlayedRef = useRef(false);
   const exitTimerRef = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const soundRef = useRef<HTMLAudioElement | null>(null);
+
+  const stopSound = useCallback(() => {
+    const sound = soundRef.current;
+    if (sound) sound.pause();
+    setSoundPlaying(false);
+  }, []);
 
   const forceOff = useCallback(() => {
     if (finishedRef.current && exitTimerRef.current === null) return;
@@ -55,18 +64,32 @@ export function IntroGate() {
       exitTimerRef.current = null;
     }
     markIntroSeen(window.localStorage);
+    stopSound();
     setPhase("off");
-  }, []);
+  }, [stopSound]);
 
   const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
     markIntroSeen(window.localStorage);
+    stopSound();
     setPhase("leaving");
     exitTimerRef.current = window.setTimeout(() => {
       exitTimerRef.current = null;
       setPhase("off");
     }, INTRO_GATE_FADE_MS);
+  }, [stopSound]);
+
+  const toggleSound = useCallback(() => {
+    const sound = soundRef.current;
+    if (!sound) return;
+    if (!sound.paused) {
+      sound.pause();
+      setSoundPlaying(false);
+      return;
+    }
+    sound.volume = 0.24;
+    void sound.play().then(() => setSoundPlaying(true)).catch(() => setSoundPlaying(false));
   }, []);
 
   useEffect(() => {
@@ -188,6 +211,18 @@ export function IntroGate() {
           }
         }}
       />
+      <audio ref={soundRef} src={OWNER_LOADING_SOUND} preload="metadata" onEnded={() => setSoundPlaying(false)} />
+      <button
+        type="button"
+        className="zhaowu-intro-sound"
+        data-background-music-control
+        data-intro-sound-control
+        aria-pressed={soundPlaying}
+        onClick={toggleSound}
+      >
+        <span aria-hidden="true">{soundPlaying ? "Ⅱ" : "♪"}</span>
+        {locale === "en" ? (soundPlaying ? "Sound on" : "Play sound") : locale === "zh-Hans" ? (soundPlaying ? "声音已开启" : "开启声音") : (soundPlaying ? "聲音已開啟" : "開啟聲音")}
+      </button>
     </div>
   );
 }

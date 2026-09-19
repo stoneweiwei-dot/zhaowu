@@ -138,7 +138,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 })}
               </div>
               <button type="button" className="zhaowu-theme-toggle zhaowu-header-mode-toggle" onClick={toggle} aria-pressed={night} aria-label={night ? dayModeLabel : nightModeLabel} title={night ? dayModeLabel : nightModeLabel}>
-                <BrandIcon name={night ? "day" : "night"} />
+                <span data-active={!night ? "true" : "false"}>{displayText(language, "日", "日", "Day", "日", "낮", "दिन")}</span>
+                <i aria-hidden="true" />
+                <span data-active={night ? "true" : "false"}>{displayText(language, "夜", "夜", "Night", "夜", "밤", "रात")}</span>
               </button>
             </nav>
           </div>

@@ -9,9 +9,9 @@ test("homepage keeps the renamed self-discovery area collapsed by default", asyn
   const home = await source("src/routes/index.tsx");
   assert.match(home, /昭梧 · 心境小測/);
   assert.match(home, /ZHAOWU · SELF DISCOVERY/);
-  assert.match(home, /const \[quizOpen, setQuizOpen\] = useState\(false\)/);
-  assert.match(home, /aria-expanded=\{quizOpen\}/);
-  assert.match(home, /\{quizOpen \? \(/);
+  assert.match(home, /const \[openPanel, setOpenPanel\].*useState.*\(null\)/);
+  assert.match(home, /openPanel === "quiz"/);
+  assert.match(home, /aria-expanded=\{open\}/);
   assert.doesNotMatch(home, /title: "輕測驗"|title: "轻测验"/);
 });
 

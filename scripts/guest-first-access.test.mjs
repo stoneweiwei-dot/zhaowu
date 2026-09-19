@@ -34,7 +34,7 @@ test("owner cookie remains the only active login path", () => {
   assert.match(login, /data-owner-only-login="true"/);
   assert.match(login, /vercel-owner-cookie/);
   assert.match(login, /login-secret/);
-  assert.match(login, /站主密鑰/);
+  assert.match(login, /站主密碼/);
   assert.doesNotMatch(login, /signInWithPassword|signUpWithPassword|signupTab|login-email/);
   assert.match(provider, /readOwnerSession/);
   assert.match(client, /ownerSignOut/);
