@@ -35,6 +35,16 @@ const HEALTH_TOPIC_RE = /(健康|病|痛|醫療|医疗|手術|手术|失眠|身�
 const LOVE_TOPIC_RE = /(感情|戀愛|恋爱|愛情|爱情|交往|正緣|正缘|婚姻|結婚|结婚|伴侶|伴侣|桃花|復合|复合|分手|緣分|缘分|喜歡|喜欢|男友|女友|約會|约会|曖昧|暧昧|對象|对象)/;
 const CAREER_TOPIC_RE = /(工作|職業|职业|事業|事业|轉職|转职|跳槽|離職|离职|辭職|辞职|升遷|升迁|升職|升职|職場|职场|公司|職位|职位|上班|面試|面试|創業|创业|老闆|老板|offer|薪水|薪資|薪资|工資|工资|學業|学业|學習|学习|考試|考试|升學|升学|留學|留学|學校|学校|大學|大学|研究所|博士|證照|证照)/i;
 const MONEY_TOPIC_RE = /(財運|财运|財務|财务|錢|钱|收入|投資|投资|理財|理财|債務|债务|存錢|存钱|虧|亏|賺|赚|股票|基金|ETF|加密|比特幣|比特币)/i;
+const TALENT_RE = /(天賦|天赋|天生擅長|天生擅长|擅長什麼|擅长什么|強項|强项|能力特長|能力特长|優勢能力|优势能力|talent|aptitude|natural\s+strength)/i;
+const JOB_FIT_RE = /(適合|适合).{0,8}(什麼|什么|哪種|哪种|哪類|哪类).{0,8}(工作|職業|职业|職位|职位|崗位|岗位)|(適合做|适合做).{0,8}(工作|職業|职业|什麼|什么)|職業方向|职业方向|career\s+fit|what\s+(?:job|career)/i;
+
+export function isTalentQuestion(question: string): boolean {
+  return TALENT_RE.test(question);
+}
+
+export function isJobFitQuestion(question: string): boolean {
+  return JOB_FIT_RE.test(question);
+}
 
 const TOPIC_LABEL: Partial<Record<ForecastTopic, string>> = {
   love: "感情",
@@ -121,6 +131,8 @@ function specialTopic(question: string): SpecialTopic {
 
 export function inferQuestionKind(question: string, fallback: QuestionKind = "self"): QuestionKind {
   if (PAST_TOPIC_RE.test(question)) return "past";
+  if (isTalentQuestion(question)) return "self";
+  if (isJobFitQuestion(question)) return "career";
   if (STRENGTH_RE.test(question)) return "self";
   if (isRealComparison(question)) return "choice";
   if (HOME_TOPIC_RE.test(question)) return "home";
@@ -278,6 +290,73 @@ function homeLocationAnswer(question: string, chart: Chart, reading: Reading): s
   return `你問的是「${q}」。先回答能回答的部分：${reading.home}${extra}`;
 }
 
+type TalentProfile = {
+  ability: string;
+  manifestations: string;
+};
+
+const TALENT_BY_TEN_GOD: Record<string, TalentProfile> = {
+  比肩: { ability: "獨立完成與自主判斷", manifestations: "自己負責的專案、個人專業、需要清楚邊界與決斷的工作" },
+  劫財: { ability: "協作整合與調動資源", manifestations: "跨人協作、共同項目、客戶與資源協調" },
+  食神: { ability: "把知識、技術或想法整理成穩定輸出", manifestations: "教學、內容、服務設計、產品化與流程化" },
+  傷官: { ability: "找出問題並改進、表達與設計解法", manifestations: "優化、企劃、創作、顧問與需要自主判斷的工作" },
+  正財: { ability: "穩定執行並把專業轉成可重複成果", manifestations: "營運、專業服務、長期客戶、成本與品質管理" },
+  偏財: { ability: "辨識機會並連結人與資源", manifestations: "開拓、商務合作、多方協調與機會型項目" },
+  正官: { ability: "在明確標準下承責、組織與落地", manifestations: "管理、制度型工作、專業資格與責任清楚的職位" },
+  七殺: { ability: "在壓力與時限下快速抓重點、做決定", manifestations: "攻堅、危機處理、競爭環境與結果導向的任務" },
+  正印: { ability: "研究、吸收、整理複雜資訊並建立方法", manifestations: "深入學習、研究、教學、知識管理與專業支援" },
+  偏印: { ability: "深挖冷門或複雜問題並做專門判斷", manifestations: "研究、技術診斷、跨領域整合與高專門化工作" },
+};
+
+const TALENT_BY_PATTERN: Array<[RegExp, string]> = [
+  [/殺印相生|杀印相生|官殺配印|官杀配印/, "另一條可見能力，是在壓力或規則中先吸收資訊，再抓重點、形成判斷"],
+  [/食神制殺|食神制杀/, "另一條可見能力，是把壓力拆成步驟，轉成可交付的解法"],
+  [/傷官配印|伤官配印/, "另一條可見能力，是用研究與專業基礎支撐改進、表達和設計"],
+  [/食傷生財|食伤生财/, "另一條可見能力，是把專業輸出轉成可計價的服務、產品或流程"],
+  [/財生官殺|财生官杀/, "另一條可見能力，是先整合資源，再承擔清楚的責任與結果"],
+];
+
+function talentParts(chart: Chart) {
+  const structure = analyzeStructure(chart);
+  const profile = TALENT_BY_TEN_GOD[structure.monthTenGod];
+  const supportingPattern = structure.supportingPattern;
+  const pattern = supportingPattern
+    ? TALENT_BY_PATTERN.find(([re]) => re.test(supportingPattern))?.[1] ?? ""
+    : "";
+  return { structure, profile, pattern };
+}
+
+function talentAnswer(chart: Chart): string {
+  const { structure, profile, pattern } = talentParts(chart);
+  if (!profile) {
+    return "目前已接入的結構證據不足以可靠列出具體天賦，所以這一題先留白，不拿格局名稱或性格模板硬湊能力。";
+  }
+  const second = pattern
+    ? `常見表現會在${profile.manifestations}；${pattern}。`
+    : `常見表現會在${profile.manifestations}。`;
+  return `較有盤面依據的天賦，是${profile.ability}。${second}依據是月令主氣的功能落在${structure.monthTenGod}${structure.supportingPattern ? `，並有「${structure.supportingPattern}」這條可見主線` : ""}；這是命理推論，不等同已被現實證明的能力。`;
+}
+
+function talentEvidence(chart: Chart): string {
+  const { structure, profile, pattern } = talentParts(chart);
+  if (!profile) return "目前沒有足夠的針對性結構證據支持更細的能力判斷，因此不補無關模板。";
+  return `依據：月令主氣落${structure.monthTenGod}，主要支持「${profile.ability}」；${pattern ? `${pattern}。` : "目前沒有第二條足夠清楚的做功主線，因此不硬加另一項天賦。"}真正是否構成你的強項，仍要以實際作品、學習速度、穩定輸出與外部回饋驗證。`;
+}
+
+function jobFitAnswer(chart: Chart): string {
+  const { structure, profile, pattern } = talentParts(chart);
+  if (!profile) {
+    return "目前已接入的結構證據不足以可靠列出適合的工作類型，所以先不拿格局名稱硬套職業。";
+  }
+  return `較適合優先看的工作類型，是${profile.manifestations}。${pattern ? `${pattern}，因此比起只靠固定流程，更適合有明確問題可解、有成果可交付的職位。` : "先選責任清楚、能持續累積專業成果的職位。"}依據是月令主氣落在${structure.monthTenGod}${structure.supportingPattern ? `，並有「${structure.supportingPattern}」這條可見主線` : ""}；這只回答工作功能與環境，不憑命盤硬指定唯一職業。`;
+}
+
+function jobFitEvidence(chart: Chart): string {
+  const { structure, profile, pattern } = talentParts(chart);
+  if (!profile) return "目前沒有足夠的針對性結構證據支持更細的職業方向，因此不補職業清單。";
+  return `依據：月令主氣的功能落${structure.monthTenGod}，對應到工作側是「${profile.ability}」；${pattern ? `${pattern}。` : "沒有第二條足夠清楚的做功主線，所以不再追加職業標籤。"}實際選工作仍要再比較收入、負荷、成長空間、責任與退出成本。`;
+}
+
 function topicalAnswer(reading: Reading): string {
   // R6.1: interpret.directAnswer 已經是按原問題生成的主回答，不能再被
   // reading.work / love / money 等「整盤主題摘要」覆蓋。
@@ -303,6 +382,12 @@ function multiTopicTimingAnswer(
 }
 
 function actionFor(question: string, kind: QuestionKind, req: AnswerRequirements, chart: Chart): string {
+  if (isTalentQuestion(question)) {
+    return "拿最近三件你做得又快又穩、而且別人會主動找你處理的事，對照上面的能力；沒有現實證據支持的項目先不算天賦。";
+  }
+  if (isJobFitQuestion(question)) {
+    return "把你正在考慮的職位按「工作內容、收入、負荷、成長、決策權、退出成本」逐項對照；只有工作功能吻合而現實條件也過關，才算適合。";
+  }
   if (isStructureQuestion(question)) {
     return "先核對主格的月令、透干、根氣、病藥與反證；格局名稱只是結果，不用多個格名堆出專業感。";
   }
@@ -355,7 +440,11 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
     ? multiTopicAnswer(question, topics, reading)
     : topicalAnswer(reading);
 
-  if (isStructureQuestion(question)) {
+  if (isTalentQuestion(question)) {
+    directAnswer = talentAnswer(chart);
+  } else if (isJobFitQuestion(question)) {
+    directAnswer = jobFitAnswer(chart);
+  } else if (isStructureQuestion(question)) {
     directAnswer = analyzeStructure(chart).directAnswer;
   } else if (STRENGTH_RE.test(question)) {
     directAnswer = strengthAnswer(question, chart);
@@ -394,6 +483,7 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
     ...reading,
     kind,
     directAnswer: customerDirectAnswer(question, directAnswer),
+    rhythm: isTalentQuestion(question) ? talentEvidence(chart) : isJobFitQuestion(question) ? jobFitEvidence(chart) : reading.rhythm,
     action: actionFor(question, kind, req, chart),
   };
 }
