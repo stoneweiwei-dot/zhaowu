@@ -402,7 +402,8 @@ export function AnalysisForm() {
               </dl>
               <p className="zhaowu-useful-boundary">{copy.usefulBoundary}</p>
             </section>
-            <ChartTrustPanel chart={previewChart} locale={locale} />\n            <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
+            <ChartTrustPanel chart={previewChart} locale={locale} />
+            <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
           </div>
         ) : (
           <div className="zhaowu-bazi-pending">
