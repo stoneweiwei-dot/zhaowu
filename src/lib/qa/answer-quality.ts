@@ -30,6 +30,7 @@ const KIND_PATTERNS: Array<[QuestionKind, RegExp[]]> = [
 ];
 
 const FOCUS_RULES: Array<[string, RegExp, RegExp]> = [
+  ["job_fit", /(適合|适合).{0,8}(什麼|什么|哪種|哪种|哪類|哪类).{0,8}(工作|職業|职业|職位|职位|崗位|岗位)|(適合做|适合做).{0,8}(工作|職業|职业|什麼|什么)|職業方向|职业方向|career\s+fit|what\s+(?:job|career)/i, /(工作類型|工作类型|職業方向|职业方向|職位|职位|崗位|岗位|研究|教學|教学|知識管理|知识管理|專業支援|专业支援|營運|营运|管理|顧問|顾问|設計|设计|協作|协作|開拓|开拓|career|job|role)/i],
   ["talent", /(天賦|天赋|擅長什麼|擅长什么|強項|强项|能力特長|能力特长|talent|aptitude|natural\s+strength)/i, /(天賦|天赋|能力|擅長|擅长|強項|强项|研究|整理|教學|教学|整合|判斷|判断|改進|改进|設計|设计|輸出|输出|管理|協作|协作|表達|表达|專門|专门|流程|產品|产品|服務|服务|talent|aptitude|ability|strength)/i],
   ["d60", /(D60|六十[分份]盤|六十[分份]盘|沙斯提安沙|shashtiamsa)/i, /(D60|旁證|旁证|時間|时间|time|corroborat)/i],
   ["ziwei", /(紫微|紫微斗數|紫微斗数|zi\s*wei)/i, /(紫微|旁證|旁证|驗證|验证|時辰|时辰|zi\s*wei|validat)/i],
