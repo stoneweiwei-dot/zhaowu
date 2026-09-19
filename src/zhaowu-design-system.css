@@ -1755,18 +1755,18 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
 
 .zhaowu-header-mode-toggle {
   display: grid !important;
-  grid-template-columns: 1fr 1px 1fr;
-  flex-basis: 82px !important;
-  width: 82px !important;
-  min-width: 82px !important;
+  grid-template-columns: repeat(2, minmax(44px, 1fr));
+  flex-basis: 96px !important;
+  width: 96px !important;
+  min-width: 96px !important;
   overflow: hidden;
   padding: 3px !important;
 }
 
-.zhaowu-header-mode-toggle span {
+.zhaowu-header-mode-toggle > button {
   display: grid;
   min-width: 0;
-  min-height: 36px;
+  min-height: 44px;
   place-items: center;
   border-radius: 999px;
   color: var(--zw-muted);
@@ -1775,7 +1775,7 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
   line-height: 1;
 }
 
-.zhaowu-header-mode-toggle span[data-active="true"] {
+.zhaowu-header-mode-toggle > button[data-active="true"] {
   color: #fffaf0;
   background: var(--zw-jade-deep);
 }
@@ -1787,7 +1787,7 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
   background: rgba(82,65,42,.13);
 }
 
-[data-zw-theme="night"] .zhaowu-header-mode-toggle span[data-active="true"] {
+[data-zw-theme="night"] .zhaowu-header-mode-toggle > button[data-active="true"] {
   color: #17332b;
   background: #d4b074;
 }
@@ -2014,7 +2014,7 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
   }
   .zhaowu-site-header .zhaowu-language-icon { display: none; }
   .zhaowu-site-header .site-lang-group { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-  .zhaowu-header-mode-toggle { flex-basis: 76px !important; width: 76px !important; min-width: 76px !important; }
+  .zhaowu-header-mode-toggle { flex-basis: 96px !important; width: 96px !important; min-width: 96px !important; }
 
   .zhaowu-home-lead { margin-top: 0; padding-inline: 12px; }
   .zhaowu-home-lead::before,
@@ -2026,7 +2026,7 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
 
 @media (max-width: 380px) {
   .zhaowu-site-header .site-lang-group { flex-basis: 130px !important; width: 130px !important; max-width: 130px !important; }
-  .zhaowu-header-mode-toggle { flex-basis: 70px !important; width: 70px !important; min-width: 70px !important; }
+  .zhaowu-header-mode-toggle { flex-basis: 96px !important; width: 96px !important; min-width: 96px !important; }
   .zhaowu-latest-update-link { padding-inline: 10px !important; }
 }
 
@@ -2367,3 +2367,32 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
   .zhaowu-dragon-guide-panel { width: calc(100vw - 1rem); }
   .zhaowu-dragon-bubble { width: min(13rem, calc(100vw - 4.5rem)); }
 }
+
+/* Canonical reading controls: both modes use explicit selection and readable descendants. */
+.zhaowu-header-mode-toggle > button { border: 0; padding: 0 3px; background: transparent; cursor: pointer; }
+.zhaowu-header-mode-toggle > button:focus-visible { outline: 2px solid var(--zw-gold); outline-offset: -3px; }
+@media (max-width: 430px) {
+  .zhaowu-header-nav { flex-wrap: wrap; justify-content: flex-end !important; }
+  .zhaowu-site-header .site-lang-group { flex-basis: 130px !important; width: 130px !important; max-width: 130px !important; }
+}
+.zhaowu-dragon-guide-panel > header p,
+.zhaowu-dragon-bubble-main span,
+.zhaowu-dragon-music-title,
+.zhaowu-dragon-music-title strong,
+.zhaowu-dragon-music-meta > p,
+.zhaowu-dragon-guide-shortcuts button { font-size: 14px; line-height: 1.6; }
+.zhaowu-dragon-guide-answer p { font-size: 16px; line-height: 1.76; }
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell :is(.zhaowu-focused-report, .zhaowu-unified-birth-report) {
+  background: #102a23 !important; color: #f1e8d8 !important;
+}
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell :is(.zhaowu-focused-report, .zhaowu-unified-birth-report) :is(p, li, h3, h4, h5, strong, b, dt, dd, small, span) {
+  color: #f1e8d8 !important;
+}
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell :is(.zhaowu-question-contract, .zhaowu-decision-card, .zhaowu-answer-meta > div, .zhaowu-visual-book, .zhaowu-visual-card, .zhaowu-visual-facts, .zhaowu-report-detail, .zhaowu-luck-book, .zhaowu-luck-current-card, .zhaowu-luck-period, .zhaowu-luck-unavailable, .zhaowu-luck-visual-card, .zhaowu-share-card-panel, .zhaowu-share-placeholder, .zhaowu-visual-module-grid > div, .zhaowu-visual-tags > span, .zhaowu-element-judgement > div, .zhaowu-season-period, .zhaowu-visual-note) {
+  background: #16372d !important; border-color: #527466 !important;
+}
+html[data-zw-theme="night"] .zhaowu-dragon-guide :is(p, span, strong, input) { color: #f1e8d8 !important; }
+html[data-zw-theme="night"] .zhaowu-dragon-guide :is(input, button, .zhaowu-dragon-guide-trigger) {
+  background: #16372d !important; color: #f1e8d8 !important; border-color: #729281 !important;
+}
+html[data-zw-theme="night"] .zhaowu-dragon-guide input::placeholder { color: #c9d2c9; opacity: 1; }

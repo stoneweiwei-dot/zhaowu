@@ -176,3 +176,5 @@ PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行�
 ## 11. 接手规则
 
 每次改网站之前：读 `AGENTS.md` 与本文件；查实时 main + Netlify Production，并把 Vercel 视为旧版 fallback；只处理当前可复现问题。新指令与旧指令冲突时，按 AGENTS 的安全 supersession 规则使旧 active path 失效，但不得破坏运行依赖。
+
+- r164：日／夜使用直接選擇按鈕，報告與小龍補齊夜間文字對比；維持 r163 紙面及單一浮動入口。

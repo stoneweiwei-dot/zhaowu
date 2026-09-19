@@ -15,7 +15,7 @@ import {
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
-import { hydrateBrandTheme, useBrandTheme } from "@/lib/brand-theme";
+import { applyBrandTheme, hydrateBrandTheme, useBrandTheme } from "@/lib/brand-theme";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -46,7 +46,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
   const { language, setLanguage } = useDisplayLanguage();
   const { user, isPending } = useCurrentUserState();
-  const { night, toggle } = useBrandTheme();
+  const { night } = useBrandTheme();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const isLogin = pathname === "/login" || pathname === "/auth/callback";
@@ -137,11 +137,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button">{label}</button>;
                 })}
               </div>
-              <button type="button" className="zhaowu-theme-toggle zhaowu-header-mode-toggle" onClick={toggle} aria-pressed={night} aria-label={night ? dayModeLabel : nightModeLabel} title={night ? dayModeLabel : nightModeLabel}>
-                <span data-active={!night ? "true" : "false"}>{displayText(language, "日", "日", "Day", "日", "낮", "दिन")}</span>
-                <i aria-hidden="true" />
-                <span data-active={night ? "true" : "false"}>{displayText(language, "夜", "夜", "Night", "夜", "밤", "रात")}</span>
-              </button>
+              <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>
+                <button type="button" onClick={() => applyBrandTheme("day")} aria-pressed={!night} aria-label={dayModeLabel} data-active={!night ? "true" : "false"}>{displayText(language, "日", "日", "Day", "日", "낮", "दिन")}</button>
+                <button type="button" onClick={() => applyBrandTheme("night")} aria-pressed={night} aria-label={nightModeLabel} data-active={night ? "true" : "false"}>{displayText(language, "夜", "夜", "Night", "夜", "밤", "रात")}</button>
+              </div>
             </nav>
           </div>
         </header>

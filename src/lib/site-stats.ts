@@ -2,23 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.19-r163",
-  updateNumber: 163,
-  publishedAt: "2026-09-19T20:48:00+10:00",
-  latestSummary: "首頁與核心流程收成高級宋式宣紙：山水退遠、紙面不透明、層級與留白加強，青玉小龍更小更安靜。",
+  version: "ZW-WEB-2026.09.19-r164",
+  updateNumber: 164,
+  publishedAt: "2026-09-19T22:00:00+10:00",
+  latestSummary: "補齊夜間報告與小龍文字對比，日夜改為直接選擇，保留宋式宣紙與單一報告流程。",
   details: {
-    "zh-Hant": [
-      "山水背景改為更淡、更遠的底層，主視覺回到暖米宣紙與宋式文字層級。",
-      "出生資料、命盤、報告、表單與延伸入口統一使用不透明紙面，移除厚重陰影與玻璃感。",
-      "手機版拉開標題、欄位、按鈕與區塊間距，維持 16px 表單字與可讀行距。",
-      "青玉小龍維持唯一浮動入口與完整五鍵音樂控制，但縮小尺寸並降低提示泡泡頻率。",
-    ],
-    en: [
-      "The landscape now recedes into a quiet background so warm paper and Song-style typography lead the page.",
-      "Birth data, chart, report, form and secondary entries use opaque paper surfaces without glass effects or heavy shadows.",
-      "Mobile spacing, type hierarchy, 16px fields and reading rhythm are tuned for a calmer complete flow.",
-      "The Jade Dragon remains the only floating entry with all five music controls, but is smaller and speaks less often.",
-    ],
+    "zh-Hant": ["日／夜可直接選定，每個按鈕至少 44px。", "補齊夜間報告及青玉小龍文字對比，播放器輔助文字加大。"],
+    en: ["Day and Night can be selected directly with 44px controls.", "Night report and Jade Dragon text contrast are aligned; music labels are larger."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }
