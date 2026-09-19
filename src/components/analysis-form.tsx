@@ -18,7 +18,7 @@ import { BaziChart } from "@/components/bazi-chart";
 import { buildChart } from "@/lib/bazi/chart";
 import { analyzeStructure } from "@/lib/bazi/structure";
 import { chartTerm } from "@/lib/bazi/presentation";
-import { UnifiedBirthReport } from "@/components/unified-birth-report";
+import { UnifiedBirthReport } from "@/components/unified-birth-report";\nimport { ChartTrustPanel } from "@/components/chart-trust-panel";
 
 const EN_STRENGTH: Record<string, string> = {
   "偏旺": "Relatively strong",
@@ -401,7 +401,7 @@ export function AnalysisForm() {
               </dl>
               <p className="zhaowu-useful-boundary">{copy.usefulBoundary}</p>
             </section>
-            <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
+            <ChartTrustPanel chart={previewChart} locale={locale} />\n            <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
           </div>
         ) : (
           <div className="zhaowu-bazi-pending">
