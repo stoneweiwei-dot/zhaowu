@@ -34,6 +34,31 @@ async function fillKnownBirthData(page: Page) {
 }
 
 test.describe("iPhone Safari core customer flow", () => {
+  test("Appearance selection is explicit, persistent and touch-sized", async ({ page }) => {
+    await makeAppOfflineSafe(page);
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    const controls = page.locator(".zhaowu-header-mode-toggle > button");
+    await expect(controls).toHaveCount(2);
+    for (const index of [1, 1, 0, 0]) {
+      await controls.nth(index).click();
+      await expect(controls.nth(index)).toHaveAttribute("aria-pressed", "true");
+      await expect(controls.nth(1 - index)).toHaveAttribute("aria-pressed", "false");
+    }
+    for (const control of await controls.all()) {
+      const box = await control.boundingBox();
+      expect(box!.width).toBeGreaterThanOrEqual(44);
+      expect(box!.height).toBeGreaterThanOrEqual(44);
+    }
+    await controls.nth(1).click();
+    await page.reload();
+    await expect(controls.nth(1)).toHaveAttribute("aria-pressed", "true");
+    await expectMobileViewportHealthy(page);
+    await page.locator(".zhaowu-dragon-guide-trigger").click();
+    const panel = page.getByRole("dialog", { name: "青玉小龍助手", exact: true });
+    await expect(panel.locator("header p")).toHaveCSS("color", "rgb(241, 232, 216)");
+    await expect(panel.locator("header p")).toHaveCSS("font-size", "14px");
+  });
+
   test("Home exposes device-local birth entry without a public account login", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
@@ -85,6 +110,9 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#question-stage")).toBeVisible();
     await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
     await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
+    await page.locator(".zhaowu-header-mode-toggle > button").nth(1).click();
+    await expect(page.locator(".zhaowu-bazi-stage-head .zhaowu-section-lead")).toHaveCSS("color", "rgb(216, 208, 193)");
+    await expect(page.locator("[data-unified-birth-report] article p").first()).toHaveCSS("color", "rgb(241, 232, 216)");
     const before = await yearPillar.textContent();
 
     await page.getByRole("button", { name: "修改資料", exact: true }).first().click();

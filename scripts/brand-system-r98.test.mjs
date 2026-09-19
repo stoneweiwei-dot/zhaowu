@@ -41,7 +41,7 @@ test("header uses kit icons, a single owner-approved brand lockup and a labelled
   assert.match(shell, /BrandIcon name="account"/);
   assert.doesNotMatch(shell, /BrandIcon name=\{night \? "day" : "night"\}/);
   assert.match(shell, /data-active=\{night \? "true" : "false"\}/);
-  assert.match(shell, /zhaowu-theme-toggle/);
+  assert.match(shell, /zhaowu-header-mode-toggle/);
   assert.match(shell, /<BrandSeal \/>/);
   assert.doesNotMatch(shell, /BRAND_ASSETS\.logoHorizontal/);
   assert.match(brand, /HEADER_MARK = "\/brand-ui\/header-gourd-wordmark-r113\.png"/);
