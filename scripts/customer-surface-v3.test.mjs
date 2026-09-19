@@ -18,14 +18,14 @@ test("owner entry remains a passcode form without a verification-code screen", (
   assert.doesNotMatch(login, /verification[-_ ]?code/i);
   assert.doesNotMatch(login, /otp/i);
   assert.match(login, /站主登入/);
-  assert.match(login, /一般使用者不需要登入/);
+  assert.doesNotMatch(login, /一般使用者不需要登入/);
 });
 
 test("mobile owner login keeps the approved full-width sheet", () => {
   assert.match(login, /className="stone-login-sheet seal-border"/);
   assert.doesNotMatch(login, /className="stone-login-panel seal-border"/);
   assert.match(login, /className="stone-login-primary"/);
-  assert.match(login, /className="stone-login-lead"/);
+  assert.doesNotMatch(login, /className="stone-login-lead"/);
   assert.match(login, /stone-login-stage-media/);
 });
 

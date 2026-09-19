@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.20-r168",
-  updateNumber: 168,
+  version: "ZW-WEB-2026.09.20-r169",
+  updateNumber: 169,
   publishedAt: "2026-09-20T06:46:00+10:00",
-  latestSummary: "修正開場動畫右下角聲音按鈕：不再被全站播放器的 44px 規則壓成直排文字，恢復成手機安全區內的橫向小膠囊。",
+  latestSummary: "精簡首頁、命書與安裝提示，移除重複說明。",
   details: {
-    "zh-Hant": ["開場動畫的「開啟聲音」從全站播放器尺寸規則中拆開，文字保持單行橫排。", "iPhone 上固定為 44px 高的小膠囊，保留安全區與原本音量／播放邏輯，不再出現圓鈕加直排字。"],
-    en: ["The opening sound control no longer inherits the global 44px music-player width, so its label remains horizontal.", "On iPhone it stays a compact 44px-high safe-area pill while preserving the existing sound behavior."],
+    "zh-Hant": ["首頁與命書移除重複說明。", "手機安裝提示更精簡。"],
+    en: ["Less repeated text on the homepage and in readings.", "Shorter Home Screen instructions."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }

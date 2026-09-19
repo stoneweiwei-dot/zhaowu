@@ -21,7 +21,7 @@ test("homepage first impression is birth-first, followed by the chart and then t
 test("question sheet is concise and explicitly answer-first", () => {
   assert.match(source, /zhaowu-question-sheet/);
   assert.match(source, /questionTitle: "沿著這份命書，繼續問你真正關心的事"/);
-  assert.match(source, /promise: \["直接結論", "相關依據", "現實下一步"\]/);
+  assert.doesNotMatch(source, /zhaowu-question-promise/);
   assert.match(source, /question: question\.trim\(\)/);
   assert.match(source, /analyzeLife\(/);
 });

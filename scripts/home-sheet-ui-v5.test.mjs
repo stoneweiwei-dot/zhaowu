@@ -47,7 +47,7 @@ test("homepage keeps the Song parchment flow and uses a readable report director
   assert.doesNotMatch(home, /ZiweiHomeFeature|zhaowu-tools-section|tea-guardian/);
   assert.match(form, /UnifiedBirthReport/);
   assert.match(report, /你的昭梧命書/);
-  assert.match(report, /子平八字仍是唯一結構主判/);
+  assert.doesNotMatch(report, /子平八字仍是唯一結構主判/);
   assert.doesNotMatch(home, /zhaowu-home-dual-entry|性格兩面|<QizhengHomePanel/);
 
   assert.match(css, /#analysisForm\.is-compact/);

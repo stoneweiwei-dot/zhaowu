@@ -22,7 +22,7 @@ test("Indian classical astrology reuses only the current report birth input and 
 test("Indian classical astrology stays internal on the unified homepage report while D60 remains minute-sensitive", () => {
   assert.match(source, /title: "印度古法占星"/);
   assert.doesNotMatch(home, /印度古法占星|Classical Indian astrology|D60/);
-  assert.match(unified, /buildIndianReading/);
+  assert.doesNotMatch(unified, /indian\.warning \|\| indian\.lead/);
   assert.match(unified, /withoutMethodLabels/);
   assert.match(unified, /時間敏感細分層|时间敏感细分层|Time-sensitive detail/);
   assert.doesNotMatch(source, /D60 · SHASHTIAMSA|title: "D60 業力旁證"|title: "D60 业力旁证"|title: "D60 karmic cross-check"/);

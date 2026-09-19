@@ -133,7 +133,7 @@ test('intro video remains visible before playing and owner login stays independe
   assert.doesNotMatch(css, /\.zhaowu-lotus-intro__video \{\s*display: none;/);
   assert.match(rest, /res\.status === 402/);
   assert.match(login, /vercel-owner-cookie/);
-  assert.match(login, /不經 Supabase Auth/);
+  assert.match(login, /ownerSignIn/);
   assert.doesNotMatch(login, /data-login-backend="supabase"/);
 });
 

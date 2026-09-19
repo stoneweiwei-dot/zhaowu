@@ -19,11 +19,11 @@ test("r165 locks the public product around one ZHAOWU Destiny Book", () => {
   assert.match(report, /你的昭梧命書/);
 });
 
-test("r165 keeps calculation truth separate from interpretation", () => {
-  assert.match(report, /排盤與解讀分層/);
-  assert.match(report, /確定性規則計算/);
-  assert.match(report, /子平八字仍是唯一結構主判/);
-  assert.match(form, /規則引擎排出四柱/);
+test("r169 keeps calculation code while removing internal process narration", () => {
+  assert.match(form, /buildChart/);
+  assert.match(report, /buildWesternReading/);
+  assert.doesNotMatch(form, /規則引擎排出四柱|copy\.chartLead/);
+  assert.doesNotMatch(report, /排盤與解讀分層|確定性規則計算|copy\.boundary/);
 });
 
 test("r165 does not reopen public school/tool entrances", () => {
@@ -38,6 +38,6 @@ test("r165 exposes an auditable AI-readable chart package without reopening a to
   assert.match(trust, /data-chart-ai-copy/);
   assert.match(trust, /昭梧 AI 可讀命盤資料包/);
   assert.match(trust, /不要重新推算或靜默改寫四柱/);
-  assert.match(trust, /固定回歸案例與核心流程檢查/);
+  assert.doesNotMatch(trust, /固定回歸案例與核心流程檢查/);
   assert.match(trust, /href="\/updates"/);
 });

@@ -72,9 +72,9 @@ export function AnalysisForm() {
     ? {
         customerKicker: "STEP 1 · BIRTH RECORD",
         customerTitle: "Enter your birth record",
-        customerLead: "Enter it once. It stays on this phone, generates your chart and Destiny Book, and does not require an account first.",
+
         birthReady: "Birth record ready",
-        birthReadyLead: "The same record is reused for your chart, Destiny Book and follow-up questions.",
+
         edit: "Edit details",
         birthData: "Birth record",
         next: "Save and generate my Destiny Book",
@@ -82,22 +82,22 @@ export function AnalysisForm() {
         saved: "Birth record saved on this phone.",
         chartKicker: "STEP 2 · ZHAOWU DESTINY BOOK",
         chartTitle: "Your Four Pillars and ZHAOWU Destiny Book",
-        chartLead: "A rule-based engine calculates the Four Pillars once. Zi Ping provides the primary structural judgement; specialist layers only cross-check in the background before one continuous plain-language reading is shown.",
-        chartPending: "Save a complete birth record to generate the Four Pillars and begin your ZHAOWU Destiny Book here.",
+
+
         foundation: "Chart foundation",
         dayMaster: "Day master",
         monthOrder: "Month command",
         strength: "Strength baseline",
         structure: "Structure direction",
         features: "Main structural feature",
-        noFeature: "No secondary pattern is stated beyond the primary structure yet.",
-        usefulBoundary: "Flow candidates are not presented here as confirmed useful gods.",
+        noFeature: "—",
+
         questionKicker: "STEP 3 · ASK YOUR DESTINY BOOK",
         questionTitle: "Continue from your Destiny Book",
-        questionLead: "Ask one real question in your own words. The answer starts with the conclusion and uses only the evidence relevant to that question.",
+
         questionLabel: "Your question",
         questionPlaceholder: "For example: Should I stay in this job or leave? What changes most over the next six months?",
-        promise: ["Direct answer", "Relevant evidence", "Practical next step"],
+
         analyze: "Analyse this question",
         analysing: "Analysing…",
         editBirth: "Birth record",
@@ -106,9 +106,9 @@ export function AnalysisForm() {
       ? {
           customerKicker: "第一步 · 出生资料",
           customerTitle: "录入生辰",
-          customerLead: "生辰只需填写一次，保存在这台手机；先排盘，再生成昭梧命书，不需要先注册。",
+
           birthReady: "生辰已准备好",
-          birthReadyLead: "同一份生辰会沿用于命盘、昭梧命书与后续提问，不必重复填写。",
+
           edit: "修改资料",
           birthData: "出生资料",
           next: "保存并生成昭梧命书",
@@ -116,22 +116,22 @@ export function AnalysisForm() {
           saved: "生辰已保存在这台手机。",
           chartKicker: "第二步 · 昭梧命书",
           chartTitle: "你的四柱命盘与昭梧命书",
-          chartLead: "先由规则引擎排出四柱，再以子平作结构主判；其他专项只在后台旁证，最后合成一份连续白话命书。",
-          chartPending: "先保存完整出生资料，这里会立即显示四柱，并开始生成昭梧命书。",
+
+
           foundation: "基础解释",
           dayMaster: "日主",
           monthOrder: "月令",
           strength: "旺衰底盘",
           structure: "格局方向",
           features: "主要结构特点",
-          noFeature: "目前只陈述主格方向，不追加第二个复合格局。",
-          usefulBoundary: "流通候选不在这里冒充正式喜用神。",
+          noFeature: "—",
+
           questionKicker: "第三步 · 命书问答",
           questionTitle: "沿着这份命书，继续问你真正关心的事",
-          questionLead: "直接写一个你现在真正要解决的问题。答案先说结论，只保留与这个问题有关的依据、时间与行动。",
+
           questionLabel: "你的问题",
           questionPlaceholder: "例如：这份工作该继续还是离开？未来半年最大的变化在哪里？",
-          promise: ["直接结论", "相关依据", "现实下一步"],
+
           analyze: "开始分析这个问题",
           analysing: "正在推演…",
           editBirth: "出生资料",
@@ -139,9 +139,9 @@ export function AnalysisForm() {
       : {
           customerKicker: "第一步 · 出生資料",
           customerTitle: "錄入生辰",
-          customerLead: "生辰只需填寫一次，保存在這台手機；先排盤，再生成昭梧命書，不需要先註冊。",
+
           birthReady: "生辰已準備好",
-          birthReadyLead: "同一份生辰會沿用於命盤、昭梧命書與後續提問，不必重複填寫。",
+
           edit: "修改資料",
           birthData: "出生資料",
           next: "保存並生成昭梧命書",
@@ -149,22 +149,22 @@ export function AnalysisForm() {
           saved: "生辰已保存在這台手機。",
           chartKicker: "第二步 · 昭梧命書",
           chartTitle: "你的四柱命盤與昭梧命書",
-          chartLead: "先由規則引擎排出四柱，再以子平作結構主判；其他專項只在後台旁證，最後合成一份連續白話命書。",
-          chartPending: "先保存完整出生資料，這裡會立即顯示四柱，並開始生成昭梧命書。",
+
+
           foundation: "基礎解釋",
           dayMaster: "日主",
           monthOrder: "月令",
           strength: "旺衰底盤",
           structure: "格局方向",
           features: "主要結構特點",
-          noFeature: "目前只陳述主格方向，不追加第二個複合格局。",
-          usefulBoundary: "流通候選不在這裡冒充正式喜用神。",
+          noFeature: "—",
+
           questionKicker: "第三步 · 命書問答",
           questionTitle: "沿著這份命書，繼續問你真正關心的事",
-          questionLead: "直接寫一個你現在真正要解決的問題。答案先說結論，只保留與這個問題有關的依據、時間與行動。",
+
           questionLabel: "你的問題",
           questionPlaceholder: "例如：這份工作該繼續還是離開？未來半年最大的變化在哪裡？",
-          promise: ["直接結論", "相關依據", "現實下一步"],
+
           analyze: "開始分析這個問題",
           analysing: "正在推演…",
           editBirth: "出生資料",
@@ -308,7 +308,6 @@ export function AnalysisForm() {
           <div>
             <p className="zhaowu-section-kicker">{copy.customerKicker}</p>
             <h2 id="zhaowu-customer-title">{copy.customerTitle}</h2>
-            <p className="zhaowu-section-lead">{copy.customerLead}</p>
           </div>
           {rememberedRecord && !detailsOpen ? (
             <button type="button" className="zhaowu-birth-edit" onClick={() => { setDetailsOpen(true); setError(null); }}>{copy.edit}</button>
@@ -319,7 +318,6 @@ export function AnalysisForm() {
           <div className="zhaowu-birth-summary" aria-label={copy.birthReady}>
             <span>{copy.birthReady}</span>
             <strong>{formatSharedBirthRecord(rememberedRecord, locale)}</strong>
-            <p>{copy.birthReadyLead}</p>
           </div>
         ) : (
           <div className="zhaowu-birth-fields">
@@ -376,7 +374,6 @@ export function AnalysisForm() {
             <div className="zhaowu-birth-cities">
               <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} onSelect={setBirthCity} />
               <CityPicker id="current-city" label={t("liveCity")} placeholder={t("liveCity")} optional optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={liveCity} onSelect={setLiveCity} />
-              <p>{t("liveHint")}</p>
             </div>
           </div>
         )}
@@ -386,7 +383,6 @@ export function AnalysisForm() {
         <header className="zhaowu-bazi-stage-head">
           <p className="zhaowu-section-kicker">{copy.chartKicker}</p>
           <h2 id="zhaowu-bazi-title">{copy.chartTitle}</h2>
-          <p className="zhaowu-section-lead">{copy.chartLead}</p>
         </header>
         {previewChart && structure && foundationValues ? (
           <div className="zhaowu-bazi-preview">
@@ -400,14 +396,12 @@ export function AnalysisForm() {
                 <div><dt>{copy.structure}</dt><dd>{foundationValues.structure}</dd></div>
                 <div><dt>{copy.features}</dt><dd>{foundationValues.features}</dd></div>
               </dl>
-              <p className="zhaowu-useful-boundary">{copy.usefulBoundary}</p>
             </section>
             <ChartTrustPanel chart={previewChart} locale={locale} />
             <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
           </div>
         ) : (
           <div className="zhaowu-bazi-pending">
-            <p>{copy.chartPending}</p>
             <button type="submit" disabled={busy}>{busy ? copy.saving : copy.next}</button>
           </div>
         )}
@@ -419,12 +413,8 @@ export function AnalysisForm() {
             <div>
               <p className="zhaowu-section-kicker">{copy.questionKicker}</p>
               <h2 id="zhaowu-question-title">{copy.questionTitle}</h2>
-              <p className="zhaowu-section-lead">{copy.questionLead}</p>
             </div>
             <button type="button" className="zhaowu-question-birth-edit" onClick={() => { setDetailsOpen(true); setError(null); }}>{copy.editBirth}</button>
-          </div>
-          <div className="zhaowu-question-promise" aria-label={copy.questionTitle}>
-            {copy.promise.map((item) => <span key={item}>{item}</span>)}
           </div>
           <label htmlFor="analysis-question" className="zhaowu-question-label">{copy.questionLabel}</label>
           <textarea

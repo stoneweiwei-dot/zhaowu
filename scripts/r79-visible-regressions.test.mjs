@@ -19,7 +19,7 @@ test("homepage specialist systems stay internal behind one React report instead 
   assert.match(unified, /buildWesternReading/);
   assert.match(unified, /buildZiweiReading/);
   assert.match(unified, /buildQizhengReading/);
-  assert.match(unified, /buildIndianReading/);
+  assert.doesNotMatch(unified, /indian\.warning \|\| indian\.lead/);
   assert.match(unified, /buildPalmReading/);
   assert.match(unified, /data-unified-birth-report/);
 });

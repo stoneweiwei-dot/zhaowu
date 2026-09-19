@@ -172,7 +172,7 @@ export function GreenDragonGuide() {
         const guidePool = guideBubbles(locale);
         const showMusic = Math.random() < 0.26;
         if (showMusic) {
-          const fallback = locale === "en" ? "Background music is ready." : locale === "zh-Hans" ? "背景音乐已经准备好了。" : "背景音樂已經準備好了。";
+          const fallback = locale === "en" ? "Play music" : locale === "zh-Hans" ? "播放音乐" : "播放音樂";
           const status = musicStatus.trackName
             ? (musicStatus.playing
                 ? (locale === "en" ? `Playing · ${musicStatus.trackName}` : locale === "zh-Hans" ? `正在播放 · ${musicStatus.trackName}` : `正在播放 · ${musicStatus.trackName}`)
@@ -199,7 +199,7 @@ export function GreenDragonGuide() {
   const copy = locale === "en"
     ? {
         title: "Jade Dragon guide",
-        intro: "Guide and music are now in one movable assistant.",
+        intro: "",
         placeholder: "For example: take me to my complete report",
         ask: "Ask",
         close: "Close guide",
@@ -210,7 +210,7 @@ export function GreenDragonGuide() {
     : locale === "zh-Hans"
       ? {
           title: "青玉小龙助手",
-          intro: "网站导航和背景音乐已经合在这里，也可以拖动到顺手的位置。",
+          intro: "",
           placeholder: "例如：带我去看完整报告",
           ask: "问小龙",
           close: "关闭助手",
@@ -220,7 +220,7 @@ export function GreenDragonGuide() {
         }
       : {
           title: "青玉小龍助手",
-          intro: "網站導覽和背景音樂已經合在這裡，也可以拖動到順手的位置。",
+          intro: "",
           placeholder: "例如：帶我去看完整報告",
           ask: "問小龍",
           close: "關閉助手",
@@ -330,7 +330,7 @@ export function GreenDragonGuide() {
       <section className="zhaowu-dragon-guide-panel" role="dialog" aria-label={copy.title} hidden={!open}>
         <header>
           <span className="zhaowu-dragon-guide-avatar is-thinking" aria-hidden />
-          <div><strong>{copy.title}</strong><p>{copy.intro}</p></div>
+          <div><strong>{copy.title}</strong>{copy.intro ? <p>{copy.intro}</p> : null}</div>
           <button type="button" onClick={() => setOpen(false)} aria-label={copy.close}>×</button>
         </header>
 
