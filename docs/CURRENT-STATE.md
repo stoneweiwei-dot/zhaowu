@@ -1,8 +1,10 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-20 05:09 AEST
+最後核對：2026-09-20 09:03 AEST
 
-> **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Netlify Production + 当前 Supabase 为准。
+> **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
+>
+> **2026-09-20 09:03 AEST supersession：** 正式 Production 已回到 Vercel `stone-zhaowu-official`，正式網址為 `https://stone-zhaowu-official.vercel.app/`。下文凡仍提到「Netlify canonical／主站」者只作歷史版本背景，不得再作當前部署指令。GitHub `main` 仍是唯一源碼真相。
 
 ## 1. 唯一生产主线
 
@@ -10,16 +12,16 @@
 | -------------- | ---------------------------------------------------------------------- |
 | GitHub         | `stoneweiwei-dot/zhaowu`                                               |
 | Branch         | `main`                                                                 |
-| Hosting        | **Netlify**（2026-09-19 r155 站主明确 supersession）                    |
-| Netlify project | `archive-stone-zhaowu-official` (`d1d08003-f225-4749-adcd-fd730b0c07a8`) |
-| Production URL | `https://archive-stone-zhaowu-official.netlify.app/`                   |
-| Synchronized fallback | Vercel `stone-zhaowu-official`，r158 已與 `main` 同步；不作 canonical 主網址 |
+| Hosting        | **Vercel**（2026-09-20 最新 supersession）                             |
+| Vercel project | `stone-zhaowu-official` (`prj_81IIJjyeM3l47ZPsiIE7d6eOrp9I`)          |
+| Production URL | `https://stone-zhaowu-official.vercel.app/`                            |
+| Historical archive | Netlify `archive-stone-zhaowu-official` 只保留歷史／備查，不作 Production |
 | Database/Auth  | **Supabase** project `plgpxusmemnmzckbwtiv`（報告／圖庫／統計）。站主登入不走 Supabase Auth。 |
 | 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前使用 Netlify production URL   |
 
-每次接手实时检查 `main`、Netlify Production 與 Vercel fallback 的 commit；GitHub `main` 仍是唯一源码真相。Netlify 是 canonical 主站；Vercel 可保留同版同步備援，但不得讓 preview 或工具分支浪費建置額度。AppDeploy、Lovable standby 與其他旧临时站只读参考。
+每次接手实时检查 `main` 與 Vercel Production 的 commit；GitHub `main` 仍是唯一源码真相。Vercel `stone-zhaowu-official` 是 canonical 主站；Netlify archive、AppDeploy、Lovable standby 與其他旧临时站只读参考，不得再切回 Production。
 
-2026-09-19 實查：Vercel Production `dpl_HhhNFxpEJvMcWHCP5YUhPoQQhUpd` 已在 r158 commit `15afe0ddf220460bfc80270ce5658a7764e80582` READY；Netlify deploy `6aadf08e321b9f85815b09ec` 亦為 r158。r159 起正式 metadata 與登入回呼指向 Netlify canonical；不得把兩個平台 READY 等同真實 iPhone／已安裝 PWA／站主登入验收。
+歷史（2026-09-19）：Vercel 與 Netlify 曾同時承載 r158/r159。此狀態已被 2026-09-20 supersession 取代；目前只以 Vercel `stone-zhaowu-official` 為 Production。不得把部署 READY 等同真實 iPhone／已安裝 PWA／站主登入验收。
 
 ## 2. 已完成且默认锁住
 
@@ -142,7 +144,7 @@ PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行�
 
 ## 8. 当前真正未完成
 
-- 正式子域名 `zhaowu.soul-terminal.com` DNS → Netlify 綁定與 SSL。完成前正式地址是 `https://archive-stone-zhaowu-official.netlify.app/`。
+- 正式子域名 `zhaowu.soul-terminal.com` 若仍要啟用，應綁定 Vercel `stone-zhaowu-official` 並完成 DNS／SSL；完成前正式地址是 `https://stone-zhaowu-official.vercel.app/`。
 - 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub iPhone Safari CI 已通過；這不等於實機完成。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
@@ -177,7 +179,7 @@ PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行�
 
 ## 11. 接手规则
 
-每次改网站之前：读 `AGENTS.md` 与本文件；查实时 main + Netlify Production，并把 Vercel 视为旧版 fallback；只处理当前可复现问题。新指令与旧指令冲突时，按 AGENTS 的安全 supersession 规则使旧 active path 失效，但不得破坏运行依赖。
+每次改网站之前：读 `AGENTS.md` 与本文件；查实时 `main` + Vercel Production；Netlify 只作歷史 archive，不得視為 canonical；只处理当前可复现问题。新指令与旧指令冲突时，按 AGENTS 的安全 supersession 规则使旧 active path 失效，但不得破坏运行依赖。
 
 - r164：日／夜使用直接選擇按鈕，報告與小龍補齊夜間文字對比；維持 r163 紙面及單一浮動入口。
 - r165：最終產品收線為「昭梧命書」：一次生辰 → 規則排盤 → 子平結構主判 → 後台多法旁證 → 一份連續命書 → 繼續提問。此後不再以增加流派入口、首頁卡片或獨立工具作為產品主線；排盤與解讀保持分層，解讀不得重算或改寫四柱。同一命書內提供可複製的 AI 可讀命盤資料包、計算口徑、核對方法與版本追溯；不得用虛構樣本數或「最準」口號代替可重現證據。
