@@ -15,7 +15,7 @@ test("homepage keeps birth, Four Pillars, unified report and question in the req
   assert.match(form, /buildChart/);
   assert.match(form, /BaziChart/);
   assert.match(form, /analysis-question/);
-  assert.match(form, /你真正想問的是什麼/);
+  assert.match(form, /沿著這份命書，繼續問你真正關心的事/);
   assert.match(form, /analyzeLife\(/);
   assert.match(form, /const showQuestion = Boolean\(rememberedRecord && !detailsOpen\)/);
   assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="bazi"'));
