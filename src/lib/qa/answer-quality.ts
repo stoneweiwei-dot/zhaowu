@@ -30,16 +30,23 @@ const KIND_PATTERNS: Array<[QuestionKind, RegExp[]]> = [
 ];
 
 const FOCUS_RULES: Array<[string, RegExp, RegExp]> = [
-  ["job_fit", /(適合|适合).{0,8}(什麼|什么|哪種|哪种|哪類|哪类).{0,8}(工作|職業|职业|職位|职位|崗位|岗位)|(適合做|适合做).{0,8}(工作|職業|职业|什麼|什么)|職業方向|职业方向|career\s+fit|what\s+(?:job|career)/i, /(工作類型|工作类型|職業方向|职业方向|職位|职位|崗位|岗位|研究|教學|教学|知識管理|知识管理|專業支援|专业支援|營運|营运|管理|顧問|顾问|設計|设计|協作|协作|開拓|开拓|career|job|role)/i],
-  ["talent", /(天賦|天赋|擅長什麼|擅长什么|強項|强项|能力特長|能力特长|talent|aptitude|natural\s+strength)/i, /(天賦|天赋|能力|擅長|擅长|強項|强项|研究|整理|教學|教学|整合|判斷|判断|改進|改进|設計|设计|輸出|输出|管理|協作|协作|表達|表达|專門|专门|流程|產品|产品|服務|服务|talent|aptitude|ability|strength)/i],
+  // Precision / data sufficiency gates come first so a compound question such as
+  // "不知道時辰，我適合什麼工作？" cannot pass by answering only the job-fit half.
+  ["unknown_time", /(不知道.{0,8}(時辰|时辰|出生時間|出生时间)|時辰.{0,8}(不知|未知|不確定|不确定)|时辰.{0,8}(不知|未知|不确定)|unknown.{0,8}(birth\s*time|time of birth))/i, /(時辰|时辰|出生時間|出生时间|不作判定|降級|降级|只能判|可以判一部分|unknown|birth\s*time|downgrad)/i],
   ["d60", /(D60|六十[分份]盤|六十[分份]盘|沙斯提安沙|shashtiamsa)/i, /(D60|旁證|旁证|時間|时间|time|corroborat)/i],
   ["ziwei", /(紫微|紫微斗數|紫微斗数|zi\s*wei)/i, /(紫微|旁證|旁证|驗證|验证|時辰|时辰|zi\s*wei|validat)/i],
-  ["unknown_time", /(不知道.{0,8}(時辰|时辰|出生時間|出生时间)|時辰.{0,8}(不知|未知|不確定|不确定)|时辰.{0,8}(不知|未知|不确定)|unknown.{0,8}(birth\s*time|time of birth))/i, /(時辰|时辰|出生時間|出生时间|不作判定|降級|降级|unknown|birth\s*time)/i],
+  ["job_fit", /(適合|适合).{0,8}(什麼|什么|哪種|哪种|哪類|哪类).{0,8}(工作|職業|职业|職位|职位|崗位|岗位)|(適合做|适合做).{0,8}(工作|職業|职业|什麼|什么)|職業方向|职业方向|career\s+fit|what\s+(?:job|career)/i, /(工作類型|工作类型|職業方向|职业方向|職位|职位|崗位|岗位|研究|教學|教学|知識管理|知识管理|專業支援|专业支援|營運|营运|管理|顧問|顾问|設計|设计|協作|协作|開拓|开拓|career|job|role)/i],
+  ["talent", /(天賦|天赋|擅長什麼|擅长什么|強項|强项|能力特長|能力特长|talent|aptitude|natural\s+strength)/i, /(天賦|天赋|能力|擅長|擅长|強項|强项|研究|整理|教學|教学|整合|判斷|判断|改進|改进|設計|设计|輸出|输出|管理|協作|协作|表達|表达|專門|专门|流程|產品|产品|服務|服务|talent|aptitude|ability|strength)/i],
+  ["career_decision", /(工作|職位|职位|公司|事業|事业|職業|职业).{0,18}(值不值得|要不要|該不該|该不该|能不能|是否值得|繼續|继续|離開|离开|換|换)|(值不值得|要不要|該不該|该不该|是否值得).{0,18}(工作|職位|职位|公司|事業|事业|職業|职业)/i, /(不能可靠|不能只憑|不能只凭|值得繼續|值得继续|不值得|續留|续留|離開|离开|偏向|stay|leave|cannot reliably|worth continuing)/i],
+  ["love_outlook", /(感情|關係|关系|曖昧|暧昧|復合|复合|對象|对象).{0,18}(有沒有|有没有|還有沒有|还有没有|能不能|會不會|会不会|空間|空间|發展|发展|繼續|继续)|(還有沒有|还有没有|能不能|會不會|会不会).{0,18}(感情|關係|关系|復合|复合|發展|发展)/i, /(不能可靠|不能只憑|不能只凭|有發展空間|有发展空间|沒有發展空間|没有发展空间|偏向繼續|偏向继续|不要再加碼|不要再加码|聯繫|联系|投入|承諾|承诺|recipro|commit|cannot reliably)/i],
+  ["money_risk", /(財務|财务|財運|财运|錢|钱|收入|投資|投资|現金流|现金流).{0,18}(最該防|最该防|風險|风险|注意|小心|避免|防什麼|防什么)|(最該防|最该防|風險|风险|注意|小心).{0,18}(財務|财务|財運|财运|錢|钱|投資|投资)/i, /(最該防|最该防|風險|风险|現金流|现金流|最大損失|最大损失|退出|槓桿|杠杆|固定支出|loss|cash flow|exit)/i],
+  ["choice", /(還是|还是|二選一|二选一|選哪|选哪|哪個更|哪个更|哪一個更|which\s+(?:one|option)|\bvs\.?\b)/i, /(暫不強選|暂不强选|條件不足|条件不足|偏向|選|选|A|B|option|choose|choice|不能可靠)/i],
+  ["timing", /(何時|何时|什麼時候|什么时候|哪一年|哪年|幾月|几月|應期|应期|when\b|timing\b)/i, /(\d{4}年|\d{1,2}月|窗口|時間|时间|階段|阶段|暫不能精確|暂不能精确|when|timing|period)/i],
   ["structure", /(格局|成格|破格|格局大小|pattern|structure)/i, /(格局|主格|結構|结构|完成度|pattern|structure)/i],
   ["strength", /(身強|身强|身弱|旺衰|日主.{0,8}(強|强|弱)|strong|weak|strength)/i, /(身強|身强|身弱|旺衰|承載|承载|強|强|弱|strength|capacity)/i],
   ["remedy", /(病藥|病药|藥神|药神|主病|病在哪|remedy|structural disease)/i, /(主病|病藥|病药|藥|药|對治|对治|remedy|disease)/i],
   ["useful", /(用神|喜用|取用|useful god|favourable element|favorable element)/i, /(用神|取用|候選|候选|流通|調候|调候|useful|candidate)/i],
-  ["decision", /(值不值得|要不要|該不該|该不该|能不能|是否值得|是否應該|是否应该|繼續.{0,8}[嗎吗]|继续.{0,8}[嗎吗]|should\s+i|worth\s+(?:staying|continuing))/i, /(直接回答|偏向|建議|建议|不建議|不建议|值得|不值得|可以|不能|不宜|暫不能|暂不能|不作判定|stay|leave|cannot|should|lean)/i],
+  ["decision", /(值不值得|要不要|該不該|该不该|能不能|有沒有必要|有没有必要|是否值得|是否應該|是否应该|繼續.{0,8}[嗎吗]|继续.{0,8}[嗎吗]|should\s+i|worth\s+(?:staying|continuing))/i, /(直接回答|偏向|建議|建议|不建議|不建议|值得|不值得|可以|不能|不宜|暫不能|暂不能|不作判定|stay|leave|cannot|should|lean)/i],
 ];
 
 const KIND_ANSWER_HINTS: Record<QuestionKind, RegExp> = {
@@ -53,6 +60,16 @@ const KIND_ANSWER_HINTS: Record<QuestionKind, RegExp> = {
   past: /前世|六道|一掌|象徵|象征|past|symbol/i,
   self: /格局|日主|命局|結構|结构|旺|弱|用神|病藥|病药|自己|structure|bazi|self/i,
 };
+
+const GENERIC_FILLER = [
+  /一切都是最好的安排/i,
+  /相信自己(?:就|，|,)?/i,
+  /順其自然|顺其自然/i,
+  /宇宙(?:會|会)?(?:給|给)你/i,
+  /命中注定/i,
+  /做最好的自己/i,
+  /聽從內心|听从内心/i,
+];
 
 const ABSOLUTE_CLAIMS = [
   /百分之百/g,
@@ -94,10 +111,15 @@ export function detectQuestionFocus(question: string): string {
 }
 
 export function directAnswerCoversQuestion(question: string, directAnswer: string): boolean {
-  for (const [, questionPattern, answerPattern] of FOCUS_RULES) {
-    if (questionPattern.test(question)) return answerPattern.test(directAnswer);
+  const matched = FOCUS_RULES.filter(([, questionPattern]) => questionPattern.test(question));
+  if (matched.length) {
+    // Compound questions must satisfy every detected requirement. This prevents a
+    // technically related sentence from passing while silently dropping the most
+    // important half of the user's question.
+    return matched.every(([, , answerPattern]) => answerPattern.test(directAnswer));
   }
-  return directAnswer.trim().length >= 8;
+  const kind = detectQaIntent(question, "self");
+  return directAnswer.trim().length >= 8 && KIND_ANSWER_HINTS[kind].test(directAnswer);
 }
 
 function sentenceParts(text: string): string[] {
@@ -180,6 +202,7 @@ export function evaluateAnswerQuality(result: AnalysisResult, expectedKind?: Que
   if (scores.relevance_score < 0.8) failReasons.push("relevance_below_0.8");
   if (scores.r6_1_compliance < 0.9) failReasons.push("r6_1_compliance_below_0.9");
   if (scores.unsupported_claim_score > 0) failReasons.push("unsupported_claim_present");
+  if (GENERIC_FILLER.some((pattern) => pattern.test(answerText))) failReasons.push("generic_filler_present");
 
   return { detectedIntent, questionFocus, scores, failed: failReasons.length > 0, failReasons };
 }
