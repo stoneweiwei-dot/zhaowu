@@ -10,6 +10,7 @@ export type AnswerQualityCorpusCase = {
 
 export const ANSWER_QUALITY_CORPUS: AnswerQualityCorpusCase[] = [
   { id: "talent", topic: "天賦", question: "我的天賦是什麼？", expectedKind: "self", expectedCoverage: "第一段列出具體能力與可能表現，再交代可追溯的盤面依據；沒有依據的能力不補造" },
+  { id: "job-fit", topic: "適合工作", question: "我適合什麼工作？", expectedKind: "career", expectedCoverage: "第一段直接列工作功能／類型與適合的工作環境，再交代盤面依據；不得只說職業判斷原則" },
   { id: "structure", topic: "格局", question: "這個八字到底是什麼格局？格局成立到什麼程度？", expectedKind: "self", expectedCoverage: "直接回答主格、成立條件、完成度與限制" },
   { id: "strength", topic: "身強身弱", question: "這個命局究竟身強還是身弱？依據是什麼？", expectedKind: "self", expectedCoverage: "直接回答承載強弱及月令、根氣、透藏依據" },
   { id: "useful", topic: "用神", question: "這個命局真正該取什麼用？不要只說缺什麼補什麼。", expectedKind: "self", expectedCoverage: "區分格局核心、病藥、調候與綜合首要解法" },
