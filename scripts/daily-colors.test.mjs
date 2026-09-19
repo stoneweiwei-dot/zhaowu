@@ -8,7 +8,7 @@ const route = await readFile(new URL("../src/routes/daily-colors.tsx", import.me
 const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
 const almanac = await readFile(new URL("../src/components/daily-almanac-widget.tsx", import.meta.url), "utf8");
 const night = await readFile(new URL("../src/night-readability-r127.css", import.meta.url), "utf8");
-const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
+const main = await readFile(new URL("../src/legacy-visual-compat.css", import.meta.url), "utf8");
 
 test("five dressing states stay centralized with trilingual names", () => {
   for (const id of ["qingyun", "jianghua", "kunning", "liujin", "hanxu"]) {
