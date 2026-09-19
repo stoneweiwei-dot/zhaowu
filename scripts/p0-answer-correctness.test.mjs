@@ -112,7 +112,9 @@ test("完整問答流程：天賦、追問工作、感情與月份各自回答�
 
   const work = await actions.followUpLife({ data: { question: "那我適合什麼工作？", base: talent, relation: "same" } });
   assert.equal(work.reading.kind, "career");
-  assert.match(work.reading.directAnswer, /工作|職業|岗位|成果|責任|输出|輸出/);
+  assert.match(work.reading.directAnswer, /較適合優先看的工作類型/);
+  assert.match(work.reading.directAnswer, /研究|教學|知識管理|專業支援|管理|顧問|設計|協作|開拓/);
+  assert.doesNotMatch((work.reading.directAnswer.split(/[。！？!?]/)[0] ?? ""), /職業判斷以|格局|旺衰/);
   assert.doesNotMatch(work.reading.directAnswer, /我的天賦是什麼/);
 
   const love = await actions.followUpLife({ data: { question: "那感情呢？", base: talent, relation: "same" } });
