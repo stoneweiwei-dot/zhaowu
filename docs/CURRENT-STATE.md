@@ -44,7 +44,7 @@
 - r135：Header 字標 PNG 已含「昭梧」，不得再並列第二個文字「昭梧」。夜色不得把宣紙標題反成月白。12MB 以內 MP3／M4A 原檔分段上傳，禁止再把相容音檔送進無逾時的 iPhone `decodeAudioData`。
 - 2026-09-18 最新首頁流程：`#customer-record → #bazi → #question-stage`。生辰保存後立即用現有 `buildChart()`／`BaziChart` 顯示完整四柱與基礎解釋；再次開站直接恢復。r129「首頁不得顯示即時四柱」已被此指令取代。四柱主卡仍只顯示柱名＋干支＋十神，藏干／納音／十二長生在同一命盤細項中完整展開。
 - 2026-09-19 r158：首頁七個公開專卷／流派入口退出 active path。生辰保存後，同一個 `#bazi` 區域直接顯示一份連續完整綜合報告；子平是唯一結構主判，紫微、西占、印度古法、七政、一掌象意與生命靈數只作內部專項旁證，不以流派名稱或分卡向客人展示。原專項計算路由保留作內部能力，不反向改寫子平主判。
-- 2026-09-19 r159：青玉小龍的捷徑與語意導覽同步收起七政、一掌經、紫微等流派入口，全部導向首頁單一完整綜合報告；Netlify 為 canonical 主站，Vercel 保留同版備援。原專項 routes 只保留內部能力與回歸用途。
+- 2026-09-19 r159：青玉小龍的捷徑與語意導覽同步收起七政、一掌經、紫微等流派入口，全部導向首頁單一完整綜合報告。r159 當時曾把 Netlify 設為 canonical；該 hosting 決策已被 r171 明確取代，現行只認 Vercel Production。原專項 routes 只保留內部能力與回歸用途。
 - `/numerology` 含靈魂獨白、人生角色、五項天賦分述與 11／22／33 區塊分析。首頁不得出現大師數文章標題「你是少見的」。
 - 研究札記與《術數的邊界》放在 `/knowledge`「昭梧 · 觀世錄」。首頁觀世錄只留最新一篇與「進入觀世錄」入口。
 - r130：背景音樂只播站主後台上傳的曲子（`/api/owner-music`）。不得再播 r129 內建佔位音，也不得把公開播放綁回 Supabase `zhaowu-audio` 公開桶（該桶 live HEAD 回 402）。後台上傳不經 Supabase session。舊檔仍在原桶，解除 spend cap 前無法自動撈回。
@@ -59,6 +59,7 @@
 - r163：首頁與核心流程採「高級宋式宣紙 × 極簡層級 × 大幅留白」。山水降權為遠景，出生資料、命盤、報告與延伸入口改用不透明暖米紙面；canonical 視覺仍只由 `zhaowu-design-system.css` 最後接管。青玉小龍縮至 52px 並把未展開提示降為約 48–72 秒一次；播放器仍只在小龍內。
 - r166：固定宋式遠山背景提高到肉眼可辨識但仍低於內容的權重；首頁暫時移除吉象圖鑑入口與其載入，獨立 `/auspicious-atlas`、素材原件與站主圖庫管理保留。
 - r167：站主認定 r166 仍過於寡淡；首頁改為較有份量的礦物色宋畫層級，降低洗白遮罩並加深遠山、深松綠標題、鎏金細線與少量朱砂。宣紙內容仍不透明，手機可讀性與圖鑑首頁隱藏契約不變。
+- r171：不再新增第 58 層視覺補丁。55 個歷史全域視覺檔改由 `legacy-visual-compat.css` 的 `@layer legacy` 統一載入；`zhaowu-design-system.css` 保持未分層且最後載入，因此 canonical 規則固定高於 legacy layer。這是視覺收斂，不刪元件專用相容樣式。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
 - 趣味測驗結果可顯示已核准的隱藏神聖圖像；這是結果頁視覺補充，不改命盤計算、報告契約或付費圖片流程。
 - Logo／STO-12 已完成，不重新製作。STO-5 普通會員入口廢止已被 2026-09-15 站主最新指令取代：會員登入／註冊必須存在且確認信不得掉進空白頁。
@@ -113,7 +114,7 @@
 - 完整報告為一張連續暖宣紙閱讀面。
 - 青玉小龙 AI 導覽、Gallery 命請匹配與真實命請圖生成邏輯不因 UI 改版改變。
 
-最終視覺權威：`src/zhaowu-design-system.css` 必須最後載入，舊 CSS 只保留相容依賴，不得再覆蓋 canonical 規則；報告內容結構仍由 `src/focused-report.css` 與現行 renderer 承載。
+最終視覺權威：`src/zhaowu-design-system.css` 必須最後載入。r171 起 `src/main.tsx` 全域 CSS 僅保留 `styles.css → legacy-visual-compat.css → zhaowu-design-system.css` 三個入口；55 個歷史視覺檔統一置於 CSS `legacy` cascade layer，只保留相容依賴，不能以 specificity 反壓 canonical。報告內容結構仍由 `src/focused-report.css` 與現行 renderer 承載。
 
 ## 6. 专题报告与 Calculation Truth Layer
 
@@ -123,7 +124,7 @@
 
 ## 7. 2026-09-13 十項收口對帳
 
-舊聊天「先修 Safari、重建 D60、西洋完整盤、真機 Gate、branch protection、Supabase、停 Netlify、Linear、DNS、#295 暫停」不得再當未做任務重做。對帳如下：
+舊聊天「先修 Safari、重建 D60、西洋完整盤、真機 Gate、branch protection、Supabase、切換 hosting、Linear、DNS、#295 暫停」不得再當未做任務重做；尤其不得復活 Netlify production。對帳如下：
 
 | # | 項 | 狀態 |
 | --- | --- | --- |
