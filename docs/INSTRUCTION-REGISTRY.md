@@ -70,7 +70,7 @@
 
 ### 3.4 旧 AppDeploy / Netlify / Grok temporary production briefings
 
-旧 AppDeploy／Grok 临时 production 仍为 `REFERENCE ONLY`。Netlify 的旧 archive／永久 skip 限制已被 2026-09-19 r154 站主明确指令取代：同一 GitHub `main` 由既有 `archive-stone-zhaowu-official` 承载 Vite 前端与十个 canonical API handler；不得复活旧静态壳，也不得另写命理逻辑。
+旧 AppDeploy／Grok 临时 production 仍为 `REFERENCE ONLY`。2026-09-19 r154 的 Netlify Production 指令已被 2026-09-20 最新 hosting supersession 取代：GitHub `main` 仍是唯一源碼真相，Vercel `stone-zhaowu-official` 是唯一正式 Production；Netlify `archive-stone-zhaowu-official` 只作歷史 archive。不得復活舊靜態殼、另建 Production 或另寫命理邏輯。
 
 ### 3.5 印度吠陀占星分散指令（v4.0 + 后续补丁）
 
