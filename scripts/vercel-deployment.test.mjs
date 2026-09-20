@@ -8,10 +8,7 @@ test("Vercel production installs the exact tracked dependency tree", () => {
   assert.equal(config.installCommand, "npm ci");
 });
 
-test("Vercel Git auto-deploy is enabled for main only and docs-only skips stay in ignoreCommand", () => {
-  assert.deepEqual(config.git?.deploymentEnabled, { "*": false, main: true });
-  assert.match(config.ignoreCommand ?? "", /VERCEL_GIT_PREVIOUS_SHA/);
-  assert.match(config.ignoreCommand ?? "", /\.github\/\*\*/);
-  assert.match(config.ignoreCommand ?? "", /docs\/\*\*/);
-  assert.match(config.ignoreCommand ?? "", /git diff --quiet/);
+test("Vercel automatic Git deployments stay fully disabled and no ignored-build quota trap remains", () => {
+  assert.equal(config.git?.deploymentEnabled, false);
+  assert.equal(Object.prototype.hasOwnProperty.call(config, "ignoreCommand"), false);
 });
