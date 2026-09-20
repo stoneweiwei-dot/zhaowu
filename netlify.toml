@@ -1,17 +1,17 @@
+# Netlify is ARCHIVE-ONLY. No runtime, no API, no automatic builds.
+# Continuous Deployment should be disabled / repo unlinked in Netlify Dashboard.
+# This file forces any accidental Git trigger to exit immediately.
+
 [build]
-  command = "npm run build"
+  command = "echo 'archive-only: build skipped' && exit 0"
   publish = "dist"
-  functions = "netlify/functions"
   ignore = "exit 0"
 
 [build.environment]
   NODE_VERSION = "24"
 
-[[redirects]]
-  from = "/api/gallery-ingest-finalize"
-  to = "https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize"
-  status = 200
-  force = true
+# No functions. No /api/* runtime. Existing public deployment is historical archive only.
+# All production traffic and APIs live on Vercel stone-zhaowu-official.
 
 [[redirects]]
   from = "/*"
@@ -38,18 +38,3 @@
   for = "/manifest.webmanifest"
   [headers.values]
     Cache-Control = "no-store, max-age=0"
-
-[[headers]]
-  for = "/audio/*"
-  [headers.values]
-    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
-
-[[headers]]
-  for = "/tea-guardians/*"
-  [headers.values]
-    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
-
-[[headers]]
-  for = "/report-visuals/*"
-  [headers.values]
-    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"

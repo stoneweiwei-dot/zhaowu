@@ -1,10 +1,13 @@
 # 昭梧
 
-正式域名：https://zhaowu.soul-terminal.com  
+唯一正式 Production：https://stone-zhaowu-official.vercel.app/  
+正式域名（DNS 待挂）：https://zhaowu.soul-terminal.com  
 主站：https://soul-terminal.com  
 仓库：https://github.com/stoneweiwei-dot/zhaowu
 
 这个仓库是所有 AI / APP / Agent 协作昭梧的唯一源码与交接入口。无论由 ChatGPT、Codex、Grok、AppDeploy、GitHub-connected agent、部署 Agent 或未来任何平台接手，都不得建立平行 production 主线。
+
+**Hosting 政策（最高）：Vercel 唯一 Production。Netlify 仅作历史 archive（无 runtime / 无 API / 无自动 build）。main 是唯一 source of truth。**
 
 ## 接手前强制阅读顺序
 

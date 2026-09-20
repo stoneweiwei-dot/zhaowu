@@ -1,29 +1,28 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-20 05:09 AEST
+最後核對：2026-09-21 03:45 AEST
 
-> **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Netlify Production + 当前 Supabase 为准。
+> **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Vercel Production + 当前 Supabase 为准。
 
 ## 1. 唯一生产主线
 
 | 项             | 当前唯一真相                                                           |
 | -------------- | ---------------------------------------------------------------------- |
 | GitHub         | `stoneweiwei-dot/zhaowu`                                               |
-| Branch         | `main`                                                                 |
-| Hosting        | **Netlify**（2026-09-19 r155 站主明确 supersession）                    |
-| Netlify project | `archive-stone-zhaowu-official` (`d1d08003-f225-4749-adcd-fd730b0c07a8`) |
-| Production URL | `https://archive-stone-zhaowu-official.netlify.app/`                   |
-| Synchronized fallback | Vercel `stone-zhaowu-official`，r158 已與 `main` 同步；不作 canonical 主網址 |
+| Branch         | `main`（唯一 source of truth）                                         |
+| Hosting        | **Vercel**（唯一 Production，stone-zhaowu-official）                   |
+| Production URL | `https://stone-zhaowu-official.vercel.app/`                            |
+| Archive only   | Netlify `archive-stone-zhaowu-official`（无 runtime / 无 API / 无自动 build） |
 | Database/Auth  | **Supabase** project `plgpxusmemnmzckbwtiv`（報告／圖庫／統計）。站主登入不走 Supabase Auth。 |
-| 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前使用 Netlify production URL   |
+| 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前使用 Vercel Production URL     |
 
-每次接手实时检查 `main`、Netlify Production 與 Vercel fallback 的 commit；GitHub `main` 仍是唯一源码真相。Netlify 是 canonical 主站；Vercel 可保留同版同步備援，但不得讓 preview 或工具分支浪費建置額度。AppDeploy、Lovable standby 與其他旧临时站只读参考。
+每次接手实时检查 `main` 与 Vercel Production 的 commit；GitHub `main` 仍是唯一源码真相。Vercel 是唯一正式站；Netlify 只作历史 archive，不得再承担任何正式流量或 `/api/*`。AppDeploy、Lovable standby 与其他旧临时站只读参考。
 
-2026-09-19 實查：Vercel Production `dpl_HhhNFxpEJvMcWHCP5YUhPoQQhUpd` 已在 r158 commit `15afe0ddf220460bfc80270ce5658a7764e80582` READY；Netlify deploy `6aadf08e321b9f85815b09ec` 亦為 r158。r159 起正式 metadata 與登入回呼指向 Netlify canonical；不得把兩個平台 READY 等同真實 iPhone／已安裝 PWA／站主登入验收。
+**治理政策（#411 起最高）：** 零成本单一 Production。禁止 preview 部署 churn、禁止把外挂变成 runtime dependency、禁止未经明确批准的付费计划升级。未来 Production release 必须显式手动，Git 自动部署已关闭（vercel.json `deploymentEnabled: false`）。
 
 ## 2. 已完成且默认锁住
 
-- GitHub `main` 是唯一源码真相。Netlify 只从 `main` 建置同一份 Vite 前端与 canonical API handlers；Vercel 的旧自动部署设定保留但当前不触发。
+- GitHub `main` 是唯一源码真相。Vercel 从 `main` 承载同一份 Vite 前端与 canonical API handlers。
 - GitHub `main` branch protection 已開啟：required checks = Deploy gate／Engine suite／iPhone Safari；`enforce_admins=true`；禁止 force push。
 - Supabase 报告存档、图库/背景资产、访问统计统一使用当前项目配置。站主登入改為獨立 Cookie `__Host-zhaowu_owner_session`，不經 Supabase Auth。
 - 登入：`/login` 提供會員登入、註冊與獨立站主密鑰三分頁。會員走 Supabase Auth，確認信與 OAuth 必須回到 `/auth/callback`，不得把 token 倒在首頁變成空白頁。站主仍只認獨立 Cookie `__Host-zhaowu_owner_session`；`profiles.is_owner` 不得讓會員變成站主。Email＋密碼廢止契約已被 2026-09-15 站主最新指令取代。
@@ -44,7 +43,7 @@
 - r135：Header 字標 PNG 已含「昭梧」，不得再並列第二個文字「昭梧」。夜色不得把宣紙標題反成月白。12MB 以內 MP3／M4A 原檔分段上傳，禁止再把相容音檔送進無逾時的 iPhone `decodeAudioData`。
 - 2026-09-18 最新首頁流程：`#customer-record → #bazi → #question-stage`。生辰保存後立即用現有 `buildChart()`／`BaziChart` 顯示完整四柱與基礎解釋；再次開站直接恢復。r129「首頁不得顯示即時四柱」已被此指令取代。四柱主卡仍只顯示柱名＋干支＋十神，藏干／納音／十二長生在同一命盤細項中完整展開。
 - 2026-09-19 r158：首頁七個公開專卷／流派入口退出 active path。生辰保存後，同一個 `#bazi` 區域直接顯示一份連續完整綜合報告；子平是唯一結構主判，紫微、西占、印度古法、七政、一掌象意與生命靈數只作內部專項旁證，不以流派名稱或分卡向客人展示。原專項計算路由保留作內部能力，不反向改寫子平主判。
-- 2026-09-19 r159：青玉小龍的捷徑與語意導覽同步收起七政、一掌經、紫微等流派入口，全部導向首頁單一完整綜合報告；Netlify 為 canonical 主站，Vercel 保留同版備援。原專項 routes 只保留內部能力與回歸用途。
+- 2026-09-19 r159：青玉小龍的捷徑與語意導覽同步收起七政、一掌經、紫微等流派入口，全部導向首頁單一完整綜合報告；原專項 routes 只保留內部能力與回歸用途。
 - `/numerology` 含靈魂獨白、人生角色、五項天賦分述與 11／22／33 區塊分析。首頁不得出現大師數文章標題「你是少見的」。
 - 研究札記與《術數的邊界》放在 `/knowledge`「昭梧 · 觀世錄」。首頁觀世錄只留最新一篇與「進入觀世錄」入口。
 - r130：背景音樂只播站主後台上傳的曲子（`/api/owner-music`）。不得再播 r129 內建佔位音，也不得把公開播放綁回 Supabase `zhaowu-audio` 公開桶（該桶 live HEAD 回 402）。後台上傳不經 Supabase session。舊檔仍在原桶，解除 spend cap 前無法自動撈回。
@@ -54,15 +53,15 @@
 - 首页各分组必须用简短三语说明回答两件事：用户“会知道自己的什么”与“这个体系最擅长看什么”；英文必须自然简洁，不做逐字直译。
 - 「趣味测验」是独立的轻量自评系列，不冒充命盘；包含「内在动物 × 命局瑞兽」与「五行功能测验」。五行功能测验只判断当前需要训练的生长、启动、落地、收敛或恢复功能，不等同八字喜用神。
 - r160：首頁不再直接攤開全部測驗卡，改為預設收起的單一入口「昭梧 · 心境小測」；點開後保留原測驗、計分、紀錄與路由。公開吉象圖鑑與命詮 Gallery-direct 候選只展示無人物祥紋；舊人像報告圖因面部重影退出圖庫展示，但既有報告母圖與原檔不刪除。
-- r161：首頁核心流程置頂；今日、心境小測、吉象圖鑑、觀世錄統一為預設收起且同時只開一區。Header 日夜控制改為文字分段。開場與登入動畫提供使用者手勢聲音控制；Netlify 站主登入修正 Fetch Request body 讀取，站主密碼仍為 `19881004`。
-- r162：專業計算 routes 改為站主 Cookie 前置驗證，公開訪客即使知道網址亦會回首頁；Netlify 新增第十一個 canonical handler `/api/owner-data`，站主報告、背景、圖庫、登入素材與命詮圖統一經同源橋接。公開紀錄、知識庫與青玉小龍只再導向首頁完整命盤或心境小測。
+- r161：首頁核心流程置頂；今日、心境小測、吉象圖鑑、觀世錄統一為預設收起且同時只開一區。Header 日夜控制改為文字分段。開場與登入動畫提供使用者手勢聲音控制。
+- r162：專業計算 routes 改為站主 Cookie 前置驗證，公開訪客即使知道網址亦會回首頁；公開紀錄、知識庫與青玉小龍只再導向首頁完整命盤或心境小測。
 - r163：首頁與核心流程採「高級宋式宣紙 × 極簡層級 × 大幅留白」。山水降權為遠景，出生資料、命盤、報告與延伸入口改用不透明暖米紙面；canonical 視覺仍只由 `zhaowu-design-system.css` 最後接管。青玉小龍縮至 52px 並把未展開提示降為約 48–72 秒一次；播放器仍只在小龍內。
 - r166：固定宋式遠山背景提高到肉眼可辨識但仍低於內容的權重；首頁暫時移除吉象圖鑑入口與其載入，獨立 `/auspicious-atlas`、素材原件與站主圖庫管理保留。
 - r167：站主認定 r166 仍過於寡淡；首頁改為較有份量的礦物色宋畫層級，降低洗白遮罩並加深遠山、深松綠標題、鎏金細線與少量朱砂。宣紙內容仍不透明，手機可讀性與圖鑑首頁隱藏契約不變。
 - 「六道习气测验」已独立落地于 `/quiz/six-realms`，只作当下日常惯性自评，不冒充死后去处、前世判定或一掌经排盘。
 - 趣味測驗結果可顯示已核准的隱藏神聖圖像；這是結果頁視覺補充，不改命盤計算、報告契約或付費圖片流程。
 - Logo／STO-12 已完成，不重新製作。STO-5 普通會員入口廢止已被 2026-09-15 站主最新指令取代：會員登入／註冊必須存在且確認信不得掉進空白頁。
-- r155 延續取代舊 Netlify 永久 skip：`netlify.toml` 現在執行正式 build；r162 起由 `netlify/functions` 承載十一個 `/api/*`。站主音樂密封金鑰以 JSON module 納入 serverless bundle，不得退回執行期相對檔案讀取或只有靜態 `dist` 的舊殼。
+- Netlify 已強制 archive-only：`netlify.toml` ignore = exit 0，functions 移除，不再承載 runtime / API。
 
 没有新的可复现 FAIL 时，不得因为旧 Issue / 旧聊天复活已废止实现。
 
@@ -99,20 +98,6 @@
 
 视觉母版是高級暖米宣纸／宋式图谱体系，品牌主體鎖定為松、日／月、山、水、雲；r163 起山水只作低權重遠景，內容紙面與文字層級優先。
 
-- Header 使用站主核准的金葫蘆＋深藍「昭梧」橫向原圖（`/brand-ui/header-gourd-wordmark-r113.png`），固定在 132 × 54 容器內；r117 已修正舊 CSS 導致的裁切。登入／帳戶／首頁功能 Icon 仍沿用細圓框系統。
-- PWA／加入主畫面使用獨立裁切與縮放的 r113 App Icon（`/apple-touch-icon-r113.png` 與 manifest 192／512 尺寸），不得拿 Header 長字標直接替代；瀏覽器 favicon 亦使用獨立輸出。
-- Footer 使用橫版「昭梧＋雲紋」標誌。
-- 金葫蘆現為核准品牌主體；功能松系圖示仍保留，但不得覆蓋 Header／App Icon。青玉小龍不是品牌 Logo。
-- 同一畫面最多兩種裝飾母題。首頁現用「松枝＋山日分隔」；禁止松、月、山、雲、水、印章同時出現。
-- 主按鈕金底松綠字膠囊；次按鈕／登出為 Ghost 金框。
-- 夜間模式：深松綠／玄黑底、金線、月白字，Header 切換至 `logo-primary-night.svg`；禁止亮白大面積。完整綜合報告、輕測驗、命盤細項必須實色底＋月白字，禁止壁紙透字。
-- r27：全站應用頁與登入頁使用米色宣紙底、朱印。固定山水背景已被站主本次指令取代；圖鑑海報不參與背景。
-- 表單、結果、命請、登入紙面與工具卡一律使用不透明暖米宣紙 `#faf8f1` / `#fffaf1`，禁止玻璃擬態、半透明卡與厚重浮空陰影。
-- iPhone 390–430 px 優先；不使用 `background-attachment: fixed`。
-- 動態 owner 背景不再參與前台 shell；圖庫、後台上傳與管理獨立保留。
-- 完整報告為一張連續暖宣紙閱讀面。
-- 青玉小龙 AI 導覽、Gallery 命請匹配與真實命請圖生成邏輯不因 UI 改版改變。
-
 最終視覺權威：`src/zhaowu-design-system.css` 必須最後載入，舊 CSS 只保留相容依賴，不得再覆蓋 canonical 規則；報告內容結構仍由 `src/focused-report.css` 與現行 renderer 承載。
 
 ## 6. 专题报告与 Calculation Truth Layer
@@ -121,34 +106,19 @@
 
 `src/lib/qizheng/engine.ts` 继续负责七政真天象计算；`src/lib/qizheng/plain-summary.ts` 只做內部旁證組合，不改动星体计算。七政對性情、情绪节奏、行动压力、关系取向和机会落地的觀察併入統一報告，不以專卷入口或命盤表向客人展示。内部 debug 口径不进客户画面。
 
-## 7. 2026-09-13 十項收口對帳
+## 7. 2026-09-13 十項收口對帳（歷史）
 
-舊聊天「先修 Safari、重建 D60、西洋完整盤、真機 Gate、branch protection、Supabase、停 Netlify、Linear、DNS、#295 暫停」不得再當未做任務重做。對帳如下：
-
-| # | 項 | 狀態 |
-| --- | --- | --- |
-| 1 | Production CI Safari | **PASS** on r129 `7a35307`（Deploy gate／Engine／iPhone Safari 全綠）；r130 合併後再核一次 |
-| 2 | D60 minute gate，不 merge #304 | **DONE** on main；#304 CLOSED 未合併 |
-| 3 | 西洋完整盤（#310 內容在最新 main）+ 專卷命盤 | **DONE**；未知時辰四軸 fail-closed |
-| 4 | 真實 iPhone／PWA／登入／報告重開 | **未完成**（CI ≠ 真機）。r129 獨立 `.js` 登入已上線；r130 後台上傳背景音樂須再核 |
-| 5 | GitHub main protection | **DONE**（三項 required checks + enforce_admins） |
-| 6 | Supabase advisor／Edge Functions | **文件化**，Dashboard 勾選仍需站主 |
-| 7 | Netlify 承載 | **r155 SUPERSEDED**：改為 active host，必須連同十個 Functions 驗證 |
-| 8 | Linear STO-12／STO-5、CURRENT-STATE SHA | Logo／舊會員入口已鎖；Linear 未接入無法寫卡。live SHA 對到 `7a35307`（r129） |
-| 9 | `zhaowu.soul-terminal.com` | **未完成**；尚未綁到目前 Netlify active host，DNS 無法解析 |
-| 10 | PR #295 Paid Visual | **維持暫停**；不 merge、不 rebase |
-
-PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行契約。r128 的 `/api/owner-*.ts` 在 Vite+Vercel 上 FUNCTION_INVOCATION_FAILED；r129 改 `api/*.js` 自包含 Node handler，並把 SPA rewrite 改成不吞 `/api/*`。
+舊聊天「先修 Safari、重建 D60、西洋完整盤、真機 Gate、branch protection、Supabase、停 Netlify、Linear、DNS、#295 暫停」不得再當未做任務重做。Netlify 已改為 archive-only；Vercel 為唯一 Production。
 
 ## 8. 当前真正未完成
 
-- 正式子域名 `zhaowu.soul-terminal.com` DNS → Netlify 綁定與 SSL。完成前正式地址是 `https://archive-stone-zhaowu-official.netlify.app/`。
+- 正式子域名 `zhaowu.soul-terminal.com` DNS → Vercel 綁定與 SSL。完成前正式地址是 `https://stone-zhaowu-official.vercel.app/`。
 - 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub iPhone Safari CI 已通過；這不等於實機完成。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
 - Supabase Storage 實查約 1.20 GB，超過 Free plan 1 GB；Storage 與 Edge gateway 回 402 `exceed_storage_size_quota`。解除只能由站主升級／調整帳務，或先核准可刪除／外移的至少約 200 MB 媒體；本版不擅自刪資料。r130 起站主音樂不依賴此桶。
-- r162 migration 已把 `get_customer_classic_passage` EXECUTE 限縮為 `service_role`，既有 helper `search_path` 維持 hardened；`zhaowu-owner-data` Edge Function 已部署 v3。Supabase leaked-password protection 仍需站主在 Dashboard 啟用；容量 402 解除前 live Edge gateway 仍不可用。
-- Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo。會員登入／註冊以 r139 為準。
+- Netlify project 層 Continuous Deployment / Git build hook 仍需站主在 Dashboard 手動關閉或 unlink（代碼側已 ignore = exit 0 並移除 functions）。
+- Vercel Project Settings 的 Git 欄位 provider-side 核對（程式碼已 `deploymentEnabled: false`，行為已證明無自動部署）。
 
 ## 9. 生产优先级
 
@@ -177,10 +147,6 @@ PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行�
 
 ## 11. 接手规则
 
-每次改网站之前：读 `AGENTS.md` 与本文件；查实时 main + Netlify Production，并把 Vercel 视为旧版 fallback；只处理当前可复现问题。新指令与旧指令冲突时，按 AGENTS 的安全 supersession 规则使旧 active path 失效，但不得破坏运行依赖。
+每次改网站之前：读 `AGENTS.md` 与本文件；查实时 main + Vercel Production；只处理当前可复现问题。新指令与旧指令冲突时，按 AGENTS 的安全 supersession 规则使旧 active path 失效，但不得破坏运行依赖。
 
-- r164：日／夜使用直接選擇按鈕，報告與小龍補齊夜間文字對比；維持 r163 紙面及單一浮動入口。
-- r165：最終產品收線為「昭梧命書」：一次生辰 → 規則排盤 → 子平結構主判 → 後台多法旁證 → 一份連續命書 → 繼續提問。此後不再以增加流派入口、首頁卡片或獨立工具作為產品主線；排盤與解讀保持分層，解讀不得重算或改寫四柱。同一命書內提供可複製的 AI 可讀命盤資料包、計算口徑、核對方法與版本追溯；不得用虛構樣本數或「最準」口號代替可重現證據。
-- r166：首頁背景必須能直接看見固定宋式遠山，但宣紙卡片仍保持不透明；首頁延伸內容只留今日、心境小測與觀世錄，吉象圖鑑及其資料請求暫時退出首頁，後台與獨立圖鑑頁不刪除。
-- r167：首頁不得再以大面積低對比米白把宋畫與品牌色洗平；山水可維持內容之下的背景層級，但需保留可辨識的墨線、礦物色與深淺。主標、主要紙面及延伸入口以深松綠、鎏金細線、少量朱砂建立層級，不增加新區塊或裝飾堆疊。
-- r169：依站主截圖清除首頁、命盤、命書、登入與安裝提示中的內部流程旁白與重複說明。方法與計算規則保留，不再強迫客人閱讀；命盤「如何核對」僅保留簡短發布 Gate：核心排盤規則變更後重跑固定回歸，偏離鎖定基準則不得發布，且不得把此 Gate 宣稱為解讀正確率。Sites 畫面與 Netlify 部署須分別驗證，不混稱已上線。
+- 外掛（Canva / Replit / Runway / AppDeploy / Floot 等）永不成為 runtime dependency；`scripts/customer-cost-isolation.test.mjs` 已強制掃描 runtime source，違者 CI fail。

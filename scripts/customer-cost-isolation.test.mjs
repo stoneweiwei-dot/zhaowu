@@ -64,3 +64,49 @@ test("public Supabase browser key remains explicitly publishable, never service-
   assert.match(source, /DEFAULT_SUPABASE_PUBLISHABLE_KEY/);
   assert.doesNotMatch(source, /SUPABASE_SERVICE_ROLE_KEY/);
 });
+
+/**
+ * Runtime external-domain allowlist Gate (zero-cost single-production policy).
+ * Production runtime (src/ + api/) may only reference explicitly approved origins.
+ * External plugin / connector domains are development tools only and must never
+ * become runtime dependencies.
+ */
+test("runtime source must not introduce unapproved external connector domains", () => {
+  const runtimeRoots = ["src", "api"].map((d) => join(ROOT, d));
+  const files = runtimeRoots.flatMap((dir) => {
+    try {
+      return walk(dir).filter((path) => /\.[cm]?[jt]sx?$|\.mjs$|\.cjs$|\.json$/.test(path));
+    } catch {
+      return [];
+    }
+  });
+
+  // Forbidden domains / hosts that must never appear in runtime source or bundle.
+  // These are development / plugin / temporary hosting tools only.
+  const forbiddenDomains = [
+    /canva\.com/i,
+    /replit\.com/i,
+    /replit\.dev/i,
+    /sites\.google\.com/i,
+    /runwayml\.com/i,
+    /runway\.com/i,
+    /appdeploy\.ai/i,
+    /appdeploy\.com/i,
+    /floot\.com/i,
+    /lovable\.dev/i,
+    /bolt\.new/i,
+    /v0\.dev/i,
+    /cursor\.com\/agents/i,
+  ];
+
+  for (const file of files) {
+    const source = readFileSync(file, "utf8");
+    for (const pattern of forbiddenDomains) {
+      assert.doesNotMatch(
+        source,
+        pattern,
+        `${relative(ROOT, file)} introduces unapproved external connector/domain into runtime`
+      );
+    }
+  }
+});
