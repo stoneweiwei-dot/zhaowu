@@ -19,11 +19,11 @@ const endpoints = [
   "zhaowu-doctor",
 ];
 
-test("Netlify builds the same Vite output and keeps SPA routing", () => {
+test("Netlify archive keeps all automatic Git builds frozen while preserving fallback config", () => {
   assert.match(netlify, /command = "npm run build"/);
   assert.match(netlify, /publish = "dist"/);
   assert.match(netlify, /functions = "netlify\/functions"/);
-  assert.doesNotMatch(netlify, /ignore = "exit 0"/);
+  assert.match(netlify, /ignore = "exit 0"/);
   assert.match(netlify, /from = "\/\*"[\s\S]*to = "\/index\.html"/);
 });
 
