@@ -17,8 +17,8 @@ test("D60 reliability gate is wired on the Indian specialist page and not merged
 test("confirmation is bound to a birth fingerprint that includes time, timezone and place", () => {
   assert.match(gate, /function birthKey\(birth: D60GateBirth\)/);
   assert.match(gate, /birth.city.timezone, birth.city.latitude, birth.city.longitude/);
-  assert.match(gate, /setConfirmedKey\("")/);
-  assert.match(gate, /setState\("idle")/);
+  assert.match(gate, /setConfirmedKey\(""\)/);
+  assert.match(gate, /setState\("idle"\)/);
   assert.match(gate, /}, \[key\]\);/);
   assert.match(gate, /confirmedKey !== key/);
   assert.match(gate, /data-d60-minute-gate/);
