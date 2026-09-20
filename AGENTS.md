@@ -3,21 +3,68 @@
 This file is the highest repository-level execution protocol for all work on **ZHAOWU / 昭梧**.
 
 Repository: `stoneweiwei-dot/zhaowu`
-Production project: Netlify `archive-stone-zhaowu-official`
-Production URL: `https://archive-stone-zhaowu-official.netlify.app/`
-Legacy live fallback: Vercel `stone-zhaowu-official` (r151 until explicitly re-enabled)
+Production project: Vercel `stone-zhaowu-official`
+Production URL: `https://stone-zhaowu-official.vercel.app/`
+Database/Auth/Storage: Supabase `plgpxusmemnmzckbwtiv`
 Primary branch: `main`
+Cost posture: **A$0/month target unless the owner explicitly approves paid infrastructure**
 
-## 2026-09-19 r154 HOSTING SUPERSESSION
+## 2026-09-20 OWNER ABSOLUTE ZERO-COST / SINGLE-PRODUCTION SUPERSESSION
 
-The owner's latest explicit instruction supersedes only the old rule that forced all production publication through Vercel and disabled Netlify. Until the owner explicitly changes this again:
+This is the owner's newest explicit infrastructure instruction and has **highest repository-level authority** for hosting, deployment, quota, storage and external-tool behavior. It fully supersedes the 2026-09-19 r154 Netlify-hosting supersession and every older 40/44/50/80-deploy budget rule.
 
-- GitHub `main` remains the only source of truth.
-- Netlify project `archive-stone-zhaowu-official` is the active production host and must build the same Vite source plus the canonical `/api/*` handlers through Netlify Functions.
-- Do not trigger Vercel builds merely to satisfy older Vercel-specific completion wording while Vercel quota or cancellation is the stated blocker.
-- Existing Vercel production stays as a non-destructive legacy fallback; do not delete it, migrate its data, or claim it serves the current release.
-- In sections 1, 5, 8 and 12 below, read Vercel-specific deployment language as applying to the active production host unless the check is explicitly about the legacy Vercel fallback.
-- This supersession does not authorize duplicate calculation logic, auth logic, Supabase data, payment, report history or media deletion.
+### A. Zero-cost is the default operating constraint
+
+- ZHAOWU must be operated at **A$0/month wherever the existing free tiers can safely support the actual traffic and workload**.
+- No AI, APP, agent, connector or automation may create, enable, upgrade or subscribe to a paid infrastructure plan, paid add-on, paid storage tier or parallel paid host without the owner's **new explicit approval for that exact spend**.
+- When any platform reports a quota/limit, the first response must be: **measure actual usage → identify waste → stop redundant triggers → deduplicate/clean safe waste → wait for free-tier reset where appropriate → only then report a genuine external blocker**.
+- "Upgrade", "add credits", "buy Pro" or "move to another paid host" is never the default fix for a quota caused by development churn.
+
+### B. One production path only
+
+- GitHub `stoneweiwei-dot/zhaowu` branch `main` is the only source of truth.
+- Vercel project `stone-zhaowu-official` is the **only active production host**.
+- Canonical production origin is `https://stone-zhaowu-official.vercel.app/` until the owner explicitly assigns another canonical domain.
+- Netlify `archive-stone-zhaowu-official`, Replit, Sites, AppDeploy, Lovable, Floot, Cloudflare or any other platform may be used only as development/reference tooling when needed. They must not become a second production source, canonical URL, auth callback origin or runtime dependency unless the owner explicitly changes this rule.
+- Older Netlify-as-production wording in docs/issues/chats is **superseded** and must not be revived.
+
+### C. Deployment budget: release once, do not deploy to test
+
+- **No automatic Vercel preview deployment is allowed for tool branches, Codex branches, fix branches, docs-only branches or exploratory work.**
+- Branches may exist in GitHub, but they must be tested with local/GitHub CI first and must not be used as a way to consume Vercel deployment quota.
+- Batch compatible work. The normal release path is: **edit/test off-production → merge one vetted batch to `main` → one production deployment → verify production**.
+- Never use repeated Vercel deployments as a debugging loop when the same failure can be found by source inspection, unit tests, typecheck, build or GitHub CI.
+- Documentation/governance-only edits should not trigger production builds where platform configuration can safely exclude them.
+- A cancelled/ignored Vercel deployment is still treated as quota consumption for project governance purposes; agents must prevent the trigger rather than intentionally creating a cancelled deployment.
+- Do not create another Vercel project to evade limits.
+
+### D. Supabase free-tier operating envelope
+
+- Keep the existing Supabase project `plgpxusmemnmzckbwtiv`; do not create a replacement project merely to reset quota.
+- Database/Auth stay on the current free project while capacity is sufficient.
+- Supabase Storage operating target is **below 900 MB**, leaving safety margin below the free-tier 1 GB limit.
+- Before uploading new media: check for an existing identical asset; avoid duplicate binaries; prefer production-appropriate compressed formats. Do not upload large WAV/PNG originals when a smaller production derivative is sufficient.
+- Cleanup order is: **unreferenced/orphan objects → exact duplicate binaries → disabled temporary/test assets → obsolete one-time imports**, but only after references and rollback needs are proven.
+- Never delete customer reports, user data, currently referenced production assets, originals required for rollback, or database records merely to reduce quota.
+- Temporary / probe / `*-once` Edge Functions are development artifacts. After their job is complete, they must be audited and retired from the active surface when safe; they must never become accidental permanent runtime dependencies.
+- Storage pressure must be solved by safe cleanup/deduplication before any paid upgrade is proposed.
+
+### E. External plugins are development tools, not production dependencies
+
+- ChatGPT plugins/connectors such as Canva, Replit, Runway, Sites, Floot, AppDeploy or other creative/dev tools must never be required for a visitor to load the site, log in, calculate a chart, read a report or use normal production features.
+- A plugin reaching its own daily limit must not take the live website down.
+- Runtime-critical dependencies are restricted to the explicitly approved production stack. Adding a new runtime SaaS dependency requires an explicit need, a free-tier/cost review, failure-mode review and owner approval.
+
+### F. Cost and quota acceptance gate
+
+Before any infrastructure change is called complete, record:
+1. what resource it consumes;
+2. whether it can trigger per-deploy/per-request/per-storage cost;
+3. whether the free tier is sufficient for current usage;
+4. what happens when that dependency is unavailable;
+5. how to roll back without data loss.
+
+**Governing rule: first remove waste, then simplify architecture, then use the free tier. Spending money is a last resort and requires explicit owner approval.**
 
 ## 0. HIGHEST PRIORITY — SAFE NEW-INSTRUCTION SUPERSESSION
 
@@ -190,15 +237,20 @@ Check the real production path(s) involved in the task. For UI tasks, verify at 
 - target static assets
 - mobile behavior where the tooling can verify it
 
-## 10. CONTINUE WORK AFTER QUOTA SUPERSESSION
+## 10. ZERO-COST DEPLOYMENT BUDGET
 
-The previous project-side Vercel throttle of **40** builds/deployments per day (including any stale 40/44/50-era variants) is superseded for ZHAOWU website work.
+All older numeric Vercel project-side deployment budgets, including **40 / 44 / 50 / 80 per day**, are superseded.
 
-The active project-side budget is now **80 Vercel builds/deployments per day** for the single production project `stone-zhaowu-official`.
+The active rule is not "use up to N deployments". The active rule is:
 
-This is a **maximum safety budget, not a target**. Agents must still use the minimum necessary deployments, batch compatible changes, avoid redundant rebuilds, and never create another Vercel project.
+- **development/test deployments to Vercel: 0 by default**;
+- **preview deployments from non-main branches: 0**;
+- **production deployments: one per vetted release batch whenever possible**;
+- emergency redeployment is allowed only to restore a broken production path, not to iterate on cosmetics;
+- a quota warning never authorizes a new host/project or paid plan;
+- if Vercel quota is near exhaustion, stop deployment churn, continue source/CI work, and preserve the remaining quota for a verified production release or emergency fix.
 
-When the owner explicitly authorizes work that was previously deferred solely because of the old 40-limit, the agent may proceed within the active 80 maximum, subject to all other regression, production, auth, data and safety gates in this protocol.
+The objective is reliable production under the free tier, not maximizing the daily quota.
 
 ## 11. Failure handling
 
