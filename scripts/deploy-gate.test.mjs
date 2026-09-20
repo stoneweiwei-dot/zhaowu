@@ -15,9 +15,10 @@ test("production build uses deploy-gate not the full engine glob", () => {
   assert.match(pkg.scripts["test:engine"], /scripts\/\*\.test\.mjs/);
 });
 
-test("Vercel build stays on npm run build and git auto-deploy is main-only", () => {
+test("Vercel build stays on npm run build and automatic Git deploys stay off", () => {
   assert.equal(vercel.buildCommand, "npm run build");
-  assert.deepEqual(vercel.git.deploymentEnabled, { "*": false, main: true });
+  assert.equal(vercel.git.deploymentEnabled, false);
+  assert.equal(Object.prototype.hasOwnProperty.call(vercel, "ignoreCommand"), false);
 });
 
 test("GitHub Production CI keeps blocking deploy-gate, engine, and iPhone Safari jobs", () => {
