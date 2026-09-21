@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.20-r169",
-  updateNumber: 169,
-  publishedAt: "2026-09-20T06:46:00+10:00",
-  latestSummary: "精簡首頁、命書與安裝提示，移除重複說明。",
+  version: "ZW-WEB-2026.09.21-r170",
+  updateNumber: 170,
+  publishedAt: "2026-09-21T22:08:00+10:00",
+  latestSummary: "判斷依據分層與紫微五行局邊界正式入庫。",
   details: {
-    "zh-Hant": ["首頁與命書移除重複說明。", "手機安裝提示更精簡。"],
-    en: ["Less repeated text on the homepage and in readings.", "Shorter Home Screen instructions."],
+    "zh-Hant": ["子平主判、扶抑、五行分布與旁證正式分層。", "紫微五行局與大限起歲加入知識庫並禁止人格化。"],
+    en: ["Primary Zi Ping judgement is separated from strength, element counts and auxiliary evidence.", "Zi Wei bureau ages are documented without turning them into personality codes."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }
