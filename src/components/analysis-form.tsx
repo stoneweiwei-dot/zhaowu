@@ -63,6 +63,7 @@ export function AnalysisForm() {
   const [relation, setRelation] = useState<AnalyzeInput["relation"]>("unset");
   const [birthCity, setBirthCity] = useState<CityHit | null>(null);
   const [liveCity, setLiveCity] = useState<CityHit | null>(null);
+  const [birthCityError, setBirthCityError] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rememberedRecord, setRememberedRecord] = useState<SharedBirthRecord | null>(null);
@@ -235,9 +236,16 @@ export function AnalysisForm() {
     if (detailsOpen || !rememberedRecord) {
       if (!birthCity || !draftBirth) {
         setError(t("errCity"));
+        setBirthCityError(true);
         setDetailsOpen(true);
+        window.setTimeout(() => {
+          const cityInput = document.getElementById("birth-city");
+          cityInput?.scrollIntoView({ behavior: "smooth", block: "center" });
+          cityInput?.focus();
+        }, 0);
         return;
       }
+      setBirthCityError(false);
       setBusy(true);
       try {
         await saveBirthAndContinue(draftBirth);
@@ -372,7 +380,7 @@ export function AnalysisForm() {
             </div>
 
             <div className="zhaowu-birth-cities">
-              <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} onSelect={setBirthCity} />
+              <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} invalid={birthCityError} errorMessage={birthCityError ? t("errCity") : undefined} onSelect={(city) => { setBirthCity(city); if (city) setBirthCityError(false); }} />
               <CityPicker id="current-city" label={t("liveCity")} placeholder={t("liveCity")} optional optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={liveCity} onSelect={setLiveCity} />
             </div>
           </div>
