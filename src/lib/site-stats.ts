@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.21-r170",
-  updateNumber: 170,
-  publishedAt: "2026-09-21T22:08:00+10:00",
-  latestSummary: "判斷依據分層與紫微五行局邊界正式入庫。",
+  version: "ZW-WEB-2026.09.21-r171",
+  updateNumber: 171,
+  publishedAt: "2026-09-21T23:30:00+10:00",
+  latestSummary: "答案第一屏補齊依據狀態與現實變數，命盤細項預設收合。",
   details: {
-    "zh-Hant": ["子平主判、扶抑、五行分布與旁證正式分層。", "紫微五行局與大限起歲加入知識庫並禁止人格化。"],
-    en: ["Primary Zi Ping judgement is separated from strength, element counts and auxiliary evidence.", "Zi Wei bureau ages are documented without turning them into personality codes."],
+    "zh-Hant": ["問事結果第一屏固定為原問題、兩句直接答案、依據狀態與最大現實變數。", "首頁與結果頁的藏干、納音、十二長生及大運細項預設收合。"],
+    en: ["Question results now open with the original question, a two-sentence direct answer, evidence status and the biggest real-world variable.", "Hidden stems, Na Yin, twelve-stage and luck-cycle details now stay collapsed by default."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }
