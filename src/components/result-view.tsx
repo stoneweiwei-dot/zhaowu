@@ -7,7 +7,7 @@ import { useAppStore } from "@/lib/store";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { CharacterPanel } from "@/components/character-panel";
 import { BaziChart } from "@/components/bazi-chart";
-import { customerCopy, customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
+import { customerCopy, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, renderFocusedReportText, type ReportSection } from "@/lib/report/focused-report";
 import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
