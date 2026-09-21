@@ -386,7 +386,7 @@ export function AnalysisForm() {
         </header>
         {previewChart && structure && foundationValues ? (
           <div className="zhaowu-bazi-preview">
-            <BaziChart chart={previewChart} showHeader={false} expandDetails />
+            <BaziChart chart={previewChart} showHeader={false} expandDetails={false} />
             <section className="zhaowu-bazi-foundation" data-home-bazi-explanation aria-labelledby="zhaowu-bazi-foundation-title">
               <h3 id="zhaowu-bazi-foundation-title">{copy.foundation}</h3>
               <dl>
