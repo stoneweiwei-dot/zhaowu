@@ -65,6 +65,23 @@ export function BaziKnowledgeNotesSection() {
     [tr(locale,"看行動","看行动","Turn insight into action"), tr(locale,"把命盤轉化為決策與行動，逐步整理出你自己的分析框架，而不是只拿到一句答案。","把命盘转化为决策与行动，逐步整理出你自己的分析框架，而不是只拿到一句答案。","Turn the chart into decisions and actions, and gradually build your own way of reading the situation instead of receiving one isolated answer.")],
   ];
 
+  const evidenceLayers = [
+    [tr(locale,"主裁決","主裁决","Primary judgement"),tr(locale,"以月令、調候、根氣、格局、病藥、流通與承載完成最終結構判斷。","以月令、调候、根气、格局、病药、流通与承载完成最终结构判断。","Season, climate, roots, structure, pathology/remedy, flow and carrying capacity form the primary judgement.")],
+    [tr(locale,"格局狀態","格局状态","Structure status"),tr(locale,"不只顯示格局名；要分候選、成格、成而有病、破格、假格／變格，並能查看成立或破格原因。","不只显示格局名；要分候选、成格、成而有病、破格、假格／变格，并能查看成立或破格原因。","Do not stop at a structure label. Distinguish candidate, established, established-with-pathology, broken, false or transformed, with reasons.")],
+    [tr(locale,"強弱旁證","强弱旁证","Strength evidence"),tr(locale,"身強身弱回答的是力量與承受方式，不與格局法平權投票，也不單獨決定喜用。","身强身弱回答的是力量与承受方式，不与格局法平权投票，也不单独决定喜用。","Strength describes force and capacity. It is supporting evidence, not a co-equal vote that independently decides useful elements.")],
+    [tr(locale,"五行分布","五行分布","Element distribution"),tr(locale,"數量、百分比與分數只描述分布；「金21、木9」不能直接推出喜忌、人格或吉凶。","数量、百分比与分数只描述分布；“金21、木9”不能直接推出喜忌、人格或吉凶。","Counts and scores describe distribution only. Numbers such as “Metal 21, Wood 9” do not directly determine useful elements, personality or fortune.")],
+    [tr(locale,"低權重旁證","低权重旁证","Auxiliary evidence"),tr(locale,"神煞、納音、十二長生可補細節；稱骨屬民俗參考。它們都不能覆蓋子平主判。","神煞、纳音、十二长生可补细节；称骨属民俗参考。它们都不能覆盖子平主判。","Auxiliary stars, Na Yin and Twelve Stages may add detail; bone-weight folklore stays folkloric. None can override the primary Zi Ping judgement.")],
+    [tr(locale,"衝突怎麼辦","冲突怎么办","When methods disagree"),tr(locale,"先說清楚各方法在回答什麼；能由主鏈裁決就合併，不能就保留未決，不把兩套相反喜用同時丟給你。","先说清楚各方法在回答什么；能由主链裁决就合并，不能就保留未决，不把两套相反喜用同时丢给你。","State what each method is answering. Reconcile only when the primary chain supports it; otherwise keep the conflict unresolved instead of presenting two opposing final answers.")],
+  ];
+
+  const structureStates = [
+    tr(locale,"候選格","候选格","Candidate"),
+    tr(locale,"成格","成格","Established"),
+    tr(locale,"成而有病","成而有病","Established with pathology"),
+    tr(locale,"破格","破格","Broken"),
+    tr(locale,"假格／變格","假格／变格","False / transformed"),
+  ];
+
   const methodologies = [
     tr(locale,"十天干：陰陽 × 五行的天賦慣性與功能取象","十天干：阴阳 × 五行的天赋惯性与功能取象","Ten Heavenly Stems: yin-yang and five-element tendencies and functions"),
     tr(locale,"日主與四柱定位：先分清哪個字代表你，以及年、月、日、時各自承載的層次","日主与四柱定位：先分清哪个字代表你，以及年、月、日、时各自承载的层次","Day Master and Four Pillars: identify the self and what each pillar represents"),
@@ -125,6 +142,33 @@ export function BaziKnowledgeNotesSection() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section id="judgement-evidence" className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
+        <p className="text-xs tracking-[0.22em] text-cinnabar">{tr(locale,"判斷依據","判断依据","EVIDENCE LAYERS")}</p>
+        <h3 className="mt-2 font-display text-2xl text-ink">{tr(locale,"不同方法有不同任務，不把兩個喜用並排給你。","不同方法有不同任务，不把两个喜用并排给你。","Different methods have different jobs. They should not produce two competing final answers.")}</h3>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-ink-soft">
+          {tr(locale,"昭梧把子平主判、格局狀態、強弱、五行分布與旁證分層處理。數字能描述分布，但不能代替結構；旁證能補細節，但不能推翻主判。","昭梧把子平主判、格局状态、强弱、五行分布与旁证分层处理。数字能描述分布，但不能代替结构；旁证能补细节，但不能推翻主判。","Zhaowu separates the primary Zi Ping judgement, structure status, strength, element distribution and auxiliary evidence. Numbers can describe distribution but cannot replace structure; auxiliary evidence can add detail but cannot overturn the primary judgement.")}
+        </p>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          {evidenceLayers.map(([title,text], n) => (
+            <article key={title} className="rounded-xl border border-line bg-cream p-4">
+              <span className="text-xs font-semibold tracking-[0.12em] text-cinnabar">{String(n + 1).padStart(2, "0")}</span>
+              <h4 className="mt-2 font-display text-lg text-ink">{title}</h4>
+              <p className="mt-2 text-sm leading-7 text-ink-soft">{text}</p>
+            </article>
+          ))}
+        </div>
+        <div className="mt-5 rounded-xl border border-earth/25 bg-cream p-4">
+          <h4 className="font-display text-lg text-ink">{tr(locale,"格局不只分「有／沒有」","格局不只分“有／没有”","Structure is not just yes or no")}</h4>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {structureStates.map((state) => <span key={state} className="rounded-full border border-line bg-paper px-3 py-2 text-xs text-ink-soft">{state}</span>)}
+          </div>
+          <p className="mt-3 text-sm leading-7 text-ink-soft">{tr(locale,"每一級都要能回到月令、透干、根氣、相神／用神、制化與破格因素。單獨一句「某格」不算完整判斷。","每一级都要能回到月令、透干、根气、相神／用神、制化与破格因素。单独一句“某格”不算完整判断。","Every state must be traceable to season, visible stems, roots, supporting/useful functions, transformations and breaking factors. A structure label alone is not a complete judgement.")}</p>
+        </div>
+        <p className="mt-4 rounded-xl border border-line bg-cream px-4 py-3 text-sm leading-7 text-ink-soft">
+          {tr(locale,"同樣地，「壬辰日的人通常……」這類日柱人格句，只能當教學背景，不能直接當成你的個人結論。","同样地，“壬辰日的人通常……”这类日柱人格句，只能当教学背景，不能直接当成你的个人结论。","Likewise, generic lines such as “people born on a Ren-Chen day usually…” are teaching background only, not a personal conclusion.")}
+        </p>
       </section>
 
       <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
