@@ -108,10 +108,13 @@ test.describe("iPhone Safari core customer flow", () => {
     const yearPillar = page.locator('#bazi [data-pillar="year"] strong');
     await expect(page.locator("#bazi [data-bazi-chart]")).toBeVisible();
     await expect(page.locator("#question-stage")).toBeVisible();
-    await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
+    const fullDetails = page.locator("#bazi > .zhaowu-bazi-preview > .zhaowu-bazi-full-details");
+    await expect(fullDetails).not.toHaveAttribute("open", "");
+    await expect(page.locator("[data-unified-birth-report]")).toBeHidden();
     await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
     await page.locator(".zhaowu-header-mode-toggle > button").nth(1).click();
     await expect(page.locator(".zhaowu-bazi-stage-head .zhaowu-section-lead")).toHaveCount(0);
+    await fullDetails.locator(":scope > summary").click();
     await expect(page.locator("[data-unified-birth-report] article p").first()).toHaveCSS("color", "rgb(241, 232, 216)");
     const before = await yearPillar.textContent();
 
@@ -170,7 +173,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await fillKnownBirthData(page);
     await page.locator("#analysisForm").evaluate((form) => (form as HTMLFormElement).requestSubmit());
-    await expect(page.getByText("請從搜尋結果選擇出生城市與國家。", { exact: true })).toBeVisible();
+    await expect(page.locator("#birth-city-error")).toHaveText("請從搜尋結果選擇出生城市與國家。");
+    await expect(page.locator("#birth-city")).toBeFocused();
     await expect(page.locator("#analysis-question")).toHaveCount(0);
     await expectMobileViewportHealthy(page);
   });
@@ -197,6 +201,10 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("月令");
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("旺衰底盤");
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("格局方向");
+    const fullChartDetails = page.locator("#bazi .zhaowu-bazi-full-details");
+    await expect(fullChartDetails).not.toHaveAttribute("open", "");
+    await expect(page.locator("[data-unified-birth-report]")).toBeHidden();
+    await fullChartDetails.locator(":scope > summary").click();
     await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
     await expect(page.getByRole("heading", { name: "你的昭梧命書", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "沿著這份命書，繼續問你真正關心的事", exact: true })).toBeVisible();
@@ -212,6 +220,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#result")).toBeVisible();
     await expect(page.locator("[data-primary-answer]")).toBeVisible();
     await expect(page.locator("[data-next-action]")).toBeVisible();
+    await expect(page.locator("[data-dragon-bubble]")).toContainText("剛看完你的分析");
     await expect(page.locator("[data-technical-evidence]")).not.toHaveAttribute("open", "");
     await expect(page.locator('[data-owner-login-entry="true"]')).toBeVisible();
     await expect(page.locator(".zhaowu-header-login")).toHaveCount(0);

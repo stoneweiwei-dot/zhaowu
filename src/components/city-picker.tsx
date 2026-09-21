@@ -14,6 +14,8 @@ type PickerProps = {
   locale: Locale;
   value?: CityHit | null;
   onSelect: (city: CityHit | null) => void;
+  invalid?: boolean;
+  errorMessage?: string;
 };
 
 export function CityPicker({
@@ -26,11 +28,14 @@ export function CityPicker({
   locale,
   value = null,
   onSelect,
+  invalid = false,
+  errorMessage,
 }: PickerProps) {
   const [query, setQuery] = useState(value?.display ?? "");
   const [hits, setHits] = useState<CityHit[]>([]);
   const [selected, setSelected] = useState<CityHit | null>(value);
   const listId = `${id}-results`;
+  const errorId = `${id}-error`;
   const optionalToken = optionalLabel.trim().toLowerCase();
   const showOptionalLabel = optional
     && Boolean(optionalToken)
@@ -53,7 +58,23 @@ export function CityPicker({
     const timer = window.setTimeout(() => {
       void searchCities({ data: q })
         .then((rows) => {
-          if (alive) setHits(rows.map((city) => localizeCityHit(city, locale)));
+          if (!alive) return;
+          const localized = rows.map((city) => localizeCityHit(city, locale));
+          const normalizedQuery = q.normalize("NFKC").toLowerCase().replace(/[\s,，。·/\\-]+/g, "");
+          const exact = localized.find((city) => {
+            const firstLabel = city.display.split(/[，,]/)[0] ?? city.display;
+            const candidates = [city.name, city.display, firstLabel]
+              .map((value) => value.normalize("NFKC").toLowerCase().replace(/[\s,，。·/\\-]+/g, ""));
+            return candidates.includes(normalizedQuery);
+          }) ?? null;
+          if (exact) {
+            setSelected(exact);
+            setQuery(exact.display);
+            setHits([]);
+            onSelect(exact);
+            return;
+          }
+          setHits(localized);
         })
         .catch(() => {
           if (alive) setHits([]);
@@ -79,7 +100,9 @@ export function CityPicker({
         aria-autocomplete="list"
         aria-controls={listId}
         aria-expanded={hits.length > 0}
-        className="h-12 w-full rounded-md border border-line bg-cream px-4 text-base outline-none transition focus:border-cinnabar"
+        aria-invalid={invalid || undefined}
+        aria-describedby={invalid && errorMessage ? errorId : undefined}
+        className={`h-12 w-full rounded-md border bg-cream px-4 text-base outline-none transition focus:border-cinnabar ${invalid ? "border-cinnabar" : "border-line"}`}
         onFocus={() => {
           if (selected || query.trim().length >= 2) return;
           void searchCities({ data: "" })
@@ -97,6 +120,7 @@ export function CityPicker({
           }
         }}
       />
+      {invalid && errorMessage ? <p id={errorId} role="alert" className="mt-2 text-sm text-cinnabar">{errorMessage}</p> : null}
       {hits.length ? (
         <div id={listId} role="listbox" aria-label={query.trim().length < 2 ? popularLabel : label} className="absolute z-40 mt-1 max-h-64 w-full overflow-auto rounded-md border border-line bg-cream shadow-xl">
           {query.trim().length < 2 ? (
