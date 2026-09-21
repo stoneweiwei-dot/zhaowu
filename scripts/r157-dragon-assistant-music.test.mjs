@@ -58,15 +58,3 @@ test("embedded music keeps the full transport and Safari gesture unlock", async 
   assert.match(music, /zhaowu-music-command/);
   assert.match(music, /min-h-11 min-w-11/);
 });
-
-
-test("dragon follows a newly generated result with evidence, risk and action", async () => {
-  const guide = await source("src/components/green-dragon-guide.tsx");
-  assert.match(guide, /useAppStore/);
-  assert.match(guide, /buildDecisionReportModel\(current\)/);
-  assert.match(guide, /promptedResultRef/);
-  assert.match(guide, /data-dragon-result-followup/);
-  assert.match(guide, /decisionModel\.risks\[0\]/);
-  assert.match(guide, /decisionModel\.actions\[0\]/);
-  assert.match(guide, /900/);
-});

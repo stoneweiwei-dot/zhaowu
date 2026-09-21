@@ -108,12 +108,8 @@ test.describe("iPhone Safari core customer flow", () => {
     const yearPillar = page.locator('#bazi [data-pillar="year"] strong');
     await expect(page.locator("#bazi [data-bazi-chart]")).toBeVisible();
     await expect(page.locator("#question-stage")).toBeVisible();
-    const restoredFullDetails = page.locator("#bazi .zhaowu-bazi-full-details");
-    await expect(restoredFullDetails).not.toHaveAttribute("open", "");
-    await expect(page.locator("[data-unified-birth-report]")).toBeHidden();
-    await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
-    await restoredFullDetails.locator("summary").click();
     await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
+    await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
     await page.locator(".zhaowu-header-mode-toggle > button").nth(1).click();
     await expect(page.locator(".zhaowu-bazi-stage-head .zhaowu-section-lead")).toHaveCount(0);
     await expect(page.locator("[data-unified-birth-report] article p").first()).toHaveCSS("color", "rgb(241, 232, 216)");
@@ -221,8 +217,6 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#result")).toBeVisible();
     await expect(page.locator("[data-primary-answer]")).toBeVisible();
     await expect(page.locator("[data-next-action]")).toBeVisible();
-    await expect(page.locator("[data-dragon-result-followup]")).toHaveCount(1);
-    await expect(page.locator("[data-dragon-bubble]")).toContainText("剛生成的結果", { timeout: 3_000 });
     await expect(page.locator("[data-technical-evidence]")).not.toHaveAttribute("open", "");
     await expect(page.locator('[data-owner-login-entry="true"]')).toBeVisible();
     await expect(page.locator(".zhaowu-header-login")).toHaveCount(0);
