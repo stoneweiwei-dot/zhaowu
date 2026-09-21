@@ -16,11 +16,22 @@ test("optional city copy is not rendered twice when the label already includes i
 });
 
 
-test("exact city matches can self-confirm and unresolved birth city is explicit", () => {
-  assert.match(picker, /localized\.length === 1/);
+test("exact city matches self-confirm and unresolved birth city stays blocked", () => {
+  assert.match(picker, /candidates\.includes\(normalizedQuery\)/);
+  assert.doesNotMatch(picker, /localized\.length === 1/);
   assert.match(picker, /aria-invalid=\{invalid \|\| undefined\}/);
   assert.match(picker, /role="alert"/);
   assert.match(analysisForm, /setBirthCityError\(true\)/);
   assert.match(analysisForm, /document\.getElementById\("birth-city"\)/);
+  assert.match(analysisForm, /cityInput\?\.focus\(\)/);
   assert.match(analysisForm, /invalid=\{birthCityError\}/);
+});
+
+test("home bazi keeps snapshot and foundation visible while the complete reading is collapsed", () => {
+  assert.match(analysisForm, /<BaziChart chart=\{previewChart\} showHeader=\{false\} expandDetails=\{false\} \/>/);
+  assert.match(analysisForm, /data-home-bazi-explanation/);
+  assert.match(analysisForm, /<details className="zhaowu-chart-details zhaowu-bazi-full-details">/);
+  assert.match(analysisForm, /<summary>\{copy\.fullDetails\}<\/summary>/);
+  assert.match(analysisForm, /展開完整命盤細節/);
+  assert.match(analysisForm, /<UnifiedBirthReport birth=\{rememberedRecord!\}/);
 });
