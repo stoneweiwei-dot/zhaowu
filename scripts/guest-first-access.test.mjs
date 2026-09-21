@@ -4,7 +4,7 @@ import test from "node:test";
 
 const shell = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
 const guestCss = await readFile(new URL("../src/device-question-flow-r144.css", import.meta.url), "utf8");
-const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
+const main = await readFile(new URL("../src/legacy-visual-compat.css", import.meta.url), "utf8");
 const login = await readFile(new URL("../src/routes/login.tsx", import.meta.url), "utf8");
 const provider = await readFile(new URL("../src/lib/auth/provider.tsx", import.meta.url), "utf8");
 const client = await readFile(new URL("../src/lib/auth/client.ts", import.meta.url), "utf8");
