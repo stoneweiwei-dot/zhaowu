@@ -32,7 +32,7 @@ function Home() {
 
         explore: "Explore",
         todayTitle: "Today Guide",
-        todayHint: "almanac, dress, spirit slip and recent sky events",
+        todayHint: "almanac, colour intent, spirit slip and recent sky events",
         quizHint: "optional reflective tests, kept separate from the formal chart",
         notesTitle: "Notes on life",
         notesHint: "the latest essay and the full editorial archive",
@@ -54,7 +54,7 @@ function Home() {
 
           explore: "延伸内容",
           todayTitle: "今日指引",
-          todayHint: "黄历、穿衣、灵签与近日天象",
+          todayHint: "黄历、今日色意、灵签与近日天象",
           quizHint: "可选的自我观察，不混入正式命盘",
           notesTitle: "观世录",
           notesHint: "最新文章与完整内容档案",
@@ -75,7 +75,7 @@ function Home() {
 
           explore: "延伸內容",
           todayTitle: "今日指引",
-          todayHint: "黃曆、穿衣、靈籤與近日天象",
+          todayHint: "黃曆、今日色意、靈籤與近日天象",
           quizHint: "可選的自我觀察，不混入正式命盤",
           notesTitle: "觀世錄",
           notesHint: "最新文章與完整內容檔案",
