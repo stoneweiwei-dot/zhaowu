@@ -80,10 +80,12 @@ test("r96 almanac paints four distinct pillar colours and hides duplicate yi lab
 });
 
 
-test("daily location stays unconfirmed until explicit browser permission", () => {
-  assert.doesNotMatch(widget, /ipwho\.is/);
-  assert.match(widget, /navigator\.geolocation\.getCurrentPosition/);
-  assert.match(widget, /data-location-request/);
+test("daily location keeps IP lookup but fails cleanly without fake city defaults", () => {
+  assert.match(widget, /ipwho\.is/);
+  assert.match(widget, /Location not confirmed/);
+  assert.match(widget, /尚未确认位置/);
   assert.match(widget, /尚未確認位置/);
-  assert.match(widget, /locationError/);
+  assert.match(widget, /Weather loading/);
+  assert.match(widget, /Season pending location/);
+  assert.doesNotMatch(widget, /visitor\?\.city \|\| \(locale === "en" \? "Local" : "本地"\)/);
 });
