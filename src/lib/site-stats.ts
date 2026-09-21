@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.22-r172",
-  updateNumber: 172,
-  publishedAt: "2026-09-22T01:52:39+10:00",
-  latestSummary: "唯一正式站 canonical／OG 已回到 Vercel，歷史 CSS 入口完成相容性收束。",
+  version: "ZW-WEB-2026.09.22-r173",
+  updateNumber: 173,
+  publishedAt: "2026-09-22T01:55:00+10:00",
+  latestSummary: "首次造訪 UX 收口：今日定位不再猜城市、出生城市更易確認、小龍在結果後接續引導。",
   details: {
-    "zh-Hant": ["正式 canonical、OG 與 Twitter metadata 已統一指向 Vercel 正式站。", "55 個歷史 CSS import 收進相容 bundle，保持原順序與既有 cascade。"],
-    en: ["Canonical, Open Graph and Twitter metadata now point only to the Vercel production origin.", "Historical CSS imports are consolidated behind one compatibility bundle without changing cascade order."],
+    "zh-Hant": ["今日指引未授權前顯示尚未確認位置，只在使用者主動要求後請求瀏覽器定位。", "出生城市支援精確匹配自動確認與欄位內錯誤提示；小龍在生成結果後提供依據、風險與下一步。"],
+    en: ["Today Guide no longer guesses a city before consent; browser location is requested only after an explicit user action.", "Birth-city exact matches can self-confirm with inline errors, and Jade Dragon follows up after a result with evidence, risk and next-move choices."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }
