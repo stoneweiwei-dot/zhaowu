@@ -160,6 +160,10 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await dismissInstallPromptIfVisible(page);
     await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
+    const fullDetails = page.locator("#bazi > .zhaowu-bazi-preview > .zhaowu-bazi-full-details");
+    await expect(fullDetails).not.toHaveAttribute("open", "");
+    await expect(page.locator("[data-unified-birth-report]")).toBeHidden();
+    await fullDetails.locator(":scope > summary").click();
     await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
     await expect(page.getByRole("heading", { name: "你的昭梧命書", exact: true })).toBeVisible();
     await expect(page.locator("[data-unified-birth-report]")).not.toContainText(/紫微斗數|西洋星座|印度古法占星|七政四餘|前世今生|生命靈數/);
