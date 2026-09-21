@@ -70,7 +70,10 @@ test('解释政策锁定八字主判、本命不可被岁运覆盖、无数值�
 });
 
 test('知识来源分层包含计算真值、解释层与隔离层', () => {
-  assert.equal(ZIWEI_INTERPRETATION_GRAMMAR_VERSION, 'zhaowu_ziwei_interpretation_v1.1');
+  assert.equal(ZIWEI_INTERPRETATION_GRAMMAR_VERSION, 'zhaowu_ziwei_interpretation_v1.2');
+  assert.match(ZIWEI_INTERPRETATION_POLICY.fiveElementBureauRule, /2–11/);
+  assert.match(ZIWEI_INTERPRETATION_POLICY.fiveElementBureauRule, /6–15/);
+  assert.match(ZIWEI_INTERPRETATION_POLICY.fiveElementBureauRule, /不得把局數直接翻成人格/);
   assert.match(ZIWEI_CLAIM_SOURCE_POLICY.calculation_truth, /排盤/);
   assert.match(ZIWEI_CLAIM_SOURCE_POLICY.owner_material, /不得冒充古籍真值/);
   assert.match(ZIWEI_CLAIM_SOURCE_POLICY.quarantine, /禁止進入客戶結論/);
