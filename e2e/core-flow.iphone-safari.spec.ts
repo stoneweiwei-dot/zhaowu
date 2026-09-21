@@ -198,6 +198,10 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("月令");
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("旺衰底盤");
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("格局方向");
+    const fullChartDetails = page.locator("#bazi .zhaowu-bazi-full-details");
+    await expect(fullChartDetails).not.toHaveAttribute("open", "");
+    await expect(page.locator("[data-unified-birth-report]")).toBeHidden();
+    await fullChartDetails.locator("summary").click();
     await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
     await expect(page.getByRole("heading", { name: "你的昭梧命書", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "沿著這份命書，繼續問你真正關心的事", exact: true })).toBeVisible();
