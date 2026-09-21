@@ -30,7 +30,7 @@ test("application shell restores the fixed Song landscape without loose scatter"
 });
 
 test("homepage keeps the Song parchment flow and uses a readable report directory", async () => {
-  const main = await source("src/main.tsx");
+  const main = await source("src/legacy-visual-compat.css");
   const css = await source("src/home-sheet-ui-v5.css");
   const home = await source("src/routes/index.tsx");
   const form = await source("src/components/analysis-form.tsx");
