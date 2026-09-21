@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.21-r171",
-  updateNumber: 171,
-  publishedAt: "2026-09-21T23:30:00+10:00",
-  latestSummary: "答案第一屏補齊依據狀態與現實變數，命盤細項預設收合。",
+  version: "ZW-WEB-2026.09.22-r172",
+  updateNumber: 172,
+  publishedAt: "2026-09-22T01:52:39+10:00",
+  latestSummary: "唯一正式站 canonical／OG 已回到 Vercel，歷史 CSS 入口完成相容性收束。",
   details: {
-    "zh-Hant": ["問事結果第一屏固定為原問題、兩句直接答案、依據狀態與最大現實變數。", "首頁與結果頁的藏干、納音、十二長生及大運細項預設收合。"],
-    en: ["Question results now open with the original question, a two-sentence direct answer, evidence status and the biggest real-world variable.", "Hidden stems, Na Yin, twelve-stage and luck-cycle details now stay collapsed by default."],
+    "zh-Hant": ["正式 canonical、OG 與 Twitter metadata 已統一指向 Vercel 正式站。", "55 個歷史 CSS import 收進相容 bundle，保持原順序與既有 cascade。"],
+    en: ["Canonical, Open Graph and Twitter metadata now point only to the Vercel production origin.", "Historical CSS imports are consolidated behind one compatibility bundle without changing cascade order."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }
