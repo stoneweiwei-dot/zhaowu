@@ -50,9 +50,9 @@ test("r162 database hardening remains present under the current release", async 
   const stats = await source("src/lib/site-stats.ts");
   const verification = await source("lib/zhaowu-verification.js");
   const migration = await source("supabase/migrations/20260919075644_restrict_customer_classic_passage_rpc.sql");
-  assert.match(stats, /ZW-WEB-2026\.09\.21-r170/);
+  assert.match(stats, /ZW-WEB-2026\.09\.21-r171/);
   assert.match(stats, /updateNumber: 171/);
-  assert.match(verification, /ZW-WEB-2026\.09\.21-r170/);
+  assert.match(verification, /ZW-WEB-2026\.09\.21-r171/);
   assert.match(migration, /revoke all on function public\.get_customer_classic_passage\(jsonb\) from public, anon, authenticated/i);
   assert.match(migration, /grant execute .* service_role/i);
 });
