@@ -238,7 +238,7 @@ export function AnalysisForm() {
 
     if (detailsOpen || !rememberedRecord) {
       if (!birthCity || !draftBirth) {
-        setError(t("errCity"));
+        setError(null);
         setBirthCityError(true);
         setDetailsOpen(true);
         window.setTimeout(() => {
