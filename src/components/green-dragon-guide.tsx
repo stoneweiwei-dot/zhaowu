@@ -8,6 +8,8 @@ import {
   type SiteGuideRoute,
 } from "@/lib/site-guide";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { useAppStore } from "@/lib/store";
+import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 
 const POSITION_STORAGE_KEY = "zhaowu.dragonAssistant.position.v1";
 const DOCK_SIZE = 52;
@@ -105,9 +107,39 @@ function guideBubbles(locale: Locale) {
   ];
 }
 
+function resultFollowupCopy(locale: Locale) {
+  if (locale === "en") return {
+    prompt: "Your result is ready. Want the evidence, the main risk, or the next move first?",
+    evidence: "Evidence",
+    risk: "Main risk",
+    action: "Next move",
+    variable: "Biggest variable",
+    none: "There is no extra item to surface here yet.",
+  };
+  if (locale === "zh-Hans") return {
+    prompt: "刚生成的结果已经好了。你想先看依据、主要风险，还是下一步？",
+    evidence: "看依据",
+    risk: "看风险",
+    action: "看下一步",
+    variable: "最大现实变量",
+    none: "这里暂时没有更多需要补充的内容。",
+  };
+  return {
+    prompt: "剛生成的結果已經好了。你想先看依據、主要風險，還是下一步？",
+    evidence: "看依據",
+    risk: "看風險",
+    action: "看下一步",
+    variable: "最大現實變數",
+    none: "這裡暫時沒有更多需要補充的內容。",
+  };
+}
+
 export function GreenDragonGuide() {
   const { locale } = useI18n();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const current = useAppStore((state) => state.current);
+  const decisionModel = current ? buildDecisionReportModel(current) : null;
+  const resultCopy = resultFollowupCopy(locale);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -118,10 +150,22 @@ export function GreenDragonGuide() {
   const [musicStatus, setMusicStatus] = useState<MusicStatus>(EMPTY_MUSIC_STATUS);
   const dragRef = useRef<{ pointerId: number; startX: number; startY: number; originX: number; originY: number; moved: boolean } | null>(null);
   const suppressClickRef = useRef(false);
+  const promptedResultRef = useRef<string | null>(null);
 
   useEffect(() => {
     setAnswer(defaultSiteGuide(locale));
   }, [locale]);
+
+  useEffect(() => {
+    if (!current || promptedResultRef.current === current.id) return;
+    promptedResultRef.current = current.id;
+    const timer = window.setTimeout(() => {
+      const prompt = resultFollowupCopy(locale).prompt;
+      setAnswer({ reply: prompt, route: null, cta: null, source: "local" });
+      setBubble({ kind: "guide", text: prompt });
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [current?.id, locale]);
 
   useEffect(() => {
     const saved = readSavedPosition();
@@ -340,6 +384,14 @@ export function GreenDragonGuide() {
           <p>{answer.reply}</p>
           {answer.route && answer.cta ? <button type="button" onClick={() => answer.route && go(answer.route)}>{answer.cta}<span aria-hidden>→</span></button> : null}
         </div>
+
+        {decisionModel && current ? (
+          <div className="zhaowu-dragon-guide-shortcuts is-result-followup" data-dragon-result-followup aria-label={locale === "en" ? "Result follow-up" : locale === "zh-Hans" ? "结果跟进" : "結果跟進"}>
+            <button type="button" onClick={() => setAnswer({ reply: `${decisionModel.confidenceLabel}。 ${decisionModel.confidenceBasis} ${resultCopy.variable}：${decisionModel.biggestVariable}`, route: null, cta: null, source: "local" })}>{resultCopy.evidence}</button>
+            <button type="button" onClick={() => setAnswer({ reply: decisionModel.risks[0] ?? resultCopy.none, route: null, cta: null, source: "local" })}>{resultCopy.risk}</button>
+            <button type="button" onClick={() => setAnswer({ reply: decisionModel.actions[0] ?? current.reading.action ?? resultCopy.none, route: null, cta: null, source: "local" })}>{resultCopy.action}</button>
+          </div>
+        ) : null}
 
         <div className="zhaowu-dragon-guide-shortcuts" aria-label={locale === "en" ? "Reading navigation" : locale === "zh-Hans" ? "分析导航" : "分析導覽"}>
           <button type="button" onClick={() => go("/#analysisForm")}>{locale === "en" ? "Full report" : locale === "zh-Hans" ? "完整综合报告" : "完整綜合報告"}</button>
