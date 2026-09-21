@@ -9,6 +9,7 @@ import { CharacterPanel } from "@/components/character-panel";
 import { BaziChart } from "@/components/bazi-chart";
 import { customerCopy, customerDirectAnswer, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, renderFocusedReportText, type ReportSection } from "@/lib/report/focused-report";
+import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
 import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
@@ -32,7 +33,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [imageReferenceAssetId, setImageReferenceAssetId] = useState<string | null>(null);
   const { chart, reading, question } = result;
   const petDecision = isPetDecisionQuestion(question) ? buildPetDecision(result, result.locale ?? locale) : null;
-  const answer = petDecision?.directAnswer ?? customerDirectAnswer(question, reading.directAnswer);
+  const decisionModel = buildDecisionReportModel(result);
+  const answer = petDecision?.directAnswer ?? decisionModel.directAnswer;
   const answerParagraphs = customerParagraphs(answer);
   const nextAction = customerCopy(reading.action);
   const decreeCouplet = customerCopy(reading.decree);
@@ -132,6 +134,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <div className="mt-4 space-y-3 text-[15px] leading-8 text-ink-soft" data-primary-answer>
           {answerParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
         </div>
+        <div className="zhaowu-answer-meta mt-5" data-answer-meta>
+          <div data-evidence-status><span>{locale === "en" ? "Evidence status" : locale === "zh-Hans" ? "依据状态" : "依據狀態"}</span><b>{decisionModel.confidenceLabel}</b><small>{decisionModel.confidenceBasis}</small></div>
+          <div data-biggest-variable><span>{locale === "en" ? "Biggest variable" : locale === "zh-Hans" ? "最大现实变量" : "最大現實變數"}</span><b>{decisionModel.biggestVariable}</b></div>
+        </div>
         {nextAction ? <aside className="zhaowu-result-next mt-5 border-t border-line/70 pt-4" data-next-action><strong className="text-sm text-ink">{copy.next}</strong><p className="mt-1 text-[14px] leading-7 text-ink-soft">{nextAction}</p></aside> : null}
       </article>
 
@@ -139,7 +145,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <summary className="cursor-pointer list-none px-5 py-4 sm:px-6"><strong>{copy.evidence}</strong><span className="mt-1 block text-xs leading-5 text-ink-mute">{copy.evidenceLead}</span></summary>
         <div className="space-y-5 border-t border-line/60 p-4 sm:p-6">
           {decreeCouplet ? <div className="zhaowu-free-decree rounded-xl border border-line/60 p-4" data-free-decree><strong className="text-sm text-ink">{copy.decree}</strong><p className="mt-2 text-[14px] leading-7 text-ink-soft">{decreeCouplet}</p></div> : null}
-          <BaziChart chart={chart} />
+          <BaziChart chart={chart} expandDetails={false} />
           <CharacterPanel chart={chart} question={question} portraitUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={session && user ? () => void onImage() : undefined} generating={busy === "image"} onImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />
         </div>
       </details>
