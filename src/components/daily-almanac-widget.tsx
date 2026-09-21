@@ -48,24 +48,90 @@ function seasonLabel(latitude: number | null, month: number, locale: Locale) {
 }
 function useVisitorContext() {
   const [visitor, setVisitor] = useState<VisitorContext | null>(null);
+  const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState(false);
+
+  const browserTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+
+  const withWeather = async (base: Omit<VisitorContext, "temperature" | "weatherCode">): Promise<VisitorContext> => {
+    const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${base.latitude}&longitude=${base.longitude}&current=temperature_2m,weather_code&timezone=auto&forecast_days=1`, { cache: "no-store" });
+    const weather = await weatherResponse.json() as { current?: { temperature_2m?: number; weather_code?: number } };
+    return {
+      ...base,
+      temperature: typeof weather.current?.temperature_2m === "number" ? weather.current.temperature_2m : null,
+      weatherCode: typeof weather.current?.weather_code === "number" ? weather.current.weather_code : null,
+    };
+  };
+
   useEffect(() => {
-    let cancelled = false; const key = "zhaowu:visitor-context:v3";
+    let cancelled = false;
+    const key = "zhaowu:visitor-context:v4";
     const load = async () => {
-      try { const cached = window.localStorage.getItem(key); if (cached) { const row = JSON.parse(cached) as { at: number; value: VisitorContext }; if (Date.now() - row.at < 5 * 60_000) { setVisitor(row.value); return; } } } catch { /* optional cache */ }
+      const localTimezone = browserTimezone();
+      try {
+        const cached = window.localStorage.getItem(key);
+        if (cached) {
+          const row = JSON.parse(cached) as { at: number; value: VisitorContext };
+          if (Date.now() - row.at < 5 * 60_000 && row.value?.timezone === localTimezone) {
+            setVisitor(row.value);
+            return;
+          }
+        }
+      } catch { /* optional cache */ }
+
       try {
         const geoResponse = await fetch("https://ipwho.is/?fields=success,city,country,latitude,longitude,timezone", { cache: "no-store" });
         const geo = await geoResponse.json() as { success?: boolean; city?: string; country?: string; latitude?: number; longitude?: number; timezone?: { id?: string } | string };
         if (!geo.success || typeof geo.latitude !== "number" || typeof geo.longitude !== "number") throw new Error("geo unavailable");
-        const timezone = typeof geo.timezone === "string" ? geo.timezone : geo.timezone?.id || Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geo.latitude}&longitude=${geo.longitude}&current=temperature_2m,weather_code&timezone=auto&forecast_days=1`, { cache: "no-store" });
-        const weather = await weatherResponse.json() as { current?: { temperature_2m?: number; weather_code?: number } };
-        const value: VisitorContext = { city: geo.city || "", country: geo.country || "", latitude: geo.latitude, longitude: geo.longitude, timezone, temperature: typeof weather.current?.temperature_2m === "number" ? weather.current.temperature_2m : null, weatherCode: typeof weather.current?.weather_code === "number" ? weather.current.weather_code : null };
-        if (!cancelled) setVisitor(value); try { window.localStorage.setItem(key, JSON.stringify({ at: Date.now(), value })); } catch { /* optional cache */ }
-      } catch { if (!cancelled) setVisitor(null); }
+        const timezone = typeof geo.timezone === "string" ? geo.timezone : geo.timezone?.id || localTimezone;
+        if (timezone !== localTimezone) throw new Error("ip timezone mismatch");
+        const value = await withWeather({
+          city: geo.city || "",
+          country: geo.country || "",
+          latitude: geo.latitude,
+          longitude: geo.longitude,
+          timezone,
+        });
+        if (!cancelled) setVisitor(value);
+        try { window.localStorage.setItem(key, JSON.stringify({ at: Date.now(), value })); } catch { /* optional cache */ }
+      } catch {
+        if (!cancelled) setVisitor(null);
+      }
     };
-    void load(); return () => { cancelled = true; };
+    void load();
+    return () => { cancelled = true; };
   }, []);
-  return visitor;
+
+  const requestLocation = async () => {
+    if (locating) return;
+    setLocating(true);
+    setLocationError(false);
+    try {
+      if (!navigator.geolocation) throw new Error("geolocation unavailable");
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: false,
+          timeout: 7_000,
+          maximumAge: 5 * 60_000,
+        });
+      });
+      const value = await withWeather({
+        city: "",
+        country: "",
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        timezone: browserTimezone(),
+      });
+      setVisitor(value);
+    } catch {
+      setVisitor(null);
+      setLocationError(true);
+    } finally {
+      setLocating(false);
+    }
+  };
+
+  return { visitor, locating, locationError, requestLocation };
 }
 
 const LIUHE: Record<string, string> = { 子: "丑", 丑: "子", 寅: "亥", 亥: "寅", 卯: "戌", 戌: "卯", 辰: "酉", 酉: "辰", 巳: "申", 申: "巳", 午: "未", 未: "午" };
@@ -101,14 +167,19 @@ const SLIPS = {
 } as const;
 
 export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean }) {
-  const { locale } = useI18n(); const absoluteNow = useNow(); const visitor = useVisitorContext(); const now = useMemo(() => zonedDate(absoluteNow, visitor?.timezone), [absoluteNow, visitor?.timezone]);
+  const { locale } = useI18n(); const absoluteNow = useNow(); const { visitor, locating, locationError, requestLocation } = useVisitorContext(); const now = useMemo(() => zonedDate(absoluteNow, visitor?.timezone), [absoluteNow, visitor?.timezone]);
   const [page, setPage] = useState(0); const [slipOpen, setSlipOpen] = useState(false); const [asset, setAsset] = useState<GalleryAsset | null>(null); const [loadingSlip, setLoadingSlip] = useState(false);
   const dayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   const pillars = useMemo(() => { const day = dayGanzhi(now.getFullYear(), now.getMonth() + 1, now.getDate()); const ym = yearMonthPillars(now); return { year: ym.year, month: ym.month, day, hour: hourPillar(day, now.getHours()), jieName: ym.jieName }; }, [dayKey, now.getHours()]);
   const values = [pillars.year, pillars.month, pillars.day, pillars.hour]; const branch = pillars.day[1]; const windows = timeWindows(branch); const tone = dayStyle(pillars.day[0], locale); const slip = useMemo(() => SLIPS[locale][stableHash(`${dayKey}|daily-spirit-slip`) % SLIPS[locale].length], [dayKey, locale]);
   const labels = locale === "en" ? { title: "Today Guide", sub: "Local time · weather · almanac rhythm", almanac: "Daily Almanac", wardrobe: "Daily Dress · Five Elements", spirit: "Daily Spirit Slip", location: "Location & weather", sacred: "Sacred day", pillars: "Stems & branches", core: "Core dynamic", yi: "Good for", ji: "Avoid", relation: "Combine · clash · penalty", good: "Supportive hours", caution: "Caution hours", colors: "Colours", jewellery: "Jewellery", mask: "Persona mask", open: "Open today guide" } : locale === "zh-Hans" ? { title: "今日指引", sub: "当地时间・即时天气・今日气机", almanac: "每日黄历", wardrobe: "每日穿衣｜五行色彩", spirit: "今日灵签｜签文指引", location: "所在地｜天气", sacred: "今日圣日", pillars: "今日干支", core: "核心气机", yi: "宜", ji: "忌", relation: "合冲刑害", good: "吉时", caution: "慎时", colors: "适宜颜色", jewellery: "适宜首饰", mask: "性格面具", open: "查看今日完整指引" } : { title: "今日指引", sub: "當地時間・即時天氣・今日氣機", almanac: "每日黃曆", wardrobe: "每日穿衣｜五行色彩", spirit: "今日靈籤｜籤文指引", location: "所在地｜天氣", sacred: "今日聖日", pillars: "今日干支", core: "核心氣機", yi: "宜", ji: "忌", relation: "合沖刑害", good: "吉時", caution: "慎時", colors: "適宜顏色", jewellery: "適宜首飾", mask: "性格面具", open: "查看今日完整指引" };
+  const locationCopy = locale === "en"
+    ? { pending: "Location not confirmed", current: "Current location", weatherPending: "Weather after location", unavailable: "Location unavailable", use: "Use current location", locating: "Locating…" }
+    : locale === "zh-Hans"
+      ? { pending: "尚未确认位置", current: "当前位置", weatherPending: "定位后显示天气", unavailable: "无法取得位置", use: "使用当前位置", locating: "正在定位…" }
+      : { pending: "尚未確認位置", current: "目前位置", weatherPending: "定位後顯示天氣", unavailable: "無法取得位置", use: "使用目前位置", locating: "正在定位…" };
   const yi = locale === "en" ? "organise · finalise · edit · calm communication" : locale === "zh-Hans" ? "整理・定稿・审美・冷静沟通" : "整理・定稿・審美・冷靜溝通"; const ji = locale === "en" ? "forcing · rushing · task stacking · emotional drain" : locale === "zh-Hans" ? "硬碰・急躁・堆任务・情绪内耗" : "硬碰・急躁・堆任務・情緒內耗";
-  const locationName = visitor?.city || (locale === "en" ? "Location not confirmed" : locale === "zh-Hans" ? "尚未确认位置" : "尚未確認位置"); const weather = `${weatherLabel(visitor?.weatherCode ?? null, locale)}${visitor?.temperature != null ? ` ${Math.round(visitor.temperature)}°C` : ""}`; const season = seasonLabel(visitor?.latitude ?? null, now.getMonth() + 1, locale); const pageTitles = [labels.almanac, labels.wardrobe, labels.spirit];
+  const locationName = visitor?.city || (visitor ? locationCopy.current : locationCopy.pending); const weather = visitor ? `${weatherLabel(visitor.weatherCode, locale)}${visitor.temperature != null ? ` ${Math.round(visitor.temperature)}°C` : ""}` : (locationError ? locationCopy.unavailable : locationCopy.weatherPending); const season = seasonLabel(visitor?.latitude ?? null, now.getMonth() + 1, locale); const pageTitles = [labels.almanac, labels.wardrobe, labels.spirit];
   async function drawSlip() { setLoadingSlip(true); setSlipOpen(true); try { if (!asset) { const rows = (await listPublicGalleryAssets("visual-library")).filter(isPublicAtlasAsset); if (rows.length) setAsset(rows[stableHash(`${dayKey}|daily-spirit-slip|image`) % rows.length]); } } catch { /* artwork optional */ } finally { setLoadingSlip(false); } }
 
   return <>
@@ -125,7 +196,7 @@ export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean })
           <div className="zhaowu-today-guide__page-title"><strong>{pageTitles[page]}</strong><span>{lunarLabel(now, locale)} · {timeLabel(now)}</span></div>
           <div className="zhaowu-today-guide__grid" hidden={page !== 0}>
             <article className="zhaowu-today-card is-date"><small>{weekdayLabel(now, locale)}</small><strong>{now.getFullYear()}.{String(now.getMonth() + 1).padStart(2, "0")}.{String(now.getDate()).padStart(2, "0")}</strong><span>{timeLabel(now)}</span></article>
-            <article className="zhaowu-today-card is-weather"><small>{labels.location}</small><strong>{locationName} · {weather}</strong><span>{season}</span></article>
+            <article className="zhaowu-today-card is-weather"><small>{labels.location}</small><strong>{locationName} · {weather}</strong><span>{season}</span>{!visitor ? <button type="button" data-location-request className="mt-2 min-h-11 rounded-md border border-line px-3 py-2 text-sm text-ink disabled:opacity-60" disabled={locating} onClick={() => void requestLocation()}>{locating ? locationCopy.locating : locationCopy.use}</button> : null}</article>
             <article className="zhaowu-today-card is-sacred"><small>{labels.sacred}</small><strong>{sacredDay(now, pillars.jieName, locale)}</strong><span>{locale === "en" ? "Unverified observances stay marked for verification." : locale === "zh-Hans" ? "未核实圣日不作确定结论。" : "未核實聖日不作確定結論。"}</span></article>
             <article className="zhaowu-today-card is-pillars"><small>{labels.pillars}</small><span className="zhaowu-contract-label">當下年月日時干支</span><div className="zhaowu-today-pillars zhaowu-daily-pillars">{values.map((value, index) => <span data-element={stemElement(value[0]) ?? undefined} data-pillar={PILLAR_KEYS[index]} key={`${PILLAR_KEYS[index]}-${value}`}><b>{value}</b><i>{locale === "en" ? PILLAR_KEYS[index].toUpperCase() : ["年", "月", "日", "時"][index]}</i></span>)}</div></article>
             <article className="zhaowu-today-card is-core"><small>{labels.core}</small><strong>{tone.core}</strong><span>{jieLabel(pillars.jieName, locale)}</span></article>
