@@ -170,7 +170,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await fillKnownBirthData(page);
     await page.locator("#analysisForm").evaluate((form) => (form as HTMLFormElement).requestSubmit());
-    await expect(page.getByText("請從搜尋結果選擇出生城市與國家。", { exact: true })).toBeVisible();
+    await expect(page.locator("#birth-city-error")).toHaveText("請從搜尋結果選擇出生城市與國家。");
+    await expect(page.locator("#birth-city")).toBeFocused();
     await expect(page.locator("#analysis-question")).toHaveCount(0);
     await expectMobileViewportHealthy(page);
   });
