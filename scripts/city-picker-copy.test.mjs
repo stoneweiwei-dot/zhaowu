@@ -18,7 +18,7 @@ test("optional city copy is not rendered twice when the label already includes i
 
 test("exact city matches self-confirm and unresolved birth city stays blocked", () => {
   assert.match(picker, /candidates\.includes\(normalizedQuery\)/);
-  assert.doesNotMatch(picker, /localized\.length === 1/);
+  assert.match(picker, /localized\.length === 1 && q\.length >= 3/);
   assert.match(picker, /aria-invalid=\{invalid \|\| undefined\}/);
   assert.match(picker, /role="alert"/);
   assert.match(analysisForm, /setBirthCityError\(true\)/);
