@@ -78,3 +78,12 @@ test("r96 almanac paints four distinct pillar colours and hides duplicate yi lab
   assert.match(almanacStyle, /#2f6b5a/);
   assert.match(almanacStyle, /small:empty/);
 });
+
+
+test("daily location stays unconfirmed until explicit browser permission", () => {
+  assert.doesNotMatch(widget, /ipwho\.is/);
+  assert.match(widget, /navigator\.geolocation\.getCurrentPosition/);
+  assert.match(widget, /data-location-request/);
+  assert.match(widget, /尚未確認位置/);
+  assert.match(widget, /locationError/);
+});
