@@ -1,6 +1,6 @@
 import type { ZiweiBrightness, ZiweiScope, ZiweiTransformation } from './horoscope';
 
-export const ZIWEI_INTERPRETATION_GRAMMAR_VERSION = 'zhaowu_ziwei_interpretation_v1.1' as const;
+export const ZIWEI_INTERPRETATION_GRAMMAR_VERSION = 'zhaowu_ziwei_interpretation_v1.2' as const;
 
 export type ZiweiClaimClass =
   | 'calculation_truth'
@@ -127,6 +127,8 @@ export const ZIWEI_INTERPRETATION_POLICY = {
   emptyPalaceRule: '空宮不等於空白或凶；不得虛構主星，應以本宮場景、對宮與三方四正結構補充觀察。',
   bodyPalaceRule: '身宮只作人生著力點／後天承接重心的加強，不取代命宮。',
   brightnessRule: '廟旺利陷只調整星曜功能的可用性、穩定度與表達成本，不直接等同吉凶、富貴或調候。',
+  fiveElementBureauRule: '五行局首先是排盤真值與大限起歲參數：水二局=2–11、木三局=3–12、金四局=4–13、土五局=5–14、火六局=6–15。不得把局數直接翻成人格、脾氣、善惡或人生層級。',
+  fiveElementBureauInterpretationBoundary: '若特定流派把五行局用作氣質背景，只能在來源與 profile 明確時作次級旁證；性格主判仍回到命宮主星、輔煞、四化、三方四正、身宮與整體結構。',
   palaceStemSelfTransformationRule: '宮干飛化／自化屬流派專項；未有明確 profile 前不得混入目前本命年干、大限宮干、流年年干四化。',
   numericSeverityScoringForbidden: true,
   diagnosisForbidden: true,

@@ -54,6 +54,38 @@ export const humanCenteredGuidanceInstructionRule: InstructionRule = {
 };
 
 /**
+ * 方法分層：把子平主判、扶抑強弱、五行分布與低權重旁證分開。
+ * 目標不是增加一套平行結論，而是避免不同方法把兩個相反「喜用」同時丟給客戶。
+ */
+export const methodLayeringInstructionRule: InstructionRule = {
+  id: 'ZW-BAZI-METHOD-LAYERING-1.0',
+  title: '子平主判／扶抑旁證／方法衝突分層協議',
+  status: 'production',
+  layer: 'bazi',
+  priority: 6,
+  purpose: '固定不同判法的任務與優先級：CURRENT 主鏈負責最終結構裁決；扶抑強弱、五行分布與神煞等只在自己的層級提供證據，不得平權投票或輸出互相衝突的兩套最終喜用。',
+  rules: [
+    '最終主裁決固定繼承 CURRENT 主鏈：從化真假／特殊格 → 月令 → 調候 → 根氣透藏 → 格局 → PK-6 → 病藥 → ODL → FC → 承載 → 刑沖合害／四庫 → 歲運。扶抑身強身弱只作結構診斷與旁證，不得與格局、病藥、流通、承載平權投票。',
+    '格局法、扶抑法、調候法或其他方法若得到不同喜忌，前台不得把兩套結果並列成同等權威的「喜用」。先標明各自回答的問題與證據層級，再由 CURRENT 主鏈裁決；仍無法裁決時保留未決並降低信度。',
+    '格局狀態至少區分：候選格、成格、成而有病、破格、假格／變格。每個狀態都必須能追溯到月令、透干、根氣、相神／用神、破格因素與制化證據；不得只吐一個格局名稱。',
+    '五行數量、百分比、字數或量化分數只可作分布描述，不得直接推出身強、喜忌、用神、人格、職業、疾病、財富或吉凶。',
+    '神煞、納音、十二長生只作低權重旁證；袁天罡稱骨等民俗算法只可放在民俗／娛樂參考層，不得覆蓋子平主判、格局、病藥或歲運。',
+    '日柱、納音、五行局、生肖等通用條目不得直接生成個人人格主結論；至少須回到完整結構與本題證據鏈。泛用「某日柱的人通常……」不能充當正式回答。',
+  ],
+  guards: [
+    '禁止同一畫面同時展示兩套互相衝突、且沒有層級說明的最終喜用。',
+    '禁止以「金21、木9、水12」之類量化值直接判喜忌或用神。',
+    '禁止把身強身弱當作格局成敗的同義詞，或反過來用格局名覆蓋病藥／流通問題。',
+    '禁止用神煞、納音、十二長生、稱骨或單一日柱性格文案替代完整子平主判。',
+  ],
+  outputContract: [
+    '客戶層默認只給一個主結論；方法差異只在「判斷依據」或知識說明中分層展示。',
+    '如展示判斷依據，固定順序為：主裁決 → 格局狀態 → 強弱旁證 → 病藥／流通／承載 → 低權重旁證 → 尚未解決的不確定項。',
+    '若方法衝突尚未解決，直接寫「目前不能合併成單一喜用」，不得為了版面完整硬選一套。',
+  ],
+};
+
+/**
  * 病藥不是「缺什麼補什麼」，也不是把偏枯本身浪漫化成富貴。
  * 這一層把命局結構、十神習氣、現實代價、自主對治與歲運觸發串成同一條判斷鏈。
  */
@@ -175,6 +207,7 @@ export const fourTombsInstructionRule: InstructionRule = {
 export const zhaowuInstructionDatabase: InstructionRule[] = [
   humanCenteredGuidanceInstructionRule,
   ...baseInstructionDatabase,
+  methodLayeringInstructionRule,
   pathologyRemedyInstructionRule,
   fourTombsInstructionRule,
   kinshipGenderInstructionRule,
@@ -208,6 +241,7 @@ function triggerMatches(rule: InstructionRule, context: InstructionContext): boo
  * ZW-HUMAN-GUIDANCE-CORE-1.0 is always injected first as the human-centered response layer.
  * ZW-BAZI-GROUP-MAINLINE-EC7 from the base database is always injected so every BaZi/metaphysics subgroup inherits the canonical mainline.
  * ZW-BAZI-PINKU-BINGYAO-P3 from the base database is always injected before the generic pathology/remedy layer.
+ * ZW-BAZI-METHOD-LAYERING-1.0 is always injected to separate primary judgement, strength evidence, distribution data and auxiliary systems.
  * ZW-BAZI-PATHOLOGY-REMEDY-1.0 is always injected as the generic pathology/remedy layer.
  * ZW-BAZI-KINSHIP-GENDER-1.0 is always injected for gender-aware kinship/person-role disambiguation.
  * Any 辰／戌／丑／未 in natal branches or active luck/year branches additionally injects
@@ -225,4 +259,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-19T00:40:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-21T22:08:00+10:00';

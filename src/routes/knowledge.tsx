@@ -1,5 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { BaziKnowledgeNotesSection } from "@/components/bazi-knowledge-notes-section";
+import { ZiweiKnowledgeNotesSection } from "@/components/ziwei-knowledge-notes-section";
 import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { useI18n, type Locale } from "@/lib/i18n";
 
@@ -20,7 +21,7 @@ function KnowledgePage() {
         <p className="text-xs tracking-[0.26em] text-cinnabar">{tr(locale,"昭梧 · 知識庫","昭梧 · 知识库","ZHAOWU · KNOWLEDGE")}</p>
         <h1 className="mt-2 font-display text-3xl leading-tight text-ink sm:text-4xl">{tr(locale,"觀世錄與命理小知識，分開看。","观世录与命理小知识，分开看。","Essays and teaching notes, clearly separated.")}</h1>
         <p className="mt-4 max-w-3xl text-[15px] leading-7 text-ink-soft">
-          {tr(locale,"觀世錄收站主文章、研究札記與觀點短札；命理小知識收八字基礎、方法、術語與判讀規則。文章就是文章，教學就是教學，不再混在同一條內容流裡。","观世录收站主文章、研究札记与观点短札；命理小知识收八字基础、方法、术语与判读规则。文章就是文章，教学就是教学，不再混在同一条内容流里。","Notes on Life contains essays, research notes and reflective short pieces. BaZi Knowledge contains teaching material, terminology and reading rules. Editorial writing and instructional material no longer share one undifferentiated feed.")}
+          {tr(locale,"觀世錄收站主文章、研究札記與觀點短札；命理小知識收八字、紫微的基礎、方法、術語與判讀規則。文章就是文章，教學就是教學，不再混在同一條內容流裡。","观世录收站主文章、研究札记与观点短札；命理小知识收八字、紫微的基础、方法、术语与判读规则。文章就是文章，教学就是教学，不再混在同一条内容流里。","Notes on Life contains essays, research notes and reflective short pieces. Metaphysics Knowledge contains BaZi and Zi Wei teaching material, terminology and reading rules. Editorial writing and instructional material no longer share one undifferentiated feed.")}
         </p>
 
         <nav className="mt-6 grid gap-3 sm:grid-cols-2" aria-label={tr(locale,"知識庫分類","知识库分类","Knowledge sections")}>
@@ -33,7 +34,7 @@ function KnowledgePage() {
           <a href="#mingli-knowledge" className="rounded-2xl border border-earth/25 bg-paper px-5 py-4 transition hover:border-earth/45">
             <span className="text-xs font-semibold tracking-[0.14em] text-earth">{tr(locale,"昭梧 · 命理小知識","昭梧 · 命理小知识","ZHAOWU · BAZI KNOWLEDGE")}</span>
             <strong className="mt-2 block font-display text-xl text-ink">{tr(locale,"方法與教學卡","方法与教学卡","Methods & teaching cards")}</strong>
-            <span className="mt-2 block text-sm leading-6 text-ink-soft">{tr(locale,"八字用途、天干、神煞、判讀步驟與來源辨識。","八字用途、天干、神煞、判读步骤与来源辨识。","BaZi uses, stems, auxiliary stars, reading steps and source checks.")}</span>
+            <span className="mt-2 block text-sm leading-6 text-ink-soft">{tr(locale,"八字與紫微的用途、基礎概念、判讀步驟與來源辨識。","八字与紫微的用途、基础概念、判读步骤与来源辨识。","BaZi and Zi Wei basics, reading methods and source checks.")}</span>
           </a>
         </nav>
       </section>
@@ -68,6 +69,7 @@ function KnowledgePage() {
       </section>
 
       <BaziKnowledgeNotesSection />
+      <ZiweiKnowledgeNotesSection />
 
       <a href="/#analysisForm" className="seal-border flex min-h-14 items-center justify-between rounded-2xl bg-cream px-5 py-4 text-sm text-ink">
         <span>{tr(locale,"產生完整命盤","产生完整命盘","Create complete chart")}</span>
