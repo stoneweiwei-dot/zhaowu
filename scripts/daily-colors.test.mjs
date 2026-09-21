@@ -7,56 +7,58 @@ const moduleSource = await readFile(new URL("../src/components/daily-colors-modu
 const route = await readFile(new URL("../src/routes/daily-colors.tsx", import.meta.url), "utf8");
 const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
 const almanac = await readFile(new URL("../src/components/daily-almanac-widget.tsx", import.meta.url), "utf8");
-const night = await readFile(new URL("../src/night-readability-r127.css", import.meta.url), "utf8");
-const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
+const css = await readFile(new URL("../src/five-element-wardrobe-r100.css", import.meta.url), "utf8");
 
-test("five dressing states stay centralized with trilingual names", () => {
-  for (const id of ["qingyun", "jianghua", "kunning", "liujin", "hanxu"]) {
-    assert.match(source, new RegExp(`id: "${id}"`));
+test("Colour Intent centralises all fourteen symbolic colours in three languages", () => {
+  for (const id of ["red","orange","yellow","green","blue","aqua","purple","pink","brown","black","white","grey","gold","silver"]) {
+    assert.match(source, new RegExp('id: "' + id + '"'));
   }
-  assert.match(source, /Qingyun/);
-  assert.match(source, /Jianghua/);
-  assert.match(source, /Kunning/);
-  assert.match(source, /Liujin/);
-  assert.match(source, /Hanxu/);
-  assert.match(source, /Energy \/ Growth \/ Momentum/);
-  assert.match(source, /Radiance \/ Expression \/ Passion/);
-  assert.match(source, /Rest \/ Stability \/ Recovery/);
-  assert.match(source, /Clarity \/ Focus \/ Decision/);
-  assert.match(source, /Stillness \/ Reflection \/ Reset/);
+  assert.match(source, /昭梧 · 今日色意/);
+  assert.match(source, /ZHAOWU · COLOUR INTENT/);
+  assert.match(source, /今天的我，需要被提醒成為什麼樣的人/);
+  assert.match(source, /what quality do I need to remember today/);
 });
 
-test("quotes stay cultural prompts rather than luck guarantees", () => {
-  assert.match(source, /Qingyun/);
-  assert.match(source, /Jianghua/);
-  assert.match(source, /not a promise to change luck/);
-  assert.match(source, /不是改運、招財或古籍穿著律令/);
+test("every colour exposes core, suitable, less and reminder content", () => {
+  assert.match(source, /core: "紅色常被用來象徵/);
+  assert.match(source, /suitable: \["需要鼓起勇氣"/);
+  assert.match(source, /less: "如果已經急躁/);
+  assert.match(source, /reminder: "不要只是在心裡想/);
+  assert.match(moduleSource, /page\.core/);
+  assert.match(moduleSource, /page\.suitable/);
+  assert.match(moduleSource, /page\.less/);
+  assert.match(moduleSource, /page\.reminder/);
+  assert.match(moduleSource, /data-daily-color-detail/);
+});
+
+test("the almanac bridge stays light and never becomes lucky-colour or favourable-element logic", () => {
+  assert.match(source, /木: "green"/);
+  assert.match(source, /火: "red"/);
+  assert.match(source, /土: "brown"/);
+  assert.match(source, /金: "gold"/);
+  assert.match(source, /水: "blue"/);
+  assert.match(source, /它不是喜用神，也不是幸運色/);
+  assert.match(source, /not a favourable-element judgement or a lucky colour/);
+  assert.match(source, /不宣稱顏色本身會帶來固定結果/);
   assert.doesNotMatch(source, /一定招財/);
   assert.doesNotMatch(source, /必然改運/);
 });
 
-test("home folds the compact colour guide into today's almanac and keeps the full page", () => {
+test("home keeps Colour Intent inside Today Guide and full guide at /daily-colors", () => {
   assert.match(route, /createFileRoute\("\/daily-colors"\)/);
   assert.match(route, /DailyColorsModule variant="page"/);
   assert.doesNotMatch(home, /DailyColorsModule variant="home"/);
+  assert.match(home, /今日色意/);
   assert.match(almanac, /DailyColorsModule variant="embed"/);
+  assert.match(almanac, /wardrobe: "今日色意"/);
   assert.match(moduleSource, /to="\/daily-colors"/);
-  assert.match(moduleSource, /data-daily-color-swatch/);
-  assert.match(moduleSource, /state\.swatches/);
-  assert.match(source, /dailyColorAlmanacRef/);
-  assert.match(source, /dayGanzhi/);
-  assert.match(source, /#1f6b4a/);
-  assert.match(source, /#c0392b/);
-  assert.match(source, /#d4a017/);
-  assert.match(source, /#d4b074/);
-  assert.match(source, /#1e4d7b/);
 });
 
-test("night last-wins CSS keeps question ink light and swatches vivid", () => {
-  assert.match(main, /night-readability-r127\.css/);
-  assert.match(night, /#analysisForm \.zhaowu-question-sheet h2/);
-  assert.match(night, /color: #fffaf0 !important/);
-  assert.match(night, /data-daily-color-swatch/);
-  assert.match(night, /background: var\(--swatch\) !important/);
-  assert.match(night, /data-daily-colors="embed"/);
+test("iPhone layout is vertical two-column and does not require horizontal card scrolling", () => {
+  assert.match(css, /@media \(max-width: 640px\)/);
+  assert.match(css, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /grid-auto-flow: row/);
+  assert.doesNotMatch(css, /overflow-x:\s*auto/);
+  assert.match(css, /\[data-daily-color-swatch\] i/);
+  assert.match(css, /background: var\(--swatch\)/);
 });
