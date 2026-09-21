@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.21-r170",
-  updateNumber: 170,
-  publishedAt: "2026-09-21T22:08:00+10:00",
-  latestSummary: "判斷依據分層與紫微五行局邊界正式入庫。",
+  version: "ZW-WEB-2026.09.21-r171",
+  updateNumber: 171,
+  publishedAt: "2026-09-21T22:48:00+10:00",
+  latestSummary: "「今日色意」整合十四色狀態指南，手機改為雙欄直式選色。",
   details: {
-    "zh-Hant": ["子平主判、扶抑、五行分布與旁證正式分層。", "紫微五行局與大限起歲加入知識庫並禁止人格化。"],
-    en: ["Primary Zi Ping judgement is separated from strength, element counts and auxiliary evidence.", "Zi Wei bureau ages are documented without turning them into personality codes."],
+    "zh-Hant": ["今日指引加入十四色「今日色意」，每色固定四層內容。", "黃曆色只作輕參考；iPhone 改雙欄直式，不再左右拖卡。"],
+    en: ["Today Guide now includes a 14-colour Colour Intent tool with four clear content layers.", "The almanac colour stays a light cue only; iPhone uses a two-column vertical picker."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }
