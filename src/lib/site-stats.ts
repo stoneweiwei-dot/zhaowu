@@ -5,10 +5,10 @@ export const SITE_RELEASE_FALLBACK = {
   version: "ZW-WEB-2026.09.22-r173",
   updateNumber: 173,
   publishedAt: "2026-09-22T02:05:00+10:00",
-  latestSummary: "定位失敗不再顯示假城市，出生城市未確認會阻止提交並聚焦，命盤完整細節預設收合。",
+  latestSummary: "首次造訪 UX 收口：錯誤 IP 城市會被攔截、出生城市更易確認，小龍在結果後接續引導。",
   details: {
-    "zh-Hant": ["今日指引保留 IP 回退；定位失敗時顯示尚未確認位置，天氣與季節同步降級。", "出生城市必須是結構化 CityHit；命盤首層只顯示四柱快照與基礎解釋，完整細節預設收合。"],
-    en: ["Today Guide keeps the IP fallback but shows an unconfirmed-location state if it fails, with weather and season degraded cleanly.", "Birth city must resolve to a structured CityHit; the first chart view keeps only the Four Pillars snapshot and foundation, with full details collapsed by default."],
+    "zh-Hant": ["今日指引會核對 IP 時區與瀏覽器時區；不一致時顯示尚未確認位置，並可由使用者主動使用瀏覽器定位。", "出生城市支援無歧義別名自動確認；命盤完整細節預設收合，小龍在生成結果後提供依據、風險與下一步。"],
+    en: ["Today Guide cross-checks IP and browser timezones; mismatches stay unconfirmed and users can explicitly request browser location.", "Unambiguous birth-city aliases can self-confirm; full chart detail stays collapsed and Jade Dragon follows up with evidence, risk and next-move choices."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }
