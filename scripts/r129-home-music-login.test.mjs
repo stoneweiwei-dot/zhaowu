@@ -31,7 +31,7 @@ test("latest homepage contract supersedes r129 and restores the real Four Pillar
   const form = await source("src/components/analysis-form.tsx");
   const chart = await source("src/components/bazi-chart.tsx");
   const css = await source("src/night-home-r129.css");
-  const main = await source("src/main.tsx");
+  const main = await source("src/legacy-visual-compat.css");
   assert.match(form, /buildChart/);
   assert.match(form, /<BaziChart chart=\{previewChart\}/);
   assert.match(form, /data-home-bazi-explanation/);

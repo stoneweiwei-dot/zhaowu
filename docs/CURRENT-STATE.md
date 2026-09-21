@@ -1,8 +1,8 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-20 05:09 AEST
+最後核對：2026-09-22 00:28 AEST
 
-> **这是项目唯一“当前状态”来源。** 旧 Issue、旧部署说明、旧聊天记录与本文件冲突时，以本文件 + 当前 `main` + 当前 Netlify Production + 当前 Supabase 为准。
+> **這是項目唯一「當前狀態」來源。** 舊 Issue、舊部署說明、舊聊天與下方歷史紀錄如與本節衝突，以本節 + 當前 `main` + 當前 Vercel Production + 當前 Supabase 為準。
 
 ## 1. 唯一生产主线
 
@@ -10,14 +10,14 @@
 | -------------- | ---------------------------------------------------------------------- |
 | GitHub         | `stoneweiwei-dot/zhaowu`                                               |
 | Branch         | `main`                                                                 |
-| Hosting        | **Netlify**（2026-09-19 r155 站主明确 supersession）                    |
-| Netlify project | `archive-stone-zhaowu-official` (`d1d08003-f225-4749-adcd-fd730b0c07a8`) |
-| Production URL | `https://archive-stone-zhaowu-official.netlify.app/`                   |
-| Synchronized fallback | Vercel `stone-zhaowu-official`，r158 已與 `main` 同步；不作 canonical 主網址 |
+| Hosting        | **Vercel**                                                            |
+| Vercel project | `stone-zhaowu-official` (`prj_81IIJjyeM3l47ZPsiIE7d6eOrp9I`)          |
+| Production URL | `https://stone-zhaowu-official.vercel.app/`                            |
+| Archived host  | Netlify `archive-stone-zhaowu-official`；自動 build 停用，只保留相容層 |
 | Database/Auth  | **Supabase** project `plgpxusmemnmzckbwtiv`（報告／圖庫／統計）。站主登入不走 Supabase Auth。 |
-| 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前使用 Netlify production URL   |
+| 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前使用 Vercel production URL    |
 
-每次接手实时检查 `main`、Netlify Production 與 Vercel fallback 的 commit；GitHub `main` 仍是唯一源码真相。Netlify 是 canonical 主站；Vercel 可保留同版同步備援，但不得讓 preview 或工具分支浪費建置額度。AppDeploy、Lovable standby 與其他旧临时站只读参考。
+每次接手只核對 `main` 與 Vercel Production 的 commit；GitHub `main` 是唯一源碼真相，Vercel `stone-zhaowu-official` 是唯一 canonical Production。Netlify 僅保留 archive／compatibility 且不得自動 build；下方任何舊 Netlify-production 敘述均視為歷史紀錄，不再具有執行權。
 
 2026-09-19 實查：Vercel Production `dpl_HhhNFxpEJvMcWHCP5YUhPoQQhUpd` 已在 r158 commit `15afe0ddf220460bfc80270ce5658a7764e80582` READY；Netlify deploy `6aadf08e321b9f85815b09ec` 亦為 r158。r159 起正式 metadata 與登入回呼指向 Netlify canonical；不得把兩個平台 READY 等同真實 iPhone／已安裝 PWA／站主登入验收。
 
@@ -113,7 +113,7 @@
 - 完整報告為一張連續暖宣紙閱讀面。
 - 青玉小龙 AI 導覽、Gallery 命請匹配與真實命請圖生成邏輯不因 UI 改版改變。
 
-最終視覺權威：`src/zhaowu-design-system.css` 必須最後載入，舊 CSS 只保留相容依賴，不得再覆蓋 canonical 規則；報告內容結構仍由 `src/focused-report.css` 與現行 renderer 承載。
+最終視覺權威：`src/zhaowu-design-system.css` 必須最後載入。r172 起 `src/main.tsx` 全域 CSS 僅保留 `styles.css → legacy-visual-compat.css → zhaowu-design-system.css` 三個入口；55 個歷史視覺檔在相容 bundle 內依原順序載入，不使用 cascade layer。
 
 ## 6. 专题报告与 Calculation Truth Layer
 

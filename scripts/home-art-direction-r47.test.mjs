@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
+const main = await readFile(new URL("../src/legacy-visual-compat.css", import.meta.url), "utf8");
 const css = await readFile(new URL("../src/home-art-direction-r47.css", import.meta.url), "utf8");
 
 test("r47 art direction loads after the existing visual locks", () => {

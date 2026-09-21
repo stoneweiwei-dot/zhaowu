@@ -5,7 +5,7 @@ import test from "node:test";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("owner-approved parchment v3 is the final visual lock", async () => {
-  const main = await read("src/main.tsx");
+  const main = await read("src/legacy-visual-compat.css");
   assert.match(main, /approved-parchment-ui-v3\.css/);
   assert.ok(main.indexOf("approved-parchment-ui-v3.css") > main.indexOf("approved-mobile-ui-v2.css"));
   assert.ok(main.indexOf("approved-parchment-ui-v3.css") > main.indexOf("focused-report.css"));

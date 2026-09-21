@@ -54,7 +54,7 @@ test("website keeps the app concept base while homepage specialist cards shed lo
 test("background assets remain manageable without overriding the restored application wallpaper", async () => {
   const account = await source("src/routes/account.tsx");
   const shell = await source("src/components/site-shell.tsx");
-  const main = await source("src/main.tsx");
+  const main = await source("src/legacy-visual-compat.css");
   const finalHome = await source("src/home-sheet-ui-v5.css");
 
   assert.doesNotMatch(shell, /@\/lib\/background-assets/);
