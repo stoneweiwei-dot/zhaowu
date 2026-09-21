@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 
 const model = readFileSync(new URL('../src/lib/report/decision-report-model.ts', import.meta.url), 'utf8');
 const pages = readFileSync(new URL('../src/components/paid-report-pages.tsx', import.meta.url), 'utf8');
+const resultView = readFileSync(new URL('../src/components/result-view.tsx', import.meta.url), 'utf8');
+const analysisForm = readFileSync(new URL('../src/components/analysis-form.tsx', import.meta.url), 'utf8');
 const focused = readFileSync(new URL('../src/lib/report/focused-report.ts', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../src/focused-report.css', import.meta.url), 'utf8');
 
@@ -60,4 +62,15 @@ test('four-pillar snapshot keeps day master visually central and hides unavailab
   assert.match(pages, /pillar\.hide\.map/);
   assert.match(css, /\.zhaowu-pillar-card\.is-day/);
   assert.match(css, /\.zhaowu-pillar-grid/);
+});
+
+
+test('homepage question result keeps the answer-first surface and technical chart details collapsed', () => {
+  assert.match(resultView, /const decisionModel = buildDecisionReportModel\(result\)/);
+  assert.match(resultView, /petDecision\?\.directAnswer \?\? decisionModel\.directAnswer/);
+  assert.match(resultView, /data-evidence-status/);
+  assert.match(resultView, /data-biggest-variable/);
+  assert.match(resultView, /<BaziChart chart=\{chart\} expandDetails=\{false\} \/>/);
+  assert.match(analysisForm, /<BaziChart chart=\{previewChart\} showHeader=\{false\} expandDetails=\{false\} \/>/);
+  assert.doesNotMatch(analysisForm, /showHeader=\{false\} expandDetails\s*\/>/);
 });

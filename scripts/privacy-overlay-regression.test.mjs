@@ -6,6 +6,7 @@ const sharedBirth = await readFile(new URL("../src/lib/shared-birth.ts", import.
 const authProvider = await readFile(new URL("../src/lib/auth/provider.tsx", import.meta.url), "utf8");
 const viewerCss = await readFile(new URL("../src/image-viewer.css", import.meta.url), "utf8");
 const resultView = await readFile(new URL("../src/components/result-view.tsx", import.meta.url), "utf8");
+const decisionModel = await readFile(new URL("../src/lib/report/decision-report-model.ts", import.meta.url), "utf8");
 const shareCard = await readFile(new URL("../src/lib/report/share-card.ts", import.meta.url), "utf8");
 const { customerCopy } = await import("../src/lib/report/customer-copy.ts");
 
@@ -36,6 +37,8 @@ test("customer result and share card strip the screenshot's internal timing trac
   assert.match(cleaned, /2026 屬於可做/);
   assert.match(cleaned, /2027 屬於可做/);
   assert.doesNotMatch(cleaned, /歲運作用鏈|大運層|流年層|流月層|排序依序核對原局|結果保證/);
-  assert.match(resultView, /customerDirectAnswer/);
+  assert.match(resultView, /buildDecisionReportModel/);
+  assert.match(resultView, /decisionModel\.directAnswer/);
+  assert.match(decisionModel, /customerDirectAnswer/);
   assert.match(shareCard, /customerCopy\(text\)/);
 });

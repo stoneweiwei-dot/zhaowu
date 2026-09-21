@@ -3,12 +3,15 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const resultView = await readFile(new URL("../src/components/result-view.tsx", import.meta.url), "utf8");
+const decisionModel = await readFile(new URL("../src/lib/report/decision-report-model.ts", import.meta.url), "utf8");
 const brand = await readFile(new URL("../src/components/brand-seal.tsx", import.meta.url), "utf8");
 const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 
 test("free direct-answer card delivers the engine's question-specific answer without generic template replacement", () => {
-  assert.match(resultView, /customerDirectAnswer\(question, reading\.directAnswer\)/);
+  assert.match(resultView, /buildDecisionReportModel\(result\)/);
+  assert.match(resultView, /decisionModel\.directAnswer/);
+  assert.match(decisionModel, /customerDirectAnswer\(result\.question, result\.reading\.directAnswer\)/);
   assert.doesNotMatch(resultView, /buildFreeDirectAnswer/);
 });
 
