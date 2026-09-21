@@ -98,6 +98,10 @@ test("Guest birth record stays on the phone and opens one integrated report", as
   await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
   await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
   await expect(page.locator("#question-stage")).toBeVisible();
+  const fullDetails = page.locator("#bazi > .zhaowu-bazi-preview > .zhaowu-bazi-full-details");
+  await expect(fullDetails).not.toHaveAttribute("open", "");
+  await expect(page.locator("[data-unified-birth-report]")).toBeHidden();
+  await fullDetails.locator(":scope > summary").click();
   await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
   await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
   await mobileHealthy(page);
