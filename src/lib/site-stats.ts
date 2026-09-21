@@ -2,13 +2,13 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 const VISITOR_KEY = "zhaowu.visitor.v1";
 export type PublicSiteStats = { totalVisits: number; todayVisits: number; version: string; updateNumber: number; publishedAt: string | null; latestSummary: string; };
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.21-r171",
-  updateNumber: 171,
-  publishedAt: "2026-09-21T23:30:00+10:00",
-  latestSummary: "答案第一屏補齊依據狀態與現實變數，命盤細項預設收合。",
+  version: "ZW-WEB-2026.09.22-r173",
+  updateNumber: 173,
+  publishedAt: "2026-09-22T02:05:00+10:00",
+  latestSummary: "定位失敗不再顯示假城市，城市選取未確認會阻止提交，命盤細節預設收合，分析完成後小龍接續引導。",
   details: {
-    "zh-Hant": ["問事結果第一屏固定為原問題、兩句直接答案、依據狀態與最大現實變數。", "首頁與結果頁的藏干、納音、十二長生及大運細項預設收合。"],
-    en: ["Question results now open with the original question, a two-sentence direct answer, evidence status and the biggest real-world variable.", "Hidden stems, Na Yin, twelve-stage and luck-cycle details now stay collapsed by default."],
+    "zh-Hant": ["今日指引保留 IP 回退；定位失敗時顯示尚未確認位置，天氣與季節同步降級。", "出生城市必須是結構化 CityHit；命盤完整細節預設收合，分析完成後小龍會接續引導依據、風險或下一步。"],
+    en: ["Today Guide keeps the IP fallback but shows an unconfirmed-location state if it fails, with weather and season degraded cleanly.", "Birth city must resolve to a structured CityHit; full chart details stay collapsed by default, and Jade Dragon offers a next-step prompt after analysis."],
   },
 } as const;
 function publicHeaders(extra?: HeadersInit): HeadersInit { return { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json", ...extra }; }

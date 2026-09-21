@@ -8,6 +8,7 @@ import {
   type SiteGuideRoute,
 } from "@/lib/site-guide";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { useAppStore } from "@/lib/store";
 
 const POSITION_STORAGE_KEY = "zhaowu.dragonAssistant.position.v1";
 const DOCK_SIZE = 52;
@@ -108,6 +109,7 @@ function guideBubbles(locale: Locale) {
 export function GreenDragonGuide() {
   const { locale } = useI18n();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const current = useAppStore((state) => state.current);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -122,6 +124,17 @@ export function GreenDragonGuide() {
   useEffect(() => {
     setAnswer(defaultSiteGuide(locale));
   }, [locale]);
+
+  useEffect(() => {
+    if (!current) return;
+    const followUp = locale === "en"
+      ? "Your analysis is ready. Want to see the reasoning, the risks, or go straight to the next step?"
+      : locale === "zh-Hans"
+        ? "刚看完你的分析。想先看依据、风险，还是直接看下一步？"
+        : "剛看完你的分析。想先看依據、風險，還是直接看下一步？";
+    setAnswer({ reply: followUp, route: null, cta: null, source: "local" });
+    setBubble({ kind: "guide", text: followUp });
+  }, [current, locale]);
 
   useEffect(() => {
     const saved = readSavedPosition();

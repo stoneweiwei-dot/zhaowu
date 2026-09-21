@@ -78,3 +78,14 @@ test("r96 almanac paints four distinct pillar colours and hides duplicate yi lab
   assert.match(almanacStyle, /#2f6b5a/);
   assert.match(almanacStyle, /small:empty/);
 });
+
+
+test("daily location keeps IP lookup but fails cleanly without fake city defaults", () => {
+  assert.match(widget, /ipwho\.is/);
+  assert.match(widget, /Location not confirmed/);
+  assert.match(widget, /尚未确认位置/);
+  assert.match(widget, /尚未確認位置/);
+  assert.match(widget, /Weather loading/);
+  assert.match(widget, /Season pending location/);
+  assert.doesNotMatch(widget, /visitor\?\.city \|\| \(locale === "en" \? "Local" : "本地"\)/);
+});
