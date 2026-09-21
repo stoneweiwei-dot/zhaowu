@@ -92,6 +92,7 @@ export function AnalysisForm() {
         structure: "Structure direction",
         features: "Main structural feature",
         noFeature: "—",
+        fullDetails: "View full chart details",
 
         questionKicker: "STEP 3 · ASK YOUR DESTINY BOOK",
         questionTitle: "Continue from your Destiny Book",
@@ -126,6 +127,7 @@ export function AnalysisForm() {
           structure: "格局方向",
           features: "主要结构特点",
           noFeature: "—",
+          fullDetails: "展开完整命盘细节",
 
           questionKicker: "第三步 · 命书问答",
           questionTitle: "沿着这份命书，继续问你真正关心的事",
@@ -159,6 +161,7 @@ export function AnalysisForm() {
           structure: "格局方向",
           features: "主要結構特點",
           noFeature: "—",
+          fullDetails: "展開完整命盤細節",
 
           questionKicker: "第三步 · 命書問答",
           questionTitle: "沿著這份命書，繼續問你真正關心的事",
@@ -235,7 +238,7 @@ export function AnalysisForm() {
 
     if (detailsOpen || !rememberedRecord) {
       if (!birthCity || !draftBirth) {
-        setError(null);
+        setError(t("errCity"));
         setBirthCityError(true);
         setDetailsOpen(true);
         window.setTimeout(() => {
@@ -380,7 +383,7 @@ export function AnalysisForm() {
             </div>
 
             <div className="zhaowu-birth-cities">
-              <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} invalid={birthCityError} errorMessage={birthCityError ? t("errCity") : undefined} onSelect={(city) => { setBirthCity(city); if (city) setBirthCityError(false); }} />
+              <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} invalid={birthCityError} errorMessage={birthCityError ? t("errCity") : undefined} onSelect={(city) => { setBirthCity(city); if (city) { setBirthCityError(false); setError(null); } }} />
               <CityPicker id="current-city" label={t("liveCity")} placeholder={t("liveCity")} optional optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={liveCity} onSelect={setLiveCity} />
             </div>
           </div>
@@ -405,8 +408,13 @@ export function AnalysisForm() {
                 <div><dt>{copy.features}</dt><dd>{foundationValues.features}</dd></div>
               </dl>
             </section>
-            <ChartTrustPanel chart={previewChart} locale={locale} />
-            <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
+            <details className="zhaowu-chart-details zhaowu-bazi-full-details">
+              <summary>{copy.fullDetails}</summary>
+              <div className="zhaowu-bazi-full-details__body">
+                <ChartTrustPanel chart={previewChart} locale={locale} />
+                <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
+              </div>
+            </details>
           </div>
         ) : (
           <div className="zhaowu-bazi-pending">
