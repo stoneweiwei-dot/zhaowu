@@ -5,12 +5,15 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("the canonical design system loads after the r75 visual lock", async () => {
+test("the canonical design system loads after the consolidated r75 compatibility lock", async () => {
   const main = await source("src/main.tsx");
-  const daily = main.indexOf("./daily-almanac-r69.css");
-  const r75 = main.indexOf("./site-ux-r75-final.css");
+  const legacy = await source("src/legacy-visual-compat.css");
+  const daily = legacy.indexOf("./daily-almanac-r69.css");
+  const r75 = legacy.indexOf("./site-ux-r75-final.css");
+  const legacyImport = main.indexOf("./legacy-visual-compat.css");
   const canonical = main.indexOf("./zhaowu-design-system.css");
-  assert.ok(daily >= 0 && r75 > daily && canonical > r75);
+  assert.ok(daily >= 0 && r75 > daily);
+  assert.ok(legacyImport >= 0 && canonical > legacyImport);
 });
 
 test("client details, the real BaZi chart and the question are independent ordered sections", async () => {
