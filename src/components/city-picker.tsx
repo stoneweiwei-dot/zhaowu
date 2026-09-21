@@ -66,7 +66,7 @@ export function CityPicker({
             const candidates = [city.name, city.display, firstLabel]
               .map((value) => value.normalize("NFKC").toLowerCase().replace(/[\s,，。·/\\-]+/g, ""));
             return candidates.includes(normalizedQuery);
-          }) ?? (localized.length === 1 && q.length >= 3 ? localized[0] : null);
+          }) ?? null;
           if (exact) {
             setSelected(exact);
             setQuery(exact.display);
