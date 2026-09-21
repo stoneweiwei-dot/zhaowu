@@ -221,6 +221,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#result")).toBeVisible();
     await expect(page.locator("[data-primary-answer]")).toBeVisible();
     await expect(page.locator("[data-next-action]")).toBeVisible();
+    await expect(page.locator("[data-dragon-result-followup]")).toHaveCount(1);
+    await expect(page.locator("[data-dragon-bubble]")).toContainText("剛生成的結果", { timeout: 3_000 });
     await expect(page.locator("[data-technical-evidence]")).not.toHaveAttribute("open", "");
     await expect(page.locator('[data-owner-login-entry="true"]')).toBeVisible();
     await expect(page.locator(".zhaowu-header-login")).toHaveCount(0);
