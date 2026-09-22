@@ -8,7 +8,7 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 test("login animation sound control stays explicit and global intro stays inactive", async () => {
   const login = await source("src/routes/login.tsx");
   const routeRoot = await source("src/routes/__root.tsx");
-  const css = await source("src/login-approved-r89.css");
+  const css = await source("src/zhaowu-design-system.css");
 
   assert.match(login, /stone-login-sound/);
   assert.match(login, /aria-pressed=\{!muted\}/);
