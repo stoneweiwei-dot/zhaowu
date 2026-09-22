@@ -10,6 +10,7 @@ import {
   type GalleryAsset,
 } from "@/lib/bridge/gallery-assets";
 import { isLoadingGalleryAsset, isPublicAtlasAsset } from "@/lib/gallery-groups";
+import { SUPABASE_STORAGE_WRITES_PAUSED, STORAGE_WRITES_PAUSED_MESSAGE } from "@/lib/storage-write-policy";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -168,15 +169,16 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <label className={`inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-4 text-sm text-[#faf8f1] ${busy ? "pointer-events-none opacity-50" : ""}`}>
+        <label className={`inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-4 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
           {busy ? copy.uploading : copy.upload}
-          <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => void onUpload(e)} />
+          <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => void onUpload(e)} />
         </label>
         <button type="button" className="min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft" onClick={() => setOpen((value) => !value)}>
           {open ? copy.closeGallery : copy.openGallery}
         </button>
       </div>
 
+      {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-3 rounded-xl border border-line bg-paper/55 px-4 py-3 text-sm text-ink-soft">{locale === "en" ? STORAGE_WRITES_PAUSED_MESSAGE.en : locale === "zh-Hans" ? STORAGE_WRITES_PAUSED_MESSAGE["zh-Hans"] : STORAGE_WRITES_PAUSED_MESSAGE["zh-Hant"]}</p> : null}
       {message ? <p className="mt-3 rounded-xl border border-line bg-paper/40 px-4 py-3 text-sm text-cinnabar">{message}</p> : null}
 
       {open ? (
