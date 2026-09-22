@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.22-r176",
-  updateNumber: 176,
-  publishedAt: "2026-09-22T21:45:00+10:00",
-  latestSummary: "正式部署收斂為 main-only：非 main 分支不部署，純文件變更不消耗 Vercel；同時帶上 r175 首訪 Loading 修復。",
+  version: "ZW-WEB-2026.09.22-r177",
+  updateNumber: 177,
+  publishedAt: "2026-09-22T23:46:00+10:00",
+  latestSummary: "觀世錄新增《見局，破局，歸自己》，並把今日兩篇修行文章收束到「知命而不困命、行動仍由人自決」的主線。",
   details: {
     "zh-Hant": [
-      "Production 只接受 main；所有其他 branch 明確禁用 Vercel deploy，純 docs/Markdown/GitHub workflow 變更由 ignoreCommand 略過。",
-      "同時包含 r175 IntroGate 修復：首訪完成後同一瀏覽器 refresh/remount 不再重播；force=1 仍可強制顯示。",
+      "觀世錄新增《見局，破局，歸自己》，放在最新文章位置；同日既有《沒有神蹟之後，人怎麼修行》保留，不重複改寫。",
+      "兩篇都把命理、因果與修行落回人的判斷與主權；不改命理計算、登入、付款、報告或 Supabase schema。",
     ],
     en: [
-      "Production now deploys only from main; all other branches are blocked, and docs-only changes are ignored to preserve the free-tier deployment budget.",
-      "This release also includes the r175 IntroGate fix: after the first completed view, refreshes or remounts in the same browser skip it while force=1 still overrides.",
+      "Notes on Life adds “See the Pattern, Break the Pattern, Return to Yourself” as the latest essay while keeping “How to Practise After the Miracles Are Gone” intact.",
+      "Both essays return metaphysics and practice to human judgement and agency; no calculation, auth, payment, report or Supabase schema logic changes.",
     ],
   },
 } as const;

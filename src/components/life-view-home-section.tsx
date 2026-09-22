@@ -12,6 +12,7 @@ import { INNER_FENGSHUI_LONG_FORM } from "@/lib/life-view-long-form/inner-fengsh
 import { BAZI_HEALTH_SYMBOLISM_LONG_FORM } from "@/lib/life-view-long-form/bazi-health-symbolism";
 import { SHUSHU_ENDS_IN_CHOICE_ARTICLE } from "@/lib/life-view-long-form/shushu-ends-in-choice";
 import { AFTER_MIRACLES_PRACTICE_LONG_FORM } from "@/lib/life-view-long-form/after-miracles-practice";
+import { SEE_BREAK_RETURN_LONG_FORM } from "@/lib/life-view-long-form/see-break-return";
 
 type ContentKind = "article" | "short-note";
 
@@ -29,6 +30,7 @@ type LifeViewHomeSectionProps = {
 };
 
 const LONG_ARTICLES: IllustratedArticle[] = [
+  SEE_BREAK_RETURN_LONG_FORM,
   AFTER_MIRACLES_PRACTICE_LONG_FORM,
   SHUSHU_ENDS_IN_CHOICE_ARTICLE,
   BAZI_HEALTH_SYMBOLISM_LONG_FORM,
