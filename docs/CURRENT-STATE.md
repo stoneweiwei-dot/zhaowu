@@ -1,8 +1,16 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-22 00:28 AEST
+最後核對：2026-09-22 18:00 AEST
 
 > **這是項目唯一「當前狀態」來源。** 舊 Issue、舊部署說明、舊聊天與下方歷史紀錄如與本節衝突，以本節 + 當前 `main` + 當前 Vercel Production + 當前 Supabase 為準。
+
+### 2026-09-22 Supabase / Deploy CURRENT supersession
+
+- **Active Supabase core**：`gyisxbkjzvdretbqzeuw`（`zhaowu-core`，Tokyo）是新的 Production data plane；schema 已由正式 migrations 重建，並已搬入 site settings、release history、經典資料與站主別名等非 Storage 資料。`zhaowu-owner-data` 與 `gallery-ingest-finalize` 已在新 core 部署。
+- **Legacy Supabase archive**：`plgpxusmemnmzckbwtiv` 因 File Storage 約 1.19 GB / 1 GB 被平台 402 全服務限制；舊 Storage、舊會員 Auth 與舊報告留作封存，不再讓 Production runtime 依賴它，也不得用 SQL 直接刪 `storage.objects`。
+- **媒體策略不變**：大型公開媒體仍應外移；Floot Media Vault 目前 workspace upload quota 阻塞，故不把 Floot 誤標為已完成遷移。Public shell、首頁背景、站主音樂已採同源靜態／GitHub-Vercel 路徑，不再依賴舊 Supabase Storage。
+- **Vercel deployment policy**：PR/feature branches 禁止自動 Preview；只有 `main` merge 可觸發 Vercel Production。這取代舊的 `git.deploymentEnabled=false` 全關閉政策，目的是保留零 Preview 浪費，同時消除每次都要人工 Dashboard 發布的阻塞。
+- **Auth current source truth**：current source `src/lib/auth/provider.tsx` 以 device-local guest + 獨立站主 HttpOnly cookie 為 active flow；下方歷史文字若仍寫普通會員 Supabase Auth 為 active，視為 superseded compatibility 記錄。
 
 ## 1. 唯一生产主线
 
@@ -14,7 +22,7 @@
 | Vercel project | `stone-zhaowu-official` (`prj_81IIJjyeM3l47ZPsiIE7d6eOrp9I`)          |
 | Production URL | `https://stone-zhaowu-official.vercel.app/`                            |
 | Archived host  | Netlify `archive-stone-zhaowu-official`；自動 build 停用，只保留相容層 |
-| Database/Auth  | **Supabase** project `plgpxusmemnmzckbwtiv`（報告／圖庫／統計）。站主登入不走 Supabase Auth。 |
+| Active data plane | **Supabase `zhaowu-core`** `gyisxbkjzvdretbqzeuw`（健康、空 Storage 起步；站主資料橋接／統計／規則資料）。舊 `plgpxusmemnmzckbwtiv` 因 Storage 1.19 GB 超額封鎖，僅保留歷史封存，禁止再作 Production runtime。 |
 | 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前使用 Vercel production URL    |
 
 每次接手只核對 `main` 與 Vercel Production 的 commit；GitHub `main` 是唯一源碼真相，Vercel `stone-zhaowu-official` 是唯一 canonical Production。Netlify 僅保留 archive／compatibility 且不得自動 build；下方任何舊 Netlify-production 敘述均視為歷史紀錄，不再具有執行權。
@@ -146,7 +154,7 @@ PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行�
 - 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub iPhone Safari CI 已通過；這不等於實機完成。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
-- Supabase Storage 實查約 1.20 GB，超過 Free plan 1 GB；Storage 與 Edge gateway 回 402 `exceed_storage_size_quota`。解除只能由站主升級／調整帳務，或先核准可刪除／外移的至少約 200 MB 媒體；本版不擅自刪資料。r130 起站主音樂不依賴此桶。
+- 舊 Supabase `plgpxusmemnmzckbwtiv` Storage 約 1.19 GB 並被 402 限制，現已退出 Production runtime、改作歷史封存；新 `zhaowu-core` 從 0 Storage 起步。舊媒體仍待平台恢復刪除能力或 Floot 可上傳後再做實體清理，但不再阻塞正式站。
 - r162 migration 已把 `get_customer_classic_passage` EXECUTE 限縮為 `service_role`，既有 helper `search_path` 維持 hardened；`zhaowu-owner-data` Edge Function 已部署 v3。Supabase leaked-password protection 仍需站主在 Dashboard 啟用；容量 402 解除前 live Edge gateway 仍不可用。
 - Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo。會員登入／註冊以 r139 為準。
 
