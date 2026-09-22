@@ -13,6 +13,7 @@ import {
 } from "@/lib/bridge/gallery-assets";
 import { LOGIN_VISUAL_CATALOG } from "@/lib/loading-gallery-catalog";
 import { loginVisualThemeFromTags, type LoginVisualTheme } from "@/lib/login-animation";
+import { SUPABASE_STORAGE_WRITES_PAUSED, STORAGE_WRITES_PAUSED_MESSAGE } from "@/lib/storage-write-policy";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -211,11 +212,12 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
           <h2 className="mt-1 font-display text-3xl">{copy.title}</h2>
           <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-soft">{copy.lead}</p>
         </div>
-        <label className={`inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-5 text-sm text-[#faf8f1] ${busy ? "pointer-events-none opacity-50" : ""}`}>
+        <label className={`inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-5 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
           {copy.upload}
-          <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm" className="hidden" onChange={(event) => void onUpload(event)} />
+          <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm" className="hidden" onChange={(event) => void onUpload(event)} />
         </label>
       </div>
+      {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-3 rounded-xl border border-line bg-paper/55 px-4 py-3 text-sm text-ink-soft">{locale === "en" ? STORAGE_WRITES_PAUSED_MESSAGE.en : locale === "zh-Hans" ? STORAGE_WRITES_PAUSED_MESSAGE["zh-Hans"] : STORAGE_WRITES_PAUSED_MESSAGE["zh-Hant"]}</p> : null}
       {message ? <p className="mt-3 rounded-xl border border-line bg-paper/40 px-4 py-3 text-sm text-cinnabar">{message}</p> : null}
       {editableRows.length ? <div data-owner-bulk-toolbar="login-visuals" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
         <span className="text-xs font-medium text-ink-soft">{copy.selected(selectedIds.length)}</span>
