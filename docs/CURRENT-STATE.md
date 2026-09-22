@@ -4,13 +4,14 @@
 
 > **這是項目唯一「當前狀態」來源。** 舊 Issue、舊部署說明、舊聊天與下方歷史紀錄如與本節衝突，以本節 + 當前 `main` + 當前 Vercel Production + 當前 Supabase 為準。
 
-### 2026-09-22 Supabase / Deploy CURRENT supersession
+### 2026-09-22 Runtime / Deploy CURRENT supersession
 
-- **Active Supabase core**：`gyisxbkjzvdretbqzeuw`（`zhaowu-core`，Tokyo）是新的 Production data plane；schema 已由正式 migrations 重建，並已搬入 site settings、release history、經典資料與站主別名等非 Storage 資料。`zhaowu-owner-data` 與 `gallery-ingest-finalize` 已在新 core 部署。
-- **Legacy Supabase archive**：`plgpxusmemnmzckbwtiv` 因 File Storage 約 1.19 GB / 1 GB 被平台 402 全服務限制；舊 Storage、舊會員 Auth 與舊報告留作封存，不再讓 Production runtime 依賴它，也不得用 SQL 直接刪 `storage.objects`。
-- **媒體策略不變**：大型公開媒體仍應外移；Floot Media Vault 目前 workspace upload quota 阻塞，故不把 Floot 誤標為已完成遷移。Public shell、首頁背景、站主音樂已採同源靜態／GitHub-Vercel 路徑，不再依賴舊 Supabase Storage。
-- **Vercel deployment policy**：PR/feature branches 禁止自動 Preview；只有 `main` merge 可觸發 Vercel Production。這取代舊的 `git.deploymentEnabled=false` 全關閉政策，目的是保留零 Preview 浪費，同時消除每次都要人工 Dashboard 發布的阻塞。
-- **Auth current source truth**：current source `src/lib/auth/provider.tsx` 以 device-local guest + 獨立站主 HttpOnly cookie 為 active flow；下方歷史文字若仍寫普通會員 Supabase Auth 為 active，視為 superseded compatibility 記錄。
+- **Owner report data plane**：站主報告讀取／刪除改由正式 Floot Media Vault 的 Postgres 承接，Vercel `/api/owner-data` 只作同源安全橋接；舊 Supabase 不再是站主報告 runtime。
+- **Historical reports copied**：舊 Supabase 的 33 筆 `report_requests` 已完整封裝搬入 Floot DB；另有 167 筆 site settings／release history／經典文本／站主別名等非 Storage 記錄作 archive/reference。
+- **Legacy Supabase**：`plgpxusmemnmzckbwtiv` 因組織 File Storage 約 1.19 GB / 1 GB 被平台 402 全服務限制，保留作歷史封存；不得用 SQL 直接刪 `storage.objects`。同組織臨時建立的 `zhaowu-core` 亦被 quota 連坐，從未成為 Production。
+- **Public runtime**：一般訪客仍是 device-local guest；出生資料、主要命盤／問事流程不依賴會員 Supabase Auth。站主登入仍是獨立 HttpOnly cookie。
+- **Media**：大型公開媒體外移策略沒有取消；Floot file-storage workspace upload quota 目前仍阻塞新媒體上傳，因此動態 Gallery／背景上傳暫停，不影響同源靜態首頁背景、登入 fallback、站主音樂與文字命書。
+- **Vercel deployment policy**：PR／feature branch 自動 Preview 關閉；只有 `main` merge 可觸發 Vercel Production。這取代舊的全域 `git.deploymentEnabled=false`，避免 Preview 浪費又不再要求每次手動 Dashboard 發布。
 
 ## 1. 唯一生产主线
 
@@ -22,7 +23,7 @@
 | Vercel project | `stone-zhaowu-official` (`prj_81IIJjyeM3l47ZPsiIE7d6eOrp9I`)          |
 | Production URL | `https://stone-zhaowu-official.vercel.app/`                            |
 | Archived host  | Netlify `archive-stone-zhaowu-official`；自動 build 停用，只保留相容層 |
-| Active data plane | **Supabase `zhaowu-core`** `gyisxbkjzvdretbqzeuw`（健康、空 Storage 起步；站主資料橋接／統計／規則資料）。舊 `plgpxusmemnmzckbwtiv` 因 Storage 1.19 GB 超額封鎖，僅保留歷史封存，禁止再作 Production runtime。 |
+| Owner report DB | **Floot Media Vault Postgres**（`zhaowu-media-vault`）；舊 Supabase 僅歷史封存。 |
 | 正式子域名     | `zhaowu.soul-terminal.com`；DNS 未完成前使用 Vercel production URL    |
 
 每次接手只核對 `main` 與 Vercel Production 的 commit；GitHub `main` 是唯一源碼真相，Vercel `stone-zhaowu-official` 是唯一 canonical Production。Netlify 僅保留 archive／compatibility 且不得自動 build；下方任何舊 Netlify-production 敘述均視為歷史紀錄，不再具有執行權。
@@ -154,7 +155,7 @@ PR #322 已作為 r128 合併進 `58ee4a9`。獨立站主密鑰登入是現行�
 - 真實 iPhone 關鍵流程與已安裝 PWA 自動更新最終實機驗收。GitHub iPhone Safari CI 已通過；這不等於實機完成。
 - 八字 chart：刑冲合害关系库、结构病药／通关层与原局→大运→流年→流月作用链已经接入并有确定性测试；但「正式取用／喜用」尚未完成全格局验证，因此生活建议仍不得据此硬推颜色、方位、时段或宠物。
 - 付費圖片接線 PR #295 由站主暫停；不得合併或重建，亦不得阻塞免費文字流程。現行圖片失敗必須回退 Gallery-direct，且不得讓文字報告消失。
-- 舊 Supabase `plgpxusmemnmzckbwtiv` Storage 約 1.19 GB 並被 402 限制，現已退出 Production runtime、改作歷史封存；新 `zhaowu-core` 從 0 Storage 起步。舊媒體仍待平台恢復刪除能力或 Floot 可上傳後再做實體清理，但不再阻塞正式站。
+- 舊 Supabase `plgpxusmemnmzckbwtiv` Storage 約 1.19 GB 並被組織級 402 限制，已退出站主報告 Production runtime、改作歷史封存。舊媒體仍待平台恢復刪除能力或 Floot file storage 可上傳後再做實體清理，但不再阻塞公開命盤／問事與站主文字報告。
 - r162 migration 已把 `get_customer_classic_passage` EXECUTE 限縮為 `service_role`，既有 helper `search_path` 維持 hardened；`zhaowu-owner-data` Edge Function 已部署 v3。Supabase leaked-password protection 仍需站主在 Dashboard 啟用；容量 402 解除前 live Edge gateway 仍不可用。
 - Linear STO-12／STO-5 無法從本環境寫入（Linear 未接入）；以本文件與 Instruction Registry 為準，不重做 Logo。會員登入／註冊以 r139 為準。
 
