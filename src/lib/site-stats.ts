@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.22-r176",
-  updateNumber: 176,
-  publishedAt: "2026-09-22T21:45:00+10:00",
-  latestSummary: "正式部署收斂為 main-only：非 main 分支不部署，純文件變更不消耗 Vercel；同時帶上 r175 首訪 Loading 修復。",
+  version: "ZW-WEB-2026.09.23-r177",
+  updateNumber: 177,
+  publishedAt: "2026-09-23T09:35:00+10:00",
+  latestSummary: "Supabase Storage 进入瘦身期：新增 Storage 写入已冻结，公开站继续 fail-open，现有内容保持可读。",
   details: {
     "zh-Hant": [
-      "Production 只接受 main；所有其他 branch 明確禁用 Vercel deploy，純 docs/Markdown/GitHub workflow 變更由 ignoreCommand 略過。",
-      "同時包含 r175 IntroGate 修復：首訪完成後同一瀏覽器 refresh/remount 不再重播；force=1 仍可強制顯示。",
+      "Supabase Storage 新增寫入已暫停：背景、站主圖庫、登入素材與新命誥圖不再增加 Storage 用量。",
+      "現有內容仍可讀取與管理；公開首頁、命盤與文字報告繼續 fail-open，不依賴 Storage 恢復才可使用。",
     ],
     en: [
-      "Production now deploys only from main; all other branches are blocked, and docs-only changes are ignored to preserve the free-tier deployment budget.",
-      "This release also includes the r175 IntroGate fix: after the first completed view, refreshes or remounts in the same browser skip it while force=1 still overrides.",
+      "New Supabase Storage writes are paused for backgrounds, owner gallery uploads, login visuals and new decree images.",
+      "Existing content remains readable and manageable; the public home, chart and text report stay fail-open while storage is being reduced.",
     ],
   },
 } as const;
