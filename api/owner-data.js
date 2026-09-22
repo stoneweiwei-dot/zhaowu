@@ -2,7 +2,7 @@ import { createHash, timingSafeEqual } from "node:crypto";
 
 const OWNER_COOKIE = "__Host-zhaowu_owner_session";
 const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
-const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
+const DEFAULT_SUPABASE_URL = "https://gyisxbkjzvdretbqzeuw.supabase.co";
 const ACTIONS = new Set([
   "report.list",
   "report.get",
@@ -135,7 +135,7 @@ async function readJsonBody(req) {
 }
 
 function supabaseUrl() {
-  return String(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "");
+  return String(process.env.ZHAOWU_CORE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "");
 }
 
 function bridgeSecret() {
