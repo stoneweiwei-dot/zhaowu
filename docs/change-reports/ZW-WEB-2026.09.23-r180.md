@@ -17,6 +17,29 @@ r179 修正期間雖然 `vercel.json` 寫了 `"*": false`，但 `fix/r179-login-
 - 不新增第三方 runtime 或付費服務。
 - Production 仍只有 `stone-zhaowu-official`，來源仍只有 GitHub `main`。
 
+
+## 影響範圍
+
+- `vercel.json` 的 Git deployment rule 與 ignored-build guard。
+- 對應 Vercel policy／deploy gate regression tests。
+- CURRENT-STATE、Instruction Registry、release metadata 與本次 change report。
+
+## 受保護範圍
+
+- 不改產品功能、登入、命理計算、報告、付款、Supabase schema 或使用者資料。
+- 不改正式網域與唯一 Production 專案。
+- 不直接 SQL 刪除 Storage metadata。
+
+## 驗證狀態
+
+- 分支 commit 已證明不再產生 Vercel Preview deployment。
+- 合併前仍以 Deploy gate、Engine suite、iPhone Safari 全綠為必要條件。
+- 合併後必須確認 Production READY 且 Production SHA = main SHA。
+
+## 回滾
+
+如 Vercel 不接受新 glob／ignore guard，可單獨回滾 `vercel.json` 與對應 policy tests；網站 runtime、資料與命理核心均不需要回滾。
+
 ## Supabase Storage 審計（唯讀）
 
 目前 Storage 共 588 objects，約 1,140.73 MB：
