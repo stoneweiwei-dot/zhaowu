@@ -1,3 +1,4 @@
+import { SearchSunLongitude } from "astronomy-engine";
 import { toTrad } from "./constants";
 
 export const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"] as const;
@@ -96,7 +97,7 @@ function lonDiff(a: number, b: number): number {
   return ((a - b + 540) % 360) - 180;
 }
 
-export function solarTermUtc(year: number, longitude: number): Date {
+function solarTermUtcApprox(year: number, longitude: number): Date {
   const approxMonth = ((longitude + 90) / 30) % 12;
   let jd = julianDay(year, Math.floor(approxMonth) + 1, 5, 0);
   if (longitude >= 270 && longitude < 315) jd = julianDay(year, 1, 5, 0);
@@ -107,6 +108,15 @@ export function solarTermUtc(year: number, longitude: number): Date {
     jd -= lonDiff(L, longitude) / 0.985647;
   }
   return new Date((jd - 2440587.5) * 86400000);
+}
+
+export function solarTermUtc(year: number, longitude: number): Date {
+  const approx = solarTermUtcApprox(year, longitude);
+  // Use a compact ephemeris-backed search for the actual apparent solar-longitude
+  // crossing. Keep the former approximation only as a deterministic fallback.
+  const start = new Date(approx.getTime() - 36 * 3_600_000);
+  const precise = SearchSunLongitude(longitude, start, 3);
+  return precise?.date ?? approx;
 }
 
 export function jieqiAround(at: Date): { prev: { name: string; branch: string; at: Date }; next: { name: string; branch: string; at: Date } } {
