@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.22-r175",
-  updateNumber: 175,
-  publishedAt: "2026-09-22T20:58:00+10:00",
-  latestSummary: "Loading 開場改為同一瀏覽器只在第一次開站顯示；已看過後重新整理或站內重新掛載不再重播。",
+  version: "ZW-WEB-2026.09.22-r176",
+  updateNumber: 176,
+  publishedAt: "2026-09-22T22:18:00+10:00",
+  latestSummary: "部署策略改為只允許 main 觸發 Production；所有 PR／fix／docs 分支不再自動建立 Vercel Preview，保留 r175 首次 Loading 修復。",
   details: {
     "zh-Hant": [
-      "Loading 開場首次正常播放後沿用既有 seen key；同一瀏覽器之後重新整理或站內重新掛載會直接跳過。",
-      "force=1 仍可強制顯示，webdriver 首訪仍可跳過；影片、五秒最短顯示、fade 與 IntroGate 結構均未修改。",
+      "Vercel Git 部署改為 main-only：只有已通過 GitHub CI 並合併到 main 的正式批次會建立 Production deployment。",
+      "所有 PR／fix／docs 分支都被 deploymentEnabled 規則阻止自動 Preview；r175 的 IntroGate 首次播放後回訪跳過行為仍保留。",
     ],
     en: [
-      "The opening now respects its existing seen flag: after the first completed view, refreshes or remounts in the same browser skip it.",
-      "force=1 still overrides the seen flag, webdriver first visits can still skip, and the video, five-second minimum, fade and IntroGate structure are unchanged.",
+      "Vercel Git deployment is now main-only: only vetted merges to main may create Production deployments.",
+      "PR, fix and docs branches are prevented from creating automatic previews; the r175 first-visit intro behaviour remains unchanged.",
     ],
   },
 } as const;
