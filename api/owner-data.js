@@ -2,7 +2,7 @@ import { createHash, timingSafeEqual } from "node:crypto";
 
 const OWNER_COOKIE = "__Host-zhaowu_owner_session";
 const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
-const DEFAULT_SUPABASE_URL = "https://gyisxbkjzvdretbqzeuw.supabase.co";
+const DEFAULT_OWNER_DATA_URL = "https://zhaowu-media-vault.floot.app/_api/zhaowu-owner-data";
 const ACTIONS = new Set([
   "report.list",
   "report.get",
@@ -134,13 +134,10 @@ async function readJsonBody(req) {
   return {};
 }
 
-function supabaseUrl() {
-  return String(process.env.ZHAOWU_CORE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "");
+function ownerDataUrl() {
+  return String(process.env.ZHAOWU_OWNER_DATA_URL || DEFAULT_OWNER_DATA_URL).trim();
 }
 
-function bridgeSecret() {
-  return String(process.env.ZHAOWU_OWNER_BRIDGE_SECRET ?? "").trim();
-}
 
 export default async function handler(req, res) {
   try {
@@ -149,17 +146,14 @@ export default async function handler(req, res) {
     const ownerSecret = ownerSecretFrom(req);
     if (!ownerSecret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
 
-    const serverBridgeSecret = bridgeSecret();
-
     const payload = await readJsonBody(req);
     const action = String(payload?.action ?? "").trim();
     if (!ACTIONS.has(action)) return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
 
-    const upstream = await fetch(`${supabaseUrl()}/functions/v1/zhaowu-owner-data`, {
+    const upstream = await fetch(ownerDataUrl(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(serverBridgeSecret ? { "X-Zhaowu-Bridge-Secret": serverBridgeSecret } : {}),
         "X-Zhaowu-Owner-Secret": ownerSecret,
         "X-Zhaowu-Server-Bridge": "r162",
       },
@@ -168,19 +162,11 @@ export default async function handler(req, res) {
     const text = await upstream.text();
     let body = null;
     try { body = text ? JSON.parse(text) : null; } catch { body = { ok: false, error: "UPSTREAM_INVALID_RESPONSE" }; }
-    if (upstream.status === 402) {
-      const detail = String(body?.message ?? body?.detail ?? text ?? "");
-      body = {
-        ok: false,
-        error: /cached_egress/i.test(detail) ? "exceed_cached_egress_quota" : "exceed_storage_size_quota",
-        detail,
-      };
-    }
     return json(res, upstream.status, body ?? { ok: upstream.ok });
   } catch (error) {
     return json(res, 502, {
       ok: false,
-      error: "SUPABASE_UNAVAILABLE",
+      error: "OWNER_DATA_UPSTREAM_UNAVAILABLE",
       detail: error instanceof Error ? error.message : "unknown",
     });
   }
