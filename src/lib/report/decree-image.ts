@@ -1,5 +1,6 @@
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import { refreshSession, type SupabaseSession } from "@/lib/supabase-rest";
+import { assertSupabaseStorageWritesEnabled } from "@/lib/storage-write-policy";
 
 export type DecreeImageResult = {
   ok: true;
@@ -103,6 +104,7 @@ export async function generateDecreeImage(
   reportId: string,
   force = false,
 ): Promise<DecreeImageResult> {
+  assertSupabaseStorageWritesEnabled();
   // Explicit user generation is different from passive page loading: re-rank the current Gallery
   // even when this report already has an older Gallery-direct image. This path never needs provider
   // credits unless force=true is explicitly requested.

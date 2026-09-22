@@ -1,6 +1,7 @@
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import { preferVerifiedPublicMedia } from "@/lib/public-media-preference";
+import { assertSupabaseStorageWritesEnabled } from "@/lib/storage-write-policy";
 const BUCKET = "zhaowu-backgrounds";
 const BACKGROUND_SELECT = "id,source,name,storage_path,content_type,enabled,days_of_week,start_date,end_date,theme,created_at,updated_at,cdn_url,cdn_provider,cdn_verified_at";
 
@@ -121,6 +122,7 @@ export async function uploadBackground(
   file: File,
   onProgress?: (percent: number) => void,
 ): Promise<BackgroundAsset> {
+  assertSupabaseStorageWritesEnabled();
   if (!file.type.startsWith("image/")) throw new Error("只接受圖片檔。");
   if (file.size > 10 * 1024 * 1024) throw new Error("單張圖片不可超過 10 MB。");
 

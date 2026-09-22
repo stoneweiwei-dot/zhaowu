@@ -1,6 +1,7 @@
 import * as base from "../background-assets";
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { isOwnerCookieSession, ownerData, uploadOwnerSignedFile, type OwnerUploadTicket } from "@/lib/owner-data-client";
+import { assertSupabaseStorageWritesEnabled } from "@/lib/storage-write-policy";
 
 export * from "../background-assets";
 
@@ -22,6 +23,7 @@ export async function uploadBackground(
   file: File,
   onProgress?: (percent: number) => void,
 ): Promise<base.BackgroundAsset> {
+  assertSupabaseStorageWritesEnabled();
   if (!isOwnerCookieSession(session)) return base.uploadBackground(session, file, onProgress);
   if (!file.type.startsWith("image/")) throw new Error("只接受圖片檔。");
   if (file.size > 10 * 1024 * 1024) throw new Error("單張圖片不可超過 10 MB。");
