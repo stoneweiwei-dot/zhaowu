@@ -25,11 +25,10 @@ export function scheduleIntroGateHardExit(
 export function shouldSkipIntroGate(storage?: Pick<Storage, "getItem"> | null, webdriver?: boolean) {
   try {
     if (storage?.getItem(INTRO_FORCE_KEY) === "1") return false;
+    if (storage?.getItem(INTRO_SEEN_KEY) === "1") return true;
   } catch {
     /* ignore */
   }
-  // Human visitors always receive the opening animation on an app boot.
-  // Automated browser runs may skip it unless explicitly forced.
   return Boolean(webdriver);
 }
 

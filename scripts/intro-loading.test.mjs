@@ -90,19 +90,21 @@ test('intro cannot be skipped before five seconds and exits after the visual has
   assert.doesNotMatch(gate, /runtimeReady/);
 });
 
-test('real visitors receive the opening on every app boot while Playwright may skip unless force=1', () => {
+test('real visitors receive the opening once per browser storage while force=1 still overrides seen state', () => {
   const storage = new Map();
   const fake = {
     getItem: (key) => storage.get(key) ?? null,
     setItem: (key, value) => { storage.set(key, value); },
   };
+  assert.equal(shouldSkipIntroGate(fake, false), false);
   assert.equal(shouldSkipIntroGate(fake, true), true);
-  fake.setItem(INTRO_FORCE_KEY, '1');
-  assert.equal(shouldSkipIntroGate(fake, true), false);
-  fake.setItem(INTRO_FORCE_KEY, '0');
   markIntroSeen(fake);
   assert.equal(fake.getItem(INTRO_SEEN_KEY), '1');
+  assert.equal(shouldSkipIntroGate(fake, false), true);
+  assert.equal(shouldSkipIntroGate(fake, true), true);
+  fake.setItem(INTRO_FORCE_KEY, '1');
   assert.equal(shouldSkipIntroGate(fake, false), false);
+  assert.equal(shouldSkipIntroGate(fake, true), false);
   assert.equal(INTRO_SEEN_KEY, 'zhaowu.intro.seen.r148');
   assert.equal(INTRO_BROKEN_KEY, 'zhaowu.intro.broken');
 });
