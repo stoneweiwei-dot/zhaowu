@@ -1,6 +1,7 @@
 import * as base from "../gallery-assets";
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { isOwnerCookieSession, ownerData, uploadOwnerSignedFile, type OwnerUploadTicket } from "@/lib/owner-data-client";
+import { assertSupabaseStorageWritesEnabled } from "@/lib/storage-write-policy";
 
 export * from "../gallery-assets";
 
@@ -24,6 +25,7 @@ export async function uploadGalleryAsset(
   file: File,
   meta: { category: string; assetKey?: string; title?: string; tags?: string[]; primary?: boolean },
 ): Promise<base.GalleryAsset> {
+  assertSupabaseStorageWritesEnabled();
   if (!isOwnerCookieSession(session)) return base.uploadGalleryAsset(session, file, meta);
 
   const isImage = file.type.startsWith("image/");
