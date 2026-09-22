@@ -24,7 +24,7 @@ test("fresh static shell defaults to Traditional Chinese before hydration", () =
   assert.match(manifest, /人生節奏與選擇分析/);
 });
 test("every production frontend change requires a matching change report", () => {
-  assert.match(report, /# 昭梧更新報告｜ZW-WEB-2026.09.22-r175/);
+  assert.match(report, /# 昭梧更新報告｜ZW-WEB-2026.09.22-r176/);
   assert.match(report, /## 本次改動/);
   assert.match(report, /## 為什麼改/);
   assert.match(report, /## 影響範圍/);
