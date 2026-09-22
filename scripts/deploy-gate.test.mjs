@@ -15,10 +15,10 @@ test("production build uses deploy-gate not the full engine glob", () => {
   assert.match(pkg.scripts["test:engine"], /scripts\/\*\.test\.mjs/);
 });
 
-test("Vercel build stays exact and automatic Git deploys are locked after the r174 cutover", () => {
+test("Vercel build stays exact and only vetted main can trigger Production", () => {
   assert.equal(vercel.buildCommand, "npm run build");
-  assert.equal(vercel.git.deploymentEnabled, false);
-  assert.equal(Object.prototype.hasOwnProperty.call(vercel, "ignoreCommand"), false);
+  assert.deepEqual(vercel.git.deploymentEnabled, { "*": false, main: true });
+  assert.match(vercel.ignoreCommand, /git diff --quiet/);
 });
 
 test("GitHub Production CI keeps blocking deploy-gate, engine, and iPhone Safari jobs", () => {
