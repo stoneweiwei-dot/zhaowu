@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r180",
-  updateNumber: 180,
-  publishedAt: "2026-09-23T05:53:00+10:00",
-  latestSummary: "部署配額護欄收口：只有 main 能觸發 Vercel build，帶斜線的 fix/content 分支也被硬擋，避免再產生 Preview 消耗。",
+  version: "ZW-WEB-2026.09.23-r181",
+  updateNumber: 181,
+  publishedAt: "2026-09-23T09:35:00+10:00",
+  latestSummary: "Supabase Storage 止血：新增 Storage 写入全部暂停，现有内容保持可读，公开主流程继续 fail-open。",
   details: {
     "zh-Hant": [
-      "Vercel Git 部署規則改為 **: false + main: true，覆蓋帶斜線的 fix/*、content/* 等分支，避免 Preview build 洩漏。",
-      "ignoreCommand 再以 VERCEL_GIT_COMMIT_REF != main 直接跳過作第二道配額護欄；PR 驗收留在 GitHub CI，合併 main 後只做一次 Production。",
+      "Supabase Storage 新增寫入已暫停：背景、站主圖庫、登入素材與新命誥圖不再增加 Storage 用量。",
+      "現有內容仍可讀取與管理；公開首頁、命盤與文字報告繼續 fail-open，不依賴 Storage 恢復才可使用。",
     ],
     en: [
-      "Vercel Git deployment rules now use **: false plus main: true, covering slash-named fix/* and content/* branches so they cannot leak Preview builds.",
-      "ignoreCommand adds a second fail-closed guard that skips any non-main Git ref; PR verification stays in GitHub CI and only the merged main gets a Production build.",
+      "New Supabase Storage writes are paused for backgrounds, owner gallery uploads, login visuals and new decree images.",
+      "Existing content remains readable and manageable; the public home, chart and text report stay fail-open while storage is being reduced.",
     ],
   },
 } as const;
