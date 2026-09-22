@@ -1,6 +1,7 @@
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import { preferVerifiedPublicMedia } from "@/lib/public-media-preference";
+import { assertSupabaseStorageWritesEnabled } from "@/lib/storage-write-policy";
 
 const BUCKET = "zhaowu-gallery";
 
@@ -105,6 +106,7 @@ export async function uploadGalleryAsset(
   file: File,
   meta: { category: string; assetKey?: string; title?: string; tags?: string[]; primary?: boolean },
 ): Promise<GalleryAsset> {
+  assertSupabaseStorageWritesEnabled();
   const isImage = file.type.startsWith("image/");
   const isVideo = file.type === "video/mp4" || file.type === "video/webm";
   const loading = meta.category === "loading";
