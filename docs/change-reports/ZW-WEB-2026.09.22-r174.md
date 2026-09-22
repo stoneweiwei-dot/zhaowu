@@ -36,3 +36,9 @@ Supabase organization 因 File Storage 超過 Free quota 被限制，Storage／E
 ## 回滾
 
 若 r174 造成公開站回歸，可回滾至 r173 程式行為；Supabase 資料與 schema 本輪沒有變更。
+
+
+## Production lock closeout
+
+- r174 已成功部署到既有 Vercel Production 後，立即將 `git.deploymentEnabled` 恢復為 `false`。
+- 此鎖定 commit 由已上線的 r174 Git integration 再部署一次；最終要求為 Production SHA = final main SHA，之後不再由一般 Git push 自動消耗 Vercel build 額度。

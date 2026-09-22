@@ -5,7 +5,7 @@
   "outputDirectory": "dist",
   "installCommand": "npm ci",
   "git": {
-    "deploymentEnabled": true
+    "deploymentEnabled": false
   },
   "functions": {
     "api/owner-login.js": { "maxDuration": 10 },

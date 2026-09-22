@@ -8,7 +8,7 @@ test("Vercel production installs the exact tracked dependency tree", () => {
   assert.equal(config.installCommand, "npm ci");
 });
 
-test("r174 cutover has no ignored-build quota trap while Git deployment is temporarily enabled", () => {
-  assert.equal(config.git?.deploymentEnabled, true);
+test("Vercel automatic Git deployments are locked again after r174", () => {
+  assert.equal(config.git?.deploymentEnabled, false);
   assert.equal(Object.prototype.hasOwnProperty.call(config, "ignoreCommand"), false);
 });
