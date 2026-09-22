@@ -7,7 +7,7 @@
 - PR 驗收只走 GitHub Deploy gate、Engine suite、iPhone Safari；非 main 不再建立可執行 Preview build。
 - r180 分支連續多個 commit 後，Vercel deployment 列表沒有新增該分支 deployment，護欄已在合併前實測生效。
 
-## 原因
+## 為什麼改
 
 r179 修正期間雖然 `vercel.json` 寫了 `"*": false`，但 `fix/r179-login-animation-only` 仍產生 Preview。Vercel 的 branch 規則使用 minimatch，原規則沒有可靠覆蓋帶 slash 的 branch。r180 改用 globstar 並加 Git ref ignore guard，避免再浪費免費部署額度。
 
