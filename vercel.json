@@ -132,10 +132,6 @@
   ],
   "rewrites": [
     {
-      "source": "/api/gallery-ingest-finalize",
-      "destination": "https://gyisxbkjzvdretbqzeuw.supabase.co/functions/v1/gallery-ingest-finalize"
-    },
-    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
