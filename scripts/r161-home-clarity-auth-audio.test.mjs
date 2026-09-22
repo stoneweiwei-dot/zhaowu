@@ -42,12 +42,11 @@ test("homepage keeps one primary flow and the current closed secondary accordion
   assert.match(home, /openPanel === "notes"/);
 });
 
-test("opening and login animations expose explicit sound controls", async () => {
-  const intro = await source("src/components/intro-gate.tsx");
+test("login owns the only active animation sound control", async () => {
+  const routeRoot = await source("src/routes/__root.tsx");
   const login = await source("src/routes/login.tsx");
-  assert.match(intro, /OWNER_LOADING_SOUND/);
-  assert.match(intro, /data-intro-sound-control/);
-  assert.doesNotMatch(intro, /data-background-music-control/);
+  assert.doesNotMatch(routeRoot, /IntroGate/);
+  assert.match(login, /LoginStageBackdrop/);
   assert.match(login, /stone-login-sound/);
   assert.match(login, /videoRef\.current\.muted = nextMuted/);
 });
