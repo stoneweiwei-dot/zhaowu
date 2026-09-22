@@ -23,13 +23,15 @@ const {
   markIntroSeen,
 } = await import('../src/lib/intro-gate-policy.ts');
 
-test('home opens with the root intro layered above an independently mounted shell', () => {
-  assert.doesNotMatch(shell, /<IntroGate/);
-  const gatePosition = root.indexOf('<IntroGate />');
-  const shellPosition = root.indexOf('<SiteShell>');
-  assert.ok(gatePosition >= 0);
-  assert.ok(shellPosition > gatePosition);
-  assert.doesNotMatch(root, /runtimeReady\s*\?\s*<SiteShell/);
+test('global intro is retired from the active route tree and login owns the animation', async () => {
+  const login = await readFile(new URL('../src/routes/login.tsx', import.meta.url), 'utf8');
+  assert.doesNotMatch(root, /IntroGate/);
+  assert.doesNotMatch(root, /<IntroGate\s*\/>/);
+  assert.match(root, /<SiteShell>/);
+  assert.match(login, /LoginStageBackdrop/);
+  assert.match(login, /stone-login-stage-media/);
+  assert.match(login, /owner-immortal-ascent-r123\.mp4/);
+  assert.match(login, /data-owner-only-login="true"/);
 });
 
 test('bootstrap still checks nine-page report runtime', () => {
