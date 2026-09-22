@@ -4,9 +4,9 @@ import { test } from "node:test";
 
 const root = new URL("../", import.meta.url);
 
-test("Vercel automatic Git deployments are disabled after the r174 production cutover", async () => {
+test("Vercel deploys only vetted main merges and suppresses branch previews", async () => {
   const config = JSON.parse(await readFile(new URL("vercel.json", root), "utf8"));
-  assert.equal(config.git.deploymentEnabled, false);
+  assert.deepEqual(config.git.deploymentEnabled, { "*": false, main: true });
   assert.equal(Object.prototype.hasOwnProperty.call(config, "ignoreCommand"), false);
   assert.equal(config.framework, "vite");
   assert.equal(config.outputDirectory, "dist");
