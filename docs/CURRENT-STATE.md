@@ -67,15 +67,14 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - 浮動 UI 只有青玉小龍；播放器控制整合在小龍內，不得掛第二個 fixed music dock。
 - 手機頁面不得要求左右拖動。
 
-## 6. IntroGate
+## 6. Login animation
 
-current main 已包含 r175 IntroGate 行為：
+r179 起，舊全站 `IntroGate` 已退出 active route tree。
 
-- `zhaowu.intro.force=1`：強制顯示。
-- `zhaowu.intro.seen.r148=1`：同一瀏覽器回訪跳過。
-- 其他一般首訪：顯示；webdriver 可跳過。
-
-IntroGate 行為只有在最新 main 實際進入 Production 後才算正式驗證。
+- 首頁、重新整理、一般路由、報告頁與回訪都不得播放 opening/loading 動畫。
+- 動畫只屬於 `/login`；由 `LoginStageBackdrop` 顯示站主登入動畫。
+- `zhaowu.intro.force`、`zhaowu.intro.seen.r148` 與舊 IntroGate 元件可保留作歷史／回歸素材，但不得再影響公開 runtime。
+- Login 動畫保留可見聲音控制；iPhone Safari 仍需使用者手勢開聲。
 
 ## 7. Supabase
 
@@ -131,7 +130,7 @@ IntroGate 行為只有在最新 main 實際進入 Production 後才算正式驗�
 3. 正式站首頁／Login／出生表單／完整報告可用；
 4. 真 iPhone Safari 無白屏、橫向 overflow、safe-area／鍵盤遮擋、雙 floating UI；
 5. refresh／返回／前進／切 App／鎖屏恢復正常；
-6. IntroGate 首訪／回訪行為符合 r175；
+6. 首頁及一般路由不再出現 IntroGate，且 /login 動畫與聲音控制正常；
 7. owner login／session restore／logout 正常；
 8. Supabase 失效時公開核心流程仍 fail-open；
 
