@@ -89,3 +89,18 @@ test("the Netlify bridge parses a Fetch Request body before forwarding it", asyn
     globalThis.fetch = originalFetch;
   }
 });
+
+test("active runtime is cut over to the healthy Supabase core and Vercel deploys main only", async () => {
+  const config = await source("src/lib/supabase-config.ts");
+  const api = await source("api/owner-data.js");
+  const vercel = JSON.parse(await source("vercel.json"));
+  assert.match(config, /gyisxbkjzvdretbqzeuw\.supabase\.co/);
+  assert.doesNotMatch(config, /VITE_SUPABASE_URL\s*\|\|/);
+  assert.match(api, /gyisxbkjzvdretbqzeuw\.supabase\.co/);
+  assert.match(api, /ZHAOWU_CORE_SUPABASE_URL/);
+  assert.deepEqual(vercel.git?.deploymentEnabled, { "*": false, main: true });
+  assert.equal(
+    vercel.rewrites?.find((row) => row.source === "/api/gallery-ingest-finalize")?.destination,
+    "https://gyisxbkjzvdretbqzeuw.supabase.co/functions/v1/gallery-ingest-finalize",
+  );
+});
