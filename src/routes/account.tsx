@@ -25,7 +25,8 @@ import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
 import { ReportDragonSticker } from "@/components/report-dragon-sticker";
 import { DecreeImageReason } from "@/components/decree-image-reason";
-import { generateDecreeImage } from "@/lib/bridge/decree-image";
+import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
+import { SUPABASE_STORAGE_WRITES_PAUSED, STORAGE_WRITES_PAUSED_MESSAGE } from "@/lib/storage-write-policy";
 import type { ReportSection } from "@/lib/report/focused-report";
 import { TeaGuardianReport } from "@/components/tea-guardian-report";
 
@@ -417,7 +418,10 @@ function AccountPage() {
     setActionBusyId(id);
     setReportMessages((prev) => ({ ...prev, [id]: "" }));
     try {
-      const out = await generateDecreeImage(session, id, force);
+      const existing = details[id]?.image_path;
+      const out = existing && !force
+        ? await loadExistingDecreeImage(session, id)
+        : await generateDecreeImage(session, id, force);
       if (out.signedUrl) setImageUrls((prev) => ({ ...prev, [id]: out.signedUrl! }));
       await refreshDetail(id, true);
       await loadReports();
@@ -631,12 +635,13 @@ function AccountPage() {
               <p className="text-xs tracking-[0.28em] text-cinnabar">BACKGROUND LIBRARY</p>
               <h2 className="mt-1 font-display text-2xl">{c.backgroundTitle}</h2>
             </div>
-            <label className={`inline-flex h-10 cursor-pointer items-center rounded-full bg-cinnabar px-4 text-sm text-cream ${backgroundBusy ? "pointer-events-none opacity-50" : ""}`}>
+            <label className={`inline-flex h-10 cursor-pointer items-center rounded-full bg-cinnabar px-4 text-sm text-cream ${backgroundBusy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
               {backgroundBusy ? c.uploading : c.upload}
-              <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => void onBackgroundUpload(e)} />
+              <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => void onBackgroundUpload(e)} />
             </label>
           </div>
           <p className="mt-3 text-xs leading-6 text-ink-mute">{c.backgroundLead}</p>
+          {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-2 rounded-lg border border-line bg-paper/55 px-3 py-2 text-xs leading-5 text-ink-soft">{locale === "en" ? STORAGE_WRITES_PAUSED_MESSAGE.en : locale === "zh-Hans" ? STORAGE_WRITES_PAUSED_MESSAGE["zh-Hans"] : STORAGE_WRITES_PAUSED_MESSAGE["zh-Hant"]}</p> : null}
           {backgroundUploads.length ? (
             <div className="mt-3 space-y-2" aria-live="polite" aria-label={c.uploading}>
               {backgroundUploads.map((item) => {
@@ -795,10 +800,10 @@ function AccountPage() {
                             <summary className="cursor-pointer list-none text-center text-xs font-medium text-ink-soft [&::-webkit-details-marker]:hidden">{c.manageActions} ＋</summary>
                             <div className="mt-3 flex flex-wrap justify-center gap-2 border-t border-line/70 pt-3">
                               {displayAnswer ? <button type="button" className="rounded-full border border-line bg-cream px-3 py-1.5 text-xs text-ink-soft" onClick={() => void copyFinalAnswer(row.id, displayAnswer)}>{c.copyAnswer}</button> : null}
-                              <button type="button" disabled={actionBusyId === row.id} className="rounded-full bg-cinnabar px-3 py-1.5 text-xs text-cream disabled:opacity-50" onClick={() => void onReportImage(row.id, false)}>
+                              <button type="button" disabled={actionBusyId === row.id || (SUPABASE_STORAGE_WRITES_PAUSED && !detail.image_path)} className="rounded-full bg-cinnabar px-3 py-1.5 text-xs text-cream disabled:opacity-50" onClick={() => void onReportImage(row.id, false)}>
                                 {actionBusyId === row.id ? c.generatingImage : detail.image_path ? c.viewImage : c.generateImage}
                               </button>
-                              {detail.image_path ? <button type="button" disabled={actionBusyId === row.id} className="rounded-full border border-cinnabar/35 bg-cinnabar/5 px-3 py-1.5 text-xs text-cinnabar disabled:opacity-50" onClick={() => void onReportImage(row.id, true)}>{c.regenerateImage}</button> : null}
+                              {detail.image_path ? <button type="button" disabled={actionBusyId === row.id || SUPABASE_STORAGE_WRITES_PAUSED} className="rounded-full border border-cinnabar/35 bg-cinnabar/5 px-3 py-1.5 text-xs text-cinnabar disabled:opacity-50" onClick={() => void onReportImage(row.id, true)}>{c.regenerateImage}</button> : null}
                               <button type="button" className="rounded-full px-3 py-1.5 text-xs text-cinnabar" onClick={async () => {
                                 if (!window.confirm(c.deleteRecordConfirm)) return;
                                 await deleteReportRecord(session!, row.id);
