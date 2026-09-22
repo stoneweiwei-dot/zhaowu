@@ -8,7 +8,7 @@ test("Vercel production installs the exact tracked dependency tree", () => {
   assert.equal(config.installCommand, "npm ci");
 });
 
-test("Vercel automatic Git deployments are locked again after r174", () => {
-  assert.equal(config.git?.deploymentEnabled, false);
+test("Vercel Git deployment policy is main-only", () => {
+  assert.deepEqual(config.git?.deploymentEnabled, { "*": false, main: true });
   assert.equal(Object.prototype.hasOwnProperty.call(config, "ignoreCommand"), false);
 });
