@@ -353,3 +353,11 @@
 - `src/components/intro-gate.tsx`、`src/lib/intro-gate-policy.ts` 與 `zhaowu.intro.*` storage key 可保留作歷史／測試相容，但 `src/routes/__root.tsx` 不得掛載 `IntroGate`，所以它們不得進入公開 runtime。
 - r175 與更早「一般首訪顯示 IntroGate、seen 後跳過」的全站 opening 行為，在公開 runtime 範圍內正式 `SUPERSEDED`。
 - 本次只改動畫掛載範圍與對應 QA；不改站主 cookie、登入 API、命理計算、報告、付款、Supabase schema 或媒體原件。
+
+
+## 2026-09-23 r180 Vercel 配額護欄
+
+- ACTIVE：Vercel 只允許 GitHub `main` 觸發正式 build；非 main 分支包含帶 `/` 的 `fix/*`、`content/*` 等一律不得消耗 Preview build。
+- `vercel.json` 的 `git.deploymentEnabled` 必須使用 `"**": false` 與 `"main": true`；舊 `"*": false` 不足以可靠涵蓋帶 slash 的分支名。
+- `ignoreCommand` 再以 `VERCEL_GIT_COMMIT_REF != main → exit 0` 作第二道 fail-closed 配額護欄；main 上純 docs／Markdown／workflow 變更仍可跳過。
+- 不得為了 PR 驗證主動建立 Vercel Preview；PR 驗收由 GitHub Deploy gate、Engine suite、iPhone Safari 完成，合併 main 後只做一次 Production release。
