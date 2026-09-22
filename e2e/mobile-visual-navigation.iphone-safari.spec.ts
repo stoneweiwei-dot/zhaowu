@@ -32,20 +32,17 @@ async function dismissInstallPromptIfVisible(page: Page) {
 }
 
 test.describe("iPhone Safari visual and report navigation contract", () => {
-  test("loading animation uses the r148 poster when video is unavailable", async ({ page }) => {
+  test("legacy intro force keys cannot revive an opening animation on home", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.addInitScript(() => {
       window.localStorage.setItem("zhaowu.intro.force", "1");
+      window.localStorage.removeItem("zhaowu.intro.seen.r148");
     });
     await page.route("**/intro/*.mp4", (route) => route.abort());
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("[data-intro-fallback]")).toBeVisible();
-    const poster = page.locator('[data-intro-fallback] img');
-    await expect(poster).toBeVisible();
-    await expect(poster).toHaveAttribute('src', '/intro/zhaowu-opening-r148.jpg');
-    await expect.poll(() => poster.evaluate((element) => (element as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
-    await expect(page.locator(".zhaowu-lotus-intro__fallback-copy")).toContainText(/昭梧|ZHAOWU/);
-    await expect(page.locator('[data-intro-fallback] svg')).toHaveCount(0);
+    await expect(page.locator("[data-intro-fallback]")).toHaveCount(0);
+    await expect(page.locator('[data-intro-motion]')).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "錄入生辰", exact: true })).toBeVisible();
     await expect(page.locator("[data-intro-skip]")).toHaveCount(0);
   });
 
