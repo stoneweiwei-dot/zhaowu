@@ -1,6 +1,6 @@
 # 昭梧更新報告｜ZW-WEB-2026.09.23-r180
 
-## 本次收口
+## 本次改動
 
 - Vercel Git 自動部署規則由 `"*": false` 改為 `"**": false`，同時保留 `"main": true`，完整覆蓋 `fix/*`、`content/*` 等含 slash 的分支名。
 - `ignoreCommand` 增加第二道硬擋：只要 `VERCEL_GIT_COMMIT_REF != main` 就直接跳過 build。
