@@ -13,7 +13,7 @@ type BootstrapTask = {
   run: () => Promise<void>;
 };
 
-const REQUEST_TIMEOUT_MS = 2600;
+const REQUEST_TIMEOUT_MS = 900;
 
 async function withTimeout<T>(run: (signal: AbortSignal) => Promise<T>, timeoutMs = REQUEST_TIMEOUT_MS): Promise<T> {
   const controller = new AbortController();
@@ -32,23 +32,29 @@ async function waitForDocumentReady() {
   });
 }
 
+/**
+ * Supabase is an optional persistence/admin layer for the guest-first public site.
+ * A restricted data service must never hold the intro gate or core BaZi runtime open.
+ */
 async function verifyDataModel() {
-  if (!supabaseConfigured) throw new Error("資料服務尚未配置。");
+  if (!supabaseConfigured) return;
   const url = `${SUPABASE_URL}/rest/v1/site_settings?key=eq.migration_state&select=key,value&limit=1`;
-  const rows = await withTimeout(async (signal) => {
-    const res = await fetch(url, {
-      signal,
-      cache: "no-store",
-      headers: {
-        apikey: SUPABASE_KEY,
-        Accept: "application/json",
-      },
+  try {
+    const rows = await withTimeout(async (signal) => {
+      const res = await fetch(url, {
+        signal,
+        cache: "no-store",
+        headers: {
+          apikey: SUPABASE_KEY,
+          Accept: "application/json",
+        },
+      });
+      if (!res.ok) return [];
+      return res.json() as Promise<Array<{ key?: string; value?: unknown }>>;
     });
-    if (!res.ok) throw new Error(`資料模型檢查失敗（HTTP ${res.status}）。`);
-    return res.json() as Promise<Array<{ key?: string; value?: unknown }>>;
-  });
-  if (!rows.length || rows[0]?.key !== "migration_state") {
-    throw new Error("資料模型尚未就緒。");
+    if (rows.length && rows[0]?.key !== "migration_state") return;
+  } catch {
+    // Fail open. Public chart/report runtime is local and must remain available.
   }
 }
 
@@ -84,10 +90,10 @@ async function warmImageStandby() {
 export async function runBootstrapReadiness(onProgress: (progress: BootstrapProgress) => void) {
   const tasks: BootstrapTask[] = [
     { key: "document", label: "正在建立啟動環境", weight: 10, run: waitForDocumentReady },
-    { key: "data", label: "正在連接資料模型", weight: 25, run: verifyDataModel },
-    { key: "core", label: "正在待命命理核心", weight: 25, run: warmCoreRuntime },
-    { key: "report", label: "正在準備九頁報告", weight: 20, run: warmReportRuntime },
-    { key: "image", label: "正在待命四柱繪意與命誥圖", weight: 20, run: warmImageStandby },
+    { key: "data", label: "正在檢查資料服務", weight: 10, run: verifyDataModel },
+    { key: "core", label: "正在待命命理核心", weight: 30, run: warmCoreRuntime },
+    { key: "report", label: "正在準備九頁報告", weight: 25, run: warmReportRuntime },
+    { key: "image", label: "正在待命四柱繪意與命誥圖", weight: 25, run: warmImageStandby },
   ];
 
   const total = tasks.reduce((sum, task) => sum + task.weight, 0);
