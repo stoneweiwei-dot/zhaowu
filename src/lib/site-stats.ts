@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.22-r174",
-  updateNumber: 174,
-  publishedAt: "2026-09-22T20:39:00+10:00",
-  latestSummary: "公開站改為 Supabase 故障時直接降級，不再讓配額限制拖慢首頁、啟動或核心命理流程。",
+  version: "ZW-WEB-2026.09.22-r175",
+  updateNumber: 175,
+  publishedAt: "2026-09-22T20:58:00+10:00",
+  latestSummary: "Loading 開場改為同一瀏覽器只在第一次開站顯示；已看過後重新整理或站內重新掛載不再重播。",
   details: {
     "zh-Hant": [
-      "首頁、命盤、問答、文章、登入動畫與音樂不再以 Supabase 可用為啟動前提；資料服務受限時直接使用本地與正式 build 內的內容。",
-      "訪問統計與公開資料讀取採短 timeout 與冷卻機制；Supabase 恢復後可自動重新讀取，不改命理核心、Auth、Payment 或資料表 schema。",
+      "Loading 開場首次正常播放後沿用既有 seen key；同一瀏覽器之後重新整理或站內重新掛載會直接跳過。",
+      "force=1 仍可強制顯示，webdriver 首訪仍可跳過；影片、五秒最短顯示、fade 與 IntroGate 結構均未修改。",
     ],
     en: [
-      "The public site no longer treats Supabase availability as a startup dependency; the chart, question flow, articles, login artwork and music keep working from the production build.",
-      "Public statistics use a short timeout and cooldown while the data service is restricted; no BaZi engine, auth, payment or database schema changes are included.",
+      "The opening now respects its existing seen flag: after the first completed view, refreshes or remounts in the same browser skip it.",
+      "force=1 still overrides the seen flag, webdriver first visits can still skip, and the video, five-second minimum, fade and IntroGate structure are unchanged.",
     ],
   },
 } as const;
