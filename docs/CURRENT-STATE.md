@@ -14,7 +14,7 @@
 - Production URL：`https://stone-zhaowu-official.vercel.app/`
 - current Production：以 Vercel `stone-zhaowu-official` Production 即時 SHA 為準。
 - 發布前必須確認 Production SHA = current main SHA。
-- Vercel Git policy：只有 `main` 可觸發 Production；所有其他 branch 禁止 deploy；純 docs/Markdown／GitHub workflow 變更由 `ignoreCommand` 跳過。
+- Vercel Git policy：只有 `main` 可觸發 Production；`deploymentEnabled` 以 `**: false + main: true` 覆蓋含 `/` 的分支名，`ignoreCommand` 再用 `VERCEL_GIT_COMMIT_REF != main` 作第二道硬擋；純 docs/Markdown／GitHub workflow 變更亦跳過。
 - Netlify：archive only；不得作 Production／canonical／fallback truth。
 - AppDeploy／Sites／Floot／Dropbox：只可作開發、管理、資產或備份工具，不得成為訪客 runtime 必要依賴。
 

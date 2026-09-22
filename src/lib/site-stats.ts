@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r179",
-  updateNumber: 179,
-  publishedAt: "2026-09-23T03:45:00+10:00",
-  latestSummary: "全站開場動畫已退出公開 runtime；動畫只保留在站主 /login 登入頁，首頁、刷新與其他路由不再播放。",
+  version: "ZW-WEB-2026.09.23-r180",
+  updateNumber: 180,
+  publishedAt: "2026-09-23T05:53:00+10:00",
+  latestSummary: "部署配額護欄收口：只有 main 能觸發 Vercel build，帶斜線的 fix/content 分支也被硬擋，避免再產生 Preview 消耗。",
   details: {
     "zh-Hant": [
-      "全站 IntroGate 已從 active route tree 移除；首頁、刷新、回訪、報告及其他一般路由不再播放 opening/loading 動畫。",
-      "登入動畫只保留在 /login 的 LoginStageBackdrop，維持影片 fallback 與使用者手勢聲音控制；不改站主 cookie、登入 API、命理計算、報告或 Supabase schema。",
+      "Vercel Git 部署規則改為 **: false + main: true，覆蓋帶斜線的 fix/*、content/* 等分支，避免 Preview build 洩漏。",
+      "ignoreCommand 再以 VERCEL_GIT_COMMIT_REF != main 直接跳過作第二道配額護欄；PR 驗收留在 GitHub CI，合併 main 後只做一次 Production。",
     ],
     en: [
-      "The global IntroGate is removed from the active route tree, so the home page, refreshes, revisits, reports and other public routes no longer play an opening/loading animation.",
-      "The animation remains only on /login through LoginStageBackdrop, with its media fallback and user-gesture sound control intact; owner cookie, login API, calculation, report and Supabase schema logic are unchanged.",
+      "Vercel Git deployment rules now use **: false plus main: true, covering slash-named fix/* and content/* branches so they cannot leak Preview builds.",
+      "ignoreCommand adds a second fail-closed guard that skips any non-main Git ref; PR verification stays in GitHub CI and only the merged main gets a Production build.",
     ],
   },
 } as const;

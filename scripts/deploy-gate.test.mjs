@@ -17,7 +17,10 @@ test("production build uses deploy-gate not the full engine glob", () => {
 
 test("Vercel build stays exact and only vetted main can trigger Production", () => {
   assert.equal(vercel.buildCommand, "npm run build");
-  assert.deepEqual(vercel.git.deploymentEnabled, { "*": false, main: true });
+  assert.deepEqual(vercel.git.deploymentEnabled, { "**": false, main: true });
+  assert.match(vercel.ignoreCommand, /VERCEL_GIT_COMMIT_REF/);
+  assert.match(vercel.ignoreCommand, /!= "main"/);
+  assert.match(vercel.ignoreCommand, /exit 0/);
   assert.match(vercel.ignoreCommand, /git diff --quiet/);
 });
 
