@@ -566,6 +566,25 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 
 .zhaowu-customer-record .zhaowu-birth-fields { margin-top: 22px !important; }
 .zhaowu-customer-record .zhaowu-birth-fields-title { margin-bottom: 11px !important; }
+.zhaowu-time-calibration-note {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 16px !important;
+  border-left: 2px solid rgba(53, 94, 80, .48);
+  padding: 10px 12px;
+  background: rgba(238, 233, 222, .52);
+}
+.zhaowu-time-calibration-note strong {
+  color: var(--zw-ink) !important;
+  font-size: 14px !important;
+  font-weight: 650 !important;
+  line-height: 1.45 !important;
+}
+.zhaowu-time-calibration-note span {
+  color: var(--zw-muted) !important;
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+}
 .zhaowu-customer-record .zhaowu-birth-date-grid,
 .zhaowu-customer-record .zhaowu-birth-time-grid,
 .zhaowu-customer-record .zhaowu-birth-select-grid { gap: 9px !important; }
@@ -2567,4 +2586,54 @@ html[data-zw-theme="night"] .zhaowu-chart-trust-details details > a {
 @media (max-width: 430px) {
   .zhaowu-chart-trust { padding: 20px 16px; }
   .zhaowu-chart-trust > header h3 { font-size: 24px; }
+}
+
+
+/* r178: browser/PDF printing must not inherit viewport-height shells or dark screen surfaces. */
+@media print {
+  @page { margin: 12mm; }
+
+  html,
+  body,
+  #root,
+  .zhaowu-home-sheet-shell,
+  .zhaowu-app-frame,
+  .zhaowu-home-app-frame,
+  .zhaowu-home-sheet-page,
+  .zhaowu-home-layout {
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  html,
+  body,
+  #root,
+  .zhaowu-home-sheet-shell,
+  .zhaowu-home-sheet-page {
+    background: #fff !important;
+    background-image: none !important;
+  }
+
+  .zhaowu-site-header,
+  .zhaowu-site-footer,
+  .zhaowu-dragon-guide {
+    display: none !important;
+  }
+
+  .zhaowu-app-frame,
+  .zhaowu-home-app-frame {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .zhaowu-home-layout #analysisForm.zhaowu-analysis-flow,
+  .zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow,
+  .zhaowu-home-layout > .zhaowu-home-stage {
+    overflow: visible !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
 }
