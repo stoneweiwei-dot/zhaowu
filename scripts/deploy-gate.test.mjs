@@ -15,9 +15,9 @@ test("production build uses deploy-gate not the full engine glob", () => {
   assert.match(pkg.scripts["test:engine"], /scripts\/\*\.test\.mjs/);
 });
 
-test("Vercel build stays on npm run build and automatic Git deploys stay off", () => {
+test("r174 recovery build keeps npm build exact and temporarily enables the single main Production cutover", () => {
   assert.equal(vercel.buildCommand, "npm run build");
-  assert.equal(vercel.git.deploymentEnabled, false);
+  assert.equal(vercel.git.deploymentEnabled, true);
   assert.equal(Object.prototype.hasOwnProperty.call(vercel, "ignoreCommand"), false);
 });
 
