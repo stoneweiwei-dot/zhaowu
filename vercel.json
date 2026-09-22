@@ -5,75 +5,135 @@
   "outputDirectory": "dist",
   "installCommand": "npm ci",
   "git": {
-    "deploymentEnabled": false
+    "deploymentEnabled": {
+      "*": false,
+      "main": true
+    }
   },
   "functions": {
-    "api/owner-login.js": { "maxDuration": 10 },
-    "api/owner-logout.js": { "maxDuration": 10 },
-    "api/owner-session.js": { "maxDuration": 10 },
-    "api/owner-music.js": { "maxDuration": 60, "includeFiles": "lib/owner-music-ssh.json" },
-    "api/mingshu-doctor.js": { "maxDuration": 10 },
-    "api/mingshu-locations.js": { "maxDuration": 10 },
-    "api/mingshu-chart.js": { "maxDuration": 15 },
-    "api/mingshu-compare.js": { "maxDuration": 15 },
-    "api/zhaowu-capabilities.js": { "maxDuration": 10 },
-    "api/zhaowu-doctor.js": { "maxDuration": 10 }
+    "api/owner-login.js": {
+      "maxDuration": 10
+    },
+    "api/owner-logout.js": {
+      "maxDuration": 10
+    },
+    "api/owner-session.js": {
+      "maxDuration": 10
+    },
+    "api/owner-music.js": {
+      "maxDuration": 60,
+      "includeFiles": "lib/owner-music-ssh.json"
+    },
+    "api/mingshu-doctor.js": {
+      "maxDuration": 10
+    },
+    "api/mingshu-locations.js": {
+      "maxDuration": 10
+    },
+    "api/mingshu-chart.js": {
+      "maxDuration": 15
+    },
+    "api/mingshu-compare.js": {
+      "maxDuration": 15
+    },
+    "api/zhaowu-capabilities.js": {
+      "maxDuration": 10
+    },
+    "api/zhaowu-doctor.js": {
+      "maxDuration": 10
+    }
   },
   "headers": [
     {
       "source": "/sw.js",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" },
-        { "key": "Service-Worker-Allowed", "value": "/" }
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
       ]
     },
     {
       "source": "/",
-      "headers": [ { "key": "Cache-Control", "value": "no-store, max-age=0" } ]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
     },
     {
       "source": "/index.html",
-      "headers": [ { "key": "Cache-Control", "value": "no-store, max-age=0" } ]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
     },
     {
       "source": "/manifest.webmanifest",
-      "headers": [ { "key": "Cache-Control", "value": "no-store, max-age=0" } ]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
     },
     {
       "source": "/audio/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
       ]
     },
     {
       "source": "/tea-guardians/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
       ]
     },
     {
       "source": "/report-visuals/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
       ]
     },
     {
       "source": "/ornaments/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
       ]
     },
     {
       "source": "/gallery/loading/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
       ]
     }
   ],
   "rewrites": [
     {
       "source": "/api/gallery-ingest-finalize",
-      "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize"
+      "destination": "https://gyisxbkjzvdretbqzeuw.supabase.co/functions/v1/gallery-ingest-finalize"
     },
     {
       "source": "/((?!api/).*)",
