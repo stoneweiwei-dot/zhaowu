@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-22 21:45 AEST
+最後核對：2026-09-23 09:35 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -81,10 +81,13 @@ r179 起，舊全站 `IntroGate` 已退出 active route tree。
 主專案：`plgpxusmemnmzckbwtiv`。
 
 - Database 專案可讀；站主登入不走 Supabase Auth。
-- Storage 目前約 **1.196 GB / Free 1 GB**，588 objects；仍是未完成基礎設施問題。
+- Storage 目前約 **1.196 GB / Free 1 GB**；仍是未完成基礎設施問題。
 - Storage／Edge 曾回 402 `exceed_storage_size_quota`。
+- r181 起 **所有新增 Supabase Storage 寫入已凍結**：背景、站主圖庫、登入素材、新命誥圖不得新增；現有內容仍可讀取／管理。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
 - 不得直接 SQL DELETE `storage.objects` 冒充刪除檔案。
+- 已確認第一批純垃圾候選：14 個未引用 audio 約 77.94 MB + 2 個未引用 gallery 原件約 0.99 MB；待 Storage delete 恢復後優先刪除。
+- backgrounds 約 611.5 MB、279 個 metadata row 目前全為 enabled=true，禁止整包刪；必須先冷備份／壓縮、停用 metadata、驗證無 runtime 引用後再刪。
 - 未完成搬遷／引用核對前，不刪 private report images、仍被 metadata reference 的資產或 rollback 必要原件。
 
 第二個 Supabase project `zhaowu-core` 目前 INACTIVE；不得擅自切 Production 過去。
