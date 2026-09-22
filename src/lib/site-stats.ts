@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.22-r175",
-  updateNumber: 175,
-  publishedAt: "2026-09-22T20:58:00+10:00",
-  latestSummary: "Loading 開場改為同一瀏覽器只在第一次開站顯示；已看過後重新整理或站內重新掛載不再重播。",
+  version: "ZW-WEB-2026.09.22-r176",
+  updateNumber: 176,
+  publishedAt: "2026-09-22T21:45:00+10:00",
+  latestSummary: "正式部署收斂為 main-only：非 main 分支不部署，純文件變更不消耗 Vercel；同時帶上 r175 首訪 Loading 修復。",
   details: {
     "zh-Hant": [
-      "Loading 開場首次正常播放後沿用既有 seen key；同一瀏覽器之後重新整理或站內重新掛載會直接跳過。",
-      "force=1 仍可強制顯示，webdriver 首訪仍可跳過；影片、五秒最短顯示、fade 與 IntroGate 結構均未修改。",
+      "Production 只接受 main；所有其他 branch 明確禁用 Vercel deploy，純 docs/Markdown/GitHub workflow 變更由 ignoreCommand 略過。",
+      "同時包含 r175 IntroGate 修復：首訪完成後同一瀏覽器 refresh/remount 不再重播；force=1 仍可強制顯示。",
     ],
     en: [
-      "The opening now respects its existing seen flag: after the first completed view, refreshes or remounts in the same browser skip it.",
-      "force=1 still overrides the seen flag, webdriver first visits can still skip, and the video, five-second minimum, fade and IntroGate structure are unchanged.",
+      "Production now deploys only from main; all other branches are blocked, and docs-only changes are ignored to preserve the free-tier deployment budget.",
+      "This release also includes the r175 IntroGate fix: after the first completed view, refreshes or remounts in the same browser skip it while force=1 still overrides.",
     ],
   },
 } as const;

@@ -8,13 +8,13 @@
 
 - GitHub：`stoneweiwei-dot/zhaowu`
 - Branch：`main`
-- current main：r175 `b1ec87e5a9b70526e8a694e1f9204dc7ce4b2961`
+- current main：以 GitHub `main` 即時 SHA 為準；不得把文件內固定 SHA 當永久 CURRENT。
 - Hosting：Vercel
 - Project：`stone-zhaowu-official`
 - Production URL：`https://stone-zhaowu-official.vercel.app/`
-- current Production：r174 `51769e8b297fdc061b83a23f67bb4f8d024ee2d1`
-- **目前 Production SHA != main SHA。不得宣稱 r175 已上線。**
-- Vercel Git auto deploy：關閉（`vercel.json → git.deploymentEnabled=false`）。
+- current Production：以 Vercel `stone-zhaowu-official` Production 即時 SHA 為準。
+- 發布前必須確認 Production SHA = current main SHA。
+- Vercel Git policy：只有 `main` 可觸發 Production；所有其他 branch 禁止 deploy；純 docs/Markdown／GitHub workflow 變更由 `ignoreCommand` 跳過。
 - Netlify：archive only；不得作 Production／canonical／fallback truth。
 - AppDeploy／Sites／Floot／Dropbox：只可作開發、管理、資產或備份工具，不得成為訪客 runtime 必要依賴。
 
@@ -69,13 +69,13 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 
 ## 6. IntroGate
 
-current main r175 已修改：
+current main 已包含 r175 IntroGate 行為：
 
 - `zhaowu.intro.force=1`：強制顯示。
 - `zhaowu.intro.seen.r148=1`：同一瀏覽器回訪跳過。
 - 其他一般首訪：顯示；webdriver 可跳過。
 
-**r175 尚未部署到 Production，因此首次播放後 refresh 不重播仍屬未驗證。**
+IntroGate 行為只有在最新 main 實際進入 Production 後才算正式驗證。
 
 ## 7. Supabase
 
@@ -112,7 +112,7 @@ current main r175 已修改：
 ## 10. 真正仍未完成
 
 ### P0
-- r175 尚未部署到 Vercel Production；Production SHA != main SHA。
+- 發布時必須確認 Vercel Production SHA = current main SHA。
 - STO-5／STO-20 真 iPhone Safari 最終實機驗收尚未完成。
 - Supabase Storage 超額仍未清理／遷移完成。
 
