@@ -12,6 +12,7 @@ const account = readFileSync(new URL('../src/routes/account.tsx', import.meta.ur
 const home = readFileSync(new URL('../src/routes/index.tsx', import.meta.url), 'utf8');
 const r144 = readFileSync(new URL('../src/device-question-flow-r144.css', import.meta.url), 'utf8');
 const siteShell = readFileSync(new URL('../src/components/site-shell.tsx', import.meta.url), 'utf8');
+const analysisForm = readFileSync(new URL('../src/components/analysis-form.tsx', import.meta.url), 'utf8');
 
 const canonicalImport = "import './zhaowu-design-system.css';";
 const legacyImport = "import './legacy-visual-compat.css';";
@@ -82,4 +83,16 @@ test('mobile header and Bazi layout are governed by canonical responsive rules',
   assert.doesNotMatch(design, /\.zhaowu-header-utility:not\(\.zhaowu-header-signout\)/);
   assert.match(design, /\.bazi-detail-pillars/);
   assert.match(design, /grid-template-columns: 1fr !important/);
+});
+
+
+test('birth onboarding keeps time correction automatic and print layout finite', () => {
+  assert.match(analysisForm, /data-auto-time-calibration="true"/);
+  assert.match(analysisForm, /時間校正由系統自動完成/);
+  assert.match(analysisForm, /經度、歷史時區、夏令時與真太陽時由系統自動處理/);
+  assert.doesNotMatch(analysisForm, /type="number"[^>]+(?:longitude|timezone|dst)|id="(?:longitude|timezone|dst)"/i);
+  assert.match(design, /\.zhaowu-time-calibration-note/);
+  assert.match(design, /@media print/);
+  assert.match(design, /\.zhaowu-home-sheet-page[\s\S]*min-height:\s*0\s*!important/);
+  assert.match(design, /\.zhaowu-dragon-guide[\s\S]*display:\s*none\s*!important/);
 });

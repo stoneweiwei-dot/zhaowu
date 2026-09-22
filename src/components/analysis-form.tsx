@@ -78,6 +78,8 @@ export function AnalysisForm() {
 
         edit: "Edit details",
         birthData: "Birth record",
+        calibrationTitle: "Time correction is automatic",
+        calibrationBody: "Enter the local time shown on the birth certificate and select the birthplace. Longitude, historical time zone, daylight saving and true solar time are handled automatically.",
         next: "Save and generate my Destiny Book",
         saving: "Saving…",
         saved: "Birth record saved on this phone.",
@@ -113,6 +115,8 @@ export function AnalysisForm() {
 
           edit: "修改资料",
           birthData: "出生资料",
+          calibrationTitle: "时间校正由系统自动完成",
+          calibrationBody: "只需填写出生证明上的当地时间并选择出生城市；经度、历史时区、夏令时与真太阳时由系统自动处理。",
           next: "保存并生成昭梧命书",
           saving: "正在保存…",
           saved: "生辰已保存在这台手机。",
@@ -147,6 +151,8 @@ export function AnalysisForm() {
 
           edit: "修改資料",
           birthData: "出生資料",
+          calibrationTitle: "時間校正由系統自動完成",
+          calibrationBody: "只需填寫出生證明上的當地時間並選擇出生城市；經度、歷史時區、夏令時與真太陽時由系統自動處理。",
           next: "保存並生成昭梧命書",
           saving: "正在保存…",
           saved: "生辰已保存在這台手機。",
@@ -333,6 +339,10 @@ export function AnalysisForm() {
         ) : (
           <div className="zhaowu-birth-fields">
             <p className="zhaowu-birth-fields-title">{copy.birthData}</p>
+            <div className="zhaowu-time-calibration-note" data-auto-time-calibration="true">
+              <strong>{copy.calibrationTitle}</strong>
+              <span>{copy.calibrationBody}</span>
+            </div>
             <div className="zhaowu-birth-date-grid">
               {[
                 { id: "birth-year", label: t("year"), value: year, set: setYear, min: 1900, max: 2100 },
