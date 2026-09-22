@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.22-r177",
-  updateNumber: 177,
-  publishedAt: "2026-09-22T23:46:00+10:00",
-  latestSummary: "觀世錄新增《見局，破局，歸自己》，並把今日兩篇修行文章收束到「知命而不困命、行動仍由人自決」的主線。",
+  version: "ZW-WEB-2026.09.23-r178",
+  updateNumber: 178,
+  publishedAt: "2026-09-23T03:08:00+10:00",
+  latestSummary: "出生資料流程明示自動時間校正，出生城市提供排盤所需定位與時區資料；同時修正首頁列印可能多出空白頁的版面高度。",
   details: {
     "zh-Hant": [
-      "觀世錄新增《見局，破局，歸自己》，放在最新文章位置；同日既有《沒有神蹟之後，人怎麼修行》保留，不重複改寫。",
-      "兩篇都把命理、因果與修行落回人的判斷與主權；不改命理計算、登入、付款、報告或 Supabase schema。",
+      "出生資料頁明示只需填出生證明上的當地時間並選擇出生城市；經度、歷史時區、夏令時與真太陽時由既有確定性排盤處理。",
+      "首頁列印樣式移除 viewport 高度與螢幕背景造成的額外空白頁；不改八字計算、登入、付款、報告或 Supabase schema。",
     ],
     en: [
-      "Notes on Life adds “See the Pattern, Break the Pattern, Return to Yourself” as the latest essay while keeping “How to Practise After the Miracles Are Gone” intact.",
-      "Both essays return metaphysics and practice to human judgement and agency; no calculation, auth, payment, report or Supabase schema logic changes.",
+      "Birth onboarding now makes automatic time correction explicit: enter the local birth-certificate time and select the birthplace; longitude, historical time zone, daylight saving and true solar time remain handled by the deterministic chart core.",
+      "Print styles now remove viewport-height shells and screen-only surfaces that could create a trailing blank PDF page; calculation, auth, payment, report and Supabase schema logic are unchanged.",
     ],
   },
 } as const;
