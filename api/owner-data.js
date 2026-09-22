@@ -3,6 +3,8 @@ import { createHash, timingSafeEqual } from "node:crypto";
 const OWNER_COOKIE = "__Host-zhaowu_owner_session";
 const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
 const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
+const STORAGE_GROWING_ACTIONS = new Set(["background.prepareUpload", "gallery.prepareUpload", "report.generateImage"]);
+
 const ACTIONS = new Set([
   "report.list",
   "report.get",
@@ -154,6 +156,9 @@ export default async function handler(req, res) {
     const payload = await readJsonBody(req);
     const action = String(payload?.action ?? "").trim();
     if (!ACTIONS.has(action)) return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
+    if (STORAGE_GROWING_ACTIONS.has(action)) {
+      return json(res, 423, { ok: false, error: "STORAGE_WRITES_PAUSED", detail: "Supabase Storage cleanup in progress; new writes are temporarily disabled." });
+    }
 
     const upstream = await fetch(`${supabaseUrl()}/functions/v1/zhaowu-owner-data`, {
       method: "POST",
