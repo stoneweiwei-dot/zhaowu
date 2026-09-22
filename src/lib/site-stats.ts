@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r178",
-  updateNumber: 178,
-  publishedAt: "2026-09-23T03:08:00+10:00",
-  latestSummary: "出生資料流程明示自動時間校正，出生城市提供排盤所需定位與時區資料；同時修正首頁列印可能多出空白頁的版面高度。",
+  version: "ZW-WEB-2026.09.23-r179",
+  updateNumber: 179,
+  publishedAt: "2026-09-23T03:45:00+10:00",
+  latestSummary: "全站開場動畫已退出公開 runtime；動畫只保留在站主 /login 登入頁，首頁、刷新與其他路由不再播放。",
   details: {
     "zh-Hant": [
-      "出生資料頁明示只需填出生證明上的當地時間並選擇出生城市；經度、歷史時區、夏令時與真太陽時由既有確定性排盤處理。",
-      "首頁列印樣式移除 viewport 高度與螢幕背景造成的額外空白頁；不改八字計算、登入、付款、報告或 Supabase schema。",
+      "全站 IntroGate 已從 active route tree 移除；首頁、刷新、回訪、報告及其他一般路由不再播放 opening/loading 動畫。",
+      "登入動畫只保留在 /login 的 LoginStageBackdrop，維持影片 fallback 與使用者手勢聲音控制；不改站主 cookie、登入 API、命理計算、報告或 Supabase schema。",
     ],
     en: [
-      "Birth onboarding now makes automatic time correction explicit: enter the local birth-certificate time and select the birthplace; longitude, historical time zone, daylight saving and true solar time remain handled by the deterministic chart core.",
-      "Print styles now remove viewport-height shells and screen-only surfaces that could create a trailing blank PDF page; calculation, auth, payment, report and Supabase schema logic are unchanged.",
+      "The global IntroGate is removed from the active route tree, so the home page, refreshes, revisits, reports and other public routes no longer play an opening/loading animation.",
+      "The animation remains only on /login through LoginStageBackdrop, with its media fallback and user-gesture sound control intact; owner cookie, login API, calculation, report and Supabase schema logic are unchanged.",
     ],
   },
 } as const;
