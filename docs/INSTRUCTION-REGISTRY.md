@@ -344,3 +344,12 @@
 
 ## 2026-09-20 r169 客戶文案 supersession
 站主要求清除全站客戶可見的 AI 指令感、流程自述與重複旁白。r165 要求客戶畫面展示「規則引擎／結構主判／後台旁證／排盤解讀分層」的文字，以及為這些字句建立的 UI 測試，在展示範圍內失效；方法、計算及權限本身不變。保留必要操作、錯誤、資料不完整提示與可展開核對資訊，不以空白文案容器佔位。核對區例外保留一條簡短發布 Gate：核心排盤規則變更後重跑鎖定回歸樣例，若偏離鎖定基準則不得發布；此 Gate 只驗證計算一致性，不宣稱命理解讀必然正確。
+
+
+## 2026-09-23 r179 登入動畫唯一入口 supersession
+
+- 站主最新明確指令：登入動畫只允許出現在 `/login`；首頁、一般瀏覽、重新整理、回訪、報告與其他 route 一律不得播放 opening／loading 動畫。
+- ACTIVE：`src/routes/login.tsx` 的 `LoginStageBackdrop` 為唯一登入動畫呈現層，保留影片／圖片 fallback 與使用者手勢聲音控制。
+- `src/components/intro-gate.tsx`、`src/lib/intro-gate-policy.ts` 與 `zhaowu.intro.*` storage key 可保留作歷史／測試相容，但 `src/routes/__root.tsx` 不得掛載 `IntroGate`，所以它們不得進入公開 runtime。
+- r175 與更早「一般首訪顯示 IntroGate、seen 後跳過」的全站 opening 行為，在公開 runtime 範圍內正式 `SUPERSEDED`。
+- 本次只改動畫掛載範圍與對應 QA；不改站主 cookie、登入 API、命理計算、報告、付款、Supabase schema 或媒體原件。
