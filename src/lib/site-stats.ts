@@ -17,7 +17,7 @@ export type PublicSiteStats = {
 export const SITE_RELEASE_FALLBACK = {
   version: "ZW-WEB-2026.09.23-r188",
   updateNumber: 188,
-  publishedAt: "2026-09-23T23:18:00+10:00",
+  publishedAt: "2026-09-23T23:02:00+10:00",
   latestSummary: "宋式小漫畫融合層：保留宋式紙本骨架，只在首頁、命書術語插頁與分享卡加入清新手繪漫畫，讓專業內容更好懂但不變成卡片牆。",
   details: {
     "zh-Hant": [
