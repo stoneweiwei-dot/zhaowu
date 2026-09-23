@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import type { Locale } from "@/lib/i18n";
 import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
+import { SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
 import {
   buildPalmReading,
   buildQizhengReading,
@@ -168,13 +169,17 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
         <h3 id="zhaowu-unified-report-title">{copy.title}</h3>
       </header>
       <div className="zhaowu-unified-report-flow">
-        {sections.map((section) => (
-          <article key={section.title}>
-            <h4>{section.title}</h4>
-            {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-          </article>
+        {sections.map((section, index) => (
+          <Fragment key={section.title}>
+            <article>
+              <h4>{section.title}</h4>
+              {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </article>
+            {index === 0 ? <SongComicReportInsert dayMaster={foundation.dayMaster} locale={locale} /> : null}
+          </Fragment>
         ))}
       </div>
+      <SongComicShareCard dayMaster={foundation.dayMaster} locale={locale} />
     </section>
   );
 }

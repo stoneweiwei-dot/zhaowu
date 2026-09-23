@@ -23,7 +23,7 @@ function UpdatesPage() {
   }, []);
 
   const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
-  const englishSummary = "This release strips instructional clutter from owner tools and gives English its own typography, spacing and mobile header flow so longer Latin labels no longer collide.";
+  const englishSummary = "This release keeps the Song-paper editorial system intact and adds a restrained hand-drawn comic layer only at three points: one daily frame, one plain-language Destiny Book insert, and one shareable frame.";
   const releaseSummary = language === "en" && /[\u3400-\u9fff]/u.test(release.latestSummary)
     ? englishSummary
     : release.latestSummary;

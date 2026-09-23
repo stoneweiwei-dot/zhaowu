@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-23 22:05 AEST
+最後核對：2026-09-23 23:02 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -73,6 +73,8 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - r186 青玉小龍維持唯一浮動入口，但入口縮至 44–46px、主動泡泡隱藏；展開面固定為小型底部抽屜，不得再覆蓋大半個 iPhone 畫面。
 - r187 起 English 是獨立排版系統，不得把中文尺寸直接換成英文字符串：Latin 標題使用 Iowan Old Style／Baskerville／Georgia fallback，UI 使用 Avenir Next／SF Pro／system sans；手機 English Header 分成品牌／更新／語言與外觀三列，禁止長字串互相交叉或壓住。
 - r187 起站主後台執行「資訊減法」：分區下方不再放教學式／解釋式 helper copy；只保留標題、狀態、操作與必要資料。Storage freeze 只用單行 short status。
+- r188 起新增「宋式小漫畫翻譯層」：宋式仍是唯一視覺骨架；漫畫只允許出現在首頁「今日一格」、命書核心底盤後單一白話插頁、命書末端分享一格。不得擴張成新工具入口、卡片牆或第二套品牌視覺。
+- r188 漫畫角色只用本機 React／SVG，依五行切換柔和色系；不得為漫畫層新增 Supabase Storage 寫入或付費圖片 provider。漫畫只翻譯概念，不得修改排盤／格局／用神／吉凶 truth。
 
 ## 6. Loading／Login animation
 
