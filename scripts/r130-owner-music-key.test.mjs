@@ -81,6 +81,7 @@ test("independent owner cookie does not get falsely sent back to login on galler
   assert.match(gallery, /if \(!user\)/);
   assert.match(gallery, /if \(!user\.isOwner\)/);
   assert.match(gallery, /data-owner-gallery-data-offline/);
-  assert.match(gallery, /data-owner-gallery-data-offline/);\n  assert.doesNotMatch(gallery, /站主登入與其他後台功能仍正常|站主登录与其他后台功能仍正常/);
+  assert.match(gallery, /data-owner-gallery-data-offline/);
+  assert.doesNotMatch(gallery, /站主登入與其他後台功能仍正常|站主登录与其他后台功能仍正常/);
   assert.match(gallery, /session \? \(/);
 });
