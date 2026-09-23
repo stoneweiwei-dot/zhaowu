@@ -371,3 +371,13 @@
 - 八卦只按主五行作象徵映射；西洋星座僅取生日星座；紫微若未經現行校驗流程不得另造盤，本測驗明示保留旁證位而不偽造命身宮。
 - 結果圖固定 9:16（1080×1920），由瀏覽器本機 SVG → Canvas → PNG 生成並疊加 `STONE 原創`；不得寫入 Supabase Storage，不調用付費圖片 provider，不解除 r181 Storage write freeze。
 - 圖片匯出失敗不得阻塞文字結果；手機直式單欄優先，不新增橫向寬表。
+
+
+## 2026-09-23 r185 真機夜間對比 × Storage 清理安全修正
+
+- 站主以正式站 iPhone 截圖確認 r184 夜間文字仍出現「淺字疊米白紙面」；r184 的全域 result-flow 亮字策略在此範圍正式 `SUPERSEDED`。
+- ACTIVE：夜間模式改為 surface-aware。米白／宣紙承載面固定深墨字；深松綠／暗色承載面才使用月白字。不得以 root 或整個 result-flow 的 `--zw-ink` 亮色覆蓋所有子卡。
+- Supabase Storage 清理不得把「不在 background_assets」等同「無引用」。所有 background bucket 候選必須同時核對 `background_assets` 與 `gallery_assets.bucket_id='zhaowu-backgrounds'` 等 cross-bucket metadata。
+- 已證實 4 個曾被誤判為 background orphan 的物件仍是 enabled `gallery_assets` 引用，禁止刪除。
+- 舊 `admin-storage-cleanup-execute-once` v7 因漏查 cross-bucket 引用退出 active path；v8 為 410 retired stub。任何新清理 executor 必須重新即時核對所有引用並使用 Storage API remove，不得 SQL DELETE `storage.objects`。
+- Storage 實體用量在真正刪除並重新量測以前一律視為未改善；不得把 audit、freeze、程式修正或部署狀態寫成「Supabase 已修好」。
