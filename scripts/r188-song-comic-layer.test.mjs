@@ -24,7 +24,7 @@ test("r188 comic is a translation layer, not a new calculation or storage system
   assert.match(comic, /dayGanzhi/);
   assert.doesNotMatch(comic, /supabase|storage\.from|upload\(|createEngineReportRecord/i);
   assert.match(comic, /不替代正式命盤判斷/);
-  assert.match(comic, /never changes chart or interpretation truth|not a deterministic verdict/i);
+  assert.match(comic, /not a deterministic verdict/i);
 });
 
 test("r188 keeps the Song paper authority and mobile safety", async () => {
