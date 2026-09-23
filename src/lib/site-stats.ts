@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r187",
-  updateNumber: 187,
-  publishedAt: "2026-09-23T22:05:00+10:00",
-  latestSummary: "後台減法與英文版重排：刪除站主頁面的教學型廢話，英文改用獨立拉丁字體、行高與手機三列 Header，避免長字串交叉與擠壓。",
+  version: "ZW-WEB-2026.09.23-r188",
+  updateNumber: 188,
+  publishedAt: "2026-09-23T23:18:00+10:00",
+  latestSummary: "宋式小漫畫融合層：保留宋式紙本骨架，只在首頁、命書術語插頁與分享卡加入清新手繪漫畫，讓專業內容更好懂但不變成卡片牆。",
   details: {
     "zh-Hant": [
-      "站主後台刪除分區下方的教學式說明，只保留標題、狀態、操作與真正需要的資料；Storage 凍結只顯示一行短狀態。",
-      "English 不再沿用中文排版：改用獨立 Latin serif / sans-serif 字體、較短字距與英文專屬手機 Header 行列，長標籤可換行但不得互相重疊。",
+      "首頁新增「今日一格」：用當日天干的小漫畫先把抽象象意講人話，但正式排盤與今日黃曆仍由原引擎負責。",
+      "昭梧命書只在核心底盤後插入一個白話漫畫頁，並提供可分享一格；漫畫是翻譯層，不改動命盤、格局或推演 truth。",
     ],
     en: [
-      "Owner pages now remove instructional helper copy and keep only headings, state, controls and useful data; Storage freeze is shown as one short status.",
-      "English now has its own Latin type system and mobile flow instead of inheriting Chinese metrics, preventing long labels from colliding or stacking over each other.",
+      "The home page now adds one quiet daily comic frame based on the day stem, while the formal chart and almanac remain authoritative.",
+      "The Destiny Book adds one plain-language comic insert after the core structure plus a shareable frame; the comic layer never changes chart or interpretation truth.",
     ],
   },
 } as const;
