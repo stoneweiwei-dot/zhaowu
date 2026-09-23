@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r186",
-  updateNumber: 186,
-  publishedAt: "2026-09-23T21:30:00+10:00",
-  latestSummary: "首頁視覺收口：移除膠囊與厚卡片感，改為宋式編輯排版；夜間使用墨色背景與暖紙閱讀面，青玉小龍改為小型抽屜。",
+  version: "ZW-WEB-2026.09.23-r187",
+  updateNumber: 187,
+  publishedAt: "2026-09-23T22:05:00+10:00",
+  latestSummary: "後台減法與英文版重排：刪除站主頁面的教學型廢話，英文改用獨立拉丁字體、行高與手機三列 Header，避免長字串交叉與擠壓。",
   details: {
     "zh-Hant": [
-      "首頁改為宋式編輯排版：頂欄、Hero、今日指引與延伸內容去除大膠囊與厚圓角卡片，閱讀面改成低圓角暖紙。",
-      "Night mode 延續 surface-aware 對比並改成墨色背景＋暖紙正文；青玉小龍只保留小入口，展開為不遮滿畫面的底部抽屜。",
+      "站主後台刪除分區下方的教學式說明，只保留標題、狀態、操作與真正需要的資料；Storage 凍結只顯示一行短狀態。",
+      "English 不再沿用中文排版：改用獨立 Latin serif / sans-serif 字體、較短字距與英文專屬手機 Header 行列，長標籤可換行但不得互相重疊。",
     ],
     en: [
-      "The home page now uses a restrained editorial layout: pill-heavy header controls and thick rounded cards are replaced with quiet typography, dividers, and low-radius warm paper reading surfaces.",
-      "Night mode keeps surface-aware contrast with an ink backdrop and warm paper content; Jade Dragon remains a small entry and opens as a compact bottom drawer.",
+      "Owner pages now remove instructional helper copy and keep only headings, state, controls and useful data; Storage freeze is shown as one short status.",
+      "English now has its own Latin type system and mobile flow instead of inheriting Chinese metrics, preventing long labels from colliding or stacking over each other.",
     ],
   },
 } as const;

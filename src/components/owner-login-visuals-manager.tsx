@@ -13,7 +13,7 @@ import {
 } from "@/lib/bridge/gallery-assets";
 import { LOGIN_VISUAL_CATALOG } from "@/lib/loading-gallery-catalog";
 import { loginVisualThemeFromTags, type LoginVisualTheme } from "@/lib/login-animation";
-import { SUPABASE_STORAGE_WRITES_PAUSED, STORAGE_WRITES_PAUSED_MESSAGE } from "@/lib/storage-write-policy";
+import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -82,7 +82,6 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   const copy = useMemo(() => ({
     kicker: "LOGIN VISUALS",
     title: tr(locale, "登入動畫管理", "登录动画管理", "Login visuals"),
-    lead: tr(locale, "這裡只顯示真正用於登入頁的影片與封面；網站 Loading、營運圖與介面小素材不會出現在這裡。", "这里只显示真正用于登录页的影片与封面；网站 Loading、运营图与界面小素材不会出现在这里。", "Only actual login-page videos and posters appear here. Loading assets, operational screenshots and UI artwork stay out of this list."),
     upload: tr(locale, "上傳登入動畫", "上传登录动画", "Upload login visual"),
     current: tr(locale, "目前使用中", "目前使用中", "Currently in use"),
     use: tr(locale, "設為目前使用", "设为目前使用", "Set as current"),
@@ -210,14 +209,13 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         <div className="min-w-0 flex-1">
           <p className="text-xs tracking-[0.28em] text-cinnabar">{copy.kicker}</p>
           <h2 className="mt-1 font-display text-3xl">{copy.title}</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-soft">{copy.lead}</p>
         </div>
         <label className={`inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-5 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
           {copy.upload}
           <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm" className="hidden" onChange={(event) => void onUpload(event)} />
         </label>
       </div>
-      {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-3 rounded-xl border border-line bg-paper/55 px-4 py-3 text-sm text-ink-soft">{locale === "en" ? STORAGE_WRITES_PAUSED_MESSAGE.en : locale === "zh-Hans" ? STORAGE_WRITES_PAUSED_MESSAGE["zh-Hans"] : STORAGE_WRITES_PAUSED_MESSAGE["zh-Hant"]}</p> : null}
+      {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-3 text-xs font-medium text-ink-mute" data-owner-storage-status>{tr(locale, "Storage 寫入暫停", "Storage 写入暂停", "Storage read-only")}</p> : null}
       {message ? <p className="mt-3 rounded-xl border border-line bg-paper/40 px-4 py-3 text-sm text-cinnabar">{message}</p> : null}
       {editableRows.length ? <div data-owner-bulk-toolbar="login-visuals" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
         <span className="text-xs font-medium text-ink-soft">{copy.selected(selectedIds.length)}</span>

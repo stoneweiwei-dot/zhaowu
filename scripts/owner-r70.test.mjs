@@ -62,5 +62,6 @@ test("owner workspace hides public counters, dragon guide and technical status w
   assert.doesNotMatch(account, /402 spend cap|Supabase Auth/);
   assert.doesNotMatch(galleryRoute, /BrandUiLibrary/);
   assert.doesNotMatch(galleryRoute, /spend cap|Supabase data session/);
-  assert.match(galleryRoute, /系統內置小素材不在這裡展示|系统内置小素材不在这里展示/);
+  assert.doesNotMatch(galleryRoute, /系統內置小素材不在這裡展示|系统内置小素材不在这里展示/);
+  assert.match(galleryRoute, /data-owner-gallery-console/);
 });

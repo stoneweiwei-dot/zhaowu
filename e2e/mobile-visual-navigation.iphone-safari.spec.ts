@@ -124,6 +124,14 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await expect(english).toHaveCSS("color", "rgb(49, 93, 80)");
     await expect(english).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
 
+    const latestBox = await page.getByRole("link", { name: /Latest update/ }).boundingBox();
+    const navBox = await page.locator(".zhaowu-header-nav").boundingBox();
+    expect(latestBox).not.toBeNull();
+    expect(navBox).not.toBeNull();
+    expect(latestBox!.y + latestBox!.height).toBeLessThanOrEqual(navBox!.y + 1);
+    const englishHeroFamily = await page.locator(".zhaowu-home-lead h1").evaluate((node) => getComputedStyle(node).fontFamily);
+    expect(englishHeroFamily).toContain("Iowan Old Style");
+
     await expect(page.getByRole("button", { name: "한국어", exact: true })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "हिन्दी", exact: true })).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
