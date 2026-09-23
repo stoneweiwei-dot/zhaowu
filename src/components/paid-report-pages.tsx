@@ -11,8 +11,8 @@ import { FiveElementTrainingBlock } from "@/components/five-element-training-blo
 
 const COPY = {
   "zh-Hant": {
-    title: "你的完整分析",
-    lead: "先回答你真正問的事，再看依據、風險、時間與下一步。",
+    title: "補充重點",
+    lead: "只保留會影響你判斷的重點；推演依據與技術細節收在最下方備註。",
     kicker: "ZHAOWU · PERSONAL ANALYSIS",
     questionKicker: "YOUR QUESTION",
     questionTitle: "你這次問的是",
@@ -28,13 +28,14 @@ const COPY = {
     hidden: "藏干",
     currentCycle: "目前大運",
     timeUnknown: "時辰未定",
-    detail: "完整說明",
+    detail: "判斷備註",
     body: "身體需要留意",
-    detailLead: "以下保留與本題相關的補充，不重複第一屏答案。",
+    detailLead: "命盤依據、推演過程與其餘補充放在這裡；想看再展開。",
+    keyPoints: "只看重點",
   },
   "zh-Hans": {
-    title: "你的完整分析",
-    lead: "先回答你真正问的事，再看依据、风险、时间与下一步。",
+    title: "补充重点",
+    lead: "只保留会影响你判断的重点；推演依据与技术细节收在最下方备注。",
     kicker: "ZHAOWU · PERSONAL ANALYSIS",
     questionKicker: "YOUR QUESTION",
     questionTitle: "你这次问的是",
@@ -50,13 +51,14 @@ const COPY = {
     hidden: "藏干",
     currentCycle: "目前大运",
     timeUnknown: "时辰未定",
-    detail: "完整说明",
+    detail: "判断备注",
     body: "身体需要留意",
-    detailLead: "以下保留与本题相关的补充，不重复第一屏答案。",
+    detailLead: "命盘依据、推演过程与其余补充放在这里；想看再展开。",
+    keyPoints: "只看重点",
   },
   en: {
-    title: "Your full analysis",
-    lead: "Your actual question first, then the reasons, risks, timing and next move.",
+    title: "Key supporting points",
+    lead: "Only the points that may change your decision stay prominent. Reasoning and technical detail move to the notes at the bottom.",
     kicker: "ZHAOWU · PERSONAL ANALYSIS",
     questionKicker: "YOUR QUESTION",
     questionTitle: "What you asked",
@@ -72,9 +74,10 @@ const COPY = {
     hidden: "Hidden stems",
     currentCycle: "Current long cycle",
     timeUnknown: "Birth time unconfirmed",
-    detail: "Full explanation",
+    detail: "Reasoning notes",
     body: "Body areas to watch",
-    detailLead: "Only question-relevant supporting detail is kept here, without repeating the opening answer.",
+    detailLead: "Chart evidence, reasoning process and extra detail live here. Open only if useful.",
+    keyPoints: "Key points only",
   },
 } as const;
 
@@ -217,7 +220,7 @@ function decisionLines(model: ReturnType<typeof buildDecisionReportModel>, key: 
   return model.actions;
 }
 
-function DecisionCards({ result, locale }: { result: AnalysisResult; locale: Locale }) {
+function PrioritySummary({ result, locale }: { result: AnalysisResult; locale: Locale }) {
   const copy = COPY[locale];
   const model = buildDecisionReportModel(result);
   const labels: Record<DecisionSectionKey, string> = {
@@ -226,36 +229,94 @@ function DecisionCards({ result, locale }: { result: AnalysisResult; locale: Loc
     timing: copy.timing,
     actions: copy.actions,
   };
+  const items = model.sectionOrder
+    .map((key) => ({ key, label: labels[key], line: decisionLines(model, key)[0] ?? "" }))
+    .filter((item) => item.line)
+    .slice(0, 3);
+
+  if (!items.length) return null;
+  return (
+    <section className="zhaowu-report-priority" aria-label={copy.keyPoints}>
+      <p className="zhaowu-report-priority-kicker">{copy.keyPoints}</p>
+      <div className="zhaowu-report-priority-list">
+        {items.map((item) => (
+          <article key={item.key}>
+            <strong>{item.label}</strong>
+            <p>{item.line}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AnalysisNotes({
+  result,
+  locale,
+  supportingSummary,
+  showLuck,
+}: {
+  result: AnalysisResult;
+  locale: Locale;
+  supportingSummary: string[];
+  showLuck: boolean;
+}) {
+  const copy = COPY[locale];
+  const model = buildDecisionReportModel(result);
+  const labels: Record<DecisionSectionKey, string> = {
+    reasons: copy.reasons,
+    risks: copy.risks,
+    timing: copy.timing,
+    actions: copy.actions,
+  };
+  const timeNote = timeCorrectionNote(result, locale);
 
   return (
-    <>
-      <section className="zhaowu-question-contract" data-report-qa={model.validationIssues.length ? "needs-review" : "pass"}>
-        <p className="zhaowu-question-kicker">{copy.questionKicker}</p>
-        <h4>{copy.questionTitle}</h4>
-        <p className="zhaowu-question-text">{model.contract.sourceText}</p>
-        <div className="zhaowu-direct-answer">
-          <span>{copy.answerTitle}</span>
-          <p>{model.directAnswer}</p>
-        </div>
-        <div className="zhaowu-answer-meta">
+    <details className="zhaowu-report-method-notes">
+      <summary>
+        <span>{copy.detail}</span>
+        <small>{copy.detailLead}</small>
+      </summary>
+      <div className="zhaowu-report-method-notes__body">
+        <div className="zhaowu-answer-meta zhaowu-answer-meta--notes">
           <div><span>{copy.confidence}</span><b>{model.confidenceLabel}</b><small>{model.confidenceBasis}</small></div>
           <div><span>{copy.variable}</span><b>{model.biggestVariable}</b></div>
         </div>
-      </section>
 
-      <section className="zhaowu-decision-grid" aria-label={copy.answerTitle}>
-        {model.sectionOrder.map((key) => {
-          const lines = decisionLines(model, key);
-          if (!lines.length) return null;
-          return (
-            <article key={key} className={`zhaowu-decision-card is-${key}`}>
-              <h5>{labels[key]}</h5>
-              <ul>{lines.map((line, index) => <li key={`${key}-${index}`}>{line}</li>)}</ul>
-            </article>
-          );
-        })}
-      </section>
-    </>
+        {timeNote ? (
+          <p className="zhaowu-time-correction zhaowu-time-correction--notes">
+            <strong>{locale === "en" ? "How time was read" : locale === "zh-Hans" ? "时间怎么换算" : "時間怎麼換算"}</strong>
+            {timeNote}
+          </p>
+        ) : null}
+
+        <div className="zhaowu-report-method-lines">
+          {model.sectionOrder.map((key) => {
+            const lines = decisionLines(model, key);
+            if (!lines.length) return null;
+            return (
+              <section key={key}>
+                <h5>{labels[key]}</h5>
+                <ul>{lines.map((line, index) => <li key={`${key}-note-${index}`}>{line}</li>)}</ul>
+              </section>
+            );
+          })}
+        </div>
+
+        <ChartSnapshot result={result} locale={locale} />
+        <ReportVisualBook result={result} />
+        <FiveElementTrainingBlock result={result} />
+        {showLuck ? <ReportLuckBook result={result} /> : null}
+
+        {supportingSummary.length ? (
+          <div className="zhaowu-report-copy zhaowu-report-copy--notes">
+            {supportingSummary.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+          </div>
+        ) : null}
+
+        <EvidenceGovernancePanel result={result} />
+      </div>
+    </details>
   );
 }
 
@@ -268,6 +329,8 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
   const supportingSummary = content.summary.filter((line) => normalizeReportLine(line) !== directFull);
   const showLuck = Boolean(model?.supportingModules.includes("luck"));
   const showBody = !model || model.supportingModules.includes("body");
+  const fallbackPriority = result ? [] : supportingSummary.slice(0, 3);
+  const fallbackNotes = result ? supportingSummary : supportingSummary.slice(3);
 
   if (!content.summary.length && !content.body.length) return null;
 
@@ -277,45 +340,43 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
         <p className="zhaowu-report-kicker">{copy.kicker}</p>
         <h3 id="focused-report-title" className="zhaowu-report-title">{copy.title}</h3>
         <p className="zhaowu-report-lead">{copy.lead}</p>
-        {timeCorrectionNote(result, locale) ? (
-          <p className="zhaowu-time-correction"><strong>{locale === "en" ? "How time was read" : locale === "zh-Hans" ? "时间怎么换算" : "時間怎麼換算"}</strong>{timeCorrectionNote(result, locale)}</p>
-        ) : null}
       </header>
 
-      <div className="zhaowu-report-flow">
-        {result ? <DecisionCards result={result} locale={locale} /> : null}
-        {result ? <ChartSnapshot result={result} locale={locale} /> : null}
-      </div>
+      {result ? <PrioritySummary result={result} locale={locale} /> : null}
 
-      {result ? <ReportVisualBook result={result} /> : null}
-      {result ? <FiveElementTrainingBlock result={result} /> : null}
-      {result && showLuck ? <ReportLuckBook result={result} /> : null}
-
-      <div className="zhaowu-report-flow zhaowu-report-supporting-flow">
-        {supportingSummary.length ? (
-          <details className="zhaowu-report-detail" open={false}>
-            <summary>
-              <span>{copy.detail}</span>
-              <small>{copy.detailLead}</small>
-            </summary>
-            <div className="zhaowu-report-copy">
-              {supportingSummary.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
-            </div>
-          </details>
-        ) : null}
-
-        {showBody && content.body.length ? (
-          <div className="zhaowu-report-body-block">
-            <h4>{copy.body}</h4>
-            <div className="zhaowu-report-copy">
-              {content.body.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
-            </div>
+      {fallbackPriority.length ? (
+        <section className="zhaowu-report-priority" aria-label={copy.keyPoints}>
+          <p className="zhaowu-report-priority-kicker">{copy.keyPoints}</p>
+          <div className="zhaowu-report-priority-list">
+            {fallbackPriority.map((line, index) => <article key={index}><p>{line}</p></article>)}
           </div>
-        ) : null}
-      </div>
+        </section>
+      ) : null}
 
-      {result ? <EvidenceGovernancePanel result={result} /> : null}
+      {showBody && content.body.length ? (
+        <section className="zhaowu-report-body-block">
+          <h4>{copy.body}</h4>
+          <div className="zhaowu-report-copy">
+            {content.body.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+          </div>
+        </section>
+      ) : null}
+
       {result ? <ReportShareCard result={result} /> : null}
+
+      {result ? (
+        <AnalysisNotes result={result} locale={locale} supportingSummary={fallbackNotes} showLuck={showLuck} />
+      ) : fallbackNotes.length ? (
+        <details className="zhaowu-report-method-notes">
+          <summary>
+            <span>{copy.detail}</span>
+            <small>{copy.detailLead}</small>
+          </summary>
+          <div className="zhaowu-report-method-notes__body zhaowu-report-copy zhaowu-report-copy--notes">
+            {fallbackNotes.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+          </div>
+        </details>
+      ) : null}
     </section>
   );
 }
