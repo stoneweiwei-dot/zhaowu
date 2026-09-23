@@ -13,10 +13,14 @@ test("evidence governance keeps explicit A/B/C/D levels and withheld outcomes", 
   assert.match(model, /usefulProvisional/);
 });
 
-test("paid report keeps governance as supporting evidence after the answer-first reading flow", () => {
-  const answer = report.indexOf("<DecisionCards");
-  const chart = report.indexOf("<ChartSnapshot");
-  const governance = report.indexOf("<EvidenceGovernancePanel");
-  assert.ok(answer >= 0 && chart > answer && governance > chart);
+test("paid report keeps governance inside the collapsed bottom reasoning layer", () => {
+  const priorityCall = report.indexOf("<PrioritySummary result={result}");
+  const shareCall = report.indexOf("<ReportShareCard result={result}");
+  const notesCall = report.indexOf("<AnalysisNotes result={result}");
+  const notesDefinition = report.indexOf("function AnalysisNotes");
+  const governance = report.indexOf("<EvidenceGovernancePanel", notesDefinition);
+  assert.ok(priorityCall >= 0 && shareCall > priorityCall && notesCall > shareCall);
+  assert.ok(notesDefinition >= 0 && governance > notesDefinition);
+  assert.match(report, /zhaowu-report-method-notes/);
   assert.match(panel, /NEXUS|證據治理|证据治理|EVIDENCE GOVERNANCE/);
 });
