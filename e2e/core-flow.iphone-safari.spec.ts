@@ -56,7 +56,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.locator(".zhaowu-dragon-guide-trigger").click();
     const panel = page.getByRole("dialog", { name: "青玉小龍助手", exact: true });
     await expect(panel.locator("header strong")).toBeVisible();
-    await expect(panel.locator("header strong")).toHaveCSS("color", "rgb(241, 232, 216)");
+    await expect(panel.locator("header strong")).toHaveCSS("color", "rgb(52, 49, 43)");
   });
 
   test("Home exposes device-local birth entry without a public account login", async ({ page }) => {
@@ -115,7 +115,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await page.locator(".zhaowu-header-mode-toggle > button").nth(1).click();
     await expect(page.locator(".zhaowu-bazi-stage-head .zhaowu-section-lead")).toHaveCount(0);
     await fullDetails.locator(":scope > summary").click();
-    await expect(page.locator("[data-unified-birth-report] article p").first()).toHaveCSS("color", "rgb(241, 232, 216)");
+    await expect(page.locator("[data-unified-birth-report] article p").first()).toHaveCSS("color", "rgb(43, 41, 36)");
     const before = await yearPillar.textContent();
 
     await page.getByRole("button", { name: "修改資料", exact: true }).first().click();
@@ -145,7 +145,10 @@ test.describe("iPhone Safari core customer flow", () => {
     await trigger.click();
     const panel = page.getByRole("dialog", { name: "青玉小龍助手", exact: true });
     await expect(panel).toBeVisible();
-    await expect(panel).toHaveCSS("position", "absolute");
+    await expect(panel).toHaveCSS("position", "fixed");
+    const panelBox = await panel.boundingBox();
+    expect(panelBox).not.toBeNull();
+    expect(panelBox!.height).toBeLessThanOrEqual(520);
     await expect(panel.locator("[data-dragon-music-controls]")).toHaveCount(1);
     await expect(panel.getByRole("button", { name: /上一首/ })).toBeVisible();
     await expect(panel.getByRole("button", { name: /下一首/ })).toBeVisible();
