@@ -118,7 +118,7 @@ function LoginPage() {
   }
 
   return (
-    <main className="stone-login-screen" aria-labelledby="login-title" data-owner-only-login="true" data-login-backend="vercel-owner-cookie">
+    <main className="stone-login-screen" aria-labelledby="login-title" data-owner-only-login="true" data-login-backend="vercel-owner-cookie" data-login-surface="cinematic-r183">
       <LoginStageBackdrop />
       <section className="stone-login-sheet seal-border">
         <div className="stone-login-brand" aria-label={`${t("brand")} ZHAOWU`}>
@@ -142,8 +142,10 @@ function LoginPage() {
           </button>
         </form>
 
-        <p className="stone-login-signature">{t("tagline")}</p>
-        <p className="stone-login-signature"><Link to="/">{t("backHome")}</Link></p>
+        <div className="stone-login-footer">
+          <span>{t("tagline")}</span>
+          <Link to="/">{t("backHome")}</Link>
+        </div>
       </section>
     </main>
   );

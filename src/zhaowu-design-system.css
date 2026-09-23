@@ -2637,3 +2637,257 @@ html[data-zw-theme="night"] .zhaowu-chart-trust-details details > a {
     box-shadow: none !important;
   }
 }
+
+/* r183 — cinematic owner login: let the moving artwork lead, keep the owner form quiet and tactile. */
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] {
+  position: relative !important;
+  isolation: isolate !important;
+  display: grid !important;
+  min-height: 100svh !important;
+  min-height: 100dvh !important;
+  place-items: end center !important;
+  overflow: hidden !important;
+  padding: max(88px, calc(env(safe-area-inset-top) + 72px)) 18px max(22px, calc(env(safe-area-inset-bottom) + 14px)) !important;
+  background: #101713 !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-stage-media {
+  position: absolute !important;
+  inset: -1.5% !important;
+  z-index: 0 !important;
+  width: 103% !important;
+  height: 103% !important;
+  object-fit: cover !important;
+  object-position: 50% 42% !important;
+  filter: saturate(.92) contrast(1.035) brightness(.92) !important;
+  transform: scale(1.015);
+  animation: zw-login-cinematic-drift 14s ease-in-out infinite alternate !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"]::before,
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"]::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"]::before {
+  z-index: 1 !important;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(229, 207, 159, .16), transparent 38%),
+    linear-gradient(180deg, rgba(5, 12, 10, .07) 0%, rgba(5, 12, 10, .02) 32%, rgba(5, 12, 10, .18) 58%, rgba(5, 12, 10, .68) 100%) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"]::after {
+  z-index: 1 !important;
+  inset: auto 10% 0 !important;
+  height: 46% !important;
+  background: radial-gradient(ellipse at 50% 100%, rgba(7, 18, 14, .44), transparent 68%) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-sheet {
+  position: relative !important;
+  z-index: 2 !important;
+  width: min(100%, 430px) !important;
+  margin: 0 auto !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(220, 190, 128, .46) !important;
+  border-radius: 28px !important;
+  padding: 20px 20px 17px !important;
+  background:
+    linear-gradient(180deg, rgba(252, 248, 237, .78), rgba(241, 229, 207, .88)) !important;
+  box-shadow:
+    0 28px 80px rgba(4, 12, 9, .28),
+    inset 0 1px 0 rgba(255, 255, 255, .72) !important;
+  backdrop-filter: blur(24px) saturate(.86) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(.86) !important;
+  animation: zw-login-cinematic-sheet .58s cubic-bezier(.22,1,.36,1) both !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-sheet::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 22% !important;
+  right: 22% !important;
+  top: 0 !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(164, 121, 61, .72), transparent) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-brand {
+  gap: 9px !important;
+  margin: 0 auto 10px !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-brand .zhaowu-brand-seal {
+  width: 44px !important;
+  height: 44px !important;
+  flex: 0 0 44px !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-brand-name {
+  font-size: 1.2rem !important;
+  letter-spacing: .18em !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-brand-latin {
+  margin-top: 4px !important;
+  font-size: .57rem !important;
+  letter-spacing: .30em !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-kicker {
+  color: #8e6a3f !important;
+  font-size: .58rem !important;
+  letter-spacing: .28em !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-title {
+  margin-top: 6px !important;
+  font-size: clamp(1.75rem, 7.6vw, 2.25rem) !important;
+  font-weight: 560 !important;
+  letter-spacing: .075em !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-form {
+  gap: 10px !important;
+  margin-top: 14px !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-form label {
+  gap: 6px !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-form label > span {
+  color: #5c5040 !important;
+  font-size: .73rem !important;
+  letter-spacing: .04em !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-form input {
+  min-height: 50px !important;
+  border: 1px solid rgba(145, 112, 65, .28) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 253, 247, .66) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.58) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-primary {
+  min-height: 50px !important;
+  margin-top: 2px !important;
+  border: 1px solid rgba(207, 176, 111, .72) !important;
+  border-radius: 999px !important;
+  color: #19392f !important;
+  background: linear-gradient(180deg, #dec38c, #cda96a) !important;
+  box-shadow: 0 12px 28px rgba(35, 58, 45, .18) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-footer {
+  display: flex !important;
+  min-height: 30px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-top: 12px !important;
+  border-top: 1px solid rgba(143, 111, 66, .16) !important;
+  padding-top: 10px !important;
+  color: #796d5e !important;
+  font-size: .68rem !important;
+  line-height: 1.45 !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-footer a {
+  min-height: 30px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  color: #33594c !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-sound {
+  position: absolute !important;
+  z-index: 4 !important;
+  top: max(16px, calc(env(safe-area-inset-top) + 10px)) !important;
+  right: max(14px, calc(env(safe-area-inset-right) + 12px)) !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  border-color: rgba(231, 207, 158, .34) !important;
+  background: rgba(8, 21, 17, .46) !important;
+  box-shadow: 0 12px 34px rgba(0,0,0,.16) !important;
+  backdrop-filter: blur(18px) saturate(.9) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(.9) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-sheet {
+  border-color: rgba(212, 176, 116, .34) !important;
+  background: linear-gradient(180deg, rgba(12, 34, 28, .74), rgba(9, 27, 22, .86)) !important;
+  box-shadow: 0 30px 84px rgba(0,0,0,.34), inset 0 1px 0 rgba(232, 206, 158, .12) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] :is(.stone-login-title,.stone-login-brand-name,.stone-login-form label > span,.stone-login-footer) {
+  color: #eee6d6 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] :is(.stone-login-kicker,.stone-login-brand-latin) {
+  color: #d5b476 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-form input {
+  border-color: rgba(212,176,116,.24) !important;
+  color: #f2eadb !important;
+  background: rgba(5, 19, 15, .48) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-footer a {
+  color: #ddc28e !important;
+}
+
+@keyframes zw-login-cinematic-drift {
+  0% { transform: scale(1.015) translate3d(0,0,0); }
+  100% { transform: scale(1.045) translate3d(0,-.45%,0); }
+}
+
+@keyframes zw-login-cinematic-sheet {
+  from { opacity: 0; transform: translate3d(0,18px,0) scale(.992); }
+  to { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+}
+
+@media (max-width: 430px) {
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] {
+    place-items: end center !important;
+    padding: max(70px, calc(env(safe-area-inset-top) + 58px)) 10px max(10px, calc(env(safe-area-inset-bottom) + 8px)) !important;
+  }
+
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-stage-media {
+    object-position: 50% 36% !important;
+  }
+
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-sheet {
+    width: 100% !important;
+    border-radius: 28px 28px 20px 20px !important;
+    padding: 17px 16px 13px !important;
+  }
+
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-brand {
+    justify-content: flex-start !important;
+  }
+
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-title,
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-kicker {
+    text-align: left !important;
+  }
+
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-title {
+    font-size: 1.78rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-stage-media,
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="cinematic-r183"] .stone-login-sheet {
+    animation: none !important;
+    transform: none !important;
+  }
+}

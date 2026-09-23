@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r182",
-  updateNumber: 182,
-  publishedAt: "2026-09-23T13:43:00+10:00",
-  latestSummary: "心境小測新增「修仙命格靈測」：以既有生辰命盤推演仙俠世界觀結果，並在瀏覽器本機生成 9:16 個人命測圖。",
+  version: "ZW-WEB-2026.09.23-r183",
+  updateNumber: 183,
+  publishedAt: "2026-09-23T14:08:00+10:00",
+  latestSummary: "站主登入改為沉浸式全屏動態舞台：影片保留為主畫面，登入操作退到底部輕量紙感層；owner-only 權限與 Storage freeze 不變。",
   details: {
     "zh-Hant": [
-      "「昭梧 · 心境小測」新增修仙命格靈測：讀取已保存生辰與既有八字／五行結果，轉譯為靈根、宗門、峰脈、六維資質、道途與修行命途。",
-      "個人 9:16 命測圖改由瀏覽器本機生成 PNG，包含 STONE 原創署名，不寫入 Supabase Storage，也不消耗付費圖片 provider。",
+      "站主登入改成全屏動態主視覺，表單退到底部半透明紙感層，讓動畫素材不再被置中大卡片遮住。",
+      "owner-only auth、聲音控制、r181 Storage freeze 與 r182 修仙命格靈測均維持不變。",
     ],
     en: [
-      "Self Discovery now includes a Cultivation Destiny Dossier that translates the saved BaZi/Five-Element chart into a fictional spirit root, sect, aptitudes and cultivation paths.",
-      "The personal 9:16 dossier is rendered locally in the browser as a PNG with the STONE attribution, without Supabase Storage writes or paid image-provider usage.",
+      "Owner sign-in now uses a full-screen moving visual with a quieter frosted paper login sheet anchored low in the frame.",
+      "Owner-only auth, sound control, the Storage write freeze and the r182 Cultivation Destiny feature are unchanged.",
     ],
   },
 } as const;
