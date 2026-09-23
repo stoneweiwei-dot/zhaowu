@@ -15,8 +15,10 @@ test("report UI has only one plain-language answer-first flow and body-attention
   assert.match(renderer, /uniqueLines/);
   assert.match(renderer, /supportingSummary\.map/);
   assert.match(renderer, /content\.body\.map/);
-  assert.match(renderer, /zhaowu-question-contract/);
-  assert.match(renderer, /zhaowu-direct-answer/);
+  assert.match(renderer, /function PrioritySummary/);
+  assert.match(renderer, /zhaowu-report-priority/);
+  assert.match(renderer, /zhaowu-report-method-notes/);
+  assert.match(renderer, /\.slice\(0, 3\)/);
   assert.doesNotMatch(renderer, /padStart\(2, "0"\)/);
   assert.doesNotMatch(renderer, /REPORT_ORNAMENTS|ReportDragonSticker/);
 });
