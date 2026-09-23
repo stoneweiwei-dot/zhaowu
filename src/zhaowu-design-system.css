@@ -3059,3 +3059,1014 @@ html[data-zw-theme="night"] .zhaowu-report-method-lines section {
   border-left-color: rgba(212, 176, 116, .42);
 }
 
+/* r186 — editorial reset.
+ * Principle: the page should read like a restrained Song-era publication, not a stack of app pills.
+ * Functional DOM stays intact; this layer removes visual chrome, lowers radius/shadow density,
+ * and keeps night mode as ink + warm paper rather than green-on-green panels.
+ */
+
+:root {
+  --zw-r186-paper: #f3eee3;
+  --zw-r186-paper-hi: #faf7ef;
+  --zw-r186-ink: #24231f;
+  --zw-r186-ink-soft: #625f57;
+  --zw-r186-line: rgba(92, 76, 55, .20);
+  --zw-r186-jade: #315d50;
+  --zw-r186-gold: #a9824d;
+  --zw-r186-night: #0d1512;
+  --zw-r186-night-soft: #151f1b;
+  --zw-r186-night-text: #eee6d8;
+  --zw-r186-night-muted: #c8bead;
+}
+
+/* Header — two quiet editorial rows, no pill forest. */
+.zhaowu-site-header {
+  border-bottom: 1px solid rgba(118, 94, 60, .18) !important;
+  background: rgba(246, 241, 231, .96) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(14px) saturate(.92) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(.92) !important;
+}
+
+.zhaowu-site-header .zhaowu-header-shell {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 2px 16px !important;
+  max-width: 900px !important;
+  padding: 8px 16px 9px !important;
+}
+
+.zhaowu-site-header [data-site-status-strip] {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+  justify-content: flex-start !important;
+  min-height: 28px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  color: var(--zw-r186-ink-soft) !important;
+}
+
+.zhaowu-site-header [data-site-status-strip] > span {
+  display: none !important;
+}
+
+.zhaowu-site-header .zhaowu-latest-update-link {
+  display: inline-flex !important;
+  min-height: 28px !important;
+  align-items: center !important;
+  gap: 6px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: var(--zw-r186-ink-soft) !important;
+  box-shadow: none !important;
+  font-size: 11px !important;
+  font-weight: 620 !important;
+  letter-spacing: .08em !important;
+  text-decoration: none !important;
+}
+
+.zhaowu-site-header .zhaowu-header-primary {
+  grid-column: 1 / -1 !important;
+  grid-row: 1 !important;
+  min-height: 42px !important;
+  gap: 12px !important;
+}
+
+.zhaowu-site-header .zhaowu-brand-link {
+  gap: 0 !important;
+  min-height: 38px !important;
+}
+
+.zhaowu-site-header .zhaowu-brand-seal {
+  display: none !important;
+}
+
+.zhaowu-site-header .zhaowu-brand-copy {
+  display: block !important;
+}
+
+.zhaowu-site-header .zhaowu-brand-name {
+  color: var(--zw-r186-ink) !important;
+  font-family: "Songti TC", "Songti SC", "STSong", "Noto Serif TC", "PMingLiU", serif !important;
+  font-size: 23px !important;
+  font-weight: 560 !important;
+  letter-spacing: .18em !important;
+}
+
+.zhaowu-site-header .zhaowu-brand-tagline {
+  display: none !important;
+}
+
+.zhaowu-site-header .zhaowu-header-account-actions {
+  gap: 2px !important;
+}
+
+.zhaowu-site-header .zhaowu-header-utility,
+.zhaowu-site-header .zhaowu-header-login,
+.zhaowu-site-header .zhaowu-header-home-link {
+  min-height: 34px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 7px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--zw-r186-ink-soft) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.zhaowu-site-header .zhaowu-header-utility:hover,
+.zhaowu-site-header .zhaowu-header-login:hover,
+.zhaowu-site-header .zhaowu-header-home-link:hover {
+  color: var(--zw-r186-jade) !important;
+  background: transparent !important;
+}
+
+.zhaowu-site-header .zhaowu-header-nav {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  justify-content: flex-end !important;
+  gap: 16px !important;
+  min-height: 28px !important;
+  width: auto !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.zhaowu-site-header .zhaowu-language-icon {
+  display: none !important;
+}
+
+.zhaowu-site-header .site-lang-group {
+  display: flex !important;
+  width: auto !important;
+  min-height: 28px !important;
+  height: 28px !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.zhaowu-site-header .site-lang-button {
+  min-width: 48px !important;
+  min-height: 28px !important;
+  height: 28px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 6px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--zw-r186-ink-soft) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.zhaowu-site-header .site-lang-button[data-active="true"],
+.zhaowu-site-header .site-lang-button[aria-pressed="true"] {
+  color: var(--zw-r186-jade) !important;
+  background: transparent !important;
+  box-shadow: inset 0 -1px 0 var(--zw-r186-jade) !important;
+}
+
+.zhaowu-site-header .zhaowu-header-mode-toggle {
+  display: flex !important;
+  gap: 0 !important;
+  min-height: 28px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.zhaowu-site-header .zhaowu-header-mode-toggle > button {
+  min-width: 34px !important;
+  min-height: 28px !important;
+  height: 28px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 5px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--zw-r186-ink-soft) !important;
+  font-size: 11px !important;
+  font-weight: 620 !important;
+}
+
+.zhaowu-site-header .zhaowu-header-mode-toggle > button[data-active="true"],
+.zhaowu-site-header .zhaowu-header-mode-toggle > button[aria-pressed="true"] {
+  color: var(--zw-r186-jade) !important;
+  background: transparent !important;
+  box-shadow: inset 0 -1px 0 var(--zw-r186-jade) !important;
+}
+
+/* Homepage — one quiet field, not stacked app cards. */
+.zhaowu-home-sheet-shell,
+.zhaowu-home-sheet-page {
+  background-color: #ebe3d3 !important;
+}
+
+.zhaowu-home-sheet-shell::before {
+  background:
+    linear-gradient(180deg, rgba(246, 239, 224, .20), rgba(238, 228, 207, .40)),
+    url('/wallpaper-song.jpg') 56% 36% / cover fixed no-repeat !important;
+  filter: saturate(.52) contrast(.96) brightness(1.05) !important;
+  opacity: .78 !important;
+}
+
+.zhaowu-home-app-frame,
+.zhaowu-home-sheet-shell:has(.zhaowu-home-layout) .zhaowu-home-app-frame {
+  max-width: 760px !important;
+  padding-inline: 20px !important;
+}
+
+.zhaowu-home-lead {
+  position: relative !important;
+  display: grid !important;
+  align-content: center !important;
+  min-height: clamp(280px, 42vh, 390px) !important;
+  margin: 0 0 26px !important;
+  padding: 54px 6px 64px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-home-lead::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 4px !important;
+  bottom: 16px !important;
+  width: min(100%, 31rem) !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, rgba(146, 107, 58, .52), rgba(146, 107, 58, 0)) !important;
+}
+
+.zhaowu-home-lead > p {
+  margin: 0 0 18px !important;
+  color: #8b662d !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  letter-spacing: .22em !important;
+}
+
+.zhaowu-home-lead h1 {
+  max-width: 11.5em !important;
+  margin: 0 !important;
+  color: #2d332f !important;
+  font-family: "Songti TC", "Songti SC", "STSong", "Noto Serif TC", "PMingLiU", serif !important;
+  font-size: clamp(34px, 6.6vw, 48px) !important;
+  font-weight: 520 !important;
+  line-height: 1.42 !important;
+  letter-spacing: .07em !important;
+  text-wrap: balance !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,.5) !important;
+}
+
+/* Disclosure rows become editorial dividers, not cards. */
+.zhaowu-home-disclosure,
+.zhaowu-home-disclosure.is-open {
+  overflow: visible !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(121, 91, 54, .26) !important;
+  border-bottom: 1px solid rgba(121, 91, 54, .20) !important;
+  border-radius: 0 !important;
+  background: rgba(247, 241, 229, .36) !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-home-disclosure-trigger {
+  min-height: 68px !important;
+  padding: 15px 4px !important;
+  background: transparent !important;
+}
+
+.zhaowu-home-disclosure-trigger strong {
+  color: #314c43 !important;
+  font-family: var(--font-display, serif) !important;
+  font-size: 18px !important;
+  font-weight: 560 !important;
+  letter-spacing: .06em !important;
+}
+
+.zhaowu-home-disclosure-trigger small {
+  margin-top: 5px !important;
+  color: #746e63 !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+
+.zhaowu-home-disclosure-trigger > i {
+  width: 28px !important;
+  height: 28px !important;
+  flex-basis: 28px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.zhaowu-home-disclosure-trigger > i::before,
+.zhaowu-home-disclosure-trigger > i::after {
+  left: 6px !important;
+  top: 13px !important;
+  width: 16px !important;
+  background: #8d7047 !important;
+}
+
+.zhaowu-home-disclosure-panel {
+  padding: 16px 0 22px !important;
+  background: transparent !important;
+}
+
+/* Primary reading surfaces are warm paper with low-radius book geometry. */
+.zhaowu-home-sheet-shell :is(
+  .zhaowu-customer-record,
+  .zhaowu-bazi-stage,
+  .zhaowu-bazi-hub,
+  .zhaowu-question-stage,
+  .zhaowu-result-card,
+  .zhaowu-focused-report,
+  .zhaowu-unified-birth-report
+) {
+  border: 1px solid var(--zw-r186-line) !important;
+  border-radius: 9px !important;
+  background: rgba(247, 243, 234, .98) !important;
+  color: var(--zw-r186-ink) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.72) inset,
+    0 12px 34px rgba(58, 45, 28, .07) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-home-sheet-shell :is(
+  .zhaowu-customer-record,
+  .zhaowu-bazi-stage,
+  .zhaowu-bazi-hub,
+  .zhaowu-question-stage
+) {
+  padding: clamp(24px, 5vw, 38px) !important;
+}
+
+.zhaowu-home-sheet-shell :is(
+  .zhaowu-customer-record,
+  .zhaowu-bazi-stage,
+  .zhaowu-bazi-hub,
+  .zhaowu-question-stage,
+  .zhaowu-result-card,
+  .zhaowu-focused-report,
+  .zhaowu-unified-birth-report
+) :is(h2,h3,h4,strong,b,dt,dd,p,li,small,span,label) {
+  opacity: 1 !important;
+}
+
+.zhaowu-home-sheet-shell .zhaowu-section-kicker {
+  color: #60746c !important;
+  font-size: 11px !important;
+  font-weight: 680 !important;
+  letter-spacing: .18em !important;
+}
+
+.zhaowu-home-sheet-shell :is(
+  .zhaowu-customer-record,
+  .zhaowu-bazi-stage,
+  .zhaowu-bazi-hub,
+  .zhaowu-question-stage
+) h2 {
+  color: var(--zw-r186-ink) !important;
+  font-family: var(--font-display, serif) !important;
+  font-size: clamp(28px, 6vw, 38px) !important;
+  font-weight: 540 !important;
+  line-height: 1.3 !important;
+  letter-spacing: .045em !important;
+}
+
+.zhaowu-home-sheet-shell :is(input, textarea, select) {
+  border-radius: 6px !important;
+  border-color: rgba(91, 77, 59, .22) !important;
+  background: rgba(255, 252, 246, .92) !important;
+  color: #2b2924 !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-home-sheet-shell :is(button[type="submit"], .zhaowu-question-submit) {
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+/* Secondary fun content is a list, not another card gallery. */
+.zhaowu-home-fun-grid {
+  gap: 0 !important;
+}
+.zhaowu-home-fun-card {
+  min-height: 62px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(99, 83, 61, .15) !important;
+  border-radius: 0 !important;
+  padding: 13px 2px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.zhaowu-home-fun-card strong {
+  font-size: 15px !important;
+  font-weight: 630 !important;
+}
+.zhaowu-home-fun-card small {
+  margin-top: 4px !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+
+/* Jade Dragon — one small floating mark. No unsolicited speech bubble. */
+.zhaowu-dragon-bubble {
+  display: none !important;
+}
+
+.zhaowu-dragon-guide,
+.zhaowu-dragon-guide-trigger {
+  width: 46px !important;
+  height: 46px !important;
+}
+
+.zhaowu-dragon-guide-trigger {
+  overflow: visible !important;
+  border: 1px solid rgba(120, 96, 61, .34) !important;
+  border-radius: 50% !important;
+  padding: 3px !important;
+  background: rgba(246, 241, 229, .94) !important;
+  box-shadow: 0 6px 20px rgba(24, 31, 27, .12) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-dragon-guide-avatar {
+  width: 38px !important;
+}
+
+.zhaowu-dragon-guide-label {
+  display: none !important;
+}
+
+.zhaowu-dragon-playing-dot {
+  right: -1px !important;
+  top: -1px !important;
+}
+
+/* Panel is an editorial drawer anchored to the viewport, not a giant app card. */
+.zhaowu-dragon-guide-panel {
+  position: fixed !important;
+  z-index: 80 !important;
+  left: max(16px, env(safe-area-inset-left)) !important;
+  right: max(16px, env(safe-area-inset-right)) !important;
+  top: auto !important;
+  bottom: max(18px, calc(env(safe-area-inset-bottom) + 12px)) !important;
+  width: auto !important;
+  max-width: 430px !important;
+  max-height: min(58dvh, 520px) !important;
+  margin-left: auto !important;
+  overflow: auto !important;
+  border: 1px solid rgba(108, 87, 58, .24) !important;
+  border-radius: 12px !important;
+  padding: 18px !important;
+  background: rgba(246, 241, 230, .985) !important;
+  color: var(--zw-r186-ink) !important;
+  box-shadow: 0 20px 54px rgba(8, 14, 11, .28) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.zhaowu-dragon-guide-panel > header {
+  min-height: 40px !important;
+  gap: 10px !important;
+  border-bottom: 1px solid rgba(102, 85, 62, .13) !important;
+  padding: 0 0 12px !important;
+}
+
+.zhaowu-dragon-guide-panel > header .zhaowu-dragon-guide-avatar {
+  width: 34px !important;
+}
+
+.zhaowu-dragon-guide-panel > header strong {
+  color: #28332e !important;
+  font-family: var(--font-display, serif) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: .05em !important;
+}
+
+.zhaowu-dragon-guide-panel > header > button {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  color: #6f685d !important;
+  font-size: 24px !important;
+}
+
+.zhaowu-dragon-music {
+  display: grid !important;
+  gap: 10px !important;
+  margin: 14px 0 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(102, 85, 62, .13) !important;
+  border-radius: 0 !important;
+  padding: 0 0 14px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-dragon-music-meta {
+  gap: 2px !important;
+}
+.zhaowu-dragon-music-title,
+.zhaowu-dragon-music-title strong,
+.zhaowu-dragon-music-meta > p {
+  color: #4d4a43 !important;
+}
+.zhaowu-dragon-music-title {
+  font-size: 11px !important;
+}
+.zhaowu-dragon-music-meta > p {
+  margin-top: 2px !important;
+  font-size: 12px !important;
+}
+
+.zhaowu-dragon-music-controls {
+  display: flex !important;
+  gap: 8px !important;
+  justify-content: flex-start !important;
+}
+.zhaowu-dragon-music-controls button {
+  width: 36px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  border: 1px solid rgba(91, 75, 54, .20) !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: #4a4c46 !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+}
+
+.zhaowu-dragon-guide-answer {
+  margin: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(102, 85, 62, .13) !important;
+  border-radius: 0 !important;
+  padding: 14px 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.zhaowu-dragon-guide-answer p {
+  color: #4b4942 !important;
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+}
+
+.zhaowu-dragon-guide-shortcuts {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px 16px !important;
+  border-bottom: 1px solid rgba(102, 85, 62, .13) !important;
+  padding: 12px 0 !important;
+}
+.zhaowu-dragon-guide-shortcuts button {
+  min-height: 32px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: #315d50 !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+}
+
+.zhaowu-dragon-guide-panel > form {
+  gap: 8px !important;
+  margin-top: 12px !important;
+}
+.zhaowu-dragon-guide-panel > form input {
+  min-height: 42px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(86, 72, 54, .30) !important;
+  border-radius: 0 !important;
+  padding: 8px 2px !important;
+  background: transparent !important;
+  color: #2d2b27 !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+}
+.zhaowu-dragon-guide-panel > form button {
+  min-height: 42px !important;
+  border: 0 !important;
+  border-radius: 5px !important;
+  padding-inline: 14px !important;
+  background: #315d50 !important;
+  color: #fffaf1 !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+}
+
+/* Night mode — ink backdrop, readable warm paper. */
+html[data-zw-theme="night"] .zhaowu-site-header {
+  border-bottom-color: rgba(191, 156, 102, .22) !important;
+  background: rgba(11, 20, 17, .97) !important;
+}
+html[data-zw-theme="night"] .zhaowu-site-header .zhaowu-brand-name {
+  color: var(--zw-r186-night-text) !important;
+}
+html[data-zw-theme="night"] .zhaowu-site-header :is(
+  .zhaowu-header-utility,
+  .zhaowu-header-login,
+  .zhaowu-header-home-link,
+  .zhaowu-latest-update-link,
+  .site-lang-button,
+  .zhaowu-header-mode-toggle > button
+) {
+  color: var(--zw-r186-night-muted) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+html[data-zw-theme="night"] .zhaowu-site-header :is(
+  .site-lang-button[data-active="true"],
+  .site-lang-button[aria-pressed="true"],
+  .zhaowu-header-mode-toggle > button[data-active="true"],
+  .zhaowu-header-mode-toggle > button[aria-pressed="true"]
+) {
+  color: #d6b474 !important;
+  box-shadow: inset 0 -1px 0 #b9945f !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell,
+html[data-zw-theme="night"] .zhaowu-home-sheet-page {
+  background: var(--zw-r186-night) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell::before {
+  background:
+    linear-gradient(180deg, rgba(5, 10, 8, .54), rgba(9, 16, 13, .74)),
+    url('/wallpaper-song.jpg') 58% 42% / cover fixed no-repeat !important;
+  filter: grayscale(.08) saturate(.32) brightness(.50) contrast(1.04) !important;
+  opacity: 1 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-lead > p {
+  color: #b88d4e !important;
+}
+html[data-zw-theme="night"] .zhaowu-home-lead h1 {
+  color: #eee7da !important;
+  text-shadow: 0 2px 18px rgba(0,0,0,.26) !important;
+}
+html[data-zw-theme="night"] .zhaowu-home-lead::after {
+  background: linear-gradient(90deg, rgba(184, 141, 78, .48), rgba(184, 141, 78, 0)) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-disclosure,
+html[data-zw-theme="night"] .zhaowu-home-disclosure.is-open {
+  border-top-color: rgba(188, 151, 94, .25) !important;
+  border-bottom-color: rgba(188, 151, 94, .18) !important;
+  background: rgba(18, 29, 24, .24) !important;
+  color: var(--zw-r186-night-text) !important;
+}
+html[data-zw-theme="night"] .zhaowu-home-disclosure-trigger strong {
+  color: #e8dfcf !important;
+}
+html[data-zw-theme="night"] .zhaowu-home-disclosure-trigger small {
+  color: #c8bead !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell :is(
+  .zhaowu-customer-record,
+  .zhaowu-bazi-stage,
+  .zhaowu-bazi-hub,
+  .zhaowu-question-stage,
+  .zhaowu-result-card,
+  .zhaowu-focused-report,
+  .zhaowu-unified-birth-report
+) {
+  border-color: rgba(151, 126, 88, .24) !important;
+  background: rgba(235, 229, 217, .975) !important;
+  color: #292824 !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,.16) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell :is(
+  .zhaowu-customer-record,
+  .zhaowu-bazi-stage,
+  .zhaowu-bazi-hub,
+  .zhaowu-question-stage,
+  .zhaowu-result-card,
+  .zhaowu-focused-report,
+  .zhaowu-unified-birth-report
+) :is(h2,h3,h4,h5,strong,b,dt,dd,p,li,small,span,label) {
+  color: #2b2924 !important;
+  opacity: 1 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-section-kicker {
+  color: #50675f !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell :is(input, textarea, select) {
+  background: rgba(247, 243, 234, .96) !important;
+  color: #292824 !important;
+  border-color: rgba(93, 78, 57, .24) !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-dragon-guide-trigger {
+  border-color: rgba(188, 151, 94, .36) !important;
+  background: rgba(20, 30, 26, .94) !important;
+}
+html[data-zw-theme="night"] .zhaowu-dragon-guide-panel {
+  border-color: rgba(157, 128, 83, .28) !important;
+  background: rgba(235, 229, 217, .992) !important;
+  color: #292824 !important;
+}
+html[data-zw-theme="night"] .zhaowu-dragon-guide-panel :is(p, span, strong, input) {
+  color: #34312b !important;
+  opacity: 1 !important;
+}
+html[data-zw-theme="night"] .zhaowu-dragon-guide-panel :is(button, input, .zhaowu-dragon-music, .zhaowu-dragon-guide-answer) {
+  border-color: rgba(93, 78, 57, .20) !important;
+}
+html[data-zw-theme="night"] .zhaowu-dragon-guide-panel .zhaowu-dragon-music-controls button {
+  background: transparent !important;
+  color: #4a4c46 !important;
+}
+html[data-zw-theme="night"] .zhaowu-dragon-guide-panel > form button {
+  background: #315d50 !important;
+  color: #fffaf1 !important;
+}
+
+@media (max-width: 780px) {
+  .zhaowu-site-header .zhaowu-header-shell {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 1px 10px !important;
+    padding: 7px 16px 8px !important;
+  }
+
+  .zhaowu-site-header .zhaowu-header-primary {
+    min-height: 40px !important;
+  }
+
+  .zhaowu-site-header .zhaowu-brand-name {
+    font-size: 22px !important;
+  }
+
+  .zhaowu-site-header .zhaowu-header-account-actions {
+    overflow: hidden !important;
+  }
+
+  .zhaowu-site-header .zhaowu-header-utility,
+  .zhaowu-site-header .zhaowu-header-login {
+    min-height: 32px !important;
+    padding-inline: 6px !important;
+    font-size: 11px !important;
+  }
+
+  .zhaowu-site-header .zhaowu-header-nav {
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+  }
+
+  .zhaowu-site-header .site-lang-group {
+    flex-basis: auto !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  .zhaowu-site-header .site-lang-button {
+    min-width: 42px !important;
+    padding-inline: 4px !important;
+  }
+
+  .zhaowu-home-app-frame,
+  .zhaowu-home-sheet-shell:has(.zhaowu-home-layout) .zhaowu-home-app-frame {
+    padding: 0 18px 42px !important;
+  }
+
+  .zhaowu-home-lead {
+    min-height: 310px !important;
+    padding: 48px 2px 62px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .zhaowu-home-lead h1 {
+    max-width: 9.8em !important;
+    font-size: clamp(32px, 8.4vw, 39px) !important;
+    line-height: 1.42 !important;
+  }
+
+  .zhaowu-home-disclosure-trigger {
+    min-height: 64px !important;
+    padding: 13px 2px !important;
+  }
+
+  .zhaowu-home-disclosure-trigger strong {
+    font-size: 17px !important;
+  }
+
+  .zhaowu-home-disclosure-trigger small {
+    font-size: 12px !important;
+  }
+
+  .zhaowu-home-sheet-shell :is(
+    .zhaowu-customer-record,
+    .zhaowu-bazi-stage,
+    .zhaowu-bazi-hub,
+    .zhaowu-question-stage
+  ) {
+    padding: 26px 22px !important;
+  }
+
+  .zhaowu-home-sheet-shell :is(
+    .zhaowu-customer-record,
+    .zhaowu-bazi-stage,
+    .zhaowu-bazi-hub,
+    .zhaowu-question-stage
+  ) h2 {
+    font-size: 31px !important;
+  }
+
+  .zhaowu-dragon-guide-panel {
+    left: 14px !important;
+    right: 14px !important;
+    bottom: max(14px, calc(env(safe-area-inset-bottom) + 10px)) !important;
+    max-height: 54dvh !important;
+    padding: 16px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .zhaowu-site-header .zhaowu-header-shell {
+    padding-inline: 14px !important;
+  }
+
+  .zhaowu-site-header .zhaowu-header-account-actions {
+    gap: 0 !important;
+  }
+
+  .zhaowu-site-header .zhaowu-header-utility,
+  .zhaowu-site-header .zhaowu-header-login {
+    font-size: 10.5px !important;
+    padding-inline: 5px !important;
+  }
+
+  .zhaowu-site-header .zhaowu-latest-update-link {
+    font-size: 10.5px !important;
+  }
+
+  .zhaowu-site-header .site-lang-button {
+    min-width: 39px !important;
+    font-size: 10.5px !important;
+  }
+
+  .zhaowu-site-header .zhaowu-header-mode-toggle > button {
+    min-width: 30px !important;
+    font-size: 10.5px !important;
+  }
+
+  .zhaowu-home-lead {
+    min-height: 285px !important;
+  }
+
+  .zhaowu-home-lead h1 {
+    font-size: clamp(30px, 8.2vw, 36px) !important;
+  }
+
+  .zhaowu-home-sheet-shell :is(
+    .zhaowu-customer-record,
+    .zhaowu-bazi-stage,
+    .zhaowu-bazi-hub,
+    .zhaowu-question-stage
+  ) {
+    border-radius: 8px !important;
+    padding: 24px 18px !important;
+  }
+
+  .zhaowu-home-sheet-shell :is(
+    .zhaowu-customer-record,
+    .zhaowu-bazi-stage,
+    .zhaowu-bazi-hub,
+    .zhaowu-question-stage
+  ) h2 {
+    font-size: 29px !important;
+  }
+
+  .zhaowu-dragon-guide,
+  .zhaowu-dragon-guide-trigger {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .zhaowu-dragon-guide-avatar {
+    width: 36px !important;
+  }
+}
+
+
+
+/* r186 acceptance corrections — keep the editorial look without shrinking touch targets. */
+.zhaowu-site-header .zhaowu-latest-update-link {
+  min-height: 44px !important;
+}
+.zhaowu-site-header .site-lang-group,
+.zhaowu-site-header .zhaowu-header-mode-toggle {
+  min-height: 44px !important;
+  height: 44px !important;
+}
+.zhaowu-site-header .site-lang-button,
+.zhaowu-site-header .zhaowu-header-mode-toggle > button {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  font-size: 13px !important;
+}
+.zhaowu-site-header .zhaowu-header-utility,
+.zhaowu-site-header .zhaowu-header-login,
+.zhaowu-site-header .zhaowu-header-home-link {
+  min-height: 44px !important;
+}
+
+.zhaowu-home-sheet-shell :is(
+  .zhaowu-customer-record,
+  .zhaowu-bazi-stage,
+  .zhaowu-bazi-hub,
+  .zhaowu-question-stage,
+  .zhaowu-result-card,
+  .zhaowu-focused-report,
+  .zhaowu-unified-birth-report
+) {
+  background: #f7f3ea !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell :is(
+  .zhaowu-customer-record,
+  .zhaowu-bazi-stage,
+  .zhaowu-bazi-hub,
+  .zhaowu-question-stage,
+  .zhaowu-result-card,
+  .zhaowu-focused-report,
+  .zhaowu-unified-birth-report
+) {
+  background: #ebe5d9 !important;
+}
+
+@media (max-width: 780px) {
+  .zhaowu-site-header .site-lang-button,
+  .zhaowu-site-header .zhaowu-header-mode-toggle > button {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    font-size: 13px !important;
+  }
+  .zhaowu-site-header .zhaowu-header-utility,
+  .zhaowu-site-header .zhaowu-header-login {
+    min-height: 44px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .zhaowu-site-header .site-lang-button,
+  .zhaowu-site-header .zhaowu-header-mode-toggle > button {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    font-size: 13px !important;
+  }
+}
+
+
+/* r186 owner-mobile header: keep one quiet admin entry so the wordmark never collapses. */
+@media (max-width: 780px) {
+  .zhaowu-site-header .zhaowu-brand-link {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 72px !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  .zhaowu-site-header .zhaowu-brand-copy,
+  .zhaowu-site-header .zhaowu-brand-name {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  .zhaowu-site-header .zhaowu-header-gallery,
+  .zhaowu-site-header .zhaowu-header-signout {
+    display: none !important;
+  }
+  .zhaowu-site-header .zhaowu-header-account-actions {
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+  }
+}

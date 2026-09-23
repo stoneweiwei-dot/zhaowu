@@ -27,13 +27,11 @@ test.describe("iPhone Safari parchment application shell", () => {
       await expect(page.getByTestId("auspicious-emblem-scatter")).toHaveCount(0);
       const backgroundImage = await page.locator("body").evaluate((node) => getComputedStyle(node).backgroundImage);
       expect(backgroundImage).not.toBe("none");
-      const mark = page.locator("header .zhaowu-brand-seal__image");
-      const imageBox = await mark.boundingBox();
-      const frameBox = await page.locator("header .zhaowu-brand-seal").boundingBox();
-      expect(imageBox).not.toBeNull();
-      expect(frameBox).not.toBeNull();
-      expect(Math.abs(imageBox!.height - frameBox!.height)).toBeLessThanOrEqual(1);
-      expect(await mark.evaluate((node) => getComputedStyle(node).objectFit)).toBe("cover");
+      await expect(page.locator("header .zhaowu-brand-link")).toBeVisible();
+      await expect(page.locator("header .zhaowu-brand-seal")).toBeHidden();
+      await expect(page.locator("header .zhaowu-brand-name")).toBeVisible();
+      const wordmarkSize = await page.locator("header .zhaowu-brand-name").evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
+      expect(wordmarkSize).toBeGreaterThanOrEqual(20);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
   }
@@ -83,14 +81,8 @@ test.describe("iPhone Safari parchment application shell", () => {
       for (let i = 1; i < boxes.length; i += 1) expect(boxes[i]!.y).toBeGreaterThanOrEqual(boxes[i - 1]!.y + boxes[i - 1]!.height);
       const titleSize = await customer.locator("h2").evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
       expect(titleSize).toBeLessThanOrEqual(28);
-      await expect(page.locator("header .zhaowu-brand-seal__image")).toHaveAttribute("src", "/brand-ui/header-gourd-wordmark-r113.png");
-      const mark = page.locator("header .zhaowu-brand-seal__image");
-      const imageBox = await mark.boundingBox();
-      const frameBox = await page.locator("header .zhaowu-brand-seal").boundingBox();
-      expect(imageBox).not.toBeNull();
-      expect(frameBox).not.toBeNull();
-      expect(Math.abs(imageBox!.height - frameBox!.height)).toBeLessThanOrEqual(1);
-      expect(await mark.evaluate((node) => getComputedStyle(node).objectFit)).toBe("cover");
+      await expect(page.locator("header .zhaowu-brand-seal")).toBeHidden();
+      await expect(page.locator("header .zhaowu-brand-name")).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
   }

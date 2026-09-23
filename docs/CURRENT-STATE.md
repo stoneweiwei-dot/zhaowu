@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-23 20:36 AEST
+最後核對：2026-09-23 21:30 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -68,6 +68,9 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - 浮動 UI 只有青玉小龍；播放器控制整合在小龍內，不得掛第二個 fixed music dock。
 - 手機頁面不得要求左右拖動。
 - r185 起夜間模式必須按「表面」配色：米白／宣紙卡保持深墨正文；只有深松綠等暗色承載面使用月白字。禁止再用全域 night 文字變亮覆蓋整個 result flow。
+- r186 起首頁視覺採單一「宋式編輯排版」權威：禁止以大膠囊、大圓角卡片牆、深綠大色塊作主要資訊架構；Header 為細字導覽，Hero 以宋體＋留白＋細線構成，Disclosure 以分隔列呈現。
+- r186 核心閱讀面（生辰／命盤／問題／報告）統一為低圓角暖紙；Night mode 為墨色背景＋暖紙正文，不把整頁染成暗綠。
+- r186 青玉小龍維持唯一浮動入口，但入口縮至 44–46px、主動泡泡隱藏；展開面固定為小型底部抽屜，不得再覆蓋大半個 iPhone 畫面。
 
 ## 6. Loading／Login animation
 

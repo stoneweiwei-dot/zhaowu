@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r185",
-  updateNumber: 185,
-  publishedAt: "2026-09-23T20:36:00+10:00",
-  latestSummary: "iPhone 真機回歸修正：夜間模式改為依紙面／深色面分別配色，米白報告卡恢復深色正文；Supabase 清理狀態維持未完成，不再誤報。",
+  version: "ZW-WEB-2026.09.23-r186",
+  updateNumber: 186,
+  publishedAt: "2026-09-23T21:30:00+10:00",
+  latestSummary: "首頁視覺收口：移除膠囊與厚卡片感，改為宋式編輯排版；夜間使用墨色背景與暖紙閱讀面，青玉小龍改為小型抽屜。",
   details: {
     "zh-Hant": [
-      "夜間模式改成 surface-aware：米白宣紙卡固定深色正文，深松綠面才使用月白字，避免再次出現白字疊白底。",
-      "Supabase Storage 仍未完成實體清理；舊 cleanup executor 已停用，避免把 gallery_assets 仍引用的背景誤刪。",
+      "首頁改為宋式編輯排版：頂欄、Hero、今日指引與延伸內容去除大膠囊與厚圓角卡片，閱讀面改成低圓角暖紙。",
+      "Night mode 延續 surface-aware 對比並改成墨色背景＋暖紙正文；青玉小龍只保留小入口，展開為不遮滿畫面的底部抽屜。",
     ],
     en: [
-      "Night mode is now surface-aware: cream paper cards keep dark ink, while dark pine panels keep light ink, preventing light text on light paper.",
-      "Supabase Storage cleanup is still not physically complete; the old cleanup executor was retired to prevent deletion of background files still referenced by gallery metadata.",
+      "The home page now uses a restrained editorial layout: pill-heavy header controls and thick rounded cards are replaced with quiet typography, dividers, and low-radius warm paper reading surfaces.",
+      "Night mode keeps surface-aware contrast with an ink backdrop and warm paper content; Jade Dragon remains a small entry and opens as a compact bottom drawer.",
     ],
   },
 } as const;
