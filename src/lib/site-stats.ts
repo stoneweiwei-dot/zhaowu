@@ -15,10 +15,10 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r184",
-  updateNumber: 184,
-  publishedAt: "2026-09-23T20:00:00+10:00",
-  latestSummary: "iPhone 真機修正：首頁恢復一次性 Loading、夜間文字對比加強、報告改成主答案優先，分析過程收到底部判斷備註。",
+  version: "ZW-WEB-2026.09.23-r185",
+  updateNumber: 185,
+  publishedAt: "2026-09-23T21:30:00+10:00",
+  latestSummary: "視覺收口：移除膠囊與厚卡片感，首頁改為宋式編輯排版；夜間以墨色背景搭配暖紙閱讀面，青玉小龍改為小型抽屜。",
   details: {
     "zh-Hant": [
       "首頁恢復一次性 Loading；同一瀏覽器看過後 refresh／回訪不重播，/login 的站主動態舞台維持獨立。",
