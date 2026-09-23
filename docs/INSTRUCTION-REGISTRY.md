@@ -361,3 +361,13 @@
 - `vercel.json` 的 `git.deploymentEnabled` 必須使用 `"**": false` 與 `"main": true`；舊 `"*": false` 不足以可靠涵蓋帶 slash 的分支名。
 - `ignoreCommand` 再以 `VERCEL_GIT_COMMIT_REF != main → exit 0` 作第二道 fail-closed 配額護欄；main 上純 docs／Markdown／workflow 變更仍可跳過。
 - 不得為了 PR 驗證主動建立 Vercel Preview；PR 驗收由 GitHub Deploy gate、Engine suite、iPhone Safari 完成，合併 main 後只做一次 Production release。
+
+
+## 2026-09-23 r182 修仙命格靈測 × 本機命測圖
+
+- 站主最新明確指令：把「修仙入門靈箋／天機命冊」系列加入首頁「昭梧 · 心境小測」，作為獨立趣味世界觀測驗。
+- ACTIVE route：`/quiz/cultivation-destiny`。讀取同裝置已保存生辰，沿用既有 `buildChart()` 的八字／五行 truth；姓名／道號與 MBTI 只作顯示或低權重趣味修飾。
+- 靈根、宗門、峰脈、弟子身份、六維資質、九大道途、諸宗適性、道侶適性、三句機驗與修行命途屬仙俠世界觀轉譯；不得反向修改正式八字、喜用、格局、歲運或報告結論。
+- 八卦只按主五行作象徵映射；西洋星座僅取生日星座；紫微若未經現行校驗流程不得另造盤，本測驗明示保留旁證位而不偽造命身宮。
+- 結果圖固定 9:16（1080×1920），由瀏覽器本機 SVG → Canvas → PNG 生成並疊加 `STONE 原創`；不得寫入 Supabase Storage，不調用付費圖片 provider，不解除 r181 Storage write freeze。
+- 圖片匯出失敗不得阻塞文字結果；手機直式單欄優先，不新增橫向寬表。

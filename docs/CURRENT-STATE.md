@@ -140,3 +140,11 @@ r179 起，舊全站 `IntroGate` 已退出 active route tree。
 才可以把 STO-5／STO-20 標 Done。
 
 CI、PR merge、Preview、單純 Vercel READY、桌面 viewport、文件描述均不能單獨代替 Production＋真機證據。
+
+
+### r182 趣味測驗｜修仙命格靈測
+- 首頁「昭梧 · 心境小測」新增 `/quiz/cultivation-destiny`。
+- 來源：裝置既有生辰 → 現行 `buildChart()` 八字／五行 truth；MBTI 可選且低權重。
+- 輸出：靈根／品階、宗門峰脈、入門身份、六維、九大道途、諸宗適性、三句機驗、修行命途與 9:16 個人命測圖。
+- 命測圖完全在瀏覽器本機生成，不新增 Supabase Storage 寫入，不使用付費圖片 provider；r181 Storage freeze 維持。
+- 邊界：仙俠結果只作趣味世界觀，不修改正式命盤；紫微未經校驗時不補造盤面。
