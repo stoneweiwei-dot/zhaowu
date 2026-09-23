@@ -13,7 +13,7 @@ import {
 } from "@/lib/bridge/gallery-assets";
 import { LOGIN_VISUAL_CATALOG } from "@/lib/loading-gallery-catalog";
 import { loginVisualThemeFromTags, type LoginVisualTheme } from "@/lib/login-animation";
-import { SUPABASE_STORAGE_WRITES_PAUSED, STORAGE_WRITES_PAUSED_MESSAGE } from "@/lib/storage-write-policy";
+import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -82,7 +82,6 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   const copy = useMemo(() => ({
     kicker: "LOGIN VISUALS",
     title: tr(locale, "登入動畫管理", "登录动画管理", "Login visuals"),
-    lead: tr(locale, "這裡只顯示真正用於登入頁的影片與封面；網站 Loading、營運圖與介面小素材不會出現在這裡。", "这里只显示真正用于登录页的影片与封面；网站 Loading、运营图与界面小素材不会出现在这里。", "Only actual login-page videos and posters appear here. Loading assets, operational screenshots and UI artwork stay out of this list."),
     upload: tr(locale, "上傳登入動畫", "上传登录动画", "Upload login visual"),
     current: tr(locale, "目前使用中", "目前使用中", "Currently in use"),
     use: tr(locale, "設為目前使用", "设为目前使用", "Set as current"),
