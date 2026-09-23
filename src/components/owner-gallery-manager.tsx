@@ -10,7 +10,7 @@ import {
   type GalleryAsset,
 } from "@/lib/bridge/gallery-assets";
 import { isLoadingGalleryAsset, isPublicAtlasAsset } from "@/lib/gallery-groups";
-import { SUPABASE_STORAGE_WRITES_PAUSED, STORAGE_WRITES_PAUSED_MESSAGE } from "@/lib/storage-write-policy";
+import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
