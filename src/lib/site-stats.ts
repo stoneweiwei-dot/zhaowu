@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r181",
-  updateNumber: 181,
-  publishedAt: "2026-09-23T09:35:00+10:00",
-  latestSummary: "Supabase Storage 止血：新增 Storage 写入全部暂停，现有内容保持可读，公开主流程继续 fail-open。",
+  version: "ZW-WEB-2026.09.23-r182",
+  updateNumber: 182,
+  publishedAt: "2026-09-23T13:42:00+10:00",
+  latestSummary: "站主登入改為沉浸式全屏動態畫面＋輕量紙感底部登入層；登入權限、聲音控制與 Storage 寫入凍結維持不變。",
   details: {
     "zh-Hant": [
-      "Supabase Storage 新增寫入已暫停：背景、站主圖庫、登入素材與新命誥圖不再增加 Storage 用量。",
-      "現有內容仍可讀取與管理；公開首頁、命盤與文字報告繼續 fail-open，不依賴 Storage 恢復才可使用。",
+      "站主登入改成全屏動態主視覺，表單退到底部半透明紙感層，減少舊版置中卡片的生硬遮擋。",
+      "登入仍為 owner-only；聲音控制、站主 cookie、Storage 寫入凍結與公開 guest-first 主流程均未改動。",
     ],
     en: [
-      "New Supabase Storage writes are paused for backgrounds, owner gallery uploads, login visuals and new decree images.",
-      "Existing content remains readable and manageable; the public home, chart and text report stay fail-open while storage is being reduced.",
+      "Owner sign-in now uses a full-screen moving visual with a quieter frosted paper login sheet anchored low in the frame.",
+      "Owner-only auth, sound control, the Storage write freeze and the public guest-first flow are unchanged.",
     ],
   },
 } as const;
