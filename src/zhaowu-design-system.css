@@ -4070,3 +4070,303 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell :is(
     overflow: visible !important;
   }
 }
+
+/* r187 — English is a separate typographic/layout system, not translated Chinese.
+ * Latin text needs different metrics, line length, spacing and mobile flow.
+ */
+html[lang="en"] body {
+  font-family: "Avenir Next", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif !important;
+  font-kerning: normal;
+}
+
+html[lang="en"] :is(.font-display, .zhaowu-home-lead h1, .zhaowu-home-sheet-shell h2, .zhaowu-home-sheet-shell h3, .zhaowu-updates-page h1, [data-owner-console] h1, [data-owner-console] h2, [data-owner-gallery-console] h1, [data-owner-gallery-console] h2) {
+  font-family: "Iowan Old Style", Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif !important;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+}
+
+html[lang="en"] .zhaowu-home-lead > p,
+html[lang="en"] .zhaowu-section-kicker,
+html[lang="en"] .zhaowu-updates-kicker,
+html[lang="en"] [data-owner-console] :is(.text-cinnabar, .text-wood),
+html[lang="en"] [data-owner-gallery-console] :is(.text-cinnabar, .text-wood) {
+  letter-spacing: .105em !important;
+  text-transform: uppercase;
+}
+
+html[lang="en"] .zhaowu-home-lead h1 {
+  max-width: 15ch !important;
+  color: #29312d !important;
+  font-size: clamp(34px, 7.2vw, 52px) !important;
+  font-weight: 500 !important;
+  line-height: 1.08 !important;
+  letter-spacing: -.025em !important;
+  text-wrap: balance !important;
+}
+
+html[lang="en"][data-zw-theme="night"] .zhaowu-home-lead h1 {
+  color: #f0e7d8 !important;
+}
+
+html[lang="en"] .zhaowu-home-disclosure-trigger {
+  align-items: center !important;
+}
+
+html[lang="en"] .zhaowu-home-disclosure-trigger strong {
+  max-width: 28ch;
+  color: #32483f !important;
+  font-family: "Avenir Next", "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 650 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -.01em !important;
+  text-wrap: pretty;
+}
+
+html[lang="en"] .zhaowu-home-disclosure-trigger small {
+  max-width: 48ch;
+  color: #6d685f !important;
+  font-size: 12.5px !important;
+  line-height: 1.45 !important;
+  letter-spacing: 0 !important;
+}
+
+html[lang="en"] .zhaowu-home-sheet-shell :is(
+  .zhaowu-customer-record,
+  .zhaowu-bazi-stage,
+  .zhaowu-bazi-hub,
+  .zhaowu-question-stage
+) h2 {
+  font-family: "Iowan Old Style", Baskerville, Georgia, serif !important;
+  font-size: clamp(28px, 6vw, 38px) !important;
+  font-weight: 500 !important;
+  line-height: 1.08 !important;
+  letter-spacing: -.018em !important;
+}
+
+html[lang="en"] :is(button, a, label, summary, input, textarea, select) {
+  font-family: "Avenir Next", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+
+html[lang="en"] :is(button, a, label, summary) {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+html[lang="en"] :is(
+  .zhaowu-header-utility,
+  .zhaowu-header-login,
+  .zhaowu-header-home-link,
+  .zhaowu-latest-update-link,
+  .site-lang-button,
+  .zhaowu-header-mode-toggle > button
+) {
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+}
+
+html[lang="en"] .zhaowu-site-header .site-lang-button {
+  width: auto !important;
+  min-width: 64px !important;
+  padding-inline: 10px !important;
+}
+
+html[lang="en"] .zhaowu-site-header .zhaowu-header-mode-toggle > button {
+  width: auto !important;
+  min-width: 50px !important;
+  padding-inline: 9px !important;
+}
+
+/* English owner surfaces: information first, no translated-card look. */
+html[lang="en"] :is([data-owner-console], [data-owner-gallery-console], [data-owner-independent-console]) {
+  font-family: "Avenir Next", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif !important;
+  color: #292c29;
+}
+
+html[lang="en"] :is([data-owner-console], [data-owner-gallery-console], [data-owner-independent-console]) :is(h1, h2, h3) {
+  color: #252925 !important;
+  letter-spacing: -.018em !important;
+}
+
+html[lang="en"] :is([data-owner-console], [data-owner-gallery-console], [data-owner-independent-console]) :is(button, a, label, summary) {
+  min-height: 44px;
+  height: auto !important;
+  line-height: 1.18 !important;
+  white-space: normal !important;
+  text-align: center;
+}
+
+html[lang="en"] :is([data-owner-console], [data-owner-gallery-console]) [data-owner-storage-status] {
+  color: #796b58 !important;
+  letter-spacing: .02em !important;
+}
+
+html[lang="en"] :is([data-owner-console], [data-owner-gallery-console]) input {
+  min-width: 0 !important;
+  max-width: 100%;
+}
+
+/* English release page gets editorial Latin rhythm instead of CJK spacing. */
+html[lang="en"] .zhaowu-updates-page {
+  font-family: "Avenir Next", "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+html[lang="en"] .zhaowu-updates-page h1 {
+  max-width: 16ch;
+  font-size: clamp(34px, 7vw, 50px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -.025em !important;
+}
+
+html[lang="en"] .zhaowu-updates-lead,
+html[lang="en"] .zhaowu-updates-card li {
+  max-width: 62ch;
+  line-height: 1.62 !important;
+}
+
+@media (max-width: 780px) {
+  /* Chinese can stay compact. English needs a third row so long Latin labels never collide. */
+  html[lang="en"] .zhaowu-site-header .zhaowu-header-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0 !important;
+    width: 100% !important;
+    padding: 7px 16px 9px !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header .zhaowu-header-primary {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header [data-site-status-strip] {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    min-height: 36px !important;
+    justify-content: flex-start !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header .zhaowu-header-nav {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    border-top: 1px solid rgba(88, 72, 52, .12) !important;
+    padding-top: 4px !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header .site-lang-group {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header .zhaowu-header-mode-toggle {
+    flex: 0 0 auto !important;
+  }
+
+  html[lang="en"] .zhaowu-home-lead {
+    min-height: 300px !important;
+    padding-top: 52px !important;
+  }
+
+  html[lang="en"] .zhaowu-home-lead h1 {
+    max-width: 12.5ch !important;
+    font-size: clamp(33px, 9.1vw, 40px) !important;
+  }
+
+  html[lang="en"] :is([data-owner-console], [data-owner-gallery-console]) {
+    width: 100%;
+  }
+
+  html[lang="en"] :is([data-owner-console], [data-owner-gallery-console]) .font-display {
+    line-height: 1.05 !important;
+  }
+}
+
+@media (max-width: 520px) {
+  html[lang="en"] .zhaowu-site-header .zhaowu-header-primary {
+    gap: 8px !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header .zhaowu-brand-name {
+    font-size: 20px !important;
+    letter-spacing: .08em !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header .zhaowu-header-account-actions {
+    min-width: 0 !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header .zhaowu-header-utility,
+  html[lang="en"] .zhaowu-site-header .zhaowu-header-login {
+    max-width: 42vw;
+    padding-inline: 8px !important;
+    font-size: 12px !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header .zhaowu-latest-update-link {
+    font-size: 12px !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header .site-lang-button {
+    min-width: 70px !important;
+    font-size: 12.5px !important;
+  }
+
+  html[lang="en"] .zhaowu-site-header .zhaowu-header-mode-toggle > button {
+    min-width: 54px !important;
+    font-size: 12.5px !important;
+  }
+
+  html[lang="en"] .zhaowu-home-lead h1 {
+    max-width: 11.5ch !important;
+    font-size: clamp(31px, 8.5vw, 37px) !important;
+  }
+
+  html[lang="en"] .zhaowu-home-disclosure-trigger {
+    grid-template-columns: minmax(0, 1fr) 28px !important;
+  }
+
+  html[lang="en"] :is([data-owner-console], [data-owner-gallery-console]) [data-owner-bulk-toolbar] {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    gap: 7px !important;
+  }
+
+  html[lang="en"] :is([data-owner-console], [data-owner-gallery-console]) [data-owner-bulk-toolbar] > span {
+    grid-column: 1 / -1;
+  }
+
+  html[lang="en"] :is([data-owner-console], [data-owner-gallery-console]) [data-owner-bulk-toolbar] :is(button, label) {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 9px 8px !important;
+    font-size: 11.5px !important;
+  }
+
+  html[lang="en"] :is([data-owner-console], [data-owner-gallery-console]) :is(
+    [data-owner-selectable-file="report"],
+    [data-owner-selectable-file="background"],
+    [data-owner-selectable-file="gallery"],
+    [data-owner-selectable-file="login-visuals"]
+  ) {
+    min-width: 0 !important;
+  }
+
+  html[lang="en"] :is([data-owner-console], [data-owner-gallery-console]) :is(
+    [data-owner-selectable-file="report"],
+    [data-owner-selectable-file="background"],
+    [data-owner-selectable-file="gallery"],
+    [data-owner-selectable-file="login-visuals"]
+  ) :is(button, label, p, span) {
+    overflow-wrap: anywhere;
+  }
+}
+
