@@ -26,7 +26,7 @@ import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
 import { ReportDragonSticker } from "@/components/report-dragon-sticker";
 import { DecreeImageReason } from "@/components/decree-image-reason";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
-import { SUPABASE_STORAGE_WRITES_PAUSED, STORAGE_WRITES_PAUSED_MESSAGE } from "@/lib/storage-write-policy";
+import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 import type { ReportSection } from "@/lib/report/focused-report";
 import { TeaGuardianReport } from "@/components/tea-guardian-report";
 
@@ -252,7 +252,6 @@ function AccountPage() {
     batchDeleteReportsConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 筆報告？此操作不可復原。`, `删除已选的 ${n} 笔报告？此操作不可恢复。`, `Delete ${n} selected reports? This cannot be undone.`),
     batchReportsDeleted: (n: number) => tr(locale, `已刪除 ${n} 筆報告。`, `已删除 ${n} 笔报告。`, `Deleted ${n} reports.`),
     backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
-    backgroundLead: tr(locale, "預設每天輪播一張；固定壁紙與排程圖片仍優先，不會被每日輪播覆蓋。", "默认每天轮播一张；固定壁纸与排程图片仍优先，不会被每日轮播覆盖。", "One image rotates by default each day. Pinned and scheduled backgrounds keep priority."),
     latestImage: tr(locale, "最近一張", "最近一张", "Latest image"),
     viewHistory: (n: number) => tr(locale, `查看上傳歷史（${n}）`, `查看上传历史（${n}）`, `View upload history (${n})`),
     hideHistory: tr(locale, "收起上傳歷史", "收起上传历史", "Hide upload history"),
