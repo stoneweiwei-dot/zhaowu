@@ -23,11 +23,12 @@ const {
   markIntroSeen,
 } = await import('../src/lib/intro-gate-policy.ts');
 
-test('global intro is retired from the active route tree and login owns the animation', async () => {
+test('public home owns a one-time IntroGate while owner login keeps its independent cinematic stage', async () => {
   const login = await readFile(new URL('../src/routes/login.tsx', import.meta.url), 'utf8');
   assert.doesNotMatch(root, /IntroGate/);
-  assert.doesNotMatch(root, /<IntroGate\s*\/>/);
   assert.match(root, /<SiteShell>/);
+  assert.match(shell, /import \{ IntroGate \}/);
+  assert.match(shell, /\{isHome \? <IntroGate \/> : null\}/);
   assert.match(login, /LoginStageBackdrop/);
   assert.match(login, /stone-login-stage-media/);
   assert.match(login, /owner-immortal-ascent-r123\.mp4/);
@@ -107,7 +108,7 @@ test('real visitors receive the opening once per browser storage while force=1 s
   fake.setItem(INTRO_FORCE_KEY, '1');
   assert.equal(shouldSkipIntroGate(fake, false), false);
   assert.equal(shouldSkipIntroGate(fake, true), false);
-  assert.equal(INTRO_SEEN_KEY, 'zhaowu.intro.seen.r148');
+  assert.equal(INTRO_SEEN_KEY, 'zhaowu.intro.seen.public.v1');
   assert.equal(INTRO_BROKEN_KEY, 'zhaowu.intro.broken');
 });
 
