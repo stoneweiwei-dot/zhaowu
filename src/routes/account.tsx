@@ -202,8 +202,8 @@ function AccountPage() {
     reportReadError: tr(locale, "單筆報告讀取失敗。", "单笔报告读取失败。", "Could not load this report."),
     expired: tr(locale, "登入狀態已失效，請重新登入。", "登录状态已失效，请重新登录。", "Your session has expired. Sign in again."),
     birthData: tr(locale, "出生資料", "出生资料", "Birth profile"),
-    birthSaved: tr(locale, "已保存，可供下次分析回填。", "已保存，可供下次分析回填。", "Saved for the next analysis."),
-    birthEmpty: tr(locale, "尚未保存。", "尚未保存。", "Not saved yet."),
+    birthSaved: tr(locale, "已保存", "已保存", "Saved"),
+    birthEmpty: tr(locale, "未保存", "未保存", "Not saved"),
     reports: tr(locale, "報告", "报告", "Reports"),
     ownerCount: (n: number) => tr(locale, `目前 ${n} 筆`, `目前 ${n} 笔`, `${n} reports`),
     memberCount: (n: number) => tr(locale, `最近 ${n} 筆，最多顯示 3 筆`, `最近 ${n} 笔，最多显示 3 笔`, `${n} recent reports; up to 3 shown`),
@@ -222,7 +222,7 @@ function AccountPage() {
     chartSummary: tr(locale, "命盤摘要", "命盘摘要", "Chart summary"),
     dayMaster: tr(locale, "日主", "日主", "Day Master"),
     monthCommand: tr(locale, "月令", "月令", "Month command"),
-    finalSource: tr(locale, "最終答案來源：保存版本，不重新計算", "最终答案来源：保存版本，不重新计算", "Final answer source: saved version, no live recalculation"),
+    finalSource: tr(locale, "保存版本", "保存版本", "Saved version"),
     chartDone: tr(locale, "命盤完成", "命盘完成", "Chart ready"),
     chartPending: tr(locale, "命盤待生成", "命盘待生成", "Chart pending"),
     answerDone: tr(locale, "最終答案完成", "最终答案完成", "Final answer ready"),
@@ -578,29 +578,20 @@ function AccountPage() {
             <div>
               <p className="text-[10px] tracking-[0.22em] text-cinnabar">OWNER CONSOLE</p>
               <h1 className="mt-1 font-display text-3xl">{c.ownerTitle}</h1>
-              <p className="mt-2 text-sm leading-6 text-ink-soft">
-                {tr(locale, "管理網站內容、音樂與素材。技術診斷預設收起。", "管理网站内容、音乐与素材。技术诊断默认收起。", "Manage site content, music and media. Technical diagnostics stay collapsed.")}
-              </p>
+
             </div>
             <button type="button" onClick={() => void signOut()} className="shrink-0 rounded-full border border-line bg-paper/70 px-4 py-2 text-xs text-ink-soft">
               {tr(locale, "登出", "登出", "Sign out")}
             </button>
           </div>
-          <details className="mt-4 rounded-xl border border-line/70 bg-paper/30">
-            <summary className="cursor-pointer list-none px-4 py-3 text-xs text-ink-mute">
-              {tr(locale, "系統狀態", "系统状态", "System status")}
-            </summary>
-            <p className="border-t border-line/60 px-4 py-3 text-xs leading-5 text-ink-mute">
-              {tr(locale, "站主登入正常；部分依賴資料服務的舊功能目前暫停，恢復後會自動重新可用。", "站主登录正常；部分依赖数据服务的旧功能目前暂停，恢复后会自动重新可用。", "Owner sign-in is working. Some legacy data-backed tools are temporarily paused and will return automatically when the data service recovers.")}
-            </p>
-          </details>
+
         </section>
       </main>
     );
   }
 
   return (
-    <main className="mx-auto max-w-3xl space-y-5">
+    <main className="mx-auto max-w-3xl space-y-5" data-owner-console={user.isOwner ? "true" : undefined}>
       <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -640,8 +631,7 @@ function AccountPage() {
               <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => void onBackgroundUpload(e)} />
             </label>
           </div>
-          <p className="mt-3 text-xs leading-6 text-ink-mute">{c.backgroundLead}</p>
-          {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-2 rounded-lg border border-line bg-paper/55 px-3 py-2 text-xs leading-5 text-ink-soft">{locale === "en" ? STORAGE_WRITES_PAUSED_MESSAGE.en : locale === "zh-Hans" ? STORAGE_WRITES_PAUSED_MESSAGE["zh-Hans"] : STORAGE_WRITES_PAUSED_MESSAGE["zh-Hant"]}</p> : null}
+          {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-2 text-xs font-medium text-ink-mute" data-owner-storage-status>{tr(locale, "Storage 寫入暫停", "Storage 写入暂停", "Storage read-only")}</p> : null}
           {backgroundUploads.length ? (
             <div className="mt-3 space-y-2" aria-live="polite" aria-label={c.uploading}>
               {backgroundUploads.map((item) => {
