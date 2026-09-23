@@ -71,7 +71,7 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 
 ## 6. Loading／Login animation
 
-r184 依 2026-09-23 真 iPhone Safari 驗收修正：
+r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 
 - 首頁恢復 **一次性 Loading／IntroGate**；同一瀏覽器只在第一次進首頁顯示。
 - seen key 使用穩定的 `zhaowu.intro.seen.public.v1`；看過後 refresh、返回、一般路由與報告頁不得重播。
@@ -121,7 +121,7 @@ r184 依 2026-09-23 真 iPhone Safari 驗收修正：
 ### P0
 - 發布時必須確認 Vercel Production SHA = current main SHA。
 - STO-5／STO-20 真 iPhone Safari 最終實機驗收尚未完成。
-- Supabase Storage 超額仍未清理／遷移完成。
+- Supabase Storage 超額仍未清理完成；39 個已核對未引用候選尚待 Storage API 實體刪除與刪後用量復核。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。
