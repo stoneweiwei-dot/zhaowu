@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-23 09:35 AEST
+最後核對：2026-09-23 13:42 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -74,7 +74,7 @@ r179 起，舊全站 `IntroGate` 已退出 active route tree。
 - 首頁、重新整理、一般路由、報告頁與回訪都不得播放 opening/loading 動畫。
 - 動畫只屬於 `/login`；由 `LoginStageBackdrop` 顯示站主登入動畫。
 - `zhaowu.intro.force`、`zhaowu.intro.seen.r148` 與舊 IntroGate 元件可保留作歷史／回歸素材，但不得再影響公開 runtime。
-- Login 動畫保留可見聲音控制；iPhone Safari 仍需使用者手勢開聲。
+- Login 動畫保留可見聲音控制；iPhone Safari 仍需使用者手勢開聲。\n- r182 起登入視覺採全屏動態舞台＋底部輕量紙感登入層；只改呈現，不改 owner auth／cookie／session。\n- r181 Storage 寫入凍結期間，新上傳影片不得寫入 Supabase；登入 runtime 仍只使用已進正式 build 的 same-origin 素材。
 
 ## 7. Supabase
 
