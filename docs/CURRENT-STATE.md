@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-23 20:00 AEST
+最後核對：2026-09-23 21:30 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -62,6 +62,9 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
   2. `legacy-visual-compat.css`
   3. `zhaowu-design-system.css`
 - `zhaowu-design-system.css` 是最後 visual authority。
+- r185 視覺收口：首頁不再使用大膠囊／厚圓角卡片作主視覺；Header 改成兩行細字導覽，Hero 用宋式留白與單一水平線，Disclosure 改成編輯式分隔列。
+- Night mode 採「墨色背景＋暖紙閱讀面」；核心生辰／命盤／問題／報告不得再用綠底綠字或低透明字。
+- 青玉小龍只保留 44–46px 浮動入口；主動泡泡隱藏；展開後固定為底部小型抽屜，音樂／導覽／問答不得覆蓋大半個畫面。
 - 不再新增新的 `visual-hotfix-rXXX.css` 全域入口。
 - SiteShell 語言列不得用 inline style 與 canonical CSS 打架。
 - iPhone 優先；主要 touch target >=44px；表單控制文字 16px，避免 Safari auto zoom。
