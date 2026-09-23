@@ -4370,3 +4370,321 @@ html[lang="en"] .zhaowu-updates-card li {
   }
 }
 
+
+
+/* r188 — Song editorial skeleton + quiet comic translation layer.
+ * Comic surfaces explain, soften and share. They do not replace the formal chart/report hierarchy.
+ */
+.zhaowu-song-comic,
+.zhaowu-song-comic-share {
+  --comic-paper: #f8f2e7;
+  --comic-ink: #30332f;
+  --comic-muted: #716b61;
+  --comic-line: rgba(81, 66, 46, .18);
+  color: var(--comic-ink);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(201, 171, 113, .11), transparent 20%),
+    linear-gradient(180deg, rgba(255,255,255,.46), rgba(246,239,226,.74)),
+    var(--comic-paper);
+}
+
+.zhaowu-song-comic {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--comic-line);
+  border-radius: 10px;
+}
+
+.zhaowu-song-comic--today {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 28%);
+  align-items: center;
+  gap: 24px;
+  margin: 0 0 22px;
+  padding: 22px 24px;
+  box-shadow: 0 10px 30px rgba(70, 57, 39, .045);
+}
+
+.zhaowu-song-comic__copy {
+  min-width: 0;
+}
+
+.zhaowu-song-comic__kicker {
+  margin: 0 0 7px !important;
+  color: #6e806f !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  letter-spacing: .14em !important;
+}
+
+.zhaowu-song-comic--today h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 8px !important;
+  color: #2f3632 !important;
+  font-family: var(--font-display, serif);
+  font-size: clamp(23px, 5vw, 30px) !important;
+  font-weight: 560 !important;
+  line-height: 1.28 !important;
+}
+
+.zhaowu-song-comic--today h2 > span {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid rgba(73, 103, 91, .25);
+  border-radius: 50%;
+  color: #3a6254 !important;
+  background: rgba(218, 230, 220, .62);
+  font-size: 22px !important;
+}
+
+.zhaowu-song-comic__copy > p:not(.zhaowu-song-comic__kicker) {
+  max-width: 42rem;
+  margin: 0 !important;
+  color: #4c4b46 !important;
+  font-size: 15px !important;
+  line-height: 1.78 !important;
+}
+
+.zhaowu-song-comic__copy > small {
+  display: block;
+  margin-top: 10px;
+  color: var(--comic-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+
+.zhaowu-comic-mascot {
+  display: block;
+  width: min(100%, 210px);
+  height: auto;
+  justify-self: end;
+  filter: drop-shadow(0 5px 8px rgba(56, 49, 39, .045));
+}
+
+.zhaowu-comic-mascot.is-compact {
+  width: 132px;
+}
+
+.zhaowu-song-comic--report {
+  display: grid;
+  grid-template-columns: 145px minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  margin: 4px 0 16px;
+  padding: 18px 20px;
+  border-color: rgba(126, 102, 67, .18);
+  border-left: 3px solid rgba(91, 122, 103, .46);
+  border-radius: 6px;
+}
+
+.zhaowu-song-comic--report .zhaowu-song-comic__illustration {
+  display: grid;
+  place-items: center;
+  min-height: 126px;
+  border-right: 1px solid rgba(88, 72, 52, .10);
+}
+
+.zhaowu-song-comic--report h5 {
+  margin: 0 0 7px !important;
+  color: #2f3632 !important;
+  font-family: var(--font-display, serif);
+  font-size: 19px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+}
+
+.zhaowu-song-comic--report .zhaowu-song-comic__copy > p {
+  margin-bottom: 8px !important;
+  font-size: 14px !important;
+  line-height: 1.72 !important;
+}
+
+.zhaowu-song-comic--report .zhaowu-song-comic__copy > strong {
+  display: block;
+  margin-top: 6px;
+  color: #3b6658 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.58 !important;
+}
+
+.zhaowu-song-comic-share {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin-top: 16px;
+  border-top: 1px solid rgba(87, 68, 43, .14);
+  border-bottom: 1px solid rgba(87, 68, 43, .14);
+  padding: 14px 4px;
+  background: transparent;
+}
+
+.zhaowu-song-comic-share__art {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  width: 82px;
+  height: 82px;
+}
+
+.zhaowu-song-comic-share__art .zhaowu-comic-mascot.is-compact {
+  width: 94px;
+}
+
+.zhaowu-song-comic-share p,
+.zhaowu-song-comic-share strong,
+.zhaowu-song-comic-share span {
+  display: block;
+  margin: 0 !important;
+}
+
+.zhaowu-song-comic-share p {
+  color: #7a7165 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: .12em;
+}
+
+.zhaowu-song-comic-share strong {
+  margin-top: 3px !important;
+  color: #30332f !important;
+  font-family: var(--font-display, serif);
+  font-size: 17px !important;
+  line-height: 1.35 !important;
+}
+
+.zhaowu-song-comic-share span {
+  margin-top: 4px !important;
+  color: #666057 !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+
+.zhaowu-song-comic-share button {
+  min-width: 112px;
+  min-height: 44px;
+  border: 1px solid rgba(53, 91, 76, .24);
+  border-radius: 7px;
+  padding: 0 12px;
+  color: #315a4c;
+  background: rgba(244, 239, 226, .72);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+html[data-zw-theme="night"] :is(.zhaowu-song-comic, .zhaowu-song-comic-share) {
+  --comic-paper: #eee7d9;
+  --comic-ink: #2d2c28;
+  --comic-muted: #6e675d;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(188, 151, 94, .10), transparent 20%),
+    linear-gradient(180deg, rgba(255,255,255,.32), rgba(236,229,216,.92)),
+    var(--comic-paper) !important;
+  color: #2d2c28 !important;
+}
+
+html[data-zw-theme="night"] :is(.zhaowu-song-comic, .zhaowu-song-comic-share) :is(h2,h5,p,strong,span,small,button) {
+  color: #2d2c28 !important;
+  opacity: 1 !important;
+}
+
+html[lang="en"] .zhaowu-song-comic :is(h2,h5),
+html[lang="en"] .zhaowu-song-comic-share strong {
+  font-family: "Iowan Old Style", Baskerville, Georgia, serif !important;
+  letter-spacing: -.015em !important;
+}
+
+html[lang="en"] .zhaowu-song-comic__kicker,
+html[lang="en"] .zhaowu-song-comic-share p {
+  font-family: "Avenir Next", "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif !important;
+  letter-spacing: .09em !important;
+}
+
+@media (max-width: 640px) {
+  .zhaowu-song-comic--today {
+    grid-template-columns: minmax(0, 1fr) 118px;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 18px 16px;
+  }
+
+  .zhaowu-song-comic--today h2 {
+    font-size: 23px !important;
+  }
+
+  .zhaowu-song-comic--today h2 > span {
+    width: 34px;
+    height: 34px;
+    font-size: 20px !important;
+  }
+
+  .zhaowu-song-comic--today .zhaowu-song-comic__copy > p {
+    font-size: 14px !important;
+    line-height: 1.68 !important;
+  }
+
+  .zhaowu-comic-mascot {
+    width: 122px;
+  }
+
+  .zhaowu-song-comic--report {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px 14px;
+  }
+
+  .zhaowu-song-comic--report .zhaowu-song-comic__illustration {
+    min-height: 100px;
+  }
+
+  .zhaowu-song-comic--report .zhaowu-comic-mascot.is-compact {
+    width: 96px;
+  }
+
+  .zhaowu-song-comic-share {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 10px;
+    padding: 13px 0;
+  }
+
+  .zhaowu-song-comic-share__art {
+    width: 62px;
+    height: 62px;
+  }
+
+  .zhaowu-song-comic-share__art .zhaowu-comic-mascot.is-compact {
+    width: 74px;
+  }
+
+  .zhaowu-song-comic-share button {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-top: 2px;
+  }
+}
+
+@media (max-width: 390px) {
+  .zhaowu-song-comic--today {
+    grid-template-columns: minmax(0, 1fr) 98px;
+    padding: 16px 13px;
+  }
+
+  .zhaowu-song-comic--today .zhaowu-comic-mascot {
+    width: 102px;
+  }
+
+  .zhaowu-song-comic--report {
+    grid-template-columns: 1fr;
+  }
+
+  .zhaowu-song-comic--report .zhaowu-song-comic__illustration {
+    display: none;
+  }
+}
