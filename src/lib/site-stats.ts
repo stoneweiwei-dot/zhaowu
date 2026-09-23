@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r183",
-  updateNumber: 183,
-  publishedAt: "2026-09-23T14:08:00+10:00",
-  latestSummary: "站主登入改為沉浸式全屏動態舞台：影片保留為主畫面，登入操作退到底部輕量紙感層；owner-only 權限與 Storage freeze 不變。",
+  version: "ZW-WEB-2026.09.23-r184",
+  updateNumber: 184,
+  publishedAt: "2026-09-23T20:00:00+10:00",
+  latestSummary: "iPhone 真機修正：首頁恢復一次性 Loading、夜間文字對比加強、報告改成主答案優先，分析過程收到底部判斷備註。",
   details: {
     "zh-Hant": [
-      "站主登入改成全屏動態主視覺，表單退到底部半透明紙感層，讓動畫素材不再被置中大卡片遮住。",
-      "owner-only auth、聲音控制、r181 Storage freeze 與 r182 修仙命格靈測均維持不變。",
+      "首頁恢復一次性 Loading；同一瀏覽器看過後 refresh／回訪不重播，/login 的站主動態舞台維持獨立。",
+      "夜間模式提高主要／次要文字對比；完整分析改為最多三項補充重點，其餘依據與推演過程收進最下方判斷備註。",
     ],
     en: [
-      "Owner sign-in now uses a full-screen moving visual with a quieter frosted paper login sheet anchored low in the frame.",
-      "Owner-only auth, sound control, the Storage write freeze and the r182 Cultivation Destiny feature are unchanged.",
+      "The home page restores a one-time loading intro; refreshes and later visits in the same browser skip it, while the owner login stage remains separate.",
+      "Night-mode text contrast is raised and the report now keeps only up to three supporting points prominent, with reasoning moved into notes at the bottom.",
     ],
   },
 } as const;

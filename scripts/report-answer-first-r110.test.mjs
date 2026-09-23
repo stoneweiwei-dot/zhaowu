@@ -18,13 +18,19 @@ test('report keeps persisted summary/body contract while rendering an answer-fir
   assert.match(model, /sectionOrder/);
 });
 
-test('paid report opens with the exact user question and a two-sentence direct answer surface', () => {
-  assert.match(pages, /zhaowu-question-contract/);
-  assert.match(pages, /model\.contract\.sourceText/);
-  assert.match(pages, /model\.directAnswer/);
-  assert.match(pages, /DecisionCards/);
-  assert.ok(pages.indexOf('<DecisionCards') < pages.indexOf('<ChartSnapshot'));
-  assert.ok(pages.indexOf('<ChartSnapshot') < pages.indexOf('<ReportVisualBook'));
+test('paid report keeps the main answer dominant and moves deep reasoning into bottom notes', () => {
+  assert.match(resultView, /data-primary-answer/);
+  assert.match(resultView, /data-next-action/);
+  const primaryStart = resultView.indexOf('<article className="zhaowu-result-card');
+  const evidenceStart = resultView.indexOf('<details className="zhaowu-result-evidence');
+  const primary = resultView.slice(primaryStart, evidenceStart);
+  assert.doesNotMatch(primary, /data-answer-meta/);
+  assert.match(pages, /function PrioritySummary/);
+  assert.match(pages, /\.slice\(0, 3\)/);
+  assert.match(pages, /zhaowu-report-method-notes/);
+  assert.match(pages, /<ChartSnapshot result=\{result\}/);
+  assert.match(pages, /<EvidenceGovernancePanel result=\{result\}/);
+  assert.doesNotMatch(pages, /<DecisionCards result=/);
 });
 
 test('customer surface shows evidence status instead of birth-data-based confidence and hides unrelated body content', () => {
@@ -65,12 +71,15 @@ test('four-pillar snapshot keeps day master visually central and hides unavailab
 });
 
 
-test('homepage question result keeps the answer-first surface and technical chart details collapsed', () => {
+test('homepage question result keeps reasoning metadata inside collapsed evidence', () => {
   assert.match(resultView, /const decisionModel = buildDecisionReportModel\(result\)/);
   assert.match(resultView, /petDecision\?\.directAnswer \?\? decisionModel\.directAnswer/);
-  assert.match(resultView, /data-evidence-status/);
-  assert.match(resultView, /data-biggest-variable/);
-  assert.match(resultView, /<BaziChart chart=\{chart\} expandDetails=\{false\} \/>/);
+  assert.match(resultView, /<details className="zhaowu-result-evidence/);
+  const evidenceStart = resultView.indexOf('<details className="zhaowu-result-evidence');
+  const evidence = resultView.slice(evidenceStart);
+  assert.match(evidence, /data-evidence-status/);
+  assert.match(evidence, /data-biggest-variable/);
+  assert.match(evidence, /<BaziChart chart=\{chart\} expandDetails=\{false\} \/>/);
   assert.match(analysisForm, /<BaziChart chart=\{previewChart\} showHeader=\{false\} expandDetails=\{false\} \/>/);
   assert.doesNotMatch(analysisForm, /showHeader=\{false\} expandDetails\s*\/>/);
 });

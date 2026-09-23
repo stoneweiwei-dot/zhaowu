@@ -15,9 +15,9 @@ import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decre
 import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
 
 const RESULT_COPY = {
-  "zh-Hant": { syncFailed: "完整報告已整理完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "完整報告暫時未能生成。", saved: "完整報告已保存到同一筆記錄。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "查看完整分析", fullGenerating: "正在整理完整分析…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字答案與完整報告不受影響。", next: "最值得先做", evidence: "查看命盤依據", evidenceLead: "技術盤放在第二層；先看答案，需要時再展開。", decree: "命理解讀" },
-  "zh-Hans": { syncFailed: "完整报告已整理完成，但云端同步暂时失败；画面内容不受影响。", fullFailed: "完整报告暂时未能生成。", saved: "完整报告已保存到同一笔记录。", saveFailed: "保存失败。", saving: "保存中…", updateSaved: "更新已保存报告", fullGenerate: "查看完整分析", fullGenerating: "正在整理完整分析…", imageReady: "个人命象已生成并保存。", imageMatched: "已为你配对并保存图库命象。", imageLoadFailed: "命象图未能载入；文字答案与完整报告不受影响。", next: "最值得先做", evidence: "查看命盘依据", evidenceLead: "技术盘放在第二层；先看答案，需要时再展开。", decree: "命理解读" },
-  en: { syncFailed: "The full report is ready, but cloud sync failed temporarily. The report remains available on this page.", fullFailed: "The full report could not be generated right now.", saved: "The full report has been saved to this record.", saveFailed: "Saving failed.", saving: "Saving…", updateSaved: "Update saved report", fullGenerate: "View full analysis", fullGenerating: "Preparing your full analysis…", imageReady: "Your personal decree image has been generated and saved.", imageMatched: "Your matched gallery artwork has been saved.", imageLoadFailed: "The decree image could not be loaded. Your text answer and full report remain available.", next: "Best next step", evidence: "View chart evidence", evidenceLead: "Technical chart detail stays secondary. Read the answer first, then expand this only if useful.", decree: "Reading note" },
+  "zh-Hant": { syncFailed: "補充內容已整理完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "補充內容暫時未能生成。", saved: "完整報告已保存到同一筆記錄。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "查看補充重點", fullGenerating: "正在整理補充重點…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字答案與完整報告不受影響。", next: "最值得先做", evidence: "判斷備註", evidenceLead: "依據狀態、最大變數與技術盤放在這裡；不和主答案搶位置。", decree: "命理解讀" },
+  "zh-Hans": { syncFailed: "补充内容已整理完成，但云端同步暂时失败；画面内容不受影响。", fullFailed: "补充内容暂时未能生成。", saved: "完整报告已保存到同一笔记录。", saveFailed: "保存失败。", saving: "保存中…", updateSaved: "更新已保存报告", fullGenerate: "查看补充重点", fullGenerating: "正在整理补充重点…", imageReady: "个人命象已生成并保存。", imageMatched: "已为你配对并保存图库命象。", imageLoadFailed: "命象图未能载入；文字答案与完整报告不受影响。", next: "最值得先做", evidence: "判断备注", evidenceLead: "依据状态、最大变量与技术盘放在这里；不和主答案抢位置。", decree: "命理解读" },
+  en: { syncFailed: "The supporting notes are ready, but cloud sync failed temporarily. The page content remains available.", fullFailed: "The supporting notes could not be generated right now.", saved: "The full report has been saved to this record.", saveFailed: "Saving failed.", saving: "Saving…", updateSaved: "Update saved report", fullGenerate: "View key supporting points", fullGenerating: "Preparing key supporting points…", imageReady: "Your personal decree image has been generated and saved.", imageMatched: "Your matched gallery artwork has been saved.", imageLoadFailed: "The decree image could not be loaded. Your text answer and full report remain available.", next: "Best next step", evidence: "Reasoning notes", evidenceLead: "Evidence status, biggest variable and technical chart detail stay here, away from the main answer.", decree: "Reading note" },
 } as const;
 
 export function ResultView({ result }: { result: AnalysisResult }) {
@@ -134,16 +134,16 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <div className="mt-4 space-y-3 text-[15px] leading-8 text-ink-soft" data-primary-answer>
           {answerParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
         </div>
-        <div className="zhaowu-answer-meta mt-5" data-answer-meta>
-          <div data-evidence-status><span>{locale === "en" ? "Evidence status" : locale === "zh-Hans" ? "依据状态" : "依據狀態"}</span><b>{decisionModel.confidenceLabel}</b><small>{decisionModel.confidenceBasis}</small></div>
-          <div data-biggest-variable><span>{locale === "en" ? "Biggest variable" : locale === "zh-Hans" ? "最大现实变量" : "最大現實變數"}</span><b>{decisionModel.biggestVariable}</b></div>
-        </div>
         {nextAction ? <aside className="zhaowu-result-next mt-5 border-t border-line/70 pt-4" data-next-action><strong className="text-sm text-ink">{copy.next}</strong><p className="mt-1 text-[14px] leading-7 text-ink-soft">{nextAction}</p></aside> : null}
       </article>
 
       <details className="zhaowu-result-evidence seal-border rounded-xl bg-cream/90" data-technical-evidence>
         <summary className="cursor-pointer list-none px-5 py-4 sm:px-6"><strong>{copy.evidence}</strong><span className="mt-1 block text-xs leading-5 text-ink-mute">{copy.evidenceLead}</span></summary>
         <div className="space-y-5 border-t border-line/60 p-4 sm:p-6">
+          <div className="zhaowu-answer-meta zhaowu-answer-meta--notes" data-answer-meta>
+            <div data-evidence-status><span>{locale === "en" ? "Evidence status" : locale === "zh-Hans" ? "依据状态" : "依據狀態"}</span><b>{decisionModel.confidenceLabel}</b><small>{decisionModel.confidenceBasis}</small></div>
+            <div data-biggest-variable><span>{locale === "en" ? "Biggest variable" : locale === "zh-Hans" ? "最大现实变量" : "最大現實變數"}</span><b>{decisionModel.biggestVariable}</b></div>
+          </div>
           {decreeCouplet ? <div className="zhaowu-free-decree rounded-xl border border-line/60 p-4" data-free-decree><strong className="text-sm text-ink">{copy.decree}</strong><p className="mt-2 text-[14px] leading-7 text-ink-soft">{decreeCouplet}</p></div> : null}
           <BaziChart chart={chart} expandDetails={false} />
           <CharacterPanel chart={chart} question={question} portraitUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={session && user ? () => void onImage() : undefined} generating={busy === "image"} onImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />

@@ -45,9 +45,9 @@ test("full reports render answer first, then supporting detail and body attentio
 
   assert.match(renderer, /zhaowu-report-continuous-sheet/);
   assert.match(renderer, /continuousReportContent/);
-  assert.match(renderer, /zhaowu-question-contract/);
-  assert.match(renderer, /zhaowu-direct-answer/);
-  assert.match(renderer, /zhaowu-report-detail/);
+  assert.match(renderer, /function PrioritySummary/);
+  assert.match(renderer, /zhaowu-report-priority/);
+  assert.match(renderer, /zhaowu-report-method-notes/);
   assert.match(renderer, /zhaowu-report-body-block/);
   assert.doesNotMatch(renderer, /REPORT_ORNAMENTS|ReportDragonSticker|zhaowu-report-ornament|zhaowu-auspicious-rail/);
   assert.doesNotMatch(renderer, /padStart\(2, "0"\)/);
@@ -135,9 +135,12 @@ test("site shell keeps the approved Zhaowu lotus brand mark without random page-
   assert.match(seal, /aria-label=\{decorative \? undefined : "昭梧"\}/);
 });
 
-test("home opens without a blocking intro overlay", async () => {
+test("home has a one-time fail-open IntroGate instead of the retired loading assets", async () => {
   const shell = await source("src/components/site-shell.tsx");
-  assert.doesNotMatch(shell, /<IntroGate/);
+  const policy = await source("src/lib/intro-gate-policy.ts");
+  assert.match(shell, /\{isHome \? <IntroGate \/> : null\}/);
+  assert.match(policy, /zhaowu\.intro\.seen\.public\.v1/);
+  assert.match(policy, /INTRO_GATE_HARD_EXIT_MS = 8000/);
   assert.doesNotMatch(shell, /loading-v11\.mp4/);
   assert.doesNotMatch(shell, /loading-v10\.mp4/);
 });

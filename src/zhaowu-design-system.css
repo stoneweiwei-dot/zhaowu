@@ -2891,3 +2891,159 @@ html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen[data-login-s
     transform: none !important;
   }
 }
+
+/* r184 — iPhone acceptance: hierarchy first, reasoning last, night contrast floor. */
+.zhaowu-report-priority {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+.zhaowu-report-priority-kicker {
+  margin: 0 !important;
+  color: var(--zw-jade-deep) !important;
+  font-size: 12px !important;
+  font-weight: 760 !important;
+  letter-spacing: .12em;
+}
+.zhaowu-report-priority-list {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(76, 64, 47, .15);
+}
+.zhaowu-report-priority-list article {
+  display: grid;
+  gap: 5px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(76, 64, 47, .11);
+  background: transparent !important;
+}
+.zhaowu-report-priority-list strong {
+  color: var(--zw-ink) !important;
+  font-size: 14px !important;
+  font-weight: 760 !important;
+}
+.zhaowu-report-priority-list p {
+  margin: 0 !important;
+  color: var(--zw-ink-soft) !important;
+  font-size: 16px !important;
+  line-height: 1.72 !important;
+}
+
+.zhaowu-report-method-notes {
+  margin-top: 26px;
+  border-top: 1px solid var(--zw-line);
+  padding-top: 8px;
+  color: var(--zw-muted);
+}
+.zhaowu-report-method-notes > summary {
+  display: grid;
+  min-height: 48px;
+  align-content: center;
+  gap: 3px;
+  padding: 10px 0;
+  list-style: none;
+  cursor: pointer;
+  color: var(--zw-muted);
+}
+.zhaowu-report-method-notes > summary::-webkit-details-marker { display: none; }
+.zhaowu-report-method-notes > summary span {
+  color: var(--zw-ink-soft) !important;
+  font-size: 14px !important;
+  font-weight: 720 !important;
+}
+.zhaowu-report-method-notes > summary small {
+  color: var(--zw-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+.zhaowu-report-method-notes__body {
+  display: grid;
+  gap: 18px;
+  padding: 14px 0 2px;
+}
+.zhaowu-report-method-notes__body,
+.zhaowu-report-method-notes__body p,
+.zhaowu-report-method-notes__body li,
+.zhaowu-report-copy--notes p {
+  font-size: 13px !important;
+  line-height: 1.68 !important;
+}
+.zhaowu-report-method-lines {
+  display: grid;
+  gap: 14px;
+}
+.zhaowu-report-method-lines section {
+  border-left: 2px solid rgba(41, 75, 63, .24);
+  padding-left: 12px;
+}
+.zhaowu-report-method-lines h5 {
+  margin: 0 0 5px !important;
+  color: var(--zw-ink-soft) !important;
+  font-size: 13px !important;
+}
+.zhaowu-report-method-lines ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.zhaowu-answer-meta--notes {
+  margin-top: 0 !important;
+}
+.zhaowu-answer-meta--notes > div {
+  padding: 12px 14px !important;
+}
+.zhaowu-answer-meta--notes small {
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+.zhaowu-time-correction--notes {
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.65 !important;
+}
+
+html[data-zw-theme="night"] {
+  --zw-ink: #f4ead9;
+  --zw-ink-soft: #e2d7c4;
+  --zw-muted: #c6b9a4;
+  --zw-line: rgba(225, 201, 151, .24);
+}
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-result-flow .text-ink,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-focused-report .text-ink {
+  color: #f4ead9 !important;
+  opacity: 1 !important;
+}
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-result-flow .text-ink-soft,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-focused-report .text-ink-soft {
+  color: #e2d7c4 !important;
+  opacity: 1 !important;
+}
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-result-flow .text-ink-mute,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-focused-report .text-ink-mute {
+  color: #c6b9a4 !important;
+  opacity: 1 !important;
+}
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-result-flow :is(p, li, small, span, summary, strong, b, h2, h3, h4, h5),
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-focused-report :is(p, li, small, span, summary, strong, b, h3, h4, h5) {
+  opacity: 1 !important;
+}
+html[data-zw-theme="night"] .zhaowu-report-priority-kicker {
+  color: #d9b978 !important;
+}
+html[data-zw-theme="night"] .zhaowu-report-priority-list {
+  border-top-color: rgba(225, 201, 151, .22);
+}
+html[data-zw-theme="night"] .zhaowu-report-priority-list article {
+  border-bottom-color: rgba(225, 201, 151, .15);
+}
+html[data-zw-theme="night"] .zhaowu-report-method-notes {
+  border-top-color: rgba(225, 201, 151, .22);
+}
+html[data-zw-theme="night"] .zhaowu-report-method-notes__body {
+  color: #cfc2ad !important;
+}
+html[data-zw-theme="night"] .zhaowu-report-method-lines section {
+  border-left-color: rgba(212, 176, 116, .42);
+}
+
