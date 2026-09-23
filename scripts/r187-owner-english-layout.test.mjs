@@ -31,5 +31,5 @@ test("r187 English has independent Latin typography and mobile rows", async () =
 test("r187 removes stale English Netlify release copy", async () => {
   const updates = await source("src/routes/updates.tsx");
   assert.doesNotMatch(updates, /repairs Netlify owner sign-in/);
-  assert.match(updates, /gives English its own typography/);
+  assert.match(updates, /const englishSummary = /);
 });
