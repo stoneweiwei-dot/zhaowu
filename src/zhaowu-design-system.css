@@ -4042,3 +4042,31 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell :is(
     font-size: 13px !important;
   }
 }
+
+
+/* r186 owner-mobile header: keep one quiet admin entry so the wordmark never collapses. */
+@media (max-width: 780px) {
+  .zhaowu-site-header .zhaowu-brand-link {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 72px !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  .zhaowu-site-header .zhaowu-brand-copy,
+  .zhaowu-site-header .zhaowu-brand-name {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  .zhaowu-site-header .zhaowu-header-gallery,
+  .zhaowu-site-header .zhaowu-header-signout {
+    display: none !important;
+  }
+  .zhaowu-site-header .zhaowu-header-account-actions {
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+  }
+}
