@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r181",
-  updateNumber: 181,
-  publishedAt: "2026-09-23T09:35:00+10:00",
-  latestSummary: "Supabase Storage 止血：新增 Storage 写入全部暂停，现有内容保持可读，公开主流程继续 fail-open。",
+  version: "ZW-WEB-2026.09.23-r182",
+  updateNumber: 182,
+  publishedAt: "2026-09-23T13:43:00+10:00",
+  latestSummary: "心境小測新增「修仙命格靈測」：以既有生辰命盤推演仙俠世界觀結果，並在瀏覽器本機生成 9:16 個人命測圖。",
   details: {
     "zh-Hant": [
-      "Supabase Storage 新增寫入已暫停：背景、站主圖庫、登入素材與新命誥圖不再增加 Storage 用量。",
-      "現有內容仍可讀取與管理；公開首頁、命盤與文字報告繼續 fail-open，不依賴 Storage 恢復才可使用。",
+      "「昭梧 · 心境小測」新增修仙命格靈測：讀取已保存生辰與既有八字／五行結果，轉譯為靈根、宗門、峰脈、六維資質、道途與修行命途。",
+      "個人 9:16 命測圖改由瀏覽器本機生成 PNG，包含 STONE 原創署名，不寫入 Supabase Storage，也不消耗付費圖片 provider。",
     ],
     en: [
-      "New Supabase Storage writes are paused for backgrounds, owner gallery uploads, login visuals and new decree images.",
-      "Existing content remains readable and manageable; the public home, chart and text report stay fail-open while storage is being reduced.",
+      "Self Discovery now includes a Cultivation Destiny Dossier that translates the saved BaZi/Five-Element chart into a fictional spirit root, sect, aptitudes and cultivation paths.",
+      "The personal 9:16 dossier is rendered locally in the browser as a PNG with the STONE attribution, without Supabase Storage writes or paid image-provider usage.",
     ],
   },
 } as const;
