@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-23 14:08 AEST
+最後核對：2026-09-23 20:00 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -31,7 +31,8 @@
 - 七個公開專卷入口已退出 active path。
 - 專項 routes（紫微／七政／西占／印度古法／一掌等）保留作站主／內部能力與回歸驗證。
 - 首頁吉象圖鑑入口隱藏；獨立頁與站主圖庫保留。
-- 完整報告第一屏先回答使用者原問題；不得先堆術語。
+- 完整報告第一屏只保留原問題、1–3 句直接答案與最多一個現實下一步；可信度、最大變數、命盤與完整分析過程不得與主答案並排。
+- 「查看補充重點」最多顯示三項真正會改變判斷的內容；其餘推演、技術盤、完整 reasons/risks/timing/actions 一律收進最下方的「判斷備註」。
 - 新報告持久化契約仍為 `summary / body`；客戶前端只呈現一份連續閱讀層，不復活九頁／四卡／多 session。
 - 圖片／provider／背景失敗不得阻塞文字答案。
 - 身體內容只作傳統象義提醒，不作醫療診斷。
@@ -67,14 +68,15 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - 浮動 UI 只有青玉小龍；播放器控制整合在小龍內，不得掛第二個 fixed music dock。
 - 手機頁面不得要求左右拖動。
 
-## 6. Login animation
+## 6. Loading／Login animation
 
-r179 起，舊全站 `IntroGate` 已退出 active route tree。
+r184 依 2026-09-23 真 iPhone Safari 驗收修正：
 
-- 首頁、重新整理、一般路由、報告頁與回訪都不得播放 opening/loading 動畫。
-- 動畫只屬於 `/login`；由 `LoginStageBackdrop` 顯示站主登入動畫。
-- `zhaowu.intro.force`、`zhaowu.intro.seen.r148` 與舊 IntroGate 元件可保留作歷史／回歸素材，但不得再影響公開 runtime。
-- Login 動畫保留可見聲音控制；iPhone Safari 仍需使用者手勢開聲。\n- r183 起 `/login` 採全屏動態舞台＋底部輕量紙感登入層；只改呈現，不改 owner auth／cookie／session。\n- r181 Storage 寫入凍結期間，新上傳登入影片不得寫入 Supabase；runtime 仍只使用正式 build 內 same-origin 素材。
+- 首頁恢復 **一次性 Loading／IntroGate**；同一瀏覽器只在第一次進首頁顯示。
+- seen key 使用穩定的 `zhaowu.intro.seen.public.v1`；看過後 refresh、返回、一般路由與報告頁不得重播。
+- `zhaowu.intro.force=1` 仍可作測試強制顯示；初始化失敗必須 hard-exit／fail-open，不得白屏。
+- `/login` 仍保留 r183 的全屏動態站主登入舞台與聲音控制；首頁 Loading 與 Login 動畫是兩個不同用途，不得互相取代。
+- r181 Storage 寫入凍結期間，新上傳登入影片不得寫入 Supabase；runtime 仍只使用正式 build 內 same-origin 素材。
 
 ## 7. Supabase
 
@@ -131,9 +133,9 @@ r179 起，舊全站 `IntroGate` 已退出 active route tree。
 1. current main 的必要 CI／contract gate 通過；
 2. Vercel Production SHA = current main SHA；
 3. 正式站首頁／Login／出生表單／完整報告可用；
-4. 真 iPhone Safari 無白屏、橫向 overflow、safe-area／鍵盤遮擋、雙 floating UI；
+4. 真 iPhone Safari 無白屏、橫向 overflow、safe-area／鍵盤遮擋、雙 floating UI；夜間模式所有主要文字與次要文字均保持可讀對比；
 5. refresh／返回／前進／切 App／鎖屏恢復正常；
-6. 首頁及一般路由不再出現 IntroGate，且 /login 動畫與聲音控制正常；
+6. 首頁首次進入顯示一次 Loading；同一瀏覽器 refresh／回訪不重播；/login 動畫與聲音控制正常；
 7. owner login／session restore／logout 正常；
 8. Supabase 失效時公開核心流程仍 fail-open；
 
