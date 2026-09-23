@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-23 20:00 AEST
+最後核對：2026-09-23 20:36 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -67,10 +67,11 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - iPhone 優先；主要 touch target >=44px；表單控制文字 16px，避免 Safari auto zoom。
 - 浮動 UI 只有青玉小龍；播放器控制整合在小龍內，不得掛第二個 fixed music dock。
 - 手機頁面不得要求左右拖動。
+- r185 起夜間模式必須按「表面」配色：米白／宣紙卡保持深墨正文；只有深松綠等暗色承載面使用月白字。禁止再用全域 night 文字變亮覆蓋整個 result flow。
 
 ## 6. Loading／Login animation
 
-r184 依 2026-09-23 真 iPhone Safari 驗收修正：
+r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 
 - 首頁恢復 **一次性 Loading／IntroGate**；同一瀏覽器只在第一次進首頁顯示。
 - seen key 使用穩定的 `zhaowu.intro.seen.public.v1`；看過後 refresh、返回、一般路由與報告頁不得重播。
@@ -88,9 +89,11 @@ r184 依 2026-09-23 真 iPhone Safari 驗收修正：
 - r181 起 **所有新增 Supabase Storage 寫入已凍結**：背景、站主圖庫、登入素材、新命誥圖不得新增；現有內容仍可讀取／管理。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
 - 不得直接 SQL DELETE `storage.objects` 冒充刪除檔案。
-- 已確認第一批純垃圾候選：14 個未引用 audio 約 77.94 MB + 2 個未引用 gallery 原件約 0.99 MB；待 Storage delete 恢復後優先刪除。
-- backgrounds 約 611.5 MB、279 個 metadata row 目前全為 enabled=true，禁止整包刪；必須先冷備份／壓縮、停用 metadata、驗證無 runtime 引用後再刪。
-- 未完成搬遷／引用核對前，不刪 private report images、仍被 metadata reference 的資產或 rollback 必要原件。
+- 已確認第一批純垃圾候選：14 個未引用 audio 約 77.94 MB + 2 個未引用 gallery 原件約 0.99 MB；仍待可安全執行的 Storage API delete。
+- 另有 23 個 report-image objects 目前查不到 `report_requests.image_path`／`paid_visual_blueprints.result_path` 引用，但依現行保留規則仍屬 quarantine，未完成 rollback／歷史引用核對前不物理刪除。
+- 先前僅按 `background_assets` 判定出的 4 個「background orphan」其實仍被 `gallery_assets(bucket_id='zhaowu-backgrounds')` 以 enabled 資產引用，**禁止刪除**。
+- `admin-storage-cleanup-execute-once` v7 的候選解析漏掉上述 cross-bucket `gallery_assets` 引用，已在 Supabase 端升為 v8 410 retired stub 並重新要求 JWT；不得再啟用 v7 邏輯。Owner dry-run audit v10 已補上 cross-bucket reference。
+- backgrounds 約 611.5 MB、279 個 `background_assets` metadata row 目前全為 enabled=true；禁止整包刪。未完成搬遷／引用核對前，不刪 private report images、仍被任何 metadata reference 的資產或 rollback 必要原件。
 
 第二個 Supabase project `zhaowu-core` 目前 INACTIVE；不得擅自切 Production 過去。
 
@@ -118,7 +121,7 @@ r184 依 2026-09-23 真 iPhone Safari 驗收修正：
 ### P0
 - 發布時必須確認 Vercel Production SHA = current main SHA。
 - STO-5／STO-20 真 iPhone Safari 最終實機驗收尚未完成。
-- Supabase Storage 超額仍未清理／遷移完成。
+- Supabase Storage 超額仍未清理完成；39 個已核對未引用候選尚待 Storage API 實體刪除與刪後用量復核。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。

@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r184",
-  updateNumber: 184,
-  publishedAt: "2026-09-23T20:00:00+10:00",
-  latestSummary: "iPhone 真機修正：首頁恢復一次性 Loading、夜間文字對比加強、報告改成主答案優先，分析過程收到底部判斷備註。",
+  version: "ZW-WEB-2026.09.23-r185",
+  updateNumber: 185,
+  publishedAt: "2026-09-23T20:36:00+10:00",
+  latestSummary: "iPhone 真機回歸修正：夜間模式改為依紙面／深色面分別配色，米白報告卡恢復深色正文；Supabase 清理狀態維持未完成，不再誤報。",
   details: {
     "zh-Hant": [
-      "首頁恢復一次性 Loading；同一瀏覽器看過後 refresh／回訪不重播，/login 的站主動態舞台維持獨立。",
-      "夜間模式提高主要／次要文字對比；完整分析改為最多三項補充重點，其餘依據與推演過程收進最下方判斷備註。",
+      "夜間模式改成 surface-aware：米白宣紙卡固定深色正文，深松綠面才使用月白字，避免再次出現白字疊白底。",
+      "Supabase Storage 仍未完成實體清理；舊 cleanup executor 已停用，避免把 gallery_assets 仍引用的背景誤刪。",
     ],
     en: [
-      "The home page restores a one-time loading intro; refreshes and later visits in the same browser skip it, while the owner login stage remains separate.",
-      "Night-mode text contrast is raised and the report now keeps only up to three supporting points prominent, with reasoning moved into notes at the bottom.",
+      "Night mode is now surface-aware: cream paper cards keep dark ink, while dark pine panels keep light ink, preventing light text on light paper.",
+      "Supabase Storage cleanup is still not physically complete; the old cleanup executor was retired to prevent deletion of background files still referenced by gallery metadata.",
     ],
   },
 } as const;

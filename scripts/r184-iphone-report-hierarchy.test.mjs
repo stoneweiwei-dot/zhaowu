@@ -39,9 +39,10 @@ test("r184 limits prominent report support and moves reasoning to bottom notes",
   assert.doesNotMatch(report, /<DecisionCards result=/);
 });
 
-test("r184 night mode establishes a readable text contrast floor", async () => {
+test("r185 keeps paper surfaces dark-ink and dark metadata panels light-ink at night", async () => {
   const css = await source("src/zhaowu-design-system.css");
-  assert.match(css, /html\[data-zw-theme="night"\] \{[\s\S]*--zw-ink-soft: #e2d7c4/);
-  assert.match(css, /\.text-ink-mute[\s\S]*color: #c6b9a4 !important/);
-  assert.match(css, /opacity: 1 !important/);
+  assert.match(css, /\.zhaowu-result-flow \{[\s\S]*--zw-ink: #29251f;[\s\S]*--zw-ink-soft: #554e45;/);
+  assert.match(css, /\.zhaowu-result-flow \.text-ink-soft \{[\s\S]*color: #554e45 !important/);
+  assert.match(css, /\.zhaowu-answer-meta > div[\s\S]*color: #f1e8d8 !important/);
+  assert.doesNotMatch(css, /html\[data-zw-theme="night"\] \{\s*--zw-ink: #f4ead9/);
 });
