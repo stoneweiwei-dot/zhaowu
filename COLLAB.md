@@ -20,7 +20,7 @@
 5. [docs/SPEC.md](./docs/SPEC.md) — 历史产品／算法基线；不得覆盖 current master
 6. [docs/FOCUSED-REPORT.md](./docs/FOCUSED-REPORT.md) — 当前完整报告内容契约
 7. [docs/REPORT-VISUAL-SYSTEM.md](./docs/REPORT-VISUAL-SYSTEM.md) — 当前报告视觉阅读系统
-8. [docs/PAID-REPORT-STYLE-v1.0.md](./docs/PAID-REPORT-STYLE-v1.0.md) — 仍兼容时才使用的视觉风格资料
+8. [docs/PAID-REPORT-STYLE-v2.0.md](./docs/PAID-REPORT-STYLE-v2.0.md) — 現行完整報告與訂製畫共用敘事契約
 
 **旧 Issue、旧聊天、旧部署文件、旧 Library 接入片段与当前事实冲突时，不得照旧执行。先以当前 `main`、Vercel Production、Supabase 实况与当前指令 Registry 为准。**
 

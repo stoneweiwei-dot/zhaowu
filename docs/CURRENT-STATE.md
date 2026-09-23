@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-23 23:02 AEST
+最後核對：2026-09-23 23:36 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -34,6 +34,8 @@
 - 完整報告第一屏只保留原問題、1–3 句直接答案與最多一個現實下一步；可信度、最大變數、命盤與完整分析過程不得與主答案並排。
 - 「查看補充重點」最多顯示三項真正會改變判斷的內容；其餘推演、技術盤、完整 reasons/risks/timing/actions 一律收進最下方的「判斷備註」。
 - 新報告持久化契約仍為 `summary / body`；客戶前端只呈現一份連續閱讀層，不復活九頁／四卡／多 session。
+- r189 起，直接答案與補充重點之後生成一次「一盤一景」：專屬題名、統一場景、天地／場域／主體／出口、力量與代價、單一行動及可折疊證據映射。它仍屬同一份報告，不新增保存區塊。
+- 現行完整報告敘事契約為 `docs/PAID-REPORT-STYLE-v2.0.md`；v1.0 只作歷史參考。時辰未知時不得補造固定法器、晚景或精細應期。
 - 圖片／provider／背景失敗不得阻塞文字答案。
 - 身體內容只作傳統象義提醒，不作醫療診斷。
 
@@ -96,11 +98,12 @@ r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 - r181 起 **所有新增 Supabase Storage 寫入已凍結**：背景、站主圖庫、登入素材、新命誥圖不得新增；現有內容仍可讀取／管理。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
 - 不得直接 SQL DELETE `storage.objects` 冒充刪除檔案。
-- 已確認第一批純垃圾候選：14 個未引用 audio 約 77.94 MB + 2 個未引用 gallery 原件約 0.99 MB；仍待可安全執行的 Storage API delete。
-- 另有 23 個 report-image objects 目前查不到 `report_requests.image_path`／`paid_visual_blueprints.result_path` 引用，但依現行保留規則仍屬 quarantine，未完成 rollback／歷史引用核對前不物理刪除。
+- 已即時核對 39 個零引用候選：14 audio／2 gallery／23 report images，共 160,741,199 bytes；manifest SHA-256 = `e73337b3bc7119f78a014fd557f0970306e5cab04f792496a8995cbea8d5396e`。report images 已加查目前欄位、歷史 JSON、blueprint 與 settings，不再只是未覆核 quarantine。
+- 2026-09-23 兩條正式刪除路徑均被組織級限制拒絕：Edge Function 與直接 Storage API 都回 402，實際刪除數為 0。一次性精確路徑 policy 已撤銷；`admin-storage-cleanup-execute-once` v10 為 `verify_jwt=true` 的 410 retired stub。
+- Free 組織目前無零成本即時解鎖入口；不得擅自升級、解除消費上限或 SQL DELETE `storage.objects`。額度週期重置／限制解除後先重跑 live audit，manifest 完全一致才可用 Storage API remove，刪後再復算全桶實體用量。
 - 先前僅按 `background_assets` 判定出的 4 個「background orphan」其實仍被 `gallery_assets(bucket_id='zhaowu-backgrounds')` 以 enabled 資產引用，**禁止刪除**。
-- `admin-storage-cleanup-execute-once` v7 的候選解析漏掉上述 cross-bucket `gallery_assets` 引用，已在 Supabase 端升為 v8 410 retired stub 並重新要求 JWT；不得再啟用 v7 邏輯。Owner dry-run audit v10 已補上 cross-bucket reference。
-- backgrounds 約 611.5 MB、279 個 `background_assets` metadata row 目前全為 enabled=true；禁止整包刪。未完成搬遷／引用核對前，不刪 private report images、仍被任何 metadata reference 的資產或 rollback 必要原件。
+- `admin-storage-cleanup-execute-once` v7 的候選解析漏掉上述 cross-bucket `gallery_assets` 引用；不得再啟用 v7 邏輯。現行 v10 為 410 retired stub 並要求 JWT；Owner dry-run audit v10 已補上 cross-bucket reference。
+- 刪除前 live 實體基線為 1,196,144,352 bytes：backgrounds 291 objects／627,245,539 bytes、gallery 249／370,798,037、report images 33／116,286,938、audio 15／81,813,838。279 個 `background_assets` metadata row 目前全為 enabled=true；禁止整包刪。未完成搬遷／引用核對前，不刪 private report images、仍被任何 metadata reference 的資產或 rollback 必要原件。
 
 第二個 Supabase project `zhaowu-core` 目前 INACTIVE；不得擅自切 Production 過去。
 

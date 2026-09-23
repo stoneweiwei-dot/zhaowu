@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r188",
-  updateNumber: 188,
-  publishedAt: "2026-09-23T23:02:00+10:00",
-  latestSummary: "宋式小漫畫融合層：保留宋式紙本骨架，只在首頁、命書術語插頁與分享卡加入清新手繪漫畫，讓專業內容更好懂但不變成卡片牆。",
+  version: "ZW-WEB-2026.09.23-r189",
+  updateNumber: 189,
+  publishedAt: "2026-09-23T23:36:00+10:00",
+  latestSummary: "完整報告正式加入一盤一景：先保留問題直答，再把同一命局收成專屬題名、統一場景、力量與代價、現實行動及可反查證據。",
   details: {
     "zh-Hant": [
-      "首頁新增「今日一格」：用當日天干的小漫畫先把抽象象意講人話，但正式排盤與今日黃曆仍由原引擎負責。",
-      "昭梧命書只在核心底盤後插入一個白話漫畫頁，並提供可分享一格；漫畫是翻譯層，不改動命盤、格局或推演 truth。",
+      "完整報告仍先回答原問題，再生成一次專屬題名與統一場景；天地、場域、主體、出口、力量、代價與行動都沿用同一份命局證據。",
+      "時辰未知時主動降級，不補造固定法器或晚景；圖片失敗或未生成也不影響文字完整交付。",
     ],
     en: [
-      "The home page now adds one quiet daily comic frame based on the day stem, while the formal chart and almanac remain authoritative.",
-      "The Destiny Book adds one plain-language comic insert after the core structure plus a shareable frame; the comic layer never changes chart or interpretation truth.",
+      "The full report still answers the original question first, then creates one personal title and one continuous scene grounded in the same chart evidence.",
+      "An unknown birth hour now explicitly limits the future outlet; the written report remains complete even when no image is generated.",
     ],
   },
 } as const;

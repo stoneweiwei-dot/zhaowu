@@ -381,3 +381,14 @@
 - 已證實 4 個曾被誤判為 background orphan 的物件仍是 enabled `gallery_assets` 引用，禁止刪除。
 - 舊 `admin-storage-cleanup-execute-once` v7 因漏查 cross-bucket 引用退出 active path；v8 為 410 retired stub。任何新清理 executor 必須重新即時核對所有引用並使用 Storage API remove，不得 SQL DELETE `storage.objects`。
 - Storage 實體用量在真正刪除並重新量測以前一律視為未改善；不得把 audit、freeze、程式修正或部署狀態寫成「Supabase 已修好」。
+
+
+## 2026-09-23 r189 完整報告一盤一景 × Storage 402 實況
+
+- ACTIVE：`ZW-PAID-ART-REPORT-2.0` 取代 v1.x 成為網站完整報告與最高檔訂製畫共用的敘事契約；v1.0 只留歷史參考。
+- 完整報告仍只保留一份連續 `summary / body`；首屏原問題、1–3 句直接答案與最多一個下一步不變。其後只生成一次「一盤一景」：專屬題名、統一場景、天地／場域／主體／出口、力量與代價、單一行動及可折疊證據映射。
+- 一盤一景只消費 canonical chart、final reading、Question Contract 與相關歲運；不得自行重算命盤、用固定干支物件表新增結論，或恢復九頁／十五頁／多 session。
+- 時辰未知時，未來出口必須降級；不得補造固定法器、晚景或精細應期。圖像仍是附件，失敗不得阻塞文字報告。
+- Supabase 重新即時核對出 39 個零引用候選，共 160,741,199 bytes；manifest SHA-256 = `e73337b3bc7119f78a014fd557f0970306e5cab04f792496a8995cbea8d5396e`。14 audio／2 gallery／23 report images 均已核對目前欄位、歷史 JSON、blueprint 與 settings 引用；4 個 cross-bucket background 正式資產仍受保護。
+- Edge Function 與直接 Storage API delete 都被組織級 `402 exceed_storage_size_quota` 在函式／Storage 執行前拒絕，所以實際刪除數仍為 0。一次性 anon 精確路徑 policy 已立即撤銷；`admin-storage-cleanup-execute-once` 已升為 v10、`verify_jwt=true`、410 retired stub。
+- Free 組織限制下不得 SQL DELETE `storage.objects`、不得為解鎖擅自升級或解除消費上限。限制解除／額度週期重置後，必須重跑 live audit，只有 manifest 仍完全一致才可走 Storage API remove，然後復算全桶實體容量。

@@ -3,11 +3,14 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const styleSource = await readFile(new URL('../src/lib/report/paid-report-style.ts', import.meta.url), 'utf8');
-const docsSource = await readFile(new URL('../docs/PAID-REPORT-STYLE-v1.0.md', import.meta.url), 'utf8');
+const narrativeSource = await readFile(new URL('../src/lib/report/personal-narrative.ts', import.meta.url), 'utf8');
+const focusedSource = await readFile(new URL('../src/lib/report/focused-report.ts', import.meta.url), 'utf8');
+const reportUiSource = await readFile(new URL('../src/components/paid-report-pages.tsx', import.meta.url), 'utf8');
+const docsSource = await readFile(new URL('../docs/PAID-REPORT-STYLE-v2.0.md', import.meta.url), 'utf8');
 
 test('paid report style contract is production-locked', () => {
   for (const required of [
-    'ZW-PAID-ART-REPORT-1.0',
+    'ZW-PAID-ART-REPORT-2.0',
     '命局证据 → 命理作用 → 人生含义 → 视觉象征',
     '9:16 iPhone优先',
     'STONE 原創',
@@ -18,22 +21,35 @@ test('paid report style contract is production-locked', () => {
 });
 
 test('documentation and code use the same paid report contract id', () => {
-  assert.match(docsSource, /ZW-PAID-ART-REPORT-1\.0/);
-  assert.match(docsSource, /判断先于绘画/);
-  assert.match(docsSource, /任何关键项失败：\*\*不得作为收费版交付。\*\*/);
+  assert.match(docsSource, /ZW-PAID-ART-REPORT-2\.0/);
+  assert.match(docsSource, /判斷先於敘事/);
+  assert.match(docsSource, /任何關鍵項失敗：\*\*不得作為收費版交付。\*\*/);
 });
 
 test('premium composition formula is locked in both contract and docs', () => {
   for (const required of [
-    '年干 = 天空气质、色温、光线性格',
-    '月支 = 主空间类型',
-    '日干 = 性情与精神质地',
-    '法器必须结合全局喜用',
-    '一幅统一画面',
+    '最終敘事是一個場景，不是四張拼貼卡',
+    '天地／年柱',
+    '場域／月柱',
+    '主體／日柱',
+    '出口／時柱',
+    '法器不得由「某干支＝某物件」死表生成',
+    '時辰未知時不補造未來、晚景或固定法器',
   ]) {
     assert.match(docsSource, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.match(styleSource, /compositionFormula/);
   assert.match(styleSource, /年干=天空气质与色温，年支=远景地貌/);
   assert.match(styleSource, /时干只提供法器的五行质地/);
+});
+
+test('one-chart-one-scene contract is wired into the current continuous report', () => {
+  assert.match(styleSource, /reportArchitecture/);
+  assert.doesNotMatch(styleSource, /pageArchitecture/);
+  assert.match(styleSource, /首屏直接答案仍在最前/);
+  assert.match(styleSource, /不恢复固定九页／多 session/);
+  assert.match(narrativeSource, /buildPersonalReportNarrative/);
+  assert.match(narrativeSource, /命局证据|How the image is grounded|畫面如何反查命局/);
+  assert.match(focusedSource, /narrative: buildPersonalReportNarrative\(result\)/);
+  assert.match(reportUiSource, /<NarrativePlate narrative=\{narrative\}/);
 });

@@ -33,6 +33,7 @@ import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as FunTestsEarthOnlineRouteImport } from './routes/fun-tests.earth-online'
 import { Route as KnowledgeShushuBoundaryRouteImport } from './routes/knowledge.shushu-boundary'
 import { Route as KnowledgeSystemMapRouteImport } from './routes/knowledge.system-map'
+import { Route as QuizCultivationDestinyRouteImport } from './routes/quiz.cultivation-destiny'
 import { Route as QuizDivineAffinityRouteImport } from './routes/quiz.divine-affinity'
 import { Route as QuizFiveElementOverdriveRouteImport } from './routes/quiz.five-element-overdrive'
 import { Route as QuizSixRealmsRouteImport } from './routes/quiz.six-realms'
@@ -157,6 +158,11 @@ const KnowledgeSystemMapRoute = KnowledgeSystemMapRouteImport.update({
   path: '/system-map',
   getParentRoute: () => KnowledgeRoute,
 } as any)
+const QuizCultivationDestinyRoute = QuizCultivationDestinyRouteImport.update({
+  id: '/quiz/cultivation-destiny',
+  path: '/quiz/cultivation-destiny',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuizDivineAffinityRoute = QuizDivineAffinityRouteImport.update({
   id: '/quiz/divine-affinity',
   path: '/quiz/divine-affinity',
@@ -199,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
+  '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
   '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
   '/quiz/six-realms': typeof QuizSixRealmsRoute
@@ -228,6 +235,7 @@ export interface FileRoutesByTo {
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
+  '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
   '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
   '/quiz/six-realms': typeof QuizSixRealmsRoute
@@ -258,6 +266,7 @@ export interface FileRoutesById {
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
+  '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
   '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
   '/quiz/six-realms': typeof QuizSixRealmsRoute
@@ -289,6 +298,7 @@ export interface FileRouteTypes {
     | '/fun-tests/earth-online'
     | '/knowledge/shushu-boundary'
     | '/knowledge/system-map'
+    | '/quiz/cultivation-destiny'
     | '/quiz/divine-affinity'
     | '/quiz/five-element-overdrive'
     | '/quiz/six-realms'
@@ -318,6 +328,7 @@ export interface FileRouteTypes {
     | '/fun-tests/earth-online'
     | '/knowledge/shushu-boundary'
     | '/knowledge/system-map'
+    | '/quiz/cultivation-destiny'
     | '/quiz/divine-affinity'
     | '/quiz/five-element-overdrive'
     | '/quiz/six-realms'
@@ -347,6 +358,7 @@ export interface FileRouteTypes {
     | '/fun-tests/earth-online'
     | '/knowledge/shushu-boundary'
     | '/knowledge/system-map'
+    | '/quiz/cultivation-destiny'
     | '/quiz/divine-affinity'
     | '/quiz/five-element-overdrive'
     | '/quiz/six-realms'
@@ -374,6 +386,7 @@ export interface RootRouteChildren {
   YizhangjingRoute: typeof YizhangjingRoute
   ZiweiRoute: typeof ZiweiRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  QuizCultivationDestinyRoute: typeof QuizCultivationDestinyRoute
   QuizDivineAffinityRoute: typeof QuizDivineAffinityRoute
   QuizFiveElementOverdriveRoute: typeof QuizFiveElementOverdriveRoute
   QuizSixRealmsRoute: typeof QuizSixRealmsRoute
@@ -549,6 +562,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KnowledgeSystemMapRouteImport
       parentRoute: typeof KnowledgeRoute
     }
+    '/quiz/cultivation-destiny': {
+      id: '/quiz/cultivation-destiny'
+      path: '/quiz/cultivation-destiny'
+      fullPath: '/quiz/cultivation-destiny'
+      preLoaderRoute: typeof QuizCultivationDestinyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quiz/divine-affinity': {
       id: '/quiz/divine-affinity'
       path: '/quiz/divine-affinity'
@@ -621,6 +641,7 @@ const rootRouteChildren: RootRouteChildren = {
   YizhangjingRoute: YizhangjingRoute,
   ZiweiRoute: ZiweiRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  QuizCultivationDestinyRoute: QuizCultivationDestinyRoute,
   QuizDivineAffinityRoute: QuizDivineAffinityRoute,
   QuizFiveElementOverdriveRoute: QuizFiveElementOverdriveRoute,
   QuizSixRealmsRoute: QuizSixRealmsRoute,

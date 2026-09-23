@@ -8,6 +8,10 @@ import { ReportLuckBook } from "@/components/report-luck-book";
 import { ReportShareCard } from "@/components/report-share-card";
 import { EvidenceGovernancePanel } from "@/components/evidence-governance-panel";
 import { FiveElementTrainingBlock } from "@/components/five-element-training-block";
+import {
+  buildPersonalReportNarrative,
+  type PersonalReportNarrative,
+} from "@/lib/report/personal-narrative";
 
 const COPY = {
   "zh-Hant": {
@@ -250,6 +254,48 @@ function PrioritySummary({ result, locale }: { result: AnalysisResult; locale: L
   );
 }
 
+function NarrativePlate({ narrative }: { narrative: PersonalReportNarrative }) {
+  return (
+    <section className="zhaowu-report-narrative" aria-labelledby="zhaowu-report-narrative-title">
+      <header className="zhaowu-report-narrative__head">
+        <p>{narrative.kicker}</p>
+        <h4 id="zhaowu-report-narrative-title">{narrative.heading}</h4>
+        <strong>{narrative.title}</strong>
+        <span>{narrative.scene}</span>
+      </header>
+
+      <div className="zhaowu-report-narrative__roles">
+        {narrative.roles.map((role) => (
+          <article key={role.key}>
+            <h5>{role.label}</h5>
+            <p>{role.body}</p>
+          </article>
+        ))}
+      </div>
+
+      <div className="zhaowu-report-narrative__balance">
+        <article><h5>{narrative.strengthLabel}</h5><p>{narrative.strength}</p></article>
+        <article><h5>{narrative.costLabel}</h5><p>{narrative.cost}</p></article>
+      </div>
+
+      <aside className="zhaowu-report-narrative__action">
+        <h5>{narrative.actionLabel}</h5>
+        <p>{narrative.action}</p>
+      </aside>
+
+      <details className="zhaowu-report-narrative__evidence">
+        <summary>{narrative.evidenceHeading}</summary>
+        <div>
+          {narrative.evidence.map((item) => (
+            <p key={`${item.label}-${item.trace}`}><strong>{item.label}</strong><span>{item.trace}</span></p>
+          ))}
+          <small>{narrative.disclaimer}</small>
+        </div>
+      </details>
+    </section>
+  );
+}
+
 function AnalysisNotes({
   result,
   locale,
@@ -325,6 +371,8 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
   const copy = COPY[locale];
   const content = continuousReportContent(sections, locale);
   const model = result ? buildDecisionReportModel(result) : null;
+  const narrative = sections.find((section) => section.key === "summary")?.narrative
+    ?? (result ? buildPersonalReportNarrative(result) : null);
   const directFull = result ? normalizeReportLine(customerDirectAnswer(result.question, result.reading.directAnswer)) : "";
   const supportingSummary = content.summary.filter((line) => normalizeReportLine(line) !== directFull);
   const showLuck = Boolean(model?.supportingModules.includes("luck"));
@@ -343,6 +391,8 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
       </header>
 
       {result ? <PrioritySummary result={result} locale={locale} /> : null}
+
+      {narrative ? <NarrativePlate narrative={narrative} /> : null}
 
       {fallbackPriority.length ? (
         <section className="zhaowu-report-priority" aria-label={copy.keyPoints}>
