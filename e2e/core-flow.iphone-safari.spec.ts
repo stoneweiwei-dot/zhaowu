@@ -225,6 +225,12 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("[data-next-action]")).toBeVisible();
     await expect(page.locator("[data-dragon-bubble]")).toContainText("剛看完你的分析");
     await expect(page.locator("[data-technical-evidence]")).not.toHaveAttribute("open", "");
+    await page.getByRole("button", { name: "查看補充重點", exact: true }).click();
+    const narrative = page.locator(".zhaowu-report-narrative");
+    await expect(narrative).toHaveCount(1);
+    await expect(narrative).toBeVisible();
+    await expect(narrative.locator(".zhaowu-report-narrative__roles > article")).toHaveCount(4);
+    await expect(narrative.locator(".zhaowu-report-narrative__evidence")).not.toHaveAttribute("open", "");
     await expect(page.locator('[data-owner-login-entry="true"]')).toBeVisible();
     await expect(page.locator(".zhaowu-header-login")).toHaveCount(0);
     await expectMobileViewportHealthy(page);

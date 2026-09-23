@@ -1,5 +1,7 @@
 # 昭梧・四柱绘意报告风 v1.0
 
+> 歷史版本：自 r189 起由 [v2.0](./PAID-REPORT-STYLE-v2.0.md) 取代，不再作為網站完整報告的 active 契約。
+
 内部代号：`ZW-PAID-ART-REPORT-1.0`
 
 ## 定位

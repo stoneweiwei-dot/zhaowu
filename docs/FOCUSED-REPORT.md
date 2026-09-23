@@ -2,6 +2,8 @@
 
 > 2026-09-11 更新：本版把「先答問題」提升為完整報告的最高呈現規則。Supabase／歷史記錄仍維持 `summary / body` 內容契約，前端則由可驗證資料派生 `Question Contract + Decision Report Model`，不恢復舊 01–09 多 session。
 
+> 2026-09-23 r189 更新：完整報告在直接答案與補充重點之後，加入一次「一盤一景」人生敘事。現行視覺／敘事細則以 [PAID-REPORT-STYLE-v2.0](./PAID-REPORT-STYLE-v2.0.md) 為準；它是同一份連續報告的一部分，不是第二份報告或九頁模板。
+
 ## 1. 核心原則
 
 完整報告的閱讀順序固定為：
@@ -72,6 +74,15 @@ Question Contract 只做路由與呈現，不重新計算八字，不修改 dete
 舊 `conclusion / basis / timing / action / relationship / ninePages` 只讀相容，不得恢復成新生成主契約。
 
 前端可以把同一份已生成內容派生成回答卡、四柱快照、五行視圖、大運視圖等，但不得為了 UI 再呼叫模型生成互相矛盾的多份答案。
+
+### 4.1 一盤一景敘事
+
+- `summary` 可攜帶一個由同一份 `AnalysisResult` 派生的 `narrative`；持久化主結構仍只有 `summary / body`。
+- 題名、天地、場域、主體、出口、力量、代價、行動與證據映射只生成一次。
+- 敘事只能消費 canonical chart、final reading、Question Contract 與已接入歲運結果，不自行重算命盤或新增結論。
+- 時辰未知時，出口必須明確降級，不生成固定法器、晚景或精細應期。
+- 首屏直接答案與唯一下一步仍在敘事之前；敘事不得把答案改寫成象徵語言。
+- 圖片是可選附加交付。沒有圖片、provider 失敗或 Storage 凍結時，文字敘事與完整報告仍須成立。
 
 ## 5. 題型回答格式
 

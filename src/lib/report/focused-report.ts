@@ -7,6 +7,11 @@ import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { buildBodyAttentionLines } from "@/lib/report/body-attention";
 import { deriveGuardianBeast } from "@/lib/report/guardian-beast";
 import { buildCycleOverlayLines } from "@/lib/report/cycle-overlay";
+import {
+  buildPersonalReportNarrative,
+  renderPersonalReportNarrativeText,
+  type PersonalReportNarrative,
+} from "@/lib/report/personal-narrative";
 
 export type ReportSectionEvidence = {
   facts: string[];
@@ -32,6 +37,7 @@ export type ReportSection = {
   title: string;
   body: string[];
   optional?: boolean;
+  narrative?: PersonalReportNarrative;
   evidence: ReportSectionEvidence;
 };
 
@@ -218,6 +224,7 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
       key: "summary",
       title: titles.summary,
       body: summaryLines(result),
+      narrative: buildPersonalReportNarrative(result),
       evidence: {
         facts: ["final reading", "question-relevant chart facts", "original chart + relevant Dayun / annual timing when requested", "timing", "action"],
         conditions: ["Only question-specific content is kept in the continuous summary", "Cycle overlay is included only when the question is time-relevant; it consumes canonical chart output and does not recompute luck-cycle direction"],
@@ -243,7 +250,10 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
 
 export function renderFocusedReportText(sections: ReportSection[], locale: AppLocale = "zh-Hans"): string {
   const title = REPORT_TITLES[locale].report;
-  const blocks = sections.map((section) => `${section.title}\n\n${section.body.join("\n\n")}`);
+  const blocks = sections.map((section) => {
+    const narrative = section.narrative ? renderPersonalReportNarrativeText(section.narrative) : "";
+    return `${section.title}\n\n${[section.body.join("\n\n"), narrative].filter(Boolean).join("\n\n")}`;
+  });
   return [title, ...blocks].join("\n\n");
 }
 

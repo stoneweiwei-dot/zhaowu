@@ -14,7 +14,7 @@
 3. [docs/CONTRACT.md](./docs/CONTRACT.md) — 底层技术契约；如客户报告结构与最新报告契约冲突，以最新报告契约为准
 4. [docs/SPEC.md](./docs/SPEC.md) — 产品边界
 5. [docs/FOCUSED-REPORT.md](./docs/FOCUSED-REPORT.md) — **当前唯一客户完整报告结构：4 个核心区 + 相关条件区**
-6. [docs/PAID-REPORT-STYLE-v1.0.md](./docs/PAID-REPORT-STYLE-v1.0.md) — 「昭梧・四柱绘意报告风」
+6. [docs/PAID-REPORT-STYLE-v2.0.md](./docs/PAID-REPORT-STYLE-v2.0.md) — 「昭梧・四柱繪意完整報告契約」
 7. [docs/lexicon/](./docs/lexicon/README.md) — 干支／十神／神煞课件（神煞不进主判）
 8. [src/lib/bazi/instruction-database.ts](./src/lib/bazi/instruction-database.ts) — 命理／南半球／五行训练／正信边界指令数据库
 

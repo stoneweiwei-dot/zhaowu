@@ -959,6 +959,169 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
   .zhaowu-customer-head .zhaowu-birth-edit { margin-top: 14px; }
 }
 
+/* r189 — one chart, one scene: the commissioned narrative now lives inside the continuous report. */
+.zhaowu-report-narrative {
+  position: relative;
+  margin-top: 30px;
+  border-block: 1px solid rgba(76, 64, 47, .17);
+  padding: 30px 0 28px;
+}
+
+.zhaowu-report-narrative::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 64px;
+  height: 2px;
+  background: var(--zw-cinnabar, #a64d3e);
+}
+
+.zhaowu-report-narrative__head > p {
+  margin: 0 !important;
+  color: var(--zw-gold, #a88349) !important;
+  font-size: 11px !important;
+  font-weight: 760 !important;
+  letter-spacing: .18em;
+}
+
+.zhaowu-report-narrative__head > h4 {
+  margin: 8px 0 0 !important;
+  color: var(--zw-ink, #29251f) !important;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 6vw, 30px) !important;
+  font-weight: 620 !important;
+  line-height: 1.35 !important;
+}
+
+.zhaowu-report-narrative__head > strong {
+  display: block;
+  margin-top: 16px;
+  color: var(--zw-jade-deep, #294b3f) !important;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 5vw, 25px) !important;
+  font-weight: 650 !important;
+  letter-spacing: .04em;
+  line-height: 1.5 !important;
+}
+
+.zhaowu-report-narrative__head > span {
+  display: block;
+  max-width: 44rem;
+  margin-top: 12px;
+  color: var(--zw-ink-soft, #554e45) !important;
+  font-size: 16px !important;
+  line-height: 1.82 !important;
+}
+
+.zhaowu-report-narrative__roles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+  margin-top: 26px;
+}
+
+.zhaowu-report-narrative__roles article {
+  min-width: 0;
+  border-top: 1px solid rgba(76, 64, 47, .12);
+  padding: 16px 0 17px;
+}
+
+.zhaowu-report-narrative :is(h5, p) { margin: 0 !important; }
+
+.zhaowu-report-narrative h5 {
+  color: var(--zw-ink, #29251f) !important;
+  font-size: 14px !important;
+  font-weight: 760 !important;
+  line-height: 1.5 !important;
+}
+
+.zhaowu-report-narrative__roles p,
+.zhaowu-report-narrative__balance p,
+.zhaowu-report-narrative__action p {
+  margin-top: 7px !important;
+  color: var(--zw-ink-soft, #554e45) !important;
+  font-size: 15px !important;
+  line-height: 1.76 !important;
+}
+
+.zhaowu-report-narrative__balance {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(76, 64, 47, .17);
+  padding-top: 20px;
+}
+
+.zhaowu-report-narrative__balance article:last-child {
+  border-left: 2px solid rgba(166, 77, 62, .25);
+  padding-left: 18px;
+}
+
+.zhaowu-report-narrative__action {
+  margin-top: 24px;
+  border-left: 3px solid rgba(41, 75, 63, .55);
+  padding: 2px 0 2px 16px;
+}
+
+.zhaowu-report-narrative__evidence {
+  margin-top: 24px;
+  border-top: 1px solid rgba(76, 64, 47, .13);
+}
+
+.zhaowu-report-narrative__evidence > summary {
+  min-height: 48px;
+  padding: 14px 0;
+  color: var(--zw-ink-soft, #554e45) !important;
+  font-size: 13px !important;
+  font-weight: 720 !important;
+  cursor: pointer;
+}
+
+.zhaowu-report-narrative__evidence > div {
+  display: grid;
+  gap: 13px;
+  padding: 0 0 4px;
+}
+
+.zhaowu-report-narrative__evidence p {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 10px;
+  color: var(--zw-muted, #74695d) !important;
+  font-size: 13px !important;
+  line-height: 1.68 !important;
+}
+
+.zhaowu-report-narrative__evidence strong {
+  color: var(--zw-ink-soft, #554e45) !important;
+  font-weight: 740 !important;
+}
+
+.zhaowu-report-narrative__evidence small {
+  display: block;
+  border-top: 1px dotted rgba(76, 64, 47, .2);
+  padding-top: 12px;
+  color: var(--zw-muted, #74695d) !important;
+  font-size: 12px !important;
+  line-height: 1.65 !important;
+}
+
+@media (max-width: 560px) {
+  .zhaowu-report-narrative { margin-top: 26px; padding: 27px 0 24px; }
+  .zhaowu-report-narrative__roles,
+  .zhaowu-report-narrative__balance { grid-template-columns: 1fr; }
+  .zhaowu-report-narrative__roles { gap: 0; }
+  .zhaowu-report-narrative__balance { gap: 17px; }
+  .zhaowu-report-narrative__balance article:last-child { border-left: 0; padding-left: 0; }
+  .zhaowu-report-narrative__evidence p { grid-template-columns: 1fr; gap: 3px; }
+}
+
+html[lang="en"] .zhaowu-report-narrative__head > strong {
+  letter-spacing: -.012em;
+}
+
 @media (max-width: 390px) {
   .zhaowu-header-gallery { display: none; }
   .zhaowu-header-signout { max-width: 60px; }
@@ -4369,9 +4532,6 @@ html[lang="en"] .zhaowu-updates-card li {
     overflow-wrap: anywhere;
   }
 }
-
-
-
 /* r188 — Song editorial skeleton + quiet comic translation layer.
  * Comic surfaces explain, soften and share. They do not replace the formal chart/report hierarchy.
  */
