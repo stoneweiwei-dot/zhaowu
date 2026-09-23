@@ -8,6 +8,7 @@ import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { ResultView } from "@/components/result-view";
 import { ScentFiveElementTest } from "@/components/scent-five-element-test";
 import { SkyEventsHomeSection } from "@/components/sky-events-home-section";
+import { SongComicToday } from "@/components/song-comic-layer";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import "@/home-polish-v3.css";
@@ -99,6 +100,8 @@ function Home() {
         <p>{funCopy.homeKicker}</p>
         <h1>{funCopy.homeTitle}</h1>
       </header>
+
+      <SongComicToday locale={locale} />
 
       <section className="zhaowu-home-stage zhaowu-home-stage--daily-priority" aria-label={funCopy.todayTitle}>
         <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>
