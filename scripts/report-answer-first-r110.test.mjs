@@ -34,7 +34,7 @@ test('paid report keeps the main answer dominant and moves deep reasoning into b
 });
 
 test('customer surface shows evidence status instead of birth-data-based confidence and hides unrelated body content', () => {
-  assert.match(pages, /confidence:\s*"依據狀態"/);
+  assert.match(pages, /confidence:\s*"依據"/);
   assert.doesNotMatch(pages, /confidence:\s*"判斷把握"/);
   assert.match(model, /confidenceLabel:\s*limited[\s\S]*?"受限"[\s\S]*?"有依據"/);
   assert.doesNotMatch(model, /"較高"|"Higher"/);

@@ -18,15 +18,17 @@ export const SITE_RELEASE_FALLBACK = {
   version: "ZW-WEB-2026.09.24-r192",
   updateNumber: 192,
   publishedAt: "2026-09-24T13:30:00+10:00",
-  latestSummary: "登入影片最多播放 15 秒；聲音改為單一喇叭圖示，後台影片清單僅顯示 MP4／WebM。",
+  latestSummary: "首頁區塊獨立故障隔離、報告文案精簡；登入影片最多 15 秒並改用喇叭控制。R6.2.2 更新證據治理，不改排盤。",
   details: {
     "zh-Hant": [
-      "登入影片最多播放 15 秒；播完停在封面，當次登入流程不重播。",
-      "聲音控制只顯示喇叭圖示，保留螢幕閱讀器標籤；後台影片只接受 15 秒內的 MP4／WebM。",
+      "首頁漫畫、生辰流程與安裝提示各自隔離；完整報告改成精簡成品語言。",
+      "登入影片最多播放 15 秒、播完顯示封面；喇叭圖示控制聲音，後台短片只接受 MP4／WebM。",
+      "R6.2.2 收緊證據治理而不改排盤；Storage 維持寫入凍結，尚未達 900 MB 安全目標。",
     ],
     en: [
-      "The login video plays for up to 15 seconds and stays on its poster for the rest of the sign-in flow.",
-      "A single speaker icon controls sound, with an accessible label. The owner catalog accepts MP4/WebM videos up to 15 seconds.",
+      "The home comic, birth flow and install prompt now fail independently; the report uses simpler customer copy.",
+      "The login video plays for up to 15 seconds and stays on its poster. A speaker icon controls sound.",
+      "R6.2.2 updates evidence governance without changing chart calculation. Storage writes remain paused.",
     ],
   },
 } as const;

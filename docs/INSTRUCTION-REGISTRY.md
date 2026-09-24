@@ -10,7 +10,7 @@
 
 1. `AGENTS.md` — 全项目治理、权限、安全 supersession、完成标准。
 2. `docs/CURRENT-STATE.md` + 当前 `main` + 当前 Production — 产品与运行现状。
-3. `docs/STONE-R6.2.1-CURRENT-MASTER.md` + `docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md` + `docs/STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md` — 当前唯一命理母指令及两份强制 Runtime 补丁。
+3. `docs/STONE-R6.2.2-CURRENT-MASTER.md` — 当前最高治理／证据母指令；其下继承 `STONE-R6.2.1-CURRENT-MASTER.md` + P2 + P3 作为 deterministic runtime。
 4. `docs/ANALYSIS-INGESTION-POLICY.md` — 新命理素材入库规则。
 5. 各专题当前契约：
    - `docs/FOCUSED-REPORT.md`
@@ -25,12 +25,13 @@
 
 | 文件 / 版本 | 状态 | 处理 |
 |---|---|---|
-| `STONE-R6.2.1-CURRENT-MASTER.md` | `CURRENT_MASTER` | 唯一当前入口；必须同时加载 P2 |
+| `STONE-R6.2.2-CURRENT-MASTER.md` | `CURRENT_GOVERNANCE_MASTER` | 最高治理、证据、EVP、AI 一致性与版本执行入口；不伪称重写 deterministic runtime |
+| `STONE-R6.2.1-CURRENT-MASTER.md` | `INHERITED_RUNTIME_BASE` | R6.2.2 之下的 deterministic 子平 runtime；必须同时加载 P2 + P3；r191 结构增补继续有效 |
 | `STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md` | `ACTIVE_RUNTIME_PATCH` | 刑冲合害破、墓库、十神功能、ODL/FC 流通、类象与跨术数边界的强制补丁 |
 | `STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md` | `ACTIVE_RUNTIME_PATCH` | 偏枯六态、特殊格先行、病藥功能化、ODL→FC、EC-7 氣勢集中／雙強／中和／通關边界，以及所有分組统一主链的强制补丁 |
-| `STONE-R6.1-CURRENT-MASTER.md` | `SUPERSEDED_BASE` | 保留完整历史判法，供 R6.2.1 继承与审计；不得单独冒充当前版本 |
+| `STONE-R6.1-CURRENT-MASTER.md` | `SUPERSEDED_BASE` | 保留完整历史判法，供后续版本继承与审计；不得单独冒充当前版本 |
 | R6 / R5 / R4 / R3 / R2 | `HISTORICAL` | 只作版本沿革，冲突处不执行 |
-| `METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` | `REDIRECT / HISTORICAL BASELINE` | 仅作为旧入口，必须转到 R6.2.1 + P2 + P3 |
+| `METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` | `REDIRECT / HISTORICAL BASELINE` | 仅作为旧入口，必须转到 R6.2.2 governance + R6.2.1 runtime + P2 + P3 |
 
 ## 3. 以前“做了但当时没权限接入”的遗留包
 
@@ -41,7 +42,7 @@
 当前处理：`DO NOT IMPORT WHOLESALE`。
 
 其中仍有效的意图已经由当前系统接管：
-- 第一段直接回答原问题 → 由 R6.2.1 / Focused Report 执行；
+- 第一段直接回答原问题 → 由 R6.2.2 governance / Focused Report 执行；
 - 多语必须完整，不可只翻表单 → 由当前 i18n / CURRENT-STATE 契约执行；
 - 禁止无关模板堆叠 → 由直接回答与 focused-report 契约执行；
 - 宇宙灵魂原型的象征边界 → 已由 `COSMIC-SYMBOLIC.md` 管理；
@@ -94,7 +95,7 @@
 
 ### `SPEC.md` / `CONTRACT.md`
 
-这些文件包含早期实现快照与历史未完成清单。它们不能覆盖 `CURRENT-STATE.md`、当前代码、当前测试或 R6.2.1 + P2。保留它们只为历史接口／算法基线时，必须在文件顶部明确 legacy / partially superseded 状态。
+这些文件包含早期实现快照与历史未完成清单。它们不能覆盖 `CURRENT-STATE.md`、当前代码、当前测试或 R6.2.2 governance + R6.2.1 runtime + P2 + P3。保留它们只为历史接口／算法基线时，必须在文件顶部明确 legacy / partially superseded 状态。
 
 ## 5. 新资料自动入库规则
 
@@ -413,3 +414,4 @@
 - ACTIVE：聲音用單一 44px 喇叭圖示控制，保留無障礙文字；後台登入影片清單只顯示 MP4／WebM，已支援的短片上傳時長上限為 15 秒。
 - r191 後台「最多 5 秒」與有字聲音控制在對應範圍 `SUPERSEDED`；圖片及封面仍不得混進登入動畫清單。
 - Storage 寫入凍結保持有效；200–500 MB 來源影片的續傳、轉碼與發佈未接線，不得把短片播放上限或 CI 通過當成大檔上傳成功。不得合併解除凍結而未核對 Free 容量與 900 MB 緩衝的舊 PR。
+- 正式站吸收 Lite 的 560px 閱讀寬度和暖紙／青玉／朱砂配色；Lite 仍只是設計參考，不成為第二正式站。舊 PR #453 的解除 Storage 凍結實作不得因此自動採用。

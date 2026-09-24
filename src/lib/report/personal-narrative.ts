@@ -162,8 +162,8 @@ function buildEnglishNarrative(result: AnalysisResult): PersonalReportNarrative 
 
   return {
     contractId: PAID_REPORT_NARRATIVE_ID,
-    kicker: "ZHAOWU · ONE CHART, ONE SCENE",
-    heading: "Your chart in one scene",
+    kicker: "",
+    heading: "Scene",
     title,
     scene: `This is one continuous image, not four disconnected pillar cards: ${world} forms the world, ${subject} carries the central tension, and “${actionImage}” turns the reading into a practical movement.`,
     roles: [
@@ -176,16 +176,16 @@ function buildEnglishNarrative(result: AnalysisResult): PersonalReportNarrative 
     strength: reason,
     costLabel: "What it can cost",
     cost: risk,
-    evidenceHeading: "How the image is grounded",
+    evidenceHeading: "Basis",
     evidence: [
       { label: "World", trace: `Birth-year elements plus the birth-month seasonal setting → external atmosphere → ${world}.` },
       { label: "Central figure", trace: `${strengthPhrase(result, "en")} plus the full-chart ${ELEMENT_EN[element]} visual direction → way of carrying the issue → ${subject}.` },
       { label: "Movement", trace: `${timeReady ? "Confirmed birth-hour layer plus" : "No birth-hour claim; only"} the question target and the practical action → real-world outlet → ${actionImage}.` },
       ...(period ? [period] : []),
     ],
-    actionLabel: "Bring it back to life",
+    actionLabel: "Next step",
     action,
-    disclaimer: "The title and scene only translate an existing analysis downstream; they are not supernatural facts and cannot be used to infer chart structure, useful elements or outcomes in reverse. The written conclusion must still stand without an image.",
+    disclaimer: "The image is supplementary and cannot be used to infer chart structure, useful elements or outcomes in reverse. The written reading is the reference.",
   };
 }
 
@@ -210,8 +210,8 @@ function buildChineseNarrative(result: AnalysisResult, locale: "zh-Hant" | "zh-H
 
   return {
     contractId: PAID_REPORT_NARRATIVE_ID,
-    kicker: "ZHAOWU · ONE CHART, ONE SCENE",
-    heading: hant ? "你的命局，收成一幅畫" : "你的命局，收成一幅画",
+    kicker: "",
+    heading: "命象",
     title,
     scene: hant
       ? `這不是把四柱拆成四張卡：${world}成為天地，${subject}承接核心張力，「${actionImage}」把整份判讀收束成一個可落實的動作。`
@@ -250,7 +250,7 @@ function buildChineseNarrative(result: AnalysisResult, locale: "zh-Hant" | "zh-H
     strength: reason,
     costLabel: hant ? "同一股力量的代價" : "同一股力量的代价",
     cost: risk,
-    evidenceHeading: hant ? "畫面如何反查命局" : "画面如何反查命局",
+    evidenceHeading: hant ? "依據" : "依据",
     evidence: [
       {
         label: hant ? "天地" : "天地",
@@ -276,11 +276,11 @@ function buildChineseNarrative(result: AnalysisResult, locale: "zh-Hant" | "zh-H
       },
       ...(period ? [period] : []),
     ],
-    actionLabel: hant ? "把畫帶回現實" : "把画带回现实",
+    actionLabel: "下一步",
     action,
     disclaimer: hant
-      ? "題名與畫面只能從既有分析往下翻譯，不是超自然事實，也不能反過來用圖像推格局、喜用或吉凶；拿掉圖像後，文字結論仍須完整成立。"
-      : "题名与画面只能从既有分析往下翻译，不是超自然事实，也不能反过来用图像推格局、喜用或吉凶；拿掉图像后，文字结论仍须完整成立。",
+      ? "圖像只作輔助，不能反推格局、喜用或吉凶；文字判讀為準。"
+      : "图像只作辅助，不能反推格局、喜用或吉凶；文字判读为准。",
   };
 }
 

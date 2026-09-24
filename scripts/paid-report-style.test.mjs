@@ -49,7 +49,7 @@ test('one-chart-one-scene contract is wired into the current continuous report',
   assert.match(styleSource, /首屏直接答案仍在最前/);
   assert.match(styleSource, /不恢复固定九页／多 session/);
   assert.match(narrativeSource, /buildPersonalReportNarrative/);
-  assert.match(narrativeSource, /命局证据|How the image is grounded|畫面如何反查命局/);
+  assert.match(narrativeSource, /evidenceHeading:\s*"Basis"|evidenceHeading:\s*hant \? "依據"/);
   assert.match(focusedSource, /narrative: buildPersonalReportNarrative\(result\)/);
   assert.match(reportUiSource, /<NarrativePlate narrative=\{narrative\}/);
 });

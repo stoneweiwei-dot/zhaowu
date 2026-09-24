@@ -15,73 +15,73 @@ import {
 
 const COPY = {
   "zh-Hant": {
-    title: "補充重點",
-    lead: "只保留會影響你判斷的重點；推演依據與技術細節收在最下方備註。",
-    kicker: "ZHAOWU · PERSONAL ANALYSIS",
-    questionKicker: "YOUR QUESTION",
-    questionTitle: "你這次問的是",
-    answerTitle: "先給答案",
-    confidence: "依據狀態",
-    variable: "最大變數",
-    reasons: "為什麼",
-    risks: "要防什麼",
-    timing: "什麼時候",
-    actions: "現在怎麼做",
-    chart: "命盤基礎",
-    chartLead: "排盤資料只作判斷底座；先看結論，再按需要展開術理。",
+    title: "補充",
+    lead: "",
+    kicker: "",
+    questionKicker: "",
+    questionTitle: "問題",
+    answerTitle: "答案",
+    confidence: "依據",
+    variable: "關鍵變數",
+    reasons: "原因",
+    risks: "留意",
+    timing: "時間",
+    actions: "下一步",
+    chart: "四柱",
+    chartLead: "",
     hidden: "藏干",
     currentCycle: "目前大運",
     timeUnknown: "時辰未定",
-    detail: "判斷備註",
-    body: "身體需要留意",
-    detailLead: "命盤依據、推演過程與其餘補充放在這裡；想看再展開。",
-    keyPoints: "只看重點",
+    detail: "附註",
+    body: "身體提醒",
+    detailLead: "",
+    keyPoints: "重點",
   },
   "zh-Hans": {
-    title: "补充重点",
-    lead: "只保留会影响你判断的重点；推演依据与技术细节收在最下方备注。",
-    kicker: "ZHAOWU · PERSONAL ANALYSIS",
-    questionKicker: "YOUR QUESTION",
-    questionTitle: "你这次问的是",
-    answerTitle: "先给答案",
-    confidence: "依据状态",
-    variable: "最大变量",
-    reasons: "为什么",
-    risks: "要防什么",
-    timing: "什么时候",
-    actions: "现在怎么做",
-    chart: "命盘基础",
-    chartLead: "排盘资料只作判断底座；先看结论，再按需要展开术理。",
+    title: "补充",
+    lead: "",
+    kicker: "",
+    questionKicker: "",
+    questionTitle: "问题",
+    answerTitle: "答案",
+    confidence: "依据",
+    variable: "关键变量",
+    reasons: "原因",
+    risks: "留意",
+    timing: "时间",
+    actions: "下一步",
+    chart: "四柱",
+    chartLead: "",
     hidden: "藏干",
     currentCycle: "目前大运",
     timeUnknown: "时辰未定",
-    detail: "判断备注",
-    body: "身体需要留意",
-    detailLead: "命盘依据、推演过程与其余补充放在这里；想看再展开。",
-    keyPoints: "只看重点",
+    detail: "附注",
+    body: "身体提醒",
+    detailLead: "",
+    keyPoints: "重点",
   },
   en: {
-    title: "Key supporting points",
-    lead: "Only the points that may change your decision stay prominent. Reasoning and technical detail move to the notes at the bottom.",
-    kicker: "ZHAOWU · PERSONAL ANALYSIS",
-    questionKicker: "YOUR QUESTION",
-    questionTitle: "What you asked",
-    answerTitle: "The answer first",
-    confidence: "Evidence status",
-    variable: "Biggest variable",
+    title: "More",
+    lead: "",
+    kicker: "",
+    questionKicker: "",
+    questionTitle: "Question",
+    answerTitle: "Answer",
+    confidence: "Basis",
+    variable: "Key variable",
     reasons: "Why",
-    risks: "What to watch",
-    timing: "When",
-    actions: "What to do now",
-    chart: "Chart basics",
-    chartLead: "The chart is the evidence base, not the opening speech. Read the answer first, then expand the technical detail if useful.",
+    risks: "Watch",
+    timing: "Timing",
+    actions: "Next step",
+    chart: "Four pillars",
+    chartLead: "",
     hidden: "Hidden stems",
-    currentCycle: "Current long cycle",
+    currentCycle: "Current cycle",
     timeUnknown: "Birth time unconfirmed",
-    detail: "Reasoning notes",
-    body: "Body areas to watch",
-    detailLead: "Chart evidence, reasoning process and extra detail live here. Open only if useful.",
-    keyPoints: "Key points only",
+    detail: "Notes",
+    body: "Body notes",
+    detailLead: "",
+    keyPoints: "Key points",
   },
 } as const;
 
@@ -177,9 +177,8 @@ function ChartSnapshot({ result, locale }: { result: AnalysisResult; locale: Loc
   return (
     <section className="zhaowu-chart-snapshot" aria-labelledby="zhaowu-chart-snapshot-title">
       <div className="zhaowu-section-heading">
-        <p>ZHAOWU · CHART</p>
         <h4 id="zhaowu-chart-snapshot-title">{copy.chart}</h4>
-        <span>{copy.chartLead}</span>
+        {copy.chartLead ? <span>{copy.chartLead}</span> : null}
       </div>
 
       <div className="zhaowu-pillar-grid">
@@ -258,7 +257,7 @@ function NarrativePlate({ narrative }: { narrative: PersonalReportNarrative }) {
   return (
     <section className="zhaowu-report-narrative" aria-labelledby="zhaowu-report-narrative-title">
       <header className="zhaowu-report-narrative__head">
-        <p>{narrative.kicker}</p>
+        {narrative.kicker ? <p>{narrative.kicker}</p> : null}
         <h4 id="zhaowu-report-narrative-title">{narrative.heading}</h4>
         <strong>{narrative.title}</strong>
         <span>{narrative.scene}</span>
@@ -321,7 +320,7 @@ function AnalysisNotes({
     <details className="zhaowu-report-method-notes">
       <summary>
         <span>{copy.detail}</span>
-        <small>{copy.detailLead}</small>
+        {copy.detailLead ? <small>{copy.detailLead}</small> : null}
       </summary>
       <div className="zhaowu-report-method-notes__body">
         <div className="zhaowu-answer-meta zhaowu-answer-meta--notes">
@@ -385,9 +384,9 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
   return (
     <section className="zhaowu-focused-report zhaowu-report-continuous-sheet" aria-labelledby="focused-report-title">
       <header className="zhaowu-report-header">
-        <p className="zhaowu-report-kicker">{copy.kicker}</p>
+        {copy.kicker ? <p className="zhaowu-report-kicker">{copy.kicker}</p> : null}
         <h3 id="focused-report-title" className="zhaowu-report-title">{copy.title}</h3>
-        <p className="zhaowu-report-lead">{copy.lead}</p>
+        {copy.lead ? <p className="zhaowu-report-lead">{copy.lead}</p> : null}
       </header>
 
       {result ? <PrioritySummary result={result} locale={locale} /> : null}
@@ -420,7 +419,7 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
         <details className="zhaowu-report-method-notes">
           <summary>
             <span>{copy.detail}</span>
-            <small>{copy.detailLead}</small>
+            {copy.detailLead ? <small>{copy.detailLead}</small> : null}
           </summary>
           <div className="zhaowu-report-method-notes__body zhaowu-report-copy zhaowu-report-copy--notes">
             {fallbackNotes.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
