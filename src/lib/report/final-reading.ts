@@ -359,5 +359,9 @@ export function finalizeReading(
     `因此你的命诰不是“硬撑到底”，而是：保留${chart.dayMaster}${chart.dayMasterElement}的判断力，同时让重要选择有出口、有边界、能复盘；该收时收、该动时动，不用同一种方法扛所有阶段。`,
   ].join(" ");
 
-  return { ...reading, decree };
+  const directAnswer = PURPOSE_QUESTION_RE.test(question)
+    ? chineseDirectAnswer(question, chart, reading, locale)
+    : reading.directAnswer;
+
+  return { ...reading, directAnswer, decree };
 }
