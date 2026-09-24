@@ -30,7 +30,9 @@ test("exact city matches self-confirm and unresolved birth city stays blocked", 
 test("home bazi keeps snapshot and foundation visible while the complete reading is collapsed", () => {
   assert.match(analysisForm, /<BaziChart chart=\{previewChart\} showHeader=\{false\} expandDetails=\{false\} \/>/);
   assert.match(analysisForm, /data-home-bazi-explanation/);
-  assert.match(analysisForm, /<details className="zhaowu-chart-details zhaowu-bazi-full-details">/);
+  assert.match(analysisForm, /className="zhaowu-chart-details zhaowu-bazi-full-details"/);
+  assert.match(analysisForm, /open=\{chartDetailsOpen\}/);
+  assert.match(analysisForm, /chartDetailsOpen \? \(/);
   assert.match(analysisForm, /<summary>\{copy\.fullDetails\}<\/summary>/);
   assert.match(analysisForm, /展開完整命盤細節/);
   assert.match(analysisForm, /<UnifiedBirthReport birth=\{rememberedRecord!\}/);
