@@ -45,3 +45,13 @@ test("r199 owner music public read avoids the legacy git HTTP URL parser", async
   assert.doesNotMatch(readBlock, /git\.getRemoteInfo/);
   assert.doesNotMatch(readBlock, /isomorphic-git\/http/);
 });
+
+
+test("r200 public owner-music GET does not statically evaluate the Node git HTTP adapter", async () => {
+  const sourceText = await source("lib/owner-music-git.js");
+  const readBlock = sourceText.slice(sourceText.indexOf("export async function readOwnerMusicManifest"), sourceText.indexOf("async function commitAndPush"));
+  const withRepoBlock = sourceText.slice(sourceText.indexOf("async function withRepo"), sourceText.indexOf("export function emptyManifest"));
+  assert.doesNotMatch(sourceText, /import http from ["']isomorphic-git\/http\/node["']/);
+  assert.doesNotMatch(readBlock, /isomorphic-git\/http\/node/);
+  assert.match(withRepoBlock, /await import\("isomorphic-git\/http\/node"\)/);
+});
