@@ -9,7 +9,7 @@ test("r191 adopts Lite mobile discipline without creating a second product core"
   const design = await source("src/zhaowu-design-system.css");
   const home = await source("src/routes/index.tsx");
   const registry = await source("docs/INSTRUCTION-REGISTRY.md");
-  assert.match(design, /r192 — Lite-converged mobile editorial shell/);
+  assert.match(design, /r191 — Lite-converged mobile editorial shell/);
   assert.match(design, /560px/);
   assert.match(design, /--zw-paper:\s*#F7F1E3/);
   assert.match(design, /--zw-jade:\s*#1D6B54/);
