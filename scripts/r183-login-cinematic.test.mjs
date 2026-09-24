@@ -28,7 +28,7 @@ test("current runtime keeps the owner-login cinematic and retires the home intro
   const shell = await source("src/components/site-shell.tsx");
   assert.match(current, /首頁、一般分區、報告頁與返回導覽一律不掛載 `IntroGate`/);
   assert.match(current, /`\/login` 是唯一登入動畫入口/);
-  assert.match(storage, /SUPABASE_STORAGE_WRITES_PAUSED\s*=\s*true/);
+  assert.match(storage, /SUPABASE_STORAGE_WRITES_PAUSED\s*=\s*false/);
   assert.doesNotMatch(rootRoute, /IntroGate/);
   assert.doesNotMatch(shell, /IntroGate/);
 });
