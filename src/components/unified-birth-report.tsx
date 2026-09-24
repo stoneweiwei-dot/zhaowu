@@ -66,6 +66,8 @@ function reportCopy(locale: Locale) {
     work: "Work, resources and real-world direction",
     timing: "Life phase and timing",
     lesson: "Recurring lesson and practical move",
+    structureRule: "This reading does not try to make the five elements equal or use a ‘replace what is missing’ rule. It reads season, structure, functional remedy, flow and capacity first; a natural bias is not a defect by itself.",
+    imageryRule: "No Heavenly Stem is inherently better or worse. Stem imagery translates function into a picture; it never overrides the full-chart judgement.",
 
 
   };
@@ -114,6 +116,8 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
           `${foundation.dayMaster}｜${foundation.monthOrder}`,
           foundation.strength,
           `${foundation.structure}；${foundation.features}`,
+          copy.structureRule,
+          copy.imageryRule,
           tx(locale, numberProfile.core),
         ], locale),
       },
