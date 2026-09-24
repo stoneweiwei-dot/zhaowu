@@ -23,7 +23,7 @@ function UpdatesPage() {
   }, []);
 
   const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
-  const englishSummary = "The Destiny Book now includes a six-frame Comic Lite reading mode while calculation and payment logic remain unchanged.";
+  const englishSummary = "Owner media is now split into focused Login videos and Content images views, idle batch controls stay hidden, and installed PWAs can update without delete-and-reinstall.";
   const releaseSummary = language === "en" && /[\u3400-\u9fff]/u.test(release.latestSummary)
     ? englishSummary
     : release.latestSummary;
