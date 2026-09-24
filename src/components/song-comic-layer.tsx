@@ -69,10 +69,10 @@ function ComicMascot({ stem, compact = false }: { stem: string; compact?: boolea
 
 function copyFor(locale: Locale) {
   return locale === "en"
-    ? { today: "TODAY · ONE COMIC", explain: "A softer way into the idea", report: "DESTINY BOOK INSERT", plain: "One concept, translated into ordinary language", share: "SHAREABLE FRAME", shareButton: "Share this frame", copied: "Copied", boundary: "Cultural imagery, not a deterministic verdict." }
+    ? { today: "TODAY · ONE COMIC", explain: "A softer way into the idea", report: "DESTINY BOOK INSERT", plain: "One concept, translated into ordinary language", share: "SHAREABLE FRAME", shareButton: "Share this frame", copied: "Copied", boundary: "No stem is inherently better or worse. This is cultural imagery, not a balance prescription or deterministic verdict." }
     : locale === "zh-Hans"
-      ? { today: "今日一格", explain: "先用一张小漫画，把抽象概念讲人话", report: "命书小插页", plain: "把一个术语，换成更贴近生活的说法", share: "可分享一格", shareButton: "分享这一格", copied: "已复制", boundary: "这是文化象意的白话翻译，不替代正式命盘判断。" }
-      : { today: "今日一格", explain: "先用一張小漫畫，把抽象概念講人話", report: "命書小插頁", plain: "把一個術語，換成更貼近生活的說法", share: "可分享一格", shareButton: "分享這一格", copied: "已複製", boundary: "這是文化象意的白話翻譯，不替代正式命盤判斷。" };
+      ? { today: "今日一格", explain: "先用一张小漫画，把抽象概念讲人话", report: "命书小插页", plain: "把一个术语，换成更贴近生活的说法", share: "可分享一格", shareButton: "分享这一格", copied: "已复制", boundary: "十干无高下；这只是文化象意的白话翻译，不用来补缺、定吉凶，也不替代整局判断。" }
+      : { today: "今日一格", explain: "先用一張小漫畫，把抽象概念講人話", report: "命書小插頁", plain: "把一個術語，換成更貼近生活的說法", share: "可分享一格", shareButton: "分享這一格", copied: "已複製", boundary: "十干無高下；這只是文化象意的白話翻譯，不用來補缺、定吉凶，也不替代整局判斷。" };
 }
 
 export function SongComicToday({ locale }: { locale: Locale }) {
