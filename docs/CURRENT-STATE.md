@@ -82,13 +82,13 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 
 ## 6. Loading／Login animation
 
-r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
+r191 依站主最新指令修正：
 
-- 首頁恢復 **一次性 Loading／IntroGate**；同一瀏覽器只在第一次進首頁顯示。
-- seen key 使用穩定的 `zhaowu.intro.seen.public.v1`；看過後 refresh、返回、一般路由與報告頁不得重播。
-- `zhaowu.intro.force=1` 仍可作測試強制顯示；初始化失敗必須 hard-exit／fail-open，不得白屏。
-- `/login` 仍保留 r183 的全屏動態站主登入舞台與聲音控制；首頁 Loading 與 Login 動畫是兩個不同用途，不得互相取代。
-- r181 Storage 寫入凍結期間，新上傳登入影片不得寫入 Supabase；runtime 仍只使用正式 build 內 same-origin 素材。
+- `/login` 是唯一登入動畫入口；首頁、一般分區、報告頁與返回導覽一律不掛載 `IntroGate`。
+- 每次站主登入流程只在首次進入 `/login` 播放一次；影片不循環，播完使用靜態封面。切到其他 route 再返回 `/login` 不重播；站主主動登出後才開始下一次登入流程。
+- 後台「登入動畫管理」只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為動畫卡片，新增上傳也只接受 MP4／WebM。
+- 歷史 `IntroGate` 元件與 policy 只留回歸／相容參照，不得重新接回公開 runtime。
+- r181 Storage 寫入凍結期間，上傳仍為停用；runtime 只使用正式 build 內 same-origin 素材。
 
 ## 7. Supabase
 

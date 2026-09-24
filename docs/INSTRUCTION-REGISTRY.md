@@ -354,6 +354,14 @@
 - r175 與更早「一般首訪顯示 IntroGate、seen 後跳過」的全站 opening 行為，在公開 runtime 範圍內正式 `SUPERSEDED`。
 - 本次只改動畫掛載範圍與對應 QA；不改站主 cookie、登入 API、命理計算、報告、付款、Supabase schema 或媒體原件。
 
+## 2026-09-24 r191 登入流程單次播放／後台影片隔離 supersession
+
+- 站主最新明確指令：登入動畫只在每次站主登入流程首次進入 `/login` 時播放一次；不得循環，切換分區、返回、重新整理或進入後台後不得重播。站主主動登出後才開始下一次登入流程。
+- ACTIVE：`sessionStorage` key `zhaowu.login-animation.seen.session.v1` 鎖定當次流程；影片結束後改顯示靜態 poster。`SiteShell`、首頁、報告及其他 route 一律不得掛載 `IntroGate`。
+- ACTIVE：後台「登入動畫管理」只顯示 `login-background` 的 MP4／WebM 影片，並只接受 MP4／WebM 上傳；普通圖片、首頁背景及 poster 不得作為動畫卡片混入。
+- r184「首頁恢復一次性 IntroGate」、登入影片循環播放、以及登入動畫庫接受圖片的舊行為在對應範圍內 `SUPERSEDED`。
+- 不改站主 cookie、登入 API、權限、命理計算、報告、付款、Supabase schema 或媒體原件；Storage 寫入凍結保持有效。
+
 
 ## 2026-09-23 r180 Vercel 配額護欄
 

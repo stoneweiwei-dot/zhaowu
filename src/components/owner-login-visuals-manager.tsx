@@ -82,7 +82,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   const copy = useMemo(() => ({
     kicker: "LOGIN VISUALS",
     title: tr(locale, "登入動畫管理", "登录动画管理", "Login visuals"),
-    upload: tr(locale, "上傳登入動畫", "上传登录动画", "Upload login visual"),
+    upload: tr(locale, "上傳登入影片", "上传登录视频", "Upload login video"),
     current: tr(locale, "目前使用中", "目前使用中", "Currently in use"),
     use: tr(locale, "設為目前使用", "设为目前使用", "Set as current"),
     enable: tr(locale, "啟用", "启用", "Enable"),
@@ -103,6 +103,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     night: tr(locale, "夜間版", "夜间版", "Night"),
     common: tr(locale, "通用版", "通用版", "Common"),
     builtIn: tr(locale, "內置素材", "内置素材", "Built-in"),
+    videoRequired: tr(locale, "登入動畫只接受 MP4／WebM 影片。", "登录动画只接受 MP4／WebM 视频。", "Login animations must be MP4 or WebM videos."),
     tooLong: tr(locale, "登入動畫不可超過 5 秒。", "登录动画不可超过 5 秒。", "Login animation must be 5 seconds or shorter."),
     failed: tr(locale, "登入動畫操作失敗。", "登录动画操作失败。", "Login visual update failed."),
     empty: tr(locale, "尚未有遠端登入動畫，前台會使用內置蓮開影片。", "尚未有远程登录动画，前台会使用内置莲开影片。", "No remote login visual yet. The built-in lotus clip is used."),
@@ -111,7 +112,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   async function load() {
     try {
       const rows = (await listOwnerGalleryAssets(session, "loading")).filter((asset) =>
-        (asset.tags ?? []).some((tag) => tag.trim().toLowerCase() === "login-background"),
+        (asset.tags ?? []).some((tag) => tag.trim().toLowerCase() === "login-background") && isVideo(asset),
       );
       setAssets(rows);
       const ids = new Set(rows.map((asset) => asset.id));
@@ -135,10 +136,9 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     setMessage(null);
     try {
       for (const file of files) {
-        if (file.type === "video/mp4" || file.type === "video/webm") {
-          const duration = await readDuration(file);
-          if (duration > 5) throw new Error(copy.tooLong);
-        }
+        if (file.type !== "video/mp4" && file.type !== "video/webm") throw new Error(copy.videoRequired);
+        const duration = await readDuration(file);
+        if (duration > 5) throw new Error(copy.tooLong);
         await uploadGalleryAsset(session, file, {
           category: "loading",
           tags: ["loading", "login-background", "login-common", "owner-upload"],
@@ -212,7 +212,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         </div>
         <label className={`inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-5 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
           {copy.upload}
-          <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm" className="hidden" onChange={(event) => void onUpload(event)} />
+          <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept="video/mp4,video/webm" className="hidden" onChange={(event) => void onUpload(event)} />
         </label>
       </div>
       {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-3 text-xs font-medium text-ink-mute" data-owner-storage-status>{tr(locale, "Storage 寫入暫停", "Storage 写入暂停", "Storage read-only")}</p> : null}
@@ -231,25 +231,20 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
           const locked = asset.id.startsWith("catalog:");
           const theme = loginVisualThemeFromTags(asset.tags);
           const current = asset.id === currentId;
-          const video = isVideo(asset);
           return (
             <article key={asset.id} data-owner-selectable-file="login-visuals" className={`relative overflow-hidden rounded-2xl border ${selectedIds.includes(asset.id) ? "border-cinnabar/45 ring-1 ring-cinnabar/20" : current ? "border-[#c4a05a] bg-[#fffaf1]" : "border-line bg-cream/72"}`}>
               {!locked ? <label className="absolute left-2 top-2 z-10 grid min-h-11 min-w-11 cursor-pointer place-items-center rounded-full border border-line bg-cream/95 shadow-sm" title={copy.select}>
                 <input type="checkbox" className="h-4 w-4" checked={selectedIds.includes(asset.id)} onChange={() => toggleSelected(asset.id)} aria-label={`${copy.select} ${asset.title}`} />
               </label> : null}
               <button type="button" className="block w-full" onClick={() => setPreview(asset)}>
-                {video ? (
-                  <video className="aspect-[16/10] w-full object-cover" src={srcOf(asset)} poster={posterOf(asset)} muted playsInline preload="metadata" />
-                ) : (
-                  <img className="aspect-[16/10] w-full object-cover" src={posterOf(asset)} alt={asset.title} />
-                )}
+                <video className="aspect-[16/10] w-full object-cover" src={srcOf(asset)} poster={posterOf(asset)} muted playsInline preload="metadata" />
               </button>
               <div className="space-y-2.5 p-3">
                 <div className="flex items-start justify-between gap-2">
                   <p className="min-w-0 truncate font-medium">{asset.title}</p>
                   {current ? <span className="shrink-0 rounded-full border border-[#c4a05a] px-2 py-0.5 text-[11px] text-[#1f4e3a]">{copy.current}</span> : null}
                 </div>
-                <p className="text-[11px] tracking-[0.14em] text-ink-mute">{video ? "MP4 / WEBM" : "POSTER"} · {theme === "night" ? copy.night : theme === "day" ? copy.day : copy.common}</p>
+                <p className="text-[11px] tracking-[0.14em] text-ink-mute">MP4 / WEBM · {theme === "night" ? copy.night : theme === "day" ? copy.day : copy.common}</p>
                 {locked ? (
                   <p className="text-[11px] text-ink-mute">{copy.builtIn}</p>
                 ) : (
@@ -293,11 +288,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
               <button type="button" className="rounded-full border border-line px-3 py-1 text-xs" onClick={() => setPreview(null)}>{copy.close}</button>
             </div>
             <div className="mt-3 overflow-hidden rounded-xl bg-paper">
-              {isVideo(preview) ? (
-                <video className="max-h-[70vh] w-full object-contain" src={srcOf(preview)} poster={posterOf(preview)} controls autoPlay muted playsInline />
-              ) : (
-                <img className="max-h-[70vh] w-full object-contain" src={posterOf(preview)} alt={preview.title} />
-              )}
+              <video className="max-h-[70vh] w-full object-contain" src={srcOf(preview)} poster={posterOf(preview)} controls autoPlay muted playsInline />
             </div>
           </div>
         </div>

@@ -4,7 +4,13 @@ import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { ownerSignIn } from "@/lib/auth/owner-api";
 import { useI18n } from "@/lib/i18n";
-import { listActiveLoginAnimations, pickLoginAnimation, type LoginAnimationAsset } from "@/lib/login-animation";
+import {
+  listActiveLoginAnimations,
+  markLoginAnimationSeen,
+  pickLoginAnimation,
+  shouldPlayLoginAnimation,
+  type LoginAnimationAsset,
+} from "@/lib/login-animation";
 import { readBrandTheme } from "@/lib/brand-theme";
 
 const FALLBACK_LOGIN_VIDEO: LoginAnimationAsset = {
@@ -31,7 +37,13 @@ function LoginStageBackdrop() {
   const [asset, setAsset] = useState<LoginAnimationAsset | null>(FALLBACK_LOGIN_VIDEO);
   const [failed, setFailed] = useState(false);
   const [muted, setMuted] = useState(true);
+  const [shouldPlay, setShouldPlay] = useState(() =>
+    typeof window !== "undefined" && shouldPlayLoginAnimation(window.sessionStorage),
+  );
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    if (shouldPlay) markLoginAnimationSeen(window.sessionStorage);
+  }, [shouldPlay]);
   useEffect(() => {
     let alive = true;
     void listActiveLoginAnimations().then((rows) => {
@@ -43,7 +55,7 @@ function LoginStageBackdrop() {
     return () => { alive = false; };
   }, []);
   const media = failed || !asset ? FALLBACK_LOGIN_VIDEO : asset;
-  if (media.type === "video") {
+  if (media.type === "video" && shouldPlay) {
     return (
       <>
         <video
@@ -54,10 +66,12 @@ function LoginStageBackdrop() {
           autoPlay
           muted={muted}
           playsInline
-          loop
           preload="auto"
+          data-login-animation="first-login-visit"
+          onEnded={() => setShouldPlay(false)}
           onError={() => {
             if (media.fileUrl !== FALLBACK_LOGIN_VIDEO.fileUrl) setFailed(true);
+            else setShouldPlay(false);
           }}
         />
         <button
@@ -80,7 +94,7 @@ function LoginStageBackdrop() {
       </>
     );
   }
-  return <img className="stone-login-stage-media" src={media.fileUrl} alt="" onError={() => setFailed(true)} />;
+  return <img className="stone-login-stage-media" src={media.posterUrl ?? media.fileUrl} alt="" data-login-stage-static="true" onError={() => setFailed(true)} />;
 }
 
 export const Route = createFileRoute("/login")({ component: LoginPage });

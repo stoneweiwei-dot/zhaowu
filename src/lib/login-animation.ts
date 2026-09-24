@@ -16,7 +16,28 @@ export type LoginAnimationAsset = {
   createdAt: string;
 };
 
-const SESSION_KEY = "zhaowu.login-anim.session";
+const SELECTED_ASSET_SESSION_KEY = "zhaowu.login-anim.session";
+export const LOGIN_ANIMATION_SEEN_SESSION_KEY = "zhaowu.login-animation.seen.session.v1";
+
+export function shouldPlayLoginAnimation(storage?: Pick<Storage, "getItem"> | null) {
+  try {
+    return storage?.getItem(LOGIN_ANIMATION_SEEN_SESSION_KEY) !== "1";
+  } catch {
+    return true;
+  }
+}
+
+export function markLoginAnimationSeen(storage?: Pick<Storage, "setItem"> | null) {
+  try {
+    storage?.setItem(LOGIN_ANIMATION_SEEN_SESSION_KEY, "1");
+  } catch { /* fail open: the current login visit may still play */ }
+}
+
+export function resetLoginAnimationSeen(storage?: Pick<Storage, "removeItem"> | null) {
+  try {
+    storage?.removeItem(LOGIN_ANIMATION_SEEN_SESSION_KEY);
+  } catch { /* the login page still works with its static fallback */ }
+}
 
 export function loginVisualThemeFromTags(tags: string[] | undefined | null): LoginVisualTheme {
   const set = new Set((tags ?? []).map((tag) => tag.trim().toLowerCase()));
@@ -69,7 +90,7 @@ export function pickLoginAnimation(assets: LoginAnimationAsset[], theme?: "day" 
   const preferred = videos.length ? videos : pool;
   if (typeof window !== "undefined") {
     try {
-      const saved = window.sessionStorage.getItem(SESSION_KEY);
+      const saved = window.sessionStorage.getItem(SELECTED_ASSET_SESSION_KEY);
       const match = preferred.find((item) => item.id === saved) ?? assets.find((item) => item.id === saved);
       if (match) return match;
     } catch { /* ignore */ }

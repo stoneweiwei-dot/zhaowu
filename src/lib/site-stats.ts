@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r190",
-  updateNumber: 190,
-  publishedAt: "2026-09-24T09:36:00+10:00",
-  latestSummary: "最終收官修復：首頁不再預先掛載完整命書細節，避免已保存生辰的邊界資料把整個首頁帶入錯誤頁；Supabase 零引用 Storage 已清理並保持寫入凍結。",
+  version: "ZW-WEB-2026.09.24-r191",
+  updateNumber: 191,
+  publishedAt: "2026-09-24T12:25:00+10:00",
+  latestSummary: "登入動畫只在每次站主登入流程首次進入 /login 時播放一遍；首頁與其他分區不再掛載舊開場，後台登入動畫區只列出並接受 MP4／WebM 影片。",
   details: {
     "zh-Hant": [
-      "首頁的正式命盤與基礎解釋先穩定呈現；完整命書細節改為使用者展開後才掛載，任何可選深層內容不得再拖垮首頁。",
-      "Supabase 已刪除 39 個零引用 Storage 物件，共 160,741,199 bytes；寫入凍結繼續保留，避免再次超額。",
+      "登入動畫只在一次站主登入流程的首次 /login 顯示一次；影片播完停在靜態封面，切換分區或返回登入頁不會重播。",
+      "首頁與所有一般路由不再掛載舊 IntroGate；後台登入動畫管理只顯示並接受 MP4／WebM 影片，普通圖片與封面圖不再混入素材卡片。",
     ],
     en: [
-      "The home page now renders the core birth chart first and only mounts the optional full Destiny Book detail after the user expands it, preventing optional deep content from crashing the whole home route.",
-      "Supabase Storage cleanup removed 39 verified unreferenced objects (160,741,199 bytes); the Storage write freeze remains in place to avoid another quota breach.",
+      "The login animation now plays once on the first /login visit of each owner sign-in flow, then stays on a static poster and does not replay after route navigation.",
+      "The retired global IntroGate is no longer mounted. The owner login-animation manager now lists and accepts MP4/WebM videos only, keeping ordinary images and posters out of the animation cards.",
     ],
   },
 } as const;

@@ -23,15 +23,16 @@ const {
   markIntroSeen,
 } = await import('../src/lib/intro-gate-policy.ts');
 
-test('public home owns a one-time IntroGate while owner login keeps its independent cinematic stage', async () => {
+test('public runtime never mounts IntroGate and owner login is the only animation route', async () => {
   const login = await readFile(new URL('../src/routes/login.tsx', import.meta.url), 'utf8');
   assert.doesNotMatch(root, /IntroGate/);
   assert.match(root, /<SiteShell>/);
-  assert.match(shell, /import \{ IntroGate \}/);
-  assert.match(shell, /\{isHome \? <IntroGate \/> : null\}/);
+  assert.doesNotMatch(shell, /IntroGate/);
   assert.match(login, /LoginStageBackdrop/);
   assert.match(login, /stone-login-stage-media/);
   assert.match(login, /owner-immortal-ascent-r123\.mp4/);
+  assert.match(login, /data-login-animation="first-login-visit"/);
+  assert.doesNotMatch(login, /\bloop\b/);
   assert.match(login, /data-owner-only-login="true"/);
 });
 
