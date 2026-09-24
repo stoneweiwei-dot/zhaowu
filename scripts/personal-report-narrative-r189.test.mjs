@@ -48,7 +48,7 @@ test("完整报告仍是两个保存区块，但 summary 内实际带入一次�
   assert.match(text, /這股力量能做到/);
   assert.match(text, /同一股力量的代價/);
   assert.match(text, /依據/);
-  assert.match(text, /不能反過來用圖像推格局、喜用或吉凶/);
+  assert.match(text, /不能反推格局、喜用或吉凶/);
   assert.doesNotMatch(text, /第\s*0?[1-9]\s*(頁|区|區)|九頁|十五頁/);
 });
 
