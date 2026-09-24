@@ -15,8 +15,8 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r190",
-  updateNumber: 190,
+  version: "ZW-WEB-2026.09.24-r191",
+  updateNumber: 191,
   publishedAt: "2026-09-24T11:35:00+10:00",
   latestSummary: "正式收官：正式站保留唯一完整分析核心，吸收昭梧 Lite 的 560px 手機優先比例、米紙／青玉／朱砂視覺與更安靜的卡片層級；Lite 保留為免費體驗與備援入口。",
   details: {
