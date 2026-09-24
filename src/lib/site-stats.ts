@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r197",
-  updateNumber: 197,
-  publishedAt: "2026-09-24T18:21:00+10:00",
-  latestSummary: "站主素材後台改為登入影片／內容圖片分頁，批量操作只在選取後出現；已安裝 PWA 同步支援免刪除更新。",
+  version: "ZW-WEB-2026.09.24-r198",
+  updateNumber: 198,
+  publishedAt: "2026-09-24T19:38:00+10:00",
+  latestSummary: "觀世錄新增〈黃泉與輪迴〉長文，梳理中國本土幽冥觀、佛教六道輪迴與中世紀地府融合，並校正《長恨歌》過度推論。",
   details: {
     "zh-Hant": [
-      "素材管理不再同時堆疊兩套工具：登入影片與內容圖片改為二選一分頁，一次只顯示一個管理器。",
-      "登入影片、總圖庫、背景與報告的批量工具條只在先勾選項目後出現；上傳、預覽、啟停、刪除與原有權限保持不變。",
-      "同一版本收錄目前 Production 已存在的 PWA 免刪除更新機制；回到前景時會檢查新版本，不需刪除 App 重裝。",
+      "昭梧 · 觀世錄新增長文〈黃泉與輪迴：中國本土幽冥世界如何遇上佛教六道〉，首頁最新文章與 /knowledge 文章庫沿用同一資料源。",
+      "文章分清先秦黃泉／幽都、魂魄與祖先祭祀，和佛教業報、六道、無我與解脫的不同結構，再追到唐宋十王與中國地府的融合。",
+      "《長恨歌》段落明確標示證據邊界：『兩處茫茫皆不見』不能直接推出楊貴妃已輪迴；詩中隨後是在海上仙山找到太真。",
     ],
     en: [
-      "Owner media is now split into Login videos and Content images, with only one manager visible at a time.",
-      "Batch toolbars for login media, gallery assets, backgrounds and reports stay hidden until an item is selected; existing upload, preview, enable/disable, delete and permission logic is unchanged.",
-      "This release also records the installed-PWA live-update path already present in production, so installed apps can pick up a new release without delete-and-reinstall.",
+      "Zhaowu · Notes on Life now includes Yellow Springs and Rebirth, a long-form comparison of indigenous Chinese afterlife traditions and Buddhist samsara.",
+      "The article separates Yellow Springs, Youdu, ancestral ritual and soul traditions from karma, rebirth, non-self and liberation, then traces their medieval synthesis through the Ten Kings system.",
+      "The Song of Everlasting Regret section keeps the evidence boundary explicit: the poem does not establish that Yang Guifei had already reincarnated, and instead locates Taizhen on an island of immortals.",
     ],
   },
 } as const;
