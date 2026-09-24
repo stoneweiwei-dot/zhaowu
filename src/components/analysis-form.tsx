@@ -68,6 +68,7 @@ export function AnalysisForm() {
   const [error, setError] = useState<string | null>(null);
   const [rememberedRecord, setRememberedRecord] = useState<SharedBirthRecord | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(true);
+  const [chartDetailsOpen, setChartDetailsOpen] = useState(false);
 
   const copy = locale === "en"
     ? {
@@ -418,12 +419,18 @@ export function AnalysisForm() {
                 <div><dt>{copy.features}</dt><dd>{foundationValues.features}</dd></div>
               </dl>
             </section>
-            <details className="zhaowu-chart-details zhaowu-bazi-full-details">
+            <details
+              className="zhaowu-chart-details zhaowu-bazi-full-details"
+              open={chartDetailsOpen}
+              onToggle={(event) => setChartDetailsOpen(event.currentTarget.open)}
+            >
               <summary>{copy.fullDetails}</summary>
-              <div className="zhaowu-bazi-full-details__body">
-                <ChartTrustPanel chart={previewChart} locale={locale} />
-                <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
-              </div>
+              {chartDetailsOpen ? (
+                <div className="zhaowu-bazi-full-details__body">
+                  <ChartTrustPanel chart={previewChart} locale={locale} />
+                  <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
+                </div>
+              ) : null}
             </details>
           </div>
         ) : (
