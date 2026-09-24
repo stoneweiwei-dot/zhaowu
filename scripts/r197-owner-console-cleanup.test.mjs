@@ -55,3 +55,16 @@ test("r200 public owner-music GET does not statically evaluate the Node git HTTP
   assert.doesNotMatch(readBlock, /isomorphic-git\/http\/node/);
   assert.match(withRepoBlock, /await import\("isomorphic-git\/http\/node"\)/);
 });
+
+
+test("r201 public owner-music GET statically imports no write-only Git or SSH runtime", async () => {
+  const sourceText = await source("lib/owner-music-git.js");
+  const readBlock = sourceText.slice(sourceText.indexOf("export async function readOwnerMusicManifest"), sourceText.indexOf("async function commitAndPush"));
+  assert.doesNotMatch(sourceText, /^import .* from ["']isomorphic-git["'];/m);
+  assert.doesNotMatch(sourceText, /^import .* from ["']isomorphic-git\/http\/node["'];/m);
+  assert.doesNotMatch(sourceText, /^import .* from ["']ssh2["'];/m);
+  assert.doesNotMatch(readBlock, /isomorphic-git|ssh2/);
+  assert.match(sourceText, /import\("isomorphic-git"\)/);
+  assert.match(sourceText, /import\("isomorphic-git\/http\/node"\)/);
+  assert.match(sourceText, /import\("ssh2"\)/);
+});
