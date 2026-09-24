@@ -16,7 +16,7 @@ const GALLERY_SELECT = "id,category,asset_key,title,storage_path,bucket_id,conte
 const REPORT_LIST_SELECT = "id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,created_at,updated_at";
 const REPORT_DETAIL_SELECT = "id,public_code,user_id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,engine_snapshot,mother_draft,paid_report,visual_profile,image_path,image_error,created_at,updated_at";
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
-const MAX_LOADING_VIDEO_BYTES = 6 * 1024 * 1024;
+const MAX_LOADING_VIDEO_BYTES = 500 * 1024 * 1024;
 const MAX_REPORT_IMAGE_BYTES = 15 * 1024 * 1024;
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 const REPORT_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -567,7 +567,7 @@ async function galleryList(service: ReturnType<typeof createClient>, payload: Pa
 async function galleryPrepareUpload(service: ReturnType<typeof createClient>, payload: Payload) {
   const name = text(payload.name).slice(0, 180) || "asset";
   const contentType = text(payload.contentType).toLowerCase();
-  const size = boundedInt(payload.size, 0, 0, MAX_IMAGE_BYTES + 1);
+  const size = boundedInt(payload.size, 0, 0, MAX_LOADING_VIDEO_BYTES + 1);
   const category = safeSlug(text(payload.category), "uncategorized");
   const assetKey = safeSlug(text(payload.assetKey), crypto.randomUUID());
   const loading = category === "loading";
