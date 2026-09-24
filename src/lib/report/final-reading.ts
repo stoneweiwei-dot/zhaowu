@@ -132,6 +132,7 @@ function englishDirectAnswer(question: string, chart: Chart, kind: QuestionKind)
 }
 
 const CHINESE_TECHNICAL_SENTENCE = /命盤|命盘|命理|八字|四柱|天干|地支|藏干|日主|月令|旺衰|身強|身强|身弱|喜用神|用神|格局|十神|大運|大运|流年|流月|干支|扶身|泄身|制身|扶泄|制化|調候|调候|病藥|病药|刑沖|刑冲|合害|節氣邊界|节气边界/;
+const PURPOSE_QUESTION_RE = /為何而生|为何而生|為什麼而生|为什么而生|使命|人生角色|宿命|珍貴|珍贵|潛意識|潜意识|真實的自己|真实的自己|幸福生活|抉擇方式|抉择方式|人生方向|前往何方|人生去向/;
 
 function simplifyPlainChinese(value: string): string {
   return value
@@ -177,6 +178,11 @@ function stripChineseTechnicalDetail(question: string, answer: string, locale: A
 
 function chineseDirectAnswer(question: string, chart: Chart, reading: Reading, locale: AppLocale): string {
   const isHant = locale === "zh-Hant";
+  if (PURPOSE_QUESTION_RE.test(question)) {
+    return isHant
+      ? "命理不能證明「上天為什麼安排你出生」，也不替你指定唯一使命。它比較能回答的是：你反覆如何吸收、整理、輸出、承擔與選擇；把這些結構功能放進現實驗證，比追求五行平均或「缺什麼補什麼」更有意義。"
+      : "命理不能证明“上天为什么安排你出生”，也不替你指定唯一使命。它比较能回答的是：你反复如何吸收、整理、输出、承担与选择；把这些结构功能放进现实验证，比追求五行平均或“缺什么补什么”更有意义。";
+  }
   const hasTiming = /(何時|何时|什麼時候|什么时候|哪一年|哪年|哪個月|哪个月|今年|明年|後年|后年|\d{4})/.test(question);
   const hasTravel = /(旅行|旅遊|旅游|度假|出行|去哪|國家|国家|城市|目的地)/.test(question);
   if (hasTiming || hasTravel) return stripChineseTechnicalDetail(question, reading.directAnswer, locale);
