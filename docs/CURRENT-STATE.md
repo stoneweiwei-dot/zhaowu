@@ -102,7 +102,7 @@ r191 依站主最新指令修正：
 主專案：`plgpxusmemnmzckbwtiv`。
 
 - Database 專案可讀；站主登入不走 Supabase Auth。
-- 2026-09-24 已完成第一輪安全清理：39 個確認零引用的物件經 Storage API 刪除，共回收 160,741,199 bytes；目前為 **549 objects / 1,035,403,153 bytes（約 0.964 GiB）**。組織為站主批准的 Pro，官方包含 100 GB Storage；現有用量約 1.035%，尚有約 98.96 GB 包含額度。
+- 2026-09-24 已完成第一輪安全清理：39 個確認零引用的物件經 Storage API 刪除，共回收 160,741,199 bytes。r197 收官實測為 **552 objects / 1,033,390,182 bytes（約 0.962 GiB）**：audio 1／3,869,936 bytes、backgrounds 291／627,245,539、gallery 250／371,049,622、report images 10／31,225,085。組織為站主批准的 Pro，包含 100 GB Storage；現有用量約 1.033%，尚有約 98.97 GB 包含額度。
 - Storage／Edge 曾回 402 `exceed_storage_size_quota`。
 - r194 起背景、站主圖庫、登入素材與命誥圖寫入恢復；舊 r181 Free-plan write freeze 已被站主最新 Pro 指令取代。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
@@ -138,9 +138,13 @@ r191 依站主最新指令修正：
 ## 10. 真正仍未完成
 
 ### P0
-- 發布時必須確認 Vercel Production SHA = current main SHA。
-- STO-5／STO-20 真 iPhone Safari 最終實機驗收尚未完成。
-- Supabase 組織目前為 Pro；Storage 實測 1,035,403,153 bytes / 100 GB 包含額度，寫入已恢復。仍須避免重複素材；任何刪除繼續先核對引用並只用 Storage API。
+- r197 已確認 Vercel Production SHA = current main SHA 9fd7c6e6d72925b385ed05e8cd803e92f871033a；之後每次發布仍須重新驗證 exact SHA。
+- Deploy gate、Engine suite 753/753、iPhone Safari CI 均 PASS；STO-5／STO-20 **真實體 iPhone Safari** 最終人工驗收仍未完成，CI／模擬器不得冒充實機證據。
+- 站主登入後的 /account／/gallery 真實視覺驗收仍缺已驗證 owner session；r197 已完成 source contract、HTTP、CI 與 Production exact-SHA 證據，不得把「缺憑證的人工視覺」冒充已跑。
+- Supabase release_history 已寫入 r197／197，source commit = 9fd7c6e6d72925b385ed05e8cd803e92f871033a，verification = READY_MAIN_SHA_MATCH。
+- 《菜根譚》APP 截圖 37 條已完成第一輪逐條校勘：28 條升為 verified direct quote，1 條確認誤歸《菜根譚》（實出《圍爐夜話》）改為 not_applicable，剩 8 條因關鍵字／詞序／漏字與可靠底本不一致而保留 pending，且已逐條寫明差異。全庫現況為 **38 verified / 8 pending / 7 not_applicable**。
+- Supabase Security Advisor 的 4 個 rls_enabled_no_policy 為 service_role-only 表；anon／authenticated 無 table grants，現況是 deny-by-default，不得為消除 INFO 提示而新增寬鬆 policy。
+- Supabase 組織目前為 Pro；Storage 實測 1,033,390,182 bytes / 100 GB 包含額度，寫入已恢復。仍須避免重複素材；任何刪除繼續先核對引用並只用 Storage API。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。
