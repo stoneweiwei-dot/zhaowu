@@ -1900,10 +1900,10 @@ html[lang="en"] .zhaowu-report-narrative__head > strong {
   position: absolute;
   z-index: 4;
   display: grid;
-  width: 40px !important;
-  height: 40px !important;
-  min-width: 40px;
-  min-height: 40px;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px;
+  min-height: 44px;
   place-items: center;
   border: 1px solid rgba(255, 247, 226, .34);
   border-radius: 50%;

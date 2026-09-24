@@ -89,6 +89,7 @@ r191 依站主最新指令修正：
 - 後台「登入動畫管理」只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為動畫卡片，新增上傳也只接受 MP4／WebM。
 - 歷史 `IntroGate` 元件與 policy 只留回歸／相容參照，不得重新接回公開 runtime。
 - r181 Storage 寫入凍結期間，上傳仍為停用；runtime 只使用正式 build 內 same-origin 素材。
+- r192：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器僅接受 MP4／WebM，時長上限 15 秒；Storage 寫入凍結期間上傳按鈕仍停用。200–500 MB 來源影片的續傳／轉碼／正式發佈未接線，不得宣稱大檔可直接使用。
 
 ## 7. Supabase
 
@@ -150,7 +151,7 @@ r191 依站主最新指令修正：
 3. 正式站首頁／Login／出生表單／完整報告可用；
 4. 真 iPhone Safari 無白屏、橫向 overflow、safe-area／鍵盤遮擋、雙 floating UI；夜間模式所有主要文字與次要文字均保持可讀對比；
 5. refresh／返回／前進／切 App／鎖屏恢復正常；
-6. 首頁首次進入顯示一次 Loading；同一瀏覽器 refresh／回訪不重播；/login 動畫與聲音控制正常；
+6. 首頁及其他公開路由不掛載 IntroGate；/login 在單次站主登入流程只播一次、最長 15 秒，refresh／返回不重播，聲音控制正常；
 7. owner login／session restore／logout 正常；
 8. Supabase 失效時公開核心流程仍 fail-open；
 

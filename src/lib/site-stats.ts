@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r191",
-  updateNumber: 191,
-  publishedAt: "2026-09-24T12:25:00+10:00",
-  latestSummary: "登入動畫只在每次站主登入流程首次進入 /login 時播放一遍；首頁與其他分區不再掛載舊開場，後台登入動畫區只列出並接受 MP4／WebM 影片。",
+  version: "ZW-WEB-2026.09.24-r192",
+  updateNumber: 192,
+  publishedAt: "2026-09-24T13:30:00+10:00",
+  latestSummary: "登入影片最多播放 15 秒；聲音改為單一喇叭圖示，後台影片清單僅顯示 MP4／WebM。",
   details: {
     "zh-Hant": [
-      "登入動畫只在一次站主登入流程的首次 /login 顯示一次；影片播完停在靜態封面，切換分區或返回登入頁不會重播。",
-      "首頁與所有一般路由不再掛載舊 IntroGate；後台登入動畫管理只顯示並接受 MP4／WebM 影片，普通圖片與封面圖不再混入素材卡片。",
+      "登入影片最多播放 15 秒；播完停在封面，當次登入流程不重播。",
+      "聲音控制只顯示喇叭圖示，保留螢幕閱讀器標籤；後台影片只接受 15 秒內的 MP4／WebM。",
     ],
     en: [
-      "The login animation now plays once on the first /login visit of each owner sign-in flow, then stays on a static poster and does not replay after route navigation.",
-      "The retired global IntroGate is no longer mounted. The owner login-animation manager now lists and accepts MP4/WebM videos only, keeping ordinary images and posters out of the animation cards.",
+      "The login video plays for up to 15 seconds and stays on its poster for the rest of the sign-in flow.",
+      "A single speaker icon controls sound, with an accessible label. The owner catalog accepts MP4/WebM videos up to 15 seconds.",
     ],
   },
 } as const;

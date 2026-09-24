@@ -104,7 +104,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     common: tr(locale, "通用版", "通用版", "Common"),
     builtIn: tr(locale, "內置素材", "内置素材", "Built-in"),
     videoRequired: tr(locale, "登入動畫只接受 MP4／WebM 影片。", "登录动画只接受 MP4／WebM 视频。", "Login animations must be MP4 or WebM videos."),
-    tooLong: tr(locale, "登入動畫不可超過 5 秒。", "登录动画不可超过 5 秒。", "Login animation must be 5 seconds or shorter."),
+    tooLong: tr(locale, "登入動畫不可超過 15 秒。", "登录动画不可超过 15 秒。", "Login animation must be 15 seconds or shorter."),
     failed: tr(locale, "登入動畫操作失敗。", "登录动画操作失败。", "Login visual update failed."),
     empty: tr(locale, "尚未有遠端登入動畫，前台會使用內置蓮開影片。", "尚未有远程登录动画，前台会使用内置莲开影片。", "No remote login visual yet. The built-in lotus clip is used."),
   }), [locale]);
@@ -138,7 +138,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       for (const file of files) {
         if (file.type !== "video/mp4" && file.type !== "video/webm") throw new Error(copy.videoRequired);
         const duration = await readDuration(file);
-        if (duration > 5) throw new Error(copy.tooLong);
+        if (duration > 15) throw new Error(copy.tooLong);
         await uploadGalleryAsset(session, file, {
           category: "loading",
           tags: ["loading", "login-background", "login-common", "owner-upload"],
