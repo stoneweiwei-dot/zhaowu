@@ -17,16 +17,16 @@ export type PublicSiteStats = {
 export const SITE_RELEASE_FALLBACK = {
   version: "ZW-WEB-2026.09.24-r190",
   updateNumber: 190,
-  publishedAt: "2026-09-24T09:36:00+10:00",
-  latestSummary: "最終收官修復：首頁不再預先掛載完整命書細節，避免已保存生辰的邊界資料把整個首頁帶入錯誤頁；Supabase 零引用 Storage 已清理並保持寫入凍結。",
+  publishedAt: "2026-09-24T11:35:00+10:00",
+  latestSummary: "正式收官：正式站保留唯一完整分析核心，吸收昭梧 Lite 的 560px 手機優先比例、米紙／青玉／朱砂視覺與更安靜的卡片層級；Lite 保留為免費體驗與備援入口。",
   details: {
     "zh-Hant": [
-      "首頁的正式命盤與基礎解釋先穩定呈現；完整命書細節改為使用者展開後才掛載，任何可選深層內容不得再拖垮首頁。",
-      "Supabase 已刪除 39 個零引用 Storage 物件，共 160,741,199 bytes；寫入凍結繼續保留，避免再次超額。",
+      "正式站縮回 560px 手機優先閱讀尺度，保留單一完整分析核心；延伸內容維持折疊，不再和主問答搶視覺層級。",
+      "昭梧 Lite 保留為免費快速體驗／備援入口，不另建第二套命理核心、帳號、付費或 Supabase 資料鏈。",
     ],
     en: [
-      "The home page now renders the core birth chart first and only mounts the optional full Destiny Book detail after the user expands it, preventing optional deep content from crashing the whole home route.",
-      "Supabase Storage cleanup removed 39 verified unreferenced objects (160,741,199 bytes); the Storage write freeze remains in place to avoid another quota breach.",
+      "The official site now uses the Lite-inspired 560px mobile reading measure and quieter paper, jade and cinnabar presentation while keeping one canonical full-analysis core.",
+      "ZHAOWU Lite remains a free lightweight demo and fallback, not a second account, payment, storage, or metaphysics backend.",
     ],
   },
 } as const;
