@@ -4923,6 +4923,26 @@ html[data-zw-theme="night"] .zhaowu-site-header :is(.zhaowu-brand-name,.zhaowu-h
 html[data-zw-theme="night"] .zhaowu-home-lead h1 { color: #EDE6D6 !important; }
 html[data-zw-theme="night"] .zhaowu-home-lead p { color: #D3B47C !important; }
 
+/* r193 — restore night-mode contrast after the r192 compact shell. */
+html[data-zw-theme="night"] body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"],
+html[data-zw-theme="night"] .zhaowu-site-header .site-lang-group,
+html[data-zw-theme="night"] .zhaowu-site-header .zhaowu-header-mode-toggle {
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+html[lang="en"][data-zw-theme="night"] .zhaowu-home-disclosure-trigger strong {
+  color: #E8DFCF !important;
+}
+
+html[lang="en"][data-zw-theme="night"] .zhaowu-home-disclosure-trigger small {
+  color: #C8BEAD !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is(.zhaowu-section-kicker, .zhaowu-section-lead) {
+  color: #50675F !important;
+}
+
 @media (max-width: 430px) {
   .zhaowu-site-header .zhaowu-header-shell,.zhaowu-app-frame,.zhaowu-home-app-frame,.zhaowu-home-sheet-shell:has(.zhaowu-home-layout) .zhaowu-home-app-frame { width: 100% !important; max-width: 100% !important; }
   .zhaowu-site-header .zhaowu-header-shell { padding-inline: 12px !important; }

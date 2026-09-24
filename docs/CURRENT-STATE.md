@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-24 11:17 AEST
+最後核對：2026-09-24 13:48 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -83,6 +83,7 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - r192 起 `STONE-R6.2.2-CURRENT-MASTER.md` 為 CURRENT governance/evidence master；deterministic runtime 仍為 R6.2.1 + P2 + P3（含 r191 結構增補），不得把治理版本號冒充排盤核心重寫。
 - r192 起首頁漫畫、生辰流程與安裝提示各自有 fail-open boundary；單一區塊或舊本機資料異常不得再拖垮整頁。
 - r192 手機閱讀面收至最寬 560px，採暖紙／青玉／朱砂節制配色與小圓角；這只是正式站的視覺層，不引入 Lite 站的獨立流程、登入或 Storage 寫入。
+- r193 修正正式站實測發現的夜間對比回歸：英文 Header 切換、延伸入口主／次文字與暖紙內容面第二步標題必須保持可讀；只改 CSS，不改功能或命理核心。
 
 ## 6. Loading／Login animation
 
