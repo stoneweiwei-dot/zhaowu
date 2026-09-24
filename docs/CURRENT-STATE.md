@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-23 23:36 AEST
+最後核對：2026-09-24 09:36 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -77,6 +77,7 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - r187 起站主後台執行「資訊減法」：分區下方不再放教學式／解釋式 helper copy；只保留標題、狀態、操作與必要資料。Storage freeze 只用單行 short status。
 - r188 起新增「宋式小漫畫翻譯層」：宋式仍是唯一視覺骨架；漫畫只允許出現在首頁「今日一格」、命書核心底盤後單一白話插頁、命書末端分享一格。不得擴張成新工具入口、卡片牆或第二套品牌視覺。
 - r188 漫畫角色只用本機 React／SVG，依五行切換柔和色系；不得為漫畫層新增 Supabase Storage 寫入或付費圖片 provider。漫畫只翻譯概念，不得修改排盤／格局／用神／吉凶 truth。
+- r190 起首頁完整命盤細節採 lazy mount：只有使用者展開後才掛載完整命書；核心生辰錄入、四柱與基礎解釋必須先 fail-open。
 
 ## 6. Loading／Login animation
 
@@ -93,7 +94,7 @@ r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 主專案：`plgpxusmemnmzckbwtiv`。
 
 - Database 專案可讀；站主登入不走 Supabase Auth。
-- Storage 目前約 **1.196 GB / Free 1 GB**；仍是未完成基礎設施問題。
+- 2026-09-24 Storage 已完成安全清理：39 個 live audit 確認零引用的物件已透過 Storage API 刪除，共回收 160,741,199 bytes；清理後為 **549 objects / 1,035,403,153 bytes**。
 - Storage／Edge 曾回 402 `exceed_storage_size_quota`。
 - r181 起 **所有新增 Supabase Storage 寫入已凍結**：背景、站主圖庫、登入素材、新命誥圖不得新增；現有內容仍可讀取／管理。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
@@ -131,7 +132,7 @@ r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 ### P0
 - 發布時必須確認 Vercel Production SHA = current main SHA。
 - STO-5／STO-20 真 iPhone Safari 最終實機驗收尚未完成。
-- Supabase Storage 超額仍未清理完成；39 個已核對未引用候選尚待 Storage API 實體刪除與刪後用量復核。
+- Supabase Storage 超額清理已完成；Storage write freeze 繼續保留，避免重新超額。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。
