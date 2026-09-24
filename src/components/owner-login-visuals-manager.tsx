@@ -217,7 +217,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       </div>
       {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-3 text-xs font-medium text-ink-mute" data-owner-storage-status>{tr(locale, "Storage 寫入暫停", "Storage 写入暂停", "Storage read-only")}</p> : null}
       {message ? <p className="mt-3 rounded-xl border border-line bg-paper/40 px-4 py-3 text-sm text-cinnabar">{message}</p> : null}
-      {editableRows.length ? <div data-owner-bulk-toolbar="login-visuals" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
+      {selectedIds.length ? <div data-owner-bulk-toolbar="login-visuals" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
         <span className="text-xs font-medium text-ink-soft">{copy.selected(selectedIds.length)}</span>
         <button type="button" disabled={busy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds(editableRows.map((asset) => asset.id))}>{copy.selectAll}</button>
         <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds([])}>{copy.clearSelection}</button>

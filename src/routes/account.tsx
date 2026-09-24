@@ -656,7 +656,7 @@ function AccountPage() {
                 if (next) void loadBackgroundHistory(0);
               }}>{backgroundHistoryOpen ? c.hideHistory : c.viewHistory(backgroundTotal)}</button>
             </div>
-            {visibleBackgrounds.length ? <div data-owner-bulk-toolbar="backgrounds" className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-cream/70 px-3 py-3">
+            {selectedBackgroundIds.length ? <div data-owner-bulk-toolbar="backgrounds" className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-cream/70 px-3 py-3">
               <span className="text-xs font-medium text-ink-soft">{c.selectedBackgrounds(selectedBackgroundIds.length)}</span>
               <button type="button" disabled={backgroundBusy} className="min-h-10 rounded-full border border-line bg-paper/70 px-3 text-xs disabled:opacity-40" onClick={() => setSelectedBackgroundIds(visibleBackgrounds.map((asset) => asset.id))}>{c.selectVisibleBackgrounds}</button>
               <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-10 rounded-full border border-line bg-paper/70 px-3 text-xs disabled:opacity-40" onClick={() => setSelectedBackgroundIds([])}>{c.clearSelection}</button>
@@ -711,7 +711,7 @@ function AccountPage() {
           </div>
         </div>
 
-        {user.isOwner && filtered.length ? <div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
+        {user.isOwner && selectedReportIds.length ? <div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
           <span className="text-xs font-medium text-ink-soft">{c.selected(selectedReportIds.length)}</span>
           <button type="button" disabled={refreshBusy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedReportIds(filtered.map((row) => row.id))}>{c.selectAllShown}</button>
           <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedReportIds([])}>{c.clearSelection}</button>

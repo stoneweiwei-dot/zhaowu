@@ -39,12 +39,6 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
 
   const copy = useMemo(() => ({
     title: tr(locale, "總圖庫", "总图库", "Gallery"),
-    lead: tr(
-      locale,
-      "只管理要保留的內容圖片；登入畫面在上方獨立管理，網站 Loading 與介面小素材不會混進這裡。",
-      "只管理要保留的内容图片；登录画面在上方独立管理，网站 Loading 与界面小素材不会混进这里。",
-      "Manage content images only. Login visuals are handled separately above, and internal loading/UI assets are excluded.",
-    ),
     upload: tr(locale, "加入圖片", "加入图片", "Add images"),
     uploading: tr(locale, "加入中…", "加入中…", "Adding…"),
     atlas: tr(locale, "吉象圖鑑", "吉象图鉴", "Public atlas"),
@@ -191,7 +185,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
             ))}
           </div>
 
-          {visibleAssets.length ? <div data-owner-bulk-toolbar="gallery" className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
+          {selectedIds.length ? <div data-owner-bulk-toolbar="gallery" className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
             <span className="text-xs font-medium text-ink-soft">{copy.selected(selectedIds.length)}</span>
             <button type="button" disabled={busy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={selectVisible}>{copy.selectVisible}</button>
             <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds([])}>{copy.clearSelection}</button>

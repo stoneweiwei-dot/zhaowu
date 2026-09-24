@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r196",
-  updateNumber: 196,
-  publishedAt: "2026-09-24T17:00:00+10:00",
-  latestSummary: "完整命書新增六格漫畫 Lite 閱讀模式；付費與排盤邏輯維持不變。",
+  version: "ZW-WEB-2026.09.24-r197",
+  updateNumber: 197,
+  publishedAt: "2026-09-24T18:21:00+10:00",
+  latestSummary: "站主素材後台改為登入影片／內容圖片分頁，批量操作只在選取後出現；已安裝 PWA 同步支援免刪除更新。",
   details: {
     "zh-Hant": [
-      "完整命書現在預設先顯示「漫畫 Lite」：核心底盤、性格、關係、事業、階段與行動以六格讀完。",
-      "每一格都可展開原本的完整判讀文字，亦可隨時切回完整命書；漫畫只改閱讀方式，不重算命盤。",
-      "付費、排盤、登入與資料庫邏輯保持原樣；正式站登入影片後台已確認可登入與讀取素材。",
+      "素材管理不再同時堆疊兩套工具：登入影片與內容圖片改為二選一分頁，一次只顯示一個管理器。",
+      "登入影片、總圖庫、背景與報告的批量工具條只在先勾選項目後出現；上傳、預覽、啟停、刪除與原有權限保持不變。",
+      "同一版本收錄目前 Production 已存在的 PWA 免刪除更新機制；回到前景時會檢查新版本，不需刪除 App 重裝。",
     ],
     en: [
-      "The Destiny Book now opens in Comic Lite: six frames cover foundation, temperament, relationships, work, timing and action.",
-      "Every frame can reveal the complete original reading, and readers can switch back to the full Destiny Book at any time.",
-      "This changes presentation only. Calculation, payment, owner access and database contracts remain unchanged.",
+      "Owner media is now split into Login videos and Content images, with only one manager visible at a time.",
+      "Batch toolbars for login media, gallery assets, backgrounds and reports stay hidden until an item is selected; existing upload, preview, enable/disable, delete and permission logic is unchanged.",
+      "This release also records the installed-PWA live-update path already present in production, so installed apps can pick up a new release without delete-and-reinstall.",
     ],
   },
 } as const;

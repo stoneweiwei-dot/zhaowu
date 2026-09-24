@@ -109,11 +109,16 @@ test("Gallery match is visible at the decree action instead of appearing only af
 });
 
 test("owner Gallery has one content upload path and excludes login/loading assets", async () => {
-  const manager = await read("src/components/owner-gallery-manager.tsx");
+  const [manager, route] = await Promise.all([
+    read("src/components/owner-gallery-manager.tsx"),
+    read("src/routes/gallery.tsx"),
+  ]);
   assert.match(manager, /category:\s*"visual-library"/);
   assert.match(manager, /tags:\s*\["owner-upload", "auto-classify"\]/);
   assert.match(manager, /!isLoadingGalleryAsset\(asset\)/);
-  assert.match(manager, /登入畫面在上方獨立管理|登录画面在上方独立管理/);
+  assert.match(route, /登入影片/);
+  assert.match(route, /內容圖片/);
+  assert.match(route, /type MediaView = "login" \| "content"/);
   assert.doesNotMatch(manager, /view === "loading"/);
   assert.doesNotMatch(manager, /const CATEGORIES/);
   assert.doesNotMatch(manager, /<select[^>]*>[^]*buddhist|<select[^>]*>[^]*daoist/);
