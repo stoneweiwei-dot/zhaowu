@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r199",
-  updateNumber: 199,
-  publishedAt: "2026-09-24T20:27:00+10:00",
-  latestSummary: "站主音樂後台完成最後一輪減法，批量工具只在選取後出現；背景音樂公開讀取移除舊 URL 解析路徑。",
+  version: "ZW-WEB-2026.09.24-r200",
+  updateNumber: 200,
+  publishedAt: "2026-09-24T20:50:00+10:00",
+  latestSummary: "背景音樂公開讀取不再載入舊 Node Git HTTP 適配器；站主寫入時才動態載入，消除正式站 DEP0169 路徑。",
   details: {
     "zh-Hant": [
-      "背景音樂管理移除常駐教學與流程說明，只保留上傳、曲目與實際操作。",
-      "音樂批量操作列改為先選取曲目後才出現，與登入影片、圖庫、背景、報告的站主後台規則一致。",
-      "公開 /api/owner-music 讀取不再先走 isomorphic-git smart-HTTP，避開 Node 24 url.parse() 的 DEP0169 警告路徑；寫入流程與 Owner 權限不變。",
+      "r199 已完成音樂後台減法；r200 只修正式站仍存在的 Node DEP0169 runtime 警告。",
+      "公開 /api/owner-music GET 不再靜態載入 isomorphic-git 的 Node HTTP 適配器；只有站主新增／改名／切換／刪除曲目時才動態載入寫入依賴。",
+      "前台播放、Owner Cookie、同源檢查、SSH push、曲目資料與報告核心均不變。",
     ],
     en: [
-      "The owner music panel now keeps only upload, track and action controls instead of permanent instructional copy.",
-      "Music batch actions stay hidden until a track is selected, matching the rest of the owner console.",
-      "Public /api/owner-music reads no longer start with the isomorphic-git smart-HTTP path that triggered Node 24 DEP0169 url.parse() warnings; write and owner-auth flows are unchanged.",
+      "r199 completed the owner-music UI cleanup; r200 fixes the remaining Node DEP0169 production warning.",
+      "Public /api/owner-music GET no longer evaluates the Node Git HTTP adapter. It is loaded only when an owner performs a write action.",
+      "Playback, owner-cookie checks, same-origin protection, SSH pushes, track data and report logic are unchanged.",
     ],
   },
 } as const;

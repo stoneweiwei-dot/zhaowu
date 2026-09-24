@@ -29,6 +29,12 @@
 - 本次只收斂站主呈現層；不得藉此改 Owner Cookie、Auth、payment、Supabase schema、Storage reference、排盤或報告計算。
 - r187「站主後台資訊減法」繼續有效，本條取代其尚未收乾淨的同屏工具堆疊與空閒批量工具列。
 
+## 2026-09-24 r200 公開音樂 runtime supersession
+
+- ACTIVE：`isomorphic-git/http/node` 不得在公開音樂 GET 路徑頂層靜態載入；只可在站主寫入流程進入 `withRepo()` 後動態載入。
+- ACTIVE：任何 runtime warning 修復都必須在 Production exact SHA 上實際呼叫對應 endpoint，再以部署後時間窗查 Vercel runtime errors；source contract／CI 通過不能代替這一步。
+- r199 的音樂後台資訊減法繼續有效；r200 只收口 Node runtime 依賴載入邊界。
+
 ## 2026-09-24 r199 站主音樂後台收口 supersession
 
 - ACTIVE：背景音樂管理不得常駐教學段、流程說明或站主專用廢話；入口只顯示管理名稱，彈窗只保留上傳、狀態、曲目與必要操作。

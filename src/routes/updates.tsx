@@ -23,7 +23,7 @@ function UpdatesPage() {
   }, []);
 
   const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
-  const englishSummary = "Owner music is now quieter and cleaner, batch actions appear only after selection, and public music reads avoid the legacy URL path that caused Node 24 warnings."
+  const englishSummary = "Public background-music reads no longer load the legacy Node Git HTTP adapter; it is loaded only for owner write actions, removing the remaining production warning path."
   const releaseSummary = language === "en" && /[\u3400-\u9fff]/u.test(release.latestSummary)
     ? englishSummary
     : release.latestSummary;
