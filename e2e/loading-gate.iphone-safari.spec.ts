@@ -17,9 +17,6 @@ test.describe("iPhone Safari login-only animation", () => {
   });
 
   test("login animation plays once per sign-in flow and never follows route navigation", async ({ page }) => {
-    await page.addInitScript(() => {
-      window.sessionStorage.removeItem("zhaowu.login-animation.seen.session.v1");
-    });
     await page.goto("/login", { waitUntil: "domcontentloaded" });
     await expect(page.locator(GLOBAL_GATE)).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "站主登入", exact: true })).toBeVisible();
