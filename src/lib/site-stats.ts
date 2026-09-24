@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r193",
-  updateNumber: 193,
-  publishedAt: "2026-09-24T13:48:00+10:00",
-  latestSummary: "修正英文夜間模式的頂部切換、延伸入口與第二步標題對比；不改報告、排盤、登入或資料。",
+  version: "ZW-WEB-2026.09.24-r194",
+  updateNumber: 194,
+  publishedAt: "2026-09-24T15:00:00+10:00",
+  latestSummary: "Supabase Pro 容量規則生效，恢復 Storage 寫入；登入影片支援最高 500 MB 的斷點續傳。",
   details: {
     "zh-Hant": [
-      "英文夜間模式的語言與日夜切換改回深色底，文字不再落在半透明淺色塊上。",
-      "今日指引、心境小測、觀世錄與第二步標題恢復可讀對比。",
-      "只修正 CSS 視覺層；r192 的報告、登入影片、R6.2.2 治理與 Storage 凍結全部保持。",
+      "Supabase 組織已按站主付費決定以 Pro 的 100 GB Storage 額度運行，舊 Free 凍結退出 active path。",
+      "背景、圖庫、登入素材與報告圖片恢復寫入；登入 MP4／WebM 最高 500 MB，6 MB 以上使用斷點續傳。",
+      "登入成品仍限 15 秒；不刪除既有素材，也不改排盤、報告、登入權限或付款邏輯。",
     ],
     en: [
-      "The language and day/night controls now stay on a dark header surface in night mode.",
-      "Today Guide, Self Discovery, Notes on life and the Step 2 label regain readable contrast.",
-      "This is a CSS-only correction; the r192 report, login media, governance and Storage freeze are unchanged.",
+      "The owner-approved Supabase Pro plan now governs Storage; the retired Free-plan freeze no longer applies.",
+      "Backgrounds, gallery, login media and report images can write again. Login MP4/WebM files up to 500 MB use resumable upload above 6 MB.",
+      "Login clips remain limited to 15 seconds; existing assets and protected calculation, reports, auth and payment logic are unchanged.",
     ],
   },
 } as const;

@@ -32,7 +32,7 @@ export async function uploadGalleryAsset(
   const loading = meta.category === "loading";
   if (loading) {
     if (!isVideo) throw new Error("登入動畫庫只接受 MP4／WebM 影片。");
-    if (isVideo && file.size > 6 * 1024 * 1024) throw new Error("登入動畫影片不可超過 6 MB。");
+    if (isVideo && file.size > 500 * 1024 * 1024) throw new Error("登入動畫影片不可超過 500 MB。");
   } else {
     const isImage = file.type.startsWith("image/");
     if (!isImage) throw new Error("只接受圖片檔。");

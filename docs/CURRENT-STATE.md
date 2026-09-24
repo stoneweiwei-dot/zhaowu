@@ -74,7 +74,7 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - r186 核心閱讀面（生辰／命盤／問題／報告）統一為低圓角暖紙；Night mode 為墨色背景＋暖紙正文，不把整頁染成暗綠。
 - r186 青玉小龍維持唯一浮動入口，但入口縮至 44–46px、主動泡泡隱藏；展開面固定為小型底部抽屜，不得再覆蓋大半個 iPhone 畫面。
 - r187 起 English 是獨立排版系統，不得把中文尺寸直接換成英文字符串：Latin 標題使用 Iowan Old Style／Baskerville／Georgia fallback，UI 使用 Avenir Next／SF Pro／system sans；手機 English Header 分成品牌／更新／語言與外觀三列，禁止長字串互相交叉或壓住。
-- r187 起站主後台執行「資訊減法」：分區下方不再放教學式／解釋式 helper copy；只保留標題、狀態、操作與必要資料。Storage freeze 只用單行 short status。
+- r187 起站主後台執行「資訊減法」：分區下方不再放教學式／解釋式 helper copy；只保留標題、狀態、操作與必要資料。任何 Storage 狀態只用單行 short status。
 - r188 起新增「宋式小漫畫翻譯層」：宋式仍是唯一視覺骨架；漫畫只允許出現在首頁「今日一格」、命書核心底盤後單一白話插頁、命書末端分享一格。不得擴張成新工具入口、卡片牆或第二套品牌視覺。
 - r188 漫畫角色只用本機 React／SVG，依五行切換柔和色系；不得為漫畫層新增 Supabase Storage 寫入或付費圖片 provider。漫畫只翻譯概念，不得修改排盤／格局／用神／吉凶 truth。
 - r190 起首頁完整命盤細節採 lazy mount：只有使用者展開後才掛載完整命書；核心生辰錄入、四柱與基礎解釋必須先 fail-open。
@@ -93,22 +93,22 @@ r191 依站主最新指令修正：
 - 每次站主登入流程只在首次進入 `/login` 播放一次；影片不循環，播完使用靜態封面。切到其他 route 再返回 `/login` 不重播；站主主動登出後才開始下一次登入流程。
 - 後台「登入動畫管理」只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為動畫卡片，新增上傳也只接受 MP4／WebM。
 - 歷史 `IntroGate` 元件與 policy 只留回歸／相容參照，不得重新接回公開 runtime。
-- r181 Storage 寫入凍結期間，上傳仍為停用；runtime 只使用正式 build 內 same-origin 素材。
-- r192：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器僅接受 MP4／WebM，時長上限 15 秒；Storage 寫入凍結期間上傳按鈕仍停用。200–500 MB 來源影片的續傳／轉碼／正式發佈未接線，不得宣稱大檔可直接使用。
+- r194 起 Supabase Pro 已由站主明確批准，舊 r181 Free 容量寫入凍結退出 active path；runtime 的既有 same-origin fallback 保留。
+- r194：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器接受 MP4／WebM、時長上限 15 秒、單檔上限 500 MB；大於 6 MB 使用 Supabase TUS 斷點續傳。系統不在瀏覽器內轉碼，來源檔須已是可播放的 15 秒內成品。
 
 ## 7. Supabase
 
 主專案：`plgpxusmemnmzckbwtiv`。
 
 - Database 專案可讀；站主登入不走 Supabase Auth。
-- 2026-09-24 已完成第一輪安全清理：39 個確認零引用的物件經 Storage API 刪除，共回收 160,741,199 bytes；目前為 **549 objects / 1,035,403,153 bytes（約 0.964 GiB）**。組織為 Pro；仍未達 <900 MB 安全目標，降回 Free 前須再核對用量與計費狀態。
+- 2026-09-24 已完成第一輪安全清理：39 個確認零引用的物件經 Storage API 刪除，共回收 160,741,199 bytes；目前為 **549 objects / 1,035,403,153 bytes（約 0.964 GiB）**。組織為站主批准的 Pro，官方包含 100 GB Storage；現有用量約 1.035%，尚有約 98.96 GB 包含額度。
 - Storage／Edge 曾回 402 `exceed_storage_size_quota`。
-- r181 起 **所有新增 Supabase Storage 寫入已凍結**：背景、站主圖庫、登入素材、新命誥圖不得新增；現有內容仍可讀取／管理。
+- r194 起背景、站主圖庫、登入素材與命誥圖寫入恢復；舊 r181 Free-plan write freeze 已被站主最新 Pro 指令取代。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
 - 不得直接 SQL DELETE `storage.objects` 冒充刪除檔案。
 - 本次已刪清單原始 manifest SHA-256 = `e73337b3bc7119f78a014fd557f0970306e5cab04f792496a8995cbea8d5396e`；14 audio／2 gallery／23 report images 的當前欄位、歷史 JSON、blueprint 與 settings 引用均已於刪除前核對。此 manifest 已用完，不得再次當作待刪清單。
 - 2026-09-23 的 402 為清理前歷史阻塞；2026-09-24 額度解除後才完成正式 Storage API 刪除。一次性精確路徑 policy 已撤銷；`admin-storage-cleanup-execute-once` 現行 v17 為 `verify_jwt=true` 的 410 retired stub。
-- 剩餘同內容物件的 eTag 理論去重上限約 56,245,616 bytes，仍不足以單靠去重達成 900 MB 目標；它們可能同時受背景、圖庫或私人報告引用。任何後續清理須重新核對用途與引用，用 Storage API 刪除並復算容量。
+- 剩餘同內容物件的 eTag 理論去重上限約 56,245,616 bytes；它們可能同時受背景、圖庫或私人報告引用。即使 Pro 容量充足，任何後續清理仍須重新核對用途與引用，用 Storage API 刪除並復算容量。
 - 先前僅按 `background_assets` 判定出的 4 個「background orphan」其實仍被 `gallery_assets(bucket_id='zhaowu-backgrounds')` 以 enabled 資產引用，**禁止刪除**。
 - `admin-storage-cleanup-execute-once` v7 的候選解析漏掉上述 cross-bucket `gallery_assets` 引用；不得再啟用 v7 邏輯。現行 v17 為 410 retired stub 並要求 JWT；Owner dry-run audit 已補上 cross-bucket reference。
 - 刪除前 live 實體基線為 1,196,144,352 bytes：backgrounds 291 objects／627,245,539 bytes、gallery 249／370,798,037、report images 33／116,286,938、audio 15／81,813,838。279 個 `background_assets` metadata row 目前全為 enabled=true；禁止整包刪。未完成搬遷／引用核對前，不刪 private report images、仍被任何 metadata reference 的資產或 rollback 必要原件。
@@ -139,7 +139,7 @@ r191 依站主最新指令修正：
 ### P0
 - 發布時必須確認 Vercel Production SHA = current main SHA。
 - STO-5／STO-20 真 iPhone Safari 最終實機驗收尚未完成。
-- Supabase Storage 已低於 1 GiB，但 <900 MB 安全餘量仍未達成；Storage write freeze 繼續保留。最新 audit 只找到約 0.49 MB 明顯零引用物件，另有約 56.25 MB exact-duplicate 候選需先重指引用再刪。降回 Free 與 900 MB 安全緩衝尚未驗收。
+- Supabase 組織目前為 Pro；Storage 實測 1,035,403,153 bytes / 100 GB 包含額度，寫入已恢復。仍須避免重複素材；任何刪除繼續先核對引用並只用 Storage API。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。
@@ -169,5 +169,5 @@ CI、PR merge、Preview、單純 Vercel READY、桌面 viewport、文件描述�
 - 首頁「昭梧 · 心境小測」新增 `/quiz/cultivation-destiny`。
 - 來源：裝置既有生辰 → 現行 `buildChart()` 八字／五行 truth；MBTI 可選且低權重。
 - 輸出：靈根／品階、宗門峰脈、入門身份、六維、九大道途、諸宗適性、三句機驗、修行命途與 9:16 個人命測圖。
-- 命測圖完全在瀏覽器本機生成，不新增 Supabase Storage 寫入，不使用付費圖片 provider；r181 Storage freeze 維持。
+- 命測圖完全在瀏覽器本機生成，不新增 Supabase Storage 寫入，不使用付費圖片 provider；此成本隔離契約與 r194 恢復其他 owner Storage 寫入相容。
 - 邊界：仙俠結果只作趣味世界觀，不修改正式命盤；紫微未經校驗時不補造盤面。

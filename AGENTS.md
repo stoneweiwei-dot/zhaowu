@@ -38,16 +38,16 @@ This is the owner's newest explicit infrastructure instruction and has **highest
 - A cancelled/ignored Vercel deployment is still treated as quota consumption for project governance purposes; agents must prevent the trigger rather than intentionally creating a cancelled deployment.
 - Do not create another Vercel project to evade limits.
 
-### D. Supabase free-tier operating envelope
+### D. Supabase current paid-plan operating envelope (2026-09-24 owner supersession)
 
 - Keep the existing Supabase project `plgpxusmemnmzckbwtiv`; do not create a replacement project merely to reset quota.
-- Database/Auth stay on the current free project while capacity is sufficient.
-- Supabase Storage operating target is **below 900 MB**, leaving safety margin below the free-tier 1 GB limit.
+- The existing organization is owner-approved **Supabase Pro**. Do not treat it as Free, reapply the retired 900 MB freeze, or downgrade it without a newer explicit owner instruction.
+- Use the live organization plan and current official quota as truth. As of 2026-09-24, Pro includes 100 GB Storage; measure current usage before reporting pressure.
 - Before uploading new media: check for an existing identical asset; avoid duplicate binaries; prefer production-appropriate compressed formats. Do not upload large WAV/PNG originals when a smaller production derivative is sufficient.
 - Cleanup order is: **unreferenced/orphan objects → exact duplicate binaries → disabled temporary/test assets → obsolete one-time imports**, but only after references and rollback needs are proven.
 - Never delete customer reports, user data, currently referenced production assets, originals required for rollback, or database records merely to reduce quota.
 - Temporary / probe / `*-once` Edge Functions are development artifacts. After their job is complete, they must be audited and retired from the active surface when safe; they must never become accidental permanent runtime dependencies.
-- Storage pressure must be solved by safe cleanup/deduplication before any paid upgrade is proposed.
+- Storage pressure must still be solved by safe cleanup/deduplication before proposing any additional paid capacity beyond the already approved Pro plan.
 
 ### E. External plugins are development tools, not production dependencies
 
