@@ -2,6 +2,8 @@ import { LOGIN_VISUAL_CATALOG } from "@/lib/loading-gallery-catalog";
 
 export type LoginVisualTheme = "day" | "night" | "common";
 
+export const MAX_LOGIN_PLAYBACK_MS = 15_000;
+
 export type LoginAnimationAsset = {
   id: string;
   title: string;
@@ -54,7 +56,7 @@ function catalogToAsset(item: (typeof LOGIN_VISUAL_CATALOG)[number], index: numb
     type: video ? "video" : "image",
     fileUrl: item.videoPath || item.publicPath,
     posterUrl: item.publicPath,
-    durationMs: item.durationMs,
+    durationMs: item.durationMs ? Math.min(item.durationMs, MAX_LOGIN_PLAYBACK_MS) : undefined,
     active: true,
     current: (item.tags ?? []).includes("current-default"),
     theme: loginVisualThemeFromTags(item.tags),
@@ -65,7 +67,9 @@ function catalogToAsset(item: (typeof LOGIN_VISUAL_CATALOG)[number], index: numb
 
 
 export function catalogLoginAnimations(): LoginAnimationAsset[] {
-  return LOGIN_VISUAL_CATALOG.map(catalogToAsset);
+  return LOGIN_VISUAL_CATALOG
+    .filter((item) => Boolean(item.videoPath))
+    .map(catalogToAsset);
 }
 
 export async function listLoginVisuals(): Promise<LoginAnimationAsset[]> {

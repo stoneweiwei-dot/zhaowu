@@ -31,7 +31,9 @@ test("mobile owner login keeps the approved full-width sheet", () => {
 
 test("one-sheet report removes customer-facing metaphysical jargon", () => {
   assert.match(report, /zhaowu-report-continuous-sheet/);
-  assert.match(report, /PERSONAL ANALYSIS/);
+  assert.doesNotMatch(report, /PERSONAL ANALYSIS|YOUR QUESTION|Reasoning notes|Chart basics/);
+  assert.match(report, /questionTitle:\s*"問題"/);
+  assert.match(report, /answerTitle:\s*"答案"/);
   assert.match(report, /CHINESE_JARGON/);
   assert.match(report, /ENGLISH_JARGON/);
   assert.doesNotMatch(report, /AUSPICIOUS MOTIFS/);

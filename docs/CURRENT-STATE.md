@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-24 09:36 AEST
+最後核對：2026-09-24 11:17 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -79,6 +79,10 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - r188 漫畫角色只用本機 React／SVG，依五行切換柔和色系；不得為漫畫層新增 Supabase Storage 寫入或付費圖片 provider。漫畫只翻譯概念，不得修改排盤／格局／用神／吉凶 truth。
 - r190 起首頁完整命盤細節採 lazy mount：只有使用者展開後才掛載完整命書；核心生辰錄入、四柱與基礎解釋必須先 fail-open。
 - r191 起命書新增「結構不是平衡表」治理：五行不以平均為目標、十干無先天高下；「使命／為何而生」只轉譯為結構功能與反覆課題；圖像／神獸／漫畫只能由既有主判向下翻譯，禁止反推格局、喜用或吉凶。
+- r192 起完整報告執行客戶文案減法：不再顯示 `PERSONAL ANALYSIS`、`YOUR QUESTION`、`Reasoning notes`、`Chart basics` 等 prompt／dashboard 式標題；只保留問題、答案、補充、四柱、附註、依據與下一步等成品語言。
+- r192 起 `STONE-R6.2.2-CURRENT-MASTER.md` 為 CURRENT governance/evidence master；deterministic runtime 仍為 R6.2.1 + P2 + P3（含 r191 結構增補），不得把治理版本號冒充排盤核心重寫。
+- r192 起首頁漫畫、生辰流程與安裝提示各自有 fail-open boundary；單一區塊或舊本機資料異常不得再拖垮整頁。
+- r192 手機閱讀面收至最寬 560px，採暖紙／青玉／朱砂節制配色與小圓角；這只是正式站的視覺層，不引入 Lite 站的獨立流程、登入或 Storage 寫入。
 
 ## 6. Loading／Login animation
 
@@ -89,13 +93,14 @@ r191 依站主最新指令修正：
 - 後台「登入動畫管理」只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為動畫卡片，新增上傳也只接受 MP4／WebM。
 - 歷史 `IntroGate` 元件與 policy 只留回歸／相容參照，不得重新接回公開 runtime。
 - r181 Storage 寫入凍結期間，上傳仍為停用；runtime 只使用正式 build 內 same-origin 素材。
+- r192：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器僅接受 MP4／WebM，時長上限 15 秒；Storage 寫入凍結期間上傳按鈕仍停用。200–500 MB 來源影片的續傳／轉碼／正式發佈未接線，不得宣稱大檔可直接使用。
 
 ## 7. Supabase
 
 主專案：`plgpxusmemnmzckbwtiv`。
 
 - Database 專案可讀；站主登入不走 Supabase Auth。
-- 2026-09-24 Storage 已完成安全清理：39 個 live audit 確認零引用的物件已透過 Storage API 刪除，共回收 160,741,199 bytes；清理後實測為 **549 objects / 1,035,403,153 bytes**（約 987.4 MiB，低於 Free 1 GiB 上限，但距專案 900 MB 緩衝目標仍有差距）。組織目前為 Pro；降回 Free 前須再核對當時用量與計費狀態。
+- 2026-09-24 已完成第一輪安全清理：39 個確認零引用的物件經 Storage API 刪除，共回收 160,741,199 bytes；目前為 **549 objects / 1,035,403,153 bytes（約 0.964 GiB）**。組織為 Pro；仍未達 <900 MB 安全目標，降回 Free 前須再核對用量與計費狀態。
 - Storage／Edge 曾回 402 `exceed_storage_size_quota`。
 - r181 起 **所有新增 Supabase Storage 寫入已凍結**：背景、站主圖庫、登入素材、新命誥圖不得新增；現有內容仍可讀取／管理。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
@@ -133,7 +138,7 @@ r191 依站主最新指令修正：
 ### P0
 - 發布時必須確認 Vercel Production SHA = current main SHA。
 - STO-5／STO-20 真 iPhone Safari 最終實機驗收尚未完成。
-- Supabase Storage 超額清理已完成；Storage write freeze 繼續保留。降回 Free 與 900 MB 安全緩衝尚未驗收。
+- Supabase Storage 已低於 1 GiB，但 <900 MB 安全餘量仍未達成；Storage write freeze 繼續保留。最新 audit 只找到約 0.49 MB 明顯零引用物件，另有約 56.25 MB exact-duplicate 候選需先重指引用再刪。降回 Free 與 900 MB 安全緩衝尚未驗收。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。
@@ -150,7 +155,7 @@ r191 依站主最新指令修正：
 3. 正式站首頁／Login／出生表單／完整報告可用；
 4. 真 iPhone Safari 無白屏、橫向 overflow、safe-area／鍵盤遮擋、雙 floating UI；夜間模式所有主要文字與次要文字均保持可讀對比；
 5. refresh／返回／前進／切 App／鎖屏恢復正常；
-6. 首頁首次進入顯示一次 Loading；同一瀏覽器 refresh／回訪不重播；/login 動畫與聲音控制正常；
+6. 首頁及其他公開路由不掛載 IntroGate；/login 在單次站主登入流程只播一次、最長 15 秒，refresh／返回不重播，聲音控制正常；
 7. owner login／session restore／logout 正常；
 8. Supabase 失效時公開核心流程仍 fail-open；
 

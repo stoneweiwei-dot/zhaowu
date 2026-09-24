@@ -15,18 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r191",
-  updateNumber: 191,
-  publishedAt: "2026-09-24T12:25:00+10:00",
-  latestSummary: "登入動畫只在每次站主登入流程首次進入 /login 時播放一遍；首頁與其他分區不再掛載舊開場，後台登入動畫區只列出並接受 MP4／WebM 影片。",
+  version: "ZW-WEB-2026.09.24-r192",
+  updateNumber: 192,
+  publishedAt: "2026-09-24T13:30:00+10:00",
+  latestSummary: "首頁區塊獨立故障隔離、報告文案精簡；登入影片最多 15 秒並改用喇叭控制。R6.2.2 更新證據治理，不改排盤。",
   details: {
     "zh-Hant": [
-      "登入動畫只在一次站主登入流程的首次 /login 顯示一次；影片播完停在靜態封面，切換分區或返回登入頁不會重播。",
-      "首頁與所有一般路由不再掛載舊 IntroGate；後台登入動畫管理只顯示並接受 MP4／WebM 影片，普通圖片與封面圖不再混入素材卡片。",
+      "首頁漫畫、生辰流程與安裝提示各自隔離；完整報告改成精簡成品語言。",
+      "登入影片最多播放 15 秒、播完顯示封面；喇叭圖示控制聲音，後台短片只接受 MP4／WebM。",
+      "R6.2.2 收緊證據治理而不改排盤；Storage 維持寫入凍結，尚未達 900 MB 安全目標。",
     ],
     en: [
-      "The login animation now plays once on the first /login visit of each owner sign-in flow, then stays on a static poster and does not replay after route navigation.",
-      "The retired global IntroGate is no longer mounted. The owner login-animation manager now lists and accepts MP4/WebM videos only, keeping ordinary images and posters out of the animation cards.",
+      "The home comic, birth flow and install prompt now fail independently; the report uses simpler customer copy.",
+      "The login video plays for up to 15 seconds and stays on its poster. A speaker icon controls sound.",
+      "R6.2.2 updates evidence governance without changing chart calculation. Storage writes remain paused.",
     ],
   },
 } as const;

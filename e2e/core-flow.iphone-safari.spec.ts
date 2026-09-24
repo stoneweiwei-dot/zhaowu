@@ -225,7 +225,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("[data-next-action]")).toBeVisible();
     await expect(page.locator("[data-dragon-bubble]")).toContainText("剛看完你的分析");
     await expect(page.locator("[data-technical-evidence]")).not.toHaveAttribute("open", "");
-    await page.getByRole("button", { name: "查看補充重點", exact: true }).click();
+    await page.getByRole("button", { name: "補充", exact: true }).click();
     const narrative = page.locator(".zhaowu-report-narrative");
     await expect(narrative).toHaveCount(1);
     await expect(narrative).toBeVisible();
