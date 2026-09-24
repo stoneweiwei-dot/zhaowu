@@ -66,8 +66,14 @@ function LoginStageBackdrop() {
           autoPlay
           muted={muted}
           playsInline
-          preload="auto"
+          preload="metadata"
           data-login-animation="first-login-visit"
+          onTimeUpdate={(event) => {
+            if (event.currentTarget.currentTime >= 15) {
+              event.currentTarget.pause();
+              setShouldPlay(false);
+            }
+          }}
           onEnded={() => setShouldPlay(false)}
           onError={() => {
             if (media.fileUrl !== FALLBACK_LOGIN_VIDEO.fileUrl) setFailed(true);
@@ -77,6 +83,8 @@ function LoginStageBackdrop() {
         <button
           type="button"
           className="stone-login-sound"
+          aria-label={ownerText(locale, muted ? "開啟聲音" : "關閉聲音", muted ? "开启声音" : "关闭声音", muted ? "Turn sound on" : "Mute sound")}
+          title={ownerText(locale, muted ? "開啟聲音" : "關閉聲音", muted ? "开启声音" : "关闭声音", muted ? "Turn sound on" : "Mute sound")}
           aria-pressed={!muted}
           onClick={() => {
             const nextMuted = !muted;
@@ -88,8 +96,9 @@ function LoginStageBackdrop() {
             }
           }}
         >
-          <span aria-hidden="true">{muted ? "♪" : "Ⅱ"}</span>
-          {ownerText(locale, muted ? "開啟聲音" : "聲音已開啟", muted ? "开启声音" : "声音已开启", muted ? "Play sound" : "Sound on")}
+          <span aria-hidden="true" className="stone-login-sound-icon">
+            {muted ? "🔇" : "🔊"}
+          </span>
         </button>
       </>
     );
