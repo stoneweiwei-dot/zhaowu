@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r194",
-  updateNumber: 194,
-  publishedAt: "2026-09-24T15:00:00+10:00",
-  latestSummary: "Supabase Pro 容量規則生效，恢復 Storage 寫入；登入影片支援最高 500 MB 的斷點續傳。",
+  version: "ZW-WEB-2026.09.24-r196",
+  updateNumber: 196,
+  publishedAt: "2026-09-24T17:00:00+10:00",
+  latestSummary: "完整命書新增六格漫畫 Lite 閱讀模式；付費與排盤邏輯維持不變。",
   details: {
     "zh-Hant": [
-      "Supabase 組織已按站主付費決定以 Pro 的 100 GB Storage 額度運行，舊 Free 凍結退出 active path。",
-      "背景、圖庫、登入素材與報告圖片恢復寫入；登入 MP4／WebM 最高 500 MB，6 MB 以上使用斷點續傳。",
-      "登入成品仍限 15 秒；不刪除既有素材，也不改排盤、報告、登入權限或付款邏輯。",
+      "完整命書現在預設先顯示「漫畫 Lite」：核心底盤、性格、關係、事業、階段與行動以六格讀完。",
+      "每一格都可展開原本的完整判讀文字，亦可隨時切回完整命書；漫畫只改閱讀方式，不重算命盤。",
+      "付費、排盤、登入與資料庫邏輯保持原樣；正式站登入影片後台已確認可登入與讀取素材。",
     ],
     en: [
-      "The owner-approved Supabase Pro plan now governs Storage; the retired Free-plan freeze no longer applies.",
-      "Backgrounds, gallery, login media and report images can write again. Login MP4/WebM files up to 500 MB use resumable upload above 6 MB.",
-      "Login clips remain limited to 15 seconds; existing assets and protected calculation, reports, auth and payment logic are unchanged.",
+      "The Destiny Book now opens in Comic Lite: six frames cover foundation, temperament, relationships, work, timing and action.",
+      "Every frame can reveal the complete original reading, and readers can switch back to the full Destiny Book at any time.",
+      "This changes presentation only. Calculation, payment, owner access and database contracts remain unchanged.",
     ],
   },
 } as const;

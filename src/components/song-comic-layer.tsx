@@ -27,7 +27,7 @@ function profileForStem(stem: string) {
   return COMIC_PROFILES[stem] ?? COMIC_PROFILES.壬;
 }
 
-function ComicMascot({ stem, compact = false }: { stem: string; compact?: boolean }) {
+export function ComicMascot({ stem, compact = false }: { stem: string; compact?: boolean }) {
   const profile = profileForStem(stem);
   const palette = {
     木: { fill: "#dfead7", accent: "#6f8f68" },

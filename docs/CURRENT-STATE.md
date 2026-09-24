@@ -95,6 +95,7 @@ r191 依站主最新指令修正：
 - 歷史 `IntroGate` 元件與 policy 只留回歸／相容參照，不得重新接回公開 runtime。
 - r194 起 Supabase Pro 已由站主明確批准，舊 r181 Free 容量寫入凍結退出 active path；runtime 的既有 same-origin fallback 保留。
 - r194：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器接受 MP4／WebM、時長上限 15 秒、單檔上限 500 MB；大於 6 MB 使用 Supabase TUS 斷點續傳。系統不在瀏覽器內轉碼，來源檔須已是可播放的 15 秒內成品。
+- r196：完整綜合報告新增「完整命書／漫畫 Lite」雙閱讀模式，預設漫畫 Lite 六格；每格可展開同一份完整報告原文。這是呈現層，不新增 calculation、Storage、AI provider 或 payment gate。
 
 ## 7. Supabase
 

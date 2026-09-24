@@ -4841,6 +4841,245 @@ html[lang="en"] .zhaowu-song-comic-share p {
   }
 }
 
+/* r196 — Full comic Lite reading mode.
+ * The six frames reuse the unified report output. They never recalculate,
+ * shorten the stored report, call a provider, or introduce a payment gate.
+ */
+.zhaowu-report-mode-switch {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  margin-top: 13px;
+  border: 1px solid rgba(55, 83, 72, .20);
+  border-radius: 999px;
+  padding: 3px;
+  background: rgba(239, 234, 220, .72);
+}
+
+.zhaowu-report-mode-switch button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 16px;
+  color: #61665f;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.zhaowu-report-mode-switch button[aria-pressed="true"] {
+  color: #fffaf0;
+  background: #315f51;
+  box-shadow: 0 3px 10px rgba(35, 69, 58, .14);
+}
+
+.zhaowu-comic-lite {
+  margin-top: 18px;
+}
+
+.zhaowu-comic-lite__lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 116px;
+  align-items: center;
+  gap: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(99, 79, 51, .16);
+  border-radius: 13px 13px 5px 5px;
+  padding: 18px 20px;
+  background:
+    radial-gradient(circle at 86% 12%, rgba(105, 145, 125, .15), transparent 31%),
+    linear-gradient(135deg, #fbf5e9, #f2eadb);
+}
+
+.zhaowu-comic-lite__lead p,
+.zhaowu-comic-lite__lead h4,
+.zhaowu-comic-lite__lead span {
+  display: block;
+  margin: 0 !important;
+}
+
+.zhaowu-comic-lite__lead p {
+  color: #7b715e !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: .14em;
+}
+
+.zhaowu-comic-lite__lead h4 {
+  margin-top: 5px !important;
+  color: #273a33 !important;
+  font-family: var(--font-display, serif);
+  font-size: 22px !important;
+  line-height: 1.35 !important;
+}
+
+.zhaowu-comic-lite__lead span {
+  margin-top: 7px !important;
+  color: #67665f !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+}
+
+.zhaowu-comic-lite__lead .zhaowu-comic-mascot {
+  width: 116px;
+}
+
+.zhaowu-comic-lite__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.zhaowu-comic-lite__frame {
+  display: grid;
+  grid-template-rows: 98px auto;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(78, 65, 48, .16);
+  border-radius: 8px;
+  background: #fbf6eb;
+  box-shadow: 0 8px 22px rgba(66, 54, 38, .035);
+}
+
+.zhaowu-comic-lite__scene {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 16px 19px;
+  background: linear-gradient(135deg, rgba(211, 225, 213, .88), rgba(238, 224, 198, .82));
+}
+
+.zhaowu-comic-lite__frame:nth-child(2n) .zhaowu-comic-lite__scene {
+  background: linear-gradient(135deg, rgba(222, 232, 236, .92), rgba(238, 217, 201, .80));
+}
+
+.zhaowu-comic-lite__scene span {
+  position: relative;
+  z-index: 2;
+  align-self: flex-start;
+  color: rgba(52, 70, 61, .62) !important;
+  font-family: Georgia, serif;
+  font-size: 13px !important;
+  letter-spacing: .12em;
+}
+
+.zhaowu-comic-lite__scene i {
+  position: absolute;
+  right: -16px;
+  bottom: -47px;
+  width: 166px;
+  height: 112px;
+  border: 2px solid rgba(57, 73, 65, .16);
+  border-radius: 50% 50% 0 0;
+  background: rgba(255, 250, 239, .42);
+  transform: rotate(-8deg);
+}
+
+.zhaowu-comic-lite__scene b {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 1px solid rgba(62, 82, 71, .24);
+  border-radius: 48% 52% 45% 55%;
+  color: #fffaf0 !important;
+  background: #5f8775;
+  font-family: var(--font-display, serif);
+  font-size: 25px !important;
+  box-shadow: 9px 8px 0 rgba(255, 250, 239, .44);
+  transform: rotate(4deg);
+}
+
+.zhaowu-comic-lite__copy {
+  padding: 16px 17px 17px;
+}
+
+.zhaowu-comic-lite__copy > p {
+  margin: 0 0 6px !important;
+  color: #7b715e !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: .12em;
+}
+
+.zhaowu-comic-lite__copy h5 {
+  margin: 0 0 9px !important;
+  color: #293631 !important;
+  font-family: var(--font-display, serif);
+  font-size: 18px !important;
+  line-height: 1.45 !important;
+}
+
+.zhaowu-comic-lite__copy > strong {
+  display: block;
+  color: #4f514d !important;
+  font-size: 15px !important;
+  font-weight: 560 !important;
+  line-height: 1.72 !important;
+}
+
+.zhaowu-comic-lite details {
+  margin-top: 13px;
+  border-top: 1px dashed rgba(73, 67, 55, .18);
+  padding-top: 10px;
+}
+
+.zhaowu-comic-lite summary {
+  min-height: 38px;
+  cursor: pointer;
+  color: #356554;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 38px;
+}
+
+.zhaowu-comic-lite summary .when-open,
+.zhaowu-comic-lite details[open] summary .when-closed { display: none; }
+.zhaowu-comic-lite details[open] summary .when-open { display: inline; }
+
+.zhaowu-comic-lite details p {
+  margin: 8px 0 0 !important;
+  color: #5f605b !important;
+  font-size: 14px !important;
+  line-height: 1.72 !important;
+}
+
+html[data-zw-theme="night"] :is(.zhaowu-report-mode-switch, .zhaowu-comic-lite__lead, .zhaowu-comic-lite__frame) {
+  color: #29312e !important;
+  background-color: #eee7d9 !important;
+}
+
+html[data-zw-theme="night"] .zhaowu-comic-lite :is(h4,h5,p,strong,span,summary) {
+  color: #30332f !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 640px) {
+  .zhaowu-report-mode-switch { display: grid; width: 100%; }
+  .zhaowu-report-mode-switch button { min-width: 0; padding: 0 10px; }
+  .zhaowu-comic-lite__lead { grid-template-columns: minmax(0, 1fr) 86px; padding: 16px; }
+  .zhaowu-comic-lite__lead .zhaowu-comic-mascot { width: 92px; }
+  .zhaowu-comic-lite__grid { grid-template-columns: 1fr; gap: 10px; }
+  .zhaowu-comic-lite__frame { grid-template-columns: 92px minmax(0, 1fr); grid-template-rows: auto; }
+  .zhaowu-comic-lite__scene { min-height: 100%; padding: 13px; }
+  .zhaowu-comic-lite__scene span { position: absolute; left: 10px; top: 9px; }
+  .zhaowu-comic-lite__scene b { width: 52px; height: 52px; margin: auto; font-size: 23px !important; }
+  .zhaowu-comic-lite__copy { padding: 15px 14px 16px; }
+}
+
+@media (max-width: 390px) {
+  .zhaowu-comic-lite__lead { grid-template-columns: minmax(0, 1fr) 70px; gap: 8px; }
+  .zhaowu-comic-lite__lead .zhaowu-comic-mascot { width: 76px; }
+  .zhaowu-comic-lite__frame { grid-template-columns: 74px minmax(0, 1fr); }
+  .zhaowu-comic-lite__scene { padding: 9px; }
+  .zhaowu-comic-lite__scene b { width: 46px; height: 46px; font-size: 21px !important; }
+}
+
 /* r191 — Lite-converged mobile editorial shell.
  * Formal ZHAOWU remains the only full product core. This layer borrows the
  * Lite page discipline: narrow mobile measure, quiet paper, restrained accents.

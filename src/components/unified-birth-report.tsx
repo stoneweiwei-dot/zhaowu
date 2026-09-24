@@ -1,8 +1,8 @@
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
-import { SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
+import { ComicMascot, SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
 import {
   buildPalmReading,
   buildQizhengReading,
@@ -68,6 +68,13 @@ function reportCopy(locale: Locale) {
     lesson: "Recurring lesson and practical move",
     structureRule: "This reading does not try to make the five elements equal or use a ‘replace what is missing’ rule. It reads season, structure, functional remedy, flow and capacity first; a natural bias is not a defect by itself.",
     imageryRule: "No Heavenly Stem is inherently better or worse. Stem imagery translates function into a picture; it never overrides the full-chart judgement.",
+    formalMode: "Full Destiny Book",
+    comicMode: "Comic Lite",
+    comicKicker: "YOUR STORY · SIX FRAMES",
+    comicLead: "Read the main thread first. Open any frame when you want the full wording behind it.",
+    frame: "Frame",
+    openFull: "Read full text",
+    closeFull: "Close full text",
 
 
   };
@@ -83,6 +90,13 @@ function reportCopy(locale: Locale) {
     lesson: "反复课题与现实行动",
     structureRule: "这份命书不把五行凑平均，也不按“缺什么补什么”处理；先看月令、格局、病药、流通与承载，偏向本身不是缺陷。",
     imageryRule: "十干没有高下。天干图像只是把功能翻成容易理解的画面，不替代整局判断。",
+    formalMode: "完整命书",
+    comicMode: "漫画 Lite",
+    comicKicker: "你的故事 · 六格读完",
+    comicLead: "先看每一格的主线；想看完整判断时，再展开该格文字。",
+    frame: "第",
+    openFull: "展开完整文字",
+    closeFull: "收起完整文字",
 
 
   };
@@ -98,6 +112,13 @@ function reportCopy(locale: Locale) {
     lesson: "反覆課題與現實行動",
     structureRule: "這份命書不把五行湊平均，也不按「缺什麼補什麼」處理；先看月令、格局、病藥、流通與承載，偏向本身不是缺陷。",
     imageryRule: "十干沒有高下。天干圖像只是把功能翻成容易理解的畫面，不替代整局判斷。",
+    formalMode: "完整命書",
+    comicMode: "漫畫 Lite",
+    comicKicker: "你的故事 · 六格讀完",
+    comicLead: "先看每一格的主線；想看完整判斷時，再展開該格文字。",
+    frame: "第",
+    openFull: "展開完整文字",
+    closeFull: "收起完整文字",
 
 
   };
@@ -105,6 +126,7 @@ function reportCopy(locale: Locale) {
 
 export function UnifiedBirthReport({ birth, locale, foundation }: { birth: SharedBirthRecord; locale: Locale; foundation: Foundation }) {
   const copy = reportCopy(locale);
+  const [mode, setMode] = useState<"formal" | "comic">("comic");
   const sections = useMemo<ReportSection[]>(() => {
     const western = buildWesternReading(birth, locale);
     const ziwei = buildZiweiReading(birth, locale);
@@ -175,19 +197,77 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
       <header>
         <p className="zhaowu-section-kicker">{copy.kicker}</p>
         <h3 id="zhaowu-unified-report-title">{copy.title}</h3>
+        <div className="zhaowu-report-mode-switch" role="group" aria-label={copy.title}>
+          <button type="button" aria-pressed={mode === "formal"} onClick={() => setMode("formal")}>{copy.formalMode}</button>
+          <button type="button" aria-pressed={mode === "comic"} onClick={() => setMode("comic")}>{copy.comicMode}</button>
+        </div>
       </header>
-      <div className="zhaowu-unified-report-flow">
+      {mode === "formal" ? (
+        <div className="zhaowu-unified-report-flow" data-report-mode="formal">
+          {sections.map((section, index) => (
+            <Fragment key={section.title}>
+              <article>
+                <h4>{section.title}</h4>
+                {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              </article>
+              {index === 0 ? <SongComicReportInsert dayMaster={foundation.dayMaster} locale={locale} /> : null}
+            </Fragment>
+          ))}
+        </div>
+      ) : (
+        <ComicLiteReport sections={sections} dayMaster={foundation.dayMaster} locale={locale} copy={copy} />
+      )}
+      <SongComicShareCard dayMaster={foundation.dayMaster} locale={locale} />
+    </section>
+  );
+}
+
+function ComicLiteReport({
+  sections,
+  dayMaster,
+  locale,
+  copy,
+}: {
+  sections: ReportSection[];
+  dayMaster: string;
+  locale: Locale;
+  copy: ReturnType<typeof reportCopy>;
+}) {
+  const stem = dayMaster?.trim()?.[0] || "壬";
+
+  return (
+    <section className="zhaowu-comic-lite" data-report-mode="comic-lite" aria-label={copy.comicMode}>
+      <header className="zhaowu-comic-lite__lead">
+        <div>
+          <p>{copy.comicKicker}</p>
+          <h4>{stem} · {copy.comicMode}</h4>
+          <span>{copy.comicLead}</span>
+        </div>
+        <ComicMascot stem={stem} compact />
+      </header>
+
+      <div className="zhaowu-comic-lite__grid">
         {sections.map((section, index) => (
-          <Fragment key={section.title}>
-            <article>
-              <h4>{section.title}</h4>
-              {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-            </article>
-            {index === 0 ? <SongComicReportInsert dayMaster={foundation.dayMaster} locale={locale} /> : null}
-          </Fragment>
+          <article key={section.title} className="zhaowu-comic-lite__frame" data-comic-scene={index + 1}>
+            <div className="zhaowu-comic-lite__scene" aria-hidden="true">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <i />
+              <b>{stem}</b>
+            </div>
+            <div className="zhaowu-comic-lite__copy">
+              <p>{locale === "en" ? `${copy.frame} ${index + 1}` : `${copy.frame}${index + 1}格`}</p>
+              <h5>{section.title}</h5>
+              <strong>{section.body[0]}</strong>
+              {section.body.length > 1 ? (
+                <details>
+                  <summary><span className="when-closed">{copy.openFull}</span><span className="when-open">{copy.closeFull}</span></summary>
+                  {section.body.slice(1).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                </details>
+              ) : null}
+            </div>
+          </article>
         ))}
       </div>
-      <SongComicShareCard dayMaster={foundation.dayMaster} locale={locale} />
     </section>
   );
 }
