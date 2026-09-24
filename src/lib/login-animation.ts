@@ -67,7 +67,9 @@ function catalogToAsset(item: (typeof LOGIN_VISUAL_CATALOG)[number], index: numb
 
 
 export function catalogLoginAnimations(): LoginAnimationAsset[] {
-  return LOGIN_VISUAL_CATALOG\n    .filter((item) => Boolean(item.videoPath))\n    .map(catalogToAsset);
+  return LOGIN_VISUAL_CATALOG
+    .filter((item) => Boolean(item.videoPath))
+    .map(catalogToAsset);
 }
 
 export async function listLoginVisuals(): Promise<LoginAnimationAsset[]> {
