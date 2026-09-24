@@ -392,3 +392,10 @@
 - Supabase 重新即時核對出 39 個零引用候選，共 160,741,199 bytes；manifest SHA-256 = `e73337b3bc7119f78a014fd557f0970306e5cab04f792496a8995cbea8d5396e`。14 audio／2 gallery／23 report images 均已核對目前欄位、歷史 JSON、blueprint 與 settings 引用；4 個 cross-bucket background 正式資產仍受保護。
 - Edge Function 與直接 Storage API delete 都被組織級 `402 exceed_storage_size_quota` 在函式／Storage 執行前拒絕，所以實際刪除數仍為 0。一次性 anon 精確路徑 policy 已立即撤銷；`admin-storage-cleanup-execute-once` 已升為 v10、`verify_jwt=true`、410 retired stub。
 - Free 組織限制下不得 SQL DELETE `storage.objects`、不得為解鎖擅自升級或解除消費上限。限制解除／額度週期重置後，必須重跑 live audit，只有 manifest 仍完全一致才可走 Storage API remove，然後復算全桶實體容量。
+
+## 2026-09-24 r192 正式站 × 昭梧 Lite 收官
+- ACTIVE：正式站仍是唯一完整昭梧產品、唯一 Production 與唯一正式分析核心。
+- https://zhaowu-guide.ston1004.chatgpt.site 保留為昭梧 Lite／免費快速體驗／備援入口；不得複製正式站帳號、付費、Supabase、命理引擎或報告資料鏈。
+- 正式站吸收 Lite 的外殼規則：560px 手機優先閱讀寬度、米紙／青玉／朱砂／金褐色系、低陰影、低圓角、單欄資訊節奏。
+- 功能契約不回退：第一屏直接回答、正式四柱、單一連續報告、身體注意事項、命誥圖獨立生成、未知時辰降級與 owner-only 後台全部保留。
+- Lite 與正式站是 funnel／backup 關係，不得演變成兩套平行正式站或兩套維護鏈。
