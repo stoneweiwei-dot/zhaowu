@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r198",
-  updateNumber: 198,
-  publishedAt: "2026-09-24T19:38:00+10:00",
-  latestSummary: "觀世錄新增〈黃泉與輪迴〉長文，梳理中國本土幽冥觀、佛教六道輪迴與中世紀地府融合，並校正《長恨歌》過度推論。",
+  version: "ZW-WEB-2026.09.24-r199",
+  updateNumber: 199,
+  publishedAt: "2026-09-24T20:27:00+10:00",
+  latestSummary: "站主音樂後台完成最後一輪減法，批量工具只在選取後出現；背景音樂公開讀取移除舊 URL 解析路徑。",
   details: {
     "zh-Hant": [
-      "昭梧 · 觀世錄新增長文〈黃泉與輪迴：中國本土幽冥世界如何遇上佛教六道〉，首頁最新文章與 /knowledge 文章庫沿用同一資料源。",
-      "文章分清先秦黃泉／幽都、魂魄與祖先祭祀，和佛教業報、六道、無我與解脫的不同結構，再追到唐宋十王與中國地府的融合。",
-      "《長恨歌》段落明確標示證據邊界：『兩處茫茫皆不見』不能直接推出楊貴妃已輪迴；詩中隨後是在海上仙山找到太真。",
+      "背景音樂管理移除常駐教學與流程說明，只保留上傳、曲目與實際操作。",
+      "音樂批量操作列改為先選取曲目後才出現，與登入影片、圖庫、背景、報告的站主後台規則一致。",
+      "公開 /api/owner-music 讀取不再先走 isomorphic-git smart-HTTP，避開 Node 24 url.parse() 的 DEP0169 警告路徑；寫入流程與 Owner 權限不變。",
     ],
     en: [
-      "Zhaowu · Notes on Life now includes Yellow Springs and Rebirth, a long-form comparison of indigenous Chinese afterlife traditions and Buddhist samsara.",
-      "The article separates Yellow Springs, Youdu, ancestral ritual and soul traditions from karma, rebirth, non-self and liberation, then traces their medieval synthesis through the Ten Kings system.",
-      "The Song of Everlasting Regret section keeps the evidence boundary explicit: the poem does not establish that Yang Guifei had already reincarnated, and instead locates Taizhen on an island of immortals.",
+      "The owner music panel now keeps only upload, track and action controls instead of permanent instructional copy.",
+      "Music batch actions stay hidden until a track is selected, matching the rest of the owner console.",
+      "Public /api/owner-music reads no longer start with the isomorphic-git smart-HTTP path that triggered Node 24 DEP0169 url.parse() warnings; write and owner-auth flows are unchanged.",
     ],
   },
 } as const;
