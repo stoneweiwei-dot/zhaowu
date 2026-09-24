@@ -14,7 +14,6 @@ import {
 } from "@/lib/display-language";
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
-import { IntroGate } from "@/components/intro-gate";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { applyBrandTheme, hydrateBrandTheme, useBrandTheme } from "@/lib/brand-theme";
 
@@ -89,7 +88,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   return (
     <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
-      {isHome ? <IntroGate /> : null}
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30">
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">

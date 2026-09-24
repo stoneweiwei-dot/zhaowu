@@ -27,6 +27,9 @@ test("login visuals are isolated from the general owner gallery", () => {
   assert.doesNotMatch(owner, /view === "loading"/);
   assert.match(loginOwner, /LOGIN_VISUAL_CATALOG/);
   assert.match(loginOwner, /login-background/);
+  assert.match(loginOwner, /&& isVideo\(asset\)/);
+  assert.match(loginOwner, /accept="video\/mp4,video\/webm"/);
+  assert.doesNotMatch(loginOwner, /accept="[^"]*image\//);
   assert.match(loginRuntime, /LOGIN_VISUAL_CATALOG/);
 });
 

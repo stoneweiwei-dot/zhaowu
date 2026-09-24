@@ -135,10 +135,10 @@ test("site shell keeps the approved Zhaowu lotus brand mark without random page-
   assert.match(seal, /aria-label=\{decorative \? undefined : "昭梧"\}/);
 });
 
-test("home has a one-time fail-open IntroGate instead of the retired loading assets", async () => {
+test("home never mounts the retired IntroGate or loading assets", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const policy = await source("src/lib/intro-gate-policy.ts");
-  assert.match(shell, /\{isHome \? <IntroGate \/> : null\}/);
+  assert.doesNotMatch(shell, /IntroGate/);
   assert.match(policy, /zhaowu\.intro\.seen\.public\.v1/);
   assert.match(policy, /INTRO_GATE_HARD_EXIT_MS = 8000/);
   assert.doesNotMatch(shell, /loading-v11\.mp4/);
