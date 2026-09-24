@@ -29,6 +29,12 @@
 - 本次只收斂站主呈現層；不得藉此改 Owner Cookie、Auth、payment、Supabase schema、Storage reference、排盤或報告計算。
 - r187「站主後台資訊減法」繼續有效，本條取代其尚未收乾淨的同屏工具堆疊與空閒批量工具列。
 
+## 2026-09-24 r199 站主音樂後台收口 supersession
+
+- ACTIVE：背景音樂管理不得常駐教學段、流程說明或站主專用廢話；入口只顯示管理名稱，彈窗只保留上傳、狀態、曲目與必要操作。
+- ACTIVE：音樂批量工具列與其他站主素材一致，未選取曲目時不得顯示。
+- 公開音樂讀取不得為了取得 manifest 先啟動 Git smart-HTTP；直接讀 owner-music branch raw manifest。Owner 寫入、SSH push、Cookie gate 與 12 MB server-side music cap 不因本條改動。
+
 ## 2. 命理母指令版本
 
 | 文件 / 版本 | 状态 | 处理 |
