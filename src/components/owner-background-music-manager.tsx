@@ -51,6 +51,7 @@ export function OwnerBackgroundMusicManager() {
     manage: tr(locale, "背景音樂管理", "背景音乐管理", "Background music"),
     title: tr(locale, "網站背景音樂", "网站背景音乐", "Website background music"),
     upload: tr(locale, "＋ 選擇音樂", "＋ 选择音乐", "+ Choose music"),
+    limit: tr(locale, "來源 ≤200MB · 直傳 ≤12MB · 支援分段上傳", "来源 ≤200MB · 直传 ≤12MB · 支持分段上传", "Source ≤200MB · direct ≤12MB · chunked upload"),
     processing: tr(locale, "處理中…", "处理中…", "Processing…"),
     current: tr(locale, "目前播放", "当前播放", "Currently playing"),
     use: tr(locale, "設為背景音樂", "设为背景音乐", "Use as background music"),
@@ -194,6 +195,7 @@ export function OwnerBackgroundMusicManager() {
           <button type="button" disabled={busy} className="min-h-11 rounded-full bg-cinnabar px-5 text-sm text-cream disabled:opacity-50" onClick={() => inputRef.current?.click()}>{busy ? c.processing : c.upload}</button>
           <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line bg-paper/60 px-4 text-sm text-ink-soft disabled:opacity-50" onClick={() => void load()}>{c.refresh}</button>
         </div>
+        <p className="mt-2 text-[11px] text-ink-mute">{c.limit}</p>
         {percent != null ? <div className="mt-4 border-y border-line/60 py-3" aria-live="polite"><div className="flex items-center justify-between gap-3 text-xs text-ink-soft"><span>{stage || c.processing}</span><span>{percent}%</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${percent}%` }} /></div></div> : null}
         {message ? <p className="mt-4 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
         {selectedIds.length ? <div data-owner-bulk-toolbar="music" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
