@@ -23,7 +23,7 @@ function UpdatesPage() {
   }, []);
 
   const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
-  const englishSummary = "Public background-music reads no longer load the legacy Node Git HTTP adapter; it is loaded only for owner write actions, removing the remaining production warning path."
+  const englishSummary = "The homepage Today module now opens on the useful Five-Element Dress guide, removes the standalone decorative comic, and constrains spirit-slip gallery artwork to a clean 9:16 editorial crop."
   const releaseSummary = language === "en" && /[\u3400-\u9fff]/u.test(release.latestSummary)
     ? englishSummary
     : release.latestSummary;

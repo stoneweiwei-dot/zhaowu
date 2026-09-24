@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r200",
-  updateNumber: 200,
-  publishedAt: "2026-09-24T20:50:00+10:00",
-  latestSummary: "背景音樂公開讀取不再載入舊 Node Git HTTP 適配器；站主寫入時才動態載入，消除正式站 DEP0169 路徑。",
+  version: "ZW-WEB-2026.09.25-r201",
+  updateNumber: 201,
+  publishedAt: "2026-09-25T04:10:00+10:00",
+  latestSummary: "首頁「今日」完成收口：移除低質首頁小漫畫，五行穿衣上移並補齊選色內容，靈籤圖統一為 9:16 裁切。",
   details: {
     "zh-Hant": [
-      "r199 已完成音樂後台減法；r200 只修正式站仍存在的 Node DEP0169 runtime 警告。",
-      "公開 /api/owner-music GET 不再靜態載入 isomorphic-git 的 Node HTTP 適配器；只有站主新增／改名／切換／刪除曲目時才動態載入寫入依賴。",
-      "前台播放、Owner Cookie、同源檢查、SSH push、曲目資料與報告核心均不變。",
+      "首頁移除獨立「今日一格」漫畫，避免在正式命書入口上方出現低權重裝飾。",
+      "「今日」預設展開五行穿衣：推薦色、五種狀態、首飾與今日提示同屏可讀；黃曆與靈籤改為清楚分頁。",
+      "靈籤仍可取用圖庫素材，但圖片只在固定 9:16 紙框內裁切，不再按原圖尺寸硬塞。",
     ],
     en: [
-      "r199 completed the owner-music UI cleanup; r200 fixes the remaining Node DEP0169 production warning.",
-      "Public /api/owner-music GET no longer evaluates the Node Git HTTP adapter. It is loaded only when an owner performs a write action.",
-      "Playback, owner-cookie checks, same-origin protection, SSH pushes, track data and report logic are unchanged.",
+      "The standalone homepage comic is removed so the formal Destiny Book entry is no longer preceded by low-value decoration.",
+      "Today opens on Five-Element Dress with the recommended palette, five selectable states, jewellery and the daily cue visible together.",
+      "Spirit-slip gallery art now stays inside a deliberate 9:16 editorial crop instead of rendering at its source dimensions.",
     ],
   },
 } as const;
