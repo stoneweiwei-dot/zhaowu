@@ -95,16 +95,16 @@ r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 主專案：`plgpxusmemnmzckbwtiv`。
 
 - Database 專案可讀；站主登入不走 Supabase Auth。
-- 2026-09-24 Storage 已完成安全清理：39 個 live audit 確認零引用的物件已透過 Storage API 刪除，共回收 160,741,199 bytes；清理後為 **549 objects / 1,035,403,153 bytes**。
+- 2026-09-24 Storage 已完成安全清理：39 個 live audit 確認零引用的物件已透過 Storage API 刪除，共回收 160,741,199 bytes；清理後實測為 **549 objects / 1,035,403,153 bytes**（約 987.4 MiB，低於 Free 1 GiB 上限，但距專案 900 MB 緩衝目標仍有差距）。組織目前為 Pro；降回 Free 前須再核對當時用量與計費狀態。
 - Storage／Edge 曾回 402 `exceed_storage_size_quota`。
 - r181 起 **所有新增 Supabase Storage 寫入已凍結**：背景、站主圖庫、登入素材、新命誥圖不得新增；現有內容仍可讀取／管理。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
 - 不得直接 SQL DELETE `storage.objects` 冒充刪除檔案。
-- 已即時核對 39 個零引用候選：14 audio／2 gallery／23 report images，共 160,741,199 bytes；manifest SHA-256 = `e73337b3bc7119f78a014fd557f0970306e5cab04f792496a8995cbea8d5396e`。report images 已加查目前欄位、歷史 JSON、blueprint 與 settings，不再只是未覆核 quarantine。
-- 2026-09-23 兩條正式刪除路徑均被組織級限制拒絕：Edge Function 與直接 Storage API 都回 402，實際刪除數為 0。一次性精確路徑 policy 已撤銷；`admin-storage-cleanup-execute-once` v10 為 `verify_jwt=true` 的 410 retired stub。
-- Free 組織目前無零成本即時解鎖入口；不得擅自升級、解除消費上限或 SQL DELETE `storage.objects`。額度週期重置／限制解除後先重跑 live audit，manifest 完全一致才可用 Storage API remove，刪後再復算全桶實體用量。
+- 本次已刪清單原始 manifest SHA-256 = `e73337b3bc7119f78a014fd557f0970306e5cab04f792496a8995cbea8d5396e`；14 audio／2 gallery／23 report images 的當前欄位、歷史 JSON、blueprint 與 settings 引用均已於刪除前核對。此 manifest 已用完，不得再次當作待刪清單。
+- 2026-09-23 的 402 為清理前歷史阻塞；2026-09-24 額度解除後才完成正式 Storage API 刪除。一次性精確路徑 policy 已撤銷；`admin-storage-cleanup-execute-once` 現行 v17 為 `verify_jwt=true` 的 410 retired stub。
+- 剩餘同內容物件的 eTag 理論去重上限約 56,245,616 bytes，仍不足以單靠去重達成 900 MB 目標；它們可能同時受背景、圖庫或私人報告引用。任何後續清理須重新核對用途與引用，用 Storage API 刪除並復算容量。
 - 先前僅按 `background_assets` 判定出的 4 個「background orphan」其實仍被 `gallery_assets(bucket_id='zhaowu-backgrounds')` 以 enabled 資產引用，**禁止刪除**。
-- `admin-storage-cleanup-execute-once` v7 的候選解析漏掉上述 cross-bucket `gallery_assets` 引用；不得再啟用 v7 邏輯。現行 v10 為 410 retired stub 並要求 JWT；Owner dry-run audit v10 已補上 cross-bucket reference。
+- `admin-storage-cleanup-execute-once` v7 的候選解析漏掉上述 cross-bucket `gallery_assets` 引用；不得再啟用 v7 邏輯。現行 v17 為 410 retired stub 並要求 JWT；Owner dry-run audit 已補上 cross-bucket reference。
 - 刪除前 live 實體基線為 1,196,144,352 bytes：backgrounds 291 objects／627,245,539 bytes、gallery 249／370,798,037、report images 33／116,286,938、audio 15／81,813,838。279 個 `background_assets` metadata row 目前全為 enabled=true；禁止整包刪。未完成搬遷／引用核對前，不刪 private report images、仍被任何 metadata reference 的資產或 rollback 必要原件。
 
 第二個 Supabase project `zhaowu-core` 目前 INACTIVE；不得擅自切 Production 過去。
@@ -133,7 +133,7 @@ r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 ### P0
 - 發布時必須確認 Vercel Production SHA = current main SHA。
 - STO-5／STO-20 真 iPhone Safari 最終實機驗收尚未完成。
-- Supabase Storage 超額清理已完成；Storage write freeze 繼續保留，避免重新超額。
+- Supabase Storage 超額清理已完成；Storage write freeze 繼續保留。降回 Free 與 900 MB 安全緩衝尚未驗收。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。
