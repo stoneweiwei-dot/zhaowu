@@ -66,6 +66,8 @@ function reportCopy(locale: Locale) {
     work: "Work, resources and real-world direction",
     timing: "Life phase and timing",
     lesson: "Recurring lesson and practical move",
+    structureRule: "This reading does not try to make the five elements equal or use a ‘replace what is missing’ rule. It reads season, structure, functional remedy, flow and capacity first; a natural bias is not a defect by itself.",
+    imageryRule: "No Heavenly Stem is inherently better or worse. Stem imagery translates function into a picture; it never overrides the full-chart judgement.",
 
 
   };
@@ -79,6 +81,8 @@ function reportCopy(locale: Locale) {
     work: "事业、资源与现实方向",
     timing: "人生阶段与时间重点",
     lesson: "反复课题与现实行动",
+    structureRule: "这份命书不把五行凑平均，也不按“缺什么补什么”处理；先看月令、格局、病药、流通与承载，偏向本身不是缺陷。",
+    imageryRule: "十干没有高下。天干图像只是把功能翻成容易理解的画面，不替代整局判断。",
 
 
   };
@@ -92,6 +96,8 @@ function reportCopy(locale: Locale) {
     work: "事業、資源與現實方向",
     timing: "人生階段與時間重點",
     lesson: "反覆課題與現實行動",
+    structureRule: "這份命書不把五行湊平均，也不按「缺什麼補什麼」處理；先看月令、格局、病藥、流通與承載，偏向本身不是缺陷。",
+    imageryRule: "十干沒有高下。天干圖像只是把功能翻成容易理解的畫面，不替代整局判斷。",
 
 
   };
@@ -114,6 +120,8 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
           `${foundation.dayMaster}｜${foundation.monthOrder}`,
           foundation.strength,
           `${foundation.structure}；${foundation.features}`,
+          copy.structureRule,
+          copy.imageryRule,
           tx(locale, numberProfile.core),
         ], locale),
       },

@@ -8,6 +8,9 @@ const baziNotes = await readFile(new URL("../src/components/bazi-knowledge-notes
 const ziweiGrammar = await readFile(new URL("../src/lib/ziwei/interpretation-grammar.ts", import.meta.url), "utf8");
 const ziweiNotes = await readFile(new URL("../src/components/ziwei-knowledge-notes-section.tsx", import.meta.url), "utf8");
 const focused = await readFile(new URL("../docs/FOCUSED-REPORT.md", import.meta.url), "utf8");
+const interpret = await readFile(new URL("../src/lib/bazi/interpret.ts", import.meta.url), "utf8");
+const finalReading = await readFile(new URL("../src/lib/report/final-reading.ts", import.meta.url), "utf8");
+const unifiedBirthReport = await readFile(new URL("../src/components/unified-birth-report.tsx", import.meta.url), "utf8");
 
 test("BaZi runtime keeps primary judgement above strength and quantity heuristics", () => {
   assert.match(instructions, /ZW-BAZI-METHOD-LAYERING-1\.0/);
@@ -34,4 +37,17 @@ test("Zi Wei five-element bureau remains calculation context, not a personality 
     assert.ok(ziweiNotes.includes(marker), `missing bureau age marker ${marker}`);
   }
   assert.match(ziweiNotes, /五行局不是性格標籤/);
+});
+
+
+test("r191 treats bias as structure, mission as framing, and imagery as downstream translation", () => {
+  assert.match(runtime, /十天干、十二地支沒有先天高低貴賤/);
+  assert.match(runtime, /為何而生／使命／宿命／人生方向/);
+  assert.match(runtime, /下游翻譯層/);
+  assert.match(focused, /五行偏向本身不是缺陷/);
+  assert.match(focused, /使命／為何而生／宿命/);
+  assert.match(interpret, /不是把五行补齐或强行凑平均/);
+  assert.match(finalReading, /不替你指定唯一使命/);
+  assert.match(unifiedBirthReport, /這份命書不把五行湊平均/);
+  assert.match(unifiedBirthReport, /十干沒有高下/);
 });
