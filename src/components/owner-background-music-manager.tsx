@@ -51,7 +51,7 @@ export function OwnerBackgroundMusicManager() {
     manage: tr(locale, "背景音樂管理", "背景音乐管理", "Background music"),
     title: tr(locale, "網站背景音樂", "网站背景音乐", "Website background music"),
     upload: tr(locale, "＋ 選擇音樂", "＋ 选择音乐", "+ Choose music"),
-    limit: tr(locale, "來源 ≤200MB · 直傳 ≤12MB · 支援分段上傳", "来源 ≤200MB · 直传 ≤12MB · 支持分段上传", "Source ≤200MB · direct ≤12MB · chunked upload"),
+    limit: tr(locale, "來源 ≤200MB · 直傳 ≤12MB · 自動轉碼／分段上傳", "来源 ≤200MB · 直传 ≤12MB · 自动转码／分段上传", "Source ≤200MB · direct ≤12MB · auto-convert / chunked upload"),
     processing: tr(locale, "處理中…", "处理中…", "Processing…"),
     current: tr(locale, "目前播放", "当前播放", "Currently playing"),
     use: tr(locale, "設為背景音樂", "设为背景音乐", "Use as background music"),
