@@ -1,3 +1,6 @@
+import * as tus from "tus-js-client";
+import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+
 export const OWNER_COOKIE_ACCESS_TOKEN = "__zhaowu_owner_cookie_server_bridge__";
 
 export type OwnerCookieSession = {
@@ -102,6 +105,43 @@ export type OwnerUploadTicket = {
 
 /** Upload bytes directly to Supabase Storage. Supabase createSignedUploadUrl URLs are valid for 2 hours; the separate server-signed uploadTicket binds finalize to this exact object. */
 export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: File, onProgress?: (percent: number) => void) {
+  if (file.size > 6 * 1024 * 1024) {
+    if (!ticket.token || !SUPABASE_URL || !SUPABASE_KEY) throw new Error("大檔續傳通道尚未正確設定。");
+    const signedUploadToken = ticket.token;
+    onProgress?.(2);
+    await new Promise<void>((resolve, reject) => {
+      const endpoint = `${SUPABASE_URL.replace(/\/$/, "").replace(".supabase.co", ".storage.supabase.co")}/storage/v1/upload/resumable`;
+      const upload = new tus.Upload(file, {
+        endpoint,
+        retryDelays: [0, 3000, 5000, 10000, 20000],
+        chunkSize: 6 * 1024 * 1024,
+        uploadDataDuringCreation: true,
+        removeFingerprintOnSuccess: true,
+        headers: {
+          apikey: SUPABASE_KEY,
+          "x-signature": signedUploadToken,
+          "x-upsert": "false",
+        },
+        metadata: {
+          bucketName: ticket.bucket,
+          objectName: ticket.path,
+          contentType: ticket.contentType,
+          cacheControl: "3600",
+        },
+        onError: reject,
+        onProgress(bytesUploaded, bytesTotal) {
+          onProgress?.(Math.max(2, Math.min(85, Math.round((bytesUploaded / bytesTotal) * 83) + 2)));
+        },
+        onSuccess: () => resolve(),
+      });
+      void upload.findPreviousUploads().then((previous) => {
+        if (previous.length) upload.resumeFromPreviousUpload(previous[0]);
+        upload.start();
+      }).catch(reject);
+    });
+    onProgress?.(85);
+    return;
+  }
   onProgress?.(10);
   const body = new FormData();
   body.append("cacheControl", "3600");
