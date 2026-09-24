@@ -23,8 +23,10 @@ test("r188 comic is a translation layer, not a new calculation or storage system
   const comic = await source("src/components/song-comic-layer.tsx");
   assert.match(comic, /dayGanzhi/);
   assert.doesNotMatch(comic, /supabase|storage\.from|upload\(|createEngineReportRecord/i);
-  assert.match(comic, /不替代正式命盤判斷/);
-  assert.match(comic, /not a deterministic verdict/i);
+  assert.match(comic, /十干無高下/);
+  assert.match(comic, /不替代整局判斷/);
+  assert.match(comic, /No stem is inherently better or worse/i);
+  assert.match(comic, /not a balance prescription or deterministic verdict/i);
 });
 
 test("r188 keeps the Song paper authority and mobile safety", async () => {
