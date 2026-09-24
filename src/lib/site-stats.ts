@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r192",
-  updateNumber: 192,
-  publishedAt: "2026-09-24T13:30:00+10:00",
-  latestSummary: "首頁區塊獨立故障隔離、報告文案精簡；登入影片最多 15 秒並改用喇叭控制。R6.2.2 更新證據治理，不改排盤。",
+  version: "ZW-WEB-2026.09.24-r193",
+  updateNumber: 193,
+  publishedAt: "2026-09-24T13:48:00+10:00",
+  latestSummary: "修正英文夜間模式的頂部切換、延伸入口與第二步標題對比；不改報告、排盤、登入或資料。",
   details: {
     "zh-Hant": [
-      "首頁漫畫、生辰流程與安裝提示各自隔離；完整報告改成精簡成品語言。",
-      "登入影片最多播放 15 秒、播完顯示封面；喇叭圖示控制聲音，後台短片只接受 MP4／WebM。",
-      "R6.2.2 收緊證據治理而不改排盤；Storage 維持寫入凍結，尚未達 900 MB 安全目標。",
+      "英文夜間模式的語言與日夜切換改回深色底，文字不再落在半透明淺色塊上。",
+      "今日指引、心境小測、觀世錄與第二步標題恢復可讀對比。",
+      "只修正 CSS 視覺層；r192 的報告、登入影片、R6.2.2 治理與 Storage 凍結全部保持。",
     ],
     en: [
-      "The home comic, birth flow and install prompt now fail independently; the report uses simpler customer copy.",
-      "The login video plays for up to 15 seconds and stays on its poster. A speaker icon controls sound.",
-      "R6.2.2 updates evidence governance without changing chart calculation. Storage writes remain paused.",
+      "The language and day/night controls now stay on a dark header surface in night mode.",
+      "Today Guide, Self Discovery, Notes on life and the Step 2 label regain readable contrast.",
+      "This is a CSS-only correction; the r192 report, login media, governance and Storage freeze are unchanged.",
     ],
   },
 } as const;
