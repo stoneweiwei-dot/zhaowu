@@ -185,7 +185,7 @@ function buildEnglishNarrative(result: AnalysisResult): PersonalReportNarrative 
     ],
     actionLabel: "Bring it back to life",
     action,
-    disclaimer: "The title and scene are a visual translation of the reading, not a supernatural fact. The written conclusion remains complete without an image.",
+    disclaimer: "The title and scene only translate an existing analysis downstream; they are not supernatural facts and cannot be used to infer chart structure, useful elements or outcomes in reverse. The written conclusion must still stand without an image.",
   };
 }
 
@@ -279,8 +279,8 @@ function buildChineseNarrative(result: AnalysisResult, locale: "zh-Hant" | "zh-H
     actionLabel: hant ? "把畫帶回現實" : "把画带回现实",
     action,
     disclaimer: hant
-      ? "題名與畫面只是一種視覺翻譯，不是超自然事實；拿掉圖像後，文字結論仍須完整成立。"
-      : "题名与画面只是一种视觉翻译，不是超自然事实；拿掉图像后，文字结论仍须完整成立。",
+      ? "題名與畫面只能從既有分析往下翻譯，不是超自然事實，也不能反過來用圖像推格局、喜用或吉凶；拿掉圖像後，文字結論仍須完整成立。"
+      : "题名与画面只能从既有分析往下翻译，不是超自然事实，也不能反过来用图像推格局、喜用或吉凶；拿掉图像后，文字结论仍须完整成立。",
   };
 }
 
