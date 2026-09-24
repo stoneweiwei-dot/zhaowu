@@ -90,7 +90,7 @@ r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 - seen key 使用穩定的 `zhaowu.intro.seen.public.v1`；看過後 refresh、返回、一般路由與報告頁不得重播。
 - `zhaowu.intro.force=1` 仍可作測試強制顯示；初始化失敗必須 hard-exit／fail-open，不得白屏。
 - `/login` 仍保留 r183 的全屏動態站主登入舞台與聲音控制；首頁 Loading 與 Login 動畫是兩個不同用途，不得互相取代。
-- r181 Storage 寫入凍結期間，新上傳登入影片不得寫入 Supabase；runtime 仍只使用正式 build 內 same-origin 素材。
+- r191 起 Supabase 組織已確認付費容量可用，r181 臨時寫入凍結解除；新上傳仍受既有 MIME／大小／signed-upload ticket 驗證。Login runtime 仍只使用正式 build 內 same-origin 素材。
 
 ## 7. Supabase
 
@@ -98,16 +98,18 @@ r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 
 - Database 專案可讀；站主登入不走 Supabase Auth。
 - 2026-09-24 Storage 已完成安全清理：39 個 live audit 確認零引用的物件已透過 Storage API 刪除，共回收 160,741,199 bytes；清理後為 **549 objects / 1,035,403,153 bytes**。
-- Storage／Edge 曾回 402 `exceed_storage_size_quota`。
-- r181 起 **所有新增 Supabase Storage 寫入已凍結**：背景、站主圖庫、登入素材、新命誥圖不得新增；現有內容仍可讀取／管理。
+- Supabase 組織目前已確認為 **Pro**，Project 狀態 `ACTIVE_HEALTHY`；先前 Free 額度時的 402 `exceed_storage_size_quota` 已不再是當前阻塞。
+- r191 起 **r181 臨時 Storage write freeze 已解除**：背景、站主圖庫、登入素材與新命誥圖恢復寫入；所有既有 MIME、大小、signed-upload ticket 與 owner-only 安全邊界保持不變。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
 - 不得直接 SQL DELETE `storage.objects` 冒充刪除檔案。
 - 已即時核對 39 個零引用候選：14 audio／2 gallery／23 report images，共 160,741,199 bytes；manifest SHA-256 = `e73337b3bc7119f78a014fd557f0970306e5cab04f792496a8995cbea8d5396e`。report images 已加查目前欄位、歷史 JSON、blueprint 與 settings，不再只是未覆核 quarantine。
 - 2026-09-23 兩條正式刪除路徑均被組織級限制拒絕：Edge Function 與直接 Storage API 都回 402，實際刪除數為 0。一次性精確路徑 policy 已撤銷；`admin-storage-cleanup-execute-once` v10 為 `verify_jwt=true` 的 410 retired stub。
 - Free 組織目前無零成本即時解鎖入口；不得擅自升級、解除消費上限或 SQL DELETE `storage.objects`。額度週期重置／限制解除後先重跑 live audit，manifest 完全一致才可用 Storage API remove，刪後再復算全桶實體用量。
 - 先前僅按 `background_assets` 判定出的 4 個「background orphan」其實仍被 `gallery_assets(bucket_id='zhaowu-backgrounds')` 以 enabled 資產引用，**禁止刪除**。
-- `admin-storage-cleanup-execute-once` v7 的候選解析漏掉上述 cross-bucket `gallery_assets` 引用；不得再啟用 v7 邏輯。現行 v10 為 410 retired stub 並要求 JWT；Owner dry-run audit v10 已補上 cross-bucket reference。
+- `admin-storage-cleanup-execute-once` 舊候選解析曾漏掉 cross-bucket `gallery_assets` 引用；不得再啟用舊邏輯。現行 **v17** 為 `verify_jwt=true` 的 410 retired stub；任何未來清理都必須重新 live audit。
 - 刪除前 live 實體基線為 1,196,144,352 bytes：backgrounds 291 objects／627,245,539 bytes、gallery 249／370,798,037、report images 33／116,286,938、audio 15／81,813,838。279 個 `background_assets` metadata row 目前全為 enabled=true；禁止整包刪。未完成搬遷／引用核對前，不刪 private report images、仍被任何 metadata reference 的資產或 rollback 必要原件。
+
+- 目前 Storage 實體用量仍為 **1,035,403,153 bytes**；雖已不阻塞 Pro，但在容量未先壓回 Free 安全線並保留足夠 headroom 前，**不得降回 Free**。
 
 第二個 Supabase project `zhaowu-core` 目前 INACTIVE；不得擅自切 Production 過去。
 
