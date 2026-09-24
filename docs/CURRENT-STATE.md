@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-24 09:36 AEST
+最後核對：2026-09-24 11:17 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -79,6 +79,9 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - r188 漫畫角色只用本機 React／SVG，依五行切換柔和色系；不得為漫畫層新增 Supabase Storage 寫入或付費圖片 provider。漫畫只翻譯概念，不得修改排盤／格局／用神／吉凶 truth。
 - r190 起首頁完整命盤細節採 lazy mount：只有使用者展開後才掛載完整命書；核心生辰錄入、四柱與基礎解釋必須先 fail-open。
 - r191 起命書新增「結構不是平衡表」治理：五行不以平均為目標、十干無先天高下；「使命／為何而生」只轉譯為結構功能與反覆課題；圖像／神獸／漫畫只能由既有主判向下翻譯，禁止反推格局、喜用或吉凶。
+- r192 起完整報告執行客戶文案減法：不再顯示 `PERSONAL ANALYSIS`、`YOUR QUESTION`、`Reasoning notes`、`Chart basics` 等 prompt／dashboard 式標題；只保留問題、答案、補充、四柱、附註、依據與下一步等成品語言。
+- r192 起 `STONE-R6.2.2-CURRENT-MASTER.md` 為 CURRENT governance/evidence master；deterministic runtime 仍為 R6.2.1 + P2 + P3（含 r191 結構增補），不得把治理版本號冒充排盤核心重寫。
+- r192 起首頁漫畫、生辰流程與安裝提示各自有 fail-open boundary；單一區塊或舊本機資料異常不得再拖垮整頁。
 
 ## 6. Loading／Login animation
 
@@ -95,7 +98,7 @@ r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 主專案：`plgpxusmemnmzckbwtiv`。
 
 - Database 專案可讀；站主登入不走 Supabase Auth。
-- 2026-09-24 Storage 已完成安全清理：39 個 live audit 確認零引用的物件已透過 Storage API 刪除，共回收 160,741,199 bytes；清理後為 **549 objects / 1,035,403,153 bytes**。
+- 2026-09-24 已完成第一輪安全清理：39 個 live audit 確認零引用的物件已透過 Storage API 刪除，共回收 160,741,199 bytes；目前為 **549 objects / 1,035,403,153 bytes（約 0.964 GiB）**。這只代表已回到 1 GiB 以下，**仍未達專案 <900 MB 安全餘量目標**。
 - Storage／Edge 曾回 402 `exceed_storage_size_quota`。
 - r181 起 **所有新增 Supabase Storage 寫入已凍結**：背景、站主圖庫、登入素材、新命誥圖不得新增；現有內容仍可讀取／管理。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
@@ -133,7 +136,7 @@ r184–r185 依 2026-09-23 真 iPhone Safari 驗收修正：
 ### P0
 - 發布時必須確認 Vercel Production SHA = current main SHA。
 - STO-5／STO-20 真 iPhone Safari 最終實機驗收尚未完成。
-- Supabase Storage 超額清理已完成；Storage write freeze 繼續保留，避免重新超額。
+- Supabase Storage 已解除 1 GiB 超額，但 <900 MB 安全餘量仍未達成；Storage write freeze 繼續保留。最新 audit 只找到約 0.49 MB 明顯零引用物件，另有約 56.25 MB exact-duplicate 候選需先重指引用再刪，不能把候選當成已回收。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。
