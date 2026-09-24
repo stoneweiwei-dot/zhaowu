@@ -7,6 +7,9 @@
 - 已保存生辰的 `analyzeStructure(previewChart)` 加上 fail-open；結構分析若遇邊界資料，首頁先保留可用狀態。
 - r190 的完整命書 lazy mount 繼續保留。
 - Supabase Storage 已完成的 39-object 清理與 Storage write freeze 不變。
+- 完整報告移除「PERSONAL ANALYSIS / YOUR QUESTION / Reasoning notes / Chart basics」等 prompt／dashboard 式標題與教學型 helper copy，改成簡短成品語言。
+- 「一盤一景」移除流程自述式文案，只保留命象、依據與下一步。
+- 新增 R6.2.2 CURRENT GOVERNANCE MASTER：收斂證據、EVP、AI 一致性與時間層級；deterministic runtime 仍明確為 R6.2.1 + P2 + P3，不假稱重寫核心。
 
 ## 為什麼改
 
@@ -18,7 +21,9 @@ r191 不再讓任何單一首頁子區塊擁有「拖垮整頁」的能力。
 
 - 首頁錯誤隔離。
 - 已保存生辰的恢復流程。
-- 不新增功能、不新增視覺系統。
+- 完整報告客戶可見文案與命象敘事。
+- 命理治理／證據版本入口。
+- 不新增產品功能、不新增視覺系統。
 
 ## 受保護範圍
 
@@ -26,7 +31,8 @@ r191 不再讓任何單一首頁子區塊擁有「拖垮整頁」的能力。
 
 - 八字曆法、四柱、真太陽時、子時換日。
 - 格局／旺衰／用神的正式 truth。
-- r189 一盤一景。
+- r189 一盤一景的資料來源與判讀 truth；本版只做文案減法。
+- deterministic 排盤與 R6.2.1 + P2 + P3 runtime。
 - Auth、payment、Supabase schema。
 - 宋式視覺、小漫畫、青玉小龍、播放器、Login animation。
 
