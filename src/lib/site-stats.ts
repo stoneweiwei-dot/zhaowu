@@ -15,8 +15,8 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r193",
-  updateNumber: 193,
+  version: "ZW-WEB-2026.09.24-r194",
+  updateNumber: 194,
   publishedAt: "2026-09-24T15:00:00+10:00",
   latestSummary: "Supabase Pro 容量規則生效，恢復 Storage 寫入；登入影片支援最高 500 MB 的斷點續傳。",
   details: {
