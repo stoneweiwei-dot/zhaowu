@@ -162,30 +162,30 @@ function buildEnglishNarrative(result: AnalysisResult): PersonalReportNarrative 
 
   return {
     contractId: PAID_REPORT_NARRATIVE_ID,
-    kicker: "ZHAOWU · ONE CHART, ONE SCENE",
-    heading: "Your chart in one scene",
+    kicker: "",
+    heading: "Scene",
     title,
-    scene: `This is one continuous image, not four disconnected pillar cards: ${world} forms the world, ${subject} carries the central tension, and “${actionImage}” turns the reading into a practical movement.`,
+    scene: `${world} sets the atmosphere. ${subject} holds the centre, and “${actionImage}” gives the scene its movement.`,
     roles: [
-      { key: "world", label: "World", body: `The birth-year layer and the ${season.toLowerCase()} seasonal setting create the distance, light and atmosphere. They set context rather than deciding personality on their own.` },
-      { key: "setting", label: "Setting", body: `The birth-month layer is read with the full chart and this question about ${model.contract.decisionTarget}; it becomes the place where the issue is actually lived.` },
-      { key: "self", label: "Central figure", body: `${subject} is a symbolic stand-in for the core pattern, chosen from the full support pattern and the ${ELEMENT_EN[element]} visual direction—not from zodiac shorthand.` },
-      { key: "outlet", label: "Way forward", body: timeReady ? `The birth-hour layer is allowed to shape the movement only after the full chart and the practical action agree.` : `The birth hour is unconfirmed, so the scene does not invent a fixed future object; the outlet comes only from the practical action supported by this reading.` },
+      { key: "world", label: "World", body: `${world} is the outer setting: the conditions around the issue before your own response is considered.` },
+      { key: "setting", label: "Setting", body: `The practical focus is ${model.contract.decisionTarget}; this is where the issue is most likely to be felt in real life.` },
+      { key: "self", label: "Centre", body: `${subject} represents the way you are carrying this issue right now.` },
+      { key: "outlet", label: "Way forward", body: timeReady ? `The way forward stays with the action already supported by this reading.` : `Birth time is unconfirmed, so the distant details stay open; only the supported next step is kept.` },
     ],
     strengthLabel: "What it can do",
     strength: reason,
     costLabel: "What it can cost",
     cost: risk,
-    evidenceHeading: "How the image is grounded",
+    evidenceHeading: "Basis",
     evidence: [
       { label: "World", trace: `Birth-year elements plus the birth-month seasonal setting → external atmosphere → ${world}.` },
       { label: "Central figure", trace: `${strengthPhrase(result, "en")} plus the full-chart ${ELEMENT_EN[element]} visual direction → way of carrying the issue → ${subject}.` },
       { label: "Movement", trace: `${timeReady ? "Confirmed birth-hour layer plus" : "No birth-hour claim; only"} the question target and the practical action → real-world outlet → ${actionImage}.` },
       ...(period ? [period] : []),
     ],
-    actionLabel: "Bring it back to life",
+    actionLabel: "Next step",
     action,
-    disclaimer: "The title and scene are a visual translation of the reading, not a supernatural fact. The written conclusion remains complete without an image.",
+    disclaimer: "The image is supplementary; the written reading is the reference.",
   };
 }
 
@@ -210,47 +210,47 @@ function buildChineseNarrative(result: AnalysisResult, locale: "zh-Hant" | "zh-H
 
   return {
     contractId: PAID_REPORT_NARRATIVE_ID,
-    kicker: "ZHAOWU · ONE CHART, ONE SCENE",
-    heading: hant ? "你的命局，收成一幅畫" : "你的命局，收成一幅画",
+    kicker: "",
+    heading: hant ? "命象" : "命象",
     title,
     scene: hant
-      ? `這不是把四柱拆成四張卡：${world}成為天地，${subject}承接核心張力，「${actionImage}」把整份判讀收束成一個可落實的動作。`
-      : `这不是把四柱拆成四张卡：${world}成为天地，${subject}承接核心张力，“${actionImage}”把整份判读收束成一个可落实的动作。`,
+      ? `${world}鋪開天地，${subject}居中承勢，「${actionImage}」成為畫面最後的動勢。`
+      : `${world}铺开天地，${subject}居中承势，“${actionImage}”成为画面最后的动势。`,
     roles: [
       {
         key: "world",
         label: hant ? "天地底色" : "天地底色",
         body: hant
-          ? `年柱與月令共同決定遠景、光線與季節感；它們只交代你所處的外部底色，不單獨替你定性。`
-          : `年柱与月令共同决定远景、光线与季节感；它们只交代你所处的外部底色，不单独替你定性。`,
+          ? `${world}是這件事的外部底色：先看環境與時勢，再看你如何承接。`
+          : `${world}是这件事的外部底色：先看环境与时势，再看你如何承接。`,
       },
       {
         key: "setting",
         label: hant ? "現實場域" : "现实场域",
         body: hant
-          ? `月柱放回整局，再與這次的「${model.contract.decisionTarget}」同讀，轉成問題真正發生的場景；不是用單一十神替人生貼標籤。`
-          : `月柱放回整局，再与这次的“${model.contract.decisionTarget}”同读，转成问题真正发生的场景；不是用单一十神替人生贴标签。`,
+          ? `這次的重點落在「${model.contract.decisionTarget}」；場景只保留與現實處境直接有關的部分。`
+          : `这次的重点落在“${model.contract.decisionTarget}”；场景只保留与现实处境直接有关的部分。`,
       },
       {
         key: "self",
         label: hant ? "核心主體" : "核心主体",
         body: hant
-          ? `${subject}只是一個視覺主體：它由日柱、${strengthPhrase(result, locale)}與全局的「${element}」視覺方向共同推導，不由生肖或單柱直接換成神獸。`
-          : `${subject}只是一个视觉主体：它由日柱、${strengthPhrase(result, locale)}与全局的“${element}”视觉方向共同推导，不由生肖或单柱直接换成神兽。`,
+          ? `${subject}代表你在這個問題裡主要的承載方式。`
+          : `${subject}代表你在这个问题里主要的承载方式。`,
       },
       {
         key: "outlet",
         label: hant ? "未來出口" : "未来出口",
         body: timeReady
-          ? (hant ? `時柱只有在整局與現實行動一致後，才用來決定畫面的動勢與法器質地。` : `时柱只有在整局与现实行动一致后，才用来决定画面的动势与法器质地。`)
-          : (hant ? `時辰未定，所以畫面不補造固定法器或晚景結論；出口只保留這份報告已支持的現實行動。` : `时辰未定，所以画面不补造固定法器或晚景结论；出口只保留这份报告已支持的现实行动。`),
+          ? (hant ? `出口只落在這份判讀已支持的現實行動上。` : `出口只落在这份判读已支持的现实行动上。`)
+          : (hant ? `時辰未定，遠期細節不寫死；只保留現在能做的下一步。` : `时辰未定，远期细节不写死；只保留现在能做的下一步。`),
       },
     ],
     strengthLabel: hant ? "這股力量能做到" : "这股力量能做到",
     strength: reason,
     costLabel: hant ? "同一股力量的代價" : "同一股力量的代价",
     cost: risk,
-    evidenceHeading: hant ? "畫面如何反查命局" : "画面如何反查命局",
+    evidenceHeading: hant ? "依據" : "依据",
     evidence: [
       {
         label: hant ? "天地" : "天地",
@@ -276,11 +276,11 @@ function buildChineseNarrative(result: AnalysisResult, locale: "zh-Hant" | "zh-H
       },
       ...(period ? [period] : []),
     ],
-    actionLabel: hant ? "把畫帶回現實" : "把画带回现实",
+    actionLabel: hant ? "下一步" : "下一步",
     action,
     disclaimer: hant
-      ? "題名與畫面只是一種視覺翻譯，不是超自然事實；拿掉圖像後，文字結論仍須完整成立。"
-      : "题名与画面只是一种视觉翻译，不是超自然事实；拿掉图像后，文字结论仍须完整成立。",
+      ? "圖像只作輔助，文字判讀為準。"
+      : "图像只作辅助，文字判读为准。",
   };
 }
 
