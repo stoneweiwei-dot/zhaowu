@@ -5,7 +5,7 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (p) => readFile(new URL(p, root), "utf8");
 
-test("r181 freezes every known Supabase Storage growth path", async () => {
+test("r193 keeps the storage policy gate but enables writes for the approved Pro plan", async () => {
   const policy = await source("src/lib/storage-write-policy.ts");
   const gallery = await source("src/lib/gallery-assets.ts");
   const backgrounds = await source("src/lib/background-assets.ts");
@@ -14,19 +14,21 @@ test("r181 freezes every known Supabase Storage growth path", async () => {
   const bridgeBackgrounds = await source("src/lib/bridge/background-assets.ts");
   const bridgeDecree = await source("src/lib/bridge/decree-image.ts");
   const ownerApi = await source("api/owner-data.js");
+  const ownerClient = await source("src/lib/owner-data-client.ts");
+  const ownerEdge = await source("supabase/functions/zhaowu-owner-data/index.ts");
 
-  assert.match(policy, /SUPABASE_STORAGE_WRITES_PAUSED = true/);
+  assert.match(policy, /SUPABASE_STORAGE_WRITES_PAUSED = false/);
   for (const file of [gallery, backgrounds, decree, bridgeGallery, bridgeBackgrounds, bridgeDecree]) {
     assert.match(file, /assertSupabaseStorageWritesEnabled/);
   }
-  assert.match(ownerApi, /STORAGE_GROWING_ACTIONS/);
-  assert.match(ownerApi, /background\.prepareUpload/);
-  assert.match(ownerApi, /gallery\.prepareUpload/);
-  assert.match(ownerApi, /report\.generateImage/);
-  assert.match(ownerApi, /STORAGE_WRITES_PAUSED/);
+  assert.doesNotMatch(ownerApi, /STORAGE_GROWING_ACTIONS/);
+  assert.match(ownerClient, /new tus\.Upload/);
+  assert.match(ownerClient, /chunkSize: 6 \* 1024 \* 1024/);
+  assert.match(ownerClient, /"x-signature": signedUploadToken/);
+  assert.match(ownerEdge, /MAX_LOADING_VIDEO_BYTES = 500 \* 1024 \* 1024/);
 });
 
-test("r181 owner UI exposes storage growth controls as disabled while cleanup is active", async () => {
+test("r193 owner UI storage controls follow the shared live policy", async () => {
   const galleryUi = await source("src/components/owner-gallery-manager.tsx");
   const loginUi = await source("src/components/owner-login-visuals-manager.tsx");
   const account = await source("src/routes/account.tsx");
