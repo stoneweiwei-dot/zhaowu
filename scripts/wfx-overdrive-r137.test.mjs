@@ -48,9 +48,11 @@ test("Five-Element Strength Overdrive quiz stays subjective and separate from fo
 });
 
 test("r137 WFX artifacts remain after later releases", async () => {
-  const sw = await source("public/sw.js");
+  const sw = await source("scripts/sw-template.js.txt");
   const report = await source("docs/change-reports/ZW-WEB-2026.09.15-r137.md");
   assert.match(report, /WFX/);
   assert.match(report, /five-element-overdrive/);
-  assert.match(sw, /zhaowu-shell-r1\d+/);
+  assert.match(sw, /zhaowu-shell-\$\{RELEASE\.slice\(0, 16\)\}/);
+  assert.match(sw, /ZHAOWU_RELEASE_READY/);
+  assert.doesNotMatch(sw, /zhaowu-shell-r1\d+/);
 });
