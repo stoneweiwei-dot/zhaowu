@@ -5,16 +5,15 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("r188 adds the comic layer at exactly the three approved public touchpoints", async () => {
+test("r201 retires the homepage comic while preserving report and share comic translation", async () => {
   const home = await source("src/routes/index.tsx");
   const report = await source("src/components/unified-birth-report.tsx");
   const comic = await source("src/components/song-comic-layer.tsx");
 
-  assert.match(home, /<SongComicToday locale={locale}/);
+  assert.doesNotMatch(home, /SongComicToday/);
   assert.match(report, /<SongComicReportInsert dayMaster={foundation\.dayMaster}/);
   assert.match(report, /<SongComicShareCard dayMaster={foundation\.dayMaster}/);
 
-  assert.match(comic, /data-song-comic-today/);
   assert.match(comic, /data-song-comic-report/);
   assert.match(comic, /data-song-comic-share/);
 });

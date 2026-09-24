@@ -59,17 +59,24 @@ export function DailyColorsModule({ variant }: { variant: Variant }) {
       )}
 
       {compact ? (
-        <article data-daily-colors-today aria-live="polite">
-          <p data-daily-colors-quote>{copy.quote}</p>
-          <p>
-            {page.element} {copy.elementLabel}
-            {" · "}
-            {copy.keywords}
-            {" · "}
-            {page.colors}：{copy.colorsLabel}
-          </p>
-          <Link to="/daily-colors">{page.openFull}</Link>
-        </article>
+        <>
+          <article data-daily-colors-today data-daily-colors-featured aria-live="polite">
+            <div data-daily-colors-featured-head>
+              <span aria-hidden="true" data-daily-color-featured-swatch>
+                {active.swatches.map((hex) => <i key={hex} style={{ ["--swatch" as string]: hex }} />)}
+              </span>
+              <div>
+                <small>{page.todaySuit}</small>
+                <strong>{copy.name} · {copy.colorsLabel}</strong>
+                <span>{copy.wantLabel} · {copy.elementLabel} · {copy.keywords}</span>
+              </div>
+            </div>
+            <p data-daily-colors-quote>{copy.quote}</p>
+            <p data-daily-colors-description>{copy.description}</p>
+            <Link to="/daily-colors">{page.openFull}</Link>
+          </article>
+          <p data-daily-colors-pick>{page.pick}</p>
+        </>
       ) : (
         <p>{page.pick}</p>
       )}

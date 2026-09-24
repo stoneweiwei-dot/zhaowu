@@ -71,11 +71,10 @@ test.describe("iPhone Safari parchment application shell", () => {
       const customer = page.locator("#customer-record");
       const bazi = page.locator("#bazi");
       for (const section of [customer, bazi]) await expect(section).toBeVisible();
-      await expect(almanac).toHaveCount(0);
       await expect(page.locator(".zhaowu-question-sheet")).toHaveCount(0);
-      await page.getByRole("button", { name: /^今日/ }).click();
       await expect(almanac).toBeVisible();
       await expect(almanac.locator("details[open]")).toHaveCount(1);
+      await expect(almanac.locator('.zhaowu-today-guide__tabs button[aria-pressed="true"]')).toContainText(/穿衣|Dress/);
       const boxes = await Promise.all([almanac, customer, bazi].map((section) => section.boundingBox()));
       expect(boxes.every(Boolean)).toBe(true);
       for (let i = 1; i < boxes.length; i += 1) expect(boxes[i]!.y).toBeGreaterThanOrEqual(boxes[i - 1]!.y + boxes[i - 1]!.height);

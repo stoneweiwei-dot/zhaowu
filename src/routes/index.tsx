@@ -9,7 +9,6 @@ import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { ResultView } from "@/components/result-view";
 import { ScentFiveElementTest } from "@/components/scent-five-element-test";
 import { SkyEventsHomeSection } from "@/components/sky-events-home-section";
-import { SongComicToday } from "@/components/song-comic-layer";
 import { useI18n } from "@/lib/i18n";
 import { clearSharedBirthRecord } from "@/lib/shared-birth";
 import { useAppStore } from "@/lib/store";
@@ -24,7 +23,7 @@ export const Route = createFileRoute("/")({ component: Home });
 function Home() {
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
-  const [openPanel, setOpenPanel] = useState<"today" | "quiz" | "notes" | null>(null);
+  const [openPanel, setOpenPanel] = useState<"today" | "quiz" | "notes" | null>("today");
   const [scentOpen, setScentOpen] = useState(false);
 
   const funCopy = locale === "en"
@@ -34,8 +33,8 @@ function Home() {
         homeTitle: "One birth record. One ZHAOWU Destiny Book.",
 
         explore: "Explore",
-        todayTitle: "Today Guide",
-        todayHint: "almanac, dress, spirit slip and recent sky events",
+        todayTitle: "Today",
+        todayHint: "dress colours first, then almanac, spirit slip and recent sky events",
         quizHint: "optional reflective tests, kept separate from the formal chart",
         notesTitle: "Notes on life",
         notesHint: "the latest essay and the full editorial archive",
@@ -57,8 +56,8 @@ function Home() {
           homeTitle: "一份生辰，读成一本昭梧命书",
 
           explore: "延伸内容",
-          todayTitle: "今日指引",
-          todayHint: "黄历、穿衣、灵签与近日天象",
+          todayTitle: "今日",
+          todayHint: "先看五行穿衣，再看黄历、灵签与近日天象",
           quizHint: "可选的自我观察，不混入正式命盘",
           notesTitle: "观世录",
           notesHint: "最新文章与完整内容档案",
@@ -79,8 +78,8 @@ function Home() {
           homeTitle: "一份生辰，讀成一本昭梧命書",
 
           explore: "延伸內容",
-          todayTitle: "今日指引",
-          todayHint: "黃曆、穿衣、靈籤與近日天象",
+          todayTitle: "今日",
+          todayHint: "先看五行穿衣，再看黃曆、靈籤與近日天象",
           quizHint: "可選的自我觀察，不混入正式命盤",
           notesTitle: "觀世錄",
           notesHint: "最新文章與完整內容檔案",
@@ -102,8 +101,6 @@ function Home() {
         <p>{funCopy.homeKicker}</p>
         <h1>{funCopy.homeTitle}</h1>
       </header>
-
-      <HomeSectionBoundary id="comic" locale={locale}><SongComicToday locale={locale} /></HomeSectionBoundary>
 
       <section className="zhaowu-home-stage zhaowu-home-stage--daily-priority" aria-label={funCopy.todayTitle}>
         <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>

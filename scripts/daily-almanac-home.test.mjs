@@ -14,8 +14,8 @@ test("homepage puts Today Guide before the primary birth flow while keeping one 
   const formMount = route.indexOf("<AnalysisForm />");
   const daily = route.indexOf("<DailyAlmanacWidget embedded />");
   assert.ok(daily >= 0 && formMount > daily);
-  assert.match(route, /todayTitle: "Today Guide"/);
-  assert.match(route, /todayTitle: "今日指引"/);
+  assert.match(route, /todayTitle: "Today"/);
+  assert.match(route, /todayTitle: "今日"/);
   assert.match(widget, /zhaowu-daily-details\$\{embedded \? " is-embedded-open"/);
   assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
   assert.match(form, /id="bazi"/);

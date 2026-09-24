@@ -8,7 +8,7 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 test("r192 isolates homepage sections behind localized fail-open boundaries", async () => {
   const home = await source("src/routes/index.tsx");
   const boundary = await source("src/components/home-section-boundary.tsx");
-  assert.match(home, /<HomeSectionBoundary id="comic" locale=\{locale\}>/);
+  assert.doesNotMatch(home, /HomeSectionBoundary id="comic"|SongComicToday/);
   assert.match(home, /<HomeSectionBoundary id="analysis" locale=\{locale\}/);
   assert.match(home, /<HomeSectionBoundary id="install" locale=\{locale\}>/);
   assert.match(boundary, /getDerivedStateFromError/);
