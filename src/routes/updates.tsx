@@ -23,7 +23,7 @@ function UpdatesPage() {
   }, []);
 
   const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
-  const englishSummary = "Notes on Life now includes Yellow Springs and Rebirth, comparing indigenous Chinese afterlife traditions with Buddhist samsara and tracing how they later merged into the Chinese underworld."
+  const englishSummary = "Owner music is now quieter and cleaner, batch actions appear only after selection, and public music reads avoid the legacy URL path that caused Node 24 warnings."
   const releaseSummary = language === "en" && /[\u3400-\u9fff]/u.test(release.latestSummary)
     ? englishSummary
     : release.latestSummary;

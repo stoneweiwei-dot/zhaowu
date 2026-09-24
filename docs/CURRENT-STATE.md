@@ -138,13 +138,15 @@ r191 依站主最新指令修正：
 ## 10. 真正仍未完成
 
 ### P0
-- r197 已確認 Vercel Production SHA = current main SHA 9fd7c6e6d72925b385ed05e8cd803e92f871033a；之後每次發布仍須重新驗證 exact SHA。
+- 每次 runtime 發布都必須確認 Vercel Production SHA = 該次 runtime main SHA；最新 exact SHA 與 deployment ID 以唯一交接板 Issue #1 為 live evidence，不在本文件硬鎖易過期 SHA。
 - Deploy gate、Engine suite 753/753、iPhone Safari CI 均 PASS；STO-5／STO-20 **真實體 iPhone Safari** 最終人工驗收仍未完成，CI／模擬器不得冒充實機證據。
 - 站主登入後的 /account／/gallery 真實視覺驗收仍缺已驗證 owner session；r197 已完成 source contract、HTTP、CI 與 Production exact-SHA 證據，不得把「缺憑證的人工視覺」冒充已跑。
 - Supabase release_history 已寫入 r197／197，source commit = 9fd7c6e6d72925b385ed05e8cd803e92f871033a，verification = READY_MAIN_SHA_MATCH。
 - 《菜根譚》APP 截圖 37 條已完成逐條校勘並結案：28 條升為 verified direct quote；1 條確認誤歸《菜根譚》（實出《圍爐夜話》）；8 條因關鍵字／詞序／漏字與可靠底本不一致，保留截圖轉錄但改為 not_applicable，不進古籍直引池。全庫現況為 **38 verified / 0 pending / 15 not_applicable**，且非 verified 卻標 direct quote 的筆數為 0。
 - Supabase Security Advisor 的 4 個 rls_enabled_no_policy 為 service_role-only 表；anon／authenticated 無 table grants，現況是 deny-by-default，不得為消除 INFO 提示而新增寬鬆 policy。Auth 目前有 8 個 Supabase users，Leaked Password Protection 仍為平台設定 WARN；現有 MCP 無 Auth Password Security 寫入能力，禁止用 SQL 假裝已開啟。
 - Supabase 組織目前為 Pro；Storage 實測 1,033,390,182 bytes / 100 GB 包含額度，寫入已恢復。仍須避免重複素材；任何刪除繼續先核對引用並只用 Storage API。
+
+- r199：站主背景音樂後台完成資訊減法；常駐教學文案移除，批量工具列只在已有選取時顯示。公開 /api/owner-music 讀取改為直接讀 owner-music branch raw manifest，避開 Node 24 DEP0169 的舊 URL parser 路徑；寫入／Owner Cookie／SSH push 邏輯不變。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。

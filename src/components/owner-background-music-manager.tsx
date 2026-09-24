@@ -50,14 +50,8 @@ export function OwnerBackgroundMusicManager() {
   const c = useMemo(() => ({
     manage: tr(locale, "背景音樂管理", "背景音乐管理", "Background music"),
     title: tr(locale, "網站背景音樂", "网站背景音乐", "Website background music"),
-    lead: tr(
-      locale,
-      "直接選 MP3 或 M4A 即可，12MB 以內會原檔上傳。所有已保留曲目會組成網站歌單，前台播放器可播放／暫停、上一首／下一首、循環與隨機播放。WAV、FLAC 請用電腦上傳。",
-      "直接选 MP3 或 M4A 即可，12MB 以内会原文件上传。所有已保留曲目会组成网站歌单，前台播放器可播放／暂停、上一首／下一首、循环与随机播放。WAV、FLAC 请用电脑上传。",
-      "Choose MP3 or M4A up to 12MB. Saved tracks form the website playlist, with play/pause, previous/next, loop and shuffle controls. Use a computer for FLAC/WAV.",
-    ),
-    entryLead: tr(locale, "站主專用 · 多曲目歌單、自動轉碼、分段上傳", "站主专用 · 多曲目歌单、自动转码、分段上传", "Owner only · playlist, auto-convert and chunked upload"),
     upload: tr(locale, "＋ 選擇音樂", "＋ 选择音乐", "+ Choose music"),
+    limit: tr(locale, "來源 ≤200 MB · 直傳 ≤12MB · 自動轉碼／分段上傳", "来源 ≤200 MB · 直传 ≤12MB · 自动转码／分段上传", "Source ≤200 MB · direct ≤12MB · auto-convert / chunked upload"),
     processing: tr(locale, "處理中…", "处理中…", "Processing…"),
     current: tr(locale, "目前播放", "当前播放", "Currently playing"),
     use: tr(locale, "設為背景音樂", "设为背景音乐", "Use as background music"),
@@ -81,8 +75,6 @@ export function OwnerBackgroundMusicManager() {
     uploaded: tr(locale, "新音樂已優化、上傳並啟用。", "新音乐已优化、上传并启用。", "The new track was optimized, uploaded and activated."),
     confirmDelete: tr(locale, "刪除這首背景音樂？", "删除这首背景音乐？", "Delete this background track?"),
     loadFailed: tr(locale, "背景音樂讀取失敗。", "背景音乐读取失败。", "Could not load background music."),
-    formatHint: tr(locale, "可直接選一般音訊原檔，來源檔最高 200 MB。12MB 以內的 MP3／M4A 會保留原音質並分段上傳；不必在 iPhone 上解碼。超過 12MB 或 WAV／FLAC 請先轉成較小 MP3／M4A，或用電腦上傳。", "可直接选择一般音频原文件，来源文件最高 200 MB。12MB 以内的 MP3／M4A 会保留原音质并分段上传；不必在 iPhone 上解码。超过 12MB 或 WAV／FLAC 请先转成较小 MP3／M4A，或用电脑上传。", "Select a normal audio source up to 200 MB. MP3/M4A up to 12MB uploads as-is in chunks. Convert larger files or WAV/FLAC first."),
-    pipeline: tr(locale, "辨識格式 → 原檔分段上傳 → 全站啟用", "识别格式 → 原文件分段上传 → 全站启用", "Detect format → chunked original upload → activate"),
   }), [locale]);
 
   useEffect(() => {
@@ -191,22 +183,22 @@ export function OwnerBackgroundMusicManager() {
     <button type="button" data-owner-background-music-manager data-owner-background-music-inline={portalTarget ? "true" : "fallback"}
       className={portalTarget ? "mt-5 flex w-full items-center justify-between gap-4 rounded-2xl border border-cinnabar/20 bg-gradient-to-br from-paper/80 to-cream/65 px-4 py-4 text-left shadow-sm transition hover:border-cinnabar/35" : "fixed left-3 right-3 z-[88] flex min-h-14 items-center justify-between gap-4 rounded-2xl border border-cinnabar/30 bg-cream/98 px-4 py-3 text-left shadow-xl backdrop-blur"}
       style={portalTarget ? undefined : { top: "max(0.75rem, env(safe-area-inset-top))" }} onClick={() => setOpen(true)}>
-      <span className="min-w-0"><span className="block text-[10px] tracking-[0.22em] text-cinnabar">OWNER · AUDIO</span><span className="mt-1 block font-display text-lg text-ink">{c.manage}</span><span className="mt-1 block text-xs leading-5 text-ink-mute">{c.entryLead}</span></span>
+      <span className="min-w-0"><span className="block text-[10px] tracking-[0.22em] text-cinnabar">OWNER · AUDIO</span><span className="mt-1 block font-display text-lg text-ink">{c.manage}</span></span>
       <span aria-hidden="true" className="shrink-0 rounded-full bg-cinnabar px-3 py-2 text-sm text-cream">＋</span>
     </button>
 
     {open ? <div className="fixed inset-0 z-[100] overflow-y-auto bg-ink/35 p-3 backdrop-blur-sm sm:p-6" role="dialog" aria-modal="true" aria-label={c.title}>
       <section className="mx-auto max-w-2xl rounded-[1.6rem] border border-line bg-cream p-5 shadow-2xl sm:p-7">
         <div className="flex items-start justify-between gap-4"><div><p className="text-xs tracking-[0.24em] text-cinnabar">OWNER · AUDIO</p><h2 className="mt-2 font-display text-2xl text-ink">{c.title}</h2></div><button type="button" className="rounded-full border border-line bg-paper/60 px-4 py-2 text-xs" onClick={() => setOpen(false)}>{c.close}</button></div>
-        <div className="mt-4 border-y border-line/70 py-4"><p className="text-sm leading-7 text-ink-soft">{c.lead}</p><p className="mt-2 text-xs leading-6 text-ink-mute">{c.formatHint}</p><p className="mt-2 text-[11px] tracking-[0.08em] text-cinnabar/80">{c.pipeline}</p></div>
         <div className="mt-5 flex flex-wrap gap-2">
           <input ref={inputRef} type="file" className="hidden" accept="audio/*,.mp3,.m4a,.aac,.wav,.flac,.ogg,.opus,.aif,.aiff,.caf" onChange={(event) => void onUpload(event)} />
           <button type="button" disabled={busy} className="min-h-11 rounded-full bg-cinnabar px-5 text-sm text-cream disabled:opacity-50" onClick={() => inputRef.current?.click()}>{busy ? c.processing : c.upload}</button>
           <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line bg-paper/60 px-4 text-sm text-ink-soft disabled:opacity-50" onClick={() => void load()}>{c.refresh}</button>
         </div>
+        <p className="mt-2 text-[11px] text-ink-mute">{c.limit}</p>
         {percent != null ? <div className="mt-4 border-y border-line/60 py-3" aria-live="polite"><div className="flex items-center justify-between gap-3 text-xs text-ink-soft"><span>{stage || c.processing}</span><span>{percent}%</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${percent}%` }} /></div></div> : null}
         {message ? <p className="mt-4 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
-        {tracks.length ? <div data-owner-bulk-toolbar="music" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
+        {selectedIds.length ? <div data-owner-bulk-toolbar="music" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
           <span className="text-xs font-medium text-ink-soft">{c.selected(selectedIds.length)}</span>
           <button type="button" disabled={busy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={selectAllDeletable}>{c.selectAll}</button>
           <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds([])}>{c.clearSelection}</button>

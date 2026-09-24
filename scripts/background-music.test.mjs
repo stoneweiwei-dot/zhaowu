@@ -69,7 +69,8 @@ test("owner music manager is visibly embedded in the account console with a high
   assert.match(manager, /z-\[88\]/);
   assert.match(manager, /z-\[100\]/);
   assert.match(manager, /背景音樂管理/);
-  assert.match(manager, /站主專用/);
+  assert.doesNotMatch(manager, /站主專用 · 多曲目歌單|Owner only · playlist/);
+  assert.doesNotMatch(manager, /辨識格式 → 原檔分段上傳|Detect format → chunked original upload/);
 });
 
 test("owner console exposes cookie-gated upload without a Supabase session", () => {
