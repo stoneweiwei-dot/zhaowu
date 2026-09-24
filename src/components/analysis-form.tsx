@@ -300,7 +300,10 @@ export function AnalysisForm() {
       return null;
     }
   }, [locale, rememberedRecord, showQuestion]);
-  const structure = useMemo(() => previewChart ? analyzeStructure(previewChart) : null, [previewChart]);
+  const structure = useMemo(() => {
+    if (!previewChart) return null;
+    try { return analyzeStructure(previewChart); } catch { return null; }
+  }, [previewChart]);
   const foundationValues = previewChart && structure
     ? locale === "en"
       ? {
