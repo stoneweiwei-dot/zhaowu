@@ -147,6 +147,7 @@ r191 依站主最新指令修正：
 - Supabase 組織目前為 Pro；Storage 實測 1,033,390,182 bytes / 100 GB 包含額度，寫入已恢復。仍須避免重複素材；任何刪除繼續先核對引用並只用 Storage API。
 
 - r199：站主背景音樂後台完成資訊減法；常駐教學文案移除，批量工具列只在已有選取時顯示。公開 /api/owner-music 讀取改為直接讀 owner-music branch raw manifest，避開 Node 24 DEP0169 的舊 URL parser 路徑；寫入／Owner Cookie／SSH push 邏輯不變。
+- r200：r199 部署後真實呼叫仍觸發 DEP0169；根因確認為 `lib/owner-music-git.js` 頂層靜態載入 Node Git HTTP adapter。r200 改為只在 `withRepo()`（站主寫入）中動態載入，公開 `/api/owner-music` GET 不再評估該 adapter。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。
