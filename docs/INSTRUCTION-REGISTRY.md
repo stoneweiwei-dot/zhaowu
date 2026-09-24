@@ -392,3 +392,9 @@
 - Supabase 重新即時核對出 39 個零引用候選，共 160,741,199 bytes；manifest SHA-256 = `e73337b3bc7119f78a014fd557f0970306e5cab04f792496a8995cbea8d5396e`。14 audio／2 gallery／23 report images 均已核對目前欄位、歷史 JSON、blueprint 與 settings 引用；4 個 cross-bucket background 正式資產仍受保護。
 - Edge Function 與直接 Storage API delete 都被組織級 `402 exceed_storage_size_quota` 在函式／Storage 執行前拒絕，所以實際刪除數仍為 0。一次性 anon 精確路徑 policy 已立即撤銷；`admin-storage-cleanup-execute-once` 已升為 v10、`verify_jwt=true`、410 retired stub。
 - Free 組織限制下不得 SQL DELETE `storage.objects`、不得為解鎖擅自升級或解除消費上限。限制解除／額度週期重置後，必須重跑 live audit，只有 manifest 仍完全一致才可走 Storage API remove，然後復算全桶實體容量。
+
+## 2026-09-24 Storage 清理完成後的現行狀態
+
+- r189 的「39 個待刪／實際刪除 0／Free 組織 402」只記錄當時情況，不能作為現行待辦。2026-09-24 重新 live audit 後，已用 Storage API 刪除原 manifest 的 39 個零引用物件，實測回收 160,741,199 bytes；現為 549 objects／1,035,403,153 bytes。
+- 組織現為 Pro；現有用量低於 Free 1 GiB 上限，但距專案 900 MB 緩衝目標仍有差距。Storage write freeze 維持；降回 Free 前重新核對用量及計費狀態。
+- 原 manifest 已清空，不得再以它執行刪除。剩餘同內容物件即使 eTag 相同，也必須先盤清跨桶與私人報告引用；任何實體刪除只能用 Storage API。`admin-storage-cleanup-execute-once` 現行 v17 是 JWT 保護的 410 retired stub。
