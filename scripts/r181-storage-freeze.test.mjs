@@ -5,7 +5,7 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (p) => readFile(new URL(p, root), "utf8");
 
-test("r193 keeps the storage policy gate but enables writes for the approved Pro plan", async () => {
+test("r194 keeps the storage policy gate but enables writes for the approved Pro plan", async () => {
   const policy = await source("src/lib/storage-write-policy.ts");
   const gallery = await source("src/lib/gallery-assets.ts");
   const backgrounds = await source("src/lib/background-assets.ts");
@@ -28,7 +28,7 @@ test("r193 keeps the storage policy gate but enables writes for the approved Pro
   assert.match(ownerEdge, /MAX_LOADING_VIDEO_BYTES = 500 \* 1024 \* 1024/);
 });
 
-test("r193 owner UI storage controls follow the shared live policy", async () => {
+test("r194 owner UI storage controls follow the shared live policy", async () => {
   const galleryUi = await source("src/components/owner-gallery-manager.tsx");
   const loginUi = await source("src/components/owner-login-visuals-manager.tsx");
   const account = await source("src/routes/account.tsx");
