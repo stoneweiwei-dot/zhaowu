@@ -31,9 +31,9 @@ test("wrong owner password is still rejected", async () => {
   assert.equal(response.status, 401);
 });
 
-test("homepage keeps one primary flow and the current closed secondary accordions", async () => {
+test("homepage keeps one primary flow while r201 opens the useful Today module", async () => {
   const home = await source("src/routes/index.tsx");
-  assert.match(home, /useState<"today" \| "quiz" \| "notes" \| null>\(null\)/);
+  assert.match(home, /useState<"today" \| "quiz" \| "notes" \| null>\("today"\)/);
   assert.equal((home.match(/<HomeDisclosure /g) ?? []).length, 3);
   assert.match(home, /<AnalysisForm \/>/);
   assert.match(home, /<DailyAlmanacWidget embedded \/>/);
