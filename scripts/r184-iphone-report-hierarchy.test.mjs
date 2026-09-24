@@ -25,8 +25,8 @@ test("r184 keeps the primary answer clear of reasoning metadata", async () => {
   assert.match(primary, /data-primary-answer/);
   assert.match(primary, /data-next-action/);
   assert.match(evidence, /data-answer-meta/);
-  assert.match(result, /查看補充重點/);
-  assert.match(result, /判斷備註/);
+  assert.match(result, /fullGenerate: "補充"/);
+  assert.match(result, /evidence: "附註"/);
 });
 
 test("r184 limits prominent report support and moves reasoning to bottom notes", async () => {
