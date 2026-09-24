@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-24 11:17 AEST
+最後核對：2026-09-24 13:48 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -83,6 +83,7 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - r192 起 `STONE-R6.2.2-CURRENT-MASTER.md` 為 CURRENT governance/evidence master；deterministic runtime 仍為 R6.2.1 + P2 + P3（含 r191 結構增補），不得把治理版本號冒充排盤核心重寫。
 - r192 起首頁漫畫、生辰流程與安裝提示各自有 fail-open boundary；單一區塊或舊本機資料異常不得再拖垮整頁。
 - r192 手機閱讀面收至最寬 560px，採暖紙／青玉／朱砂節制配色與小圓角；這只是正式站的視覺層，不引入 Lite 站的獨立流程、登入或 Storage 寫入。
+- r193 修正正式站實測發現的夜間對比回歸：英文 Header 切換、延伸入口主／次文字與暖紙內容面第二步標題必須保持可讀；只改 CSS，不改功能或命理核心。
 
 ## 6. Loading／Login animation
 
@@ -92,8 +93,8 @@ r191 依站主最新指令修正：
 - 每次站主登入流程只在首次進入 `/login` 播放一次；影片不循環，播完使用靜態封面。切到其他 route 再返回 `/login` 不重播；站主主動登出後才開始下一次登入流程。
 - 後台「登入動畫管理」只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為動畫卡片，新增上傳也只接受 MP4／WebM。
 - 歷史 `IntroGate` 元件與 policy 只留回歸／相容參照，不得重新接回公開 runtime。
-- r193 起 Supabase Pro 已由站主明確批准，舊 r181 Free 容量寫入凍結退出 active path；runtime 的既有 same-origin fallback 保留。
-- r193：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器接受 MP4／WebM、時長上限 15 秒、單檔上限 500 MB；大於 6 MB 使用 Supabase TUS 斷點續傳。系統不在瀏覽器內轉碼，來源檔須已是可播放的 15 秒內成品。
+- r194 起 Supabase Pro 已由站主明確批准，舊 r181 Free 容量寫入凍結退出 active path；runtime 的既有 same-origin fallback 保留。
+- r194：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器接受 MP4／WebM、時長上限 15 秒、單檔上限 500 MB；大於 6 MB 使用 Supabase TUS 斷點續傳。系統不在瀏覽器內轉碼，來源檔須已是可播放的 15 秒內成品。
 
 ## 7. Supabase
 
@@ -102,7 +103,7 @@ r191 依站主最新指令修正：
 - Database 專案可讀；站主登入不走 Supabase Auth。
 - 2026-09-24 已完成第一輪安全清理：39 個確認零引用的物件經 Storage API 刪除，共回收 160,741,199 bytes；目前為 **549 objects / 1,035,403,153 bytes（約 0.964 GiB）**。組織為站主批准的 Pro，官方包含 100 GB Storage；現有用量約 1.035%，尚有約 98.96 GB 包含額度。
 - Storage／Edge 曾回 402 `exceed_storage_size_quota`。
-- r193 起背景、站主圖庫、登入素材與命誥圖寫入恢復；舊 r181 Free-plan write freeze 已被站主最新 Pro 指令取代。
+- r194 起背景、站主圖庫、登入素材與命誥圖寫入恢復；舊 r181 Free-plan write freeze 已被站主最新 Pro 指令取代。
 - r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
 - 不得直接 SQL DELETE `storage.objects` 冒充刪除檔案。
 - 本次已刪清單原始 manifest SHA-256 = `e73337b3bc7119f78a014fd557f0970306e5cab04f792496a8995cbea8d5396e`；14 audio／2 gallery／23 report images 的當前欄位、歷史 JSON、blueprint 與 settings 引用均已於刪除前核對。此 manifest 已用完，不得再次當作待刪清單。
@@ -168,5 +169,5 @@ CI、PR merge、Preview、單純 Vercel READY、桌面 viewport、文件描述�
 - 首頁「昭梧 · 心境小測」新增 `/quiz/cultivation-destiny`。
 - 來源：裝置既有生辰 → 現行 `buildChart()` 八字／五行 truth；MBTI 可選且低權重。
 - 輸出：靈根／品階、宗門峰脈、入門身份、六維、九大道途、諸宗適性、三句機驗、修行命途與 9:16 個人命測圖。
-- 命測圖完全在瀏覽器本機生成，不新增 Supabase Storage 寫入，不使用付費圖片 provider；此成本隔離契約與 r193 恢復其他 owner Storage 寫入相容。
+- 命測圖完全在瀏覽器本機生成，不新增 Supabase Storage 寫入，不使用付費圖片 provider；此成本隔離契約與 r194 恢復其他 owner Storage 寫入相容。
 - 邊界：仙俠結果只作趣味世界觀，不修改正式命盤；紫微未經校驗時不補造盤面。
