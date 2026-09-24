@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r190",
-  updateNumber: 190,
-  publishedAt: "2026-09-24T09:36:00+10:00",
-  latestSummary: "最終收官修復：首頁不再預先掛載完整命書細節，避免已保存生辰的邊界資料把整個首頁帶入錯誤頁；Supabase 零引用 Storage 已清理並保持寫入凍結。",
+  version: "ZW-WEB-2026.09.24-r192",
+  updateNumber: 192,
+  publishedAt: "2026-09-24T11:17:00+10:00",
+  latestSummary: "收官批次：首頁高風險區塊獨立 fail-open；報告移除 prompt／dashboard 式文案；命理證據治理升至 R6.2.2，排盤核心不改。",
   details: {
     "zh-Hant": [
-      "首頁的正式命盤與基礎解釋先穩定呈現；完整命書細節改為使用者展開後才掛載，任何可選深層內容不得再拖垮首頁。",
-      "Supabase 已刪除 39 個零引用 Storage 物件，共 160,741,199 bytes；寫入凍結繼續保留，避免再次超額。",
+      "首頁漫畫、生辰流程與安裝提示各自隔離；舊本機資料或單一區塊異常不得再拖垮整頁。",
+      "完整報告改成自然成品語言；R6.2.2 收緊證據與執行邊界。Supabase 維持 0.964 GiB 左右與寫入凍結，尚未達 <900 MB 安全目標。",
     ],
     en: [
-      "The home page now renders the core birth chart first and only mounts the optional full Destiny Book detail after the user expands it, preventing optional deep content from crashing the whole home route.",
-      "Supabase Storage cleanup removed 39 verified unreferenced objects (160,741,199 bytes); the Storage write freeze remains in place to avoid another quota breach.",
+      "The comic, birth flow and install prompt now fail open independently, so stale local data or one bad section cannot take down the whole home page.",
+      "Report labels now read like finished product copy. R6.2.2 tightens evidence governance without rewriting chart calculation; Storage remains frozen at about 0.964 GiB and is not yet below the 900 MB safety target.",
     ],
   },
 } as const;
