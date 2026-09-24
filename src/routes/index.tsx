@@ -4,12 +4,14 @@ import { AnalysisForm } from "@/components/analysis-form";
 import { DailyAlmanacWidget } from "@/components/daily-almanac-widget";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
+import { HomeSectionBoundary } from "@/components/home-section-boundary";
 import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { ResultView } from "@/components/result-view";
 import { ScentFiveElementTest } from "@/components/scent-five-element-test";
 import { SkyEventsHomeSection } from "@/components/sky-events-home-section";
 import { SongComicToday } from "@/components/song-comic-layer";
 import { useI18n } from "@/lib/i18n";
+import { clearSharedBirthRecord } from "@/lib/shared-birth";
 import { useAppStore } from "@/lib/store";
 import "@/home-polish-v3.css";
 import "@/home-portals.css";
@@ -101,7 +103,7 @@ function Home() {
         <h1>{funCopy.homeTitle}</h1>
       </header>
 
-      <SongComicToday locale={locale} />
+      <HomeSectionBoundary id="comic"><SongComicToday locale={locale} /></HomeSectionBoundary>
 
       <section className="zhaowu-home-stage zhaowu-home-stage--daily-priority" aria-label={funCopy.todayTitle}>
         <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>
@@ -110,9 +112,11 @@ function Home() {
         </HomeDisclosure>
       </section>
 
-      <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
-        <AnalysisForm />
-      </div>
+      <HomeSectionBoundary id="analysis" onRecover={() => { clearSharedBirthRecord(); window.location.reload(); }}>
+        <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
+          <AnalysisForm />
+        </div>
+      </HomeSectionBoundary>
 
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><ResultView result={current} /></div> : null}
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div> : null}
@@ -145,7 +149,7 @@ function Home() {
         </HomeDisclosure>
       </section>
 
-      <div className="zhaowu-home-stage"><HomeScreenInstallPrompt /></div>
+      <HomeSectionBoundary id="install"><div className="zhaowu-home-stage"><HomeScreenInstallPrompt /></div></HomeSectionBoundary>
     </main>
   );
 }
