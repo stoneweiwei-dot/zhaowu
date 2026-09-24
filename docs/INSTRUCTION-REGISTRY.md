@@ -399,3 +399,5 @@
 - 正式站吸收 Lite 的外殼規則：560px 手機優先閱讀寬度、米紙／青玉／朱砂／金褐色系、低陰影、低圓角、單欄資訊節奏。
 - 功能契約不回退：第一屏直接回答、正式四柱、單一連續報告、身體注意事項、命誥圖獨立生成、未知時辰降級與 owner-only 後台全部保留。
 - Lite 與正式站是 funnel／backup 關係，不得演變成兩套平行正式站或兩套維護鏈。
+- Supabase 組織已確認為 Pro、project `ACTIVE_HEALTHY`；r181 臨時 Storage write freeze 在本範圍正式 `SUPERSEDED`，站主背景／圖庫／登入素材／新命誥圖寫入恢復，但 MIME、大小、signed-upload ticket、owner-only 與 Storage API 安全邊界不得放寬。
+- 當前 Storage 仍為 1,035,403,153 bytes；日後若要降回 Free，必須先重新清理並留出安全 headroom，不得先降級再賭 quota。
