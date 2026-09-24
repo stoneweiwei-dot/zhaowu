@@ -1899,28 +1899,20 @@ html[lang="en"] .zhaowu-report-narrative__head > strong {
 .stone-login-sound {
   position: absolute;
   z-index: 4;
-  display: inline-flex;
-  width: auto !important;
-  height: 44px !important;
-  min-width: max-content;
-  min-height: 44px;
-  max-width: calc(100vw - 36px);
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  white-space: nowrap;
-  writing-mode: horizontal-tb !important;
-  border: 1px solid rgba(255, 247, 226, .45);
-  border-radius: 999px;
-  padding: 0 16px;
+  display: grid;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px;
+  min-height: 40px;
+  place-items: center;
+  border: 1px solid rgba(255, 247, 226, .34);
+  border-radius: 50%;
+  padding: 0;
   color: #fffaf0;
-  background: rgba(10, 22, 18, .62);
-  box-shadow: 0 12px 34px rgba(0,0,0,.18);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: .06em;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(10, 22, 18, .48);
+  box-shadow: 0 8px 24px rgba(0,0,0,.16);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .zhaowu-intro-sound {
@@ -1937,13 +1929,13 @@ html[lang="en"] .zhaowu-report-narrative__head > strong {
 .zhaowu-intro-sound > span,
 .stone-login-sound > span {
   display: grid;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   place-items: center;
   border-radius: 50%;
-  color: #173a2e;
-  background: #dbc18b;
-  font-size: 13px;
+  color: inherit;
+  background: transparent;
+  font-size: 16px;
 }
 
 .zhaowu-header-mode-toggle {
