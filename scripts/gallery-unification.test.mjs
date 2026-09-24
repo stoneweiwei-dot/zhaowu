@@ -9,6 +9,7 @@ test("one visible Gallery keeps owner asset management independent of the fixed 
   const shell = await source("src/components/site-shell.tsx");
   const account = await source("src/routes/account.tsx");
   const gallery = await source("src/components/owner-gallery-manager.tsx");
+  const galleryRoute = await source("src/routes/gallery.tsx");
   const main = await source("src/legacy-visual-compat.css");
   const lock = await source("src/gallery-unification.css");
 
@@ -23,8 +24,10 @@ test("one visible Gallery keeps owner asset management independent of the fixed 
   assert.match(account, /listOwnerBackgroundPage/);
   assert.match(account, /setBackgroundWallpaper/);
 
-  assert.match(gallery, /登录画面在上方独立管理|登入畫面在上方獨立管理/);
-  assert.match(gallery, /Loading 与界面小素材不会混进这里|Loading 與介面小素材不會混進這裡/);
+  assert.match(galleryRoute, /type MediaView = "login" \\| "content"/);
+  assert.match(galleryRoute, /登入影片/);
+  assert.match(galleryRoute, /內容圖片/);
+  assert.match(gallery, /assets\.filter\(\(asset\) => !isLoadingGalleryAsset\(asset\)\)/);
   assert.match(gallery, /category:\s*"visual-library"/);
   assert.match(gallery, /auto-classify/);
   assert.doesNotMatch(gallery, /category === "background" \? "site-wallpaper"/);
