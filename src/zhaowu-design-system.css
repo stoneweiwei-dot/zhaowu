@@ -5144,7 +5144,7 @@ html[data-zw-theme="night"] .zhaowu-comic-lite :is(h4,h5,p,strong,span,summary) 
 
 .zhaowu-home-disclosure,.zhaowu-home-disclosure.is-open {
   border: 1px solid rgba(83, 69, 48, .14) !important;
-  border-inline-start: 2px solid rgba(178, 59, 36, .78) !important;
+  border-inline-start: 1px solid rgba(83, 69, 48, .14) !important;
   border-radius: 10px !important;
   background: #FBF7EE !important;
   box-shadow: 0 6px 20px rgba(46, 39, 29, .045) !important;
