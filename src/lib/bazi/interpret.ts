@@ -12,6 +12,7 @@ const MONEY_KEYS = ["財", "錢", "收入", "投資", "買房", "買屋", "理�
 const HEALTH_KEYS = ["健康", "病", "痛", "醫療", "手術", "失眠", "身體", "復原", "累", "睡不著"];
 const CHOICE_KEYS = ["還是", "或者", "該不該", "要不要", "兩個選項", "A還是B", "選哪"];
 const TIME_KEYS = ["什麼時候", "何時", "哪年", "哪月", "時間", "窗口", "時機", "等到"];
+const PURPOSE_KEYS = ["為何而生", "为何而生", "為什麼而生", "为什么而生", "使命", "人生角色", "宿命", "珍貴", "珍贵", "潛意識", "潜意识", "真實的自己", "真实的自己", "幸福生活", "抉擇方式", "抉择方式", "人生方向", "前往何方", "人生去向"];
 
 export function classifyQuestion(q: string): QuestionKind {
   if (PAST_KEYS.some((k) => q.includes(k))) return "past";
@@ -77,6 +78,23 @@ const GOD_WORK: Record<string, string> = {
   正印: "适合研究、教学、知识管理与专业支撑，但要设交付截止点",
   偏印: "适合冷门专业、复杂判断与高专门化任务，但不宜同时开启过多方向",
 };
+
+const GOD_LIFE_FUNCTION: Record<string, string> = {
+  比肩: "建立边界、独立承担，并形成自己的判断标准",
+  劫財: "在协作、竞争与资源分配中学会明确规则和边界",
+  食神: "把经验、知识、审美或技术转成稳定、可被他人接住的输出",
+  傷官: "发现旧结构的问题，再用表达、设计或方法提出新方案",
+  正財: "把能力转成稳定交换、长期责任与可持续积累",
+  偏財: "辨识机会、连接资源，同时为风险与退出保留边界",
+  正官: "建立秩序、承担责任，并维护可以长期执行的标准",
+  七殺: "在压力中判断、执行与守住边界，而不是被压力牵着走",
+  正印: "吸收、整理、传承知识，并把零散经验建立成方法",
+  偏印: "处理复杂、冷门或非常规问题，并把洞见转成可验证的结构",
+};
+
+function isPurposeQuestion(question: string): boolean {
+  return PURPOSE_KEYS.some((key) => question.includes(key));
+}
 
 function guideFrom(chart: Chart): LifeGuide {
   if (chart.usefulProvisional) {
@@ -264,7 +282,9 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
       directAnswer = `结论：时间题必须用原局 + 大运 + 流年判断，不能单凭一个流年字直接定“必成日期”。${now}${chart.currentDayun ? ` 当前大运提供的是${chart.currentDayun.ganZhi}这一阶段背景；具体到月份，需要再看该问题所属领域与流月是否形成同向触发。` : " 大运资料不足时，时间结论降级。"}`;
       break;
     default:
-      directAnswer = `结论：这张盘当前以${structure.label}${structure.established ? "" : "方向"}为主，结构完成度为${structure.completion.label}，日主${chart.dayMaster}${chart.dayMasterElement}的承载底盘为${chart.strength.tendency}。核心不是罗列更多术语，而是看格局、病药、流通与承载是否能形成同一条有效链。`;
+      directAnswer = isPurposeQuestion(question)
+        ? `结论：八字不能证明“为什么被安排出生”，也不能把“使命”写成上天指令。若把问题改成“这张盘最自然的结构功能与反复课题是什么”，当前以${structure.label}${structure.established ? "" : "方向"}为主，月令主气功能为${monthFunctionGod}；较稳定的功能方向是：${GOD_LIFE_FUNCTION[monthFunctionGod] ?? "把复杂经验整理成可以验证、可以执行的现实方法"}。调整重点是处理真实出现的阻塞与代价，不是把五行补齐或强行凑平均。`
+        : `结论：这张盘当前以${structure.label}${structure.established ? "" : "方向"}为主，结构完成度为${structure.completion.label}，日主${chart.dayMaster}${chart.dayMasterElement}的承载底盘为${chart.strength.tendency}。核心不是罗列更多术语，而是看格局、病药、流通与承载是否能形成同一条有效链。`;
   }
 
   const rhythm = `结构摘要：日主${chart.dayMaster}${chart.dayMasterElement}，月令${monthP.zhi}，主格${structure.label}${structure.established ? "" : "方向"}，完成度${structure.completion.label}。${structure.remedy.disease}；${structure.remedy.medicine}${timeLine}`;
