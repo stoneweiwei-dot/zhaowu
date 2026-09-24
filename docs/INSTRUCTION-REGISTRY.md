@@ -29,6 +29,12 @@
 - 本次只收斂站主呈現層；不得藉此改 Owner Cookie、Auth、payment、Supabase schema、Storage reference、排盤或報告計算。
 - r187「站主後台資訊減法」繼續有效，本條取代其尚未收乾淨的同屏工具堆疊與空閒批量工具列。
 
+## 2026-09-24 r201 公開音樂依賴隔離 supersession
+
+- ACTIVE：公開 `/api/owner-music` GET 的模組初始化不得靜態載入任何站主寫入 runtime，包括 `isomorphic-git` core、`isomorphic-git/http/node`、`ssh2`。
+- ACTIVE：上述三個依賴只可在站主寫入操作實際進入 Git／SSH 路徑後動態載入。
+- ACTIVE：runtime warning 的 Done gate 必須以新 Production 真實 endpoint 呼叫 + deployment 後時間窗 runtime errors 為準；若仍有警告，繼續追根因，不得只依 source contract 宣告完成。
+
 ## 2026-09-24 r200 公開音樂 runtime supersession
 
 - ACTIVE：`isomorphic-git/http/node` 不得在公開音樂 GET 路徑頂層靜態載入；只可在站主寫入流程進入 `withRepo()` 後動態載入。

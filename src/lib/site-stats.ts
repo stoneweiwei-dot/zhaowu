@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.24-r200",
-  updateNumber: 200,
-  publishedAt: "2026-09-24T20:50:00+10:00",
-  latestSummary: "背景音樂公開讀取不再載入舊 Node Git HTTP 適配器；站主寫入時才動態載入，消除正式站 DEP0169 路徑。",
+  version: "ZW-WEB-2026.09.24-r201",
+  updateNumber: 201,
+  publishedAt: "2026-09-24T21:05:00+10:00",
+  latestSummary: "背景音樂公開 GET 完全隔離站主寫入依賴；Git core、Node HTTP adapter 與 SSH 只在寫入時動態載入。",
   details: {
     "zh-Hant": [
-      "r199 已完成音樂後台減法；r200 只修正式站仍存在的 Node DEP0169 runtime 警告。",
-      "公開 /api/owner-music GET 不再靜態載入 isomorphic-git 的 Node HTTP 適配器；只有站主新增／改名／切換／刪除曲目時才動態載入寫入依賴。",
-      "前台播放、Owner Cookie、同源檢查、SSH push、曲目資料與報告核心均不變。",
+      "r200 已把 Node Git HTTP adapter 改成寫入時載入，但正式站真實 GET 仍觸發 DEP0169，證明其餘寫入依賴仍在公開模組初始化鏈。",
+      "r201 將 isomorphic-git core、Node HTTP adapter 與 ssh2 全部改為站主寫入時才動態載入；公開 /api/owner-music GET 不再評估任何 Git／SSH runtime。",
+      "前台播放、歌單、Owner Cookie、同源檢查、SSH push、付款、Supabase 與命理／報告核心均不變。",
     ],
     en: [
-      "r199 completed the owner-music UI cleanup; r200 fixes the remaining Node DEP0169 production warning.",
-      "Public /api/owner-music GET no longer evaluates the Node Git HTTP adapter. It is loaded only when an owner performs a write action.",
-      "Playback, owner-cookie checks, same-origin protection, SSH pushes, track data and report logic are unchanged.",
+      "r200 deferred the Node Git HTTP adapter, but a real production GET still emitted DEP0169, proving more write-only dependencies remained in the public module initialization path.",
+      "r201 loads isomorphic-git core, the Node HTTP adapter and ssh2 only for owner write operations. Public /api/owner-music GET evaluates none of those runtimes.",
+      "Playback, playlists, owner-cookie checks, same-origin protection, SSH pushes, payment, Supabase and report logic are unchanged.",
     ],
   },
 } as const;

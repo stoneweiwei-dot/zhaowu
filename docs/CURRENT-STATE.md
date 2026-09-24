@@ -148,6 +148,7 @@ r191 依站主最新指令修正：
 
 - r199：站主背景音樂後台完成資訊減法；常駐教學文案移除，批量工具列只在已有選取時顯示。公開 /api/owner-music 讀取改為直接讀 owner-music branch raw manifest，避開 Node 24 DEP0169 的舊 URL parser 路徑；寫入／Owner Cookie／SSH push 邏輯不變。
 - r200：r199 部署後真實呼叫仍觸發 DEP0169；根因確認為 `lib/owner-music-git.js` 頂層靜態載入 Node Git HTTP adapter。r200 改為只在 `withRepo()`（站主寫入）中動態載入，公開 `/api/owner-music` GET 不再評估該 adapter。
+- r201：r200 正式站真實 GET 後仍有 DEP0169；進一步確認公開模組初始化仍靜態載入 `isomorphic-git` core 與 `ssh2`。r201 將 Git core、Node HTTP adapter、SSH 三者全部改為站主寫入時才動態載入，公開 GET 僅保留 raw manifest 讀取。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。
