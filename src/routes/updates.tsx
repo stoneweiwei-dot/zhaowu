@@ -23,7 +23,7 @@ function UpdatesPage() {
   }, []);
 
   const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
-  const englishSummary = "This final closeout release keeps the core home route fail-open by mounting the optional full Destiny Book detail only after expansion, and records the verified Supabase Storage cleanup.";
+  const englishSummary = "This closeout release isolates high-risk home sections, removes prompt-like report copy, and moves evidence governance to R6.2.2 without rewriting deterministic chart calculation.";
   const releaseSummary = language === "en" && /[\u3400-\u9fff]/u.test(release.latestSummary)
     ? englishSummary
     : release.latestSummary;
