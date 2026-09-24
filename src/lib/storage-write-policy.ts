@@ -1,4 +1,4 @@
-export const SUPABASE_STORAGE_WRITES_PAUSED = true;
+export const SUPABASE_STORAGE_WRITES_PAUSED = false;
 
 export const STORAGE_WRITES_PAUSED_MESSAGE = {
   "zh-Hant": "Supabase 儲存空間正在瘦身，新增上傳暫停；現有內容仍可查看與管理。",
