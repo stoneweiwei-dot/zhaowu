@@ -23,7 +23,7 @@ function UpdatesPage() {
   }, []);
 
   const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
-  const englishSummary = "Owner media is now split into focused Login videos and Content images views, idle batch controls stay hidden, and installed PWAs can update without delete-and-reinstall.";
+  const englishSummary = "Notes on Life now includes Yellow Springs and Rebirth, comparing indigenous Chinese afterlife traditions with Buddhist samsara and tracing how they later merged into the Chinese underworld."
   const releaseSummary = language === "en" && /[\u3400-\u9fff]/u.test(release.latestSummary)
     ? englishSummary
     : release.latestSummary;
