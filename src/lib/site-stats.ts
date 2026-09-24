@@ -23,10 +23,12 @@ export const SITE_RELEASE_FALLBACK = {
     "zh-Hant": [
       "正式站縮回 560px 手機優先閱讀尺度，保留單一完整分析核心；延伸內容維持折疊，不再和主問答搶視覺層級。",
       "昭梧 Lite 保留為免費快速體驗／備援入口，不另建第二套命理核心、帳號、付費或 Supabase 資料鏈。",
+      "Supabase 容量限制已解除，站主背景／圖庫上傳與新命誥圖寫入恢復；既有安全驗證與大小限制不變。",
     ],
     en: [
       "The official site now uses the Lite-inspired 560px mobile reading measure and quieter paper, jade and cinnabar presentation while keeping one canonical full-analysis core.",
       "ZHAOWU Lite remains a free lightweight demo and fallback, not a second account, payment, storage, or metaphysics backend.",
+      "Supabase capacity is no longer blocking owner uploads or new decree-image writes; existing validation and size limits remain in force.",
     ],
   },
 } as const;
