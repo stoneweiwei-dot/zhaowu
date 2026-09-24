@@ -405,7 +405,7 @@
 ## 2026-09-24 Storage 清理完成後的現行狀態
 
 - r189 的「39 個待刪／實際刪除 0／Free 組織 402」只記錄當時情況，不能作為現行待辦。2026-09-24 重新 live audit 後，已用 Storage API 刪除原 manifest 的 39 個零引用物件，實測回收 160,741,199 bytes；現為 549 objects／1,035,403,153 bytes。
-- 組織現為站主明確批准的 Pro；r193 起以官方 100 GB Storage 包含額度及 live usage 為準，舊 900 MB Free 緩衝與 write freeze 退出 active path。不得未經站主新指令擅自降回 Free。
+- 組織現為站主明確批准的 Pro；r194 起以官方 100 GB Storage 包含額度及 live usage 為準，舊 900 MB Free 緩衝與 write freeze 退出 active path。不得未經站主新指令擅自降回 Free。
 - 原 manifest 已清空，不得再以它執行刪除。剩餘同內容物件即使 eTag 相同，也必須先盤清跨桶與私人報告引用；任何實體刪除只能用 Storage API。`admin-storage-cleanup-execute-once` 現行 v17 是 JWT 保護的 410 retired stub。
 
 ## 2026-09-24 r192 登入媒體收線
@@ -413,5 +413,5 @@
 - ACTIVE：`/login` 首次進入播放最多 15 秒，結束後停在靜態封面；同一登入流程返回不重播，登出後才可再播。
 - ACTIVE：聲音用單一 44px 喇叭圖示控制，保留無障礙文字；後台登入影片清單只顯示 MP4／WebM，已支援的短片上傳時長上限為 15 秒。
 - r191 後台「最多 5 秒」與有字聲音控制在對應範圍 `SUPERSEDED`；圖片及封面仍不得混進登入動畫清單。
-- 此條的 Free-plan 寫入凍結已被 2026-09-24 站主 Pro 指令取代。r193 接通 6–500 MB MP4／WebM 的 TUS 斷點續傳與發佈；播放與上傳成品仍限 15 秒，瀏覽器不負責來源轉碼。
+- 此條的 Free-plan 寫入凍結已被 2026-09-24 站主 Pro 指令取代。r194 接通 6–500 MB MP4／WebM 的 TUS 斷點續傳與發佈；播放與上傳成品仍限 15 秒，瀏覽器不負責來源轉碼。
 - 正式站吸收 Lite 的 560px 閱讀寬度和暖紙／青玉／朱砂配色；Lite 仍只是設計參考，不成為第二正式站。舊 PR #453 的解除 Storage 凍結實作不得因此自動採用。
