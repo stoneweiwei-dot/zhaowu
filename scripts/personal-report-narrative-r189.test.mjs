@@ -44,7 +44,7 @@ test("完整报告仍是两个保存区块，但 summary 内实际带入一次�
   assert.equal(sections[0].narrative.roles.length, 4);
   assert.ok(sections[0].narrative.evidence.length >= 3);
   const text = composeFocusedReportText(result);
-  assert.match(text, /你的命局，收成一幅畫/);
+  assert.match(text, /命象/);
   assert.match(text, /這股力量能做到/);
   assert.match(text, /同一股力量的代價/);
   assert.match(text, /依據/);
