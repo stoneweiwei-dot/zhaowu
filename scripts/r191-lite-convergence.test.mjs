@@ -20,7 +20,9 @@ test("r191 adopts Lite mobile discipline without creating a second product core"
   assert.match(registry, /zhaowu-guide\.ston1004\.chatgpt\.site/);
 });
 
-test("r191 preserves the Storage write freeze", async () => {
+test("r191 restores Storage writes only through the central gate", async () => {
   const policy = await source("src/lib/storage-write-policy.ts");
-  assert.match(policy, /SUPABASE_STORAGE_WRITES_PAUSED = true/);
+  const ownerApi = await source("api/owner-data.js");
+  assert.match(policy, /SUPABASE_STORAGE_WRITES_PAUSED = false/);
+  assert.doesNotMatch(ownerApi, /STORAGE_GROWING_ACTIONS/);
 });
