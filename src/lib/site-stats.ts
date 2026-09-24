@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.23-r189",
-  updateNumber: 189,
-  publishedAt: "2026-09-23T23:36:00+10:00",
-  latestSummary: "完整報告正式加入一盤一景：先保留問題直答，再把同一命局收成專屬題名、統一場景、力量與代價、現實行動及可反查證據。",
+  version: "ZW-WEB-2026.09.24-r190",
+  updateNumber: 190,
+  publishedAt: "2026-09-24T09:36:00+10:00",
+  latestSummary: "最終收官修復：首頁不再預先掛載完整命書細節，避免已保存生辰的邊界資料把整個首頁帶入錯誤頁；Supabase 零引用 Storage 已清理並保持寫入凍結。",
   details: {
     "zh-Hant": [
-      "完整報告仍先回答原問題，再生成一次專屬題名與統一場景；天地、場域、主體、出口、力量、代價與行動都沿用同一份命局證據。",
-      "時辰未知時主動降級，不補造固定法器或晚景；圖片失敗或未生成也不影響文字完整交付。",
+      "首頁的正式命盤與基礎解釋先穩定呈現；完整命書細節改為使用者展開後才掛載，任何可選深層內容不得再拖垮首頁。",
+      "Supabase 已刪除 39 個零引用 Storage 物件，共 160,741,199 bytes；寫入凍結繼續保留，避免再次超額。",
     ],
     en: [
-      "The full report still answers the original question first, then creates one personal title and one continuous scene grounded in the same chart evidence.",
-      "An unknown birth hour now explicitly limits the future outlet; the written report remains complete even when no image is generated.",
+      "The home page now renders the core birth chart first and only mounts the optional full Destiny Book detail after the user expands it, preventing optional deep content from crashing the whole home route.",
+      "Supabase Storage cleanup removed 39 verified unreferenced objects (160,741,199 bytes); the Storage write freeze remains in place to avoid another quota breach.",
     ],
   },
 } as const;
