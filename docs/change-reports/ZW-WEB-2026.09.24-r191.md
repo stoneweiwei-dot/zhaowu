@@ -1,0 +1,41 @@
+# 昭梧更新報告｜ZW-WEB-2026.09.24-r191
+
+## 本次改動
+
+- 首頁的「今日一格」、核心生辰流程、桌面安裝提示改為三個獨立 fail-open boundary。
+- 任一單一區塊 render／lifecycle 異常時，只降級該區，不再讓整個 `/` 落入 Router Error。
+- 已保存生辰的 `analyzeStructure(previewChart)` 加上 fail-open；結構分析若遇邊界資料，首頁先保留可用狀態。
+- r190 的完整命書 lazy mount 繼續保留。
+- Supabase Storage 已完成的 39-object 清理與 Storage write freeze 不變。
+
+## 為什麼改
+
+r190 上線後，持久瀏覽器狀態仍可重現首頁 Error，而新訪客 CI 正常。這表示問題不只是完整命書提早掛載，而是舊本機狀態或某個首頁子區塊仍可能觸發 client-side 錯誤。
+
+r191 不再讓任何單一首頁子區塊擁有「拖垮整頁」的能力。
+
+## 影響範圍
+
+- 首頁錯誤隔離。
+- 已保存生辰的恢復流程。
+- 不新增功能、不新增視覺系統。
+
+## 受保護範圍
+
+不修改：
+
+- 八字曆法、四柱、真太陽時、子時換日。
+- 格局／旺衰／用神的正式 truth。
+- r189 一盤一景。
+- Auth、payment、Supabase schema。
+- 宋式視覺、小漫畫、青玉小龍、播放器、Login animation。
+
+## 驗證狀態
+
+合併前必須通過 Deploy gate、Engine suite、iPhone Safari 與 r191 error-isolation contract。
+
+合併後必須重新打開 canonical Production `/`，確認不再是「Something went wrong」，並 smoke `/login`、`/updates`、修仙測驗及 runtime errors。
+
+## 回滾
+
+r191 只增加首頁錯誤隔離與 fail-open，不涉及資料遷移；必要時可回滾前端 commit。Supabase 已完成的零引用 Storage 清理不回滾。
