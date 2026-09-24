@@ -42,7 +42,7 @@ test("report mother art has no photo-card frame", async () => {
 
 test("installed iPhone app actively refreshes the current production shell without reloading first-time visitors", async () => {
   const main = await source("src/main.tsx");
-  const sw = await source("public/sw.js");
+  const sw = await source("scripts/sw-template.js.txt");
   const vercel = await source("vercel.json");
   assert.match(main, /updateViaCache:\s*'none'/);
   assert.match(main, /registration\.update\(\)/);
@@ -51,9 +51,14 @@ test("installed iPhone app actively refreshes the current production shell witho
   assert.match(main, /if \(!hadControllerAtBoot \|\| reloadedForControllerChange\) return/);
   assert.match(main, /pageshow/);
   assert.match(main, /visibilitychange/);
+  assert.match(main, /focus/);
+  assert.match(main, /online/);
+  assert.match(main, /\/release\.json\?t=/);
   assert.match(main, /checkForFreshShell/);
   assert.match(main, /current !== fresh/);
-  assert.match(sw, /zhaowu-shell-r\d+/);
+  assert.match(sw, /zhaowu-shell-\$\{RELEASE\.slice\(0, 16\)\}/);
+  assert.match(sw, /ZHAOWU_RELEASE_READY/);
+  assert.doesNotMatch(sw, /zhaowu-shell-r\d+/);
   assert.match(sw, /skipWaiting\(\)/);
   assert.match(sw, /clients\.claim\(\)/);
   assert.match(sw, /cache:\s*"no-store"/);
