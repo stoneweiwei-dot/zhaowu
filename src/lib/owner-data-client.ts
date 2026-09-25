@@ -118,8 +118,9 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
         uploadDataDuringCreation: true,
         removeFingerprintOnSuccess: true,
         headers: {
+          // createSignedUploadUrl token must be sent as Bearer; apikey alone hits RLS 403.
+          authorization: `Bearer ${signedUploadToken}`,
           apikey: SUPABASE_KEY,
-          "x-signature": signedUploadToken,
           "x-upsert": "false",
         },
         metadata: {
