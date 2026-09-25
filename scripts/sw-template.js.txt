@@ -16,6 +16,31 @@ async function cacheFresh(path) {
   await cache.put(path, response.clone());
 }
 
+async function clientAlreadyRunsRelease(client) {
+  return new Promise((resolve) => {
+    const channel = new MessageChannel();
+    const timer = setTimeout(() => resolve(false), 700);
+
+    channel.port1.onmessage = (event) => {
+      clearTimeout(timer);
+      resolve(
+        event.data?.type === "ZHAOWU_CLIENT_RELEASE" &&
+        event.data?.release === RELEASE,
+      );
+    };
+
+    try {
+      client.postMessage(
+        { type: "ZHAOWU_RELEASE_PROBE", release: RELEASE },
+        [channel.port2],
+      );
+    } catch {
+      clearTimeout(timer);
+      resolve(false);
+    }
+  });
+}
+
 self.addEventListener("install", (event) => {
   event.waitUntil(Promise.allSettled(SHELL.map((path) => cacheFresh(path))));
   self.skipWaiting();
@@ -32,19 +57,21 @@ self.addEventListener("activate", (event) => {
     await self.clients.claim();
     const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
     for (const client of clients) {
-      client.postMessage({ type: "ZHAOWU_RELEASE_READY", release: RELEASE });
+      // Probe first. A page that already runs this exact release answers through
+      // MessageChannel and must not be navigated again; this avoids racing normal
+      // Safari navigation and Playwright route transitions.
+      const alreadyCurrent = await clientAlreadyRunsRelease(client);
+      if (alreadyCurrent) {
+        client.postMessage({ type: "ZHAOWU_RELEASE_READY", release: RELEASE });
+        continue;
+      }
 
-      // iOS can keep a Home Screen web app process alive across releases. Do not
-      // rely only on the page bundle understanding the update message: an older
-      // client may never reload itself. A same-origin WindowClient navigation
-      // makes the newly activated worker able to self-heal that stale shell.
+      // Older installed iOS bundles do not understand ZHAOWU_RELEASE_PROBE, so
+      // silence is the stale-client signal. Preserve its current deep route and
+      // navigate it once under the newly activated worker.
       try {
         const target = new URL(client.url);
         if (target.origin !== self.location.origin) continue;
-        // Preserve the current route so an installed PWA can self-heal even
-        // when iOS resumes it on /updates, /report, /login, or another deep
-        // path. Activation runs once per release, so this does not create a
-        // navigation loop.
         target.searchParams.set("zw_release", RELEASE);
         await client.navigate(target.toString());
       } catch {
