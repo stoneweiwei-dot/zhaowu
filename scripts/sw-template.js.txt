@@ -16,23 +16,14 @@ async function cacheFresh(path) {
   await cache.put(path, response.clone());
 }
 
-const PROBE_TIMEOUT_MS = 700;
-const PROBE_RETRY_DELAY_MS = 500;
-
-function probeClientRelease(client) {
+async function clientAlreadyRunsRelease(client) {
   return new Promise((resolve) => {
     const channel = new MessageChannel();
-    let settled = false;
-    const finish = (value) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timer);
-      resolve(value);
-    };
-    const timer = setTimeout(() => finish(false), PROBE_TIMEOUT_MS);
+    const timer = setTimeout(() => resolve(false), 700);
 
     channel.port1.onmessage = (event) => {
-      finish(
+      clearTimeout(timer);
+      resolve(
         event.data?.type === "ZHAOWU_CLIENT_RELEASE" &&
         event.data?.release === RELEASE,
       );
@@ -44,17 +35,10 @@ function probeClientRelease(client) {
         [channel.port2],
       );
     } catch {
-      finish(false);
+      clearTimeout(timer);
+      resolve(false);
     }
   });
-}
-
-async function clientAlreadyRunsRelease(client) {
-  if (await probeClientRelease(client)) return true;
-  // A freshly navigated page can receive the first probe before React installs
-  // its message listener. Retry once before treating silence as a stale bundle.
-  await new Promise((resolve) => setTimeout(resolve, PROBE_RETRY_DELAY_MS));
-  return probeClientRelease(client);
 }
 
 self.addEventListener("install", (event) => {
@@ -76,6 +60,7 @@ self.addEventListener("activate", (event) => {
       // Probe first. A page that already runs this exact release answers through
       // MessageChannel and must not be navigated again; this avoids racing normal
       // Safari navigation and Playwright route transitions.
+      const observedUrl = client.url;
       const alreadyCurrent = await clientAlreadyRunsRelease(client);
       if (alreadyCurrent) {
         client.postMessage({ type: "ZHAOWU_RELEASE_READY", release: RELEASE });
@@ -83,13 +68,16 @@ self.addEventListener("activate", (event) => {
       }
 
       // Older installed iOS bundles do not understand ZHAOWU_RELEASE_PROBE, so
-      // silence is the stale-client signal. Preserve its current deep route and
-      // navigate it once under the newly activated worker.
+      // silence is the stale-client signal. Re-read the WindowClient before
+      // navigating: if the user already changed route while the probe waited,
+      // the old URL must never win a navigation race.
       try {
-        const target = new URL(client.url);
+        const latestClient = await self.clients.get(client.id);
+        if (!latestClient || latestClient.url !== observedUrl) continue;
+        const target = new URL(latestClient.url);
         if (target.origin !== self.location.origin) continue;
         target.searchParams.set("zw_release", RELEASE);
-        await client.navigate(target.toString());
+        await latestClient.navigate(target.toString());
       } catch {
         // Keep activation fail-open. The page-side release checker remains a
         // second path for clients that cannot be navigated by the worker.

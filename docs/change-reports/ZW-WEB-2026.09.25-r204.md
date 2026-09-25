@@ -6,7 +6,7 @@
 - 登入動畫新增明確「跳過 / Skip」按鈕；播放結束或跳過後顯示靜態封面。
 - 青玉小龍完整播放器的循環／隨機鍵補上清楚 active 視覺與模式文字。
 - 隨機模式在歌單尚未載入時會立即準備歌單；播放器模式鍵不再觸發 Safari 的全域 user-gesture 自動播放解鎖。
-- r203 PWA 自癒 probe 改為兩段確認，避免新頁 listener 尚未就緒時被誤判為舊 bundle、與正常 route navigation 搶導航。
+- r203 PWA 自癒在強制導航前重新核對 WindowClient URL；若使用者已切換 route，就取消舊路徑導航，避免舊頁面與新頁面互搶。
 
 ## 為什麼改
 
@@ -22,7 +22,7 @@
 
 - 不改站主 Cookie、登入 API、會員 Auth、Supabase schema／Storage。
 - 不改 owner music API、音樂檔案或後台曲目資料。
-- 不改命理計算、報告、付款或 PWA identity；Service Worker 僅收斂 probe 防競態，不改 release handshake 的自癒目的。
+- 不改命理計算、報告、付款或 PWA identity；Service Worker 僅收斂導航前 URL 防競態，不改 release handshake 的自癒目的。
 
 ## 驗證狀態
 
