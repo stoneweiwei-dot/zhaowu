@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.25-r201",
-  updateNumber: 201,
-  publishedAt: "2026-09-25T04:10:00+10:00",
-  latestSummary: "首頁「今日」完成收口：移除低質首頁小漫畫，五行穿衣上移並補齊選色內容，靈籤圖統一為 9:16 裁切。",
+  version: "ZW-WEB-2026.09.25-r203",
+  updateNumber: 203,
+  publishedAt: "2026-09-25T20:45:00+10:00",
+  latestSummary: "修復 iPhone 主畫面昭梧卡在舊版本：Service Worker 現在可在任何同源頁面原地更新，失敗後也不會被一次嘗試永久鎖住。",
   details: {
     "zh-Hant": [
-      "首頁移除獨立「今日一格」漫畫，避免在正式命書入口上方出現低權重裝飾。",
-      "「今日」預設展開五行穿衣：推薦色、五種狀態、首飾與今日提示同屏可讀；黃曆與靈籤改為清楚分頁。",
-      "靈籤仍可取用圖庫素材，但圖片只在固定 9:16 紙框內裁切，不再按原圖尺寸硬塞。",
+      "已安裝到 iPhone 主畫面的昭梧，更新時不再只刷新首頁；停留在「最新更新」、報告、登入等深層頁面也會保留當前路徑並載入新版本。",
+      "若 iOS 第一次更新導航仍恢復舊 bundle，系統不再把「已嘗試」誤當成「已更新」，會用第二條 bundle 檢查做一次受控重試。",
+      "Manifest 的 id、start_url、scope 保持不變，不需要刪除桌面圖示再重新加入。",
     ],
     en: [
-      "The standalone homepage comic is removed so the formal Destiny Book entry is no longer preceded by low-value decoration.",
-      "Today opens on Five-Element Dress with the recommended palette, five selectable states, jewellery and the daily cue visible together.",
-      "Spirit-slip gallery art now stays inside a deliberate 9:16 editorial crop instead of rendering at its source dimensions.",
+      "Installed iPhone Home Screen apps now self-heal on deep routes instead of refreshing only the root page.",
+      "A failed first update attempt no longer permanently suppresses the fallback bundle check; one bounded retry is allowed.",
+      "The manifest identity stays stable, so users should not need to delete and re-add the Home Screen app.",
     ],
   },
 } as const;
