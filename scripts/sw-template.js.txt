@@ -33,6 +33,22 @@ self.addEventListener("activate", (event) => {
     const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
     for (const client of clients) {
       client.postMessage({ type: "ZHAOWU_RELEASE_READY", release: RELEASE });
+
+      // iOS can keep a Home Screen web app process alive across releases. Do not
+      // rely only on the page bundle understanding the update message: an older
+      // client may never reload itself. A same-origin WindowClient navigation
+      // makes the newly activated worker able to self-heal that stale shell.
+      try {
+        const target = new URL(client.url);
+        if (target.origin !== self.location.origin) continue;
+        if (target.pathname !== "/") continue;
+        if (target.searchParams.get("zw_release") === RELEASE) continue;
+        target.searchParams.set("zw_release", RELEASE);
+        await client.navigate(target.toString());
+      } catch {
+        // Keep activation fail-open. The page-side release checker remains a
+        // second path for clients that cannot be navigated by the worker.
+      }
     }
   })());
 });
