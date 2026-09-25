@@ -17,6 +17,7 @@ if (!root) throw new Error('Missing root element');
 const CURRENT_RELEASE = __ZHAOWU_RELEASE_ID__ || 'dev';
 const RELEASE_PARAM = 'zw_release';
 const RELEASE_RELOAD_KEY = 'zhaowu.pwa.release-reload';
+const SHELL_RELOAD_KEY = 'zhaowu.pwa.shell-reload';
 
 const currentBundlePath = () => {
   const script = document.querySelector<HTMLScriptElement>('script[type="module"][src*="/assets/"]');
@@ -38,6 +39,7 @@ const clearSatisfiedReleaseParam = () => {
     url.searchParams.delete(RELEASE_PARAM);
     window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
     sessionStorage.removeItem(RELEASE_RELOAD_KEY);
+    sessionStorage.removeItem(SHELL_RELOAD_KEY);
   } catch {
     // Query cleanup is cosmetic; never block the app if iOS rejects it.
   }
@@ -70,7 +72,12 @@ const checkForFreshRelease = async () => {
       registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
     }
 
-    if (sessionStorage.getItem(RELEASE_RELOAD_KEY) === freshRelease) return true;
+    if (sessionStorage.getItem(RELEASE_RELOAD_KEY) === freshRelease) {
+      // A previous navigation may have been restored from an old iOS standalone
+      // process. Do not treat "attempted" as "updated"; allow the independent
+      // bundle-path fallback below to verify the shell once.
+      return false;
+    }
     sessionStorage.setItem(RELEASE_RELOAD_KEY, freshRelease);
 
     const url = new URL(window.location.href);
@@ -94,7 +101,13 @@ const checkForFreshShell = async () => {
     const html = await response.text();
     const current = currentBundlePath();
     const fresh = freshBundlePath(html);
-    if (current && fresh && current !== fresh) window.location.reload();
+    if (current && fresh && current !== fresh) {
+      const fingerprint = `${current}→${fresh}`;
+      if (sessionStorage.getItem(SHELL_RELOAD_KEY) !== fingerprint) {
+        sessionStorage.setItem(SHELL_RELOAD_KEY, fingerprint);
+        window.location.reload();
+      }
+    }
   } catch {
     // Fail open: never block the app just because an update check failed.
   } finally {
