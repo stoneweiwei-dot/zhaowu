@@ -41,6 +41,7 @@ self.addEventListener("activate", (event) => {
       try {
         const target = new URL(client.url);
         if (target.origin !== self.location.origin) continue;
+        if (target.pathname !== "/") continue;
         if (target.searchParams.get("zw_release") === RELEASE) continue;
         target.searchParams.set("zw_release", RELEASE);
         await client.navigate(target.toString());
