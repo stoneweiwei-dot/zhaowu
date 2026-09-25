@@ -126,6 +126,14 @@ if ('serviceWorker' in navigator) {
   });
 
   navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data?.type === 'ZHAOWU_RELEASE_PROBE') {
+      event.ports?.[0]?.postMessage({
+        type: 'ZHAOWU_CLIENT_RELEASE',
+        release: CURRENT_RELEASE,
+      });
+      if (event.data?.release !== CURRENT_RELEASE) void checkForFreshShell();
+      return;
+    }
     if (event.data?.type === 'ZHAOWU_RELEASE_READY') void checkForFreshShell();
   });
 
