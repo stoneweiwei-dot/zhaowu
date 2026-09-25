@@ -27,7 +27,10 @@ test("every production build emits a unique release id into app and service work
   assert.match(swTemplate, /searchParams\.set\("zw_release", RELEASE\)/);
   assert.match(swTemplate, /target\.origin !== self\.location\.origin/);
   assert.doesNotMatch(swTemplate, /target\.pathname !== "\/"/);
-  assert.match(swTemplate, /Preserve the current route/);
+  assert.match(swTemplate, /MessageChannel/);
+  assert.match(swTemplate, /ZHAOWU_RELEASE_PROBE/);
+  assert.match(swTemplate, /ZHAOWU_CLIENT_RELEASE/);
+  assert.match(swTemplate, /silence is the stale-client signal/);
   assert.match(packageJson.scripts.prebuild, /write-release-assets\.mjs/);
 });
 
@@ -41,6 +44,9 @@ test("installed app checks release metadata and performs one fresh navigation", 
   assert.match(main, /focus/);
   assert.match(main, /online/);
   assert.match(main, /ZHAOWU_RELEASE_READY/);
+  assert.match(main, /ZHAOWU_RELEASE_PROBE/);
+  assert.match(main, /ZHAOWU_CLIENT_RELEASE/);
+  assert.match(main, /event\.ports/);
   assert.match(main, /sessionStorage/);
   assert.match(main, /SHELL_RELOAD_KEY/);
   assert.match(main, /Do not treat "attempted" as "updated"/);
