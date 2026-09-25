@@ -60,6 +60,7 @@ self.addEventListener("activate", (event) => {
       // Probe first. A page that already runs this exact release answers through
       // MessageChannel and must not be navigated again; this avoids racing normal
       // Safari navigation and Playwright route transitions.
+      const observedUrl = client.url;
       const alreadyCurrent = await clientAlreadyRunsRelease(client);
       if (alreadyCurrent) {
         client.postMessage({ type: "ZHAOWU_RELEASE_READY", release: RELEASE });
@@ -67,10 +68,13 @@ self.addEventListener("activate", (event) => {
       }
 
       // Older installed iOS bundles do not understand ZHAOWU_RELEASE_PROBE, so
-      // silence is the stale-client signal. Preserve its current deep route and
-      // navigate it once under the newly activated worker.
+      // silence is the stale-client signal. Re-read the WindowClient before
+      // navigating: if the user already changed route while the probe waited,
+      // the old URL must never win a navigation race.
       try {
-        const target = new URL(client.url);
+        const latestClient = await self.clients.get(client.id);
+        if (!latestClient || latestClient.url !== observedUrl) continue;
+        const target = new URL(latestClient.url);
         if (target.origin !== self.location.origin) continue;
         target.searchParams.set("zw_release", RELEASE);
         await client.navigate(target.toString());

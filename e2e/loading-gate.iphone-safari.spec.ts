@@ -16,7 +16,7 @@ test.describe("iPhone Safari login-only animation", () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
 
-  test("login animation plays once per sign-in flow and never follows route navigation", async ({ page }) => {
+  test("login animation plays once per local day, can be skipped, and never follows route navigation", async ({ page }) => {
     await page.goto("/login", { waitUntil: "domcontentloaded" });
     await expect(page.locator(GLOBAL_GATE)).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "站主登入", exact: true })).toBeVisible();
@@ -24,6 +24,9 @@ test.describe("iPhone Safari login-only animation", () => {
     await expect(media).toBeVisible();
     await expect(media).toHaveAttribute("src", /\/intro\/(?:owner-immortal-ascent-r123|[^"']+)\.mp4/);
     await expect(page.locator(".stone-login-sound")).toBeVisible();
+    await expect(page.locator('[data-login-animation-skip="true"]')).toBeVisible();
+    await page.locator('[data-login-animation-skip="true"]').click();
+    await expect(page.locator('[data-login-stage-static="true"]')).toBeVisible();
     await page.goto("/updates", { waitUntil: "domcontentloaded" });
     await expect(page.locator('[data-login-animation="first-login-visit"]')).toHaveCount(0);
     await page.goto("/login", { waitUntil: "domcontentloaded" });

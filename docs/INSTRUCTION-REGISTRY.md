@@ -4,6 +4,13 @@
 
 目的：把「当前有效」「已被取代」「曾因权限未接入」「仅历史参考」分开，防止未来 AI / Agent 从旧聊天、旧 Library 文件、旧 AppDeploy 补丁或旧 PR 重新激活已废止指令。
 
+## 2026-09-25 r204 登入動畫每日一次 × 音樂模式可見回饋 supersession
+
+- 站主最新明確指令：登入動畫只允許在 `/login`，且同一裝置每個本地日曆日最多播放一次；同日登出、重新登入、換 route、重新整理或換瀏覽 session 都不得重播。r191/r192 的「登出後開始下一次播放流程」在此範圍正式 `SUPERSEDED`。
+- ACTIVE：登入動畫使用 `localStorage` 的每日日期戳判斷，不再使用 `sessionStorage`；動畫播放時提供明確「跳過 / Skip」按鈕，跳過後顯示靜態封面，不影響登入表單。
+- ACTIVE：青玉小龍完整播放器最右兩鍵仍為「循環播放」與「隨機播放」，必須真正改變播放行為、保存 localStorage 偏好，並提供清楚的 pressed/active 視覺狀態與文字模式回饋；點模式鍵不得被 Safari 全域手勢解鎖誤當成播放指令。
+- 保護邊界：不改 Owner Cookie、登入 API、Supabase schema、owner music API／檔案、命理計算、報告、payment 或 PWA identity。
+
 ## 2026-09-25 r201 首頁今日模組 × 圖像比例 supersession
 
 - 站主最新明確指令：首頁頂部低質「今日一格」漫畫退出 active path；不得再讓裝飾性漫畫搶在正式命書／今日實用內容之前。r188 的報告漫畫翻譯與分享能力保留，不刪底層元件。

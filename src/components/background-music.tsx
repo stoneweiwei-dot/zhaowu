@@ -304,7 +304,11 @@ export function BackgroundMusic() {
     const next = !shuffleEnabled;
     shuffleRef.current = next;
     setShuffleEnabled(next);
-    setPlayOrder(buildPlaybackOrder(tracks, currentId, next));
+    if (tracks.length) {
+      setPlayOrder(buildPlaybackOrder(tracks, currentId, next));
+    } else {
+      void refreshAsset();
+    }
   };
 
   useEffect(() => {
@@ -371,7 +375,12 @@ export function BackgroundMusic() {
         };
 
   const transportButton = "inline-grid min-h-11 min-w-11 place-items-center rounded-full border border-line/80 bg-paper/75 text-base leading-none text-ink-soft transition hover:text-ink active:scale-[0.97]";
-  const modeButton = (active: boolean) => `${transportButton} ${active ? "border-cinnabar/45 bg-cinnabar/10 text-cinnabar" : ""}`;
+  const modeButton = (active: boolean) => `${transportButton} ${active ? "border-cinnabar bg-cinnabar/15 text-cinnabar ring-2 ring-cinnabar/25 shadow-sm" : "opacity-70"}`;
+  const modeStatus = locale === "en"
+    ? `${shuffleEnabled ? "Shuffle" : "In order"} · ${loopEnabled ? "Loop on" : "Stop at end"}`
+    : locale === "zh-Hans"
+      ? `${shuffleEnabled ? "随机" : "顺序"} · ${loopEnabled ? "循环已开" : "播完停止"}`
+      : `${shuffleEnabled ? "隨機" : "順序"} · ${loopEnabled ? "循環已開" : "播完停止"}`;
 
   return (
     <section className="zhaowu-dragon-music" data-background-music-player data-dragon-music-controls aria-label={copy.controls}>
@@ -403,7 +412,7 @@ export function BackgroundMusic() {
         <p data-music-track-title title={musicTitle}>{musicTitle}</p>
       </div>
 
-      <div className="zhaowu-dragon-music-controls" role="group" aria-label={musicTitle}>
+      <div className="zhaowu-dragon-music-controls" role="group" aria-label={musicTitle} data-background-music-control>
         <button type="button" className={transportButton} aria-label={`${copy.previous}: ${musicTitle}`} title={copy.previous} onClick={() => void moveTrack(-1)}>
           <span aria-hidden="true">⏮</span>
         </button>
@@ -413,13 +422,14 @@ export function BackgroundMusic() {
         <button type="button" className={transportButton} aria-label={`${copy.next}: ${musicTitle}`} title={copy.next} onClick={() => void moveTrack(1)}>
           <span aria-hidden="true">⏭</span>
         </button>
-        <button type="button" className={modeButton(loopEnabled)} aria-label={copy.loop} title={copy.loop} aria-pressed={loopEnabled} onClick={toggleLoop}>
+        <button type="button" className={modeButton(loopEnabled)} data-active={loopEnabled ? "true" : "false"} aria-label={copy.loop} title={copy.loop} aria-pressed={loopEnabled} onClick={toggleLoop}>
           <span aria-hidden="true">↻</span>
         </button>
-        <button type="button" className={modeButton(shuffleEnabled)} aria-label={copy.shuffle} title={copy.shuffle} aria-pressed={shuffleEnabled} onClick={toggleShuffle}>
+        <button type="button" className={modeButton(shuffleEnabled)} data-active={shuffleEnabled ? "true" : "false"} aria-label={copy.shuffle} title={copy.shuffle} aria-pressed={shuffleEnabled} onClick={toggleShuffle}>
           <span aria-hidden="true">⇄</span>
         </button>
       </div>
+      <p data-music-mode-status className="mt-1 text-center text-[11px] font-semibold tracking-wide text-ink-mute">{modeStatus}</p>
       <span className="sr-only" aria-live="polite">{playing ? legacyPlayingStatus : copy.paused}</span>
     </section>
   );

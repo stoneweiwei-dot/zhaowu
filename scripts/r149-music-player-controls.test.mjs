@@ -17,6 +17,10 @@ test("dragon assistant embeds a five-control iPhone-safe playlist transport", as
   assert.match(music, /隨機播放/);
   assert.match(music, /aria-pressed=\{loopEnabled\}/);
   assert.match(music, /aria-pressed=\{shuffleEnabled\}/);
+  assert.match(music, /data-active=\{loopEnabled \? "true" : "false"\}/);
+  assert.match(music, /data-active=\{shuffleEnabled \? "true" : "false"\}/);
+  assert.match(music, /data-music-mode-status/);
+  assert.match(music, /data-background-music-control/);
   assert.match(music, /onEnded=\{\(\) => void moveTrack\(1, true\)\}/);
 });
 

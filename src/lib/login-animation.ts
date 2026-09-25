@@ -19,26 +19,33 @@ export type LoginAnimationAsset = {
 };
 
 const SELECTED_ASSET_SESSION_KEY = "zhaowu.login-anim.session";
-export const LOGIN_ANIMATION_SEEN_SESSION_KEY = "zhaowu.login-animation.seen.session.v1";
+export const LOGIN_ANIMATION_SEEN_DAY_KEY = "zhaowu.login-animation.seen.day.v1";
 
-export function shouldPlayLoginAnimation(storage?: Pick<Storage, "getItem"> | null) {
+function localDayStamp(now: Date) {
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function shouldPlayLoginAnimation(
+  storage?: Pick<Storage, "getItem"> | null,
+  now = new Date(),
+) {
   try {
-    return storage?.getItem(LOGIN_ANIMATION_SEEN_SESSION_KEY) !== "1";
+    return storage?.getItem(LOGIN_ANIMATION_SEEN_DAY_KEY) !== localDayStamp(now);
   } catch {
     return true;
   }
 }
 
-export function markLoginAnimationSeen(storage?: Pick<Storage, "setItem"> | null) {
+export function markLoginAnimationSeen(
+  storage?: Pick<Storage, "setItem"> | null,
+  now = new Date(),
+) {
   try {
-    storage?.setItem(LOGIN_ANIMATION_SEEN_SESSION_KEY, "1");
+    storage?.setItem(LOGIN_ANIMATION_SEEN_DAY_KEY, localDayStamp(now));
   } catch { /* fail open: the current login visit may still play */ }
-}
-
-export function resetLoginAnimationSeen(storage?: Pick<Storage, "removeItem"> | null) {
-  try {
-    storage?.removeItem(LOGIN_ANIMATION_SEEN_SESSION_KEY);
-  } catch { /* the login page still works with its static fallback */ }
 }
 
 export function loginVisualThemeFromTags(tags: string[] | undefined | null): LoginVisualTheme {
