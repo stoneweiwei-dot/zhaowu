@@ -23,7 +23,7 @@ function UpdatesPage() {
   }, []);
 
   const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
-  const englishSummary = "Fix iPhone Home Screen apps getting stuck on an old release: the service worker now refreshes deep routes in place and a failed first attempt no longer blocks a safe retry."
+  const englishSummary = "The login animation now plays once per local day with an explicit Skip control, while Loop and Shuffle expose clear persistent playback states."
   const releaseSummary = language === "en" && /[\u3400-\u9fff]/u.test(release.latestSummary)
     ? englishSummary
     : release.latestSummary;

@@ -38,11 +38,11 @@ function LoginStageBackdrop() {
   const [failed, setFailed] = useState(false);
   const [muted, setMuted] = useState(true);
   const [shouldPlay, setShouldPlay] = useState(() =>
-    typeof window !== "undefined" && shouldPlayLoginAnimation(window.sessionStorage),
+    typeof window !== "undefined" && shouldPlayLoginAnimation(window.localStorage),
   );
   const videoRef = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
-    if (shouldPlay) markLoginAnimationSeen(window.sessionStorage);
+    if (shouldPlay) markLoginAnimationSeen(window.localStorage);
   }, [shouldPlay]);
   useEffect(() => {
     let alive = true;
@@ -80,6 +80,16 @@ function LoginStageBackdrop() {
             else setShouldPlay(false);
           }}
         />
+        <button
+          type="button"
+          data-login-animation-skip="true"
+          className="absolute left-4 top-[max(16px,calc(env(safe-area-inset-top)+10px))] z-[5] min-h-11 rounded-full border border-white/30 bg-black/35 px-4 text-sm font-semibold text-white shadow-lg backdrop-blur-md"
+          aria-label={ownerText(locale, "跳過登入動畫", "跳过登录动画", "Skip login animation")}
+          title={ownerText(locale, "跳過", "跳过", "Skip")}
+          onClick={() => setShouldPlay(false)}
+        >
+          {ownerText(locale, "跳過", "跳过", "Skip")}
+        </button>
         <button
           type="button"
           className="stone-login-sound"

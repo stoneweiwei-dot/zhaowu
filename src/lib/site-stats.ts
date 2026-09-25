@@ -15,20 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.25-r203",
-  updateNumber: 203,
-  publishedAt: "2026-09-25T20:45:00+10:00",
-  latestSummary: "修復 iPhone 主畫面昭梧卡在舊版本：Service Worker 現在可在任何同源頁面原地更新，失敗後也不會被一次嘗試永久鎖住。",
+  version: "ZW-WEB-2026.09.25-r204",
+  updateNumber: 204,
+  publishedAt: "2026-09-25T23:22:00+10:00",
+  latestSummary: "登入動畫改為同一裝置每日最多一次並加入跳過；青玉小龍播放器的循環／隨機鍵補上真正可辨識、可持久化的模式狀態。",
   details: {
     "zh-Hant": [
-      "已安裝到 iPhone 主畫面的昭梧，更新時不再只刷新首頁；停留在「最新更新」、報告、登入等深層頁面也會保留當前路徑並載入新版本。",
-      "若 iOS 第一次更新導航仍恢復舊 bundle，系統不再把「已嘗試」誤當成「已更新」，會用第二條 bundle 檢查做一次受控重試。",
-      "Manifest 的 id、start_url、scope 保持不變，不需要刪除桌面圖示再重新加入。",
+      "登入動畫只在 /login 同一裝置當日第一次進入時播放；同日登出、重新登入或換 session 都不重播，隔日才重新播放一次。",
+      "登入動畫新增明確「跳過」按鈕；跳過或播放結束後停在靜態封面，不影響登入。",
+      "青玉小龍播放器的循環／隨機鍵現在有清楚 active 樣式與模式文字，隨機鍵會立即準備歌單，模式鍵不再被 Safari 手勢解鎖誤當成播放。",
     ],
     en: [
-      "Installed iPhone Home Screen apps now self-heal on deep routes instead of refreshing only the root page.",
-      "A failed first update attempt no longer permanently suppresses the fallback bundle check; one bounded retry is allowed.",
-      "The manifest identity stays stable, so users should not need to delete and re-add the Home Screen app.",
+      "The login animation now plays at most once per local calendar day on the same device, even after sign-out or a new browser session.",
+      "The login animation has an explicit Skip control and falls back to the static poster without blocking sign-in.",
+      "Loop and shuffle now expose clear active states and mode text; shuffle prepares the playlist immediately and mode taps no longer trigger Safari's playback unlock path.",
     ],
   },
 } as const;

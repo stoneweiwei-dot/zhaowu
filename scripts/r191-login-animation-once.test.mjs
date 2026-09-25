@@ -2,41 +2,45 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
-  LOGIN_ANIMATION_SEEN_SESSION_KEY,
+  LOGIN_ANIMATION_SEEN_DAY_KEY,
   markLoginAnimationSeen,
-  resetLoginAnimationSeen,
   shouldPlayLoginAnimation,
 } from "../src/lib/login-animation.ts";
 
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("login animation state is one-time within a sign-in flow and resets on owner logout", () => {
+test("login animation plays at most once per local calendar day", () => {
   const values = new Map();
   const storage = {
     getItem: (key) => values.get(key) ?? null,
     setItem: (key, value) => values.set(key, value),
-    removeItem: (key) => values.delete(key),
   };
-  assert.equal(LOGIN_ANIMATION_SEEN_SESSION_KEY, "zhaowu.login-animation.seen.session.v1");
-  assert.equal(shouldPlayLoginAnimation(storage), true);
-  markLoginAnimationSeen(storage);
-  assert.equal(shouldPlayLoginAnimation(storage), false);
-  resetLoginAnimationSeen(storage);
-  assert.equal(shouldPlayLoginAnimation(storage), true);
+  const dayOne = new Date(2026, 8, 25, 9, 0, 0);
+  const sameDay = new Date(2026, 8, 25, 23, 30, 0);
+  const nextDay = new Date(2026, 8, 26, 0, 5, 0);
+
+  assert.equal(LOGIN_ANIMATION_SEEN_DAY_KEY, "zhaowu.login-animation.seen.day.v1");
+  assert.equal(shouldPlayLoginAnimation(storage, dayOne), true);
+  markLoginAnimationSeen(storage, dayOne);
+  assert.equal(shouldPlayLoginAnimation(storage, sameDay), false);
+  assert.equal(shouldPlayLoginAnimation(storage, nextDay), true);
 });
 
-test("only /login can mount a non-looping animation and the rest of the shell has no IntroGate", async () => {
+test("only /login can mount the non-looping daily animation and it has an explicit skip", async () => {
   const [login, shell, authClient] = await Promise.all([
     source("src/routes/login.tsx"),
     source("src/components/site-shell.tsx"),
     source("src/lib/auth/client.ts"),
   ]);
   assert.match(login, /data-login-animation="first-login-visit"/);
+  assert.match(login, /window\.localStorage/);
+  assert.match(login, /data-login-animation-skip="true"/);
   assert.match(login, /onEnded=\{\(\) => setShouldPlay\(false\)\}/);
   assert.doesNotMatch(login, /\bloop\b/);
   assert.doesNotMatch(shell, /IntroGate/);
-  assert.match(authClient, /resetLoginAnimationSeen\(window\.sessionStorage\)/);
+  assert.doesNotMatch(authClient, /resetLoginAnimationSeen/);
+  assert.doesNotMatch(authClient, /sessionStorage/);
 });
 
 test("owner login manager excludes images from loading, cards, and upload validation", async () => {
