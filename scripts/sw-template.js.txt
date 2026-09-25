@@ -16,14 +16,23 @@ async function cacheFresh(path) {
   await cache.put(path, response.clone());
 }
 
-async function clientAlreadyRunsRelease(client) {
+const PROBE_TIMEOUT_MS = 700;
+const PROBE_RETRY_DELAY_MS = 500;
+
+function probeClientRelease(client) {
   return new Promise((resolve) => {
     const channel = new MessageChannel();
-    const timer = setTimeout(() => resolve(false), 700);
+    let settled = false;
+    const finish = (value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(value);
+    };
+    const timer = setTimeout(() => finish(false), PROBE_TIMEOUT_MS);
 
     channel.port1.onmessage = (event) => {
-      clearTimeout(timer);
-      resolve(
+      finish(
         event.data?.type === "ZHAOWU_CLIENT_RELEASE" &&
         event.data?.release === RELEASE,
       );
@@ -35,10 +44,17 @@ async function clientAlreadyRunsRelease(client) {
         [channel.port2],
       );
     } catch {
-      clearTimeout(timer);
-      resolve(false);
+      finish(false);
     }
   });
+}
+
+async function clientAlreadyRunsRelease(client) {
+  if (await probeClientRelease(client)) return true;
+  // A freshly navigated page can receive the first probe before React installs
+  // its message listener. Retry once before treating silence as a stale bundle.
+  await new Promise((resolve) => setTimeout(resolve, PROBE_RETRY_DELAY_MS));
+  return probeClientRelease(client);
 }
 
 self.addEventListener("install", (event) => {

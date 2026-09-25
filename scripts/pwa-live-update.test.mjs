@@ -30,6 +30,9 @@ test("every production build emits a unique release id into app and service work
   assert.match(swTemplate, /MessageChannel/);
   assert.match(swTemplate, /ZHAOWU_RELEASE_PROBE/);
   assert.match(swTemplate, /ZHAOWU_CLIENT_RELEASE/);
+  assert.match(swTemplate, /PROBE_RETRY_DELAY_MS/);
+  assert.match(swTemplate, /probeClientRelease/);
+  assert.match(swTemplate, /Retry once before treating silence as a stale bundle/);
   assert.match(swTemplate, /silence is the stale-client signal/);
   assert.match(packageJson.scripts.prebuild, /write-release-assets\.mjs/);
 });
