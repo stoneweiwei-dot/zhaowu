@@ -24,6 +24,7 @@ test("r194 keeps the storage policy gate but enables writes for the approved Pro
   assert.doesNotMatch(ownerApi, /STORAGE_GROWING_ACTIONS/);
   assert.match(ownerClient, /new tus\.Upload/);
   assert.match(ownerClient, /chunkSize: 6 \* 1024 \* 1024/);
+  assert.match(ownerClient, /authorization: `Bearer \$\{signedUploadToken\}`/);
   assert.match(ownerClient, /"x-signature": signedUploadToken/);
   assert.match(ownerEdge, /MAX_LOADING_VIDEO_BYTES = 500 \* 1024 \* 1024/);
 });
