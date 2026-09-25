@@ -26,6 +26,7 @@ test("every production build emits a unique release id into app and service work
   assert.match(swTemplate, /client\.navigate\(/);
   assert.match(swTemplate, /searchParams\.set\("zw_release", RELEASE\)/);
   assert.match(swTemplate, /target\.origin !== self\.location\.origin/);
+  assert.match(swTemplate, /target\.pathname !== "\/"\)/);
   assert.match(packageJson.scripts.prebuild, /write-release-assets\.mjs/);
 });
 
