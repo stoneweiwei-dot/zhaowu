@@ -26,7 +26,8 @@ test("every production build emits a unique release id into app and service work
   assert.match(swTemplate, /client\.navigate\(/);
   assert.match(swTemplate, /searchParams\.set\("zw_release", RELEASE\)/);
   assert.match(swTemplate, /target\.origin !== self\.location\.origin/);
-  assert.match(swTemplate, /target\.pathname !== "\/"\)/);
+  assert.doesNotMatch(swTemplate, /target\.pathname !== "\/"/);
+  assert.match(swTemplate, /Preserve the current route/);
   assert.match(packageJson.scripts.prebuild, /write-release-assets\.mjs/);
 });
 
@@ -41,6 +42,9 @@ test("installed app checks release metadata and performs one fresh navigation", 
   assert.match(main, /online/);
   assert.match(main, /ZHAOWU_RELEASE_READY/);
   assert.match(main, /sessionStorage/);
+  assert.match(main, /SHELL_RELOAD_KEY/);
+  assert.match(main, /Do not treat "attempted" as "updated"/);
+  assert.match(main, /fingerprint/);
 });
 
 test("release metadata, service worker and app shell are never edge-cached", () => {
