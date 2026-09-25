@@ -77,7 +77,7 @@ self.addEventListener("activate", (event) => {
         const target = new URL(latestClient.url);
         if (target.origin !== self.location.origin) continue;
         target.searchParams.set("zw_release", RELEASE);
-        await latestClient.navigate(target.toString());
+        await client.navigate(target.toString());
       } catch {
         // Keep activation fail-open. The page-side release checker remains a
         // second path for clients that cannot be navigated by the worker.
