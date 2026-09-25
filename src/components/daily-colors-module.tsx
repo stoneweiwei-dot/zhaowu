@@ -8,6 +8,11 @@ import {
   formatDailyColorDate,
   type DailyColorId,
 } from "@/lib/daily-colors";
+import {
+  FIVE_ELEMENT_GUIDE_COPY,
+  FIVE_ELEMENT_USE_STATES,
+  fiveElementCorrespondence,
+} from "@/lib/five-element-correspondences";
 import { useI18n } from "@/lib/i18n";
 
 type Variant = "home" | "page" | "embed";
@@ -22,6 +27,8 @@ export function DailyColorsModule({ variant }: { variant: Variant }) {
   const recommended = dailyColorById(almanac.recommendedId).copy[locale];
   const isUserOverride = selectedId !== almanac.recommendedId;
   const compact = variant === "embed";
+  const guide = FIVE_ELEMENT_GUIDE_COPY[locale];
+  const correspondence = fiveElementCorrespondence(active.element, locale);
 
   return (
     <section
@@ -109,6 +116,58 @@ export function DailyColorsModule({ variant }: { variant: Variant }) {
           );
         })}
       </div>
+
+      {compact ? (
+        <article data-five-element-correspondence-compact aria-live="polite">
+          <small>{guide.compactTitle}</small>
+          <strong>{correspondence.name} · {correspondence.motion}</strong>
+          <span>
+            {guide.color} {correspondence.classicalColor}
+            {" · "}{guide.tone} {correspondence.tone}
+            {" · "}{guide.qi} {correspondence.qi}
+          </span>
+        </article>
+      ) : (
+        <section data-five-element-correspondence aria-label={guide.fullTitle}>
+          <header>
+            <h3>{guide.fullTitle}</h3>
+            <p>{guide.fullSubtitle}</p>
+          </header>
+
+          <article data-five-element-correspondence-current aria-live="polite">
+            <div>
+              <small>{guide.function}</small>
+              <strong>{correspondence.name} · {correspondence.function}</strong>
+              <span>{correspondence.motion}</span>
+            </div>
+            <dl data-five-element-correspondence-grid>
+              <div><dt>{guide.color}</dt><dd>{correspondence.classicalColor}</dd></div>
+              <div><dt>{guide.tone}</dt><dd>{correspondence.tone}</dd></div>
+              <div><dt>{guide.qi}</dt><dd>{correspondence.qi}</dd></div>
+              <div><dt>{guide.season}</dt><dd>{correspondence.season}</dd></div>
+              <div><dt>{guide.direction}</dt><dd>{correspondence.direction}</dd></div>
+              <div><dt>{guide.taste}</dt><dd>{correspondence.taste}</dd></div>
+              <div><dt>{guide.zangFu}</dt><dd>{correspondence.zangFu}</dd></div>
+              <div><dt>{guide.body}</dt><dd>{correspondence.body}</dd></div>
+              <div><dt>{guide.emotion}</dt><dd>{correspondence.emotion}</dd></div>
+              <div><dt>{guide.spirit}</dt><dd>{correspondence.spirit}</dd></div>
+              <div><dt>{guide.labor}</dt><dd>{correspondence.labor}</dd></div>
+            </dl>
+            <p><b>{guide.practice}</b>{correspondence.practice}</p>
+            <p><b>{guide.overuse}</b>{correspondence.overuse}</p>
+          </article>
+
+          <div data-five-element-use-states>
+            <h4>{guide.statesTitle}</h4>
+            {FIVE_ELEMENT_USE_STATES.map((state) => {
+              const item = state.copy[locale];
+              return <p key={state.id}><strong>{item.title}</strong><span>{item.action}</span></p>;
+            })}
+          </div>
+
+          <p data-five-element-correspondence-boundary>{guide.boundary}</p>
+        </section>
+      )}
 
       {compact ? null : isUserOverride ? <p>{page.userNote}</p> : <p>{page.almanacNote}</p>}
       {compact ? null : <p>{page.boundary}</p>}
