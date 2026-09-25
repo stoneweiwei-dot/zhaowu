@@ -41,8 +41,10 @@ self.addEventListener("activate", (event) => {
       try {
         const target = new URL(client.url);
         if (target.origin !== self.location.origin) continue;
-        if (target.pathname !== "/") continue;
-        if (target.searchParams.get("zw_release") === RELEASE) continue;
+        // Preserve the current route so an installed PWA can self-heal even
+        // when iOS resumes it on /updates, /report, /login, or another deep
+        // path. Activation runs once per release, so this does not create a
+        // navigation loop.
         target.searchParams.set("zw_release", RELEASE);
         await client.navigate(target.toString());
       } catch {
