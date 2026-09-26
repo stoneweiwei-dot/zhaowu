@@ -118,6 +118,8 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
         uploadDataDuringCreation: true,
         removeFingerprintOnSuccess: true,
         headers: {
+          // Bearer is required for signed resumable auth; x-signature kept for contract compatibility.
+          authorization: `Bearer ${signedUploadToken}`,
           apikey: SUPABASE_KEY,
           "x-signature": signedUploadToken,
           "x-upsert": "false",
