@@ -7,16 +7,14 @@
 [build.environment]
   NODE_VERSION = "24"
 
-[[redirects]]
-  from = "/api/gallery-ingest-finalize"
-  to = "https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize"
-  status = 200
-  force = true
-
+# Legacy iPhone Home Screen compatibility bridge.
+# Netlify is not a second production build. It preserves the historical origin
+# only for already-installed PWAs and transparently proxies the live Vercel app.
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "https://stone-zhaowu-official.vercel.app/:splat"
   status = 200
+  force = true
 
 [[headers]]
   for = "/sw.js"
