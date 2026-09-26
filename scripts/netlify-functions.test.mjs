@@ -24,7 +24,8 @@ test("Netlify archive stays build-frozen and proxies legacy PWA origins to Verce
   assert.match(netlify, /publish = "dist"/);
   assert.match(netlify, /functions = "netlify\/functions"/);
   assert.match(netlify, /ignore = "exit 0"/);
-  assert.match(netlify, /from = "\/\*"[\s\S]*to = "\/index\.html"/);
+  assert.match(netlify, /from = "\/\*"[\s\S]*to = "https:\/\/stone-zhaowu-official\.vercel\.app\/:splat"[\s\S]*status = 200[\s\S]*force = true/);
+  assert.match(netlify, /for = "\/release\.json"[\s\S]*Cache-Control = "no-store, no-cache, must-revalidate, max-age=0"/);
 });
 
 test("owner music bundles its sealed key instead of reading beside the serverless bundle", () => {
