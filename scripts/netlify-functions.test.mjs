@@ -19,7 +19,7 @@ const endpoints = [
   "zhaowu-doctor",
 ];
 
-test("Netlify archive keeps all automatic Git builds frozen while preserving fallback config", () => {
+test("Netlify archive stays build-frozen and proxies legacy PWA origins to Vercel", () => {
   assert.match(netlify, /command = "npm run build"/);
   assert.match(netlify, /publish = "dist"/);
   assert.match(netlify, /functions = "netlify\/functions"/);
