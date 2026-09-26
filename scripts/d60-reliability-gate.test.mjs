@@ -53,5 +53,5 @@ test("Engine suite is required while the Netlify archive fallback stays build-fr
   assert.doesNotMatch(workflow, /Engine suite \(observe\)/);
   assert.match(netlify, /command = "npm run build"/);
   assert.match(netlify, /functions = "netlify\/functions"/);
-  assert.ok(netlify.includes("ignore = \"if git log -1 --pretty=%B | grep -Fq '[netlify-bridge-deploy]'; then exit 1; else exit 0; fi\""));
+  assert.match(netlify, /ignore = "exit 0"/);
 });
