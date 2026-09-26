@@ -23,7 +23,7 @@ test("Netlify archive stays build-frozen and proxies legacy PWA origins to Verce
   assert.match(netlify, /command = "npm run build"/);
   assert.match(netlify, /publish = "dist"/);
   assert.match(netlify, /functions = "netlify\/functions"/);
-  assert.match(netlify, /ignore = "exit 0"/);
+  assert.match(netlify, /ignore = "if git log -1 --pretty=%B \| grep -Fq \'[netlify-bridge-deploy]\'; then exit 1; else exit 0; fi"/);
   assert.match(netlify, /from = "\/\*"[\s\S]*to = "https:\/\/stone-zhaowu-official\.vercel\.app\/:splat"[\s\S]*status = 200[\s\S]*force = true/);
   assert.match(netlify, /for = "\/release\.json"[\s\S]*Cache-Control = "no-store, no-cache, must-revalidate, max-age=0"/);
 });
