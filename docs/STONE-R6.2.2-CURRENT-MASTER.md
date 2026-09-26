@@ -99,3 +99,16 @@ Therefore:
 is the active repository interpretation contract.
 
 Any future runtime change must have its own source patch, contract tests and release evidence before the engine version is changed.
+
+
+## 9. Theory unit regression layer
+
+Owner-provided modern/盲派 material may enter the runtime only through bounded regression fixtures and a clearly labelled operational supplement.
+
+Current fixture set: `docs/STONE-THEORY-UNIT-CASES-v0.1.md`.
+
+Rules:
+- provenance remains `OWNER_MATERIAL`; it is not promoted to verified classical authority;
+- the production supplement may clarify 宮位、虛實、賓主／體用、合沖與應期, but cannot replace the CURRENT Zi Ping mainline;
+- synthetic cases test rule consistency only; they do not count as EVP evidence;
+- a case that conflicts with CURRENT, P2 or P3 must fail or be downgraded rather than silently rewrite the master.

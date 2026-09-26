@@ -180,3 +180,10 @@ CI、PR merge、Preview、單純 Vercel READY、桌面 viewport、文件描述�
 - 輸出：靈根／品階、宗門峰脈、入門身份、六維、九大道途、諸宗適性、三句機驗、修行命途與 9:16 個人命測圖。
 - 命測圖完全在瀏覽器本機生成，不新增 Supabase Storage 寫入，不使用付費圖片 provider；此成本隔離契約與 r194 恢復其他 owner Storage 寫入相容。
 - 邊界：仙俠結果只作趣味世界觀，不修改正式命盤；紫微未經校驗時不補造盤面。
+
+
+### r205｜盲派理論單元測試與 runtime 補充
+- 新增 `docs/STONE-THEORY-UNIT-CASES-v0.1.md` 與 12 個 synthetic theory-unit cases；只測規則一致性，不算 EVP 成功證據。
+- 新增 `ZW-BAZI-BLIND-THEORY-OPERATIONAL-0.1`：宮位定領域、十神定功能；有字不等於有效；合來／合絆／合閉分判；沖庫不預設開庫；重大事件維持原局→大運→流年→流月。
+- 來源固定為 `OWNER_MATERIAL`，不得冒充古籍權威；R6.2.2 governance、R6.2.1 deterministic runtime、P2/P3 仍具更高優先級。
+- 本次不改 deterministic 排盤、auth、payment 或 Supabase schema；Supabase 僅用於正式 release evidence。
