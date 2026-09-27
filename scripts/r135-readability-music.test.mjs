@@ -47,6 +47,7 @@ test("owner music skips iPhone decode for MP3/M4A, uploads in chunks, accepts ra
   const native = await source("src/lib/owner-music-native-encode.ts");
   const client = await source("src/lib/owner-music-client.ts");
   const api = await source("api/owner-music.js");
+  const publicRead = await source("lib/owner-music-public.js");
   const git = await source("lib/owner-music-git.js");
   const vercel = JSON.parse(await source("vercel.json"));
   const manager = await source("src/components/owner-background-music-manager.tsx");
@@ -59,7 +60,12 @@ test("owner music skips iPhone decode for MP3/M4A, uploads in chunks, accepts ra
   assert.match(client, /OWNER_MUSIC_CHUNK_BYTES = 3_000_000/);
   assert.match(client, /x-zhaowu-music-upload-id/);
   assert.match(client, /uploadInChunks/);
-  assert.match(api, /saveOwnerMusicChunk/);
+  assert.match(api, /writer\.saveOwnerMusicChunk/);
+  assert.match(api, /import\(["']\.\.\/lib\/owner-music-git\.js["']\)/);
+  assert.doesNotMatch(api, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
+  assert.match(publicRead, /readOwnerMusicManifest/);
+  assert.match(publicRead, /MAX_BYTES = 12 \* 1024 \* 1024/);
+  assert.doesNotMatch(publicRead, /isomorphic-git|ssh2/);
   assert.match(api, /x-zhaowu-music-chunk-index/);
   assert.match(api, /bodyParser: false/);
   assert.match(api, /req\[Symbol\.asyncIterator\]/);
@@ -69,7 +75,6 @@ test("owner music skips iPhone decode for MP3/M4A, uploads in chunks, accepts ra
   assert.doesNotMatch(api, /readSupabaseActiveTrack/);
   assert.doesNotMatch(api, /SUPABASE_AUDIO_BUCKET/);
   assert.doesNotMatch(api, /supabase-bootstrap/);
-  assert.match(git, /MAX_BYTES = 12 \* 1024 \* 1024/);
   assert.match(git, /saveOwnerMusicChunk/);
   assert.match(git, /SCRATCH_DIR/);
   assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 60);
