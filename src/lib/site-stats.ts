@@ -17,7 +17,7 @@ export type PublicSiteStats = {
 export const SITE_RELEASE_FALLBACK = {
   version: "ZW-WEB-2026.09.28-r212",
   updateNumber: 212,
-  publishedAt: "2026-09-28T01:08:00+10:00",
+  publishedAt: "2026-09-28T00:59:00+10:00",
   latestSummary: "背景音樂公開讀取與站主 Git 寫入已真正分離；一般播放不再載入 isomorphic-git／SSH 寫入依賴。",
   details: {
     "zh-Hant": [
