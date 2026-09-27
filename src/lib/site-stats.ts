@@ -18,15 +18,13 @@ export const SITE_RELEASE_FALLBACK = {
   version: "ZW-WEB-2026.09.27-r206",
   updateNumber: 205,
   publishedAt: "2026-09-27T10:40:00+10:00",
-  latestSummary: "夜間模式文字對比修復（新增 --zw-ink/--zw-ink-soft/--zw-muted 的夜間覆寫，符合 WCAG AA）；命書報告區塊補上 560px 閱讀寬度上限。",
+  latestSummary: "命書報告區塊補上 560px 閱讀寬度上限，避免寬螢幕行長過長。",
   details: {
     "zh-Hant": [
-      "夜間模式（data-zw-theme=\"night\"）先前只有邊框／背景的局部覆寫，正文文字顏色仍沿用日間深色值，導致對比不足；現在 :root 層級新增夜間文字色（#f4ead9 / #d8d0c1 / #b3ada1），全站在夜間模式下的文字都會正確變亮。",
       "命書報告（.zhaowu-unified-birth-report）新增 max-width: 560px，避免寬螢幕下單行過長影響閱讀。",
     ],
     en: [
-      "Night mode previously only overrode borders/backgrounds; body text still used the light-mode dark ink colors, failing contrast. Added root-level night text-color overrides (#f4ead9 / #d8d0c1 / #b3ada1) so all copy renders legibly in night mode.",
-      "The birth report block now caps at 560px reading width.",
+      "The birth report block now caps at 560px reading width to avoid overlong lines on wide screens.",
     ],
   },
 } as const;

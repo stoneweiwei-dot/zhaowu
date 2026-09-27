@@ -23,17 +23,6 @@
   --zw-readable: 46rem;
 }
 
-/* r206: night-mode text contrast — WCAG AA (4.5:1 normal / 3:1 large).
-   --zw-ink/--zw-ink-soft/--zw-muted are dark-on-light values only in :root;
-   no night override existed for the text-color variables themselves
-   (only scoped border/background overrides existed), so body copy rendered
-   near-invisible against the dark night background. */
-html[data-zw-theme="night"] {
-  --zw-ink: #f4ead9;
-  --zw-ink-soft: #d8d0c1;
-  --zw-muted: #b3ada1;
-}
-
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
