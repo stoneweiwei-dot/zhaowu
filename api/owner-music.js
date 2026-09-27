@@ -1,15 +1,13 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import {
-  activateOwnerMusicTrack,
-  deleteOwnerMusicTrack,
-  deleteOwnerMusicTracks,
-  renameOwnerMusicTrack,
   emptyManifest,
   MAX_BYTES,
   readOwnerMusicManifest,
-  saveOwnerMusicTrack,
-  saveOwnerMusicChunk,
-} from "../lib/owner-music-git.js";
+} from "../lib/owner-music-public.js";
+
+function loadOwnerMusicWriter() {
+  return import("../lib/owner-music-git.js");
+}
 
 const OWNER_COOKIE = "__Host-zhaowu_owner_session";
 const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
@@ -279,6 +277,7 @@ export default async function handler(req, res) {
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const secret = ownerSecretFrom(req);
     if (!secret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+    const writer = await loadOwnerMusicWriter();
 
     if (method === "POST") {
       const declaredType = headerValue(req, "content-type").split(";")[0].trim().toLowerCase();
@@ -291,7 +290,7 @@ export default async function handler(req, res) {
       const chunkIndex = headerValue(req, "x-zhaowu-music-chunk-index").trim();
       const chunkTotal = headerValue(req, "x-zhaowu-music-chunk-total").trim();
       if (uploadId || chunkIndex || chunkTotal) {
-        const saved = await saveOwnerMusicChunk(secret, {
+        const saved = await writer.saveOwnerMusicChunk(secret, {
           name: parsed.name,
           ext: parsed.ext,
           contentType: parsed.contentType,
@@ -304,7 +303,7 @@ export default async function handler(req, res) {
         return json(res, 200, { ...publicPayload(saved), uploaded: true });
       }
       if (buffer.length > MAX_BYTES) return json(res, 413, { ok: false, error: "AUDIO_TOO_LARGE" });
-      const manifest = await saveOwnerMusicTrack(secret, {
+      const manifest = await writer.saveOwnerMusicTrack(secret, {
         name: parsed.name,
         ext: parsed.ext,
         contentType: parsed.contentType,
@@ -321,20 +320,20 @@ export default async function handler(req, res) {
       if (action === "rename" || Object.prototype.hasOwnProperty.call(body || {}, "name")) {
         const name = String(body?.name ?? "").trim();
         if (!name) return json(res, 400, { ok: false, error: "TRACK_NAME_REQUIRED" });
-        const manifest = await renameOwnerMusicTrack(secret, id, name);
+        const manifest = await writer.renameOwnerMusicTrack(secret, id, name);
         return json(res, 200, { ...publicPayload(manifest), renamed: true });
       }
-      const manifest = await activateOwnerMusicTrack(secret, id);
+      const manifest = await writer.activateOwnerMusicTrack(secret, id);
       return json(res, 200, { ...publicPayload(manifest), changed: true });
     }
     if (method === "DELETE") {
       const ids = Array.isArray(body?.ids) ? body.ids.map((value) => String(value ?? "").trim()).filter(Boolean) : [];
       if (ids.length) {
-        const manifest = await deleteOwnerMusicTracks(secret, ids);
+        const manifest = await writer.deleteOwnerMusicTracks(secret, ids);
         return json(res, 200, { ...publicPayload(manifest), deleted: ids.length });
       }
       if (!id) return json(res, 400, { ok: false, error: "TRACK_REQUIRED" });
-      const manifest = await deleteOwnerMusicTrack(secret, id);
+      const manifest = await writer.deleteOwnerMusicTrack(secret, id);
       return json(res, 200, { ...publicPayload(manifest), deleted: true });
     }
     return json(res, 405, { ok: false });
