@@ -24,7 +24,11 @@ test("r194 keeps the storage policy gate but enables writes for the approved Pro
   assert.doesNotMatch(ownerApi, /STORAGE_GROWING_ACTIONS/);
   assert.match(ownerClient, /new tus\.Upload/);
   assert.match(ownerClient, /chunkSize: 6 \* 1024 \* 1024/);
-  assert.match(ownerClient, /authorization: `Bearer \$\{signedUploadToken\}`/);
+  // r209: authorization must carry a valid Supabase JWT (anon key, since there is no user
+  // session) — the signed-upload token belongs in x-signature, not authorization. Putting the
+  // token in authorization is what caused 403 "new row violates row-level security policy" on
+  // resumable uploads; see docs/change-reports/ZW-WEB-2026.09.27-r209.md.
+  assert.match(ownerClient, /authorization: `Bearer \$\{SUPABASE_KEY\}`/);
   assert.match(ownerClient, /"x-signature": signedUploadToken/);
   assert.match(ownerEdge, /MAX_LOADING_VIDEO_BYTES = 500 \* 1024 \* 1024/);
 });
