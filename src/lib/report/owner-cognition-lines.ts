@@ -2,6 +2,7 @@ import type { AppLocale, Chart } from "@/lib/bazi/types";
 import {
   FIVE_ELEMENT_FIVE_CONSTANTS,
   FOUR_TOMB_OWNER_CHEATSHEET,
+  PUBLISHED_FIVE_ELEMENT_ABSENCE_EPISODES,
   TEN_STEM_SOCIAL_SHORTHAND,
 } from "@/lib/bazi/owner-five-element-cognition";
 
@@ -47,6 +48,54 @@ const TOMB_EN = {
   戌: { climate: "dry Earth", identity: "Fire storehouse" },
 } as const;
 
+
+function hasVisibleAbsence(
+  chart: Chart,
+  stems: readonly string[],
+  branches: readonly string[],
+): boolean {
+  if (chart.timeUnknown) return false;
+  return chart.pillars
+    .filter((pillar) => pillar.ready !== false)
+    .every((pillar) => !stems.includes(pillar.gan) && !branches.includes(pillar.zhi));
+}
+
+function buildPublishedAbsenceLines(chart: Chart, locale: AppLocale): string[] {
+  const lines: string[] = [];
+  const episodes = [
+    PUBLISHED_FIVE_ELEMENT_ABSENCE_EPISODES.wood,
+    PUBLISHED_FIVE_ELEMENT_ABSENCE_EPISODES.fire,
+  ] as const;
+
+  for (const episode of episodes) {
+    if (episode.status !== "published") continue;
+    if (!hasVisibleAbsence(chart, episode.absenceStems, episode.absenceBranches)) continue;
+
+    if (locale === "en") {
+      if (episode.element === "木") {
+        lines.push("Published absence note · Wood (EP01) | No visible Jia/Yi stems or Yin/Mao branches. The source frames Wood as benevolence, growth and flexible extension; it describes a possible style of being more direct and less roundabout, but whether that is helpful or limiting still depends on the chart's main judgement. Symbolic practices in the source include green, plants, wood materials and spending time with gentle, accommodating people. This is not a medical or 'replace what is missing' rule.");
+      } else {
+        lines.push("Published absence note · Fire (EP02) | No visible Bing/Ding stems or Si/Wu branches. The source frames Fire as propriety, warmth, action and expression; it describes a possible style of being calmer, less attention-seeking and more suited to technical or behind-the-scenes work, but whether Fire is genuinely needed still depends on the chart's main judgement and seasonal structure. Symbolic practices in the source include red/orange/purple, sunlight, active expression and time with more outgoing people. This is not a medical or 'replace what is missing' rule.");
+      }
+      continue;
+    }
+
+    if (episode.element === "木") {
+      lines.push(locale === "zh-Hans"
+        ? "缺象观察｜EP01 木：原局可见字面无甲乙寅卯。来源以「木主仁、生发、条达、曲直」描述其功能，并把缺木侧写为更直接、少迂回、执行较快的一种可能表现；是否是优点或缺口仍须回到喜忌与整体结构。来源建议的象义练习为绿色、植物、木质物，以及接近温和包容的人；不是“缺木就硬补”。"
+        : "缺象觀察｜EP01 木：原局可見字面無甲乙寅卯。來源以「木主仁、生發、條達、曲直」描述其功能，並把缺木側寫為更直接、少迂迴、執行較快的一種可能表現；是否是優點或缺口仍須回到喜忌與整體結構。來源建議的象義練習為綠色、植物、木質物，以及接近溫和包容的人；不是「缺木就硬補」。"
+      );
+    } else {
+      lines.push(locale === "zh-Hans"
+        ? "缺象观察｜EP02 火：原局可见字面无丙丁巳午。来源以「火主礼、热情、行动、表现、温暖」描述其功能，并把缺火侧写为更冷静、稳定、耐心、不偏焦点型的一种可能表现；是否属于真正需要补足的功能，仍看喜用与季节结构。来源建议的象义练习为红橙紫、日照、主动表达，以及接近开朗的人；不是“缺火就硬补”。"
+        : "缺象觀察｜EP02 火：原局可見字面無丙丁巳午。來源以「火主禮、熱情、行動、表現、溫暖」描述其功能，並把缺火側寫為更冷靜、穩定、耐心、不偏焦點型的一種可能表現；是否屬於真正需要補足的功能，仍看喜用與季節結構。來源建議的象義練習為紅橙紫、日照、主動表達，以及接近開朗的人；不是「缺火就硬補」。"
+      );
+    }
+  }
+
+  return lines;
+}
+
 function positionLabel(key: string, locale: AppLocale): string {
   if (locale === "en") return ({ year: "year", month: "month", day: "day", time: "time" } as Record<string, string>)[key] ?? key;
   if (locale === "zh-Hans") return ({ year: "年支", month: "月支", day: "日支", time: "时支" } as Record<string, string>)[key] ?? key;
@@ -78,6 +127,8 @@ export function buildOwnerCognitionReportLines(chart: Chart, locale: AppLocale):
       lines.push(`${prefix}｜${chart.dayMaster}：${shorthand}${tail}`);
     }
   }
+
+  lines.push(...buildPublishedAbsenceLines(chart, locale));
 
   const tombPillars = chart.pillars.filter(
     (pillar) => pillar.ready !== false && pillar.zhi in FOUR_TOMB_OWNER_CHEATSHEET,
