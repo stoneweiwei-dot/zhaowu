@@ -8,6 +8,7 @@ const { composeFocusedReportText } = await import("../src/lib/report/focused-rep
 const { interpret } = await import("../src/lib/bazi/interpret.ts");
 const { applyAnswerContract } = await import("../src/lib/core/answer-contract.ts");
 const { buildPalm } = await import("../src/lib/palm/engine.ts");
+const { finalizeReading } = await import("../src/lib/report/final-reading.ts");
 
 function result(locale = "zh-Hant") {
   const input = {
@@ -28,7 +29,8 @@ function result(locale = "zh-Hant") {
   };
   const chart = buildChart(input);
   const palm = buildPalm({ year: input.year, month: input.month, day: input.day, hour: input.hour, timeUnknown: false, gender: input.gender });
-  const reading = applyAnswerContract(input.question, chart, interpret(input.question, chart, "unset", palm));
+  const rawReading = applyAnswerContract(input.question, chart, interpret(input.question, chart, "unset", palm));
+  const reading = finalizeReading(input.question, chart, rawReading, locale);
   return { id: "r210", locale, question: input.question, chart, reading, createdAt: "2026-09-28T00:00:00+10:00", palm };
 }
 
