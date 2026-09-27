@@ -145,7 +145,7 @@ function schema() {
           indexType: ZVecIndexType.FTS,
           tokenizerName: "ngram",
           filters: ["lowercase"],
-          extraParams: JSON.stringify({ ngram_min: 2, ngram_max: 4 }),
+          extraParams: JSON.stringify({ ngram_min: 2, ngram_max: 3 }),
         },
       },
       { name: "tags", dataType: ZVecDataType.STRING },
