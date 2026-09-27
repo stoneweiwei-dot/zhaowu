@@ -7,8 +7,9 @@
 - `src/components/sky-events-home-section.tsx`、`src/routes/sky-events.tsx` 改用上述兩個函式；時間軸與行星符號改由事件資料生成，不再對特定 id 寫死文字。
 - `src/routes/sky-events.tsx` 新增「早前天象」區塊，土星衝與金星入天蠍兩則既有內容改列於此，讀者仍可完整閱讀，不因新事件成為頭條而消失。
 - `src/sky-events.css` 追加 `.sky-events-archive` 相關樣式，沿用既有 `--sky-ink`／`--sky-jade`／`--sky-gold` token。
-- `src/lib/site-stats.ts`：版本號推進為 r209，`updateNumber` 由 206 更新為 207，並更新公開摘要。
+- `src/lib/site-stats.ts`：版本號推進為 r209，`updateNumber` 更新為 209，並更新公開摘要。
 - `scripts/release-ledger.test.mjs`、`scripts/r162-production-closeout.test.mjs`、`lib/zhaowu-verification.js` 同步指向 r209。
+- **合併後修正**：production 部署驗證時發現 Supabase `public.release_history` 實際最新一筆記錄（並行 PR #483／r208）已寫入 `update_number: 208`，但本報告與 `site-stats.ts` 原先仍依照舊 code-side fallback（206）順延寫成 207，造成「DB 209 應大於既有最新值」的遞增規則與程式碼常數不一致（若维持 207，`getPublicSiteStats()` 的 `databaseUpdateNumber >= SITE_RELEASE_FALLBACK.updateNumber` 判斷會使畫面顯示回退到舊的 r208/208，而非新的 r209）。已在合併後另提交一次修正，將 `updateNumber` 由 207 改為 209（與 version 標籤 r209 對齊），三個受影響檔案同步更新，並在本報告記錄修正原因；`release_history` 資料表本次寫入的 `update_number` 亦為 209。
 
 ## 為什麼改
 

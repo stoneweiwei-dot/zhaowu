@@ -16,7 +16,7 @@ export type PublicSiteStats = {
 
 export const SITE_RELEASE_FALLBACK = {
   version: "ZW-WEB-2026.09.27-r209",
-  updateNumber: 207,
+  updateNumber: 209,
   publishedAt: "2026-09-27T23:40:00+10:00",
   latestSummary: "近日天象新增本週火星相位叢集，並改為自動挑選最新一則發布作為首頁與天象專欄頭條。",
   details: {
