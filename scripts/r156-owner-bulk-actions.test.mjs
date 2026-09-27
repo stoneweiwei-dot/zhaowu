@@ -7,7 +7,7 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 
 test("owner music supports rename and one-request multi-delete", async () => {
   const client = await source("src/lib/owner-music-client.ts");
-  const api = await source("api/owner-music.js");
+  const api = await source("api/owner-music-write.js");
   const git = await source("lib/owner-music-git.js");
   const manager = await source("src/components/owner-background-music-manager.tsx");
 
