@@ -1,5 +1,6 @@
 import { HIDDEN, tenGod } from "@/lib/bazi/calendar";
 import type { Chart, Reading } from "@/lib/bazi/types";
+import { FOUR_TOMB_OWNER_CHEATSHEET } from "@/lib/bazi/owner-five-element-cognition";
 
 const FOUR_TOMBS = new Set(["辰", "戌", "丑", "未"]);
 const TOMB_STEM: Record<string, string> = {
@@ -47,7 +48,9 @@ function describePillar(chart: Chart, pillar: Chart["pillars"][number]): string 
   const middleText = middle.length
     ? `；中餘氣${middle.map((stem) => `${stem}${tenGod(chart.dayMaster, stem)}`).join("、")}`
     : "";
-  return `${PILLAR_LABEL[pillar.key] ?? pillar.key}${branch}：本氣${mainStem}${mainGod}${middleText}；庫氣${tombStem}${tombGod}`;
+  const profile = FOUR_TOMB_OWNER_CHEATSHEET[branch as keyof typeof FOUR_TOMB_OWNER_CHEATSHEET];
+  const profileText = profile ? `（${profile.climate}／${profile.identity}）` : "";
+  return `${PILLAR_LABEL[pillar.key] ?? pillar.key}${branch}${profileText}：本氣${mainStem}${mainGod}${middleText}；庫氣${tombStem}${tombGod}`;
 }
 
 function dynamicRelationText(branches: string[]): string[] {

@@ -187,3 +187,12 @@ CI、PR merge、Preview、單純 Vercel READY、桌面 viewport、文件描述�
 - 新增 `ZW-BAZI-BLIND-THEORY-OPERATIONAL-0.1`：宮位定領域、十神定功能；有字不等於有效；合來／合絆／合閉分判；沖庫不預設開庫；重大事件維持原局→大運→流年→流月。
 - 來源固定為 `OWNER_MATERIAL`，不得冒充古籍權威；R6.2.2 governance、R6.2.1 deterministic runtime、P2/P3 仍具更高優先級。
 - 本次不改 deterministic 排盤、auth、payment 或 Supabase schema；Supabase 僅用於正式 release evidence。
+
+
+### r207｜五行認知／十干性格梗／四庫速查
+- 站主 2026-09-27 截圖材料已整理為 `OWNER_MATERIAL`，接入 `ZW-OWNER-FIVE-ELEMENT-COGNITION-1.0`。
+- 五行五常採金義、木仁、水智、火禮、土信作文化／功能教學；禁止由「缺某五行」或元素數量直接判人格。
+- 十干一句話性格只作 social shorthand、趣味測驗／漫畫翻譯，不進正式人格主判。
+- 四庫新增教學標籤：辰濕土／水庫、丑濕寒土／金庫、未燥土／木庫、戌燥土／火庫；藏干仍以 deterministic calendar 為準。
+- 材料中的住所／事業／感情／家庭等沖庫場景只作候選象意；正式事件仍需宮位、十神、原局種子、大運／流年／流月與病藥、ODL、FC、承載共同成立。
+- 本輪不改 deterministic 排盤、auth、payment、Supabase schema 或 Storage。
