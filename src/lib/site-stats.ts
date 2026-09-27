@@ -15,16 +15,16 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.27-r206",
-  updateNumber: 205,
-  publishedAt: "2026-09-27T10:40:00+10:00",
-  latestSummary: "命書報告區塊補上 560px 閱讀寬度上限，避免寬螢幕行長過長。",
+  version: "ZW-WEB-2026.09.27-r207",
+  updateNumber: 206,
+  publishedAt: "2026-09-27T23:20:00+10:00",
+  latestSummary: "修復登入影片/圖庫大檔（>6MB）續傳上傳 403 RLS 失敗（授權標頭配置錯誤）。",
   details: {
     "zh-Hant": [
-      "命書報告（.zhaowu-unified-birth-report）新增 max-width: 560px，避免寬螢幕下單行過長影響閱讀。",
+      "修復大檔（>6MB）續傳上傳（TUS resumable）在 Supabase Storage 回傳「new row violates row-level security policy」403 的問題：signed-upload token 應放在 x-signature 標頭，authorization 標頭需帶有效 Supabase JWT（此處為 anon key），先前把 signed token 誤放進 authorization 導致 Storage API 無法驗證。",
     ],
     en: [
-      "The birth report block now caps at 560px reading width to avoid overlong lines on wide screens.",
+      "Fixed large-file (>6MB) resumable (TUS) uploads to Supabase Storage failing with a 403 \"new row violates row-level security policy\" error: the signed-upload token belongs in the x-signature header, while authorization needs a valid Supabase JWT (anon key here). The token had been placed in authorization instead, which the Storage API could not validate.",
     ],
   },
 } as const;
