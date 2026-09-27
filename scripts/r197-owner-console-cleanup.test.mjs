@@ -39,19 +39,20 @@ test("r197 preserves login video-only constraints and owner bridge", async () =>
 
 
 test("r199 owner music public read avoids the legacy git HTTP URL parser", async () => {
-  const git = await source("lib/owner-music-git.js");
-  const readBlock = git.slice(git.indexOf("export async function readOwnerMusicManifest"), git.indexOf("async function commitAndPush"));
-  assert.match(readBlock, /raw\.githubusercontent\.com/);
-  assert.doesNotMatch(readBlock, /git\.getRemoteInfo/);
-  assert.doesNotMatch(readBlock, /isomorphic-git\/http/);
+  const publicRead = await source("lib/owner-music-public.js");
+  assert.match(publicRead, /raw\.githubusercontent\.com/);
+  assert.doesNotMatch(publicRead, /git\.getRemoteInfo/);
+  assert.doesNotMatch(publicRead, /isomorphic-git\/http|isomorphic-git|ssh2/);
 });
 
 
 test("r200 public owner-music GET does not statically evaluate the Node git HTTP adapter", async () => {
-  const sourceText = await source("lib/owner-music-git.js");
-  const readBlock = sourceText.slice(sourceText.indexOf("export async function readOwnerMusicManifest"), sourceText.indexOf("async function commitAndPush"));
-  const withRepoBlock = sourceText.slice(sourceText.indexOf("async function withRepo"), sourceText.indexOf("export function emptyManifest"));
-  assert.doesNotMatch(sourceText, /import http from ["']isomorphic-git\/http\/node["']/);
-  assert.doesNotMatch(readBlock, /isomorphic-git\/http\/node/);
-  assert.match(withRepoBlock, /await import\("isomorphic-git\/http\/node"\)/);
+  const api = await source("api/owner-music.js");
+  const publicRead = await source("lib/owner-music-public.js");
+  const git = await source("lib/owner-music-git.js");
+  assert.doesNotMatch(api, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
+  assert.match(api, /import\(["']\.\.\/lib\/owner-music-git\.js["']\)/);
+  assert.doesNotMatch(publicRead, /isomorphic-git\/http\/node|isomorphic-git|ssh2/);
+  assert.doesNotMatch(git, /import http from ["']isomorphic-git\/http\/node["']/);
+  assert.match(git, /await import\("isomorphic-git\/http\/node"\)/);
 });
