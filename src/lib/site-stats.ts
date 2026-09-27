@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r211",
-  updateNumber: 211,
-  publishedAt: "2026-09-28T00:02:00+10:00",
-  latestSummary: "完整報告已加入五行功能、十干趣味側寫與四庫提示；只作主判後的白話翻譯，不改命理核心。",
+  version: "ZW-WEB-2026.09.28-r212",
+  updateNumber: 212,
+  publishedAt: "2026-09-28T01:08:00+10:00",
+  latestSummary: "完整報告新增已發布的 EP01 木／EP02 火缺象觀察；時辰未知不硬判，土金水未發布不自行補寫。",
   details: {
     "zh-Hant": [
-      "完整報告新增「五行功能」：以五常與功能語言翻譯核心天干所屬五行，不採缺什麼補什麼。",
-      "命盤含辰戌丑未時，報告加入「四庫提示」；另加入一條明確標為趣味化翻譯的「天干一面」，不作人格定論。",
+      "完整報告只接入目前已發布的 EP01 木與 EP02 火缺象邏輯；木看無甲乙寅卯，火看無丙丁巳午，且時辰未知時不斷言整局確定缺象。",
+      "來源側寫與象義練習只作主判後翻譯；是否為真正功能缺口仍回到喜用與整體結構。土／金／水尚未發布，不自行生成。",
     ],
     en: [
-      "Full reports now include a concise five-element functional lens after the main judgement, without using a replace-what-is-missing rule.",
-      "Charts containing the four storehouse branches receive a compact storehouse note, plus a clearly bounded stem shorthand that is not treated as a personality verdict.",
+      "Full reports now use only the published EP01 Wood and EP02 Fire absence rules; unknown birth time blocks any whole-chart absence claim.",
+      "Source personality notes and symbolic practices remain post-judgement translations only. Unpublished Earth, Metal and Water episodes are not inferred.",
     ],
   },
 } as const;
