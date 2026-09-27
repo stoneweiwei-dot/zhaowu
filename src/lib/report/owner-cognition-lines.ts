@@ -34,6 +34,12 @@ const STEM_EN: Record<string, string> = {
   癸: "You may look quiet until pressure breaks through, then reflect on it afterwards.",
 };
 
+const STEM_EN_NAME: Record<string, string> = {
+  甲: "Jia", 乙: "Yi", 丙: "Bing", 丁: "Ding", 戊: "Wu",
+  己: "Ji", 庚: "Geng", 辛: "Xin", 壬: "Ren", 癸: "Gui",
+};
+const ELEMENT_EN_NAME = { 木: "Wood", 火: "Fire", 土: "Earth", 金: "Metal", 水: "Water" } as const;
+const BRANCH_EN_NAME = { 辰: "Chen", 丑: "Chou", 未: "Wei", 戌: "Xu" } as const;
 const TOMB_EN = {
   辰: { climate: "damp Earth", identity: "Water storehouse" },
   丑: { climate: "cold damp Earth", identity: "Metal storehouse" },
@@ -54,7 +60,7 @@ export function buildOwnerCognitionReportLines(chart: Chart, locale: AppLocale):
 
   if (locale === "en") {
     const copy = EN_VIRTUE[elementKey];
-    lines.push(`Five-element function | ${chart.dayMaster} (${chart.dayMasterElement}) is translated through the traditional virtue of ${copy.virtue}: ${copy.functions.join(", ")}. This is functional symbolism, not a "replace what is missing" rule.`);
+    lines.push(`Five-element function | ${STEM_EN_NAME[chart.dayMaster] ?? "the day stem"} (${ELEMENT_EN_NAME[chart.dayMasterElement]}) is translated through the traditional virtue of ${copy.virtue}: ${copy.functions.join(", ")}. This is functional symbolism, not a "replace what is missing" rule.`);
     const shorthand = STEM_EN[chart.dayMaster];
     if (shorthand) lines.push(`Stem shorthand | ${shorthand} This is a light social translation only, not a personality verdict.`);
   } else {
@@ -82,7 +88,7 @@ export function buildOwnerCognitionReportLines(chart: Chart, locale: AppLocale):
       const details = tombPillars.map((pillar) => {
         const zhi = pillar.zhi as keyof typeof TOMB_EN;
         const profile = TOMB_EN[zhi];
-        return `${positionLabel(pillar.key, locale)} ${zhi} (${profile.climate} / ${profile.identity}; hidden stems ${FOUR_TOMB_OWNER_CHEATSHEET[zhi].hidden.join(", ")})`;
+        return `${positionLabel(pillar.key, locale)} ${BRANCH_EN_NAME[zhi]} (${profile.climate} / ${profile.identity}; hidden stems ${FOUR_TOMB_OWNER_CHEATSHEET[zhi].hidden.map((stem) => STEM_EN_NAME[stem] ?? stem).join(", ")})`;
       });
       lines.push(`Storehouse note | ${details.join("; ")}. A storehouse is not automatically a wealth store; whether it becomes active still depends on combinations/clashes, exposure, function and timing.`);
     } else {
