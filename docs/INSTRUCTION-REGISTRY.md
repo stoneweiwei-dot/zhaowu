@@ -11,7 +11,7 @@
 - 「補」需先由完整分析確認實際功能卡點，再訂一個可執行行動與一至四週觀察指標；五行字數、顏色、聲音或物件不能單獨選個人用神或保證效果。
 - 新頁只屬教學，不改命盤判讀、首頁資訊架構、醫療建議範圍或報告個人化結論。
 
-## 2026-09-27 r206 命理核心最後一次收口：R6.2.2 五層宣告 + 六項最小補丁 + 古籍來源 + 方法論披露
+## 2026-09-27 r208 命理核心最後一次收口：R6.2.2 五層宣告 + 六項最小補丁 + 古籍來源 + 方法論披露
 
 - 站主最新明確指令（"最後一次收口"）：本次只做四件事，不重新研究整個專案、不另建命理框架、不推翻既有子平核心。
 - **Task 1**：`docs/STONE-R6.2.2-CURRENT-MASTER-DECLARATION.md` 新增，正式宣告 R6.2.2 為唯一 CURRENT MASTER，並把既有文件／runtime 綁定到站主指定的五層模型（L1 CORE ZI-PING／L2 STRUCTURAL PATCH／L3 TEMPORAL-EVENT／L4 EVIDENCE-AUXILIARY／L5 OPERATIONAL INFRASTRUCTURE）。Code-level engine identifier 依既有 R6.2.2 §8 規則繼續保持 `R6.2.1`；本宣告不改動 L1／L2 既有判法文字。
