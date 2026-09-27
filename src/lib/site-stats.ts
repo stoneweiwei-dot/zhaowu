@@ -15,21 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.27-r209",
-  updateNumber: 209,
-  publishedAt: "2026-09-27T23:40:00+10:00",
-  latestSummary: "近日天象新增本週火星相位叢集，並改為自動挑選最新一則發布作為首頁與天象專欄頭條。",
+  version: "ZW-WEB-2026.09.28-r210",
+  updateNumber: 210,
+  publishedAt: "2026-09-28T00:02:00+10:00",
+  latestSummary: "完整報告新增五行功能、十干趣味側寫與四庫提示；只作主判後的白話翻譯，不改命理核心。 ",
   details: {
     "zh-Hant": [
-      "「近日天象」新增本週（9/28–10/3）火星相位叢集事件：太陽三分天王星、水星入天蠍、火星四分水星、火星三分海王星、火星衝冥王逆行，附天文事實與占星心理解讀分層，以及本命宮位對照。",
-      "首頁天象摘要與天象專欄頭條，從固定顯示陣列首項，改為自動挑選 published 日期最新的一則；土星衝、金星入天蠍等既有內容保留，於專欄新增「早前天象」區塊可繼續查閱，不再需要每次手動調整陣列順序。",
+      "完整報告新增「五行功能」：以五常與功能語言翻譯核心天干所屬五行，不採缺什麼補什麼。",
+      "命盤含辰戌丑未時，報告加入「四庫提示」；另加入一條明確標為趣味化翻譯的「天干一面」，不作人格定論。",
     ],
     en: [
-      "\"Recent sky events\" gains this week's (9/28–10/3) Mars aspect cluster: Sun trine Uranus, Mercury into Scorpio, Mars square Mercury, Mars trine Neptune, and Mars opposite retrograde Pluto, with layered astronomy/astrology notes and a natal-house table.",
-      "The home teaser and sky-events headline now auto-select the most recently published entry instead of a fixed array position; the existing Saturn and Venus features remain reachable in a new \"earlier sky events\" archive list, so no manual reordering is needed for future weekly updates.",
+      "Full reports now include a concise five-element functional lens after the main judgement, without using a replace-what-is-missing rule.",
+      "Charts containing the four storehouse branches receive a compact storehouse note, plus a clearly bounded stem shorthand that is not treated as a personality verdict.",
     ],
-  },
-} as const;
+  },} as const;
 
 function fallbackStats(): PublicSiteStats {
   return {
