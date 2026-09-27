@@ -68,7 +68,8 @@ test("account console and player use owner music with browser-side format optimi
   assert.doesNotMatch(player, /zhaowu-background\.m4a/);
   assert.match(organizer, /背景音樂|背景音乐/);
   assert.match(client, /optimizeOwnerMusic/);
-  assert.match(client, /x-zhaowu-music-name/);\n  assert.match(client, /OWNER_MUSIC_WRITE_URL = "\/api\/owner-music-write"/);
+  assert.match(client, /x-zhaowu-music-name/);
+  assert.match(client, /OWNER_MUSIC_WRITE_URL = "\/api\/owner-music-write"/);
   assert.match(client, /zhaowu-music-change/);
   assert.match(transcoder, /TARGET_UPLOAD_BYTES = 3_550_000/);
   assert.match(transcoder, /MAX_OWNER_UPLOAD_BYTES = 12 \* 1024 \* 1024/);
