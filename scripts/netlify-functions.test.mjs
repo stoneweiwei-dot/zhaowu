@@ -14,6 +14,7 @@ const endpoints = [
   "owner-logout",
   "owner-data",
   "owner-music",
+  "owner-music-write",
   "owner-session",
   "zhaowu-capabilities",
   "zhaowu-doctor",
