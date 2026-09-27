@@ -82,13 +82,14 @@ test("iPhone music upload sniffs AAC/octet-stream and surfaces the real HTTP err
   const transcode = await source("src/lib/owner-music-transcode.ts");
   const client = await source("src/lib/owner-music-client.ts");
   const api = await source("api/owner-music.js");
+  const writeApi = await source("api/owner-music-write.js");
   assert.match(transcode, /audio\/aac/);
   assert.match(transcode, /sniffAudioContainer/);
   assert.match(transcode, /application\/octet-stream/);
   assert.match(client, /HTTP \$\{status\}/);
   assert.match(client, /body\.detail/);
-  assert.match(api, /sniffAudioExt/);
-  assert.match(api, /resolveAudioFile/);
+  assert.match(writeApi, /sniffAudioExt/);
+  assert.match(writeApi, /resolveAudioFile/);
   assert.match(api, /cdn\.jsdelivr\.net\/gh/);
-  assert.match(api, /method === "GET" \|\| method === "HEAD"/);
+  assert.match(api, /method !== "GET" && method !== "HEAD"/);
 });
