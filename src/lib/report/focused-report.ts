@@ -7,6 +7,7 @@ import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { buildBodyAttentionLines } from "@/lib/report/body-attention";
 import { deriveGuardianBeast } from "@/lib/report/guardian-beast";
 import { buildCycleOverlayLines } from "@/lib/report/cycle-overlay";
+import { buildOwnerCognitionReportLines } from "@/lib/report/owner-cognition-lines";
 import {
   buildPersonalReportNarrative,
   renderPersonalReportNarrativeText,
@@ -210,7 +211,8 @@ function summaryLines(result: AnalysisResult): string[] {
     : chineseSummaryLines(result);
   const req = inspectAnswerRequirements(result.question);
   const showCycle = req.asksWhen || ["timing", "career", "love", "money", "home"].includes(result.reading.kind);
-  return dedupeLines(showCycle ? [...core, ...buildCycleOverlayLines(result)] : core);
+  const cognition = buildOwnerCognitionReportLines(result.chart, result.locale ?? "zh-Hans");
+  return dedupeLines(showCycle ? [...core, ...cognition, ...buildCycleOverlayLines(result)] : [...core, ...cognition]);
 }
 
 /** New reports keep one overall summary plus the persisted body-attention block; UI relevance decides whether body is shown. */
@@ -226,9 +228,9 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
       body: summaryLines(result),
       narrative: buildPersonalReportNarrative(result),
       evidence: {
-        facts: ["final reading", "question-relevant chart facts", "original chart + relevant Dayun / annual timing when requested", "timing", "action"],
+        facts: ["final reading", "question-relevant chart facts", "owner-material five-element functional lens", "four-storehouse teaching labels when present", "original chart + relevant Dayun / annual timing when requested", "timing", "action"],
         conditions: ["Only question-specific content is kept in the continuous summary", "Cycle overlay is included only when the question is time-relevant; it consumes canonical chart output and does not recompute luck-cycle direction"],
-        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Provisional useful-element conclusions never become hard five-element remedies"],
+        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Five-element cognition and stem shorthand are symbolic/customer-language only", "Storehouse labels do not imply wealth or automatic activation", "Provisional useful-element conclusions never become hard five-element remedies"],
         checks: ["Direct answer appears once", "No numbered mini-sections", "Unrelated body and timing modules stay out of the main reading flow", "Dayun and annual year are read together only when relevant and birth time is usable"],
       },
     },
