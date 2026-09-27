@@ -202,3 +202,11 @@ CI、PR merge、Preview、單純 Vercel READY、桌面 viewport、文件描述�
 - Supabase `classic_sources` 新增 4 筆子平核心來源（滴天髓、三命通會、子平真詮、窮通寶鑑），`source_nature='classic'`；`classic_passages` 既有 verified=38／not_applicable=15／pending=0／rejected=0 核對後未變動（未插入任何段落列）。
 - 完整報告「判斷備註」收合層新增三語（繁中／簡中／英文）方法論披露，含可折疊「了解方法」（`src/components/paid-report-pages.tsx` 的 `MethodologyDisclosure`）。
 - 本次不改 deterministic 排盤、R6.2.1／P2／P3 既有判法全文、auth、payment 或 Supabase 用戶資料結構。
+
+
+### r210｜五行認知與四庫內容進入完整報告
+- r207 已接入的五行五常、十干趣味側寫與四庫速查，現已真正進入 `composeFocusedReport` 的完整報告文字，而非只停留在 instruction registry。
+- 報告最多新增三條低負擔內容：五行功能、天干一面、四庫提示（只有命盤實際出現辰戌丑未時才顯示）。
+- 五行功能只作主判後白話翻譯；天干一句話固定標示為趣味側寫；四庫提示明示「庫不等於財庫」，不改寫既有四庫主判。
+- 英文報告使用純英文 stem／branch 名稱，不混入漢字。
+- 本輪不新增第三個 report session／卡片，不改 deterministic 排盤、auth、payment、Supabase schema 或 Storage。
