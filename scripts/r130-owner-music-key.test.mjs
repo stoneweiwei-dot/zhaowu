@@ -7,14 +7,19 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 
 test("owner music API is a self-contained cookie-gated function off the SPA rewrite", async () => {
   const api = await source("api/owner-music.js");
+  const publicRead = await source("lib/owner-music-public.js");
   const git = await source("lib/owner-music-git.js");
   const ssh = await source("lib/owner-music-ssh.json");
   const vercel = JSON.parse(await source("vercel.json"));
   assert.match(api, /OWNER_KEY_SHA256/);
-  assert.match(api, /saveOwnerMusicTrack/);
+  assert.match(api, /writer\.saveOwnerMusicTrack/);
   assert.match(api, /OWNER_REQUIRED/);
   assert.doesNotMatch(api, /from ["']\.\.\/src\//);
-  assert.match(api, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
+  assert.match(api, /from ["']\.\.\/lib\/owner-music-public\.js["']/);
+  assert.doesNotMatch(api, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
+  assert.match(api, /import\(["']\.\.\/lib\/owner-music-git\.js["']\)/);
+  assert.match(publicRead, /readOwnerMusicManifest/);
+  assert.doesNotMatch(publicRead, /isomorphic-git|ssh2/);
   assert.match(git, /owner-music/);
   assert.match(git, /decryptOwnerSshKey/);
   assert.doesNotMatch(ssh, /BEGIN OPENSSH PRIVATE KEY/);
