@@ -15,22 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.27-r208",
-  updateNumber: 206,
-  publishedAt: "2026-09-27T21:00:00+10:00",
-  latestSummary: "命理核心最後一次收口：R6.2.2 五層治理宣告、六項最小補丁、四筆子平古籍來源與三語方法論披露。",
+  version: "ZW-WEB-2026.09.27-r209",
+  updateNumber: 207,
+  publishedAt: "2026-09-27T23:40:00+10:00",
+  latestSummary: "近日天象新增本週火星相位叢集，並改為自動挑選最新一則發布作為首頁與天象專欄頭條。",
   details: {
     "zh-Hant": [
-      "正式宣告 STONE R6.2.2 為唯一 CURRENT MASTER，並綁定 L1–L5 五層治理模型（docs/STONE-R6.2.2-CURRENT-MASTER-DECLARATION.md）。",
-      "新增六項最小補丁 runtime（GF-13 擴展、ODL→FC→CAPACITY、時間層 Evidence Gap、資料證據邊界、事件鏈分離、年度機制獨立＋VAL-C 回溯降級），見 docs/STONE-R6.2.2-SIX-PATCHES.md 與 src/lib/bazi/six-patches-instruction.ts。",
-      "Supabase classic_sources 新增滴天髓、三命通會、子平真詮、窮通寶鑑四筆子平核心來源；既有段落驗證計數未變動。",
-      "完整報告判斷備註層新增三語（繁中／簡中／英文）方法論披露，含可折疊「了解方法」說明。",
+      "「近日天象」新增本週（9/28–10/3）火星相位叢集事件：太陽三分天王星、水星入天蠍、火星四分水星、火星三分海王星、火星衝冥王逆行，附天文事實與占星心理解讀分層，以及本命宮位對照。",
+      "首頁天象摘要與天象專欄頭條，從固定顯示陣列首項，改為自動挑選 published 日期最新的一則；土星衝、金星入天蠍等既有內容保留，於專欄新增「早前天象」區塊可繼續查閱，不再需要每次手動調整陣列順序。",
     ],
     en: [
-      "STONE R6.2.2 formally declared the sole current governance master, mapped to a five-layer model (L1–L5).",
-      "Added six minimum runtime patches for evidence, time-layer and event-chain discipline.",
-      "Registered four canonical BaZi classical sources in Supabase; existing passage verification counts unchanged.",
-      "Added a small trilingual methodology disclosure to the full report's collapsed notes layer.",
+      "\"Recent sky events\" gains this week's (9/28–10/3) Mars aspect cluster: Sun trine Uranus, Mercury into Scorpio, Mars square Mercury, Mars trine Neptune, and Mars opposite retrograde Pluto, with layered astronomy/astrology notes and a natal-house table.",
+      "The home teaser and sky-events headline now auto-select the most recently published entry instead of a fixed array position; the existing Saturn and Venus features remain reachable in a new \"earlier sky events\" archive list, so no manual reordering is needed for future weekly updates.",
     ],
   },
 } as const;

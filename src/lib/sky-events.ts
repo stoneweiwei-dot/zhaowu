@@ -13,6 +13,87 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    id: "mars-aspect-cluster-2026-10",
+    published: "2026-09-27",
+    status: "active",
+    title: {
+      "zh-Hant": "火星週：三分海王、四分水星、衝冥王的行動考驗",
+      "zh-Hans": "火星周：三分海王、四分水星、冲冥王的行动考验",
+      en: "Mars week: a trine to Neptune, a square to Mercury, an opposition to Pluto"
+    },
+    subtitle: {
+      "zh-Hant": "2026.09.28–10.03｜天文實況 × 火星相位叢集的占星象意",
+      "zh-Hans": "2026.09.28–10.03｜天文实况 × 火星相位丛集的占星象意",
+      en: "2026.09.28–10.03 | Astronomy × the symbolic astrology of a Mars aspect cluster"
+    },
+    facts: [
+      { date: "2026-09-28", label: { "zh-Hant": "太陽（天秤）與天王星（金牛）形成三分相", "zh-Hans": "太阳（天秤）与天王星（金牛）形成三分相", en: "Sun (Libra) trine Uranus (Taurus)" } },
+      { date: "2026-09-30", label: { "zh-Hant": "水星進入熱帶黃道天蠍區段", "zh-Hans": "水星进入热带黄道天蝎区段", en: "Mercury enters tropical Scorpio" } },
+      { date: "2026-10-02", label: { "zh-Hant": "火星（獅子）與水星（天蠍）形成四分相", "zh-Hans": "火星（狮子）与水星（天蝎）形成四分相", en: "Mars (Leo) square Mercury (Scorpio)" } },
+      { date: "2026-10-02", label: { "zh-Hant": "火星（獅子）與海王星（雙魚）形成三分相", "zh-Hans": "火星（狮子）与海王星（双鱼）形成三分相", en: "Mars (Leo) trine Neptune (Pisces)" } },
+      { date: "2026-10-03", label: { "zh-Hant": "火星（獅子）與冥王星逆行（水瓶）形成對分相", "zh-Hans": "火星（狮子）与冥王星逆行（水瓶）形成对分相", en: "Mars (Leo) opposite retrograde Pluto (Aquarius)" } }
+    ],
+    science: {
+      "zh-Hant": [
+        "相位是以地心視黃經角距定義的幾何關係：三分相約 120°、四分相約 90°、對分相約 180°，皆可由星曆表精確驗證，屬於可測量的天體幾何事實。",
+        "本週水星為順行入宮，不涉及逆行；冥王星自 2026 年稍早即持續逆行，本次對分只是火星移動到與其形成 180° 角的位置，並非冥王星本身有特殊動作。",
+        "「獅子座火星」「天蠍座水星」等描述採本站慣用之熱帶黃道座標，指行星在地心視角下落入的分區，不主張行星物理進入同名恆星星座。"
+      ],
+      "zh-Hans": [
+        "相位是以地心视黄经角距定义的几何关系：三分相约 120°、四分相约 90°、对分相约 180°，皆可由星历表精确验证，属于可测量的天体几何事实。",
+        "本周水星为顺行入宫，不涉及逆行；冥王星自 2026 年稍早即持续逆行，本次对分只是火星移动到与其形成 180° 角的位置，并非冥王星本身有特殊动作。",
+        "“狮子座火星”“天蝎座水星”等描述采本站惯用之热带黄道坐标，指行星在地心视角下落入的分区，不主张行星物理进入同名恒星星座。"
+      ],
+      en: [
+        "An aspect is a geometric relationship defined by geocentric ecliptic angular distance: a trine is roughly 120°, a square roughly 90°, an opposition roughly 180°; all can be checked precisely against an ephemeris as measurable celestial geometry.",
+        "Mercury's sign change this week is a direct-motion ingress, not a retrograde event; Pluto has been retrograde since earlier in 2026, so this opposition is simply Mars moving into a 180° relationship with it, not a new action by Pluto itself.",
+        "Sign labels such as 'Mars in Leo' or 'Mercury in Scorpio' use this site's tropical-zodiac convention for the geocentric sector a planet occupies, not a claim that it physically enters the matching IAU constellation."
+      ]
+    },
+    interpretation: {
+      "zh-Hant": [
+        "太陽三分天王星：傳統占星讀作自我表達與外在變動之間出現不費力的呼應，象徵一些長期被壓抑的想法或做法，忽然找到一個看似意外卻順暢的出口。",
+        "水星入天蠍：象徵性地代表思考從交換表面訊息，轉向追問動機與底層意圖，適合深度調查、財務盡職審查或需要坦誠面對的對話；風險是過度懷疑滑向偏執。",
+        "火星四分水星：傳統讀法認為行動與言語之間容易出現摩擦——常見情況是話還沒想清楚就先出口，或把情緒當成論點使用；可留意的練習是把「想說的」與「此刻是否該說」分開處理。",
+        "火星三分海王星：象徵行動力與想像力、同理心之間罕見地順暢共振，利於創作、直覺判斷與非語言的默契溝通；風險是把強烈的渴望，誤認成已經核實的事實。",
+        "火星衝冥王逆行：傳統讀法將此視為控制與被控制的張力浮上檯面，容易把眼前一件小摩擦，放大成整體「誰更有權力」的議題；值得先分辨——這是這件事本身的份量，還是舊有無力感被重新觸發。"
+      ],
+      "zh-Hans": [
+        "太阳三分天王星：传统占星读作自我表达与外在变动之间出现不费力的呼应，象征一些长期被压抑的想法或做法，忽然找到一个看似意外却顺畅的出口。",
+        "水星入天蝎：象征性地代表思考从交换表面讯息，转向追问动机与底层意图，适合深度调查、财务尽职审查或需要坦诚面对的对话；风险是过度怀疑滑向偏执。",
+        "火星四分水星：传统读法认为行动与言语之间容易出现摩擦——常见情况是话还没想清楚就先出口，或把情绪当成论点使用；可留意的练习是把“想说的”与“此刻是否该说”分开处理。",
+        "火星三分海王星：象征行动力与想象力、同理心之间罕见地顺畅共振，利于创作、直觉判断与非语言的默契沟通；风险是把强烈的渴望，误认成已经核实的事实。",
+        "火星冲冥王逆行：传统读法将此视为控制与被控制的张力浮上台面，容易把眼前一件小摩擦，放大成整体“谁更有权力”的议题；值得先分辨——这是这件事本身的份量，还是旧有无力感被重新触发。"
+      ],
+      en: [
+        "Sun trine Uranus: astrological tradition reads this as an easy resonance between self-expression and outer change — a long-suppressed idea or habit may suddenly find a surprising but smooth outlet.",
+        "Mercury into Scorpio: symbolically, thinking shifts from surface information toward questioning motive and hidden intent — useful for research, financial due diligence, or conversations that need real honesty; the risk is that suspicion slides into paranoia.",
+        "Mars square Mercury: tradition reads this as friction between action and speech — a common pattern is speaking before the thought is finished, or treating emotion as an argument; worth separating 'what I want to say' from 'whether now is the moment to say it.'",
+        "Mars trine Neptune: a comparatively rare, smooth resonance between drive and imagination or empathy — good for creative work, intuitive judgement, and unspoken rapport; the risk is mistaking a strong wish for an already-verified fact.",
+        "Mars opposite retrograde Pluto: tradition reads this as control-versus-being-controlled tension surfacing — a small friction can be inflated into a whole argument about 'who holds more power'; worth asking first whether the weight belongs to this moment, or to an old sense of powerlessness being re-triggered."
+      ]
+    },
+    houses: [
+      { house: 1, "zh-Hant": "自我展現、如何被看見、個人存在感", "zh-Hans": "自我展现、如何被看见、个人存在感", en: "self-presentation, visibility, personal presence" },
+      { house: 2, "zh-Hant": "收入來源、個人資源展示、自信與金錢的連結", "zh-Hans": "收入来源、个人资源展示、自信与金钱的连结", en: "income, display of resources, confidence tied to money" },
+      { house: 3, "zh-Hant": "表達欲、公開發言、手足與近距離社交場合", "zh-Hans": "表达欲、公开发言、手足与近距离社交场合", en: "self-expression, public speech, siblings, close social settings" },
+      { house: 4, "zh-Hant": "家庭中的主導位置、居家風格的展示欲", "zh-Hans": "家庭中的主导位置、居家风格的展示欲", en: "leadership at home, wanting one's home style seen" },
+      { house: 5, "zh-Hant": "戀愛、創作、子女與舞台性的自我表達", "zh-Hans": "恋爱、创作、子女与舞台性的自我表达", en: "romance, creativity, children, theatrical self-expression" },
+      { house: 6, "zh-Hant": "工作表現欲、對日常事務的掌控感、身體活力", "zh-Hans": "工作表现欲、对日常事务的掌控感、身体活力", en: "wanting recognition at work, control over routine, physical vitality" },
+      { house: 7, "zh-Hant": "伴侶關係中的主導權、公開合作場合", "zh-Hans": "伴侣关系中的主导权、公开合作场合", en: "leadership within partnership, public collaborations" },
+      { house: 8, "zh-Hant": "危機中的領導欲、深層資源的掌控", "zh-Hans": "危机中的领导欲、深层资源的掌控", en: "wanting to lead in a crisis, control over shared resources" },
+      { house: 9, "zh-Hant": "公開表達信念、跨文化舞台、教學與演說", "zh-Hans": "公开表达信念、跨文化舞台、教学与演说", en: "publicly stated beliefs, cross-cultural stage, teaching and speaking" },
+      { house: 10, "zh-Hant": "事業舞台、公開身分、領導位置", "zh-Hans": "事业舞台、公开身份、领导位置", en: "career stage, public identity, leadership position" },
+      { house: 11, "zh-Hant": "群體中的核心位置、社交圈的影響力", "zh-Hans": "群体中的核心位置、社交圈的影响力", en: "central position in a group, influence within a social circle" },
+      { house: 12, "zh-Hant": "私下的表演欲、未被看見的自我肯定需求", "zh-Hans": "私下的表演欲、未被看见的自我肯定需求", en: "a private need for performance or unseen self-affirmation" }
+    ],
+    sources: [
+      { label: "Astrology.com · Weekly Horoscope Sep 28 – Oct 4, 2026", url: "https://www.astrology.com/article/weekly-horoscope-september-28-2026-to-october-4-2026/" },
+      { label: "Storm Cestavani · Sep 28 – Oct 4, 2026 astrology", url: "https://stormcestavani.com/september-28-october-4-2026-what-still-has-power-over-you/" },
+      { label: "NASA/JPL Horizons", url: "https://ssd.jpl.nasa.gov/horizons/" }
+    ]
+  },
+  {
     id: "saturn-opposition-2026",
     published: "2026-09-15",
     status: "upcoming",
@@ -146,6 +227,21 @@ export const SKY_EVENTS: SkyEvent[] = [
     ]
   }
 ];
+
+/**
+ * The featured sky event is the most recently published entry, not a fixed
+ * array position. This lets a new weekly entry become the home-section and
+ * /sky-events headline automatically once merged, without reordering older
+ * entries or touching their display logic.
+ */
+export function getFeaturedSkyEvent(): SkyEvent {
+  return [...SKY_EVENTS].sort((a, b) => b.published.localeCompare(a.published))[0];
+}
+
+export function getArchivedSkyEvents(): SkyEvent[] {
+  const featured = getFeaturedSkyEvent();
+  return [...SKY_EVENTS].filter((event) => event.id !== featured.id).sort((a, b) => b.published.localeCompare(a.published));
+}
 
 export const SKY_EVENT_CATEGORIES = [
   "行星換座 / Planetary ingress",
