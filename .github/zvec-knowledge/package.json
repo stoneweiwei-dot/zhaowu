@@ -9,7 +9,11 @@
   "scripts": {
     "build-index": "node ./knowledge.mjs build",
     "search": "node ./knowledge.mjs search",
-    "smoke": "node ./knowledge.mjs smoke"
+    "smoke": "node ./knowledge.mjs smoke",
+    "build-media": "node ./media.mjs build",
+    "search-media": "node ./media.mjs search",
+    "media-inventory": "node ./media.mjs inventory",
+    "media-smoke": "node ./media.mjs smoke"
   },
   "dependencies": {
     "@zvec/zvec": "0.7.1"
