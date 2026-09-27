@@ -118,8 +118,11 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
         uploadDataDuringCreation: true,
         removeFingerprintOnSuccess: true,
         headers: {
-          // Bearer is required for signed resumable auth; x-signature kept for contract compatibility.
-          authorization: `Bearer ${signedUploadToken}`,
+          // Supabase resumable uploads need a valid JWT-shaped bearer credential plus
+          // the object-scoped signed-upload token in x-signature. The site owner session
+          // is cookie-based, so the public Supabase key is used as the bearer credential;
+          // the signed token authorizes this exact object/path.
+          authorization: `Bearer ${SUPABASE_KEY}`,
           apikey: SUPABASE_KEY,
           "x-signature": signedUploadToken,
           "x-upsert": "false",

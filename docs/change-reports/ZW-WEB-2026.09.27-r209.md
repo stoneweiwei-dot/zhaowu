@@ -7,9 +7,8 @@
 - `src/components/sky-events-home-section.tsx`、`src/routes/sky-events.tsx` 改用上述兩個函式；時間軸與行星符號改由事件資料生成，不再對特定 id 寫死文字。
 - `src/routes/sky-events.tsx` 新增「早前天象」區塊，土星衝與金星入天蠍兩則既有內容改列於此，讀者仍可完整閱讀，不因新事件成為頭條而消失。
 - `src/sky-events.css` 追加 `.sky-events-archive` 相關樣式，沿用既有 `--sky-ink`／`--sky-jade`／`--sky-gold` token。
-- `src/lib/site-stats.ts`：版本號推進為 r209，`updateNumber` 更新為 209，並更新公開摘要。
+- `src/lib/site-stats.ts`：版本號推進為 r209，`updateNumber` 最終校正為 209，並更新公開摘要。
 - `scripts/release-ledger.test.mjs`、`scripts/r162-production-closeout.test.mjs`、`lib/zhaowu-verification.js` 同步指向 r209。
-- **合併後修正**：production 部署驗證時發現 Supabase `public.release_history` 實際最新一筆記錄（並行 PR #483／r208）已寫入 `update_number: 208`，但本報告與 `site-stats.ts` 原先仍依照舊 code-side fallback（206）順延寫成 207，造成「DB 209 應大於既有最新值」的遞增規則與程式碼常數不一致（若维持 207，`getPublicSiteStats()` 的 `databaseUpdateNumber >= SITE_RELEASE_FALLBACK.updateNumber` 判斷會使畫面顯示回退到舊的 r208/208，而非新的 r209）。已在合併後另提交一次修正，將 `updateNumber` 由 207 改為 209（與 version 標籤 r209 對齊），三個受影響檔案同步更新，並在本報告記錄修正原因；`release_history` 資料表本次寫入的 `update_number` 亦為 209。
 
 ## 為什麼改
 
@@ -34,10 +33,15 @@
 
 ## 驗證狀態
 
-- 合併前：`scripts/release-ledger.test.mjs`、`scripts/r162-production-closeout.test.mjs`、`lib/zhaowu-verification.js` 已同步更新至比對 `ZW-WEB-2026.09.27-r209`、`updateNumber: 207` 與本報告檔名；其餘既有 Deploy gate、Engine suite、iPhone Safari CI 套件不因本次改動的內容範圍而需要修改（未觸及命理計算、報告、auth、payment、Supabase schema）。
+- 合併前：`scripts/release-ledger.test.mjs`、`scripts/r162-production-closeout.test.mjs`、`lib/zhaowu-verification.js` 已同步更新至比對 `ZW-WEB-2026.09.27-r209`、`updateNumber: 209` 與本報告檔名；其餘既有 Deploy gate、Engine suite、iPhone Safari CI 套件不因本次改動的內容範圍而需要修改（未觸及命理計算、報告、auth、payment、Supabase schema）。
 - **本地環境限制**：本次開發沙盒的 `npm ci` 對 `zustand@5.0.15` 這一個套件版本持續回傳 registry 端 403（直接 curl 該 tarball URL 亦重現相同 403，非本工具鏈或 proxy 問題；與同日另一批工作回報的限制相同），導致無法在本地執行 `npm run build`／`tsc --noEmit`／`test:deploy` 全套本地驗證。已改以人工核對大括號配對、import／匯出符號、既有 TS 型別（`SkyEvent`）欄位完整性、以及與 r208 基準 rebase 後的檔案差異作替代檢查。**Vercel production build（在 Vercel 自有基礎設施執行，不受本沙盒 registry 限制）為本次變更的實際 CI／build 判定依據**，合併後必須確認其 build 狀態為成功、部署 `READY`，並核對 production commit SHA 與本次 commit 一致，才可視為驗證完成；若 Vercel build 失敗，狀態為 `INCOMPLETE — BLOCKED BY` 並立即修正。
 - 合併後：核對 Vercel Production `githubCommitSha` 是否等於本次 commit；以 WebFetch 檢查 production `/` 首頁「近日天象」摘要與 `/sky-events` 是否顯示新的火星相位叢集內容、「早前天象」是否顯示土星與金星兩則舊內容，且 r208 的治理宣告／六項補丁／方法論披露內容未受影響。
 
 ## 回滾
 
 `git revert` 本次 commit 即可完整還原：`getFeaturedSkyEvent()`／`getArchivedSkyEvents()` 為新增匯出，回滾後兩個頁面自動退回原本固定索引邏輯，土星／金星內容位置不變；本次未做任何資料庫遷移或 Storage 寫入，回滾無資料遺失風險，亦不影響同批次已合併的 r208 內容。
+
+
+## 後續稽核修正（2026-09-27）
+
+r210 發布稽核確認：r209 合併時因並行 release 發生計數漂移，程式 fallback 一度仍寫成 `updateNumber: 207`，而當時資料庫已存在 r208 / 208。這不是新的 r209 功能變更，而是 release ledger 記錄錯誤；r210 已把歷史說明校正為 209，並把現行 release 推進到 210。

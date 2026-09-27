@@ -15,19 +15,19 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.27-r209",
-  updateNumber: 209,
-  publishedAt: "2026-09-27T23:40:00+10:00",
-  latestSummary: "近日天象新增本週火星相位叢集，並改為自動挑選最新一則發布作為首頁與天象專欄頭條。",
+  version: "ZW-WEB-2026.09.27-r210",
+  updateNumber: 210,
+  publishedAt: "2026-09-27T23:58:00+10:00",
+  latestSummary: "完成 r1–r209 發布稽核、補齊有真實 commit 的缺失變更紀錄，並修正登入影片大檔續傳的 TUS 授權標頭。",
   details: {
     "zh-Hant": [
-      "「近日天象」新增本週（9/28–10/3）火星相位叢集事件：太陽三分天王星、水星入天蠍、火星四分水星、火星三分海王星、火星衝冥王逆行，附天文事實與占星心理解讀分層，以及本命宮位對照。",
-      "首頁天象摘要與天象專欄頭條，從固定顯示陣列首項，改為自動挑選 published 日期最新的一則；土星衝、金星入天蠍等既有內容保留，於專欄新增「早前天象」區塊可繼續查閱，不再需要每次手動調整陣列順序。",
+      "稽核 docs/change-reports 與 Git 歷史：補回 r71–r77、r93、r121、r124、r128、r143、r172、r195、r202 的真實 commit 變更紀錄；r59 保留為沒有對應 release commit 的歷史跳號，不補造假版本。",
+      "修正 >6 MB MP4/WebM TUS 續傳：Authorization 改用有效的 Supabase bearer credential，物件 signed-upload token 僅放 x-signature；同時修正 r209 updateNumber 漂移與 CURRENT 文件的過期登入動畫描述。"
     ],
     en: [
-      "\"Recent sky events\" gains this week's (9/28–10/3) Mars aspect cluster: Sun trine Uranus, Mercury into Scorpio, Mars square Mercury, Mars trine Neptune, and Mars opposite retrograde Pluto, with layered astronomy/astrology notes and a natal-house table.",
-      "The home teaser and sky-events headline now auto-select the most recently published entry instead of a fixed array position; the existing Saturn and Venus features remain reachable in a new \"earlier sky events\" archive list, so no manual reordering is needed for future weekly updates.",
-    ],
+      "Audited the r1–r209 release ledger against Git history and backfilled only release notes backed by real commits; r59 remains an intentional historical gap because no matching release commit was found.",
+      "Fixed >6 MB MP4/WebM TUS resumable-upload authorization, corrected release-number drift, and removed stale CURRENT documentation that conflicted with the active once-per-local-day login-animation rule."
+    ]
   },
 } as const;
 

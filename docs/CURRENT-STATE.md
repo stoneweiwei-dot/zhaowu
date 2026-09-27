@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-27 21:00 AEST
+最後核對：2026-09-27 23:58 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -88,15 +88,18 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 
 ## 6. Loading／Login animation
 
-r191 依站主最新指令修正：
+r204 依站主最新指令 supersede r191 的播放頻率：
 
 - `/login` 是唯一登入動畫入口；首頁、一般分區、報告頁與返回導覽一律不掛載 `IntroGate`。
-- 每次站主登入流程只在首次進入 `/login` 播放一次；影片不循環，播完使用靜態封面。切到其他 route 再返回 `/login` 不重播；站主主動登出後才開始下一次登入流程。
+- 同一裝置每個本地日曆日最多播放一次；同日登出／重登、切換 route、重新整理或換 browser session 都不得重播。播放中提供 Skip；影片不循環，播完或 Skip 後使用靜態封面。
 - 後台「登入動畫管理」只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為動畫卡片，新增上傳也只接受 MP4／WebM。
 - 歷史 `IntroGate` 元件與 policy 只留回歸／相容參照，不得重新接回公開 runtime。
 - r194 起 Supabase Pro 已由站主明確批准，舊 r181 Free 容量寫入凍結退出 active path；runtime 的既有 same-origin fallback 保留。
 - r194：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器接受 MP4／WebM、時長上限 15 秒、單檔上限 500 MB；大於 6 MB 使用 Supabase TUS 斷點續傳。系統不在瀏覽器內轉碼，來源檔須已是可播放的 15 秒內成品。
-- r196：完整綜合報告新增「完整命書／漫畫 Lite」雙閱讀模式，預設漫畫 Lite 六格；每格可展開同一份完整報告原文。這是呈現層，不新增 calculation、Storage、AI provider 或 payment gate。\n- r197：站主 `/gallery` 素材後台改為「登入影片／內容圖片」二選一分頁，一次只渲染一個管理器；登入影片、總圖庫、背景與報告的批量工具列只有先勾選項目後才顯示。功能、Owner 權限、Storage 寫入與資料結構不變。\n- r197：已安裝 PWA 以 release metadata + service worker 前景檢查吸收新正式版本，不要求刪除 App 重裝。
+- r210：>6 MB MP4／WebM 的 TUS resumable request 使用 `Authorization: Bearer ${SUPABASE_KEY}` 作可驗證 bearer credential，object-scoped signed upload token 只放 `x-signature`。此前把 signed token 放進 Authorization 的 r204-era 實作已被證明會觸發 403 RLS，禁止復活。
+- r196：完整綜合報告新增「完整命書／漫畫 Lite」雙閱讀模式，預設漫畫 Lite 六格；每格可展開同一份完整報告原文。這是呈現層，不新增 calculation、Storage、AI provider 或 payment gate。
+- r197：站主 `/gallery` 素材後台改為「登入影片／內容圖片」二選一分頁，一次只渲染一個管理器；登入影片、總圖庫、背景與報告的批量工具列只有先勾選項目後才顯示。功能、Owner 權限、Storage 寫入與資料結構不變。
+- r197：已安裝 PWA 以 release metadata + service worker 前景檢查吸收新正式版本，不要求刪除 App 重裝。
 
 ## 7. Supabase
 
@@ -149,6 +152,12 @@ r191 依站主最新指令修正：
 
 - r199：站主背景音樂後台完成資訊減法；常駐教學文案移除，批量工具列只在已有選取時顯示。公開 /api/owner-music 讀取改為直接讀 owner-music branch raw manifest，避開 Node 24 DEP0169 的舊 URL parser 路徑；寫入／Owner Cookie／SSH push 邏輯不變。
 - r200：r199 部署後真實呼叫仍觸發 DEP0169；根因確認為 `lib/owner-music-git.js` 頂層靜態載入 Node Git HTTP adapter。r200 改為只在 `withRepo()`（站主寫入）中動態載入，公開 `/api/owner-music` GET 不再評估該 adapter。
+
+### r210 發布完整性稽核
+
+- 已核對 `docs/change-reports` 與 Git 歷史：r11–r209 間有 15 個真實 release commit 沒有對應 change-report（r71–r77、r93、r121、r124、r128、r143、r172、r195、r202）；r210 只按真實 commit 回填，不為無 commit 的 r59 或 r1–r10 補造版本。
+- 已發現並修正三個「文件/測試聲稱已做，但 current source 不一致」的具體漂移：TUS Authorization 標頭、r209 updateNumber、CURRENT login animation 頻率；Instruction Registry 的 r206→r208 標籤漂移亦一併修正。
+- 真實體 iPhone Safari 與已驗證 owner session 的 >6 MB 實際上傳仍屬 human/live evidence gate；程式碼與 CI 不得冒充這兩項實機證據。
 
 ### P1 / Backlog
 - STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。

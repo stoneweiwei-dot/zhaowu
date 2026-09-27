@@ -1,10 +1,18 @@
+## 2026-09-27 r210 發布完整性稽核 supersession
+
+- ACTIVE：change-report 不得再被當成「做了」的唯一證據。runtime／UI／資料變更必須至少有對應 source diff + regression/CI；Production 功能仍需 live evidence。
+- ACTIVE：r1–r209 歷史稽核只回填有真實 Git commit 證據的缺失 release note；不得為沒有 release commit 的跳號補造版本。
+- ACTIVE：>6 MB MP4/WebM 的 TUS resumable upload，`Authorization` 必須使用可被 Supabase 接受的 bearer credential；object-scoped signed upload token 放在 `x-signature`。禁止再次把 signed token 當 bearer JWT。
+- ACTIVE：r204 的登入動畫規則為同一裝置、本地日曆日最多一次；同日登出／重登／換 route／refresh／換 browser session 都不得重播，並保留 Skip。
+- ACTIVE：release ledger 的 `version`、`updateNumber`、最新 change-report、Production SHA 與 Supabase `release_history` 必須一致；發現漂移即視為未完成，不得用報告文字掩蓋。
+
 # 昭梧｜Instruction Registry
 
 状态：`ACTIVE REGISTRY`
 
 目的：把「当前有效」「已被取代」「曾因权限未接入」「仅历史参考」分开，防止未来 AI / Agent 从旧聊天、旧 Library 文件、旧 AppDeploy 补丁或旧 PR 重新激活已废止指令。
 
-## 2026-09-27 r206 命理核心最後一次收口：R6.2.2 五層宣告 + 六項最小補丁 + 古籍來源 + 方法論披露
+## 2026-09-27 r208 命理核心最後一次收口：R6.2.2 五層宣告 + 六項最小補丁 + 古籍來源 + 方法論披露
 
 - 站主最新明確指令（"最後一次收口"）：本次只做四件事，不重新研究整個專案、不另建命理框架、不推翻既有子平核心。
 - **Task 1**：`docs/STONE-R6.2.2-CURRENT-MASTER-DECLARATION.md` 新增，正式宣告 R6.2.2 為唯一 CURRENT MASTER，並把既有文件／runtime 綁定到站主指定的五層模型（L1 CORE ZI-PING／L2 STRUCTURAL PATCH／L3 TEMPORAL-EVENT／L4 EVIDENCE-AUXILIARY／L5 OPERATIONAL INFRASTRUCTURE）。Code-level engine identifier 依既有 R6.2.2 §8 規則繼續保持 `R6.2.1`；本宣告不改動 L1／L2 既有判法文字。
