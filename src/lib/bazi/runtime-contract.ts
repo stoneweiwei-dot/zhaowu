@@ -4,6 +4,152 @@ export const BAZI_RUNTIME_PATCH_SOURCES = [
   'docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md',
   'docs/STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md',
 ] as const;
+
+/**
+ * R6.2.2 is the CURRENT GOVERNANCE MASTER. It is an evidence/execution overlay,
+ * not a rewrite of deterministic chart truth — the code-level engine identifier
+ * intentionally remains R6.2.1 (see docs/STONE-R6.2.2-CURRENT-MASTER.md §8).
+ */
+export const BAZI_GOVERNANCE_MASTER_VERSION = 'R6.2.2' as const;
+export const BAZI_GOVERNANCE_MASTER_SOURCE = 'docs/STONE-R6.2.2-CURRENT-MASTER.md' as const;
+export const BAZI_SIX_MINIMUM_PATCHES_SOURCE = 'docs/STONE-R6.2.2-SIX-PATCHES.md' as const;
+export const BAZI_MASTER_DECLARATION_SOURCE =
+  'docs/STONE-R6.2.2-CURRENT-MASTER-DECLARATION.md' as const;
+
+/**
+ * Five-layer governance taxonomy — owner-specified 2026-09-27, verbatim scope.
+ * This is a documentation / routing map only: it does not create a second
+ * execution order and does not change BAZI_ANALYSIS_MAINLINE below. The six
+ * minimum patches (see BAZI_SIX_MINIMUM_PATCHES_SOURCE) refine specific L2/L3/L4
+ * items in place; they are not a separate sixth layer.
+ */
+export const BAZI_GOVERNANCE_LAYER_MODEL = [
+  {
+    layer: 'L1',
+    name: 'CORE ZI-PING',
+    source: BAZI_CURRENT_MASTER_SOURCE,
+    scope: '月令、調候、根氣、格局、體用、病藥、制化、流通、承載。',
+  },
+  {
+    layer: 'L2',
+    name: 'STRUCTURAL PATCH',
+    source: 'docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md, docs/STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md',
+    scope: 'GF-13、TG-FS、P2、PK-6、EC-7、ODL→FC、墓庫、辰庫六態、NEG-QA。PATCH 01 擴展 GF-13、PATCH 02 把 ODL→FC 延伸為 ODL→FC→CAPACITY，均在本層原地加固，不新增第二套判法。',
+  },
+  {
+    layer: 'L3',
+    name: 'TEMPORAL / EVENT',
+    source: 'BAZI_ANALYSIS_MAINLINE (原局→大運→流年→流月), LBX 四軸, kinship-runtime 六親事件鏈',
+    scope: '原局 → 大運 → 流年 → 流月；LBX、事件分類、六親／事件對象定位。PATCH 03 時間層證據缺口與 PATCH 05 事件鏈分離在本層加固。',
+  },
+  {
+    layer: 'L4',
+    name: 'EVIDENCE / AUXILIARY',
+    source: BAZI_GOVERNANCE_MASTER_SOURCE,
+    scope: 'SRC、VAL、AUX、胎元、命宮、身宮、神煞、十干外應、紫微等旁證。PATCH 04 資料證據邊界與 PATCH 06 年度機制獨立／VAL-C 回溯降級在本層加固。',
+  },
+  {
+    layer: 'L5',
+    name: 'OPERATIONAL INFRASTRUCTURE',
+    source: 'AGENTS.md, docs/INSTRUCTION-REGISTRY.md, docs/CURRENT-STATE.md, supabase/migrations',
+    scope: 'Execution Manifest、G0–G4、REASONED、MSC、EVP、Conflict Matrix、SH-FECM、Regression、release ledger、classic_passages 古籍治理、部署／成本護欄。',
+  },
+] as const;
+
+/**
+ * PATCH 01｜GF-13 擴展：GF-13 不只檢查「格局真假」，而是檢查所有命名結構真假
+ * （包括但不限於：傷官配印、殺印相生、財官印相生、官殺取清、木火通明、金白水清、
+ * 水火既濟、食傷生財、比劫奪財／合作、從格）。硬規則：「有其名 ≠ 有其實」。
+ */
+export const BAZI_GF13_NAMED_STRUCTURE_EXAMPLES = [
+  '傷官配印',
+  '殺印相生',
+  '財官印相生',
+  '官殺取清',
+  '木火通明',
+  '金白水清',
+  '水火既濟',
+  '食傷生財',
+  '比劫奪財／合作',
+  '從格',
+] as const;
+export const BAZI_GF13_VERIFICATION_AXES = [
+  '月令',
+  '根氣',
+  '調候',
+  '承載',
+  '制化',
+  '流通',
+  '反證',
+] as const;
+
+/**
+ * PATCH 02｜ODL → FC → CAPACITY 三段：存在關係 ≠ 作用有效 ≠ 結果落地。
+ * 禁止把前一階段直接等於後一階段。
+ */
+export const BAZI_ODL_FC_CAPACITY_STAGES = [
+  { stage: 'ODL', question: '有沒有根／透／路（存在關係 existence）。' },
+  { stage: 'FC', question: '作用是否真的有效（effectiveness）。' },
+  { stage: 'CAPACITY', question: '結果是否能被日主／整體結構承載並落到現實（capacity）。' },
+] as const;
+
+/**
+ * PATCH 03｜時間層 Evidence Gap：重大事件在原局／大運／流年分別記錄
+ * PRESENT／ABSENT／UNKNOWN；流月只負責縮窗。禁止「流年 > 大運 > 原局」
+ * 或「流年力量永遠最大」的固定階層語句。
+ */
+export const BAZI_TIME_LAYER_EVIDENCE_STATES = ['PRESENT', 'ABSENT', 'UNKNOWN'] as const;
+export const BAZI_TIME_LAYERS_FOR_EVIDENCE_GAP = ['原局', '大運', '流年'] as const;
+export const BAZI_TIME_LAYER_FIXED_STATEMENT =
+  '原局定結構；大運定十年條件；流年定年度觸發；流月只縮小時間窗口。' as const;
+
+/**
+ * PATCH 04｜Data Evidence Boundary：命理輸出細度不得超過已知資料細度。
+ * 例：只知道「住院」不得自行補病名；只知道「事故」不得補事故方式；
+ * 只知道「官非」不得補罪名／判決；日期未知不得補年月日。UNKNOWN 就明確寫 UNKNOWN。
+ */
+export const BAZI_DATA_EVIDENCE_BOUNDARY_EXAMPLES = [
+  { known: '住院', forbidden: '自行補病名' },
+  { known: '事故', forbidden: '自行補事故方式' },
+  { known: '官非', forbidden: '自行補罪名／判決' },
+  { known: '日期未知', forbidden: '自行補年月日' },
+] as const;
+
+/**
+ * PATCH 05｜Event Chain Separation：本人、配偶、父親、母親、兄弟姐妹、子女
+ * 必須分別建立 Evidence Chain；同一年發生多件事情 ≠ 同一個命理機制。
+ * 每條鏈固定四步：目標對象 → 原局根 → 大運場 → 流年觸發 → 現實反饋。
+ */
+export const BAZI_EVENT_CHAIN_ROLES = [
+  '本人',
+  '配偶',
+  '父親',
+  '母親',
+  '兄弟姐妹',
+  '子女',
+] as const;
+export const BAZI_EVENT_CHAIN_STEPS = [
+  '目標對象',
+  '原局根',
+  '大運場',
+  '流年觸發',
+  '現實反饋',
+] as const;
+
+/**
+ * PATCH 06｜年度機制獨立 + 回溯降級：連續兩年發生同類事件，也必須分別解釋
+ * 當年的實際作用鏈。知道答案後才倒推年月日，只能標 VAL-C／回溯支持，不得算成
+ * 前瞻預測命中或正式 empirical validity。
+ */
+export const BAZI_VALIDATION_CLASSES = [
+  { code: 'VAL-A', name: '前瞻驗證', note: '結論在事件發生前已鎖定，不可事後修改。' },
+  { code: 'VAL-B', name: '獨立盲回溯', note: '判斷者不知結果情況下獨立作出，事後核對。' },
+  {
+    code: 'VAL-C',
+    name: '解釋性回溯／回溯支持',
+    note: '已知結果後才倒推年月日的事後解釋；可用於案例研究，不得算成前瞻預測命中或正式 empirical validity。',
+  },
+] as const;
 export const BAZI_INTERPRETATION_GUARD_SOURCES = [
   'docs/WFX-WANGSHI-ZHIHUA-v1.0.md',
   'docs/THREE-YUAN-AUXILIARY-RULE.md',

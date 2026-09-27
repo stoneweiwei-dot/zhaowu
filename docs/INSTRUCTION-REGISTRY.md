@@ -4,6 +4,15 @@
 
 目的：把「当前有效」「已被取代」「曾因权限未接入」「仅历史参考」分开，防止未来 AI / Agent 从旧聊天、旧 Library 文件、旧 AppDeploy 补丁或旧 PR 重新激活已废止指令。
 
+## 2026-09-27 r206 命理核心最後一次收口：R6.2.2 五層宣告 + 六項最小補丁 + 古籍來源 + 方法論披露
+
+- 站主最新明確指令（"最後一次收口"）：本次只做四件事，不重新研究整個專案、不另建命理框架、不推翻既有子平核心。
+- **Task 1**：`docs/STONE-R6.2.2-CURRENT-MASTER-DECLARATION.md` 新增，正式宣告 R6.2.2 為唯一 CURRENT MASTER，並把既有文件／runtime 綁定到站主指定的五層模型（L1 CORE ZI-PING／L2 STRUCTURAL PATCH／L3 TEMPORAL-EVENT／L4 EVIDENCE-AUXILIARY／L5 OPERATIONAL INFRASTRUCTURE）。Code-level engine identifier 依既有 R6.2.2 §8 規則繼續保持 `R6.2.1`；本宣告不改動 L1／L2 既有判法文字。
+- **Task 2**：`docs/STONE-R6.2.2-SIX-PATCHES.md` 新增為 `ACTIVE RUNTIME PATCH`，收錄站主 128 頁 PDF 壓力測試的六個最小 Patch（GF-13 擴展、ODL→FC→CAPACITY、時間層 Evidence Gap、Data Evidence Boundary、Event Chain Separation、年度機制獨立＋VAL-C 回溯降級）。Runtime 綁定為新增檔案 `src/lib/bazi/six-patches-instruction.ts`（instruction rule `ZW-R6.2.2-SIX-PATCHES-1.0`，priority 0，注入順序僅次於 `ZW-HUMAN-GUIDANCE-CORE-1.0`），機器可讀常數新增於 `src/lib/bazi/runtime-contract.ts`（`BAZI_GOVERNANCE_MASTER_*`、`BAZI_GF13_*`、`BAZI_ODL_FC_CAPACITY_STAGES`、`BAZI_TIME_LAYER_*`、`BAZI_DATA_EVIDENCE_BOUNDARY_EXAMPLES`、`BAZI_EVENT_CHAIN_*`、`BAZI_VALIDATION_CLASSES`）。不修改四柱／節氣／藏干／十神／起運／大運等 deterministic calculation truth，不修改既有 P2／P3 全文。
+- **Task 3**：Supabase `classic_passages` 既有結案狀態（verified=38／not_applicable=15／pending=0／rejected=0）核對後完全未動。新增 migration `supabase/migrations/20260927210000_add_bazi_classic_sources.sql`，只在 `classic_sources` 新增 4 筆子平核心來源（滴天髓、三命通會【四庫全書本】、子平真詮【國家圖書館影印原本掃描】、窮通寶鑑），全部標 `source_nature='classic'` 並在 `verification_note` 明確區分古籍原文與注文／後世整理（徐樂吾《子平真詮評注》、任鐵樵《滴天髓闡微》、徐樂吾《造化元鑰》均註明為另立條目，不得與本次登記的原文條目混用）。未插入任何 `classic_passages` 列，故既有段落驗證計數不受影響。
+- **Task 4**：方法論披露聲明（繁中／簡中／英文）待加入完整報告區域；繁中／簡中文案採站主提供原文（分別轉換為正體／保留簡體），英文為站主指定風格（自然白話、不逐字直譯術語堆疊）的獨立撰寫版本，非機器翻譯。
+- 驗收邊界：不改排盤結果、auth／payment／Supabase 用戶資料結構；不重新發明格局評分；不使用「缺什麼補什麼」；不允許旁證推翻子平主判；不允許流月越級造重大事件；不允許已知答案後的回溯解釋冒充預測成功。
+
 ## 2026-09-25 r204 登入動畫每日一次 × 音樂模式可見回饋 supersession
 
 - 站主最新明確指令：登入動畫只允許在 `/login`，且同一裝置每個本地日曆日最多播放一次；同日登出、重新登入、換 route、重新整理或換瀏覽 session 都不得重播。r191/r192 的「登出後開始下一次播放流程」在此範圍正式 `SUPERSEDED`。

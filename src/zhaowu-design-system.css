@@ -3159,6 +3159,40 @@ html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen[data-login-s
   line-height: 1.65 !important;
 }
 
+/* 2026-09-27 最後一次收口 Task 4 — small methodology disclosure inside 判斷備註層. */
+.zhaowu-report-methodology {
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--zw-line);
+  display: grid;
+  gap: 8px;
+  max-width: 100%;
+}
+.zhaowu-report-methodology__statement {
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.7 !important;
+  color: var(--zw-muted) !important;
+}
+.zhaowu-report-methodology__more {
+  color: var(--zw-muted);
+}
+.zhaowu-report-methodology__more > summary {
+  list-style: none;
+  cursor: pointer;
+  font-size: 12px !important;
+  font-weight: 640 !important;
+  color: var(--zw-ink-soft) !important;
+  padding: 4px 0;
+}
+.zhaowu-report-methodology__more > summary::-webkit-details-marker { display: none; }
+.zhaowu-report-methodology__more > p {
+  margin: 6px 0 0 !important;
+  font-size: 12px !important;
+  line-height: 1.7 !important;
+  color: var(--zw-muted) !important;
+}
+
 /* r185 — night mode is surface-aware: paper stays dark-ink, dark panels stay light-ink. */
 html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-result-flow {
   --zw-ink: #29251f;
@@ -3213,6 +3247,17 @@ html[data-zw-theme="night"] .zhaowu-report-method-notes__body {
 }
 html[data-zw-theme="night"] .zhaowu-report-method-lines section {
   border-left-color: rgba(212, 176, 116, .42);
+}
+html[data-zw-theme="night"] .zhaowu-report-methodology {
+  border-top-color: rgba(225, 201, 151, .22);
+}
+html[data-zw-theme="night"] .zhaowu-report-methodology__statement,
+html[data-zw-theme="night"] .zhaowu-report-methodology__more,
+html[data-zw-theme="night"] .zhaowu-report-methodology__more > p {
+  color: #cfc2ad !important;
+}
+html[data-zw-theme="night"] .zhaowu-report-methodology__more > summary {
+  color: #e2d7c4 !important;
 }
 
 /* r186 — editorial reset.
