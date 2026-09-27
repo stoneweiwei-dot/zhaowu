@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r212",
-  updateNumber: 212,
-  publishedAt: "2026-09-28T01:08:00+10:00",
-  latestSummary: "完整報告新增已發布的 EP01 木／EP02 火缺象觀察；時辰未知不硬判，土金水未發布不自行補寫。",
+  version: "ZW-WEB-2026.09.28-r213",
+  updateNumber: 213,
+  publishedAt: "2026-09-28T01:18:00+10:00",
+  latestSummary: "背景音樂公開讀取與站主 Git 寫入已真正分離；一般播放不再載入 isomorphic-git／SSH 寫入依賴。",
   details: {
     "zh-Hant": [
-      "完整報告只接入目前已發布的 EP01 木與 EP02 火缺象邏輯；木看無甲乙寅卯，火看無丙丁巳午，且時辰未知時不斷言整局確定缺象。",
-      "來源側寫與象義練習只作主判後翻譯；是否為真正功能缺口仍回到喜用與整體結構。土／金／水尚未發布，不自行生成。",
+      "背景音樂公開 GET／HEAD 改讀獨立輕量 manifest 模組，不再靜態載入 Git／SSH 寫入依賴。",
+      "站主新增、改名、切換與刪除音樂仍維持原 Git 寫入流程，只在通過站主驗證後動態載入。",
     ],
     en: [
-      "Full reports now use only the published EP01 Wood and EP02 Fire absence rules; unknown birth time blocks any whole-chart absence claim.",
-      "Source personality notes and symbolic practices remain post-judgement translations only. Unpublished Earth, Metal and Water episodes are not inferred.",
+      "Public background-music reads now use a lightweight manifest module and no longer load Git or SSH write dependencies.",
+      "Owner-only music mutations keep the existing Git write path, which is loaded only after owner authentication.",
     ],
   },
 } as const;
