@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r211",
-  updateNumber: 211,
-  publishedAt: "2026-09-28T00:02:00+10:00",
-  latestSummary: "完整報告已加入五行功能、十干趣味側寫與四庫提示；只作主判後的白話翻譯，不改命理核心。",
+  version: "ZW-WEB-2026.09.28-r212",
+  updateNumber: 212,
+  publishedAt: "2026-09-28T01:08:00+10:00",
+  latestSummary: "背景音樂公開讀取與站主 Git 寫入已真正分離；一般播放不再載入 isomorphic-git／SSH 寫入依賴。",
   details: {
     "zh-Hant": [
-      "完整報告新增「五行功能」：以五常與功能語言翻譯核心天干所屬五行，不採缺什麼補什麼。",
-      "命盤含辰戌丑未時，報告加入「四庫提示」；另加入一條明確標為趣味化翻譯的「天干一面」，不作人格定論。",
+      "背景音樂公開 GET／HEAD 改讀獨立輕量 manifest 模組，不再靜態載入 Git／SSH 寫入依賴。",
+      "站主新增、改名、切換與刪除音樂仍維持原 Git 寫入流程，只在通過站主驗證後動態載入。",
     ],
     en: [
-      "Full reports now include a concise five-element functional lens after the main judgement, without using a replace-what-is-missing rule.",
-      "Charts containing the four storehouse branches receive a compact storehouse note, plus a clearly bounded stem shorthand that is not treated as a personality verdict.",
+      "Public background-music reads now use a lightweight manifest module and no longer load Git or SSH write dependencies.",
+      "Owner-only music mutations keep the existing Git write path, which is loaded only after owner authentication.",
     ],
   },
 } as const;
