@@ -5,26 +5,30 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("owner music API is a self-contained cookie-gated function off the SPA rewrite", async () => {
+test("owner music read and write APIs are physically split off the SPA rewrite", async () => {
   const api = await source("api/owner-music.js");
+  const writeApi = await source("api/owner-music-write.js");
   const publicRead = await source("lib/owner-music-public.js");
   const git = await source("lib/owner-music-git.js");
   const ssh = await source("lib/owner-music-ssh.json");
   const vercel = JSON.parse(await source("vercel.json"));
-  assert.match(api, /OWNER_KEY_SHA256/);
-  assert.match(api, /writer\.saveOwnerMusicTrack/);
-  assert.match(api, /OWNER_REQUIRED/);
-  assert.doesNotMatch(api, /from ["']\.\.\/src\//);
-  assert.match(api, /from ["']\.\.\/lib\/owner-music-public\.js["']/);
-  assert.doesNotMatch(api, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
-  assert.match(api, /import\(["']\.\.\/lib\/owner-music-git\.js["']\)/);
+  assert.match(api, /readOwnerMusicManifest/);
+  assert.doesNotMatch(api, /OWNER_KEY_SHA256|OWNER_REQUIRED|owner-music-git|isomorphic-git|ssh2/);
+  assert.match(writeApi, /OWNER_KEY_SHA256/);
+  assert.match(writeApi, /saveOwnerMusicTrack/);
+  assert.match(writeApi, /OWNER_REQUIRED/);
+  assert.doesNotMatch(writeApi, /from ["']\.\.\/src\//);
+  assert.match(writeApi, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
   assert.match(publicRead, /readOwnerMusicManifest/);
   assert.doesNotMatch(publicRead, /isomorphic-git|ssh2/);
   assert.match(git, /owner-music/);
   assert.match(git, /decryptOwnerSshKey/);
   assert.doesNotMatch(ssh, /BEGIN OPENSSH PRIVATE KEY/);
   assert.match(ssh, /aes-256-gcm/);
-  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 60);
+  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 10);
+  assert.equal(vercel.functions["api/owner-music-write.js"].maxDuration, 60);
+  assert.equal(vercel.functions["api/owner-music-write.js"].includeFiles, "lib/owner-music-ssh.json");
+  assert.equal(vercel.functions["api/owner-music.js"].includeFiles, undefined);
   assert.deepEqual(vercel.git.deploymentEnabled, { "**": false, main: true });
   assert.match(vercel.ignoreCommand, /git diff --quiet/);
   assert.equal(vercel.rewrites.at(-1).source, "/((?!api/).*)");
@@ -34,7 +38,7 @@ test("owner key hash is rotated and the raw secret is not in the repo", async ()
   const login = await source("api/owner-login.js");
   const session = await source("api/owner-session.js");
   const server = await source("src/server/owner-auth.ts");
-  const music = await source("api/owner-music.js");
+  const music = await source("api/owner-music-write.js");
   assert.match(login, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
   assert.match(session, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
   assert.match(server, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
@@ -65,6 +69,7 @@ test("account console and player use owner music with browser-side format optimi
   assert.match(organizer, /背景音樂|背景音乐/);
   assert.match(client, /optimizeOwnerMusic/);
   assert.match(client, /x-zhaowu-music-name/);
+  assert.match(client, /OWNER_MUSIC_WRITE_URL = "\/api\/owner-music-write"/);
   assert.match(client, /zhaowu-music-change/);
   assert.match(transcoder, /TARGET_UPLOAD_BYTES = 3_550_000/);
   assert.match(transcoder, /MAX_OWNER_UPLOAD_BYTES = 12 \* 1024 \* 1024/);

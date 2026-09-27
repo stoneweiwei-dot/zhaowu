@@ -42,11 +42,12 @@ test("Guan Shi Lu titles stay in the collapsed row and hex cream is gone", async
   assert.match(svg, /STONE/);
 });
 
-test("owner music skips iPhone decode for MP3/M4A, uploads in chunks, accepts raw request bytes, and guarantees same-origin fallback audio", async () => {
+test("owner music keeps public reads dependency-light and routes mutations through the isolated writer", async () => {
   const transcoder = await source("src/lib/owner-music-transcode.ts");
   const native = await source("src/lib/owner-music-native-encode.ts");
   const client = await source("src/lib/owner-music-client.ts");
   const api = await source("api/owner-music.js");
+  const writeApi = await source("api/owner-music-write.js");
   const publicRead = await source("lib/owner-music-public.js");
   const git = await source("lib/owner-music-git.js");
   const vercel = JSON.parse(await source("vercel.json"));
@@ -58,17 +59,18 @@ test("owner music skips iPhone decode for MP3/M4A, uploads in chunks, accepts ra
   assert.doesNotMatch(transcoder, /file\.size <= TARGET_UPLOAD_BYTES &&/);
   assert.match(native, /setTimeout\(resolve, 1200\)/);
   assert.match(client, /OWNER_MUSIC_CHUNK_BYTES = 3_000_000/);
+  assert.match(client, /OWNER_MUSIC_WRITE_URL = "\/api\/owner-music-write"/);
   assert.match(client, /x-zhaowu-music-upload-id/);
   assert.match(client, /uploadInChunks/);
-  assert.match(api, /writer\.saveOwnerMusicChunk/);
-  assert.match(api, /import\(["']\.\.\/lib\/owner-music-git\.js["']\)/);
-  assert.doesNotMatch(api, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
+  assert.match(writeApi, /saveOwnerMusicChunk/);
+  assert.match(writeApi, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
+  assert.doesNotMatch(api, /owner-music-git|isomorphic-git|ssh2/);
   assert.match(publicRead, /readOwnerMusicManifest/);
   assert.match(publicRead, /MAX_BYTES = 12 \* 1024 \* 1024/);
   assert.doesNotMatch(publicRead, /isomorphic-git|ssh2/);
-  assert.match(api, /x-zhaowu-music-chunk-index/);
-  assert.match(api, /bodyParser: false/);
-  assert.match(api, /req\[Symbol\.asyncIterator\]/);
+  assert.match(writeApi, /x-zhaowu-music-chunk-index/);
+  assert.match(writeApi, /bodyParser: false/);
+  assert.match(writeApi, /req\[Symbol\.asyncIterator\]/);
   assert.match(api, /STATIC_FALLBACK_TRACK/);
   assert.match(api, /\/audio\/zhaowu-background\.mp3/);
   assert.match(api, /source: "static-fallback"/);
@@ -77,7 +79,8 @@ test("owner music skips iPhone decode for MP3/M4A, uploads in chunks, accepts ra
   assert.doesNotMatch(api, /supabase-bootstrap/);
   assert.match(git, /saveOwnerMusicChunk/);
   assert.match(git, /SCRATCH_DIR/);
-  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 60);
+  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 10);
+  assert.equal(vercel.functions["api/owner-music-write.js"].maxDuration, 60);
   assert.match(manager, /12MB/);
   assert.match(manager, /分段上傳/);
 });

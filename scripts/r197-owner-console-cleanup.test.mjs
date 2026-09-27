@@ -46,12 +46,15 @@ test("r199 owner music public read avoids the legacy git HTTP URL parser", async
 });
 
 
-test("r200 public owner-music GET does not statically evaluate the Node git HTTP adapter", async () => {
+test("r214 public owner-music GET is a separate function from the Git writer", async () => {
   const api = await source("api/owner-music.js");
+  const writeApi = await source("api/owner-music-write.js");
   const publicRead = await source("lib/owner-music-public.js");
   const git = await source("lib/owner-music-git.js");
-  assert.doesNotMatch(api, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
-  assert.match(api, /import\(["']\.\.\/lib\/owner-music-git\.js["']\)/);
+  assert.doesNotMatch(api, /owner-music-git|isomorphic-git|ssh2|OWNER_KEY_SHA256/);
+  assert.match(api, /readOwnerMusicManifest/);
+  assert.match(writeApi, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
+  assert.match(writeApi, /OWNER_KEY_SHA256/);
   assert.doesNotMatch(publicRead, /isomorphic-git\/http\/node|isomorphic-git|ssh2/);
   assert.doesNotMatch(git, /import http from ["']isomorphic-git\/http\/node["']/);
   assert.match(git, /await import\("isomorphic-git\/http\/node"\)/);
