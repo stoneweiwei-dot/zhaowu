@@ -334,6 +334,8 @@ The release ledger is the canonical answer to: **which version is live, how many
 
 For every ZHAOWU metaphysics analysis, report, AI prompt, rule-ingestion task or specialist route, the current governance doctrine is `docs/STONE-R6.2.2-CURRENT-MASTER.md`. The deterministic runtime it governs remains `docs/STONE-R6.2.1-CURRENT-MASTER.md` together with mandatory runtime patches `docs/STONE-R6.2.1-P2-STRUCTURAL-DYNAMICS.md` and `docs/STONE-R6.2.1-P3-PINKU-BINGYAO-GATE.md`, including the r191 structural addendum, unless the site owner explicitly approves a later runtime patch. `docs/METAPHYSICS-DEFAULT-PROTOCOL-v1.0.md` is retained only as a historical redirect.
 
+Since the 2026-09-27 owner "final closure" instruction, `docs/STONE-R6.2.2-CURRENT-MASTER-DECLARATION.md` is the authoritative five-layer routing map (L1 CORE ZI-PING / L2 STRUCTURAL PATCH / L3 TEMPORAL-EVENT / L4 EVIDENCE-AUXILIARY / L5 OPERATIONAL INFRASTRUCTURE) for where each governance document and runtime file sits, and `docs/STONE-R6.2.2-SIX-PATCHES.md` is a mandatory ACTIVE RUNTIME PATCH (GF-13 extension, ODL→FC→CAPACITY, time-layer evidence gap, data evidence boundary, event-chain separation, annual mechanism independence + VAL-C retroactive downgrade) bound to runtime via `src/lib/bazi/six-patches-instruction.ts`. Both refine L2/L3/L4 governance in place; neither rewrites L1 deterministic chart truth.
+
 Mandatory interpretation boundaries:
 
 1. Zi Ping Bazi remains the primary structural judgement system.

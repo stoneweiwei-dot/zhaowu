@@ -36,6 +36,9 @@ const COPY = {
     body: "身體提醒",
     detailLead: "",
     keyPoints: "重點",
+    methodologyStatement: "昭梧採用 STONE R6.2.2 推演體系，以傳統子平法為核心，依次校驗月令、調候、格局、病藥、流通、承載及歲運觸發。古籍依據、現代整理與輔助象意分層處理；無法確認的內容不會強行下斷。",
+    methodologyMore: "了解方法",
+    methodologyExpanded: "分析先看原局定下的結構，再看大運帶來的十年條件，然後流年觸發當年的具體事件，流月只用來縮小時間範圍。每一層證據都會標記是否確定、屬於較高概率、合理推論，還是暫時無法判定，避免用單一線索得出結論。",
   },
   "zh-Hans": {
     title: "补充",
@@ -59,6 +62,9 @@ const COPY = {
     body: "身体提醒",
     detailLead: "",
     keyPoints: "重点",
+    methodologyStatement: "昭梧采用 STONE R6.2.2 推演体系，以传统子平法为核心，依次校验月令、调候、格局、病药、流通、承载及岁运触发。古籍依据、现代整理与辅助象意分层处理；无法确认的内容不会强行下断。",
+    methodologyMore: "了解方法",
+    methodologyExpanded: "分析先看原局定下的结构，再看大运带来的十年条件，然后流年触发当年的具体事件，流月只用来缩小时间范围。每一层证据都会标记是否确定、属于较高概率、合理推论，还是暂时无法判定，避免用单一线索得出结论。",
   },
   en: {
     title: "More",
@@ -82,6 +88,9 @@ const COPY = {
     body: "Body notes",
     detailLead: "",
     keyPoints: "Key points",
+    methodologyStatement: "Zhaowu's readings follow the STONE R6.2.2 method, built on traditional Zi Ping BaZi analysis. Each chart is checked in order — the governing energy of the birth month, seasonal balance, the chart's structure, where it's under strain, how the elements flow and support each other, and how later luck cycles bring things into play. Classical sources, modern interpretation, and supporting symbolism are kept in separate layers, and anything that can't be confirmed is left open rather than forced into an answer.",
+    methodologyMore: "How this is worked out",
+    methodologyExpanded: "The reading starts with the structure set at birth, then looks at how the current ten-year cycle shapes what's available, then how a given year can trigger something specific, with the month only narrowing the timing further. Each layer of evidence is marked as confirmed, more likely, a reasonable inference, or simply undetermined, so no conclusion rests on a single clue.",
   },
 } as const;
 
@@ -295,6 +304,23 @@ function NarrativePlate({ narrative }: { narrative: PersonalReportNarrative }) {
   );
 }
 
+/**
+ * 2026-09-27 最後一次收口 Task 4：小型方法論披露。
+ * 只在「判斷備註」收合層出現，不進主答案畫面；固定一句話聲明 + 可選「了解方法」折疊。
+ */
+function MethodologyDisclosure({ locale }: { locale: Locale }) {
+  const copy = COPY[locale];
+  return (
+    <div className="zhaowu-report-methodology">
+      <p className="zhaowu-report-methodology__statement">{copy.methodologyStatement}</p>
+      <details className="zhaowu-report-methodology__more">
+        <summary>{copy.methodologyMore}</summary>
+        <p>{copy.methodologyExpanded}</p>
+      </details>
+    </div>
+  );
+}
+
 function AnalysisNotes({
   result,
   locale,
@@ -360,6 +386,7 @@ function AnalysisNotes({
         ) : null}
 
         <EvidenceGovernancePanel result={result} />
+        <MethodologyDisclosure locale={locale} />
       </div>
     </details>
   );
@@ -423,6 +450,7 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
           </summary>
           <div className="zhaowu-report-method-notes__body zhaowu-report-copy zhaowu-report-copy--notes">
             {fallbackNotes.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+            <MethodologyDisclosure locale={locale} />
           </div>
         </details>
       ) : null}

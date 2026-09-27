@@ -2,6 +2,7 @@ import {
   zhaowuInstructionDatabase as baseInstructionDatabase,
   type InstructionRule as BaseInstructionRule,
 } from './instruction-database-base';
+import { sixMinimumPatchesInstructionRule } from './six-patches-instruction';
 
 export type InstructionTrigger = {
   /** Any matching natal or active branch enables this instruction. */
@@ -206,6 +207,7 @@ export const fourTombsInstructionRule: InstructionRule = {
 /** Highest-priority human guidance first, then all technical analysis modules. */
 export const zhaowuInstructionDatabase: InstructionRule[] = [
   humanCenteredGuidanceInstructionRule,
+  sixMinimumPatchesInstructionRule,
   ...baseInstructionDatabase,
   methodLayeringInstructionRule,
   pathologyRemedyInstructionRule,
@@ -239,6 +241,9 @@ function triggerMatches(rule: InstructionRule, context: InstructionContext): boo
 /**
  * Canonical instruction router for BaZi analysis.
  * ZW-HUMAN-GUIDANCE-CORE-1.0 is always injected first as the human-centered response layer.
+ * ZW-R6.2.2-SIX-PATCHES-1.0 is always injected next as the L4 EVIDENCE/AUXILIARY governance gate
+ * (GF-13 extension, ODL->FC->CAPACITY, time-layer evidence gap, data evidence boundary,
+ * event-chain separation, annual mechanism independence + VAL-C retroactive downgrade).
  * ZW-BAZI-GROUP-MAINLINE-EC7 from the base database is always injected so every BaZi/metaphysics subgroup inherits the canonical mainline.
  * ZW-BAZI-PINKU-BINGYAO-P3 from the base database is always injected before the generic pathology/remedy layer.
  * ZW-BAZI-METHOD-LAYERING-1.0 is always injected to separate primary judgement, strength evidence, distribution data and auxiliary systems.
@@ -259,4 +264,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-21T22:08:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-27T20:30:00+10:00';

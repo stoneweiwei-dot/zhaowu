@@ -15,16 +15,22 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.27-r206",
-  updateNumber: 205,
-  publishedAt: "2026-09-27T10:40:00+10:00",
-  latestSummary: "命書報告區塊補上 560px 閱讀寬度上限，避免寬螢幕行長過長。",
+  version: "ZW-WEB-2026.09.27-r208",
+  updateNumber: 206,
+  publishedAt: "2026-09-27T21:00:00+10:00",
+  latestSummary: "命理核心最後一次收口：R6.2.2 五層治理宣告、六項最小補丁、四筆子平古籍來源與三語方法論披露。",
   details: {
     "zh-Hant": [
-      "命書報告（.zhaowu-unified-birth-report）新增 max-width: 560px，避免寬螢幕下單行過長影響閱讀。",
+      "正式宣告 STONE R6.2.2 為唯一 CURRENT MASTER，並綁定 L1–L5 五層治理模型（docs/STONE-R6.2.2-CURRENT-MASTER-DECLARATION.md）。",
+      "新增六項最小補丁 runtime（GF-13 擴展、ODL→FC→CAPACITY、時間層 Evidence Gap、資料證據邊界、事件鏈分離、年度機制獨立＋VAL-C 回溯降級），見 docs/STONE-R6.2.2-SIX-PATCHES.md 與 src/lib/bazi/six-patches-instruction.ts。",
+      "Supabase classic_sources 新增滴天髓、三命通會、子平真詮、窮通寶鑑四筆子平核心來源；既有段落驗證計數未變動。",
+      "完整報告判斷備註層新增三語（繁中／簡中／英文）方法論披露，含可折疊「了解方法」說明。",
     ],
     en: [
-      "The birth report block now caps at 560px reading width to avoid overlong lines on wide screens.",
+      "STONE R6.2.2 formally declared the sole current governance master, mapped to a five-layer model (L1–L5).",
+      "Added six minimum runtime patches for evidence, time-layer and event-chain discipline.",
+      "Registered four canonical BaZi classical sources in Supabase; existing passage verification counts unchanged.",
+      "Added a small trilingual methodology disclosure to the full report's collapsed notes layer.",
     ],
   },
 } as const;

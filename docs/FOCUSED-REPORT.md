@@ -199,6 +199,7 @@ body 只在健康／身體題通過 Relevance Gate 時作獨立段落；不得�
 - 四柱快照、藏干、大運等技術盤。
 - 五行視圖、命之書、歲運等延伸模組。
 - Evidence governance 與其餘 summary 補充。
+- 2026-09-27 起：一句小型三語（繁中／簡中／英文）方法論披露，附可折疊「了解方法」（原局→大運→流年→流月 + Evidence 分層說明）；見 `src/components/paid-report-pages.tsx` 的 `MethodologyDisclosure`。不做成大段說明書，不使用 AI prompt 風格。
 
 此層使用較小但仍可讀的字級；iPhone 不低於 13px。它是「想知道怎麼判的人再看」，不是主答案正文。
 

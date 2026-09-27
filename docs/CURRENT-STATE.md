@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-25 04:10 AEST
+最後核對：2026-09-27 21:00 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -188,7 +188,6 @@ CI、PR merge、Preview、單純 Vercel READY、桌面 viewport、文件描述�
 - 來源固定為 `OWNER_MATERIAL`，不得冒充古籍權威；R6.2.2 governance、R6.2.1 deterministic runtime、P2/P3 仍具更高優先級。
 - 本次不改 deterministic 排盤、auth、payment 或 Supabase schema；Supabase 僅用於正式 release evidence。
 
-
 ### r207｜五行認知／十干性格梗／四庫速查
 - 站主 2026-09-27 截圖材料已整理為 `OWNER_MATERIAL`，接入 `ZW-OWNER-FIVE-ELEMENT-COGNITION-1.0`。
 - 五行五常採金義、木仁、水智、火禮、土信作文化／功能教學；禁止由「缺某五行」或元素數量直接判人格。
@@ -196,3 +195,10 @@ CI、PR merge、Preview、單純 Vercel READY、桌面 viewport、文件描述�
 - 四庫新增教學標籤：辰濕土／水庫、丑濕寒土／金庫、未燥土／木庫、戌燥土／火庫；藏干仍以 deterministic calendar 為準。
 - 材料中的住所／事業／感情／家庭等沖庫場景只作候選象意；正式事件仍需宮位、十神、原局種子、大運／流年／流月與病藥、ODL、FC、承載共同成立。
 - 本輪不改 deterministic 排盤、auth、payment、Supabase schema 或 Storage。
+
+### r208｜命理核心最後一次收口
+- `docs/STONE-R6.2.2-CURRENT-MASTER-DECLARATION.md`：R6.2.2 正式宣告為唯一 CURRENT MASTER，綁定站主指定五層模型（L1 CORE ZI-PING／L2 STRUCTURAL PATCH／L3 TEMPORAL-EVENT／L4 EVIDENCE-AUXILIARY／L5 OPERATIONAL INFRASTRUCTURE）。Code-level engine identifier 依既有規則繼續為 `R6.2.1`。
+- `docs/STONE-R6.2.2-SIX-PATCHES.md`（`ACTIVE RUNTIME PATCH`）：GF-13 擴展、ODL→FC→CAPACITY、時間層 Evidence Gap、Data Evidence Boundary、Event Chain Separation、年度機制獨立＋VAL-C 回溯降級；runtime 綁定 `src/lib/bazi/six-patches-instruction.ts`（`ZW-R6.2.2-SIX-PATCHES-1.0`，priority 0）。
+- Supabase `classic_sources` 新增 4 筆子平核心來源（滴天髓、三命通會、子平真詮、窮通寶鑑），`source_nature='classic'`；`classic_passages` 既有 verified=38／not_applicable=15／pending=0／rejected=0 核對後未變動（未插入任何段落列）。
+- 完整報告「判斷備註」收合層新增三語（繁中／簡中／英文）方法論披露，含可折疊「了解方法」（`src/components/paid-report-pages.tsx` 的 `MethodologyDisclosure`）。
+- 本次不改 deterministic 排盤、R6.2.1／P2／P3 既有判法全文、auth、payment 或 Supabase 用戶資料結構。
