@@ -4,6 +4,12 @@
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
+## 五音、五氣與五行功能訓練教學
+
+- ACTIVE：`/knowledge/five-elements-tone-qi` 以繁中／簡中／英文說明五色、五音、氣候語境的五氣，以及功能卡點如何轉成可觀察的日常練習。
+- 僅作傳統象義教學；不從元素數量推個人缺項，不作診斷或治療，也不承諾顏色、音樂或物件能改命。
+- 正式個人化行動仍以完整報告已判定的「五行功能訓練」為準；入口位於既有 `/knowledge` 命理教學區。
+
 ## 1. 唯一 Production
 
 - GitHub：`stoneweiwei-dot/zhaowu`
