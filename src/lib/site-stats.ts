@@ -15,18 +15,16 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r212",
-  updateNumber: 212,
-  publishedAt: "2026-09-28T01:08:00+10:00",
-  latestSummary: "完整報告新增已發布的 EP01 木／EP02 火缺象觀察；時辰未知不硬判，土金水未發布不自行補寫。",
+  version: "ZW-WEB-2026.09.28-r213",
+  updateNumber: 213,
+  publishedAt: "2026-09-28T01:25:00+10:00",
+  latestSummary: "修復登入影片/圖庫大檔（>6MB）續傳上傳 403 RLS 失敗（授權標頭配置錯誤）。",
   details: {
     "zh-Hant": [
-      "完整報告只接入目前已發布的 EP01 木與 EP02 火缺象邏輯；木看無甲乙寅卯，火看無丙丁巳午，且時辰未知時不斷言整局確定缺象。",
-      "來源側寫與象義練習只作主判後翻譯；是否為真正功能缺口仍回到喜用與整體結構。土／金／水尚未發布，不自行生成。",
+      "修復大檔（>6MB）續傳上傳（TUS resumable）在 Supabase Storage 回傳「new row violates row-level security policy」403 的問題：signed-upload token 應放在 x-signature 標頭，authorization 標頭需帶有效 Supabase JWT（此處為 anon key），先前把 signed token 誤放進 authorization 導致 Storage API 無法驗證。",
     ],
     en: [
-      "Full reports now use only the published EP01 Wood and EP02 Fire absence rules; unknown birth time blocks any whole-chart absence claim.",
-      "Source personality notes and symbolic practices remain post-judgement translations only. Unpublished Earth, Metal and Water episodes are not inferred.",
+      "Fixed large-file (>6MB) resumable (TUS) uploads to Supabase Storage failing with a 403 \"new row violates row-level security policy\" error: the signed-upload token belongs in the x-signature header, while authorization needs a valid Supabase JWT (anon key here). The token had been placed in authorization instead, which the Storage API could not validate.",
     ],
   },
 } as const;
