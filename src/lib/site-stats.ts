@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r213",
-  updateNumber: 213,
-  publishedAt: "2026-09-28T01:18:00+10:00",
-  latestSummary: "背景音樂公開讀取與站主 Git 寫入已真正分離；一般播放不再載入 isomorphic-git／SSH 寫入依賴。",
+  version: "ZW-WEB-2026.09.28-r214",
+  updateNumber: 214,
+  publishedAt: "2026-09-28T01:36:00+10:00",
+  latestSummary: "背景音樂讀取與站主寫入已拆成兩個獨立 Serverless Functions；一般播放函數不再包含 Git／SSH 依賴。",
   details: {
     "zh-Hant": [
-      "背景音樂公開 GET／HEAD 改讀獨立輕量 manifest 模組，不再靜態載入 Git／SSH 寫入依賴。",
-      "站主新增、改名、切換與刪除音樂仍維持原 Git 寫入流程，只在通過站主驗證後動態載入。",
+      "公開 /api/owner-music 現在只負責讀取 manifest 與播放導向，函數 bundle 不再包含 isomorphic-git、ssh2 或站主 sealed key。",
+      "站主上傳、切換、改名與刪除改走獨立 /api/owner-music-write；現有曲目、播放器與 r212 報告內容保持不變。",
     ],
     en: [
-      "Public background-music reads now use a lightweight manifest module and no longer load Git or SSH write dependencies.",
-      "Owner-only music mutations keep the existing Git write path, which is loaded only after owner authentication.",
+      "Public /api/owner-music now only reads the manifest and redirects playback; its function bundle no longer contains isomorphic-git, ssh2 or the owner's sealed key.",
+      "Owner upload, activate, rename and delete actions now use a separate /api/owner-music-write function; existing tracks, playback and r212 report content remain unchanged.",
     ],
   },
 } as const;
