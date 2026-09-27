@@ -22,7 +22,8 @@ export type OwnerMusicUploadResult = {
   transcoded: boolean;
 };
 
-export const OWNER_MUSIC_CHUNK_BYTES = 3_000_000;\nconst OWNER_MUSIC_WRITE_URL = "/api/owner-music-write";
+export const OWNER_MUSIC_CHUNK_BYTES = 3_000_000;
+const OWNER_MUSIC_WRITE_URL = "/api/owner-music-write";
 
 async function parseBody(response: Response) {
   return response.json().catch(() => ({})) as Promise<Record<string, unknown>>;
