@@ -16,6 +16,7 @@ import {
 } from './folk-environment-symbolism';
 import { threeYuanAuxiliaryInstructionRule } from './three-yuan-instruction';
 import { blindTheoryOperationalInstructionRule } from './blind-theory-instruction';
+import { ownerFiveElementCognitionInstructionRule } from './owner-five-element-cognition';
 
 export type { InstructionRule } from './instruction-database-base-legacy';
 
@@ -219,6 +220,7 @@ export const zhaowuInstructionDatabase: InstructionRule[] = [
   huagaiAuxiliaryInstructionRule,
   threeYuanAuxiliaryInstructionRule,
   wealthEnvironmentSymbolismInstructionRule,
+  ownerFiveElementCognitionInstructionRule,
   lifestyleFiveElementSymbolismInstructionRule,
 ];
 
@@ -226,4 +228,4 @@ export function getInstructionRule(id: string): InstructionRule | undefined {
   return zhaowuInstructionDatabase.find((rule) => rule.id === id);
 }
 
-export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-27T09:21:00+10:00';
+export const zhaowuInstructionDatabaseUpdatedAt = '2026-09-27T22:33:00+10:00';
