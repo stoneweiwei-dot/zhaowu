@@ -62,7 +62,7 @@ function uploadError(body: Record<string, unknown>, status?: number) {
 }
 
 async function postMusicBlob(file: Blob, name: string, contentType: string, extra: Record<string, string> = {}) {
-  return fetch("/api/owner-music", {
+  return fetch(OWNER_MUSIC_WRITE_URL, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -130,7 +130,7 @@ export async function activateOwnerMusic(id: string) {
 export async function renameOwnerMusic(id: string, name: string) {
   const cleaned = name.trim().replace(/\s+/g, " ").slice(0, 80);
   if (!cleaned) throw new Error("曲目名稱不能留空。");
-  const response = await fetch("/api/owner-music", {
+  const response = await fetch(OWNER_MUSIC_WRITE_URL, {
     method: "PATCH",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -151,7 +151,7 @@ export async function deleteOwnerMusic(id: string) {
 export async function deleteOwnerMusicMany(ids: string[]) {
   const unique = [...new Set(ids.map((id) => id.trim()).filter(Boolean))];
   if (!unique.length) return;
-  const response = await fetch("/api/owner-music", {
+  const response = await fetch(OWNER_MUSIC_WRITE_URL, {
     method: "DELETE",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
