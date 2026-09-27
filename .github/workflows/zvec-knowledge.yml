@@ -39,8 +39,11 @@ jobs:
       - name: Install isolated ZVec tool
         run: npm ci --prefix .github/zvec-knowledge --no-audit --no-fund
 
-      - name: Verify build, optimize, close, reopen, search
+      - name: Verify CURRENT knowledge build, optimize, close, reopen, search
         run: npm run --prefix .github/zvec-knowledge smoke
+
+      - name: Verify federated media inventory and reopen FTS
+        run: npm run --prefix .github/zvec-knowledge media-smoke
 
       - name: Manual query
         if: ${{ github.event_name == 'workflow_dispatch' }}
