@@ -104,6 +104,17 @@ export function BaziKnowledgeNotesSection() {
         </p>
       </section>
 
+            <section className="seal-border flex flex-col gap-3 rounded-2xl border border-wood/20 bg-cream p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <div>
+          <p className="text-xs tracking-[0.2em] text-cinnabar">{tr(locale,"新增教學","新增教学","NEW TEACHING NOTE")}</p>
+          <h3 className="mt-1 font-display text-xl text-ink">{tr(locale,"五行五色、五音與五氣","五行五色、五音与五气","Five Elements, Colours, Tones and Qi")}</h3>
+          <p className="mt-1 text-sm leading-6 text-ink-soft">{tr(locale,"看懂傳統對應，也看它們如何轉成實際行動。","看懂传统对应，也看它们如何转成实际行动。","Understand the traditional correspondences and how to turn them into practical action.")}</p>
+        </div>
+        <Link to="/knowledge/five-elements-tone-qi" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-pine px-4 py-2 text-sm text-white">
+          {tr(locale,"閱讀教學","阅读教学","Read the guide")} →
+        </Link>
+      </section>
+
       <section id="bazi-decision-tool" className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
         <p className="text-xs tracking-[0.22em] text-cinnabar">{tr(locale,"昭梧的八字立場","昭梧的八字立场","HOW ZHAOWU USES BAZI")}</p>
         <h3 className="mt-2 font-display text-3xl leading-tight text-ink">{tr(locale,"八字不是宿命，而是一套決策工具。","八字不是宿命，而是一套决策工具。","BaZi is not a sentence of fate. It is a framework for better decisions.")}</h3>
