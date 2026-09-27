@@ -15,20 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.25-r204",
-  updateNumber: 204,
-  publishedAt: "2026-09-25T23:22:00+10:00",
-  latestSummary: "登入動畫改為同一裝置每日最多一次並加入跳過；青玉小龍播放器的循環／隨機鍵補上真正可辨識、可持久化的模式狀態。",
+  version: "ZW-WEB-2026.09.27-r206",
+  updateNumber: 205,
+  publishedAt: "2026-09-27T10:40:00+10:00",
+  latestSummary: "夜間模式文字對比修復（新增 --zw-ink/--zw-ink-soft/--zw-muted 的夜間覆寫，符合 WCAG AA）；命書報告區塊補上 560px 閱讀寬度上限。",
   details: {
     "zh-Hant": [
-      "登入動畫只在 /login 同一裝置當日第一次進入時播放；同日登出、重新登入或換 session 都不重播，隔日才重新播放一次。",
-      "登入動畫新增明確「跳過」按鈕；跳過或播放結束後停在靜態封面，不影響登入。",
-      "青玉小龍播放器的循環／隨機鍵現在有清楚 active 樣式與模式文字，隨機鍵會立即準備歌單，模式鍵不再被 Safari 手勢解鎖誤當成播放。",
+      "夜間模式（data-zw-theme=\"night\"）先前只有邊框／背景的局部覆寫，正文文字顏色仍沿用日間深色值，導致對比不足；現在 :root 層級新增夜間文字色（#f4ead9 / #d8d0c1 / #b3ada1），全站在夜間模式下的文字都會正確變亮。",
+      "命書報告（.zhaowu-unified-birth-report）新增 max-width: 560px，避免寬螢幕下單行過長影響閱讀。",
     ],
     en: [
-      "The login animation now plays at most once per local calendar day on the same device, even after sign-out or a new browser session.",
-      "The login animation has an explicit Skip control and falls back to the static poster without blocking sign-in.",
-      "Loop and shuffle now expose clear active states and mode text; shuffle prepares the playlist immediately and mode taps no longer trigger Safari's playback unlock path.",
+      "Night mode previously only overrode borders/backgrounds; body text still used the light-mode dark ink colors, failing contrast. Added root-level night text-color overrides (#f4ead9 / #d8d0c1 / #b3ada1) so all copy renders legibly in night mode.",
+      "The birth report block now caps at 560px reading width.",
     ],
   },
 } as const;

@@ -23,6 +23,17 @@
   --zw-readable: 46rem;
 }
 
+/* r206: night-mode text contrast — WCAG AA (4.5:1 normal / 3:1 large).
+   --zw-ink/--zw-ink-soft/--zw-muted are dark-on-light values only in :root;
+   no night override existed for the text-color variables themselves
+   (only scoped border/background overrides existed), so body copy rendered
+   near-invisible against the dark night background. */
+html[data-zw-theme="night"] {
+  --zw-ink: #f4ead9;
+  --zw-ink-soft: #d8d0c1;
+  --zw-muted: #b3ada1;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
@@ -647,6 +658,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 }
 
 .zhaowu-unified-birth-report {
+  max-width: 560px; /* r185-192: report reading-width contract */
   margin-top: 24px;
   border-top: 1px solid rgba(41, 75, 63, .2);
   padding-top: 24px;
