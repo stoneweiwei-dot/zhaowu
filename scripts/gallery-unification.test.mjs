@@ -25,7 +25,7 @@ test("one visible Gallery keeps owner asset management independent of the fixed 
   assert.match(account, /setBackgroundWallpaper/);
 
   assert.match(galleryRoute, /type MediaView = "login" \\| "content"/);
-  assert.match(galleryRoute, /登入影片/);
+  assert.match(galleryRoute, /開場影片/);
   assert.match(galleryRoute, /內容圖片/);
   assert.match(gallery, /assets\.filter\(\(asset\) => !isLoadingGalleryAsset\(asset\)\)/);
   assert.match(gallery, /category:\s*"visual-library"/);

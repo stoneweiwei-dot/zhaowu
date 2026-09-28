@@ -116,7 +116,7 @@ test("owner Gallery has one content upload path and excludes login/loading asset
   assert.match(manager, /category:\s*"visual-library"/);
   assert.match(manager, /tags:\s*\["owner-upload", "auto-classify"\]/);
   assert.match(manager, /!isLoadingGalleryAsset\(asset\)/);
-  assert.match(route, /登入影片/);
+  assert.match(route, /開場影片/);
   assert.match(route, /內容圖片/);
   assert.match(route, /type MediaView = "login" \| "content"/);
   assert.doesNotMatch(manager, /view === "loading"/);
