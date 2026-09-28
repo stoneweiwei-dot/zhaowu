@@ -15,16 +15,16 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r220",
-  updateNumber: 220,
-  publishedAt: "2026-09-28T23:40:00+10:00",
-  latestSummary: "修正首頁「今日指引」五行穿衣色塊在深綠底上文字對比度不足的問題，選色按鈕名稱與副標改回米白色。",
+  version: "ZW-WEB-2026.09.28-r221",
+  updateNumber: 221,
+  publishedAt: "2026-09-28T00:00:00+10:00",
+  latestSummary: "整合首頁視覺：統一揭示卡片、探索區塊與功能卡格局，依宋代美學框架確立金色鉛字層次、深松綠左邊線、琥珀羊皮紙底色，消除多補丁衝突。",
   details: {
     "zh-Hant": [
-      "站主回報首頁「今日指引」卡片內「今日穿衣」五個顏色選項按鈕，文字幾乎看不清楚。原因是 `daily-almanac-r69.css` 把按鈕底色改為近黑的深墨綠（`rgba(14,54,45,.74)`），但按鈕內 `strong`／`small` 文字的顏色來自 `zhaowu-design-system.css` 針對淺色背景版本設定的近黑色（`#34352f`／`#746d63`），兩者疊在一起等於深色文字疊深色底，完全無法辨識。修正為在同一份深綠卡片的樣式規則內，明確把這兩層文字強制改回卡片本身使用的米白色（`#f4ecda`），次要文字保留透明度區分層級。",
+      "在 `zhaowu-design-system.css` 末尾新增 r221 整合區塊，統一首頁 `/` 路由的整體視覺。修正內容：英雄標題區（`zhaowu-home-lead`）恢復宋代書籍排版感，上下細線 + 金色小標 + 置中正文；揭示卡（`zhaowu-home-disclosure`）改為深松綠左邊線（3px）、溫暖羊皮紙底色、細緻陰影，取代多個補丁互相衝突的邊框設定；「今日」區塊在開啟時使用松綠色邊線強調；「延伸內容」標籤套用與標題相同的金色鉛字格式；功能測驗格（`zhaowu-home-fun-card`）在 480px 以上顯示雙欄，每張卡片使用宋式羊皮紙底色 + 丹紅色箭頭；夜間模式保持紙面卡片淺色底，不強制覆蓋全局 ink 變數。",
     ],
     en: [
-      "The owner reported that the five colour-choice buttons inside the homepage 'Today' card's daily-dress section were nearly unreadable. The button background had been darkened to a near-black deep green (`rgba(14,54,45,.74)`) in `daily-almanac-r69.css`, but the `strong`/`small` label text still inherited the near-black colours (`#34352f`/`#746d63`) that `zhaowu-design-system.css` sets for the light-background variant of the same component — dark text on a near-black background, unreadable. Fixed by explicitly forcing both label layers back to the card's own cream ink (`#f4ecda`) within this card's own CSS rule, with the secondary label kept at reduced opacity for hierarchy.",
+      "Added r221 consolidation block at the end of `zhaowu-design-system.css` to unify the visual appearance of the `/` homepage route, eliminating the 'dog-skin plaster' look from conflicting CSS patch files. Changes: hero header (`zhaowu-home-lead`) restored to Song editorial style with hairline borders, gold kicker text, and centred serif h1; disclosure cards (`zhaowu-home-disclosure`) now use a 3px deep-pine-green left accent stripe, warm parchment background, and subtle shadow instead of conflicting !important overrides from five patch files; Today section gets jade accent in open state; explore-section label styled as gold kicker; fun-card grid switches to two columns at ≥480px with Song parchment cards and cinnabar arrows; night mode keeps paper surfaces light — no root-level ink variable override.",
     ],
   },
 } as const;
