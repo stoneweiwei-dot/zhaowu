@@ -15,18 +15,16 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r214",
-  updateNumber: 214,
-  publishedAt: "2026-09-28T01:36:00+10:00",
-  latestSummary: "背景音樂讀取與站主寫入已拆成兩個獨立 Serverless Functions；一般播放函數不再包含 Git／SSH 依賴。",
+  version: "ZW-WEB-2026.09.28-r215",
+  updateNumber: 215,
+  publishedAt: "2026-09-28T11:50:00+10:00",
+  latestSummary: "修復登入影片/圖庫大檔（>6MB）續傳上傳 403 RLS 失敗（授權標頭配置錯誤）。",
   details: {
     "zh-Hant": [
-      "公開 /api/owner-music 現在只負責讀取 manifest 與播放導向，函數 bundle 不再包含 isomorphic-git、ssh2 或站主 sealed key。",
-      "站主上傳、切換、改名與刪除改走獨立 /api/owner-music-write；現有曲目、播放器與 r212 報告內容保持不變。",
+      "修復大檔（>6MB）續傳上傳（TUS resumable）在 Supabase Storage 回傳「new row violates row-level security policy」403 的問題：signed-upload token 應放在 x-signature 標頭，authorization 標頭需帶有效 Supabase JWT（此處為 anon key），先前把 signed token 誤放進 authorization 導致 Storage API 無法驗證。",
     ],
     en: [
-      "Public /api/owner-music now only reads the manifest and redirects playback; its function bundle no longer contains isomorphic-git, ssh2 or the owner's sealed key.",
-      "Owner upload, activate, rename and delete actions now use a separate /api/owner-music-write function; existing tracks, playback and r212 report content remain unchanged.",
+      "Fixed large-file (>6MB) resumable (TUS) uploads to Supabase Storage failing with a 403 \"new row violates row-level security policy\" error: the signed-upload token belongs in the x-signature header, while authorization needs a valid Supabase JWT (anon key here). The token had been placed in authorization instead, which the Storage API could not validate.",
     ],
   },
 } as const;

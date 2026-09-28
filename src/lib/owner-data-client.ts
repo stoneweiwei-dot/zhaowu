@@ -118,8 +118,12 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
         uploadDataDuringCreation: true,
         removeFingerprintOnSuccess: true,
         headers: {
-          // Bearer is required for signed resumable auth; x-signature kept for contract compatibility.
-          authorization: `Bearer ${signedUploadToken}`,
+          // authorization must carry a valid Supabase JWT (anon key here, since there is no
+          // user session); the signed-upload token authorizes the specific object/path via
+          // x-signature. Putting the signed token in authorization instead of x-signature is
+          // what caused the "new row violates row-level security policy" 403 on resumable
+          // uploads — the Storage API could not validate a non-JWT bearer value against RLS.
+          authorization: `Bearer ${SUPABASE_KEY}`,
           apikey: SUPABASE_KEY,
           "x-signature": signedUploadToken,
           "x-upsert": "false",
