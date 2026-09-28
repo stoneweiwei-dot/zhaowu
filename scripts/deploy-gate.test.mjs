@@ -39,8 +39,8 @@ test("strict release ledger stays outside routine deploy CI", () => {
   assert.doesNotMatch(pkg.scripts["test:deploy"], /release-ledger/);
   assert.doesNotMatch(workflow, /release-ledger\.release\.mjs/);
   assert.match(releaseWorkflow, /push:\s*\n\s*tags:/);
-  assert.match(releaseWorkflow, /- "v\\\*"/);
-  assert.match(releaseWorkflow, /- "release-\\\*"/);
+  assert.match(releaseWorkflow, /- "v\*"/);
+  assert.match(releaseWorkflow, /- "release-\*"/);
   assert.match(releaseWorkflow, /workflow_dispatch:/);
   assert.match(releaseWorkflow, /node --test scripts\/release-ledger\.release\.mjs/);
 });
