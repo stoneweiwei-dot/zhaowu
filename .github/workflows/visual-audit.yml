@@ -21,8 +21,22 @@ jobs:
       - name: iPhone Safari suite (capture output)
         run: |
           mkdir -p visual-audit-shots
-          CI=1 npx playwright test --project=iphone-safari --reporter=list > visual-audit-shots/e2e.txt 2>&1 || true
+          CI=1 npx playwright test --project=iphone-safari e2e/mobile-visual-navigation.iphone-safari.spec.ts e2e/daily-colors.iphone-safari.spec.ts e2e/auspicious-emblems.iphone-safari.spec.ts --reporter=list > visual-audit-shots/e2e.txt 2>&1 || true
+          echo skip --version >/dev/null || true
           tail -c 20000 visual-audit-shots/e2e.txt
+      - run: npx vite build
+      - run: (npx vite preview --host 127.0.0.1 --port 4173 &) && sleep 4
+      - run: node scripts/visual-audit/shoot.mjs
+        env:
+          TARGETS: "local=http://127.0.0.1:4173"
+          ROUTES: "/"
+          OUT_DIR: visual-audit-shots
+      - run: node scripts/visual-audit/shoot.mjs
+        env:
+          TARGETS: "local=http://127.0.0.1:4173"
+          ROUTES: "/"
+          OUT_DIR: visual-audit-shots
+          LANG_CODE: en
       - name: Commit output back to branch
         run: |
           git config user.name "visual-audit-bot"

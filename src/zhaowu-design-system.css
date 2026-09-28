@@ -5563,18 +5563,17 @@ html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead {
 }
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead::before,
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead::after { display: none !important; content: none !important; }
-html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p {
+html:not([lang="en"]) body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p {
   margin: 0 !important;
   color: #a67c42 !important;
   font-size: 11px !important;
   font-weight: 700 !important;
   letter-spacing: .26em !important;
 }
-html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead h1 {
+html:not([lang="en"]) body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead h1 {
   max-width: 16em !important;
   margin: 12px auto 0 !important;
   color: #1f1f1c !important;
-  font-family: var(--font-display, serif) !important;
   font-size: clamp(25px, 6.4vw, 34px) !important;
   font-weight: 500 !important;
   line-height: 1.38 !important;
@@ -5582,6 +5581,7 @@ html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead h1 
   text-shadow: none !important;
   text-wrap: balance;
 }
+html[lang="en"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead h1 { margin-inline: auto !important; text-shadow: none !important; }
 html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead { border-bottom-color: rgba(200, 168, 106, .22) !important; }
 html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p { color: #c8a86a !important; }
 html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead h1 { color: #efe7d8 !important; }
@@ -5611,7 +5611,6 @@ html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosu
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure-trigger strong {
   display: block !important;
   color: #1f1f1c !important;
-  font-family: var(--font-display, serif) !important;
   font-size: 18px !important;
   font-weight: 600 !important;
   line-height: 1.3 !important;
@@ -5689,7 +5688,6 @@ html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__
 }
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__page-title strong {
   color: #1f1f1c !important;
-  font-family: var(--font-display, serif) !important;
   font-size: 20px !important;
   font-weight: 600 !important;
   line-height: 1.35 !important;
@@ -5749,9 +5747,9 @@ html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrob
 }
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-color-featured-swatch] i { display: block !important; background: var(--swatch) !important; }
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured-head] > div > small { display: block !important; color: #806846 !important; font-size: 11px !important; letter-spacing: .1em !important; }
-html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured-head] > div > strong { display: block !important; margin-top: 2px !important; color: #1d4b3f !important; font-family: var(--font-display, serif) !important; font-size: 20px !important; line-height: 1.3 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured-head] > div > strong { display: block !important; margin-top: 2px !important; color: #1d4b3f !important; font-size: 20px !important; line-height: 1.3 !important; }
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured-head] > div > span { display: block !important; margin-top: 3px !important; color: #6e6a60 !important; font-size: 12.5px !important; line-height: 1.5 !important; }
-html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-quote] { margin: 0 !important; color: #1f1f1c !important; font-family: var(--font-display, serif) !important; font-size: 17px !important; line-height: 1.65 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-quote] { margin: 0 !important; color: #1f1f1c !important; font-size: 17px !important; line-height: 1.65 !important; }
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-description] { margin: 0 !important; color: #4a4a44 !important; font-size: 13.5px !important; line-height: 1.75 !important; }
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured] > a { color: #1d4b3f !important; font-size: 13px !important; font-weight: 700 !important; }
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-pick] { margin: 4px 0 8px !important; color: #6e6a60 !important; font-size: 12.5px !important; }
@@ -5802,7 +5800,6 @@ html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrob
   display: block !important;
   margin: 0 !important;
   color: var(--daily-color-ink, #1d4b3f) !important;
-  font-family: var(--font-display, serif) !important;
   font-size: 16px !important;
   font-weight: 600 !important;
   line-height: 1.3 !important;
@@ -5926,7 +5923,7 @@ html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card
   box-shadow: none !important;
   text-decoration: none !important;
 }
-html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card strong { display: block !important; color: #1f1f1c !important; font-family: var(--font-display, serif) !important; font-size: 15px !important; line-height: 1.4 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card strong { display: block !important; color: #1f1f1c !important; font-size: 15px !important; line-height: 1.4 !important; }
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card small { display: block !important; margin-top: 4px !important; color: #6e6a60 !important; font-size: 12px !important; line-height: 1.55 !important; }
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-arrow { flex: 0 0 auto !important; color: #b0503a !important; font-size: 1.1rem !important; }
 html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card { border-color: rgba(212, 176, 116, .18) !important; color: #f1e9da !important; }

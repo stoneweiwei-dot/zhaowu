@@ -11,11 +11,11 @@ async function shoot(browserType, name, ctxOpts, base, label, route, theme, expa
   const browser = await browserType.launch();
   const ctx = await browser.newContext(ctxOpts);
   const page = await ctx.newPage();
-  await page.addInitScript((t) => {
-    localStorage.setItem("zhaowu.display-language", "zh-Hant");
-    if (t === "night") localStorage.setItem("zhaowu.theme.v1", "night");
+  await page.addInitScript((o) => {
+    localStorage.setItem("zhaowu.display-language", o.lang);
+    if (o.theme === "night") localStorage.setItem("zhaowu.theme.v1", "night");
     else localStorage.removeItem("zhaowu.theme.v1");
-  }, theme);
+  }, { theme, lang: process.env.LANG_CODE || "zh-Hant" });
   await page.goto(base + route, { waitUntil: "networkidle", timeout: 45000 }).catch(() => {});
   await page.waitForTimeout(2500);
   if (expand) {
@@ -25,7 +25,7 @@ async function shoot(browserType, name, ctxOpts, base, label, route, theme, expa
     await page.waitForTimeout(1200);
   }
   const slug = route === "/" ? "home" : route.replace(/\W+/g, "_");
-  const file = `${OUT}/${label}-${slug}-${name}-${theme}${expand ? "-open" : ""}.png`;
+  const file = `${OUT}/${process.env.LANG_CODE || "zh"}-${label}-${slug}-${name}-${theme}${expand ? "-open" : ""}.png`;
   await page.screenshot({ path: file, fullPage: true });
   console.log("shot", file);
   await browser.close();
