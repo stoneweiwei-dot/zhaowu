@@ -30,7 +30,8 @@ test("home keeps dress colour inside the unified Today disclosure", async ({ pag
   const almanac = page.locator("#daily-almanac");
   await expect(almanac).toBeVisible();
   await expect(almanac.locator("details")).toHaveAttribute("open", "");
-  await expect(almanac.locator("summary")).toHaveCount(0);
+  await expect(almanac.locator("summary")).toHaveCount(1);
+  await expect(almanac.locator("summary")).toBeHidden();
   await expect(almanac.locator('.zhaowu-today-guide__tabs button[aria-pressed="true"]')).toContainText(/穿衣|Dress/);
   const embed = almanac.locator('#five-element-wardrobe[data-daily-colors="embed"]');
   await expect(embed).toBeVisible();
