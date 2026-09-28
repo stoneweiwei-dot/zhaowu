@@ -17,9 +17,9 @@ export const SKY_EVENTS: SkyEvent[] = [
     published: "2026-09-27",
     status: "active",
     title: {
-      "zh-Hant": "火星週：三分海王、四分水星、衝冥王的行動考驗",
-      "zh-Hans": "火星周：三分海王、四分水星、冲冥王的行动考验",
-      en: "Mars week: a trine to Neptune, a square to Mercury, an opposition to Pluto"
+      "zh-Hant": "火星週：三分海王（白羊）、四分水星、衝冥王的行動考驗",
+      "zh-Hans": "火星周：三分海王（白羊）、四分水星、冲冥王的行动考验",
+      en: "Mars week: a trine to Neptune (Aries), a square to Mercury, an opposition to Pluto"
     },
     subtitle: {
       "zh-Hant": "2026.09.28–10.03｜天文實況 × 火星相位叢集的占星象意",
@@ -27,10 +27,10 @@ export const SKY_EVENTS: SkyEvent[] = [
       en: "2026.09.28–10.03 | Astronomy × the symbolic astrology of a Mars aspect cluster"
     },
     facts: [
-      { date: "2026-09-28", label: { "zh-Hant": "太陽（天秤）與天王星（金牛）形成三分相", "zh-Hans": "太阳（天秤）与天王星（金牛）形成三分相", en: "Sun (Libra) trine Uranus (Taurus)" } },
-      { date: "2026-09-30", label: { "zh-Hant": "水星進入熱帶黃道天蠍區段", "zh-Hans": "水星进入热带黄道天蝎区段", en: "Mercury enters tropical Scorpio" } },
+      { date: "2026-09-28", label: { "zh-Hant": "太陽（天秤）與天王星逆行（雙子）形成三分相", "zh-Hans": "太阳（天秤）与天王星逆行（双子）形成三分相", en: "Sun (Libra) trine retrograde Uranus (Gemini)" } },
+      { date: "2026-10-01", label: { "zh-Hant": "水星進入熱帶黃道天蠍區段", "zh-Hans": "水星进入热带黄道天蝎区段", en: "Mercury enters tropical Scorpio" } },
       { date: "2026-10-02", label: { "zh-Hant": "火星（獅子）與水星（天蠍）形成四分相", "zh-Hans": "火星（狮子）与水星（天蝎）形成四分相", en: "Mars (Leo) square Mercury (Scorpio)" } },
-      { date: "2026-10-02", label: { "zh-Hant": "火星（獅子）與海王星（雙魚）形成三分相", "zh-Hans": "火星（狮子）与海王星（双鱼）形成三分相", en: "Mars (Leo) trine Neptune (Pisces)" } },
+      { date: "2026-10-02", label: { "zh-Hant": "火星（獅子）與海王星逆行（白羊）形成三分相", "zh-Hans": "火星（狮子）与海王星逆行（白羊）形成三分相", en: "Mars (Leo) trine retrograde Neptune (Aries)" } },
       { date: "2026-10-03", label: { "zh-Hant": "火星（獅子）與冥王星逆行（水瓶）形成對分相", "zh-Hans": "火星（狮子）与冥王星逆行（水瓶）形成对分相", en: "Mars (Leo) opposite retrograde Pluto (Aquarius)" } }
     ],
     science: {
@@ -251,3 +251,286 @@ export const SKY_EVENT_CATEGORIES = [
   "行星合月、合相與觀測事件 / Conjunctions & observing events",
   "流星雨、彗星與特殊可見天象 / Meteor showers, comets & visible phenomena"
 ] as const;
+
+/**
+ * ── 今日星象卡（TODAY_SKY_CARDS） ──────────────────────────────────────────
+ *
+ * Design constraints this module deliberately satisfies (see
+ * docs/change-reports for the audit that produced them):
+ *
+ * 1. No planetary position or aspect is invented. Every sign/degree used
+ *    below was cross-checked against a published ephemeris (AstroAk /
+ *    Cafe Astrology, cross-referenced against NASA/JPL Horizons) for the
+ *    2026-09-28 → 2026-10-04 window before being written here. If the
+ *    underlying SKY_EVENTS fact changes (a republish with corrected
+ *    degrees), update the ASPECT_FACTS table below — never hand-edit
+ *    affectedSigns, they are always derived.
+ * 2. "affectedSigns" is never a natal-house guess (we have no birth data
+ *    for readers). It is computed purely from classical modality/element
+ *    geometry: a trine's third-party signs share the element triad, a
+ *    square/opposition's third-party signs share the modality tetrad.
+ *    That is exact zodiac arithmetic, not interpretive invention.
+ * 3. "visibleToNakedEye" is only ever true for an event that is itself an
+ *    observable phenomenon (e.g. Saturn near opposition, at its brightest
+ *    and visible most of the night). A geometric aspect between two
+ *    planets (a square, trine, opposition) is not itself something to
+ *    look at in the sky and must never be marked visible.
+ * 4. No fabricated clock time. Facts carry a calendar date only, because
+ *    that is the precision the source ephemeris actually supports; a
+ *    fake "06:34" reads as more precise than the underlying data.
+ */
+
+const ZODIAC_SIGNS = [
+  "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+  "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+] as const;
+
+type ZodiacSign = (typeof ZODIAC_SIGNS)[number];
+
+const SIGN_NAMES: Record<ZodiacSign, { "zh-Hant": string; "zh-Hans": string; en: string }> = {
+  Aries: { "zh-Hant": "白羊座", "zh-Hans": "白羊座", en: "Aries" },
+  Taurus: { "zh-Hant": "金牛座", "zh-Hans": "金牛座", en: "Taurus" },
+  Gemini: { "zh-Hant": "雙子座", "zh-Hans": "双子座", en: "Gemini" },
+  Cancer: { "zh-Hant": "巨蟹座", "zh-Hans": "巨蟹座", en: "Cancer" },
+  Leo: { "zh-Hant": "獅子座", "zh-Hans": "狮子座", en: "Leo" },
+  Virgo: { "zh-Hant": "處女座", "zh-Hans": "处女座", en: "Virgo" },
+  Libra: { "zh-Hant": "天秤座", "zh-Hans": "天秤座", en: "Libra" },
+  Scorpio: { "zh-Hant": "天蠍座", "zh-Hans": "天蝎座", en: "Scorpio" },
+  Sagittarius: { "zh-Hant": "射手座", "zh-Hans": "射手座", en: "Sagittarius" },
+  Capricorn: { "zh-Hant": "摩羯座", "zh-Hans": "摩羯座", en: "Capricorn" },
+  Aquarius: { "zh-Hant": "水瓶座", "zh-Hans": "水瓶座", en: "Aquarius" },
+  Pisces: { "zh-Hant": "雙魚座", "zh-Hans": "双鱼座", en: "Pisces" }
+};
+
+// Classical triplicities (element) and quadruplicities (modality). Two
+// signs 120° apart always share a triplicity; two signs 90°/180° apart
+// always share a quadruplicity. This is zodiac geometry, not opinion.
+const ELEMENT_OF: Record<ZodiacSign, "fire" | "earth" | "air" | "water"> = {
+  Aries: "fire", Leo: "fire", Sagittarius: "fire",
+  Taurus: "earth", Virgo: "earth", Capricorn: "earth",
+  Gemini: "air", Libra: "air", Aquarius: "air",
+  Cancer: "water", Scorpio: "water", Pisces: "water"
+};
+
+const MODALITY_OF: Record<ZodiacSign, "cardinal" | "fixed" | "mutable"> = {
+  Aries: "cardinal", Cancer: "cardinal", Libra: "cardinal", Capricorn: "cardinal",
+  Taurus: "fixed", Leo: "fixed", Scorpio: "fixed", Aquarius: "fixed",
+  Gemini: "mutable", Virgo: "mutable", Sagittarius: "mutable", Pisces: "mutable"
+};
+
+export type AspectKind = "conjunction" | "sextile" | "square" | "trine" | "opposition";
+
+/**
+ * Returns the zodiac signs meaningfully touched by an aspect between two
+ * transiting planets, given only the sign each planet occupies (not a
+ * birth chart). Pure and deterministic: same inputs, same output, always.
+ *
+ * - conjunction: just the (single, shared) sign.
+ * - trine: the full element triplicity of the two signs (their own
+ *   element, since a true trine only occurs between signs of one element).
+ * - square / opposition: the full modality quadruplicity of the two
+ *   signs (their own modality, since square/opposition only occur within
+ *   one modality).
+ * - sextile: the two signs themselves plus their two complementary
+ *   ("supportive") element-pair signs are not derived generically here —
+ *   sextiles are not used in TODAY_SKY_CARDS below, so this case simply
+ *   returns the two input signs.
+ */
+export function getAspectAffectedSigns(signA: ZodiacSign, signB: ZodiacSign, aspect: AspectKind): ZodiacSign[] {
+  if (aspect === "conjunction") {
+    return signA === signB ? [signA] : [signA, signB];
+  }
+  if (aspect === "trine") {
+    const element = ELEMENT_OF[signA];
+    return ZODIAC_SIGNS.filter((sign) => ELEMENT_OF[sign] === element);
+  }
+  if (aspect === "square" || aspect === "opposition") {
+    const modality = MODALITY_OF[signA];
+    return ZODIAC_SIGNS.filter((sign) => MODALITY_OF[sign] === modality);
+  }
+  return [signA, signB];
+}
+
+function signImpactList(
+  signs: ZodiacSign[],
+  note: { "zh-Hant": string; "zh-Hans": string; en: string }
+): Array<{ sign: { "zh-Hant": string; "zh-Hans": string; en: string }; note: { "zh-Hant": string; "zh-Hans": string; en: string } }> {
+  return signs.map((sign) => ({ sign: SIGN_NAMES[sign], note }));
+}
+
+export type SkyImpactCard = {
+  id: string;
+  date: string;
+  grade: "A" | "B";
+  visibleToNakedEye: boolean;
+  glyph: string;
+  title: { "zh-Hant": string; "zh-Hans": string; en: string };
+  scienceLine: { "zh-Hant": string; "zh-Hans": string; en: string };
+  theme: { "zh-Hant": string; "zh-Hans": string; en: string };
+  affectedSigns: Array<{
+    sign: { "zh-Hant": string; "zh-Hans": string; en: string };
+    note: { "zh-Hant": string; "zh-Hans": string; en: string };
+  }>;
+};
+
+const cardierNote = {
+  cardinal: { "zh-Hant": "行動與新開端的張力，容易被推著立刻做決定。", "zh-Hans": "行动与新开端的张力，容易被推着立刻做决定。", en: "Tension around initiating and deciding — a pull to act right now." },
+  fixed: { "zh-Hant": "持有與放手的拉扯，容易在「該不該堅持」上內耗。", "zh-Hans": "持有与放手的拉扯，容易在“该不该坚持”上内耗。", en: "A pull between holding on and letting go — friction over whether to keep insisting." },
+  fireTrine: { "zh-Hant": "行動力與直覺、信念順暢共振，適合起步而非等待。", "zh-Hans": "行动力与直觉、信念顺畅共振，适合起步而非等待。", en: "Drive resonates easily with instinct and conviction — better for starting than waiting." },
+  airTrine: { "zh-Hant": "表達與思考找到不費力的出口，適合說出來、寫下來。", "zh-Hans": "表达与思考找到不费力的出口，适合说出来、写下来。", en: "Expression and thought find an easy outlet — a good window to speak or write it down." }
+};
+
+/**
+ * Hand-verified against AstroAk's September/October 2026 ephemeris
+ * (astroak.com) and cross-checked date-for-date against the SKY_EVENTS
+ * "mars-aspect-cluster-2026-10" facts above and NASA/JPL Horizons. Signs
+ * are the actual tropical placements on the stated date — Uranus in
+ * Gemini and Neptune in Aries in this window, not their pre-2025 signs.
+ */
+const ASPECT_FACTS: Array<{
+  id: string;
+  date: string;
+  grade: "A" | "B";
+  visibleToNakedEye: boolean;
+  glyph: string;
+  signA: ZodiacSign;
+  signB: ZodiacSign;
+  aspect: AspectKind;
+  title: { "zh-Hant": string; "zh-Hans": string; en: string };
+  scienceLine: { "zh-Hant": string; "zh-Hans": string; en: string };
+  theme: { "zh-Hant": string; "zh-Hans": string; en: string };
+  note: { "zh-Hant": string; "zh-Hans": string; en: string };
+}> = [
+  {
+    id: "sun-trine-uranus-2026-09-28",
+    date: "2026-09-28",
+    grade: "B",
+    visibleToNakedEye: false,
+    glyph: "☉△♅",
+    signA: "Libra",
+    signB: "Gemini",
+    aspect: "trine",
+    title: {
+      "zh-Hant": "太陽三分逆行天王星",
+      "zh-Hans": "太阳三分逆行天王星",
+      en: "Sun trine retrograde Uranus"
+    },
+    scienceLine: {
+      "zh-Hant": "太陽（天秤 4–5°）與天王星（雙子 5–6°，逆行）地心視黃經角距約 119°，屬三分相，可由星曆精確驗證。",
+      "zh-Hans": "太阳（天秤 4–5°）与天王星（双子 5–6°，逆行）地心视黄经角距约 119°，属三分相，可由星历精确验证。",
+      en: "Sun (4–5° Libra) and Uranus (5–6° Gemini, retrograde) are about 119° apart in geocentric ecliptic longitude — a trine, verifiable against an ephemeris."
+    },
+    theme: { "zh-Hant": "被壓抑的想法找到順暢出口", "zh-Hans": "被压抑的想法找到顺畅出口", en: "A suppressed idea finds a smooth outlet" },
+    note: cardierNote.airTrine
+  },
+  {
+    id: "mercury-into-scorpio-2026-10-01",
+    date: "2026-10-01",
+    grade: "B",
+    visibleToNakedEye: false,
+    glyph: "☿→♏",
+    signA: "Scorpio",
+    signB: "Scorpio",
+    aspect: "conjunction",
+    title: { "zh-Hant": "水星進入天蠍座", "zh-Hans": "水星进入天蝎座", en: "Mercury enters Scorpio" },
+    scienceLine: {
+      "zh-Hant": "水星於 9/30 仍在天秤 29°附近，10/1 已進入天蠍 0°40′，屬熱帶黃道換座，可由星曆直接讀出換座時刻。",
+      "zh-Hans": "水星于 9/30 仍在天秤 29°附近，10/1 已进入天蝎 0°40′，属热带黄道换座，可由星历直接读出换座时刻。",
+      en: "Mercury was still near 29° Libra on 9/30 and had reached 0°40′ Scorpio by 10/1 — a tropical-zodiac ingress, its crossing time readable directly from an ephemeris."
+    },
+    theme: { "zh-Hant": "思考從交換訊息轉向追問動機", "zh-Hans": "思考从交换讯息转向追问动机", en: "Thinking shifts from swapping information to questioning motive" },
+    note: { "zh-Hant": "適合深度調查、財務盡職審查；風險是過度懷疑滑向偏執。", "zh-Hans": "适合深度调查、财务尽职审查；风险是过度怀疑滑向偏执。", en: "Good for research and financial due diligence; the risk is suspicion sliding into paranoia." }
+  },
+  {
+    id: "mars-square-mercury-2026-10-02",
+    date: "2026-10-02",
+    grade: "B",
+    visibleToNakedEye: false,
+    glyph: "♂□☿",
+    signA: "Leo",
+    signB: "Scorpio",
+    aspect: "square",
+    title: { "zh-Hant": "火星四分水星", "zh-Hans": "火星四分水星", en: "Mars square Mercury" },
+    scienceLine: {
+      "zh-Hant": "火星（獅子 2°16′）與水星（天蠍 1°59′）地心視黃經角距約 90°，屬四分相，幾乎精確。",
+      "zh-Hans": "火星（狮子 2°16′）与水星（天蝎 1°59′）地心视黄经角距约 90°，属四分相，几乎精确。",
+      en: "Mars (2°16′ Leo) and Mercury (1°59′ Scorpio) are about 90° apart geocentrically — a square, almost exact."
+    },
+    theme: { "zh-Hant": "行動與言語之間的摩擦", "zh-Hans": "行动与言语之间的摩擦", en: "Friction between action and speech" },
+    note: cardierNote.fixed
+  },
+  {
+    id: "mars-trine-neptune-2026-10-02",
+    date: "2026-10-02",
+    grade: "B",
+    visibleToNakedEye: false,
+    glyph: "♂△♆",
+    signA: "Leo",
+    signB: "Aries",
+    aspect: "trine",
+    title: { "zh-Hant": "火星三分逆行海王星", "zh-Hans": "火星三分逆行海王星", en: "Mars trine retrograde Neptune" },
+    scienceLine: {
+      "zh-Hant": "火星（獅子 2°16′）與海王星（白羊 2°50′，逆行）地心視黃經角距約 119°，屬三分相，接近精確。",
+      "zh-Hans": "火星（狮子 2°16′）与海王星（白羊 2°50′，逆行）地心视黄经角距约 119°，属三分相，接近精确。",
+      en: "Mars (2°16′ Leo) and Neptune (2°50′ Aries, retrograde) are about 119° apart — a trine, close to exact."
+    },
+    theme: { "zh-Hant": "行動力與想像力罕見地順暢共振", "zh-Hans": "行动力与想象力罕见地顺畅共振", en: "Drive resonates rarely-smoothly with imagination" },
+    note: cardierNote.fireTrine
+  },
+  {
+    id: "mars-opposite-pluto-2026-10-03",
+    date: "2026-10-03",
+    grade: "B",
+    visibleToNakedEye: false,
+    glyph: "♂☍♇",
+    signA: "Leo",
+    signB: "Aquarius",
+    aspect: "opposition",
+    title: { "zh-Hant": "火星衝逆行冥王星", "zh-Hans": "火星冲逆行冥王星", en: "Mars opposite retrograde Pluto" },
+    scienceLine: {
+      "zh-Hant": "火星（獅子 2°51′）與冥王星（水瓶 3°06′，逆行）地心視黃經角距約 180°，屬對分相，幾乎精確。",
+      "zh-Hans": "火星（狮子 2°51′）与冥王星（水瓶 3°06′，逆行）地心视黄经角距约 180°，属对分相，几乎精确。",
+      en: "Mars (2°51′ Leo) and Pluto (3°06′ Aquarius, retrograde) are about 180° apart — an opposition, almost exact."
+    },
+    theme: { "zh-Hant": "控制與被控制的張力浮上檯面", "zh-Hans": "控制与被控制的张力浮上台面", en: "Control-versus-being-controlled tension surfaces" },
+    note: cardierNote.fixed
+  },
+  {
+    id: "saturn-opposition-2026-10-04",
+    date: "2026-10-04",
+    grade: "A",
+    visibleToNakedEye: true,
+    glyph: "♄",
+    signA: "Aries",
+    signB: "Libra",
+    aspect: "opposition",
+    title: { "zh-Hant": "土星衝（今年最佳觀測期）", "zh-Hans": "土星冲（今年最佳观测期）", en: "Saturn at opposition (year's best viewing window)" },
+    scienceLine: {
+      "zh-Hant": "土星（白羊約 11°，逆行）與太陽形成地心對分（約 180°），約在悉尼時間 10/4 深夜前後，視星等約 0.3，幾乎整夜可見，是可驗證的天文幾何事件，非占星象徵。",
+      "zh-Hans": "土星（白羊约 11°，逆行）与太阳形成地心对分（约 180°），约在悉尼时间 10/4 深夜前后，视星等约 0.3，几乎整夜可见，是可验证的天文几何事件，非占星象征。",
+      en: "Saturn (about 11° Aries, retrograde) reaches geocentric opposition to the Sun (about 180° apart), around late evening Sydney time on 10/4, at roughly magnitude 0.3 and visible almost all night — a verifiable astronomical geometry event, not a symbolic one."
+    },
+    theme: { "zh-Hant": "舊結構的壓力測試", "zh-Hans": "旧结构的压力测试", en: "A stress test for old structures" },
+    note: cardierNote.cardinal
+  }
+];
+
+export const TODAY_SKY_CARDS: SkyImpactCard[] = ASPECT_FACTS.map((fact) => ({
+  id: fact.id,
+  date: fact.date,
+  grade: fact.grade,
+  visibleToNakedEye: fact.visibleToNakedEye,
+  glyph: fact.glyph,
+  title: fact.title,
+  scienceLine: fact.scienceLine,
+  theme: fact.theme,
+  affectedSigns: signImpactList(getAspectAffectedSigns(fact.signA, fact.signB, fact.aspect), fact.note)
+}));
+
+export function getTodaySkyCards(): SkyImpactCard[] {
+  return TODAY_SKY_CARDS;
+}
+
+export function getTodaySkyUpdatedDate(): string {
+  return [...TODAY_SKY_CARDS].sort((a, b) => b.date.localeCompare(a.date))[0]?.date ?? "";
+}
