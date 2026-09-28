@@ -5532,3 +5532,197 @@ html:not([data-zw-theme="night"]) .zhaowu-today-guide__tabs button[aria-pressed=
   [data-five-element-use-states] p { grid-template-columns: 1fr; gap: 3px; }
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   r221 — Homepage visual coherence (Song Aesthetic Framework consolidation)
+   Removes "dog-skin-plaster" appearance from the / route.
+   Governs: home-lead, disclosures, explore section, fun-grid cards.
+   Does NOT touch: daily-almanac hero, specialist cards, portal layouts,
+   analysis form, result cards, or night-mode ink variables.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* 1 ── Hero header ─────────────────────────────────────────────────────────── */
+.zhaowu-home-lead {
+  min-height: 0 !important;
+  margin: 4px 0 26px !important;
+  border-top: 1px solid rgba(172, 134, 72, .28) !important;
+  border-bottom: 1px solid rgba(172, 134, 72, .18) !important;
+  padding: clamp(22px, 5vw, 38px) 8px clamp(26px, 5vw, 42px) !important;
+  text-align: center !important;
+  background: transparent !important;
+}
+.zhaowu-home-lead p {
+  margin: 0 !important;
+  color: var(--zw-gold) !important;
+  font-size: 10px !important;
+  font-weight: 720 !important;
+  letter-spacing: .24em !important;
+  text-transform: uppercase !important;
+}
+.zhaowu-home-lead h1 {
+  max-width: 14em !important;
+  margin: 12px auto 0 !important;
+  color: var(--zw-ink) !important;
+  font-family: var(--font-display, serif) !important;
+  font-size: clamp(26px, 6.5vw, 36px) !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  letter-spacing: .04em !important;
+}
+
+/* 2 ── Disclosure cards — shared Song surface ──────────────────────────────── */
+.zhaowu-home-disclosure,
+.zhaowu-home-disclosure.is-open {
+  overflow: hidden !important;
+  border: 1px solid rgba(83, 69, 48, .16) !important;
+  border-inline-start: 3px solid rgba(83, 69, 48, .22) !important;
+  border-radius: 12px !important;
+  background: rgba(251, 247, 238, .97) !important;
+  box-shadow: 0 4px 16px rgba(46, 39, 29, .06), 0 1px 3px rgba(46, 39, 29, .04) !important;
+}
+.zhaowu-home-disclosure.is-open {
+  border-inline-start-color: var(--zw-jade) !important;
+  box-shadow: 0 8px 28px rgba(46, 39, 29, .09), 0 1px 3px rgba(46, 39, 29, .04) !important;
+}
+.zhaowu-home-disclosure-trigger {
+  min-height: 64px !important;
+  padding: 14px 16px !important;
+  cursor: pointer !important;
+}
+.zhaowu-home-disclosure-trigger > span { min-width: 0 !important; }
+.zhaowu-home-disclosure-trigger strong {
+  display: block !important;
+  color: var(--zw-ink) !important;
+  font-family: var(--font-display, serif) !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  letter-spacing: .03em !important;
+}
+.zhaowu-home-disclosure-trigger small {
+  display: block !important;
+  margin-top: 4px !important;
+  color: var(--zw-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+.zhaowu-home-disclosure-panel {
+  display: grid !important;
+  gap: 14px !important;
+  border-top: 1px solid rgba(83, 69, 48, .12) !important;
+  padding: 16px !important;
+}
+
+/* 3 ── Today section — daily-priority gets jade accent ─────────────────────── */
+.zhaowu-home-stage--daily-priority .zhaowu-home-disclosure,
+.zhaowu-home-stage--daily-priority .zhaowu-home-disclosure.is-open {
+  border-inline-start: 3px solid var(--zw-jade) !important;
+}
+.zhaowu-home-stage--daily-priority .zhaowu-home-disclosure.is-open {
+  border-color: rgba(29, 107, 84, .28) !important;
+  border-inline-start-color: var(--zw-jade) !important;
+  background: rgba(248, 251, 248, .98) !important;
+}
+
+/* 4 ── Explore wrapper — Song section container ─────────────────────────────── */
+.zhaowu-home-explore {
+  display: grid !important;
+  gap: 10px !important;
+  margin-top: 28px !important;
+}
+.zhaowu-home-explore-label {
+  margin: 0 2px 4px !important;
+  color: var(--zw-gold) !important;
+  font-size: 10px !important;
+  font-weight: 720 !important;
+  letter-spacing: .24em !important;
+  text-transform: uppercase !important;
+}
+
+/* 5 ── Fun cards grid — Song card rows, 2-col at ≥480 px ───────────────────── */
+.zhaowu-home-fun-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 8px !important;
+  margin-top: 0 !important;
+}
+@media (min-width: 480px) {
+  .zhaowu-home-fun-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+.zhaowu-home-fun-card {
+  display: flex !important;
+  min-height: 88px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  border: 1px solid rgba(83, 69, 48, .14) !important;
+  border-radius: 10px !important;
+  padding: 14px 12px !important;
+  color: var(--zw-ink) !important;
+  background: rgba(255, 252, 244, .72) !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  transition: background 120ms ease, border-color 120ms ease !important;
+}
+.zhaowu-home-fun-card:hover {
+  border-color: rgba(83, 69, 48, .26) !important;
+  background: rgba(255, 252, 244, .95) !important;
+}
+.zhaowu-home-fun-card strong {
+  display: block !important;
+  color: var(--zw-ink) !important;
+  font-family: var(--font-display, serif) !important;
+  font-size: 15px !important;
+  line-height: 1.35 !important;
+  letter-spacing: .02em !important;
+}
+.zhaowu-home-fun-card small {
+  display: block !important;
+  margin-top: 5px !important;
+  color: var(--zw-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.55 !important;
+}
+.zhaowu-home-fun-arrow {
+  flex: 0 0 auto !important;
+  color: var(--zw-cinnabar) !important;
+  font-size: 1.1rem !important;
+  line-height: 1 !important;
+}
+
+/* 6 ── Night mode — surface-aware (paper stays light, ink adapts) ─────────── */
+[data-zw-theme="night"] .zhaowu-home-lead {
+  border-top-color: rgba(160, 128, 72, .22) !important;
+  border-bottom-color: rgba(160, 128, 72, .15) !important;
+}
+[data-zw-theme="night"] .zhaowu-home-lead h1 { color: #EDE6D6 !important; }
+[data-zw-theme="night"] .zhaowu-home-lead p { color: #C8A86A !important; }
+[data-zw-theme="night"] .zhaowu-home-disclosure,
+[data-zw-theme="night"] .zhaowu-home-disclosure.is-open {
+  border-color: rgba(160, 140, 100, .20) !important;
+  border-inline-start-color: rgba(83, 140, 110, .40) !important;
+  background: rgba(30, 38, 30, .96) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .18) !important;
+}
+[data-zw-theme="night"] .zhaowu-home-disclosure.is-open {
+  border-inline-start-color: rgba(60, 160, 110, .55) !important;
+  background: rgba(22, 40, 32, .98) !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .22) !important;
+}
+[data-zw-theme="night"] .zhaowu-home-stage--daily-priority .zhaowu-home-disclosure.is-open {
+  border-color: rgba(40, 100, 72, .35) !important;
+  background: #102a23 !important;
+}
+[data-zw-theme="night"] .zhaowu-home-fun-card {
+  border-color: rgba(160, 140, 100, .18) !important;
+  background: rgba(30, 38, 30, .72) !important;
+}
+[data-zw-theme="night"] .zhaowu-home-fun-card:hover {
+  border-color: rgba(160, 140, 100, .32) !important;
+  background: rgba(30, 38, 30, .92) !important;
+}
+[data-zw-theme="night"] .zhaowu-home-fun-card strong { color: #EDE6D6 !important; }
+[data-zw-theme="night"] .zhaowu-home-fun-card small { color: #9E9887 !important; }
+[data-zw-theme="night"] .zhaowu-home-fun-arrow { color: #C8734A !important; }
+[data-zw-theme="night"] .zhaowu-home-explore-label { color: #C8A86A !important; }
+
+/* r221 end */
