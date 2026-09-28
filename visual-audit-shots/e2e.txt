@@ -1,0 +1,80 @@
+
+Running 46 tests using 1 worker
+
+  ✓   1 [iphone-safari] › e2e/auspicious-emblems.iphone-safari.spec.ts:14:5 › iPhone Safari parchment application shell › keeps wallpaper/scatter out and parchment present on / (2.8s)
+  ✓   2 [iphone-safari] › e2e/auspicious-emblems.iphone-safari.spec.ts:14:5 › iPhone Safari parchment application shell › keeps wallpaper/scatter out and parchment present on /ziwei (1.6s)
+  ✓   3 [iphone-safari] › e2e/auspicious-emblems.iphone-safari.spec.ts:14:5 › iPhone Safari parchment application shell › keeps wallpaper/scatter out and parchment present on /qizheng (2.1s)
+  ✓   4 [iphone-safari] › e2e/auspicious-emblems.iphone-safari.spec.ts:39:3 › iPhone Safari parchment application shell › r163 keeps an opaque client record separate from the non-empty Bazi stage (3.0s)
+  ✓   5 [iphone-safari] › e2e/auspicious-emblems.iphone-safari.spec.ts:53:3 › iPhone Safari parchment application shell › does not fetch owner wallpaper assets for application shell rendering (1.5s)
+  ✓   6 [iphone-safari] › e2e/auspicious-emblems.iphone-safari.spec.ts:66:5 › iPhone Safari parchment application shell › Today Guide leads the primary chart flow without overlap at 390px (2.1s)
+  ✓   7 [iphone-safari] › e2e/auspicious-emblems.iphone-safari.spec.ts:66:5 › iPhone Safari parchment application shell › Today Guide leads the primary chart flow without overlap at 430px (2.1s)
+  ✓   8 [iphone-safari] › e2e/authenticated-account.iphone-safari.spec.ts:31:3 › iPhone Safari member vs owner account flow › a stored member session cannot unlock the independent owner console (2.5s)
+  ✓   9 [iphone-safari] › e2e/authenticated-account.iphone-safari.spec.ts:42:3 › iPhone Safari member vs owner account flow › a stored member session still leaves the public home birth form available (1.9s)
+  ✓  10 [iphone-safari] › e2e/authenticated-report-save.iphone-safari.spec.ts:81:1 › Guest saves birth details first and then receives the r144 question stage (9.3s)
+  ✓  11 [iphone-safari] › e2e/authenticated-report-save.iphone-safari.spec.ts:94:1 › Guest birth record stays on the phone and opens one integrated report (7.8s)
+  ✓  12 [iphone-safari] › e2e/core-flow.iphone-safari.spec.ts:37:3 › iPhone Safari core customer flow › Appearance selection is explicit, persistent and touch-sized (8.3s)
+  ✓  13 [iphone-safari] › e2e/core-flow.iphone-safari.spec.ts:62:3 › iPhone Safari core customer flow › Home exposes device-local birth entry without a public account login (3.1s)
+  ✓  14 [iphone-safari] › e2e/core-flow.iphone-safari.spec.ts:81:3 › iPhone Safari core customer flow › Home language switching keeps birth-first controls usable (4.0s)
+  ✓  15 [iphone-safari] › e2e/core-flow.iphone-safari.spec.ts:97:3 › iPhone Safari core customer flow › Saved guest birth restores the chart immediately and edits replot it (6.3s)
+  ✓  16 [iphone-safari] › e2e/core-flow.iphone-safari.spec.ts:129:3 › iPhone Safari core customer flow › Jade Dragon is the single movable floating assistant with embedded music (3.5s)
+  ✓  17 [iphone-safari] › e2e/core-flow.iphone-safari.spec.ts:162:3 › iPhone Safari core customer flow › Login page remains reachable only for the independent owner key (1.5s)
+  ✓  18 [iphone-safari] › e2e/core-flow.iphone-safari.spec.ts:174:3 › iPhone Safari core customer flow › Analysis form blocks incomplete birth submissions instead of failing silently (2.4s)
+  ✓  19 [iphone-safari] › e2e/core-flow.iphone-safari.spec.ts:185:3 › iPhone Safari core customer flow › Birth save reveals the real chart before the question, then the answer leads (10.2s)
+  ✓  20 [iphone-safari] › e2e/daily-colors.iphone-safari.spec.ts:3:1 › daily five-element colour guide is usable on iPhone Safari (3.3s)
+  ✓  21 [iphone-safari] › e2e/daily-colors.iphone-safari.spec.ts:26:1 › home keeps dress colour inside the unified Today disclosure (1.9s)
+  ✓  22 [iphone-safari] › e2e/daily-colors.iphone-safari.spec.ts:41:1 › night Today keeps selected labels and wardrobe copy legible (2.8s)
+  ✓  23 [iphone-safari] › e2e/default-language.iphone-safari.spec.ts:24:3 › iPhone Safari display-language contract › fresh visit defaults to Traditional Chinese, keeps approved languages and exposes only the owner login entry (2.0s)
+  ✓  24 [iphone-safari] › e2e/default-language.iphone-safari.spec.ts:50:3 › iPhone Safari display-language contract › the two active public language controls switch cleanly without breaking the iPhone viewport (3.9s)
+  ✓  25 [iphone-safari] › e2e/default-language.iphone-safari.spec.ts:64:3 › iPhone Safari display-language contract › saved hidden or retired language preferences fold to Traditional Chinese (4.6s)
+  ✓  26 [iphone-safari] › e2e/dual-destiny.iphone-safari.spec.ts:33:1 › iPhone Safari One-Palm page is usable without the removed duplicate specialist shell (1.6s)
+  ✓  27 [iphone-safari] › e2e/dual-destiny.iphone-safari.spec.ts:44:1 › shared birth auto-generates the report and changing direction regenerates it (3.0s)
+  ✓  28 [iphone-safari] › e2e/loading-gate.iphone-safari.spec.ts:7:3 › iPhone Safari login-only animation › home never mounts the retired global intro (2.2s)
+  ✓  29 [iphone-safari] › e2e/loading-gate.iphone-safari.spec.ts:19:3 › iPhone Safari login-only animation › login animation plays once per local day, can be skipped, and never follows route navigation (5.3s)
+  ✓  30 [iphone-safari] › e2e/mobile-visual-navigation.iphone-safari.spec.ts:35:3 › iPhone Safari visual and report navigation contract › legacy intro force keys cannot revive an opening animation on home (2.3s)
+  ✓  31 [iphone-safari] › e2e/mobile-visual-navigation.iphone-safari.spec.ts:49:3 › iPhone Safari visual and report navigation contract › D60 withholds interpretation until the recorded minute is confirmed (4.0s)
+  ✓  32 [iphone-safari] › e2e/mobile-visual-navigation.iphone-safari.spec.ts:80:3 › iPhone Safari visual and report navigation contract › master number insight is part of the personal numerology reading (2.0s)
+  ✘  33 [iphone-safari] › e2e/mobile-visual-navigation.iphone-safari.spec.ts:96:3 › iPhone Safari visual and report navigation contract › language controls are readable and expose the current active state (3.6s)
+  ✓  34 [iphone-safari] › e2e/mobile-visual-navigation.iphone-safari.spec.ts:140:3 › iPhone Safari visual and report navigation contract › latest update is a dedicated readable page in both public languages (3.2s)
+  ✓  35 [iphone-safari] › e2e/mobile-visual-navigation.iphone-safari.spec.ts:159:3 › iPhone Safari visual and report navigation contract › homepage hides every specialist portal and delivers one integrated report (3.0s)
+  ✓  36 [iphone-safari] › e2e/public-atlas.iphone-safari.spec.ts:12:3 › iPhone Safari public atlas › serves gallery artwork from same-origin static assets without Supabase gallery traffic (3.0s)
+  ✓  37 [iphone-safari] › e2e/specialist-reports.iphone-safari.spec.ts:13:1 › Western astrology gives a complete house analysis instead of one Sun-house fragment (1.5s)
+  ✓  38 [iphone-safari] › e2e/specialist-reports.iphone-safari.spec.ts:35:1 › Seven Luminaries uses the shared homepage birth record and keeps its explanation readable (1.4s)
+  ✓  39 [iphone-safari] › e2e/specialist-reports.iphone-safari.spec.ts:47:1 › Zi Wei uses the shared homepage birth record and keeps its explanation readable (1.4s)
+  ✓  40 [iphone-safari] › e2e/specialist-reports.iphone-safari.spec.ts:69:1 › Seven Luminaries shows its natal chart when the shared birth record is present (1.5s)
+  ✓  41 [iphone-safari] › e2e/specialist-reports.iphone-safari.spec.ts:76:1 › Zi Wei shows its natal chart when the shared birth record is present (1.5s)
+  ✓  42 [iphone-safari] › e2e/specialist-reports.iphone-safari.spec.ts:83:1 › Indian D60 shows year/month/day, exact time and place, and withholds interpretation before minute confirmation (1.5s)
+  ✓  43 [iphone-safari] › e2e/sto13-b-variant.spec.ts:28:3 › STO-13 approved B variant › keeps owner history lazy, scheduled wallpaper priority deterministic, and QA records isolated (3ms)
+  ✓  44 [iphone-safari] › e2e/tea-guardian.iphone-safari.spec.ts:7:1 › tea guardian quiz renders and completes on iPhone Safari (6.2s)
+  ✓  45 [iphone-safari] › e2e/tea-guardian.iphone-safari.spec.ts:51:1 › tea guardian English copy is complete and does not mix Chinese UI (1.4s)
+  ✓  46 [iphone-safari] › e2e/typography.iphone-safari.spec.ts:8:3 › iPhone Safari typography lock › uses real Songti/PingFang font stacks on the parchment application shell (1.9s)
+
+
+  1) [iphone-safari] › e2e/mobile-visual-navigation.iphone-safari.spec.ts:96:3 › iPhone Safari visual and report navigation contract › language controls are readable and expose the current active state 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "Iowan Old Style"
+    Received string:    "Noto Serif TC, Songti TC, Songti SC, STSong, PMingLiU, serif"
+
+      131 |     expect(latestBox!.y + latestBox!.height).toBeLessThanOrEqual(navBox!.y + 1);
+      132 |     const englishHeroFamily = await page.locator(".zhaowu-home-lead h1").evaluate((node) => getComputedStyle(node).fontFamily);
+    > 133 |     expect(englishHeroFamily).toContain("Iowan Old Style");
+          |                               ^
+      134 |
+      135 |     await expect(page.getByRole("button", { name: "한국어", exact: true })).toHaveCount(0);
+      136 |     await expect(page.getByRole("button", { name: "हिन्दी", exact: true })).toHaveCount(0);
+        at /home/runner/work/zhaowu/zhaowu/e2e/mobile-visual-navigation.iphone-safari.spec.ts:133:31
+
+    Error Context: test-results/mobile-visual-navigation.i-626fa-se-the-current-active-state-iphone-safari/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/mobile-visual-navigation.i-626fa-se-the-current-active-state-iphone-safari/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/mobile-visual-navigation.i-626fa-se-the-current-active-state-iphone-safari/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [iphone-safari] › e2e/mobile-visual-navigation.iphone-safari.spec.ts:96:3 › iPhone Safari visual and report navigation contract › language controls are readable and expose the current active state 
+  45 passed (2.5m)
