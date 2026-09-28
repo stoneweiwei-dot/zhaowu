@@ -5298,6 +5298,24 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
 .zhaowu-today-guide__spirit h3{margin:0!important;color:#2b453a!important;font-family:var(--font-display,serif);font-size:24px!important}
 .zhaowu-today-guide__spirit strong,.zhaowu-today-guide__spirit span{max-width:36rem;line-height:1.72!important}
 .zhaowu-today-guide__spirit button{width:fit-content;min-height:44px;margin-top:5px;border:0;border-bottom:1px solid rgba(49,94,80,.35);border-radius:0;padding:0;color:#315e50;background:transparent;font-weight:700}
+/* r221 — .zhaowu-today-guide__grid .zhaowu-today-card is force-flattened to a transparent
+   background above (line ~5267), so it always sits directly on the outer .zhaowu-today-guide
+   card's permanently dark ink-green fill (#173f35, not theme-dependent — see
+   daily-almanac-r69.css). But its <strong> main-content line (today's date, location/weather,
+   sacred-day text, core-dynamic text, relation text) and the 宜/忌・吉時/慎時 paragraph text
+   were still painted with the dark ink colours (#263c35/#384a43/#2c6c58) meant for the card's
+   original light-paper look, in BOTH day and night theme — the r213 night-mode fix only
+   covered small/span/i and the pillar letters, never <strong> or these paragraphs, so this
+   text has been unreadable (near-black on near-black) since the card was flattened. Give it
+   the card's own light ink unconditionally; the 忌 label keeps its existing --tg-red via the
+   more specific .is-ji b rule. Does not touch .zhaowu-today-guide__spirit, which keeps its
+   own always-light paper background and correctly-dark text untouched. */
+.zhaowu-today-guide__grid .zhaowu-today-card>strong{color:#f4ead9!important}
+.zhaowu-today-guide__grid .zhaowu-today-card.is-guidance p,
+.zhaowu-today-guide__grid .zhaowu-today-card.is-hours p{color:#d3c9b8!important}
+.zhaowu-today-guide__grid .zhaowu-today-card.is-guidance p b,
+.zhaowu-today-guide__grid .zhaowu-today-card.is-hours p b{color:#e7ce9e!important}
+.zhaowu-today-guide__wardrobe-notes strong{color:#f4ead9!important}
 /* r213 — .zhaowu-spirit-slip had no position/backdrop rule at all (only the sizing
    tweaks below), so it rendered in normal document flow immediately after the
    "今日靈籤" teaser instead of as an overlay: opening "查看完整籤文" just inserted the
