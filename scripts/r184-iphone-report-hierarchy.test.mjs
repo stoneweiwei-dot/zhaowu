@@ -5,10 +5,10 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("the retired r184 home intro remains outside the public runtime", async () => {
+test("the home intro is mounted once per browser via the r184 policy contract", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const policy = await source("src/lib/intro-gate-policy.ts");
-  assert.doesNotMatch(shell, /IntroGate/);
+  assert.match(shell, /isHome \? <IntroGate \/> : null/);
   assert.match(policy, /zhaowu\.intro\.seen\.public\.v1/);
   assert.match(policy, /storage\?\.getItem\(INTRO_SEEN_KEY\) === "1"/);
   assert.match(policy, /INTRO_GATE_HARD_EXIT_MS/);

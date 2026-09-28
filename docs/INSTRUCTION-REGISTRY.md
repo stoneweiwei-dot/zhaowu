@@ -4,6 +4,15 @@
 
 目的：把「当前有效」「已被取代」「曾因权限未接入」「仅历史参考」分开，防止未来 AI / Agent 从旧聊天、旧 Library 文件、旧 AppDeploy 补丁或旧 PR 重新激活已废止指令。
 
+## 2026-09-28 r219 首頁一次性 IntroGate 恢復 supersession
+
+- 站主最新明確指令：首頁打開時原本會有一次性開場影片（`zhaowu-opening-r148.mp4`／`IntroGate`），站主回報「打開網頁時看不到影片」，要求恢復。經查證這不是意外壞掉，而是 r179／r191 兩次明確指令（「登入動畫只允許出現在 `/login`」）刻意移除首頁掛載，並各自留下對應測試鎖定；r184 曾短暫恢復首頁 IntroGate，隨即在 r191 範圍內再次被 `SUPERSEDED`。本條目是站主對同一問題第三次表態，且是最新一次，依本檔案「新指令戰勝舊指令」原則生效。
+- ACTIVE：`src/components/site-shell.tsx` 在 `isHome` 為真時掛載 `<IntroGate />`（`{isHome ? <IntroGate /> : null}`）。`IntroGate` 本身行為不變：`zhaowu.intro.seen.public.v1` 記錄「同一瀏覽器只播一次」（非每日），最短可見 5 秒、8 秒硬性逾時、播放失敗立即降級為靜態 poster，不阻塞頁面其餘內容渲染。
+- `/login` 的 `LoginStageBackdrop` 維持唯一登入動畫入口，行為、15 秒播放上限、聲音控制、後台「登入動畫管理」範圍完全不變；首頁 IntroGate 與 `/login` 動畫是兩條互不相關的動畫路徑，不共用 storage key、不互相觸發。
+- r179／r191 中「首頁、一般分區、報告頁與返回導覽一律不得播放 opening／loading 動畫」的措辭，僅在「首頁」這一項範圍內 `SUPERSEDED`；一般分區、報告頁、返回導覽不掛載 IntroGate 的部分維持 `ACTIVE`，未受影響。
+- 本次同步更新的測試契約（不得再被舊斷言復原）：`scripts/r183-login-cinematic.test.mjs`、`scripts/intro-loading.test.mjs`、`scripts/ui-contract.test.mjs`、`scripts/r191-login-animation-once.test.mjs`、`scripts/r184-iphone-report-hierarchy.test.mjs`。`scripts/r168-intro-sound-control.test.mjs`、`scripts/r161-home-clarity-auth-audio.test.mjs` 檢查的是 `src/routes/__root.tsx`（本次未改動該檔），維持有效不需更動。
+- 不改：`/login` 登入邏輯、auth cookie、命理計算、報告生成、付款、Supabase schema 或既有媒體原件；不新增 Supabase 讀寫或付費依賴（`zhaowu-opening-r148.mp4` 為既有 `public/intro` 靜態檔）。
+
 ## 2026-09-28 Release Ledger 日常 CI 解耦
 
 - ACTIVE：release-number / report consistency is a formal-release check, not a normal feature-PR merge gate.

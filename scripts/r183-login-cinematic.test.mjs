@@ -21,14 +21,14 @@ test("r183 keeps owner-only auth while the login surface becomes cinematic", asy
   assert.match(css, /@media \(max-width:\s*430px\)[\s\S]*border-radius:\s*28px 28px 20px 20px !important/);
 });
 
-test("current runtime keeps the owner-login cinematic and retires the home intro", async () => {
+test("current runtime keeps the owner-login cinematic and restores the home intro", async () => {
   const current = await source("docs/CURRENT-STATE.md");
   const storage = await source("src/lib/storage-write-policy.ts");
   const rootRoute = await source("src/routes/__root.tsx");
   const shell = await source("src/components/site-shell.tsx");
-  assert.match(current, /首頁、一般分區、報告頁與返回導覽一律不掛載 `IntroGate`/);
-  assert.match(current, /`\/login` 是唯一登入動畫入口/);
+  assert.match(current, /首頁掛載一次性 `IntroGate`/);
+  assert.match(current, /`\/login` 仍是登入動畫入口/);
   assert.match(storage, /SUPABASE_STORAGE_WRITES_PAUSED\s*=\s*false/);
   assert.doesNotMatch(rootRoute, /IntroGate/);
-  assert.doesNotMatch(shell, /IntroGate/);
+  assert.match(shell, /isHome \? <IntroGate \/> : null/);
 });
