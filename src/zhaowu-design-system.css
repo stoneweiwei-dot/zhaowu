@@ -4002,6 +4002,22 @@ html[data-zw-theme="night"] .zhaowu-dragon-guide-panel .zhaowu-dragon-music-cont
   background: transparent !important;
   color: #4a4c46 !important;
 }
+/* r213 — .zhaowu-dragon-music keeps its own dark-green box (background:#102a23,
+   color:#f1e8d8; see the shared night rule above covering .zhaowu-dragon-bubble /
+   .zhaowu-dragon-music / .zhaowu-dragon-guide-answer) even while nested inside the
+   now light-paper .zhaowu-dragon-guide-panel at night. The panel-wide text/button
+   re-darkening two rules above (same specificity, later in source) was winning over
+   that light color for every descendant, including this dark box's own text and
+   buttons, making the 背景音樂 title/track-name/play-controls unreadable (dark-gray
+   on dark-green). Scope the light color back onto just this box, higher specificity
+   than the panel-wide rule so it wins regardless of source order. */
+html[data-zw-theme="night"] .zhaowu-dragon-guide-panel .zhaowu-dragon-music :is(p, span, strong) {
+  color: #f1e8d8 !important;
+}
+html[data-zw-theme="night"] .zhaowu-dragon-guide-panel .zhaowu-dragon-music-controls button {
+  color: #f1e8d8 !important;
+  border-color: rgba(241, 232, 216, .35) !important;
+}
 html[data-zw-theme="night"] .zhaowu-dragon-guide-panel > form button {
   background: #315d50 !important;
   color: #fffaf1 !important;
@@ -5282,19 +5298,60 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
 .zhaowu-today-guide__spirit h3{margin:0!important;color:#2b453a!important;font-family:var(--font-display,serif);font-size:24px!important}
 .zhaowu-today-guide__spirit strong,.zhaowu-today-guide__spirit span{max-width:36rem;line-height:1.72!important}
 .zhaowu-today-guide__spirit button{width:fit-content;min-height:44px;margin-top:5px;border:0;border-bottom:1px solid rgba(49,94,80,.35);border-radius:0;padding:0;color:#315e50;background:transparent;font-weight:700}
-.zhaowu-spirit-slip{width:min(calc(100% - 28px),560px)!important;max-height:min(82vh,620px)!important;overflow:auto!important;padding:20px!important}
+/* r213 — .zhaowu-spirit-slip had no position/backdrop rule at all (only the sizing
+   tweaks below), so it rendered in normal document flow immediately after the
+   "今日靈籤" teaser instead of as an overlay: opening "查看完整籤文" just inserted the
+   same slip title/verse a second time directly beneath the teaser, reading as
+   duplicated/ghosted text. Anchor it as a real centered dialog with a dim backdrop,
+   matching the paper-card convention used by .zhaowu-dragon-guide-panel /
+   .zhaowu-home-fun-card (always-light card, default-dark inherited text, no --zw-ink
+   root override needed). */
+.zhaowu-spirit-slip{position:fixed!important;inset:0!important;z-index:90!important;margin:auto!important;width:min(calc(100% - 28px),560px)!important;height:fit-content!important;max-height:min(82vh,620px)!important;overflow:auto!important;padding:20px!important;border:1px solid rgba(144,105,54,.24)!important;border-radius:14px!important;background:#fffaf1!important;box-shadow:0 24px 60px rgba(20,16,10,.32)!important}
+.zhaowu-spirit-slip::before{content:"";position:fixed;inset:0;z-index:-1;background:rgba(20,22,18,.55)}
+.zhaowu-spirit-slip-close{position:absolute;top:12px;right:12px;width:32px;min-width:32px;height:32px;min-height:32px;display:grid;place-items:center;border:1px solid rgba(144,105,54,.22);border-radius:50%;padding:0;background:rgba(255,255,255,.6);color:var(--zw-ink-soft);font-size:18px;line-height:1}
 .zhaowu-spirit-slip-layout{display:grid;grid-template-columns:124px minmax(0,1fr);gap:20px;align-items:start}
 .zhaowu-spirit-slip-art{width:124px!important;height:auto!important;aspect-ratio:9 / 16!important;overflow:hidden!important;border-radius:7px!important;background:#eee5d5!important}
 .zhaowu-spirit-slip-art img{display:block!important;width:100%!important;height:100%!important;max-height:none!important;object-fit:cover!important;object-position:50% 38%!important}
 .zhaowu-spirit-slip-art.is-empty{display:grid;place-items:center;color:rgba(47,78,66,.55);font-family:var(--font-display,serif)}
 .zhaowu-spirit-slip-content{min-width:0;padding-top:4px}
 .zhaowu-spirit-slip-content h2{margin-top:9px!important}
+.zhaowu-spirit-slip-kicker{display:flex;align-items:center;gap:8px;margin:0!important;color:var(--zw-muted);font-size:12px;font-weight:700;letter-spacing:.08em}
+.zhaowu-spirit-slip-gourd{display:block;flex:0 0 auto}
+.zhaowu-spirit-slip-copy p{margin:0 0 8px!important;line-height:1.7}
+.zhaowu-spirit-slip-rule{height:1px;margin:14px 0!important;background:rgba(84,66,44,.14)}
+.zhaowu-spirit-slip-basis,.zhaowu-spirit-slip-mark{margin:0!important;color:var(--zw-muted);font-size:12px;line-height:1.6}
 .zhaowu-today-guide__footer{padding-top:14px!important;border-top:1px solid rgba(84,66,44,.10)}
 .zhaowu-today-guide__footer>div{display:none!important}
 [data-zw-theme="night"] .zhaowu-home-stage--daily-priority .zhaowu-home-disclosure,[data-zw-theme="night"] .zhaowu-home-stage--daily-priority .zhaowu-home-disclosure.is-open{border-color:rgba(209,176,120,.20)!important;background:#102a23!important}
 [data-zw-theme="night"] .zhaowu-today-guide__tabs{border-color:rgba(224,199,155,.15)}
 [data-zw-theme="night"] .zhaowu-today-guide__tabs button{color:#d2c8b7;border-color:rgba(224,199,155,.12)}
 [data-zw-theme="night"] .zhaowu-today-guide__tabs button[aria-pressed="true"]{color:#fff5e4;background:rgba(231,206,158,.10);box-shadow:inset 0 -2px 0 rgba(231,206,158,.55)}
+/* r213 — the Today grid/wardrobe-notes/spirit/page-title/footer sit on a transparent
+   background and only ever painted their text for day mode, so at night they inherited
+   the unthemed dark --zw-ink against the disclosure's #102a23 night background (line
+   ~5294) and went unreadable. Scoped fix only — does not touch --zw-ink / --zw-ink-soft /
+   --zw-muted at :root (r184/r185 protected contract), and does not reach the wardrobe tab's
+   DailyColorsModule embed ([data-daily-colors="embed"]), which keeps its own opaque light
+   card at night by design. */
+[data-zw-theme="night"] .zhaowu-today-guide__page-title,
+[data-zw-theme="night"] .zhaowu-today-guide__grid,
+[data-zw-theme="night"] .zhaowu-today-guide__wardrobe-notes,
+[data-zw-theme="night"] .zhaowu-today-guide__spirit,
+[data-zw-theme="night"] .zhaowu-today-guide__footer{color:#f4ead9}
+[data-zw-theme="night"] .zhaowu-today-guide__grid{border-color:rgba(224,199,155,.14)}
+[data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-today-card{border-bottom-color:rgba(224,199,155,.12)!important}
+[data-zw-theme="night"] .zhaowu-today-guide__page-title span,
+[data-zw-theme="night"] .zhaowu-today-guide__grid :is(small,span,i),
+[data-zw-theme="night"] .zhaowu-today-guide__footer span{color:#d3c9b8}
+[data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-today-pillars b,
+[data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-daily-pillars b{color:#f4ead9}
+[data-zw-theme="night"] .zhaowu-today-guide__wardrobe-notes{border-color:rgba(224,199,155,.12)}
+[data-zw-theme="night"] .zhaowu-today-guide__wardrobe-notes>span{border-color:rgba(224,199,155,.10)}
+[data-zw-theme="night"] .zhaowu-today-guide__wardrobe-notes small{color:#d3c9b8!important}
+[data-zw-theme="night"] .zhaowu-today-guide__wardrobe-notes strong{color:#f4ead9!important}
+[data-zw-theme="night"] .zhaowu-today-guide__spirit h3{color:#f4ead9!important}
+[data-zw-theme="night"] .zhaowu-today-guide__spirit button{color:#e7ce9e!important;border-bottom-color:rgba(231,206,158,.4)}
+[data-zw-theme="night"] .zhaowu-today-guide__footer{border-color:rgba(224,199,155,.10)}
 @media(max-width:520px){
 .zhaowu-home-stage--daily-priority{margin-bottom:24px!important}
 .zhaowu-home-stage--daily-priority .zhaowu-home-disclosure-panel{padding:0 12px 14px!important}
