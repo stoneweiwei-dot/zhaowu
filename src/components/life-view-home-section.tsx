@@ -13,6 +13,7 @@ import { BAZI_HEALTH_SYMBOLISM_LONG_FORM } from "@/lib/life-view-long-form/bazi-
 import { SHUSHU_ENDS_IN_CHOICE_ARTICLE } from "@/lib/life-view-long-form/shushu-ends-in-choice";
 import { AFTER_MIRACLES_PRACTICE_LONG_FORM } from "@/lib/life-view-long-form/after-miracles-practice";
 import { SEE_BREAK_RETURN_LONG_FORM } from "@/lib/life-view-long-form/see-break-return";
+import { TIME_IS_IT_FASTER_LONG_FORM } from "@/lib/life-view-long-form/time-is-it-faster";
 
 type ContentKind = "article" | "short-note";
 
@@ -22,6 +23,7 @@ type IllustratedArticle = LifeViewArticle & {
     src: string;
     afterParagraph: number;
     alt: Record<Locale, string>;
+    display?: "wide" | "portrait";
   }>;
 };
 
@@ -30,6 +32,7 @@ type LifeViewHomeSectionProps = {
 };
 
 const LONG_ARTICLES: IllustratedArticle[] = [
+  TIME_IS_IT_FASTER_LONG_FORM,
   SEE_BREAK_RETURN_LONG_FORM,
   AFTER_MIRACLES_PRACTICE_LONG_FORM,
   SHUSHU_ENDS_IN_CHOICE_ARTICLE,
@@ -186,7 +189,9 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                       <Fragment key={`${article.id}-${paragraphIndex}`}>
                         <p className={paragraphIndex ? "mt-4" : ""}>{paragraph}</p>
                         {illustration ? (
-                          <figure className="mx-auto my-6 w-[72%] max-w-[300px] overflow-hidden rounded-[28px] border border-line/70 bg-paper shadow-[0_8px_24px_rgba(86,62,31,0.06)]">
+                          <figure className={illustration.display === "wide"
+                            ? "mx-auto my-6 w-full max-w-[640px] overflow-hidden rounded-2xl border border-line/70 bg-paper shadow-[0_8px_24px_rgba(86,62,31,0.06)]"
+                            : "mx-auto my-6 w-[72%] max-w-[300px] overflow-hidden rounded-[28px] border border-line/70 bg-paper shadow-[0_8px_24px_rgba(86,62,31,0.06)]"}>
                             <img
                               src={illustration.src}
                               alt={illustration.alt[locale]}
