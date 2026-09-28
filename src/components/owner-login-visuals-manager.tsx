@@ -81,9 +81,9 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const copy = useMemo(() => ({
-    kicker: "LOGIN VISUALS",
-    title: tr(locale, "登入動畫管理", "登录动画管理", "Login visuals"),
-    upload: tr(locale, "上傳登入影片", "上传登录视频", "Upload login video"),
+    kicker: "OPENING VIDEO",
+    title: tr(locale, "首頁開場影片管理", "首页开场视频管理", "Homepage opening video"),
+    upload: tr(locale, "上傳開場影片", "上传开场视频", "Upload opening video"),
     current: tr(locale, "目前使用中", "目前使用中", "Currently in use"),
     use: tr(locale, "設為目前使用", "设为目前使用", "Set as current"),
     enable: tr(locale, "啟用", "启用", "Enable"),
@@ -96,19 +96,19 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     enableSelected: tr(locale, "啟用所選", "启用所选", "Enable selected"),
     disableSelected: tr(locale, "停用所選", "停用所选", "Disable selected"),
     deleteSelected: tr(locale, "刪除所選", "删除所选", "Delete selected"),
-    batchDeleteConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 個登入素材？此操作不可復原。`, `删除已选的 ${n} 个登录素材？此操作不可恢复。`, `Delete ${n} selected login assets? This cannot be undone.`),
-    batchDone: (n: number) => tr(locale, `已處理 ${n} 個登入素材。`, `已处理 ${n} 个登录素材。`, `Updated ${n} login assets.`),
+    batchDeleteConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 個開場素材？此操作不可復原。`, `删除已选的 ${n} 个开场素材？此操作不可恢复。`, `Delete ${n} selected opening-video assets? This cannot be undone.`),
+    batchDone: (n: number) => tr(locale, `已處理 ${n} 個開場素材。`, `已处理 ${n} 个开场素材。`, `Updated ${n} opening-video assets.`),
     preview: tr(locale, "預覽", "预览", "Preview"),
     close: tr(locale, "關閉", "关闭", "Close"),
     day: tr(locale, "日間版", "日间版", "Day"),
     night: tr(locale, "夜間版", "夜间版", "Night"),
     common: tr(locale, "通用版", "通用版", "Common"),
     builtIn: tr(locale, "內置素材", "内置素材", "Built-in"),
-    videoRequired: tr(locale, "登入動畫只接受影片檔（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "登录动画只接受视频文件（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "Login animations must be a video file (MP4, MOV, M4V, WebM, 3GP, MKV, AVI, WMV, FLV, MPEG, TS, OGV)."),
-    clipped: tr(locale, "已上傳；影片超過 15 秒，登入頁只播放前 15 秒。", "已上传；视频超过 15 秒，登录页只播放前 15 秒。", "Uploaded. The video is longer than 15 seconds; the login page plays only the first 15 seconds."),
-    notPlayable: tr(locale, "已上傳；此格式瀏覽器無法直接播放，登入頁會改顯示封面。建議改用 MP4 或 MOV。", "已上传；此格式浏览器无法直接播放，登录页会改显示封面。建议改用 MP4 或 MOV。", "Uploaded. Browsers cannot play this format directly, so the login page will show the poster instead. MP4 or MOV is recommended."),
-    failed: tr(locale, "登入動畫操作失敗。", "登录动画操作失败。", "Login visual update failed."),
-    empty: tr(locale, "尚未有遠端登入動畫，前台會使用內置蓮開影片。", "尚未有远程登录动画，前台会使用内置莲开影片。", "No remote login visual yet. The built-in lotus clip is used."),
+    videoRequired: tr(locale, "開場影片只接受影片檔（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "开场视频只接受视频文件（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "The opening video must be a video file (MP4, MOV, M4V, WebM, 3GP, MKV, AVI, WMV, FLV, MPEG, TS, OGV)."),
+    clipped: tr(locale, "已上傳；首頁開場最長播放約 8 秒，其餘片段不會播出。", "已上传；首页开场最长播放约 8 秒，其余片段不会播出。", "Uploaded. The homepage opening plays for at most about 8 seconds; the rest of the clip is not shown."),
+    notPlayable: tr(locale, "已上傳；此格式瀏覽器無法直接播放，首頁會改顯示封面。建議改用 MP4 或 MOV。", "已上传；此格式浏览器无法直接播放，首页会改显示封面。建议改用 MP4 或 MOV。", "Uploaded. Browsers cannot play this format directly, so the homepage will show the poster instead. MP4 or MOV is recommended."),
+    failed: tr(locale, "開場影片操作失敗。", "开场视频操作失败。", "Opening-video update failed."),
+    empty: tr(locale, "尚未設定自訂開場影片，首頁會使用內建蓮開影片。", "尚未设置自定义开场视频，首页会使用内置莲开视频。", "No custom opening video set. The homepage uses the built-in lotus clip."),
   }), [locale]);
 
   async function load() {

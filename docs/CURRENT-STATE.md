@@ -109,8 +109,13 @@ r219 依站主最新明確指令（2026-09-28，見 `docs/INSTRUCTION-REGISTRY.m
 
 - 首頁掛載一次性 `IntroGate`（`SiteShell` 內 `isHome ? <IntroGate /> : null`）：以 `zhaowu.intro.seen.public.v1` 記錄，同一瀏覽器只播一次（非每日），播完或逾時後改用靜態 poster，不阻塞頁面其他內容；一般分區、報告頁與返回導覽仍不掛載。
 - `/login` 仍是登入動畫入口，行為不變：每次站主登入流程只在首次進入 `/login` 播放一次；影片不循環，播完使用靜態封面。切到其他 route 再返回 `/login` 不重播；站主主動登出後才開始下一次登入流程。
-- 後台「登入動畫管理」只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為動畫卡片，新增上傳也只接受 MP4／WebM。
 - `IntroGate` 元件與 policy（`src/components/intro-gate.tsx`、`src/lib/intro-gate-policy.ts`）現為公開 runtime 的一部分，不再只是回歸／相容參照。
+
+r220 依站主最新明確指令（2026-09-29，見 `docs/INSTRUCTION-REGISTRY.md`）修正後台素材管理的對應範圍：
+
+- `/gallery` 的「開場影片」分頁（元件 `src/components/owner-login-visuals-manager.tsx`，內部識別碼與 `data-*` 屬性維持 `login-visuals` 不變）現在管理的是**首頁 `IntroGate` 的開場影片**，不是 `/login` 的登入畫面。站主在此上傳、標記 `is_primary`（`category=loading`、標記 `login-background`）的影片，透過新的公開唯讀端點 `src/lib/intro-visual-source.ts`（匿名金鑰、單一 row、~450ms 逾時、任何失敗一律 fail-open 回到內建預設 `zhaowu-opening-r148.mp4`）被首頁的 `IntroGate` 讀取使用。
+- `/login` 的 `LoginStageBackdrop` 完全不受影響：它一直只讀取靜態內建的 `LOGIN_VISUAL_CATALOG`（`src/lib/loading-gallery-catalog.ts`），從未實際消費過這個後台分頁寫入 Supabase 的資料，因此本次重新配線對站主自己的登入畫面是零風險、零行為變更。
+- 後台分頁只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為候選，新增上傳也只接受影片檔。
 - r194 起 Supabase Pro 已由站主明確批准，舊 r181 Free 容量寫入凍結退出 active path；runtime 的既有 same-origin fallback 保留。
 - r194：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器接受 MP4／WebM、時長上限 15 秒、單檔上限 500 MB；大於 6 MB 使用 Supabase TUS 斷點續傳。系統不在瀏覽器內轉碼，來源檔須已是可播放的 15 秒內成品。
 - r196：完整綜合報告新增「完整命書／漫畫 Lite」雙閱讀模式，預設漫畫 Lite 六格；每格可展開同一份完整報告原文。這是呈現層，不新增 calculation、Storage、AI provider 或 payment gate。\n- r197：站主 `/gallery` 素材後台改為「登入影片／內容圖片」二選一分頁，一次只渲染一個管理器；登入影片、總圖庫、背景與報告的批量工具列只有先勾選項目後才顯示。功能、Owner 權限、Storage 寫入與資料結構不變。\n- r197：已安裝 PWA 以 release metadata + service worker 前景檢查吸收新正式版本，不要求刪除 App 重裝。

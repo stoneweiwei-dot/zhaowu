@@ -10,22 +10,18 @@ import {
   scheduleIntroGateHardExit,
   shouldSkipIntroGate,
 } from "@/lib/intro-gate-policy";
+import { fetchIntroVisualOverride } from "@/lib/intro-visual-source";
+
+// How long we wait for the owner's custom "開場影片" pick (set from the
+// /gallery admin panel) before falling back to the built-in default. This
+// only delays when the <video> element itself mounts; the static poster
+// overlay below is already on screen, so a visitor never sees a blank frame.
+const INTRO_VISUAL_OVERRIDE_TIMEOUT_MS = 500;
 
 const OWNER_LOADING_VIDEO = "/intro/zhaowu-opening-r148.mp4";
 const OWNER_LOADING_POSTER = "/intro/zhaowu-opening-r148.jpg";
 const OWNER_LOADING_BROKEN = "/intro/missing-force-fail.mp4";
 const OWNER_LOADING_SOUND = "/audio/zhaowu-background.mp3";
-
-function ownerVideoSrc() {
-  try {
-    if (typeof window !== "undefined" && window.localStorage.getItem(INTRO_BROKEN_KEY) === "1") {
-      return OWNER_LOADING_BROKEN;
-    }
-  } catch {
-    /* ignore */
-  }
-  return OWNER_LOADING_VIDEO;
-}
 
 function isForcedBrokenIntro() {
   try {
@@ -44,6 +40,9 @@ export function IntroGate() {
   const [visualDone, setVisualDone] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(false);
   const [soundPlaying, setSoundPlaying] = useState(false);
+  // undefined = still resolving which video to play; a visitor never sees a
+  // blank frame because the poster overlay below covers this window.
+  const [resolvedVideoSrc, setResolvedVideoSrc] = useState<string | undefined>(undefined);
   const finishedRef = useRef(false);
   const hasPlayedRef = useRef(false);
   const exitTimerRef = useRef<number | null>(null);
@@ -122,8 +121,37 @@ export function IntroGate() {
   }, [forceOff]);
 
   useEffect(() => {
+    if (isForcedBrokenIntro()) {
+      setResolvedVideoSrc(OWNER_LOADING_BROKEN);
+      return;
+    }
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      setResolvedVideoSrc((current) => (current === undefined ? OWNER_LOADING_VIDEO : current));
+    }, INTRO_VISUAL_OVERRIDE_TIMEOUT_MS);
+    fetchIntroVisualOverride()
+      .then((override) => {
+        if (cancelled) return;
+        window.clearTimeout(timer);
+        // Guard against the fetch resolving after the timeout already picked
+        // a default: never swap the src of a video that may already be
+        // playing.
+        setResolvedVideoSrc((current) => (current === undefined ? override?.videoUrl || OWNER_LOADING_VIDEO : current));
+      })
+      .catch(() => {
+        if (cancelled) return;
+        window.clearTimeout(timer);
+        setResolvedVideoSrc((current) => (current === undefined ? OWNER_LOADING_VIDEO : current));
+      });
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, []);
+
+  useEffect(() => {
     const node = videoRef.current;
-    if (!node || isForcedBrokenIntro()) return;
+    if (!node || resolvedVideoSrc === undefined) return;
     node.muted = true;
     node.defaultMuted = true;
     node.playsInline = true;
@@ -146,7 +174,7 @@ export function IntroGate() {
       node.removeEventListener("canplay", tryPlay);
       node.removeEventListener("loadeddata", tryPlay);
     };
-  }, []);
+  }, [resolvedVideoSrc]);
 
   useEffect(() => {
     if (hasPlayedRef.current || videoPlaying || visualDone || !isForcedBrokenIntro()) return;
@@ -184,33 +212,35 @@ export function IntroGate() {
           <i />
         </div>
       </div>
-      <video
-        ref={videoRef}
-        className="zhaowu-lotus-intro__video is-playing"
-        src={ownerVideoSrc()}
-        poster={OWNER_LOADING_POSTER}
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-        onPlaying={() => {
-          hasPlayedRef.current = true;
-          setVideoPlaying(true);
-        }}
-        onEnded={() => setVisualDone(true)}
-        onAbort={() => {
-          if (!hasPlayedRef.current) {
-            setVideoPlaying(false);
-            setVisualDone(true);
-          }
-        }}
-        onError={() => {
-          if (!hasPlayedRef.current) {
-            setVideoPlaying(false);
-            setVisualDone(true);
-          }
-        }}
-      />
+      {resolvedVideoSrc !== undefined ? (
+        <video
+          ref={videoRef}
+          className="zhaowu-lotus-intro__video is-playing"
+          src={resolvedVideoSrc}
+          poster={OWNER_LOADING_POSTER}
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          onPlaying={() => {
+            hasPlayedRef.current = true;
+            setVideoPlaying(true);
+          }}
+          onEnded={() => setVisualDone(true)}
+          onAbort={() => {
+            if (!hasPlayedRef.current) {
+              setVideoPlaying(false);
+              setVisualDone(true);
+            }
+          }}
+          onError={() => {
+            if (!hasPlayedRef.current) {
+              setVideoPlaying(false);
+              setVisualDone(true);
+            }
+          }}
+        />
+      ) : null}
       <audio ref={soundRef} src={OWNER_LOADING_SOUND} preload="metadata" onEnded={() => setSoundPlaying(false)} />
       <button
         type="button"
