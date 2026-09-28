@@ -5251,9 +5251,7 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
   .zhaowu-home-sheet-shell :is(.zhaowu-customer-record,.zhaowu-bazi-stage,.zhaowu-bazi-hub,.zhaowu-question-stage) { padding: 22px 16px !important; }
 }
 
-/* 2026-09-29 — Song editorial framework: abundance distilled into a calm paper
-   reading surface. Whitespace establishes hierarchy; it must not become an empty
-   page, and the landscape remains visibly present behind opaque reading sheets. */
+/* r201 — homepage Today module closeout; Astro-inspired paper reading surface. */
 .zhaowu-home-layout .zhaowu-today-guide{color:#30463c!important;background:#fbf7ee!important;border-color:rgba(128,98,57,.20)!important;border-radius:8px!important;box-shadow:none!important}
 .zhaowu-home-layout .zhaowu-today-guide::after{display:none}
 .zhaowu-home-layout .zhaowu-today-guide__page-title strong{color:#2c493d!important}
