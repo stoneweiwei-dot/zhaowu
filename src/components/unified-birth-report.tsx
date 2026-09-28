@@ -126,7 +126,7 @@ function reportCopy(locale: Locale) {
 
 export function UnifiedBirthReport({ birth, locale, foundation }: { birth: SharedBirthRecord; locale: Locale; foundation: Foundation }) {
   const copy = reportCopy(locale);
-  const [mode, setMode] = useState<"formal" | "comic">("comic");
+  const [mode, setMode] = useState<"formal" | "comic">("formal");
   const sections = useMemo<ReportSection[]>(() => {
     const western = buildWesternReading(birth, locale);
     const ziwei = buildZiweiReading(birth, locale);
