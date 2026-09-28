@@ -308,27 +308,16 @@ For ZHAOWU work, facts beat assumptions, production beats local state, and verif
 
 If there is no production evidence, there is no completion claim.
 
-## 14. MANDATORY RELEASE LEDGER
+## 14. RELEASE LEDGER — RELEASE-ONLY GATE
 
-Every change that reaches ZHAOWU production and modifies runtime behavior, backend behavior, customer-facing UI, report output, deployment behavior, or production data/configuration must leave a release record. This applies to every AI, APP, agent and manual maintainer.
+The release ledger is maintained for formal production releases. Ordinary feature PRs and routine CI must not be blocked by release-number sequencing.
 
-Before merge:
-
-1. Bump the public release fallback in `src/lib/site-stats.ts`.
-2. Increase `updateNumber` by exactly one from the latest recorded production release.
-3. Create one matching file under `docs/change-reports/` named with the same release version/date.
-4. The change report must state: what changed, why, affected scope, protected scope, rollback path, and verification state.
-5. Tests must fail if the footer release metadata and matching report drift apart. (2026-09-28 owner supersession) Tests must **derive** the current release from `src/lib/site-stats.ts` and must never hardcode a release number; a release bump may only touch `site-stats.ts`, `lib/zhaowu-verification.js` and the new change report. Do not add new release-number literals to any test file.
-
-After Production is VERIFIED:
-
-6. Insert the same version and `update_number` into Supabase `public.release_history` with summary, PR, source commit, deployment id and verification notes.
-7. Never overwrite or delete older `release_history` rows merely to make the count look cleaner. Historical rows are audit records.
-8. The website footer must always show current version, cumulative recorded update count, latest update date, and the latest update-report summary. If Supabase is temporarily stale/unavailable, the code fallback must still show the current release.
-9. A production change without its release report is **INCOMPLETE**, even if the feature itself works.
-10. Documentation-only changes that do not affect production runtime/configuration may be exempt unless the user explicitly asks to version them.
-
-The release ledger is the canonical answer to: **which version is live, how many recorded production updates have occurred, and what changed in the latest release.**
+- Ordinary PR / main CI may run build, engine, UI and contract tests, but must not run `scripts/release-ledger.release.mjs`.
+- A normal feature PR is not required to bump `src/lib/site-stats.ts`, change `updateNumber`, update `lib/zhaowu-verification.js`, or create a numbered change report before merge. Concurrent work must not compete for the next release number.
+- The strict release ledger check runs only from a `v*` or `release-*` tag, or by manually dispatching the release-ledger workflow on `main`.
+- Before a formal release, the declared version and `updateNumber` must agree, `lib/zhaowu-verification.js` must match, and a corresponding `docs/change-reports/` report must exist with scope, rationale, verification and rollback notes. The release test derives version values from `src/lib/site-stats.ts`; it must not hardcode a moving release number.
+- After the matching Vercel Production deployment is verified, record the formal release in Supabase `public.release_history`. Keep existing rows; include source commit, PR, deployment ID and verification evidence in the existing `notes` JSON where available. No schema change is implied by this rule.
+- The release ledger is the audit trail for formal releases. Its numbering is not derived from Git commit count and must not be used as a daily merge gate.
 
 ## 15. CANONICAL METAPHYSICS DEFAULT
 

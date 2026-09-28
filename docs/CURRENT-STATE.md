@@ -10,6 +10,15 @@
 - 僅作傳統象義教學；不從元素數量推個人缺項，不作診斷或治療，也不承諾顏色、音樂或物件能改命。
 - 正式個人化行動仍以完整報告已判定的「五行功能訓練」為準；入口位於既有 `/knowledge` 命理教學區。
 
+## Release Ledger CI boundary
+
+- 普通 PR／一般 main CI 執行功能、引擎、UI、合約與建置檢查；不執行嚴格 release ledger 校驗。
+- 一般功能 PR 不必先競逐版本號、不必為了通過日常 CI 改 `site-stats.ts`／`updateNumber`／驗證常數／編號更新報告。
+- 嚴格校驗只在 `v*` 或 `release-*` tag，以及 main 手動執行 release ledger workflow 時運行。
+- 正式發版仍需一致版本、更新序號、驗證常數與對應變更報告；Production 驗證後再寫入 Supabase `release_history`。
+- 該檢查目前由 `scripts/release-ledger.release.mjs` 承載，不得重新加入一般 build／engine 測試清單。
+
+
 ## 1. 唯一 Production
 
 - GitHub：`stoneweiwei-dot/zhaowu`

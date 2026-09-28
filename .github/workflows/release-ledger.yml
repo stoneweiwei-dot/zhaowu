@@ -1,0 +1,33 @@
+name: Release ledger
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "release-*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-ledger-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  strict-release-ledger:
+    name: Strict release ledger
+    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout release ref
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Validate formal release ledger
+        run: node --test scripts/release-ledger.release.mjs
