@@ -5533,196 +5533,413 @@ html:not([data-zw-theme="night"]) .zhaowu-today-guide__tabs button[aria-pressed=
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   r221 — Homepage visual coherence (Song Aesthetic Framework consolidation)
-   Removes "dog-skin-plaster" appearance from the / route.
-   Governs: home-lead, disclosures, explore section, fun-grid cards.
-   Does NOT touch: daily-almanac hero, specialist cards, portal layouts,
-   analysis form, result cards, or night-mode ink variables.
+   r222 — Homepage single surface system (replaces r221).
+   Why: older layers (five-element-wardrobe-r100.css uses #id selectors,
+   daily-almanac-r69.css uses 3-class selectors) outranked every later rule,
+   so homepage fixes never reached the screen. Every rule here is scoped by
+   `html body .zhaowu-home-sheet-shell main.zhaowu-home-layout` (and the
+   wardrobe by its #id) so this block is the effective authority for `/`.
+   Song framework: rule 4 (no nested floating frames), rule 6 (1px lines,
+   6–12px radius, paper-weight shadow), rule 8 (night = ink field; Today and
+   home disclosures are dark carriers with moon-white text; form paper keeps
+   dark ink).
+   Scope: `/` only. No calculation, data, routing or auth code touched.
    ───────────────────────────────────────────────────────────────────────────── */
 
-/* 1 ── Hero header ─────────────────────────────────────────────────────────── */
-.zhaowu-home-lead {
+/* 0 ── Page field (night: one ink colour instead of green/black/navy) */
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell { background: #0b1411 !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout { background: #0d1613 !important; }
+
+/* 1 ── Hero: text on the page, one hairline, no box, no stray rules */
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead {
   min-height: 0 !important;
-  margin: 4px 0 26px !important;
-  border-top: 1px solid rgba(172, 134, 72, .28) !important;
-  border-bottom: 1px solid rgba(172, 134, 72, .18) !important;
-  padding: clamp(22px, 5vw, 38px) 8px clamp(26px, 5vw, 42px) !important;
+  margin: 6px 0 22px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(166, 124, 66, .24) !important;
+  padding: clamp(22px, 5vw, 34px) 8px clamp(20px, 4.5vw, 30px) !important;
   text-align: center !important;
   background: transparent !important;
+  box-shadow: none !important;
 }
-.zhaowu-home-lead p {
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead::before,
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead::after { display: none !important; content: none !important; }
+html:not([lang="en"]) body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p {
   margin: 0 !important;
-  color: var(--zw-gold) !important;
-  font-size: 10px !important;
-  font-weight: 720 !important;
-  letter-spacing: .24em !important;
-  text-transform: uppercase !important;
+  color: #a67c42 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: .26em !important;
 }
-.zhaowu-home-lead h1 {
-  max-width: 14em !important;
+html:not([lang="en"]) body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead h1 {
+  max-width: 16em !important;
   margin: 12px auto 0 !important;
-  color: var(--zw-ink) !important;
-  font-family: var(--font-display, serif) !important;
-  font-size: clamp(26px, 6.5vw, 36px) !important;
+  color: #1f1f1c !important;
+  font-size: clamp(25px, 6.4vw, 34px) !important;
   font-weight: 500 !important;
-  line-height: 1.35 !important;
+  line-height: 1.38 !important;
   letter-spacing: .04em !important;
+  text-shadow: none !important;
+  text-wrap: balance;
 }
+html[lang="en"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead h1 { margin-inline: auto !important; text-shadow: none !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead { border-bottom-color: rgba(200, 168, 106, .22) !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p { color: #c8a86a !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead h1 { color: #efe7d8 !important; }
 
-/* 2 ── Disclosure cards — shared Song surface ──────────────────────────────── */
-.zhaowu-home-disclosure,
-.zhaowu-home-disclosure.is-open {
+/* 2 ── Stage rhythm */
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout > .zhaowu-home-stage,
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout > * > .zhaowu-home-stage { margin: 0 0 20px !important; }
+
+/* 3 ── Disclosures: one paper sheet, 1px line, 12px radius, no accent stripe */
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure,
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure.is-open {
   overflow: hidden !important;
-  border: 1px solid rgba(83, 69, 48, .16) !important;
-  border-inline-start: 3px solid rgba(83, 69, 48, .22) !important;
+  margin: 0 !important;
+  border: 1px solid rgba(83, 69, 48, .15) !important;
   border-radius: 12px !important;
-  background: rgba(251, 247, 238, .97) !important;
-  box-shadow: 0 4px 16px rgba(46, 39, 29, .06), 0 1px 3px rgba(46, 39, 29, .04) !important;
+  color: #1f1f1c !important;
+  background: #fbf7ee !important;
+  box-shadow: 0 1px 2px rgba(46, 39, 29, .05) !important;
 }
-.zhaowu-home-disclosure.is-open {
-  border-inline-start-color: var(--zw-jade) !important;
-  box-shadow: 0 8px 28px rgba(46, 39, 29, .09), 0 1px 3px rgba(46, 39, 29, .04) !important;
-}
-.zhaowu-home-disclosure-trigger {
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure-trigger {
   min-height: 64px !important;
   padding: 14px 16px !important;
-  cursor: pointer !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
-.zhaowu-home-disclosure-trigger > span { min-width: 0 !important; }
-.zhaowu-home-disclosure-trigger strong {
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure-trigger strong {
   display: block !important;
-  color: var(--zw-ink) !important;
-  font-family: var(--font-display, serif) !important;
+  color: #1f1f1c !important;
   font-size: 18px !important;
   font-weight: 600 !important;
-  line-height: 1.25 !important;
+  line-height: 1.3 !important;
   letter-spacing: .03em !important;
 }
-.zhaowu-home-disclosure-trigger small {
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure-trigger small {
   display: block !important;
-  margin-top: 4px !important;
-  color: var(--zw-muted) !important;
-  font-size: 12px !important;
+  margin-top: 3px !important;
+  color: #6e6a60 !important;
+  font-size: 12.5px !important;
   line-height: 1.55 !important;
 }
-.zhaowu-home-disclosure-panel {
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure-panel {
   display: grid !important;
-  gap: 14px !important;
+  gap: 0 !important;
   border-top: 1px solid rgba(83, 69, 48, .12) !important;
-  padding: 16px !important;
+  padding: 0 16px 16px !important;
+  background: transparent !important;
 }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure,
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure.is-open {
+  border-color: rgba(212, 176, 116, .18) !important;
+  color: #f1e9da !important;
+  background: #10261f !important;
+  box-shadow: none !important;
+}
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure-trigger strong { color: #f1e9da !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure-trigger small { color: #c9bfae !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-disclosure-panel { border-top-color: rgba(212, 176, 116, .14) !important; }
 
-/* 3 ── Today section — daily-priority gets jade accent ─────────────────────── */
-.zhaowu-home-stage--daily-priority .zhaowu-home-disclosure,
-.zhaowu-home-stage--daily-priority .zhaowu-home-disclosure.is-open {
-  border-inline-start: 3px solid var(--zw-jade) !important;
+/* 4 ── Today: flatten the guide into the disclosure (no card-in-card) */
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
-.zhaowu-home-stage--daily-priority .zhaowu-home-disclosure.is-open {
-  border-color: rgba(29, 107, 84, .28) !important;
-  border-inline-start-color: var(--zw-jade) !important;
-  background: rgba(248, 251, 248, .98) !important;
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide .zhaowu-daily-details { border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__tabs {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  margin: 0 -16px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(83, 69, 48, .12) !important;
+  padding: 0 8px !important;
+  background: transparent !important;
 }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__tabs button {
+  min-height: 46px !important;
+  border: 0 !important;
+  padding: 0 4px !important;
+  color: #6e6a60 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: .08em !important;
+  white-space: nowrap !important;
+  transition: box-shadow .2s ease !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__tabs button[aria-pressed="true"] {
+  color: #1d4b3f !important;
+  box-shadow: inset 0 -2px 0 #1d4b3f !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__page-title {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 4px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  padding: 18px 0 14px !important;
+  text-align: left !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__page-title strong {
+  color: #1f1f1c !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+  letter-spacing: .03em !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__page-title span {
+  color: #6e6a60 !important;
+  font-size: 12px !important;
+  text-align: left !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__footer { margin: 0 !important; padding: 12px 0 16px !important; background: transparent !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__tabs { border-bottom-color: rgba(212, 176, 116, .14) !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__tabs button { color: #b9b09f !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__tabs button[aria-pressed="true"] { color: #fff5e4 !important; box-shadow: inset 0 -2px 0 #d1b078 !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__page-title strong { color: #f1e9da !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-today-guide__page-title span { color: #b9b09f !important; }
 
-/* 4 ── Explore wrapper — Song section container ─────────────────────────────── */
-.zhaowu-home-explore {
+/* 5 ── Dress colours embedded in Today: outrank r100 #id card styling */
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"]::before,
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"]::after,
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > header { display: none !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured] {
   display: grid !important;
   gap: 10px !important;
-  margin-top: 28px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(83, 69, 48, .12) !important;
+  border-radius: 0 !important;
+  padding: 16px 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
-.zhaowu-home-explore-label {
-  margin: 0 2px 4px !important;
-  color: var(--zw-gold) !important;
-  font-size: 10px !important;
-  font-weight: 720 !important;
-  letter-spacing: .24em !important;
-  text-transform: uppercase !important;
-}
-
-/* 5 ── Fun cards grid — Song card rows, 2-col at ≥480 px ───────────────────── */
-.zhaowu-home-fun-grid {
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured-head] {
   display: grid !important;
-  grid-template-columns: 1fr !important;
-  gap: 8px !important;
-  margin-top: 0 !important;
+  grid-template-columns: 52px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 14px !important;
 }
-@media (min-width: 480px) {
-  .zhaowu-home-fun-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-color-featured-swatch] {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  width: 52px !important;
+  height: 52px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(71, 61, 47, .16) !important;
+  border-radius: 50% !important;
 }
-.zhaowu-home-fun-card {
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-color-featured-swatch] i { display: block !important; background: var(--swatch) !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured-head] > div > small { display: block !important; color: #806846 !important; font-size: 11px !important; letter-spacing: .1em !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured-head] > div > strong { display: block !important; margin-top: 2px !important; color: #1d4b3f !important; font-size: 20px !important; line-height: 1.3 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured-head] > div > span { display: block !important; margin-top: 3px !important; color: #6e6a60 !important; font-size: 12.5px !important; line-height: 1.5 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-quote] { margin: 0 !important; color: #1f1f1c !important; font-size: 17px !important; line-height: 1.65 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-description] { margin: 0 !important; color: #4a4a44 !important; font-size: 13.5px !important; line-height: 1.75 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured] > a { color: #1d4b3f !important; font-size: 13px !important; font-weight: 700 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-pick] { margin: 4px 0 8px !important; color: #6e6a60 !important; font-size: 12.5px !important; }
+/* choices: one clean list — swatch bar · name · wish */
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  border-top: 1px solid rgba(83, 69, 48, .12) !important;
+  grid-auto-flow: row !important;
+  grid-auto-columns: auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  scroll-snap-type: none !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button {
+  display: grid !important;
+  grid-template-columns: 64px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 0 14px !important;
+  min-width: 0 !important;
+  min-height: 52px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(83, 69, 48, .10) !important;
+  border-radius: 0 !important;
+  padding: 10px 4px !important;
+  color: #1f1f1c !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: left !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button::before,
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button::after { display: none !important; content: none !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button > span:first-child {
   display: flex !important;
-  min-height: 88px !important;
+  width: 64px !important;
+  height: 14px !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: none !important;
+  box-shadow: inset 0 0 0 1px rgba(71, 61, 47, .12) !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button > span:first-child i { flex: 1 1 0 !important; display: block !important; background: var(--swatch) !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button strong {
+  display: block !important;
+  margin: 0 !important;
+  color: var(--daily-color-ink, #1d4b3f) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  letter-spacing: .06em !important;
+  white-space: nowrap !important;
+  writing-mode: horizontal-tb !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button small {
+  display: block !important;
+  margin: 0 !important;
+  color: #6e6a60 !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  white-space: nowrap !important;
+  opacity: 1 !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button[aria-pressed="true"] {
+  background: rgba(29, 75, 63, .06) !important;
+  box-shadow: inset 2px 0 0 var(--daily-color-ink, #1d4b3f) !important;
+}
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured],
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] { border-top-color: rgba(212, 176, 116, .14) !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured-head] > div > strong,
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-quote],
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button strong { color: #f4ead9 !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured-head] > div > :is(small, span),
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-description],
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-pick],
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button small { color: #d3c9b8 !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-featured] > a { color: #e7ce9e !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button { border-bottom-color: rgba(212, 176, 116, .10) !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] > div[role="list"] > button[aria-pressed="true"] { background: rgba(241, 233, 218, .06) !important; box-shadow: inset 2px 0 0 #d1b078 !important; }
+
+/* 6 ── Recent sky events: a section of the Today sheet, not another card */
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-home {
+  margin: 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(83, 69, 48, .12) !important;
+  border-radius: 0 !important;
+  padding: 18px 0 2px !important;
+  color: #1f1f1c !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-home .sky-events-kicker { color: #a67c42 !important; font-size: 10.5px !important; letter-spacing: .22em !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-home header h2 { margin: 6px 0 2px !important; color: #1f1f1c !important; font-size: 20px !important; line-height: 1.35 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-home header p { margin: 0 0 12px !important; color: #6e6a60 !important; font-size: 13px !important; line-height: 1.6 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-feature {
+  grid-template-columns: 44px minmax(0, 1fr) !important;
+  gap: 4px 14px !important;
+  border: 1px solid rgba(83, 69, 48, .14) !important;
+  border-radius: 10px !important;
+  padding: 14px !important;
+  color: #1f1f1c !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-feature-mark { width: 44px !important; height: 44px !important; align-self: start !important; font-size: 1.5rem !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-feature-copy strong { color: #1f1f1c !important; font-size: 15.5px !important; line-height: 1.5 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-feature-copy small,
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-timeline { color: #6e6a60 !important; font-size: 12px !important; line-height: 1.55 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-open { grid-column: 2 !important; color: #1d4b3f !important; font-size: 13px !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-home { border-top-color: rgba(212, 176, 116, .14) !important; color: #f1e9da !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-home .sky-events-kicker { color: #c8a86a !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-home header h2,
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-feature-copy strong { color: #f1e9da !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-home header p,
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-feature-copy small,
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-timeline { color: #c9bfae !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-feature { border-color: rgba(212, 176, 116, .18) !important; color: #f1e9da !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .sky-events-open { color: #e7ce9e !important; }
+
+/* 7 ── Birth form sheets: same radius/line/shadow as the disclosures */
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout :is(.zhaowu-customer-record, .zhaowu-bazi-stage) {
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(46, 39, 29, .05) !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-analysis-flow { display: grid !important; gap: 20px !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-bazi-pending { border-radius: 10px !important; }
+
+/* 8 ── Explore: a label and two sheets, not a box around boxes */
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-explore {
+  display: grid !important;
+  gap: 10px !important;
+  margin: 8px 0 20px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-explore-label {
+  margin: 0 4px !important;
+  color: #a67c42 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1.6 !important;
+  letter-spacing: .26em !important;
+}
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-explore-label { color: #c8a86a !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 8px !important;
+  margin: 16px 0 0 !important;
+}
+@media (min-width: 520px) {
+  html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card {
+  display: flex !important;
+  min-height: 72px !important;
   align-items: center !important;
   justify-content: space-between !important;
   gap: 12px !important;
   border: 1px solid rgba(83, 69, 48, .14) !important;
   border-radius: 10px !important;
-  padding: 14px 12px !important;
-  color: var(--zw-ink) !important;
-  background: rgba(255, 252, 244, .72) !important;
+  padding: 12px 14px !important;
+  color: #1f1f1c !important;
+  background: transparent !important;
   box-shadow: none !important;
   text-decoration: none !important;
-  transition: background 120ms ease, border-color 120ms ease !important;
 }
-.zhaowu-home-fun-card:hover {
-  border-color: rgba(83, 69, 48, .26) !important;
-  background: rgba(255, 252, 244, .95) !important;
-}
-.zhaowu-home-fun-card strong {
-  display: block !important;
-  color: var(--zw-ink) !important;
-  font-family: var(--font-display, serif) !important;
-  font-size: 15px !important;
-  line-height: 1.35 !important;
-  letter-spacing: .02em !important;
-}
-.zhaowu-home-fun-card small {
-  display: block !important;
-  margin-top: 5px !important;
-  color: var(--zw-muted) !important;
-  font-size: 11px !important;
-  line-height: 1.55 !important;
-}
-.zhaowu-home-fun-arrow {
-  flex: 0 0 auto !important;
-  color: var(--zw-cinnabar) !important;
-  font-size: 1.1rem !important;
-  line-height: 1 !important;
-}
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card strong { display: block !important; color: #1f1f1c !important; font-size: 15px !important; line-height: 1.4 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card small { display: block !important; margin-top: 4px !important; color: #6e6a60 !important; font-size: 12px !important; line-height: 1.55 !important; }
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-arrow { flex: 0 0 auto !important; color: #b0503a !important; font-size: 1.1rem !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card { border-color: rgba(212, 176, 116, .18) !important; color: #f1e9da !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card strong { color: #f1e9da !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-card small { color: #c9bfae !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-fun-arrow { color: #e0a47a !important; }
 
-/* 6 ── Night mode — surface-aware (paper stays light, ink adapts) ─────────── */
-[data-zw-theme="night"] .zhaowu-home-lead {
-  border-top-color: rgba(160, 128, 72, .22) !important;
-  border-bottom-color: rgba(160, 128, 72, .15) !important;
+/* 9 ── Add-to-home-screen sheet: 14px radius; paper keeps dark ink at night */
+html body [aria-labelledby="home-install-title"] { border-radius: 14px !important; }
+html[data-zw-theme="night"] body [aria-labelledby="home-install-title"] { background: #f4eee2 !important; }
+html[data-zw-theme="night"] body [aria-labelledby="home-install-title"] :is(h2, p, span) { color: #2b2a26 !important; }
+html[data-zw-theme="night"] body [aria-labelledby="home-install-title"] button[class*="bg-wood"] { color: #fffaf0 !important; }
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-bazi-pending {
+  border-color: rgba(83, 69, 48, .24) !important;
+  background: rgba(255, 253, 248, .55) !important;
+  box-shadow: none !important;
 }
-[data-zw-theme="night"] .zhaowu-home-lead h1 { color: #EDE6D6 !important; }
-[data-zw-theme="night"] .zhaowu-home-lead p { color: #C8A86A !important; }
-[data-zw-theme="night"] .zhaowu-home-disclosure,
-[data-zw-theme="night"] .zhaowu-home-disclosure.is-open {
-  border-color: rgba(160, 140, 100, .20) !important;
-  border-inline-start-color: rgba(83, 140, 110, .40) !important;
-  background: rgba(30, 38, 30, .96) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, .18) !important;
-}
-[data-zw-theme="night"] .zhaowu-home-disclosure.is-open {
-  border-inline-start-color: rgba(60, 160, 110, .55) !important;
-  background: rgba(22, 40, 32, .98) !important;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, .22) !important;
-}
-[data-zw-theme="night"] .zhaowu-home-stage--daily-priority .zhaowu-home-disclosure.is-open {
-  border-color: rgba(40, 100, 72, .35) !important;
-  background: #102a23 !important;
-}
-[data-zw-theme="night"] .zhaowu-home-fun-card {
-  border-color: rgba(160, 140, 100, .18) !important;
-  background: rgba(30, 38, 30, .72) !important;
-}
-[data-zw-theme="night"] .zhaowu-home-fun-card:hover {
-  border-color: rgba(160, 140, 100, .32) !important;
-  background: rgba(30, 38, 30, .92) !important;
-}
-[data-zw-theme="night"] .zhaowu-home-fun-card strong { color: #EDE6D6 !important; }
-[data-zw-theme="night"] .zhaowu-home-fun-card small { color: #9E9887 !important; }
-[data-zw-theme="night"] .zhaowu-home-fun-arrow { color: #C8734A !important; }
-[data-zw-theme="night"] .zhaowu-home-explore-label { color: #C8A86A !important; }
-
-/* r221 end */
+/* r222 end */
