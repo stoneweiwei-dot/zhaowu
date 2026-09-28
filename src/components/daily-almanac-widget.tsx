@@ -114,7 +114,7 @@ export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean })
   return <>
     <section id="daily-almanac" className="zhaowu-today-guide" aria-label={labels.title}>
       <details className={`zhaowu-daily-details${embedded ? " is-embedded-open" : ""}`} open={embedded || undefined}>
-        {!embedded ? <summary className="zhaowu-today-guide__summary">
+        {embedded ? <summary hidden>{labels.title}</summary> : <summary className="zhaowu-today-guide__summary">
           <div className="zhaowu-today-guide__summary-head"><div><p>{labels.title}</p><span>{labels.sub}</span></div><b>→</b></div>
           <div className="zhaowu-today-guide__summary-row"><strong>{now.getFullYear()}.{String(now.getMonth() + 1).padStart(2, "0")}.{String(now.getDate()).padStart(2, "0")}</strong><span>{locationName} · {weather}</span></div>
           <div className="zhaowu-today-guide__summary-meta"><span>{pillars.day}</span><span>{season}</span><em>{labels.open}</em></div>
