@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent } from "@/lib/sky-events";
+import { TodaySkyCards } from "@/components/today-sky-cards";
 import "@/sky-events.css";
 
 export const Route = createFileRoute("/sky-events")({ component: SkyEventsPage });
@@ -134,6 +135,8 @@ function SkyEventsPage() {
         <p>{ui.lead}</p>
         <div className="sky-events-truth-note">{ui.note}</div>
       </header>
+
+      <TodaySkyCards />
 
       <section className="sky-events-watch">
         <h2>{ui.watch}</h2>
