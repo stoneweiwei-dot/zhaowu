@@ -22,9 +22,10 @@ jobs:
       - run: (npx vite preview --host 127.0.0.1 --port 4173 &) && sleep 4
       - run: node scripts/visual-audit/shoot.mjs
         env:
-          TARGETS: "local=http://127.0.0.1:4173,prod=https://stone-zhaowu-official.vercel.app"
+          TARGETS: "local=http://127.0.0.1:4173"
           ROUTES: "/"
           OUT_DIR: visual-audit-shots
+      - run: node scripts/visual-audit/dom.mjs
       - name: Commit screenshots back to branch
         run: |
           git config user.name "visual-audit-bot"
