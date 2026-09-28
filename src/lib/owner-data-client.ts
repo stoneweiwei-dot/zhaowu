@@ -151,7 +151,9 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
   onProgress?.(10);
   const body = new FormData();
   body.append("cacheControl", "3600");
-  body.append("", file);
+  // Re-type the blob with the ticket's resolved MIME: iOS/Windows may report an empty or
+  // aliased type (e.g. screen-recorded .MOV), which would fail finalize's MIME check.
+  body.append("", file.type === ticket.contentType ? file : new File([file], file.name, { type: ticket.contentType }));
   const res = await fetch(ticket.signedUrl, {
     method: "PUT",
     headers: { "x-upsert": "false" },

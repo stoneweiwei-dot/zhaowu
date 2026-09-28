@@ -15,16 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r217",
-  updateNumber: 217,
-  publishedAt: "2026-09-28T20:01:00+10:00",
-  latestSummary: "首頁七個命理系統分組卡片的識別圖徽，從不透明白盤＋陰影改為柔性暈染，讓圖徽融進卡片底色，去除貼片感。",
+  version: "ZW-WEB-2026.09.28-r218",
+  updateNumber: 218,
+  publishedAt: "2026-09-28T20:30:00+10:00",
+  latestSummary: "登入動畫可上傳所有主流影片格式（含 iPhone 螢幕錄影 MOV），超過 15 秒也可上傳，播放只取前 15 秒。",
   details: {
     "zh-Hant": [
-      "站主回報首頁七個命理系統分組卡片（八字／紫微／西占／印度占星／七政四餘／過去分析／數字命理）右上角的識別圖徽有「狗皮膏藥」般的黏貼感：原本每個圖徽都用一個不透明米白色圓盤（rgba 88% 不透明度）加上自己的陰影浮在卡片上，與卡片本身的底色不連續。修改為每個圖徽改用放射狀漸層暈光（由卡片底色的暖白色調，從中心 55% 不透明度平滑降到邊緣完全透明），移除實色圓盤與陰影，讓圖徽直接融進卡片底色；圖徽本身線條（松綠／金／硃紅）對比度足夠，移除背板後仍清楚可辨。",
+      "登入動畫上傳由只收 MP4／WebM 擴充為 MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV；手機回報空白檔案類型時改以副檔名判定。",
+      "影片長度不再擋上傳；登入頁照舊只播放前 15 秒。瀏覽器無法直接播放的格式（AVI、WMV、FLV 等）會顯示封面並提示改用 MP4／MOV。",
     ],
     en: [
-      "The owner reported that the identity badges on the homepage's seven specialist-system cards (BaZi, Zi Wei, Western, Indian, Qi Zheng, past-life, numerology) looked like a crudely pasted-on patch: each badge sat on an opaque near-white disc (88% opacity) with its own drop shadow, visually disconnected from the card's own background. Replaced the disc-and-shadow with a soft radial glow in the same warm cream tone as the card background, fading smoothly from 55% opacity at the center to fully transparent at the edge, so each badge blends into its card instead of sitting on top of it. The icon linework (pine green / gold / cinnabar) has enough of its own contrast to stay clearly legible without the backing plate.",
+      "Login animation uploads now accept MP4, MOV, M4V, WebM, 3GP, MKV, AVI, WMV, FLV, MPEG, TS and OGV instead of only MP4/WebM; the type is inferred from the extension when the device reports none.",
+      "Length no longer blocks uploads; the login page still plays only the first 15 seconds. Formats browsers cannot decode (AVI, WMV, FLV…) fall back to the poster with a hint to use MP4/MOV.",
     ],
   },
 } as const;

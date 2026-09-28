@@ -20,7 +20,25 @@ const MAX_LOADING_VIDEO_BYTES = 500 * 1024 * 1024;
 const MAX_REPORT_IMAGE_BYTES = 15 * 1024 * 1024;
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 const REPORT_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const LOADING_VIDEO_TYPES = ["video/mp4", "video/webm"];
+// r218: every mainstream video container is accepted for login animations (iPhone screen
+// recordings are video/quicktime). Keep in sync with src/lib/video-formats.ts and the
+// zhaowu-gallery bucket allowed_mime_types.
+const LOADING_VIDEO_EXTENSIONS: Record<string, string> = {
+  "video/mp4": "mp4",
+  "video/x-m4v": "m4v",
+  "video/quicktime": "mov",
+  "video/webm": "webm",
+  "video/3gpp": "3gp",
+  "video/3gpp2": "3g2",
+  "video/x-matroska": "mkv",
+  "video/ogg": "ogv",
+  "video/x-msvideo": "avi",
+  "video/x-ms-wmv": "wmv",
+  "video/x-flv": "flv",
+  "video/mpeg": "mpg",
+  "video/mp2t": "ts",
+};
+const LOADING_VIDEO_TYPES = Object.keys(LOADING_VIDEO_EXTENSIONS);
 
 const ALLOWED_ACTIONS = new Set([
   "report.list",
@@ -122,12 +140,11 @@ function safeExtension(name: string, contentType: string) {
     "image/png": "png",
     "image/webp": "webp",
     "image/avif": "avif",
-    "video/mp4": "mp4",
-    "video/webm": "webm",
+    ...LOADING_VIDEO_EXTENSIONS,
   };
   if (byType[contentType]) return byType[contentType];
   const ext = name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") ?? "";
-  return ["jpg", "jpeg", "png", "webp", "avif", "mp4", "webm"].includes(ext) ? ext : "bin";
+  return ["jpg", "jpeg", "png", "webp", "avif", ...Object.values(LOADING_VIDEO_EXTENSIONS)].includes(ext) ? ext : "bin";
 }
 
 function isImageType(contentType: string) {
