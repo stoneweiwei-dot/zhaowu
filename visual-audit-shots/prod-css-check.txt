@@ -1,0 +1,5 @@
+css=/assets/index-KeZN8nyz.css
+home-install-title]{border-radius:14px!important}
+home-install-title]{background:#f4eee2!important}
+home-install-title] :is(h2,p,span){color:#2b2a26!important}
+1
