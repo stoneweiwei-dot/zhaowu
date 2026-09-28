@@ -8,6 +8,7 @@ import './legacy-visual-compat.css';
 // Canonical visual authority must load last. Do not add visual hotfix layers after this import.
 import './zhaowu-design-system.css';
 
+
 const router = createRouter({ routeTree });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
 declare const __ZHAOWU_RELEASE_ID__: string;

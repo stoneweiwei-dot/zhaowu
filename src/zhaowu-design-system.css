@@ -5394,6 +5394,47 @@ html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardr
 .zhaowu-spirit-slip-art{width:104px!important}
 }
 
+/* Song paper/ink detail for Today. Keep the canonical style layer and preserve
+   the existing surface-aware night palette and the dragon's music controls. */
+html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide {
+  color: #1f1f1c !important;
+  background: #f7f3ea !important;
+  border-color: rgba(31,31,28,.12) !important;
+}
+.zhaowu-today-guide__tabs button {
+  min-height: 48px;
+  border-right: 0;
+  font-size: 13.5px;
+  transition: color .25s ease, box-shadow .25s ease;
+}
+html:not([data-zw-theme="night"]) .zhaowu-today-guide__tabs button[aria-pressed="true"] {
+  color: #1f1f1c;
+  background: transparent;
+  box-shadow: inset 0 -2px 0 #9db8b0;
+}
+[data-zw-theme="night"] .zhaowu-today-guide__tabs button[aria-pressed="true"] {
+  background: transparent;
+}
+.zhaowu-today-guide__grid .zhaowu-today-card p,
+.zhaowu-today-guide__spirit :is(strong,span) {
+  line-height: 1.85 !important;
+  letter-spacing: .02em;
+}
+.zhaowu-spirit-slip {
+  border-radius: 8px !important;
+  background: #f7f3ea !important;
+}
+.zhaowu-spirit-slip-close {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  border-radius: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-today-guide__tabs button { transition: none; }
+}
+
 /* five-element correspondence guide: function first, mappings second. */
 [data-five-element-correspondence-compact] {
   display: grid;
