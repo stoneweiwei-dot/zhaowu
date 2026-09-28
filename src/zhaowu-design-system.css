@@ -5180,16 +5180,16 @@ html[data-zw-theme="night"] .zhaowu-comic-lite :is(h4,h5,p,strong,span,summary) 
 .zhaowu-home-lead {
   min-height: 0 !important;
   margin: 6px 0 20px !important;
-  padding: 30px 2px 34px !important;
+  padding: 18px 2px 22px !important;
 }
 .zhaowu-home-lead p { color: var(--zw-gold) !important; font-size: 11px !important; letter-spacing: .20em !important; }
 .zhaowu-home-lead h1 {
   max-width: 12em !important;
   margin-top: 10px !important;
   color: var(--zw-ink) !important;
-  font-size: clamp(30px, 8vw, 38px) !important;
-  font-weight: 600 !important;
-  line-height: 1.34 !important;
+  font-size: clamp(28px, 7vw, 34px) !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
   letter-spacing: .035em !important;
 }
 
@@ -5251,7 +5251,14 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
   .zhaowu-home-sheet-shell :is(.zhaowu-customer-record,.zhaowu-bazi-stage,.zhaowu-bazi-hub,.zhaowu-question-stage) { padding: 22px 16px !important; }
 }
 
-/* r201 — homepage Today module closeout. */
+/* r201 — homepage Today module closeout; Astro-inspired paper reading surface. */
+.zhaowu-home-layout .zhaowu-today-guide{color:#30463c!important;background:#fbf7ee!important;border-color:rgba(128,98,57,.20)!important;border-radius:8px!important;box-shadow:none!important}
+.zhaowu-home-layout .zhaowu-today-guide::after{display:none}
+.zhaowu-home-layout .zhaowu-today-guide__page-title strong{color:#2c493d!important}
+.zhaowu-home-layout .zhaowu-today-guide__page-title span,.zhaowu-home-layout .zhaowu-today-guide__footer>span{color:#716b5d!important}
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-today-guide{color:#f5f0e4!important;background:#173f35!important;border-color:rgba(209,176,120,.20)!important}
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-today-guide__page-title strong{color:#fff9e9!important}
+[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-today-guide__page-title span,[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-today-guide__footer>span{color:#d3c9b8!important}
 .zhaowu-home-stage--daily-priority{margin:0 0 30px!important}
 .zhaowu-home-stage--daily-priority .zhaowu-home-disclosure,.zhaowu-home-stage--daily-priority .zhaowu-home-disclosure.is-open{overflow:hidden;border:1px solid rgba(128,98,57,.22)!important;border-radius:10px!important;background:rgba(255,250,241,.94)!important;box-shadow:0 10px 34px rgba(58,43,24,.06)!important}
 .zhaowu-home-stage--daily-priority .zhaowu-home-disclosure-trigger{min-height:68px!important;padding:14px 16px!important}
@@ -5287,6 +5294,13 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
 [data-daily-colors="embed"] [data-daily-color-swatch] i{flex:1 1 0;background:var(--swatch)}
 [data-daily-colors="embed"] [data-daily-colors-choices] strong{display:block;margin-top:7px;color:#34352f;font-size:12px;line-height:1.25}
 [data-daily-colors="embed"] [data-daily-colors-choices] small{display:block;margin-top:3px;color:#746d63;font-size:10px;line-height:1.25}
+/* The embedded Daily Colors panel inherits a dark-card palette from the older
+   module. On the new day-mode paper surface, keep its copy dark as well. */
+html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"]{border:0!important;background:transparent!important;box-shadow:none!important;color:#384a43!important}
+html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"] :is(header,article,p){color:#384a43!important}
+html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"] h2{color:#294b3e!important}
+html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"] a{color:#315e50!important}
+html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button{color:#2c493d!important}
 .zhaowu-today-guide__wardrobe-notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:15px;border-top:1px solid rgba(84,66,44,.12);border-bottom:1px solid rgba(84,66,44,.12)}
 .zhaowu-today-guide__wardrobe-notes>span{min-width:0;padding:12px 8px;border-right:1px solid rgba(84,66,44,.10)}
 .zhaowu-today-guide__wardrobe-notes>span:last-child{border-right:0}
@@ -5298,24 +5312,17 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
 .zhaowu-today-guide__spirit h3{margin:0!important;color:#2b453a!important;font-family:var(--font-display,serif);font-size:24px!important}
 .zhaowu-today-guide__spirit strong,.zhaowu-today-guide__spirit span{max-width:36rem;line-height:1.72!important}
 .zhaowu-today-guide__spirit button{width:fit-content;min-height:44px;margin-top:5px;border:0;border-bottom:1px solid rgba(49,94,80,.35);border-radius:0;padding:0;color:#315e50;background:transparent;font-weight:700}
-/* r221 — .zhaowu-today-guide__grid .zhaowu-today-card is force-flattened to a transparent
-   background above (line ~5267), so it always sits directly on the outer .zhaowu-today-guide
-   card's permanently dark ink-green fill (#173f35, not theme-dependent — see
-   daily-almanac-r69.css). But its <strong> main-content line (today's date, location/weather,
-   sacred-day text, core-dynamic text, relation text) and the 宜/忌・吉時/慎時 paragraph text
-   were still painted with the dark ink colours (#263c35/#384a43/#2c6c58) meant for the card's
-   original light-paper look, in BOTH day and night theme — the r213 night-mode fix only
-   covered small/span/i and the pillar letters, never <strong> or these paragraphs, so this
-   text has been unreadable (near-black on near-black) since the card was flattened. Give it
-   the card's own light ink unconditionally; the 忌 label keeps its existing --tg-red via the
-   more specific .is-ji b rule. Does not touch .zhaowu-today-guide__spirit, which keeps its
-   own always-light paper background and correctly-dark text untouched. */
-.zhaowu-today-guide__grid .zhaowu-today-card>strong{color:#f4ead9!important}
+/* Keep flattened Today rows legible on the paper surface in day mode and the
+   deep-green surface in night mode. The spirit slip retains its own paper card. */
+.zhaowu-today-guide__grid .zhaowu-today-card>strong{color:#2c493d!important}
 .zhaowu-today-guide__grid .zhaowu-today-card.is-guidance p,
-.zhaowu-today-guide__grid .zhaowu-today-card.is-hours p{color:#d3c9b8!important}
+.zhaowu-today-guide__grid .zhaowu-today-card.is-hours p{color:#384a43!important}
 .zhaowu-today-guide__grid .zhaowu-today-card.is-guidance p b,
-.zhaowu-today-guide__grid .zhaowu-today-card.is-hours p b{color:#e7ce9e!important}
-.zhaowu-today-guide__wardrobe-notes strong{color:#f4ead9!important}
+.zhaowu-today-guide__grid .zhaowu-today-card.is-hours p b{color:#2c6c58!important}
+.zhaowu-today-guide__wardrobe-notes strong{color:#3c3a34!important}
+[data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-today-card>strong,[data-zw-theme="night"] .zhaowu-today-guide__wardrobe-notes strong{color:#f4ead9!important}
+[data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-today-card.is-guidance p,[data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-today-card.is-hours p{color:#d3c9b8!important}
+[data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-today-card.is-guidance p b,[data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-today-card.is-hours p b{color:#e7ce9e!important}
 /* r213 — .zhaowu-spirit-slip had no position/backdrop rule at all (only the sizing
    tweaks below), so it rendered in normal document flow immediately after the
    "今日靈籤" teaser instead of as an overlay: opening "查看完整籤文" just inserted the
