@@ -4,6 +4,14 @@
 
 目的：把「当前有效」「已被取代」「曾因权限未接入」「仅历史参考」分开，防止未来 AI / Agent 从旧聊天、旧 Library 文件、旧 AppDeploy 补丁或旧 PR 重新激活已废止指令。
 
+## 2026-09-28 Release Ledger 日常 CI 解耦
+
+- ACTIVE：release-number / report consistency is a formal-release check, not a normal feature-PR merge gate.
+- Ordinary build and engine CI must not execute `scripts/release-ledger.release.mjs`; ordinary feature PRs do not bump public release metadata or create a numbered release report solely to pass CI.
+- Run the strict check only on `v*` / `release-*` tags or manual dispatch on `main`.
+- This supersedes older wording that required a release bump before every merge or placed ledger integrity in the routine deploy gate. Keep formal release history after Production verification; do not delete historical rows.
+
+
 ## 2026-09-27 r210 五行五色、五音與五氣教學
 
 - ACTIVE：`/knowledge/five-elements-tone-qi` 是 `/knowledge` 既有命理教學區的三語教學頁，依傳統典籍標示五色、五音與氣候語境的五氣。
