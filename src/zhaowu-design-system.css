@@ -5296,7 +5296,7 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
 [data-daily-colors="embed"] [data-daily-colors-choices] small{display:block;margin-top:3px;color:#746d63;font-size:10px;line-height:1.25}
 /* The embedded Daily Colors panel inherits a dark-card palette from the older
    module. On the new day-mode paper surface, keep its copy dark as well. */
-html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"],
+html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"]{border:0!important;background:transparent!important;box-shadow:none!important;color:#384a43!important}
 html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"] :is(header,article,p){color:#384a43!important}
 html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"] h2{color:#294b3e!important}
 html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"] a{color:#315e50!important}
