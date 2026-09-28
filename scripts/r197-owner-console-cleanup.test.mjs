@@ -31,7 +31,7 @@ test("r197 idle owner pages do not show batch action bars", async () => {
 
 test("r197 preserves login video-only constraints and owner bridge", async () => {
   const manager = await source("src/components/owner-login-visuals-manager.tsx");
-  assert.match(manager, /accept="video\/mp4,video\/webm"/);
+  assert.match(manager, /accept=\{LOGIN_VIDEO_ACCEPT\}/);
   assert.match(manager, /login-background[^\n]+&& isVideo\(asset\)/);
   assert.match(manager, /@\/lib\/bridge\/gallery-assets/);
   assert.doesNotMatch(manager, /accept="[^"]*image\//);

@@ -1,4 +1,5 @@
 import * as base from "../gallery-assets";
+import { resolveLoginVideoType } from "@/lib/video-formats";
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { isOwnerCookieSession, ownerData, uploadOwnerSignedFile, type OwnerUploadTicket } from "@/lib/owner-data-client";
 import { assertSupabaseStorageWritesEnabled } from "@/lib/storage-write-policy";
@@ -28,10 +29,11 @@ export async function uploadGalleryAsset(
   assertSupabaseStorageWritesEnabled();
   if (!isOwnerCookieSession(session)) return base.uploadGalleryAsset(session, file, meta);
 
-  const isVideo = file.type === "video/mp4" || file.type === "video/webm";
+  const videoType = resolveLoginVideoType(file);
+  const isVideo = Boolean(videoType);
   const loading = meta.category === "loading";
   if (loading) {
-    if (!isVideo) throw new Error("登入動畫庫只接受 MP4／WebM 影片。");
+    if (!isVideo) throw new Error("登入動畫庫只接受影片檔（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。");
     if (isVideo && file.size > 500 * 1024 * 1024) throw new Error("登入動畫影片不可超過 500 MB。");
   } else {
     const isImage = file.type.startsWith("image/");
@@ -44,7 +46,7 @@ export async function uploadGalleryAsset(
   const assetKey = safeSlug(meta.assetKey || baseName, crypto.randomUUID());
   const prep = await ownerData<OwnerUploadTicket>("gallery.prepareUpload", {
     name: file.name,
-    contentType: file.type || "application/octet-stream",
+    contentType: (loading && videoType) || file.type || "application/octet-stream",
     size: file.size,
     category,
     assetKey,

@@ -50,9 +50,9 @@ test("owner login manager excludes images from loading, cards, and upload valida
     source("src/lib/bridge/gallery-assets.ts"),
   ]);
   assert.match(manager, /login-background[^\n]+&& isVideo\(asset\)/);
-  assert.match(manager, /accept="video\/mp4,video\/webm"/);
+  assert.match(manager, /accept=\{LOGIN_VIDEO_ACCEPT\}/);
   assert.doesNotMatch(manager, /POSTER/);
   assert.doesNotMatch(manager, /<img /);
-  assert.match(direct, /if \(!isVideo\) throw new Error\("登入動畫庫只接受 MP4／WebM 影片。"\)/);
-  assert.match(bridge, /if \(!isVideo\) throw new Error\("登入動畫庫只接受 MP4／WebM 影片。"\)/);
+  assert.match(direct, /if \(!isVideo\) throw new Error\("登入動畫庫只接受影片檔/);
+  assert.match(bridge, /if \(!isVideo\) throw new Error\("登入動畫庫只接受影片檔/);
 });

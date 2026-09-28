@@ -14,6 +14,7 @@ import {
 import { LOGIN_VISUAL_CATALOG } from "@/lib/loading-gallery-catalog";
 import { loginVisualThemeFromTags, type LoginVisualTheme } from "@/lib/login-animation";
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
+import { LOGIN_VIDEO_ACCEPT, isBrowserPlayableVideoType, resolveLoginVideoType } from "@/lib/video-formats";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -103,8 +104,9 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     night: tr(locale, "夜間版", "夜间版", "Night"),
     common: tr(locale, "通用版", "通用版", "Common"),
     builtIn: tr(locale, "內置素材", "内置素材", "Built-in"),
-    videoRequired: tr(locale, "登入動畫只接受 MP4／WebM 影片。", "登录动画只接受 MP4／WebM 视频。", "Login animations must be MP4 or WebM videos."),
-    tooLong: tr(locale, "登入動畫不可超過 15 秒。", "登录动画不可超过 15 秒。", "Login animation must be 15 seconds or shorter."),
+    videoRequired: tr(locale, "登入動畫只接受影片檔（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "登录动画只接受视频文件（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "Login animations must be a video file (MP4, MOV, M4V, WebM, 3GP, MKV, AVI, WMV, FLV, MPEG, TS, OGV)."),
+    clipped: tr(locale, "已上傳；影片超過 15 秒，登入頁只播放前 15 秒。", "已上传；视频超过 15 秒，登录页只播放前 15 秒。", "Uploaded. The video is longer than 15 seconds; the login page plays only the first 15 seconds."),
+    notPlayable: tr(locale, "已上傳；此格式瀏覽器無法直接播放，登入頁會改顯示封面。建議改用 MP4 或 MOV。", "已上传；此格式浏览器无法直接播放，登录页会改显示封面。建议改用 MP4 或 MOV。", "Uploaded. Browsers cannot play this format directly, so the login page will show the poster instead. MP4 or MOV is recommended."),
     failed: tr(locale, "登入動畫操作失敗。", "登录动画操作失败。", "Login visual update failed."),
     empty: tr(locale, "尚未有遠端登入動畫，前台會使用內置蓮開影片。", "尚未有远程登录动画，前台会使用内置莲开影片。", "No remote login visual yet. The built-in lotus clip is used."),
   }), [locale]);
@@ -135,10 +137,17 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     setBusy(true);
     setMessage(null);
     try {
+      const notes = new Set<string>();
       for (const file of files) {
-        if (file.type !== "video/mp4" && file.type !== "video/webm") throw new Error(copy.videoRequired);
-        const duration = await readDuration(file);
-        if (duration > 15) throw new Error(copy.tooLong);
+        const videoType = resolveLoginVideoType(file);
+        if (!videoType) throw new Error(copy.videoRequired);
+        // Duration is informational only: playback on /login already stops at 15 seconds.
+        const duration = await Promise.race([
+          readDuration(file),
+          new Promise<number>((_, reject) => setTimeout(() => reject(new Error("timeout")), 8000)),
+        ]).catch(() => null);
+        if (duration === null || !isBrowserPlayableVideoType(videoType)) notes.add(copy.notPlayable);
+        else if (duration > 15) notes.add(copy.clipped);
         await uploadGalleryAsset(session, file, {
           category: "loading",
           tags: ["loading", "login-background", "login-common", "owner-upload"],
@@ -147,6 +156,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       }
       await load();
       notifyChanged();
+      if (notes.size) setMessage([...notes].join(" "));
     } catch (error) {
       setMessage(error instanceof Error ? error.message : copy.failed);
     } finally {
@@ -212,7 +222,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         </div>
         <label className={`inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-5 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
           {copy.upload}
-          <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept="video/mp4,video/webm" className="hidden" onChange={(event) => void onUpload(event)} />
+          <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept={LOGIN_VIDEO_ACCEPT} className="hidden" onChange={(event) => void onUpload(event)} />
         </label>
       </div>
       {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-3 text-xs font-medium text-ink-mute" data-owner-storage-status>{tr(locale, "Storage 寫入暫停", "Storage 写入暂停", "Storage read-only")}</p> : null}
