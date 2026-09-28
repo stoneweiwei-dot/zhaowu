@@ -1,0 +1,142 @@
+/*
+ * Song-Style Minimalist UI Lock: "今日" (Today) Module
+ * Adheres to Song dynasty aesthetic: xuan paper (#F7F3EA), ink typography (#1F1F1C / #4A4A44),
+ * celadon accent (#9DB8B0), 1px subtle divider lines, zero border-radius, no drop shadows,
+ * generous padding and 2.0 line-height.
+ */
+
+:root {
+  --song-paper: #F7F3EA;
+  --song-ink: #1F1F1C;
+  --song-ink-soft: #4A4A44;
+  --song-ink-mute: #8B806F;
+  --song-celadon: #9DB8B0;
+  --song-bamboo: #6F7F6A;
+  --song-tea: #8B6F55;
+  --song-line: rgba(31, 31, 28, 0.12);
+  --song-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 1. Today Guide Container — Paper texture, sharp corners, no heavy green */
+.zhaowu-home-layout .zhaowu-today-guide,
+.zhaowu-today-guide {
+  background: var(--song-paper) !important;
+  color: var(--song-ink) !important;
+  border: 1px solid var(--song-line) !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+  margin-top: 48px !important;
+  margin-bottom: 64px !important;
+  overflow: hidden !important;
+}
+
+.zhaowu-home-layout .zhaowu-today-guide::after,
+.zhaowu-today-guide::after {
+  display: none !important;
+}
+
+/* 2. Today Guide Hero Header */
+.zhaowu-home-layout .zhaowu-today-guide__hero,
+.zhaowu-today-guide__hero {
+  background: transparent !important;
+  border-bottom: 1px solid var(--song-line) !important;
+  padding: 32px 32px 20px !important;
+}
+
+.zhaowu-home-layout .zhaowu-today-guide__hero p,
+.zhaowu-today-guide__hero p {
+  color: var(--song-ink) !important;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif) !important;
+  font-size: clamp(22px, 5vw, 30px) !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* 3. Subtitles, Meta and Timestamps */
+.zhaowu-today-guide__summary-meta,
+.zhaowu-today-guide__page-title,
+.zhaowu-contract-label {
+  color: var(--song-ink-soft) !important;
+  font-size: 13px !important;
+  letter-spacing: 0.03em !important;
+}
+
+/* 4. Tabs Navigation — Linear, minimalist, celadon underline */
+.zhaowu-today-guide__pager button,
+.zhaowu-today-guide .tab-button,
+.zhaowu-today-card__tab {
+  background: transparent !important;
+  color: var(--song-ink-soft) !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 8px 16px !important;
+  font-size: 14px !important;
+  transition: all 0.6s var(--song-ease) !important;
+}
+
+.zhaowu-today-guide__pager button[aria-selected="true"],
+.zhaowu-today-guide__pager button.is-active,
+.zhaowu-today-guide .tab-button.active,
+.zhaowu-today-card__tab.active {
+  color: var(--song-ink) !important;
+  border-bottom: 2px solid var(--song-celadon) !important;
+  font-weight: 500 !important;
+}
+
+/* 5. Five-Element Wardrobe & Content Section */
+#five-element-wardrobe,
+.zhaowu-today-guide__wardrobe,
+.zhaowu-today-card {
+  background: var(--song-paper) !important;
+  border: 1px solid var(--song-line) !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+  padding: clamp(24px, 5vw, 40px) !important;
+}
+
+#five-element-wardrobe::before,
+#five-element-wardrobe::after {
+  display: none !important;
+}
+
+/* Typography & breathing space */
+.zhaowu-today-guide p,
+#five-element-wardrobe p,
+.zhaowu-daily-details p {
+  color: var(--song-ink-soft) !important;
+  line-height: 2.0 !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* 6. Buttons & Disclosure Triggers — Plain text link with subtle line */
+.zhaowu-home-disclosure-trigger,
+.zhaowu-today-guide__footer button,
+.zhaowu-today-guide a.button-link {
+  background: transparent !important;
+  color: var(--song-ink) !important;
+  border: 1px solid var(--song-line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 10px 24px !important;
+  font-size: 13px !important;
+  letter-spacing: 0.04em !important;
+  transition: all 0.6s var(--song-ease) !important;
+}
+
+.zhaowu-home-disclosure-trigger:hover,
+.zhaowu-today-guide__footer button:hover {
+  background: rgba(157, 184, 176, 0.12) !important;
+  border-color: var(--song-celadon) !important;
+}
+
+/* 7. Green Dragon Floating Trigger — Demoted to subtle ink seal */
+.zhaowu-dragon-guide-trigger {
+  border-radius: 2px !important;
+  border: 1px solid var(--song-line) !important;
+  background: rgba(247, 243, 234, 0.94) !important;
+  box-shadow: 0 4px 16px rgba(31, 31, 28, 0.06) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
