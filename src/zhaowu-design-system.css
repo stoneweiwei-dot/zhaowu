@@ -5418,7 +5418,7 @@ html:not([data-zw-theme="night"]) .zhaowu-today-guide__tabs button[aria-pressed=
   box-shadow: inset 0 -2px 0 #d1b078 !important;
 }
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-featured-head] :is(small,strong,span),
-[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button strong {
+[data-zw-theme="night"] .zhaowu-home-layout #five-element-wardrobe[data-daily-colors="embed"] [data-daily-colors-choices] button strong {
   color: #f4ead9 !important;
 }
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-featured-head] small,
@@ -5531,3 +5531,4 @@ html:not([data-zw-theme="night"]) .zhaowu-today-guide__tabs button[aria-pressed=
   [data-five-element-correspondence-grid] { grid-template-columns: 1fr; }
   [data-five-element-use-states] p { grid-template-columns: 1fr; gap: 3px; }
 }
+
