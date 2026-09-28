@@ -5,6 +5,7 @@ import test from "node:test";
 const pkg = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
 const vercel = JSON.parse(await readFile(new URL("../vercel.json", import.meta.url), "utf8"));
 const workflow = await readFile(new URL("../.github/workflows/build.yml", import.meta.url), "utf8");
+const releaseWorkflow = await readFile(new URL("../.github/workflows/release-ledger.yml", import.meta.url), "utf8");
 
 test("production build uses deploy-gate not the full engine glob", () => {
   assert.match(pkg.scripts.build, /test:deploy/);
@@ -32,4 +33,14 @@ test("GitHub Production CI keeps blocking deploy-gate, engine, and iPhone Safari
   assert.match(workflow, /name: iPhone Safari/);
   assert.doesNotMatch(workflow, /engine-observe:/);
   assert.doesNotMatch(workflow, /continue-on-error:\s*true/);
+});
+
+test("strict release ledger stays outside routine deploy CI", () => {
+  assert.doesNotMatch(pkg.scripts["test:deploy"], /release-ledger/);
+  assert.doesNotMatch(workflow, /release-ledger\.release\.mjs/);
+  assert.match(releaseWorkflow, /push:\s*\n\s*tags:/);
+  assert.match(releaseWorkflow, /- "v\\\*"/);
+  assert.match(releaseWorkflow, /- "release-\\\*"/);
+  assert.match(releaseWorkflow, /workflow_dispatch:/);
+  assert.match(releaseWorkflow, /node --test scripts\/release-ledger\.release\.mjs/);
 });

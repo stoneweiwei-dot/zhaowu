@@ -50,7 +50,7 @@ test("every production frontend change requires a matching change report", async
   assert.match(report, /## 受保護範圍/);
   assert.match(report, /## 驗證狀態/);
   assert.match(report, /## 回滾/);
-  assert.match(agents, /MANDATORY RELEASE LEDGER/);
+  assert.match(agents, /RELEASE LEDGER — RELEASE-ONLY GATE/);
   assert.match(agents, /docs\/change-reports/);
   assert.match(agents, /release_history/);
   assert.match(agents, /CANONICAL METAPHYSICS DEFAULT/);
