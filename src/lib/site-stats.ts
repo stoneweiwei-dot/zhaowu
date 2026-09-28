@@ -15,16 +15,16 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r216",
-  updateNumber: 216,
-  publishedAt: "2026-09-28T13:10:00+10:00",
-  latestSummary: "修復「今日」小工具／青玉小龍音樂控制／今日靈籤彈窗在夜間模式下文字看不清的問題。",
+  version: "ZW-WEB-2026.09.28-r217",
+  updateNumber: 217,
+  publishedAt: "2026-09-28T20:01:00+10:00",
+  latestSummary: "首頁七個命理系統分組卡片的識別圖徽，從不透明白盤＋陰影改為柔性暈染，讓圖徽融進卡片底色，去除貼片感。",
   details: {
     "zh-Hant": [
-      "修復三處夜間模式下的文字對比度問題：(1) 首頁「今日」小工具的黃曆卡片（日期／天氣／聖日等）在夜間沒有對應的文字上色，直接繼承日間的深色墨色，疊在轉暗的卡片背景上幾乎看不見；(2) 青玉小龍助理展開後的「背景音樂」控制列，其標題／曲名／播放按鈕文字被寫死的深灰色 !important 覆蓋，蓋掉了音樂區塊自己該有的淺色文字；(3) 「今日靈籤」完整籤文彈窗完全沒有 position/z-index/背景設定，點開後只是直接插入在原本teaser文字下方，看起來像文字重複顯示，現在改為置中浮層並附上遮罩背景。",
+      "站主回報首頁七個命理系統分組卡片（八字／紫微／西占／印度占星／七政四餘／過去分析／數字命理）右上角的識別圖徽有「狗皮膏藥」般的黏貼感：原本每個圖徽都用一個不透明米白色圓盤（rgba 88% 不透明度）加上自己的陰影浮在卡片上，與卡片本身的底色不連續。修改為每個圖徽改用放射狀漸層暈光（由卡片底色的暖白色調，從中心 55% 不透明度平滑降到邊緣完全透明），移除實色圓盤與陰影，讓圖徽直接融進卡片底色；圖徽本身線條（松綠／金／硃紅）對比度足夠，移除背板後仍清楚可辨。",
     ],
     en: [
-      "Fixed three night-mode text-contrast bugs: (1) the homepage \"Today\" almanac cards (date/weather/sacred day, etc.) had no night-mode text color of their own and inherited the day-mode dark ink straight onto the card's darkened night background, making them nearly invisible; (2) the Jade Dragon assistant's expanded \"Background Music\" control row had its title/track name/play buttons pinned to a hardcoded dark gray with !important, overriding the light text the music block itself was supposed to have at night; (3) the \"Daily Spirit Slip\" full-verse popup had no position/z-index/backdrop styling at all, so opening it just inserted the same verse text again directly below the teaser, reading as duplicated text — it now renders as a proper centered overlay with a dimming backdrop.",
+      "The owner reported that the identity badges on the homepage's seven specialist-system cards (BaZi, Zi Wei, Western, Indian, Qi Zheng, past-life, numerology) looked like a crudely pasted-on patch: each badge sat on an opaque near-white disc (88% opacity) with its own drop shadow, visually disconnected from the card's own background. Replaced the disc-and-shadow with a soft radial glow in the same warm cream tone as the card background, fading smoothly from 55% opacity at the center to fully transparent at the edge, so each badge blends into its card instead of sitting on top of it. The icon linework (pine green / gold / cinnabar) has enough of its own contrast to stay clearly legible without the backing plate.",
     ],
   },
 } as const;
