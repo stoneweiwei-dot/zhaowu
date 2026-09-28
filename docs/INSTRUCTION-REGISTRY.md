@@ -28,6 +28,15 @@
 - ACTIVE：`IntroGate` 的既有播放契約完全不變——`zhaowu.intro.seen.public.v1` 同一瀏覽器只播一次、`INTRO_GATE_MIN_VISIBLE_MS`／`INTRO_GATE_HARD_EXIT_MS` 計時器不受影響、內建預設 `zhaowu-opening-r148.mp4`／`.jpg` 永遠是失敗或逾時的退回目標。新增的只是「先花至多 ~450ms 問一次 Supabase 有沒有站主指定的自訂影片」，且這個等待只延後 `<video>` 元素掛載，靜態封面在此期間已經蓋滿畫面，訪客不會看到空白。
 - ACTIVE：`/login` 的 `LoginStageBackdrop`、站主登入 cookie、15 秒播放上限、聲音控制、後台其餘登入邏輯全部不變——這次改動對 `/login` 是零風險、零行為變更，因為它本來就沒有消費過這份 Supabase 資料。
 - 不改：命理計算、報告生成、付款、Supabase schema／既有媒體原件；不新增付費依賴，重用既有 `gallery_assets` 資料表與既有上傳／驗證流程。
+## 2026-09-29 r225 命書六格＋頂部導航「宋式手卷」supersession
+
+- 站主最新明確指令：把命書六格（`ComicLiteReport`）與頂部導航做「提純」——去卡片、去漸變頭像、去陰影，改為以 1px 細線串聯的編號列表。範圍只限這兩處。
+- ACTIVE：六格＝`.zhaowu-comic-lite` 連續列表；序號（青綠）＋標題＋主線句＋純文字「展開／收起」鏈（細箭頭、0.8s `cubic-bezier(.22,1,.36,1)`、12px 位移淡入，`prefers-reduced-motion` 關閉動效）。圓角 0、無陰影、無漸變；朱砂線框小印章取代漸變頭像與吉祥物；「完整命書／漫畫 Lite」切換由膠囊改為底線文字頁籤。
+- ACTIVE：頂部導航在 r186 基礎上只做細修——日間 8% 墨色細線＋72% 暖紙底＋8px 模糊、字距 .1em、現用語言維持站內翡翠綠 `#315D50`（iPhone e2e 契約鎖定）、現用日／夜僅一顆朱砂點；夜間沿用原深色承載面配色。
+- 僅取代與 `docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 衝突的部分（六格 6–12px 圓角與紙面陰影 → 0 圓角／無陰影）。框架其餘規則不變：單一遠山背景、不透明暖紙閱讀面、夜間 surface-aware、560px 閱讀寬度、無橫向溢出、44px 觸控。
+- 站主草稿色值在此**刻意偏離**：`#8A8A80`（3.15:1）與 `#9DB8B0`（1.91:1）作文字不達 4.5:1，改用 `#666659` 與 `#3F6B5D`（於日間 `#FBF7EE`、夜間 `#EBE5D9` 兩種紙面皆 ≥ 4.5:1，由 `scripts/r196-comic-lite-report.test.mjs` 鎖定）；頁首不做全透明，因背景圖頂部對淡墨字僅 3.5–4.1:1。頁首本站非 sticky，故不加滾動狀態腳本。
+- **未執行（需另行明確指令）**：移除青玉小龍助手（`GreenDragonGuide`）與精簡音樂控件——它們由 r149／r157 測試鎖定，屬功能移除，不在本條範圍。全站 `border-radius: 0`／`box-shadow: none` 也未套用到六格與導航以外的區域。
+- 不改：命理內核、報告內容與資料來源（`buildWesternReading` 等）、登入、付款、Supabase、媒體資料、多語系。
 
 ## 2026-09-29 宋式主體審美框架 supersession
 
