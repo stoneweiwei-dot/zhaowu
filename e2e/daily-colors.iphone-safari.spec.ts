@@ -37,3 +37,31 @@ test("home keeps dress colour inside the unified Today disclosure", async ({ pag
   await expect(embed).toBeVisible();
   await expect(embed.locator("[data-daily-color-swatch] i").first()).toBeVisible();
 });
+
+test("night Today keeps selected labels and wardrobe copy legible", async ({ page }) => {
+  await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.getByRole("button", { name: "切換夜間模式" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-zw-theme", "night");
+
+  const selectors = [
+    '.zhaowu-today-guide__tabs button[aria-pressed="true"]',
+    '[data-daily-colors-featured-head] small',
+    '[data-daily-colors-featured-head] strong',
+    '[data-daily-colors-featured-head] span',
+    '[data-daily-colors-choices] button strong',
+  ];
+  for (const selector of selectors) {
+    const element = page.locator(`#daily-almanac ${selector}`).first();
+    await expect(element).toBeVisible();
+    const luminance = await element.evaluate((node) => {
+      const channels = getComputedStyle(node).color.match(/[\d.]+/g)?.slice(0, 3).map(Number) ?? [];
+      const linear = channels.map((value) => {
+        const channel = value / 255;
+        return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+      });
+      return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+    });
+    expect(luminance, `${selector} should be light on the night surface`).toBeGreaterThan(0.5);
+  }
+});
