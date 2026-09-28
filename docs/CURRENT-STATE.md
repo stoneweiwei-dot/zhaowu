@@ -1,6 +1,6 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-09-27 21:00 AEST
+最後核對：2026-09-28 22:50 AEST
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
@@ -103,12 +103,12 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 
 ## 6. Loading／Login animation
 
-r191 依站主最新指令修正：
+r219 依站主最新明確指令（2026-09-28，見 `docs/INSTRUCTION-REGISTRY.md`）修正，取代 r161／r191 對首頁的限制：
 
-- `/login` 是唯一登入動畫入口；首頁、一般分區、報告頁與返回導覽一律不掛載 `IntroGate`。
-- 每次站主登入流程只在首次進入 `/login` 播放一次；影片不循環，播完使用靜態封面。切到其他 route 再返回 `/login` 不重播；站主主動登出後才開始下一次登入流程。
+- 首頁掛載一次性 `IntroGate`（`SiteShell` 內 `isHome ? <IntroGate /> : null`）：以 `zhaowu.intro.seen.public.v1` 記錄，同一瀏覽器只播一次（非每日），播完或逾時後改用靜態 poster，不阻塞頁面其他內容；一般分區、報告頁與返回導覽仍不掛載。
+- `/login` 仍是登入動畫入口，行為不變：每次站主登入流程只在首次進入 `/login` 播放一次；影片不循環，播完使用靜態封面。切到其他 route 再返回 `/login` 不重播；站主主動登出後才開始下一次登入流程。
 - 後台「登入動畫管理」只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為動畫卡片，新增上傳也只接受 MP4／WebM。
-- 歷史 `IntroGate` 元件與 policy 只留回歸／相容參照，不得重新接回公開 runtime。
+- `IntroGate` 元件與 policy（`src/components/intro-gate.tsx`、`src/lib/intro-gate-policy.ts`）現為公開 runtime 的一部分，不再只是回歸／相容參照。
 - r194 起 Supabase Pro 已由站主明確批准，舊 r181 Free 容量寫入凍結退出 active path；runtime 的既有 same-origin fallback 保留。
 - r194：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器接受 MP4／WebM、時長上限 15 秒、單檔上限 500 MB；大於 6 MB 使用 Supabase TUS 斷點續傳。系統不在瀏覽器內轉碼，來源檔須已是可播放的 15 秒內成品。
 - r196：完整綜合報告新增「完整命書／漫畫 Lite」雙閱讀模式，預設漫畫 Lite 六格；每格可展開同一份完整報告原文。這是呈現層，不新增 calculation、Storage、AI provider 或 payment gate。\n- r197：站主 `/gallery` 素材後台改為「登入影片／內容圖片」二選一分頁，一次只渲染一個管理器；登入影片、總圖庫、背景與報告的批量工具列只有先勾選項目後才顯示。功能、Owner 權限、Storage 寫入與資料結構不變。\n- r197：已安裝 PWA 以 release metadata + service worker 前景檢查吸收新正式版本，不要求刪除 App 重裝。
@@ -180,7 +180,7 @@ r191 依站主最新指令修正：
 3. 正式站首頁／Login／出生表單／完整報告可用；
 4. 真 iPhone Safari 無白屏、橫向 overflow、safe-area／鍵盤遮擋、雙 floating UI；夜間模式所有主要文字與次要文字均保持可讀對比；
 5. refresh／返回／前進／切 App／鎖屏恢復正常；
-6. 首頁及其他公開路由不掛載 IntroGate；/login 在單次站主登入流程只播一次、最長 15 秒，refresh／返回不重播，聲音控制正常；
+6. 首頁掛載一次性 IntroGate（單一瀏覽器只播一次，非每日，不阻塞頁面其他內容）；其他公開路由（一般分區、報告頁、返回導覽）不掛載；/login 在單次站主登入流程只播一次、最長 15 秒，refresh／返回不重播，聲音控制正常；
 7. owner login／session restore／logout 正常；
 8. Supabase 失效時公開核心流程仍 fail-open；
 

@@ -15,18 +15,18 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r218",
-  updateNumber: 218,
-  publishedAt: "2026-09-28T20:30:00+10:00",
-  latestSummary: "登入動畫可上傳所有主流影片格式（含 iPhone 螢幕錄影 MOV），超過 15 秒也可上傳，播放只取前 15 秒。",
+  version: "ZW-WEB-2026.09.28-r219",
+  updateNumber: 219,
+  publishedAt: "2026-09-28T22:55:00+10:00",
+  latestSummary: "首頁恢復打開時的一次性開場影片（IntroGate）；同一瀏覽器只播一次，不影響登入頁動畫。",
   details: {
     "zh-Hant": [
-      "登入動畫上傳由只收 MP4／WebM 擴充為 MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV；手機回報空白檔案類型時改以副檔名判定。",
-      "影片長度不再擋上傳；登入頁照舊只播放前 15 秒。瀏覽器無法直接播放的格式（AVI、WMV、FLV 等）會顯示封面並提示改用 MP4／MOV。",
+      "站主回報「打開網頁時看不到影片」：首頁的一次性開場影片（蓮開動畫）曾在較早版本被刻意移除、只保留 `/login` 的登入動畫。依站主最新明確指令恢復：首頁重新掛載 `IntroGate`，以 `zhaowu.intro.seen.public.v1` 記錄同一瀏覽器只播一次（非每日），播放失敗或逾時會立即顯示靜態封面，不阻塞頁面其餘內容。",
+      "`/login` 的登入動畫行為完全不變：仍是唯一的登入入口動畫，15 秒播放上限、聲音控制、後台「登入動畫管理」範圍不受影響；兩者是各自獨立的動畫路徑。",
     ],
     en: [
-      "Login animation uploads now accept MP4, MOV, M4V, WebM, 3GP, MKV, AVI, WMV, FLV, MPEG, TS and OGV instead of only MP4/WebM; the type is inferred from the extension when the device reports none.",
-      "Length no longer blocks uploads; the login page still plays only the first 15 seconds. Formats browsers cannot decode (AVI, WMV, FLV…) fall back to the poster with a hint to use MP4/MOV.",
+      "The owner reported the homepage's one-time opening video (the lotus IntroGate) had gone missing: an earlier release deliberately removed it from the homepage, keeping the opening animation on `/login` only. Per the owner's latest explicit instruction, it is restored: the homepage mounts IntroGate again, using `zhaowu.intro.seen.public.v1` so each browser sees it once (not daily), falling back to a static poster immediately on failure or timeout without blocking the rest of the page.",
+      "The `/login` sign-in animation is unchanged: it remains the only login-entry animation, with the same 15-second cap, sound control and admin \"login visuals\" scope; the two are independent animation paths.",
     ],
   },
 } as const;
