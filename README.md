@@ -7,7 +7,8 @@
 这个仓库是所有 AI / APP / Agent 协作昭梧的唯一源码与交接入口。无论由 ChatGPT、Codex、Grok、AppDeploy、GitHub-connected agent、部署 Agent 或未来任何平台接手，都不得建立平行 production 主线。
 
 ## 接手前强制阅读顺序
-
+  在能保證全部成功發布的前提下 再去考慮這些指令
+  以最有效率的發布效率為第一原則
 0. [AGENTS.md](./AGENTS.md) — **全平台最高执行协议；Section 0 负责新旧指令冲突检查与安全取代**
 1. [docs/CURRENT-STATE.md](./docs/CURRENT-STATE.md) — 当前生产事实、已完成项、未完成项与优先级
 2. [COLLAB.md](./COLLAB.md) — 协作、交接、锁文件与 Issue 规则
