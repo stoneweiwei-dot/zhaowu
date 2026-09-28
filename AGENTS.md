@@ -318,7 +318,7 @@ Before merge:
 2. Increase `updateNumber` by exactly one from the latest recorded production release.
 3. Create one matching file under `docs/change-reports/` named with the same release version/date.
 4. The change report must state: what changed, why, affected scope, protected scope, rollback path, and verification state.
-5. Tests must fail if the footer release metadata and matching report drift apart.
+5. Tests must fail if the footer release metadata and matching report drift apart. (2026-09-28 owner supersession) Tests must **derive** the current release from `src/lib/site-stats.ts` and must never hardcode a release number; a release bump may only touch `site-stats.ts`, `lib/zhaowu-verification.js` and the new change report. Do not add new release-number literals to any test file.
 
 After Production is VERIFIED:
 
