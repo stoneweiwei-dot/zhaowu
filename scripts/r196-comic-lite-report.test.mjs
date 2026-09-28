@@ -7,7 +7,7 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 
 test("r196 turns the unified report into a real six-frame Comic Lite mode", async () => {
   const report = await source("src/components/unified-birth-report.tsx");
-  assert.match(report, /useState<"formal" \| "comic">\("comic"\)/);
+  assert.match(report, /useState<"formal" \| "comic">\("formal"\)/);
   assert.match(report, /data-report-mode="comic-lite"/);
   assert.match(report, /sections\.map\(\(section, index\)/);
   assert.match(report, /section\.body\.slice\(1\)/);

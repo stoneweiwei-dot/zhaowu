@@ -5943,3 +5943,70 @@ html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layou
   box-shadow: none !important;
 }
 /* r222 end */
+
+/* Mobile reading: one paper flow, including the optional Comic Lite view. */
+.zhaowu-comic-lite__lead,
+.zhaowu-comic-lite__frame,
+html[data-zw-theme="night"] .zhaowu-comic-lite__lead,
+html[data-zw-theme="night"] .zhaowu-comic-lite__frame {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.zhaowu-comic-lite__lead {
+  border-bottom: 1px solid rgba(31, 31, 28, .18) !important;
+  padding: 16px 0 20px !important;
+}
+.zhaowu-comic-lite__grid {
+  display: block !important;
+  margin-top: 0 !important;
+}
+.zhaowu-comic-lite__frame {
+  grid-template-columns: 50px minmax(0, 1fr) !important;
+  grid-template-rows: auto !important;
+  border-bottom: 1px solid rgba(31, 31, 28, .18) !important;
+}
+.zhaowu-comic-lite__scene,
+.zhaowu-comic-lite__frame:nth-child(2n) .zhaowu-comic-lite__scene {
+  min-height: 0 !important;
+  align-items: flex-start !important;
+  padding: 22px 4px 0 0 !important;
+  background: transparent !important;
+}
+.zhaowu-comic-lite__scene span {
+  position: static !important;
+  color: #627b72 !important;
+  font-size: 15px !important;
+}
+.zhaowu-comic-lite__scene :is(i, b) { display: none !important; }
+.zhaowu-comic-lite__copy { min-width: 0; padding: 20px 0 22px !important; }
+.zhaowu-comic-lite__copy > p { display: none !important; }
+.zhaowu-comic-lite__copy h5 { font-size: clamp(19px, 5vw, 23px) !important; }
+.zhaowu-comic-lite__copy > strong {
+  color: #2e322f !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1.8 !important;
+}
+.zhaowu-comic-lite details { border-top-style: solid !important; }
+.zhaowu-comic-lite summary { min-height: 44px !important; line-height: 44px !important; }
+
+/* The assistant drawer remains dismissible while its contents scroll. */
+.zhaowu-dragon-guide-panel > header {
+  position: sticky;
+  z-index: 2;
+  top: -18px;
+  background: #f6f1e6;
+}
+.zhaowu-dragon-guide-panel > header > button {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+html[data-zw-theme="night"] .zhaowu-dragon-guide-panel > header { background: #ebe5d9; }
+html[data-zw-theme="night"] .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer p {
+  color: #f1e8d8 !important;
+}
+html[data-zw-theme="night"] .zhaowu-dragon-guide-panel .zhaowu-dragon-music [data-music-mode-status] {
+  color: #f1e8d8 !important;
+}
