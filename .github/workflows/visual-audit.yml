@@ -11,25 +11,22 @@ jobs:
   shots:
     if: "!contains(github.event.head_commit.message, '[shots]')"
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 24, cache: npm }
       - run: npm ci --no-audit --no-fund
       - run: ./node_modules/.bin/playwright install --with-deps webkit chromium
-      - run: npx vite build
-      - run: (npx vite preview --host 127.0.0.1 --port 4173 &) && sleep 4
-      - run: node scripts/visual-audit/shoot.mjs
-        env:
-          TARGETS: "local=http://127.0.0.1:4173"
-          ROUTES: "/"
-          OUT_DIR: visual-audit-shots
-      - run: node scripts/visual-audit/dom.mjs
-      - name: Commit screenshots back to branch
+      - name: iPhone Safari suite (capture output)
+        run: |
+          mkdir -p visual-audit-shots
+          CI=1 npx playwright test --project=iphone-safari --reporter=list > visual-audit-shots/e2e.txt 2>&1 || true
+          tail -c 20000 visual-audit-shots/e2e.txt
+      - name: Commit output back to branch
         run: |
           git config user.name "visual-audit-bot"
           git config user.email "visual-audit-bot@users.noreply.github.com"
           git add -f visual-audit-shots
-          git commit -m "chore: visual audit screenshots [shots] [skip ci]" || exit 0
+          git commit -m "chore: visual audit output [shots] [skip ci]" || exit 0
           git push

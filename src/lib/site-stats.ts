@@ -15,16 +15,20 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r221",
-  updateNumber: 221,
-  publishedAt: "2026-09-28T00:00:00+10:00",
-  latestSummary: "整合首頁視覺：統一揭示卡片、探索區塊與功能卡格局，依宋代美學框架確立金色鉛字層次、深松綠左邊線、琥珀羊皮紙底色，消除多補丁衝突。",
+  version: "ZW-WEB-2026.09.29-r222",
+  updateNumber: 222,
+  publishedAt: "2026-09-29T07:30:00+10:00",
+  latestSummary: "首頁重整為單一紙面系統：今日指引不再卡中套卡，分頁與標題不再斷字，五色選擇改為清晰清單；夜間統一墨色底，修正「近日天象」與延伸內容看不見文字的問題。",
   details: {
     "zh-Hant": [
-      "在 `zhaowu-design-system.css` 末尾新增 r221 整合區塊，統一首頁 `/` 路由的整體視覺。修正內容：英雄標題區（`zhaowu-home-lead`）恢復宋代書籍排版感，上下細線 + 金色小標 + 置中正文；揭示卡（`zhaowu-home-disclosure`）改為深松綠左邊線（3px）、溫暖羊皮紙底色、細緻陰影，取代多個補丁互相衝突的邊框設定；「今日」區塊在開啟時使用松綠色邊線強調；「延伸內容」標籤套用與標題相同的金色鉛字格式；功能測驗格（`zhaowu-home-fun-card`）在 480px 以上顯示雙欄，每張卡片使用宋式羊皮紙底色 + 丹紅色箭頭；夜間模式保持紙面卡片淺色底，不強制覆蓋全局 ink 變數。",
+      "r221 的首頁樣式實際被舊層（以 ID 選擇器撰寫的五行穿衣樣式、三層 class 的黃曆樣式）壓過，畫面幾乎沒有變化。r222 以足夠特異性的單一區塊取代 r221，成為首頁唯一有效的視覺規則。",
+      "白天：英雄標題去框、移除穿過標題的金線；「今日」內的黃曆、穿衣、天象併入同一張紙，以細線分段，不再四層邊框；分頁改短標籤（黃曆／穿衣／靈籤），完整名稱保留為頁內標題；五色狀態改為色帶＋名稱＋心願的清單；延伸內容去除外框。",
+      "夜間：頁面統一墨色底；今日與延伸內容為深松綠承載面、月白字；「近日天象」與延伸內容卡片的淺底淺字問題已修正；生辰表單維持暖紙深墨；加入主畫面提示在夜間恢復可讀。",
     ],
     en: [
-      "Added r221 consolidation block at the end of `zhaowu-design-system.css` to unify the visual appearance of the `/` homepage route, eliminating the 'dog-skin plaster' look from conflicting CSS patch files. Changes: hero header (`zhaowu-home-lead`) restored to Song editorial style with hairline borders, gold kicker text, and centred serif h1; disclosure cards (`zhaowu-home-disclosure`) now use a 3px deep-pine-green left accent stripe, warm parchment background, and subtle shadow instead of conflicting !important overrides from five patch files; Today section gets jade accent in open state; explore-section label styled as gold kicker; fun-card grid switches to two columns at ≥480px with Song parchment cards and cinnabar arrows; night mode keeps paper surfaces light — no root-level ink variable override.",
+      "r221's homepage rules were outranked by older layers (the #id-based five-element wardrobe stylesheet and the three-class almanac stylesheet), so the page barely changed. r222 replaces r221 with one sufficiently specific block that is now the effective visual authority for the homepage.",
+      "Day: the hero is no longer boxed and the stray gold rule through the title is gone; almanac, dress colours and sky events now sit on one paper sheet separated by hairlines instead of four nested frames; tabs use short labels with the full name kept as the in-page heading; the five colour states are a clean swatch · name · wish list; the Explore wrapper box is removed.",
+      "Night: one ink page field; Today and Explore are dark pine carriers with moon-white text; the light-on-light 'Recent sky events' and Explore cards are fixed; the birth form keeps warm paper with dark ink; the add-to-home-screen sheet is readable again.",
     ],
   },
 } as const;

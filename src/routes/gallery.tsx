@@ -38,7 +38,7 @@ function GalleryPage() {
             onClick={() => setView("login")}
             className={`min-h-11 rounded-lg border px-3 text-sm font-medium ${view === "login" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-paper/55 text-ink-soft"}`}
           >
-            {tx("登入影片", "登录视频", "Login videos")}
+            {tx("開場影片", "开场视频", "Opening video")}
           </button>
           <button
             type="button"

@@ -4,6 +4,15 @@
 
 目的：把「当前有效」「已被取代」「曾因权限未接入」「仅历史参考」分开，防止未来 AI / Agent 从旧聊天、旧 Library 文件、旧 AppDeploy 补丁或旧 PR 重新激活已废止指令。
 
+## 2026-09-29 r220 後台「開場影片」分頁改管首頁 IntroGate supersession
+
+- 站主最新明確指令：`/gallery` 後台那個標成「登入影片」的分頁，站主的原意是給第一次打開網站、還沒進主頁前的客人看的動畫（首頁一次性 `IntroGate`），不是給站主自己登入後台時看的畫面。
+- 查證確認：`/login` 從頭到尾只是站主自己的後台登入畫面（`data-owner-only-login="true"`，標題「站主登入」），網站沒有其他客人會用到的登入路由。而 `/login` 的 `LoginStageBackdrop` 一直只讀取靜態內建的 `LOGIN_VISUAL_CATALOG`，從未實際讀取過這個後台分頁寫入 Supabase 的 `gallery_assets`（`category=loading`、`is_primary`）；所以這個後台分頁過去對 `/login` 的實際畫面沒有任何即時效果。r179／r191 把這個分頁與 `/login` 綁在一起的措辭，是依站主當時的指令做的，但站主現在要的東西變了，屬於新指令對舊指令的正常取代，不是誰擅自改的。
+- ACTIVE：`src/components/owner-login-visuals-manager.tsx`（元件名、`id="login-visuals"`、`data-owner-selectable-file="login-visuals"` 等內部識別碼維持不變，只換站主看到的文案）現在的上傳／標記「目前使用」功能，透過新的公開唯讀端點 `src/lib/intro-visual-source.ts`（匿名金鑰、限定 `category=loading` 且 `is_primary=true` 且含 `login-background` 標記的單一 row、~450ms 逾時、任何失敗都 fail-open 回退內建預設）被 `src/components/intro-gate.tsx`（首頁 `IntroGate`）讀取使用；`/gallery` 分頁標籤同步由「登入影片」改為「開場影片」。
+- ACTIVE：`IntroGate` 的既有播放契約完全不變——`zhaowu.intro.seen.public.v1` 同一瀏覽器只播一次、`INTRO_GATE_MIN_VISIBLE_MS`／`INTRO_GATE_HARD_EXIT_MS` 計時器不受影響、內建預設 `zhaowu-opening-r148.mp4`／`.jpg` 永遠是失敗或逾時的退回目標。新增的只是「先花至多 ~450ms 問一次 Supabase 有沒有站主指定的自訂影片」，且這個等待只延後 `<video>` 元素掛載，靜態封面在此期間已經蓋滿畫面，訪客不會看到空白。
+- ACTIVE：`/login` 的 `LoginStageBackdrop`、站主登入 cookie、15 秒播放上限、聲音控制、後台其餘登入邏輯全部不變——這次改動對 `/login` 是零風險、零行為變更，因為它本來就沒有消費過這份 Supabase 資料。
+- 不改：命理計算、報告生成、付款、Supabase schema／既有媒體原件；不新增付費依賴，重用既有 `gallery_assets` 資料表與既有上傳／驗證流程。
+
 ## 2026-09-29 宋式主體審美框架 supersession
 
 - ACTIVE：`docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 是全站主體審美框架；核心定義為「豐盛後的收斂」，不得把宋式簡約執行成空洞、洗白、低對比或背景不可見。
