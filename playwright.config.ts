@@ -17,7 +17,10 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   timeout: 30_000,
-  reporter: "line",
+  // In CI, also emit GitHub-native annotations (file/line/message per failed
+  // test) so a failure can be diagnosed from the Checks API without needing
+  // the raw job log. Local runs keep the plain line reporter.
+  reporter: process.env.CI ? [["line"], ["github"]] : "line",
   use: {
     baseURL: "http://127.0.0.1:4173",
     trace: "retain-on-failure",
