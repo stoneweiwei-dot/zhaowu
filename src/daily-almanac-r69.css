@@ -158,6 +158,12 @@
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] { gap:8px !important; }
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button { min-height:102px !important; border:1px solid rgba(226,204,159,.22) !important; border-radius:13px !important; color:#f4ecda !important; background:rgba(14,54,45,.74) !important; box-shadow:none !important; }
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button[aria-pressed="true"] { border-color:rgba(241,209,139,.78) !important; background:rgba(95,83,47,.42) !important; }
+/* r217 fix: design-system.css sets strong/small to near-black for the light "embed" variant;
+   on this card's near-black-green button background that text was unreadable. Force the
+   card's own cream ink for both states instead of letting it inherit the dark ink. */
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button strong,
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button small { color:#f4ecda !important; }
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button small { opacity:.78; }
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe a { color:#f0d89e !important; }
 
 /* 3/3 靈籤：定位為當日反思，不作宿命預測。 */

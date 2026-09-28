@@ -15,18 +15,16 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.28-r219",
-  updateNumber: 219,
-  publishedAt: "2026-09-28T22:55:00+10:00",
-  latestSummary: "首頁恢復打開時的一次性開場影片（IntroGate）；同一瀏覽器只播一次，不影響登入頁動畫。",
+  version: "ZW-WEB-2026.09.28-r220",
+  updateNumber: 220,
+  publishedAt: "2026-09-28T23:40:00+10:00",
+  latestSummary: "修正首頁「今日指引」五行穿衣色塊在深綠底上文字對比度不足的問題，選色按鈕名稱與副標改回米白色。",
   details: {
     "zh-Hant": [
-      "站主回報「打開網頁時看不到影片」：首頁的一次性開場影片（蓮開動畫）曾在較早版本被刻意移除、只保留 `/login` 的登入動畫。依站主最新明確指令恢復：首頁重新掛載 `IntroGate`，以 `zhaowu.intro.seen.public.v1` 記錄同一瀏覽器只播一次（非每日），播放失敗或逾時會立即顯示靜態封面，不阻塞頁面其餘內容。",
-      "`/login` 的登入動畫行為完全不變：仍是唯一的登入入口動畫，15 秒播放上限、聲音控制、後台「登入動畫管理」範圍不受影響；兩者是各自獨立的動畫路徑。",
+      "站主回報首頁「今日指引」卡片內「今日穿衣」五個顏色選項按鈕，文字幾乎看不清楚。原因是 `daily-almanac-r69.css` 把按鈕底色改為近黑的深墨綠（`rgba(14,54,45,.74)`），但按鈕內 `strong`／`small` 文字的顏色來自 `zhaowu-design-system.css` 針對淺色背景版本設定的近黑色（`#34352f`／`#746d63`），兩者疊在一起等於深色文字疊深色底，完全無法辨識。修正為在同一份深綠卡片的樣式規則內，明確把這兩層文字強制改回卡片本身使用的米白色（`#f4ecda`），次要文字保留透明度區分層級。",
     ],
     en: [
-      "The owner reported the homepage's one-time opening video (the lotus IntroGate) had gone missing: an earlier release deliberately removed it from the homepage, keeping the opening animation on `/login` only. Per the owner's latest explicit instruction, it is restored: the homepage mounts IntroGate again, using `zhaowu.intro.seen.public.v1` so each browser sees it once (not daily), falling back to a static poster immediately on failure or timeout without blocking the rest of the page.",
-      "The `/login` sign-in animation is unchanged: it remains the only login-entry animation, with the same 15-second cap, sound control and admin \"login visuals\" scope; the two are independent animation paths.",
+      "The owner reported that the five colour-choice buttons inside the homepage 'Today' card's daily-dress section were nearly unreadable. The button background had been darkened to a near-black deep green (`rgba(14,54,45,.74)`) in `daily-almanac-r69.css`, but the `strong`/`small` label text still inherited the near-black colours (`#34352f`/`#746d63`) that `zhaowu-design-system.css` sets for the light-background variant of the same component — dark text on a near-black background, unreadable. Fixed by explicitly forcing both label layers back to the card's own cream ink (`#f4ecda`) within this card's own CSS rule, with the secondary label kept at reduced opacity for hierarchy.",
     ],
   },
 } as const;
