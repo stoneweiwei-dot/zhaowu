@@ -2,7 +2,7 @@ import { Fragment, useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
-import { ComicMascot, SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
+import { SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
 import {
   buildPalmReading,
   buildQizhengReading,
@@ -73,8 +73,8 @@ function reportCopy(locale: Locale) {
     comicKicker: "YOUR STORY · SIX FRAMES",
     comicLead: "Read the main thread first. Open any frame when you want the full wording behind it.",
     frame: "Frame",
-    openFull: "Read full text",
-    closeFull: "Close full text",
+    openFull: "Expand",
+    closeFull: "Collapse",
 
 
   };
@@ -95,8 +95,8 @@ function reportCopy(locale: Locale) {
     comicKicker: "你的故事 · 六格读完",
     comicLead: "先看每一格的主线；想看完整判断时，再展开该格文字。",
     frame: "第",
-    openFull: "展开完整文字",
-    closeFull: "收起完整文字",
+    openFull: "展开",
+    closeFull: "收起",
 
 
   };
@@ -117,8 +117,8 @@ function reportCopy(locale: Locale) {
     comicKicker: "你的故事 · 六格讀完",
     comicLead: "先看每一格的主線；想看完整判斷時，再展開該格文字。",
     frame: "第",
-    openFull: "展開完整文字",
-    closeFull: "收起完整文字",
+    openFull: "展開",
+    closeFull: "收起",
 
 
   };
@@ -238,30 +238,30 @@ function ComicLiteReport({
   return (
     <section className="zhaowu-comic-lite" data-report-mode="comic-lite" aria-label={copy.comicMode}>
       <header className="zhaowu-comic-lite__lead">
-        <div>
-          <p>{copy.comicKicker}</p>
-          <h4>{stem} · {copy.comicMode}</h4>
-          <span>{copy.comicLead}</span>
-        </div>
-        <ComicMascot stem={stem} compact />
+        <p>{copy.comicKicker}</p>
+        <h4>{stem} · {copy.comicMode}</h4>
+        <span>{copy.comicLead}</span>
+        <i className="zhaowu-comic-lite__seal" aria-hidden="true">{stem}</i>
       </header>
 
       <div className="zhaowu-comic-lite__grid">
         {sections.map((section, index) => (
-          <article key={section.title} className="zhaowu-comic-lite__frame" data-comic-scene={index + 1}>
-            <div className="zhaowu-comic-lite__scene" aria-hidden="true">
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <i />
-              <b>{stem}</b>
-            </div>
+          <article
+            key={section.title}
+            className="zhaowu-comic-lite__frame"
+            data-comic-scene={index + 1}
+            aria-label={locale === "en" ? `${copy.frame} ${index + 1}: ${section.title}` : `${copy.frame}${index + 1}格：${section.title}`}
+          >
+            <i className="zhaowu-comic-lite__no" aria-hidden="true">{String(index + 1).padStart(2, "0")}</i>
             <div className="zhaowu-comic-lite__copy">
-              <p>{locale === "en" ? `${copy.frame} ${index + 1}` : `${copy.frame}${index + 1}格`}</p>
               <h5>{section.title}</h5>
               <strong>{section.body[0]}</strong>
               {section.body.length > 1 ? (
                 <details>
                   <summary><span className="when-closed">{copy.openFull}</span><span className="when-open">{copy.closeFull}</span></summary>
-                  {section.body.slice(1).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                  <div className="zhaowu-comic-lite__more">
+                    {section.body.slice(1).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                  </div>
                 </details>
               ) : null}
             </div>
