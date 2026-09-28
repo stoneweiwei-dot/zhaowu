@@ -7,7 +7,6 @@ import './styles.css';
 import './legacy-visual-compat.css';
 // Canonical visual authority must load last. Do not add visual hotfix layers after this import.
 import './zhaowu-design-system.css';
-import './song-minimalist-today.css';
 
 
 const router = createRouter({ routeTree });
