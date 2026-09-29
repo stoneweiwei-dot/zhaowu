@@ -13,6 +13,10 @@ function luminance(rgb: string) {
   const lin = c.map((v) => { const s = v / 255; return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; });
   return lin[0] * 0.2126 + lin[1] * 0.7152 + lin[2] * 0.0722;
 }
+function contrast(a: string, b: string) {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
 function alpha(rgb: string) {
   const m = rgb.match(/rgba?\(([^)]+)\)/)?.[1].split(/[ ,/]+/).filter(Boolean);
   return m && m.length >= 4 ? Number(m[3]) : 1;
@@ -75,7 +79,7 @@ for (const width of WIDTHS) {
       }
     });
 
-    test("jade dragon keeps its avatar, dark night panel and light text", async ({ page }) => {
+    test("jade dragon keeps its avatar and a readable, opaque night panel", async ({ page }) => {
       await openNight(page, width);
       const trigger = page.locator(".zhaowu-dragon-guide-trigger");
       await expect(trigger).toBeVisible();
@@ -89,10 +93,11 @@ for (const width of WIDTHS) {
       await expect(panel).toBeVisible();
       const style = await panel.evaluate((n) => { const s = getComputedStyle(n); return { bg: s.backgroundColor, color: s.color }; });
       expect(alpha(style.bg)).toBeGreaterThan(0.9);
-      expect(luminance(style.bg)).toBeLessThan(0.1);
-      expect(luminance(style.color)).toBeGreaterThan(0.5);
+      // Surface-aware night: the assistant is a paper carrier, so ink must contrast with
+      // whatever surface it sits on (never light-on-light or dark-on-dark).
+      expect(contrast(style.bg, style.color), "panel text vs surface").toBeGreaterThanOrEqual(4.5);
       const answer = await page.locator(".zhaowu-dragon-guide-answer").evaluate((n) => { const s = getComputedStyle(n); return { bg: s.backgroundColor, color: s.color }; });
-      expect(Math.abs(luminance(answer.bg) - luminance(answer.color))).toBeGreaterThan(0.3);
+      expect(contrast(answer.bg, answer.color), "answer text vs surface").toBeGreaterThanOrEqual(4.5);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
   });
