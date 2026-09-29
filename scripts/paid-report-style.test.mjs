@@ -51,5 +51,6 @@ test('one-chart-one-scene contract is wired into the current continuous report',
   assert.match(narrativeSource, /buildPersonalReportNarrative/);
   assert.match(narrativeSource, /evidenceHeading:\s*"Basis"|evidenceHeading:\s*hant \? "依據"/);
   assert.match(focusedSource, /narrative: buildPersonalReportNarrative\(result\)/);
-  assert.match(reportUiSource, /<NarrativePlate narrative=\{narrative\}/);
+  assert.match(reportUiSource, /zhaowu-report-summary-block/);
+  assert.doesNotMatch(reportUiSource, /<NarrativePlate|<PrioritySummary/);
 });

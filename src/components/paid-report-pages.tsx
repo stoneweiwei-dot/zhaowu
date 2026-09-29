@@ -8,14 +8,11 @@ import { ReportLuckBook } from "@/components/report-luck-book";
 import { ReportShareCard } from "@/components/report-share-card";
 import { EvidenceGovernancePanel } from "@/components/evidence-governance-panel";
 import { FiveElementTrainingBlock } from "@/components/five-element-training-block";
-import {
-  buildPersonalReportNarrative,
-  type PersonalReportNarrative,
-} from "@/lib/report/personal-narrative";
 
 const COPY = {
   "zh-Hant": {
-    title: "補充",
+    title: "完整報告",
+    summaryTitle: "總體概括",
     lead: "",
     kicker: "",
     questionKicker: "",
@@ -33,7 +30,8 @@ const COPY = {
     currentCycle: "目前大運",
     timeUnknown: "時辰未定",
     detail: "附註",
-    body: "身體提醒",
+    body: "身體需要注意的地方",
+    bodyUnavailable: "資料不足，暫不提供身體象義觀察。",
     detailLead: "",
     keyPoints: "重點",
     methodologyStatement: "昭梧採用 STONE R6.2.2 推演體系，以傳統子平法為核心，依次校驗月令、調候、格局、病藥、流通、承載及歲運觸發。古籍依據、現代整理與輔助象意分層處理；無法確認的內容不會強行下斷。",
@@ -41,7 +39,8 @@ const COPY = {
     methodologyExpanded: "分析先看原局定下的結構，再看大運帶來的十年條件，然後流年觸發當年的具體事件，流月只用來縮小時間範圍。每一層證據都會標記是否確定、屬於較高概率、合理推論，還是暫時無法判定，避免用單一線索得出結論。",
   },
   "zh-Hans": {
-    title: "补充",
+    title: "完整报告",
+    summaryTitle: "总体概括",
     lead: "",
     kicker: "",
     questionKicker: "",
@@ -59,7 +58,8 @@ const COPY = {
     currentCycle: "目前大运",
     timeUnknown: "时辰未定",
     detail: "附注",
-    body: "身体提醒",
+    body: "身体需要注意的地方",
+    bodyUnavailable: "资料不足，暂不提供身体象义观察。",
     detailLead: "",
     keyPoints: "重点",
     methodologyStatement: "昭梧采用 STONE R6.2.2 推演体系，以传统子平法为核心，依次校验月令、调候、格局、病药、流通、承载及岁运触发。古籍依据、现代整理与辅助象意分层处理；无法确认的内容不会强行下断。",
@@ -67,7 +67,8 @@ const COPY = {
     methodologyExpanded: "分析先看原局定下的结构，再看大运带来的十年条件，然后流年触发当年的具体事件，流月只用来缩小时间范围。每一层证据都会标记是否确定、属于较高概率、合理推论，还是暂时无法判定，避免用单一线索得出结论。",
   },
   en: {
-    title: "More",
+    title: "Full report",
+    summaryTitle: "Overall summary",
     lead: "",
     kicker: "",
     questionKicker: "",
@@ -85,7 +86,8 @@ const COPY = {
     currentCycle: "Current cycle",
     timeUnknown: "Birth time unconfirmed",
     detail: "Notes",
-    body: "Body notes",
+    body: "Body areas to watch",
+    bodyUnavailable: "There is not enough saved information to provide a symbolic body note.",
     detailLead: "",
     keyPoints: "Key points",
     methodologyStatement: "Zhaowu's readings follow the STONE R6.2.2 method, built on traditional Zi Ping BaZi analysis. Each chart is checked in order — the governing energy of the birth month, seasonal balance, the chart's structure, where it's under strain, how the elements flow and support each other, and how later luck cycles bring things into play. Classical sources, modern interpretation, and supporting symbolism are kept in separate layers, and anything that can't be confirmed is left open rather than forced into an answer.",
@@ -232,78 +234,6 @@ function decisionLines(model: ReturnType<typeof buildDecisionReportModel>, key: 
   return model.actions;
 }
 
-function PrioritySummary({ result, locale }: { result: AnalysisResult; locale: Locale }) {
-  const copy = COPY[locale];
-  const model = buildDecisionReportModel(result);
-  const labels: Record<DecisionSectionKey, string> = {
-    reasons: copy.reasons,
-    risks: copy.risks,
-    timing: copy.timing,
-    actions: copy.actions,
-  };
-  const items = model.sectionOrder
-    .map((key) => ({ key, label: labels[key], line: decisionLines(model, key)[0] ?? "" }))
-    .filter((item) => item.line)
-    .slice(0, 3);
-
-  if (!items.length) return null;
-  return (
-    <section className="zhaowu-report-priority" aria-label={copy.keyPoints}>
-      <p className="zhaowu-report-priority-kicker">{copy.keyPoints}</p>
-      <div className="zhaowu-report-priority-list">
-        {items.map((item) => (
-          <article key={item.key}>
-            <strong>{item.label}</strong>
-            <p>{item.line}</p>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function NarrativePlate({ narrative }: { narrative: PersonalReportNarrative }) {
-  return (
-    <section className="zhaowu-report-narrative" aria-labelledby="zhaowu-report-narrative-title">
-      <header className="zhaowu-report-narrative__head">
-        {narrative.kicker ? <p>{narrative.kicker}</p> : null}
-        <h4 id="zhaowu-report-narrative-title">{narrative.heading}</h4>
-        <strong>{narrative.title}</strong>
-        <span>{narrative.scene}</span>
-      </header>
-
-      <div className="zhaowu-report-narrative__roles">
-        {narrative.roles.map((role) => (
-          <article key={role.key}>
-            <h5>{role.label}</h5>
-            <p>{role.body}</p>
-          </article>
-        ))}
-      </div>
-
-      <div className="zhaowu-report-narrative__balance">
-        <article><h5>{narrative.strengthLabel}</h5><p>{narrative.strength}</p></article>
-        <article><h5>{narrative.costLabel}</h5><p>{narrative.cost}</p></article>
-      </div>
-
-      <aside className="zhaowu-report-narrative__action">
-        <h5>{narrative.actionLabel}</h5>
-        <p>{narrative.action}</p>
-      </aside>
-
-      <details className="zhaowu-report-narrative__evidence">
-        <summary>{narrative.evidenceHeading}</summary>
-        <div>
-          {narrative.evidence.map((item) => (
-            <p key={`${item.label}-${item.trace}`}><strong>{item.label}</strong><span>{item.trace}</span></p>
-          ))}
-          <small>{narrative.disclaimer}</small>
-        </div>
-      </details>
-    </section>
-  );
-}
-
 /**
  * 2026-09-27 最後一次收口 Task 4：小型方法論披露。
  * 只在「判斷備註」收合層出現，不進主答案畫面；固定一句話聲明 + 可選「了解方法」折疊。
@@ -397,14 +327,12 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
   const copy = COPY[locale];
   const content = continuousReportContent(sections, locale);
   const model = result ? buildDecisionReportModel(result) : null;
-  const narrative = sections.find((section) => section.key === "summary")?.narrative
-    ?? (result ? buildPersonalReportNarrative(result) : null);
   const directFull = result ? normalizeReportLine(customerDirectAnswer(result.question, result.reading.directAnswer)) : "";
   const supportingSummary = content.summary.filter((line) => normalizeReportLine(line) !== directFull);
   const showLuck = Boolean(model?.supportingModules.includes("luck"));
-  const showBody = !model || model.supportingModules.includes("body");
-  const fallbackPriority = result ? [] : supportingSummary.slice(0, 3);
-  const fallbackNotes = result ? supportingSummary : supportingSummary.slice(3);
+  const overviewLines = directFull ? [directFull, ...supportingSummary] : content.summary;
+  const fallbackNotes = result ? [] : supportingSummary.slice(3);
+  const bodyLines = content.body.length ? content.body : [copy.bodyUnavailable];
 
   if (!content.summary.length && !content.body.length) return null;
 
@@ -416,27 +344,21 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
         {copy.lead ? <p className="zhaowu-report-lead">{copy.lead}</p> : null}
       </header>
 
-      {result ? <PrioritySummary result={result} locale={locale} /> : null}
-
-      {narrative ? <NarrativePlate narrative={narrative} /> : null}
-
-      {fallbackPriority.length ? (
-        <section className="zhaowu-report-priority" aria-label={copy.keyPoints}>
-          <p className="zhaowu-report-priority-kicker">{copy.keyPoints}</p>
-          <div className="zhaowu-report-priority-list">
-            {fallbackPriority.map((line, index) => <article key={index}><p>{line}</p></article>)}
+      {overviewLines.length ? (
+        <section className="zhaowu-report-summary-block" aria-labelledby="zhaowu-report-summary-title">
+          <h4 id="zhaowu-report-summary-title">{copy.summaryTitle}</h4>
+          <div className="zhaowu-report-copy">
+            {overviewLines.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
           </div>
         </section>
       ) : null}
 
-      {showBody && content.body.length ? (
-        <section className="zhaowu-report-body-block">
+      <section className="zhaowu-report-body-block">
           <h4>{copy.body}</h4>
           <div className="zhaowu-report-copy">
-            {content.body.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+            {bodyLines.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
           </div>
         </section>
-      ) : null}
 
       {result ? <ReportShareCard result={result} /> : null}
 

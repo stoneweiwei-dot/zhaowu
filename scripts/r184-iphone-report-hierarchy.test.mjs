@@ -28,10 +28,11 @@ test("r184 keeps the primary answer clear of reasoning metadata", async () => {
   assert.match(result, /evidence: "附註"/);
 });
 
-test("r184 limits prominent report support and moves reasoning to bottom notes", async () => {
+test("full report uses a continuous summary and body sequence before bottom notes", async () => {
   const report = await source("src/components/paid-report-pages.tsx");
-  assert.match(report, /function PrioritySummary/);
-  assert.match(report, /\.slice\(0, 3\)/);
+  assert.match(report, /zhaowu-report-summary-block/);
+  assert.match(report, /zhaowu-report-body-block/);
+  assert.doesNotMatch(report, /function PrioritySummary|function NarrativePlate/);
   assert.match(report, /zhaowu-report-method-notes/);
   assert.match(report, /<ChartSnapshot result=\{result\}/);
   assert.match(report, /<EvidenceGovernancePanel result=\{result\}/);

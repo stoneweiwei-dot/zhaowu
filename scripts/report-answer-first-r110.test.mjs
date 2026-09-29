@@ -25,21 +25,24 @@ test('paid report keeps the main answer dominant and moves deep reasoning into b
   const evidenceStart = resultView.indexOf('<details className="zhaowu-result-evidence');
   const primary = resultView.slice(primaryStart, evidenceStart);
   assert.doesNotMatch(primary, /data-answer-meta/);
-  assert.match(pages, /function PrioritySummary/);
-  assert.match(pages, /\.slice\(0, 3\)/);
+  assert.match(pages, /zhaowu-report-summary-block/);
+  assert.match(pages, /copy\.summaryTitle/);
+  assert.doesNotMatch(pages, /function PrioritySummary|function NarrativePlate/);
   assert.match(pages, /zhaowu-report-method-notes/);
   assert.match(pages, /<ChartSnapshot result=\{result\}/);
   assert.match(pages, /<EvidenceGovernancePanel result=\{result\}/);
   assert.doesNotMatch(pages, /<DecisionCards result=/);
 });
 
-test('customer surface shows evidence status instead of birth-data-based confidence and hides unrelated body content', () => {
+test('customer surface shows evidence status and fixed body-attention section for every report', () => {
   assert.match(pages, /confidence:\s*"依據"/);
   assert.doesNotMatch(pages, /confidence:\s*"判斷把握"/);
   assert.match(model, /confidenceLabel:\s*limited[\s\S]*?"受限"[\s\S]*?"有依據"/);
   assert.doesNotMatch(model, /"較高"|"Higher"/);
-  assert.match(model, /contract\.kind === "health"\) modules\.push\("body"\)/);
-  assert.match(pages, /showBody\s*&&\s*content\.body\.length/);
+  assert.doesNotMatch(model, /modules\.push\("body"\)/);
+  assert.match(pages, /const bodyLines = content\.body\.length \? content\.body : \[copy\.bodyUnavailable\]/);
+  assert.match(pages, /bodyLines\.map/);
+  assert.match(pages, /const overviewLines = directFull/);
 });
 
 test('question relevance controls timing-heavy visual modules', () => {
