@@ -78,3 +78,35 @@ jobs:
 
       - name: iPhone Safari regression suite
         run: npm run test:iphone-safari
+
+  visual-regression:
+    name: Visual regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    needs: deploy-gate
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies from lockfile
+        run: npm ci --no-audit --no-fund
+
+      - name: Install Chromium runtime
+        run: ./node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Today module screenshot regression (phone / tablet / desktop, day / night)
+        run: npm run test:visual
+
+      - name: Upload diffs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-diffs
+          path: test-results/
+          retention-days: 7
