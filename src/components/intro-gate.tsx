@@ -11,6 +11,7 @@ import {
   shouldSkipIntroGate,
 } from "@/lib/intro-gate-policy";
 import { fetchIntroVisualOverride } from "@/lib/intro-visual-source";
+import { readBrandTheme } from "@/lib/brand-theme";
 
 // How long we wait for the owner's custom "開場影片" pick (set from the
 // /gallery admin panel) before falling back to the built-in default. This
@@ -129,7 +130,7 @@ export function IntroGate() {
     const timer = window.setTimeout(() => {
       setResolvedVideoSrc((current) => (current === undefined ? OWNER_LOADING_VIDEO : current));
     }, INTRO_VISUAL_OVERRIDE_TIMEOUT_MS);
-    fetchIntroVisualOverride()
+    fetchIntroVisualOverride(readBrandTheme())
       .then((override) => {
         if (cancelled) return;
         window.clearTimeout(timer);
