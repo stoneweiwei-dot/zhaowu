@@ -12,7 +12,9 @@
     "build": "npm run prebuild && npm run test:deploy && vite build && tsc --noEmit",
     "preview": "vite preview",
     "check": "tsc --noEmit",
-    "test:iphone-safari": "playwright test --project=iphone-safari"
+    "test:iphone-safari": "playwright test --project=iphone-safari",
+    "test:visual": "playwright test --project=visual-regression",
+    "test:visual:update": "playwright test --project=visual-regression --update-snapshots"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",

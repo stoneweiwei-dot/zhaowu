@@ -28,6 +28,7 @@ export default defineConfig({
   projects: [
     {
       name: "iphone-safari",
+      testIgnore: /today-visual-regression/,
       use: {
         ...devices["iPhone 13"],
         browserName: "webkit",
@@ -37,6 +38,7 @@ export default defineConfig({
     },
     {
       name: "android-chrome",
+      testIgnore: /today-visual-regression/,
       use: {
         ...devices["Pixel 7"],
         browserName: "chromium",
@@ -45,13 +47,22 @@ export default defineConfig({
     },
     {
       name: "desktop-chrome",
+      testIgnore: /today-visual-regression/,
       use: {
         ...devices["Desktop Chrome"],
         browserName: "chromium",
         viewport: { width: 1440, height: 900 },
       },
     },
+    {
+      // Screenshot regression: Chromium only, Linux baselines, run via npm run test:visual.
+      name: "visual-regression",
+      testMatch: /today-visual-regression\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"], browserName: "chromium", viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, storageState: TRADITIONAL_CHINESE_STORAGE },
+    },
   ],
+  expect: { toHaveScreenshot: { animations: "disabled", caret: "hide", scale: "css" } },
+  snapshotPathTemplate: "{testDir}/__screenshots__/{testFileName}/{arg}{ext}",
   webServer: {
     command: "npm exec vite -- --host 127.0.0.1 --port 4173",
     url: "http://127.0.0.1:4173",
