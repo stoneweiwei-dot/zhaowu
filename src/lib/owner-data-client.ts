@@ -110,7 +110,19 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
     const signedUploadToken = ticket.token;
     onProgress?.(2);
     await new Promise<void>((resolve, reject) => {
-      const endpoint = `${SUPABASE_URL.replace(/\/$/, "").replace(".supabase.co", ".storage.supabase.co")}/storage/v1/upload/resumable`;
+      // The plain /storage/v1/upload/resumable endpoint authorizes the caller the normal way:
+      // it checks storage.objects' RLS policies against the Authorization header's JWT role,
+      // which for this bucket requires role=authenticated plus an owner check. There is no real
+      // Supabase Auth session here (the owner signs in through a cookie bridge, not Supabase
+      // Auth), so any Authorization value we can send resolves to role=anon and RLS rejects the
+      // insert with 403 "new row violates row-level security policy" — regardless of what else
+      // is in the request. The .../resumable/sign variant is Supabase's dedicated endpoint for
+      // pre-authorized uploads: it trusts the x-signature token (minted server-side via
+      // createSignedUploadUrl, using the service role, which already bypasses RLS) instead of
+      // re-checking the caller's own role, and does not expect an Authorization bearer at all
+      // (matches Supabase's own resumable-upload-signed-uppy example). See tools/mcp Supabase
+      // `pg_policies` for storage.objects: zhaowu_gallery_owner_insert is roles={authenticated}.
+      const endpoint = `${SUPABASE_URL.replace(/\/$/, "").replace(".supabase.co", ".storage.supabase.co")}/storage/v1/upload/resumable/sign`;
       const upload = new tus.Upload(file, {
         endpoint,
         retryDelays: [0, 3000, 5000, 10000, 20000],
@@ -118,12 +130,6 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
         uploadDataDuringCreation: true,
         removeFingerprintOnSuccess: true,
         headers: {
-          // authorization must carry a valid Supabase JWT (anon key here, since there is no
-          // user session); the signed-upload token authorizes the specific object/path via
-          // x-signature. Putting the signed token in authorization instead of x-signature is
-          // what caused the "new row violates row-level security policy" 403 on resumable
-          // uploads — the Storage API could not validate a non-JWT bearer value against RLS.
-          authorization: `Bearer ${SUPABASE_KEY}`,
           apikey: SUPABASE_KEY,
           "x-signature": signedUploadToken,
           "x-upsert": "false",
