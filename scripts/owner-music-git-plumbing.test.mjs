@@ -17,9 +17,13 @@ import { __plumbing, MANIFEST_PATH, REPO, TRACK_DIR, SCRATCH_DIR } from "../lib/
 const sh = (cwd, ...args) => execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
 
 // Simulates GitHub's recursive tree listing (path/mode/type/sha, no blob
-// content) by reading it straight out of the local test repo.
+// content) by reading it straight out of the local test repo. `-t` is
+// required: plain `ls-tree -r` lists only blobs, but GitHub's recursive=1
+// response also includes an entry per intermediate directory (mode 040000,
+// type tree) — childrenAt()/rewrite() need those to know which untouched
+// subtrees to preserve by oid without ever reading their contents.
 function lsTreeMap(dir, tip) {
-  const out = sh(dir, "ls-tree", "-r", tip);
+  const out = sh(dir, "ls-tree", "-r", "-t", tip);
   const treeMap = new Map();
   for (const line of out.split("\n").filter(Boolean)) {
     const [meta, entryPath] = line.split("\t");
