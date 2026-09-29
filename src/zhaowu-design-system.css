@@ -5370,6 +5370,9 @@ html:not([data-zw-theme="night"]) .zhaowu-home-layout .zhaowu-today-guide__wardr
 [data-zw-theme="night"] .zhaowu-today-guide__footer span{color:#d3c9b8}
 [data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-today-pillars b,
 [data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-daily-pillars b{color:#f4ead9}
+/* The four pillar cells keep a light paper surface at night; use ink on paper. */
+[data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-today-pillars > span b{color:#1f3d32!important}
+[data-zw-theme="night"] .zhaowu-today-guide__grid .zhaowu-today-pillars > span i{color:#5c554c!important}
 [data-zw-theme="night"] .zhaowu-today-guide__wardrobe-notes{border-color:rgba(224,199,155,.12)}
 [data-zw-theme="night"] .zhaowu-today-guide__wardrobe-notes>span{border-color:rgba(224,199,155,.10)}
 [data-zw-theme="night"] .zhaowu-today-guide__wardrobe-notes small{color:#d3c9b8!important}
