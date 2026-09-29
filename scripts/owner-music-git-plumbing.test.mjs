@@ -4,13 +4,48 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { __plumbing, MANIFEST_PATH, TRACK_DIR, SCRATCH_DIR } from "../lib/owner-music-git.js";
+import { __plumbing, MANIFEST_PATH, REPO, TRACK_DIR, SCRATCH_DIR } from "../lib/owner-music-git.js";
 
-// Guards the r223 fix: uploads must build the commit from the branch tip's tree
-// (no checkout) and push ONLY new objects, so /tmp usage and push size no longer
-// scale with the whole library. A real `git` validates the produced pack.
+// Guards the r223/r224 fix: uploads must learn the existing branch structure
+// via GitHub's read-only Git Data REST API (ref + recursive tree listing +
+// on-demand blob reads) instead of a git fetch, which has no partial-clone
+// filter and downloads every blob reachable from the tip commit (i.e. the
+// whole library) on every single-track edit. commitChanges must then push
+// ONLY new objects, referencing every untouched sibling by its existing oid.
+// A real `git` validates the produced pack.
 
 const sh = (cwd, ...args) => execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
+
+// Simulates GitHub's recursive tree listing (path/mode/type/sha, no blob
+// content) by reading it straight out of the local test repo.
+function lsTreeMap(dir, tip) {
+  const out = sh(dir, "ls-tree", "-r", tip);
+  const treeMap = new Map();
+  for (const line of out.split("\n").filter(Boolean)) {
+    const [meta, entryPath] = line.split("\t");
+    const [mode, type, sha] = meta.split(" ");
+    treeMap.set(entryPath, { mode, type, sha });
+  }
+  return treeMap;
+}
+
+// Stubs global fetch to serve only GitHub's blob-content endpoint, sourced
+// from the local git object database — proves readFileAt/readManifestAt never
+// need any other network call, and never touch objects outside `changes`.
+function stubBlobFetch(git, dir, allowedShas) {
+  const original = globalThis.fetch;
+  const prefix = `https://api.github.com/repos/${REPO}/git/blobs/`;
+  const seen = new Set();
+  globalThis.fetch = async (url) => {
+    assert.ok(String(url).startsWith(prefix), `unexpected network call: ${url}`);
+    const sha = String(url).slice(prefix.length);
+    assert.ok(allowedShas.has(sha), `blob-read requested for an oid outside the expected set: ${sha}`);
+    seen.add(sha);
+    const { blob } = await git.readBlob({ fs, dir, oid: sha });
+    return { ok: true, json: async () => ({ encoding: "base64", content: Buffer.from(blob).toString("base64") }) };
+  };
+  return { seen, restore: () => { globalThis.fetch = original; } };
+}
 
 test("commitChanges packs only new objects and preserves everything else", async () => {
   const git = await __plumbing.loadGitRuntime();
@@ -29,12 +64,25 @@ test("commitChanges packs only new objects and preserves everything else", async
       await git.add({ fs, dir, filepath: f });
     }
     const tip = await git.commit({ fs, dir, message: "base", author: { name: "t", email: "t@t" } });
+    const treeMap = lsTreeMap(dir, tip);
 
-    const repo = { git, dir, tip };
-    const manifest = await __plumbing.readManifestAt(repo);
-    assert.equal(manifest.activeId, "a");
-    assert.deepEqual(await __plumbing.listDirAt(repo, `${SCRATCH_DIR}/up12345678`), ["000.part"]);
+    // Reading the manifest and listing a scratch dir must resolve purely from
+    // the tree listing plus, for the manifest, ONE blob-content read — never
+    // the 300KB/200KB unrelated audio blobs.
+    const manifestSha = treeMap.get(MANIFEST_PATH).sha;
+    const stub = stubBlobFetch(git, dir, new Set([manifestSha]));
+    let manifest;
+    try {
+      const repo = { git, dir, tip, treeMap };
+      manifest = await __plumbing.readManifestAt(repo);
+      assert.equal(manifest.activeId, "a");
+      assert.deepEqual(await __plumbing.listDirAt(repo, `${SCRATCH_DIR}/up12345678`), ["000.part"]);
+      assert.deepEqual([...stub.seen], [manifestSha], "only the manifest blob should have been read");
+    } finally {
+      stub.restore();
+    }
 
+    const repo = { git, dir, tip, treeMap };
     const next = { version: 1, activeId: "b", tracks: [{ id: "b", filename: "b.mp3" }, ...manifest.tracks] };
     const changes = new Map([
       [`${TRACK_DIR}/b.mp3`, Buffer.alloc(1000, 3)],
@@ -67,4 +115,14 @@ test("commitChanges packs only new objects and preserves everything else", async
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test("owner-music-git no longer performs a git fetch of the branch", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const source = await readFile(new URL("../lib/owner-music-git.js", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /git\.fetch\(/, "a git fetch downloads every blob reachable from the tip — the exact regression this test guards against");
+  assert.doesNotMatch(source, /isomorphic-git\/http\/node/);
+  assert.doesNotMatch(source, /addRemote/);
+  assert.match(source, /git\/trees\/\$\{tip\}\?recursive=1/);
+  assert.match(source, /git\/blobs\/\$\{entry\.sha\}/);
 });
