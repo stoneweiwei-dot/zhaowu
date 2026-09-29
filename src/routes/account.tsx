@@ -193,6 +193,7 @@ function AccountPage() {
   const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
   const [selectedBackgroundIds, setSelectedBackgroundIds] = useState<string[]>([]);
   const [selectedReportIds, setSelectedReportIds] = useState<string[]>([]);
+  const [ownerView, setOwnerView] = useState<"reports" | "backgrounds">("reports");
 
   const c = useMemo(() => ({
     ownerTitle: tr(locale, "昭梧後台", "昭梧后台", "Zhaowu Console"),
@@ -619,6 +620,28 @@ function AccountPage() {
       </section>
 
       {user.isOwner ? (
+        <nav className="flex flex-wrap items-center gap-2" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
+          <div className="grid min-h-11 flex-1 grid-cols-2 gap-2" aria-label={tr(locale, "管理分區", "管理分区", "Console section")}>
+            <button
+              type="button"
+              aria-pressed={ownerView === "reports"}
+              onClick={() => setOwnerView("reports")}
+              className={"min-h-11 rounded-lg border px-3 text-sm font-medium " + (ownerView === "reports" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-paper/55 text-ink-soft")}
+            >{tr(locale, "報告管理", "报告管理", "Reports")}</button>
+            <button
+              type="button"
+              aria-pressed={ownerView === "backgrounds"}
+              onClick={() => setOwnerView("backgrounds")}
+              className={"min-h-11 rounded-lg border px-3 text-sm font-medium " + (ownerView === "backgrounds" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-paper/55 text-ink-soft")}
+            >{tr(locale, "首頁背景", "首页背景", "Home backgrounds")}</button>
+          </div>
+          <Link to="/gallery" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-cream px-4 text-sm text-ink-soft">
+            {tr(locale, "影片與圖片素材", "视频与图片素材", "Video & image library")} →
+          </Link>
+        </nav>
+      ) : null}
+
+      {user.isOwner && ownerView === "backgrounds" ? (
         <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -697,18 +720,13 @@ function AccountPage() {
         </section>
       ) : null}
 
-      <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
+      {(!user.isOwner || ownerView === "reports") ? <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs tracking-[0.28em] text-cinnabar">REPORTS</p>
             <h2 className="mt-1 font-display text-2xl">{user.isOwner ? c.customerReports : c.recentReports}</h2>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {user.isOwner ? <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} /> : null}
-            <button type="button" disabled={refreshBusy} onClick={() => void refreshAll()} className="h-10 rounded-full border border-line bg-cream px-4 text-sm text-ink-soft disabled:opacity-50">
-              {refreshBusy ? c.refreshing : c.refreshAll}
-            </button>
-          </div>
+          {user.isOwner ? <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} /> : null}
         </div>
 
         {user.isOwner && selectedReportIds.length ? <div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
@@ -843,7 +861,7 @@ function AccountPage() {
             );
           })}
         </div>
-      </section>
+      </section> : null}
 
       <Link to="/" className="inline-flex h-11 items-center rounded-full border border-line bg-cream px-5 text-ink">{t("backHome")}</Link>
     </main>
