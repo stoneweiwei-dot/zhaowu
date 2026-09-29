@@ -61,5 +61,8 @@ test("r214 public owner-music GET is a separate function from the Git writer", a
   assert.doesNotMatch(git, /import http from ["']isomorphic-git\/http\/node["']/);
   assert.match(git, /import\("isomorphic-git"\)/);
   assert.match(git, /import\("ssh2"\)/);
-  assert.match(git, /await import\("isomorphic-git\/http\/node"\)/);
+  // r223/r224: the writer no longer fetches the branch over git at all (see
+  // scripts/owner-music-git-plumbing.test.mjs), so isomorphic-git's HTTP
+  // transport is gone entirely rather than merely lazy-loaded.
+  assert.doesNotMatch(git, /isomorphic-git\/http\/node/);
 });
