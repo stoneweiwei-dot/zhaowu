@@ -24,12 +24,15 @@ test("r194 keeps the storage policy gate but enables writes for the approved Pro
   assert.doesNotMatch(ownerApi, /STORAGE_GROWING_ACTIONS/);
   assert.match(ownerClient, /new tus\.Upload/);
   assert.match(ownerClient, /chunkSize: 6 \* 1024 \* 1024/);
-  // r215: authorization must carry a valid Supabase JWT (anon key, since there is no user
-  // session) — the signed-upload token belongs in x-signature, not authorization. Putting the
-  // token in authorization is what caused 403 "new row violates row-level security policy" on
-  // resumable uploads; see docs/change-reports/ZW-WEB-2026.09.28-r215.md.
-  assert.match(ownerClient, /authorization: `Bearer \$\{SUPABASE_KEY\}`/);
+  // r215 moved the signed-upload token from `authorization` to `x-signature`, but kept hitting
+  // the plain /storage/v1/upload/resumable endpoint, which authorizes the caller by checking
+  // storage.objects RLS against the Authorization header's JWT role (roles={authenticated} for
+  // this bucket) — there is no real Supabase Auth session here, so it still 403'd. The fix is
+  // the dedicated /storage/v1/upload/resumable/sign endpoint, which trusts x-signature (minted
+  // server-side via createSignedUploadUrl under the service role) instead, and expects no
+  // Authorization bearer at all — see scripts/tus-resumable-sign-endpoint.test.mjs.
   assert.match(ownerClient, /"x-signature": signedUploadToken/);
+  assert.doesNotMatch(ownerClient, /authorization: `Bearer \$\{SUPABASE_KEY\}`/);
   assert.match(ownerEdge, /MAX_LOADING_VIDEO_BYTES = 500 \* 1024 \* 1024/);
 });
 
