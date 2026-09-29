@@ -256,7 +256,24 @@ export default async function handler(req, res) {
     return json(res, 500, {
       ok: false,
       error: "OWNER_MUSIC_WRITE_FAILED",
-      detail: error instanceof Error ? error.message : "unknown",
+      detail: shortErrorDetail(error),
     });
   }
+}
+
+// Node's AggregateError.message (thrown by Promise.allSettled, e.g. an
+// isomorphic-git FS failure such as ENOSPC) is generic boilerplate text
+// ("There are multiple errors that were thrown by the method...") with no
+// length cap — surfacing it verbatim made the owner UI's error banner huge
+// and unreadable. Use the first concrete inner error instead, and always cap
+// the length so one bad error can never dominate the panel again.
+function shortErrorDetail(error) {
+  const DETAIL_MAX = 160;
+  const pick = (value) => {
+    if (!(value instanceof Error)) return typeof value === "string" ? value : "unknown";
+    if (Array.isArray(value.errors) && value.errors.length) return pick(value.errors[0]);
+    return value.message || value.name || "unknown";
+  };
+  const text = pick(error).replace(/\s+/g, " ").trim();
+  return text.length > DETAIL_MAX ? `${text.slice(0, DETAIL_MAX)}…` : text;
 }
