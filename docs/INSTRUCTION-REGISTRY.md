@@ -4,6 +4,13 @@
 
 目的：把「当前有效」「已被取代」「曾因权限未接入」「仅历史参考」分开，防止未来 AI / Agent 从旧聊天、旧 Library 文件、旧 AppDeploy 补丁或旧 PR 重新激活已废止指令。
 
+## 2026-09-29 公開頁 SEO／404／安全標頭核對
+
+- 正式站 `index.html` 已靜態提供 title、description、canonical、完整 Open Graph 與 Twitter Card；`public/og.jpg` 為 1200×630 JPEG，既有 `og-preview` build/test 契約維持。不得因看到 `<div id="root"></div>` 就誤判 SEO／社群預覽標籤缺失，也不因這項誤判重寫成 Next.js／SSR。
+- ACTIVE：TanStack Router root 使用昭梧雙語 `notFoundComponent`，不存在路由須顯示可理解的 404 說明與返回首頁／最新更新入口，不再只顯示框架預設 `Not Found`。
+- ACTIVE：Vercel 公開回應全域加入 `X-Content-Type-Options: nosniff` 與 `Referrer-Policy: strict-origin-when-cross-origin`；平台既有 HSTS 不重複覆寫。未加入 `X-Frame-Options: DENY`，避免未經需求驗證就破壞合法預覽／嵌入。
+- 不改：首頁一次性 `IntroGate`、PWA、命理計算、報告、登入、付款、Supabase schema 與 Storage。
+
 ## 2026-09-29 r220 全站清理（分支／PR／CI／Vercel／Supabase Edge Functions）
 
 - 站主指令：把「亂七八糟的、合併沒合併的、做一半沒做完的」程序與後台全部走一遍清理。
