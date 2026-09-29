@@ -4,6 +4,15 @@
 
 目的：把「当前有效」「已被取代」「曾因权限未接入」「仅历史参考」分开，防止未来 AI / Agent 从旧聊天、旧 Library 文件、旧 AppDeploy 补丁或旧 PR 重新激活已废止指令。
 
+## 2026-09-29 r220 全站清理（分支／PR／CI／Vercel／Supabase Edge Functions）
+
+- 站主指令：把「亂七八糟的、合併沒合併的、做一半沒做完的」程序與後台全部走一遍清理。
+- 分支盤點：遠端 581 個分支中 15 個已是 `main` 祖先、375 個對應已合併 PR、99 個對應已關閉未合併 PR、89 個從未開過 PR。已分類並嘗試批次刪除，但本 session 的 GitHub App token 對 `DELETE /git/refs`（含經代理與經 `git push --delete` 兩條路徑）都回 `Resource not accessible by integration`／403 —— 屬於平台權限層級的硬限制，非代理誤擋，未強行繞過。**尚待站主本人或有完整權限的憑證執行實際刪除**；分類結果與待刪清單已產出。例外保留不刪：`design/r222-home-surface`（open PR #524）、`song-handscroll-six-frames-r220`（open PR #520）、`visual-audit/r222`（另一個並行 agent當天的 in-flight 工作，其自身 commit 訊息已註明「branch only, not for main」）。另外找到站主本人直接在 GitHub 網頁編輯、從未合併的 `stoneweiwei-dot-patch-1`（README 補一句「保證全部成功發布前提下才考慮這些指令、發布效率優先」），已完整合併進 `main`（非丟棄）。
+- PR／CI：合併兩個小型 chore PR——一是上述 README 補指令，二是 `playwright.config.ts` 在 CI 下加開 GitHub 原生 annotations reporter（`reporter: process.env.CI ? [["line"],["github"]] : "line"`），讓未來 e2e 失敗能直接從 Checks API 讀到「哪個測試、哪一行、什麼錯誤」，不必依賴目前被代理政策擋住的 Azure blob 原始 log（`productionresultssa6.blob.core.windows.net` 403，屬組織 egress policy 拒絕，未嘗試繞過）。
+- **重要修正**：先前 r220 報告的「iPhone Safari CI 全綠」不完整——`546cd210`（r220 merge commit）當時的 iPhone Safari job 實際失敗過，但當時只核對了 Engine suite／Deploy gate／UI contract tests，漏看了這個 job。本次用新加的 GitHub annotations 直接定位：真正失敗的測試是 `e2e/public-atlas.iphone-safari.spec.ts`「serves gallery artwork from same-origin static assets without Supabase gallery traffic」，斷言整頁 zero runtime error，但間歇性地會多出兩筆 `zhaowu_record_visit`（`src/lib/site-stats.ts` 的全站訪問計數 RPC）「due to access control checks」的錯誤。這與 IntroGate／`/gallery` 開場影片改動完全無關——是全站既有的、間歇性的訪問計數 CORS／access-control 問題，該測試沒有對這個全站呼叫做 mock／排除。已確認 README-only 與本次 CI-annotations-only 兩個互不相關的 diff，在同一份 `main` 基礎上一次過一次不過，證實是既有 flaky，不是本次規模內的迴歸。**未修復**，留給下一輪專門處理 `zhaowu_record_visit` 的 access-control 問題；此處僅記錄發現與診斷工具。
+- Vercel：確認只有單一 production 專案 `stone-zhaowu-official`，近 40 筆近期 deployment 中僅 3 筆 `CANCELED`、其餘 `READY`，沒有卡住／building 中的殘留部署。但確認「一個 PR 對應一次獨立 production 部署」的模式持續存在（本次觀察期間 main 從 `546cd21` 經 #524／#527／#528 一路推進到 `2173c897`，等同至少 4 次獨立 production 部署），與 AGENTS.md §10「一批次一次部署」的字面要求不符——這是並行的另一個 agent 造成，不在本 session 控制範圍，僅再次記錄，未處理。
+- Supabase Edge Functions：見下方「7. Supabase」章節新增段落——22 個零引用的 `-once`／`temp`／`probe`／`audit` 開發用函式已比照既有 `admin-storage-cleanup-execute-once` 慣例改為 410 retired stub（MCP 工具沒有刪除函式的操作，故不做 hard delete）。
+
 ## 2026-09-29 r220 後台「開場影片」分頁改管首頁 IntroGate supersession
 
 - 站主最新明確指令：`/gallery` 後台那個標成「登入影片」的分頁，站主的原意是給第一次打開網站、還沒進主頁前的客人看的動畫（首頁一次性 `IntroGate`），不是給站主自己登入後台時看的畫面。
