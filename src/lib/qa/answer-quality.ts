@@ -18,7 +18,7 @@ export type AnswerQualityEvaluation = {
 };
 
 const KIND_PATTERNS: Array<[QuestionKind, RegExp[]]> = [
-  ["choice", [/還是|还是|二選一|二选一|選哪|选哪|選A或B|选A或B|哪個更|哪个更|哪一個更|A\s*[：:].+?B\s*[：:]|which\s+(?:one|option)|\bvs\.?\b/is]],
+  ["choice", [/還是|还是|二選一|二选一|選哪|选哪|選A或B|选A或B|哪個更|哪个更|哪一個更|A\s*[：:].+?B\s*[：:]|which\s+(?:one|option)|\b(?:choose|pick|select)\s+(?:A\s+or\s+B|between\s+A\s+and\s+B)\b|\bvs\.?\b/is]],
   ["timing", [/何時|何时|什麼時候|什么时候|哪一年|哪年|幾月|几月|應期|应期|when\b|timing\b/i]],
   ["love", [/感情|戀愛|恋爱|婚姻|伴侶|伴侣|男友|女友|對象|对象|復合|复合|love|relationship|marriage|partner/i]],
   ["career", [/工作|事業|事业|職業|职业|轉職|转职|跳槽|升職|升职|老闆|老板|公司|職場|职场|career|job|work|role|business/i]],

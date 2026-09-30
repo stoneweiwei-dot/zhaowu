@@ -10,10 +10,11 @@ const hub = await readFile(new URL("../src/home-birth-hub-r60.css", import.meta.
 const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", import.meta.url), "utf8");
 const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 
-test("homepage puts Today Guide before the primary birth flow while keeping one reading path", () => {
+test("homepage puts the primary birth flow before Today Guide while keeping one reading path", () => {
   const formMount = route.indexOf("<AnalysisForm />");
   const daily = route.indexOf("<DailyAlmanacWidget embedded />");
-  assert.ok(daily >= 0 && formMount > daily);
+  const report = route.indexOf("<ResultView result={current} />");
+  assert.ok(formMount >= 0 && report > formMount && daily > report);
   assert.match(route, /todayTitle: "Today"/);
   assert.match(route, /todayTitle: "今日"/);
   assert.match(widget, /zhaowu-daily-details\$\{embedded \? " is-embedded-open"/);
@@ -31,7 +32,8 @@ test("daily almanac uses the canonical calendar and shows current year month day
   assert.match(widget, /zhaowu-daily-pillars/);
   assert.match(widget, /當下年月日時干支/);
   assert.match(widget, /jieName/);
-  assert.match(widget, /setInterval\(\(\) => setNow\(new Date\(\)\), 30_000\)/);
+  assert.match(widget, /setInterval\(refresh, 30_000\)/);
+  assert.match(widget, /DailyColorsModule variant="embed" date=\{now\}/);
 });
 
 test("daily almanac keeps the daily spirit slip available to guests", () => {

@@ -3879,7 +3879,12 @@ html[data-zw-theme="night"] .zhaowu-report-methodology__more > summary {
 /* Night mode — ink backdrop, readable warm paper. */
 html[data-zw-theme="night"] .zhaowu-site-header {
   border-bottom-color: rgba(191, 156, 102, .22) !important;
-  background: rgba(11, 20, 17, .97) !important;
+  background: #0b2f26 !important;
+}
+/* The full-width bar and its centred shell share one colour on inner routes. */
+html[data-zw-theme="night"] body .zhaowu-site-header,
+html[data-zw-theme="night"] body .zhaowu-site-header .zhaowu-header-shell {
+  background: #0b2f26 !important;
 }
 html[data-zw-theme="night"] .zhaowu-site-header .zhaowu-brand-name {
   color: var(--zw-r186-night-text) !important;
