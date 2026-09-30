@@ -10,12 +10,13 @@ const LOVE_KEYS = ["感情", "戀", "愛", "對象", "結婚", "伴侶", "桃花
 const WORK_KEYS = ["工作", "職業", "轉職", "升遷", "事業", "面試", "創業", "老闆", "職場", "出國工作", "離職", "跳槽", "考", "升官"];
 const MONEY_KEYS = ["財", "錢", "收入", "投資", "買房", "買屋", "理財", "債務", "存錢", "虧", "賺"];
 const HEALTH_KEYS = ["健康", "病", "痛", "醫療", "手術", "失眠", "身體", "復原", "累", "睡不著"];
-const CHOICE_KEYS = ["還是", "或者", "該不該", "要不要", "兩個選項", "A還是B", "選哪"];
+const CHOICE_KEYS = ["還是", "或者", "該不該", "要不要", "兩個選項", "A還是B", "選哪", "選A或B", "选A或B"];
 const TIME_KEYS = ["什麼時候", "何時", "哪年", "哪月", "時間", "窗口", "時機", "等到"];
 const PURPOSE_KEYS = ["為何而生", "为何而生", "為什麼而生", "为什么而生", "使命", "人生角色", "宿命", "珍貴", "珍贵", "潛意識", "潜意识", "真實的自己", "真实的自己", "幸福生活", "抉擇方式", "抉择方式", "人生方向", "前往何方", "人生去向"];
 
 export function classifyQuestion(q: string): QuestionKind {
   if (PAST_KEYS.some((k) => q.includes(k))) return "past";
+  if (/A\s*[：:].+?B\s*[：:]/is.test(q)) return "choice";
   if (CHOICE_KEYS.some((k) => q.includes(k))) return "choice";
   if (HOME_KEYS.some((k) => q.includes(k))) return "home";
   if (HEALTH_KEYS.some((k) => q.includes(k))) return "health";
@@ -150,7 +151,7 @@ function clipQuestion(q: string): string {
 }
 
 function moveScore(text: string): number {
-  const move = ["轉", "转", "離", "离", "走", "換", "换", "創", "创", "出國", "出国", "分手", "結束", "结束", "辭", "辞", "跳", "搬", "開", "开"];
+  const move = ["轉", "转", "離", "离", "走", "換", "换", "創", "创", "出國", "出国", "分手", "結束", "结束", "辭", "辞", "跳", "搬", "開", "开", "新工作", "新公司", "新職位", "新职位", "升遷", "升迁", "成長", "成长", "薪資高", "薪资高", "收入高"];
   const stay = ["留", "穩", "稳", "等", "維持", "维持", "繼續", "继续", "復合", "复合", "保留"];
   let n = 0;
   for (const k of move) if (text.includes(k)) n += 1;
@@ -158,27 +159,54 @@ function moveScore(text: string): number {
   return n;
 }
 
+type ChoicePart = { label: "A" | "B" | null; text: string };
+
+function choiceParts(question: string): ChoicePart[] {
+  const labelled = question.match(/(?:^|[\s，,；;])A\s*[：:]\s*([\s\S]*?)(?:[；;\n]\s*|\s+)B\s*[：:]\s*([\s\S]*?)(?:[。！？!?]|$)/i);
+  if (labelled) {
+    return [
+      { label: "A", text: labelled[1].trim() },
+      { label: "B", text: labelled[2].trim() },
+    ];
+  }
+
+  return question
+    .split(/還是|还是|或者/)
+    .map((text, index) => ({ label: null, text: text.trim(), index }))
+    .filter((part) => Boolean(part.text))
+    .slice(0, 2)
+    .map(({ label, text }) => ({ label, text }));
+}
+
+function choiceName(part: ChoicePart): string {
+  const text = part.text.length > 34 ? `${part.text.slice(0, 34)}…` : part.text;
+  return part.label ? `${part.label}（${text}）` : `「${text}」`;
+}
+
 function leanChoice(q: string, chart: Chart): string {
-  const parts = q.split(/還是|还是|或者/).map((x) => x.trim()).filter(Boolean);
+  const parts = choiceParts(q);
   const strong = chart.strength.tendency.includes("旺");
   if (parts.length >= 2) {
-    const a = parts[0]
+    const aPart = parts[0];
+    const bPart = parts[1];
+    const a = aPart.text
       .replace(/^(?:我)?(?:應該|应该)?/, "")
-      .replace(/^.*[，,、：:]/, "")
+      .replace(/^[^：:]{0,24}[：:]/, "")
+      .replace(/[，,、]$/, "")
       .trim();
-    const b = parts[1].replace(/[？?。！!].*$/, "").trim();
+    const b = bPart.text.replace(/[？?。！!].*$/, "").trim();
     const aMove = moveScore(a);
     const bMove = moveScore(b);
 
     if (a && b && aMove !== bMove) {
-      const moveChoice = aMove > bMove ? a : b;
-      const stayChoice = moveChoice === a ? b : a;
+      const moveChoice = aMove > bMove ? { ...aPart, text: a } : { ...bPart, text: b };
+      const stayChoice = aMove > bMove ? { ...bPart, text: b } : { ...aPart, text: a };
       return strong
-        ? `僅從命盤承載角度，偏向「${moveChoice}」。原因是原局偏滿時，更需要形成有效輸出與轉場；但最終仍要用收入、責任、地點、時間與退出成本復核。`
-        : `僅從命盤承載角度，偏向「${stayChoice}」。原因是原局承載偏弱時，優先保住穩定資源與可持續節奏；但最終仍要用收入、責任、地點、時間與退出成本復核。`;
+        ? `直接回答：偏向 ${choiceName(moveChoice)}。原局偏滿時，更需要把能量轉成可衡量的成果與有效轉場；但要先確認新增責任、時間成本與退出條款仍在可承受範圍。`
+        : `直接回答：偏向 ${choiceName(stayChoice)}。原局承載偏弱時，應先保住穩定資源與可持續節奏；除非另一選項的支援、規則與退出條款明顯更完整。`;
     }
 
-    return `這是二選一比較要求，但你沒有分開提供兩個選項的可比較條件，所以暫不強選。請把「${a || "選項 A"}」與「${b || "選項 B"}」的收入、責任、地點、時間投入、穩定性和退出成本放在同一組條件下，再按同一命盤結構比較。`;
+    return `直接回答：目前不能可靠強選。你已提出 ${choiceName(aPart)} 與 ${choiceName(bPart)}，但兩邊還缺少能拉開差異的現實條件；請至少用同一標準補上收益、責任、時間投入、穩定性與退出成本。`;
   }
 
   if (q.includes("該不該") || q.includes("该不该") || q.includes("要不要")) {

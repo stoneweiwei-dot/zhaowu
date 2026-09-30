@@ -6013,3 +6013,21 @@ html[data-zw-theme="night"] .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answ
 html[data-zw-theme="night"] .zhaowu-dragon-guide-panel .zhaowu-dragon-music [data-music-mode-status] {
   color: #f1e8d8 !important;
 }
+
+/* English header: the Day/Night toggle was pinned to 96px (Chinese one-character labels)
+   and clipped "Night" to "Nigh". Let it size to its labels; Chinese stays 96px. */
+html[lang="en"] body .zhaowu-site-header .zhaowu-header-mode-toggle {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+html[lang="en"] body .zhaowu-site-header .zhaowu-header-mode-toggle > button {
+  width: auto !important;
+  min-width: 52px !important;
+  padding-inline: 10px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}

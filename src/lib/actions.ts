@@ -13,6 +13,7 @@ import { inferQuestionKind } from "@/lib/core/answer-contract";
 import { composeFocusedReportText } from "@/lib/report/focused-report";
 import { finalizeReading } from "@/lib/report/final-reading";
 import { enforceDirectAnswerGuard } from "@/lib/qa/direct-answer-guard";
+import { localizeReading } from "@/lib/report/reading-locale";
 import { trackAnswerError, trackAnswerResult } from "@/lib/observability/answer-quality-telemetry";
 
 function newId(): string {
@@ -118,7 +119,7 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
 
 function finishReading(question: string, chart: AnalysisResult["chart"], reading: AnalysisResult["reading"], locale?: AnalysisResult["locale"]) {
   const auxiliaryReading = applyThreeYuanAuxiliaryPolicy(question, chart, reading, locale);
-  return enforceDirectAnswerGuard(question, chart, auxiliaryReading, locale);
+  return localizeReading(enforceDirectAnswerGuard(question, chart, auxiliaryReading, locale), locale);
 }
 
 export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promise<AnalysisResult> {

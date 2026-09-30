@@ -159,7 +159,19 @@ const ART = {
   immortal: { field: "#dce9df", soft: "#edf4ea", robe: "#6f9d85", deep: "#3f6657", gold: "#ad8743", object: "fan" as const },
 };
 
-function AffinityArt({ family, label, note }: { family: AffinityKey; label: string; note: string }) {
+const ART_MOTTO: Record<Locale, Record<AffinityKey, string>> = {
+  "zh-Hant": { buddha: "空 · 觀", bodhisattva: "光 · 願", guardian: "護 · 守", immortal: "氣 · 行" },
+  "zh-Hans": { buddha: "空 · 观", bodhisattva: "光 · 愿", guardian: "护 · 守", immortal: "气 · 行" },
+  en: { buddha: "VOID · OBSERVE", bodhisattva: "LIGHT · VOW", guardian: "GUARD · HOLD", immortal: "QI · MOVE" },
+};
+
+const BLUEPRINT_LABELS: Record<Locale, string[]> = {
+  "zh-Hant": ["天命", "天魂", "天相", "天印", "天職", "天路", "天則"],
+  "zh-Hans": ["天命", "天魂", "天相", "天印", "天职", "天路", "天则"],
+  en: ["Mandate", "Soul", "Aspect", "Seal", "Calling", "Path", "Principle"],
+};
+
+function AffinityArt({ family, label, note, locale }: { family: AffinityKey; label: string; note: string; locale: Locale }) {
   const palette = ART[family];
   return (
     <article className="seal-border overflow-hidden rounded-2xl bg-cream/95 p-4 sm:p-6" data-divine-affinity-art={family}>
@@ -210,10 +222,10 @@ function AffinityArt({ family, label, note }: { family: AffinityKey; label: stri
         </div>
         <div className="min-w-0">
           <p className="text-xs tracking-[0.24em] text-cinnabar">{label}</p>
-          <h3 className="mt-2 font-display text-2xl text-ink">{family === "buddha" ? "空 · 觀" : family === "bodhisattva" ? "光 · 願" : family === "guardian" ? "護 · 守" : "氣 · 行"}</h3>
+          <h3 className="mt-2 font-display text-2xl text-ink">{ART_MOTTO[locale][family]}</h3>
           <p className="mt-4 text-sm leading-7 text-ink-soft">{note}</p>
           <div className="mt-5 h-px bg-line" />
-          <p className="mt-3 text-[11px] tracking-[0.2em] text-ink-mute">STONE · 昭梧</p>
+          <p className="mt-3 text-[11px] tracking-[0.2em] text-ink-mute">{locale === "en" ? "STONE · ZHAOWU" : "STONE · 昭梧"}</p>
         </div>
       </div>
     </article>
@@ -311,20 +323,23 @@ function DivineAffinityQuiz() {
             {showSecondary ? <p className="mt-3 text-sm leading-7 text-ink-soft"><b className="text-ink">{copy.secondary}：</b>{secondary.name} · {secondary.essence}</p> : null}
           </article>
 
-          <AffinityArt family={finalScore.primary} label={copy.art} note={copy.artNote} />
+          <AffinityArt family={finalScore.primary} label={copy.art} note={copy.artNote} locale={locale} />
 
           <article className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
             <p className="text-xs tracking-[0.22em] text-cinnabar">{copy.blueprint}</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {[
-                ["天命", primary.mandate], ["天魂", primary.soul], ["天相", primary.aspect], ["天印", primary.seal],
-                ["天職", primary.duty], ["天路", primary.path], ["天則", primary.law],
-              ].map(([label, value]) => (
+                primary.mandate, primary.soul, primary.aspect, primary.seal,
+                primary.duty, primary.path, primary.law,
+              ].map((value, itemIndex) => {
+                const label = BLUEPRINT_LABELS[locale][itemIndex];
+                return (
                 <div key={label} className="rounded-xl border border-line bg-cream/75 px-4 py-3">
                   <span className="text-xs tracking-[0.15em] text-ink-mute">{label}</span>
                   <strong className="mt-1 block font-display text-xl text-ink">{value}</strong>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </article>
 

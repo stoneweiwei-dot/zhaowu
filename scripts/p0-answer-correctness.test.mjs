@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 const { buildChart } = await import("../src/lib/bazi/chart.ts");
+const { tenGod } = await import("../src/lib/bazi/calendar.ts");
 const { interpret } = await import("../src/lib/bazi/interpret.ts");
 const { applyAnswerContract, inspectAnswerRequirements, inferQuestionKind } = await import("../src/lib/core/answer-contract.ts");
 
@@ -40,6 +41,34 @@ function chart() {
     useTrueSolar: true,
   });
 }
+
+test("同一日干出現在其他柱時是比肩，不誤標成日主", () => {
+  assert.equal(tenGod("庚", "庚"), "比肩");
+  const c = buildChart({
+    question: "我的命盤重點是什麼？",
+    year: 1990,
+    month: 1,
+    day: 15,
+    hour: 8,
+    minute: 30,
+    timeUnknown: false,
+    gender: "male",
+    relation: "any",
+    city: {
+      name: "Taipei",
+      country: "Taiwan",
+      display: "臺北，臺灣",
+      latitude: 25.033,
+      longitude: 121.5654,
+      timezone: "Asia/Taipei",
+    },
+    liveCity: SYDNEY,
+    ziPolicy: "midnight",
+    useTrueSolar: true,
+  });
+  assert.equal(c.pillars.find((pillar) => pillar.key === "day")?.shiShenGan, "日主");
+  assert.equal(c.pillars.find((pillar) => pillar.key === "time")?.shiShenGan, "比肩");
+});
 
 test("身强还是弱属于旺衰题，不得被“还是”误判成二选一", () => {
   const q = "我现在这个大运流年对我八字的属性能量大小有什么影响，让我现在是身强还是弱？";
@@ -127,6 +156,21 @@ test("完整問答流程：天賦、追問工作、感情與月份各自回答�
   assert.match(timing.reading.directAnswer, /較順的窗口|较顺的窗口/);
   assert.match(timing.reading.directAnswer, /\d{1,2}月/);
   assert.doesNotMatch(timing.reading.directAnswer, /天賦|天赋|性格盲點|性格盲点/);
+
+  const choice = await actions.followUpLife({
+    data: {
+      question: "A：新工作薪資高20%，通勤多30分鐘，責任更大；B：維持現職，薪資不變、較穩定。直接選A或B。",
+      base: talent,
+      relation: "same",
+    },
+  });
+  assert.equal(choice.reading.kind, "choice");
+  assert.match(choice.reading.directAnswer, /直接回答：偏向 [AB]/);
+  assert.doesNotMatch(choice.reading.directAnswer, /職業判斷以|没有分开提供|沒有分開提供/);
+  assert.doesNotMatch(
+    [choice.reading.directAnswer, choice.reading.rhythm, choice.reading.decree].join("\n"),
+    /[这为与关选择现运时应个业专结构层观输续稳责负险据资际]/,
+  );
 });
 
 test("出生盘 hemisphere 只取出生地，不被现居悉尼覆盖", () => {

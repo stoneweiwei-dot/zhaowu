@@ -23,6 +23,14 @@ test("common navigation requests resolve locally in all three languages", () => 
     resolveLocalSiteGuide("I want a career analysis", "en")?.route,
     "/#analysisForm",
   );
+  assert.equal(
+    resolveLocalSiteGuide("Take me to the full report", "en")?.route,
+    "/#analysisForm",
+  );
+  assert.equal(
+    resolveLocalSiteGuide("帶我去看完整報告", "zh-Hant")?.route,
+    "/#analysisForm",
+  );
 });
 
 test("the guide can only recommend real public site routes", () => {
