@@ -7,8 +7,30 @@ const LEGACY_STORAGE_KEY = "zhaowu.backgroundMusic.v1";
 const LOOP_STORAGE_KEY = `${STORAGE_KEY}.loop`;
 const SHUFFLE_STORAGE_KEY = `${STORAGE_KEY}.shuffle`;
 const TRACK_STORAGE_KEY = `${STORAGE_KEY}.track`;
-const DEFAULT_VOLUME = 0.24;
+const DEFAULT_VOLUME = 0.16;
+const VOLUME_FADE_IN_MS = 900;
 const MUSIC_STREAM_URL = "/api/owner-music?stream=1";
+
+// Ramp volume up smoothly instead of jumping straight to DEFAULT_VOLUME the
+// instant playback starts — a hard jump to full volume is what makes the
+// first note feel like a jump-scare. Stops early if playback is paused
+// (e.g. the visitor paused mid-fade), so it never fights the user.
+function fadeVolumeTo(audio: HTMLAudioElement, target: number, durationMs = VOLUME_FADE_IN_MS) {
+  const start = audio.volume;
+  const delta = target - start;
+  if (Math.abs(delta) < 0.001) {
+    try { audio.volume = target; } catch {}
+    return;
+  }
+  const startTime = performance.now();
+  const step = (now: number) => {
+    if (audio.paused) return;
+    const progress = Math.min(1, (now - startTime) / durationMs);
+    try { audio.volume = start + delta * progress; } catch {}
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
 
 function readInitialPreference() {
   if (typeof window === "undefined") return true;
@@ -49,6 +71,7 @@ export function BackgroundMusic() {
   const { locale } = useI18n();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const unlockStartedRef = useRef(false);
+  const resumeOnVisibleRef = useRef(false);
   const currentIdRef = useRef<string | null>(null);
   const shuffleRef = useRef(readBooleanPreference(SHUFFLE_STORAGE_KEY, false));
 
@@ -87,7 +110,19 @@ export function BackgroundMusic() {
       audio.src = source;
       audio.load();
     }
-    audio.volume = DEFAULT_VOLUME;
+    // Start silent; playAudio() below fades it up once playback actually begins,
+    // so switching or selecting a track never leaves it sitting at full volume.
+    audio.volume = 0;
+  }, []);
+
+  // Wraps every audio.play() call so the volume always ramps up from silence
+  // instead of jumping straight to DEFAULT_VOLUME — avoids startling whoever
+  // is nearby when playback kicks in from a first tap/keystroke.
+  const playAudio = useCallback((audio: HTMLAudioElement) => {
+    try { audio.volume = 0; } catch {}
+    return audio.play().then(() => {
+      fadeVolumeTo(audio, DEFAULT_VOLUME);
+    });
   }, []);
 
   const refreshAsset = useCallback(async (preferActive = false) => {
@@ -129,7 +164,7 @@ export function BackgroundMusic() {
         syncAudioSource(selected);
         if (resume) {
           unlockStartedRef.current = true;
-          void audio.play().catch(() => {
+          void playAudio(audio).catch(() => {
             unlockStartedRef.current = false;
             setPlaying(false);
           });
@@ -138,7 +173,7 @@ export function BackgroundMusic() {
     };
     window.addEventListener("zhaowu-music-change", onChange);
     return () => window.removeEventListener("zhaowu-music-change", onChange);
-  }, [enabled, requested, refreshAsset, syncAudioSource]);
+  }, [enabled, requested, refreshAsset, syncAudioSource, playAudio]);
 
   useEffect(() => {
     try {
@@ -146,7 +181,6 @@ export function BackgroundMusic() {
     } catch {}
     const audio = audioRef.current;
     if (!audio) return;
-    audio.volume = DEFAULT_VOLUME;
     if (!enabled) {
       audio.pause();
       setPlaying(false);
@@ -161,6 +195,34 @@ export function BackgroundMusic() {
     shuffleRef.current = shuffleEnabled;
     try { window.localStorage.setItem(SHUFFLE_STORAGE_KEY, shuffleEnabled ? "on" : "off"); } catch {}
   }, [shuffleEnabled]);
+
+  // Stop playback the moment the tab/app goes into the background (switching
+  // apps, locking the phone, moving to another tab) so the music doesn't keep
+  // playing where the visitor can no longer see or control it. Resume with a
+  // fade-in when they come back, but only if it was this player that paused it.
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (document.hidden) {
+        if (!audio.paused) {
+          resumeOnVisibleRef.current = true;
+          audio.pause();
+        }
+      } else if (resumeOnVisibleRef.current) {
+        resumeOnVisibleRef.current = false;
+        if (enabled && requested) {
+          unlockStartedRef.current = true;
+          void playAudio(audio).catch(() => {
+            unlockStartedRef.current = false;
+            setPlaying(false);
+          });
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", onVisibilityChange);
+  }, [enabled, requested, playAudio]);
 
   // iPhone/iPad Safari still needs the first play() call inside a user gesture.
   // Keep the previous gesture-unlock behavior, then expose explicit transport
@@ -178,7 +240,7 @@ export function BackgroundMusic() {
       setRequested(true);
       setPlaying(false);
       syncAudioSource(currentTrack);
-      void audio.play().catch(() => {
+      void playAudio(audio).catch(() => {
         unlockStartedRef.current = false;
         setPlaying(false);
       });
@@ -194,7 +256,7 @@ export function BackgroundMusic() {
       window.removeEventListener("touchend", unlock);
       window.removeEventListener("keydown", unlock);
     };
-  }, [enabled, requested, currentTrack, syncAudioSource]);
+  }, [enabled, requested, currentTrack, syncAudioSource, playAudio]);
 
   const startPlayback = (track: OwnerMusicTrack | null = currentTrack) => {
     const audio = audioRef.current;
@@ -204,7 +266,7 @@ export function BackgroundMusic() {
     setPlaying(false);
     unlockStartedRef.current = true;
     syncAudioSource(track);
-    void audio.play().catch(() => {
+    void playAudio(audio).catch(() => {
       unlockStartedRef.current = false;
       setPlaying(false);
     });
@@ -240,10 +302,12 @@ export function BackgroundMusic() {
       setRequested(true);
       unlockStartedRef.current = true;
       setPlaying(false);
-      void audio?.play().catch(() => {
-        unlockStartedRef.current = false;
-        setPlaying(false);
-      });
+      if (audio) {
+        void playAudio(audio).catch(() => {
+          unlockStartedRef.current = false;
+          setPlaying(false);
+        });
+      }
     } else {
       setPlaying(false);
     }

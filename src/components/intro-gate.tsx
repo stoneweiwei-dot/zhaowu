@@ -112,7 +112,10 @@ export function IntroGate() {
       const nextMuted = !video.muted;
       video.muted = nextMuted;
       if (!nextMuted) {
-        video.volume = 0.6;
+        // Comfortable default level, not full blast — matches the site's
+        // background-music default so unmuting the intro clip doesn't jump
+        // the volume much louder than everything else on the site.
+        video.volume = 0.24;
         void video.play().then(() => setSoundPlaying(true)).catch(() => { video.muted = true; setSoundPlaying(false); });
       } else {
         setSoundPlaying(false);
@@ -126,7 +129,7 @@ export function IntroGate() {
       setSoundPlaying(false);
       return;
     }
-    sound.volume = 0.24;
+    sound.volume = 0.16;
     void sound.play().then(() => setSoundPlaying(true)).catch(() => setSoundPlaying(false));
   }, [resolvedVideoSrc]);
 
