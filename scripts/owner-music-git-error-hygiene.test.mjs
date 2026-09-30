@@ -26,7 +26,7 @@ test("git-receive-pack failure never interpolates the raw wire response into the
 
   // The new behavior: a fixed, bounded Chinese message with no `out`
   // interpolation reaching the client...
-  assert.match(lib, /reject\(new Error\("曲目保存失敗，請稍後再試一次/);
+  assert.match(lib, /reject\(Object\.assign\(new Error\("曲目保存失敗，請稍後再試一次/);
 
   // ...while the full raw response is still captured server-side for
   // diagnosis via Vercel runtime logs.
