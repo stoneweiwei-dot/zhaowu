@@ -6036,3 +6036,19 @@ html[lang="en"] body .zhaowu-site-header .zhaowu-header-mode-toggle > button {
   overflow: visible !important;
   text-overflow: clip !important;
 }
+
+/* r223 — owner opening-video cards: compact option chips (owner: option text/buttons were too large).
+ * Scoped to the login-visuals manager only; beats the generic 44px owner-console touch-target rule. */
+html body [data-owner-login-visuals] article button {
+  min-height: 28px !important;
+  padding: 3px 9px !important;
+  font-size: 10.5px !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+}
+html body [data-owner-login-visuals] article form button { min-height: 26px !important; }
+html body [data-owner-login-visuals] article input[type="text"],
+html body [data-owner-login-visuals] article form input { min-height: 26px !important; font-size: 12px !important; }
+html body [data-owner-login-visuals] article p { font-size: 12px; }
+html body [data-owner-login-visuals] article p.tracking-\[0\.14em\] { font-size: 10px; letter-spacing: .06em; }
