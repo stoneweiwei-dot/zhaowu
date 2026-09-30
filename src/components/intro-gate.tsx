@@ -3,6 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 import {
   INTRO_BROKEN_KEY,
+  INTRO_FORCE_KEY,
   INTRO_GATE_ERROR_EXIT_MS,
   INTRO_GATE_FADE_MS,
   INTRO_GATE_MAX_PLAY_S,
@@ -33,10 +34,29 @@ function isForcedBrokenIntro() {
   }
 }
 
+/**
+ * Owner 2026-09-30: the opening video must show every time the app/site is opened, not only the very
+ * first time ever on a browser. "Seen" is therefore remembered per session (sessionStorage): route changes
+ * and reloads inside one visit do not replay it; opening the app again does. The force flag still lives in
+ * localStorage so it keeps working as before.
+ */
+function introStorage(): Pick<Storage, "getItem" | "setItem"> {
+  return {
+    getItem(key: string) {
+      try {
+        return key === INTRO_FORCE_KEY ? window.localStorage.getItem(key) : window.sessionStorage.getItem(key);
+      } catch { return null; }
+    },
+    setItem(key: string, value: string) {
+      try { window.sessionStorage.setItem(key, value); } catch { /* ignore */ }
+    },
+  };
+}
+
 export function IntroGate() {
   const { locale } = useI18n();
   const [phase, setPhase] = useState<"in" | "leaving" | "off">(() =>
-    typeof window !== "undefined" && shouldSkipIntroGate(window.localStorage, Boolean(navigator.webdriver)) ? "off" : "in",
+    typeof window !== "undefined" && shouldSkipIntroGate(introStorage(), Boolean(navigator.webdriver)) ? "off" : "in",
   );
   const [minimumDone, setMinimumDone] = useState(false);
   const [visualDone, setVisualDone] = useState(false);
@@ -64,7 +84,7 @@ export function IntroGate() {
       window.clearTimeout(exitTimerRef.current);
       exitTimerRef.current = null;
     }
-    markIntroSeen(window.localStorage);
+    markIntroSeen(introStorage());
     stopSound();
     setPhase("off");
   }, [stopSound]);
@@ -72,7 +92,7 @@ export function IntroGate() {
   const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
-    markIntroSeen(window.localStorage);
+    markIntroSeen(introStorage());
     stopSound();
     setPhase("leaving");
     exitTimerRef.current = window.setTimeout(() => {
@@ -108,7 +128,7 @@ export function IntroGate() {
   }, [resolvedVideoSrc]);
 
   useEffect(() => {
-    if (shouldSkipIntroGate(window.localStorage, Boolean(navigator.webdriver))) {
+    if (shouldSkipIntroGate(introStorage(), Boolean(navigator.webdriver))) {
       finishedRef.current = true;
       setPhase("off");
       return;

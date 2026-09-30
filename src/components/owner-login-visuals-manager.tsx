@@ -12,7 +12,6 @@ import {
   type GalleryAsset,
 } from "@/lib/bridge/gallery-assets";
 import { LOGIN_VISUAL_CATALOG } from "@/lib/loading-gallery-catalog";
-import { loginVisualThemeFromTags, type LoginVisualTheme } from "@/lib/login-animation";
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 import { LOGIN_VIDEO_ACCEPT, isBrowserPlayableVideoType, resolveLoginVideoType } from "@/lib/video-formats";
 import { LOGIN_VIDEO_MAX_SECONDS, compressLoginVideo } from "@/lib/login-video-compress";
@@ -204,18 +203,6 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     }
   }
 
-  async function setTheme(asset: GalleryAsset, theme: LoginVisualTheme) {
-    if (asset.id.startsWith("catalog:")) return;
-    const next = (asset.tags ?? []).filter((tag) => !["login-day", "login-night", "login-common", "day", "night"].includes(tag));
-    next.push(theme === "day" ? "login-day" : theme === "night" ? "login-night" : "login-common");
-    try {
-      await setGalleryAssetTags(session, asset.id, next);
-      await load();
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : copy.failed);
-    }
-  }
-
   async function saveName(asset: GalleryAsset) {
     const cleaned = draftName.trim().replace(/\s+/g, " ").slice(0, NAME_MAX);
     if (!cleaned) { setMessage(tr(locale, "名稱不能留空。", "名称不能留空。", "The name cannot be empty.")); return; }
@@ -294,7 +281,6 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {rows.map((asset) => {
           const locked = asset.id.startsWith("catalog:");
-          const theme = loginVisualThemeFromTags(asset.tags);
           const current = asset.id === currentId;
           return (
             <article key={asset.id} data-owner-selectable-file="login-visuals" className={`relative overflow-hidden rounded-2xl border ${selectedIds.includes(asset.id) ? "border-cinnabar/45 ring-1 ring-cinnabar/20" : current ? "border-[#c4a05a] bg-[#fffaf1]" : "border-line bg-cream/72"}`}>
@@ -315,38 +301,22 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
                   ) : <p className="min-w-0 truncate text-[13px] font-medium">{displayTitle(asset)}</p>}
                   {current ? <span className="shrink-0 rounded-full border border-[#c4a05a] px-2 py-0.5 text-[11px] text-[#1f4e3a]">{copy.current}</span> : null}
                 </div>
-                <p className="text-[11px] tracking-[0.14em] text-ink-mute">MP4 / WEBM · {theme === "night" ? copy.night : theme === "day" ? copy.day : copy.common}</p>
                 {locked ? (
                   <p className="text-[11px] text-ink-mute">{copy.builtIn}</p>
                 ) : (
-                  <div className="flex flex-wrap gap-1.5">
-                    {(["day", "night", "common"] as const).map((item) => (
-                      <button key={item} type="button" className={`rounded-full border px-2 py-0.5 text-[10px] ${theme === item ? "border-[#1f4e3a] bg-[#1f4e3a] text-[#faf8f1]" : "border-line text-ink-soft"}`} onClick={() => void setTheme(asset, item)}>
-                        {item === "day" ? copy.day : item === "night" ? copy.night : copy.common}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <div className="flex flex-wrap items-center gap-2">
-                  {!locked && !current ? (
-                    <button type="button" className="rounded-full bg-[#1f4e3a] px-2.5 py-1 text-[10px] text-[#faf8f1]" onClick={async () => {
-                      try { await setLoginVisualCurrent(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
-                    }}>{copy.use}</button>
-                  ) : null}
-                  {!locked ? (
-                    <button type="button" className="rounded-full border border-line px-2.5 py-1 text-[10px]" onClick={async () => {
-                      try { await setGalleryAssetEnabled(session, asset.id, !asset.enabled); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
-                    }}>{asset.enabled ? copy.disable : copy.enable}</button>
-                  ) : null}
-                  <button type="button" className="rounded-full border border-line px-2.5 py-1 text-[10px]" onClick={() => setPreview(asset)}>{copy.preview}</button>
-                  {!locked ? <button type="button" className="rounded-full border border-line px-2.5 py-1 text-[10px]" onClick={() => { setRenamingId(asset.id); setDraftName(displayTitle(asset)); }}>{copy.rename}</button> : null}
-                  {!locked ? (
+                  <div className="flex flex-wrap items-center gap-2">
+                    {!current ? (
+                      <button type="button" className="rounded-full bg-[#1f4e3a] px-2.5 py-1 text-[10px] text-[#faf8f1]" onClick={async () => {
+                        try { await setLoginVisualCurrent(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
+                      }}>{copy.use}</button>
+                    ) : null}
+                    <button type="button" className="rounded-full border border-line px-2.5 py-1 text-[10px]" onClick={() => { setRenamingId(asset.id); setDraftName(displayTitle(asset)); }}>{copy.rename}</button>
                     <button type="button" className="rounded-full px-2.5 py-1 text-[10px] text-cinnabar" onClick={async () => {
                       if (!window.confirm(`${copy.remove} ${displayTitle(asset)}?`)) return;
                       try { await deleteGalleryAsset(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
                     }}>{copy.remove}</button>
-                  ) : null}
-                </div>
+                  </div>
+                )}
               </div>
             </article>
           );

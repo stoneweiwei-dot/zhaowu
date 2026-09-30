@@ -9,7 +9,9 @@ import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 // back to the built-in default video with zero visible delay beyond the
 // bounded timeout below.
 
-const FETCH_TIMEOUT_MS = 450;
+// 450 ms was too tight on mobile data: the request timed out and the built-in clip played instead of the
+// owner's upload. The poster covers the screen meanwhile, so a longer bounded wait costs nothing visible.
+const FETCH_TIMEOUT_MS = 1800;
 const GALLERY_BUCKET_FALLBACK = "zhaowu-gallery";
 
 export type IntroVisualOverride = { videoUrl: string };
