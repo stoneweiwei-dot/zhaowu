@@ -1,6 +1,7 @@
 import { buildTravelDestinationAnswer, extractNamedPlaces, pickTravelDestinations } from "@/lib/bazi/forecast";
 import { buildDistinctTimingAnswer } from "@/lib/bazi/forecast-safe";
-import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
+import { inspectAnswerRequirements, readingForTopic } from "@/lib/core/answer-contract";
+import type { ForecastTopic } from "@/lib/bazi/forecast";
 import { customerCopy } from "@/lib/report/customer-copy";
 import type { Chart, Reading } from "@/lib/bazi/types";
 import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
@@ -101,10 +102,23 @@ export function applyCustomerAnswerHotfix(question: string, chart: Chart, readin
   if (travelIntent) return travelAnswer(question, chart, reading);
 
   if (req.asksWhen && !/(感情.*工作|工作.*感情|工作.*財|工作.*财|財.*工作|财.*工作)/.test(question)) {
-    const topic = reading.kind === "timing" ? "self" : reading.kind;
+    // 這是最後一層修正，它先前不分問題主題，一律把 directAnswer 整段換成
+    // 純時機表——而中文問句幾乎都帶時間詞（「我今年適合換工作嗎」「我這幾年
+    // 財運如何」「我今年健康要注意什麼」），等於絕大多數帶主題的問題最終都
+    // 只會收到一張跟問題內容無關的順／不順月份清單，reading.work／money／
+    // body／love／home 這些已經算好的結構內容從未真正到達使用者。
+    // readingForTopic() 是既有、專門用來把主題內容接回答案的函式（
+    // multiTopicAnswer 已在用），這裡沿用同一支函式，把時機與結構面一起
+    // 保留，而不是新增判斷邏輯。
+    const topic: ForecastTopic = reading.kind === "timing" ? "self" : reading.kind;
+    const timing = buildDistinctTimingAnswer(chart, topic, req.targetYears, req.targetMonths);
+    const REAL_TOPICS = new Set<ForecastTopic>(["love", "career", "money", "health", "home"]);
+    const topicText = REAL_TOPICS.has(topic) ? readingForTopic(topic, reading) : "";
     return {
       ...reading,
-      directAnswer: customerCopy(buildDistinctTimingAnswer(chart, topic, req.targetYears, req.targetMonths)),
+      directAnswer: topicText
+        ? customerCopy(`${timing}　結構面：${topicText}`)
+        : customerCopy(timing),
     };
   }
 

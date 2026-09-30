@@ -30,7 +30,7 @@ const FERTILITY_RE = /(懷孕|怀孕|受孕|備孕|备孕|生育|生孩子|要�
 const RELATION_RE = /(父母|爸爸|媽媽|妈妈|母親|母亲|父親|父亲|家人|兄弟|姐妹|姊妹|朋友|友情|人際|人际|同事|合作夥伴|合作伙伴|客戶|客户|貴人|贵人|小人)/;
 
 const PAST_TOPIC_RE = /(前世|前三世|六道|輪迴|轮回|一掌經|一掌经|三世因果)/;
-const HOME_TOPIC_RE = /(家宅|搬家|房子|住宅|店面|風水|风水|買屋|买屋|買房|买房|住哪|坐向|戶型|户型)/;
+const HOME_TOPIC_RE = /(家宅|搬家|房子|住宅|店面|風水|风水|買屋|买屋|買房|买房|住哪|坐向|戶型|户型|搬到|移居|移民)/;
 const HEALTH_TOPIC_RE = /(健康|病|痛|醫療|医疗|手術|手术|失眠|身體|身体|復原|恢复|康復|康复|睡不著|睡不着|懷孕|怀孕|受孕|備孕|备孕|生育)/;
 const LOVE_TOPIC_RE = /(感情|戀愛|恋爱|愛情|爱情|交往|正緣|正缘|婚姻|結婚|结婚|伴侶|伴侣|桃花|復合|复合|分手|緣分|缘分|喜歡|喜欢|男友|女友|約會|约会|曖昧|暧昧|對象|对象)/;
 const CAREER_TOPIC_RE = /(工作|職業|职业|事業|事业|轉職|转职|跳槽|離職|离职|辭職|辞职|升遷|升迁|升職|升职|職場|职场|公司|職位|职位|上班|面試|面试|創業|创业|老闆|老板|offer|薪水|薪資|薪资|工資|工资|學業|学业|學習|学习|考試|考试|升學|升学|留學|留学|學校|学校|大學|大学|研究所|博士|證照|证照)/i;
@@ -183,7 +183,11 @@ function topicFor(question: string, kind: QuestionKind, req: AnswerRequirements)
   return topics[0] ?? kind;
 }
 
-function readingForTopic(topic: ForecastTopic, reading: Reading): string {
+// exported so customer-answer-hotfix.ts's later "asksWhen" correction layer
+// can reuse the exact same topic→field mapping instead of re-deciding, in a
+// second place, which reading field represents "the topic's substantive
+// content" for a given question kind.
+export function readingForTopic(topic: ForecastTopic, reading: Reading): string {
   switch (topic) {
     case "love": return reading.love;
     case "career": return reading.work;
@@ -472,7 +476,19 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
   } else if (req.asksWhen && multiTopic) {
     directAnswer = multiTopicTimingAnswer(question, chart, topics, req);
   } else if (req.asksWhen) {
-    directAnswer = `你問的是「${cleanQuestion(question)}」。先直接回答時間：${buildTimingAnswer(chart, topic, req.targetYears, { months: req.targetMonths })}`;
+    // 原本只要問句含時間詞（今年／這幾年／幾月…）就整段改成「純時機表」，
+    // 完全丟掉 reading.work／money／body／love／home 這些已經算好的主題結構內容——
+    // 而中文問句幾乎都會帶時間詞（「我今年適合換工作嗎」「我這幾年財運如何」
+    // 「我今年健康要注意什麼」），等於絕大多數帶主題的問題都會被降級成一張
+    // 跟問題內容無關的順／不順月份清單。readingForTopic() 本來就是為了把
+    // 主題內容接回答案而寫的（multiTopicAnswer 已在用），這裡把同一支函式
+    // 用在單一主題＋問時間的情況，讓時機與結構面一起保留，不是新增判斷邏輯。
+    const timing = buildTimingAnswer(chart, topic, req.targetYears, { months: req.targetMonths });
+    const REAL_TOPICS = new Set<ForecastTopic>(["love", "career", "money", "health", "home"]);
+    const topicText = REAL_TOPICS.has(topic) ? readingForTopic(topic, reading) : "";
+    directAnswer = topicText
+      ? `你問的是「${cleanQuestion(question)}」。先直接回答時間：${timing}　結構面：${topicText}`
+      : `你問的是「${cleanQuestion(question)}」。先直接回答時間：${timing}`;
   } else if (kind === "home" && req.asksWhere) {
     directAnswer = homeLocationAnswer(question, chart, reading);
   } else if (req.asksCompare) {

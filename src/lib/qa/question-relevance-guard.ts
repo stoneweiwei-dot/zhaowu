@@ -23,7 +23,14 @@ function compact(value: string, question: string) {
     return true;
   });
   const multiTopic = /(感情.*工作|工作.*感情|工作.*財|工作.*财|財.*工作|财.*工作|感情.*財|感情.*财|財.*感情|财.*感情)/.test(question);
-  return unique.slice(0, multiTopic ? 8 : 5).join("");
+  // 這條「最終客戶端把關」原本一律只留前 5 句（明確同時點名兩個領域才給 8
+  // 句），但一個帶時間詞的單一主題問題（例如「我這幾年財運如何」）光是把
+  // 2 年份的順／不順月份講完就已經用掉 6 句，等於答案裡真正回答「為什麼」
+  // 的結構性內容（reading.work／money／body／love／home）永遠排不進前 5
+  // 句，在這裡被整段砍掉——句子有沒有被算進 unique 之前就已經去重，這裡只
+  // 是把上限訂得比「兩年時機表」本身還短。上限調寬，不改變去重與相關性判
+  // 斷邏輯，短答案（≤原上限）完全不受影響。
+  return unique.slice(0, multiTopic ? 12 : 9).join("");
 }
 
 function topicBody(kind: QuestionKind, reading: Reading) {
