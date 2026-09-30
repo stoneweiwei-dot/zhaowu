@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+test.use({ serviceWorkers: "block" });
+
 test("owner music keeps long names readable on a narrow phone", async ({ page }) => {
   page.on("pageerror", error => console.log("OWNER PAGE ERROR:", error.stack));
   page.on("console", message => { if (message.type() === "error") console.log("OWNER CONSOLE ERROR:", message.text()); });
