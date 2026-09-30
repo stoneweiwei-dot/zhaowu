@@ -7,6 +7,7 @@ const { interpret } = await import("../src/lib/bazi/interpret.ts");
 const { applyAnswerContract } = await import("../src/lib/core/answer-contract.ts");
 const { buildPalm } = await import("../src/lib/palm/engine.ts");
 const { writeFullReport } = await import("../src/lib/actions.ts");
+const { toTraditionalCustomerText } = await import("../src/lib/report/reading-locale.ts");
 
 const CITY = FEATURED_CITIES[0];
 
@@ -47,6 +48,12 @@ test("完整报告不会恢复旧的固定人格课题模板", async () => {
   const question = "我現在工作最大的問題是什麼？";
   const { chart, reading, palm } = base(question);
   const out = await writeFullReport({ data: { question, chart, reading, palm } });
-  assert.ok(out.text.includes(reading.work));
+  // `data.locale` is intentionally omitted above (legacy/base-report shape);
+  // finishReading()/localizeReading() in src/lib/actions.ts now default a
+  // missing locale to zh-Hant (docs/I18N-JA-KO-STATUS.md: zh-Hans is
+  // withdrawn from the UI) and convert the Simplified source text to
+  // Traditional accordingly, so the composed report carries the
+  // Traditional-converted form of reading.work, not the raw string.
+  assert.ok(out.text.includes(toTraditionalCustomerText(reading.work)));
   assert.doesNotMatch(out.text, /關係裡和工作裡，能控制的事會被你抓得太久|关系里和工作里，能控制的事会被你抓得太久/);
 });
