@@ -487,7 +487,7 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
     const REAL_TOPICS = new Set<ForecastTopic>(["love", "career", "money", "health", "home"]);
     const topicText = REAL_TOPICS.has(topic) ? readingForTopic(topic, reading) : "";
     directAnswer = topicText
-      ? `你問的是「${cleanQuestion(question)}」。先直接回答時間：${timing}　結構面：${topicText}`
+      ? `你問的是「${cleanQuestion(question)}」。先直接回答時間：${timing}　從你的盤來看：${topicText}`
       : `你問的是「${cleanQuestion(question)}」。先直接回答時間：${timing}`;
   } else if (kind === "home" && req.asksWhere) {
     directAnswer = homeLocationAnswer(question, chart, reading);
