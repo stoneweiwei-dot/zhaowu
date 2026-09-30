@@ -63,7 +63,7 @@ test.describe("iPhone Safari parchment application shell", () => {
   });
 
   for (const width of [390, 430]) {
-    test(`Today Guide leads the primary chart flow without overlap at ${width}px`, async ({ page }) => {
+    test(`birth and chart lead Today Guide without overlap at ${width}px`, async ({ page }) => {
       await makeAppOfflineSafe(page);
       await page.setViewportSize({ width, height: 844 });
       await page.goto("/", { waitUntil: "domcontentloaded" });
@@ -75,7 +75,7 @@ test.describe("iPhone Safari parchment application shell", () => {
       await expect(almanac).toBeVisible();
       await expect(almanac.locator("details[open]")).toHaveCount(1);
       await expect(almanac.locator('.zhaowu-today-guide__tabs button[aria-pressed="true"]')).toContainText(/穿衣|Dress/);
-      const boxes = await Promise.all([almanac, customer, bazi].map((section) => section.boundingBox()));
+      const boxes = await Promise.all([customer, bazi, almanac].map((section) => section.boundingBox()));
       expect(boxes.every(Boolean)).toBe(true);
       for (let i = 1; i < boxes.length; i += 1) expect(boxes[i]!.y).toBeGreaterThanOrEqual(boxes[i - 1]!.y + boxes[i - 1]!.height);
       const titleSize = await customer.locator("h2").evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
