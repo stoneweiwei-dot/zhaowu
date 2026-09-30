@@ -167,12 +167,15 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   async function onUpload(event: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
     event.target.value = "";
-    if (!files.length) return;
+    if (!files.length || busy) return;
+    let uploadedCount = 0;
+    let currentFileName = "";
     setBusy(true);
     setMessage(null);
     try {
       const notes = new Set<string>();
       for (const file of files) {
+        currentFileName = file.name;
         const videoType = resolveLoginVideoType(file);
         if (!videoType) throw new Error(copy.videoRequired);
         const duration = await Promise.race([
@@ -193,13 +196,14 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
           tags: ["loading", "login-background", "login-common", "owner-upload"],
           primary: false,
         });
+        uploadedCount += 1;
       }
-      await load();
-      notifyChanged();
       if (notes.size) setMessage([...notes].join(" "));
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : copy.failed);
+      const detail = error instanceof Error ? error.message : copy.failed;
+      setMessage(`${currentFileName}: ${detail}${uploadedCount ? tr(locale, `（前 ${uploadedCount} 支已上傳）`, `（前 ${uploadedCount} 支已上传）`, ` (${uploadedCount} earlier uploads saved)`) : ""}`);
     } finally {
+      if (uploadedCount) { await load(); notifyChanged(); }
       setBusy(false);
     }
   }
@@ -277,7 +281,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         </div>
         <label className={`inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-5 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
           {copy.upload}
-          <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept={LOGIN_VIDEO_ACCEPT} className="hidden" onChange={(event) => void onUpload(event)} />
+          <input type="file" multiple disabled={busy || SUPABASE_STORAGE_WRITES_PAUSED} accept={LOGIN_VIDEO_ACCEPT} className="hidden" onChange={(event) => void onUpload(event)} />
         </label>
       </div>
       {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-3 text-xs font-medium text-ink-mute" data-owner-storage-status>{tr(locale, "Storage 寫入暫停", "Storage 写入暂停", "Storage read-only")}</p> : null}
@@ -305,17 +309,17 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
                 <video className="aspect-[16/10] w-full object-cover" src={videoSrcOf(asset)} poster={posterOf(asset)} muted playsInline preload="metadata" />
               </button>
               <div className="space-y-2.5 p-3">
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex flex-wrap items-start gap-2">
                   {renamingId === asset.id ? (
                     <form className="flex min-w-0 flex-1 items-center gap-1" onSubmit={(event) => { event.preventDefault(); void saveName(asset); }}>
                       <input autoFocus value={draftName} maxLength={NAME_MAX} placeholder={copy.namePlaceholder} onChange={(event) => setDraftName(event.target.value)} className="min-w-0 flex-1 rounded-md border border-line bg-cream px-2 py-1 text-xs" />
                       <button type="submit" disabled={busy} className="rounded-full bg-[#1f4e3a] px-2 py-1 text-[10px] text-[#faf8f1]">{copy.save}</button>
                       <button type="button" className="rounded-full border border-line px-2 py-1 text-[10px]" onClick={() => setRenamingId(null)}>{copy.cancel}</button>
                     </form>
-                  ) : <p className="min-w-0 truncate text-[13px] font-medium">{displayTitle(asset)}</p>}
+                  ) : <p className="w-full min-w-0 break-words text-sm font-medium [overflow-wrap:anywhere]">{displayTitle(asset)}</p>}
                   {current ? <span className="shrink-0 rounded-full border border-[#c4a05a] px-2 py-0.5 text-[11px] text-[#1f4e3a]">{copy.current}</span> : null}
                 </div>
-                <p className="text-[11px] tracking-[0.14em] text-ink-mute">MP4 / WEBM · {theme === "night" ? copy.night : theme === "day" ? copy.day : copy.common}</p>
+                <p className="text-[11px] tracking-[0.14em] text-ink-mute">{asset.content_type === "video/quicktime" ? "MOV" : (asset.content_type?.split("/")[1] || "VIDEO").toUpperCase()} · {theme === "night" ? copy.night : theme === "day" ? copy.day : copy.common}</p>
                 {locked ? (
                   <p className="text-[11px] text-ink-mute">{copy.builtIn}</p>
                 ) : (

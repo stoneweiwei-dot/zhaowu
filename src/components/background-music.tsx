@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { loadOwnerMusic, type OwnerMusicTrack } from "@/lib/owner-music-client";
 import { useI18n } from "@/lib/i18n";
+import { prepareQuietAudio, releaseQuietAudio } from "@/lib/quiet-audio";
 
 const STORAGE_KEY = "zhaowu.backgroundMusic.v3";
 const LEGACY_STORAGE_KEY = "zhaowu.backgroundMusic.v1";
@@ -87,7 +88,7 @@ export function BackgroundMusic() {
       audio.src = source;
       audio.load();
     }
-    audio.volume = DEFAULT_VOLUME;
+    prepareQuietAudio(audio, DEFAULT_VOLUME);
   }, []);
 
   const refreshAsset = useCallback(async (preferActive = false) => {
@@ -146,7 +147,6 @@ export function BackgroundMusic() {
     } catch {}
     const audio = audioRef.current;
     if (!audio) return;
-    audio.volume = DEFAULT_VOLUME;
     if (!enabled) {
       audio.pause();
       setPlaying(false);
@@ -314,13 +314,19 @@ export function BackgroundMusic() {
   useEffect(() => {
     const onCommand = (event: Event) => {
       const command = (event as CustomEvent<{ command?: string }>).detail?.command;
-      if (command === "toggle") togglePlayback();
+      if (command === "pause") pausePlayback();
+      else if (command === "toggle") togglePlayback();
       else if (command === "next") void moveTrack(1);
       else if (command === "previous") void moveTrack(-1);
     };
     window.addEventListener("zhaowu-music-command", onCommand as EventListener);
     return () => window.removeEventListener("zhaowu-music-command", onCommand as EventListener);
   });
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    return () => { if (audio) releaseQuietAudio(audio); };
+  }, []);
 
   const markPlaybackStarted = () => {
     const audio = audioRef.current;
