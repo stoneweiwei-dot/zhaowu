@@ -43,7 +43,12 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await expect(page.locator("[data-intro-fallback]")).toHaveCount(0);
     await expect(page.locator('[data-intro-motion]')).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "錄入生辰", exact: true })).toBeVisible();
-    await expect(page.locator("[data-intro-skip]")).toHaveCount(0);
+    // Owner 2026-09-30: if an opening video is showing, the guest can always skip it.
+    const skip = page.locator("[data-intro-skip]");
+    if (await skip.count()) {
+      await skip.click();
+      await expect(page.locator("[data-intro-motion]")).toHaveCount(0);
+    }
   });
 
   test("D60 withholds interpretation until the recorded minute is confirmed", async ({ page }) => {

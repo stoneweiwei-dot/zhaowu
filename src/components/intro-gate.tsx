@@ -5,6 +5,7 @@ import {
   INTRO_BROKEN_KEY,
   INTRO_GATE_ERROR_EXIT_MS,
   INTRO_GATE_FADE_MS,
+  INTRO_GATE_MAX_PLAY_S,
   INTRO_GATE_MIN_VISIBLE_MS,
   markIntroSeen,
   scheduleIntroGateHardExit,
@@ -81,6 +82,20 @@ export function IntroGate() {
   }, [stopSound]);
 
   const toggleSound = useCallback(() => {
+    const video = videoRef.current;
+    // Owner-uploaded clips keep their own soundtrack: the sound button (un)mutes the video itself.
+    // Only the built-in silent clip falls back to the separate background track below.
+    if (video && resolvedVideoSrc !== undefined && resolvedVideoSrc !== OWNER_LOADING_VIDEO) {
+      const nextMuted = !video.muted;
+      video.muted = nextMuted;
+      if (!nextMuted) {
+        video.volume = 0.6;
+        void video.play().then(() => setSoundPlaying(true)).catch(() => { video.muted = true; setSoundPlaying(false); });
+      } else {
+        setSoundPlaying(false);
+      }
+      return;
+    }
     const sound = soundRef.current;
     if (!sound) return;
     if (!sound.paused) {
@@ -90,7 +105,7 @@ export function IntroGate() {
     }
     sound.volume = 0.24;
     void sound.play().then(() => setSoundPlaying(true)).catch(() => setSoundPlaying(false));
-  }, []);
+  }, [resolvedVideoSrc]);
 
   useEffect(() => {
     if (shouldSkipIntroGate(window.localStorage, Boolean(navigator.webdriver))) {
@@ -228,6 +243,12 @@ export function IntroGate() {
             setVideoPlaying(true);
           }}
           onEnded={() => setVisualDone(true)}
+          onTimeUpdate={(event) => {
+            if (event.currentTarget.currentTime >= INTRO_GATE_MAX_PLAY_S) {
+              event.currentTarget.pause();
+              setVisualDone(true);
+            }
+          }}
           onAbort={() => {
             if (!hasPlayedRef.current) {
               setVideoPlaying(false);
@@ -243,6 +264,15 @@ export function IntroGate() {
         />
       ) : null}
       <audio ref={soundRef} src={OWNER_LOADING_SOUND} preload="metadata" onEnded={() => setSoundPlaying(false)} />
+      <button
+        type="button"
+        className="zhaowu-intro-skip"
+        data-intro-skip
+        aria-label={locale === "en" ? "Skip the opening video" : locale === "zh-Hans" ? "跳过开场影片" : "跳過開場影片"}
+        onClick={forceOff}
+      >
+        {locale === "en" ? "Skip" : locale === "zh-Hans" ? "跳过" : "跳過"}
+      </button>
       <button
         type="button"
         className="zhaowu-intro-sound"

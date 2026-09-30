@@ -69,10 +69,10 @@ test('opening contract is a full five seconds with only a later emergency hard e
   assert.equal(INTRO_GATE_MIN_VISIBLE_MS, 5000);
   assert.equal(INTRO_GATE_NATIVE_MS, 5000);
   assert.equal(INTRO_GATE_TARGET_MS, 5000);
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 8000);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 17000);
   assert.equal(INTRO_GATE_ERROR_EXIT_MS, 1600);
   assert.ok(INTRO_GATE_HARD_EXIT_MS > INTRO_GATE_MIN_VISIBLE_MS);
-  assert.equal(scheduledDelay, 8000);
+  assert.equal(scheduledDelay, 17000);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
@@ -88,9 +88,9 @@ test('intro cannot be skipped before five seconds and exits after the visual has
   assert.match(gate, /INTRO_BROKEN_KEY/);
   assert.match(gate, /missing-force-fail\.mp4/);
   assert.match(gate, /isForcedBrokenIntro/);
-  assert.doesNotMatch(gate, /data-intro-skip/);
-  assert.doesNotMatch(gate, /zhaowu-lotus-intro__skip/);
-  assert.doesNotMatch(gate, /skipLabel/);
+  // Owner 2026-09-30 supersedes the old no-skip rule: guests may skip at any time via a small chip under the video.
+  assert.match(gate, /data-intro-skip/);
+  assert.match(gate, /onClick=\{forceOff\}/);
   assert.doesNotMatch(gate, /runtimeReady/);
 });
 
