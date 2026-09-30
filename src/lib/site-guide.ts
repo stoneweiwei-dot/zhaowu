@@ -49,6 +49,7 @@ const COPY: Record<Locale, GuideCopy> = {
 };
 
 const ANALYSIS = /分析|八字|工作|事業|事业|感情|戀愛|恋爱|婚姻|時機|时机|選擇|选择|運勢|运势|命理|report|analysis|career|work|love|relationship|timing|choice|destiny/i;
+const FULL_REPORT = /完整(?:綜合|综合)?報告|完整(?:綜合|综合)?分析|complete\s+report|full\s+report|complete\s+analysis|full\s+analysis/i;
 const HISTORY = /保存|儲存|存档|存檔|報告|报告|紀錄|记录|歷史|历史|saved|report|history|record/i;
 const ACCOUNT = /我的昭梧|帳戶|账户|account|my zhaowu/i;
 const LOGIN = /登入|登錄|登录|註冊|注册|後台|后台|sign.?in|log.?in|register|admin/i;
@@ -66,6 +67,7 @@ export function resolveLocalSiteGuide(message: string, locale: Locale): SiteGuid
   if (LOGIN.test(text)) return answer(copy.login, "/login");
   if (ACCOUNT.test(text)) return answer(copy.account, "/account");
   if (SPECIALIST.test(text)) return answer(copy.analysis, "/#analysisForm");
+  if (FULL_REPORT.test(text)) return answer(copy.analysis, "/#analysisForm");
   if (HISTORY.test(text)) return answer(copy.history, "/history");
   if (ANALYSIS.test(text)) return answer(copy.analysis, "/#analysisForm");
   if (HOME.test(text)) return answer(copy.home, "/");

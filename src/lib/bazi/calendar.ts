@@ -156,7 +156,9 @@ export function hourPillar(dayGz: string, hour: number): string {
 }
 
 export function tenGod(dayStem: string, other: string): string {
-  if (dayStem === other) return "日主";
+  // 「日主」只屬於日柱自身的顯示標籤；同一日干出現在其他柱時，
+  // 十神關係仍然是比肩。日柱會在 chart.ts 另外明確標成日主。
+  if (dayStem === other) return "比肩";
   const dayEl = "木木火火土土金金水水"[STEMS.indexOf(dayStem as (typeof STEMS)[number])];
   const otherEl = "木木火火土土金金水水"[STEMS.indexOf(other as (typeof STEMS)[number])];
   const dayYang = STEMS.indexOf(dayStem as (typeof STEMS)[number]) % 2 === 0;
