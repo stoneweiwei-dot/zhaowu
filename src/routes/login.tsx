@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { BrandSeal } from "@/components/brand-seal";
+import { SoundIcon } from "@/components/sound-icon";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { ownerSignIn } from "@/lib/auth/owner-api";
 import { useI18n } from "@/lib/i18n";
@@ -106,9 +107,7 @@ function LoginStageBackdrop() {
             }
           }}
         >
-          <span aria-hidden="true" className="stone-login-sound-icon">
-            {muted ? "🔇" : "🔊"}
-          </span>
+          <SoundIcon on={!muted} />
         </button>
       </>
     );

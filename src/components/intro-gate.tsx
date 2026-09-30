@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { SoundIcon } from "@/components/sound-icon";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 import {
   INTRO_BROKEN_KEY,
@@ -55,6 +56,8 @@ function introStorage(): Pick<Storage, "getItem" | "setItem"> {
 
 export function IntroGate() {
   const { locale } = useI18n();
+  const soundLabelFor = (on: boolean) =>
+    locale === "en" ? (on ? "Mute sound" : "Play sound") : locale === "zh-Hans" ? (on ? "关闭声音" : "开启声音") : (on ? "關閉聲音" : "開啟聲音");
   const [phase, setPhase] = useState<"in" | "leaving" | "off">(() =>
     typeof window !== "undefined" && shouldSkipIntroGate(introStorage(), Boolean(navigator.webdriver)) ? "off" : "in",
   );
@@ -298,10 +301,11 @@ export function IntroGate() {
         className="zhaowu-intro-sound"
         data-intro-sound-control
         aria-pressed={soundPlaying}
+        aria-label={soundLabelFor(soundPlaying)}
+        title={soundLabelFor(soundPlaying)}
         onClick={toggleSound}
       >
-        <span aria-hidden="true">{soundPlaying ? "Ⅱ" : "♪"}</span>
-        {locale === "en" ? (soundPlaying ? "Sound on" : "Play sound") : locale === "zh-Hans" ? (soundPlaying ? "声音已开启" : "开启声音") : (soundPlaying ? "聲音已開啟" : "開啟聲音")}
+        <SoundIcon on={soundPlaying} />
       </button>
     </div>
   );
