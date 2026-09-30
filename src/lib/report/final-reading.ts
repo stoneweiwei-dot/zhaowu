@@ -337,7 +337,14 @@ export function finalizeReading(
   question: string,
   chart: Chart,
   raw: Reading,
-  locale: AppLocale = "zh-Hans",
+  // docs/I18N-JA-KO-STATUS.md: zh-Hans is withdrawn from the UI and any saved
+  // zh-Hans preference folds to zh-Hant — it is kept only in internal content
+  // tables. A caller with no locale (an omitted argument, or a stored/legacy
+  // AnalysisResult whose .locale was never populated — e.g. followUpLife()
+  // reusing an older base report) must fall back to that same real default,
+  // not to the withdrawn zh-Hans, or the report body renders in a script no
+  // real user can ever select.
+  locale: AppLocale = "zh-Hant",
 ): Reading {
   const contracted = applyAnswerContract(question, chart, raw);
   const reading = applyCustomerAnswerHotfix(question, chart, contracted);

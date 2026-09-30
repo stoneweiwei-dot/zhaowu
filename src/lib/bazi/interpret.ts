@@ -2,7 +2,7 @@ import { COLOR_OF_ELEMENT, DAY_MASTER_NATURE, DIRECTION_OF_ELEMENT, ELEMENT_LABE
 import type { Chart, Element, LifeGuide, Pillar, QuestionKind, Reading, RelationPref } from "./types";
 import type { PalmReading } from "@/lib/core/types";
 import { composePalmReport } from "@/lib/palm/engine";
-import { analyzeStructure } from "@/lib/bazi/structure";
+import { analyzeStructure, completionPhrase } from "@/lib/bazi/structure";
 
 const PAST_KEYS = ["前世", "前三世", "六道", "輪迴", "哪一道", "一掌經", "三世因果", "前世今生"];
 const HOME_KEYS = ["家宅", "搬家", "店面", "風水", "住哪", "買屋方位"];
@@ -270,7 +270,7 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
       directAnswer = `结论：这段关系是否值得推进，不看“桃花词”本身，先看对方是否持续回应、是否有现实投入、是否愿意明确下一步。${loveLens(chart, relation)}${now}若连续性与投入不足，就不把短期情绪升格为稳定关系。`;
       break;
     case "career":
-      directAnswer = `结论：职业判断以“能否形成稳定做功与承载”为核心。当前主格为${structure.label}${structure.established ? "" : "方向"}，结构完成度为${structure.completion.label}；月令主气功能为${monthFunctionGod}，它只作结构入口，不直接贴人格标签，对应工作侧可优先观察：${GOD_WORK[monthFunctionGod] ?? "把判断转成可验证成果"}。${strong ? "原局偏满时优先增加有效输出与减少无效负荷。" : "原局承载偏弱时优先选择资源、规则和支持条件更完整的岗位。"} ${now}`;
+      directAnswer = `结论：职业判断以"能否形成稳定做功与承载"为核心。当前主格为${structure.label}${structure.established ? "" : "方向"}，结构完成度为${completionPhrase(structure.completion.label)}；月令主气功能为${monthFunctionGod}，它只作结构入口，不直接贴人格标签，对应工作侧可优先观察：${GOD_WORK[monthFunctionGod] ?? "把判断转成可验证成果"}。${strong ? "原局偏满时优先增加有效输出与减少无效负荷。" : "原局承载偏弱时优先选择资源、规则和支持条件更完整的岗位。"} ${now}`;
       break;
     case "money":
       directAnswer = `结论：财务不能只看“财星多不多”，先看日主能否承财、有没有稳定输出和可重复变现路径。当前主格为${structure.label}${structure.established ? "" : "方向"}，${structure.remedy.disease}；因此先处理结构上的承载与流通，再谈扩张。${usefulLine} 五行取財行為提示（男女共用）：${fiveElementWealthBehaviorHint(chart.dayMasterElement)}。此層只作五行應象輔助；仍須服從財星喜忌、承載、格局病藥、流通制化與歲運觸發，不可單獨判富貧、發財時間或投資成敗。`;
@@ -284,10 +284,10 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
     default:
       directAnswer = isPurposeQuestion(question)
         ? `结论：八字不能证明“为什么被安排出生”，也不能把“使命”写成上天指令。若把问题改成“这张盘最自然的结构功能与反复课题是什么”，当前以${structure.label}${structure.established ? "" : "方向"}为主，月令主气功能为${monthFunctionGod}；较稳定的功能方向是：${GOD_LIFE_FUNCTION[monthFunctionGod] ?? "把复杂经验整理成可以验证、可以执行的现实方法"}。调整重点是处理真实出现的阻塞与代价，不是把五行补齐或强行凑平均。`
-        : `结论：这张盘当前以${structure.label}${structure.established ? "" : "方向"}为主，结构完成度为${structure.completion.label}，日主${chart.dayMaster}${chart.dayMasterElement}的承载底盘为${chart.strength.tendency}。核心不是罗列更多术语，而是看格局、病药、流通与承载是否能形成同一条有效链。`;
+        : `结论：这张盘当前以${structure.label}${structure.established ? "" : "方向"}为主，结构完成度为${completionPhrase(structure.completion.label)}，日主${chart.dayMaster}${chart.dayMasterElement}的承载底盘为${chart.strength.tendency}。核心不是罗列更多术语，而是看格局、病药、流通与承载是否能形成同一条有效链。`;
   }
 
-  const rhythm = `结构摘要：日主${chart.dayMaster}${chart.dayMasterElement}，月令${monthP.zhi}，主格${structure.label}${structure.established ? "" : "方向"}，完成度${structure.completion.label}。${structure.remedy.disease}；${structure.remedy.medicine}${timeLine}`;
+  const rhythm = `结构摘要：日主${chart.dayMaster}${chart.dayMasterElement}，月令${monthP.zhi}，主格${structure.label}${structure.established ? "" : "方向"}，完成度${completionPhrase(structure.completion.label)}。${structure.remedy.disease}；${structure.remedy.medicine}${timeLine}`;
 
   const work = `月令主气功能为${monthFunctionGod}，${GOD_WORK[monthFunctionGod] ?? "把判断转成可验证成果"}。这是结构入口，不是按十神数量贴职业标签；职业选择仍优先比较：责任是否清楚、成果是否可衡量、资源是否足够、退出成本是否可控。`;
   const love = `${loveLens(chart, relation)}关系只看可验证行为：联系是否连续、投入是否对等、边界是否清楚、下一步是否明确。`;
