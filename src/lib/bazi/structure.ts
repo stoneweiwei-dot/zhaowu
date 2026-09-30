@@ -31,6 +31,17 @@ export type StructureCompletion = {
   reasons: string[];
 };
 
+// completion.label is a short phrase; for grade G4 it is itself "結構完成度高"
+// (the label already includes the head noun "結構完成度"), so prose that
+// prefixes it with "結構完成度為"/"结构完成度为" duplicates that noun instead of
+// reading as a value ("結構完成度為結構完成度高"). Callers composing such a
+// prefixed phrase should interpolate completionPhrase(label) instead of the
+// raw label; G0–G3 labels ("格局未定" 等) have no such prefix and are
+// returned unchanged.
+export function completionPhrase(label: StructureCompletion["label"]): string {
+  return label.replace(/^結構完成度/, "");
+}
+
 export type StructureSummary = {
   runtimeContractVersion: typeof BAZI_RUNTIME_CONTRACT_VERSION;
   runtimeMasterSource: typeof BAZI_CURRENT_MASTER_SOURCE;

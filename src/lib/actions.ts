@@ -118,8 +118,17 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
 }
 
 function finishReading(question: string, chart: AnalysisResult["chart"], reading: AnalysisResult["reading"], locale?: AnalysisResult["locale"]) {
-  const auxiliaryReading = applyThreeYuanAuxiliaryPolicy(question, chart, reading, locale);
-  return localizeReading(enforceDirectAnswerGuard(question, chart, auxiliaryReading, locale), locale);
+  // docs/I18N-JA-KO-STATUS.md: zh-Hans is withdrawn from the UI and any saved
+  // zh-Hans preference folds to zh-Hant. followUpLife()/writeFullReport() can
+  // pass through an undefined locale from a stale/legacy stored base report
+  // (AnalysisResult.locale was not always populated), and localizeReading()
+  // below only converts Simplified source text to Traditional when its
+  // locale argument is exactly "zh-Hant" — an undefined locale silently skips
+  // that conversion instead of falling back to the real default. Resolve the
+  // fallback once here so every caller of finishReading gets it consistently.
+  const effectiveLocale = locale ?? "zh-Hant";
+  const auxiliaryReading = applyThreeYuanAuxiliaryPolicy(question, chart, reading, effectiveLocale);
+  return localizeReading(enforceDirectAnswerGuard(question, chart, auxiliaryReading, effectiveLocale), effectiveLocale);
 }
 
 export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promise<AnalysisResult> {
