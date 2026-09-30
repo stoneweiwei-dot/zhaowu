@@ -102,13 +102,6 @@ function Home() {
         <h1>{funCopy.homeTitle}</h1>
       </header>
 
-      <section className="zhaowu-home-stage zhaowu-home-stage--daily-priority" aria-label={funCopy.todayTitle}>
-        <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>
-          <DailyAlmanacWidget embedded />
-          <SkyEventsHomeSection />
-        </HomeDisclosure>
-      </section>
-
       <HomeSectionBoundary id="analysis" locale={locale} onRecover={() => { clearSharedBirthRecord(); window.location.reload(); }}>
         <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
           <AnalysisForm />
@@ -117,6 +110,13 @@ function Home() {
 
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><ResultView result={current} /></div> : null}
       {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div> : null}
+
+      <section className="zhaowu-home-stage zhaowu-home-stage--daily-priority" aria-label={funCopy.todayTitle}>
+        <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>
+          <DailyAlmanacWidget embedded />
+          <SkyEventsHomeSection />
+        </HomeDisclosure>
+      </section>
 
       <section className="zhaowu-home-explore" aria-label={funCopy.explore}>
         <p className="zhaowu-home-explore-label">{funCopy.explore}</p>

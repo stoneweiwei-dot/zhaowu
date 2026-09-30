@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   DAILY_COLOR_PAGE,
@@ -17,15 +17,24 @@ import { useI18n } from "@/lib/i18n";
 
 type Variant = "home" | "page" | "embed";
 
-export function DailyColorsModule({ variant }: { variant: Variant }) {
+export function DailyColorsModule({ variant, date }: { variant: Variant; date?: Date }) {
   const { locale } = useI18n();
   const page = DAILY_COLOR_PAGE[locale];
-  const almanac = useMemo(() => dailyColorAlmanacRef(), []);
-  const [selectedId, setSelectedId] = useState<DailyColorId>(almanac.recommendedId);
-  const active = dailyColorById(selectedId);
+  const [localNow, setLocalNow] = useState(() => new Date());
+  useEffect(() => {
+    if (date) return;
+    const refresh = () => setLocalNow(new Date());
+    const timer = window.setInterval(refresh, 30_000);
+    document.addEventListener("visibilitychange", refresh);
+    return () => { window.clearInterval(timer); document.removeEventListener("visibilitychange", refresh); };
+  }, [date]);
+  const almanac = dailyColorAlmanacRef(date ?? localNow);
+  const [selectedId, setSelectedId] = useState<DailyColorId | null>(null);
+  const activeId = selectedId ?? almanac.recommendedId;
+  const active = dailyColorById(activeId);
   const copy = active.copy[locale];
   const recommended = dailyColorById(almanac.recommendedId).copy[locale];
-  const isUserOverride = selectedId !== almanac.recommendedId;
+  const isUserOverride = selectedId !== null && selectedId !== almanac.recommendedId;
   const compact = variant === "embed";
   const guide = FIVE_ELEMENT_GUIDE_COPY[locale];
   const correspondence = fiveElementCorrespondence(active.element, locale);
@@ -91,7 +100,7 @@ export function DailyColorsModule({ variant }: { variant: Variant }) {
       <div role="list" data-daily-colors-choices>
         {DAILY_COLOR_STATES.map((state) => {
           const item = state.copy[locale];
-          const pressed = state.id === selectedId;
+          const pressed = state.id === activeId;
           return (
             <button
               key={state.id}
