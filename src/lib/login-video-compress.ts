@@ -2,11 +2,11 @@ import { loadFfmpeg, withTimeout } from "@/lib/owner-music-transcode";
 
 /**
  * Opening-video compression (owner instruction 2026-09-30: uploaded login videos should be
- * squeezed to within 10 seconds). Runs in the owner's browser with ffmpeg.wasm (same zero-cost,
+ * squeezed to within 15 seconds, keeping the original soundtrack). Runs in the owner's browser with ffmpeg.wasm (same zero-cost,
  * client-side approach as the music optimiser) — no server transcoding, no paid service.
- * Output is a muted H.264 MP4, max 10 s, max 1280 px wide, which plays on every browser.
+ * Output is an H.264 + AAC MP4, max 15 s, max 1280 px wide, which plays on every browser.
  */
-export const LOGIN_VIDEO_MAX_SECONDS = 10;
+export const LOGIN_VIDEO_MAX_SECONDS = 15;
 const SKIP_IF_UNDER_BYTES = 6 * 1024 * 1024;
 const MAX_SOURCE_BYTES = 300 * 1024 * 1024;
 const TRANSCODE_TIMEOUT_MS = 240_000;
@@ -52,16 +52,17 @@ export async function compressLoginVideo(
     onProgress?.({ percent: 12, label: "讀取影片" });
     await ffmpeg.writeFile(inputName, new Uint8Array(await source.arrayBuffer()));
     const listener = ({ progress }: { progress: number }) => {
-      if (Number.isFinite(progress)) onProgress?.({ percent: 15 + Math.round(Math.min(1, Math.max(0, progress)) * 80), label: "壓縮影片（最長 10 秒）" });
+      if (Number.isFinite(progress)) onProgress?.({ percent: 15 + Math.round(Math.min(1, Math.max(0, progress)) * 80), label: "壓縮影片（最長 15 秒，保留聲音）" });
     };
     ffmpeg.on("progress", listener);
     // `-t` before `-i` limits how much of the input is read, so long clips are not fully decoded.
     const exit = await withTimeout(
       ffmpeg.exec([
         "-y", "-t", String(LOGIN_VIDEO_MAX_SECONDS), "-i", inputName,
-        "-an", "-map_metadata", "-1",
+        "-map_metadata", "-1",
         "-vf", "scale='min(1280,iw)':-2,fps=24",
         "-c:v", "libx264", "-preset", "veryfast", "-crf", "27", "-pix_fmt", "yuv420p",
+        "-c:a", "aac", "-b:a", "96k", "-ac", "2",
         "-movflags", "+faststart", outputName,
       ]),
       TRANSCODE_TIMEOUT_MS,

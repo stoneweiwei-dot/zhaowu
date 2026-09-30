@@ -127,7 +127,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     common: tr(locale, "通用版", "通用版", "Common"),
     builtIn: tr(locale, "內置素材", "内置素材", "Built-in"),
     videoRequired: tr(locale, "開場影片只接受影片檔（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "开场视频只接受视频文件（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "The opening video must be a video file (MP4, MOV, M4V, WebM, 3GP, MKV, AVI, WMV, FLV, MPEG, TS, OGV)."),
-    clipped: tr(locale, "已上傳；首頁開場最長播放約 8 秒，其餘片段不會播出。", "已上传；首页开场最长播放约 8 秒，其余片段不会播出。", "Uploaded. The homepage opening plays for at most about 8 seconds; the rest of the clip is not shown."),
+    clipped: tr(locale, "已上傳；首頁開場最長播放 15 秒，其餘片段不會播出。", "已上传；首页开场最长播放 15 秒，其余片段不会播出。", "Uploaded. The homepage opening plays for at most 15 seconds; the rest of the clip is not shown."),
     notPlayable: tr(locale, "已上傳；此格式瀏覽器無法直接播放，首頁會改顯示封面。建議改用 MP4 或 MOV。", "已上传；此格式浏览器无法直接播放，首页会改显示封面。建议改用 MP4 或 MOV。", "Uploaded. Browsers cannot play this format directly, so the homepage will show the poster instead. MP4 or MOV is recommended."),
     rename: tr(locale, "改名", "改名", "Rename"),
     save: tr(locale, "儲存", "保存", "Save"),
@@ -180,7 +180,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
           new Promise<number>((_, reject) => setTimeout(() => reject(new Error("timeout")), 8000)),
         ]).catch(() => null);
         const playable = isBrowserPlayableVideoType(videoType);
-        // Owner instruction 2026-09-30: squeeze uploads to within 10 seconds (client-side, zero cost).
+        // Owner instruction 2026-09-30: squeeze uploads to within 15 seconds, keeping sound (client-side, zero cost).
         const result = await compressLoginVideo(file, duration, playable, (progress) => setMessage(`${copy.compressing} ${Math.min(99, progress.percent)}% · ${progress.label}`));
         setMessage(null);
         if (result.compressed) notes.add(copy.compressed(result.sourceBytes, result.outputBytes));

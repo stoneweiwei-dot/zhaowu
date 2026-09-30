@@ -6052,3 +6052,23 @@ html body [data-owner-login-visuals] article input[type="text"],
 html body [data-owner-login-visuals] article form input { min-height: 26px !important; font-size: 12px !important; }
 html body [data-owner-login-visuals] article p { font-size: 12px; }
 html body [data-owner-login-visuals] article p.tracking-\[0\.14em\] { font-size: 10px; letter-spacing: .06em; }
+
+/* r224 — homepage opening video: small "Skip" chip under the video so guests can choose (owner 2026-09-30). */
+.zhaowu-intro-skip {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: max(22px, calc(env(safe-area-inset-bottom) + 16px));
+  transform: translateX(-50%);
+  min-height: 36px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 247, 226, .4);
+  border-radius: 999px;
+  color: #fffaf0;
+  background: rgba(10, 22, 18, .5);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .08em;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
