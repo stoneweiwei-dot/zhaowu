@@ -14,6 +14,7 @@ test("owner music keeps long names readable on a narrow phone", async ({ page })
   const title = dialog.getByRole("heading", { name, exact: true });
   await expect(title).toBeVisible();
   await expect(dialog.locator("audio[controls]")).toHaveCount(0);
+  await expect(dialog.locator("audio")).toHaveAttribute("crossorigin", "anonymous");
   await expect(dialog.getByRole("button", { name: "改名", exact: true })).not.toBeVisible();
   await expect(dialog.getByRole("button", { name: "試聽 " + name, exact: true })).toBeVisible();
   const bounds = await title.boundingBox();

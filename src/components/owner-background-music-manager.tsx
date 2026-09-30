@@ -239,7 +239,7 @@ export function OwnerBackgroundMusicManager() {
           <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds([])}>{c.clearSelection}</button>
           <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void onBatchDelete()}>{c.deleteSelected}</button>
         </div> : null}
-        <audio ref={previewRef} preload="none" playsInline onPlaying={() => setPreviewPlaying(true)} onPause={() => setPreviewPlaying(false)} onEnded={() => setPreviewPlaying(false)} onError={() => { setPreviewPlaying(false); setErrorMessage(c.previewFailed); }} />
+        <audio ref={previewRef} crossOrigin="anonymous" preload="none" playsInline onPlaying={() => setPreviewPlaying(true)} onPause={() => setPreviewPlaying(false)} onEnded={() => setPreviewPlaying(false)} onError={() => { setPreviewPlaying(false); setErrorMessage(c.previewFailed); }} />
         <div className="mt-5 space-y-3">
           {!tracks.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
           {tracks.map((track) => <article key={track.id} data-owner-selectable-file="music" className={`border-t border-line/70 pt-4 ${selectedIds.includes(track.id) ? "rounded-xl bg-cinnabar/[0.035] px-3 pb-3" : ""}`}>

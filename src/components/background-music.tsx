@@ -392,6 +392,7 @@ export function BackgroundMusic() {
     <section className="zhaowu-dragon-music" data-background-music-player data-dragon-music-controls aria-label={copy.controls}>
       <audio
         ref={audioRef}
+        crossOrigin="anonymous"
         playsInline
         data-music-loop={loopEnabled ? "playlist" : "off"}
         data-music-shuffle={shuffleEnabled ? "on" : "off"}
