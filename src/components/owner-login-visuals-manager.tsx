@@ -15,6 +15,17 @@ import { LOGIN_VISUAL_CATALOG } from "@/lib/loading-gallery-catalog";
 import { loginVisualThemeFromTags, type LoginVisualTheme } from "@/lib/login-animation";
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 import { LOGIN_VIDEO_ACCEPT, isBrowserPlayableVideoType, resolveLoginVideoType } from "@/lib/video-formats";
+import { LOGIN_VIDEO_MAX_SECONDS, compressLoginVideo } from "@/lib/login-video-compress";
+
+const NAME_TAG_PREFIX = "name:";
+const NAME_MAX = 40;
+
+/** Display name = owner-chosen `name:` tag when present, otherwise the stored title. */
+function displayTitle(asset: GalleryAsset) {
+  const tag = (asset.tags ?? []).find((item) => item.startsWith(NAME_TAG_PREFIX));
+  const custom = tag ? tag.slice(NAME_TAG_PREFIX.length).trim() : "";
+  return custom || asset.title;
+}
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -47,8 +58,17 @@ function srcOf(asset: GalleryAsset) {
 }
 
 function posterOf(asset: GalleryAsset) {
+  // Only built-in clips have a real poster image. For uploaded videos the poster used to be
+  // the video URL itself (not an image), which rendered a blank tile; they now show a real
+  // frame of the video instead (see videoSrcOf).
   const catalog = LOGIN_VISUAL_CATALOG.find((item) => item.asset_key === asset.asset_key || asset.id === `catalog:${item.asset_key}`);
-  return catalog?.publicPath || srcOf(asset);
+  return catalog?.publicPath;
+}
+
+/** `#t=` makes every browser (incl. iOS Safari) paint a real frame as the preview. */
+function videoSrcOf(asset: GalleryAsset) {
+  const src = srcOf(asset);
+  return src.includes("#") ? src : `${src}#t=0.5`;
 }
 
 function isVideo(asset: GalleryAsset) {
@@ -79,6 +99,8 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   const [message, setMessage] = useState<string | null>(null);
   const [preview, setPreview] = useState<GalleryAsset | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [draftName, setDraftName] = useState("");
 
   const copy = useMemo(() => ({
     kicker: "OPENING VIDEO",
@@ -107,6 +129,18 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     videoRequired: tr(locale, "開場影片只接受影片檔（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "开场视频只接受视频文件（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "The opening video must be a video file (MP4, MOV, M4V, WebM, 3GP, MKV, AVI, WMV, FLV, MPEG, TS, OGV)."),
     clipped: tr(locale, "已上傳；首頁開場最長播放約 8 秒，其餘片段不會播出。", "已上传；首页开场最长播放约 8 秒，其余片段不会播出。", "Uploaded. The homepage opening plays for at most about 8 seconds; the rest of the clip is not shown."),
     notPlayable: tr(locale, "已上傳；此格式瀏覽器無法直接播放，首頁會改顯示封面。建議改用 MP4 或 MOV。", "已上传；此格式浏览器无法直接播放，首页会改显示封面。建议改用 MP4 或 MOV。", "Uploaded. Browsers cannot play this format directly, so the homepage will show the poster instead. MP4 or MOV is recommended."),
+    rename: tr(locale, "改名", "改名", "Rename"),
+    save: tr(locale, "儲存", "保存", "Save"),
+    cancel: tr(locale, "取消", "取消", "Cancel"),
+    namePlaceholder: tr(locale, "輸入新名稱", "输入新名称", "New name"),
+    compressing: tr(locale, "壓縮中", "压缩中", "Compressing"),
+    compressed: (from: number, to: number) => tr(
+      locale,
+      `已壓縮：${(from / 1048576).toFixed(1)} MB → ${(to / 1048576).toFixed(1)} MB（最長 ${LOGIN_VIDEO_MAX_SECONDS} 秒）。`,
+      `已压缩：${(from / 1048576).toFixed(1)} MB → ${(to / 1048576).toFixed(1)} MB（最长 ${LOGIN_VIDEO_MAX_SECONDS} 秒）。`,
+      `Compressed: ${(from / 1048576).toFixed(1)} MB → ${(to / 1048576).toFixed(1)} MB (max ${LOGIN_VIDEO_MAX_SECONDS} s).`,
+    ),
+    compressFailed: tr(locale, "此影片無法在瀏覽器內壓縮，已直接上傳原檔。", "此视频无法在浏览器内压缩，已直接上传原文件。", "This video could not be compressed in the browser; the original was uploaded."),
     failed: tr(locale, "開場影片操作失敗。", "开场视频操作失败。", "Opening-video update failed."),
     empty: tr(locale, "尚未設定自訂開場影片，首頁會使用內建蓮開影片。", "尚未设置自定义开场视频，首页会使用内置莲开视频。", "No custom opening video set. The homepage uses the built-in lotus clip."),
   }), [locale]);
@@ -141,15 +175,21 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       for (const file of files) {
         const videoType = resolveLoginVideoType(file);
         if (!videoType) throw new Error(copy.videoRequired);
-        // Duration is informational only: playback on /login already stops at 15 seconds.
         const duration = await Promise.race([
           readDuration(file),
           new Promise<number>((_, reject) => setTimeout(() => reject(new Error("timeout")), 8000)),
         ]).catch(() => null);
-        if (duration === null || !isBrowserPlayableVideoType(videoType)) notes.add(copy.notPlayable);
+        const playable = isBrowserPlayableVideoType(videoType);
+        // Owner instruction 2026-09-30: squeeze uploads to within 10 seconds (client-side, zero cost).
+        const result = await compressLoginVideo(file, duration, playable, (progress) => setMessage(`${copy.compressing} ${Math.min(99, progress.percent)}% · ${progress.label}`));
+        setMessage(null);
+        if (result.compressed) notes.add(copy.compressed(result.sourceBytes, result.outputBytes));
+        else if (result.skippedReason === "failed") notes.add(copy.compressFailed);
+        else if (duration === null || !playable) notes.add(copy.notPlayable);
         else if (duration > 15) notes.add(copy.clipped);
-        await uploadGalleryAsset(session, file, {
+        await uploadGalleryAsset(session, result.file, {
           category: "loading",
+          title: file.name,
           tags: ["loading", "login-background", "login-common", "owner-upload"],
           primary: false,
         });
@@ -174,6 +214,21 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     } catch (error) {
       setMessage(error instanceof Error ? error.message : copy.failed);
     }
+  }
+
+  async function saveName(asset: GalleryAsset) {
+    const cleaned = draftName.trim().replace(/\s+/g, " ").slice(0, NAME_MAX);
+    if (!cleaned) { setMessage(tr(locale, "名稱不能留空。", "名称不能留空。", "The name cannot be empty.")); return; }
+    setBusy(true); setMessage(null);
+    try {
+      const next = (asset.tags ?? []).filter((tag) => !tag.startsWith(NAME_TAG_PREFIX));
+      next.push(`${NAME_TAG_PREFIX}${cleaned}`);
+      await setGalleryAssetTags(session, asset.id, next);
+      setRenamingId(null);
+      await load();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : copy.failed);
+    } finally { setBusy(false); }
   }
 
   const editableRows = rows.filter((asset) => !asset.id.startsWith("catalog:"));
@@ -244,14 +299,20 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
           return (
             <article key={asset.id} data-owner-selectable-file="login-visuals" className={`relative overflow-hidden rounded-2xl border ${selectedIds.includes(asset.id) ? "border-cinnabar/45 ring-1 ring-cinnabar/20" : current ? "border-[#c4a05a] bg-[#fffaf1]" : "border-line bg-cream/72"}`}>
               {!locked ? <label className="absolute left-2 top-2 z-10 grid min-h-11 min-w-11 cursor-pointer place-items-center rounded-full border border-line bg-cream/95 shadow-sm" title={copy.select}>
-                <input type="checkbox" className="h-4 w-4" checked={selectedIds.includes(asset.id)} onChange={() => toggleSelected(asset.id)} aria-label={`${copy.select} ${asset.title}`} />
+                <input type="checkbox" className="h-4 w-4" checked={selectedIds.includes(asset.id)} onChange={() => toggleSelected(asset.id)} aria-label={`${copy.select} ${displayTitle(asset)}`} />
               </label> : null}
               <button type="button" className="block w-full" onClick={() => setPreview(asset)}>
-                <video className="aspect-[16/10] w-full object-cover" src={srcOf(asset)} poster={posterOf(asset)} muted playsInline preload="metadata" />
+                <video className="aspect-[16/10] w-full object-cover" src={videoSrcOf(asset)} poster={posterOf(asset)} muted playsInline preload="metadata" />
               </button>
               <div className="space-y-2.5 p-3">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="min-w-0 truncate font-medium">{asset.title}</p>
+                  {renamingId === asset.id ? (
+                    <form className="flex min-w-0 flex-1 items-center gap-1" onSubmit={(event) => { event.preventDefault(); void saveName(asset); }}>
+                      <input autoFocus value={draftName} maxLength={NAME_MAX} placeholder={copy.namePlaceholder} onChange={(event) => setDraftName(event.target.value)} className="min-w-0 flex-1 rounded-md border border-line bg-cream px-2 py-1 text-xs" />
+                      <button type="submit" disabled={busy} className="rounded-full bg-[#1f4e3a] px-2 py-1 text-[10px] text-[#faf8f1]">{copy.save}</button>
+                      <button type="button" className="rounded-full border border-line px-2 py-1 text-[10px]" onClick={() => setRenamingId(null)}>{copy.cancel}</button>
+                    </form>
+                  ) : <p className="min-w-0 truncate text-[13px] font-medium">{displayTitle(asset)}</p>}
                   {current ? <span className="shrink-0 rounded-full border border-[#c4a05a] px-2 py-0.5 text-[11px] text-[#1f4e3a]">{copy.current}</span> : null}
                 </div>
                 <p className="text-[11px] tracking-[0.14em] text-ink-mute">MP4 / WEBM · {theme === "night" ? copy.night : theme === "day" ? copy.day : copy.common}</p>
@@ -260,7 +321,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
                 ) : (
                   <div className="flex flex-wrap gap-1.5">
                     {(["day", "night", "common"] as const).map((item) => (
-                      <button key={item} type="button" className={`rounded-full border px-2.5 py-1 text-[11px] ${theme === item ? "border-[#1f4e3a] bg-[#1f4e3a] text-[#faf8f1]" : "border-line text-ink-soft"}`} onClick={() => void setTheme(asset, item)}>
+                      <button key={item} type="button" className={`rounded-full border px-2 py-0.5 text-[10px] ${theme === item ? "border-[#1f4e3a] bg-[#1f4e3a] text-[#faf8f1]" : "border-line text-ink-soft"}`} onClick={() => void setTheme(asset, item)}>
                         {item === "day" ? copy.day : item === "night" ? copy.night : copy.common}
                       </button>
                     ))}
@@ -268,19 +329,20 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
                 )}
                 <div className="flex flex-wrap items-center gap-2">
                   {!locked && !current ? (
-                    <button type="button" className="rounded-full bg-[#1f4e3a] px-3 py-1.5 text-[11px] text-[#faf8f1]" onClick={async () => {
+                    <button type="button" className="rounded-full bg-[#1f4e3a] px-2.5 py-1 text-[10px] text-[#faf8f1]" onClick={async () => {
                       try { await setLoginVisualCurrent(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
                     }}>{copy.use}</button>
                   ) : null}
                   {!locked ? (
-                    <button type="button" className="rounded-full border border-line px-3 py-1.5 text-[11px]" onClick={async () => {
+                    <button type="button" className="rounded-full border border-line px-2.5 py-1 text-[10px]" onClick={async () => {
                       try { await setGalleryAssetEnabled(session, asset.id, !asset.enabled); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
                     }}>{asset.enabled ? copy.disable : copy.enable}</button>
                   ) : null}
-                  <button type="button" className="rounded-full border border-line px-3 py-1.5 text-[11px]" onClick={() => setPreview(asset)}>{copy.preview}</button>
+                  <button type="button" className="rounded-full border border-line px-2.5 py-1 text-[10px]" onClick={() => setPreview(asset)}>{copy.preview}</button>
+                  {!locked ? <button type="button" className="rounded-full border border-line px-2.5 py-1 text-[10px]" onClick={() => { setRenamingId(asset.id); setDraftName(displayTitle(asset)); }}>{copy.rename}</button> : null}
                   {!locked ? (
-                    <button type="button" className="rounded-full px-3 py-1.5 text-[11px] text-cinnabar" onClick={async () => {
-                      if (!window.confirm(`${copy.remove} ${asset.title}?`)) return;
+                    <button type="button" className="rounded-full px-2.5 py-1 text-[10px] text-cinnabar" onClick={async () => {
+                      if (!window.confirm(`${copy.remove} ${displayTitle(asset)}?`)) return;
                       try { await deleteGalleryAsset(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
                     }}>{copy.remove}</button>
                   ) : null}
@@ -294,7 +356,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/55 px-4" role="dialog" aria-modal="true" onClick={() => setPreview(null)}>
           <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-line bg-cream p-4" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between gap-3">
-              <p className="truncate font-display text-lg">{preview.title}</p>
+              <p className="truncate font-display text-lg">{displayTitle(preview)}</p>
               <button type="button" className="rounded-full border border-line px-3 py-1 text-xs" onClick={() => setPreview(null)}>{copy.close}</button>
             </div>
             <div className="mt-3 overflow-hidden rounded-xl bg-paper">
