@@ -33,7 +33,10 @@ test("player consumes the full owner playlist and preserves Safari gesture unloc
   assert.match(music, /track\?\.url \|\| MUSIC_STREAM_URL/);
   assert.match(music, /window\.addEventListener\("pointerdown", unlock/);
   assert.match(music, /window\.addEventListener\("touchend", unlock/);
-  assert.match(music, /audio\.play\(\)\.catch/);
+  // Gesture-unlock play() is wrapped by playAudio() (adds a volume fade-in),
+  // but it still calls the real audio.play() with error handling underneath.
+  assert.match(music, /return audio\.play\(\)\.then/);
+  assert.match(music, /playAudio\(audio\)\.catch/);
   assert.doesNotMatch(music, /<audio[\s\S]{0,180}\sloop\s/);
 });
 
