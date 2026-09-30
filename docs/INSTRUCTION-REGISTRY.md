@@ -4,6 +4,16 @@
 
 目的：把「当前有效」「已被取代」「曾因权限未接入」「仅历史参考」分开，防止未来 AI / Agent 从旧聊天、旧 Library 文件、旧 AppDeploy 补丁或旧 PR 重新激活已废止指令。
 
+## 2026-09-30 站主「從根本解決死循環」指令（復盤文《AI 協作死循環根因剖析》）
+
+- 站主指令：讀完復盤文後，把「反覆出錯、假完成」從根本解決，之後不得再發生。
+- 查證結論（以 `main` 現況為準，不照文章原文照搬）：
+  - 方案一（發布帳本與日常 CI 解耦）**早已落實**：`scripts/release-ledger.release.mjs` 只在 `v*`／`release-*` tag 或手動 dispatch 時執行；日常 PR／push 不跑、不需要改版本號。維持不變，不得把它加回 `scripts/*.test.mjs` 或 `build.yml`。
+  - 方案二（建置自動注入 SHA／時間）**已落實**：`vite.config.ts` 注入 `__ZHAOWU_RELEASE_ID__`，`scripts/write-release-assets.mjs` 於每次建置寫出 `public/release.json`（`release` = 完整 commit SHA、`builtAt`）。正式站 `/release.json` 即「線上跑的是哪個 commit」的唯一真相。
+  - 方案四（以真實用戶路徑為準）**新增自動化落實**：`.github/workflows/production-smoke.yml` 在每次 push `main` 後，先輪詢正式站 `/release.json` 直到等於該 commit SHA（15 分鐘內沒有就紅燈 `NOT LIVE`），再用真實 iPhone Safari（WebKit）對正式站跑 `e2e-production/smoke.spec.ts`（首頁生辰表單、`/login`、JS/CSS 資產 200、`/api/owner-music`）。此檢查走 GitHub Actions，不觸發 Vercel 部署、A$0。**沒有這條綠燈，不得回報「完成」**（對應 AGENTS.md §1／§8／§12）。
+- 音樂上傳根因（同日）：Vercel 日誌 `cannot lock ref 'refs/heads/owner-music': is at X but expected Y`——透過 GitHub REST 讀到的分支 tip 落後剛完成的推送。已改為：推送被拒時取出 GitHub 回報的真實 tip，整個操作以該 tip 重建並重試（最多 3 次）；`scripts/owner-music-stale-tip.test.mjs` 為回歸測試。`owner-music` 分支另有 `vercel.json` 關閉 Vercel 建置，避免每次上傳白燒部署額度。
+- 不改：命理計算、報告、auth／payment、Supabase schema 與資料。
+
 ## 2026-09-29 公開頁 SEO／404／安全標頭核對
 
 - 正式站 `index.html` 已靜態提供 title、description、canonical、完整 Open Graph 與 Twitter Card；`public/og.jpg` 為 1200×630 JPEG，既有 `og-preview` build/test 契約維持。不得因看到 `<div id="root"></div>` 就誤判 SEO／社群預覽標籤缺失，也不因這項誤判重寫成 Next.js／SSR。
