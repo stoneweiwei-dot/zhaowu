@@ -59,7 +59,6 @@ jobs:
     name: iPhone Safari
     runs-on: ubuntu-latest
     timeout-minutes: 12
-    needs: deploy-gate
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v4
@@ -72,6 +71,12 @@ jobs:
 
       - name: Install dependencies from lockfile
         run: npm ci --no-audit --no-fund
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: Install Mobile Safari browser runtime
         run: ./node_modules/.bin/playwright install --with-deps webkit
@@ -83,7 +88,6 @@ jobs:
     name: Visual regression
     runs-on: ubuntu-latest
     timeout-minutes: 12
-    needs: deploy-gate
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v4
@@ -96,6 +100,12 @@ jobs:
 
       - name: Install dependencies from lockfile
         run: npm ci --no-audit --no-fund
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: Install Chromium runtime
         run: ./node_modules/.bin/playwright install --with-deps chromium
