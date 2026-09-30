@@ -117,7 +117,7 @@ export function applyCustomerAnswerHotfix(question: string, chart: Chart, readin
     return {
       ...reading,
       directAnswer: topicText
-        ? customerCopy(`${timing}　結構面：${topicText}`)
+        ? customerCopy(`${timing}　從你的盤來看：${topicText}`)
         : customerCopy(timing),
     };
   }

@@ -218,18 +218,16 @@ function leanChoice(q: string, chart: Chart): string {
   return "目前問題缺少可比較的兩個明確選項，不作強行二選一。";
 }
 
+// 面向客户的白話版：不把「日支／財星／官殺」這類術語直接丟給讀者。
+// 判斷依據沒有改（仍是關係連續性、現實投入、邊界），只是換成一般人聽得懂的講法。
 function loveLens(chart: Chart, relation: RelationPref): string {
-  const day = p(chart, "day");
   if (relation === "same") {
-    return `同性／非传统关系不硬套异性婚配公式；本题以日支${day.zhi}的关系承载、互动连续性与现实投入为主。`;
+    return "你们这段关系不用去套异性婚配的老公式，看的是两个人相处够不够持续、投入对不对等。";
   }
-  if (chart.gender === "female") {
-    return `传统女命官杀只作伴侣功能候选，实际仍要结合日支${day.zhi}、关系连续性与现实投入。`;
+  if (chart.gender === "female" || chart.gender === "male") {
+    return "命理上是有一套看另一半的说法，但那只是参考线索，真正说了算的，还是你们相处有没有持续、投入对不对等。";
   }
-  if (chart.gender === "male") {
-    return `传统男命财星只作伴侣功能候选，实际仍要结合日支${day.zhi}、关系连续性与现实投入。`;
-  }
-  return `关系判断以日支${day.zhi}、互动连续性、边界与现实投入为主。`;
+  return "关系好不好，看的是相处连不连续、投入对不对等、边界清不清楚。";
 }
 
 function fiveElementWealthBehaviorHint(element: Element): string {
@@ -255,8 +253,6 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
   const dayP = p(chart, "day");
   const monthP = p(chart, "month");
   const timeP = p(chart, "time");
-  const useful = joinEl(chart.useful);
-  const usefulLine = useful ? `当前仅有流通／调候候选：${useful}；在完整病药与格局链未完成前，不直接等同喜用神。` : "当前正式取用仍未定。";
   const timeLine = isReady(timeP) ? `时柱${timeP.ganZhi}可用于观察输出与结果层。` : "时柱未定，涉及输出方式与晚期结果的判断降级。";
   const guide = guideFrom(chart);
   const guideLine = chart.usefulProvisional
@@ -268,6 +264,8 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
   const now = weather(chart);
   const strong = chart.strength.tendency.includes("旺");
   const structure = analyzeStructure(chart);
+  // R6.1/R6.2.1 guard（scripts/r621-runtime-contract.test.mjs）：月令主气功能为
+  // structure.monthTenGod，職業／人生功能傾向不得改用十神計數排名決定。
   const monthFunctionGod = structure.monthTenGod !== "未定" ? structure.monthTenGod : "食神";
 
   let directAnswer = "";
@@ -289,19 +287,19 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
       }
       break;
     case "home":
-      directAnswer = `结论：现有出生盘只能判断个人承载与环境偏好，不能代替具体住宅的坐向、采光、道路与动线。若你问的是某套房或店面是否适合，必须补该空间资料；在此之前不硬定方位。${guideLine}`;
+      directAnswer = `结论：出生盘只能看你个人适合什么样的环境，没办法代替一间具体房子的坐向、采光、道路和动线。你要问的是某套房或某个店面适不适合，得把那个地方的实际情况给我，在那之前我不硬指方位。${guideLine}`;
       break;
     case "health":
-      directAnswer = `结论：命盘不能诊断疾病。当前只能从承载层看，日主${chart.dayMaster}${chart.dayMasterElement}在${monthP.zhi}月令下的底盘为${chart.strength.tendency}，${now}若现实已经出现持续疼痛、失眠、明显乏力或其他症状，先按医疗路径处理；命理只补充作息与压力管理。`;
+      directAnswer = `结论：命盘看不出具体的病，只能看你的底子和消耗节奏。你这张盘目前${chart.strength.tendency}，${now}如果现实里已经持续疼痛、睡不好或明显没力气，那是身体在提醒你，先去看医生；命理这边能帮上的，是作息和压力怎么调整。`;
       break;
     case "love":
-      directAnswer = `结论：这段关系是否值得推进，不看“桃花词”本身，先看对方是否持续回应、是否有现实投入、是否愿意明确下一步。${loveLens(chart, relation)}${now}若连续性与投入不足，就不把短期情绪升格为稳定关系。`;
+      directAnswer = `结论：这段关系值不值得往下走，不是看“桃花”两个字，而是看对方有没有持续回应你、有没有实际投入、愿不愿意把下一步讲清楚。${loveLens(chart, relation)}${now}如果连续性和投入都不够，就别把一时的心动当成稳定的关系。`;
       break;
     case "career":
-      directAnswer = `结论：职业判断以"能否形成稳定做功与承载"为核心。当前主格为${structure.label}${structure.established ? "" : "方向"}，结构完成度为${completionPhrase(structure.completion.label)}；月令主气功能为${monthFunctionGod}，它只作结构入口，不直接贴人格标签，对应工作侧可优先观察：${GOD_WORK[monthFunctionGod] ?? "把判断转成可验证成果"}。${strong ? "原局偏满时优先增加有效输出与减少无效负荷。" : "原局承载偏弱时优先选择资源、规则和支持条件更完整的岗位。"} ${now}`;
+      directAnswer = `结论：工作合不合适，关键看你撑不撑得住、做出来的东西稳不稳定。你这张盘目前偏向${structure.label}${structure.established ? "" : "方向"}，${GOD_WORK[monthFunctionGod] ?? "把判断转成可验证成果"}。${strong ? "你现在盘面偏满，优先想办法多产出、少背不必要的负担。" : "你现在盘面承载偏弱，优先挑资源、规则、支持都比较到位的岗位。"}${now}`;
       break;
     case "money":
-      directAnswer = `结论：财务不能只看“财星多不多”，先看日主能否承财、有没有稳定输出和可重复变现路径。当前主格为${structure.label}${structure.established ? "" : "方向"}，${structure.remedy.disease}；因此先处理结构上的承载与流通，再谈扩张。${usefulLine} 五行取財行為提示（男女共用）：${fiveElementWealthBehaviorHint(chart.dayMasterElement)}。此層只作五行應象輔助；仍須服從財星喜忌、承載、格局病藥、流通制化與歲運觸發，不可單獨判富貧、發財時間或投資成敗。`;
+      directAnswer = `结论：钱的事不能只看“财星多不多”，要看你撑不撑得住财、有没有稳定的产出和能重复变现的路子。你这张盘目前偏向${structure.label}${structure.established ? "" : "方向"}，${structure.remedy.disease}；所以先把底子和流通理顺，再谈扩张。${fiveElementWealthBehaviorHint(chart.dayMasterElement)}。这只是辅助参考，不能单靠它断定你会不会发财、什么时候发财，或哪一笔投资稳赚。`;
       break;
     case "choice":
       directAnswer = leanChoice(question, chart);
@@ -312,18 +310,18 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
     default:
       directAnswer = isPurposeQuestion(question)
         ? `结论：八字不能证明“为什么被安排出生”，也不能把“使命”写成上天指令。若把问题改成“这张盘最自然的结构功能与反复课题是什么”，当前以${structure.label}${structure.established ? "" : "方向"}为主，月令主气功能为${monthFunctionGod}；较稳定的功能方向是：${GOD_LIFE_FUNCTION[monthFunctionGod] ?? "把复杂经验整理成可以验证、可以执行的现实方法"}。调整重点是处理真实出现的阻塞与代价，不是把五行补齐或强行凑平均。`
-        : `结论：这张盘当前以${structure.label}${structure.established ? "" : "方向"}为主，结构完成度为${completionPhrase(structure.completion.label)}，日主${chart.dayMaster}${chart.dayMasterElement}的承载底盘为${chart.strength.tendency}。核心不是罗列更多术语，而是看格局、病药、流通与承载是否能形成同一条有效链。`;
+        : `结论：这张盘目前以${structure.label}${structure.established ? "" : "方向"}为主，日主${chart.dayMaster}${chart.dayMasterElement}的底子${chart.strength.tendency}。${structure.remedy.disease}；重点不在多懂几个术语，而在把这个卡点处理掉，让你的力气用得顺。`;
   }
 
   const rhythm = `结构摘要：日主${chart.dayMaster}${chart.dayMasterElement}，月令${monthP.zhi}，主格${structure.label}${structure.established ? "" : "方向"}，完成度${completionPhrase(structure.completion.label)}。${structure.remedy.disease}；${structure.remedy.medicine}${timeLine}`;
 
-  const work = `月令主气功能为${monthFunctionGod}，${GOD_WORK[monthFunctionGod] ?? "把判断转成可验证成果"}。这是结构入口，不是按十神数量贴职业标签；职业选择仍优先比较：责任是否清楚、成果是否可衡量、资源是否足够、退出成本是否可控。`;
-  const love = `${loveLens(chart, relation)}关系只看可验证行为：联系是否连续、投入是否对等、边界是否清楚、下一步是否明确。`;
-  const money = `财务优先看承载、现金流与退出成本。命盘只提供结构节奏，不替代真实收入、成本和风险数据。${kind === "money" ? ` 五行取財行為提示（男女共用）：${fiveElementWealthBehaviorHint(chart.dayMasterElement)}。此提示不取代財星喜忌、格局、制化與歲運判斷。` : ""}`;
-  const body = `身体层只谈承载与生活节奏，不下疾病诊断。现实症状持续或加重时，以医疗评估优先。`;
+  const work = `${GOD_WORK[monthFunctionGod] ?? "把判断转成可验证成果"}。选工作时优先比较四件事：责任是否清楚、成果看不看得出来、资源够不够、万一不做了退路好不好走。`;
+  const love = `${loveLens(chart, relation)}关系只看实际表现：联系有没有持续、投入对不对等、边界清不清楚、下一步明不明确。`;
+  const money = `钱的事优先看你扛不扛得住、现金流顺不顺、退路好不好走。命盘只能给你一个大致的节奏，取代不了真实的收入、成本和风险数字。${kind === "money" ? ` ${fiveElementWealthBehaviorHint(chart.dayMasterElement)}。` : ""}`;
+  const body = `身体这块只谈你的底子和生活节奏，不下疾病诊断。症状持续或加重，就以医生的判断为准。`;
   const home = chart.usefulProvisional
-    ? "空间建议暂不指定颜色或方位。具体住宅必须结合坐向、采光、道路、动线与实际居住感受。"
-    : `空间取象可参考${guide.colors[0]}这一系，但具体住宅仍以坐向、采光、道路、动线与实际居住感受为准。`;
+    ? "颜色和方位先不下定论。真要选房子，还是要看坐向、采光、道路、动线，以及你住进去实际的感受。"
+    : `空间上可以参考${guide.colors[0]}这一系的感觉，但真要选房子，还是以坐向、采光、道路、动线和你住进去实际的感受为准。`;
   const action = kind === "choice"
     ? "把两个选项放进同一张比较表：收入／资源、责任、时间、地点、稳定性、退出成本；命盘倾向只作为其中一列。"
     : kind === "career"
