@@ -1,0 +1,58 @@
+name: Production smoke
+
+# After every push to main: wait until production serves THIS commit (release.json),
+# then run a real iPhone-Safari smoke test against the live site. Costs nothing
+# (GitHub Actions, no Vercel deployment). A red run here = production is not verified.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Production smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PROD_URL: https://stone-zhaowu-official.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Wait until production serves this exact commit
+        run: |
+          for i in $(seq 1 60); do
+            got=$(curl -fsS -H 'cache-control: no-cache' "$PROD_URL/release.json?ts=$(date +%s)" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).release)}catch{console.log("")}})' || true)
+            echo "attempt $i: production=$got expected=$GITHUB_SHA"
+            [ "$got" = "$GITHUB_SHA" ] && exit 0
+            sleep 15
+          done
+          echo "NOT LIVE: production never served $GITHUB_SHA within 15 minutes" && exit 1
+
+      - run: npm ci --no-audit --no-fund
+
+      - run: ./node_modules/.bin/playwright install --with-deps webkit
+
+      - name: Smoke test production
+        run: ./node_modules/.bin/playwright test -c playwright.production.config.ts
+        env:
+          EXPECT_SHA: ${{ github.sha }}
+
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-smoke-traces
+          path: test-results/
+          if-no-files-found: ignore
