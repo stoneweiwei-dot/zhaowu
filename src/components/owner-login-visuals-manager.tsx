@@ -139,6 +139,9 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       `已压缩：${(from / 1048576).toFixed(1)} MB → ${(to / 1048576).toFixed(1)} MB（最长 ${LOGIN_VIDEO_MAX_SECONDS} 秒）。`,
       `Compressed: ${(from / 1048576).toFixed(1)} MB → ${(to / 1048576).toFixed(1)} MB (max ${LOGIN_VIDEO_MAX_SECONDS} s).`,
     ),
+    tooBig: () => {
+      return tr(locale, `此影片壓縮後仍太大，超過儲存空間單檔上限（Supabase 回報 413）。請先用手機「剪輯」裁成 15 秒內、或用較低畫質重新匯出後再上傳。`, `此视频压缩后仍太大，超过存储空间单文件上限（Supabase 返回 413）。请先用手机「剪辑」裁成 15 秒内、或用较低画质重新导出后再上传。`, `This video is still too large after compression and exceeds the storage per-file limit (Supabase returned 413). Trim it to 15 seconds or export at lower quality, then upload again.`);
+    },
     compressFailed: tr(locale, "此影片無法在瀏覽器內壓縮，已直接上傳原檔。", "此视频无法在浏览器内压缩，已直接上传原文件。", "This video could not be compressed in the browser; the original was uploaded."),
     failed: tr(locale, "開場影片操作失敗。", "开场视频操作失败。", "Opening-video update failed."),
     empty: tr(locale, "尚未設定自訂開場影片，首頁會使用內建蓮開影片。", "尚未设置自定义开场视频，首页会使用内置莲开视频。", "No custom opening video set. The homepage uses the built-in lotus clip."),
@@ -197,7 +200,8 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       notifyChanged();
       if (notes.size) setMessage([...notes].join(" "));
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : copy.failed);
+      const raw = error instanceof Error ? error.message : "";
+      setMessage(/413|Maximum size exceeded/i.test(raw) ? copy.tooBig() : raw || copy.failed);
     } finally {
       setBusy(false);
     }
