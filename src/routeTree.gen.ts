@@ -31,6 +31,7 @@ import { Route as YizhangjingRouteImport } from './routes/yizhangjing'
 import { Route as ZiweiRouteImport } from './routes/ziwei'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as FunTestsEarthOnlineRouteImport } from './routes/fun-tests.earth-online'
+import { Route as KnowledgeFiveElementsToneQiRouteImport } from './routes/knowledge.five-elements-tone-qi'
 import { Route as KnowledgeShushuBoundaryRouteImport } from './routes/knowledge.shushu-boundary'
 import { Route as KnowledgeSystemMapRouteImport } from './routes/knowledge.system-map'
 import { Route as QuizCultivationDestinyRouteImport } from './routes/quiz.cultivation-destiny'
@@ -148,6 +149,12 @@ const FunTestsEarthOnlineRoute = FunTestsEarthOnlineRouteImport.update({
   path: '/earth-online',
   getParentRoute: () => FunTestsRoute,
 } as any)
+const KnowledgeFiveElementsToneQiRoute =
+  KnowledgeFiveElementsToneQiRouteImport.update({
+    id: '/five-elements-tone-qi',
+    path: '/five-elements-tone-qi',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
 const KnowledgeShushuBoundaryRoute = KnowledgeShushuBoundaryRouteImport.update({
   id: '/shushu-boundary',
   path: '/shushu-boundary',
@@ -203,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/ziwei': typeof ZiweiRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
+  '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
@@ -233,6 +241,7 @@ export interface FileRoutesByTo {
   '/ziwei': typeof ZiweiRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
+  '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
@@ -264,6 +273,7 @@ export interface FileRoutesById {
   '/ziwei': typeof ZiweiRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
+  '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/ziwei'
     | '/auth/callback'
     | '/fun-tests/earth-online'
+    | '/knowledge/five-elements-tone-qi'
     | '/knowledge/shushu-boundary'
     | '/knowledge/system-map'
     | '/quiz/cultivation-destiny'
@@ -326,6 +337,7 @@ export interface FileRouteTypes {
     | '/ziwei'
     | '/auth/callback'
     | '/fun-tests/earth-online'
+    | '/knowledge/five-elements-tone-qi'
     | '/knowledge/shushu-boundary'
     | '/knowledge/system-map'
     | '/quiz/cultivation-destiny'
@@ -356,6 +368,7 @@ export interface FileRouteTypes {
     | '/ziwei'
     | '/auth/callback'
     | '/fun-tests/earth-online'
+    | '/knowledge/five-elements-tone-qi'
     | '/knowledge/shushu-boundary'
     | '/knowledge/system-map'
     | '/quiz/cultivation-destiny'
@@ -548,6 +561,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FunTestsEarthOnlineRouteImport
       parentRoute: typeof FunTestsRoute
     }
+    '/knowledge/five-elements-tone-qi': {
+      id: '/knowledge/five-elements-tone-qi'
+      path: '/five-elements-tone-qi'
+      fullPath: '/knowledge/five-elements-tone-qi'
+      preLoaderRoute: typeof KnowledgeFiveElementsToneQiRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
     '/knowledge/shushu-boundary': {
       id: '/knowledge/shushu-boundary'
       path: '/shushu-boundary'
@@ -606,11 +626,13 @@ const FunTestsRouteWithChildren = FunTestsRoute._addFileChildren(
 )
 
 interface KnowledgeRouteChildren {
+  KnowledgeFiveElementsToneQiRoute: typeof KnowledgeFiveElementsToneQiRoute
   KnowledgeShushuBoundaryRoute: typeof KnowledgeShushuBoundaryRoute
   KnowledgeSystemMapRoute: typeof KnowledgeSystemMapRoute
 }
 
 const KnowledgeRouteChildren: KnowledgeRouteChildren = {
+  KnowledgeFiveElementsToneQiRoute: KnowledgeFiveElementsToneQiRoute,
   KnowledgeShushuBoundaryRoute: KnowledgeShushuBoundaryRoute,
   KnowledgeSystemMapRoute: KnowledgeSystemMapRoute,
 }
