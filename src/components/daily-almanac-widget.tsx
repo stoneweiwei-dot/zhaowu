@@ -5,7 +5,6 @@ import { stemElement } from "@/lib/element-colors";
 import { galleryFallbackUrl, galleryPublicUrl, listPublicGalleryAssets, type GalleryAsset } from "@/lib/gallery-assets";
 import { isPublicAtlasAsset } from "@/lib/gallery-groups";
 import { dayGanzhi, hourPillar, yearMonthPillars, lunarDateLabel, toLunar } from "@/lib/bazi/calendar";
-import { dateInTimeZone } from "@/lib/local-day";
 
 const PILLAR_KEYS = ["year", "month", "day", "hour"] as const;
 const BRANCH_EN: Record<string, string> = { 子: "Zi", 丑: "Chou", 寅: "Yin", 卯: "Mao", 辰: "Chen", 巳: "Si", 午: "Wu", 未: "Wei", 申: "Shen", 酉: "You", 戌: "Xu", 亥: "Hai" };
@@ -18,9 +17,6 @@ function useNow() {
   return now;
 }
 function stableHash(value: string) { let hash = 2166136261; for (let i = 0; i < value.length; i += 1) { hash ^= value.charCodeAt(i); hash = Math.imul(hash, 16777619); } return hash >>> 0; }
-function zonedDate(now: Date, timezone?: string) {
-  return dateInTimeZone(now, timezone);
-}
 function timeLabel(date: Date) { return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`; }
 function weekdayLabel(date: Date, locale: Locale) { return locale === "en" ? new Intl.DateTimeFormat("en-AU", { weekday: "long" }).format(date) : ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"][date.getDay()]; }
 function lunarLabel(date: Date, locale: Locale) {
@@ -111,7 +107,7 @@ const SLIPS = {
 } as const;
 
 export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean }) {
-  const { locale } = useI18n(); const absoluteNow = useNow(); const visitor = useVisitorContext(); const now = useMemo(() => zonedDate(absoluteNow, visitor?.timezone), [absoluteNow, visitor?.timezone]);
+  const { locale } = useI18n(); const now = useNow(); const visitor = useVisitorContext();
   const [page, setPage] = useState(embedded ? 1 : 0); const [slipOpen, setSlipOpen] = useState(false); const [asset, setAsset] = useState<GalleryAsset | null>(null); const [loadingSlip, setLoadingSlip] = useState(false);
   const dayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   const pillars = useMemo(() => { const day = dayGanzhi(now.getFullYear(), now.getMonth() + 1, now.getDate()); const ym = yearMonthPillars(now); return { year: ym.year, month: ym.month, day, hour: hourPillar(day, now.getHours()), jieName: ym.jieName }; }, [dayKey, now.getHours(), now.getMinutes()]);
