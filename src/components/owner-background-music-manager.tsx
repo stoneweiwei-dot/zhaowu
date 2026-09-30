@@ -190,6 +190,7 @@ export function OwnerBackgroundMusicManager() {
 
   useEffect(() => {
     const audio = previewRef.current;
+    setPreviewPlaying(false);
     return () => {
       audio?.pause();
       if (audio) releaseQuietAudio(audio);
@@ -200,7 +201,7 @@ export function OwnerBackgroundMusicManager() {
     const audio = previewRef.current;
     if (!audio) return;
     if (previewId === track.id && !audio.paused) { audio.pause(); return; }
-    if (previewId !== track.id) { audio.src = track.url; audio.load(); }
+    if (audio.getAttribute("src") !== track.url) { audio.src = track.url; audio.load(); }
     setPreviewId(track.id);
     prepareQuietAudio(audio);
     window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "pause" } }));

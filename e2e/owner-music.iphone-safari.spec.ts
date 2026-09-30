@@ -21,6 +21,13 @@ test("owner music keeps long names readable on a narrow phone", async ({ page })
   expect(bounds!.width).toBeGreaterThan(180);
   expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
   expect(await title.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+  const previewButton = dialog.getByRole("button", { name: "試聽 " + name, exact: true });
+  await previewButton.click();
+  await expect(dialog.locator("audio")).toHaveAttribute("src", "/audio/fixture.mp3");
+  await dialog.getByRole("button", { name: "關閉", exact: true }).click();
+  await page.locator("[data-owner-background-music-manager]").click();
+  await dialog.getByRole("button", { name: "試聽 " + name, exact: true }).click();
+  await expect(dialog.locator("audio")).toHaveAttribute("src", "/audio/fixture.mp3");
   await dialog.getByText("更多 ⋯", { exact: true }).click();
   await expect(dialog.getByRole("button", { name: "改名", exact: true })).toBeVisible();
   await expect(dialog.getByRole("button", { name: "刪除", exact: true })).toBeVisible();
