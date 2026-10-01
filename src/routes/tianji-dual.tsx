@@ -189,7 +189,7 @@ function TianjiDualPage() {
       <div className="dual-shell">
         <div className="dual-topbar"><p>{copy.kicker}</p><Link to="/">{copy.back}</Link></div>
         <header className="dual-hero">
-          <span className="dual-seal" aria-hidden="true">{locale === "en" ? "II" : "兩面"}</span>
+          <span className="dual-seal" aria-hidden="true">{locale === "en" ? "II" : locale === "zh-Hans" ? "两面" : "兩面"}</span>
           <p className="dual-kicker">{copy.kicker}</p>
           <h1 id="dual-title">{copy.title}</h1>
           <p>{copy.lead}</p>

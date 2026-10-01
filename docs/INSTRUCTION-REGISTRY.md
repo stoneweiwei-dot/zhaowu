@@ -12,6 +12,23 @@
 
 目的：把「当前有效」「已被取代」「曾因权限未接入」「仅历史参考」分开，防止未来 AI / Agent 从旧聊天、旧 Library 文件、旧 AppDeploy 补丁或旧 PR 重新激活已废止指令。
 
+## 2026-09-30 站主「從根本解決死循環」指令（復盤文《AI 協作死循環根因剖析》）
+
+- 站主指令：讀完復盤文後，把「反覆出錯、假完成」從根本解決，之後不得再發生。
+- 查證結論（以 `main` 現況為準，不照文章原文照搬）：
+  - 方案一（發布帳本與日常 CI 解耦）**早已落實**：`scripts/release-ledger.release.mjs` 只在 `v*`／`release-*` tag 或手動 dispatch 時執行；日常 PR／push 不跑、不需要改版本號。維持不變，不得把它加回 `scripts/*.test.mjs` 或 `build.yml`。
+  - 方案二（建置自動注入 SHA／時間）**已落實**：`vite.config.ts` 注入 `__ZHAOWU_RELEASE_ID__`，`scripts/write-release-assets.mjs` 於每次建置寫出 `public/release.json`（`release` = 完整 commit SHA、`builtAt`）。正式站 `/release.json` 即「線上跑的是哪個 commit」的唯一真相。
+  - 方案四（以真實用戶路徑為準）**新增自動化落實**：`.github/workflows/production-smoke.yml` 在每次 push `main` 後，先輪詢正式站 `/release.json` 直到等於該 commit SHA（15 分鐘內沒有就紅燈 `NOT LIVE`），再用真實 iPhone Safari（WebKit）對正式站跑 `e2e-production/smoke.spec.ts`（首頁生辰表單、`/login`、JS/CSS 資產 200、`/api/owner-music`）。此檢查走 GitHub Actions，不觸發 Vercel 部署、A$0。**沒有這條綠燈，不得回報「完成」**（對應 AGENTS.md §1／§8／§12）。
+- 音樂上傳根因（同日）：Vercel 日誌 `cannot lock ref 'refs/heads/owner-music': is at X but expected Y`——透過 GitHub REST 讀到的分支 tip 落後剛完成的推送。已改為：推送被拒時取出 GitHub 回報的真實 tip，整個操作以該 tip 重建並重試（最多 3 次）；`scripts/owner-music-stale-tip.test.mjs` 為回歸測試。`owner-music` 分支另有 `vercel.json` 關閉 Vercel 建置，避免每次上傳白燒部署額度。
+- 不改：命理計算、報告、auth／payment、Supabase schema 與資料。
+
+## 2026-09-29 公開頁 SEO／404／安全標頭核對
+
+- 正式站 `index.html` 已靜態提供 title、description、canonical、完整 Open Graph 與 Twitter Card；`public/og.jpg` 為 1200×630 JPEG，既有 `og-preview` build/test 契約維持。不得因看到 `<div id="root"></div>` 就誤判 SEO／社群預覽標籤缺失，也不因這項誤判重寫成 Next.js／SSR。
+- ACTIVE：TanStack Router root 使用昭梧雙語 `notFoundComponent`，不存在路由須顯示可理解的 404 說明與返回首頁／最新更新入口，不再只顯示框架預設 `Not Found`。
+- ACTIVE：Vercel 公開回應全域加入 `X-Content-Type-Options: nosniff` 與 `Referrer-Policy: strict-origin-when-cross-origin`；平台既有 HSTS 不重複覆寫。未加入 `X-Frame-Options: DENY`，避免未經需求驗證就破壞合法預覽／嵌入。
+- 不改：首頁一次性 `IntroGate`、PWA、命理計算、報告、登入、付款、Supabase schema 與 Storage。
+
 ## 2026-09-29 r220 全站清理（分支／PR／CI／Vercel／Supabase Edge Functions）
 
 - 站主指令：把「亂七八糟的、合併沒合併的、做一半沒做完的」程序與後台全部走一遍清理。
@@ -29,6 +46,15 @@
 - ACTIVE：`IntroGate` 的既有播放契約完全不變——`zhaowu.intro.seen.public.v1` 同一瀏覽器只播一次、`INTRO_GATE_MIN_VISIBLE_MS`／`INTRO_GATE_HARD_EXIT_MS` 計時器不受影響、內建預設 `zhaowu-opening-r148.mp4`／`.jpg` 永遠是失敗或逾時的退回目標。新增的只是「先花至多 ~450ms 問一次 Supabase 有沒有站主指定的自訂影片」，且這個等待只延後 `<video>` 元素掛載，靜態封面在此期間已經蓋滿畫面，訪客不會看到空白。
 - ACTIVE：`/login` 的 `LoginStageBackdrop`、站主登入 cookie、15 秒播放上限、聲音控制、後台其餘登入邏輯全部不變——這次改動對 `/login` 是零風險、零行為變更，因為它本來就沒有消費過這份 Supabase 資料。
 - 不改：命理計算、報告生成、付款、Supabase schema／既有媒體原件；不新增付費依賴，重用既有 `gallery_assets` 資料表與既有上傳／驗證流程。
+## 2026-09-29 r225 命書六格＋頂部導航「宋式手卷」supersession
+
+- 站主最新明確指令：把命書六格（`ComicLiteReport`）與頂部導航做「提純」——去卡片、去漸變頭像、去陰影，改為以 1px 細線串聯的編號列表。範圍只限這兩處。
+- ACTIVE：六格＝`.zhaowu-comic-lite` 連續列表；序號（青綠）＋標題＋主線句＋純文字「展開／收起」鏈（細箭頭、0.8s `cubic-bezier(.22,1,.36,1)`、12px 位移淡入，`prefers-reduced-motion` 關閉動效）。圓角 0、無陰影、無漸變；朱砂線框小印章取代漸變頭像與吉祥物；「完整命書／漫畫 Lite」切換由膠囊改為底線文字頁籤。
+- ACTIVE：頂部導航在 r186 基礎上只做細修——日間 8% 墨色細線＋72% 暖紙底＋8px 模糊、字距 .1em、現用語言維持站內翡翠綠 `#315D50`（iPhone e2e 契約鎖定）、現用日／夜僅一顆朱砂點；夜間沿用原深色承載面配色。
+- 僅取代與 `docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 衝突的部分（六格 6–12px 圓角與紙面陰影 → 0 圓角／無陰影）。框架其餘規則不變：單一遠山背景、不透明暖紙閱讀面、夜間 surface-aware、560px 閱讀寬度、無橫向溢出、44px 觸控。
+- 站主草稿色值在此**刻意偏離**：`#8A8A80`（3.15:1）與 `#9DB8B0`（1.91:1）作文字不達 4.5:1，改用 `#666659` 與 `#3F6B5D`（於日間 `#FBF7EE`、夜間 `#EBE5D9` 兩種紙面皆 ≥ 4.5:1，由 `scripts/r196-comic-lite-report.test.mjs` 鎖定）；頁首不做全透明，因背景圖頂部對淡墨字僅 3.5–4.1:1。頁首本站非 sticky，故不加滾動狀態腳本。
+- **未執行（需另行明確指令）**：移除青玉小龍助手（`GreenDragonGuide`）與精簡音樂控件——它們由 r149／r157 測試鎖定，屬功能移除，不在本條範圍。全站 `border-radius: 0`／`box-shadow: none` 也未套用到六格與導航以外的區域。
+- 不改：命理內核、報告內容與資料來源（`buildWesternReading` 等）、登入、付款、Supabase、媒體資料、多語系。
 
 ## 2026-09-29 宋式主體審美框架 supersession
 

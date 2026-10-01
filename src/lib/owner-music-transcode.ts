@@ -19,7 +19,7 @@ export type OwnerMusicOptimizeProgress = { percent: number; label: string };
 export type OptimizedOwnerMusic = { file: File; sourceBytes: number; outputBytes: number; bitrateKbps: number | null; transcoded: boolean };
 
 type FfmpegFileData = Uint8Array | string;
-type FfmpegLike = {
+export type FfmpegLike = {
   load(config: Record<string, string>): Promise<boolean>;
   writeFile(path: string, data: Uint8Array): Promise<void>;
   exec(args: string[]): Promise<number>;
@@ -68,7 +68,7 @@ export function isIosOwnerDevice() {
   return /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 }
 
-async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string): Promise<T> {
+export async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
@@ -87,8 +87,8 @@ async function toBlobUrl(url: string, mimeType: string) {
   return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
 }
 
-async function loadFfmpeg(onProgress?: (p: OwnerMusicOptimizeProgress) => void): Promise<FfmpegLike> {
-  onProgress?.({ percent: 5, label: "載入音訊優化器" });
+export async function loadFfmpeg(onProgress?: (p: OwnerMusicOptimizeProgress) => void, noun = "音訊"): Promise<FfmpegLike> {
+  onProgress?.({ percent: 5, label: `載入${noun}優化器` });
   const imported = await withTimeout(
     import(/* @vite-ignore */ FFMPEG_MODULE_URL) as Promise<{ FFmpeg?: FfmpegConstructor }>,
     CORE_LOAD_TIMEOUT_MS,
@@ -100,7 +100,7 @@ async function loadFfmpeg(onProgress?: (p: OwnerMusicOptimizeProgress) => void):
   const blobs = [coreURL, wasmURL, classWorkerURL];
   const forgetBlobs = () => { for (const url of blobs) URL.revokeObjectURL(url); };
   try {
-    onProgress?.({ percent: 8, label: "初始化音訊優化器（首次較慢）" });
+    onProgress?.({ percent: 8, label: `初始化${noun}優化器（首次較慢）` });
     await withTimeout(ffmpeg.load({ coreURL, wasmURL, classWorkerURL }), CORE_LOAD_TIMEOUT_MS, "音訊優化器初始化逾時，請改用 MP3／M4A 後再試，或換電腦上傳。");
   } catch (error) {
     ffmpeg.terminate?.();

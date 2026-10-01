@@ -238,12 +238,21 @@ test("投資標的題：回答財務節奏但不指定股票", () => {
   assert.match(reading.directAnswer, /不把任何標的說成必賺/);
 });
 
-test("普通二選一：不假装已比较没有提供的两个选项条件", () => {
+test("普通二選一：已點名兩個選項時必須給出傾向", () => {
   const q = "我應該留在現在的工作，還是換到新公司？";
   const { reading } = contracted(q);
-  assert.match(reading.directAnswer, /二選一|比較要求/);
-  assert.match(reading.directAnswer, /沒有分開提供/);
+  assert.match(reading.directAnswer, /直接回答：偏向/);
+  assert.match(reading.directAnswer, /留在現在的工作|換到新公司/);
+  assert.doesNotMatch(reading.directAnswer, /沒有分開提供|没有分开提供/);
   assert.doesNotMatch(reading.directAnswer, /旅行型態/);
+});
+
+test("具體 A／B 工作選項：能辨識標籤並直接選邊", () => {
+  const q = "A：新工作薪資高20%，通勤多30分鐘，責任更大；B：維持現職，薪資不變、較穩定。只根據這張命盤與未來一年，直接選A或B。";
+  const { reading } = contracted(q);
+  assert.equal(reading.kind, "choice");
+  assert.match(reading.directAnswer, /直接回答：偏向 [AB]/);
+  assert.doesNotMatch(reading.directAnswer, /職業判斷以|没有分开提供|沒有分開提供/);
 });
 
 test("去哪里旅游：必须点名目的地，不得反问用户补城市", () => {

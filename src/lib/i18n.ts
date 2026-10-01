@@ -109,6 +109,10 @@ const TABLE = {
     "請從搜尋結果選擇出生城市與國家。",
     "请从搜索结果选择出生城市与国家。",
   ],
+  errDate: [
+    "這個日期不存在，請重新確認月份與日。",
+    "这个日期不存在，请重新确认月份与日。",
+  ],
   errQuestion: ["請先寫下你真正想問的問題。", "请先写下你真正想问的问题。"],
   errAnalyze: [
     "分析暫時未能完成，請檢查資料後再試。",
@@ -168,8 +172,8 @@ const TABLE = {
   needLogin: ["登入後即可保存與續看。", "登录后即可保存与续看。"],
   reset: ["重新開始", "重新开始"],
   disclaimer: [
-    "以上屬傳統文化與象徵性解讀，用來理解人生慣性與課題，不代表已被證實的前世事實，亦不替代醫療、法律或財務決定。",
-    "以上属传统文化与象征性解读，用来理解人生惯性与课题，不代表已被证实的前世事实，亦不替代医疗、法律或财务决定。",
+    "以上屬傳統文化與象徵性解讀，用來理解人生慣性、選擇與課題，不替代醫療、法律或財務判斷。",
+    "以上属传统文化与象征性解读，用来理解人生惯性、选择与课题，不替代医疗、法律或财务判断。",
   ],
   mineLead: [
     "同一帳號保存你的出生檔案、歷次問題與完整報告。",
@@ -365,6 +369,7 @@ const EN: Record<CopyKey, string> = {
   locating: "Resolving birth-location time…",
   remembered: "Your saved birth details are here. You can edit them.",
   errCity: "Choose your birth city from the search results.",
+  errDate: "That date doesn't exist. Please recheck the month and day.",
   errQuestion: "Write the question you actually want answered first.",
   errAnalyze:
     "The analysis could not be completed. Check the details and try again.",

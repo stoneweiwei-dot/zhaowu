@@ -196,9 +196,9 @@ function tokenMaterial(primary: Element, secondary: Element, locale: AppLocale) 
 
 function pairRoot(primary: Element, secondary: Element, dual: boolean, locale: AppLocale) {
   const p = ELEMENT_NAME[primary][locale];
-  if (!dual) return locale === "en" ? p + " spirit root" : p + "靈根";
+  if (!dual) return locale === "en" ? p + " spirit root" : p + (locale === "zh-Hans" ? "灵根" : "靈根");
   const s = ELEMENT_NAME[secondary][locale];
-  return locale === "en" ? p + "–" + s + " dual spirit root" : p + s + "雙靈根";
+  return locale === "en" ? p + "–" + s + " dual spirit root" : p + s + (locale === "zh-Hans" ? "双灵根" : "雙靈根");
 }
 
 function partnerElement(primary: Element): Element {

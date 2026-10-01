@@ -49,13 +49,16 @@ export async function loadOwnerMusic(): Promise<OwnerMusicState> {
   };
 }
 
+const UPLOAD_ERROR_DETAIL_MAX = 120;
+
 function uploadError(body: Record<string, unknown>, status?: number) {
   if (body.error === "AUDIO_TOO_LARGE") return "音檔仍超過安全上傳大小，請裁短曲目後再試。";
   if (body.error === "UNSUPPORTED_AUDIO") return "這個音檔無法轉成網站播放格式。請改用 MP3 或 M4A。";
   if (body.error === "OWNER_REQUIRED") return "站主登入狀態已失效，請重新登入。";
   if (body.error === "ORIGIN_REJECTED") return "上傳來源被拒絕，請從正式站重新登入後再試。";
   if (body.error === "EMPTY_AUDIO") return "音檔是空的。";
-  const detail = typeof body.detail === "string" && body.detail.trim() ? body.detail.trim() : "";
+  let detail = typeof body.detail === "string" ? body.detail.trim().replace(/\s+/g, " ") : "";
+  if (detail.length > UPLOAD_ERROR_DETAIL_MAX) detail = `${detail.slice(0, UPLOAD_ERROR_DETAIL_MAX)}…`;
   const error = typeof body.error === "string" && body.error.trim() ? body.error.trim() : "";
   const http = status ? `HTTP ${status}` : "";
   const parts = [detail, error, http].filter(Boolean);

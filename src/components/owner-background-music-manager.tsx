@@ -197,7 +197,7 @@ export function OwnerBackgroundMusicManager() {
         </div>
         <p className="mt-2 text-[11px] text-ink-mute">{c.limit}</p>
         {percent != null ? <div className="mt-4 border-y border-line/60 py-3" aria-live="polite"><div className="flex items-center justify-between gap-3 text-xs text-ink-soft"><span>{stage || c.processing}</span><span>{percent}%</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${percent}%` }} /></div></div> : null}
-        {message ? <p className="mt-4 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
+        {message ? <p className="mt-4 line-clamp-3 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
         {selectedIds.length ? <div data-owner-bulk-toolbar="music" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
           <span className="text-xs font-medium text-ink-soft">{c.selected(selectedIds.length)}</span>
           <button type="button" disabled={busy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={selectAllDeletable}>{c.selectAll}</button>

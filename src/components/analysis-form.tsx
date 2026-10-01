@@ -10,6 +10,7 @@ import {
   formatSharedBirthRecord,
   readSharedBirthRecord,
   sharedBirthFromUnknown,
+  validDate,
   writeSharedBirthRecord,
   type SharedBirthRecord,
 } from "@/lib/shared-birth";
@@ -64,6 +65,7 @@ export function AnalysisForm() {
   const [birthCity, setBirthCity] = useState<CityHit | null>(null);
   const [liveCity, setLiveCity] = useState<CityHit | null>(null);
   const [birthCityError, setBirthCityError] = useState(false);
+  const [dateError, setDateError] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rememberedRecord, setRememberedRecord] = useState<SharedBirthRecord | null>(null);
@@ -84,6 +86,7 @@ export function AnalysisForm() {
         next: "Save and generate my Destiny Book",
         saving: "Saving…",
         saved: "Birth record saved on this phone.",
+        saveError: "Could not save the birth record. Please try again.",
         chartKicker: "STEP 2 · ZHAOWU DESTINY BOOK",
         chartTitle: "Your Four Pillars and ZHAOWU Destiny Book",
 
@@ -121,6 +124,7 @@ export function AnalysisForm() {
           next: "保存并生成昭梧命书",
           saving: "正在保存…",
           saved: "生辰已保存在这台手机。",
+          saveError: "保存失败，请再试一次。",
           chartKicker: "第二步 · 昭梧命书",
           chartTitle: "你的四柱命盘与昭梧命书",
 
@@ -157,6 +161,7 @@ export function AnalysisForm() {
           next: "保存並生成昭梧命書",
           saving: "正在保存…",
           saved: "生辰已保存在這台手機。",
+          saveError: "保存失敗，請再試一次。",
           chartKicker: "第二步 · 昭梧命書",
           chartTitle: "你的四柱命盤與昭梧命書",
 
@@ -244,23 +249,42 @@ export function AnalysisForm() {
     setError(null);
 
     if (detailsOpen || !rememberedRecord) {
-      if (!birthCity || !draftBirth) {
+      if (!draftBirth) {
         setError(null);
-        setBirthCityError(true);
+        const dateInvalid = Boolean(year) && Boolean(month) && Boolean(day)
+          && !validDate(Number(year), Number(month), Number(day));
+        if (!birthCity) {
+          setDateError(false);
+          setBirthCityError(true);
+          setDetailsOpen(true);
+          window.setTimeout(() => {
+            const cityInput = document.getElementById("birth-city");
+            cityInput?.scrollIntoView({ behavior: "smooth", block: "center" });
+            cityInput?.focus();
+          }, 0);
+          return;
+        }
+        setBirthCityError(false);
+        if (dateInvalid) {
+          setDateError(true);
+          setDetailsOpen(true);
+          window.setTimeout(() => {
+            const dayInput = document.getElementById("birth-day");
+            dayInput?.scrollIntoView({ behavior: "smooth", block: "center" });
+            dayInput?.focus();
+          }, 0);
+          return;
+        }
         setDetailsOpen(true);
-        window.setTimeout(() => {
-          const cityInput = document.getElementById("birth-city");
-          cityInput?.scrollIntoView({ behavior: "smooth", block: "center" });
-          cityInput?.focus();
-        }, 0);
         return;
       }
       setBirthCityError(false);
+      setDateError(false);
       setBusy(true);
       try {
         await saveBirthAndContinue(draftBirth);
       } catch (err) {
-        setError(locale === "en" ? "Could not save the birth record." : err instanceof Error ? err.message : copy.saved);
+        setError(locale === "en" ? copy.saveError : err instanceof Error ? err.message : copy.saveError);
       } finally {
         setBusy(false);
       }
@@ -347,7 +371,7 @@ export function AnalysisForm() {
               <strong>{copy.calibrationTitle}</strong>
               <span>{copy.calibrationBody}</span>
             </div>
-            <div className="zhaowu-birth-date-grid">
+            <div className="zhaowu-birth-date-grid" data-invalid={dateError ? "true" : undefined}>
               {[
                 { id: "birth-year", label: t("year"), value: year, set: setYear, min: 1900, max: 2100 },
                 { id: "birth-month", label: t("month"), value: month, set: setMonth, min: 1, max: 12 },
@@ -355,10 +379,24 @@ export function AnalysisForm() {
               ].map((field) => (
                 <label htmlFor={field.id} key={field.id}>
                   <span>{field.label}</span>
-                  <input id={field.id} type="number" inputMode="numeric" min={field.min} max={field.max} required value={field.value} onChange={(event) => field.set(event.target.value)} />
+                  <input
+                    id={field.id}
+                    type="number"
+                    inputMode="numeric"
+                    min={field.min}
+                    max={field.max}
+                    required
+                    aria-invalid={dateError || undefined}
+                    value={field.value}
+                    onChange={(event) => {
+                      field.set(event.target.value);
+                      if (dateError) setDateError(false);
+                    }}
+                  />
                 </label>
               ))}
             </div>
+            {dateError ? <p role="alert" className="mt-2 text-sm text-cinnabar">{t("errDate")}</p> : null}
 
             <div className="zhaowu-birth-time-block">
               <div className="zhaowu-birth-time-line">

@@ -9,6 +9,16 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="昭梧" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <!-- Canonical display typeface: declared as --font-display across the CSS authority chain
+         but never previously loaded as a web font, so it only ever rendered on devices with
+         Songti TC pre-installed (Apple only). Loading it here fixes CJK typography on
+         Android/Windows/Linux without touching any component or layout file. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
+    />
     <link rel="apple-touch-icon" href="/apple-touch-icon-r113.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-r113.png" />
     <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-r113-precomposed.png" />
@@ -20,7 +30,7 @@
       (function () {
         try {
           var savedLanguage = localStorage.getItem("zhaowu.display-language");
-          if (["zh-Hant", "en"].indexOf(savedLanguage) === -1) {
+          if (["zh-Hant", "zh-Hans", "en"].indexOf(savedLanguage) === -1) {
             savedLanguage = "zh-Hant";
             localStorage.setItem("zhaowu.display-language", savedLanguage);
           }

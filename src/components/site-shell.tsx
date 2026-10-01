@@ -74,11 +74,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const languageOptions = [
     { value: "en" as const, label: "English", aria: "English" },
     { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
+    { value: "zh-Hans" as const, label: "简体", aria: "简体中文" },
   ];
 
   const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
   const todayLabel = displayText(language, "今日", "今日", "Today", "本日", "오늘", "आज");
   const totalLabel = displayText(language, "累計訪問", "累计访问", "Total visits", "累計訪問", "누적 방문", "कुल विज़िट");
+  // Owner 2026-10-01: view counts must be visible. The header strip that used to carry them is hidden by the
+  // layout system, so they live in the page footer (existing counter/RPC unchanged).
+  const viewsTodayLabel = displayText(language, "今日瀏覽", "今日浏览", "Views today", "本日の閲覧", "오늘 조회", "आज के दृश्य");
+  const viewsTotalLabel = displayText(language, "累計瀏覽", "累计浏览", "Total views", "累計閲覧", "누적 조회", "कुल दृश्य");
   const latestLabel = displayText(language, "最新更新", "最新更新", "Latest update", "最新更新", "최신 업데이트", "नवीनतम अपडेट");
   const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
   const galleryLabel = displayText(language, "圖庫", "图库", "Gallery", "ギャラリー", "갤러리", "गैलरी");
@@ -152,6 +157,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <div className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
 
       {!isLogin && !isOwnerWorkspace ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
+        {stats.totalVisits > 0 ? (
+          <p className="zhaowu-site-views" data-site-views aria-label={`${viewsTodayLabel} ${stats.todayVisits.toLocaleString(numberLocale)}，${viewsTotalLabel} ${stats.totalVisits.toLocaleString(numberLocale)}`}>
+            <span>{viewsTodayLabel} <b>{stats.todayVisits.toLocaleString(numberLocale)}</b></span>
+            <i aria-hidden="true" />
+            <span>{viewsTotalLabel} <b>{stats.totalVisits.toLocaleString(numberLocale)}</b></span>
+          </p>
+        ) : null}
         <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
       </footer> : null}
     </div>

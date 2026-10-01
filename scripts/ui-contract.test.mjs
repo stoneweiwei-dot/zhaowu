@@ -140,7 +140,7 @@ test("home mounts a one-time IntroGate and never the old loading assets", async 
   const policy = await source("src/lib/intro-gate-policy.ts");
   assert.match(shell, /isHome \? <IntroGate \/> : null/);
   assert.match(policy, /zhaowu\.intro\.seen\.public\.v1/);
-  assert.match(policy, /INTRO_GATE_HARD_EXIT_MS = 8000/);
+  assert.match(policy, /INTRO_GATE_HARD_EXIT_MS = 17000/);
   assert.doesNotMatch(shell, /loading-v11\.mp4/);
   assert.doesNotMatch(shell, /loading-v10\.mp4/);
 });

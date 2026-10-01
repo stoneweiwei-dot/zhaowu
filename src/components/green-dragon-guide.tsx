@@ -9,6 +9,7 @@ import {
 } from "@/lib/site-guide";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
+import { MusicIcon } from "@/components/music-icons";
 
 const POSITION_STORAGE_KEY = "zhaowu.dragonAssistant.position.v1";
 const DOCK_SIZE = 52;
@@ -189,7 +190,7 @@ export function GreenDragonGuide() {
           const status = musicStatus.trackName
             ? (musicStatus.playing
                 ? (locale === "en" ? `Playing · ${musicStatus.trackName}` : locale === "zh-Hans" ? `正在播放 · ${musicStatus.trackName}` : `正在播放 · ${musicStatus.trackName}`)
-                : (locale === "en" ? `Music · ${musicStatus.trackName}` : `音樂 · ${musicStatus.trackName}`))
+                : (locale === "en" ? `Music · ${musicStatus.trackName}` : locale === "zh-Hans" ? `音乐 · ${musicStatus.trackName}` : `音樂 · ${musicStatus.trackName}`))
             : fallback;
           setBubble({ kind: "music", text: status });
         } else {
@@ -333,8 +334,8 @@ export function GreenDragonGuide() {
           </button>
           {bubble.kind === "music" ? (
             <div className="zhaowu-dragon-bubble-player" aria-label={copy.music}>
-              <button type="button" data-background-music-control onClick={() => sendMusicCommand("toggle")} aria-label={musicStatus.playing ? (locale === "en" ? "Pause" : "暫停") : (locale === "en" ? "Play" : "播放")}>{musicStatus.playing ? "Ⅱ" : "▶"}</button>
-              <button type="button" onClick={() => sendMusicCommand("next")} aria-label={locale === "en" ? "Next track" : locale === "zh-Hans" ? "下一首" : "下一首"}>⏭</button>
+              <button type="button" data-background-music-control onClick={() => sendMusicCommand("toggle")} aria-label={musicStatus.playing ? (locale === "en" ? "Pause" : locale === "zh-Hans" ? "暂停" : "暫停") : (locale === "en" ? "Play" : "播放")}><MusicIcon name={musicStatus.playing ? "pause" : "play"} size={16} /></button>
+              <button type="button" onClick={() => sendMusicCommand("next")} aria-label={locale === "en" ? "Next track" : locale === "zh-Hans" ? "下一首" : "下一首"}><MusicIcon name="next" size={16} /></button>
             </div>
           ) : null}
         </div>

@@ -47,7 +47,8 @@ test("website keeps the app concept base while homepage specialist cards shed lo
   assert.match(intro, /data-intro-motion="zhaowu-opening-r148"/);
   assert.doesNotMatch(intro, /wutong-owner-r29/);
   assert.match(intro, /zhaowu-opening-r148\.mp4/);
-  assert.doesNotMatch(intro, /data-intro-skip/);
+  // Owner 2026-09-30: guests may skip the opening video via a small chip.
+  assert.match(intro, /data-intro-skip/);
   assert.match(intro, /INTRO_GATE_MIN_VISIBLE_MS/);
 });
 

@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { SoundIcon } from "@/components/sound-icon";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 import {
   INTRO_BROKEN_KEY,
+  INTRO_FORCE_KEY,
   INTRO_GATE_ERROR_EXIT_MS,
   INTRO_GATE_FADE_MS,
+  INTRO_GATE_MAX_PLAY_S,
   INTRO_GATE_MIN_VISIBLE_MS,
   markIntroSeen,
   scheduleIntroGateHardExit,
   shouldSkipIntroGate,
 } from "@/lib/intro-gate-policy";
 import { fetchIntroVisualOverride } from "@/lib/intro-visual-source";
+import { readBrandTheme } from "@/lib/brand-theme";
 
 // How long we wait for the owner's custom "開場影片" pick (set from the
 // /gallery admin panel) before falling back to the built-in default. This
@@ -31,10 +35,31 @@ function isForcedBrokenIntro() {
   }
 }
 
+/**
+ * Owner 2026-09-30: the opening video must show every time the app/site is opened, not only the very
+ * first time ever on a browser. "Seen" is therefore remembered per session (sessionStorage): route changes
+ * and reloads inside one visit do not replay it; opening the app again does. The force flag still lives in
+ * localStorage so it keeps working as before.
+ */
+function introStorage(): Pick<Storage, "getItem" | "setItem"> {
+  return {
+    getItem(key: string) {
+      try {
+        return key === INTRO_FORCE_KEY ? window.localStorage.getItem(key) : window.sessionStorage.getItem(key);
+      } catch { return null; }
+    },
+    setItem(key: string, value: string) {
+      try { window.sessionStorage.setItem(key, value); } catch { /* ignore */ }
+    },
+  };
+}
+
 export function IntroGate() {
   const { locale } = useI18n();
+  const soundLabelFor = (on: boolean) =>
+    locale === "en" ? (on ? "Mute sound" : "Play sound") : locale === "zh-Hans" ? (on ? "关闭声音" : "开启声音") : (on ? "關閉聲音" : "開啟聲音");
   const [phase, setPhase] = useState<"in" | "leaving" | "off">(() =>
-    typeof window !== "undefined" && shouldSkipIntroGate(window.localStorage, Boolean(navigator.webdriver)) ? "off" : "in",
+    typeof window !== "undefined" && shouldSkipIntroGate(introStorage(), Boolean(navigator.webdriver)) ? "off" : "in",
   );
   const [minimumDone, setMinimumDone] = useState(false);
   const [visualDone, setVisualDone] = useState(false);
@@ -62,7 +87,7 @@ export function IntroGate() {
       window.clearTimeout(exitTimerRef.current);
       exitTimerRef.current = null;
     }
-    markIntroSeen(window.localStorage);
+    markIntroSeen(introStorage());
     stopSound();
     setPhase("off");
   }, [stopSound]);
@@ -70,7 +95,7 @@ export function IntroGate() {
   const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
-    markIntroSeen(window.localStorage);
+    markIntroSeen(introStorage());
     stopSound();
     setPhase("leaving");
     exitTimerRef.current = window.setTimeout(() => {
@@ -80,6 +105,23 @@ export function IntroGate() {
   }, [stopSound]);
 
   const toggleSound = useCallback(() => {
+    const video = videoRef.current;
+    // Owner-uploaded clips keep their own soundtrack: the sound button (un)mutes the video itself.
+    // Only the built-in silent clip falls back to the separate background track below.
+    if (video && resolvedVideoSrc !== undefined && resolvedVideoSrc !== OWNER_LOADING_VIDEO) {
+      const nextMuted = !video.muted;
+      video.muted = nextMuted;
+      if (!nextMuted) {
+        // Comfortable default level, not full blast — matches the site's
+        // background-music default so unmuting the intro clip doesn't jump
+        // the volume much louder than everything else on the site.
+        video.volume = 0.24;
+        void video.play().then(() => setSoundPlaying(true)).catch(() => { video.muted = true; setSoundPlaying(false); });
+      } else {
+        setSoundPlaying(false);
+      }
+      return;
+    }
     const sound = soundRef.current;
     if (!sound) return;
     if (!sound.paused) {
@@ -87,12 +129,12 @@ export function IntroGate() {
       setSoundPlaying(false);
       return;
     }
-    sound.volume = 0.24;
+    sound.volume = 0.16;
     void sound.play().then(() => setSoundPlaying(true)).catch(() => setSoundPlaying(false));
-  }, []);
+  }, [resolvedVideoSrc]);
 
   useEffect(() => {
-    if (shouldSkipIntroGate(window.localStorage, Boolean(navigator.webdriver))) {
+    if (shouldSkipIntroGate(introStorage(), Boolean(navigator.webdriver))) {
       finishedRef.current = true;
       setPhase("off");
       return;
@@ -129,7 +171,7 @@ export function IntroGate() {
     const timer = window.setTimeout(() => {
       setResolvedVideoSrc((current) => (current === undefined ? OWNER_LOADING_VIDEO : current));
     }, INTRO_VISUAL_OVERRIDE_TIMEOUT_MS);
-    fetchIntroVisualOverride()
+    fetchIntroVisualOverride(readBrandTheme())
       .then((override) => {
         if (cancelled) return;
         window.clearTimeout(timer);
@@ -227,6 +269,12 @@ export function IntroGate() {
             setVideoPlaying(true);
           }}
           onEnded={() => setVisualDone(true)}
+          onTimeUpdate={(event) => {
+            if (event.currentTarget.currentTime >= INTRO_GATE_MAX_PLAY_S) {
+              event.currentTarget.pause();
+              setVisualDone(true);
+            }
+          }}
           onAbort={() => {
             if (!hasPlayedRef.current) {
               setVideoPlaying(false);
@@ -244,13 +292,23 @@ export function IntroGate() {
       <audio ref={soundRef} src={OWNER_LOADING_SOUND} preload="metadata" onEnded={() => setSoundPlaying(false)} />
       <button
         type="button"
+        className="zhaowu-intro-skip"
+        data-intro-skip
+        aria-label={locale === "en" ? "Skip the opening video" : locale === "zh-Hans" ? "跳过开场影片" : "跳過開場影片"}
+        onClick={forceOff}
+      >
+        {locale === "en" ? "Skip" : locale === "zh-Hans" ? "跳过" : "跳過"}
+      </button>
+      <button
+        type="button"
         className="zhaowu-intro-sound"
         data-intro-sound-control
         aria-pressed={soundPlaying}
+        aria-label={soundLabelFor(soundPlaying)}
+        title={soundLabelFor(soundPlaying)}
         onClick={toggleSound}
       >
-        <span aria-hidden="true">{soundPlaying ? "Ⅱ" : "♪"}</span>
-        {locale === "en" ? (soundPlaying ? "Sound on" : "Play sound") : locale === "zh-Hans" ? (soundPlaying ? "声音已开启" : "开启声音") : (soundPlaying ? "聲音已開啟" : "開啟聲音")}
+        <SoundIcon on={soundPlaying} />
       </button>
     </div>
   );

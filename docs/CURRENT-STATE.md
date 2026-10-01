@@ -43,6 +43,9 @@
 
 **出生資料 → 四柱與基礎解釋 → 單一完整報告 → 可選追問**
 
+- 公開不存在路由使用昭梧雙語 404 引導頁，提供返回首頁與查看最新更新；Vite SPA fallback 仍由 TanStack Router 判定 client-side not found。
+- 公開回應由 Vercel 全域補上 `X-Content-Type-Options: nosniff` 與 `Referrer-Policy: strict-origin-when-cross-origin`；Vercel 既有 HSTS 維持有效。
+
 - 七個公開專卷入口已退出 active path。
 - 專項 routes（紫微／七政／西占／印度古法／一掌等）保留作站主／內部能力與回歸驗證。
 - 首頁吉象圖鑑入口隱藏；獨立頁與站主圖庫保留。

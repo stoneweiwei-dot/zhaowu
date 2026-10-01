@@ -14,3 +14,15 @@ test("Vercel blocks non-main branch deploys and ignores docs-only production bui
   assert.match(config.ignoreCommand, /VERCEL_GIT_COMMIT_REF/);
   assert.match(config.ignoreCommand, /git diff --quiet/);
 });
+
+test("public responses receive baseline browser security headers", () => {
+  const globalHeaders = config.headers.find(({ source }) => source === "/(.*)")?.headers ?? [];
+  assert.deepEqual(globalHeaders.find(({ key }) => key === "X-Content-Type-Options"), {
+    key: "X-Content-Type-Options",
+    value: "nosniff",
+  });
+  assert.deepEqual(globalHeaders.find(({ key }) => key === "Referrer-Policy"), {
+    key: "Referrer-Policy",
+    value: "strict-origin-when-cross-origin",
+  });
+});

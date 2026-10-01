@@ -34,6 +34,7 @@ function englishGanZhi(value: string): string {
 }
 
 function englishQuestionKind(question: string, fallback: QuestionKind): QuestionKind {
+  if (/\bA\s*[:：].+?\bB\s*[:：]/is.test(question) || /\b(?:choose|pick|select)\s+(?:A\s+or\s+B|between\s+A\s+and\s+B)\b/i.test(question)) return "choice";
   if (/\b(work|career|job|role|profession|business|project|study|school|exam)\b/i.test(question)) return "career";
   if (/\b(love|relationship|partner|dating|marriage|romance)\b/i.test(question)) return "love";
   if (/\b(money|finance|income|salary|investment|debt|budget)\b/i.test(question)) return "money";
@@ -42,6 +43,25 @@ function englishQuestionKind(question: string, fallback: QuestionKind): Question
   if (/\b(choose|choice|compare|versus|\bvs\b|which option)\b/i.test(question)) return "choice";
   if (/\b(when|timing|what time|which month|which year|how soon)\b/i.test(question)) return "timing";
   return fallback;
+}
+
+function englishLabelledChoice(question: string, chart: Chart): string | null {
+  const options = question.match(/(?:^|[\s,;])A\s*[:：]\s*([\s\S]*?)(?:[;\n]\s*|\s+)B\s*[:：]\s*([\s\S]*?)(?:[.?!]|$)/i);
+  if (!options) return null;
+  const [a, b] = [options[1], options[2]].map((value) => value.trim());
+  if (!a || !b) return null;
+  const move = /\b(new|change|switch|leave|quit|move|higher|raise|increase|grow|promotion|start)\b/i;
+  const stay = /\b(stay|remain|keep|current|stable|steady|unchanged|same)\b/i;
+  const score = (value: string) => Number(move.test(value)) - Number(stay.test(value));
+  if (score(a) === score(b)) return null;
+  const highLoad = chart.strength.tendency.includes("旺");
+  const chooseA = highLoad ? score(a) > score(b) : score(a) < score(b);
+  const chosen = chooseA ? "A" : "B";
+  const detail = (chooseA ? a : b).slice(0, 100);
+  const reason = highLoad
+    ? "The chart's current structural reading favours turning capacity into a defined result, provided the added responsibility and exit cost are manageable."
+    : "The chart's current structural reading favours a steadier load, unless the other option offers clearly better support and an exit route.";
+  return `Direct answer: lean towards ${chosen} (${detail}). ${reason} Compare pay, travel time, workload and the worst-case cost before committing.`;
 }
 
 function horizonPhrase(question: string): string {
@@ -104,6 +124,8 @@ function englishAction(kind: QuestionKind): string {
 }
 
 function englishDirectAnswer(question: string, chart: Chart, kind: QuestionKind): string {
+  const labelledChoice = englishLabelledChoice(question, chart);
+  if (labelledChoice) return labelledChoice;
   const region = englishRegion(chart);
   const lead = prioritise(region);
   if (/\b(travel|trip|vacation)\b/i.test(question)) {
@@ -337,7 +359,14 @@ export function finalizeReading(
   question: string,
   chart: Chart,
   raw: Reading,
-  locale: AppLocale = "zh-Hans",
+  // docs/I18N-JA-KO-STATUS.md: zh-Hans is withdrawn from the UI and any saved
+  // zh-Hans preference folds to zh-Hant — it is kept only in internal content
+  // tables. A caller with no locale (an omitted argument, or a stored/legacy
+  // AnalysisResult whose .locale was never populated — e.g. followUpLife()
+  // reusing an older base report) must fall back to that same real default,
+  // not to the withdrawn zh-Hans, or the report body renders in a script no
+  // real user can ever select.
+  locale: AppLocale = "zh-Hant",
 ): Reading {
   const contracted = applyAnswerContract(question, chart, raw);
   const reading = applyCustomerAnswerHotfix(question, chart, contracted);

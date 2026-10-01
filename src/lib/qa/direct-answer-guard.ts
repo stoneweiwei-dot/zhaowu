@@ -1,4 +1,4 @@
-import { analyzeStructure } from "@/lib/bazi/structure";
+import { analyzeStructure, completionPhrase } from "@/lib/bazi/structure";
 import type { AppLocale, Chart, Reading } from "@/lib/bazi/types";
 import { enforceQuestionRelevance } from "@/lib/qa/question-relevance-guard";
 
@@ -22,8 +22,8 @@ function guardStructure(chart: Chart, locale?: AppLocale): string {
   const structure = analyzeStructure(chart);
   const suffix = structure.established ? "" : zh(locale, "方向", "方向", " direction");
   return zh(locale,
-    `直接回答：目前主格判為「${structure.label}${suffix}」，結構完成度為「${structure.completion.label}」。這裡的格局大小只指結構完成度與容量，不代表人的等級、財富或社會地位。`,
-    `直接回答：目前主格判为「${structure.label}${suffix}」，结构完成度为「${structure.completion.label}」。这里的格局大小只指结构完成度与容量，不代表人的等级、财富或社会地位。`,
+    `直接回答：目前主格判為「${structure.label}${suffix}」，結構完成度為「${completionPhrase(structure.completion.label)}」。這裡的格局大小只指結構完成度與容量，不代表人的等級、財富或社會地位。`,
+    `直接回答：目前主格判为「${structure.label}${suffix}」，结构完成度为「${completionPhrase(structure.completion.label)}」。这里的格局大小只指结构完成度与容量，不代表人的等级、财富或社会地位。`,
     `Direct answer: the current primary structure is ${structure.label}${suffix}, with completion assessed as ${structure.completion.label}. This describes structural completion and capacity, not human worth, guaranteed wealth, or social rank.`);
 }
 
