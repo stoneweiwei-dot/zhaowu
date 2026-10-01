@@ -25,3 +25,13 @@ test("footer view-count line is styled and the counter RPC is unchanged", () => 
   const stats = /rpc\/zhaowu_record_visit/;
   return readFile(new URL("../src/lib/site-stats.ts", import.meta.url), "utf8").then((src) => assert.match(src, stats));
 });
+
+test("automated browsers (CI / smoke / Playwright) are never counted as visits", async () => {
+  const src = await readFile(new URL("../src/lib/site-stats.ts", import.meta.url), "utf8");
+  assert.match(src, /export function isAutomatedBrowser/);
+  assert.match(src, /nav\.webdriver/);
+  assert.match(src, /HeadlessChrome/);
+  // the guard must run before any network call or visitor key creation in recordVisit
+  const body = src.slice(src.indexOf("export async function recordVisit"));
+  assert.ok(body.indexOf("isAutomatedBrowser()") > -1 && body.indexOf("isAutomatedBrowser()") < body.indexOf("publicFetch"));
+});
