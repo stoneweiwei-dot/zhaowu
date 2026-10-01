@@ -6305,6 +6305,7 @@ html:not([data-zw-theme="night"]) .zhaowu-site-header .zhaowu-header-mode-toggle
   .zhaowu-site-header .zhaowu-header-mode-toggle > button,
   .zhaowu-site-header .zhaowu-header-utility,
   .zhaowu-site-header .zhaowu-latest-update-link { transition: none; }
+}
 
 /* r228 — night dragon panel: one flat paper surface (owner 2026-10-01: same root cause as the player).
  * The panel is light paper at night, but shared night rules painted the answer, shortcut chips, input and
