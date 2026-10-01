@@ -3,12 +3,20 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { writeOgPreview } from "./write-og-preview.mjs";
 
-await writeOgPreview();
+const originalFetch = globalThis.fetch;
+globalThis.fetch = () => {
+  throw new Error("the OG preview build must not make network requests");
+};
+try {
+  await writeOgPreview();
+} finally {
+  globalThis.fetch = originalFetch;
+}
 
 const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const og = await readFile(new URL("../public/og.jpg", import.meta.url));
 
-test("link preview card is a committed 1200x630 JPEG", () => {
+test("prebuild restores the committed 1200x630 JPEG without network access", () => {
   assert.equal(og.subarray(0, 2).toString("hex"), "ffd8");
   assert.ok(og.length > 80_000);
   assert.ok(og.length < 800_000);

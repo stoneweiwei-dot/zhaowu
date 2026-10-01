@@ -7,9 +7,6 @@ const ROOT = resolve(HERE, "..");
 const SINGLE = resolve(HERE, "og-preview.jpg.b64");
 const PREFIX = "og-preview.jpg.b64.";
 const DEST = resolve(ROOT, "public/og.jpg");
-const PARTS = ["00", "01", "02", "030", "031", "032", "040", "041", "042", "050", "051", "052"];
-const RAW_BASE = "https://raw.githubusercontent.com/stoneweiwei-dot/zhaowu/feat/r61-og-preview-card/scripts/";
-
 function readLocalPayload() {
   if (existsSync(SINGLE)) {
     return readFileSync(SINGLE, "utf8").replace(/\s+/g, "");
@@ -21,23 +18,27 @@ function readLocalPayload() {
   return names.map((name) => readFileSync(resolve(HERE, name), "utf8").replace(/\s+/g, "")).join("");
 }
 
-async function readRemotePayload() {
-  const chunks = await Promise.all(
-    PARTS.map(async (part) => {
-      const res = await fetch(`${RAW_BASE}${PREFIX}${part}`);
-      if (!res.ok) throw new Error(`og preview payload ${part} HTTP ${res.status}`);
-      return (await res.text()).replace(/\s+/g, "");
-    }),
-  );
-  return chunks.join("");
-}
-
-export async function writeOgPreview() {
-  let payload = readLocalPayload();
-  if (!payload) payload = await readRemotePayload();
-  const raw = Buffer.from(payload, "base64");
+function validateJpeg(raw) {
   if (raw.subarray(0, 2).toString("hex") !== "ffd8") {
     throw new Error("og preview source is not a JPEG");
+  }
+  if (raw.readUInt16BE(raw.length - 2) !== 0xffd9) {
+    throw new Error("og preview source is an incomplete JPEG");
+  }
+  return raw;
+}
+
+export function writeOgPreview() {
+  const payload = readLocalPayload();
+  // The checked-in production image is the deterministic offline source of truth.
+  // Do not make builds depend on an old feature branch or raw.githubusercontent.com.
+  const raw = payload
+    ? validateJpeg(Buffer.from(payload, "base64"))
+    : existsSync(DEST)
+      ? validateJpeg(readFileSync(DEST))
+      : null;
+  if (!raw) {
+    throw new Error("og preview source is missing: restore public/og.jpg or a local scripts/og-preview payload");
   }
   mkdirSync(dirname(DEST), { recursive: true });
   writeFileSync(DEST, raw);
