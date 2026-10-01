@@ -10,7 +10,8 @@ test("r201 removes the standalone homepage comic and makes Today useful immediat
   const daily = await source("src/components/daily-almanac-widget.tsx");
   assert.doesNotMatch(home, /SongComicToday/);
   assert.match(home, /useState<"today" \| "quiz" \| "notes" \| null>\("today"\)/);
-  assert.match(daily, /useState\(embedded \? 1 : 0\)/);
+  // r228: the almanac (sacred days first) is the opening page; the wardrobe page is one tab away.
+  assert.match(daily, /const \[page, setPage\] = useState\(0\)/);
   assert.match(daily, /zhaowu-today-guide__tabs/);
   assert.match(daily, /DailyColorsModule variant="embed"/);
 });
@@ -27,12 +28,12 @@ test("r201 restores useful wardrobe content in the embedded mini app", async () 
   assert.match(daily, /tone\.mask/);
 });
 
-test("r201 constrains spirit-slip gallery art instead of hard-inserting source dimensions", async () => {
+test("r228 replaces the spirit-slip gallery art with an original paper lot", async () => {
   const daily = await source("src/components/daily-almanac-widget.tsx");
   const css = await source("src/zhaowu-design-system.css");
-  assert.match(daily, /zhaowu-spirit-slip-layout/);
-  assert.match(daily, /loading="lazy"/);
-  assert.match(css, /\.zhaowu-spirit-slip-art[\s\S]*aspect-ratio:\s*9\s*\/\s*16/);
-  assert.match(css, /\.zhaowu-spirit-slip-art img[\s\S]*object-fit:\s*cover/);
-  assert.match(css, /@media\(max-width:520px\)[\s\S]*grid-template-columns:104px minmax\(0,1fr\)/);
+  assert.match(daily, /zhaowu-lot__strip/);
+  assert.match(daily, /zhaowu-lot__poem/);
+  assert.doesNotMatch(daily, /zhaowu-spirit-slip-layout|galleryPublicUrl|<img[^>]*asset/);
+  assert.match(css, /\.zhaowu-lot__poem \{[^}]*writing-mode: vertical-rl/);
+  assert.match(css, /\.zhaowu-lot \{ display: grid; grid-template-columns: 124px minmax\(0, 1fr\)/);
 });

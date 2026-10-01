@@ -6192,3 +6192,189 @@ html body .zhaowu-dragon-music-controls[data-background-music-control] {
   box-shadow: none !important;
   justify-content: flex-start !important;
 }
+
+/* r228 — opening video: no flash of the old r148 opening before the owner's clip (owner 2026-10-01: "一開始還是會有
+ * 原來那個動畫卡一秒，最後才開始播新的"). While the owner's pick is still resolving, and for any custom clip, the fallback
+ * layer is a plain dark field: the r148 poster, shade and "正在準備昭梧" copy only belong to the built-in clip. */
+html body .zhaowu-lotus-intro:has(> .zhaowu-lotus-intro__fallback.is-neutral) { background: #0b120e !important; }
+html body .zhaowu-lotus-intro__fallback.is-neutral { background: #0b120e !important; }
+html body .zhaowu-lotus-intro__fallback.is-neutral > * { display: none !important; }
+
+/* r228 — owner music list: the full file name is always readable, and the action buttons sit small *under* the name
+ * (owner 2026-10-01: button labels were larger and longer than the track names, which were cut off with "…"). */
+html body [data-owner-selectable-file="music"] [data-owner-music-name] {
+  display: block !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-all !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+html body [data-owner-selectable-file="music"] [data-owner-music-actions] button {
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 26px !important;
+  height: 26px !important;
+  padding: 0 10px !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* r228 — Today guide: almanac first, full 神佛聖誕 list, and a redrawn 今日靈籤 (owner 2026-10-01).
+ * The almanac page now opens first and leads with the sacred-day card (every 佛／道／民間 birthday on the lunar date,
+ * the 十齋日 buddha and the next observance). The spirit slip is an original paper lot drawn in CSS — no random
+ * gallery photos. Day = paper surface, night = deep-green surface; the lot strip stays paper in both. */
+html body .zhaowu-today-card.is-sacred { padding: 16px 8px 14px !important; }
+html body .zhaowu-today-card.is-sacred .zhaowu-sacred-list { display: grid; gap: 9px; margin: 2px 0 0; padding: 0; list-style: none; }
+html body .zhaowu-today-card.is-sacred .zhaowu-sacred-list li { display: flex; align-items: baseline; gap: 10px; }
+html body .zhaowu-today-card.is-sacred .zhaowu-sacred-list li i {
+  flex: none; padding: 1px 8px; border: 1px solid currentColor; border-radius: 999px;
+  font-size: 11px; font-style: normal; font-weight: 700; letter-spacing: .04em; line-height: 1.7;
+}
+html body .zhaowu-today-card.is-sacred li[data-sacred-kind="buddha"] i { color: #8a5a1f; background: rgba(176, 126, 52, .12); }
+html body .zhaowu-today-card.is-sacred li[data-sacred-kind="dao"] i { color: #2c6c58; background: rgba(44, 108, 88, .10); }
+html body .zhaowu-today-card.is-sacred li[data-sacred-kind="folk"] i { color: #a7473d; background: rgba(167, 71, 61, .09); }
+html body .zhaowu-today-card.is-sacred .zhaowu-sacred-list li strong {
+  color: #263c35; font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-size: 18px; font-weight: 620; line-height: 1.45;
+}
+html body .zhaowu-today-card.is-sacred .zhaowu-sacred-none { margin: 4px 0 0; color: #384a43; font-size: 14px; line-height: 1.6; }
+html body .zhaowu-today-card.is-sacred .zhaowu-sacred-line { display: flex; gap: 10px; margin: 9px 0 0; color: #384a43; font-size: 13px; line-height: 1.6; }
+html body .zhaowu-today-card.is-sacred .zhaowu-sacred-line b { flex: none; min-width: 66px; color: #2c6c58; }
+html body .zhaowu-today-card.is-sacred .zhaowu-sacred-note { display: block; margin-top: 10px; color: #716b5d; font-size: 11.5px; font-style: normal; line-height: 1.55; }
+html[data-zw-theme="night"] body .zhaowu-today-card.is-sacred .zhaowu-sacred-list li strong { color: #fff9e9; }
+html[data-zw-theme="night"] body .zhaowu-today-card.is-sacred li[data-sacred-kind="buddha"] i { color: #f0cf8e; background: rgba(240, 207, 142, .12); }
+html[data-zw-theme="night"] body .zhaowu-today-card.is-sacred li[data-sacred-kind="dao"] i { color: #9fd6c0; background: rgba(159, 214, 192, .12); }
+html[data-zw-theme="night"] body .zhaowu-today-card.is-sacred li[data-sacred-kind="folk"] i { color: #f1a89f; background: rgba(241, 168, 159, .12); }
+html[data-zw-theme="night"] body .zhaowu-today-card.is-sacred .zhaowu-sacred-none,
+html[data-zw-theme="night"] body .zhaowu-today-card.is-sacred .zhaowu-sacred-line { color: #d3c9b8; }
+html[data-zw-theme="night"] body .zhaowu-today-card.is-sacred .zhaowu-sacred-line b { color: #e7ce9e; }
+html[data-zw-theme="night"] body .zhaowu-today-card.is-sacred .zhaowu-sacred-note { color: #bfb4a2; }
+
+html body .zhaowu-lot-wrap {
+  --lot-ink: #2b453a; --lot-soft: #4d5a53; --lot-line: rgba(86, 68, 45, .2); --lot-accent: #8a6a3c; --lot-btn-bg: #2f5b4a; --lot-btn-ink: #fbf7ee;
+  display: grid; gap: 14px; padding: 18px 4px 6px;
+}
+html[data-zw-theme="night"] body .zhaowu-lot-wrap {
+  --lot-ink: #fff9e9; --lot-soft: #d3c9b8; --lot-line: rgba(231, 206, 158, .3); --lot-accent: #e7ce9e; --lot-btn-bg: #e7ce9e; --lot-btn-ink: #1b3a30;
+}
+html body .zhaowu-lot-wrap[hidden] { display: none !important; }
+html body .zhaowu-lot-wrap .zhaowu-lot-note { margin: 0; color: var(--lot-soft); font-size: 12.5px; letter-spacing: .08em; }
+
+html body .zhaowu-lot { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: 16px; align-items: start; }
+html body .zhaowu-lot[data-lot-script="latin"] { grid-template-columns: minmax(0, 1fr); }
+html body .zhaowu-lot__strip {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 26px 8px 16px; border: 1px solid rgba(128, 98, 57, .38); border-radius: 6px 6px 24px 24px;
+  background: #f7f0df; color: #2f2a21; box-shadow: 0 8px 20px rgba(36, 26, 12, .16);
+}
+html body .zhaowu-lot__strip::before {
+  content: ""; position: absolute; top: 9px; left: 50%; width: 9px; height: 9px;
+  border: 1px solid rgba(128, 98, 57, .5); border-radius: 50%; transform: translateX(-50%);
+}
+html body .zhaowu-lot__number {
+  padding-bottom: 8px; border-bottom: 1px solid rgba(128, 98, 57, .3); color: #a7473d;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif); font-size: 13px; font-weight: 650; letter-spacing: .16em; text-indent: .16em;
+}
+html body .zhaowu-lot__poem {
+  display: block; margin: 0; padding: 0; list-style: none; color: #2f2a21;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif); font-size: 15px; line-height: 1.7; letter-spacing: .1em;
+  writing-mode: vertical-rl; text-orientation: upright; min-height: 8.6em; max-width: 100%;
+}
+html body .zhaowu-lot__poem li { margin: 0; padding: 0 2px; }
+html body .zhaowu-lot__strip { overflow: hidden; }
+html body .zhaowu-lot__grade {
+  padding: 4px 5px; border: 1.5px solid #a7473d; border-radius: 3px; color: #a7473d;
+  font-size: 12px; font-style: normal; font-weight: 700; letter-spacing: .1em; line-height: 1.2;
+  writing-mode: vertical-rl; text-orientation: upright;
+}
+html body .zhaowu-lot[data-lot-script="latin"] .zhaowu-lot__strip { align-items: flex-start; padding: 26px 16px 16px; border-radius: 6px 6px 18px 18px; }
+html body .zhaowu-lot[data-lot-script="latin"] .zhaowu-lot__poem { writing-mode: horizontal-tb; text-orientation: mixed; min-height: 0; font-size: 14px; line-height: 1.7; letter-spacing: .01em; }
+html body .zhaowu-lot[data-lot-script="latin"] .zhaowu-lot__poem li { padding: 0; }
+html body .zhaowu-lot[data-lot-script="latin"] .zhaowu-lot__grade { writing-mode: horizontal-tb; text-orientation: mixed; }
+
+html body .zhaowu-lot__body { display: grid; gap: 10px; min-width: 0; color: var(--lot-ink); }
+html body .zhaowu-lot__kicker { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--lot-accent); font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+html body .zhaowu-lot__body h3 {
+  margin: 0; color: var(--lot-ink); font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-size: 26px; font-weight: 620; line-height: 1.25;
+}
+html body .zhaowu-lot__body dl { display: grid; gap: 12px; margin: 2px 0 0; }
+html body .zhaowu-lot__body dl > div { display: grid; gap: 3px; padding-top: 10px; border-top: 1px solid var(--lot-line); }
+html body .zhaowu-lot__body dt { color: var(--lot-accent); font-size: 12px; font-weight: 700; letter-spacing: .1em; }
+html body .zhaowu-lot__body dd { margin: 0; color: var(--lot-soft); font-size: 14px; line-height: 1.75; }
+html body .zhaowu-lot__body dl > div:first-child dd { color: var(--lot-ink); font-weight: 600; }
+html body .zhaowu-lot__basis { margin: 4px 0 0; color: var(--lot-soft); font-size: 12px; letter-spacing: .06em; }
+html body .zhaowu-lot__mark { margin: 0; color: var(--lot-accent); font-size: 11px; letter-spacing: .28em; }
+
+html body .zhaowu-lot-tube { display: grid; justify-items: center; gap: 10px; padding: 8px 0 4px; color: var(--lot-accent); text-align: center; }
+html body .zhaowu-lot-tube svg { display: block; }
+html body .zhaowu-lot-tube button {
+  min-height: 44px; padding: 0 26px; border: 0; border-radius: 999px; background: var(--lot-btn-bg); color: var(--lot-btn-ink);
+  font-size: 14px; font-weight: 700; letter-spacing: .1em; box-shadow: none;
+}
+html body .zhaowu-lot-tube p { max-width: 24rem; margin: 0; color: var(--lot-soft); font-size: 12px; line-height: 1.65; }
+@media (prefers-reduced-motion: no-preference) {
+  html body .zhaowu-lot { animation: zw-lot-in .5s cubic-bezier(.22, 1, .36, 1) both; }
+}
+@keyframes zw-lot-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* r228 — night dragon-assistant panel: no leftover dark-green blocks on the paper panel (owner 2026-10-01: "播放器夜間
+ * 版本底下還是會有那個顏色不太自然"). The shared night rule paints .zhaowu-dragon-guide-answer #102a23 and the older
+ * night button/input rules keep the three shortcut buttons and the question box dark green. Inside the paper panel
+ * they now follow the day layout exactly: transparent rows with hairline dividers, ink text, jade links. */
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer {
+  border: 0 !important;
+  border-bottom: 1px solid rgba(102, 85, 62, .22) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 14px 0 !important;
+  color: #4b4942 !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer p { color: #4b4942 !important; }
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer button {
+  background: transparent !important;
+  color: #315d50 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(49, 93, 80, .4) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-shortcuts {
+  border-bottom: 1px solid rgba(102, 85, 62, .22) !important;
+  background: transparent !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-shortcuts button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #315d50 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel > form input {
+  border: 0 !important;
+  border-bottom: 1px solid rgba(86, 72, 54, .38) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #2d2b27 !important;
+  box-shadow: none !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel > form input::placeholder { color: #6f6a5e !important; opacity: 1 !important; }
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel > form button:disabled {
+  background: rgba(49, 93, 80, .38) !important;
+  color: #fffaf1 !important;
+}
+
+/* r228 — night: lot title/body stay readable on the jade card; the form input follows the paper panel */
+html[data-zw-theme="night"] body .zhaowu-lot-wrap .zhaowu-lot__body h3 { color: #fff9e9 !important; }
+html[data-zw-theme="night"] body .zhaowu-lot-wrap .zhaowu-lot__body dd { color: #d3c9b8 !important; }
+html[data-zw-theme="night"] body .zhaowu-lot-wrap .zhaowu-lot__body dl > div:first-child dd { color: #fff9e9 !important; }
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel form input,
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel form input:focus { background: transparent !important; color: #2d2b27 !important; box-shadow: none !important; }

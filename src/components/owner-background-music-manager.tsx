@@ -207,7 +207,7 @@ export function OwnerBackgroundMusicManager() {
         <div className="mt-5 space-y-3">
           {!tracks.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
           {tracks.map((track) => <article key={track.id} data-owner-selectable-file="music" className={`border-t border-line/70 pt-4 ${selectedIds.includes(track.id) ? "rounded-xl bg-cinnabar/[0.035] px-3 pb-3" : ""}`}>
-            <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="flex items-start gap-3">
               <div className="flex min-w-0 flex-1 items-start gap-3">
                 <label className={`mt-0.5 grid min-h-11 min-w-11 place-items-center rounded-full border border-line bg-paper/60 ${track.enabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`} title={track.enabled ? c.activeCannotSelect : c.select}>
                   <input type="checkbox" className="h-4 w-4" disabled={busy || track.enabled} checked={selectedIds.includes(track.id)} onChange={() => toggleSelected(track)} aria-label={`${c.select} ${track.name}`} />
@@ -223,15 +223,15 @@ export function OwnerBackgroundMusicManager() {
                       <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line px-3 text-xs" onClick={() => { setEditingId(null); setEditingName(""); }}>{c.cancel}</button>
                     </div>
                   ) : (
-                    <div className="flex flex-wrap items-center gap-2"><h3 className="truncate font-medium text-ink">{track.name}</h3>{track.enabled ? <span className="rounded-full border border-emerald-700/25 bg-emerald-700/5 px-2.5 py-1 text-[11px] text-emerald-800">{c.current}</span> : null}</div>
+                    <div className="flex flex-wrap items-start gap-2"><h3 data-owner-music-name className="min-w-0 break-all font-medium leading-snug text-ink">{track.name}</h3>{track.enabled ? <span className="shrink-0 rounded-full border border-emerald-700/25 bg-emerald-700/5 px-2 py-0.5 text-[11px] text-emerald-800">{c.current}</span> : null}</div>
                   )}
                   <p className="mt-1 text-xs text-ink-mute">{formatCodec(track)} · {formatSize(track.fileSize)}</p>
+                  <div data-owner-music-actions className="mt-2 flex flex-wrap items-center gap-1.5">
+                    {!track.enabled ? <button type="button" disabled={busy} className="rounded-full bg-wood px-2.5 text-[11px] text-cream disabled:opacity-50" onClick={() => void onActivate(track)}>{c.use}</button> : null}
+                    <button type="button" disabled={busy || editingId === track.id} className="rounded-full border border-line bg-paper/60 px-2.5 text-[11px] text-ink-soft disabled:opacity-40" onClick={() => beginRename(track)}>{c.rename}</button>
+                    <button type="button" disabled={busy || track.enabled} className="rounded-full px-2.5 text-[11px] text-cinnabar disabled:opacity-30" onClick={() => void onDelete(track)}>{c.delete}</button>
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {!track.enabled ? <button type="button" disabled={busy} className="min-h-10 rounded-full bg-wood px-3 text-xs text-cream disabled:opacity-50" onClick={() => void onActivate(track)}>{c.use}</button> : null}
-                <button type="button" disabled={busy || editingId === track.id} className="min-h-10 rounded-full border border-line bg-paper/60 px-3 text-xs text-ink-soft disabled:opacity-40" onClick={() => beginRename(track)}>{c.rename}</button>
-                <button type="button" disabled={busy || track.enabled} className="min-h-10 rounded-full px-3 text-xs text-cinnabar disabled:opacity-30" onClick={() => void onDelete(track)}>{c.delete}</button>
               </div>
             </div>
             <audio className="mt-3 w-full" controls preload="none"><source src={track.url} type={track.contentType || "audio/mpeg"} /></audio>

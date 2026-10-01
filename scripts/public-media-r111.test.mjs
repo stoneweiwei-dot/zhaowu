@@ -80,5 +80,6 @@ test("public Supabase-managed media requires a verified safe URL and preserves o
   assert.match(galleryAssets, /cdn_url,cdn_provider,cdn_verified_at/);
   assert.match(galleryAssets, /rows\.map\(preferVerifiedPublicMedia\)/);
   assert.match(galleryAssets, /galleryFallbackUrl/);
-  assert.match(dailyAlmanac, /onError=.*galleryFallbackUrl/);
+  // r228: the spirit slip no longer pulls random gallery photos, so the almanac has no gallery URL fallback to verify.
+  assert.doesNotMatch(dailyAlmanac, /galleryPublicUrl|galleryFallbackUrl|listPublicGalleryAssets/);
 });

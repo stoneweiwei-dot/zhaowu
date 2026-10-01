@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { DailyColorsModule } from "@/components/daily-colors-module";
 import { useI18n } from "@/lib/i18n";
 import { stemElement } from "@/lib/element-colors";
-import { galleryFallbackUrl, galleryPublicUrl, listPublicGalleryAssets, type GalleryAsset } from "@/lib/gallery-assets";
-import { isPublicAtlasAsset } from "@/lib/gallery-groups";
+import { hantToHans, nextSacredAfter, sacredForDate, SACRED_KIND_LABEL } from "@/lib/sacred-days";
+import { spiritSlipFor } from "@/lib/spirit-slips";
 import { dayGanzhi, hourPillar, yearMonthPillars, lunarDateLabel, toLunar } from "@/lib/bazi/calendar";
 
 const PILLAR_KEYS = ["year", "month", "day", "hour"] as const;
@@ -71,17 +71,6 @@ function relationText(branch: string, locale: Locale) {
   const value = `日支${branch}｜合${LIUHE[branch] ?? "—"}・沖${CHONG[branch] ?? "—"}・三合${mates}`; return locale === "zh-Hans" ? value.replace("沖", "冲") : value;
 }
 function timeWindows(branch: string) { const group = SANHE.find((row) => row.includes(branch)) ?? []; return { good: Array.from(new Set([LIUHE[branch], ...group])).filter(Boolean).slice(0, 4), caution: Array.from(new Set([CHONG[branch], ...(XING[branch] ?? [])])).filter(Boolean).slice(0, 4) }; }
-function sacredDay(date: Date, jieName: string, locale: Locale) {
-  const lunar = toLunar(date.getFullYear(), date.getMonth() + 1, date.getDate()); const key = lunar ? `${lunar.month}-${lunar.day}` : "";
-  const known: Record<string, string> = { "1-1": "彌勒菩薩聖誕", "1-9": "玉皇上帝聖誕", "1-15": "上元天官聖誕", "2-19": "觀世音菩薩聖誕", "3-3": "玄天上帝聖誕", "4-8": "釋迦牟尼佛誕", "6-19": "觀世音菩薩成道", "7-15": "中元地官聖誕", "7-30": "地藏菩薩聖誕", "9-19": "觀世音菩薩出家", "10-15": "下元水官聖誕", "12-8": "釋迦牟尼佛成道日" };
-  let observance = known[key] ?? ""; if (!observance && lunar && [8, 14, 15, 23, 29, 30].includes(lunar.day)) observance = "傳統六齋日";
-  if (locale === "en") {
-    const english: Record<string, string> = { "1-1": "Maitreya observance", "1-9": "Jade Emperor observance", "1-15": "Heaven Official observance", "2-19": "Guanyin's birthday", "3-3": "Xuantian Emperor observance", "4-8": "Buddha's birthday", "6-19": "Guanyin's enlightenment", "7-15": "Earth Official observance", "7-30": "Ksitigarbha observance", "9-19": "Guanyin's renunciation", "10-15": "Water Official observance", "12-8": "Buddha's enlightenment" };
-    return `${english[key] ?? (observance ? "Traditional observance" : "No confirmed observance")} · ${jieLabel(jieName, locale)}`;
-  }
-  if (locale === "zh-Hans") { observance = observance.replaceAll("觀", "观").replaceAll("薩", "萨").replaceAll("誕", "诞").replaceAll("傳", "传").replaceAll("齋", "斋"); return observance ? `${observance}｜节令：${jieLabel(jieName, locale)}` : `节令：${jieLabel(jieName, locale)}｜佛道主圣日：待考`; }
-  return observance ? `${observance}｜節令：${jieLabel(jieName, locale)}` : `節令：${jieLabel(jieName, locale)}｜佛道主聖日：待考`;
-}
 function dayStyle(stem: string, locale: Locale) {
   const element = stemElement(stem) ?? "水";
   const map: Record<string, { core: string; colors: string; jewellery: string; mask: string }> = {
@@ -100,22 +89,22 @@ function dayStyle(stem: string, locale: Locale) {
   }
   if (locale === "zh-Hans") return Object.fromEntries(Object.entries(value).map(([key, text]) => [key, text.replaceAll("氣", "气").replaceAll("鋒", "锋").replaceAll("觀", "观").replaceAll("銀", "银").replaceAll("綠", "绿").replaceAll("藍", "蓝").replaceAll("邊", "边").replaceAll("靜", "静")])) as typeof value; return value;
 }
-const SLIPS = {
-  "zh-Hant": [["靜心守中", "先把最重要的一件事守住，雜音自然會退。", "少猜一步，慢半拍確認；真正要保留的是自己的節奏。"], ["應緣而啟", "有些門不是硬推開的。先看清哪一個回應是真正的邀請。", "先觀察，再靠近；有回聲的地方才值得投入更多心力。"], ["先定後行", "現在最重要的不是速度，而是先把方向定清楚。", "涉及承諾、金錢或關係時，先確認核心條件。"], ["留白養氣", "今天的空白不是浪費，而是在替下一步保留判斷力。", "把能量留給需要你親自決定的事。"]],
-  "zh-Hans": [["静心守中", "先把最重要的一件事守住，杂音自然会退。", "少猜一步，慢半拍确认；真正要保留的是自己的节奏。"], ["应缘而启", "有些门不是硬推开的。先看清哪一个回应是真正的邀请。", "先观察，再靠近；有回声的地方才值得投入更多心力。"], ["先定后行", "现在最重要的不是速度，而是先把方向定清楚。", "涉及承诺、金钱或关系时，先确认核心条件。"], ["留白养气", "今天的空白不是浪费，而是在替下一步保留判断力。", "把能量留给需要你亲自决定的事。"]],
-  en: [["Hold Your Centre", "Protect the one thing that matters most and let the noise fall away.", "Guess less, confirm first, and keep your own pace."], ["Open With Response", "Notice what is genuinely responding to you before you invest more.", "Observe first, then move closer."], ["Set Direction First", "Speed is not the priority; set the direction before moving.", "Confirm the core conditions before acting on emotion."], ["Leave Some Space", "Doing slightly less can preserve the judgement you need next.", "Keep your capacity for decisions only you can make."]]
-} as const;
-
 export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean }) {
   const { locale } = useI18n(); const now = useNow(); const visitor = useVisitorContext();
-  const [page, setPage] = useState(embedded ? 1 : 0); const [slipOpen, setSlipOpen] = useState(false); const [asset, setAsset] = useState<GalleryAsset | null>(null); const [loadingSlip, setLoadingSlip] = useState(false);
+  const [page, setPage] = useState(0); const [drawn, setDrawn] = useState(false);
   const dayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   const pillars = useMemo(() => { const day = dayGanzhi(now.getFullYear(), now.getMonth() + 1, now.getDate()); const ym = yearMonthPillars(now); return { year: ym.year, month: ym.month, day, hour: hourPillar(day, now.getHours()), jieName: ym.jieName }; }, [dayKey, now.getHours(), now.getMinutes()]);
-  const values = [pillars.year, pillars.month, pillars.day, pillars.hour]; const branch = pillars.day[1]; const windows = timeWindows(branch); const tone = dayStyle(pillars.day[0], locale); const slip = useMemo(() => SLIPS[locale][stableHash(`${dayKey}|daily-spirit-slip`) % SLIPS[locale].length], [dayKey, locale]);
+  const values = [pillars.year, pillars.month, pillars.day, pillars.hour]; const branch = pillars.day[1]; const windows = timeWindows(branch); const tone = dayStyle(pillars.day[0], locale); const slip = useMemo(() => spiritSlipFor(stableHash(`${dayKey}|daily-spirit-slip`), locale), [dayKey, locale]); const sacred = useMemo(() => sacredForDate(now, locale), [dayKey, locale]); const nextSacred = useMemo(() => (sacred.items.length ? null : nextSacredAfter(now, locale)), [dayKey, locale, sacred.items.length]); const kindLabel = SACRED_KIND_LABEL[locale];
   const labels = locale === "en" ? { title: "Today Guide", sub: "Local time · weather · almanac rhythm", almanac: "Daily Almanac", wardrobe: "Daily Dress · Five Elements", spirit: "Daily Spirit Slip", location: "Location & weather", sacred: "Sacred day", pillars: "Stems & branches", core: "Core dynamic", yi: "Good for", ji: "Avoid", relation: "Combine · clash · penalty", good: "Supportive hours", caution: "Caution hours", colors: "Colours", jewellery: "Jewellery", mask: "Persona mask", open: "Open today guide" } : locale === "zh-Hans" ? { title: "今日指引", sub: "当地时间・即时天气・今日气机", almanac: "每日黄历", wardrobe: "每日穿衣｜五行色彩", spirit: "今日灵签｜签文指引", location: "所在地｜天气", sacred: "今日圣日", pillars: "今日干支", core: "核心气机", yi: "宜", ji: "忌", relation: "合冲刑害", good: "吉时", caution: "慎时", colors: "适宜颜色", jewellery: "适宜首饰", mask: "性格面具", open: "查看今日完整指引" } : { title: "今日指引", sub: "當地時間・即時天氣・今日氣機", almanac: "每日黃曆", wardrobe: "每日穿衣｜五行色彩", spirit: "今日靈籤｜籤文指引", location: "所在地｜天氣", sacred: "今日聖日", pillars: "今日干支", core: "核心氣機", yi: "宜", ji: "忌", relation: "合沖刑害", good: "吉時", caution: "慎時", colors: "適宜顏色", jewellery: "適宜首飾", mask: "性格面具", open: "查看今日完整指引" };
   const yi = locale === "en" ? "organise · finalise · edit · calm communication" : locale === "zh-Hans" ? "整理・定稿・审美・冷静沟通" : "整理・定稿・審美・冷靜溝通"; const ji = locale === "en" ? "forcing · rushing · task stacking · emotional drain" : locale === "zh-Hans" ? "硬碰・急躁・堆任务・情绪内耗" : "硬碰・急躁・堆任務・情緒內耗";
   const locationName = visitor?.city || (locale === "en" ? "Location not confirmed" : locale === "zh-Hans" ? "尚未确认位置" : "尚未確認位置"); const weather = `${weatherLabel(visitor?.weatherCode ?? null, locale)}${visitor?.temperature != null ? ` ${Math.round(visitor.temperature)}°C` : ""}`; const season = seasonLabel(visitor?.latitude ?? null, now.getMonth() + 1, locale); const pageTitles = [labels.almanac, labels.wardrobe, labels.spirit]; const tabLabels = locale === "en" ? ["Almanac", "Dress", "Spirit slip"] : locale === "zh-Hans" ? ["黄历", "穿衣", "灵签"] : ["黃曆", "穿衣", "靈籤"];
-  async function drawSlip() { setLoadingSlip(true); setSlipOpen(true); try { if (!asset) { const rows = (await listPublicGalleryAssets("visual-library")).filter(isPublicAtlasAsset); if (rows.length) setAsset(rows[stableHash(`${dayKey}|daily-spirit-slip|image`) % rows.length]); } } catch { /* artwork optional */ } finally { setLoadingSlip(false); } }
+  const tr = (hant: string) => (locale === "zh-Hans" ? hantToHans(hant) : hant);
+  const extra = locale === "en"
+    ? { sacredNone: "No confirmed birthday or observance today.", fast: "Fast-day Buddha", next: "Next observance", term: "Solar term", sacredNote: "Dates follow common Buddhist, Daoist and folk traditions; temples may differ, so follow your own temple's calendar.", draw: "Shake for today's slip", drawHint: "One slip a day, the same all day. A prompt for reflection, not a prediction.", verse: "Verse", gloss: "Reading", advice: "For today", when: (n: number) => (n === 1 ? "tomorrow" : `in ${n} days`), mark: "STONE ORIGINAL" }
+    : { sacredNone: tr("今日無載明的神佛聖誕。"), fast: tr("十齋日"), next: tr("下一個聖日"), term: tr("節令"), sacredNote: tr("日期依佛、道與民間信仰的通行說法，各寺廟宮觀略有差異，請以所屬寺廟為準。"), draw: tr("搖一支今日籤"), drawHint: tr("每日一支，當天固定；籤文是提醒與反思，不是預言。"), verse: tr("籤詩"), gloss: tr("解曰"), advice: tr("今日宜"), when: (n: number) => (n === 1 ? tr("明天") : tr(`${n} 天後`)), mark: tr("STONE 原創") };
+  const nextWhen = nextSacred ? (locale === "en" ? ` (${extra.when(nextSacred.inDays)})` : `（${extra.when(nextSacred.inDays)}）`) : "";
+  useEffect(() => { try { setDrawn(window.sessionStorage.getItem(`zhaowu:slip-drawn:${dayKey}`) === "1"); } catch { /* optional memory */ } }, [dayKey]);
+  function drawSlip() { setDrawn(true); try { window.sessionStorage.setItem(`zhaowu:slip-drawn:${dayKey}`, "1"); } catch { /* optional memory */ } }
 
   return <>
     <section id="daily-almanac" className="zhaowu-today-guide" aria-label={labels.title}>
@@ -131,9 +120,15 @@ export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean })
           <nav className="zhaowu-today-guide__tabs" aria-label={locale === "en" ? "Today sections" : locale === "zh-Hans" ? "今日分区" : "今日分區"}>{pageTitles.map((title, index) => <button key={title} type="button" aria-pressed={page === index} aria-label={title} onClick={() => setPage(index)}>{tabLabels[index]}</button>)}</nav>
           <div className="zhaowu-today-guide__page-title"><strong>{pageTitles[page]}</strong><span>{lunarLabel(now, locale)} · {timeLabel(now)}</span></div>
           <div className="zhaowu-today-guide__grid" hidden={page !== 0}>
+            <article className="zhaowu-today-card is-sacred" data-sacred-card>
+              <small>{labels.sacred}</small>
+              {sacred.items.length ? <ul className="zhaowu-sacred-list">{sacred.items.map((item) => <li key={item.label} data-sacred-kind={item.kind}><i>{kindLabel[item.kind]}</i><strong>{item.label}</strong></li>)}</ul> : <p className="zhaowu-sacred-none">{extra.sacredNone}</p>}
+              {sacred.fast ? <p className="zhaowu-sacred-line"><b>{extra.fast}</b>{sacred.fast}</p> : null}
+              {nextSacred ? <p className="zhaowu-sacred-line"><b>{extra.next}</b>{lunarLabel(nextSacred.date, locale)} · {nextSacred.items.map((item) => item.label).join(locale === "en" ? "; " : "、")}{nextWhen}</p> : null}
+              <em className="zhaowu-sacred-note">{extra.term}：{jieLabel(pillars.jieName, locale)} · {extra.sacredNote}</em>
+            </article>
             <article className="zhaowu-today-card is-date"><small>{weekdayLabel(now, locale)}</small><strong>{now.getFullYear()}.{String(now.getMonth() + 1).padStart(2, "0")}.{String(now.getDate()).padStart(2, "0")}</strong><span>{timeLabel(now)}</span></article>
             <article className="zhaowu-today-card is-weather"><small>{labels.location}</small><strong>{locationName} · {weather}</strong><span>{season}</span></article>
-            <article className="zhaowu-today-card is-sacred"><small>{labels.sacred}</small><strong>{sacredDay(now, pillars.jieName, locale)}</strong><span>{locale === "en" ? "Unverified observances stay marked for verification." : locale === "zh-Hans" ? "未核实圣日不作确定结论。" : "未核實聖日不作確定結論。"}</span></article>
             <article className="zhaowu-today-card is-pillars"><small>{labels.pillars}</small><span className="zhaowu-contract-label">{locale === "en" ? "Current year, month, day and hour pillars" : "當下年月日時干支"}</span><div className="zhaowu-today-pillars zhaowu-daily-pillars">{values.map((value, index) => <span data-element={stemElement(value[0]) ?? undefined} data-pillar={PILLAR_KEYS[index]} key={`${PILLAR_KEYS[index]}-${value}`}><b>{value}</b><i>{locale === "en" ? PILLAR_KEYS[index].toUpperCase() : ["年", "月", "日", "時"][index]}</i></span>)}</div></article>
             <article className="zhaowu-today-card is-core"><small>{labels.core}</small><strong>{tone.core}</strong><span>{jieLabel(pillars.jieName, locale)}</span></article>
             <article className="zhaowu-today-card is-guidance"><small>{labels.yi} / {labels.ji}</small><p className="is-yi"><b>{labels.yi}</b>{yi}</p><p className="is-ji"><b>{labels.ji}</b>{ji}</p></article>
@@ -142,11 +137,34 @@ export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean })
             <div className="zhaowu-today-guide__chips"><article><small>{labels.colors}</small><strong>{tone.colors}</strong></article><article><small>{labels.jewellery}</small><strong>{tone.jewellery}</strong></article><article><small>{labels.mask}</small><strong>{tone.mask}</strong></article></div>
           </div>
           <div className="zhaowu-today-guide__wardrobe" hidden={page !== 1}><DailyColorsModule variant="embed" date={now} /><div className="zhaowu-today-guide__wardrobe-notes"><span><small>{labels.colors}</small><strong>{tone.colors}</strong></span><span><small>{labels.jewellery}</small><strong>{tone.jewellery}</strong></span><span><small>{labels.mask}</small><strong>{tone.mask}</strong></span></div></div>
-          <div className="zhaowu-today-guide__spirit" hidden={page !== 2}><div><p>{locale === "en" ? "Reflection, not prediction" : locale === "zh-Hans" ? "一支签，照见当下；不作宿命判断" : "一支籤，照見當下；不作宿命判斷"}</p><h3>{slip[0]}</h3><strong>{slip[1]}</strong><span>{slip[2]}</span><button type="button" onClick={() => void drawSlip()} disabled={loadingSlip}>{loadingSlip ? "…" : locale === "en" ? "Open full slip" : locale === "zh-Hans" ? "查看完整签文" : "查看完整籤文"} →</button></div></div>
+          <div className="zhaowu-lot-wrap" hidden={page !== 2}>
+            <p className="zhaowu-lot-note">{locale === "en" ? "Reflection, not prediction" : locale === "zh-Hans" ? "一支签，照见当下；不作宿命判断" : "一支籤，照見當下；不作宿命判斷"}</p>
+            {drawn ? (
+              <article className="zhaowu-lot" data-lot-script={locale === "en" ? "latin" : "han"} aria-label={`${slip.number} ${slip.title}`}>
+                <div className="zhaowu-lot__strip">
+                  <b className="zhaowu-lot__number">{slip.number}</b>
+                  <ol className="zhaowu-lot__poem" aria-label={extra.verse}>{slip.poem.map((line) => <li key={line}>{line}</li>)}</ol>
+                  <i className="zhaowu-lot__grade" data-grade={slip.grade}>{slip.gradeLabel}</i>
+                </div>
+                <div className="zhaowu-lot__body">
+                  <p className="zhaowu-lot__kicker"><img className="zhaowu-spirit-slip-gourd" src="/brand-ui/mark-gourd.svg" alt="" width={24} height={24} decoding="async" />{labels.spirit}</p>
+                  <h3>{slip.title}</h3>
+                  <dl><div><dt>{extra.gloss}</dt><dd>{slip.gloss}</dd></div><div><dt>{extra.advice}</dt><dd>{slip.advice}</dd></div></dl>
+                  <p className="zhaowu-lot__basis">{pillars.day} · {timeLabel(now)}</p>
+                  <p className="zhaowu-lot__mark">{extra.mark}</p>
+                </div>
+              </article>
+            ) : (
+              <div className="zhaowu-lot-tube">
+                <svg viewBox="0 0 96 112" width="96" height="112" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M30 8v26M42 4v30M54 10v24M66 6v28" opacity=".7"/><path d="M22 34h52l-4 70a6 6 0 0 1-6 5H32a6 6 0 0 1-6-5z" fill="currentColor" fillOpacity=".06"/><path d="M24 54h48M25 86h46" opacity=".4"/></g></svg>
+                <button type="button" onClick={() => drawSlip()}>{extra.draw}</button>
+                <p>{extra.drawHint}</p>
+              </div>
+            )}
+          </div>
           <footer className="zhaowu-today-guide__footer"><span>{locale === "en" ? "Location and weather are fetched in the visitor browser; no private API key is exposed." : locale === "zh-Hans" ? "位置与天气由访客浏览器直接读取，不暴露私钥。" : "位置與天氣由訪客瀏覽器直接讀取，不暴露私鑰。"}</span></footer>
         </div>
       </details>
     </section>
-    {slipOpen ? <section className="zhaowu-spirit-slip" aria-label={labels.spirit}><button type="button" className="zhaowu-spirit-slip-close" onClick={() => setSlipOpen(false)} aria-label={locale === "en" ? "Close" : "收起"}>×</button><div className="zhaowu-spirit-slip-layout">{asset ? <figure className="zhaowu-spirit-slip-art"><img src={galleryPublicUrl(asset.storage_path, asset.bucket_id)} alt={asset.title || labels.spirit} loading="lazy" decoding="async" onError={(event) => { const fallback = galleryFallbackUrl(asset); if (fallback && event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} /></figure> : <div className="zhaowu-spirit-slip-art is-empty" aria-hidden>昭梧</div>}<div className="zhaowu-spirit-slip-content"><p className="zhaowu-spirit-slip-kicker"><img className="zhaowu-spirit-slip-gourd" src="/brand-ui/mark-gourd.svg" alt="" width={28} height={28} decoding="async" />{labels.spirit}</p><h2>{slip[0]}</h2><div className="zhaowu-spirit-slip-copy"><p><strong>{slip[1]}</strong></p><p>{slip[2]}</p></div><div className="zhaowu-spirit-slip-rule" aria-hidden /><p className="zhaowu-spirit-slip-basis">{pillars.day} · {timeLabel(now)}</p><p className="zhaowu-spirit-slip-mark">{locale === "en" ? "STONE ORIGINAL" : locale === "zh-Hans" ? "STONE 原创" : "STONE 原創"}</p></div></div></section> : null}
   </>;
 }
