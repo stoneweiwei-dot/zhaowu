@@ -6311,7 +6311,7 @@ html:not([data-zw-theme="night"]) .zhaowu-site-header .zhaowu-header-mode-toggle
  * The panel is light paper at night, but shared night rules painted the answer, shortcut chips, input and
  * (light) placeholder in dark-green/moon-white for a dark surface, giving heavy stuck-on blocks and a
  * light-on-light placeholder. Inside the panel they now use exactly the day layout. */
-html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer {
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer {
   border: 0 !important;
   border-bottom: 1px solid rgba(102, 85, 62, .22) !important;
   border-radius: 0 !important;
@@ -6319,10 +6319,10 @@ html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide
   box-shadow: none !important;
   padding: 14px 0 !important;
 }
-html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer p {
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer p {
   color: #3a3832 !important;
 }
-html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer button {
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer button {
   border: 0 !important;
   border-radius: 0 !important;
   padding: 0 !important;
@@ -6331,10 +6331,10 @@ html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide
   box-shadow: none !important;
   font-weight: 650 !important;
 }
-html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-shortcuts {
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-shortcuts {
   border-bottom: 1px solid rgba(102, 85, 62, .22) !important;
 }
-html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-shortcuts button {
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-shortcuts button {
   border: 0 !important;
   border-radius: 0 !important;
   padding: 0 !important;
@@ -6342,7 +6342,7 @@ html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-guide
   color: #315d50 !important;
   box-shadow: none !important;
 }
-html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel > form input {
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel > form input {
   border: 0 !important;
   border-bottom: 1px solid rgba(86, 72, 54, .38) !important;
   border-radius: 0 !important;
@@ -6350,16 +6350,16 @@ html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel > form input {
   color: #2d2b27 !important;
   box-shadow: none !important;
 }
-html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel > form input::placeholder {
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel > form input::placeholder {
   color: #6f6a5e !important;
   opacity: 1 !important;
 }
-html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel > form button {
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel > form button {
   border: 0 !important;
   background: #315d50 !important;
   color: #fffaf1 !important;
 }
-html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel > form button:disabled {
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel > form button:disabled {
   background: rgba(49, 93, 80, .38) !important;
   color: rgba(255, 250, 241, .85) !important;
 }
