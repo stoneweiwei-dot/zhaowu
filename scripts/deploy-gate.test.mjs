@@ -12,9 +12,9 @@ test("production build uses deploy-gate not the full engine glob", () => {
   assert.doesNotMatch(pkg.scripts.build, /test:engine/);
   assert.match(pkg.scripts.prebuild, /write-og-preview/);
   assert.doesNotMatch(pkg.scripts.build, /prebuild|write-og-preview/);
-  assert.match(pkg.scripts["test:deploy"], /og-preview\.test\.mjs/);
-  assert.match(pkg.scripts["test:deploy"], /deploy-gate\.test\.mjs/);
-  assert.match(pkg.scripts["test:engine"], /scripts\/\*\.test\.mjs/);
+  assert.match(pkg.scripts["test:deploy"], /og-preview\\.test\\.mjs/);
+  assert.match(pkg.scripts["test:deploy"], /deploy-gate\\.test\\.mjs/);
+  assert.match(pkg.scripts["test:engine"], /scripts\\/\\*\\.test\\.mjs/);
 });
 
 test("Vercel build stays exact and only vetted main can trigger Production", () => {
@@ -26,22 +26,23 @@ test("Vercel build stays exact and only vetted main can trigger Production", () 
   assert.match(vercel.ignoreCommand, /git diff --quiet/);
 });
 
-test("GitHub Production CI keeps blocking deploy-gate, engine, and iPhone Safari jobs", () => {
+test("GitHub Production CI keeps deploy-gate, engine, and visual regression jobs without iPhone Safari", () => {
   assert.match(workflow, /deploy-gate:/);
   assert.match(workflow, /npm run build/);
   assert.match(workflow, / {2}engine:/);
   assert.match(workflow, /name: Engine suite/);
-  assert.match(workflow, /name: iPhone Safari/);
+  assert.match(workflow, /name: Visual regression/);
+  assert.doesNotMatch(workflow, /name: iPhone Safari/);
   assert.doesNotMatch(workflow, /engine-observe:/);
-  assert.doesNotMatch(workflow, /continue-on-error:\s*true/);
+  assert.doesNotMatch(workflow, /continue-on-error:\\s*true/);
 });
 
 test("strict release ledger stays outside routine deploy CI", () => {
   assert.doesNotMatch(pkg.scripts["test:deploy"], /release-ledger/);
-  assert.doesNotMatch(workflow, /release-ledger\.release\.mjs/);
-  assert.match(releaseWorkflow, /push:\s*\n\s*tags:/);
-  assert.match(releaseWorkflow, /- "v\*"/);
-  assert.match(releaseWorkflow, /- "release-\*"/);
+  assert.doesNotMatch(workflow, /release-ledger\\.release\\.mjs/);
+  assert.match(releaseWorkflow, /push:\\s*\\n\\s*tags:/);
+  assert.match(releaseWorkflow, /- "v\\*"/);
+  assert.match(releaseWorkflow, /- "release-\\*"/);
   assert.match(releaseWorkflow, /workflow_dispatch:/);
-  assert.match(releaseWorkflow, /node --test scripts\/release-ledger\.release\.mjs/);
+  assert.match(releaseWorkflow, /node --test scripts\\/release-ledger\\.release\\.mjs/);
 });
