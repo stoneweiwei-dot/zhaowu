@@ -6134,3 +6134,46 @@ html body .zhaowu-site-footer .zhaowu-site-views {
 html body .zhaowu-site-footer .zhaowu-site-views b { font-weight: 650; color: inherit; margin-left: 4px; }
 html body .zhaowu-site-footer .zhaowu-site-views i { width: 1px; height: 11px; background: currentColor; opacity: .35; }
 html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views { color: #cfc6b4; }
+
+/* r227 — night music player blends into the paper panel (owner 2026-10-01: "狗皮膏藥感覺很重").
+ * At night the dragon panel is light paper, but the shared night rule painted .zhaowu-dragon-music as a
+ * dark-green box inside it. Inside the panel the player is now transparent with ink text and a single
+ * hairline divider, exactly like the day layout; transport buttons are hairline circles with SVG icons. */
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music {
+  border: 0 !important;
+  border-bottom: 1px solid rgba(102, 85, 62, .22) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 0 14px !important;
+  color: #34312b !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music :is(p, span, strong, [data-music-mode-status]) {
+  color: #4a463e !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music .zhaowu-dragon-music-title strong {
+  color: #2f2d27 !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-meta > p {
+  color: #2f2d27 !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-controls button {
+  border: 1px solid rgba(91, 75, 54, .30) !important;
+  background: transparent !important;
+  color: #3d3f39 !important;
+  box-shadow: none !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-controls button[data-active="true"],
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-controls button[aria-pressed="true"][data-background-music-control] {
+  border-color: rgba(168, 134, 82, .85) !important;
+  background: rgba(168, 134, 82, .16) !important;
+  color: #5b4a2c !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-controls button:not([data-active="true"]) { opacity: 1 !important; }
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-controls button:not([data-active="true"]):not([data-background-music-control]) { color: #5a5a52 !important; }
+html body .zhaowu-dragon-music-controls .zhaowu-music-icon { display: block; width: 18px; height: 18px; flex: none; }
+html body .zhaowu-dragon-music-controls button > span { display: contents; }
+html body .zhaowu-dragon-bubble-player .zhaowu-music-icon { display: block; width: 16px; height: 16px; margin: auto; }
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-dot { background: rgba(91, 75, 54, .35) !important; }
+html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-dot.is-playing { background: #a88652 !important; }
+html body .zhaowu-dragon-music-controls button { display: inline-grid !important; place-items: center !important; }

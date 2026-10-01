@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { loadOwnerMusic, type OwnerMusicTrack } from "@/lib/owner-music-client";
 import { useI18n } from "@/lib/i18n";
+import { MusicIcon } from "@/components/music-icons";
 
 const STORAGE_KEY = "zhaowu.backgroundMusic.v3";
 const LEGACY_STORAGE_KEY = "zhaowu.backgroundMusic.v1";
@@ -478,19 +479,19 @@ export function BackgroundMusic() {
 
       <div className="zhaowu-dragon-music-controls" role="group" aria-label={musicTitle} data-background-music-control>
         <button type="button" className={transportButton} aria-label={`${copy.previous}: ${musicTitle}`} title={copy.previous} onClick={() => void moveTrack(-1)}>
-          <span aria-hidden="true">⏮</span>
+          <MusicIcon name="prev" />
         </button>
         <button type="button" data-background-music-control className={transportButton} aria-label={`${playing ? copy.pause : copy.play}: ${musicTitle}`} title={playing ? copy.pause : copy.play} aria-pressed={playing} onClick={togglePlayback}>
-          <span aria-hidden="true">{playing ? "Ⅱ" : "▶"}</span>
+          <MusicIcon name={playing ? "pause" : "play"} />
         </button>
         <button type="button" className={transportButton} aria-label={`${copy.next}: ${musicTitle}`} title={copy.next} onClick={() => void moveTrack(1)}>
-          <span aria-hidden="true">⏭</span>
+          <MusicIcon name="next" />
         </button>
         <button type="button" className={modeButton(loopEnabled)} data-active={loopEnabled ? "true" : "false"} aria-label={copy.loop} title={copy.loop} aria-pressed={loopEnabled} onClick={toggleLoop}>
-          <span aria-hidden="true">↻</span>
+          <MusicIcon name="loop" />
         </button>
         <button type="button" className={modeButton(shuffleEnabled)} data-active={shuffleEnabled ? "true" : "false"} aria-label={copy.shuffle} title={copy.shuffle} aria-pressed={shuffleEnabled} onClick={toggleShuffle}>
-          <span aria-hidden="true">⇄</span>
+          <MusicIcon name="shuffle" />
         </button>
       </div>
       <p data-music-mode-status className="mt-1 text-center text-[11px] font-semibold tracking-wide text-ink-mute">{modeStatus}</p>
