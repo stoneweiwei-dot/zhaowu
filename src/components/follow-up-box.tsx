@@ -36,6 +36,8 @@ export function FollowUpBox({ result }: { result: AnalysisResult }) {
       <p className="mt-2 text-sm leading-7 text-ink-mute">{t("followLead")}</p>
       <form className="mt-4 flex flex-col gap-3 sm:flex-row" onSubmit={(e) => void submit(e)}>
         <textarea
+          id="follow-up-question"
+          aria-label={t("followTitle")}
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           maxLength={400}

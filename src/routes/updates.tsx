@@ -23,7 +23,12 @@ function UpdatesPage() {
   }, []);
 
   const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
-  const englishSummary = "The login animation now plays once per local day with an explicit Skip control, while Loop and Shuffle expose clear persistent playback states."
+  // r223: when the live release row has no English translation stored yet, fall back to
+  // the hand-written English summary for the known current release rather than an old,
+  // unrelated hardcoded string (that used to describe a stale login-animation change).
+  const englishSummary = currentFallback
+    ? SITE_RELEASE_FALLBACK.details.en[0]
+    : "An English summary for this update isn't available yet; see the Chinese notes above.";
   const releaseSummary = language === "en" && /[\u3400-\u9fff]/u.test(release.latestSummary)
     ? englishSummary
     : release.latestSummary;

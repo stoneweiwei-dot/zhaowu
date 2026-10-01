@@ -23,6 +23,7 @@ export const Route = createFileRoute("/")({ component: Home });
 function Home() {
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
+  const setCurrent = useAppStore((s) => s.setCurrent);
   const [openPanel, setOpenPanel] = useState<"today" | "quiz" | "notes" | null>("today");
   const [scentOpen, setScentOpen] = useState(false);
 
@@ -108,8 +109,12 @@ function Home() {
         </div>
       </HomeSectionBoundary>
 
-      {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><ResultView result={current} /></div> : null}
-      {current ? <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div> : null}
+      {current ? (
+        <HomeSectionBoundary id="report" locale={locale} onRecover={() => { setCurrent(null); window.location.reload(); }}>
+          <div className="zhaowu-home-stage zhaowu-home-stage--result"><ResultView result={current} /></div>
+          <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div>
+        </HomeSectionBoundary>
+      ) : null}
 
       <section className="zhaowu-home-stage zhaowu-home-stage--daily-priority" aria-label={funCopy.todayTitle}>
         <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>
