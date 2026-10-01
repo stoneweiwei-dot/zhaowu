@@ -87,8 +87,7 @@ test.describe("iPhone Safari display-language contract", () => {
   // These characters exist only in Traditional script, so any hit is Traditional text served to a Simplified reader.
   const TRADITIONAL_ONLY = "個們這來說為與對體當時麼開關運氣學會國點應區義樣愛過還後從見讓題無問門間車長總經結構現實證動係觀產進選專業張計圖書單據認識語讀師機發覺紀錄許請謝歲歷興藝覆陽陰靈壇鐘齡願衝處標準備顧慮價際線訊費變壞醫療衛險護報導啟廣積極項決議級終續統織試類詳細種稱釋範圍態確權擇調整額組";
   test.describe("Simplified Chinese route scan", () => {
-    // Keep this cheap: one test, no trace capture, per-route failures reported together.
-    test.use({ trace: "off" });
+    // Keep this cheap: one test, per-route failures reported together in a single assertion.
     test("Simplified Chinese shows no Traditional-only text on key routes", async ({ page }) => {
       test.setTimeout(150_000);
       await makeAppOfflineSafe(page);
