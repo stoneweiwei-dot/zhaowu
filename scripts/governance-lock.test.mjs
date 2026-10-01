@@ -14,7 +14,7 @@ test("release ledger stays release-only (never part of routine CI)", async () =>
   const build = await read(".github/workflows/build.yml");
   assert.doesNotMatch(build, /release-ledger/);
   const pkg = JSON.parse(await read("package.json"));
-  assert.match(pkg.scripts["test:engine"], /scripts\\/\\*\\.test\\.mjs/);
+  assert.match(pkg.scripts["test:engine"], /scripts\/\*\.test\.mjs/);
   assert.doesNotMatch(pkg.scripts["test:engine"], /release/);
   assert.ok(existsSync(new URL("scripts/release-ledger.release.mjs", root)));
   assert.ok(!existsSync(new URL("scripts/release-ledger.test.mjs", root)), "ledger test must not match the *.test.mjs glob");
@@ -25,19 +25,19 @@ test("release ledger stays release-only (never part of routine CI)", async () =>
 
 test("post-deploy production smoke exists and waits for the exact pushed SHA", async () => {
   const wf = await read(".github/workflows/production-smoke.yml");
-  assert.match(wf, /branches: \\[main\\]/);
-  assert.match(wf, /release\\.json/);
+  assert.match(wf, /branches: \[main\]/);
+  assert.match(wf, /release\.json/);
   assert.match(wf, /GITHUB_SHA/);
-  assert.match(wf, /playwright\\.production\\.config\\.ts/);
+  assert.match(wf, /playwright\.production\.config\.ts/);
   const spec = await read("e2e-production/smoke.spec.ts");
   assert.match(spec, /EXPECT_SHA/);
-  assert.match(spec, /\\/api\\/owner-music/);
+  assert.match(spec, /\/api\/owner-music/);
 });
 
 test("CI test jobs stay parallel and skip repeated iPhone Safari", async () => {
   const build = await read(".github/workflows/build.yml");
-  assert.doesNotMatch(build, /needs:\\s*deploy-gate/);
-  for (const name of ["Deploy gate", "Engine suite", "Visual regression"]) assert.match(build, new RegExp(`name: ${name}`));
+  assert.doesNotMatch(build, /needs:\s*deploy-gate/);
+  for (const name of ["Deploy gate", "Engine suite", "Visual regression"]) assert.match(build, new RegExp("name: " + name));
   assert.doesNotMatch(build, /name: iPhone Safari/);
 });
 
