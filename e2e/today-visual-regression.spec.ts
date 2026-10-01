@@ -62,6 +62,7 @@ for (const viewport of VIEWPORTS) {
       test("almanac page and spirit slip tab", async ({ page }) => {
         await openToday(page, theme, viewport, { hideDragon: true });
         const guide = page.locator("#daily-almanac");
+        await guide.locator('.zhaowu-today-guide__tabs button').nth(0).click();
         await expect(guide.locator(".zhaowu-today-guide__grid")).toBeVisible();
         await expect(guide.locator(".zhaowu-today-guide__expanded")).toHaveScreenshot(`today-almanac-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
         await guide.locator('.zhaowu-today-guide__tabs button').nth(2).click();
