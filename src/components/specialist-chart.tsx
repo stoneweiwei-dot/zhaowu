@@ -13,7 +13,7 @@ function position(lon: number, locale: Locale) { const p = decoratePosition("Sun
 const xy = (degree: number, radius: number) => ({ x: 220 - radius * Math.cos(degree * Math.PI / 180), y: 220 + radius * Math.sin(degree * Math.PI / 180) });
 function Wheel({ points, cusps, locale }: { points: { longitude: number }[]; cusps?: number[]; locale: Locale }) {
   const origin = cusps?.[0] ?? 0;
-  return <svg className="zw-chart-wheel" viewBox="0 0 440 440" role="img" aria-label={locale === "en" ? "Zodiac positions; numbered points match the table" : "星位圓盤：編號對應下方星位表"}>
+  return <svg className="zw-chart-wheel" viewBox="0 0 440 440" role="img" aria-label={locale === "en" ? "Zodiac positions; numbered points match the table" : locale === "zh-Hans" ? "星位圆盘：编号对应下方星位表" : "星位圓盤：編號對應下方星位表"}>
     <circle cx="220" cy="220" r="206"/><circle cx="220" cy="220" r="172"/><circle cx="220" cy="220" r="108"/>
     {signs.map((_, i) => { const a=xy(i*30-origin,172),b=xy(i*30-origin,206),t=xy(i*30+15-origin,189); return <g key={i}><path d={`M${a.x},${a.y} L${b.x},${b.y}`}/><text x={t.x} y={t.y}>{["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"][i]}</text></g>; })}
     {cusps?.map((c,i)=>{ const a=xy(c-origin,38),b=xy(c-origin,172);const width=((cusps[(i+1)%12]-c+360)%360);const t=xy(c+width/2-origin,85);return <g key={i}><path d={`M${a.x},${a.y} L${b.x},${b.y}`}/><text x={t.x} y={t.y}>{i+1}</text></g>;})}

@@ -100,7 +100,7 @@ function SaturnEssay({ lang }: { lang: Lang }) {
 
   const selected = copy[lang];
   return (
-    <section className="sky-event-essay" aria-label={lang === "en" ? "Feature essay" : "專題文章"}>
+    <section className="sky-event-essay" aria-label={lang === "en" ? "Feature essay" : lang === "zh-Hans" ? "专题文章" : "專題文章"}>
       <p className="sky-event-essay-intro">{selected.intro}</p>
       {selected.sections.map((section) => (
         <section className="sky-event-essay-section" key={section.title}>

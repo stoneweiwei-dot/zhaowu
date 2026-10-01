@@ -119,7 +119,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     expect(metrics.color).toBe("rgb(49, 93, 80)");
     expect(metrics.backgroundColor).toBe("rgba(0, 0, 0, 0)");
 
-    await expect(page.getByRole("button", { name: "简体中文", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "简体中文", exact: true })).toHaveCount(1);
     await expect(page.getByRole("button", { name: "日本語", exact: true })).toHaveCount(0);
 
     const english = page.getByRole("button", { name: "English", exact: true });
