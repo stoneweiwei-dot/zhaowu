@@ -12,4 +12,5 @@ test("Today spirit slip, chips and pillars are flat in day and night (no pasted 
   assert.match(block, /#daily-almanac \.zhaowu-today-pillars > span \{[^}]*background: transparent !important/);
   assert.match(block, /html\[data-zw-theme="night"\] body #daily-almanac \.zhaowu-today-guide__spirit h3 \{ color: #f4ead9/);
   assert.match(block, /html\[data-zw-theme="night"\] body #daily-almanac \.zhaowu-today-pillars > span b \{ color: #f4ead9/);
+  assert.match(block, /:is\(\.zhaowu-today-pillars, \.zhaowu-daily-pillars\) \{[^}]*background: transparent !important/);
 });

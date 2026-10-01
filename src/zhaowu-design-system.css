@@ -6428,3 +6428,13 @@ html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__chips stron
 html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-pillars > span { border-color: rgba(224, 199, 155, .26) !important; }
 html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-pillars > span b { color: #f4ead9 !important; }
 html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-pillars > span i { color: #d3c9b8 !important; }
+body #daily-almanac :is(.zhaowu-today-pillars, .zhaowu-daily-pillars) {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html[data-zw-theme="night"] body #daily-almanac :is(.zhaowu-today-pillars, .zhaowu-daily-pillars) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
