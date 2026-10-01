@@ -2,13 +2,12 @@
 
 The calculation engine remains on the existing verified locale contract; switching display language must not alter BaZi calculations, stems/branches, chart inputs, timing rules, or stored chart facts.
 
-Current rule (r107):
+Current rule (2026-10-02 owner three-language instruction; supersedes r102/r107 withdrawal of Simplified Chinese):
 - `zh-Hant`, `zh-Hans`, `en` remain calculation locales.
-- Front-end selector: `English → 繁體 → 한국어 → हिन्दी`.
+- Front-end selector: `English → 繁體 → 简体`.
 - Fresh sessions default to `zh-Hant`.
-- Saved `zh-Hans` or `ja` preferences fold to `zh-Hant`.
-- Simplified Chinese and Japanese are withdrawn from the UI. Internal content tables may still keep `zh-Hans` so report tests do not need a mass rewrite.
-- Korean and Hindi remain display languages.
+- Saved `zh-Hans` is a valid persisted choice. Saved `ja`, `ko`, `hi` preferences fold to `zh-Hant`.
+- Japanese, Korean and Hindi remain withdrawn from the selector (dormant code only).
 - Any specialised narrative not yet localised falls back to English rather than leaking Chinese or changing calculations.
 - Hindi uses `hi-IN` for locale-sensitive number/date formatting.
 

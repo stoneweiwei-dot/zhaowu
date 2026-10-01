@@ -5,6 +5,7 @@ import { stemElement } from "@/lib/element-colors";
 import { galleryFallbackUrl, galleryPublicUrl, listPublicGalleryAssets, type GalleryAsset } from "@/lib/gallery-assets";
 import { isPublicAtlasAsset } from "@/lib/gallery-groups";
 import { dayGanzhi, hourPillar, yearMonthPillars, lunarDateLabel, toLunar } from "@/lib/bazi/calendar";
+import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 
 const PILLAR_KEYS = ["year", "month", "day", "hour"] as const;
 const BRANCH_EN: Record<string, string> = { 子: "Zi", 丑: "Chou", 寅: "Yin", 卯: "Mao", 辰: "Chen", 巳: "Si", 午: "Wu", 未: "Wei", 申: "Shen", 酉: "You", 戌: "Xu", 亥: "Hai" };
@@ -98,7 +99,7 @@ function dayStyle(stem: string, locale: Locale) {
     };
     return english[element] ?? english.水;
   }
-  if (locale === "zh-Hans") return Object.fromEntries(Object.entries(value).map(([key, text]) => [key, text.replaceAll("氣", "气").replaceAll("鋒", "锋").replaceAll("觀", "观").replaceAll("銀", "银").replaceAll("綠", "绿").replaceAll("藍", "蓝").replaceAll("邊", "边").replaceAll("靜", "静")])) as typeof value; return value;
+  if (locale === "zh-Hans") return Object.fromEntries(Object.entries(value).map(([key, text]) => [key, toSimplifiedCustomerText(text)])) as typeof value; return value;
 }
 const SLIPS = {
   "zh-Hant": [["靜心守中", "先把最重要的一件事守住，雜音自然會退。", "少猜一步，慢半拍確認；真正要保留的是自己的節奏。"], ["應緣而啟", "有些門不是硬推開的。先看清哪一個回應是真正的邀請。", "先觀察，再靠近；有回聲的地方才值得投入更多心力。"], ["先定後行", "現在最重要的不是速度，而是先把方向定清楚。", "涉及承諾、金錢或關係時，先確認核心條件。"], ["留白養氣", "今天的空白不是浪費，而是在替下一步保留判斷力。", "把能量留給需要你親自決定的事。"]],
@@ -134,7 +135,7 @@ export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean })
             <article className="zhaowu-today-card is-date"><small>{weekdayLabel(now, locale)}</small><strong>{now.getFullYear()}.{String(now.getMonth() + 1).padStart(2, "0")}.{String(now.getDate()).padStart(2, "0")}</strong><span>{timeLabel(now)}</span></article>
             <article className="zhaowu-today-card is-weather"><small>{labels.location}</small><strong>{locationName} · {weather}</strong><span>{season}</span></article>
             <article className="zhaowu-today-card is-sacred"><small>{labels.sacred}</small><strong>{sacredDay(now, pillars.jieName, locale)}</strong><span>{locale === "en" ? "Unverified observances stay marked for verification." : locale === "zh-Hans" ? "未核实圣日不作确定结论。" : "未核實聖日不作確定結論。"}</span></article>
-            <article className="zhaowu-today-card is-pillars"><small>{labels.pillars}</small><span className="zhaowu-contract-label">{locale === "en" ? "Current year, month, day and hour pillars" : "當下年月日時干支"}</span><div className="zhaowu-today-pillars zhaowu-daily-pillars">{values.map((value, index) => <span data-element={stemElement(value[0]) ?? undefined} data-pillar={PILLAR_KEYS[index]} key={`${PILLAR_KEYS[index]}-${value}`}><b>{value}</b><i>{locale === "en" ? PILLAR_KEYS[index].toUpperCase() : ["年", "月", "日", "時"][index]}</i></span>)}</div></article>
+            <article className="zhaowu-today-card is-pillars"><small>{labels.pillars}</small><span className="zhaowu-contract-label">{locale === "en" ? "Current year, month, day and hour pillars" : locale === "zh-Hans" ? "当下年月日时干支" : "當下年月日時干支"}</span><div className="zhaowu-today-pillars zhaowu-daily-pillars">{values.map((value, index) => <span data-element={stemElement(value[0]) ?? undefined} data-pillar={PILLAR_KEYS[index]} key={`${PILLAR_KEYS[index]}-${value}`}><b>{value}</b><i>{locale === "en" ? PILLAR_KEYS[index].toUpperCase() : ["年", "月", "日", locale === "zh-Hans" ? "时" : "時"][index]}</i></span>)}</div></article>
             <article className="zhaowu-today-card is-core"><small>{labels.core}</small><strong>{tone.core}</strong><span>{jieLabel(pillars.jieName, locale)}</span></article>
             <article className="zhaowu-today-card is-guidance"><small>{labels.yi} / {labels.ji}</small><p className="is-yi"><b>{labels.yi}</b>{yi}</p><p className="is-ji"><b>{labels.ji}</b>{ji}</p></article>
             <article className="zhaowu-today-card is-relation"><small>{labels.relation}</small><strong>{relationText(branch, locale)}</strong></article>

@@ -165,7 +165,7 @@ function TianjiXinggongPage() {
             {resolution && palace ? (
               <div className="tianji-result">
                 <div className="tianji-resolved-strip"><small>{copy.birthResolved}</small><p>{birth ? formatSharedBirthRecord(birth, locale) : ""}</p></div>
-                <div className="tianji-result-cards"><div><small>{copy.palace}</small><strong>{palace}{locale === "en" ? " Palace" : "宮"}</strong></div><div><small>{copy.star}</small><strong>{STAR[palace][locale]}</strong></div></div>
+                <div className="tianji-result-cards"><div><small>{copy.palace}</small><strong>{palace}{locale === "en" ? " Palace" : locale === "zh-Hans" ? "宫" : "宮"}</strong></div><div><small>{copy.star}</small><strong>{STAR[palace][locale]}</strong></div></div>
                 <div className="tianji-reading"><small>{copy.personality}</small><p>{CHARACTER[palace][locale]}</p></div>
               </div>
             ) : <div className="tianji-empty-state"><span>十二</span><p>{copy.lead}</p></div>}
