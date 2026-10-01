@@ -32,7 +32,7 @@ test("GitHub Production CI keeps build, engine, and visual jobs while skipping i
   assert.match(workflow, / {2}engine:/);
   assert.match(workflow, /name: Engine suite/);
   assert.match(workflow, /name: Visual regression/);
-  assert.match(workflow, /name: iPhone Safari[\\s\\S]*?if: false/);
+  assert.match(workflow, /name: iPhone Safari[\s\S]*?if: false/);
   assert.doesNotMatch(workflow, /npm run test:iphone-safari|playwright install .*webkit/);
   assert.doesNotMatch(workflow, /engine-observe:/);
   assert.doesNotMatch(workflow, /continue-on-error:\s*true/);
