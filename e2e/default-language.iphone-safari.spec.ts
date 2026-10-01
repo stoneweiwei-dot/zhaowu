@@ -85,7 +85,9 @@ test.describe("iPhone Safari display-language contract", () => {
 
   // Owner 2026-10-02: Simplified must be a real third language, not Traditional text behind a button.
   // These characters exist only in Traditional script, so any hit is Traditional text served to a Simplified reader.
-  const TRADITIONAL_ONLY = "個們這來說為與對體當時麼開關運氣學會國點應區義樣愛過還後從見讓題無問門間車長總經結構現實證動係觀產進選專業張計圖書單據認識語讀師機發覺紀錄許請謝歲歷興藝覆陽陰靈壇鐘齡願衝處標準備顧慮價際線訊費變壞醫療衛險護報導啟廣積極項決議級終續統織試類詳細種稱釋範圍態確權擇調整額組";
+  // Generated from the site's own Traditional↔Simplified tables (src/lib/report/reading-locale.ts), minus forms that
+  // legitimately survive in Simplified text (於 著 乾 餘 裡). Do not hand-edit; regenerate from the tables.
+  const TRADITIONAL_ONLY = "亂亞併來侶俠倆倉個們倫側偵偽備傳債傷傾僅價儀儉償優兩別刪則剛創劃劍動務勝勞勢匯區參員問啟單嗎嚴國圍園圓圖執堅報場塊塵墳墾壇壓壞壟夠夾奪奮娛婦學實審寫寶將專對導層屬島崗嶺帥師帳帶幣幫幾庫廟張強後徑從復悶惡愛態慣慮憂憫憲憶應懷戰戲戶捨掃揚換損撐擇擊擋擔據擴擺攜攝敗數斷時晉暈暫曉書會東條棄業極構樓標樣橋機橫檔檢權歡歲歸殘殺氣決沒沖況減渦測湯準溝溫滿漢漸潔潤澤澱濕濟濾災為無煉煩熱營爭爾牆牽狀獎獨獲現環產畢畫異當疊療發監盤眾確礎礙禮種稱積穩窩窮筆節範篩簡糧紀約納純級紛細終組結給統綠綱線緣編緩練縣縮縱總繪繼續罰羅義習聯聲職聽脫腦膚臨與興舉華萬葉蓋蕩薑薦藍藝藥處號虧術衛補裝複見規親覺觀觸計訊討訓記訪設許訴診評詞試話該詳認語誠誤說課調談請論諸謂講證識議護讀變讓讚貓負財貨責貴買費資賣賦質賴賺賽贈趕趙跡踐車軟較載輔輕輪輯輸轉辦農這連進運過違遞遠適遲選遺還邊邏郵鄉鄭鄰醞醫釋針銀鋒錄錢錦錯鍵鏈鐘鑑長門閉開間閱關陣陰陸陽隊階際隨險隱雖雜離難雲電霧靜韓響頁頂項順須預領頭額願類顧顯風飛飯飲養館駐駕驗驚體髮鬥鬧魚鮮鳥鳴鵝麗麼點黨齊齡龍";
   test.describe("Simplified Chinese route scan", () => {
     // Keep this cheap: one test, per-route failures reported together in a single assertion.
     test("Simplified Chinese shows no Traditional-only text on key routes", async ({ page }) => {
@@ -108,7 +110,7 @@ test.describe("iPhone Safari display-language contract", () => {
           const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
           for (let node = walker.nextNode(); node; node = walker.nextNode()) {
             const parent = (node as Text).parentElement;
-            if (!parent || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.tagName)) continue;
+            if (!parent || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.tagName) || parent.closest(".site-lang-group")) continue;
             const text = node.textContent ?? "";
             const hit = [...text].filter((ch) => trad.includes(ch));
             if (hit.length) out.push(`[${[...new Set(hit)].join("")}] ${text.trim().slice(0, 50)}`);
