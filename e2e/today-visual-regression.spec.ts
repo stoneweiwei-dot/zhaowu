@@ -59,6 +59,17 @@ for (const viewport of VIEWPORTS) {
         await expect(wardrobe).toHaveScreenshot(`today-wardrobe-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
       });
 
+      test("almanac page and spirit slip tab", async ({ page }) => {
+        await openToday(page, theme, viewport, { hideDragon: true });
+        const guide = page.locator("#daily-almanac");
+        await expect(guide.locator(".zhaowu-today-guide__grid")).toBeVisible();
+        await expect(guide.locator(".zhaowu-today-guide__expanded")).toHaveScreenshot(`today-almanac-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
+        await guide.locator('.zhaowu-today-guide__tabs button').nth(2).click();
+        const spirit = guide.locator(".zhaowu-today-guide__spirit");
+        await expect(spirit).toBeVisible();
+        await expect(guide.locator(".zhaowu-today-guide__expanded")).toHaveScreenshot(`today-spirit-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
+      });
+
       test("jade dragon assistant (closed and open)", async ({ page }) => {
         await openToday(page, theme, viewport, { hideDragon: false });
         const dragon = page.locator(".zhaowu-dragon-guide");
