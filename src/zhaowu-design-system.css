@@ -6306,3 +6306,135 @@ html:not([data-zw-theme="night"]) .zhaowu-site-header .zhaowu-header-mode-toggle
   .zhaowu-site-header .zhaowu-header-utility,
   .zhaowu-site-header .zhaowu-latest-update-link { transition: none; }
 }
+
+/* r228 — night dragon panel: one flat paper surface (owner 2026-10-01: same root cause as the player).
+ * The panel is light paper at night, but shared night rules painted the answer, shortcut chips, input and
+ * (light) placeholder in dark-green/moon-white for a dark surface, giving heavy stuck-on blocks and a
+ * light-on-light placeholder. Inside the panel they now use exactly the day layout. */
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer {
+  border: 0 !important;
+  border-bottom: 1px solid rgba(102, 85, 62, .22) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 14px 0 !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer p {
+  color: #3a3832 !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-answer button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: #315d50 !important;
+  box-shadow: none !important;
+  font-weight: 650 !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-shortcuts {
+  border-bottom: 1px solid rgba(102, 85, 62, .22) !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel .zhaowu-dragon-guide-shortcuts button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: #315d50 !important;
+  box-shadow: none !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel > form input {
+  border: 0 !important;
+  border-bottom: 1px solid rgba(86, 72, 54, .38) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #2d2b27 !important;
+  box-shadow: none !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel > form input::placeholder {
+  color: #6f6a5e !important;
+  opacity: 1 !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel > form button {
+  border: 0 !important;
+  background: #315d50 !important;
+  color: #fffaf1 !important;
+}
+html[data-zw-theme="night"] body .zhaowu-dragon-guide .zhaowu-dragon-guide-panel > form button:disabled {
+  background: rgba(49, 93, 80, .38) !important;
+  color: rgba(255, 250, 241, .85) !important;
+}
+
+/* r229 — Today module: flat paper rows, no pasted boxes (owner 2026-10-02: "狗皮膏藥").
+   Legacy r69 card rules (boxed chips, gradient spirit card, light tiles with dark-ink text forced at night)
+   still out-ranked the flat design. Scoped by #daily-almanac so they lose in both themes. */
+body #daily-almanac .zhaowu-today-guide__spirit {
+  display: block !important;
+  margin: 0 !important;
+  padding: 20px 4px 8px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+body #daily-almanac .zhaowu-today-guide__spirit h3 { color: #2b453a !important; }
+body #daily-almanac .zhaowu-today-guide__spirit p { color: #6f6a5e !important; }
+body #daily-almanac .zhaowu-today-guide__spirit strong { color: #34433d !important; }
+body #daily-almanac .zhaowu-today-guide__spirit span { color: #68716b !important; }
+body #daily-almanac .zhaowu-today-guide__spirit button {
+  border: 0 !important;
+  border-bottom: 1px solid rgba(49, 94, 80, .35) !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: #315e50 !important;
+}
+body #daily-almanac .zhaowu-today-guide__chips {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+  margin-top: 4px !important;
+  border-top: 1px solid rgba(84, 66, 44, .12) !important;
+  border-bottom: 1px solid rgba(84, 66, 44, .12) !important;
+}
+body #daily-almanac .zhaowu-today-guide__chips article {
+  padding: 12px 2px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(84, 66, 44, .09) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+body #daily-almanac .zhaowu-today-guide__chips article:last-child { border-bottom: 0 !important; }
+body #daily-almanac .zhaowu-today-guide__chips small { color: #83786a !important; }
+body #daily-almanac .zhaowu-today-guide__chips strong { color: #3c3a34 !important; }
+body #daily-almanac .zhaowu-today-pillars > span {
+  border: 1px solid rgba(84, 66, 44, .18) !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__spirit h3 { color: #f4ead9 !important; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__spirit p { color: #d3c9b8 !important; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__spirit strong { color: #f4ead9 !important; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__spirit span { color: #d3c9b8 !important; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__spirit button {
+  color: #e7ce9e !important;
+  border-bottom-color: rgba(231, 206, 158, .4) !important;
+}
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__chips,
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__chips article { border-color: rgba(224, 199, 155, .12) !important; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__chips small { color: #d3c9b8 !important; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__chips strong { color: #f4ead9 !important; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-pillars > span { border-color: rgba(224, 199, 155, .26) !important; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-pillars > span b { color: #f4ead9 !important; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-pillars > span i { color: #d3c9b8 !important; }
+body #daily-almanac :is(.zhaowu-today-pillars, .zhaowu-daily-pillars) {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html[data-zw-theme="night"] body #daily-almanac :is(.zhaowu-today-pillars, .zhaowu-daily-pillars) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
