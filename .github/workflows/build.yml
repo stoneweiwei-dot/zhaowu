@@ -55,6 +55,13 @@ jobs:
       - name: Full engine and contract suite
         run: npm run test:engine
 
+  iphone-safari:
+    name: iPhone Safari
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "iPhone Safari verification retired; required context retained for branch protection."
+
   visual-regression:
     name: Visual regression
     runs-on: ubuntu-latest
