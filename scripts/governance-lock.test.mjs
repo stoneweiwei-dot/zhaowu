@@ -34,11 +34,12 @@ test("post-deploy production smoke exists and waits for the exact pushed SHA", a
   assert.match(spec, /\/api\/owner-music/);
 });
 
-test("CI test jobs stay parallel and skip repeated iPhone Safari", async () => {
+test("CI jobs stay parallel and iPhone Safari is skipped", async () => {
   const build = await read(".github/workflows/build.yml");
   assert.doesNotMatch(build, /needs:\s*deploy-gate/);
   for (const name of ["Deploy gate", "Engine suite", "Visual regression"]) assert.match(build, new RegExp("name: " + name));
-  assert.doesNotMatch(build, /name: iPhone Safari/);
+  assert.match(build, /name: iPhone Safari[\\s\\S]*?if: false/);
+  assert.doesNotMatch(build, /npm run test:iphone-safari|playwright install .*webkit/);
 });
 
 test("single production host: Vercel deploys main only", async () => {
