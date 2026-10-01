@@ -111,7 +111,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     });
     expect(metrics.height).toBeGreaterThanOrEqual(44);
     expect(metrics.fontSize).toBeGreaterThanOrEqual(13);
-    expect(metrics.color).toBe("rgb(49, 93, 80)");
+    expect(metrics.color).toBe("rgb(63, 107, 93)");
     expect(metrics.backgroundColor).toBe("rgba(0, 0, 0, 0)");
 
     await expect(page.getByRole("button", { name: "简体中文", exact: true })).toHaveCount(0);
@@ -121,7 +121,7 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
     await english.click();
     await expect(english).toHaveText("English");
     await expect(english).toHaveAttribute("aria-pressed", "true");
-    await expect(english).toHaveCSS("color", "rgb(49, 93, 80)");
+    await expect(english).toHaveCSS("color", "rgb(63, 107, 93)");
     await expect(english).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
 
     const latestBox = await page.getByRole("link", { name: /Latest update/ }).boundingBox();
