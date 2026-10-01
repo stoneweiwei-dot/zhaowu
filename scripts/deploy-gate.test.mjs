@@ -10,7 +10,8 @@ const releaseWorkflow = await readFile(new URL("../.github/workflows/release-led
 test("production build uses deploy-gate not the full engine glob", () => {
   assert.match(pkg.scripts.build, /test:deploy/);
   assert.doesNotMatch(pkg.scripts.build, /test:engine/);
-  assert.match(pkg.scripts.build, /prebuild|write-og-preview/);
+  assert.match(pkg.scripts.prebuild, /write-og-preview/);
+  assert.doesNotMatch(pkg.scripts.build, /prebuild|write-og-preview/);
   assert.match(pkg.scripts["test:deploy"], /og-preview\.test\.mjs/);
   assert.match(pkg.scripts["test:deploy"], /deploy-gate\.test\.mjs/);
   assert.match(pkg.scripts["test:engine"], /scripts\/\*\.test\.mjs/);
