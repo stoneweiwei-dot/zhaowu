@@ -1,4 +1,16 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+// A shell self-repair reload can legitimately interrupt a navigation; retry once on that
+// specific error so the test asserts the login-animation contract, not reload timing.
+async function gotoSettled(page: Page, url: string) {
+  try {
+    await page.goto(url, { waitUntil: "domcontentloaded" });
+  } catch (error) {
+    if (!/interrupted by another navigation/i.test(String(error))) throw error;
+    await page.waitForLoadState("load");
+    await page.goto(url, { waitUntil: "domcontentloaded" });
+  }
+}
 
 const GLOBAL_GATE =
   '[role="status"][aria-label*="昭梧"], [role="status"][aria-label*="Zhaowu"]';
@@ -28,8 +40,12 @@ test.describe("iPhone Safari login-only animation", () => {
     await page.locator('[data-login-animation-skip="true"]').click();
     await expect(page.locator('[data-login-stage-static="true"]')).toBeVisible();
     await page.goto("/updates", { waitUntil: "domcontentloaded" });
+    // main.tsx may self-heal the shell (controllerchange reload / release-param replace)
+    // right after domcontentloaded; let /updates fully settle before navigating again.
+    await expect(page.locator("[data-updates-page]")).toBeVisible();
+    await page.waitForLoadState("load");
     await expect(page.locator('[data-login-animation="first-login-visit"]')).toHaveCount(0);
-    await page.goto("/login", { waitUntil: "domcontentloaded" });
+    await gotoSettled(page, "/login");
     await expect(page.locator('[data-login-animation="first-login-visit"]')).toHaveCount(0);
     await expect(page.locator('[data-login-stage-static="true"]')).toBeVisible();
     await expect(page.locator(".stone-login-sound")).toHaveCount(0);

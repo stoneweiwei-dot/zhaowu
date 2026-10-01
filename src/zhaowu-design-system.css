@@ -5629,6 +5629,41 @@ html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layou
 html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p { color: #c8a86a !important; }
 html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead h1 { color: #efe7d8 !important; }
 
+/* 1b ── Hero inscription (天衍四九 opening couplet): sits between h1 and the hairline,
+   quieter than both the kicker and the title so it reads as an epigraph, not a second headline. */
+html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p.zhaowu-home-lead-inscription {
+  display: block !important;
+  max-width: 24em !important;
+  margin: 16px auto 0 !important;
+  color: #5c5043 !important;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif) !important;
+  font-size: clamp(12.5px, 3.3vw, 14.5px) !important;
+  font-weight: 400 !important;
+  line-height: 2 !important;
+  letter-spacing: .05em !important;
+  text-transform: none !important;
+}
+html[data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p.zhaowu-home-lead-inscription {
+  color: #c9b99a !important;
+}
+html[lang="en"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p.zhaowu-home-lead-inscription {
+  max-width: 34ch !important;
+  color: #4a4541 !important;
+  font-family: "Iowan Old Style", Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif !important;
+  font-size: clamp(13px, 3vw, 15px) !important;
+  font-style: italic !important;
+  line-height: 1.75 !important;
+  letter-spacing: .01em !important;
+}
+html[lang="en"][data-zw-theme="night"] body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p.zhaowu-home-lead-inscription {
+  color: #cfc3ae !important;
+}
+@media (max-width: 420px) {
+  html body .zhaowu-home-sheet-shell main.zhaowu-home-layout .zhaowu-home-lead > p.zhaowu-home-lead-inscription {
+    max-width: 100% !important;
+  }
+}
+
 /* 2 ── Stage rhythm */
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout > .zhaowu-home-stage,
 html body .zhaowu-home-sheet-shell main.zhaowu-home-layout > * > .zhaowu-home-stage { margin: 0 0 20px !important; }
