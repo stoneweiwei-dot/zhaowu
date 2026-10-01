@@ -3,6 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent } from "@/lib/sky-events";
 import { TodaySkyCards } from "@/components/today-sky-cards";
 import "@/sky-events.css";
+import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 
 export const Route = createFileRoute("/sky-events")({ component: SkyEventsPage });
 
@@ -100,7 +101,7 @@ function SaturnEssay({ lang }: { lang: Lang }) {
 
   const selected = copy[lang];
   return (
-    <section className="sky-event-essay" aria-label={lang === "en" ? "Feature essay" : "專題文章"}>
+    <section className="sky-event-essay" aria-label={lang === "en" ? "Feature essay" : lang === "zh-Hans" ? "专题文章" : "專題文章"}>
       <p className="sky-event-essay-intro">{selected.intro}</p>
       {selected.sections.map((section) => (
         <section className="sky-event-essay-section" key={section.title}>
@@ -140,7 +141,7 @@ function SkyEventsPage() {
 
       <section className="sky-events-watch">
         <h2>{ui.watch}</h2>
-        <div className="sky-events-category-grid">{SKY_EVENT_CATEGORIES.map((x) => <span key={x}>{x}</span>)}</div>
+        <div className="sky-events-category-grid">{SKY_EVENT_CATEGORIES.map((x) => <span key={x}>{lang === "zh-Hans" ? toSimplifiedCustomerText(x) : x}</span>)}</div>
       </section>
 
       <article className="sky-event-article">

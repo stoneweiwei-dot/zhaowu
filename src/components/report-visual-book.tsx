@@ -223,7 +223,7 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
             <p className="zhaowu-visual-summary">{model.dayMaster.summary}</p>
             <div className="zhaowu-visual-tags">{model.dayMaster.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}</div>
             <dl className="zhaowu-visual-facts">
-              <div><dt>{locale === "en" ? "Polarity" : "陰陽"}</dt><dd>{model.dayMaster.yinYangLabel}</dd></div>
+              <div><dt>{locale === "en" ? "Polarity" : locale === "zh-Hans" ? "阴阳" : "陰陽"}</dt><dd>{model.dayMaster.yinYangLabel}</dd></div>
               <div><dt>{locale === "en" ? "Element" : "五行"}</dt><dd>{model.dayMaster.elementLabel}</dd></div>
               <div><dt>{locale === "en" ? "Image" : "在天取象"}</dt><dd>{model.dayMaster.heavenImage}</dd></div>
             </dl>

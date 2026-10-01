@@ -579,13 +579,13 @@ function readDisplayLanguage(): DisplayLanguage {
   if (typeof window === "undefined") return "zh-Hant";
   try {
     const value = window.localStorage.getItem("zhaowu.display-language");
-    if (value === "zh-Hant" || value === "en") return value;
-    if (value === "ko" || value === "hi" || value === "zh-Hans" || value === "ja") {
+    if (value === "zh-Hant" || value === "zh-Hans" || value === "en") return value;
+    if (value === "ko" || value === "hi" || value === "ja") {
       window.localStorage.setItem("zhaowu.display-language", "zh-Hant");
       return "zh-Hant";
     }
     const legacy = window.localStorage.getItem("zhaowu.locale");
-    if (legacy === "zh-Hant" || legacy === "en") return legacy;
+    if (legacy === "zh-Hant" || legacy === "zh-Hans" || legacy === "en") return legacy;
   } catch {
     /* ignore */
   }

@@ -68,6 +68,32 @@ const HANT_CHARS: Record<string, string> = {
   这: "這", 顺: "順", 键: "鍵", 办: "辦", 险: "險", 点: "點", 础: "礎", 属: "屬", 暂: "暫", 长: "長", 杀: "殺", 阳: "陽",
 };
 
+// Traditional → Simplified for display text that is authored once in Traditional.
+// Reverses HANT_CHARS / HANT_PHRASES (1:1) and adds common Traditional characters those tables never needed.
+// Prefer authoring a real zh-Hans string at the source; use this where a Traditional-only literal already exists.
+const HANS_EXTRA: Record<string, string> = {
+  併: "并", 駐: "驻", 裡: "里", 復: "复", 複: "复", 擔: "担", 據: "据", 撐: "撑", 換: "换", 擇: "择", 隨: "随", 離: "离",
+  難: "难", 戰: "战", 陣: "阵", 麼: "么", 認: "认", 識: "识", 讀: "读", 記: "记", 設: "设", 許: "许", 訪: "访", 訊: "讯",
+  訓: "训", 評: "评", 詞: "词", 話: "话", 該: "该", 詳: "详", 誠: "诚", 誤: "误", 說: "说", 課: "课", 調: "调", 談: "谈",
+  論: "论", 護: "护", 變: "变", 讓: "让", 負: "负", 財: "财", 貨: "货", 貴: "贵", 費: "费", 質: "质", 賴: "赖", 贈: "赠",
+  趕: "赶", 跡: "迹", 軟: "软", 轉: "转", 輕: "轻", 輪: "轮", 輯: "辑", 輸: "输", 農: "农", 遞: "递", 邊: "边", 郵: "邮",
+  鄉: "乡", 醫: "医", 釋: "释", 鐘: "钟", 鑑: "鉴", 閉: "闭", 開: "开", 間: "间", 閱: "阅", 隊: "队", 階: "阶", 陸: "陆",
+  際: "际", 隱: "隐", 雖: "虽", 雜: "杂", 電: "电", 韓: "韩", 頁: "页", 頂: "顶", 項: "项", 預: "预", 領: "领", 頭: "头",
+  額: "额", 顯: "显", 風: "风", 飛: "飞", 駕: "驾", 驚: "惊", 髮: "发", 鬥: "斗", 鬧: "闹", 鵝: "鹅", 麗: "丽", 黨: "党",
+  齡: "龄", 觀: "观", 靜: "静", 綠: "绿", 藍: "蓝", 銀: "银", 鋒: "锋", 溫: "温", 氣: "气", 體: "体", 時: "时", 見: "见",
+};
+const HANS_CHARS: Record<string, string> = {
+  ...HANS_EXTRA,
+  ...Object.fromEntries(Object.entries(HANT_CHARS).map(([simplified, traditional]) => [traditional, simplified])),
+};
+const HANS_PHRASES: Array<[string, string]> = HANT_PHRASES.map(([simplified, traditional]) => [traditional, simplified]);
+
+export function toSimplifiedCustomerText(value: string): string {
+  let text = String(value ?? "");
+  for (const [traditional, simplified] of HANS_PHRASES) text = text.replaceAll(traditional, simplified);
+  return [...text].map((character) => HANS_CHARS[character] ?? character).join("");
+}
+
 export function toTraditionalCustomerText(value: string): string {
   let text = String(value ?? "");
   for (const [source, target] of HANT_PHRASES) text = text.replaceAll(source, target);
