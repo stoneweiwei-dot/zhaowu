@@ -6116,3 +6116,21 @@ html body .zhaowu-intro-skip {
   box-sizing: border-box;
   white-space: nowrap;
 }
+
+/* r226 — visible view counts in the footer (owner 2026-10-01). Quiet, single line, wraps safely on phones. */
+html body .zhaowu-site-footer .zhaowu-site-views {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 12px;
+  margin: 0 0 8px;
+  color: var(--zw-muted, #6b6558);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: .06em;
+  font-variant-numeric: tabular-nums;
+}
+html body .zhaowu-site-footer .zhaowu-site-views b { font-weight: 650; color: inherit; margin-left: 4px; }
+html body .zhaowu-site-footer .zhaowu-site-views i { width: 1px; height: 11px; background: currentColor; opacity: .35; }
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views { color: #cfc6b4; }
