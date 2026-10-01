@@ -109,6 +109,10 @@ const TABLE = {
     "請從搜尋結果選擇出生城市與國家。",
     "请从搜索结果选择出生城市与国家。",
   ],
+  errDate: [
+    "這個日期不存在，請重新確認月份與日。",
+    "这个日期不存在，请重新确认月份与日。",
+  ],
   errQuestion: ["請先寫下你真正想問的問題。", "请先写下你真正想问的问题。"],
   errAnalyze: [
     "分析暫時未能完成，請檢查資料後再試。",
@@ -365,6 +369,7 @@ const EN: Record<CopyKey, string> = {
   locating: "Resolving birth-location time…",
   remembered: "Your saved birth details are here. You can edit them.",
   errCity: "Choose your birth city from the search results.",
+  errDate: "That date doesn't exist. Please recheck the month and day.",
   errQuestion: "Write the question you actually want answered first.",
   errAnalyze:
     "The analysis could not be completed. Check the details and try again.",
