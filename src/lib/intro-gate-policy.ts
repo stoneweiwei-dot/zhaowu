@@ -4,7 +4,9 @@ export const INTRO_BROKEN_KEY = "zhaowu.intro.broken";
 export const INTRO_GATE_MIN_VISIBLE_MS = 5000;
 export const INTRO_GATE_NATIVE_MS = 5000;
 export const INTRO_GATE_TARGET_MS = INTRO_GATE_NATIVE_MS;
-export const INTRO_GATE_HARD_EXIT_MS = 8000;
+/** Owner 2026-09-30: opening clips may run 10-15 s with sound; hard exit = 15 s cap + 2 s slack, guests can skip at any time. */
+export const INTRO_GATE_MAX_PLAY_S = 15;
+export const INTRO_GATE_HARD_EXIT_MS = 17000;
 export const INTRO_GATE_FADE_MS = 180;
 /** Forced-missing test clip only. The poster still remains until the five-second minimum is satisfied. */
 export const INTRO_GATE_ERROR_EXIT_MS = 1600;

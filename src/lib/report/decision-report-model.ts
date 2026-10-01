@@ -35,7 +35,7 @@ export type DecisionReportModel = {
 
 const DIRECT_QUESTION_RE = /(嗎|吗|呢|要不要|該不該|该不该|是否|哪個|哪个|哪一|什麼|什么|何時|何时|為什麼|为什么|怎麼|怎么|如何|會不會|会不会|能不能|可不可以|應不應|应不应)/;
 const YES_NO_RE = /(要不要|該不該|该不该|是否|能不能|可不可以|應不應|应不应)/;
-const EXPLICIT_COMPARE_RE = /(還是|还是|或者|二選一|二选一|A\s*(?:還是|还是|or)\s*B)/i;
+const EXPLICIT_COMPARE_RE = /(還是|还是|或者|二選一|二选一|選A或B|选A或B|A\s*(?:還是|还是|or)\s*B|A\s*[：:].+?B\s*[：:]|\b(?:choose|pick|select)\s+(?:A\s+or\s+B|between\s+A\s+and\s+B)\b)/is;
 const REASON_RE = /(為什麼|为什么|原因|怎麼會|怎么会|根源|癥結|症结)/;
 const FORECAST_RE = /(會不會|会不会|未來|未来|結果|结果|發生|发生|走勢|走势|接下來|接下来)/;
 const ACTION_RE = /(怎麼做|怎么做|如何做|怎麼辦|怎么办|方案|建議|建议|下一步)/;

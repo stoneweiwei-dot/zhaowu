@@ -30,7 +30,7 @@ function numberIn(value: unknown, min: number, max: number): number | null {
   return Number.isInteger(n) && n >= min && n <= max ? n : null;
 }
 
-function validDate(year: number, month: number, day: number) {
+export function validDate(year: number, month: number, day: number) {
   const date = new Date(Date.UTC(year, month - 1, day));
   return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
 }

@@ -10,6 +10,14 @@
 
 命理／分析任务的当前唯一母指令为 [docs/STONE-R6.2.1-CURRENT-MASTER.md](./docs/STONE-R6.2.1-CURRENT-MASTER.md)。R6.1 与更早版本只作历史继承与审计，不得重新提升为 current master。
 
+## 多 Agent 并行锁（Claude / ChatGPT / Codex / future agents）
+
+所有并行代码工作必须同时遵守 [docs/AI-COORDINATION.md](./docs/AI-COORDINATION.md)。
+
+硬规则：`main` 不是共享草稿；不同 Agent 必须不同 branch；开工前必须声明 Task Lock + File/Module Lock；同一模块同时最多一个 ACTIVE owner；新发现只进 BACKLOG；ACTIVE/PR/VERIFY 未结束不得被下一条无关指令带跑。发现与另一 Agent 的 open PR / active lock 重叠时，停止修改并先报告冲突。
+
+Claude 的固定入口另见 [CLAUDE.md](./CLAUDE.md)，但其内容不得覆盖 `AGENTS.md` 或本统一协议。
+
 ## 每次接手先读
 
 0. [AGENTS.md](./AGENTS.md) — 全平台最高执行协议；先做新旧指令冲突与安全取代检查

@@ -19,7 +19,7 @@ type SpecialTopic = "relation" | "legal" | "pet" | "fertility" | null;
 
 const WHEN_RE = /(什麼時候|什么时候|何時|何时|哪年|哪一年|哪月|幾月|几月|日期|多久|幾年|几年|時機|时机|窗口|應期|应期|今年|明年|後年|后年|這個月|这个月|本月|今月|上半年|下半年|年初|年底|季度|季|近期|最近)/;
 const WHERE_RE = /(去哪|去哪里|去哪裡|哪個城市|哪个城市|哪個國家|哪个国家|哪個地方|哪个地方|哪裡最好|哪里最好|什麼方向|什么方向|哪個方向|哪个方向|住哪|搬去哪)/;
-const COMPARE_RE = /(還是|还是|或者|二選一|二选一|哪一個|哪一个|哪個比較|哪个比较|選哪|选哪|比較好|比较好|該不該|该不该|要不要)/;
+const COMPARE_RE = /(還是|还是|或者|二選一|二选一|哪一個|哪一个|哪個比較|哪个比较|選哪|选哪|選A或B|选A或B|比較好|比较好|該不該|该不该|要不要|A\s*[：:].+?B\s*[：:]|\b(?:choose|pick|select)\s+(?:A\s+or\s+B|between\s+A\s+and\s+B)\b)/is;
 const STRENGTH_RE = /(身強|身强|身弱|強弱|强弱|旺衰|日主.{0,8}(強|强|弱)|五行.{0,8}(能量|比例|占比|大小)|能量.{0,8}(大小|強|强|弱))/;
 const TRAVEL_RE = /(度假|旅行|旅遊|旅游|出行|出國|出国|出境|機票|机票|行程|目的地|旅居|vacation|travel|trip)/i;
 const MEDICAL_RE = /(手術|手术|治療|治疗|停藥|停药|用藥|用药|復原|恢复|康復|康复|懷孕|怀孕|受孕|備孕|备孕|生育|生孩子|孩子|病|痛|癌|醫生|医生|醫療|医疗)/;
@@ -30,7 +30,7 @@ const FERTILITY_RE = /(懷孕|怀孕|受孕|備孕|备孕|生育|生孩子|要�
 const RELATION_RE = /(父母|爸爸|媽媽|妈妈|母親|母亲|父親|父亲|家人|兄弟|姐妹|姊妹|朋友|友情|人際|人际|同事|合作夥伴|合作伙伴|客戶|客户|貴人|贵人|小人)/;
 
 const PAST_TOPIC_RE = /(前世|前三世|六道|輪迴|轮回|一掌經|一掌经|三世因果)/;
-const HOME_TOPIC_RE = /(家宅|搬家|房子|住宅|店面|風水|风水|買屋|买屋|買房|买房|住哪|坐向|戶型|户型)/;
+const HOME_TOPIC_RE = /(家宅|搬家|房子|住宅|店面|風水|风水|買屋|买屋|買房|买房|住哪|坐向|戶型|户型|搬到|移居|移民)/;
 const HEALTH_TOPIC_RE = /(健康|病|痛|醫療|医疗|手術|手术|失眠|身體|身体|復原|恢复|康復|康复|睡不著|睡不着|懷孕|怀孕|受孕|備孕|备孕|生育)/;
 const LOVE_TOPIC_RE = /(感情|戀愛|恋爱|愛情|爱情|交往|正緣|正缘|婚姻|結婚|结婚|伴侶|伴侣|桃花|復合|复合|分手|緣分|缘分|喜歡|喜欢|男友|女友|約會|约会|曖昧|暧昧|對象|对象)/;
 const CAREER_TOPIC_RE = /(工作|職業|职业|事業|事业|轉職|转职|跳槽|離職|离职|辭職|辞职|升遷|升迁|升職|升职|職場|职场|公司|職位|职位|上班|面試|面试|創業|创业|老闆|老板|offer|薪水|薪資|薪资|工資|工资|學業|学业|學習|学习|考試|考试|升學|升学|留學|留学|學校|学校|大學|大学|研究所|博士|證照|证照)/i;
@@ -183,7 +183,11 @@ function topicFor(question: string, kind: QuestionKind, req: AnswerRequirements)
   return topics[0] ?? kind;
 }
 
-function readingForTopic(topic: ForecastTopic, reading: Reading): string {
+// exported so customer-answer-hotfix.ts's later "asksWhen" correction layer
+// can reuse the exact same topic→field mapping instead of re-deciding, in a
+// second place, which reading field represents "the topic's substantive
+// content" for a given question kind.
+export function readingForTopic(topic: ForecastTopic, reading: Reading): string {
   switch (topic) {
     case "love": return reading.love;
     case "career": return reading.work;
@@ -419,7 +423,7 @@ function actionFor(question: string, kind: QuestionKind, req: AnswerRequirements
     case "money": return "先列主收入、固定支出、可承受風險與退出成本，再談擴張。";
     case "health": return "把症狀頻率與作息記錄下來；持續或加重就就醫。";
     case "home": return "真實住宅要補平面圖、坐向、採光與周邊道路，不憑一句八字亂定風水。";
-    case "choice": return "先確認這個二選一比較要求是否有兩組可比條件；若沒有，就把兩個選項的收入、距離、責任和退出成本放在同一張表再核對。";
+    case "choice": return "把兩個選項的收益、時間、責任、穩定性與退出成本放在同一張表；先核對偏向選項的最壞成本是否承受得起，再決定。";
     case "past": return "只核對已排出的四宮，不追加沒有來源的前世故事。";
     default: return "把這個結論拿最近三次真實事件核對，對不上就不要硬套。";
   }
@@ -472,7 +476,19 @@ export function applyAnswerContract(question: string, chart: Chart, reading: Rea
   } else if (req.asksWhen && multiTopic) {
     directAnswer = multiTopicTimingAnswer(question, chart, topics, req);
   } else if (req.asksWhen) {
-    directAnswer = `你問的是「${cleanQuestion(question)}」。先直接回答時間：${buildTimingAnswer(chart, topic, req.targetYears, { months: req.targetMonths })}`;
+    // 原本只要問句含時間詞（今年／這幾年／幾月…）就整段改成「純時機表」，
+    // 完全丟掉 reading.work／money／body／love／home 這些已經算好的主題結構內容——
+    // 而中文問句幾乎都會帶時間詞（「我今年適合換工作嗎」「我這幾年財運如何」
+    // 「我今年健康要注意什麼」），等於絕大多數帶主題的問題都會被降級成一張
+    // 跟問題內容無關的順／不順月份清單。readingForTopic() 本來就是為了把
+    // 主題內容接回答案而寫的（multiTopicAnswer 已在用），這裡把同一支函式
+    // 用在單一主題＋問時間的情況，讓時機與結構面一起保留，不是新增判斷邏輯。
+    const timing = buildTimingAnswer(chart, topic, req.targetYears, { months: req.targetMonths });
+    const REAL_TOPICS = new Set<ForecastTopic>(["love", "career", "money", "health", "home"]);
+    const topicText = REAL_TOPICS.has(topic) ? readingForTopic(topic, reading) : "";
+    directAnswer = topicText
+      ? `你問的是「${cleanQuestion(question)}」。先直接回答時間：${timing}　從你的盤來看：${topicText}`
+      : `你問的是「${cleanQuestion(question)}」。先直接回答時間：${timing}`;
   } else if (kind === "home" && req.asksWhere) {
     directAnswer = homeLocationAnswer(question, chart, reading);
   } else if (req.asksCompare) {

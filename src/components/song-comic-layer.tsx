@@ -128,7 +128,7 @@ export function SongComicShareCard({ dayMaster, locale }: { dayMaster: string; l
   async function share() {
     try {
       if (navigator.share) {
-        await navigator.share({ title: locale === "en" ? "ZHAOWU · One Comic Frame" : "昭梧 · 命書一格", text: shareText, url: window.location.href });
+        await navigator.share({ title: locale === "en" ? "ZHAOWU · One Comic Frame" : locale === "zh-Hans" ? "昭梧 · 命书一格" : "昭梧 · 命書一格", text: shareText, url: window.location.href });
       } else {
         await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
         setStatus(copy.copied);

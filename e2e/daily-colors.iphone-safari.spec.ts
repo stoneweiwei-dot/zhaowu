@@ -38,6 +38,24 @@ test("home keeps dress colour inside the unified Today disclosure", async ({ pag
   await expect(embed.locator("[data-daily-color-swatch] i").first()).toBeVisible();
 });
 
+test("home almanac and standalone dress page use the same device date when IP timezone differs", async ({ page }) => {
+  await page.clock.setFixedTime(new Date("2026-09-30T00:15:00Z"));
+  await page.addInitScript(() => {
+    localStorage.setItem("zhaowu:visitor-context:v3", JSON.stringify({
+      at: Date.now(),
+      value: { city: "Los Angeles", country: "United States", latitude: 34.05, longitude: -118.24, timezone: "America/Los_Angeles", temperature: 20, weatherCode: 0 },
+    }));
+  });
+  await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const embeddedDate = await page.locator("#daily-almanac [data-daily-colors-date]").textContent();
+  await page.locator('#daily-almanac .zhaowu-today-guide__tabs button').first().click();
+  const almanacDate = await page.locator("#daily-almanac .zhaowu-today-card.is-date strong").textContent();
+  expect(almanacDate).toBe("2026.09.30");
+  await page.goto("/daily-colors", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("#five-element-wardrobe [data-daily-colors-date]")).toHaveText(embeddedDate ?? "");
+});
+
 test("night Today keeps selected labels and wardrobe copy legible", async ({ page }) => {
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
   await page.goto("/", { waitUntil: "domcontentloaded" });

@@ -364,7 +364,7 @@ function CultivationDestinyQuiz() {
       {result ? (
         <section className="space-y-5">
           <article className="seal-border rounded-2xl bg-cream/95 p-5 sm:p-8">
-            <p className="text-xs tracking-[0.22em] text-cinnabar">{locale === "en" ? "CELESTIAL DOSSIER" : "天機命冊"}</p>
+            <p className="text-xs tracking-[0.22em] text-cinnabar">{locale === "en" ? "CELESTIAL DOSSIER" : locale === "zh-Hans" ? "天机命册" : "天機命冊"}</p>
             <h2 className="mt-2 font-display text-3xl text-ink">{displayName} · {result.rootName}</h2>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {[
@@ -410,7 +410,7 @@ function CultivationDestinyQuiz() {
             <h3 className="font-display text-2xl text-ink">{copy.paths}</h3>
             <p className="mt-3 text-sm leading-7 text-ink-soft"><b className="text-ink">{locale === "en" ? "Main" : locale === "zh-Hans" ? "主修" : "主修"}：</b>{result.mainPath.label} · {result.mainPath.score}/10</p>
             <p className="mt-1 text-sm leading-7 text-ink-soft"><b className="text-ink">{locale === "en" ? "Support" : locale === "zh-Hans" ? "辅修" : "輔修"}：</b>{result.supportPath.label} · {result.supportPath.score}/10</p>
-            <p className="mt-1 text-sm leading-7 text-ink-soft"><b className="text-ink">{locale === "en" ? "Poor fit" : "不適合"}：</b>{result.unsuitablePaths.map((item) => item.label + " " + item.score + "/10").join(" · ")}</p>
+            <p className="mt-1 text-sm leading-7 text-ink-soft"><b className="text-ink">{locale === "en" ? "Poor fit" : locale === "zh-Hans" ? "不适合" : "不適合"}：</b>{result.unsuitablePaths.map((item) => item.label + " " + item.score + "/10").join(" · ")}</p>
             <div className="mt-4 grid gap-2">
               {result.paths.map((item) => (
                 <div key={item.key} className="flex items-center justify-between rounded-lg border border-line px-3 py-2 text-sm"><span>{item.label}</span><span className="text-cinnabar">{item.score}/10</span></div>
@@ -438,8 +438,8 @@ function CultivationDestinyQuiz() {
           <article className="seal-border rounded-2xl bg-paper p-5 sm:p-7">
             <h3 className="font-display text-2xl text-ink">{copy.three}</h3>
             <div className="mt-4 grid gap-3 text-sm leading-7 text-ink-soft">
-              <p><b className="text-ink">{locale === "en" ? "Opening" : "最大機緣"}：</b>{result.opportunity}</p>
-              <p><b className="text-ink">{locale === "en" ? "Trial" : "最大劫數"}：</b>{result.trial}</p>
+              <p><b className="text-ink">{locale === "en" ? "Opening" : locale === "zh-Hans" ? "最大机缘" : "最大機緣"}：</b>{result.opportunity}</p>
+              <p><b className="text-ink">{locale === "en" ? "Trial" : locale === "zh-Hans" ? "最大劫数" : "最大劫數"}：</b>{result.trial}</p>
               <p><b className="text-ink">{locale === "en" ? "Core Dao" : "核心道意"}：</b>{result.dao}</p>
             </div>
           </article>
@@ -449,7 +449,7 @@ function CultivationDestinyQuiz() {
             <div className="mt-4 grid gap-3 text-sm leading-7 text-ink-soft">
               <p><b className="text-ink">{locale === "en" ? "Common" : "常途"}：</b>{result.commonRoute}</p>
               <p><b className="text-ink">{locale === "en" ? "Upper" : "上途"}：</b>{result.upperRoute}</p>
-              <p><b className="text-ink">{locale === "en" ? "Extreme" : "極途"}：</b>{result.extremeRoute}</p>
+              <p><b className="text-ink">{locale === "en" ? "Extreme" : locale === "zh-Hans" ? "极途" : "極途"}：</b>{result.extremeRoute}</p>
             </div>
           </article>
 
@@ -465,14 +465,14 @@ function CultivationDestinyQuiz() {
           </article>
 
           <article className="seal-border rounded-2xl bg-cream/95 p-4 sm:p-6">
-            <img src={imageUrl} alt={locale === "en" ? "Personal cultivation destiny dossier" : "個人修仙命測圖"} className="mx-auto block h-auto w-full max-w-[540px] rounded-xl border border-line" />
+            <img src={imageUrl} alt={locale === "en" ? "Personal cultivation destiny dossier" : locale === "zh-Hans" ? "个人修仙命测图" : "個人修仙命測圖"} className="mx-auto block h-auto w-full max-w-[540px] rounded-xl border border-line" />
             <button type="button" onClick={() => void savePng()} className="mt-4 min-h-12 w-full rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.save}</button>
             {exportError ? <p role="alert" className="mt-3 text-xs leading-6 text-cinnabar">{exportError}</p> : null}
           </article>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <button type="button" onClick={() => { setGenerated(false); setExportError(""); }} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{copy.retry}</button>
-            <Link to="/" className="grid min-h-12 place-items-center rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink">{locale === "en" ? "Back home" : "返回首頁"}</Link>
+            <Link to="/" className="grid min-h-12 place-items-center rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink">{locale === "en" ? "Back home" : locale === "zh-Hans" ? "返回首页" : "返回首頁"}</Link>
           </div>
         </section>
       ) : null}
