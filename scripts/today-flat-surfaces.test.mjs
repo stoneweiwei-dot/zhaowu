@@ -1,0 +1,15 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+
+const css = readFileSync(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
+const block = css.slice(css.indexOf("/* r229"));
+
+test("Today spirit slip, chips and pillars are flat in day and night (no pasted boxes)", () => {
+  assert.ok(css.includes("/* r229"));
+  assert.match(block, /#daily-almanac \.zhaowu-today-guide__spirit \{[^}]*background: transparent !important/);
+  assert.match(block, /#daily-almanac \.zhaowu-today-guide__chips article \{[^}]*background: transparent !important/);
+  assert.match(block, /#daily-almanac \.zhaowu-today-pillars > span \{[^}]*background: transparent !important/);
+  assert.match(block, /html\[data-zw-theme="night"\] body #daily-almanac \.zhaowu-today-guide__spirit h3 \{ color: #f4ead9/);
+  assert.match(block, /html\[data-zw-theme="night"\] body #daily-almanac \.zhaowu-today-pillars > span b \{ color: #f4ead9/);
+});
