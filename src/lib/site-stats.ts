@@ -71,8 +71,21 @@ async function publicFetch(input: string, init: RequestInit = {}) {
   }
 }
 
+/**
+ * Owner 2026-10-01: ~92% of the stored "visits" came from automated browsers (every CI / production-smoke
+ * Playwright context is a fresh visitor with a new key, and CI loads the app against the live counter).
+ * Automated browsers are therefore never counted. navigator.webdriver is true for Playwright/Selenium/
+ * Puppeteer; the UA check covers headless Chrome variants that do not set it.
+ */
+export function isAutomatedBrowser(nav: Pick<Navigator, "webdriver" | "userAgent"> | undefined = typeof navigator === "undefined" ? undefined : navigator) {
+  if (!nav) return false;
+  if (nav.webdriver) return true;
+  return /HeadlessChrome|PhantomJS|Playwright|Puppeteer|Lighthouse/i.test(nav.userAgent || "");
+}
+
 export async function recordVisit() {
   if (!SUPABASE_URL || !SUPABASE_KEY || typeof window === "undefined") return;
+  if (isAutomatedBrowser()) return;
   if (Date.now() < publicDataBlockedUntil) return;
 
   let key = "";
