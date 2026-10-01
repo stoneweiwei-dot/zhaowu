@@ -15,20 +15,22 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.09.29-r222",
-  updateNumber: 222,
-  publishedAt: "2026-09-29T07:30:00+10:00",
-  latestSummary: "首頁重整為單一紙面系統：今日指引不再卡中套卡，分頁與標題不再斷字，五色選擇改為清晰清單；夜間統一墨色底，修正「近日天象」與延伸內容看不見文字的問題。",
+  version: "ZW-WEB-2026.10.01-r223",
+  updateNumber: 223,
+  publishedAt: "2026-10-01T13:00:00+10:00",
+  latestSummary: "開場影片每次開啟 App 都會播放並可跳過、保留聲音且上限 15 秒；聲音鈕改為乾淨的圖示；素材管理只留「設為目前使用／改名／刪除」；音樂上傳改用真實分支狀態重試，不再誤報失敗。",
   details: {
     "zh-Hant": [
-      "首頁視覺已重新整理，現在以一致的紙面層級呈現；標題、分頁與內容區塊在手機上更清楚，也減少彼此遮蓋或樣式不一致的情況。",
-      "白天：英雄標題去框、移除穿過標題的金線；「今日」內的黃曆、穿衣、天象併入同一張紙，以細線分段，不再四層邊框；分頁改短標籤（黃曆／穿衣／靈籤），完整名稱保留為頁內標題；五色狀態改為色帶＋名稱＋心願的清單；延伸內容去除外框。",
-      "夜間：頁面統一墨色底；今日與延伸內容為深松綠承載面、月白字；「近日天象」與延伸內容卡片的淺底淺字問題已修正；生辰表單維持暖紙深墨；加入主畫面提示在夜間恢復可讀。",
+      "開場影片：每次重新開啟 App 或網站都會播放（同一次瀏覽內換頁不重播），底部有「跳過」鈕；站主上傳的影片保留原聲，最長 15 秒，上傳時自動在瀏覽器內壓縮（不產生雲端費用）。",
+      "聲音鈕：開場與登入頁的聲音控制改為細線喇叭圖示（開／靜音兩態），不再有文字逐字換行溢出螢幕的問題，並與「跳過」鈕同高並排。",
+      "素材管理（站主後台）：每支影片只留「設為目前使用」「改名」「刪除」；日夜版、停用、預覽等多餘選項已移除；上傳失敗（檔案超過儲存單檔上限）時改以中文說明原因。",
+      "背景音樂：站主上傳曲目時，改以最新的分支狀態自動重試，修正「曲目保存失敗」的假失敗；頁面切到背景時暫停音樂，起始音量放輕。",
     ],
     en: [
-      "The homepage now uses one consistent paper-and-ink hierarchy. Titles, tabs and content sections are clearer on mobile, with fewer visual conflicts between older and newer sections.",
-      "Day: the hero is no longer boxed and the stray gold rule through the title is gone; almanac, dress colours and sky events now sit on one paper sheet separated by hairlines instead of four nested frames; tabs use short labels with the full name kept as the in-page heading; the five colour states are a clean swatch · name · wish list; the Explore wrapper box is removed.",
-      "Night: one ink page field; Today and Explore are dark pine carriers with moon-white text; the light-on-light 'Recent sky events' and Explore cards are fixed; the birth form keeps warm paper with dark ink; the add-to-home-screen sheet is readable again.",
+      "Opening video: it now plays every time the app or site is opened (not again on page changes within the same visit), with a Skip button at the bottom. Owner uploads keep their sound, are capped at 15 seconds and are compressed in the browser at no cloud cost.",
+      "Sound button: the opening and login sound control is now a clean line speaker icon (on / muted). The label that used to wrap one character per line off the screen is gone, and the button sits level with Skip.",
+      "Media manager (owner console): each video now offers only Set as current, Rename and Delete; the day/night, disable and preview options were removed; when an upload exceeds the storage per-file limit the reason is explained in plain language.",
+      "Background music: owner track uploads now retry against the live branch state, fixing the false 'track save failed' error; music pauses when the page goes to the background and starts at a softer volume.",
     ],
   },
 } as const;
