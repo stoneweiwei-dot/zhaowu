@@ -29,3 +29,11 @@ test("legacy floating-button rules no longer paint a square behind the control r
   assert.match(block, /\.zhaowu-dragon-music-controls\[data-background-music-control\] \{[^}]*background: transparent !important/);
   assert.match(block, /\.zhaowu-dragon-music-controls\[data-background-music-control\] \{[^}]*box-shadow: none !important/);
 });
+
+test("night dragon panel answer, shortcuts and input follow the flat day layout", () => {
+  const block = css.slice(css.indexOf("/* r228"));
+  assert.match(block, /\.zhaowu-dragon-guide-answer \{[^}]*background: transparent !important/);
+  assert.match(block, /\.zhaowu-dragon-guide-shortcuts button \{[^}]*background: transparent !important/);
+  assert.match(block, /> form input \{[^}]*background: transparent !important/);
+  assert.match(block, /::placeholder \{[^}]*color: #6f6a5e/);
+});

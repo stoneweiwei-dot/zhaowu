@@ -74,6 +74,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const languageOptions = [
     { value: "en" as const, label: "English", aria: "English" },
     { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
+    { value: "zh-Hans" as const, label: "简体", aria: "简体中文" },
   ];
 
   const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
