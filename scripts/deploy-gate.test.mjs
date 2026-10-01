@@ -26,12 +26,14 @@ test("Vercel build stays exact and only vetted main can trigger Production", () 
   assert.match(vercel.ignoreCommand, /git diff --quiet/);
 });
 
-test("GitHub Production CI keeps blocking deploy-gate, engine, and iPhone Safari jobs", () => {
+test("GitHub Production CI keeps build, engine, and visual jobs while skipping iPhone Safari", () => {
   assert.match(workflow, /deploy-gate:/);
   assert.match(workflow, /npm run build/);
   assert.match(workflow, / {2}engine:/);
   assert.match(workflow, /name: Engine suite/);
-  assert.match(workflow, /name: iPhone Safari/);
+  assert.match(workflow, /name: Visual regression/);
+  assert.match(workflow, /name: iPhone Safari[\s\S]*?if: false/);
+  assert.doesNotMatch(workflow, /npm run test:iphone-safari|playwright install .*webkit/);
   assert.doesNotMatch(workflow, /engine-observe:/);
   assert.doesNotMatch(workflow, /continue-on-error:\s*true/);
 });
