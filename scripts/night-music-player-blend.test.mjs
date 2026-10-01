@@ -23,3 +23,9 @@ test("night player inside the dragon panel is transparent paper, not a dark box"
   assert.match(block, /html\[data-zw-theme="night"\] body \.zhaowu-dragon-guide-panel \.zhaowu-dragon-music \{[^}]*background: transparent !important/);
   assert.match(block, /border-bottom: 1px solid/);
 });
+
+test("legacy floating-button rules no longer paint a square behind the control row", () => {
+  const block = css.slice(css.indexOf("/* r227"));
+  assert.match(block, /\.zhaowu-dragon-music-controls\[data-background-music-control\] \{[^}]*background: transparent !important/);
+  assert.match(block, /\.zhaowu-dragon-music-controls\[data-background-music-control\] \{[^}]*box-shadow: none !important/);
+});

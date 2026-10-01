@@ -6172,8 +6172,23 @@ html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music
 html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-controls button:not([data-active="true"]) { opacity: 1 !important; }
 html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-controls button:not([data-active="true"]):not([data-background-music-control]) { color: #5a5a52 !important; }
 html body .zhaowu-dragon-music-controls .zhaowu-music-icon { display: block; width: 18px; height: 18px; flex: none; }
-html body .zhaowu-dragon-music-controls button > span { display: contents; }
 html body .zhaowu-dragon-bubble-player .zhaowu-music-icon { display: block; width: 16px; height: 16px; margin: auto; }
 html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-dot { background: rgba(91, 75, 54, .35) !important; }
 html[data-zw-theme="night"] body .zhaowu-dragon-guide-panel .zhaowu-dragon-music-dot.is-playing { background: #a88652 !important; }
 html body .zhaowu-dragon-music-controls button { display: inline-grid !important; place-items: center !important; }
+/* The control-row wrapper carries data-background-music-control (click-outside guard), which legacy rules for the
+ * old floating music button (44px / 2.35rem cream square with shadow) also matched: that was the square "patch"
+ * behind the Previous button. Neutralise those legacy styles for the wrapper only. */
+html body .zhaowu-dragon-music-controls[data-background-music-control] {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  justify-content: flex-start !important;
+}
