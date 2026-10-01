@@ -86,26 +86,39 @@ test.describe("iPhone Safari display-language contract", () => {
   // Owner 2026-10-02: Simplified must be a real third language, not Traditional text behind a button.
   // These characters exist only in Traditional script, so any hit is Traditional text served to a Simplified reader.
   const TRADITIONAL_ONLY = "個們這來說為與對體當時麼開關運氣學會國點應區義樣愛過還後從見讓題無問門間車長總經結構現實證動係觀產進選專業張計圖書單據認識語讀師機發覺紀錄許請謝歲歷興藝覆陽陰靈壇鐘齡願衝處標準備顧慮價際線訊費變壞醫療衛險護報導啟廣積極項決議級終續統織試類詳細種稱釋範圍態確權擇調整額組";
-  for (const route of ["/", "/knowledge", "/numerology", "/fun-tests", "/sky-events"]) {
-    test(`Simplified Chinese shows no Traditional-only text on ${route}`, async ({ page }) => {
+  test.describe("Simplified Chinese route scan", () => {
+    // Keep this cheap: one test, no trace capture, per-route failures reported together.
+    test.use({ trace: "off" });
+    test("Simplified Chinese shows no Traditional-only text on key routes", async ({ page }) => {
+      test.setTimeout(150_000);
       await makeAppOfflineSafe(page);
       await page.addInitScript(() => localStorage.setItem("zhaowu.display-language", "zh-Hans"));
-      await page.goto(route, { waitUntil: "domcontentloaded" });
-      await expect.poll(() => page.evaluate(() => document.documentElement.lang)).toBe("zh-Hans");
-      await page.waitForTimeout(1500);
-      const leaks = await page.evaluate((trad) => {
-        const out: string[] = [];
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-          const parent = (node as Text).parentElement;
-          if (!parent || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.tagName)) continue;
-          const text = node.textContent ?? "";
-          const hit = [...text].filter((ch) => trad.includes(ch));
-          if (hit.length) out.push(`[${[...new Set(hit)].join("")}] ${text.trim().slice(0, 60)}`);
+      const report: string[] = [];
+      for (const route of ["/", "/knowledge", "/numerology", "/fun-tests", "/sky-events"]) {
+        try {
+          await page.goto(route, { waitUntil: "domcontentloaded", timeout: 25_000 });
+          await page.waitForTimeout(1200);
+        } catch (error) {
+          report.push(`${route}: load failed (${String(error).slice(0, 80)})`);
+          continue;
         }
-        return out.slice(0, 25);
-      }, TRADITIONAL_ONLY);
-      expect(leaks, `Traditional-only text on ${route} while 简体 is selected`).toEqual([]);
+        const lang = await page.evaluate(() => document.documentElement.lang);
+        if (lang !== "zh-Hans") report.push(`${route}: html lang is ${lang}`);
+        const leaks = await page.evaluate((trad) => {
+          const out: string[] = [];
+          const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+          for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            const parent = (node as Text).parentElement;
+            if (!parent || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.tagName)) continue;
+            const text = node.textContent ?? "";
+            const hit = [...text].filter((ch) => trad.includes(ch));
+            if (hit.length) out.push(`[${[...new Set(hit)].join("")}] ${text.trim().slice(0, 50)}`);
+          }
+          return out.slice(0, 12);
+        }, TRADITIONAL_ONLY);
+        for (const leak of leaks) report.push(`${route}: ${leak}`);
+      }
+      expect(report, "Traditional-only text while 简体 is selected").toEqual([]);
     });
-  }
+  });
 });
