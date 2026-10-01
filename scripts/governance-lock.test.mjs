@@ -38,7 +38,7 @@ test("CI jobs stay parallel and iPhone Safari is skipped", async () => {
   const build = await read(".github/workflows/build.yml");
   assert.doesNotMatch(build, /needs:\s*deploy-gate/);
   for (const name of ["Deploy gate", "Engine suite", "Visual regression"]) assert.match(build, new RegExp("name: " + name));
-  assert.match(build, /name: iPhone Safari[\\s\\S]*?if: false/);
+  assert.match(build, /name: iPhone Safari[\s\S]*?if: false/);
   assert.doesNotMatch(build, /npm run test:iphone-safari|playwright install .*webkit/);
 });
 
