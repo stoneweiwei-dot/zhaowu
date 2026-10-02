@@ -82,12 +82,33 @@ test("r96 almanac paints four distinct pillar colours and hides duplicate yi lab
 });
 
 
-test("daily location keeps IP lookup but fails cleanly without fake city defaults", () => {
-  assert.match(widget, /ipwho\.is/);
+test("Today Guide location is confirmed only from browser geolocation", () => {
+  assert.match(widget, /source: "browser" \\| "none"/);
+  assert.match(widget, /navigator\\.geolocation\\.getCurrentPosition/);
+  assert.match(widget, /timeout:\\s*8_000/);
+  assert.match(widget, /maximumAge:\\s*5 \\* 60_000/);
+  assert.match(widget, /api\\.open-meteo\\.com\\/v1\\/forecast\\?latitude=\\$\\{latitude\\}&longitude=\\$\\{longitude\\}/);
+  assert.match(widget, /source === "browser"/);
+  assert.match(widget, /function locationLabel\\(visitor: VisitorContext \\| null, locale: Locale\\)/);
+  assert.match(widget, /visitor\\.city\\.trim\\(\\)\\.toLowerCase\\(\\) !== "washington"/);
   assert.match(widget, /Location not confirmed/);
   assert.match(widget, /尚未确认位置/);
   assert.match(widget, /尚未確認位置/);
-  assert.match(widget, /Weather loading/);
+  assert.match(widget, /"Located"/);
+  assert.match(widget, /"已定位"/);
+  assert.doesNotMatch(widget, /ipwho\\.is|ipapi\\.co|ipinfo\\.io/);
+});
+
+test("Today Guide invalidates legacy IP cache and only stores browser-confirmed locations", () => {
+  assert.match(widget, /zhaowu:visitor-context:v3/);
+  assert.match(widget, /removeItem\\(legacyKey\\)/);
+  assert.match(widget, /zhaowu:visitor-context:v4/);
+  assert.match(widget, /value\\?\\.source === "browser"/);
+  assert.match(widget, /typeof value\\.latitude === "number"/);
+  assert.match(widget, /typeof value\\.longitude === "number"/);
+  assert.match(widget, /window\\.localStorage\\.setItem\\("zhaowu:visitor-context:v4"/);
+  assert.match(widget, /if \\(!embedded && event\\.currentTarget\\.open\\) void requestLocation\\(\\)/);
+  assert.match(widget, /className="zhaowu-today-location-retry"/);
+  assert.match(widget, /seasonLabel\\(visitor\\.latitude, now\\.getMonth\\(\\) \\+ 1, locale\\)/);
   assert.match(widget, /Season pending location/);
-  assert.doesNotMatch(widget, /visitor\?\.city \|\| \(locale === "en" \? "Local" : "本地"\)/);
 });
