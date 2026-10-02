@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import test from "node:test";
 import { publishSocialPost, socialConfiguration, validateSocialPost } from "../lib/meta-social-publisher.js";
 
@@ -20,7 +20,9 @@ test("social credentials stay server-side and configuration exposes booleans onl
   assert.doesNotMatch(client, /META_.*ACCESS_TOKEN|graph\.facebook\.com|graph\.threads/);
   assert.doesNotMatch(route, /META_.*ACCESS_TOKEN|graph\.facebook\.com|graph\.threads/);
   assert.match(client, /credentials: "include"/);
-  assert.match(client, /fetch\("\/api\/owner-social"/);
+  assert.match(client, /fetch\("\/api\/owner-session"/);
+  assert.match(client, /social\.status/);
+  assert.match(client, /social\.publish/);
 });
 
 test("validation preserves platform-specific limits", () => {
@@ -93,14 +95,19 @@ test("partial failures are explicit and tokens are scrubbed", async () => {
   assert.match(results.threads.message, /\[hidden\]/);
 });
 
-test("owner endpoint is protected and Vercel grants the required duration", async () => {
-  const api = await source("api/owner-social.js");
+test("owner endpoint is protected, consolidated, and stays within the Hobby function cap", async () => {
+  const api = await source("api/owner-session.js");
   const vercel = JSON.parse(await source("vercel.json"));
-  assert.match(api, /hasOwnerSession/);
+  const apiFiles = (await readdir(new URL("api/", root))).filter((name) => name.endsWith(".js"));
+  assert.match(api, /requestHasOwnerSession/);
   assert.match(api, /requestIsSameOrigin/);
   assert.match(api, /timingSafeEqual/);
   assert.match(api, /Cache-Control.*no-store/s);
-  assert.equal(vercel.functions["api/owner-social.js"].maxDuration, 60);
+  assert.match(api, /social\.status/);
+  assert.match(api, /social\.publish/);
+  assert.equal(vercel.functions["api/owner-session.js"].maxDuration, 60);
+  assert.equal(vercel.functions["api/owner-social.js"], undefined);
+  assert.ok(apiFiles.length <= 12);
 });
 
 test("the owner console links to the compact social publisher", async () => {
