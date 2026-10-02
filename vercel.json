@@ -20,6 +20,9 @@
     "api/owner-session.js": {
       "maxDuration": 10
     },
+    "api/owner-social.js": {
+      "maxDuration": 60
+    },
     "api/owner-music.js": {
       "maxDuration": 10
     },
