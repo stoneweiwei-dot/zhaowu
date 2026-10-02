@@ -4,6 +4,7 @@ import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
 import { SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
 import {
+  buildIndianReading,
   buildPalmReading,
   buildQizhengReading,
   buildWesternReading,
@@ -75,6 +76,9 @@ function reportCopy(locale: Locale) {
     frame: "Frame",
     openFull: "Expand",
     closeFull: "Collapse",
+    specialistTitle: "Deeper readings by system",
+    specialistLead: "Optional. Each system below is folded; open only the one you want. They are supporting evidence and never override the main BaZi judgement.",
+    numerology: "Life-path numerology",
 
 
   };
@@ -97,6 +101,9 @@ function reportCopy(locale: Locale) {
     frame: "第",
     openFull: "展开",
     closeFull: "收起",
+    specialistTitle: "分系统深读",
+    specialistLead: "可选阅读，每个系统默认收合，想看哪个再展开。皆为旁证，不覆盖子平八字主判。",
+    numerology: "生命灵数",
 
 
   };
@@ -119,6 +126,9 @@ function reportCopy(locale: Locale) {
     frame: "第",
     openFull: "展開",
     closeFull: "收起",
+    specialistTitle: "分系統深讀",
+    specialistLead: "可選閱讀，每個系統預設收合，想看哪個再展開。皆為旁證，不覆蓋子平八字主判。",
+    numerology: "生命靈數",
 
 
   };
@@ -207,8 +217,15 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
           {sections.map((section, index) => (
             <Fragment key={section.title}>
               <article>
-                <h4>{section.title}</h4>
-                {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                <details className="zhaowu-unified-fold" data-report-fold>
+                  <summary>
+                    <h4>{section.title}</h4>
+                    {section.body[0] ? <span className="zhaowu-unified-fold__teaser">{section.body[0]}</span> : null}
+                  </summary>
+                  <div className="zhaowu-unified-fold__body">
+                    {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                  </div>
+                </details>
               </article>
               {index === 0 ? <SongComicReportInsert dayMaster={foundation.dayMaster} locale={locale} /> : null}
             </Fragment>
@@ -217,8 +234,77 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
       ) : (
         <ComicLiteReport sections={sections} dayMaster={foundation.dayMaster} locale={locale} copy={copy} />
       )}
+      <SpecialistTree birth={birth} locale={locale} copy={copy} />
       <SongComicShareCard dayMaster={foundation.dayMaster} locale={locale} />
     </section>
+  );
+}
+
+type SpecialistEntry = { id: string; title: string; lead?: string; warning?: string; sections: { title: string; lines: string[] }[] };
+
+function fromReading(id: string, reading: SpecialistReading): SpecialistEntry {
+  return {
+    id,
+    title: reading.title,
+    lead: reading.lead,
+    warning: reading.warning,
+    sections: reading.sections.map((section) => ({
+      title: section.title,
+      lines: [section.body, ...(section.table?.rows.map((row) => row.join(" · ")) ?? [])].filter(Boolean),
+    })),
+  };
+}
+
+// Optional method-by-method readings. Collapsed by default and computed only once the tree is opened,
+// so the main report stays short and the heavier engines (e.g. D60) never run for readers who skip it.
+function SpecialistTree({ birth, locale, copy }: { birth: SharedBirthRecord; locale: Locale; copy: ReturnType<typeof reportCopy> }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <details className="zhaowu-specialist-tree" data-specialist-tree open={open} onToggle={(event) => setOpen(event.currentTarget.open)}>
+      <summary>
+        <strong>{copy.specialistTitle}</strong>
+        <span>{copy.specialistLead}</span>
+      </summary>
+      {open ? <SpecialistTreeBody birth={birth} locale={locale} copy={copy} /> : null}
+    </details>
+  );
+}
+
+function SpecialistTreeBody({ birth, locale, copy }: { birth: SharedBirthRecord; locale: Locale; copy: ReturnType<typeof reportCopy> }) {
+  const entries = useMemo<SpecialistEntry[]>(() => {
+    const profile = NUMEROLOGY_PROFILES[calculateLifeNumber(birth.year, birth.month, birth.day).number];
+    return [
+      fromReading("ziwei", buildZiweiReading(birth, locale)),
+      fromReading("qizheng", buildQizhengReading(birth, locale)),
+      fromReading("western", buildWesternReading(birth, locale)),
+      fromReading("indian", buildIndianReading(birth, locale)),
+      fromReading("palm", buildPalmReading(birth, locale)),
+      {
+        id: "numerology",
+        title: copy.numerology,
+        sections: [{ title: copy.numerology, lines: [tx(locale, profile.core), tx(locale, profile.challenge), tx(locale, profile.lesson), tx(locale, profile.action)].filter(Boolean) }],
+      },
+    ];
+  }, [birth, copy.numerology, locale]);
+
+  return (
+    <div className="zhaowu-specialist-tree__list">
+      {entries.map((entry) => (
+        <details key={entry.id} className="zhaowu-specialist-node" data-specialist-node={entry.id}>
+          <summary><h5>{entry.title}</h5></summary>
+          <div className="zhaowu-specialist-node__body">
+            {entry.warning ? <p className="zhaowu-specialist-node__warning">{entry.warning}</p> : null}
+            {entry.lead ? <p>{entry.lead}</p> : null}
+            {entry.sections.map((section, index) => (
+              <section key={`${section.title}-${index}`}>
+                {section.title && section.title !== entry.title && !/^\d+$/.test(section.title.trim()) ? <h6>{section.title}</h6> : null}
+                {section.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
+              </section>
+            ))}
+          </div>
+        </details>
+      ))}
+    </div>
   );
 }
 
