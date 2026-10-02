@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { AnalysisForm } from "@/components/analysis-form";
 import { DailyAlmanacWidget } from "@/components/daily-almanac-widget";
+import { DeepReadingHeroCard } from "@/components/deep-reading-hero-card";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
 import { HomeSectionBoundary } from "@/components/home-section-boundary";
@@ -138,6 +139,8 @@ function Home() {
           <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div>
         </HomeSectionBoundary>
       ) : null}
+
+      <HomeSectionBoundary id="hero" locale={locale}><DeepReadingHeroCard /></HomeSectionBoundary>
 
       <section className="zhaowu-home-stage zhaowu-home-stage--daily-priority" aria-label={funCopy.todayTitle}>
         <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>

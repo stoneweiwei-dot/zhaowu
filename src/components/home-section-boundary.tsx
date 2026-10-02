@@ -2,7 +2,7 @@ import { Component, type ErrorInfo, type ReactNode } from "react";
 import type { Locale } from "@/lib/i18n";
 
 type Props = {
-  id: "comic" | "analysis" | "install" | "report";
+  id: "comic" | "analysis" | "install" | "report" | "hero";
   locale: Locale;
   children: ReactNode;
   onRecover?: () => void;
