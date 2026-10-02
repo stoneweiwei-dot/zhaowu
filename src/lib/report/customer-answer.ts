@@ -274,5 +274,5 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
 
   const answer = [opener, why, timing, precision].map((s) => s.trim()).filter(Boolean).join("");
   if (!answer) return null;
-  return { answer, nextAction: nextStep(topic, form, showTiming || form === "when" ? summary : null, question) };
+  return { answer, nextAction: nextStep(topic, form, showTiming ? summary : null, question) };
 }
