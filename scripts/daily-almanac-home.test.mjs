@@ -108,7 +108,8 @@ test("Today Guide invalidates legacy IP cache and only stores browser-confirmed 
     'typeof value.longitude === "number"',
     'window.localStorage.setItem("zhaowu:visitor-context:v4"',
     "if (!embedded && event.currentTarget.open) void requestLocation()",
-    'className="zhaowu-today-location-retry"',
+    'className="zhaowu-today-location-control"',
+    'className="zhaowu-today-location-control"',
     "seasonLabel(visitor.latitude, now.getMonth() + 1, locale)",
     "Season pending location"
   ]) assert.ok(widget.includes(value), `Missing expected cache/location contract: ${value}`);
