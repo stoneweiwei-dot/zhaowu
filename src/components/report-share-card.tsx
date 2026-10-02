@@ -56,7 +56,7 @@ const COPY: Record<Locale, {
 };
 
 function safeFilename(locale: Locale) {
-  return locale === "en" ? "zhaowu-share-card.png" : "昭梧-命象分享圖.png";
+  return locale === "en" ? "zhaowu-share-card.png" : locale === "zh-Hans" ? "昭梧-命象分享图.png" : "昭梧-命象分享圖.png";
 }
 
 export function ReportShareCard({ result }: { result: AnalysisResult }) {

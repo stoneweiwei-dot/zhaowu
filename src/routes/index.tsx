@@ -33,6 +33,11 @@ function Home() {
         title: "ZHAOWU · SELF DISCOVERY",
         homeKicker: "ZHAOWU · PERSONAL DESTINY BOOK",
         homeTitle: "One birth record. One ZHAOWU Destiny Book.",
+        heroInscription: [
+          "Heaven counts to forty-nine — and leaves one line open.",
+          "What you give returns to you; fortune follows no fixed door, only your own hand.",
+          "Zhaowu does not pronounce your fate — it shows you the line still yours to write.",
+        ],
 
         explore: "Explore",
         todayTitle: "Today",
@@ -56,6 +61,11 @@ function Home() {
           title: "昭梧 · 心境小测",
           homeKicker: "昭梧 · 个人命书",
           homeTitle: "一份生辰，读成一本昭梧命书",
+          heroInscription: [
+            "天衍四九，其留与一。",
+            "爱出者爱返，福往者福来；祸福无门，惟人自召。",
+            "昭于未见，梧于有归。",
+          ],
 
           explore: "延伸内容",
           todayTitle: "今日",
@@ -78,6 +88,11 @@ function Home() {
           title: "昭梧 · 心境小測",
           homeKicker: "昭梧 · 個人命書",
           homeTitle: "一份生辰，讀成一本昭梧命書",
+          heroInscription: [
+            "天衍四九，其留與一。",
+            "愛出者愛返，福往者福來；禍福無門，惟人自召。",
+            "昭於未見，梧於有歸。",
+          ],
 
           explore: "延伸內容",
           todayTitle: "今日",
@@ -102,6 +117,14 @@ function Home() {
       <header className="zhaowu-home-lead">
         <p>{funCopy.homeKicker}</p>
         <h1>{funCopy.homeTitle}</h1>
+        <p className="zhaowu-home-lead-inscription">
+          {funCopy.heroInscription.map((line, i) => (
+            <span key={i}>
+              {line}
+              {i < funCopy.heroInscription.length - 1 ? <br /> : null}
+            </span>
+          ))}
+        </p>
       </header>
 
       <HomeSectionBoundary id="analysis" locale={locale} onRecover={() => { clearSharedBirthRecord(); window.location.reload(); }}>
