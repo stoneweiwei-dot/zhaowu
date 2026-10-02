@@ -45,8 +45,8 @@ test("full reports render answer first, then supporting detail and body attentio
 
   assert.match(renderer, /zhaowu-report-continuous-sheet/);
   assert.match(renderer, /continuousReportContent/);
-  assert.match(renderer, /function PrioritySummary/);
-  assert.match(renderer, /zhaowu-report-priority/);
+  assert.match(renderer, /zhaowu-report-summary-block/);
+  assert.doesNotMatch(renderer, /function PrioritySummary|function NarrativePlate|zhaowu-report-priority/);
   assert.match(renderer, /zhaowu-report-method-notes/);
   assert.match(renderer, /zhaowu-report-body-block/);
   assert.doesNotMatch(renderer, /REPORT_ORNAMENTS|ReportDragonSticker|zhaowu-report-ornament|zhaowu-auspicious-rail/);
