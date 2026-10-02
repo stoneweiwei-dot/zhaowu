@@ -1,5 +1,13 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-03 圖像氣韻 × 宋式網站主審美（站主 2026-10-02 九幅參考圖）supersession
+
+- ACTIVE：`docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 的「圖像氣韻 × 宋式網站主審美｜最高審美判準」是昭梧所有美工、視覺、UI、背景、圖像、排版工作的最高審美判準；Codex、Claude 與其他 agent 開工前必須讀取。
+- ACTIVE：骨架仍是唯一一套宋式編輯排版；新增層為紙絹肌理、柔霧礦物色、細墨線、大景小人物尺度、含蓄靈動與題跋式節奏。
+- COMPATIBLE（保留不動）：同日稍早的「全域圖像生成主風格」條目仍有效，繼續管圖像生成預設（9:16 單張成畫等）；本條是其網站視覺層的上位延伸，不取代它。
+- SUPERSEDED（僅限衝突部分）：框架「現行落點」中「背景沿用單一 `/wallpaper-song.jpg`」的字面寫法，改為「單一背景層，依本判準評估更新」；「不新增第二張背景或外部運行依賴」維持有效。
+- PROTECTED：手機可讀性、44px 操作目標、無橫向溢出、夜間對比、產品流程、命理內容邊界、效能與既有功能。本條不授權改動網站功能、資料、排盤、登入、付款、Supabase 或部署設定。
+
 ## 2026-10-03 全域圖像生成主風格 supersession
 
 - ACTIVE：`docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 的「全域生成圖像預設」是昭梧所有新圖像生成的預設主風格；Codex、其他 coding agent 與內容生成流程均須遵循。
