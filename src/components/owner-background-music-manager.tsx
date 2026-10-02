@@ -194,31 +194,40 @@ export function OwnerBackgroundMusicManager() {
     return () => {
       audio?.pause();
       if (audio) releaseQuietAudio(audio);
+      window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } }));
     };
   }, [open]);
 
   function togglePreview(track: OwnerMusicTrack) {
     const audio = previewRef.current;
     if (!audio) return;
-    if (previewId === track.id && !audio.paused) { audio.pause(); return; }
+    if (previewId === track.id && !audio.paused) {
+      audio.pause();
+      window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } }));
+      return;
+    }
     if (audio.getAttribute("src") !== track.url) { audio.src = track.url; audio.load(); }
     setPreviewId(track.id);
     prepareQuietAudio(audio);
     window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "pause" } }));
-    void audio.play().catch(() => { setPreviewPlaying(false); setErrorMessage(c.previewFailed); });
+    void audio.play().catch(() => {
+      setPreviewPlaying(false);
+      setErrorMessage(c.previewFailed);
+      window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } }));
+    });
   }
 
   if (!user?.isOwner || !onAccount) return null;
 
   const manager = <>
     <button type="button" data-owner-background-music-manager data-owner-background-music-inline={portalTarget ? "true" : "fallback"}
-      className={portalTarget ? "mt-5 flex w-full items-center justify-between gap-4 rounded-2xl border border-cinnabar/20 bg-gradient-to-br from-paper/80 to-cream/65 px-4 py-4 text-left shadow-sm transition hover:border-cinnabar/35" : "fixed left-3 right-3 z-[88] flex min-h-14 items-center justify-between gap-4 rounded-2xl border border-cinnabar/30 bg-cream/98 px-4 py-3 text-left shadow-xl backdrop-blur"}
+      className={portalTarget ? "mt-5 flex w-full items-center justify-between gap-4 rounded-2xl border border-cinnabar/20 bg-gradient-to-br from-paper/80 to-cream/65 px-4 py-4 text-left shadow-sm transition hover:border-cinnabar/35" : "fixed left-3 right-3 z-[88] flex min-h-14 items-center justify-between gap-4 rounded-2xl border border-cinnabar/30 bg-cream/98 px-4 py-3 text-left shadow-xl backdrop-blur"} data-background-music-control
       style={portalTarget ? undefined : { top: "max(0.75rem, env(safe-area-inset-top))" }} onClick={() => setOpen(true)}>
       <span className="min-w-0"><span className="block text-[10px] tracking-[0.22em] text-cinnabar">OWNER · AUDIO</span><span className="mt-1 block font-display text-lg text-ink">{c.manage}</span></span>
       <span aria-hidden="true" className="shrink-0 rounded-full bg-cinnabar px-3 py-2 text-sm text-cream">＋</span>
     </button>
 
-    {open ? createPortal(<div className="fixed inset-0 z-[100] overflow-x-hidden overflow-y-auto bg-ink/35 p-3 backdrop-blur-sm sm:p-6" role="dialog" aria-modal="true" aria-label={c.title}>
+    {open ? createPortal(<div className="fixed inset-0 z-[100] overflow-x-hidden overflow-y-auto bg-ink/35 p-3 backdrop-blur-sm sm:p-6" data-background-music-control role="dialog" aria-modal="true" aria-label={c.title}>
       <section className="mx-auto w-full min-w-0 max-w-2xl rounded-xl border border-line bg-cream p-4 shadow-2xl sm:p-6">
         <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-xs tracking-[0.24em] text-cinnabar">OWNER · AUDIO</p><h2 className="mt-2 font-display text-2xl text-ink">{c.title}</h2></div><button type="button" className="min-h-11 shrink-0 rounded-full border border-line bg-paper/60 px-3 text-xs" onClick={() => setOpen(false)}>{c.close}</button></div>
         <div className="mt-5 flex flex-wrap gap-2">
@@ -239,7 +248,7 @@ export function OwnerBackgroundMusicManager() {
           <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds([])}>{c.clearSelection}</button>
           <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void onBatchDelete()}>{c.deleteSelected}</button>
         </div> : null}
-        <audio ref={previewRef} crossOrigin="anonymous" preload="none" playsInline onPlaying={() => setPreviewPlaying(true)} onPause={() => setPreviewPlaying(false)} onEnded={() => setPreviewPlaying(false)} onError={() => { setPreviewPlaying(false); setErrorMessage(c.previewFailed); }} />
+        <audio ref={previewRef} crossOrigin="anonymous" preload="none" playsInline onPlaying={() => setPreviewPlaying(true)} onPause={() => setPreviewPlaying(false)} onEnded={() => { setPreviewPlaying(false); window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } })); }} onError={() => { setPreviewPlaying(false); setErrorMessage(c.previewFailed); window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } })); }} />
         <div className="mt-5 space-y-3">
           {!tracks.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
           {tracks.map((track) => <article key={track.id} data-owner-selectable-file="music" className={`border-t border-line/70 pt-4 ${selectedIds.includes(track.id) ? "rounded-xl bg-cinnabar/[0.035] px-3 pb-3" : ""}`}>
