@@ -226,11 +226,16 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("[data-dragon-bubble]")).toContainText("剛看完你的分析");
     await expect(page.locator("[data-technical-evidence]")).not.toHaveAttribute("open", "");
     await page.getByRole("button", { name: "補充", exact: true }).click();
-    const narrative = page.locator(".zhaowu-report-narrative");
-    await expect(narrative).toHaveCount(1);
-    await expect(narrative).toBeVisible();
-    await expect(narrative.locator(".zhaowu-report-narrative__roles > article")).toHaveCount(4);
-    await expect(narrative.locator(".zhaowu-report-narrative__evidence")).not.toHaveAttribute("open", "");
+    const fullReport = page.locator(".zhaowu-report-continuous-sheet");
+    await expect(fullReport).toBeVisible();
+    await expect(fullReport.getByRole("heading", { name: "總體概括", exact: true })).toBeVisible();
+    await expect(fullReport.getByRole("heading", { name: "身體需要注意的地方", exact: true })).toBeVisible();
+    await expect(page.locator(".zhaowu-report-narrative")).toHaveCount(0);
+    const reportHeadingOrder = await fullReport.evaluate((node) => {
+      const headings = Array.from(node.querySelectorAll("h4"));
+      return headings.map((heading) => heading.textContent?.trim());
+    });
+    expect(reportHeadingOrder.indexOf("總體概括")).toBeLessThan(reportHeadingOrder.indexOf("身體需要注意的地方"));
     await expect(page.locator('[data-owner-login-entry="true"]')).toBeVisible();
     await expect(page.locator(".zhaowu-header-login")).toHaveCount(0);
     await expectMobileViewportHealthy(page);

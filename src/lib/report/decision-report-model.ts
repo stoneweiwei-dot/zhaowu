@@ -4,7 +4,7 @@ import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
 
 export type AnswerMode = "yes-no" | "comparison" | "timing" | "reason" | "forecast" | "action-plan" | "direct";
 export type DecisionSectionKey = "reasons" | "risks" | "timing" | "actions";
-export type SupportingModuleKey = "chart" | "visual" | "luck" | "body" | "evidence" | "share";
+export type SupportingModuleKey = "chart" | "visual" | "luck" | "evidence" | "share";
 
 export type QuestionContract = {
   sourceText: string;
@@ -297,7 +297,6 @@ function sectionOrder(mode: AnswerMode, hasTiming: boolean): DecisionSectionKey[
 function supportingModules(contract: QuestionContract): SupportingModuleKey[] {
   const modules: SupportingModuleKey[] = ["chart", "visual"];
   if (contract.requirements.asksWhen || ["timing", "career", "love", "money", "home"].includes(contract.kind)) modules.push("luck");
-  if (contract.kind === "health") modules.push("body");
   modules.push("evidence", "share");
   return modules;
 }
