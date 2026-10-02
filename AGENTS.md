@@ -184,6 +184,8 @@ A ZIP, SVG, PNG, code snippet, patch file, local asset or draft is not "added to
 
 ## 6. Visual asset rules
 
+For every new image generated for ZHAOWU, Codex and other agents must use the active image-generation direction in `docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` by default: Song-informed composition, warm paper/silk texture, soft mineral-pastel washes, fine ink lines, restrained gold, spacious scale and a quiet poetic narrative. Default to a single 9:16 artwork without collage or multi-panel layouts unless the owner explicitly specifies otherwise. Preserve the source culture's own visual language for non-Chinese subjects, then apply the shared material and compositional qualities. A per-task explicit style request overrides this default for that task only.
+
 For UI/images/emblems/backgrounds/logos:
 
 - asset must exist in the repo/public build
