@@ -83,32 +83,33 @@ test("r96 almanac paints four distinct pillar colours and hides duplicate yi lab
 
 
 test("Today Guide location is confirmed only from browser geolocation", () => {
-  assert.match(widget, /source: "browser" \\| "none"/);
-  assert.match(widget, /navigator\\.geolocation\\.getCurrentPosition/);
-  assert.match(widget, /timeout:\\s*8_000/);
-  assert.match(widget, /maximumAge:\\s*5 \\* 60_000/);
-  assert.match(widget, /api\\.open-meteo\\.com\\/v1\\/forecast\\?latitude=\\$\\{latitude\\}&longitude=\\$\\{longitude\\}/);
-  assert.match(widget, /source === "browser"/);
-  assert.match(widget, /function locationLabel\\(visitor: VisitorContext \\| null, locale: Locale\\)/);
-  assert.match(widget, /visitor\\.city\\.trim\\(\\)\\.toLowerCase\\(\\) !== "washington"/);
-  assert.match(widget, /Location not confirmed/);
-  assert.match(widget, /尚未确认位置/);
-  assert.match(widget, /尚未確認位置/);
-  assert.match(widget, /"Located"/);
-  assert.match(widget, /"已定位"/);
-  assert.doesNotMatch(widget, /ipwho\\.is|ipapi\\.co|ipinfo\\.io/);
+  for (const value of [
+    'source: "browser" | "none"',
+    "navigator.geolocation.getCurrentPosition",
+    "timeout: 8_000",
+    "maximumAge: 5 * 60_000",
+    "api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}",
+    'source === "browser"',
+    "function locationLabel(visitor: VisitorContext | null, locale: Locale)",
+    'visitor.city.trim().toLowerCase() !== "washington"',
+    "Location not confirmed", "尚未确认位置", "尚未確認位置",
+    "\"Located\"", "\"已定位\""
+  ]) assert.ok(widget.includes(value), `Missing expected location contract: ${value}`);
+  assert.doesNotMatch(widget, /ipwho\.is|ipapi\.co|ipinfo\.io/);
 });
 
 test("Today Guide invalidates legacy IP cache and only stores browser-confirmed locations", () => {
-  assert.match(widget, /zhaowu:visitor-context:v3/);
-  assert.match(widget, /removeItem\\(legacyKey\\)/);
-  assert.match(widget, /zhaowu:visitor-context:v4/);
-  assert.match(widget, /value\\?\\.source === "browser"/);
-  assert.match(widget, /typeof value\\.latitude === "number"/);
-  assert.match(widget, /typeof value\\.longitude === "number"/);
-  assert.match(widget, /window\\.localStorage\\.setItem\\("zhaowu:visitor-context:v4"/);
-  assert.match(widget, /if \\(!embedded && event\\.currentTarget\\.open\\) void requestLocation\\(\\)/);
-  assert.match(widget, /className="zhaowu-today-location-retry"/);
-  assert.match(widget, /seasonLabel\\(visitor\\.latitude, now\\.getMonth\\(\\) \\+ 1, locale\\)/);
-  assert.match(widget, /Season pending location/);
+  for (const value of [
+    "zhaowu:visitor-context:v3",
+    "removeItem(legacyKey)",
+    "zhaowu:visitor-context:v4",
+    'value?.source === "browser"',
+    'typeof value.latitude === "number"',
+    'typeof value.longitude === "number"',
+    'window.localStorage.setItem("zhaowu:visitor-context:v4"',
+    "if (!embedded && event.currentTarget.open) void requestLocation()",
+    'className="zhaowu-today-location-retry"',
+    "seasonLabel(visitor.latitude, now.getMonth() + 1, locale)",
+    "Season pending location"
+  ]) assert.ok(widget.includes(value), `Missing expected cache/location contract: ${value}`);
 });
