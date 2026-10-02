@@ -41,6 +41,22 @@ async function clientAlreadyRunsRelease(client) {
   });
 }
 
+async function navigateClientToRelease(client, hard = false) {
+  try {
+    const latestClient = await self.clients.get(client.id);
+    if (!latestClient) return null;
+    const target = new URL(latestClient.url);
+    if (target.origin !== self.location.origin) return null;
+    target.searchParams.set("zw_release", RELEASE);
+    if (hard) target.searchParams.set("zw_sw_reset", String(Date.now()));
+    return await latestClient.navigate(target.toString());
+  } catch {
+    return null;
+  }
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 self.addEventListener("install", (event) => {
   event.waitUntil(Promise.allSettled(SHELL.map((path) => cacheFresh(path))));
   self.skipWaiting();
@@ -67,20 +83,22 @@ self.addEventListener("activate", (event) => {
         continue;
       }
 
-      // Older installed iOS bundles do not understand ZHAOWU_RELEASE_PROBE, so
-      // silence is the stale-client signal. Re-read the WindowClient before
-      // navigating: if the user already changed route while the probe waited,
-      // the old URL must never win a navigation race.
-      try {
-        const latestClient = await self.clients.get(client.id);
-        if (!latestClient || latestClient.url !== observedUrl) continue;
-        const target = new URL(latestClient.url);
-        if (target.origin !== self.location.origin) continue;
-        target.searchParams.set("zw_release", RELEASE);
-        await client.navigate(target.toString());
-      } catch {
-        // Keep activation fail-open. The page-side release checker remains a
-        // second path for clients that cannot be navigated by the worker.
+      // Older installed iOS bundles may restore the same stale WebContent snapshot
+      // even after one successful navigation. First preserve the user's current route,
+      // then verify the client actually started the new release. If it did not, issue
+      // one second navigation with a unique reset token so the stale snapshot cannot win.
+      const latestBeforeNavigate = await self.clients.get(client.id);
+      if (!latestBeforeNavigate || latestBeforeNavigate.url !== observedUrl) continue;
+
+      const navigated = await navigateClientToRelease(latestBeforeNavigate, false);
+      if (!navigated) continue;
+
+      await sleep(1_500);
+      const latestAfterNavigate = await self.clients.get(client.id);
+      if (!latestAfterNavigate) continue;
+      const updated = await clientAlreadyRunsRelease(latestAfterNavigate);
+      if (!updated) {
+        await navigateClientToRelease(latestAfterNavigate, true);
       }
     }
   })());
