@@ -97,6 +97,18 @@ function useVisitorContext() {
       });
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
+      const baseValue: VisitorContext = {
+        source: "browser",
+        city: "",
+        country: "",
+        latitude,
+        longitude,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        temperature: null,
+        weatherCode: null,
+      };
+      setVisitor(baseValue);
+      try { window.localStorage.setItem("zhaowu:visitor-context:v4", JSON.stringify({ at: Date.now(), value: baseValue })); } catch { /* optional cache */ }
       let temperature: number | null = null;
       let weatherCode: number | null = null;
       try {
@@ -110,16 +122,7 @@ function useVisitorContext() {
         weatherCode = typeof weather.current?.weather_code === "number" ? weather.current.weather_code : null;
       } catch { /* location remains confirmed when weather is unavailable */ }
 
-      const value: VisitorContext = {
-        source: "browser",
-        city: "",
-        country: "",
-        latitude,
-        longitude,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        temperature,
-        weatherCode,
-      };
+      const value: VisitorContext = { ...baseValue, temperature, weatherCode };
       setVisitor(value);
       try { window.localStorage.setItem("zhaowu:visitor-context:v4", JSON.stringify({ at: Date.now(), value })); } catch { /* optional cache */ }
     } catch {
