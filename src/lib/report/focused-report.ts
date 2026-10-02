@@ -136,6 +136,7 @@ function chineseSummaryLines(result: AnalysisResult): string[] {
     return dedupeLines([
       composed.answer,
       `下一步｜${composed.nextAction}`,
+      ...composed.detail,
       BASIS_LABEL_HANT,
       `命盤落點：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`,
       chart.currentDayun && !structureQuestion && showCycle ? `當前階段：${chart.currentDayun.ganZhi}大運（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
