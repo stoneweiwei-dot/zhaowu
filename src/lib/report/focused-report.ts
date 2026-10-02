@@ -1,4 +1,6 @@
 import type { AnalysisResult, AppLocale, Chart, Reading } from "@/lib/bazi/types";
+import { composeCustomerAnswer } from "@/lib/report/customer-answer";
+import { toTraditionalCustomerText } from "@/lib/report/reading-locale";
 import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
 import { inspectAnswerRequirements } from "@/lib/core/answer-contract";
 import { pickTravelDestinations } from "@/lib/bazi/forecast";
@@ -119,11 +121,28 @@ function guardianLine(chart: Chart, locale: AppLocale): string {
   return `命局瑞兽｜${beast.name}：${beast.keywords.join("、")}。${beast.rationale}`;
 }
 
+const BASIS_LABEL_HANT = "命理依據｜以下是這份判斷背後的盤面細節，想深入了解再看；上面的回答已經是結論。";
+
 function chineseSummaryLines(result: AnalysisResult): string[] {
   const { question, chart, reading } = result;
   const req = inspectAnswerRequirements(question);
   const structureQuestion = isStructureQuestion(question);
   const showCycle = req.asksWhen || ["timing", "career", "love", "money", "home"].includes(reading.kind);
+  const composed = composeCustomerAnswer(result);
+  if (composed) {
+    // Plain answer + next step first; every chart-level detail (R6.2.x
+    // governance text included) stays in the report, grouped under one basis
+    // label after the answer instead of interleaved with it.
+    return dedupeLines([
+      composed.answer,
+      `下一步｜${composed.nextAction}`,
+      BASIS_LABEL_HANT,
+      `命盤落點：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`,
+      chart.currentDayun && !structureQuestion && showCycle ? `當前階段：${chart.currentDayun.ganZhi}大運（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。` : "",
+      chart.timeUnknown ? "出生時間未確定，因此不把時柱與大運起運當作硬結論依據。" : "",
+      customerCopy(reading.rhythm),
+    ]);
+  }
   const lines = [
     customerDirectAnswer(question, reading.directAnswer),
     `命盘落点：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`,
@@ -206,13 +225,16 @@ function cosmicSummaryLines(result: AnalysisResult): string[] {
 
 function summaryLines(result: AnalysisResult): string[] {
   if (isCosmicSymbolicQuestion(result.question)) return cosmicSummaryLines(result);
-  const core = (result.locale ?? "zh-Hans") === "en"
+  const locale = result.locale ?? "zh-Hans";
+  const core = locale === "en"
     ? englishSummaryLines(result)
     : chineseSummaryLines(result);
   const req = inspectAnswerRequirements(result.question);
   const showCycle = req.asksWhen || ["timing", "career", "love", "money", "home"].includes(result.reading.kind);
   const cognition = buildOwnerCognitionReportLines(result.chart, result.locale ?? "zh-Hans");
-  return dedupeLines(showCycle ? [...core, ...cognition, ...buildCycleOverlayLines(result)] : [...core, ...cognition]);
+  const lines = dedupeLines(showCycle ? [...core, ...cognition, ...buildCycleOverlayLines(result)] : [...core, ...cognition]);
+  // zh-Hant reports must not leak the Simplified source strings above.
+  return locale === "zh-Hant" ? lines.map(toTraditionalCustomerText) : lines;
 }
 
 /** New reports keep one overall summary plus the persisted body-attention block; UI relevance decides whether body is shown. */

@@ -39,7 +39,7 @@ function p(chart: Chart, key: Pillar["key"]): Pillar {
   return chart.pillars.find((x) => x.key === key) ?? chart.pillars[0];
 }
 
-const BRANCH_TELL: Record<string, string> = {
+export const BRANCH_TELL: Record<string, string> = {
   子: "信息与情绪更容易在安静环境中继续加工，决策需要明确截止点",
   丑: "倾向先承接再表达，容易把问题留到负荷已经累积之后才处理",
   寅: "行动一旦启动会比较直接，适合先确认方向再集中推进",
@@ -54,7 +54,7 @@ const BRANCH_TELL: Record<string, string> = {
   亥: "内在处理量较大，适合减少噪音并保留稳定的独处恢复时段",
 };
 
-const STEM_TELL: Record<string, string> = {
+export const STEM_TELL: Record<string, string> = {
   甲: "处理问题时倾向先建立框架，再持续推进；风险是长期承担过多",
   乙: "适应与协调能力较强，优势在迂回解决问题；风险是边界表达过晚",
   丙: "外显推动力较强，适合需要表达与带动的任务；风险是持续过热",

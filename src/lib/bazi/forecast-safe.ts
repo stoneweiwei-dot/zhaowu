@@ -94,3 +94,40 @@ export function buildDistinctTimingAnswer(
     : "";
   return `${blocks.join(" ")} ${precision}`.trim();
 }
+
+export type TimingYearSummary = {
+  year: number;
+  /** Same cross-layer-adjusted year score that drives yearVerdict() above. */
+  score: number;
+  best: number[];
+  caution: number[];
+};
+
+/**
+ * Structured twin of buildDistinctTimingAnswer(): identical ranking inputs
+ * (analyzeForecastYear + cycle-chain adjustment + rankDistinct), returned as
+ * data so the customer answer composer can phrase it without re-parsing text.
+ * Does not introduce any new scoring.
+ */
+export function distinctTimingSummary(
+  chart: Chart,
+  topic: ForecastTopic,
+  targetYears: number[],
+  months?: number[],
+): TimingYearSummary[] {
+  const now = new Date().getFullYear();
+  const years = targetYears.length ? targetYears.slice(0, 3) : [now];
+  const scope = normalizedMonths(months);
+  return years.map((year) => {
+    const forecast = analyzeForecastYear(chart, year, topic);
+    const source = scope.length ? forecast.months.filter((period) => scope.includes(period.month)) : forecast.months;
+    const periods = source.map((period) => withCycleAdjustment(chart, topic, period));
+    const score = adjustedYearScore(chart, topic, forecast.score, periods);
+    if (periods.length <= 1) {
+      const only = periods[0];
+      return { year, score, best: only && only.score > -2 ? [only.month] : [], caution: only && only.score <= -2 ? [only.month] : [] };
+    }
+    const ranked = rankDistinct(periods);
+    return { year, score, best: ranked.best.map((p) => p.month), caution: ranked.caution.map((p) => p.month) };
+  });
+}

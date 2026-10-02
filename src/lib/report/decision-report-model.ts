@@ -1,6 +1,7 @@
 import type { AnalysisResult, AppLocale, QuestionKind, Reading } from "@/lib/bazi/types";
 import { inferQuestionKind, inspectAnswerRequirements, isTalentQuestion, type AnswerRequirements } from "@/lib/core/answer-contract";
 import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
+import { composeCustomerAnswer } from "@/lib/report/customer-answer";
 
 export type AnswerMode = "yes-no" | "comparison" | "timing" | "reason" | "forecast" | "action-plan" | "direct";
 export type DecisionSectionKey = "reasons" | "risks" | "timing" | "actions";
@@ -20,6 +21,8 @@ export type QuestionContract = {
 export type DecisionReportModel = {
   contract: QuestionContract;
   directAnswer: string;
+  /** First-screen "next step"; composed in plain language when available. */
+  nextAction: string;
   confidence: "high" | "medium" | "limited";
   confidenceLabel: string;
   confidenceBasis: string;
@@ -317,8 +320,11 @@ export function validateDecisionReportModel(model: Omit<DecisionReportModel, "va
 export function buildDecisionReportModel(result: AnalysisResult): DecisionReportModel {
   const locale = localeOf(result);
   const contract = buildQuestionContract(result.question, result.reading.kind, locale);
+  const composed = composeCustomerAnswer(result);
   const directFull = customerDirectAnswer(result.question, result.reading.directAnswer);
-  const directAnswer = sentenceParts(directFull).slice(0, 2).join(locale === "en" ? " " : "");
+  // Composed answers are already complete and ordered (answer → why → timing),
+  // so they are not cut. Dedicated special answers keep the 2-sentence lead.
+  const directAnswer = composed?.answer ?? sentenceParts(directFull).slice(0, 2).join(locale === "en" ? " " : "");
   const reasons = compactLines(topicSource(result.reading, contract.kind), 3);
   const timing = contract.requirements.asksWhen || contract.kind === "timing"
     ? compactLines(result.reading.rhythm, 3)
@@ -328,6 +334,7 @@ export function buildDecisionReportModel(result: AnalysisResult): DecisionReport
   const draft = {
     contract,
     directAnswer: directAnswer || directFull,
+    nextAction: composed?.nextAction ?? customerCopy(result.reading.action),
     ...confidenceState,
     biggestVariable: biggestVariable(result, contract),
     reasons: reasons.length ? reasons : compactLines(result.reading.rhythm, 2),
