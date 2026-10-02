@@ -26,9 +26,12 @@ async function payloadOf(response: Response): Promise<ApiPayload> {
 }
 
 export async function readSocialConfiguration(): Promise<SocialConfiguration> {
-  const response = await fetch("/api/owner-social", {
+  const response = await fetch("/api/owner-session", {
+    method: "POST",
     credentials: "include",
     cache: "no-store",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "social.status" }),
   });
   const body = await payloadOf(response);
   if (!response.ok || !body.channels) throw new Error(body.message || body.error || "SOCIAL_STATUS_FAILED");
@@ -41,11 +44,11 @@ export async function publishOwnerSocialPost(input: {
   altText: string;
   channels: SocialChannel[];
 }): Promise<Partial<Record<SocialChannel, SocialPublishResult>>> {
-  const response = await fetch("/api/owner-social", {
+  const response = await fetch("/api/owner-session", {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(input),
+    body: JSON.stringify({ action: "social.publish", ...input }),
   });
   const body = await payloadOf(response);
   if (body.results) return body.results;
