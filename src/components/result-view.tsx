@@ -36,7 +36,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const decisionModel = buildDecisionReportModel(result);
   const answer = petDecision?.directAnswer ?? decisionModel.directAnswer;
   const answerParagraphs = customerParagraphs(answer);
-  const nextAction = customerCopy(reading.action);
+  const nextAction = petDecision ? customerCopy(reading.action) : decisionModel.nextAction;
   const decreeCouplet = customerCopy(reading.decree);
 
   useEffect(() => {
