@@ -37,11 +37,10 @@ test("every production build emits a unique release id into app and service work
   assert.match(swTemplate, /await sleep\(1_500\)/);
   assert.match(swTemplate, /clientAlreadyRunsRelease\(latestAfterNavigate\)/);
   assert.match(swTemplate, /stale snapshot cannot win/);
-  assert.match(swTemplate, /silence is the stale-client signal/);
   assert.match(packageJson.scripts.prebuild, /write-release-assets\.mjs/);
 });
 
-test("installed app checks release metadata and performs one fresh navigation", () => {
+test("installed app retries a stale release and escalates to a scoped hard self-heal", () => {
   assert.match(main, /\/release\.json\?t=/);
   assert.match(main, /cache:\s*'no-store'/);
   assert.match(main, /__ZHAOWU_RELEASE_ID__/);
