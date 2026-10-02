@@ -9,6 +9,10 @@
  * five-element money lines are existing owner material). What changes is how it
  * is said: answer first, reason in plain words, timing last, no jargon.
  *
+ * Contract (docs/FOCUSED-REPORT.md §1): the first screen is at most 3 sentences
+ * (counted by 。). Anything longer goes to `detail` for the full report. Months
+ * that have already passed are never offered as timing windows.
+ *
  * Special question types that already have dedicated, question-specific
  * answers (talent, job fit, 格局, 用神, 身強弱, travel, pets, legal, fertility,
  * named relatives, purpose, cosmic, past life, A/B comparison, multi-topic…)
@@ -58,6 +62,16 @@ function tr(value: string): string {
   return toTraditionalCustomerText(value);
 }
 
+function sentences(text: string): string[] {
+  return text.split(/(?<=。)/).map((part) => part.trim()).filter(Boolean);
+}
+
+function firstSentence(text: string): string {
+  return sentences(text)[0] ?? "";
+}
+
+const MAX_SENTENCES = 3;
+
 function detectTopics(question: string): Topic[] {
   return TOPIC_RES.filter(([, re]) => re.test(question)).map(([topic]) => topic);
 }
@@ -106,8 +120,8 @@ function verdict(topic: Topic, form: Form, grade: Grade, y: string, chart: Chart
     const move = strong && grade !== "down";
     const yearPart = grade === "up" ? `${y}${TOPIC_NOUN[topic]}也推得動` : grade === "down" ? `但${y}${TOPIC_NOUN[topic]}阻力偏大` : `只是${y}不是整年都順`;
     return move
-      ? `偏向可以動。你的底子偏滿，比起一直忍著，更需要把力氣用出去；${yearPart}，所以重點是挑對時間、先想好退路。`
-      : `偏向先不急著動。${strong ? "" : "你的底子承載偏弱，先把手上穩定的資源顧好比較重要；"}${yearPart}，真要動就小步試，不要一次全押。`;
+      ? `偏向可以動，你的底子偏滿，比起一直忍著，更需要把力氣用出去；${yearPart}，所以重點是挑對時間、先想好退路。`
+      : `偏向先不急著動，${strong ? "" : "你的底子偏弱、扛事的餘力比較少，先把手上穩定的資源顧好比較重要；"}${yearPart.replace(/^(只是|但)/, "而且")}，真要動就小步試，不要一次全押。`;
   }
   switch (topic) {
     case "career":
@@ -142,19 +156,19 @@ function whenOpener(topic: Topic, summary: TimingYearSummary[]): string {
   if (!withBest.length) return `${yearWord(summary[0].year)}沒有特別突出的月份，${TOPIC_NOUN[topic]}這件事不建議硬排時間。`;
   const head = topic === "love" ? "感情比較容易有進展的時間" : topic === "health" ? "身體比較穩、適合處理健康安排的時間" : `${TOPIC_NOUN[topic]}上比較容易推進的時間`;
   const parts = withBest.map((s) => `${yearWord(s.year)}的${months(s.best)}`).join("，其次是");
-  return `${head}，落在${parts}。這是比較順的窗口，不是保證一定發生。`;
+  return `${head}，落在${parts}，這只是比較順的窗口，不是保證一定發生。`;
 }
 
 function structuralCareer(chart: Chart): string {
   return isStrong(chart)
-    ? "可以，但要選對方向。你的底子偏滿，比起被動等安排，更適合主動做事、把成果做出來。"
-    : "可以考慮，但不要一個人硬扛。你的底子承載偏弱，比較適合資源、規則和支援都到位的環境。";
+    ? "可以，但要選對方向，你的底子偏滿，比起被動等安排，更適合主動做事、把成果做出來。"
+    : "可以考慮，但不要一個人硬扛，你的底子偏弱、扛事的餘力比較少，比較適合資源、規則和支援都到位的環境。";
 }
 
 function structuralMoney(chart: Chart): string {
   return isStrong(chart)
-    ? "有機會。你扛得住財，關鍵在有沒有一條穩定、能重複賺錢的路，而不是靠一次運氣。"
-    : "有機會，但財來了要扛得住。先求穩、少借錢、少槓桿，比追求一次大賺更重要。";
+    ? "有機會，你扛得住財，關鍵在有沒有一條穩定、能重複賺錢的路，而不是靠一次運氣。"
+    : "有機會，但財來了要扛得住，先求穩、少借錢、少槓桿，比追求一次大賺更重要。";
 }
 
 function reason(topic: Topic, result: AnalysisResult, question: string): string {
@@ -163,7 +177,7 @@ function reason(topic: Topic, result: AnalysisResult, question: string): string 
     case "career": {
       // Full plain topic text (already localized by finishReading); it ends
       // with the four-point job comparison, which the next step refers to.
-      const work = String(reading.work ?? "").trim();
+      const work = firstSentence(String(reading.work ?? "").trim());
       return work ? `從你的盤來看，你${/^(適合|适合)/.test(work) ? "" : "比較適合"}${work}` : "";
     }
     case "money":
@@ -177,7 +191,7 @@ function reason(topic: Topic, result: AnalysisResult, question: string): string 
         : t.includes("弱")
           ? "你的底子偏弱，比較容易累，恢復要比別人多留時間。"
           : "你的底子還算平衡，規律作息就是最好的保養。";
-      return `${base}命盤不能診斷疾病，有持續的不舒服一定先看醫生。`;
+      return `${base.replace(/。$/, "")}；命盤不能診斷疾病，有持續的不舒服一定先看醫生。`;
     }
     case "home":
       return /(搬到|移居|移民|生活)/.test(question)
@@ -196,20 +210,21 @@ function reason(topic: Topic, result: AnalysisResult, question: string): string 
   }
 }
 
-function timingLine(summary: TimingYearSummary[]): string {
-  return summary.map((s) => {
+function timingLine(summary: TimingYearSummary[], unknownTime = false): string {
+  const body = summary.map((s) => {
     const y = yearWord(s.year);
     const good = s.best.length ? `${y}比較順的是${months(s.best)}` : `${y}沒有特別順的月份`;
     const slow = s.caution.length ? `，${months(s.caution)}放慢一點` : "";
-    return `${good}${slow}。`;
-  }).join("");
+    return `${good}${slow}`;
+  }).join("；");
+  return `${body}${unknownTime ? "（出生時間未定，月份只抓大方向）" : ""}。`;
 }
 
 function nextStep(topic: Topic, form: Form, summary: TimingYearSummary[] | null, question: string): string {
   const first = summary?.find((s) => s.best.length);
   const when = first ? `，時間上優先抓${yearWord(first.year)}${months(first.best.slice(0, 2))}` : "";
   switch (topic) {
-    case "career": return `把你正在考慮的機會寫下來，用上面四件事逐項比，最值得的那一個先推進${when}。`;
+    case "career": return `把你正在考慮的機會寫下來，按責任是否清楚、成果看不看得出來、資源夠不夠、退路好不好走這四點逐項比，最值得的那一個先推進${when}。`;
     case "money": return `先算清楚每月固定支出和你能承受的最大損失，再決定要不要加碼${when}。`;
     case "love": return `接下來只看對方三件事：會不會主動聯絡、會不會安排見面、願不願意把關係講清楚${when}。`;
     case "health": return "先把睡眠和作息固定下來；有持續的不舒服，直接去看醫生。";
@@ -222,7 +237,7 @@ function nextStep(topic: Topic, form: Form, summary: TimingYearSummary[] | null,
   }
 }
 
-export type ComposedCustomerAnswer = { answer: string; nextAction: string };
+export type ComposedCustomerAnswer = { answer: string; nextAction: string; detail: string[] };
 
 export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerAnswer | null {
   const locale = result.locale ?? "zh-Hant";
@@ -248,7 +263,9 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
     : form === "when" || /這幾年|这几年|未來|未来/.test(question)
       ? [new Date().getFullYear(), new Date().getFullYear() + 1]
       : [new Date().getFullYear()];
-  const summary = distinctTimingSummary(result.chart, forecastTopic, years, req.targetMonths);
+  const today = new Date();
+  const from = req.targetMonths.length ? undefined : { year: today.getFullYear(), month: today.getMonth() + 1 };
+  const summary = distinctTimingSummary(result.chart, forecastTopic, years, req.targetMonths, from);
   const grade = gradeOf(summary[0]?.score ?? 0);
   const y = yearWord(summary[0]?.year ?? new Date().getFullYear());
 
@@ -269,10 +286,20 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
   const showTiming = explicitTime || form === "choice" || topic === "love" || topic === "health" || topic === "home";
   const cautionParts = summary.filter((s) => s.caution.length).map((s) => `${yearWord(s.year)}${months(s.caution)}`);
   const cautionOnly = cautionParts.length ? `比較不順的是${cautionParts.join("和")}，重要的事盡量避開。` : "";
-  const timing = form === "when" ? cautionOnly : showTiming ? timingLine(summary) : "";
-  const precision = result.chart.timeUnknown ? "你的出生時間沒有確定，月份只能抓大方向。" : "";
+  const timing = form === "when" ? cautionOnly : showTiming ? timingLine(summary, result.chart.timeUnknown) : "";
 
-  const answer = [opener, why, timing, precision].map((s) => s.trim()).filter(Boolean).join("");
+  // Hard cap: opener first, then the timing sentence, and the reason fills what is left.
+  const openerParts = sentences(opener);
+  const timingParts = sentences(timing).slice(0, 1);
+  const room = Math.max(0, MAX_SENTENCES - openerParts.length - timingParts.length);
+  const whyParts = sentences(why).slice(0, room);
+  const answer = [...openerParts, ...whyParts, ...timingParts].slice(0, MAX_SENTENCES).join("");
   if (!answer) return null;
-  return { answer, nextAction: nextStep(topic, form, showTiming ? summary : null, question) };
+
+  const detail: string[] = [];
+  if (topic === "career") {
+    const fullWork = String(result.reading.work ?? "").trim();
+    if (fullWork && sentences(fullWork).length > 1) detail.push(`補充｜${fullWork}`);
+  }
+  return { answer, nextAction: nextStep(topic, form, showTiming ? summary : null, question), detail };
 }
