@@ -24,4 +24,7 @@ test("Today Guide uses restrained mineral palette on warm paper in day and night
   }
   assert.match(block, /html\[data-zw-theme="night"\].*\.zhaowu-today-guide__spirit h3/);
   assert.match(block, /#daily-almanac \.zhaowu-today-guide__tabs button\[aria-pressed="true"\]/);
+  assert.match(block, /body #daily-almanac \.zhaowu-today-guide__tabs button\[aria-pressed="true"\] \{[\s\S]*background: rgba\(157, 184, 194, \.16\)/);
+  assert.match(block, /html\[data-zw-theme="night"\] body #daily-almanac \.zhaowu-today-card\.is-guidance > small \{ color: #dfbcc2/);
+  assert.match(block, /body #daily-almanac \.zhaowu-today-guide__chips article:nth-child\(2\) \{ border-left: 2px solid #d4c094/);
 });
