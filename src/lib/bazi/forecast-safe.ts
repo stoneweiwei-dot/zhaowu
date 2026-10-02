@@ -114,13 +114,19 @@ export function distinctTimingSummary(
   topic: ForecastTopic,
   targetYears: number[],
   months?: number[],
+  from?: { year: number; month: number },
 ): TimingYearSummary[] {
   const now = new Date().getFullYear();
   const years = targetYears.length ? targetYears.slice(0, 3) : [now];
   const scope = normalizedMonths(months);
   return years.map((year) => {
     const forecast = analyzeForecastYear(chart, year, topic);
-    const source = scope.length ? forecast.months.filter((period) => scope.includes(period.month)) : forecast.months;
+    const scoped = scope.length ? forecast.months.filter((period) => scope.includes(period.month)) : forecast.months;
+    // Optional: drop months that have already passed (only the `from.year` itself),
+    // so a customer is never told to act in a month that is over. If nothing is
+    // left, keep the full list rather than return an empty window.
+    const upcoming = from && year === from.year ? scoped.filter((period) => period.month >= from.month) : scoped;
+    const source = upcoming.length ? upcoming : scoped;
     const periods = source.map((period) => withCycleAdjustment(chart, topic, period));
     const score = adjustedYearScore(chart, topic, forecast.score, periods);
     if (periods.length <= 1) {
