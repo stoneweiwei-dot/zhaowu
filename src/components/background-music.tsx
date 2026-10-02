@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { loadOwnerMusic, type OwnerMusicTrack } from "@/lib/owner-music-client";
 import { useI18n } from "@/lib/i18n";
 import { MusicIcon } from "@/components/music-icons";
+import { prepareQuietAudio, releaseQuietAudio, setQuietAudioVolume } from "@/lib/quiet-audio";
 
 const STORAGE_KEY = "zhaowu.backgroundMusic.v3";
 const LEGACY_STORAGE_KEY = "zhaowu.backgroundMusic.v1";
@@ -17,17 +18,13 @@ const MUSIC_STREAM_URL = "/api/owner-music?stream=1";
 // first note feel like a jump-scare. Stops early if playback is paused
 // (e.g. the visitor paused mid-fade), so it never fights the user.
 function fadeVolumeTo(audio: HTMLAudioElement, target: number, durationMs = VOLUME_FADE_IN_MS) {
-  const start = audio.volume;
-  const delta = target - start;
-  if (Math.abs(delta) < 0.001) {
-    try { audio.volume = target; } catch {}
-    return;
-  }
+  const start = 0;
+  const delta = target;
   const startTime = performance.now();
   const step = (now: number) => {
     if (audio.paused) return;
     const progress = Math.min(1, (now - startTime) / durationMs);
-    try { audio.volume = start + delta * progress; } catch {}
+    setQuietAudioVolume(audio, start + delta * progress);
     if (progress < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -113,14 +110,14 @@ export function BackgroundMusic() {
     }
     // Start silent; playAudio() below fades it up once playback actually begins,
     // so switching or selecting a track never leaves it sitting at full volume.
-    audio.volume = 0;
+    prepareQuietAudio(audio, 0);
   }, []);
 
   // Wraps every audio.play() call so the volume always ramps up from silence
   // instead of jumping straight to DEFAULT_VOLUME — avoids startling whoever
   // is nearby when playback kicks in from a first tap/keystroke.
   const playAudio = useCallback((audio: HTMLAudioElement) => {
-    try { audio.volume = 0; } catch {}
+    prepareQuietAudio(audio, 0);
     return audio.play().then(() => {
       fadeVolumeTo(audio, DEFAULT_VOLUME);
     });
@@ -379,13 +376,19 @@ export function BackgroundMusic() {
   useEffect(() => {
     const onCommand = (event: Event) => {
       const command = (event as CustomEvent<{ command?: string }>).detail?.command;
-      if (command === "toggle") togglePlayback();
+      if (command === "pause") pausePlayback();
+      else if (command === "toggle") togglePlayback();
       else if (command === "next") void moveTrack(1);
       else if (command === "previous") void moveTrack(-1);
     };
     window.addEventListener("zhaowu-music-command", onCommand as EventListener);
     return () => window.removeEventListener("zhaowu-music-command", onCommand as EventListener);
   });
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    return () => { if (audio) releaseQuietAudio(audio); };
+  }, []);
 
   const markPlaybackStarted = () => {
     const audio = audioRef.current;
@@ -451,6 +454,7 @@ export function BackgroundMusic() {
     <section className="zhaowu-dragon-music" data-background-music-player data-dragon-music-controls aria-label={copy.controls}>
       <audio
         ref={audioRef}
+        crossOrigin="anonymous"
         playsInline
         data-music-loop={loopEnabled ? "playlist" : "off"}
         data-music-shuffle={shuffleEnabled ? "on" : "off"}
