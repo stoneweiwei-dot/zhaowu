@@ -268,6 +268,7 @@ function highStakes(question: string): ComposedCustomerAnswer | null {
       answer: "這類身體上的決定，要以醫生的判斷為準，命盤不能替你拍板，也不能取代醫療意見。能參考的只有你近期的節奏，壓力大、消耗大的時候，先把休息和檢查顧好。",
       nextAction: "把醫生建議的方案、風險和替代做法問清楚；拿不定主意時，再找第二位醫生確認。",
       detail: [],
+      route: "safe:medical",
     };
   }
   if (MARRIAGE_BREAK_RE.test(question)) {
@@ -275,6 +276,7 @@ function highStakes(question: string): ComposedCustomerAnswer | null {
       answer: "婚姻要不要走下去是重大決定，命盤不能替你拍板。命盤只能看時機和你的節奏，真正的依據是對方有沒有實際改變的行動，以及你的安全、居住、經濟和孩子這些現實條件。",
       nextAction: "先把居住、經濟、孩子和相關證據這些現實條件列清楚，必要時找律師或專業輔導；有人身安全疑慮，先找專業協助。",
       detail: [],
+      route: "safe:marriage",
     };
   }
   return null;
@@ -285,7 +287,7 @@ function highStakes(question: string): ComposedCustomerAnswer | null {
 export const LEAK_RE = /月令|格局|(正|偏)?(印|財|财|官|殺|杀|食神|傷官|伤官|比肩|劫財|劫财|建祿|建禄|羊刃)格|十神|七殺|七杀|殺印|杀印|日主|喜用|用神|病藥|病药|承載|承载|制化|透干|藏干|庫氣|结构完成度|結構完成度|六親定位|六亲定位|主看(日柱|年柱|月柱|時柱|时柱)|結構摘要|结构摘要|主格.{0,4}格|完成度|月令.{0,3}[子丑寅卯辰巳午未申酉戌亥]/;
 const CHART_TALK_RE = /(格局|成格|用神|喜用|身強|身强|身弱|旺衰|五行|時柱|时柱|日主|月令|八字|命盤|命盘|十神|大運|大运|流年|紫微|納音|纳音|命宮|命宫)/;
 
-export type ComposedCustomerAnswer = { answer: string; nextAction: string; detail: string[] };
+export type ComposedCustomerAnswer = { answer: string; nextAction: string; detail: string[]; route?: string };
 
 function composeIntent(intent: Intent, result: AnalysisResult, question: string): ComposedCustomerAnswer {
   const { chart } = result;
@@ -323,7 +325,7 @@ function composeIntent(intent: Intent, result: AnalysisResult, question: string)
       : "";
   const parts = [tr(intent.lead(ctx)), intent.reason ? tr(intent.reason(ctx)) : "", timing]
     .flatMap((text) => sentences(text).slice(0, 1));
-  return { answer: parts.slice(0, MAX_SENTENCES).join(""), nextAction: tr(intent.next(ctx)), detail: [] };
+  return { answer: parts.slice(0, MAX_SENTENCES).join(""), nextAction: tr(intent.next(ctx)), detail: [], route: `intent:${intent.id}` };
 }
 
 export function leakFallback(result: AnalysisResult): ComposedCustomerAnswer | null {
@@ -342,7 +344,7 @@ export function leakFallback(result: AnalysisResult): ComposedCustomerAnswer | n
     verdict("self", "open", grade, yearWord(nowYear), chart),
     timingLine(summary, chart.timeUnknown),
   ].join("");
-  return { answer, nextAction: nextStep("self", "choice", summary, question), detail: [] };
+  return { answer, nextAction: nextStep("self", "choice", summary, question), detail: [], route: "generic:leak" };
 }
 
 export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerAnswer | null {
@@ -418,5 +420,35 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
     const fullWork = String(result.reading.work ?? "").trim();
     if (fullWork && sentences(fullWork).length > 1) detail.push(`補充｜${fullWork}`);
   }
-  return { answer, nextAction: nextStep(topic, generic ? "choice" : form, showTiming ? summary : null, question), detail };
+  return { answer, nextAction: nextStep(topic, generic ? "choice" : form, showTiming ? summary : null, question), detail, route: generic ? "generic" : `topic:${topic}` };
+}
+
+/**
+ * Plain-language chart facts for the answer writer (LLM). Only values the engine
+ * already produced; the writer may rephrase them but must not add new ones.
+ */
+export function writerFacts(result: AnalysisResult): { facts: string; months: number[] } {
+  const { chart, question } = result;
+  const req = inspectAnswerRequirements(String(question ?? ""));
+  const today = new Date();
+  const nowYear = today.getFullYear();
+  const summary = distinctTimingSummary(chart, "self", [nowYear, nowYear + 1], [], { year: nowYear, month: today.getMonth() + 1 });
+  const { gift, risk } = stemParts(chart);
+  const branch = tr(BRANCH_TELL[chart.pillars.find((p) => p.key === "day")?.zhi ?? ""] ?? "").replace(/。$/, "");
+  const work = firstSentence(String(result.reading.work ?? "")).replace(/。$/, "");
+  const t = chart.strength.tendency;
+  const base = t.includes("旺") ? "偏旺（精力足，容易停不下來）" : t.includes("弱") ? "偏弱（扛事的餘力較少，要多留恢復時間）" : "大致平衡";
+  const gradeWord = (score: number) => (score >= 3 ? "推得動" : score <= -3 ? "阻力偏大" : "有起伏、要挑時間");
+  const lines = [
+    `底子：${base}`,
+    gift ? `長處：${gift}` : "",
+    risk ? `要留意：${risk}` : "",
+    branch ? `做決定的習慣：${branch}` : "",
+    work ? `工作上適合：${work}` : "",
+    ...summary.map((s) => `${yearWord(s.year)}整體：${gradeWord(s.score)}；比較順的月份：${s.best.length ? months(s.best) : "沒有特別突出"}；要放慢的月份：${s.caution.length ? months(s.caution) : "無"}`),
+    chart.timeUnknown ? "出生時間不確定：月份只能抓大方向" : "",
+  ].filter(Boolean);
+  const allowed = new Set<number>([today.getMonth() + 1, (today.getMonth() + 1) % 12 + 1, ...req.targetMonths]);
+  for (const s of summary) for (const m of [...s.best, ...s.caution]) allowed.add(m);
+  return { facts: lines.join("\n"), months: [...allowed].sort((a, b) => a - b) };
 }
