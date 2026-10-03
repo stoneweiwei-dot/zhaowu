@@ -6,8 +6,7 @@ async function makeAppOfflineSafe(page: Page) {
 
 async function dismissInstallPrompt(page: Page) {
   const dismiss = page.getByRole("button", { name: "稍後再說", exact: true });
-  await expect(dismiss).toBeVisible();
-  await dismiss.click();
+  if (await dismiss.isVisible().catch(() => false)) await dismiss.click();
 }
 
 async function expectMobileViewportHealthy(page: Page) {
@@ -71,6 +70,10 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByText("套用真太陽時校正", { exact: true })).toHaveCount(0);
     await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
 
+    await expect(page.getByRole("dialog", { name: "把昭梧存到手機桌面", exact: true })).toHaveCount(0);
+    const installLauncher = page.getByRole("button", { name: "存到桌面", exact: true });
+    await expect(installLauncher).toBeVisible();
+    await installLauncher.click();
     await expect(page.getByRole("dialog", { name: "把昭梧存到手機桌面", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "顯示 iPhone 保存步驟", exact: true })).toBeVisible();
     await page.locator("#analysisForm").scrollIntoViewIfNeeded();
