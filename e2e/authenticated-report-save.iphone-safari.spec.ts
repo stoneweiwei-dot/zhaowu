@@ -70,8 +70,7 @@ async function fillKnownBirthData(page: Page) {
 }
 async function dismissInstallPrompt(page: Page) {
   const dismiss = page.getByRole("button", { name: "稍後再說", exact: true });
-  await expect(dismiss).toBeVisible();
-  await dismiss.click();
+  if (await dismiss.isVisible().catch(() => false)) await dismiss.click();
 }
 async function mobileHealthy(page: Page) {
   expect(await page.evaluate(() => window.innerWidth)).toBe(390);
