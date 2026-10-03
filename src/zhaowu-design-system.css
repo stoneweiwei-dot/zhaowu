@@ -1015,7 +1015,7 @@ html[data-zw-theme="night"] .zhaowu-specialist-node { border-top-color: rgba(236
 .zhaowu-cycle-list,
 .bazi-luck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 9px !important; }
 
-[data-background-music-control] {
+[data-background-music-control]:not([data-owner-background-music-manager]):not([role="dialog"]) {
   width: 44px !important;
   height: 44px !important;
   border-color: rgba(76, 67, 55, .18) !important;
@@ -6845,4 +6845,13 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-mark { margin-top: 7px !important
   body #daily-almanac .zhaowu-almanac-board .is-core { grid-template-columns: 70px minmax(0, 1fr); gap: 10px; }
   body #daily-almanac .zhaowu-almanac-board__guidance > article + article { margin-left: 12px; padding-left: 12px !important; }
   body > .zhaowu-spirit-slip .zhaowu-spirit-slip-layout { padding-inline: 24px; }
+}
+
+
+/* r225 — keep the sticky site header below iPhone's top safe area when an in-app browser draws under the status bar. */
+@media (max-width: 780px) {
+  .zhaowu-site-header {
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    top: env(safe-area-inset-top, 0px) !important;
+  }
 }
