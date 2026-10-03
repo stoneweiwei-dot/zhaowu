@@ -1,7 +1,7 @@
 import { jsonResponse } from "../lib/mingshu-client.js";
 
-// A Stripe Checkout session id looks like cs_test_... or cs_live_...
-const CHECKOUT_SESSION_ID_PATTERN = /^cs_(test|live)_[A-Za-z0-9]+$/;
+// Stripe Checkout session IDs start with cs_test_ or cs_live_ followed by alphanumeric characters
+const CHECKOUT_SESSION_ID_PATTERN = /^cs_(test|live)_[A-Za-z0-9_]+$/;
 const EXPECTED_AMOUNT_TOTAL = 999; // $9.99 USD
 const EXPECTED_CURRENCY = "usd";
 
