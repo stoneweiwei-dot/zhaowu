@@ -19,6 +19,10 @@ const CURRENT_RELEASE = __ZHAOWU_RELEASE_ID__ || 'dev';
 const RELEASE_PARAM = 'zw_release';
 const RELEASE_RELOAD_KEY = 'zhaowu.pwa.release-reload';
 const SHELL_RELOAD_KEY = 'zhaowu.pwa.shell-reload';
+const RECOVERY_STATE_KEY = 'zhaowu.pwa.recovery-state';
+const RESET_PARAM = 'zw_reset';
+const MAX_RELEASE_RETRIES = 3;
+const RELEASE_RETRY_COOLDOWN_MS = 8_000;
 
 const currentBundlePath = () => {
   const script = document.querySelector<HTMLScriptElement>('script[type="module"][src*="/assets/"]');
@@ -38,15 +42,87 @@ const clearSatisfiedReleaseParam = () => {
     const requestedRelease = url.searchParams.get(RELEASE_PARAM);
     if (!requestedRelease || requestedRelease !== CURRENT_RELEASE) return;
     url.searchParams.delete(RELEASE_PARAM);
+    url.searchParams.delete(RESET_PARAM);
+    url.searchParams.delete('zw_retry');
     window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
     sessionStorage.removeItem(RELEASE_RELOAD_KEY);
     sessionStorage.removeItem(SHELL_RELOAD_KEY);
+    sessionStorage.removeItem(RECOVERY_STATE_KEY);
   } catch {
     // Query cleanup is cosmetic; never block the app if iOS rejects it.
   }
 };
 
 clearSatisfiedReleaseParam();
+
+type RecoveryState = {
+  release: string;
+  attempts: number;
+  lastAttemptAt: number;
+  hardResetAt?: number;
+};
+
+const readRecoveryState = (): RecoveryState | null => {
+  try {
+    const raw = sessionStorage.getItem(RECOVERY_STATE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<RecoveryState>;
+    if (
+      typeof parsed.release !== 'string' ||
+      typeof parsed.attempts !== 'number' ||
+      typeof parsed.lastAttemptAt !== 'number'
+    ) return null;
+    return {
+      release: parsed.release,
+      attempts: parsed.attempts,
+      lastAttemptAt: parsed.lastAttemptAt,
+      hardResetAt: typeof parsed.hardResetAt === 'number' ? parsed.hardResetAt : undefined,
+    };
+  } catch {
+    return null;
+  }
+};
+
+const writeRecoveryState = (state: RecoveryState) => {
+  try { sessionStorage.setItem(RECOVERY_STATE_KEY, JSON.stringify(state)); } catch { /* best effort */ }
+};
+
+const hardResetForRelease = async (freshRelease: string) => {
+  const now = Date.now();
+  const previous = readRecoveryState();
+  if (previous?.release === freshRelease && previous.hardResetAt && now - previous.hardResetAt < 30_000) {
+    return false;
+  }
+
+  writeRecoveryState({
+    release: freshRelease,
+    attempts: Math.max(previous?.attempts ?? 0, MAX_RELEASE_RETRIES),
+    lastAttemptAt: now,
+    hardResetAt: now,
+  });
+
+  try {
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.filter((key) => key.startsWith('zhaowu-shell-')).map((key) => caches.delete(key)));
+    }
+  } catch {
+    // Cache cleanup is a recovery aid; never block navigation if Safari rejects it.
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.getRegistration('/');
+    await registration?.unregister();
+  } catch {
+    // The next navigation can still escape a stale standalone snapshot.
+  }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set(RELEASE_PARAM, freshRelease);
+  url.searchParams.set(RESET_PARAM, String(now));
+  window.location.replace(url.toString());
+  return true;
+};
 
 let refreshCheckInFlight = false;
 let lastRefreshCheckAt = 0;
@@ -63,7 +139,10 @@ const checkForFreshRelease = async () => {
     const payload = await response.json() as { release?: unknown };
     const freshRelease = typeof payload.release === 'string' ? payload.release.trim() : '';
     if (!freshRelease || freshRelease === CURRENT_RELEASE) {
-      if (freshRelease === CURRENT_RELEASE) sessionStorage.removeItem(RELEASE_RELOAD_KEY);
+      if (freshRelease === CURRENT_RELEASE) {
+        sessionStorage.removeItem(RELEASE_RELOAD_KEY);
+        sessionStorage.removeItem(RECOVERY_STATE_KEY);
+      }
       return false;
     }
 
@@ -73,16 +152,30 @@ const checkForFreshRelease = async () => {
       registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
     }
 
-    if (sessionStorage.getItem(RELEASE_RELOAD_KEY) === freshRelease) {
-      // A previous navigation may have been restored from an old iOS standalone
-      // process. Do not treat "attempted" as "updated"; allow the independent
-      // bundle-path fallback below to verify the shell once.
-      return false;
+    const now = Date.now();
+    const previous = readRecoveryState();
+    const sameRelease = previous?.release === freshRelease;
+    const attempts = sameRelease ? previous.attempts : 0;
+    const lastAttemptAt = sameRelease ? previous.lastAttemptAt : 0;
+
+    if (sameRelease && now - lastAttemptAt < RELEASE_RETRY_COOLDOWN_MS) return false;
+
+    if (attempts >= MAX_RELEASE_RETRIES) {
+      return await hardResetForRelease(freshRelease);
     }
-    sessionStorage.setItem(RELEASE_RELOAD_KEY, freshRelease);
+
+    const nextAttempts = attempts + 1;
+    writeRecoveryState({
+      release: freshRelease,
+      attempts: nextAttempts,
+      lastAttemptAt: now,
+      hardResetAt: sameRelease ? previous?.hardResetAt : undefined,
+    });
+    sessionStorage.setItem(RELEASE_RELOAD_KEY, freshRelease + ':' + nextAttempts);
 
     const url = new URL(window.location.href);
     url.searchParams.set(RELEASE_PARAM, freshRelease);
+    url.searchParams.set('zw_retry', String(nextAttempts));
     window.location.replace(url.toString());
     return true;
   } catch {

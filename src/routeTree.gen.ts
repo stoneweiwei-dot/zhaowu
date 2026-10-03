@@ -23,6 +23,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as NumerologyRouteImport } from './routes/numerology'
 import { Route as QizhengRouteImport } from './routes/qizheng'
 import { Route as SkyEventsRouteImport } from './routes/sky-events'
+import { Route as SocialRouteImport } from './routes/social'
 import { Route as TeaGuardianRouteImport } from './routes/tea-guardian'
 import { Route as TianjiDualRouteImport } from './routes/tianji-dual'
 import { Route as TianjiXinggongRouteImport } from './routes/tianji-xinggong'
@@ -107,6 +108,11 @@ const QizhengRoute = QizhengRouteImport.update({
 const SkyEventsRoute = SkyEventsRouteImport.update({
   id: '/sky-events',
   path: '/sky-events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SocialRoute = SocialRouteImport.update({
+  id: '/social',
+  path: '/social',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeaGuardianRoute = TeaGuardianRouteImport.update({
@@ -202,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/numerology': typeof NumerologyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
+  '/social': typeof SocialRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
@@ -233,6 +240,7 @@ export interface FileRoutesByTo {
   '/numerology': typeof NumerologyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
+  '/social': typeof SocialRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/numerology': typeof NumerologyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
+  '/social': typeof SocialRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
@@ -298,6 +307,7 @@ export interface FileRouteTypes {
     | '/numerology'
     | '/qizheng'
     | '/sky-events'
+    | '/social'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
@@ -329,6 +339,7 @@ export interface FileRouteTypes {
     | '/numerology'
     | '/qizheng'
     | '/sky-events'
+    | '/social'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
@@ -360,6 +371,7 @@ export interface FileRouteTypes {
     | '/numerology'
     | '/qizheng'
     | '/sky-events'
+    | '/social'
     | '/tea-guardian'
     | '/tianji-dual'
     | '/tianji-xinggong'
@@ -392,6 +404,7 @@ export interface RootRouteChildren {
   NumerologyRoute: typeof NumerologyRoute
   QizhengRoute: typeof QizhengRoute
   SkyEventsRoute: typeof SkyEventsRoute
+  SocialRoute: typeof SocialRoute
   TeaGuardianRoute: typeof TeaGuardianRoute
   TianjiDualRoute: typeof TianjiDualRoute
   TianjiXinggongRoute: typeof TianjiXinggongRoute
@@ -503,6 +516,13 @@ declare module '@tanstack/react-router' {
       path: '/sky-events'
       fullPath: '/sky-events'
       preLoaderRoute: typeof SkyEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/social': {
+      id: '/social'
+      path: '/social'
+      fullPath: '/social'
+      preLoaderRoute: typeof SocialRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tea-guardian': {
@@ -656,6 +676,7 @@ const rootRouteChildren: RootRouteChildren = {
   NumerologyRoute: NumerologyRoute,
   QizhengRoute: QizhengRoute,
   SkyEventsRoute: SkyEventsRoute,
+  SocialRoute: SocialRoute,
   TeaGuardianRoute: TeaGuardianRoute,
   TianjiDualRoute: TianjiDualRoute,
   TianjiXinggongRoute: TianjiXinggongRoute,
