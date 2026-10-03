@@ -49,11 +49,12 @@ export function IllustratedDestinyPanel({ result }: { result: AnalysisResult }) 
 function xmlEscape(text: string) {
   return text.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char] ?? char);
 }
-function downloadIllustratedShare(scene: NonNullable<ReturnType<typeof buildIllustratedDestiny>>, ratio: "9:16" | "4:5" | "1:1") {
+function downloadIllustratedShare(scene: NonNullable<ReturnType<typeof buildIllustratedDestiny>>, question: string, ratio: "9:16" | "4:5" | "1:1") {
   const sizes = { "9:16": [1080, 1920], "4:5": [1080, 1350], "1:1": [1080, 1080] } as const;
   const [width, height] = sizes[ratio];
   const caption = xmlEscape(Array.from(scene.caption).slice(0, 92).join(""));
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="#F6F1E7"/><path d="M0 ${height*.42}Q${width*.2} ${height*.27} ${width*.48} ${height*.42}T${width} ${height*.39}V${height*.59}H0Z" fill="#DCE4DB"/><path d="M0 ${height*.49}Q${width*.5} ${height*.46} ${width} ${height*.5}" fill="none" stroke="#456B72" stroke-width="3"/><circle cx="${width*.7}" cy="${height*.32}" r="42" fill="#E7D9B8"/><g stroke="#242620" stroke-width="5" stroke-linecap="round" fill="none"><circle cx="${width*.5}" cy="${height*.44}" r="13"/><path d="M${width*.5} ${height*.455}v54m0-33-20 23m20-23 19 20m-19 13-17 30m17-30 20 30"/></g><rect y="${height*.59}" width="100%" height="${height*.41}" fill="#FFF9EE"/><foreignObject x="80" y="${height*.65}" width="${width-160}" height="${height*.22}"><div xmlns="http://www.w3.org/1999/xhtml" style="font:48px/1.5 serif;color:#242620;overflow-wrap:anywhere">${caption}</div></foreignObject><text x="80" y="${height-65}" font-size="28" letter-spacing="3" fill="#355E50">ZHAOWU · 昭梧</text><rect x="${width-190}" y="${height-195}" width="96" height="96" fill="none" stroke="#C19A55" stroke-width="3" stroke-dasharray="8 7"/></svg>`;
+  const prompt = xmlEscape(Array.from(question).slice(0, 72).join(""));
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="#F6F1E7"/><path d="M0 ${height*.42}Q${width*.2} ${height*.27} ${width*.48} ${height*.42}T${width} ${height*.39}V${height*.59}H0Z" fill="#DCE4DB"/><path d="M0 ${height*.49}Q${width*.5} ${height*.46} ${width} ${height*.5}" fill="none" stroke="#456B72" stroke-width="3"/><circle cx="${width*.7}" cy="${height*.32}" r="42" fill="#E7D9B8"/><g stroke="#242620" stroke-width="5" stroke-linecap="round" fill="none"><circle cx="${width*.5}" cy="${height*.44}" r="13"/><path d="M${width*.5} ${height*.455}v54m0-33-20 23m20-23 19 20m-19 13-17 30m17-30 20 30"/></g><rect y="${height*.59}" width="100%" height="${height*.41}" fill="#FFF9EE"/><foreignObject x="80" y="${height*.61}" width="${width-160}" height="${height*.09}"><div xmlns="http://www.w3.org/1999/xhtml" style="font:30px/1.4 sans-serif;color:#355E50;overflow-wrap:anywhere">${prompt}</div></foreignObject><foreignObject x="80" y="${height*.70}" width="${width-160}" height="${height*.17}"><div xmlns="http://www.w3.org/1999/xhtml" style="font:48px/1.5 serif;color:#242620;overflow-wrap:anywhere">${caption}</div></foreignObject><text x="80" y="${height-65}" font-size="28" letter-spacing="3" fill="#355E50">ZHAOWU · 昭梧</text><rect x="${width-190}" y="${height-195}" width="96" height="96" fill="none" stroke="#C19A55" stroke-width="3" stroke-dasharray="8 7"/></svg>`;
   const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml;charset=utf-8" }));
   const anchor = document.createElement("a");
   anchor.href = url; anchor.download = `zhaowu-share-${ratio.replace(":", "x")}.svg`;
@@ -66,7 +67,7 @@ export function IllustratedShareCard({ result }: { result: AnalysisResult }) {
   return <details className="illustrated-destiny-share" data-illustrated-share>
     <summary>{result.locale === "en" ? "Share this scene" : "分享這幅插頁"}</summary>
     <div className="illustrated-destiny-formats">{(["9:16", "4:5", "1:1"] as const).map((ratio) =>
-      <button type="button" key={ratio} onClick={() => downloadIllustratedShare(scene, ratio)}>{ratio}</button>)}</div>
+      <button type="button" key={ratio} onClick={() => downloadIllustratedShare(scene, result.question, ratio)}>{ratio}</button>)}</div>
   </details>;
 }
 export function IllustratedDestinyWelcome({ locale }: { locale: string }) {
