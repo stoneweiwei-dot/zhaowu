@@ -38,7 +38,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [written, setWritten] = useState<{ key: string; answer: string; next: string } | null>(null);
   const writerKey = `${result.id ?? ""}|${question}`;
   const writtenNow = !petDecision && written?.key === writerKey ? written : null;
-  const answer = petDecision?.directAnswer ?? writtenNow?.answer ?? decisionModel.directAnswer;
+  const ruleAnswer = petDecision?.directAnswer ?? decisionModel.directAnswer;
+  const answer = writtenNow?.answer ?? ruleAnswer;
   const answerParagraphs = customerParagraphs(answer);
   const nextAction = petDecision ? customerCopy(reading.action) : writtenNow?.next ?? decisionModel.nextAction;
 
