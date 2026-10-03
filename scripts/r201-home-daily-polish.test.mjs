@@ -30,12 +30,13 @@ test("r201 restores useful wardrobe content in the embedded mini app", async () 
   assert.match(daily, /tone\.mask/);
 });
 
-test("r201 constrains spirit-slip gallery art instead of hard-inserting source dimensions", async () => {
+test("Today spirit slip uses the dedicated full-surface Song-mineral artwork", async () => {
   const daily = await source("src/components/daily-almanac-widget.tsx");
   const css = await source("src/zhaowu-design-system.css");
   assert.match(daily, /zhaowu-spirit-slip-layout/);
-  assert.match(daily, /loading="lazy"/);
-  assert.match(css, /\.zhaowu-spirit-slip-art[\s\S]*aspect-ratio:\s*9\s*\/\s*16/);
-  assert.match(css, /\.zhaowu-spirit-slip-art img[\s\S]*object-fit:\s*cover/);
-  assert.match(css, /@media\(max-width:520px\)[\s\S]*grid-template-columns:104px minmax\(0,1fr\)/);
+  assert.match(daily, /\/today\/spirit-slip-song-mineral-v1\.webp/);
+  assert.match(daily, /zhaowu-spirit-slip-backdrop-art/);
+  assert.doesNotMatch(daily, /listPublicGalleryAssets|galleryPublicUrl|GalleryAsset/);
+  assert.match(css, /body > \.zhaowu-spirit-slip[\s\S]*aspect-ratio:\s*9\s*\/\s*16/);
+  assert.match(css, /\.zhaowu-spirit-slip-backdrop-art[\s\S]*object-fit:\s*cover/);
 });

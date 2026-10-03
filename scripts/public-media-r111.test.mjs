@@ -80,5 +80,6 @@ test("public Supabase-managed media requires a verified safe URL and preserves o
   assert.match(galleryAssets, /cdn_url,cdn_provider,cdn_verified_at/);
   assert.match(galleryAssets, /rows\.map\(preferVerifiedPublicMedia\)/);
   assert.match(galleryAssets, /galleryFallbackUrl/);
-  assert.match(dailyAlmanac, /onError=.*galleryFallbackUrl/);
+  assert.match(dailyAlmanac, /\/today\/spirit-slip-song-mineral-v1\.webp/);
+  assert.doesNotMatch(dailyAlmanac, /galleryFallbackUrl|listPublicGalleryAssets/);
 });
