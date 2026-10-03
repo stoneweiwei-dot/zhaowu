@@ -19,11 +19,12 @@
  * are left untouched: composeCustomerAnswer() returns null for them.
  */
 import { distinctTimingSummary, type TimingYearSummary } from "@/lib/bazi/forecast-safe";
-import type { ForecastTopic } from "@/lib/bazi/forecast";
+import { analyzeForecastYear, type ForecastTopic } from "@/lib/bazi/forecast";
 import { BRANCH_TELL, STEM_TELL } from "@/lib/bazi/interpret";
 import { isStructureQuestion } from "@/lib/bazi/structure";
 import type { AnalysisResult, Chart, Element } from "@/lib/bazi/types";
 import { inspectAnswerRequirements, isJobFitQuestion, isTalentQuestion } from "@/lib/core/answer-contract";
+import { matchIntent, type Intent } from "@/lib/report/answer-intents";
 import { toTraditionalCustomerText } from "@/lib/report/reading-locale";
 import { isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 
@@ -36,15 +37,19 @@ const AB_RE = /A\s*[：:].+?B\s*[：:]|還是|还是|或者|二選一|二选一|
 const WHEN_FORM_RE = /(什麼時候|什么时候|何時|何时|哪年|哪一年|哪月|幾月|几月|多久|時機|时机|幾歲|几岁)/;
 const CHOICE_FORM_RE = /(該不該|该不该|要不要|值不值得|是否應該|是否应该|有沒有必要|有没有必要)/;
 const YESNO_FORM_RE = /(嗎|吗|能不能|會不會|会不会|可不可以|適不適合|适不适合|有沒有|有没有|行不行|好不好)[？?]?$|^(?:我)?(?:能|會|会|可以|適合|适合)/;
-const YEAR_WORD_RE = /(今年|明年|後年|后年|這幾年|这几年|未來|未来|20\d{2})/;
+const YEAR_WORD_RE = /(今年|明年|後年|后年|這幾年|这几年|未來|未来|最近|近期|這陣子|这阵子|20\d{2})/;
 
 const TOPIC_RES: [Topic, RegExp][] = [
-  ["home", /(家宅|搬家|房子|住宅|店面|風水|风水|買屋|买屋|買房|买房|住哪|坐向|搬到|移居|移民)/],
+  ["home", /((去|到|搬到|移居|前往).{0,6}(日本|韓國|韩国|美國|美国|英國|英国|加拿大|澳洲|新加坡|台灣|台湾|香港|歐洲|欧洲|海外|國外|国外)|家宅|搬家|房子|住宅|店面|風水|风水|買屋|买屋|買房|买房|住哪|坐向|搬到|移居|移民)/],
   ["health", /(健康|身體|身体|生病|病痛|失眠|睡不著|睡不着|體力|体力|累)/],
-  ["love", /(感情|戀愛|恋爱|愛情|爱情|交往|正緣|正缘|婚姻|結婚|结婚|伴侶|伴侣|桃花|復合|复合|分手|緣分|缘分|男友|女友|另一半|對象|对象|曖昧|暧昧|脫單|脱单)/],
-  ["career", /(工作|職業|职业|事業|事业|轉職|转职|跳槽|離職|离职|辭職|辞职|升遷|升迁|升職|升职|加薪|職場|职场|公司|職位|职位|上班|面試|面试|創業|创业|老闆|老板|offer|學業|学业|考試|考试|升學|升学|留學|留学|研究所|讀書|读书|證照|证照)/i],
+  ["love", /(同居|冷靜|冷静|已讀|已读|不回我|吃醋|男友|女友|老公|老婆|感情|戀愛|恋爱|愛情|爱情|交往|正緣|正缘|婚姻|結婚|结婚|伴侶|伴侣|桃花|復合|复合|分手|緣分|缘分|男友|女友|另一半|對象|对象|曖昧|暧昧|脫單|脱单)/],
+  ["career", /((適合|适合)(當|当|做|從事|从事|學|学|讀|读|選|选)|轉去|转去|科技業|業務|业务|行業|行业|產業|产业|工作|職業|职业|事業|事业|轉職|转职|跳槽|離職|离职|辭職|辞职|升遷|升迁|升職|升职|加薪|職場|职场|公司|職位|职位|上班|面試|面试|創業|创业|老闆|老板|offer|學業|学业|考試|考试|升學|升学|留學|留学|研究所|讀書|读书|證照|证照)/i],
   ["money", /(財運|财运|財務|财务|錢|钱|收入|投資|投资|理財|理财|債務|债务|存錢|存钱|發財|发财|賺|赚|虧|亏)/],
 ];
+
+// Questions that really are about the person themselves (or ask for the year's luck);
+// anything else with no recognised topic gets the honest "chart cannot answer this" frame.
+const SELFISH_RE = /(自信|拖延|懶|心軟|內向|外向|膽小|害羞|脾氣|情緒|完美主義|個性|性格|優點|缺點|盲點|長處|特質|天賦|過人|亮點|迷茫|迷惘|焦慮|命好|人生|一生|這輩子|成功|我是.{0,4}人|我是什麼|什麼樣的人|命運|運勢|運氣|運程|流年|八字|命盤)/;
 
 const TOPIC_NOUN: Record<Topic, string> = {
   career: "工作", money: "財運", love: "感情", health: "身體", home: "搬遷和居住上的變動", self: "整體運勢",
@@ -275,19 +280,87 @@ function highStakes(question: string): ComposedCustomerAnswer | null {
   return null;
 }
 
+// Old dedicated answers sometimes lead with chart bookkeeping. Customers who did not ask in
+// chart terms must never see it on the first screen.
+export const LEAK_RE = /月令|格局|(正|偏)?(印|財|财|官|殺|杀|食神|傷官|伤官|比肩|劫財|劫财|建祿|建禄|羊刃)格|十神|七殺|七杀|殺印|杀印|日主|喜用|用神|病藥|病药|承載|承载|制化|透干|藏干|庫氣|结构完成度|結構完成度|六親定位|六亲定位|主看(日柱|年柱|月柱|時柱|时柱)|結構摘要|结构摘要|主格.{0,4}格|完成度|月令.{0,3}[子丑寅卯辰巳午未申酉戌亥]/;
+const CHART_TALK_RE = /(格局|成格|用神|喜用|身強|身强|身弱|旺衰|五行|時柱|时柱|日主|月令|八字|命盤|命盘|十神|大運|大运|流年|紫微|納音|纳音|命宮|命宫)/;
+
 export type ComposedCustomerAnswer = { answer: string; nextAction: string; detail: string[] };
+
+function composeIntent(intent: Intent, result: AnalysisResult, question: string): ComposedCustomerAnswer {
+  const { chart } = result;
+  const req = inspectAnswerRequirements(question);
+  const today = new Date();
+  const nowYear = today.getFullYear();
+  const years = req.targetYears.length ? req.targetYears : formOf(question) === "when" ? [nowYear, nowYear + 1] : [nowYear];
+  const from = req.targetMonths.length ? undefined : { year: nowYear, month: today.getMonth() + 1 };
+  const summary = distinctTimingSummary(chart, intent.topic, years, req.targetMonths, from);
+  const first = summary[0];
+  const targetYear = first?.year ?? nowYear;
+  const { gift, risk } = stemParts(chart);
+  const monthTarget = /下個月|下个月/.test(question) ? (today.getMonth() + 1) % 12 + 1 : today.getMonth() + 1;
+  const monthYear = /下個月|下个月/.test(question) && today.getMonth() === 11 ? nowYear + 1 : nowYear;
+  const monthRead = intent.id === "luck.month" ? distinctTimingSummary(chart, "self", [monthYear], [monthTarget])[0] : null;
+  const ctx = {
+    monthLabel: /下個月|下个月/.test(question) ? "下個月" : "這個月",
+    monthGrade: gradeOf(monthRead?.score ?? 0),
+    chart,
+    question,
+    y: yearWord(targetYear),
+    yearLabel: yearWord(targetYear),
+    grade: gradeOf(first?.score ?? 0),
+    strong: isStrong(chart),
+    gift,
+    risk,
+    work: firstSentence(String(result.reading.work ?? "")).replace(/。$/, ""),
+    yearBranch: analyzeForecastYear(chart, targetYear, intent.topic).yearGanZhi.slice(1, 2),
+  };
+  const cautionParts = summary.filter((s) => s.caution.length).map((s) => `${yearWord(s.year)}${months(s.caution)}`);
+  const timing = intent.timing === "good"
+    ? timingLine(summary, chart.timeUnknown)
+    : intent.timing === "caution" && cautionParts.length
+      ? `比較要放慢、多留恢復時間的是${cautionParts.join("和")}。`
+      : "";
+  const parts = [tr(intent.lead(ctx)), intent.reason ? tr(intent.reason(ctx)) : "", timing]
+    .flatMap((text) => sentences(text).slice(0, 1));
+  return { answer: parts.slice(0, MAX_SENTENCES).join(""), nextAction: tr(intent.next(ctx)), detail: [] };
+}
+
+export function leakFallback(result: AnalysisResult): ComposedCustomerAnswer | null {
+  if ((result.locale ?? "zh-Hant") !== "zh-Hant") return null;
+  const question = String(result.question ?? "").trim();
+  if (!question || CHART_TALK_RE.test(question)) return null;
+  // Dedicated answer types keep their own wording.
+  if (isStructureQuestion(question) || isTalentQuestion(question) || isJobFitQuestion(question) || isCosmicSymbolicQuestion(question)) return null;
+  const { chart } = result;
+  const today = new Date();
+  const nowYear = today.getFullYear();
+  const summary = distinctTimingSummary(chart, "self", [nowYear], [], { year: nowYear, month: today.getMonth() + 1 });
+  const grade = gradeOf(summary[0]?.score ?? 0);
+  const answer = [
+    "這個問題命盤沒辦法直接給出具體答案，只能看你這段時間的整體節奏。",
+    verdict("self", "open", grade, yearWord(nowYear), chart),
+    timingLine(summary, chart.timeUnknown),
+  ].join("");
+  return { answer, nextAction: nextStep("self", "choice", summary, question), detail: [] };
+}
 
 export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerAnswer | null {
   const locale = result.locale ?? "zh-Hant";
   if (locale !== "zh-Hant") return null;
   const question = String(result.question ?? "").trim();
   if (!question) return null;
+  const intent = matchIntent(question);
+  const suspect = intent?.id === "love.suspect" ? intent : null;
+  if (suspect) return composeIntent(suspect, result, question);
   const sensitive = highStakes(question);
   if (sensitive) return sensitive;
+  if (intent) return composeIntent(intent, result, question);
   if (SPECIAL_RE.test(question) || isStructureQuestion(question) || isTalentQuestion(question) || isJobFitQuestion(question) || isCosmicSymbolicQuestion(question)) return null;
   if (/A\s*[：:].+?B\s*[：:]/s.test(question)) return null;
 
   const topics = detectTopics(question);
+  // Multi-topic questions keep their dedicated per-topic answer (focused-report contract).
   if (topics.length > 1) return null;
   const kind = result.reading.kind;
   if (kind === "past") return null;
@@ -309,6 +382,8 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
   const grade = gradeOf(summary[0]?.score ?? 0);
   const y = yearWord(summary[0]?.year ?? new Date().getFullYear());
 
+  const generic = topics.length === 0 && form !== "when" && form !== "choice" && !explicitTime
+    && !SELFISH_RE.test(question) && !["career", "money", "love", "health", "home"].includes(kind);
   let opener: string;
   if (form === "when") {
     opener = whenOpener(topic, summary);
@@ -316,14 +391,16 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
     opener = structuralCareer(result.chart);
   } else if (!explicitTime && form !== "choice" && topic === "money") {
     opener = structuralMoney(result.chart);
+  } else if (generic) {
+    opener = "這個問題命盤沒辦法直接給出具體答案，只能看你這段時間的整體節奏。";
   } else if (!explicitTime && form !== "choice" && topic === "self") {
     opener = "";
   } else {
     opener = verdict(topic, form, grade, y, result.chart);
   }
 
-  const why = topic === "self" && form === "choice" ? "" : reason(topic, result, question);
-  const showTiming = explicitTime || form === "choice" || topic === "love" || topic === "health" || topic === "home";
+  const why = generic ? verdict("self", "open", grade, y, result.chart) : topic === "self" && form === "choice" ? "" : reason(topic, result, question);
+  const showTiming = generic || explicitTime || form === "choice" || topic === "love" || topic === "health" || topic === "home";
   const cautionParts = summary.filter((s) => s.caution.length).map((s) => `${yearWord(s.year)}${months(s.caution)}`);
   const cautionOnly = cautionParts.length ? `比較不順的是${cautionParts.join("和")}，重要的事盡量避開。` : "";
   const timing = form === "when" ? cautionOnly : showTiming ? timingLine(summary, result.chart.timeUnknown) : "";
@@ -341,5 +418,5 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
     const fullWork = String(result.reading.work ?? "").trim();
     if (fullWork && sentences(fullWork).length > 1) detail.push(`補充｜${fullWork}`);
   }
-  return { answer, nextAction: nextStep(topic, form, showTiming ? summary : null, question), detail };
+  return { answer, nextAction: nextStep(topic, generic ? "choice" : form, showTiming ? summary : null, question), detail };
 }
