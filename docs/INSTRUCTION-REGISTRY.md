@@ -1,5 +1,12 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-03 基本盤公開、盤後解讀按次付費 supersession
+
+- ACTIVE：紫微、七政、西洋、印度古法、一掌經／前世今生、生命靈數六類基本盤與計算落位向公開訪客開放，不再要求 owner cookie。
+- ACTIVE：基本盤之後的文字解讀全部按次付費；快速讀 USD 1.99、單一系統完整讀 USD 4.99、六系統全讀 USD 9.99，均為一次性付款、不自動續費。
+- ACTIVE：付款權限只以 Stripe webhook 驗簽後寫入的 server-side entitlement 為準；前端 query string、localStorage 或付款跳轉本身不得直接授權。
+- SUPERSEDED：r162「全部專項 routes 僅供站主／內部」以及 r196「payment gate 暫停」的衝突部分。天機雙盤／星宮等內部工具仍維持 owner-only；子平主判、排盤引擎與內容邊界不變。
+
 ## 2026-10-03 r228a 開場影片不再先閃舊版 supersession
 
 - 站主明確指令（2026-10-01）：打開網頁時，原本內建的開場動畫會先卡約一秒，最後才播站主選定的新影片，要求不要先出現舊版。

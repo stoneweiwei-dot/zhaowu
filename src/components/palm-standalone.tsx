@@ -1,4 +1,5 @@
 import { ChartTable } from "@/components/specialist-chart";
+import { ReportAccessGate } from "@/components/report-access-gate";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { CityPicker } from "@/components/city-picker";
@@ -264,6 +265,11 @@ export function PalmStandalone() {
           <div className="space-y-5 px-5 pb-5 sm:px-8 sm:pb-8">
             <div data-natal-chart="past"><ChartTable title={locale === "en" ? "Four-palace chart" : locale === "zh-Hans" ? "一掌经 · 四宫命盘表" : "一掌經 · 四宮命盤表"} headers={[locale === "en" ? "Life" : "世次", locale === "en" ? "Branch" : locale === "zh-Hans" ? "宫支" : "宮支", locale === "en" ? "Star" : "星曜", locale === "en" ? "Path" : "六道"]} rows={result.palaces.map(p => { const item=presentPalmPalace(p,locale);return [item.lifeLabel,item.zhi,item.star,item.dao]; })}/></div>
 
+            <ReportAccessGate
+              system="palm"
+              locale={locale}
+              quick={<article className="rounded-2xl border border-[#b99755]/35 bg-paper/65 p-5"><h3 className="font-display text-xl font-semibold tracking-[0.06em] text-ink">{copy.readingTitle}</h3><p className="mt-3 text-sm leading-7 text-ink-soft">{copy.readingBody}</p></article>}
+              full={<>
             <article className="relative overflow-hidden rounded-2xl border border-[#b99755]/35 p-4 sm:p-5" style={{ background: "linear-gradient(135deg, rgba(255,250,242,.98), rgba(242,231,207,.84))" }}>
               <h3 className="font-display text-lg font-semibold tracking-[0.06em] text-ink">{copy.traceTitle}</h3>
               <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -328,6 +334,8 @@ export function PalmStandalone() {
                 ))}
               </div>
             ) : null}
+              </>}
+            />
 
             <p className="text-xs leading-6 text-ink-mute">{copy.boundary}</p>
             <div className="palm-history-note"><span>{historySaved ? copy.saved : copy.saveFailed}</span>{historySaved ? <Link to="/history">{copy.history}<b aria-hidden>→</b></Link> : null}</div>

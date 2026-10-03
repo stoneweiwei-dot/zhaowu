@@ -46,8 +46,8 @@
 - 公開不存在路由使用昭梧雙語 404 引導頁，提供返回首頁與查看最新更新；Vite SPA fallback 仍由 TanStack Router 判定 client-side not found。
 - 公開回應由 Vercel 全域補上 `X-Content-Type-Options: nosniff` 與 `Referrer-Policy: strict-origin-when-cross-origin`；Vercel 既有 HSTS 維持有效。
 
-- 七個公開專卷入口已退出 active path。
-- 專項 routes（紫微／七政／西占／印度古法／一掌等）保留作站主／內部能力與回歸驗證。
+- 紫微、七政、西占、印度古法、一掌經／前世今生、生命靈數六類專卷的基本盤與計算落位公開；盤後文字解讀按次付費（USD 1.99 快速讀／USD 4.99 單盤完整讀／USD 9.99 六盤全讀），不自動續費。
+- 天機雙盤／星宮等未納入六類公開產品的內部 routes 仍維持 owner-only。
 - 首頁吉象圖鑑入口隱藏；獨立頁與站主圖庫保留。
 - 完整報告第一屏只保留原問題、1–3 句直接答案與最多一個現實下一步；可信度、最大變數、命盤與完整分析過程不得與主答案並排。
 - 完整 reasons／risks／timing／actions、技術盤與證據依據一律收進最下方的「判斷備註」；主閱讀不再顯示優先重點卡。
@@ -173,7 +173,7 @@ r220 依站主最新明確指令（2026-09-29，見 `docs/INSTRUCTION-REGISTRY.m
 - 站主登入後的 /account／/gallery 真實視覺驗收仍缺已驗證 owner session；r197 已完成 source contract、HTTP、CI 與 Production exact-SHA 證據，不得把「缺憑證的人工視覺」冒充已跑。
 - Supabase release_history 已寫入 r197／197，source commit = 9fd7c6e6d72925b385ed05e8cd803e92f871033a，verification = READY_MAIN_SHA_MATCH。
 - 《菜根譚》APP 截圖 37 條已完成逐條校勘並結案：28 條升為 verified direct quote；1 條確認誤歸《菜根譚》（實出《圍爐夜話》）；8 條因關鍵字／詞序／漏字與可靠底本不一致，保留截圖轉錄但改為 not_applicable，不進古籍直引池。全庫現況為 **38 verified / 0 pending / 15 not_applicable**，且非 verified 卻標 direct quote 的筆數為 0。
-- Supabase Security Advisor 的 4 個 rls_enabled_no_policy 為 service_role-only 表；anon／authenticated 無 table grants，現況是 deny-by-default，不得為消除 INFO 提示而新增寬鬆 policy。Auth 目前有 8 個 Supabase users，Leaked Password Protection 仍為平台設定 WARN；現有 MCP 無 Auth Password Security 寫入能力，禁止用 SQL 假裝已開啟。
+- Supabase Security Advisor 的 5 個 rls_enabled_no_policy 為 service_role-only 表（含付款 entitlement）；anon／authenticated 無 table grants，現況是 deny-by-default，不得為消除 INFO 提示而新增寬鬆 policy。Auth 目前有 8 個 Supabase users，Leaked Password Protection 仍為平台設定 WARN；現有 MCP 無 Auth Password Security 寫入能力，禁止用 SQL 假裝已開啟。
 - Supabase 組織目前為 Pro；Storage 實測 1,033,390,182 bytes / 100 GB 包含額度，寫入已恢復。仍須避免重複素材；任何刪除繼續先核對引用並只用 Storage API。
 
 - r199：站主背景音樂後台完成資訊減法；常駐教學文案移除，批量工具列只在已有選取時顯示。公開 /api/owner-music 讀取改為直接讀 owner-music branch raw manifest，避開 Node 24 DEP0169 的舊 URL parser 路徑；寫入／Owner Cookie／SSH push 邏輯不變。
