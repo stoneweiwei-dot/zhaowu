@@ -39,11 +39,12 @@ test("daily almanac uses the canonical calendar and shows current year month day
 test("daily almanac keeps the daily spirit slip available to guests", () => {
   assert.match(widget, /stableHash/);
   assert.match(widget, /drawSlip/);
-  assert.match(widget, /listPublicGalleryAssets/);
+  assert.match(widget, /\/today\/spirit-slip-song-mineral-v1\.webp/);
+  assert.doesNotMatch(widget, /listPublicGalleryAssets|galleryPublicUrl/);
   assert.doesNotMatch(widget, /needLogin|needBirth|goLogin|goBirth|slip-gate/);
   assert.doesNotMatch(widget, /useCurrentUserState/);
   assert.match(widget, /stableHash\(`\$\{dayKey\}\|daily-spirit-slip`\)/);
-  assert.match(widget, /async function drawSlip\(\) \{[\s\S]*setSlipOpen\(true\);[\s\S]*listPublicGalleryAssets/);
+  assert.match(widget, /function drawSlip\(\) \{ setSlipOpen\(true\); \}/);
 });
 
 test("daily guide uses the canonical type system, readable touch targets and restrained motion", () => {
