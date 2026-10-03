@@ -101,3 +101,19 @@ test("a weaker-foundation chart gets the cautious branch, still plain and within
   assert.match(health.model.directAnswer, /底子偏弱/);
   assert.match(health.model.directAnswer, /先看醫生/);
 });
+
+test("high-stakes and non-job decisions never get the 'go ahead' wording", async () => {
+  const marriage = await screen("我老公外遇了，我要不要離婚？");
+  assert.match(marriage.model.directAnswer, /命盤不能替你拍板/);
+  assert.match(marriage.model.nextAction, /安全/);
+  const surgery = await screen("我要不要動手術？");
+  assert.match(surgery.model.directAnswer, /醫生/);
+  for (const q of ["要不要跟前任復合？", "我要不要買房？", "我要不要搬去墨爾本？"]) {
+    const { model } = await screen(q);
+    assert.doesNotMatch(model.directAnswer, /偏向可以動|一直忍著|把力氣用出去/, q);
+    assert.match(model.directAnswer, /命盤不能替你拍板|命盤只能看時機/, q);
+    assert.ok((model.directAnswer.match(/。/g) ?? []).length <= 3, q);
+  }
+  const job = await screen("我該不該離職？");
+  assert.match(job.model.directAnswer, /^偏向可以動/);
+});
