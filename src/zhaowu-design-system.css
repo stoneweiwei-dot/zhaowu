@@ -1015,7 +1015,7 @@ html[data-zw-theme="night"] .zhaowu-specialist-node { border-top-color: rgba(236
 .zhaowu-cycle-list,
 .bazi-luck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 9px !important; }
 
-[data-background-music-control]:not([data-owner-background-music-manager]):not([role="dialog"]) {
+[data-background-music-control]:where(:not([data-owner-background-music-manager]):not([role="dialog"])) {
   width: 44px !important;
   height: 44px !important;
   border-color: rgba(76, 67, 55, .18) !important;
