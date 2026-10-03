@@ -29,9 +29,12 @@ test("full report folds summary overflow and the body note but keeps both headin
   assert.match(pages, /<summary><h4>\{copy\.body\}<\/h4><\/summary>/);
 });
 
-test("the home page still exposes no school entrances (specialists only appear inside the report)", () => {
+test("the home page keeps specialist entrances inside the report and links to each free chart", () => {
   assert.doesNotMatch(home, /紫微斗數|七政四餘|達摩一掌經|印度古法占星|Western astrology|D60/);
   assert.doesNotMatch(unified, /data-specialist-link/);
+  assert.match(unified, /zhaowu-specialist-free-link/);
+  assert.match(unified, /SPECIALIST_ROUTES/);
+  assert.match(unified, /<ReportAccessGate/);
 });
 
 test("fold styles exist and respect reduced motion", () => {

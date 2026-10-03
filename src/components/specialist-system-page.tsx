@@ -1,4 +1,5 @@
 import { ChartTable, SpecialistChart } from "@/components/specialist-chart";
+import { ReportAccessGate } from "@/components/report-access-gate";
 import { useEffect, useMemo, useState } from "react";
 import { D60ReliabilityGate } from "@/components/d60-reliability-gate";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
@@ -65,6 +66,7 @@ const COPY = {
     add: "回首頁填寫生辰",
     back: "返回六種專卷",
     overview: "本卷總覽",
+    basicFree: "基本盤免費公開；盤後解讀按次付費。",
   },
   "zh-Hans": {
     ready: "本卷使用的生辰",
@@ -74,6 +76,7 @@ const COPY = {
     add: "回首页填写生辰",
     back: "返回六种专卷",
     overview: "本卷总览",
+    basicFree: "基本盘免费公开；盘后解读按次付费。",
   },
   en: {
     ready: "Birth record for this volume",
@@ -83,6 +86,7 @@ const COPY = {
     add: "Add birth record",
     back: "Back to six readings",
     overview: "Reading overview",
+    basicFree: "The basic chart is free. Interpretation after the chart is paid per reading.",
   },
 } as const;
 
@@ -143,19 +147,32 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
         </div>
 
         {reading?.chart ? <SpecialistChart chart={reading.chart} locale={locale} /> : null}
+        {reading?.chart ? <p className="zhaowu-specialist-free-note">{copy.basicFree}</p> : null}
 
         {reading ? (
-          <div className="zhaowu-specialist-sections">
-            {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
-            {reading.sections.map((section) => (
-              <article key={`${section.title}-${section.body.slice(0, 24)}`} data-summary-table={section.table ? "true" : undefined} data-summary-description={section.layout === "description" ? "true" : undefined}>
-                {section.table ? <ChartTable title={section.title} headers={section.table.headers} rows={section.table.rows} /> : <><h2>{section.title}</h2><p>{section.body}</p></>}
-              </article>
-            ))}
-          </div>
+          <ReportAccessGate
+            system={id === "past" || id === "dharma" ? "palm" : id}
+            locale={locale}
+            quick={<div className="zhaowu-specialist-sections">
+              {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
+              {reading.sections.slice(0, 1).map((section) => <ReadingSection key={`${section.title}-quick`} section={section} />)}
+            </div>}
+            full={<div className="zhaowu-specialist-sections">
+              {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
+              {reading.sections.map((section) => <ReadingSection key={`${section.title}-${section.body.slice(0, 24)}`} section={section} />)}
+              {id === "indian" ? <div className="mt-6"><D60ReliabilityGate reportBirth={birth && !birth.timeUnknown && birth.city ? { year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute, city: birth.city } : null} /></div> : null}
+            </div>}
+          />
         ) : null}
-        {id === "indian" ? <div className="mt-6"><D60ReliabilityGate reportBirth={birth && !birth.timeUnknown && birth.city ? { year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute, city: birth.city } : null} /></div> : null}
       </section>
     </main>
+  );
+}
+
+function ReadingSection({ section }: { section: SpecialistReading["sections"][number] }) {
+  return (
+    <article data-summary-table={section.table ? "true" : undefined} data-summary-description={section.layout === "description" ? "true" : undefined}>
+      {section.table ? <ChartTable title={section.title} headers={section.table.headers} rows={section.table.rows} /> : <><h2>{section.title}</h2><p>{section.body}</p></>}
+    </article>
   );
 }

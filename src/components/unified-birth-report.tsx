@@ -3,6 +3,8 @@ import type { Locale } from "@/lib/i18n";
 import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
 import { SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
+import { ReportAccessGate } from "@/components/report-access-gate";
+import type { ReportSystemId } from "@/lib/report-access";
 import {
   buildIndianReading,
   buildPalmReading,
@@ -79,6 +81,7 @@ function reportCopy(locale: Locale) {
     specialistTitle: "Deeper readings by system",
     specialistLead: "Optional. Each system below is folded; open only the one you want. They are supporting evidence and never override the main BaZi judgement.",
     numerology: "Life-path numerology",
+    freeChart: "Open free basic chart",
 
 
   };
@@ -104,6 +107,7 @@ function reportCopy(locale: Locale) {
     specialistTitle: "分系统深读",
     specialistLead: "可选阅读，每个系统默认收合，想看哪个再展开。皆为旁证，不覆盖子平八字主判。",
     numerology: "生命灵数",
+    freeChart: "查看免费基本盘",
 
 
   };
@@ -129,6 +133,7 @@ function reportCopy(locale: Locale) {
     specialistTitle: "分系統深讀",
     specialistLead: "可選閱讀，每個系統預設收合，想看哪個再展開。皆為旁證，不覆蓋子平八字主判。",
     numerology: "生命靈數",
+    freeChart: "查看免費基本盤",
 
 
   };
@@ -240,11 +245,21 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
   );
 }
 
-type SpecialistEntry = { id: string; title: string; lead?: string; warning?: string; sections: { title: string; lines: string[] }[] };
+type SpecialistEntry = { id: ReportSystemId; route: string; title: string; lead?: string; warning?: string; sections: { title: string; lines: string[] }[] };
 
-function fromReading(id: string, reading: SpecialistReading): SpecialistEntry {
+const SPECIALIST_ROUTES: Record<ReportSystemId, string> = {
+  ziwei: "/ziwei",
+  qizheng: "/qizheng",
+  western: "/astrology",
+  indian: "/indian-astrology",
+  palm: "/yizhangjing",
+  numerology: "/numerology",
+};
+
+function fromReading(id: ReportSystemId, reading: SpecialistReading): SpecialistEntry {
   return {
     id,
+    route: SPECIALIST_ROUTES[id],
     title: reading.title,
     lead: reading.lead,
     warning: reading.warning,
@@ -281,6 +296,7 @@ function SpecialistTreeBody({ birth, locale, copy }: { birth: SharedBirthRecord;
       fromReading("palm", buildPalmReading(birth, locale)),
       {
         id: "numerology",
+        route: SPECIALIST_ROUTES.numerology,
         title: copy.numerology,
         sections: [{ title: copy.numerology, lines: [tx(locale, profile.core), tx(locale, profile.challenge), tx(locale, profile.lesson), tx(locale, profile.action)].filter(Boolean) }],
       },
@@ -293,19 +309,32 @@ function SpecialistTreeBody({ birth, locale, copy }: { birth: SharedBirthRecord;
         <details key={entry.id} className="zhaowu-specialist-node" data-specialist-node={entry.id}>
           <summary><h5>{entry.title}</h5></summary>
           <div className="zhaowu-specialist-node__body">
-            {entry.warning ? <p className="zhaowu-specialist-node__warning">{entry.warning}</p> : null}
-            {entry.lead ? <p>{entry.lead}</p> : null}
-            {entry.sections.map((section, index) => (
-              <section key={`${section.title}-${index}`}>
-                {section.title && section.title !== entry.title && !/^\d+$/.test(section.title.trim()) ? <h6>{section.title}</h6> : null}
-                {section.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
-              </section>
-            ))}
+            <a className="zhaowu-specialist-free-link" href={entry.route}>{copy.freeChart}</a>
+            <ReportAccessGate
+              system={entry.id}
+              locale={locale}
+              quick={<SpecialistEntryContent entry={entry} quick />}
+              full={<SpecialistEntryContent entry={entry} />}
+            />
           </div>
         </details>
       ))}
     </div>
   );
+}
+
+function SpecialistEntryContent({ entry, quick = false }: { entry: SpecialistEntry; quick?: boolean }) {
+  const sections = quick ? entry.sections.slice(0, 1) : entry.sections;
+  return <>
+    {entry.warning ? <p className="zhaowu-specialist-node__warning">{entry.warning}</p> : null}
+    {entry.lead ? <p>{entry.lead}</p> : null}
+    {sections.map((section, index) => (
+      <section key={`${section.title}-${index}`}>
+        {section.title && section.title !== entry.title && !/^\d+$/.test(section.title.trim()) ? <h6>{section.title}</h6> : null}
+        {section.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
+      </section>
+    ))}
+  </>;
 }
 
 function ComicLiteReport({

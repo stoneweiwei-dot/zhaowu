@@ -4,27 +4,36 @@ import test from "node:test";
 
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
-const specialistRoutes = ["ziwei", "qizheng", "astrology", "indian-astrology", "yizhangjing", "numerology", "tianji-dual", "tianji-xinggong"];
+const publicSpecialistRoutes = ["ziwei", "qizheng", "astrology", "indian-astrology", "yizhangjing", "numerology"];
+const ownerSpecialistRoutes = ["tianji-dual", "tianji-xinggong"];
 
-test("every specialist route fails closed behind the owner cookie", async () => {
+test("six customer basic-chart routes are public while internal Tianji tools stay owner-only", async () => {
   const guard = await source("src/lib/auth/owner-route.ts");
   assert.match(guard, /readOwnerSession/);
   assert.match(guard, /throw redirect/);
-  for (const route of specialistRoutes) {
+  for (const route of publicSpecialistRoutes) {
+    const routeSource = await source(`src/routes/${route}.tsx`);
+    assert.doesNotMatch(routeSource, /requireOwnerRoute/);
+    assert.doesNotMatch(routeSource, /beforeLoad:/);
+  }
+  for (const route of ownerSpecialistRoutes) {
     const routeSource = await source(`src/routes/${route}.tsx`);
     assert.match(routeSource, /import \{ requireOwnerRoute \}/);
     assert.match(routeSource, /beforeLoad: requireOwnerRoute/);
   }
 });
 
-test("public navigation exposes the unified report and fun test, not specialist routes", async () => {
+test("public navigation keeps specialist charts inside the unified report flow", async () => {
   const history = await source("src/routes/history.tsx");
   const dragon = await source("src/components/green-dragon-guide.tsx");
   const knowledge = await source("src/routes/knowledge.tsx");
   const ziweiFeature = await source("src/components/ziwei-home-feature.tsx");
+  const unified = await source("src/components/unified-birth-report.tsx");
   for (const publicSource of [history, knowledge, ziweiFeature]) {
     assert.doesNotMatch(publicSource, /to="\/(?:ziwei|qizheng|astrology|indian-astrology|yizhangjing|numerology|tianji-dual|tianji-xinggong)"/);
   }
+  assert.match(unified, /zhaowu-specialist-free-link/);
+  assert.match(unified, /<ReportAccessGate/);
   assert.match(history, /entry\.kind === "fun-five-element"/);
   assert.match(history, /href="\/#analysisForm"/);
   assert.doesNotMatch(dragon, /seven reading paths|七種分析|七种分析/);
