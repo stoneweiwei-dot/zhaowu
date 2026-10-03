@@ -6269,3 +6269,208 @@ html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__chips artic
 html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__chips article:nth-child(3) { border-left-color: #beacc4 !important; }
 html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__spirit { border-left-color: #beacc4 !important; }
 html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__spirit h3 { color: #e0d2e6 !important; }
+
+/* r230 — Today Guide is three independent reading sections, not a tab carousel. */
+body #daily-almanac .zhaowu-today-guide__expanded {
+  display: grid;
+  gap: 18px;
+}
+body #daily-almanac .zhaowu-today-guide__overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .8fr) minmax(0, 1.1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 12px 4px 14px;
+  border-bottom: 1px solid rgba(84, 66, 44, .14);
+  color: #716b5d;
+  font-size: 12px;
+  line-height: 1.5;
+}
+body #daily-almanac .zhaowu-today-guide__overview strong { color: #294b42; font-weight: 680; }
+body #daily-almanac .zhaowu-today-guide__overview span:last-child { text-align: right; }
+body #daily-almanac .zhaowu-today-section {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(84, 66, 44, .16);
+  border-radius: 8px;
+  background: rgba(255, 252, 244, .58);
+  box-shadow: none;
+}
+body #daily-almanac .zhaowu-today-section.is-almanac { border-top: 3px solid #a9bdc6; }
+body #daily-almanac .zhaowu-today-section.is-wardrobe { border-top: 3px solid #d4c094; background: rgba(244, 239, 220, .34); }
+body #daily-almanac .zhaowu-today-section__head {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 72px;
+  padding: 13px 16px;
+  border-bottom: 1px solid rgba(84, 66, 44, .12);
+}
+body #daily-almanac .zhaowu-today-section__head > span {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  border-right: 1px solid rgba(84, 66, 44, .14);
+  color: #8a7a62;
+  font-family: var(--font-display, serif);
+  font-size: 15px;
+}
+body #daily-almanac .zhaowu-today-section__head small,
+body #daily-almanac .zhaowu-today-section__head h2 { display: block; margin: 0 !important; }
+body #daily-almanac .zhaowu-today-section__head small {
+  color: #7b7468;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .13em;
+}
+body #daily-almanac .zhaowu-today-section__head h2 {
+  margin-top: 3px !important;
+  color: #294b42 !important;
+  font-family: var(--font-display, serif);
+  font-size: clamp(19px, 4.6vw, 24px) !important;
+  font-weight: 650;
+  line-height: 1.25;
+}
+body #daily-almanac .zhaowu-today-section__head em {
+  max-width: 170px;
+  color: #716b5d;
+  font-size: 11px;
+  font-style: normal;
+  line-height: 1.45;
+  text-align: right;
+}
+body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 !important;
+  border: 0 !important;
+  padding: 0 12px 12px;
+}
+body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__grid .zhaowu-today-card {
+  min-width: 0;
+  padding: 14px 10px !important;
+}
+body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__grid .zhaowu-today-card:nth-child(odd) {
+  border-right: 1px solid rgba(84, 66, 44, .09) !important;
+}
+body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__grid .is-pillars,
+body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__grid .is-core,
+body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__grid .is-guidance,
+body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__grid .is-hours { grid-column: 1 / -1; border-right: 0 !important; }
+body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__wardrobe { padding: 2px 16px 16px; }
+
+body #daily-almanac .zhaowu-today-section.is-spirit {
+  position: relative;
+  border: 1px solid rgba(202, 180, 129, .42);
+  border-top: 3px solid #c4b7c9;
+  background: #294b42;
+  color: #f6efe2;
+}
+body #daily-almanac .zhaowu-today-section.is-spirit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .22;
+  background: radial-gradient(circle at 86% 18%, rgba(212, 192, 148, .28), transparent 24%), linear-gradient(145deg, transparent 38%, rgba(169, 189, 198, .16) 100%);
+}
+body #daily-almanac .zhaowu-today-section.is-spirit > * { position: relative; z-index: 1; }
+body #daily-almanac .zhaowu-today-section.is-spirit .zhaowu-today-section__head { border-bottom-color: rgba(244, 234, 217, .14); }
+body #daily-almanac .zhaowu-today-section.is-spirit .zhaowu-today-section__head > span { color: #d7c69f; border-right-color: rgba(244, 234, 217, .16); }
+body #daily-almanac .zhaowu-today-section.is-spirit .zhaowu-today-section__head small { color: #c8bda9; }
+body #daily-almanac .zhaowu-today-section.is-spirit .zhaowu-today-section__head h2 { color: #fff8ea !important; }
+body #daily-almanac .zhaowu-today-section.is-spirit .zhaowu-today-section__head em { color: #d7c69f; }
+body #daily-almanac .zhaowu-today-guide__spirit {
+  padding: 0 !important;
+  border: 0 !important;
+}
+body #daily-almanac .zhaowu-today-guide__spirit-paper {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 24px 20px 22px;
+}
+body #daily-almanac .zhaowu-today-guide__spirit-kicker {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 !important;
+  color: #d7c69f !important;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .13em;
+}
+body #daily-almanac .zhaowu-today-guide__spirit-kicker img { filter: brightness(0) invert(92%) sepia(18%) saturate(505%); opacity: .9; }
+body #daily-almanac .zhaowu-today-guide__spirit-paper h3 {
+  margin: 1px 0 0 !important;
+  color: #fff8ea !important;
+  font-family: var(--font-display, serif);
+  font-size: clamp(31px, 8vw, 44px) !important;
+  font-weight: 560;
+  letter-spacing: .08em;
+  line-height: 1.15;
+}
+body #daily-almanac .zhaowu-today-guide__spirit-paper > strong {
+  max-width: 34rem;
+  color: #f6efe2 !important;
+  font-family: var(--font-display, serif);
+  font-size: clamp(17px, 4.2vw, 21px);
+  font-weight: 540;
+  line-height: 1.75;
+}
+body #daily-almanac .zhaowu-today-guide__spirit-reading {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 38rem;
+  padding-top: 14px;
+  border-top: 1px solid rgba(244, 234, 217, .16);
+}
+body #daily-almanac .zhaowu-today-guide__spirit-reading small { color: #d7c69f; font-size: 10px; font-weight: 700; letter-spacing: .13em; }
+body #daily-almanac .zhaowu-today-guide__spirit-reading span { color: #e2dacc !important; font-size: 13.5px; line-height: 1.75 !important; }
+body #daily-almanac .zhaowu-today-guide__spirit-paper button {
+  min-height: 44px;
+  margin-top: 2px;
+  border: 1px solid rgba(215, 198, 159, .56) !important;
+  border-radius: 3px !important;
+  padding: 0 16px !important;
+  background: rgba(255, 248, 234, .05) !important;
+  color: #f5e8ca !important;
+  font-size: 13px;
+  font-weight: 700;
+}
+body #daily-almanac .zhaowu-today-guide__spirit-paper button:disabled { opacity: .55; }
+body .zhaowu-spirit-slip-copy small { display: block; margin-bottom: 5px; color: #8d764e; font-size: 10px; font-weight: 750; letter-spacing: .13em; }
+
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__overview {
+  border-bottom-color: rgba(224, 199, 155, .14);
+  color: #d3c9b8;
+}
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-guide__overview strong { color: #f4ead9; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-section {
+  border-color: rgba(224, 199, 155, .18);
+  background: rgba(255, 250, 241, .025);
+}
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-section.is-almanac { border-top-color: #95b0ba; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-section.is-wardrobe { border-top-color: #d3bd8e; background: rgba(220, 199, 151, .035); }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-section__head { border-bottom-color: rgba(224, 199, 155, .13); }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-section__head > span { color: #d3bd8e; border-right-color: rgba(224, 199, 155, .14); }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-section__head small,
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-section__head em { color: #d3c9b8; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-section__head h2 { color: #f4ead9 !important; }
+html[data-zw-theme="night"] body #daily-almanac .zhaowu-today-section.is-spirit { background: #102f28; border-color: rgba(224, 199, 155, .28); border-top-color: #beacc4; }
+
+@media (max-width: 560px) {
+  body #daily-almanac .zhaowu-today-guide__expanded { gap: 14px; }
+  body #daily-almanac .zhaowu-today-guide__overview { grid-template-columns: 1fr; gap: 3px; padding-inline: 2px; }
+  body #daily-almanac .zhaowu-today-guide__overview span:last-child { text-align: left; }
+  body #daily-almanac .zhaowu-today-section__head { grid-template-columns: 30px minmax(0, 1fr); gap: 10px; padding: 12px; }
+  body #daily-almanac .zhaowu-today-section__head em { grid-column: 2; max-width: none; text-align: left; }
+  body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__grid { grid-template-columns: 1fr !important; padding-inline: 10px; }
+  body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__grid .zhaowu-today-card { grid-column: 1 !important; border-right: 0 !important; }
+  body #daily-almanac .zhaowu-today-section .zhaowu-today-guide__wardrobe { padding-inline: 12px; }
+  body #daily-almanac .zhaowu-today-guide__spirit-paper { padding: 21px 16px 20px; }
+  body #daily-almanac .zhaowu-today-guide__spirit-reading { grid-template-columns: 1fr; gap: 5px; }
+}
