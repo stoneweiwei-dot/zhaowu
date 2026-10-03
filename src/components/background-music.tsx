@@ -73,6 +73,8 @@ export function BackgroundMusic() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const unlockStartedRef = useRef(false);
   const resumeOnVisibleRef = useRef(false);
+  const previewOwnsAudioRef = useRef(false);
+  const resumeAfterPreviewRef = useRef(false);
   const currentIdRef = useRef<string | null>(null);
   const shuffleRef = useRef(readBooleanPreference(SHUFFLE_STORAGE_KEY, false));
 
@@ -210,9 +212,11 @@ export function BackgroundMusic() {
           resumeOnVisibleRef.current = true;
           audio.pause();
         }
-      } else if (resumeOnVisibleRef.current) {
+      } else if (resumeOnVisibleRef.current || resumeAfterPreviewRef.current) {
+        const shouldResume = resumeOnVisibleRef.current || resumeAfterPreviewRef.current;
         resumeOnVisibleRef.current = false;
-        if (enabled && requested) {
+        if (shouldResume && enabled && requested && !previewOwnsAudioRef.current) {
+          resumeAfterPreviewRef.current = false;
           unlockStartedRef.current = true;
           void playAudio(audio).catch(() => {
             unlockStartedRef.current = false;
@@ -260,6 +264,7 @@ export function BackgroundMusic() {
   }, [enabled, requested, currentTrack, syncAudioSource, playAudio]);
 
   const startPlayback = (track: OwnerMusicTrack | null = currentTrack) => {
+    if (previewOwnsAudioRef.current) return;
     const audio = audioRef.current;
     if (!audio) return;
     setEnabled(true);
@@ -280,6 +285,7 @@ export function BackgroundMusic() {
     setEnabled(false);
     setRequested(false);
     unlockStartedRef.current = false;
+    resumeAfterPreviewRef.current = false;
     setPlaying(false);
   };
 
@@ -379,7 +385,26 @@ export function BackgroundMusic() {
   useEffect(() => {
     const onCommand = (event: Event) => {
       const command = (event as CustomEvent<{ command?: string }>).detail?.command;
-      if (command === "toggle") togglePlayback();
+      if (command === "pause") {
+        const audio = audioRef.current;
+        if (!audio) return;
+        if (!audio.paused && enabled && requested) resumeAfterPreviewRef.current = true;
+        previewOwnsAudioRef.current = true;
+        audio.pause();
+        setPlaying(false);
+      } else if (command === "resume") {
+        previewOwnsAudioRef.current = false;
+        if (resumeAfterPreviewRef.current && enabled && requested && !document.hidden) {
+          resumeAfterPreviewRef.current = false;
+          const audio = audioRef.current;
+          if (!audio) return;
+          unlockStartedRef.current = true;
+          void playAudio(audio).catch(() => {
+            unlockStartedRef.current = false;
+            setPlaying(false);
+          });
+        }
+      } else if (command === "toggle") togglePlayback();
       else if (command === "next") void moveTrack(1);
       else if (command === "previous") void moveTrack(-1);
     };
