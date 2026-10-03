@@ -29,8 +29,8 @@ test("P0 buttons follow gold primary and ivory secondary", () => {
   const r97 = main.lastIndexOf("./brand-ui-r97.css");
   const hotfix = main.indexOf("./visual-hotfix-r94.css");
   assert.ok(r97 > hotfix);
-  assert.match(css, /background: #d4b074/);
-  assert.match(css, /color: #1f4e3a/);
+  assert.match(css, /background: #d6c496/);
+  assert.match(css, /color: #365d57/);
   assert.match(css, /background: #faf8f1/);
 });
 
