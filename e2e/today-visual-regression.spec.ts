@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 /**
  * Real-browser screenshot regression for the homepage "Today" module.
- * Covers tabs, five-element wardrobe and the Jade Dragon assistant at
+ * Covers the independent almanac, five-element wardrobe, spirit slip and Jade Dragon at
  * phone / tablet / desktop widths, day and night.
  *
  * Determinism: fixed clock, no network for visitor/weather/sky data, Traditional
@@ -44,11 +44,11 @@ async function openToday(page: Page, theme: (typeof THEMES)[number], viewport: (
 for (const viewport of VIEWPORTS) {
   for (const theme of THEMES) {
     test.describe(`Today visual baseline · ${viewport.name} · ${theme}`, () => {
-      test("tabs", async ({ page }) => {
+      test("section overview", async ({ page }) => {
         await openToday(page, theme, viewport, { hideDragon: true });
-        const tabs = page.locator("#daily-almanac .zhaowu-today-guide__tabs");
-        await expect(tabs).toBeVisible();
-        await expect(tabs).toHaveScreenshot(`today-tabs-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
+        const overview = page.locator("#daily-almanac .zhaowu-today-guide__overview");
+        await expect(overview).toBeVisible();
+        await expect(overview).toHaveScreenshot(`today-tabs-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
       });
 
       test("five-element wardrobe", async ({ page }) => {
@@ -59,16 +59,15 @@ for (const viewport of VIEWPORTS) {
         await expect(wardrobe).toHaveScreenshot(`today-wardrobe-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
       });
 
-      test("almanac page and spirit slip tab", async ({ page }) => {
+      test("almanac and spirit slip sections", async ({ page }) => {
         await openToday(page, theme, viewport, { hideDragon: true });
         const guide = page.locator("#daily-almanac");
-        await guide.locator('.zhaowu-today-guide__tabs button').nth(0).click();
-        await expect(guide.locator(".zhaowu-today-guide__grid")).toBeVisible();
-        await expect(guide.locator(".zhaowu-today-guide__expanded")).toHaveScreenshot(`today-almanac-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
-        await guide.locator('.zhaowu-today-guide__tabs button').nth(2).click();
-        const spirit = guide.locator(".zhaowu-today-guide__spirit");
+        const almanac = guide.locator(".zhaowu-today-section.is-almanac");
+        await expect(almanac).toBeVisible();
+        await expect(almanac).toHaveScreenshot(`today-almanac-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
+        const spirit = guide.locator(".zhaowu-today-section.is-spirit");
         await expect(spirit).toBeVisible();
-        await expect(guide.locator(".zhaowu-today-guide__expanded")).toHaveScreenshot(`today-spirit-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
+        await expect(spirit).toHaveScreenshot(`today-spirit-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
       });
 
       test("jade dragon assistant (closed and open)", async ({ page }) => {

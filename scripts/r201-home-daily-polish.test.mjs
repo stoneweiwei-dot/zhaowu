@@ -5,13 +5,16 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("r201 removes the standalone homepage comic and makes Today useful immediately", async () => {
+test("Today removes the standalone homepage comic and exposes three independent sections", async () => {
   const home = await source("src/routes/index.tsx");
   const daily = await source("src/components/daily-almanac-widget.tsx");
   assert.doesNotMatch(home, /SongComicToday/);
   assert.match(home, /useState<"today" \| "quiz" \| "notes" \| null>\("today"\)/);
-  assert.match(daily, /useState\(embedded \? 1 : 0\)/);
-  assert.match(daily, /zhaowu-today-guide__tabs/);
+  assert.doesNotMatch(daily, /zhaowu-today-guide__tabs/);
+  assert.doesNotMatch(daily, /hidden=\{page !==/);
+  assert.match(daily, /zhaowu-today-section is-almanac/);
+  assert.match(daily, /zhaowu-today-section is-wardrobe/);
+  assert.match(daily, /zhaowu-today-section is-spirit/);
   assert.match(daily, /DailyColorsModule variant="embed"/);
 });
 
