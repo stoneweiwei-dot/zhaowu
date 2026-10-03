@@ -1,5 +1,13 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-03 r228a 開場影片不再先閃舊版 supersession
+
+- 站主明確指令（2026-10-01）：打開網頁時，原本內建的開場動畫會先卡約一秒，最後才播站主選定的新影片，要求不要先出現舊版。
+- ACTIVE：`IntroGate` 在查詢站主「開場影片」選擇期間（`resolvedVideoSrc === undefined`）與播放站主自訂影片時，底層只顯示中性深色底，不顯示 r148 海報、遮罩與「正在準備昭梧」文字；這些僅屬內建 r148 影片。
+- ACTIVE：站主影片查詢等待上限對齊 `intro-visual-source.ts` 自身的 1800 ms 逾時（原 500 ms 會先放棄，使慢速手機永遠播內建片）；400 ms 內若尚無回應，沿用此瀏覽器上次成功取得的站主影片（`zhaowu.intro.last-visual.v1`，僅接受 `https://` 或站內絕對路徑）。
+- 不改：`zhaowu.intro.seen.public.v1` 一次性契約、`INTRO_GATE_MIN_VISIBLE_MS`／`INTRO_GATE_HARD_EXIT_MS`、內建 r148 作為失敗／逾時退回目標、聲音鈕與跳過鈕、`/login` 動畫、命理計算、報告、付款、Supabase。
+- 範圍說明：同一舊分支（`fix-r228-intro-player-music-today`／PR #584）的黃曆首頁、靈籤與神佛聖日部分，與 2026-10-03「黃曆母版與靈籤專用背景」「三段獨立呈現」的 ACTIVE 條目互斥，未移植；神佛聖日資料列為 BACKLOG，需站主新指令與三段式版面位置。
+
 ## 2026-10-03 手機桌面安裝入口改為主動開啟 supersession
 
 - ACTIVE：首頁不得在載入後自動彈出「快速入口／把昭梧存到手機桌面」安裝卡，也不得以 fixed 浮動按鈕長期遮住內容。

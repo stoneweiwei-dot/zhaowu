@@ -17,10 +17,34 @@ import { fetchIntroVisualOverride } from "@/lib/intro-visual-source";
 import { readBrandTheme } from "@/lib/brand-theme";
 
 // How long we wait for the owner's custom "開場影片" pick (set from the
-// /gallery admin panel) before falling back to the built-in default. This
-// only delays when the <video> element itself mounts; the static poster
-// overlay below is already on screen, so a visitor never sees a blank frame.
-const INTRO_VISUAL_OVERRIDE_TIMEOUT_MS = 500;
+// /gallery admin panel) before falling back. Must not be shorter than the
+// fetch's own timeout in intro-visual-source.ts (1800 ms): the old 500 ms value
+// gave up first, so slow phones played the built-in r148 clip and never the
+// owner's pick. While the pick is still unresolved the screen is a neutral dark
+// field (no r148 poster / copy), so the old opening never flashes before the
+// real one.
+const INTRO_VISUAL_OVERRIDE_TIMEOUT_MS = 1800;
+// If the live lookup has not answered by then, reuse the last owner clip this
+// browser resolved successfully, instead of waiting out the full timeout.
+const INTRO_VISUAL_CACHED_START_MS = 400;
+const INTRO_LAST_VISUAL_KEY = "zhaowu.intro.last-visual.v1";
+
+function readLastIntroVisual() {
+  try {
+    const value = window.localStorage.getItem(INTRO_LAST_VISUAL_KEY);
+    return value && (value.startsWith("https://") || (value.startsWith("/") && !value.startsWith("//"))) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeLastIntroVisual(url: string) {
+  try {
+    window.localStorage.setItem(INTRO_LAST_VISUAL_KEY, url);
+  } catch {
+    /* ignore */
+  }
+}
 
 const OWNER_LOADING_VIDEO = "/intro/zhaowu-opening-r148.mp4";
 const OWNER_LOADING_POSTER = "/intro/zhaowu-opening-r148.jpg";
@@ -168,26 +192,34 @@ export function IntroGate() {
       return;
     }
     let cancelled = false;
+    const cached = readLastIntroVisual();
+    const clearTimers = () => {
+      window.clearTimeout(cachedTimer);
+      window.clearTimeout(timer);
+    };
+    const cachedTimer = window.setTimeout(() => {
+      if (cached) setResolvedVideoSrc((current) => (current === undefined ? cached : current));
+    }, INTRO_VISUAL_CACHED_START_MS);
     const timer = window.setTimeout(() => {
-      setResolvedVideoSrc((current) => (current === undefined ? OWNER_LOADING_VIDEO : current));
+      setResolvedVideoSrc((current) => (current === undefined ? cached || OWNER_LOADING_VIDEO : current));
     }, INTRO_VISUAL_OVERRIDE_TIMEOUT_MS);
     fetchIntroVisualOverride(readBrandTheme())
       .then((override) => {
         if (cancelled) return;
-        window.clearTimeout(timer);
-        // Guard against the fetch resolving after the timeout already picked
-        // a default: never swap the src of a video that may already be
-        // playing.
+        clearTimers();
+        if (override?.videoUrl) writeLastIntroVisual(override.videoUrl);
+        // Guard against the fetch resolving after a timer already picked a
+        // source: never swap the src of a video that may already be playing.
         setResolvedVideoSrc((current) => (current === undefined ? override?.videoUrl || OWNER_LOADING_VIDEO : current));
       })
       .catch(() => {
         if (cancelled) return;
-        window.clearTimeout(timer);
-        setResolvedVideoSrc((current) => (current === undefined ? OWNER_LOADING_VIDEO : current));
+        clearTimers();
+        setResolvedVideoSrc((current) => (current === undefined ? cached || OWNER_LOADING_VIDEO : current));
       });
     return () => {
       cancelled = true;
-      window.clearTimeout(timer);
+      clearTimers();
     };
   }, []);
 
@@ -235,6 +267,9 @@ export function IntroGate() {
   if (phase === "off") return null;
 
   const loadingLabel = locale === "en" ? "Preparing Zhaowu" : locale === "zh-Hans" ? "正在准备昭梧" : "正在準備昭梧";
+  // The r148 poster + copy are only for the built-in clip. While the owner's pick is still resolving, or when it
+  // is a custom clip, show a neutral dark field so the old opening never appears for a second before the real one.
+  const usesBuiltInVisual = resolvedVideoSrc === OWNER_LOADING_VIDEO || resolvedVideoSrc === OWNER_LOADING_BROKEN;
 
   return (
     <div
@@ -245,7 +280,7 @@ export function IntroGate() {
       data-intro-motion="zhaowu-opening-r148"
       data-intro-fallback-mode="r148-poster"
     >
-      <div className={`zhaowu-lotus-intro__fallback ${videoPlaying ? "is-covered" : ""}`} data-intro-fallback aria-hidden="true">
+      <div className={`zhaowu-lotus-intro__fallback ${videoPlaying ? "is-covered" : ""} ${usesBuiltInVisual ? "" : "is-neutral"}`} data-intro-fallback aria-hidden="true">
         <img src={OWNER_LOADING_POSTER} alt="" className="zhaowu-lotus-intro__poster" />
         <div className="zhaowu-lotus-intro__fallback-shade" />
         <div className="zhaowu-lotus-intro__fallback-copy">
@@ -259,7 +294,7 @@ export function IntroGate() {
           ref={videoRef}
           className="zhaowu-lotus-intro__video is-playing"
           src={resolvedVideoSrc}
-          poster={OWNER_LOADING_POSTER}
+          poster={usesBuiltInVisual ? OWNER_LOADING_POSTER : undefined}
           autoPlay
           muted
           playsInline
