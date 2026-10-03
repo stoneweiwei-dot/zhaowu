@@ -8,6 +8,7 @@ import { ReportLuckBook } from "@/components/report-luck-book";
 import { ReportShareCard } from "@/components/report-share-card";
 import { EvidenceGovernancePanel } from "@/components/evidence-governance-panel";
 import { FiveElementTrainingBlock } from "@/components/five-element-training-block";
+import { IllustratedDestinyPanel } from "@/components/illustrated-destiny-panel";
 
 const COPY = {
   "zh-Hant": {
@@ -366,6 +367,8 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
           ) : null}
         </section>
       ) : null}
+
+      {result ? <IllustratedDestinyPanel result={result} /> : null}
 
       <section className="zhaowu-report-body-block">
           <details className="zhaowu-report-fold zhaowu-report-fold--section" data-report-fold>
