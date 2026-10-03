@@ -13,6 +13,19 @@ const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8")
 const guide = await readFile(new URL("../src/components/green-dragon-guide.tsx", import.meta.url), "utf8");
 const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
 
+
+test("owner preview exclusively pauses background music and restores its prior play state", () => {
+  assert.match(manager, /data-background-music-control/);
+  assert.match(manager, /command: "pause"/);
+  assert.match(manager, /command: "resume"/);
+  assert.match(manager, /onEnded=\{\(\) => \{[^}]*command: "resume"/);
+  assert.match(music, /command === "pause"/);
+  assert.match(music, /command === "resume"/);
+  assert.match(music, /previewOwnsAudioRef/);
+  assert.match(music, /resumeAfterPreviewRef/);
+  assert.match(music, /if \(previewOwnsAudioRef\.current\) return/);
+});
+
 test("background music resolves the active owner track through /api/owner-music and defers fetch until playback is requested", () => {
   assert.match(music, /MUSIC_STREAM_URL = "\/api\/owner-music\?stream=1"/);
   assert.match(music, /loadOwnerMusic/);

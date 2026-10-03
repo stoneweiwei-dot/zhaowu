@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { createPortal } from "react-dom";
+import { prepareQuietAudio, releaseQuietAudio } from "@/lib/quiet-audio";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n, type Locale } from "@/lib/i18n";
 import {
@@ -43,9 +44,13 @@ export function OwnerBackgroundMusicManager() {
   const [percent, setPercent] = useState<number | null>(null);
   const [stage, setStage] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
+  const previewRef = useRef<HTMLAudioElement | null>(null);
+  const [previewId, setPreviewId] = useState<string | null>(null);
+  const [previewPlaying, setPreviewPlaying] = useState(false);
 
   const c = useMemo(() => ({
     manage: tr(locale, "背景音樂管理", "背景音乐管理", "Background music"),
@@ -54,7 +59,11 @@ export function OwnerBackgroundMusicManager() {
     limit: tr(locale, "來源 ≤200 MB · 直傳 ≤12MB · 自動轉碼／分段上傳", "来源 ≤200 MB · 直传 ≤12MB · 自动转码／分段上传", "Source ≤200 MB · direct ≤12MB · auto-convert / chunked upload"),
     processing: tr(locale, "處理中…", "处理中…", "Processing…"),
     current: tr(locale, "目前播放", "当前播放", "Currently playing"),
-    use: tr(locale, "設為背景音樂", "设为背景音乐", "Use as background music"),
+    use: tr(locale, "使用此曲", "使用此曲", "Use track"),
+    preview: tr(locale, "試聽", "试听", "Preview"),
+    pause: tr(locale, "暫停", "暂停", "Pause"),
+    more: tr(locale, "更多", "更多", "More"),
+    previewFailed: tr(locale, "無法試聽，請稍後再試。", "无法试听，请稍后再试。", "Could not play this track. Try again."),
     delete: tr(locale, "刪除", "删除", "Delete"),
     rename: tr(locale, "改名", "改名", "Rename"),
     saveName: tr(locale, "保存名稱", "保存名称", "Save name"),
@@ -74,6 +83,8 @@ export function OwnerBackgroundMusicManager() {
     changed: tr(locale, "已切換背景音樂。", "已切换背景音乐。", "Background music changed."),
     uploaded: tr(locale, "新音樂已優化、上傳並啟用。", "新音乐已优化、上传并启用。", "The new track was optimized, uploaded and activated."),
     confirmDelete: tr(locale, "刪除這首背景音樂？", "删除这首背景音乐？", "Delete this background track?"),
+    operationFailed: tr(locale, "未能確認操作成功，請先刷新清單。", "未能确认操作成功，请先刷新列表。", "Could not confirm the change. Refresh the list first."),
+    errorDetails: tr(locale, "錯誤詳情", "错误详情", "Error details"),
     loadFailed: tr(locale, "背景音樂讀取失敗。", "背景音乐读取失败。", "Could not load background music."),
   }), [locale]);
 
@@ -96,7 +107,7 @@ export function OwnerBackgroundMusicManager() {
       const ids = new Set(state.tracks.map((track) => track.id));
       setSelectedIds((current) => current.filter((id) => ids.has(id) && !state.tracks.find((track) => track.id === id)?.enabled));
     }
-    catch (error) { setMessage(error instanceof Error ? error.message : c.loadFailed); }
+    catch (error) { setErrorMessage(error instanceof Error ? error.message : c.loadFailed); }
   }
 
   useEffect(() => { if (open) void load(); }, [open, user?.isOwner]);
@@ -104,7 +115,7 @@ export function OwnerBackgroundMusicManager() {
   async function onUpload(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]; event.target.value = "";
     if (!file || !user?.isOwner || busy) return;
-    setBusy(true); setMessage(null); setPercent(2); setStage(c.processing);
+    setBusy(true); setMessage(null); setErrorMessage(null); setPercent(2); setStage(c.processing);
     try {
       const result = await uploadOwnerMusic(file, (progress) => { setPercent(progress.percent); setStage(progress.label); });
       await load();
@@ -114,22 +125,22 @@ export function OwnerBackgroundMusicManager() {
         : ` ${formatSize(result.outputBytes)} · 已保留原格式避免重複有損轉碼`;
       setMessage(`${c.uploaded}${saved > 0 ? detail : detail}`);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : c.loadFailed);
+      setErrorMessage(error instanceof Error ? error.message : c.loadFailed);
     } finally { setBusy(false); setPercent(null); setStage(null); }
   }
 
   async function onActivate(track: OwnerMusicTrack) {
-    if (busy) return; setBusy(true); setMessage(null);
+    if (busy) return; setBusy(true); setMessage(null); setErrorMessage(null);
     try { await activateOwnerMusic(track.id); await load(); setMessage(c.changed); }
-    catch (error) { setMessage(error instanceof Error ? error.message : c.loadFailed); }
+    catch (error) { setErrorMessage(error instanceof Error ? error.message : c.loadFailed); }
     finally { setBusy(false); }
   }
 
   async function onDelete(track: OwnerMusicTrack) {
     if (busy || track.enabled || !window.confirm(c.confirmDelete)) return;
-    setBusy(true); setMessage(null);
+    setBusy(true); setMessage(null); setErrorMessage(null);
     try { await deleteOwnerMusic(track.id); await load(); }
-    catch (error) { setMessage(error instanceof Error ? error.message : c.loadFailed); }
+    catch (error) { setErrorMessage(error instanceof Error ? error.message : c.loadFailed); }
     finally { setBusy(false); }
   }
 
@@ -144,7 +155,7 @@ export function OwnerBackgroundMusicManager() {
 
   async function onBatchDelete() {
     if (busy || !selectedIds.length || !window.confirm(c.batchDeleteConfirm(selectedIds.length))) return;
-    setBusy(true); setMessage(null);
+    setBusy(true); setMessage(null); setErrorMessage(null);
     try {
       const count = selectedIds.length;
       await deleteOwnerMusicMany(selectedIds);
@@ -152,7 +163,7 @@ export function OwnerBackgroundMusicManager() {
       await load();
       setMessage(c.batchDeleted(count));
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : c.loadFailed);
+      setErrorMessage(error instanceof Error ? error.message : c.loadFailed);
     } finally { setBusy(false); }
   }
 
@@ -165,7 +176,7 @@ export function OwnerBackgroundMusicManager() {
     if (busy) return;
     const nextName = editingName.trim();
     if (!nextName) return;
-    setBusy(true); setMessage(null);
+    setBusy(true); setMessage(null); setErrorMessage(null);
     try {
       await renameOwnerMusic(track.id, nextName);
       setEditingId(null);
@@ -173,23 +184,52 @@ export function OwnerBackgroundMusicManager() {
       await load();
       setMessage(c.renamed);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : c.loadFailed);
+      setErrorMessage(error instanceof Error ? error.message : c.loadFailed);
     } finally { setBusy(false); }
+  }
+
+  useEffect(() => {
+    const audio = previewRef.current;
+    setPreviewPlaying(false);
+    return () => {
+      audio?.pause();
+      if (audio) releaseQuietAudio(audio);
+      window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } }));
+    };
+  }, [open]);
+
+  function togglePreview(track: OwnerMusicTrack) {
+    const audio = previewRef.current;
+    if (!audio) return;
+    if (previewId === track.id && !audio.paused) {
+      audio.pause();
+      window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } }));
+      return;
+    }
+    if (audio.getAttribute("src") !== track.url) { audio.src = track.url; audio.load(); }
+    setPreviewId(track.id);
+    prepareQuietAudio(audio);
+    window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "pause" } }));
+    void audio.play().catch(() => {
+      setPreviewPlaying(false);
+      setErrorMessage(c.previewFailed);
+      window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } }));
+    });
   }
 
   if (!user?.isOwner || !onAccount) return null;
 
   const manager = <>
     <button type="button" data-owner-background-music-manager data-owner-background-music-inline={portalTarget ? "true" : "fallback"}
-      className={portalTarget ? "mt-5 flex w-full items-center justify-between gap-4 rounded-2xl border border-cinnabar/20 bg-gradient-to-br from-paper/80 to-cream/65 px-4 py-4 text-left shadow-sm transition hover:border-cinnabar/35" : "fixed left-3 right-3 z-[88] flex min-h-14 items-center justify-between gap-4 rounded-2xl border border-cinnabar/30 bg-cream/98 px-4 py-3 text-left shadow-xl backdrop-blur"}
+      className={portalTarget ? "mt-5 flex w-full items-center justify-between gap-4 rounded-2xl border border-cinnabar/20 bg-gradient-to-br from-paper/80 to-cream/65 px-4 py-4 text-left shadow-sm transition hover:border-cinnabar/35" : "fixed left-3 right-3 z-[88] flex min-h-14 items-center justify-between gap-4 rounded-2xl border border-cinnabar/30 bg-cream/98 px-4 py-3 text-left shadow-xl backdrop-blur"} data-background-music-control
       style={portalTarget ? undefined : { top: "max(0.75rem, env(safe-area-inset-top))" }} onClick={() => setOpen(true)}>
       <span className="min-w-0"><span className="block text-[10px] tracking-[0.22em] text-cinnabar">OWNER · AUDIO</span><span className="mt-1 block font-display text-lg text-ink">{c.manage}</span></span>
       <span aria-hidden="true" className="shrink-0 rounded-full bg-cinnabar px-3 py-2 text-sm text-cream">＋</span>
     </button>
 
-    {open ? <div className="fixed inset-0 z-[100] overflow-y-auto bg-ink/35 p-3 backdrop-blur-sm sm:p-6" role="dialog" aria-modal="true" aria-label={c.title}>
-      <section className="mx-auto max-w-2xl rounded-[1.6rem] border border-line bg-cream p-5 shadow-2xl sm:p-7">
-        <div className="flex items-start justify-between gap-4"><div><p className="text-xs tracking-[0.24em] text-cinnabar">OWNER · AUDIO</p><h2 className="mt-2 font-display text-2xl text-ink">{c.title}</h2></div><button type="button" className="rounded-full border border-line bg-paper/60 px-4 py-2 text-xs" onClick={() => setOpen(false)}>{c.close}</button></div>
+    {open ? createPortal(<div className="fixed inset-0 z-[100] overflow-x-hidden overflow-y-auto bg-ink/35 p-3 backdrop-blur-sm sm:p-6" data-background-music-control role="dialog" aria-modal="true" aria-label={c.title}>
+      <section className="mx-auto w-full min-w-0 max-w-2xl rounded-xl border border-line bg-cream p-4 shadow-2xl sm:p-6">
+        <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-xs tracking-[0.24em] text-cinnabar">OWNER · AUDIO</p><h2 className="mt-2 font-display text-2xl text-ink">{c.title}</h2></div><button type="button" className="min-h-11 shrink-0 rounded-full border border-line bg-paper/60 px-3 text-xs" onClick={() => setOpen(false)}>{c.close}</button></div>
         <div className="mt-5 flex flex-wrap gap-2">
           <input ref={inputRef} type="file" className="hidden" accept="audio/*,.mp3,.m4a,.aac,.wav,.flac,.ogg,.opus,.aif,.aiff,.caf" onChange={(event) => void onUpload(event)} />
           <button type="button" disabled={busy} className="min-h-11 rounded-full bg-cinnabar px-5 text-sm text-cream disabled:opacity-50" onClick={() => inputRef.current?.click()}>{busy ? c.processing : c.upload}</button>
@@ -197,18 +237,23 @@ export function OwnerBackgroundMusicManager() {
         </div>
         <p className="mt-2 text-[11px] text-ink-mute">{c.limit}</p>
         {percent != null ? <div className="mt-4 border-y border-line/60 py-3" aria-live="polite"><div className="flex items-center justify-between gap-3 text-xs text-ink-soft"><span>{stage || c.processing}</span><span>{percent}%</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${percent}%` }} /></div></div> : null}
-        {message ? <p className="mt-4 line-clamp-3 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
+        {message ? <p role="status" className="mt-4 break-words line-clamp-3 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
+        {errorMessage ? <div className="mt-4 border-l-2 border-cinnabar/55 pl-3">
+          <p role="alert" className="text-sm leading-6 text-cinnabar">{c.operationFailed}</p>
+          <details className="mt-1 text-xs text-ink-soft"><summary className="cursor-pointer py-2">{c.errorDetails}</summary><p className="break-words leading-5 [overflow-wrap:anywhere]">{errorMessage}</p></details>
+        </div> : null}
         {selectedIds.length ? <div data-owner-bulk-toolbar="music" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
           <span className="text-xs font-medium text-ink-soft">{c.selected(selectedIds.length)}</span>
           <button type="button" disabled={busy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={selectAllDeletable}>{c.selectAll}</button>
           <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds([])}>{c.clearSelection}</button>
           <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void onBatchDelete()}>{c.deleteSelected}</button>
         </div> : null}
+        <audio ref={previewRef} crossOrigin="anonymous" preload="none" playsInline onPlaying={() => setPreviewPlaying(true)} onPause={() => setPreviewPlaying(false)} onEnded={() => { setPreviewPlaying(false); window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } })); }} onError={() => { setPreviewPlaying(false); setErrorMessage(c.previewFailed); window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } })); }} />
         <div className="mt-5 space-y-3">
           {!tracks.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
           {tracks.map((track) => <article key={track.id} data-owner-selectable-file="music" className={`border-t border-line/70 pt-4 ${selectedIds.includes(track.id) ? "rounded-xl bg-cinnabar/[0.035] px-3 pb-3" : ""}`}>
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="flex min-w-0 flex-1 items-start gap-3">
+            <div className="space-y-2">
+              <div className="flex min-w-0 items-start gap-2">
                 <label className={`mt-0.5 grid min-h-11 min-w-11 place-items-center rounded-full border border-line bg-paper/60 ${track.enabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`} title={track.enabled ? c.activeCannotSelect : c.select}>
                   <input type="checkbox" className="h-4 w-4" disabled={busy || track.enabled} checked={selectedIds.includes(track.id)} onChange={() => toggleSelected(track)} aria-label={`${c.select} ${track.name}`} />
                 </label>
@@ -223,22 +268,27 @@ export function OwnerBackgroundMusicManager() {
                       <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line px-3 text-xs" onClick={() => { setEditingId(null); setEditingName(""); }}>{c.cancel}</button>
                     </div>
                   ) : (
-                    <div className="flex flex-wrap items-center gap-2"><h3 className="truncate font-medium text-ink">{track.name}</h3>{track.enabled ? <span className="rounded-full border border-emerald-700/25 bg-emerald-700/5 px-2.5 py-1 text-[11px] text-emerald-800">{c.current}</span> : null}</div>
+                    <div className="flex flex-wrap items-center gap-2"><h3 className="w-full min-w-0 break-words font-medium leading-6 text-ink [overflow-wrap:anywhere]">{track.name}</h3>{track.enabled ? <span className="rounded-full border border-emerald-700/25 bg-emerald-700/5 px-2.5 py-1 text-[11px] text-emerald-800">{c.current}</span> : null}</div>
                   )}
-                  <p className="mt-1 text-xs text-ink-mute">{formatCodec(track)} · {formatSize(track.fileSize)}</p>
+                  <p className="mt-1 whitespace-nowrap text-xs text-ink-mute">{formatCodec(track)} · {formatSize(track.fileSize)}</p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {!track.enabled ? <button type="button" disabled={busy} className="min-h-10 rounded-full bg-wood px-3 text-xs text-cream disabled:opacity-50" onClick={() => void onActivate(track)}>{c.use}</button> : null}
-                <button type="button" disabled={busy || editingId === track.id} className="min-h-10 rounded-full border border-line bg-paper/60 px-3 text-xs text-ink-soft disabled:opacity-40" onClick={() => beginRename(track)}>{c.rename}</button>
-                <button type="button" disabled={busy || track.enabled} className="min-h-10 rounded-full px-3 text-xs text-cinnabar disabled:opacity-30" onClick={() => void onDelete(track)}>{c.delete}</button>
+              <div className="flex flex-wrap items-center gap-2 pl-[3.25rem]">
+                <button type="button" aria-label={`${previewId === track.id && previewPlaying ? c.pause : c.preview} ${track.name}`} className="min-h-11 rounded-md border border-line px-3 text-xs text-ink-soft" onClick={() => togglePreview(track)}>{previewId === track.id && previewPlaying ? c.pause : c.preview}</button>
+                {!track.enabled ? <button type="button" disabled={busy} className="min-h-11 rounded-md bg-wood px-3 text-xs text-cream disabled:opacity-50" onClick={() => void onActivate(track)}>{c.use}</button> : null}
+                <details className="min-w-0">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center px-3 text-xs text-ink-soft [&::-webkit-details-marker]:hidden">{c.more} ⋯</summary>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" disabled={busy || editingId === track.id} className="min-h-11 rounded-md border border-line px-3 text-xs text-ink-soft disabled:opacity-40" onClick={() => beginRename(track)}>{c.rename}</button>
+                    <button type="button" disabled={busy || track.enabled} className="min-h-11 rounded-md px-3 text-xs text-cinnabar disabled:opacity-30" onClick={() => void onDelete(track)}>{c.delete}</button>
+                  </div>
+                </details>
               </div>
             </div>
-            <audio className="mt-3 w-full" controls preload="none"><source src={track.url} type={track.contentType || "audio/mpeg"} /></audio>
           </article>)}
         </div>
       </section>
-    </div> : null}
+    </div>, document.body) : null}
   </>;
 
   return portalTarget ? createPortal(manager, portalTarget) : manager;
