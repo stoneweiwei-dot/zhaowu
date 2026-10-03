@@ -74,7 +74,9 @@ test.describe("iPhone Safari parchment application shell", () => {
       await expect(page.locator(".zhaowu-question-sheet")).toHaveCount(0);
       await expect(almanac).toBeVisible();
       await expect(almanac.locator("details[open]")).toHaveCount(1);
-      await expect(almanac.locator('.zhaowu-today-guide__tabs button[aria-pressed="true"]')).toContainText(/穿衣|Dress/);
+      await expect(almanac.locator(".zhaowu-today-section.is-almanac")).toBeVisible();
+      await expect(almanac.locator(".zhaowu-today-section.is-wardrobe")).toBeVisible();
+      await expect(almanac.locator(".zhaowu-today-section.is-spirit")).toBeVisible();
       const boxes = await Promise.all([customer, bazi, almanac].map((section) => section.boundingBox()));
       expect(boxes.every(Boolean)).toBe(true);
       for (let i = 1; i < boxes.length; i += 1) expect(boxes[i]!.y).toBeGreaterThanOrEqual(boxes[i - 1]!.y + boxes[i - 1]!.height);

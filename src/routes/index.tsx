@@ -41,7 +41,7 @@ function Home() {
 
         explore: "Explore",
         todayTitle: "Today",
-        todayHint: "dress colours first, then almanac, spirit slip and recent sky events",
+        todayHint: "almanac, five-element dress colours and spirit slip — each in its own section",
         quizHint: "optional reflective tests, kept separate from the formal chart",
         notesTitle: "Notes on life",
         notesHint: "the latest essay and the full editorial archive",
@@ -69,7 +69,7 @@ function Home() {
 
           explore: "延伸内容",
           todayTitle: "今日",
-          todayHint: "先看五行穿衣，再看黄历、灵签与近日天象",
+          todayHint: "黄历、五行穿衣、灵签各自展开，不必来回切换",
           quizHint: "可选的自我观察，不混入正式命盘",
           notesTitle: "观世录",
           notesHint: "最新文章与完整内容档案",
@@ -96,7 +96,7 @@ function Home() {
 
           explore: "延伸內容",
           todayTitle: "今日",
-          todayHint: "先看五行穿衣，再看黃曆、靈籤與近日天象",
+          todayHint: "黃曆、五行穿衣、靈籤各自展開，不必來回切換",
           quizHint: "可選的自我觀察，不混入正式命盤",
           notesTitle: "觀世錄",
           notesHint: "最新文章與完整內容檔案",

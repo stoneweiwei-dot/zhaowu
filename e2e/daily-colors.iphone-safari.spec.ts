@@ -23,7 +23,7 @@ test("daily five-element colour guide is usable on iPhone Safari", async ({ page
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
-test("home keeps dress colour inside the unified Today disclosure", async ({ page }) => {
+test("home keeps almanac, dress colour and spirit slip in separate Today sections", async ({ page }) => {
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
@@ -32,7 +32,9 @@ test("home keeps dress colour inside the unified Today disclosure", async ({ pag
   await expect(almanac.locator("details")).toHaveAttribute("open", "");
   await expect(almanac.locator("summary")).toHaveCount(1);
   await expect(almanac.locator("summary")).toBeHidden();
-  await expect(almanac.locator('.zhaowu-today-guide__tabs button[aria-pressed="true"]')).toContainText(/穿衣|Dress/);
+  await expect(almanac.locator(".zhaowu-today-section.is-almanac")).toBeVisible();
+  await expect(almanac.locator(".zhaowu-today-section.is-wardrobe")).toBeVisible();
+  await expect(almanac.locator(".zhaowu-today-section.is-spirit")).toBeVisible();
   const embed = almanac.locator('#five-element-wardrobe[data-daily-colors="embed"]');
   await expect(embed).toBeVisible();
   await expect(embed.locator("[data-daily-color-swatch] i").first()).toBeVisible();
@@ -49,7 +51,6 @@ test("home almanac and standalone dress page use the same device date when IP ti
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const embeddedDate = await page.locator("#daily-almanac [data-daily-colors-date]").textContent();
-  await page.locator('#daily-almanac .zhaowu-today-guide__tabs button').first().click();
   const almanacDate = await page.locator("#daily-almanac .zhaowu-today-card.is-date strong").textContent();
   expect(almanacDate).toBe("2026.09.30");
   await page.goto("/daily-colors", { waitUntil: "domcontentloaded" });
@@ -63,7 +64,7 @@ test("night Today keeps selected labels and wardrobe copy legible", async ({ pag
   await expect(page.locator("html")).toHaveAttribute("data-zw-theme", "night");
 
   const selectors = [
-    '.zhaowu-today-guide__tabs button[aria-pressed="true"]',
+    '.zhaowu-today-section__head h2',
     '[data-daily-colors-featured-head] small',
     '[data-daily-colors-featured-head] strong',
     '[data-daily-colors-featured-head] span',

@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 /**
  * Cascade-priority guard for the night "Today" module.
  * Old stylesheets (r69 almanac, r100 wardrobe #id rules, r127 night) must not
- * override the canonical layer: pressed tab, colour swatches and the Jade
+ * override the canonical layer: section headings, colour swatches and the Jade
  * Dragon assistant have to keep their intended computed styles at every width.
  */
 const WIDTHS = [390, 820, 1440];
@@ -37,18 +37,17 @@ async function openNight(page: Page, width: number) {
 
 for (const width of WIDTHS) {
   test.describe(`night Today cascade @${width}px`, () => {
-    test("pressed tab is light with an accent underline; idle tabs stay readable", async ({ page }) => {
+    test("three independent section headings stay readable and clearly separated", async ({ page }) => {
       await openNight(page, width);
-      const pressed = page.locator('#daily-almanac .zhaowu-today-guide__tabs button[aria-pressed="true"]');
-      await expect(pressed).toBeVisible();
-      expect(await pressed.evaluate((n) => getComputedStyle(n).color).then(luminance)).toBeGreaterThan(0.5);
-      expect(await pressed.evaluate((n) => getComputedStyle(n).boxShadow)).not.toBe("none");
-      const idle = page.locator('#daily-almanac .zhaowu-today-guide__tabs button[aria-pressed="false"]').first();
-      expect(await idle.evaluate((n) => getComputedStyle(n).color).then(luminance)).toBeGreaterThan(0.3);
-      const buttons = page.locator("#daily-almanac .zhaowu-today-guide__tabs button");
-      for (let i = 0; i < (await buttons.count()); i += 1) {
-        const box = await buttons.nth(i).boundingBox();
-        expect(box!.height).toBeGreaterThanOrEqual(44);
+      const sections = page.locator("#daily-almanac .zhaowu-today-section");
+      await expect(sections).toHaveCount(3);
+      const headings = sections.locator(".zhaowu-today-section__head h2");
+      await expect(headings).toHaveCount(3);
+      for (let i = 0; i < (await headings.count()); i += 1) {
+        await expect(headings.nth(i)).toBeVisible();
+        expect(await headings.nth(i).evaluate((n) => getComputedStyle(n).color).then(luminance)).toBeGreaterThan(0.5);
+        const box = await sections.nth(i).boundingBox();
+        expect(box!.height).toBeGreaterThan(120);
       }
     });
 
