@@ -13,6 +13,7 @@ const COPY = {
   "zh-Hant": {
     title: "完整報告",
     summaryTitle: "總體概括",
+    moreSummary: "展開完整概括",
     lead: "",
     kicker: "",
     questionKicker: "",
@@ -41,6 +42,7 @@ const COPY = {
   "zh-Hans": {
     title: "完整报告",
     summaryTitle: "总体概括",
+    moreSummary: "展开完整概括",
     lead: "",
     kicker: "",
     questionKicker: "",
@@ -69,6 +71,7 @@ const COPY = {
   en: {
     title: "Full report",
     summaryTitle: "Overall summary",
+    moreSummary: "Show the full summary",
     lead: "",
     kicker: "",
     questionKicker: "",
@@ -322,6 +325,9 @@ function AnalysisNotes({
   );
 }
 
+/** Direct answer + one supporting line stay open; the rest of the overall summary folds. */
+const SUMMARY_VISIBLE_LINES = 2;
+
 export function FocusedReportSections({ sections, result }: { sections: ReportSection[]; result?: AnalysisResult }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
@@ -348,16 +354,26 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
         <section className="zhaowu-report-summary-block" aria-labelledby="zhaowu-report-summary-title">
           <h4 id="zhaowu-report-summary-title">{copy.summaryTitle}</h4>
           <div className="zhaowu-report-copy">
-            {overviewLines.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+            {overviewLines.slice(0, SUMMARY_VISIBLE_LINES).map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
           </div>
+          {overviewLines.length > SUMMARY_VISIBLE_LINES ? (
+            <details className="zhaowu-report-fold" data-report-fold>
+              <summary>{copy.moreSummary}</summary>
+              <div className="zhaowu-report-copy">
+                {overviewLines.slice(SUMMARY_VISIBLE_LINES).map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+              </div>
+            </details>
+          ) : null}
         </section>
       ) : null}
 
       <section className="zhaowu-report-body-block">
-          <h4>{copy.body}</h4>
-          <div className="zhaowu-report-copy">
-            {bodyLines.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
-          </div>
+          <details className="zhaowu-report-fold zhaowu-report-fold--section" data-report-fold>
+            <summary><h4>{copy.body}</h4></summary>
+            <div className="zhaowu-report-copy">
+              {bodyLines.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+            </div>
+          </details>
         </section>
 
       {result ? <ReportShareCard result={result} /> : null}
