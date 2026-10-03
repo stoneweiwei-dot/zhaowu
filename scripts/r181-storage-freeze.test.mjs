@@ -42,7 +42,7 @@ test("r194 owner UI storage controls follow the shared live policy", async () =>
   const account = await source("src/routes/account.tsx");
 
   assert.match(galleryUi, /disabled=\{SUPABASE_STORAGE_WRITES_PAUSED\}/);
-  assert.match(loginUi, /disabled=\{SUPABASE_STORAGE_WRITES_PAUSED\}/);
+  assert.match(loginUi, /disabled=\{busy \|\| SUPABASE_STORAGE_WRITES_PAUSED\}/);
   assert.match(account, /disabled=\{SUPABASE_STORAGE_WRITES_PAUSED\}/);
   assert.match(account, /loadExistingDecreeImage/);
 });
