@@ -13,11 +13,75 @@ import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
 import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
+import { computeChartHash, createCheckoutSession, verifyCheckoutSession } from "@/lib/stripe-checkout";
 
 const RESULT_COPY = {
-  "zh-Hant": { syncFailed: "內容已完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "補充內容暫時未能生成。", saved: "完整報告已保存。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "補充", fullGenerating: "整理中…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字內容不受影響。", next: "下一步", evidence: "附註", evidenceLead: "", decree: "命理解讀" },
-  "zh-Hans": { syncFailed: "内容已完成，但云端同步暂时失败；画面内容不受影响。", fullFailed: "补充内容暂时未能生成。", saved: "完整报告已保存。", saveFailed: "保存失败。", saving: "保存中…", updateSaved: "更新已保存报告", fullGenerate: "补充", fullGenerating: "整理中…", imageReady: "个人命象已生成并保存。", imageMatched: "已为你配对并保存图库命象。", imageLoadFailed: "命象图未能载入；文字内容不受影响。", next: "下一步", evidence: "附注", evidenceLead: "", decree: "命理解读" },
-  en: { syncFailed: "The content is ready, but cloud sync failed temporarily. This page is still available.", fullFailed: "More detail could not be generated right now.", saved: "Report saved.", saveFailed: "Saving failed.", saving: "Saving…", updateSaved: "Update saved report", fullGenerate: "More", fullGenerating: "Preparing…", imageReady: "Your personal image has been generated and saved.", imageMatched: "Your matched gallery artwork has been saved.", imageLoadFailed: "The image could not be loaded. The written reading is unaffected.", next: "Next step", evidence: "Notes", evidenceLead: "", decree: "Reading" },
+  "zh-Hant": {
+    syncFailed: "內容已完成，但雲端同步暫時失敗；畫面內容不受影響。",
+    fullFailed: "補充內容暫時未能生成。",
+    saved: "完整報告已保存。",
+    saveFailed: "保存失敗。",
+    saving: "保存中…",
+    updateSaved: "更新已保存報告",
+    fullGenerate: "補充",
+    fullGenerating: "整理中…",
+    imageReady: "個人命象已生成並保存。",
+    imageMatched: "已為你配對並保存圖庫命象。",
+    imageLoadFailed: "命象圖未能載入；文字內容不受影響。",
+    next: "下一步",
+    evidence: "附註",
+    evidenceLead: "",
+    decree: "命理解讀",
+    verifyingPayment: "正在核驗付款狀態…",
+    paymentVerifiedSuccess: "付款已成功核驗，已為你解鎖深度命理報告。",
+    paymentVerifyFailed: "付款核驗未通過，深度報告尚未解鎖。",
+    unlockDeepReport: "解鎖深度推演報告（$9.99 USD）",
+    creatingCheckout: "正在前往支付頁面…",
+  },
+  "zh-Hans": {
+    syncFailed: "内容已完成，但云端同步暂时失败；画面内容不受影响。",
+    fullFailed: "补充内容暂时未能生成。",
+    saved: "完整报告已保存。",
+    saveFailed: "保存失败。",
+    saving: "保存中…",
+    updateSaved: "更新已保存报告",
+    fullGenerate: "补充",
+    fullGenerating: "整理中…",
+    imageReady: "个人命象已生成并保存。",
+    imageMatched: "已为你配对并保存图库命象。",
+    imageLoadFailed: "命象图未能载入；文字内容不受影响。",
+    next: "下一步",
+    evidence: "附注",
+    evidenceLead: "",
+    decree: "命理解读",
+    verifyingPayment: "正在核验付款状态…",
+    paymentVerifiedSuccess: "付款已成功核验，已为你解锁深度命理报告。",
+    paymentVerifyFailed: "付款核验未通过，深度报告尚未解锁。",
+    unlockDeepReport: "解锁深度推演报告（$9.99 USD）",
+    creatingCheckout: "正在前往支付页面…",
+  },
+  en: {
+    syncFailed: "The content is ready, but cloud sync failed temporarily. This page is still available.",
+    fullFailed: "More detail could not be generated right now.",
+    saved: "Report saved.",
+    saveFailed: "Saving failed.",
+    saving: "Saving…",
+    updateSaved: "Update saved report",
+    fullGenerate: "More",
+    fullGenerating: "Preparing…",
+    imageReady: "Your personal image has been generated and saved.",
+    imageMatched: "Your matched gallery artwork has been saved.",
+    imageLoadFailed: "The image could not be loaded. The written reading is unaffected.",
+    next: "Next step",
+    evidence: "Notes",
+    evidenceLead: "",
+    decree: "Reading",
+    verifyingPayment: "Verifying payment status with Stripe…",
+    paymentVerifiedSuccess: "Payment verified successfully. Full reading unlocked.",
+    paymentVerifyFailed: "Payment verification failed. Report remains locked.",
+    unlockDeepReport: "Unlock Deep Reading ($9.99 USD)",
+    creatingCheckout: "Redirecting to checkout…",
+  },
 } as const;
 
 export function ResultView({ result }: { result: AnalysisResult }) {
@@ -25,12 +89,14 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const copy = RESULT_COPY[locale];
   const { user, profile, session } = useCurrentUserState();
   const { fullReport, setFullReport, savedId, setSavedId, reset } = useAppStore();
-  const [busy, setBusy] = useState<"full" | "save" | "image" | null>(null);
+  const [busy, setBusy] = useState<"full" | "save" | "image" | "verify" | "checkout" | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [reportSections, setReportSections] = useState<ReportSection[] | null>(null);
   const [reportSyncedId, setReportSyncedId] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageReferenceAssetId, setImageReferenceAssetId] = useState<string | null>(null);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
   const { chart, reading, question } = result;
   const petDecision = isPetDecisionQuestion(question) ? buildPetDecision(result, result.locale ?? locale) : null;
   const decisionModel = buildDecisionReportModel(result);
@@ -38,6 +104,64 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const answerParagraphs = customerParagraphs(answer);
   const nextAction = petDecision ? customerCopy(reading.action) : decisionModel.nextAction;
   const decreeCouplet = customerCopy(reading.decree);
+
+  const chartHash = computeChartHash(result);
+
+  // Check localStorage for prior valid unlock of this chart
+  useEffect(() => {
+    if (!chartHash) return;
+    try {
+      const unlocked = localStorage.getItem(`zhaowu_unlocked_${chartHash}`);
+      if (unlocked === "true") {
+        setIsUnlocked(true);
+      }
+    } catch {}
+  }, [chartHash]);
+
+  // Handle Stripe Checkout return verification
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const searchParams = new URLSearchParams(window.location.search);
+    const sessionId = searchParams.get("session_id") || searchParams.get("sessionId");
+
+    if (!sessionId || !chartHash) return;
+
+    let cancelled = false;
+    setBusy("verify");
+    setMsg(copy.verifyingPayment);
+
+    void verifyCheckoutSession(sessionId, chartHash).then((res) => {
+      if (cancelled) return;
+      if (res.ok && res.verified === true) {
+        setIsUnlocked(true);
+        setMsg(copy.paymentVerifiedSuccess);
+        try {
+          localStorage.setItem(`zhaowu_unlocked_${chartHash}`, "true");
+        } catch {}
+
+        // Automatically trigger report generation on verified unlock
+        const sections = petDecision?.sections ?? composeFocusedReport(result);
+        setReportSections(sections);
+        void ensureFullReport();
+
+        // Clean query parameters from URL to prevent accidental re-verification
+        const cleanUrl = window.location.pathname + window.location.hash;
+        window.history.replaceState({}, document.title, cleanUrl);
+      } else {
+        setIsUnlocked(false);
+        const reasonDetail = res.reason ? ` (${res.reason})` : "";
+        setMsg(`${copy.paymentVerifyFailed}${reasonDetail}`);
+      }
+    }).catch(() => {
+      if (!cancelled) setMsg(copy.paymentVerifyFailed);
+    }).finally(() => {
+      if (!cancelled) setBusy(null);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [chartHash]);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,7 +200,31 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     return reportId;
   }
 
+  async function onStartCheckout() {
+    if (!chartHash) return;
+    setBusy("checkout");
+    setMsg(copy.creatingCheckout);
+    try {
+      const checkoutRes = await createCheckoutSession(chartHash);
+      if (checkoutRes.ok && checkoutRes.url) {
+        window.location.href = checkoutRes.url;
+      } else {
+        setMsg(checkoutRes.error || "Failed to initiate payment");
+        setBusy(null);
+      }
+    } catch {
+      setMsg("Failed to initiate payment");
+      setBusy(null);
+    }
+  }
+
   async function onFull() {
+    if (!isUnlocked) {
+      // Must be verified before unlocking
+      await onStartCheckout();
+      return;
+    }
+
     setBusy("full");
     setMsg(null);
     const sections = petDecision?.sections ?? composeFocusedReport(result);
@@ -151,13 +299,17 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </details>
 
       <div className="zhaowu-result-actions flex flex-col gap-3">
-        <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">{busy === "full" ? copy.fullGenerating : copy.fullGenerate}</button>
+        {isUnlocked ? (
+          <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">{busy === "full" ? copy.fullGenerating : copy.fullGenerate}</button>
+        ) : (
+          <button type="button" disabled={busy !== null} onClick={() => void onStartCheckout()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream shadow-sm hover:opacity-90 disabled:opacity-60">{busy === "checkout" ? copy.creatingCheckout : copy.unlockDeepReport}</button>
+        )}
         {session && user ? <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">{busy === "save" ? copy.saving : hasDurableRecord ? copy.updateSaved : t("save")}</button> : null}
         <button type="button" onClick={() => reset()} className="zhaowu-result-reset h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
       </div>
 
-      {msg ? <p className="zhaowu-result-message text-sm text-cinnabar">{msg}</p> : null}
-      {reportSections ? <FocusedReportSections sections={reportSections} result={result} /> : null}
+      {msg ? <p className="zhaowu-result-message text-sm text-cinnabar text-center">{msg}</p> : null}
+      {isUnlocked && reportSections ? <FocusedReportSections sections={reportSections} result={result} /> : null}
       <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
     </section>
   );
