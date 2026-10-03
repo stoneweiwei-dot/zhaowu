@@ -1,7 +1,7 @@
 import type { AnalysisResult, AppLocale, QuestionKind, Reading } from "@/lib/bazi/types";
 import { inferQuestionKind, inspectAnswerRequirements, isTalentQuestion, type AnswerRequirements } from "@/lib/core/answer-contract";
 import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
-import { composeCustomerAnswer } from "@/lib/report/customer-answer";
+import { composeCustomerAnswer, LEAK_RE, leakFallback } from "@/lib/report/customer-answer";
 
 export type AnswerMode = "yes-no" | "comparison" | "timing" | "reason" | "forecast" | "action-plan" | "direct";
 export type DecisionSectionKey = "reasons" | "risks" | "timing" | "actions";
@@ -324,7 +324,8 @@ export function buildDecisionReportModel(result: AnalysisResult): DecisionReport
   const directFull = customerDirectAnswer(result.question, result.reading.directAnswer);
   // Composed answers are already complete and ordered (answer → why → timing),
   // so they are not cut. Dedicated special answers keep the 2-sentence lead.
-  const directAnswer = composed?.answer ?? sentenceParts(directFull).slice(0, 2).join(locale === "en" ? " " : "");
+  const leaked = !composed && LEAK_RE.test(directFull) ? leakFallback(result) : null;
+  const directAnswer = (composed ?? leaked)?.answer ?? sentenceParts(directFull).slice(0, 2).join(locale === "en" ? " " : "");
   const reasons = compactLines(topicSource(result.reading, contract.kind), 3);
   const timing = contract.requirements.asksWhen || contract.kind === "timing"
     ? compactLines(result.reading.rhythm, 3)
@@ -334,7 +335,7 @@ export function buildDecisionReportModel(result: AnalysisResult): DecisionReport
   const draft = {
     contract,
     directAnswer: directAnswer || directFull,
-    nextAction: composed?.nextAction ?? customerCopy(result.reading.action),
+    nextAction: (composed ?? leaked)?.nextAction ?? customerCopy(result.reading.action),
     ...confidenceState,
     biggestVariable: biggestVariable(result, contract),
     reasons: reasons.length ? reasons : compactLines(result.reading.rhythm, 2),
