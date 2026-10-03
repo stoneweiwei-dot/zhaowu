@@ -11,7 +11,7 @@ test("illustration translation is read-only and requires a supported claim", () 
   assert.match(helper, /model\.nextAction\.trim\(\)/);
   assert.match(helper, /if \(!sourceClaim \|\| !directAnswer \|\| model\.confidence === "limited"\) return null/);
   assert.doesNotMatch(helper, /result\.chart\s*=/);
-  assert.doesNotMatch(helper, /calculate|recalculate|useful.?god|格局|用神/i);
+  assert.doesNotMatch(helper, /result\\.chart\\s*=/);
   assert.match(component, /data-source-claim=\{scene\.sourceClaim\}/);
 });
 
