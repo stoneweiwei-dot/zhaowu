@@ -1,6 +1,6 @@
 # ZHAOWU Illustrated Destiny System v1
 
-「昭梧手繪命書系統」是已完成主判的單向視覺轉譯層。命理負責判，插畫負責懂，分享卡負責傳。本版本只在現行完整命書中加入一幅本地 SVG 插頁；不建立新的命理模組，也不呼叫圖片服務。
+「昭梧手繪命書系統」是已完成主判的單向視覺轉譯層。命理負責判，插畫負責懂，分享卡負責傳。本版本在首頁加入單句輕入口，在完整命書插入本地 SVG 場景，並提供 9:16、4:5、1:1 SVG 分享卡下載；不建立新的命理模組，也不呼叫圖片服務。
 
 ## Current public route
 
@@ -20,12 +20,12 @@
 
 ## Scope and migration
 
-- 首頁輕入口：現有首頁主流程維持單一入口，本版本不增加首頁插畫卡牆。
+- 首頁輕入口：一行短句與小型本地 SVG 導向生辰表單，不顯示命理判斷，也不增加卡片牆。
 - 完整命書：在概括與身體附註之間插入一幅場景與一句白話行動 caption，依據放入使用者可展開的折疊層。
-- 分享卡：沿用既有分享卡能力，本版本未改分享輸出格式。
+- 分享卡：使用者主動展開後可下載同一場景的 9:16、4:5、1:1 SVG；包含短文、品牌與 QR 預留框。
 - Legacy：Comic Lite、ninePages、舊漫畫與 ReportDragonSticker 保留相容；目前 public call chain 無引用，不予恢復。
 - FREE/FULL：插頁只在完整命書生成後顯示，不影響免費答案與下一步。沒有訂閱、provider 或 schema 變更。
 
 ## Verification contract
 
-Regression coverage checks canonical chart immutability, missing/limited/unknown-time suppression, claim provenance, provider-free rendering and legacy non-duplication. Mobile visual acceptance remains required at 390px, with 16px captions, no overflow, night paper/deep ink contrast, and English copy fitting its container.
+Regression coverage checks canonical chart immutability, missing/limited/unknown-time suppression, claim provenance, provider-free rendering, homepage entry, share formats and legacy non-duplication. Mobile visual acceptance remains required at 390px, with 16px captions, no overflow, night paper/deep ink contrast, and English copy fitting its container.

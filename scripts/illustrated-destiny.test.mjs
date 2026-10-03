@@ -6,6 +6,7 @@ const helper = await readFile(new URL("../src/lib/report/illustrated-destiny.ts"
 const component = await readFile(new URL("../src/components/illustrated-destiny-panel.tsx", import.meta.url), "utf8");
 const resultView = await readFile(new URL("../src/components/result-view.tsx", import.meta.url), "utf8");
 const report = await readFile(new URL("../src/components/paid-report-pages.tsx", import.meta.url), "utf8");
+const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
 
 test("illustration translation is read-only and requires a supported claim", () => {
   assert.match(helper, /model\.nextAction\.trim\(\)/);
@@ -29,4 +30,5 @@ test("provider and illustration failures cannot replace the free answer", () => 
 test("legacy Comic Lite remains outside the active public result and focused report flow", () => {
   assert.doesNotMatch(resultView, /ComicLiteReport|ReportComicLite/);
   assert.doesNotMatch(report, /ComicLiteReport|ReportComicLite/);
+  assert.match(home, /<IllustratedDestinyWelcome locale=\\{locale\\} \/>/);
 });

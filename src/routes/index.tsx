@@ -8,6 +8,7 @@ import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt
 import { HomeSectionBoundary } from "@/components/home-section-boundary";
 import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { ResultView } from "@/components/result-view";
+import { IllustratedDestinyWelcome } from "@/components/illustrated-destiny-panel";
 import { ScentFiveElementTest } from "@/components/scent-five-element-test";
 import { SkyEventsHomeSection } from "@/components/sky-events-home-section";
 import { useI18n } from "@/lib/i18n";
@@ -127,6 +128,7 @@ function Home() {
         </p>
       </header>
 
+      <IllustratedDestinyWelcome locale={locale} />
       <HomeSectionBoundary id="analysis" locale={locale} onRecover={() => { clearSharedBirthRecord(); window.location.reload(); }}>
         <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
           <AnalysisForm />
