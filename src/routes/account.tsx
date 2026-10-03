@@ -638,6 +638,9 @@ function AccountPage() {
           <Link to="/gallery" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-cream px-4 text-sm text-ink-soft">
             {tr(locale, "影片與圖片素材", "视频与图片素材", "Video & image library")} →
           </Link>
+          <Link to="/social" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-cream px-4 text-sm text-ink-soft">
+            {tr(locale, "社交發布", "社交发布", "Social publishing")} →
+          </Link>
         </nav>
       ) : null}
 
