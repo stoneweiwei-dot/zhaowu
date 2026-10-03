@@ -35,11 +35,8 @@
             localStorage.setItem("zhaowu.display-language", savedLanguage);
           }
           document.documentElement.lang = savedLanguage;
-          if (localStorage.getItem("zhaowu.theme.v1") === "night") {
-            document.documentElement.setAttribute("data-zw-theme", "night");
-            var meta = document.querySelector('meta[name="theme-color"]');
-            if (meta) meta.setAttribute("content", "#0A1311");
-          }
+          /* Night mode is switched off (owner 2026-10-03): always day, and drop any saved night choice. */
+          if (localStorage.getItem("zhaowu.theme.v1") === "night") localStorage.setItem("zhaowu.theme.v1", "day");
         } catch (e) {}
       })();
     </script>

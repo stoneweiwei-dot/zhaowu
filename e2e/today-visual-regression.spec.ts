@@ -16,7 +16,8 @@ const VIEWPORTS = [
   { name: "tablet", width: 820, height: 1180 },
   { name: "desktop", width: 1440, height: 900 },
 ] as const;
-const THEMES = ["day", "night"] as const;
+// Night mode is switched off site-wide (owner 2026-10-03); only the day theme is baselined.
+const THEMES = ["day"] as const;
 
 async function openToday(page: Page, theme: (typeof THEMES)[number], viewport: (typeof VIEWPORTS)[number], opts: { hideDragon: boolean }) {
   await page.setViewportSize({ width: viewport.width, height: viewport.height });
