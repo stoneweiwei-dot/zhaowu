@@ -3395,15 +3395,15 @@ html[data-zw-theme="night"] .zhaowu-report-methodology__more > summary {
 /* Homepage — one quiet field, not stacked app cards. */
 .zhaowu-home-sheet-shell,
 .zhaowu-home-sheet-page {
-  background-color: #ebe3d3 !important;
+  background-color: #f3f0e9 !important;
 }
 
 .zhaowu-home-sheet-shell::before {
   background:
-    linear-gradient(180deg, rgba(246, 239, 224, .20), rgba(238, 228, 207, .40)),
+    linear-gradient(180deg, rgba(247, 245, 239, .06), rgba(242, 239, 234, .20)),
     url('/wallpaper-song.jpg') 56% 36% / cover fixed no-repeat !important;
-  filter: saturate(.52) contrast(.96) brightness(1.05) !important;
-  opacity: .78 !important;
+  filter: saturate(.94) contrast(1) brightness(1.02) !important;
+  opacity: .94 !important;
 }
 
 .zhaowu-home-app-frame,
@@ -3431,7 +3431,7 @@ html[data-zw-theme="night"] .zhaowu-report-methodology__more > summary {
   bottom: 16px !important;
   width: min(100%, 31rem) !important;
   height: 1px !important;
-  background: linear-gradient(90deg, rgba(146, 107, 58, .52), rgba(146, 107, 58, 0)) !important;
+  background: linear-gradient(90deg, rgba(126, 162, 168, .56), rgba(169, 141, 90, .25), transparent) !important;
 }
 
 .zhaowu-home-lead > p {
@@ -5115,18 +5115,18 @@ html[data-zw-theme="night"] .zhaowu-comic-lite {
  * Formal ZHAOWU remains the only full product core. This layer borrows the
  * Lite page discipline: narrow mobile measure, quiet paper, restrained accents.
  */
-:root {
-  --zw-paper: #F7F1E3;
-  --zw-paper-soft: rgba(247, 241, 227, .92);
-  --zw-paper-strong: #FBF7EE;
-  --zw-ink: #202B3D;
-  --zw-ink-soft: #4D5663;
-  --zw-muted: #6E746F;
-  --zw-jade: #1D6B54;
-  --zw-jade-deep: #185845;
-  --zw-cinnabar: #B23B24;
-  --zw-gold: #A67C42;
-  --zw-line: rgba(83, 69, 48, .16);
+html:not([data-zw-theme="night"]) {
+  --zw-paper: #F3F0E9;
+  --zw-paper-soft: rgba(249, 247, 241, .94);
+  --zw-paper-strong: #FCFAF5;
+  --zw-ink: #302E35;
+  --zw-ink-soft: #595761;
+  --zw-muted: #74717A;
+  --zw-jade: #456D67;
+  --zw-jade-deep: #31544F;
+  --zw-cinnabar: #A9615E;
+  --zw-gold: #A98D5A;
+  --zw-line: rgba(82, 92, 97, .17);
   --zw-readable: 35rem;
   --zw-card-radius: 12px;
 }

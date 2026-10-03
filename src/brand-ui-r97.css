@@ -1,9 +1,9 @@
 /* 昭梧 brand UI r97 — pine / sun / moon system. One screen, at most two decorative motifs. */
 :root {
-  --zw-brand-ivory: #faf8f1;
-  --zw-brand-gold: #d4b074;
-  --zw-brand-pine: #1f4e3a;
-  --zw-brand-sage: #8a9c88;
+  --zw-brand-ivory: #fbf9f3;
+  --zw-brand-gold: #cbb98d;
+  --zw-brand-pine: #365d57;
+  --zw-brand-sage: #91aaab;
   --zw-brand-divider-mountain: url("/brand-ui/divider-mountain.svg");
   --zw-brand-ornament-pine: url("/brand-ui/ornament-pine.svg");
 }
@@ -77,12 +77,12 @@
 .zhaowu-login-shell .stone-login-primary,
 .zhaowu-analysis-submit-wrap button {
   min-height: 48px !important;
-  border: 1px solid #c4a05a !important;
+  border: 1px solid #b79d68 !important;
   border-radius: 999px !important;
-  color: #1f4e3a !important;
-  background: #d4b074 !important;
+  color: #365d57 !important;
+  background: #d6c496 !important;
   background-image: none !important;
-  box-shadow: 0 8px 18px rgba(212, 176, 116, .28) !important;
+  box-shadow: 0 8px 18px rgba(181, 158, 108, .20) !important;
   font-weight: 720 !important;
   letter-spacing: .04em;
 }
@@ -90,9 +90,9 @@
 .zhaowu-home-sheet-shell .zhaowu-decree-generate,
 .zhaowu-home-sheet-shell .zhaowu-specialist-action,
 .zhaowu-home-sheet-shell .zhaowu-ziwei-action {
-  border: 1px solid #d4b074 !important;
+  border: 1px solid #cbb98d !important;
   border-radius: 999px !important;
-  color: #1f4e3a !important;
+  color: #365d57 !important;
   background: #faf8f1 !important;
   box-shadow: none !important;
 }
