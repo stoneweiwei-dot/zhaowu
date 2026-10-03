@@ -68,6 +68,14 @@ for (const viewport of VIEWPORTS) {
         const spirit = guide.locator(".zhaowu-today-section.is-spirit");
         await expect(spirit).toBeVisible();
         await expect(spirit).toHaveScreenshot(`today-spirit-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
+        await spirit.getByRole("button", { name: /完整/ }).click();
+        const dialog = page.getByRole("dialog", { name: /靈籤/ });
+        await expect(dialog).toBeVisible();
+        const dialogBox = await dialog.boundingBox();
+        expect(dialogBox).not.toBeNull();
+        expect(dialogBox!.y).toBeGreaterThanOrEqual(0);
+        expect(dialogBox!.y + dialogBox!.height).toBeLessThanOrEqual(viewport.height);
+        await expect(dialog).toHaveScreenshot(`today-spirit-dialog-${viewport.name}-${theme}.png`, { maxDiffPixelRatio: 0.01 });
       });
 
       test("jade dragon assistant (closed and open)", async ({ page }) => {
