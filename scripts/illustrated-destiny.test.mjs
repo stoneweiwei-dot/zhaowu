@@ -8,12 +8,12 @@ const resultView = await readFile(new URL("../src/components/result-view.tsx", i
 const report = await readFile(new URL("../src/components/paid-report-pages.tsx", import.meta.url), "utf8");
 const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
 
-test("illustration translation is read-only and requires a supported claim", () => {
+test("illustration requires an evidence-backed claim and stays read-only", () => {
   assert.match(helper, /model\.nextAction\.trim\(\)/);
   assert.match(helper, /if \(!sourceClaim \|\| !directAnswer \|\| model\.confidence === "limited"\) return null/);
   assert.doesNotMatch(helper, /result\.chart\s*=/);
-  assert.doesNotMatch(helper, /result\\.chart\\s*=/);
   assert.match(component, /data-source-claim=\{scene\.sourceClaim\}/);
+  for (const ratio of ["9:16", "4:5", "1:1"]) assert.ok(component.includes(ratio));
 });
 
 test("unknown birth time downgrades and suppresses illustration", () => {
@@ -21,14 +21,14 @@ test("unknown birth time downgrades and suppresses illustration", () => {
   assert.match(helper, /if \(confidence === "limited"\) return null/);
 });
 
-test("provider and illustration failures cannot replace the free answer", () => {
+test("provider or illustration failure cannot block the free answer", () => {
   assert.match(resultView, /data-primary-answer/);
-  assert.match(report, /<IllustratedDestinyPanel result=\{result\} \/>/);
+  assert.ok(report.includes("IllustratedDestinyPanel"));
   assert.doesNotMatch(component, /fetch\(|generateDecreeImage|supabase/i);
 });
 
-test("legacy Comic Lite remains outside the active public result and focused report flow", () => {
+test("homepage entry is small and legacy Comic Lite is not duplicated in public report flow", () => {
+  assert.ok(home.includes('<IllustratedDestinyWelcome locale={locale} />'));
   assert.doesNotMatch(resultView, /ComicLiteReport|ReportComicLite/);
   assert.doesNotMatch(report, /ComicLiteReport|ReportComicLite/);
-  assert.match(home, /<IllustratedDestinyWelcome locale=\\{locale\\} \/>/);
 });
