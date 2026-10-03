@@ -23,7 +23,7 @@ test("every production build emits a unique release id into app and service work
   assert.match(swTemplate, /__ZHAOWU_RELEASE__/);
   assert.match(swTemplate, /zhaowu-shell-\$\{RELEASE\.slice\(0, 16\)\}/);
   assert.doesNotMatch(swTemplate, /zhaowu-shell-r\d+/);
-  assert.match(swTemplate, /client\.navigate\(/);
+  assert.match(swTemplate, /latestClient\.navigate\(/);
   assert.match(swTemplate, /searchParams\.set\("zw_release", RELEASE\)/);
   assert.match(swTemplate, /target\.origin !== self\.location\.origin/);
   assert.doesNotMatch(swTemplate, /target\.pathname !== "\/"/);
@@ -32,13 +32,15 @@ test("every production build emits a unique release id into app and service work
   assert.match(swTemplate, /ZHAOWU_CLIENT_RELEASE/);
   assert.match(swTemplate, /observedUrl/);
   assert.match(swTemplate, /self\.clients\.get\(client\.id\)/);
-  assert.match(swTemplate, /latestClient\.url !== observedUrl/);
-  assert.match(swTemplate, /old URL must never win a navigation race/);
-  assert.match(swTemplate, /silence is the stale-client signal/);
+  assert.match(swTemplate, /navigateClientToRelease/);
+  assert.match(swTemplate, /zw_sw_reset/);
+  assert.match(swTemplate, /await sleep\(1_500\)/);
+  assert.match(swTemplate, /clientAlreadyRunsRelease\(latestAfterNavigate\)/);
+  assert.match(swTemplate, /stale snapshot cannot win/);
   assert.match(packageJson.scripts.prebuild, /write-release-assets\.mjs/);
 });
 
-test("installed app checks release metadata and performs one fresh navigation", () => {
+test("installed app retries a stale release and escalates to a scoped hard self-heal", () => {
   assert.match(main, /\/release\.json\?t=/);
   assert.match(main, /cache:\s*'no-store'/);
   assert.match(main, /__ZHAOWU_RELEASE_ID__/);
@@ -53,7 +55,14 @@ test("installed app checks release metadata and performs one fresh navigation", 
   assert.match(main, /event\.ports/);
   assert.match(main, /sessionStorage/);
   assert.match(main, /SHELL_RELOAD_KEY/);
-  assert.match(main, /Do not treat "attempted" as "updated"/);
+  assert.match(main, /RECOVERY_STATE_KEY/);
+  assert.match(main, /MAX_RELEASE_RETRIES = 3/);
+  assert.match(main, /RELEASE_RETRY_COOLDOWN_MS/);
+  assert.match(main, /hardResetForRelease/);
+  assert.match(main, /registration\?\.unregister\(\)/);
+  assert.match(main, /key\.startsWith\('zhaowu-shell-'\)/);
+  assert.match(main, /zw_retry/);
+  assert.match(main, /zw_reset/);
   assert.match(main, /fingerprint/);
 });
 
