@@ -16,7 +16,7 @@ import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSite
 import { GreenDragonGuide } from "@/components/green-dragon-guide";
 import { IntroGate } from "@/components/intro-gate";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
-import { applyBrandTheme, hydrateBrandTheme, useBrandTheme } from "@/lib/brand-theme";
+import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -144,10 +144,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button">{label}</button>;
                 })}
               </div>
-              <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>
+              {NIGHT_MODE_ENABLED ? <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>
                 <button type="button" onClick={() => applyBrandTheme("day")} aria-pressed={!night} aria-label={dayModeLabel} data-active={!night ? "true" : "false"}>{displayText(language, "日", "日", "Day", "日", "낮", "दिन")}</button>
                 <button type="button" onClick={() => applyBrandTheme("night")} aria-pressed={night} aria-label={nightModeLabel} data-active={night ? "true" : "false"}>{displayText(language, "夜", "夜", "Night", "夜", "밤", "रात")}</button>
-              </div>
+              </div> : null}
             </nav>
           </div>
         </header>
