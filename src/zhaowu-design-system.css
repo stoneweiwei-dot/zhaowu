@@ -6855,3 +6855,10 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-mark { margin-top: 7px !important
     top: env(safe-area-inset-top, 0px) !important;
   }
 }
+
+/* r228a — opening video: no flash of the old r148 opening before the owner's clip (owner 2026-10-01: "一開始還是會有
+ * 原來那個動畫卡一秒，最後才開始播新的"). While the owner's pick is still resolving, and for any custom clip, the fallback
+ * layer is a plain dark field: the r148 poster, shade and "正在準備昭梧" copy only belong to the built-in clip. */
+html body .zhaowu-lotus-intro:has(> .zhaowu-lotus-intro__fallback.is-neutral) { background: #0b120e !important; }
+html body .zhaowu-lotus-intro__fallback.is-neutral { background: #0b120e !important; }
+html body .zhaowu-lotus-intro__fallback.is-neutral > * { display: none !important; }
