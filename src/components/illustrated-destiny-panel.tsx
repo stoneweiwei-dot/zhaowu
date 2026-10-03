@@ -65,7 +65,7 @@ export function IllustratedShareCard({ result }: { result: AnalysisResult }) {
   const scene = buildIllustratedDestiny(result);
   if (!scene) return null;
   return <details className="illustrated-destiny-share" data-illustrated-share>
-    <summary>{result.locale === "en" ? "Share this scene" : "分享這幅插頁"}</summary>
+    <summary>{result.locale === "en" ? "Share this scene" : result.locale === "zh-Hans" ? "分享这幅插页" : "分享這幅插頁"}</summary>
     <div className="illustrated-destiny-formats">{(["9:16", "4:5", "1:1"] as const).map((ratio) =>
       <button type="button" key={ratio} onClick={() => downloadIllustratedShare(scene, result.question, ratio)}>{ratio}</button>)}</div>
   </details>;
@@ -77,6 +77,6 @@ export function IllustratedDestinyWelcome({ locale }: { locale: string }) {
       <circle cx="70" cy="13" r="6" fill="#E7D9B8"/>
       <path d="M40 30v8m0-5-3 4m3-4 4 3" stroke="#242620" fill="none" strokeWidth="1.2"/></svg>
     <span>{locale === "en" ? "Start with one question" : "今天先看一件事"}</span>
-    <a href="#analysis">{locale === "en" ? "Begin with your birth details" : "從生辰開始"}</a>
+    <a href="#analysis">{locale === "en" ? "Begin with your birth details" : locale === "zh-Hans" ? "从生辰开始" : "從生辰開始"}</a>
   </aside>;
 }
