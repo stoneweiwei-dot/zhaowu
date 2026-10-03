@@ -13,6 +13,212 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    "id": "mercury-venus-double-retrograde-2026",
+    "published": "2026-10-03",
+    "status": "active",
+    "title": {
+      "zh-Hant": "水星 × 金星雙重逆行：對話與價值的重新檢視",
+      "zh-Hans": "水星 × 金星双重逆行：对话与价值的重新检视",
+      "en": "Mercury and Venus retrograde: reviewing words and values"
+    },
+    "subtitle": {
+      "zh-Hant": "2026.09.30–12.06｜可核對的星曆 × 占星象徵 × 悉尼日期",
+      "zh-Hans": "2026.09.30–12.06｜可核对的星历 × 占星象征 × 悉尼日期",
+      "en": "30 Sep–6 Dec 2026 | Ephemeris facts, symbolic astrology, and Sydney-local dates"
+    },
+    "facts": [
+      {
+        "date": "2026-09-30",
+        "label": {
+          "zh-Hant": "水星進入熱帶黃道天蠍區段（悉尼日期）",
+          "zh-Hans": "水星进入热带黄道天蝎区段（悉尼日期）",
+          "en": "Mercury enters tropical Scorpio (Sydney date)"
+        }
+      },
+      {
+        "date": "2026-10-03",
+        "label": {
+          "zh-Hant": "金星於天蠍約 8°29′開始視逆行",
+          "zh-Hans": "金星于天蝎约 8°29′开始视逆行",
+          "en": "Venus stations retrograde near 8°29′ Scorpio"
+        }
+      },
+      {
+        "date": "2026-10-24",
+        "label": {
+          "zh-Hant": "水星於天蠍約 20°59′開始視逆行",
+          "zh-Hans": "水星于天蝎约 20°59′开始视逆行",
+          "en": "Mercury stations retrograde near 20°59′ Scorpio"
+        }
+      },
+      {
+        "date": "2026-10-25",
+        "label": {
+          "zh-Hant": "金星逆行退回天秤",
+          "zh-Hans": "金星逆行退回天秤",
+          "en": "Retrograde Venus re-enters Libra"
+        }
+      },
+      {
+        "date": "2026-11-14",
+        "label": {
+          "zh-Hant": "水星於天蠍約 5°02′恢復順行（悉尼日期）",
+          "zh-Hans": "水星于天蝎约 5°02′恢复顺行（悉尼日期）",
+          "en": "Mercury stations direct near 5°02′ Scorpio (Sydney date)"
+        }
+      },
+      {
+        "date": "2026-11-14",
+        "label": {
+          "zh-Hant": "金星於天秤約 22°52′恢復順行（悉尼日期）",
+          "zh-Hans": "金星于天秤约 22°52′恢复顺行（悉尼日期）",
+          "en": "Venus stations direct near 22°52′ Libra (Sydney date)"
+        }
+      },
+      {
+        "date": "2026-12-06",
+        "label": {
+          "zh-Hant": "水星離開天蠍，進入射手",
+          "zh-Hans": "水星离开天蝎，进入射手",
+          "en": "Mercury leaves Scorpio and enters Sagittarius"
+        }
+      }
+    ],
+    "science": {
+      "zh-Hant": [
+        "水星與金星的「逆行」是地球觀測到的視運動方向改變，不代表行星真的沿軌道倒退。文中的星座採熱帶黃道座標，描述行星相對黃道的位置分區。",
+        "日期統一換算為澳洲／悉尼當地日期。悉尼 10 月 3 日仍為 AEST（UTC+10），10 月 4 日起進入 AEDT（UTC+11）；因此部分英文星曆所列的 UTC 或北美日期會落在悉尼的不同日期。",
+        "兩次恢復順行在悉尼都落於 11 月 14 日，但不是同一時刻：水星先轉順，金星約八個半小時後轉順。兩者的逆行重疊在悉尼時間 10 月 24 日開始，並於 11 月 14 日先後結束。"
+      ],
+      "zh-Hans": [
+        "水星与金星的“逆行”是地球观测到的视运动方向改变，不代表行星真的沿轨道倒退。文中的星座采用热带黄道坐标，描述行星相对黄道的位置分区。",
+        "日期统一换算为澳大利亚／悉尼当地日期。悉尼 10 月 3 日仍为 AEST（UTC+10），10 月 4 日起进入 AEDT（UTC+11）；因此部分英文星历所列的 UTC 或北美日期会落在悉尼的不同日期。",
+        "两次恢复顺行在悉尼都落于 11 月 14 日，但不是同一时刻：水星先转顺，金星约八个半小时后转顺。两者的逆行重叠在悉尼时间 10 月 24 日开始，并于 11 月 14 日先后结束。"
+      ],
+      "en": [
+        "Mercury's and Venus's retrogrades are apparent changes in direction as observed from Earth; neither planet literally reverses its orbit. Sign labels use tropical-zodiac coordinates for the planets' positions along the ecliptic.",
+        "Dates are converted to Sydney local calendar dates. Sydney is on AEST (UTC+10) on 3 October and switches to AEDT (UTC+11) on 4 October, so UTC and North American calendar dates can differ from the Sydney date.",
+        "Both direct stations fall on 14 November in Sydney, but not at the same moment: Mercury turns direct first, followed about eight and a half hours later by Venus. Their retrogrades overlap from 24 October in Sydney and end in sequence on 14 November."
+      ]
+    },
+    "interpretation": {
+      "zh-Hant": [
+        "在傳統占星的象徵語言裡，水星逆行常用來回看訊息、判斷與尚未談清楚的事；金星逆行則常用來檢視關係、價值、吸引與交換。兩者重疊時，可把它當成重新確認「我真正想表達什麼、重視什麼」的提醒。",
+        "水星於天蠍逆行；金星先在天蠍逆行、再退回天秤。象徵閱讀的焦點會從深層信任、界線與共享資源，延伸到互惠、承諾與關係協商。這是占星傳統的反思框架，不代表必然復合、爭吵、延誤或發生特定事件。",
+        "可實際採取的做法：重要約定寫清楚、修改前後核對條件，談敏感議題時先分清已知事實與自己的推測。沒有必要只因逆行就延後重要決定。",
+        "個人層面不能只看「天蠍座」或太陽星座；需先確認天蠍與天秤落入本命哪一宮，再核對行運金星、水星與本命行星的精確相位。"
+      ],
+      "zh-Hans": [
+        "在传统占星的象征语言里，水星逆行常用于回看信息、判断与尚未谈清楚的事；金星逆行则常用于检视关系、价值、吸引与交换。两者重叠时，可把它当成重新确认“我真正想表达什么、重视什么”的提醒。",
+        "水星在天蝎逆行；金星先在天蝎逆行，再退回天秤。象征阅读的焦点会从深层信任、界线与共享资源，延伸到互惠、承诺与关系协商。这是占星传统的反思框架，不代表必然复合、争吵、延误或发生特定事件。",
+        "可实际采取的做法：重要约定写清楚、修改前后核对条件，谈敏感议题时先分清已知事实与自己的推测。没有必要只因逆行就延后重要决定。",
+        "个人层面不能只看“天蝎座”或太阳星座；需先确认天蝎与天秤落入本命哪一宫，再核对行运金星、水星与本命行星的精确相位。"
+      ],
+      "en": [
+        "In traditional astrological symbolism, Mercury retrograde is used to review messages, judgements, and unfinished conversations; Venus retrograde is used to reconsider relationships, values, attraction, and exchange. Their overlap can serve as a prompt to check what you truly want to say and what you value.",
+        "Mercury retrogrades in Scorpio. Venus begins its retrograde there, then backs into Libra. Symbolically, the focus moves from trust, boundaries, and shared resources toward reciprocity, commitments, and relationship negotiation. This is a reflective framework, not a prediction of reunions, arguments, delays, or any specific event.",
+        "Practical steps: put important agreements in writing, compare changed terms, and separate known facts from assumptions in sensitive conversations. There is no need to postpone a significant decision solely because a planet is retrograde.",
+        "A personal reading cannot be based only on a Sun sign or the label 'Scorpio'. It requires the natal houses containing Scorpio and Libra, plus exact aspects from transiting Mercury and Venus to natal planets."
+      ]
+    },
+    "houses": [
+      {
+        "house": 1,
+        "zh-Hant": "自我表達、個人界線與被看見的方式",
+        "zh-Hans": "自我表达、个人界线与被看见的方式",
+        "en": "self-expression, boundaries, and visibility"
+      },
+      {
+        "house": 2,
+        "zh-Hant": "收入、自我價值與資源交換",
+        "zh-Hans": "收入、自我价值与资源交换",
+        "en": "income, self-worth, and exchange of resources"
+      },
+      {
+        "house": 3,
+        "zh-Hant": "訊息往來、對話、協商與手足關係",
+        "zh-Hans": "信息往来、对话、协商与手足关系",
+        "en": "messages, conversations, negotiation, and siblings"
+      },
+      {
+        "house": 4,
+        "zh-Hant": "家庭模式、居所與內在安全感",
+        "zh-Hans": "家庭模式、居所与内在安全感",
+        "en": "family patterns, home, and inner security"
+      },
+      {
+        "house": 5,
+        "zh-Hant": "戀愛、創作、愉悅與自我展現",
+        "zh-Hans": "恋爱、创作、愉悦与自我展现",
+        "en": "romance, creativity, pleasure, and self-expression"
+      },
+      {
+        "house": 6,
+        "zh-Hant": "日常工作、協作與照顧節奏",
+        "zh-Hans": "日常工作、协作与照顾节奏",
+        "en": "daily work, cooperation, and care routines"
+      },
+      {
+        "house": 7,
+        "zh-Hant": "伴侶、合約、互惠與關係協商",
+        "zh-Hans": "伴侣、合约、互惠与关系协商",
+        "en": "partnerships, contracts, reciprocity, and negotiation"
+      },
+      {
+        "house": 8,
+        "zh-Hant": "共有資源、債務、親密與依賴界線",
+        "zh-Hans": "共有资源、债务、亲密与依赖界线",
+        "en": "shared resources, debt, intimacy, and boundaries around dependence"
+      },
+      {
+        "house": 9,
+        "zh-Hant": "信念、學習、遠行與跨文化方向",
+        "zh-Hans": "信念、学习、远行与跨文化方向",
+        "en": "beliefs, study, travel, and cross-cultural direction"
+      },
+      {
+        "house": 10,
+        "zh-Hant": "事業、公開身分與合作關係",
+        "zh-Hans": "事业、公开身份与合作关系",
+        "en": "career, public identity, and professional alliances"
+      },
+      {
+        "house": 11,
+        "zh-Hant": "朋友、社群、共同目標與未來計畫",
+        "zh-Hans": "朋友、社群、共同目标与未来计划",
+        "en": "friends, communities, shared goals, and future plans"
+      },
+      {
+        "house": 12,
+        "zh-Hant": "私下情緒、未說出口的期待與休整",
+        "zh-Hans": "私下情绪、未说出口的期待与休整",
+        "en": "private feelings, unspoken expectations, and restoration"
+      }
+    ],
+    "sources": [
+      {
+        "label": "NASA/JPL Horizons",
+        "url": "https://ssd.jpl.nasa.gov/horizons/"
+      },
+      {
+        "label": "Astrology.com · Mercury Retrograde in Scorpio 2026",
+        "url": "https://www.astrology.com/article/mercury-retrograde-scorpio-2026/"
+      },
+      {
+        "label": "Cafe Astrology · Venus Retrograde Cycle 2026",
+        "url": "https://cafeastrology.com/events/venus-turns-retrograde-in-scorpio/"
+      },
+      {
+        "label": "Cafe Astrology · 2026 Astrology Calendar",
+        "url": "https://cafeastrology.com/astrology-calendars-events.html"
+      },
+      {
+        "label": "AstroSynthesis Australia · 2026 Retrogrades (UTC table)",
+        "url": "https://www.astrosynthesis.com.au/wp-content/uploads/2025/12/2026-Retrogrades.pdf"
+      }
+    ]
+  },
+  {
     id: "mars-aspect-cluster-2026-10",
     published: "2026-09-27",
     status: "active",
