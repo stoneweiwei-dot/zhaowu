@@ -11,6 +11,8 @@
     }
   },
   "functions": {
+    "api/stripe-checkout.js": { "maxDuration": 10 },
+    "api/stripe-status.js": { "maxDuration": 10 },
     "api/owner-login.js": {
       "maxDuration": 10
     },
