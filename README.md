@@ -1,7 +1,4 @@
 # 昭梧
-
-正式域名：https://zhaowu.soul-terminal.com  
-主站：https://soul-terminal.com  
 仓库：https://github.com/stoneweiwei-dot/zhaowu
 
 这个仓库是所有 AI / APP / Agent 协作昭梧的唯一源码与交接入口。无论由 ChatGPT、Codex、Grok、AppDeploy、GitHub-connected agent、部署 Agent 或未来任何平台接手，都不得建立平行 production 主线。
