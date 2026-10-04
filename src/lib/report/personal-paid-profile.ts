@@ -26,6 +26,20 @@ const ELEMENT_LABEL: Record<Locale, Record<Element, string>> = {
   en: { 木: "Wood", 火: "Fire", 土: "Earth", 金: "Metal", 水: "Water" },
 };
 
+const SEASON_LABEL: Record<Locale, Record<string, string>> = {
+  "zh-Hant": { 春: "春", 夏: "夏", 秋: "秋", 冬: "冬", 四季: "四季" },
+  "zh-Hans": { 春: "春", 夏: "夏", 秋: "秋", 冬: "冬", 四季: "四季" },
+  en: { 春: "spring", 夏: "summer", 秋: "autumn", 冬: "winter", 四季: "transitional earth" },
+};
+
+function tendencyLabel(tendency: string, locale: Locale) {
+  if (locale !== "en") return tendency;
+  if (tendency === "偏旺") return "strong-leaning";
+  if (tendency === "偏弱") return "weak-leaning";
+  if (tendency.includes("中和")) return "near-balanced";
+  return "mixed";
+}
+
 const COLORS: Record<Locale, Record<Element, string[]>> = {
   "zh-Hant": {
     木: ["青玉綠", "松針綠", "青灰"],
@@ -118,10 +132,17 @@ const PERSONA: Record<Locale, Record<Element, string>> = {
   en: { 木: "adaptive grower", 火: "clear expresser", 土: "steady integrator", 金: "precise curator", 水: "calm observer" },
 };
 
-const LIUHE = new Set(["丑子", "亥寅", "戌卯", "辰酉", "巳申", "午未"]);
-const CHONG = new Set(["午子", "丑未", "寅申", "卯酉", "戌辰", "亥巳"]);
-const HAI = new Set(["子未", "丑午", "寅巳", "卯辰", "亥申", "戌酉"]);
-const XING = new Set(["卯子", "寅巳", "寅申", "巳申", "丑戌", "丑未", "戌未"]);
+function pairKey(a: string, b: string) {
+  return [a, b].sort().join("");
+}
+
+const pairSet = (pairs: ReadonlyArray<readonly [string, string]>) =>
+  new Set(pairs.map(([a, b]) => pairKey(a, b)));
+
+const LIUHE = pairSet([["子", "丑"], ["寅", "亥"], ["卯", "戌"], ["辰", "酉"], ["巳", "申"], ["午", "未"]]);
+const CHONG = pairSet([["子", "午"], ["丑", "未"], ["寅", "申"], ["卯", "酉"], ["辰", "戌"], ["巳", "亥"]]);
+const HAI = pairSet([["子", "未"], ["丑", "午"], ["寅", "巳"], ["卯", "辰"], ["申", "亥"], ["酉", "戌"]]);
+const XING = pairSet([["子", "卯"], ["寅", "巳"], ["寅", "申"], ["巳", "申"], ["丑", "戌"], ["丑", "未"], ["戌", "未"]]);
 const SELF_XING = new Set(["辰", "午", "酉", "亥"]);
 const SANHE = [
   ["申", "子", "辰"],
@@ -129,10 +150,6 @@ const SANHE = [
   ["寅", "午", "戌"],
   ["巳", "酉", "丑"],
 ] as const;
-
-function pairKey(a: string, b: string) {
-  return [a, b].sort().join("");
-}
 
 function unique<T>(items: T[]) {
   return [...new Set(items)];
@@ -192,7 +209,8 @@ function coreLine(dayMaster: string, element: Element, monthBranch: string, seas
 
 export function buildPersonalPaidProfile(birth: SharedBirthRecord, locale: Locale): PersonalPaidProfileModel {
   const chart = buildChart({ ...birth, question: "personal-paid-profile", locale });
-  const season = SEASON_OF_BRANCH[chart.monthBranch] ?? "四季";
+  const seasonRaw = SEASON_OF_BRANCH[chart.monthBranch] ?? "四季";
+  const season = SEASON_LABEL[locale][seasonRaw] ?? seasonRaw;
   const branches = chart.pillars.filter((pillar) => pillar.ready).map((pillar) => pillar.zhi);
   const relations = relationLabels(branches, locale);
   const useful = chart.useful.length ? chart.useful : [chart.dayMasterElement];
