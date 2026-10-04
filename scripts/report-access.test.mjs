@@ -3,12 +3,16 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const [client, gate, specialist, palm, numerology] = await Promise.all([
+const [client, gate, specialist, palm, numerology, unified, personalComponent, personalModel, reportCss] = await Promise.all([
   read("src/lib/report-access.ts"),
   read("src/components/report-access-gate.tsx"),
   read("src/components/specialist-system-page.tsx"),
   read("src/components/palm-standalone.tsx"),
   read("src/routes/numerology.tsx"),
+  read("src/components/unified-birth-report.tsx"),
+  read("src/components/personal-paid-profile.tsx"),
+  read("src/lib/report/personal-paid-profile.ts"),
+  read("src/report-access.css"),
 ]);
 
 test("the report catalogue is fixed at free, $1.99, $4.99 and $9.99", () => {
@@ -32,4 +36,36 @@ test("browser state never grants access without server verification", () => {
   assert.match(client, /verification\.paid/);
   assert.doesNotMatch(client, /localStorage\.setItem\([^\n]*(?:paid|product|bundle|system)/i);
   assert.doesNotMatch(client, /STRIPE_(?:SECRET|RESTRICTED)_KEY/);
+});
+
+
+test("full paid reports include a customer-specific birth profile without changing the quick tier", () => {
+  assert.match(gate, /personal\?: ReactNode/);
+  assert.match(gate, /level === "bundle" \|\| level === "system"[\s\S]*\{personal\}\{full\}/);
+  const quickBranch = gate.slice(gate.indexOf('level === "quick"'), gate.indexOf("<header>"));
+  assert.doesNotMatch(quickBranch, /\{personal\}/);
+
+  for (const surface of [specialist, unified, palm, numerology]) {
+    assert.match(surface, /PersonalPaidProfile/);
+    assert.match(surface, /personal=\{/);
+  }
+});
+
+test("the paid personal page is derived from each customer's saved birth data, never the owner's chart", () => {
+  assert.match(personalModel, /buildChart\(\{ \.\.\.birth, question: "personal-paid-profile", locale \}\)/);
+  assert.match(personalComponent, /data-personal-source="customer-birth-only"/);
+  assert.match(personalComponent, /birth=\{birth\}/);
+  assert.match(personalModel, /不引用站主命盤/);
+  assert.doesNotMatch(personalModel, /壬辰|金水結構|金水结构|辰辰自刑/);
+});
+
+test("the customer profile keeps the approved three-page wardrobe/editorial structure", () => {
+  assert.match(personalComponent, /1\/3|page \+ 1/);
+  assert.match(personalComponent, /專屬穿衣/);
+  assert.match(personalComponent, /合沖刑害/);
+  assert.match(personalComponent, /colorSwatches/);
+  assert.match(personalComponent, /currentCycle/);
+  assert.match(reportCss, /\.zhaowu-paid-personal-profile/);
+  assert.match(reportCss, /#173f35/);
+  assert.match(reportCss, /Songti TC/);
 });
