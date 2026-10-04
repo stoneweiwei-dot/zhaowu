@@ -314,6 +314,7 @@ function SpecialistTreeBody({ birth, locale, copy }: { birth: SharedBirthRecord;
             <ReportAccessGate
               system={entry.id}
               locale={locale}
+              birth={birth}
               quick={<SpecialistEntryContent entry={entry} quick />}
               personal={<PersonalPaidProfile birth={birth} locale={locale} />}
               full={<SpecialistEntryContent entry={entry} />}
