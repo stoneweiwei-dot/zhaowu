@@ -55,12 +55,11 @@
 }
 
 .zhaowu-report-paywall > header .zhaowu-report-distinction {
-  margin-top: 10px !important;
-  border-left: 2px solid rgba(169, 97, 94, .55);
+  margin-top: 8px !important;
+  border-left: 1px solid rgba(49, 84, 79, .38);
   padding: 2px 0 2px 10px;
-  color: var(--zw-ink, #302e35) !important;
-  font-family: var(--font-display, "Songti TC", serif);
-  font-size: 14px !important;
+  color: var(--zw-muted, #74717a) !important;
+  font-size: 13px !important;
   line-height: 1.7 !important;
 }
 
@@ -92,17 +91,18 @@
 .zhaowu-report-pricing p {
   grid-column: 1 / -1;
   margin: 8px 0 0 !important;
-  color: var(--zw-muted, #74717a) !important;
-  font-size: 13px !important;
-  line-height: 1.6 !important;
+  color: var(--zw-ink, #302e35) !important;
+  font-size: 14px !important;
+  font-weight: 600;
+  line-height: 1.7 !important;
 }
 .zhaowu-report-pricing article > small {
   grid-column: 1 / -1;
   display: block;
   margin-top: 8px;
-  color: var(--zw-jade-deep, #31544f);
-  font-size: 11px;
-  font-weight: 650;
+  color: var(--zw-muted, #74717a);
+  font-size: 12px;
+  font-weight: 600;
   line-height: 1.65;
   letter-spacing: .015em;
 }
@@ -131,7 +131,7 @@
 .zhaowu-report-tone-boundary {
   margin: 10px 0 0 !important;
   color: var(--zw-muted, #74717a) !important;
-  font-size: 10px !important;
+  font-size: 12px !important;
   line-height: 1.65 !important;
 }
 
@@ -139,7 +139,7 @@
 .zhaowu-five-tone-gift {
   position: relative;
   overflow: hidden;
-  margin: 4px 0 22px;
+  margin: 26px 0 22px;
   border-top: 1px solid rgba(143, 110, 65, .38);
   border-bottom: 1px solid rgba(143, 110, 65, .28);
   padding: 20px clamp(14px, 3.8vw, 28px) 15px;
@@ -174,7 +174,7 @@
 .zhaowu-five-tone-gift > header p {
   margin: 0 !important;
   color: #956d50 !important;
-  font-size: 9px !important;
+  font-size: 10px !important;
   font-weight: 750;
   line-height: 1.4 !important;
   letter-spacing: .22em;
@@ -184,7 +184,7 @@
   margin: 5px 0 0 !important;
   color: #263c35 !important;
   font-family: var(--font-display, "Songti TC", serif) !important;
-  font-size: clamp(23px, 5.4vw, 32px) !important;
+  font-size: clamp(21px, 4.8vw, 28px) !important;
   font-weight: 560 !important;
   line-height: 1.25 !important;
   letter-spacing: .035em;
