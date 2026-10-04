@@ -89,11 +89,13 @@ export function ReportAccessGate({
   locale,
   quick,
   full,
+  personal,
 }: {
   system: ReportSystemId;
   locale: Locale;
   quick: ReactNode;
   full: ReactNode;
+  personal?: ReactNode;
 }) {
   const copy = copyFor(locale);
   const [level, setLevel] = useState<ReportAccessLevel>("none");
@@ -125,7 +127,7 @@ export function ReportAccessGate({
   }
 
   if (checking) return <div className="zhaowu-report-access-loading" aria-live="polite">{locale === "en" ? "Checking access…" : locale === "zh-Hans" ? "正在确认读取权限……" : "正在確認讀取權限……"}</div>;
-  if (level === "bundle" || level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{copy.unlocked}</p>{full}</section>;
+  if (level === "bundle" || level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{copy.unlocked}</p>{personal}{full}</section>;
 
   return (
     <section className="zhaowu-report-paywall" data-report-paywall={system}>
