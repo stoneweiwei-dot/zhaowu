@@ -54,6 +54,16 @@
   line-height: 1.7 !important;
 }
 
+.zhaowu-report-paywall > header .zhaowu-report-distinction {
+  margin-top: 10px !important;
+  border-left: 2px solid rgba(169, 97, 94, .55);
+  padding: 2px 0 2px 10px;
+  color: var(--zw-ink, #302e35) !important;
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+}
+
 .zhaowu-report-pricing {
   margin-top: 14px;
   border-bottom: 1px solid rgba(83, 69, 48, .16);
@@ -86,6 +96,16 @@
   font-size: 13px !important;
   line-height: 1.6 !important;
 }
+.zhaowu-report-pricing article > small {
+  grid-column: 1 / -1;
+  display: block;
+  margin-top: 8px;
+  color: var(--zw-jade-deep, #31544f);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.65;
+  letter-spacing: .015em;
+}
 .zhaowu-report-pricing button {
   grid-column: 1 / -1;
   min-height: 44px;
@@ -108,9 +128,196 @@
   line-height: 1.65 !important;
 }
 .zhaowu-report-payment-note.is-error { border-left-color: rgba(169, 97, 94, .7); color: #7c3733 !important; }
+.zhaowu-report-tone-boundary {
+  margin: 10px 0 0 !important;
+  color: var(--zw-muted, #74717a) !important;
+  font-size: 10px !important;
+  line-height: 1.65 !important;
+}
+
+/* Paid five-tone gift — one continuous Song-style listening folio, not a card wall. */
+.zhaowu-five-tone-gift {
+  position: relative;
+  overflow: hidden;
+  margin: 4px 0 22px;
+  border-top: 1px solid rgba(143, 110, 65, .38);
+  border-bottom: 1px solid rgba(143, 110, 65, .28);
+  padding: 20px clamp(14px, 3.8vw, 28px) 15px;
+  color: #263c35;
+  background:
+    radial-gradient(circle at 93% 5%, rgba(204, 179, 126, .20), transparent 28%),
+    radial-gradient(circle at 7% 92%, rgba(132, 165, 151, .14), transparent 31%),
+    linear-gradient(120deg, rgba(253, 248, 236, .92), rgba(241, 237, 224, .78));
+}
+
+.zhaowu-five-tone-gift::after {
+  content: "五音";
+  position: absolute;
+  right: -4px;
+  bottom: -26px;
+  color: rgba(100, 85, 58, .045);
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: 82px;
+  letter-spacing: -.12em;
+  pointer-events: none;
+}
+
+.zhaowu-five-tone-gift > header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.zhaowu-five-tone-gift > header p {
+  margin: 0 !important;
+  color: #956d50 !important;
+  font-size: 9px !important;
+  font-weight: 750;
+  line-height: 1.4 !important;
+  letter-spacing: .22em;
+}
+
+.zhaowu-five-tone-gift > header h3 {
+  margin: 5px 0 0 !important;
+  color: #263c35 !important;
+  font-family: var(--font-display, "Songti TC", serif) !important;
+  font-size: clamp(23px, 5.4vw, 32px) !important;
+  font-weight: 560 !important;
+  line-height: 1.25 !important;
+  letter-spacing: .035em;
+}
+
+.zhaowu-five-tone-gift > header > span {
+  flex: 0 0 auto;
+  border-bottom: 1px solid rgba(169, 97, 94, .48);
+  padding: 0 1px 4px;
+  color: #8b4c47;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.zhaowu-five-tone-gift__lead {
+  position: relative;
+  z-index: 1;
+  max-width: 42rem;
+  margin: 13px 0 0 !important;
+  color: #58635d !important;
+  font-size: 12px !important;
+  line-height: 1.8 !important;
+}
+
+.zhaowu-five-tone-gift__state {
+  position: relative;
+  z-index: 1;
+  margin: 14px 0 0 !important;
+  border-left: 2px solid rgba(64, 104, 91, .42);
+  padding-left: 10px;
+  color: #637069 !important;
+  font-size: 12px !important;
+  line-height: 1.7 !important;
+}
+
+.zhaowu-five-tone-gift__state.is-error { border-left-color: rgba(169, 97, 94, .62); color: #7c4945 !important; }
+
+.zhaowu-five-tone-gift__tracks {
+  position: relative;
+  z-index: 1;
+  margin: 17px 0 0;
+  border-top: 1px solid rgba(73, 91, 79, .18);
+  padding: 0;
+  list-style: none;
+}
+
+.zhaowu-five-tone-gift__tracks li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  border-bottom: 1px solid rgba(73, 91, 79, .16);
+  padding: 11px 0;
+}
+
+.zhaowu-five-tone-gift__tracks li > i {
+  color: rgba(83, 89, 80, .44);
+  font-family: Georgia, serif;
+  font-size: 11px;
+  font-style: normal;
+  letter-spacing: .08em;
+}
+
+.zhaowu-five-tone-gift__tracks li > div { min-width: 0; }
+.zhaowu-five-tone-gift__tracks small {
+  display: block;
+  color: #8e664f;
+  font-size: 10px;
+  font-weight: 720;
+  line-height: 1.45;
+  letter-spacing: .08em;
+}
+.zhaowu-five-tone-gift__tracks strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 3px;
+  color: #30473f;
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: 14px;
+  font-weight: 560;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zhaowu-five-tone-gift__tracks button {
+  position: relative;
+  display: grid;
+  grid-template-columns: 18px auto;
+  min-width: 70px;
+  min-height: 42px;
+  place-content: center;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(49, 84, 79, .38);
+  border-radius: 999px;
+  padding: 0 11px;
+  color: #31544f;
+  background: rgba(255, 252, 244, .58);
+}
+
+.zhaowu-five-tone-gift__tracks button[aria-pressed="true"] {
+  color: #fffaf0;
+  background: #31544f;
+}
+
+.zhaowu-five-tone-gift__tracks button:disabled { cursor: not-allowed; opacity: .38; }
+.zhaowu-five-tone-gift__tracks button span { font-size: 14px; line-height: 1; }
+.zhaowu-five-tone-gift__tracks button b { font-size: 10px; font-weight: 720; white-space: nowrap; }
+
+.zhaowu-five-tone-gift > footer {
+  position: relative;
+  z-index: 1;
+  margin-top: 12px;
+  color: rgba(64, 73, 68, .62);
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+@media (max-width: 560px) {
+  .zhaowu-five-tone-gift { padding-inline: 12px; }
+  .zhaowu-five-tone-gift > header { display: block; }
+  .zhaowu-five-tone-gift > header > span { display: inline-block; margin-top: 9px; }
+  .zhaowu-five-tone-gift__tracks li { grid-template-columns: 23px minmax(0, 1fr) 44px; gap: 8px; }
+  .zhaowu-five-tone-gift__tracks button { grid-template-columns: 1fr; min-width: 44px; width: 44px; padding: 0; }
+  .zhaowu-five-tone-gift__tracks button b { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .zhaowu-report-pricing button { transition: none; }
+  .zhaowu-report-pricing button,
+  .zhaowu-five-tone-gift__tracks button { transition: none; }
 }
 
 

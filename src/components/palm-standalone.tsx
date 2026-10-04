@@ -270,6 +270,7 @@ export function PalmStandalone() {
             <ReportAccessGate
               system="palm"
               locale={locale}
+              birth={personalBirth}
               quick={<article className="rounded-2xl border border-[#b99755]/35 bg-paper/65 p-5"><h3 className="font-display text-xl font-semibold tracking-[0.06em] text-ink">{copy.readingTitle}</h3><p className="mt-3 text-sm leading-7 text-ink-soft">{copy.readingBody}</p></article>}
               personal={personalBirth ? <PersonalPaidProfile birth={personalBirth} locale={locale} /> : undefined}
               full={<>
