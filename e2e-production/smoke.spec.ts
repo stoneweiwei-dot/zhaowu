@@ -15,7 +15,10 @@ test.describe("production smoke (iPhone Safari)", () => {
     const pageErrors: string[] = [];
     page.on("pageerror", (error) => pageErrors.push(error.message));
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "錄入生辰", exact: true })).toBeVisible({ timeout: 20_000 });
+    // In the new design (PR #601), the form is hidden until the user opens it via nav
+    const formNavButton = page.getByRole("button", { name: /命書|Destiny|命书/ });
+    await formNavButton.click();
+    await expect(page.getByRole("heading", { name: /錄入生辰|Enter your birth record|录入生辰/, exact: false })).toBeVisible({ timeout: 20_000 });
     for (const id of ["#birth-year", "#birth-month", "#birth-day", "#birth-hour", "#birth-minute", "#birth-city"]) {
       await expect(page.locator(id)).toBeVisible();
     }
