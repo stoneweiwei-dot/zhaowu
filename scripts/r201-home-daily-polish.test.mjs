@@ -9,7 +9,7 @@ test("Today removes the standalone homepage comic and exposes three independent 
   const home = await source("src/routes/index.tsx");
   const daily = await source("src/components/daily-almanac-widget.tsx");
   assert.doesNotMatch(home, /SongComicToday/);
-  assert.match(home, /useState<"today" \| "quiz" \| "notes" \| null>\("today"\)/);
+  assert.match(home, /useState<Section \| null>\(null\)/);
   assert.doesNotMatch(daily, /zhaowu-today-guide__tabs/);
   assert.doesNotMatch(daily, /hidden=\{page !==/);
   assert.match(daily, /zhaowu-today-section is-almanac/);

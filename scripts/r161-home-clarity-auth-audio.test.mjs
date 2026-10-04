@@ -33,13 +33,13 @@ test("wrong owner password is still rejected", async () => {
 
 test("homepage keeps one primary flow while r201 opens the useful Today module", async () => {
   const home = await source("src/routes/index.tsx");
-  assert.match(home, /useState<"today" \| "quiz" \| "notes" \| null>\("today"\)/);
-  assert.equal((home.match(/<HomeDisclosure /g) ?? []).length, 3);
+  assert.match(home, /useState<Section \| null>\(null\)/);
+  assert.doesNotMatch(home, /<HomeDisclosure /);
   assert.match(home, /<AnalysisForm \/>/);
   assert.match(home, /<DailyAlmanacWidget embedded \/>/);
-  assert.match(home, /openPanel === "today"/);
-  assert.doesNotMatch(home, /openPanel === "gallery"/);
-  assert.match(home, /openPanel === "notes"/);
+  assert.match(home, /activeSection === "today"/);
+  assert.doesNotMatch(home, /activeSection === "gallery"/);
+  assert.match(home, /activeSection === "notes"/);
 });
 
 test("login owns the only active animation sound control", async () => {

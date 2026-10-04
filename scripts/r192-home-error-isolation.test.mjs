@@ -9,7 +9,7 @@ test("r192 isolates homepage sections behind localized fail-open boundaries", as
   const home = await source("src/routes/index.tsx");
   const boundary = await source("src/components/home-section-boundary.tsx");
   assert.doesNotMatch(home, /HomeSectionBoundary id="comic"|SongComicToday/);
-  assert.match(home, /<HomeSectionBoundary id="analysis" locale=\{locale\}/);
+  assert.match(home, /<HomeSectionBoundary[\s\S]{0,120}id="analysis"[\s\S]{0,120}locale=\{locale\}/);
   assert.match(home, /<HomeSectionBoundary id="install" locale=\{locale\}>/);
   assert.match(boundary, /getDerivedStateFromError/);
   assert.match(boundary, /data-home-fail-open/);
