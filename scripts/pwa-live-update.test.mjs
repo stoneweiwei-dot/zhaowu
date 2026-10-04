@@ -6,8 +6,10 @@ const manifest = JSON.parse(readFileSync("public/manifest.webmanifest", "utf8"))
 const main = readFileSync("src/main.tsx", "utf8");
 const vite = readFileSync("vite.config.ts", "utf8");
 const swTemplate = readFileSync("scripts/sw-template.js.txt", "utf8");
+const publicSw = readFileSync("public/sw.js", "utf8");
 const vercel = JSON.parse(readFileSync("vercel.json", "utf8"));
 const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
+const html = readFileSync("index.html", "utf8");
 
 test("installed app identity stays stable across releases", () => {
   assert.equal(manifest.id, "/");
@@ -38,6 +40,15 @@ test("every production build emits a unique release id into app and service work
   assert.match(swTemplate, /clientAlreadyRunsRelease\(latestAfterNavigate\)/);
   assert.match(swTemplate, /stale snapshot cannot win/);
   assert.match(packageJson.scripts.prebuild, /write-release-assets\.mjs/);
+  for (const source of [swTemplate.replaceAll("__ZHAOWU_RELEASE__", "dev"), publicSw]) {
+    assert.match(source, /skipWaiting\(\)/);
+    assert.match(source, /clients\.claim\(\)/);
+    assert.match(source, /ZHAOWU_RELEASE_READY/);
+    assert.match(source, /ZHAOWU_RELEASE_PROBE/);
+    assert.match(source, /navigateClientToRelease/);
+    assert.match(source, /zw_sw_reset/);
+    assert.match(source, /cache:\s*"no-store"/);
+  }
 });
 
 test("installed app retries a stale release and escalates to a scoped hard self-heal", () => {
@@ -64,6 +75,10 @@ test("installed app retries a stale release and escalates to a scoped hard self-
   assert.match(main, /zw_retry/);
   assert.match(main, /zw_reset/);
   assert.match(main, /fingerprint/);
+  assert.match(main, /display-mode: standalone/);
+  assert.match(main, /legacyStandalone/);
+  assert.match(main, /isStandaloneWebApp/);
+  assert.match(main, /return await hardResetForRelease\(freshRelease\)/);
 });
 
 test("release metadata, service worker and app shell are never edge-cached", () => {
@@ -76,4 +91,15 @@ test("release metadata, service worker and app shell are never edge-cached", () 
   const assets = headers.get("/assets/(.*)") ?? [];
   const assetCache = assets.find((item) => item.key.toLowerCase() === "cache-control")?.value ?? "";
   assert.match(assetCache, /immutable/);
+});
+
+
+test("stale installed HTML detects a newer release before React and service-worker boot", () => {
+  assert.match(vite, /transformIndexHtml/);
+  assert.match(vite, /__ZHAOWU_RELEASE__/);
+  assert.match(html, /fetch\("\/release\.json\?bootstrap=" \+ Date\.now\(\)/);
+  assert.match(html, /embeddedRelease/);
+  assert.match(html, /zw_bootstrap/);
+  assert.match(html, /window\.location\.replace/);
+  assert.match(html, /cache:\s*"no-store"/);
 });

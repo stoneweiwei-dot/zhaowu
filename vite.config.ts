@@ -42,6 +42,9 @@ function writeGeneratedPublicAssets(): Plugin {
     configureServer() {
       write();
     },
+    transformIndexHtml(html) {
+      return html.replaceAll("__ZHAOWU_RELEASE__", RELEASE_ID);
+    },
   };
 }
 

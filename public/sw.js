@@ -16,6 +16,47 @@ async function cacheFresh(path) {
   await cache.put(path, response.clone());
 }
 
+async function clientAlreadyRunsRelease(client) {
+  return new Promise((resolve) => {
+    const channel = new MessageChannel();
+    const timer = setTimeout(() => resolve(false), 700);
+
+    channel.port1.onmessage = (event) => {
+      clearTimeout(timer);
+      resolve(
+        event.data?.type === "ZHAOWU_CLIENT_RELEASE" &&
+        event.data?.release === RELEASE,
+      );
+    };
+
+    try {
+      client.postMessage(
+        { type: "ZHAOWU_RELEASE_PROBE", release: RELEASE },
+        [channel.port2],
+      );
+    } catch {
+      clearTimeout(timer);
+      resolve(false);
+    }
+  });
+}
+
+async function navigateClientToRelease(client, hard = false) {
+  try {
+    const latestClient = await self.clients.get(client.id);
+    if (!latestClient) return null;
+    const target = new URL(latestClient.url);
+    if (target.origin !== self.location.origin) return null;
+    target.searchParams.set("zw_release", RELEASE);
+    if (hard) target.searchParams.set("zw_sw_reset", String(Date.now()));
+    return await latestClient.navigate(target.toString());
+  } catch {
+    return null;
+  }
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 self.addEventListener("install", (event) => {
   event.waitUntil(Promise.allSettled(SHELL.map((path) => cacheFresh(path))));
   self.skipWaiting();
@@ -32,7 +73,33 @@ self.addEventListener("activate", (event) => {
     await self.clients.claim();
     const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
     for (const client of clients) {
-      client.postMessage({ type: "ZHAOWU_RELEASE_READY", release: RELEASE });
+      // Probe first. A page that already runs this exact release answers through
+      // MessageChannel and must not be navigated again; this avoids racing normal
+      // Safari navigation and Playwright route transitions.
+      const observedUrl = client.url;
+      const alreadyCurrent = await clientAlreadyRunsRelease(client);
+      if (alreadyCurrent) {
+        client.postMessage({ type: "ZHAOWU_RELEASE_READY", release: RELEASE });
+        continue;
+      }
+
+      // Older installed iOS bundles may restore the same stale WebContent snapshot
+      // even after one successful navigation. First preserve the user's current route,
+      // then verify the client actually started the new release. If it did not, issue
+      // one second navigation with a unique reset token so the stale snapshot cannot win.
+      const latestBeforeNavigate = await self.clients.get(client.id);
+      if (!latestBeforeNavigate || latestBeforeNavigate.url !== observedUrl) continue;
+
+      const navigated = await navigateClientToRelease(latestBeforeNavigate, false);
+      if (!navigated) continue;
+
+      await sleep(1_500);
+      const latestAfterNavigate = await self.clients.get(client.id);
+      if (!latestAfterNavigate) continue;
+      const updated = await clientAlreadyRunsRelease(latestAfterNavigate);
+      if (!updated) {
+        await navigateClientToRelease(latestAfterNavigate, true);
+      }
     }
   })());
 });
