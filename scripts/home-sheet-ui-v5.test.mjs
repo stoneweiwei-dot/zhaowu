@@ -40,7 +40,7 @@ test("homepage keeps the Song parchment flow and uses a readable report director
   const v5 = main.indexOf("./home-sheet-ui-v5.css");
   assert.ok(v4 >= 0 && v5 > v4, "home sheet lock must import after readability v4");
 
-  assert.match(home, /zhaowu-home-sheet-page/);
+  assert.match(home, /zw-hero-home/);
   assert.doesNotMatch(home, /zhaowu-home-intro/);
   assert.doesNotMatch(home, /zhaowu-home-portals|data-specialist-link|七種個人分析/);
   assert.doesNotMatch(home, /zhaowu-home-hero/);

@@ -33,6 +33,7 @@ function NumerologyPage(){
     <ReportAccessGate
       system="numerology"
       locale={locale}
+      birth={birth}
       quick={<section className="seal-border rounded-2xl bg-paper p-5 sm:p-8"><h3 className="font-display text-xl text-ink">{c.who}</h3><p className="mt-3 text-[15px] leading-7 text-ink-soft">{tx(locale,p.core)}</p></section>}
       personal={<PersonalPaidProfile birth={birth} locale={locale} />}
       full={<div className="space-y-5">
