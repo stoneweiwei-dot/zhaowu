@@ -30,6 +30,8 @@ async function openToday(page: Page, theme: (typeof THEMES)[number], viewport: (
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
   await page.route(/ipwho\.is|open-meteo\.com|nominatim|geocoding/, (route) => route.abort());
   await page.goto("/", { waitUntil: "domcontentloaded" });
+  // New homepage defaults to activeSection=null; click Today nav to open the module.
+  await page.getByRole("button", { name: "今日" }).click();
   await expect(page.locator("#daily-almanac")).toBeVisible();
   await expect(page.locator('#daily-almanac [data-daily-color-swatch] i').first()).toBeVisible();
   await page.addStyleTag({
