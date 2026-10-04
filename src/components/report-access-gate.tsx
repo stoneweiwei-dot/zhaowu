@@ -1,5 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { FiveToneGift } from "@/components/five-tone-gift";
 import type { Locale } from "@/lib/i18n";
+import type { SharedBirthRecord } from "@/lib/shared-birth";
 import {
   REPORT_ACCESS_PRODUCTS,
   resolveReportAccess,
@@ -25,6 +27,9 @@ type Copy = {
   unlocked: string;
   pending: string;
   unavailable: string;
+  distinction: string;
+  toneBoundary: string;
+  advantage: Record<ReportAccessProduct, string>;
 };
 
 function copyFor(locale: Locale): Copy {
@@ -43,6 +48,13 @@ function copyFor(locale: Locale): Copy {
     unlocked: "Unlocked",
     pending: "Payment received. Access is being confirmed…",
     unavailable: "Checkout is not active yet. The prices and free/paid boundary are already fixed.",
+    distinction: "Zhaowu goes beyond written interpretation: each paid level includes a genuinely playable five-tone sequence selected from the chart's functional emphasis.",
+    toneBoundary: "Five-tone listening is a traditional cultural practice for rest and self-care, not medical or mental-health treatment.",
+    advantage: {
+      quick: "Zhaowu extra · first priority + 1 chart-matched primary-tone track",
+      system: "Zhaowu extra · full reading + personal profile + 3-track support sequence",
+      bundle: "Zhaowu extra · six complete readings + the full 5-track tone cycle",
+    },
   };
   if (locale === "zh-Hans") return {
     title: "选择读取深度",
@@ -59,6 +71,13 @@ function copyFor(locale: Locale): Copy {
     unlocked: "已解锁",
     pending: "付款已收到，正在确认读取权限……",
     unavailable: "付款通道尚未启用；价格与免费／付费边界已经固定。",
+    distinction: "昭梧不只给文字解读，还把命盘功能取向做成真正可播放的五音疗愈聆听赠曲；付费层级越完整，聆听序列越完整。",
+    toneBoundary: "此处“疗愈”指放松、调息与自我照顾的文化聆听，不替代医疗、心理治疗或专业诊断。",
+    advantage: {
+      quick: "昭梧加做｜第一优先重点＋命盘主音 1 首",
+      system: "昭梧加做｜完整单盘＋个人命格专页＋生扶／主音／疏导 3 首",
+      bundle: "昭梧加做｜六盘完整解读＋完整个人专页＋五音完整序列 5 首",
+    },
   };
   return {
     title: "選擇讀取深度",
@@ -75,6 +94,13 @@ function copyFor(locale: Locale): Copy {
     unlocked: "已解鎖",
     pending: "付款已收到，正在確認讀取權限……",
     unavailable: "付款通道尚未啟用；價格與免費／付費邊界已經固定。",
+    distinction: "昭梧不只給文字解讀，還把命盤功能取向做成真正可播放的五音療癒聆聽贈曲；付費層級越完整，聆聽序列越完整。",
+    toneBoundary: "此處「療癒」指放鬆、調息與自我照顧的文化聆聽，不替代醫療、心理治療或專業診斷。",
+    advantage: {
+      quick: "昭梧加做｜第一優先重點＋命盤主音 1 首",
+      system: "昭梧加做｜完整單盤＋個人命格專頁＋生扶／主音／疏導 3 首",
+      bundle: "昭梧加做｜六盤完整解讀＋完整個人專頁＋五音完整序列 5 首",
+    },
   };
 }
 
@@ -90,12 +116,14 @@ export function ReportAccessGate({
   quick,
   full,
   personal,
+  birth,
 }: {
   system: ReportSystemId;
   locale: Locale;
   quick: ReactNode;
   full: ReactNode;
   personal?: ReactNode;
+  birth?: SharedBirthRecord | null;
 }) {
   const copy = copyFor(locale);
   const [level, setLevel] = useState<ReportAccessLevel>("none");
@@ -127,14 +155,15 @@ export function ReportAccessGate({
   }
 
   if (checking) return <div className="zhaowu-report-access-loading" aria-live="polite">{locale === "en" ? "Checking access…" : locale === "zh-Hans" ? "正在确认读取权限……" : "正在確認讀取權限……"}</div>;
-  if (level === "bundle" || level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{copy.unlocked}</p>{personal}{full}</section>;
+  if (level === "bundle" || level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{copy.unlocked}</p><FiveToneGift birth={birth} locale={locale} level={level} />{personal}{full}</section>;
 
   return (
     <section className="zhaowu-report-paywall" data-report-paywall={system}>
-      {level === "quick" ? <div className="zhaowu-report-access-content" data-report-access="quick"><p className="zhaowu-report-access-status">{copy.unlocked} · {copy.quick}</p>{quick}</div> : null}
+      {level === "quick" ? <div className="zhaowu-report-access-content" data-report-access="quick"><p className="zhaowu-report-access-status">{copy.unlocked} · {copy.quick}</p><FiveToneGift birth={birth} locale={locale} level="quick" />{quick}</div> : null}
       <header>
         <h6>{copy.title}</h6>
         <p>{copy.lead}</p>
+        <p className="zhaowu-report-distinction">{copy.distinction}</p>
       </header>
       <div className="zhaowu-report-pricing" role="list">
         <article role="listitem" className="is-free">
@@ -147,12 +176,14 @@ export function ReportAccessGate({
             <strong>{copy[tier.copy]}</strong>
             <span>{REPORT_ACCESS_PRODUCTS[tier.id].price}</span>
             <p>{copy[tier.body]}</p>
+            <small>{copy.advantage[tier.id]}</small>
             <button type="button" disabled={busy !== null} onClick={() => void purchase(tier.id)}>
               {busy === tier.id ? "…" : `${copy.buy} ${REPORT_ACCESS_PRODUCTS[tier.id].price}`}
             </button>
           </article>
         ))}
       </div>
+      <p className="zhaowu-report-tone-boundary">{copy.toneBoundary}</p>
       {pending ? <p className="zhaowu-report-payment-note" role="status">{copy.pending}</p> : null}
       {error ? <p className="zhaowu-report-payment-note is-error" role="alert">{error}</p> : null}
     </section>
