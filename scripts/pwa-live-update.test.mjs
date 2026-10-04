@@ -9,6 +9,7 @@ const swTemplate = readFileSync("scripts/sw-template.js.txt", "utf8");
 const publicSw = readFileSync("public/sw.js", "utf8");
 const vercel = JSON.parse(readFileSync("vercel.json", "utf8"));
 const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
+const html = readFileSync("index.html", "utf8");
 
 test("installed app identity stays stable across releases", () => {
   assert.equal(manifest.id, "/");
@@ -90,4 +91,15 @@ test("release metadata, service worker and app shell are never edge-cached", () 
   const assets = headers.get("/assets/(.*)") ?? [];
   const assetCache = assets.find((item) => item.key.toLowerCase() === "cache-control")?.value ?? "";
   assert.match(assetCache, /immutable/);
+});
+
+
+test("stale installed HTML detects a newer release before React and service-worker boot", () => {
+  assert.match(vite, /transformIndexHtml/);
+  assert.match(vite, /__ZHAOWU_RELEASE__/);
+  assert.match(html, /fetch\("\/release\.json\?bootstrap=" \+ Date\.now\(\)/);
+  assert.match(html, /embeddedRelease/);
+  assert.match(html, /zw_bootstrap/);
+  assert.match(html, /window\.location\.replace/);
+  assert.match(html, /cache:\s*"no-store"/);
 });
