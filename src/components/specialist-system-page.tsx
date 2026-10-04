@@ -158,7 +158,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
               {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
               {reading.sections.slice(0, 1).map((section) => <ReadingSection key={`${section.title}-quick`} section={section} />)}
             </div>}
-            personal={<PersonalPaidProfile birth={birth} locale={locale} />}
+            personal={birth ? <PersonalPaidProfile birth={birth} locale={locale} /> : undefined}
             full={<div className="zhaowu-specialist-sections">
               {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
               {reading.sections.map((section) => <ReadingSection key={`${section.title}-${section.body.slice(0, 24)}`} section={section} />)}
