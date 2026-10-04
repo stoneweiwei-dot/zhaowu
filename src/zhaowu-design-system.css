@@ -6862,3 +6862,16 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-mark { margin-top: 7px !important
 html body .zhaowu-lotus-intro:has(> .zhaowu-lotus-intro__fallback.is-neutral) { background: #0b120e !important; }
 html body .zhaowu-lotus-intro__fallback.is-neutral { background: #0b120e !important; }
 html body .zhaowu-lotus-intro__fallback.is-neutral > * { display: none !important; }
+
+/* Illustrated Destiny v1: one quiet local scene with readable warm-paper text. */
+.illustrated-destiny-panel{margin:18px 0;padding:0;color:#242620;background:#FFF9EE;border-block:1px solid rgba(84,66,44,.18)}
+.illustrated-destiny-art{display:block;width:100%;height:auto;max-width:100%}
+.illustrated-destiny-panel figcaption{padding:12px 16px;font-size:16px;line-height:1.65;color:#242620;overflow-wrap:anywhere}
+.illustrated-destiny-panel details{padding:0 16px 14px;font-size:16px;line-height:1.6;overflow-wrap:anywhere}
+.illustrated-destiny-panel details summary,.illustrated-destiny-share summary{display:flex;align-items:center;min-height:44px;cursor:pointer;color:#355E50}
+.illustrated-destiny-share{margin:0 0 18px;color:#242620;font-size:16px}
+.illustrated-destiny-formats{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0}
+.illustrated-destiny-formats button{min-width:64px;min-height:44px;padding:8px 12px;border:1px solid rgba(84,66,44,.28);background:#FFF9EE;color:#242620;font-size:16px}
+html[data-zw-theme="night"] body :is(.illustrated-destiny-panel,.illustrated-destiny-share){color:#242620;background-color:#FFF9EE}
+html[data-zw-theme="night"] body .illustrated-destiny-panel :is(figcaption,details,summary,p,li,small){color:#242620}
+@media(max-width:560px){.illustrated-destiny-panel figcaption{padding:12px 14px;font-size:16px}}
