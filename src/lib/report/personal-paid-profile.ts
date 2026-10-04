@@ -11,7 +11,9 @@ export type PersonalPaidProfileModel = {
   currentCycle: string;
   relations: string[];
   colors: string[];
+  colorSwatches: Array<{ label: string; hex: string }>;
   quietColors: string[];
+  quietColorSwatches: Array<{ label: string; hex: string }>;
   materials: string[];
   hours: string[];
   persona: string;
@@ -46,6 +48,14 @@ const COLORS: Record<Locale, Record<Element, string[]>> = {
     金: ["pearl white", "silver grey", "pale gold"],
     水: ["mist blue", "ink navy", "smoke black"],
   },
+};
+
+const ELEMENT_SWATCH: Record<Element, string> = {
+  木: "#6f907a",
+  火: "#b85f4d",
+  土: "#b79a6b",
+  金: "#c7c1b4",
+  水: "#617b88",
 };
 
 const MATERIALS: Record<Locale, Record<Element, string[]>> = {
@@ -187,8 +197,16 @@ export function buildPersonalPaidProfile(birth: SharedBirthRecord, locale: Local
   const relations = relationLabels(branches, locale);
   const useful = chart.useful.length ? chart.useful : [chart.dayMasterElement];
   const drain = chart.drain.length ? chart.drain : [];
-  const colors = unique(useful.flatMap((element) => COLORS[locale][element])).slice(0, 4);
-  const quietColors = unique(drain.flatMap((element) => COLORS[locale][element])).slice(0, 3);
+  const colorSwatches = useful
+    .flatMap((element) => COLORS[locale][element].map((label) => ({ label, hex: ELEMENT_SWATCH[element] })))
+    .filter((item, index, all) => all.findIndex((candidate) => candidate.label === item.label) === index)
+    .slice(0, 4);
+  const colors = colorSwatches.map((item) => item.label);
+  const quietColorSwatches = drain
+    .flatMap((element) => COLORS[locale][element].map((label) => ({ label, hex: ELEMENT_SWATCH[element] })))
+    .filter((item, index, all) => all.findIndex((candidate) => candidate.label === item.label) === index)
+    .slice(0, 3);
+  const quietColors = quietColorSwatches.map((item) => item.label);
   const materials = unique(useful.flatMap((element) => MATERIALS[locale][element])).slice(0, 4);
   const hours = unique(useful.flatMap((element) => HOURS[locale][element])).slice(0, 4);
 
@@ -218,7 +236,9 @@ export function buildPersonalPaidProfile(birth: SharedBirthRecord, locale: Local
     currentCycle,
     relations,
     colors,
+    colorSwatches,
     quietColors,
+    quietColorSwatches,
     materials,
     hours,
     persona: personaFor(chart.dayMasterElement, chart.strength.tendency, relations, locale),
