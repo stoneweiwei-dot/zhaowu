@@ -70,13 +70,3 @@ export function IllustratedShareCard({ result }: { result: AnalysisResult }) {
       <button type="button" key={ratio} onClick={() => downloadIllustratedShare(scene, result.question, ratio)}>{ratio}</button>)}</div>
   </details>;
 }
-export function IllustratedDestinyWelcome({ locale }: { locale: string }) {
-  return <aside className="illustrated-destiny-welcome" data-illustrated-welcome>
-    <svg viewBox="0 0 100 44" aria-hidden="true"><path d="M1 36Q23 7 49 36T99 32V43H1Z" fill="#DCE4DB"/>
-      <path d="M2 38Q50 33 98 37" fill="none" stroke="#456B72" strokeWidth="1.3"/>
-      <circle cx="70" cy="13" r="6" fill="#E7D9B8"/>
-      <path d="M40 30v8m0-5-3 4m3-4 4 3" stroke="#242620" fill="none" strokeWidth="1.2"/></svg>
-    <span>{locale === "en" ? "Start with one question" : "今天先看一件事"}</span>
-    <a href="#analysis">{locale === "en" ? "Begin with your birth details" : locale === "zh-Hans" ? "从生辰开始" : "從生辰開始"}</a>
-  </aside>;
-}

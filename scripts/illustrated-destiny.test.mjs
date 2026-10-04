@@ -28,8 +28,12 @@ test("provider or illustration failure cannot block the free answer", () => {
   assert.doesNotMatch(component, /fetch\(|generateDecreeImage|supabase/i);
 });
 
-test("homepage entry is small and legacy Comic Lite is not duplicated in public report flow", () => {
-  assert.ok(home.includes('<IllustratedDestinyWelcome locale={locale} />'));
+test("illustrations stay inside reports without adding a homepage welcome or duplicating legacy Comic Lite", () => {
+  assert.doesNotMatch(home, /IllustratedDestiny|illustrated-destiny-panel|data-illustrated-welcome/);
+  assert.doesNotMatch(component, /IllustratedDestinyWelcome|data-illustrated-welcome/);
+  assert.doesNotMatch(styles, /illustrated-destiny-welcome/);
+  assert.match(report, /<IllustratedDestinyPanel result=\{result\} \/>/);
+  assert.match(report, /<IllustratedShareCard result=\{result\} \/>/);
   assert.doesNotMatch(resultView, /ComicLiteReport|ReportComicLite/);
   assert.doesNotMatch(report, /ComicLiteReport|ReportComicLite/);
 });

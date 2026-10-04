@@ -6872,10 +6872,6 @@ html body .zhaowu-lotus-intro__fallback.is-neutral > * { display: none !importan
 .illustrated-destiny-share{margin:0 0 18px;color:#242620;font-size:16px}
 .illustrated-destiny-formats{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0}
 .illustrated-destiny-formats button{min-width:64px;min-height:44px;padding:8px 12px;border:1px solid rgba(84,66,44,.28);background:#FFF9EE;color:#242620;font-size:16px}
-.illustrated-destiny-welcome{display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:min(100%,560px);margin:4px auto 12px;padding:8px 14px;color:#242620;background:#FFF9EE;border-block:1px solid rgba(84,66,44,.16);font-size:16px;line-height:1.5}
-.illustrated-destiny-welcome svg{width:64px;height:30px;flex:none}
-.illustrated-destiny-welcome span{flex:1 1 150px}
-.illustrated-destiny-welcome a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;color:#355E50;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
-html[data-zw-theme="night"] body :is(.illustrated-destiny-panel,.illustrated-destiny-share,.illustrated-destiny-welcome){color:#242620;background-color:#FFF9EE}
+html[data-zw-theme="night"] body :is(.illustrated-destiny-panel,.illustrated-destiny-share){color:#242620;background-color:#FFF9EE}
 html[data-zw-theme="night"] body .illustrated-destiny-panel :is(figcaption,details,summary,p,li,small){color:#242620}
-@media(max-width:560px){.illustrated-destiny-panel figcaption{padding:12px 14px;font-size:16px}.illustrated-destiny-welcome{gap:7px}.illustrated-destiny-welcome svg{width:48px}}
+@media(max-width:560px){.illustrated-destiny-panel figcaption{padding:12px 14px;font-size:16px}}
