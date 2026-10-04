@@ -24,11 +24,14 @@ export const Route = createFileRoute("/")({ component: Home });
 
 /* ── Hero painting set ─────────────────────────────────────── */
 const HERO_PAINTINGS = [
-  { src: "/intro/zhaowu-opening-r148.jpg",        alt: "昭梧開卷" },
-  { src: "/intro/owner-immortal-ascent-r123.jpg",  alt: "登天" },
-  { src: "/intro/owner-lotus-bloom-r53.jpg",       alt: "蓮花盛開" },
-  { src: "/visuals/tianlong-report-hero.jpg",      alt: "天龍" },
-  { src: "/deep-reading-song-mineral.webp",        alt: "宋礦深讀" },
+  { src: "/hero-gallery/dragon-scholar.webp",      alt: "天龍觀者" },
+  { src: "/hero-gallery/lotus-lady.webp",          alt: "蓮池仙境" },
+  { src: "/hero-gallery/koi-dragon-rider.webp",    alt: "御龍飛天" },
+  { src: "/hero-gallery/cloud-dragon.webp",        alt: "雲龍出岫" },
+  { src: "/hero-gallery/river-rain-boat.webp",     alt: "煙雨孤舟" },
+  { src: "/hero-gallery/karst-mist-lake.webp",     alt: "山水雲霧" },
+  { src: "/hero-gallery/temple-bamboo-rain.webp",  alt: "竹雨古寺" },
+  { src: "/hero-gallery/misty-mountains-lake.webp",alt: "煙嵐疊翠" },
 ];
 
 type Section = "form" | "today" | "quiz" | "notes";
