@@ -1,5 +1,6 @@
 import { ChartTable } from "@/components/specialist-chart";
 import { ReportAccessGate } from "@/components/report-access-gate";
+import { PersonalPaidProfile } from "@/components/personal-paid-profile";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
@@ -33,6 +34,7 @@ function NumerologyPage(){
       system="numerology"
       locale={locale}
       quick={<section className="seal-border rounded-2xl bg-paper p-5 sm:p-8"><h3 className="font-display text-xl text-ink">{c.who}</h3><p className="mt-3 text-[15px] leading-7 text-ink-soft">{tx(locale,p.core)}</p></section>}
+      personal={<PersonalPaidProfile birth={birth} locale={locale} />}
       full={<div className="space-y-5">
         <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8" data-numerology-soul><p className="text-xs tracking-[0.22em] text-cinnabar">{c.soul}</p><blockquote className="mt-4 font-display text-2xl leading-relaxed text-ink">{tx(locale,p.soul)}</blockquote></section>
         <section className="seal-border rounded-2xl bg-cream p-5 sm:p-8"><h3 className="font-display text-xl text-ink">{c.role}</h3><p className="mt-3 text-[15px] leading-7 text-ink-soft">{tx(locale,p.role)}</p></section>

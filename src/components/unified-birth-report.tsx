@@ -4,6 +4,7 @@ import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
 import { SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
 import { ReportAccessGate } from "@/components/report-access-gate";
+import { PersonalPaidProfile } from "@/components/personal-paid-profile";
 import type { ReportSystemId } from "@/lib/report-access";
 import {
   buildIndianReading,
@@ -314,6 +315,7 @@ function SpecialistTreeBody({ birth, locale, copy }: { birth: SharedBirthRecord;
               system={entry.id}
               locale={locale}
               quick={<SpecialistEntryContent entry={entry} quick />}
+              personal={<PersonalPaidProfile birth={birth} locale={locale} />}
               full={<SpecialistEntryContent entry={entry} />}
             />
           </div>

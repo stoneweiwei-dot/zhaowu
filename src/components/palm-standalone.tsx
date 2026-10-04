@@ -1,5 +1,6 @@
 import { ChartTable } from "@/components/specialist-chart";
 import { ReportAccessGate } from "@/components/report-access-gate";
+import { PersonalPaidProfile } from "@/components/personal-paid-profile";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { CityPicker } from "@/components/city-picker";
@@ -168,6 +169,7 @@ export function PalmStandalone() {
   };
 
   const synthesis = result ? buildPalmSynthesis(result.palaces, locale) : null;
+  const personalBirth = result ? readSharedBirthRecord() : null;
 
   return (
     <main className="palm-standalone mx-auto max-w-4xl space-y-6 pb-10 sm:space-y-8">
@@ -269,6 +271,7 @@ export function PalmStandalone() {
               system="palm"
               locale={locale}
               quick={<article className="rounded-2xl border border-[#b99755]/35 bg-paper/65 p-5"><h3 className="font-display text-xl font-semibold tracking-[0.06em] text-ink">{copy.readingTitle}</h3><p className="mt-3 text-sm leading-7 text-ink-soft">{copy.readingBody}</p></article>}
+              personal={personalBirth ? <PersonalPaidProfile birth={personalBirth} locale={locale} /> : undefined}
               full={<>
             <article className="relative overflow-hidden rounded-2xl border border-[#b99755]/35 p-4 sm:p-5" style={{ background: "linear-gradient(135deg, rgba(255,250,242,.98), rgba(242,231,207,.84))" }}>
               <h3 className="font-display text-lg font-semibold tracking-[0.06em] text-ink">{copy.traceTitle}</h3>

@@ -1,5 +1,6 @@
 import { ChartTable, SpecialistChart } from "@/components/specialist-chart";
 import { ReportAccessGate } from "@/components/report-access-gate";
+import { PersonalPaidProfile } from "@/components/personal-paid-profile";
 import { useEffect, useMemo, useState } from "react";
 import { D60ReliabilityGate } from "@/components/d60-reliability-gate";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
@@ -157,6 +158,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
               {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
               {reading.sections.slice(0, 1).map((section) => <ReadingSection key={`${section.title}-quick`} section={section} />)}
             </div>}
+            personal={birth ? <PersonalPaidProfile birth={birth} locale={locale} /> : undefined}
             full={<div className="zhaowu-specialist-sections">
               {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
               {reading.sections.map((section) => <ReadingSection key={`${section.title}-${section.body.slice(0, 24)}`} section={section} />)}
