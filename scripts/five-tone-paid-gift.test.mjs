@@ -41,7 +41,7 @@ test("only the standardized owner-library five-tone names can fulfill the gift",
   assert.equal(matched.find((item) => item.element === "水")?.track, null);
 });
 
-test("every paid choice states its extra value and verified access renders the playable gift", async () => {
+test("the report stays primary while every verified paid level includes its playable five-tone gift", async () => {
   const [gate, gift, css, specialist, palm, numerology, unified] = await Promise.all([
     read("src/components/report-access-gate.tsx"),
     read("src/components/five-tone-gift.tsx"),
@@ -51,16 +51,22 @@ test("every paid choice states its extra value and verified access renders the p
     read("src/routes/numerology.tsx"),
     read("src/components/unified-birth-report.tsx"),
   ]);
-  for (const phrase of ["命盤主音 1 首", "生扶／主音／疏導 3 首", "五音完整序列 5 首"]) assert.match(gate, new RegExp(phrase));
+  assert.match(gate, /你購買的是命盤解讀/);
+  for (const phrase of ["隨報告附贈｜命盤主音 1 首", "隨報告附贈｜生扶音・主音・疏導音 3 首", "隨報告附贈｜完整五音序列 5 首"]) assert.match(gate, new RegExp(phrase));
+  assert.doesNotMatch(gate, /昭梧不只給文字解讀/);
+  assert.match(gate, /\{personal\}\{full\}<FiveToneGift/);
+  assert.match(gate, /\{quick\}<FiveToneGift/);
   assert.match(gate, /<FiveToneGift[\s\S]*level=\{level\}/);
   assert.match(gate, /<FiveToneGift[\s\S]*level="quick"/);
   assert.match(gift, /loadOwnerMusic/);
   assert.match(gift, /data-background-music-control/);
   assert.match(gift, /不是按五行數量「缺什麼補什麼」/);
   assert.match(gift, /不替代醫療、心理治療或專業診斷/);
-  assert.match(gate, /五音療癒聆聽贈曲/);
+  assert.match(gift, /隨報告附贈 · 五音/);
   assert.match(gate, /不替代醫療、心理治療或專業診斷/);
   assert.match(css, /\.zhaowu-five-tone-gift/);
+  assert.match(css, /\.zhaowu-report-pricing p \{[\s\S]*font-size: 14px/);
+  assert.match(css, /\.zhaowu-report-pricing article > small \{[\s\S]*font-size: 12px/);
   assert.match(css, /grid-template-columns: 23px minmax\(0, 1fr\) 44px/);
   for (const surface of [specialist, palm, numerology, unified]) assert.match(surface, /birth=\{/);
 });

@@ -30,10 +30,10 @@ type Copy = {
 
 const COPY: Record<Locale, Copy> = {
   "zh-Hant": {
-    kicker: "ZHAOWU · FIVE TONES",
-    title: "你的命盤專屬五音療癒聆聽",
+    kicker: "隨報告附贈 · 五音",
+    title: "命盤專屬五音聆聽",
     lead: (element, tone, count) => `依完整命盤目前的功能取向，以${element}行・${tone}音為主，為你排出 ${count} 首聆聽序列；不是按五行數量「缺什麼補什麼」。`,
-    gift: (count) => `本次付費奉送 ${count} 首`,
+    gift: (count) => `附贈 ${count} 首`,
     missingBirth: "先在首頁保存出生資料，這裡便會自動排出你的專屬五音。",
     loading: "正在從昭梧音樂庫取回你的曲目……",
     unavailable: "五音曲庫暫時未能連線，請稍後重新整理；你的付費權益不會消失。",
@@ -44,10 +44,10 @@ const COPY: Record<Locale, Copy> = {
     role: { support: "生扶音", primary: "主音", release: "疏導音", transform: "轉化音", settle: "收束音" },
   },
   "zh-Hans": {
-    kicker: "ZHAOWU · FIVE TONES",
-    title: "你的命盘专属五音疗愈聆听",
+    kicker: "随报告附赠 · 五音",
+    title: "命盘专属五音聆听",
     lead: (element, tone, count) => `依完整命盘目前的功能取向，以${element}行・${tone}音为主，为你排出 ${count} 首聆听序列；不是按五行数量“缺什么补什么”。`,
-    gift: (count) => `本次付费奉送 ${count} 首`,
+    gift: (count) => `附赠 ${count} 首`,
     missingBirth: "先在首页保存出生资料，这里便会自动排出你的专属五音。",
     loading: "正在从昭梧音乐库取回你的曲目……",
     unavailable: "五音曲库暂时未能连接，请稍后刷新；你的付费权益不会消失。",
@@ -58,10 +58,10 @@ const COPY: Record<Locale, Copy> = {
     role: { support: "生扶音", primary: "主音", release: "疏导音", transform: "转化音", settle: "收束音" },
   },
   en: {
-    kicker: "ZHAOWU · FIVE TONES",
-    title: "Your chart-matched five tones",
+    kicker: "INCLUDED WITH YOUR REPORT · FIVE TONES",
+    title: "Chart-matched five-tone listening",
     lead: (element, tone, count) => `Built from the chart's current functional emphasis: ${element} and the ${tone} tone lead this ${count}-track sequence. It is not selected by simply replacing a “missing” element.`,
-    gift: (count) => `${count} track${count === 1 ? "" : "s"} included with this purchase`,
+    gift: (count) => `${count} track${count === 1 ? "" : "s"} included`,
     missingBirth: "Save a birth record on the homepage and your personal tone sequence will appear here automatically.",
     loading: "Retrieving your tracks from the Zhaowu music library…",
     unavailable: "The five-tone library is temporarily unavailable. Refresh later; your paid access remains intact.",
