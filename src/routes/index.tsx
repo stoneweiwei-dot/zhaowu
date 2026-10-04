@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { AnalysisForm } from "@/components/analysis-form";
 import { DailyAlmanacWidget } from "@/components/daily-almanac-widget";
 import { DeepReadingHeroCard } from "@/components/deep-reading-hero-card";
@@ -13,6 +13,7 @@ import { SkyEventsHomeSection } from "@/components/sky-events-home-section";
 import { useI18n } from "@/lib/i18n";
 import { clearSharedBirthRecord } from "@/lib/shared-birth";
 import { useAppStore } from "@/lib/store";
+import "@/home-hero-v1.css";
 import "@/home-polish-v3.css";
 import "@/home-portals.css";
 import "@/home-portals-astrology.css";
@@ -21,175 +22,279 @@ import "@/home-birth-hub-r60.css";
 
 export const Route = createFileRoute("/")({ component: Home });
 
+/* ── Hero painting set ─────────────────────────────────────── */
+const HERO_PAINTINGS = [
+  { src: "/intro/zhaowu-opening-r148.jpg",        alt: "昭梧開卷" },
+  { src: "/intro/owner-immortal-ascent-r123.jpg",  alt: "登天" },
+  { src: "/intro/owner-lotus-bloom-r53.jpg",       alt: "蓮花盛開" },
+  { src: "/visuals/tianlong-report-hero.jpg",      alt: "天龍" },
+  { src: "/deep-reading-song-mineral.webp",        alt: "宋礦深讀" },
+];
+
+type Section = "form" | "today" | "quiz" | "notes";
+
+/* ── Trilingual copy ───────────────────────────────────────── */
+function useCopy(locale: string) {
+  if (locale === "en") {
+    return {
+      kicker: "ZHAOWU · PERSONAL DESTINY BOOK",
+      title: "One birth record. One ZHAOWU Destiny Book.",
+      tagline: "Heaven counts to forty-nine — and leaves one line open.",
+      navBook:  "Destiny",
+      navToday: "Today",
+      navQuiz:  "Explore",
+      navNotes: "Notes",
+      todayHint: "almanac, five-element dress and spirit slip",
+      quizHint: "optional self-discovery tests",
+      notesTitle: "Notes on Life",
+      notesHint: "essays and editorial archive",
+      scentTitle: "Five-Element Scent Map",
+      scentHint: "sensory preference vs. five-element symbolism",
+      cards: [
+        { href: "/quiz/divine-affinity",       title: "Divine Affinity Scan",           hint: "16 questions across Soul Pattern, Celestial Mandate" },
+        { href: "/quiz/cultivation-destiny",   title: "Cultivation Destiny Dossier",    hint: "spirit root, sect, paths + personal 9:16 dossier image" },
+        { href: "/fun-tests/earth-online",     title: "Earth Online · Classics Guide",  hint: "8 questions to match your stuck point with a Chinese classic" },
+        { href: "/fun-tests?test=animal",      title: "Inner Animal × Guardian Beast",  hint: "current personality strategy and instinctive response" },
+        { href: "/fun-tests?test=element",     title: "Five-Element Function Test",     hint: "which function you currently want to strengthen" },
+        { href: "/quiz/six-realms",            title: "Six Realms Habit Test",          hint: "which everyday habit pattern is strongest now" },
+      ],
+    };
+  }
+  if (locale === "zh-Hans") {
+    return {
+      kicker: "昭梧 · 个人命书",
+      title: "一份生辰，读成一本昭梧命书",
+      tagline: "天衍四九，其留与一。爱出者爱返，福往者福来。",
+      navBook:  "命书",
+      navToday: "今日",
+      navQuiz:  "测验",
+      navNotes: "观世录",
+      todayHint: "黄历、五行穿衣、灵签各自展开",
+      quizHint: "可选的自我观察",
+      notesTitle: "观世录",
+      notesHint: "最新文章与完整内容档案",
+      scentTitle: "五行香气谱",
+      scentHint: "看嗅觉偏好与五行文化象意",
+      cards: [
+        { href: "/quiz/divine-affinity",       title: "仙佛渊源本缘测试",   hint: "16 题从魂格、象征脉象、天命六层交叉判读" },
+        { href: "/quiz/cultivation-destiny",   title: "修仙命格灵测",       hint: "推演灵根宗门道途并生成个人九比十六命测图" },
+        { href: "/fun-tests/earth-online",     title: "地球 Online · 古籍攻略", hint: "8 道题看你现在卡在哪一关，推荐古籍" },
+        { href: "/fun-tests?test=animal",      title: "内在动物 × 命局瑞兽", hint: "看现在常用的人格策略与本能反应" },
+        { href: "/fun-tests?test=element",     title: "五行功能测验",        hint: "看现在主观上最想加强哪一种功能" },
+        { href: "/quiz/six-realms",            title: "六道习气测验",        hint: "看目前最明显的日常惯性" },
+      ],
+    };
+  }
+  /* 繁體中文 (default) */
+  return {
+    kicker: "昭梧 · 個人命書",
+    title: "一份生辰，讀成一本昭梧命書",
+    tagline: "天衍四九，其留與一。愛出者愛返，福往者福來。",
+    navBook:  "命書",
+    navToday: "今日",
+    navQuiz:  "測驗",
+    navNotes: "觀世錄",
+    todayHint: "黃曆、五行穿衣、靈籤各自展開",
+    quizHint: "可選的自我觀察",
+    notesTitle: "觀世錄",
+    notesHint: "最新文章與完整內容檔案",
+    scentTitle: "五行香氣譜",
+    scentHint: "看嗅覺偏好與五行文化象意",
+    cards: [
+      { href: "/quiz/divine-affinity",       title: "仙佛淵源本緣測試",   hint: "16 題從魂格、象徵脈象、天命六層交叉判讀" },
+      { href: "/quiz/cultivation-destiny",   title: "修仙命格靈測",       hint: "推演靈根宗門道途並生成個人九比十六命測圖" },
+      { href: "/fun-tests/earth-online",     title: "地球 Online · 古籍攻略", hint: "8 道題看你現在卡在哪一關，推薦古籍" },
+      { href: "/fun-tests?test=animal",      title: "內在動物 × 命局瑞獸", hint: "看現在常用的人格策略與本能反應" },
+      { href: "/fun-tests?test=element",     title: "五行功能測驗",        hint: "看現在主觀上最想加強哪一種功能" },
+      { href: "/quiz/six-realms",            title: "六道習氣測驗",        hint: "看目前最明顯的日常慣性" },
+    ],
+  };
+}
+
+/* ── Nav item data ─────────────────────────────────────────── */
+const NAV_ITEMS: { id: Section; iconSrc: string }[] = [
+  { id: "form",  iconSrc: "/emblems/ruyi-emblem.svg" },
+  { id: "today", iconSrc: "/emblems/lotus-emblem.svg" },
+  { id: "quiz",  iconSrc: "/emblems/modern-bagua-emblem.svg" },
+  { id: "notes", iconSrc: "/emblems/mountain-emblem.svg" },
+];
+
+/* ── Home ──────────────────────────────────────────────────── */
 function Home() {
   const { locale } = useI18n();
+  const copy = useCopy(locale);
   const current = useAppStore((s) => s.current);
   const setCurrent = useAppStore((s) => s.setCurrent);
-  const [openPanel, setOpenPanel] = useState<"today" | "quiz" | "notes" | null>("today");
+
+  const [heroIdx, setHeroIdx] = useState(0);
+  const [activeSection, setActiveSection] = useState<Section | null>(null);
   const [scentOpen, setScentOpen] = useState(false);
 
-  const funCopy = locale === "en"
-    ? {
-        title: "ZHAOWU · SELF DISCOVERY",
-        homeKicker: "ZHAOWU · PERSONAL DESTINY BOOK",
-        homeTitle: "One birth record. One ZHAOWU Destiny Book.",
-        heroInscription: [
-          "Heaven counts to forty-nine — and leaves one line open.",
-          "What you give returns to you; fortune follows no fixed door, only your own hand.",
-          "Zhaowu does not pronounce your fate — it shows you the line still yours to write.",
-        ],
+  /* auto-cycle paintings */
+  useEffect(() => {
+    const t = setInterval(() => setHeroIdx((i) => (i + 1) % HERO_PAINTINGS.length), 4500);
+    return () => clearInterval(t);
+  }, []);
 
-        explore: "Explore",
-        todayTitle: "Today",
-        todayHint: "almanac, five-element dress colours and spirit slip — each in its own section",
-        quizHint: "optional reflective tests, kept separate from the formal chart",
-        notesTitle: "Notes on life",
-        notesHint: "the latest essay and the full editorial archive",
-        scentTitle: "Five-Element Scent Map",
-        scentHint: "sensory preference compared with five-element cultural imagery",
-        cards: [
-          { href: "/quiz/divine-affinity", title: "Divine Affinity Scan", hint: "16 questions across Soul Pattern, symbolic lineage and Celestial Mandate" },
-            { href: "/quiz/cultivation-destiny", title: "Cultivation Destiny Dossier", hint: "turn your saved birth chart into a spirit root, sect, paths and a personal 9:16 dossier image" },
-          { href: "/fun-tests/earth-online", title: "Earth Online · Classics Guide", hint: "8 questions to match your current stuck point with a Chinese classic" },
-          { href: "/fun-tests?test=animal", title: "Inner Animal × Guardian Beast", hint: "current personality strategy and instinctive response" },
-          { href: "/fun-tests?test=element", title: "Five-Element Function Test", hint: "which function you currently want to strengthen" },
-          { href: "/quiz/six-realms", title: "Six Realms Habit Test", hint: "which everyday habit pattern is strongest now" },
-        ],
-      }
-    : locale === "zh-Hans"
-      ? {
-          title: "昭梧 · 心境小测",
-          homeKicker: "昭梧 · 个人命书",
-          homeTitle: "一份生辰，读成一本昭梧命书",
-          heroInscription: [
-            "天衍四九，其留与一。",
-            "爱出者爱返，福往者福来；祸福无门，惟人自召。",
-            "昭于未见，梧于有归。",
-          ],
+  /* auto-open form if there's a cached analysis result */
+  useEffect(() => {
+    if (current && activeSection === null) setActiveSection("form");
+  }, [current]); // eslint-disable-line react-hooks/exhaustive-deps
 
-          explore: "延伸内容",
-          todayTitle: "今日",
-          todayHint: "黄历、五行穿衣、灵签各自展开，不必来回切换",
-          quizHint: "可选的自我观察，不混入正式命盘",
-          notesTitle: "观世录",
-          notesHint: "最新文章与完整内容档案",
-          scentTitle: "五行香气谱",
-          scentHint: "看嗅觉偏好与五行文化象意，不当成身体缺什么",
-          cards: [
-            { href: "/quiz/divine-affinity", title: "仙佛渊源本缘测试", hint: "16 题从魂格、象征脉象、能量体、前世象征、命格深层与天命六层交叉判读" },
-            { href: "/quiz/cultivation-destiny", title: "修仙命格灵测", hint: "用已保存生辰推演灵根 宗门 道途并生成个人九比十六命测图" },
-            { href: "/fun-tests/earth-online", title: "地球 Online · 古籍攻略", hint: "8 道题看你现在卡在哪一关，再推荐最适合此刻读的古籍" },
-            { href: "/fun-tests?test=animal", title: "内在动物 × 命局瑞兽", hint: "看现在常用的人格策略与本能反应" },
-            { href: "/fun-tests?test=element", title: "五行功能测验", hint: "看现在主观上最想加强哪一种功能" },
-            { href: "/quiz/six-realms", title: "六道习气测验", hint: "看目前最明显的日常惯性" },
-          ],
-        }
-      : {
-          title: "昭梧 · 心境小測",
-          homeKicker: "昭梧 · 個人命書",
-          homeTitle: "一份生辰，讀成一本昭梧命書",
-          heroInscription: [
-            "天衍四九，其留與一。",
-            "愛出者愛返，福往者福來；禍福無門，惟人自召。",
-            "昭於未見，梧於有歸。",
-          ],
+  const toggleSection = (id: Section) =>
+    setActiveSection((prev) => (prev === id ? null : id));
 
-          explore: "延伸內容",
-          todayTitle: "今日",
-          todayHint: "黃曆、五行穿衣、靈籤各自展開，不必來回切換",
-          quizHint: "可選的自我觀察，不混入正式命盤",
-          notesTitle: "觀世錄",
-          notesHint: "最新文章與完整內容檔案",
-          scentTitle: "五行香氣譜",
-          scentHint: "看嗅覺偏好與五行文化象意，不當成身體缺什麼",
-          cards: [
-            { href: "/quiz/divine-affinity", title: "仙佛淵源本緣測試", hint: "16 題從魂格、象徵脈象、能量體、前世象徵、命格深層與天命六層交叉判讀" },
-            { href: "/quiz/cultivation-destiny", title: "修仙命格靈測", hint: "用已保存生辰推演靈根 宗門 道途並生成個人九比十六命測圖" },
-            { href: "/fun-tests/earth-online", title: "地球 Online · 古籍攻略", hint: "8 道題看你現在卡在哪一關，再推薦最適合此刻讀的古籍" },
-            { href: "/fun-tests?test=animal", title: "內在動物 × 命局瑞獸", hint: "看現在常用的人格策略與本能反應" },
-            { href: "/fun-tests?test=element", title: "五行功能測驗", hint: "看現在主觀上最想加強哪一種功能" },
-            { href: "/quiz/six-realms", title: "六道習氣測驗", hint: "看目前最明顯的日常慣性" },
-          ],
-        };
+  const navLabels: Record<Section, string> = {
+    form:  copy.navBook,
+    today: copy.navToday,
+    quiz:  copy.navQuiz,
+    notes: copy.navNotes,
+  };
 
   return (
-    <main className="zhaowu-home-sheet-page zhaowu-home-layout">
-      <header className="zhaowu-home-lead">
-        <p>{funCopy.homeKicker}</p>
-        <h1>{funCopy.homeTitle}</h1>
-        <p className="zhaowu-home-lead-inscription">
-          {funCopy.heroInscription.map((line, i) => (
-            <span key={i}>
-              {line}
-              {i < funCopy.heroInscription.length - 1 ? <br /> : null}
-            </span>
-          ))}
-        </p>
-      </header>
+    <main className="zw-hero-home">
 
-      <HomeSectionBoundary id="analysis" locale={locale} onRecover={() => { clearSharedBirthRecord(); window.location.reload(); }}>
-        <div className="zhaowu-home-stage zhaowu-home-stage--primary relative">
-          <AnalysisForm />
+      {/* ── PAINTING HERO GALLERY ───────────────────────────── */}
+      <div className="zw-hero-gallery" role="region" aria-label="昭梧畫作">
+        {HERO_PAINTINGS.map((p, i) => (
+          <img
+            key={p.src}
+            src={p.src}
+            alt={p.alt}
+            className={`zw-hero-painting${i === heroIdx ? " is-active" : ""}`}
+            loading={i === 0 ? "eager" : "lazy"}
+            decoding="async"
+          />
+        ))}
+        <div className="zw-hero-dots" role="tablist" aria-label="畫作切換">
+          {HERO_PAINTINGS.map((_, i) => (
+            <button
+              key={i}
+              role="tab"
+              aria-selected={i === heroIdx}
+              aria-label={`第 ${i + 1} 張`}
+              className={`zw-hero-dot${i === heroIdx ? " is-active" : ""}`}
+              onClick={() => setHeroIdx(i)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* ── BRAND INSCRIPTION ───────────────────────────────── */}
+      <div className="zw-hero-inscription">
+        <p className="zw-hero-inscription-kicker">{copy.kicker}</p>
+        <h1 className="zw-hero-inscription-title">{copy.title}</h1>
+        <p className="zw-hero-inscription-tagline">{copy.tagline}</p>
+      </div>
+
+      {/* ── ICON NAVIGATION ─────────────────────────────────── */}
+      <div className="zw-hero-nav-wrap">
+        <nav className="zw-hero-nav" aria-label="主要功能">
+          {NAV_ITEMS.map(({ id, iconSrc }) => (
+            <button
+              key={id}
+              type="button"
+              className={`zw-hero-nav-item${activeSection === id ? " is-active" : ""}`}
+              aria-expanded={activeSection === id}
+              aria-label={navLabels[id]}
+              onClick={() => toggleSection(id)}
+            >
+              <img src={iconSrc} className="zw-hero-nav-icon" alt="" aria-hidden />
+              <span className="zw-hero-nav-label">{navLabels[id]}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* ── DEEP READING CTA (always visible) ───────────────── */}
+      <HomeSectionBoundary id="hero" locale={locale}>
+        <DeepReadingHeroCard />
+      </HomeSectionBoundary>
+
+      {/* ── SECONDARY PANEL: FORM ───────────────────────────── */}
+      {activeSection === "form" && (
+        <HomeSectionBoundary
+          id="analysis"
+          locale={locale}
+          onRecover={() => { clearSharedBirthRecord(); window.location.reload(); }}
+        >
+          <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--primary relative">
+            <AnalysisForm />
+          </div>
+        </HomeSectionBoundary>
+      )}
+
+      {/* Result view always visible when there's a result */}
+      {current && (
+        <HomeSectionBoundary
+          id="report"
+          locale={locale}
+          onRecover={() => { setCurrent(null); window.location.reload(); }}
+        >
+          <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
+            <ResultView result={current} />
+          </div>
+          <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
+            <FollowUpBox result={current} />
+          </div>
+        </HomeSectionBoundary>
+      )}
+
+      {/* ── SECONDARY PANEL: TODAY ──────────────────────────── */}
+      {activeSection === "today" && (
+        <div className="zw-hero-secondary-panel">
+          <DailyAlmanacWidget embedded />
+          <SkyEventsHomeSection />
+        </div>
+      )}
+
+      {/* ── SECONDARY PANEL: QUIZ ───────────────────────────── */}
+      {activeSection === "quiz" && (
+        <div className="zw-hero-secondary-panel">
+          <div className="zhaowu-home-fun-grid" style={{ padding: "0 16px" }}>
+            {copy.cards.map((card) => (
+              <a key={card.title} href={card.href} className="zhaowu-home-fun-card" aria-label={card.title}>
+                <span className="min-w-0">
+                  <strong>{card.title}</strong>
+                  <small>{card.hint}</small>
+                </span>
+                <span className="zhaowu-home-fun-arrow" aria-hidden>›</span>
+              </a>
+            ))}
+            <button
+              type="button"
+              className="zhaowu-home-fun-card text-left"
+              aria-expanded={scentOpen}
+              aria-controls="home-scent-test"
+              onClick={() => setScentOpen((v) => !v)}
+            >
+              <span className="min-w-0">
+                <strong>{copy.scentTitle}</strong>
+                <small>{copy.scentHint}</small>
+              </span>
+              <span className="zhaowu-home-fun-arrow" aria-hidden>{scentOpen ? "⌃" : "›"}</span>
+            </button>
+          </div>
+          <div id="home-scent-test" data-scent-panel hidden={!scentOpen}>
+            {scentOpen ? <ScentFiveElementTest result={current} /> : null}
+          </div>
+        </div>
+      )}
+
+      {/* ── SECONDARY PANEL: NOTES ──────────────────────────── */}
+      {activeSection === "notes" && (
+        <div className="zw-hero-secondary-panel">
+          <LifeViewHomeSection />
+        </div>
+      )}
+
+      {/* ── INSTALL PROMPT ──────────────────────────────────── */}
+      <HomeSectionBoundary id="install" locale={locale}>
+        <div className="zhaowu-home-stage">
+          <HomeScreenInstallPrompt />
         </div>
       </HomeSectionBoundary>
 
-      {current ? (
-        <HomeSectionBoundary id="report" locale={locale} onRecover={() => { setCurrent(null); window.location.reload(); }}>
-          <div className="zhaowu-home-stage zhaowu-home-stage--result"><ResultView result={current} /></div>
-          <div className="zhaowu-home-stage zhaowu-home-stage--result"><FollowUpBox result={current} /></div>
-        </HomeSectionBoundary>
-      ) : null}
-
-      <HomeSectionBoundary id="hero" locale={locale}><DeepReadingHeroCard /></HomeSectionBoundary>
-
-      <section className="zhaowu-home-stage zhaowu-home-stage--daily-priority" aria-label={funCopy.todayTitle}>
-        <HomeDisclosure id="home-today" title={funCopy.todayTitle} hint={funCopy.todayHint} open={openPanel === "today"} onToggle={() => setOpenPanel((value) => value === "today" ? null : "today")}>
-          <DailyAlmanacWidget embedded />
-          <SkyEventsHomeSection />
-        </HomeDisclosure>
-      </section>
-
-      <section className="zhaowu-home-explore" aria-label={funCopy.explore}>
-        <p className="zhaowu-home-explore-label">{funCopy.explore}</p>
-
-        <HomeDisclosure id="home-fun-tests" title={funCopy.title} hint={funCopy.quizHint} open={openPanel === "quiz"} onToggle={() => setOpenPanel((value) => value === "quiz" ? null : "quiz")}>
-          <div data-home-fun-tests>
-            <div className="zhaowu-home-fun-grid">
-              {funCopy.cards.map((card) => (
-                <a key={card.title} href={card.href} className="zhaowu-home-fun-card" aria-label={card.title}>
-                  <span className="min-w-0"><strong>{card.title}</strong><small>{card.hint}</small></span>
-                  <span className="zhaowu-home-fun-arrow" aria-hidden>›</span>
-                </a>
-              ))}
-              <button type="button" className="zhaowu-home-fun-card text-left" aria-expanded={scentOpen} aria-controls="home-scent-test" onClick={() => setScentOpen((value) => !value)}>
-                <span className="min-w-0"><strong>{funCopy.scentTitle}</strong><small>{funCopy.scentHint}</small></span>
-                <span className="zhaowu-home-fun-arrow" aria-hidden>{scentOpen ? "⌃" : "›"}</span>
-              </button>
-            </div>
-            <div id="home-scent-test" data-scent-panel hidden={!scentOpen}>
-              {scentOpen ? <ScentFiveElementTest result={current} /> : null}
-            </div>
-          </div>
-        </HomeDisclosure>
-
-        <HomeDisclosure id="home-notes" title={funCopy.notesTitle} hint={funCopy.notesHint} open={openPanel === "notes"} onToggle={() => setOpenPanel((value) => value === "notes" ? null : "notes")}>
-          <LifeViewHomeSection />
-        </HomeDisclosure>
-      </section>
-
-      <HomeSectionBoundary id="install" locale={locale}><div className="zhaowu-home-stage"><HomeScreenInstallPrompt /></div></HomeSectionBoundary>
     </main>
-  );
-}
-
-function HomeDisclosure({ id, title, hint, open, onToggle, children }: { id: string; title: string; hint: string; open: boolean; onToggle: () => void; children: ReactNode }) {
-  return (
-    <section className={`zhaowu-home-disclosure${open ? " is-open" : ""}`}>
-      <button type="button" className="zhaowu-home-disclosure-trigger" aria-expanded={open} aria-controls={`${id}-panel`} onClick={onToggle}>
-        <span><strong>{title}</strong><small>{hint}</small></span>
-        <i aria-hidden="true" />
-      </button>
-      {open ? <div id={`${id}-panel`} className="zhaowu-home-disclosure-panel">{children}</div> : null}
-    </section>
   );
 }
