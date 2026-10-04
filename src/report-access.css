@@ -112,3 +112,315 @@
 @media (prefers-reduced-motion: reduce) {
   .zhaowu-report-pricing button { transition: none; }
 }
+
+
+/* Paid personal birth-profile — customer data only, three-page editorial insert. */
+.zhaowu-paid-personal-profile {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin: 0 0 22px;
+  border: 1px solid rgba(185, 154, 98, .52);
+  border-radius: 22px;
+  color: #f8f1df;
+  background:
+    radial-gradient(circle at 86% 10%, rgba(222, 196, 137, .13), transparent 28%),
+    radial-gradient(circle at 8% 88%, rgba(116, 154, 137, .10), transparent 30%),
+    #173f35;
+  box-shadow: 0 22px 54px rgba(31, 45, 38, .15), inset 0 0 0 1px rgba(255,255,255,.025);
+}
+
+.zhaowu-paid-personal-profile::after {
+  content: "昭";
+  position: absolute;
+  right: -22px;
+  bottom: -72px;
+  z-index: -1;
+  color: rgba(245, 226, 180, .055);
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: 190px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.zhaowu-paid-personal-profile__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 22px 17px;
+  border-bottom: 1px solid rgba(222, 198, 143, .20);
+}
+
+.zhaowu-paid-personal-profile__head p {
+  margin: 0 !important;
+  color: #d9bd83 !important;
+  font-size: 10px !important;
+  font-weight: 700;
+  letter-spacing: .22em;
+}
+
+.zhaowu-paid-personal-profile__head h3 {
+  margin: 6px 0 0 !important;
+  color: #fff8e9 !important;
+  font-family: var(--font-display, "Songti TC", serif) !important;
+  font-size: clamp(24px, 5vw, 34px) !important;
+  font-weight: 560 !important;
+  line-height: 1.2 !important;
+  letter-spacing: .035em;
+}
+
+.zhaowu-paid-personal-profile__head span {
+  display: block;
+  max-width: 34rem;
+  margin-top: 7px;
+  color: rgba(246, 239, 222, .70);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.zhaowu-paid-personal-profile__pager {
+  display: grid;
+  grid-template-columns: auto 38px 38px;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+}
+
+.zhaowu-paid-personal-profile__pager b {
+  color: rgba(247, 239, 221, .68);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.zhaowu-paid-personal-profile__pager button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid rgba(224, 194, 132, .52);
+  border-radius: 999px;
+  color: #efd798;
+  background: rgba(7, 35, 29, .28);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.zhaowu-paid-personal-profile__pager button:disabled {
+  cursor: default;
+  opacity: .26;
+}
+
+.zhaowu-paid-personal-profile__page-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 22px 12px;
+}
+
+.zhaowu-paid-personal-profile__page-title strong {
+  color: #f5dda8;
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: 18px;
+  font-weight: 560;
+  letter-spacing: .06em;
+}
+
+.zhaowu-paid-personal-profile__page-title span {
+  color: rgba(244, 236, 217, .42);
+  font-size: 9px;
+  letter-spacing: .14em;
+}
+
+.zhaowu-paid-personal-profile__page {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 14px 16px;
+}
+
+.zhaowu-paid-personal-card {
+  min-width: 0;
+  padding: 15px 15px 14px;
+  border: 1px solid rgba(185, 154, 98, .42);
+  border-radius: 15px;
+  color: #243a33;
+  background: linear-gradient(145deg, rgba(255, 252, 244, .97), rgba(242, 235, 219, .95));
+  box-shadow: inset 0 1px rgba(255,255,255,.8);
+}
+
+.zhaowu-paid-personal-card > small {
+  display: block;
+  margin-bottom: 7px;
+  color: #806e4f;
+  font-size: 10px;
+  font-weight: 720;
+  letter-spacing: .12em;
+}
+
+.zhaowu-paid-personal-card > strong {
+  display: block;
+  color: #2a3e37;
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: 15px;
+  font-weight: 560;
+  line-height: 1.7;
+}
+
+.zhaowu-paid-personal-card.is-birth,
+.zhaowu-paid-personal-card.is-pillars,
+.zhaowu-paid-personal-card.is-core,
+.zhaowu-paid-personal-card.is-colors,
+.zhaowu-paid-personal-card.is-relations {
+  grid-column: 1 / -1;
+}
+
+.zhaowu-paid-personal-card.is-birth > strong {
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.zhaowu-paid-personal-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.zhaowu-paid-personal-pillars span {
+  display: grid;
+  min-width: 0;
+  justify-items: center;
+  gap: 4px;
+  padding: 10px 4px;
+  border: 1px solid rgba(49, 79, 68, .12);
+  border-radius: 10px;
+  background: rgba(235, 230, 215, .62);
+}
+
+.zhaowu-paid-personal-pillars span[data-ready="false"] { opacity: .62; }
+
+.zhaowu-paid-personal-pillars i {
+  color: #8b795a;
+  font-size: 9px;
+  font-style: normal;
+  letter-spacing: .08em;
+}
+
+.zhaowu-paid-personal-pillars b {
+  color: #244d40;
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: clamp(16px, 4vw, 21px);
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.zhaowu-paid-personal-card.is-core > strong { font-size: 14px; line-height: 1.8; }
+.zhaowu-paid-personal-card.is-cycle > strong,
+.zhaowu-paid-personal-card.is-persona > strong { font-size: 20px; color: #285a4b; }
+
+.zhaowu-paid-personal-swatches {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.zhaowu-paid-personal-swatches span {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.zhaowu-paid-personal-swatches i {
+  width: 100%;
+  aspect-ratio: 1.38;
+  border: 1px solid rgba(74, 63, 48, .12);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.28);
+}
+
+.zhaowu-paid-personal-swatches b {
+  color: #4f5b55;
+  font-size: 10px;
+  font-weight: 650;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.zhaowu-paid-personal-mini-swatches,
+.zhaowu-paid-personal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.zhaowu-paid-personal-mini-swatches span,
+.zhaowu-paid-personal-tags span {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(91, 75, 52, .15);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: #52605a;
+  background: rgba(255,255,255,.46);
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.zhaowu-paid-personal-mini-swatches i {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+
+.zhaowu-paid-personal-profile__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px 16px;
+  border-top: 1px solid rgba(222, 198, 143, .14);
+}
+
+.zhaowu-paid-personal-profile__foot p {
+  max-width: 38rem;
+  margin: 0 !important;
+  color: rgba(246, 239, 222, .58) !important;
+  font-size: 10px !important;
+  line-height: 1.65 !important;
+}
+
+.zhaowu-paid-personal-profile__foot > span {
+  color: rgba(239, 214, 154, .46);
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: 22px;
+  letter-spacing: .14em;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .zhaowu-paid-personal-profile { border-radius: 18px; }
+  .zhaowu-paid-personal-profile__head { gap: 12px; padding: 18px 16px 14px; }
+  .zhaowu-paid-personal-profile__head h3 { font-size: 25px !important; }
+  .zhaowu-paid-personal-profile__head span { font-size: 11px; }
+  .zhaowu-paid-personal-profile__pager { grid-template-columns: auto 36px 36px; gap: 5px; }
+  .zhaowu-paid-personal-profile__pager button { width: 36px; height: 36px; }
+  .zhaowu-paid-personal-profile__page-title { padding: 13px 16px 11px; }
+  .zhaowu-paid-personal-profile__page { grid-template-columns: 1fr; padding: 0 10px 13px; }
+  .zhaowu-paid-personal-card { grid-column: 1 / -1; padding: 14px; }
+  .zhaowu-paid-personal-pillars { gap: 5px; }
+  .zhaowu-paid-personal-pillars span { padding: 9px 2px; }
+  .zhaowu-paid-personal-swatches { gap: 6px; }
+  .zhaowu-paid-personal-swatches b { font-size: 9px; }
+  .zhaowu-paid-personal-profile__foot { padding: 11px 14px 14px; }
+  .zhaowu-paid-personal-profile__foot > span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-paid-personal-profile__pager button { transition: none; }
+}
