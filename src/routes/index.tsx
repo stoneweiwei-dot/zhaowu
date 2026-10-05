@@ -1,15 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { AnalysisForm } from "@/components/analysis-form";
-import { DailyAlmanacWidget } from "@/components/daily-almanac-widget";
 import { DeepReadingHeroCard } from "@/components/deep-reading-hero-card";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
 import { HomeSectionBoundary } from "@/components/home-section-boundary";
-import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { ResultView } from "@/components/result-view";
-import { ScentFiveElementTest } from "@/components/scent-five-element-test";
-import { SkyEventsHomeSection } from "@/components/sky-events-home-section";
 import { useI18n } from "@/lib/i18n";
 import { clearSharedBirthRecord } from "@/lib/shared-birth";
 import { useAppStore } from "@/lib/store";
@@ -122,6 +118,19 @@ const NAV_ITEMS: { id: Section; iconSrc: string }[] = [
   { id: "notes", iconSrc: "/emblems/mountain-emblem.svg" },
 ];
 
+const LazyDailyAlmanacWidget = lazy(() =>
+  import("@/components/daily-almanac-widget").then((mod) => ({ default: mod.DailyAlmanacWidget })),
+);
+const LazySkyEventsHomeSection = lazy(() =>
+  import("@/components/sky-events-home-section").then((mod) => ({ default: mod.SkyEventsHomeSection })),
+);
+const LazyLifeViewHomeSection = lazy(() =>
+  import("@/components/life-view-home-section").then((mod) => ({ default: mod.LifeViewHomeSection })),
+);
+const LazyScentFiveElementTest = lazy(() =>
+  import("@/components/scent-five-element-test").then((mod) => ({ default: mod.ScentFiveElementTest })),
+);
+
 /* ── Home ──────────────────────────────────────────────────── */
 function Home() {
   const { locale } = useI18n();
@@ -153,22 +162,27 @@ function Home() {
     quiz:  copy.navQuiz,
     notes: copy.navNotes,
   };
+  const visibleHeroIndexes = [heroIdx, (heroIdx + 1) % HERO_PAINTINGS.length];
 
   return (
     <main className="zw-hero-home">
 
       {/* ── PAINTING HERO GALLERY ───────────────────────────── */}
       <div className="zw-hero-gallery" role="region" aria-label="昭梧畫作">
-        {HERO_PAINTINGS.map((p, i) => (
-          <img
-            key={p.src}
-            src={p.src}
-            alt={p.alt}
-            className={`zw-hero-painting${i === heroIdx ? " is-active" : ""}`}
-            loading={i === 0 ? "eager" : "lazy"}
-            decoding="async"
-          />
-        ))}
+        {visibleHeroIndexes.map((i) => {
+          const p = HERO_PAINTINGS[i];
+          return (
+            <img
+              key={p.src}
+              src={p.src}
+              alt={p.alt}
+              className={`zw-hero-painting${i === heroIdx ? " is-active" : ""}`}
+              loading={i === heroIdx ? "eager" : "lazy"}
+              fetchPriority={i === heroIdx ? "high" : "low"}
+              decoding="async"
+            />
+          );
+        })}
         <div className="zw-hero-dots" role="tablist" aria-label="畫作切換">
           {HERO_PAINTINGS.map((_, i) => (
             <button
@@ -246,8 +260,10 @@ function Home() {
       {/* ── SECONDARY PANEL: TODAY ──────────────────────────── */}
       {activeSection === "today" && (
         <div className="zw-hero-secondary-panel">
-          <DailyAlmanacWidget embedded />
-          <SkyEventsHomeSection />
+          <Suspense fallback={null}>
+            <LazyDailyAlmanacWidget embedded />
+            <LazySkyEventsHomeSection />
+          </Suspense>
         </div>
       )}
 
@@ -279,7 +295,11 @@ function Home() {
             </button>
           </div>
           <div id="home-scent-test" data-scent-panel hidden={!scentOpen}>
-            {scentOpen ? <ScentFiveElementTest result={current} /> : null}
+            {scentOpen ? (
+              <Suspense fallback={null}>
+                <LazyScentFiveElementTest result={current} />
+              </Suspense>
+            ) : null}
           </div>
         </div>
       )}
@@ -287,7 +307,9 @@ function Home() {
       {/* ── SECONDARY PANEL: NOTES ──────────────────────────── */}
       {activeSection === "notes" && (
         <div className="zw-hero-secondary-panel">
-          <LifeViewHomeSection />
+          <Suspense fallback={null}>
+            <LazyLifeViewHomeSection />
+          </Suspense>
         </div>
       )}
 
