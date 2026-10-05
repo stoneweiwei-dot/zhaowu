@@ -12,18 +12,36 @@ function SceneDrawing({ type }: { type: IllustratedSceneType }) {
   const art = ART[type];
   return (
     <svg viewBox="0 0 400 190" role="img" aria-label="A quiet Song-inspired landscape in ink and mineral colour" className="illustrated-destiny-art">
-      <path d="M0 0H400V190H0Z" fill="#FFF9EE" />
-      <path d="M16 128 Q80 58 146 127 Q230 44 318 127 Q348 100 390 119 V170 H16Z" fill="#DCE4DB" opacity=".72" />
-      <path d={art.horizon} fill="none" stroke="#456B72" strokeWidth="1.5" strokeLinecap="round" />
-      <path d={art.path} fill="none" stroke={art.accent} strokeWidth="2" strokeLinecap="round" />
-      <path d="M24 160 Q125 152 205 161 T378 157" fill="none" stroke="#C19A55" strokeWidth="1" opacity=".72" />
-      <circle cx="276" cy="53" r="16" fill="#E7D9B8" opacity=".72" />
-      <path d="M0 171 Q90 166 180 172 T400 168 V190 H0Z" fill="#F6F1E7" />
-      <g fill="none" stroke="#242620" strokeWidth="1.6" strokeLinecap="round">
-        <circle cx="197" cy="120" r="4" fill="#F6F1E7" />
-        <path d="M197 124v17m0-11-6 7m6-7 6 6m-6 5-5 9m5-9 6 9" />
+      <defs>
+        <linearGradient id="scene-paper" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FFFBF2" />
+          <stop offset="1" stopColor="#F3ECDD" />
+        </linearGradient>
+        <linearGradient id="scene-jade" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#DCE6DC" />
+          <stop offset=".55" stopColor="#AFC3B5" />
+          <stop offset="1" stopColor="#7F9D8F" />
+        </linearGradient>
+      </defs>
+      <path d="M0 0H400V190H0Z" fill="url(#scene-paper)" />
+      <circle cx="310" cy="47" r="19" fill="#DFC58C" opacity=".76" />
+      <path d="M0 128 Q58 62 116 124 Q168 80 211 124 Q270 49 340 126 Q366 103 400 114V176H0Z" fill="#D8E2D9" opacity=".82" />
+      <path d="M42 132 Q91 87 139 130 Q193 72 244 129 Q303 91 365 130V176H42Z" fill="url(#scene-jade)" opacity=".48" />
+      <path d={art.horizon} fill="none" stroke="#466D68" strokeWidth="1.7" strokeLinecap="round" />
+      <path d={art.path} fill="none" stroke={art.accent} strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M18 151 Q90 141 153 150 T278 149 T389 146" fill="none" stroke="#F4EFE3" strokeWidth="8" strokeLinecap="round" opacity=".9" />
+      <path d="M20 156 Q115 148 202 157 T382 152" fill="none" stroke="#C19A55" strokeWidth="1.3" opacity=".72" />
+      <path d="M36 59c14-10 28-8 39 4 12-11 26-12 39-3M272 82c12-9 25-8 36 3 10-9 22-10 34-2" fill="none" stroke="#A8B9AE" strokeWidth="2.4" strokeLinecap="round" opacity=".7" />
+      <g fill="none" stroke="#536F63" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity=".9">
+        <path d="M79 129v-29m0 5-11 11m11-4 12 11" />
+        <path d="M66 116c7-8 13-10 19-4M74 106c6-7 11-8 16-3" />
+        <path d="M326 132v-27m0 5-9 9m9-3 10 10" />
       </g>
-      <path d="M190 117q7-8 14 0" fill="none" stroke={art.accent} strokeWidth="1.4" strokeLinecap="round" />
+      <g transform="translate(286 104)" fill="none" stroke="#8E6A3D" strokeWidth="1.7" strokeLinejoin="round">
+        <path d="M0 22h38M5 22V7h28v15M2 7h34L19-2Z" />
+        <path d="M12 9v13M26 9v13" />
+      </g>
+      <path d="M0 174 Q91 166 181 173 T400 169V190H0Z" fill="#F7F1E6" />
     </svg>
   );
 }
@@ -31,6 +49,7 @@ function SceneDrawing({ type }: { type: IllustratedSceneType }) {
 export function IllustratedDestinyPanel({ result }: { result: AnalysisResult }) {
   const scene = buildIllustratedDestiny(result);
   if (!scene) return null;
+  const basisEvidence = scene.sourceEvidence.filter((evidence) => evidence.trim() !== scene.sourceClaim.trim());
   return (
     <figure className="illustrated-destiny-panel" data-illustrated-destiny data-scene={scene.sceneType}
       data-source-claim={scene.sourceClaim} data-confidence={scene.confidence}>
@@ -38,8 +57,7 @@ export function IllustratedDestinyPanel({ result }: { result: AnalysisResult }) 
       <figcaption>{scene.caption}</figcaption>
       <details>
         <summary>{result.locale === "en" ? "Reading basis" : result.locale === "zh-Hant" ? "命理依據" : "判断依据"}</summary>
-        <p>{scene.sourceClaim}</p>
-        <ul>{scene.sourceEvidence.map((evidence, index) => <li key={index}>{evidence}</li>)}</ul>
+        {basisEvidence.length ? <ul>{basisEvidence.map((evidence, index) => <li key={index}>{evidence}</li>)}</ul> : null}
         <small>{scene.visualMetaphor}</small>
       </details>
     </figure>
