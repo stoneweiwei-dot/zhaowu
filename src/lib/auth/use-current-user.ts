@@ -4,7 +4,7 @@ import { readOwnerSession } from "@/lib/auth/owner-api";
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { createOwnerCookieSession } from "@/lib/owner-data-client";
 
-const OWNER_DATA_ROUTES = new Set(["/account", "/gallery"]);
+const OWNER_DATA_ROUTES = new Set(["/account", "/gallery", "/social"]);
 const OWNER_DATA_SESSION = createOwnerCookieSession() as SupabaseSession;
 
 function currentPathname() {

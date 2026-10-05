@@ -3,7 +3,6 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { SiteShell } from "@/components/site-shell";
 import { OwnerBackgroundMusicManager } from "@/components/owner-background-music-manager";
-import { OwnerConsoleOrganizer } from "@/components/owner-console-organizer";
 import { displayText, useDisplayLanguage } from "@/lib/display-language";
 
 function PublicNotFound() {
@@ -38,7 +37,6 @@ export const Route = createRootRoute({
           <Outlet />
         </SiteShell>
         <OwnerBackgroundMusicManager />
-        <OwnerConsoleOrganizer />
       </AuthProvider>
     </>
   ),

@@ -606,11 +606,13 @@ function AccountPage() {
             </button>
           </div>
         </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-lg border border-line bg-paper/45 p-4">
-            <p className="text-xs tracking-[0.2em] text-ink-mute">{c.birthData}</p>
-            <p className="mt-2 text-sm text-ink-soft">{user.birthData ? c.birthSaved : c.birthEmpty}</p>
-          </div>
+        <div className={`mt-5 grid gap-3 ${user.isOwner ? "" : "sm:grid-cols-2"}`}>
+          {!user.isOwner ? (
+            <div className="rounded-lg border border-line bg-paper/45 p-4">
+              <p className="text-xs tracking-[0.2em] text-ink-mute">{c.birthData}</p>
+              <p className="mt-2 text-sm text-ink-soft">{user.birthData ? c.birthSaved : c.birthEmpty}</p>
+            </div>
+          ) : null}
           <div className="rounded-lg border border-line bg-paper/45 p-4">
             <p className="text-xs tracking-[0.2em] text-ink-mute">{c.reports}</p>
             <p className="mt-2 text-sm text-ink-soft">{user.isOwner ? c.ownerCount(rows.length) : c.memberCount(rows.length)}</p>
@@ -620,26 +622,32 @@ function AccountPage() {
       </section>
 
       {user.isOwner ? (
-        <nav className="flex flex-wrap items-center gap-2" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
-          <div className="grid min-h-11 flex-1 grid-cols-2 gap-2" aria-label={tr(locale, "管理分區", "管理分区", "Console section")}>
-            <button
-              type="button"
-              aria-pressed={ownerView === "reports"}
-              onClick={() => setOwnerView("reports")}
-              className={"min-h-11 rounded-lg border px-3 text-sm font-medium " + (ownerView === "reports" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-paper/55 text-ink-soft")}
-            >{tr(locale, "報告管理", "报告管理", "Reports")}</button>
-            <button
-              type="button"
-              aria-pressed={ownerView === "backgrounds"}
-              onClick={() => setOwnerView("backgrounds")}
-              className={"min-h-11 rounded-lg border px-3 text-sm font-medium " + (ownerView === "backgrounds" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-paper/55 text-ink-soft")}
-            >{tr(locale, "首頁背景", "首页背景", "Home backgrounds")}</button>
-          </div>
-          <Link to="/gallery" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-cream px-4 text-sm text-ink-soft">
-            {tr(locale, "影片與圖片素材", "视频与图片素材", "Video & image library")} →
+        <nav className="grid grid-cols-2 gap-2" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
+          <button
+            type="button"
+            aria-pressed={ownerView === "reports"}
+            onClick={() => setOwnerView("reports")}
+            className={"min-h-14 rounded-xl border px-4 py-3 text-left text-sm font-medium " + (ownerView === "reports" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-cream/80 text-ink")}
+          >
+            <span className="block text-[10px] tracking-[0.16em] opacity-65">REPORTS</span>
+            <span className="mt-1 block">{tr(locale, "報告管理", "报告管理", "Reports")}</span>
+          </button>
+          <button
+            type="button"
+            aria-pressed={ownerView === "backgrounds"}
+            onClick={() => setOwnerView("backgrounds")}
+            className={"min-h-14 rounded-xl border px-4 py-3 text-left text-sm font-medium " + (ownerView === "backgrounds" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-cream/80 text-ink")}
+          >
+            <span className="block text-[10px] tracking-[0.16em] opacity-65">HOME</span>
+            <span className="mt-1 block">{tr(locale, "首頁背景", "首页背景", "Home backgrounds")}</span>
+          </button>
+          <Link to="/gallery" className="min-h-14 rounded-xl border border-line bg-cream/80 px-4 py-3 text-left text-sm font-medium text-ink">
+            <span className="block text-[10px] tracking-[0.16em] text-ink-mute">MEDIA</span>
+            <span className="mt-1 block">{tr(locale, "影片與圖片", "视频与图片", "Media library")}</span>
           </Link>
-          <Link to="/social" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-cream px-4 text-sm text-ink-soft">
-            {tr(locale, "社交發布", "社交发布", "Social publishing")} →
+          <Link to="/social" className="min-h-14 rounded-xl border border-line bg-cream/80 px-4 py-3 text-left text-sm font-medium text-ink">
+            <span className="block text-[10px] tracking-[0.16em] text-cinnabar">PUBLISH</span>
+            <span className="mt-1 block">{tr(locale, "Instagram／Threads", "Instagram／Threads", "Instagram / Threads")}</span>
           </Link>
         </nav>
       ) : null}

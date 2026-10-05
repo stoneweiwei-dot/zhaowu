@@ -56,7 +56,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const isLogin = pathname === "/login" || pathname === "/auth/callback";
-  const isOwnerWorkspace = Boolean(user?.isOwner && (pathname === "/account" || pathname === "/gallery"));
+  const isOwnerWorkspace = Boolean(user?.isOwner && (pathname === "/account" || pathname === "/gallery" || pathname === "/social"));
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
 
   useEffect(() => {
