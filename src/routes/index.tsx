@@ -112,10 +112,10 @@ function useCopy(locale: string) {
 
 /* ── Nav item data ─────────────────────────────────────────── */
 const NAV_ITEMS: { id: Section; iconSrc: string }[] = [
-  { id: "form",  iconSrc: "/emblems/ruyi-emblem.svg" },
-  { id: "today", iconSrc: "/emblems/lotus-emblem.svg" },
-  { id: "quiz",  iconSrc: "/emblems/modern-bagua-emblem.svg" },
-  { id: "notes", iconSrc: "/emblems/mountain-emblem.svg" },
+  { id: "form",  iconSrc: "/emblems/jade-destiny.svg" },
+  { id: "today", iconSrc: "/emblems/jade-today.svg" },
+  { id: "quiz",  iconSrc: "/emblems/jade-quiz.svg" },
+  { id: "notes", iconSrc: "/emblems/jade-notes.svg" },
 ];
 
 const LazyDailyAlmanacWidget = lazy(() =>
