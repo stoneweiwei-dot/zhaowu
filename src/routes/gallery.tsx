@@ -25,7 +25,7 @@ function GalleryPage() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[10px] tracking-[0.22em] text-cinnabar">MEDIA</p>
-            <h1 className="mt-1 font-display text-3xl">{tx("素材管理", "素材管理", "Media")}</h1>
+            <h1 className="mt-1 font-display text-2xl leading-tight">{tx("素材管理", "素材管理", "Media")}</h1>
           </div>
           <Link to="/account" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft">← {tx("後台", "后台", "Console")}</Link>
         </div>
