@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { lazy, Suspense, useState, useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { AnalysisForm } from "@/components/analysis-form";
 import { DeepReadingHeroCard } from "@/components/deep-reading-hero-card";
 import { FollowUpBox } from "@/components/follow-up-box";
