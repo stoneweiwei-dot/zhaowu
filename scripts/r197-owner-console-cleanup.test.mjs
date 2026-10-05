@@ -15,18 +15,22 @@ test("r197 owner media shows one focused manager at a time", async () => {
   assert.match(route, /view === "login"[\s\S]*OwnerLoginVisualsManager[\s\S]*OwnerGalleryManager/);
 });
 
-test("r197 idle owner pages do not show batch action bars", async () => {
+test("r197 owner batch actions stay discoverable before the first selection", async () => {
   const [login, gallery, account, music] = await Promise.all([
     source("src/components/owner-login-visuals-manager.tsx"),
     source("src/components/owner-gallery-manager.tsx"),
     source("src/routes/account.tsx"),
     source("src/components/owner-background-music-manager.tsx"),
   ]);
-  assert.match(login, /\{selectedIds\.length \? <div data-owner-bulk-toolbar="login-visuals"/);
-  assert.match(gallery, /\{selectedIds\.length \? <div data-owner-bulk-toolbar="gallery"/);
-  assert.match(account, /\{selectedBackgroundIds\.length \? <div data-owner-bulk-toolbar="backgrounds"/);
-  assert.match(account, /\{user\.isOwner && selectedReportIds\.length \? <div data-owner-bulk-toolbar="reports"/);
-  assert.match(music, /\{selectedIds\.length \? <div data-owner-bulk-toolbar="music"/);
+  assert.match(login, /<div data-owner-bulk-toolbar="login-visuals"/);
+  assert.match(gallery, /<div data-owner-bulk-toolbar="gallery"/);
+  assert.match(account, /<div data-owner-bulk-toolbar="backgrounds"/);
+  assert.match(account, /user\.isOwner \? <div data-owner-bulk-toolbar="reports"/);
+  assert.match(music, /<div data-owner-bulk-toolbar="music"/);
+  assert.match(login, /batchManage/);
+  assert.match(gallery, /batchManage/);
+  assert.match(account, /batchManage/);
+  assert.match(music, /batchManage/);
 });
 
 test("r197 preserves login video-only constraints and owner bridge", async () => {

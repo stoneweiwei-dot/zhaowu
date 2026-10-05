@@ -10,6 +10,8 @@ const gallery = await readFile(new URL("../src/components/owner-gallery-manager.
 const shellSource = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
 const account = await readFile(new URL("../src/routes/account.tsx", import.meta.url), "utf8");
 const galleryRoute = await readFile(new URL("../src/routes/gallery.tsx", import.meta.url), "utf8");
+const loginVisuals = await readFile(new URL("../src/components/owner-login-visuals-manager.tsx", import.meta.url), "utf8");
+const publicAtlas = await readFile(new URL("../src/lib/public-atlas.ts", import.meta.url), "utf8");
 
 test("owner music upload uses a deterministic native mobile path instead of browser ffmpeg", () => {
   assert.match(upload, /MAX_OUTPUT_BYTES = 15 \* 1024 \* 1024/);
@@ -62,4 +64,34 @@ test("owner workspace hides public counters, dragon guide and technical status w
   assert.doesNotMatch(galleryRoute, /spend cap|Supabase data session/);
   assert.doesNotMatch(galleryRoute, /系統內置小素材不在這裡展示|系统内置小素材不在这里展示/);
   assert.match(galleryRoute, /data-owner-gallery-console/);
+});
+
+
+test("owner file managers expose persistent bulk actions with explicit text selection states", () => {
+  assert.match(manager, /data-owner-bulk-toolbar="music"/);
+  assert.match(manager, /batchManage/);
+  assert.match(manager, /aria-pressed=\{selected\}/);
+  assert.doesNotMatch(manager, /type="checkbox" className="h-4 w-4" disabled=\{busy \|\| track\.enabled\}/);
+
+  assert.match(gallery, /data-owner-bulk-toolbar="gallery"/);
+  assert.match(gallery, /setSelectedIds\(visibleAssets\.map/);
+  assert.match(gallery, /copy\.shown : copy\.hidden/);
+  assert.doesNotMatch(gallery, /type="checkbox" className="h-4 w-4" checked=\{selectedIds\.includes\(asset\.id\)\}/);
+
+  assert.match(loginVisuals, /data-owner-bulk-toolbar="login-visuals"/);
+  assert.match(loginVisuals, /batchManage/);
+  assert.doesNotMatch(loginVisuals, /type="checkbox" className="h-4 w-4" checked=\{selectedIds\.includes\(asset\.id\)\}/);
+
+  assert.match(account, /data-owner-bulk-toolbar="backgrounds"/);
+  assert.match(account, /data-owner-bulk-toolbar="reports"/);
+  assert.match(account, /selectedOne/);
+  assert.doesNotMatch(account, /type="checkbox" className="h-4 w-4" checked=\{selectedReportIds\.includes\(row\.id\)\}/);
+});
+
+test("customer-facing atlas keeps only restrained Song-jade motifs", () => {
+  assert.match(publicAtlas, /ornament-crane/);
+  assert.match(publicAtlas, /ornament-dragon/);
+  assert.match(publicAtlas, /ornament-lotus/);
+  assert.match(publicAtlas, /ornament-phoenix/);
+  assert.doesNotMatch(publicAtlas, /celestial-pearl|endless-knot|pomegranate|twin-fish/);
 });

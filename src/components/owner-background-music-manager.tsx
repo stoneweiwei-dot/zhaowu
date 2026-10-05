@@ -69,10 +69,12 @@ export function OwnerBackgroundMusicManager() {
     saveName: tr(locale, "保存名稱", "保存名称", "Save name"),
     cancel: tr(locale, "取消", "取消", "Cancel"),
     select: tr(locale, "選取", "选择", "Select"),
+    selectedOne: tr(locale, "已選", "已选", "Selected"),
+    batchManage: tr(locale, "批次管理", "批次管理", "Bulk actions"),
     selected: (n: number) => tr(locale, `已選 ${n} 首`, `已选 ${n} 首`, `${n} selected`),
-    selectAll: tr(locale, "全選可刪除曲目", "全选可删除曲目", "Select deletable"),
-    clearSelection: tr(locale, "取消全選", "取消全选", "Clear selection"),
-    deleteSelected: tr(locale, "刪除所選", "删除所选", "Delete selected"),
+    selectAll: tr(locale, "全選可管理曲目", "全选可管理曲目", "Select all manageable"),
+    clearSelection: tr(locale, "清除選取", "清除选择", "Clear"),
+    deleteSelected: tr(locale, "批次刪除", "批量删除", "Delete selected"),
     batchDeleteConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 首音樂？此操作不可復原。`, `删除已选的 ${n} 首音乐？此操作不可恢复。`, `Delete ${n} selected tracks? This cannot be undone.`),
     renamed: tr(locale, "曲目名稱已更新。", "曲目名称已更新。", "Track name updated."),
     batchDeleted: (n: number) => tr(locale, `已刪除 ${n} 首音樂。`, `已删除 ${n} 首音乐。`, `Deleted ${n} tracks.`),
@@ -228,35 +230,37 @@ export function OwnerBackgroundMusicManager() {
     </button>
 
     {open ? createPortal(<div className="fixed inset-0 z-[100] overflow-x-hidden overflow-y-auto bg-ink/35 p-3 backdrop-blur-sm sm:p-6" data-background-music-control role="dialog" aria-modal="true" aria-label={c.title}>
-      <section className="mx-auto w-full min-w-0 max-w-2xl rounded-xl border border-line bg-cream p-4 shadow-2xl sm:p-6">
-        <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-xs tracking-[0.24em] text-cinnabar">OWNER · AUDIO</p><h2 className="mt-2 font-display text-2xl text-ink">{c.title}</h2></div><button type="button" className="min-h-11 shrink-0 rounded-full border border-line bg-paper/60 px-3 text-xs" onClick={() => setOpen(false)}>{c.close}</button></div>
-        <div className="mt-5 flex flex-wrap gap-2">
+      <section className="mx-auto w-full min-w-0 max-w-xl rounded-2xl border border-line bg-cream p-3.5 shadow-2xl sm:p-5">
+        <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-[10px] tracking-[0.22em] text-cinnabar">OWNER · AUDIO</p><h2 className="mt-1 font-display text-xl leading-tight text-ink">{c.title}</h2></div><button type="button" className="min-h-10 shrink-0 rounded-full border border-line bg-paper/60 px-3 text-xs text-ink-soft" onClick={() => setOpen(false)}>{c.close}</button></div>
+        <div className="mt-4 flex flex-wrap gap-2">
           <input ref={inputRef} type="file" className="hidden" accept="audio/*,.mp3,.m4a,.aac,.wav,.flac,.ogg,.opus,.aif,.aiff,.caf" onChange={(event) => void onUpload(event)} />
-          <button type="button" disabled={busy} className="min-h-11 rounded-full bg-cinnabar px-5 text-sm text-cream disabled:opacity-50" onClick={() => inputRef.current?.click()}>{busy ? c.processing : c.upload}</button>
-          <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line bg-paper/60 px-4 text-sm text-ink-soft disabled:opacity-50" onClick={() => void load()}>{c.refresh}</button>
+          <button type="button" disabled={busy} className="min-h-10 rounded-full bg-cinnabar px-4 text-sm text-cream disabled:opacity-50" onClick={() => inputRef.current?.click()}>{busy ? c.processing : c.upload}</button>
+          <button type="button" disabled={busy} className="min-h-10 rounded-full border border-line bg-paper/60 px-4 text-sm text-ink-soft disabled:opacity-50" onClick={() => void load()}>{c.refresh}</button>
         </div>
-        <p className="mt-2 text-[11px] text-ink-mute">{c.limit}</p>
+        <p className="mt-2 text-[10px] leading-5 text-ink-mute">{c.limit}</p>
         {percent != null ? <div className="mt-4 border-y border-line/60 py-3" aria-live="polite"><div className="flex items-center justify-between gap-3 text-xs text-ink-soft"><span>{stage || c.processing}</span><span>{percent}%</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${percent}%` }} /></div></div> : null}
         {message ? <p role="status" className="mt-4 break-words line-clamp-3 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
         {errorMessage ? <div className="mt-4 border-l-2 border-cinnabar/55 pl-3">
           <p role="alert" className="text-sm leading-6 text-cinnabar">{c.operationFailed}</p>
           <details className="mt-1 text-xs text-ink-soft"><summary className="cursor-pointer py-2">{c.errorDetails}</summary><p className="break-words leading-5 [overflow-wrap:anywhere]">{errorMessage}</p></details>
         </div> : null}
-        {selectedIds.length ? <div data-owner-bulk-toolbar="music" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
-          <span className="text-xs font-medium text-ink-soft">{c.selected(selectedIds.length)}</span>
-          <button type="button" disabled={busy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={selectAllDeletable}>{c.selectAll}</button>
-          <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds([])}>{c.clearSelection}</button>
-          <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void onBatchDelete()}>{c.deleteSelected}</button>
-        </div> : null}
+        <div data-owner-bulk-toolbar="music" className="mt-4 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
+          <span className="mr-auto font-display text-sm text-ink">{selectedIds.length ? c.selected(selectedIds.length) : c.batchManage}</span>
+          <button type="button" disabled={busy} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-40" onClick={selectAllDeletable}>{c.selectAll}</button>
+          <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedIds([])}>{c.clearSelection}</button>
+          <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void onBatchDelete()}>{c.deleteSelected}</button>
+        </div>
         <audio ref={previewRef} crossOrigin="anonymous" preload="none" playsInline onPlaying={() => setPreviewPlaying(true)} onPause={() => setPreviewPlaying(false)} onEnded={() => { setPreviewPlaying(false); window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } })); }} onError={() => { setPreviewPlaying(false); setErrorMessage(c.previewFailed); window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } })); }} />
-        <div className="mt-5 space-y-3">
+        <div className="mt-3 space-y-2">
           {!tracks.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
-          {tracks.map((track) => <article key={track.id} data-owner-selectable-file="music" className={`border-t border-line/70 pt-4 ${selectedIds.includes(track.id) ? "rounded-xl bg-cinnabar/[0.035] px-3 pb-3" : ""}`}>
-            <div className="space-y-2">
+          {tracks.map((track) => {
+            const selected = selectedIds.includes(track.id);
+            return <article key={track.id} data-owner-selectable-file="music" className={`border-t border-line/70 pt-3 ${selected ? "bg-wood/[0.045]" : ""}`}>
+            <div className="space-y-2 py-1">
               <div className="flex min-w-0 items-start gap-2">
-                <label className={`mt-0.5 grid min-h-11 min-w-11 place-items-center rounded-full border border-line bg-paper/60 ${track.enabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`} title={track.enabled ? c.activeCannotSelect : c.select}>
-                  <input type="checkbox" className="h-4 w-4" disabled={busy || track.enabled} checked={selectedIds.includes(track.id)} onChange={() => toggleSelected(track)} aria-label={`${c.select} ${track.name}`} />
-                </label>
+                <button type="button" disabled={busy || track.enabled} aria-pressed={selected} onClick={() => toggleSelected(track)} className={`mt-0.5 inline-flex min-h-9 min-w-[3.75rem] shrink-0 items-center justify-center rounded-full border px-2.5 text-[11px] font-medium transition ${selected ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"} ${track.enabled ? "cursor-not-allowed opacity-35" : ""}`} title={track.enabled ? c.activeCannotSelect : c.select}>
+                  {selected ? `✓ ${c.selectedOne}` : c.select}
+                </button>
                 <div className="min-w-0 flex-1">
                   {editingId === track.id ? (
                     <div className="flex flex-wrap items-center gap-2">
@@ -268,24 +272,20 @@ export function OwnerBackgroundMusicManager() {
                       <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line px-3 text-xs" onClick={() => { setEditingId(null); setEditingName(""); }}>{c.cancel}</button>
                     </div>
                   ) : (
-                    <div className="flex flex-wrap items-center gap-2"><h3 className="w-full min-w-0 break-words font-medium leading-6 text-ink [overflow-wrap:anywhere]">{track.name}</h3>{track.enabled ? <span className="rounded-full border border-emerald-700/25 bg-emerald-700/5 px-2.5 py-1 text-[11px] text-emerald-800">{c.current}</span> : null}</div>
+                    <div className="flex flex-wrap items-center gap-2"><h3 className="w-full min-w-0 break-words font-display text-[15px] leading-5 text-ink [overflow-wrap:anywhere]">{track.name}</h3>{track.enabled ? <span className="rounded-full border border-wood/30 bg-wood/5 px-2 py-0.5 text-[10px] text-wood">{c.current}</span> : null}</div>
                   )}
                   <p className="mt-1 whitespace-nowrap text-xs text-ink-mute">{formatCodec(track)} · {formatSize(track.fileSize)}</p>
                 </div>
               </div>
-              <div className="flex flex-wrap items-center gap-2 pl-[3.25rem]">
-                <button type="button" aria-label={`${previewId === track.id && previewPlaying ? c.pause : c.preview} ${track.name}`} className="min-h-11 rounded-md border border-line px-3 text-xs text-ink-soft" onClick={() => togglePreview(track)}>{previewId === track.id && previewPlaying ? c.pause : c.preview}</button>
-                {!track.enabled ? <button type="button" disabled={busy} className="min-h-11 rounded-md bg-wood px-3 text-xs text-cream disabled:opacity-50" onClick={() => void onActivate(track)}>{c.use}</button> : null}
-                <details className="min-w-0">
-                  <summary className="flex min-h-11 cursor-pointer list-none items-center px-3 text-xs text-ink-soft [&::-webkit-details-marker]:hidden">{c.more} ⋯</summary>
-                  <div className="flex flex-wrap gap-2">
-                    <button type="button" disabled={busy || editingId === track.id} className="min-h-11 rounded-md border border-line px-3 text-xs text-ink-soft disabled:opacity-40" onClick={() => beginRename(track)}>{c.rename}</button>
-                    <button type="button" disabled={busy || track.enabled} className="min-h-11 rounded-md px-3 text-xs text-cinnabar disabled:opacity-30" onClick={() => void onDelete(track)}>{c.delete}</button>
-                  </div>
-                </details>
+              <div className="flex flex-wrap items-center gap-1.5 pl-[4.25rem]">
+                <button type="button" aria-label={`${previewId === track.id && previewPlaying ? c.pause : c.preview} ${track.name}`} className="min-h-9 rounded-full border border-line px-3 text-[11px] text-ink-soft" onClick={() => togglePreview(track)}>{previewId === track.id && previewPlaying ? c.pause : c.preview}</button>
+                {!track.enabled ? <button type="button" disabled={busy} className="min-h-9 rounded-full bg-wood px-3 text-[11px] text-cream disabled:opacity-50" onClick={() => void onActivate(track)}>{c.use}</button> : null}
+                <button type="button" disabled={busy || editingId === track.id} className="min-h-9 rounded-full border border-line px-3 text-[11px] text-ink-soft disabled:opacity-40" onClick={() => beginRename(track)}>{c.rename}</button>
+                <button type="button" disabled={busy || track.enabled} className="min-h-9 rounded-full px-2.5 text-[11px] text-cinnabar disabled:opacity-30" onClick={() => void onDelete(track)}>{c.delete}</button>
               </div>
             </div>
-          </article>)}
+          </article>;
+          })}
         </div>
       </section>
     </div>, document.body) : null}
