@@ -460,6 +460,74 @@
   }
 }
 
+
+/* Owner 2026-10-06: the dedicated Daily Colours page must show all five states
+   at once on iPhone. Keep the embedded Today module on its established layout. */
+@media (max-width: 640px) {
+  #five-element-wardrobe[data-daily-colors="page"] > div[role="list"] {
+    display: grid !important;
+    grid-auto-flow: row !important;
+    grid-auto-columns: unset !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    margin: 18px 0 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    overscroll-behavior-inline: auto;
+    scroll-snap-type: none;
+  }
+
+  #five-element-wardrobe[data-daily-colors="page"] > div[role="list"] > button {
+    min-width: 0 !important;
+    min-height: 116px !important;
+    gap: 6px !important;
+    padding: 10px 4px 9px !important;
+    border-radius: 12px !important;
+    scroll-snap-align: none;
+  }
+
+  #five-element-wardrobe[data-daily-colors="page"] > div[role="list"] > button > span:first-child {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  #five-element-wardrobe[data-daily-colors="page"] > div[role="list"] > button strong {
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    overflow-wrap: anywhere;
+  }
+
+  #five-element-wardrobe[data-daily-colors="page"] > div[role="list"] > button small {
+    font-size: 10px !important;
+    line-height: 1.28 !important;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 390px) {
+  #five-element-wardrobe[data-daily-colors="page"] > div[role="list"] {
+    gap: 4px !important;
+  }
+
+  #five-element-wardrobe[data-daily-colors="page"] > div[role="list"] > button {
+    min-height: 110px !important;
+    padding-inline: 3px !important;
+  }
+
+  #five-element-wardrobe[data-daily-colors="page"] > div[role="list"] > button > span:first-child {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  #five-element-wardrobe[data-daily-colors="page"] > div[role="list"] > button strong {
+    font-size: 12px !important;
+  }
+
+  #five-element-wardrobe[data-daily-colors="page"] > div[role="list"] > button small {
+    font-size: 9.5px !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   #five-element-wardrobe > div[role="list"] > button {
     transition: none !important;

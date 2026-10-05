@@ -10,6 +10,7 @@ const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url),
 const almanac = await readFile(new URL("../src/components/daily-almanac-widget.tsx", import.meta.url), "utf8");
 const night = await readFile(new URL("../src/night-readability-r127.css", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/legacy-visual-compat.css", import.meta.url), "utf8");
+const wardrobeCss = await readFile(new URL("../src/five-element-wardrobe-r100.css", import.meta.url), "utf8");
 
 test("five dressing states stay centralized with trilingual names", () => {
   for (const id of ["qingyun", "jianghua", "kunning", "liujin", "hanxu"]) {
@@ -51,6 +52,15 @@ test("home folds the compact colour guide into today's almanac and keeps the ful
   assert.match(source, /#d4a017/);
   assert.match(source, /#d4b074/);
   assert.match(source, /#1e4d7b/);
+});
+
+
+test("standalone phone five-element choices stay in one viewport without changing the embedded Today layout", () => {
+  assert.match(
+    wardrobeCss,
+    /#five-element-wardrobe\[data-daily-colors="page"\] > div\[role="list"\][\s\S]*grid-auto-flow: row !important;[\s\S]*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\) !important;[\s\S]*overflow: visible !important;[\s\S]*scroll-snap-type: none;/,
+  );
+  assert.match(wardrobeCss, /#five-element-wardrobe > div\[role="list"\][\s\S]*overflow-x: auto;/);
 });
 
 test("night last-wins CSS keeps question ink light and swatches vivid", () => {
