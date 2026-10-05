@@ -107,11 +107,13 @@ type BackgroundUploadItem = {
 
 type BackgroundCardCopy = {
   enabled: string;
+  disabled: string;
   setWallpaper: string;
   currentWallpaper: string;
   unpinWallpaper: string;
   delete: string;
   select: string;
+  selectedOne: string;
 };
 
 function BackgroundAssetCard({
@@ -134,10 +136,10 @@ function BackgroundAssetCard({
   onDelete: () => Promise<void>;
 }) {
   return (
-    <article data-background-card data-owner-selectable-file="background" className={`relative overflow-hidden rounded-lg border bg-cream/80 ${selected ? "border-cinnabar/45 ring-1 ring-cinnabar/20" : "border-line"}`}>
-      <label className="absolute left-2 top-2 z-10 grid min-h-11 min-w-11 cursor-pointer place-items-center rounded-full border border-line bg-cream/95 shadow-sm" title={copy.select}>
-        <input type="checkbox" className="h-4 w-4" checked={selected} onChange={onToggleSelected} aria-label={`${copy.select} ${asset.name}`} />
-      </label>
+    <article data-background-card data-owner-selectable-file="background" className={`relative overflow-hidden rounded-xl border bg-cream/80 ${selected ? "border-wood/45 ring-1 ring-wood/15" : "border-line"}`}>
+      <button type="button" aria-pressed={selected} onClick={onToggleSelected} className={`absolute left-2 top-2 z-10 inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 text-[10px] font-medium shadow-sm ${selected ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${copy.select} ${asset.name}`}>
+        {selected ? `✓ ${copy.selectedOne}` : copy.select}
+      </button>
       <img
         src={backgroundPublicUrl(asset.storage_path)}
         alt={asset.name}
@@ -148,10 +150,9 @@ function BackgroundAssetCard({
       <div className="p-3">
         <p className="truncate text-sm font-medium text-ink">{asset.name}</p>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-          <label className="flex items-center gap-2 text-xs text-ink-soft">
-            <input type="checkbox" checked={asset.enabled} onChange={(event) => void onEnabled(event.target.checked)} />
-            {copy.enabled}
-          </label>
+          <button type="button" aria-pressed={asset.enabled} className={`min-h-8 rounded-full border px-2.5 text-[10px] ${asset.enabled ? "border-wood/30 bg-wood/5 text-wood" : "border-line bg-paper/55 text-ink-mute"}`} onClick={() => void onEnabled(!asset.enabled)}>
+            {asset.enabled ? copy.enabled : copy.disabled}
+          </button>
           <div className="flex flex-wrap items-center justify-end gap-2">
             {isPinnedWallpaper(asset) ? (
               <button type="button" className="rounded-full border border-wood/40 bg-wood/10 px-3 py-1.5 text-xs text-wood" onClick={() => void onUnpin()}>{copy.unpinWallpaper}</button>
@@ -246,10 +247,12 @@ function AccountPage() {
     deleteRecordConfirm: tr(locale, "刪除這筆報告？", "删除这笔报告？", "Delete this report?"),
     deleteRecord: tr(locale, "刪除記錄", "删除记录", "Delete record"),
     select: tr(locale, "選取", "选择", "Select"),
+    selectedOne: tr(locale, "已選", "已选", "Selected"),
+    batchManage: tr(locale, "批次管理", "批次管理", "Bulk actions"),
     selected: (n: number) => tr(locale, `已選 ${n} 筆`, `已选 ${n} 笔`, `${n} selected`),
-    selectAllShown: tr(locale, "全選目前顯示", "全选当前显示", "Select shown"),
-    clearSelection: tr(locale, "取消全選", "取消全选", "Clear selection"),
-    deleteSelected: tr(locale, "刪除所選", "删除所选", "Delete selected"),
+    selectAllShown: tr(locale, "全選目前結果", "全选当前结果", "Select all results"),
+    clearSelection: tr(locale, "清除選取", "清除选择", "Clear"),
+    deleteSelected: tr(locale, "批次刪除", "批量删除", "Delete selected"),
     batchDeleteReportsConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 筆報告？此操作不可復原。`, `删除已选的 ${n} 笔报告？此操作不可恢复。`, `Delete ${n} selected reports? This cannot be undone.`),
     batchReportsDeleted: (n: number) => tr(locale, `已刪除 ${n} 筆報告。`, `已删除 ${n} 笔报告。`, `Deleted ${n} reports.`),
     backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
@@ -269,7 +272,8 @@ function AccountPage() {
     uploadDone: tr(locale, "完成", "完成", "Done"),
     uploadItemFailed: tr(locale, "失敗", "失败", "Failed"),
     uploadFailed: tr(locale, "圖片上傳失敗。", "图片上传失败。", "Image upload failed."),
-    enabled: tr(locale, "啟用輪播", "启用轮播", "Enable rotation"),
+    enabled: tr(locale, "輪播中", "轮播中", "In rotation"),
+    disabled: tr(locale, "已停用", "已停用", "Disabled"),
     setWallpaper: tr(locale, "設為壁紙", "设为壁纸", "Set as wallpaper"),
     currentWallpaper: tr(locale, "目前壁紙", "当前壁纸", "Current wallpaper"),
     unpinWallpaper: tr(locale, "取消固定", "取消固定", "Unpin"),
@@ -277,10 +281,10 @@ function AccountPage() {
     delete: tr(locale, "刪除", "删除", "Delete"),
     selectBackground: tr(locale, "選取背景", "选择背景", "Select background"),
     selectedBackgrounds: (n: number) => tr(locale, `已選 ${n} 張`, `已选 ${n} 张`, `${n} selected`),
-    selectVisibleBackgrounds: tr(locale, "全選目前頁面", "全选当前页面", "Select current page"),
-    enableSelectedBackgrounds: tr(locale, "啟用所選", "启用所选", "Enable selected"),
-    disableSelectedBackgrounds: tr(locale, "停用所選", "停用所选", "Disable selected"),
-    deleteSelectedBackgrounds: tr(locale, "刪除所選", "删除所选", "Delete selected"),
+    selectVisibleBackgrounds: tr(locale, "全選本頁", "全选本页", "Select page"),
+    enableSelectedBackgrounds: tr(locale, "批次啟用", "批量启用", "Enable selected"),
+    disableSelectedBackgrounds: tr(locale, "批次停用", "批量停用", "Disable selected"),
+    deleteSelectedBackgrounds: tr(locale, "批次刪除", "批量删除", "Delete selected"),
     batchDeleteBackgroundsConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 張背景圖？此操作不可復原。`, `删除已选的 ${n} 张背景图？此操作不可恢复。`, `Delete ${n} selected backgrounds? This cannot be undone.`),
     batchBackgroundsDone: (n: number) => tr(locale, `已處理 ${n} 張背景圖。`, `已处理 ${n} 张背景图。`, `Updated ${n} backgrounds.`),
     deleteImage: (name: string) => tr(locale, `刪除「${name}」？`, `删除“${name}”？`, `Delete “${name}”?`),
@@ -690,14 +694,14 @@ function AccountPage() {
                 if (next) void loadBackgroundHistory(0);
               }}>{backgroundHistoryOpen ? c.hideHistory : c.viewHistory(backgroundTotal)}</button>
             </div>
-            {selectedBackgroundIds.length ? <div data-owner-bulk-toolbar="backgrounds" className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-cream/70 px-3 py-3">
-              <span className="text-xs font-medium text-ink-soft">{c.selectedBackgrounds(selectedBackgroundIds.length)}</span>
-              <button type="button" disabled={backgroundBusy} className="min-h-10 rounded-full border border-line bg-paper/70 px-3 text-xs disabled:opacity-40" onClick={() => setSelectedBackgroundIds(visibleBackgrounds.map((asset) => asset.id))}>{c.selectVisibleBackgrounds}</button>
-              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-10 rounded-full border border-line bg-paper/70 px-3 text-xs disabled:opacity-40" onClick={() => setSelectedBackgroundIds([])}>{c.clearSelection}</button>
-              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-10 rounded-full border border-wood/30 bg-wood/5 px-3 text-xs text-wood disabled:opacity-40" onClick={() => void setSelectedBackgroundsEnabled(true)}>{c.enableSelectedBackgrounds}</button>
-              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-10 rounded-full border border-line bg-paper/70 px-3 text-xs disabled:opacity-40" onClick={() => void setSelectedBackgroundsEnabled(false)}>{c.disableSelectedBackgrounds}</button>
-              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void deleteSelectedBackgrounds()}>{c.deleteSelectedBackgrounds}</button>
-            </div> : null}
+            <div data-owner-bulk-toolbar="backgrounds" className="mt-3 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
+              <span className="mr-auto font-display text-sm text-ink">{selectedBackgroundIds.length ? c.selectedBackgrounds(selectedBackgroundIds.length) : c.batchManage}</span>
+              <button type="button" disabled={backgroundBusy || !visibleBackgrounds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedBackgroundIds(visibleBackgrounds.map((asset) => asset.id))}>{c.selectVisibleBackgrounds}</button>
+              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedBackgroundIds([])}>{c.clearSelection}</button>
+              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-9 rounded-full border border-wood/30 bg-wood/5 px-3 text-[11px] text-wood disabled:opacity-35" onClick={() => void setSelectedBackgroundsEnabled(true)}>{c.enableSelectedBackgrounds}</button>
+              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => void setSelectedBackgroundsEnabled(false)}>{c.disableSelectedBackgrounds}</button>
+              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelectedBackgrounds()}>{c.deleteSelectedBackgrounds}</button>
+            </div>
             {backgroundHistoryBusy ? <div className="mt-4 h-24 animate-pulse rounded-lg bg-paper-deep" /> : null}
             {!backgroundHistoryBusy && !visibleBackgrounds.length ? <p className="mt-4 text-sm text-ink-mute">{c.noImages}</p> : null}
             {!backgroundHistoryBusy ? (
@@ -740,11 +744,11 @@ function AccountPage() {
           {user.isOwner ? <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} /> : null}
         </div>
 
-        {user.isOwner && selectedReportIds.length ? <div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
-          <span className="text-xs font-medium text-ink-soft">{c.selected(selectedReportIds.length)}</span>
-          <button type="button" disabled={refreshBusy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedReportIds(filtered.map((row) => row.id))}>{c.selectAllShown}</button>
-          <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedReportIds([])}>{c.clearSelection}</button>
-          <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void deleteSelectedReports()}>{c.deleteSelected}</button>
+        {user.isOwner ? <div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
+          <span className="mr-auto font-display text-sm text-ink">{selectedReportIds.length ? c.selected(selectedReportIds.length) : c.batchManage}</span>
+          <button type="button" disabled={refreshBusy || !filtered.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedReportIds(filtered.map((row) => row.id))}>{c.selectAllShown}</button>
+          <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedReportIds([])}>{c.clearSelection}</button>
+          <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelectedReports()}>{c.deleteSelected}</button>
         </div> : null}
 
         {busy ? <div className="mt-5 h-20 animate-pulse rounded-lg bg-paper-deep" /> : null}
@@ -772,10 +776,10 @@ function AccountPage() {
             const rowBusy = detailBusyId === row.id || actionBusyId === row.id;
 
             return (
-              <article key={row.id} data-owner-selectable-file="report" className={`relative rounded-lg border bg-paper/35 p-4 ${selectedReportIds.includes(row.id) ? "border-cinnabar/45 ring-1 ring-cinnabar/20" : "border-line"}`}>
-                {user.isOwner ? <label className="absolute left-2 top-2 grid min-h-11 min-w-11 cursor-pointer place-items-center rounded-full border border-line bg-cream/95" title={c.select}>
-                  <input type="checkbox" className="h-4 w-4" checked={selectedReportIds.includes(row.id)} onChange={() => setSelectedReportIds((current) => current.includes(row.id) ? current.filter((id) => id !== row.id) : [...current, row.id])} aria-label={`${c.select} ${row.alias || c.reportFallback}`} />
-                </label> : null}
+              <article key={row.id} data-owner-selectable-file="report" className={`relative rounded-xl border bg-paper/35 p-3.5 ${selectedReportIds.includes(row.id) ? "border-wood/45 ring-1 ring-wood/15" : "border-line"}`}>
+                {user.isOwner ? <button type="button" aria-pressed={selectedReportIds.includes(row.id)} onClick={() => setSelectedReportIds((current) => current.includes(row.id) ? current.filter((id) => id !== row.id) : [...current, row.id])} className={`absolute left-2 top-2 inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 text-[10px] font-medium ${selectedReportIds.includes(row.id) ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${c.select} ${row.alias || c.reportFallback}`}>
+                  {selectedReportIds.includes(row.id) ? `✓ ${c.selectedOne}` : c.select}
+                </button> : null}
                 <div className="text-center">
                   <h3 className="truncate font-display text-lg font-semibold">{row.alias || String(row.context?.question ?? c.reportFallback)}</h3>
                   {user.isOwner ? <p className="truncate text-xs text-cinnabar">{row.user_email || c.noEmail}</p> : null}
