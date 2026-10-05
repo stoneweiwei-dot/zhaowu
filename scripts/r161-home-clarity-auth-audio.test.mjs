@@ -36,7 +36,8 @@ test("homepage keeps one primary flow while r201 opens the useful Today module",
   assert.match(home, /useState<Section \| null>\(null\)/);
   assert.doesNotMatch(home, /<HomeDisclosure /);
   assert.match(home, /<AnalysisForm \/>/);
-  assert.match(home, /<DailyAlmanacWidget embedded \/>/);
+  assert.match(home, /<LazyDailyAlmanacWidget embedded \/>/);
+  assert.match(home, /import\("@\/components\/daily-almanac-widget"\)/);
   assert.match(home, /activeSection === "today"/);
   assert.doesNotMatch(home, /activeSection === "gallery"/);
   assert.match(home, /activeSection === "notes"/);
