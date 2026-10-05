@@ -318,10 +318,13 @@ export function GreenDragonGuide() {
 
   const isLeft = position ? position.x + DOCK_SIZE / 2 < (typeof window === "undefined" ? 0 : window.innerWidth / 2) : false;
   const opensDown = position ? position.y < (typeof window === "undefined" ? 0 : window.innerHeight * 0.48) : false;
+  const readingSurface = Boolean(current) || ["/numerology", "/ziwei", "/qizheng", "/astrology", "/indian-astrology", "/yizhangjing"].some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
 
   return (
     <aside
-      className={`zhaowu-dragon-guide ${isLeft ? "is-left" : "is-right"} ${opensDown ? "opens-down" : "opens-up"} ${dragging ? "is-dragging" : ""}`}
+      className={`zhaowu-dragon-guide ${isLeft ? "is-left" : "is-right"} ${opensDown ? "opens-down" : "opens-up"} ${dragging ? "is-dragging" : ""} ${readingSurface ? "is-reading-surface" : ""}`}
       data-site-guide
       data-dragon-assistant
       data-dragon-side={isLeft ? "left" : "right"}

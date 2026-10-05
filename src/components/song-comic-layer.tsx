@@ -67,6 +67,41 @@ export function ComicMascot({ stem, compact = false }: { stem: string; compact?:
   );
 }
 
+function ReportStemEmblem({ stem }: { stem: string }) {
+  const profile = profileForStem(stem);
+  const accent = {
+    木: "#6F907A",
+    火: "#B85F4D",
+    土: "#B79A6B",
+    金: "#879B98",
+    水: "#617B88",
+  }[profile.element];
+
+  return (
+    <svg className="zhaowu-comic-mascot is-compact zhaowu-report-stem-emblem" viewBox="0 0 220 170" role="img" aria-label={stem}>
+      <defs>
+        <linearGradient id={`jade-${stem}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#EEF2E8" />
+          <stop offset=".55" stopColor="#BED0C0" />
+          <stop offset="1" stopColor="#8BA596" />
+        </linearGradient>
+        <linearGradient id={`gold-${stem}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#E9D8A9" />
+          <stop offset="1" stopColor="#A98245" />
+        </linearGradient>
+      </defs>
+      <path d="M48 14h124l28 28v86l-28 28H48l-28-28V42Z" fill={`url(#jade-${stem})`} stroke={`url(#gold-${stem})`} strokeWidth="5" />
+      <path d="M43 118 76 72l24 30 30-48 46 64" fill="#6D8B7D" opacity=".34" />
+      <path d="M42 120 77 86l23 29 30-45 35 50" fill="none" stroke={accent} strokeWidth="3" strokeLinecap="round" />
+      <path d="M32 129c28-10 56-9 82 2 25 10 49 9 75-3M49 141c18-6 36-5 53 2 18 7 37 7 58 0" fill="none" stroke="#F5F0E4" strokeWidth="5" strokeLinecap="round" />
+      <circle cx="159" cy="50" r="15" fill="#D9B973" opacity=".84" />
+      <circle cx="69" cy="51" r="24" fill="rgba(255,250,240,.72)" stroke={`url(#gold-${stem})`} strokeWidth="3" />
+      <text x="69" y="60" textAnchor="middle" fontSize="30" fontFamily="serif" fill="#31544F">{stem}</text>
+      <path d="M139 101h24M143 96l8-10 8 10M147 101v18M157 101v18M141 119h22" fill="none" stroke="#8E6A3D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function copyFor(locale: Locale) {
   return locale === "en"
     ? { today: "TODAY · ONE COMIC", explain: "A softer way into the idea", report: "DESTINY BOOK INSERT", plain: "One concept, translated into ordinary language", share: "SHAREABLE FRAME", shareButton: "Share this frame", copied: "Copied", boundary: "No stem is inherently better or worse. This is cultural imagery, not a balance prescription or deterministic verdict." }
@@ -103,7 +138,7 @@ export function SongComicReportInsert({ dayMaster, locale }: { dayMaster: string
 
   return (
     <aside className="zhaowu-song-comic zhaowu-song-comic--report" data-song-comic-report aria-label={copy.report}>
-      <div className="zhaowu-song-comic__illustration"><ComicMascot stem={stem} compact /></div>
+      <div className="zhaowu-song-comic__illustration"><ReportStemEmblem stem={stem} /></div>
       <div className="zhaowu-song-comic__copy">
         <p className="zhaowu-song-comic__kicker">{copy.report}</p>
         <h5>{stem} · {profile.title[locale]}</h5>
@@ -141,7 +176,7 @@ export function SongComicShareCard({ dayMaster, locale }: { dayMaster: string; l
 
   return (
     <footer className="zhaowu-song-comic-share" data-song-comic-share>
-      <div className="zhaowu-song-comic-share__art"><ComicMascot stem={stem} compact /></div>
+      <div className="zhaowu-song-comic-share__art"><ReportStemEmblem stem={stem} /></div>
       <div>
         <p>{copy.share}</p>
         <strong>{stem} · {profile.genre[locale]}</strong>

@@ -158,7 +158,6 @@ export function ReportShareCard({ result }: { result: AnalysisResult }) {
       </div>
 
       <p className="zhaowu-share-fallback">{error ? copy.failed : copy.fallback}</p>
-      <p className="zhaowu-share-watermark" aria-hidden="true">STONE 原創</p>
       {openPreview && previewUrl ? (
         <ImageViewer
           items={[{ id: "share-card", alt: copy.previewAlt, thumbnailUrl: previewUrl, fullImageUrl: previewUrl }]}
