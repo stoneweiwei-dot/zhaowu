@@ -7005,3 +7005,144 @@ html[data-zw-theme="night"] body .illustrated-destiny-panel :is(figcaption,detai
     width: 82px;
   }
 }
+
+
+/* r229 — owner 2026-10-06: compact homepage chrome.
+   Homepage keeps only Latest update + the three language choices in one row.
+   Brand/account chrome moves out of the first screen; owner access lives in the footer. */
+.zhaowu-site-header.is-home-compact .zhaowu-header-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 6px 12px !important;
+  width: min(calc(100% - 24px), 900px) !important;
+  min-height: 48px !important;
+  padding: 2px 0 !important;
+}
+
+.zhaowu-site-header.is-home-compact [data-site-status-strip] {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  min-width: 0 !important;
+  min-height: 44px !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  margin: 0 !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.zhaowu-site-header.is-home-compact [data-site-status-strip] > span {
+  display: none !important;
+}
+
+.zhaowu-site-header.is-home-compact .zhaowu-latest-update-link {
+  display: inline-flex !important;
+  min-height: 44px !important;
+  align-items: center !important;
+  gap: 6px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 4px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--zw-ink-soft) !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  letter-spacing: .08em !important;
+  white-space: nowrap !important;
+}
+
+.zhaowu-site-header.is-home-compact .zhaowu-header-nav {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  width: auto !important;
+  min-width: 0 !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.zhaowu-site-header.is-home-compact .zhaowu-language-icon {
+  display: none !important;
+}
+
+.zhaowu-site-header.is-home-compact .site-lang-group {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  flex: 0 0 auto !important;
+  width: 190px !important;
+  max-width: 190px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-site-header.is-home-compact .site-lang-group .site-lang-button {
+  min-width: 0 !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 6px !important;
+  background: transparent !important;
+  font-size: 13px !important;
+  white-space: nowrap !important;
+}
+
+.zhaowu-route-home .zhaowu-home-app-frame {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.zhaowu-site-owner-bottom {
+  margin: 8px 0 0 !important;
+}
+
+.zhaowu-footer-owner-entry {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(49, 94, 80, .28);
+  padding: 0 6px;
+  color: var(--zw-jade-deep, #315e50);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-decoration: none;
+}
+
+.zhaowu-footer-owner-entry:focus-visible {
+  outline: 2px solid rgba(49, 94, 80, .28);
+  outline-offset: 3px;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-site-header.is-home-compact .zhaowu-header-shell {
+    width: min(calc(100% - 20px), 900px) !important;
+    gap: 6px !important;
+  }
+
+  .zhaowu-site-header.is-home-compact .site-lang-group {
+    width: 184px !important;
+    max-width: 184px !important;
+  }
+
+  .zhaowu-site-header.is-home-compact .site-lang-group .site-lang-button {
+    padding-inline: 4px !important;
+    font-size: 12px !important;
+  }
+
+  .zhaowu-site-header.is-home-compact .zhaowu-latest-update-link {
+    padding-inline: 2px !important;
+    font-size: 11.5px !important;
+  }
+}
