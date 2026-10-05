@@ -78,6 +78,13 @@ test("installed app retries a stale release and escalates to a scoped hard self-
   assert.match(main, /display-mode: standalone/);
   assert.match(main, /legacyStandalone/);
   assert.match(main, /isStandaloneWebApp/);
+  assert.match(main, /promoteFreshServiceWorker/);
+  assert.match(main, /registration\.update\(\)/);
+  assert.match(main, /controllerchange/);
+  assert.match(
+    main,
+    /if \(isStandaloneWebApp\)[\s\S]*promoteFreshServiceWorker\(\)[\s\S]*hardResetForRelease\(freshRelease\)/,
+  );
   assert.match(main, /return await hardResetForRelease\(freshRelease\)/);
 });
 

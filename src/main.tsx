@@ -97,6 +97,47 @@ const writeRecoveryState = (state: RecoveryState) => {
   try { sessionStorage.setItem(RECOVERY_STATE_KEY, JSON.stringify(state)); } catch { /* best effort */ }
 };
 
+const promoteFreshServiceWorker = async () => {
+  try {
+    const registration = await navigator.serviceWorker.getRegistration('/');
+    if (!registration) return false;
+
+    let settled = false;
+    let timeoutId: number | undefined;
+    const controllerChanged = new Promise<boolean>((resolve) => {
+      const finish = (value: boolean) => {
+        if (settled) return;
+        settled = true;
+        if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+        navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
+        resolve(value);
+      };
+      const onControllerChange = () => finish(true);
+      navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
+      timeoutId = window.setTimeout(() => finish(false), 3_000);
+    });
+
+    await registration.update();
+
+    if (registration.waiting) {
+      registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+    } else if (registration.installing) {
+      const installing = registration.installing;
+      const promoteWhenReady = () => {
+        if (installing.state === 'installed') {
+          registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
+        }
+      };
+      installing.addEventListener('statechange', promoteWhenReady);
+      promoteWhenReady();
+    }
+
+    return await controllerChanged;
+  } catch {
+    return false;
+  }
+};
+
 const hardResetForRelease = async (freshRelease: string) => {
   const now = Date.now();
   const previous = readRecoveryState();
@@ -156,13 +197,14 @@ const checkForFreshRelease = async () => {
       return false;
     }
 
-    // macOS Safari Web Apps created with Add to Dock have their own WebKit
-    // website-data container. When a standalone app is still serving an older
-    // release, prefer a scoped self-heal over the ordinary retry path: clear only
-    // ZHAOWU's shell caches, unregister the old root worker, then navigate once to
-    // the exact release. The next load registers the new worker and keeps the app's
-    // manifest identity, local storage, cookies, and user data intact.
+    // iPhone/iPad/macOS standalone Web Apps can restore an older WebKit snapshot
+    // even when the network already serves a newer release. Always ask the existing
+    // registration to update first: service-worker script updates bypass the stale
+    // page shell and are the safest bridge from an old installed app to the new
+    // release. Only fall back to the scoped hard reset if no new controller takes
+    // over within the update window.
     if (isStandaloneWebApp) {
+      if (await promoteFreshServiceWorker()) return true;
       return await hardResetForRelease(freshRelease);
     }
 
