@@ -22,7 +22,7 @@ test("owner music supports rename and one-request multi-delete", async () => {
   assert.match(manager, /data-owner-bulk-toolbar="music"/);
   assert.match(manager, /editingName/);
   assert.match(manager, /保存名稱/);
-  assert.match(manager, /刪除所選/);
+  assert.match(manager, /批次刪除/);
 });
 
 test("all owner file lists expose multi-select batch controls", async () => {
