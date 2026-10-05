@@ -172,8 +172,8 @@
 }
 
 .zw-hero-nav-icon {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -188,7 +188,7 @@
 }
 
 @media (min-width: 420px) {
-  .zw-hero-nav-icon { width: 40px; height: 40px; }
+  .zw-hero-nav-icon { width: 46px; height: 46px; }
   .zw-hero-nav-label { font-size: 0.73rem; }
   .zw-hero-nav-item { padding: 20px 8px 18px; }
 }
@@ -225,7 +225,7 @@
     border-radius: 20px;
   }
 
-  .zw-hero-nav-icon { width: 44px; height: 44px; }
+  .zw-hero-nav-icon { width: 50px; height: 50px; }
   .zw-hero-nav-label { font-size: 0.75rem; }
   .zw-hero-nav-item { padding: 22px 12px 20px; }
 }
