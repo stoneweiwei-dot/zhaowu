@@ -15,7 +15,8 @@ const layout = readFileSync(new URL("../src/content-layout-fixes.css", import.me
 
 test("home exposes Zhaowu Guan Shi Lu as a latest-first expandable editorial archive", () => {
   assert.match(home, /LifeViewHomeSection/);
-  assert.match(home, /<LifeViewHomeSection \/>/);
+  assert.match(home, /<LazyLifeViewHomeSection \/>/);
+  assert.match(home, /import\("@\/components\/life-view-home-section"\)/);
   assert.match(section, /id="life-view"/);
   assert.match(section, /昭梧 · 觀世錄/);
   assert.match(section, /昭梧 · 观世录/);

@@ -34,6 +34,11 @@ function formatReleaseDate(value: string | null, language: DisplayLanguage) {
   return new Intl.DateTimeFormat(intlTagFor(language), { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 }
 
+function updateMeta(selector: string, content: string) {
+  const node = document.querySelector<HTMLMetaElement>(selector);
+  if (node) node.content = content;
+}
+
 function releaseSummaryForLanguage(summary: string, version: string, language: DisplayLanguage) {
   if (language === "zh-Hant" || language === "zh-Hans") return summary;
   if (language === "ja") return `最新の本番更新：${version} には、現在のUI・コンテンツ・安定性に関する修正が含まれています。`;
@@ -91,9 +96,43 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
   const ownerLoginLabel = displayText(language, "站主登入", "站主登录", "Owner sign-in", "站主ログイン", "관리자 로그인", "मालिक लॉगिन");
+  const skipLabel = displayText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
+
+  useEffect(() => {
+    const title = displayText(
+      language,
+      "昭梧｜一份生辰，讀成一本昭梧命書",
+      "昭梧｜一份生辰，读成一本昭梧命书",
+      "ZHAOWU｜One birth record. One Destiny Book.",
+      "ZHAOWU｜出生情報から読むパーソナル命書",
+      "ZHAOWU｜출생 정보로 읽는 개인 명서",
+      "ZHAOWU｜जन्म विवरण से व्यक्तिगत Destiny Book",
+    );
+    const description = displayText(
+      language,
+      "以傳統子平八字為主判，從出生資料整理命盤、人生節奏、今日提示與可選自我探索內容。",
+      "以传统子平八字为主判，从出生资料整理命盘、人生节奏、今日提示与可选自我探索内容。",
+      "A personal BaZi-based Destiny Book with chart calculation, life-rhythm reading, daily guidance and optional self-discovery tools.",
+      "四柱推命を中心に、命盤・人生の流れ・今日の指針を整理するパーソナル命書。",
+      "사주를 중심으로 명식, 삶의 흐름, 오늘의 안내를 정리하는 개인 명서.",
+      "BaZi आधारित व्यक्तिगत Destiny Book, जिसमें जन्म-चार्ट, जीवन-लय और दैनिक मार्गदर्शन शामिल है।",
+    );
+
+    document.title = title;
+    updateMeta('meta[name="description"]', description);
+    updateMeta('meta[property="og:title"]', title);
+    updateMeta('meta[property="og:description"]', description);
+    updateMeta('meta[name="twitter:title"]', title);
+    updateMeta('meta[name="twitter:description"]', description);
+    updateMeta(
+      'meta[property="og:locale"]',
+      language === "en" ? "en_AU" : language === "zh-Hans" ? "zh_CN" : "zh_TW",
+    );
+  }, [language]);
 
   return (
     <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
+      <a className="zhaowu-skip-link" href="#zhaowu-main-content">{skipLabel}</a>
       {isHome ? <IntroGate /> : null}
       {!isLogin ? (
         <header className="zhaowu-site-header sticky top-0 z-30">
@@ -154,7 +193,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       ) : null}
 
       {!isLogin && !isOwnerWorkspace ? <GreenDragonGuide /> : null}
-      <div className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
+      <div id="zhaowu-main-content" tabIndex={-1} className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
 
       {!isLogin && !isOwnerWorkspace ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
         {stats.totalVisits > 0 ? (

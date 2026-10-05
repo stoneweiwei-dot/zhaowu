@@ -24,6 +24,16 @@ const RESET_PARAM = 'zw_reset';
 const MAX_RELEASE_RETRIES = 3;
 const RELEASE_RETRY_COOLDOWN_MS = 8_000;
 
+const isStandaloneWebApp = (() => {
+  try {
+    const standaloneMedia = window.matchMedia('(display-mode: standalone)').matches;
+    const legacyStandalone = Boolean((navigator as Navigator & { standalone?: boolean }).standalone);
+    return standaloneMedia || legacyStandalone;
+  } catch {
+    return false;
+  }
+})();
+
 const currentBundlePath = () => {
   const script = document.querySelector<HTMLScriptElement>('script[type="module"][src*="/assets/"]');
   if (!script?.src) return null;
@@ -144,6 +154,16 @@ const checkForFreshRelease = async () => {
         sessionStorage.removeItem(RECOVERY_STATE_KEY);
       }
       return false;
+    }
+
+    // macOS Safari Web Apps created with Add to Dock have their own WebKit
+    // website-data container. When a standalone app is still serving an older
+    // release, prefer a scoped self-heal over the ordinary retry path: clear only
+    // ZHAOWU's shell caches, unregister the old root worker, then navigate once to
+    // the exact release. The next load registers the new worker and keeps the app's
+    // manifest identity, local storage, cookies, and user data intact.
+    if (isStandaloneWebApp) {
+      return await hardResetForRelease(freshRelease);
     }
 
     const registration = await navigator.serviceWorker.getRegistration('/');

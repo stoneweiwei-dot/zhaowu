@@ -9,6 +9,27 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="昭梧" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <script>
+      (() => {
+        const embeddedRelease = "__ZHAOWU_RELEASE__";
+        if (!embeddedRelease || embeddedRelease === "dev") return;
+        fetch("/release.json?bootstrap=" + Date.now(), {
+          cache: "no-store",
+          credentials: "same-origin",
+          headers: { "Cache-Control": "no-cache" }
+        })
+          .then((response) => response.ok ? response.json() : null)
+          .then((payload) => {
+            const freshRelease = typeof payload?.release === "string" ? payload.release.trim() : "";
+            if (!freshRelease || freshRelease === embeddedRelease) return;
+            const url = new URL(window.location.href);
+            url.searchParams.set("zw_release", freshRelease);
+            url.searchParams.set("zw_bootstrap", String(Date.now()));
+            window.location.replace(url.toString());
+          })
+          .catch(() => undefined);
+      })();
+    </script>
     <!-- Canonical display typeface: declared as --font-display across the CSS authority chain
          but never previously loaded as a web font, so it only ever rendered on devices with
          Songti TC pre-installed (Apple only). Loading it here fixes CJK typography on
@@ -59,6 +80,29 @@
     <meta name="twitter:description" content="看見命運的節奏，選擇屬於你的道路" />
     <meta name="twitter:image" content="https://stone-zhaowu-official.vercel.app/og.jpg" />
     <meta name="twitter:image:alt" content="昭梧｜看見命運的節奏，選擇屬於你的道路" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "name": "昭梧",
+            "alternateName": "ZHAOWU",
+            "url": "https://stone-zhaowu-official.vercel.app/",
+            "inLanguage": ["zh-Hant", "zh-Hans", "en"]
+          },
+          {
+            "@type": "WebApplication",
+            "name": "昭梧 · 個人命書",
+            "url": "https://stone-zhaowu-official.vercel.app/",
+            "applicationCategory": "LifestyleApplication",
+            "operatingSystem": "Web",
+            "description": "以傳統子平八字為主判，從出生資料整理命盤、人生節奏、今日提示與可選自我探索內容。",
+            "inLanguage": ["zh-Hant", "zh-Hans", "en"]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

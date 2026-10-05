@@ -6875,3 +6875,36 @@ html body .zhaowu-lotus-intro__fallback.is-neutral > * { display: none !importan
 html[data-zw-theme="night"] body :is(.illustrated-destiny-panel,.illustrated-destiny-share){color:#242620;background-color:#FFF9EE}
 html[data-zw-theme="night"] body .illustrated-destiny-panel :is(figcaption,details,summary,p,li,small){color:#242620}
 @media(max-width:560px){.illustrated-destiny-panel figcaption{padding:12px 14px;font-size:16px}}
+
+/* Final accessibility polish: keyboard users can bypass the persistent site chrome. */
+.zhaowu-skip-link {
+  position: fixed;
+  top: max(8px, env(safe-area-inset-top));
+  left: max(8px, env(safe-area-inset-left));
+  z-index: 1000;
+  transform: translateY(-160%);
+  border: 1px solid rgba(41, 75, 63, .28);
+  border-radius: 7px;
+  padding: 10px 14px;
+  color: var(--zw-jade-deep);
+  background: #fffaf0;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(49, 42, 32, .12);
+  transition: transform .16s ease;
+}
+
+.zhaowu-skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid rgba(41, 75, 63, .34);
+  outline-offset: 2px;
+}
+
+#zhaowu-main-content:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-skip-link { transition: none; }
+}
