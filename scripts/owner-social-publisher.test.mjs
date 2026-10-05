@@ -110,12 +110,24 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
   assert.ok(apiFiles.length <= 12);
 });
 
-test("the owner console links to the compact social publisher", async () => {
+test("the owner console links to a gallery-backed dual social publisher", async () => {
   const account = await source("src/routes/account.tsx");
   const route = await source("src/routes/social.tsx");
+  const userState = await source("src/lib/auth/use-current-user.ts");
   assert.match(account, /to="\/social"/);
+  assert.match(account, /Instagram／Threads/);
   assert.match(route, /data-owner-social-publisher/);
-  assert.match(route, /user\.isOwner/);
-  assert.match(route, /Instagram 需要一張公開圖片/);
+  assert.match(route, /useCurrentUserState/);
+  assert.match(route, /listOwnerGalleryAssets/);
+  assert.match(route, /uploadGalleryAsset/);
+  assert.match(route, /一次發布到 Instagram \+ Threads/);
+  assert.match(route, /Instagram 需要一張圖片；請從圖庫選擇或直接上傳/);
+  assert.doesNotMatch(route, /完成一次 Meta 授權後/);
+  assert.match(userState, /"\/social"/);
   assert.doesNotMatch(route, /小紅書|小红书|抖音/);
+});
+
+test("the root no longer mounts the duplicate DOM-scanning owner console organizer", async () => {
+  const root = await source("src/routes/__root.tsx");
+  assert.doesNotMatch(root, /OwnerConsoleOrganizer/);
 });
