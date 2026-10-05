@@ -131,24 +131,29 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, [language]);
 
   return (
-    <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
+    <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
       <a className="zhaowu-skip-link" href="#zhaowu-main-content">{skipLabel}</a>
       {isHome ? <IntroGate /> : null}
       {!isLogin ? (
-        <header className="zhaowu-site-header sticky top-0 z-30">
+        <header className={`zhaowu-site-header sticky top-0 z-30${isHome ? " is-home-compact" : ""}`}>
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">
             {!isOwnerWorkspace ? (
               <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
-                <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
-                <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
+                {!isHome ? (
+                  <>
+                    <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
+                    <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
+                  </>
+                ) : null}
                 <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>
                   <span>{latestLabel}</span><span aria-hidden="true">›</span>
                 </Link>
               </div>
             ) : null}
 
-            <div className="zhaowu-header-primary">
-              <Link to="/" className="zhaowu-brand-link text-ink" aria-label={t("brand")}>
+            {!isHome ? (
+              <div className="zhaowu-header-primary">
+                <Link to="/" className="zhaowu-brand-link text-ink" aria-label={t("brand")}>
                 <BrandSeal />
                 <span className="zhaowu-brand-copy">
                   <span className="zhaowu-brand-name font-display" aria-hidden="true">{t("brand")}</span>
@@ -173,7 +178,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   </Link>
                 )}
               </div>
-            </div>
+              </div>
+            ) : null}
 
             <nav className="zhaowu-header-nav" aria-label={siteControlsLabel}>
               <div role="group" aria-label={t("language")} className="site-lang-group">
@@ -204,6 +210,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </p>
         ) : null}
         <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
+        {isHome && !isPending ? (
+          <p className="zhaowu-site-owner-bottom">
+            {user?.isOwner ? (
+              <Link to="/account" className="zhaowu-footer-owner-entry">{t("navAdmin")}</Link>
+            ) : (
+              <Link to="/login" className="zhaowu-footer-owner-entry">{ownerLoginLabel}</Link>
+            )}
+          </p>
+        ) : null}
       </footer> : null}
     </div>
   );
