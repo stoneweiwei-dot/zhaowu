@@ -49,12 +49,16 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     enabled: tr(locale, "可使用", "可使用", "Available"),
     remove: tr(locale, "刪除", "删除", "Delete"),
     select: tr(locale, "選取", "选择", "Select"),
+    selectedOne: tr(locale, "已選", "已选", "Selected"),
+    batchManage: tr(locale, "批次管理", "批次管理", "Bulk actions"),
     selected: (n: number) => tr(locale, `已選 ${n} 個`, `已选 ${n} 个`, `${n} selected`),
-    selectVisible: tr(locale, "全選目前顯示", "全选当前显示", "Select visible"),
-    clearSelection: tr(locale, "取消全選", "取消全选", "Clear selection"),
-    enableSelected: tr(locale, "啟用所選", "启用所选", "Enable selected"),
-    disableSelected: tr(locale, "停用所選", "停用所选", "Disable selected"),
-    deleteSelected: tr(locale, "刪除所選", "删除所选", "Delete selected"),
+    selectVisible: tr(locale, "全選此分類", "全选此分类", "Select all in view"),
+    clearSelection: tr(locale, "清除選取", "清除选择", "Clear"),
+    enableSelected: tr(locale, "批次顯示", "批量显示", "Show selected"),
+    disableSelected: tr(locale, "批次隱藏", "批量隐藏", "Hide selected"),
+    deleteSelected: tr(locale, "批次刪除", "批量删除", "Delete selected"),
+    shown: tr(locale, "顯示中", "显示中", "Shown"),
+    hidden: tr(locale, "已隱藏", "已隐藏", "Hidden"),
     batchDeleteConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 個素材？此操作不可復原。`, `删除已选的 ${n} 个素材？此操作不可恢复。`, `Delete ${n} selected assets? This cannot be undone.`),
     batchDone: (n: number) => tr(locale, `已處理 ${n} 個素材。`, `已处理 ${n} 个素材。`, `Updated ${n} assets.`),
     more: tr(locale, "載入更多", "加载更多", "Load more"),
@@ -118,7 +122,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   };
 
   const selectVisible = () => {
-    setSelectedIds((current) => [...new Set([...current, ...renderedAssets.map((asset) => asset.id)])]);
+    setSelectedIds(visibleAssets.map((asset) => asset.id));
   };
 
   async function setSelectedEnabled(enabled: boolean) {
@@ -152,11 +156,11 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   }
 
   return (
-    <section className="seal-border rounded-[1.35rem] bg-cream/92 p-4 sm:p-6" data-owner-content-gallery>
+    <section className="seal-border rounded-2xl bg-cream/92 p-4 sm:p-5" data-owner-content-gallery>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-[10px] tracking-[0.22em] text-wood">CONTENT LIBRARY</p>
-          <h2 className="mt-1 font-display text-2xl">{copy.title}</h2>
+          <h2 className="mt-1 font-display text-xl leading-tight">{copy.title}</h2>
         </div>
         <span className="shrink-0 rounded-full border border-line bg-paper/70 px-3 py-1 text-xs text-ink-mute">{libraryAssets.length}</span>
       </div>
@@ -185,41 +189,38 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
             ))}
           </div>
 
-          {selectedIds.length ? <div data-owner-bulk-toolbar="gallery" className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper/45 px-3 py-3">
-            <span className="text-xs font-medium text-ink-soft">{copy.selected(selectedIds.length)}</span>
-            <button type="button" disabled={busy} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={selectVisible}>{copy.selectVisible}</button>
-            <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => setSelectedIds([])}>{copy.clearSelection}</button>
-            <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-wood/30 bg-wood/5 px-3 text-xs text-wood disabled:opacity-40" onClick={() => void setSelectedEnabled(true)}>{copy.enableSelected}</button>
-            <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full border border-line bg-cream px-3 text-xs disabled:opacity-40" onClick={() => void setSelectedEnabled(false)}>{copy.disableSelected}</button>
-            <button type="button" disabled={busy || !selectedIds.length} className="min-h-10 rounded-full bg-cinnabar px-4 text-xs text-cream disabled:opacity-40" onClick={() => void deleteSelected()}>{copy.deleteSelected}</button>
-          </div> : null}
+          <div data-owner-bulk-toolbar="gallery" className="mt-3 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
+            <span className="mr-auto font-display text-sm text-ink">{selectedIds.length ? copy.selected(selectedIds.length) : copy.batchManage}</span>
+            <button type="button" disabled={busy || !visibleAssets.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={selectVisible}>{copy.selectVisible}</button>
+            <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedIds([])}>{copy.clearSelection}</button>
+            <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-wood/30 bg-wood/5 px-3 text-[11px] text-wood disabled:opacity-35" onClick={() => void setSelectedEnabled(true)}>{copy.enableSelected}</button>
+            <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => void setSelectedEnabled(false)}>{copy.disableSelected}</button>
+            <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelected()}>{copy.deleteSelected}</button>
+          </div>
 
           {!visibleAssets.length ? <p className="mt-4 text-sm text-ink-mute">{copy.empty}</p> : null}
 
           <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
             {renderedAssets.map((asset) => (
-              <article key={asset.id} data-owner-selectable-file="gallery" className={`relative overflow-hidden rounded-xl border bg-cream/72 ${selectedIds.includes(asset.id) ? "border-cinnabar/45 ring-1 ring-cinnabar/20" : "border-line"}`}>
-                <label className="absolute left-2 top-2 z-10 grid min-h-11 min-w-11 cursor-pointer place-items-center rounded-full border border-line bg-cream/95 shadow-sm" title={copy.select}>
-                  <input type="checkbox" className="h-4 w-4" checked={selectedIds.includes(asset.id)} onChange={() => toggleSelected(asset.id)} aria-label={`${copy.select} ${asset.title}`} />
-                </label>
+              <article key={asset.id} data-owner-selectable-file="gallery" className={`relative overflow-hidden rounded-xl border bg-cream/72 ${selectedIds.includes(asset.id) ? "border-wood/45 ring-1 ring-wood/15" : "border-line"}`}>
+                <button type="button" aria-pressed={selectedIds.includes(asset.id)} onClick={() => toggleSelected(asset.id)} className={`absolute left-2 top-2 z-10 inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 text-[10px] font-medium shadow-sm ${selectedIds.includes(asset.id) ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${copy.select} ${asset.title}`}>
+                  {selectedIds.includes(asset.id) ? `✓ ${copy.selectedOne}` : copy.select}
+                </button>
                 <button type="button" className="block w-full" onClick={() => setPreview(asset)} aria-label={`${copy.preview} ${asset.title}`}>
                   <img src={assetSrc(asset)} alt={asset.title || "gallery image"} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover object-top" />
                 </button>
                 <div className="p-3">
                   <p className="truncate text-xs font-medium sm:text-sm">{asset.title}</p>
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-                    <label className="flex items-center gap-1.5 text-[11px]">
-                      <input type="checkbox" checked={asset.enabled} onChange={async (event) => {
-                        try {
-                          await setGalleryAssetEnabled(session, asset.id, event.target.checked);
-                          await load();
-                          notifyGalleryChanged();
-                        } catch (error) {
-                          setMessage(error instanceof Error ? error.message : copy.failed);
-                        }
-                      }} />
-                      {copy.enabled}
-                    </label>
+                    <button type="button" aria-pressed={asset.enabled} className={`min-h-8 rounded-full border px-2.5 text-[10px] ${asset.enabled ? "border-wood/30 bg-wood/5 text-wood" : "border-line bg-paper/55 text-ink-mute"}`} onClick={async () => {
+                      try {
+                        await setGalleryAssetEnabled(session, asset.id, !asset.enabled);
+                        await load();
+                        notifyGalleryChanged();
+                      } catch (error) {
+                        setMessage(error instanceof Error ? error.message : copy.failed);
+                      }
+                    }}>{asset.enabled ? copy.shown : copy.hidden}</button>
                     <button type="button" onClick={async () => {
                       if (!window.confirm(`${copy.remove} ${asset.title}?`)) return;
                       try {
