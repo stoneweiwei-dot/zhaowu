@@ -230,6 +230,20 @@
   .zhaowu-dragon-guide-avatar { width: 3.15rem; }
   .zhaowu-dragon-guide-panel { width: calc(100vw - 1rem); max-height: calc(100dvh - 5.5rem); }
   .zhaowu-dragon-bubble { width: min(14rem, calc(100vw - 4.75rem)); }
+
+  .zhaowu-dragon-guide.is-reading-surface {
+    width: 3.15rem;
+    height: 3.15rem;
+    right: max(.35rem, env(safe-area-inset-right));
+    bottom: max(.45rem, env(safe-area-inset-bottom));
+  }
+  .zhaowu-dragon-guide.is-reading-surface .zhaowu-dragon-guide-trigger {
+    width: 3.15rem;
+    height: 3.15rem;
+    background: rgb(255 253 247 / .86);
+    box-shadow: 0 8px 20px rgb(32 42 35 / .10);
+  }
+  .zhaowu-dragon-guide.is-reading-surface .zhaowu-dragon-guide-avatar { width: 2.58rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
