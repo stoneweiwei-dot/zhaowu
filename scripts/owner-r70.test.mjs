@@ -6,7 +6,6 @@ const upload = await readFile(new URL("../src/lib/background-music-upload.ts", i
 const manager = await readFile(new URL("../src/components/owner-background-music-manager.tsx", import.meta.url), "utf8");
 const player = await readFile(new URL("../src/components/background-music.tsx", import.meta.url), "utf8");
 const root = await readFile(new URL("../src/routes/__root.tsx", import.meta.url), "utf8");
-const organizer = await readFile(new URL("../src/components/owner-console-organizer.tsx", import.meta.url), "utf8");
 const gallery = await readFile(new URL("../src/components/owner-gallery-manager.tsx", import.meta.url), "utf8");
 const shellSource = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
 const account = await readFile(new URL("../src/routes/account.tsx", import.meta.url), "utf8");
@@ -35,13 +34,12 @@ test("background player plays owner-uploaded audio with explicit MIME types", ()
   assert.doesNotMatch(player, /LOCAL_PRIMARY/);
 });
 
-test("owner console is mounted inside auth and keeps long account sections collapsed", () => {
-  assert.match(root, /OwnerConsoleOrganizer/);
-  assert.match(root, /<AuthProvider>[\s\S]*<OwnerConsoleOrganizer \/>[\s\S]*<\/AuthProvider>/);
-  assert.match(organizer, /data-owner-console-dashboard/);
-  assert.match(organizer, /backgroundSection\.hidden = expanded !== "backgrounds"/);
-  assert.match(organizer, /reportsSection\.hidden = expanded !== "reports"/);
-  assert.match(organizer, /data-owner-background-music-manager/);
+test("owner console keeps one canonical account navigation without the old portal organizer", () => {
+  assert.doesNotMatch(root, /OwnerConsoleOrganizer/);
+  assert.match(root, /<AuthProvider>[\s\S]*<OwnerBackgroundMusicManager \/>[\s\S]*<\/AuthProvider>/);
+  assert.match(account, /Instagram／Threads/);
+  assert.match(account, /ownerView === "backgrounds"/);
+  assert.match(account, /ownerView === "reports"/);
 });
 
 test("owner Gallery keeps content media separate from login/loading assets", () => {
