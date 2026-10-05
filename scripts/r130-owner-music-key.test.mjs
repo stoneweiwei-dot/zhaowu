@@ -56,7 +56,6 @@ test("account console and player use owner music with browser-side format optimi
   const manager = await source("src/components/owner-background-music-manager.tsx");
   const player = await source("src/components/background-music.tsx");
   const account = await source("src/routes/account.tsx");
-  const organizer = await source("src/components/owner-console-organizer.tsx");
   const client = await source("src/lib/owner-music-client.ts");
   const transcoder = await source("src/lib/owner-music-transcode.ts");
   assert.match(manager, /uploadOwnerMusic/);
@@ -66,7 +65,9 @@ test("account console and player use owner music with browser-side format optimi
   assert.doesNotMatch(manager, /uploadBackgroundMusicResilient/);
   assert.match(player, /loadOwnerMusic/);
   assert.doesNotMatch(player, /zhaowu-background\.m4a/);
-  assert.match(organizer, /背景音樂|背景音乐/);
+  const rootRoute = await source("src/routes/__root.tsx");
+  assert.match(rootRoute, /<OwnerBackgroundMusicManager \/>/);
+  assert.doesNotMatch(rootRoute, /OwnerConsoleOrganizer/);
   assert.match(client, /optimizeOwnerMusic/);
   assert.match(client, /x-zhaowu-music-name/);
   assert.match(client, /OWNER_MUSIC_WRITE_URL = "\/api\/owner-music-write"/);
