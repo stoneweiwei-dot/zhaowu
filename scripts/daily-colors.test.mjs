@@ -55,11 +55,12 @@ test("home folds the compact colour guide into today's almanac and keeps the ful
 });
 
 
-test("phone five-element choices stay in one viewport without a swipe rail", () => {
-  assert.match(wardrobeCss, /grid-template-columns: repeat\(5, minmax\(0, 1fr\)\) !important/);
-  assert.match(wardrobeCss, /grid-auto-flow: row !important/);
-  assert.match(wardrobeCss, /scroll-snap-type: none/);
-  assert.doesNotMatch(wardrobeCss, /overflow-x:\s*auto/);
+test("standalone phone five-element choices stay in one viewport without changing the embedded Today layout", () => {
+  assert.match(
+    wardrobeCss,
+    /#five-element-wardrobe\[data-daily-colors="page"\] > div\[role="list"\][\s\S]*grid-auto-flow: row !important;[\s\S]*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\) !important;[\s\S]*overflow: visible !important;[\s\S]*scroll-snap-type: none;/,
+  );
+  assert.match(wardrobeCss, /#five-element-wardrobe > div\[role="list"\][\s\S]*overflow-x: auto;/);
 });
 
 test("night last-wins CSS keeps question ink light and swatches vivid", () => {
