@@ -6908,3 +6908,100 @@ html[data-zw-theme="night"] body .illustrated-destiny-panel :is(figcaption,detai
 @media (prefers-reduced-motion: reduce) {
   .zhaowu-skip-link { transition: none; }
 }
+
+
+/* r224 — mobile report closeout: quieter hierarchy and compact specialist tree. */
+@media (max-width: 640px) {
+  .zhaowu-unified-report-flow h4 {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    line-height: 1.42 !important;
+  }
+
+  .zhaowu-unified-fold__teaser {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 1.62 !important;
+    color: var(--zw-muted) !important;
+  }
+
+  .zhaowu-unified-fold__body p {
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    line-height: 1.78 !important;
+  }
+
+  .zhaowu-specialist-tree {
+    margin-top: 14px;
+    padding-top: 0;
+    border-top-color: rgba(81, 67, 48, .10);
+  }
+
+  .zhaowu-specialist-tree > summary {
+    min-height: 48px;
+    padding: 14px 30px 12px 0;
+  }
+
+  .zhaowu-specialist-tree > summary strong {
+    font-size: 17px !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+  }
+
+  .zhaowu-specialist-tree > summary span {
+    display: none;
+  }
+
+  .zhaowu-specialist-tree[open] > summary span {
+    display: block;
+    margin-top: 5px;
+    color: var(--zw-muted) !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 1.55 !important;
+  }
+
+  .zhaowu-specialist-tree__list {
+    margin-top: 2px;
+  }
+
+  .zhaowu-specialist-node {
+    border-top-color: rgba(81, 67, 48, .10);
+  }
+
+  .zhaowu-specialist-node > summary {
+    min-height: 46px;
+    padding: 13px 30px 11px 0;
+  }
+
+  .zhaowu-specialist-node > summary h5 {
+    margin: 0 !important;
+    font-size: 15px !important;
+    font-weight: 560 !important;
+    line-height: 1.45 !important;
+  }
+
+  .zhaowu-specialist-node__body p {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 1.72 !important;
+  }
+
+  .zhaowu-song-comic--report {
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 14px;
+    padding: 16px 14px;
+  }
+
+  .zhaowu-song-comic--report .zhaowu-song-comic__illustration {
+    min-height: 108px;
+  }
+
+  .zhaowu-song-comic--report .zhaowu-report-stem-emblem {
+    width: 104px;
+  }
+
+  .zhaowu-song-comic-share__art .zhaowu-report-stem-emblem {
+    width: 82px;
+  }
+}
