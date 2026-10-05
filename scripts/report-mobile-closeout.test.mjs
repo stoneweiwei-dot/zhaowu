@@ -8,7 +8,7 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 test("mobile chart titles no longer participate in table column sizing", async () => {
   const component = await source("src/components/specialist-chart.tsx");
   const css = await source("src/specialist-chart.css");
-  assert.match(component, /zhaowu-chart-table-title/);
+  assert.match(component, /zw-chart-table-title/);
   assert.match(component, /caption className="zw-chart-caption"/);
   assert.match(css, /\.zw-chart-caption[\s\S]*position:absolute/);
   assert.match(css, /@media \(max-width:560px\)[\s\S]*\.zw-chart-table tbody\{display:grid/);
