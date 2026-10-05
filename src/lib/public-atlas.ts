@@ -17,13 +17,12 @@ const ornament = (id: string, file: string): PublicAtlasAsset => ({
  * Grid/list views should use thumbnailUrl when available. The original `url`
  * remains the click-through/full-resolution artwork.
  */
+// Keep the customer-facing atlas restrained to motifs that fit the current
+// Song-inspired jade/mineral-pigment visual system. Decorative charm-like
+// variants remain in the repository but are not surfaced on the website.
 export const PUBLIC_ATLAS_ASSETS: readonly PublicAtlasAsset[] = [
-  ornament("ornament-celestial-pearl", "celestial-pearl"),
   ornament("ornament-crane", "crane"),
   ornament("ornament-dragon", "dragon"),
-  ornament("ornament-endless-knot", "endless-knot"),
   ornament("ornament-lotus", "lotus"),
   ornament("ornament-phoenix", "phoenix"),
-  ornament("ornament-pomegranate", "pomegranate"),
-  ornament("ornament-twin-fish", "twin-fish"),
 ] as const;
