@@ -157,7 +157,7 @@ function Home() {
     if (id === "today") {
       const guide = document.getElementById("home-today-guide");
       const details = guide?.querySelector<HTMLDetailsElement>("details");
-      if (details) details.open = true;
+      if (details && !details.open) details.querySelector<HTMLElement>("summary")?.click();
       guide?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
