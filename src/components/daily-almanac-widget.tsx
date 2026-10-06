@@ -43,6 +43,8 @@ function seasonLabel(latitude: number | null, month: number, locale: Locale) {
 function locationLabel(visitor: VisitorContext | null, locale: Locale) {
   if (visitor?.source === "browser") {
     if (visitor.city.trim() && visitor.city.trim().toLowerCase() !== "washington") return visitor.city.trim();
+    const timezoneCity = visitor.timezone.split("/").filter(Boolean).at(-1)?.replaceAll("_", " ").trim();
+    if (timezoneCity) return timezoneCity;
     return locale === "en" ? "Located" : "已定位";
   }
   return locale === "en" ? "Location not confirmed" : locale === "zh-Hans" ? "尚未确认位置" : "尚未確認位置";
@@ -56,6 +58,7 @@ function weatherPendingLocation(locale: Locale) {
 function useVisitorContext() {
   const [visitor, setVisitor] = useState<VisitorContext>(NO_VISITOR_LOCATION);
   const [requesting, setRequesting] = useState(false);
+  const [locationError, setLocationError] = useState<"denied" | "unavailable" | "timeout" | "unknown" | null>(null);
   const inFlight = useRef(false);
 
   useEffect(() => {
@@ -84,6 +87,7 @@ function useVisitorContext() {
     if (inFlight.current) return;
     inFlight.current = true;
     setRequesting(true);
+    setLocationError(null);
     const finish = () => { inFlight.current = false; setRequesting(false); };
     try {
       if (!navigator.geolocation) throw new Error("Geolocation unavailable");
@@ -124,14 +128,25 @@ function useVisitorContext() {
       const value: VisitorContext = { ...baseValue, temperature, weatherCode };
       setVisitor(value);
       try { window.localStorage.setItem("zhaowu:visitor-context:v4", JSON.stringify({ at: Date.now(), value })); } catch { /* optional cache */ }
-    } catch {
+    } catch (error) {
       setVisitor(NO_VISITOR_LOCATION);
+      const code = typeof error === "object" && error && "code" in error ? Number((error as GeolocationPositionError).code) : 0;
+      setLocationError(code === 1 ? "denied" : code === 2 ? "unavailable" : code === 3 ? "timeout" : "unknown");
     } finally {
       finish();
     }
   }
 
-  return { visitor, requestLocation, requesting };
+  useEffect(() => {
+    let cancelled = false;
+    if (!navigator.geolocation || !navigator.permissions?.query) return;
+    void navigator.permissions.query({ name: "geolocation" as PermissionName }).then((permission) => {
+      if (!cancelled && permission.state === "granted") void requestLocation();
+    }).catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
+
+  return { visitor, requestLocation, requesting, locationError };
 }
 
 const LIUHE: Record<string, string> = { 子: "丑", 丑: "子", 寅: "亥", 亥: "寅", 卯: "戌", 戌: "卯", 辰: "酉", 酉: "辰", 巳: "申", 申: "巳", 午: "未", 未: "午" };
@@ -207,7 +222,7 @@ const SLIPS = {
 } as const;
 
 export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: boolean; onExpand?: () => void }) {
-  const { locale } = useI18n(); const now = useNow(); const { visitor, requestLocation, requesting } = useVisitorContext();
+  const { locale } = useI18n(); const now = useNow(); const { visitor, requestLocation, requesting, locationError } = useVisitorContext();
   const [slipOpen, setSlipOpen] = useState(false);
   const dayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   const pillars = useMemo(() => { const day = dayGanzhi(now.getFullYear(), now.getMonth() + 1, now.getDate()); const ym = yearMonthPillars(now); return { year: ym.year, month: ym.month, day, hour: hourPillar(day, now.getHours()), jieName: ym.jieName }; }, [dayKey, now.getHours(), now.getMinutes()]);
@@ -236,7 +251,30 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
               <div className="zhaowu-almanac-board__lead">
                 <article className="zhaowu-today-card is-date"><small>{weekdayLabel(now, locale)}</small><strong>{now.getFullYear()}.{String(now.getMonth() + 1).padStart(2, "0")}.{String(now.getDate()).padStart(2, "0")}</strong><b>{String(now.getDate()).padStart(2, "0")}</b><span>{lunarLabel(now, locale)} · {timeLabel(now)}</span></article>
                 <div className="zhaowu-almanac-board__place">
-                  <article className="zhaowu-today-card is-weather"><small>{labels.location}</small><strong>{locationName}</strong><span>{weather} · {season}</span></article>
+                  <article className="zhaowu-today-card is-weather">
+                    <small>{labels.location}</small>
+                    <strong>{locationName}</strong>
+                    <span>{weather} · {season}</span>
+                    {visitor.source !== "browser" ? (
+                      <button
+                        type="button"
+                        className="zhaowu-today-location-inline"
+                        onClick={() => void requestLocation()}
+                        disabled={requesting}
+                      >
+                        {requesting
+                          ? (locale === "en" ? "Locating…" : locale === "zh-Hans" ? "正在定位…" : "正在定位…")
+                          : (locale === "en" ? "Use current location" : locale === "zh-Hans" ? "使用当前位置" : "使用目前位置")}
+                      </button>
+                    ) : null}
+                    {locationError ? (
+                      <em className="zhaowu-today-location-error">
+                        {locationError === "denied"
+                          ? (locale === "en" ? "Location permission is off in this browser." : locale === "zh-Hans" ? "浏览器未允许位置权限。" : "瀏覽器未允許位置權限。")
+                          : (locale === "en" ? "Could not get the current location. Tap to retry." : locale === "zh-Hans" ? "暂时无法取得当前位置，请重试。" : "暫時無法取得目前位置，請重試。")}
+                      </em>
+                    ) : null}
+                  </article>
                   <article className="zhaowu-today-card is-sacred"><small>{labels.sacred}</small><strong>{sacredDay(now, pillars.jieName, locale)}</strong><span>{jieLabel(pillars.jieName, locale)}</span></article>
                 </div>
               </div>
