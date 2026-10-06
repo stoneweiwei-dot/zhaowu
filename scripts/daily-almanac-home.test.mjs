@@ -105,45 +105,29 @@ test("r96 almanac paints four distinct pillar colours and hides duplicate yi lab
 });
 
 
-test("Today Guide location is confirmed only from browser geolocation", () => {
+test("Today Guide reuses granted browser location and refreshes it automatically", () => {
   for (const value of [
-    'source: "browser" | "none"',
+    'source: "browser" | "ip" | "none"',
     "navigator.geolocation.getCurrentPosition",
-    "timeout: 8_000",
-    "maximumAge: 5 * 60_000",
+    "navigator.permissions.query",
+    'permission.state === "granted"',
+    "30 * 24 * 60 * 60_000",
+    "15 * 60_000",
+    "visibilitychange",
     "api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}",
-    'source === "browser"',
     "function locationLabel(visitor: VisitorContext | null, locale: Locale)",
-    'visitor.city.trim().toLowerCase() !== "washington"',
-    "Location not confirmed", "尚未确认位置", "尚未確認位置",
-    "\"Located\"", "\"已定位\""
-  ]) assert.ok(widget.includes(value), `Missing expected location contract: ${value}`);
+  ]) assert.ok(widget.includes(value), `Missing expected automatic location contract: ${value}`);
+});
+
+test("Today Guide uses only the same-origin Vercel coarse location fallback when precise permission is unavailable", () => {
+  assert.match(widget, /fetch\("\/api\/visitor-location"/);
+  assert.match(widget, /source: "ip"/);
+  assert.match(widget, /value\?\.source === "browser" \|\| value\?\.source === "ip"/);
+  assert.match(widget, /visitor\.source !== "none"/);
   assert.doesNotMatch(widget, /ipwho\.is|ipapi\.co|ipinfo\.io/);
 });
 
-test("Today Guide invalidates legacy IP cache and only stores browser-confirmed locations", () => {
-  for (const value of [
-    "zhaowu:visitor-context:v3",
-    "removeItem(legacyKey)",
-    "zhaowu:visitor-context:v4",
-    'value?.source === "browser"',
-    'typeof value.latitude === "number"',
-    'typeof value.longitude === "number"',
-    'window.localStorage.setItem("zhaowu:visitor-context:v4"',
-    "if (!embedded && event.currentTarget.open)",
-    "if (onExpand) onExpand()",
-    "else void requestLocation()",
-    'className="zhaowu-today-location-control"',
-    'className="zhaowu-today-location-control"',
-    "seasonLabel(visitor.latitude, now.getMonth() + 1, locale)",
-    "Season pending location"
-  ]) assert.ok(widget.includes(value), `Missing expected cache/location contract: ${value}`);
-});
-
-
-test("Today location is directly recoverable from the visible weather card", () => {
-  assert.match(widget, /navigator\.permissions\.query/);
-  assert.match(widget, /permission\.state === "granted"/);
+test("Today location keeps the visible permission feedback for first-time precise opt-in", () => {
   assert.match(widget, /zhaowu-today-location-inline/);
   assert.match(widget, /locationError === "denied"/);
   assert.match(widget, /visitor\.timezone\.split\("\/"\)/);

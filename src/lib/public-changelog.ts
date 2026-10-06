@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-07-auto-location-home-visuals",
+    date: "2026-10-07",
+    zhHant: { title: "定位與首頁視覺再收斂", summary: "已授權的定位會自動沿用並定期刷新；未取得精準定位時以 Vercel IP 的城市級位置兜底。站主後台的首頁背景改成明確專區與「設為首頁背景」操作；首頁畫作持續自動輪播，並移除底部白色輪播條。" },
+    zhHans: { title: "定位与首页视觉再收敛", summary: "已授权的定位会自动沿用并定期刷新；未取得精准定位时以 Vercel IP 的城市级位置兜底。站主后台的首页背景改成明确专区与“设为首页背景”操作；首页画作持续自动轮播，并移除底部白色轮播条。" },
+    en: { title: "Automatic location and cleaner homepage visuals", summary: "Granted location is reused and refreshed automatically, with Vercel IP city-level geolocation as a coarse fallback. Homepage backgrounds now use explicit owner controls, while the hero paintings keep auto-cycling without the white carousel rail." },
+  },
+  {
     id: "2026-10-06-owner-live-controls",
     date: "2026-10-06",
     zhHant: { title: "定位、五行版面與首頁背景控制修正", summary: "今日定位加入明確重試與權限提示；五行五格收緊為同列緊湊控制；站主選定的首頁背景現在真正驅動正式站背景。Instagram／Threads 發布器同步顯示目前缺少 Meta 連接，不再假裝可發布。" },

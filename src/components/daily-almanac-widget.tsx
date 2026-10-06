@@ -9,7 +9,7 @@ import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 const PILLAR_KEYS = ["year", "month", "day", "hour"] as const;
 const BRANCH_EN: Record<string, string> = { 子: "Zi", 丑: "Chou", 寅: "Yin", 卯: "Mao", 辰: "Chen", 巳: "Si", 午: "Wu", 未: "Wei", 申: "Shen", 酉: "You", 戌: "Xu", 亥: "Hai" };
 type Locale = "zh-Hant" | "zh-Hans" | "en";
-type VisitorContext = { source: "browser" | "none"; city: string; country: string; latitude: number | null; longitude: number | null; timezone: string; temperature: number | null; weatherCode: number | null };
+type VisitorContext = { source: "browser" | "ip" | "none"; city: string; country: string; latitude: number | null; longitude: number | null; timezone: string; temperature: number | null; weatherCode: number | null };
 const NO_VISITOR_LOCATION: VisitorContext = { source: "none", city: "", country: "", latitude: null, longitude: null, timezone: "", temperature: null, weatherCode: null };
 
 function useNow() {
@@ -41,7 +41,7 @@ function seasonLabel(latitude: number | null, month: number, locale: Locale) {
   const map: Record<string, string> = { spring: "春季", summer: "夏季", autumn: "秋季", winter: "冬季" }; return `${south ? "南半球" : "北半球"}${map[season]}`;
 }
 function locationLabel(visitor: VisitorContext | null, locale: Locale) {
-  if (visitor?.source === "browser") {
+  if (visitor && visitor.source !== "none") {
     if (visitor.city.trim() && visitor.city.trim().toLowerCase() !== "washington") return visitor.city.trim();
     const timezoneCity = visitor.timezone.split("/").filter(Boolean).at(-1)?.replaceAll("_", " ").trim();
     if (timezoneCity) return timezoneCity;
@@ -71,8 +71,8 @@ function useVisitorContext() {
       const row = JSON.parse(cached) as { at?: number; value?: Partial<VisitorContext> };
       const value = row.value;
       const valid = typeof row.at === "number"
-        && Date.now() - row.at < 5 * 60_000
-        && value?.source === "browser"
+        && Date.now() - row.at < 30 * 24 * 60 * 60_000
+        && (value?.source === "browser" || value?.source === "ip")
         && typeof value.latitude === "number"
         && typeof value.longitude === "number"
         && (value.city || "").trim().toLowerCase() !== "washington";
@@ -82,6 +82,51 @@ function useVisitorContext() {
       try { window.localStorage.removeItem(key); } catch { /* optional cache */ }
     }
   }, []);
+
+  async function fetchCoarseLocation() {
+    try {
+      const response = await fetch("/api/visitor-location", { cache: "no-store", signal: AbortSignal.timeout(4_000) });
+      if (!response.ok) return;
+      const body = await response.json() as {
+        ok?: boolean;
+        city?: string;
+        country?: string;
+        latitude?: number | null;
+        longitude?: number | null;
+        timezone?: string;
+      };
+      if (!body.ok) return;
+      const latitude = typeof body.latitude === "number" ? body.latitude : null;
+      const longitude = typeof body.longitude === "number" ? body.longitude : null;
+      let temperature: number | null = null;
+      let weatherCode: number | null = null;
+      if (latitude != null && longitude != null) {
+        try {
+          const weatherResponse = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto&forecast_days=1`,
+            { cache: "no-store", signal: AbortSignal.timeout(5_000) },
+          );
+          if (weatherResponse.ok) {
+            const weather = await weatherResponse.json() as { current?: { temperature_2m?: number; weather_code?: number } };
+            temperature = typeof weather.current?.temperature_2m === "number" ? weather.current.temperature_2m : null;
+            weatherCode = typeof weather.current?.weather_code === "number" ? weather.current.weather_code : null;
+          }
+        } catch { /* coarse location still remains usable */ }
+      }
+      const value: VisitorContext = {
+        source: "ip",
+        city: String(body.city ?? ""),
+        country: String(body.country ?? ""),
+        latitude,
+        longitude,
+        timezone: String(body.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone ?? ""),
+        temperature,
+        weatherCode,
+      };
+      setVisitor(value);
+      try { window.localStorage.setItem("zhaowu:visitor-context:v4", JSON.stringify({ at: Date.now(), value })); } catch { /* optional cache */ }
+    } catch { /* keep cached location when coarse lookup is unavailable */ }
+  }
 
   async function requestLocation() {
     if (inFlight.current) return;
@@ -129,7 +174,7 @@ function useVisitorContext() {
       setVisitor(value);
       try { window.localStorage.setItem("zhaowu:visitor-context:v4", JSON.stringify({ at: Date.now(), value })); } catch { /* optional cache */ }
     } catch (error) {
-      setVisitor(NO_VISITOR_LOCATION);
+      void fetchCoarseLocation();
       const code = typeof error === "object" && error && "code" in error ? Number((error as GeolocationPositionError).code) : 0;
       setLocationError(code === 1 ? "denied" : code === 2 ? "unavailable" : code === 3 ? "timeout" : "unknown");
     } finally {
@@ -139,11 +184,33 @@ function useVisitorContext() {
 
   useEffect(() => {
     let cancelled = false;
-    if (!navigator.geolocation || !navigator.permissions?.query) return;
-    void navigator.permissions.query({ name: "geolocation" as PermissionName }).then((permission) => {
-      if (!cancelled && permission.state === "granted") void requestLocation();
-    }).catch(() => undefined);
-    return () => { cancelled = true; };
+    let permission: PermissionStatus | null = null;
+
+    const refreshGrantedLocation = async () => {
+      if (cancelled) return;
+      if (!navigator.geolocation || !navigator.permissions?.query) {
+        void fetchCoarseLocation();
+        return;
+      }
+      try {
+        permission = permission ?? await navigator.permissions.query({ name: "geolocation" as PermissionName });
+        if (!cancelled && permission.state === "granted") void requestLocation();
+        else if (!cancelled) void fetchCoarseLocation();
+      } catch { /* browsers without Permissions API keep the cached location */ }
+    };
+
+    void refreshGrantedLocation();
+    const timer = window.setInterval(() => { void refreshGrantedLocation(); }, 15 * 60_000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void refreshGrantedLocation();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, []);
 
   return { visitor, requestLocation, requesting, locationError };
@@ -229,7 +296,7 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
   const values = [pillars.year, pillars.month, pillars.day, pillars.hour]; const branch = pillars.day[1]; const windows = timeWindows(branch); const tone = dayStyle(pillars.day[0], locale); const slipIndex = useMemo(() => stableHash(`${dayKey}|daily-spirit-slip`) % SLIPS[locale].length, [dayKey, locale]); const slip = SLIPS[locale][slipIndex]; const slipSequence = String(slipIndex + 1).padStart(2, "0");
   const labels = locale === "en" ? { title: "Today Guide", sub: "Local time · weather · almanac rhythm", almanac: "Daily Almanac", wardrobe: "Daily Dress · Five Elements", spirit: "Daily Spirit Slip", location: "Location & weather", sacred: "Sacred day", pillars: "Stems & branches", core: "Core dynamic", yi: "Good for", ji: "Avoid", relation: "Combine · clash · penalty", good: "Supportive hours", caution: "Caution hours", colors: "Colours", jewellery: "Jewellery", mask: "Persona mask", open: "Open today guide" } : locale === "zh-Hans" ? { title: "今日指引", sub: "当地时间・即时天气・今日气机", almanac: "每日黄历", wardrobe: "每日穿衣｜五行色彩", spirit: "今日灵签｜签文指引", location: "所在地｜天气", sacred: "今日圣日", pillars: "今日干支", core: "核心气机", yi: "宜", ji: "忌", relation: "合冲刑害", good: "吉时", caution: "慎时", colors: "适宜颜色", jewellery: "适宜首饰", mask: "性格面具", open: "查看今日完整指引" } : { title: "今日指引", sub: "當地時間・即時天氣・今日氣機", almanac: "每日黃曆", wardrobe: "每日穿衣｜五行色彩", spirit: "今日靈籤｜籤文指引", location: "所在地｜天氣", sacred: "今日聖日", pillars: "今日干支", core: "核心氣機", yi: "宜", ji: "忌", relation: "合沖刑害", good: "吉時", caution: "慎時", colors: "適宜顏色", jewellery: "適宜首飾", mask: "性格面具", open: "查看今日完整指引" };
   const yi = locale === "en" ? "organise · finalise · edit · calm communication" : locale === "zh-Hans" ? "整理・定稿・审美・冷静沟通" : "整理・定稿・審美・冷靜溝通"; const ji = locale === "en" ? "forcing · rushing · task stacking · emotional drain" : locale === "zh-Hans" ? "硬碰・急躁・堆任务・情绪内耗" : "硬碰・急躁・堆任務・情緒內耗";
-  const locationName = locationLabel(visitor, locale); const weather = visitor.source === "browser" ? (visitor.weatherCode != null ? `${weatherLabel(visitor.weatherCode, locale)}${visitor.temperature != null ? ` ${Math.round(visitor.temperature)}°C` : ""}` : weatherUnavailable(locale)) : weatherPendingLocation(locale); const season = seasonLabel(visitor.latitude, now.getMonth() + 1, locale);
+  const locationName = locationLabel(visitor, locale); const weather = visitor.source !== "none" ? (visitor.weatherCode != null ? `${weatherLabel(visitor.weatherCode, locale)}${visitor.temperature != null ? ` ${Math.round(visitor.temperature)}°C` : ""}` : weatherUnavailable(locale)) : weatherPendingLocation(locale); const season = seasonLabel(visitor.latitude, now.getMonth() + 1, locale);
   function drawSlip() { setSlipOpen(true); }
 
   return <>
