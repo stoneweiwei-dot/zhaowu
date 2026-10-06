@@ -246,6 +246,30 @@
 .zw-home-today-skeleton > strong { width: 68%; height: 27px; }
 .zw-home-today-skeleton > i { width: 88%; height: 12px; }
 
+.zw-home-today-collapse {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-top: 1px solid rgba(49, 94, 80, .12);
+  padding: 0 10px;
+  color: #315e50;
+  background: transparent;
+  font-family: var(--font-display, serif);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  cursor: pointer;
+  transition: background-color 180ms ease, transform 180ms cubic-bezier(.22,.72,.25,1);
+}
+
+.zw-home-today-collapse:active {
+  transform: scale(.99);
+  background: rgba(49, 94, 80, .035);
+}
+
 @keyframes zw-home-skeleton {
   0%, 100% { background-position: 0 50%; }
   50% { background-position: 100% 50%; }
@@ -263,7 +287,8 @@
   .zw-hero-dot,
   .zw-hero-nav-item,
   .zw-hero-secondary-panel,
-  .zw-home-today-skeleton > * {
+  .zw-home-today-skeleton > *,
+  .zw-home-today-collapse {
     animation: none !important;
     transition: none !important;
   }
