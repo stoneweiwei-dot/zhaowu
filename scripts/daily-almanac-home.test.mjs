@@ -17,9 +17,12 @@ test("homepage puts Today Guide before the birth flow and reserves deep reading 
   const deepReading = route.indexOf("<DeepReadingHeroCard />");
   assert.ok(daily >= 0 && formMount > daily && report > formMount && deepReading > report);
   assert.match(route, /id="home-today-guide"/);
-  assert.match(route, /querySelector<HTMLDetailsElement>\("details"\)/);
-  assert.match(route, /details\.querySelector<HTMLElement>\("summary"\)\?\.click\(\)/);
+  assert.match(route, /const \[todayExpanded, setTodayExpanded\] = useState\(false\)/);
+  assert.match(route, /setTodayExpanded\(true\)/);
+  assert.match(route, /<LazyDailyAlmanacWidget open=\{todayExpanded\} onOpenChange=\{setTodayExpanded\} \/>/);
   assert.match(route, /scrollIntoView\(\{ behavior: "smooth", block: "start" \}\)/);
+  assert.match(widget, /open\?: boolean; onOpenChange\?: \(open: boolean\) => void/);
+  assert.match(widget, /onOpenChange\?\.\(event\.currentTarget\.open\)/);
   assert.doesNotMatch(route, /<LazyDailyAlmanacWidget embedded \/>/);
   assert.doesNotMatch(route, /activeSection === "today"/);
   assert.match(route, /import\("@\/components\/daily-almanac-widget"\)/);
