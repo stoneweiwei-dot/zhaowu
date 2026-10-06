@@ -3,7 +3,7 @@ import type { SharedBirthRecord } from "@/lib/shared-birth";
 import type { Locale } from "@/lib/i18n";
 import { calculateQizheng, localBirthToUtc } from "@/lib/qizheng/engine";
 import { buildQizhengPlainSummary } from "@/lib/qizheng/plain-summary";
-import { buildPalm } from "@/lib/palm/engine";
+import { buildPalm } from "@/lib/yizhangjing/engine";
 import { buildPalmSynthesis, presentPalmPalace, splitPalmMeaning } from "@/lib/palm/standalone-presentation";
 import { buildZiweiCoreChart } from "@/lib/ziwei/core";
 import { normalizeZiweiCalendarBirth } from "@/lib/ziwei/calendar-normalization";
@@ -19,7 +19,7 @@ import {
   houseOf,
   julianDay,
   traditionalRuler,
-} from "@/lib/western-astrology/engine";
+} from "@/lib/astrology/engine";
 
 export type SpecialistId = "indian" | "western" | "ziwei" | "qizheng" | "past" | "dharma";
 
