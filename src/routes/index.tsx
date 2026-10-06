@@ -141,6 +141,7 @@ function Home() {
   const [heroIdx, setHeroIdx] = useState(0);
   const [activeSection, setActiveSection] = useState<Section | null>(null);
   const [scentOpen, setScentOpen] = useState(false);
+  const [todayExpanded, setTodayExpanded] = useState(false);
 
   /* auto-cycle paintings */
   useEffect(() => {
@@ -155,10 +156,10 @@ function Home() {
 
   const toggleSection = (id: Section) => {
     if (id === "today") {
-      const guide = document.getElementById("home-today-guide");
-      const details = guide?.querySelector<HTMLDetailsElement>("details");
-      if (details && !details.open) details.querySelector<HTMLElement>("summary")?.click();
-      guide?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTodayExpanded(true);
+      window.requestAnimationFrame(() => {
+        document.getElementById("home-today-guide")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
       return;
     }
     setActiveSection((prev) => (prev === id ? null : id));
@@ -235,7 +236,7 @@ function Home() {
       {/* ── TODAY GUIDE: FIRST DAILY-RETURN SURFACE ─────────── */}
       <section id="home-today-guide" className="zw-home-today-priority" aria-label={copy.navToday}>
         <Suspense fallback={null}>
-          <LazyDailyAlmanacWidget />
+          <LazyDailyAlmanacWidget open={todayExpanded} onOpenChange={setTodayExpanded} />
           <LazySkyEventsHomeSection />
         </Suspense>
       </section>
