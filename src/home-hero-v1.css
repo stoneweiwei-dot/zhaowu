@@ -222,6 +222,35 @@
   margin: 0;
 }
 
+.zw-home-today-skeleton {
+  display: grid;
+  min-height: 168px;
+  align-content: center;
+  gap: 13px;
+  border: 1px solid rgba(49, 94, 80, .12);
+  border-radius: 14px;
+  padding: 20px;
+  background: rgba(255, 250, 241, .78);
+}
+
+.zw-home-today-skeleton > * {
+  display: block;
+  overflow: hidden;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(49, 94, 80, .07), rgba(49, 94, 80, .13), rgba(49, 94, 80, .07));
+  background-size: 180% 100%;
+  animation: zw-home-skeleton 1.4s ease-in-out infinite;
+}
+
+.zw-home-today-skeleton > span { width: 42%; height: 13px; }
+.zw-home-today-skeleton > strong { width: 68%; height: 27px; }
+.zw-home-today-skeleton > i { width: 88%; height: 12px; }
+
+@keyframes zw-home-skeleton {
+  0%, 100% { background-position: 0 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 @media (max-width: 430px) {
   .zw-home-today-priority {
     margin-top: 14px;
@@ -233,7 +262,8 @@
   .zw-hero-painting,
   .zw-hero-dot,
   .zw-hero-nav-item,
-  .zw-hero-secondary-panel {
+  .zw-hero-secondary-panel,
+  .zw-home-today-skeleton > * {
     animation: none !important;
     transition: none !important;
   }
