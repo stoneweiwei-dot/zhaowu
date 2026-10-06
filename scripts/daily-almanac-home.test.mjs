@@ -17,6 +17,8 @@ test("homepage puts Today Guide before the birth flow and reserves deep reading 
   const deepReading = route.indexOf("<DeepReadingHeroCard />");
   assert.ok(daily >= 0 && formMount > daily && report > formMount && deepReading > report);
   assert.match(route, /id="home-today-guide"/);
+  assert.match(route, /querySelector<HTMLDetailsElement>\("details"\)/);
+  assert.match(route, /details\.open = true/);
   assert.match(route, /scrollIntoView\(\{ behavior: "smooth", block: "start" \}\)/);
   assert.doesNotMatch(route, /<LazyDailyAlmanacWidget embedded \/>/);
   assert.doesNotMatch(route, /activeSection === "today"/);
