@@ -127,9 +127,19 @@ test("client packet includes deterministic decision, structure, timing and topic
   ]) assert.match(client, new RegExp(id.replace(".", "\\.")));
 });
 
-test("result view tries complex reasoning first and fails closed to writer/rule", () => {
+test("result view shows deterministic complex synthesis immediately, then optionally tries AI reasoning", () => {
+  assert.match(resultView, /buildComplexDeterministicAnswer/);
+  assert.match(resultView, /complexRule\?\.answer/);
   assert.match(resultView, /buildComplexReasoningRequest/);
   assert.match(resultView, /requestComplexReasoning/);
   assert.match(resultView, /else if \(!cancelled\) void runWriter\(\)/);
   assert.match(resultView, /data-answer-source=\{writtenNow\?\.source \?\? "rule"\}/);
+});
+
+test("deterministic complex composer exists so provider failure cannot remove the upgrade", () => {
+  assert.match(client, /export function buildComplexDeterministicAnswer/);
+  assert.match(client, /thirdPartyBoundary/);
+  assert.match(client, /highStakesBoundary/);
+  assert.match(client, /domainLine/);
+  assert.match(client, /multi-part/);
 });
