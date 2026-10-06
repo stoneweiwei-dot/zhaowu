@@ -4,11 +4,19 @@
 
 /* ── PAGE RESET ──────────────────────────────────────────────── */
 .zw-hero-home {
-  background: var(--zw-bg, #f5f0e8);
+  background: transparent;
   min-height: 100dvh;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* The owner-selected wallpaper lives on SiteShell. Keep the image-first home
+   transparent enough to reveal that live background instead of masking it. */
+.zhaowu-home-sheet-shell.zhaowu-route-home::before {
+  background:
+    linear-gradient(180deg, rgba(247, 245, 239, .20), rgba(242, 239, 234, .42)),
+    var(--zhaowu-shell-wallpaper, url('/wallpaper-song.jpg')) 56% 36% / cover no-repeat !important;
 }
 
 /* ── HERO PAINTING GALLERY ───────────────────────────────────── */
@@ -55,12 +63,11 @@
 
 /* dot indicators */
 .zw-hero-dots {
-  display: none;
+  display: none !important;
   position: absolute;
   bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
   gap: 7px;
   z-index: 2;
 }
