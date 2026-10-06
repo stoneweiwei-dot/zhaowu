@@ -9,6 +9,7 @@ const layout = await readFile(new URL("../src/home-layout-r46.css", import.meta.
 const hub = await readFile(new URL("../src/home-birth-hub-r60.css", import.meta.url), "utf8");
 const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", import.meta.url), "utf8");
 const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
+const hero = await readFile(new URL("../src/home-hero-v1.css", import.meta.url), "utf8");
 
 test("homepage puts Today Guide before the birth flow and reserves deep reading for an existing result", () => {
   const daily = route.indexOf("<LazyDailyAlmanacWidget open={todayExpanded} onOpenChange={setTodayExpanded} />");
@@ -33,6 +34,15 @@ test("homepage puts Today Guide before the birth flow and reserves deep reading 
   assert.match(form, /id="bazi"/);
   assert.match(route, /home-layout-r46\.css/);
   assert.match(route, /home-birth-hub-r60\.css/);
+});
+
+test("home reserves Today loading space and stops automatic painting motion when requested", () => {
+  assert.match(route, /className="zw-home-today-skeleton"/);
+  assert.match(route, /prefers-reduced-motion: reduce/);
+  assert.match(route, /heroManual/);
+  assert.match(hero, /\.zw-home-today-skeleton/);
+  assert.match(hero, /min-height:\s*168px/);
+  assert.match(hero, /prefers-reduced-motion: reduce/);
 });
 
 test("daily almanac uses the canonical calendar and shows current year month day hour pillars", () => {
