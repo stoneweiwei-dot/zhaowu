@@ -139,15 +139,17 @@ function Home() {
   const setCurrent = useAppStore((s) => s.setCurrent);
 
   const [heroIdx, setHeroIdx] = useState(0);
+  const [heroManual, setHeroManual] = useState(false);
   const [activeSection, setActiveSection] = useState<Section | null>(null);
   const [scentOpen, setScentOpen] = useState(false);
   const [todayExpanded, setTodayExpanded] = useState(false);
 
-  /* auto-cycle paintings */
+  /* Auto-cycle only while motion is welcome and the visitor has not chosen a painting. */
   useEffect(() => {
+    if (heroManual || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const t = setInterval(() => setHeroIdx((i) => (i + 1) % HERO_PAINTINGS.length), 4500);
     return () => clearInterval(t);
-  }, []);
+  }, [heroManual]);
 
   /* auto-open form if there's a cached analysis result */
   useEffect(() => {
@@ -200,7 +202,7 @@ function Home() {
               aria-selected={i === heroIdx}
               aria-label={`第 ${i + 1} 張`}
               className={`zw-hero-dot${i === heroIdx ? " is-active" : ""}`}
-              onClick={() => setHeroIdx(i)}
+              onClick={() => { setHeroIdx(i); setHeroManual(true); }}
             />
           ))}
         </div>
@@ -235,7 +237,15 @@ function Home() {
 
       {/* ── TODAY GUIDE: FIRST DAILY-RETURN SURFACE ─────────── */}
       <section id="home-today-guide" className="zw-home-today-priority" aria-label={copy.navToday}>
-        <Suspense fallback={null}>
+        <Suspense
+          fallback={
+            <div className="zw-home-today-skeleton" role="status" aria-label={locale === "en" ? "Loading Today Guide" : locale === "zh-Hans" ? "正在载入今日指引" : "正在載入今日指引"}>
+              <span />
+              <strong />
+              <i />
+            </div>
+          }
+        >
           <LazyDailyAlmanacWidget open={todayExpanded} onOpenChange={setTodayExpanded} />
           <LazySkyEventsHomeSection />
         </Suspense>
