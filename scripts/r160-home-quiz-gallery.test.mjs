@@ -15,8 +15,12 @@ test("homepage keeps self-discovery collapsed while r201 opens Today by default"
   assert.doesNotMatch(home, /title: "輕測驗"|title: "轻测验"/);
 });
 
-test("customer-facing public gallery no longer displays portrait-heavy legacy art", async () => {
+test("customer-facing public gallery exposes only approved Song report art plus restrained motifs", async () => {
   const atlas = await source("src/lib/public-atlas.ts");
-  assert.doesNotMatch(atlas, /report-visuals|reportVisual/);
+  assert.match(atlas, /reportVisual\("library-report-art-jia-wood", "jia-wood"\)/);
+  assert.match(atlas, /reportVisual\("library-report-art-gui-water", "gui-water"\)/);
+  assert.match(atlas, /reportVisual\("library-report-art-yin-spring", "yin-spring"\)/);
+  assert.match(atlas, /reportVisual\("library-report-art-chou-winter", "chou-winter"\)/);
   assert.match(atlas, /ornament\("ornament-lotus", "lotus"\)/);
+  assert.doesNotMatch(atlas, /luck-wood|luck-fire|luck-earth|luck-metal|luck-water|celestial-pearl|endless-knot|pomegranate|twin-fish/);
 });
