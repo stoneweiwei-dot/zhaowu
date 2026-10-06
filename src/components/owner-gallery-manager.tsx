@@ -64,6 +64,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     shown: tr(locale, "顯示中", "显示中", "Shown"),
     hidden: tr(locale, "已隱藏", "已隐藏", "Hidden"),
     coreAsset: tr(locale, "核心資產", "核心资产", "Core asset"),
+    qcBlocked: tr(locale, "QC 封鎖", "QC 封锁", "QC blocked"),
     batchDeleteConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 個素材？此操作不可復原。`, `删除已选的 ${n} 个素材？此操作不可恢复。`, `Delete ${n} selected assets? This cannot be undone.`),
     batchDone: (n: number) => tr(locale, `已處理 ${n} 個素材。`, `已处理 ${n} 个素材。`, `Updated ${n} assets.`),
     more: tr(locale, "載入更多", "加载更多", "Load more"),
@@ -128,6 +129,11 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   );
   const renderedAssets = visibleAssets.slice(0, shown);
   const protectedAsset = (asset: GalleryAsset) => isOfficialSongGalleryAsset(asset) || asset.bucket_id === "public-fallback";
+  const qcBlockedAsset = (asset: GalleryAsset) => asset.tags.includes("qc-blocked-ghosting");
+  const selectedEnableableIds = selectedIds.filter((id) => {
+    const asset = libraryAssets.find((item) => item.id === id);
+    return asset ? !qcBlockedAsset(asset) : false;
+  });
   const selectedDeletableIds = selectedIds.filter((id) => {
     const asset = libraryAssets.find((item) => item.id === id);
     return asset ? !protectedAsset(asset) : false;
@@ -158,11 +164,12 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   };
 
   async function setSelectedEnabled(enabled: boolean) {
-    if (busy || !selectedIds.length) return;
+    const targetIds = enabled ? selectedEnableableIds : selectedIds;
+    if (busy || !targetIds.length) return;
     setBusy(true); setMessage(null);
     try {
-      await Promise.all(selectedIds.map((id) => setGalleryAssetEnabled(session, id, enabled)));
-      const count = selectedIds.length;
+      await Promise.all(targetIds.map((id) => setGalleryAssetEnabled(session, id, enabled)));
+      const count = targetIds.length;
       await load();
       notifyGalleryChanged();
       setMessage(copy.batchDone(count));
@@ -231,7 +238,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
             <span className="mr-auto font-display text-sm text-ink">{selectedIds.length ? copy.selected(selectedIds.length) : copy.batchManage}</span>
             <button type="button" disabled={busy || !visibleAssets.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={selectVisible}>{copy.selectVisible}</button>
             <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedIds([])}>{copy.clearSelection}</button>
-            <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-wood/30 bg-wood/5 px-3 text-[11px] text-wood disabled:opacity-35" onClick={() => void setSelectedEnabled(true)}>{copy.enableSelected}</button>
+            <button type="button" disabled={busy || !selectedEnableableIds.length} className="min-h-9 rounded-full border border-wood/30 bg-wood/5 px-3 text-[11px] text-wood disabled:opacity-35" onClick={() => void setSelectedEnabled(true)}>{copy.enableSelected}</button>
             <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => void setSelectedEnabled(false)}>{copy.disableSelected}</button>
             <button type="button" disabled={busy || !selectedDeletableIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelected()}>{copy.deleteSelected}</button>
           </div>
@@ -250,15 +257,21 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
                 <div className="p-3">
                   <p className="truncate text-xs font-medium sm:text-sm">{asset.title}</p>
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-                    <button type="button" aria-pressed={asset.enabled} className={`min-h-8 rounded-full border px-2.5 text-[10px] ${asset.enabled ? "border-wood/30 bg-wood/5 text-wood" : "border-line bg-paper/55 text-ink-mute"}`} onClick={async () => {
-                      try {
-                        await setGalleryAssetEnabled(session, asset.id, !asset.enabled);
-                        await load();
-                        notifyGalleryChanged();
-                      } catch (error) {
-                        setMessage(error instanceof Error ? error.message : copy.failed);
-                      }
-                    }}>{asset.enabled ? copy.shown : copy.hidden}</button>
+                    <button
+                      type="button"
+                      aria-pressed={asset.enabled}
+                      disabled={qcBlockedAsset(asset)}
+                      className={`min-h-8 rounded-full border px-2.5 text-[10px] disabled:cursor-not-allowed ${qcBlockedAsset(asset) ? "border-cinnabar/25 bg-cinnabar/5 text-cinnabar" : asset.enabled ? "border-wood/30 bg-wood/5 text-wood" : "border-line bg-paper/55 text-ink-mute"}`}
+                      onClick={async () => {
+                        try {
+                          await setGalleryAssetEnabled(session, asset.id, !asset.enabled);
+                          await load();
+                          notifyGalleryChanged();
+                        } catch (error) {
+                          setMessage(error instanceof Error ? error.message : copy.failed);
+                        }
+                      }}
+                    >{qcBlockedAsset(asset) ? copy.qcBlocked : asset.enabled ? copy.shown : copy.hidden}</button>
                     {protectedAsset(asset) ? (
                       <span className="rounded-full border border-wood/25 bg-wood/5 px-2.5 py-1 text-[10px] text-wood">{copy.coreAsset}</span>
                     ) : (

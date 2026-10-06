@@ -30,6 +30,7 @@ export function ImageViewer({ items, index, onClose, onIndexChange }: Props) {
   const [src, setSrc] = useState(item?.fullImageUrl ?? "");
   const [failed, setFailed] = useState(false);
   const [scale, setScale] = useState(1);
+  const [maxScale, setMaxScale] = useState(1);
   const [tx, setTx] = useState(0);
   const [ty, setTy] = useState(0);
   const start = useRef({ x: 0, y: 0, tx: 0, ty: 0, dist: 0, scale: 1, pinched: false, pointers: new Map<number, { x: number; y: number }>() });
@@ -39,6 +40,7 @@ export function ImageViewer({ items, index, onClose, onIndexChange }: Props) {
     setSrc(item?.fullImageUrl ?? "");
     setFailed(false);
     setScale(1);
+    setMaxScale(1);
     setTx(0);
     setTy(0);
   }, [item?.id, item?.fullImageUrl]);
@@ -80,6 +82,14 @@ export function ImageViewer({ items, index, onClose, onIndexChange }: Props) {
     return Math.hypot(a.x - b.x, a.y - b.y);
   }
 
+  function updateNativeZoomLimit(image: HTMLImageElement) {
+    const renderedWidth = Math.max(1, image.getBoundingClientRect().width);
+    const nativeScale = Math.max(1, image.naturalWidth / renderedWidth);
+    const nextMaxScale = Math.min(4, nativeScale);
+    setMaxScale(nextMaxScale);
+    setScale((current) => Math.min(current, nextMaxScale));
+  }
+
   function onPointerDown(event: React.PointerEvent) {
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
     start.current.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -101,7 +111,7 @@ export function ImageViewer({ items, index, onClose, onIndexChange }: Props) {
     if (start.current.pointers.size === 2) {
       const [a, b] = [...start.current.pointers.values()];
       const next = distance(a, b) / Math.max(1, start.current.dist);
-      setScale(Math.min(4, Math.max(1, start.current.scale * next)));
+      setScale(Math.min(maxScale, Math.max(1, start.current.scale * next)));
       return;
     }
     if (scale > 1) {
@@ -146,6 +156,7 @@ export function ImageViewer({ items, index, onClose, onIndexChange }: Props) {
           alt={item.alt}
           decoding="async"
           style={{ transform: `translate(${tx}px, ${ty}px) scale(${scale})` }}
+          onLoad={(event) => updateNativeZoomLimit(event.currentTarget)}
           onError={() => {
             if (!failed && src !== item.thumbnailUrl) {
               setFailed(true);

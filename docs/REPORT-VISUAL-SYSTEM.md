@@ -265,3 +265,17 @@ Level 3 失败 → 回退 Level 2；Level 2 失败 → 回退纯宣纸 / 淡墨�
 本文件是**产品与实现方向的 P1 契约**，不是声称 Phase 1–3 已经完成。
 
 在代码实际接入、测试、Production 部署和手机证据完成前，状态只能按 AGENTS.md 使用：Analysed / Modified / Committed / Deployed / Live / Verified，不得虚报完成。
+
+
+## 12. 正式母圖 QC 硬閘（2026-10-06）
+
+正式宋式母圖不再只以「檔案存在」視為合格。Runtime 必須同時滿足以下條件：
+
+1. **臉／頭部 QC**：人物臉、髮際、頭部輪廓不得有雙影、重影、錯位疊臉或生成殘影。
+2. **像素契約**：正式替換目標為至少 **1080×1920**、約 9:16。現有 10 天干與 12 月令的 480×854 檔只作既有 frozen baseline；只要像素內容改變，就不再享有低解析例外。
+3. **逐檔鎖定**：`public/report-visuals/qc-manifest.json` 記錄已人工驗收檔案的 Git blob SHA、尺寸與 QC 狀態。任何像素變更必須先重新人工檢查，再更新 manifest，否則 CI 失敗。
+4. **放大查看**：報告預覽可用 thumbnail；點開 viewer 必須先載 `fullImageUrl`。Viewer 的 pinch zoom 以圖片 natural pixel width 為上限，不允許把低解析來源無限數位放大造成假高清。
+5. **已知壞圖隔離**：舊的五行運圖 `luck-wood/fire/earth/metal/water` 因人物頭臉存在可見 ghosting，已退出 Runtime 並標記 `qc-blocked-ghosting`。運之書改用已驗收的「實際天干」母圖，不再調用這 5 張。
+6. **後台不可誤恢復**：標有 `qc-blocked-ghosting` 的素材即使仍保留原檔，也不得由普通「批次顯示」或單張狀態按鈕重新啟用。
+
+此 QC 層只管視覺資產品質，不改八字計算、喜忌、格局、歲運或文字報告。

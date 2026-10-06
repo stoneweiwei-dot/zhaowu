@@ -11,7 +11,6 @@ export type ReportVisualAssetKind = "day-master" | "month" | "overview";
 export type LuckVisualElement = "木" | "火" | "土" | "金" | "水";
 
 const REPORT_VISUAL_CDN_BASE = "/report-visuals/groups";
-const REPORT_LUCK_CDN_BASE = "/report-visuals/groups";
 const REPORT_OVERVIEW_CDN = "/report-visuals/full/overview.webp";
 
 function localPair(id: string, sprite: string, index: number, count: number): ReportVisualAsset {
@@ -53,12 +52,17 @@ const MONTH_ASSETS: Record<string, ReportVisualAsset> = {
   "chou-winter": localPair("chou-winter", `${REPORT_VISUAL_CDN_BASE}/month-3.webp`, 2, 3),
 };
 
-const LUCK_ASSETS: Record<LuckVisualElement, ReportVisualAsset> = {
-  木: localPair("luck-wood", `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, 0, 5),
-  火: localPair("luck-fire", `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, 1, 5),
-  土: localPair("luck-earth", `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, 2, 5),
-  金: localPair("luck-metal", `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, 3, 5),
-  水: localPair("luck-water", `${REPORT_LUCK_CDN_BASE}/luck-0.webp`, 4, 5),
+const STEM_VISUAL_KEYS: Record<string, string> = {
+  甲: "jia-wood",
+  乙: "yi-wood",
+  丙: "bing-fire",
+  丁: "ding-fire",
+  戊: "wu-earth",
+  己: "ji-earth",
+  庚: "geng-metal",
+  辛: "xin-metal",
+  壬: "ren-water",
+  癸: "gui-water",
 };
 
 export const REPORT_OVERVIEW_ASSET: ReportVisualAsset = {
@@ -87,8 +91,12 @@ export function luckElementFromGanZhi(ganZhi: string | null | undefined): LuckVi
 }
 
 export function getLuckVisualAsset(ganZhi: string | null | undefined): ReportVisualAsset | null {
-  const element = luckElementFromGanZhi(ganZhi);
-  return element ? LUCK_ASSETS[element] : null;
+  const stem = ganZhi?.trim().charAt(0);
+  const key = stem ? STEM_VISUAL_KEYS[stem] : null;
+  // The older five generic luck images are archived because face/head ghosting
+  // was found during the 2026-10-06 visual QC. Runtime timing art reuses the
+  // already-reviewed exact heavenly-stem mother image instead.
+  return key ? DAY_MASTER_ASSETS[key] ?? null : null;
 }
 
 export const REPORT_VISUAL_ASSET_COUNTS = {
