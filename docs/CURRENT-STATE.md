@@ -16,6 +16,16 @@
 
 Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batched conversion/trust work; P2 is backlog-only polish.
 
+
+## 0.1 Complex question answering — 2026-10-07
+
+- **ACTIVE deterministic upgrade:** complex / long-tail questions are parsed into a question graph covering people, relationship roles, domains, subquestions, comparison/conditional/timing modes, third-party boundaries and high-stakes boundaries.
+- **ACTIVE first-screen fallback:** complex questions now get a deterministic multi-part synthesis before any provider call. It combines the existing Decision Report, question-relevant topic readings, timing and risk boundaries; it does not calculate a second chart or invent new metaphysical facts.
+- **Coverage catalogue:** `docs/COMPLEX-QUESTION-REASONING.md` defines 40+ person/relationship roles and broad question families including work, business, money, love, family, social relationships, timing, A/B decisions, home/property, migration, travel, health, fertility, legal, investment, pets, retrospective validation and symbolic/spiritual questions.
+- **OPTIONAL AI enhancement:** `answer-reasoner` exists as a bounded fact-synthesis layer. It is allowed to connect/prioritise only deterministic fact IDs and must fail closed to deterministic output.
+- **PROVIDER STATUS:** on 2026-10-07 both the existing `answer-writer` and the new `answer-reasoner` returned provider HTTP 401 from the currently configured OpenAI key. Their `site_settings` switches are therefore disabled to avoid useless provider calls. This does **not** disable deterministic customer answers or the new complex-question synthesis.
+- AI enhancement must not be re-enabled until a valid provider credential is installed through a secure secret-management path and a real invocation returns an accepted, fact-cited answer.
+
 ## 五音、五氣與五行功能訓練教學
 
 - ACTIVE：`/knowledge/five-elements-tone-qi` 以繁中／簡中／英文說明五色、五音、氣候語境的五氣，以及功能卡點如何轉成可觀察的日常練習。
