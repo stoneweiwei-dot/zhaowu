@@ -10,8 +10,8 @@
 - Current GitHub `main` may be ahead of Production by docs/governance-only commits. This is intentional when Vercel skips non-runtime changes; runtime freshness is judged against the latest runtime-affecting commit, not literal docs-only HEAD.
 - Vercel `stone-zhaowu-official` is serving runtime release `943f79a1ac0abc3a66dec85dd90a69fddcd8570b` as verified on 2026-10-07. Newer `main` commit `b79f9ab109c04b6c03a6a59b3f220fb55b33eb6e` is docs/reference-only and its Vercel deployment was intentionally canceled/skipped.
 - Stripe live account is enabled for charges and payouts. Supabase `stripe-checkout` and `stripe-webhook` functions are ACTIVE and the `report_purchase_entitlements` schema is applied.
-- **P0 PAYMENT WIRING:** a live Stripe webhook endpoint was created for `/functions/v1/stripe-webhook` on 2026-10-07. Before the first paid launch campaign, its signing secret must be confirmed as the active Supabase `STRIPE_WEBHOOK_SECRET`. This is the only currently confirmed payment wiring blocker.
-- Current entitlement table count at the 2026-10-07 audit: 0 paid / 0 pending / 0 failed, so there is no existing customer entitlement migration problem.
+- **PAYMENT LAUNCH PATH:** paid access no longer depends on manually copying a webhook signing secret. `stripe-checkout` creates a server-only pending entitlement before redirecting to Stripe; on return it retrieves the Checkout Session directly from Stripe with the server secret, re-checks product/system/access-key/amount/currency, and grants `paid` only when Stripe reports `payment_status=paid`. The signed webhook function remains available as an optional asynchronous fallback.
+- At the pre-launch audit there were no existing customer entitlement rows, so this change requires no purchase migration.
 - Instagram / Threads automatic publishing remains optional and depends on Meta credentials; it is not a launch blocker.
 
 Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batched conversion/trust work; P2 is backlog-only polish.
