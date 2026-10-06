@@ -256,7 +256,7 @@ function AccountPage() {
     batchDeleteReportsConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 筆報告？此操作不可復原。`, `删除已选的 ${n} 笔报告？此操作不可恢复。`, `Delete ${n} selected reports? This cannot be undone.`),
     batchReportsDeleted: (n: number) => tr(locale, `已刪除 ${n} 筆報告。`, `已删除 ${n} 笔报告。`, `Deleted ${n} reports.`),
     backgroundTitle: tr(locale, "首頁背景專區", "首页背景专区", "Homepage backgrounds"),
-    backgroundHint: tr(locale, "這裡只管理首頁背景；上傳後直接按「設為首頁背景」。", "这里只管理首页背景；上传后直接按“设为首页背景”。", "This section is only for homepage backgrounds. Upload an image, then set it as the homepage background."),
+    backgroundHint: tr(locale, "這裡只管理首頁背景；單張上傳後會直接套用，多張上傳後可點任意一張「設為首頁背景」。", "这里只管理首页背景；单张上传后会直接套用，多张上传后可点任意一张“设为首页背景”。", "This section only manages homepage backgrounds. A single upload is applied immediately; after multiple uploads, choose any image with “Set as homepage background”."),
     latestImage: tr(locale, "最近一張", "最近一张", "Latest image"),
     viewHistory: (n: number) => tr(locale, `查看上傳歷史（${n}）`, `查看上传历史（${n}）`, `View upload history (${n})`),
     hideHistory: tr(locale, "收起上傳歷史", "收起上传历史", "Hide upload history"),
@@ -267,6 +267,7 @@ function AccountPage() {
     upload: tr(locale, "＋上傳首頁背景", "＋上传首页背景", "+ Upload homepage backgrounds"),
     uploading: tr(locale, "上傳中…", "上传中…", "Uploading…"),
     uploaded: (n: number) => tr(locale, `已上傳 ${n} 張。`, `已上传 ${n} 张。`, `Uploaded ${n} image${n === 1 ? "" : "s"}.`),
+    uploadedAndSet: tr(locale, "已上傳並設為首頁背景。", "已上传并设为首页背景。", "Uploaded and set as the homepage background."),
     uploadPartial: (done: number, failed: number) => tr(locale, `完成 ${done} 張，失敗 ${failed} 張。`, `完成 ${done} 张，失败 ${failed} 张。`, `${done} completed; ${failed} failed.`),
     queued: tr(locale, "等待", "等待", "Queued"),
     uploadInProgress: tr(locale, "上傳中", "上传中", "Uploading"),
@@ -467,11 +468,14 @@ function AccountPage() {
     setBackgroundMsg(null);
     let done = 0;
     let failed = 0;
+    let singleUploadedAsset: BackgroundAsset | null = null;
+    let autoPinError: string | null = null;
     for (const [index, file] of files.entries()) {
       const item = batch[index];
       updateUpload(item.id, { status: "uploading", progress: 1 });
       try {
-        await uploadBackground(session, file, (progress) => updateUpload(item.id, { progress }));
+        const uploadedAsset = await uploadBackground(session, file, (progress) => updateUpload(item.id, { progress }));
+        if (files.length === 1) singleUploadedAsset = uploadedAsset;
         updateUpload(item.id, { status: "done", progress: 100 });
         done += 1;
       } catch (err) {
@@ -482,9 +486,16 @@ function AccountPage() {
         failed += 1;
       }
     }
+    if (singleUploadedAsset) {
+      try {
+        await setBackgroundWallpaper(session, singleUploadedAsset.id);
+      } catch (err) {
+        autoPinError = err instanceof Error ? err.message : c.updateFailed;
+      }
+    }
     await refreshBackgrounds();
     if (done) notifyBackgroundChanged();
-    setBackgroundMsg(failed ? c.uploadPartial(done, failed) : c.uploaded(done));
+    setBackgroundMsg(autoPinError ?? (singleUploadedAsset ? c.uploadedAndSet : failed ? c.uploadPartial(done, failed) : c.uploaded(done)));
     setBackgroundBusy(false);
   }
 
