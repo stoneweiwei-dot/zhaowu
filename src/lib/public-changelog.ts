@@ -17,9 +17,9 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
     id: "2026-10-07-auto-location-home-visuals",
     date: "2026-10-07",
-    zhHant: { title: "定位與首頁視覺再收斂", summary: "已授權的定位會自動沿用並定期刷新；未取得精準定位時以 Vercel IP 的城市級位置兜底。首頁背景專區現在單張上傳即直接套用，站主選中的背景會真正顯示在首頁；首頁畫作持續自動輪播，底部白色輪播條已徹底移除。" },
-    zhHans: { title: "定位与首页视觉再收敛", summary: "已授权的定位会自动沿用并定期刷新；未取得精准定位时以 Vercel IP 的城市级位置兜底。首页背景专区现在单张上传即直接套用，站主选中的背景会真正显示在首页；首页画作持续自动轮播，底部白色轮播条已彻底移除。" },
-    en: { title: "Automatic location and cleaner homepage visuals", summary: "Granted location is reused and refreshed automatically, with Vercel IP city-level geolocation as a coarse fallback. A single upload in Homepage Backgrounds is now applied immediately, the owner-selected wallpaper is actually visible on the homepage, and the white carousel rail is fully removed while hero paintings keep auto-cycling." },
+    zhHant: { title: "定位與首頁視覺再收斂", summary: "已授權的定位會自動沿用並定期刷新；未取得精準定位時以 Vercel IP 的城市級位置兜底。首頁背景專區會在打開時主動載入現有背景，站主資料橋接偶發讀取失敗時以公開背景庫兜底，不再出現空白分區；單張上傳即直接套用，選中的背景會真正顯示在首頁，底部白色輪播條已徹底移除。" },
+    zhHans: { title: "定位与首页视觉再收敛", summary: "已授权的定位会自动沿用并定期刷新；未取得精准定位时以 Vercel IP 的城市级位置兜底。首页背景专区会在打开时主动载入现有背景，站主数据桥接偶发读取失败时以公开背景库兜底，不再出现空白分区；单张上传即直接套用，选中的背景会真正显示在首页，底部白色轮播条已彻底移除。" },
+    en: { title: "Automatic location and cleaner homepage visuals", summary: "Granted location is reused and refreshed automatically, with Vercel IP city-level geolocation as a coarse fallback. Homepage Backgrounds now reloads its library whenever opened and falls back to the public background library if the owner read bridge fails, so the section no longer appears empty. A single upload applies immediately, the selected wallpaper is visible on the homepage, and the white carousel rail is fully removed." },
   },
   {
     id: "2026-10-06-owner-live-controls",
