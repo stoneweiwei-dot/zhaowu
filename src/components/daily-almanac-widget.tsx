@@ -71,7 +71,7 @@ function useVisitorContext() {
       const row = JSON.parse(cached) as { at?: number; value?: Partial<VisitorContext> };
       const value = row.value;
       const valid = typeof row.at === "number"
-        && Date.now() - row.at < 5 * 60_000
+        && Date.now() - row.at < 30 * 24 * 60 * 60_000
         && value?.source === "browser"
         && typeof value.latitude === "number"
         && typeof value.longitude === "number"
@@ -139,11 +139,28 @@ function useVisitorContext() {
 
   useEffect(() => {
     let cancelled = false;
-    if (!navigator.geolocation || !navigator.permissions?.query) return;
-    void navigator.permissions.query({ name: "geolocation" as PermissionName }).then((permission) => {
-      if (!cancelled && permission.state === "granted") void requestLocation();
-    }).catch(() => undefined);
-    return () => { cancelled = true; };
+    let permission: PermissionStatus | null = null;
+
+    const refreshGrantedLocation = async () => {
+      if (cancelled || !navigator.geolocation || !navigator.permissions?.query) return;
+      try {
+        permission = permission ?? await navigator.permissions.query({ name: "geolocation" as PermissionName });
+        if (!cancelled && permission.state === "granted") void requestLocation();
+      } catch { /* browsers without Permissions API keep the cached location */ }
+    };
+
+    void refreshGrantedLocation();
+    const timer = window.setInterval(() => { void refreshGrantedLocation(); }, 15 * 60_000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void refreshGrantedLocation();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, []);
 
   return { visitor, requestLocation, requesting, locationError };
