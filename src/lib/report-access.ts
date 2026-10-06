@@ -12,7 +12,40 @@ export const REPORT_ACCESS_PRODUCTS = {
 
 const ACCESS_KEY_STORAGE = "zhaowu.report-access-key.v1";
 const SESSION_STORAGE = "zhaowu.report-access-sessions.v1";
-const CHECKOUT_ENDPOINT = `${SUPABASE_URL}/functions/v1/stripe-checkout`;
+const ACCESS_ENDPOINT = `${SUPABASE_URL}/functions/v1/stripe-checkout`;
+
+const PAYMENT_LINKS: Record<ReportSystemId, Record<ReportAccessProduct, string>> = {
+  ziwei: {
+    quick: "https://buy.stripe.com/8x2bJ16SPgPL1tN8hk2sM03",
+    system: "https://buy.stripe.com/14A5kDelh42ZgoH69c2sM04",
+    bundle: "https://buy.stripe.com/8x27sLgtp9njb4naps2sM05",
+  },
+  qizheng: {
+    quick: "https://buy.stripe.com/aFa6oHb959nj0pJ7dg2sM06",
+    system: "https://buy.stripe.com/7sY28r5OL573egzbtw2sM07",
+    bundle: "https://buy.stripe.com/eVq9AT7WTdDz8Wfaps2sM08",
+  },
+  western: {
+    quick: "https://buy.stripe.com/14AbJ190X7fb1tN69c2sM09",
+    system: "https://buy.stripe.com/dRmaEX1yv42Z5K37dg2sM0a",
+    bundle: "https://buy.stripe.com/9B68wPb95eHDegz2X02sM0b",
+  },
+  indian: {
+    quick: "https://buy.stripe.com/14A7sL4KH7fb1tNeFI2sM0c",
+    system: "https://buy.stripe.com/7sY4gzelharn0pJcxA2sM0d",
+    bundle: "https://buy.stripe.com/dRm28r4KH9nj6O7fJM2sM0e",
+  },
+  palm: {
+    quick: "https://buy.stripe.com/28E5kD3GDdDz8Wf69c2sM0f",
+    system: "https://buy.stripe.com/3cI8wPcd9arn4FZeFI2sM0g",
+    bundle: "https://buy.stripe.com/eVqdR93GD6b7a0japs2sM0h",
+  },
+  numerology: {
+    quick: "https://buy.stripe.com/28E5kDfpl1UR2xR2X02sM0i",
+    system: "https://buy.stripe.com/3cI4gz3GD9nj0pJdBE2sM0j",
+    bundle: "https://buy.stripe.com/14AeVdfplfLHgoH0OS2sM0k",
+  },
+};
 
 type Verification = {
   ok?: boolean;
@@ -66,8 +99,8 @@ function apiHeaders() {
   return { apikey: SUPABASE_KEY, "Content-Type": "application/json" };
 }
 
-async function payloadOf(response: Response): Promise<Verification & { url?: string }> {
-  const payload = await response.json().catch(() => ({})) as Verification & { url?: string };
+async function payloadOf(response: Response): Promise<Verification> {
+  const payload = await response.json().catch(() => ({})) as Verification;
   if (!response.ok) {
     const raw = typeof payload.error === "string" ? payload.error : payload.error?.code;
     throw new Error(raw || `HTTP_${response.status}`);
@@ -76,7 +109,7 @@ async function payloadOf(response: Response): Promise<Verification & { url?: str
 }
 
 async function verifySession(sessionId: string, accessKey: string): Promise<Verification> {
-  const url = new URL(CHECKOUT_ENDPOINT);
+  const url = new URL(ACCESS_ENDPOINT);
   url.searchParams.set("session_id", sessionId);
   url.searchParams.set("access_key", accessKey);
   const response = await fetch(url, { headers: apiHeaders(), cache: "no-store" });
@@ -116,13 +149,9 @@ export async function resolveReportAccess(system: ReportSystemId) {
 export async function startReportCheckout(product: ReportAccessProduct, system: ReportSystemId) {
   const accessKey = reportAccessKey();
   if (!accessKey) throw new Error("ACCESS_KEY_UNAVAILABLE");
-  const returnPath = typeof window === "undefined" ? "/" : `${window.location.pathname}${window.location.hash}`;
-  const response = await fetch(CHECKOUT_ENDPOINT, {
-    method: "POST",
-    headers: apiHeaders(),
-    body: JSON.stringify({ product, system, accessKey, returnPath }),
-  });
-  const payload = await payloadOf(response);
-  if (!payload.url || !payload.url.startsWith("https://checkout.stripe.com/")) throw new Error("CHECKOUT_URL_MISSING");
-  window.location.assign(payload.url);
+  const link = PAYMENT_LINKS[system]?.[product];
+  if (!link) throw new Error("PAYMENT_LINK_MISSING");
+  const url = new URL(link);
+  url.searchParams.set("client_reference_id", accessKey);
+  window.location.assign(url.toString());
 }

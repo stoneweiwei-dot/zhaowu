@@ -1,5 +1,16 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-07 Payment Links 正式收費路徑 supersession
+
+- ACTIVE：公開付費改用 Stripe 官方 Payment Links，不再由瀏覽器 POST 到 Supabase 建立 Checkout Session，因此網站 runtime 不需要保存 Stripe server API key。
+- ACTIVE：快速讀 USD 1.99、單盤完整讀 USD 4.99、六盤全讀 USD 9.99 價格不變；六個公開系統各有三個 live Payment Link，付款完成後直接回原系統頁並帶回 Stripe Checkout Session ID。
+- ACTIVE：瀏覽器只把本機 access key 放入 Stripe 支援的 `client_reference_id`；query string、localStorage、成功跳轉本身仍不得授權。
+- ACTIVE：Stripe webhook 只接受私有高熵 endpoint token、已登記的 live Payment Link ID、精確 USD 金額／幣別、合法 access key 與 live event；符合付款成功條件後才寫入 server-only `report_purchase_entitlements`。
+- ACTIVE：`stripe-checkout` 現在只作 entitlement lookup；瀏覽器只能以 session ID + 本機 access key 查詢是否 `paid`，不能自行建立或修改 entitlement。
+- COMPATIBLE：async payment succeeded／failed 事件繼續更新 entitlement；已是 `paid` 的紀錄不得被較晚的非付款事件降級。
+- SUPERSEDED：2026-10-03「付款權限只以 Stripe webhook 驗簽後寫入」中的「必須使用 Stripe signing secret」與 2026-10-07「站主必須手動搬 webhook secret 才能 Launch」限制。其核心安全原則——server-side fulfillment、前端不得自行授權——完全保留。
+- OPERATIONAL：第一筆真實付款是 Stripe→webhook delivery 的最終營運實證；在現有 live Payment Links、ACTIVE Edge Functions、已驗證 entitlement lookup 均成立時，不再把它當作開站前人工阻塞。
+
 ## 2026-10-07 正式進入 Launch／營運模式 supersession
 
 - ACTIVE：昭梧已進入 Launch／Operations；後續預設目標改為穩定營運、讓真實訪客完成排盤／閱讀／付款、開始推廣與取得收入，不再以清空所有小瑕疵後才上線為前提。
@@ -7,7 +18,7 @@
 - ACTIVE：docs／governance-only `main` commit 若按既有 Vercel policy 跳過部署，不要求 Production SHA 追到字面上的最新 main；正式站只需對齊最新 runtime-affecting release。
 - ACTIVE：Meta／Instagram／Threads 自動發布屬可選 distribution integration；缺 Meta credentials 不得阻止網站營運、人工推廣或其他渠道推廣。
 - ACTIVE：在無 P0 時，下一階段工作順序固定為「營運 → 推廣 → 真實用戶／付款觀察 → 證據化 P0/P1 修復 → P2 批次收尾」。
-- 2026-10-07 PAYMENT P0：Stripe live account 已可收款／撥款；Supabase checkout、webhook 與 entitlement schema 均存在；已建立 live Stripe webhook endpoint。正式付費推廣前只剩確認該 endpoint signing secret 已綁定為 Supabase `STRIPE_WEBHOOK_SECRET`。
+- 2026-10-07 PAYMENT：已改為 live Stripe Payment Links + server-only webhook fulfillment；不再需要站主手動搬運 Stripe/Supabase secret 才能 Launch。
 - SUPERSEDED：任何把非必要 CI、視覺 baseline、手機 screenshot 差異、後台小便利、單一 cosmetic issue 或 docs-only SHA mismatch 當成「網站仍不能上線／不能推廣」的舊工作方式。
 
 ## 2026-10-04 付費報告為主、五音為隨報告附贈 supersession
@@ -30,7 +41,7 @@
 
 - ACTIVE：紫微、七政、西洋、印度古法、一掌經／前世今生、生命靈數六類基本盤與計算落位向公開訪客開放，不再要求 owner cookie。
 - ACTIVE：基本盤之後的文字解讀全部按次付費；快速讀 USD 1.99、單一系統完整讀 USD 4.99、六系統全讀 USD 9.99，均為一次性付款、不自動續費。
-- ACTIVE：付款權限只以 Stripe webhook 驗簽後寫入的 server-side entitlement 為準；前端 query string、localStorage 或付款跳轉本身不得直接授權。
+- SUPERSEDED IN PART：付款仍只由 server-side fulfillment 寫入 entitlement，但實作已改為 2026-10-07 Payment Links + private endpoint token；前端 query string、localStorage 或付款跳轉本身仍不得直接授權。
 - SUPERSEDED：r162「全部專項 routes 僅供站主／內部」以及 r196「payment gate 暫停」的衝突部分。天機雙盤／星宮等內部工具仍維持 owner-only；子平主判、排盤引擎與內容邊界不變。
 
 ## 2026-10-03 r228a 開場影片不再先閃舊版 supersession
