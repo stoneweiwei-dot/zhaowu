@@ -15,22 +15,33 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.10.01-r223",
-  updateNumber: 223,
-  publishedAt: "2026-10-01T13:00:00+10:00",
-  latestSummary: "開場影片每次開啟 App 都會播放並可跳過、保留聲音且上限 15 秒；聲音鈕改為乾淨的圖示；素材管理只留「設為目前使用／改名／刪除」；音樂上傳改用真實分支狀態重試，不再誤報失敗。",
+  version: "ZW-WEB-2026.10.06-r224",
+  updateNumber: 224,
+  publishedAt: "2026-10-06T20:16:00+11:00",
+  latestSummary: "更新頁改為逐次記錄網站改動，不再停在單一版本；補回近日首頁、報告、後台、PWA 與圖庫變化。開場影片已整理名稱，並將「雙生並蒂蓮」設為目前版本。",
+  summary: {
+    "zh-Hant": "更新頁改為逐次記錄網站改動，不再停在單一版本；補回近日首頁、報告、後台、PWA 與圖庫變化。開場影片已整理名稱，並將「雙生並蒂蓮」設為目前版本。",
+    "zh-Hans": "更新页改为逐次记录网站改动，不再停在单一版本；补回近日首页、报告、后台、PWA 与图库变化。开场影片已整理名称，并将「双生并蒂莲」设为目前版本。",
+    en: "The updates page now records site changes as they happen instead of freezing at one release. Recent home, report, owner-console, PWA and gallery changes have been backfilled, and Twin Lotus is now the selected opening video.",
+  },
   details: {
     "zh-Hant": [
-      "開場影片：每次重新開啟 App 或網站都會播放（同一次瀏覽內換頁不重播），底部有「跳過」鈕；站主上傳的影片保留原聲，最長 15 秒，上傳時自動在瀏覽器內壓縮（不產生雲端費用）。",
-      "聲音鈕：開場與登入頁的聲音控制改為細線喇叭圖示（開／靜音兩態），不再有文字逐字換行溢出螢幕的問題，並與「跳過」鈕同高並排。",
-      "素材管理（站主後台）：每支影片只留「設為目前使用」「改名」「刪除」；日夜版、停用、預覽等多餘選項已移除；上傳失敗（檔案超過儲存單檔上限）時改以中文說明原因。",
-      "背景音樂：站主上傳曲目時，改以最新的分支狀態自動重試，修正「曲目保存失敗」的假失敗；頁面切到背景時暫停音樂，起始音量放輕。",
+      "更新紀錄：今後每次網站功能、視覺、站主後台或正式 runtime 有實際改動，都必須在同一個變更加入公開紀錄；CI 會阻止漏寫。",
+      "開場影片：後台素材改成可讀名稱；目前使用「雙生並蒂蓮｜主版」MP4，其他影片保留作備用，沒有刪除原檔。",
+      "近日改動：已補入手機首頁與五行版面、站主批次操作、Instagram／Threads 發布器、報告手機版、PWA 自癒、宋式圖庫分組與正式圖像品質門檻等變化。",
+      "版本機制：正式 rN 仍可按一個完整發布批次更新；但「每次改動」清單會跟著實際產品變化走，不再等 release_history 才顯示。",
+    ],
+    "zh-Hans": [
+      "更新记录：今后每次网站功能、视觉、站主后台或正式 runtime 有实际改动，都必须在同一个变更加入公开记录；CI 会阻止漏写。",
+      "开场影片：后台素材改成可读名称；目前使用「双生并蒂莲｜主版」MP4，其他影片保留作备用，没有删除原档。",
+      "近日改动：已补入手机首页与五行版面、站主批量操作、Instagram／Threads 发布器、报告手机版、PWA 自愈、宋式图库分组与正式图像质量门槛等变化。",
+      "版本机制：正式 rN 仍可按一个完整发布批次更新；但「每次改动」清单会跟着实际产品变化走，不再等 release_history 才显示。",
     ],
     en: [
-      "Opening video: it now plays every time the app or site is opened (not again on page changes within the same visit), with a Skip button at the bottom. Owner uploads keep their sound, are capped at 15 seconds and are compressed in the browser at no cloud cost.",
-      "Sound button: the opening and login sound control is now a clean line speaker icon (on / muted). The label that used to wrap one character per line off the screen is gone, and the button sits level with Skip.",
-      "Media manager (owner console): each video now offers only Set as current, Rename and Delete; the day/night, disable and preview options were removed; when an upload exceeds the storage per-file limit the reason is explained in plain language.",
-      "Background music: owner track uploads now retry against the live branch state, fixing the false 'track save failed' error; music pauses when the page goes to the background and starts at a softer volume.",
+      "Change history: every real change to site features, visuals, the owner console or production runtime must now add a public note in the same change; CI blocks omissions.",
+      "Opening video: owner media now has readable names. Twin Lotus (main MP4) is selected, while every other clip remains available as a fallback and no original was deleted.",
+      "Recent changes have been backfilled, including the mobile home/five-element layout, owner bulk actions, Instagram/Threads publisher, report mobile cleanup, PWA self-heal, Song gallery grouping and formal-art QC.",
+      "Release numbering can still move in vetted batches, but the Every change list follows actual product changes and no longer waits for release_history before showing them.",
     ],
   },
 } as const;
