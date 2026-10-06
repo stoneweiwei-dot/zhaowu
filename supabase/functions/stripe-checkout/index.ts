@@ -98,10 +98,39 @@ function validBrowserKey(req: Request, env: Runtime) {
   return !env.publishableKey || req.headers.get("apikey") === env.publishableKey;
 }
 
+function expectedSystem(product: ProductId, system: string) {
+  return product === "bundle" ? null : system;
+}
+
+function sessionMatchesEntitlement(
+  session: Stripe.Checkout.Session,
+  row: { product_id: string; system_id: string | null; access_key: string; amount_cents: number; currency: string },
+) {
+  const product = String(session.metadata?.product_id || "") as ProductId;
+  const system = String(session.metadata?.system_id || "");
+  const accessKey = String(session.metadata?.access_key || "");
+  const expected = PRODUCTS[product];
+  if (!expected) return false;
+  return Boolean(
+    session.id
+    && session.amount_total === row.amount_cents
+    && session.currency === row.currency
+    && expected.amount === row.amount_cents
+    && product === row.product_id
+    && accessKey === row.access_key
+    && ((product === "bundle" && system === "all" && row.system_id === null)
+      || (product !== "bundle" && system === row.system_id))
+  );
+}
+
 export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Promise<Response> {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(req, env) });
   if (!validBrowserKey(req, env)) return json(req, env, { ok: false, error: { code: "CLIENT_KEY_REJECTED" } }, 401);
   if (!env.stripeKey) return json(req, env, { ok: false, error: { code: "PAYMENT_NOT_CONFIGURED" } }, 503);
+
+  const admin = adminClient(env);
+  if (!admin) return json(req, env, { ok: false, error: { code: "PAYMENT_STORE_NOT_CONFIGURED" } }, 503);
+  const stripe = stripeClient(env.stripeKey);
 
   if (req.method === "GET") {
     const url = new URL(req.url);
@@ -110,20 +139,53 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Pr
     if (!/^cs_(?:live|test)_[A-Za-z0-9]{10,200}$/.test(sessionId) || !accessKey) {
       return json(req, env, { ok: false, error: { code: "BAD_VERIFICATION_REQUEST" } }, 400);
     }
-    const admin = adminClient(env);
-    if (!admin) return json(req, env, { ok: false, error: { code: "PAYMENT_STORE_NOT_CONFIGURED" } }, 503);
+
     const { data, error } = await admin
       .from("report_purchase_entitlements")
-      .select("product_id,system_id,status")
+      .select("product_id,system_id,status,access_key,amount_cents,currency")
       .eq("checkout_session_id", sessionId)
       .eq("access_key", accessKey)
       .maybeSingle();
     if (error) return json(req, env, { ok: false, error: { code: "PAYMENT_STORE_ERROR" } }, 502);
-    if (!data) return json(req, env, { ok: true, paid: false, pending: true });
+    if (!data) return json(req, env, { ok: true, paid: false, pending: false });
+
+    if (data.status === "paid") {
+      return json(req, env, { ok: true, paid: true, pending: false, product: data.product_id, system: data.system_id });
+    }
+    if (data.status === "failed" || data.status === "refunded") {
+      return json(req, env, { ok: true, paid: false, pending: false, product: data.product_id, system: data.system_id });
+    }
+
+    let session: Stripe.Checkout.Session;
+    try {
+      session = await stripe.checkout.sessions.retrieve(sessionId);
+    } catch {
+      return json(req, env, { ok: false, error: { code: "STRIPE_VERIFY_ERROR" } }, 502);
+    }
+    if (!sessionMatchesEntitlement(session, data)) {
+      return json(req, env, { ok: false, error: { code: "CHECKOUT_MISMATCH" } }, 409);
+    }
+
+    const paid = session.payment_status === "paid";
+    const expired = session.status === "expired";
+    if (paid || expired) {
+      const nextStatus = paid ? "paid" : "failed";
+      const { error: updateError } = await admin
+        .from("report_purchase_entitlements")
+        .update({
+          status: nextStatus,
+          stripe_event_id: `checkout:verify:${session.id}`,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("checkout_session_id", session.id)
+        .eq("access_key", accessKey);
+      if (updateError) return json(req, env, { ok: false, error: { code: "ENTITLEMENT_WRITE_FAILED" } }, 502);
+    }
+
     return json(req, env, {
       ok: true,
-      paid: data.status === "paid",
-      pending: data.status === "pending",
+      paid,
+      pending: !paid && !expired,
       product: data.product_id,
       system: data.system_id,
     });
@@ -150,7 +212,7 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Pr
   const metadata = { product_id: product, system_id: product === "bundle" ? "all" : system, access_key: accessKey };
 
   try {
-    const session = await stripeClient(env.stripeKey).checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: [{ quantity: 1, price_data: { currency: "usd", unit_amount: definition.amount, product_data: { name: definition.name } } }],
       success_url: success.toString().replace("%7BCHECKOUT_SESSION_ID%7D", "{CHECKOUT_SESSION_ID}"),
@@ -161,6 +223,23 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Pr
       integration_identifier: "zhaowu_report_access_v1",
     });
     if (!session.url) return json(req, env, { ok: false, error: { code: "CHECKOUT_URL_MISSING" } }, 502);
+
+    const { error: storeError } = await admin.from("report_purchase_entitlements").upsert({
+      checkout_session_id: session.id,
+      stripe_event_id: `checkout:init:${session.id}`,
+      access_key: accessKey,
+      product_id: product,
+      system_id: expectedSystem(product, system),
+      amount_cents: definition.amount,
+      currency: "usd",
+      status: "pending",
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "checkout_session_id" });
+
+    if (storeError) {
+      try { await stripe.checkout.sessions.expire(session.id); } catch { /* fail closed: do not return checkout URL */ }
+      return json(req, env, { ok: false, error: { code: "ENTITLEMENT_INIT_FAILED" } }, 502);
+    }
     return json(req, env, { ok: true, url: session.url, id: session.id });
   } catch {
     return json(req, env, { ok: false, error: { code: "STRIPE_ERROR" } }, 502);
