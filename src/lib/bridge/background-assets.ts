@@ -5,17 +5,40 @@ import { assertSupabaseStorageWritesEnabled } from "@/lib/storage-write-policy";
 
 export * from "../background-assets";
 
+async function publicBackgroundFallbackPage(
+  page: number,
+  requestedPageSize: number,
+): Promise<base.BackgroundPage> {
+  const pageSize = Math.max(1, Math.min(base.BACKGROUND_HISTORY_PAGE_SIZE, Math.floor(requestedPageSize)));
+  const safePage = Math.max(0, Math.floor(page));
+  const items = await base.listPublicBackgrounds();
+  const offset = safePage * pageSize;
+  return {
+    items: items.slice(offset, offset + pageSize),
+    total: items.length,
+    page: safePage,
+    pageSize,
+  };
+}
+
 export async function listOwnerBackgroundPage(
   session: SupabaseSession,
   page = 0,
   requestedPageSize = base.BACKGROUND_HISTORY_PAGE_SIZE,
 ): Promise<base.BackgroundPage> {
   if (!isOwnerCookieSession(session)) return base.listOwnerBackgroundPage(session, page, requestedPageSize);
-  const out = await ownerData<{ ok: true; page: base.BackgroundPage }>("background.list", {
-    page,
-    pageSize: requestedPageSize,
-  });
-  return out.page;
+  try {
+    const out = await ownerData<{ ok: true; page: base.BackgroundPage }>("background.list", {
+      page,
+      pageSize: requestedPageSize,
+    });
+    if (out.page.total > 0 || out.page.items.length > 0) return out.page;
+  } catch (ownerError) {
+    const fallback = await publicBackgroundFallbackPage(page, requestedPageSize);
+    if (fallback.total > 0) return fallback;
+    throw ownerError;
+  }
+  return publicBackgroundFallbackPage(page, requestedPageSize);
 }
 
 export async function uploadBackground(
