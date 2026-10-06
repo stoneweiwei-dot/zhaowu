@@ -24,9 +24,9 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
     id: "2026-10-06-today-first-home-rhythm",
     date: "2026-10-06",
-    zhHant: { title: "今日指引移到首頁主流程最前", summary: "今日摘要與青玉「今日」入口會進入同一套既有正式版完整指引；載入時保留版面高度避免跳動，減少動態模式與手動選圖會停止自動輪播。命書仍保持單一路徑，深度解讀只在已有命盤結果後出現。" },
-    zhHans: { title: "今日指引移到首页主流程最前", summary: "今日摘要与青玉「今日」入口会进入同一套既有正式版完整指引；载入时保留版面高度避免跳动，减少动态模式与手动选图会停止自动轮播。命书仍保持单一路径，深度解读只在已有命盘结果后出现。" },
-    en: { title: "Today Guide now leads the homepage flow", summary: "The Today summary and jade Today shortcut now open the same approved full guide, with reserved loading space to prevent layout jumps. Reduced-motion mode and manual painting selection stop auto-cycling; the Destiny Book stays a single path and deep-reading promotion appears only after a result exists." },
+    zhHant: { title: "今日指引移到首頁主流程最前", summary: "今日摘要與青玉「今日」入口會在原位進入同一套既有正式版完整指引，不再觸發多餘頁面捲動；載入時保留版面高度避免跳動，減少動態模式與手動選圖會停止自動輪播。命書仍保持單一路徑，深度解讀只在已有命盤結果後出現。" },
+    zhHans: { title: "今日指引移到首页主流程最前", summary: "今日摘要与青玉「今日」入口会在原位进入同一套既有正式版完整指引，不再触发多余页面滚动；载入时保留版面高度避免跳动，减少动态模式与手动选图会停止自动轮播。命书仍保持单一路径，深度解读只在已有命盘结果后出现。" },
+    en: { title: "Today Guide now leads the homepage flow", summary: "The Today summary and jade Today shortcut now open the same approved full guide in place, without redundant page scrolling, with reserved loading space to prevent layout jumps. Reduced-motion mode and manual painting selection stop auto-cycling; the Destiny Book stays a single path and deep-reading promotion appears only after a result exists." },
   },
   {
     id: "2026-10-06-public-change-log",
