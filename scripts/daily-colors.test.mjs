@@ -11,6 +11,7 @@ const almanac = await readFile(new URL("../src/components/daily-almanac-widget.t
 const night = await readFile(new URL("../src/night-readability-r127.css", import.meta.url), "utf8");
 const main = await readFile(new URL("../src/legacy-visual-compat.css", import.meta.url), "utf8");
 const wardrobeCss = await readFile(new URL("../src/five-element-wardrobe-r100.css", import.meta.url), "utf8");
+const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 
 test("five dressing states stay centralized with trilingual names", () => {
   for (const id of ["qingyun", "jianghua", "kunning", "liujin", "hanxu"]) {
@@ -83,4 +84,12 @@ test("five-element correspondence guide preserves the classical mapping and func
   assert.match(moduleSource, /data-five-element-correspondence-compact/);
   assert.match(moduleSource, /data-five-element-correspondence-grid/);
   assert.match(moduleSource, /FIVE_ELEMENT_USE_STATES/);
+});
+
+
+test("canonical visual authority keeps every five-element choice row compact and on-screen", () => {
+  assert.match(design, /#five-element-wardrobe\[data-daily-colors\] \[data-daily-colors-choices\][\s\S]*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\) !important/);
+  assert.match(design, /min-height: 72px !important/);
+  assert.match(design, /@media \(max-width: 430px\)[\s\S]*min-height: 66px !important/);
+  assert.match(design, /scroll-snap-type: none !important/);
 });
