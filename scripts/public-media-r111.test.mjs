@@ -19,9 +19,12 @@ function cacheValue(source) {
   return entry?.headers?.find((header) => header.key === "Cache-Control")?.value ?? "";
 }
 
-test("public atlas exposes only face-safe same-origin ornaments", () => {
+test("public atlas exposes only reviewed same-origin Song art and restrained ornaments", () => {
   assert.match(atlas, /url:\s*`\/ornaments\/generated\/\$\{file\}\.webp`/);
-  assert.doesNotMatch(atlas, /report-visuals|reportVisual/);
+  assert.match(atlas, /url:\s*`\/report-visuals\/full\/\$\{file\}\.webp`/);
+  assert.match(atlas, /reportVisual\("library-report-art-jia-wood", "jia-wood"\)/);
+  assert.match(atlas, /reportVisual\("library-report-art-chou-winter", "chou-winter"\)/);
+  assert.doesNotMatch(atlas, /luck-wood|luck-fire|luck-earth|luck-metal|luck-water|celestial-pearl|endless-knot|pomegranate|twin-fish/);
   assert.match(gallery, /src=\{asset\.thumbnailUrl \?\? asset\.url\}/);
   assert.match(gallery, /href=\{asset\.url\}/);
   assert.doesNotMatch(gallery, /galleryPublicUrl|listPublicGalleryAssets|SUPABASE_URL|storage\/v1\/object\/public\/zhaowu-gallery/);
