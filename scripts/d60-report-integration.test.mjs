@@ -3,6 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 const source = fs.readFileSync(new URL("../src/components/d60-karma-section.tsx", import.meta.url), "utf8");
+const engine = fs.readFileSync(new URL("../src/lib/indian-astrology/engine.ts", import.meta.url), "utf8");
 const palm = fs.readFileSync(new URL("../src/components/palm-standalone.tsx", import.meta.url), "utf8");
 const route = fs.readFileSync(new URL("../src/routes/yizhangjing.tsx", import.meta.url), "utf8");
 const indian = fs.readFileSync(new URL("../src/routes/indian-astrology.tsx", import.meta.url), "utf8");
@@ -49,8 +50,9 @@ test("D60 lives in its own Indian grouping and is no longer injected into Past &
   assert.match(source, /export function D60KarmaSection/);
   assert.match(source, /大約 2 分鐘就可能跨過一個細分區/);
   assert.match(source, /roughly two minutes/);
-  assert.match(source, /stableMinus2/);
-  assert.match(source, /stablePlus2/);
+  assert.match(source, /@\/lib\/indian-astrology\/engine/);
+  assert.match(engine, /stableMinus2/);
+  assert.match(engine, /stablePlus2/);
 });
 
 test("Indian classical astrology remains fail-closed and never blocks other readings", () => {
