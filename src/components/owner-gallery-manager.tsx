@@ -9,7 +9,7 @@ import {
   uploadGalleryAsset,
   type GalleryAsset,
 } from "@/lib/bridge/gallery-assets";
-import { isLoadingGalleryAsset, isPublicAtlasAsset } from "@/lib/gallery-groups";
+import { OWNER_GALLERY_GROUP_ORDER, isLoadingGalleryAsset, matchesOwnerGalleryGroup, type OwnerGalleryGroup } from "@/lib/gallery-groups";
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
@@ -20,7 +20,6 @@ function notifyGalleryChanged() {
   if (typeof window !== "undefined") window.dispatchEvent(new Event("zhaowu-gallery-change"));
 }
 
-type OwnerView = "atlas" | "all";
 const PAGE_SIZE = 18;
 
 function assetSrc(asset: GalleryAsset) {
@@ -31,7 +30,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   const [assets, setAssets] = useState<GalleryAsset[]>([]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [view, setView] = useState<OwnerView>("atlas");
+  const [group, setGroup] = useState<OwnerGalleryGroup>("song-master");
   const [open, setOpen] = useState(false);
   const [shown, setShown] = useState(PAGE_SIZE);
   const [preview, setPreview] = useState<GalleryAsset | null>(null);
@@ -41,8 +40,13 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     title: tr(locale, "總圖庫", "总图库", "Gallery"),
     upload: tr(locale, "加入圖片", "加入图片", "Add images"),
     uploading: tr(locale, "加入中…", "加入中…", "Adding…"),
-    atlas: tr(locale, "吉象圖鑑", "吉象图鉴", "Public atlas"),
-    all: tr(locale, "全部內容圖", "全部内容图", "All content images"),
+    songMaster: tr(locale, "正式宋式母圖", "正式宋式母图", "Official Song masters"),
+    dayMaster: tr(locale, "十天干", "十天干", "Ten heavenly stems"),
+    monthCommand: tr(locale, "十二地支／月令", "十二地支／月令", "Twelve earthly branches"),
+    luckFiveElements: tr(locale, "五行運圖", "五行运图", "Five-element luck"),
+    auspicious: tr(locale, "吉祥紋樣", "吉祥纹样", "Auspicious motifs"),
+    ownerUpload: tr(locale, "私人上傳", "私人上传", "Private uploads"),
+    legacy: tr(locale, "舊素材", "旧素材", "Legacy assets"),
     openGallery: tr(locale, "打開圖庫", "打开图库", "Open gallery"),
     closeGallery: tr(locale, "收起圖庫", "收起图库", "Close gallery"),
     empty: tr(locale, "目前沒有圖片。", "目前没有图片。", "No images in this view."),
@@ -95,7 +99,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
         });
       }
       await load();
-      setView("all");
+      setGroup("owner-upload");
       setShown(PAGE_SIZE);
       setOpen(true);
       notifyGalleryChanged();
@@ -107,14 +111,36 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     }
   }
 
-  const libraryAssets = useMemo(() => assets.filter((asset) => !isLoadingGalleryAsset(asset)), [assets]);
-  const atlasAssets = useMemo(() => libraryAssets.filter(isPublicAtlasAsset), [libraryAssets]);
-  const visibleAssets = view === "atlas" ? atlasAssets : libraryAssets;
+  const libraryAssets = useMemo(
+    () => assets.filter((asset) => asset.category === "visual-library" && !isLoadingGalleryAsset(asset)),
+    [assets],
+  );
+  const groupCounts = useMemo(() => Object.fromEntries(
+    OWNER_GALLERY_GROUP_ORDER.map((item) => [
+      item,
+      libraryAssets.filter((asset) => matchesOwnerGalleryGroup(asset, item)).length,
+    ]),
+  ) as Record<OwnerGalleryGroup, number>, [libraryAssets]);
+  const visibleAssets = useMemo(
+    () => libraryAssets.filter((asset) => matchesOwnerGalleryGroup(asset, group)),
+    [libraryAssets, group],
+  );
   const renderedAssets = visibleAssets.slice(0, shown);
 
-  const switchView = (next: OwnerView) => {
-    setView(next);
+  const switchGroup = (next: OwnerGalleryGroup) => {
+    setGroup(next);
+    setSelectedIds([]);
     setShown(PAGE_SIZE);
+  };
+
+  const groupLabel = (item: OwnerGalleryGroup) => {
+    if (item === "song-master") return copy.songMaster;
+    if (item === "day-master") return copy.dayMaster;
+    if (item === "month-command") return copy.monthCommand;
+    if (item === "luck-five-elements") return copy.luckFiveElements;
+    if (item === "auspicious") return copy.auspicious;
+    if (item === "owner-upload") return copy.ownerUpload;
+    return copy.legacy;
   };
 
   const toggleSelected = (id: string) => {
@@ -180,11 +206,17 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
 
       {open ? (
         <div className="mt-4 border-t border-line/70 pt-4">
-          <div className="flex flex-wrap gap-2" aria-label={tr(locale, "圖庫檢視", "图库检视", "Gallery view")}>
-            {(["atlas", "all"] as OwnerView[]).map((item) => (
-              <button key={item} type="button" onClick={() => switchView(item)} aria-pressed={view === item} className={`min-h-10 rounded-full border px-4 text-sm ${view === item ? "border-cinnabar/50 bg-cinnabar text-cream" : "border-line bg-cream text-ink-soft"}`}>
-                {item === "atlas" ? copy.atlas : copy.all}
-                <span className="ml-2 opacity-70">{item === "atlas" ? atlasAssets.length : libraryAssets.length}</span>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4" aria-label={tr(locale, "圖庫分類", "图库分类", "Gallery groups")}>
+            {OWNER_GALLERY_GROUP_ORDER.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => switchGroup(item)}
+                aria-pressed={group === item}
+                className={`flex min-h-11 items-center justify-between gap-2 rounded-xl border px-3 text-left text-sm ${group === item ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-paper/55 text-ink-soft"}`}
+              >
+                <span className="min-w-0 leading-tight">{groupLabel(item)}</span>
+                <span className="shrink-0 text-[11px] opacity-70">{groupCounts[item]}</span>
               </button>
             ))}
           </div>
