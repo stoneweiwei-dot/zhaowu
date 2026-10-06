@@ -37,7 +37,8 @@ test("homepage keeps one primary flow while Today Guide stays visible above it",
   assert.doesNotMatch(home, /<HomeDisclosure /);
   assert.match(home, /<AnalysisForm \/>/);
   assert.match(home, /id="home-today-guide"/);
-  assert.match(home, /<LazyDailyAlmanacWidget embedded \/>/);\n  assert.match(home, /<LazyDailyAlmanacWidget onExpand=\{\(\) => setTodayExpanded\(true\)\} \/>/);
+  assert.match(home, /<LazyDailyAlmanacWidget embedded \/>/);
+  assert.match(home, /<LazyDailyAlmanacWidget onExpand=\{\(\) => setTodayExpanded\(true\)\} \/>/);
   assert.match(home, /import\("@\/components\/daily-almanac-widget"\)/);
   assert.doesNotMatch(home, /activeSection === "today"/);
   assert.doesNotMatch(home, /activeSection === "gallery"/);
