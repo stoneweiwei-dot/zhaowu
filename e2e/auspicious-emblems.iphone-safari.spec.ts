@@ -63,23 +63,24 @@ test.describe("iPhone Safari parchment application shell", () => {
   });
 
   for (const width of [390, 430]) {
-    test(`birth and chart lead Today Guide without overlap at ${width}px`, async ({ page }) => {
+    test(`Today Guide leads birth and chart without overlap at ${width}px`, async ({ page }) => {
       await makeAppOfflineSafe(page);
       await page.setViewportSize({ width, height: 844 });
       await page.goto("/", { waitUntil: "domcontentloaded" });
       const almanac = page.locator("#daily-almanac");
       const customer = page.locator("#customer-record");
       const bazi = page.locator("#bazi");
-      for (const section of [customer, bazi]) await expect(section).toBeVisible();
+      for (const section of [almanac, customer, bazi]) await expect(section).toBeVisible();
       await expect(page.locator(".zhaowu-question-sheet")).toHaveCount(0);
-      await expect(almanac).toBeVisible();
-      await expect(almanac.locator("details[open]")).toHaveCount(1);
+      await expect(almanac.locator("details[open]")).toHaveCount(0);
+      await expect(almanac.locator(".zhaowu-today-guide__summary")).toBeVisible();
+      const boxes = await Promise.all([almanac, customer, bazi].map((section) => section.boundingBox()));
+      expect(boxes.every(Boolean)).toBe(true);
+      for (let i = 1; i < boxes.length; i += 1) expect(boxes[i]!.y).toBeGreaterThanOrEqual(boxes[i - 1]!.y + boxes[i - 1]!.height);
+      await almanac.locator("summary").click();
       await expect(almanac.locator(".zhaowu-today-section.is-almanac")).toBeVisible();
       await expect(almanac.locator(".zhaowu-today-section.is-wardrobe")).toBeVisible();
       await expect(almanac.locator(".zhaowu-today-section.is-spirit")).toBeVisible();
-      const boxes = await Promise.all([customer, bazi, almanac].map((section) => section.boundingBox()));
-      expect(boxes.every(Boolean)).toBe(true);
-      for (let i = 1; i < boxes.length; i += 1) expect(boxes[i]!.y).toBeGreaterThanOrEqual(boxes[i - 1]!.y + boxes[i - 1]!.height);
       const titleSize = await customer.locator("h2").evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
       expect(titleSize).toBeLessThanOrEqual(28);
       await expect(page.locator("header .zhaowu-brand-seal")).toBeHidden();
