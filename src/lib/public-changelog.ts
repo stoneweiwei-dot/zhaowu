@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-06-answer-routing-credit-talent",
+    date: "2026-10-06",
+    zhHant: { title: "工作、天賦與信用問題的回答路由修正", summary: "修正「適合做什麼運動」被誤當職業問題、天賦讀不到實際命盤資料，以及第一屏直接露出過多命理術語的問題；現實信用分仍明確以徵信資料為準。" },
+    zhHans: { title: "工作、天赋与信用问题的回答路由修正", summary: "修正「适合做什么运动」被误当职业问题、天赋读不到实际命盘数据，以及第一屏直接露出过多命理术语的问题；现实信用分仍明确以征信资料为准。" },
+    en: { title: "Job, talent and credit-question routing corrected", summary: "Fixed sports questions being mistaken for career questions, talent answers missing real chart data, and excess astrology jargon on the first screen. Real credit scores remain explicitly tied to actual credit records, not the chart." },
+  },
+  {
     id: "2026-10-06-today-first-home-rhythm",
     date: "2026-10-06",
     zhHant: { title: "今日指引移到首頁主流程最前", summary: "今日摘要與青玉「今日」入口會進入同一套既有正式版完整指引；載入時保留版面高度避免跳動，減少動態模式與手動選圖會停止自動輪播。命書仍保持單一路徑，深度解讀只在已有命盤結果後出現。" },
