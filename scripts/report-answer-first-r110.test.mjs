@@ -76,7 +76,7 @@ test('four-pillar snapshot keeps day master visually central and hides unavailab
 
 test('homepage question result keeps reasoning metadata inside collapsed evidence', () => {
   assert.match(resultView, /const decisionModel = buildDecisionReportModel\(result\)/);
-  assert.match(resultView, /petDecision\?\.directAnswer \?\? decisionModel\.directAnswer/);
+  assert.match(resultView, /petDecision\?\.directAnswer \?\? complexRule\?\.answer \?\? decisionModel\.directAnswer/);
   assert.match(resultView, /<details className="zhaowu-result-evidence/);
   const evidenceStart = resultView.indexOf('<details className="zhaowu-result-evidence');
   const evidence = resultView.slice(evidenceStart);
