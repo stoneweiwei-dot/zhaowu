@@ -17,9 +17,9 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
     id: "2026-10-07-auto-location-home-visuals",
     date: "2026-10-07",
-    zhHant: { title: "定位與首頁視覺再收斂", summary: "已授權的定位會自動沿用並定期刷新；未取得精準定位時以 Vercel IP 的城市級位置兜底。站主後台的首頁背景改成明確專區與「設為首頁背景」操作；首頁畫作持續自動輪播，並移除底部白色輪播條。" },
-    zhHans: { title: "定位与首页视觉再收敛", summary: "已授权的定位会自动沿用并定期刷新；未取得精准定位时以 Vercel IP 的城市级位置兜底。站主后台的首页背景改成明确专区与“设为首页背景”操作；首页画作持续自动轮播，并移除底部白色轮播条。" },
-    en: { title: "Automatic location and cleaner homepage visuals", summary: "Granted location is reused and refreshed automatically, with Vercel IP city-level geolocation as a coarse fallback. Homepage backgrounds now use explicit owner controls, while the hero paintings keep auto-cycling without the white carousel rail." },
+    zhHant: { title: "定位與首頁視覺再收斂", summary: "已授權的定位會自動沿用並定期刷新；未取得精準定位時以 Vercel IP 的城市級位置兜底。首頁背景專區現在單張上傳即直接套用，站主選中的背景會真正顯示在首頁；首頁畫作持續自動輪播，底部白色輪播條已徹底移除。" },
+    zhHans: { title: "定位与首页视觉再收敛", summary: "已授权的定位会自动沿用并定期刷新；未取得精准定位时以 Vercel IP 的城市级位置兜底。首页背景专区现在单张上传即直接套用，站主选中的背景会真正显示在首页；首页画作持续自动轮播，底部白色轮播条已彻底移除。" },
+    en: { title: "Automatic location and cleaner homepage visuals", summary: "Granted location is reused and refreshed automatically, with Vercel IP city-level geolocation as a coarse fallback. A single upload in Homepage Backgrounds is now applied immediately, the owner-selected wallpaper is actually visible on the homepage, and the white carousel rail is fully removed while hero paintings keep auto-cycling." },
   },
   {
     id: "2026-10-06-owner-live-controls",
