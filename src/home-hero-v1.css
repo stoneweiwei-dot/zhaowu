@@ -17,7 +17,7 @@
   width: 100%;
   height: clamp(320px, 65dvh, 680px);
   overflow: hidden;
-  background: #1a3a5c;
+  background: #f5f0e8;
   flex-shrink: 0;
 }
 
@@ -55,6 +55,7 @@
 
 /* dot indicators */
 .zw-hero-dots {
+  display: none;
   position: absolute;
   bottom: 14px;
   left: 50%;
