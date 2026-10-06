@@ -401,6 +401,12 @@ function AccountPage() {
     if (user?.isOwner) void loadLatestBackground();
   }, [session?.access_token, user?.isOwner]);
 
+  useEffect(() => {
+    if (!user?.isOwner || !session || ownerView !== "backgrounds") return;
+    setBackgroundHistoryOpen(true);
+    void loadBackgroundHistory(0);
+  }, [ownerView, session?.access_token, user?.isOwner]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return rows;
@@ -651,11 +657,7 @@ function AccountPage() {
           <button
             type="button"
             aria-pressed={ownerView === "backgrounds"}
-            onClick={() => {
-              setOwnerView("backgrounds");
-              setBackgroundHistoryOpen(true);
-              void loadBackgroundHistory(0);
-            }}
+            onClick={() => setOwnerView("backgrounds")}
             className={"min-h-14 rounded-xl border px-4 py-3 text-left text-sm font-medium " + (ownerView === "backgrounds" ? "border-[#315f51] bg-[#315f51]" : "border-line bg-cream/80 text-ink")}
           >
             <span className={"block text-[10px] tracking-[0.16em] opacity-75 " + (ownerView === "backgrounds" ? "text-[#fffaf0]" : "text-ink-mute")}>HOME</span>
