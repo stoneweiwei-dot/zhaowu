@@ -255,7 +255,8 @@ function AccountPage() {
     deleteSelected: tr(locale, "批次刪除", "批量删除", "Delete selected"),
     batchDeleteReportsConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 筆報告？此操作不可復原。`, `删除已选的 ${n} 笔报告？此操作不可恢复。`, `Delete ${n} selected reports? This cannot be undone.`),
     batchReportsDeleted: (n: number) => tr(locale, `已刪除 ${n} 筆報告。`, `已删除 ${n} 笔报告。`, `Deleted ${n} reports.`),
-    backgroundTitle: tr(locale, "首頁背景管理", "首页背景管理", "Homepage backgrounds"),
+    backgroundTitle: tr(locale, "首頁背景專區", "首页背景专区", "Homepage backgrounds"),
+    backgroundHint: tr(locale, "這裡只管理首頁背景；上傳後直接按「設為首頁背景」。", "这里只管理首页背景；上传后直接按“设为首页背景”。", "This section is only for homepage backgrounds. Upload an image, then set it as the homepage background."),
     latestImage: tr(locale, "最近一張", "最近一张", "Latest image"),
     viewHistory: (n: number) => tr(locale, `查看上傳歷史（${n}）`, `查看上传历史（${n}）`, `View upload history (${n})`),
     hideHistory: tr(locale, "收起上傳歷史", "收起上传历史", "Hide upload history"),
@@ -263,7 +264,7 @@ function AccountPage() {
     previousPage: tr(locale, "上一頁", "上一页", "Previous"),
     nextPage: tr(locale, "下一頁", "下一页", "Next"),
     noImages: tr(locale, "目前沒有已上傳圖片。", "目前没有已上传图片。", "No uploaded images yet."),
-    upload: tr(locale, "＋上傳圖片", "＋上传图片", "+ Upload images"),
+    upload: tr(locale, "＋上傳首頁背景", "＋上传首页背景", "+ Upload homepage backgrounds"),
     uploading: tr(locale, "上傳中…", "上传中…", "Uploading…"),
     uploaded: (n: number) => tr(locale, `已上傳 ${n} 張。`, `已上传 ${n} 张。`, `Uploaded ${n} image${n === 1 ? "" : "s"}.`),
     uploadPartial: (done: number, failed: number) => tr(locale, `完成 ${done} 張，失敗 ${failed} 張。`, `完成 ${done} 张，失败 ${failed} 张。`, `${done} completed; ${failed} failed.`),
@@ -274,10 +275,10 @@ function AccountPage() {
     uploadFailed: tr(locale, "圖片上傳失敗。", "图片上传失败。", "Image upload failed."),
     enabled: tr(locale, "輪播中", "轮播中", "In rotation"),
     disabled: tr(locale, "已停用", "已停用", "Disabled"),
-    setWallpaper: tr(locale, "設為壁紙", "设为壁纸", "Set as wallpaper"),
-    currentWallpaper: tr(locale, "目前壁紙", "当前壁纸", "Current wallpaper"),
-    unpinWallpaper: tr(locale, "取消固定", "取消固定", "Unpin"),
-    wallpaperSet: tr(locale, "已設為目前壁紙。", "已设为当前壁纸。", "Wallpaper updated."),
+    setWallpaper: tr(locale, "設為首頁背景", "设为首页背景", "Set as homepage background"),
+    currentWallpaper: tr(locale, "目前首頁背景", "当前首页背景", "Current homepage background"),
+    unpinWallpaper: tr(locale, "取消首頁背景", "取消首页背景", "Remove homepage background"),
+    wallpaperSet: tr(locale, "已設為首頁背景。", "已设为首页背景。", "Homepage background updated."),
     delete: tr(locale, "刪除", "删除", "Delete"),
     selectBackground: tr(locale, "選取背景", "选择背景", "Select background"),
     selectedBackgrounds: (n: number) => tr(locale, `已選 ${n} 張`, `已选 ${n} 张`, `${n} selected`),
@@ -666,6 +667,7 @@ function AccountPage() {
             <div>
               <p className="text-xs tracking-[0.28em] text-cinnabar">BACKGROUND LIBRARY</p>
               <h2 className="mt-1 font-display text-2xl">{c.backgroundTitle}</h2>
+              <p className="mt-1 max-w-xl text-xs leading-5 text-ink-mute">{c.backgroundHint}</p>
             </div>
             <label className={`inline-flex h-10 cursor-pointer items-center rounded-full bg-cinnabar px-4 text-sm text-cream ${backgroundBusy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
               {backgroundBusy ? c.uploading : c.upload}
