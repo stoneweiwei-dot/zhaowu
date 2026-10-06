@@ -72,13 +72,8 @@ const TALENT_BY_TEN_GOD: Record<string, TalentProfile> = {
 };
 
 function monthTenGod(chart: Chart): string {
-  const anyChart = chart as any;
-  return (
-    anyChart.structure?.monthTenGod ||
-    anyChart.monthTenGod ||
-    anyChart.tenGods?.month ||
-    ""
-  );
+  const monthPillar = chart.pillars.find((pillar) => pillar.key === "month");
+  return monthPillar?.hide[0]?.shiShen || monthPillar?.shiShenGan || "";
 }
 
 function talentAnswer(chart: Chart): string {
@@ -87,7 +82,7 @@ function talentAnswer(chart: Chart): string {
   if (!profile) {
     return "直接結論：目前結構證據不足以可靠列出具體天賦，本題先留白，不拿格局名稱或性格模板硬湊能力。";
   }
-  return `直接結論：較有盤面依據的天賦是「${profile.ability}」。常見表現在${profile.manifestations}。依據是月令主氣落在${god}；這是命理推論，需用實際作品與外部回饋驗證。`;
+  return `直接結論：較有盤面依據的天賦是「${profile.ability}」。常見表現在${profile.manifestations}。這是命理推論，仍要用實際作品與外部回饋驗證。`;
 }
 
 // ─────────────────────────────────────────────
@@ -97,31 +92,29 @@ function talentAnswer(chart: Chart): string {
 type CreditLevel = "偏高" | "中等" | "偏低" | "條件不足";
 
 function creditLevelFromChart(chart: Chart): { level: CreditLevel; reason: string } {
-  const anyChart = chart as any;
-  const strength = String(anyChart.strength?.tendency ?? "");
-  const useful = (anyChart.useful ?? []) as string[];
-  const hasWealthSupport =
-    useful.some((u) => /財|财|金/.test(u)) ||
-    /財|财/.test(String(anyChart.structure?.label ?? ""));
+  const strength = String(chart.strength?.tendency ?? "");
+  const hasFinancialMarker = chart.pillars.some((pillar) =>
+    /正財|偏財/.test(pillar.shiShenGan) || pillar.hide.some((item) => /正財|偏財/.test(item.shiShen))
+  );
 
-  if (/旺|強|强/.test(strength) && hasWealthSupport) {
+  if (/旺|強|强/.test(strength) && hasFinancialMarker) {
     return {
       level: "偏高",
-      reason: "日主承載偏旺，且用神／流通方向對財氣有支持，現實信用節奏通常較穩。",
+      reason: "盤面顯示處理資源與壓力的條件相對穩，但現實信用仍以還款紀錄、負債比與收入證明為準。",
     };
   }
-  if (/弱/.test(strength) && !hasWealthSupport) {
+  if (/弱/.test(strength) && !hasFinancialMarker) {
     return {
       level: "偏低",
-      reason: "日主承載偏弱，且財氣支持不足，信用節奏更容易受現金流與壓力波動影響。",
+      reason: "盤面顯示財務壓力較容易放大波動，因此更需要保守管理現金流；這不是銀行信用評分。",
     };
   }
   if (!strength) {
-    return { level: "條件不足", reason: "旺衰或用神尚未可靠判定，不作硬性信用高低結論。" };
+    return { level: "條件不足", reason: "現有資料不足以做命理層面的財務節奏判斷，更不能推算銀行信用分。" };
   }
   return {
     level: "中等",
-    reason: "承載與財氣條件中和，信用表現更取決於實際還款紀錄與現金流管理，而非單一盤面標籤。",
+    reason: "盤面沒有足夠理由把財務節奏說成明顯偏高或偏低；實際信用仍取決於還款紀錄、負債比與收入。",
   };
 }
 
@@ -155,9 +148,9 @@ export function buildSpecialDirectAnswer(
     const god = monthTenGod(chart);
     const profile = TALENT_BY_TEN_GOD[god];
     if (!profile) {
-      return "直接結論：目前結構證據不足以可靠列出適合的工作類型，先不拿格局名稱硬套職業。";
+      return "直接結論：現有資料不足以可靠列出適合的工作類型，先不硬套職業。";
     }
-    return `直接結論：較適合優先看的工作類型是${profile.manifestations}。依據是月令主氣落在${god}。先選責任清楚、能持續累積成果的職位，再對照收入與退出成本。`;
+    return `直接結論：較適合優先看的工作類型是${profile.manifestations}。這些方向比較符合目前能可靠讀出的工作方式。先選責任清楚、能持續累積成果的職位，再對照收入與退出成本。`;
   }
   return null;
 }
@@ -186,7 +179,7 @@ export function structureCreditAnswer(chart: Chart): StructuredAnswer {
   const { level, reason } = creditLevelFromChart(chart);
   const rating = RATING_MAP[level];
   return {
-    direct: `就命盤節奏看，信用承載偏向「${level}」。`,
+    direct: `命盤不能推算銀行信用分；若只看財務節奏，目前偏向「${level}」。`,
     rating: rating.symbol,
     ratingText: rating.text,
     reasons: [
@@ -194,7 +187,7 @@ export function structureCreditAnswer(chart: Chart): StructuredAnswer {
       level === "偏低"
         ? "現金流與壓力波動更容易影響還款穩定性。"
         : "實際銀行分數仍以還款紀錄與負債比為準。",
-      "命盤只反映承壓與財務節奏，不能替代徵信系統。",
+      "這只是命理層面的財務節奏提示，不能替代徵信系統。",
     ],
     action:
       level === "偏高"
@@ -213,7 +206,7 @@ export function structureTalentAnswer(chart: Chart): StructuredAnswer {
       direct: "目前結構證據不足以可靠列出具體天賦。",
       rating: "😐",
       ratingText: "待觀察，條件尚未齊",
-      reasons: ["月令主氣或格局資訊不足。", "不拿性格模板硬湊能力。", "需補完整出生資料後再判。"],
+      reasons: ["現有出生資料不足以穩定定位主要能力取向。", "不拿性格模板硬湊能力。", "需補完整出生資料後再判。"],
       action: "先補齊出生時辰與城市，再重問天賦。",
     };
   }
@@ -222,7 +215,7 @@ export function structureTalentAnswer(chart: Chart): StructuredAnswer {
     rating: "⭐",
     ratingText: "可以做",
     reasons: [
-      `月令主氣落在${god}。`,
+      "出生月所呈現的主要能力取向與這類能力一致。",
       `常見表現：${profile.manifestations}。`,
       "需用實際作品與外部回饋驗證，不能只靠命盤認定。",
     ],
