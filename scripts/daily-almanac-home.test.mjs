@@ -11,7 +11,7 @@ const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", impo
 const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 
 test("homepage puts Today Guide before the birth flow and reserves deep reading for an existing result", () => {
-  const daily = route.indexOf("<LazyDailyAlmanacWidget />");
+  const daily = route.indexOf("<LazyDailyAlmanacWidget open={todayExpanded} onOpenChange={setTodayExpanded} />");
   const formMount = route.indexOf("<AnalysisForm />");
   const report = route.indexOf("<ResultView result={current} />");
   const deepReading = route.indexOf("<DeepReadingHeroCard />");
