@@ -82,3 +82,59 @@ export function sortGalleryAssets<T extends GalleryAsset>(assets: T[]): T[] {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
 }
+
+
+export type OwnerGalleryGroup =
+  | "song-master"
+  | "day-master"
+  | "month-command"
+  | "luck-five-elements"
+  | "auspicious"
+  | "owner-upload"
+  | "legacy";
+
+export const OWNER_GALLERY_GROUP_ORDER: readonly OwnerGalleryGroup[] = [
+  "song-master",
+  "day-master",
+  "month-command",
+  "luck-five-elements",
+  "auspicious",
+  "owner-upload",
+  "legacy",
+];
+
+export function isOfficialSongGalleryAsset(asset: GalleryAsset): boolean {
+  if (asset.category !== "visual-library") return false;
+  const hasOfficialMarker =
+    hasTag(asset, "official-report-mother")
+    || hasTag(asset, "report-art-r62-lock")
+    || hasTag(asset, "song-atlas");
+  return hasOfficialMarker && hasTag(asset, "final") && hasTag(asset, "production");
+}
+
+export function matchesOwnerGalleryGroup(asset: GalleryAsset, group: OwnerGalleryGroup): boolean {
+  if (asset.category !== "visual-library") return false;
+
+  const official = isOfficialSongGalleryAsset(asset);
+  if (group === "song-master") return official;
+  if (group === "day-master") {
+    return official && hasTag(asset, "official-report-mother") && hasTag(asset, "day-master");
+  }
+  if (group === "month-command") {
+    return official && hasTag(asset, "official-report-mother") && hasTag(asset, "month-command");
+  }
+  if (group === "luck-five-elements") {
+    return official && hasTag(asset, "official-report-mother") && hasTag(asset, "luck-five-elements");
+  }
+  if (group === "auspicious") {
+    return hasTag(asset, "auspicious") || hasTag(asset, "ornament");
+  }
+  if (group === "owner-upload") {
+    return !official && hasTag(asset, "owner-upload") && asset.bucket_id === "zhaowu-gallery";
+  }
+  if (group === "legacy") {
+    return asset.bucket_id === "zhaowu-backgrounds"
+      || (!official && !hasTag(asset, "owner-upload") && !hasTag(asset, "auspicious") && !hasTag(asset, "ornament"));
+  }
+  return false;
+}

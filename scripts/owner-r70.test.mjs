@@ -12,6 +12,7 @@ const account = await readFile(new URL("../src/routes/account.tsx", import.meta.
 const galleryRoute = await readFile(new URL("../src/routes/gallery.tsx", import.meta.url), "utf8");
 const loginVisuals = await readFile(new URL("../src/components/owner-login-visuals-manager.tsx", import.meta.url), "utf8");
 const publicAtlas = await readFile(new URL("../src/lib/public-atlas.ts", import.meta.url), "utf8");
+const galleryGroups = await readFile(new URL("../src/lib/gallery-groups.ts", import.meta.url), "utf8");
 
 test("owner music upload uses a deterministic native mobile path instead of browser ffmpeg", () => {
   assert.match(upload, /MAX_OUTPUT_BYTES = 15 \* 1024 \* 1024/);
@@ -44,14 +45,31 @@ test("owner console keeps one canonical account navigation without the old porta
   assert.match(account, /ownerView === "reports"/);
 });
 
-test("owner Gallery keeps content media separate from login/loading assets", () => {
-  assert.match(gallery, /type OwnerView = "atlas" \| "all"/);
+test("owner Gallery separates protected Song assets from uploads and legacy material", () => {
+  assert.match(gallery, /useState<OwnerGalleryGroup>\("song-master"\)/);
   assert.match(gallery, /const PAGE_SIZE = 18/);
-  assert.match(gallery, /isLoadingGalleryAsset/);
-  assert.match(gallery, /!isLoadingGalleryAsset\(asset\)/);
+  assert.match(gallery, /asset\.category === "visual-library"/);
+  assert.match(gallery, /OWNER_GALLERY_GROUP_ORDER/);
+  assert.match(gallery, /matchesOwnerGalleryGroup/);
+  assert.match(gallery, /正式宋式母圖/);
+  assert.match(gallery, /十天干/);
+  assert.match(gallery, /十二地支／月令/);
+  assert.match(gallery, /五行運圖/);
+  assert.match(gallery, /吉祥紋樣/);
+  assert.match(gallery, /私人上傳/);
+  assert.match(gallery, /舊素材/);
+  assert.match(gallery, /核心資產/);
+  assert.match(gallery, /selectedDeletableIds/);
   assert.doesNotMatch(gallery, /LOADING_GALLERY_CATALOG/);
-  assert.doesNotMatch(gallery, /view === "loading"/);
   assert.match(gallery, /setShown\(\(current\) => current \+ PAGE_SIZE\)/);
+
+  assert.match(galleryGroups, /export type OwnerGalleryGroup/);
+  assert.match(galleryGroups, /"song-master"/);
+  assert.match(galleryGroups, /hasTag\(asset, "day-master"\)/);
+  assert.match(galleryGroups, /hasTag\(asset, "month-command"\)/);
+  assert.match(galleryGroups, /hasTag\(asset, "luck-five-elements"\)/);
+  assert.match(galleryGroups, /asset\.bucket_id === "zhaowu-backgrounds"/);
+  assert.match(galleryGroups, /asset\.bucket_id === "zhaowu-gallery"/);
 });
 
 
