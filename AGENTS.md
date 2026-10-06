@@ -134,6 +134,20 @@ Before changing anything, check the current truth:
 
 Do not work from memory, old chat context, assumptions, or stale local state when repository/production tools can answer the question.
 
+## 2.5 Stone AI Partner operating layer — audit / link / level-up
+
+ZHAOWU adopts only three workflow patterns from the external AI-Partner concept: **audit**, **link**, and **level-up**. This is a governance method only. Do **not** install or vendor the upstream project, add its runtime, create a parallel memory system, or duplicate ZHAOWU truth into a second knowledge base.
+
+Execution details live in `docs/AI-COORDINATION.md` §§11–13. Canonical reusable source pointers live in `docs/SOURCE-INDEX.md`.
+
+Apply these rules:
+
+- **Audit:** a completion/status claim must be backed by evidence that is current for the claim. PR text, old screenshots, stale checks, or another agent saying "done" are not proof. Respect §7: disabled/non-required CI suites are not default evidence and must not be re-run merely to satisfy audit.
+- **Link:** when a durable external/internal source will be reused, register only its canonical pointer, authority, purpose and freshness rule in `docs/SOURCE-INDEX.md`. Do not copy the source body into a second truth store. Never record secrets, tokens, private credentials, or unnecessary personal data.
+- **Level-up:** at most once per week, identify one confirmed workflow bottleneck worth removing. Prefer deleting steps, merging duplicate paths, or clarifying authority over adding tools. Do not auto-implement an unrelated improvement inside an active task; put it in the existing backlog unless the owner explicitly assigns it.
+- If there is no meaningful evidence-backed improvement, record nothing. "Finding something to optimize" is not itself a goal.
+- These methods never authorize a new runtime SaaS dependency, paid plan, deployment path, production host, database, or agent framework.
+
 ## 3. Task boundary discipline
 
 For each task, determine:

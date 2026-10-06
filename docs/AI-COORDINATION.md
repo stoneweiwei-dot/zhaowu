@@ -120,3 +120,67 @@ An agent must stop writing code and report instead when:
 ## 10. Core principle
 
 **Finish the locked task before starting the next one. Record new ideas; do not chase them. Branch isolation prevents Git conflicts; task + module locks prevent semantic conflicts.**
+
+## 11. Evidence audit
+
+Use audit when judging whether a requested change, fix, release, integration, or workflow state is actually true.
+
+Evidence classes:
+
+- **PROVEN** — current evidence directly supports the claim.
+- **UNVERIFIED** — implementation or intent exists, but the relevant current state was not observed.
+- **BLOCKED** — a concrete external/permission/dependency blocker prevents the required evidence or action.
+- **REGRESSION** — newer evidence contradicts a previously proven state.
+
+Audit rules:
+
+1. Require evidence that is temporally relevant to the claim. Evidence from before the change cannot prove the change.
+2. Prefer direct state over narrative: current `main`/file contents, the target service state, and real runtime state when runtime is in scope.
+3. A PR body, issue comment, generated handoff, commit message, another agent's summary, or "checks expected to pass" is context, not proof.
+4. Do not manufacture evidence by re-running broad suites that the owner has disabled or made non-required. Follow `AGENTS.md` §7 and use the smallest evidence source that answers the question.
+5. Do not downgrade a working task to "incomplete" merely because a non-required check is red, skipped, absent, or stale.
+6. When a claim cannot be verified with available access, report **UNVERIFIED** or **BLOCKED** rather than filling the gap with inference.
+
+## 12. Link protocol — pointer, not copy
+
+`docs/SOURCE-INDEX.md` is the reusable source map. It is intentionally pointer-only.
+
+Add a link entry only when a source is expected to be reused across tasks and has clear authority or reference value. Each entry records:
+
+- canonical name;
+- authority level;
+- purpose/scope;
+- canonical location;
+- freshness or re-check rule;
+- supersession note when needed.
+
+Rules:
+
+1. Do not paste mirrored copies of source documents into the index.
+2. Do not create a second instruction registry, second current-state document, second memory store, or second product truth.
+3. Never store API keys, cookies, tokens, passwords, private credentials, sensitive customer data, or unnecessary personal data.
+4. If a linked source conflicts with the owner's latest explicit instruction or `AGENTS.md`, the linked source loses.
+5. Temporary research links belong in task notes unless they become durable project references.
+6. External projects such as AI-Partner may be registered as **reference only** and never become runtime or instruction authority by implication.
+
+## 13. Weekly level-up rule
+
+Level-up is a restraint mechanism, not a feature generator.
+
+At most once in a seven-day period, an agent may nominate **one** workflow improvement when all are true:
+
+1. the friction is evidenced by repeated manual work, repeated defects, duplicated paths, unnecessary verification, stale authority, or avoidable cost;
+2. the proposed improvement reduces steps, ambiguity, failure modes, cost, or maintenance burden;
+3. it does not expand the active task's scope;
+4. it does not add a paid plan, new production host, parallel database, runtime SaaS dependency, or another agent framework;
+5. it has a clear acceptance condition.
+
+Default handling:
+
+- If the improvement is part of the owner's current task, implement it within the declared scope.
+- If it is unrelated, add one concise item to the existing Backlog / `NEW_BACKLOG`; do not open a cascade of follow-up tasks.
+- Prefer **remove → merge → clarify → automate** in that order.
+- If no material improvement is justified, do nothing.
+
+The objective is a smaller, more legible operating system for ZHAOWU — not a larger automation stack.
+
