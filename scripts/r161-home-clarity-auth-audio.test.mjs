@@ -31,14 +31,15 @@ test("wrong owner password is still rejected", async () => {
   assert.equal(response.status, 401);
 });
 
-test("homepage keeps one primary flow while r201 opens the useful Today module", async () => {
+test("homepage keeps one primary flow while Today Guide stays visible above it", async () => {
   const home = await source("src/routes/index.tsx");
   assert.match(home, /useState<Section \| null>\(null\)/);
   assert.doesNotMatch(home, /<HomeDisclosure /);
   assert.match(home, /<AnalysisForm \/>/);
-  assert.match(home, /<LazyDailyAlmanacWidget embedded \/>/);
+  assert.match(home, /id="home-today-guide"/);
+  assert.match(home, /<LazyDailyAlmanacWidget open=\{todayExpanded\} onOpenChange=\{setTodayExpanded\} \/>/);
   assert.match(home, /import\("@\/components\/daily-almanac-widget"\)/);
-  assert.match(home, /activeSection === "today"/);
+  assert.doesNotMatch(home, /activeSection === "today"/);
   assert.doesNotMatch(home, /activeSection === "gallery"/);
   assert.match(home, /activeSection === "notes"/);
 });

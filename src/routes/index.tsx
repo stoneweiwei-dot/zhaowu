@@ -139,22 +139,33 @@ function Home() {
   const setCurrent = useAppStore((s) => s.setCurrent);
 
   const [heroIdx, setHeroIdx] = useState(0);
+  const [heroManual, setHeroManual] = useState(false);
   const [activeSection, setActiveSection] = useState<Section | null>(null);
   const [scentOpen, setScentOpen] = useState(false);
+  const [todayExpanded, setTodayExpanded] = useState(false);
 
-  /* auto-cycle paintings */
+  /* Auto-cycle only while motion is welcome and the visitor has not chosen a painting. */
   useEffect(() => {
+    if (heroManual || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const t = setInterval(() => setHeroIdx((i) => (i + 1) % HERO_PAINTINGS.length), 4500);
     return () => clearInterval(t);
-  }, []);
+  }, [heroManual]);
 
   /* auto-open form if there's a cached analysis result */
   useEffect(() => {
     if (current && activeSection === null) setActiveSection("form");
   }, [current]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const toggleSection = (id: Section) =>
+  const toggleSection = (id: Section) => {
+    if (id === "today") {
+      setTodayExpanded(true);
+      window.requestAnimationFrame(() => {
+        document.getElementById("home-today-guide")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      return;
+    }
     setActiveSection((prev) => (prev === id ? null : id));
+  };
 
   const navLabels: Record<Section, string> = {
     form:  copy.navBook,
@@ -191,7 +202,7 @@ function Home() {
               aria-selected={i === heroIdx}
               aria-label={`第 ${i + 1} 張`}
               className={`zw-hero-dot${i === heroIdx ? " is-active" : ""}`}
-              onClick={() => setHeroIdx(i)}
+              onClick={() => { setHeroIdx(i); setHeroManual(true); }}
             />
           ))}
         </div>
@@ -212,7 +223,8 @@ function Home() {
               key={id}
               type="button"
               className={`zw-hero-nav-item${activeSection === id ? " is-active" : ""}`}
-              aria-expanded={activeSection === id}
+              aria-expanded={id === "today" ? undefined : activeSection === id}
+              aria-controls={id === "today" ? "home-today-guide" : undefined}
               aria-label={navLabels[id]}
               onClick={() => toggleSection(id)}
             >
@@ -223,10 +235,34 @@ function Home() {
         </nav>
       </div>
 
-      {/* ── DEEP READING CTA (always visible) ───────────────── */}
-      <HomeSectionBoundary id="hero" locale={locale}>
-        <DeepReadingHeroCard />
-      </HomeSectionBoundary>
+      {/* ── TODAY GUIDE: FIRST DAILY-RETURN SURFACE ─────────── */}
+      <section id="home-today-guide" className="zw-home-today-priority" aria-label={copy.navToday}>
+        <Suspense
+          fallback={
+            <div className="zw-home-today-skeleton" role="status" aria-label={locale === "en" ? "Loading Today Guide" : locale === "zh-Hans" ? "正在载入今日指引" : "正在載入今日指引"}>
+              <span />
+              <strong />
+              <i />
+            </div>
+          }
+        >
+          {todayExpanded ? (
+            <>
+              <LazyDailyAlmanacWidget embedded />
+              <button
+                type="button"
+                className="zw-home-today-collapse"
+                onClick={() => setTodayExpanded(false)}
+              >
+                {locale === "en" ? "Collapse Today Guide" : locale === "zh-Hans" ? "收起今日指引" : "收起今日指引"}
+              </button>
+              <LazySkyEventsHomeSection />
+            </>
+          ) : (
+            <LazyDailyAlmanacWidget onExpand={() => setTodayExpanded(true)} />
+          )}
+        </Suspense>
+      </section>
 
       {/* ── SECONDARY PANEL: FORM ───────────────────────────── */}
       {activeSection === "form" && (
@@ -243,28 +279,23 @@ function Home() {
 
       {/* Result view always visible when there's a result */}
       {current && (
-        <HomeSectionBoundary
-          id="report"
-          locale={locale}
-          onRecover={() => { setCurrent(null); window.location.reload(); }}
-        >
-          <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
-            <ResultView result={current} />
-          </div>
-          <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
-            <FollowUpBox result={current} />
-          </div>
-        </HomeSectionBoundary>
-      )}
-
-      {/* ── SECONDARY PANEL: TODAY ──────────────────────────── */}
-      {activeSection === "today" && (
-        <div className="zw-hero-secondary-panel">
-          <Suspense fallback={null}>
-            <LazyDailyAlmanacWidget embedded />
-            <LazySkyEventsHomeSection />
-          </Suspense>
-        </div>
+        <>
+          <HomeSectionBoundary
+            id="report"
+            locale={locale}
+            onRecover={() => { setCurrent(null); window.location.reload(); }}
+          >
+            <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
+              <ResultView result={current} />
+            </div>
+            <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
+              <FollowUpBox result={current} />
+            </div>
+          </HomeSectionBoundary>
+          <HomeSectionBoundary id="hero" locale={locale}>
+            <DeepReadingHeroCard />
+          </HomeSectionBoundary>
+        </>
       )}
 
       {/* ── SECONDARY PANEL: QUIZ ───────────────────────────── */}

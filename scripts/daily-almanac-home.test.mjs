@@ -9,20 +9,40 @@ const layout = await readFile(new URL("../src/home-layout-r46.css", import.meta.
 const hub = await readFile(new URL("../src/home-birth-hub-r60.css", import.meta.url), "utf8");
 const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", import.meta.url), "utf8");
 const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
+const hero = await readFile(new URL("../src/home-hero-v1.css", import.meta.url), "utf8");
 
-test("homepage puts the primary birth flow before Today Guide while keeping one reading path", () => {
+test("homepage puts Today Guide before the birth flow and reserves deep reading for an existing result", () => {
+  const daily = route.indexOf("<LazyDailyAlmanacWidget open={todayExpanded} onOpenChange={setTodayExpanded} />");
   const formMount = route.indexOf("<AnalysisForm />");
-  const daily = route.indexOf("<LazyDailyAlmanacWidget embedded />");
   const report = route.indexOf("<ResultView result={current} />");
-  assert.ok(formMount >= 0 && report > formMount && daily > report);
+  const deepReading = route.indexOf("<DeepReadingHeroCard />");
+  assert.ok(daily >= 0 && formMount > daily && report > formMount && deepReading > report);
+  assert.match(route, /id="home-today-guide"/);
+  assert.match(route, /const \[todayExpanded, setTodayExpanded\] = useState\(false\)/);
+  assert.match(route, /setTodayExpanded\(true\)/);
+  assert.match(route, /<LazyDailyAlmanacWidget open=\{todayExpanded\} onOpenChange=\{setTodayExpanded\} \/>/);
+  assert.match(route, /scrollIntoView\(\{ behavior: "smooth", block: "start" \}\)/);
+  assert.match(widget, /open\?: boolean; onOpenChange\?: \(open: boolean\) => void/);
+  assert.match(widget, /onOpenChange\?\.\(event\.currentTarget\.open\)/);
+  assert.doesNotMatch(route, /<LazyDailyAlmanacWidget embedded \/>/);
+  assert.doesNotMatch(route, /activeSection === "today"/);
   assert.match(route, /import\("@\/components\/daily-almanac-widget"\)/);
   assert.match(route, /navToday: "Today"/);
   assert.match(route, /navToday: "今日"/);
-  assert.match(widget, /zhaowu-daily-details\$\{embedded \? " is-embedded-open"/);
+  assert.match(widget, /zhaowu-daily-details\$\{embedded \|\| open \? " is-embedded-open"/);
   assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
   assert.match(form, /id="bazi"/);
   assert.match(route, /home-layout-r46\.css/);
   assert.match(route, /home-birth-hub-r60\.css/);
+});
+
+test("home reserves Today loading space and stops automatic painting motion when requested", () => {
+  assert.match(route, /className="zw-home-today-skeleton"/);
+  assert.match(route, /prefers-reduced-motion: reduce/);
+  assert.match(route, /heroManual/);
+  assert.match(hero, /\.zw-home-today-skeleton/);
+  assert.match(hero, /min-height:\s*168px/);
+  assert.match(hero, /prefers-reduced-motion: reduce/);
 });
 
 test("daily almanac uses the canonical calendar and shows current year month day hour pillars", () => {
