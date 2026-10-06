@@ -41,7 +41,7 @@ function UpdatesPage() {
     ? new Intl.DateTimeFormat(intlTagFor(language), { year: "numeric", month: "long", day: "numeric" }).format(new Date(release.publishedAt))
     : "";
 
-  const title = displayText(language, "版本與更新", "版本与更新", "Release notes", "最新バージョン", "최신 버전", "नवीनतम संस्करण");
+  const title = displayText(language, "最新版本更新內容", "最新版本更新内容", "Latest release", "最新バージョン", "최신 버전", "नवीनतम संस्करण");
   const currentLabel = displayText(language, "目前正式版本", "当前正式版本", "Current production release", "現在の正式版", "현재 프로덕션 버전", "वर्तमान प्रोडक्शन संस्करण");
   const changesLabel = displayText(language, "每次改動", "每次改动", "Every change", "変更履歴", "변경 내역", "बदलाव");
   const changesIntro = displayText(
