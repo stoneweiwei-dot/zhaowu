@@ -1,5 +1,15 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-07 正式進入 Launch／營運模式 supersession
+
+- ACTIVE：昭梧已進入 Launch／Operations；後續預設目標改為穩定營運、讓真實訪客完成排盤／閱讀／付款、開始推廣與取得收入，不再以清空所有小瑕疵後才上線為前提。
+- ACTIVE：只有 P0（正式站不可用、付款／webhook／entitlement、核心排盤、核心報告、必要登入、安全／資料完整性）可以阻止推廣。P1 轉化／信任問題批次處理；P2 美工、間距、圖示偏好、後台便利性、可選整合與非阻斷 edge case 一律進 backlog，不得形成連續 PR／部署鏈。
+- ACTIVE：docs／governance-only `main` commit 若按既有 Vercel policy 跳過部署，不要求 Production SHA 追到字面上的最新 main；正式站只需對齊最新 runtime-affecting release。
+- ACTIVE：Meta／Instagram／Threads 自動發布屬可選 distribution integration；缺 Meta credentials 不得阻止網站營運、人工推廣或其他渠道推廣。
+- ACTIVE：在無 P0 時，下一階段工作順序固定為「營運 → 推廣 → 真實用戶／付款觀察 → 證據化 P0/P1 修復 → P2 批次收尾」。
+- 2026-10-07 PAYMENT P0：Stripe live account 已可收款／撥款；Supabase checkout、webhook 與 entitlement schema 均存在；已建立 live Stripe webhook endpoint。正式付費推廣前只剩確認該 endpoint signing secret 已綁定為 Supabase `STRIPE_WEBHOOK_SECRET`。
+- SUPERSEDED：任何把非必要 CI、視覺 baseline、手機 screenshot 差異、後台小便利、單一 cosmetic issue 或 docs-only SHA mismatch 當成「網站仍不能上線／不能推廣」的舊工作方式。
+
 ## 2026-10-04 付費報告為主、五音為隨報告附贈 supersession
 
 - ACTIVE：客戶購買的主體始終是命盤解讀報告；五音是其中一個促成下單的獨家附贈賣點，不是獨立產品，也不得把任何付費層級呈現成「只有五音」的版本。
