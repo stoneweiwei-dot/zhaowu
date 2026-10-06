@@ -120,7 +120,7 @@ test("Today Guide reuses granted browser location and refreshes it automatically
 });
 
 test("Today Guide uses only the same-origin Vercel coarse location fallback when precise permission is unavailable", () => {
-  assert.match(widget, /fetch\("\/api\/visitor-location"/);
+  assert.match(widget, /fetch\("\/api\/zhaowu-capabilities\?mode=visitor-location"/);
   assert.match(widget, /source: "ip"/);
   assert.match(widget, /value\?\.source === "browser" \|\| value\?\.source === "ip"/);
   assert.match(widget, /visitor\.source !== "none"/);
