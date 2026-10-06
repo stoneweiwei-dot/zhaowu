@@ -169,7 +169,7 @@ r220 依站主最新明確指令（2026-09-29，見 `docs/INSTRUCTION-REGISTRY.m
 
 ### P0
 - 每次 runtime 發布都必須確認 Vercel Production SHA = 該次 runtime main SHA；最新 exact SHA 與 deployment ID 以唯一交接板 Issue #1 為 live evidence，不在本文件硬鎖易過期 SHA。
-- Deploy gate、Engine suite 753/753、iPhone Safari CI 均 PASS；STO-5／STO-20 **真實體 iPhone Safari** 最終人工驗收仍未完成，CI／模擬器不得冒充實機證據。
+- 2026-10-06 站主已取消 GitHub required checks／branch protection 依賴；Deploy gate、Engine suite、iPhone Safari、Visual regression 不再是完成或發布條件，也不再要求代理默認查詢。需要時僅作手動診斷。
 - 站主登入後的 /account／/gallery 真實視覺驗收仍缺已驗證 owner session；r197 已完成 source contract、HTTP、CI 與 Production exact-SHA 證據，不得把「缺憑證的人工視覺」冒充已跑。
 - Supabase release_history 已寫入 r197／197，source commit = 9fd7c6e6d72925b385ed05e8cd803e92f871033a，verification = READY_MAIN_SHA_MATCH。
 - 《菜根譚》APP 截圖 37 條已完成逐條校勘並結案：28 條升為 verified direct quote；1 條確認誤歸《菜根譚》（實出《圍爐夜話》）；8 條因關鍵字／詞序／漏字與可靠底本不一致，保留截圖轉錄但改為 not_applicable，不進古籍直引池。全庫現況為 **38 verified / 0 pending / 15 not_applicable**，且非 verified 卻標 direct quote 的筆數為 0。
@@ -187,20 +187,14 @@ r220 依站主最新明確指令（2026-09-29，見 `docs/INSTRUCTION-REGISTRY.m
 
 不得再使用「基本完成／差最後一步／可以收官」作完成判定。
 
-只有同時有證據證明：
+完成判定改以目前實際產品狀態為主：
 
-1. current main 的必要 CI／contract gate 通過；
-2. Vercel Production SHA = current main SHA；
-3. 正式站首頁／Login／出生表單／完整報告可用；
-4. 真 iPhone Safari 無白屏、橫向 overflow、safe-area／鍵盤遮擋、雙 floating UI；夜間模式所有主要文字與次要文字均保持可讀對比；
-5. refresh／返回／前進／切 App／鎖屏恢復正常；
-6. 首頁掛載一次性 IntroGate（單一瀏覽器只播一次，非每日，不阻塞頁面其他內容）；其他公開路由（一般分區、報告頁、返回導覽）不掛載；/login 在單次站主登入流程只播一次、最長 15 秒，refresh／返回不重播，聲音控制正常；
-7. owner login／session restore／logout 正常；
-8. Supabase 失效時公開核心流程仍 fail-open；
+1. current `main` 已包含要求的變更；
+2. 需要正式發布時，Vercel Production 已到目標 main SHA；
+3. 使用者實際回報的核心路徑沒有已知阻斷問題；
+4. 沒有尚未處理且與本次要求直接相關的已知回歸。
 
-才可以把 STO-5／STO-20 標 Done。
-
-CI、PR merge、Preview、單純 Vercel READY、桌面 viewport、文件描述均不能單獨代替 Production＋真機證據。
+GitHub Production CI、Deploy gate、Engine suite、iPhone Safari、Visual regression、PR check 狀態均不是默認 Done Gate。除非站主明確要求，不主動查、不等待、不因紅叉／黃點／skip 判定工作未完成。
 
 
 ### r182 趣味測驗｜修仙命格靈測
