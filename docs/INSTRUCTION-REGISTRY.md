@@ -1,5 +1,16 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-07 複雜／長尾問題推理層 supersession
+
+- ACTIVE：複雜問題不得只靠「把原答案寫順」處理。先建立 question graph，識別人物／關係、主問題、次問題、題域、比較／條件／情境／時間要求、第三方邊界與高風險邊界，再從 CURRENT deterministic runtime 的既有結果組合答案。
+- ACTIVE：新增 `src/lib/qa/complex-question-ontology.ts`、`src/lib/report/complex-reasoning.ts` 與 `docs/COMPLEX-QUESTION-REASONING.md`。人物關係目錄覆蓋本人、伴侶／前任、父母子女手足、朋友室友鄰居、老闆主管同事下屬、客戶／合夥人／投資人、老師／醫生／律師、房東租客、公司團隊、公眾人物、寵物、未出生孩子、亡者與未知第三方等 40+ 類。
+- ACTIVE：問題領域必須能處理自我／天賦／工作／學業／創業／商業／財務／債務／感情婚姻／家庭六親／人際合作／衝突／法律／健康／生育／孩子／房產／搬遷／移民／旅行／時間／A-B／排名／情境／風險／談判／回溯驗證／前世與象徵層等；新句式用分類組合處理，不要求先寫過一模一樣的問句。
+- ACTIVE：複雜題第一屏先使用 deterministic complex composer；它只重組 Decision Report、題域 reading、timing、risks 與現實邊界，不重新排盤、不新增命理 truth。provider 不可用時，這層仍然生效。
+- OPTIONAL / DISABLED CURRENTLY：`answer-reasoner` 是可選的 fact-ID 受控 AI 綜合層；只有輸入 facts 可作證據，每個實質結論必須引用存在的 fact ID；不得輸出 chain-of-thought、不得替第三方讀心、不得把醫療／法律／投資／死亡等高風險問題寫成保證。
+- PROVIDER STATUS：2026-10-07 實測現有 OpenAI provider credential 對舊 `answer-writer` 與新 `answer-reasoner` 均回 HTTP 401，因此兩個 `site_settings` AI 開關暫時設為 disabled。不得把「Edge Function ACTIVE」冒充「AI provider 正常工作」。
+- RE-ENABLE GATE：只有安全更新 provider secret，且真實 invocation 回傳有效、可核對 fact IDs 的答案後，才可重新開啟 AI writer/reasoner。不得把 API key 寫進 GitHub、前端 bundle、文件或聊天紀錄。
+- PRIORITY：complex deterministic synthesis → optional bounded reasoner → simple wording writer；任何 AI/provider 失敗一律回 deterministic answer，不白屏、不阻塞排盤／報告／付款／Launch。
+
 
 ## 2026-10-07 首頁 Hero／背景視覺吸收與防回退
 
