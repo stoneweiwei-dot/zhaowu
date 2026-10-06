@@ -246,8 +246,21 @@ function Home() {
             </div>
           }
         >
-          <LazyDailyAlmanacWidget open={todayExpanded} onOpenChange={setTodayExpanded} />
-          <LazySkyEventsHomeSection />
+          {todayExpanded ? (
+            <>
+              <LazyDailyAlmanacWidget embedded />
+              <button
+                type="button"
+                className="zw-home-today-collapse"
+                onClick={() => setTodayExpanded(false)}
+              >
+                {locale === "en" ? "Collapse Today Guide" : locale === "zh-Hans" ? "收起今日指引" : "收起今日指引"}
+              </button>
+              <LazySkyEventsHomeSection />
+            </>
+          ) : (
+            <LazyDailyAlmanacWidget />
+          )}
         </Suspense>
       </section>
 
