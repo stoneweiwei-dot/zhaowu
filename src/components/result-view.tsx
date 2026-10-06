@@ -11,7 +11,7 @@ import { customerCopy, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, renderFocusedReportText, type ReportSection } from "@/lib/report/focused-report";
 import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 import { buildWriterRequest, requestWrittenAnswer } from "@/lib/report/llm-answer";
-import { buildComplexReasoningRequest, requestComplexReasoning } from "@/lib/report/complex-reasoning";
+import { buildComplexDeterministicAnswer, buildComplexReasoningRequest, requestComplexReasoning } from "@/lib/report/complex-reasoning";
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
 import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
@@ -36,13 +36,14 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const { chart, reading, question } = result;
   const petDecision = isPetDecisionQuestion(question) ? buildPetDecision(result, result.locale ?? locale) : null;
   const decisionModel = buildDecisionReportModel(result);
+  const complexRule = !petDecision ? buildComplexDeterministicAnswer(result) : null;
   const [written, setWritten] = useState<{ key: string; answer: string; next: string; source: "reasoned" | "written" } | null>(null);
   const writerKey = `${result.id ?? ""}|${question}`;
   const writtenNow = !petDecision && written?.key === writerKey ? written : null;
-  const ruleAnswer = petDecision?.directAnswer ?? decisionModel.directAnswer;
+  const ruleAnswer = petDecision?.directAnswer ?? complexRule?.answer ?? decisionModel.directAnswer;
   const answer = writtenNow?.answer ?? ruleAnswer;
   const answerParagraphs = customerParagraphs(answer);
-  const nextAction = petDecision ? customerCopy(reading.action) : writtenNow?.next ?? decisionModel.nextAction;
+  const nextAction = petDecision ? customerCopy(reading.action) : writtenNow?.next ?? complexRule?.next ?? decisionModel.nextAction;
 
   useEffect(() => {
     // Rule answer is already on screen. Complex questions get one bounded reasoning
