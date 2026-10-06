@@ -79,9 +79,13 @@ test("known ghosted five-element timing images are archived and cannot enter run
 test("lightbox opens the full source and refuses to zoom beyond source-native pixels", async () => {
   const artwork = await readText("src/components/report-sprite-artwork.tsx");
   const viewer = await readText("src/components/image-viewer.tsx");
+  const ownerGallery = await readText("src/components/owner-gallery-manager.tsx");
   assert.match(artwork, /fullImageUrl: asset\.fullImageUrl/);
   assert.match(viewer, /setSrc\(item\?\.fullImageUrl/);
   assert.match(viewer, /updateNativeZoomLimit/);
   assert.match(viewer, /image\.naturalWidth \/ renderedWidth/);
   assert.match(viewer, /Math\.min\(maxScale/);
+  assert.match(ownerGallery, /qc-blocked-ghosting/);
+  assert.match(ownerGallery, /selectedEnableableIds/);
+  assert.match(ownerGallery, /disabled=\{qcBlockedAsset\(asset\)\}/);
 });
