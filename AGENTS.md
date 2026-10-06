@@ -9,6 +9,50 @@ Database/Auth/Storage: Supabase `plgpxusmemnmzckbwtiv`
 Primary branch: `main`
 Cost posture: **A$0/month target unless the owner explicitly approves paid infrastructure**
 
+## 2026-10-07 OWNER LAUNCH / OPERATIONS MODE SUPERSESSION
+
+ZHAOWU is now in **Launch / Operations mode**. The default objective is no longer continuous feature development or cosmetic perfection. The product objective is: **keep the live service stable, let real users complete the core flow, accept paid orders reliably, and promote the product.**
+
+This instruction supersedes any older workflow that implicitly treats every small defect, visual preference, stale check, or admin inconvenience as a reason to keep the product in pre-launch development.
+
+### A. Launch severity
+
+Classify new findings before doing work:
+
+- **P0 — launch / revenue blocker:** production unavailable; checkout/webhook/paid entitlement broken; core birth/chart calculation unavailable; report generation unusable; owner/customer access required for the core flow is broken; security/data-integrity issue that makes live operation unsafe. P0 may block promotion and should be fixed first.
+- **P1 — material conversion / trust issue:** a reproducible issue on the public purchase or reading path that materially confuses users, hides the offer, prevents a common mobile action, or visibly damages trust. Batch P1 work; do not create a long chain of isolated releases.
+- **P2 — cosmetic / convenience / polish:** spacing, minor icon taste, admin convenience, non-blocking visual differences, optional integrations, stale diagnostics, or edge-case polish. Record it and continue operating. P2 never blocks launch, promotion, payment, or declaring the product operational.
+
+### B. Stop development churn
+
+- Do not start a new coding task merely because a small issue exists.
+- Do not reopen disabled CI / Production Smoke / Deploy Gate / Engine suite / iPhone Safari / Visual Regression as routine launch gates.
+- Do not convert owner fatigue into more verification work. Use the smallest current evidence that can answer the question.
+- During launch, keep at most **one active runtime/product coding task** unless the owner explicitly asks for parallel work.
+- Prefer one batched production release over repeated cosmetic deployments.
+- New feature ideas, experimental tools, alternate hosts, new agent frameworks, and optional automation go to backlog unless the owner explicitly promotes them.
+
+### C. Runtime truth versus docs-only main
+
+Vercel Production must match the latest **runtime-affecting** commit intended for release. A docs/governance-only commit that is deliberately skipped by Vercel does **not** make the current Production stale or incomplete.
+
+Do not require `Production SHA == literal current main SHA` when the only newer commits are docs/governance/workflow references that do not change the built runtime. In that case, report both:
+- current main SHA;
+- current live runtime SHA;
+and state that the difference is intentional and non-runtime.
+
+### D. Operations and promotion become the default next phase
+
+Once no confirmed P0 remains:
+
+1. keep the site live;
+2. promote the public product;
+3. watch real-user/payment failures;
+4. fix evidence-backed P0/P1 issues;
+5. leave P2 polish for scheduled batches.
+
+Meta / Instagram / Threads automation is an **optional distribution integration**, not a launch gate. Missing Meta credentials must not keep ZHAOWU in perpetual development; manual or alternate promotion may proceed.
+
 ## 2026-09-20 OWNER ABSOLUTE ZERO-COST / SINGLE-PRODUCTION SUPERSESSION
 
 This is the owner's newest explicit infrastructure instruction and has **highest repository-level authority** for hosting, deployment, quota, storage and external-tool behavior. It fully supersedes the 2026-09-19 r154 Netlify-hosting supersession and every older 40/44/50/80-deploy budget rule.
