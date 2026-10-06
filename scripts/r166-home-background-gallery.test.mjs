@@ -23,14 +23,20 @@ test("r166 removes the atlas from the homepage only", async () => {
 });
 
 
-test("owner-selected homepage wallpaper is consumed by the live SiteShell", async () => {
+test("owner-selected homepage wallpaper is consumed and remains visible on the live homepage", async () => {
   const shell = await source("src/components/site-shell.tsx");
   const account = await source("src/routes/account.tsx");
+  const hero = await source("src/home-hero-v1.css");
   assert.match(shell, /listPublicBackgrounds/);
   assert.match(shell, /chooseDailyBackground/);
   assert.match(shell, /--zhaowu-shell-wallpaper/);
   assert.match(shell, /zhaowu-background-change/);
   assert.match(account, /setBackgroundHistoryOpen\(true\)/);
   assert.match(account, /loadBackgroundHistory\(0\)/);
-  assert.match(account, /text-\[#fffaf0\]/);
+  assert.match(account, /files\.length === 1/);
+  assert.match(account, /setBackgroundWallpaper\(session, singleUploadedAsset\.id\)/);
+  assert.match(hero, /\.zw-hero-home\s*\{[^}]*background:\s*transparent;/s);
+  assert.match(hero, /\.zhaowu-home-sheet-shell\.zhaowu-route-home::before\s*\{[^}]*var\(--zhaowu-shell-wallpaper/s);
+  assert.match(hero, /\.zw-hero-dots\s*\{[^}]*display:\s*none !important;/s);
+  assert.doesNotMatch(hero, /\.zw-hero-dots\s*\{[^}]*display:\s*flex;/s);
 });
