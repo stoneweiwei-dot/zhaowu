@@ -8,15 +8,19 @@ test("report visual registry covers 10 day masters, 12 months and grouped assets
   const registry = await read("src/lib/report/report-visual-assets.ts");
   for (const key of ["jia-wood", "yi-wood", "bing-fire", "ding-fire", "wu-earth", "ji-earth", "geng-metal", "xin-metal", "ren-water", "gui-water"]) assert.match(registry, new RegExp(`\\"${key}\\"`));
   for (const key of ["yin-spring", "mao-spring", "chen-spring", "si-summer", "wu-summer", "wei-summer", "shen-autumn", "you-autumn", "xu-autumn", "hai-winter", "zi-winter", "chou-winter"]) assert.match(registry, new RegExp(`\\"${key}\\"`));
-  for (const file of ["day-0.webp", "day-1.webp", "month-0.webp", "month-1.webp", "month-2.webp", "month-3.webp", "luck-0.webp"]) assert.match(registry, new RegExp(file.replace(".", "\\.")));
+  for (const file of ["day-0.webp", "day-1.webp", "month-0.webp", "month-1.webp", "month-2.webp", "month-3.webp"]) assert.match(registry, new RegExp(file.replace(".", "\\.")));
+  assert.match(registry, /STEM_VISUAL_KEYS/);
   assert.match(registry, /dayMaster:\s*10/);
   assert.match(registry, /month:\s*12/);
   assert.match(registry, /luckElement:\s*5/);
 });
 
-test("luck artwork is selected only from the first heavenly stem of calculated GanZhi", async () => {
+test("luck artwork is selected from the exact first heavenly stem and only then derives the five-element label", async () => {
   const registry = await read("src/lib/report/report-visual-assets.ts");
   assert.match(registry, /trim\(\)\.charAt\(0\)/);
+  assert.match(registry, /甲: "jia-wood"/);
+  assert.match(registry, /癸: "gui-water"/);
+  assert.match(registry, /return key \? DAY_MASTER_ASSETS\[key\]/);
   assert.match(registry, /stem === "甲" \|\| stem === "乙"/);
   assert.match(registry, /stem === "壬" \|\| stem === "癸"/);
 });
