@@ -58,6 +58,8 @@ test("owner Gallery separates protected Song assets from uploads and legacy mate
   assert.match(gallery, /吉祥紋樣/);
   assert.match(gallery, /私人上傳/);
   assert.match(gallery, /舊素材/);
+  assert.match(gallery, /核心資產/);
+  assert.match(gallery, /selectedDeletableIds/);
   assert.doesNotMatch(gallery, /LOADING_GALLERY_CATALOG/);
   assert.match(gallery, /setShown\(\(current\) => current \+ PAGE_SIZE\)/);
 
