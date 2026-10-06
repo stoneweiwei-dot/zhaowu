@@ -26,10 +26,10 @@ test("report artwork keeps lazy loading and fail-open paper fallback", () => {
   assert.match(sprite, /thumbnailUrl/);
 });
 
-test("luck artwork uses the completed five-element same-origin sprite", () => {
-  assert.ok(assets.includes('const REPORT_LUCK_CDN_BASE = "/report-visuals/groups"'));
-  assert.match(assets, /luck-0\.webp/);
-  assert.match(assets, /REPORT_LUCK_CDN_BASE/);
+test("luck artwork uses reviewed exact-stem mother art instead of ghosted generic timing images", () => {
+  assert.match(assets, /STEM_VISUAL_KEYS/);
+  assert.match(assets, /return key \? DAY_MASTER_ASSETS\[key\]/);
+  assert.doesNotMatch(assets, /REPORT_LUCK_CDN_BASE|const LUCK_ASSETS/);
   assert.doesNotMatch(assets, /supabase\.co|storage\/v1\/object\/public/);
   assert.match(assets, /luckElement:\s*5/);
 });
