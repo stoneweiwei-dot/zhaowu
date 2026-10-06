@@ -47,10 +47,12 @@ test("Astronomy Engine, Lahiri, Ascendant and D60 segment formulas stay local co
   assert.match(gate, /SiderealTime/);
 });
 
-test("Engine suite is required while the Netlify archive fallback stays build-frozen", () => {
-  assert.match(workflow, /name: Engine suite/);
-  assert.doesNotMatch(workflow, /continue-on-error:\s*true/);
-  assert.doesNotMatch(workflow, /Engine suite \(observe\)/);
+test("engine diagnostics remain available manually while Netlify archive stays build-frozen", () => {
+  assert.match(workflow, /name: Manual diagnostics/);
+  assert.match(workflow, /workflow_dispatch:/);
+  assert.match(workflow, /name: Manual engine suite/);
+  assert.match(workflow, /npm run test:engine/);
+  assert.doesNotMatch(workflow, /pull_request:|push:/);
   assert.match(netlify, /command = "npm run build"/);
   assert.match(netlify, /functions = "netlify\/functions"/);
   assert.match(netlify, /ignore = "exit 0"/);
