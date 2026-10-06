@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
 import { BrandIcon } from "@/components/brand-icon";
@@ -17,6 +17,7 @@ import { GreenDragonGuide } from "@/components/green-dragon-guide";
 import { IntroGate } from "@/components/intro-gate";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
+import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -58,6 +59,41 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const isLogin = pathname === "/login" || pathname === "/auth/callback";
   const isOwnerWorkspace = Boolean(user?.isOwner && (pathname === "/account" || pathname === "/gallery" || pathname === "/social"));
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
+  const [wallpaperUrl, setWallpaperUrl] = useState("");
+
+  useEffect(() => {
+    if (isLogin) {
+      setWallpaperUrl("");
+      return;
+    }
+    let alive = true;
+    const refreshWallpaper = async () => {
+      try {
+        const assets = await listPublicBackgrounds();
+        if (!alive) return;
+        const selected = chooseDailyBackground(assets);
+        if (!selected) {
+          setWallpaperUrl("");
+          return;
+        }
+        const cdn = String(selected.cdn_url ?? "").trim();
+        setWallpaperUrl(cdn.startsWith("https://") ? cdn : backgroundPublicUrl(selected.storage_path));
+      } catch {
+        if (alive) setWallpaperUrl("");
+      }
+    };
+    void refreshWallpaper();
+    const onBackgroundChange = () => { void refreshWallpaper(); };
+    window.addEventListener("zhaowu-background-change", onBackgroundChange);
+    return () => {
+      alive = false;
+      window.removeEventListener("zhaowu-background-change", onBackgroundChange);
+    };
+  }, [isLogin]);
+
+  const shellStyle = wallpaperUrl
+    ? ({ ["--zhaowu-shell-wallpaper" as string]: `url(${JSON.stringify(wallpaperUrl)})` } as CSSProperties)
+    : undefined;
 
   useEffect(() => {
     hydrateLocale();
@@ -131,7 +167,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, [language]);
 
   return (
-    <div className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
+    <div style={shellStyle} className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
       <a className="zhaowu-skip-link" href="#zhaowu-main-content">{skipLabel}</a>
       {isHome ? <IntroGate /> : null}
       {!isLogin ? (
