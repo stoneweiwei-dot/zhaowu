@@ -206,7 +206,7 @@ const SLIPS = {
   ],
 } as const;
 
-export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean }) {
+export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: boolean; onExpand?: () => void }) {
   const { locale } = useI18n(); const now = useNow(); const { visitor, requestLocation, requesting } = useVisitorContext();
   const [slipOpen, setSlipOpen] = useState(false);
   const dayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
@@ -219,7 +219,7 @@ export function DailyAlmanacWidget({ embedded = false }: { embedded?: boolean })
 
   return <>
     <section id="daily-almanac" className="zhaowu-today-guide" aria-label={labels.title}>
-      <details className={`zhaowu-daily-details${embedded ? " is-embedded-open" : ""}`} open={embedded || undefined} onToggle={(event) => { if (!embedded && event.currentTarget.open) void requestLocation(); }}>
+      <details className={`zhaowu-daily-details${embedded ? " is-embedded-open" : ""}`} open={embedded || undefined} onToggle={(event) => { if (!embedded && event.currentTarget.open) { if (onExpand) onExpand(); else void requestLocation(); } }}>
         {embedded ? <summary hidden>{labels.title}</summary> : <summary className="zhaowu-today-guide__summary">
           <div className="zhaowu-today-guide__summary-head"><div><p>{labels.title}</p><span>{labels.sub}</span></div><b>→</b></div>
           <div className="zhaowu-today-guide__summary-row"><strong>{now.getFullYear()}.{String(now.getMonth() + 1).padStart(2, "0")}.{String(now.getDate()).padStart(2, "0")}</strong><span>{locationName} · {weather}</span></div>
