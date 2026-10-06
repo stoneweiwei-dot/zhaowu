@@ -11,8 +11,8 @@ const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", impo
 const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 const hero = await readFile(new URL("../src/home-hero-v1.css", import.meta.url), "utf8");
 
-test("homepage puts Today Guide before the birth flow and reserves deep reading for an existing result", () => {
-  const daily = route.indexOf("<LazyDailyAlmanacWidget open={todayExpanded} onOpenChange={setTodayExpanded} />");
+test("homepage puts Today Guide before the birth flow and preserves the approved full-guide mode", () => {
+  const daily = route.indexOf("<LazyDailyAlmanacWidget onExpand={() => setTodayExpanded(true)} />");
   const formMount = route.indexOf("<AnalysisForm />");
   const report = route.indexOf("<ResultView result={current} />");
   const deepReading = route.indexOf("<DeepReadingHeroCard />");
@@ -20,16 +20,17 @@ test("homepage puts Today Guide before the birth flow and reserves deep reading 
   assert.match(route, /id="home-today-guide"/);
   assert.match(route, /const \[todayExpanded, setTodayExpanded\] = useState\(false\)/);
   assert.match(route, /setTodayExpanded\(true\)/);
-  assert.match(route, /<LazyDailyAlmanacWidget open=\{todayExpanded\} onOpenChange=\{setTodayExpanded\} \/>/);
+  assert.match(route, /<LazyDailyAlmanacWidget embedded \/>/);
+  assert.match(route, /<LazyDailyAlmanacWidget onExpand=\{\(\) => setTodayExpanded\(true\)\} \/>/);
+  assert.match(route, /className="zw-home-today-collapse"/);
   assert.match(route, /scrollIntoView\(\{ behavior: "smooth", block: "start" \}\)/);
-  assert.match(widget, /open\?: boolean; onOpenChange\?: \(open: boolean\) => void/);
-  assert.match(widget, /onOpenChange\?\.\(event\.currentTarget\.open\)/);
-  assert.doesNotMatch(route, /<LazyDailyAlmanacWidget embedded \/>/);
+  assert.match(widget, /onExpand\?: \(\) => void/);
+  assert.match(widget, /if \(onExpand\) onExpand\(\)/);
+  assert.match(widget, /zhaowu-daily-details\$\{embedded \? " is-embedded-open"/);
   assert.doesNotMatch(route, /activeSection === "today"/);
   assert.match(route, /import\("@\/components\/daily-almanac-widget"\)/);
   assert.match(route, /navToday: "Today"/);
   assert.match(route, /navToday: "今日"/);
-  assert.match(widget, /zhaowu-daily-details\$\{embedded \|\| open \? " is-embedded-open"/);
   assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
   assert.match(form, /id="bazi"/);
   assert.match(route, /home-layout-r46\.css/);
@@ -129,7 +130,9 @@ test("Today Guide invalidates legacy IP cache and only stores browser-confirmed 
     'typeof value.latitude === "number"',
     'typeof value.longitude === "number"',
     'window.localStorage.setItem("zhaowu:visitor-context:v4"',
-    "if (!embedded && event.currentTarget.open) void requestLocation()",
+    "if (!embedded && event.currentTarget.open)",
+    "if (onExpand) onExpand()",
+    "else void requestLocation()",
     'className="zhaowu-today-location-control"',
     'className="zhaowu-today-location-control"',
     "seasonLabel(visitor.latitude, now.getMonth() + 1, locale)",
