@@ -18,7 +18,8 @@ test("social credentials stay server-side and configuration exposes booleans onl
   const client = await source("src/lib/owner-social-client.ts");
   const route = await source("src/routes/social.tsx");
   assert.doesNotMatch(client, /META_.*ACCESS_TOKEN|graph\.facebook\.com|graph\.threads/);
-  assert.doesNotMatch(route, /META_.*ACCESS_TOKEN|graph\.facebook\.com|graph\.threads/);
+  assert.doesNotMatch(route, /graph\.facebook\.com|graph\.threads/);
+  assert.doesNotMatch(route, /ig-secret-token|threads-secret-token/);
   assert.match(client, /credentials: "include"/);
   assert.match(client, /fetch\("\/api\/owner-session"/);
   assert.match(client, /social\.status/);
@@ -130,4 +131,18 @@ test("the owner console links to a gallery-backed dual social publisher", async 
 test("the root no longer mounts the duplicate DOM-scanning owner console organizer", async () => {
   const root = await source("src/routes/__root.tsx");
   assert.doesNotMatch(root, /OwnerConsoleOrganizer/);
+});
+
+
+test("unconfigured production does not pretend the Meta publisher is ready", async () => {
+  const route = await source("src/routes/social.tsx");
+  assert.match(route, /data-social-connection-required/);
+  assert.match(route, /Meta 尚未連接/);
+  assert.match(route, /https:\/\/developers\.facebook\.com\/apps\//);
+  for (const key of [
+    "META_INSTAGRAM_USER_ID",
+    "META_INSTAGRAM_ACCESS_TOKEN",
+    "META_THREADS_USER_ID",
+    "META_THREADS_ACCESS_TOKEN",
+  ]) assert.match(route, new RegExp(key));
 });

@@ -139,3 +139,14 @@ test("Today Guide invalidates legacy IP cache and only stores browser-confirmed 
     "Season pending location"
   ]) assert.ok(widget.includes(value), `Missing expected cache/location contract: ${value}`);
 });
+
+
+test("Today location is directly recoverable from the visible weather card", () => {
+  assert.match(widget, /navigator\.permissions\.query/);
+  assert.match(widget, /permission\.state === "granted"/);
+  assert.match(widget, /zhaowu-today-location-inline/);
+  assert.match(widget, /locationError === "denied"/);
+  assert.match(widget, /visitor\.timezone\.split\("\/"\)/);
+  assert.match(design, /\.zhaowu-today-location-inline/);
+  assert.match(design, /\.zhaowu-today-location-error/);
+});

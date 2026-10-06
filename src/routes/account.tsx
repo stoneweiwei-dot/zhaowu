@@ -639,11 +639,15 @@ function AccountPage() {
           <button
             type="button"
             aria-pressed={ownerView === "backgrounds"}
-            onClick={() => setOwnerView("backgrounds")}
-            className={"min-h-14 rounded-xl border px-4 py-3 text-left text-sm font-medium " + (ownerView === "backgrounds" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-cream/80 text-ink")}
+            onClick={() => {
+              setOwnerView("backgrounds");
+              setBackgroundHistoryOpen(true);
+              void loadBackgroundHistory(0);
+            }}
+            className={"min-h-14 rounded-xl border px-4 py-3 text-left text-sm font-medium " + (ownerView === "backgrounds" ? "border-[#315f51] bg-[#315f51]" : "border-line bg-cream/80 text-ink")}
           >
-            <span className="block text-[10px] tracking-[0.16em] opacity-65">HOME</span>
-            <span className="mt-1 block">{tr(locale, "首頁背景", "首页背景", "Home backgrounds")}</span>
+            <span className={"block text-[10px] tracking-[0.16em] opacity-75 " + (ownerView === "backgrounds" ? "text-[#fffaf0]" : "text-ink-mute")}>HOME</span>
+            <span className={"mt-1 block " + (ownerView === "backgrounds" ? "text-[#fffaf0]" : "text-ink")}>{tr(locale, "首頁背景", "首页背景", "Home backgrounds")}</span>
           </button>
           <Link to="/gallery" className="min-h-14 rounded-xl border border-line bg-cream/80 px-4 py-3 text-left text-sm font-medium text-ink">
             <span className="block text-[10px] tracking-[0.16em] text-ink-mute">MEDIA</span>

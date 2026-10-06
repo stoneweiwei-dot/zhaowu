@@ -7,7 +7,7 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 
 test("r166 makes the fixed Song landscape visibly present without weakening paper surfaces", async () => {
   const design = await source("src/zhaowu-design-system.css");
-  assert.match(design, /url\('\/wallpaper-song\.jpg'\) center 72% \/ cover no-repeat/);
+  assert.match(design, /var\(--zhaowu-shell-wallpaper, url\('\/wallpaper-song\.jpg'\)\) center 72% \/ cover no-repeat/);
   assert.match(design, /\.zhaowu-home-sheet-shell::before[\s\S]*opacity: \.98;/);
   assert.match(design, /\.zhaowu-home-sheet-shell \.zhaowu-customer-record[\s\S]*background: #fffaf1 !important;/);
 });
@@ -20,4 +20,17 @@ test("r166 removes the atlas from the homepage only", async () => {
   assert.match(atlasRoute, /createFileRoute\("\/auspicious-atlas"\)/);
   assert.match(ownerRoute, /createFileRoute\("\/gallery"\)/);
   assert.match(ownerRoute, /if \(!user\.isOwner\)/);
+});
+
+
+test("owner-selected homepage wallpaper is consumed by the live SiteShell", async () => {
+  const shell = await source("src/components/site-shell.tsx");
+  const account = await source("src/routes/account.tsx");
+  assert.match(shell, /listPublicBackgrounds/);
+  assert.match(shell, /chooseDailyBackground/);
+  assert.match(shell, /--zhaowu-shell-wallpaper/);
+  assert.match(shell, /zhaowu-background-change/);
+  assert.match(account, /setBackgroundHistoryOpen\(true\)/);
+  assert.match(account, /loadBackgroundHistory\(0\)/);
+  assert.match(account, /text-\[#fffaf0\]/);
 });

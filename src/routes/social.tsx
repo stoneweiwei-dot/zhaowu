@@ -201,8 +201,20 @@ function SocialPublisherPage() {
         {statusError ? <p className="mt-3 text-sm text-cinnabar">{statusError}</p> : null}
         {configuration && connectedCount === 0 ? (
           <div className="mt-4 rounded-xl border border-cinnabar/25 bg-cinnabar/5 px-4 py-3" data-social-connection-required>
-            <p className="text-sm font-medium text-ink">{tx("正式發布目前被 Meta 連接擋住", "正式发布目前被 Meta 连接挡住", "Publishing is blocked by Meta connection")}</p>
-            <p className="mt-1 text-xs leading-5 text-ink-soft">{tx("介面與官方 API 已就位，但正式站目前沒有檢測到 Instagram／Threads 的伺服器憑證。連接完成前不會假裝已發布。", "界面与官方 API 已就位，但正式站目前没有检测到 Instagram／Threads 的服务器凭证。连接完成前不会假装已发布。", "The interface and official APIs are ready, but the production server has no Instagram/Threads credentials yet. Nothing will be reported as published until they are connected.")}</p>
+            <p className="text-sm font-medium text-ink">{tx("Meta 尚未連接", "Meta 尚未连接", "Meta is not connected")}</p>
+            <p className="mt-1 text-xs leading-5 text-ink-soft">{tx("正式站目前沒有 Instagram／Threads 的伺服器憑證，所以這裡不再假裝成可發布狀態。先完成 Meta App 授權，再回來就會自動顯示可發布的平台。", "正式站目前没有 Instagram／Threads 的服务器凭证，所以这里不再假装成可发布状态。先完成 Meta App 授权，再回来就会自动显示可发布的平台。", "Production has no Instagram/Threads server credentials yet, so this screen will not pretend publishing is ready. Finish the Meta app connection first; connected channels will then become available automatically.")}</p>
+            <a
+              href="https://developers.facebook.com/apps/"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex min-h-11 items-center rounded-full border border-cinnabar/30 bg-cream px-4 text-xs font-medium text-cinnabar"
+            >
+              {tx("開啟 Meta Developers", "打开 Meta Developers", "Open Meta Developers")}
+            </a>
+            <details className="mt-2">
+              <summary className="cursor-pointer text-[11px] text-ink-mute">{tx("需要連接的四項資料", "需要连接的四项数据", "Required server settings")}</summary>
+              <code className="mt-2 block whitespace-pre-wrap rounded-lg bg-paper/55 p-2 text-[10px] leading-5 text-ink-soft">META_INSTAGRAM_USER_ID{"\n"}META_INSTAGRAM_ACCESS_TOKEN{"\n"}META_THREADS_USER_ID{"\n"}META_THREADS_ACCESS_TOKEN</code>
+            </details>
           </div>
         ) : null}
       </section>
