@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { CityPicker } from "@/components/city-picker";
 import { useI18n, type Locale } from "@/lib/i18n";
-import { buildPalm } from "@/lib/palm/engine";
+import { buildPalm } from "@/lib/yizhangjing/engine";
 import { buildPalmSynthesis, palmDaoTone, presentLunarLabel, presentPalmPalace, splitPalmMeaning } from "@/lib/palm/standalone-presentation";
 import { saveSpecialistHistory } from "@/lib/specialist-history";
 import type { CityHit, Gender } from "@/lib/bazi/types";
