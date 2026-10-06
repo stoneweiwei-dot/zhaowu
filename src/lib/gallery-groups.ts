@@ -121,10 +121,14 @@ export function matchesOwnerGalleryGroup(asset: GalleryAsset, group: OwnerGaller
 
   const official = isOfficialSongGalleryAsset(asset);
   if (group === "song-master") return official;
-  if (group === "day-master") return official && hasTag(asset, "day-master");
-  if (group === "month-command") return official && (hasTag(asset, "month-command") || hasTag(asset, "month"));
+  if (group === "day-master") {
+    return official && hasTag(asset, "official-report-mother") && hasTag(asset, "day-master");
+  }
+  if (group === "month-command") {
+    return official && hasTag(asset, "official-report-mother") && hasTag(asset, "month-command");
+  }
   if (group === "luck-five-elements") {
-    return official && (hasTag(asset, "luck-five-elements") || hasEveryTag(asset, ["luck", "five-elements"]));
+    return official && hasTag(asset, "official-report-mother") && hasTag(asset, "luck-five-elements");
   }
   if (group === "auspicious") {
     return hasTag(asset, "auspicious") || hasTag(asset, "ornament");
