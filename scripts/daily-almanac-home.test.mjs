@@ -10,11 +10,16 @@ const hub = await readFile(new URL("../src/home-birth-hub-r60.css", import.meta.
 const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", import.meta.url), "utf8");
 const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 
-test("homepage puts the primary birth flow before Today Guide while keeping one reading path", () => {
+test("homepage puts Today Guide before the birth flow and reserves deep reading for an existing result", () => {
+  const daily = route.indexOf("<LazyDailyAlmanacWidget />");
   const formMount = route.indexOf("<AnalysisForm />");
-  const daily = route.indexOf("<LazyDailyAlmanacWidget embedded />");
   const report = route.indexOf("<ResultView result={current} />");
-  assert.ok(formMount >= 0 && report > formMount && daily > report);
+  const deepReading = route.indexOf("<DeepReadingHeroCard />");
+  assert.ok(daily >= 0 && formMount > daily && report > formMount && deepReading > report);
+  assert.match(route, /id="home-today-guide"/);
+  assert.match(route, /scrollIntoView\(\{ behavior: "smooth", block: "start" \}\)/);
+  assert.doesNotMatch(route, /<LazyDailyAlmanacWidget embedded \/>/);
+  assert.doesNotMatch(route, /activeSection === "today"/);
   assert.match(route, /import\("@\/components\/daily-almanac-widget"\)/);
   assert.match(route, /navToday: "Today"/);
   assert.match(route, /navToday: "今日"/);
