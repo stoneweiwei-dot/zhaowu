@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-06-owner-live-controls",
+    date: "2026-10-06",
+    zhHant: { title: "定位、五行版面與首頁背景控制修正", summary: "今日定位加入明確重試與權限提示；五行五格收緊為同列緊湊控制；站主選定的首頁背景現在真正驅動正式站背景。Instagram／Threads 發布器同步顯示目前缺少 Meta 連接，不再假裝可發布。" },
+    zhHans: { title: "定位、五行版面与首页背景控制修正", summary: "今日定位加入明确重试与权限提示；五行五格收紧为同列紧凑控制；站主选定的首页背景现在真正驱动正式站背景。Instagram／Threads 发布器同步显示目前缺少 Meta 连接，不再假装可发布。" },
+    en: { title: "Location, five-element layout and live wallpaper controls fixed", summary: "Today location now exposes retry and permission feedback; the five choices use a compact single-row control; owner-selected home backgrounds now drive the live shell. The Instagram/Threads publisher also shows the missing Meta connection instead of presenting a false ready state." },
+  },
+  {
     id: "2026-10-06-answer-routing-credit-talent",
     date: "2026-10-06",
     zhHant: { title: "工作、天賦與信用問題的回答路由修正", summary: "修正「適合做什麼運動」被誤當職業問題、天賦讀不到實際命盤資料，以及第一屏直接露出過多命理術語的問題；現實信用分仍明確以徵信資料為準。" },
