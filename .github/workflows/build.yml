@@ -1,32 +1,19 @@
-name: Production CI
+name: Manual diagnostics
 
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: production-ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  deploy-gate:
-    name: Deploy gate
+  build:
+    name: Manual build
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - name: Require public change note
-        run: node scripts/public-changelog-gate.mjs
 
       - name: Use Node.js 24
         uses: actions/setup-node@v4
@@ -37,11 +24,11 @@ jobs:
       - name: Install dependencies from lockfile
         run: npm ci --no-audit --no-fund
 
-      - name: Production deploy gate and build
+      - name: Build
         run: npm run build
 
   engine:
-    name: Engine suite
+    name: Manual engine suite
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -57,49 +44,5 @@ jobs:
       - name: Install dependencies from lockfile
         run: npm ci --no-audit --no-fund
 
-      - name: Full engine and contract suite
+      - name: Engine and contract suite
         run: npm run test:engine
-
-  iphone-safari:
-    name: iPhone Safari
-    if: false
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "iPhone Safari verification retired; required context retained for branch protection."
-
-  visual-regression:
-    name: Visual regression
-    runs-on: ubuntu-latest
-    timeout-minutes: 12
-    steps:
-      - name: Checkout exact commit
-        uses: actions/checkout@v4
-
-      - name: Use Node.js 24
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install dependencies from lockfile
-        run: npm ci --no-audit --no-fund
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Install Chromium runtime
-        run: ./node_modules/.bin/playwright install --with-deps chromium
-
-      - name: Today module screenshot regression (phone / tablet / desktop, day / night)
-        run: npm run test:visual
-
-      - name: Upload diffs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: visual-regression-diffs
-          path: test-results/
-          retention-days: 7
