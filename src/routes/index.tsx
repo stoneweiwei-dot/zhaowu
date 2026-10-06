@@ -146,7 +146,7 @@ function Home() {
 
   /* Auto-cycle only while motion is welcome and the visitor has not chosen a painting. */
   useEffect(() => {
-    if (heroManual || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const t = setInterval(() => setHeroIdx((i) => (i + 1) % HERO_PAINTINGS.length), 4500);
     return () => clearInterval(t);
   }, [heroManual]);
