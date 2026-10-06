@@ -23,7 +23,7 @@ test("homepage puts Today Guide before the birth flow and preserves the approved
   assert.match(route, /<LazyDailyAlmanacWidget embedded \/>/);
   assert.match(route, /<LazyDailyAlmanacWidget onExpand=\{\(\) => setTodayExpanded\(true\)\} \/>/);
   assert.match(route, /className="zw-home-today-collapse"/);
-  assert.match(route, /scrollIntoView\(\{ behavior: "smooth", block: "start" \}\)/);
+  assert.doesNotMatch(route, /scrollIntoView/);
   assert.match(widget, /onExpand\?: \(\) => void/);
   assert.match(widget, /if \(onExpand\) onExpand\(\)/);
   assert.match(widget, /zhaowu-daily-details\$\{embedded \? " is-embedded-open"/);

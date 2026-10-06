@@ -159,9 +159,6 @@ function Home() {
   const toggleSection = (id: Section) => {
     if (id === "today") {
       setTodayExpanded(true);
-      window.requestAnimationFrame(() => {
-        document.getElementById("home-today-guide")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
       return;
     }
     setActiveSection((prev) => (prev === id ? null : id));
