@@ -22,6 +22,11 @@ jobs:
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Require public change note
+        run: node scripts/public-changelog-gate.mjs
 
       - name: Use Node.js 24
         uses: actions/setup-node@v4
