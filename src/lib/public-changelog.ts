@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-06-today-first-home-rhythm",
+    date: "2026-10-06",
+    zhHant: { title: "今日指引移到首頁主流程最前", summary: "首頁把今日指引改為主視覺後的常駐每日入口；命書仍保持單一路徑，深度解讀只在已有命盤結果後出現，同時統一主標、玉牌文字與點按過渡。" },
+    zhHans: { title: "今日指引移到首页主流程最前", summary: "首页把今日指引改为主视觉后的常驻每日入口；命书仍保持单一路径，深度解读只在已有命盘结果后出现，同时统一主标、玉牌文字与点按过渡。" },
+    en: { title: "Today Guide now leads the homepage flow", summary: "Today Guide is now the persistent daily-return surface below the hero. The Destiny Book remains a single path, deep-reading promotion appears only after a result exists, and home typography and press motion are more consistent." },
+  },
+  {
     id: "2026-10-06-public-change-log",
     date: "2026-10-06",
     zhHant: { title: "更新紀錄改為每次改動必寫", summary: "網站功能、視覺、後台或正式 runtime 有實際變化時，同一個 PR 必須加入公開更新紀錄；CI 會阻止漏寫的產品變更。" },
