@@ -129,7 +129,7 @@ Before changing anything, check the current truth:
 3. Recent related commits.
 4. Existing implementation, assets, tests and duplicate/legacy paths.
 5. Current active-host production deployment and its GitHub commit SHA.
-6. Failed deployments or CI checks relevant to the task.
+6. Failed deployments relevant to the task; CI/check status only when the owner explicitly asked for that diagnostic.
 7. Open PRs if they may overlap the requested work.
 
 Do not work from memory, old chat context, assumptions, or stale local state when repository/production tools can answer the question.
@@ -198,22 +198,18 @@ For UI/images/emblems/backgrounds/logos:
 
 For random decoration requests, verify whether behavior is truly random, where it appears, route coverage, hydration safety, mobile overlap, and whether any route was intentionally excluded.
 
-## 7. Tests and build are hard gates
+## 7. Tests and build are diagnostic tools, not default release gates
 
-Run/inspect all available relevant gates:
+Owner supersession — 2026-10-06:
 
-- project tests
-- UI contract tests
-- build
-- TypeScript/typecheck
-- lint if configured
-- deployment build result
+- GitHub Production CI, Deploy gate, Engine suite, iPhone Safari and Visual regression are **not required checks** and must not be treated as merge, release, completion or reporting gates.
+- Do not automatically wait for, inspect, rerun or report these checks unless the owner explicitly asks for that specific diagnostic.
+- A red, yellow, skipped or absent GitHub check by itself does **not** mean the requested work is incomplete.
+- The repository workflow is manual-only. Routine pull requests and pushes must not trigger these diagnostic suites.
+- Source inspection, targeted local reasoning, current `main`, and actual Vercel Production state are the default evidence for routine work.
+- Tests/build may still be run manually when they are directly useful for debugging a concrete defect or when the owner explicitly requests them.
 
-If any required gate fails, status is:
-
-**NOT COMPLETE — blocked by CI/build/test failure.**
-
-Do not claim success because source code "looks correct".
+Do not reintroduce branch-protection or required-check assumptions without a newer explicit owner instruction.
 
 ## 8. Active-host production verification
 
@@ -283,7 +279,7 @@ For every website task, final status must include:
 Commit: `<SHA>`
 
 ### CI / Build
-`PASS` / `FAIL`
+`NOT REQUIRED BY DEFAULT` / `RUN ON REQUEST` / `PASS` / `FAIL`
 
 ### Hosting
 `READY` / `ERROR` / `BUILDING`
