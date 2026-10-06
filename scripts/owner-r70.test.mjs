@@ -106,10 +106,35 @@ test("owner file managers expose persistent bulk actions with explicit text sele
   assert.doesNotMatch(account, /type="checkbox" className="h-4 w-4" checked=\{selectedReportIds\.includes\(row\.id\)\}/);
 });
 
-test("customer-facing atlas keeps only restrained Song-jade motifs", () => {
+test("customer-facing atlas keeps the approved Song stems, branches and restrained motifs", () => {
+  for (const id of [
+    "library-report-art-jia-wood",
+    "library-report-art-yi-wood",
+    "library-report-art-bing-fire",
+    "library-report-art-ding-fire",
+    "library-report-art-wu-earth",
+    "library-report-art-ji-earth",
+    "library-report-art-geng-metal",
+    "library-report-art-xin-metal",
+    "library-report-art-ren-water",
+    "library-report-art-gui-water",
+    "library-report-art-yin-spring",
+    "library-report-art-mao-spring",
+    "library-report-art-chen-spring",
+    "library-report-art-si-summer",
+    "library-report-art-wu-summer",
+    "library-report-art-wei-summer",
+    "library-report-art-shen-autumn",
+    "library-report-art-you-autumn",
+    "library-report-art-xu-autumn",
+    "library-report-art-hai-winter",
+    "library-report-art-zi-winter",
+    "library-report-art-chou-winter",
+  ]) assert.match(publicAtlas, new RegExp(id));
+
   assert.match(publicAtlas, /ornament-crane/);
   assert.match(publicAtlas, /ornament-dragon/);
   assert.match(publicAtlas, /ornament-lotus/);
   assert.match(publicAtlas, /ornament-phoenix/);
-  assert.doesNotMatch(publicAtlas, /celestial-pearl|endless-knot|pomegranate|twin-fish/);
+  assert.doesNotMatch(publicAtlas, /celestial-pearl|endless-knot|pomegranate|twin-fish|luck-wood|luck-fire|luck-earth|luck-metal|luck-water/);
 });
