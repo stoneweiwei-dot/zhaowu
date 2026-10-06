@@ -16,22 +16,38 @@ test("checkout exposes only the fixed USD 1.99, 4.99 and 9.99 catalogue", () => 
   assert.doesNotMatch(checkout, /payment_method_types/);
 });
 
-test("checkout uses a pinned current Stripe client and fails closed without server secrets", () => {
+test("checkout uses a pinned Stripe client and fails closed without server secrets", () => {
   assert.match(checkout, /npm:stripe@22\.6\.0/);
   assert.match(checkout, /2026-08-26\.dahlia/);
   assert.match(checkout, /STRIPE_RESTRICTED_KEY/);
   assert.match(checkout, /PAYMENT_NOT_CONFIGURED/);
+  assert.match(checkout, /PAYMENT_STORE_NOT_CONFIGURED/);
   assert.match(checkout, /report_purchase_entitlements/);
   assert.doesNotMatch(client, /STRIPE_(?:SECRET|RESTRICTED)_KEY/);
 });
 
-test("webhook verifies the Stripe signature before granting server-side entitlement", () => {
+test("checkout creates a server-side pending entitlement before returning a payable URL", () => {
+  assert.match(checkout, /checkout_session_id:\s*session\.id/);
+  assert.match(checkout, /stripe_event_id:\s*`checkout:init:\$\{session\.id\}`/);
+  assert.match(checkout, /status:\s*"pending"/);
+  assert.match(checkout, /ENTITLEMENT_INIT_FAILED/);
+  assert.match(checkout, /checkout\.sessions\.expire\(session\.id\)/);
+});
+
+test("success return verifies the Checkout Session directly with Stripe before unlocking", () => {
+  assert.match(checkout, /stripe\.checkout\.sessions\.retrieve\(sessionId\)/);
+  assert.match(checkout, /sessionMatchesEntitlement\(session, data\)/);
+  assert.match(checkout, /session\.payment_status === "paid"/);
+  assert.match(checkout, /status:\s*nextStatus/);
+  assert.match(checkout, /stripe_event_id:\s*`checkout:verify:\$\{session\.id\}`/);
+  assert.doesNotMatch(client, /paid\s*=\s*true/);
+});
+
+test("webhook remains a signed asynchronous fallback, not the only unlock path", () => {
   assert.match(webhook, /constructEventAsync\(await req\.text\(\), signature, webhookSecret\)/);
   assert.match(webhook, /checkout\.session\.completed/);
   assert.match(webhook, /checkout\.session\.async_payment_succeeded/);
   assert.match(webhook, /checkout\.session\.async_payment_failed/);
-  assert.match(webhook, /session\.payment_status !== "unpaid"/);
-  assert.match(webhook, /existing\?\.status === "paid" && !paid/);
   assert.match(webhook, /report_purchase_entitlements/);
 });
 
