@@ -9,7 +9,7 @@ import {
   uploadGalleryAsset,
   type GalleryAsset,
 } from "@/lib/bridge/gallery-assets";
-import { OWNER_GALLERY_GROUP_ORDER, isLoadingGalleryAsset, matchesOwnerGalleryGroup, type OwnerGalleryGroup } from "@/lib/gallery-groups";
+import { OWNER_GALLERY_GROUP_ORDER, isLoadingGalleryAsset, isOfficialSongGalleryAsset, matchesOwnerGalleryGroup, type OwnerGalleryGroup } from "@/lib/gallery-groups";
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
@@ -63,6 +63,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     deleteSelected: tr(locale, "批次刪除", "批量删除", "Delete selected"),
     shown: tr(locale, "顯示中", "显示中", "Shown"),
     hidden: tr(locale, "已隱藏", "已隐藏", "Hidden"),
+    coreAsset: tr(locale, "核心資產", "核心资产", "Core asset"),
     batchDeleteConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 個素材？此操作不可復原。`, `删除已选的 ${n} 个素材？此操作不可恢复。`, `Delete ${n} selected assets? This cannot be undone.`),
     batchDone: (n: number) => tr(locale, `已處理 ${n} 個素材。`, `已处理 ${n} 个素材。`, `Updated ${n} assets.`),
     more: tr(locale, "載入更多", "加载更多", "Load more"),
@@ -126,6 +127,11 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     [libraryAssets, group],
   );
   const renderedAssets = visibleAssets.slice(0, shown);
+  const protectedAsset = (asset: GalleryAsset) => isOfficialSongGalleryAsset(asset) || asset.bucket_id === "public-fallback";
+  const selectedDeletableIds = selectedIds.filter((id) => {
+    const asset = libraryAssets.find((item) => item.id === id);
+    return asset ? !protectedAsset(asset) : false;
+  });
 
   const switchGroup = (next: OwnerGalleryGroup) => {
     setGroup(next);
@@ -169,7 +175,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     if (busy || !selectedIds.length || !window.confirm(copy.batchDeleteConfirm(selectedIds.length))) return;
     setBusy(true); setMessage(null);
     try {
-      const chosen = libraryAssets.filter((asset) => selectedIds.includes(asset.id));
+      const chosen = libraryAssets.filter((asset) => selectedDeletableIds.includes(asset.id));
       for (const asset of chosen) await deleteGalleryAsset(session, asset);
       const count = chosen.length;
       setSelectedIds([]);
@@ -227,7 +233,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
             <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedIds([])}>{copy.clearSelection}</button>
             <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-wood/30 bg-wood/5 px-3 text-[11px] text-wood disabled:opacity-35" onClick={() => void setSelectedEnabled(true)}>{copy.enableSelected}</button>
             <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => void setSelectedEnabled(false)}>{copy.disableSelected}</button>
-            <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelected()}>{copy.deleteSelected}</button>
+            <button type="button" disabled={busy || !selectedDeletableIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelected()}>{copy.deleteSelected}</button>
           </div>
 
           {!visibleAssets.length ? <p className="mt-4 text-sm text-ink-mute">{copy.empty}</p> : null}
@@ -253,16 +259,20 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
                         setMessage(error instanceof Error ? error.message : copy.failed);
                       }
                     }}>{asset.enabled ? copy.shown : copy.hidden}</button>
-                    <button type="button" onClick={async () => {
-                      if (!window.confirm(`${copy.remove} ${asset.title}?`)) return;
-                      try {
-                        await deleteGalleryAsset(session, asset);
-                        await load();
-                        notifyGalleryChanged();
-                      } catch (error) {
-                        setMessage(error instanceof Error ? error.message : copy.failed);
-                      }
-                    }} className="rounded-full px-2 py-1 text-[11px] text-cinnabar">{copy.remove}</button>
+                    {protectedAsset(asset) ? (
+                      <span className="rounded-full border border-wood/25 bg-wood/5 px-2.5 py-1 text-[10px] text-wood">{copy.coreAsset}</span>
+                    ) : (
+                      <button type="button" onClick={async () => {
+                        if (!window.confirm(`${copy.remove} ${asset.title}?`)) return;
+                        try {
+                          await deleteGalleryAsset(session, asset);
+                          await load();
+                          notifyGalleryChanged();
+                        } catch (error) {
+                          setMessage(error instanceof Error ? error.message : copy.failed);
+                        }
+                      }} className="rounded-full px-2 py-1 text-[11px] text-cinnabar">{copy.remove}</button>
+                    )}
                   </div>
                 </div>
               </article>
