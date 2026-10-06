@@ -259,7 +259,7 @@ function Home() {
               <LazySkyEventsHomeSection />
             </>
           ) : (
-            <LazyDailyAlmanacWidget />
+            <LazyDailyAlmanacWidget onExpand={() => setTodayExpanded(true)} />
           )}
         </Suspense>
       </section>
