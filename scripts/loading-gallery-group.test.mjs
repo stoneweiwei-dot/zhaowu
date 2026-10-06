@@ -20,11 +20,11 @@ test("gallery keeps a dedicated loading group outside the public atlas", () => {
 });
 
 test("login visuals are isolated from the general owner gallery", () => {
-  assert.match(owner, /type OwnerView = "atlas" \| "all"/);
+  assert.match(owner, /OwnerGalleryGroup/);
   assert.match(owner, /isLoadingGalleryAsset/);
-  assert.match(owner, /assets\.filter\(\(asset\) => !isLoadingGalleryAsset\(asset\)\)/);
+  assert.match(owner, /asset\.category === "visual-library" && !isLoadingGalleryAsset\(asset\)/);
   assert.doesNotMatch(owner, /LOADING_GALLERY_CATALOG/);
-  assert.doesNotMatch(owner, /view === "loading"/);
+  assert.doesNotMatch(owner, /group === "loading"/);
   assert.match(loginOwner, /LOGIN_VISUAL_CATALOG/);
   assert.match(loginOwner, /login-background/);
   assert.match(loginOwner, /&& isVideo\(asset\)/);
