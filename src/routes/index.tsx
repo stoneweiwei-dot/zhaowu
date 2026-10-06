@@ -155,7 +155,10 @@ function Home() {
 
   const toggleSection = (id: Section) => {
     if (id === "today") {
-      document.getElementById("home-today-guide")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const guide = document.getElementById("home-today-guide");
+      const details = guide?.querySelector<HTMLDetailsElement>("details");
+      if (details) details.open = true;
+      guide?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     setActiveSection((prev) => (prev === id ? null : id));
