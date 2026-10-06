@@ -85,7 +85,7 @@ function useVisitorContext() {
 
   async function fetchCoarseLocation() {
     try {
-      const response = await fetch("/api/visitor-location", { cache: "no-store", signal: AbortSignal.timeout(4_000) });
+      const response = await fetch("/api/zhaowu-capabilities?mode=visitor-location", { cache: "no-store", signal: AbortSignal.timeout(4_000) });
       if (!response.ok) return;
       const body = await response.json() as {
         ok?: boolean;
