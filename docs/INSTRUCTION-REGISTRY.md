@@ -1,5 +1,15 @@
 # 昭梧｜Instruction Registry
 
+
+## 2026-10-07 首頁 Hero／背景視覺吸收與防回退
+
+- ACTIVE：2026-10-07 外部視覺審閱只吸收適合昭梧的原理，完整規則已寫入 `docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md`「首頁 Hero／背景落地補充」。不得照抄第三方 CSS、另起一套配色或新增第二套首頁視覺系統。
+- CONFIRMED CURRENT MAIN：PR #631 已完成首頁畫作自動輪播、定位沿用與首頁背景專區；PR #636 已完成單張背景上傳即套用、站主選定 wallpaper 真正顯示、Hero 不再遮住 SiteShell 背景，以及白色輪播 rail 的移除。這些已存在的功能不得因後續 agent 誤讀舊指令而重做或回退。
+- ACTIVE：首頁 wallpaper 必須由站主後台目前選定的 `background_assets.theme = wallpaper` 驅動；禁止把某張站主圖片重新硬編碼進 CSS／route。只保留一層主背景，採 `cover`／`no-repeat` 與淡暖紙遮罩；禁止黑色壓暗、重 vignette、整圖 blur。
+- ACTIVE：Hero 前景畫作與全頁 wallpaper 分工保持；現有本地畫作自動輪播、reduced-motion 與手動選圖語義保持。沒有新的站主明確指令前，不接入 runtime AI 自動生成或外部圖片服務。
+- ACTIVE：首頁圖片區禁止白條、空白 rail、重複 dots 或因圖片尺寸不同造成的縫隙；容器與圖片尺寸由現有 Hero CSS 統一控制，圖片失敗時回退為暖紙，不得破壞頁面閱讀。
+- WORKFLOW：本項屬視覺防回退與治理吸收；若 `main` 已符合規則，預設只更新文件，不為相同 P2 建議觸發新的產品部署。
+
 ## 2026-10-07 Payment Links 正式收費路徑 supersession
 
 - ACTIVE：公開付費改用 Stripe 官方 Payment Links，不再由瀏覽器 POST 到 Supabase 建立 Checkout Session，因此網站 runtime 不需要保存 Stripe server API key。
