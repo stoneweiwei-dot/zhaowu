@@ -103,10 +103,6 @@ export const OWNER_GALLERY_GROUP_ORDER: readonly OwnerGalleryGroup[] = [
   "legacy",
 ];
 
-function hasEveryTag(asset: GalleryAsset, tags: string[]) {
-  return tags.every((tag) => hasTag(asset, tag));
-}
-
 export function isOfficialSongGalleryAsset(asset: GalleryAsset): boolean {
   if (asset.category !== "visual-library") return false;
   const hasOfficialMarker =
