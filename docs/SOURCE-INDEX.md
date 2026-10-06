@@ -72,3 +72,11 @@ For conflicting project behavior, use the precedence already defined in `AGENTS.
 - Location: https://github.com/Jaycheng1103/AI-Partner
 - Imported behavior: methodology only; no package, runtime, memory store or framework dependency
 - Supersession: ZHAOWU's own `AGENTS.md` and `docs/AI-COORDINATION.md` are authoritative
+
+### Open-source adoption radar
+- Name: `docs/OPEN-SOURCE-RADAR.md`
+- Authority: REFERENCE — adoption decisions, not product/runtime truth
+- Scope: external GitHub projects, licence/security/fit triage and adoption status
+- Location: https://github.com/stoneweiwei-dot/zhaowu/blob/main/docs/OPEN-SOURCE-RADAR.md
+- Freshness: re-check a project's current repository/licence/security state before any actual adoption
+
