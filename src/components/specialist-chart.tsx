@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Locale } from "@/lib/i18n";
 import type { SpecialistReading } from "@/lib/specialist-reading";
-import { decoratePosition, formatDegree, houseOf } from "@/lib/western-astrology/engine";
+import { decoratePosition, formatDegree, houseOf } from "@/lib/astrology/engine";
 import "@/specialist-chart.css";
 
 const signs = ["白羊", "金牛", "雙子", "巨蟹", "獅子", "處女", "天秤", "天蠍", "射手", "摩羯", "水瓶", "雙魚"];
