@@ -28,7 +28,7 @@ test("homepage puts Today Guide before the birth flow and reserves deep reading 
   assert.match(route, /import\("@\/components\/daily-almanac-widget"\)/);
   assert.match(route, /navToday: "Today"/);
   assert.match(route, /navToday: "今日"/);
-  assert.match(widget, /zhaowu-daily-details\$\{embedded \? " is-embedded-open"/);
+  assert.match(widget, /zhaowu-daily-details\$\{embedded \|\| open \? " is-embedded-open"/);
   assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
   assert.match(form, /id="bazi"/);
   assert.match(route, /home-layout-r46\.css/);
