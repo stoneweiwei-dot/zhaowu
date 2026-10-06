@@ -11,6 +11,7 @@ import { customerCopy, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, renderFocusedReportText, type ReportSection } from "@/lib/report/focused-report";
 import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 import { buildWriterRequest, requestWrittenAnswer } from "@/lib/report/llm-answer";
+import { buildComplexReasoningRequest, requestComplexReasoning } from "@/lib/report/complex-reasoning";
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
 import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
@@ -35,7 +36,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const { chart, reading, question } = result;
   const petDecision = isPetDecisionQuestion(question) ? buildPetDecision(result, result.locale ?? locale) : null;
   const decisionModel = buildDecisionReportModel(result);
-  const [written, setWritten] = useState<{ key: string; answer: string; next: string } | null>(null);
+  const [written, setWritten] = useState<{ key: string; answer: string; next: string; source: "reasoned" | "written" } | null>(null);
   const writerKey = `${result.id ?? ""}|${question}`;
   const writtenNow = !petDecision && written?.key === writerKey ? written : null;
   const ruleAnswer = petDecision?.directAnswer ?? decisionModel.directAnswer;
@@ -44,14 +45,31 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const nextAction = petDecision ? customerCopy(reading.action) : writtenNow?.next ?? decisionModel.nextAction;
 
   useEffect(() => {
-    // Rule answer is already on screen; an LLM rewrite replaces it only if it passes validation.
+    // Rule answer is already on screen. Complex questions get one bounded reasoning
+    // pass first; simpler eligible questions keep the cheaper wording-only writer.
+    // Either path may replace the rule answer only after its client/server validators pass.
     if (petDecision) return;
-    const req = buildWriterRequest(result);
-    if (!req) return;
     let cancelled = false;
-    void requestWrittenAnswer(req).then((out) => {
-      if (!cancelled && out) setWritten({ key: writerKey, ...out });
-    }).catch(() => {});
+
+    const runWriter = async () => {
+      const req = buildWriterRequest(result);
+      if (!req) return;
+      const out = await requestWrittenAnswer(req);
+      if (!cancelled && out) setWritten({ key: writerKey, ...out, source: "written" });
+    };
+
+    const complex = buildComplexReasoningRequest(result);
+    if (complex) {
+      void requestComplexReasoning(complex)
+        .then((out) => {
+          if (!cancelled && out) setWritten({ key: writerKey, answer: out.answer, next: out.next, source: "reasoned" });
+          else if (!cancelled) void runWriter();
+        })
+        .catch(() => { if (!cancelled) void runWriter(); });
+    } else {
+      void runWriter();
+    }
+
     return () => { cancelled = true; };
   }, [writerKey]);
   const decreeCouplet = customerCopy(reading.decree);
@@ -148,7 +166,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       <article className="zhaowu-result-card seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("resultQ")}</p>
         <h2 className="mt-2 font-display text-2xl">{question}</h2>
-        <div className="mt-4 space-y-3 text-[15px] leading-8 text-ink-soft transition-opacity duration-300" data-primary-answer data-answer-source={writtenNow ? "written" : "rule"}>
+        <div className="mt-4 space-y-3 text-[15px] leading-8 text-ink-soft transition-opacity duration-300" data-primary-answer data-answer-source={writtenNow?.source ?? "rule"}>
           {answerParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
         </div>
         {nextAction ? <aside className="zhaowu-result-next mt-5 border-t border-line/70 pt-4" data-next-action><strong className="text-sm text-ink">{copy.next}</strong><p className="mt-1 text-[14px] leading-7 text-ink-soft">{nextAction}</p></aside> : null}
