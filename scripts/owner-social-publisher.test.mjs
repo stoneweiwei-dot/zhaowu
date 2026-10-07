@@ -14,7 +14,12 @@ const configuredEnv = {
 };
 
 test("social credentials stay server-side and configuration exposes booleans only", async () => {
-  assert.deepEqual(socialConfiguration(configuredEnv), { instagram: true, threads: true, ready: true });
+  assert.deepEqual(socialConfiguration(configuredEnv), {
+    instagram: true,
+    threads: true,
+    ready: true,
+    targets: { instagram: "", threads: "" },
+  });
   const client = await source("src/lib/owner-social-client.ts");
   const route = await source("src/routes/social.tsx");
   assert.doesNotMatch(client, /META_.*ACCESS_TOKEN|graph\.facebook\.com|graph\.threads/);
@@ -71,6 +76,40 @@ test("one request creates and publishes one container per selected platform", as
   assert.ok(calls.some((call) => call.url === "https://graph.facebook.com/v26.0/ig-user/media_publish" && call.values.creation_id));
 });
 
+test("locked target handles reject the wrong Meta account before any publish call", async () => {
+  const calls = [];
+  const env = {
+    ...configuredEnv,
+    META_TARGET_INSTAGRAM_USERNAME: "fkofflove",
+    META_TARGET_THREADS_USERNAME: "fkofflove",
+  };
+  const fakeFetch = async (url, init = {}) => {
+    calls.push({ url: String(url), method: init.method || "GET" });
+    if ((init.method || "GET") === "GET") {
+      const username = String(url).includes("graph.threads.net") ? "otherthreads" : "fkofflove";
+      return new Response(JSON.stringify({ id: "profile", username }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    }
+    return new Response(JSON.stringify({ id: "should-not-publish" }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  };
+  const results = await publishSocialPost({
+    text: "test",
+    imageUrl: "https://stone-zhaowu-official.vercel.app/og-preview.png",
+    channels: ["threads"],
+  }, env, fakeFetch);
+  assert.equal(results.threads.ok, false);
+  assert.equal(results.threads.code, "META_ACCOUNT_MISMATCH");
+  assert.match(results.threads.message, /@otherthreads/);
+  assert.match(results.threads.message, /@fkofflove/);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].method, "GET");
+});
+
 test("partial failures are explicit and tokens are scrubbed", async () => {
   const fakeFetch = async (url, init) => {
     const values = Object.fromEntries(new URLSearchParams(String(init.body)));
@@ -118,6 +157,7 @@ test("the owner console links to a gallery-backed dual social publisher", async 
   assert.match(account, /to="\/social"/);
   assert.match(account, /Instagram／Threads/);
   assert.match(route, /data-owner-social-publisher/);
+  assert.match(route, /configuration\.targets/);
   assert.match(route, /useCurrentUserState/);
   assert.match(route, /listOwnerGalleryAssets/);
   assert.match(route, /uploadGalleryAsset/);
