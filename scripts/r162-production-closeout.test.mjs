@@ -29,11 +29,17 @@ test("public navigation keeps specialist charts inside the unified report flow",
   const knowledge = await source("src/routes/knowledge.tsx");
   const ziweiFeature = await source("src/components/ziwei-home-feature.tsx");
   const unified = await source("src/components/unified-birth-report.tsx");
+  const specialistPage = await source("src/components/specialist-system-page.tsx");
+  const numerology = await source("src/routes/numerology.tsx");
+  const palm = await source("src/components/palm-standalone.tsx");
   for (const publicSource of [history, knowledge, ziweiFeature]) {
     assert.doesNotMatch(publicSource, /to="\/(?:ziwei|qizheng|astrology|indian-astrology|yizhangjing|numerology|tianji-dual|tianji-xinggong)"/);
   }
   assert.match(unified, /zhaowu-specialist-free-link/);
-  assert.match(unified, /<ReportAccessGate/);
+  assert.match(unified, /systemsMode/);
+  assert.match(specialistPage, /<ReportAccessGate/);
+  assert.match(numerology, /<ReportAccessGate/);
+  assert.match(palm, /<ReportAccessGate/);
   assert.match(history, /entry\.kind === "fun-five-element"/);
   assert.match(history, /href="\/#analysisForm"/);
   assert.doesNotMatch(dragon, /seven reading paths|七種分析|七种分析/);
