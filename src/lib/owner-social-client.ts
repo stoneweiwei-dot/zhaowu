@@ -4,6 +4,10 @@ export type SocialConfiguration = {
   instagram: boolean;
   threads: boolean;
   ready: boolean;
+  targets: {
+    instagram: string;
+    threads: string;
+  };
 };
 
 export type SocialPublishResult = {

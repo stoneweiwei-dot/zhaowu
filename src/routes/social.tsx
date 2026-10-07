@@ -193,7 +193,8 @@ function SocialPublisherPage() {
             return (
               <div key={channel} className={`rounded-xl border px-3 py-3 ${connected ? "border-wood/30 bg-wood/5" : "border-line bg-paper/35"}`}>
                 <p className="text-sm font-medium text-ink">{channel === "threads" ? "Threads" : "Instagram"}</p>
-                <p className={`mt-1 text-xs ${connected ? "text-wood" : "text-ink-mute"}`}>{connected ? tx("已連接", "已连接", "Connected") : tx("未連接", "未连接", "Not connected")}</p>
+                {configuration?.targets?.[channel] ? <p className="mt-1 text-xs font-medium text-ink-soft">@{configuration.targets[channel]}</p> : null}
+                <p className={`mt-1 text-xs ${connected ? "text-wood" : "text-ink-mute"}`}>{connected ? tx("已連接並鎖定", "已连接并锁定", "Connected and locked") : tx("未連接", "未连接", "Not connected")}</p>
               </div>
             );
           })}
@@ -202,7 +203,8 @@ function SocialPublisherPage() {
         {configuration && connectedCount === 0 ? (
           <div className="mt-4 rounded-xl border border-cinnabar/25 bg-cinnabar/5 px-4 py-3" data-social-connection-required>
             <p className="text-sm font-medium text-ink">{tx("Meta 尚未連接", "Meta 尚未连接", "Meta is not connected")}</p>
-            <p className="mt-1 text-xs leading-5 text-ink-soft">{tx("正式站目前沒有 Instagram／Threads 的伺服器憑證，所以這裡不再假裝成可發布狀態。先完成 Meta App 授權，再回來就會自動顯示可發布的平台。", "正式站目前没有 Instagram／Threads 的服务器凭证，所以这里不再假装成可发布状态。先完成 Meta App 授权，再回来就会自动显示可发布的平台。", "Production has no Instagram/Threads server credentials yet, so this screen will not pretend publishing is ready. Finish the Meta app connection first; connected channels will then become available automatically.")}</p>
+            <p className="mt-1 text-xs leading-5 text-ink-soft">{tx("正式站目前還沒有 Instagram／Threads 的伺服器憑證；發布器已鎖定到指定帳號，連接時若 Meta 回傳的是其他帳號，系統會直接拒絕發布。", "正式站目前还没有 Instagram／Threads 的服务器凭证；发布器已锁定到指定账号，连接时如果 Meta 返回的是其他账号，系统会直接拒绝发布。", "Production still has no Instagram/Threads server credentials. The publisher is locked to the selected account and will refuse to publish if Meta resolves to another account.")}</p>
+            {configuration?.targets?.instagram ? <p className="mt-2 text-xs font-medium text-ink">{tx("目標帳號", "目标账号", "Target account")} · @{configuration.targets.instagram}</p> : null}
             <a
               href="https://developers.facebook.com/apps/"
               target="_blank"
