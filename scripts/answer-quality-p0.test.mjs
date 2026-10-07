@@ -99,3 +99,15 @@ test("question mode must also be answered, not merely the broad topic", () => {
     false,
   );
 });
+
+
+test("a decision-looking sentence still fails when it answers the wrong domain", () => {
+  assert.equal(
+    directAnswerCoversQuestion("我和老闆最近一直衝突，我該不該離職？", "建議不要再投入這段感情，先觀察對方的承諾。"),
+    false,
+  );
+  assert.equal(
+    directAnswerCoversQuestion("我要不要跟前任復合？", "建議先留在現在的工作，不急著離職。"),
+    false,
+  );
+});
