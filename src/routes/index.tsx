@@ -148,12 +148,19 @@ function heroUiCopy(locale: string) {
 }
 
 /* ── Nav item data ─────────────────────────────────────────── */
-const NAV_ITEMS: { id: Section; iconSrc: string }[] = [
-  { id: "form",  iconSrc: "/emblems/jade-destiny.svg" },
-  { id: "today", iconSrc: "/emblems/jade-today.svg" },
-  { id: "quiz",  iconSrc: "/emblems/jade-quiz.svg" },
-  { id: "notes", iconSrc: "/emblems/jade-notes.svg" },
+/* Owner 2026-10-08 mockup: four illustrated paper cards (art from the owner's scene set). */
+const NAV_ITEMS: { id: Section; artSrc: string }[] = [
+  { id: "form",  artSrc: "/art/scene-koi-rider-v1.webp" },
+  { id: "today", artSrc: "/art/scene-lotus-boat-v1.webp" },
+  { id: "quiz",  artSrc: "/art/scene-osmanthus-tea-v1.webp" },
+  { id: "notes", artSrc: "/art/scene-butterfly-dream-v1.webp" },
 ];
+
+const NAV_HINTS: Record<"zh-Hant" | "zh-Hans" | "en", Record<Section, string>> = {
+  "zh-Hant": { form: "讀懂命運的紋理，看見更多可能。", today: "一日之氣，順勢而行。", quiz: "探索內心，遇見另一種自己。", notes: "看見更大的世界，也看見更深的自己。" },
+  "zh-Hans": { form: "读懂命运的纹理，看见更多可能。", today: "一日之气，顺势而行。", quiz: "探索内心，遇见另一种自己。", notes: "看见更大的世界，也看见更深的自己。" },
+  en: { form: "Read the grain of your life and see more options.", today: "Today's energy, and how to move with it.", quiz: "Explore within and meet another side of you.", notes: "See a wider world—and a deeper self." },
+};
 
 const LazyDailyAlmanacWidget = lazy(() =>
   import("@/components/daily-almanac-widget").then((mod) => ({ default: mod.DailyAlmanacWidget })),
@@ -240,18 +247,23 @@ function Home() {
       {/* ── ICON NAVIGATION ─────────────────────────────────── */}
       <div className="zw-hero-nav-wrap">
         <nav className="zw-hero-nav" aria-label={heroUi.primaryNav}>
-          {NAV_ITEMS.map(({ id, iconSrc }) => (
+          {NAV_ITEMS.map(({ id, artSrc }) => (
             <button
               key={id}
               type="button"
-              className={`zw-hero-nav-item${activeSection === id ? " is-active" : ""}`}
+              data-home-card={id}
+              className={`zw-hero-nav-item zw-hero-card${activeSection === id ? " is-active" : ""}`}
               aria-expanded={id === "today" ? undefined : activeSection === id}
               aria-controls={id === "today" ? "home-today-guide" : undefined}
               aria-label={navLabels[id]}
               onClick={() => toggleSection(id)}
             >
-              <img src={iconSrc} className="zw-hero-nav-icon" alt="" aria-hidden />
-              <span className="zw-hero-nav-label">{navLabels[id]}</span>
+              <img src={artSrc} className="zw-hero-card-art" alt="" aria-hidden loading="lazy" decoding="async" width={760} height={504} />
+              <span className="zw-hero-card-copy">
+                <span className="zw-hero-nav-label">{navLabels[id]}</span>
+                <small>{NAV_HINTS[locale][id]}</small>
+              </span>
+              <span className="zw-hero-card-arrow" aria-hidden>→</span>
             </button>
           ))}
         </nav>

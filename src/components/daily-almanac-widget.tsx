@@ -5,11 +5,11 @@ import { useI18n } from "@/lib/i18n";
 import { stemElement } from "@/lib/element-colors";
 import { dayGanzhi, hourPillar, yearMonthPillars, lunarDateLabel, toLunar } from "@/lib/bazi/calendar";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
+import { AlmanacInkBoard } from "@/components/almanac-ink-board";
 import { buildPersonalPaidProfile } from "@/lib/report/personal-paid-profile";
 import { readSharedBirthRecord, SHARED_BIRTH_EVENT, type SharedBirthRecord } from "@/lib/shared-birth";
 
 const PILLAR_KEYS = ["year", "month", "day", "hour"] as const;
-const BRANCH_EN: Record<string, string> = { 子: "Zi", 丑: "Chou", 寅: "Yin", 卯: "Mao", 辰: "Chen", 巳: "Si", 午: "Wu", 未: "Wei", 申: "Shen", 酉: "You", 戌: "Xu", 亥: "Hai" };
 type Locale = "zh-Hant" | "zh-Hans" | "en";
 type VisitorContext = { source: "browser" | "ip" | "none"; city: string; country: string; latitude: number | null; longitude: number | null; timezone: string; temperature: number | null; weatherCode: number | null };
 const NO_VISITOR_LOCATION: VisitorContext = { source: "none", city: "", country: "", latitude: null, longitude: null, timezone: "", temperature: null, weatherCode: null };
@@ -37,8 +37,10 @@ function weatherLabel(code: number | null, locale: Locale) {
   return code === 0 ? "Clear" : code <= 3 ? "Partly cloudy" : code <= 48 ? "Fog" : code <= 67 ? "Rain" : code <= 77 ? "Snow" : code <= 82 ? "Showers" : "Thunderstorms";
 }
 function seasonLabel(latitude: number | null, month: number, locale: Locale) {
-  if (latitude == null) return locale === "en" ? "Season pending location" : locale === "zh-Hans" ? "季节待定位" : "季節待定位";
-  const south = latitude < 0; const north = month <= 2 || month === 12 ? "winter" : month <= 5 ? "spring" : month <= 8 ? "summer" : "autumn"; const southern = month <= 2 || month === 12 ? "summer" : month <= 5 ? "autumn" : month <= 8 ? "winter" : "spring"; const season = south ? southern : north;
+  let tz = ""; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone ?? ""; } catch { tz = ""; }
+  const tzSouth = /^(Australia\/|Pacific\/(Auckland|Chatham|Fiji|Noumea)|America\/(Sao_Paulo|Argentina|Santiago|Montevideo|Asuncion|La_Paz|Lima)|Africa\/(Johannesburg|Maputo|Harare|Windhoek))/.test(tz);
+  if (latitude == null && !tz) return locale === "en" ? "Season pending location" : locale === "zh-Hans" ? "季节待定位" : "季節待定位";
+  const south = latitude != null ? latitude < 0 : tzSouth; const north = month <= 2 || month === 12 ? "winter" : month <= 5 ? "spring" : month <= 8 ? "summer" : "autumn"; const southern = month <= 2 || month === 12 ? "summer" : month <= 5 ? "autumn" : month <= 8 ? "winter" : "spring"; const season = south ? southern : north;
   if (locale === "en") return `${south ? "Southern" : "Northern"} Hemisphere · ${season[0].toUpperCase()}${season.slice(1)}`;
   const map: Record<string, string> = { spring: "春季", summer: "夏季", autumn: "秋季", winter: "冬季" }; return `${south ? "南半球" : "北半球"}${map[season]}`;
 }
@@ -218,16 +220,6 @@ function useVisitorContext() {
   return { visitor, requestLocation, requesting, locationError };
 }
 
-const LIUHE: Record<string, string> = { 子: "丑", 丑: "子", 寅: "亥", 亥: "寅", 卯: "戌", 戌: "卯", 辰: "酉", 酉: "辰", 巳: "申", 申: "巳", 午: "未", 未: "午" };
-const CHONG: Record<string, string> = { 子: "午", 午: "子", 丑: "未", 未: "丑", 寅: "申", 申: "寅", 卯: "酉", 酉: "卯", 辰: "戌", 戌: "辰", 巳: "亥", 亥: "巳" };
-const SANHE = [["申", "子", "辰"], ["亥", "卯", "未"], ["寅", "午", "戌"], ["巳", "酉", "丑"]];
-const XING: Record<string, string[]> = { 子: ["卯"], 卯: ["子"], 寅: ["巳", "申"], 巳: ["寅", "申"], 申: ["寅", "巳"], 丑: ["戌", "未"], 戌: ["丑", "未"], 未: ["丑", "戌"], 辰: ["辰"], 午: ["午"], 酉: ["酉"], 亥: ["亥"] };
-function relationText(branch: string, locale: Locale) {
-  const group = SANHE.find((row) => row.includes(branch)) ?? []; const mates = group.filter((item) => item !== branch).join("、") || "—";
-  if (locale === "en") return `Day ${BRANCH_EN[branch] ?? branch}: combines with ${BRANCH_EN[LIUHE[branch]] ?? "—"} · opposes ${BRANCH_EN[CHONG[branch]] ?? "—"} · triad ${group.filter((item) => item !== branch).map((item) => BRANCH_EN[item]).join(", ") || "—"}`;
-  const value = `日支${branch}｜合${LIUHE[branch] ?? "—"}・沖${CHONG[branch] ?? "—"}・三合${mates}`; return locale === "zh-Hans" ? value.replace("沖", "冲") : value;
-}
-function timeWindows(branch: string) { const group = SANHE.find((row) => row.includes(branch)) ?? []; return { good: Array.from(new Set([LIUHE[branch], ...group])).filter(Boolean).slice(0, 4), caution: Array.from(new Set([CHONG[branch], ...(XING[branch] ?? [])])).filter(Boolean).slice(0, 4) }; }
 function sacredDay(date: Date, jieName: string, locale: Locale) {
   const lunar = toLunar(date.getFullYear(), date.getMonth() + 1, date.getDate()); const key = lunar ? `${lunar.month}-${lunar.day}` : "";
   const known: Record<string, string> = { "1-1": "彌勒菩薩聖誕", "1-9": "玉皇上帝聖誕", "1-15": "上元天官聖誕", "2-19": "觀世音菩薩聖誕", "3-3": "玄天上帝聖誕", "4-8": "釋迦牟尼佛誕", "6-19": "觀世音菩薩成道", "7-15": "中元地官聖誕", "7-30": "地藏菩薩聖誕", "9-19": "觀世音菩薩出家", "10-15": "下元水官聖誕", "12-8": "釋迦牟尼佛成道日" };
@@ -306,14 +298,13 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
   const personal = useMemo(() => birth ? buildPersonalPaidProfile(birth, locale) : null, [birth, locale]);
   const dayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   const pillars = useMemo(() => { const day = dayGanzhi(now.getFullYear(), now.getMonth() + 1, now.getDate()); const ym = yearMonthPillars(now); return { year: ym.year, month: ym.month, day, hour: hourPillar(day, now.getHours()), jieName: ym.jieName }; }, [dayKey, now.getHours(), now.getMinutes()]);
-  const values = [pillars.year, pillars.month, pillars.day, pillars.hour]; const branch = pillars.day[1]; const windows = timeWindows(branch); const tone = dayStyle(pillars.day[0], locale); const slipIndex = useMemo(() => stableHash(`${dayKey}|daily-spirit-slip`) % SLIPS[locale].length, [dayKey, locale]); const slip = SLIPS[locale][slipIndex]; const slipSequence = String(slipIndex + 1).padStart(2, "0");
+  const values = [pillars.year, pillars.month, pillars.day, pillars.hour]; const tone = dayStyle(pillars.day[0], locale); const slipIndex = useMemo(() => stableHash(`${dayKey}|daily-spirit-slip`) % SLIPS[locale].length, [dayKey, locale]); const slip = SLIPS[locale][slipIndex]; const slipSequence = String(slipIndex + 1).padStart(2, "0");
   const labels = locale === "en" ? { title: "Today Guide", sub: "Local time · weather · almanac rhythm", almanac: "Daily Almanac", wardrobe: "Daily Dress · Five Elements", spirit: "Daily Spirit Slip", location: "Location & weather", sacred: "Sacred day", pillars: "Stems & branches", core: "Core dynamic", yi: "Good for", ji: "Avoid", relation: "Combine · clash · penalty", good: "Supportive hours", caution: "Caution hours", colors: "Colours", jewellery: "Jewellery", mask: "Persona mask", open: "Open today guide" } : locale === "zh-Hans" ? { title: "今日指引", sub: "当地时间・即时天气・今日气机", almanac: "每日黄历", wardrobe: "每日穿衣｜五行色彩", spirit: "今日灵签｜签文指引", location: "所在地｜天气", sacred: "今日圣日", pillars: "今日干支", core: "核心气机", yi: "宜", ji: "忌", relation: "合冲刑害", good: "吉时", caution: "慎时", colors: "适宜颜色", jewellery: "适宜首饰", mask: "性格面具", open: "查看今日完整指引" } : { title: "今日指引", sub: "當地時間・即時天氣・今日氣機", almanac: "每日黃曆", wardrobe: "每日穿衣｜五行色彩", spirit: "今日靈籤｜籤文指引", location: "所在地｜天氣", sacred: "今日聖日", pillars: "今日干支", core: "核心氣機", yi: "宜", ji: "忌", relation: "合沖刑害", good: "吉時", caution: "慎時", colors: "適宜顏色", jewellery: "適宜首飾", mask: "性格面具", open: "查看今日完整指引" };
   const personalLabels = locale === "en"
     ? { heroSub: "Your birth chart · local weather · today's rhythm", active: "Personal edition active", birth: "Your birth chart", core: "Your chart structure", cycle: "Current cycle", todayColors: "Today's sky palette", yourColors: "Your working palette", quietColors: "Use lightly", materials: "Jewellery / materials", relations: "Natal relations", persona: "Your persona" }
     : locale === "zh-Hans"
       ? { heroSub: "你的生辰・当地天气・今日气机", active: "个人版已启用", birth: "你的命盘", core: "你的命局底盘", cycle: "目前大运", todayColors: "今日天时色", yourColors: "你的主色", quietColors: "少量使用", materials: "首饰／材质", relations: "原局合冲刑害", persona: "你的性格面具" }
       : { heroSub: "你的生辰・當地天氣・今日氣機", active: "個人版已啟用", birth: "你的命盤", core: "你的命局底盤", cycle: "目前大運", todayColors: "今日天時色", yourColors: "你的主色", quietColors: "少量使用", materials: "首飾／材質", relations: "原局合沖刑害", persona: "你的性格面具" };
-  const yi = locale === "en" ? "organise · finalise · edit · calm communication" : locale === "zh-Hans" ? "整理・定稿・审美・冷静沟通" : "整理・定稿・審美・冷靜溝通"; const ji = locale === "en" ? "forcing · rushing · task stacking · emotional drain" : locale === "zh-Hans" ? "硬碰・急躁・堆任务・情绪内耗" : "硬碰・急躁・堆任務・情緒內耗";
   const locationName = locationLabel(visitor, locale); const weather = visitor.source !== "none" ? (visitor.weatherCode != null ? `${weatherLabel(visitor.weatherCode, locale)}${visitor.temperature != null ? ` ${Math.round(visitor.temperature)}°C` : ""}` : weatherUnavailable(locale)) : weatherPendingLocation(locale); const season = seasonLabel(visitor.latitude, now.getMonth() + 1, locale);
   function drawSlip() { setSlipOpen(true); }
 
@@ -332,38 +323,43 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
 
           <section className="zhaowu-today-section is-almanac" aria-labelledby="zhaowu-today-almanac-title">
             <header className="zhaowu-today-section__head"><span>1/3</span><div><small>{locale === "en" ? "TIME · CALENDAR" : locale === "zh-Hans" ? "时令・日历" : "時令・日曆"}</small><h2 id="zhaowu-today-almanac-title">{labels.almanac}</h2></div><em>{jieLabel(pillars.jieName, locale)}</em></header>
-            <div className="zhaowu-almanac-board">
-              <div className="zhaowu-almanac-board__lead">
-                <article className="zhaowu-today-card is-date"><small>{weekdayLabel(now, locale)}</small><strong>{now.getFullYear()}.{String(now.getMonth() + 1).padStart(2, "0")}.{String(now.getDate()).padStart(2, "0")}</strong><b>{String(now.getDate()).padStart(2, "0")}</b><span>{lunarLabel(now, locale)} · {timeLabel(now)}</span></article>
-                <div className="zhaowu-almanac-board__place">
-                  <article className="zhaowu-today-card is-weather">
-                    <small>{labels.location}</small>
-                    <strong>{locationName}</strong>
-                    <span>{weather} · {season}</span>
-                    {visitor.source !== "browser" ? (
-                      <button
-                        type="button"
-                        className="zhaowu-today-location-inline"
-                        onClick={() => void requestLocation()}
-                        disabled={requesting}
-                      >
-                        {requesting
-                          ? (locale === "en" ? "Locating…" : locale === "zh-Hans" ? "正在定位…" : "正在定位…")
-                          : (locale === "en" ? "Use current location" : locale === "zh-Hans" ? "使用当前位置" : "使用目前位置")}
-                      </button>
-                    ) : null}
-                    {locationError ? (
-                      <em className="zhaowu-today-location-error">
-                        {locationError === "denied"
-                          ? (locale === "en" ? "Location permission is off in this browser." : locale === "zh-Hans" ? "浏览器未允许位置权限。" : "瀏覽器未允許位置權限。")
-                          : (locale === "en" ? "Could not get the current location. Tap to retry." : locale === "zh-Hans" ? "暂时无法取得当前位置，请重试。" : "暫時無法取得目前位置，請重試。")}
-                      </em>
-                    ) : null}
-                  </article>
-                  <article className="zhaowu-today-card is-sacred"><small>{labels.sacred}</small><strong>{sacredDay(now, pillars.jieName, locale)}</strong><span>{jieLabel(pillars.jieName, locale)}</span></article>
-                </div>
-              </div>
-              <article className="zhaowu-today-card is-pillars"><small>{labels.pillars}</small><span className="zhaowu-contract-label">{locale === "en" ? "Current year, month, day and hour pillars" : locale === "zh-Hans" ? "当下年月日时干支" : "當下年月日時干支"}</span><div className="zhaowu-today-pillars zhaowu-daily-pillars">{values.map((value, index) => <span data-element={stemElement(value[0]) ?? undefined} data-pillar={PILLAR_KEYS[index]} key={`${PILLAR_KEYS[index]}-${value}`}><b>{value}</b><i>{locale === "en" ? PILLAR_KEYS[index].toUpperCase() : ["年", "月", "日", locale === "zh-Hans" ? "时" : "時"][index]}</i></span>)}</div></article>
+            <AlmanacInkBoard
+              locale={locale}
+              now={now}
+              pillars={pillars}
+              lunar={lunarLabel(now, locale)}
+              weekday={weekdayLabel(now, locale)}
+              time={timeLabel(now)}
+              jie={jieLabel(pillars.jieName, locale)}
+              locationName={locationName}
+              weather={weather}
+              season={season}
+              latitude={visitor.latitude}
+              sacred={sacredDay(now, pillars.jieName, locale)}
+              locationControl={<>
+                {visitor.source !== "browser" ? (
+                  <button
+                    type="button"
+                    className="zhaowu-today-location-inline"
+                    onClick={() => void requestLocation()}
+                    disabled={requesting}
+                  >
+                    {requesting
+                      ? (locale === "en" ? "Locating…" : locale === "zh-Hans" ? "正在定位…" : "正在定位…")
+                      : (locale === "en" ? "Use current location" : locale === "zh-Hans" ? "使用当前位置" : "使用目前位置")}
+                  </button>
+                ) : null}
+                {locationError ? (
+                  <em className="zhaowu-today-location-error">
+                    {locationError === "denied"
+                      ? (locale === "en" ? "Location permission is off in this browser." : locale === "zh-Hans" ? "浏览器未允许位置权限。" : "瀏覽器未允許位置權限。")
+                      : (locale === "en" ? "Could not get the current location. Tap to retry." : locale === "zh-Hans" ? "暂时无法取得当前位置，请重试。" : "暫時無法取得目前位置，請重試。")}
+                  </em>
+                ) : null}
+              </>}
+              pillarsSlot={<div className="zhaowu-today-card is-pillars"><span className="zhaowu-contract-label">{locale === "en" ? "Current year, month, day and hour pillars" : locale === "zh-Hans" ? "当下年月日时干支" : "當下年月日時干支"}</span><div className="zhaowu-today-pillars zhaowu-daily-pillars">{values.map((value, index) => <span data-element={stemElement(value[0]) ?? undefined} data-pillar={PILLAR_KEYS[index]} key={`${PILLAR_KEYS[index]}-${value}`}><i>{locale === "en" ? PILLAR_KEYS[index].toUpperCase() : ["年柱", "月柱", "日柱", locale === "zh-Hans" ? "时柱" : "時柱"][index]}</i><b>{value}</b></span>)}</div></div>}
+            />
+            {personal ? <div className="zhaowu-almanac-board zhaowu-almanac-board--personal">
               {personal ? <>
                 <article className="zhaowu-today-card is-personal-birth">
                   <small>{personalLabels.birth}</small>
@@ -382,12 +378,7 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
                   <div className="zhaowu-today-personal-tags">{personal.relations.map((item) => <span key={item}>{item}</span>)}</div>
                 </article>
               </> : null}
-              <article className="zhaowu-today-card is-core"><small>{labels.core}</small><strong>{tone.core}</strong><span>{relationText(branch, locale)}</span></article>
-              <div className="zhaowu-almanac-board__guidance">
-                <article className="zhaowu-today-card is-guidance"><small>{labels.yi} / {labels.ji}</small><p className="is-yi"><b>{labels.yi}</b>{yi}</p><p className="is-ji"><b>{labels.ji}</b>{ji}</p></article>
-                <article className="zhaowu-today-card is-hours"><small>{labels.good} / {labels.caution}</small><p><b>{labels.good}</b>{locale === "en" ? windows.good.map((item) => BRANCH_EN[item]).join(" · ") || "—" : windows.good.join("・") || "—"}</p><p><b>{labels.caution}</b>{locale === "en" ? windows.caution.map((item) => BRANCH_EN[item]).join(" · ") || "—" : windows.caution.join("・") || "—"}</p></article>
-              </div>
-            </div>
+            </div> : null}
           </section>
 
           <section className="zhaowu-today-section is-wardrobe" aria-labelledby="zhaowu-today-wardrobe-title">

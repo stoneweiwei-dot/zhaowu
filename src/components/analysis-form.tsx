@@ -21,6 +21,7 @@ import { analyzeStructure } from "@/lib/bazi/structure";
 import { chartTerm } from "@/lib/bazi/presentation";
 import { UnifiedBirthReport } from "@/components/unified-birth-report";
 import { ChartTrustPanel } from "@/components/chart-trust-panel";
+import { buildPlainChartSummary } from "@/lib/bazi/plain-summary";
 
 const EN_STRENGTH: Record<string, string> = {
   "偏旺": "Relatively strong",
@@ -91,7 +92,10 @@ export function AnalysisForm() {
         chartTitle: "Your Four Pillars and ZHAOWU Destiny Book",
 
 
-        foundation: "Chart foundation",
+        foundation: "Technical terms (day master, month command, structure)",
+        plainTitle: "Your chart in plain words",
+        plainLead: "No jargon—just what your birth chart says about you. The technical chart is folded below.",
+        chartToggle: "View the Four Pillars chart",
         dayMaster: "Day master",
         monthOrder: "Month command",
         strength: "Strength baseline",
@@ -129,7 +133,10 @@ export function AnalysisForm() {
           chartTitle: "你的四柱命盘与昭梧命书",
 
 
-          foundation: "基础解释",
+          foundation: "专业术语版（日主、月令、格局）",
+          plainTitle: "你的命盘白话版",
+          plainLead: "不讲术语，直接告诉你命盘在说什么。专业命盘与术语都收在下面。",
+          chartToggle: "看四柱命盘",
           dayMaster: "日主",
           monthOrder: "月令",
           strength: "旺衰底盘",
@@ -166,7 +173,10 @@ export function AnalysisForm() {
           chartTitle: "你的四柱命盤與昭梧命書",
 
 
-          foundation: "基礎解釋",
+          foundation: "專業術語版（日主、月令、格局）",
+          plainTitle: "你的命盤白話版",
+          plainLead: "不講術語，直接告訴你命盤在說什麼。專業命盤與術語都收在下面。",
+          chartToggle: "看四柱命盤",
           dayMaster: "日主",
           monthOrder: "月令",
           strength: "旺衰底盤",
@@ -328,6 +338,10 @@ export function AnalysisForm() {
     if (!previewChart) return null;
     try { return analyzeStructure(previewChart); } catch { return null; }
   }, [previewChart]);
+  const plainItems = useMemo(() => {
+    if (!previewChart) return [];
+    try { return buildPlainChartSummary(previewChart, locale); } catch { return []; }
+  }, [previewChart, locale]);
   const foundationValues = previewChart && structure
     ? locale === "en"
       ? {
@@ -449,17 +463,36 @@ export function AnalysisForm() {
         </header>
         {previewChart && structure && foundationValues ? (
           <div className="zhaowu-bazi-preview">
-            <BaziChart chart={previewChart} showHeader={false} expandDetails={false} />
-            <section className="zhaowu-bazi-foundation" data-home-bazi-explanation aria-labelledby="zhaowu-bazi-foundation-title">
-              <h3 id="zhaowu-bazi-foundation-title">{copy.foundation}</h3>
-              <dl>
-                <div><dt>{copy.dayMaster}</dt><dd>{foundationValues.dayMaster}</dd></div>
-                <div><dt>{copy.monthOrder}</dt><dd>{foundationValues.monthOrder}</dd></div>
-                <div><dt>{copy.strength}</dt><dd>{foundationValues.strength}</dd></div>
-                <div><dt>{copy.structure}</dt><dd>{foundationValues.structure}</dd></div>
-                <div><dt>{copy.features}</dt><dd>{foundationValues.features}</dd></div>
-              </dl>
+            <section className="zhaowu-bazi-plain" data-home-bazi-explanation data-plain-summary aria-labelledby="zhaowu-bazi-plain-title">
+              <img className="zhaowu-bazi-plain__art" src="/art/zhaowu-dragon-lake-v1.webp" alt="" decoding="async" width={1200} height={675} />
+              <h3 id="zhaowu-bazi-plain-title">{copy.plainTitle}</h3>
+              <p className="zhaowu-bazi-plain__lead">{copy.plainLead}</p>
+              <ol>
+                {plainItems.map((item) => (
+                  <li key={item.key} data-plain-item={item.key}>
+                    <strong>{item.title}</strong>
+                    <p>{item.body}</p>
+                  </li>
+                ))}
+              </ol>
             </section>
+            <details className="zhaowu-chart-details zhaowu-bazi-fold" data-fold="chart">
+              <summary>{copy.chartToggle}</summary>
+              <BaziChart chart={previewChart} showHeader={false} expandDetails={false} />
+            </details>
+            <details className="zhaowu-chart-details zhaowu-bazi-fold" data-fold="terms">
+              <summary>{copy.foundation}</summary>
+              <section className="zhaowu-bazi-foundation" aria-labelledby="zhaowu-bazi-foundation-title">
+                <h3 id="zhaowu-bazi-foundation-title" className="sr-only">{copy.foundation}</h3>
+                <dl>
+                  <div><dt>{copy.dayMaster}</dt><dd>{foundationValues.dayMaster}</dd></div>
+                  <div><dt>{copy.monthOrder}</dt><dd>{foundationValues.monthOrder}</dd></div>
+                  <div><dt>{copy.strength}</dt><dd>{foundationValues.strength}</dd></div>
+                  <div><dt>{copy.structure}</dt><dd>{foundationValues.structure}</dd></div>
+                  <div><dt>{copy.features}</dt><dd>{foundationValues.features}</dd></div>
+                </dl>
+              </section>
+            </details>
             <details
               className="zhaowu-chart-details zhaowu-bazi-full-details"
               open={chartDetailsOpen}

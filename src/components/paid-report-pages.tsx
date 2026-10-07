@@ -353,6 +353,7 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
   return (
     <section className="zhaowu-focused-report zhaowu-report-continuous-sheet" aria-labelledby="focused-report-title">
       <header className="zhaowu-report-header">
+        <img className="zhaowu-report-art" src="/art/zhaowu-lotus-ascend-v1.webp" alt="" loading="lazy" decoding="async" width={900} height={1272} />
         {copy.kicker ? <p className="zhaowu-report-kicker">{copy.kicker}</p> : null}
         <h3 id="focused-report-title" className="zhaowu-report-title">{copy.title}</h3>
         {copy.lead ? <p className="zhaowu-report-lead">{copy.lead}</p> : null}

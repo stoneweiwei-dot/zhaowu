@@ -15,11 +15,11 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
-    id: "2026-10-08-intimacy-symbolism-boundaries",
+    id: "2026-10-08-launch-polish",
     date: "2026-10-08",
-    zhHant: { title: "觀世錄新增：命理能不能看男性尺寸？", summary: "新增跨西占、紫微與十二宮主飛宮的研究文章，整理八宮／火星／天蠍、子位＋疾厄宮、五行局童限與十二宮主等網路說法，明確區分象意、娛樂推論與不能據此下定論的公分、器官形態、性向及醫療結論。" },
-    zhHans: { title: "观世录新增：命理能不能看男性尺寸？", summary: "新增跨西占、紫微与十二宫主飞宫的研究文章，整理八宫／火星／天蝎、子位＋疾厄宫、五行局童限与十二宫主等网络说法，明确区分象意、娱乐推论与不能据此下定论的公分、器官形态、性向及医疗结论。" },
-    en: { title: "New Notes article: can astrology read male size?", summary: "A new cross-system research note reviews eighth-house/Mars/Scorpio claims, Zi Wei's Zi-position plus Health-Palace model, Five-Element Bureau childhood shortcuts and the twelfth-house ruler. It clearly separates symbolic or entertainment readings from unsupported centimetre, anatomy, orientation and medical claims." },
+    zhHant: { title: "今日黃曆改為墨青版、命盤先講白話、出生地更好找", summary: "今日黃曆重做為墨青底版：日期、天氣、今日干支、聖日、五行氣機、宜忌圖示、合沖刑害、吉時慎時、顏色首飾與性格面具一頁看完；錄入生辰後會依你的命盤顯示今日對你的關係。輸入生辰後先用白話列出你的命盤重點，四柱與術語收合在下方。出生地輸入不再跳字，並補上小城鎮與鄉區搜尋。報告字體放大加粗、段落更舒展；首頁入口換上新的四幅山水插畫。" },
+    zhHans: { title: "今日黄历改为墨青版、命盘先讲白话、出生地更好找", summary: "今日黄历重做为墨青底版：日期、天气、今日干支、圣日、五行气机、宜忌图示、合冲刑害、吉时慎时、颜色首饰与性格面具一页看完；录入生辰后会依你的命盘显示今日对你的关系。输入生辰后先用白话列出你的命盘重点，四柱与术语收合在下方。出生地输入不再跳字，并补上小城镇与乡区搜索。报告字体放大加粗、段落更舒展；首页入口换上新的四幅山水插画。" },
+    en: { title: "Ink-teal almanac, plain-language chart first, easier birthplace search", summary: "Today's Almanac is rebuilt as an ink-teal sheet with date, weather, pillars, observance, five-element dynamic, do/avoid icons, combinations and clashes, supportive and careful hours, colours, jewellery and persona—personalised to your saved chart. After entering a birth record you now see plain-language highlights first, with the Four Pillars and terms folded below. Birthplace typing no longer jumps and finds small towns. Report text is larger and airier, and the home entries use four new landscape illustrations." },
   },
   {
     id: "2026-10-07-owner-media-home-background-simplify",

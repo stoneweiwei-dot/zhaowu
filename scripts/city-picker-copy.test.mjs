@@ -19,7 +19,10 @@ test("optional city copy is not rendered twice when the label already includes i
 test("exact city matches self-confirm and unresolved birth city stays blocked", () => {
   assert.match(picker, /candidates\.includes\(normalizedQuery\)/);
   assert.doesNotMatch(picker, /localized\.length === 1/);
-  assert.match(picker, /aria-invalid=\{invalid \|\| undefined\}/);
+  assert.match(picker, /aria-invalid=\{invalid \|\| tzError \|\| undefined\}/);
+  // 2026-10-08: typing is never rewritten mid-input; IME composition is respected.
+  assert.match(picker, /onCompositionStart/);
+  assert.match(picker, /resolveCityTimezone/);
   assert.match(picker, /role="alert"/);
   assert.match(analysisForm, /setBirthCityError\(true\)/);
   assert.match(analysisForm, /document\.getElementById\("birth-city"\)/);
@@ -27,9 +30,12 @@ test("exact city matches self-confirm and unresolved birth city stays blocked", 
   assert.match(analysisForm, /invalid=\{birthCityError\}/);
 });
 
-test("home bazi keeps snapshot and foundation visible while the complete reading is collapsed", () => {
-  assert.match(analysisForm, /<BaziChart chart=\{previewChart\} showHeader=\{false\} expandDetails=\{false\} \/>/);
+test("home bazi leads with a plain-language summary and folds the technical chart", () => {
+  // Owner 2026-10-08: plain words first; four pillars, terms and full details stay folded.
   assert.match(analysisForm, /data-home-bazi-explanation/);
+  assert.match(analysisForm, /buildPlainChartSummary\(previewChart, locale\)/);
+  assert.match(analysisForm, /data-fold="chart"/);
+  assert.match(analysisForm, /<BaziChart chart=\{previewChart\} showHeader=\{false\} expandDetails=\{false\} \/>/);
   assert.match(analysisForm, /className="zhaowu-chart-details zhaowu-bazi-full-details"/);
   assert.match(analysisForm, /open=\{chartDetailsOpen\}/);
   assert.match(analysisForm, /chartDetailsOpen \? \(/);
