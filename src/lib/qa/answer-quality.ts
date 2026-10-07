@@ -54,6 +54,15 @@ const KIND_ANSWER_HINTS: Record<QuestionKind, RegExp> = {
   self: /格局|日主|命局|結構|结构|旺|弱|用神|病藥|病药|自己|structure|bazi|self/i,
 };
 
+const CONTENT_DOMAIN_RULES: Array<[RegExp, RegExp]> = [
+  [/(感情|戀愛|恋爱|婚姻|伴侶|伴侣|男友|女友|對象|对象|復合|复合|前任|曖昧|暧昧|love|relationship|marriage|partner|dating)/i, KIND_ANSWER_HINTS.love],
+  [/(工作|事業|事业|職業|职业|轉職|转职|跳槽|升職|升职|老闆|老板|主管|同事|公司|職場|职场|offer|薪水|薪資|薪资|career|job|work|role|business)/i, KIND_ANSWER_HINTS.career],
+  [/(財運|财运|財務|财务|收入|賺錢|赚钱|投資|投资|資產|资产|負債|负债|貸款|贷款|金錢|金钱|money|finance|income|investment|wealth|debt|loan)/i, KIND_ANSWER_HINTS.money],
+  [/(健康|身體|身体|睡眠|壓力|压力|疲勞|疲劳|生病|疾病|手術|手术|治療|治疗|health|body|sleep|stress|medical|surgery)/i, KIND_ANSWER_HINTS.health],
+  [/(家宅|住宅|住哪|搬家|搬遷|搬迁|買房|买房|租房|房間|房间|房產|房产|移居|城市|風水|风水|home|house|move|property|relocat)/i, KIND_ANSWER_HINTS.home],
+  [/(前世|今生|六道|一掌經|一掌经|past life|past-life)/i, KIND_ANSWER_HINTS.past],
+];
+
 const ABSOLUTE_CLAIMS = [
   /百分之百/g,
   /100\s*%/g,
@@ -99,7 +108,11 @@ export function directAnswerCoversQuestion(question: string, directAnswer: strin
   if (!q || answer.length < 8) return false;
 
   for (const [, questionPattern, answerPattern] of FOCUS_RULES) {
-    if (questionPattern.test(q)) return answerPattern.test(answer);
+    if (questionPattern.test(q) && !answerPattern.test(answer)) return false;
+  }
+
+  for (const [questionPattern, answerPattern] of CONTENT_DOMAIN_RULES) {
+    if (questionPattern.test(q) && !answerPattern.test(answer)) return false;
   }
 
   const detected = detectQaIntent(q, "self");
