@@ -1,9 +1,11 @@
 import { buildTravelDestinationAnswer, extractNamedPlaces, pickTravelDestinations } from "@/lib/bazi/forecast";
 import { buildDistinctTimingAnswer } from "@/lib/bazi/forecast-safe";
+import { COLOR_OF_ELEMENT } from "@/lib/bazi/constants";
 import { inspectAnswerRequirements, readingForTopic } from "@/lib/core/answer-contract";
 import type { ForecastTopic } from "@/lib/bazi/forecast";
 import { customerCopy } from "@/lib/report/customer-copy";
-import type { Chart, Reading } from "@/lib/bazi/types";
+import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
+import type { AppLocale, Chart, Reading } from "@/lib/bazi/types";
 import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { applyCosmicSymbolicReading, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
 import {
@@ -17,10 +19,68 @@ import {
 } from "@/lib/report/credit-and-talent-contract";
 
 const ELEMENT_PROFILE_RE = /(五行.{0,8}(屬性|属性|主導|主导|分布|比例|占比|能量|哪個最多|哪个最多)|哪個五行|哪个五行|五行誰最強|五行谁最强)/;
+const LUCKY_COLOR_RE = /(幸運色|幸运色|幸運顏色|幸运颜色|(適合|适合).{0,8}(什麼|什么|哪些|哪種|哪种).{0,6}(顏色|颜色)|(顏色|颜色).{0,8}(適合我|适合我|旺我))/;
 const TRAVEL_FOLLOWUP_RE = /((具體|具体|推薦|推荐|適合|适合).{0,16}(國家|国家|城市|目的地)|(國家|国家|城市|目的地).{0,16}(旅行|旅遊|旅游|度假|充電|充电|適合|适合|推薦|推荐))/;
 const CAUTION_RE = /(注意|小心|風險|风险|避開|躲开|careful|watch out|caution|risk|avoid)/i;
 const ENGLISH_RE = /[A-Za-z]{4,}/;
 const HAN_RE = /[\u3400-\u9fff]/;
+
+function localizedColors(colors: string[], locale: AppLocale): string[] {
+  return locale === "zh-Hans" ? colors.map(toSimplifiedCustomerText) : colors;
+}
+
+function luckyColorReading(chart: Chart, reading: Reading, locale: AppLocale): Reading {
+  const isHans = locale === "zh-Hans";
+  const formal = localizedColors(reading.guide.colors.filter(Boolean), locale);
+  const avoid = localizedColors(reading.guide.avoidColors.filter(Boolean), locale);
+
+  if (formal.length) {
+    const directAnswer = isHans
+      ? `你的幸运色以${formal.join("、")}为主；如果只选一种，先用${formal[0]}。${avoid.length ? `相对少用${avoid.join("、")}。` : ""}`
+      : `你的幸運色以${formal.join("、")}為主；如果只選一種，先用${formal[0]}。${avoid.length ? `相對少用${avoid.join("、")}。` : ""}`;
+    return {
+      ...reading,
+      kind: "self",
+      directAnswer,
+      action: isHans
+        ? `日常先从${formal[0]}开始，用在上衣、配件或手机壳其中一处就够，不必全身同色。`
+        : `日常先從${formal[0]}開始，用在上衣、配件或手機殼其中一處就夠，不必全身同色。`,
+    };
+  }
+
+  const primaryElement = chart.useful[0];
+  const secondaryElement = chart.useful[1];
+  const primary = primaryElement ? localizedColors(COLOR_OF_ELEMENT[primaryElement] ?? [], locale) : [];
+  const secondary = secondaryElement ? localizedColors(COLOR_OF_ELEMENT[secondaryElement] ?? [], locale) : [];
+
+  if (primary.length) {
+    const second = secondary.length
+      ? (isHans ? `；第二组可参考${secondary.join("、")}` : `；第二組可參考${secondary.join("、")}`)
+      : "";
+    const directAnswer = isHans
+      ? `先给颜色：${primary.join("、")}${second}。目前配色依据还在候选阶段，所以我不会把其中一种假装成已经定案的“唯一幸运色”，也不是按“五行缺什么补什么”硬配。`
+      : `先給顏色：${primary.join("、")}${second}。目前配色依據還在候選階段，所以我不會把其中一種假裝成已經定案的「唯一幸運色」，也不是按「五行缺什麼補什麼」硬配。`;
+    return {
+      ...reading,
+      kind: "self",
+      directAnswer,
+      action: isHans
+        ? `如果只是日常穿搭，先从第一组任选一种做主色或点缀；等配色依据正式落定后，再把主色和避色锁死。`
+        : `如果只是日常穿搭，先從第一組任選一種做主色或點綴；等配色依據正式落定後，再把主色和避色鎖死。`,
+    };
+  }
+
+  return {
+    ...reading,
+    kind: "self",
+    directAnswer: isHans
+      ? "目前这张盘还没有足够依据可靠指定幸运色，所以不硬编颜色。"
+      : "目前這張盤還沒有足夠依據可靠指定幸運色，所以不硬編顏色。",
+    action: isHans
+      ? "先不要用“五行缺什么补什么”替代正式判断；等配色依据成立后再给明确主色。"
+      : "先不要用「五行缺什麼補什麼」替代正式判斷；等配色依據成立後再給明確主色。",
+  };
+}
 
 function elementProfileAnswer(chart: Chart): string {
   const entries = Object.entries(chart.elementPercents) as [keyof Chart["elementPercents"], number][];
@@ -80,7 +140,10 @@ function travelAnswer(question: string, chart: Chart, reading: Reading): Reading
  * Last customer-facing correction layer. It only overrides answers when a
  * concrete, reproducible routing failure exists; it does not recalculate the chart.
  */
-export function applyCustomerAnswerHotfix(question: string, chart: Chart, reading: Reading): Reading {
+export function applyCustomerAnswerHotfix(question: string, chart: Chart, reading: Reading, locale: AppLocale = "zh-Hant"): Reading {
+  // Simple colour questions must answer with colours before any generic structure copy.
+  if (LUCKY_COLOR_RE.test(question)) return luckyColorReading(chart, reading, locale);
+
   // Credit score / 信用分 — force structured direct answer
   if (isCreditQuestion(question)) {
     const structured = structureCreditAnswer(chart);
