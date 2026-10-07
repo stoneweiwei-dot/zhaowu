@@ -39,7 +39,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const complexRule = !petDecision ? buildComplexDeterministicAnswer(result) : null;
   const [written, setWritten] = useState<{ key: string; answer: string; next: string; source: "reasoned" | "written" } | null>(null);
   const writerKey = `${result.id ?? ""}|${question}`;
-  const writtenNow = !petDecision && written?.key === writerKey ? written : null;
+  const lockDeterministicVerdict = Boolean(complexRule?.comparison);
+  const writtenNow = !petDecision && !lockDeterministicVerdict && written?.key === writerKey ? written : null;
   const ruleAnswer = petDecision?.directAnswer ?? complexRule?.answer ?? decisionModel.directAnswer;
   const answer = writtenNow?.answer ?? ruleAnswer;
   const answerParagraphs = customerParagraphs(answer);
@@ -49,7 +50,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     // Rule answer is already on screen. Complex questions get one bounded reasoning
     // pass first; simpler eligible questions keep the cheaper wording-only writer.
     // Either path may replace the rule answer only after its client/server validators pass.
-    if (petDecision) return;
+    if (petDecision || lockDeterministicVerdict) return;
     let cancelled = false;
 
     const runWriter = async () => {
@@ -72,7 +73,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     }
 
     return () => { cancelled = true; };
-  }, [writerKey]);
+  }, [writerKey, lockDeterministicVerdict]);
   const decreeCouplet = customerCopy(reading.decree);
 
   useEffect(() => {
@@ -171,7 +172,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           <div className="zhaowu-answer-steps" data-primary-answer data-answer-source="rule" data-complex-answer="true">
             <section className="zhaowu-answer-step">
               <span>{locale === "en" ? "01 · ANSWER" : locale === "zh-Hans" ? "01 · 直接结论" : "01 · 直接結論"}</span>
-              <strong>{complexRule.verdict}</strong>
+              <strong data-decision-verdict>{complexRule.verdict}</strong>
             </section>
             <section className="zhaowu-answer-step">
               <span>{locale === "en" ? "02 · WHY" : locale === "zh-Hans" ? "02 · 为什么" : "02 · 為什麼"}</span>

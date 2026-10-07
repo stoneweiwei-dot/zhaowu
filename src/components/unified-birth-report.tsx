@@ -1,8 +1,8 @@
-import { Fragment, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
-import { ComicMascot, SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
+import { SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
 import type { ReportSystemId } from "@/lib/report-access";
 import {
   buildIndianReading,
@@ -61,6 +61,11 @@ function reportCopy(locale: Locale) {
   if (locale === "en") return {
     kicker: "ZHAOWU DESTINY BOOK · NATAL VOLUME",
     title: "Your ZHAOWU Destiny Book",
+    summaryStage: "Overall summary",
+    visualStage: "Illustrated destiny",
+    bodyStage: "Body areas to watch",
+    notesStage: "Notes",
+    bodyFallback: "Birth-time detail is not complete enough for house-based body symbolism. Keep this section to daily workload, sleep and recovery; persistent symptoms need qualified medical assessment.",
 
     basis: "Core structure",
     nature: "Temperament and inner rhythm",
@@ -89,6 +94,11 @@ function reportCopy(locale: Locale) {
   if (locale === "zh-Hans") return {
     kicker: "昭梧命书 · 本命卷",
     title: "你的昭梧命书",
+    summaryStage: "总体概括",
+    visualStage: "命书图解",
+    bodyStage: "身体需要注意的地方",
+    notesStage: "附注",
+    bodyFallback: "出生时间不足时，不做依赖宫位的身体细分；这里只保留日常负荷、睡眠与恢复的观察。持续或加重的不适，以实际医疗检查为准。",
 
     basis: "核心底盘",
     nature: "性格与内在节奏",
@@ -117,6 +127,11 @@ function reportCopy(locale: Locale) {
   return {
     kicker: "昭梧命書 · 本命卷",
     title: "你的昭梧命書",
+    summaryStage: "總體概括",
+    visualStage: "命書圖解",
+    bodyStage: "身體需要注意的地方",
+    notesStage: "附註",
+    bodyFallback: "出生時間不足時，不做依賴宮位的身體細分；這裡只保留日常負荷、睡眠與恢復的觀察。持續或加重的不適，以實際醫療檢查為準。",
 
     basis: "核心底盤",
     nature: "性格與內在節奏",
@@ -212,6 +227,45 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
     ];
   }, [birth, copy.basis, copy.lesson, copy.nature, copy.relation, copy.timing, copy.work, foundation, locale]);
 
+  const formalStages = useMemo<ReportSection[]>(() => {
+    const [basis, nature, relation, work, timing, lesson] = sections;
+    const western = buildWesternReading(birth, locale);
+    const bodyLines = unique(tableInterpretations(western, /十二宮|十二宫|twelve houses/i, [5]), locale);
+    return [
+      {
+        title: copy.summaryStage,
+        body: unique([
+          ...(basis?.body.slice(0, 4) ?? []),
+          ...(nature?.body.slice(0, 2) ?? []),
+        ], locale),
+      },
+      {
+        title: copy.visualStage,
+        body: unique([
+          relation?.body[0] ?? "",
+          work?.body[0] ?? "",
+          timing?.body[0] ?? "",
+          lesson?.body[0] ?? "",
+        ], locale),
+      },
+      {
+        title: copy.bodyStage,
+        body: bodyLines.length ? bodyLines : [copy.bodyFallback],
+      },
+      {
+        title: copy.notesStage,
+        body: unique([
+          ...(basis?.body.slice(4) ?? []),
+          ...(nature?.body.slice(2) ?? []),
+          ...(relation?.body.slice(1) ?? []),
+          ...(work?.body.slice(1) ?? []),
+          ...(timing?.body.slice(1) ?? []),
+          ...(lesson?.body.slice(1) ?? []),
+        ], locale),
+      },
+    ];
+  }, [birth, copy.bodyFallback, copy.bodyStage, copy.notesStage, copy.summaryStage, copy.visualStage, locale, sections]);
+
   return (
     <section className="zhaowu-unified-birth-report" data-unified-birth-report aria-labelledby="zhaowu-unified-report-title">
       <header>
@@ -226,12 +280,28 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
       {mode === "formal" ? (
         <>
           <nav className="zhaowu-report-reading-path" aria-label={locale === "en" ? "Reading order" : locale === "zh-Hans" ? "阅读顺序" : "閱讀順序"}>
-            {sections.map((section, index) => <span key={section.title}><b>{String(index + 1).padStart(2, "0")}</b>{section.title}</span>)}
+            {formalStages.map((section, index) => <span key={section.title}><b>{String(index + 1).padStart(2, "0")}</b>{section.title}</span>)}
           </nav>
           <div className="zhaowu-unified-report-flow" data-report-mode="formal">
-            {sections.map((section, index) => (
-              <Fragment key={section.title}>
-                <article>
+            {formalStages.map((section, index) => (
+              <article key={section.title} data-formal-stage={index + 1}>
+                {index === 0 ? (
+                  <div className="zhaowu-unified-summary-stage">
+                    <span className="zhaowu-unified-fold__step">01</span>
+                    <h4>{section.title}</h4>
+                    <div className="zhaowu-unified-fold__body">
+                      {section.body.slice(0, 2).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                    </div>
+                    {section.body.length > 2 ? (
+                      <details className="zhaowu-unified-fold zhaowu-unified-fold--more" data-report-fold>
+                        <summary>{copy.openFull}</summary>
+                        <div className="zhaowu-unified-fold__body">
+                          {section.body.slice(2).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                        </div>
+                      </details>
+                    ) : null}
+                  </div>
+                ) : (
                   <details className="zhaowu-unified-fold" data-report-fold>
                     <summary>
                       <span className="zhaowu-unified-fold__step">{String(index + 1).padStart(2, "0")}</span>
@@ -240,11 +310,11 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
                     </summary>
                     <div className="zhaowu-unified-fold__body">
                       {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                      {index === 1 ? <SongComicReportInsert dayMaster={foundation.dayMaster} locale={locale} /> : null}
                     </div>
                   </details>
-                </article>
-                {index === 0 ? <SongComicReportInsert dayMaster={foundation.dayMaster} locale={locale} /> : null}
-              </Fragment>
+                )}
+              </article>
             ))}
           </div>
         </>
@@ -334,6 +404,84 @@ function SpecialistHub({ birth, locale, copy }: { birth: SharedBirthRecord; loca
   );
 }
 
+function ComicSceneArt({ scene, stem }: { scene: number; stem: string }) {
+  const common = {
+    viewBox: "0 0 360 220",
+    className: `zhaowu-comic-scene zhaowu-comic-scene--${scene}`,
+    focusable: "false",
+    "aria-hidden": true,
+  } as const;
+
+  if (scene === 1) return (
+    <svg {...common}>
+      <circle className="wash sun" cx="286" cy="50" r="28" />
+      <path className="wash hill" d="M0 178 Q58 92 120 160 Q176 78 240 160 Q294 104 360 168 V220 H0Z" />
+      <path className="ink path" d="M170 220 C170 188 204 164 219 140 C235 115 236 94 238 72" />
+      <circle className="ink person-head" cx="133" cy="138" r="8" />
+      <path className="ink person" d="M133 148 L130 180 M130 158 L114 171 M131 159 L146 166 M130 180 L118 205 M130 180 L143 204" />
+      <text className="seal" x="24" y="36">{stem}</text>
+    </svg>
+  );
+  if (scene === 2) return (
+    <svg {...common}>
+      <rect className="wash window" x="210" y="35" width="112" height="96" rx="4" />
+      <circle className="wash moon" cx="270" cy="74" r="22" />
+      <path className="ink window-line" d="M266 35 V131 M210 83 H322" />
+      <path className="wash floor" d="M0 164 Q92 146 183 170 T360 164 V220 H0Z" />
+      <circle className="ink person-head" cx="126" cy="115" r="9" />
+      <path className="ink person" d="M126 126 Q114 145 118 168 L151 171 M118 145 L92 153 M119 147 L144 151 M119 168 L103 197 M146 171 L158 197" />
+      <path className="accent" d="M62 80 Q92 54 118 82 Q92 103 62 80Z" />
+      <text className="seal" x="24" y="36">{stem}</text>
+    </svg>
+  );
+  if (scene === 3) return (
+    <svg {...common}>
+      <path className="wash water" d="M0 154 Q50 144 100 154 T200 154 T300 154 T400 154 V220 H0Z" />
+      <path className="ink bridge" d="M48 143 Q180 72 312 143 M48 143 H312 M78 130 V160 M126 107 V149 M180 96 V145 M234 107 V149 M282 130 V160" />
+      <circle className="ink person-head" cx="145" cy="105" r="7" />
+      <path className="ink person" d="M145 113 L144 139 M144 120 L133 129 M144 121 L154 129 M144 139 L137 151 M144 139 L151 151" />
+      <circle className="ink person-head" cx="212" cy="105" r="7" />
+      <path className="ink person" d="M212 113 L213 139 M213 120 L202 129 M213 121 L224 129 M213 139 L206 151 M213 139 L220 151" />
+      <circle className="accent" cx="180" cy="66" r="8" />
+      <text className="seal" x="24" y="36">{stem}</text>
+    </svg>
+  );
+  if (scene === 4) return (
+    <svg {...common}>
+      <rect className="wash room" x="40" y="44" width="280" height="136" rx="8" />
+      <path className="ink shelf" d="M70 76 H150 M70 102 H150 M70 128 H150 M82 76 V128 M116 76 V128" />
+      <path className="ink desk" d="M175 138 H300 M193 138 V190 M282 138 V190" />
+      <circle className="ink person-head" cx="225" cy="92" r="8" />
+      <path className="ink person" d="M225 101 L224 132 M224 113 L207 125 M224 113 L241 125 M224 132 L216 151 M224 132 L233 151" />
+      <rect className="accent" x="252" y="112" width="30" height="20" rx="3" />
+      <text className="seal" x="24" y="36">{stem}</text>
+    </svg>
+  );
+  if (scene === 5) return (
+    <svg {...common}>
+      <circle className="wash sun" cx="78" cy="62" r="23" />
+      <circle className="wash moon" cx="292" cy="58" r="20" />
+      <path className="wash hill" d="M0 178 Q64 124 116 168 Q175 92 236 166 Q300 116 360 174 V220 H0Z" />
+      <path className="ink path" d="M176 220 C194 190 157 174 177 149 C198 124 257 127 270 96 C279 75 268 62 260 54" />
+      <circle className="ink person-head" cx="151" cy="146" r="7" />
+      <path className="ink person" d="M151 154 L151 179 M151 160 L140 169 M151 160 L163 168 M151 179 L144 196 M151 179 L159 196" />
+      <text className="seal" x="24" y="36">{stem}</text>
+    </svg>
+  );
+  return (
+    <svg {...common}>
+      <path className="wash ground" d="M0 176 Q74 150 142 176 Q214 148 360 176 V220 H0Z" />
+      <path className="ink gate" d="M118 60 V162 M242 60 V162 M102 60 H258 M126 84 H234" />
+      <path className="ink fork" d="M180 220 V164 M180 164 C162 144 139 131 112 124 M180 164 C198 145 221 132 250 124" />
+      <circle className="ink person-head" cx="180" cy="136" r="8" />
+      <path className="ink person" d="M180 145 L180 176 M180 154 L166 166 M180 154 L195 165 M180 176 L172 198 M180 176 L188 198" />
+      <circle className="accent lantern" cx="200" cy="163" r="8" />
+      <path className="accent" d="M200 155 V145" />
+      <text className="seal" x="24" y="36">{stem}</text>
+    </svg>
+  );
+}
+
 function ComicLiteReport({
   sections,
   dayMaster,
@@ -366,7 +514,7 @@ function ComicLiteReport({
           >
             <div className="zhaowu-comic-lite__art" aria-hidden="true">
               <span className="zhaowu-comic-lite__scene-no">{String(index + 1).padStart(2, "0")}</span>
-              <ComicMascot stem={stem} />
+              <ComicSceneArt scene={index + 1} stem={stem} />
               <div className="zhaowu-comic-lite__bubble">{section.body[0]}</div>
             </div>
             <div className="zhaowu-comic-lite__copy">

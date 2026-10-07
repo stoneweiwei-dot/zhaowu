@@ -69,10 +69,22 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
     return () => { cancelled = true; };
   }, []);
 
+  function shouldCountArticleOpen(articleId: string) {
+    if (countedThisVisit.current.has(articleId)) return false;
+    countedThisVisit.current.add(articleId);
+    try {
+      const key = `zhaowu.life-view.viewed.${articleId}`;
+      if (window.sessionStorage.getItem(key) === "1") return false;
+      window.sessionStorage.setItem(key, "1");
+    } catch {
+      // Private browsing / storage restrictions must not block reading or counting.
+    }
+    return true;
+  }
+
   function toggleArticle(articleId: string, isOpen: boolean) {
     setOpenId(isOpen ? null : articleId);
-    if (isOpen || countedThisVisit.current.has(articleId)) return;
-    countedThisVisit.current.add(articleId);
+    if (isOpen || !shouldCountArticleOpen(articleId)) return;
     void incrementLifeViewCount(articleId).then((count) => {
       if (count == null) return;
       setViewCounts((current) => ({ ...current, [articleId]: count }));
@@ -199,7 +211,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                   </span>
                   <span className="mt-1 flex items-start justify-between gap-3">
                     <strong className="min-w-0 font-display text-[1.05rem] font-semibold leading-6 text-ink sm:text-lg">{article.title[locale]}</strong>
-                    <span className="shrink-0 pt-0.5 text-[10px] font-medium tracking-[0.04em] text-ink-mute">{viewsLabel(article.id)}</span>
+                    <span className="shrink-0 pt-0.5 text-[10px] font-medium tracking-[0.04em] text-ink-mute" data-life-view-count={article.id}>{viewsLabel(article.id)}</span>
                   </span>
                   {!isOpen ? (
                     <span className="mt-2 line-clamp-2 block text-sm leading-6 text-ink-soft">{article.summary?.[locale] || (index === 0 ? latestParagraph : paragraphs[0])}</span>
