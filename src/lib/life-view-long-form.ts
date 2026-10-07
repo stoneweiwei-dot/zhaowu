@@ -5,7 +5,7 @@ import { HUAGAI_LONG_FORM } from "@/lib/life-view-long-form/huagai";
 import { STRENGTH_OVERDRIVE_FIVE_ELEMENTS_LONG_FORM } from "@/lib/life-view-long-form/strength-overdrive-five-elements";
 import { TEN_GODS_RELATIONSHIP_FRICTION_LONG_FORM } from "@/lib/life-view-long-form/ten-gods-relationship-friction";
 import { WEALTH_ENVIRONMENT_SYMBOLISM_LONG_FORM } from "@/lib/life-view-long-form/wealth-environment-symbolism";
-import { YELLOW_SPRINGS_AND_BUDDHIST_REBIRTH_LONG_FORM } from "@/lib/life-view-long-form/yellow-springs-and-buddhist-rebirth";
+import { YELLOW_SPRINGS_AND_BUDDHIST_REBIRTH_LONG_FORM } from "@/lib/life-view-long-form/yellow-springs-and-buddhist-rebirth";\nimport { INTIMACY_SYMBOLISM_BOUNDARIES_LONG_FORM } from "@/lib/life-view-long-form/intimacy-symbolism-boundaries";
 
 /**
  * 長篇版《昭梧 · 觀世錄》總表。
