@@ -39,6 +39,8 @@ function useCopy(locale: string) {
       kicker: "ZHAOWU · PERSONAL DESTINY BOOK",
       title: "One birth record. One ZHAOWU Destiny Book.",
       tagline: "Heaven counts to forty-nine — and leaves one line open.",
+      birthCta: "Enter birth details · Open ZHAOWU",
+      birthHint: "Begin with your birth record",
       navBook:  "Destiny",
       navToday: "Today",
       navQuiz:  "Explore",
@@ -64,6 +66,8 @@ function useCopy(locale: string) {
       kicker: "昭梧 · 个人命书",
       title: "一份生辰，读成一本昭梧命书",
       tagline: "天衍四九，其留与一。爱出者爱返，福往者福来。",
+      birthCta: "录入生辰・开卷昭梧",
+      birthHint: "以子平八字，起一生节奏",
       navBook:  "命书",
       navToday: "今日",
       navQuiz:  "测验",
@@ -89,6 +93,8 @@ function useCopy(locale: string) {
     kicker: "昭梧 · 個人命書",
     title: "一份生辰，讀成一本昭梧命書",
     tagline: "天衍四九，其留與一。愛出者愛返，福往者福來。",
+    birthCta: "錄入生辰・開卷昭梧",
+    birthHint: "以子平八字，起一生節奏",
     navBook:  "命書",
     navToday: "今日",
     navQuiz:  "測驗",
@@ -164,6 +170,15 @@ function Home() {
     setActiveSection((prev) => (prev === id ? null : id));
   };
 
+  const openBirthBook = () => {
+    setActiveSection("form");
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.getElementById("analysis")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  };
+
   const navLabels: Record<Section, string> = {
     form:  copy.navBook,
     today: copy.navToday,
@@ -210,6 +225,21 @@ function Home() {
         <p className="zw-hero-inscription-kicker">{copy.kicker}</p>
         <h1 className="zw-hero-inscription-title">{copy.title}</h1>
         <p className="zw-hero-inscription-tagline">{copy.tagline}</p>
+        <button
+          type="button"
+          className="zw-birth-entry-ticket"
+          data-home-birth-entry
+          aria-controls="analysis"
+          aria-expanded={activeSection === "form"}
+          onClick={openBirthBook}
+        >
+          <span className="zw-birth-entry-seal" aria-hidden>命</span>
+          <span className="zw-birth-entry-copy">
+            <strong>{copy.birthCta}</strong>
+            <small>{copy.birthHint}</small>
+          </span>
+          <span className="zw-birth-entry-arrow" aria-hidden>→</span>
+        </button>
       </div>
 
       {/* ── ICON NAVIGATION ─────────────────────────────────── */}

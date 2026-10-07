@@ -123,6 +123,77 @@
   line-height: 1.72;
 }
 
+.zw-birth-entry-ticket {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 420px);
+  margin: 16px auto 2px;
+  padding: 10px 13px 10px 11px;
+  border: 1px solid rgba(79, 101, 83, 0.18);
+  border-radius: 12px;
+  color: #244f43;
+  background:
+    linear-gradient(180deg, rgba(251, 248, 240, 0.94), rgba(245, 239, 228, 0.90));
+  box-shadow: 0 4px 18px rgba(55, 72, 62, 0.055);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 180ms cubic-bezier(.22,.72,.25,1), border-color 180ms ease, background-color 180ms ease;
+}
+
+.zw-birth-entry-ticket:active {
+  transform: translateY(1px);
+  border-color: rgba(61, 107, 90, 0.30);
+}
+
+.zw-birth-entry-seal {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid rgba(159, 65, 50, 0.46);
+  border-radius: 7px;
+  color: #9f4132;
+  font-family: var(--font-display, serif);
+  font-size: 0.74rem;
+  line-height: 1;
+}
+
+.zw-birth-entry-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.zw-birth-entry-copy strong {
+  color: #244f43;
+  font-family: var(--font-display, serif);
+  font-size: 0.82rem;
+  font-weight: 620;
+  letter-spacing: 0.055em;
+  line-height: 1.35;
+}
+
+.zw-birth-entry-copy small {
+  overflow: hidden;
+  color: rgba(36, 79, 67, 0.58);
+  font-size: 0.66rem;
+  letter-spacing: 0.035em;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zw-birth-entry-arrow {
+  color: rgba(36, 79, 67, 0.72);
+  font-family: var(--font-display, serif);
+  font-size: 1rem;
+  text-align: right;
+}
+
 /* ── ICON NAVIGATION ─────────────────────────────────────────── */
 .zw-hero-nav-wrap {
   padding: 4px 16px 0;
@@ -296,7 +367,8 @@
   .zw-hero-nav-item,
   .zw-hero-secondary-panel,
   .zw-home-today-skeleton > *,
-  .zw-home-today-collapse {
+  .zw-home-today-collapse,
+  .zw-birth-entry-ticket {
     animation: none !important;
     transition: none !important;
   }
