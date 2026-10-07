@@ -19,14 +19,18 @@ test("homepage puts Today Guide before the birth flow and preserves the approved
   assert.ok(daily >= 0 && formMount > daily && report > formMount && deepReading > report);
   assert.match(route, /id="home-today-guide"/);
   assert.match(route, /const \[todayExpanded, setTodayExpanded\] = useState\(false\)/);
-  assert.match(route, /setTodayExpanded\(true\)/);
+  assert.match(route, /if \(id === "today"\) \{[\s\S]*setActiveSection\(null\);[\s\S]*setTodayExpanded\(true\);/);
+  assert.match(route, /setTodayExpanded\(false\);[\s\S]*setActiveSection\(\(prev\) => \(prev === id \? null : id\)\)/);
+  assert.match(route, /const openBirthBook = \(\) => \{[\s\S]*setTodayExpanded\(false\);[\s\S]*setActiveSection\("form"\)/);
   assert.match(route, /<LazyDailyAlmanacWidget embedded \/>/);
   assert.match(route, /<LazyDailyAlmanacWidget onExpand=\{\(\) => setTodayExpanded\(true\)\} \/>/);
   assert.match(route, /className="zw-home-today-collapse"/);
-  assert.doesNotMatch(route, /scrollIntoView/);
   assert.match(widget, /onExpand\?: \(\) => void/);
   assert.match(widget, /if \(onExpand\) onExpand\(\)/);
   assert.match(widget, /zhaowu-daily-details\$\{embedded \? " is-embedded-open"/);
+  assert.match(widget, /<span>1\/3<\/span>/);
+  assert.match(widget, /<span>2\/3<\/span>/);
+  assert.match(widget, /<span>3\/3<\/span>/);
   assert.doesNotMatch(route, /activeSection === "today"/);
   assert.match(route, /import\("@\/components\/daily-almanac-widget"\)/);
   assert.match(route, /navToday: "Today"/);
@@ -82,6 +86,9 @@ test("daily guide uses the canonical type system, readable touch targets and res
   assert.match(almanacStyle, /:not\(\[open\]\) \.zhaowu-today-guide__expanded/);
   assert.doesNotMatch(almanacStyle, /\.zhaowu-home-layout \.zhaowu-daily-details \{ display:none/);
   assert.match(design, /-webkit-font-smoothing:\s*antialiased/);
+  assert.match(design, /Today Guide native dashboard/);
+  assert.match(design, /grid-template-columns:\s*52px minmax\(0, 1fr\) auto/);
+  assert.match(design, /radial-gradient\(circle at 88% 4%/);
 });
 
 test("r46 preserves mobile-first whitespace and responsive directory grids", () => {
