@@ -27,17 +27,15 @@ test("login animation plays at most once per local calendar day", () => {
   assert.equal(shouldPlayLoginAnimation(storage, nextDay), true);
 });
 
-test("/login keeps its own non-looping daily animation with an explicit skip", async () => {
+test("/login is now a static Song artwork while the home IntroGate remains separate", async () => {
   const [login, shell, authClient] = await Promise.all([
     source("src/routes/login.tsx"),
     source("src/components/site-shell.tsx"),
     source("src/lib/auth/client.ts"),
   ]);
-  assert.match(login, /data-login-animation="first-login-visit"/);
-  assert.match(login, /window\.localStorage/);
-  assert.match(login, /data-login-animation-skip="true"/);
-  assert.match(login, /onEnded=\{\(\) => setShouldPlay\(false\)\}/);
-  assert.doesNotMatch(login, /\bloop\b/);
+  assert.match(login, /\/hero-gallery\/dragon-scholar\.webp/);
+  assert.match(login, /data-login-stage-static="true"/);
+  assert.doesNotMatch(login, /data-login-animation|<video|data-login-animation-skip/);
   assert.match(shell, /isHome \? <IntroGate \/> : null/);
   assert.doesNotMatch(authClient, /resetLoginAnimationSeen/);
   assert.doesNotMatch(authClient, /sessionStorage/);
