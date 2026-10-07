@@ -103,7 +103,7 @@ export function SiteUtilityDock() {
 
         <div className="zhaowu-site-guide-shortcuts" aria-label={copy.title}>
           <button type="button" onClick={() => go("/#analysisForm")}>{copy.report}</button>
-          <button type="button" onClick={() => window.location.assign("/#today")}>{copy.today}</button>
+          <button type="button" onClick={() => window.location.assign("/#home-today-guide")}>{copy.today}</button>
           <button type="button" onClick={() => window.location.assign("/fun-tests")}>{copy.tests}</button>
           <button type="button" onClick={() => go("/history")}>{copy.history}</button>
         </div>
