@@ -13,9 +13,9 @@ test("core destiny-book sections are folded by default (no `open` attribute) wit
   assert.doesNotMatch(unified, /<details className="zhaowu-unified-fold"[^>]*\bopen\b/);
 });
 
-test("specialist systems live in a collapsed tree and are computed only after it is opened", () => {
-  assert.match(unified, /data-specialist-tree/);
-  assert.match(unified, /\{open \? <SpecialistTreeBody/);
+test("specialist hub mounts only in the selected systems mode", () => {
+  assert.match(unified, /data-specialist-hub/);
+  assert.match(unified, /mode === "formal"[\s\S]*mode === "comic"[\s\S]*<SpecialistHub/);
   for (const id of ["ziwei", "qizheng", "western", "indian", "palm", "numerology"]) {
     assert.match(unified, new RegExp(`"${id}"`));
   }
@@ -26,7 +26,7 @@ test("full report folds summary overflow and the body note but keeps both headin
   assert.match(pages, /SUMMARY_VISIBLE_LINES/);
   assert.match(pages, /<section className="zhaowu-report-body-block">/);
   assert.ok(pages.indexOf("zhaowu-report-summary-block") < pages.indexOf('<section className="zhaowu-report-body-block">'));
-  assert.match(pages, /<summary><h4>\{copy\.body\}<\/h4><\/summary>/);
+  assert.match(pages, /<summary><h4><span className="zhaowu-report-stage-no">03<\/span>\{copy\.body\}<\/h4><\/summary>/);
 });
 
 test("the home page keeps specialist entrances inside the report and links to each free chart", () => {
@@ -34,7 +34,8 @@ test("the home page keeps specialist entrances inside the report and links to ea
   assert.doesNotMatch(unified, /data-specialist-link/);
   assert.match(unified, /zhaowu-specialist-free-link/);
   assert.match(unified, /SPECIALIST_ROUTES/);
-  assert.match(unified, /<ReportAccessGate/);
+  assert.match(unified, /href=\{entry\.route\}/);
+  assert.doesNotMatch(unified, /<ReportAccessGate/);
 });
 
 test("fold styles exist and respect reduced motion", () => {

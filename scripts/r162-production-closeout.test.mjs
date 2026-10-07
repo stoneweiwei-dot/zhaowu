@@ -54,7 +54,7 @@ test("owner console data is routed through the same-origin bridge", async () => 
   assert.match(state, /OWNER_DATA_ROUTES/);
   assert.match(state, /createOwnerCookieSession/);
   assert.match(account, /@\/lib\/bridge\/supabase-rest/);
-  assert.match(account, /@\/lib\/bridge\/background-assets/);
+  assert.match(gallery, /@\/lib\/bridge\/background-assets/);
   assert.match(gallery, /@\/lib\/bridge\/gallery-assets/);
   assert.match(loginVisuals, /@\/lib\/bridge\/gallery-assets/);
   assert.match(netlify, /api\/owner-data\.js/);

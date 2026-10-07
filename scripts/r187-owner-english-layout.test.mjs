@@ -15,7 +15,7 @@ test("r187 owner console removes instructional helper copy", async () => {
   assert.doesNotMatch(galleryRoute, /登入畫面與內容圖庫分開管理/);
   assert.doesNotMatch(gallery, /copy\.lead/);
   assert.doesNotMatch(loginVisuals, /copy\.lead/);
-  for (const file of [account, gallery, loginVisuals]) assert.match(file, /Storage read-only/);
+  for (const file of [gallery, loginVisuals]) assert.match(file, /Storage read-only/);
 });
 
 test("r187 English has independent Latin typography and mobile rows", async () => {

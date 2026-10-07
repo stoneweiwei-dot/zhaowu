@@ -145,8 +145,6 @@ function periodEvidence(result: AnalysisResult, locale: AppLocale): NarrativeEvi
 function buildEnglishNarrative(result: AnalysisResult): PersonalReportNarrative {
   const model = buildDecisionReportModel(result);
   const year = pillar(result, "year");
-  const month = pillar(result, "month");
-  const day = pillar(result, "day");
   const time = pillar(result, "time");
   const element = visualElement(result);
   const season = SEASON.en[monthSeason(result.chart.monthBranch)];

@@ -8,7 +8,6 @@ import {
 import { timezoneOffsetHours } from "./cities";
 import { stamp, toTrueSolar } from "./solar-time";
 import {
-  addCivilDays,
   dayGanzhi,
   dayunPeriods,
   diShi,

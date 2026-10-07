@@ -7,8 +7,10 @@ const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "u
 
 test("D60 uses geocentric positions including the Sun and receives the active birth as a prop", () => {
   const d60 = source("src/components/d60-karma-section.tsx");
-  assert.match(d60, /api\.Ecliptic\(api\.GeoVector\(key, date, true\)\)\.elon/);
-  assert.doesNotMatch(d60, /api\.EclipticLongitude\(/);
+  const engine = source("src/lib/indian-astrology/engine.ts");
+  assert.match(d60, /calculateD60/);
+  assert.match(engine, /api\.Ecliptic\(api\.GeoVector\(key, date, true\)\)\.elon/);
+  assert.doesNotMatch(engine, /api\.EclipticLongitude\(/);
   assert.match(d60, /reportBirth === undefined \? eventBirth : reportBirth/);
   const page = source("src/components/specialist-system-page.tsx");
   assert.match(page, /D60ReliabilityGate/);

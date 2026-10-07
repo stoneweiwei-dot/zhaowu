@@ -1,4 +1,4 @@
-import { COLOR_OF_ELEMENT, DAY_MASTER_NATURE, DIRECTION_OF_ELEMENT, ELEMENT_LABEL, HOUR_OF_ELEMENT } from "./constants";
+import { COLOR_OF_ELEMENT, DIRECTION_OF_ELEMENT, HOUR_OF_ELEMENT } from "./constants";
 import type { Chart, Element, LifeGuide, Pillar, QuestionKind, Reading, RelationPref } from "./types";
 import type { PalmReading } from "@/lib/core/types";
 import { composePalmReport } from "@/lib/palm/engine";
@@ -25,10 +25,6 @@ export function classifyQuestion(q: string): QuestionKind {
   if (MONEY_KEYS.some((k) => q.includes(k))) return "money";
   if (TIME_KEYS.some((k) => q.includes(k))) return "timing";
   return "self";
-}
-
-function joinEl(els: Element[]): string {
-  return els.join("、");
 }
 
 function isReady(col: Pillar): boolean {
@@ -145,11 +141,6 @@ function weather(chart: Chart): string {
   return `当前流年为${chart.currentYear}。`;
 }
 
-function clipQuestion(q: string): string {
-  const t = q.trim().replace(/[？?。！!]+$/g, "");
-  return t.length > 52 ? `${t.slice(0, 52)}…` : t;
-}
-
 function moveScore(text: string): number {
   const move = ["轉", "转", "離", "离", "走", "換", "换", "創", "创", "出國", "出国", "分手", "結束", "结束", "辭", "辞", "跳", "搬", "開", "开", "新工作", "新公司", "新職位", "新职位", "升遷", "升迁", "成長", "成长", "薪資高", "薪资高", "收入高"];
   const stay = ["留", "穩", "稳", "等", "維持", "维持", "繼續", "继续", "復合", "复合", "保留"];
@@ -249,8 +240,6 @@ function fiveElementWealthBehaviorHint(element: Element): string {
 
 export function interpret(question: string, chart: Chart, relation: RelationPref = "unset", palm: PalmReading | null = null): Reading {
   const kind = classifyQuestion(question);
-  const nature = DAY_MASTER_NATURE[chart.dayMaster] ?? "以日主功能为轴";
-  const dayP = p(chart, "day");
   const monthP = p(chart, "month");
   const timeP = p(chart, "time");
   const timeLine = isReady(timeP) ? `时柱${timeP.ganZhi}可用于观察输出与结果层。` : "时柱未定，涉及输出方式与晚期结果的判断降级。";
@@ -258,9 +247,6 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
   const guideLine = chart.usefulProvisional
     ? "颜色、方位、时段与宠物取象暂不下定论。"
     : `生活取象可参考${guide.colors[0]}这一系，但只作辅助。`;
-  const stemTell = STEM_TELL[chart.dayMaster] ?? nature;
-  const branchTell = BRANCH_TELL[dayP.zhi] ?? "日支用于观察贴身关系与日常承载。";
-  const q = clipQuestion(question);
   const now = weather(chart);
   const strong = chart.strength.tendency.includes("旺");
   const structure = analyzeStructure(chart);

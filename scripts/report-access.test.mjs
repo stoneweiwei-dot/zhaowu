@@ -45,10 +45,12 @@ test("full paid reports include a customer-specific birth profile without changi
   const quickBranch = gate.slice(gate.indexOf('level === "quick"'), gate.indexOf("<header>"));
   assert.doesNotMatch(quickBranch, /\{personal\}/);
 
-  for (const surface of [specialist, unified, palm, numerology]) {
+  for (const surface of [specialist, palm, numerology]) {
     assert.match(surface, /PersonalPaidProfile/);
     assert.match(surface, /personal=\{/);
   }
+  assert.match(unified, /href=\{entry\.route\}/);
+  assert.doesNotMatch(unified, /<ReportAccessGate|<PersonalPaidProfile/);
 });
 
 test("the paid personal page is derived from each customer's saved birth data, never the owner's chart", () => {
