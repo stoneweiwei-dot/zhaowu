@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 import type { LifeViewArticle } from "@/lib/life-view";
@@ -14,6 +14,7 @@ import { SHUSHU_ENDS_IN_CHOICE_ARTICLE } from "@/lib/life-view-long-form/shushu-
 import { AFTER_MIRACLES_PRACTICE_LONG_FORM } from "@/lib/life-view-long-form/after-miracles-practice";
 import { SEE_BREAK_RETURN_LONG_FORM } from "@/lib/life-view-long-form/see-break-return";
 import { TIME_IS_IT_FASTER_LONG_FORM } from "@/lib/life-view-long-form/time-is-it-faster";
+import { fetchLifeViewCounts, incrementLifeViewCount, type LifeViewCounts } from "@/lib/life-view-views";
 
 type ContentKind = "article" | "short-note";
 
@@ -58,7 +59,31 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
   const { locale } = useI18n();
   const [showAll, setShowAll] = useState(archiveMode);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [viewCounts, setViewCounts] = useState<LifeViewCounts>({});
+  const countedThisVisit = useRef(new Set<string>());
   const latest = CONTENTS[0] ?? null;
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchLifeViewCounts().then((counts) => { if (!cancelled) setViewCounts(counts); }).catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
+
+  function toggleArticle(articleId: string, isOpen: boolean) {
+    setOpenId(isOpen ? null : articleId);
+    if (isOpen || countedThisVisit.current.has(articleId)) return;
+    countedThisVisit.current.add(articleId);
+    void incrementLifeViewCount(articleId).then((count) => {
+      if (count == null) return;
+      setViewCounts((current) => ({ ...current, [articleId]: count }));
+    }).catch(() => undefined);
+  }
+
+  const viewsLabel = (articleId: string) => {
+    const count = viewCounts[articleId] ?? 0;
+    const formatted = new Intl.NumberFormat(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW").format(count);
+    return locale === "en" ? `${formatted} views` : locale === "zh-Hans" ? `已浏览 ${formatted}` : `已瀏覽 ${formatted}`;
+  };
 
   const copy = useMemo(() => {
     if (locale === "en") {
@@ -163,7 +188,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
             <article key={article.id} className={`${index ? "border-t border-line/60" : ""} py-4`}>
               <button
                 type="button"
-                onClick={() => setOpenId(isOpen ? null : article.id)}
+                onClick={() => toggleArticle(article.id, isOpen)}
                 className="flex w-full items-start justify-between gap-4 text-left"
                 aria-expanded={isOpen}
               >
@@ -172,9 +197,12 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                     <span>{index === 0 ? copy.latest : article.publishedAt}</span>
                     <span className="rounded-full border border-line bg-cream px-2 py-0.5 tracking-[0.08em] text-ink-mute">{kindLabel}</span>
                   </span>
-                  <strong className="mt-1 block font-display text-[1.05rem] font-semibold leading-6 text-ink sm:text-lg">{article.title[locale]}</strong>
-                  {!archiveMode && !showAll && !isOpen ? (
-                    <span className="mt-2 line-clamp-2 block text-sm leading-6 text-ink-soft">{latestParagraph}</span>
+                  <span className="mt-1 flex items-start justify-between gap-3">
+                    <strong className="min-w-0 font-display text-[1.05rem] font-semibold leading-6 text-ink sm:text-lg">{article.title[locale]}</strong>
+                    <span className="shrink-0 pt-0.5 text-[10px] font-medium tracking-[0.04em] text-ink-mute">{viewsLabel(article.id)}</span>
+                  </span>
+                  {!isOpen ? (
+                    <span className="mt-2 line-clamp-2 block text-sm leading-6 text-ink-soft">{article.summary?.[locale] || (index === 0 ? latestParagraph : paragraphs[0])}</span>
                   ) : null}
                 </span>
                 <span className="shrink-0 pt-1 text-sm text-cinnabar">{isOpen ? "−" : "+"}</span>
@@ -182,7 +210,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
 
               {isOpen ? (
                 <div className="mt-4 border-l border-cinnabar/20 pl-4 text-[15px] leading-8 text-ink">
-                  <time className="mb-3 block text-xs text-ink-mute" dateTime={article.publishedAt}>{article.publishedAt}</time>
+                  <div className="mb-3 flex items-center justify-between gap-3 text-xs text-ink-mute"><time dateTime={article.publishedAt}>{article.publishedAt}</time><span>{viewsLabel(article.id)}</span></div>
                   {paragraphs.map((paragraph, paragraphIndex) => {
                     const illustration = article.illustrations?.find((item) => item.afterParagraph === paragraphIndex + 1);
                     return (

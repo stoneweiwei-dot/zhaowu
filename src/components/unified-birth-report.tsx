@@ -2,9 +2,7 @@ import { Fragment, useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
-import { SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
-import { ReportAccessGate } from "@/components/report-access-gate";
-import { PersonalPaidProfile } from "@/components/personal-paid-profile";
+import { ComicMascot, SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
 import type { ReportSystemId } from "@/lib/report-access";
 import {
   buildIndianReading,
@@ -73,9 +71,11 @@ function reportCopy(locale: Locale) {
     structureRule: "This reading does not try to make the five elements equal or use a ‘replace what is missing’ rule. It reads season, structure, functional remedy, flow and capacity first; a natural bias is not a defect by itself.",
     imageryRule: "No Heavenly Stem is inherently better or worse. Stem imagery translates function into a picture; it never overrides the full-chart judgement.",
     formalMode: "Full Destiny Book",
-    comicMode: "Comic Lite",
+    comicMode: "Comic Destiny Book",
+    systemsMode: "Six Systems",
     comicKicker: "YOUR STORY · SIX FRAMES",
-    comicLead: "Read the main thread first. Open any frame when you want the full wording behind it.",
+    comicLead: "Six illustrated scenes first; text stays secondary and opens only when you want detail.",
+    systemsLead: "All six specialist systems are visible here. Open the one you want; none is buried under the full report.",
     frame: "Frame",
     openFull: "Expand",
     closeFull: "Collapse",
@@ -99,9 +99,11 @@ function reportCopy(locale: Locale) {
     structureRule: "这份命书不把五行凑平均，也不按“缺什么补什么”处理；先看月令、格局、病药、流通与承载，偏向本身不是缺陷。",
     imageryRule: "十干没有高下。天干图像只是把功能翻成容易理解的画面，不替代整局判断。",
     formalMode: "完整命书",
-    comicMode: "漫画 Lite",
+    comicMode: "漫画命书",
+    systemsMode: "六大系统",
     comicKicker: "你的故事 · 六格读完",
-    comicLead: "先看每一格的主线；想看完整判断时，再展开该格文字。",
+    comicLead: "先看六格漫画把主线看懂；文字解释放在后面，需要时再展开。",
+    systemsLead: "六套独立系统全部直接显示，不再藏在完整报告最下方。",
     frame: "第",
     openFull: "展开",
     closeFull: "收起",
@@ -125,9 +127,11 @@ function reportCopy(locale: Locale) {
     structureRule: "這份命書不把五行湊平均，也不按「缺什麼補什麼」處理；先看月令、格局、病藥、流通與承載，偏向本身不是缺陷。",
     imageryRule: "十干沒有高下。天干圖像只是把功能翻成容易理解的畫面，不替代整局判斷。",
     formalMode: "完整命書",
-    comicMode: "漫畫 Lite",
+    comicMode: "漫畫命書",
+    systemsMode: "六大系統",
     comicKicker: "你的故事 · 六格讀完",
-    comicLead: "先看每一格的主線；想看完整判斷時，再展開該格文字。",
+    comicLead: "先看六格漫畫把主線看懂；文字解釋放在後面，需要時再展開。",
+    systemsLead: "六套獨立系統全部直接顯示，不再藏在完整報告最下方。",
     frame: "第",
     openFull: "展開",
     closeFull: "收起",
@@ -142,7 +146,7 @@ function reportCopy(locale: Locale) {
 
 export function UnifiedBirthReport({ birth, locale, foundation }: { birth: SharedBirthRecord; locale: Locale; foundation: Foundation }) {
   const copy = reportCopy(locale);
-  const [mode, setMode] = useState<"formal" | "comic">("formal");
+  const [mode, setMode] = useState<"formal" | "comic" | "systems">("formal");
   const sections = useMemo<ReportSection[]>(() => {
     const western = buildWesternReading(birth, locale);
     const ziwei = buildZiweiReading(birth, locale);
@@ -216,31 +220,39 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
         <div className="zhaowu-report-mode-switch" role="group" aria-label={copy.title}>
           <button type="button" aria-pressed={mode === "formal"} onClick={() => setMode("formal")}>{copy.formalMode}</button>
           <button type="button" aria-pressed={mode === "comic"} onClick={() => setMode("comic")}>{copy.comicMode}</button>
+          <button type="button" aria-pressed={mode === "systems"} onClick={() => setMode("systems")}>{copy.systemsMode}</button>
         </div>
       </header>
       {mode === "formal" ? (
-        <div className="zhaowu-unified-report-flow" data-report-mode="formal">
-          {sections.map((section, index) => (
-            <Fragment key={section.title}>
-              <article>
-                <details className="zhaowu-unified-fold" data-report-fold>
-                  <summary>
-                    <h4>{section.title}</h4>
-                    {section.body[0] ? <span className="zhaowu-unified-fold__teaser">{section.body[0]}</span> : null}
-                  </summary>
-                  <div className="zhaowu-unified-fold__body">
-                    {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                  </div>
-                </details>
-              </article>
-              {index === 0 ? <SongComicReportInsert dayMaster={foundation.dayMaster} locale={locale} /> : null}
-            </Fragment>
-          ))}
-        </div>
-      ) : (
+        <>
+          <nav className="zhaowu-report-reading-path" aria-label={locale === "en" ? "Reading order" : locale === "zh-Hans" ? "阅读顺序" : "閱讀順序"}>
+            {sections.map((section, index) => <span key={section.title}><b>{String(index + 1).padStart(2, "0")}</b>{section.title}</span>)}
+          </nav>
+          <div className="zhaowu-unified-report-flow" data-report-mode="formal">
+            {sections.map((section, index) => (
+              <Fragment key={section.title}>
+                <article>
+                  <details className="zhaowu-unified-fold" data-report-fold>
+                    <summary>
+                      <span className="zhaowu-unified-fold__step">{String(index + 1).padStart(2, "0")}</span>
+                      <h4>{section.title}</h4>
+                      {section.body[0] ? <span className="zhaowu-unified-fold__teaser">{section.body[0]}</span> : null}
+                    </summary>
+                    <div className="zhaowu-unified-fold__body">
+                      {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                    </div>
+                  </details>
+                </article>
+                {index === 0 ? <SongComicReportInsert dayMaster={foundation.dayMaster} locale={locale} /> : null}
+              </Fragment>
+            ))}
+          </div>
+        </>
+      ) : mode === "comic" ? (
         <ComicLiteReport sections={sections} dayMaster={foundation.dayMaster} locale={locale} copy={copy} />
+      ) : (
+        <SpecialistHub birth={birth} locale={locale} copy={copy} />
       )}
-      <SpecialistTree birth={birth} locale={locale} copy={copy} />
       <SongComicShareCard dayMaster={foundation.dayMaster} locale={locale} />
     </section>
   );
@@ -271,22 +283,8 @@ function fromReading(id: ReportSystemId, reading: SpecialistReading): Specialist
   };
 }
 
-// Optional method-by-method readings. Collapsed by default and computed only once the tree is opened,
-// so the main report stays short and the heavier engines (e.g. D60) never run for readers who skip it.
-function SpecialistTree({ birth, locale, copy }: { birth: SharedBirthRecord; locale: Locale; copy: ReturnType<typeof reportCopy> }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <details className="zhaowu-specialist-tree" data-specialist-tree open={open} onToggle={(event) => setOpen(event.currentTarget.open)}>
-      <summary>
-        <strong>{copy.specialistTitle}</strong>
-        <span>{copy.specialistLead}</span>
-      </summary>
-      {open ? <SpecialistTreeBody birth={birth} locale={locale} copy={copy} /> : null}
-    </details>
-  );
-}
-
-function SpecialistTreeBody({ birth, locale, copy }: { birth: SharedBirthRecord; locale: Locale; copy: ReturnType<typeof reportCopy> }) {
+// Six specialist systems are a first-class report mode rather than a buried disclosure.
+function SpecialistHub({ birth, locale, copy }: { birth: SharedBirthRecord; locale: Locale; copy: ReturnType<typeof reportCopy> }) {
   const entries = useMemo<SpecialistEntry[]>(() => {
     const profile = NUMEROLOGY_PROFILES[calculateLifeNumber(birth.year, birth.month, birth.day).number];
     return [
@@ -304,40 +302,36 @@ function SpecialistTreeBody({ birth, locale, copy }: { birth: SharedBirthRecord;
     ];
   }, [birth, copy.numerology, locale]);
 
-  return (
-    <div className="zhaowu-specialist-tree__list">
-      {entries.map((entry) => (
-        <details key={entry.id} className="zhaowu-specialist-node" data-specialist-node={entry.id}>
-          <summary><h5>{entry.title}</h5></summary>
-          <div className="zhaowu-specialist-node__body">
-            <a className="zhaowu-specialist-free-link" href={entry.route}>{copy.freeChart}</a>
-            <ReportAccessGate
-              system={entry.id}
-              locale={locale}
-              birth={birth}
-              quick={<SpecialistEntryContent entry={entry} quick />}
-              personal={<PersonalPaidProfile birth={birth} locale={locale} />}
-              full={<SpecialistEntryContent entry={entry} />}
-            />
-          </div>
-        </details>
-      ))}
-    </div>
-  );
-}
+  const labels: Partial<Record<ReportSystemId, string>> = {
+    indian: "D60",
+    palm: locale === "en" ? "One-Palm" : locale === "zh-Hans" ? "一掌经" : "一掌經",
+  };
 
-function SpecialistEntryContent({ entry, quick = false }: { entry: SpecialistEntry; quick?: boolean }) {
-  const sections = quick ? entry.sections.slice(0, 1) : entry.sections;
-  return <>
-    {entry.warning ? <p className="zhaowu-specialist-node__warning">{entry.warning}</p> : null}
-    {entry.lead ? <p>{entry.lead}</p> : null}
-    {sections.map((section, index) => (
-      <section key={`${section.title}-${index}`}>
-        {section.title && section.title !== entry.title && !/^\d+$/.test(section.title.trim()) ? <h6>{section.title}</h6> : null}
-        {section.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
-      </section>
-    ))}
-  </>;
+  return (
+    <section className="zhaowu-specialist-hub" data-specialist-hub>
+      <header>
+        <p>{copy.systemsMode}</p>
+        <h4>{copy.specialistTitle}</h4>
+        <span>{copy.systemsLead}</span>
+      </header>
+      <div className="zhaowu-specialist-hub__grid">
+        {entries.map((entry, index) => {
+          const preview = entry.lead || entry.sections[0]?.lines[0] || "";
+          return (
+            <article key={entry.id} className="zhaowu-specialist-hub__card" data-specialist-node={entry.id}>
+              <div className="zhaowu-specialist-hub__meta">
+                <b>{String(index + 1).padStart(2, "0")}</b>
+                {labels[entry.id] ? <em>{labels[entry.id]}</em> : null}
+              </div>
+              <h5>{entry.title}</h5>
+              {preview ? <p>{preview}</p> : null}
+              <a className="zhaowu-specialist-free-link" href={entry.route}>{copy.freeChart} →</a>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
 }
 
 function ComicLiteReport({
@@ -370,10 +364,13 @@ function ComicLiteReport({
             data-comic-scene={index + 1}
             aria-label={locale === "en" ? `${copy.frame} ${index + 1}: ${section.title}` : `${copy.frame}${index + 1}格：${section.title}`}
           >
-            <i className="zhaowu-comic-lite__no" aria-hidden="true">{String(index + 1).padStart(2, "0")}</i>
+            <div className="zhaowu-comic-lite__art" aria-hidden="true">
+              <span className="zhaowu-comic-lite__scene-no">{String(index + 1).padStart(2, "0")}</span>
+              <ComicMascot stem={stem} />
+              <div className="zhaowu-comic-lite__bubble">{section.body[0]}</div>
+            </div>
             <div className="zhaowu-comic-lite__copy">
               <h5>{section.title}</h5>
-              <strong>{section.body[0]}</strong>
               {section.body.length > 1 ? (
                 <details>
                   <summary><span className="when-closed">{copy.openFull}</span><span className="when-open">{copy.closeFull}</span></summary>
