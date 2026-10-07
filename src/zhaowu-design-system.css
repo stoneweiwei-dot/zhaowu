@@ -8869,3 +8869,4 @@ html body .zw-ink-board[data-lang="en"] .zw-ink-relations li b { width: auto; mi
 html body .zw-ink-board[data-lang="en"] .zw-ink-wheel text { font-size: 8.5px; }
 html body .zw-ink-board[data-lang="en"] .zw-ink-paper h4 { letter-spacing: .06em; }
 html body .zw-ink-board[data-lang="en"] .zw-ink-weather strong { font-size: 18px; }
+html body .zw-ink-board[data-lang="en"] .zw-ink-city span { font-size: 10px; overflow-wrap: normal; word-break: normal; hyphens: auto; }
