@@ -30,8 +30,8 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   const [assets, setAssets] = useState<GalleryAsset[]>([]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [group, setGroup] = useState<OwnerGalleryGroup>("song-master");
-  const [open, setOpen] = useState(false);
+  const [group, setGroup] = useState<OwnerGalleryGroup>("owner-upload");
+  const [open, setOpen] = useState(true);
   const [shown, setShown] = useState(PAGE_SIZE);
   const [preview, setPreview] = useState<GalleryAsset | null>(null);
   const [backgroundBusyId, setBackgroundBusyId] = useState<string | null>(null);

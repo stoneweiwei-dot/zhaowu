@@ -42,6 +42,7 @@ test("owner-selected homepage wallpaper is consumed and remains visible on the l
   assert.match(gallery, /setBackgroundWallpaper\(session, background\.id\)/);
   assert.match(hero, /\.zw-hero-home\s*\{[^}]*background:\s*transparent;/s);
   assert.match(hero, /\.zhaowu-home-sheet-shell\.zhaowu-route-home::before\s*\{[^}]*var\(--zhaowu-shell-wallpaper/s);
-  assert.match(hero, /\.zw-hero-carousel-controls\s*\{[^}]*display:\s*flex;/s);
-  assert.match(hero, /\.zw-hero-dots\s*\{[^}]*display:\s*flex !important;/s);
+  const home = await source("src/routes/index.tsx");
+  assert.doesNotMatch(home, /zw-hero-gallery|HERO_PAINTINGS/);
+  assert.match(gallery, /useState<OwnerGalleryGroup>\("owner-upload"\)/);
 });

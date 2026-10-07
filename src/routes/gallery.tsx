@@ -12,7 +12,7 @@ type MediaView = "login" | "content";
 function GalleryPage() {
   const { locale } = useI18n();
   const { user, session, isPending } = useCurrentUserState();
-  const [view, setView] = useState<MediaView>("login");
+  const [view, setView] = useState<MediaView>("content");
   const tx = (hant: string, hans: string, en: string) => locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
 
   if (isPending) return <div className="mx-auto h-52 max-w-3xl animate-pulse rounded-xl bg-cream/70" />;
@@ -47,7 +47,7 @@ function GalleryPage() {
             onClick={() => setView("content")}
             className={`min-h-11 rounded-lg border px-3 text-sm font-medium ${view === "content" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-paper/55 text-ink-soft"}`}
           >
-            {tx("內容圖片", "内容图片", "Content images")}
+            {tx("首頁背景／內容圖片", "首页背景／内容图片", "Home background / images")}
           </button>
         </div>
       </section>

@@ -404,84 +404,6 @@ function SpecialistHub({ birth, locale, copy }: { birth: SharedBirthRecord; loca
   );
 }
 
-function ComicSceneArt({ scene, stem }: { scene: number; stem: string }) {
-  const common = {
-    viewBox: "0 0 360 220",
-    className: `zhaowu-comic-scene zhaowu-comic-scene--${scene}`,
-    focusable: "false",
-    "aria-hidden": true,
-  } as const;
-
-  if (scene === 1) return (
-    <svg {...common}>
-      <circle className="wash sun" cx="286" cy="50" r="28" />
-      <path className="wash hill" d="M0 178 Q58 92 120 160 Q176 78 240 160 Q294 104 360 168 V220 H0Z" />
-      <path className="ink path" d="M170 220 C170 188 204 164 219 140 C235 115 236 94 238 72" />
-      <circle className="ink person-head" cx="133" cy="138" r="8" />
-      <path className="ink person" d="M133 148 L130 180 M130 158 L114 171 M131 159 L146 166 M130 180 L118 205 M130 180 L143 204" />
-      <text className="seal" x="24" y="36">{stem}</text>
-    </svg>
-  );
-  if (scene === 2) return (
-    <svg {...common}>
-      <rect className="wash window" x="210" y="35" width="112" height="96" rx="4" />
-      <circle className="wash moon" cx="270" cy="74" r="22" />
-      <path className="ink window-line" d="M266 35 V131 M210 83 H322" />
-      <path className="wash floor" d="M0 164 Q92 146 183 170 T360 164 V220 H0Z" />
-      <circle className="ink person-head" cx="126" cy="115" r="9" />
-      <path className="ink person" d="M126 126 Q114 145 118 168 L151 171 M118 145 L92 153 M119 147 L144 151 M119 168 L103 197 M146 171 L158 197" />
-      <path className="accent" d="M62 80 Q92 54 118 82 Q92 103 62 80Z" />
-      <text className="seal" x="24" y="36">{stem}</text>
-    </svg>
-  );
-  if (scene === 3) return (
-    <svg {...common}>
-      <path className="wash water" d="M0 154 Q50 144 100 154 T200 154 T300 154 T400 154 V220 H0Z" />
-      <path className="ink bridge" d="M48 143 Q180 72 312 143 M48 143 H312 M78 130 V160 M126 107 V149 M180 96 V145 M234 107 V149 M282 130 V160" />
-      <circle className="ink person-head" cx="145" cy="105" r="7" />
-      <path className="ink person" d="M145 113 L144 139 M144 120 L133 129 M144 121 L154 129 M144 139 L137 151 M144 139 L151 151" />
-      <circle className="ink person-head" cx="212" cy="105" r="7" />
-      <path className="ink person" d="M212 113 L213 139 M213 120 L202 129 M213 121 L224 129 M213 139 L206 151 M213 139 L220 151" />
-      <circle className="accent" cx="180" cy="66" r="8" />
-      <text className="seal" x="24" y="36">{stem}</text>
-    </svg>
-  );
-  if (scene === 4) return (
-    <svg {...common}>
-      <rect className="wash room" x="40" y="44" width="280" height="136" rx="8" />
-      <path className="ink shelf" d="M70 76 H150 M70 102 H150 M70 128 H150 M82 76 V128 M116 76 V128" />
-      <path className="ink desk" d="M175 138 H300 M193 138 V190 M282 138 V190" />
-      <circle className="ink person-head" cx="225" cy="92" r="8" />
-      <path className="ink person" d="M225 101 L224 132 M224 113 L207 125 M224 113 L241 125 M224 132 L216 151 M224 132 L233 151" />
-      <rect className="accent" x="252" y="112" width="30" height="20" rx="3" />
-      <text className="seal" x="24" y="36">{stem}</text>
-    </svg>
-  );
-  if (scene === 5) return (
-    <svg {...common}>
-      <circle className="wash sun" cx="78" cy="62" r="23" />
-      <circle className="wash moon" cx="292" cy="58" r="20" />
-      <path className="wash hill" d="M0 178 Q64 124 116 168 Q175 92 236 166 Q300 116 360 174 V220 H0Z" />
-      <path className="ink path" d="M176 220 C194 190 157 174 177 149 C198 124 257 127 270 96 C279 75 268 62 260 54" />
-      <circle className="ink person-head" cx="151" cy="146" r="7" />
-      <path className="ink person" d="M151 154 L151 179 M151 160 L140 169 M151 160 L163 168 M151 179 L144 196 M151 179 L159 196" />
-      <text className="seal" x="24" y="36">{stem}</text>
-    </svg>
-  );
-  return (
-    <svg {...common}>
-      <path className="wash ground" d="M0 176 Q74 150 142 176 Q214 148 360 176 V220 H0Z" />
-      <path className="ink gate" d="M118 60 V162 M242 60 V162 M102 60 H258 M126 84 H234" />
-      <path className="ink fork" d="M180 220 V164 M180 164 C162 144 139 131 112 124 M180 164 C198 145 221 132 250 124" />
-      <circle className="ink person-head" cx="180" cy="136" r="8" />
-      <path className="ink person" d="M180 145 L180 176 M180 154 L166 166 M180 154 L195 165 M180 176 L172 198 M180 176 L188 198" />
-      <circle className="accent lantern" cx="200" cy="163" r="8" />
-      <path className="accent" d="M200 155 V145" />
-      <text className="seal" x="24" y="36">{stem}</text>
-    </svg>
-  );
-}
-
 function ComicLiteReport({
   sections,
   dayMaster,
@@ -514,11 +436,11 @@ function ComicLiteReport({
           >
             <div className="zhaowu-comic-lite__art" aria-hidden="true">
               <span className="zhaowu-comic-lite__scene-no">{String(index + 1).padStart(2, "0")}</span>
-              <ComicSceneArt scene={index + 1} stem={stem} />
-              <div className="zhaowu-comic-lite__bubble">{section.body[0]}</div>
+              <img src={`/comic/story-v2/scene-${index + 1}.webp`} alt="" loading="lazy" decoding="async" width="940" height="279" />
             </div>
             <div className="zhaowu-comic-lite__copy">
               <h5>{section.title}</h5>
+              <p className="zhaowu-comic-lite__caption">{section.body[0]}</p>
               {section.body.length > 1 ? (
                 <details>
                   <summary><span className="when-closed">{copy.openFull}</span><span className="when-open">{copy.closeFull}</span></summary>

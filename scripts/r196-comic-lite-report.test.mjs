@@ -40,22 +40,17 @@ function scrollBlock(css) {
   return css.slice(start, end);
 }
 
-test("r226 six frames are visibly illustrated while keeping text secondary", async () => {
-  const css = await source("src/zhaowu-design-system.css");
+test("six report frames use finished local art and keep each customer's words readable", async () => {
   const report = await source("src/components/unified-birth-report.tsx");
-  const legacy = scrollBlock(css);
-  const r226 = css.slice(css.indexOf("r226 — mobile clarity pass"));
-  assert.doesNotMatch(report, /ComicMascot/);
-  assert.match(report, /ComicSceneArt/);
-  for (const scene of [1, 2, 3, 4, 5, 6]) assert.match(report, new RegExp(`scene === ${scene}|scene === [1-5]`));
-  assert.match(report, /zhaowu-comic-lite__art/);
-  assert.match(report, /zhaowu-comic-lite__bubble/);
-  assert.match(report, /zhaowu-comic-lite__more/);
-  assert.match(r226, /\.zhaowu-comic-lite__art/);
-  assert.match(r226, /\.zhaowu-comic-scene/);
-  assert.match(r226, /linear-gradient/);
-  assert.match(r226, /border-radius: 18px/);
-  assert.match(legacy, /prefers-reduced-motion: reduce/);
+  const css = await source("src/zhaowu-design-system.css");
+  const { stat } = await import("node:fs/promises");
+  assert.doesNotMatch(report, /ComicSceneArt|zhaowu-comic-lite__bubble/);
+  assert.match(report, /story-v2\/scene-\$\{index \+ 1\}\.webp/);
+  assert.match(report, /zhaowu-comic-lite__caption/);
+  assert.match(css, /\.zhaowu-comic-lite__art img/);
+  for (let scene = 1; scene <= 6; scene++) {
+    assert.ok((await stat(new URL(`../public/comic/story-v2/scene-${scene}.webp`, import.meta.url))).size > 1000);
+  }
 });
 
 function luminance(hex) {
