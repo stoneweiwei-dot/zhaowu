@@ -141,3 +141,32 @@ test("Today location keeps the visible permission feedback for first-time precis
   assert.match(design, /\.zhaowu-today-location-inline/);
   assert.match(design, /\.zhaowu-today-location-error/);
 });
+
+
+test("homepage Today Guide upgrades itself to the customer-specific edition when a saved birth record exists", () => {
+  assert.match(widget, /readSharedBirthRecord/);
+  assert.match(widget, /SHARED_BIRTH_EVENT/);
+  assert.match(widget, /buildPersonalPaidProfile/);
+  assert.match(widget, /data-personalized=\{personal \? "true" : "false"\}/);
+  assert.match(widget, /personal\.birthLine/);
+  assert.match(widget, /personal\.pillars/);
+  assert.match(widget, /personal\.core/);
+  assert.match(widget, /personal\.currentCycle/);
+  assert.match(widget, /personal\.relations/);
+  assert.match(widget, /personal\.colorSwatches/);
+  assert.match(widget, /personal\.colors/);
+  assert.match(widget, /personal\.quietColors/);
+  assert.match(widget, /personal\.materials/);
+  assert.match(widget, /personal\.persona/);
+  assert.match(widget, /DailyColorsModule variant="embed" date=\{now\}/);
+  assert.doesNotMatch(widget, /壬辰|金水結構|金水结构|辰辰自刑/);
+});
+
+test("customer-specific homepage almanac keeps the paid Personal Edition visual language without a nested paywall", () => {
+  assert.match(almanacStyle, /zhaowu-today-personal-badge/);
+  assert.match(almanacStyle, /zhaowu-today-personal-pillars/);
+  assert.match(almanacStyle, /zhaowu-today-personal-swatches/);
+  assert.match(almanacStyle, /zhaowu-today-personal-mask/);
+  assert.match(almanacStyle, /#173f35/);
+  assert.doesNotMatch(widget, /ReportAccessGate/);
+});

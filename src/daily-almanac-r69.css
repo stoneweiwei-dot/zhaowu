@@ -348,3 +348,235 @@
     margin-bottom: 28px !important;
   }
 }
+
+
+/* R219 — homepage Today Guide can become a customer-specific edition after a birth record exists. */
+.zhaowu-home-layout .zhaowu-today-guide[data-personalized="true"] {
+  background:
+    radial-gradient(circle at 86% 10%, rgba(229, 202, 142, .14), transparent 28%),
+    radial-gradient(circle at 9% 88%, rgba(120, 159, 140, .10), transparent 31%),
+    #173f35;
+}
+
+.zhaowu-home-layout .zhaowu-today-guide__summary-meta .is-personal {
+  color: #f0d89a;
+  font-weight: 650;
+  letter-spacing: .05em;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-badge {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  border: 1px solid rgba(226, 198, 137, .5);
+  border-radius: 999px;
+  padding: 0 11px;
+  color: #f0d99c;
+  background: rgba(7, 35, 29, .24);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
+.zhaowu-home-layout .zhaowu-today-card.is-personal-birth,
+.zhaowu-home-layout .zhaowu-today-card.is-personal-core,
+.zhaowu-home-layout .zhaowu-today-card.is-personal-relations {
+  grid-column: 1 / -1;
+}
+
+.zhaowu-home-layout .zhaowu-today-card.is-personal-birth {
+  background:
+    linear-gradient(145deg, rgba(255,252,244,.98), rgba(239,233,218,.96)),
+    var(--tg-paper);
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-pillars > span {
+  display: grid;
+  min-width: 0;
+  justify-items: center;
+  gap: 4px;
+  padding: 9px 4px;
+  border: 1px solid rgba(42, 82, 68, .14);
+  border-radius: 10px;
+  background: rgba(227, 231, 220, .58);
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-pillars > span[data-ready="false"] {
+  opacity: .58;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-pillars i {
+  color: #8a7653;
+  font-size: 9px;
+  font-style: normal;
+  letter-spacing: .08em;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-pillars b {
+  color: #275446;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-size: clamp(16px, 4vw, 20px);
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.zhaowu-home-layout .zhaowu-today-card.is-personal-core > strong {
+  font-size: 14px;
+  line-height: 1.78;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-tags > span {
+  display: inline-flex;
+  min-height: 31px;
+  align-items: center;
+  border: 1px solid rgba(67, 92, 81, .16);
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: #4b5f56;
+  background: rgba(255,255,255,.48);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-wardrobe {
+  display: grid;
+  gap: 12px;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-swatches {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid rgba(225,198,138,.32);
+  border-radius: 17px;
+  background: rgba(8,39,32,.38);
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-swatches > span {
+  display: grid;
+  min-width: 0;
+  justify-items: center;
+  gap: 8px;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-swatches i {
+  width: 100%;
+  aspect-ratio: 1.35;
+  border: 1px solid rgba(245,233,201,.22);
+  border-radius: 11px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-swatches b {
+  color: #f5eddb;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe-notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe-notes > span {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(225,198,138,.22);
+  border-radius: 12px;
+  background: rgba(12, 49, 41, .58);
+}
+
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe-notes small {
+  display: block;
+  margin: 0;
+  color: rgba(246,236,211,.62);
+  font-size: 10px;
+  letter-spacing: .06em;
+}
+
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe-notes strong {
+  display: block;
+  margin-top: 5px;
+  color: #f5eddb;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-mask {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 12px;
+  border-top: 1px solid rgba(87, 94, 86, .16);
+  padding-top: 10px;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-mask small {
+  margin: 0;
+  color: #8a7652;
+  font-size: 10px;
+  letter-spacing: .08em;
+}
+
+.zhaowu-home-layout .zhaowu-today-personal-mask strong {
+  color: #285a4b;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-size: 16px;
+  font-weight: 650;
+}
+
+@media (max-width: 560px) {
+  .zhaowu-home-layout .zhaowu-today-guide__hero {
+    align-items: flex-start;
+  }
+
+  .zhaowu-home-layout .zhaowu-today-personal-badge {
+    max-width: 8rem;
+    min-height: 28px;
+    padding: 0 9px;
+    font-size: 9px;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .zhaowu-home-layout .zhaowu-today-personal-pillars {
+    gap: 5px;
+  }
+
+  .zhaowu-home-layout .zhaowu-today-personal-pillars > span {
+    padding: 8px 2px;
+  }
+
+  .zhaowu-home-layout .zhaowu-today-personal-swatches {
+    gap: 6px;
+    padding: 12px 10px;
+  }
+
+  .zhaowu-home-layout .zhaowu-today-personal-swatches b {
+    font-size: 9px;
+  }
+
+  .zhaowu-home-layout .zhaowu-today-guide__wardrobe-notes {
+    grid-template-columns: 1fr;
+  }
+}
