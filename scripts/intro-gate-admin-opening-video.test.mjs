@@ -56,7 +56,8 @@ test("the /gallery admin panel is relabeled as the homepage opening-video manage
   // Internal identifiers (data attributes, section id, component/file name)
   // are left unchanged on purpose — only owner-facing copy moved.
   assert.match(manager, /id="login-visuals"/);
-  assert.match(manager, /data-owner-selectable-file="login-visuals"/);
+  assert.doesNotMatch(manager, /data-owner-bulk-toolbar="login-visuals"/);
+  assert.match(manager, /setLoginVisualCurrent/);
 });
 
 test("/login's own sign-in screen is untouched by the relabel", async () => {

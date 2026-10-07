@@ -27,10 +27,15 @@ test("owner-selected homepage wallpaper is consumed and remains visible on the l
   const shell = await source("src/components/site-shell.tsx");
   const account = await source("src/routes/account.tsx");
   const hero = await source("src/home-hero-v1.css");
+  const gallery = await source("src/components/owner-gallery-manager.tsx");
   assert.match(shell, /listPublicBackgrounds/);
   assert.match(shell, /chooseDailyBackground/);
   assert.match(shell, /--zhaowu-shell-wallpaper/);
   assert.match(shell, /zhaowu-background-change/);
+  assert.match(gallery, /setAsHomepageBackground/);
+  assert.match(gallery, /uploadBackground/);
+  assert.match(gallery, /setBackgroundWallpaper/);
+  assert.doesNotMatch(account, /onClick=\{\(\) => setOwnerView\("backgrounds"\)\}/);
   assert.match(account, /ownerView !== "backgrounds"/);
   assert.match(account, /setBackgroundHistoryOpen\(true\)/);
   assert.match(account, /loadBackgroundHistory\(0\)/);

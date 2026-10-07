@@ -644,7 +644,7 @@ function AccountPage() {
       </section>
 
       {user.isOwner ? (
-        <nav className="grid grid-cols-2 gap-2" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
+        <nav className="grid grid-cols-1 gap-2 sm:grid-cols-3" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
           <button
             type="button"
             aria-pressed={ownerView === "reports"}
@@ -654,18 +654,9 @@ function AccountPage() {
             <span className="block text-[10px] tracking-[0.16em] opacity-65">REPORTS</span>
             <span className="mt-1 block">{tr(locale, "報告管理", "报告管理", "Reports")}</span>
           </button>
-          <button
-            type="button"
-            aria-pressed={ownerView === "backgrounds"}
-            onClick={() => setOwnerView("backgrounds")}
-            className={"min-h-14 rounded-xl border px-4 py-3 text-left text-sm font-medium " + (ownerView === "backgrounds" ? "border-[#315f51] bg-[#315f51]" : "border-line bg-cream/80 text-ink")}
-          >
-            <span className={"block text-[10px] tracking-[0.16em] opacity-75 " + (ownerView === "backgrounds" ? "text-[#fffaf0]" : "text-ink-mute")}>HOME</span>
-            <span className={"mt-1 block " + (ownerView === "backgrounds" ? "text-[#fffaf0]" : "text-ink")}>{tr(locale, "首頁背景", "首页背景", "Home backgrounds")}</span>
-          </button>
           <Link to="/gallery" className="min-h-14 rounded-xl border border-line bg-cream/80 px-4 py-3 text-left text-sm font-medium text-ink">
             <span className="block text-[10px] tracking-[0.16em] text-ink-mute">MEDIA</span>
-            <span className="mt-1 block">{tr(locale, "影片與圖片", "视频与图片", "Media library")}</span>
+            <span className="mt-1 block">{tr(locale, "圖片與開場影片", "图片与开场视频", "Images & opening video")}</span>
           </Link>
           <Link to="/social" className="min-h-14 rounded-xl border border-line bg-cream/80 px-4 py-3 text-left text-sm font-medium text-ink">
             <span className="block text-[10px] tracking-[0.16em] text-cinnabar">PUBLISH</span>

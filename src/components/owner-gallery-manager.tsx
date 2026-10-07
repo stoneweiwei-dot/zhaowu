@@ -5,12 +5,12 @@ import {
   deleteGalleryAsset,
   galleryPublicUrl,
   listOwnerGalleryAssets,
-  setGalleryAssetEnabled,
   uploadGalleryAsset,
   type GalleryAsset,
 } from "@/lib/bridge/gallery-assets";
 import { OWNER_GALLERY_GROUP_ORDER, isLoadingGalleryAsset, isOfficialSongGalleryAsset, matchesOwnerGalleryGroup, type OwnerGalleryGroup } from "@/lib/gallery-groups";
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
+import { setBackgroundWallpaper, uploadBackground } from "@/lib/bridge/background-assets";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -34,10 +34,10 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   const [open, setOpen] = useState(false);
   const [shown, setShown] = useState(PAGE_SIZE);
   const [preview, setPreview] = useState<GalleryAsset | null>(null);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [backgroundBusyId, setBackgroundBusyId] = useState<string | null>(null);
 
   const copy = useMemo(() => ({
-    title: tr(locale, "總圖庫", "总图库", "Gallery"),
+    title: tr(locale, "圖片素材", "图片素材", "Image library"),
     upload: tr(locale, "加入圖片", "加入图片", "Add images"),
     uploading: tr(locale, "加入中…", "加入中…", "Adding…"),
     songMaster: tr(locale, "正式宋式母圖", "正式宋式母图", "Official Song masters"),
@@ -50,23 +50,12 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     openGallery: tr(locale, "打開圖庫", "打开图库", "Open gallery"),
     closeGallery: tr(locale, "收起圖庫", "收起图库", "Close gallery"),
     empty: tr(locale, "目前沒有圖片。", "目前没有图片。", "No images in this view."),
-    enabled: tr(locale, "可使用", "可使用", "Available"),
     remove: tr(locale, "刪除", "删除", "Delete"),
-    select: tr(locale, "選取", "选择", "Select"),
-    selectedOne: tr(locale, "已選", "已选", "Selected"),
-    batchManage: tr(locale, "批次管理", "批次管理", "Bulk actions"),
-    selected: (n: number) => tr(locale, `已選 ${n} 個`, `已选 ${n} 个`, `${n} selected`),
-    selectVisible: tr(locale, "全選此分類", "全选此分类", "Select all in view"),
-    clearSelection: tr(locale, "清除選取", "清除选择", "Clear"),
-    enableSelected: tr(locale, "批次顯示", "批量显示", "Show selected"),
-    disableSelected: tr(locale, "批次隱藏", "批量隐藏", "Hide selected"),
-    deleteSelected: tr(locale, "批次刪除", "批量删除", "Delete selected"),
-    shown: tr(locale, "顯示中", "显示中", "Shown"),
-    hidden: tr(locale, "已隱藏", "已隐藏", "Hidden"),
-    coreAsset: tr(locale, "核心資產", "核心资产", "Core asset"),
-    qcBlocked: tr(locale, "QC 封鎖", "QC 封锁", "QC blocked"),
-    batchDeleteConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 個素材？此操作不可復原。`, `删除已选的 ${n} 个素材？此操作不可恢复。`, `Delete ${n} selected assets? This cannot be undone.`),
-    batchDone: (n: number) => tr(locale, `已處理 ${n} 個素材。`, `已处理 ${n} 个素材。`, `Updated ${n} assets.`),
+    qcBlocked: tr(locale, "品質未通過", "质量未通过", "Quality blocked"),
+    setHomeBackground: tr(locale, "設為首頁背景", "设为首页背景", "Set as homepage background"),
+    settingHomeBackground: tr(locale, "套用中…", "套用中…", "Applying…"),
+    homeBackgroundSet: tr(locale, "已設為首頁背景。", "已设为首页背景。", "Homepage background updated."),
+    homeBackgroundHint: tr(locale, "點圖片可預覽；要換首頁背景，直接點該圖片下方的「設為首頁背景」。", "点图片可预览；要换首页背景，直接点该图片下方的“设为首页背景”。", "Tap an image to preview it, or use “Set as homepage background” on that image."),
     more: tr(locale, "載入更多", "加载更多", "Load more"),
     preview: tr(locale, "預覽", "预览", "Preview"),
     closePreview: tr(locale, "關閉", "关闭", "Close"),
@@ -77,8 +66,6 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     try {
       const next = await listOwnerGalleryAssets(session);
       setAssets(next);
-      const ids = new Set(next.map((asset) => asset.id));
-      setSelectedIds((current) => current.filter((id) => ids.has(id)));
     } catch (error) {
       setMessage(error instanceof Error ? error.message : copy.failed);
     }
@@ -130,18 +117,8 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   const renderedAssets = visibleAssets.slice(0, shown);
   const protectedAsset = (asset: GalleryAsset) => isOfficialSongGalleryAsset(asset) || asset.bucket_id === "public-fallback";
   const qcBlockedAsset = (asset: GalleryAsset) => asset.tags.includes("qc-blocked-ghosting");
-  const selectedEnableableIds = selectedIds.filter((id) => {
-    const asset = libraryAssets.find((item) => item.id === id);
-    return asset ? !qcBlockedAsset(asset) : false;
-  });
-  const selectedDeletableIds = selectedIds.filter((id) => {
-    const asset = libraryAssets.find((item) => item.id === id);
-    return asset ? !protectedAsset(asset) : false;
-  });
-
   const switchGroup = (next: OwnerGalleryGroup) => {
     setGroup(next);
-    setSelectedIds([]);
     setShown(PAGE_SIZE);
   };
 
@@ -155,43 +132,27 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     return copy.legacy;
   };
 
-  const toggleSelected = (id: string) => {
-    setSelectedIds((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
-  };
-
-  const selectVisible = () => {
-    setSelectedIds(visibleAssets.map((asset) => asset.id));
-  };
-
-  async function setSelectedEnabled(enabled: boolean) {
-    const targetIds = enabled ? selectedEnableableIds : selectedIds;
-    if (busy || !targetIds.length) return;
-    setBusy(true); setMessage(null);
+  async function setAsHomepageBackground(asset: GalleryAsset) {
+    if (busy || backgroundBusyId || SUPABASE_STORAGE_WRITES_PAUSED || qcBlockedAsset(asset)) return;
+    setBackgroundBusyId(asset.id);
+    setMessage(null);
     try {
-      await Promise.all(targetIds.map((id) => setGalleryAssetEnabled(session, id, enabled)));
-      const count = targetIds.length;
-      await load();
-      notifyGalleryChanged();
-      setMessage(copy.batchDone(count));
+      const response = await fetch(assetSrc(asset));
+      if (!response.ok) throw new Error(tr(locale, "圖片讀取失敗。", "图片读取失败。", "Could not load this image."));
+      const blob = await response.blob();
+      const contentType = blob.type || asset.content_type || "image/webp";
+      if (!contentType.startsWith("image/")) throw new Error(tr(locale, "這個素材不是可用圖片。", "这个素材不是可用图片。", "This asset is not a usable image."));
+      const ext = contentType.includes("jpeg") ? "jpg" : contentType.split("/")[1]?.replace(/[^a-z0-9]/gi, "") || "webp";
+      const file = new File([blob], `homepage-${asset.asset_key || asset.id}.${ext}`, { type: contentType });
+      const background = await uploadBackground(session, file);
+      await setBackgroundWallpaper(session, background.id);
+      window.dispatchEvent(new Event("zhaowu-background-change"));
+      setMessage(copy.homeBackgroundSet);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : copy.failed);
-    } finally { setBusy(false); }
-  }
-
-  async function deleteSelected() {
-    if (busy || !selectedIds.length || !window.confirm(copy.batchDeleteConfirm(selectedIds.length))) return;
-    setBusy(true); setMessage(null);
-    try {
-      const chosen = libraryAssets.filter((asset) => selectedDeletableIds.includes(asset.id));
-      for (const asset of chosen) await deleteGalleryAsset(session, asset);
-      const count = chosen.length;
-      setSelectedIds([]);
-      await load();
-      notifyGalleryChanged();
-      setMessage(copy.batchDone(count));
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : copy.failed);
-    } finally { setBusy(false); }
+    } finally {
+      setBackgroundBusyId(null);
+    }
   }
 
   return (
@@ -203,6 +164,8 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
         </div>
         <span className="shrink-0 rounded-full border border-line bg-paper/70 px-3 py-1 text-xs text-ink-mute">{libraryAssets.length}</span>
       </div>
+
+      <p className="mt-3 text-sm leading-6 text-ink-mute">{copy.homeBackgroundHint}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <label className={`inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-4 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
@@ -234,47 +197,26 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
             ))}
           </div>
 
-          <div data-owner-bulk-toolbar="gallery" className="mt-3 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
-            <span className="mr-auto font-display text-sm text-ink">{selectedIds.length ? copy.selected(selectedIds.length) : copy.batchManage}</span>
-            <button type="button" disabled={busy || !visibleAssets.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={selectVisible}>{copy.selectVisible}</button>
-            <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedIds([])}>{copy.clearSelection}</button>
-            <button type="button" disabled={busy || !selectedEnableableIds.length} className="min-h-9 rounded-full border border-wood/30 bg-wood/5 px-3 text-[11px] text-wood disabled:opacity-35" onClick={() => void setSelectedEnabled(true)}>{copy.enableSelected}</button>
-            <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => void setSelectedEnabled(false)}>{copy.disableSelected}</button>
-            <button type="button" disabled={busy || !selectedDeletableIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelected()}>{copy.deleteSelected}</button>
-          </div>
-
           {!visibleAssets.length ? <p className="mt-4 text-sm text-ink-mute">{copy.empty}</p> : null}
 
           <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
             {renderedAssets.map((asset) => (
-              <article key={asset.id} data-owner-selectable-file="gallery" className={`relative overflow-hidden rounded-xl border bg-cream/72 ${selectedIds.includes(asset.id) ? "border-wood/45 ring-1 ring-wood/15" : "border-line"}`}>
-                <button type="button" aria-pressed={selectedIds.includes(asset.id)} onClick={() => toggleSelected(asset.id)} className={`absolute left-2 top-2 z-10 inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 text-[10px] font-medium shadow-sm ${selectedIds.includes(asset.id) ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${copy.select} ${asset.title}`}>
-                  {selectedIds.includes(asset.id) ? `✓ ${copy.selectedOne}` : copy.select}
-                </button>
+              <article key={asset.id} className="overflow-hidden rounded-xl border border-line bg-cream/72">
                 <button type="button" className="block w-full" onClick={() => setPreview(asset)} aria-label={`${copy.preview} ${asset.title}`}>
                   <img src={assetSrc(asset)} alt={asset.title || "gallery image"} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover object-top" />
                 </button>
                 <div className="p-3">
                   <p className="truncate text-xs font-medium sm:text-sm">{asset.title}</p>
-                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                  <div className="mt-3 grid gap-2">
                     <button
                       type="button"
-                      aria-pressed={asset.enabled}
-                      disabled={qcBlockedAsset(asset)}
-                      className={`min-h-8 rounded-full border px-2.5 text-[10px] disabled:cursor-not-allowed ${qcBlockedAsset(asset) ? "border-cinnabar/25 bg-cinnabar/5 text-cinnabar" : asset.enabled ? "border-wood/30 bg-wood/5 text-wood" : "border-line bg-paper/55 text-ink-mute"}`}
-                      onClick={async () => {
-                        try {
-                          await setGalleryAssetEnabled(session, asset.id, !asset.enabled);
-                          await load();
-                          notifyGalleryChanged();
-                        } catch (error) {
-                          setMessage(error instanceof Error ? error.message : copy.failed);
-                        }
-                      }}
-                    >{qcBlockedAsset(asset) ? copy.qcBlocked : asset.enabled ? copy.shown : copy.hidden}</button>
-                    {protectedAsset(asset) ? (
-                      <span className="rounded-full border border-wood/25 bg-wood/5 px-2.5 py-1 text-[10px] text-wood">{copy.coreAsset}</span>
-                    ) : (
+                      disabled={Boolean(backgroundBusyId) || SUPABASE_STORAGE_WRITES_PAUSED || qcBlockedAsset(asset)}
+                      className="min-h-10 rounded-full bg-[#315f51] px-3 text-xs font-medium text-[#fffaf0] disabled:opacity-40"
+                      onClick={() => void setAsHomepageBackground(asset)}
+                    >
+                      {backgroundBusyId === asset.id ? copy.settingHomeBackground : qcBlockedAsset(asset) ? copy.qcBlocked : copy.setHomeBackground}
+                    </button>
+                    {!protectedAsset(asset) ? (
                       <button type="button" onClick={async () => {
                         if (!window.confirm(`${copy.remove} ${asset.title}?`)) return;
                         try {
@@ -284,8 +226,8 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
                         } catch (error) {
                           setMessage(error instanceof Error ? error.message : copy.failed);
                         }
-                      }} className="rounded-full px-2 py-1 text-[11px] text-cinnabar">{copy.remove}</button>
-                    )}
+                      }} className="min-h-9 rounded-full border border-cinnabar/25 px-3 text-xs text-cinnabar">{copy.remove}</button>
+                    ) : null}
                   </div>
                 </div>
               </article>

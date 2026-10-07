@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-07-owner-media-home-background-simplify",
+    date: "2026-10-07",
+    zhHant: { title: "後台圖片操作收斂，首頁背景可直接從圖庫套用", summary: "移除圖片與開場影片裡難懂的批次顯示／隱藏／啟用控制；圖片卡改為直接預覽、設為首頁背景與必要的刪除，站主首頁不再顯示獨立空白的首頁背景入口。今日指引的首頁小卡同步恢復暖宣紙與山水感，深青玉只保留在局部欄頭。" },
+    zhHans: { title: "后台图片操作收敛，首页背景可直接从图库套用", summary: "移除图片与开场视频里难懂的批量显示／隐藏／启用控制；图片卡改为直接预览、设为首页背景与必要的删除，站主首页不再显示独立空白的首页背景入口。今日指引的首页小卡同步恢复暖宣纸与山水感，深青玉只保留在局部栏头。" },
+    en: { title: "Owner media controls simplified; gallery images can set the homepage background directly", summary: "Confusing bulk show/hide/enable controls were removed from image and opening-video managers. Image cards now focus on preview, set-as-home-background and necessary deletion, while the empty standalone Home Backgrounds entry is no longer shown. The Today Guide summary also returns to a warm paper-and-landscape surface with deep jade reserved for section headers." },
+  },
+  {
     id: "2026-10-07-today-native-dashboard",
     date: "2026-10-07",
     zhHant: { title: "今日指引改為原生宋式儀表頁", summary: "修正完整今日指引展開後遮住其他三個主入口的狀態問題：切換命書、測驗或觀世錄會先收回今日。黃曆、五行穿衣與靈籤以 1/3、2/3、3/3 的原生 React/CSS 模組重整為暖宣紙、深青玉與淡金框架，不使用整張參考圖假裝介面。" },
