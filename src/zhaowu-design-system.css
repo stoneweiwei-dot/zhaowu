@@ -7249,14 +7249,28 @@ body #daily-almanac.zhaowu-today-guide {
 body #daily-almanac .zhaowu-today-guide__summary {
   min-height: 148px;
   padding: 18px 18px 16px !important;
-  color: #f6efdd;
+  color: #2f3e38;
   background:
-    radial-gradient(circle at 84% 16%, rgba(213, 190, 132, .14), transparent 28%),
-    linear-gradient(145deg, #173f35, #214b40 64%, #183d34) !important;
+    radial-gradient(circle at 86% 20%, rgba(226, 204, 151, .30), transparent 19%),
+    radial-gradient(ellipse at 72% 112%, rgba(79, 116, 101, .20), transparent 37%),
+    linear-gradient(180deg, rgba(255, 252, 244, .99), rgba(240, 233, 216, .97)) !important;
+}
+
+body #daily-almanac .zhaowu-today-guide__summary::after {
+  content: "";
+  position: absolute;
+  right: -24px;
+  bottom: -18px;
+  width: 58%;
+  height: 82px;
+  pointer-events: none;
+  opacity: .36;
+  background:
+    radial-gradient(ellipse at 20% 100%, transparent 48%, rgba(49, 94, 80, .25) 49%, transparent 52%) 0 0 / 92px 42px;
 }
 
 body #daily-almanac .zhaowu-today-guide__summary-head p {
-  color: #f2dfad !important;
+  color: #332e25 !important;
   font-size: clamp(25px, 6vw, 33px) !important;
   letter-spacing: .07em !important;
 }
@@ -7264,22 +7278,22 @@ body #daily-almanac .zhaowu-today-guide__summary-head p {
 body #daily-almanac .zhaowu-today-guide__summary-head span,
 body #daily-almanac .zhaowu-today-guide__summary-row span,
 body #daily-almanac .zhaowu-today-guide__summary-meta {
-  color: rgba(247, 239, 222, .72) !important;
+  color: #726a5d !important;
 }
 
 body #daily-almanac .zhaowu-today-guide__summary-row strong {
-  color: #fff9e9 !important;
+  color: #315e50 !important;
   font-size: 17px !important;
 }
 
 body #daily-almanac .zhaowu-today-guide__summary-head b {
-  border-color: rgba(229, 201, 136, .72) !important;
-  color: #f2dfad !important;
-  background: rgba(7, 31, 26, .18);
+  border-color: rgba(49, 94, 80, .34) !important;
+  color: #315e50 !important;
+  background: rgba(255, 252, 244, .72);
 }
 
 body #daily-almanac .zhaowu-today-guide__summary-meta em {
-  color: #f1d99d !important;
+  color: #9b4438 !important;
 }
 
 body #daily-almanac .zhaowu-today-guide__expanded {
@@ -7393,10 +7407,10 @@ body #daily-almanac .zhaowu-today-section__head em {
 body #daily-almanac .zhaowu-today-section.is-almanac,
 body #daily-almanac .zhaowu-today-section.is-wardrobe,
 body #daily-almanac .zhaowu-today-section.is-spirit {
-  color: #f5efdf !important;
+  color: #2f3e38 !important;
   background:
-    radial-gradient(circle at 88% 9%, rgba(180, 197, 200, .11), transparent 23%),
-    linear-gradient(145deg, #173f35, #1b4539 62%, #15392f) !important;
+    radial-gradient(circle at 90% 8%, rgba(205, 184, 129, .12), transparent 22%),
+    linear-gradient(180deg, rgba(255, 252, 244, .98), rgba(242, 235, 219, .96)) !important;
 }
 
 body #daily-almanac .zhaowu-almanac-board {
@@ -7508,9 +7522,9 @@ body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardr
 }
 
 body #daily-almanac .zhaowu-today-section.is-wardrobe [data-daily-colors="embed"] {
-  border-color: rgba(226, 204, 159, .20) !important;
+  border-color: rgba(188, 157, 94, .34) !important;
   border-radius: 13px !important;
-  background: rgba(8, 39, 32, .32) !important;
+  background: linear-gradient(180deg, rgba(250, 246, 235, .96), rgba(239, 232, 214, .94)) !important;
 }
 
 body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe-notes {
@@ -7523,13 +7537,13 @@ body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardr
 body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe-notes > span {
   min-width: 0;
   padding: 10px 8px;
-  border: 1px solid rgba(226, 204, 159, .20);
+  border: 1px solid rgba(188, 157, 94, .30);
   border-radius: 11px;
-  background: rgba(9, 42, 34, .54);
+  background: rgba(255, 252, 244, .72);
 }
 
 body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe-notes small {
-  color: #c9c1af;
+  color: #80745f;
   font-size: 9px;
   letter-spacing: .08em;
 }
@@ -7537,7 +7551,7 @@ body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardr
 body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe-notes strong {
   display: block;
   margin-top: 4px;
-  color: #fff1ce;
+  color: #315e50;
   font-family: var(--font-display, serif);
   font-size: 12px;
   line-height: 1.35;
