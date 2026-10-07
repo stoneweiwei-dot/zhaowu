@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { dayGanzhi } from "@/lib/bazi/calendar";
 import type { Locale } from "@/lib/i18n";
+import { publicShareUrl } from "@/lib/share-url";
 
 type ComicProfile = {
   element: "木" | "火" | "土" | "金" | "水";
@@ -162,10 +163,11 @@ export function SongComicShareCard({ dayMaster, locale }: { dayMaster: string; l
 
   async function share() {
     try {
+      const shareUrl = publicShareUrl();
       if (navigator.share) {
-        await navigator.share({ title: locale === "en" ? "ZHAOWU · One Comic Frame" : locale === "zh-Hans" ? "昭梧 · 命书一格" : "昭梧 · 命書一格", text: shareText, url: window.location.href });
+        await navigator.share({ title: locale === "en" ? "ZHAOWU · One Comic Frame" : locale === "zh-Hans" ? "昭梧 · 命书一格" : "昭梧 · 命書一格", text: shareText, url: shareUrl });
       } else {
-        await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
+        await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
         setStatus(copy.copied);
         window.setTimeout(() => setStatus(copy.shareButton), 1600);
       }
