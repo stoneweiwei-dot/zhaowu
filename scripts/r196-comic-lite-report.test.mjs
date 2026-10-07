@@ -45,11 +45,14 @@ test("r226 six frames are visibly illustrated while keeping text secondary", asy
   const report = await source("src/components/unified-birth-report.tsx");
   const legacy = scrollBlock(css);
   const r226 = css.slice(css.indexOf("r226 — mobile clarity pass"));
-  assert.match(report, /ComicMascot/);
+  assert.doesNotMatch(report, /ComicMascot/);
+  assert.match(report, /ComicSceneArt/);
+  for (const scene of [1, 2, 3, 4, 5, 6]) assert.match(report, new RegExp(`scene === ${scene}|scene === [1-5]`));
   assert.match(report, /zhaowu-comic-lite__art/);
   assert.match(report, /zhaowu-comic-lite__bubble/);
   assert.match(report, /zhaowu-comic-lite__more/);
   assert.match(r226, /\.zhaowu-comic-lite__art/);
+  assert.match(r226, /\.zhaowu-comic-scene/);
   assert.match(r226, /linear-gradient/);
   assert.match(r226, /border-radius: 18px/);
   assert.match(legacy, /prefers-reduced-motion: reduce/);
