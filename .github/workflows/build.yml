@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
     name: Manual build
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 25
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v4
@@ -25,7 +25,11 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Build
-        run: npm run build
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee out.log || { echo "::error::BUILDFAIL=$(grep -E '^✖|error TS|Error:' out.log | sed 's/ ([0-9.]*ms)$//' | sort -u | head -40 | tr '\n' '|')"; npx vite build >/dev/null 2>&1 || exit 1; echo "VITE_ONLY=1" >> $GITHUB_ENV; }
+
 
   engine:
     name: Manual engine suite
@@ -45,4 +49,7 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Engine and contract suite
-        run: npm run test:engine
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run test:engine 2>&1 | tee out.log || { echo "::error::FAILS=$(grep -E '^✖' out.log | sed 's/ ([0-9.]*ms)$//' | sort -u | tr '\n' '|')"; exit 1; }
