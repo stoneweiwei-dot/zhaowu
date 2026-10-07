@@ -25,18 +25,19 @@ const SELF_XING = new Set(["辰", "午", "酉", "亥"]);
 const SANHE = [["申", "子", "辰"], ["亥", "卯", "未"], ["寅", "午", "戌"], ["巳", "酉", "丑"]];
 const GENERATES: Record<Element, Element> = { 木: "火", 火: "土", 土: "金", 金: "水", 水: "木" };
 
-const T = (locale: Locale, hant: string, en: string) => locale === "en" ? en : locale === "zh-Hans" ? toSimplifiedCustomerText(hant) : hant;
+const isEnglish = (value: Locale) => value === "en";
+const T = (locale: Locale, hant: string, en: string) => isEnglish(locale) ? en : locale === "zh-Hans" ? toSimplifiedCustomerText(hant) : hant;
 
 type Relation = { key: string; label: string; kind: "合" | "沖" | "刑" | "害"; natal: boolean };
 
 function pairRelations(a: string, b: string, natal: boolean, locale: Locale): Relation[] {
   const out: Relation[] = [];
   const en = (x: string) => BRANCH_EN[x] ?? x;
-  if (LIUHE[a]?.[0] === b) out.push({ key: `he-${[a, b].sort().join("")}`, kind: "合", natal, label: locale === "en" ? `${en(a)}–${en(b)} combine (${LIUHE[a][1]})` : `${a}${b}合${LIUHE[a][1]}` });
-  if (CHONG[a] === b) out.push({ key: `chong-${[a, b].sort().join("")}`, kind: "沖", natal, label: locale === "en" ? `${en(a)}–${en(b)} clash` : T(locale, `${a}${b}相沖`, "") });
-  if (HAI[a] === b) out.push({ key: `hai-${[a, b].sort().join("")}`, kind: "害", natal, label: locale === "en" ? `${en(a)}–${en(b)} harm` : `${a}${b}相害` });
-  if (a === b && SELF_XING.has(a)) out.push({ key: `zixing-${a}`, kind: "刑", natal, label: locale === "en" ? `${en(a)}–${en(a)} self-penalty` : `${a}${a}自刑` });
-  else if (XING[a]?.includes(b) || XING[b]?.includes(a)) out.push({ key: `xing-${[a, b].sort().join("")}`, kind: "刑", natal, label: locale === "en" ? `${en(a)}–${en(b)} penalty` : `${a}${b}相刑` });
+  if (LIUHE[a]?.[0] === b) out.push({ key: `he-${[a, b].sort().join("")}`, kind: "合", natal, label: isEnglish(locale) ? `${en(a)}–${en(b)} combine (${LIUHE[a][1]})` : `${a}${b}合${LIUHE[a][1]}` });
+  if (CHONG[a] === b) out.push({ key: `chong-${[a, b].sort().join("")}`, kind: "沖", natal, label: isEnglish(locale) ? `${en(a)}–${en(b)} clash` : T(locale, `${a}${b}相沖`, "") });
+  if (HAI[a] === b) out.push({ key: `hai-${[a, b].sort().join("")}`, kind: "害", natal, label: isEnglish(locale) ? `${en(a)}–${en(b)} harm` : `${a}${b}相害` });
+  if (a === b && SELF_XING.has(a)) out.push({ key: `zixing-${a}`, kind: "刑", natal, label: isEnglish(locale) ? `${en(a)}–${en(a)} self-penalty` : `${a}${a}自刑` });
+  else if (XING[a]?.includes(b) || XING[b]?.includes(a)) out.push({ key: `xing-${[a, b].sort().join("")}`, kind: "刑", natal, label: isEnglish(locale) ? `${en(a)}–${en(b)} penalty` : `${a}${b}相刑` });
   return out;
 }
 
@@ -156,7 +157,7 @@ function ElementWheel({ active, locale }: { active: Element; locale: Locale }) {
       {order.map((el, i) => (
         <g key={el} data-element={el} className={el === active || GENERATES[active] === el ? "is-on" : undefined}>
           <circle cx={pts[i][0]} cy={pts[i][1]} r={11} className="zw-ink-wheel__node" />
-          <text x={pts[i][0]} y={pts[i][1] + 4.5} textAnchor="middle">{locale === "en" ? en[el][0] : el}</text>
+          <text x={pts[i][0]} y={pts[i][1] + 4.5} textAnchor="middle">{isEnglish(locale) ? en[el][0] : el}</text>
         </g>
       ))}
     </svg>
@@ -208,7 +209,7 @@ function seasonAdvice(latitude: number | null, month: number, weather: string, l
     winter: ["寒氣內藏，萬物收斂", "宜保暖養藏，調整節奏", "Cold settles in", "Stay warm and slow your pace"],
   }[season];
   const wet = /雨|霧|Rain|Fog|Shower|Thunder/i.test(weather);
-  const lines = locale === "en" ? [map[2], wet ? "Damp air—keep warm and dry" : map[3]] : [map[0], wet ? "濕氣偏重，注意保暖除濕" : map[1]];
+  const lines = isEnglish(locale) ? [map[2], wet ? "Damp air—keep warm and dry" : map[3]] : [map[0], wet ? "濕氣偏重，注意保暖除濕" : map[1]];
   return locale === "zh-Hans" ? lines.map(toSimplifiedCustomerText) : lines;
 }
 
@@ -244,9 +245,9 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
   const personalPlain = personal ? TEN_GOD_PLAIN[personal] : null;
   const advice = seasonAdvice(props.latitude, now.getMonth() + 1, props.weather, locale);
   const mmdd = `${String(now.getMonth() + 1).padStart(2, "0")}/${String(now.getDate()).padStart(2, "0")}`;
-  const kindLabel = (k: Relation["kind"]) => locale === "en" ? ({ 合: "Combine", 沖: "Clash", 刑: "Penalty", 害: "Harm" } as const)[k] : locale === "zh-Hans" && k === "沖" ? "冲" : k;
-  const branchName = (b: string) => locale === "en" ? BRANCH_EN[b] : b;
-  const hourLabel = locale === "en" ? "" : T(locale, "時", "");
+  const kindLabel = (k: Relation["kind"]) => isEnglish(locale) ? ({ 合: "Combine", 沖: "Clash", 刑: "Penalty", 害: "Harm" } as const)[k] : locale === "zh-Hans" && k === "沖" ? "冲" : k;
+  const branchName = (b: string) => isEnglish(locale) ? BRANCH_EN[b] : b;
+  const hourLabel = isEnglish(locale) ? "" : T(locale, "時", "");
 
   return (
     <div className="zw-ink-board" data-almanac-ink-board data-day-element={element}>
@@ -291,9 +292,9 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
         <ElementWheel active={element} locale={locale} />
         <div>
           <small>{T(locale, "核心氣機", "Core dynamic")}</small>
-          <strong>{locale === "en" ? data.coreEn : T(locale, data.core, "")}</strong>
+          <strong>{isEnglish(locale) ? data.coreEn : T(locale, data.core, "")}</strong>
           {personalPlain ? (
-            <p className="zw-ink-personal" data-almanac-personal>{locale === "en" ? `For you, today's ${dayStem} is your “${personal}”: ${personalPlain.en}` : T(locale, `對你而言，今日${dayStem}是「${personal}」：${personalPlain.zh}`, "")}</p>
+            <p className="zw-ink-personal" data-almanac-personal>{isEnglish(locale) ? `For you, today's ${dayStem} is your “${personal}”: ${personalPlain.en}` : T(locale, `對你而言，今日${dayStem}是「${personal}」：${personalPlain.zh}`, "")}</p>
           ) : null}
         </div>
       </section>
@@ -301,11 +302,11 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
       <div className="zw-ink-row">
         <section className="zw-ink-paper is-yi">
           <h4><span>{T(locale, "宜", "Do")}</span></h4>
-          <ul>{data.yi.map(([icon, zh, en]) => <li key={zh}><Icon name={icon} /><span>{locale === "en" ? en : T(locale, zh, "")}</span></li>)}</ul>
+          <ul>{data.yi.map(([icon, zh, en]) => <li key={zh}><Icon name={icon} /><span>{isEnglish(locale) ? en : T(locale, zh, "")}</span></li>)}</ul>
         </section>
         <section className="zw-ink-paper is-ji">
           <h4><span>{T(locale, "忌", "Avoid")}</span></h4>
-          <ul>{data.ji.map(([icon, zh, en]) => <li key={zh}><Icon name={icon} /><span>{locale === "en" ? en : T(locale, zh, "")}</span></li>)}</ul>
+          <ul>{data.ji.map(([icon, zh, en]) => <li key={zh}><Icon name={icon} /><span>{isEnglish(locale) ? en : T(locale, zh, "")}</span></li>)}</ul>
         </section>
       </div>
 
@@ -330,20 +331,20 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
       <div className="zw-ink-row is-three">
         <section className="zw-ink-panel zw-ink-colors">
           <small>{T(locale, "今日適宜顏色", "Colours")}</small>
-          <ul>{data.colors.map(([hex, zh, en]) => <li key={hex}><i style={{ background: hex }} /><span>{locale === "en" ? en : T(locale, zh, "")}</span></li>)}</ul>
+          <ul>{data.colors.map(([hex, zh, en]) => <li key={hex}><i style={{ background: hex }} /><span>{isEnglish(locale) ? en : T(locale, zh, "")}</span></li>)}</ul>
         </section>
         <section className="zw-ink-panel zw-ink-jewels">
           <small>{T(locale, "今日適宜首飾", "Jewellery")}</small>
-          <ul>{data.jewellery.map(([zh, en]) => <li key={zh}><svg viewBox="0 0 24 24" aria-hidden className="zw-ink-icon" fill="none" stroke="currentColor" strokeWidth={1.4}><circle cx="12" cy="14" r="6" /><path d="M9 8.5L12 4l3 4.5" /></svg><span>{locale === "en" ? en : T(locale, zh, "")}</span></li>)}</ul>
+          <ul>{data.jewellery.map(([zh, en]) => <li key={zh}><svg viewBox="0 0 24 24" aria-hidden className="zw-ink-icon" fill="none" stroke="currentColor" strokeWidth={1.4}><circle cx="12" cy="14" r="6" /><path d="M9 8.5L12 4l3 4.5" /></svg><span>{isEnglish(locale) ? en : T(locale, zh, "")}</span></li>)}</ul>
         </section>
         <section className="zw-ink-panel zw-ink-mask">
           <small>{T(locale, "今日性格面具", "Persona mask")}</small>
           <svg viewBox="0 0 64 32" aria-hidden className="zw-ink-maskart" fill="none" stroke="currentColor" strokeWidth={1.3}><path d="M4 8c8-5 20-5 28 2 8-7 20-7 28-2-1 12-9 20-18 20-5 0-8-3-10-6-2 3-5 6-10 6C13 28 5 20 4 8z" /><path d="M14 15c2-2 6-2 8 0M42 15c2-2 6-2 8 0" /></svg>
-          <strong>{locale === "en" ? data.mask[1] : T(locale, data.mask[0], "")}</strong>
+          <strong>{isEnglish(locale) ? data.mask[1] : T(locale, data.mask[0], "")}</strong>
         </section>
       </div>
 
-      <p className="zw-ink-closing">{locale === "en" ? data.closing[1] : T(locale, data.closing[0], "")}</p>
+      <p className="zw-ink-closing">{isEnglish(locale) ? data.closing[1] : T(locale, data.closing[0], "")}</p>
     </div>
   );
 }

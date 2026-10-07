@@ -34,8 +34,8 @@ jobs:
         shell: bash
         run: |
           npx playwright install --with-deps chromium >/dev/null 2>&1
-          (npx vite preview --port 4173 --strictPort >/dev/null 2>&1 &)
-          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+          (npx vite preview --host 127.0.0.1 --port 4173 --strictPort > /tmp/preview.log 2>&1 &)
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done; echo "::notice::PREVIEW=$(tail -c 600 /tmp/preview.log | tr '\n' ' ')"
           SHOT_OUT=/tmp/shots node .github/ci-shots.mjs || true
           echo "::notice::SHOTLOG=$(tr '\n' '|' < /tmp/shots/log.txt)"
           git config user.email "311473989+stoneweiwei-dot@users.noreply.github.com"

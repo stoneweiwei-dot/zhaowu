@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-08-launch-polish",
+    date: "2026-10-08",
+    zhHant: { title: "今日黃曆改為墨青版、命盤先講白話、出生地更好找", summary: "今日黃曆重做為墨青底版：日期、天氣、今日干支、聖日、五行氣機、宜忌圖示、合沖刑害、吉時慎時、顏色首飾與性格面具一頁看完；錄入生辰後會依你的命盤顯示今日對你的關係。輸入生辰後先用白話列出你的命盤重點，四柱與術語收合在下方。出生地輸入不再跳字，並補上小城鎮與鄉區搜尋。報告字體放大加粗、段落更舒展；首頁入口換上新的四幅山水插畫。" },
+    zhHans: { title: "今日黄历改为墨青版、命盘先讲白话、出生地更好找", summary: "今日黄历重做为墨青底版：日期、天气、今日干支、圣日、五行气机、宜忌图示、合冲刑害、吉时慎时、颜色首饰与性格面具一页看完；录入生辰后会依你的命盘显示今日对你的关系。输入生辰后先用白话列出你的命盘重点，四柱与术语收合在下方。出生地输入不再跳字，并补上小城镇与乡区搜索。报告字体放大加粗、段落更舒展；首页入口换上新的四幅山水插画。" },
+    en: { title: "Ink-teal almanac, plain-language chart first, easier birthplace search", summary: "Today's Almanac is rebuilt as an ink-teal sheet with date, weather, pillars, observance, five-element dynamic, do/avoid icons, combinations and clashes, supportive and careful hours, colours, jewellery and persona—personalised to your saved chart. After entering a birth record you now see plain-language highlights first, with the Four Pillars and terms folded below. Birthplace typing no longer jumps and finds small towns. Report text is larger and airier, and the home entries use four new landscape illustrations." },
+  },
+  {
     id: "2026-10-07-owner-media-home-background-simplify",
     date: "2026-10-07",
     zhHant: { title: "後台圖片操作收斂，首頁背景可直接從圖庫套用", summary: "移除圖片與開場影片裡難懂的批次顯示／隱藏／啟用控制；圖片卡改為直接預覽、設為首頁背景與必要的刪除，站主首頁不再顯示獨立空白的首頁背景入口。今日指引的首頁小卡同步恢復暖宣紙與山水感，深青玉只保留在局部欄頭。" },
