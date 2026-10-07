@@ -32,6 +32,8 @@ const COPY = {
     currentCycle: "目前大運",
     timeUnknown: "時辰未定",
     detail: "附註",
+    visual: "命書圖解",
+    visualHint: "先看圖，再決定要不要展開細節。",
     body: "身體需要注意的地方",
     bodyUnavailable: "資料不足，暫不提供身體象義觀察。",
     detailLead: "",
@@ -61,6 +63,8 @@ const COPY = {
     currentCycle: "目前大运",
     timeUnknown: "时辰未定",
     detail: "附注",
+    visual: "命书图解",
+    visualHint: "先看图，再决定要不要展开细节。",
     body: "身体需要注意的地方",
     bodyUnavailable: "资料不足，暂不提供身体象义观察。",
     detailLead: "",
@@ -90,6 +94,8 @@ const COPY = {
     currentCycle: "Current cycle",
     timeUnknown: "Birth time unconfirmed",
     detail: "Notes",
+    visual: "Illustrated reading",
+    visualHint: "Start with the visual summary; open the detail only if you want it.",
     body: "Body areas to watch",
     bodyUnavailable: "There is not enough saved information to provide a symbolic body note.",
     detailLead: "",
@@ -279,6 +285,7 @@ function AnalysisNotes({
   return (
     <details className="zhaowu-report-method-notes">
       <summary>
+        <b className="zhaowu-report-stage-no">04</b>
         <span>{copy.detail}</span>
         {copy.detailLead ? <small>{copy.detailLead}</small> : null}
       </summary>
@@ -327,7 +334,7 @@ function AnalysisNotes({
 }
 
 /** Direct answer + one supporting line stay open; the rest of the overall summary folds. */
-const SUMMARY_VISIBLE_LINES = 2;
+const SUMMARY_VISIBLE_LINES = 1;
 
 export function FocusedReportSections({ sections, result }: { sections: ReportSection[]; result?: AnalysisResult }) {
   const { locale } = useI18n();
@@ -350,10 +357,16 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
         <h3 id="focused-report-title" className="zhaowu-report-title">{copy.title}</h3>
         {copy.lead ? <p className="zhaowu-report-lead">{copy.lead}</p> : null}
       </header>
+      <nav className="zhaowu-focused-progress" aria-label={locale === "en" ? "Report reading order" : locale === "zh-Hans" ? "报告阅读顺序" : "報告閱讀順序"}>
+        <span><b>01</b>{copy.summaryTitle}</span>
+        <span><b>02</b>{copy.visual}</span>
+        <span><b>03</b>{copy.body}</span>
+        <span><b>04</b>{copy.detail}</span>
+      </nav>
 
       {overviewLines.length ? (
         <section className="zhaowu-report-summary-block" aria-labelledby="zhaowu-report-summary-title">
-          <h4 id="zhaowu-report-summary-title">{copy.summaryTitle}</h4>
+          <h4 id="zhaowu-report-summary-title"><span className="zhaowu-report-stage-no">01</span>{copy.summaryTitle}</h4>
           <div className="zhaowu-report-copy">
             {overviewLines.slice(0, SUMMARY_VISIBLE_LINES).map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
           </div>
@@ -368,19 +381,29 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
         </section>
       ) : null}
 
-      {result ? <IllustratedDestinyPanel result={result} /> : null}
-      {result ? <IllustratedShareCard result={result} /> : null}
+      {result ? (
+        <details className="zhaowu-report-stage-fold" data-report-stage="visual">
+          <summary>
+            <b className="zhaowu-report-stage-no">02</b>
+            <span><strong>{copy.visual}</strong><small>{copy.visualHint}</small></span>
+          </summary>
+          <div className="zhaowu-report-stage-fold__body">
+            <IllustratedDestinyPanel result={result} />
+            <IllustratedShareCard result={result} />
+            <ReportShareCard result={result} />
+          </div>
+        </details>
+      ) : null}
 
       <section className="zhaowu-report-body-block">
           <details className="zhaowu-report-fold zhaowu-report-fold--section" data-report-fold>
-            <summary><h4>{copy.body}</h4></summary>
+            <summary><h4><span className="zhaowu-report-stage-no">03</span>{copy.body}</h4></summary>
             <div className="zhaowu-report-copy">
               {bodyLines.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
             </div>
           </details>
         </section>
 
-      {result ? <ReportShareCard result={result} /> : null}
 
       {result ? (
         <AnalysisNotes result={result} locale={locale} supportingSummary={fallbackNotes} showLuck={showLuck} />
