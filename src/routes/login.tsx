@@ -1,118 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { BrandSeal } from "@/components/brand-seal";
-import { SoundIcon } from "@/components/sound-icon";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { ownerSignIn } from "@/lib/auth/owner-api";
 import { useI18n } from "@/lib/i18n";
-import {
-  listActiveLoginAnimations,
-  markLoginAnimationSeen,
-  pickLoginAnimation,
-  shouldPlayLoginAnimation,
-  type LoginAnimationAsset,
-} from "@/lib/login-animation";
-import { readBrandTheme } from "@/lib/brand-theme";
 
-const FALLBACK_LOGIN_VIDEO: LoginAnimationAsset = {
-  id: "fallback:owner-immortal",
-  title: "登入動畫",
-  type: "video",
-  fileUrl: "/intro/owner-immortal-ascent-r123.mp4",
-  posterUrl: "/intro/owner-immortal-ascent-r123.jpg",
-  durationMs: 10040,
-  active: true,
-  current: true,
-  theme: "common",
-  sortOrder: 0,
-  createdAt: "2026-09-13T00:00:00.000Z",
-};
+const LOGIN_BACKDROP = "/hero-gallery/dragon-scholar.webp";
 
 function ownerText(locale: string, hant: string, hans: string, en: string) {
   if (locale === "en") return en;
   return locale === "zh-Hans" ? hans : hant;
-}
-
-function LoginStageBackdrop() {
-  const { locale } = useI18n();
-  const [asset, setAsset] = useState<LoginAnimationAsset | null>(FALLBACK_LOGIN_VIDEO);
-  const [failed, setFailed] = useState(false);
-  const [muted, setMuted] = useState(true);
-  const [shouldPlay, setShouldPlay] = useState(() =>
-    typeof window !== "undefined" && shouldPlayLoginAnimation(window.localStorage),
-  );
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  useEffect(() => {
-    if (shouldPlay) markLoginAnimationSeen(window.localStorage);
-  }, [shouldPlay]);
-  useEffect(() => {
-    let alive = true;
-    void listActiveLoginAnimations().then((rows) => {
-      if (!alive) return;
-      setAsset(pickLoginAnimation(rows, readBrandTheme()) ?? FALLBACK_LOGIN_VIDEO);
-    }).catch(() => {
-      if (alive) setAsset(FALLBACK_LOGIN_VIDEO);
-    });
-    return () => { alive = false; };
-  }, []);
-  const media = failed || !asset ? FALLBACK_LOGIN_VIDEO : asset;
-  if (media.type === "video" && shouldPlay) {
-    return (
-      <>
-        <video
-          ref={videoRef}
-          className="stone-login-stage-media"
-          src={media.fileUrl}
-          poster={media.posterUrl}
-          autoPlay
-          muted={muted}
-          playsInline
-          preload="metadata"
-          data-login-animation="first-login-visit"
-          onTimeUpdate={(event) => {
-            if (event.currentTarget.currentTime >= 15) {
-              event.currentTarget.pause();
-              setShouldPlay(false);
-            }
-          }}
-          onEnded={() => setShouldPlay(false)}
-          onError={() => {
-            if (media.fileUrl !== FALLBACK_LOGIN_VIDEO.fileUrl) setFailed(true);
-            else setShouldPlay(false);
-          }}
-        />
-        <button
-          type="button"
-          data-login-animation-skip="true"
-          className="absolute left-4 top-[max(16px,calc(env(safe-area-inset-top)+10px))] z-[5] min-h-11 rounded-full border border-white/30 bg-black/35 px-4 text-sm font-semibold text-white shadow-lg backdrop-blur-md"
-          aria-label={ownerText(locale, "跳過登入動畫", "跳过登录动画", "Skip login animation")}
-          title={ownerText(locale, "跳過", "跳过", "Skip")}
-          onClick={() => setShouldPlay(false)}
-        >
-          {ownerText(locale, "跳過", "跳过", "Skip")}
-        </button>
-        <button
-          type="button"
-          className="stone-login-sound"
-          aria-label={ownerText(locale, muted ? "開啟聲音" : "關閉聲音", muted ? "开启声音" : "关闭声音", muted ? "Turn sound on" : "Mute sound")}
-          title={ownerText(locale, muted ? "開啟聲音" : "關閉聲音", muted ? "开启声音" : "关闭声音", muted ? "Turn sound on" : "Mute sound")}
-          aria-pressed={!muted}
-          onClick={() => {
-            const nextMuted = !muted;
-            setMuted(nextMuted);
-            if (videoRef.current) {
-              videoRef.current.muted = nextMuted;
-              videoRef.current.volume = 0.34;
-              if (!nextMuted) void videoRef.current.play().catch(() => setMuted(true));
-            }
-          }}
-        >
-          <SoundIcon on={!muted} />
-        </button>
-      </>
-    );
-  }
-  return <img className="stone-login-stage-media" src={media.posterUrl ?? media.fileUrl} alt="" data-login-stage-static="true" onError={() => setFailed(true)} />;
 }
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
@@ -150,8 +47,23 @@ function LoginPage() {
   }
 
   return (
-    <main className="stone-login-screen" aria-labelledby="login-title" data-owner-only-login="true" data-login-backend="vercel-owner-cookie" data-login-surface="cinematic-r183">
-      <LoginStageBackdrop />
+    <main
+      className="stone-login-screen"
+      aria-labelledby="login-title"
+      data-owner-only-login="true"
+      data-login-backend="vercel-owner-cookie"
+      data-login-surface="song-landing-r224"
+    >
+      <img
+        className="stone-login-stage-media"
+        src={LOGIN_BACKDROP}
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+        fetchPriority="high"
+        data-login-stage-static="true"
+      />
+
       <section className="stone-login-sheet seal-border">
         <div className="stone-login-brand" aria-label={`${t("brand")} ZHAOWU`}>
           <BrandSeal size="lg" decorative />
@@ -160,13 +72,26 @@ function LoginPage() {
             <p className="stone-login-brand-latin">ZHAOWU</p>
           </div>
         </div>
-        <p className="stone-login-kicker">ZHAOWU · OWNER</p>
-        <h1 id="login-title" className="stone-login-title">{ownerText(locale, "站主登入", "站主登录", "Owner sign-in")}</h1>
+
+        <p className="stone-login-kicker">
+          {ownerText(locale, "一份看見自己的命書", "一份看见自己的命书", "A guide for a clearer you")}
+        </p>
+        <h1 id="login-title" className="stone-login-title">
+          {ownerText(locale, "站主登入", "站主登录", "Owner sign-in")}
+        </h1>
 
         <form onSubmit={onOwnerSubmit} className="stone-login-form">
           <label>
             <span>{ownerText(locale, "站主密碼", "站主密码", "Owner password")}</span>
-            <input id="login-secret" type="password" inputMode="numeric" autoComplete="current-password" value={secret} onChange={(event) => setSecret(event.target.value.trim())} placeholder={ownerText(locale, "輸入站主密碼", "输入站主密码", "Enter owner password")} />
+            <input
+              id="login-secret"
+              type="password"
+              inputMode="numeric"
+              autoComplete="current-password"
+              value={secret}
+              onChange={(event) => setSecret(event.target.value.trim())}
+              placeholder={ownerText(locale, "輸入站主密碼", "输入站主密码", "Enter owner password")}
+            />
           </label>
           {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
           <button type="submit" disabled={busy} className="stone-login-primary">
