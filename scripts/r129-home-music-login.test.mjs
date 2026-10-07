@@ -59,7 +59,7 @@ test("knowledge hub keeps 觀世錄 editorial content separate from 昭梧命理
   assert.match(knowledge, /id="#?mingli-knowledge"|BaziKnowledgeNotesSection/);
   assert.match(knowledge, /LifeViewHomeSection archiveMode/);
   assert.match(knowledge, /昭梧 · 命理小知識/);
-  assert.match(knowledge, /文章就是文章，教學就是教學/);
+  assert.match(knowledge, /先選你要看的內容：觀世錄讀文章與短札；命理小知識查方法、術語與判讀規則/);
   assert.match(knowledgeNotes, /命理知識就是知識，不混進觀世錄文章/);
   assert.match(article, /返回昭梧 · 觀世錄/);
   assert.match(homeNotes, /to="\/knowledge"/);
