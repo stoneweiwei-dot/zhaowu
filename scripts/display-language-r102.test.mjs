@@ -12,7 +12,7 @@ test("global language selector exposes English, Traditional Chinese and Simplifi
   assert.match(layer, /const JA:/);
   assert.match(layer, /const KO:/);
   assert.match(layer, /const HI:/);
-  assert.match(shell, /value: "en"[\s\S]*value: "zh-Hant"[\s\S]*value: "zh-Hans"/);
+  for (const value of ["en", "zh-Hant", "zh-Hans"]) assert.match(shell, new RegExp(`value: "${value}" as const`));
   assert.doesNotMatch(shell, /value: "ja" as const/);
   assert.doesNotMatch(shell, /value: "ko" as const/);
   assert.doesNotMatch(shell, /value: "hi" as const/);

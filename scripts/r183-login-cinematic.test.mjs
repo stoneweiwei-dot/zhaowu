@@ -5,30 +5,36 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("r183 keeps owner-only auth while the login surface becomes cinematic", async () => {
+test("owner-only auth remains intact while login becomes a static Song landscape", async () => {
   const login = await source("src/routes/login.tsx");
   const css = await source("src/zhaowu-design-system.css");
+
   assert.match(login, /data-owner-only-login="true"/);
-  assert.match(login, /data-login-surface="cinematic-r183"/);
-  assert.match(login, /LoginStageBackdrop/);
-  assert.match(login, /stone-login-sound/);
-  assert.match(login, /stone-login-footer/);
+  assert.match(login, /data-login-backend="vercel-owner-cookie"/);
+  assert.match(login, /data-login-surface="song-landing-r224"/);
+  assert.match(login, /\/hero-gallery\/dragon-scholar\.webp/);
+  assert.match(login, /data-login-stage-static="true"/);
+  assert.doesNotMatch(login, /<video|LoginStageBackdrop|stone-login-sound|data-login-animation/);
   assert.doesNotMatch(login, /signInWithPassword|signUpWithPassword|Google|Apple/);
-  assert.match(css, /r183 — cinematic owner login/);
+
+  assert.match(css, /final Song login, explicit language\/login row, and quiet utility dock/);
+  assert.match(css, /data-login-surface="song-landing-r224"/);
   assert.match(css, /place-items:\s*end center !important/);
-  assert.match(css, /backdrop-filter:\s*blur\(24px\) saturate\(\.86\) !important/);
+  assert.match(css, /background:\s*rgba\(255, 250, 239, \.84\) !important/);
   assert.match(css, /\.stone-login-form input \{[\s\S]*min-height:\s*50px !important/);
-  assert.match(css, /@media \(max-width:\s*430px\)[\s\S]*border-radius:\s*28px 28px 20px 20px !important/);
 });
 
-test("current runtime keeps the owner-login cinematic and restores the home intro", async () => {
+test("current runtime documents static owner login and a mascot-free utility dock", async () => {
   const current = await source("docs/CURRENT-STATE.md");
-  const storage = await source("src/lib/storage-write-policy.ts");
   const rootRoute = await source("src/routes/__root.tsx");
   const shell = await source("src/components/site-shell.tsx");
-  assert.match(current, /首頁掛載一次性 `IntroGate`/);
-  assert.match(current, /`\/login` 仍是登入動畫入口/);
-  assert.match(storage, /SUPABASE_STORAGE_WRITES_PAUSED\s*=\s*false/);
-  assert.doesNotMatch(rootRoute, /IntroGate/);
+
+  assert.match(current, /owner-only login/);
+  assert.match(current, /dragon-scholar\.webp/);
+  assert.match(current, /青玉小龍已退出公開 runtime/);
+  assert.match(current, /SiteUtilityDock/);
   assert.match(shell, /isHome \? <IntroGate \/> : null/);
+  assert.match(shell, /<SiteUtilityDock \/>/);
+  assert.doesNotMatch(shell, /<GreenDragonGuide \/>/);
+  assert.doesNotMatch(rootRoute, /IntroGate/);
 });

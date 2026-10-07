@@ -13,7 +13,7 @@ import {
   type DisplayLanguage,
 } from "@/lib/display-language";
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
-import { GreenDragonGuide } from "@/components/green-dragon-guide";
+import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { IntroGate } from "@/components/intro-gate";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
@@ -113,9 +113,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
   // Korean and Hindi remain implemented in the codebase but are intentionally
   // hidden from the public language selector until they are reactivated.
   const languageOptions = [
-    { value: "en" as const, label: "English", aria: "English" },
-    { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
-    { value: "zh-Hans" as const, label: "简体", aria: "简体中文" },
+    { value: "zh-Hant" as const, label: "繁體", short: "繁", aria: "繁體中文" },
+    { value: "zh-Hans" as const, label: "简体", short: "简", aria: "简体中文" },
+    { value: "en" as const, label: "English", short: "EN", aria: "English" },
   ];
 
   const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
@@ -132,6 +132,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
   const ownerLoginLabel = displayText(language, "站主登入", "站主登录", "Owner sign-in", "站主ログイン", "관리자 로그인", "मालिक लॉगिन");
+  const homeLoginLabel = displayText(language, "登入", "登录", "Login", "ログイン", "로그인", "लॉगिन");
+  const languageVisualLabel = displayText(language, "語言", "语言", "Language", "言語", "언어", "भाषा");
   const skipLabel = displayText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
 
   useEffect(() => {
@@ -217,14 +219,38 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </div>
             ) : null}
 
-            <nav className="zhaowu-header-nav" aria-label={siteControlsLabel}>
+            <nav className={`zhaowu-header-nav${isHome ? " is-home-entry-row" : ""}`} aria-label={siteControlsLabel}>
               <div role="group" aria-label={t("language")} className="site-lang-group">
-                <span aria-hidden="true" className="zhaowu-language-icon"><BrandIcon name="language" /></span>
-                {languageOptions.map(({ value, label, aria }) => {
+                <span className="zhaowu-language-label">
+                  <BrandIcon name="language" />
+                  <span>{languageVisualLabel}</span>
+                </span>
+                {languageOptions.map(({ value, label, short, aria }) => {
                   const active = language === value;
-                  return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button">{label}</button>;
+                  return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button">{isHome ? short : label}</button>;
                 })}
               </div>
+
+              {isHome ? (
+                isPending ? <span className="zhaowu-home-login-inline is-pending" aria-hidden="true" /> :
+                user?.isOwner ? (
+                  <Link to="/account" className="zhaowu-home-login-inline" aria-label={t("navAdmin")}>
+                    <BrandIcon name="account" />
+                    <span>{displayText(language, "後台", "后台", "Console", "管理", "관리", "कंसोल")}</span>
+                  </Link>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="zhaowu-home-login-inline"
+                    aria-label={ownerLoginLabel}
+                    data-owner-login-entry="true"
+                  >
+                    <BrandIcon name="account" />
+                    <span>{homeLoginLabel}</span>
+                  </Link>
+                )
+              ) : null}
+
               {NIGHT_MODE_ENABLED ? <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>
                 <button type="button" onClick={() => applyBrandTheme("day")} aria-pressed={!night} aria-label={dayModeLabel} data-active={!night ? "true" : "false"}>{displayText(language, "日", "日", "Day", "日", "낮", "दिन")}</button>
                 <button type="button" onClick={() => applyBrandTheme("night")} aria-pressed={night} aria-label={nightModeLabel} data-active={night ? "true" : "false"}>{displayText(language, "夜", "夜", "Night", "夜", "밤", "रात")}</button>
@@ -234,7 +260,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </header>
       ) : null}
 
-      {!isLogin && !isOwnerWorkspace ? <GreenDragonGuide /> : null}
+      {!isOwnerWorkspace ? <SiteUtilityDock /> : null}
       <div id="zhaowu-main-content" tabIndex={-1} className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
 
       {!isLogin && !isOwnerWorkspace ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
@@ -246,15 +272,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </p>
         ) : null}
         <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
-        {isHome && !isPending ? (
-          <p className="zhaowu-site-owner-bottom">
-            {user?.isOwner ? (
-              <Link to="/account" className="zhaowu-footer-owner-entry">{t("navAdmin")}</Link>
-            ) : (
-              <Link to="/login" className="zhaowu-footer-owner-entry">{ownerLoginLabel}</Link>
-            )}
-          </p>
-        ) : null}
       </footer> : null}
     </div>
   );

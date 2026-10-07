@@ -45,13 +45,12 @@ test("homepage keeps one primary flow while Today Guide stays visible above it",
   assert.match(home, /activeSection === "notes"/);
 });
 
-test("login owns the only active animation sound control", async () => {
+test("login carries no animation sound control after the static Song login", async () => {
   const routeRoot = await source("src/routes/__root.tsx");
   const login = await source("src/routes/login.tsx");
   assert.doesNotMatch(routeRoot, /IntroGate/);
-  assert.match(login, /LoginStageBackdrop/);
-  assert.match(login, /stone-login-sound/);
-  assert.match(login, /videoRef\.current\.muted = nextMuted/);
+  assert.match(login, /data-login-stage-static="true"/);
+  assert.doesNotMatch(login, /<video|LoginStageBackdrop|stone-login-sound/);
 });
 
 test("header mode control uses a labelled day-night segment instead of decorative icons", async () => {

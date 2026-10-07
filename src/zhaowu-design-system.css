@@ -7912,3 +7912,459 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-layout {
   .zhaowu-specialist-hub__card { padding:11px 10px; }
   .zhaowu-comic-lite__bubble { width:min(67%,235px);font-size:13px; }
 }
+
+/* 2026-10-07 — final Song login, explicit language/login row, and quiet utility dock. */
+
+/* Language + login are one obvious row on the public home header. */
+.zhaowu-header-nav.is-home-entry-row {
+  width: 100% !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+}
+
+.zhaowu-site-header .site-lang-group {
+  grid-template-columns: 62px repeat(3, minmax(0, 1fr)) !important;
+  width: 224px !important;
+  max-width: 224px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+}
+
+.zhaowu-language-label {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-right: 1px solid rgba(71, 61, 47, .09);
+  color: #5e574d;
+  font-size: 11px;
+  font-weight: 720;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.zhaowu-language-label svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  color: var(--zw-jade);
+}
+
+.zhaowu-site-header .site-lang-group .site-lang-button {
+  min-width: 0 !important;
+  min-height: 44px !important;
+  padding-inline: 6px !important;
+  font-size: 13px !important;
+}
+
+.zhaowu-home-login-inline {
+  display: inline-flex;
+  min-width: 84px;
+  min-height: 44px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(168, 134, 82, .42);
+  border-radius: 999px;
+  padding: 0 14px;
+  color: #fffaf0;
+  background: linear-gradient(180deg, #b98d4a, #98713c);
+  box-shadow: 0 6px 18px rgba(92, 64, 30, .12);
+  font-size: 13px;
+  font-weight: 720;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.zhaowu-home-login-inline svg { width: 17px; height: 17px; }
+.zhaowu-home-login-inline.is-pending { opacity: .48; }
+
+.zhaowu-home-login-inline:focus-visible,
+.zhaowu-home-login-inline:hover {
+  color: #fffdf6;
+  border-color: rgba(125, 88, 41, .62);
+  background: linear-gradient(180deg, #a77d40, #875f31);
+}
+
+/* The mascot is retired. Music and guide live in one low-noise paper utility dock. */
+.zhaowu-site-utility-dock {
+  position: fixed;
+  right: max(12px, env(safe-area-inset-right));
+  bottom: max(14px, calc(env(safe-area-inset-bottom) + 8px));
+  z-index: 46;
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.zhaowu-site-utility-buttons {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 4px;
+  border: 1px solid rgba(146, 112, 64, .26);
+  border-radius: 999px;
+  padding: 4px;
+  background: rgba(255, 251, 241, .88);
+  box-shadow: 0 8px 24px rgba(59, 48, 35, .10);
+  backdrop-filter: blur(12px) saturate(.92);
+  -webkit-backdrop-filter: blur(12px) saturate(.92);
+  pointer-events: auto;
+}
+
+.zhaowu-site-utility-buttons > button {
+  display: grid;
+  min-width: 58px;
+  min-height: 48px;
+  place-items: center;
+  align-content: center;
+  gap: 2px;
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 9px;
+  color: #61594f;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.zhaowu-site-utility-buttons > button + button {
+  border-left: 1px solid rgba(116, 91, 56, .11);
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+.zhaowu-site-utility-buttons > button.is-active {
+  color: var(--zw-jade-deep);
+  background: rgba(226, 235, 225, .72);
+}
+
+.zhaowu-site-utility-icon {
+  color: #a67d42;
+  font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.zhaowu-site-utility-buttons > button > span:last-child {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.zhaowu-site-utility-panel {
+  width: min(348px, calc(100vw - 24px));
+  max-height: min(68dvh, 560px);
+  overflow: auto;
+  border: 1px solid rgba(146, 112, 64, .26);
+  border-radius: 18px;
+  padding: 14px;
+  color: var(--zw-ink);
+  background: rgba(255, 250, 239, .97);
+  box-shadow: 0 16px 44px rgba(45, 39, 31, .16);
+  pointer-events: auto;
+  overscroll-behavior: contain;
+}
+
+.zhaowu-site-utility-panel[hidden] { display: none !important; }
+
+.zhaowu-site-utility-panel-head {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid rgba(91, 73, 50, .11);
+  padding: 0 0 9px;
+}
+
+.zhaowu-site-utility-panel-head strong {
+  color: var(--zw-ink);
+  font-family: var(--font-display, "Songti TC", "PMingLiU", serif);
+  font-size: 17px;
+  font-weight: 620;
+  letter-spacing: .04em;
+}
+
+.zhaowu-site-utility-panel-head > button {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: #675f54;
+  background: rgba(95, 82, 65, .06);
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.zhaowu-site-utility-panel .zhaowu-dragon-music {
+  margin: 12px 0 0;
+  border: 0;
+  padding: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-site-guide-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.zhaowu-site-guide-shortcuts button {
+  min-height: 44px;
+  border: 1px solid rgba(84, 75, 62, .13);
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: #4e4a43;
+  background: rgba(255, 253, 247, .78);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.zhaowu-site-guide-answer {
+  margin-top: 12px;
+  border-left: 2px solid rgba(41, 75, 63, .44);
+  padding: 9px 0 9px 12px;
+}
+
+.zhaowu-site-guide-answer p {
+  margin: 0;
+  color: #5f584e;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.zhaowu-site-guide-answer > button {
+  min-height: 40px;
+  margin-top: 7px;
+  border: 0;
+  padding: 0;
+  color: var(--zw-jade-deep);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 720;
+  cursor: pointer;
+}
+
+.zhaowu-site-guide-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.zhaowu-site-guide-form input {
+  min-width: 0;
+  min-height: 46px;
+  border: 1px solid rgba(84, 75, 62, .17);
+  border-radius: 10px;
+  padding: 0 12px;
+  color: var(--zw-ink);
+  background: #fffdf8;
+  font-size: 16px;
+}
+
+.zhaowu-site-guide-form button {
+  min-width: 62px;
+  min-height: 46px;
+  border: 1px solid rgba(41, 75, 63, .28);
+  border-radius: 10px;
+  padding: 0 12px;
+  color: #fffaf1;
+  background: var(--zw-jade-deep);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* The owner-only login is now a quiet Song landscape, not a dark cinematic video surface. */
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] {
+  position: relative !important;
+  isolation: isolate !important;
+  display: grid !important;
+  min-height: 100svh !important;
+  min-height: 100dvh !important;
+  place-items: end center !important;
+  overflow: hidden !important;
+  padding: max(92px, calc(env(safe-area-inset-top) + 74px)) 18px max(22px, calc(env(safe-area-inset-bottom) + 14px)) !important;
+  background: #f4eddf !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-stage-media {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: 50% 42% !important;
+  filter: saturate(.90) contrast(.98) brightness(1.035) !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"]::before,
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"]::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"]::before {
+  background:
+    linear-gradient(180deg, rgba(255, 250, 240, .03) 0%, rgba(255, 250, 240, .08) 42%, rgba(246, 237, 219, .42) 66%, rgba(244, 234, 214, .78) 100%) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"]::after {
+  background:
+    radial-gradient(circle at 84% 14%, rgba(237, 216, 174, .12), transparent 34%),
+    linear-gradient(90deg, rgba(255, 252, 244, .09), transparent 42%) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-sheet {
+  position: relative !important;
+  z-index: 2 !important;
+  width: min(100%, 430px) !important;
+  margin: 0 auto !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(168, 128, 68, .32) !important;
+  border-radius: 20px !important;
+  padding: 21px 20px 17px !important;
+  color: #39332b !important;
+  background: rgba(255, 250, 239, .84) !important;
+  box-shadow: 0 18px 54px rgba(62, 49, 31, .13) !important;
+  backdrop-filter: blur(11px) saturate(.90) !important;
+  -webkit-backdrop-filter: blur(11px) saturate(.90) !important;
+  animation: none !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-sheet::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 24% !important;
+  right: 24% !important;
+  top: 0 !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(164, 121, 61, .68), transparent) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-kicker {
+  color: #8c683e !important;
+  font-size: 12px !important;
+  letter-spacing: .12em !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-title {
+  color: #2f2a24 !important;
+  font-size: clamp(1.7rem, 7vw, 2.15rem) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-form input {
+  min-height: 50px !important;
+  border: 1px solid rgba(145, 112, 65, .24) !important;
+  border-radius: 12px !important;
+  color: #2f2a24 !important;
+  background: rgba(255, 254, 249, .84) !important;
+  font-size: 16px !important;
+  box-shadow: none !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-primary {
+  min-height: 50px !important;
+  border: 1px solid rgba(42, 81, 66, .32) !important;
+  border-radius: 12px !important;
+  color: #fffaf1 !important;
+  background: #315a4c !important;
+  box-shadow: 0 9px 22px rgba(37, 67, 56, .14) !important;
+}
+
+.zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-footer {
+  color: #74695c !important;
+  border-top-color: rgba(116, 91, 56, .13) !important;
+}
+
+/* On login the two tools sit at the upper-right edge, leaving the form untouched. */
+.zhaowu-login-shell .zhaowu-site-utility-dock {
+  top: max(14px, calc(env(safe-area-inset-top) + 8px));
+  right: max(12px, env(safe-area-inset-right));
+  bottom: auto;
+}
+
+.zhaowu-login-shell .zhaowu-site-utility-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+}
+
+@media (max-width: 430px) {
+  .zhaowu-site-header .site-lang-group {
+    flex: 1 1 auto !important;
+    width: min(210px, calc(100vw - 118px)) !important;
+    max-width: 210px !important;
+    grid-template-columns: 56px repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .zhaowu-language-label { font-size: 10px; }
+  .zhaowu-language-label svg { display: none; }
+
+  .zhaowu-home-login-inline {
+    min-width: 82px;
+    padding-inline: 12px;
+  }
+
+  .zhaowu-site-utility-buttons > button {
+    min-width: 56px;
+    min-height: 48px;
+  }
+
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] {
+    padding-inline: 14px !important;
+    padding-bottom: max(14px, calc(env(safe-area-inset-bottom) + 8px)) !important;
+  }
+
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-stage-media {
+    object-position: 54% 42% !important;
+  }
+
+  .zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-sheet {
+    border-radius: 18px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .zhaowu-site-header .site-lang-group {
+    width: min(190px, calc(100vw - 104px)) !important;
+    grid-template-columns: 48px repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .zhaowu-home-login-inline {
+    min-width: 74px;
+    padding-inline: 9px;
+    font-size: 12px;
+  }
+
+  .zhaowu-language-label span { font-size: 9px; }
+  .zhaowu-site-header .site-lang-group .site-lang-button { font-size: 12px !important; }
+}
+
+@media print {
+  .zhaowu-site-utility-dock { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-site-utility-buttons,
+  .zhaowu-site-utility-panel { scroll-behavior: auto; }
+}
+

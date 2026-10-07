@@ -93,9 +93,10 @@ Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batch
 公開 selector 只有：
 
 - 繁體中文
+- 简体中文
 - English
 
-ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在公開 selector，也不得阻塞 Production 驗收。
+ko／hi／ja 原始碼或相容 bridge 可保留，但不得出現在公開 selector，也不得阻塞 Production 驗收。
 
 ## 5. 視覺權威
 
@@ -107,7 +108,7 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - 不再新增新的 `visual-hotfix-rXXX.css` 全域入口。
 - SiteShell 語言列不得用 inline style 與 canonical CSS 打架。
 - iPhone 優先；主要 touch target >=44px；表單控制文字 16px，避免 Safari auto zoom。
-- 浮動 UI 只有青玉小龍；播放器控制整合在小龍內，不得掛第二個 fixed music dock。
+- 青玉小龍已退出公開 runtime；音樂與網站導覽整合為同一個低干擾 paper utility dock，只保留兩個帶文字的 44px+ 入口，不得再疊第二套 mascot／music 浮層。
 - 手機頁面不得要求左右拖動。
 - 2026-10-03 起同一框架新增全域圖像預設：暖紙／絹肌理、柔霧礦物粉彩、細墨線、克制淡金、大景小敘事與 9:16 單張成畫；所有生成圖預設遵循，文化題材保留其自身畫風。
 - 2026-09-29 起 `docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 為主體審美框架：核心是「豐盛後的收斂」。留白必須有分組作用，遠山必須可辨識，暖紙閱讀面不得被做成空洞洗白；全站維持單一宋式編輯骨架。
@@ -115,7 +116,7 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 - r185 起夜間模式必須按「表面」配色：米白／宣紙卡保持深墨正文；只有深松綠等暗色承載面使用月白字。禁止再用全域 night 文字變亮覆蓋整個 result flow。
 - r186 起首頁視覺採單一「宋式編輯排版」權威：禁止以大膠囊、大圓角卡片牆、深綠大色塊作主要資訊架構；Header 為細字導覽，Hero 以宋體＋留白＋細線構成，Disclosure 以分隔列呈現。
 - r186 核心閱讀面（生辰／命盤／問題／報告）統一為低圓角暖紙；Night mode 為墨色背景＋暖紙正文，不把整頁染成暗綠。
-- r186 青玉小龍維持唯一浮動入口，但入口縮至 44–46px、主動泡泡隱藏；展開面固定為小型底部抽屜，不得再覆蓋大半個 iPhone 畫面。
+- 2026-10-07 起青玉小龍公開入口取消；原有音樂與網站指引能力由 `SiteUtilityDock` 承接，視覺只保留「音樂／導覽」兩個有文字標示的低干擾入口。
 - r187 起 English 是獨立排版系統，不得把中文尺寸直接換成英文字符串：Latin 標題使用 Iowan Old Style／Baskerville／Georgia fallback，UI 使用 Avenir Next／SF Pro／system sans；手機 English Header 分成品牌／更新／語言與外觀三列，禁止長字串互相交叉或壓住。
 - r187 起站主後台執行「資訊減法」：分區下方不再放教學式／解釋式 helper copy；只保留標題、狀態、操作與必要資料。任何 Storage 狀態只用單行 short status。
 - r188 起新增「宋式小漫畫翻譯層」：宋式仍是唯一視覺骨架；漫畫只允許出現在首頁「今日一格」、命書核心底盤後單一白話插頁、命書末端分享一格。不得擴張成新工具入口、卡片牆或第二套品牌視覺。
@@ -135,16 +136,16 @@ ko／hi／zh-Hans／ja 原始碼或相容 bridge 可保留，但不得出現在�
 r219 依站主最新明確指令（2026-09-28，見 `docs/INSTRUCTION-REGISTRY.md`）修正，取代 r161／r191 對首頁的限制：
 
 - 首頁掛載一次性 `IntroGate`（`SiteShell` 內 `isHome ? <IntroGate /> : null`）：以 `zhaowu.intro.seen.public.v1` 記錄，同一瀏覽器只播一次（非每日），播完或逾時後改用靜態 poster，不阻塞頁面其他內容；一般分區、報告頁與返回導覽仍不掛載。
-- `/login` 仍是登入動畫入口，行為不變：每次站主登入流程只在首次進入 `/login` 播放一次；影片不循環，播完使用靜態封面。切到其他 route 再返回 `/login` 不重播；站主主動登出後才開始下一次登入流程。
+- `/login` 仍是 owner-only login，但公開呈現改為固定宋式畫作背景 `/hero-gallery/dragon-scholar.webp`；不再播放登入影片，也不再顯示登入動畫的聲音／跳過控制。站主 cookie／session 與 owner-only 身份邊界不變。
 - `IntroGate` 元件與 policy（`src/components/intro-gate.tsx`、`src/lib/intro-gate-policy.ts`）現為公開 runtime 的一部分，不再只是回歸／相容參照。
 
 r220 依站主最新明確指令（2026-09-29，見 `docs/INSTRUCTION-REGISTRY.md`）修正後台素材管理的對應範圍：
 
 - `/gallery` 的「開場影片」分頁（元件 `src/components/owner-login-visuals-manager.tsx`，內部識別碼與 `data-*` 屬性維持 `login-visuals` 不變）現在管理的是**首頁 `IntroGate` 的開場影片**，不是 `/login` 的登入畫面。站主在此上傳、標記 `is_primary`（`category=loading`、標記 `login-background`）的影片，透過新的公開唯讀端點 `src/lib/intro-visual-source.ts`（匿名金鑰、單一 row、~450ms 逾時、任何失敗一律 fail-open 回到內建預設 `zhaowu-opening-r148.mp4`）被首頁的 `IntroGate` 讀取使用。
-- `/login` 的 `LoginStageBackdrop` 完全不受影響：它一直只讀取靜態內建的 `LOGIN_VISUAL_CATALOG`（`src/lib/loading-gallery-catalog.ts`），從未實際消費過這個後台分頁寫入 Supabase 的資料，因此本次重新配線對站主自己的登入畫面是零風險、零行為變更。
+- `/login` 不再消費 `LoginStageBackdrop`／`LOGIN_VISUAL_CATALOG`；後台「開場影片」仍只管理首頁 `IntroGate` 的公開開場素材，與 owner-only login 背景解耦。
 - 後台分頁只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為候選，新增上傳也只接受影片檔。
 - r194 起 Supabase Pro 已由站主明確批准，舊 r181 Free 容量寫入凍結退出 active path；runtime 的既有 same-origin fallback 保留。
-- r194：登入影片最多播放 15 秒，結束後顯示封面；喇叭圖示為單一聲音控制，觸控區至少 44px。站主影片管理器接受 MP4／WebM、時長上限 15 秒、單檔上限 500 MB；大於 6 MB 使用 Supabase TUS 斷點續傳。系統不在瀏覽器內轉碼，來源檔須已是可播放的 15 秒內成品。
+- r194 的影片格式／TUS 上傳能力保留給首頁 `IntroGate` 素材管理；2026-10-07 起 `/login` 本身固定使用靜態宋式畫作，不再消費登入影片 runtime。
 - r196：完整綜合報告新增「完整命書／漫畫 Lite」雙閱讀模式，預設漫畫 Lite 六格；每格可展開同一份完整報告原文。這是呈現層，不新增 calculation、Storage、AI provider 或 payment gate。\n- r197：站主 `/gallery` 素材後台改為「登入影片／內容圖片」二選一分頁，一次只渲染一個管理器；登入影片、總圖庫、背景與報告的批量工具列只有先勾選項目後才顯示。功能、Owner 權限、Storage 寫入與資料結構不變。\n- r197：已安裝 PWA 以 release metadata + service worker 前景檢查吸收新正式版本，不要求刪除 App 重裝。
 
 ## 7. Supabase
