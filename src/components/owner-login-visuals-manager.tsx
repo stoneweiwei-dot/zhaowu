@@ -5,7 +5,6 @@ import {
   deleteGalleryAsset,
   galleryPublicUrl,
   listOwnerGalleryAssets,
-  setGalleryAssetEnabled,
   setGalleryAssetTags,
   setLoginVisualCurrent,
   uploadGalleryAsset,
@@ -97,7 +96,6 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [preview, setPreview] = useState<GalleryAsset | null>(null);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
 
@@ -107,20 +105,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     upload: tr(locale, "上傳開場影片", "上传开场视频", "Upload opening video"),
     current: tr(locale, "目前使用中", "目前使用中", "Currently in use"),
     use: tr(locale, "設為目前使用", "设为目前使用", "Set as current"),
-    enable: tr(locale, "啟用", "启用", "Enable"),
-    disable: tr(locale, "停用", "停用", "Disable"),
     remove: tr(locale, "刪除", "删除", "Delete"),
-    select: tr(locale, "選取", "选择", "Select"),
-    selectedOne: tr(locale, "已選", "已选", "Selected"),
-    batchManage: tr(locale, "批次管理", "批次管理", "Bulk actions"),
-    selected: (n: number) => tr(locale, `已選 ${n} 個`, `已选 ${n} 个`, `${n} selected`),
-    selectAll: tr(locale, "全選可管理素材", "全选可管理素材", "Select all editable"),
-    clearSelection: tr(locale, "清除選取", "清除选择", "Clear"),
-    enableSelected: tr(locale, "批次啟用", "批量启用", "Enable selected"),
-    disableSelected: tr(locale, "批次停用", "批量停用", "Disable selected"),
-    deleteSelected: tr(locale, "批次刪除", "批量删除", "Delete selected"),
-    batchDeleteConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 個開場素材？此操作不可復原。`, `删除已选的 ${n} 个开场素材？此操作不可恢复。`, `Delete ${n} selected opening-video assets? This cannot be undone.`),
-    batchDone: (n: number) => tr(locale, `已處理 ${n} 個開場素材。`, `已处理 ${n} 个开场素材。`, `Updated ${n} opening-video assets.`),
     preview: tr(locale, "預覽", "预览", "Preview"),
     close: tr(locale, "關閉", "关闭", "Close"),
     day: tr(locale, "日間版", "日间版", "Day"),
@@ -155,8 +140,6 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         (asset.tags ?? []).some((tag) => tag.trim().toLowerCase() === "login-background") && isVideo(asset),
       );
       setAssets(rows);
-      const ids = new Set(rows.map((asset) => asset.id));
-      setSelectedIds((current) => current.filter((id) => ids.has(id)));
     } catch (error) {
       setMessage(error instanceof Error ? error.message : copy.failed);
     }
@@ -229,43 +212,6 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     } finally { setBusy(false); }
   }
 
-  const editableRows = rows.filter((asset) => !asset.id.startsWith("catalog:"));
-
-  const toggleSelected = (id: string) => {
-    if (id.startsWith("catalog:")) return;
-    setSelectedIds((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
-  };
-
-  async function setSelectedEnabled(enabled: boolean) {
-    if (busy || !selectedIds.length) return;
-    setBusy(true); setMessage(null);
-    try {
-      await Promise.all(selectedIds.map((id) => setGalleryAssetEnabled(session, id, enabled)));
-      const count = selectedIds.length;
-      await load();
-      notifyChanged();
-      setMessage(copy.batchDone(count));
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : copy.failed);
-    } finally { setBusy(false); }
-  }
-
-  async function deleteSelected() {
-    if (busy || !selectedIds.length || !window.confirm(copy.batchDeleteConfirm(selectedIds.length))) return;
-    setBusy(true); setMessage(null);
-    try {
-      const chosen = assets.filter((asset) => selectedIds.includes(asset.id));
-      for (const asset of chosen) await deleteGalleryAsset(session, asset);
-      const count = chosen.length;
-      setSelectedIds([]);
-      await load();
-      notifyChanged();
-      setMessage(copy.batchDone(count));
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : copy.failed);
-    } finally { setBusy(false); }
-  }
-
   return (
     <section id="login-visuals" data-owner-login-visuals className="seal-border rounded-2xl bg-cream/88 p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -280,24 +226,13 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       </div>
       {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-3 text-xs font-medium text-ink-mute" data-owner-storage-status>{tr(locale, "Storage 寫入暫停", "Storage 写入暂停", "Storage read-only")}</p> : null}
       {message ? <p className="mt-3 rounded-xl border border-line bg-paper/40 px-4 py-3 text-sm text-cinnabar">{message}</p> : null}
-      <div data-owner-bulk-toolbar="login-visuals" className="mt-4 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
-        <span className="mr-auto font-display text-sm text-ink">{selectedIds.length ? copy.selected(selectedIds.length) : copy.batchManage}</span>
-        <button type="button" disabled={busy || !editableRows.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedIds(editableRows.map((asset) => asset.id))}>{copy.selectAll}</button>
-        <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedIds([])}>{copy.clearSelection}</button>
-        <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-wood/30 bg-wood/5 px-3 text-[11px] text-wood disabled:opacity-35" onClick={() => void setSelectedEnabled(true)}>{copy.enableSelected}</button>
-        <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => void setSelectedEnabled(false)}>{copy.disableSelected}</button>
-        <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelected()}>{copy.deleteSelected}</button>
-      </div>
       {!rows.length ? <p className="mt-4 text-sm text-ink-mute">{copy.empty}</p> : null}
       <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {rows.map((asset) => {
           const locked = asset.id.startsWith("catalog:");
           const current = asset.id === currentId;
           return (
-            <article key={asset.id} data-owner-selectable-file="login-visuals" className={`relative overflow-hidden rounded-xl border ${selectedIds.includes(asset.id) ? "border-wood/45 ring-1 ring-wood/15" : current ? "border-[#c4a05a] bg-[#fffaf1]" : "border-line bg-cream/72"}`}>
-              {!locked ? <button type="button" aria-pressed={selectedIds.includes(asset.id)} onClick={() => toggleSelected(asset.id)} className={`absolute left-2 top-2 z-10 inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 text-[10px] font-medium shadow-sm ${selectedIds.includes(asset.id) ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${copy.select} ${displayTitle(asset)}`}>
-                {selectedIds.includes(asset.id) ? `✓ ${copy.selectedOne}` : copy.select}
-              </button> : null}
+            <article key={asset.id} className={`relative overflow-hidden rounded-xl border ${current ? "border-[#c4a05a] bg-[#fffaf1]" : "border-line bg-cream/72"}`}>
               <button type="button" className="block w-full" onClick={() => setPreview(asset)}>
                 <video className="aspect-[16/10] w-full object-cover" src={videoSrcOf(asset)} poster={posterOf(asset)} muted playsInline preload="metadata" />
               </button>
