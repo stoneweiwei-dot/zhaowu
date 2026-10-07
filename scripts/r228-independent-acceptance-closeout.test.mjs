@@ -4,11 +4,28 @@ import test from "node:test";
 
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
+const { analyzeLife } = await import("../src/lib/actions.ts");
+const { buildComplexDeterministicAnswer } = await import("../src/lib/report/complex-reasoning.ts");
+const { FEATURED_CITIES } = await import("../src/lib/bazi/cities.ts");
 
 test("acceptance: fixed offer questions lead with a plain stay-or-go verdict", async () => {
+  const result = await analyzeLife({
+    data: {
+      question: "老闆說可能升我但薪水不變，我又有另一個 offer，留還是走？",
+      locale: "zh-Hant",
+      year: 1988, month: 10, day: 4, hour: 4, minute: 40,
+      timeUnknown: false, gender: "male", relation: "unset",
+      city: FEATURED_CITIES[0], liveCity: null, ziPolicy: "midnight", useTrueSolar: false,
+    },
+  });
+  const answer = buildComplexDeterministicAnswer(result);
+  assert.ok(answer);
+  assert.match(answer.verdict, /^先留，不急著走。/);
+  assert.ok(answer.comparison);
+  assert.doesNotMatch(answer.verdict, /日主|月令|格局|十神|用神|身強|身弱/);
+
   const reasoning = await source("src/lib/report/complex-reasoning.ts");
   const view = await source("src/components/result-view.tsx");
-  assert.match(reasoning, /先留，不急著走/);
   assert.match(reasoning, /先留，不急着走/);
   assert.match(reasoning, /Stay for now; do not move yet/);
   assert.match(view, /lockDeterministicVerdict = Boolean\(complexRule\?\.comparison\)/);
