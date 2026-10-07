@@ -8870,3 +8870,27 @@ html body .zw-ink-board[data-lang="en"] .zw-ink-wheel text { font-size: 8.5px; }
 html body .zw-ink-board[data-lang="en"] .zw-ink-paper h4 { letter-spacing: .06em; }
 html body .zw-ink-board[data-lang="en"] .zw-ink-weather strong { font-size: 18px; }
 html body .zw-ink-board[data-lang="en"] .zw-ink-city span { font-size: 10px; overflow-wrap: normal; word-break: normal; hyphens: auto; }
+
+/* 2026-10-08 · owner: 靈籤「展開完整籤文」button was too faint — solid jade + gold, readable on light or dark paper. */
+html body #daily-almanac .zhaowu-today-guide__spirit-paper button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px !important;
+  margin-top: 10px !important;
+  border: 1.5px solid #c9a86a !important;
+  border-radius: 24px !important;
+  padding: 0 22px !important;
+  background: linear-gradient(180deg, #2f6b55, #1f4a3c) !important;
+  color: #fff7e6 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: .08em;
+  opacity: 1 !important;
+  box-shadow: 0 4px 14px rgba(20, 50, 40, .28);
+  text-shadow: none !important;
+}
+html body #daily-almanac .zhaowu-today-guide__spirit-paper button::after { content: "→"; font-weight: 700; }
+html body #daily-almanac .zhaowu-today-guide__spirit-paper button:active { transform: scale(.98); }
+html body #daily-almanac .zhaowu-today-guide__spirit-reading small { color: #8d6f3f !important; font-size: 12px !important; }
