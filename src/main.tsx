@@ -4,7 +4,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { KoHiLocalizationBridge } from './components/ko-hi-localization-bridge';
 import { routeTree } from './routeTree.gen';
 import './styles.css';
-import './legacy-visual-compat.css';
+import './zhaowu-layered-styles.css';
 // Canonical visual authority must load last. Do not add visual hotfix layers after this import.
 import './zhaowu-design-system.css';
 

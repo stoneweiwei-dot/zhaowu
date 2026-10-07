@@ -14,7 +14,6 @@ import "@/home-polish-v3.css";
 import "@/home-portals.css";
 import "@/home-portals-astrology.css";
 import "@/home-layout-r46.css";
-import "@/home-birth-hub-r60.css";
 
 export const Route = createFileRoute("/")({ component: Home });
 
