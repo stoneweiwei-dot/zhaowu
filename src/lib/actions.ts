@@ -1,4 +1,5 @@
 import { FEATURED_CITIES, filterFeatured } from "@/lib/bazi/cities";
+import { searchBirthPlaces } from "@/lib/geo/city-search";
 import type { AnalysisResult, AnalyzeInput, CityHit, RelationPref } from "@/lib/bazi/types";
 import { buildChart, currentAlmanac } from "@/lib/bazi/chart";
 import { classifyQuestion, interpret } from "@/lib/bazi/interpret";
@@ -72,48 +73,13 @@ export async function getAlmanac() {
 }
 
 export async function searchCities({ data }: { data: string }): Promise<CityHit[]> {
-  const q = String(data ?? "").trim().slice(0, 40);
-  const local = filterFeatured(q);
-  if (!q || q.length < 2) return local;
-  if (local.length) return local;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 1800);
+  // Owner 2026-10-08: birthplace search must find small towns. Delegates to the
+  // merged local + GeoNames + OSM search; timezone-less hits are resolved on select.
   try {
-    const language = /[a-z]/i.test(q) ? "en" : "zh";
-    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=${language}`;
-    const res = await fetch(url, { signal: controller.signal });
-    if (!res.ok) return local.length ? local : FEATURED_CITIES.slice(0, 6);
-    const body = (await res.json()) as {
-      results?: {
-        name: string;
-        country?: string;
-        admin1?: string;
-        latitude: number;
-        longitude: number;
-        timezone?: string;
-      }[];
-    };
-    const remote: CityHit[] = (body.results ?? []).map((r) => ({
-      name: r.name,
-      country: r.country ?? "",
-      display: [r.name, r.admin1, r.country].filter(Boolean).join("，"),
-      latitude: r.latitude,
-      longitude: r.longitude,
-      timezone: r.timezone || "UTC",
-    }));
-    const seen = new Set<string>();
-    const merged: CityHit[] = [];
-    for (const item of [...local, ...remote]) {
-      const key = `${item.display}-${item.latitude.toFixed(2)}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      merged.push(item);
-    }
-    return merged.slice(0, 8);
+    return await searchBirthPlaces(String(data ?? ""));
   } catch {
+    const local = filterFeatured(String(data ?? "").trim());
     return local.length ? local : FEATURED_CITIES.slice(0, 6);
-  } finally {
-    clearTimeout(timeout);
   }
 }
 

@@ -19,7 +19,10 @@ test("optional city copy is not rendered twice when the label already includes i
 test("exact city matches self-confirm and unresolved birth city stays blocked", () => {
   assert.match(picker, /candidates\.includes\(normalizedQuery\)/);
   assert.doesNotMatch(picker, /localized\.length === 1/);
-  assert.match(picker, /aria-invalid=\{invalid \|\| undefined\}/);
+  assert.match(picker, /aria-invalid=\{invalid \|\| tzError \|\| undefined\}/);
+  // 2026-10-08: typing is never rewritten mid-input; IME composition is respected.
+  assert.match(picker, /onCompositionStart/);
+  assert.match(picker, /resolveCityTimezone/);
   assert.match(picker, /role="alert"/);
   assert.match(analysisForm, /setBirthCityError\(true\)/);
   assert.match(analysisForm, /document\.getElementById\("birth-city"\)/);
