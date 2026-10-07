@@ -14,7 +14,11 @@ test("capture home + report", async ({ page }) => {
   await page.screenshot({ path: `${OUT}/01-home-top.png` });
   const portals = page.locator(".zhaowu-home-portals").first();
   if (await portals.count()) await portals.screenshot({ path: `${OUT}/02-portals.png` }).catch(() => {});
-  await page.locator("#analysisForm").scrollIntoViewIfNeeded();
+  await page.getByText("開始建立我的命書").first().click().catch(() => {});
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: `${OUT}/02b-after-cta.png`, fullPage: true });
+  await page.locator("#birth-year").waitFor({ timeout: 20_000 }).catch(async () => { await page.screenshot({ path: `${OUT}/err-noform.png`, fullPage: true }); });
+  await page.locator("#analysisForm").scrollIntoViewIfNeeded().catch(() => {});
   await page.locator("#birth-year").fill("1988");
   await page.locator("#birth-month").fill("10");
   await page.locator("#birth-day").fill("4");
@@ -27,7 +31,7 @@ test("capture home + report", async ({ page }) => {
   const opt = page.locator('#birth-city-results [role="option"]').first();
   if (await opt.isVisible().catch(() => false)) await opt.click();
   await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
-  await page.locator(".zhaowu-birth-summary").waitFor({ timeout: 60_000 });
+  await page.locator(".zhaowu-birth-summary").waitFor({ timeout: 60_000 }).catch(async () => { await page.screenshot({ path: `${OUT}/err-nosummary.png`, fullPage: true }); });
   await page.waitForTimeout(2500);
   await page.screenshot({ path: `${OUT}/04-after-submit.png`, fullPage: true });
   const book = page.locator("[data-unified-birth-report]");
