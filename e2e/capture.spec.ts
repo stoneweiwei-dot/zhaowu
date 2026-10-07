@@ -34,6 +34,11 @@ test("capture home + report", async ({ page }) => {
   await page.locator(".zhaowu-birth-summary").waitFor({ timeout: 60_000 }).catch(async () => { await page.screenshot({ path: `${OUT}/err-nosummary.png`, fullPage: true }); });
   await page.waitForTimeout(2500);
   await page.screenshot({ path: `${OUT}/04-after-submit.png`, fullPage: true });
+  const q = page.locator("textarea").first();
+  await q.fill("今年事業要不要換工作？");
+  await page.getByRole("button", { name: "開始分析這個問題", exact: true }).click();
+  await page.waitForTimeout(8000);
+  await page.screenshot({ path: `${OUT}/04b-after-question.png`, fullPage: true });
   const book = page.locator("[data-unified-birth-report]");
   if (await book.count()) {
     await book.scrollIntoViewIfNeeded();
