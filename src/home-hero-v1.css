@@ -61,32 +61,92 @@
   pointer-events: none;
 }
 
-/* dot indicators */
-.zw-hero-dots {
-  display: none !important;
+/* compact, touch-readable carousel controls */
+.zw-hero-carousel-controls {
   position: absolute;
-  bottom: 14px;
   left: 50%;
+  bottom: 12px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 2px;
   transform: translateX(-50%);
-  gap: 7px;
-  z-index: 2;
+  border: 1px solid rgba(67, 89, 75, .18);
+  border-radius: 999px;
+  padding: 3px 5px;
+  background: rgba(250, 246, 235, .84);
+  box-shadow: 0 5px 18px rgba(43, 53, 46, .10);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.zw-hero-dots {
+  display: flex !important;
+  align-items: center;
+  gap: 0;
 }
 
 .zw-hero-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 3px;
-  background: rgba(245, 240, 232, 0.35);
-  border: none;
+  position: relative;
+  width: 20px;
+  height: 36px;
+  border: 0;
   padding: 0;
+  background: transparent;
   cursor: pointer;
-  transition: background 0.35s, width 0.35s;
   -webkit-tap-highlight-color: transparent;
 }
 
-.zw-hero-dot.is-active {
-  background: #f5f0e8;
-  width: 22px;
+.zw-hero-dot::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: rgba(49, 94, 80, .34);
+  transition: width 180ms ease, background-color 180ms ease;
+}
+
+.zw-hero-dot.is-active::after,
+.zw-hero-dot[aria-current="true"]::after {
+  width: 15px;
+  background: #315e50;
+}
+
+.zw-hero-step,
+.zw-hero-toggle {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 0;
+  color: #315e50;
+  background: transparent;
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.zw-hero-toggle {
+  width: 32px;
+  font-size: 11px;
+  letter-spacing: -.08em;
+}
+
+.zw-hero-step:active,
+.zw-hero-toggle:active {
+  background: rgba(49, 94, 80, .08);
+}
+
+.zw-hero-toggle:disabled {
+  cursor: default;
+  opacity: .48;
 }
 
 /* ── BRAND INSCRIPTION ───────────────────────────────────────── */
@@ -349,6 +409,20 @@
   background: rgba(49, 94, 80, .035);
 }
 
+.zw-home-inline-loading {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid rgba(49, 94, 80, .10);
+  padding: 16px;
+  color: rgba(49, 94, 80, .72);
+  background: rgba(255, 250, 241, .54);
+  font-size: 12px;
+  letter-spacing: .04em;
+  line-height: 1.5;
+}
+
 @keyframes zw-home-skeleton {
   0%, 100% { background-position: 0 50%; }
   50% { background-position: 100% 50%; }
@@ -364,6 +438,8 @@
 @media (prefers-reduced-motion: reduce) {
   .zw-hero-painting,
   .zw-hero-dot,
+  .zw-hero-step,
+  .zw-hero-toggle,
   .zw-hero-nav-item,
   .zw-hero-secondary-panel,
   .zw-home-today-skeleton > *,
