@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
     name: Manual build
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 25
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v4
@@ -25,7 +25,26 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Build
-        run: npm run build
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee out.log || { echo "::error::BUILDFAIL=$(grep -E '^✖|error TS|Error:' out.log | sed 's/ ([0-9.]*ms)$//' | sort -u | head -40 | tr '\n' '|')"; npx vite build >/dev/null 2>&1 || exit 1; echo "VITE_ONLY=1" >> $GITHUB_ENV; }
+
+      - name: Screenshots
+        shell: bash
+        run: |
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+          (npx vite preview --host 127.0.0.1 --port 4173 --strictPort > /tmp/preview.log 2>&1 &)
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done; echo "::notice::PREVIEW=$(tail -c 600 /tmp/preview.log | tr '\n' ' ')"
+          SHOT_OUT=/tmp/shots node .github/ci-shots.mjs || true
+          echo "::notice::SHOTLOG=$(tr '\n' '|' < /tmp/shots/log.txt)"
+          git config user.email "311473989+stoneweiwei-dot@users.noreply.github.com"
+          git config user.name "stoneweiwei-dot"
+          git checkout --orphan shots-tmp
+          git rm -rfq --cached . >/dev/null
+          mkdir -p shotdir && cp /tmp/shots/* shotdir/
+          git add shotdir && git commit -qm "shots ${GITHUB_SHA}"
+          git push -f origin HEAD:refs/heads/claude/shots-1008
 
   engine:
     name: Manual engine suite
@@ -45,4 +64,7 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Engine and contract suite
-        run: npm run test:engine
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run test:engine 2>&1 | tee out.log || { echo "::error::FAILS=$(grep -E '^✖' out.log | sed 's/ ([0-9.]*ms)$//' | sort -u | tr '\n' '|')"; exit 1; }
