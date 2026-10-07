@@ -201,7 +201,7 @@ function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model:
 
   if (careerOffer) {
     if (locale === "en") return {
-      verdict: "Do not treat a possible promotion as if it has already happened. Keep the current role while you compare the written offer on pay, responsibility, growth, workload and exit cost; move only if the new offer clearly wins on the conditions that matter.",
+      verdict: "Stay for now; do not move yet. Do not treat a possible promotion as if it has already happened. Compare the written offer on pay, responsibility, growth, workload and exit cost, and move only if the new offer clearly wins on the conditions that matter.",
       comparison: {
         leftLabel: "Current role",
         left: "Count only confirmed pay, duties and a concrete promotion path — not a verbal possibility.",
@@ -210,7 +210,7 @@ function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model:
       },
     };
     if (locale === "zh-Hans") return {
-      verdict: "不要把“可能升职”当成已经发生。先保留现职，同时把新 offer 的书面薪酬、职责、成长、负荷与退出成本放在同一张表；只有新 offer 在关键条件上明显胜出，才值得走。",
+      verdict: "先留，不急着走。不要把“可能升职”当成已经发生；把新 offer 的书面薪酬、职责、成长、负荷与退出成本放在同一张表，只有新 offer 在关键条件上明显胜出，才值得走。",
       comparison: {
         leftLabel: "留在现职",
         left: "只计算已经确认的薪酬、职责与具体升职条件，不把口头可能性当事实。",
@@ -219,7 +219,7 @@ function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model:
       },
     };
     return {
-      verdict: "不要把「可能升職」當成已經發生。先保留現職，同時把新 offer 的書面薪酬、職責、成長、負荷與退出成本放在同一張表；只有新 offer 在關鍵條件上明顯勝出，才值得走。",
+      verdict: "先留，不急著走。不要把「可能升職」當成已經發生；把新 offer 的書面薪酬、職責、成長、負荷與退出成本放在同一張表，只有新 offer 在關鍵條件上明顯勝出，才值得走。",
       comparison: {
         leftLabel: "留在現職",
         left: "只計算已確認的薪酬、職責與具體升職條件，不把口頭可能性當事實。",
