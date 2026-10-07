@@ -46,15 +46,23 @@ function topicBody(kind: QuestionKind, reading: Reading) {
   }
 }
 
-function honestFallback(kind: QuestionKind, reading: Reading, locale?: AppLocale) {
-  const body = compact(topicBody(kind, reading), "");
-  const prefix = tr(
+function honestFallback(kind: QuestionKind, reading: Reading, question: string, locale?: AppLocale) {
+  const body = compact(topicBody(kind, reading), question);
+  if (body && directAnswerCoversQuestion(question, body)) {
+    const prefix = tr(
+      locale,
+      "這一題目前沒有足夠的針對性證據支持更精確的結論，所以不補無關模板。能可靠回答到的是：",
+      "这一题目前没有足够的针对性证据支持更精确的结论，所以不补无关模板。能可靠回答到的是：",
+      "The current evidence is not specific enough for a more precise conclusion, so unrelated template material is omitted. What can be supported is: ",
+    );
+    return `${prefix}${body}`;
+  }
+  return tr(
     locale,
-    "這一題目前沒有足夠的針對性證據支持更精確的結論，所以不補無關模板。能可靠回答到的是：",
-    "这一题目前没有足够的针对性证据支持更精确的结论，所以不补无关模板。能可靠回答到的是：",
-    "The current evidence is not specific enough for a more precise conclusion, so unrelated template material is omitted. What can be supported is: ",
+    "目前這份盤面結果沒有直接覆蓋你問的重點；與其拿別的主題內容來湊答案，這一題先不硬答。",
+    "目前这份盘面结果没有直接覆盖你问的重点；与其拿别的主题内容来凑答案，这一题先不硬答。",
+    "This chart result does not directly cover the point you asked about. Rather than pad the answer with another topic, this question is left unresolved.",
   );
-  return `${prefix}${body}`;
 }
 
 /**
@@ -73,7 +81,7 @@ export function enforceQuestionRelevance(
   const cleaned = compact(reading.directAnswer, question);
   const directAnswer = directAnswerCoversQuestion(question, cleaned)
     ? cleaned
-    : honestFallback(kind, reading, locale);
+    : honestFallback(kind, reading, question, locale);
 
   return {
     ...reading,
