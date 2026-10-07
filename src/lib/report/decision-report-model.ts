@@ -18,6 +18,21 @@ export type QuestionContract = {
   decisionTarget: string;
 };
 
+/**
+ * Where a model field's text comes from, by code path (not by quality):
+ * - reading-engine: text taken from `result.reading`, i.e. the per-chart reading output.
+ * - special-composer: produced by `composeCustomerAnswer` for a dedicated question type.
+ * - leak-fallback: `leakFallback` replaced a direct answer that leaked internal terms.
+ * - question-template: a static lookup keyed on how the question is classified; it does
+ *   NOT vary with the chart. Safe to show as practical guidance, but not chart evidence.
+ */
+export type FieldProvenance = "reading-engine" | "special-composer" | "leak-fallback" | "question-template";
+
+export type DecisionProvenance = Record<
+  "directAnswer" | "nextAction" | "reasons" | "timing" | "actions" | "confidence" | "biggestVariable" | "risks",
+  FieldProvenance
+>;
+
 export type DecisionReportModel = {
   contract: QuestionContract;
   directAnswer: string;
@@ -33,6 +48,8 @@ export type DecisionReportModel = {
   actions: string[];
   sectionOrder: DecisionSectionKey[];
   supportingModules: SupportingModuleKey[];
+  /** Field-level origin map; inspection/testing aid, never rendered to customers. */
+  provenance: DecisionProvenance;
   validationIssues: string[];
 };
 
@@ -332,6 +349,17 @@ export function buildDecisionReportModel(result: AnalysisResult): DecisionReport
     : [];
   const actions = compactLines(result.reading.action, 3);
   const confidenceState = confidence(result, contract);
+  const answerSource: FieldProvenance = composed ? "special-composer" : leaked ? "leak-fallback" : "reading-engine";
+  const provenance: DecisionProvenance = {
+    directAnswer: answerSource,
+    nextAction: answerSource,
+    reasons: "reading-engine",
+    timing: "reading-engine",
+    actions: actions.length ? "reading-engine" : "question-template",
+    confidence: "question-template",
+    biggestVariable: "question-template",
+    risks: "question-template",
+  };
   const draft = {
     contract,
     directAnswer: directAnswer || directFull,
@@ -344,6 +372,7 @@ export function buildDecisionReportModel(result: AnalysisResult): DecisionReport
     actions: actions.length ? actions : [fallbackAction(contract.kind, locale)],
     sectionOrder: sectionOrder(contract.answerMode, timing.length > 0),
     supportingModules: supportingModules(contract),
+    provenance,
   };
   return { ...draft, validationIssues: validateDecisionReportModel(draft) };
 }

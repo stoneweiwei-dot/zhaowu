@@ -179,6 +179,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             <section className="zhaowu-answer-step">
               <span>{locale === "en" ? "01 · ANSWER" : locale === "zh-Hans" ? "01 · 直接结论" : "01 · 直接結論"}</span>
               <strong data-decision-verdict>{complexRule.verdict}</strong>
+              {complexRule.basisNote ? <p data-answer-basis={complexRule.verdictBasis}>{complexRule.basisNote}</p> : null}
             </section>
             <section className="zhaowu-answer-step">
               <span>{locale === "en" ? "02 · WHY" : locale === "zh-Hans" ? "02 · 为什么" : "02 · 為什麼"}</span>

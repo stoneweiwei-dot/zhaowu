@@ -173,10 +173,41 @@ function domainLine(result: AnalysisResult, graph: QuestionGraph, domain: string
   }
 }
 
+/**
+ * Where the lead verdict sentence comes from.
+ * - answer-engine: produced by the reading/answer composer for this question.
+ * - decision-framework: a fixed trade-off framework that does not vary with the chart.
+ * - generic-fallback: nothing comparable was found, so a generic prompt is shown.
+ */
+export type VerdictBasis = "answer-engine" | "decision-framework" | "generic-fallback";
+
+const BASIS_NOTES: Record<Exclude<VerdictBasis, "answer-engine">, Record<"zh-Hant" | "zh-Hans" | "en", string>> = {
+  "decision-framework": {
+    "zh-Hant": "這句結論是通用的取捨框架，不會因命盤不同而改變；與你命盤有關的內容見下方「為什麼」。",
+    "zh-Hans": "这句结论是通用的取舍框架，不会因命盘不同而改变；与你命盘有关的内容见下方“为什么”。",
+    en: "This verdict is a general decision framework and does not change with your chart. What is specific to your chart is in “Why” below.",
+  },
+  "generic-fallback": {
+    "zh-Hant": "目前沒有足夠可比較的條件，這句是通用提醒，不是從你的命盤推出的結論。",
+    "zh-Hans": "目前没有足够可比较的条件，这句是通用提醒，不是从你的命盘推出的结论。",
+    en: "There was not enough comparable detail, so this line is a general prompt, not a conclusion drawn from your chart.",
+  },
+};
+
+/** Reader-facing disclosure; empty when the verdict comes from the answer engine. */
+export function verdictBasisNote(basis: VerdictBasis, locale: string | undefined): string {
+  if (basis === "answer-engine") return "";
+  const key = locale === "en" ? "en" : locale === "zh-Hans" ? "zh-Hans" : "zh-Hant";
+  return BASIS_NOTES[basis][key];
+}
+
 export type ComplexDeterministicAnswer = {
   answer: string;
   next: string;
   verdict: string;
+  verdictBasis: VerdictBasis;
+  /** Visible one-line disclosure for `verdictBasis`; empty for the answer engine. */
+  basisNote: string;
   reason: string;
   timing?: string;
   comparison?: {
@@ -194,7 +225,13 @@ function clientSentence(value: string): string {
   return CLIENT_TECHNICAL_RE.test(sentence) ? "" : sentence;
 }
 
-function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model: ReturnType<typeof buildDecisionReportModel>) {
+type ComparisonFallback = {
+  verdict: string;
+  basis: VerdictBasis;
+  comparison?: ComplexDeterministicAnswer["comparison"];
+};
+
+function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model: ReturnType<typeof buildDecisionReportModel>): ComparisonFallback {
   const locale = result.locale ?? "zh-Hant";
   const q = result.question;
   const careerOffer = graph.domains.some((domain) => ["career", "job_fit", "workplace_relationship"].includes(domain))
@@ -202,6 +239,7 @@ function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model:
 
   if (careerOffer) {
     if (locale === "en") return {
+      basis: "decision-framework",
       verdict: "Stay for now; do not move yet. Do not treat a possible promotion as if it has already happened. Compare the written offer on pay, responsibility, growth, workload and exit cost, and move only if the new offer clearly wins on the conditions that matter.",
       comparison: {
         leftLabel: "Current role",
@@ -211,6 +249,7 @@ function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model:
       },
     };
     if (locale === "zh-Hans") return {
+      basis: "decision-framework",
       verdict: "先留，不急着走。不要把“可能升职”当成已经发生；把新 offer 的书面薪酬、职责、成长、负荷与退出成本放在同一张表，只有新 offer 在关键条件上明显胜出，才值得走。",
       comparison: {
         leftLabel: "留在现职",
@@ -220,6 +259,7 @@ function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model:
       },
     };
     return {
+      basis: "decision-framework",
       verdict: "先留，不急著走。不要把「可能升職」當成已經發生；把新 offer 的書面薪酬、職責、成長、負荷與退出成本放在同一張表，只有新 offer 在關鍵條件上明顯勝出，才值得走。",
       comparison: {
         leftLabel: "留在現職",
@@ -232,19 +272,22 @@ function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model:
 
   const direct = clientSentence(model.directAnswer);
   if (direct && /(偏向|選|选|暫不|暂不|prefer|choose|cannot|not enough)/i.test(direct)) {
-    return { verdict: direct, comparison: undefined };
+    return { verdict: direct, basis: "answer-engine", comparison: undefined };
   }
 
   if (locale === "en") return {
     verdict: "There is not enough comparable evidence to force an A/B answer yet. Put both options under the same criteria first, then remove any option that fails a non-negotiable condition.",
+    basis: "generic-fallback",
     comparison: undefined,
   };
   if (locale === "zh-Hans") return {
     verdict: "目前不适合硬选 A／B。先把两个选项放进同一组条件比较，再先淘汰踩到不可接受条件的一方。",
+    basis: "generic-fallback",
     comparison: undefined,
   };
   return {
     verdict: "目前不適合硬選 A／B。先把兩個選項放進同一組條件比較，再先淘汰踩到不可接受條件的一方。",
+    basis: "generic-fallback",
     comparison: undefined,
   };
 }
@@ -259,7 +302,11 @@ export function buildComplexDeterministicAnswer(result: AnalysisResult): Complex
     ? comparisonFallback(result, graph, model)
     : null;
 
-  const verdict = comparison?.verdict || clientSentence(model.directAnswer)
+  const directVerdict = clientSentence(model.directAnswer);
+  const verdictBasis: VerdictBasis = comparison?.verdict
+    ? comparison.basis
+    : directVerdict ? "answer-engine" : "generic-fallback";
+  const verdict = comparison?.verdict || directVerdict
     || (locale === "en"
       ? "This question needs more than one factor, so the answer is split into the decision, the reason, the timing and the next action."
       : locale === "zh-Hans"
@@ -297,6 +344,8 @@ export function buildComplexDeterministicAnswer(result: AnalysisResult): Complex
     answer,
     next,
     verdict,
+    verdictBasis,
+    basisNote: verdictBasisNote(verdictBasis, locale),
     reason,
     timing,
     comparison: comparison?.comparison,
