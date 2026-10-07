@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-07-today-native-dashboard",
+    date: "2026-10-07",
+    zhHant: { title: "今日指引改為原生宋式儀表頁", summary: "修正完整今日指引展開後遮住其他三個主入口的狀態問題：切換命書、測驗或觀世錄會先收回今日。黃曆、五行穿衣與靈籤以 1/3、2/3、3/3 的原生 React/CSS 模組重整為暖宣紙、深青玉與淡金框架，不使用整張參考圖假裝介面。" },
+    zhHans: { title: "今日指引改为原生宋式仪表页", summary: "修正完整今日指引展开后遮住其他三个主入口的状态问题：切换命书、测验或观世录会先收回今日。黄历、五行穿衣与灵签以 1/3、2/3、3/3 的原生 React/CSS 模块重整为暖宣纸、深青玉与淡金框架，不使用整张参考图假装界面。" },
+    en: { title: "Today Guide rebuilt as a native Song-style dashboard", summary: "Opening the full Today Guide no longer leaves the other primary entrances visually stranded: Destiny, Explore and Notes collapse Today first. Almanac, five-element dress and the spirit slip are now presented as native 1/3, 2/3 and 3/3 React/CSS modules in warm paper, deep jade and restrained gold rather than as a screenshot surface." },
+  },
+  {
     id: "2026-10-07-auto-location-home-visuals",
     date: "2026-10-07",
     zhHant: { title: "定位與首頁視覺再收斂", summary: "已授權的定位會自動沿用並定期刷新；未取得精準定位時以 Vercel IP 的城市級位置兜底。首頁背景專區會在打開時主動載入現有背景，站主資料橋接偶發讀取失敗時以公開背景庫兜底，不再出現空白分區；單張上傳即直接套用，選中的背景會真正顯示在首頁，底部白色輪播條已徹底移除。" },

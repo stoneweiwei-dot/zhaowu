@@ -7228,3 +7228,403 @@ html[data-zw-theme="night"] body .illustrated-destiny-panel :is(figcaption,detai
   #five-element-wardrobe[data-daily-colors] [data-daily-colors-choices] strong { font-size: 11px !important; }
   #five-element-wardrobe[data-daily-colors] [data-daily-colors-choices] small { font-size: 8.8px !important; }
 }
+
+
+/* 2026-10-07 — Today Guide native dashboard.
+   Reference direction: warm Song-paper page + deep-jade framed modules + mineral-gold details.
+   This is native CSS/React presentation; no screenshot is used as the UI surface. */
+body #daily-almanac.zhaowu-today-guide {
+  overflow: clip;
+  border: 1px solid rgba(109, 89, 54, .24) !important;
+  border-radius: 22px !important;
+  color: #2f3e38 !important;
+  background:
+    radial-gradient(circle at 88% 4%, rgba(205, 184, 129, .17), transparent 21%),
+    linear-gradient(180deg, rgba(255, 252, 244, .98), rgba(241, 234, 217, .98)) !important;
+  box-shadow:
+    0 18px 44px rgba(53, 57, 46, .09),
+    inset 0 0 0 1px rgba(255, 255, 255, .52) !important;
+}
+
+body #daily-almanac .zhaowu-today-guide__summary {
+  min-height: 148px;
+  padding: 18px 18px 16px !important;
+  color: #f6efdd;
+  background:
+    radial-gradient(circle at 84% 16%, rgba(213, 190, 132, .14), transparent 28%),
+    linear-gradient(145deg, #173f35, #214b40 64%, #183d34) !important;
+}
+
+body #daily-almanac .zhaowu-today-guide__summary-head p {
+  color: #f2dfad !important;
+  font-size: clamp(25px, 6vw, 33px) !important;
+  letter-spacing: .07em !important;
+}
+
+body #daily-almanac .zhaowu-today-guide__summary-head span,
+body #daily-almanac .zhaowu-today-guide__summary-row span,
+body #daily-almanac .zhaowu-today-guide__summary-meta {
+  color: rgba(247, 239, 222, .72) !important;
+}
+
+body #daily-almanac .zhaowu-today-guide__summary-row strong {
+  color: #fff9e9 !important;
+  font-size: 17px !important;
+}
+
+body #daily-almanac .zhaowu-today-guide__summary-head b {
+  border-color: rgba(229, 201, 136, .72) !important;
+  color: #f2dfad !important;
+  background: rgba(7, 31, 26, .18);
+}
+
+body #daily-almanac .zhaowu-today-guide__summary-meta em {
+  color: #f1d99d !important;
+}
+
+body #daily-almanac .zhaowu-today-guide__expanded {
+  padding: 0 0 10px;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 244, .96), rgba(241, 234, 217, .94));
+}
+
+body #daily-almanac .zhaowu-today-guide__hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 118px;
+  align-items: center;
+  padding: 22px 20px !important;
+  border-bottom: 1px solid rgba(80, 67, 44, .12) !important;
+  background:
+    radial-gradient(circle at 80% 28%, rgba(227, 205, 151, .30), transparent 17%),
+    radial-gradient(ellipse at 67% 105%, rgba(76, 113, 97, .17), transparent 36%),
+    linear-gradient(180deg, rgba(255, 252, 245, .98), rgba(239, 232, 214, .96));
+}
+
+body #daily-almanac .zhaowu-today-guide__hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -6% -34px 34%;
+  height: 92px;
+  pointer-events: none;
+  opacity: .42;
+  background:
+    radial-gradient(ellipse at 15% 100%, transparent 49%, rgba(49, 94, 80, .26) 50%, transparent 53%) 0 0 / 96px 46px;
+}
+
+body #daily-almanac .zhaowu-today-guide__hero > div {
+  position: relative;
+  z-index: 1;
+}
+
+body #daily-almanac .zhaowu-today-guide__hero p {
+  color: #332e25 !important;
+  font-size: clamp(30px, 7vw, 42px) !important;
+  font-weight: 560 !important;
+  letter-spacing: .08em !important;
+}
+
+body #daily-almanac .zhaowu-today-guide__hero span {
+  color: #6f6758 !important;
+  font-size: 13px !important;
+  letter-spacing: .05em;
+}
+
+body #daily-almanac .zhaowu-today-guide__overview {
+  margin: 0 12px;
+  padding: 12px 8px 14px;
+  border-bottom: 0 !important;
+  color: #746b5d;
+}
+
+body #daily-almanac .zhaowu-today-guide__overview strong {
+  color: #315e50 !important;
+}
+
+body #daily-almanac .zhaowu-today-section {
+  margin: 0 10px 12px;
+  border: 1px solid rgba(188, 157, 94, .48) !important;
+  border-top: 1px solid rgba(188, 157, 94, .48) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 22px rgba(45, 52, 44, .07) !important;
+}
+
+body #daily-almanac .zhaowu-today-section__head {
+  grid-template-columns: 52px minmax(0, 1fr) auto !important;
+  min-height: 74px;
+  gap: 12px !important;
+  padding: 13px 16px !important;
+  border-bottom: 1px solid rgba(241, 226, 194, .16) !important;
+  background:
+    radial-gradient(circle at 88% 20%, rgba(213, 190, 132, .10), transparent 24%),
+    #173f35 !important;
+}
+
+body #daily-almanac .zhaowu-today-section__head > span {
+  align-self: center !important;
+  min-width: 46px;
+  min-height: 34px;
+  border: 1px solid rgba(226, 198, 137, .56) !important;
+  border-radius: 999px;
+  color: #f0d99e !important;
+  font-size: 12px !important;
+  font-weight: 650;
+  letter-spacing: .05em;
+}
+
+body #daily-almanac .zhaowu-today-section__head small {
+  color: #c9c1af !important;
+  font-size: 10px !important;
+  letter-spacing: .14em !important;
+}
+
+body #daily-almanac .zhaowu-today-section__head h2 {
+  color: #fff8e9 !important;
+  font-size: clamp(21px, 5vw, 27px) !important;
+  font-weight: 590 !important;
+  letter-spacing: .035em;
+}
+
+body #daily-almanac .zhaowu-today-section__head em {
+  color: #d8c79e !important;
+  font-size: 11px !important;
+}
+
+body #daily-almanac .zhaowu-today-section.is-almanac,
+body #daily-almanac .zhaowu-today-section.is-wardrobe,
+body #daily-almanac .zhaowu-today-section.is-spirit {
+  color: #f5efdf !important;
+  background:
+    radial-gradient(circle at 88% 9%, rgba(180, 197, 200, .11), transparent 23%),
+    linear-gradient(145deg, #173f35, #1b4539 62%, #15392f) !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board {
+  display: grid;
+  gap: 8px;
+  padding: 10px 10px 12px !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board__lead {
+  gap: 8px;
+  border: 0 !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board__place {
+  gap: 8px;
+  padding-left: 0 !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board :is(.zhaowu-today-card,.zhaowu-today-pillars > span) {
+  border: 1px solid rgba(192, 163, 104, .38) !important;
+  border-radius: 12px !important;
+  color: #2d3f37 !important;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 246, .98), rgba(244, 238, 222, .96)) !important;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .7) !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board .zhaowu-today-card {
+  padding: 12px 12px !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board .zhaowu-today-card > small {
+  color: #8a7652 !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board .zhaowu-today-card > strong {
+  color: #2a433a !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board .zhaowu-today-card > span {
+  color: #69736c !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board__lead .is-date {
+  padding-right: 12px !important;
+  border-right: 1px solid rgba(192, 163, 104, .38) !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board__lead .is-date > strong {
+  color: #6d796f !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board__lead .is-date > b {
+  color: #315e50 !important;
+  font-size: clamp(46px, 13vw, 68px) !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board__place .zhaowu-today-card + .zhaowu-today-card {
+  border-top: 1px solid rgba(192, 163, 104, .38) !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board .is-pillars,
+body #daily-almanac .zhaowu-almanac-board .is-core {
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 12px;
+  border-bottom: 1px solid rgba(192, 163, 104, .38) !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board :is(.zhaowu-today-pillars,.zhaowu-daily-pillars) {
+  gap: 5px !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board .zhaowu-today-pillars > span {
+  padding: 7px 3px !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board .zhaowu-today-pillars > span + span {
+  border-left: 1px solid rgba(192, 163, 104, .38) !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board .zhaowu-today-pillars > span b {
+  color: #2b5547 !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board .zhaowu-today-pillars > span i {
+  color: #8a795c !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board__guidance {
+  gap: 8px;
+}
+
+body #daily-almanac .zhaowu-almanac-board__guidance > article + article {
+  margin-left: 0 !important;
+  border-left: 1px solid rgba(192, 163, 104, .38) !important;
+  padding-left: 12px !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board__guidance p {
+  color: #3d4b45 !important;
+}
+
+body #daily-almanac .zhaowu-almanac-board__guidance p b {
+  color: #315e50 !important;
+}
+
+body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe {
+  padding: 10px 10px 12px !important;
+}
+
+body #daily-almanac .zhaowu-today-section.is-wardrobe [data-daily-colors="embed"] {
+  border-color: rgba(226, 204, 159, .20) !important;
+  border-radius: 13px !important;
+  background: rgba(8, 39, 32, .32) !important;
+}
+
+body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe-notes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe-notes > span {
+  min-width: 0;
+  padding: 10px 8px;
+  border: 1px solid rgba(226, 204, 159, .20);
+  border-radius: 11px;
+  background: rgba(9, 42, 34, .54);
+}
+
+body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe-notes small {
+  color: #c9c1af;
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+
+body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe-notes strong {
+  display: block;
+  margin-top: 4px;
+  color: #fff1ce;
+  font-family: var(--font-display, serif);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+body #daily-almanac .zhaowu-today-section.is-spirit .zhaowu-today-guide__spirit {
+  margin: 10px !important;
+  border-radius: 13px !important;
+  background:
+    linear-gradient(135deg, rgba(255, 252, 244, .98), rgba(238, 229, 207, .97)) !important;
+}
+
+body #daily-almanac .zhaowu-today-section.is-spirit .zhaowu-today-guide__spirit-paper {
+  padding: 20px 18px 19px !important;
+}
+
+body #daily-almanac .zhaowu-today-section.is-spirit .zhaowu-today-guide__spirit-kicker {
+  color: #8d7954 !important;
+}
+
+body #daily-almanac .zhaowu-today-section.is-spirit .zhaowu-today-guide__spirit-paper h3 {
+  color: #263d35 !important;
+  font-size: clamp(27px, 6vw, 36px) !important;
+}
+
+body #daily-almanac .zhaowu-today-section.is-spirit .zhaowu-today-guide__spirit-paper :is(strong,span) {
+  color: #46524d !important;
+}
+
+body #daily-almanac .zhaowu-today-guide__footer {
+  margin: 2px 12px 0;
+  border-top: 1px solid rgba(92, 73, 46, .12) !important;
+}
+
+body #daily-almanac .zhaowu-today-guide__footer > span {
+  max-width: 100%;
+  color: #7a7469 !important;
+}
+
+@media (max-width: 560px) {
+  body #daily-almanac .zhaowu-today-guide__hero {
+    min-height: 104px;
+    padding: 18px 15px !important;
+  }
+
+  body #daily-almanac .zhaowu-today-section {
+    margin-inline: 8px;
+    border-radius: 15px !important;
+  }
+
+  body #daily-almanac .zhaowu-today-section__head {
+    grid-template-columns: 48px minmax(0, 1fr) !important;
+    gap: 9px !important;
+    min-height: 68px;
+    padding: 11px 12px !important;
+  }
+
+  body #daily-almanac .zhaowu-today-section__head em {
+    grid-column: 2;
+    max-width: none;
+    text-align: left;
+  }
+
+  body #daily-almanac .zhaowu-almanac-board {
+    padding: 8px 8px 10px !important;
+  }
+
+  body #daily-almanac .zhaowu-almanac-board__lead {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  body #daily-almanac .zhaowu-almanac-board .is-pillars,
+  body #daily-almanac .zhaowu-almanac-board .is-core {
+    grid-template-columns: 74px minmax(0, 1fr);
+  }
+
+  body #daily-almanac .zhaowu-almanac-board__guidance {
+    grid-template-columns: 1fr;
+  }
+
+  body #daily-almanac .zhaowu-almanac-board__guidance > article + article {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(192, 163, 104, .38) !important;
+    padding-left: 12px !important;
+  }
+
+  body #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe-notes {
+    grid-template-columns: 1fr;
+  }
+}

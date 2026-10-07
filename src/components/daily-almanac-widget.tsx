@@ -313,7 +313,7 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
           <div className="zhaowu-today-guide__overview"><strong>{lunarLabel(now, locale)}</strong><span>{weekdayLabel(now, locale)} · {timeLabel(now)}</span><span>{locationName} · {weather}</span></div>
 
           <section className="zhaowu-today-section is-almanac" aria-labelledby="zhaowu-today-almanac-title">
-            <header className="zhaowu-today-section__head"><span>01</span><div><small>{locale === "en" ? "TIME · CALENDAR" : locale === "zh-Hans" ? "时令・日历" : "時令・日曆"}</small><h2 id="zhaowu-today-almanac-title">{labels.almanac}</h2></div><em>{jieLabel(pillars.jieName, locale)}</em></header>
+            <header className="zhaowu-today-section__head"><span>1/3</span><div><small>{locale === "en" ? "TIME · CALENDAR" : locale === "zh-Hans" ? "时令・日历" : "時令・日曆"}</small><h2 id="zhaowu-today-almanac-title">{labels.almanac}</h2></div><em>{jieLabel(pillars.jieName, locale)}</em></header>
             <div className="zhaowu-almanac-board">
               <div className="zhaowu-almanac-board__lead">
                 <article className="zhaowu-today-card is-date"><small>{weekdayLabel(now, locale)}</small><strong>{now.getFullYear()}.{String(now.getMonth() + 1).padStart(2, "0")}.{String(now.getDate()).padStart(2, "0")}</strong><b>{String(now.getDate()).padStart(2, "0")}</b><span>{lunarLabel(now, locale)} · {timeLabel(now)}</span></article>
@@ -355,12 +355,12 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
           </section>
 
           <section className="zhaowu-today-section is-wardrobe" aria-labelledby="zhaowu-today-wardrobe-title">
-            <header className="zhaowu-today-section__head"><span>02</span><div><small>{locale === "en" ? "COLOUR · ELEMENT" : locale === "zh-Hans" ? "五色・五行" : "五色・五行"}</small><h2 id="zhaowu-today-wardrobe-title">{labels.wardrobe}</h2></div><em>{tone.colors}</em></header>
+            <header className="zhaowu-today-section__head"><span>2/3</span><div><small>{locale === "en" ? "COLOUR · ELEMENT" : locale === "zh-Hans" ? "五色・五行" : "五色・五行"}</small><h2 id="zhaowu-today-wardrobe-title">{labels.wardrobe}</h2></div><em>{tone.colors}</em></header>
             <div className="zhaowu-today-guide__wardrobe"><DailyColorsModule variant="embed" date={now} /><div className="zhaowu-today-guide__wardrobe-notes"><span><small>{labels.colors}</small><strong>{tone.colors}</strong></span><span><small>{labels.jewellery}</small><strong>{tone.jewellery}</strong></span><span><small>{labels.mask}</small><strong>{tone.mask}</strong></span></div></div>
           </section>
 
           <section className="zhaowu-today-section is-spirit" aria-labelledby="zhaowu-today-spirit-title">
-            <header className="zhaowu-today-section__head"><span>03</span><div><small>{locale === "en" ? "REFLECTION · ACTION" : locale === "zh-Hans" ? "观照・行动" : "觀照・行動"}</small><h2 id="zhaowu-today-spirit-title">{labels.spirit}</h2></div><em>{locale === "en" ? `Slip ${slipSequence}` : locale === "zh-Hans" ? `昭梧签 ${slipSequence}` : `昭梧籤 ${slipSequence}`}</em></header>
+            <header className="zhaowu-today-section__head"><span>3/3</span><div><small>{locale === "en" ? "REFLECTION · ACTION" : locale === "zh-Hans" ? "观照・行动" : "觀照・行動"}</small><h2 id="zhaowu-today-spirit-title">{labels.spirit}</h2></div><em>{locale === "en" ? `Slip ${slipSequence}` : locale === "zh-Hans" ? `昭梧签 ${slipSequence}` : `昭梧籤 ${slipSequence}`}</em></header>
             <div className="zhaowu-today-guide__spirit"><div className="zhaowu-today-guide__spirit-paper"><p className="zhaowu-today-guide__spirit-kicker"><img src="/brand-ui/mark-gourd.svg" alt="" width={30} height={30} decoding="async" />{locale === "en" ? `ZHAOWU DAILY SLIP · ${slipSequence}` : locale === "zh-Hans" ? `昭梧今日灵签・${slipSequence}` : `昭梧今日靈籤・${slipSequence}`}</p><h3>{slip[0]}</h3><strong>{slip[1]}</strong><div className="zhaowu-today-guide__spirit-reading"><small>{locale === "en" ? "READING" : locale === "zh-Hans" ? "签意" : "籤意"}</small><span>{slip[2]}</span></div><button type="button" onClick={drawSlip}>{locale === "en" ? "Open the full slip" : locale === "zh-Hans" ? "展开完整签文" : "展開完整籤文"}</button></div></div>
           </section>
           <footer className="zhaowu-today-guide__footer"><span>{locale === "en" ? "Location and weather are fetched in the visitor browser; no private API key is exposed." : locale === "zh-Hans" ? "位置与天气由访客浏览器直接读取，不暴露私钥。" : "位置與天氣由訪客瀏覽器直接讀取，不暴露私鑰。"}</span></footer>
