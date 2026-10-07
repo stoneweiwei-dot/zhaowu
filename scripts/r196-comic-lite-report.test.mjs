@@ -7,12 +7,12 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 
 test("r196 turns the unified report into a real six-frame Comic Lite mode", async () => {
   const report = await source("src/components/unified-birth-report.tsx");
-  assert.match(report, /useState<"formal" \| "comic">\("formal"\)/);
+  assert.match(report, /useState<"formal" \| "comic" \| "systems">\("formal"\)/);
   assert.match(report, /data-report-mode="comic-lite"/);
   assert.match(report, /sections\.map\(\(section, index\)/);
   assert.match(report, /section\.body\.slice\(1\)/);
-  assert.match(report, /漫畫 Lite/);
-  assert.match(report, /Comic Lite/);
+  assert.match(report, /漫畫命書/);
+  assert.match(report, /Comic Destiny Book/);
 });
 
 test("r196 keeps Comic Lite as presentation only and leaves payment untouched", async () => {
@@ -40,21 +40,19 @@ function scrollBlock(css) {
   return css.slice(start, end);
 }
 
-test("r225 six frames are a hairline list: no cards, gradients, shadows, radii or mascot", async () => {
+test("r226 six frames are visibly illustrated while keeping text secondary", async () => {
   const css = await source("src/zhaowu-design-system.css");
   const report = await source("src/components/unified-birth-report.tsx");
-  const block = scrollBlock(css);
-  const frame = block.slice(block.indexOf(".zhaowu-comic-lite__frame {"), block.indexOf(".zhaowu-comic-lite__no {"));
-  assert.match(frame, /border-bottom: 1px solid var\(--zw-scroll-line\)/);
-  assert.match(frame, /border-radius: 0/);
-  assert.match(frame, /box-shadow: none/);
-  assert.doesNotMatch(block, /linear-gradient|radial-gradient|box-shadow: [1-9-]/);
-  assert.doesNotMatch(report, /ComicMascot/);
-  assert.doesNotMatch(report, /zhaowu-comic-lite__scene/);
-  assert.match(report, /zhaowu-comic-lite__seal/);
+  const legacy = scrollBlock(css);
+  const r226 = css.slice(css.indexOf("r226 — mobile clarity pass"));
+  assert.match(report, /ComicMascot/);
+  assert.match(report, /zhaowu-comic-lite__art/);
+  assert.match(report, /zhaowu-comic-lite__bubble/);
   assert.match(report, /zhaowu-comic-lite__more/);
-  assert.match(block, /cubic-bezier\(\.22, 1, \.36, 1\)/);
-  assert.match(block, /prefers-reduced-motion: reduce/);
+  assert.match(r226, /\.zhaowu-comic-lite__art/);
+  assert.match(r226, /linear-gradient/);
+  assert.match(r226, /border-radius: 18px/);
+  assert.match(legacy, /prefers-reduced-motion: reduce/);
 });
 
 function luminance(hex) {
