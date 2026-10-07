@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          npm run build 2>&1 | tee out.log || { grep -E '^not ok|AssertionError|error TS|# fail' out.log | head -45 | while read -r l; do echo "::error::$l"; done; exit 1; }
+          npm run build 2>&1 | tee out.log || { grep -E '✖|^not ok|AssertionError|error TS|# fail' out.log | head -48 | while read -r l; do echo "::error::$l"; done; exit 1; }
 
   engine:
     name: Manual engine suite
@@ -51,4 +51,4 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          npm run test:engine 2>&1 | tee out.log || { grep -E '^not ok|AssertionError|error TS|# fail' out.log | head -45 | while read -r l; do echo "::error::$l"; done; exit 1; }
+          npm run test:engine 2>&1 | tee out.log || { grep -E '✖|^not ok|AssertionError|error TS|# fail' out.log | head -48 | while read -r l; do echo "::error::$l"; done; exit 1; }
