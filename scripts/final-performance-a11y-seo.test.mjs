@@ -10,7 +10,7 @@ test("final polish mounts only the active and next hero paintings", async () => 
   assert.match(home, /visibleHeroIndexes = \[heroIdx, \(heroIdx \+ 1\) % HERO_PAINTINGS\.length\]/);
   assert.match(home, /visibleHeroIndexes\.map/);
   assert.doesNotMatch(home, /HERO_PAINTINGS\.map\(\(p, i\) => \(/);
-  assert.match(home, /fetchPriority=\{i === heroIdx \? "high" : "low"\}/);
+  assert.match(home, /fetchPriority=\{isActive \? "high" : "low"\}/);
 });
 
 test("secondary homepage modules are deferred until their panels open", async () => {
@@ -25,7 +25,9 @@ test("secondary homepage modules are deferred until their panels open", async ()
   }
   assert.doesNotMatch(home, /import \{ DailyAlmanacWidget \} from/);
   assert.doesNotMatch(home, /import \{ LifeViewHomeSection \} from/);
-  assert.match(home, /<Suspense fallback=\{null\}>/);
+  assert.doesNotMatch(home, /<Suspense fallback=\{null\}>/);
+  assert.match(home, /zw-home-inline-loading/);
+  assert.match(home, /role="status"/);
 });
 
 test("site shell exposes keyboard skip navigation and localized metadata", async () => {
