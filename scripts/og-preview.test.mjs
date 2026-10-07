@@ -32,7 +32,7 @@ test("index.html exposes the Vercel canonical origin and large-image social card
   assert.match(html, /property="og:image:type" content="image\/jpeg"/);
   assert.match(html, /property="og:locale" content="zh_TW"/);
   assert.match(html, /property="og:title" content="昭梧｜昭於未見，梧於有歸"/);
-  assert.match(html, /property="og:description" content="看見命運的節奏，選擇屬於你的道路"/);
+  assert.match(html, /property="og:description" content="昭梧以出生資料與傳統子平八字為基礎，整理個人命盤、人生節奏、今日提示與自我探索內容。"/);
   assert.match(html, /name="twitter:card" content="summary_large_image"/);
   assert.match(html, /name="twitter:image" content="https:\/\/stone-zhaowu-official\.vercel\.app\/og\.jpg"/);
   assert.doesNotMatch(html, /x-banner|twitter-banner|feed-banner/);
