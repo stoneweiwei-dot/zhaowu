@@ -44,14 +44,14 @@ test("D60 belongs to Indian astrology and is gone from Past & Present", async ()
   assert.match(gate, /variant="standalone"/);
 });
 
-test("login animation remains full-bleed while the route is owner-only", async () => {
+test("login backdrop remains static while the route is owner-only", async () => {
   const login = await source("src/routes/login.tsx");
   const css = await source("src/login-approved-r89.css");
   const provider = await source("src/lib/auth/provider.tsx");
-  assert.match(login, /stone-login-stage-media/);
-  assert.match(login, /owner-immortal-ascent-r123\.mp4/);
+  assert.match(login, /\/hero-gallery\/dragon-scholar\.webp/);
+  assert.match(login, /data-login-stage-static="true"/);
+  assert.doesNotMatch(login, /<video|LoginStageBackdrop|stone-login-sound/);
   assert.match(css, /\.stone-login-stage-media/);
-  assert.match(css, /object-fit: cover/);
   assert.match(login, /data-owner-only-login="true"/);
   assert.match(login, /ownerSignIn/);
   assert.match(login, /站主登入/);
