@@ -46,7 +46,7 @@ const KIND_ANSWER_HINTS: Record<QuestionKind, RegExp> = {
   choice: /選|选|方案|方向|比較|比较|偏向|先留|先走|留下|離開|离开|接受|買|买|租|A|B|option|choose|choice|prefer|stay|leave|accept|compare/i,
   timing: /年|月|時|时|運|运|階段|阶段|when|timing|period/i,
   love: /感情|關係|关系|伴侶|伴侣|婚|戀|恋|分手|復合|复合|前任|曖昧|暧昧|約會|约会|love|relationship|partner|marriage|breakup|reconcile|dating/i,
-  career: /工作|事業|事业|職場|职场|職業|职业|離職|离职|跳槽|升職|升职|升遷|升迁|薪水|薪資|薪资|offer|老闆|老板|主管|管理|技術|技术|創業|创业|開店|开店|客戶|客户|career|job|work|role|business|manage|technical|startup/i,
+  career: /工作|事業|事业|職場|职场|職業|职业|現職|现职|職位|职位|離職|离职|跳槽|升職|升职|升遷|升迁|薪水|薪資|薪资|offer|老闆|老板|主管|管理|技術|技术|創業|创业|開店|开店|客戶|客户|career|job|work|role|business|manage|technical|startup/i,
   money: /財|财|收入|投資|投资|資產|资产|負債|负债|債|债|貸款|贷款|現金流|现金流|money|finance|income|wealth|debt|loan|cash flow/i,
   health: /身體|身体|健康|睡眠|壓力|压力|疲勞|疲劳|症狀|症状|醫療|医疗|手術|手术|治療|治疗|health|body|sleep|stress|symptom|medical|surgery|treatment/i,
   home: /家|宅|住|搬|房|風水|风水|租|城市|移居|通勤|home|house|move|rent|city|relocat|commute/i,
