@@ -35,15 +35,11 @@ test("owner-selected homepage wallpaper is consumed and remains visible on the l
   assert.match(gallery, /setAsHomepageBackground/);
   assert.match(gallery, /uploadBackground/);
   assert.match(gallery, /setBackgroundWallpaper/);
-  assert.doesNotMatch(account, /onClick=\{\(\) => setOwnerView\("backgrounds"\)\}/);
-  assert.match(account, /ownerView !== "backgrounds"/);
-  assert.match(account, /setBackgroundHistoryOpen\(true\)/);
-  assert.match(account, /loadBackgroundHistory\(0\)/);
+  assert.doesNotMatch(account, /ownerView|loadBackgroundHistory|loadLatestBackground|onBackgroundUpload/);
   const bridge = await source("src/lib/bridge/background-assets.ts");
   assert.match(bridge, /publicBackgroundFallbackPage/);
   assert.match(bridge, /listPublicBackgrounds\(\)/);
-  assert.match(account, /files\.length === 1/);
-  assert.match(account, /setBackgroundWallpaper\(session, singleUploadedAsset\.id\)/);
+  assert.match(gallery, /setBackgroundWallpaper\(session, background\.id\)/);
   assert.match(hero, /\.zw-hero-home\s*\{[^}]*background:\s*transparent;/s);
   assert.match(hero, /\.zhaowu-home-sheet-shell\.zhaowu-route-home::before\s*\{[^}]*var\(--zhaowu-shell-wallpaper/s);
   assert.match(hero, /\.zw-hero-carousel-controls\s*\{[^}]*display:\s*flex;/s);

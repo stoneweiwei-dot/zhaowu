@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { signOut } from "@/lib/auth/client";
@@ -9,18 +9,6 @@ import {
   type ReportListRecord,
   type ReportRecord,
 } from "@/lib/bridge/supabase-rest";
-import {
-  backgroundPublicUrl,
-  clearBackgroundWallpaper,
-  deleteBackground,
-  isPinnedWallpaper,
-  BACKGROUND_HISTORY_PAGE_SIZE,
-  listOwnerBackgroundPage,
-  setBackgroundEnabled,
-  setBackgroundWallpaper,
-  uploadBackground,
-  type BackgroundAsset,
-} from "@/lib/bridge/background-assets";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
 import { ReportDragonSticker } from "@/components/report-dragon-sticker";
@@ -97,77 +85,6 @@ function statusPill(ok: boolean, label: string, pendingLabel: string) {
   };
 }
 
-type BackgroundUploadItem = {
-  id: string;
-  name: string;
-  progress: number;
-  status: "queued" | "uploading" | "done" | "failed";
-  error?: string;
-};
-
-type BackgroundCardCopy = {
-  enabled: string;
-  disabled: string;
-  setWallpaper: string;
-  currentWallpaper: string;
-  unpinWallpaper: string;
-  delete: string;
-  select: string;
-  selectedOne: string;
-};
-
-function BackgroundAssetCard({
-  asset,
-  copy,
-  selected,
-  onToggleSelected,
-  onEnabled,
-  onPin,
-  onUnpin,
-  onDelete,
-}: {
-  asset: BackgroundAsset;
-  copy: BackgroundCardCopy;
-  selected: boolean;
-  onToggleSelected: () => void;
-  onEnabled: (enabled: boolean) => Promise<void>;
-  onPin: () => Promise<void>;
-  onUnpin: () => Promise<void>;
-  onDelete: () => Promise<void>;
-}) {
-  return (
-    <article data-background-card data-owner-selectable-file="background" className={`relative overflow-hidden rounded-xl border bg-cream/80 ${selected ? "border-wood/45 ring-1 ring-wood/15" : "border-line"}`}>
-      <button type="button" aria-pressed={selected} onClick={onToggleSelected} className={`absolute left-2 top-2 z-10 inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 text-[10px] font-medium shadow-sm ${selected ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${copy.select} ${asset.name}`}>
-        {selected ? `✓ ${copy.selectedOne}` : copy.select}
-      </button>
-      <img
-        src={backgroundPublicUrl(asset.storage_path)}
-        alt={asset.name}
-        className="aspect-[16/9] w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
-      <div className="p-3">
-        <p className="truncate text-sm font-medium text-ink">{asset.name}</p>
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-          <button type="button" aria-pressed={asset.enabled} className={`min-h-8 rounded-full border px-2.5 text-[10px] ${asset.enabled ? "border-wood/30 bg-wood/5 text-wood" : "border-line bg-paper/55 text-ink-mute"}`} onClick={() => void onEnabled(!asset.enabled)}>
-            {asset.enabled ? copy.enabled : copy.disabled}
-          </button>
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            {isPinnedWallpaper(asset) ? (
-              <button type="button" className="rounded-full border border-wood/40 bg-wood/10 px-3 py-1.5 text-xs text-wood" onClick={() => void onUnpin()}>{copy.unpinWallpaper}</button>
-            ) : (
-              <button type="button" className="rounded-full bg-cinnabar px-3 py-1.5 text-xs text-cream" onClick={() => void onPin()}>{copy.setWallpaper}</button>
-            )}
-            <button type="button" className="rounded-full px-3 py-1.5 text-xs text-cinnabar" onClick={() => void onDelete()}>{copy.delete}</button>
-          </div>
-        </div>
-        {isPinnedWallpaper(asset) ? <p className="mt-2 text-[11px] tracking-[0.12em] text-cinnabar">{copy.currentWallpaper}</p> : null}
-      </div>
-    </article>
-  );
-}
-
 function AccountPage() {
   const { t, locale } = useI18n();
   const { user, session, isPending } = useCurrentUserState();
@@ -182,19 +99,8 @@ function AccountPage() {
   const [error, setError] = useState<string | null>(null);
   const [reportMessages, setReportMessages] = useState<Record<string, string>>({});
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
-  const [latestBackground, setLatestBackground] = useState<BackgroundAsset | null>(null);
-  const [backgroundHistory, setBackgroundHistory] = useState<BackgroundAsset[]>([]);
-  const [backgroundTotal, setBackgroundTotal] = useState(0);
-  const [backgroundHistoryOpen, setBackgroundHistoryOpen] = useState(false);
-  const [backgroundPage, setBackgroundPage] = useState(0);
-  const [backgroundHistoryBusy, setBackgroundHistoryBusy] = useState(false);
-  const [backgroundUploads, setBackgroundUploads] = useState<BackgroundUploadItem[]>([]);
-  const [backgroundBusy, setBackgroundBusy] = useState(false);
-  const [backgroundMsg, setBackgroundMsg] = useState<string | null>(null);
   const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
-  const [selectedBackgroundIds, setSelectedBackgroundIds] = useState<string[]>([]);
   const [selectedReportIds, setSelectedReportIds] = useState<string[]>([]);
-  const [ownerView, setOwnerView] = useState<"reports" | "backgrounds">("reports");
 
   const c = useMemo(() => ({
     ownerTitle: tr(locale, "昭梧後台", "昭梧后台", "Zhaowu Console"),
@@ -255,44 +161,7 @@ function AccountPage() {
     deleteSelected: tr(locale, "批次刪除", "批量删除", "Delete selected"),
     batchDeleteReportsConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 筆報告？此操作不可復原。`, `删除已选的 ${n} 笔报告？此操作不可恢复。`, `Delete ${n} selected reports? This cannot be undone.`),
     batchReportsDeleted: (n: number) => tr(locale, `已刪除 ${n} 筆報告。`, `已删除 ${n} 笔报告。`, `Deleted ${n} reports.`),
-    backgroundTitle: tr(locale, "首頁背景專區", "首页背景专区", "Homepage backgrounds"),
-    backgroundHint: tr(locale, "這裡只管理首頁背景；單張上傳後會直接套用，多張上傳後可點任意一張「設為首頁背景」。", "这里只管理首页背景；单张上传后会直接套用，多张上传后可点任意一张“设为首页背景”。", "This section only manages homepage backgrounds. A single upload is applied immediately; after multiple uploads, choose any image with “Set as homepage background”."),
-    latestImage: tr(locale, "最近一張", "最近一张", "Latest image"),
-    viewHistory: (n: number) => tr(locale, `查看上傳歷史（${n}）`, `查看上传历史（${n}）`, `View upload history (${n})`),
-    hideHistory: tr(locale, "收起上傳歷史", "收起上传历史", "Hide upload history"),
-    historyPage: (page: number, total: number) => tr(locale, `第 ${page} 頁 · 共 ${total} 張`, `第 ${page} 页 · 共 ${total} 张`, `Page ${page} · ${total} images`),
-    previousPage: tr(locale, "上一頁", "上一页", "Previous"),
-    nextPage: tr(locale, "下一頁", "下一页", "Next"),
-    noImages: tr(locale, "目前沒有已上傳圖片。", "目前没有已上传图片。", "No uploaded images yet."),
-    upload: tr(locale, "＋上傳首頁背景", "＋上传首页背景", "+ Upload homepage backgrounds"),
-    uploading: tr(locale, "上傳中…", "上传中…", "Uploading…"),
-    uploaded: (n: number) => tr(locale, `已上傳 ${n} 張。`, `已上传 ${n} 张。`, `Uploaded ${n} image${n === 1 ? "" : "s"}.`),
-    uploadedAndSet: tr(locale, "已上傳並設為首頁背景。", "已上传并设为首页背景。", "Uploaded and set as the homepage background."),
-    uploadPartial: (done: number, failed: number) => tr(locale, `完成 ${done} 張，失敗 ${failed} 張。`, `完成 ${done} 张，失败 ${failed} 张。`, `${done} completed; ${failed} failed.`),
-    queued: tr(locale, "等待", "等待", "Queued"),
-    uploadInProgress: tr(locale, "上傳中", "上传中", "Uploading"),
-    uploadDone: tr(locale, "完成", "完成", "Done"),
-    uploadItemFailed: tr(locale, "失敗", "失败", "Failed"),
-    uploadFailed: tr(locale, "圖片上傳失敗。", "图片上传失败。", "Image upload failed."),
-    enabled: tr(locale, "輪播中", "轮播中", "In rotation"),
-    disabled: tr(locale, "已停用", "已停用", "Disabled"),
-    setWallpaper: tr(locale, "設為首頁背景", "设为首页背景", "Set as homepage background"),
-    currentWallpaper: tr(locale, "目前首頁背景", "当前首页背景", "Current homepage background"),
-    unpinWallpaper: tr(locale, "取消首頁背景", "取消首页背景", "Remove homepage background"),
-    wallpaperSet: tr(locale, "已設為首頁背景。", "已设为首页背景。", "Homepage background updated."),
-    delete: tr(locale, "刪除", "删除", "Delete"),
-    selectBackground: tr(locale, "選取背景", "选择背景", "Select background"),
-    selectedBackgrounds: (n: number) => tr(locale, `已選 ${n} 張`, `已选 ${n} 张`, `${n} selected`),
-    selectVisibleBackgrounds: tr(locale, "全選本頁", "全选本页", "Select page"),
-    enableSelectedBackgrounds: tr(locale, "批次啟用", "批量启用", "Enable selected"),
-    disableSelectedBackgrounds: tr(locale, "批次停用", "批量停用", "Disable selected"),
-    deleteSelectedBackgrounds: tr(locale, "批次刪除", "批量删除", "Delete selected"),
-    batchDeleteBackgroundsConfirm: (n: number) => tr(locale, `刪除已選的 ${n} 張背景圖？此操作不可復原。`, `删除已选的 ${n} 张背景图？此操作不可恢复。`, `Delete ${n} selected backgrounds? This cannot be undone.`),
-    batchBackgroundsDone: (n: number) => tr(locale, `已處理 ${n} 張背景圖。`, `已处理 ${n} 张背景图。`, `Updated ${n} backgrounds.`),
-    deleteImage: (name: string) => tr(locale, `刪除「${name}」？`, `删除“${name}”？`, `Delete “${name}”?`),
-    deleteFailed: tr(locale, "刪除失敗。", "删除失败。", "Delete failed."),
     updateFailed: tr(locale, "更新失敗。", "更新失败。", "Update failed."),
-    backgroundsReadError: tr(locale, "背景圖片讀取失敗。", "背景图片读取失败。", "Could not load background images."),
     updated: tr(locale, "更新", "更新", "Updated"),
     manageActions: tr(locale, "管理操作", "管理操作", "Manage actions"),
   }), [locale]);
@@ -315,50 +184,6 @@ function AccountPage() {
     } finally {
       setBusy(false);
     }
-  }
-
-  async function loadLatestBackground() {
-    if (!session || !user?.isOwner) return;
-    try {
-      const result = await listOwnerBackgroundPage(session, 0, 1);
-      setLatestBackground(result.items[0] ?? null);
-      setBackgroundTotal(result.total);
-      const ids = new Set(result.items.map((asset) => asset.id));
-      setSelectedBackgroundIds((current) => backgroundHistoryOpen ? current : current.filter((id) => ids.has(id)));
-    } catch (err) {
-      setBackgroundMsg(err instanceof Error ? err.message : c.backgroundsReadError);
-    }
-  }
-
-  async function loadBackgroundHistory(page: number) {
-    if (!session || !user?.isOwner) return;
-    setBackgroundHistoryBusy(true);
-    try {
-      const result = await listOwnerBackgroundPage(session, page);
-      const lastPage = Math.max(0, Math.ceil(result.total / result.pageSize) - 1);
-      if (page > lastPage) {
-        await loadBackgroundHistory(lastPage);
-        return;
-      }
-      setBackgroundHistory(result.items);
-      setBackgroundTotal(result.total);
-      setBackgroundPage(result.page);
-      const ids = new Set(result.items.map((asset) => asset.id));
-      setSelectedBackgroundIds((current) => current.filter((id) => ids.has(id)));
-    } catch (err) {
-      setBackgroundMsg(err instanceof Error ? err.message : c.backgroundsReadError);
-    } finally {
-      setBackgroundHistoryBusy(false);
-    }
-  }
-
-  async function refreshBackgrounds() {
-    await loadLatestBackground();
-    if (backgroundHistoryOpen) await loadBackgroundHistory(backgroundPage);
-  }
-
-  function notifyBackgroundChanged() {
-    window.dispatchEvent(new Event("zhaowu-background-change"));
   }
 
   async function refreshDetail(id: string, silent = false) {
@@ -388,7 +213,6 @@ function AccountPage() {
     setError(null);
     try {
       await loadReports();
-      if (user.isOwner) await refreshBackgrounds();
       if (openId) await refreshDetail(openId, true);
       setLastRefreshedAt(new Date());
     } finally {
@@ -398,14 +222,7 @@ function AccountPage() {
 
   useEffect(() => {
     void loadReports();
-    if (user?.isOwner) void loadLatestBackground();
   }, [session?.access_token, user?.isOwner]);
-
-  useEffect(() => {
-    if (!user?.isOwner || !session || ownerView !== "backgrounds") return;
-    setBackgroundHistoryOpen(true);
-    void loadBackgroundHistory(0);
-  }, [ownerView, session?.access_token, user?.isOwner]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -455,103 +272,6 @@ function AccountPage() {
     }
   }
 
-  async function onBackgroundUpload(e: ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []);
-    e.target.value = "";
-    if (!session || !user?.isOwner || !files.length) return;
-    const batch = files.map((file) => ({
-      id: crypto.randomUUID(),
-      name: file.name,
-      progress: 0,
-      status: "queued" as const,
-    }));
-    const updateUpload = (id: string, patch: Partial<BackgroundUploadItem>) => {
-      setBackgroundUploads((current) => current.map((item) => item.id === id ? { ...item, ...patch } : item));
-    };
-
-    setBackgroundUploads(batch);
-    setBackgroundBusy(true);
-    setBackgroundMsg(null);
-    let done = 0;
-    let failed = 0;
-    let singleUploadedAsset: BackgroundAsset | null = null;
-    let autoPinError: string | null = null;
-    for (const [index, file] of files.entries()) {
-      const item = batch[index];
-      updateUpload(item.id, { status: "uploading", progress: 1 });
-      try {
-        const uploadedAsset = await uploadBackground(session, file, (progress) => updateUpload(item.id, { progress }));
-        if (files.length === 1) singleUploadedAsset = uploadedAsset;
-        updateUpload(item.id, { status: "done", progress: 100 });
-        done += 1;
-      } catch (err) {
-        updateUpload(item.id, {
-          status: "failed",
-          error: err instanceof Error ? err.message : c.uploadFailed,
-        });
-        failed += 1;
-      }
-    }
-    if (singleUploadedAsset) {
-      try {
-        await setBackgroundWallpaper(session, singleUploadedAsset.id);
-      } catch (err) {
-        autoPinError = err instanceof Error ? err.message : c.updateFailed;
-      }
-    }
-    await refreshBackgrounds();
-    if (done) notifyBackgroundChanged();
-    setBackgroundMsg(autoPinError ?? (singleUploadedAsset ? c.uploadedAndSet : failed ? c.uploadPartial(done, failed) : c.uploaded(done)));
-    setBackgroundBusy(false);
-  }
-
-  async function updateBackgroundAsset(operation: () => Promise<void>, successMessage?: string) {
-    try {
-      await operation();
-      await refreshBackgrounds();
-      notifyBackgroundChanged();
-      if (successMessage) setBackgroundMsg(successMessage);
-    } catch (err) {
-      setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed);
-    }
-  }
-
-  function toggleBackgroundSelected(id: string) {
-    setSelectedBackgroundIds((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
-  }
-
-  async function setSelectedBackgroundsEnabled(enabled: boolean) {
-    if (!session || backgroundBusy || !selectedBackgroundIds.length) return;
-    setBackgroundBusy(true); setBackgroundMsg(null);
-    try {
-      await Promise.all(selectedBackgroundIds.map((id) => setBackgroundEnabled(session, id, enabled)));
-      const count = selectedBackgroundIds.length;
-      await refreshBackgrounds();
-      notifyBackgroundChanged();
-      setBackgroundMsg(c.batchBackgroundsDone(count));
-    } catch (err) {
-      setBackgroundMsg(err instanceof Error ? err.message : c.updateFailed);
-    } finally { setBackgroundBusy(false); }
-  }
-
-  async function deleteSelectedBackgrounds() {
-    if (!session || backgroundBusy || !selectedBackgroundIds.length || !window.confirm(c.batchDeleteBackgroundsConfirm(selectedBackgroundIds.length))) return;
-    setBackgroundBusy(true); setBackgroundMsg(null);
-    try {
-      const pool = [...backgroundHistory, ...(latestBackground ? [latestBackground] : [])];
-      const unique = new Map(pool.map((asset) => [asset.id, asset]));
-      const chosen = selectedBackgroundIds.map((id) => unique.get(id)).filter((asset): asset is BackgroundAsset => Boolean(asset));
-      for (const asset of chosen) await deleteBackground(session, asset);
-      const count = chosen.length;
-      setSelectedBackgroundIds([]);
-      await refreshBackgrounds();
-      notifyBackgroundChanged();
-      setBackgroundMsg(c.batchBackgroundsDone(count));
-    } catch (err) {
-      setBackgroundMsg(err instanceof Error ? err.message : c.deleteFailed);
-    } finally { setBackgroundBusy(false); }
-  }
-
   async function deleteSelectedReports() {
     if (!session || !user?.isOwner || refreshBusy || !selectedReportIds.length || !window.confirm(c.batchDeleteReportsConfirm(selectedReportIds.length))) return;
     setRefreshBusy(true); setError(null);
@@ -571,11 +291,6 @@ function AccountPage() {
       setError(err instanceof Error ? err.message : c.updateFailed);
     } finally { setRefreshBusy(false); }
   }
-
-  const visibleBackgrounds = backgroundHistoryOpen
-    ? backgroundHistory
-    : latestBackground ? [latestBackground] : [];
-  const backgroundPageCount = Math.max(1, Math.ceil(backgroundTotal / BACKGROUND_HISTORY_PAGE_SIZE));
 
   if (isPending) return <div className="mx-auto h-52 max-w-xl animate-pulse rounded-xl bg-cream/70" />;
 
@@ -647,9 +362,8 @@ function AccountPage() {
         <nav className="grid grid-cols-1 gap-2 sm:grid-cols-3" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
           <button
             type="button"
-            aria-pressed={ownerView === "reports"}
-            onClick={() => setOwnerView("reports")}
-            className={"min-h-14 rounded-xl border px-4 py-3 text-left text-sm font-medium " + (ownerView === "reports" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-cream/80 text-ink")}
+            aria-pressed={true}
+            className="min-h-14 rounded-xl border px-4 py-3 text-left text-sm font-medium border-[#315f51] bg-[#315f51] text-[#fffaf0]"
           >
             <span className="block text-[10px] tracking-[0.16em] opacity-65">REPORTS</span>
             <span className="mt-1 block">{tr(locale, "報告管理", "报告管理", "Reports")}</span>
@@ -665,87 +379,7 @@ function AccountPage() {
         </nav>
       ) : null}
 
-      {user.isOwner && ownerView === "backgrounds" ? (
-        <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs tracking-[0.28em] text-cinnabar">BACKGROUND LIBRARY</p>
-              <h2 className="mt-1 font-display text-2xl">{c.backgroundTitle}</h2>
-              <p className="mt-1 max-w-xl text-xs leading-5 text-ink-mute">{c.backgroundHint}</p>
-            </div>
-            <label className={`inline-flex h-10 cursor-pointer items-center rounded-full bg-cinnabar px-4 text-sm text-cream ${backgroundBusy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
-              {backgroundBusy ? c.uploading : c.upload}
-              <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => void onBackgroundUpload(e)} />
-            </label>
-          </div>
-          {SUPABASE_STORAGE_WRITES_PAUSED ? <p className="mt-2 text-xs font-medium text-ink-mute" data-owner-storage-status>{tr(locale, "Storage 寫入暫停", "Storage 写入暂停", "Storage read-only")}</p> : null}
-          {backgroundUploads.length ? (
-            <div className="mt-3 space-y-2" aria-live="polite" aria-label={c.uploading}>
-              {backgroundUploads.map((item) => {
-                const label = item.status === "done" ? c.uploadDone : item.status === "failed" ? c.uploadItemFailed : item.status === "uploading" ? c.uploadInProgress : c.queued;
-                return (
-                  <div key={item.id} className="rounded-lg border border-line bg-paper/45 px-3 py-2 text-xs">
-                    <div className="flex items-center justify-between gap-3"><span className="truncate text-ink-soft">{item.name}</span><span className="shrink-0 text-ink-mute">{label} · {item.progress}%</span></div>
-                    <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.progress} className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${item.progress}%` }} /></div>
-                    {item.error ? <p className="mt-1 text-cinnabar">{item.error}</p> : null}
-                  </div>
-                );
-              })}
-            </div>
-          ) : null}
-          {backgroundMsg ? <p className="mt-3 text-sm text-cinnabar">{backgroundMsg}</p> : null}
-
-          <div className="mt-4 rounded-lg border border-line bg-paper/35 p-4">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-sm font-medium text-ink">{backgroundHistoryOpen ? c.historyPage(backgroundPage + 1, backgroundTotal) : c.latestImage}</p>
-              <button type="button" className="min-h-10 rounded-full border border-line bg-cream px-4 text-xs text-ink-soft" onClick={() => {
-                const next = !backgroundHistoryOpen;
-                setBackgroundHistoryOpen(next);
-                if (next) void loadBackgroundHistory(0);
-              }}>{backgroundHistoryOpen ? c.hideHistory : c.viewHistory(backgroundTotal)}</button>
-            </div>
-            <div data-owner-bulk-toolbar="backgrounds" className="mt-3 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
-              <span className="mr-auto font-display text-sm text-ink">{selectedBackgroundIds.length ? c.selectedBackgrounds(selectedBackgroundIds.length) : c.batchManage}</span>
-              <button type="button" disabled={backgroundBusy || !visibleBackgrounds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedBackgroundIds(visibleBackgrounds.map((asset) => asset.id))}>{c.selectVisibleBackgrounds}</button>
-              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedBackgroundIds([])}>{c.clearSelection}</button>
-              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-9 rounded-full border border-wood/30 bg-wood/5 px-3 text-[11px] text-wood disabled:opacity-35" onClick={() => void setSelectedBackgroundsEnabled(true)}>{c.enableSelectedBackgrounds}</button>
-              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => void setSelectedBackgroundsEnabled(false)}>{c.disableSelectedBackgrounds}</button>
-              <button type="button" disabled={backgroundBusy || !selectedBackgroundIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelectedBackgrounds()}>{c.deleteSelectedBackgrounds}</button>
-            </div>
-            {backgroundHistoryBusy ? <div className="mt-4 h-24 animate-pulse rounded-lg bg-paper-deep" /> : null}
-            {!backgroundHistoryBusy && !visibleBackgrounds.length ? <p className="mt-4 text-sm text-ink-mute">{c.noImages}</p> : null}
-            {!backgroundHistoryBusy ? (
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {visibleBackgrounds.map((asset) => (
-                  <BackgroundAssetCard
-                    key={asset.id}
-                    asset={asset}
-                    copy={{ ...c, select: c.selectBackground }}
-                    selected={selectedBackgroundIds.includes(asset.id)}
-                    onToggleSelected={() => toggleBackgroundSelected(asset.id)}
-                    onEnabled={(enabled) => updateBackgroundAsset(() => setBackgroundEnabled(session!, asset.id, enabled))}
-                    onPin={() => updateBackgroundAsset(() => setBackgroundWallpaper(session!, asset.id), c.wallpaperSet)}
-                    onUnpin={() => updateBackgroundAsset(() => clearBackgroundWallpaper(session!, asset.id))}
-                    onDelete={async () => {
-                      if (!window.confirm(c.deleteImage(asset.name))) return;
-                      await updateBackgroundAsset(() => deleteBackground(session!, asset));
-                    }}
-                  />
-                ))}
-              </div>
-            ) : null}
-            {backgroundHistoryOpen && backgroundPageCount > 1 ? (
-              <div className="mt-4 flex items-center justify-between gap-3">
-                <button type="button" disabled={backgroundPage === 0 || backgroundHistoryBusy} className="min-h-10 rounded-full border border-line bg-cream px-4 text-xs disabled:opacity-40" onClick={() => void loadBackgroundHistory(backgroundPage - 1)}>{c.previousPage}</button>
-                <span className="text-xs text-ink-mute">{backgroundPage + 1} / {backgroundPageCount}</span>
-                <button type="button" disabled={backgroundPage + 1 >= backgroundPageCount || backgroundHistoryBusy} className="min-h-10 rounded-full border border-line bg-cream px-4 text-xs disabled:opacity-40" onClick={() => void loadBackgroundHistory(backgroundPage + 1)}>{c.nextPage}</button>
-              </div>
-            ) : null}
-          </div>
-        </section>
-      ) : null}
-
-      {(!user.isOwner || ownerView === "reports") ? <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
+      <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs tracking-[0.28em] text-cinnabar">REPORTS</p>
@@ -886,7 +520,7 @@ function AccountPage() {
             );
           })}
         </div>
-      </section> : null}
+      </section>
 
       <Link to="/" className="inline-flex h-11 items-center rounded-full border border-line bg-cream px-5 text-ink">{t("backHome")}</Link>
     </main>

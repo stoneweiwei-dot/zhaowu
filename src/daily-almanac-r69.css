@@ -278,7 +278,6 @@
 }
 .zhaowu-home-layout .zhaowu-daily-details[open] .zhaowu-today-guide__summary-row,
 .zhaowu-home-layout .zhaowu-daily-details[open] .zhaowu-today-guide__summary-meta { display: none; }
-.zhaowu-home-layout .zhaowu-daily-details[open] .zhaowu-today-guide__summary-head b { transform: rotate(90deg); }
 .zhaowu-home-layout .zhaowu-today-guide [hidden] { display: none !important; }
 .zhaowu-contract-label { position:absolute !important; width:1px !important; height:1px !important; overflow:hidden !important; clip:rect(0 0 0 0) !important; white-space:nowrap !important; }
 

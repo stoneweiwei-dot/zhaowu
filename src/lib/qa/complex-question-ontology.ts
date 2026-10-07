@@ -55,7 +55,7 @@ const ROLE_MATCHERS: MatchDef<PersonRole>[] = [
   { value: "dating_interest", re: /(喜歡的人|喜欢的人|心儀|心仪|crush|追求對象|追求对象)/i },
   { value: "ambiguous_interest", re: /(曖昧|暧昧|約會對象|约会对象|dating|situationship)/i },
   { value: "ex_partner", re: /(前任|前男友|前女友|前夫|前妻|ex\b)/i },
-  { value: "father", re: /(爸爸|父親|父亲|老爸|father|dad)/i },
+  { value: "father", re: /(爸爸|我爸|父親|父亲|老爸|father|dad)/i },
   { value: "mother", re: /(媽媽|妈妈|母親|母亲|老媽|老妈|mother|mom|mum)/i },
   { value: "parent", re: /(父母|雙親|双亲|家長|家长|parents?)/i },
   { value: "son", re: /(兒子|儿子|son\b)/i },
@@ -122,7 +122,7 @@ const DOMAIN_MATCHERS: MatchDef<QuestionDomain>[] = [
   { value: "workplace_relationship", re: /(老闆|老板|主管|同事|下屬|下属|職場關係|职场关系|workplace)/i },
   { value: "client_relationship", re: /(客戶|客户|顧客|顾客|client|customer)/i },
   { value: "partnership", re: /(合夥|合伙|合作|股東|股东|投資人|投资人|partnership|cofounder)/i },
-  { value: "conflict", re: /(衝突|冲突|吵架|爭執|争执|矛盾|對立|对立|conflict|fight)/i },
+  { value: "conflict", re: /(衝突|冲突|吵架|一直吵|爭執|争执|矛盾|對立|对立|conflict|fight)/i },
   { value: "legal", re: /(官司|訴訟|诉讼|法律|律師|律师|法院|仲裁|合約糾紛|合同纠纷|legal|lawsuit|court)/i },
   { value: "medical_timing", re: /(手術|手术|治療|治疗|停藥|停药|用藥|用药|康復|康复|medical|surgery|treatment).{0,20}(何時|何时|什麼時候|什么时候|when|時間|时间)/i },
   { value: "health", re: /(健康|身體|身体|疾病|病|痛|睡眠|失眠|醫療|医疗|health|illness|symptom)/i },
@@ -155,7 +155,7 @@ const THIRD_PRONOUN_RE = /(^|[^我])(他|她|對方|对方|那個人|那个人|�
 const SELF_RE = /(我|自己|本人|我的|my\b|me\b|myself)/i;
 
 const HIGH_STAKES: Array<{ value: QuestionGraph["highStakesKinds"][number]; re: RegExp }> = [
-  { value: "medical", re: /(診斷|诊断|癌|手術|手术|停藥|停药|治療|治疗|醫生|医生|medical|surgery|diagnos)/i },
+  { value: "medical", re: /(診斷|诊断|癌|手術|手术|停藥|停药|治療|治疗|醫生|医生|(?:身體|身体).{0,8}(?:很差|不好|不適|不适)|medical|surgery|diagnos)/i },
   { value: "legal", re: /(官司|訴訟|诉讼|法院|判決|判决|律師|律师|legal|lawsuit|court)/i },
   { value: "investment", re: /(股票|基金|ETF|加密|比特幣|比特币|投資標的|投资标的|investment|stock|crypto)/i },
   { value: "gambling", re: /(彩票|彩券|賭博|赌博|博彩|號碼|号码|lottery|gambl)/i },

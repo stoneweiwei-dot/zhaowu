@@ -4,7 +4,6 @@ import { SoundIcon } from "@/components/sound-icon";
 import { runBootstrapReadiness } from "@/lib/bootstrap-readiness";
 import {
   INTRO_BROKEN_KEY,
-  INTRO_FORCE_KEY,
   INTRO_GATE_ERROR_EXIT_MS,
   INTRO_GATE_FADE_MS,
   INTRO_GATE_MAX_PLAY_S,

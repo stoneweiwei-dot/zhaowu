@@ -64,6 +64,11 @@ test("business partner exit question recognises partnership, conflict and timing
   assert.ok(graph.modes.includes("conditional"));
 });
 
+test("ordinary fitness and a noisy setting do not become medical or interpersonal conflict", () => {
+  assert.equal(buildQuestionGraph("我想鍛鍊身體，怎樣建立習慣？", "self").highStakes, false);
+  assert.ok(!buildQuestionGraph("工作環境很吵，適合搬家嗎？", "home").domains.includes("conflict"));
+});
+
 test("multi-domain home plus career question routes to reasoner", () => {
   const graph = buildQuestionGraph("今年適不適合買房？但我也準備換工作，兩件事應該先做哪個？", "home");
   assert.equal(graph.shouldReason, true);

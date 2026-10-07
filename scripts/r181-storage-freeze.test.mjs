@@ -43,6 +43,6 @@ test("r194 owner UI storage controls follow the shared live policy", async () =>
 
   assert.match(galleryUi, /disabled=\{SUPABASE_STORAGE_WRITES_PAUSED\}/);
   assert.match(loginUi, /disabled=\{busy \|\| SUPABASE_STORAGE_WRITES_PAUSED\}/);
-  assert.match(account, /disabled=\{SUPABASE_STORAGE_WRITES_PAUSED\}/);
+  assert.match(account, /disabled=\{actionBusyId === row\.id \|\| \(SUPABASE_STORAGE_WRITES_PAUSED && !detail\.image_path\)\}/);
   assert.match(account, /loadExistingDecreeImage/);
 });

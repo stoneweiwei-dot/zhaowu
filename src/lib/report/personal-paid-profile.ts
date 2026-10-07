@@ -32,14 +32,6 @@ const SEASON_LABEL: Record<Locale, Record<string, string>> = {
   en: { 春: "spring", 夏: "summer", 秋: "autumn", 冬: "winter", 四季: "transitional earth" },
 };
 
-function tendencyLabel(tendency: string, locale: Locale) {
-  if (locale !== "en") return tendency;
-  if (tendency === "偏旺") return "strong-leaning";
-  if (tendency === "偏弱") return "weak-leaning";
-  if (tendency.includes("中和")) return "near-balanced";
-  return "mixed";
-}
-
 const COLORS: Record<Locale, Record<Element, string[]>> = {
   "zh-Hant": {
     木: ["青玉綠", "松針綠", "青灰"],
