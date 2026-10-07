@@ -60,20 +60,17 @@ function isForcedBrokenIntro() {
 }
 
 /**
- * Owner 2026-09-30: the opening video must show every time the app/site is opened, not only the very
- * first time ever on a browser. "Seen" is therefore remembered per session (sessionStorage): route changes
- * and reloads inside one visit do not replay it; opening the app again does. The force flag still lives in
- * localStorage so it keeps working as before.
+ * Launch 2026-10-07: keep the full opening for a visitor who has not seen it recently,
+ * then skip it on the same browser for seven days. The owner force flag remains in
+ * localStorage so the opening can still be replayed intentionally.
  */
 function introStorage(): Pick<Storage, "getItem" | "setItem"> {
   return {
     getItem(key: string) {
-      try {
-        return key === INTRO_FORCE_KEY ? window.localStorage.getItem(key) : window.sessionStorage.getItem(key);
-      } catch { return null; }
+      try { return window.localStorage.getItem(key); } catch { return null; }
     },
     setItem(key: string, value: string) {
-      try { window.sessionStorage.setItem(key, value); } catch { /* ignore */ }
+      try { window.localStorage.setItem(key, value); } catch { /* ignore */ }
     },
   };
 }
