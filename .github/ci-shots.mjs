@@ -7,6 +7,7 @@ const birth = { year: 1988, month: 10, day: 4, hour: 4, minute: 30, timeUnknown:
   city: { name: "雪梨", country: "澳洲", display: "雪梨，澳洲", latitude: -33.8688, longitude: 151.2093, timezone: "Australia/Sydney" },
   liveCity: null, ziPolicy: "midnight", useTrueSolar: true };
 const browser = await chromium.launch();
+setTimeout(() => { console.log("GLOBAL TIMEOUT"); process.exit(0); }, 240000);
 const log = [];
 async function ctx(withBirth, lang = "zh-Hant") {
   const c = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1.5, locale: "zh-TW", timezoneId: "Australia/Sydney" });
@@ -26,7 +27,7 @@ async function step(name, fn) { try { await fn(); log.push(`OK ${name}`); } catc
 
 await step("home", async () => {
   const { c, p } = await ctx(false);
-  await p.goto(BASE + "/", { waitUntil: "networkidle" });
+  await p.goto(BASE + "/", { waitUntil: "load", timeout: 30000 });
   await p.waitForTimeout(1500);
   await p.screenshot({ path: `${OUT}/01-home.png` });
   await p.screenshot({ path: `${OUT}/02-home-full.png`, fullPage: true });
@@ -42,7 +43,7 @@ await step("home", async () => {
 });
 await step("almanac-personal", async () => {
   const { c, p } = await ctx(true);
-  await p.goto(BASE + "/", { waitUntil: "networkidle" });
+  await p.goto(BASE + "/", { waitUntil: "load", timeout: 30000 });
   await p.click('[data-home-card="today"]');
   await p.waitForSelector("[data-almanac-personal]", { timeout: 15000 });
   await p.waitForTimeout(1500);
@@ -51,7 +52,7 @@ await step("almanac-personal", async () => {
 });
 await step("city", async () => {
   const { c, p } = await ctx(false);
-  await p.goto(BASE + "/", { waitUntil: "networkidle" });
+  await p.goto(BASE + "/", { waitUntil: "load", timeout: 30000 });
   await p.click('[data-home-card="form"]');
   await p.waitForSelector("#birth-city", { timeout: 15000 });
   await p.locator("#birth-city").scrollIntoViewIfNeeded();
@@ -68,7 +69,7 @@ await step("city", async () => {
 });
 await step("bazi+report", async () => {
   const { c, p } = await ctx(true);
-  await p.goto(BASE + "/", { waitUntil: "networkidle" });
+  await p.goto(BASE + "/", { waitUntil: "load", timeout: 30000 });
   await p.click('[data-home-card="form"]');
   await p.waitForSelector("[data-plain-summary]", { timeout: 15000 });
   await p.waitForTimeout(1200);
@@ -85,7 +86,7 @@ await step("bazi+report", async () => {
 });
 await step("en-almanac", async () => {
   const { c, p } = await ctx(true, "en");
-  await p.goto(BASE + "/", { waitUntil: "networkidle" });
+  await p.goto(BASE + "/", { waitUntil: "load", timeout: 30000 });
   await p.click('[data-home-card="today"]');
   await p.waitForSelector("[data-almanac-ink-board]", { timeout: 15000 });
   await p.waitForTimeout(1500);
