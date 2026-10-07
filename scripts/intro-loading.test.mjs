@@ -15,6 +15,7 @@ const {
   INTRO_GATE_TARGET_MS,
   INTRO_GATE_HARD_EXIT_MS,
   INTRO_GATE_ERROR_EXIT_MS,
+  INTRO_RETURN_SKIP_MS,
   INTRO_SEEN_KEY,
   INTRO_FORCE_KEY,
   INTRO_BROKEN_KEY,
@@ -94,22 +95,24 @@ test('intro cannot be skipped before five seconds and exits after the visual has
   assert.doesNotMatch(gate, /runtimeReady/);
 });
 
-test('real visitors receive the opening once per browser storage while force=1 still overrides seen state', () => {
+test('return visitors skip the public opening for seven days while force=1 still overrides seen state', () => {
   const storage = new Map();
   const fake = {
     getItem: (key) => storage.get(key) ?? null,
     setItem: (key, value) => { storage.set(key, value); },
   };
-  assert.equal(shouldSkipIntroGate(fake, false), false);
-  assert.equal(shouldSkipIntroGate(fake, true), true);
-  markIntroSeen(fake);
-  assert.equal(fake.getItem(INTRO_SEEN_KEY), '1');
-  assert.equal(shouldSkipIntroGate(fake, false), true);
-  assert.equal(shouldSkipIntroGate(fake, true), true);
+  const now = Date.UTC(2026, 9, 7, 0, 0, 0);
+  assert.equal(shouldSkipIntroGate(fake, false, now), false);
+  assert.equal(shouldSkipIntroGate(fake, true, now), true);
+  markIntroSeen(fake, now);
+  assert.equal(fake.getItem(INTRO_SEEN_KEY), String(now));
+  assert.equal(shouldSkipIntroGate(fake, false, now + INTRO_RETURN_SKIP_MS - 1), true);
+  assert.equal(shouldSkipIntroGate(fake, false, now + INTRO_RETURN_SKIP_MS), false);
   fake.setItem(INTRO_FORCE_KEY, '1');
-  assert.equal(shouldSkipIntroGate(fake, false), false);
-  assert.equal(shouldSkipIntroGate(fake, true), false);
-  assert.equal(INTRO_SEEN_KEY, 'zhaowu.intro.seen.public.v1');
+  assert.equal(shouldSkipIntroGate(fake, false, now + 1), false);
+  assert.equal(shouldSkipIntroGate(fake, true, now + 1), false);
+  assert.equal(INTRO_RETURN_SKIP_MS, 7 * 24 * 60 * 60 * 1000);
+  assert.equal(INTRO_SEEN_KEY, 'zhaowu.intro.seen-at.public.v2');
   assert.equal(INTRO_BROKEN_KEY, 'zhaowu.intro.broken');
 });
 
