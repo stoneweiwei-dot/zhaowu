@@ -20,15 +20,19 @@ export const Route = createFileRoute("/")({ component: Home });
 
 /* ── Hero painting set ─────────────────────────────────────── */
 const HERO_PAINTINGS = [
-  { src: "/hero-gallery/dragon-scholar.webp",      alt: "天龍觀者" },
-  { src: "/hero-gallery/lotus-lady.webp",          alt: "蓮池仙境" },
-  { src: "/hero-gallery/koi-dragon-rider.webp",    alt: "御龍飛天" },
-  { src: "/hero-gallery/cloud-dragon.webp",        alt: "雲龍出岫" },
-  { src: "/hero-gallery/river-rain-boat.webp",     alt: "煙雨孤舟" },
-  { src: "/hero-gallery/karst-mist-lake.webp",     alt: "山水雲霧" },
-  { src: "/hero-gallery/temple-bamboo-rain.webp",  alt: "竹雨古寺" },
-  { src: "/hero-gallery/misty-mountains-lake.webp",alt: "煙嵐疊翠" },
+  { src: "/hero-gallery/dragon-scholar.webp", hant: "天龍觀者", hans: "天龙观者", en: "Dragon Scholar" },
+  { src: "/hero-gallery/lotus-lady.webp", hant: "蓮池仙境", hans: "莲池仙境", en: "Lotus Realm" },
+  { src: "/hero-gallery/koi-dragon-rider.webp", hant: "御龍飛天", hans: "御龙飞天", en: "Dragon Rider" },
+  { src: "/hero-gallery/cloud-dragon.webp", hant: "雲龍出岫", hans: "云龙出岫", en: "Cloud Dragon" },
+  { src: "/hero-gallery/river-rain-boat.webp", hant: "煙雨孤舟", hans: "烟雨孤舟", en: "Boat in Rain" },
+  { src: "/hero-gallery/karst-mist-lake.webp", hant: "山水雲霧", hans: "山水云雾", en: "Misty Mountains" },
+  { src: "/hero-gallery/temple-bamboo-rain.webp", hant: "竹雨古寺", hans: "竹雨古寺", en: "Bamboo Rain Temple" },
+  { src: "/hero-gallery/misty-mountains-lake.webp", hant: "煙嵐疊翠", hans: "烟岚叠翠", en: "Layered Jade Mist" },
 ];
+
+function heroPaintingTitle(painting: (typeof HERO_PAINTINGS)[number], locale: string) {
+  return locale === "en" ? painting.en : locale === "zh-Hans" ? painting.hans : painting.hant;
+}
 
 type Section = "form" | "today" | "quiz" | "notes";
 
@@ -39,8 +43,8 @@ function useCopy(locale: string) {
       kicker: "ZHAOWU · PERSONAL DESTINY BOOK",
       title: "One birth record. One ZHAOWU Destiny Book.",
       tagline: "Heaven counts to forty-nine — and leaves one line open.",
-      birthCta: "Enter birth details · Open ZHAOWU",
-      birthHint: "Begin with your birth record",
+      birthCta: "Build my Destiny Book",
+      birthHint: "Enter birth details · Open ZHAOWU",
       navBook:  "Destiny",
       navToday: "Today",
       navQuiz:  "Explore",
@@ -66,8 +70,8 @@ function useCopy(locale: string) {
       kicker: "昭梧 · 个人命书",
       title: "一份生辰，读成一本昭梧命书",
       tagline: "天衍四九，其留与一。爱出者爱返，福往者福来。",
-      birthCta: "录入生辰・开卷昭梧",
-      birthHint: "以子平八字，起一生节奏",
+      birthCta: "开始建立我的命书",
+      birthHint: "录入生辰・开卷昭梧",
       navBook:  "命书",
       navToday: "今日",
       navQuiz:  "测验",
@@ -93,8 +97,8 @@ function useCopy(locale: string) {
     kicker: "昭梧 · 個人命書",
     title: "一份生辰，讀成一本昭梧命書",
     tagline: "天衍四九，其留與一。愛出者愛返，福往者福來。",
-    birthCta: "錄入生辰・開卷昭梧",
-    birthHint: "以子平八字，起一生節奏",
+    birthCta: "開始建立我的命書",
+    birthHint: "錄入生辰・開卷昭梧",
     navBook:  "命書",
     navToday: "今日",
     navQuiz:  "測驗",
@@ -113,6 +117,49 @@ function useCopy(locale: string) {
       { href: "/fun-tests?test=element",     title: "五行功能測驗",        hint: "看現在主觀上最想加強哪一種功能" },
       { href: "/quiz/six-realms",            title: "六道習氣測驗",        hint: "看目前最明顯的日常慣性" },
     ],
+  };
+}
+
+
+function heroUiCopy(locale: string) {
+  if (locale === "en") return {
+    gallery: "ZHAOWU artwork carousel",
+    controls: "Artwork controls",
+    previous: "Previous artwork",
+    next: "Next artwork",
+    pause: "Pause artwork rotation",
+    play: "Play artwork rotation",
+    reduced: "Automatic artwork rotation is disabled by Reduce Motion",
+    primaryNav: "Main features",
+    scentLoading: "Loading Five-Element Scent Map",
+    notesLoading: "Loading Notes on Life",
+    painting: (index: number, total: number, title: string) => `${index} of ${total}: ${title}`,
+  };
+  if (locale === "zh-Hans") return {
+    gallery: "昭梧画作轮播",
+    controls: "画作切换",
+    previous: "上一张画作",
+    next: "下一张画作",
+    pause: "暂停画作轮播",
+    play: "继续画作轮播",
+    reduced: "系统已开启减少动态效果，自动轮播已停用",
+    primaryNav: "主要功能",
+    scentLoading: "正在载入五行香气谱",
+    notesLoading: "正在载入观世录",
+    painting: (index: number, total: number, title: string) => `第 ${index} 张，共 ${total} 张：${title}`,
+  };
+  return {
+    gallery: "昭梧畫作輪播",
+    controls: "畫作切換",
+    previous: "上一張畫作",
+    next: "下一張畫作",
+    pause: "暫停畫作輪播",
+    play: "繼續畫作輪播",
+    reduced: "系統已開啟減少動態效果，自動輪播已停用",
+    primaryNav: "主要功能",
+    scentLoading: "正在載入五行香氣譜",
+    notesLoading: "正在載入觀世錄",
+    painting: (index: number, total: number, title: string) => `第 ${index} 張，共 ${total} 張：${title}`,
   };
 }
 
@@ -141,21 +188,31 @@ const LazyScentFiveElementTest = lazy(() =>
 function Home() {
   const { locale } = useI18n();
   const copy = useCopy(locale);
+  const heroUi = heroUiCopy(locale);
   const current = useAppStore((s) => s.current);
   const setCurrent = useAppStore((s) => s.setCurrent);
 
   const [heroIdx, setHeroIdx] = useState(0);
-  const [heroManual, setHeroManual] = useState(false);
+  const [heroPaused, setHeroPaused] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [activeSection, setActiveSection] = useState<Section | null>(null);
   const [scentOpen, setScentOpen] = useState(false);
   const [todayExpanded, setTodayExpanded] = useState(false);
 
-  /* Auto-cycle only while motion is welcome and the visitor has not chosen a painting. */
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const t = setInterval(() => setHeroIdx((i) => (i + 1) % HERO_PAINTINGS.length), 4500);
-    return () => clearInterval(t);
-  }, [heroManual]);
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReducedMotion(media.matches);
+    sync();
+    media.addEventListener?.("change", sync);
+    return () => media.removeEventListener?.("change", sync);
+  }, []);
+
+  /* Auto-cycle only while motion is welcome and the visitor has not paused or chosen a painting. */
+  useEffect(() => {
+    if (reducedMotion || heroPaused) return;
+    const t = window.setInterval(() => setHeroIdx((i) => (i + 1) % HERO_PAINTINGS.length), 4500);
+    return () => window.clearInterval(t);
+  }, [heroPaused, reducedMotion]);
 
   /* auto-open form if there's a cached analysis result */
   useEffect(() => {
@@ -182,6 +239,13 @@ function Home() {
     });
   };
 
+  const selectHero = (index: number) => {
+    setHeroIdx((index + HERO_PAINTINGS.length) % HERO_PAINTINGS.length);
+    setHeroPaused(true);
+  };
+
+  const stepHero = (delta: number) => selectHero(heroIdx + delta);
+
   const navLabels: Record<Section, string> = {
     form:  copy.navBook,
     today: copy.navToday,
@@ -194,32 +258,52 @@ function Home() {
     <main className="zw-hero-home">
 
       {/* ── PAINTING HERO GALLERY ───────────────────────────── */}
-      <div className="zw-hero-gallery" role="region" aria-label="昭梧畫作">
+      <div className="zw-hero-gallery" role="region" aria-label={heroUi.gallery} aria-live="off">
         {visibleHeroIndexes.map((i) => {
           const p = HERO_PAINTINGS[i];
+          const isActive = i === heroIdx;
+          const title = heroPaintingTitle(p, locale);
           return (
             <img
               key={p.src}
               src={p.src}
-              alt={p.alt}
-              className={`zw-hero-painting${i === heroIdx ? " is-active" : ""}`}
-              loading={i === heroIdx ? "eager" : "lazy"}
-              fetchPriority={i === heroIdx ? "high" : "low"}
+              alt={isActive ? title : ""}
+              aria-hidden={!isActive}
+              className={`zw-hero-painting${isActive ? " is-active" : ""}`}
+              loading={isActive ? "eager" : "lazy"}
+              fetchPriority={isActive ? "high" : "low"}
               decoding="async"
             />
           );
         })}
-        <div className="zw-hero-dots" role="tablist" aria-label="畫作切換">
-          {HERO_PAINTINGS.map((_, i) => (
-            <button
-              key={i}
-              role="tab"
-              aria-selected={i === heroIdx}
-              aria-label={`第 ${i + 1} 張`}
-              className={`zw-hero-dot${i === heroIdx ? " is-active" : ""}`}
-              onClick={() => { setHeroIdx(i); setHeroManual(true); }}
-            />
-          ))}
+        <div className="zw-hero-carousel-controls" role="group" aria-label={heroUi.controls}>
+          <button type="button" className="zw-hero-step" aria-label={heroUi.previous} onClick={() => stepHero(-1)}>
+            <span aria-hidden>‹</span>
+          </button>
+          <div className="zw-hero-dots">
+            {HERO_PAINTINGS.map((painting, i) => (
+              <button
+                key={painting.src}
+                type="button"
+                aria-current={i === heroIdx ? "true" : undefined}
+                aria-label={heroUi.painting(i + 1, HERO_PAINTINGS.length, heroPaintingTitle(painting, locale))}
+                className={`zw-hero-dot${i === heroIdx ? " is-active" : ""}`}
+                onClick={() => selectHero(i)}
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            className="zw-hero-toggle"
+            disabled={reducedMotion}
+            aria-label={reducedMotion ? heroUi.reduced : heroPaused ? heroUi.play : heroUi.pause}
+            onClick={() => setHeroPaused((value) => !value)}
+          >
+            <span aria-hidden>{heroPaused || reducedMotion ? "▶" : "Ⅱ"}</span>
+          </button>
+          <button type="button" className="zw-hero-step" aria-label={heroUi.next} onClick={() => stepHero(1)}>
+            <span aria-hidden>›</span>
+          </button>
         </div>
       </div>
 
@@ -247,7 +331,7 @@ function Home() {
 
       {/* ── ICON NAVIGATION ─────────────────────────────────── */}
       <div className="zw-hero-nav-wrap">
-        <nav className="zw-hero-nav" aria-label="主要功能">
+        <nav className="zw-hero-nav" aria-label={heroUi.primaryNav}>
           {NAV_ITEMS.map(({ id, iconSrc }) => (
             <button
               key={id}
@@ -357,7 +441,7 @@ function Home() {
           </div>
           <div id="home-scent-test" data-scent-panel hidden={!scentOpen}>
             {scentOpen ? (
-              <Suspense fallback={null}>
+              <Suspense fallback={<div className="zw-home-inline-loading" role="status">{heroUi.scentLoading}</div>}>
                 <LazyScentFiveElementTest result={current} />
               </Suspense>
             ) : null}
@@ -368,7 +452,7 @@ function Home() {
       {/* ── SECONDARY PANEL: NOTES ──────────────────────────── */}
       {activeSection === "notes" && (
         <div className="zw-hero-secondary-panel">
-          <Suspense fallback={null}>
+          <Suspense fallback={<div className="zw-home-inline-loading" role="status">{heroUi.notesLoading}</div>}>
             <LazyLifeViewHomeSection />
           </Suspense>
         </div>
