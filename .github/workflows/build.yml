@@ -25,10 +25,7 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Build
-        shell: bash
-        run: |
-          set -o pipefail
-          npm run build 2>&1 | tee out.log || { echo "::error::FAILS=$(grep -E '^✖' out.log | sed 's/ ([0-9.]*ms)$//' | sort -u | tr '\n' '|')"; exit 1; }
+        run: npm run build
 
   engine:
     name: Manual engine suite
@@ -48,7 +45,4 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Engine and contract suite
-        shell: bash
-        run: |
-          set -o pipefail
-          npm run test:engine 2>&1 | tee out.log || { echo "::error::FAILS=$(grep -E '^✖' out.log | sed 's/ ([0-9.]*ms)$//' | sort -u | tr '\n' '|')"; exit 1; }
+        run: npm run test:engine
