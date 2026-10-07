@@ -68,3 +68,34 @@ test("self subtopics require matching answer coverage", () => {
   assert.equal(directAnswerCoversQuestion("這個命局的用神到底是什麼？", "正式取用未定，目前只有調候候選。"), true);
   assert.equal(detectQuestionFocus("D60 能不能作旁證？"), "d60");
 });
+
+
+test("off-topic answers are rejected even when they are fluent and long enough", () => {
+  assert.equal(
+    directAnswerCoversQuestion("我和老闆最近一直衝突，我該不該離職？", "這段感情目前比較適合先觀察對方的承諾和聯絡頻率。"),
+    false,
+  );
+  assert.equal(
+    directAnswerCoversQuestion("我最近睡眠很差，要注意什麼？", "工作上可以先觀察新的機會，不必急著換公司。"),
+    false,
+  );
+  assert.equal(
+    directAnswerCoversQuestion("我這幾年財運怎麼樣？", "感情上比較容易在熟人圈遇到合適的人。"),
+    false,
+  );
+});
+
+test("question mode must also be answered, not merely the broad topic", () => {
+  assert.equal(
+    directAnswerCoversQuestion("為什麼我每次做到管理就很煩？", "工作方向以管理和協作為主。"),
+    false,
+  );
+  assert.equal(
+    directAnswerCoversQuestion("為什麼我每次做到管理就很煩？", "主要原因是你在管理情境下要同時承擔人和結果，這比單純做技術更消耗。"),
+    true,
+  );
+  assert.equal(
+    directAnswerCoversQuestion("我什麼時候適合換工作？", "工作方向可以考慮新的機會。"),
+    false,
+  );
+});
