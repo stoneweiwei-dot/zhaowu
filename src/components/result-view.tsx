@@ -167,9 +167,37 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       <article className="zhaowu-result-card seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("resultQ")}</p>
         <h2 className="mt-2 font-display text-2xl">{question}</h2>
-        <div className="mt-4 space-y-3 text-[15px] leading-8 text-ink-soft transition-opacity duration-300" data-primary-answer data-answer-source={writtenNow?.source ?? "rule"}>
-          {answerParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
-        </div>
+        {!writtenNow && complexRule ? (
+          <div className="zhaowu-answer-steps" data-primary-answer data-answer-source="rule" data-complex-answer="true">
+            <section className="zhaowu-answer-step">
+              <span>{locale === "en" ? "01 · ANSWER" : locale === "zh-Hans" ? "01 · 直接结论" : "01 · 直接結論"}</span>
+              <strong>{complexRule.verdict}</strong>
+            </section>
+            <section className="zhaowu-answer-step">
+              <span>{locale === "en" ? "02 · WHY" : locale === "zh-Hans" ? "02 · 为什么" : "02 · 為什麼"}</span>
+              <p>{complexRule.reason}</p>
+            </section>
+            {complexRule.comparison ? (
+              <section className="zhaowu-answer-step">
+                <span>{locale === "en" ? "03 · COMPARE" : locale === "zh-Hans" ? "03 · 放在同一张表比较" : "03 · 放在同一張表比較"}</span>
+                <div className="zhaowu-answer-compare">
+                  <div><b>{complexRule.comparison.leftLabel}</b>{complexRule.comparison.left}</div>
+                  <div><b>{complexRule.comparison.rightLabel}</b>{complexRule.comparison.right}</div>
+                </div>
+              </section>
+            ) : null}
+            {complexRule.timing ? (
+              <section className="zhaowu-answer-step">
+                <span>{locale === "en" ? "04 · TIMING" : locale === "zh-Hans" ? "04 · 时间窗口" : "04 · 時間窗口"}</span>
+                <p>{complexRule.timing}</p>
+              </section>
+            ) : null}
+          </div>
+        ) : (
+          <div className="mt-4 space-y-3 text-[15px] leading-8 text-ink-soft transition-opacity duration-300" data-primary-answer data-answer-source={writtenNow?.source ?? "rule"}>
+            {answerParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+          </div>
+        )}
         {nextAction ? <aside className="zhaowu-result-next mt-5 border-t border-line/70 pt-4" data-next-action><strong className="text-sm text-ink">{copy.next}</strong><p className="mt-1 text-[14px] leading-7 text-ink-soft">{nextAction}</p></aside> : null}
       </article>
 
