@@ -43,7 +43,7 @@ const FOCUS_RULES: Array<[string, RegExp, RegExp]> = [
 ];
 
 const KIND_ANSWER_HINTS: Record<QuestionKind, RegExp> = {
-  choice: /選|选|方案|方向|A|B|option|choose|choice/i,
+  choice: /選|选|方案|方向|比較|比较|偏向|先留|先走|留下|離開|离开|接受|買|买|租|A|B|option|choose|choice|prefer|stay|leave|accept|compare/i,
   timing: /年|月|時|时|運|运|階段|阶段|when|timing|period/i,
   love: /感情|關係|关系|伴侶|伴侣|婚|戀|恋|分手|復合|复合|前任|曖昧|暧昧|約會|约会|love|relationship|partner|marriage|breakup|reconcile|dating/i,
   career: /工作|事業|事业|職場|职场|職業|职业|離職|离职|跳槽|升職|升职|升遷|升迁|薪水|薪資|薪资|offer|老闆|老板|主管|管理|技術|技术|創業|创业|開店|开店|客戶|客户|career|job|work|role|business|manage|technical|startup/i,
