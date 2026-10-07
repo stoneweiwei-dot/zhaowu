@@ -20,15 +20,19 @@ export const Route = createFileRoute("/")({ component: Home });
 
 /* ── Hero painting set ─────────────────────────────────────── */
 const HERO_PAINTINGS = [
-  { src: "/hero-gallery/dragon-scholar.webp",      alt: "天龍觀者" },
-  { src: "/hero-gallery/lotus-lady.webp",          alt: "蓮池仙境" },
-  { src: "/hero-gallery/koi-dragon-rider.webp",    alt: "御龍飛天" },
-  { src: "/hero-gallery/cloud-dragon.webp",        alt: "雲龍出岫" },
-  { src: "/hero-gallery/river-rain-boat.webp",     alt: "煙雨孤舟" },
-  { src: "/hero-gallery/karst-mist-lake.webp",     alt: "山水雲霧" },
-  { src: "/hero-gallery/temple-bamboo-rain.webp",  alt: "竹雨古寺" },
-  { src: "/hero-gallery/misty-mountains-lake.webp",alt: "煙嵐疊翠" },
+  { src: "/hero-gallery/dragon-scholar.webp", hant: "天龍觀者", hans: "天龙观者", en: "Dragon Scholar" },
+  { src: "/hero-gallery/lotus-lady.webp", hant: "蓮池仙境", hans: "莲池仙境", en: "Lotus Realm" },
+  { src: "/hero-gallery/koi-dragon-rider.webp", hant: "御龍飛天", hans: "御龙飞天", en: "Dragon Rider" },
+  { src: "/hero-gallery/cloud-dragon.webp", hant: "雲龍出岫", hans: "云龙出岫", en: "Cloud Dragon" },
+  { src: "/hero-gallery/river-rain-boat.webp", hant: "煙雨孤舟", hans: "烟雨孤舟", en: "Boat in Rain" },
+  { src: "/hero-gallery/karst-mist-lake.webp", hant: "山水雲霧", hans: "山水云雾", en: "Misty Mountains" },
+  { src: "/hero-gallery/temple-bamboo-rain.webp", hant: "竹雨古寺", hans: "竹雨古寺", en: "Bamboo Rain Temple" },
+  { src: "/hero-gallery/misty-mountains-lake.webp", hant: "煙嵐疊翠", hans: "烟岚叠翠", en: "Layered Jade Mist" },
 ];
+
+function heroPaintingTitle(painting: (typeof HERO_PAINTINGS)[number], locale: string) {
+  return locale === "en" ? painting.en : locale === "zh-Hans" ? painting.hans : painting.hant;
+}
 
 type Section = "form" | "today" | "quiz" | "notes";
 
@@ -258,11 +262,12 @@ function Home() {
         {visibleHeroIndexes.map((i) => {
           const p = HERO_PAINTINGS[i];
           const isActive = i === heroIdx;
+          const title = heroPaintingTitle(p, locale);
           return (
             <img
               key={p.src}
               src={p.src}
-              alt={isActive ? p.alt : ""}
+              alt={isActive ? title : ""}
               aria-hidden={!isActive}
               className={`zw-hero-painting${isActive ? " is-active" : ""}`}
               loading={isActive ? "eager" : "lazy"}
@@ -281,7 +286,7 @@ function Home() {
                 key={painting.src}
                 type="button"
                 aria-current={i === heroIdx ? "true" : undefined}
-                aria-label={heroUi.painting(i + 1, HERO_PAINTINGS.length, painting.alt)}
+                aria-label={heroUi.painting(i + 1, HERO_PAINTINGS.length, heroPaintingTitle(painting, locale))}
                 className={`zw-hero-dot${i === heroIdx ? " is-active" : ""}`}
                 onClick={() => selectHero(i)}
               />
