@@ -15,13 +15,6 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
-    id: "2026-10-08-intimacy-symbolism-boundaries",
-    date: "2026-10-08",
-    zhHant: { title: "觀世錄新增：命理能不能看男性尺寸？", summary: "新增跨西占、紫微與十二宮主飛宮的研究文章，整理八宮／火星／天蠍、子位＋疾厄宮、五行局童限與十二宮主等網路說法，明確區分象意、娛樂推論與不能據此下定論的公分、器官形態、性向及醫療結論。" },
-    zhHans: { title: "观世录新增：命理能不能看男性尺寸？", summary: "新增跨西占、紫微与十二宫主飞宫的研究文章，整理八宫／火星／天蝎、子位＋疾厄宫、五行局童限与十二宫主等网络说法，明确区分象意、娱乐推论与不能据此下定论的公分、器官形态、性向及医疗结论。" },
-    en: { title: "New Notes article: can astrology read male size?", summary: "A new cross-system research note reviews eighth-house/Mars/Scorpio claims, Zi Wei's Zi-position plus Health-Palace model, Five-Element Bureau childhood shortcuts and the twelfth-house ruler. It clearly separates symbolic or entertainment readings from unsupported centimetre, anatomy, orientation and medical claims." },
-  },
-  {
     id: "2026-10-07-owner-media-home-background-simplify",
     date: "2026-10-07",
     zhHant: { title: "後台圖片操作收斂，首頁背景可直接從圖庫套用", summary: "移除圖片與開場影片裡難懂的批次顯示／隱藏／啟用控制；圖片卡改為直接預覽、設為首頁背景與必要的刪除，站主首頁不再顯示獨立空白的首頁背景入口。今日指引的首頁小卡同步恢復暖宣紙與山水感，深青玉只保留在局部欄頭。" },
