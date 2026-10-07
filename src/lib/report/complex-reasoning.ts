@@ -172,43 +172,134 @@ function domainLine(result: AnalysisResult, graph: QuestionGraph, domain: string
   }
 }
 
-export function buildComplexDeterministicAnswer(result: AnalysisResult): { answer: string; next: string } | null {
+export type ComplexDeterministicAnswer = {
+  answer: string;
+  next: string;
+  verdict: string;
+  reason: string;
+  timing?: string;
+  comparison?: {
+    leftLabel: string;
+    left: string;
+    rightLabel: string;
+    right: string;
+  };
+};
+
+const CLIENT_TECHNICAL_RE = /(日主|月令|格局|十神|正印|偏印|七殺|七杀|用神|喜用|身強|身强|身弱|得令|得地|得勢|得势|完成度|結構摘要|结构摘要|適合研究|适合研究|命局性情|chart structure|day master|month command)/i;
+
+function clientSentence(value: string): string {
+  const sentence = firstSentence(value);
+  return CLIENT_TECHNICAL_RE.test(sentence) ? "" : sentence;
+}
+
+function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model: ReturnType<typeof buildDecisionReportModel>) {
+  const locale = result.locale ?? "zh-Hant";
+  const q = result.question;
+  const careerOffer = graph.domains.some((domain) => ["career", "job_fit", "workplace_relationship"].includes(domain))
+    && /(offer|升職|升职|留下|留還是走|留还是走|離職|离职|跳槽)/i.test(q);
+
+  if (careerOffer) {
+    if (locale === "en") return {
+      verdict: "Do not treat a possible promotion as if it has already happened. Keep the current role while you compare the written offer on pay, responsibility, growth, workload and exit cost; move only if the new offer clearly wins on the conditions that matter.",
+      comparison: {
+        leftLabel: "Current role",
+        left: "Count only confirmed pay, duties and a concrete promotion path — not a verbal possibility.",
+        rightLabel: "New offer",
+        right: "Compare the written pay, scope, probation, growth path and exit cost on the same page.",
+      },
+    };
+    if (locale === "zh-Hans") return {
+      verdict: "不要把“可能升职”当成已经发生。先保留现职，同时把新 offer 的书面薪酬、职责、成长、负荷与退出成本放在同一张表；只有新 offer 在关键条件上明显胜出，才值得走。",
+      comparison: {
+        leftLabel: "留在现职",
+        left: "只计算已经确认的薪酬、职责与具体升职条件，不把口头可能性当事实。",
+        rightLabel: "接受新 offer",
+        right: "看书面薪酬、职责、试用期、成长路径与退出成本，并用同一组标准比较。",
+      },
+    };
+    return {
+      verdict: "不要把「可能升職」當成已經發生。先保留現職，同時把新 offer 的書面薪酬、職責、成長、負荷與退出成本放在同一張表；只有新 offer 在關鍵條件上明顯勝出，才值得走。",
+      comparison: {
+        leftLabel: "留在現職",
+        left: "只計算已確認的薪酬、職責與具體升職條件，不把口頭可能性當事實。",
+        rightLabel: "接受新 offer",
+        right: "看書面薪酬、職責、試用期、成長路徑與退出成本，並用同一組標準比較。",
+      },
+    };
+  }
+
+  const direct = clientSentence(model.directAnswer);
+  if (direct && /(偏向|選|选|暫不|暂不|prefer|choose|cannot|not enough)/i.test(direct)) {
+    return { verdict: direct, comparison: undefined };
+  }
+
+  if (locale === "en") return {
+    verdict: "There is not enough comparable evidence to force an A/B answer yet. Put both options under the same criteria first, then remove any option that fails a non-negotiable condition.",
+    comparison: undefined,
+  };
+  if (locale === "zh-Hans") return {
+    verdict: "目前不适合硬选 A／B。先把两个选项放进同一组条件比较，再先淘汰踩到不可接受条件的一方。",
+    comparison: undefined,
+  };
+  return {
+    verdict: "目前不適合硬選 A／B。先把兩個選項放進同一組條件比較，再先淘汰踩到不可接受條件的一方。",
+    comparison: undefined,
+  };
+}
+
+export function buildComplexDeterministicAnswer(result: AnalysisResult): ComplexDeterministicAnswer | null {
   const graph = buildQuestionGraph(result.question, result.reading.kind);
   if (!graph.shouldReason) return null;
   const model = buildDecisionReportModel(result);
+  const locale = result.locale ?? "zh-Hant";
 
-  const lines: string[] = [model.directAnswer];
+  const comparison = graph.modes.includes("comparison") || graph.domains.includes("choice")
+    ? comparisonFallback(result, graph, model)
+    : null;
 
-  // Cover distinct secondary domains instead of repeating one generic paragraph.
-  const priority = [
-    "career", "job_fit", "business", "entrepreneurship",
-    "money", "debt",
-    "relationship", "marriage", "breakup", "reconciliation", "compatibility",
-    "home", "property", "relocation", "migration",
-    "timing", "health", "fertility",
-  ];
-  const used = new Set<string>();
-  for (const domain of priority) {
-    if (!graph.domains.includes(domain as any)) continue;
-    const line = domainLine(result, graph, domain);
-    const sentence = firstSentence(line);
-    const key = sentence.replace(/[。！？!?\s]/g, "");
-    if (!sentence || used.has(key)) continue;
-    used.add(key);
-    lines.push(sentence);
-    if (lines.length >= (graph.modes.includes("multi-part") ? 4 : 3)) break;
+  const verdict = comparison?.verdict || clientSentence(model.directAnswer)
+    || (locale === "en"
+      ? "This question needs more than one factor, so the answer is split into the decision, the reason, the timing and the next action."
+      : locale === "zh-Hans"
+        ? "这题不能只看一个标签，下面按“结论、理由、时间、行动”拆开回答。"
+        : "這題不能只看一個標籤，下面按「結論、理由、時間、行動」拆開回答。");
+
+  const domainCandidates: string[] = [];
+  for (const domain of graph.domains) {
+    const line = clientSentence(domainLine(result, graph, domain));
+    if (line && !domainCandidates.includes(line)) domainCandidates.push(line);
   }
+  const reason = domainCandidates[0]
+    || model.reasons.map(clientSentence).find(Boolean)
+    || model.biggestVariable;
 
-  if (graph.modes.includes("timing") && model.timing.length) lines.push(model.timing[0]);
-  const thirdParty = thirdPartyBoundary(result, graph);
-  if (thirdParty) lines.push(thirdParty);
+  const timingCandidate = model.timing
+    .map(clientSentence)
+    .find((line) => line && /(20\d{2}|\d{1,2}\s*月|上半年|下半年|month|quarter|year)/i.test(line));
+  const asksTiming = graph.modes.includes("timing") || graph.domains.includes("timing") || /什麼時候|什么时候|何時|何时|未來半年|未来半年|when|timing/i.test(result.question);
+  const timing = timingCandidate || (asksTiming
+    ? (locale === "en"
+      ? "The current evidence does not support a reliable month-level date, so the answer stays at the confirmed time level rather than inventing a month."
+      : locale === "zh-Hans"
+        ? "目前证据不足以安全落到具体月份，所以只保留已确认的时间层级，不硬凑月份。"
+        : "目前證據不足以安全落到具體月份，所以只保留已確認的時間層級，不硬湊月份。")
+    : undefined);
+
+  const boundary = thirdPartyBoundary(result, graph);
   const highStakes = highStakesBoundary(graph);
-  if (highStakes) lines.push(highStakes);
-
-  const max = graph.modes.includes("multi-part") ? 5 : 3;
-  const answer = dedupeSentences(lines).slice(0, max).join("");
+  const lines = dedupeSentences([verdict, reason, timing ?? "", boundary, highStakes]).slice(0, graph.modes.includes("multi-part") ? 5 : 3);
+  const answer = lines.join("");
   const next = compact(model.nextAction || result.reading.action, 180);
-  return answer && next ? { answer, next } : null;
+
+  return {
+    answer,
+    next,
+    verdict,
+    reason,
+    timing,
+    comparison: comparison?.comparison,
+  };
 }
 
 export function buildComplexReasoningRequest(result: AnalysisResult): ComplexReasoningRequest | null {
