@@ -164,13 +164,16 @@ function Home() {
 
   const toggleSection = (id: Section) => {
     if (id === "today") {
+      setActiveSection(null);
       setTodayExpanded(true);
       return;
     }
+    setTodayExpanded(false);
     setActiveSection((prev) => (prev === id ? null : id));
   };
 
   const openBirthBook = () => {
+    setTodayExpanded(false);
     setActiveSection("form");
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
