@@ -464,7 +464,7 @@ export function AnalysisForm() {
         {previewChart && structure && foundationValues ? (
           <div className="zhaowu-bazi-preview">
             <section className="zhaowu-bazi-plain" data-home-bazi-explanation data-plain-summary aria-labelledby="zhaowu-bazi-plain-title">
-              <img className="zhaowu-bazi-plain__art" src="/art/zhaowu-dragon-lake-v1.webp" alt="" loading="lazy" decoding="async" width={1200} height={675} />
+              <img className="zhaowu-bazi-plain__art" src="/art/zhaowu-dragon-lake-v1.webp" alt="" decoding="async" width={1200} height={675} />
               <h3 id="zhaowu-bazi-plain-title">{copy.plainTitle}</h3>
               <p className="zhaowu-bazi-plain__lead">{copy.plainLead}</p>
               <ol>

@@ -55,6 +55,8 @@ function hourWindows(branch: string) {
   return { good: good.slice(0, 4), caution: caution.filter((b) => !good.includes(b)).slice(0, 4) };
 }
 
+const TEN_GOD_EN: Record<string, string> = { 比肩: "Peer", 劫財: "Rival", 食神: "Output", 傷官: "Expression", 正財: "Steady Wealth", 偏財: "Windfall", 正官: "Authority", 七殺: "Pressure", 正印: "Support", 偏印: "Insight" };
+
 const TEN_GOD_PLAIN: Record<string, { zh: string; en: string }> = {
   比肩: { zh: "同類相助，適合和夥伴分工、各自負責。", en: "Peer support—split work with partners and own your part." },
   劫財: { zh: "容易有競爭和開銷，合作先講清楚分配，看緊荷包。", en: "Competition and spending rise—agree on shares first and watch money." },
@@ -146,6 +148,7 @@ function ElementWheel({ active, locale }: { active: Element; locale: Locale }) {
   const order: Element[] = ["木", "火", "土", "金", "水"];
   const pts = order.map((_, i) => { const a = (-90 + i * 72) * Math.PI / 180; return [60 + 44 * Math.cos(a), 60 + 44 * Math.sin(a)] as const; });
   const en: Record<Element, string> = { 木: "Wood", 火: "Fire", 土: "Earth", 金: "Metal", 水: "Water" };
+  const short: Record<Element, string> = { 木: "Wd", 火: "Fi", 土: "Ea", 金: "Me", 水: "Wa" };
   return (
     <svg viewBox="0 0 120 120" className="zw-ink-wheel" role="img" aria-label={T(locale, `五行相生，今日以${active}為主`, `Five-element cycle; today leans ${en[active]}`)}>
       <polygon points={[0, 2, 4, 1, 3].map((i) => pts[i].join(",")).join(" ")} className="zw-ink-wheel__star" />
@@ -157,7 +160,7 @@ function ElementWheel({ active, locale }: { active: Element; locale: Locale }) {
       {order.map((el, i) => (
         <g key={el} data-element={el} className={el === active || GENERATES[active] === el ? "is-on" : undefined}>
           <circle cx={pts[i][0]} cy={pts[i][1]} r={11} className="zw-ink-wheel__node" />
-          <text x={pts[i][0]} y={pts[i][1] + 4.5} textAnchor="middle">{isEnglish(locale) ? en[el][0] : el}</text>
+          <text x={pts[i][0]} y={pts[i][1] + 4.5} textAnchor="middle">{isEnglish(locale) ? short[el] : el}</text>
         </g>
       ))}
     </svg>
@@ -198,7 +201,9 @@ export type AlmanacInkBoardProps = {
 };
 
 function seasonAdvice(latitude: number | null, month: number, weather: string, locale: Locale) {
-  const south = latitude != null && latitude < 0;
+  const tz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone ?? ""; } catch { return ""; } })();
+  // Before location is confirmed, infer the hemisphere from the device time zone (Sydney visitors must not get autumn advice in October).
+  const south = latitude != null ? latitude < 0 : /^(Australia\/|Pacific\/(Auckland|Chatham|Fiji|Noumea)|America\/(Sao_Paulo|Argentina|Santiago|Montevideo|Asuncion|La_Paz|Lima)|Africa\/(Johannesburg|Maputo|Harare|Windhoek))/.test(tz);
   const north = month <= 2 || month === 12 ? "winter" : month <= 5 ? "spring" : month <= 8 ? "summer" : "autumn";
   const southern = month <= 2 || month === 12 ? "summer" : month <= 5 ? "autumn" : month <= 8 ? "winter" : "spring";
   const season = south ? southern : north;
@@ -250,7 +255,7 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
   const hourLabel = isEnglish(locale) ? "" : T(locale, "時", "");
 
   return (
-    <div className="zw-ink-board" data-almanac-ink-board data-day-element={element}>
+    <div className="zw-ink-board" data-almanac-ink-board data-day-element={element} data-lang={locale}>
       <header className="zw-ink-hero">
         <div className="zw-ink-datecard">
           <span>{now.getFullYear()}</span>
@@ -294,7 +299,7 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
           <small>{T(locale, "核心氣機", "Core dynamic")}</small>
           <strong>{isEnglish(locale) ? data.coreEn : T(locale, data.core, "")}</strong>
           {personalPlain ? (
-            <p className="zw-ink-personal" data-almanac-personal>{isEnglish(locale) ? `For you, today's ${dayStem} is your “${personal}”: ${personalPlain.en}` : T(locale, `對你而言，今日${dayStem}是「${personal}」：${personalPlain.zh}`, "")}</p>
+            <p className="zw-ink-personal" data-almanac-personal>{isEnglish(locale) ? `For you, today's ${dayStem} is your “${TEN_GOD_EN[personal] ?? personal}” day: ${personalPlain.en}` : T(locale, `對你而言，今日${dayStem}是「${personal}」：${personalPlain.zh}`, "")}</p>
           ) : null}
         </div>
       </section>
