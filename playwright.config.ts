@@ -60,6 +60,11 @@ export default defineConfig({
       testMatch: /today-visual-regression\.spec\.ts/,
       use: { ...devices["Desktop Chrome"], browserName: "chromium", viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, storageState: TRADITIONAL_CHINESE_STORAGE },
     },
+    {
+      name: "capture",
+      testMatch: /capture\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"], browserName: "chromium", viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, storageState: TRADITIONAL_CHINESE_STORAGE },
+    },
   ],
   expect: { toHaveScreenshot: { animations: "disabled", caret: "hide", scale: "css" } },
   snapshotPathTemplate: "{testDir}/__screenshots__/{testFileName}/{arg}{ext}",
