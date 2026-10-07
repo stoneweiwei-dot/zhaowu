@@ -369,7 +369,7 @@ export function finalizeReading(
   locale: AppLocale = "zh-Hant",
 ): Reading {
   const contracted = applyAnswerContract(question, chart, raw);
-  const reading = applyCustomerAnswerHotfix(question, chart, contracted);
+  const reading = applyCustomerAnswerHotfix(question, chart, contracted, locale);
   if (isCosmicSymbolicQuestion(question)) return applyCosmicSymbolicReading(question, chart, reading, locale);
   if (locale === "en") return buildEnglishReading(question, chart, reading);
 
