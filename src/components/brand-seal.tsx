@@ -1,5 +1,3 @@
-import "@/brand-ui-r97.css";
-
 type BrandSealProps = {
   size?: "sm" | "lg";
   className?: string;
