@@ -8368,3 +8368,42 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-layout {
   .zhaowu-site-utility-panel { scroll-behavior: auto; }
 }
 
+
+/* The six report scenes are finished illustrations; keep the customer's reading in HTML below. */
+.zhaowu-comic-lite__frame {
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(63,107,93,.18);
+  border-radius: 12px;
+  padding: 0;
+  background: #fbf7ee;
+}
+.zhaowu-comic-lite__art {
+  display: block;
+  min-height: 0;
+  background: #f2ede2;
+}
+.zhaowu-comic-lite__art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 940 / 279;
+  object-fit: cover;
+}
+.zhaowu-comic-lite__scene-no {
+  z-index: 1;
+  top: 8px;
+  left: 9px;
+  border-radius: 3px;
+  padding: 3px 6px;
+  background: rgba(255,250,241,.88);
+  color: #31544f;
+}
+.zhaowu-comic-lite__copy { padding: 14px 16px 18px; }
+.zhaowu-comic-lite__caption {
+  margin: 0 !important;
+  color: #302e35 !important;
+  font-size: 15px !important;
+  line-height: 1.75 !important;
+  overflow-wrap: anywhere;
+}

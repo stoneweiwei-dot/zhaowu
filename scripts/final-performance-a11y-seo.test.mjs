@@ -5,12 +5,13 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("final polish mounts only the active and next hero paintings", async () => {
+test("homepage starts with the owner-selected wallpaper and the birth entry", async () => {
   const home = await source("src/routes/index.tsx");
-  assert.match(home, /visibleHeroIndexes = \[heroIdx, \(heroIdx \+ 1\) % HERO_PAINTINGS\.length\]/);
-  assert.match(home, /visibleHeroIndexes\.map/);
-  assert.doesNotMatch(home, /HERO_PAINTINGS\.map\(\(p, i\) => \(/);
-  assert.match(home, /fetchPriority=\{isActive \? "high" : "low"\}/);
+  const shell = await source("src/components/site-shell.tsx");
+  assert.doesNotMatch(home, /HERO_PAINTINGS|zw-hero-gallery|visibleHeroIndexes/);
+  assert.match(home, /zw-hero-inscription/);
+  assert.match(home, /data-home-birth-entry/);
+  assert.match(shell, /--zhaowu-shell-wallpaper/);
 });
 
 test("secondary homepage modules are deferred until their panels open", async () => {

@@ -370,7 +370,7 @@ function AccountPage() {
           </button>
           <Link to="/gallery" className="min-h-14 rounded-xl border border-line bg-cream/80 px-4 py-3 text-left text-sm font-medium text-ink">
             <span className="block text-[10px] tracking-[0.16em] text-ink-mute">MEDIA</span>
-            <span className="mt-1 block">{tr(locale, "圖片與開場影片", "图片与开场视频", "Images & opening video")}</span>
+            <span className="mt-1 block">{tr(locale, "首頁背景／圖片／開場", "首页背景／图片／开场", "Background / images / opening")}</span>
           </Link>
           <Link to="/social" className="min-h-14 rounded-xl border border-line bg-cream/80 px-4 py-3 text-left text-sm font-medium text-ink">
             <span className="block text-[10px] tracking-[0.16em] text-cinnabar">PUBLISH</span>

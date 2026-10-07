@@ -18,22 +18,6 @@ import "@/home-birth-hub-r60.css";
 
 export const Route = createFileRoute("/")({ component: Home });
 
-/* ── Hero painting set ─────────────────────────────────────── */
-const HERO_PAINTINGS = [
-  { src: "/hero-gallery/dragon-scholar.webp", hant: "天龍觀者", hans: "天龙观者", en: "Dragon Scholar" },
-  { src: "/hero-gallery/lotus-lady.webp", hant: "蓮池仙境", hans: "莲池仙境", en: "Lotus Realm" },
-  { src: "/hero-gallery/koi-dragon-rider.webp", hant: "御龍飛天", hans: "御龙飞天", en: "Dragon Rider" },
-  { src: "/hero-gallery/cloud-dragon.webp", hant: "雲龍出岫", hans: "云龙出岫", en: "Cloud Dragon" },
-  { src: "/hero-gallery/river-rain-boat.webp", hant: "煙雨孤舟", hans: "烟雨孤舟", en: "Boat in Rain" },
-  { src: "/hero-gallery/karst-mist-lake.webp", hant: "山水雲霧", hans: "山水云雾", en: "Misty Mountains" },
-  { src: "/hero-gallery/temple-bamboo-rain.webp", hant: "竹雨古寺", hans: "竹雨古寺", en: "Bamboo Rain Temple" },
-  { src: "/hero-gallery/misty-mountains-lake.webp", hant: "煙嵐疊翠", hans: "烟岚叠翠", en: "Layered Jade Mist" },
-];
-
-function heroPaintingTitle(painting: (typeof HERO_PAINTINGS)[number], locale: string) {
-  return locale === "en" ? painting.en : locale === "zh-Hans" ? painting.hans : painting.hant;
-}
-
 type Section = "form" | "today" | "quiz" | "notes";
 
 /* ── Trilingual copy ───────────────────────────────────────── */
@@ -192,27 +176,9 @@ function Home() {
   const current = useAppStore((s) => s.current);
   const setCurrent = useAppStore((s) => s.setCurrent);
 
-  const [heroIdx, setHeroIdx] = useState(0);
-  const [heroPaused, setHeroPaused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [activeSection, setActiveSection] = useState<Section | null>(null);
   const [scentOpen, setScentOpen] = useState(false);
   const [todayExpanded, setTodayExpanded] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReducedMotion(media.matches);
-    sync();
-    media.addEventListener?.("change", sync);
-    return () => media.removeEventListener?.("change", sync);
-  }, []);
-
-  /* Auto-cycle only while motion is welcome and the visitor has not paused or chosen a painting. */
-  useEffect(() => {
-    if (reducedMotion || heroPaused) return;
-    const t = window.setInterval(() => setHeroIdx((i) => (i + 1) % HERO_PAINTINGS.length), 4500);
-    return () => window.clearInterval(t);
-  }, [heroPaused, reducedMotion]);
 
   /* auto-open form if there's a cached analysis result */
   useEffect(() => {
@@ -239,73 +205,15 @@ function Home() {
     });
   };
 
-  const selectHero = (index: number) => {
-    setHeroIdx((index + HERO_PAINTINGS.length) % HERO_PAINTINGS.length);
-    setHeroPaused(true);
-  };
-
-  const stepHero = (delta: number) => selectHero(heroIdx + delta);
-
   const navLabels: Record<Section, string> = {
     form:  copy.navBook,
     today: copy.navToday,
     quiz:  copy.navQuiz,
     notes: copy.navNotes,
   };
-  const visibleHeroIndexes = [heroIdx, (heroIdx + 1) % HERO_PAINTINGS.length];
 
   return (
     <main className="zw-hero-home">
-
-      {/* ── PAINTING HERO GALLERY ───────────────────────────── */}
-      <div className="zw-hero-gallery" role="region" aria-label={heroUi.gallery} aria-live="off">
-        {visibleHeroIndexes.map((i) => {
-          const p = HERO_PAINTINGS[i];
-          const isActive = i === heroIdx;
-          const title = heroPaintingTitle(p, locale);
-          return (
-            <img
-              key={p.src}
-              src={p.src}
-              alt={isActive ? title : ""}
-              aria-hidden={!isActive}
-              className={`zw-hero-painting${isActive ? " is-active" : ""}`}
-              loading={isActive ? "eager" : "lazy"}
-              fetchPriority={isActive ? "high" : "low"}
-              decoding="async"
-            />
-          );
-        })}
-        <div className="zw-hero-carousel-controls" role="group" aria-label={heroUi.controls}>
-          <button type="button" className="zw-hero-step" aria-label={heroUi.previous} onClick={() => stepHero(-1)}>
-            <span aria-hidden>‹</span>
-          </button>
-          <div className="zw-hero-dots">
-            {HERO_PAINTINGS.map((painting, i) => (
-              <button
-                key={painting.src}
-                type="button"
-                aria-current={i === heroIdx ? "true" : undefined}
-                aria-label={heroUi.painting(i + 1, HERO_PAINTINGS.length, heroPaintingTitle(painting, locale))}
-                className={`zw-hero-dot${i === heroIdx ? " is-active" : ""}`}
-                onClick={() => selectHero(i)}
-              />
-            ))}
-          </div>
-          <button
-            type="button"
-            className="zw-hero-toggle"
-            disabled={reducedMotion}
-            aria-label={reducedMotion ? heroUi.reduced : heroPaused ? heroUi.play : heroUi.pause}
-            onClick={() => setHeroPaused((value) => !value)}
-          >
-            <span aria-hidden>{heroPaused || reducedMotion ? "▶" : "Ⅱ"}</span>
-          </button>
-          <button type="button" className="zw-hero-step" aria-label={heroUi.next} onClick={() => stepHero(1)}>
-            <span aria-hidden>›</span>
-          </button>
-        </div>
-      </div>
 
       {/* ── BRAND INSCRIPTION ───────────────────────────────── */}
       <div className="zw-hero-inscription">

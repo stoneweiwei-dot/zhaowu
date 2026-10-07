@@ -8,7 +8,7 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 test("r197 owner media shows one focused manager at a time", async () => {
   const route = await source("src/routes/gallery.tsx");
   assert.match(route, /type MediaView = "login" \| "content"/);
-  assert.match(route, /useState<MediaView>\("login"\)/);
+  assert.match(route, /useState<MediaView>\("content"\)/);
   assert.match(route, /role="tablist"/);
   assert.match(route, /開場影片/);
   assert.match(route, /內容圖片/);
