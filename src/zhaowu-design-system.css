@@ -8407,3 +8407,442 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-layout {
   line-height: 1.75 !important;
   overflow-wrap: anywhere;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2026-10-08 · Owner launch polish
+   (1) illustrated home cards from the owner's scene set
+   (2) plain-language chart first screen
+   (3) report reading comfort: larger, heavier, airier type
+   (4) 今日黃曆 ink board (owner reference: dark ink-teal almanac sheet)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* (1) Home cards ─────────────────────────────────────────────────────────── */
+html body .zw-hero-nav-wrap { padding: 8px 16px 0 !important; }
+html body .zw-hero-nav {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html body .zw-hero-nav-item.zw-hero-card {
+  position: relative;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  min-height: 150px;
+  padding: 16px 14px 14px !important;
+  border: 1px solid rgba(160, 136, 88, .28) !important;
+  border-radius: 16px !important;
+  background: #fbf6ec !important;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(60, 48, 30, .07);
+}
+html body .zw-hero-nav-item.zw-hero-card.is-active { border-color: rgba(192, 57, 43, .45) !important; }
+html body .zw-hero-nav-item.zw-hero-card.is-active::after { display: none; }
+html body .zw-hero-card-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% 60%;
+  opacity: .92;
+  pointer-events: none;
+}
+html body .zw-hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(105deg, rgba(251, 246, 236, .96) 0%, rgba(251, 246, 236, .82) 42%, rgba(251, 246, 236, 0) 78%);
+  pointer-events: none;
+}
+html body .zw-hero-card-copy { position: relative; z-index: 2; display: grid; gap: 8px; max-width: 78%; }
+html body .zw-hero-card .zw-hero-nav-label {
+  color: #1f2a26 !important;
+  font-family: var(--font-display) !important;
+  font-size: 1.32rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .12em !important;
+  line-height: 1.1 !important;
+}
+html body .zw-hero-card-copy small {
+  color: #4b524d;
+  font-family: var(--font-display);
+  font-size: .8rem;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: .04em;
+}
+html body .zw-hero-card-arrow {
+  position: absolute;
+  z-index: 2;
+  left: 14px;
+  bottom: 12px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(160, 120, 80, .35);
+  border-radius: 50%;
+  background: rgba(244, 226, 214, .85);
+  color: #6b4a3a;
+  font-size: 15px;
+}
+@media (min-width: 720px) {
+  html body .zw-hero-nav { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+}
+
+/* (2) Plain-language chart ───────────────────────────────────────────────── */
+html body .zhaowu-bazi-plain {
+  overflow: hidden;
+  margin: 0 0 14px;
+  border: 1px solid rgba(160, 136, 88, .26);
+  border-radius: 16px;
+  background: #fffaf1;
+}
+html body .zhaowu-bazi-plain__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  object-position: 50% 62%;
+}
+html body .zhaowu-bazi-plain h3 {
+  margin: 18px 20px 6px;
+  color: #1f2a26;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+html body .zhaowu-bazi-plain__lead {
+  margin: 0 20px 6px;
+  color: #6a6a62;
+  font-size: 14px;
+  line-height: 1.7;
+}
+html body .zhaowu-bazi-plain ol { list-style: none; margin: 0; padding: 6px 20px 18px; }
+html body .zhaowu-bazi-plain li { padding: 16px 0; border-top: 1px solid rgba(160, 136, 88, .2); }
+html body .zhaowu-bazi-plain li:first-child { border-top: 0; }
+html body .zhaowu-bazi-plain li strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #2f5a48;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+html body .zhaowu-bazi-plain li p {
+  margin: 0;
+  color: #2b2b28 !important;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.9;
+}
+html body .zhaowu-bazi-fold {
+  margin: 10px 0 0;
+  border: 1px solid rgba(160, 136, 88, .24);
+  border-radius: 12px;
+  background: rgba(255, 250, 241, .9);
+}
+html body .zhaowu-bazi-fold > summary {
+  min-height: 48px;
+  padding: 13px 16px;
+  color: #2f5a48;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+html body .zhaowu-bazi-fold[open] > summary { border-bottom: 1px solid rgba(160, 136, 88, .2); }
+html body .zhaowu-bazi-fold > :not(summary) { margin: 12px; }
+html body .zhaowu-question-stage {
+  background-image: linear-gradient(90deg, rgba(255, 250, 241, .97) 55%, rgba(255, 250, 241, .78)), url("/art/zhaowu-koi-paper-v1.webp") !important;
+  background-size: cover, 60% auto !important;
+  background-position: 0 0, right bottom !important;
+  background-repeat: no-repeat !important;
+}
+
+/* (3) Report reading comfort ─────────────────────────────────────────────── */
+html body .zhaowu-report-art {
+  display: block;
+  width: calc(100% + 2px);
+  max-height: 240px;
+  margin: -1px -1px 14px;
+  object-fit: cover;
+  object-position: 50% 42%;
+  border-radius: 14px 14px 0 0;
+}
+html body .zhaowu-focused-report .zhaowu-report-title {
+  font-size: clamp(1.5rem, 5.6vw, 1.9rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: .08em !important;
+}
+html body .zhaowu-focused-report h4 {
+  font-size: 1.18rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .06em !important;
+  line-height: 1.5 !important;
+}
+html body .zhaowu-focused-report .zhaowu-report-copy,
+html body .zhaowu-focused-report .zhaowu-report-copy p,
+html body .zhaowu-home-sheet-shell .zhaowu-focused-report .zhaowu-report-copy p,
+html body .zhaowu-result-card [data-primary-answer] p,
+html body .zhaowu-answer-step p {
+  font-family: var(--font-display) !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  line-height: 2 !important;
+  letter-spacing: .02em !important;
+  color: #262624 !important;
+}
+html body .zhaowu-focused-report .zhaowu-report-copy p + p { margin-top: 24px !important; }
+html body .zhaowu-focused-report .zhaowu-report-summary-block,
+html body .zhaowu-focused-report .zhaowu-report-body-block { padding-block: 10px; }
+html body .zhaowu-result-card h2 { font-size: 1.55rem !important; font-weight: 700 !important; line-height: 1.5 !important; }
+html body .zhaowu-answer-step strong[data-decision-verdict] { font-size: 1.3rem !important; font-weight: 700 !important; line-height: 1.7 !important; }
+html body .zhaowu-focused-report .zhaowu-report-copy--notes p { font-size: 16px !important; font-weight: 400 !important; line-height: 1.85 !important; }
+
+/* (4) 今日黃曆 · ink board ────────────────────────────────────────────────── */
+html body .zw-ink-board {
+  --ink-bg: #10262a;
+  --ink-panel: rgba(18, 44, 48, .92);
+  --ink-line: rgba(201, 168, 106, .38);
+  --ink-gold: #d8b977;
+  --ink-text: #efe6d2;
+  --ink-mute: #b8b09c;
+  --ink-paper: #ece2cc;
+  --ink-paper-ink: #2a2620;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 18px;
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(80, 120, 120, .35), transparent 60%),
+    linear-gradient(180deg, #17333a 0%, var(--ink-bg) 55%, #0c1d20 100%);
+  color: var(--ink-text);
+  font-family: var(--font-display);
+}
+html body .zw-ink-board small { display: block; color: var(--ink-gold); font-size: 13px; font-weight: 700; letter-spacing: .14em; }
+html body .zw-ink-hero { display: grid; grid-template-columns: 86px 1fr 74px; gap: 10px; align-items: stretch; }
+html body .zw-ink-datecard {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 2px;
+  padding: 10px 6px;
+  border: 1px solid var(--ink-line);
+  border-radius: 8px;
+  background: var(--ink-paper);
+  color: var(--ink-paper-ink);
+  text-align: center;
+}
+html body .zw-ink-datecard > span { font-size: 13px; font-weight: 600; }
+html body .zw-ink-datecard strong { font-size: 22px; line-height: 1.1; font-weight: 700; }
+html body .zw-ink-datecard em { margin-top: 3px; padding: 1px 6px; border-radius: 3px; background: #9d2f24; color: #fff4e6; font-size: 11px; font-style: normal; letter-spacing: .1em; }
+html body .zw-ink-datecard small { color: var(--ink-paper-ink); font-size: 11px; letter-spacing: 0; font-weight: 600; }
+html body .zw-ink-title { display: grid; align-content: center; justify-items: center; text-align: center; gap: 4px; }
+html body .zw-ink-title h3 {
+  margin: 0;
+  color: var(--ink-gold);
+  font-size: clamp(1.9rem, 8.5vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, .35);
+}
+html body .zw-ink-title p { margin: 0; color: var(--ink-text); font-size: 12.5px; letter-spacing: .12em; }
+html body .zw-ink-title small { color: var(--ink-mute); font-weight: 500; font-size: 12px; }
+html body .zw-ink-city {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  border: 1px solid var(--ink-line);
+  border-radius: 6px;
+  background: rgba(10, 30, 34, .85);
+  text-align: center;
+}
+html body .zw-ink-city strong { color: var(--ink-gold); font-size: 15px; font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+html body .zw-ink-city span { color: var(--ink-text); font-size: 11px; line-height: 1.4; }
+html body .zw-ink-panel {
+  padding: 12px 14px;
+  border: 1px solid var(--ink-line);
+  border-radius: 8px;
+  background: var(--ink-panel);
+}
+html body .zw-ink-weather { display: grid; grid-template-columns: 1fr 1.2fr; gap: 12px; }
+html body .zw-ink-weather > div + div { border-left: 1px solid var(--ink-line); padding-left: 12px; }
+html body .zw-ink-weather strong { display: block; margin-top: 4px; font-size: 22px; font-weight: 700; }
+html body .zw-ink-weather span { display: block; margin-top: 4px; color: var(--ink-text); font-size: 14px; line-height: 1.6; }
+html body .zw-ink-weather .zhaowu-today-location-inline {
+  margin-top: 6px;
+  min-height: 36px;
+  border: 0;
+  border-bottom: 1px solid var(--ink-gold);
+  background: transparent;
+  color: var(--ink-gold);
+  font-size: 13px;
+  font-weight: 600;
+}
+html body .zw-ink-weather .zhaowu-today-location-error { display: block; margin-top: 4px; color: #e7a593; font-size: 12px; font-style: normal; }
+html body .zw-ink-row { display: grid; grid-template-columns: 1.55fr 1fr; gap: 10px; }
+html body .zw-ink-row.is-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+html body .zw-ink-pillars .zhaowu-today-card.is-pillars { padding: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; }
+html body .zw-ink-pillars .zhaowu-daily-pillars {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  margin-top: 8px;
+}
+html body .zw-ink-pillars .zhaowu-daily-pillars > span {
+  display: grid !important;
+  justify-items: center;
+  gap: 6px;
+  padding: 2px 0 !important;
+  border: 0 !important;
+  border-left: 1px solid var(--ink-line) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  min-height: 0 !important;
+}
+html body .zw-ink-pillars .zhaowu-daily-pillars > span:first-child { border-left: 0 !important; }
+html body .zw-ink-pillars .zhaowu-daily-pillars i { color: var(--ink-mute) !important; font-size: 12px !important; font-style: normal; }
+html body .zw-ink-pillars .zhaowu-daily-pillars b {
+  color: var(--ink-text) !important;
+  font-size: clamp(1.25rem, 5.6vw, 1.7rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: .04em;
+  writing-mode: horizontal-tb;
+}
+html body .zw-ink-pillars .zhaowu-daily-pillars > span[data-pillar="day"] b { color: var(--ink-gold) !important; }
+html body .zw-ink-daymaster { margin: 10px 0 0; color: var(--ink-text); font-size: 13px; text-align: center; }
+html body .zw-ink-sacred { display: grid; justify-items: center; align-content: start; gap: 8px; text-align: center; }
+html body .zw-ink-sacred .zw-ink-icon { width: 34px; height: 34px; color: var(--ink-gold); }
+html body .zw-ink-sacred strong { font-size: 14px; line-height: 1.6; font-weight: 600; }
+html body .zw-ink-core { display: grid; grid-template-columns: 112px 1fr; gap: 12px; align-items: center; }
+html body .zw-ink-core strong { display: block; margin-top: 6px; font-size: 16px; font-weight: 600; line-height: 1.8; }
+html body .zw-ink-personal { margin: 8px 0 0; padding-top: 8px; border-top: 1px dashed var(--ink-line); color: var(--ink-text); font-size: 14px; line-height: 1.75; }
+html body .zw-ink-wheel { width: 112px; height: 112px; }
+html body .zw-ink-wheel__star { fill: none; stroke: rgba(216, 185, 119, .35); stroke-width: .8; }
+html body .zw-ink-wheel__arc { fill: none; stroke: rgba(216, 185, 119, .7); stroke-width: 1; }
+html body .zw-ink-wheel__node { fill: #0f2427; stroke: rgba(239, 230, 210, .75); stroke-width: 1.1; }
+html body .zw-ink-wheel text { fill: #efe6d2; font-size: 11px; font-weight: 700; }
+html body .zw-ink-wheel g[data-element="木"].is-on .zw-ink-wheel__node { fill: #2f6b45; }
+html body .zw-ink-wheel g[data-element="火"].is-on .zw-ink-wheel__node { fill: #a4372a; }
+html body .zw-ink-wheel g[data-element="土"].is-on .zw-ink-wheel__node { fill: #8c6a2e; }
+html body .zw-ink-wheel g[data-element="金"].is-on .zw-ink-wheel__node { fill: #8f8a7c; }
+html body .zw-ink-wheel g[data-element="水"].is-on .zw-ink-wheel__node { fill: #24557a; }
+html body .zw-ink-paper {
+  padding: 12px;
+  border: 1px solid rgba(120, 100, 70, .45);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #efe6d1, #e5d9bf);
+  color: var(--ink-paper-ink);
+}
+html body .zw-ink-paper h4 {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 10px;
+  color: var(--ink-paper-ink);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+html body .zw-ink-paper.is-yi h4 span,
+html body .zw-ink-paper.is-ji h4 span {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #fff6e8;
+  letter-spacing: 0;
+}
+html body .zw-ink-paper.is-yi h4 span { background: #2f5a45; }
+html body .zw-ink-paper.is-ji h4 span { background: #9d2f24; }
+html body .zw-ink-row:has(.is-yi) { grid-template-columns: 1fr 1fr; }
+html body .zw-ink-paper ul { list-style: none; margin: 0; padding: 0; }
+html body .zw-ink-paper.is-yi ul,
+html body .zw-ink-paper.is-ji ul { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+html body .zw-ink-paper.is-yi li,
+html body .zw-ink-paper.is-ji li { display: grid; justify-items: center; gap: 4px; text-align: center; font-size: 11px; line-height: 1.3; font-weight: 600; }
+html body .zw-ink-icon { width: 24px; height: 24px; }
+html body .zw-ink-relations ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+html body .zw-ink-relations li {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 8px 4px;
+  border: 1px solid rgba(120, 100, 70, .35);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+html body .zw-ink-relations li b {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #fff6e8;
+  font-size: 12px;
+}
+html body .zw-ink-relations li[data-kind="合"] b { background: #2f5a45; }
+html body .zw-ink-relations li[data-kind="沖"] b { background: #9d2f24; }
+html body .zw-ink-relations li[data-kind="刑"] b { background: #9a6a1f; }
+html body .zw-ink-relations li[data-kind="害"] b { background: #6b3f5a; }
+html body .zw-ink-relations li i { color: #7a6a52; font-size: 11px; font-style: normal; font-weight: 500; }
+html body .zw-ink-relations p { margin: 0; font-size: 14px; text-align: center; }
+html body .zw-ink-hours > div { display: grid; grid-template-columns: 1fr 74px; gap: 8px; align-items: center; }
+html body .zw-ink-hours ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+html body .zw-ink-hours li { display: flex; justify-content: space-between; gap: 6px; font-size: 13px; font-variant-numeric: tabular-nums; }
+html body .zw-ink-hours li b { font-weight: 700; }
+html body .zw-ink-hours.is-good h4 { color: #2f5a45; }
+html body .zw-ink-hours.is-caution h4 { color: #9d2f24; }
+html body .zw-ink-row:has(.zw-ink-hours) { grid-template-columns: 1fr 1fr; }
+html body .zw-ink-ring { width: 74px; height: 74px; }
+html body .zw-ink-ring path { fill: rgba(42, 38, 32, .08); stroke: rgba(42, 38, 32, .25); stroke-width: .4; }
+html body .zw-ink-ring g.is-good path { fill: #3f7a5c; }
+html body .zw-ink-ring g.is-caution path { fill: #a8433a; }
+html body .zw-ink-ring text { fill: #2a2620; font-size: 6px; font-weight: 700; }
+html body .zw-ink-ring g.is-good text,
+html body .zw-ink-ring g.is-caution text { fill: #fff6e8; }
+html body .zw-ink-ring__hub { fill: #1a3a3f; }
+html body .zw-ink-colors ul,
+html body .zw-ink-jewels ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 4px; }
+html body .zw-ink-colors li,
+html body .zw-ink-jewels li { display: grid; justify-items: center; gap: 4px; font-size: 11.5px; text-align: center; color: var(--ink-text); }
+html body .zw-ink-colors i { width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(239, 230, 210, .5); }
+html body .zw-ink-jewels .zw-ink-icon { width: 28px; height: 28px; color: var(--ink-gold); }
+html body .zw-ink-mask { display: grid; justify-items: center; align-content: start; gap: 8px; text-align: center; }
+html body .zw-ink-maskart { width: 72px; height: 36px; color: var(--ink-gold); }
+html body .zw-ink-mask strong { font-size: 14px; font-weight: 700; line-height: 1.5; }
+html body .zw-ink-closing {
+  margin: 4px 0 2px;
+  color: var(--ink-gold);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-align: center;
+}
+@media (max-width: 400px) {
+  html body .zw-ink-hero { grid-template-columns: 76px 1fr 62px; gap: 6px; }
+  html body .zw-ink-row,
+  html body .zw-ink-row:has(.is-yi),
+  html body .zw-ink-row:has(.zw-ink-hours) { grid-template-columns: 1fr; }
+  html body .zw-ink-row.is-three { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+}
