@@ -15,6 +15,7 @@ import { buildComplexDeterministicAnswer, buildComplexReasoningRequest, requestC
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
 import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
+import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
 
 const RESULT_COPY = {
   "zh-Hant": { syncFailed: "內容已完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "補充內容暫時未能生成。", saved: "完整報告已保存。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "補充", fullGenerating: "整理中…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字內容不受影響。", next: "下一步", evidence: "附註", evidenceLead: "", decree: "命理解讀" },
@@ -57,15 +58,20 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       const req = buildWriterRequest(result);
       if (!req) return;
       const out = await requestWrittenAnswer(req);
-      if (!cancelled && out) setWritten({ key: writerKey, ...out, source: "written" });
+      if (!cancelled && out && directAnswerCoversQuestion(question, out.answer)) {
+        setWritten({ key: writerKey, ...out, source: "written" });
+      }
     };
 
     const complex = buildComplexReasoningRequest(result);
     if (complex) {
       void requestComplexReasoning(complex)
         .then((out) => {
-          if (!cancelled && out) setWritten({ key: writerKey, answer: out.answer, next: out.next, source: "reasoned" });
-          else if (!cancelled) void runWriter();
+          if (!cancelled && out && directAnswerCoversQuestion(question, out.answer)) {
+            setWritten({ key: writerKey, answer: out.answer, next: out.next, source: "reasoned" });
+          } else if (!cancelled) {
+            void runWriter();
+          }
         })
         .catch(() => { if (!cancelled) void runWriter(); });
     } else {

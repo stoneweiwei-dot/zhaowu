@@ -137,7 +137,8 @@ test("result view shows deterministic complex synthesis immediately, then option
   assert.match(resultView, /complexRule\?\.answer/);
   assert.match(resultView, /buildComplexReasoningRequest/);
   assert.match(resultView, /requestComplexReasoning/);
-  assert.match(resultView, /else if \(!cancelled\) void runWriter\(\)/);
+  assert.match(resultView, /directAnswerCoversQuestion\(question, out\.answer\)/);
+  assert.match(client, /directAnswerCoversQuestion\(req\.graph\.primaryQuestion \|\| req\.graph\.sourceText, answer\)/);
   assert.match(resultView, /data-answer-source=\{writtenNow\?\.source \?\? "rule"\}/);
 });
 
@@ -147,4 +148,10 @@ test("deterministic complex composer exists so provider failure cannot remove th
   assert.match(client, /highStakesBoundary/);
   assert.match(client, /domainLine/);
   assert.match(client, /multi-part/);
+});
+
+
+test("complex answer replacement is rejected when it does not answer the primary question", () => {
+  assert.match(client, /directAnswerCoversQuestion/);
+  assert.match(resultView, /never replace|directAnswerCoversQuestion/);
 });

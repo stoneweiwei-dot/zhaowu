@@ -43,16 +43,29 @@ const FOCUS_RULES: Array<[string, RegExp, RegExp]> = [
 ];
 
 const KIND_ANSWER_HINTS: Record<QuestionKind, RegExp> = {
-  choice: /選|选|方案|方向|A|B|option|choose|choice/i,
+  choice: /選|选|方案|方向|比較|比较|偏向|先留|先走|留下|離開|离开|接受|買|买|租|A|B|option|choose|choice|prefer|stay|leave|accept|compare/i,
   timing: /年|月|時|时|運|运|階段|阶段|when|timing|period/i,
-  love: /感情|關係|关系|伴侶|伴侣|婚|戀|恋|love|relationship|partner/i,
-  career: /工作|事業|事业|職場|职场|職業|职业|career|job|work|role/i,
-  money: /財|财|收入|投資|投资|資產|资产|money|finance|income|wealth/i,
-  health: /身體|身体|健康|睡眠|壓力|压力|health|body|sleep|stress/i,
-  home: /家|宅|住|搬|房|風水|风水|home|house|move/i,
+  love: /感情|關係|关系|伴侶|伴侣|婚|戀|恋|分手|復合|复合|前任|曖昧|暧昧|約會|约会|love|relationship|partner|marriage|breakup|reconcile|dating/i,
+  career: /工作|事業|事业|職場|职场|職業|职业|離職|离职|跳槽|升職|升职|升遷|升迁|薪水|薪資|薪资|offer|老闆|老板|主管|管理|技術|技术|創業|创业|開店|开店|客戶|客户|career|job|work|role|business|manage|technical|startup/i,
+  money: /財|财|收入|投資|投资|資產|资产|負債|负债|債|债|貸款|贷款|現金流|现金流|money|finance|income|wealth|debt|loan|cash flow/i,
+  health: /身體|身体|健康|睡眠|壓力|压力|疲勞|疲劳|症狀|症状|醫療|医疗|手術|手术|治療|治疗|health|body|sleep|stress|symptom|medical|surgery|treatment/i,
+  home: /家|宅|住|搬|房|風水|风水|租|城市|移居|通勤|home|house|move|rent|city|relocat|commute/i,
   past: /前世|六道|一掌|象徵|象征|past|symbol/i,
   self: /格局|日主|命局|結構|结构|旺|弱|用神|病藥|病药|自己|structure|bazi|self/i,
 };
+
+const CONTENT_DOMAIN_RULES: Array<[RegExp, RegExp]> = [
+  [/(感情|戀愛|恋爱|婚姻|伴侶|伴侣|男友|女友|對象|对象|復合|复合|前任|曖昧|暧昧|love|relationship|marriage|partner|dating)/i, KIND_ANSWER_HINTS.love],
+  [/(工作|事業|事业|職業|职业|轉職|转职|跳槽|升職|升职|老闆|老板|主管|同事|公司|職場|职场|管理|技術|技术|創業|创业|開店|开店|合夥|合伙|客戶|客户|考試|考试|學習|学习|offer|薪水|薪資|薪资|career|job|work|role|business|manage|technical|startup|client)/i, KIND_ANSWER_HINTS.career],
+  [/(財運|财运|財務|财务|收入|賺錢|赚钱|投資|投资|資產|资产|負債|负债|貸款|贷款|金錢|金钱|money|finance|income|investment|wealth|debt|loan)/i, KIND_ANSWER_HINTS.money],
+  [/(健康|身體|身体|睡眠|壓力|压力|疲勞|疲劳|生病|疾病|手術|手术|治療|治疗|health|body|sleep|stress|medical|surgery)/i, KIND_ANSWER_HINTS.health],
+  [/(家宅|住宅|住哪|搬家|搬遷|搬迁|買房|买房|租房|房間|房间|房產|房产|移居|城市|風水|风水|home|house|move|property|relocat)/i, KIND_ANSWER_HINTS.home],
+  [/(前世|今生|六道|一掌經|一掌经|past life|past-life)/i, KIND_ANSWER_HINTS.past],
+  [/(父母|爸爸|父親|父亲|媽媽|妈妈|母親|母亲|孩子|子女|兒子|儿子|女兒|女儿|兄弟|姐妹|家人|親戚|亲戚|parent|father|mother|child|family|sibling)/i, /(父母|爸爸|父親|父亲|媽媽|妈妈|母親|母亲|孩子|子女|家人|家庭|照護|照护|邊界|边界|本人|parent|father|mother|child|family|boundary)/i],
+  [/(官司|訴訟|诉讼|法院|律師|律师|仲裁|法律|合約糾紛|合同纠纷|lawsuit|court|legal|lawyer)/i, /(官司|訴訟|诉讼|法院|律師|律师|法律|證據|证据|期限|程序|合約|合同|lawsuit|court|legal|evidence|deadline)/i],
+  [/(旅行|旅遊|旅游|出國|出国|度假|行程|目的地|哪個城市|哪个城市|哪個國家|哪个国家|travel|trip|vacation|destination)/i, /(旅行|旅遊|旅游|出國|出国|行程|目的地|城市|國家|国家|簽證|签证|預算|预算|交通|travel|trip|destination|city|country|visa|budget)/i],
+  [/(寵物|宠物|養貓|养猫|養狗|养狗|貓|猫|狗|pet|cat|dog)/i, /(寵物|宠物|貓|猫|狗|照護|照护|獸醫|兽医|陪伴|pet|cat|dog|vet|care)/i],
+];
 
 const ABSOLUTE_CLAIMS = [
   /百分之百/g,
@@ -94,10 +107,32 @@ export function detectQuestionFocus(question: string): string {
 }
 
 export function directAnswerCoversQuestion(question: string, directAnswer: string): boolean {
+  const q = question.trim();
+  const answer = directAnswer.trim();
+  if (!q || answer.length < 8) return false;
+
   for (const [, questionPattern, answerPattern] of FOCUS_RULES) {
-    if (questionPattern.test(question)) return answerPattern.test(directAnswer);
+    if (questionPattern.test(q) && !answerPattern.test(answer)) return false;
   }
-  return directAnswer.trim().length >= 8;
+
+  for (const [questionPattern, answerPattern] of CONTENT_DOMAIN_RULES) {
+    if (questionPattern.test(q) && !answerPattern.test(answer)) return false;
+  }
+
+  const detected = detectQaIntent(q, "self");
+  const domainPattern = KIND_ANSWER_HINTS[detected];
+  if (detected !== "self" && !domainPattern.test(answer)) return false;
+
+  const asksDecision = /(要不要|該不該|该不该|值不值得|能不能|是否|應不應該|应不应该|should\s+i|worth\s+)/i.test(q);
+  if (asksDecision && !/(偏向|建議|建议|可以|不建議|不建议|不宜|先|不要|暫不|暂不|值得|不值得|應該|应该|不應該|不应该|stay|leave|choose|prefer|should|shouldn't|not enough|cannot)/i.test(answer)) return false;
+
+  const asksReason = /(為什麼|为什么|原因|怎麼會|怎么会|why\b)/i.test(q);
+  if (asksReason && !/(因為|因为|關鍵|关键|原因|所以|主要|來自|来自|取決於|取决于|because|reason|mainly|depends)/i.test(answer)) return false;
+
+  const asksTiming = /(什麼時候|什么时候|何時|何时|哪年|哪月|多久|when\b|timing\b)/i.test(q);
+  if (asksTiming && !/(年|月|時|时|階段|阶段|窗口|上半年|下半年|quarter|year|month|window|timing|period)/i.test(answer)) return false;
+
+  return true;
 }
 
 function sentenceParts(text: string): string[] {

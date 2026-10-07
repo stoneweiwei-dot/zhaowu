@@ -11,6 +11,7 @@ import { composeCustomerAnswer, leakFallback, LEAK_RE, writerFacts, type Compose
 import { customerDirectAnswer } from "@/lib/report/customer-copy";
 import { toTraditionalCustomerText } from "@/lib/report/reading-locale";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
 
 /** Routes whose fixed wording is a safety decision, not a quality gap. */
 const KEEP_FIXED = /^(safe:|intent:(love\.suspect|money\.lottery|legal|family\.parentHealth|other\.ghost|other\.pastlife|other\.guardian)$)/;
@@ -43,13 +44,14 @@ export function buildWriterRequest(result: AnalysisResult): WriterRequest | null
   return { question, facts, months, draft: { answer: rule.answer, next: rule.nextAction } };
 }
 
-export function acceptWriterOutput(answer: unknown, next: unknown, months: number[]): { answer: string; next: string } | null {
+export function acceptWriterOutput(question: string, answer: unknown, next: unknown, months: number[]): { answer: string; next: string } | null {
   const a = toTraditionalCustomerText(String(answer ?? "").trim());
   const n = toTraditionalCustomerText(String(next ?? "").trim());
   const count = (a.match(/[。！？]/g) ?? []).length;
   if (count < 1 || count > 3 || a.length > 220 || !n || n.length > 100) return null;
   const all = `${a}${n}`;
   if (JARGON.test(all) || SIMPLIFIED.test(all) || FORBIDDEN.test(all)) return null;
+  if (!directAnswerCoversQuestion(question, a)) return null;
   for (const m of all.matchAll(/(\d{1,2})月/g)) if (!months.includes(Number(m[1]))) return null;
   return { answer: a, next: n };
 }
@@ -68,7 +70,7 @@ export async function requestWrittenAnswer(req: WriterRequest, timeoutMs = 15000
     if (!res.ok) return null;
     const out = await res.json();
     if (out?.source !== "llm") return null;
-    return acceptWriterOutput(out.answer, out.next, req.months);
+    return acceptWriterOutput(req.question, out.answer, out.next, req.months);
   } catch {
     return null;
   } finally {
