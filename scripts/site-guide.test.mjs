@@ -43,7 +43,7 @@ test("the guide can only recommend real public site routes", () => {
   ]);
 });
 
-test("the shell mounts a non-blocking local-only green dragon guide", async () => {
+test("the shell mounts the non-blocking local-only site guide inside the utility dock", async () => {
   const shell = await readFile(
     new URL("../src/components/site-shell.tsx", import.meta.url),
     "utf8",
@@ -64,7 +64,9 @@ test("the shell mounts a non-blocking local-only green dragon guide", async () =
     new URL("../supabase/functions/site-guide/index.ts", import.meta.url),
     "utf8",
   );
-  assert.match(shell, /<GreenDragonGuide \/>/);
+  // #656: the dragon component stays in source as history; the public shell now mounts the guide via SiteUtilityDock.
+  assert.doesNotMatch(shell, /<GreenDragonGuide \/>/);
+  assert.match(shell, /<SiteUtilityDock \/>/);
   assert.match(guide, /data-site-guide/);
   assert.doesNotMatch(guide, /DAILY_AI_LIMIT|needsAI|spendCall|AI questions|每天可問 AI|每天可问 AI/);
   assert.match(styles, /volume-01\.webp|volume-03\.webp/);
@@ -76,7 +78,6 @@ test("the shell mounts a non-blocking local-only green dragon guide", async () =
   assert.match(guide, /完整綜合報告/);
   assert.match(guide, /我的紀錄/);
   assert.doesNotMatch(edge, /性格兩面|性格两面|Two sides|tianji-dual/);
-  assert.match(shell, /<GreenDragonGuide \/>[\s\S]*zhaowu-app-frame/);
   assert.match(guide, /data-dragon-assistant/);
   assert.match(guide, /onPointerDown=\{beginDrag\}/);
   assert.match(guide, /POSITION_STORAGE_KEY/);

@@ -73,10 +73,11 @@ test("owner Gallery separates protected Song assets from uploads and legacy mate
 });
 
 
-test("owner workspace hides public counters, dragon guide and technical status walls", () => {
+test("owner workspace hides public counters, the utility dock and technical status walls", () => {
   assert.match(shellSource, /const isOwnerWorkspace = Boolean/);
   assert.match(shellSource, /!isOwnerWorkspace \? \(/);
-  assert.match(shellSource, /!isLogin && !isOwnerWorkspace \? <GreenDragonGuide/);
+  assert.match(shellSource, /!isOwnerWorkspace \? <SiteUtilityDock \/>/);
+  assert.doesNotMatch(shellSource, /<GreenDragonGuide \/>/);
   assert.doesNotMatch(account, /402 spend cap|Supabase Auth/);
   assert.doesNotMatch(galleryRoute, /BrandUiLibrary/);
   assert.doesNotMatch(galleryRoute, /spend cap|Supabase data session/);
