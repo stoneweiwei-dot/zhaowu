@@ -94,10 +94,28 @@ export function detectQuestionFocus(question: string): string {
 }
 
 export function directAnswerCoversQuestion(question: string, directAnswer: string): boolean {
+  const q = question.trim();
+  const answer = directAnswer.trim();
+  if (!q || answer.length < 8) return false;
+
   for (const [, questionPattern, answerPattern] of FOCUS_RULES) {
-    if (questionPattern.test(question)) return answerPattern.test(directAnswer);
+    if (questionPattern.test(q)) return answerPattern.test(answer);
   }
-  return directAnswer.trim().length >= 8;
+
+  const detected = detectQaIntent(q, "self");
+  const domainPattern = KIND_ANSWER_HINTS[detected];
+  if (detected !== "self" && !domainPattern.test(answer)) return false;
+
+  const asksDecision = /(要不要|該不該|该不该|值不值得|能不能|是否|應不應該|应不应该|should\s+i|worth\s+)/i.test(q);
+  if (asksDecision && !/(偏向|建議|建议|可以|不建議|不建议|不宜|先|不要|暫不|暂不|值得|不值得|應該|应该|不應該|不应该|stay|leave|choose|prefer|should|shouldn't|not enough|cannot)/i.test(answer)) return false;
+
+  const asksReason = /(為什麼|为什么|原因|怎麼會|怎么会|why\b)/i.test(q);
+  if (asksReason && !/(因為|因为|關鍵|关键|原因|所以|主要|來自|来自|取決於|取决于|because|reason|mainly|depends)/i.test(answer)) return false;
+
+  const asksTiming = /(什麼時候|什么时候|何時|何时|哪年|哪月|多久|when\b|timing\b)/i.test(q);
+  if (asksTiming && !/(年|月|時|时|階段|阶段|窗口|上半年|下半年|quarter|year|month|window|timing|period)/i.test(answer)) return false;
+
+  return true;
 }
 
 function sentenceParts(text: string): string[] {
