@@ -8893,3 +8893,4 @@ html body #daily-almanac .zhaowu-today-guide__spirit-paper button {
 }
 html body #daily-almanac .zhaowu-today-guide__spirit-paper button::after { content: "→"; font-weight: 700; }
 html body #daily-almanac .zhaowu-today-guide__spirit-paper button:active { transform: scale(.98); }
+html body #daily-almanac .zhaowu-today-guide__spirit-reading small { color: #8d6f3f !important; font-size: 12px !important; }
