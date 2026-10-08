@@ -1,0 +1,9 @@
+OK today
+OK home
+OK almanac-personal
+city value after typing: 員林
+city options: 員林市，彰化縣，臺灣
+Dubbo options: Dubbo，New South Wales，Australia Australia/Sydney | Dubbo City Regional Airport，Dubbo，New South Wales，Australia Australia/Sydney | Dubbo Hill，Snowy Valleys，New South Wales，Australia Australia/Sydney | Dubbo Falls，Snowy Valleys，New South Wales，Australia Australia/Sydney | Dubbo Regional Council，New South Wales，Australia
+OK city
+OK bazi+report
+OK en-almanac
