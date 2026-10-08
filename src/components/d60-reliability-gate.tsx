@@ -24,8 +24,8 @@ type GateState = "idle" | "checking" | "stable" | "unstable" | "error";
 
 const COPY = {
   "zh-Hant": {
-    kicker: "D60 · 出生分鐘可靠度 Gate",
-    title: "先確認出生分鐘，再計算 D60",
+    kicker: "D60 · 出生分鐘可靠度檢查",
+    title: "先確認出生分鐘，再生成你的業力分盤",
     lead: "D60 對分鐘高度敏感。只有在你確認這是可核對到分鐘的出生時間後，昭梧才會進一步做 ±2 分鐘穩定性檢查。",
     record: "本次使用的出生記錄",
     caution: "若時間只是估算、整點填寫或家人回憶，請不要確認；D60 應維持【不作判定】。",
@@ -33,12 +33,12 @@ const COPY = {
     edit: "回首頁修改出生時間",
     checking: "正在檢查這個出生分鐘前後 ±2 分鐘是否會改變 D60 上升細分…",
     withheldTitle: "D60｜不作判定",
-    unstable: "前後 ±2 分鐘已足以改變 D60 上升細分。依昭梧時間可靠度 Gate，本次 D60 不作判定；不用 D60 反向考時。",
+    unstable: "前後 ±2 分鐘已足以改變 D60 上升細分。依昭梧的時間可靠度檢查，本次 D60 不作判定；不用 D60 反向考時。",
     error: "D60 穩定性檢查暫時無法完成，因此本次不作判定；其他分析不受影響。",
   },
   "zh-Hans": {
-    kicker: "D60 · 出生分钟可靠度 Gate",
-    title: "先确认出生分钟，再计算 D60",
+    kicker: "D60 · 出生分钟可靠度检查",
+    title: "先确认出生分钟，再生成你的业力分盘",
     lead: "D60 对分钟高度敏感。只有在你确认这是可核对到分钟的出生时间后，昭梧才会进一步做 ±2 分钟稳定性检查。",
     record: "本次使用的出生记录",
     caution: "如果时间只是估算、整点填写或家人回忆，请不要确认；D60 应维持【不作判断】。",
@@ -46,12 +46,12 @@ const COPY = {
     edit: "回首页修改出生时间",
     checking: "正在检查这个出生分钟前后 ±2 分钟是否会改变 D60 上升细分…",
     withheldTitle: "D60｜不作判断",
-    unstable: "前后 ±2 分钟已经足以改变 D60 上升细分。依昭梧时间可靠度 Gate，本次 D60 不作判断；不用 D60 反向考时。",
+    unstable: "前后 ±2 分钟已经足以改变 D60 上升细分。依昭梧的时间可靠度检查，本次 D60 不作判断；不用 D60 反向考时。",
     error: "D60 稳定性检查暂时无法完成，因此本次不作判断；其他分析不受影响。",
   },
   en: {
-    kicker: "D60 · BIRTH-MINUTE RELIABILITY GATE",
-    title: "Confirm the recorded minute before calculating D60",
+    kicker: "D60 · BIRTH-MINUTE RELIABILITY CHECK",
+    title: "Confirm the recorded minute to generate your karma chart",
     lead: "D60 is extremely minute-sensitive. Zhaowu only runs the ±2-minute stability check after you confirm that this is a documented minute-level birth time.",
     record: "Birth record used for this check",
     caution: "Do not confirm an estimated, rounded, or family-remembered time. In that case D60 should remain withheld.",
@@ -59,7 +59,7 @@ const COPY = {
     edit: "Edit birth time on the homepage",
     checking: "Checking whether moving the recorded time by ±2 minutes changes the D60 rising subdivision…",
     withheldTitle: "D60 · WITHHELD",
-    unstable: "A ±2-minute change alters the D60 rising subdivision. Under Zhaowu's time-reliability gate, D60 is withheld and is not used to rectify the birth time.",
+    unstable: "A ±2-minute change alters the D60 rising subdivision. Under Zhaowu's time-reliability check, D60 is withheld and is not used to rectify the birth time.",
     error: "The D60 stability check could not be completed, so D60 is withheld. Other readings are unaffected.",
   },
 } as const satisfies Record<Locale, Record<string, string>>;
@@ -169,7 +169,7 @@ async function isStableAtPlusMinusTwoMinutes(birth: D60GateBirth) {
   return signAt(-2) === base && signAt(2) === base;
 }
 
-export function D60ReliabilityGate({ reportBirth }: { reportBirth: D60GateBirth | null }) {
+export function D60ReliabilityGate({ reportBirth, depth = "full" }: { reportBirth: D60GateBirth | null; depth?: "quick" | "full" }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const key = useMemo(() => reportBirth ? birthKey(reportBirth) : "", [reportBirth]);
@@ -229,5 +229,5 @@ export function D60ReliabilityGate({ reportBirth }: { reportBirth: D60GateBirth 
     );
   }
 
-  return <D60KarmaSection variant="standalone" reportBirth={reportBirth} />;
+  return <D60KarmaSection variant="standalone" reportBirth={reportBirth} depth={depth} />;
 }

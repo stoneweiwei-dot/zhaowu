@@ -342,6 +342,8 @@ export function AnalysisForm() {
     if (!previewChart) return [];
     try { return buildPlainChartSummary(previewChart, locale); } catch { return []; }
   }, [previewChart, locale]);
+  // Plain-language opening lines for the full report (who you are + your natural energy).
+  const plainLead = useMemo(() => plainItems.slice(0, 2).map((item) => item.body).filter(Boolean), [plainItems]);
   const foundationValues = previewChart && structure
     ? locale === "en"
       ? {
@@ -502,7 +504,7 @@ export function AnalysisForm() {
               {chartDetailsOpen ? (
                 <div className="zhaowu-bazi-full-details__body">
                   <ChartTrustPanel chart={previewChart} locale={locale} />
-                  <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} />
+                  <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} plainLead={plainLead} />
                 </div>
               ) : null}
             </details>
