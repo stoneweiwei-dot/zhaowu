@@ -3,6 +3,7 @@ import { ReportAccessGate } from "@/components/report-access-gate";
 import { PersonalPaidProfile } from "@/components/personal-paid-profile";
 import { useEffect, useMemo, useState } from "react";
 import { D60ReliabilityGate } from "@/components/d60-reliability-gate";
+import { specialistHeadline, type HeadlineSystem } from "@/lib/specialist-headline";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import {
@@ -114,6 +115,12 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
   }, [user?.id, user?.birthData]);
 
   const reading = useMemo(() => birth ? buildReading(id, birth, locale) : null, [birth, id, locale]);
+  const headlineSystem: HeadlineSystem = id === "past" || id === "dharma" ? "palm" : id;
+  const headline = useMemo(() => specialistHeadline(headlineSystem, reading, locale), [headlineSystem, reading, locale]);
+  // D60 only runs for a documented minute-level birth time and place.
+  const d60Birth = birth && !birth.timeUnknown && birth.city
+    ? { year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute, city: birth.city }
+    : null;
 
   useEffect(() => {
     if (!birth || (id !== "indian" && id !== "past" && id !== "dharma")) return;
@@ -143,7 +150,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
         {reading?.warning ? <p className="zhaowu-specialist-warning">{reading.warning}</p> : null}
 
         <div className="zhaowu-specialist-actions">
-          <a href="/#bazi">{birth ? copy.edit : copy.add}</a>
+          <a href="/#bazi" className="is-secondary">{birth ? copy.edit : copy.add}</a>
           <a href="/#analysis-reports" className="is-secondary">{copy.back}</a>
         </div>
 
@@ -155,9 +162,11 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
             system={id === "past" || id === "dharma" ? "palm" : id}
             locale={locale}
             birth={birth}
+            preview={headline}
             quick={<div className="zhaowu-specialist-sections">
               {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
               {reading.sections.slice(0, 1).map((section) => <ReadingSection key={`${section.title}-quick`} section={section} />)}
+              {id === "indian" ? <div className="mt-6"><D60ReliabilityGate depth="quick" reportBirth={d60Birth} /></div> : null}
             </div>}
             personal={birth ? <PersonalPaidProfile birth={birth} locale={locale} /> : undefined}
             full={<div className="zhaowu-specialist-sections">

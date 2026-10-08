@@ -54,6 +54,25 @@
   line-height: 1.7 !important;
 }
 
+.zhaowu-report-paywall > header .zhaowu-report-preview {
+  margin: 10px 0 0 !important;
+  border-left: 2px solid rgba(169, 97, 94, .6);
+  padding: 4px 0 4px 12px;
+  color: var(--zw-ink, #302e35) !important;
+  font-size: 15px !important;
+  font-weight: 600;
+  line-height: 1.75 !important;
+}
+
+.zhaowu-report-paywall > header .zhaowu-report-preview span {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--zw-muted, #74717a);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+
 .zhaowu-report-paywall > header .zhaowu-report-distinction {
   margin-top: 8px !important;
   border-left: 1px solid rgba(49, 84, 79, .38);

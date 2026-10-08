@@ -311,10 +311,10 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
       : locale === "zh-Hans"
         ? occupants.length
           ? `「${topics[index]}」有${occupantNames.join("、")}直接落入；重点同时参考${occupantFocus.join("、")}。宫头${signLabel(cuspPos.sign, locale)}让这一领域偏向「${cuspTone}」的运作方式，传统主星${rulerName}${rulerHouse ? `落${westernHouseLabel(rulerHouse, locale)}` : ""}，形成进一步联动。`
-          : `「${topics[index]}」为空宫，不等于这个领域不存在。宫头${signLabel(cuspPos.sign, locale)}让它偏向「${cuspTone}」的运作方式；传统主星${rulerName}${rulerHouse ? `落${westernHouseLabel(rulerHouse, locale)}` : ""}，是这个宫位与其他生活领域连接的主要线索。`
+          : `「${topics[index]}」没有行星直接落入，不代表这个领域不存在。宫头${signLabel(cuspPos.sign, locale)}让它偏向「${cuspTone}」的运作方式；传统主星${rulerName}${rulerHouse ? `落${westernHouseLabel(rulerHouse, locale)}` : ""}，是这个宫位与其他生活领域连接的主要线索。`
         : occupants.length
           ? `「${topics[index]}」有${occupantNames.join("、")}直接落入；重點同時參考${occupantFocus.join("、")}。宮頭${signLabel(cuspPos.sign, locale)}讓這一領域偏向「${cuspTone}」的運作方式，傳統主星${rulerName}${rulerHouse ? `落${westernHouseLabel(rulerHouse, locale)}` : ""}，形成進一步聯動。`
-          : `「${topics[index]}」為空宮，不等於這個領域不存在。宮頭${signLabel(cuspPos.sign, locale)}讓它偏向「${cuspTone}」的運作方式；傳統主星${rulerName}${rulerHouse ? `落${westernHouseLabel(rulerHouse, locale)}` : ""}，是這個宮位與其他生活領域連接的主要線索。`;
+          : `「${topics[index]}」沒有行星直接落入，不代表這個領域不存在。宮頭${signLabel(cuspPos.sign, locale)}讓它偏向「${cuspTone}」的運作方式；傳統主星${rulerName}${rulerHouse ? `落${westernHouseLabel(rulerHouse, locale)}` : ""}，是這個宮位與其他生活領域連接的主要線索。`;
 
     return [
       westernHouseLabel(house, locale),
@@ -431,10 +431,10 @@ export function buildWesternReading(birth: SharedBirthRecord, locale: Locale): S
   return {
     title: locale === "en" ? "Western astrology" : "西洋星座",
     lead: locale === "en"
-      ? "This page no longer isolates one Sun-house line. With a documented birth time it reads the seven classical planets by sign and house, all twelve houses, the four angles and the major aspects together."
+      ? "A second view of your character and where life energy concentrates, read from the seven classical planets, twelve houses, four angles and major aspects together."
       : locale === "zh-Hans"
-        ? "本页不再只抽一个太阳落宫。出生时间完整时，会一起看七曜星座与落宫、十二宫宫头与传统主星、四轴和主要相位。"
-        : "本頁不再只抽一個太陽落宮。出生時間完整時，會一起看七曜星座與落宮、十二宮宮頭與傳統主星、四軸和主要相位。",
+        ? "从七曜星座与落宫、十二宫、四轴和主要相位，一起看你的性格底色，以及生活能量集中的领域。"
+        : "從七曜星座與落宮、十二宮、四軸和主要相位，一起看你的性格底色，以及生活能量集中的領域。",
     warning: timeNote || undefined,
     chart: !birth.timeUnknown && qizheng ? { kind: "western", bodies: classicalBodies, houses: chartHouses, angles: chartAngles } : undefined,
     sections,
@@ -552,10 +552,10 @@ export function buildPalmReading(birth: SharedBirthRecord, locale: Locale): Spec
   return {
     title: locale === "en" ? "Past and present" : locale === "zh-Hans" ? "前世今生" : "前世今生",
     lead: locale === "en"
-      ? "The four-life trail is read from the same birth record. Indian D60 is only a supporting note when the minute is documented."
+      ? "Four prior-life images show which habits keep repeating, and how to use them in this life."
       : locale === "zh-Hans"
-        ? "前四世象意与反复习性沿用同一份出生资料。印度古法占星只在时间足够时作旁证。"
-        : "前四世象意與反覆習性沿用同一份出生資料。印度古法占星只在時間足夠時作旁證。",
+        ? "用前四世的象意，看反复出现的习性，以及今生可以怎么使用它。"
+        : "用前四世的象意，看反覆出現的習性，以及今生可以怎麼使用它。",
     warning: birth.timeUnknown
       ? (locale === "en" ? "Hour palace stays blank because birth time is unknown." : locale === "zh-Hans" ? "时辰未知，时宫／最近一世暂不判定。" : "時辰未知，時宮／最近一世暫不判定。")
       : undefined,
@@ -579,10 +579,10 @@ export function buildIndianReading(birth: SharedBirthRecord, locale: Locale): Sp
   return {
     title: locale === "en" ? "Classical Indian astrology" : locale === "zh-Hans" ? "印度古法占星" : "印度古法占星",
     lead: locale === "en"
-      ? "This page reuses the shared birth record. After you confirm the recorded minute, D60 generates its own grouping here. If ±2 minutes would change the rising subdivision, the grouping is still shown as weak supporting evidence and is never used to rectify time."
+      ? "Your karma chart: the habits you carry across five areas — core reaction, emotion, duty, resources and relationships. Confirm your birth minute and it is generated."
       : locale === "zh-Hans"
-        ? "本页沿用同一份出生资料。确认出生分钟后，D60 会在本卷生成自己的分组；若前后 ±2 分钟会改上升细分，仍输出盘面，只作弱旁证，不用 D60 反向考时。"
-        : "本頁沿用同一份出生資料。確認出生分鐘後，D60 會在本卷生成自己的分組；若前後 ±2 分鐘會改上升細分，仍輸出盤面，只作弱旁證，不用 D60 反向考時。",
+        ? "你的业力分盘：看你带着的核心反应、情绪、责任、资源与关系五种惯性。确认出生分钟后即生成。"
+        : "你的業力分盤：看你帶著的核心反應、情緒、責任、資源與關係五種慣性。確認出生分鐘後即生成。",
     warning: precise
       ? undefined
       : (locale === "en"

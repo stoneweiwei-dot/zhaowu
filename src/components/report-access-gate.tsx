@@ -29,27 +29,29 @@ type Copy = {
   unavailable: string;
   distinction: string;
   toneBoundary: string;
+  previewLabel: string;
   bonus: Record<ReportAccessProduct, string>;
 };
 
 function copyFor(locale: Locale): Copy {
   if (locale === "en") return {
     title: "Choose how far to read",
-    lead: "The basic chart is free. Interpretation after the chart is a one-time purchase.",
+    lead: "The basic chart is free. Interpretation after the chart is a one-time purchase in USD, never auto-renewed.",
     free: "Free",
     freeBody: "Basic chart and calculated placements",
     quick: "Quick read",
-    quickBody: "Overview, core conclusion, and first priority for this system",
+    quickBody: "See this system's main conclusion and the first thing to watch in your chart",
     system: "Full system",
-    systemBody: "The complete interpretation, every section, and your personal chart profile",
+    systemBody: "Every section of this system, plus the personal profile written from your own chart",
     bundle: "All systems",
-    bundleBody: "Complete readings across all six systems and your full personal chart profile",
+    bundleBody: "Every section of all six systems, plus your full personal chart profile",
     buy: "Unlock",
     unlocked: "Unlocked",
     pending: "Payment received. Access is being confirmed…",
     unavailable: "Checkout is not active yet. The prices and free/paid boundary are already fixed.",
     distinction: "You are purchasing the chart interpretation. A playable five-tone sequence matched to the chart is included as an additional gift.",
     toneBoundary: "Five-tone listening is a traditional cultural practice for rest and self-care, not medical or mental-health treatment.",
+    previewLabel: "Your chart in one line",
     bonus: {
       quick: "Included with the report · 1 chart-matched primary-tone track",
       system: "Included with the report · 3 support, primary, and release tracks",
@@ -58,21 +60,22 @@ function copyFor(locale: Locale): Copy {
   };
   if (locale === "zh-Hans") return {
     title: "选择读取深度",
-    lead: "基本盘免费；基本盘之后的解读按次付费，不自动续费。",
+    lead: "基本盘免费；基本盘之后的解读按次付费，不自动续费。价格以美元计，一次付款。",
     free: "免费",
     freeBody: "基本盘、落位与计算结果",
     quick: "快速读",
-    quickBody: "读出本系统总览、核心结论与第一优先重点",
+    quickBody: "先看到本系统的核心结论，以及你最需要留意的第一件事",
     system: "完整单盘",
-    systemBody: "解锁本系统完整解读、全部段落与个人命格专页",
+    systemBody: "本系统的全部段落，加上依你这张盘写成的个人命格专页",
     bundle: "六盘全读",
-    bundleBody: "一次解锁六个系统的完整解读与完整个人命格专页",
+    bundleBody: "六个系统的全部段落，加上完整的个人命格专页",
     buy: "解锁",
     unlocked: "已解锁",
     pending: "付款已收到，正在确认读取权限……",
     unavailable: "付款通道尚未启用；价格与免费／付费边界已经固定。",
     distinction: "你购买的是命盘解读；昭梧另随报告附赠依命盘功能取向配置、可直接播放的五音聆听曲。",
     toneBoundary: "此处“疗愈”指放松、调息与自我照顾的文化聆听，不替代医疗、心理治疗或专业诊断。",
+    previewLabel: "你这张盘的一句结论",
     bonus: {
       quick: "随报告附赠｜命盘主音 1 首",
       system: "随报告附赠｜生扶音・主音・疏导音 3 首",
@@ -81,21 +84,22 @@ function copyFor(locale: Locale): Copy {
   };
   return {
     title: "選擇讀取深度",
-    lead: "基本盤免費；基本盤之後的解讀按次付費，不自動續費。",
+    lead: "基本盤免費；基本盤之後的解讀按次付費，不自動續費。價格以美元計，一次付款。",
     free: "免費",
     freeBody: "基本盤、落位與計算結果",
     quick: "快速讀",
-    quickBody: "讀出本系統總覽、核心結論與第一優先重點",
+    quickBody: "先看到本系統的核心結論，以及你最需要留意的第一件事",
     system: "完整單盤",
-    systemBody: "解鎖本系統完整解讀、全部段落與個人命格專頁",
+    systemBody: "本系統的全部段落，加上依你這張盤寫成的個人命格專頁",
     bundle: "六盤全讀",
-    bundleBody: "一次解鎖六個系統的完整解讀與完整個人命格專頁",
+    bundleBody: "六個系統的全部段落，加上完整的個人命格專頁",
     buy: "解鎖",
     unlocked: "已解鎖",
     pending: "付款已收到，正在確認讀取權限……",
     unavailable: "付款通道尚未啟用；價格與免費／付費邊界已經固定。",
     distinction: "你購買的是命盤解讀；昭梧另隨報告附贈依命盤功能取向配置、可直接播放的五音聆聽曲。",
     toneBoundary: "此處「療癒」指放鬆、調息與自我照顧的文化聆聽，不替代醫療、心理治療或專業診斷。",
+    previewLabel: "你這張盤的一句結論",
     bonus: {
       quick: "隨報告附贈｜命盤主音 1 首",
       system: "隨報告附贈｜生扶音・主音・疏導音 3 首",
@@ -117,6 +121,7 @@ export function ReportAccessGate({
   full,
   personal,
   birth,
+  preview,
 }: {
   system: ReportSystemId;
   locale: Locale;
@@ -124,6 +129,7 @@ export function ReportAccessGate({
   full: ReactNode;
   personal?: ReactNode;
   birth?: SharedBirthRecord | null;
+  preview?: string;
 }) {
   const copy = copyFor(locale);
   const [level, setLevel] = useState<ReportAccessLevel>("none");
@@ -162,6 +168,7 @@ export function ReportAccessGate({
       {level === "quick" ? <div className="zhaowu-report-access-content" data-report-access="quick"><p className="zhaowu-report-access-status">{copy.unlocked} · {copy.quick}</p>{quick}<FiveToneGift birth={birth} locale={locale} level="quick" /></div> : null}
       <header>
         <h6>{copy.title}</h6>
+        {preview ? <p className="zhaowu-report-preview" data-report-preview><span>{copy.previewLabel}</span>{preview}</p> : null}
         <p>{copy.lead}</p>
         <p className="zhaowu-report-distinction">{copy.distinction}</p>
       </header>

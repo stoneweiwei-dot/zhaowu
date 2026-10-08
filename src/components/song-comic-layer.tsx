@@ -28,6 +28,13 @@ function profileForStem(stem: string) {
   return COMIC_PROFILES[stem] ?? COMIC_PROFILES.壬;
 }
 
+/** One-line illustrated-stem summary for collapsed report headers: "壬 · 流動，但不失方向". */
+export function comicStemTeaser(dayMaster: string, locale: Locale) {
+  const stem = dayMaster?.trim()?.[0] || "壬";
+  const profile = profileForStem(stem);
+  return `${stem} · ${profile.title[locale]}：${profile.body[locale]}`;
+}
+
 export function ComicMascot({ stem, compact = false }: { stem: string; compact?: boolean }) {
   const profile = profileForStem(stem);
   const palette = {

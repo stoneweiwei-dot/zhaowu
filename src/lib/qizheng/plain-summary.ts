@@ -55,11 +55,42 @@ function toneOf(body: QizhengBody | undefined): BranchTone {
   return body ? BRANCH_TONE[body.palace] ?? "earth" : "earth";
 }
 
+// Each retrograde note is specific to the planet it follows, so the same sentence is never
+// repeated across sections (a chart with Mercury, Mars and Jupiter retrograde used to read
+// the identical line three times).
+const RETRO_NOTE: Record<"mercury" | "venus" | "mars" | "saturn" | "jupiter", Record<Locale, string>> = {
+  mercury: {
+    "zh-Hant": " 水星逆行讓這股特質更向內：想法常在心裡反覆推敲、修改，說出口時往往已是第二、三版。",
+    "zh-Hans": " 水星逆行让这股特质更向内：想法常在心里反复推敲、修改，说出口时往往已是第二、三版。",
+    en: " Mercury retrograde turns this inward: ideas are usually rehearsed and revised privately, so what you say is often already a second or third draft.",
+  },
+  venus: {
+    "zh-Hant": " 金星逆行讓這份偏好更內斂：你對關係的標準不輕易說出口，通常先確認安全感才表態。",
+    "zh-Hans": " 金星逆行让这份偏好更内敛：你对关系的标准不轻易说出口，通常先确认安全感才表态。",
+    en: " Venus retrograde makes this preference more private: you rarely state your standards early and usually check for safety before committing.",
+  },
+  mars: {
+    "zh-Hant": " 火星逆行讓行動偏向先內化再出手：出手前會在心裡演練，所以一旦行動，通常已有準備。",
+    "zh-Hans": " 火星逆行让行动偏向先内化再出手：出手前会在心里演练，所以一旦行动，通常已有准备。",
+    en: " Mars retrograde means you act after internal rehearsal: by the time you move, you have usually prepared.",
+  },
+  saturn: {
+    "zh-Hant": " 土星逆行讓責任感更私密：你多半先對自己嚴格，才對外提出要求。",
+    "zh-Hans": " 土星逆行让责任感更私密：你多半先对自己严格，才对外提出要求。",
+    en: " Saturn retrograde keeps responsibility private: you tend to hold yourself to the standard first, then ask it of others.",
+  },
+  jupiter: {
+    "zh-Hant": " 木星逆行讓成長偏向回頭整理：機會常在你消化、複盤之後才真正放大。",
+    "zh-Hans": " 木星逆行让成长偏向回头整理：机会常在你消化、复盘之后才真正放大。",
+    en: " Jupiter retrograde makes growth a matter of looking back: opportunity usually expands after you digest and review.",
+  },
+};
+
 function retroText(locale: Locale, ...bodies: Array<QizhengBody | undefined>) {
-  if (!bodies.some((body) => body?.retrograde)) return "";
-  if (locale === "en") return " This tendency is more inward than it first appears: you tend to rehearse, revise, or digest it privately before others see the result.";
-  if (locale === "zh-Hans") return " 这股倾向更偏向内在运作：你往往会先在心里反复消化、修改，之后才让别人看见结果。";
-  return " 這股傾向更偏向內在運作：你往往會先在心裡反覆消化、修改，之後才讓別人看見結果。";
+  return bodies
+    .filter((body): body is QizhengBody => Boolean(body?.retrograde))
+    .map((body) => RETRO_NOTE[body.key as keyof typeof RETRO_NOTE]?.[locale] ?? "")
+    .join("");
 }
 
 function dominantTone(chart: QizhengResult) {

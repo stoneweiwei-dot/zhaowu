@@ -2,7 +2,9 @@ import { useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
-import { SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
+import { comicStemTeaser, SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
+import { specialistHeadline } from "@/lib/specialist-headline";
+import "@/report-hub.css";
 import type { ReportSystemId } from "@/lib/report-access";
 import {
   buildIndianReading,
@@ -21,7 +23,9 @@ type Foundation = {
   features: string;
 };
 
-type ReportSection = { title: string; body: string[] };
+const NO_PLAIN_LEAD: string[] = [];
+
+type ReportSection = { title: string; body: string[]; teaser?: string; groups?: ReportSection[] };
 
 function sectionBody(reading: SpecialistReading, title: RegExp, fallback = "") {
   return reading.sections.find((section) => title.test(section.title))?.body.trim() || fallback;
@@ -64,7 +68,6 @@ function reportCopy(locale: Locale) {
     summaryStage: "Overall summary",
     visualStage: "Illustrated destiny",
     bodyStage: "Body areas to watch",
-    notesStage: "Notes",
     bodyFallback: "Birth-time detail is not complete enough for house-based body symbolism. Keep this section to daily workload, sleep and recovery; persistent symptoms need qualified medical assessment.",
 
     basis: "Core structure",
@@ -80,7 +83,7 @@ function reportCopy(locale: Locale) {
     systemsMode: "Six Systems",
     comicKicker: "YOUR STORY · SIX FRAMES",
     comicLead: "Six illustrated scenes first; text stays secondary and opens only when you want detail.",
-    systemsLead: "All six specialist systems are visible here. Open the one you want; none is buried under the full report.",
+    systemsLead: "One conclusion per system. Open any card for its full chart.",
     frame: "Frame",
     openFull: "Expand",
     closeFull: "Collapse",
@@ -88,6 +91,13 @@ function reportCopy(locale: Locale) {
     specialistLead: "Optional. Each system below is folded; open only the one you want. They are supporting evidence and never override the main BaZi judgement.",
     numerology: "Life-path numerology",
     freeChart: "Open free basic chart",
+    notesStage: "Notes",
+    notesLead: "Full paragraphs for each theme, the basis behind them, and how to read them",
+    bodyCare: "Body notes here are about daily load, sleep and recovery, not disease judgement. Persistent or worsening symptoms need a qualified medical assessment.",
+    freeNote: "The basic chart is free. Interpretation after the chart is paid per reading.",
+    karmaBadge: "Karma",
+    basisDetail: "How this was read",
+    openLabels: { ziwei: "Open my Zi Wei chart", qizheng: "Open my Seven Luminaries chart", western: "Open my Western chart", indian: "Open my karma chart", palm: "Open my past-life reading", numerology: "Open my numerology" } as Record<string, string>,
 
 
   };
@@ -113,7 +123,7 @@ function reportCopy(locale: Locale) {
     systemsMode: "六大系统",
     comicKicker: "你的故事 · 六格读完",
     comicLead: "先看六格漫画把主线看懂；文字解释放在后面，需要时再展开。",
-    systemsLead: "六套独立系统全部直接显示，不再藏在完整报告最下方。",
+    systemsLead: "每个系统先给你一句结论；点进去看完整盘。",
     frame: "第",
     openFull: "展开",
     closeFull: "收起",
@@ -121,6 +131,12 @@ function reportCopy(locale: Locale) {
     specialistLead: "可选阅读，每个系统默认收合，想看哪个再展开。皆为旁证，不覆盖子平八字主判。",
     numerology: "生命灵数",
     freeChart: "查看免费基本盘",
+    notesLead: "各主题的完整段落、判读依据与阅读说明",
+    bodyCare: "身体提醒以日常负荷、睡眠与恢复为主，不作疾病判断；持续或加重的不适，请以实际医疗检查为准。",
+    freeNote: "基本盘免费公开；盘后解读按次付费。",
+    karmaBadge: "业力",
+    basisDetail: "判读依据",
+    openLabels: { ziwei: "看我的紫微命盘", qizheng: "看我的七政命盘", western: "看我的西洋星盘", indian: "看我的业力分盘", palm: "看我的前世今生", numerology: "看我的灵数盘" } as Record<string, string>,
 
 
   };
@@ -146,7 +162,7 @@ function reportCopy(locale: Locale) {
     systemsMode: "六大系統",
     comicKicker: "你的故事 · 六格讀完",
     comicLead: "先看六格漫畫把主線看懂；文字解釋放在後面，需要時再展開。",
-    systemsLead: "六套獨立系統全部直接顯示，不再藏在完整報告最下方。",
+    systemsLead: "每個系統先給你一句結論；點進去看完整盤。",
     frame: "第",
     openFull: "展開",
     closeFull: "收起",
@@ -154,12 +170,16 @@ function reportCopy(locale: Locale) {
     specialistLead: "可選閱讀，每個系統預設收合，想看哪個再展開。皆為旁證，不覆蓋子平八字主判。",
     numerology: "生命靈數",
     freeChart: "查看免費基本盤",
-
-
+    notesLead: "各主題的完整段落、判讀依據與閱讀說明",
+    bodyCare: "身體提醒以日常負荷、睡眠與恢復為主，不作疾病判斷；持續或加重的不適，請以實際醫療檢查為準。",
+    freeNote: "基本盤免費公開；盤後解讀按次付費。",
+    karmaBadge: "業力",
+    basisDetail: "判讀依據",
+    openLabels: { ziwei: "看我的紫微命盤", qizheng: "看我的七政命盤", western: "看我的西洋星盤", indian: "看我的業力分盤", palm: "看我的前世今生", numerology: "看我的靈數盤" } as Record<string, string>,
   };
 }
 
-export function UnifiedBirthReport({ birth, locale, foundation }: { birth: SharedBirthRecord; locale: Locale; foundation: Foundation }) {
+export function UnifiedBirthReport({ birth, locale, foundation, plainLead = NO_PLAIN_LEAD }: { birth: SharedBirthRecord; locale: Locale; foundation: Foundation; plainLead?: string[] }) {
   const copy = reportCopy(locale);
   const [mode, setMode] = useState<"formal" | "comic" | "systems">("formal");
   const sections = useMemo<ReportSection[]>(() => {
@@ -174,6 +194,7 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
       {
         title: copy.basis,
         body: unique([
+          ...plainLead,
           `${foundation.dayMaster}｜${foundation.monthOrder}`,
           foundation.strength,
           `${foundation.structure}；${foundation.features}`,
@@ -225,46 +246,49 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
         ], locale),
       },
     ];
-  }, [birth, copy.basis, copy.lesson, copy.nature, copy.relation, copy.timing, copy.work, foundation, locale]);
+  }, [birth, copy.basis, copy.lesson, copy.nature, copy.relation, copy.timing, copy.work, foundation, locale, plainLead]);
 
   const formalStages = useMemo<ReportSection[]>(() => {
     const [basis, nature, relation, work, timing, lesson] = sections;
     const western = buildWesternReading(birth, locale);
     const bodyLines = unique(tableInterpretations(western, /十二宮|十二宫|twelve houses/i, [5]), locale);
+    const bodyCore = bodyLines.length ? bodyLines : [copy.bodyFallback];
+    // Each illustrated line carries the title of the theme it comes from, so a relationship
+    // paragraph is never presented under an unlabeled heading.
+    const themed = [relation, work, timing, lesson]
+      .filter((section): section is ReportSection => Boolean(section?.body[0]))
+      .map((section) => `${section.title}：${section.body[0]}`);
+    const detailGroups: ReportSection[] = [nature, relation, work, timing, lesson]
+      .filter((section): section is ReportSection => Boolean(section))
+      .map((section) => ({ title: section.title, body: unique(section.body.slice(section === nature ? 2 : 1), locale) }))
+      .filter((group) => group.body.length > 0);
+    // Reading rules and technical labels stay available, but after the substantive paragraphs.
+    const basisDetail: ReportSection = { title: copy.basisDetail, body: unique(basis?.body.slice(plainLead.length + 2) ?? [], locale) };
     return [
       {
         title: copy.summaryStage,
         body: unique([
-          ...(basis?.body.slice(0, 4) ?? []),
+          ...(basis?.body.slice(0, plainLead.length + 2) ?? []),
           ...(nature?.body.slice(0, 2) ?? []),
         ], locale),
       },
       {
         title: copy.visualStage,
-        body: unique([
-          relation?.body[0] ?? "",
-          work?.body[0] ?? "",
-          timing?.body[0] ?? "",
-          lesson?.body[0] ?? "",
-        ], locale),
+        teaser: comicStemTeaser(foundation.dayMaster, locale),
+        body: unique(themed, locale),
       },
       {
         title: copy.bodyStage,
-        body: bodyLines.length ? bodyLines : [copy.bodyFallback],
+        body: bodyLines.length ? [...bodyCore, copy.bodyCare] : bodyCore,
       },
       {
         title: copy.notesStage,
-        body: unique([
-          ...(basis?.body.slice(4) ?? []),
-          ...(nature?.body.slice(2) ?? []),
-          ...(relation?.body.slice(1) ?? []),
-          ...(work?.body.slice(1) ?? []),
-          ...(timing?.body.slice(1) ?? []),
-          ...(lesson?.body.slice(1) ?? []),
-        ], locale),
+        teaser: copy.notesLead,
+        body: unique([...detailGroups.flatMap((group) => group.body), ...basisDetail.body], locale),
+        groups: [...detailGroups, basisDetail].filter((group) => group.body.length > 0),
       },
     ];
-  }, [birth, copy.bodyFallback, copy.bodyStage, copy.notesStage, copy.summaryStage, copy.visualStage, locale, sections]);
+  }, [birth, copy.basisDetail, copy.bodyCare, copy.bodyFallback, copy.bodyStage, copy.notesLead, copy.notesStage, copy.summaryStage, copy.visualStage, foundation.dayMaster, locale, plainLead, sections]);
 
   return (
     <section className="zhaowu-unified-birth-report" data-unified-birth-report aria-labelledby="zhaowu-unified-report-title">
@@ -306,11 +330,18 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
                     <summary>
                       <span className="zhaowu-unified-fold__step">{String(index + 1).padStart(2, "0")}</span>
                       <h4>{section.title}</h4>
-                      {section.body[0] ? <span className="zhaowu-unified-fold__teaser">{section.body[0]}</span> : null}
+                      {section.teaser || section.body[0] ? <span className="zhaowu-unified-fold__teaser">{section.teaser ?? section.body[0]}</span> : null}
                     </summary>
                     <div className="zhaowu-unified-fold__body">
-                      {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
                       {index === 1 ? <SongComicReportInsert dayMaster={foundation.dayMaster} locale={locale} /> : null}
+                      {section.groups?.length
+                        ? section.groups.map((group) => (
+                          <div className="zhaowu-unified-fold__group" key={group.title}>
+                            <h5>{group.title}</h5>
+                            {group.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                          </div>
+                        ))
+                        : section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
                     </div>
                   </details>
                 )}
@@ -328,7 +359,7 @@ export function UnifiedBirthReport({ birth, locale, foundation }: { birth: Share
   );
 }
 
-type SpecialistEntry = { id: ReportSystemId; route: string; title: string; lead?: string; warning?: string; sections: { title: string; lines: string[] }[] };
+type SpecialistEntry = { id: ReportSystemId; route: string; title: string; headline: string; lead?: string; warning?: string; sections: { title: string; lines: string[] }[] };
 
 const SPECIALIST_ROUTES: Record<ReportSystemId, string> = {
   ziwei: "/ziwei",
@@ -339,11 +370,12 @@ const SPECIALIST_ROUTES: Record<ReportSystemId, string> = {
   numerology: "/numerology",
 };
 
-function fromReading(id: ReportSystemId, reading: SpecialistReading): SpecialistEntry {
+function fromReading(id: ReportSystemId, reading: SpecialistReading, locale: Locale): SpecialistEntry {
   return {
     id,
     route: SPECIALIST_ROUTES[id],
     title: reading.title,
+    headline: specialistHeadline(id, reading, locale),
     lead: reading.lead,
     warning: reading.warning,
     sections: reading.sections.map((section) => ({
@@ -358,22 +390,23 @@ function SpecialistHub({ birth, locale, copy }: { birth: SharedBirthRecord; loca
   const entries = useMemo<SpecialistEntry[]>(() => {
     const profile = NUMEROLOGY_PROFILES[calculateLifeNumber(birth.year, birth.month, birth.day).number];
     return [
-      fromReading("ziwei", buildZiweiReading(birth, locale)),
-      fromReading("qizheng", buildQizhengReading(birth, locale)),
-      fromReading("western", buildWesternReading(birth, locale)),
-      fromReading("indian", buildIndianReading(birth, locale)),
-      fromReading("palm", buildPalmReading(birth, locale)),
+      fromReading("ziwei", buildZiweiReading(birth, locale), locale),
+      fromReading("qizheng", buildQizhengReading(birth, locale), locale),
+      fromReading("western", buildWesternReading(birth, locale), locale),
+      fromReading("indian", buildIndianReading(birth, locale), locale),
+      fromReading("palm", buildPalmReading(birth, locale), locale),
       {
         id: "numerology",
         route: SPECIALIST_ROUTES.numerology,
         title: copy.numerology,
+        headline: specialistHeadline("numerology", { title: copy.numerology, lead: "", sections: [{ title: copy.numerology, body: tx(locale, profile.core) }] }, locale),
         sections: [{ title: copy.numerology, lines: [tx(locale, profile.core), tx(locale, profile.challenge), tx(locale, profile.lesson), tx(locale, profile.action)].filter(Boolean) }],
       },
     ];
   }, [birth, copy.numerology, locale]);
 
   const labels: Partial<Record<ReportSystemId, string>> = {
-    indian: "D60",
+    indian: copy.karmaBadge,
     palm: locale === "en" ? "One-Palm" : locale === "zh-Hans" ? "一掌经" : "一掌經",
   };
 
@@ -386,7 +419,7 @@ function SpecialistHub({ birth, locale, copy }: { birth: SharedBirthRecord; loca
       </header>
       <div className="zhaowu-specialist-hub__grid">
         {entries.map((entry, index) => {
-          const preview = entry.lead || entry.sections[0]?.lines[0] || "";
+          const preview = entry.headline || entry.lead || entry.sections[0]?.lines[0] || "";
           return (
             <article key={entry.id} className="zhaowu-specialist-hub__card" data-specialist-node={entry.id}>
               <div className="zhaowu-specialist-hub__meta">
@@ -395,11 +428,12 @@ function SpecialistHub({ birth, locale, copy }: { birth: SharedBirthRecord; loca
               </div>
               <h5>{entry.title}</h5>
               {preview ? <p>{preview}</p> : null}
-              <a className="zhaowu-specialist-free-link" href={entry.route}>{copy.freeChart} →</a>
+              <a className="zhaowu-specialist-free-link" href={entry.route}>{copy.openLabels[entry.id] ?? copy.freeChart} →</a>
             </article>
           );
         })}
       </div>
+      <p className="zhaowu-specialist-hub__note">{copy.freeNote}</p>
     </section>
   );
 }

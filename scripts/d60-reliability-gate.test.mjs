@@ -33,7 +33,7 @@ test("after minute confirmation D60 is shown only when stable; unstable or error
   assert.match(gate, /不用 D60 反向考時|不用 D60 反向考时|not used to rectify/);
   assert.match(gate, /state === "unstable" \|\| state === "error"/);
   assert.match(gate, /state === "unstable" \? copy\.unstable : copy\.error/);
-  assert.match(gate, /return <D60KarmaSection variant="standalone" reportBirth=\{reportBirth\} \/>/);
+  assert.match(gate, /return <D60KarmaSection variant="standalone" reportBirth=\{reportBirth\} depth=\{depth\} \/>/);
   assert.doesNotMatch(gate, /仍輸出 D60 盤面|still generated as weak supporting evidence/);
   assert.doesNotMatch(gate, /Astronomy Engine formula change|rectifyBirth|suggestBetterMinute/);
 });

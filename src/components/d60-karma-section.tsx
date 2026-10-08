@@ -104,7 +104,8 @@ const COPY = {
     unstable: "以本次提供的時間前後各移動 2 分鐘測試，上升細分結果已發生變化，因此這一段只作弱旁證。",
     core: "核心慣性", emotion: "情緒慣性", duty: "反覆責任", resource: "帶得走的資源", relation: "關係價值",
     expand: "點開看白話解釋", collapse: "收起白話解釋",
-    synthesis: "D60 是印度古法占星的細分盤。只在出生分鐘通過可靠度 Gate 後才輸出；單獨出現的內容不升級成確定結論。"
+    karmaLead: "你帶著的五種業力慣性",
+    synthesis: "D60 是印度古法占星的細分盤。只在出生分鐘通過可靠度檢查後才輸出；單獨出現的內容不升級成確定結論。"
   },
   "zh-Hans": {
     kicker: "D60 · 印度古法占星",
@@ -117,7 +118,8 @@ const COPY = {
     unstable: "以本次提供的时间前后各移动 2 分钟测试，上升细分结果已经发生变化，因此这一段只作弱旁证。",
     core: "核心惯性", emotion: "情绪惯性", duty: "反复责任", resource: "带得走的资源", relation: "关系价值",
     expand: "点开看白话解释", collapse: "收起白话解释",
-    synthesis: "D60 是印度古法占星的细分盘。只在出生分钟通过可靠度 Gate 后才输出；单独出现的内容不升级成确定结论。"
+    karmaLead: "你带着的五种业力惯性",
+    synthesis: "D60 是印度古法占星的细分盘。只在出生分钟通过可靠度检查后才输出；单独出现的内容不升级成确定结论。"
   },
   en: {
     kicker: "D60 · INDIAN CLASSICAL ASTROLOGY",
@@ -130,7 +132,8 @@ const COPY = {
     unstable: "Moving this report's supplied birth time two minutes earlier and later changes the rising fine-division result, so this section is treated only as weak supporting context.",
     core: "Core pattern", emotion: "Emotional habit", duty: "Repeated duty", resource: "Carried resource", relation: "Relationship values",
     expand: "Tap for a plain-language explanation", collapse: "Hide plain-language explanation",
-    synthesis: "D60 is the fine-division chart of Indian classical astrology. It is shown only after the birth-minute reliability gate passes; a theme appearing only here is not promoted into a definite conclusion."
+    karmaLead: "The five karmic habits you carry",
+    synthesis: "D60 is the fine-division chart of Indian classical astrology. It is shown only after the birth-minute reliability check passes; a theme appearing only here is not promoted into a definite conclusion."
   },
 } as const;
 
@@ -193,7 +196,7 @@ function plainExplanation(key: ThemeKey, signIndex: number, locale: Locale) {
   return `${DIMENSION_PLAIN[locale][key]} ${SIGN_PLAIN[locale][signIndex]}`;
 }
 
-export function D60KarmaSection({ variant = "palm", reportBirth }: { variant?: "palm" | "standalone"; reportBirth?: ReportBirth | null }) {
+export function D60KarmaSection({ variant = "palm", reportBirth, depth = "full" }: { variant?: "palm" | "standalone"; reportBirth?: ReportBirth | null; depth?: "quick" | "full" }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const target = usePalmReportPortalTarget();
@@ -273,25 +276,13 @@ export function D60KarmaSection({ variant = "palm", reportBirth }: { variant?: "
       <div className="relative">
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#7c5b43]">{copy.kicker}</p>
         <h3 className="mt-1 font-display text-xl font-semibold tracking-[0.05em] text-ink">{copy.title}</h3>
-        <p className="mt-3 text-xs leading-6 text-ink-mute">{copy.note}</p>
 
         {!birth ? <p className="mt-4 rounded-xl border border-cinnabar/20 bg-cinnabar/5 px-3 py-3 text-sm leading-7 text-ink-soft">{copy.unavailable}</p> : null}
         {birth && status === "loading" ? <p className="mt-4 text-sm leading-7 text-ink-soft">{copy.calculating}</p> : null}
         {birth && status === "error" ? <p className="mt-4 text-sm leading-7 text-ink-soft">{copy.failed}</p> : null}
         {result ? <>
-          <div className="zw-chart" data-natal-chart="indian">
-            <h4>{locale === "en" ? "D1 / D60 placements" : locale === "zh-Hans" ? "D1 本命位置／D60 分盘表" : "D1 本命位置／D60 分盤表"}</h4>
-            <p>{locale === "en" ? "Lahiri sidereal positions. D60 signs follow the existing calculation profile; independent reference validation is pending. House numbers use Whole Sign from each chart’s Ascendant." : locale === "zh-Hans" ? "Lahiri 恒星黄道。D60 沿用现有计算版本，尚待独立参照盘验证；落宫按各盘上升起算整宫制。" : "Lahiri 恆星黃道。D60 沿用現有計算版本，尚待獨立參照盤驗證；落宮按各盤上升起算整宮制。"}</p>
-            <ChartTable title={locale === "en" ? "Planetary positions" : "星曜位置"} headers={[locale === "en" ? "Body" : "星曜", "D1", locale === "en" ? "D1 house" : locale === "zh-Hans" ? "D1 宫位" : "D1 宮位", "D60", locale === "en" ? "D60 house / segment" : locale === "zh-Hans" ? "D60 宫位／分段" : "D60 宮位／分段"]} rows={result.placements.map(p => {
-              const natalSign = Math.floor(p.siderealLongitude / 30);
-              const asc = result.placements[0];
-              const names: Record<string,string> = { Ascendant: "上升", Sun: "太陽", Moon: "月亮", Mercury: "水星", Venus: "金星", Mars: "火星", Jupiter: "木星", Saturn: "土星" };
-              const minutes = Math.floor((p.siderealLongitude % 30) * 60);
-              return [locale === "en" ? p.key : names[p.key], `${signName(natalSign, locale)} ${Math.floor(minutes / 60)}°${String(minutes % 60).padStart(2,"0")}′`, (natalSign - Math.floor(asc.siderealLongitude / 30) + 12) % 12 + 1, signName(p.d60Sign, locale), `${(p.d60Sign - asc.d60Sign + 12) % 12 + 1} / ${p.segment}`];
-            })}/>
-            <ChartTable title={locale === "en" ? "D60 · Twelve houses" : locale === "zh-Hans" ? "D60 · 十二宫命盘" : "D60 · 十二宮命盤"} headers={[locale === "en" ? "House" : locale === "zh-Hans" ? "宫位" : "宮位", locale === "en" ? "Sign" : "星座", locale === "en" ? "Occupants" : "星曜"]} rows={Array.from({length:12},(_,i)=>{ const sign=(result.placements[0].d60Sign+i)%12; return [i+1,signName(sign,locale),result.placements.filter(p=>p.key!=="Ascendant"&&p.d60Sign===sign).map(p=>locale === "en" ? p.key : ({Sun:"太陽",Moon:"月亮",Mercury:"水星",Venus:"金星",Mars:"火星",Jupiter:"木星",Saturn:"土星"} as Record<string,string>)[p.key]).join("、")||"—"]; })}/>
-          </div>
-          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+          <p className="mt-4 text-sm font-semibold text-ink" data-d60-karma-lead>{copy.karmaLead}</p>
+          <div className="mt-2 grid gap-2 sm:grid-cols-2">
             {themes.map(({ key, label, placement }) => {
               const isOpen = openTheme === key;
               const explanationId = `indian-astrology-${key}`;
@@ -324,7 +315,22 @@ export function D60KarmaSection({ variant = "palm", reportBirth }: { variant?: "
             })}
           </div>
           <p className={`mt-4 rounded-xl border px-3 py-2 text-xs leading-6 ${stable ? "border-wood/25 bg-wood/5 text-ink-soft" : "border-cinnabar/25 bg-cinnabar/5 text-ink-soft"}`}>{stable ? copy.stable : copy.unstable}</p>
+          {depth === "full" ? (
+          <div className="zw-chart" data-natal-chart="indian">
+            <h4>{locale === "en" ? "D1 / D60 placements" : locale === "zh-Hans" ? "D1 本命位置／D60 分盘表" : "D1 本命位置／D60 分盤表"}</h4>
+            <p>{locale === "en" ? "Lahiri sidereal positions. D60 signs follow the existing calculation profile; independent reference validation is pending. House numbers use Whole Sign from each chart’s Ascendant." : locale === "zh-Hans" ? "Lahiri 恒星黄道。D60 沿用现有计算版本，尚待独立参照盘验证；落宫按各盘上升起算整宫制。" : "Lahiri 恆星黃道。D60 沿用現有計算版本，尚待獨立參照盤驗證；落宮按各盤上升起算整宮制。"}</p>
+            <ChartTable title={locale === "en" ? "Planetary positions" : "星曜位置"} headers={[locale === "en" ? "Body" : "星曜", "D1", locale === "en" ? "D1 house" : locale === "zh-Hans" ? "D1 宫位" : "D1 宮位", "D60", locale === "en" ? "D60 house / segment" : locale === "zh-Hans" ? "D60 宫位／分段" : "D60 宮位／分段"]} rows={result.placements.map(p => {
+              const natalSign = Math.floor(p.siderealLongitude / 30);
+              const asc = result.placements[0];
+              const names: Record<string,string> = { Ascendant: "上升", Sun: "太陽", Moon: "月亮", Mercury: "水星", Venus: "金星", Mars: "火星", Jupiter: "木星", Saturn: "土星" };
+              const minutes = Math.floor((p.siderealLongitude % 30) * 60);
+              return [locale === "en" ? p.key : names[p.key], `${signName(natalSign, locale)} ${Math.floor(minutes / 60)}°${String(minutes % 60).padStart(2,"0")}′`, (natalSign - Math.floor(asc.siderealLongitude / 30) + 12) % 12 + 1, signName(p.d60Sign, locale), `${(p.d60Sign - asc.d60Sign + 12) % 12 + 1} / ${p.segment}`];
+            })}/>
+            <ChartTable title={locale === "en" ? "D60 · Twelve houses" : locale === "zh-Hans" ? "D60 · 十二宫命盘" : "D60 · 十二宮命盤"} headers={[locale === "en" ? "House" : locale === "zh-Hans" ? "宫位" : "宮位", locale === "en" ? "Sign" : "星座", locale === "en" ? "Occupants" : "星曜"]} rows={Array.from({length:12},(_,i)=>{ const sign=(result.placements[0].d60Sign+i)%12; return [i+1,signName(sign,locale),result.placements.filter(p=>p.key!=="Ascendant"&&p.d60Sign===sign).map(p=>locale === "en" ? p.key : ({Sun:"太陽",Moon:"月亮",Mercury:"水星",Venus:"金星",Mars:"火星",Jupiter:"木星",Saturn:"土星"} as Record<string,string>)[p.key]).join("、")||"—"]; })}/>
+          </div>
+          ) : null}
           <p className="mt-3 text-sm leading-7 text-ink-soft">{copy.synthesis}</p>
+          <p className="mt-2 text-xs leading-6 text-ink-mute">{copy.note}</p>
         </> : null}
       </div>
     </article>
