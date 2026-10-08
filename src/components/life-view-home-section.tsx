@@ -14,6 +14,7 @@ import { SHUSHU_ENDS_IN_CHOICE_ARTICLE } from "@/lib/life-view-long-form/shushu-
 import { AFTER_MIRACLES_PRACTICE_LONG_FORM } from "@/lib/life-view-long-form/after-miracles-practice";
 import { SEE_BREAK_RETURN_LONG_FORM } from "@/lib/life-view-long-form/see-break-return";
 import { TIME_IS_IT_FASTER_LONG_FORM } from "@/lib/life-view-long-form/time-is-it-faster";
+import { A_DAY_WITH_INCENSE_LONG_FORM } from "@/lib/life-view-long-form/a-day-with-incense";
 import { fetchLifeViewCounts, incrementLifeViewCount, type LifeViewCounts } from "@/lib/life-view-views";
 
 type ContentKind = "article" | "short-note";
@@ -33,6 +34,7 @@ type LifeViewHomeSectionProps = {
 };
 
 const LONG_ARTICLES: IllustratedArticle[] = [
+  A_DAY_WITH_INCENSE_LONG_FORM,
   TIME_IS_IT_FASTER_LONG_FORM,
   SEE_BREAK_RETURN_LONG_FORM,
   AFTER_MIRACLES_PRACTICE_LONG_FORM,
