@@ -77,6 +77,37 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
   const guide = FIVE_ELEMENT_GUIDE_COPY[locale];
   const correspondence = fiveElementCorrespondence(active.element, locale);
 
+  const choices = (
+    <div role="list" data-daily-colors-choices>
+            {DAILY_COLOR_STATES.map((state) => {
+              const item = state.copy[locale];
+              const pressed = state.id === activeId;
+              return (
+                <button
+                  key={state.id}
+                  type="button"
+                  role="listitem"
+                  data-daily-color-id={state.id}
+                  data-testid={`daily-color-${state.id}`}
+                  aria-pressed={pressed}
+                  onClick={() => setSelectedId(state.id)}
+                  style={{ ["--daily-color-ink" as string]: state.ink }}
+                >
+                  <span aria-hidden="true" data-daily-color-swatch>
+                    {state.swatches.map((hex) => (
+                      <i key={hex} style={{ ["--swatch" as string]: hex }} />
+                    ))}
+                  </span>
+                  <strong>{item.name}</strong>
+                  <small>
+                    {item.wantLabel} · {item.elementLabel}
+                  </small>
+                </button>
+              );
+            })}
+          </div>
+  );
+
   return (
     <section
       id="five-element-wardrobe"
@@ -138,65 +169,9 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
       {compact ? (
         <details data-daily-colour-choices-fold>
           <summary>{locale === "en" ? "Choose a different five-element colour" : locale === "zh-Hans" ? "选择其他五行配色" : "選擇其他五行配色"}<span aria-hidden="true">＋</span></summary>
-          <div role="list" data-daily-colors-choices>
-                  {DAILY_COLOR_STATES.map((state) => {
-                    const item = state.copy[locale];
-                    const pressed = state.id === activeId;
-                    return (
-                      <button
-                        key={state.id}
-                        type="button"
-                        role="listitem"
-                        data-daily-color-id={state.id}
-                        data-testid={`daily-color-${state.id}`}
-                        aria-pressed={pressed}
-                        onClick={() => setSelectedId(state.id)}
-                        style={{ ["--daily-color-ink" as string]: state.ink }}
-                      >
-                        <span aria-hidden="true" data-daily-color-swatch>
-                          {state.swatches.map((hex) => (
-                            <i key={hex} style={{ ["--swatch" as string]: hex }} />
-                          ))}
-                        </span>
-                        <strong>{item.name}</strong>
-                        <small>
-                          {item.wantLabel} · {item.elementLabel}
-                        </small>
-                      </button>
-                    );
-                  })}
-                </div>
+          {choices}
         </details>
-      ) : (
-        <div role="list" data-daily-colors-choices>
-                {DAILY_COLOR_STATES.map((state) => {
-                  const item = state.copy[locale];
-                  const pressed = state.id === activeId;
-                  return (
-                    <button
-                      key={state.id}
-                      type="button"
-                      role="listitem"
-                      data-daily-color-id={state.id}
-                      data-testid={`daily-color-${state.id}`}
-                      aria-pressed={pressed}
-                      onClick={() => setSelectedId(state.id)}
-                      style={{ ["--daily-color-ink" as string]: state.ink }}
-                    >
-                      <span aria-hidden="true" data-daily-color-swatch>
-                        {state.swatches.map((hex) => (
-                          <i key={hex} style={{ ["--swatch" as string]: hex }} />
-                        ))}
-                      </span>
-                      <strong>{item.name}</strong>
-                      <small>
-                        {item.wantLabel} · {item.elementLabel}
-                      </small>
-                    </button>
-                  );
-                })}
-              </div>
-      )}
+      ) : choices}
 
       {compact ? (
         <article data-five-element-correspondence-compact aria-live="polite">
