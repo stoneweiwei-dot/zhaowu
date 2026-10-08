@@ -8,15 +8,7 @@ import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 import type { AppLocale, Chart, Reading } from "@/lib/bazi/types";
 import { analyzeStructure, isStructureQuestion } from "@/lib/bazi/structure";
 import { applyCosmicSymbolicReading, isCosmicSymbolicQuestion } from "@/lib/symbolic/cosmic-profile";
-import {
-  isCreditQuestion,
-  isTalentQuestion,
-  isJobFitQuestion,
-  structureCreditAnswer,
-  structureTalentAnswer,
-  renderStructuredAnswer,
-  buildSpecialDirectAnswer,
-} from "@/lib/report/credit-and-talent-contract";
+import { buildContractAnswer } from "@/lib/report/credit-and-talent-contract";
 
 const ELEMENT_PROFILE_RE = /(五行.{0,8}(屬性|属性|主導|主导|分布|比例|占比|能量|哪個最多|哪个最多)|哪個五行|哪个五行|五行誰最強|五行谁最强)/;
 const LUCKY_COLOR_RE = /(幸運色|幸运色|幸運顏色|幸运颜色|(適合|适合).{0,8}(什麼|什么|哪些|哪種|哪种).{0,6}(顏色|颜色)|(顏色|颜色).{0,8}(適合我|适合我|旺我))/;
@@ -144,38 +136,10 @@ export function applyCustomerAnswerHotfix(question: string, chart: Chart, readin
   // Simple colour questions must answer with colours before any generic structure copy.
   if (LUCKY_COLOR_RE.test(question)) return luckyColorReading(chart, reading, locale);
 
-  // Credit score / 信用分 — force structured direct answer
-  if (isCreditQuestion(question)) {
-    const structured = structureCreditAnswer(chart);
-    return {
-      ...reading,
-      kind: "money",
-      directAnswer: renderStructuredAnswer(structured),
-      action: structured.action,
-    };
-  }
-
-  // Talent / 天賦
-  if (isTalentQuestion(question)) {
-    const structured = structureTalentAnswer(chart);
-    return {
-      ...reading,
-      kind: "self",
-      directAnswer: renderStructuredAnswer(structured),
-      action: structured.action,
-    };
-  }
-
-  // Job fit
-  if (isJobFitQuestion(question)) {
-    const special = buildSpecialDirectAnswer(question, chart, reading);
-    if (special) {
-      return {
-        ...reading,
-        kind: "career",
-        directAnswer: special,
-      };
-    }
+  // 信用分／天賦／適合的工作：一個入口，處理單題、複合題、問別人、問專項（見 credit-and-talent-contract.ts）。
+  const contract = buildContractAnswer(question, chart);
+  if (contract) {
+    return { ...reading, kind: contract.kind, directAnswer: contract.directAnswer, action: contract.action };
   }
 
   if (isCosmicSymbolicQuestion(question)) {
