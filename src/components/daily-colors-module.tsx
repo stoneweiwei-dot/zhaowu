@@ -222,7 +222,7 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
 
           <p data-five-element-correspondence-boundary>{guide.boundary}</p>
         </section>
-      )}
+      ) : null}
 
       {compact ? null : isUserOverride ? <p>{page.userNote}</p> : <p>{page.almanacNote}</p>}
       {compact ? null : <ChakraColourIdeas locale={locale} />}
