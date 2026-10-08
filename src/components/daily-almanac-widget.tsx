@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { DailyColorsModule } from "@/components/daily-colors-module";
+import { ChakraColourIdeas, DailyColorsModule } from "@/components/daily-colors-module";
 import { useI18n } from "@/lib/i18n";
 import { stemElement } from "@/lib/element-colors";
 import { dayGanzhi, hourPillar, yearMonthPillars, lunarDateLabel, toLunar } from "@/lib/bazi/calendar";
@@ -317,7 +317,7 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
           <div className="zhaowu-today-guide__summary-meta"><span>{pillars.day}</span><span>{season}</span>{personal ? <span className="is-personal">{personalLabels.active}</span> : null}<em>{labels.open}</em></div>
         </summary>}
 
-        <div className="zhaowu-today-guide__expanded">
+        {(embedded || !onExpand) ? <div className="zhaowu-today-guide__expanded">
           <header className="zhaowu-today-guide__hero"><div><p>{labels.title}</p><span>{personal ? personalLabels.heroSub : labels.sub}</span></div>{personal ? <b className="zhaowu-today-personal-badge">{personalLabels.active}</b> : null}</header>
           <div className="zhaowu-today-guide__overview"><strong>{lunarLabel(now, locale)}</strong><span>{weekdayLabel(now, locale)} · {timeLabel(now)}</span><span>{locationName} · {weather}</span></div>
 
@@ -389,19 +389,26 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
                   <div className="zhaowu-today-personal-swatches">
                     {personal.colorSwatches.map((item) => <span key={item.label}><i style={{ backgroundColor: item.hex }} aria-hidden="true" /><b>{item.label}</b></span>)}
                   </div>
-                  <div className="zhaowu-today-guide__wardrobe-notes">
-                    <span><small>{personalLabels.todayColors}</small><strong>{tone.colors}</strong></span>
-                    <span><small>{personalLabels.yourColors}</small><strong>{personal.colors.join("・")}</strong></span>
-                    <span><small>{personalLabels.materials}</small><strong>{personal.materials.join("・")}</strong></span>
-                    <span><small>{personalLabels.quietColors}</small><strong>{personal.quietColors.join("・") || "—"}</strong></span>
-                  </div>
+                  <details data-wardrobe-additional>
+                    <summary>{locale === "en" ? "More outfit details" : locale === "zh-Hans" ? "更多穿搭参考" : "更多穿搭參考"}<span aria-hidden="true">＋</span></summary>
+                    <div className="zhaowu-today-guide__wardrobe-notes">
+                      <span><small>{personalLabels.todayColors}</small><strong>{tone.colors}</strong></span>
+                      <span><small>{personalLabels.yourColors}</small><strong>{personal.colors.join("・")}</strong></span>
+                      <span><small>{personalLabels.materials}</small><strong>{personal.materials.join("・")}</strong></span>
+                      <span><small>{personalLabels.quietColors}</small><strong>{personal.quietColors.join("・") || "—"}</strong></span>
+                    </div>
+                  </details>
                 </div>
               ) : (
                 <>
                   <DailyColorsModule variant="embed" date={now} />
+                  <details data-wardrobe-additional>
+                    <summary>{locale === "en" ? "More outfit details" : locale === "zh-Hans" ? "更多穿搭参考" : "更多穿搭參考"}<span aria-hidden="true">＋</span></summary>
                   <div className="zhaowu-today-guide__wardrobe-notes"><span><small>{labels.colors}</small><strong>{tone.colors}</strong></span><span><small>{labels.jewellery}</small><strong>{tone.jewellery}</strong></span><span><small>{labels.mask}</small><strong>{tone.mask}</strong></span></div>
+                  </details>
                 </>
               )}
+              <ChakraColourIdeas locale={locale} />
             </div>
           </section>
 
@@ -410,7 +417,7 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
             <div className="zhaowu-today-guide__spirit"><div className="zhaowu-today-guide__spirit-paper"><p className="zhaowu-today-guide__spirit-kicker"><img src="/brand-ui/mark-gourd.svg" alt="" width={30} height={30} decoding="async" />{locale === "en" ? `ZHAOWU DAILY SLIP · ${slipSequence}` : locale === "zh-Hans" ? `昭梧今日灵签・${slipSequence}` : `昭梧今日靈籤・${slipSequence}`}</p><h3>{slip[0]}</h3><strong>{slip[1]}</strong><div className="zhaowu-today-guide__spirit-reading"><small>{locale === "en" ? "READING" : locale === "zh-Hans" ? "签意" : "籤意"}</small><span>{slip[2]}</span></div>{personal ? <div className="zhaowu-today-personal-mask"><small>{personalLabels.persona}</small><strong>{personal.persona}</strong></div> : null}<button type="button" onClick={drawSlip}>{locale === "en" ? "Open the full slip" : locale === "zh-Hans" ? "展开完整签文" : "展開完整籤文"}</button></div></div>
           </section>
           <footer className="zhaowu-today-guide__footer"><span>{locale === "en" ? "Location and weather are fetched in the visitor browser; no private API key is exposed." : locale === "zh-Hans" ? "位置与天气由访客浏览器直接读取，不暴露私钥。" : "位置與天氣由訪客瀏覽器直接讀取，不暴露私鑰。"}</span></footer>
-        </div>
+        </div> : null}
       </details>
     </section>
     {embedded ? <div className="zhaowu-today-location-control"><button type="button" onClick={() => void requestLocation()} disabled={requesting} aria-label={locale === "en" ? "Use current location" : locale === "zh-Hans" ? "使用当前位置" : "使用目前位置"} style={{ minHeight: 44, border: 0, borderBottom: "1px solid rgba(49, 94, 80, .35)", padding: "0 4px", color: "var(--zw-jade, #315e50)", background: "transparent", fontSize: 14, fontWeight: 650 }}>{requesting ? (locale === "en" ? "Locating…" : locale === "zh-Hans" ? "正在定位…" : "正在定位…") : (locale === "en" ? "Use current location" : locale === "zh-Hans" ? "使用当前位置" : "使用目前位置")}</button></div> : null}
