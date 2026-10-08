@@ -13,6 +13,98 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    "id": "moon-occults-jupiter-2026-10-06",
+    "published": "2026-10-08",
+    "status": "active",
+    "title": {
+      "zh-Hant": "月掩木星：情緒衝擊擴張力",
+      "zh-Hans": "月掩木星：情绪冲击扩张力",
+      "en": "Moon Occults Jupiter: Emotional Surge Meets Expansion"
+    },
+    "subtitle": {
+      "zh-Hant": "2026.10.06｜月球遮掩木星，本週天象精選",
+      "zh-Hans": "2026.10.06｜月球遮掩木星，本周天象精选",
+      "en": "6 Oct 2026 | Moon occults Jupiter — weekly sky highlight"
+    },
+    "facts": [
+      {
+        "date": "2026-10-06",
+        "label": {
+          "zh-Hant": "月球於金牛座遮掩木星（悉尼可見）",
+          "zh-Hans": "月球于金牛座遮掩木星（悉尼可见）",
+          "en": "Moon occults Jupiter in Taurus (visible from Sydney)"
+        }
+      }
+    ],
+    "science": {
+      "zh-Hant": [
+        "月掩木星：月球在軌道上行進時，從地球觀測角度恰好遮蔽木星的天文現象。",
+        "此次遮掩發生於熱帶黃道金牛座區段，木星約位於金牛22°附近。",
+        "遮掩持續時間依觀測地點而異，悉尼地區可觀察到完整遮掩過程。"
+      ],
+      "zh-Hans": [
+        "月掩木星：月球在轨道上行进时，从地球观测角度恰好遮蔽木星的天文现象。",
+        "此次遮掩发生于热带黄道金牛座区段，木星约位于金牛22°附近。",
+        "遮掩持续时间依观测地点而异，悉尼地区可观察到完整遮掩过程。"
+      ],
+      "en": [
+        "A lunar occultation of Jupiter occurs when the Moon passes directly in front of Jupiter as seen from Earth.",
+        "This occultation takes place in tropical Taurus, with Jupiter near 22° Taurus.",
+        "Duration varies by location; Sydney observers can witness the full ingress and egress."
+      ]
+    },
+    "interpretation": {
+      "zh-Hant": [
+        "月亮象徵情緒、直覺與本能需求；木星象徵擴張、信念與成長衝動。",
+        "月掩木星的象意：情緒浪潮短暫掩蓋宏觀視野，直覺主導而非理性判斷的短暫窗口。",
+        "金牛座的底色：物質安全感、感官滿足、對改變的抵抗——擴張衝動在此需要穩固地基。",
+        "此天象適合：重新感受自己對「夠了」的定義，而非繼續追加。"
+      ],
+      "zh-Hans": [
+        "月亮象征情绪、直觉与本能需求；木星象征扩张、信念与成长冲动。",
+        "月掩木星的象意：情绪浪潮短暂掩盖宏观视野，直觉主导而非理性判断的短暂窗口。",
+        "金牛座的底色：物质安全感、感官满足、对改变的抵抗——扩张冲动在此需要稳固地基。",
+        "此天象适合：重新感受自己对「够了」的定义，而非继续追加。"
+      ],
+      "en": [
+        "The Moon symbolises emotion, intuition and instinctive needs; Jupiter represents expansion, belief and the urge to grow.",
+        "A lunar occultation of Jupiter suggests: an emotional tide briefly eclipsing the big picture, a short window where gut feeling leads over rational planning.",
+        "Taurus colouring: material security, sensory satisfaction, resistance to change — expansive impulses need solid ground here.",
+        "A good moment to feel into your own definition of 'enough' rather than pushing for more."
+      ]
+    },
+    "houses": [
+      {
+        "house": 2,
+        "zh-Hant": "財務價值感：情緒影響對「夠了」的判斷",
+        "zh-Hans": "财务价值感：情绪影响对「够了」的判断",
+        "en": "Material values: emotions colour your sense of 'enough'"
+      },
+      {
+        "house": 4,
+        "zh-Hant": "家庭根基：對安全感的渴望被放大",
+        "zh-Hans": "家庭根基：对安全感的渴望被放大",
+        "en": "Home and roots: longing for security is amplified"
+      },
+      {
+        "house": 9,
+        "zh-Hant": "信念旅程：直覺引路，超越固有框架",
+        "zh-Hans": "信念旅程：直觉引路，超越固有框架",
+        "en": "Beliefs and journeys: intuition leads beyond familiar frameworks"
+      }
+    ],
+    "sources": [
+      {
+        "label": "JPL Horizons — Moon occultation of Jupiter 2026-10-06",
+        "url": "https://ssd.jpl.nasa.gov/horizons/"
+      },
+      {
+        "label": "In-The-Sky.org — Moon occults Jupiter",
+        "url": "https://in-the-sky.org/news.php?id=20261006_09_100"
+      }
+    ]
+  },
+  {
     "id": "mercury-venus-double-retrograde-2026",
     "published": "2026-10-03",
     "status": "active",
