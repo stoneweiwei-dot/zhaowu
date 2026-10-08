@@ -179,7 +179,6 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
               {" · "}{guide.qi} {correspondence.qi}
             </span>
           </article>
-  
         </details>
       ) : choices}
 
