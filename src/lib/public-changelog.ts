@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-07-offline-china-place-gazetteer",
+    date: "2026-10-07",
+    zhHant: { title: "出生地補全中國地級市與縣級市，找不到時推薦最近地點", summary: "出生地搜尋內建全中國三百多個地級市、臺灣縣市、香港與澳門，以及三百個常見縣級市；簡體、繁體、拼音都能秒出並自帶時區。輸入有誤或查不到時，會列出最接近的地名供你直接選擇。" },
+    zhHans: { title: "出生地补全中国地级市与县级市，找不到时推荐最近地点", summary: "出生地搜索内置全中国三百多个地级市、台湾县市、香港与澳门，以及三百个常见县级市；简体、繁体、拼音都能秒出并自带时区。输入有误或查不到时，会列出最接近的地名供你直接选择。" },
+    en: { title: "Birthplace search now covers every Chinese prefecture-level city", summary: "Birthplace search now ships an offline gazetteer of 330+ prefecture-level cities, Taiwan counties, Hong Kong, Macau and 300 county-level cities. Simplified, Traditional and pinyin all resolve instantly with a confirmed time zone, and near-miss spellings suggest the closest known places." },
+  },
+  {
     id: "2026-10-08-launch-polish",
     date: "2026-10-08",
     zhHant: { title: "今日黃曆改為墨青版、命盤先講白話、出生地更好找", summary: "今日黃曆重做為墨青底版：日期、天氣、今日干支、聖日、五行氣機、宜忌圖示、合沖刑害、吉時慎時、顏色首飾與性格面具一頁看完；錄入生辰後會依你的命盤顯示今日對你的關係。輸入生辰後先用白話列出你的命盤重點，四柱與術語收合在下方。出生地輸入不再跳字，並補上小城鎮與鄉區搜尋。報告字體放大加粗、段落更舒展；首頁入口換上新的四幅山水插畫。" },

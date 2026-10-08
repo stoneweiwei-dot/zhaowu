@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { searchCities } from "@/lib/actions";
 import type { CityHit } from "@/lib/bazi/types";
 import type { Locale } from "@/lib/i18n";
-import { localizeCityHit } from "@/lib/bazi/cities";
-import { needsTimezone, resolveCityTimezone } from "@/lib/geo/city-search";
+import { localizePlaceHit as localizeCityHit, needsTimezone, resolveCityTimezone } from "@/lib/geo/city-search";
 
 type PickerProps = {
   id: string;

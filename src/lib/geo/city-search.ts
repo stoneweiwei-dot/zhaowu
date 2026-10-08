@@ -1,10 +1,13 @@
-import { FEATURED_CITIES, filterFeatured } from "@/lib/bazi/cities";
+import { FEATURED_CITIES, filterFeatured, localizeCityHit } from "@/lib/bazi/cities";
 import type { CityHit } from "@/lib/bazi/types";
+import { fuzzyChinaPlaces, isKnownPlace, localizeChinaPlace, searchChinaPlaces } from "@/lib/geo/china-places";
 
 /**
  * Birthplace search used by the birth-record form.
  *
  * Coverage strategy (owner 2026-10-08: small towns must be findable):
+ *  0. Offline China/Taiwan/HK/Macau gazetteer (all prefecture-level cities + 300 county-level
+ *     cities; Traditional / Simplified / pinyin; timezone preset; ranked above remote results).
  *  1. Local featured cities (instant, offline).
  *  2. Open-Meteo geocoding (GeoNames; strong for Latin names, includes timezone).
  *  3. OSM Photon (OpenStreetMap; strong for CJK village/district names). Photon has
@@ -37,6 +40,23 @@ function dedupe(rows: CityHit[]) {
     out.push(row);
   }
   return out;
+}
+
+/** Gazetteer hits first, then featured cities that are not the same place. */
+export function searchLocalPlaces(q: string): CityHit[] {
+  const gazetteer = searchChinaPlaces(q);
+  const featured = filterFeatured(q).filter(
+    (f) => !gazetteer.some((g) => Math.abs(g.latitude - f.latitude) < 0.1 && Math.abs(g.longitude - f.longitude) < 0.1),
+  );
+  return [...gazetteer, ...featured];
+}
+
+/** localizeCityHit + gazetteer places (Simplified / English display). */
+export function localizePlaceHit(city: CityHit, locale: "zh-Hant" | "zh-Hans" | "en"): CityHit {
+  const featured = localizeCityHit(city, locale);
+  if (featured !== city) return featured;
+  const display = localizeChinaPlace(city, locale);
+  return display ? { ...city, display } : city;
 }
 
 async function openMeteo(q: string, signal: AbortSignal): Promise<CityHit[]> {
@@ -92,7 +112,7 @@ async function photon(q: string, signal: AbortSignal): Promise<CityHit[]> {
 
 export async function searchBirthPlaces(query: string, signal?: AbortSignal): Promise<CityHit[]> {
   const q = String(query ?? "").trim().slice(0, 60);
-  const local = filterFeatured(q);
+  const local = searchLocalPlaces(q);
   if (q.length < 2) return local.length ? local : FEATURED_CITIES.slice(0, 8);
   const key = normalize(q);
   const cached = cache.get(key);
@@ -109,9 +129,15 @@ export async function searchBirthPlaces(query: string, signal?: AbortSignal): Pr
       photon(q, controller.signal).catch(() => [] as CityHit[]),
     ]);
     const remote = CJK.test(q) ? [...osm, ...meteo] : [...meteo, ...osm];
-    const merged = dedupe([...local, ...remote]).slice(0, 12);
-    if (merged.length) cache.set(key, merged);
-    return merged.length ? merged : local;
+    // Remote rows that merely re-state a gazetteer city (e.g. "洛阳市") add nothing.
+    const extra = remote.filter((r) => !isKnownPlace(r.name, r.latitude, r.longitude));
+    const merged = dedupe([...local, ...extra]).slice(0, 12);
+    if (merged.length) {
+      cache.set(key, merged);
+      return merged;
+    }
+    // Nothing matched anywhere: offer the closest gazetteer names so the user can always pick one.
+    return fuzzyChinaPlaces(q);
   } finally {
     clearTimeout(timer);
     signal?.removeEventListener("abort", abort);
