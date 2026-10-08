@@ -170,20 +170,20 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
         <details data-daily-colour-choices-fold>
           <summary>{locale === "en" ? "Choose a different five-element colour" : locale === "zh-Hans" ? "选择其他五行配色" : "選擇其他五行配色"}<span aria-hidden="true">＋</span></summary>
           {choices}
+          <article data-five-element-correspondence-compact aria-live="polite">
+            <small>{guide.compactTitle}</small>
+            <strong>{correspondence.name} · {correspondence.motion}</strong>
+            <span>
+              {guide.color} {correspondence.classicalColor}
+              {" · "}{guide.tone} {correspondence.tone}
+              {" · "}{guide.qi} {correspondence.qi}
+            </span>
+          </article>
+  
         </details>
       ) : choices}
 
-      {compact ? (
-        <article data-five-element-correspondence-compact aria-live="polite">
-          <small>{guide.compactTitle}</small>
-          <strong>{correspondence.name} · {correspondence.motion}</strong>
-          <span>
-            {guide.color} {correspondence.classicalColor}
-            {" · "}{guide.tone} {correspondence.tone}
-            {" · "}{guide.qi} {correspondence.qi}
-          </span>
-        </article>
-      ) : (
+      {!compact ? (
         <section data-five-element-correspondence aria-label={guide.fullTitle}>
           <header>
             <h3>{guide.fullTitle}</h3>
