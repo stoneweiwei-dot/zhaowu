@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { DailyColorsModule } from "@/components/daily-colors-module";
+import { ChakraColourIdeas, DailyColorsModule } from "@/components/daily-colors-module";
 import { useI18n } from "@/lib/i18n";
 import { stemElement } from "@/lib/element-colors";
 import { dayGanzhi, hourPillar, yearMonthPillars, lunarDateLabel, toLunar } from "@/lib/bazi/calendar";
@@ -389,19 +389,26 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
                   <div className="zhaowu-today-personal-swatches">
                     {personal.colorSwatches.map((item) => <span key={item.label}><i style={{ backgroundColor: item.hex }} aria-hidden="true" /><b>{item.label}</b></span>)}
                   </div>
-                  <div className="zhaowu-today-guide__wardrobe-notes">
-                    <span><small>{personalLabels.todayColors}</small><strong>{tone.colors}</strong></span>
-                    <span><small>{personalLabels.yourColors}</small><strong>{personal.colors.join("・")}</strong></span>
-                    <span><small>{personalLabels.materials}</small><strong>{personal.materials.join("・")}</strong></span>
-                    <span><small>{personalLabels.quietColors}</small><strong>{personal.quietColors.join("・") || "—"}</strong></span>
-                  </div>
+                  <details data-wardrobe-additional>
+                    <summary>{locale === "en" ? "More outfit details" : locale === "zh-Hans" ? "更多穿搭参考" : "更多穿搭參考"}<span aria-hidden="true">＋</span></summary>
+                    <div className="zhaowu-today-guide__wardrobe-notes">
+                      <span><small>{personalLabels.todayColors}</small><strong>{tone.colors}</strong></span>
+                      <span><small>{personalLabels.yourColors}</small><strong>{personal.colors.join("・")}</strong></span>
+                      <span><small>{personalLabels.materials}</small><strong>{personal.materials.join("・")}</strong></span>
+                      <span><small>{personalLabels.quietColors}</small><strong>{personal.quietColors.join("・") || "—"}</strong></span>
+                    </div>
+                  </details>
                 </div>
               ) : (
                 <>
                   <DailyColorsModule variant="embed" date={now} />
+                  <details data-wardrobe-additional>
+                    <summary>{locale === "en" ? "More outfit details" : locale === "zh-Hans" ? "更多穿搭参考" : "更多穿搭參考"}<span aria-hidden="true">＋</span></summary>
                   <div className="zhaowu-today-guide__wardrobe-notes"><span><small>{labels.colors}</small><strong>{tone.colors}</strong></span><span><small>{labels.jewellery}</small><strong>{tone.jewellery}</strong></span><span><small>{labels.mask}</small><strong>{tone.mask}</strong></span></div>
+                  </details>
                 </>
               )}
+              <ChakraColourIdeas locale={locale} />
             </div>
           </section>
 
