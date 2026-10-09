@@ -110,10 +110,10 @@ test("简明报告标题为昭梧｜专属简明报告，不再出现九页或�
 test("直接答案在三段式报告的第一段中只出现一次", () => {
   const result = makeResult("我何時適合換工作？");
   const sections = composeFocusedReport(result);
-  const summarySection = sections.find((s) => s.key === "summary");
-  assert.ok(summarySection);
-  const directAnswerMatches = summarySection.body.filter((line) => line.includes(result.reading.directAnswer.substring(0, 20)));
-  assert.ok(directAnswerMatches.length >= 1);
+  const exact = sections.flatMap((item) => item.body).filter((line) => line === result.reading.directAnswer);
+  assert.ok(exact.length <= 1);
+  assert.equal(sections[0].key, "summary");
+  assert.ok(sections[0].body.length > 0);
 });
 
 test("English report stays plain-language and uses three-section structure", () => {

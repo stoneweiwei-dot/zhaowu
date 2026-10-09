@@ -9055,3 +9055,294 @@ html body [data-chakra-colour-item] small {
     gap: 8px;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ZW-FE-03 · 今日黃曆 redesign (owner 2026-10-10 references 圖3 / 圖4)
+   day   = 圖3 宣紙晴日：Sydney harbour hero, xuan-paper cards, navy-gold ribbon titles
+   night = 圖4 墨夜：existing ink board + dusk harbour hero
+   ══════════════════════════════════════════════════════════════════════════ */
+html body .zw-ink-board { position: relative; }
+html body .zw-ink-board > .zw-ink-variant {
+  position: absolute !important;
+  z-index: 6 !important;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid rgba(201, 168, 106, .7);
+  border-radius: 999px;
+  background: rgba(255, 251, 242, .82);
+  backdrop-filter: blur(4px);
+}
+html body .zw-ink-variant button {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #1d3550;
+  font: 600 12px/1 var(--font-display);
+  letter-spacing: .06em;
+  cursor: pointer;
+}
+html body .zw-ink-variant button[aria-pressed="true"] { background: #1d3550; color: #f6ecd2; }
+html body .zw-ink-hero { position: relative; z-index: 0; isolation: isolate; overflow: hidden; border-radius: 12px; }
+html body .zw-ink-hero__art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: center bottom / cover no-repeat;
+  pointer-events: none;
+}
+html body .zw-ink-seal { display: inline-block; width: .55em; height: .55em; margin-left: .12em; vertical-align: super; }
+html body .zw-ink-sacred { position: relative; overflow: hidden; isolation: isolate; }
+html body .zw-ink-sacred__art { display: none; }
+
+/* ── night (圖4) ── */
+html body .zw-ink-board[data-variant="night"] .zw-ink-hero { min-height: 230px; padding: 46px 10px 12px; align-items: center; }
+html body .zw-ink-board[data-variant="night"] .zw-ink-hero__art {
+  background-image: linear-gradient(180deg, rgba(12, 29, 32, .1) 40%, rgba(12, 29, 32, .75) 100%), url("/today/almanac-hero-night-v1.webp");
+}
+html body .zw-ink-board[data-variant="night"] .zw-ink-city { background: rgba(10, 30, 34, .72); border-color: rgba(216, 185, 119, .7); }
+html body .zw-ink-board[data-variant="night"] .zw-ink-variant { background: rgba(10, 30, 34, .7); }
+html body .zw-ink-board[data-variant="night"] .zw-ink-variant button { color: #efe6d2; }
+html body .zw-ink-board[data-variant="night"] .zw-ink-variant button[aria-pressed="true"] { background: #d8b977; color: #10262a; }
+
+/* ── day (圖3) ── */
+html body .zw-ink-board[data-variant="day"] {
+  --ink-line: rgba(176, 141, 78, .55);
+  --ink-gold: #a8813e;
+  --ink-text: #23334a;
+  --ink-mute: #6b6457;
+  --ink-paper-ink: #23334a;
+  --ink-navy: #1d3550;
+  --ink-navy-2: #2c4c70;
+  --ink-cream: #fbf7ee;
+  gap: 12px;
+  padding: 10px;
+  background:
+    url("/today/almanac-mist-v1.webp") center bottom / 100% auto no-repeat,
+    linear-gradient(180deg, #f7f1e4 0%, #f4eddc 100%);
+  color: var(--ink-text);
+  box-shadow: inset 0 0 0 1px rgba(201, 168, 106, .45);
+}
+/* hero */
+html body .zw-ink-board[data-variant="day"] .zw-ink-hero {
+  grid-template-columns: 1fr;
+  grid-template-areas: "title" "city" "date";
+  justify-items: start;
+  align-content: start;
+  gap: 6px;
+  min-height: clamp(270px, 76vw, 360px);
+  padding: 50px 16px 96px;
+  border: 1px solid rgba(201, 168, 106, .6);
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-hero__art {
+  background-image:
+    linear-gradient(100deg, rgba(251, 247, 238, .78) 0%, rgba(251, 247, 238, .35) 48%, rgba(251, 247, 238, 0) 70%),
+    url("/today/almanac-hero-day-v1.webp");
+  background-position: center, 62% bottom;
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-title { grid-area: title; justify-items: start; text-align: left; gap: 2px; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-title h3 {
+  color: #1d3550;
+  font-family: "LXGW WenKai TC", "Kaiti TC", "STKaiti", "KaiTi", var(--font-display);
+  font-size: clamp(2.6rem, 13vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: .04em;
+  line-height: 1.05;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .7), 0 2px 14px rgba(255, 255, 255, .6);
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-title p { color: #33475f; font-size: 12.5px; letter-spacing: .08em; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-title small { color: #4c5a69; font-size: 12px; letter-spacing: .04em; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-city {
+  grid-area: city;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-city strong { color: #1d3550; font-size: 18px; font-weight: 700; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-city span { position: relative; padding-left: 9px; color: #1d3550; font-size: 15px; font-weight: 600; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-city span::before { content: ""; position: absolute; left: 0; top: 15%; bottom: 15%; width: 1px; background: #1d3550; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-datecard {
+  grid-area: date;
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 6px 14px;
+  border: 1px solid #c9a86a;
+  border-radius: 6px;
+  background: rgba(251, 247, 238, .9);
+  box-shadow: 0 0 0 3px rgba(251, 247, 238, .9), 0 0 0 4px rgba(201, 168, 106, .7);
+  color: #1d3550;
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-datecard > span { font-size: 14px; font-weight: 700; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-datecard strong { font-size: 18px; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-datecard em { margin: 0; background: #b0392b; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-datecard small { color: #1d3550; font-size: 12.5px; }
+
+/* cards: xuan paper with double gold rule */
+html body .zw-ink-board[data-variant="day"] .zw-ink-panel,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper {
+  position: relative;
+  padding: 16px 12px 12px;
+  border: 1px solid rgba(201, 168, 106, .75);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 247, .94), rgba(250, 245, 233, .92));
+  box-shadow: inset 0 0 0 3px rgba(255, 253, 247, .9), inset 0 0 0 4px rgba(201, 168, 106, .32), 0 6px 18px -12px rgba(60, 50, 30, .35);
+  color: var(--ink-text);
+}
+/* navy-gold ribbon titles (圖3 cartouche) */
+html body .zw-ink-board[data-variant="day"] .zw-ink-panel > small,
+html body .zw-ink-board[data-variant="day"] .zw-ink-panel > div > small:first-child,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper > h4 {
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: -4px auto 12px;
+  padding: 5px 18px;
+  border: 1px solid #c9a86a;
+  border-radius: 5px;
+  background: linear-gradient(180deg, var(--ink-navy-2), var(--ink-navy));
+  box-shadow: 0 0 0 2px #fbf7ee, 0 0 0 3px rgba(201, 168, 106, .85), 0 3px 8px -4px rgba(29, 53, 80, .6);
+  color: #f6ecd2;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  line-height: 1.35;
+  text-align: center;
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-panel > small::before,
+html body .zw-ink-board[data-variant="day"] .zw-ink-panel > small::after,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper > h4::before,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper > h4::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #c9a86a;
+  background: #fbf7ee;
+  transform: translateY(-50%) rotate(45deg);
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-panel > small::before,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper > h4::before { left: -10px; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-panel > small::after,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper > h4::after { right: -10px; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-yi > h4,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-ji > h4 { padding: 4px; background: transparent; border: 0; box-shadow: none; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-yi > h4::before,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-yi > h4::after,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-ji > h4::before,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-ji > h4::after { display: none; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-yi h4 span,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-ji h4 span {
+  width: 42px;
+  height: 42px;
+  font-size: 22px;
+  box-shadow: 0 0 0 2px #fbf7ee, 0 0 0 3px rgba(201, 168, 106, .8);
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-yi h4 span { background: #3d6b5a; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-ji h4 span { background: #b0392b; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-yi li,
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-ji li { color: #23334a; font-size: 12px; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-yi .zw-ink-icon { color: #3d6b5a; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-paper.is-ji .zw-ink-icon { color: #b0392b; }
+
+/* weather */
+html body .zw-ink-board[data-variant="day"] .zw-ink-weather {
+  background:
+    linear-gradient(180deg, rgba(222, 236, 248, .9), rgba(251, 247, 238, .94) 70%);
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-weather > div > small { margin: 0 0 8px; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-weather strong { color: #1d3550; font-size: 24px; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-weather span { color: #33475f; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-weather > div + div { border-left-color: rgba(201, 168, 106, .5); }
+html body .zw-ink-board[data-variant="day"] .zw-ink-weather .zhaowu-today-location-inline { color: #1d3550; border-bottom-color: #1d3550; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-weather .zhaowu-today-location-error { color: #a8322a; }
+
+/* pillars */
+html body .zw-ink-board[data-variant="day"] .zw-ink-pillars .zhaowu-daily-pillars i { color: #6b6457 !important; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-pillars .zhaowu-daily-pillars b { color: #1d3550 !important; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-pillars .zhaowu-daily-pillars > span[data-pillar="day"] b { color: #b0392b !important; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-daymaster { color: #33475f; }
+
+/* sacred day with lotus art (圖3 觀音 card) */
+html body .zw-ink-board[data-variant="day"] .zw-ink-sacred__art {
+  display: block;
+  position: absolute;
+  right: -18%;
+  bottom: -14%;
+  z-index: -1;
+  width: 78%;
+  max-width: 220px;
+  opacity: .55;
+  pointer-events: none;
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-sacred .zw-ink-icon { color: #b0392b; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-sacred strong { color: #a8322a; font-size: 15px; font-weight: 700; }
+
+/* core + wheel */
+html body .zw-ink-board[data-variant="day"] .zw-ink-core strong { color: #23334a; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-personal { color: #33475f; border-top-color: rgba(201, 168, 106, .5); }
+html body .zw-ink-board[data-variant="day"] .zw-ink-wheel__star { stroke: rgba(29, 53, 80, .28); }
+html body .zw-ink-board[data-variant="day"] .zw-ink-wheel__arc { stroke: rgba(168, 129, 62, .8); }
+html body .zw-ink-board[data-variant="day"] .zw-ink-wheel__node { fill: #fbf7ee; stroke: #1d3550; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-wheel text { fill: #1d3550; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-wheel g.is-on text { fill: #fff8ea; }
+
+/* relations + hours */
+html body .zw-ink-board[data-variant="day"] .zw-ink-relations li { border-color: rgba(201, 168, 106, .5); background: rgba(255, 253, 247, .7); color: #1d3550; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-relations li i { color: #6b6457; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-hours li { color: #23334a; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-hours.is-good > h4 { background: linear-gradient(180deg, #4a7c69, #3d6b5a); color: #f6ecd2; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-hours.is-caution > h4 { background: linear-gradient(180deg, #c04a3a, #a8322a); color: #f6ecd2; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-ring path { fill: rgba(29, 53, 80, .05); stroke: rgba(29, 53, 80, .2); }
+html body .zw-ink-board[data-variant="day"] .zw-ink-ring g.is-good path { fill: #3d6b5a; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-ring g.is-caution path { fill: #b0392b; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-ring text { fill: #1d3550; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-ring__hub { fill: #1d3550; }
+
+/* colours / jewellery / mask */
+html body .zw-ink-board[data-variant="day"] .zw-ink-colors li,
+html body .zw-ink-board[data-variant="day"] .zw-ink-jewels li { color: #23334a; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-colors i {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, .9);
+  box-shadow: inset -4px -6px 10px rgba(0, 0, 0, .18), inset 4px 4px 8px rgba(255, 255, 255, .7), 0 2px 5px rgba(40, 40, 40, .2);
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-jewels .zw-ink-icon,
+html body .zw-ink-board[data-variant="day"] .zw-ink-maskart { color: #8a6a32; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-mask strong {
+  color: #1d3550;
+  font-family: "LXGW WenKai TC", "Kaiti TC", "STKaiti", "KaiTi", var(--font-display);
+  font-size: 17px;
+}
+html body .zw-ink-board[data-variant="day"] .zw-ink-row.is-three .zw-ink-panel { padding-inline: 8px; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-row.is-three .zw-ink-panel > small { padding: 4px 10px; font-size: 12.5px; letter-spacing: .06em; }
+html body .zw-ink-board[data-variant="day"] .zw-ink-closing {
+  margin: 6px 0 4px;
+  color: #1d3550;
+  font-family: "LXGW WenKai TC", "Kaiti TC", "STKaiti", "KaiTi", var(--font-display);
+  font-size: 19px;
+  letter-spacing: .12em;
+}
+html body .zw-ink-board[data-variant="day"][data-lang="en"] .zw-ink-title h3 { font-family: var(--font-display); font-size: clamp(1.9rem, 8.5vw, 2.6rem); }
+html body .zw-ink-board[data-variant="day"][data-lang="en"] .zw-ink-panel > small,
+html body .zw-ink-board[data-variant="day"][data-lang="en"] .zw-ink-paper > h4 { letter-spacing: .04em; }
+@media (max-width: 400px) {
+  html body .zw-ink-board[data-variant="day"] .zw-ink-hero { grid-template-columns: 1fr; padding: 48px 12px 84px; }
+  html body .zw-ink-board[data-variant="day"] .zw-ink-row.is-three .zw-ink-panel > small { padding: 4px 6px; font-size: 11.5px; letter-spacing: 0; }
+  html body .zw-ink-board[data-variant="day"] .zw-ink-row.is-three .zw-ink-panel > small::before,
+  html body .zw-ink-board[data-variant="day"] .zw-ink-row.is-three .zw-ink-panel > small::after { display: none; }
+}
