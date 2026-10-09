@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { signOut } from "@/lib/auth/client";
@@ -17,6 +17,11 @@ import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decre
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 import type { ReportSection } from "@/lib/report/focused-report";
 import { TeaGuardianReport } from "@/components/tea-guardian-report";
+
+const OwnerGalleryManager = lazy(() => import("@/components/owner-gallery-manager").then((m) => ({ default: m.OwnerGalleryManager })));
+const OwnerLoginVisualsManager = lazy(() => import("@/components/owner-login-visuals-manager").then((m) => ({ default: m.OwnerLoginVisualsManager })));
+const SocialPublisherPage = lazy(() => import("./social").then((m) => ({ default: m.SocialPublisherPage })));
+type ConsoleView = "reports" | "images" | "opening" | "social";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -88,6 +93,12 @@ function statusPill(ok: boolean, label: string, pendingLabel: string) {
 function AccountPage() {
   const { t, locale } = useI18n();
   const { user, session, isPending } = useCurrentUserState();
+  const [consoleView, setConsoleView] = useState<ConsoleView>("reports");
+  const [visitedViews, setVisitedViews] = useState<Set<ConsoleView>>(() => new Set(["reports"]));
+  function selectConsoleView(view: ConsoleView) {
+    setConsoleView(view);
+    setVisitedViews((previous) => new Set([...previous, view]));
+  }
   const [rows, setRows] = useState<ReportListRecord[]>([]);
   const [details, setDetails] = useState<Record<string, ReportRecord | null>>({});
   const [openId, setOpenId] = useState<string | null>(null);
@@ -359,26 +370,33 @@ function AccountPage() {
       </section>
 
       {user.isOwner ? (
-        <nav className="grid grid-cols-1 gap-2 sm:grid-cols-3" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
-          <button
-            type="button"
-            aria-pressed={true}
-            className="min-h-14 rounded-xl border px-4 py-3 text-left text-sm font-medium border-[#315f51] bg-[#315f51] text-[#fffaf0]"
-          >
-            <span className="block text-[10px] tracking-[0.16em] opacity-65">REPORTS</span>
-            <span className="mt-1 block">{tr(locale, "報告管理", "报告管理", "Reports")}</span>
-          </button>
-          <Link to="/gallery" className="min-h-14 rounded-xl border border-line bg-cream/80 px-4 py-3 text-left text-sm font-medium text-ink">
-            <span className="block text-[10px] tracking-[0.16em] text-ink-mute">MEDIA</span>
-            <span className="mt-1 block">{tr(locale, "首頁背景／圖片／開場", "首页背景／图片／开场", "Background / images / opening")}</span>
-          </Link>
-          <Link to="/social" className="min-h-14 rounded-xl border border-line bg-cream/80 px-4 py-3 text-left text-sm font-medium text-ink">
-            <span className="block text-[10px] tracking-[0.16em] text-cinnabar">PUBLISH</span>
-            <span className="mt-1 block">{tr(locale, "Instagram／Threads", "Instagram／Threads", "Instagram / Threads")}</span>
-          </Link>
+        <nav className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="tablist" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
+          {([
+            ["reports", tr(locale, "報告管理", "报告管理", "Reports")],
+            ["images", tr(locale, "背景與圖片", "背景与图片", "Backgrounds and images")],
+            ["opening", tr(locale, "開場影片", "开场视频", "Opening video")],
+            ["social", "Instagram / Threads"],
+          ] as [ConsoleView, string][]).map(([view, label], index, tabs) => (
+            <button key={view} id={`console-tab-${view}`} type="button" role="tab"
+              aria-selected={consoleView === view} aria-controls={`console-panel-${view}`}
+              tabIndex={consoleView === view ? 0 : -1}
+              onClick={() => selectConsoleView(view)}
+              onKeyDown={(event) => {
+                const offset = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+                if (!offset && event.key !== "Home" && event.key !== "End") return;
+                event.preventDefault();
+                const next = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : (index + offset + tabs.length) % tabs.length;
+                selectConsoleView(tabs[next][0]);
+                document.getElementById(`console-tab-${tabs[next][0]}`)?.focus();
+              }}
+              className={`min-h-14 rounded-xl border px-3 py-3 text-left text-sm font-medium ${consoleView === view ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-cream/80 text-ink"}`}>
+              {label}
+            </button>
+          ))}
         </nav>
       ) : null}
 
+      <div id="console-panel-reports" role={user.isOwner ? "tabpanel" : undefined} aria-labelledby={user.isOwner ? "console-tab-reports" : undefined} hidden={user.isOwner && consoleView !== "reports"}>
       <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -521,6 +539,20 @@ function AccountPage() {
           })}
         </div>
       </section>
+
+      </div>
+
+      {user.isOwner && session ? (<>
+        <div id="console-panel-images" role="tabpanel" aria-labelledby="console-tab-images" hidden={consoleView !== "images"}>
+          {visitedViews.has("images") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入圖庫…", "加载图库…", "Loading gallery…")}</p>}><OwnerGalleryManager session={session} locale={locale} /></Suspense> : null}
+        </div>
+        <div id="console-panel-opening" role="tabpanel" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>
+          {visitedViews.has("opening") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入影片…", "加载视频…", "Loading videos…")}</p>}><OwnerLoginVisualsManager session={session} locale={locale} /></Suspense> : null}
+        </div>
+        <div id="console-panel-social" role="tabpanel" aria-labelledby="console-tab-social" hidden={consoleView !== "social"}>
+          {visitedViews.has("social") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入發布器…", "加载发布器…", "Loading publisher…")}</p>}><SocialPublisherPage embedded /></Suspense> : null}
+        </div>
+      </>) : null}
 
       <Link to="/" className="inline-flex h-11 items-center rounded-full border border-line bg-cream px-5 text-ink">{t("backHome")}</Link>
     </main>

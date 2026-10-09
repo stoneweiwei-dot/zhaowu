@@ -35,7 +35,9 @@ function imageAsset(asset: GalleryAsset) {
   return /\.(avif|gif|jpe?g|png|webp)(?:$|\?)/i.test(asset.storage_path);
 }
 
-function SocialPublisherPage() {
+export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }) {
+  const Container = embedded ? "div" : "main";
+  const Title = embedded ? "h2" : "h1";
   const { locale } = useI18n();
   const { user, session, isPending } = useCurrentUserState();
   const [configuration, setConfiguration] = useState<SocialConfiguration | null>(null);
@@ -176,15 +178,15 @@ function SocialPublisherPage() {
   );
 
   return (
-    <main className="mx-auto max-w-2xl space-y-4 pb-14" data-owner-social-publisher>
+    <Container className="mx-auto max-w-2xl space-y-4 pb-14" data-owner-social-publisher>
       <section className="seal-border rounded-[1.35rem] bg-cream/95 p-5 sm:p-7">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[10px] tracking-[0.22em] text-cinnabar">SOCIAL PUBLISHER</p>
-            <h1 className="mt-1 font-display text-3xl">{tx("一次發到兩邊", "一次发到两边", "Publish once")}</h1>
+            <Title className="mt-1 font-display text-3xl">{tx("一次發到兩邊", "一次发到两边", "Publish once")}</Title>
             <p className="mt-2 text-sm leading-6 text-ink-soft">{tx("寫一次、選一張圖，直接送到 Instagram 與 Threads。", "写一次、选一张图，直接送到 Instagram 与 Threads。", "Write once, choose one image, then publish to Instagram and Threads.")}</p>
           </div>
-          <Link to="/account" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft">← {tx("後台", "后台", "Console")}</Link>
+          {!embedded ? <Link to="/account" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft">← {tx("後台", "后台", "Console")}</Link> : null}
         </div>
 
         <div className="mt-5 grid grid-cols-2 gap-2" aria-label={tx("平台連接", "平台连接", "Platform connections")}>
@@ -347,6 +349,6 @@ function SocialPublisherPage() {
           {busy ? tx("正在發布…", "正在发布…", "Publishing…") : publishLabel}
         </button>
       </form>
-    </main>
+    </Container>
   );
 }

@@ -150,12 +150,12 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
   assert.ok(apiFiles.length <= 12);
 });
 
-test("the owner console links to a gallery-backed dual social publisher", async () => {
+test("the owner console embeds the existing gallery-backed dual social publisher", async () => {
   const account = await source("src/routes/account.tsx");
   const route = await source("src/routes/social.tsx");
   const userState = await source("src/lib/auth/use-current-user.ts");
-  assert.match(account, /to="\/social"/);
-  assert.match(account, /Instagram／Threads/);
+  assert.match(account, /<SocialPublisherPage embedded/);
+  assert.match(account, /Instagram \/ Threads/);
   assert.match(route, /data-owner-social-publisher/);
   assert.match(route, /configuration\.targets/);
   assert.match(route, /useCurrentUserState/);
