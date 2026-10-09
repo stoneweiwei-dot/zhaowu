@@ -31,16 +31,15 @@ test("wrong owner password is still rejected", async () => {
   assert.equal(response.status, 401);
 });
 
-test("homepage keeps one primary flow while Today Guide stays visible above it", async () => {
+test("homepage (ZW-FE-02) keeps one primary flow per dedicated view, each reachable from the four home portals", async () => {
   const home = await source("src/routes/index.tsx");
   assert.match(home, /useState<Section \| null>\(null\)/);
   assert.doesNotMatch(home, /<HomeDisclosure /);
   assert.match(home, /<AnalysisForm \/>/);
   assert.match(home, /id="home-today-guide"/);
   assert.match(home, /<LazyDailyAlmanacWidget embedded \/>/);
-  assert.match(home, /<LazyDailyAlmanacWidget onExpand=\{\(\) => setTodayExpanded\(true\)\} \/>/);
   assert.match(home, /import\("@\/components\/daily-almanac-widget"\)/);
-  assert.doesNotMatch(home, /activeSection === "today"/);
+  assert.match(home, /activeSection === "today"/);
   assert.doesNotMatch(home, /activeSection === "gallery"/);
   assert.match(home, /activeSection === "notes"/);
 });
