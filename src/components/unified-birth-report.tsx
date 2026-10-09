@@ -56,7 +56,7 @@ function withoutMethodLabels(text: string, locale: Locale) {
     .replace(/達摩一掌經|达摩一掌经|一掌經|一掌经|Dharma One-Palm Classic/gi, internal)
     .replace(/生命靈數|生命灵数|Numerology/gi, internal)
     .replace(/D60/gi, timeDetail)
-    .replace(/本卷/g, "本報告")
+    .replace(/本卷/g, locale === "zh-Hans" ? "本报告" : "本報告")
     .replace(/\s+/g, " ")
     .trim();
 }

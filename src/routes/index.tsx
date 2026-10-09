@@ -84,6 +84,7 @@ function useCopy(locale: string) {
     tagline: "天衍四九，其留與一。愛出者愛返，福往者福來。",
     birthCta: "開始建立我的命書",
     birthHint: "錄入生辰・開卷昭梧",
+    backHome: "返回主頁",
     navBook:  "命書",
     navToday: "今日",
     navQuiz:  "測驗",
