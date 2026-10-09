@@ -205,13 +205,26 @@ function Home() {
       openBirthBook({ focusYear: true });
       return;
     }
-    setActiveSection((prev) => (prev === id ? null : id));
+    setActiveSection((prev) => {
+      const next = prev === id ? null : id;
+      if (typeof window !== "undefined") {
+        if (next) {
+          window.history.pushState(null, "", `#${next}`);
+        } else {
+          window.history.pushState(null, "", window.location.pathname);
+        }
+      }
+      return next;
+    });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const openBirthBook = (options?: { focusYear?: boolean }) => {
     const shouldFocus = options?.focusYear ?? true;
     setActiveSection("form");
+    if (typeof window !== "undefined" && window.location.hash !== "#birth-form") {
+      window.history.pushState(null, "", "#birth-form");
+    }
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
         const target = document.getElementById("birth-form") ?? document.getElementById("analysis");
@@ -227,9 +240,27 @@ function Home() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const BIRTH_HASHES = ["#birth-form", "#analysis", "#analysisForm"];
+    const BIRTH_HASHES = ["#birth-form", "#analysis", "#analysisForm", "#birth-year", "#form"];
+    const TODAY_HASHES = ["#today", "#home-today-guide", "#almanac"];
+    const QUIZ_HASHES = ["#quiz", "#fun-tests", "#tests"];
+    const NOTES_HASHES = ["#notes", "#life-view", "#guanshi"];
+
     const fromHash = () => {
-      if (BIRTH_HASHES.includes(window.location.hash)) openBirthBook({ focusYear: false });
+      const hash = window.location.hash;
+      if (BIRTH_HASHES.includes(hash)) {
+        openBirthBook({ focusYear: false });
+      } else if (TODAY_HASHES.includes(hash)) {
+        setActiveSection("today");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (QUIZ_HASHES.includes(hash)) {
+        setActiveSection("quiz");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (NOTES_HASHES.includes(hash)) {
+        setActiveSection("notes");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (!hash || hash === "#" || hash === "#home") {
+        setActiveSection(null);
+      }
     };
     const fromEvent = () => openBirthBook({ focusYear: false });
     fromHash();

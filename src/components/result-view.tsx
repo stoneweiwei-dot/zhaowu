@@ -15,6 +15,13 @@ import { buildComplexDeterministicAnswer, buildComplexReasoningRequest, requestC
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
 import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
+import {
+  REPORT_ACCESS_PRODUCTS,
+  resolveReportAccess,
+  startReportCheckout,
+  type ReportAccessLevel,
+  type ReportAccessProduct,
+} from "@/lib/report-access";
 import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
 
 const RESULT_COPY = {
@@ -34,6 +41,28 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [reportSyncedId, setReportSyncedId] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageReferenceAssetId, setImageReferenceAssetId] = useState<string | null>(null);
+  const [accessLevel, setAccessLevel] = useState<ReportAccessLevel>("none");
+  const [purchasing, setPurchasing] = useState<ReportAccessProduct | null>(null);
+  const [purchaseError, setPurchaseError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void resolveReportAccess("ziwei").then((acc) => {
+      if (active) setAccessLevel(acc.level);
+    });
+    return () => { active = false; };
+  }, []);
+
+  async function handleUnlock(product: ReportAccessProduct) {
+    setPurchasing(product);
+    setPurchaseError(null);
+    try {
+      await startReportCheckout(product, "ziwei");
+    } catch {
+      setPurchaseError(locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : "付款通道尚未啟用；價格與免費／付費邊界已經固定。");
+      setPurchasing(null);
+    }
+  }
   const { chart, reading, question } = result;
   const petDecision = isPetDecisionQuestion(question) ? buildPetDecision(result, result.locale ?? locale) : null;
   const decisionModel = buildDecisionReportModel(result);
@@ -222,15 +251,145 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </div>
       </details>
 
-      <div className="zhaowu-result-actions flex flex-col gap-3">
-        <button type="button" disabled={busy !== null} onClick={() => void onFull()} className="zhaowu-result-primary h-12 rounded-full bg-cinnabar px-5 text-cream disabled:opacity-60">{busy === "full" ? copy.fullGenerating : copy.fullGenerate}</button>
-        {session && user ? <button type="button" disabled={busy !== null} onClick={() => void onSave()} className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60">{busy === "save" ? copy.saving : hasDurableRecord ? copy.updateSaved : t("save")}</button> : null}
-        <button type="button" onClick={() => reset()} className="zhaowu-result-reset h-12 rounded-full px-5 text-ink-soft">{t("reset")}</button>
+      {/* ── 付費命書內容邊界與進階解鎖入口 ── */}
+      <section className="zhaowu-destiny-unlock-gate seal-border rounded-xl bg-cream/95 p-5 sm:p-7 mt-6" data-destiny-unlock-gate>
+        <div className="flex items-center justify-between border-b border-line/60 pb-3">
+          <span className="text-xs font-semibold tracking-widest text-cinnabar uppercase">
+            {locale === "en" ? "Paid Deep Reading" : locale === "zh-Hans" ? "付费进阶深批" : "付費進階深批"}
+          </span>
+          <span className="text-xs text-ink-mute">
+            {accessLevel !== "none"
+              ? (locale === "en" ? "✓ Unlocked" : "✓ 已解鎖")
+              : (locale === "en" ? "One-time unlock · No recurring fees" : "單次解鎖 · 不設自動續費")}
+          </span>
+        </div>
+
+        <h3 className="mt-3 font-display text-xl text-ink">
+          {locale === "en" ? "Unlock Full Destiny Book" : locale === "zh-Hans" ? "解锁昭梧深批命书" : "解鎖昭梧深批命書"}
+        </h3>
+        <p className="mt-2 text-sm leading-6 text-ink-soft">
+          {locale === "en"
+            ? "Your 3-part direct verdict is free forever. To unlock deep 10-year luck cycles, monthly timing rhythms, full shensha stars, and multi-system synthesis, select a reading depth below:"
+            : locale === "zh-Hans"
+            ? "上方三段式核心直断永久免费。若需进一步推演十年大运起伏、流年逐月吉凶、完整神煞星曜与多流派合参，请选择下方深批规格："
+            : "上方三段式核心直斷永久免費。若需進一步推演十年大運起伏、流年逐月吉凶、完整神煞星曜與多流派合參，請選擇下方深批規格："}
+        </p>
+
+        {/* 內容邊界清單 */}
+        <ul className="my-4 space-y-2 rounded-lg bg-paper-clean/70 p-4 text-xs leading-5 text-ink-soft border border-line/40">
+          <li className="flex items-start gap-2">
+            <span className="text-cinnabar">✦</span>
+            <span>{locale === "en" ? "10-Year Luck Cycle & Monthly Timing (Precise turning points)" : "十年大運起伏與流年逐月節奏（精準定位轉折時機）"}</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-cinnabar">✦</span>
+            <span>{locale === "en" ? "Complete ShenSha Stars & Pattern Analysis (Personality & blind spots)" : "完整四柱神煞星曜與深層格局全解（性格盲區與潛在契機）"}</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-cinnabar">✦</span>
+            <span>{locale === "en" ? "Multi-System Star Chart Synthesis (Ziwei & Qi Zheng overlay)" : "跨流派星象合參（紫微斗數命盤、七政四餘合照）"}</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-cinnabar">✦</span>
+            <span>{locale === "en" ? "Five-Tone Harmonic Tuning & Personal Sacred Beast sequence" : "五音調和聆聽序列與專屬命象瑞獸圖譜"}</span>
+          </li>
+        </ul>
+
+        {/* 價格階梯卡片 */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 my-4">
+          <div className="flex flex-col justify-between rounded-lg border border-line/70 bg-cream p-4 text-center">
+            <div>
+              <strong className="block text-sm text-ink">{locale === "en" ? "Quick Read" : "快速進階讀"}</strong>
+              <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.quick.price}</span>
+              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Core cycle & first key observation" : "核心大運走勢與第一關鍵留心點"}</p>
+            </div>
+            <button
+              type="button"
+              disabled={purchasing !== null}
+              onClick={() => void handleUnlock("quick")}
+              className="mt-3 w-full rounded-full border border-line py-2 text-xs font-medium text-ink hover:bg-paper-clean disabled:opacity-60"
+            >
+              {purchasing === "quick" ? "…" : (locale === "en" ? `Unlock ${REPORT_ACCESS_PRODUCTS.quick.price}` : `解鎖 ${REPORT_ACCESS_PRODUCTS.quick.price}`)}
+            </button>
+          </div>
+
+          <div className="flex flex-col justify-between rounded-lg border-2 border-cinnabar/80 bg-cinnabar/5 p-4 text-center relative shadow-sm">
+            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-cinnabar px-2 py-0.5 text-[10px] text-cream font-medium">
+              {locale === "en" ? "Recommended" : "推薦深批"}
+            </span>
+            <div>
+              <strong className="block text-sm text-ink">{locale === "en" ? "Full Destiny Book" : "完整單盤深批"}</strong>
+              <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.system.price}</span>
+              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Full multi-section report & personal profile" : "完整深批全段落與個人命格專頁"}</p>
+            </div>
+            <button
+              type="button"
+              disabled={purchasing !== null}
+              onClick={() => void handleUnlock("system")}
+              className="mt-3 w-full rounded-full bg-cinnabar py-2 text-xs font-medium text-cream hover:opacity-90 disabled:opacity-60"
+            >
+              {purchasing === "system" ? "…" : (locale === "en" ? `Unlock ${REPORT_ACCESS_PRODUCTS.system.price}` : `解鎖 ${REPORT_ACCESS_PRODUCTS.system.price}`)}
+            </button>
+          </div>
+
+          <div className="flex flex-col justify-between rounded-lg border border-line/70 bg-cream p-4 text-center">
+            <div>
+              <strong className="block text-sm text-ink">{locale === "en" ? "6 Systems Bundle" : "全六盤典藏"}</strong>
+              <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.bundle.price}</span>
+              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "All six astrology systems & full profile" : "六大術數流派合參與完整專頁"}</p>
+            </div>
+            <button
+              type="button"
+              disabled={purchasing !== null}
+              onClick={() => void handleUnlock("bundle")}
+              className="mt-3 w-full rounded-full border border-line py-2 text-xs font-medium text-ink hover:bg-paper-clean disabled:opacity-60"
+            >
+              {purchasing === "bundle" ? "…" : (locale === "en" ? `Unlock ${REPORT_ACCESS_PRODUCTS.bundle.price}` : `解鎖 ${REPORT_ACCESS_PRODUCTS.bundle.price}`)}
+            </button>
+          </div>
+        </div>
+
+        {purchaseError ? (
+          <p className="mt-2 text-xs text-cinnabar" role="alert">{purchaseError}</p>
+        ) : null}
+
+        <div className="mt-4 pt-3 border-t border-line/40 flex items-center justify-between text-xs text-ink-mute">
+          <span>{locale === "en" ? "Free 3-part report remains accessible anytime" : "三段式免費報告隨時可查，無任何強制要求"}</span>
+          <button
+            type="button"
+            disabled={busy !== null}
+            onClick={() => void onFull()}
+            className="text-xs text-cinnabar underline hover:opacity-80"
+          >
+            {reportSections ? (locale === "en" ? "Re-generate reading" : "重新排布報告") : (locale === "en" ? "Preview full reading" : "預覽深批內容")}
+          </button>
+        </div>
+      </section>
+
+      {/* ── 操作按鈕組 ── */}
+      <div className="zhaowu-result-actions flex flex-col gap-3 mt-6">
+        {session && user ? (
+          <button
+            type="button"
+            disabled={busy !== null}
+            onClick={() => void onSave()}
+            className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60"
+          >
+            {busy === "save" ? copy.saving : hasDurableRecord ? copy.updateSaved : t("save")}
+          </button>
+        ) : null}
+        <button
+          type="button"
+          onClick={() => reset()}
+          className="zhaowu-result-reset h-12 rounded-full px-5 text-ink-soft hover:text-ink"
+        >
+          {t("reset")}
+        </button>
       </div>
 
-      {msg ? <p className="zhaowu-result-message text-sm text-cinnabar">{msg}</p> : null}
+      {msg ? <p className="zhaowu-result-message text-sm text-cinnabar mt-2">{msg}</p> : null}
       {reportSections ? <FocusedReportSections sections={reportSections} result={result} /> : null}
-      <p className="text-xs leading-6 text-ink-mute">{t("disclaimer")}</p>
+      <p className="text-xs leading-6 text-ink-mute mt-4">{t("disclaimer")}</p>
     </section>
   );
 }
