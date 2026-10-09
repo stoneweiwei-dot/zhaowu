@@ -78,7 +78,7 @@ export function matchFiveToneTracks(plan: FiveTonePlanItem[], tracks: OwnerMusic
   const byElement = new Map<Element, { track: OwnerMusicTrack; title: string }>();
   tracks.forEach((track) => {
     const parsed = parseFiveToneTrackName(track.name);
-    if (parsed && !byElement.has(parsed.element)) byElement.set(parsed.element, { track, title: parsed.title });
+    if (parsed && track.enabled !== false && !byElement.has(parsed.element)) byElement.set(parsed.element, { track, title: parsed.title });
   });
 
   return plan.map((item) => {

@@ -504,7 +504,7 @@ export function AnalysisForm() {
               {chartDetailsOpen ? (
                 <div className="zhaowu-bazi-full-details__body">
                   <ChartTrustPanel chart={previewChart} locale={locale} />
-                  <UnifiedBirthReport birth={rememberedRecord!} locale={locale} foundation={foundationValues} plainLead={plainLead} />
+                  {rememberedRecord ? <UnifiedBirthReport birth={rememberedRecord} locale={locale} foundation={foundationValues} plainLead={plainLead} /> : null}
                 </div>
               ) : null}
             </details>
@@ -537,7 +537,7 @@ export function AnalysisForm() {
             onChange={(event) => setQuestion(event.target.value)}
           />
           <div className="zhaowu-question-meta">
-            <span>{formatSharedBirthRecord(rememberedRecord!, locale)}</span>
+            <span>{rememberedRecord ? formatSharedBirthRecord(rememberedRecord, locale) : ""}</span>
             <span>{question.length}/400</span>
           </div>
         </section>
