@@ -45,4 +45,10 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Engine and contract suite
-        run: npm run test:engine
+        run: |
+          set +e
+          npm run test:engine > out.txt 2>&1
+          code=$?
+          grep -E "^\s*✖" out.txt | sort -u | head -60 | while IFS= read -r l; do echo "::warning::$l"; done
+          grep -E "^ℹ (tests|pass|fail)" out.txt | while IFS= read -r l; do echo "::notice::$l"; done
+          exit $code
