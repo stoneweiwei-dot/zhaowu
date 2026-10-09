@@ -5,16 +5,15 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("homepage keeps self-discovery collapsed while Today stays a persistent jump target", async () => {
+test("homepage (ZW-FE-02) routes Today into its own dedicated full-screen view instead of a persistent jump target", async () => {
   const home = await source("src/routes/index.tsx");
   assert.match(home, /昭梧 · 個人命書/);
   assert.match(home, /ZHAOWU · PERSONAL DESTINY BOOK/);
   assert.match(home, /const \[activeSection, setActiveSection\] = useState<Section \| null>\(null\)/);
   assert.match(home, /activeSection === "quiz"/);
-  assert.match(home, /aria-expanded=\{id === "today" \? undefined : activeSection === id\}/);
-  assert.match(home, /aria-controls=\{id === "today" \? "home-today-guide" : undefined\}/);
+  assert.match(home, /activeSection === "today"/);
   assert.match(home, /id="home-today-guide"/);
-  assert.doesNotMatch(home, /activeSection === "today"/);
+  assert.doesNotMatch(home, /aria-expanded=\{id === "today" \? undefined : activeSection === id\}/);
   assert.doesNotMatch(home, /title: "輕測驗"|title: "轻测验"/);
 });
 
