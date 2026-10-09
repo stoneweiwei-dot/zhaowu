@@ -206,10 +206,20 @@ function Home() {
     setActiveSection("form");
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
-        document.getElementById("analysis")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        const target = document.getElementById("birth-form") ?? document.getElementById("analysis");
+        target?.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.setTimeout(() => {
+          document.getElementById("birth-year")?.focus({ preventScroll: true });
+        }, 350);
       });
     });
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && (window.location.hash === "#birth-form" || window.location.hash === "#analysis")) {
+      openBirthBook();
+    }
+  }, []);
 
   const navLabels: Record<Section, string> = {
     form:  copy.navBook,
@@ -230,7 +240,7 @@ function Home() {
           type="button"
           className="zw-birth-entry-ticket"
           data-home-birth-entry
-          aria-controls="analysis"
+          aria-controls="birth-form"
           aria-expanded={activeSection === "form"}
           onClick={openBirthBook}
         >
