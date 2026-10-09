@@ -32,6 +32,7 @@ function useCopy(locale: string) {
       navToday: "Today",
       navQuiz:  "Explore",
       navNotes: "Notes",
+      backHome: "Back to Home",
       todayHint: "almanac, five-element dress and spirit slip",
       quizHint: "optional self-discovery tests",
       notesTitle: "Notes on Life",
@@ -59,6 +60,7 @@ function useCopy(locale: string) {
       navToday: "今日",
       navQuiz:  "测验",
       navNotes: "观世录",
+      backHome: "返回首页",
       todayHint: "黄历、五行穿衣、灵签各自展开",
       quizHint: "可选的自我观察",
       notesTitle: "观世录",
@@ -191,14 +193,21 @@ function Home() {
     if (current && activeSection === null) setActiveSection("form");
   }, [current]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const returnToHome = () => {
+    setActiveSection(null);
+    if (typeof window !== "undefined" && window.location.hash) {
+      window.history.pushState(null, "", window.location.pathname);
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const toggleSection = (id: Section) => {
-    if (id === "today") {
-      setActiveSection(null);
-      setTodayExpanded(true);
+    if (id === "form") {
+      openBirthBook({ focusYear: true });
       return;
     }
-    setTodayExpanded(false);
     setActiveSection((prev) => (prev === id ? null : id));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const openBirthBook = (options?: { focusYear?: boolean }) => {
@@ -244,119 +253,131 @@ function Home() {
   return (
     <main className="zw-hero-home">
 
-      {/* ── BRAND INSCRIPTION ───────────────────────────────── */}
-      <div className="zw-hero-inscription">
-        <p className="zw-hero-inscription-kicker">{copy.kicker}</p>
-        <h1 className="zw-hero-inscription-title">{copy.title}</h1>
-        <p className="zw-hero-inscription-tagline">{copy.tagline}</p>
-        <button
-          type="button"
-          className="zw-birth-entry-ticket"
-          data-home-birth-entry
-          aria-controls="birth-form"
-          aria-expanded={activeSection === "form"}
-          onClick={() => openBirthBook({ focusYear: true })}
-        >
-          <span className="zw-birth-entry-seal" aria-hidden>命</span>
-          <span className="zw-birth-entry-copy">
-            <strong>{copy.birthCta}</strong>
-            <small>{copy.birthHint}</small>
-          </span>
-          <span className="zw-birth-entry-arrow" aria-hidden>→</span>
-        </button>
-      </div>
-
-      {/* ── ICON NAVIGATION ─────────────────────────────────── */}
-      <div className="zw-hero-nav-wrap">
-        <nav className="zw-hero-nav" aria-label={heroUi.primaryNav}>
-          {NAV_ITEMS.map(({ id, artSrc }) => (
-            <button
-              key={id}
-              type="button"
-              data-home-card={id}
-              className={`zw-hero-nav-item zw-hero-card${activeSection === id ? " is-active" : ""}`}
-              aria-expanded={id === "today" ? undefined : activeSection === id}
-              aria-controls={id === "today" ? "home-today-guide" : undefined}
-              aria-label={navLabels[id]}
-              onClick={() => toggleSection(id)}
-            >
-              <img src={artSrc} className="zw-hero-card-art" alt="" aria-hidden loading="lazy" decoding="async" width={760} height={504} />
-              <span className="zw-hero-card-copy">
-                <span className="zw-hero-nav-label">{navLabels[id]}</span>
-                <small>{NAV_HINTS[locale][id]}</small>
-              </span>
-              <span className="zw-hero-card-arrow" aria-hidden>→</span>
-            </button>
-          ))}
-        </nav>
-      </div>
-
-      {/* ── TODAY GUIDE: FIRST DAILY-RETURN SURFACE ─────────── */}
-      <section id="home-today-guide" className="zw-home-today-priority" aria-label={copy.navToday}>
-        <Suspense
-          fallback={
-            <div className="zw-home-today-skeleton" role="status" aria-label={locale === "en" ? "Loading Today Guide" : locale === "zh-Hans" ? "正在载入今日指引" : "正在載入今日指引"}>
-              <span />
-              <strong />
-              <i />
-            </div>
-          }
-        >
-          {todayExpanded ? (
-            <>
-              <LazyDailyAlmanacWidget embedded />
-              <button
-                type="button"
-                className="zw-home-today-collapse"
-                onClick={() => setTodayExpanded(false)}
-              >
-                {locale === "en" ? "Collapse Today Guide" : locale === "zh-Hans" ? "收起今日指引" : "收起今日指引"}
-              </button>
-              <LazySkyEventsHomeSection />
-            </>
-          ) : (
-            <LazyDailyAlmanacWidget onExpand={() => setTodayExpanded(true)} />
-          )}
-        </Suspense>
-      </section>
-
-      {/* ── SECONDARY PANEL: FORM ───────────────────────────── */}
-      {activeSection === "form" && (
-        <HomeSectionBoundary
-          id="analysis"
-          locale={locale}
-          onRecover={() => { clearSharedBirthRecord(); window.location.reload(); }}
-        >
-          <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--primary relative">
-            <AnalysisForm />
-          </div>
-        </HomeSectionBoundary>
-      )}
-
-      {/* Result view always visible when there's a result */}
-      {current && (
+      {/* ── HOME MAIN: HERO & 4 BIG PORTALS (shown when no subview active) ── */}
+      {activeSection === null && (
         <>
-          <HomeSectionBoundary
-            id="report"
-            locale={locale}
-            onRecover={() => { setCurrent(null); window.location.reload(); }}
-          >
-            <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
-              <ResultView result={current} />
-            </div>
-            <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
-              <FollowUpBox result={current} />
-            </div>
-          </HomeSectionBoundary>
-          <HomeSectionBoundary id="hero" locale={locale}>
-            <DeepReadingHeroCard />
-          </HomeSectionBoundary>
+          {/* ── BRAND INSCRIPTION ───────────────────────────────── */}
+          <div className="zw-hero-inscription">
+            <p className="zw-hero-inscription-kicker">{copy.kicker}</p>
+            <h1 className="zw-hero-inscription-title">{copy.title}</h1>
+            <p className="zw-hero-inscription-tagline">{copy.tagline}</p>
+            <button
+              type="button"
+              className="zw-birth-entry-ticket"
+              data-home-birth-entry
+              aria-controls="birth-form"
+              aria-expanded={false}
+              onClick={() => openBirthBook({ focusYear: true })}
+            >
+              <span className="zw-birth-entry-seal" aria-hidden>命</span>
+              <span className="zw-birth-entry-copy">
+                <strong>{copy.birthCta}</strong>
+                <small>{copy.birthHint}</small>
+              </span>
+              <span className="zw-birth-entry-arrow" aria-hidden>→</span>
+            </button>
+          </div>
+
+          {/* ── FOUR BIG PORTALS NAVIGATION ─────────────────────── */}
+          <div className="zw-hero-nav-wrap">
+            <nav className="zw-hero-nav" aria-label={heroUi.primaryNav}>
+              {NAV_ITEMS.map(({ id, artSrc }) => (
+                <button
+                  key={id}
+                  type="button"
+                  data-home-card={id}
+                  className="zw-hero-nav-item zw-hero-card"
+                  aria-label={navLabels[id]}
+                  onClick={() => toggleSection(id)}
+                >
+                  <img src={artSrc} className="zw-hero-card-art" alt="" aria-hidden loading="lazy" decoding="async" width={760} height={504} />
+                  <span className="zw-hero-card-copy">
+                    <span className="zw-hero-nav-label">{navLabels[id]}</span>
+                    <small>{NAV_HINTS[locale][id]}</small>
+                  </span>
+                  <span className="zw-hero-card-arrow" aria-hidden>→</span>
+                </button>
+              ))}
+            </nav>
+          </div>
         </>
       )}
 
-      {/* ── SECONDARY PANEL: QUIZ ───────────────────────────── */}
+      {/* ── SUBVIEW TOPBAR: RETURN TO 4 BIG PORTALS ──────────── */}
+      {activeSection !== null && (
+        <div className="zw-subview-topbar" data-subview-header>
+          <button
+            type="button"
+            className="zw-subview-back-btn"
+            data-subview-back
+            onClick={returnToHome}
+          >
+            <span className="zw-subview-back-arrow" aria-hidden>←</span>
+            <span>{copy.backHome}</span>
+          </button>
+          <span className="zw-subview-title">{navLabels[activeSection]}</span>
+        </div>
+      )}
+
+      {/* ── DEDICATED VIEW: TODAY GUIDE ─────────────────────── */}
+      {activeSection === "today" && (
+        <div className="zw-hero-secondary-panel zw-subview-panel">
+          <section id="home-today-guide" className="zw-home-today-priority" aria-label={copy.navToday}>
+            <Suspense
+              fallback={
+                <div className="zw-home-today-skeleton" role="status" aria-label={locale === "en" ? "Loading Today Guide" : locale === "zh-Hans" ? "正在载入今日指引" : "正在載入今日指引"}>
+                  <span />
+                  <strong />
+                  <i />
+                </div>
+              }
+            >
+              <LazyDailyAlmanacWidget embedded />
+              <LazySkyEventsHomeSection />
+            </Suspense>
+          </section>
+        </div>
+      )}
+
+      {/* ── DEDICATED VIEW: FORM & DESTINY BOOK ─────────────── */}
+      {activeSection === "form" && (
+        <>
+          <HomeSectionBoundary
+            id="analysis"
+            locale={locale}
+            onRecover={() => { clearSharedBirthRecord(); window.location.reload(); }}
+          >
+            <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--primary relative">
+              <AnalysisForm />
+            </div>
+          </HomeSectionBoundary>
+
+          {/* Result view visible when there's an active result */}
+          {current && (
+            <>
+              <HomeSectionBoundary
+                id="report"
+                locale={locale}
+                onRecover={() => { setCurrent(null); window.location.reload(); }}
+              >
+                <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
+                  <ResultView result={current} />
+                </div>
+                <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
+                  <FollowUpBox result={current} />
+                </div>
+              </HomeSectionBoundary>
+              <HomeSectionBoundary id="hero" locale={locale}>
+                <DeepReadingHeroCard />
+              </HomeSectionBoundary>
+            </>
+          )}
+        </>
+      )}
+
+      {/* ── DEDICATED VIEW: QUIZ ────────────────────────────── */}
       {activeSection === "quiz" && (
-        <div className="zw-hero-secondary-panel">
+        <div className="zw-hero-secondary-panel zw-subview-panel">
           <div className="zhaowu-home-fun-grid" style={{ padding: "0 16px" }}>
             {copy.cards.map((card) => (
               <a key={card.title} href={card.href} className="zhaowu-home-fun-card" aria-label={card.title}>
@@ -391,9 +412,9 @@ function Home() {
         </div>
       )}
 
-      {/* ── SECONDARY PANEL: NOTES ──────────────────────────── */}
+      {/* ── DEDICATED VIEW: NOTES ───────────────────────────── */}
       {activeSection === "notes" && (
-        <div className="zw-hero-secondary-panel">
+        <div className="zw-hero-secondary-panel zw-subview-panel">
           <Suspense fallback={<div className="zw-home-inline-loading" role="status">{heroUi.notesLoading}</div>}>
             <LazyLifeViewHomeSection />
           </Suspense>
