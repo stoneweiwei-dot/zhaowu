@@ -186,7 +186,6 @@ function Home() {
 
   const [activeSection, setActiveSection] = useState<Section | null>(null);
   const [scentOpen, setScentOpen] = useState(false);
-  const [todayExpanded, setTodayExpanded] = useState(false);
 
   /* auto-open form if there's a cached analysis result */
   useEffect(() => {
@@ -212,7 +211,6 @@ function Home() {
 
   const openBirthBook = (options?: { focusYear?: boolean }) => {
     const shouldFocus = options?.focusYear ?? true;
-    setTodayExpanded(false);
     setActiveSection("form");
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
