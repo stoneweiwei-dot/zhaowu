@@ -96,3 +96,16 @@ test('birth onboarding keeps time correction automatic and print layout finite',
   assert.match(design, /\.zhaowu-home-sheet-page[\s\S]*min-height:\s*0\s*!important/);
   assert.match(design, /\.zhaowu-dragon-guide[\s\S]*display:\s*none\s*!important/);
 });
+
+test('home birth ticket implements double RAF scroll and 350ms delay for 390px Safari keyboard stability', () => {
+  assert.match(home, /data-home-birth-entry/);
+  assert.match(home, /aria-controls="birth-form"/);
+  assert.match(home, /requestAnimationFrame\(\(\)\s*=>\s*\{\s*window\.requestAnimationFrame/);
+  assert.match(home, /getElementById\("birth-form"\)/);
+  assert.match(home, /scrollIntoView\(\{\s*behavior:\s*"smooth"/);
+  assert.match(home, /getElementById\("birth-year"\)\?\.focus\(\{\s*preventScroll:\s*true\s*\}\)/);
+  assert.match(home, /350/);
+  assert.match(analysisForm, /id="birth-form"/);
+  assert.match(analysisForm, /data-legacy-id="analysisForm"/);
+  assert.ok(/id="birth-year"|id:\s*"birth-year"/.test(analysisForm));
+});
