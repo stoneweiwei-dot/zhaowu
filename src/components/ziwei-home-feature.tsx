@@ -49,7 +49,7 @@ export function ZiweiHomeFeature() {
         <ul>
           {copy.points.map((point) => <li key={point}>{point}</li>)}
         </ul>
-        <a href="/#analysisForm" className="zhaowu-ziwei-action">
+        <a href="/#birth-form" className="zhaowu-ziwei-action">
           <span>{copy.action}</span><b aria-hidden>→</b>
         </a>
       </div>

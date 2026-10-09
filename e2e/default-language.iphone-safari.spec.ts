@@ -30,7 +30,7 @@ test.describe("iPhone Safari display-language contract", () => {
     });
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await expect(page.locator("#analysisForm")).toBeVisible();
+    await expect(page.locator("#birth-form")).toBeVisible();
     await expect(page.getByRole("button", { name: "繁體中文", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByRole("button", { name: "简体中文", exact: true })).toHaveCount(1);
     await expect(page.getByRole("button", { name: "日本語", exact: true })).toHaveCount(0);
@@ -57,7 +57,7 @@ test.describe("iPhone Safari display-language contract", () => {
       await button.click();
       await expect(button).toHaveAttribute("aria-pressed", "true");
       await expect.poll(() => page.evaluate(() => document.documentElement.lang)).toBe(lang);
-      await expect(page.locator("#analysisForm")).toBeVisible();
+      await expect(page.locator("#birth-form")).toBeVisible();
       await expectNoHorizontalOverflow(page);
     }
   });

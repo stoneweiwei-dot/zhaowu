@@ -42,9 +42,9 @@ const EMPTY_MUSIC_STATUS: MusicStatus = {
 };
 
 function go(route: SiteGuideRoute) {
-  if (route === "/#analysisForm") {
-    if (window.location.pathname !== "/") window.location.assign("/#analysisForm");
-    else document.getElementById("analysisForm")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (route === "/#birth-form") {
+    if (window.location.pathname !== "/") window.location.assign("/#birth-form");
+    else window.dispatchEvent(new CustomEvent("zhaowu:open-birth-form"));
     return;
   }
   window.location.assign(route);
@@ -359,7 +359,7 @@ export function GreenDragonGuide() {
         </div>
 
         <div className="zhaowu-dragon-guide-shortcuts" aria-label={locale === "en" ? "Reading navigation" : locale === "zh-Hans" ? "分析导航" : "分析導覽"}>
-          <button type="button" onClick={() => go("/#analysisForm")}>{locale === "en" ? "Full report" : locale === "zh-Hans" ? "完整综合报告" : "完整綜合報告"}</button>
+          <button type="button" onClick={() => go("/#birth-form")}>{locale === "en" ? "Full report" : locale === "zh-Hans" ? "完整综合报告" : "完整綜合報告"}</button>
           <button type="button" onClick={() => window.location.assign("/fun-tests")}>{locale === "en" ? "Fun tests" : locale === "zh-Hans" ? "趣味测验" : "趣味測驗"}</button>
           <button type="button" onClick={() => go("/history")}>{locale === "en" ? "My history" : locale === "zh-Hans" ? "我的记录" : "我的紀錄"}</button>
         </div>

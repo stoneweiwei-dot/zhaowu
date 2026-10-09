@@ -7,9 +7,9 @@ import { useI18n, type Locale } from "@/lib/i18n";
 type UtilityPanel = "music" | "guide" | null;
 
 function go(route: SiteGuideRoute) {
-  if (route === "/#analysisForm") {
-    if (window.location.pathname !== "/") window.location.assign("/#analysisForm");
-    else document.getElementById("analysisForm")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (route === "/#birth-form") {
+    if (window.location.pathname !== "/") window.location.assign("/#birth-form");
+    else window.dispatchEvent(new CustomEvent("zhaowu:open-birth-form"));
     return;
   }
   window.location.assign(route);
@@ -102,7 +102,7 @@ export function SiteUtilityDock() {
         </div>
 
         <div className="zhaowu-site-guide-shortcuts" aria-label={copy.title}>
-          <button type="button" onClick={() => go("/#analysisForm")}>{copy.report}</button>
+          <button type="button" onClick={() => go("/#birth-form")}>{copy.report}</button>
           <button type="button" onClick={() => window.location.assign("/#home-today-guide")}>{copy.today}</button>
           <button type="button" onClick={() => window.location.assign("/fun-tests")}>{copy.tests}</button>
           <button type="button" onClick={() => go("/history")}>{copy.history}</button>

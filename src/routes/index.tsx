@@ -219,9 +219,19 @@ function Home() {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined" && (window.location.hash === "#birth-form" || window.location.hash === "#analysis")) {
-      openBirthBook({ focusYear: false });
-    }
+    if (typeof window === "undefined") return;
+    const BIRTH_HASHES = ["#birth-form", "#analysis", "#analysisForm"];
+    const fromHash = () => {
+      if (BIRTH_HASHES.includes(window.location.hash)) openBirthBook({ focusYear: false });
+    };
+    const fromEvent = () => openBirthBook({ focusYear: false });
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    window.addEventListener("zhaowu:open-birth-form", fromEvent);
+    return () => {
+      window.removeEventListener("hashchange", fromHash);
+      window.removeEventListener("zhaowu:open-birth-form", fromEvent);
+    };
   }, []);
 
   const navLabels: Record<Section, string> = {

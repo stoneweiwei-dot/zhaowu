@@ -66,7 +66,7 @@ test("standalone phone five-element choices stay in one viewport without changin
 
 test("night last-wins CSS keeps question ink light and swatches vivid", () => {
   assert.match(main, /night-readability-r127\.css/);
-  assert.match(night, /#analysisForm \.zhaowu-question-sheet h2/);
+  assert.match(night, /#birth-form \.zhaowu-question-sheet h2/);
   assert.match(night, /color: #fffaf0 !important/);
   assert.match(night, /data-daily-color-swatch/);
   assert.match(night, /background: var\(--swatch\) !important/);

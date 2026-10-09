@@ -26,7 +26,7 @@ test("quiet utility dock preserves music transport and site-guide actions", asyn
 
   assert.match(dock, /askSiteGuide/);
   assert.match(dock, /defaultSiteGuide/);
-  assert.match(dock, /#analysisForm/);
+  assert.match(dock, /#birth-form/);
   assert.match(dock, /#home-today-guide/);
   assert.match(dock, /\/fun-tests/);
   assert.match(dock, /\/history/);

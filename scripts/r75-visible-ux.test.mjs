@@ -26,7 +26,7 @@ test("client details, the real BaZi chart and the question are independent order
   assert.match(form, /<BaziChart chart=\{previewChart\}/);
   assert.ok(form.indexOf('id="customer-record"') < form.indexOf('id="bazi"'));
   assert.ok(form.indexOf('id="bazi"') < form.indexOf('id="question-stage"'));
-  assert.match(css, /#analysisForm\.zhaowu-analysis-flow[\s\S]*background:\s*transparent !important/);
+  assert.match(css, /#birth-form\.zhaowu-analysis-flow[\s\S]*background:\s*transparent !important/);
   assert.match(css, /\.zhaowu-customer-record[\s\S]*border-radius:\s*12px !important/);
   assert.match(flow, /\.zhaowu-bazi-stage/);
   assert.match(flow, /\.zhaowu-bazi-foundation/);
