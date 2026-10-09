@@ -6492,14 +6492,20 @@ header[role='banner'] {
   backdrop-filter: none !important;
 }
 
-nav a,
-nav button {
+/* scoped to the real site header nav only — a bare `nav` tag selector here
+   used to hit EVERY <nav> in the app (owner-console section tabs, knowledge
+   page nav, sky-events nav, etc.), forcing their text/border to ink/green
+   with !important and clobbering unrelated components' own colors
+   (e.g. the owner-console REPORTS tab's bg-[#315f51]/text-[#fffaf0]
+   became unreadable dark-green-on-dark-green). */
+.zhaowu-header-nav a,
+.zhaowu-header-nav button {
   color: var(--zw-ink) !important;
 }
 
-nav a[aria-current='page'],
-nav a.active,
-nav button[aria-pressed='true'] {
+.zhaowu-header-nav a[aria-current='page'],
+.zhaowu-header-nav a.active,
+.zhaowu-header-nav button[aria-pressed='true'] {
   color: var(--zw-green) !important;
   border-color: var(--zw-green) !important;
 }

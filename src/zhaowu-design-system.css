@@ -4621,8 +4621,8 @@ html[lang="en"] .zhaowu-updates-card li {
 
 .zhaowu-song-comic--report {
   display: grid;
-  grid-template-columns: 145px minmax(0, 1fr);
-  gap: 20px;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 22px;
   align-items: center;
   margin: 4px 0 16px;
   padding: 18px 20px;
@@ -4634,8 +4634,16 @@ html[lang="en"] .zhaowu-updates-card li {
 .zhaowu-song-comic--report .zhaowu-song-comic__illustration {
   display: grid;
   place-items: center;
-  min-height: 126px;
+  min-height: 172px;
   border-right: 1px solid rgba(88, 72, 52, .10);
+}
+
+/* the report-insert emblem reads at a larger, legible scale than the
+   compact mascot it shares a base class with — a 220x220 seal badge
+   shrunk to ~132px loses all its ink/seal detail and reads as a crude
+   doodle, which is the exact complaint this fixes. */
+.zhaowu-report-stem-emblem.is-compact {
+  width: 164px;
 }
 
 .zhaowu-song-comic--report h5 {
@@ -4678,12 +4686,16 @@ html[lang="en"] .zhaowu-updates-card li {
   display: grid;
   place-items: center;
   overflow: hidden;
-  width: 82px;
-  height: 82px;
+  width: 96px;
+  height: 96px;
 }
 
 .zhaowu-song-comic-share__art .zhaowu-comic-mascot.is-compact {
   width: 94px;
+}
+
+.zhaowu-song-comic-share__art .zhaowu-report-stem-emblem.is-compact {
+  width: 108px;
 }
 
 .zhaowu-song-comic-share p,
@@ -4783,17 +4795,21 @@ html[lang="en"] .zhaowu-song-comic-share p {
   }
 
   .zhaowu-song-comic--report {
-    grid-template-columns: 92px minmax(0, 1fr);
+    grid-template-columns: 112px minmax(0, 1fr);
     gap: 12px;
     padding: 16px 14px;
   }
 
   .zhaowu-song-comic--report .zhaowu-song-comic__illustration {
-    min-height: 100px;
+    min-height: 118px;
   }
 
   .zhaowu-song-comic--report .zhaowu-comic-mascot.is-compact {
     width: 96px;
+  }
+
+  .zhaowu-song-comic--report .zhaowu-report-stem-emblem.is-compact {
+    width: 120px;
   }
 
   .zhaowu-song-comic-share {
@@ -4809,6 +4825,10 @@ html[lang="en"] .zhaowu-song-comic-share p {
 
   .zhaowu-song-comic-share__art .zhaowu-comic-mascot.is-compact {
     width: 74px;
+  }
+
+  .zhaowu-song-comic-share__art .zhaowu-report-stem-emblem.is-compact {
+    width: 80px;
   }
 
   .zhaowu-song-comic-share button {
@@ -4828,12 +4848,24 @@ html[lang="en"] .zhaowu-song-comic-share p {
     width: 102px;
   }
 
+  /* previously hid the illustration entirely below 390px — the user
+     explicitly asked for it to read well, not disappear, on narrow
+     phones, so it now stacks above the copy at a still-legible size
+     instead of being removed. */
   .zhaowu-song-comic--report {
     grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
   }
 
   .zhaowu-song-comic--report .zhaowu-song-comic__illustration {
-    display: none;
+    min-height: 0;
+    border-right: none;
+    margin-bottom: 10px;
+  }
+
+  .zhaowu-song-comic--report .zhaowu-report-stem-emblem.is-compact {
+    width: 126px;
   }
 }
 
@@ -6988,21 +7020,21 @@ html[data-zw-theme="night"] body .illustrated-destiny-panel :is(figcaption,detai
   }
 
   .zhaowu-song-comic--report {
-    grid-template-columns: 112px minmax(0, 1fr);
+    grid-template-columns: 128px minmax(0, 1fr);
     gap: 14px;
     padding: 16px 14px;
   }
 
   .zhaowu-song-comic--report .zhaowu-song-comic__illustration {
-    min-height: 108px;
+    min-height: 124px;
   }
 
   .zhaowu-song-comic--report .zhaowu-report-stem-emblem {
-    width: 104px;
+    width: 120px;
   }
 
   .zhaowu-song-comic-share__art .zhaowu-report-stem-emblem {
-    width: 82px;
+    width: 92px;
   }
 }
 

@@ -7,10 +7,19 @@ const checkout = await readFile(new URL("../supabase/functions/stripe-checkout/i
 const webhook = await readFile(new URL("../supabase/functions/stripe-webhook/index.ts", import.meta.url), "utf8");
 const migration = await readFile(new URL("../supabase/migrations/20261003170000_report_purchase_entitlements.sql", import.meta.url), "utf8");
 
-test("the public paid catalogue stays fixed at USD 1.99, 4.99 and 9.99", () => {
-  assert.match(client, /quick: \{ amountCents: 199, price: "\$1\.99" \}/);
+// 2026-10-10: quick is now a free new-user welcome gift (client-side
+// display only — see REPORT_ACCESS_PRODUCTS in report-access.ts). The
+// server-side webhook amount table below is untouched on purpose: it still
+// validates real Stripe sessions against the live Payment Links' real
+// $1.99/$4.99/$9.99 amounts, which have not changed Stripe-side.
+test("the public paid catalogue shows quick as free, system/bundle stay at 4.99 and 9.99", () => {
+  assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
   assert.match(client, /system: \{ amountCents: 499, price: "\$4\.99" \}/);
   assert.match(client, /bundle: \{ amountCents: 999, price: "\$9\.99" \}/);
+});
+
+test("the webhook's server-side amount table still matches the live, unchanged Stripe Payment Links", () => {
+  assert.match(webhook, /product: "quick".*amount: 199/);
 });
 
 test("all six systems use live Stripe Payment Links and preserve the browser access key", () => {

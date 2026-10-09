@@ -206,6 +206,7 @@ export function D60KarmaSection({ variant = "palm", reportBirth, depth = "full" 
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [openTheme, setOpenTheme] = useState<ThemeKey | null>(null);
   const syncedRef = useRef("");
+  const autoOpenedRef = useRef<string | null>(null);
 
   useEffect(() => {
     const receiveBirth = (event: Event) => {
@@ -244,6 +245,18 @@ export function D60KarmaSection({ variant = "palm", reportBirth, depth = "full" 
       ["relation", copy.relation, byKey.Venus],
     ].flatMap(([key, label, placement]) => placement ? [{ key: key as ThemeKey, label: label as string, placement: placement as D60Placement }] : []);
   }, [copy, result]);
+
+  // Open the first karma theme by default so the card shows at least one
+  // real plain-language paragraph on arrival instead of five collapsed
+  // one-line rows — the complaint this addresses is that the page reads
+  // as nearly empty before anyone taps anything.
+  useEffect(() => {
+    if (!themes.length) return;
+    const key = result?.utcIso ?? "pending";
+    if (autoOpenedRef.current === key) return;
+    autoOpenedRef.current = key;
+    setOpenTheme(themes[0].key);
+  }, [result?.utcIso, themes]);
 
   const stable = Boolean(result?.stableMinus2 && result?.stablePlus2);
   const historyBody = useMemo(() => {

@@ -31,6 +31,7 @@ type Copy = {
   toneBoundary: string;
   previewLabel: string;
   bonus: Record<ReportAccessProduct, string>;
+  welcomeGift: string;
 };
 
 function copyFor(locale: Locale): Copy {
@@ -57,6 +58,7 @@ function copyFor(locale: Locale): Copy {
       system: "Included with the report · 3 support, primary, and release tracks",
       bundle: "Included with the report · the complete 5-track tone cycle",
     },
+    welcomeGift: "🎁 New-user welcome gift · Quick read is free for everyone",
   };
   if (locale === "zh-Hans") return {
     title: "选择读取深度",
@@ -81,6 +83,7 @@ function copyFor(locale: Locale): Copy {
       system: "随报告附赠｜生扶音・主音・疏导音 3 首",
       bundle: "随报告附赠｜完整五音序列 5 首",
     },
+    welcomeGift: "🎁 新用户的福利 · 快速读对所有人免费开放",
   };
   return {
     title: "選擇讀取深度",
@@ -105,6 +108,7 @@ function copyFor(locale: Locale): Copy {
       system: "隨報告附贈｜生扶音・主音・疏導音 3 首",
       bundle: "隨報告附贈｜完整五音序列 5 首",
     },
+    welcomeGift: "🎁 新用戶的福利 · 快速讀對所有人免費開放",
   };
 }
 
@@ -165,7 +169,7 @@ export function ReportAccessGate({
 
   return (
     <section className="zhaowu-report-paywall" data-report-paywall={system}>
-      {level === "quick" ? <div className="zhaowu-report-access-content" data-report-access="quick"><p className="zhaowu-report-access-status">{copy.unlocked} · {copy.quick}</p>{quick}<FiveToneGift birth={birth} locale={locale} level="quick" /></div> : null}
+      {level === "quick" ? <div className="zhaowu-report-access-content" data-report-access="quick"><p className="zhaowu-report-access-status" data-welcome-gift>{copy.welcomeGift}</p>{quick}<FiveToneGift birth={birth} locale={locale} level="quick" /></div> : null}
       <header>
         <h6>{copy.title}</h6>
         {preview ? <p className="zhaowu-report-preview" data-report-preview><span>{copy.previewLabel}</span>{preview}</p> : null}

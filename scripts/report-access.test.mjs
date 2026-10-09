@@ -15,12 +15,23 @@ const [client, gate, specialist, palm, numerology, unified, personalComponent, p
   read("src/report-access.css"),
 ]);
 
-test("the report catalogue is fixed at free, $1.99, $4.99 and $9.99", () => {
-  assert.match(client, /quick: \{ amountCents: 199, price: "\$1\.99" \}/);
+// 2026-10-10: the quick tier was cancelled as a paid product and is now a
+// standing new-user welcome gift (free for everyone by default — see
+// resolveReportAccess). system/bundle remain the only sold tiers; their
+// display prices stay pinned to their current, Stripe-accurate amounts
+// until real Payment Links at $9.90/$19.99 exist (see the BLOCKED BY note
+// in report-access.ts above REPORT_ACCESS_PRODUCTS).
+test("the report catalogue is fixed at free (quick, new-user gift), $4.99 and $9.99", () => {
+  assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
   assert.match(client, /system: \{ amountCents: 499, price: "\$4\.99" \}/);
   assert.match(client, /bundle: \{ amountCents: 999, price: "\$9\.99" \}/);
   assert.match(gate, /basic chart is free/i);
   assert.match(gate, /不自動續費/);
+});
+
+test("resolveReportAccess floors everyone at the free quick welcome gift", () => {
+  assert.match(client, /level: "quick" as ReportAccessLevel, pending: false/);
+  assert.match(client, /let level: ReportAccessLevel = "quick"/);
 });
 
 test("basic charts stay outside the gate and all interpretation is gated", () => {

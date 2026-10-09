@@ -258,7 +258,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             {locale === "en" ? "Paid Deep Reading" : locale === "zh-Hans" ? "付费进阶深批" : "付費進階深批"}
           </span>
           <span className="text-xs text-ink-mute">
-            {accessLevel !== "none"
+            {accessLevel === "system" || accessLevel === "bundle"
               ? (locale === "en" ? "✓ Unlocked" : "✓ 已解鎖")
               : (locale === "en" ? "One-time unlock · No recurring fees" : "單次解鎖 · 不設自動續費")}
           </span>
@@ -295,24 +295,20 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </li>
         </ul>
 
-        {/* 價格階梯卡片 */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 my-4">
-          <div className="flex flex-col justify-between rounded-lg border border-line/70 bg-cream p-4 text-center">
-            <div>
-              <strong className="block text-sm text-ink">{locale === "en" ? "Quick Read" : "快速進階讀"}</strong>
-              <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.quick.price}</span>
-              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Core cycle & first key observation" : "核心大運走勢與第一關鍵留心點"}</p>
-            </div>
-            <button
-              type="button"
-              disabled={purchasing !== null}
-              onClick={() => void handleUnlock("quick")}
-              className="mt-3 w-full rounded-full border border-line py-2 text-xs font-medium text-ink hover:bg-paper-clean disabled:opacity-60"
-            >
-              {purchasing === "quick" ? "…" : (locale === "en" ? `Unlock ${REPORT_ACCESS_PRODUCTS.quick.price}` : `解鎖 ${REPORT_ACCESS_PRODUCTS.quick.price}`)}
-            </button>
-          </div>
+        {/* 新用戶福利：快速進階讀現已預設免費開放，不再是購買項目 */}
+        <div className="my-4 flex items-start gap-2 rounded-lg border border-wood/30 bg-wood/5 p-3 text-xs leading-5 text-ink-soft">
+          <span className="text-cinnabar">🎁</span>
+          <span>
+            {locale === "en"
+              ? "New-user welcome gift: Quick Read (core cycle & first key observation) is now included for everyone at no cost — no purchase needed."
+              : locale === "zh-Hans"
+              ? "新用户的福利：快速进阶读（核心大运走势与第一关键留心点）现已对所有人免费开放，不需购买。"
+              : "新用戶的福利：快速進階讀（核心大運走勢與第一關鍵留心點）現已對所有人免費開放，不需購買。"}
+          </span>
+        </div>
 
+        {/* 價格階梯卡片 */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 my-4">
           <div className="flex flex-col justify-between rounded-lg border-2 border-cinnabar/80 bg-cinnabar/5 p-4 text-center relative shadow-sm">
             <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-cinnabar px-2 py-0.5 text-[10px] text-cream font-medium">
               {locale === "en" ? "Recommended" : "推薦深批"}
