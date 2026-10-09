@@ -7,6 +7,7 @@ import { useAppStore } from "@/lib/store";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { CharacterPanel } from "@/components/character-panel";
 import { BaziChart } from "@/components/bazi-chart";
+import { ReportTimingGuide } from "@/components/report-timing-guide";
 import { customerCopy, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, renderFocusedReportText, type ReportSection } from "@/lib/report/focused-report";
 import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
@@ -250,6 +251,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           <CharacterPanel chart={chart} question={question} portraitUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={session && user ? () => void onImage() : undefined} generating={busy === "image"} onImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />
         </div>
       </details>
+
+      <ReportTimingGuide chart={chart} unlocked={accessLevel === "system" || accessLevel === "bundle"} />
 
       {/* ── 付費命書內容邊界與進階解鎖入口 ── */}
       <section className="zhaowu-destiny-unlock-gate seal-border rounded-xl bg-cream/95 p-5 sm:p-7 mt-6" data-destiny-unlock-gate>

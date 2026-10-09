@@ -35,6 +35,9 @@ function formatReleaseDate(value: string | null, language: DisplayLanguage) {
   return new Intl.DateTimeFormat(intlTagFor(language), { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 }
 
+const PRIVATE_ROUTES = ["/login", "/account", "/history", "/auth", "/gallery", "/social"];
+const SELF_CANONICAL_ROUTES = ["/", "/knowledge", "/knowledge/five-elements-tone-qi", "/knowledge/shushu-boundary", "/knowledge/system-map", "/updates", "/daily-colors"];
+
 function updateMeta(selector: string, content: string) {
   const node = document.querySelector<HTMLMetaElement>(selector);
   if (node) node.content = content;
@@ -139,18 +142,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     const title = displayText(
       language,
-      "昭梧｜一份生辰，讀成一本昭梧命書",
-      "昭梧｜一份生辰，读成一本昭梧命书",
-      "ZHAOWU｜One birth record. One Destiny Book.",
+      "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費",
+      "昭梧｜八字排盘・子平八字・真太阳时・流年运势｜免登录免费",
+      "ZHAOWU｜Free BaZi Chart · Four Pillars · True Solar Time · Annual Luck · No Sign-up",
       "ZHAOWU｜出生情報から読むパーソナル命書",
       "ZHAOWU｜출생 정보로 읽는 개인 명서",
       "ZHAOWU｜जन्म विवरण से व्यक्तिगत Destiny Book",
     );
     const description = displayText(
       language,
-      "以傳統子平八字為主判，從出生資料整理命盤、人生節奏、今日提示與可選自我探索內容。",
-      "以传统子平八字为主判，从出生资料整理命盘、人生节奏、今日提示与可选自我探索内容。",
-      "A personal BaZi-based Destiny Book with chart calculation, life-rhythm reading, daily guidance and optional self-discovery tools.",
+      "免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。",
+      "免登录免费八字排盘：依子平八字与真太阳时校正，整理五行旺衰、大运与流年运势、今日提示。",
+      "Free BaZi (Four Pillars) chart with true solar time correction: five-element balance, luck cycles, annual luck and daily guidance. No sign-up needed.",
       "四柱推命を中心に、命盤・人生の流れ・今日の指針を整理するパーソナル命書。",
       "사주를 중심으로 명식, 삶의 흐름, 오늘의 안내를 정리하는 개인 명서.",
       "BaZi आधारित व्यक्तिगत Destiny Book, जिसमें जन्म-चार्ट, जीवन-लय और दैनिक मार्गदर्शन शामिल है।",
@@ -167,6 +170,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
       language === "en" ? "en_AU" : language === "zh-Hans" ? "zh_CN" : "zh_TW",
     );
   }, [language]);
+
+  // SEO: private/account routes are noindex; sitemap-listed public routes self-canonicalise, everything else keeps "/".
+  useEffect(() => {
+    const origin = "https://stone-zhaowu-official.vercel.app";
+    const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
+    const isPrivate = PRIVATE_ROUTES.some((route) => normalized === route || normalized.startsWith(`${route}/`));
+    const canonicalPath = SELF_CANONICAL_ROUTES.includes(normalized) ? normalized : "/";
+    const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (canonical) canonical.href = `${origin}${canonicalPath === "/" ? "/" : canonicalPath}`;
+    updateMeta('meta[property="og:url"]', `${origin}${canonicalPath}`);
+    updateMeta('meta[name="robots"]', isPrivate ? "noindex,nofollow" : "index,follow");
+  }, [pathname]);
 
   return (
     <div style={shellStyle} className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>

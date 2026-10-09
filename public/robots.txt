@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /account
+Disallow: /history
+Disallow: /auth/
+Disallow: /gallery
+Disallow: /social
+Disallow: /api/
+
+Sitemap: https://stone-zhaowu-official.vercel.app/sitemap.xml
