@@ -281,7 +281,7 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
     if (chart.currentDayun) {
       actionLines.push(
         locale === "en"
-          ? `Current ten-year cycle: ${chart.currentDayun.ganZhi} (${chart.currentDayun.startYear}–${chart.currentDayun.endYear}).`
+          ? `Current ten-year phase: ${chart.currentDayun.startYear}–${chart.currentDayun.endYear}.`
           : locale === "zh-Hant"
           ? `當前十年週期：${chart.currentDayun.ganZhi}（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。`
           : `当前十年周期：${chart.currentDayun.ganZhi}（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。`
@@ -332,8 +332,9 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
   const basisLines: string[] = [];
 
   // Chart fundamentals
+  const EN_ELEMENT: Record<string, string> = { 木: "Wood", 火: "Fire", 土: "Earth", 金: "Metal", 水: "Water" };
   const chartLabel = locale === "en"
-    ? `Chart: Day Master ${chart.dayMaster}${chart.dayMasterElement}, Month ${chart.monthBranch}.`
+    ? `Chart anchor: a ${EN_ELEMENT[chart.dayMasterElement] ?? "balanced"} day, read against the season of birth.`
     : locale === "zh-Hant"
     ? `命盤落點：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`
     : `命盘落点：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`;
@@ -349,8 +350,9 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
     basisLines.push(timeNote);
   }
 
-  // Guardian beast (symbolic lens)
-  basisLines.push(guardianLine(chart, locale));
+  // Guardian beast (symbolic lens); English keeps the report free of CJK glyphs.
+  const beastLine = guardianLine(chart, locale);
+  if (locale !== "en" || !/[\u3400-\u9fff]/.test(beastLine)) basisLines.push(beastLine);
 
   return [
     {

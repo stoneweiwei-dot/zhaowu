@@ -218,6 +218,8 @@ function seasonAdvice(latitude: number | null, month: number, weather: string, l
   return locale === "zh-Hans" ? lines.map(toSimplifiedCustomerText) : lines;
 }
 
+const VARIANT_KEY = "zhaowu:almanac-variant:v1";
+
 export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
   const { locale, now, pillars } = props;
   const dayStem = pillars.day[0];
@@ -225,6 +227,15 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
   const element = (stemElement(dayStem) ?? "水") as Element;
   const data = ELEMENT_DAY[element];
   const [natal, setNatal] = useState<{ dayMaster: string; branches: string[] } | null>(null);
+  // 圖3 宣紙晴日版為預設；圖4 墨夜版可由訪客切換並記在本機。
+  const [variant, setVariant] = useState<"day" | "night">("day");
+  useEffect(() => {
+    try { if (window.localStorage.getItem(VARIANT_KEY) === "night") setVariant("night"); } catch { /* optional */ }
+  }, []);
+  const chooseVariant = (next: "day" | "night") => {
+    setVariant(next);
+    try { window.localStorage.setItem(VARIANT_KEY, next); } catch { /* optional */ }
+  };
 
   useEffect(() => {
     try {
@@ -255,8 +266,13 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
   const hourLabel = isEnglish(locale) ? "" : T(locale, "時", "");
 
   return (
-    <div className="zw-ink-board" data-almanac-ink-board data-day-element={element} data-lang={locale}>
+    <div className="zw-ink-board" data-almanac-ink-board data-variant={variant} data-day-element={element} data-lang={locale}>
+      <div className="zw-ink-variant" role="group" aria-label={T(locale, "黃曆版面", "Almanac style")}>
+        <button type="button" aria-pressed={variant === "day"} onClick={() => chooseVariant("day")}>{T(locale, "晴・宣紙", "Day")}</button>
+        <button type="button" aria-pressed={variant === "night"} onClick={() => chooseVariant("night")}>{T(locale, "夜・墨色", "Night")}</button>
+      </div>
       <header className="zw-ink-hero">
+        <i className="zw-ink-hero__art" aria-hidden />
         <div className="zw-ink-datecard">
           <span>{now.getFullYear()}</span>
           <strong>{mmdd}</strong>
@@ -265,7 +281,7 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
           <small>{props.lunar}</small>
         </div>
         <div className="zw-ink-title">
-          <h3>{T(locale, "今日黃曆", "Today's Almanac")}</h3>
+          <h3>{T(locale, "今日黃曆", "Today's Almanac")}<img className="zw-ink-seal" src="/brand-ui/seal-red.svg" alt="" width={22} height={22} decoding="async" /></h3>
           <p>{natal ? T(locale, "個人八字定制・每日指引", "Tuned to your chart · daily guide") : T(locale, "通用黃曆・錄入生辰後依命盤定制", "General almanac · save your birth record to personalise")}</p>
           <small>{props.time} · {props.jie}</small>
         </div>
@@ -288,6 +304,7 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
         </section>
         <section className="zw-ink-panel zw-ink-sacred">
           <small>{T(locale, "今日聖日", "Observance")}</small>
+          <img className="zw-ink-sacred__art" src="/today/almanac-lotus-v1.webp" alt="" loading="lazy" decoding="async" />
           <Icon name="lotus" />
           <strong>{props.sacred}</strong>
         </section>
