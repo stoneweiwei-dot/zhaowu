@@ -62,7 +62,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await expect(page.locator("#analysisForm")).toBeVisible();
+    await expect(page.locator("#birth-form")).toBeVisible();
     await expect(page.getByRole("heading", { name: "錄入生辰", exact: true })).toBeVisible();
     await expect(page.locator("#analysis-question")).toHaveCount(0);
     await expect(page.getByRole("link", { name: "登入", exact: true })).toHaveCount(0);
@@ -76,8 +76,8 @@ test.describe("iPhone Safari core customer flow", () => {
     await installLauncher.click();
     await expect(page.getByRole("dialog", { name: "把昭梧存到手機桌面", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "顯示 iPhone 保存步驟", exact: true })).toBeVisible();
-    await page.locator("#analysisForm").scrollIntoViewIfNeeded();
-    await expect(page.locator('#analysisForm button[type="submit"]')).toHaveText("保存並生成昭梧命書");
+    await page.locator("#birth-form").scrollIntoViewIfNeeded();
+    await expect(page.locator('#birth-form button[type="submit"]')).toHaveText("保存並生成昭梧命書");
     await expectMobileViewportHealthy(page);
   });
 
@@ -178,7 +178,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await fillKnownBirthData(page);
-    await page.locator("#analysisForm").evaluate((form) => (form as HTMLFormElement).requestSubmit());
+    await page.locator("#birth-form").evaluate((form) => (form as HTMLFormElement).requestSubmit());
     await expect(page.locator("#birth-city-error")).toHaveText("請從搜尋結果選擇出生城市與國家。");
     await expect(page.locator("#birth-city")).toBeFocused();
     await expect(page.locator("#analysis-question")).toHaveCount(0);

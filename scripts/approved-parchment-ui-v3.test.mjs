@@ -25,7 +25,7 @@ test("wallpaper and cards use one warm translucent material family", async () =>
   assert.match(css, /--zv3-paper:\s*rgba\(246, 236, 217, \.34\)/);
   assert.match(css, /\.zhaowu-has-wallpaper \.zhaowu-app-frame[\s\S]*rgba\(244, 233, 212, \.075\)/);
   assert.match(css, /\.zhaowu-home-hero[\s\S]*var\(--zv3-paper\)/);
-  assert.match(css, /#analysisForm[\s\S]*var\(--zv3-paper-field\)/);
+  assert.match(css, /#birth-form[\s\S]*var\(--zv3-paper-field\)/);
   assert.match(css, /--zv3-red:\s*#b4372b/);
   assert.match(css, /--zv3-jade:\s*#2f7465/);
 });

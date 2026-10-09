@@ -201,15 +201,38 @@ function Home() {
     setActiveSection((prev) => (prev === id ? null : id));
   };
 
-  const openBirthBook = () => {
+  const openBirthBook = (options?: { focusYear?: boolean }) => {
+    const shouldFocus = options?.focusYear ?? true;
     setTodayExpanded(false);
     setActiveSection("form");
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
-        document.getElementById("analysis")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        const target = document.getElementById("birth-form") ?? document.getElementById("analysis");
+        target?.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (shouldFocus) {
+          window.setTimeout(() => {
+            document.getElementById("birth-year")?.focus({ preventScroll: true });
+          }, 350);
+        }
       });
     });
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const BIRTH_HASHES = ["#birth-form", "#analysis", "#analysisForm"];
+    const fromHash = () => {
+      if (BIRTH_HASHES.includes(window.location.hash)) openBirthBook({ focusYear: false });
+    };
+    const fromEvent = () => openBirthBook({ focusYear: false });
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    window.addEventListener("zhaowu:open-birth-form", fromEvent);
+    return () => {
+      window.removeEventListener("hashchange", fromHash);
+      window.removeEventListener("zhaowu:open-birth-form", fromEvent);
+    };
+  }, []);
 
   const navLabels: Record<Section, string> = {
     form:  copy.navBook,
@@ -230,9 +253,9 @@ function Home() {
           type="button"
           className="zw-birth-entry-ticket"
           data-home-birth-entry
-          aria-controls="analysis"
+          aria-controls="birth-form"
           aria-expanded={activeSection === "form"}
-          onClick={openBirthBook}
+          onClick={() => openBirthBook({ focusYear: true })}
         >
           <span className="zw-birth-entry-seal" aria-hidden>命</span>
           <span className="zw-birth-entry-copy">

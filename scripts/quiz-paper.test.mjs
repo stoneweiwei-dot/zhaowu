@@ -14,7 +14,7 @@ test("homepage keeps one analysis form and the restored r144 question stage", as
   const copy = await source("src/lib/report/quiz-copy.ts");
 
   assert.equal((home.match(/<AnalysisForm \/>/g) ?? []).length, 1);
-  assert.match(form, /id="analysisForm"/);
+  assert.match(form, /id="birth-form"/);
   assert.match(form, /id="bazi"/);
   assert.match(form, /birth-year/);
   assert.match(form, /id="analysis-question"/);

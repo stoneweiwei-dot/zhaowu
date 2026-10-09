@@ -12,7 +12,7 @@ test("r47 art direction loads after the existing visual locks", () => {
 
 test("r47 keeps the homepage in one warm parchment and jade visual system", () => {
   assert.match(css, /--r47-jade:\s*#315f50/);
-  assert.match(css, /#analysisForm button\[type="submit"\]/);
+  assert.match(css, /#birth-form button\[type="submit"\]/);
   assert.match(css, /\.zhaowu-daily-almanac/);
   assert.match(css, /\.zhaowu-home-portals-block/);
   assert.match(css, /@media \(max-width: 560px\)/);

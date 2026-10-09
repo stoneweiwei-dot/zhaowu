@@ -39,7 +39,7 @@ test.describe("iPhone Safari parchment application shell", () => {
   test("r163 keeps an opaque client record separate from the non-empty Bazi stage", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("#analysisForm")).toBeVisible();
+    await expect(page.locator("#birth-form")).toBeVisible();
     await expect(page.locator(".zhaowu-home-hero")).toHaveCount(0);
     await expect(page.locator(".zhaowu-ziwei-feature")).toHaveCount(0);
     await expect(page.locator("#bazi.zhaowu-bazi-stage")).toBeVisible();

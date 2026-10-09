@@ -2427,9 +2427,9 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 }
 
 /* Inputs need a little more body than their parent panels for legibility. */
-.zhaowu-has-wallpaper #analysisForm input,
-.zhaowu-has-wallpaper #analysisForm textarea,
-.zhaowu-has-wallpaper #analysisForm select,
+.zhaowu-has-wallpaper #birth-form input,
+.zhaowu-has-wallpaper #birth-form textarea,
+.zhaowu-has-wallpaper #birth-form select,
 .zhaowu-has-wallpaper .stone-login-form input {
   background: rgba(255, 254, 251, .74) !important;
 }
@@ -3506,7 +3506,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   max-width: 30rem;
 }
 
-.zhaowu-home-hero a[href="#analysisForm"] {
+.zhaowu-home-hero a[href="#birth-form"] {
   border: 0 !important;
   background: linear-gradient(180deg, var(--zv-red), var(--zv-red-deep)) !important;
   color: #fffaf4 !important;
@@ -3537,31 +3537,31 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   -webkit-backdrop-filter: blur(10px) saturate(102%) !important;
 }
 
-#analysisForm {
+#birth-form {
   padding: 20px 16px !important;
 }
 
-#analysisForm form {
+#birth-form form {
   margin-top: 20px !important;
 }
 
-#analysisForm input,
-#analysisForm textarea,
-#analysisForm select {
+#birth-form input,
+#birth-form textarea,
+#birth-form select {
   border-color: rgba(119, 104, 81, .24) !important;
   border-radius: 12px !important;
   background: rgba(255, 254, 251, .86) !important;
   box-shadow: none !important;
 }
 
-#analysisForm input:focus,
-#analysisForm textarea:focus,
-#analysisForm select:focus {
+#birth-form input:focus,
+#birth-form textarea:focus,
+#birth-form select:focus {
   border-color: rgba(169, 54, 43, .72) !important;
   outline: none !important;
 }
 
-#analysisForm button[type="submit"] {
+#birth-form button[type="submit"] {
   border: 0 !important;
   border-radius: 13px !important;
   background: linear-gradient(180deg, var(--zv-red), var(--zv-red-deep)) !important;
@@ -3802,7 +3802,7 @@ footer {
     display: none !important;
   }
 
-  #analysisForm {
+  #birth-form {
     padding: 18px 14px !important;
   }
 }
@@ -3912,17 +3912,17 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   -webkit-backdrop-filter: blur(2.5px) saturate(103%) !important;
 }
 
-#analysisForm,
+#birth-form,
 .zhaowu-app-frame .zhaowu-result-card {
   border-radius: 22px !important;
 }
 
-#analysisForm input,
-#analysisForm textarea,
-#analysisForm select,
-.zhaowu-has-wallpaper #analysisForm input,
-.zhaowu-has-wallpaper #analysisForm textarea,
-.zhaowu-has-wallpaper #analysisForm select {
+#birth-form input,
+#birth-form textarea,
+#birth-form select,
+.zhaowu-has-wallpaper #birth-form input,
+.zhaowu-has-wallpaper #birth-form textarea,
+.zhaowu-has-wallpaper #birth-form select {
   border: 1px solid var(--zv2-line-strong) !important;
   background: var(--zv2-paper-field) !important;
   color: var(--zv-ink) !important;
@@ -3931,7 +3931,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   -webkit-backdrop-filter: blur(2px) !important;
 }
 
-#analysisForm button[type="submit"],
+#birth-form button[type="submit"],
 .zhaowu-result-primary {
   border: 0 !important;
   background: linear-gradient(180deg, var(--zv2-red), var(--zv2-red-deep)) !important;
@@ -4275,7 +4275,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 
 /* One material family for hero, form, result and visual modules. */
 .zhaowu-home-hero,
-#analysisForm,
+#birth-form,
 .zhaowu-result-card,
 .zhaowu-decree-gallery,
 .zhaowu-decree-couplet,
@@ -4292,7 +4292,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 }
 
 .zhaowu-home-hero,
-#analysisForm,
+#birth-form,
 .zhaowu-result-card,
 .zhaowu-decree-gallery,
 .zhaowu-decree-couplet,
@@ -4308,7 +4308,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 }
 
 .zhaowu-home-hero,
-#analysisForm,
+#birth-form,
 .zhaowu-result-card,
 .zhaowu-decree-gallery,
 .zhaowu-focused-report,
@@ -4348,7 +4348,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 
 .zhaowu-home-hero h1,
 .zhaowu-home-hero h2,
-#analysisForm h2,
+#birth-form h2,
 .zhaowu-result-card h2,
 .zhaowu-decree-copy h3,
 .zhaowu-tools-heading h2,
@@ -4364,15 +4364,15 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 }
 
 .zhaowu-home-hero .text-earth,
-#analysisForm .text-cinnabar,
+#birth-form .text-cinnabar,
 .zhaowu-decree-kicker,
 .zhaowu-tools-heading p,
 .zhaowu-specialist-eyebrow {
   color: var(--zv3-earth) !important;
 }
 
-.zhaowu-home-hero a[href="#analysisForm"],
-#analysisForm button[type="submit"],
+.zhaowu-home-hero a[href="#birth-form"],
+#birth-form button[type="submit"],
 .zhaowu-result-primary {
   border: 0 !important;
   background: linear-gradient(180deg, var(--zv3-red), var(--zv3-red-deep)) !important;
@@ -4388,13 +4388,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   box-shadow: none !important;
 }
 
-#analysisForm {
+#birth-form {
   padding: 24px 20px !important;
 }
 
-#analysisForm input,
-#analysisForm textarea,
-#analysisForm select,
+#birth-form input,
+#birth-form textarea,
+#birth-form select,
 .zhaowu-dragon-guide-panel input {
   border: 1px solid var(--zv3-line-strong) !important;
   background: var(--zv3-paper-field) !important;
@@ -4404,25 +4404,25 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   -webkit-backdrop-filter: blur(1.5px) !important;
 }
 
-#analysisForm textarea {
+#birth-form textarea {
   min-height: 10rem;
   border-radius: 18px !important;
 }
 
-#analysisForm input,
-#analysisForm select {
+#birth-form input,
+#birth-form select {
   border-radius: 14px !important;
 }
 
-#analysisForm .bg-paper\/45,
-#analysisForm .bg-paper\/35 {
+#birth-form .bg-paper\/45,
+#birth-form .bg-paper\/35 {
   border-color: var(--zv3-line-soft) !important;
   background: rgba(247, 238, 220, .22) !important;
 }
 
-#analysisForm input:focus,
-#analysisForm textarea:focus,
-#analysisForm select:focus {
+#birth-form input:focus,
+#birth-form textarea:focus,
+#birth-form select:focus {
   border-color: rgba(180, 55, 43, .48) !important;
   box-shadow: 0 0 0 3px rgba(180, 55, 43, .065) !important;
 }
@@ -4885,7 +4885,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   }
 
   .zhaowu-home-hero,
-  #analysisForm,
+  #birth-form,
   .zhaowu-result-card,
   .zhaowu-decree-gallery,
   .zhaowu-focused-report,
@@ -4897,7 +4897,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
     min-height: 27rem;
   }
 
-  #analysisForm,
+  #birth-form,
   .zhaowu-result-card {
     padding: 20px 16px !important;
   }
@@ -4974,7 +4974,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
  * also used !important and a longer selector chain.
  */
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-home-hero,
-.zhaowu-has-wallpaper .zhaowu-app-frame #analysisForm,
+.zhaowu-has-wallpaper .zhaowu-app-frame #birth-form,
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-result-card,
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-decree-gallery,
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-decree-couplet,
@@ -4992,7 +4992,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 
 /* Same readable material also applies when there is no owner wallpaper loaded yet. */
 .zhaowu-home-hero,
-#analysisForm,
+#birth-form,
 .zhaowu-result-card,
 .zhaowu-decree-gallery,
 .zhaowu-decree-couplet,
@@ -5005,12 +5005,12 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 }
 
 /* Inputs and secondary text containers must stay legible over every wallpaper. */
-.zhaowu-has-wallpaper #analysisForm input,
-.zhaowu-has-wallpaper #analysisForm textarea,
-.zhaowu-has-wallpaper #analysisForm select,
-#analysisForm input,
-#analysisForm textarea,
-#analysisForm select,
+.zhaowu-has-wallpaper #birth-form input,
+.zhaowu-has-wallpaper #birth-form textarea,
+.zhaowu-has-wallpaper #birth-form select,
+#birth-form input,
+#birth-form textarea,
+#birth-form select,
 .zhaowu-dragon-guide-panel input,
 .zhaowu-result-message,
 .zhaowu-result-secondary,
@@ -5123,7 +5123,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 
 @media (max-width: 430px) {
   .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-home-hero,
-  .zhaowu-has-wallpaper .zhaowu-app-frame #analysisForm,
+  .zhaowu-has-wallpaper .zhaowu-app-frame #birth-form,
   .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-result-card,
   .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-decree-gallery,
   .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-decree-couplet,
@@ -5244,7 +5244,7 @@ body:has(.zhaowu-login-shell),
   display: none !important;
 }
 
-.zhaowu-home-sheet-shell #analysisForm,
+.zhaowu-home-sheet-shell #birth-form,
 .zhaowu-home-sheet-shell .zhaowu-result-card,
 .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
 .zhaowu-home-sheet-shell .zhaowu-decree-couplet,
@@ -5265,7 +5265,7 @@ body:has(.zhaowu-login-shell),
   box-shadow: var(--zv5-shadow) !important;
 }
 
-.zhaowu-home-sheet-shell #analysisForm,
+.zhaowu-home-sheet-shell #birth-form,
 .zhaowu-home-sheet-shell .zhaowu-result-card,
 .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
 .zhaowu-home-sheet-shell .zhaowu-tools-section,
@@ -5273,16 +5273,16 @@ body:has(.zhaowu-login-shell),
   border-radius: 17px !important;
 }
 
-.zhaowu-home-sheet-shell #analysisForm,
+.zhaowu-home-sheet-shell #birth-form,
 .zhaowu-home-sheet-shell .zhaowu-result-card,
 .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
 .zhaowu-home-sheet-shell .zhaowu-tools-section {
   padding: 15px 15px !important;
 }
 
-.zhaowu-home-sheet-shell #analysisForm input,
-.zhaowu-home-sheet-shell #analysisForm textarea,
-.zhaowu-home-sheet-shell #analysisForm select,
+.zhaowu-home-sheet-shell #birth-form input,
+.zhaowu-home-sheet-shell #birth-form textarea,
+.zhaowu-home-sheet-shell #birth-form select,
 .zhaowu-home-sheet-shell .zhaowu-dragon-guide-panel input,
 .zhaowu-home-sheet-shell .zhaowu-result-message,
 .zhaowu-home-sheet-shell .zhaowu-result-secondary,
@@ -5316,7 +5316,7 @@ body:has(.zhaowu-login-shell),
   opacity: 1 !important;
 }
 
-.zhaowu-home-sheet-shell #analysisForm button[type="submit"],
+.zhaowu-home-sheet-shell #birth-form button[type="submit"],
 .zhaowu-home-sheet-shell .zhaowu-result-primary {
   background: linear-gradient(
     180deg,
@@ -5380,7 +5380,7 @@ body:has(.zhaowu-login-shell),
     padding: 7px 6px 3px;
   }
 
-  .zhaowu-home-sheet-shell #analysisForm,
+  .zhaowu-home-sheet-shell #birth-form,
   .zhaowu-home-sheet-shell .zhaowu-result-card,
   .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
   .zhaowu-home-sheet-shell .zhaowu-tools-section,
@@ -5388,7 +5388,7 @@ body:has(.zhaowu-login-shell),
     border-radius: 16px !important;
   }
 
-  .zhaowu-home-sheet-shell #analysisForm,
+  .zhaowu-home-sheet-shell #birth-form,
   .zhaowu-home-sheet-shell .zhaowu-result-card,
   .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
   .zhaowu-home-sheet-shell .zhaowu-tools-section {
@@ -5397,20 +5397,20 @@ body:has(.zhaowu-login-shell),
 }
 
 /* Screenshot-one lock: one compact parchment flow with the landscape visible. */
-.zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-heading h2 {
+.zhaowu-home-sheet-shell #birth-form .zhaowu-analysis-heading h2 {
   font-size: 1.35rem !important;
   margin-top: 0.35rem !important;
 }
-.zhaowu-home-sheet-shell #analysisForm > p {
+.zhaowu-home-sheet-shell #birth-form > p {
   line-height: 1.6 !important;
 }
-.zhaowu-home-sheet-shell #analysisForm form {
+.zhaowu-home-sheet-shell #birth-form form {
   margin-top: 14px !important;
 }
-.zhaowu-home-sheet-shell #analysisForm form > :not([hidden]) ~ :not([hidden]) {
+.zhaowu-home-sheet-shell #birth-form form > :not([hidden]) ~ :not([hidden]) {
   margin-top: 13px !important;
 }
-.zhaowu-home-sheet-shell #analysisForm textarea {
+.zhaowu-home-sheet-shell #birth-form textarea {
   min-height: 88px !important;
 }
 .zhaowu-home-sheet-shell .zhaowu-result-flow {
@@ -5582,23 +5582,23 @@ body:has(.zhaowu-login-shell),
   line-height: 1;
 }
 
-.zhaowu-home-sheet-shell #analysisForm.is-compact {
+.zhaowu-home-sheet-shell #birth-form.is-compact {
   padding: 15px !important;
 }
 
-.zhaowu-home-sheet-shell #analysisForm.is-compact h2 {
+.zhaowu-home-sheet-shell #birth-form.is-compact h2 {
   font-size: 1.22rem !important;
   letter-spacing: 0.04em;
 }
 
-.zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-compact-form {
+.zhaowu-home-sheet-shell #birth-form .zhaowu-analysis-compact-form {
   display: grid;
   gap: 13px;
   margin-top: 15px !important;
 }
 
 .zhaowu-home-sheet-shell
-  #analysisForm
+  #birth-form
   .zhaowu-analysis-compact-form
   > :not([hidden])
   ~ :not([hidden]) {
@@ -5671,7 +5671,7 @@ body:has(.zhaowu-login-shell),
 }
 
 /* Final opaque lock: Song landscape stays behind solid parchment cards. */
-.zhaowu-home-sheet-shell #analysisForm,
+.zhaowu-home-sheet-shell #birth-form,
 .zhaowu-home-sheet-shell .zhaowu-result-card,
 .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
 .zhaowu-home-sheet-shell .zhaowu-decree-couplet,
@@ -5689,9 +5689,9 @@ body:has(.zhaowu-login-shell),
   -webkit-backdrop-filter: none !important;
 }
 
-.zhaowu-home-sheet-shell #analysisForm input,
-.zhaowu-home-sheet-shell #analysisForm textarea,
-.zhaowu-home-sheet-shell #analysisForm select,
+.zhaowu-home-sheet-shell #birth-form input,
+.zhaowu-home-sheet-shell #birth-form textarea,
+.zhaowu-home-sheet-shell #birth-form select,
 .zhaowu-home-sheet-shell .zhaowu-analysis-settings > span,
 .zhaowu-login-shell input,
 .zhaowu-login-shell textarea {
@@ -5847,7 +5847,7 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 }
 
 .zhaowu-quiz-sheet,
-.zhaowu-home-sheet-shell #analysisForm.zhaowu-quiz-sheet {
+.zhaowu-home-sheet-shell #birth-form.zhaowu-quiz-sheet {
   position: relative;
   /* Paper surface is owned by parchment-layout.css; do not cover its landscape. */
 }
@@ -6129,7 +6129,7 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 .zhaowu-home-sheet-shell .zhaowu-site-header button,.zhaowu-home-sheet-shell .zhaowu-site-header a { min-height:40px; }
 .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-home-app-frame { max-width:860px !important; width:100% !important; padding:22px 18px 40px !important; }
 .zhaowu-home-sheet-page { gap:28px !important; }
-.zhaowu-home-sheet-shell #analysisForm,
+.zhaowu-home-sheet-shell #birth-form,
 .zhaowu-home-sheet-shell .zhaowu-result-card,
 .zhaowu-home-sheet-shell .zhaowu-focused-report,
 .zhaowu-home-sheet-shell #auspicious-atlas,
@@ -6144,15 +6144,15 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 .zhaowu-home-sheet-shell h1,.zhaowu-home-sheet-shell h2,.zhaowu-home-sheet-shell h3 { font-weight:650 !important; line-height:1.45; overflow-wrap:anywhere; }
 .zhaowu-home-sheet-shell h2 { font-size:1.55rem !important; }
 .zhaowu-home-sheet-shell p { line-height:1.85; }
-.zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-heading { padding-right:44px; }
-.zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-heading h2 { font-size:1.55rem !important; line-height:1.4 !important; }
-.zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-heading h2::after { content:none !important; }
-.zhaowu-home-sheet-shell #analysisForm form { margin-top:24px !important; }
-.zhaowu-home-sheet-shell #analysisForm form > :not([hidden]) ~ :not([hidden]) { margin-top:22px !important; }
-.zhaowu-home-sheet-shell #analysisForm label,.zhaowu-home-sheet-shell .zhaowu-quiz-legend { font-size:16px !important; font-weight:600; }
-.zhaowu-home-sheet-shell #analysisForm input,.zhaowu-home-sheet-shell #analysisForm select,.zhaowu-home-sheet-shell #analysisForm textarea { font-size:16px !important; background:rgba(250,243,230,.70) !important; border-color:#baa482 !important; border-radius:12px !important; min-width:0; }
-.zhaowu-home-sheet-shell #analysisForm textarea { min-height:112px !important; }
-.zhaowu-home-sheet-shell #analysisForm button[type=submit],
+.zhaowu-home-sheet-shell #birth-form .zhaowu-analysis-heading { padding-right:44px; }
+.zhaowu-home-sheet-shell #birth-form .zhaowu-analysis-heading h2 { font-size:1.55rem !important; line-height:1.4 !important; }
+.zhaowu-home-sheet-shell #birth-form .zhaowu-analysis-heading h2::after { content:none !important; }
+.zhaowu-home-sheet-shell #birth-form form { margin-top:24px !important; }
+.zhaowu-home-sheet-shell #birth-form form > :not([hidden]) ~ :not([hidden]) { margin-top:22px !important; }
+.zhaowu-home-sheet-shell #birth-form label,.zhaowu-home-sheet-shell .zhaowu-quiz-legend { font-size:16px !important; font-weight:600; }
+.zhaowu-home-sheet-shell #birth-form input,.zhaowu-home-sheet-shell #birth-form select,.zhaowu-home-sheet-shell #birth-form textarea { font-size:16px !important; background:rgba(250,243,230,.70) !important; border-color:#baa482 !important; border-radius:12px !important; min-width:0; }
+.zhaowu-home-sheet-shell #birth-form textarea { min-height:112px !important; }
+.zhaowu-home-sheet-shell #birth-form button[type=submit],
 .zhaowu-home-sheet-shell .zhaowu-result-primary,
 .zhaowu-login-shell button[type=submit],
 .zhaowu-personal-art-actions button:first-child {
@@ -6205,13 +6205,13 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 @media(max-width:430px){
   .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-home-app-frame { padding:16px 12px 30px !important; }
   .zhaowu-home-sheet-page { gap:22px !important; }
-  .zhaowu-home-sheet-shell #analysisForm,.zhaowu-home-sheet-shell .zhaowu-result-card,.zhaowu-home-sheet-shell .zhaowu-personal-art,.zhaowu-home-sheet-shell .zhaowu-bazi-chart,.zhaowu-home-sheet-shell #auspicious-atlas,.zhaowu-home-sheet-shell #life-view,.zhaowu-home-sheet-shell section.seal-border { padding:18px 14px !important; }
+  .zhaowu-home-sheet-shell #birth-form,.zhaowu-home-sheet-shell .zhaowu-result-card,.zhaowu-home-sheet-shell .zhaowu-personal-art,.zhaowu-home-sheet-shell .zhaowu-bazi-chart,.zhaowu-home-sheet-shell #auspicious-atlas,.zhaowu-home-sheet-shell #life-view,.zhaowu-home-sheet-shell section.seal-border { padding:18px 14px !important; }
   .zhaowu-pillar-grid { gap:5px; }
   .zhaowu-pillar-grid section { padding:12px 3px; }
   .zhaowu-pillar-grid strong { font-size:23px; }
   html[lang=en] .zhaowu-pillar-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .zhaowu-cycle-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .zhaowu-home-sheet-shell #analysisForm .zhaowu-analysis-heading { padding-right:0; }
+  .zhaowu-home-sheet-shell #birth-form .zhaowu-analysis-heading { padding-right:0; }
   .zhaowu-quiz-sheet:not(.is-compact)::after { top:12px; right:12px; width:30px; height:30px; line-height:30px; font-size:14px; }
 }
 
@@ -6295,7 +6295,7 @@ body::before {
 .zhaowu-home-sheet-page > div,
 .zhaowu-home-portals-block,
 .zhaowu-home-sheet-page .seal-border,
-#analysisForm.zhaowu-quiz-sheet {
+#birth-form.zhaowu-quiz-sheet {
   border: 1px solid var(--zw-line) !important;
   border-radius: 18px !important;
   background: var(--zw-paper-card) !important;
@@ -6304,12 +6304,12 @@ body::before {
 }
 
 /* the form should read like a sheet laid over an old album */
-#analysisForm.zhaowu-quiz-sheet {
+#birth-form.zhaowu-quiz-sheet {
   position: relative;
   overflow: hidden;
 }
 
-#analysisForm.zhaowu-quiz-sheet::before {
+#birth-form.zhaowu-quiz-sheet::before {
   content: '';
   position: absolute;
   width: 220px;
@@ -6527,7 +6527,7 @@ nav button[aria-pressed='true'] {
   .zhaowu-home-sheet-page > section,
   .zhaowu-home-sheet-page > div,
   .zhaowu-home-portals-block,
-  #analysisForm.zhaowu-quiz-sheet,
+  #birth-form.zhaowu-quiz-sheet,
   main.mx-auto.max-w-3xl.space-y-6.pb-16 > header,
   main.mx-auto.max-w-3xl.space-y-6.pb-16 > section,
   main.mx-auto.max-w-3xl.space-y-6.pb-16 .seal-border {
@@ -7435,7 +7435,7 @@ body::before {
 }
 
 /* Main analysis form: one sheet, clear labels, one dominant CTA. */
-#analysisForm,
+#birth-form,
 .zhaowu-app-frame .seal-border,
 .zhaowu-app-frame section.seal-border,
 .zhaowu-app-frame .zhaowu-tool-card {
@@ -7448,20 +7448,20 @@ body::before {
   -webkit-backdrop-filter: none !important;
 }
 
-#analysisForm {
+#birth-form {
   padding: 22px 18px !important;
 }
 
-#analysisForm input,
-#analysisForm textarea,
-#analysisForm select {
+#birth-form input,
+#birth-form textarea,
+#birth-form select {
   min-height: 46px !important;
   border: 1px solid var(--z41-line) !important;
   border-radius: 9px !important;
   background: var(--z41-paper-2) !important;
 }
 
-#analysisForm button[type="submit"] {
+#birth-form button[type="submit"] {
   min-height: 48px !important;
   border-radius: 10px !important;
   background: var(--z41-jade) !important;
@@ -7812,7 +7812,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
 }
 
 /* Main question sheet: one continuous paper surface, not a white card stack. */
-.zhaowu-home-layout #analysisForm {
+.zhaowu-home-layout #birth-form {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--r47-line) !important;
@@ -7826,7 +7826,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
   -webkit-backdrop-filter: blur(1px) saturate(101%) !important;
 }
 
-.zhaowu-home-layout #analysisForm::before {
+.zhaowu-home-layout #birth-form::before {
   content: "";
   position: absolute;
   inset: 11px;
@@ -7835,65 +7835,65 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
   pointer-events: none;
 }
 
-.zhaowu-home-layout #analysisForm .zhaowu-quiz-kicker {
+.zhaowu-home-layout #birth-form .zhaowu-quiz-kicker {
   color: var(--r47-cinnabar) !important;
   font-weight: 720;
 }
 
-.zhaowu-home-layout #analysisForm h2 {
+.zhaowu-home-layout #birth-form h2 {
   color: var(--r47-ink) !important;
   font-size: clamp(1.8rem, 6vw, 2.35rem) !important;
   letter-spacing: .04em;
 }
 
-.zhaowu-home-layout #analysisForm .zhaowu-quiz-paper,
-.zhaowu-home-layout #analysisForm .zhaowu-analysis-core,
-.zhaowu-home-layout #analysisForm .zhaowu-quiz-block {
+.zhaowu-home-layout #birth-form .zhaowu-quiz-paper,
+.zhaowu-home-layout #birth-form .zhaowu-analysis-core,
+.zhaowu-home-layout #birth-form .zhaowu-quiz-block {
   background: transparent !important;
   box-shadow: none !important;
 }
 
-.zhaowu-home-layout #analysisForm .zhaowu-quiz-legend {
+.zhaowu-home-layout #birth-form .zhaowu-quiz-legend {
   color: var(--r47-ink) !important;
   font-weight: 720;
   letter-spacing: .025em;
 }
 
-.zhaowu-home-layout #analysisForm .zhaowu-quiz-legend em {
+.zhaowu-home-layout #birth-form .zhaowu-quiz-legend em {
   color: var(--r47-cinnabar) !important;
   font-style: normal;
   font-weight: 760;
 }
 
-.zhaowu-home-layout #analysisForm textarea,
-.zhaowu-home-layout #analysisForm input,
-.zhaowu-home-layout #analysisForm select {
+.zhaowu-home-layout #birth-form textarea,
+.zhaowu-home-layout #birth-form input,
+.zhaowu-home-layout #birth-form select {
   border-color: rgba(139, 99, 55, .30) !important;
   background: var(--r47-paper-field) !important;
   color: var(--r47-ink) !important;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.32) !important;
 }
 
-.zhaowu-home-layout #analysisForm textarea {
+.zhaowu-home-layout #birth-form textarea {
   min-height: 9.5rem !important;
   border-radius: 18px !important;
   font-size: 1rem !important;
   line-height: 1.75 !important;
 }
 
-.zhaowu-home-layout #analysisForm input,
-.zhaowu-home-layout #analysisForm select {
+.zhaowu-home-layout #birth-form input,
+.zhaowu-home-layout #birth-form select {
   border-radius: 13px !important;
 }
 
-.zhaowu-home-layout #analysisForm textarea:focus,
-.zhaowu-home-layout #analysisForm input:focus,
-.zhaowu-home-layout #analysisForm select:focus {
+.zhaowu-home-layout #birth-form textarea:focus,
+.zhaowu-home-layout #birth-form input:focus,
+.zhaowu-home-layout #birth-form select:focus {
   border-color: rgba(49, 95, 80, .62) !important;
   box-shadow: 0 0 0 3px rgba(49, 95, 80, .075) !important;
 }
 
-.zhaowu-home-layout #analysisForm button[type="submit"] {
+.zhaowu-home-layout #birth-form button[type="submit"] {
   min-height: 52px !important;
   border: 1px solid rgba(38, 77, 66, .76) !important;
   border-radius: 16px !important;
@@ -7980,19 +7980,19 @@ body:has(.zhaowu-home-layout) footer {
     margin-top: 38px !important;
   }
 
-  .zhaowu-home-layout #analysisForm {
+  .zhaowu-home-layout #birth-form {
     border-radius: 23px !important;
     padding: 22px 17px !important;
   }
 
-  .zhaowu-home-layout #analysisForm::before {
+  .zhaowu-home-layout #birth-form::before {
     inset: 8px;
     border-radius: 17px;
   }
 
-  .zhaowu-home-layout #analysisForm input,
-  .zhaowu-home-layout #analysisForm select,
-  .zhaowu-home-layout #analysisForm textarea {
+  .zhaowu-home-layout #birth-form input,
+  .zhaowu-home-layout #birth-form select,
+  .zhaowu-home-layout #birth-form textarea {
     font-size: 16px !important;
   }
 
@@ -8056,7 +8056,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 }
 
 /* Main BaZi paper: thin xuan-paper instead of the former 0.78 opacity surface. */
-.zhaowu-home-layout #analysisForm {
+.zhaowu-home-layout #birth-form {
   background:
     linear-gradient(180deg, rgba(255, 249, 238, .13), rgba(232, 216, 188, .055)),
     rgba(246, 236, 216, .54) !important;
@@ -8066,12 +8066,12 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
 }
 
 /* Typing controls keep enough paper body for iPhone legibility. */
-.zhaowu-home-layout #analysisForm textarea,
-.zhaowu-home-layout #analysisForm input,
-.zhaowu-home-layout #analysisForm select,
-body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm textarea,
-body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm input,
-body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm select {
+.zhaowu-home-layout #birth-form textarea,
+.zhaowu-home-layout #birth-form input,
+.zhaowu-home-layout #birth-form select,
+body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form textarea,
+body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form input,
+body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   background: rgba(255, 251, 242, .80) !important;
 }
 
@@ -8134,15 +8134,15 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm select {
       linear-gradient(145deg, rgba(250, 244, 232, .60), rgba(232, 217, 190, .52)) !important;
   }
 
-  .zhaowu-home-layout #analysisForm {
+  .zhaowu-home-layout #birth-form {
     background:
       linear-gradient(180deg, rgba(255, 249, 238, .14), rgba(232, 216, 188, .06)),
       rgba(246, 236, 216, .58) !important;
   }
 
-  .zhaowu-home-layout #analysisForm textarea,
-  .zhaowu-home-layout #analysisForm input,
-  .zhaowu-home-layout #analysisForm select {
+  .zhaowu-home-layout #birth-form textarea,
+  .zhaowu-home-layout #birth-form input,
+  .zhaowu-home-layout #birth-form select {
     background: rgba(255, 251, 242, .84) !important;
   }
 
@@ -8773,8 +8773,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm select {
 
 /* ─── site-ux-r63-lock.css ─── */
 /* r63 final override: remove the legacy outer question-card shell so 問事 and 四柱八字 are visibly separate. */
-.zhaowu-home-layout #analysisForm.zhaowu-analysis-flow,
-.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+.zhaowu-home-layout #birth-form.zhaowu-analysis-flow,
+.zhaowu-home-sheet-shell #birth-form.zhaowu-analysis-flow {
   border: 0 !important;
   border-radius: 0 !important;
   padding: 0 !important;
@@ -8785,10 +8785,10 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm select {
   -webkit-backdrop-filter: none !important;
   overflow: visible !important;
 }
-.zhaowu-home-layout #analysisForm.zhaowu-analysis-flow::before,
-.zhaowu-home-layout #analysisForm.zhaowu-analysis-flow::after,
-.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow::before,
-.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow::after {
+.zhaowu-home-layout #birth-form.zhaowu-analysis-flow::before,
+.zhaowu-home-layout #birth-form.zhaowu-analysis-flow::after,
+.zhaowu-home-sheet-shell #birth-form.zhaowu-analysis-flow::before,
+.zhaowu-home-sheet-shell #birth-form.zhaowu-analysis-flow::after {
   content: none !important;
   display: none !important;
 }
@@ -9383,8 +9383,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm select {
    report mother art dissolves into the paper instead of sitting inside a photo-card frame.
    This file is intentionally imported last. */
 
-.zhaowu-home-layout #analysisForm.zhaowu-analysis-flow,
-.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+.zhaowu-home-layout #birth-form.zhaowu-analysis-flow,
+.zhaowu-home-sheet-shell #birth-form.zhaowu-analysis-flow {
   display: grid !important;
   gap: clamp(34px, 7vw, 58px) !important;
   overflow: visible !important;
@@ -9559,8 +9559,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm select {
 }
 
 @media (max-width: 560px) {
-  .zhaowu-home-layout #analysisForm.zhaowu-analysis-flow,
-  .zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+  .zhaowu-home-layout #birth-form.zhaowu-analysis-flow,
+  .zhaowu-home-sheet-shell #birth-form.zhaowu-analysis-flow {
     gap: 34px !important;
   }
 
@@ -10167,8 +10167,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #analysisForm select {
   background: none !important;
 }
 
-.zhaowu-home-layout #analysisForm button[type="submit"],
-.zhaowu-home-sheet-shell #analysisForm button[type="submit"],
+.zhaowu-home-layout #birth-form button[type="submit"],
+.zhaowu-home-sheet-shell #birth-form button[type="submit"],
 .zhaowu-home-sheet-shell .zhaowu-result-primary,
 .zhaowu-login-shell .stone-login-primary,
 .zhaowu-analysis-submit-wrap button {
@@ -10517,8 +10517,8 @@ html[data-zw-theme="night"] .zhaowu-brand-ui-library__preview {
   background: linear-gradient(180deg, #0b2f26, #0a1311) !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm button[type="submit"],
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm button[type="submit"],
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form button[type="submit"],
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form button[type="submit"],
 html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-primary,
 html[data-zw-theme="night"] .zhaowu-analysis-submit-wrap button,
 html[data-zw-theme="night"] .zhaowu-share-primary {
@@ -10609,7 +10609,7 @@ html[data-zw-theme="night"] .stone-login-signature {
 .zhaowu-home-sheet-shell .zhaowu-question-sheet,
 .zhaowu-home-layout .zhaowu-daily-almanac,
 .zhaowu-home-sheet-shell .zhaowu-home-portal,
-.zhaowu-home-sheet-shell #analysisForm,
+.zhaowu-home-sheet-shell #birth-form,
 .zhaowu-login-sheet,
 .stone-login-sheet {
   background-color: var(--zw-card-day) !important;
@@ -10623,7 +10623,7 @@ html[data-zw-theme="night"] .stone-login-signature {
 [data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-question-sheet,
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-almanac,
 [data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-home-portal,
-[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm,
+[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form,
 [data-zw-theme="night"] .zhaowu-login-sheet,
 [data-zw-theme="night"] .stone-login-sheet {
   background-color: var(--zw-card-night) !important;
@@ -10631,8 +10631,8 @@ html[data-zw-theme="night"] .stone-login-signature {
   color: #eae6d7;
 }
 
-.zhaowu-home-layout #analysisForm button[type="submit"],
-.zhaowu-home-sheet-shell #analysisForm button[type="submit"],
+.zhaowu-home-layout #birth-form button[type="submit"],
+.zhaowu-home-sheet-shell #birth-form button[type="submit"],
 .zhaowu-home-sheet-shell .zhaowu-result-primary,
 .zhaowu-login-shell .stone-login-primary,
 .stone-login-primary,
@@ -10773,8 +10773,8 @@ html[data-zw-theme="night"] .stone-login-signature {
   .zhaowu-home-layout .zhaowu-daily-details > summary { min-height: 40px !important; }
   .zhaowu-home-layout .zhaowu-daily-almanac::before { width: 32px; height: 32px; opacity: .22; }
   .zhaowu-home-layout .zhaowu-daily-almanac::after { width: 72px; height: 24px; bottom: 7px; opacity: .14; }
-  .zhaowu-home-layout #analysisForm button[type="submit"],
-  .zhaowu-home-sheet-shell #analysisForm button[type="submit"],
+  .zhaowu-home-layout #birth-form button[type="submit"],
+  .zhaowu-home-sheet-shell #birth-form button[type="submit"],
   .zhaowu-analysis-submit-wrap button {
     min-width: 10.5rem;
   }
@@ -12278,29 +12278,29 @@ html[data-zw-theme="night"] .zhaowu-home-portal-action {
 /* r127 — last-wins night readability + five-element colour fills.
    Night must not leave dark ink on pine, or wash the 五行 swatches into empty squares. */
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet,
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-question-sheet {
   color: #fffaf0 !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet h2,
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet h2 {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet h2,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-question-sheet h2 {
   color: #fffaf0 !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet .zhaowu-section-kicker,
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet .zhaowu-section-kicker {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet .zhaowu-section-kicker,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-question-sheet .zhaowu-section-kicker {
   color: #e5c47f !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet .zhaowu-section-lead,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet .zhaowu-question-promise span,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet .zhaowu-question-label,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet .zhaowu-question-count,
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet .zhaowu-section-lead,
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet .zhaowu-question-promise span,
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet .zhaowu-question-label,
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet .zhaowu-question-count {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet .zhaowu-section-lead,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet .zhaowu-question-promise span,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet .zhaowu-question-label,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet .zhaowu-question-count,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-question-sheet .zhaowu-section-lead,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-question-sheet .zhaowu-question-promise span,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-question-sheet .zhaowu-question-label,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-question-sheet .zhaowu-question-count {
   color: #eee5d6 !important;
 }
 
@@ -12308,60 +12308,60 @@ html[data-zw-theme="night"] .zhaowu-question-promise span + span::before {
   color: rgba(229, 196, 127, .62) !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet textarea,
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet textarea {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet textarea,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-question-sheet textarea {
   background: #fffaf0 !important;
   color: #1b241f !important;
   border-color: rgba(212, 176, 116, .46) !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet textarea::placeholder,
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-question-sheet textarea::placeholder {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet textarea::placeholder,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-question-sheet textarea::placeholder {
   color: #6d675e !important;
   opacity: 1 !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-bazi-hub h2,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-bazi-hub .zhaowu-section-lead,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-bazi-pending,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-bazi-hub h2,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-bazi-hub .zhaowu-section-lead,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-bazi-pending,
 html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-analysis-submit-wrap p {
   color: #eee5d6 !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-bazi-hub .zhaowu-section-kicker {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-bazi-hub .zhaowu-section-kicker {
   color: #e5c47f !important;
 }
 
 /* Customer record stays parchment. Night tokens must not leak pale ink onto cream. */
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record,
-html[data-zw-theme="night"] .zhaowu-home-sheet-shell #analysisForm .zhaowu-customer-record {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record,
+html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-customer-record {
   background: rgba(250, 247, 238, .92) !important;
   color: #2d2a25 !important;
   border-color: rgba(78, 68, 53, .22) !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record h2,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-birth-fields-title,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-birth-summary strong {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record h2,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record .zhaowu-birth-fields-title,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record .zhaowu-birth-summary strong {
   color: #2d2a25 !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-section-kicker {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record .zhaowu-section-kicker {
   color: #2c6654 !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-section-lead,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record label,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record label span,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record p,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record small,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-time-warning,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record .zhaowu-birth-time-line span {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record .zhaowu-section-lead,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record label,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record label span,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record p,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record small,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record .zhaowu-time-warning,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record .zhaowu-birth-time-line span {
   color: #4a453d !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record input,
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-customer-record select {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record input,
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record select {
   background: #fffaf0 !important;
   color: #1b241f !important;
   border-color: rgba(81, 67, 48, .28) !important;
@@ -12887,7 +12887,7 @@ html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--directory {
   color: #fffaf0 !important;
 }
 
-html[data-zw-theme="night"] .zhaowu-home-layout #analysisForm .zhaowu-question-sheet h2 {
+html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet h2 {
   color: #fffaf0 !important;
   -webkit-text-fill-color: #fffaf0 !important;
 }
@@ -12915,7 +12915,7 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
 /* Ordinary visitors no longer enter an account flow. Owner login remains available at /login. */
 .zhaowu-site-header .zhaowu-header-login { display: none !important; }
 
-.zhaowu-home-sheet-shell #analysisForm.zhaowu-analysis-flow {
+.zhaowu-home-sheet-shell #birth-form.zhaowu-analysis-flow {
   gap: 18px !important;
 }
 

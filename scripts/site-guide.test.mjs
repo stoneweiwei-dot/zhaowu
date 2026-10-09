@@ -16,27 +16,27 @@ test("common navigation requests resolve locally in all three languages", () => 
     resolveLocalSiteGuide("Where are my saved reports?", "en")?.route,
     "/history",
   );
-  assert.equal(resolveLocalSiteGuide("我想看七政四餘", "zh-Hant")?.route, "/#analysisForm");
-  assert.equal(resolveLocalSiteGuide("我想看以前的紫微报告", "zh-Hans")?.route, "/#analysisForm");
-  assert.equal(resolveLocalSiteGuide("Open Dharma Palm", "en")?.route, "/#analysisForm");
+  assert.equal(resolveLocalSiteGuide("我想看七政四餘", "zh-Hant")?.route, "/#birth-form");
+  assert.equal(resolveLocalSiteGuide("我想看以前的紫微报告", "zh-Hans")?.route, "/#birth-form");
+  assert.equal(resolveLocalSiteGuide("Open Dharma Palm", "en")?.route, "/#birth-form");
   assert.equal(
     resolveLocalSiteGuide("I want a career analysis", "en")?.route,
-    "/#analysisForm",
+    "/#birth-form",
   );
   assert.equal(
     resolveLocalSiteGuide("Take me to the full report", "en")?.route,
-    "/#analysisForm",
+    "/#birth-form",
   );
   assert.equal(
     resolveLocalSiteGuide("帶我去看完整報告", "zh-Hant")?.route,
-    "/#analysisForm",
+    "/#birth-form",
   );
 });
 
 test("the guide can only recommend real public site routes", () => {
   assert.deepEqual(SITE_GUIDE_ROUTES, [
     "/",
-    "/#analysisForm",
+    "/#birth-form",
     "/history",
     "/account",
     "/login",

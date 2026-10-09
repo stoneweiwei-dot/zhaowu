@@ -83,7 +83,7 @@ function HistoryPage() {
       {!publicEntries.length ? (
         <section className="history-empty">
           <span aria-hidden>記</span><h2>{copy.empty}</h2><p>{copy.start}</p>
-          <div><a href="/#analysisForm">{tr(locale, "產生完整命盤", "产生完整命盘", "Create complete chart")}</a><Link to="/fun-tests">{kindLabel("fun-five-element", locale)}</Link></div>
+          <div><a href="/#birth-form">{tr(locale, "產生完整命盤", "产生完整命盘", "Create complete chart")}</a><Link to="/fun-tests">{kindLabel("fun-five-element", locale)}</Link></div>
         </section>
       ) : (
         <section className="history-list" aria-label={copy.title}>

@@ -20,7 +20,7 @@ test("r55 homepage transparency layer is imported last", () => {
 test("r55 keeps the existing homepage and exposes the selected artwork through thin paper", () => {
   assert.match(css, /zhaowu-home-app-frame/);
   assert.match(css, /zhaowu-daily-almanac/);
-  assert.match(css, /#analysisForm/);
+  assert.match(css, /#birth-form/);
   assert.match(css, /zhaowu-home-portals-block/);
   assert.match(css, /zhaowu-home-fun-section/);
   assert.match(css, /#auspicious-atlas/);

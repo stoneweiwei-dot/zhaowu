@@ -2,7 +2,7 @@ import type { Locale } from "@/lib/i18n";
 
 export const SITE_GUIDE_ROUTES = [
   "/",
-  "/#analysisForm",
+  "/#birth-form",
   "/history",
   "/account",
   "/login",
@@ -66,10 +66,10 @@ export function resolveLocalSiteGuide(message: string, locale: Locale): SiteGuid
   const copy = COPY[locale];
   if (LOGIN.test(text)) return answer(copy.login, "/login");
   if (ACCOUNT.test(text)) return answer(copy.account, "/account");
-  if (SPECIALIST.test(text)) return answer(copy.analysis, "/#analysisForm");
-  if (FULL_REPORT.test(text)) return answer(copy.analysis, "/#analysisForm");
+  if (SPECIALIST.test(text)) return answer(copy.analysis, "/#birth-form");
+  if (FULL_REPORT.test(text)) return answer(copy.analysis, "/#birth-form");
   if (HISTORY.test(text)) return answer(copy.history, "/history");
-  if (ANALYSIS.test(text)) return answer(copy.analysis, "/#analysisForm");
+  if (ANALYSIS.test(text)) return answer(copy.analysis, "/#birth-form");
   if (HOME.test(text)) return answer(copy.home, "/");
   return null;
 }

@@ -56,7 +56,7 @@ function KnowledgePage() {
       <ZiweiKnowledgeNotesSection />
       <ZiweiHomeEnvironmentArticle />
 
-      <a href="/#analysisForm" className="seal-border flex min-h-14 items-center justify-between rounded-2xl bg-cream px-5 py-4 text-sm text-ink">
+      <a href="/#birth-form" className="seal-border flex min-h-14 items-center justify-between rounded-2xl bg-cream px-5 py-4 text-sm text-ink">
         <span>{tr(locale,"產生完整命盤","产生完整命盘","Create complete chart")}</span>
         <span className="text-cinnabar">→</span>
       </a>
