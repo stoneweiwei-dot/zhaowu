@@ -201,23 +201,26 @@ function Home() {
     setActiveSection((prev) => (prev === id ? null : id));
   };
 
-  const openBirthBook = () => {
+  const openBirthBook = (options?: { focusYear?: boolean }) => {
+    const shouldFocus = options?.focusYear ?? true;
     setTodayExpanded(false);
     setActiveSection("form");
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
         const target = document.getElementById("birth-form") ?? document.getElementById("analysis");
         target?.scrollIntoView({ behavior: "smooth", block: "start" });
-        window.setTimeout(() => {
-          document.getElementById("birth-year")?.focus({ preventScroll: true });
-        }, 350);
+        if (shouldFocus) {
+          window.setTimeout(() => {
+            document.getElementById("birth-year")?.focus({ preventScroll: true });
+          }, 350);
+        }
       });
     });
   };
 
   useEffect(() => {
     if (typeof window !== "undefined" && (window.location.hash === "#birth-form" || window.location.hash === "#analysis")) {
-      openBirthBook();
+      openBirthBook({ focusYear: false });
     }
   }, []);
 
@@ -242,7 +245,7 @@ function Home() {
           data-home-birth-entry
           aria-controls="birth-form"
           aria-expanded={activeSection === "form"}
-          onClick={openBirthBook}
+          onClick={() => openBirthBook({ focusYear: true })}
         >
           <span className="zw-birth-entry-seal" aria-hidden>命</span>
           <span className="zw-birth-entry-copy">
