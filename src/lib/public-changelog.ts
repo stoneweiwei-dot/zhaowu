@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-09-owner-console-integration",
+    date: "2026-10-09",
+    zhHant: { title: "站主後台集中管理", summary: "報告、背景圖片、開場影片與 Instagram／Threads 改為同頁切換；音樂管理保留在後台入口。切換分區保留報告選取與社群草稿，沿用原有站主權限與資料接口。" },
+    zhHans: { title: "站主后台集中管理", summary: "报告、背景图片、开场视频与 Instagram／Threads 改为同页切换；音乐管理保留在后台入口。切换分区保留报告选择与社交草稿，沿用原有站主权限与数据接口。" },
+    en: { title: "One owner console", summary: "Reports, backgrounds, opening videos and Instagram/Threads now share one console. Music management remains available at the console entry. Switching sections retains report selection and social drafts while keeping the existing owner permissions and data APIs." },
+  },
+  {
     id: "2026-10-07-offline-china-place-gazetteer",
     date: "2026-10-07",
     zhHant: { title: "出生地補全中國地級市與縣級市，找不到時推薦最近地點", summary: "出生地搜尋內建全中國三百多個地級市、臺灣縣市、香港與澳門，以及三百個常見縣級市；簡體、繁體、拼音都能秒出並自帶時區。輸入有誤或查不到時，會列出最接近的地名供你直接選擇。" },
