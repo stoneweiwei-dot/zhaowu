@@ -363,7 +363,7 @@ export function AnalysisForm() {
     : null;
 
   return (
-    <form id="analysisForm" className="zhaowu-analysis-flow" onSubmit={(event) => void submit(event)} data-device-first-flow="true">
+    <form id="birth-form" data-legacy-id="analysisForm" className="zhaowu-analysis-flow" onSubmit={(event) => void submit(event)} data-device-first-flow="true">
       <section id="customer-record" className="zhaowu-customer-record" aria-labelledby="zhaowu-customer-title">
         <header className="zhaowu-customer-head">
           <div>
