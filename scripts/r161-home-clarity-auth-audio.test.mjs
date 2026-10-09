@@ -6,7 +6,9 @@ import ownerLogin from "../api/owner-login.js";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("Netlify Request JSON accepts the documented owner password", async () => {
+const ownerTestSecret = process.env.ZHAOWU_OWNER_TEST_SECRET ?? "";
+
+test("Netlify Request JSON accepts the owner password", { skip: !ownerTestSecret && "ZHAOWU_OWNER_TEST_SECRET not set" }, async () => {
   const request = new Request("https://archive-stone-zhaowu-official.netlify.app/api/owner-login", {
     method: "POST",
     headers: {
@@ -14,7 +16,7 @@ test("Netlify Request JSON accepts the documented owner password", async () => {
       origin: "https://archive-stone-zhaowu-official.netlify.app",
       "x-forwarded-host": "archive-stone-zhaowu-official.netlify.app",
     },
-    body: JSON.stringify({ secret: "19881004" }),
+    body: JSON.stringify({ secret: ownerTestSecret }),
   });
   const response = await ownerLogin(request);
   assert.equal(response.status, 200);

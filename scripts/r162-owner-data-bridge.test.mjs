@@ -59,7 +59,9 @@ test("uploads are bound to signed tickets before database finalization", async (
   assert.match(security, /UPLOADED_OBJECT_MIME_MISMATCH/);
 });
 
-test("the Netlify bridge parses a Fetch Request body before forwarding it", async () => {
+const ownerTestSecret = process.env.ZHAOWU_OWNER_TEST_SECRET ?? "";
+
+test("the Netlify bridge parses a Fetch Request body before forwarding it", { skip: !ownerTestSecret && "ZHAOWU_OWNER_TEST_SECRET not set" }, async () => {
   const originalFetch = globalThis.fetch;
   let forwarded = null;
   globalThis.fetch = async (_url, init) => {
@@ -77,7 +79,7 @@ test("the Netlify bridge parses a Fetch Request body before forwarding it", asyn
         origin: "https://archive-stone-zhaowu-official.netlify.app",
         host: "archive-stone-zhaowu-official.netlify.app",
         "sec-fetch-site": "same-origin",
-        cookie: "__Host-zhaowu_owner_session=19881004",
+        cookie: `__Host-zhaowu_owner_session=${encodeURIComponent(ownerTestSecret)}`,
         "content-type": "application/json",
       },
       body: JSON.stringify({ action: "report.list" }),
