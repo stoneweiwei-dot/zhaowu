@@ -44,10 +44,30 @@ export type ReportSection = {
   evidence: ReportSectionEvidence;
 };
 
-const REPORT_TITLES: Record<AppLocale, { summary: string; body: string; report: string }> = {
-  "zh-Hant": { summary: "總體概括", body: "身體需要注意", report: "昭梧｜專屬完整報告" },
-  "zh-Hans": { summary: "总体概括", body: "身体需要注意", report: "昭梧｜专属完整报告" },
-  en: { summary: "Overall summary", body: "Body areas to watch", report: "Zhaowu | Personal full report" },
+const REPORT_TITLES: Record<AppLocale, {
+  verdict: string;
+  action: string;
+  basis: string;
+  report: string;
+}> = {
+  "zh-Hant": {
+    verdict: "核心直斷",
+    action: "近期建議",
+    basis: "核心依據",
+    report: "昭梧｜專屬簡明報告"
+  },
+  "zh-Hans": {
+    verdict: "核心直斷",
+    action: "近期建議",
+    basis: "核心依據",
+    report: "昭梧｜专属简明报告"
+  },
+  en: {
+    verdict: "Core insight",
+    action: "Next steps",
+    basis: "Foundation",
+    report: "Zhaowu | Personal insight report"
+  },
 };
 
 function normalizeLine(line: string): string {
@@ -238,36 +258,139 @@ function summaryLines(result: AnalysisResult): string[] {
   return locale === "zh-Hant" ? lines.map(toTraditionalCustomerText) : lines;
 }
 
-/** New reports keep one overall summary plus the persisted body-attention block; UI relevance decides whether body is shown. */
+/** Three-section streamlined report: verdict + action + basis. */
 export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
   const locale = result.locale ?? "zh-Hans";
   const titles = REPORT_TITLES[locale];
+  const { question, chart, reading } = result;
+  const req = inspectAnswerRequirements(question);
+
+  // Section 1: Core verdict — direct answer + current cycle context
+  const verdict = summaryLines(result);
+
+  // Section 2: Action items — next steps, timing, practical guidance
+  const actionLines: string[] = [];
+  const structureQuestion = isStructureQuestion(question);
+
+  if (!structureQuestion) {
+    actionLines.push(customerCopy(reading.action));
+  }
+
+  // Add timing context if relevant
+  if (req.asksWhen || ["timing", "career", "love", "money", "home"].includes(reading.kind)) {
+    if (chart.currentDayun) {
+      actionLines.push(
+        locale === "en"
+          ? `Current ten-year cycle: ${chart.currentDayun.ganZhi} (${chart.currentDayun.startYear}–${chart.currentDayun.endYear}).`
+          : locale === "zh-Hant"
+          ? `當前十年週期：${chart.currentDayun.ganZhi}（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。`
+          : `当前十年周期：${chart.currentDayun.ganZhi}（${chart.currentDayun.startYear}–${chart.currentDayun.endYear}）。`
+      );
+    }
+  }
+
+  // Add specific guidance by question type
+  if (req.asksTravel) {
+    const names = travelNames(question, chart);
+    const exec = locale === "en"
+      ? `Confirm the first option, then book transport and housing. Keep only one backup destination.`
+      : locale === "zh-Hant"
+      ? `先定第一選項，再訂交通和住宿；備選只留一個。`
+      : `先定第一选项，再订交通和住宿；备选只留一个。`;
+    actionLines.push(exec);
+  } else if (reading.kind === "career" && !structureQuestion) {
+    const careerGuide = locale === "en"
+      ? "Put job title, income, growth space, responsibility and exit cost on the same table; advance only what's most worth it."
+      : locale === "zh-Hant"
+      ? "把職位、收入、成長空間、責任和退出成本放在同一張表；只推進最值得的一條。"
+      : "把职位、收入、成长空间、责任和退出成本放在同一张表；只推进最值得的一条。";
+    actionLines.push(careerGuide);
+  } else if (reading.kind === "money") {
+    const moneyGuide = locale === "en"
+      ? "Define risk cap, cash flow and exit terms first; then weigh the return potential."
+      : locale === "zh-Hant"
+      ? "先寫清風險上限、現金流和退出條件，再考慮收益空間。"
+      : "先写清风险上限、现金流和退出条件，再考虑收益空间。";
+    actionLines.push(moneyGuide);
+  } else if (reading.kind === "health") {
+    const healthGuide = locale === "en"
+      ? "Stabilize sleep, rhythm and physical load first; see a doctor if symptoms persist, worsen or limit activity."
+      : locale === "zh-Hant"
+      ? "先穩定睡眠、作息與身體負荷；不適持續、加重或影響活動時及時就醫。"
+      : "先稳定睡眠、作息与身体负荷；不适持续、加重或影响活动时及时就医。";
+    actionLines.push(healthGuide);
+  } else if (reading.kind === "love") {
+    const loveGuide = locale === "en"
+      ? "Judge the relationship by consistent contact, actual plans, clear commitment and respected boundaries."
+      : locale === "zh-Hant"
+      ? "關係只看持續聯繫、實際見面、明確承諾和邊界；沒有這些，就不要靠解釋補關係。"
+      : "关系只看持续联系、实际见面、明确承诺和边界；没有这些，就不要靠解释补关系。";
+    actionLines.push(loveGuide);
+  }
+
+  // Section 3: Basis — chart details and evidence
+  const basisLines: string[] = [];
+
+  // Chart fundamentals
+  const chartLabel = locale === "en"
+    ? `Chart: Day Master ${chart.dayMaster}${chart.dayMasterElement}, Month ${chart.monthBranch}.`
+    : locale === "zh-Hant"
+    ? `命盤落點：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`
+    : `命盘落点：日主 ${chart.dayMaster}${chart.dayMasterElement}，月令 ${chart.monthBranch}。`;
+  basisLines.push(chartLabel);
+
+  // Data quality note
+  if (chart.timeUnknown) {
+    const timeNote = locale === "en"
+      ? "Birth time is not confirmed; conclusions depending on the hour are approximate."
+      : locale === "zh-Hant"
+      ? "出生時間未確定；依賴時柱的結論降級為參考。"
+      : "出生时间未确定；依赖时柱的结论降级为参考。";
+    basisLines.push(timeNote);
+  }
+
+  // Guardian beast (symbolic lens)
+  basisLines.push(guardianLine(chart, locale));
+
   return [
     {
       sectionNo: 1,
       pageNo: 1,
       key: "summary",
-      title: titles.summary,
-      body: summaryLines(result),
+      title: titles.verdict,
+      body: verdict,
       narrative: buildPersonalReportNarrative(result),
       evidence: {
-        facts: ["final reading", "question-relevant chart facts", "owner-material five-element functional lens", "four-storehouse teaching labels when present", "original chart + relevant Dayun / annual timing when requested", "timing", "action"],
-        conditions: ["Only question-specific content is kept in the continuous summary", "Cycle overlay is included only when the question is time-relevant; it consumes canonical chart output and does not recompute luck-cycle direction"],
-        limits: ["No unrelated topic filler", "No internal chain-of-thought", "Five-element cognition and stem shorthand are symbolic/customer-language only", "Storehouse labels do not imply wealth or automatic activation", "Provisional useful-element conclusions never become hard five-element remedies"],
-        checks: ["Direct answer appears once", "No numbered mini-sections", "Unrelated body and timing modules stay out of the main reading flow", "Dayun and annual year are read together only when relevant and birth time is usable"],
+        facts: ["final reading", "question-relevant chart facts", "owner-material five-element functional lens", "four-storehouse teaching labels when present", "original chart + relevant Dayun / annual timing when requested"],
+        conditions: ["Only question-specific content is kept", "Cycle overlay is included only when time-relevant"],
+        limits: ["No unrelated topic filler", "Five-element cognition is symbolic/customer-language only", "Storehouse labels do not imply automatic activation"],
+        checks: ["Direct answer appears once", "No internal chain-of-thought"],
       },
     },
     {
       sectionNo: 2,
       pageNo: 2,
-      key: "body",
-      title: titles.body,
-      body: buildBodyAttentionLines(result.chart, locale),
+      key: "action",
+      title: titles.action,
+      body: dedupeLines(actionLines),
       evidence: {
-        facts: ["four-pillar earthly branches", "month seasonal weighting", "current long-term cycle branch", "six fixed opposition axes"],
-        conditions: ["Earthly branch sets the observation area; paired branches are read as one axis"],
-        limits: ["Traditional symbolic body map only", "Not a medical diagnosis", "No unimplemented Zi Wei star or sha-ji layer is invented"],
-        checks: ["Seasonal weight is shown", "Medical boundary is explicit"],
+        facts: ["reading.action", "current Dayun context when relevant", "question-specific guidance"],
+        conditions: ["Guidance targets immediate next steps and practical boundaries"],
+        limits: ["Not medical advice, legal advice or investment advice", "No timeline guarantee"],
+        checks: ["Actionable steps are concrete", "Timing is approximate or conditional"],
+      },
+    },
+    {
+      sectionNo: 3,
+      pageNo: 3,
+      key: "basis",
+      title: titles.basis,
+      body: dedupeLines(basisLines),
+      evidence: {
+        facts: ["four-pillar chart", "day master and month order", "guardian beast symbolic lens"],
+        conditions: ["Data quality is noted; conclusions adjust if birth time is absent"],
+        limits: ["No full structural analysis; references the main reading instead"],
+        checks: ["Chart details are shown", "Data quality is transparent"],
       },
     },
   ];
