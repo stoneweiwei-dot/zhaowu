@@ -67,11 +67,13 @@ test("result view enforces 3-part free report boundary and embeds paid destiny b
   assert.match(resultView, /data-technical-evidence/);
   assert.match(resultView, /data-destiny-unlock-gate/);
 
-  // Three pricing tiers and unlock call
-  assert.match(resultView, /REPORT_ACCESS_PRODUCTS\.quick\.price/);
+  // 2026-10-10 business decision: the quick tier is no longer sold — it is
+  // a standing new-user welcome gift, so it has no purchase button and no
+  // price card. Only system/bundle remain purchasable.
+  assert.match(resultView, /新用戶的福利|新用户的福利|New-user welcome gift/);
+  assert.doesNotMatch(resultView, /handleUnlock\("quick"\)/);
   assert.match(resultView, /REPORT_ACCESS_PRODUCTS\.system\.price/);
   assert.match(resultView, /REPORT_ACCESS_PRODUCTS\.bundle\.price/);
-  assert.match(resultView, /handleUnlock\("quick"\)/);
   assert.match(resultView, /handleUnlock\("system"\)/);
   assert.match(resultView, /handleUnlock\("bundle"\)/);
 

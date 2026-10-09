@@ -4,8 +4,23 @@ export type ReportSystemId = "ziwei" | "qizheng" | "western" | "indian" | "palm"
 export type ReportAccessProduct = "quick" | "system" | "bundle";
 export type ReportAccessLevel = "none" | "quick" | "system" | "bundle";
 
+// The "quick" tier is no longer sold: every visitor gets it for free by
+// default (see resolveReportAccess below) as a new-user welcome gift, so it
+// carries no price and no longer renders as a purchasable card in
+// ReportAccessGate. `system`/`bundle` are the only two tiers still sold.
+//
+// NOTE ON system/bundle PRICES: the business decision is to reprice these
+// to $9.9 / $19.99, but the strings below are DISPLAY labels only — the
+// amount actually charged is fixed by the Stripe Price object behind each
+// hardcoded buy.stripe.com Payment Link in PAYMENT_LINKS, not by this file.
+// Changing these strings without changing the real Stripe-side price would
+// make the button say one amount and Stripe charge another, which is worse
+// than the current prices. They are left at their current, Stripe-accurate
+// values until new Payment Links (or Stripe dashboard access) make $9.90 /
+// $19.99 the real charged amount. See the BLOCKED BY note reported
+// alongside this change.
 export const REPORT_ACCESS_PRODUCTS = {
-  quick: { amountCents: 199, price: "$1.99" },
+  quick: { amountCents: 0, price: "$0" },
   system: { amountCents: 499, price: "$4.99" },
   bundle: { amountCents: 999, price: "$9.99" },
 } as const;
@@ -127,10 +142,15 @@ const rank: Record<ReportAccessLevel, number> = { none: 0, quick: 1, system: 2, 
 
 export async function resolveReportAccess(system: ReportSystemId) {
   const accessKey = reportAccessKey();
-  if (!accessKey) return { level: "none" as ReportAccessLevel, pending: false };
+  // "quick" is a standing new-user welcome gift, not a purchase: everyone
+  // starts at this level rather than "none", regardless of whether an
+  // access key could be minted or any session verifies. Paid "system"/
+  // "bundle" levels are still earned strictly through verified Stripe
+  // sessions below and only ever raise this floor, never lower it.
+  if (!accessKey) return { level: "quick" as ReportAccessLevel, pending: false };
   const query = typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("session_id") || "";
   if (query) rememberSession(query);
-  let level: ReportAccessLevel = "none";
+  let level: ReportAccessLevel = "quick";
   let pending = false;
   for (const sessionId of [...new Set([query, ...storedSessions()].filter(Boolean))]) {
     try {

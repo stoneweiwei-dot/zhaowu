@@ -314,13 +314,18 @@ export function UnifiedBirthReport({ birth, locale, foundation, plainLead = NO_P
                     <span className="zhaowu-unified-fold__step">01</span>
                     <h4>{section.title}</h4>
                     <div className="zhaowu-unified-fold__body">
-                      {section.body.slice(0, 2).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                      {/* Only the single direct-conclusion line stays open by
+                          default (matching the SUMMARY_VISIBLE_LINES=1 convention
+                          used on the continuous report page) — users were not
+                          reading the second always-visible paragraph, so it now
+                          folds with the rest instead of showing automatically. */}
+                      {section.body.slice(0, 1).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
                     </div>
-                    {section.body.length > 2 ? (
+                    {section.body.length > 1 ? (
                       <details className="zhaowu-unified-fold zhaowu-unified-fold--more" data-report-fold>
                         <summary>{copy.openFull}</summary>
                         <div className="zhaowu-unified-fold__body">
-                          {section.body.slice(2).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                          {section.body.slice(1).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
                         </div>
                       </details>
                     ) : null}
