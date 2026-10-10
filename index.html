@@ -55,6 +55,19 @@
     <script>
       (function () {
         try {
+          var k = localStorage.getItem("zhaowu.skin.v1");
+          if (!k || k === "none") return;
+          var dark = k === "night-flute" || k === "night-palace";
+          var r = document.documentElement;
+          r.setAttribute("data-zws", k);
+          r.setAttribute("data-zws-mode", dark ? "dark" : "light");
+          if (dark) r.setAttribute("data-zw-theme", "night");
+        } catch (e) {}
+      })();
+    </script>
+    <script>
+      (function () {
+        try {
           var savedLanguage = localStorage.getItem("zhaowu.display-language");
           if (["zh-Hant", "zh-Hans", "en"].indexOf(savedLanguage) === -1) {
             savedLanguage = "zh-Hant";

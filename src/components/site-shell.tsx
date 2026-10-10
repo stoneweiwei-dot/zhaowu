@@ -18,6 +18,7 @@ import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { IntroGate } from "@/components/intro-gate";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
+import { hydrateSkin } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 
 const EMPTY_STATS: PublicSiteStats = {
@@ -103,6 +104,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     hydrateLocale();
     hydrateDisplayLanguage();
     hydrateBrandTheme();
+    hydrateSkin();
     runLocalHousekeeping();
     let alive = true;
     void recordVisit().catch(() => undefined).finally(() => {

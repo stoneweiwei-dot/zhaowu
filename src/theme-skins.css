@@ -1,0 +1,318 @@
+/* ============================================================================
+ * ZHAOWU theme skins (owner-selectable) — loaded AFTER zhaowu-design-system.css on purpose.
+ * Everything here is gated by html[data-zws]; with no attribute this file changes nothing.
+ * Also contains the 圖15 "jade almanac" board variant ([data-variant="jade"]).
+ * ========================================================================== */
+
+/* ── 1. skin tokens ───────────────────────────────────────────────────────── */
+html[data-zws] {
+  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "PMingLiU", serif;
+  --zws-font-en: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, "Times New Roman", serif;
+  --zws-radius: 18px;
+  --zws-radius-sm: 12px;
+  --zws-shadow: 0 10px 28px rgba(60, 46, 24, .10);
+  --zws-on-accent: #fffaf0;
+  --zws-gold: #b8934d;
+}
+html[data-zws="lotus-boat"] { --zws-page: #f4ead7; --zws-card: #fbf4e4; --zws-ink: #1f3d35; --zws-soft: #5a665d; --zws-accent: #285044; --zws-line: rgba(184,147,77,.5); --zws-gold: #b8934d; --zws-wash: radial-gradient(circle at 80% 8%, rgba(214,150,150,.18), transparent 38%), radial-gradient(circle at 10% 40%, rgba(120,160,150,.16), transparent 40%); }
+html[data-zws="cloud-jade"] { --zws-page: #efe9db; --zws-card: #f7f2e6; --zws-ink: #243a32; --zws-soft: #5b655d; --zws-accent: #2b5545; --zws-line: rgba(160,150,120,.45); --zws-gold: #a99567; --zws-radius: 20px; --zws-wash: radial-gradient(circle at 20% 5%, rgba(255,255,255,.7), transparent 40%); }
+html[data-zws="golden-phoenix"] { --zws-page: #f3e6c8; --zws-card: #fbf1d8; --zws-ink: #2c2a22; --zws-soft: #6b5f45; --zws-accent: #26493c; --zws-line: rgba(201,162,79,.6); --zws-gold: #c9a24f; --zws-wash: radial-gradient(circle at 70% 0%, rgba(255,214,120,.45), transparent 45%); }
+html[data-zws="ink-dragon"] { --zws-page: #efe6d4; --zws-card: #f7efde; --zws-ink: #1d1a16; --zws-soft: #5d554a; --zws-accent: #3f5f58; --zws-line: rgba(183,154,90,.5); --zws-gold: #b79a5a; --zws-radius: 10px; --zws-wash: radial-gradient(circle at 85% 0%, rgba(150,190,185,.28), transparent 45%); }
+html[data-zws="dragon-lotus"] { --zws-page: #f1e8d8; --zws-card: #fdf7ea; --zws-ink: #1f3a33; --zws-soft: #5b6a62; --zws-accent: #234e43; --zws-line: rgba(196,162,99,.7); --zws-gold: #c4a263; --zws-radius: 22px; --zws-wash: radial-gradient(circle at 90% 0%, rgba(160,200,215,.35), transparent 42%), radial-gradient(circle at 0% 60%, rgba(240,200,200,.25), transparent 40%); }
+html[data-zws="day-flute"] { --zws-page: #eee6d6; --zws-card: #f8f2e6; --zws-ink: #12313f; --zws-soft: #4f636b; --zws-accent: #0f4059; --zws-line: rgba(185,160,106,.55); --zws-gold: #b9a06a; --zws-wash: radial-gradient(circle at 80% 0%, rgba(120,170,200,.35), transparent 45%); }
+html[data-zws="pine-ink"] { --zws-page: #f4efe3; --zws-card: #fbf8ef; --zws-ink: #172b25; --zws-soft: #55625b; --zws-accent: #1f4a3a; --zws-line: rgba(23,43,37,.16); --zws-gold: #1f4a3a; --zws-radius: 14px; --zws-shadow: 0 6px 18px rgba(23,43,37,.07); --zws-wash: none; }
+html[data-zws="pastel-koi"] { --zws-page: #f7efe3; --zws-card: rgba(255,255,255,.62); --zws-ink: #3b3a3a; --zws-soft: #7a7370; --zws-accent: #6f9a98; --zws-line: rgba(232,201,193,.9); --zws-gold: #d9b9a8; --zws-radius: 22px; --zws-shadow: 0 10px 26px rgba(170,140,170,.14); --zws-wash: radial-gradient(circle at 85% 5%, rgba(160,200,230,.35), transparent 42%), radial-gradient(circle at 10% 55%, rgba(240,190,200,.3), transparent 42%), radial-gradient(circle at 70% 90%, rgba(190,175,230,.25), transparent 40%); }
+/* dark skins */
+html[data-zws="night-flute"], html[data-zws="night-palace"] { --zws-page: #0a1b27; --zws-card: rgba(12,32,45,.82); --zws-ink: #f1e8d0; --zws-soft: #b9c3c0; --zws-accent: #e0be80; --zws-on-accent: #2a1d08; --zws-line: rgba(224,190,128,.38); --zws-gold: #e0be80; --zws-radius: 16px; --zws-shadow: 0 12px 34px rgba(0,0,0,.45); --zws-wash: radial-gradient(120% 60% at 50% 0%, rgba(40,110,130,.45), transparent 60%); }
+html[data-zws="night-palace"] { --zws-page: #07121a; --zws-card: rgba(9,26,38,.86); --zws-radius: 8px; }
+
+/* ── 2. page, header, controls ────────────────────────────────────────────── */
+html[data-zws] body,
+html[data-zws] body:has(.zhaowu-home-sheet-shell),
+html[data-zws] body:has(.zhaowu-has-wallpaper) {
+  background-color: var(--zws-page) !important;
+  background-image: var(--zws-wash, none) !important;
+  background-attachment: fixed !important;
+  color: var(--zws-ink);
+}
+html[data-zws] body .zhaowu-home-sheet-shell,
+html[data-zws] body .zhaowu-home-sheet-shell main.zhaowu-home-layout { background: transparent !important; }
+html[data-zws] body .zhaowu-home-sheet-shell { --zhaowu-shell-wallpaper: none; }
+html[data-zws] body .zhaowu-home-sheet-shell::before,
+html[data-zws] body .zhaowu-home-sheet-shell::after { background-image: none !important; }
+
+html[data-zws] body .zhaowu-site-header {
+  background: color-mix(in srgb, var(--zws-page) 90%, transparent) !important;
+  border-bottom: 1px solid var(--zws-line) !important;
+  backdrop-filter: blur(10px);
+}
+html[data-zws] body .zhaowu-site-header :is(a, button, span):not(.zhaowu-home-login-inline):not(.zhaowu-home-login-inline *) { color: var(--zws-ink) !important; }
+html[data-zws] body .zhaowu-home-login-inline,
+html[data-zws] body .zhaowu-site-header .zhaowu-header-owner-login {
+  background: var(--zws-accent) !important;
+  color: var(--zws-on-accent) !important;
+  border: 1px solid var(--zws-gold) !important;
+  border-radius: 999px !important;
+}
+html[data-zws] body .zhaowu-home-login-inline * { color: var(--zws-on-accent) !important; }
+
+/* hero art banner at top of the home page (the painted crop from the owner's mood-board) */
+html[data-zws] body main.zhaowu-home-layout::before {
+  content: "";
+  display: block;
+  height: clamp(150px, 44vw, 230px);
+  margin: 4px 0 14px;
+  border-radius: var(--zws-radius);
+  border: 1px solid var(--zws-line);
+  background: var(--zws-hero) center / cover no-repeat;
+  box-shadow: var(--zws-shadow);
+}
+html[data-zws="lotus-boat"] { --zws-hero: url(/theme-skins/lotus-boat-hero.webp); }
+html[data-zws="cloud-jade"] { --zws-hero: url(/theme-skins/cloud-jade-hero.webp); }
+html[data-zws="golden-phoenix"] { --zws-hero: url(/theme-skins/golden-phoenix-hero.webp); }
+html[data-zws="ink-dragon"] { --zws-hero: url(/theme-skins/ink-dragon-hero.webp); }
+html[data-zws="dragon-lotus"] { --zws-hero: url(/theme-skins/dragon-lotus-hero.webp); }
+html[data-zws="night-flute"] { --zws-hero: url(/theme-skins/night-flute-hero.webp); }
+html[data-zws="day-flute"] { --zws-hero: url(/theme-skins/day-flute-hero.webp); }
+html[data-zws="night-palace"] { --zws-hero: url(/theme-skins/night-palace-hero.webp); }
+html[data-zws="pine-ink"] { --zws-hero: url(/theme-skins/pine-ink-hero.webp); }
+html[data-zws="pastel-koi"] { --zws-hero: url(/theme-skins/pastel-koi-hero.webp); }
+html[data-zws="golden-phoenix"] body main.zhaowu-home-layout::before { background-position: 50% 30%; }
+html[data-zws="night-flute"] body main.zhaowu-home-layout::before { background-position: 50% 35%; }
+html[data-zws="night-palace"] body main.zhaowu-home-layout::before { background-position: 50% 30%; height: clamp(150px, 46vw, 260px); }
+
+/* titles & body type */
+html[data-zws] body :is(h1, h2, h3) { font-family: var(--zws-font-d) !important; color: var(--zws-ink); }
+html[data-zws] body .zhaowu-home-lead h1,
+html[data-zws] body .zhaowu-home-lead p { color: var(--zws-ink) !important; }
+html[data-zws] body .zhaowu-home-lead p { color: var(--zws-soft) !important; }
+html[lang="en"][data-zws] body :is(h1, h2, h3) { font-family: var(--zws-font-en) !important; letter-spacing: .005em !important; }
+html[data-zws="ink-dragon"] body :is(h1, h2) { font-weight: 800 !important; }
+html[data-zws="pastel-koi"] body :is(h1, h2, h3) { font-weight: 500 !important; }
+html[data-zws="pine-ink"] body :is(h1, h2, h3) { font-weight: 800 !important; }
+
+/* primary entry ticket, portal cards, utility dock, nav links */
+html[data-zws] body .zw-birth-entry-ticket,
+html[data-zws] body .zw-hero-nav-item.zw-hero-card,
+html[data-zws] body .zhaowu-site-utility-buttons,
+html[data-zws] body .zhaowu-home-sheet-shell a[class=""],
+html[data-zws] body .zhaowu-home-sheet-shell a:not([class]) {
+  background: var(--zws-card) !important;
+  border: 1px solid var(--zws-line) !important;
+  border-radius: var(--zws-radius) !important;
+  color: var(--zws-ink) !important;
+  box-shadow: var(--zws-shadow) !important;
+}
+html[data-zws] body .zw-hero-nav-item.zw-hero-card :is(strong, b, h3, span) { color: var(--zws-ink) !important; font-family: var(--zws-font-d); }
+html[lang="en"][data-zws] body .zw-hero-nav-item.zw-hero-card :is(strong, b, h3, span) { font-family: var(--zws-font-en); }
+html[data-zws] body .zw-hero-nav-item.zw-hero-card p,
+html[data-zws] body .zw-hero-nav-item.zw-hero-card small { color: var(--zws-soft) !important; }
+html[data-zws] body .zw-hero-nav-item.zw-hero-card:hover { border-color: var(--zws-gold) !important; transform: translateY(-1px); }
+html[data-zws] body .zw-birth-entry-ticket * { color: inherit; }
+
+/* generic cards / buttons used across inner pages */
+html[data-zws] body :is(.seal-border, .zhaowu-result-card, .zhaowu-customer-record) {
+  background: var(--zws-card) !important;
+  border-color: var(--zws-line) !important;
+  border-radius: var(--zws-radius) !important;
+  color: var(--zws-ink);
+}
+html[data-zws] body :is(button[type="submit"], .bg-cinnabar, .zhaowu-primary-button) {
+  background: var(--zws-accent) !important;
+  color: var(--zws-on-accent) !important;
+  border-color: var(--zws-gold) !important;
+}
+html[data-zws="night-flute"] body :is(button[type="submit"], .bg-cinnabar),
+html[data-zws="night-palace"] body :is(button[type="submit"], .bg-cinnabar) { background: linear-gradient(180deg, #f0d6a0, #c9a063) !important; }
+html[data-zws="night-palace"] body :is(.zw-hero-nav-item.zw-hero-card, .zw-birth-entry-ticket) { border-width: 1.5px !important; outline: 1px solid rgba(224,190,128,.22); outline-offset: -6px; }
+
+/* ── 3. 圖15 · jade almanac board ([data-variant="jade"]) ─────────────────── */
+html body .zw-ink-board[data-variant="jade"] {
+  --j-frame: #173f35;
+  --j-frame-2: #0f2c26;
+  --j-card: #f7f0de;
+  --j-card-2: #efe5cb;
+  --j-ink: #26382f;
+  --j-soft: #62705f;
+  --j-gold: #c8a45e;
+  --j-line: rgba(176, 140, 76, .55);
+  --j-yi: #2f6b55;
+  --j-ji: #a63a2d;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px;
+  border-radius: 22px;
+  border: 1.5px solid var(--j-gold);
+  background:
+    radial-gradient(120% 40% at 50% 0%, rgba(90, 140, 120, .35), transparent 70%),
+    linear-gradient(180deg, var(--j-frame), var(--j-frame-2));
+  box-shadow: 0 0 0 3px rgba(23, 63, 53, .5), 0 14px 34px rgba(15, 44, 38, .25);
+  position: relative;
+}
+html body .zw-ink-board[data-variant="jade"] > * { min-width: 0; }
+html body .zw-ink-board[data-variant="jade"] :is(.zw-ink-hero__art, .zw-ink-title, .zw-ink-city) { order: 0; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-variant { order: 1; }
+html body .zw-ink-board[data-variant="jade"] small { color: var(--j-soft); letter-spacing: .1em; font-size: 12px; white-space: nowrap; }
+
+/* variant switch: three pills, one line, both languages */
+html body .zw-ink-board[data-variant="jade"] .zw-ink-variant { grid-column: 1 / -1; justify-self: end; align-self: center; margin: 0; z-index: 3; display: inline-flex; gap: 0; padding: 3px; border-radius: 999px; background: rgba(15, 44, 38, .72); border: 1px solid var(--j-line); backdrop-filter: blur(6px); }
+html body .zw-ink-board .zw-ink-variant button { white-space: nowrap; min-height: 30px; padding: 0 11px; border: 0; border-radius: 999px; background: transparent; color: #e9dfc4; font-size: 12px; font-weight: 600; }
+html body .zw-ink-board .zw-ink-variant button[aria-pressed="true"] { background: var(--j-gold); color: #1a2a22; }
+
+/* hero banner = skyline art + gold title; date card becomes a regular cell */
+html body .zw-ink-board[data-variant="jade"] .zw-ink-hero { display: contents; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art {
+  grid-column: 1 / -1; grid-row: 1;
+  position: relative; inset: auto; z-index: 0; display: block; height: 150px; border-radius: 16px; border: 1px solid var(--j-line);
+  background: linear-gradient(90deg, rgba(8, 30, 26, .86), rgba(8, 30, 26, .35) 58%, rgba(8, 30, 26, .05)), url(/theme-skins/almanac-skyline.webp) center bottom / cover no-repeat;
+}
+html body .zw-ink-board[data-variant="jade"] .zw-ink-title { grid-column: 1 / -1; grid-row: 1; align-self: end; justify-items: start; text-align: left; padding: 0 16px 30px; z-index: 2; pointer-events: none; gap: 2px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-title h3 { color: #f1dba0; font-size: clamp(1.9rem, 9.5vw, 2.7rem); letter-spacing: .06em; line-height: 1.05; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-title p { color: #f3ecd8; font-size: 13px; letter-spacing: .1em; white-space: nowrap; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-title small { display: none; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-city { grid-column: 1 / -1; grid-row: 1; align-self: start; justify-self: end; margin: 10px 12px 0 0; padding: 4px 10px; background: rgba(8, 30, 26, .6); border-color: var(--j-line); z-index: 2; display: flex; gap: 8px; align-items: baseline; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-city strong { color: #f1dba0; font-size: 14px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-city span { color: #eadfc3; font-size: 11px; white-space: nowrap; }
+html body .zw-ink-board:not([data-variant="jade"]) .zw-ink-hero__art { display: none; }
+
+/* cream cards */
+html body .zw-ink-board[data-variant="jade"] :is(.zw-ink-panel, .zw-ink-paper, .zw-ink-datecard) {
+  background: linear-gradient(180deg, var(--j-card), var(--j-card-2));
+  border: 1px solid var(--j-line);
+  border-radius: 12px;
+  color: var(--j-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7);
+}
+html body .zw-ink-board[data-variant="jade"] .zw-ink-row { display: contents; }
+html body .zw-ink-board[data-variant="jade"] :is(.zw-ink-panel, .zw-ink-paper) strong,
+html body .zw-ink-board[data-variant="jade"] :is(.zw-ink-panel, .zw-ink-paper) span,
+html body .zw-ink-board[data-variant="jade"] :is(.zw-ink-panel, .zw-ink-paper) li { color: var(--j-ink); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-datecard { grid-column: span 2; order: 2; padding: 8px 4px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-datecard em { background: #a63a2d; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-datecard small { color: var(--j-ink); white-space: normal; text-align: center; line-height: 1.3; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-weather { grid-column: span 2; order: 2; grid-template-columns: 1fr; gap: 4px; padding: 8px 8px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-weather > div + div { border-left: 0; padding-left: 0; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-weather strong { font-size: 17px; line-height: 1.2; margin-top: 2px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-weather span { font-size: 12px; line-height: 1.45; margin-top: 2px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-weather > div + div { display: none; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-sacred { grid-column: span 2; order: 2; padding: 8px 6px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-sacred__art { display: none; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-sacred strong { font-size: 13px; line-height: 1.45; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-pillars { grid-column: 1 / -1; order: 3; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-pillars .zhaowu-daily-pillars b { color: var(--j-ink) !important; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-pillars .zhaowu-daily-pillars > span[data-pillar="day"] b { color: var(--j-ji) !important; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-pillars .zhaowu-daily-pillars i { color: var(--j-soft) !important; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-pillars .zhaowu-daily-pillars > span { border-left-color: var(--j-line) !important; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-daymaster { color: var(--j-soft); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-core { grid-column: 1 / -1; order: 4; grid-template-columns: 84px 1fr; padding: 10px 12px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-core strong { font-size: 15px; line-height: 1.7; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-wheel { width: 84px; height: 84px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-wheel__node { fill: #f7f0de; stroke: var(--j-gold); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-wheel text { fill: var(--j-ink); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-wheel g.is-on text { fill: #fffaf0; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-personal { color: var(--j-ink); border-top-color: var(--j-line); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-yi { grid-column: span 3; order: 5; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-ji { grid-column: span 3; order: 5; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-yi h4 span { background: var(--j-yi); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-ji h4 span { background: var(--j-ji); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-yi ul,
+html body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-ji ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 4px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-yi li,
+html body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-ji li { display: flex; justify-content: flex-start; align-items: center; gap: 6px; text-align: left; font-size: 12px; line-height: 1.3; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-yi li .zw-ink-icon,
+html body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-ji li .zw-ink-icon { width: 16px; height: 16px; flex: 0 0 16px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-relations { grid-column: 1 / -1; order: 6; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-hours { order: 7; grid-column: span 3; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-hours > div { grid-template-columns: 1fr; justify-items: center; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-hours li { gap: 8px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-hours.is-good h4 { color: var(--j-yi); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-hours.is-caution h4 { color: var(--j-ji); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-colors,
+html body .zw-ink-board[data-variant="jade"] .zw-ink-jewels,
+html body .zw-ink-board[data-variant="jade"] .zw-ink-mask { grid-column: span 2; order: 8; padding: 8px 6px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-colors ul,
+html body .zw-ink-board[data-variant="jade"] .zw-ink-jewels ul { grid-template-columns: 1fr 1fr; }
+html body .zw-ink-board[data-variant="jade"] :is(.zw-ink-colors, .zw-ink-jewels) li { color: var(--j-ink); font-size: 11px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-jewels .zw-ink-icon,
+html body .zw-ink-board[data-variant="jade"] .zw-ink-maskart,
+html body .zw-ink-board[data-variant="jade"] .zw-ink-sacred .zw-ink-icon { color: var(--j-gold); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-colors i { border-color: var(--j-line); }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-closing { grid-column: 1 / -1; order: 9; color: #f1dba0; }
+html body .zw-ink-board[data-variant="jade"] .zhaowu-today-location-inline { color: #1f4a3a; border-bottom-color: #1f4a3a; font-size: 12px; min-height: 32px; white-space: nowrap; }
+
+/* English: no wrapping labels, serif stack, cards re-flow so nothing breaks into two lines */
+html[lang="en"] body .zw-ink-board[data-variant="jade"] { font-family: var(--zws-font-en, Georgia, serif); }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-title h3 { font-size: clamp(1.7rem, 8.4vw, 2.4rem); letter-spacing: .01em; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-title p { letter-spacing: .02em; font-size: 12.5px; white-space: normal; max-width: 70%; line-height: 1.35; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-datecard { grid-column: span 3; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-weather { grid-column: span 3; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-sacred { grid-column: 1 / -1; grid-template-columns: auto 1fr; justify-items: start; text-align: left; align-items: center; gap: 4px 10px; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-sacred small { grid-column: 1 / -1; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-paper h4 { letter-spacing: .04em; white-space: nowrap; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-yi ul,
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-ji ul { grid-template-columns: 1fr; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-yi li,
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-paper.is-ji li { font-size: 12.5px; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-hours li { font-size: 12px; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] :is(.zw-ink-colors, .zw-ink-jewels, .zw-ink-mask) { grid-column: 1 / -1; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] :is(.zw-ink-colors, .zw-ink-jewels) ul { grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-closing { font-size: 15px; letter-spacing: .02em; }
+
+/* the three numbered section bars below the board: jade frame + gold edge (圖15) */
+html body #daily-almanac:has([data-variant="jade"]) .zhaowu-today-section {
+  border: 1.5px solid #c8a45e !important;
+  border-radius: 20px !important;
+  background: linear-gradient(180deg, #173f35, #0f2c26) !important;
+  box-shadow: 0 10px 26px rgba(15, 44, 38, .22);
+  overflow: hidden;
+}
+html body #daily-almanac:has([data-variant="jade"]) .zhaowu-today-section__head h2 { color: #f1dba0 !important; white-space: nowrap; }
+html[lang="en"] body #daily-almanac:has([data-variant="jade"]) .zhaowu-today-section__head h2 { font-family: var(--zws-font-en, Georgia, serif) !important; font-size: clamp(1.15rem, 5.4vw, 1.5rem) !important; letter-spacing: 0 !important; }
+html body #daily-almanac:has([data-variant="jade"]) .zhaowu-today-section__head em { white-space: nowrap; }
+
+/* jade polish: pill sits inside the banner on purpose; location lives in the weather card */
+html body .zw-ink-board[data-variant="jade"] .zw-ink-variant { grid-row: 1; margin: 8px 8px 0 0; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-city { display: none; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-hours h4 { font-size: 15px; letter-spacing: 0; }
+html[lang="en"] body .zw-ink-board[data-variant="jade"] .zw-ink-hours li { flex-direction: row; font-size: 11.5px; }
+html body #daily-almanac:has([data-variant="jade"]) .zhaowu-today-guide__wardrobe {
+  margin: 8px; padding: 8px 10px; border-radius: 14px; border: 1px solid rgba(176, 140, 76, .55);
+  background: linear-gradient(180deg, #f7f0de, #efe5cb); color: #26382f;
+}
+html body #daily-almanac:has([data-variant="jade"]) .zhaowu-today-guide__wardrobe :is(summary, summary *, small, strong, span, p, h3) { color: #26382f !important; }
+html body #daily-almanac:has([data-variant="jade"]) .zhaowu-today-guide__wardrobe summary { color: #1f4a3a !important; }
+
+/* ── 4. home (main.zw-hero-home) fixes ────────────────────────────────────── */
+html[data-zws] { background: var(--zws-page) !important; }
+html[data-zws] #root,
+html[data-zws] #root > div,
+html[data-zws] body > div:not([class]) { background: transparent !important; }
+html[data-zws] body main.zw-hero-home::before {
+  content: "";
+  display: block;
+  height: clamp(150px, 46vw, 240px);
+  margin: 6px 0 14px;
+  border-radius: var(--zws-radius);
+  border: 1px solid var(--zws-line);
+  background: var(--zws-hero) center / cover no-repeat;
+  box-shadow: var(--zws-shadow);
+}
+html[data-zws="golden-phoenix"] body main.zw-hero-home::before { background-position: 50% 28%; }
+html[data-zws="night-flute"] body main.zw-hero-home::before { background-position: 50% 30%; }
+html[data-zws="night-palace"] body main.zw-hero-home::before { background-position: 50% 30%; height: clamp(150px, 48vw, 270px); }
+html[data-zws="pine-ink"] body main.zw-hero-home::before { background-position: 50% 60%; }
+html[data-zws="lotus-boat"] body main.zw-hero-home::before { background-position: 50% 60%; }
+/* painted portal-card art stays, but dark skins keep it as a quiet watermark so text is readable */
+html[data-zws-mode="dark"] body .zw-hero-card-art,
+html[data-zws-mode="dark"] body .zw-hero-card::before { opacity: .16 !important; filter: saturate(.7) brightness(.8); }
+html[data-zws-mode="dark"] body .zw-hero-nav-item.zw-hero-card :is(strong, b, h3, span, p, small) { color: var(--zws-ink) !important; text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+html[data-zws-mode="dark"] body .zw-birth-entry-ticket { background: var(--zws-card) !important; }
+html[data-zws-mode="dark"] body :is(.zhaowu-home-lead p, .zw-hero-home p, .zw-hero-home small) { color: var(--zws-soft) !important; }
+html[data-zws-mode="dark"] body .zw-hero-home :is(h1, h2) { color: var(--zws-ink) !important; }
+html[data-zws-mode="dark"] body .zhaowu-site-utility-buttons * { color: var(--zws-ink) !important; }
+html[data-zws-mode="dark"] body .zw-hero-home details > summary,
+html[data-zws-mode="dark"] body .zw-hero-home details > summary * { color: var(--zws-ink) !important; }
+/* jade banner: taller so the switch pill never collides with the (longer) English title block */
+html body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { height: 172px; }
+html body .zw-ink-board[data-variant="jade"] .zw-ink-title { padding-bottom: 14px; }
+html[data-zws-mode="dark"] body #daily-almanac .zhaowu-today-guide__overview :is(strong, span) { color: #2c4037 !important; }

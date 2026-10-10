@@ -22,7 +22,8 @@ import { TeaGuardianReport } from "@/components/tea-guardian-report";
 const OwnerGalleryManager = lazy(() => import("@/components/owner-gallery-manager").then((m) => ({ default: m.OwnerGalleryManager })));
 const OwnerLoginVisualsManager = lazy(() => import("@/components/owner-login-visuals-manager").then((m) => ({ default: m.OwnerLoginVisualsManager })));
 const SocialPublisherPage = lazy(() => import("./social").then((m) => ({ default: m.SocialPublisherPage })));
-type ConsoleView = "reports" | "images" | "opening" | "social";
+const OwnerThemeSkinsManager = lazy(() => import("@/components/owner-theme-skins-manager").then((m) => ({ default: m.OwnerThemeSkinsManager })));
+type ConsoleView = "reports" | "images" | "opening" | "social" | "themes";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -390,12 +391,13 @@ function AccountPage() {
       </section>
 
       {user.isOwner ? (
-        <nav className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="tablist" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
+        <nav className="grid grid-cols-2 gap-2 sm:grid-cols-5" role="tablist" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
           {([
             ["reports", tr(locale, "報告管理", "报告管理", "Reports")],
             ["images", tr(locale, "背景與圖片", "背景与图片", "Backgrounds and images")],
             ["opening", tr(locale, "開場影片", "开场视频", "Opening video")],
             ["social", "Instagram / Threads"],
+            ["themes", tr(locale, "主題皮膚", "主题皮肤", "Theme skins")],
           ] as [ConsoleView, string][]).map(([view, label], index, tabs) => (
             <button key={view} id={`console-tab-${view}`} type="button" role="tab"
               aria-selected={consoleView === view} aria-controls={`console-panel-${view}`}
@@ -567,6 +569,9 @@ function AccountPage() {
         </div>
         <div id="console-panel-opening" role="tabpanel" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>
           {visitedViews.has("opening") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入影片…", "加载视频…", "Loading videos…")}</p>}><OwnerLoginVisualsManager session={session} locale={locale} /></Suspense> : null}
+        </div>
+        <div id="console-panel-themes" role="tabpanel" aria-labelledby="console-tab-themes" hidden={consoleView !== "themes"}>
+          {visitedViews.has("themes") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入主題…", "加载主题…", "Loading themes…")}</p>}><OwnerThemeSkinsManager locale={locale} /></Suspense> : null}
         </div>
         <div id="console-panel-social" role="tabpanel" aria-labelledby="console-tab-social" hidden={consoleView !== "social"}>
           {visitedViews.has("social") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入發布器…", "加载发布器…", "Loading publisher…")}</p>}><SocialPublisherPage embedded /></Suspense> : null}
