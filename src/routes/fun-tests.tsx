@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { ConcealedSacredResultArt } from "@/components/concealed-sacred-result-art";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
@@ -147,6 +147,8 @@ function scoreAnimal(answers: AnimalKey[]) {
 }
 
 function FunTests() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  if (pathname.startsWith("/fun-tests/")) return <Outlet />;
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
   const [mode, setMode] = useState<QuizMode>(() => {
