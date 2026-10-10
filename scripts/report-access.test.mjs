@@ -23,8 +23,8 @@ const [client, gate, specialist, palm, numerology, unified, personalComponent, p
 // in report-access.ts above REPORT_ACCESS_PRODUCTS).
 test("the report catalogue is fixed at free (quick, new-user gift), $4.99 and $9.99", () => {
   assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
-  assert.match(client, /system: \{ amountCents: 499, price: "\$4\.99" \}/);
-  assert.match(client, /bundle: \{ amountCents: 999, price: "\$9\.99" \}/);
+  assert.match(client, /system: \{ amountCents: 499, price: "US\$4\.99" \}/);
+  assert.match(client, /bundle: \{ amountCents: 999, price: "US\$9\.99" \}/);
   assert.match(gate, /basic chart is free/i);
   assert.match(gate, /不自動續費/);
 });
