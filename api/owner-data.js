@@ -1,7 +1,7 @@
-import { createHash, timingSafeEqual } from "node:crypto";
+import { isValidOwnerSecret, ownerSecretFromRequest } from "../lib/owner-session-cookie.js";
 
-const OWNER_COOKIE = "__Host-zhaowu_owner_session";
-const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
+export { isValidOwnerSecret };
+
 const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
 
 const ACTIONS = new Set([
@@ -29,40 +29,12 @@ const ACTIONS = new Set([
   "upload.abort",
 ]);
 
-function hash(value) {
-  return createHash("sha256").update(String(value), "utf8").digest();
-}
-
-export function isValidOwnerSecret(value) {
-  if (!value || value.length < 8 || value.length > 256) return false;
-  const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
-  const actual = hash(value);
-  return actual.length === expected.length && timingSafeEqual(actual, expected);
-}
-
 function headerValue(req, name) {
   const headers = req?.headers;
   if (!headers) return "";
   if (typeof headers.get === "function") return String(headers.get(name) ?? "");
   const raw = headers[name] ?? headers[name.toLowerCase()];
   return String(Array.isArray(raw) ? raw[0] : raw ?? "");
-}
-
-function readCookie(req, name) {
-  const raw = headerValue(req, "cookie");
-  for (const part of raw.split(";")) {
-    const index = part.indexOf("=");
-    if (index < 0) continue;
-    const key = part.slice(0, index).trim();
-    if (key !== name) continue;
-    try { return decodeURIComponent(part.slice(index + 1)); } catch { return ""; }
-  }
-  return "";
-}
-
-function ownerSecretFrom(req) {
-  const secret = readCookie(req, OWNER_COOKIE);
-  return isValidOwnerSecret(secret) ? secret : "";
 }
 
 function normalizeOrigin(value) {
@@ -148,7 +120,7 @@ export default async function handler(req, res) {
   try {
     if ((req.method || "GET") !== "POST") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
-    const ownerSecret = ownerSecretFrom(req);
+    const ownerSecret = ownerSecretFromRequest(req);
     if (!ownerSecret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
 
     const serverBridgeSecret = bridgeSecret();

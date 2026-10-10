@@ -1,5 +1,5 @@
-import { createHash, timingSafeEqual } from "node:crypto";
 import { MAX_BYTES } from "../lib/owner-music-public.js";
+import { ownerSecretFromRequest } from "../lib/owner-session-cookie.js";
 import {
   activateOwnerMusicTrack,
   deleteOwnerMusicTrack,
@@ -8,9 +8,6 @@ import {
   saveOwnerMusicTrack,
   saveOwnerMusicChunk,
 } from "../lib/owner-music-git.js";
-
-const OWNER_COOKIE = "__Host-zhaowu_owner_session";
-const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
 
 const ALLOWED_TYPES = {
   "audio/mpeg": ".mp3",
@@ -33,40 +30,12 @@ const ALLOWED_EXT = {
   ".flac": "audio/flac",
 };
 
-function hash(value) {
-  return createHash("sha256").update(String(value), "utf8").digest();
-}
-
-function isValidOwnerSecret(value) {
-  if (!value || value.length < 8 || value.length > 256) return false;
-  const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
-  const actual = hash(value);
-  return actual.length === expected.length && timingSafeEqual(actual, expected);
-}
-
 function headerValue(req, name) {
   const headers = req?.headers;
   if (!headers) return "";
   if (typeof headers.get === "function") return String(headers.get(name) ?? "");
   const raw = headers[name] ?? headers[name.toLowerCase()];
   return String(Array.isArray(raw) ? raw[0] : raw ?? "");
-}
-
-function readCookie(req, name) {
-  const raw = headerValue(req, "cookie");
-  for (const part of raw.split(";")) {
-    const index = part.indexOf("=");
-    if (index < 0) continue;
-    const key = part.slice(0, index).trim();
-    if (key !== name) continue;
-    try { return decodeURIComponent(part.slice(index + 1)); } catch { return ""; }
-  }
-  return "";
-}
-
-function ownerSecretFrom(req) {
-  const secret = readCookie(req, OWNER_COOKIE);
-  return isValidOwnerSecret(secret) ? secret : "";
 }
 
 function requestIsSameOrigin(req) {
@@ -189,7 +158,7 @@ export default async function handler(req, res) {
     const method = req.method || "GET";
     if (method === "GET" || method === "HEAD") return json(res, 405, { ok: false });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
-    const secret = ownerSecretFrom(req);
+    const secret = ownerSecretFromRequest(req);
     if (!secret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
 
     if (method === "POST") {
