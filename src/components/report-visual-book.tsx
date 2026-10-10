@@ -37,7 +37,7 @@ const COPY: Record<Locale, {
     ratio: "五行氣勢",
     active: "目前閱讀",
     flowTitle: "相生路徑",
-    flowNote: "此處只顯示五行相生順序與原局比例；是否真正流通，仍須看月令、根氣、透藏與實際合沖制化，不能由百分比單獨決定。",
+    flowNote: "此處只顯示五行相生順序與原局比例；是否真正流通，仍須看月令、根氣、透藏與實際合沖制化，不能由強弱程度單獨決定。",
   },
   "zh-Hans": {
     kicker: "ZHAOWU · 命之书",
@@ -54,7 +54,7 @@ const COPY: Record<Locale, {
     ratio: "五行气势",
     active: "目前阅读",
     flowTitle: "相生路径",
-    flowNote: "此处只显示五行相生顺序与原局比例；是否真正流通，仍须看月令、根气、透藏与实际合冲制化，不能由百分比单独决定。",
+    flowNote: "此处只显示五行相生顺序与原局比例；是否真正流通，仍须看月令、根气、透藏与实际合冲制化，不能由强弱程度单独决定。",
   },
   en: {
     kicker: "ZHAOWU · VISUAL READING",
@@ -71,7 +71,7 @@ const COPY: Record<Locale, {
     ratio: "Element pattern",
     active: "Current view",
     flowTitle: "Generating sequence",
-    flowNote: "This line shows only the generating order and natal proportions. Whether the chart actually flows cleanly still depends on seasonal strength, roots, visible/hidden stems and verified interactions; percentages alone do not decide it.",
+    flowNote: "This line shows only the generating order and natal proportions. Whether the chart actually flows cleanly still depends on seasonal strength, roots, visible/hidden stems and verified interactions; strength levels alone do not decide it.",
   },
 };
 
@@ -111,7 +111,9 @@ function FiveElementWheel({ rows, ariaLabel }: { rows: ReturnType<typeof buildRe
           <g key={row.element} className={`zhaowu-wheel-node ${ELEMENT_CLASS[row.element]}`} transform={`translate(${point.x} ${point.y})`}>
             <circle r="32" />
             <text className="zhaowu-wheel-name" textAnchor="middle" y="-2">{row.label}</text>
-            <text className="zhaowu-wheel-value" textAnchor="middle" y="18">{row.percent}%</text>
+            <g className="zhaowu-wheel-dots" aria-hidden="true">
+              {[0, 1, 2, 3, 4].map((i) => <circle key={i} className={i < row.level ? "is-on" : ""} cx={(i - 2) * 8} cy="16" r="2.6" />)}
+            </g>
           </g>
         );
       })}
@@ -136,7 +138,7 @@ function FiveElementFlow({ rows, title, note }: {
             <div className="zhaowu-element-flow-step" key={element}>
               <span className={`zhaowu-element-flow-node ${ELEMENT_CLASS[element]}`}>
                 <b>{row.label}</b>
-                <small>{row.percent}%</small>
+                <small aria-hidden="true">{"●".repeat(row.level)}{"○".repeat(5 - row.level)}</small>
               </span>
               {index < FLOW_ORDER.length - 1 ? <i aria-hidden="true">→</i> : null}
             </div>
@@ -260,8 +262,10 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
               {model.elements.rows.map((row) => (
                 <div key={row.element} className={`zhaowu-element-bar ${ELEMENT_CLASS[row.element]}`}>
                   <span>{row.label}</span>
-                  <div><i style={{ width: `${Math.min(100, row.percent)}%` }} /></div>
-                  <b>{row.percent}%</b>
+                  <div className="zhaowu-meter" role="img" aria-label={`${row.label}: ${row.levelLabel}`}>
+                    {[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= row.level ? "is-on" : ""} />)}
+                  </div>
+                  <b>{row.levelLabel}</b>
                 </div>
               ))}
             </div>

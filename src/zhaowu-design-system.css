@@ -9358,3 +9358,36 @@ html body .zhaowu-focused-report { box-sizing: border-box; max-width: 100%; min-
 html body .zhaowu-focused-report :where(img, video, canvas, iframe, picture) { max-width: 100%; }
 html body .zhaowu-focused-report :where(p, li, dd, dt, h1, h2, h3, h4, h5, h6, td, th, summary, figcaption, blockquote) { overflow-wrap: break-word; }
 html body .zhaowu-focused-report :where(pre, code) { max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2026-10-10 · English layout guard (long Latin labels must not squeeze or clip)
+   Scope: html:lang(en) only — Chinese layouts are unchanged.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Home hero cards: label may wrap instead of being clipped; copy never runs under the arrow. */
+html:lang(en) body .zw-hero-nav-item.zw-hero-card { padding-bottom: 56px !important; }
+html:lang(en) body .zw-hero-card-copy { max-width: 100%; }
+html:lang(en) body .zw-hero-card .zw-hero-nav-label {
+  font-size: 1.15rem !important;
+  letter-spacing: .02em !important;
+  line-height: 1.18 !important;
+  overflow-wrap: normal;
+}
+html:lang(en) body .zw-hero-card-copy small { letter-spacing: 0; line-height: 1.5; }
+
+/* Birth form: caption above the "time uncertain" checkbox instead of squeezing both into one row. */
+html:lang(en) .zhaowu-birth-time-line { flex-direction: column; align-items: flex-start; gap: 8px; }
+html:lang(en) .zhaowu-birth-time-line > span { font-size: 14px; font-weight: 700; color: #3b362e; }
+html:lang(en) .zhaowu-birth-time-line > label { align-items: flex-start; font-size: 14px; line-height: 1.5; }
+html:lang(en) .zhaowu-birth-time-line > label > input { flex: 0 0 18px; width: 18px; height: 18px; margin-top: 2px; }
+
+/* Birth form: two long English selects side by side truncate their options; stack them on phones. */
+@media (max-width: 480px) {
+  html:lang(en) .zhaowu-birth-select-grid { grid-template-columns: 1fr !important; }
+}
+/* Submit buttons: the grid track was sized to content but the button is capped at 100% − 24px, so
+   "Analyse this question" broke onto two lines. Let the English label size the button. */
+html:lang(en) .zhaowu-analysis-submit-wrap button { max-width: none !important; white-space: nowrap; padding-inline: 28px; }
+html:lang(en) #birth-form button[type="submit"] { text-wrap: balance; line-height: 1.3; }
+/* Five-element correspondence list: the fixed 72px term column forced "Traditional organ link" etc. onto 2–3 lines. */
+html:lang(en) [data-five-element-correspondence-grid] > div { grid-template-columns: minmax(8.75rem, 44%) minmax(0, 1fr); }

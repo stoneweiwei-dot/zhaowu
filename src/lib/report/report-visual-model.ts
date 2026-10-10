@@ -3,10 +3,30 @@ import type { Locale } from "@/lib/i18n";
 
 export type ReportVisualTab = "overview" | "day-master" | "season" | "elements";
 
+export type VisualLevel = 1 | 2 | 3 | 4 | 5;
+
 export type VisualElementRow = {
   element: Element;
   label: string;
+  /** Kept for data/tests only; the report UI shows `level`, never the number. */
   percent: number;
+  level: VisualLevel;
+  levelLabel: string;
+};
+
+/** Coarse 5-step reading of a natal element share (5 elements average 20%). */
+export function elementLevel(percent: number): VisualLevel {
+  if (percent < 6) return 1;
+  if (percent < 14) return 2;
+  if (percent < 24) return 3;
+  if (percent < 36) return 4;
+  return 5;
+}
+
+const LEVEL_LABEL: Record<Locale, Record<VisualLevel, string>> = {
+  "zh-Hant": { 1: "微弱", 2: "偏弱", 3: "中和", 4: "偏旺", 5: "旺盛" },
+  "zh-Hans": { 1: "微弱", 2: "偏弱", 3: "中和", 4: "偏旺", 5: "旺盛" },
+  en: { 1: "Faint", 2: "Light", 3: "Steady", 4: "Strong", 5: "Dominant" },
 };
 
 export type ReportVisualModel = {
@@ -165,17 +185,17 @@ function strengthLabel(chart: Chart, locale: Locale) {
 export function buildReportVisualModel(chart: Chart, locale: Locale): ReportVisualModel {
   const dayMeta = DAY_META[chart.dayMaster] ?? DAY_META.甲;
   const monthMeta = MONTH_META[chart.monthBranch] ?? MONTH_META.寅;
-  const elements = (["木", "火", "土", "金", "水"] as Element[]).map((element) => ({
-    element,
-    label: ELEMENT_LABEL[locale][element],
-    percent: Math.max(0, Math.round(Number(chart.elementPercents?.[element] ?? 0))),
-  }));
+  const elements: VisualElementRow[] = (["木", "火", "土", "金", "水"] as Element[]).map((element) => {
+    const percent = Math.max(0, Math.round(Number(chart.elementPercents?.[element] ?? 0)));
+    const level = elementLevel(percent);
+    return { element, label: ELEMENT_LABEL[locale][element], percent, level, levelLabel: LEVEL_LABEL[locale][level] };
+  });
 
   const provisional = Boolean(chart.usefulProvisional);
   const note = locale === "en"
     ? provisional
-      ? "Element percentages are a visual reference only. The current favourable-element result is provisional and must not be treated as a final judgement."
-      : "Element percentages are a visual reference only. The judgement also uses season, roots, stems and circulation."
+      ? "Element levels are a visual reference only. The current favourable-element result is provisional and must not be treated as a final judgement."
+      : "Element levels are a visual reference only. The judgement also uses season, roots, stems and circulation."
     : locale === "zh-Hans"
       ? provisional
         ? "五行比例只作气势可视化参考；当前喜用结果仍属暂定，不作为最终判断。"

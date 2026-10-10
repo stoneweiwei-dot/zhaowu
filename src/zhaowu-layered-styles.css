@@ -6889,25 +6889,33 @@ body::before {
 .zhaowu-wheel-node.is-metal circle { fill: rgba(194, 162, 91, .18); stroke: #c2a25b; }
 .zhaowu-wheel-node.is-water circle { fill: rgba(67, 130, 160, .17); stroke: #4382a0; }
 .zhaowu-wheel-name { fill: #242620; font-size: 15px; font-family: var(--font-display, serif); font-weight: 700; }
-.zhaowu-wheel-value { fill: #686a62; font-size: 13px; font-weight: 650; }
+.zhaowu-wheel-dots circle { fill: rgba(128, 103, 66, .2); }
+.zhaowu-wheel-node.is-wood .zhaowu-wheel-dots circle.is-on { fill: #64865d; }
+.zhaowu-wheel-node.is-fire .zhaowu-wheel-dots circle.is-on { fill: #b95b49; }
+.zhaowu-wheel-node.is-earth .zhaowu-wheel-dots circle.is-on { fill: #af8e55; }
+.zhaowu-wheel-node.is-metal .zhaowu-wheel-dots circle.is-on { fill: #c2a25b; }
+.zhaowu-wheel-node.is-water .zhaowu-wheel-dots circle.is-on { fill: #4382a0; }
 
-.zhaowu-element-bars { display: grid; gap: 10px; margin-top: 4px; }
+.zhaowu-element-bars { display: grid; gap: 11px; margin-top: 6px; }
 .zhaowu-element-bar {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) 44px;
-  gap: 9px;
+  grid-template-columns: 52px minmax(0, 1fr) 74px;
+  gap: 10px;
   align-items: center;
   color: #555850;
   font-size: 14px;
+  white-space: nowrap;
 }
-.zhaowu-element-bar > div { height: 10px; overflow: hidden; border-radius: 999px; background: rgba(128, 103, 66, .1); }
-.zhaowu-element-bar i { display: block; height: 100%; border-radius: inherit; background: #8a765a; }
-.zhaowu-element-bar.is-wood i { background: #64865d; }
-.zhaowu-element-bar.is-fire i { background: #b95b49; }
-.zhaowu-element-bar.is-earth i { background: #af8e55; }
-.zhaowu-element-bar.is-metal i { background: #c2a25b; }
-.zhaowu-element-bar.is-water i { background: #4382a0; }
-.zhaowu-element-bar b { text-align: right; font-size: 13px; }
+.zhaowu-element-bar > span { overflow: hidden; text-overflow: clip; }
+.zhaowu-element-bar .zhaowu-meter { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; height: 12px; }
+.zhaowu-element-bar .zhaowu-meter i { display: block; height: 100%; border-radius: 4px; background: rgba(128, 103, 66, .14); }
+.zhaowu-element-bar .zhaowu-meter i.is-on { background: #8a765a; }
+.zhaowu-element-bar.is-wood .zhaowu-meter i.is-on { background: #64865d; }
+.zhaowu-element-bar.is-fire .zhaowu-meter i.is-on { background: #b95b49; }
+.zhaowu-element-bar.is-earth .zhaowu-meter i.is-on { background: #af8e55; }
+.zhaowu-element-bar.is-metal .zhaowu-meter i.is-on { background: #c2a25b; }
+.zhaowu-element-bar.is-water .zhaowu-meter i.is-on { background: #4382a0; }
+.zhaowu-element-bar b { text-align: right; font-size: 13px; font-weight: 650; }
 
 .zhaowu-element-judgement {
   display: grid;
@@ -11583,7 +11591,7 @@ html[data-zw-theme="night"] .stone-login-signature {
 }
 
 .zhaowu-focused-report .zhaowu-element-flow-node b { font-size: 14px; }
-.zhaowu-focused-report .zhaowu-element-flow-node small { margin-top: 2px; font-size: 11px; }
+.zhaowu-focused-report .zhaowu-element-flow-node small { margin-top: 2px; font-size: 6px; letter-spacing: -.3px; line-height: 1; white-space: nowrap; }
 .zhaowu-focused-report .zhaowu-element-flow-node.is-wood { color: #64865d; background: rgba(100, 134, 93, .09); }
 .zhaowu-focused-report .zhaowu-element-flow-node.is-fire { color: #b95b49; background: rgba(185, 91, 73, .08); }
 .zhaowu-focused-report .zhaowu-element-flow-node.is-earth { color: #af8e55; background: rgba(175, 142, 85, .09); }
@@ -11613,16 +11621,16 @@ html[data-zw-theme="night"] .stone-login-signature {
 
 .zhaowu-focused-report .zhaowu-direct-answer > p { font-size: clamp(21px, 5.5vw, 24px); }
 
-.zhaowu-focused-report .zhaowu-element-bar.is-wood i { background: #64865d; }
-.zhaowu-focused-report .zhaowu-element-bar.is-fire i { background: #b95b49; }
-.zhaowu-focused-report .zhaowu-element-bar.is-earth i { background: #af8e55; }
-.zhaowu-focused-report .zhaowu-element-bar.is-metal i { background: #c2a25b; }
-.zhaowu-focused-report .zhaowu-element-bar.is-water i { background: #4382a0; }
+.zhaowu-focused-report .zhaowu-element-bar.is-wood .zhaowu-meter i.is-on { background: #64865d; }
+.zhaowu-focused-report .zhaowu-element-bar.is-fire .zhaowu-meter i.is-on { background: #b95b49; }
+.zhaowu-focused-report .zhaowu-element-bar.is-earth .zhaowu-meter i.is-on { background: #af8e55; }
+.zhaowu-focused-report .zhaowu-element-bar.is-metal .zhaowu-meter i.is-on { background: #c2a25b; }
+.zhaowu-focused-report .zhaowu-element-bar.is-water .zhaowu-meter i.is-on { background: #4382a0; }
 
 @media (max-width: 430px) {
-  .zhaowu-focused-report .zhaowu-element-flow-node { flex-basis: 44px; min-height: 44px; }
-  .zhaowu-focused-report .zhaowu-element-flow-node b { font-size: 13px; }
-  .zhaowu-focused-report .zhaowu-element-flow-node small { font-size: 10px; }
+  .zhaowu-focused-report .zhaowu-element-flow-node { flex-basis: 46px; min-height: 46px; }
+  .zhaowu-focused-report .zhaowu-element-flow-node b { font-size: 12px; letter-spacing: 0; white-space: nowrap; }
+  .zhaowu-focused-report .zhaowu-element-flow-node small { font-size: 6px; }
   .zhaowu-focused-report .zhaowu-element-flow-step > i { min-width: 6px; font-size: 12px; }
 }
 
@@ -11808,6 +11816,7 @@ a {
 .zhaowu-element-bar > div {
   background: rgba(60, 45, 30, .085);
 }
+.zhaowu-element-bar > .zhaowu-meter { background: none; overflow: visible; }
 
 .zhaowu-visual-note {
   border-left-color: rgba(53, 94, 80, .58);
@@ -11951,7 +11960,7 @@ a {
   }
 
   .zhaowu-element-bar {
-    grid-template-columns: 38px minmax(0, 1fr) 40px;
+    grid-template-columns: 44px minmax(0, 1fr) 70px;
     gap: 8px;
   }
 }
@@ -13240,4 +13249,11 @@ html[data-zw-theme="night"] .zhaowu-question-stage textarea {
 html[data-zw-theme="night"] .zhaowu-question-meta,
 html[data-zw-theme="night"] .zhaowu-question-stage .zhaowu-section-lead {
   color: #d8d0c1 !important;
+}
+
+/* Element level meters: final scoped guard (percent numbers removed; English labels must stay on one line). */
+.zhaowu-element-bar > span,
+.zhaowu-element-bar > b { white-space: nowrap; overflow-wrap: normal; }
+@media (max-width: 340px) {
+  .zhaowu-focused-report .zhaowu-element-flow-node { flex-basis: 42px; min-height: 42px; }
 }
