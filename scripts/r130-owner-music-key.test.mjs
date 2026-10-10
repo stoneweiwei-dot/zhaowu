@@ -14,7 +14,7 @@ test("owner music read and write APIs are physically split off the SPA rewrite",
   const vercel = JSON.parse(await source("vercel.json"));
   assert.match(api, /readOwnerMusicManifest/);
   assert.doesNotMatch(api, /OWNER_KEY_SHA256|OWNER_REQUIRED|owner-music-git|isomorphic-git|ssh2/);
-  assert.match(writeApi, /OWNER_KEY_SHA256/);
+  assert.match(writeApi, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
   assert.match(writeApi, /saveOwnerMusicTrack/);
   assert.match(writeApi, /OWNER_REQUIRED/);
   assert.doesNotMatch(writeApi, /from ["']\.\.\/src\//);
@@ -39,14 +39,18 @@ test("owner key hash is rotated and the raw secret is not in the repo", async ()
   const session = await source("api/owner-session.js");
   const server = await source("src/server/owner-auth.ts");
   const music = await source("api/owner-music-write.js");
-  assert.match(login, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
-  assert.match(session, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
+  // Login, session and music-write now share one validator in lib/owner-session-cookie.js.
+  const shared = await source("lib/owner-session-cookie.js");
+  assert.match(shared, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
+  assert.match(shared, /value\.length < 8/);
   assert.match(server, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
-  assert.match(music, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
-  assert.match(login, /value\.length < 8/);
-  assert.match(session, /value\.length < 8/);
   assert.match(server, /value\.length < 8/);
-  assert.match(music, /value\.length < 8/);
+  for (const api of [login, session, music]) {
+    assert.match(api, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
+    assert.doesNotMatch(api, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
+  }
+  assert.doesNotMatch(shared, /value\.length < 32/);
+  assert.doesNotMatch(shared, /BEGIN OPENSSH PRIVATE KEY/);
   assert.doesNotMatch(login, /value\.length < 32/);
   assert.doesNotMatch(login, /BEGIN OPENSSH PRIVATE KEY/);
   assert.doesNotMatch(server, /BEGIN OPENSSH PRIVATE KEY/);

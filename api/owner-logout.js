@@ -1,4 +1,4 @@
-const OWNER_COOKIE = "__Host-zhaowu_owner_session";
+import { ownerClearCookie } from "../lib/owner-session-cookie.js";
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
   try {
     if ((req.method || "GET") !== "POST") return json(res, 405, { ok: false });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
-    const cookie = `${OWNER_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
+    const cookie = ownerClearCookie();
     return json(res, 200, { ok: true }, { "Set-Cookie": cookie });
   } catch (error) {
     return json(res, 500, { ok: false, error: "OWNER_LOGOUT_FAILED", detail: error instanceof Error ? error.message : "unknown" });

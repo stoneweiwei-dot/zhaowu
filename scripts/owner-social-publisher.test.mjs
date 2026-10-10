@@ -141,7 +141,8 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
   const apiFiles = (await readdir(new URL("api/", root))).filter((name) => name.endsWith(".js"));
   assert.match(api, /requestHasOwnerSession/);
   assert.match(api, /requestIsSameOrigin/);
-  assert.match(api, /timingSafeEqual/);
+  assert.match(api, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
+  assert.match(await source("lib/owner-session-cookie.js"), /timingSafeEqual/);
   assert.match(api, /Cache-Control.*no-store/s);
   assert.match(api, /social\.status/);
   assert.match(api, /social\.publish/);
