@@ -1,0 +1,30 @@
+/* Mobile browsers need one explicit viewport-sized page scroller. The public shell
+   otherwise grows with its content, which can leave touch scrolling dependent on how
+   each browser handles overflow-x:hidden on #root and the shell. */
+#root {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
+
+@media (max-width: 700px) {
+  html,
+  body {
+    height: 100%;
+    min-height: 100%;
+  }
+
+  #root {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
+  #root > .zhaowu-home-sheet-shell:not(.zhaowu-login-shell) {
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y pinch-zoom;
+  }
+}
