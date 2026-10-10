@@ -149,6 +149,10 @@ function scoreAnimal(answers: AnimalKey[]) {
 function FunTests() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   if (pathname.startsWith("/fun-tests/")) return <Outlet />;
+  return <FunTestsIndex />;
+}
+
+function FunTestsIndex() {
   const { locale } = useI18n();
   const current = useAppStore((s) => s.current);
   const [mode, setMode] = useState<QuizMode>(() => {
