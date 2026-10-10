@@ -15,3 +15,10 @@ test("fun-tests route honours the requested direct test without showing the shar
   assert.match(funTests, /new URLSearchParams\(window\.location\.search\)\.get\("test"\)/);
   assert.match(funTests, /requested === "animal" \|\| requested === "element" \? requested : "menu"/);
 });
+
+test("fun-tests parent route delegates subroutes like /fun-tests/earth-online to Outlet", () => {
+  assert.match(funTests, /import\s*\{[^}]*Outlet[^}]*\}\s*from\s*["']@tanstack\/react-router["']/);
+  assert.match(funTests, /import\s*\{[^}]*useRouterState[^}]*\}\s*from\s*["']@tanstack\/react-router["']/);
+  assert.match(funTests, /pathname\.startsWith\(\s*["']\/fun-tests\/["']\s*\)/);
+  assert.match(funTests, /return\s*<Outlet\s*\/>/);
+});
