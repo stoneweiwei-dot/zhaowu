@@ -45,7 +45,7 @@
   vertical-align:top;
 }
 .zw-chart-table thead{background:#eee9de;font-weight:650}
-.zw-chart-wheel{display:block;width:100%;max-width:440px;margin:1rem auto;fill:none;stroke:#859387;stroke-width:1}
+.zw-chart-wheel{display:block;width:100%;max-width:440px;aspect-ratio:1;margin:1rem auto;fill:none;stroke:#859387;stroke-width:1}
 .zw-chart-wheel text{fill:#263d36;stroke:none;font-size:14px;text-anchor:middle;dominant-baseline:middle}
 .zw-chart-wheel .zw-star-label{fill:#fffaf1;stroke:#617e6c}
 .zw-ziwei-grid{
