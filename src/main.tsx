@@ -7,6 +7,8 @@ import './styles.css';
 import './zhaowu-layered-styles.css';
 // Canonical visual authority must load last. Do not add visual hotfix layers after this import.
 import './zhaowu-design-system.css';
+// Owner-selectable theme skins + jade almanac board. Gated by html[data-zws]/[data-variant]; inert by default.
+import './theme-skins.css';
 
 
 const router = createRouter({ routeTree });

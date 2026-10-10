@@ -218,7 +218,8 @@ function seasonAdvice(latitude: number | null, month: number, weather: string, l
   return locale === "zh-Hans" ? lines.map(toSimplifiedCustomerText) : lines;
 }
 
-const VARIANT_KEY = "zhaowu:almanac-variant:v1";
+const VARIANT_KEY = "zhaowu:almanac-variant:v2";
+type Variant = "jade" | "day" | "night";
 
 export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
   const { locale, now, pillars } = props;
@@ -228,11 +229,11 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
   const data = ELEMENT_DAY[element];
   const [natal, setNatal] = useState<{ dayMaster: string; branches: string[] } | null>(null);
   // 圖3 宣紙晴日版為預設；圖4 墨夜版可由訪客切換並記在本機。
-  const [variant, setVariant] = useState<"day" | "night">("day");
+  const [variant, setVariant] = useState<Variant>("jade");
   useEffect(() => {
-    try { if (window.localStorage.getItem(VARIANT_KEY) === "night") setVariant("night"); } catch { /* optional */ }
+    try { const v = window.localStorage.getItem(VARIANT_KEY); if (v === "night" || v === "day" || v === "jade") setVariant(v); } catch { /* optional */ }
   }, []);
-  const chooseVariant = (next: "day" | "night") => {
+  const chooseVariant = (next: Variant) => {
     setVariant(next);
     try { window.localStorage.setItem(VARIANT_KEY, next); } catch { /* optional */ }
   };
@@ -268,6 +269,7 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
   return (
     <div className="zw-ink-board" data-almanac-ink-board data-variant={variant} data-day-element={element} data-lang={locale}>
       <div className="zw-ink-variant" role="group" aria-label={T(locale, "黃曆版面", "Almanac style")}>
+        <button type="button" aria-pressed={variant === "jade"} onClick={() => chooseVariant("jade")}>{T(locale, "玉・黃曆", "Jade")}</button>
         <button type="button" aria-pressed={variant === "day"} onClick={() => chooseVariant("day")}>{T(locale, "晴・宣紙", "Day")}</button>
         <button type="button" aria-pressed={variant === "night"} onClick={() => chooseVariant("night")}>{T(locale, "夜・墨色", "Night")}</button>
       </div>
