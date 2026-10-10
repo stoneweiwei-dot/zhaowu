@@ -1,3 +1,4 @@
+import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 import { useEffect, useState } from "react";
 import { writeFullReport } from "@/lib/actions";
 import type { AnalysisResult } from "@/lib/bazi/types";
@@ -60,7 +61,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     try {
       await startReportCheckout(product, "ziwei");
     } catch {
-      setPurchaseError(locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : "付款通道尚未啟用；價格與免費／付費邊界已經固定。");
+      setPurchaseError(locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : locale === "zh-Hans" ? toSimplifiedCustomerText("付款通道尚未啟用；價格與免費／付費邊界已經固定。") : "付款通道尚未啟用；價格與免費／付費邊界已經固定。");
       setPurchasing(null);
     }
   }
@@ -262,8 +263,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </span>
           <span className="text-xs text-ink-mute">
             {accessLevel === "system" || accessLevel === "bundle"
-              ? (locale === "en" ? "✓ Unlocked" : "✓ 已解鎖")
-              : (locale === "en" ? "One-time unlock · No recurring fees" : "單次解鎖 · 不設自動續費")}
+              ? (locale === "en" ? "✓ Unlocked" : locale === "zh-Hans" ? toSimplifiedCustomerText("✓ 已解鎖") : "✓ 已解鎖")
+              : (locale === "en" ? "One-time unlock · No recurring fees" : locale === "zh-Hans" ? toSimplifiedCustomerText("單次解鎖 · 不設自動續費") : "單次解鎖 · 不設自動續費")}
           </span>
         </div>
 
@@ -282,19 +283,19 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <ul className="my-4 space-y-2 rounded-lg bg-paper-clean/70 p-4 text-xs leading-5 text-ink-soft border border-line/40">
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
-            <span>{locale === "en" ? "10-Year Luck Cycle & Monthly Timing (Precise turning points)" : "十年大運起伏與流年逐月節奏（精準定位轉折時機）"}</span>
+            <span>{locale === "en" ? "10-Year Luck Cycle & Monthly Timing (Precise turning points)" : locale === "zh-Hans" ? toSimplifiedCustomerText("十年大運起伏與流年逐月節奏（精準定位轉折時機）") : "十年大運起伏與流年逐月節奏（精準定位轉折時機）"}</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
-            <span>{locale === "en" ? "Complete ShenSha Stars & Pattern Analysis (Personality & blind spots)" : "完整四柱神煞星曜與深層格局全解（性格盲區與潛在契機）"}</span>
+            <span>{locale === "en" ? "Complete ShenSha Stars & Pattern Analysis (Personality & blind spots)" : locale === "zh-Hans" ? toSimplifiedCustomerText("完整四柱神煞星曜與深層格局全解（性格盲區與潛在契機）") : "完整四柱神煞星曜與深層格局全解（性格盲區與潛在契機）"}</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
-            <span>{locale === "en" ? "Multi-System Star Chart Synthesis (Ziwei & Qi Zheng overlay)" : "跨流派星象合參（紫微斗數命盤、七政四餘合照）"}</span>
+            <span>{locale === "en" ? "Multi-System Star Chart Synthesis (Ziwei & Qi Zheng overlay)" : locale === "zh-Hans" ? toSimplifiedCustomerText("跨流派星象合參（紫微斗數命盤、七政四餘合照）") : "跨流派星象合參（紫微斗數命盤、七政四餘合照）"}</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
-            <span>{locale === "en" ? "Five-Tone Harmonic Tuning & Personal Sacred Beast sequence" : "五音調和聆聽序列與專屬命象瑞獸圖譜"}</span>
+            <span>{locale === "en" ? "Five-Tone Harmonic Tuning & Personal Sacred Beast sequence" : locale === "zh-Hans" ? toSimplifiedCustomerText("五音調和聆聽序列與專屬命象瑞獸圖譜") : "五音調和聆聽序列與專屬命象瑞獸圖譜"}</span>
           </li>
         </ul>
 
@@ -314,12 +315,12 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 my-4">
           <div className="flex flex-col justify-between rounded-lg border-2 border-cinnabar/80 bg-cinnabar/5 p-4 text-center relative shadow-sm">
             <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-cinnabar px-2 py-0.5 text-[10px] text-cream font-medium">
-              {locale === "en" ? "Recommended" : "推薦深批"}
+              {locale === "en" ? "Recommended" : locale === "zh-Hans" ? toSimplifiedCustomerText("推薦深批") : "推薦深批"}
             </span>
             <div>
-              <strong className="block text-sm text-ink">{locale === "en" ? "Full Destiny Book" : "完整單盤深批"}</strong>
+              <strong className="block text-sm text-ink">{locale === "en" ? "Zi Wei Full Reading" : locale === "zh-Hans" ? "紫微斗数完整深批" : "紫微斗數完整深批"}</strong>
               <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.system.price}</span>
-              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Full multi-section report & personal profile" : "完整深批全段落與個人命格專頁"}</p>
+              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Full Zi Wei interpretation, every section & personal profile" : locale === "zh-Hans" ? "紫微斗数完整解读、全部段落与个人命格专页" : "紫微斗數完整解讀、全部段落與個人命格專頁"}</p>
             </div>
             <button
               type="button"
@@ -333,9 +334,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
           <div className="flex flex-col justify-between rounded-lg border border-line/70 bg-cream p-4 text-center">
             <div>
-              <strong className="block text-sm text-ink">{locale === "en" ? "6 Systems Bundle" : "全六盤典藏"}</strong>
+              <strong className="block text-sm text-ink">{locale === "en" ? "6 Systems Bundle" : locale === "zh-Hans" ? toSimplifiedCustomerText("全六盤典藏") : "全六盤典藏"}</strong>
               <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.bundle.price}</span>
-              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "All six astrology systems & full profile" : "六大術數流派合參與完整專頁"}</p>
+              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "All six astrology systems & full profile" : locale === "zh-Hans" ? toSimplifiedCustomerText("六大術數流派合參與完整專頁") : "六大術數流派合參與完整專頁"}</p>
             </div>
             <button
               type="button"
@@ -353,14 +354,14 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         ) : null}
 
         <div className="mt-4 pt-3 border-t border-line/40 flex items-center justify-between text-xs text-ink-mute">
-          <span>{locale === "en" ? "Free 3-part report remains accessible anytime" : "三段式免費報告隨時可查，無任何強制要求"}</span>
+          <span>{locale === "en" ? "Free 3-part report remains accessible anytime" : locale === "zh-Hans" ? toSimplifiedCustomerText("三段式免費報告隨時可查，無任何強制要求") : "三段式免費報告隨時可查，無任何強制要求"}</span>
           <button
             type="button"
             disabled={busy !== null}
             onClick={() => void onFull()}
             className="text-xs text-cinnabar underline hover:opacity-80"
           >
-            {reportSections ? (locale === "en" ? "Re-generate reading" : "重新排布報告") : (locale === "en" ? "Preview full reading" : "預覽深批內容")}
+            {reportSections ? (locale === "en" ? "Re-generate reading" : locale === "zh-Hans" ? toSimplifiedCustomerText("重新排布報告") : "重新排布報告") : (locale === "en" ? "Preview full reading" : locale === "zh-Hans" ? toSimplifiedCustomerText("預覽深批內容") : "預覽深批內容")}
           </button>
         </div>
       </section>
