@@ -83,3 +83,12 @@ test("USD prices and webhook entitlement agree with new Stripe link", () => {
   assert.match(shell, /pending-bazi-report\.v1/);
   assert.doesNotMatch(resultView, /Zi Wei Full Reading|紫微斗數完整深批/);
 });
+
+test("free preview never calls the paid report writer or saves paid output", () => {
+  const makeReport = resultView.slice(resultView.indexOf("async function ensureFullReport()"), resultView.indexOf("async function ensureSavedReport()"));
+  assert.ok(makeReport.indexOf('accessLevel !== "system" && accessLevel !== "bundle"') >= 0);
+  assert.ok(makeReport.indexOf("return renderFocusedReportText") < makeReport.indexOf("await writeFullReport"));
+  const preview = resultView.slice(resultView.indexOf("async function onFull()"), resultView.indexOf("async function onSave()"));
+  assert.ok(preview.indexOf('accessLevel !== "system" && accessLevel !== "bundle"') < preview.indexOf("await ensureFullReport"));
+  assert.match(resultView, /View free 3-part summary/);
+});
