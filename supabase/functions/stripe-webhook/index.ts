@@ -3,6 +3,8 @@ import { createClient } from "npm:@supabase/supabase-js@2.95.0";
 const WEBHOOK_TOKEN_SHA256 = "092ba513b79119e1a8b6340fe041ea4e6111fbff3ee653b0f6a346d5c87b60d0";
 
 const PAYMENT_LINKS = Object.freeze({
+  // BaZi standalone: USD 4.99; the six-system bundle does not include BaZi.
+  plink_1UP3HWFAzopdCCaxkt9pGy9Z: { product: "system", system: "bazi", amount: 499 },
   plink_1UNco6FAzopdCCaxsi61vVPn: { product: "quick", system: "ziwei", amount: 199 },
   plink_1UNco8FAzopdCCaxNMJ9EbUo: { product: "system", system: "ziwei", amount: 499 },
   plink_1UNcoBFAzopdCCaxggjB7RO8: { product: "bundle", system: "ziwei", amount: 999 },
