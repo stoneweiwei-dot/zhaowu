@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 
@@ -241,7 +241,12 @@ function DivineAffinityQuiz() {
   const [answers, setAnswers] = useState<AffinityKey[]>([]);
   const [selected, setSelected] = useState<AffinityKey | null>(null);
   const [done, setDone] = useState(false);
+  const resultRef = useRef<HTMLElement | null>(null);
   const score = useMemo(() => scoreAnswers(answers), [answers]);
+
+  useEffect(() => {
+    if (done) resultRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
+  }, [done]);
 
   function reset() {
     setIndex(0);
@@ -314,7 +319,7 @@ function DivineAffinityQuiz() {
           </button>
         </section>
       ) : (
-        <section className="space-y-4" data-divine-affinity-result>
+        <section ref={resultRef} className="scroll-mt-4 space-y-4" data-divine-affinity-result>
           <article className="seal-border rounded-2xl bg-cream/95 p-5 sm:p-8">
             <p className="text-xs tracking-[0.24em] text-cinnabar">{copy.primary}</p>
             <h2 className="mt-2 font-display text-4xl text-ink">{primary.name}</h2>
