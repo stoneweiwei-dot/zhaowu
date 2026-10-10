@@ -1,0 +1,12 @@
+/* Keep horizontal overflow clipped without creating nested vertical scroll containers.
+   On small mobile viewports the document must remain the sole page scroller so native
+   touch gestures continue to move the page, including in Android browser shells. */
+#root {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
+
+#root > .zhaowu-home-sheet-shell:not(.zhaowu-login-shell) {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
