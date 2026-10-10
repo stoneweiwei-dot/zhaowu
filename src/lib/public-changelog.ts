@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-10-dark-skin-readability",
+    date: "2026-10-10",
+    zhHant: { title: "深色主題皮膚文字可讀性修正、城市選單與浮動鈕不再遮擋", summary: "套用夜藍類主題皮膚時，出生資料表單標籤、報告導覽、我的報告與更新頁的標題不再變成淺色字壓在米色卡片上；出生城市選單不再被下一段標題蓋住；音樂／導覽浮動鈕縮小，頁尾也留出空間。" },
+    zhHans: { title: "深色主题皮肤文字可读性修正、城市菜单与浮动钮不再遮挡", summary: "套用夜蓝类主题皮肤时，出生资料表单标签、报告导览、我的报告与更新页的标题不再变成浅色字压在米色卡片上；出生城市菜单不再被下一段标题盖住；音乐／导览浮动钮缩小，页尾也留出空间。" },
+    en: { title: "Dark-skin readability fixes; city list and floating dock no longer cover content", summary: "With the night-blue theme skins, form labels, report wayfinding, My Reports and updates headings no longer render pale text on cream cards; the birth-city list is no longer covered by the next heading; the Music/Guide dock is smaller and the page end keeps clear of it." },
+  },
+  {
     id: "2026-10-10-hans-and-checkout-label-fix",
     date: "2026-10-10",
     zhHant: { title: "簡體報告用字修正、付費卡標示改為紫微", summary: "選擇簡體時，報告段落標題與旅行建議不再混入繁體字；結果頁付費區塊補上簡體文案。單盤付費卡改標為「紫微斗數完整深批」，與實際購買內容一致。" },
