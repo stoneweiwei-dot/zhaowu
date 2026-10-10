@@ -13,6 +13,7 @@ import {
   type DisplayLanguage,
 } from "@/lib/display-language";
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
+import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { IntroGate } from "@/components/intro-gate";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
@@ -184,7 +185,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   return (
-    <div style={shellStyle} className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
+    <div data-owner-view={user?.isOwner ? "true" : undefined} style={shellStyle} className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
       <a className="zhaowu-skip-link" href="#zhaowu-main-content">{skipLabel}</a>
       {isHome ? <IntroGate /> : null}
       {!isLogin ? (
@@ -251,7 +252,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 user?.isOwner ? (
                   <Link to="/account" className="zhaowu-home-login-inline" aria-label={t("navAdmin")}>
                     <BrandIcon name="account" />
-                    <span>{displayText(language, "後台", "后台", "Console", "管理", "관리", "कंसोल")}</span>
+                    <span>{displayText(language, "所有報告", "所有报告", "All reports", "管理", "관리", "कंसोल")}</span>
                   </Link>
                 ) : (
                   <Link
@@ -275,6 +276,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </header>
       ) : null}
 
+      {!isLogin ? <JourneyNavigation /> : null}
       {!isOwnerWorkspace ? <SiteUtilityDock /> : null}
       <div id="zhaowu-main-content" tabIndex={-1} className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
 

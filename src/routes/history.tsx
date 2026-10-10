@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useAuthState } from "@/lib/auth/provider";
+import { readLocalReports, removeLocalReport, REPORT_HISTORY_EVENT, type LocalReport } from "@/lib/local-report-history";
+import { readSharedBirthRecord } from "@/lib/shared-birth";
 import { useI18n, type Locale } from "@/lib/i18n";
 import {
   clearSpecialistHistory,
@@ -25,7 +28,16 @@ function kindLabel(kind: SpecialistHistoryKind, locale: Locale) {
 function HistoryPage() {
   const { locale } = useI18n();
   const [entries, setEntries] = useState<SpecialistHistoryEntry[]>([]);
-  const publicEntries = entries.filter((entry) => entry.kind === "fun-five-element");
+  const publicEntries = entries;
+  const { user } = useAuthState();
+  const [reports, setReports] = useState<LocalReport[]>([]);
+  const [hasBirth, setHasBirth] = useState(false);
+  useEffect(() => {
+    const refresh = () => { setReports(readLocalReports()); setHasBirth(Boolean(readSharedBirthRecord())); };
+    refresh();
+    window.addEventListener(REPORT_HISTORY_EVENT, refresh);
+    return () => window.removeEventListener(REPORT_HISTORY_EVENT, refresh);
+  }, []);
 
   useEffect(() => {
     setEntries(readSpecialistHistory());
@@ -34,11 +46,11 @@ function HistoryPage() {
   const copy = useMemo(() => ({
     back: tr(locale, "返回昭梧", "返回昭梧", "Back to Zhaowu"),
     kicker: tr(locale, "昭梧 · 個人紀錄", "昭梧 · 个人记录", "ZHAOWU · MY HISTORY"),
-    title: tr(locale, "我的紀錄", "我的记录", "My history"),
+    title: tr(locale, "我的報告", "我的报告", "My reports"),
     lead: tr(locale,
-      "五行功能測驗會自動保存在這台裝置。完整命盤請從首頁出生資料產生；超過七天沒有再打開的本機紀錄會自動清掉。",
-      "五行功能测验会自动保存在这台设备。完整命盘请从首页出生资料产生；超过七天没有再打开的本机记录会自动清掉。",
-      "Five-Element Function results are saved on this device. Generate the complete chart from the birth form on the home page. Local records unused for seven days are removed automatically."),
+      "這裡是這台裝置保存的提問報告與測驗。點「閱讀報告」直接重看；站主登入後可免費閱讀完整內容。",
+      "这里是这台设备保存的提问报告与测验。点“阅读报告”直接重看；站主登录后可免费阅读完整内容。",
+      "Questions and tests saved on this device appear here. Open a report to read it again. Owners can read the full content without payment."),
     local: tr(locale, "僅保存在這台裝置", "仅保存在这台设备", "Saved on this device only"),
     cloudTitle: tr(locale, "八字提問與雲端報告", "八字提问与云端报告", "BaZi questions and cloud reports"),
     cloudBody: tr(locale,
@@ -79,8 +91,16 @@ function HistoryPage() {
     <main className="history-page">
       <div className="history-topline"><Link to="/">← {copy.back}</Link><span>{copy.local}</span></div>
       <section className="history-hero"><p>{copy.kicker}</p><h1>{copy.title}</h1><p>{copy.lead}</p></section>
-      <section className="history-cloud-card"><div><p>MY ZHAOWU</p><h2>{copy.cloudTitle}</h2><span>{copy.cloudBody}</span></div><Link to="/account">{copy.cloudCta}<b aria-hidden>→</b></Link></section>
-      {!publicEntries.length ? (
+      {user?.isOwner ? <section className="history-cloud-card"><div><h2>{tr(locale, "所有人的雲端報告", "所有人的云端报告", "Everyone’s cloud reports")}</h2><span>{tr(locale, "站主可查看所有已上傳的報告，無需付款。", "站主可查看所有已上传的报告，无需付款。", "Owners can read every uploaded report without payment.")}</span></div><a href="/account">{tr(locale, "開啟所有人報告", "打开所有人报告", "Open all reports")} →</a></section> : null}
+      {hasBirth ? <section className="zw-saved-report-card"><h2>{tr(locale, "已保存的出生資料", "已保存的出生资料", "Saved birth details")}</h2><p>{tr(locale, "可繼續查看命盤，或用這份生辰提出新問題。", "可继续查看命盘，或用这份生辰提出新问题。", "Continue to your chart or ask a new question using these details.")}</p><a href="/#birth-form">{tr(locale, "查看命盤／繼續提問", "查看命盘／继续提问", "Open chart / ask a question")}</a></section> : null}
+      {reports.map(({ result, savedAt, cloudSaved }) => <article key={result.id} className="zw-saved-report-card">
+        <small>{new Date(savedAt).toLocaleString()} · {cloudSaved ? tr(locale, "已同步站主後台", "已同步站主后台", "Synced to owner archive") : copy.local}</small>
+        <h2>{result.question}</h2>
+        <p>{result.reading.directAnswer}</p>
+        <button type="button" onClick={() => { window.location.assign(`/?report=${encodeURIComponent(result.id)}#report`); }}>{tr(locale, "閱讀報告", "阅读报告", "Read report")}</button>
+        <button type="button" onClick={() => { if (window.confirm(copy.confirmOne)) { removeLocalReport(result.id); setReports(readLocalReports()); } }}>{copy.remove}</button>
+      </article>)}
+      {!publicEntries.length && !reports.length && !hasBirth ? (
         <section className="history-empty">
           <span aria-hidden>記</span><h2>{copy.empty}</h2><p>{copy.start}</p>
           <div><a href="/#birth-form">{tr(locale, "產生完整命盤", "产生完整命盘", "Create complete chart")}</a><Link to="/fun-tests">{kindLabel("fun-five-element", locale)}</Link></div>
@@ -93,7 +113,7 @@ function HistoryPage() {
               <div className="history-entry-report">
                 {entry.sections.map((section, index) => <article key={`${entry.id}-${index}`}><i aria-hidden>{String(index + 1).padStart(2, "0")}</i><div><h3>{section.title}</h3><p>{section.body}</p></div></article>)}
                 {entry.closing ? <blockquote>{entry.closing}</blockquote> : null}
-                <div className="history-entry-actions"><Link to="/fun-tests">{copy.again}</Link><button type="button" onClick={() => removeEntry(entry.id)}>{copy.remove}</button></div>
+                <div className="history-entry-actions"><a href={entry.sourcePath}>{copy.again}</a><button type="button" onClick={() => removeEntry(entry.id)}>{copy.remove}</button></div>
               </div>
             </details>
           ))}

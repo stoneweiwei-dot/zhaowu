@@ -34,10 +34,10 @@ export function useCurrentUserState() {
           await state.reload();
           return;
         }
-        if (!cancelled && OWNER_DATA_ROUTES.has(currentPathname())) window.location.replace("/");
+        if (!cancelled && OWNER_DATA_ROUTES.has(currentPathname())) window.location.replace("/login");
       })
       .catch(() => {
-        if (!cancelled && OWNER_DATA_ROUTES.has(currentPathname())) window.location.replace("/");
+        if (!cancelled && OWNER_DATA_ROUTES.has(currentPathname())) window.location.replace("/login");
       });
     return () => { cancelled = true; };
   }, [ownerDataRoute, state.isPending, isOwner, state.reload]);

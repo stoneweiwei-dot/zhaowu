@@ -1,5 +1,14 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-10 站主免費閱讀與報告入口
+
+- ACTIVE：站主由同源 HttpOnly cookie 經伺服器確認後，可免費閱讀本人與所有人的已保存完整報告。不得以 localStorage、URL、前端自填 role 授權。訪客的付款權限維持既有伺服器核驗。
+- ACTIVE：常駐入口為首頁／開始排盤／我的報告；站主另見所有人報告。生成後先讀答案，出生資料收合並可重新展開。
+- ACTIVE：新的提問結果保存在本機「我的報告」；站主登入時生成／重新開啟的本機提問結果，透過既有 owner bridge 保存至 report_requests。雲端列表分頁讀取所有已上傳的客戶紀錄，不限最近 50 筆。
+- BOUNDARY：2026-10-10 查核 report_requests 為 0 筆。從未上傳、只存在其他訪客裝置的舊結果無法由站主後台還原；本次不改為自動收集其他訪客裝置資料。舊測驗保存規則不變。
+- COMPATIBLE：保留客戶資料隔離、既有付款／排盤引擎、單一 Production 與 A$0 新增基礎設施成本。
+
+
 ## 2026-10-07 複雜／長尾問題推理層 supersession
 
 - ACTIVE：複雜問題不得只靠「把原答案寫順」處理。先建立 question graph，識別人物／關係、主問題、次問題、題域、比較／條件／情境／時間要求、第三方邊界與高風險邊界，再從 CURRENT deterministic runtime 的既有結果組合答案。

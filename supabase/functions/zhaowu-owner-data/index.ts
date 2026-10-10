@@ -8,6 +8,8 @@ import {
   verifyUploadTicket,
 } from "./security.mjs";
 
+import { listReportPage, ownerReportRow } from "./reports.mjs";
+
 const BACKGROUND_BUCKET = "zhaowu-backgrounds";
 const GALLERY_BUCKET = "zhaowu-gallery";
 const REPORT_BUCKET = "zhaowu-report-images";
@@ -42,6 +44,7 @@ const LOADING_VIDEO_TYPES = Object.keys(LOADING_VIDEO_EXTENSIONS);
 
 const ALLOWED_ACTIONS = new Set([
   "report.list",
+  "report.save",
   "report.get",
   "report.delete",
   "report.viewImage",
@@ -249,15 +252,7 @@ async function bestEffortRemoveObject(service: ReturnType<typeof createClient>, 
 }
 
 async function reportList(service: ReturnType<typeof createClient>, payload: Payload) {
-  const limit = boundedInt(payload.limit, 50, 1, 50);
-  const { data, error } = await service
-    .from("report_requests")
-    .select(REPORT_LIST_SELECT)
-    .order("created_at", { ascending: false })
-    .limit(Math.max(limit * 2, 60));
-  if (error) throw new OwnerDataError("REPORT_LIST_FAILED", 502, error.message);
-  const items = (data ?? []).filter((row) => !isQaReport(row as Record<string, unknown>)).slice(0, limit);
-  return { ok: true, items };
+  return listReportPage(service, payload, REPORT_LIST_SELECT, isQaReport);
 }
 
 async function reportGet(service: ReturnType<typeof createClient>, payload: Payload) {
@@ -736,6 +731,12 @@ async function dispatch(service: ReturnType<typeof createClient>, action: string
   switch (action) {
     case "report.list": return reportList(service, payload);
     case "report.get": return reportGet(service, payload);
+    case "report.save": {
+      const row = ownerReportRow(payload);
+      const { error } = await service.from("report_requests").upsert(row, { onConflict: "id", ignoreDuplicates: true });
+      if (error) throw new OwnerDataError("REPORT_SAVE_FAILED", 502, error.message);
+      return { ok: true, id: row.id };
+    }
     case "report.delete": return reportDelete(service, payload);
     case "report.viewImage": return reportViewImage(service, payload);
     case "report.generateImage": return reportGenerateImage(service, payload);

@@ -6,15 +6,16 @@ import {
   deleteReportRecord,
   getReportRecord,
   listReportRecords,
+  listOwnerReportPage,
   type ReportListRecord,
   type ReportRecord,
 } from "@/lib/bridge/supabase-rest";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
-import { ReportDragonSticker } from "@/components/report-dragon-sticker";
 import { DecreeImageReason } from "@/components/decree-image-reason";
 import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
+import { composeFocusedReport } from "@/lib/report/focused-report";
 import type { ReportSection } from "@/lib/report/focused-report";
 import { TeaGuardianReport } from "@/components/tea-guardian-report";
 
@@ -78,6 +79,9 @@ function storedReportSections(row: ReportRecord): ReportSection[] {
       };
     });
   }
+  if (row.engine_snapshot?.chart && row.engine_snapshot?.reading) {
+    try { return composeFocusedReport(row.engine_snapshot); } catch { /* Preserve legacy fallback. */ }
+  }
   return [];
 }
 
@@ -102,6 +106,8 @@ function AccountPage() {
   const [rows, setRows] = useState<ReportListRecord[]>([]);
   const [details, setDetails] = useState<Record<string, ReportRecord | null>>({});
   const [openId, setOpenId] = useState<string | null>(null);
+  const [nextOffset, setNextOffset] = useState<number | null>(null);
+  const [moreBusy, setMoreBusy] = useState(false);
   const [query, setQuery] = useState("");
   const [busy, setBusy] = useState(true);
   const [refreshBusy, setRefreshBusy] = useState(false);
@@ -114,7 +120,7 @@ function AccountPage() {
   const [selectedReportIds, setSelectedReportIds] = useState<string[]>([]);
 
   const c = useMemo(() => ({
-    ownerTitle: tr(locale, "昭梧後台", "昭梧后台", "Zhaowu Console"),
+    ownerTitle: tr(locale, "所有人的報告", "所有人的报告", "All reports"),
     memberTitle: tr(locale, "我的昭梧", "我的昭梧", "My Zhaowu"),
     ownerBadge: tr(locale, "站主", "站主", "Owner"),
     reportsReadError: tr(locale, "報告讀取失敗。", "报告读取失败。", "Could not load reports."),
@@ -130,11 +136,11 @@ function AccountPage() {
     refreshing: tr(locale, "刷新中…", "刷新中…", "Refreshing…"),
     refreshed: tr(locale, "已刷新", "已刷新", "Refreshed"),
     refreshOne: tr(locale, "刷新這筆", "刷新这笔", "Refresh"),
-    customerReports: tr(locale, "客戶報告", "客户报告", "Customer reports"),
+    customerReports: tr(locale, "所有已上傳的報告", "所有已上传的报告", "All uploaded reports"),
     recentReports: tr(locale, "最近報告", "最近报告", "Recent reports"),
     search: tr(locale, "搜尋 Email / 問題", "搜索 Email / 问题", "Search email / question"),
-    empty: tr(locale, "目前沒有報告。", "目前没有报告。", "No reports yet."),
-    open: tr(locale, "查看", "查看", "Open"),
+    empty: tr(locale, "目前沒有已上傳的報告。本機保存的內容請到「我的報告」查看。", "目前没有已上传的报告。本机保存的内容请到“我的报告”查看。", "No uploaded reports yet. Open My reports for results saved on this device."),
+    open: tr(locale, "閱讀完整報告", "阅读完整报告", "Read full report"),
     collapse: tr(locale, "收起", "收起", "Collapse"),
     noEmail: tr(locale, "未綁 Email", "未绑定 Email", "No email linked"),
     reportFallback: tr(locale, "昭梧報告", "昭梧报告", "Zhaowu report"),
@@ -186,7 +192,9 @@ function AccountPage() {
     setBusy(true);
     setError(null);
     try {
-      const nextRows = await listReportRecords(session, user.isOwner);
+      const page = user.isOwner ? await listOwnerReportPage() : null;
+      const nextRows = page ? page.items : await listReportRecords(session, false);
+      setNextOffset(page?.nextOffset ?? null);
       setRows(nextRows);
       const ids = new Set(nextRows.map((row) => row.id));
       setSelectedReportIds((current) => current.filter((id) => ids.has(id)));
@@ -195,6 +203,17 @@ function AccountPage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function loadMoreReports() {
+    if (nextOffset === null || moreBusy || !user?.isOwner) return;
+    setMoreBusy(true);
+    try {
+      const page = await listOwnerReportPage(nextOffset);
+      setRows(previous => [...previous, ...page.items.filter(row => !previous.some(old => old.id === row.id))]);
+      setNextOffset(page.nextOffset);
+    } catch (err) { setError(err instanceof Error ? err.message : c.reportsReadError); }
+    finally { setMoreBusy(false); }
   }
 
   async function refreshDetail(id: string, silent = false) {
@@ -345,7 +364,8 @@ function AccountPage() {
           <div>
             <p className="text-xs tracking-[0.28em] text-cinnabar">{user.isOwner ? "OWNER CONSOLE" : "MY ZHAOWU"}</p>
             <h1 className="mt-2 font-display text-3xl">{user.isOwner ? c.ownerTitle : c.memberTitle}</h1>
-            <p className="mt-2 text-sm text-ink-soft">{user.displayName} · {user.email}</p>
+            <p className="zw-owner-access-note">{tr(locale, "站主權限：可免費查看自己與所有人的完整報告。", "站主权限：可免费查看自己与所有人的完整报告。", "Owner access: read your own and everyone’s complete reports without payment.")}</p>
+            <a href="/history" className="underline">{tr(locale, "查看這台裝置的「我的報告」 →", "查看这台设备的“我的报告” →", "My reports on this device →")}</a>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {user.isOwner ? <span className="rounded-full border border-cinnabar/30 bg-cinnabar/5 px-3 py-1 text-xs text-cinnabar">{c.ownerBadge}</span> : null}
@@ -406,12 +426,12 @@ function AccountPage() {
           {user.isOwner ? <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} /> : null}
         </div>
 
-        {user.isOwner ? <div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
+        {user.isOwner ? <details><summary className="min-h-11 py-3 text-sm">{c.batchManage} ＋</summary><div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
           <span className="mr-auto font-display text-sm text-ink">{selectedReportIds.length ? c.selected(selectedReportIds.length) : c.batchManage}</span>
           <button type="button" disabled={refreshBusy || !filtered.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedReportIds(filtered.map((row) => row.id))}>{c.selectAllShown}</button>
           <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedReportIds([])}>{c.clearSelection}</button>
           <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelectedReports()}>{c.deleteSelected}</button>
-        </div> : null}
+        </div></details> : null}
 
         {busy ? <div className="mt-5 h-20 animate-pulse rounded-lg bg-paper-deep" /> : null}
         {error ? <p className="mt-4 rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm text-cinnabar-deep">{error}</p> : null}
@@ -442,8 +462,8 @@ function AccountPage() {
                 {user.isOwner ? <button type="button" aria-pressed={selectedReportIds.includes(row.id)} onClick={() => setSelectedReportIds((current) => current.includes(row.id) ? current.filter((id) => id !== row.id) : [...current, row.id])} className={`absolute left-2 top-2 inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 text-[10px] font-medium ${selectedReportIds.includes(row.id) ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${c.select} ${row.alias || c.reportFallback}`}>
                   {selectedReportIds.includes(row.id) ? `✓ ${c.selectedOne}` : c.select}
                 </button> : null}
-                <div className="text-center">
-                  <h3 className="truncate font-display text-lg font-semibold">{row.alias || String(row.context?.question ?? c.reportFallback)}</h3>
+                <div className={user.isOwner ? "pl-16 text-left" : "text-left"}>
+                  <h3 className="font-display text-lg font-semibold break-words">{row.alias || String(row.context?.question ?? c.reportFallback)}</h3>
                   {user.isOwner ? <p className="truncate text-xs text-cinnabar">{row.user_email || c.noEmail}</p> : null}
                   <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")} · {reportLevel(row, locale)}</p>
                   <p className="mt-1 text-[11px] text-ink-mute">{c.updated} {new Date(row.updated_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")}</p>
@@ -518,13 +538,10 @@ function AccountPage() {
                         {sections.length ? (
                           <div className="space-y-4">
                             {sections.map((section, index) => (
-                              <div key={`${row.id}-${section.key}-${index}`} className="border-t border-line/70 pt-3 first:border-0 first:pt-0">
-                                <div className="flex items-start justify-between gap-3">
-                                  <p className="pt-1 font-medium text-ink">{String(section.sectionNo ?? index + 1).padStart(2, "0")} · {section.title || c.fullReport}</p>
-                                  <ReportDragonSticker section={section} compact />
-                                </div>
+                              <details key={`${row.id}-${section.key}-${index}`} className="zw-record-section border-t border-line/70">
+                                <summary>{section.title || c.fullReport}</summary>
                                 {(section.body ?? []).map((line, j) => <p key={j} className="mt-1">{customerCopy(line)}</p>)}
-                              </div>
+                              </details>
                             ))}
                           </div>
                         ) : text ? <div className="whitespace-pre-wrap">{text}</div> : !displayAnswer ? <p className="text-ink-mute">{c.noReadable}</p> : null}
@@ -538,6 +555,8 @@ function AccountPage() {
             );
           })}
         </div>
+        {nextOffset !== null ? <button type="button" disabled={moreBusy} className="mt-5 min-h-11 rounded-full border border-line px-5" onClick={() => void loadMoreReports()}>{moreBusy ? c.refreshing : tr(locale, "載入更早的報告", "加载更早的报告", "Load older reports")}</button> : null}
+        {query ? <p className="mt-3 text-sm">{tr(locale, "搜尋目前已載入的報告；可載入更早紀錄繼續查找。", "搜索目前已加载的报告；可加载更早记录继续查找。", "Searching loaded reports. Load older reports to search further.")}</p> : null}
       </section>
 
       </div>
