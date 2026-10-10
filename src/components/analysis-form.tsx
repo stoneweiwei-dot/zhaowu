@@ -52,7 +52,6 @@ export function AnalysisForm() {
   const { user, profile, session } = useCurrentUserState();
   const setCurrent = useAppStore((s) => s.setCurrent);
   const setSavedId = useAppStore((s) => s.setSavedId);
-  const reset = useAppStore((s) => s.reset);
 
   const [question, setQuestion] = useState("");
   const [year, setYear] = useState("");
@@ -208,13 +207,6 @@ export function AnalysisForm() {
     setBirthCity(record.city);
     setLiveCity(record.liveCity ?? null);
   }
-
-  useEffect(() => {
-    reset();
-    const clear = () => reset();
-    window.addEventListener("pagehide", clear);
-    return () => window.removeEventListener("pagehide", clear);
-  }, [reset]);
 
   useEffect(() => {
     const localRecord = readSharedBirthRecord();

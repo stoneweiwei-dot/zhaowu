@@ -1,0 +1,29 @@
+/* Explicit task navigation: scoped away from decorative header and report styles. */
+.zw-journey-nav { display:flex; flex-wrap:wrap; gap:.45rem; max-width:64rem; margin:.65rem auto 0; padding:0 1rem; position:relative; z-index:11; }
+.zw-journey-nav a { display:flex; align-items:center; justify-content:center; min-height:44px; padding:.55rem .85rem; border:1px solid #bdac8e; border-radius:.65rem; background:#fffbf2; color:#24483e; font-size:.875rem; font-weight:600; text-decoration:none; line-height:1.35; }
+.zw-journey-nav a[aria-current=page] { background:#24483e; color:#fffaf0; }
+.zw-owner-access-note,.zw-report-save-status { margin:.8rem 0; border:1px solid #b8cbbf; border-radius:.65rem; background:#f0f6ef; color:#24483e; padding:.8rem 1rem; font-size:.875rem; line-height:1.6; }
+.zw-report-save-status button { margin-left:.6rem; text-decoration:underline; min-height:44px; }
+/* Permission itself is checked by resolveReportAccess against the server.
+   This removes only the redundant purchase advertisement for verified owners. */
+[data-owner-view=true] [data-destiny-unlock-gate] { display:none; }
+.zw-report-wayfinding { border:1px solid #cabda5; border-radius:1rem; padding:1rem; margin:1rem 0; background:#fffaf0; color:#243e38; }
+.zw-report-wayfinding h2 { font-size:1.35rem; margin:0 0 .5rem; }
+.zw-report-wayfinding p { line-height:1.7; }
+.zw-report-wayfinding a { display:inline-flex; align-items:center; min-height:44px; margin-right:.8rem; text-decoration:underline; }
+.zw-report-edit { margin:1rem 0; border:1px solid #cabda5; border-radius:.85rem; background:#fffaf0; }
+.zw-report-edit > summary { padding:1rem; cursor:pointer; font-weight:600; color:#24483e; }
+.zw-saved-report-card { border:1px solid #cabda5; padding:1rem; border-radius:1rem; background:#fffaf0; margin:1rem 0; overflow-wrap:anywhere; }
+.zw-saved-report-card h2 { font-size:1.2rem; margin:.4rem 0; }
+.zw-saved-report-card button,.zw-saved-report-card a { display:inline-flex; align-items:center; min-height:44px; padding:.6rem .9rem; margin:.5rem .5rem 0 0; border:1px solid #bdac8e; border-radius:.65rem; }
+.zw-saved-report-card button:first-of-type { background:#24483e; color:#fffaf0; }
+.zw-record-section > summary { cursor:pointer; padding:.8rem 0; font-weight:600; }
+.zw-record-section p { margin:.6rem 0; line-height:1.85; }
+@media(max-width:420px) { .zw-journey-nav { gap:.35rem; } .zw-journey-nav a { flex:1 1 40%; padding:.55rem .4rem; } }
+
+.zw-journey-directory { flex-basis:100%; color:#24483e; font-size:.875rem; }
+.zw-journey-directory > summary { cursor:pointer; min-height:44px; padding:.7rem 0; }
+.zw-journey-directory > div { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.4rem; margin-bottom:.7rem; }
+@media(min-width:700px) { .zw-journey-directory > div { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+
+.zw-saved-report-card > p { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:4; overflow:hidden; line-height:1.7; }

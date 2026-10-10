@@ -137,6 +137,7 @@ export function ReportAccessGate({
 }) {
   const copy = copyFor(locale);
   const [level, setLevel] = useState<ReportAccessLevel>("none");
+  const [owner, setOwner] = useState(false);
   const [checking, setChecking] = useState(true);
   const [pending, setPending] = useState(false);
   const [busy, setBusy] = useState<ReportAccessProduct | null>(null);
@@ -147,6 +148,7 @@ export function ReportAccessGate({
     void resolveReportAccess(system).then((result) => {
       if (cancelled) return;
       setLevel(result.level);
+      setOwner(result.owner === true);
       setPending(result.pending);
     }).finally(() => { if (!cancelled) setChecking(false); });
     return () => { cancelled = true; };
@@ -165,7 +167,7 @@ export function ReportAccessGate({
   }
 
   if (checking) return <div className="zhaowu-report-access-loading" aria-live="polite">{locale === "en" ? "Checking access…" : locale === "zh-Hans" ? "正在确认读取权限……" : "正在確認讀取權限……"}</div>;
-  if (level === "bundle" || level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{copy.unlocked}</p>{personal}{full}<FiveToneGift birth={birth} locale={locale} level={level} /></section>;
+  if (level === "bundle" || level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{owner ? (locale === "en" ? "Owner access · Full report, no payment" : locale === "zh-Hans" ? "站主权限 · 完整报告免费阅读" : "站主權限 · 完整報告免費閱讀") : copy.unlocked}</p>{personal}{full}<FiveToneGift birth={birth} locale={locale} level={level} /></section>;
 
   return (
     <section className="zhaowu-report-paywall" data-report-paywall={system}>

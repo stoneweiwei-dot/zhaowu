@@ -1,3 +1,4 @@
+import { readOwnerSession } from "@/lib/auth/owner-api";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 
 export type ReportSystemId = "ziwei" | "qizheng" | "western" | "indian" | "palm" | "numerology";
@@ -141,13 +142,16 @@ function levelFor(verification: Verification, system: ReportSystemId): ReportAcc
 const rank: Record<ReportAccessLevel, number> = { none: 0, quick: 1, system: 2, bundle: 3 };
 
 export async function resolveReportAccess(system: ReportSystemId) {
+  // Only a server-verified HttpOnly owner session grants the complimentary tier.
+  // Never persist owner access in localStorage or infer it from a query parameter.
+  if (await readOwnerSession()) return { level: "bundle" as ReportAccessLevel, pending: false, owner: true };
   const accessKey = reportAccessKey();
   // "quick" is a standing new-user welcome gift, not a purchase: everyone
   // starts at this level rather than "none", regardless of whether an
   // access key could be minted or any session verifies. Paid "system"/
   // "bundle" levels are still earned strictly through verified Stripe
   // sessions below and only ever raise this floor, never lower it.
-  if (!accessKey) return { level: "quick" as ReportAccessLevel, pending: false };
+  if (!accessKey) return { level: "quick" as ReportAccessLevel, pending: false, owner: false };
   const query = typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("session_id") || "";
   if (query) rememberSession(query);
   let level: ReportAccessLevel = "quick";
@@ -163,7 +167,7 @@ export async function resolveReportAccess(system: ReportSystemId) {
       /* One expired or invalid session must not block other valid purchases. */
     }
   }
-  return { level, pending };
+  return { level, pending, owner: false };
 }
 
 export async function startReportCheckout(product: ReportAccessProduct, system: ReportSystemId) {

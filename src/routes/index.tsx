@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useState, useEffect } from "react";
+import { useAuthState } from "@/lib/auth/provider";
+import { ReportSaveStatus } from "@/components/report-save-status";
 import { AnalysisForm } from "@/components/analysis-form";
 import { DeepReadingHeroCard } from "@/components/deep-reading-hero-card";
 import { FollowUpBox } from "@/components/follow-up-box";
@@ -7,7 +9,8 @@ import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt
 import { HomeSectionBoundary } from "@/components/home-section-boundary";
 import { ResultView } from "@/components/result-view";
 import { useI18n } from "@/lib/i18n";
-import { clearSharedBirthRecord } from "@/lib/shared-birth";
+import { readLocalReports } from "@/lib/local-report-history";
+import { clearSharedBirthRecord, writeSharedBirthRecord } from "@/lib/shared-birth";
 import { useAppStore } from "@/lib/store";
 import "@/home-hero-v1.css";
 import "@/home-polish-v3.css";
@@ -28,7 +31,7 @@ function useCopy(locale: string) {
       tagline: "Heaven counts to forty-nine — and leaves one line open.",
       birthCta: "Build my Destiny Book",
       birthHint: "Enter birth details · Open ZHAOWU",
-      navBook:  "Destiny",
+      navBook:  "Create report",
       navToday: "Today",
       navQuiz:  "Explore",
       navNotes: "Notes",
@@ -56,8 +59,8 @@ function useCopy(locale: string) {
       tagline: "天衍四九，其留与一。爱出者爱返，福往者福来。",
       birthCta: "开始建立我的命书",
       birthHint: "录入生辰・开卷昭梧",
-      navBook:  "命书",
-      navToday: "今日",
+      navBook:  "排盘与报告",
+      navToday: "今日黄历",
       navQuiz:  "测验",
       navNotes: "观世录",
       backHome: "返回首页",
@@ -85,9 +88,9 @@ function useCopy(locale: string) {
     birthCta: "開始建立我的命書",
     birthHint: "錄入生辰・開卷昭梧",
     backHome: "返回主頁",
-    navBook:  "命書",
-    navToday: "今日",
-    navQuiz:  "測驗",
+    navBook:  "排盤與報告",
+    navToday: "今日黃曆",
+    navQuiz:  "趣味測驗",
     navNotes: "觀世錄",
     todayHint: "黃曆、五行穿衣、靈籤各自展開",
     quizHint: "可選的自我觀察",
@@ -182,11 +185,24 @@ function Home() {
   const { locale } = useI18n();
   const copy = useCopy(locale);
   const heroUi = heroUiCopy(locale);
+  const { user } = useAuthState();
   const current = useAppStore((s) => s.current);
   const setCurrent = useAppStore((s) => s.setCurrent);
 
   const [activeSection, setActiveSection] = useState<Section | null>(null);
   const [scentOpen, setScentOpen] = useState(false);
+  const [formExpanded, setFormExpanded] = useState(!current);
+  useEffect(() => { setFormExpanded(!current); }, [current?.id]);
+
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("report");
+    const saved = id ? readLocalReports().find(entry => entry.result.id === id) : null;
+    if (saved) {
+      if (saved.birth) writeSharedBirthRecord(saved.birth);
+      setCurrent(saved.result);
+      setActiveSection("form");
+    }
+  }, [setCurrent]);
 
   /* auto-open form if there's a cached analysis result */
   useEffect(() => {
@@ -222,6 +238,7 @@ function Home() {
 
   const openBirthBook = (options?: { focusYear?: boolean }) => {
     const shouldFocus = options?.focusYear ?? true;
+    setFormExpanded(true);
     setActiveSection("form");
     if (typeof window !== "undefined" && window.location.hash !== "#birth-form") {
       window.history.pushState(null, "", "#birth-form");
@@ -248,7 +265,10 @@ function Home() {
 
     const fromHash = () => {
       const hash = window.location.hash;
-      if (BIRTH_HASHES.includes(hash)) {
+      if (hash === "#report") {
+        setActiveSection("form");
+        window.setTimeout(() => document.getElementById("report")?.scrollIntoView({ block: "start" }), 150);
+      } else if (BIRTH_HASHES.includes(hash)) {
         openBirthBook({ focusYear: false });
       } else if (TODAY_HASHES.includes(hash)) {
         setActiveSection("today");
@@ -266,9 +286,11 @@ function Home() {
     const fromEvent = () => openBirthBook({ focusYear: false });
     fromHash();
     window.addEventListener("hashchange", fromHash);
+    window.addEventListener("popstate", fromHash);
     window.addEventListener("zhaowu:open-birth-form", fromEvent);
     return () => {
       window.removeEventListener("hashchange", fromHash);
+      window.removeEventListener("popstate", fromHash);
       window.removeEventListener("zhaowu:open-birth-form", fromEvent);
     };
   }, []);
@@ -372,6 +394,15 @@ function Home() {
       {/* ── DEDICATED VIEW: FORM & DESTINY BOOK ─────────────── */}
       {activeSection === "form" && (
         <>
+          <section className="zw-report-wayfinding">
+            <h2>{locale === "en" ? (current ? "Your report is ready" : "Create your report") : locale === "zh-Hans" ? (current ? "你的报告已生成" : "开始排盘与提问") : (current ? "你的報告已生成" : "開始排盤與提問")}</h2>
+            <p>{locale === "en" ? "1. Enter birth details → 2. Ask a question → 3. Read your answer. Saved results are in My reports." : locale === "zh-Hans" ? "① 填出生资料 → ② 写下问题 → ③ 看答案。以后从「我的报告」重看。" : "① 填出生資料 → ② 寫下問題 → ③ 看答案。以後從「我的報告」重看。"}</p>
+            <a href="/history">{locale === "en" ? "My saved reports" : locale === "zh-Hans" ? "查看我的报告" : "查看我的報告"}</a>
+            {current ? <a href="#report">{locale === "en" ? "Read this answer" : locale === "zh-Hans" ? "直接看本次答案" : "直接看本次答案"}</a> : null}
+            {user?.isOwner ? <p className="zw-owner-access-note">{locale === "en" ? "Owner access: all report content is available without payment." : locale === "zh-Hans" ? "站主已登入：所有报告内容免费阅读，无需购买。" : "站主已登入：所有報告內容免費閱讀，無需購買。"}</p> : null}
+          </section>
+          <details className="zw-report-edit" open={formExpanded} onToggle={event => setFormExpanded(event.currentTarget.open)}>
+            <summary>{locale === "en" ? "Birth details and question" : locale === "zh-Hans" ? "出生资料与问题（点此修改）" : "出生資料與問題（點此修改）"}</summary>
           <HomeSectionBoundary
             id="analysis"
             locale={locale}
@@ -382,6 +413,8 @@ function Home() {
             </div>
           </HomeSectionBoundary>
 
+          </details>
+
           {/* Result view visible when there's an active result */}
           {current && (
             <>
@@ -390,7 +423,8 @@ function Home() {
                 locale={locale}
                 onRecover={() => { setCurrent(null); window.location.reload(); }}
               >
-                <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
+                <div id="report" className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
+                  <ReportSaveStatus />
                   <ResultView result={current} />
                 </div>
                 <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">

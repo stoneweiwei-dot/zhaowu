@@ -3,6 +3,10 @@ import { isOwnerCookieSession, ownerData } from "@/lib/owner-data-client";
 
 export * from "../supabase-rest";
 
+export async function listOwnerReportPage(offset = 0) {
+  return ownerData<{ ok: true; items: base.ReportListRecord[]; nextOffset: number | null }>("report.list", { limit: 50, offset });
+}
+
 /** Owner-console reads and destructive actions are server-bridged. Public/member compatibility stays in the base module. */
 export async function listReportRecords(session: base.SupabaseSession, isOwner: boolean): Promise<base.ReportListRecord[]> {
   if (!isOwnerCookieSession(session)) return base.listReportRecords(session, isOwner);

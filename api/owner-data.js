@@ -6,6 +6,7 @@ const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
 
 const ACTIONS = new Set([
   "report.list",
+  "report.save",
   "report.get",
   "report.delete",
   "report.viewImage",

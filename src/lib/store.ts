@@ -1,3 +1,4 @@
+import { saveLocalReport } from "@/lib/local-report-history";
 import { create } from "zustand";
 import type { AnalysisResult } from "@/lib/bazi/types";
 
@@ -19,7 +20,10 @@ const EMPTY = {
 
 export const useAppStore = create<AppState>((set) => ({
   ...EMPTY,
-  setCurrent: (current) => set({ current, fullReport: null, savedId: null }),
+  setCurrent: (current) => {
+    if (current) saveLocalReport(current);
+    set({ current, fullReport: null, savedId: null });
+  },
   setFullReport: (fullReport) => set({ fullReport }),
   setSavedId: (savedId) => set({ savedId }),
   reset: () => set({ ...EMPTY }),
