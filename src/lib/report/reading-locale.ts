@@ -104,8 +104,8 @@ export function toTraditionalCustomerText(value: string): string {
 }
 
 export function localizeReading(reading: Reading, locale?: AppLocale): Reading {
-  if (locale !== "zh-Hant") return reading;
-  const hant = toTraditionalCustomerText;
+  if (locale !== "zh-Hant" && locale !== "zh-Hans") return reading;
+  const hant = locale === "zh-Hans" ? toSimplifiedCustomerText : toTraditionalCustomerText;
   return {
     ...reading,
     directAnswer: hant(reading.directAnswer),

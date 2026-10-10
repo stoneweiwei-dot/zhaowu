@@ -57,9 +57,9 @@ const REPORT_TITLES: Record<AppLocale, {
     report: "昭梧｜專屬簡明報告"
   },
   "zh-Hans": {
-    verdict: "核心直斷",
-    action: "近期建議",
-    basis: "核心依據",
+    verdict: "核心直断",
+    action: "近期建议",
+    basis: "核心依据",
     report: "昭梧｜专属简明报告"
   },
   en: {

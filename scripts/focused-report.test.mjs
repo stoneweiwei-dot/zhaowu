@@ -50,9 +50,9 @@ test("简明报告固定三段式：核心直断 + 近期建议 + 核心依据",
   const result = makeResult("我現在工作最大的問題是什麼？");
   const sections = composeFocusedReport(result);
   assert.deepEqual(sections.map((item) => item.key), ["summary", "action", "basis"]);
-  assert.equal(sections[0].title, "核心直斷");
-  assert.equal(sections[1].title, "近期建議");
-  assert.equal(sections[2].title, "核心依據");
+  assert.equal(sections[0].title, "核心直断");
+  assert.equal(sections[1].title, "近期建议");
+  assert.equal(sections[2].title, "核心依据");
   const summary = section(result, "summary").body.join("\n");
   assert.ok(summary.includes(result.reading.work));
   assert.ok(!summary.includes(result.reading.love));

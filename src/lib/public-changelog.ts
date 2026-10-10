@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-10-hans-and-checkout-label-fix",
+    date: "2026-10-10",
+    zhHant: { title: "簡體報告用字修正、付費卡標示改為紫微", summary: "選擇簡體時，報告段落標題與旅行建議不再混入繁體字；結果頁付費區塊補上簡體文案。單盤付費卡改標為「紫微斗數完整深批」，與實際購買內容一致。" },
+    zhHans: { title: "简体报告用字修正、付费卡标示改为紫微", summary: "选择简体时，报告段落标题与旅行建议不再混入繁体字；结果页付费区块补上简体文案。单盘付费卡改标为「紫微斗数完整深批」，与实际购买内容一致。" },
+    en: { title: "Simplified Chinese report fixes; single-system card now labelled Zi Wei", summary: "Simplified Chinese readers no longer see Traditional characters in report headings and travel advice, and the result-page paywall has Simplified copy. The single-system card is now labelled Zi Wei Full Reading to match what it unlocks." },
+  },
+  {
     id: "2026-10-09-owner-console-integration",
     date: "2026-10-09",
     zhHant: { title: "站主後台集中管理", summary: "報告、背景圖片、開場影片與 Instagram／Threads 改為同頁切換；音樂管理保留在後台入口。切換分區保留報告選取與社群草稿，沿用原有站主權限與資料接口。" },
