@@ -22,3 +22,12 @@ test("fun-tests parent route delegates subroutes like /fun-tests/earth-online to
   assert.match(funTests, /pathname\.startsWith\(\s*["']\/fun-tests\/["']\s*\)/);
   assert.match(funTests, /return\s*<Outlet\s*\/>/);
 });
+
+test("fun-tests route keeps index-only hooks in a separate component", () => {
+  const parent = funTests.match(/function FunTests\(\) \{([\s\S]*?)\n\}\n\nfunction FunTestsIndex\(\)/);
+  assert.ok(parent, "parent route must delegate index UI to a separate component");
+  assert.match(parent[1], /return\s+<FunTestsIndex\s*\/>/);
+  assert.doesNotMatch(parent[1], /\b(?:useI18n|useAppStore|useState|useMemo)\s*\(/);
+  assert.match(funTests, /function FunTestsIndex\(\) \{\s*const \{ locale \} = useI18n\(\)/);
+  assert.match(funTests, /function FunTestsIndex\(\)[\s\S]*?const \[mode, setMode\] = useState/);
+});
