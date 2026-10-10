@@ -3,7 +3,7 @@ import type { AnalysisResult, Element, Pillar } from "@/lib/bazi/types";
 import type { ReportSection } from "@/lib/report/focused-report";
 import { customerDirectAnswer } from "@/lib/report/customer-copy";
 import { buildDecisionReportModel, type DecisionSectionKey } from "@/lib/report/decision-report-model";
-import { ReportVisualBook } from "@/components/report-visual-book";
+import { ReportElementMeters, ReportVisualBook } from "@/components/report-visual-book";
 import { ReportLuckBook } from "@/components/report-luck-book";
 import { ReportShareCard } from "@/components/report-share-card";
 import { EvidenceGovernancePanel } from "@/components/evidence-governance-panel";
@@ -381,6 +381,8 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
           ) : null}
         </section>
       ) : null}
+
+      {result ? <ReportElementMeters result={result} /> : null}
 
       {result ? (
         <details className="zhaowu-report-stage-fold" data-report-stage="visual">
