@@ -18,9 +18,8 @@ const [client, gate, specialist, palm, numerology, unified, personalComponent, p
 // 2026-10-10: the quick tier was cancelled as a paid product and is now a
 // standing new-user welcome gift (free for everyone by default — see
 // resolveReportAccess). system/bundle remain the only sold tiers; their
-// display prices stay pinned to their current, Stripe-accurate amounts
-// until real Payment Links at $9.90/$19.99 exist (see the BLOCKED BY note
-// in report-access.ts above REPORT_ACCESS_PRODUCTS).
+// display prices stay pinned to the verified live Stripe USD 4.99 / USD 9.99
+// amounts; the six-system bundle excludes the separate BaZi purchase.
 test("the report catalogue is fixed at free (quick, new-user gift), $4.99 and $9.99", () => {
   assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
   assert.match(client, /system: \{ amountCents: 499, price: "US\$4\.99" \}/);
