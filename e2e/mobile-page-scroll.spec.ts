@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("public mobile pages keep native document scrolling", async ({ page }) => {
+test("narrow public pages have a scrollable native-touch viewport", async ({ page }) => {
+  const viewport = page.viewportSize();
+  test.skip(!viewport || viewport.width > 700, "mobile scroll behavior");
+
   await page.goto("/quiz/divine-affinity");
 
   const metrics = await page.evaluate(() => {
@@ -9,15 +12,17 @@ test("public mobile pages keep native document scrolling", async ({ page }) => {
     return {
       rootOverflowY: root ? getComputedStyle(root).overflowY : "missing",
       shellOverflowY: shell ? getComputedStyle(shell).overflowY : "missing",
-      documentHeight: document.documentElement.scrollHeight,
-      viewportHeight: window.innerHeight,
+      shellHeight: shell?.clientHeight ?? 0,
+      shellScrollHeight: shell?.scrollHeight ?? 0,
     };
   });
 
   expect(metrics.rootOverflowY).toBe("visible");
-  expect(metrics.shellOverflowY).toBe("visible");
-  expect(metrics.documentHeight).toBeGreaterThan(metrics.viewportHeight);
+  expect(metrics.shellOverflowY).toBe("auto");
+  expect(metrics.shellScrollHeight).toBeGreaterThan(metrics.shellHeight);
 
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  await page.locator("#root > .zhaowu-home-sheet-shell").evaluate((node) => {
+    node.scrollTop = node.scrollHeight;
+  });
+  await expect.poll(() => page.locator("#root > .zhaowu-home-sheet-shell").evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
 });
