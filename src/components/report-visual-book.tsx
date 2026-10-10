@@ -150,6 +150,36 @@ function FiveElementFlow({ rows, title, note }: {
   );
 }
 
+const GLANCE_TITLE: Record<Locale, string> = {
+  "zh-Hant": "五行強弱一覽",
+  "zh-Hans": "五行强弱一览",
+  en: "Five-element strength at a glance",
+};
+
+/** Always-visible level meters (no numbers); the full visual book stays in the collapsed detail section. */
+export function ReportElementMeters({ result }: { result: AnalysisResult }) {
+  const { locale } = useI18n();
+  const model = useMemo(() => buildReportVisualModel(result.chart, locale), [result.chart, locale]);
+  const title = GLANCE_TITLE[locale];
+  return (
+    <section className="zhaowu-element-glance" aria-label={title} data-element-glance>
+      <h4>{title}</h4>
+      <div className="zhaowu-element-bars">
+        {model.elements.rows.map((row) => (
+          <div key={row.element} className={`zhaowu-element-bar ${ELEMENT_CLASS[row.element]}`}>
+            <span>{row.label}</span>
+            <div className="zhaowu-meter" role="img" aria-label={`${row.label}: ${row.levelLabel}`}>
+              {[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= row.level ? "is-on" : ""} />)}
+            </div>
+            <b>{row.levelLabel}</b>
+          </div>
+        ))}
+      </div>
+      <p className="zhaowu-visual-note">{model.elements.strengthLabel}</p>
+    </section>
+  );
+}
+
 export function ReportVisualBook({ result }: { result: AnalysisResult }) {
   const { locale } = useI18n();
   const copy = COPY[locale];

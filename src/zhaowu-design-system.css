@@ -9391,3 +9391,9 @@ html:lang(en) .zhaowu-analysis-submit-wrap button { max-width: none !important; 
 html:lang(en) #birth-form button[type="submit"] { text-wrap: balance; line-height: 1.3; }
 /* Five-element correspondence list: the fixed 72px term column forced "Traditional organ link" etc. onto 2–3 lines. */
 html:lang(en) [data-five-element-correspondence-grid] > div { grid-template-columns: minmax(8.75rem, 44%) minmax(0, 1fr); }
+
+/* Always-visible element strength meters (report, above the folded sections) */
+.zhaowu-element-glance { margin: 18px 0; padding: 14px 16px; border: 1px solid rgba(26, 58, 92, .14); border-radius: 14px; background: rgba(255, 252, 245, .7); }
+.zhaowu-element-glance > h4 { margin: 0 0 10px; font-size: 1rem; color: #1a3a5c; }
+.zhaowu-element-glance .zhaowu-element-bars { margin-top: 0; }
+.zhaowu-element-glance .zhaowu-visual-note { margin: 10px 0 0; }
