@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { buildReportVisualModel } from "../src/lib/report/report-visual-model.ts";
+import { buildReportVisualModel, elementLevel } from "../src/lib/report/report-visual-model.ts";
 
 const source = async (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -54,6 +54,22 @@ test("English visual layer stays plain-language while keeping the same data", ()
   assert.doesNotMatch(model.dayMaster.title, /Day Master/i);
   assert.equal(model.season.seasonLabel, "mid autumn");
   assert.equal(model.elements.rows.reduce((sum, row) => sum + row.percent, 0), 100);
+});
+
+test("element rows expose a 5-step level so the report can show meters instead of numbers", () => {
+  assert.deepEqual([0, 5, 6, 13, 14, 23, 24, 35, 36, 60].map(elementLevel), [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]);
+  const zh = buildReportVisualModel(chart, "zh-Hant").elements.rows;
+  const en = buildReportVisualModel(chart, "en").elements.rows;
+  assert.equal(zh.find((row) => row.element === "金")?.levelLabel, "旺盛");
+  assert.equal(en.find((row) => row.element === "金")?.levelLabel, "Dominant");
+  assert.equal(en.find((row) => row.element === "木")?.level, 2);
+  for (const row of [...zh, ...en]) assert.ok(row.level >= 1 && row.level <= 5 && row.levelLabel.length > 0);
+});
+
+test("report visual UI never prints element percentages", async () => {
+  const component = await source("src/components/report-visual-book.tsx");
+  assert.doesNotMatch(component, /row\.percent|\{[^}]*percent[^}]*\}%/);
+  assert.match(component, /row\.levelLabel/);
 });
 
 test("Geng and Xin metal keep lunar imagery in the visual layer only", () => {
