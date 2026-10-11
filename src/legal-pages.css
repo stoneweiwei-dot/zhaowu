@@ -113,26 +113,13 @@
 }
 .zhaowu-purchase-consent[data-needed="true"] input[type="checkbox"] { outline: 2px solid rgba(169, 97, 94, .8); outline-offset: 2px; }
 
-/* Reminder shown beside birth-data / question inputs (not a blocking consent). */
+/* One-line reminder beside birth-data / question inputs (not a blocking consent). */
 .zhaowu-data-notice {
-  display: grid;
-  gap: 4px;
-  margin: 0 0 14px;
-  border-left: 2px solid rgba(169, 135, 72, .6);
-  padding: 10px 12px;
-  background: rgba(238, 233, 222, .52);
-  text-align: left;
-}
-.zhaowu-data-notice strong {
-  color: var(--zw-ink, #2a2218);
-  font-size: 14px;
-  font-weight: 650;
-  line-height: 1.5;
-}
-.zhaowu-data-notice span {
+  margin: 0 0 12px;
   color: var(--zw-muted, #74695d);
-  font-size: 13px;
-  line-height: 1.7;
+  font-size: 12.5px;
+  line-height: 1.6;
+  text-align: left;
 }
 .zhaowu-data-notice a {
   color: var(--zw-jade, #294b3f);
