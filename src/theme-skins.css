@@ -316,3 +316,45 @@ html[data-zws-mode="dark"] body .zw-hero-home details > summary * { color: var(-
 html body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { height: 172px; }
 html body .zw-ink-board[data-variant="jade"] .zw-ink-title { padding-bottom: 14px; }
 html[data-zws-mode="dark"] body #daily-almanac .zhaowu-today-guide__overview :is(strong, span) { color: #2c4037 !important; }
+
+/* ── 5. dark skins: light-paper blocks keep dark ink ──────────────────────────
+ * Dark skins force headings/summaries to the light --zws-ink. Blocks that stay light paper
+ * (birth form, report wayfinding, edit-details) then render pale-on-cream and vanish.
+ * Blocks sitting directly on the dark page (journey directory) must use the light ink instead. */
+html[data-zws-mode="dark"] body main :is(.zhaowu-customer-record, .zhaowu-birth-fields) :is(label, label *, legend, h2, h3, summary, summary *),
+html[data-zws-mode="dark"] body main :is(.zw-report-wayfinding, .zw-report-edit) :is(h1, h2, h3, p, li, summary, summary *, small, strong, span) {
+  color: #243e38 !important;
+}
+html[data-zws-mode="dark"] body :is(.zw-journey-directory, .zw-journey-directory > summary) { color: var(--zws-ink) !important; }
+
+/* Dark skins reuse the night token set, which turns --zw-ink/--zw-ink-soft pale. Light-paper blocks put the day ink back
+ * so every rule inside them (including `#birth-form label { color: var(--zw-ink-soft) !important }`) resolves dark again. */
+html[data-zws-mode="dark"] body main :is(.zhaowu-customer-record, .zhaowu-bazi-stage, .zhaowu-question-sheet, .zhaowu-focused-report, .zhaowu-report-continuous-sheet, .zhaowu-result-evidence, .zhaowu-bazi-chart, .zw-report-wayfinding, .zw-report-edit) {
+  --zw-ink: #29251f;
+  --zw-ink-soft: #554e45;
+  --zw-ink-mute: #6f675b;
+  --color-ink: #29251f;
+  --color-ink-soft: #554e45;
+  --color-ink-mute: #6f675b;
+}
+
+/* History cards stay light paper under dark skins (confirmed by rendering /history with night-flute). */
+html[data-zws-mode="dark"] body main :is(.history-hero, .history-empty) { --zw-ink: #29251f; --zw-ink-soft: #554e45; --zw-ink-mute: #6f675b; }
+html[data-zws-mode="dark"] body main :is(.history-hero, .history-empty) :is(h1, h2, h3, h4, strong) { color: #29251f !important; }
+html[data-zws-mode="dark"] body main :is(.history-hero, .history-empty) :is(p, small) { color: #554e45 !important; }
+/* gold owner-login pill in the header: dark label on gold */
+html[data-zws-mode="dark"] body .zhaowu-site-header :is(.zhaowu-header-owner-login, .zhaowu-header-owner-login *) { color: var(--zws-on-accent) !important; }
+
+/* Inner pages under a dark skin. Their text uses hard-coded dark greens/browns written for a light page, and the dark
+ * skin turns the page itself dark. Block text on the page therefore takes the skin's light ink; the cards that really
+ * are light paper (.seal-border, history) keep dark ink. Inline chips, buttons and links keep their own colours.
+ * Found by rendering /history /updates /ziwei /knowledge /daily-colors with night-flute and measuring contrast. */
+html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(h1, h2, h3, h4, p, li, summary, dt, dd):not(button *):not([class*="bg-"]) { color: var(--zws-ink) !important; }
+html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(p, li, dd):not(button *):not([class*="bg-"]) { color: var(--zws-soft) !important; }
+html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(.seal-border, .history-hero, .history-empty) :is(h1, h2, h3, h4, p, li, summary, dt, dd):not(button *):not([class*="bg-"]) { color: #29251f !important; }
+html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(.seal-border, .history-hero, .history-empty) :is(p, li, dd):not(button *):not([class*="bg-"]) { color: #554e45 !important; }
+/* light chip-style links */
+html[data-zws-mode="dark"] body main :is(.zhaowu-updates-back, .zhaowu-specialist-actions a.is-secondary) { color: #29251f !important; }
+html[data-zws-mode="dark"] body :is(.history-topline span, .zhaowu-home-stage details > summary, .zhaowu-home-stage button strong) { color: var(--zws-ink) !important; }
+html[data-zws-mode="dark"][data-zw-theme="night"] body .zhaowu-site-header a.zhaowu-header-owner-login,
+html[data-zws-mode="dark"][data-zw-theme="night"] body .zhaowu-site-header a.zhaowu-header-owner-login * { color: var(--zws-on-accent) !important; }
