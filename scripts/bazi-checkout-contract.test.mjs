@@ -92,3 +92,9 @@ test("free preview never calls the paid report writer or saves paid output", () 
   assert.ok(preview.indexOf('accessLevel !== "system" && accessLevel !== "bundle"') < preview.indexOf("await ensureFullReport"));
   assert.match(resultView, /View free 3-part summary/);
 });
+
+test("database entitlement constraint accepts the BaZi system id the webhook writes", async () => {
+  const sql = await load("supabase/migrations/20261011120000_allow_bazi_entitlement_system.sql");
+  assert.match(sql, /system_id in \('bazi', 'ziwei', 'qizheng', 'western', 'indian', 'palm', 'numerology'\)/);
+  assert.doesNotMatch(sql, /delete\s+from|truncate|drop\s+table/i);
+});
