@@ -108,7 +108,7 @@
 |---|---|---|
 | ✅ 已做 | 付款前同意勾選（clickwrap）：`PurchaseConsent`＋`startReportCheckout` 閘門，記錄條款版本與時間於瀏覽器 | 條款可執行性 |
 | P1 | **在 Stripe 後台對所有 Payment Link 開啟「須同意服務條款」**（Payment Link → Collect customer consent → Terms of service，並在 Stripe 設定填入 `/terms` 網址）；這是伺服端、爭議時可出示的同意紀錄，比瀏覽器本機紀錄強 | chargeback／爭議舉證 |
-| P1 | 輸入生辰前的第三人資料同意提示 | 提問涉他人出生資料 |
+| ✅ 已做 | 輸入生辰處（首頁生辰表、一掌經）與提問框的提醒：只輸入本人或已獲同意者的資料、未成年由監護人操作、提問勿寫他人姓名／電話／住址／身分證／病歷。為**不擋核心流程的提醒**（非必勾），避免傷害轉換；若日後想要可舉證的同意，可改成首次儲存生辰時勾選一次 | 第三人資料、最小化收集 |
 | P1 | 歐盟／英國訪客預設關閉 PostHog 或加同意橫幅 | ePrivacy／PECR |
 | P1 | 補完素材授權清單（音樂、影片、圖庫）並更新 THIRD-PARTY-NOTICES | 最主要的被索賠風險 |
 | P2 | 自行託管 Noto／LXGW 字型子集 | 消除 Google Fonts IP 傳輸，亦利於中國大陸、台灣載入速度 |
