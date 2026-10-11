@@ -160,7 +160,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기", "गैलरी खोलें");
   const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
-  const ownerLoginLabel = displayText(language, "站主登入", "站主登录", "Owner sign-in", "站主ログイン", "관리자 로그인", "मालिक लॉगिन");
+  const ownerLoginLabel = displayText(language, "登入", "登录", "Sign in", "ログイン", "로그인", "लॉगिन");
   const homeLoginLabel = displayText(language, "登入", "登录", "Login", "ログイン", "로그인", "लॉगिन");
   const languageVisualLabel = displayText(language, "語言", "语言", "Language", "言語", "언어", "भाषा");
   const skipLabel = displayText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
@@ -277,7 +277,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 user?.isOwner ? (
                   <Link to="/account" className="zhaowu-home-login-inline" aria-label={t("navAdmin")}>
                     <BrandIcon name="account" />
-                    <span>{displayText(language, "所有報告", "所有报告", "All reports", "管理", "관리", "कंसोल")}</span>
+                    <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
                   </Link>
                 ) : (
                   <Link

@@ -48,9 +48,9 @@ function HistoryPage() {
     kicker: tr(locale, "昭梧 · 個人紀錄", "昭梧 · 个人记录", "ZHAOWU · MY HISTORY"),
     title: tr(locale, "我的報告", "我的报告", "My reports"),
     lead: tr(locale,
-      "這裡是這台裝置保存的提問報告與測驗。點「閱讀報告」直接重看；站主登入後可免費閱讀完整內容。",
-      "这里是这台设备保存的提问报告与测验。点“阅读报告”直接重看；站主登录后可免费阅读完整内容。",
-      "Questions and tests saved on this device appear here. Open a report to read it again. Owners can read the full content without payment."),
+      "這裡是這台裝置保存的提問報告與測驗。點「閱讀報告」可直接重看。",
+      "这里是这台设备保存的提问报告与测验。点“阅读报告”可直接重看。",
+      "Questions and tests saved on this device appear here. Open a report to read it again."),
     local: tr(locale, "僅保存在這台裝置", "仅保存在这台设备", "Saved on this device only"),
     cloudTitle: tr(locale, "八字提問與雲端報告", "八字提问与云端报告", "BaZi questions and cloud reports"),
     cloudBody: tr(locale,
@@ -91,10 +91,9 @@ function HistoryPage() {
     <main className="history-page">
       <div className="history-topline"><Link to="/">← {copy.back}</Link><span>{copy.local}</span></div>
       <section className="history-hero"><p>{copy.kicker}</p><h1>{copy.title}</h1><p>{copy.lead}</p></section>
-      {user?.isOwner ? <section className="history-cloud-card"><div><h2>{tr(locale, "所有人的雲端報告", "所有人的云端报告", "Everyone’s cloud reports")}</h2><span>{tr(locale, "站主可查看所有已上傳的報告，無需付款。", "站主可查看所有已上传的报告，无需付款。", "Owners can read every uploaded report without payment.")}</span></div><a href="/account">{tr(locale, "開啟所有人報告", "打开所有人报告", "Open all reports")} →</a></section> : null}
       {hasBirth ? <section className="zw-saved-report-card"><h2>{tr(locale, "已保存的出生資料", "已保存的出生资料", "Saved birth details")}</h2><p>{tr(locale, "可繼續查看命盤，或用這份生辰提出新問題。", "可继续查看命盘，或用这份生辰提出新问题。", "Continue to your chart or ask a new question using these details.")}</p><a href="/#birth-form">{tr(locale, "查看命盤／繼續提問", "查看命盘／继续提问", "Open chart / ask a question")}</a></section> : null}
       {reports.map(({ result, savedAt, cloudSaved }) => <article key={result.id} className="zw-saved-report-card">
-        <small>{new Date(savedAt).toLocaleString()} · {cloudSaved ? tr(locale, "已同步站主後台", "已同步站主后台", "Synced to owner archive") : copy.local}</small>
+        <small>{new Date(savedAt).toLocaleString()} · {cloudSaved ? tr(locale, "已安全備份", "已安全备份", "Securely backed up") : copy.local}</small>
         <h2>{result.question}</h2>
         <p>{result.reading.directAnswer}</p>
         <button type="button" onClick={() => { window.location.assign(`/?report=${encodeURIComponent(result.id)}#report`); }}>{tr(locale, "閱讀報告", "阅读报告", "Read report")}</button>
