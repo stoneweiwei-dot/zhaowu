@@ -1,0 +1,98 @@
+/*
+ * 2026-10-12 owner correction: the former octagonal stem badge has been
+ * retired. These are editorial report fragments, not icon galleries.
+ * Intentionally use typography and negative space; no downloaded images.
+ */
+.zhaowu-song-comic--report.is-editorial {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 1rem 0 1.5rem;
+  padding: clamp(1.15rem, 4vw, 1.65rem) clamp(1rem, 4vw, 1.7rem);
+  border: 0;
+  border-top: 1px solid rgba(77, 109, 94, .34);
+  border-bottom: 1px solid rgba(77, 109, 94, .18);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: start;
+}
+.zhaowu-song-comic--report.is-editorial .zhaowu-song-comic__copy {
+  max-width: 38rem;
+  margin-inline: auto;
+}
+.zhaowu-song-comic--report.is-editorial h5 {
+  margin: .65rem 0 .85rem !important;
+  font-size: clamp(1.35rem, 4.7vw, 1.85rem) !important;
+  line-height: 1.4 !important;
+  font-weight: 500 !important;
+  color: #34493f !important;
+}
+.zhaowu-song-comic--report.is-editorial .zhaowu-song-comic__copy > p:not(.zhaowu-song-comic__kicker) {
+  font-size: 1rem !important;
+  line-height: 1.75 !important;
+  max-width: 42ch;
+}
+.zhaowu-song-comic-share.is-editorial {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .95rem 1.25rem;
+  align-items: center;
+  margin: 1.65rem 0 1rem;
+  padding: 1.2rem 0;
+  border-top: 1px solid rgba(77, 109, 94, .3);
+  border-bottom: 1px solid rgba(77, 109, 94, .18);
+  background: transparent;
+}
+.zhaowu-song-comic-share.is-editorial .zhaowu-song-comic-share__copy {
+  min-width: 0;
+  max-width: 38rem;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(77, 109, 94, .45);
+}
+.zhaowu-song-comic-share.is-editorial strong {
+  display: block;
+  margin-top: .4rem !important;
+  font-size: clamp(1.15rem, 4vw, 1.55rem) !important;
+  font-weight: 500 !important;
+  line-height: 1.42 !important;
+  color: #34493f !important;
+  overflow-wrap: anywhere;
+}
+.zhaowu-song-comic-share.is-editorial span {
+  font-size: .9rem !important;
+  line-height: 1.65 !important;
+}
+.zhaowu-song-comic-share.is-editorial button {
+  width: auto;
+  min-width: 8.4rem;
+  min-height: 44px;
+  padding-inline: 1.15rem;
+  border-radius: 3px;
+  background: transparent;
+  color: #315a4c;
+}
+@media (max-width: 640px) {
+  .zhaowu-song-comic--report.is-editorial {
+    display: block;
+    padding: 1.15rem 1rem 1.25rem;
+    text-align: start;
+  }
+  .zhaowu-song-comic-share.is-editorial {
+    grid-template-columns: minmax(0, 1fr);
+    gap: .85rem;
+    padding: 1rem 0;
+  }
+  .zhaowu-song-comic-share.is-editorial button {
+    grid-column: 1;
+    width: 100%;
+    margin: 0;
+  }
+}
+@media (max-width: 390px) {
+  .zhaowu-song-comic--report.is-editorial {
+    display: block;
+    justify-items: stretch;
+    text-align: start;
+  }
+}
