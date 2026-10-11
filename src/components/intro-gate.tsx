@@ -269,7 +269,7 @@ export function IntroGate() {
 
   return (
     <div
-      className={`zhaowu-lotus-intro fixed inset-0 z-[100] overflow-hidden transition-opacity duration-180 ease-out ${phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"}`}
+      className={`zhaowu-lotus-intro zhaowu-wm-on zhaowu-wm--corner fixed inset-0 z-[100] overflow-hidden transition-opacity duration-180 ease-out ${phase === "leaving" ? "pointer-events-none opacity-0" : "opacity-100"}`}
       role="status"
       aria-live="polite"
       aria-label={loadingLabel}

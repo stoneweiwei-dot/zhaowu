@@ -1,3 +1,4 @@
+import { applyBrandWatermark } from "@/lib/brand-watermark";
 import * as base from "../background-assets";
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { isOwnerCookieSession, ownerData, uploadOwnerSignedFile, type OwnerUploadTicket } from "@/lib/owner-data-client";
@@ -45,11 +46,14 @@ export async function uploadBackground(
   session: SupabaseSession,
   file: File,
   onProgress?: (percent: number) => void,
+  options: { skipWatermark?: boolean } = {},
 ): Promise<base.BackgroundAsset> {
   assertSupabaseStorageWritesEnabled();
-  if (!isOwnerCookieSession(session)) return base.uploadBackground(session, file, onProgress);
   if (!file.type.startsWith("image/")) throw new Error("只接受圖片檔。");
   if (file.size > 10 * 1024 * 1024) throw new Error("單張圖片不可超過 10 MB。");
+  // Publish-time watermark; a copy of an already-baked gallery image passes skipWatermark.
+  if (!options.skipWatermark) file = (await applyBrandWatermark(file)).file;
+  if (!isOwnerCookieSession(session)) return base.uploadBackground(session, file, onProgress);
 
   const prep = await ownerData<OwnerUploadTicket>("background.prepareUpload", {
     name: file.name,

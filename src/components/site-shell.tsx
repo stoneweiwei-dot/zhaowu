@@ -22,6 +22,7 @@ import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme }
 import { hydrateSkin } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 import "@/legal-pages.css";
+import "@/brand-watermark.css";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
