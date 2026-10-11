@@ -1,24 +1,10 @@
-import { createHash, timingSafeEqual } from "node:crypto";
 import { fetchMingshuJson, jsonResponse, sanitizeChartInput } from "../lib/mingshu-client.js";
+import { requestHasOwnerSession } from "../lib/owner-session-cookie.js";
 import {
   compareZhaowuWithMingshu,
   isUsableZhaowuSnapshot,
   projectZhaowuChart,
 } from "../lib/zhaowu-verification.js";
-
-const OWNER_COOKIE = "__Host-zhaowu_owner_session";
-const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
-
-function hash(value) {
-  return createHash("sha256").update(String(value), "utf8").digest();
-}
-
-function isValidOwnerSecret(value) {
-  if (!value || value.length < 8 || value.length > 256) return false;
-  const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
-  const actual = hash(value);
-  return actual.length === expected.length && timingSafeEqual(actual, expected);
-}
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -26,21 +12,6 @@ function headerValue(req, name) {
   if (typeof headers.get === "function") return String(headers.get(name) ?? "");
   const raw = headers[name] ?? headers[name.toLowerCase()];
   return String(Array.isArray(raw) ? raw[0] : raw ?? "");
-}
-
-function readCookie(req, name) {
-  const raw = headerValue(req, "cookie");
-  for (const part of raw.split(";")) {
-    const index = part.indexOf("=");
-    if (index < 0) continue;
-    if (part.slice(0, index).trim() !== name) continue;
-    try { return decodeURIComponent(part.slice(index + 1)); } catch { return ""; }
-  }
-  return "";
-}
-
-function requestHasOwnerSession(req) {
-  return isValidOwnerSecret(readCookie(req, OWNER_COOKIE));
 }
 
 const MAX_COMPARE_BODY_BYTES = 65536;

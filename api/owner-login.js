@@ -1,19 +1,4 @@
-import { createHash, timingSafeEqual } from "node:crypto";
-
-const OWNER_COOKIE = "__Host-zhaowu_owner_session";
-const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
-const MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
-
-function hash(value) {
-  return createHash("sha256").update(String(value), "utf8").digest();
-}
-
-function isValidOwnerSecret(value) {
-  if (!value || value.length < 8 || value.length > 256) return false;
-  const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
-  const actual = hash(value);
-  return actual.length === expected.length && timingSafeEqual(actual, expected);
-}
+import { isValidOwnerSecret, ownerSetCookie } from "../lib/owner-session-cookie.js";
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -71,7 +56,7 @@ export default async function handler(req, res) {
     const body = await readJsonBody(req);
     const secret = String(body?.secret ?? req.body?.secret ?? "");
     if (!isValidOwnerSecret(secret)) return json(res, 401, { ok: false, error: "INVALID_OWNER_CREDENTIAL" });
-    const cookie = `${OWNER_COOKIE}=${encodeURIComponent(secret)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${MAX_AGE_SECONDS}`;
+    const cookie = ownerSetCookie(secret);
     return json(res, 200, { ok: true }, { "Set-Cookie": cookie });
   } catch (error) {
     return json(res, 500, { ok: false, error: "OWNER_LOGIN_FAILED", detail: error instanceof Error ? error.message : "unknown" });

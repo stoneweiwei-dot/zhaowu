@@ -28,22 +28,22 @@ const COPY: Record<Locale, GuideCopy> = {
   "zh-Hant": {
     analysis: ["填好出生資料後，昭梧會把內部專項判讀合成一份完整綜合報告。", "開始完整分析"],
     history: ["已保存的舊報告可以在「我的報告」重看。", "查看我的報告"],
-    account: ["所有已上傳的報告在「所有人報告」，需站主登入。", "查看所有人報告"],
-    login: ["我的報告會保存在這台裝置。站主登入後可免費閱讀完整內容及查看所有已上傳報告。", "前往登入"],
+    account: ["您在昭梧的報告與測驗會保存在這台裝置中。如需管理或同步，請前往帳戶頁面。", "前往帳戶"],
+    login: ["我的報告會保存在這台裝置。點擊即可登入或管理個人帳戶。", "前往登入"],
     home: ["請先填寫出生資料，昭梧會直接產生一份完整綜合報告。", "返回首頁"],
   },
   "zh-Hans": {
     analysis: ["填好出生资料后，昭梧会把内部专项判断合成一份完整综合报告。", "开始完整分析"],
     history: ["已保存的旧报告可以在“我的报告”重看。", "查看我的报告"],
-    account: ["所有已上传的报告在“所有人报告”，需站主登录。", "查看所有人报告"],
-    login: ["我的报告会保存在这台设备。站主登录后可免费阅读完整内容及查看所有已上传报告。", "前往登录"],
+    account: ["您在昭梧的报告与测验会保存在这台设备中。如需管理或同步，请前往账户页面。", "前往账户"],
+    login: ["我的报告会保存在这台设备。点击即可登录或管理个人账户。", "前往登录"],
     home: ["请先填写出生资料，昭梧会直接生成一份完整综合报告。", "返回首页"],
   },
   en: {
     analysis: ["Enter your birth details and Zhaowu will combine its internal specialist readings into one complete report.", "Start full analysis"],
     history: ["Your previously saved reports are in My reports.", "Open my reports"],
-    account: ["All uploaded reports are in the owner report archive.", "Open all reports"],
-    login: ["My reports are saved on this device. Owner sign-in opens full readings and all uploaded reports.", "Sign in"],
+    account: ["Your reports and tests are saved on this device. Go to Account to manage your records.", "Go to account"],
+    login: ["My reports are saved on this device. Sign in to manage your account.", "Sign in"],
     home: ["Enter your birth details to receive one complete integrated report.", "Go home"],
   },
 };

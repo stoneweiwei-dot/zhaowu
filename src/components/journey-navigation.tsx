@@ -1,10 +1,8 @@
 import { useRouterState } from "@tanstack/react-router";
-import { useAuthState } from "@/lib/auth/provider";
 import { useI18n } from "@/lib/i18n";
 import "@/journey-navigation.css";
 
 export function JourneyNavigation() {
-  const { user } = useAuthState();
   const { locale } = useI18n();
   const path = useRouterState({ select: s => s.location.pathname });
   const en = locale === "en", hans = locale === "zh-Hans";
@@ -12,7 +10,6 @@ export function JourneyNavigation() {
     { href: "/", label: en ? "Home" : hans ? "首页" : "首頁" },
     { href: "/#birth-form", label: en ? "Create report" : hans ? "开始排盘" : "開始排盤" },
     { href: "/history", label: en ? "My reports" : hans ? "我的报告" : "我的報告" },
-    ...(user?.isOwner ? [{ href: "/account", label: en ? "All reports" : hans ? "所有人报告" : "所有人報告" }] : []),
   ];
   const systems = [
     ["/ziwei", "紫微斗數", "紫微斗数", "Zi Wei"],

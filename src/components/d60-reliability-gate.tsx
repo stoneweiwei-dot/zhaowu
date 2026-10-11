@@ -33,7 +33,7 @@ const COPY = {
     edit: "回首頁修改出生時間",
     checking: "正在檢查這個出生分鐘前後 ±2 分鐘是否會改變 D60 上升細分…",
     withheldTitle: "D60｜不作判定",
-    unstable: "前後 ±2 分鐘已足以改變 D60 上升細分。依昭梧的時間可靠度檢查，本次 D60 不作判定；不用 D60 反向考時。",
+    unstable: "前後 ±2 分鐘會改變 D60 上升細分，所以下面的 D60 分析只作弱旁證，不作定論；也不用 D60 反向考時。",
     error: "D60 穩定性檢查暫時無法完成，因此本次不作判定；其他分析不受影響。",
   },
   "zh-Hans": {
@@ -46,7 +46,7 @@ const COPY = {
     edit: "回首页修改出生时间",
     checking: "正在检查这个出生分钟前后 ±2 分钟是否会改变 D60 上升细分…",
     withheldTitle: "D60｜不作判断",
-    unstable: "前后 ±2 分钟已经足以改变 D60 上升细分。依昭梧的时间可靠度检查，本次 D60 不作判断；不用 D60 反向考时。",
+    unstable: "前后 ±2 分钟会改变 D60 上升细分，所以下面的 D60 分析只作弱旁证，不作定论；也不用 D60 反向考时。",
     error: "D60 稳定性检查暂时无法完成，因此本次不作判断；其他分析不受影响。",
   },
   en: {
@@ -59,7 +59,7 @@ const COPY = {
     edit: "Edit birth time on the homepage",
     checking: "Checking whether moving the recorded time by ±2 minutes changes the D60 rising subdivision…",
     withheldTitle: "D60 · WITHHELD",
-    unstable: "A ±2-minute change alters the D60 rising subdivision. Under Zhaowu's time-reliability check, D60 is withheld and is not used to rectify the birth time.",
+    unstable: "A ±2-minute change alters the D60 rising subdivision, so the D60 reading below is weak supporting context only, not a conclusion, and is not used to rectify the birth time.",
     error: "The D60 stability check could not be completed, so D60 is withheld. Other readings are unaffected.",
   },
 } as const satisfies Record<Locale, Record<string, string>>;
@@ -219,15 +219,22 @@ export function D60ReliabilityGate({ reportBirth, depth = "full" }: { reportBirt
     return <p className="rounded-xl border border-line/70 bg-paper/70 px-4 py-4 text-sm leading-7 text-ink-soft" data-d60-stability-check>{copy.checking}</p>;
   }
 
-  if (state === "unstable" || state === "error") {
+  if (state === "error") {
     return (
       <article className="rounded-2xl border border-cinnabar/25 bg-cinnabar/5 p-5" data-d60-withheld>
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-cinnabar">D60 · RELIABILITY</p>
         <h3 className="mt-1 font-display text-xl font-semibold text-ink">{copy.withheldTitle}</h3>
-        <p className="mt-3 text-sm leading-7 text-ink-soft">{state === "unstable" ? copy.unstable : copy.error}</p>
+        <p className="mt-3 text-sm leading-7 text-ink-soft">{copy.error}</p>
       </article>
     );
   }
 
-  return <D60KarmaSection variant="standalone" reportBirth={reportBirth} depth={depth} />;
+  return (
+    <>
+      {state === "unstable" ? (
+        <p className="mb-3 rounded-xl border border-cinnabar/25 bg-cinnabar/5 px-4 py-3 text-sm leading-7 text-ink-soft" data-d60-weak-evidence>{copy.unstable}</p>
+      ) : null}
+      <D60KarmaSection variant="standalone" reportBirth={reportBirth} depth={depth} />
+    </>
+  );
 }
