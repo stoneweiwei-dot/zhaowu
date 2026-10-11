@@ -69,13 +69,17 @@ test("result view enforces 3-part free report boundary and embeds paid destiny b
 
   // 2026-10-10 business decision: the quick tier is no longer sold — it is
   // a standing new-user welcome gift, so it has no purchase button and no
-  // price card. Only system/bundle remain purchasable.
+  // price card. 2026-10-11 owner decision: the home result sells only the
+  // BaZi book; the 全六盤 bundle option is removed from the home page, and a
+  // server-verified owner session sees a free-access note instead of buttons.
   assert.match(resultView, /新用戶的福利|新用户的福利|New-user welcome gift/);
   assert.doesNotMatch(resultView, /handleUnlock\("quick"\)/);
   assert.match(resultView, /REPORT_ACCESS_PRODUCTS\.system\.price/);
-  assert.match(resultView, /REPORT_ACCESS_PRODUCTS\.bundle\.price/);
+  assert.doesNotMatch(resultView, /REPORT_ACCESS_PRODUCTS\.bundle\.price/);
   assert.match(resultView, /handleUnlock\("system"\)/);
-  assert.match(resultView, /handleUnlock\("bundle"\)/);
+  assert.doesNotMatch(resultView, /handleUnlock\("bundle"\)/);
+  assert.doesNotMatch(resultView, /全六盤典藏|6 Systems Bundle/);
+  assert.match(resultView, /data-owner-free-access/);
 
   // Free/paid boundary description
   assert.match(resultView, /十年大運|十年大运/);

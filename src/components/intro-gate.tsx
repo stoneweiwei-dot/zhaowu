@@ -14,6 +14,10 @@ import {
 } from "@/lib/intro-gate-policy";
 import { fetchIntroVisualOverride } from "@/lib/intro-visual-source";
 import { readBrandTheme } from "@/lib/brand-theme";
+import "@/intro-replay.css";
+
+/** Home "重播開場影片" button → re-mounts the opening gate even inside the 7-day skip window. */
+export const INTRO_REPLAY_EVENT = "zhaowu:intro-replay";
 
 // How long we wait for the owner's custom "開場影片" pick (set from the
 // /gallery admin panel) before falling back. Must not be shorter than the
@@ -75,11 +79,38 @@ function introStorage(): Pick<Storage, "getItem" | "setItem"> {
 }
 
 export function IntroGate() {
+  const [run, setRun] = useState(0);
+  useEffect(() => {
+    const replay = () => setRun((n) => n + 1);
+    window.addEventListener(INTRO_REPLAY_EVENT, replay);
+    return () => window.removeEventListener(INTRO_REPLAY_EVENT, replay);
+  }, []);
+  return <IntroGateScreen key={run} force={run > 0} />;
+}
+
+export function IntroReplayButton() {
+  const { locale } = useI18n();
+  const label = locale === "en" ? "Replay the opening film" : locale === "zh-Hans" ? "重播开场影片" : "重播開場影片";
+  return (
+    <button
+      type="button"
+      className="zw-intro-replay"
+      data-intro-replay
+      aria-label={label}
+      onClick={() => window.dispatchEvent(new Event(INTRO_REPLAY_EVENT))}
+    >
+      <span className="zw-intro-replay__icon" aria-hidden>▶</span>
+      <span>{locale === "en" ? "Replay intro" : label}</span>
+    </button>
+  );
+}
+
+function IntroGateScreen({ force }: { force: boolean }) {
   const { locale } = useI18n();
   const soundLabelFor = (on: boolean) =>
     locale === "en" ? (on ? "Mute sound" : "Play sound") : locale === "zh-Hans" ? (on ? "关闭声音" : "开启声音") : (on ? "關閉聲音" : "開啟聲音");
   const [phase, setPhase] = useState<"in" | "leaving" | "off">(() =>
-    typeof window !== "undefined" && shouldSkipIntroGate(introStorage(), Boolean(navigator.webdriver)) ? "off" : "in",
+    !force && typeof window !== "undefined" && shouldSkipIntroGate(introStorage(), Boolean(navigator.webdriver)) ? "off" : "in",
   );
   const [minimumDone, setMinimumDone] = useState(false);
   const [visualDone, setVisualDone] = useState(false);
@@ -154,7 +185,7 @@ export function IntroGate() {
   }, [resolvedVideoSrc]);
 
   useEffect(() => {
-    if (shouldSkipIntroGate(introStorage(), Boolean(navigator.webdriver))) {
+    if (!force && shouldSkipIntroGate(introStorage(), Boolean(navigator.webdriver))) {
       finishedRef.current = true;
       setPhase("off");
       return;
@@ -180,7 +211,7 @@ export function IntroGate() {
         exitTimerRef.current = null;
       }
     };
-  }, [forceOff]);
+  }, [forceOff, force]);
 
   useEffect(() => {
     if (isForcedBrokenIntro()) {

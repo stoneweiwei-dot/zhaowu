@@ -45,6 +45,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageReferenceAssetId, setImageReferenceAssetId] = useState<string | null>(null);
   const [accessLevel, setAccessLevel] = useState<ReportAccessLevel>("none");
+  const [ownerAccess, setOwnerAccess] = useState(false);
   const [purchasing, setPurchasing] = useState<ReportAccessProduct | null>(null);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
   const consent = usePurchaseConsent();
@@ -52,7 +53,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   useEffect(() => {
     let active = true;
     void resolveReportAccess("bazi").then((acc) => {
-      if (active) setAccessLevel(acc.level);
+      if (!active) return;
+      setAccessLevel(acc.level);
+      setOwnerAccess(Boolean(acc.owner));
     });
     return () => { active = false; };
   }, []);
@@ -323,8 +326,14 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </span>
         </div>
 
-        {/* 價格階梯卡片 */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 my-4">
+        {/* 價格卡：站主 2026-10-11 決定首頁只賣八字命書；六盤合購方案不在首頁出現（六盤頁面各自有入口）。
+            站主登入（伺服器驗證的 owner session）一律免費，不顯示購買按鈕。 */}
+        {ownerAccess ? (
+          <p className="my-4 rounded-lg border border-wood/30 bg-wood/5 p-3 text-center text-xs leading-5 text-ink-soft" data-owner-free-access>
+            {locale === "en" ? "Owner signed in: every reading is free — nothing to buy." : locale === "zh-Hans" ? "站主已登入：全部内容免费阅读，无需购买。" : "站主已登入：全部內容免費閱讀，無需購買。"}
+          </p>
+        ) : (
+        <div className="mx-auto my-4 grid max-w-sm grid-cols-1 gap-3">
           <div className="flex flex-col justify-between rounded-lg border-2 border-cinnabar/80 bg-cinnabar/5 p-4 text-center relative shadow-sm">
             <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-cinnabar px-2 py-0.5 text-[10px] text-cream font-medium">
               {locale === "en" ? "Recommended" : locale === "zh-Hans" ? toSimplifiedCustomerText("推薦深批") : "推薦深批"}
@@ -344,22 +353,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             </button>
           </div>
 
-          <div className="flex flex-col justify-between rounded-lg border border-line/70 bg-cream p-4 text-center">
-            <div>
-              <strong className="block text-sm text-ink">{locale === "en" ? "6 Systems Bundle" : locale === "zh-Hans" ? toSimplifiedCustomerText("全六盤典藏") : "全六盤典藏"}</strong>
-              <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.bundle.price}</span>
-              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Six specialist systems and full profiles (BaZi sold separately)" : locale === "zh-Hans" ? toSimplifiedCustomerText("六個專門系統完整深讀（不含本頁八字命書）") : "六個專門系統完整深讀（不含本頁八字命書）"}</p>
-            </div>
-            <button
-              type="button"
-              disabled={purchasing !== null}
-              onClick={() => void handleUnlock("bundle")}
-              className="mt-3 w-full rounded-full border border-line py-2 text-xs font-medium text-ink hover:bg-paper-clean disabled:opacity-60"
-            >
-              {purchasing === "bundle" ? "…" : (locale === "en" ? `Unlock ${REPORT_ACCESS_PRODUCTS.bundle.price}` : `解鎖 ${REPORT_ACCESS_PRODUCTS.bundle.price}`)}
-            </button>
-          </div>
         </div>
+        )}
 
         <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} />
 
