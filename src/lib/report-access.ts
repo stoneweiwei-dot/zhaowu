@@ -1,4 +1,5 @@
 import { readOwnerSession } from "@/lib/auth/owner-api";
+import { hasPurchaseConsent } from "@/lib/purchase-consent";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 
 export type ReportSystemId = "bazi" | "ziwei" | "qizheng" | "western" | "indian" | "palm" | "numerology";
@@ -169,6 +170,8 @@ export async function resolveReportAccess(system: ReportSystemId) {
 }
 
 export async function startReportCheckout(product: ReportAccessProduct, system: ReportSystemId, reportId?: string) {
+  // Every purchase entry point must collect the Terms/Privacy consent first (PurchaseConsent).
+  if (!hasPurchaseConsent()) throw new Error("CONSENT_REQUIRED");
   const accessKey = reportAccessKey();
   if (!accessKey) throw new Error("ACCESS_KEY_UNAVAILABLE");
   const link = PAYMENT_LINKS[system]?.[product];
