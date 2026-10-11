@@ -15,6 +15,6 @@ test("every place that collects birth details shows the third-party notice", asy
   assert.match(palm, /<BirthDataNotice locale=\{locale\} variant="birth" \/>/);
   assert.ok(form.indexOf('variant="birth"') < form.indexOf('id: "birth-year"'), "notice comes before the date fields");
   assert.match(notice, /href="\/privacy"/);
-  for (const lang of ["zh-Hant", "zh-Hans", "en"]) assert.match(notice, new RegExp(`"?${lang}"?: \\{`));
+  for (const lang of ["zh-Hant", "zh-Hans", "en"]) assert.match(notice, new RegExp(`"?${lang}"?: "`));
   assert.doesNotMatch(notice, /disabled|required|onChange/, "the notice is a reminder and must not block entry");
 });
