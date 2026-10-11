@@ -1,0 +1,72 @@
+/* Legal pages (/privacy, /terms, /copyright). Reuses the .zhaowu-updates-* surface; only list/section rhythm is added here. */
+.zhaowu-legal-page .zhaowu-legal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.zhaowu-legal-page .zhaowu-legal-nav a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--zw-jade);
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.zhaowu-legal-page .zhaowu-legal-nav a[aria-current="page"] {
+  font-weight: 700;
+  text-decoration: none;
+}
+.zhaowu-legal-page .zhaowu-legal-meta {
+  margin: 14px 0 0;
+  color: var(--zw-ink-mute, rgba(32, 28, 20, .62));
+  font-size: 13px;
+}
+.zhaowu-legal-page .zhaowu-updates-card h2 {
+  margin: 0 0 10px;
+  color: var(--zw-ink);
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: clamp(18px, 4.4vw, 21px);
+  font-weight: 600;
+  line-height: 1.4;
+}
+.zhaowu-legal-page .zhaowu-updates-card p {
+  margin: 10px 0 0;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.zhaowu-legal-page .zhaowu-updates-card ul {
+  margin: 10px 0 0;
+  padding-left: 1.25em;
+  line-height: 1.85;
+}
+.zhaowu-legal-page .zhaowu-updates-card li + li {
+  margin-top: 6px;
+}
+.zhaowu-legal-page .zhaowu-updates-card a {
+  color: var(--zw-jade);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.zhaowu-site-footer .zhaowu-footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 14px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+}
+.zhaowu-site-footer .zhaowu-footer-legal a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--zw-ink-mute, rgba(32, 28, 20, .62));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

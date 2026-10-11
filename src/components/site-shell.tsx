@@ -21,6 +21,7 @@ import { resolveReportAccess } from "@/lib/report-access";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
 import { hydrateSkin } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
+import "@/legal-pages.css";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -313,7 +314,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <span>{viewsTotalLabel} <b>{stats.totalVisits.toLocaleString(numberLocale)}</b></span>
           </p>
         ) : null}
+        <ul className="zhaowu-footer-legal" aria-label={displayText(language, "法律資訊", "法律信息", "Legal", "法的情報", "법적 고지", "कानूनी")}>
+          <li><Link to="/privacy">{displayText(language, "隱私權政策", "隐私权政策", "Privacy", "プライバシー", "개인정보", "गोपनीयता")}</Link></li>
+          <li><Link to="/terms">{displayText(language, "服務條款", "服务条款", "Terms", "利用規約", "이용약관", "शर्तें")}</Link></li>
+          <li><Link to="/copyright">{displayText(language, "版權聲明", "版权声明", "Copyright", "著作権", "저작권", "कॉपीराइट")}</Link></li>
+        </ul>
         <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
+        <p className="text-xs text-ink-mute">© 2026 {t("brand")} ZHAOWU</p>
       </footer> : null}
     </div>
   );
