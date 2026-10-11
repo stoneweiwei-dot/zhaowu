@@ -130,8 +130,8 @@ export function SongComicShareCard({ dayMaster, locale }: { dayMaster: string; l
   const [status, setStatus] = useState(copy.shareButton);
 
   const shareText = locale === "en"
-    ? `${stem} · ${profile.genre.en}\n${profile.title.en}\n${profile.move.en}\nZHAOWU`
-    : `${stem}｜${profile.genre[locale]}\n${profile.title[locale]}\n${profile.move[locale]}\n昭梧 ZHAOWU`;
+    ? `${stem} · ${profile.title.en}\n${profile.move.en}\nZHAOWU`
+    : `${stem}｜${profile.title[locale]}\n${profile.move[locale]}\n昭梧 ZHAOWU`;
 
   async function share() {
     try {
@@ -152,7 +152,7 @@ export function SongComicShareCard({ dayMaster, locale }: { dayMaster: string; l
     <footer className="zhaowu-song-comic-share is-editorial" data-song-comic-share>
       <div className="zhaowu-song-comic-share__copy">
         <p>{copy.share}</p>
-        <strong>{stem} · {profile.genre[locale]}</strong>
+        <strong>{stem} · {profile.title[locale]}</strong>
         <span>{profile.move[locale]}</span>
       </div>
       <button type="button" onClick={() => void share()}>{status}</button>
