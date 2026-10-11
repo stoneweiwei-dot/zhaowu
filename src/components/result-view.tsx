@@ -49,7 +49,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
   useEffect(() => {
     let active = true;
-    void resolveReportAccess("ziwei").then((acc) => {
+    void resolveReportAccess("bazi").then((acc) => {
       if (active) setAccessLevel(acc.level);
     });
     return () => { active = false; };
@@ -59,7 +59,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setPurchasing(product);
     setPurchaseError(null);
     try {
-      await startReportCheckout(product, "ziwei");
+      await startReportCheckout(product, product === "bundle" ? "ziwei" : "bazi", result.id);
     } catch {
       setPurchaseError(locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : locale === "zh-Hans" ? toSimplifiedCustomerText("付款通道尚未啟用；價格與免費／付費邊界已經固定。") : "付款通道尚未啟用；價格與免費／付費邊界已經固定。");
       setPurchasing(null);
@@ -127,6 +127,11 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   }, [result.id, session?.access_token, user?.id]);
 
   async function ensureFullReport() {
+    // The three free sections may be saved, but full paid text must never be
+    // requested or persisted before a server-verified purchase or owner access.
+    if (accessLevel !== "system" && accessLevel !== "bundle") {
+      return renderFocusedReportText(petDecision?.sections ?? composeFocusedReport(result), result.locale ?? locale);
+    }
     if (fullReport) return fullReport;
     if (petDecision) {
       const text = renderFocusedReportText(petDecision.sections, result.locale ?? locale);
@@ -155,6 +160,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setMsg(null);
     const sections = petDecision?.sections ?? composeFocusedReport(result);
     setReportSections(sections);
+    if (accessLevel !== "system" && accessLevel !== "bundle") {
+      setBusy(null); // Free preview is built locally; no paid full-report request.
+      return;
+    }
     try {
       const text = await ensureFullReport();
       if (session && user) {
@@ -291,7 +300,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </li>
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
-            <span>{locale === "en" ? "Multi-System Star Chart Synthesis (Ziwei & Qi Zheng overlay)" : locale === "zh-Hans" ? toSimplifiedCustomerText("跨流派星象合參（紫微斗數命盤、七政四餘合照）") : "跨流派星象合參（紫微斗數命盤、七政四餘合照）"}</span>
+            <span>{locale === "en" ? "BaZi luck-cycle and chart-pattern evidence" : locale === "zh-Hans" ? toSimplifiedCustomerText("八字大運、流年與格局依據的交叉解讀") : "八字大運、流年與格局依據的交叉解讀"}</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
@@ -318,9 +327,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
               {locale === "en" ? "Recommended" : locale === "zh-Hans" ? toSimplifiedCustomerText("推薦深批") : "推薦深批"}
             </span>
             <div>
-              <strong className="block text-sm text-ink">{locale === "en" ? "Zi Wei Full Reading" : locale === "zh-Hans" ? "紫微斗数完整深批" : "紫微斗數完整深批"}</strong>
+              <strong className="block text-sm text-ink">{locale === "en" ? "BaZi Full Reading" : locale === "zh-Hans" ? "八字命书完整深批" : "八字命書完整深批"}</strong>
               <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.system.price}</span>
-              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Full Zi Wei interpretation, every section & personal profile" : locale === "zh-Hans" ? "紫微斗数完整解读、全部段落与个人命格专页" : "紫微斗數完整解讀、全部段落與個人命格專頁"}</p>
+              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Full BaZi reading, luck cycles and monthly guidance" : locale === "zh-Hans" ? "八字命书完整解读、大运流年与流月指引" : "八字命書完整解讀、大運流年與流月指引"}</p>
             </div>
             <button
               type="button"
@@ -336,7 +345,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             <div>
               <strong className="block text-sm text-ink">{locale === "en" ? "6 Systems Bundle" : locale === "zh-Hans" ? toSimplifiedCustomerText("全六盤典藏") : "全六盤典藏"}</strong>
               <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.bundle.price}</span>
-              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "All six astrology systems & full profile" : locale === "zh-Hans" ? toSimplifiedCustomerText("六大術數流派合參與完整專頁") : "六大術數流派合參與完整專頁"}</p>
+              <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Six specialist systems and full profiles (BaZi sold separately)" : locale === "zh-Hans" ? toSimplifiedCustomerText("六個專門系統完整深讀（不含本頁八字命書）") : "六個專門系統完整深讀（不含本頁八字命書）"}</p>
             </div>
             <button
               type="button"
@@ -361,7 +370,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             onClick={() => void onFull()}
             className="text-xs text-cinnabar underline hover:opacity-80"
           >
-            {reportSections ? (locale === "en" ? "Re-generate reading" : locale === "zh-Hans" ? toSimplifiedCustomerText("重新排布報告") : "重新排布報告") : (locale === "en" ? "Preview full reading" : locale === "zh-Hans" ? toSimplifiedCustomerText("預覽深批內容") : "預覽深批內容")}
+            {reportSections ? (locale === "en" ? "Re-generate reading" : locale === "zh-Hans" ? toSimplifiedCustomerText("重新排布報告") : "重新排布報告") : (locale === "en" ? (accessLevel === "system" || accessLevel === "bundle" ? "View full reading" : "View free 3-part summary") : locale === "zh-Hans" ? toSimplifiedCustomerText(accessLevel === "system" || accessLevel === "bundle" ? "查看完整深批" : "查看免費三段摘要") : (accessLevel === "system" || accessLevel === "bundle" ? "查看完整深批" : "查看免費三段摘要"))}
           </button>
         </div>
       </section>

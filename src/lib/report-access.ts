@@ -1,7 +1,7 @@
 import { readOwnerSession } from "@/lib/auth/owner-api";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 
-export type ReportSystemId = "ziwei" | "qizheng" | "western" | "indian" | "palm" | "numerology";
+export type ReportSystemId = "bazi" | "ziwei" | "qizheng" | "western" | "indian" | "palm" | "numerology";
 export type ReportAccessProduct = "quick" | "system" | "bundle";
 export type ReportAccessLevel = "none" | "quick" | "system" | "bundle";
 
@@ -10,20 +10,13 @@ export type ReportAccessLevel = "none" | "quick" | "system" | "bundle";
 // carries no price and no longer renders as a purchasable card in
 // ReportAccessGate. `system`/`bundle` are the only two tiers still sold.
 //
-// NOTE ON system/bundle PRICES: the business decision is to reprice these
-// to $9.9 / $19.99, but the strings below are DISPLAY labels only — the
-// amount actually charged is fixed by the Stripe Price object behind each
-// hardcoded buy.stripe.com Payment Link in PAYMENT_LINKS, not by this file.
-// Changing these strings without changing the real Stripe-side price would
-// make the button say one amount and Stripe charge another, which is worse
-// than the current prices. They are left at their current, Stripe-accurate
-// values until new Payment Links (or Stripe dashboard access) make $9.90 /
-// $19.99 the real charged amount. See the BLOCKED BY note reported
-// alongside this change.
+// Live Stripe Payment Links currently charge USD 4.99 per system and USD 9.99
+// for the six specialist systems bundle. Keep displayed currency explicit.
+// Changing labels alone never changes the charged Stripe amounts.
 export const REPORT_ACCESS_PRODUCTS = {
   quick: { amountCents: 0, price: "$0" },
-  system: { amountCents: 499, price: "$4.99" },
-  bundle: { amountCents: 999, price: "$9.99" },
+  system: { amountCents: 499, price: "US$4.99" },
+  bundle: { amountCents: 999, price: "US$9.99" },
 } as const;
 
 const ACCESS_KEY_STORAGE = "zhaowu.report-access-key.v1";
@@ -31,6 +24,11 @@ const SESSION_STORAGE = "zhaowu.report-access-sessions.v1";
 const ACCESS_ENDPOINT = `${SUPABASE_URL}/functions/v1/stripe-checkout`;
 
 const PAYMENT_LINKS: Record<ReportSystemId, Record<ReportAccessProduct, string>> = {
+  bazi: {
+    quick: "", // Always free: never sell the quick tier.
+    system: "https://buy.stripe.com/8x2eVda51eHD7Sb4142sM0l", // Activate only after webhook deployment.
+    bundle: "", // Six-system bundle is NOT a BaZi purchase.
+  },
   ziwei: {
     quick: "https://buy.stripe.com/8x2bJ16SPgPL1tN8hk2sM03",
     system: "https://buy.stripe.com/14A5kDelh42ZgoH69c2sM04",
@@ -134,7 +132,7 @@ async function verifySession(sessionId: string, accessKey: string): Promise<Veri
 
 function levelFor(verification: Verification, system: ReportSystemId): ReportAccessLevel {
   if (!verification.paid || !verification.product) return "none";
-  if (verification.product === "bundle") return "bundle";
+  if (verification.product === "bundle") return system === "bazi" ? "none" : "bundle";
   if (verification.system !== system) return "none";
   return verification.product;
 }
@@ -170,11 +168,17 @@ export async function resolveReportAccess(system: ReportSystemId) {
   return { level, pending, owner: false };
 }
 
-export async function startReportCheckout(product: ReportAccessProduct, system: ReportSystemId) {
+export async function startReportCheckout(product: ReportAccessProduct, system: ReportSystemId, reportId?: string) {
   const accessKey = reportAccessKey();
   if (!accessKey) throw new Error("ACCESS_KEY_UNAVAILABLE");
   const link = PAYMENT_LINKS[system]?.[product];
   if (!link) throw new Error("PAYMENT_LINK_MISSING");
+  // Preserve the already-saved BaZi result across the Stripe round trip.
+  // A session ID/URL/localStorage marker is NOT an entitlement: the server
+  // still verifies the paid Stripe session before showing gated content.
+  if (system === "bazi" && product === "system" && /^[0-9a-f-]{36}$/i.test(reportId || "")) {
+    try { localStorage.setItem("zhaowu.pending-bazi-report.v1", reportId!); } catch { /* Recovery remains available in My reports. */ }
+  }
   const url = new URL(link);
   url.searchParams.set("client_reference_id", accessKey);
   window.location.assign(url.toString());

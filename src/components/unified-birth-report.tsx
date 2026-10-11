@@ -364,9 +364,12 @@ export function UnifiedBirthReport({ birth, locale, foundation, plainLead = NO_P
   );
 }
 
-type SpecialistEntry = { id: ReportSystemId; route: string; title: string; headline: string; lead?: string; warning?: string; sections: { title: string; lines: string[] }[] };
+// The hub lists the six specialist systems only; BaZi is sold and unlocked separately.
+type SpecialistSystemId = Exclude<ReportSystemId, "bazi">;
 
-const SPECIALIST_ROUTES: Record<ReportSystemId, string> = {
+type SpecialistEntry = { id: SpecialistSystemId; route: string; title: string; headline: string; lead?: string; warning?: string; sections: { title: string; lines: string[] }[] };
+
+const SPECIALIST_ROUTES: Record<SpecialistSystemId, string> = {
   ziwei: "/ziwei",
   qizheng: "/qizheng",
   western: "/astrology",
@@ -375,7 +378,7 @@ const SPECIALIST_ROUTES: Record<ReportSystemId, string> = {
   numerology: "/numerology",
 };
 
-function fromReading(id: ReportSystemId, reading: SpecialistReading, locale: Locale): SpecialistEntry {
+function fromReading(id: SpecialistSystemId, reading: SpecialistReading, locale: Locale): SpecialistEntry {
   return {
     id,
     route: SPECIALIST_ROUTES[id],
@@ -410,7 +413,7 @@ function SpecialistHub({ birth, locale, copy }: { birth: SharedBirthRecord; loca
     ];
   }, [birth, copy.numerology, locale]);
 
-  const labels: Partial<Record<ReportSystemId, string>> = {
+  const labels: Partial<Record<SpecialistSystemId, string>> = {
     indian: copy.karmaBadge,
     palm: locale === "en" ? "One-Palm" : locale === "zh-Hans" ? "一掌经" : "一掌經",
   };

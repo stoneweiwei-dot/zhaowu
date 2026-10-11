@@ -17,6 +17,7 @@ import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { IntroGate } from "@/components/intro-gate";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
+import { resolveReportAccess } from "@/lib/report-access";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
 import { hydrateSkin } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
@@ -95,6 +96,28 @@ export function SiteShell({ children }: { children: ReactNode }) {
       window.removeEventListener("zhaowu-background-change", onBackgroundChange);
     };
   }, [isLogin]);
+
+  // One-time BaZi checkout return. Stripe redirects to the canonical homepage;
+  // restore the original local report and verify the paid entitlement server-side.
+  useEffect(() => {
+    if (pathname !== "/") return;
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id") || "";
+    if (params.get("checkout") !== "success" || !/^cs_live_[A-Za-z0-9]{10,200}$/.test(sessionId)) return;
+    let reportId = "";
+    try {
+      reportId = localStorage.getItem("zhaowu.pending-bazi-report.v1") || "";
+      localStorage.removeItem("zhaowu.pending-bazi-report.v1");
+    } catch { reportId = ""; }
+    if (/^[0-9a-f-]{36}$/i.test(reportId)) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("report", reportId);
+      url.hash = "report";
+      window.location.replace(url.toString());
+      return;
+    }
+    void resolveReportAccess("bazi").catch(() => undefined);
+  }, [pathname]);
 
   const shellStyle = wallpaperUrl
     ? ({ ["--zhaowu-shell-wallpaper" as string]: `url(${JSON.stringify(wallpaperUrl)})` } as CSSProperties)
