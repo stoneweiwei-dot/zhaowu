@@ -1,3 +1,4 @@
+import { BirthDataNotice } from "@/components/birth-data-notice";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { analyzeLife } from "@/lib/actions";
 import type { AnalyzeInput, CityHit } from "@/lib/bazi/types";
@@ -375,6 +376,7 @@ export function AnalysisForm() {
         ) : (
           <div className="zhaowu-birth-fields">
             <p className="zhaowu-birth-fields-title">{copy.birthData}</p>
+            <BirthDataNotice locale={locale} variant="birth" />
             <div className="zhaowu-time-calibration-note" data-auto-time-calibration="true">
               <strong>{copy.calibrationTitle}</strong>
               <span>{copy.calibrationBody}</span>
@@ -528,6 +530,7 @@ export function AnalysisForm() {
             placeholder={copy.questionPlaceholder}
             onChange={(event) => setQuestion(event.target.value)}
           />
+          <BirthDataNotice locale={locale} variant="question" />
           <div className="zhaowu-question-meta">
             <span>{rememberedRecord ? formatSharedBirthRecord(rememberedRecord, locale) : ""}</span>
             <span>{question.length}/400</span>

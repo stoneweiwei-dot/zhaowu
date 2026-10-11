@@ -5,6 +5,7 @@ import type { AnalysisResult } from "@/lib/bazi/types";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
+import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { CharacterPanel } from "@/components/character-panel";
 import { BaziChart } from "@/components/bazi-chart";
@@ -47,6 +48,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [ownerAccess, setOwnerAccess] = useState(false);
   const [purchasing, setPurchasing] = useState<ReportAccessProduct | null>(null);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  const consent = usePurchaseConsent();
 
   useEffect(() => {
     let active = true;
@@ -59,6 +61,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   }, []);
 
   async function handleUnlock(product: ReportAccessProduct) {
+    if (!consent.require()) return;
     setPurchasing(product);
     setPurchaseError(null);
     try {
@@ -352,6 +355,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
         </div>
         )}
+
+        <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} />
 
         {purchaseError ? (
           <p className="mt-2 text-xs text-cinnabar" role="alert">{purchaseError}</p>

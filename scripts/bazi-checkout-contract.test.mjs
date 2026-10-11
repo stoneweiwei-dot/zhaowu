@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { resolveReportAccess, startReportCheckout } from "../src/lib/report-access.ts";
+import { clearPurchaseConsent, recordPurchaseConsent } from "../src/lib/purchase-consent.ts";
 
 const load = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const [client, resultView, webhook, shell] = await Promise.all([
@@ -63,6 +64,7 @@ test("BaZi checkout preserves report ID and passes only opaque reference to Stri
   const browser = browserFixture({ product: "system", system: "bazi" });
   try {
     const id = "11111111-1111-4111-8111-111111111111";
+    recordPurchaseConsent();
     await startReportCheckout("system", "bazi", id);
     const checkoutUrl = new URL(browser.redirected());
     assert.equal(checkoutUrl.origin, "https://buy.stripe.com");
@@ -70,7 +72,7 @@ test("BaZi checkout preserves report ID and passes only opaque reference to Stri
     assert.equal(browser.data.get("zhaowu.pending-bazi-report.v1"), id);
     assert.ok(browser.redirected().includes("8x2eVda51eHD7Sb4142sM0l"));
     await assert.rejects(startReportCheckout("bundle", "bazi"), /PAYMENT_LINK_MISSING/);
-  } finally { browser.restore(); }
+  } finally { clearPurchaseConsent(); browser.restore(); }
 });
 
 test("USD prices and webhook entitlement agree with new Stripe link", () => {

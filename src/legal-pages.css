@@ -1,0 +1,141 @@
+/* Legal pages (/privacy, /terms, /copyright). Reuses the .zhaowu-updates-* surface; only list/section rhythm is added here. */
+.zhaowu-legal-page .zhaowu-legal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.zhaowu-legal-page .zhaowu-legal-nav a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--zw-jade);
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.zhaowu-legal-page .zhaowu-legal-nav a[aria-current="page"] {
+  font-weight: 700;
+  text-decoration: none;
+}
+.zhaowu-legal-page .zhaowu-legal-meta {
+  margin: 14px 0 0;
+  color: var(--zw-ink-mute, rgba(32, 28, 20, .62));
+  font-size: 13px;
+}
+.zhaowu-legal-page .zhaowu-updates-card h2 {
+  margin: 0 0 10px;
+  color: var(--zw-ink);
+  font-family: var(--font-display, "Songti TC", serif);
+  font-size: clamp(18px, 4.4vw, 21px);
+  font-weight: 600;
+  line-height: 1.4;
+}
+.zhaowu-legal-page .zhaowu-updates-card p {
+  margin: 10px 0 0;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.zhaowu-legal-page .zhaowu-updates-card ul {
+  margin: 10px 0 0;
+  padding-left: 1.25em;
+  line-height: 1.85;
+}
+.zhaowu-legal-page .zhaowu-updates-card li + li {
+  margin-top: 6px;
+}
+.zhaowu-legal-page .zhaowu-updates-card a {
+  color: var(--zw-jade);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.zhaowu-site-footer .zhaowu-footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 14px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+}
+.zhaowu-site-footer .zhaowu-footer-legal a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--zw-ink-mute, rgba(32, 28, 20, .62));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Pre-payment consent (checkbox before any Stripe redirect). */
+.zhaowu-purchase-consent {
+  margin: 14px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--zw-ink, #2a2218);
+  text-align: left;
+}
+.zhaowu-purchase-consent label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.zhaowu-purchase-consent input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  accent-color: var(--zw-jade, #294b3f);
+}
+.zhaowu-purchase-consent a {
+  color: var(--zw-jade, #294b3f);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.zhaowu-purchase-consent small {
+  display: block;
+  margin: 2px 0 0 32px;
+  color: var(--zw-muted, #74695d);
+  font-size: 12px;
+}
+.zhaowu-purchase-consent p {
+  margin: 8px 0 0 32px;
+  border-left: 2px solid rgba(169, 97, 94, .7);
+  padding-left: 10px;
+  color: #7c3733;
+  font-size: 13px;
+}
+.zhaowu-purchase-consent[data-needed="true"] input[type="checkbox"] { outline: 2px solid rgba(169, 97, 94, .8); outline-offset: 2px; }
+
+/* Reminder shown beside birth-data / question inputs (not a blocking consent). */
+.zhaowu-data-notice {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 14px;
+  border-left: 2px solid rgba(169, 135, 72, .6);
+  padding: 10px 12px;
+  background: rgba(238, 233, 222, .52);
+  text-align: left;
+}
+.zhaowu-data-notice strong {
+  color: var(--zw-ink, #2a2218);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.zhaowu-data-notice span {
+  color: var(--zw-muted, #74695d);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.zhaowu-data-notice a {
+  color: var(--zw-jade, #294b3f);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

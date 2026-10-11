@@ -1,5 +1,11 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-11 品牌水印（站主指令）
+
+- ACTIVE：站主後台發布的圖片一律在發布動作時燒入「昭梧 ZHAOWU」水印並加上 `wm-baked` 標籤（`src/lib/brand-watermark.ts`，接在 `uploadGalleryAsset` 與 `uploadBackground`）；影片、舊素材與非燒入素材以顯示層疊加（`src/brand-watermark.css`，class `zhaowu-wm`／`zhaowu-wm-on`），不改動已存放的原檔；報告頁加極淡平鋪水印。已燒入的素材不得再疊加顯示層水印，避免雙重。
+- SUPERSEDES（僅此部分）：`AGENTS.md` §6「no invented or unwanted logos, marks or decorative overlays」中針對品牌水印的禁止；其餘禁止（任意新增 Logo、遮擋文字／按鈕的裝飾）仍有效。
+- BOUNDARY：網頁無法阻止系統截圖，水印是追溯與威懾，不是防截圖。影片不燒入（手機端 ffmpeg.wasm 不穩定且耗時），僅顯示層疊加。舊素材批次重製需備份與 service key，未執行。
+
 ## 2026-10-10 站主免費閱讀與報告入口
 
 - ACTIVE：站主由同源 HttpOnly cookie 經伺服器確認後，可免費閱讀本人與所有人的已保存完整報告。不得以 localStorage、URL、前端自填 role 授權。訪客的付款權限維持既有伺服器核驗。

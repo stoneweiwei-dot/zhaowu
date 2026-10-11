@@ -1,3 +1,4 @@
+import { isBakedWatermark } from "@/lib/brand-watermark";
 import { useEffect, useMemo, useState } from "react";
 import type { Chart } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
@@ -125,7 +126,7 @@ export function DecreeGalleryPreview({
           </>
         ) : heroSrc ? (
           <>
-            <figure className="zhaowu-decree-preview is-main">
+            <figure className="zhaowu-decree-preview is-main zhaowu-wm zhaowu-wm--top">
               <img
                 src={heroSrc}
                 alt={heroAlt}
@@ -136,7 +137,7 @@ export function DecreeGalleryPreview({
               <figcaption>{generatedImageUrl ? copy.generated : copy.matched}</figcaption>
             </figure>
             {secondary.map((match) => (
-              <figure key={match.asset.id} className="zhaowu-decree-preview">
+              <figure key={match.asset.id} className={`zhaowu-decree-preview ${isBakedWatermark(match.asset) ? "" : "zhaowu-wm zhaowu-wm--top"}`}>
                 <img src={match.imageUrl} alt={copy.alt} loading="lazy" decoding="async" />
               </figure>
             ))}

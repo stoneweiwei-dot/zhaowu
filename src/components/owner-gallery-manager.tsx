@@ -11,6 +11,7 @@ import {
 import { OWNER_GALLERY_GROUP_ORDER, isLoadingGalleryAsset, isOfficialSongGalleryAsset, matchesOwnerGalleryGroup, type OwnerGalleryGroup } from "@/lib/gallery-groups";
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 import { setBackgroundWallpaper, uploadBackground } from "@/lib/bridge/background-assets";
+import { isBakedWatermark } from "@/lib/brand-watermark";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -144,7 +145,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       if (!contentType.startsWith("image/")) throw new Error(tr(locale, "這個素材不是可用圖片。", "这个素材不是可用图片。", "This asset is not a usable image."));
       const ext = contentType.includes("jpeg") ? "jpg" : contentType.split("/")[1]?.replace(/[^a-z0-9]/gi, "") || "webp";
       const file = new File([blob], `homepage-${asset.asset_key || asset.id}.${ext}`, { type: contentType });
-      const background = await uploadBackground(session, file);
+      const background = await uploadBackground(session, file, undefined, { skipWatermark: isBakedWatermark(asset) });
       await setBackgroundWallpaper(session, background.id);
       window.dispatchEvent(new Event("zhaowu-background-change"));
       setMessage(copy.homeBackgroundSet);
