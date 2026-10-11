@@ -18,10 +18,13 @@ test("owner login APIs are self-contained JavaScript and stay off the SPA rewrit
   const session = await source("api/owner-session.js");
   const logout = await source("api/owner-logout.js");
   const vercel = JSON.parse(await source("vercel.json"));
-  assert.match(login, /OWNER_KEY_SHA256/);
+  const shared = await source("lib/owner-session-cookie.js");
+  assert.match(login, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
+  assert.match(shared, /OWNER_KEY_SHA256/);
   assert.match(login, /req\.body\?\.secret/);
   assert.match(session, /authenticated/);
-  assert.match(logout, /Max-Age=0/);
+  assert.match(logout, /ownerClearCookie\(\)/);
+  assert.match(shared, /Max-Age=0/);
   assert.doesNotMatch(login, /from ["']\.\.\/src\//);
   assert.equal(vercel.rewrites[0].source, "/api/gallery-ingest-finalize");
   assert.equal(vercel.rewrites.at(-1).source, "/((?!api/).*)");
