@@ -7,6 +7,7 @@ import { DeepReadingHeroCard } from "@/components/deep-reading-hero-card";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
 import { HomeSectionBoundary } from "@/components/home-section-boundary";
+import { IntroReplayButton } from "@/components/intro-gate";
 import { ResultView } from "@/components/result-view";
 import { useI18n } from "@/lib/i18n";
 import { readLocalReports } from "@/lib/local-report-history";
@@ -328,6 +329,7 @@ function Home() {
               </span>
               <span className="zw-birth-entry-arrow" aria-hidden>→</span>
             </button>
+            <IntroReplayButton />
           </div>
 
           {/* ── FOUR BIG PORTALS NAVIGATION ─────────────────────── */}
