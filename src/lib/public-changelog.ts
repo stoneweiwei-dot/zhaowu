@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-11-skin-sets-quiz-hub-d60",
+    date: "2026-10-11",
+    zhHant: { title: "主題皮膚改為整套樣式、趣味測驗入口統一、D60 業力分盤補回", summary: "十款主題皮膚不再只換頂圖：各自有背景紋理、卡片框線、按鈕、標題線與導覽膠囊，並修正首頁標語與頁尾偏淡的字。趣味測驗頁現在列出全部測驗，與首頁一致（新增「五行優勢內耗測驗」到首頁）。印度占星確認出生分鐘後，即使前後 ±2 分鐘會改變 D60 上升細分，也會生成 D60 業力分盤並標示為弱旁證，不再整段空白；只有計算失敗才不作判定。" },
+    zhHans: { title: "主题皮肤改为整套样式、趣味测验入口统一、D60 业力分盘补回", summary: "十款主题皮肤不再只换顶图：各自有背景纹理、卡片框线、按钮、标题线与导览胶囊，并修正首页标语与页尾偏淡的字。趣味测验页现在列出全部测验，与首页一致（新增「五行优势内耗测验」到首页）。印度占星确认出生分钟后，即使前后 ±2 分钟会改变 D60 上升细分，也会生成 D60 业力分盘并标示为弱旁证，不再整段空白；只有计算失败才不作判断。" },
+    en: { title: "Full theme skin sets, one quiz hub, D60 karma chart restored", summary: "The ten theme skins now change more than the banner: each has its own background texture, card frame, buttons, title rule and nav pills, and faint tagline/footer text is fixed. The fun-tests page lists every quiz, matching the home page (the Five-Element Overuse Test is now on the home list). In Indian astrology, once you confirm the birth minute the D60 karma chart is generated even if a ±2-minute shift changes the rising subdivision, labelled as weak supporting context; only a failed calculation is withheld." },
+  },
+  {
     id: "2026-10-10-dark-skin-readability",
     date: "2026-10-10",
     zhHant: { title: "深色主題皮膚文字可讀性修正、城市選單與浮動鈕不再遮擋", summary: "套用夜藍類主題皮膚時，出生資料表單標籤、報告導覽、我的報告與更新頁的標題不再變成淺色字壓在米色卡片上；出生城市選單不再被下一段標題蓋住；音樂／導覽浮動鈕縮小，頁尾也留出空間。" },
