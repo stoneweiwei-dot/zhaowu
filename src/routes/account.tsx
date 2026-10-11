@@ -331,7 +331,7 @@ function AccountPage() {
         <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
           <p className="text-xs tracking-[0.28em] text-cinnabar">ZHAOWU ACCOUNT</p>
           <h1 className="mt-2 font-display text-3xl">{c.memberTitle}</h1>
-          <p className="mt-4 text-sm leading-7 text-ink-soft">{tr(locale, "登入或註冊後可保存這台手機的生辰與報告。站主請改用登入頁的「站主」分頁。", "登录或注册后可保存这台手机的生辰与报告。站主请改用登录页的「站主」分页。", "Sign in or create an account to keep this phone's birth record and reports. Owners use the Owner tab on the sign-in page.")}</p>
+          <p className="mt-4 text-sm leading-7 text-ink-soft">{tr(locale, "登入或註冊後可保存這台裝置的生辰與報告，並隨時同步您的紀錄。", "登录或注册后可保存这台设备的生辰与报告，并随时同步您的记录。", "Sign in or register to preserve birth records and reports on this device and sync your readings anytime.")}</p>
           <Link to="/login" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{tr(locale, "會員登入／註冊", "会员登录／注册", "Sign in / Register")}</Link>
         </section>
       </main>
