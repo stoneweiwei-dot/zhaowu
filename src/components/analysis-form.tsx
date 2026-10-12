@@ -61,7 +61,7 @@ export function AnalysisForm() {
   const [hour, setHour] = useState("");
   const [minute, setMinute] = useState("");
   const [timeUnknown, setTimeUnknown] = useState(false);
-  const [gender, setGender] = useState<AnalyzeInput["gender"]>("unspecified");
+  const [gender, setGender] = useState<AnalyzeInput["gender"] | "">("");
   const [relation, setRelation] = useState<AnalyzeInput["relation"]>("unset");
   const [birthCity, setBirthCity] = useState<CityHit | null>(null);
   const [liveCity, setLiveCity] = useState<CityHit | null>(null);
@@ -220,7 +220,7 @@ export function AnalysisForm() {
     if (!localRecord && serverRecord) writeSharedBirthRecord(serverRecord);
   }, [user?.id, user?.birthData]);
 
-  const draftBirth = useMemo(() => sharedBirthFromUnknown({
+  const draftBirth = useMemo(() => gender ? sharedBirthFromUnknown({
     year,
     month,
     day,
@@ -233,7 +233,7 @@ export function AnalysisForm() {
     liveCity,
     ziPolicy: "midnight",
     useTrueSolar: true,
-  }), [year, month, day, hour, minute, timeUnknown, gender, relation, birthCity, liveCity]);
+  }) : null, [year, month, day, hour, minute, timeUnknown, gender, relation, birthCity, liveCity]);
 
   async function saveBirthAndContinue(record: SharedBirthRecord) {
     writeSharedBirthRecord(record);
@@ -252,6 +252,11 @@ export function AnalysisForm() {
     setError(null);
 
     if (detailsOpen || !rememberedRecord) {
+      if (!gender) {
+        setError(locale === "en" ? "Choose a traditional chart option, or select Not specified." : locale === "zh-Hans" ? "请先选择性别排运选项，也可以选择不提供。" : "請先選擇性別排運選項，也可以選擇不提供。");
+        document.getElementById("birth-gender")?.focus();
+        return;
+      }
       if (!draftBirth) {
         setError(null);
         const dateInvalid = Boolean(year) && Boolean(month) && Boolean(day)
@@ -426,11 +431,13 @@ export function AnalysisForm() {
             <div className="zhaowu-birth-select-grid">
               <label htmlFor="birth-gender">
                 <span>{t("gender")}</span>
-                <select id="birth-gender" value={gender} onChange={(event) => setGender(event.target.value as AnalyzeInput["gender"])}>
+                <select id="birth-gender" required value={gender} onChange={(event) => setGender(event.target.value as AnalyzeInput["gender"])}>
+                  <option value="" disabled>{locale === "en" ? "Choose an option" : locale === "zh-Hans" ? "请选择" : "請選擇"}</option>
                   <option value="unspecified">{t("unset")}</option>
                   <option value="male">{t("male")}</option>
                   <option value="female">{t("female")}</option>
                 </select>
+                <small>{locale === "en" ? "Used for traditional luck-cycle direction and certain family readings. You may choose not to specify; the basic Four Pillars remain available. Relationship preference is separate." : locale === "zh-Hans" ? "用于传统大运顺逆及部分六亲判断。可以选择不提供，基本四柱仍可排出；伴侣偏好另行选择。" : "用於傳統大運順逆及部分六親判斷。可以選擇不提供，基本四柱仍可排出；伴侶偏好另行選擇。"}</small>
               </label>
               <label htmlFor="relationship-preference">
                 <span>{t("relation")}</span>
