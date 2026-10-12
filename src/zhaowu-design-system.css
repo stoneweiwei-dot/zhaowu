@@ -9930,3 +9930,31 @@ html body .zhaowu-result-card [data-next-action] p {
   --zws-accent: #2f5a48;
   --zws-line: rgba(160, 136, 88, .4);
 }
+
+/* r220 — dark skins/night: the chart-detail folds sit on light paper (dark ink), the answer steps sit on the dark page (light ink on dark glass). */
+html[data-zws-mode="dark"] body main .zhaowu-bazi-preview > details.zhaowu-chart-details > summary,
+html[data-zw-theme="night"] body main .zhaowu-bazi-preview > details.zhaowu-chart-details > summary {
+  color: #2f5a48 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-step,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-step {
+  background: rgba(9, 24, 34, .78) !important;
+  border-color: rgba(224, 190, 128, .38) !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-step > span,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-step > span {
+  color: #e0be80 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-step :is(strong, p),
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-step :is(strong, p) {
+  color: #f4ead6 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-compare > div,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-compare > div {
+  background: rgba(255, 255, 255, .08) !important;
+  color: #f1e8d4 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-compare b,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-compare b {
+  color: #e0be80 !important;
+}
