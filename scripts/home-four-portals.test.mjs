@@ -5,13 +5,14 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("homepage (ZW-FE-02) renders four distinct portal cards and handles view switching", async () => {
+test("homepage (ZW-FE-02) has one birth entry ticket plus three explore portals and handles view switching", async () => {
   const home = await source("src/routes/index.tsx");
 
-  // Four portals navigation cards with data-home-card attributes
+  // 2026-10-12: the birth ticket is the single start; "form" is no longer a portal card.
+  assert.match(home, /data-home-birth-entry/);
   assert.match(home, /data-home-card=\{id\}/);
-  assert.match(home, /NAV_ITEMS: \{ id: Section;/);
-  assert.match(home, /id: "form"/);
+  assert.match(home, /NAV_ITEMS: \{ id: Exclude<Section, "form">;/);
+  assert.doesNotMatch(home, /\{ id: "form",\s+artSrc/);
   assert.match(home, /id: "today"/);
   assert.match(home, /id: "quiz"/);
   assert.match(home, /id: "notes"/);

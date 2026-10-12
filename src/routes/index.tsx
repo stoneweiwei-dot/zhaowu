@@ -31,7 +31,8 @@ function useCopy(locale: string) {
       title: "One birth record. One ZHAOWU Destiny Book.",
       tagline: "Heaven counts to forty-nine — and leaves one line open.",
       birthCta: "Build my Destiny Book",
-      birthHint: "About 1 minute · free 3-part summary first · pay only to go deeper",
+      birthHint: "About 1 minute · no sign-up · unsure of the hour? You can still start",
+      exploreLead: "Not ready to chart? Look around first",
       navBook:  "Create report",
       navToday: "Today",
       navQuiz:  "Explore",
@@ -60,7 +61,8 @@ function useCopy(locale: string) {
       title: "一份生辰，读成一本昭梧命书",
       tagline: "天衍四九，其留与一。爱出者爱返，福往者福来。",
       birthCta: "开始建立我的命书",
-      birthHint: "约 1 分钟 · 先看免费三段结论 · 想深入再解锁",
+      birthHint: "约 1 分钟 · 免注册 · 不确定时辰也能先开始",
+      exploreLead: "还不想排盘？先随意逛逛",
       navBook:  "排盘与报告",
       navToday: "今日黄历",
       navQuiz:  "测验",
@@ -89,7 +91,8 @@ function useCopy(locale: string) {
     title: "一份生辰，讀成一本昭梧命書",
     tagline: "天衍四九，其留與一。愛出者愛返，福往者福來。",
     birthCta: "開始建立我的命書",
-    birthHint: "約 1 分鐘 · 先看免費三段結論 · 想深入再解鎖",
+    birthHint: "約 1 分鐘 · 免註冊 · 不確定時辰也能先開始",
+    exploreLead: "還不想排盤？先隨意逛逛",
     backHome: "返回主頁",
     navBook:  "排盤與報告",
     navToday: "今日黃曆",
@@ -157,9 +160,10 @@ function heroUiCopy(locale: string) {
 }
 
 /* ── Nav item data ─────────────────────────────────────────── */
-/* Owner 2026-10-08 mockup: four illustrated paper cards (art from the owner's scene set). */
-const NAV_ITEMS: { id: Section; artSrc: string }[] = [
-  { id: "form",  artSrc: "/art/scene-koi-rider-v1.webp" },
+/* Owner 2026-10-08 mockup: illustrated paper cards (art from the owner's scene set).
+ * 2026-10-12: "form" is no longer a card — the birth ticket above is the single start;
+ * these three are the optional "look around" entries. */
+const NAV_ITEMS: { id: Exclude<Section, "form">; artSrc: string }[] = [
   { id: "today", artSrc: "/art/scene-lotus-boat-v1.webp" },
   { id: "quiz",  artSrc: "/art/scene-osmanthus-tea-v1.webp" },
   { id: "notes", artSrc: "/art/scene-butterfly-dream-v1.webp" },
@@ -335,9 +339,10 @@ function Home() {
             <IntroReplayButton />
           </div>
 
-          {/* ── FOUR BIG PORTALS NAVIGATION ─────────────────────── */}
+          {/* ── OPTIONAL EXPLORE PORTALS (birth entry is the ticket above) ── */}
           <div className="zw-hero-nav-wrap">
-            <nav className="zw-hero-nav" aria-label={heroUi.primaryNav}>
+            <p className="zw-hero-nav-lead">{copy.exploreLead}</p>
+            <nav className="zw-hero-nav zw-hero-nav--explore" aria-label={heroUi.primaryNav}>
               {NAV_ITEMS.map(({ id, artSrc }) => (
                 <button
                   key={id}
