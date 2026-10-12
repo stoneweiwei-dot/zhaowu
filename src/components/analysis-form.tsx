@@ -102,7 +102,7 @@ export function AnalysisForm() {
         structure: "Structure direction",
         features: "Main structural feature",
         noFeature: "—",
-        fullDetails: "View full chart details",
+        fullDetails: "Open your full Destiny Book reading",
 
         questionKicker: "STEP 3 · ASK YOUR DESTINY BOOK",
         questionTitle: "Continue from your Destiny Book",
@@ -143,7 +143,7 @@ export function AnalysisForm() {
           structure: "格局方向",
           features: "主要结构特点",
           noFeature: "—",
-          fullDetails: "展开完整命盘细节",
+          fullDetails: "展开完整昭梧命书",
 
           questionKicker: "第三步 · 命书问答",
           questionTitle: "沿着这份命书，继续问你真正关心的事",
@@ -183,7 +183,7 @@ export function AnalysisForm() {
           structure: "格局方向",
           features: "主要結構特點",
           noFeature: "—",
-          fullDetails: "展開完整命盤細節",
+          fullDetails: "展開完整昭梧命書",
 
           questionKicker: "第三步 · 命書問答",
           questionTitle: "沿著這份命書，繼續問你真正關心的事",
@@ -504,8 +504,8 @@ export function AnalysisForm() {
               <summary>{copy.fullDetails}</summary>
               {chartDetailsOpen ? (
                 <div className="zhaowu-bazi-full-details__body">
-                  <ChartTrustPanel chart={previewChart} locale={locale} />
                   {rememberedRecord ? <UnifiedBirthReport birth={rememberedRecord} locale={locale} foundation={foundationValues} plainLead={plainLead} /> : null}
+                  <ChartTrustPanel chart={previewChart} locale={locale} />
                 </div>
               ) : null}
             </details>
