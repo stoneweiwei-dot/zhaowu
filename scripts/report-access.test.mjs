@@ -18,12 +18,12 @@ const [client, gate, specialist, palm, numerology, unified, personalComponent, p
 // 2026-10-10: the quick tier was cancelled as a paid product and is now a
 // standing new-user welcome gift (free for everyone by default — see
 // resolveReportAccess). system/bundle remain the only sold tiers; their
-// display prices stay pinned to the verified live Stripe USD 4.99 / USD 9.99
-// amounts; the six-system bundle excludes the separate BaZi purchase.
-test("the report catalogue is fixed at free (quick, new-user gift), $4.99 and $9.99", () => {
+// display prices match the verified live Stripe USD 9.90 / USD 19.99
+// amounts; BaZi is a separate USD 9.90 purchase and the bundle excludes it.
+test("the report catalogue is fixed at free quick, US$9.90 per system and US$19.99 bundle", () => {
   assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
-  assert.match(client, /system: \{ amountCents: 499, price: "US\$4\.99" \}/);
-  assert.match(client, /bundle: \{ amountCents: 999, price: "US\$9\.99" \}/);
+  assert.match(client, /system: \{ amountCents: 990, price: "US\$9\.90" \}/);
+  assert.match(client, /bundle: \{ amountCents: 1999, price: "US\$19\.99" \}/);
   assert.match(gate, /basic chart is free/i);
   assert.match(gate, /不自動續費/);
 });

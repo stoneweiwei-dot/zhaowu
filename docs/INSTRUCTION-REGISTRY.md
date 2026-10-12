@@ -1,5 +1,13 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-13 Stripe 價格更新 supersession
+
+- ACTIVE：快速讀維持免費迎新內容，不再出售；單一系統完整深讀統一為一次性 **USD 9.90**，六個專項系統完整套裝為一次性 **USD 19.99**，均不自動續費。
+- ACTIVE：八字完整命書是獨立單盤購買，價格同為 USD 9.90；六盤套裝不包含八字。
+- ACTIVE：公開頁只使用 2026-10-13 新 Payment Links；webhook 同時保留舊連結／舊金額驗證，只為已開啟或已完成的舊付款回訪，不再作新銷售入口。
+- ACTIVE：`report_purchase_entitlements` 金額白名單同時接受舊價與新價；授權仍必須通過已登記 live Payment Link、精確 USD 金額、合法 access key 與 live event 的 server-side 驗證。
+- SUPERSEDED：本文件所有「USD 1.99／4.99／9.99 價格不變」及同義舊敘述；其付款安全、一次性收費、server-side entitlement 與六盤不含八字等非價格規則繼續有效。
+
 ## 2026-10-12 每日穿衣色卡重設（站主畫面回饋）
 
 - ACTIVE：首頁「每日穿衣｜五行色彩」個人版不得只列低對比色名；每一個主色、今日天時色與少量使用色都必須有名稱相符、肉眼可辨的實體色卡。

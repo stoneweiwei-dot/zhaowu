@@ -769,6 +769,15 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
 .zhaowu-report-fold > summary:focus-visible { outline: 1px solid var(--zw-scroll-celadon, currentColor); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .zhaowu-report-fold > summary::after { transition: none; } }
 
+/* r229 — nested sub-folds inside the "附註" method-notes block (chart/visual assets in
+   one fold, evidence/methodology text in another) so they don't dump flat into one
+   long scroll. Reuses the .zhaowu-report-fold arrow treatment above for consistency;
+   keep any further tweaks to that shared rule rather than adding a second copy here. */
+.zhaowu-report-subfold { margin-top: 18px; }
+.zhaowu-report-subfold > summary { font-weight: 600; color: var(--zw-ink); padding-right: 26px; }
+.zhaowu-report-subfold__body { margin-top: 10px; }
+.zhaowu-report-subfold + .zhaowu-report-subfold { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--zw-line); }
+
 /* Folded destiny book: each core section and each specialist system opens on demand.
    Closed state shows the title plus a two-line teaser, so the report is a short list, not a wall of text. */
 .zhaowu-unified-fold > summary,
@@ -2585,60 +2594,71 @@ html[data-zw-theme="night"] .zhaowu-dragon-guide input::placeholder { color: #c9
 html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is(.zhaowu-section-kicker, .zhaowu-section-lead) { color: #d8d0c1 !important; }
 
 
-/* r165 — auditable chart package, kept inside the single Destiny Book flow. */
+/* r226 — chart-trust is a verification utility, not report content: it must read as
+   quieter than the Destiny Book it sits beside, never compete with it for attention.
+   Flat strip, no card chrome, small ghost button. Single source of truth — no later
+   override block restyles these selectors; r165/r223's duplicate tightening rules
+   were folded in here and removed. */
 .zhaowu-chart-trust {
-  margin-top: 0;
-  border: 1px solid rgba(93, 77, 55, .15);
-  border-radius: 16px;
-  padding: clamp(22px, 4vw, 30px);
-  background: #fffaf1;
+  margin-top: 28px;
+  border-top: 1px solid rgba(93, 77, 55, .16);
+  padding: 14px 0 0;
+  background: transparent;
+}
+.zhaowu-chart-trust > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 .zhaowu-chart-trust > header h3 {
-  margin: 8px 0 0;
-  color: var(--zw-ink);
-  font-family: var(--font-display, serif);
-  font-size: clamp(23px, 4.5vw, 30px);
-  font-weight: 560;
-  line-height: 1.35;
+  margin: 0;
+  color: var(--zw-muted);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  line-height: 1.4;
 }
 .zhaowu-chart-trust > header > p:last-child {
-  margin: 10px 0 0;
+  margin: 6px 0 0;
   color: var(--zw-muted);
-  font-size: 15px;
-  line-height: 1.75;
+  font-size: 12.5px;
+  line-height: 1.6;
 }
 .zhaowu-chart-copy {
-  width: 100%;
-  min-height: 48px;
-  margin-top: 18px;
-  border: 1px solid rgba(53, 91, 76, .28);
-  border-radius: 12px;
-  padding: 10px 16px;
-  background: #315345;
-  color: #fffaf1;
-  font-size: 15px;
-  font-weight: 720;
-  line-height: 1.4;
+  width: auto;
+  min-height: 34px;
+  margin: 0;
+  border: 1px solid rgba(93, 77, 55, .28);
+  border-radius: 8px;
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--zw-ink-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
 }
 .zhaowu-chart-trust-details {
   display: grid;
-  gap: 10px;
-  margin-top: 14px;
+  gap: 8px;
+  margin-top: 10px;
 }
 .zhaowu-chart-trust-details details {
   overflow: hidden;
-  border: 1px solid rgba(93, 77, 55, .14);
-  border-radius: 12px;
-  background: #fffdf8;
+  border: 1px solid rgba(93, 77, 55, .12);
+  border-radius: 10px;
+  background: transparent;
 }
 .zhaowu-chart-trust-details summary {
-  min-height: 48px;
-  padding: 13px 15px;
+  min-height: 40px;
+  padding: 10px 12px;
   cursor: pointer;
-  color: var(--zw-ink);
-  font-size: 15px;
-  font-weight: 680;
-  line-height: 1.45;
+  color: var(--zw-muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 .zhaowu-chart-trust-details details[open] summary {
   border-bottom: 1px solid rgba(93, 77, 55, .12);
@@ -2650,11 +2670,20 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
 .zhaowu-chart-trust-details details > p,
 .zhaowu-chart-trust-details details > a {
   color: var(--zw-ink-soft);
-  font-size: 14px;
-  line-height: 1.75;
+  font-size: 13px;
+  line-height: 1.7;
 }
-.zhaowu-chart-trust-details details > p:first-of-type { margin-top: 14px; }
-.zhaowu-chart-trust-details details > p:last-of-type { margin-bottom: 14px; }
+.zhaowu-chart-trust-details details > p:first-of-type { margin-top: 12px; }
+.zhaowu-chart-trust-details details > p:last-of-type { margin-bottom: 12px; }
+.zhaowu-chart-trust-details details > h4 {
+  margin: 12px 15px 0;
+  color: var(--zw-ink-soft);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+.zhaowu-chart-trust-details details > p.zhaowu-chart-trust-version { margin-top: 4px; }
+html[data-zw-theme="night"] .zhaowu-chart-trust-details details > h4 { color: #d3c9b8; }
 .zhaowu-chart-trust-details details > a {
   display: inline-flex;
   min-height: 44px;
@@ -2689,34 +2718,28 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
   line-height: 1.65;
 }
 html[data-zw-theme="night"] .zhaowu-chart-trust {
-  border-color: rgba(212, 176, 116, .22);
-  background: #102a23;
+  border-color: rgba(212, 176, 116, .18);
 }
 html[data-zw-theme="night"] .zhaowu-chart-trust > header h3,
 html[data-zw-theme="night"] .zhaowu-chart-trust-details summary,
 html[data-zw-theme="night"] .zhaowu-chart-trust-details dd {
-  color: #f1e8d8;
+  color: #d3c9b8;
 }
 html[data-zw-theme="night"] .zhaowu-chart-trust > header > p:last-child,
 html[data-zw-theme="night"] .zhaowu-chart-trust-details dt,
 html[data-zw-theme="night"] .zhaowu-chart-trust-details details > p {
-  color: #d3c9b8;
+  color: #a79c86;
 }
 html[data-zw-theme="night"] .zhaowu-chart-trust-details details {
-  border-color: rgba(212, 176, 116, .2);
-  background: #16372d;
+  border-color: rgba(212, 176, 116, .18);
+  background: transparent;
 }
 html[data-zw-theme="night"] .zhaowu-chart-copy {
-  border-color: rgba(212, 176, 116, .45);
-  background: #d4b074;
-  color: #17332b;
+  border-color: rgba(212, 176, 116, .3);
+  color: #e2c48d;
 }
 html[data-zw-theme="night"] .zhaowu-chart-trust-details details > a {
   color: #e2c48d;
-}
-@media (max-width: 430px) {
-  .zhaowu-chart-trust { padding: 20px 16px; }
-  .zhaowu-chart-trust > header h3 { font-size: 24px; }
 }
 
 
@@ -6896,6 +6919,10 @@ html body .zhaowu-lotus-intro__fallback.is-neutral { background: #0b120e !import
 html body .zhaowu-lotus-intro__fallback.is-neutral > * { display: none !important; }
 
 /* Illustrated Destiny v1: one quiet local scene with readable warm-paper text. */
+.illustrated-destiny-welcome{display:grid;grid-template-columns:88px minmax(0,1fr);align-items:center;gap:12px;max-width:420px;margin:12px auto 0;text-align:left}
+.illustrated-destiny-welcome .illustrated-destiny-art{width:88px;border-radius:2px}
+.illustrated-destiny-welcome p{display:grid;gap:3px;margin:0;color:#242620;font-size:16px;line-height:1.45;overflow-wrap:anywhere}
+.illustrated-destiny-welcome strong{font-weight:600}
 .illustrated-destiny-panel{margin:18px 0;padding:0;color:#242620;background:#FFF9EE;border-block:1px solid rgba(84,66,44,.18)}
 .illustrated-destiny-art{display:block;width:100%;height:auto;max-width:100%}
 .illustrated-destiny-panel figcaption{padding:12px 16px;font-size:16px;line-height:1.65;color:#242620;overflow-wrap:anywhere}
@@ -7698,41 +7725,26 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-layout {
   padding: 70px clamp(18px,6vw,32px) 42px;
 }
 
-.zhaowu-report-mode-switch {
-  display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr));
-  width: 100%;
-  gap: 0;
-  margin-top: 15px;
-  border-bottom: 1px solid rgba(31,31,28,.12);
-}
-.zhaowu-report-mode-switch button {
-  min-width: 0;
-  min-height: 46px;
-  padding: 0 6px;
-  text-align: center;
-  letter-spacing: .05em;
-}
-.zhaowu-report-mode-switch button[aria-pressed="true"] { border-bottom-width: 2px; }
-
+/* r226 — a second, duller .zhaowu-report-mode-switch block used to live here and win
+   the cascade on mobile (it loaded after r225's tasteful underline tabs at line ~4899
+   and after their @media flex/gap refinement), silently reverting the tabs to a boxed
+   3-column grid. Removed so r225's rule is the only one and actually renders.
+   .zhaowu-report-reading-path is a static index, not a nav (the spans are not links or
+   buttons) — styled as a plain caption line so it doesn't look like a dead button row. */
 .zhaowu-report-reading-path {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 8px;
-  margin: 18px 0 4px;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 14px;
+  row-gap: 4px;
+  margin: 14px 0 2px;
 }
 .zhaowu-report-reading-path span {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid rgba(63,107,93,.13);
-  border-radius: 12px;
-  padding: 8px 10px;
-  background: rgba(247,244,236,.66);
-  color: var(--zw-ink-soft);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  color: var(--zw-muted);
   font-size: 12px;
-  line-height: 1.35;
+  line-height: 1.5;
 }
 .zhaowu-report-reading-path b,
 .zhaowu-unified-fold__step {
@@ -9843,4 +9855,110 @@ html body .zw-hero-nav--explore .zw-hero-nav-item.zw-hero-card { min-height: 112
 @media (min-width: 720px) {
   html body .zw-hero-nav.zw-hero-nav--explore { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
   html body .zw-hero-nav--explore .zw-hero-nav-item.zw-hero-card { min-height: 150px; }
+}
+
+/* r220 — condense the chart-detail folds into one grouped card, shrink trust-panel chrome, and give the answer's next step the weight it deserves. */
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details {
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(160, 136, 88, .28);
+  border-top-width: 0;
+  border-radius: 0;
+  background: #fffaf1;
+}
+html body .zhaowu-bazi-preview > .zhaowu-bazi-plain + details.zhaowu-chart-details {
+  margin-top: 16px;
+  border-top-width: 1px;
+  border-radius: 12px 12px 0 0;
+}
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details:last-child { border-radius: 0 0 12px 12px; }
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details > summary {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  list-style: none;
+  color: #3d5a4d;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details > summary::-webkit-details-marker { display: none; }
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details > summary::after { content: "＋"; color: #8a7547; font-size: 15px; }
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details[open] > summary::after { content: "－"; }
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details[open] > summary { border-bottom: 1px solid rgba(160, 136, 88, .2); }
+html body .zhaowu-bazi-preview > details.zhaowu-bazi-full-details > .zhaowu-bazi-full-details__body { margin: 12px; }
+
+html body .zhaowu-answer-meta--notes { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+html body .zhaowu-answer-meta--notes > div { padding: 10px 12px !important; }
+html body .zhaowu-answer-meta--notes > small {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--zw-ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+@media (max-width: 430px) {
+  html body .zhaowu-answer-meta--notes { grid-template-columns: minmax(0, 1fr); }
+}
+
+html body .zhaowu-result-card [data-next-action] {
+  margin-top: 22px;
+  border: 1px solid rgba(160, 136, 88, .3);
+  border-left: 4px solid #2f5a48;
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: rgba(47, 90, 72, .06);
+}
+html body .zhaowu-result-card [data-next-action] strong { color: #2f5a48 !important; font-size: 1.05rem; font-weight: 700; letter-spacing: .06em; }
+html body .zhaowu-result-card [data-next-action] p {
+  margin-top: 6px;
+  color: #262624 !important;
+  font-family: var(--font-display);
+  font-size: 17px !important;
+  font-weight: 500;
+  line-height: 1.9 !important;
+}
+
+/* r220 — an unknown/stale saved skin id still sets data-zws before paint. Without these base tokens every
+   `background: var(--zws-accent) !important` rule resolves to transparent and cream button text vanishes on a cream page.
+   :where() keeps specificity at zero so every real skin overrides them. */
+:where(html[data-zws]) {
+  --zws-page: #f4efe3;
+  --zws-card: #fbf8ef;
+  --zws-ink: #243a32;
+  --zws-soft: #55625b;
+  --zws-accent: #2f5a48;
+  --zws-line: rgba(160, 136, 88, .4);
+}
+
+/* r220 — dark skins/night: the chart-detail folds sit on light paper (dark ink), the answer steps sit on the dark page (light ink on dark glass). */
+html[data-zws-mode="dark"] body #bazi .zhaowu-bazi-preview > details.zhaowu-chart-details > summary,
+html[data-zw-theme="night"] body #bazi .zhaowu-bazi-preview > details.zhaowu-chart-details > summary {
+  color: #2f5a48 !important;
+  -webkit-text-fill-color: #2f5a48 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-step,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-step {
+  background: rgba(9, 24, 34, .78) !important;
+  border-color: rgba(224, 190, 128, .38) !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-step > span,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-step > span {
+  color: #e0be80 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-step :is(strong, p),
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-step :is(strong, p) {
+  color: #f4ead6 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-compare > div,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-compare > div {
+  background: rgba(255, 255, 255, .08) !important;
+  color: #f1e8d4 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-compare b,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-compare b {
+  color: #e0be80 !important;
 }

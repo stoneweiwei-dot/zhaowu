@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { ChakraColourIdeas, DailyColorsModule } from "@/components/daily-colors-module";
 import { useI18n } from "@/lib/i18n";
 import { stemElement } from "@/lib/element-colors";
+import { formatSacredDay } from "@/lib/almanac/sacred-days";
 import { dayGanzhi, hourPillar, yearMonthPillars, lunarDateLabel, toLunar } from "@/lib/bazi/calendar";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 import { AlmanacInkBoard } from "@/components/almanac-ink-board";
@@ -238,15 +239,11 @@ function useVisitorContext() {
 }
 
 function sacredDay(date: Date, jieName: string, locale: Locale) {
-  const lunar = toLunar(date.getFullYear(), date.getMonth() + 1, date.getDate()); const key = lunar ? `${lunar.month}-${lunar.day}` : "";
-  const known: Record<string, string> = { "1-1": "彌勒菩薩聖誕", "1-9": "玉皇上帝聖誕", "1-15": "上元天官聖誕", "2-19": "觀世音菩薩聖誕", "3-3": "玄天上帝聖誕", "4-8": "釋迦牟尼佛誕", "6-19": "觀世音菩薩成道", "7-15": "中元地官聖誕", "7-30": "地藏菩薩聖誕", "9-19": "觀世音菩薩出家", "10-15": "下元水官聖誕", "12-8": "釋迦牟尼佛成道日" };
-  let observance = known[key] ?? ""; if (!observance && lunar && [8, 14, 15, 23, 29, 30].includes(lunar.day)) observance = "傳統六齋日";
-  if (locale === "en") {
-    const english: Record<string, string> = { "1-1": "Maitreya observance", "1-9": "Jade Emperor observance", "1-15": "Heaven Official observance", "2-19": "Guanyin's birthday", "3-3": "Xuantian Emperor observance", "4-8": "Buddha's birthday", "6-19": "Guanyin's enlightenment", "7-15": "Earth Official observance", "7-30": "Ksitigarbha observance", "9-19": "Guanyin's renunciation", "10-15": "Water Official observance", "12-8": "Buddha's enlightenment" };
-    return `${english[key] ?? (observance ? "Traditional observance" : "No confirmed observance")} · ${jieLabel(jieName, locale)}`;
-  }
-  if (locale === "zh-Hans") { observance = observance.replaceAll("觀", "观").replaceAll("薩", "萨").replaceAll("誕", "诞").replaceAll("傳", "传").replaceAll("齋", "斋"); return observance ? `${observance}｜节令：${jieLabel(jieName, locale)}` : `节令：${jieLabel(jieName, locale)}｜佛道主圣日：待考`; }
-  return observance ? `${observance}｜節令：${jieLabel(jieName, locale)}` : `節令：${jieLabel(jieName, locale)}｜佛道主聖日：待考`;
+  const lunar = toLunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
+  if (!lunar) return jieLabel(jieName, locale);
+  const observance = formatSacredDay(lunar.month, lunar.day, locale, `${date.getMonth() + 1}-${date.getDate()}`);
+  const season = jieLabel(jieName, locale);
+  return locale === "en" ? `${observance} · ${season}` : `${observance}｜${locale === "zh-Hans" ? "节令" : "節令"}：${season}`;
 }
 function dayStyle(stem: string, locale: Locale) {
   const element = stemElement(stem) ?? "水";

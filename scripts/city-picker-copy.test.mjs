@@ -40,6 +40,6 @@ test("home bazi leads with a plain-language summary and folds the technical char
   assert.match(analysisForm, /open=\{chartDetailsOpen\}/);
   assert.match(analysisForm, /chartDetailsOpen \? \(/);
   assert.match(analysisForm, /<summary>\{copy\.fullDetails\}<\/summary>/);
-  assert.match(analysisForm, /展開完整命盤細節/);
-  assert.match(analysisForm, /<UnifiedBirthReport birth=\{rememberedRecord!\}/);
+  assert.match(analysisForm, /展開完整昭梧命書/);
+  assert.match(analysisForm, /<UnifiedBirthReport birth=\{rememberedRecord\}/);
 });

@@ -9,6 +9,7 @@ import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt
 import { HomeSectionBoundary } from "@/components/home-section-boundary";
 import { IntroReplayButton } from "@/components/intro-gate";
 import { ResultView } from "@/components/result-view";
+import { IllustratedDestinyWelcome } from "@/components/illustrated-destiny-panel";
 import { useI18n } from "@/lib/i18n";
 import { readLocalReports } from "@/lib/local-report-history";
 import { clearSharedBirthRecord, writeSharedBirthRecord } from "@/lib/shared-birth";
@@ -355,6 +356,7 @@ function Home() {
             </span>
             <span className="zw-birth-entry-arrow" aria-hidden>↓</span>
           </button>
+          <IllustratedDestinyWelcome />
         </div>
       )}
 
