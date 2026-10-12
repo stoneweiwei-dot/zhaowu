@@ -1,0 +1,338 @@
+/* ============================================================================
+ * ZHAOWU theme skins — FULL SKIN KIT. Loaded after theme-skins.css and theme-skins-sets.css.
+ * A skin is not a header picture: it is a complete set applied to every page —
+ *   1. page painting  (a fixed, high-resolution painting behind every page, fading into the page colour)
+ *   2. type           (Chinese + English display faces per skin)
+ *   3. card frame     (one ornament per skin on every card/sheet on every page)
+ *   4. buttons, nav pills, header glass, section rules
+ *   5. 今日黃曆 frame colours
+ * Everything is gated by html[data-zws]; with no skin selected this file changes nothing.
+ * ========================================================================== */
+
+/* ── per-skin tokens: painting, focal point, type, frame, card ornament ───────────────────────────────── */
+html[data-zws="lotus-boat"] {
+  --zws-art: url(/art/zhaowu-lotus-ascend-v1.webp); --zws-focus: 50% 30%; --zws-veil: 38%;
+  --zws-frame: #1c4a3e;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --zws-hw: 600;
+  --zws-card-outline: 1px solid rgba(184, 147, 77, .55); --zws-card-outline-off: -5px;
+  --zws-card-orn: linear-gradient(90deg, transparent, rgba(184, 147, 77, .7), transparent) top 0 left 50% / 46% 2px no-repeat;
+}
+html[data-zws="cloud-jade"] {
+  --zws-art: url(/art/zhaowu-dragon-lake-v1.webp); --zws-focus: 50% 52%; --zws-veil: 30%;
+  --zws-frame: #1f4a3c;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 500;
+  --zws-card-orn: radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .85), transparent 60%);
+  --zws-card-border: 1px solid rgba(43, 85, 69, .18);
+}
+html[data-zws="golden-phoenix"] {
+  --zws-art: url(/theme-skins/golden-phoenix-art.webp); --zws-focus: 50% 36%; --zws-veil: 20%;
+  --zws-frame: #2a4a3b;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Playfair Display", "Cormorant Garamond", Georgia, serif; --zws-hw: 700;
+  --zws-card-outline: 1px solid rgba(201, 162, 79, .8); --zws-card-outline-off: -5px;
+  --zws-card-orn: radial-gradient(circle at 100% 0%, rgba(255, 205, 110, .38), transparent 46%);
+}
+html[data-zws="ink-dragon"] {
+  --zws-art: url(/hero-gallery/dragon-scholar.webp); --zws-focus: 50% 24%; --zws-veil: 28%;
+  --zws-frame: #1d1a16;
+  --zws-font-d: "LXGW WenKai TC", "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Playfair Display", Georgia, serif; --zws-hw: 700;
+  --zws-card-border: 1px solid rgba(29, 26, 22, .72); --zws-card-r: 6px;
+  --zws-card-orn: linear-gradient(#1d1a16, #1d1a16) left 0 top 0 / 5px 100% no-repeat, radial-gradient(60% 40% at 100% 0%, rgba(29, 26, 22, .08), transparent 70%);
+}
+html[data-zws="dragon-lotus"] {
+  --zws-art: url(/hero-gallery/cloud-dragon.webp); --zws-focus: 40% 18%; --zws-veil: 22%;
+  --zws-frame: #1e473c;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 700;
+  --zws-card-r: 8px;
+  --zws-card-orn:
+    radial-gradient(circle, #a8843f 0 3.5px, transparent 4.5px) top 1px left 2px / 12px 12px no-repeat,
+    radial-gradient(circle, #a8843f 0 3.5px, transparent 4.5px) top 1px right 2px / 12px 12px no-repeat,
+    radial-gradient(circle, #a8843f 0 3.5px, transparent 4.5px) bottom 1px left 2px / 12px 12px no-repeat,
+    radial-gradient(circle, #a8843f 0 3.5px, transparent 4.5px) bottom 1px right 2px / 12px 12px no-repeat,
+    linear-gradient(180deg, #e0c88e, #a8843f) top 0 left 8px / calc(100% - 16px) 6px no-repeat,
+    linear-gradient(180deg, #a8843f, #e0c88e) bottom 0 left 8px / calc(100% - 16px) 6px no-repeat;
+}
+html[data-zws="night-flute"] {
+  --zws-art: url(/theme-skins/night-flute-art.webp); --zws-focus: 50% 28%; --zws-veil: 8%;
+  --zws-frame: #0a1e2c;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
+  --zws-card-border: 1px solid rgba(224, 190, 128, .42); --zws-card-blur: blur(10px);
+  --zws-card-orn: linear-gradient(180deg, rgba(120, 190, 235, .12), transparent 38%);
+  --zws-card-outline: 1px solid rgba(120, 190, 235, .16); --zws-card-outline-off: -4px;
+}
+html[data-zws="day-flute"] {
+  --zws-art: url(/intro/zhaowu-opening-r148.jpg); --zws-focus: 50% 26%; --zws-veil: 40%;
+  --zws-frame: #0f4059;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
+  --zws-card-border: 1px solid rgba(15, 64, 89, .18); --zws-card-blur: blur(8px);
+  --zws-card-orn: linear-gradient(90deg, #0f4059, #3a7a9a) top 0 left 0 / 100% 3px no-repeat;
+}
+html[data-zws="night-palace"] {
+  --zws-art: url(/theme-skins/night-palace-art.webp); --zws-focus: 50% 34%; --zws-veil: 5%;
+  --zws-frame: #08141d;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Playfair Display", Georgia, serif; --zws-hw: 700;
+  --zws-card-r: 4px; --zws-card-blur: blur(8px);
+  --zws-card-border: 1px solid rgba(224, 190, 128, .5);
+  --zws-card-outline: 1px solid rgba(224, 190, 128, .28); --zws-card-outline-off: -6px;
+  --zws-card-orn:
+    linear-gradient(#e0be80, #e0be80) top 6px left 6px / 14px 1.5px no-repeat, linear-gradient(#e0be80, #e0be80) top 6px left 6px / 1.5px 14px no-repeat,
+    linear-gradient(#e0be80, #e0be80) top 6px right 6px / 14px 1.5px no-repeat, linear-gradient(#e0be80, #e0be80) top 6px right 6px / 1.5px 14px no-repeat,
+    linear-gradient(#e0be80, #e0be80) bottom 6px left 6px / 14px 1.5px no-repeat, linear-gradient(#e0be80, #e0be80) bottom 6px left 6px / 1.5px 14px no-repeat,
+    linear-gradient(#e0be80, #e0be80) bottom 6px right 6px / 14px 1.5px no-repeat, linear-gradient(#e0be80, #e0be80) bottom 6px right 6px / 1.5px 14px no-repeat;
+}
+html[data-zws="pine-ink"] {
+  --zws-art: url(/hero-gallery/temple-bamboo-rain.webp); --zws-focus: 50% 45%; --zws-veil: 45%;
+  --zws-frame: #1f4a3a;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Jost", "Helvetica Neue", Arial, sans-serif; --zws-hw: 800;
+  --zws-card-r: 8px; --zws-card-border: 1px solid rgba(23, 43, 37, .2);
+  --zws-card-orn: linear-gradient(#1f4a3a, #1f4a3a) left 0 top 0 / 4px 100% no-repeat;
+}
+html[data-zws="pastel-koi"] {
+  --zws-art: url(/hero-gallery/koi-dragon-rider.webp); --zws-focus: 50% 40%; --zws-veil: 22%;
+  --zws-frame: #5b8a88;
+  --zws-font-d: "Noto Sans TC", "PingFang TC", sans-serif; --zws-font-en: "Jost", "Helvetica Neue", Arial, sans-serif; --zws-hw: 400;
+  --zws-card: rgba(255, 255, 255, .7); --zws-card-r: 24px; --zws-card-blur: blur(12px);
+  --zws-card-border: 1px solid rgba(255, 255, 255, .9);
+  --zws-card-frame: 0 0 0 1px rgba(233, 193, 200, .9), 0 0 0 5px rgba(188, 208, 238, .3), 0 12px 28px rgba(170, 140, 170, .16);
+}
+
+/* ── 1. page painting — every page, not only the home banner ──────────────────────────────────────────── */
+/* The painting is painted on <body> itself (fixed to the viewport): body's own background would otherwise cover any
+ * pseudo-element behind it. A veil gradient fades the painting into the page colour, so text on cards stays legible
+ * while the art shows around the header and between cards. --zws-veil = how much page colour covers the top. */
+html[data-zws] body,
+html[data-zws] body:has(.zhaowu-home-sheet-shell),
+html[data-zws] body:has(.zhaowu-has-wallpaper) {
+  background-image:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--zws-page) var(--zws-veil, 40%), transparent) 0%,
+      color-mix(in srgb, var(--zws-page) 84%, transparent) 42%,
+      var(--zws-page) 82%),
+    var(--zws-art),
+    var(--zws-wash, none) !important;
+  background-size: 100% 100%, cover, auto !important;
+  background-position: 0 0, var(--zws-focus, 50% 30%), 0 0 !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+/* the home page already shows the painting in its banner: keep the backdrop quieter there */
+html[data-zws]:has(main.zw-hero-home) body { --zws-veil: 64%; }
+/* home banner = same painting, framed, sharp (cover of the full-size art, never a tiny crop) */
+html[data-zws] body main:is(.zw-hero-home, .zhaowu-home-layout)::before {
+  background: var(--zws-art) var(--zws-focus, 50% 40%) / cover no-repeat !important;
+  height: clamp(168px, 50vw, 250px) !important;
+}
+
+/* ── 2. type ──────────────────────────────────────────────────────────────────────────────────────────── */
+html[data-zws] body :is(h1, h2, h3, .font-display, .zw-hero-inscription-title) {
+  font-family: var(--zws-font-d) !important;
+  font-weight: var(--zws-hw, 600);
+}
+html[lang="en"][data-zws] body :is(h1, h2, h3, .font-display, .zw-hero-inscription-title) {
+  font-family: var(--zws-font-en) !important;
+  font-weight: var(--zws-hw, 600);
+}
+html[lang="en"][data-zws="pine-ink"] body :is(h1, h2, h3, .zw-hero-inscription-title),
+html[lang="en"][data-zws="pastel-koi"] body :is(h1, h2, h3, .zw-hero-inscription-title) { letter-spacing: .01em !important; }
+html[lang="en"][data-zws="pastel-koi"] body :is(h1, h2, h3) { font-weight: 400; }
+html[lang="en"][data-zws="pine-ink"] body :is(h1, h2, h3) { font-weight: 600; }
+/* a gold/ink rule under every page title (the home title already has its own) */
+html[data-zws] body .zhaowu-app-frame h1:not(.zw-hero-inscription-title)::after {
+  content: "";
+  display: block;
+  width: var(--zws-rule-w, 52px);
+  height: var(--zws-rule-h, 2px);
+  margin-top: 10px;
+  background: var(--zws-rule, linear-gradient(90deg, var(--zws-gold), transparent));
+  border-radius: 2px;
+}
+
+/* ── 3. cards — one frame language on every card of every page ────────────────────────────────────────── */
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  .seal-border, .zhaowu-result-card, .zhaowu-customer-record, .zhaowu-updates-card, .zhaowu-updates-hero,
+  .history-hero, .history-empty, .zhaowu-specialist-sheet, .stone-login-sheet,
+  main article.rounded-xl, main section.rounded-2xl, main a.rounded-2xl.border, main details.rounded-xl,
+  .zw-birth-entry-ticket
+):not(.zw-hero-card) {
+  background: var(--zws-card-orn, none), var(--zws-card) !important;
+  border: var(--zws-card-border, 1px solid var(--zws-line)) !important;
+  border-radius: var(--zws-card-r, var(--zws-radius)) !important;
+  outline: var(--zws-card-outline, none);
+  outline-offset: var(--zws-card-outline-off, -6px);
+  box-shadow: var(--zws-card-frame, var(--zws-shadow)) !important;
+  -webkit-backdrop-filter: var(--zws-card-blur, none);
+  backdrop-filter: var(--zws-card-blur, none);
+  color: var(--zws-ink);
+}
+/* home portal cards: the skin's own painting (a different region on each card) under a card-colour veil, plus the skin ornament */
+html[data-zws] body .zw-hero-card .zw-hero-card-art { display: none !important; }
+html[data-zws][data-zws] body :is(button, a).zw-hero-card {
+  background:
+    var(--zws-card-orn, none),
+    linear-gradient(100deg, var(--zws-card) 0%, color-mix(in srgb, var(--zws-card) 82%, transparent) 44%, color-mix(in srgb, var(--zws-card) 16%, transparent) 100%),
+    var(--zws-art) var(--zws-pc-pos, 50% 40%) / cover no-repeat,
+    var(--zws-card) !important;
+  border-radius: var(--zws-card-r, var(--zws-radius)) !important;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+html[data-zws] body .zw-hero-card:nth-of-type(1) { --zws-pc-pos: 16% 20%; }
+html[data-zws] body .zw-hero-card:nth-of-type(2) { --zws-pc-pos: 84% 26%; }
+html[data-zws] body .zw-hero-card:nth-of-type(3) { --zws-pc-pos: 22% 78%; }
+html[data-zws] body .zw-hero-card:nth-of-type(4) { --zws-pc-pos: 80% 84%; }
+
+/* ── 4. header glass, buttons, nav pills ──────────────────────────────────────────────────────────────── */
+html[data-zws] body .zhaowu-site-header {
+  background: color-mix(in srgb, var(--zws-page) 74%, transparent) !important;
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+}
+html[data-zws] body :is(button[type="submit"], .bg-cinnabar, .zhaowu-primary-button, .stone-login-primary) {
+  background: var(--zws-btn-bg, var(--zws-accent)) !important;
+  color: var(--zws-on-accent) !important;
+  border: 1px solid color-mix(in srgb, var(--zws-gold) 70%, transparent) !important;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--zws-accent) 28%, transparent);
+  letter-spacing: .04em;
+}
+html[data-zws] body .zw-journey-nav a {
+  background: color-mix(in srgb, var(--zws-card) 82%, transparent) !important;
+  border: 1px solid var(--zws-line) !important;
+  color: var(--zws-ink) !important;
+  white-space: nowrap;
+}
+html[data-zws] body .zw-journey-nav a[aria-current="page"] { background: var(--zws-accent) !important; color: var(--zws-on-accent) !important; }
+html[data-zws] body .zw-journey-directory > summary { color: var(--zws-ink); }
+html[lang="en"][data-zws] body :is(.zw-journey-nav a, .zw-intro-replay, .zhaowu-header-owner-login) { white-space: nowrap; }
+
+/* ── 5. 今日黃曆 board takes the skin: frame colour, gold line and banner painting ───────────────────────── */
+html[data-zws] body .zw-ink-board[data-variant="jade"] {
+  --j-frame: var(--zws-frame);
+  --j-frame-2: color-mix(in srgb, var(--zws-frame) 72%, #000);
+  --j-gold: var(--zws-gold);
+  --j-line: color-mix(in srgb, var(--zws-gold) 62%, transparent);
+}
+html[data-zws] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--zws-frame) 88%, transparent), color-mix(in srgb, var(--zws-frame) 38%, transparent) 58%, transparent),
+    var(--zws-art) var(--zws-focus, 50% 40%) / cover no-repeat;
+}
+
+/* ── 6. dark skins: inner pages hard-code dark ink on light panels; flip both together ─────────────────── */
+/* the design system paints inner pages from its own paper/ink variables — retint them for dark skins so nothing is left light-on-light */
+html[data-zws][data-zws-mode="dark"],
+html[data-zws][data-zws-mode="dark"] body,
+html[data-zws][data-zws-mode="dark"] .zhaowu-app-frame,
+html[data-zws][data-zws-mode="dark"] main {
+  --zw-paper: var(--zws-page);
+  --zw-paper-soft: color-mix(in srgb, var(--zws-card) 90%, transparent);
+  --zw-paper-card: color-mix(in srgb, var(--zws-card) 84%, transparent);
+  --zw-paper-card-strong: color-mix(in srgb, var(--zws-card) 90%, transparent);
+  --zw-ink: var(--zws-ink);
+  --zw-ink-soft: color-mix(in srgb, var(--zws-ink) 80%, transparent);
+  --zw-green: color-mix(in srgb, var(--zws-gold) 92%, #fff);
+  --zw-green-dark: var(--zws-gold);
+  --zw-green-soft: color-mix(in srgb, var(--zws-gold) 70%, transparent);
+  --zw-red: color-mix(in srgb, var(--zws-gold) 85%, #fff);
+  --zw-line: var(--zws-line);
+  --zv-paper: color-mix(in srgb, var(--zws-card) 88%, transparent);
+  --zv-paper-strong: color-mix(in srgb, var(--zws-card) 92%, transparent);
+  --z41-paper: color-mix(in srgb, var(--zws-card) 90%, transparent);
+}
+/* panels that are not one of the framed cards above: dark glass instead of cream */
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body main :is(
+  [class*="bg-cream"], [class*="bg-paper"], [class*="bg-white"], [class*="bg-wood/"], [class*="bg-earth/"],
+  blockquote, p.rounded-xl, p.rounded-2xl, p.rounded-lg, div.rounded-xl, div.rounded-2xl, div.rounded-lg, aside.rounded-xl, aside.rounded-2xl
+):not(.seal-border):not(article):not(section):not(details):not(a):not(button):not(img):not(.zw-ink-board *):not(.bg-cinnabar) {
+  background: color-mix(in srgb, var(--zws-card) 78%, transparent) !important;
+  border-color: var(--zws-line) !important;
+}
+/* sections / forms whose light fill is an arbitrary-value class (bg-[#fffaf0]/92 …) */
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body main :is(section, article, div, form, aside, header, fieldset)[class*="bg-["]:not(.bg-cinnabar):not(.zw-ink-board *):not(.zw-hero-card):not([class*="bg-[url"]):not([class*="bg-[radial"]):not([class*="bg-[linear"]) {
+  background: color-mix(in srgb, var(--zws-card) 86%, transparent) !important;
+  border-color: var(--zws-line) !important;
+}
+/* every text block reads as light ink */
+html[data-zws][data-zws-mode="dark"] body main :is(h1, h2, h3, h4, h5, p, li, dt, dd, th, td, blockquote, summary, strong, b, label, small, span, em, legend, figcaption):not(button:not(.seal-border) *):not(.bg-cinnabar *):not(.zw-ink-board *):not([class*="text-cinnabar"]):not([class*="text-earth"]):not([class*="text-wood"]):not([class*="text-ink-mute"]) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws-mode="dark"] body main :is(p, li, dd, td, small, span):not(h1 *):not(h2 *):not(h3 *):not(strong *):not(button:not(.seal-border) *):not(.zw-ink-board *):not([class*="text-cinnabar"]):not([class*="text-earth"]):not([class*="text-wood"]) {
+  color: color-mix(in srgb, var(--zws-ink) 84%, transparent) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws-mode="dark"] body main :is([class*="text-cinnabar"], [class*="text-earth"], [class*="text-wood"], [class*="text-ink-mute"]):not(button:not(.seal-border) *):not(.zw-ink-board *) { color: color-mix(in srgb, var(--zws-gold) 92%, #fff) !important; -webkit-text-fill-color: currentColor !important; }
+html[data-zws][data-zws-mode="dark"] body main :is(a, button).rounded-full:not(.bg-cinnabar):not([type="submit"]),
+html[data-zws][data-zws-mode="dark"] body main :is(a, button).is-secondary {
+  background: rgba(224, 190, 128, .12) !important;
+  color: var(--zws-ink) !important;
+  border: 1px solid rgba(224, 190, 128, .5) !important;
+}
+html[data-zws][data-zws-mode="dark"] body main :is(a, button).is-secondary * { color: var(--zws-ink) !important; }
+
+/* #life-view pages (fun tests, life view) pin dark ink with an id selector — outrank it on dark skins */
+html[data-zws][data-zws-mode="dark"][data-zw-theme="night"] body #life-view :is(.font-display, strong, b, h2, h3, .text-ink, .text-ink-soft, span, p) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws-mode="dark"][data-zw-theme="night"] body #life-view :is(.text-cinnabar, .text-earth, .text-wood, .text-ink-mute) {
+  color: color-mix(in srgb, var(--zws-gold) 92%, #fff) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* #life-view blocks are painted by an id rule in the design system — give them the same card frame as every other card */
+html[data-zws][data-zws][data-zws] body #life-view {
+  background: var(--zws-card-orn, none), var(--zws-card) !important;
+  border: var(--zws-card-border, 1px solid var(--zws-line)) !important;
+  border-radius: var(--zws-card-r, var(--zws-radius)) !important;
+  box-shadow: var(--zws-card-frame, var(--zws-shadow)) !important;
+}
+
+/* form fields: dark glass with light ink on dark skins */
+html[data-zws][data-zws][data-zws-mode="dark"] body main :is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]), select, textarea) {
+  background: rgba(255, 255, 255, .07) !important;
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: var(--zws-ink) !important;
+  border: 1px solid color-mix(in srgb, var(--zws-gold) 45%, transparent) !important;
+  color-scheme: dark;
+}
+html[data-zws][data-zws][data-zws-mode="dark"] body main :is(input, textarea)::placeholder { color: color-mix(in srgb, var(--zws-ink) 45%, transparent) !important; -webkit-text-fill-color: color-mix(in srgb, var(--zws-ink) 45%, transparent) !important; }
+
+/* owner-login pill in the header: on-accent label in every skin (the generic header-link ink rule otherwise wins on light skins) */
+html[data-zws][data-zws][data-zws] body .zhaowu-site-header :is(a, button).zhaowu-header-owner-login,
+html[data-zws][data-zws][data-zws] body .zhaowu-site-header :is(a, button).zhaowu-header-owner-login * {
+  color: var(--zws-on-accent) !important;
+  -webkit-text-fill-color: var(--zws-on-accent) !important;
+}
+
+/* sub-view top bar (今日 / 紀錄 pages) */
+html[data-zws][data-zws][data-zws-mode="dark"] body .zw-subview-topbar {
+  background: color-mix(in srgb, var(--zws-card) 92%, transparent) !important;
+  border: 1px solid var(--zws-line) !important;
+}
+html[data-zws][data-zws][data-zws-mode="dark"] body .zw-subview-topbar :is(button, a) {
+  background: rgba(224, 190, 128, .12) !important;
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: var(--zws-ink) !important;
+  border: 1px solid color-mix(in srgb, var(--zws-gold) 50%, transparent) !important;
+}
+
+/* 今日黃曆 under dark skins: every tile becomes dark glass (the night text rules of the board already expect that) */
+html[data-zws][data-zws][data-zws-mode="dark"] body #daily-almanac :is(.zw-ink-panel, .zw-ink-paper, .zw-ink-datecard, .zhaowu-today-guide__expanded, .zhaowu-today-guide__wardrobe, .zhaowu-today-guide__spirit, .zhaowu-today-guide__overview) {
+  background: color-mix(in srgb, var(--zws-card) 88%, transparent) !important;
+  border-color: var(--zws-line) !important;
+  box-shadow: none !important;
+}
+
+html[data-zws][data-zws][data-zws-mode="dark"] body #daily-almanac :is(.zw-ink-panel, .zw-ink-paper, .zw-ink-datecard, .zhaowu-today-guide__expanded, .zhaowu-today-guide__wardrobe, .zhaowu-today-guide__spirit, .zhaowu-today-guide__overview) :not(svg *):not(svg):not(.zw-ink-seal):not([class*="seal"]) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* wardrobe + sky-events blocks of the home/today stack */
+html[data-zws][data-zws][data-zws-mode="dark"] body :is(#five-element-wardrobe, .sky-events-home, .sky-events-feature, .zhaowu-today-guide__wardrobe-notes span, .sky-events-badges span) {
+  background: color-mix(in srgb, var(--zws-card) 88%, transparent) !important;
+  border-color: var(--zws-line) !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws-mode="dark"] body :is(#five-element-wardrobe, .sky-events-home, .sky-events-feature) :not(svg *):not(svg):not(button):not(button *):not([class*="seal"]) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}

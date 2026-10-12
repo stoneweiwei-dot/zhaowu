@@ -29,7 +29,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
           const active = id === s.id;
           return (
             <article key={s.id} className={`overflow-hidden rounded-xl border bg-paper/40 ${active ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"}`}>
-              <div className="relative h-28 w-full" style={{ background: `${s.swatch[0]} url(${s.hero}) center / cover no-repeat` }} role="img" aria-label={name(s)}>
+              <div className="relative h-28 w-full" style={{ background: `${s.swatch[0]} url(${s.hero}) ${s.focus} / cover no-repeat` }} role="img" aria-label={name(s)}>
                 <span className="absolute left-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[10px] text-white">{tr(locale, `圖${s.ref}`, `图${s.ref}`, `Ref ${s.ref}`)}</span>
               </div>
               <div className="flex items-center justify-between gap-3 p-3">
