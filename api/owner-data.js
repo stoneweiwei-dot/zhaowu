@@ -1,4 +1,5 @@
 import { isValidOwnerSecret, ownerSecretFromRequest } from "../lib/owner-session-cookie.js";
+import { readPublishedSiteSkin, validSiteSkin } from "../lib/owner-site-skin-public.js";
 
 export { isValidOwnerSecret };
 
@@ -118,7 +119,22 @@ function bridgeSecret() {
 
 export default async function handler(req, res) {
   try {
-    if ((req.method || "GET") !== "POST") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
+    const method = req.method || "GET";
+    if (method === "GET") {
+      // The only public GET on this otherwise private owner-data bridge.
+      let view = String(req.query?.view ?? "");
+      if (!view) {
+        try { view = new URL(String(req.url || "/"), "https://zhaowu.local").searchParams.get("view") || ""; } catch {}
+      }
+      if (view !== "site-skin") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
+      try {
+        const record = await readPublishedSiteSkin();
+        return json(res, 200, { ok: true, ...record });
+      } catch {
+        return json(res, 503, { ok: false, error: "SHARED_SKIN_TEMPORARILY_UNAVAILABLE" });
+      }
+    }
+    if (method !== "POST") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const ownerSecret = ownerSecretFromRequest(req);
     if (!ownerSecret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
@@ -127,6 +143,17 @@ export default async function handler(req, res) {
 
     const payload = await readJsonBody(req);
     const action = String(payload?.action ?? "").trim();
+    if (action === "site-skin.publish") {
+      const skin = validSiteSkin(payload?.skin);
+      if (!skin) return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
+      try {
+        const { saveSharedSiteSkin } = await import("../lib/owner-music-git.js");
+        const published = await saveSharedSiteSkin(ownerSecret, skin);
+        return json(res, 200, { ok: true, ...published });
+      } catch {
+        return json(res, 503, { ok: false, error: "SHARED_SKIN_WRITE_FAILED" });
+      }
+    }
     if (!ACTIONS.has(action)) return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
     const upstream = await fetch(`${supabaseUrl()}/functions/v1/zhaowu-owner-data`, {
       method: "POST",
