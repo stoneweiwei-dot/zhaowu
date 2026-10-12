@@ -8,7 +8,7 @@ type Observance = { calendar:"lunar"|"solar"; month:number; day:number; traditio
 // https://www.fgsbmc.org.tw/tw/exhibition.aspx?serno=15
 // https://www.lingyinsi.com/detail_14731.html
 // https://tct.gov.taipei/
-const rows: readonly Observance[] = [
+const rows: readonly (readonly [Observance["calendar"],number,number,Tradition,string,string])[] = [
 ["lunar",1,1,"佛教","彌勒菩薩聖誕","Maitreya Bodhisattva's birthday"],
 ["lunar",1,9,"道教","玉皇上帝聖誕","Jade Emperor's birthday"],
 ["lunar",1,13,"民間信仰","關聖帝君飛昇","Guandi's ascension"],
@@ -57,7 +57,7 @@ const rows: readonly Observance[] = [
 ["lunar",12,23,"民間信仰","送神／祭灶（北方多見）","Kitchen God farewell (common in northern China)"],
 ["lunar",12,24,"民間信仰","送神／祭灶（南方多見）","Kitchen God farewell (common in southern China)"],
 ["solar",9,28,"儒家","孔子誕辰紀念暨祭孔（公曆）","Confucius's birthday and ceremony (solar date)"],
-].map(([calendar,month,day,tradition,hant,en])=>({calendar,month,day,tradition,hant,en})) as readonly Observance[];
+] as const;
 
 const SIMPLIFIED: Readonly<Record<string,string>> = Object.fromEntries(
   [..."彌觀薩誕傳齋聖釋關趙註媽國陽華韋馱勢蘭寶陰與燈藥師阿陀謝歲頭飛昇財呂張會曆紀念風見".split("")].map((c,i)=>[c,[..."弥观萨诞传斋圣释关赵注妈国阳华韦驮势兰宝阴与灯药师阿陀谢岁头飞升财吕张会历纪念风见"][i]])
@@ -68,8 +68,8 @@ function traditionLabel(tradition:Tradition,locale:SacredDayLocale){
  return locale==="zh-Hans"?zhHans(tradition):tradition;
 }
 export function formatSacredDay(lunarMonth:number,lunarDay:number,locale:SacredDayLocale,solarMonthDay?:string){
- const matches=rows.filter((row)=>row.calendar==="lunar"?row.month===lunarMonth&&row.day===lunarDay:solarMonthDay===`${row.month}-${row.day}`);
- const labels=matches.map((row)=>locale==="en"?`[${traditionLabel(row.tradition,locale)}] ${row.en}`:`[${traditionLabel(row.tradition,locale)}] ${locale==="zh-Hans"?zhHans(row.hant):row.hant}`);
+ const matches=rows.filter((row)=>row[0]==="lunar"?row[1]===lunarMonth&&row[2]===lunarDay:solarMonthDay===`${row[1]}-${row[2]}`);
+ const labels=matches.map((row)=>locale==="en"?`[${traditionLabel(row[3],locale)}] ${row[5]}`:`[${traditionLabel(row.tradition,locale)}] ${locale==="zh-Hans"?zhHans(row[4]):row.hant}`);
  if(!labels.length&&[8,14,15,23,29,30].includes(lunarDay)) labels.push(locale==="en"?"Traditional six fasting days":locale==="zh-Hans"?"传统六斋日":"傳統六齋日");
  if(!labels.length) labels.push(locale==="en"?"No major observance listed":locale==="zh-Hans"?"未列主要圣日":"未列主要聖日");
  return labels.join(locale==="en"?" · ":"｜");
