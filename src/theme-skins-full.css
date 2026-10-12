@@ -593,3 +593,173 @@ html[data-zws][data-zws-mode="dark"] body main :is(
   color: #293c34 !important;
   -webkit-text-fill-color: #293c34 !important;
 }
+
+/* ── 2026-10-13: theme-integrated paper, headings and controls ──────────────────
+ * Keep each skin's painting, ink and accent; stop stamping a framed ornament on
+ * every nested section. Shared surface tokens are opaque so artwork never makes
+ * reading or control contrast depend on the image underneath.
+ */
+html[data-zws][data-zws] {
+  --zws-surface: color-mix(in srgb, var(--zws-page) 72%, #fff 28%);
+  --zws-surface-soft: color-mix(in srgb, var(--zws-surface) 96%, var(--zws-accent) 4%);
+  --zws-divider: color-mix(in srgb, var(--zws-ink) 18%, var(--zws-surface));
+  --zws-soft: color-mix(in srgb, var(--zws-ink) 76%, var(--zws-surface));
+  --zws-action-bg: var(--zws-accent);
+  --zws-card: var(--zws-surface);
+  --zws-card-r: 8px;
+  --zws-card-radius: 8px;
+  --zws-radius: 8px;
+  --zws-radius-sm: 6px;
+  --zws-btn-radius: 6px;
+  --zws-pill-radius: 6px;
+  --zws-card-frame: none;
+  --zws-card-outline: none;
+  --zws-card-blur: none;
+  --zws-card-orn: none;
+  --zws-title-shadow: none;
+  --zws-shadow: none;
+  --zw-paper: var(--zws-page);
+  --zw-paper-soft: var(--zws-surface-soft);
+  --zw-paper-strong: var(--zws-surface);
+  --zw-ink: var(--zws-ink);
+  --zw-ink-soft: var(--zws-soft);
+  --zw-muted: var(--zws-soft);
+  --zw-jade: var(--zws-accent);
+  --zw-jade-deep: var(--zws-action-bg);
+  --zw-line: var(--zws-divider);
+  --zw-gold: var(--zws-gold);
+  --color-paper: var(--zws-page);
+  --color-cream: var(--zws-surface);
+  --color-ink: var(--zws-ink);
+  --color-ink-soft: var(--zws-soft);
+  --color-ink-mute: var(--zws-soft);
+  --color-line: var(--zws-divider);
+}
+html[data-zws][data-zws][data-zws-mode="dark"] {
+  --zws-surface: color-mix(in srgb, var(--zws-page) 86%, var(--zws-accent) 14%);
+}
+/* The pastel accent is decorative; reuse its darker existing button pigment. */
+html[data-zws="pastel-koi"][data-zws] { --zws-action-bg: #467573; }
+
+/* A reading sheet carries the fill once. Popups stay opaque and independent. */
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  #birth-form, .zw-report-edit, .zhaowu-report-continuous-sheet,
+  .zhaowu-specialist-sheet, .history-hero, .history-empty,
+  .zhaowu-site-utility-panel, .zhaowu-site-utility-buttons
+) {
+  background: var(--zws-surface) !important;
+  color: var(--zws-ink) !important;
+  border-color: var(--zws-divider) !important;
+  box-shadow: none !important;
+  outline: none;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* Same sheet, rather than another panel inside it. Do not touch colour swatches,
+ * the almanac's symbolic pigment plates, images or the selected report covers.
+ */
+html[data-zws][data-zws][data-zws][data-zws] body #birth-form :is(
+  #customer-record, #bazi, .zhaowu-bazi-preview, .zhaowu-bazi-plain,
+  .zhaowu-question-sheet, .zhaowu-birth-summary, .zhaowu-time-calibration-note,
+  #time-importance, .zhaowu-time-warning
+) {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* Headings and disclosure labels belong to their surrounding surface. */
+html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-app-frame :is(
+  h2, h3, h4, h5, .zhaowu-section-kicker, .zhaowu-customer-head,
+  .zhaowu-bazi-stage-head, .zhaowu-question-stage-head,
+  .zw-home-more-title, .zw-subview-title, .zhaowu-report-kicker
+) {
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none;
+  text-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  .zw-journey-nav a, .zw-journey-nav .zw-journey-help,
+  #birth-form .zw-flow-progress button,
+  .zhaowu-birth-edit, .zhaowu-question-birth-edit, .zw-subview-back-btn,
+  .zw-intro-replay, .zhaowu-site-guide-shortcuts button, .zw-saved-report-card a,
+  .zw-saved-report-card button:not(:first-of-type)
+) {
+  background: transparent !important;
+  color: var(--zws-control-ink, var(--zws-ink)) !important;
+  -webkit-text-fill-color: currentColor !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--zws-divider) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline-offset: 2px;
+}
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  .zw-journey-nav a[aria-current="page"],
+  #birth-form .zw-flow-progress button[aria-current="step"]
+) {
+  background: var(--zws-surface-soft) !important;
+  border-bottom: 3px solid var(--zws-action-bg) !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body #birth-form .zw-flow-progress button:disabled {
+  color: var(--zws-soft) !important;
+}
+/* One solid accent for actions, one ink for the text on that accent. */
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  button[type="submit"], .bg-cinnabar, .zhaowu-primary-button,
+  .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type
+) {
+  background: var(--zws-action-bg) !important;
+  color: var(--zws-on-accent) !important;
+  border: 1px solid var(--zws-action-bg) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  button[type="submit"], .bg-cinnabar, .zhaowu-primary-button,
+  .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type
+) :is(span, strong, small, b) {
+  color: var(--zws-on-accent) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  .zw-journey-nav, .zw-subview-topbar
+) {
+  background: var(--zws-surface) !important;
+  border-color: var(--zws-divider) !important;
+  box-shadow: none !important;
+  outline: none;
+}
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  .zw-birth-entry-ticket, .zw-hero-card
+) {
+  background: var(--zws-surface-soft) !important;
+  border: 1px solid var(--zws-divider) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  outline: none;
+}
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  .zw-birth-entry-ticket, .zw-hero-card, .zhaowu-site-utility-panel,
+  .zhaowu-site-utility-buttons
+) :is(strong, small, span, h2, h3, p, a, button):not(.bg-cinnabar):not(.bg-cinnabar *):not([type="submit"]):not([type="submit"] *) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  .zw-journey-nav a, .zw-journey-help, .zw-flow-progress button, .zw-flow-next
+):focus-visible {
+  outline: 2px solid var(--zws-action-bg) !important;
+  outline-offset: 3px;
+}
+
+/* Saved report covers deliberately stay warm paper under every skin. */
+html[data-zws][data-zws][data-zws][data-zws] body .zw-saved-report-card {
+  --zws-control-ink: #293c34;
+  box-shadow: none !important;
+  outline: none;
+}
