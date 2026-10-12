@@ -15,6 +15,7 @@ export type PersonalPaidProfileModel = {
   quietColors: string[];
   quietColorSwatches: Array<{ label: string; hex: string }>;
   materials: string[];
+  materialElement: Element;
   hours: string[];
   persona: string;
   note: string;
@@ -250,6 +251,7 @@ export function buildPersonalPaidProfile(birth: SharedBirthRecord, locale: Local
     quietColors,
     quietColorSwatches,
     materials,
+    materialElement: useful[0],
     hours,
     persona: personaFor(chart.dayMasterElement, chart.strength.tendency, relations, locale),
     note,

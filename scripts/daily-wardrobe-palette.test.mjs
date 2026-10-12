@@ -25,6 +25,18 @@ test("home wardrobe renders labelled colour cards for personal, daily and quiet 
   assert.match(widget, /data-wardrobe-materials/);
 });
 
+test("daily wardrobe selects a local accessory illustration for each five-element recommendation", () => {
+  const assets = new URL("../public/today/accessories/", import.meta.url);
+  for (const [element, slug] of [["木", "wood"], ["火", "fire"], ["土", "earth"], ["金", "metal"], ["水", "water"]]) {
+    assert.match(widget, new RegExp(`${element}: \\{ src: \\"/today/accessories/${slug}\\.webp\\"`));
+    const image = readFileSync(new URL(`${slug}.webp`, assets));
+    assert.equal(image.toString("ascii", 0, 4), "RIFF");
+    assert.equal(image.toString("ascii", 8, 12), "WEBP");
+  }
+  assert.match(widget, /personal\?\.materialElement \?\? stemElement\(pillars\.day\[0\]\)/);
+  assert.match(widget, /<WardrobeAccessoryArt element=\{accessoryElement\} locale=\{locale\} \/>/);
+});
+
 test("wardrobe palette stays Song-paper legible on phones and dark skins", () => {
   assert.match(design, /Personal wardrobe palette/);
   assert.match(design, /main:is\(\.zhaowu-home-layout, \.zw-hero-home\) #daily-almanac/);
