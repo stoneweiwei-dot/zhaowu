@@ -95,6 +95,42 @@ html[data-zws="pastel-koi"] {
   --zws-card-frame: 0 0 0 1px rgba(233, 193, 200, .9), 0 0 0 5px rgba(188, 208, 238, .3), 0 12px 28px rgba(170, 140, 170, .16);
 }
 
+/* ── 青木・生生不息 series (15–18): green-wood, new growth ─────────────────────────────────────────────── */
+html[data-zws="verdant-dragon"] {
+  --zws-art: url(/theme-skins/verdant-dragon-art.webp); --zws-focus: 50% 24%; --zws-veil: 46%;
+  --zws-frame: #2f6a4c;
+  --zws-font-d: "LXGW WenKai TC", "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 700;
+  --zws-card-r: 20px; --zws-card-border: 1px solid rgba(155, 160, 95, .62);
+  --zws-card-outline: 1px solid rgba(185, 165, 75, .42); --zws-card-outline-off: -5px;
+  --zws-card-orn: linear-gradient(90deg, #2f6a4c, #b9a54b 62%, transparent) top 0 left 0 / 100% 3px no-repeat, radial-gradient(circle at 100% 0%, rgba(190, 215, 120, .38), transparent 42%);
+  --zws-pc-gold: #b9a54b;
+}
+html[data-zws="verdant-mist"] {
+  --zws-art: url(/theme-skins/verdant-mist-art.webp); --zws-focus: 50% 36%; --zws-veil: 34%;
+  --zws-frame: #2e6a52;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 500;
+  --zws-card: rgba(247, 250, 242, .8); --zws-card-r: 18px; --zws-card-blur: blur(10px);
+  --zws-card-border: 1px solid rgba(255, 255, 255, .85);
+  --zws-card-frame: 0 0 0 1px rgba(88, 138, 112, .28), 0 10px 28px rgba(40, 80, 60, .10);
+  --zws-card-orn: linear-gradient(180deg, rgba(255, 255, 255, .75), transparent 38%);
+}
+html[data-zws="verdant-pavilion"] {
+  --zws-art: url(/theme-skins/verdant-pavilion-art.webp); --zws-focus: 50% 44%; --zws-veil: 40%;
+  --zws-frame: #3f7d3a;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Playfair Display", Georgia, serif; --zws-hw: 600;
+  --zws-card-r: 14px; --zws-card-border: 1px solid rgba(120, 165, 80, .5);
+  --zws-card-orn: linear-gradient(180deg, #8fb54a, #3f7d3a) left 0 top 12% / 5px 76% no-repeat, radial-gradient(circle at 100% 0%, rgba(170, 210, 110, .34), transparent 40%);
+}
+html[data-zws="verdant-rain"] {
+  --zws-art: url(/theme-skins/verdant-rain-art.webp); --zws-focus: 50% 40%; --zws-veil: 14%;
+  --zws-frame: #0b2418;
+  --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
+  --zws-card-r: 12px; --zws-card-blur: blur(10px);
+  --zws-card-border: 1px solid rgba(168, 211, 138, .42);
+  --zws-card-frame: 0 0 0 1px rgba(168, 211, 138, .18), 0 0 26px rgba(110, 190, 110, .14), 0 12px 34px rgba(0, 0, 0, .5);
+  --zws-card-orn: linear-gradient(90deg, transparent, #a8d38a, transparent) top 0 left 12% / 76% 1.5px no-repeat, linear-gradient(90deg, transparent, rgba(168, 211, 138, .5), transparent) bottom 0 left 12% / 76% 1px no-repeat;
+}
+
 /* ── 1. page painting — every page, not only the home banner ──────────────────────────────────────────── */
 /* The painting is painted on <body> itself (fixed to the viewport): body's own background would otherwise cover any
  * pseudo-element behind it. A veil gradient fades the painting into the page colour, so text on cards stays legible
@@ -381,6 +417,43 @@ html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout,
 html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac .zhaowu-today-section.is-wardrobe [data-wardrobe-materials] > span {
   border-color: #b99a61 !important;
   background: rgba(226, 217, 196, .52) !important;
+}
+
+/* single-entry home (steps card, birth form, calibration notes): id/class rules keep these panels cream — make them dark glass with light ink */
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body :is(
+  ol.zw-home-steps, details.zw-report-edit, section#customer-record, div.zhaowu-time-calibration-note,
+  p#time-importance, p.zhaowu-time-warning, #bazi.zhaowu-bazi-stage
+) {
+  background: color-mix(in srgb, var(--zws-card) 90%, transparent) !important;
+  border-color: var(--zws-line) !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body :is(
+  ol.zw-home-steps, details.zw-report-edit, section#customer-record, div.zhaowu-time-calibration-note,
+  p#time-importance, p.zhaowu-time-warning, #bazi.zhaowu-bazi-stage
+) :is(h1, h2, h3, h4, p, li, span, strong, b, small, label, legend, summary, em, div):not(button):not(button *):not(svg *):not(.bg-cinnabar *) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body ol.zw-home-steps li span.zw-home-steps-num {
+  background: var(--zws-accent) !important;
+  border-color: var(--zws-accent) !important;
+  color: var(--zws-on-accent) !important;
+  -webkit-text-fill-color: var(--zws-on-accent) !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body :is(p#time-importance, p.zhaowu-time-warning, div.zhaowu-time-calibration-note) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body :is(
+  #birth-year, #birth-month, #birth-day, #birth-hour, #birth-minute, #birth-gender,
+  #relationship-preference, #birth-city, #current-city, #customer-record input, #customer-record select, #customer-record textarea
+) {
+  background: rgba(255, 255, 255, .07) !important;
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: var(--zws-ink) !important;
+  border: 1px solid color-mix(in srgb, var(--zws-gold) 45%, transparent) !important;
+  color-scheme: dark;
 }
 
 

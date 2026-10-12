@@ -7,20 +7,29 @@ const css = readFileSync("src/theme-skins.css", "utf8");
 const html = readFileSync("index.html", "utf8");
 const ids = [...ts.matchAll(/\{ id: "([a-z-]+)", ref: (\d+), mode: "(light|dark)"/g)].map((m) => ({ id: m[1], ref: +m[2], mode: m[3] }));
 
-test("14 skins, original 10 preserved, unique ids and catalog order", () => {
-  assert.equal(ids.length, 14);
-  assert.deepEqual(ids.map((s) => s.ref).sort((a, b) => a - b), Array.from({ length: 14 }, (_, i) => i + 1));
-  assert.equal(new Set(ids.map((s) => s.id)).size, 14);
+test("18 skins, original 10 preserved, unique ids and catalog order", () => {
+  assert.equal(ids.length, 18);
+  assert.deepEqual(ids.map((s) => s.ref).sort((a, b) => a - b), Array.from({ length: 18 }, (_, i) => i + 1));
+  assert.equal(new Set(ids.map((s) => s.id)).size, 18);
   assert.deepEqual(ids.slice(0, 10).map((s) => s.ref), Array.from({ length: 10 }, (_, i) => i + 1));
 });
 const full = readFileSync("src/theme-skins-full.css", "utf8");
 test("Song Quiet group uses the existing skin engine and light contrast mode", () => {
-  const quiet = ids.slice(10);
+  const quiet = ids.slice(10, 14);
   assert.equal(quiet.length, 4);
   assert.ok(quiet.every((s) => s.id.startsWith("song-") && s.mode === "light"));
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
   assert.match(manager, /data-song-quiet-skin-collection/);
   assert.ok(full.includes('html[data-zws^="song-"]'));
+});
+test("青木 series (15-18): three light skins and one dark rain skin on the existing engine", () => {
+  const g = ids.slice(14);
+  assert.equal(g.length, 4);
+  assert.ok(g.every((s) => s.id.startsWith("verdant-")));
+  assert.deepEqual(g.map((s) => s.mode), ["light", "light", "light", "dark"]);
+  const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
+  assert.match(manager, /data-qingmu-skin-collection/);
+  assert.ok(full.includes("ol.zw-home-steps") && full.includes("#birth-year"), "home panels + birth fields have dark-skin rules");
 });
 test("every skin has tokens, a full-set definition and crisp art on disk", () => {
   for (const { id } of ids) {
