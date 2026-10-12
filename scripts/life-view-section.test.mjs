@@ -13,16 +13,15 @@ const practiceSource = readFileSync(new URL("../src/lib/life-view-practice-manua
 const intakeSource = readFileSync(new URL("../src/lib/life-view-20260831.ts", import.meta.url), "utf8");
 const layout = readFileSync(new URL("../src/content-layout-fixes.css", import.meta.url), "utf8");
 
-test("home exposes Zhaowu Guan Shi Lu as a latest-first expandable editorial archive", () => {
+test("home exposes the Articles section as a latest-first expandable editorial archive", () => {
   assert.match(home, /LifeViewHomeSection/);
   assert.match(home, /<LazyLifeViewHomeSection \/>/);
   assert.match(home, /import\("@\/components\/life-view-home-section"\)/);
   assert.match(section, /id="life-view"/);
-  assert.match(section, /昭梧 · 觀世錄/);
-  assert.match(section, /昭梧 · 观世录/);
-  assert.match(section, /Zhaowu · Notes on Life/);
-  assert.match(section, /完整文章與觀世短札都收在觀世錄/);
-  assert.match(section, /完整文章与观世短札都收在观世录/);
+  assert.match(section, /昭梧 · 文章/);
+  assert.match(section, /Zhaowu · Articles/);
+  assert.match(section, /所有文章與短札都收在文章/);
+  assert.match(section, /所有文章与短札都收在文章/);
   assert.match(section, /full archive of essays and reflective short notes/);
 
   // Editorial content may keep growing. Keep long articles and short notes

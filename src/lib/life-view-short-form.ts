@@ -1,7 +1,7 @@
 import type { LifeViewArticle } from "@/lib/life-view";
 
 /**
- * Curated short-form notes for 「昭梧 · 觀世錄」.
+ * Curated short-form notes for the 「昭梧 · 文章」 section.
  * There is no article-count limit. Add meaningful notes as needed; keep each
  * piece focused, non-duplicative and readable. Editorial content only — never
  * alter BaZi/Ziwei calculation truth or report logic from here.
@@ -139,5 +139,36 @@ export const LIFE_VIEW_SHORT_FORM_ARTICLES: LifeViewArticle[] = [
       "zh-Hans": "知人，是看懂世界；自知，是看懂自己。胜人，不过赢得一时；自胜，才是不再反复败给自己的习气。\n\n知足，不是不再追求；守心，也不是固执不变。世事可以变，评价可以变，得失可以变，唯独不要把自己的心交出去。真正的自在，是外境变动时，仍知道自己为何而行、何处该止。",
       en: "To understand others is to read the world; to understand yourself is to read your own motives. Defeating someone else may win a moment. Self-mastery means no longer losing to the same habit in yourself again and again.\n\nContentment is not the end of aspiration, and guarding the mind is not stubbornness. Circumstances, opinions, gains and losses can all change. Do not hand over ownership of your mind with them. Freedom is knowing why you act and where to stop even while conditions keep moving.",
     },
+  },
+  {
+    "id": "twenty-three-mysticism-life-reminders",
+    "publishedAt": "2026-10-12",
+    "title": {
+      "zh-Hant": "人多少要懂一點玄學",
+      "zh-Hans": "人多少要懂一点玄学",
+      "en": "23 Folk Beliefs, 23 Grounded Reminders"
+    },
+    "summary": {
+      "zh-Hant": "從民俗象徵聊到日常選擇：玄學可以作為觀照，真正的生活仍靠行動、關係與休息。",
+      "zh-Hans": "从民俗象征聊到日常选择：玄学可以作为观照，真正的生活仍靠行动、关系与休息。",
+      "en": "A light look at folk beliefs and everyday choices. Use symbolism as reflection; build a good life through action, relationships and rest."
+    },
+    "body": {
+      "zh-Hant": "民俗說法可以當作聊天與自我提醒，不必當成命運保證。氣味、外貌、生肖與姓名筆畫，都不能可靠地衡量一個人的福氣、能力或未來。\n\n1. 氣味常受清潔、飲食與環境影響，不能用來判斷業力。\n\n2. 敏感是一種感受方式；先理解自己，也不必把它解讀成天選。\n\n3. 家中有幾位屬龍，不能保證一生衣食無憂。\n\n4. 兩個人同屬馬，可以是有趣的巧合，不代表日子必然順遂。\n\n5. 姓名筆畫吉凶屬於民俗說法，好運仍要靠選擇與行動。\n\n6. 牙齒整潔讓人更有精神；人緣與事業還要靠相處和努力。\n\n7. 精神好時把握機會，疲憊時好好休息。\n\n8. 孩子或動物願意親近你，是值得珍惜的信任與陪伴。\n\n9. 開心能讓人更有力量行動；好運也需要準備和把握。\n\n10. 走路穩健可能讓人更有信心，成事仍靠判斷與持續努力。\n\n11. 保持平常心、穩步做事，往往比急著求成更踏實。\n\n12. 遇到觀念不同的人，不必每件事都爭出輸贏；把力氣留給重要的溝通。\n\n13. 好好經營自己的生活，比一味羨慕別人更容易感到滿足。\n\n14. 害怕失敗時，先把注意力放回眼前能做好的那一步。\n\n15. 喜鵲報喜是吉祥的民俗意象，可以討個好彩頭，不是預言。\n\n16. 勤奮值得肯定，也要留意休息；過度操勞會傷身。\n\n17. 媽媽的陪伴可能帶來安慰；需要時，也可以尋求專業支持。\n\n18. 不必輕易放棄；若方向不合，也可以停下來調整。\n\n19. 幫別人創造價值有機會帶來收入，但收入仍取決於能力、合作與市場。\n\n20. 眉毛濃淡和外型不能決定毅力；能力可以靠練習累積。\n\n21. 常常傷害別人會消耗信任；尊重彼此，關係才有長久的空間。\n\n22. 心存善意本身就有價值，不必把它當成換取避災的條件。\n\n23. 孝親重在關心與陪伴；家庭和事業的穩定仍需要一起經營。",
+      "zh-Hans": "民俗说法可以当作聊天与自我提醒，不必当成命运保证。气味、外貌、生肖与姓名笔画，都不能可靠地衡量一个人的福气、能力或未来。\n\n1. 气味常受清洁、饮食与环境影响，不能用来判断业力。\n\n2. 敏感是一种感受方式；先理解自己，也不必把它解读成天选。\n\n3. 家中有几位属龙，不能保证一生衣食无忧。\n\n4. 两个人同属马，可以是有趣的巧合，不代表日子必然顺遂。\n\n5. 姓名笔画吉凶属于民俗说法，好运仍要靠选择与行动。\n\n6. 牙齿整洁让人更有精神；人缘与事业还要靠相处和努力。\n\n7. 精神好时把握机会，疲惫时好好休息。\n\n8. 孩子或动物愿意亲近你，是值得珍惜的信任与陪伴。\n\n9. 开心能让人更有力量行动；好运也需要准备和把握。\n\n10. 走路稳健可能让人更有信心，成事仍靠判断与持续努力。\n\n11. 保持平常心、稳步做事，往往比急着求成更踏实。\n\n12. 遇到观念不同的人，不必每件事都争出输赢；把力气留给重要的沟通。\n\n13. 好好经营自己的生活，比一味羡慕别人更容易感到满足。\n\n14. 害怕失败时，先把注意力放回眼前能做好的那一步。\n\n15. 喜鹊报喜是吉祥的民俗意象，可以讨个好彩头，不是预言。\n\n16. 勤奋值得肯定，也要留意休息；过度操劳会伤身。\n\n17. 妈妈的陪伴可能带来安慰；需要时，也可以寻求专业支持。\n\n18. 不必轻易放弃；若方向不合，也可以停下来调整。\n\n19. 帮别人创造价值有机会带来收入，但收入仍取决于能力、合作与市场。\n\n20. 眉毛浓淡和外型不能决定毅力；能力可以靠练习积累。\n\n21. 常常伤害别人会消耗信任；尊重彼此，关系才有长久的空间。\n\n22. 心存善意本身就有价值，不必把它当成换取避灾的条件。\n\n23. 孝亲重在关心与陪伴；家庭和事业的稳定仍需要一起经营。",
+      "en": "Folk beliefs can be a conversation starter or a prompt for reflection, but they cannot guarantee anyone's fate. Smell, appearance, zodiac signs and name strokes are not reliable measures of a person's fortune, ability or future.\n\n1. Personal scent is shaped by hygiene, diet and surroundings; it cannot reveal karma.\n\n2. Sensitivity is one way of experiencing the world. Understand it without assuming you were chosen by fate.\n\n3. Having several people born in the Year of the Dragon cannot guarantee lifelong security.\n\n4. Two people born in the Year of the Horse may share a fun coincidence; it does not promise an easy life.\n\n5. Lucky name strokes are a folk belief. Good outcomes still depend on choices and actions.\n\n6. Clean teeth can help you feel presentable; relationships and work still take care and effort.\n\n7. Use your energy when it is there, and rest when you are tired.\n\n8. A child or animal choosing to come near you is a trust worth cherishing.\n\n9. Happiness can give you more energy to act; good fortune also takes preparation and opportunity.\n\n10. A steady walk may build confidence; progress still takes judgment and sustained effort.\n\n11. A calm mind and steady work are often more useful than rushing for quick results.\n\n12. You do not have to win every disagreement. Save your energy for conversations that matter.\n\n13. Building a life you value is more fulfilling than constantly envying someone else's.\n\n14. When you fear failure, bring your attention back to the next step you can do well.\n\n15. A magpie as an omen of joy is a cheerful folk image, not a prediction.\n\n16. Diligence matters, and so does rest. Overwork can harm your health.\n\n17. A mother's company may be comforting; professional support can also help when needed.\n\n18. You do not have to give up at the first setback; you can also pause and change direction.\n\n19. Creating value for others may lead to income, but income also depends on skill, collaboration and the market.\n\n20. Eyebrow shape does not determine perseverance; abilities grow through practice.\n\n21. Repeatedly hurting others erodes trust. Respect gives relationships room to last.\n\n22. Kindness has value in itself; it is not a bargain to ward off misfortune.\n\n23. Caring for parents means showing up for them; stable family and work lives still take shared effort."
+    },
+    "illustrations": [
+      {
+        "src": "/images/articles/23-notes-on-mysticism.svg",
+        "afterParagraph": 1,
+        "alt": {
+          "zh-Hant": "23 條民俗與生活提醒直式圖卡",
+          "zh-Hans": "23 条民俗与生活提醒竖版图卡",
+          "en": "A vertical infographic with 23 folk belief and life reminders"
+        },
+        "display": "portrait"
+      }
+    ]
   },
 ];
