@@ -12,13 +12,17 @@ type Props = {
   fallbackText: string;
   compact?: boolean;
   gallery?: ImageViewerItem[];
+  /** "character" keeps the near-square 720x773 illustration uncropped; default is the 9:16 sprite cell. */
+  variant?: "sprite" | "character";
+  /** Lets a caller swap to a legacy asset when this one fails to load. */
+  onAssetError?: () => void;
 };
 
 export function toViewerItem(asset: ReportVisualAsset, alt: string): ImageViewerItem {
   return { id: asset.id, alt, thumbnailUrl: asset.thumbnailUrl, fullImageUrl: asset.fullImageUrl };
 }
 
-export function ReportSpriteArtwork({ asset, alt, fallbackText, compact = false, gallery }: Props) {
+export function ReportSpriteArtwork({ asset, alt, fallbackText, compact = false, gallery, variant = "sprite", onAssetError }: Props) {
   const { locale } = useI18n();
   const copy = viewerCopy(locale);
   const assetKey = useMemo(
@@ -40,7 +44,7 @@ export function ReportSpriteArtwork({ asset, alt, fallbackText, compact = false,
       : [];
 
   return (
-    <figure className={`zhaowu-sprite-artwork ${compact ? "is-compact" : ""}`}>
+    <figure className={`zhaowu-sprite-artwork ${compact ? "is-compact" : ""} ${variant === "character" ? "is-character" : ""}`}>
       {useFallback ? (
         <>
           <img src={FALLBACK_SRC} alt={alt} loading="lazy" decoding="async" className="zhaowu-sprite-image is-fallback" />
@@ -60,12 +64,15 @@ export function ReportSpriteArtwork({ asset, alt, fallbackText, compact = false,
           <img
             src={thumb}
             alt={alt}
-            width={420}
-            height={747}
+            width={variant === "character" ? 720 : 420}
+            height={variant === "character" ? 773 : 747}
             loading="lazy"
             decoding="async"
             className="zhaowu-sprite-image is-single"
-            onError={() => setFailed(true)}
+            onError={() => {
+              setFailed(true);
+              onAssetError?.();
+            }}
           />
           <span className="zhaowu-image-viewer-hint">{copy.hint}</span>
         </button>

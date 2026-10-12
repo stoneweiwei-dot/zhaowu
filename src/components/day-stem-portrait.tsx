@@ -1,7 +1,8 @@
+import { useState } from "react";
 import type { AnalysisResult } from "@/lib/bazi/types";
 import { ReportSpriteArtwork } from "@/components/report-sprite-artwork";
 import { useI18n, type Locale } from "@/lib/i18n";
-import { getReportVisualAsset } from "@/lib/report/report-visual-assets";
+import { getDayStemCharacterAsset, getReportVisualAsset } from "@/lib/report/report-visual-assets";
 import { buildReportVisualModel } from "@/lib/report/report-visual-model";
 import "./day-stem-portrait.css";
 
@@ -47,17 +48,24 @@ const COPY: Record<Locale, {
 
 /**
  * This is a report-only placement, not a homepage mascot or a parallel reading engine.
- * Until the newly approved character artwork is committed, the reviewed ten-stem
- * report mother images remain the source. Never substitute reference-site screenshots.
+ * The ten-stem character illustration (`/report-visuals/characters/<key>.webp`) loads first;
+ * the reviewed ten-stem mother image in `/report-visuals/full/` is the fallback if it fails.
+ * The stem glyph is always rendered as text in the heading — glyphs painted inside the
+ * artwork are decoration only and are never the source of truth. Never substitute
+ * reference-site screenshots.
  */
 export function DayStemPortrait({ result }: { result: AnalysisResult }) {
   const { locale } = useI18n();
+  const [failedCharacterKey, setFailedCharacterKey] = useState<string | null>(null);
   if (!result?.chart) return null;
   const model = buildReportVisualModel(result.chart, locale);
   const stem = model.dayMaster.stem;
   const english = STEM_ENGLISH[stem];
   if (!english) return null;
-  const art = getReportVisualAsset("day-master", model.dayMaster.visualKey);
+  const visualKey = model.dayMaster.visualKey;
+  const legacyArt = getReportVisualAsset("day-master", visualKey);
+  const characterArt = failedCharacterKey === visualKey ? null : getDayStemCharacterAsset(visualKey);
+  const art = characterArt ?? legacyArt;
   const isYin = model.dayMaster.yinYang === "陰";
   const copy = COPY[locale];
 
@@ -76,6 +84,8 @@ export function DayStemPortrait({ result }: { result: AnalysisResult }) {
         alt={`${stem} · ${english} · ${model.dayMaster.imageAlt}`}
         fallbackText={copy.artworkUnavailable}
         compact
+        variant={characterArt ? "character" : "sprite"}
+        onAssetError={characterArt ? () => setFailedCharacterKey(visualKey) : undefined}
       />
       <div className="zhaowu-day-stem-portrait__caption">
         <p className="zhaowu-day-stem-portrait__nature">{model.dayMaster.heavenImage}</p>
