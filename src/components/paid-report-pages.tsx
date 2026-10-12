@@ -355,7 +355,7 @@ function AnalysisNotes({
 /** Direct answer + one supporting line stay open; the rest of the overall summary folds. */
 const SUMMARY_VISIBLE_LINES = 1;
 
-export function FocusedReportSections({ sections, result, showChartArtwork = true }: { sections: ReportSection[]; result?: AnalysisResult; showChartArtwork?: boolean }) {
+export function FocusedReportSections({ sections, result, showChartArtwork = true, showReadingGuide = true }: { sections: ReportSection[]; result?: AnalysisResult; showChartArtwork?: boolean; showReadingGuide?: boolean }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const content = continuousReportContent(sections, locale);
@@ -371,7 +371,7 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
 
   return (
     <section className="zhaowu-focused-report zhaowu-report-continuous-sheet" aria-label={locale === "en" ? "Reading and full report" : locale === "zh-Hans" ? "导读与完整命书" : "導讀與完整命書"}>
-      {model ? <MobileReadingGuide model={model} locale={locale} /> : null}
+      {model && showReadingGuide ? <MobileReadingGuide model={model} locale={locale} /> : null}
       <details className="zhaowu-professional-report" data-professional-report>
         <summary>{locale === "en" ? "Open the full professional report" : locale === "zh-Hans" ? "展开专业命书与完整依据" : "展開專業命書與完整依據"}</summary>
       <div className="zhaowu-professional-report__body">

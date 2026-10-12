@@ -1,3 +1,6 @@
+import { JourneySteps } from "@/components/journey-steps";
+import { currentJourneyStep, type JourneyStep } from "@/lib/site-journey";
+import { CharacterPanel } from "@/components/character-panel";
 import { BirthDataNotice } from "@/components/birth-data-notice";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { analyzeLife } from "@/lib/actions";
@@ -72,6 +75,7 @@ export function AnalysisForm() {
   const [rememberedRecord, setRememberedRecord] = useState<SharedBirthRecord | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(true);
   const [chartDetailsOpen, setChartDetailsOpen] = useState(false);
+  const [questionOpen, setQuestionOpen] = useState(false);
 
   const copy = locale === "en"
     ? {
@@ -84,12 +88,12 @@ export function AnalysisForm() {
         birthData: "Birth record",
         calibrationTitle: "Time correction is automatic",
         calibrationBody: "Enter the local time shown on the birth certificate and select the birthplace. Longitude, historical time zone, daylight saving and true solar time are handled automatically.",
-        next: "Save and generate my Destiny Book",
+        next: "Generate my Destiny Book",
         saving: "Saving…",
         saved: "Birth record saved on this phone.",
         saveError: "Could not save the birth record. Please try again.",
         chartKicker: "STEP 2 · ZHAOWU DESTINY BOOK",
-        chartTitle: "Your Four Pillars and ZHAOWU Destiny Book",
+        chartTitle: "Your Destiny Book",
 
 
         foundation: "Technical terms",
@@ -105,7 +109,7 @@ export function AnalysisForm() {
         fullDetails: "Open your full Destiny Book reading",
 
         questionKicker: "STEP 3 · ASK YOUR DESTINY BOOK",
-        questionTitle: "Continue from your Destiny Book",
+        questionTitle: "Ask a question (optional)",
 
         questionLabel: "Your question",
         questionPlaceholder: "For example: Should I stay in this job or leave? What changes most over the next six months?",
@@ -125,12 +129,12 @@ export function AnalysisForm() {
           birthData: "出生资料",
           calibrationTitle: "时间校正由系统自动完成",
           calibrationBody: "只需填写出生证明上的当地时间并选择出生城市；经度、历史时区、夏令时与真太阳时由系统自动处理。",
-          next: "保存并生成昭梧命书",
+          next: "生成我的命书",
           saving: "正在保存…",
           saved: "生辰已保存在这台手机。",
           saveError: "保存失败，请再试一次。",
           chartKicker: "第二步 · 昭梧命书",
-          chartTitle: "你的四柱命盘与昭梧命书",
+          chartTitle: "你的命书",
 
 
           foundation: "术语版",
@@ -146,7 +150,7 @@ export function AnalysisForm() {
           fullDetails: "展开完整昭梧命书",
 
           questionKicker: "第三步 · 命书问答",
-          questionTitle: "沿着这份命书，继续问你真正关心的事",
+          questionTitle: "问个问题（选填）",
 
           questionLabel: "你的问题",
           questionPlaceholder: "例如：这份工作该继续还是离开？未来半年最大的变化在哪里？",
@@ -165,12 +169,12 @@ export function AnalysisForm() {
           birthData: "出生資料",
           calibrationTitle: "時間校正由系統自動完成",
           calibrationBody: "只需填寫出生證明上的當地時間並選擇出生城市；經度、歷史時區、夏令時與真太陽時由系統自動處理。",
-          next: "保存並生成昭梧命書",
+          next: "生成我的命書",
           saving: "正在保存…",
           saved: "生辰已保存在這台手機。",
           saveError: "保存失敗，請再試一次。",
           chartKicker: "第二步 · 昭梧命書",
-          chartTitle: "你的四柱命盤與昭梧命書",
+          chartTitle: "你的命書",
 
 
           foundation: "術語版",
@@ -186,7 +190,7 @@ export function AnalysisForm() {
           fullDetails: "展開完整昭梧命書",
 
           questionKicker: "第三步 · 命書問答",
-          questionTitle: "沿著這份命書，繼續問你真正關心的事",
+          questionTitle: "問個問題（選填）",
 
           questionLabel: "你的問題",
           questionPlaceholder: "例如：這份工作該繼續還是離開？未來半年最大的變化在哪裡？",
@@ -239,6 +243,7 @@ export function AnalysisForm() {
     writeSharedBirthRecord(record);
     setRememberedRecord(record);
     setDetailsOpen(false);
+    setQuestionOpen(false);
     if (session) {
       void updateBirthData(session, record as unknown as Record<string, unknown>)
         .then(() => window.dispatchEvent(new Event("zhaowu-auth-change")))
@@ -360,8 +365,22 @@ export function AnalysisForm() {
         }
     : null;
 
+  function selectStep(step: JourneyStep) {
+    if (step > 1 && (!rememberedRecord || detailsOpen)) return;
+    setError(null);
+    setDetailsOpen(step === 1);
+    setQuestionOpen(step === 3);
+    window.requestAnimationFrame(() => {
+      const id = step === 1 ? "birth-year" : step === 2 ? "bazi" : "analysis-question";
+      const target = document.getElementById(id);
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (step !== 2) target?.focus({ preventScroll: true });
+    });
+  }
+
   return (
     <form id="birth-form" data-legacy-id="analysisForm" className="zhaowu-analysis-flow" onSubmit={(event) => void submit(event)} data-device-first-flow="true">
+      <JourneySteps locale={locale} current={currentJourneyStep(Boolean(rememberedRecord), detailsOpen, questionOpen)} hasBirth={Boolean(rememberedRecord) && !detailsOpen} onSelect={selectStep} />
       <section id="customer-record" className="zhaowu-customer-record" aria-labelledby="zhaowu-customer-title">
         <header className="zhaowu-customer-head">
           <div>
@@ -380,11 +399,10 @@ export function AnalysisForm() {
           </div>
         ) : (
           <div className="zhaowu-birth-fields">
-            <p className="zhaowu-birth-fields-title">{copy.birthData}</p>
             <BirthDataNotice locale={locale} variant="birth" />
             <div className="zhaowu-time-calibration-note" data-auto-time-calibration="true">
               <strong>{copy.calibrationTitle}</strong>
-              <span>{copy.calibrationBody}</span>
+              <details><summary>{locale === "en" ? "How time is corrected" : locale === "zh-Hans" ? "校时说明" : "校時說明"}</summary><span>{copy.calibrationBody}</span></details>
             </div>
             <div className="zhaowu-birth-date-grid" data-invalid={dateError ? "true" : undefined}>
               {[
@@ -421,7 +439,7 @@ export function AnalysisForm() {
                   {t("timeUnknown")}
                 </label>
               </div>
-              <p id="time-importance" className="zhaowu-time-warning">{UNKNOWN_TIME_COPY[locale]}</p>
+              <p id="time-importance" className="zhaowu-time-warning">{timeUnknown ? UNKNOWN_TIME_COPY[locale] : locale === "en" ? "If you do not know the time, tick the box above." : locale === "zh-Hans" ? "不知道出生时间，也可以勾选后继续。" : "不知道出生時間，也可以勾選後繼續。"}</p>
               <div className="zhaowu-birth-time-grid">
                 <input id="birth-hour" aria-label={t("hourPh")} type="number" inputMode="numeric" min={0} max={23} required={!timeUnknown} disabled={timeUnknown} value={hour} placeholder={t("hourPh")} onChange={(event) => setHour(event.target.value)} />
                 <input id="birth-minute" aria-label={t("minutePh")} type="number" inputMode="numeric" min={0} max={59} disabled={timeUnknown} value={minute} placeholder={t("minutePh")} onChange={(event) => setMinute(event.target.value)} />
@@ -439,7 +457,16 @@ export function AnalysisForm() {
                 </select>
                 <small>{locale === "en" ? "Used for traditional luck-cycle direction and certain family readings. You may choose not to specify; the basic Four Pillars remain available. Relationship preference is separate." : locale === "zh-Hans" ? "用于传统大运顺逆及部分六亲判断。可以选择不提供，基本四柱仍可排出；伴侣偏好另行选择。" : "用於傳統大運順逆及部分六親判斷。可以選擇不提供，基本四柱仍可排出；伴侶偏好另行選擇。"}</small>
               </label>
-              <label htmlFor="relationship-preference">
+
+            </div>
+
+            <div className="zhaowu-birth-cities">
+              <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} invalid={birthCityError} errorMessage={birthCityError ? t("errCity") : undefined} onSelect={(city) => { setBirthCity(city); if (city) { setBirthCityError(false); setError(null); } }} />
+
+            </div>
+            <details className="zw-flow-optional">
+              <summary>{locale === "en" ? "Optional details" : locale === "zh-Hans" ? "补充资料（选填）" : "補充資料（選填）"}</summary>
+              <div className="zhaowu-birth-select-grid">                <label htmlFor="relationship-preference">
                 <span>{t("relation")}</span>
                 <select id="relationship-preference" value={relation} onChange={(event) => setRelation(event.target.value as AnalyzeInput["relation"])}>
                   <option value="unset">{t("unset")}</option>
@@ -448,18 +475,21 @@ export function AnalysisForm() {
                   <option value="same">{t("relSame")}</option>
                 </select>
                 <small>{t("relHint")}</small>
-              </label>
-            </div>
-
-            <div className="zhaowu-birth-cities">
-              <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} invalid={birthCityError} errorMessage={birthCityError ? t("errCity") : undefined} onSelect={(city) => { setBirthCity(city); if (city) { setBirthCityError(false); setError(null); } }} />
-              <CityPicker id="current-city" label={t("liveCity")} placeholder={t("liveCity")} optional optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={liveCity} onSelect={setLiveCity} />
+                </label>
+              </div>
+              <div className="zhaowu-birth-cities">
+                <CityPicker id="current-city" label={t("liveCity")} placeholder={t("liveCity")} optional optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={liveCity} onSelect={setLiveCity} />
+              </div>
+            </details>
+            <div className="zhaowu-analysis-submit-wrap" data-analysis-stage="birth">
+              <button type="submit" disabled={busy}>{busy ? copy.saving : copy.next}</button>
+              {rememberedRecord ? <button type="button" className="zhaowu-birth-edit" onClick={() => { applyBirth(rememberedRecord); setDetailsOpen(false); setQuestionOpen(false); setError(null); }}>{locale === "en" ? "Cancel edits" : locale === "zh-Hans" ? "取消修改" : "取消修改"}</button> : null}
             </div>
           </div>
         )}
       </section>
 
-      <section id="bazi" className="zhaowu-bazi-stage" aria-labelledby="zhaowu-bazi-title" aria-live="polite">
+      {showQuestion && !questionOpen ? <section id="bazi" className="zhaowu-bazi-stage" aria-labelledby="zhaowu-bazi-title" aria-live="polite">
         <header className="zhaowu-bazi-stage-head">
           <p className="zhaowu-section-kicker">{copy.chartKicker}</p>
           <h2 id="zhaowu-bazi-title">{copy.chartTitle}</h2>
@@ -471,17 +501,23 @@ export function AnalysisForm() {
               <h3 id="zhaowu-bazi-plain-title">{copy.plainTitle}</h3>
               <p className="zhaowu-bazi-plain__lead">{copy.plainLead}</p>
               <ol>
-                {plainItems.map((item) => (
+                {plainItems.slice(0, 2).map((item) => (
                   <li key={item.key} data-plain-item={item.key}>
                     <strong>{item.title}</strong>
                     <p>{item.body}</p>
                   </li>
                 ))}
               </ol>
+              <button type="button" className="zw-flow-next" onClick={() => selectStep(3)}>{locale === "en" ? "Ask a question" : locale === "zh-Hans" ? "继续：问个问题" : "繼續：問個問題"}<span aria-hidden="true"> →</span></button>
+              <p className="zw-flow-note">{locale === "en" ? "Optional. Your birth details are already saved on this device." : locale === "zh-Hans" ? "提问是选填；生辰已保存在这台设备。" : "提問是選填；生辰已保存在這台裝置。"}</p>
+              <details className="zw-flow-optional"><summary>{locale === "en" ? "More about your chart" : locale === "zh-Hans" ? "更多命盘解读" : "更多命盤解讀"}</summary>
+                {plainItems.slice(2).map(item => <div key={item.key}><strong>{item.title}</strong><p>{item.body}</p></div>)}
+              </details>
             </section>
             <details className="zhaowu-chart-details zhaowu-bazi-fold" data-fold="chart">
-              <summary>{copy.chartToggle}</summary>
+              <summary>{locale === "en" ? "Chart and stem / branch artwork" : locale === "zh-Hans" ? "命盘与天干地支图" : "命盤與天干地支圖"}</summary>
               <BaziChart chart={previewChart} showHeader={false} expandDetails={false} />
+              <CharacterPanel chart={previewChart} />
             </details>
             <details className="zhaowu-chart-details zhaowu-bazi-fold" data-fold="terms">
               <summary>{copy.foundation}</summary>
@@ -510,14 +546,10 @@ export function AnalysisForm() {
               ) : null}
             </details>
           </div>
-        ) : (
-          <div className="zhaowu-bazi-pending">
-            <button type="submit" disabled={busy}>{busy ? copy.saving : copy.next}</button>
-          </div>
-        )}
-      </section>
+        ) : <p role="status">{locale === "en" ? "Your chart could not be shown. Edit your birth details to try again." : locale === "zh-Hans" ? "命盘暂时无法显示，请修改出生资料后重试。" : "命盤暫時無法顯示，請修改出生資料後重試。"}</p>}
+      </section> : null}
 
-      {showQuestion ? (
+      {showQuestion && questionOpen ? (
         <section id="question-stage" className="zhaowu-question-sheet zhaowu-question-stage" aria-labelledby="zhaowu-question-title">
           <div className="zhaowu-question-stage-head">
             <div>
@@ -546,7 +578,7 @@ export function AnalysisForm() {
       ) : null}
 
       {error ? <p role="alert" className="zhaowu-analysis-error">{error}</p> : null}
-      {showQuestion ? (
+      {showQuestion && questionOpen ? (
         <div className="zhaowu-analysis-submit-wrap" data-analysis-stage="question">
           <button type="submit" disabled={busy}>{busy ? copy.analysing : copy.analyze}</button>
         </div>
