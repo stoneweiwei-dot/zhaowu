@@ -21,8 +21,9 @@ export function buildIllustratedDestiny(result: AnalysisResult): IllustratedDest
   const directAnswer = model.directAnswer.trim();
   if (!sourceClaim || !directAnswer || model.confidence === "limited") return null;
 
+  // Unknown birth time reduces the visual confidence label, but does not erase
+  // an otherwise supported claim from the existing decision model.
   const confidence = result.chart.timeUnknown ? "limited" : "medium";
-  if (confidence === "limited") return null;
 
   const sceneType: IllustratedSceneType = model.contract.kind === "career"
     ? "workshop"
