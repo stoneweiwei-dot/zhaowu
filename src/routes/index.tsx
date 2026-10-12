@@ -30,9 +30,10 @@ function useCopy(locale: string) {
       kicker: "ZHAOWU · PERSONAL DESTINY BOOK",
       title: "One birth record. One ZHAOWU Destiny Book.",
       tagline: "Heaven counts to forty-nine — and leaves one line open.",
-      birthCta: "Build my Destiny Book",
-      birthHint: "About 1 minute · no sign-up · unsure of the hour? You can still start",
-      exploreLead: "Not ready to chart? Look around first",
+      birthCta: "Start here: enter your birth date",
+      birthHint: "Free · no sign-up · about 1 minute",
+      steps: ["Enter your birth date and time", "Tap “Save and generate” to see your chart", "Write your question, then tap “Analyse”"],
+      moreTitle: "More features",
       navBook:  "Create report",
       navToday: "Today",
       navQuiz:  "Explore",
@@ -60,9 +61,10 @@ function useCopy(locale: string) {
       kicker: "昭梧 · 个人命书",
       title: "一份生辰，读成一本昭梧命书",
       tagline: "天衍四九，其留与一。爱出者爱返，福往者福来。",
-      birthCta: "开始建立我的命书",
-      birthHint: "约 1 分钟 · 免注册 · 不确定时辰也能先开始",
-      exploreLead: "还不想排盘？先随意逛逛",
+      birthCta: "从这里开始：填写出生日期",
+      birthHint: "免费 · 免登录 · 约 1 分钟",
+      steps: ["填写出生年月日与时间", "按「保存并生成昭梧命书」看命盘", "写下想问的事，按「开始分析」看答案"],
+      moreTitle: "其他功能",
       navBook:  "排盘与报告",
       navToday: "今日黄历",
       navQuiz:  "测验",
@@ -90,9 +92,10 @@ function useCopy(locale: string) {
     kicker: "昭梧 · 個人命書",
     title: "一份生辰，讀成一本昭梧命書",
     tagline: "天衍四九，其留與一。愛出者愛返，福往者福來。",
-    birthCta: "開始建立我的命書",
-    birthHint: "約 1 分鐘 · 免註冊 · 不確定時辰也能先開始",
-    exploreLead: "還不想排盤？先隨意逛逛",
+    birthCta: "從這裡開始：填寫出生日期",
+    birthHint: "免費 · 免登入 · 約 1 分鐘",
+    steps: ["填寫出生年月日與時間", "按「保存並生成昭梧命書」看命盤", "寫下想問的事，按「開始分析」看答案"],
+    moreTitle: "其他功能",
     backHome: "返回主頁",
     navBook:  "排盤與報告",
     navToday: "今日黃曆",
@@ -160,9 +163,8 @@ function heroUiCopy(locale: string) {
 }
 
 /* ── Nav item data ─────────────────────────────────────────── */
-/* Owner 2026-10-08 mockup: illustrated paper cards (art from the owner's scene set).
- * 2026-10-12: "form" is no longer a card — the birth ticket above is the single start;
- * these three are the optional "look around" entries. */
+/* Owner 2026-10-12: the birth form is now inline on the home page (single entry
+   for older visitors), so only the three secondary portals remain as cards. */
 const NAV_ITEMS: { id: Exclude<Section, "form">; artSrc: string }[] = [
   { id: "today", artSrc: "/art/scene-lotus-boat-v1.webp" },
   { id: "quiz",  artSrc: "/art/scene-osmanthus-tea-v1.webp" },
@@ -264,6 +266,18 @@ function Home() {
     });
   };
 
+  /* Home ticket: the form is already on the page, so only scroll + focus. */
+  const focusBirthForm = () => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.getElementById("birth-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.setTimeout(() => {
+          document.getElementById("birth-year")?.focus({ preventScroll: true });
+        }, 350);
+      });
+    });
+  };
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const BIRTH_HASHES = ["#birth-form", "#analysis", "#analysisForm", "#birth-year", "#form"];
@@ -313,56 +327,35 @@ function Home() {
   return (
     <main className="zw-hero-home">
 
-      {/* ── HOME MAIN: HERO & 4 BIG PORTALS (shown when no subview active) ── */}
+      {/* ── HOME MAIN: ONE ENTRY. Title → 3 plain steps → the birth form itself (rendered below). ── */}
       {activeSection === null && (
-        <>
-          {/* ── BRAND INSCRIPTION ───────────────────────────────── */}
-          <div className="zw-hero-inscription">
-            <p className="zw-hero-inscription-kicker">{copy.kicker}</p>
-            <h1 className="zw-hero-inscription-title">{copy.title}</h1>
-            <p className="zw-hero-inscription-tagline">{copy.tagline}</p>
-            <button
-              type="button"
-              className="zw-birth-entry-ticket"
-              data-home-birth-entry
-              aria-controls="birth-form"
-              aria-expanded={false}
-              onClick={() => openBirthBook({ focusYear: true })}
-            >
-              <span className="zw-birth-entry-seal" aria-hidden>命</span>
-              <span className="zw-birth-entry-copy">
-                <strong>{copy.birthCta}</strong>
-                <small>{copy.birthHint}</small>
-              </span>
-              <span className="zw-birth-entry-arrow" aria-hidden>→</span>
-            </button>
-            <IntroReplayButton />
-          </div>
-
-          {/* ── OPTIONAL EXPLORE PORTALS (birth entry is the ticket above) ── */}
-          <div className="zw-hero-nav-wrap">
-            <p className="zw-hero-nav-lead">{copy.exploreLead}</p>
-            <nav className="zw-hero-nav zw-hero-nav--explore" aria-label={heroUi.primaryNav}>
-              {NAV_ITEMS.map(({ id, artSrc }) => (
-                <button
-                  key={id}
-                  type="button"
-                  data-home-card={id}
-                  className="zw-hero-nav-item zw-hero-card"
-                  aria-label={navLabels[id]}
-                  onClick={() => toggleSection(id)}
-                >
-                  <img src={artSrc} className="zw-hero-card-art" alt="" aria-hidden loading="lazy" decoding="async" width={760} height={504} />
-                  <span className="zw-hero-card-copy">
-                    <span className="zw-hero-nav-label">{navLabels[id]}</span>
-                    <small>{NAV_HINTS[locale][id]}</small>
-                  </span>
-                  <span className="zw-hero-card-arrow" aria-hidden>→</span>
-                </button>
-              ))}
-            </nav>
-          </div>
-        </>
+        <div className="zw-hero-inscription">
+          <p className="zw-hero-inscription-kicker">{copy.kicker}</p>
+          <h1 className="zw-hero-inscription-title">{copy.title}</h1>
+          <p className="zw-hero-inscription-tagline">{copy.tagline}</p>
+          <ol className="zw-home-steps" data-home-steps>
+            {copy.steps.map((step, index) => (
+              <li key={step}>
+                <span className="zw-home-steps-num" aria-hidden>{index + 1}</span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+          <button
+            type="button"
+            className="zw-birth-entry-ticket"
+            data-home-birth-entry
+            aria-controls="birth-form"
+            onClick={focusBirthForm}
+          >
+            <span className="zw-birth-entry-seal" aria-hidden>命</span>
+            <span className="zw-birth-entry-copy">
+              <strong>{copy.birthCta}</strong>
+              <small>{copy.birthHint}</small>
+            </span>
+            <span className="zw-birth-entry-arrow" aria-hidden>↓</span>
+          </button>
+        </div>
       )}
 
       {/* ── SUBVIEW TOPBAR: RETURN TO 4 BIG PORTALS ──────────── */}
@@ -401,16 +394,16 @@ function Home() {
         </div>
       )}
 
-      {/* ── DEDICATED VIEW: FORM & DESTINY BOOK ─────────────── */}
-      {activeSection === "form" && (
+      {/* ── FORM & DESTINY BOOK: inline on the home page, and as the "form" subview ── */}
+      {(activeSection === null || activeSection === "form") && (
         <>
-          <section className="zw-report-wayfinding">
+          {activeSection === "form" ? <section className="zw-report-wayfinding">
             <h2>{locale === "en" ? (current ? "Your report is ready" : "Create your report") : locale === "zh-Hans" ? (current ? "你的报告已生成" : "开始排盘与提问") : (current ? "你的報告已生成" : "開始排盤與提問")}</h2>
             <p>{locale === "en" ? "1. Enter birth details → 2. Ask a question → 3. Read your answer. Saved results are in My reports." : locale === "zh-Hans" ? "① 填出生资料 → ② 写下问题 → ③ 看答案。以后从「我的报告」重看。" : "① 填出生資料 → ② 寫下問題 → ③ 看答案。以後從「我的報告」重看。"}</p>
             <a href="/history">{locale === "en" ? "My saved reports" : locale === "zh-Hans" ? "查看我的报告" : "查看我的報告"}</a>
             {current ? <a href="#report">{locale === "en" ? "Read this answer" : locale === "zh-Hans" ? "直接看本次答案" : "直接看本次答案"}</a> : null}
             {user?.isOwner ? <p className="zw-owner-access-note">{locale === "en" ? "Owner access: all report content is available without payment." : locale === "zh-Hans" ? "站主已登入：所有报告内容免费阅读，无需购买。" : "站主已登入：所有報告內容免費閱讀，無需購買。"}</p> : null}
-          </section>
+          </section> : null}
           <details className="zw-report-edit" open={formExpanded} onToggle={event => setFormExpanded(event.currentTarget.open)}>
             <summary>{locale === "en" ? "Birth details and question" : locale === "zh-Hans" ? "出生资料与问题（点此修改）" : "出生資料與問題（點此修改）"}</summary>
           <HomeSectionBoundary
@@ -447,6 +440,33 @@ function Home() {
             </>
           )}
         </>
+      )}
+
+      {/* ── SECONDARY PORTALS (home only, below the form) ───── */}
+      {activeSection === null && (
+        <div className="zw-hero-nav-wrap zw-home-more">
+          <h2 className="zw-home-more-title">{copy.moreTitle}</h2>
+          <nav className="zw-hero-nav zw-hero-nav--explore" aria-label={heroUi.primaryNav}>
+            {NAV_ITEMS.map(({ id, artSrc }) => (
+              <button
+                key={id}
+                type="button"
+                data-home-card={id}
+                className="zw-hero-nav-item zw-hero-card"
+                aria-label={navLabels[id]}
+                onClick={() => toggleSection(id)}
+              >
+                <img src={artSrc} className="zw-hero-card-art" alt="" aria-hidden loading="lazy" decoding="async" width={760} height={504} />
+                <span className="zw-hero-card-copy">
+                  <span className="zw-hero-nav-label">{navLabels[id]}</span>
+                  <small>{NAV_HINTS[locale][id]}</small>
+                </span>
+                <span className="zw-hero-card-arrow" aria-hidden>→</span>
+              </button>
+            ))}
+          </nav>
+          <IntroReplayButton />
+        </div>
       )}
 
       {/* ── DEDICATED VIEW: QUIZ ────────────────────────────── */}
