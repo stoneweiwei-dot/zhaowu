@@ -8,7 +8,7 @@ export function JourneyNavigation() {
   const en = locale === "en", hans = locale === "zh-Hans";
   const items = [
     { href: "/", label: en ? "Home" : hans ? "首页" : "首頁" },
-    { href: "/#birth-form", label: en ? "Create report" : hans ? "开始排盘" : "開始排盤" },
+    { href: "/#birth-form", label: en ? "Build my book" : hans ? "建立命书" : "建立命書" },
     { href: "/history", label: en ? "My reports" : hans ? "我的报告" : "我的報告" },
   ];
   const systems = [

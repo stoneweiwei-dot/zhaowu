@@ -9822,3 +9822,25 @@ html body #daily-almanac [data-wardrobe-note="jewellery"] .zhaowu-wardrobe-acces
     grid-template-columns: minmax(0, 1fr) 78px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2026-10-12 · Home entry consolidation
+   The birth ticket is the single start. The illustrated cards below it are the
+   optional "look around" entries (today / tests / notes), so they get a quiet
+   lead line and a 1-column (phone) / 3-column (≥720px) grid instead of 2/4.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html body .zw-hero-nav-lead {
+  margin: 0 0 8px;
+  padding: 0 2px;
+  color: #6b5f4a;
+  font-family: var(--font-display);
+  font-size: .82rem;
+  letter-spacing: .12em;
+  line-height: 1.5;
+}
+html body .zw-hero-nav.zw-hero-nav--explore { grid-template-columns: minmax(0, 1fr) !important; }
+html body .zw-hero-nav--explore .zw-hero-nav-item.zw-hero-card { min-height: 112px; }
+@media (min-width: 720px) {
+  html body .zw-hero-nav.zw-hero-nav--explore { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  html body .zw-hero-nav--explore .zw-hero-nav-item.zw-hero-card { min-height: 150px; }
+}
