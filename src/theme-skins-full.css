@@ -763,3 +763,6 @@ html[data-zws][data-zws][data-zws][data-zws] body .zw-saved-report-card {
   box-shadow: none !important;
   outline: none;
 }
+
+/* Replay remains a real touch target even after its pill frame is removed. */
+html[data-zws] body .zw-intro-replay { min-height: 44px; }

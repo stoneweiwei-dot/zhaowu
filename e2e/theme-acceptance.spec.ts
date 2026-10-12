@@ -28,17 +28,17 @@ async function metrics(page: Page, selectors: string[]) {
 
 async function healthy(page: Page, label: string) {
   const sizes = await page.evaluate(() => ({ width: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
-  expect(sizes.scroll, `${label}: horizontal overflow`).toBeLessThanOrEqual(sizes.width + 1);
+  expect.soft(sizes.scroll, `${label}: horizontal overflow`).toBeLessThanOrEqual(sizes.width + 1);
   const secondary = await metrics(page, ['.zw-journey-nav a:not([aria-current])', '.zw-journey-help', '.zhaowu-birth-edit', '.zw-subview-back-btn', '.zw-intro-replay']);
   for (const m of secondary) {
-    expect(alpha(m.bg), `${label}: ${m.selector} still has a pasted background`).toBe(0);
-    expect(m.shadow, `${label}: ${m.selector} has a floating shadow`).toBe('none');
-    expect(m.height, `${label}: ${m.selector} touch target`).toBeGreaterThanOrEqual(44);
+    expect.soft(alpha(m.bg), `${label}: ${m.selector} still has a pasted background`).toBe(0);
+    expect.soft(m.shadow, `${label}: ${m.selector} has a floating shadow`).toBe('none');
+    expect.soft(m.height, `${label}: ${m.selector} touch target`).toBeGreaterThanOrEqual(44);
   }
   const headings = await metrics(page, ['#zhaowu-customer-title', '.zhaowu-bazi-stage-head h2', '.zw-home-more-title', '.zw-subview-title', '.zhaowu-report-title', '.zhaowu-report-summary-block h4']);
   for (const m of headings) {
-    expect(alpha(m.bg), `${label}: ${m.selector} heading is a pasted panel`).toBe(0);
-    expect(m.shadow, `${label}: ${m.selector} heading shadow`).toBe('none');
+    expect.soft(alpha(m.bg), `${label}: ${m.selector} heading is a pasted panel`).toBe(0);
+    expect.soft(m.shadow, `${label}: ${m.selector} heading shadow`).toBe('none');
   }
   // Measure computed foreground against the real opaque ancestor surface.
   // Image-backed labels without an opaque carrier need screenshot review;
@@ -61,7 +61,7 @@ async function healthy(page: Page, label: string) {
       return { text: el.textContent?.trim().slice(0, 35), ratio: (Math.max(a, b) + .05) / (Math.min(a, b) + .05), imageBacked: false };
     });
   });
-  for (const m of contrasts) if (m.ratio !== null) expect(m.ratio, `${label}: ${m.text} computed text contrast`).toBeGreaterThanOrEqual(4.5);
+  for (const m of contrasts) if (m.ratio !== null) expect.soft(m.ratio, `${label}: ${m.text} computed text contrast`).toBeGreaterThanOrEqual(4.5);
   return { secondary, headings, contrasts };
 }
 
@@ -78,11 +78,15 @@ for (const skin of SKINS) {
     page.on('pageerror', error => errors.push(error.message));
     await context.route('**/*', async route => {
       const request = route.request(), url = new URL(request.url());
-      const json = (data: unknown, status = 200) => route.fulfill({ status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(data) });
+      const json = (data: unknown, status = 200) => route.fulfill({ status, contentType: 'application/json', headers: {
+        'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET,POST,PATCH,DELETE,OPTIONS',
+        'access-control-allow-headers': 'authorization,apikey,content-type,prefer,x-client-info',
+      }, body: JSON.stringify(data) });
       if (url.origin === 'http://127.0.0.1:4173' && !url.pathname.startsWith('/api/')) return route.continue();
       if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') return route.continue();
       if (request.method() !== 'GET' && request.method() !== 'OPTIONS') writes++;
       if (url.pathname === '/api/owner-data' && request.method() === 'POST') themeWrites++;
+      if (request.method() === 'OPTIONS') return json({});
       if (url.pathname === '/api/owner-session') return json({ authenticated: false });
       if (url.pathname === '/api/owner-data' && url.searchParams.get('view') === 'site-skin') return json({ configured: true, skin: skin.id });
       if (url.pathname.endsWith('/stripe-checkout')) return json({ ok: true, paid, product: paid ? 'system' : undefined, system: 'bazi' });
