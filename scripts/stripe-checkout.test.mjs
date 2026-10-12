@@ -15,8 +15,8 @@ const repriceMigration = await readFile(new URL("../supabase/migrations/20261013
 
 test("the public paid catalogue shows quick as free and new live prices", () => {
   assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
-  assert.match(client, /system: \\{ amountCents: 990, price: "US\\$9\\.90" \\}/);
-  assert.match(client, /bundle: \\{ amountCents: 1999, price: "US\\$19\\.99" \\}/);
+  assert.match(client, /system: \{ amountCents: 990, price: "US\$9\.90" \}/);
+  assert.match(client, /bundle: \{ amountCents: 1999, price: "US\$19\.99" \}/);
 });
 
 test("the webhook accepts new prices and preserves legacy checkout recovery", () => {
@@ -29,7 +29,7 @@ test("BaZi and all six specialist systems use the new live Stripe Payment Links"
   for (const system of ["bazi", "ziwei", "qizheng", "western", "indian", "palm", "numerology"]) {
     assert.match(client, new RegExp(`${system}: \\{`));
   }
-  assert.equal((client.match(/https:\\/\\/buy\\.stripe\\.com\\//g) || []).length, 13);
+  assert.equal((client.match(/https:\/\/buy\.stripe\.com\//g) || []).length, 13);
   assert.match(client, /url\.searchParams\.set\("client_reference_id", accessKey\)/);
   assert.doesNotMatch(client, /method:\s*"POST"/);
   assert.doesNotMatch(client, /STRIPE_(?:SECRET|RESTRICTED)_KEY/);
@@ -71,4 +71,7 @@ test("entitlements remain server-only, constrained and protected by RLS", () => 
   assert.match(migration, /amount_cents in \(199, 499, 999\)/i);
   assert.match(migration, /revoke all on table public\.report_purchase_entitlements from public, anon, authenticated/i);
   assert.match(migration, /checkout_session_id text not null unique/i);
+  assert.match(repriceMigration, /amount_cents in \(199, 499, 990, 999, 1999\)/i);
+  assert.match(repriceMigration, /product_id = 'system' and amount_cents in \(499, 990\)/i);
+  assert.match(repriceMigration, /product_id = 'bundle' and amount_cents in \(999, 1999\)/i);
 });

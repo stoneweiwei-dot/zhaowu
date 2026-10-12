@@ -22,8 +22,8 @@ const [client, gate, specialist, palm, numerology, unified, personalComponent, p
 // amounts; BaZi is a separate USD 9.90 purchase and the bundle excludes it.
 test("the report catalogue is fixed at free quick, US$9.90 per system and US$19.99 bundle", () => {
   assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
-  assert.match(client, /system: \\{ amountCents: 990, price: "US\\$9\\.90" \\}/);
-  assert.match(client, /bundle: \\{ amountCents: 1999, price: "US\\$19\\.99" \\}/);
+  assert.match(client, /system: \{ amountCents: 990, price: "US\$9\.90" \}/);
+  assert.match(client, /bundle: \{ amountCents: 1999, price: "US\$19\.99" \}/);
   assert.match(gate, /basic chart is free/i);
   assert.match(gate, /不自動續費/);
 });
