@@ -97,7 +97,7 @@ export async function refreshSharedSkin(): Promise<string | null> {
   if (typeof window === "undefined") return null;
   const token = ++syncSerial;
   try {
-    const response = await fetch("/api/site-skin", { cache: "no-store", credentials: "same-origin" });
+    const response = await fetch("/api/owner-data?view=site-skin", { cache: "no-store", credentials: "same-origin" });
     if (!response.ok) return null; // keep last known skin if the setting service is unavailable
     const payload = await response.json() as { skin?: unknown; configured?: boolean };
     const selected = payload.skin === "none" ? "none" : typeof payload.skin === "string" && skinById(payload.skin) ? payload.skin : null;
@@ -128,12 +128,12 @@ export async function publishSkin(id: string): Promise<void> {
   const chosen = id === "" || id === "none" ? "none" : skinById(id)?.id;
   if (!chosen) throw new Error("未知主題，不能發佈。");
   const token = ++syncSerial;
-  const response = await fetch("/api/site-skin", {
+  const response = await fetch("/api/owner-data", {
     method: "POST",
     cache: "no-store",
     credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ skin: chosen }),
+    body: JSON.stringify({ action: "site-skin.publish", skin: chosen }),
   });
   if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : "全站主題尚未儲存，請稍後重試。");
   const data = await response.json() as { ok?: boolean; skin?: string };
