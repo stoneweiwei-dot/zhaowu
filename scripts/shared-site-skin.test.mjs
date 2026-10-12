@@ -34,18 +34,20 @@ test("public read: upstream error is not mistaken for classic", async () => {
 });
 
 test("owner write is cookie gated, same-origin only and the UI never reports local-only success", () => {
-  const api = readFileSync("api/site-skin.js", "utf8");
+  const api = readFileSync("api/owner-data.js", "utf8");
   const skin = readFileSync("src/lib/theme-skins.ts", "utf8");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
   const shell = readFileSync("src/components/site-shell.tsx", "utf8");
   assert.match(api, /ownerSecretFromRequest\(req\)/);
-  assert.match(api, /if \(!sameOriginWrite\(req\)\)/);
-  assert.match(api, /if \(!secret\)/);
+  assert.match(api, /if \(!requestIsSameOrigin\(req\)\)/);
+  assert.match(api, /if \(!ownerSecret\)/);
   assert.match(api, /validSiteSkin\(payload\?\.skin\)/);
-  assert.match(skin, /await fetch\("\/api\/site-skin", \{/);
+  assert.match(skin, /await fetch\("\/api\/owner-data", \{/);
   assert.match(skin, /if \(!response\.ok\) throw new Error/);
   assert.match(skin, /localStorage\.removeItem\(SKIN_KEY\)/);
   assert.doesNotMatch(skin, /localStorage\.setItem\(SKIN_KEY/);
+  assert.match(api, /view !== "site-skin"/);
+  assert.match(api, /action === "site-skin.publish"/);
   assert.match(manager, /await apply\(next\)/);
   assert.match(shell, /refreshSharedSkin\(\)/);
 });
