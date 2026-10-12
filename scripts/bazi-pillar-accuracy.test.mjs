@@ -92,14 +92,14 @@ describe("solar terms (節) vs sxtwl", () => {
   for (let y = 1930; y <= 2050; y++)
     for (const n of JIE_NAMES) rows.push({ y, n, d: solarTermUtc(y, JIE[n][0]).getTime() / 1000 - sxtwl(y, n) });
 
-  test("baseline guard: every 節 1930-2050 within 15 min of sxtwl (current measured max ≈ 13 min)", () => {
+  test("every 節 1930-2050 within 15 min of sxtwl (guard for the analytic fallback)", () => {
     assert.ok(maxAbs(rows.map((r) => r.d)) <= 15 * 60, `max ${maxAbs(rows.map((r) => r.d))}s`);
   });
   test("no systematic drift: mean error within ±5 min", () => {
     const mean = rows.reduce((s, r) => s + r.d, 0) / rows.length;
     assert.ok(Math.abs(mean) <= 300, `mean ${mean}s`);
   });
-  test("every 節 1930-2050 within 90 s of sxtwl", { todo: "KNOWN DEFECT: Meeus low-accuracy sunLongitude, max ≈ 13 min / mean ≈ 2 min early" }, () => {
+  test("every 節 1930-2050 within 90 s of sxtwl", () => {
     const worst = rows.reduce((a, r) => (Math.abs(r.d) > Math.abs(a.d) ? r : a));
     assert.ok(Math.abs(worst.d) <= 90, `worst ${worst.y}${worst.n} ${worst.d.toFixed(0)}s`);
   });
@@ -131,7 +131,7 @@ describe("year / month pillar at 節 boundaries", () => {
       assert.equal(miss.length, 0, miss.slice(0, 5).join(", "));
     });
   for (const off of [-120, 120])
-    test(`month + 立春 year pillar correct at 節 ${off > 0 ? "+" : ""}${off} s, 1930-2050`, { todo: "KNOWN DEFECT: term instant error up to 13 min flips pillars inside that window" }, () => {
+    test(`month + 立春 year pillar correct at 節 ${off > 0 ? "+" : ""}${off} s, 1930-2050`, () => {
       const miss = probe(off, 1930, 2050);
       assert.equal(miss.length, 0, `${miss.length} wrong, e.g. ${miss.slice(0, 5).join(", ")}`);
     });
