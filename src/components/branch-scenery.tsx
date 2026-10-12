@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { AnalysisResult } from "@/lib/bazi/types";
+import type { AnalysisResult, Chart } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
 import { BRANCH_COPY, branchSceneryUrl, branchesInChart } from "@/lib/report/branch-scenery";
 import "./branch-scenery.css";
@@ -9,10 +9,10 @@ import "./branch-scenery.css";
  * (distinct, max four) — never all twelve. Titles/copy are text; the images are decoration and
  * fall back to text alone if they fail to load.
  */
-export function BranchScenery({ result }: { result: AnalysisResult }) {
+export function BranchScenery({ result, chart = result?.chart }: { result?: AnalysisResult; chart?: Chart }) {
   const { locale } = useI18n();
   const [failed, setFailed] = useState<Set<string>>(() => new Set());
-  const zhis = (result?.chart?.pillars ?? []).filter((p) => p.ready !== false).map((p) => p.zhi);
+  const zhis = (chart?.pillars ?? []).filter((p) => p.ready !== false).map((p) => p.zhi);
   const scenes = branchesInChart(zhis);
   if (!scenes.length) return null;
   const copy = BRANCH_COPY[locale];

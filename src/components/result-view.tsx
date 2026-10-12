@@ -403,7 +403,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </div>
 
       {msg ? <p className="zhaowu-result-message text-sm text-cinnabar mt-2">{msg}</p> : null}
-      {reportSections ? <FocusedReportSections sections={reportSections} result={result} /> : null}
+      {reportSections ? <FocusedReportSections sections={reportSections} result={result} showChartArtwork={false} /> : null}
       <p className="text-xs leading-6 text-ink-mute mt-4">{t("disclaimer")}</p>
     </section>
   );
