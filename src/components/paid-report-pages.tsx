@@ -10,6 +10,7 @@ import { EvidenceGovernancePanel } from "@/components/evidence-governance-panel"
 import { FiveElementTrainingBlock } from "@/components/five-element-training-block";
 import { IllustratedDestinyPanel, IllustratedShareCard } from "@/components/illustrated-destiny-panel";
 import { DayStemPortrait } from "@/components/day-stem-portrait";
+import { MobileReadingGuide } from "@/components/mobile-reading-guide";
 import { BranchScenery } from "@/components/branch-scenery";
 
 const COPY = {
@@ -369,7 +370,11 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
   if (!content.summary.length && !content.body.length) return null;
 
   return (
-    <section className="zhaowu-focused-report zhaowu-report-continuous-sheet" aria-labelledby="focused-report-title">
+    <section className="zhaowu-focused-report zhaowu-report-continuous-sheet" aria-label={locale === "en" ? "Reading and full report" : locale === "zh-Hans" ? "导读与完整命书" : "導讀與完整命書"}>
+      {model ? <MobileReadingGuide model={model} locale={locale} /> : null}
+      <details className="zhaowu-professional-report" data-professional-report>
+        <summary>{locale === "en" ? "Open the full professional report" : locale === "zh-Hans" ? "展开专业命书与完整依据" : "展開專業命書與完整依據"}</summary>
+      <div className="zhaowu-professional-report__body">
       <header className="zhaowu-report-header">
         <img className="zhaowu-report-art" src="/art/zhaowu-lotus-ascend-v1.webp" alt="" loading="lazy" decoding="async" width={900} height={1272} />
         {copy.kicker ? <p className="zhaowu-report-kicker">{copy.kicker}</p> : null}
@@ -440,6 +445,8 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
           </div>
         </details>
       ) : null}
+      </div>
+      </details>
     </section>
   );
 }
