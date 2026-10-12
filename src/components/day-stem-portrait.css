@@ -43,6 +43,18 @@
   width: min(100%, 13rem);
   margin: .6rem auto .3rem;
 }
+/* Character illustration is near-square (720x773): show it whole, in its own colours. */
+.zhaowu-day-stem-portrait .zhaowu-sprite-artwork.is-character {
+  width: min(100%, 19rem);
+  aspect-ratio: 720 / 773;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.zhaowu-day-stem-portrait .zhaowu-sprite-artwork.is-character .zhaowu-sprite-image {
+  object-fit: contain;
+  filter: none;
+  mix-blend-mode: normal;
+}
 .zhaowu-day-stem-portrait__caption {
   display: grid;
   gap: .38rem;
@@ -69,4 +81,5 @@
 @media (max-width: 430px) {
   .zhaowu-day-stem-portrait { padding-inline: .8rem; }
   .zhaowu-day-stem-portrait .zhaowu-sprite-artwork { width: min(60vw, 12rem); }
+  .zhaowu-day-stem-portrait .zhaowu-sprite-artwork.is-character { width: min(86vw, 19rem); }
 }
