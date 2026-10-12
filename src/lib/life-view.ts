@@ -6,10 +6,11 @@ export type LifeViewArticle = {
   title: Record<Locale, string>;
   summary: Record<Locale, string>;
   body: Record<Locale, string>;
+  illustrations?: Array<{ src: string; afterParagraph: number; alt: Record<Locale, string>; display?: "wide" | "portrait" }>;
 };
 
 /**
- * Stone's essays for the public "昭梧 · 觀世錄" section.
+ * Stone's essays for the public "昭梧 · 文章" section.
  * New chat-submitted articles are appended here so the website has one
  * stable source of truth and no database/schema change is required.
  */
