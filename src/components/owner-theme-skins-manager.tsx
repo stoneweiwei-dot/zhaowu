@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { SKINS, useSkin } from "@/lib/theme-skins";
 
@@ -9,6 +9,23 @@ function tr(locale: Locale, hant: string, hans: string, en: string) {
 /** 後台「主題皮膚」：原有 10 套 + 宋式留白 4 套，預覽圖使用實際的本地畫作。 */
 export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
   const { id, apply } = useSkin();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const choose = async (next: string) => {
+    if (saving) return;
+    setSaving(true);
+    setError("");
+    setSuccess("");
+    try {
+      await apply(next);
+      setSuccess(tr(locale, "已同步給所有訪客。", "已同步给所有访客。", "Published for all visitors."));
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : tr(locale, "儲存失敗，網站主題未更動。", "保存失败，网站主题未更改。", "Save failed. Public theme unchanged."));
+    } finally {
+      setSaving(false);
+    }
+  };
   const name = (s: (typeof SKINS)[number]) => (locale === "en" ? s.en : locale === "zh-Hans" ? s.hans : s.zh);
   const note = (s: (typeof SKINS)[number]) => (locale === "en" ? s.noteEn : locale === "zh-Hans" ? s.noteHans : s.noteZh);
   return (
@@ -16,14 +33,16 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
       <p className="text-xs tracking-[0.28em] text-cinnabar">THEME SKINS</p>
       <h2 className="mt-1 font-display text-2xl">{tr(locale, "主題皮膚", "主题皮肤", "Theme skins")}</h2>
       <p className="mt-2 text-sm leading-7 text-ink-soft">
-        {tr(locale, "套用後，頁面與報告題頭會同步換膚；正文紙面保持清楚。只儲存在這台裝置，不會替其他訪客切換。", "套用后，页面与报告标题区同步换肤；正文纸面保持清晰。只保存在这台设备，不会替其他访客切换。", "Apply to pages and report covers on this device only. Reading paper stays clear; other visitors are unchanged.")}
+        {tr(locale, "在這裡選擇一款，所有訪客就會使用同款主題與報告背景；切換免部署。已開啟的頁面約一分鐘內同步。", "在这里选择一款，所有访客就会使用同款主题与报告背景；切换无需部署。已打开的页面约一分钟内同步。", "Choose once for every visitor. Pages and report covers update without redeploying; open tabs sync within about a minute.")}
       </p>
+      {error ? <p role="alert" className="mt-3 text-sm text-cinnabar">{error}</p> : null}
+      {success ? <p role="status" className="mt-3 text-sm text-wood">{success}</p> : null}
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <article className={`overflow-hidden rounded-xl border ${id === "" ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"} bg-paper/40`}>
           <div className="flex h-28 items-center justify-center bg-paper-deep/40 text-sm text-ink-soft">{tr(locale, "現行樣式", "现行样式", "Classic")}</div>
           <div className="flex items-center justify-between gap-3 p-3">
             <div className="min-w-0"><p className="truncate font-medium">{tr(locale, "預設（現行）", "默认（现行）", "Default (current)")}</p></div>
-            <button type="button" onClick={() => apply("none")} aria-pressed={id === ""} className="min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line px-4 text-sm">{id === "" ? tr(locale, "使用中", "使用中", "In use") : tr(locale, "還原預設", "还原默认", "Reset")}</button>
+            <button type="button" disabled={saving} onClick={() => void choose("none")} aria-pressed={id === ""} className="min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line px-4 text-sm disabled:opacity-50">{saving ? tr(locale, "同步中…", "同步中…", "Saving…") : id === "" ? tr(locale, "全站使用中", "全站使用中", "Live site theme") : tr(locale, "全站還原", "全站还原", "Reset site")}</button>
           </div>
         </article>
         {SKINS.map((s) => {
@@ -53,7 +72,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
                   <p className="truncate text-xs text-ink-mute">{note(s)}</p>
                   <div className="mt-1.5 flex gap-1" aria-hidden="true">{s.swatch.map((c) => <i key={c} className="h-3.5 w-3.5 rounded-full border border-black/10" style={{ background: c }} />)}</div>
                 </div>
-                <button type="button" onClick={() => apply(s.id)} aria-pressed={active} className={`min-h-11 shrink-0 whitespace-nowrap rounded-full px-4 text-sm ${active ? "bg-[#315f51] text-[#fffaf0]" : "border border-[#315f51] text-[#315f51]"}`}>{active ? tr(locale, "使用中", "使用中", "In use") : tr(locale, "套用", "套用", "Apply")}</button>
+                <button type="button" disabled={saving} onClick={() => void choose(s.id)} aria-pressed={active} className={`min-h-11 shrink-0 whitespace-nowrap rounded-full px-4 text-sm disabled:opacity-50 ${active ? "bg-[#315f51] text-[#fffaf0]" : "border border-[#315f51] text-[#315f51]"}`}>{saving ? tr(locale, "同步中…", "同步中…", "Saving…") : active ? tr(locale, "全站使用中", "全站使用中", "Live site theme") : tr(locale, "全站套用", "全站套用", "Publish")}</button>
               </div>
               </article>
             </Fragment>
