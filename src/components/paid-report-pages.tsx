@@ -10,6 +10,7 @@ import { EvidenceGovernancePanel } from "@/components/evidence-governance-panel"
 import { FiveElementTrainingBlock } from "@/components/five-element-training-block";
 import { IllustratedDestinyPanel, IllustratedShareCard } from "@/components/illustrated-destiny-panel";
 import { DayStemPortrait } from "@/components/day-stem-portrait";
+import { BranchScenery } from "@/components/branch-scenery";
 
 const COPY = {
   "zh-Hant": {
@@ -407,6 +408,7 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
           </summary>
           <div className="zhaowu-report-stage-fold__body">
             <DayStemPortrait result={result} />
+            <BranchScenery result={result} />
             <IllustratedDestinyPanel result={result} />
             <IllustratedShareCard result={result} />
             <ReportShareCard result={result} />
