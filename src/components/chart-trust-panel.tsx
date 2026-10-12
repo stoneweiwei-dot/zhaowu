@@ -78,15 +78,13 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
 
   const copy = locale === "en"
     ? {
-        kicker: "CHART DATA · VERIFIABLE",
-        title: "Chart data you can audit and reuse",
+        title: "Chart data",
+        audit: "Method and how to verify",
 
         copyButton: "Copy chart",
         copied: "Copied",
         failed: "Copy failed",
-        method: "Calculation method",
         verify: "How to verify",
-        release: "Version and changes",
         civil: "Recorded clock time",
         solar: "True solar time",
         timezone: "Timezone",
@@ -101,15 +99,13 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
       }
     : locale === "zh-Hans"
       ? {
-          kicker: "命盘资料 · 可核对",
           title: "命盘资料",
+          audit: "计算口径与核对",
 
           copyButton: "复制命盘",
           copied: "已复制",
           failed: "复制失败",
-          method: "计算口径",
           verify: "如何核对",
-          release: "版本与变更",
           civil: "钟表时间",
           solar: "真太阳时",
           timezone: "时区",
@@ -123,15 +119,13 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
           updates: "查看更新记录",
         }
       : {
-          kicker: "命盤資料 · 可核對",
           title: "命盤資料",
+          audit: "計算口徑與核對",
 
           copyButton: "複製命盤",
           copied: "已複製",
           failed: "複製失敗",
-          method: "計算口徑",
           verify: "如何核對",
-          release: "版本與變更",
           civil: "鐘錶時間",
           solar: "真太陽時",
           timezone: "時區",
@@ -159,17 +153,15 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
   return (
     <section className="zhaowu-chart-trust" data-chart-trust-panel aria-labelledby="zhaowu-chart-trust-title">
       <header>
-        <p className="zhaowu-section-kicker">{copy.kicker}</p>
         <h3 id="zhaowu-chart-trust-title">{copy.title}</h3>
+        <button type="button" className="zhaowu-chart-copy" data-chart-ai-copy onClick={() => void onCopy()}>
+          {copied === "ok" ? copy.copied : copied === "failed" ? copy.failed : copy.copyButton}
+        </button>
       </header>
-
-      <button type="button" className="zhaowu-chart-copy" data-chart-ai-copy onClick={() => void onCopy()}>
-        {copied === "ok" ? copy.copied : copied === "failed" ? copy.failed : copy.copyButton}
-      </button>
 
       <div className="zhaowu-chart-trust-details">
         <details>
-          <summary>{copy.method}</summary>
+          <summary>{copy.audit}</summary>
           <dl>
             <div><dt>{copy.civil}</dt><dd>{chart.civilStamp || "—"}</dd></div>
             <div><dt>{copy.solar}</dt><dd>{chart.trueSolarStamp || "—"}</dd></div>
@@ -177,18 +169,10 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
             <div><dt>{copy.source}</dt><dd>{chart.provenance || "ZHAOWU deterministic chart engine"}</dd></div>
             <div><dt>{copy.review}</dt><dd>{chart.birthTimeReview.required ? copy.reviewNeeded : copy.reviewClear}</dd></div>
           </dl>
-        </details>
-
-        <details>
-          <summary>{copy.verify}</summary>
+          <h4>{copy.verify}</h4>
           <p>{copy.gateBody}</p>
           <p>{copy.compareBody}</p>
-        </details>
-
-        <details>
-          <summary>{copy.release}</summary>
-          <p><strong>{SITE_RELEASE_FALLBACK.version}</strong></p>
-          <a href="/updates">{copy.updates} ›</a>
+          <p className="zhaowu-chart-trust-version"><strong>{SITE_RELEASE_FALLBACK.version}</strong> · <a href="/updates">{copy.updates} ›</a></p>
         </details>
       </div>
     </section>
