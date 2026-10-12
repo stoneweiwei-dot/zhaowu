@@ -9918,3 +9918,15 @@ html body .zhaowu-result-card [data-next-action] p {
   font-weight: 500;
   line-height: 1.9 !important;
 }
+
+/* r220 — an unknown/stale saved skin id still sets data-zws before paint. Without these base tokens every
+   `background: var(--zws-accent) !important` rule resolves to transparent and cream button text vanishes on a cream page.
+   :where() keeps specificity at zero so every real skin overrides them. */
+:where(html[data-zws]) {
+  --zws-page: #f4efe3;
+  --zws-card: #fbf8ef;
+  --zws-ink: #243a32;
+  --zws-soft: #55625b;
+  --zws-accent: #2f5a48;
+  --zws-line: rgba(160, 136, 88, .4);
+}
