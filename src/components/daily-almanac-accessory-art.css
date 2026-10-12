@@ -1,5 +1,6 @@
 html body #daily-almanac .zw-ink-accessory-feature {
   display: grid;
+  grid-column: 1 / -1;
   grid-template-columns: minmax(0, 1fr) 86px;
   align-items: center;
   gap: 14px;
