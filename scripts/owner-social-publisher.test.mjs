@@ -2,6 +2,13 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import test from "node:test";
 import { publishSocialPost, socialConfiguration, validateSocialPost } from "../lib/meta-social-publisher.js";
+import {
+  createThreadsAuthorization,
+  decryptThreadsAccessToken,
+  encryptThreadsAccessToken,
+  threadsAuthorizationOwnerProof,
+  verifyThreadsAuthorization,
+} from "../lib/threads-oauth.js";
 
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
@@ -76,6 +83,46 @@ test("one request creates and publishes one container per selected platform", as
   assert.ok(calls.some((call) => call.url === "https://graph.facebook.com/v26.0/ig-user/media_publish" && call.values.creation_id));
 });
 
+test("one Threads publish can target multiple OAuth accounts without exposing tokens", async () => {
+  const calls = [];
+  const fakeFetch = async (url, init = {}) => {
+    calls.push({ url: String(url), method: init.method || "GET" });
+    if ((init.method || "GET") === "GET") {
+      const username = String(url).includes("thread-user-2") ? "second" : "first";
+      return new Response(JSON.stringify({ id: "profile", username }), { status: 200 });
+    }
+    return new Response(JSON.stringify({ id: String(url).endsWith("_publish") ? "published" : "container" }), { status: 200 });
+  };
+  const results = await publishSocialPost({ text: "昭梧", channels: ["threads"] }, {}, fakeFetch, [
+    { id: "account-1", userId: "thread-user-1", username: "first", accessToken: "secret-one" },
+    { id: "account-2", userId: "thread-user-2", username: "second", accessToken: "secret-two" },
+  ]);
+  assert.equal(results.threads.ok, true);
+  assert.deepEqual(results.threads.accounts.map((item) => item.username), ["first", "second"]);
+  assert.equal(calls.filter((call) => call.method === "POST").length, 4);
+  assert.doesNotMatch(JSON.stringify(results), /secret-one|secret-two/);
+});
+
+test("Threads OAuth state and stored tokens are authenticated and encrypted", () => {
+  const env = {
+    META_APP_ID: "1234567890",
+    META_APP_SECRET: "app-secret-for-unit-test-123456",
+    ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-unit-test-123456",
+    PUBLIC_SITE_ORIGIN: "https://stone-zhaowu-official.vercel.app",
+  };
+  const authorization = createThreadsAuthorization(env, 1_000_000, "sealed-owner-proof");
+  const state = new URL(authorization.url).searchParams.get("state");
+  const cookieValue = decodeURIComponent(authorization.cookie.match(/=([^;]+)/)[1]);
+  const request = { headers: { cookie: `__Host-zhaowu_threads_oauth=${encodeURIComponent(cookieValue)}` } };
+  assert.equal(verifyThreadsAuthorization(request, state, env, 1_000_001), true);
+  assert.equal(threadsAuthorizationOwnerProof(request), "sealed-owner-proof");
+  assert.equal(verifyThreadsAuthorization(request, `${state}x`, env, 1_000_001), false);
+  const encrypted = encryptThreadsAccessToken("threads-user-token", env);
+  assert.match(encrypted, /^v1\./);
+  assert.doesNotMatch(encrypted, /threads-user-token/);
+  assert.equal(decryptThreadsAccessToken(encrypted, env), "threads-user-token");
+});
+
 test("locked target handles reject the wrong Meta account before any publish call", async () => {
   const calls = [];
   const env = {
@@ -146,6 +193,8 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
   assert.match(api, /Cache-Control.*no-store/s);
   assert.match(api, /social\.status/);
   assert.match(api, /social\.publish/);
+  assert.match(api, /social\.threads\.connect/);
+  assert.match(api, /threads\.callback/);
   assert.equal(vercel.functions["api/owner-session.js"].maxDuration, 60);
   assert.equal(vercel.functions["api/owner-social.js"], undefined);
   assert.ok(apiFiles.length <= 12);
@@ -162,7 +211,9 @@ test("the owner console embeds the existing gallery-backed dual social publisher
   assert.match(route, /useCurrentUserState/);
   assert.match(route, /listOwnerGalleryAssets/);
   assert.match(route, /uploadGalleryAsset/);
-  assert.match(route, /一次發布到 Instagram \+ Threads/);
+  assert.match(route, /一次發到多個帳號/);
+  assert.match(route, /data-threads-account-manager/);
+  assert.match(route, /startThreadsConnection/);
   assert.match(route, /Instagram 需要一張圖片；請從圖庫選擇或直接上傳/);
   assert.doesNotMatch(route, /完成一次 Meta 授權後/);
   assert.match(userState, /"\/social"/);
@@ -179,11 +230,6 @@ test("unconfigured production does not pretend the Meta publisher is ready", asy
   const route = await source("src/routes/social.tsx");
   assert.match(route, /data-social-connection-required/);
   assert.match(route, /Meta 尚未連接/);
-  assert.match(route, /https:\/\/developers\.facebook\.com\/apps\//);
-  for (const key of [
-    "META_INSTAGRAM_USER_ID",
-    "META_INSTAGRAM_ACCESS_TOKEN",
-    "META_THREADS_USER_ID",
-    "META_THREADS_ACCESS_TOKEN",
-  ]) assert.match(route, new RegExp(key));
+  assert.match(route, /連接帳號/);
+  assert.doesNotMatch(route, /META_.*ACCESS_TOKEN/);
 });

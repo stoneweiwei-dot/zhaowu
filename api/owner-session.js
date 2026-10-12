@@ -1,5 +1,22 @@
 import { publishSocialPost, socialConfiguration, SocialPublishError } from "../lib/meta-social-publisher.js";
-import { requestHasOwnerSession } from "../lib/owner-session-cookie.js";
+import {
+  ownerCookieValue,
+  ownerSecretFromCookieValue,
+  ownerSecretFromRequest,
+  requestHasOwnerSession,
+} from "../lib/owner-session-cookie.js";
+import {
+  clearThreadsOauthCookie,
+  createThreadsAuthorization,
+  decryptThreadsAccessToken,
+  encryptThreadsAccessToken,
+  exchangeThreadsAuthorizationCode,
+  threadsOauthConfiguration,
+  threadsAuthorizationOwnerProof,
+  tokenFingerprint,
+  verifyThreadsAuthorization,
+} from "../lib/threads-oauth.js";
+import { threadsAccountStoreRequest } from "../lib/threads-account-store.js";
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -32,11 +49,12 @@ async function readJsonBody(req) {
   return {};
 }
 
-function json(res, status, body) {
+function json(res, status, body, extraHeaders = {}) {
   const headers = {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
     "X-Content-Type-Options": "nosniff",
+    ...extraHeaders,
   };
   if (res && typeof res.status === "function" && typeof res.setHeader === "function") {
     for (const [key, value] of Object.entries(headers)) res.setHeader(key, value);
@@ -45,22 +63,122 @@ function json(res, status, body) {
   return new Response(JSON.stringify(body), { status, headers });
 }
 
+function queryValue(req, name) {
+  const direct = req?.query?.[name];
+  if (direct !== undefined) return String(Array.isArray(direct) ? direct[0] : direct);
+  try { return new URL(String(req?.url || "/"), "https://zhaowu.local").searchParams.get(name) || ""; } catch { return ""; }
+}
+
+function redirect(res, location, cookie = clearThreadsOauthCookie()) {
+  const headers = { Location: location, "Cache-Control": "no-store", "Set-Cookie": cookie };
+  if (res && typeof res.status === "function" && typeof res.setHeader === "function") {
+    for (const [key, value] of Object.entries(headers)) res.setHeader(key, value);
+    return res.status(302).end();
+  }
+  return new Response(null, { status: 302, headers });
+}
+
+function publicThreadAccount(row, source = "oauth") {
+  return {
+    id: String(row.id),
+    userId: String(row.threads_user_id || row.userId || ""),
+    username: String(row.username || "").replace(/^@+/, ""),
+    profilePictureUrl: String(row.profile_picture_url || row.profilePictureUrl || ""),
+    expiresAt: row.token_expires_at || row.expiresAt || null,
+    source,
+  };
+}
+
+async function storedThreadsAccounts(ownerSecret) {
+  const body = await threadsAccountStoreRequest("social.threads.list", {}, ownerSecret);
+  return Array.isArray(body?.items) ? body.items : [];
+}
+
+async function handleThreadsCallback(req, res, ownerSecret) {
+  const state = queryValue(req, "state");
+  const code = queryValue(req, "code");
+  const oauthError = queryValue(req, "error") || queryValue(req, "error_reason");
+  if (oauthError) return redirect(res, `/social?threads=error&reason=${encodeURIComponent(oauthError)}`);
+  if (!code || !verifyThreadsAuthorization(req, state)) return redirect(res, "/social?threads=error&reason=invalid_state");
+  try {
+    const account = await exchangeThreadsAuthorizationCode(code);
+    const accessTokenCiphertext = encryptThreadsAccessToken(account.accessToken);
+    await threadsAccountStoreRequest("social.threads.upsert", {
+      threadsUserId: account.userId,
+      username: account.username,
+      profilePictureUrl: account.profilePictureUrl,
+      accessTokenCiphertext,
+      tokenFingerprint: tokenFingerprint(account.accessToken),
+      tokenExpiresAt: account.expiresAt,
+    }, ownerSecret);
+    return redirect(res, `/social?threads=connected&username=${encodeURIComponent(account.username)}`);
+  } catch (error) {
+    const codeValue = error instanceof Error ? error.message.split(":")[0] : "oauth_failed";
+    return redirect(res, `/social?threads=error&reason=${encodeURIComponent(codeValue)}`);
+  }
+}
+
 export default async function handler(req, res) {
   try {
     const method = req.method || "GET";
-    if (method === "GET") return json(res, 200, { authenticated: requestHasOwnerSession(req) });
+    if (method === "GET") {
+      let ownerSecret = ownerSecretFromRequest(req);
+      if (queryValue(req, "action") === "threads.callback") {
+        if (!ownerSecret) ownerSecret = ownerSecretFromCookieValue(threadsAuthorizationOwnerProof(req));
+        if (!ownerSecret) return redirect(res, "/login?redirect=%2Fsocial");
+        return handleThreadsCallback(req, res, ownerSecret);
+      }
+      return json(res, 200, { authenticated: Boolean(ownerSecret) });
+    }
     if (method !== "POST") return json(res, 405, { authenticated: false });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     if (!requestHasOwnerSession(req)) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+    const ownerSecret = ownerSecretFromRequest(req);
 
     const payload = await readJsonBody(req);
     if (payload?.action === "social.status") {
-      return json(res, 200, { ok: true, channels: socialConfiguration() });
+      const base = socialConfiguration();
+      let rows = [];
+      try { rows = await storedThreadsAccounts(ownerSecret); } catch { /* legacy env publishing may still work */ }
+      const threadsAccounts = rows.map((row) => publicThreadAccount(row));
+      return json(res, 200, {
+        ok: true,
+        channels: {
+          ...base,
+          threads: threadsAccounts.length > 0 || base.threads,
+          ready: base.instagram || base.threads || threadsAccounts.length > 0,
+          threadsOauthReady: threadsOauthConfiguration().ready,
+          threadsAccounts,
+        },
+      });
+    }
+    if (payload?.action === "social.threads.connect") {
+      const authorization = createThreadsAuthorization(process.env, Date.now(), ownerCookieValue(ownerSecret));
+      return json(res, 200, { ok: true, url: authorization.url }, { "Set-Cookie": authorization.cookie });
+    }
+    if (payload?.action === "social.threads.disconnect") {
+      const id = String(payload?.accountId || "").trim();
+      if (!/^[0-9a-f-]{36}$/i.test(id)) return json(res, 400, { ok: false, error: "INVALID_THREADS_ACCOUNT" });
+      await threadsAccountStoreRequest("social.threads.delete", { id }, ownerSecret);
+      return json(res, 200, { ok: true });
     }
     if (payload?.action !== "social.publish") {
       return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
     }
-    const results = await publishSocialPost(payload);
+    let threadAccounts = [];
+    if (Array.isArray(payload?.channels) && payload.channels.includes("threads")) {
+      const rows = await storedThreadsAccounts(ownerSecret);
+      const requested = new Set(Array.isArray(payload?.threadAccountIds) ? payload.threadAccountIds.map(String) : []);
+      const selectedRows = requested.size ? rows.filter((row) => requested.has(String(row.id))) : rows;
+      if (requested.size && selectedRows.length !== requested.size) return json(res, 400, { ok: false, error: "UNKNOWN_THREADS_ACCOUNT" });
+      threadAccounts = selectedRows.map((row) => ({
+        id: String(row.id),
+        userId: String(row.threads_user_id),
+        username: String(row.username),
+        accessToken: decryptThreadsAccessToken(row.access_token_ciphertext),
+      }));
+    }
+    const results = await publishSocialPost(payload, process.env, fetch, threadAccounts);
     const successCount = Object.values(results).filter((result) => result?.ok).length;
     return json(res, successCount ? 200 : 502, { ok: successCount > 0, results });
   } catch (error) {

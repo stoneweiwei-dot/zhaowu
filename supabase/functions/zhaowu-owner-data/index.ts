@@ -17,6 +17,7 @@ const BACKGROUND_SELECT = "id,source,name,storage_path,content_type,enabled,days
 const GALLERY_SELECT = "id,category,asset_key,title,storage_path,bucket_id,content_type,tags,enabled,is_primary,created_at,updated_at";
 const REPORT_LIST_SELECT = "id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,created_at,updated_at";
 const REPORT_DETAIL_SELECT = "id,public_code,user_id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,engine_snapshot,mother_draft,paid_report,visual_profile,image_path,image_error,created_at,updated_at";
+const THREADS_ACCOUNT_SELECT = "id,threads_user_id,username,profile_picture_url,access_token_ciphertext,token_fingerprint,token_expires_at,connected_at,last_verified_at,updated_at";
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const MAX_LOADING_VIDEO_BYTES = 500 * 1024 * 1024;
 const MAX_REPORT_IMAGE_BYTES = 15 * 1024 * 1024;
@@ -64,6 +65,9 @@ const ALLOWED_ACTIONS = new Set([
   "gallery.setTags",
   "gallery.setLoginCurrent",
   "gallery.delete",
+  "social.threads.list",
+  "social.threads.upsert",
+  "social.threads.delete",
   "upload.abort",
 ]);
 
@@ -727,6 +731,52 @@ async function abortUpload(service: ReturnType<typeof createClient>, payload: Pa
   return { ok: true, storageCleanupPending };
 }
 
+async function threadsAccountList(service: ReturnType<typeof createClient>) {
+  const { data, error } = await service
+    .from("social_threads_accounts")
+    .select(THREADS_ACCOUNT_SELECT)
+    .order("connected_at", { ascending: true });
+  if (error) throw new OwnerDataError("THREADS_ACCOUNT_LIST_FAILED", 502, error.message);
+  return { ok: true, items: data ?? [] };
+}
+
+async function threadsAccountUpsert(service: ReturnType<typeof createClient>, payload: Payload) {
+  const userId = text(payload.threadsUserId);
+  const username = text(payload.username).replace(/^@+/, "");
+  const ciphertext = text(payload.accessTokenCiphertext);
+  const fingerprint = text(payload.tokenFingerprint);
+  const profilePictureUrl = text(payload.profilePictureUrl) || null;
+  const expiresAt = text(payload.tokenExpiresAt) || null;
+  if (!/^[0-9]{3,30}$/.test(userId) || !/^[A-Za-z0-9._]{1,80}$/.test(username)) {
+    throw new OwnerDataError("THREADS_ACCOUNT_INVALID", 400);
+  }
+  if (!/^v1\.[A-Za-z0-9_-]{40,}$/.test(ciphertext) || !/^[a-f0-9]{16}$/.test(fingerprint)) {
+    throw new OwnerDataError("THREADS_TOKEN_INVALID", 400);
+  }
+  if (profilePictureUrl && !/^https:\/\//i.test(profilePictureUrl)) throw new OwnerDataError("THREADS_PROFILE_URL_INVALID", 400);
+  if (expiresAt && !Number.isFinite(Date.parse(expiresAt))) throw new OwnerDataError("THREADS_TOKEN_EXPIRY_INVALID", 400);
+  const now = new Date().toISOString();
+  const { data, error } = await service.from("social_threads_accounts").upsert({
+    threads_user_id: userId,
+    username,
+    profile_picture_url: profilePictureUrl,
+    access_token_ciphertext: ciphertext,
+    token_fingerprint: fingerprint,
+    token_expires_at: expiresAt,
+    last_verified_at: now,
+    updated_at: now,
+  }, { onConflict: "threads_user_id" }).select(THREADS_ACCOUNT_SELECT).single();
+  if (error || !data) throw new OwnerDataError("THREADS_ACCOUNT_SAVE_FAILED", 502, error?.message ?? "Account was not saved");
+  return { ok: true, item: data };
+}
+
+async function threadsAccountDelete(service: ReturnType<typeof createClient>, payload: Payload) {
+  const id = requireId(payload);
+  const { error } = await service.from("social_threads_accounts").delete().eq("id", id);
+  if (error) throw new OwnerDataError("THREADS_ACCOUNT_DELETE_FAILED", 502, error.message);
+  return { ok: true };
+}
+
 async function dispatch(service: ReturnType<typeof createClient>, action: string, payload: Payload) {
   switch (action) {
     case "report.list": return reportList(service, payload);
@@ -755,6 +805,9 @@ async function dispatch(service: ReturnType<typeof createClient>, action: string
     case "gallery.setTags": return gallerySetTags(service, payload);
     case "gallery.setLoginCurrent": return gallerySetLoginCurrent(service, payload);
     case "gallery.delete": return galleryDelete(service, payload);
+    case "social.threads.list": return threadsAccountList(service);
+    case "social.threads.upsert": return threadsAccountUpsert(service, payload);
+    case "social.threads.delete": return threadsAccountDelete(service, payload);
     case "upload.abort": return abortUpload(service, payload);
     default: throw new OwnerDataError("ACTION_NOT_ALLOWED", 400);
   }
