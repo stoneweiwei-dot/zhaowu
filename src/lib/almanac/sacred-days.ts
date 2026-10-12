@@ -66,7 +66,7 @@ function traditionLabel(tradition:Tradition,locale:SacredDayLocale){
 }
 export function formatSacredDay(lunarMonth:number,lunarDay:number,locale:SacredDayLocale,solarMonthDay?:string){
  const matches=rows.filter((row)=>row[0]==="lunar"?row[1]===lunarMonth&&row[2]===lunarDay:solarMonthDay===`${row[1]}-${row[2]}`);
- const labels=matches.map((row)=>locale==="en"?`[${traditionLabel(row[3],locale)}] ${row[5]}`:`[${traditionLabel(row.tradition,locale)}] ${locale==="zh-Hans"?zhHans(row[4]):row.hant}`);
+ const labels=matches.map((row)=>locale==="en"?`[${traditionLabel(row[3],locale)}] ${row[5]}`:`[${traditionLabel(row[3],locale)}] ${locale==="zh-Hans"?zhHans(row[4]):row[4]}`);
  if(!labels.length&&[8,14,15,23,29,30].includes(lunarDay)) labels.push(locale==="en"?"Traditional six fasting days":locale==="zh-Hans"?"传统六斋日":"傳統六齋日");
  if(!labels.length) labels.push(locale==="en"?"No major observance listed":locale==="zh-Hans"?"未列主要圣日":"未列主要聖日");
  return labels.join(locale==="en"?" · ":"｜");
