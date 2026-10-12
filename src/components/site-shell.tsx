@@ -316,7 +316,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </header>
       ) : null}
 
-      {!isLogin ? <JourneyNavigation /> : null}
+      {!isLogin ? <JourneyNavigation showHelp={!isOwnerWorkspace} /> : null}
       {!isOwnerWorkspace ? <SiteUtilityDock /> : null}
       <div id="zhaowu-main-content" tabIndex={-1} className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
 

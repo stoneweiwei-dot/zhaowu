@@ -12,7 +12,9 @@ test("homepage renders the birth form inline plus three secondary portal cards",
   // itself; only today / quiz / notes remain as portal cards below it.
   assert.match(home, /data-home-birth-entry/);
   assert.match(home, /activeSection === null \|\| activeSection === "form"/);
-  assert.match(home, /data-home-steps/);
+  const form = await source("src/components/analysis-form.tsx");
+  assert.match(form, /<JourneySteps/);
+  assert.doesNotMatch(home, /data-home-steps/);
   assert.match(home, /<AnalysisForm \/>/);
   assert.match(home, /data-home-card=\{id\}/);
   assert.match(home, /NAV_ITEMS: \{ id: Exclude<Section, "form">;/);

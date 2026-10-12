@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
 import { FocusedReportSections } from "@/components/paid-report-pages";
+import { FollowUpBox } from "@/components/follow-up-box";
 import { CharacterPanel } from "@/components/character-panel";
 import { BaziChart } from "@/components/bazi-chart";
 import { ReportTimingGuide } from "@/components/report-timing-guide";
@@ -28,9 +29,9 @@ import {
 import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
 
 const RESULT_COPY = {
-  "zh-Hant": { syncFailed: "內容已完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "補充內容暫時未能生成。", saved: "完整報告已保存。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "補充", fullGenerating: "整理中…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字內容不受影響。", next: "下一步", evidence: "附註", evidenceLead: "", decree: "命理解讀", chartDetail: "展開命盤與人物詳解" },
-  "zh-Hans": { syncFailed: "内容已完成，但云端同步暂时失败；画面内容不受影响。", fullFailed: "补充内容暂时未能生成。", saved: "完整报告已保存。", saveFailed: "保存失败。", saving: "保存中…", updateSaved: "更新已保存报告", fullGenerate: "补充", fullGenerating: "整理中…", imageReady: "个人命象已生成并保存。", imageMatched: "已为你配对并保存图库命象。", imageLoadFailed: "命象图未能载入；文字内容不受影响。", next: "下一步", evidence: "附注", evidenceLead: "", decree: "命理解读", chartDetail: "展开命盘与人物详解" },
-  en: { syncFailed: "The content is ready, but cloud sync failed temporarily. This page is still available.", fullFailed: "More detail could not be generated right now.", saved: "Report saved.", saveFailed: "Saving failed.", saving: "Saving…", updateSaved: "Update saved report", fullGenerate: "More", fullGenerating: "Preparing…", imageReady: "Your personal image has been generated and saved.", imageMatched: "Your matched gallery artwork has been saved.", imageLoadFailed: "The image could not be loaded. The written reading is unaffected.", next: "Next step", evidence: "Notes", evidenceLead: "", decree: "Reading", chartDetail: "Expand chart & character detail" },
+  "zh-Hant": { syncFailed: "內容已完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "補充內容暫時未能生成。", saved: "完整報告已保存。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "補充", fullGenerating: "整理中…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字內容不受影響。", next: "下一步", evidence: "命盤與天干地支圖", evidenceLead: "", decree: "命理解讀", chartDetail: "展開命盤與人物詳解" },
+  "zh-Hans": { syncFailed: "内容已完成，但云端同步暂时失败；画面内容不受影响。", fullFailed: "补充内容暂时未能生成。", saved: "完整报告已保存。", saveFailed: "保存失败。", saving: "保存中…", updateSaved: "更新已保存报告", fullGenerate: "补充", fullGenerating: "整理中…", imageReady: "个人命象已生成并保存。", imageMatched: "已为你配对并保存图库命象。", imageLoadFailed: "命象图未能载入；文字内容不受影响。", next: "下一步", evidence: "命盘与天干地支图", evidenceLead: "", decree: "命理解读", chartDetail: "展开命盘与人物详解" },
+  en: { syncFailed: "The content is ready, but cloud sync failed temporarily. This page is still available.", fullFailed: "More detail could not be generated right now.", saved: "Report saved.", saveFailed: "Saving failed.", saving: "Saving…", updateSaved: "Update saved report", fullGenerate: "More", fullGenerating: "Preparing…", imageReady: "Your personal image has been generated and saved.", imageMatched: "Your matched gallery artwork has been saved.", imageLoadFailed: "The image could not be loaded. The written reading is unaffected.", next: "Next step", evidence: "Chart and artwork", evidenceLead: "", decree: "Reading", chartDetail: "Expand chart & character detail" },
 } as const;
 
 export function ResultView({ result }: { result: AnalysisResult }) {
@@ -255,6 +256,8 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         {nextAction ? <aside className="zhaowu-result-next mt-5 border-t border-line/70 pt-4" data-next-action><strong className="text-sm text-ink">{copy.next}</strong><p className="mt-1 text-[14px] leading-7 text-ink-soft">{nextAction}</p></aside> : null}
       </article>
 
+      <FollowUpBox result={result} />
+
       <details className="zhaowu-result-evidence seal-border rounded-xl bg-cream/90" data-technical-evidence>
         <summary className="cursor-pointer list-none px-5 py-4 sm:px-6"><strong>{copy.evidence}</strong>{copy.evidenceLead ? <span className="mt-1 block text-xs leading-5 text-ink-mute">{copy.evidenceLead}</span> : null}</summary>
         <div className="space-y-5 border-t border-line/60 p-4 sm:p-6">
@@ -263,14 +266,13 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             <div data-biggest-variable><span>{locale === "en" ? "Biggest variable" : locale === "zh-Hans" ? "最大现实变量" : "最大現實變數"}</span><b>{decisionModel.biggestVariable}</b></div>
             {decisionModel.confidenceBasis ? <small>{decisionModel.confidenceBasis}</small> : null}
           </div>
-          <details className="zhaowu-result-evidence-chart rounded-lg border border-line/50 bg-paper-clean/60" data-evidence-chart-detail>
-            <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-ink">{copy.chartDetail}</summary>
+          <div className="zhaowu-result-evidence-chart" data-evidence-chart-detail>
             <div className="space-y-5 border-t border-line/40 p-4">
               {decreeCouplet ? <div className="zhaowu-free-decree rounded-xl border border-line/60 p-4" data-free-decree><strong className="text-sm text-ink">{copy.decree}</strong><p className="mt-2 text-[14px] leading-7 text-ink-soft">{decreeCouplet}</p></div> : null}
               <BaziChart chart={chart} expandDetails={false} />
               <CharacterPanel chart={chart} question={question} portraitUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={session && user ? () => void onImage() : undefined} generating={busy === "image"} onImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />
             </div>
-          </details>
+          </div>
         </div>
       </details>
 
@@ -403,7 +405,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </div>
 
       {msg ? <p className="zhaowu-result-message text-sm text-cinnabar mt-2">{msg}</p> : null}
-      {reportSections ? <FocusedReportSections sections={reportSections} result={result} showChartArtwork={false} /> : null}
+      {reportSections ? <FocusedReportSections sections={reportSections} result={result} showChartArtwork={false} showReadingGuide={false} /> : null}
       <p className="text-xs leading-6 text-ink-mute mt-4">{t("disclaimer")}</p>
     </section>
   );

@@ -26,25 +26,25 @@ type GuideCopy = {
 
 const COPY: Record<Locale, GuideCopy> = {
   "zh-Hant": {
-    analysis: ["填好出生資料後，昭梧會把內部專項判讀合成一份完整綜合報告。", "開始完整分析"],
+    analysis: ["填寫生辰 → 看免費命書概要 → 按需要提問。完整深讀按頁面標示解鎖。", "開始完整分析"],
     history: ["已保存的舊報告可以在「我的報告」重看。", "查看我的報告"],
     account: ["您在昭梧的報告與測驗會保存在這台裝置中。如需管理或同步，請前往帳戶頁面。", "前往帳戶"],
     login: ["我的報告會保存在這台裝置。點擊即可登入或管理個人帳戶。", "前往登入"],
-    home: ["請先填寫出生資料，昭梧會直接產生一份完整綜合報告。", "返回首頁"],
+    home: ["先填生辰，看命書概要；有想問的事，再繼續提問。", "返回首頁"],
   },
   "zh-Hans": {
-    analysis: ["填好出生资料后，昭梧会把内部专项判断合成一份完整综合报告。", "开始完整分析"],
+    analysis: ["填写生辰 → 看免费命书概要 → 按需要提问。完整深读按页面标示解锁。", "开始完整分析"],
     history: ["已保存的旧报告可以在“我的报告”重看。", "查看我的报告"],
     account: ["您在昭梧的报告与测验会保存在这台设备中。如需管理或同步，请前往账户页面。", "前往账户"],
     login: ["我的报告会保存在这台设备。点击即可登录或管理个人账户。", "前往登录"],
-    home: ["请先填写出生资料，昭梧会直接生成一份完整综合报告。", "返回首页"],
+    home: ["先填生辰，看命书概要；有想问的事，再继续提问。", "返回首页"],
   },
   en: {
-    analysis: ["Enter your birth details and Zhaowu will combine its internal specialist readings into one complete report.", "Start full analysis"],
+    analysis: ["Enter birth details, read the free summary, then ask an optional question. Full readings are unlocked as shown on the page.", "Start full analysis"],
     history: ["Your previously saved reports are in My reports.", "Open my reports"],
     account: ["Your reports and tests are saved on this device. Go to Account to manage your records.", "Go to account"],
     login: ["My reports are saved on this device. Sign in to manage your account.", "Sign in"],
-    home: ["Enter your birth details to receive one complete integrated report.", "Go home"],
+    home: ["Enter your birth details, read the chart summary, then ask a question if you wish.", "Go home"],
   },
 };
 

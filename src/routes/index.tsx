@@ -4,12 +4,10 @@ import { useAuthState } from "@/lib/auth/provider";
 import { ReportSaveStatus } from "@/components/report-save-status";
 import { AnalysisForm } from "@/components/analysis-form";
 import { DeepReadingHeroCard } from "@/components/deep-reading-hero-card";
-import { FollowUpBox } from "@/components/follow-up-box";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
 import { HomeSectionBoundary } from "@/components/home-section-boundary";
 import { IntroReplayButton } from "@/components/intro-gate";
 import { ResultView } from "@/components/result-view";
-import { IllustratedDestinyWelcome } from "@/components/illustrated-destiny-panel";
 import { useI18n } from "@/lib/i18n";
 import { readLocalReports } from "@/lib/local-report-history";
 import { clearSharedBirthRecord, writeSharedBirthRecord } from "@/lib/shared-birth";
@@ -33,7 +31,6 @@ function useCopy(locale: string) {
       tagline: "Heaven counts to forty-nine — and leaves one line open.",
       birthCta: "Start here: enter your birth date",
       birthHint: "Free · no sign-up · about 1 minute",
-      steps: ["Enter your birth date and time", "Tap “Save and generate” to see your chart", "Write your question, then tap “Analyse”"],
       moreTitle: "More features",
       navBook:  "Create report",
       navToday: "Today",
@@ -64,7 +61,6 @@ function useCopy(locale: string) {
       tagline: "天衍四九，其留与一。爱出者爱返，福往者福来。",
       birthCta: "从这里开始：填写出生日期",
       birthHint: "免费 · 免登录 · 约 1 分钟",
-      steps: ["填写出生年月日与时间", "按「保存并生成昭梧命书」看命盘", "写下想问的事，按「开始分析」看答案"],
       moreTitle: "其他功能",
       navBook:  "排盘与报告",
       navToday: "今日黄历",
@@ -95,7 +91,6 @@ function useCopy(locale: string) {
     tagline: "天衍四九，其留與一。愛出者愛返，福往者福來。",
     birthCta: "從這裡開始：填寫出生日期",
     birthHint: "免費 · 免登入 · 約 1 分鐘",
-    steps: ["填寫出生年月日與時間", "按「保存並生成昭梧命書」看命盤", "寫下想問的事，按「開始分析」看答案"],
     moreTitle: "其他功能",
     backHome: "返回主頁",
     navBook:  "排盤與報告",
@@ -334,14 +329,6 @@ function Home() {
           <p className="zw-hero-inscription-kicker">{copy.kicker}</p>
           <h1 className="zw-hero-inscription-title">{copy.title}</h1>
           <p className="zw-hero-inscription-tagline">{copy.tagline}</p>
-          <ol className="zw-home-steps" data-home-steps>
-            {copy.steps.map((step, index) => (
-              <li key={step}>
-                <span className="zw-home-steps-num" aria-hidden>{index + 1}</span>
-                <span>{step}</span>
-              </li>
-            ))}
-          </ol>
           <button
             type="button"
             className="zw-birth-entry-ticket"
@@ -356,7 +343,6 @@ function Home() {
             </span>
             <span className="zw-birth-entry-arrow" aria-hidden>↓</span>
           </button>
-          <IllustratedDestinyWelcome />
         </div>
       )}
 
@@ -401,13 +387,12 @@ function Home() {
         <>
           {activeSection === "form" ? <section className="zw-report-wayfinding">
             <h2>{locale === "en" ? (current ? "Your report is ready" : "Create your report") : locale === "zh-Hans" ? (current ? "你的报告已生成" : "开始排盘与提问") : (current ? "你的報告已生成" : "開始排盤與提問")}</h2>
-            <p>{locale === "en" ? "1. Enter birth details → 2. Ask a question → 3. Read your answer. Saved results are in My reports." : locale === "zh-Hans" ? "① 填出生资料 → ② 写下问题 → ③ 看答案。以后从「我的报告」重看。" : "① 填出生資料 → ② 寫下問題 → ③ 看答案。以後從「我的報告」重看。"}</p>
             <a href="/history">{locale === "en" ? "My saved reports" : locale === "zh-Hans" ? "查看我的报告" : "查看我的報告"}</a>
             {current ? <a href="#report">{locale === "en" ? "Read this answer" : locale === "zh-Hans" ? "直接看本次答案" : "直接看本次答案"}</a> : null}
             {user?.isOwner ? <p className="zw-owner-access-note">{locale === "en" ? "Owner access: all report content is available without payment." : locale === "zh-Hans" ? "站主已登入：所有报告内容免费阅读，无需购买。" : "站主已登入：所有報告內容免費閱讀，無需購買。"}</p> : null}
           </section> : null}
           <details className="zw-report-edit" open={formExpanded} onToggle={event => setFormExpanded(event.currentTarget.open)}>
-            <summary>{locale === "en" ? "Birth details and question" : locale === "zh-Hans" ? "出生资料与问题（点此修改）" : "出生資料與問題（點此修改）"}</summary>
+            <summary hidden={!current}>{locale === "en" ? "Birth details and question" : locale === "zh-Hans" ? "出生资料与问题（点此修改）" : "出生資料與問題（點此修改）"}</summary>
           <HomeSectionBoundary
             id="analysis"
             locale={locale}
@@ -431,9 +416,6 @@ function Home() {
                 <div id="report" className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
                   <ReportSaveStatus />
                   <ResultView result={current} />
-                </div>
-                <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
-                  <FollowUpBox result={current} />
                 </div>
               </HomeSectionBoundary>
               <HomeSectionBoundary id="hero" locale={locale}>
