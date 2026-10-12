@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { createPortal } from "react-dom";
 import { prepareQuietAudio, releaseQuietAudio } from "@/lib/quiet-audio";
+import { musicDisplayName } from "@/lib/music-display-name";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n, type Locale } from "@/lib/i18n";
 import {
@@ -255,6 +256,7 @@ export function OwnerBackgroundMusicManager() {
           {!tracks.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
           {tracks.map((track) => {
             const selected = selectedIds.includes(track.id);
+            const displayName = musicDisplayName(track.name, locale);
             return <article key={track.id} data-owner-selectable-file="music" className={`border-t border-line/70 pt-3 ${selected ? "bg-wood/[0.045]" : ""}`}>
             <div className="space-y-2 py-1">
               <div className="flex min-w-0 items-start gap-2">
@@ -272,13 +274,13 @@ export function OwnerBackgroundMusicManager() {
                       <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line px-3 text-xs" onClick={() => { setEditingId(null); setEditingName(""); }}>{c.cancel}</button>
                     </div>
                   ) : (
-                    <div className="flex flex-wrap items-center gap-2"><h3 className="w-full min-w-0 break-words font-display text-[15px] leading-5 text-ink [overflow-wrap:anywhere]">{track.name}</h3>{track.enabled ? <span className="rounded-full border border-wood/30 bg-wood/5 px-2 py-0.5 text-[10px] text-wood">{c.current}</span> : null}</div>
+                    <div className="flex flex-wrap items-center gap-2"><div className="min-w-0 flex-1"><h3 className="break-words font-display text-[15px] leading-5 text-ink [overflow-wrap:anywhere]">{displayName.primary}</h3>{displayName.secondary ? <p className="mt-0.5 break-words text-[12px] leading-5 text-ink-mute">{displayName.secondary}</p> : null}</div>{track.enabled ? <span className="rounded-full border border-wood/30 bg-wood/5 px-2 py-0.5 text-[10px] text-wood">{c.current}</span> : null}</div>
                   )}
                   <p className="mt-1 whitespace-nowrap text-xs text-ink-mute">{formatCodec(track)} · {formatSize(track.fileSize)}</p>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-1.5 pl-[4.25rem]">
-                <button type="button" aria-label={`${previewId === track.id && previewPlaying ? c.pause : c.preview} ${track.name}`} className="min-h-9 rounded-full border border-line px-3 text-[11px] text-ink-soft" onClick={() => togglePreview(track)}>{previewId === track.id && previewPlaying ? c.pause : c.preview}</button>
+                <button type="button" aria-label={`${previewId === track.id && previewPlaying ? c.pause : c.preview} ${displayName.primary}`} className="min-h-9 rounded-full border border-line px-3 text-[11px] text-ink-soft" onClick={() => togglePreview(track)}>{previewId === track.id && previewPlaying ? c.pause : c.preview}</button>
                 {!track.enabled ? <button type="button" disabled={busy} className="min-h-9 rounded-full bg-wood px-3 text-[11px] text-cream disabled:opacity-50" onClick={() => void onActivate(track)}>{c.use}</button> : null}
                 <button type="button" disabled={busy || editingId === track.id} className="min-h-9 rounded-full border border-line px-3 text-[11px] text-ink-soft disabled:opacity-40" onClick={() => beginRename(track)}>{c.rename}</button>
                 <button type="button" disabled={busy || track.enabled} className="min-h-9 rounded-full px-2.5 text-[11px] text-cinnabar disabled:opacity-30" onClick={() => void onDelete(track)}>{c.delete}</button>

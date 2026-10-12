@@ -21,7 +21,7 @@ export type SkinDef = {
   noteHans: string;
   noteEn: string;
   mode: SkinMode;
-  /** Source reference number in the owner's mood-board (圖1–圖10). */
+  /** Catalog order; 1–10 map to the original mood-board, 11–14 to the Song whitespace series. */
   ref: number;
   /** High-resolution painting (existing site art or a graded video frame) used as the page backdrop and home banner. */
   hero: string;
@@ -42,6 +42,11 @@ export const SKINS: SkinDef[] = [
   { id: "night-palace", ref: 8, mode: "dark", zh: "夜・宮闕", hans: "夜・宫阙", en: "Night Palace", noteZh: "寬幅夜景，雕花邊框卡片", noteHans: "宽幅夜景，雕花边框卡片", noteEn: "Wide night scene, ornate-framed cards", hero: "/theme-skins/night-palace-art.webp", focus: "50% 35%", swatch: ["#07121a", "#d8b574", "#16303f"] },
   { id: "pine-ink", ref: 9, mode: "light", zh: "青松簡約", hans: "青松简约", en: "Pine Minimal", noteZh: "墨字大標，深綠實心按鈕", noteHans: "墨字大标，深绿实心按钮", noteEn: "Bold ink titles, solid green buttons", hero: "/hero-gallery/temple-bamboo-rain.webp", focus: "50% 45%", swatch: ["#f4efe3", "#1f4a3a", "#172b25"] },
   { id: "pastel-koi", ref: 10, mode: "light", zh: "粉彩錦鯉", hans: "粉彩锦鲤", en: "Pastel Koi", noteZh: "粉藍紫水彩，輕盈細字", noteHans: "粉蓝紫水彩，轻盈细字", noteEn: "Pastel watercolour, light type", hero: "/hero-gallery/koi-dragon-rider.webp", focus: "50% 40%", swatch: ["#f7efe3", "#6f9a98", "#e8c9c1"] },
+  // 宋式留白：新增可選系列；維持既有 10 套與經典預設不變。
+  { id: "song-clear-dragon", ref: 11, mode: "light", zh: "雲龍留白", hans: "云龙留白", en: "Dragon in Clear Air", noteZh: "青玉遠山・暖紙大留白・淡金細線", noteHans: "青玉远山・暖纸大留白・淡金细线", noteEn: "Jade mountains, open paper, restrained gold", hero: "/art/zhaowu-dragon-lake-v1.webp", focus: "50% 52%", swatch: ["#f8f4eb", "#315e50", "#a99570"] },
+  { id: "song-rain-bank", ref: 12, mode: "light", zh: "煙汀雨過", hans: "烟汀雨过", en: "After the Rain", noteZh: "雨青湖色・薄墨水岸・細框無浮飾", noteHans: "雨青湖色・薄墨水岸・细框无浮饰", noteEn: "Rainwashed lake blue, thin ink, quiet frames", hero: "/hero-gallery/river-rain-boat.webp", focus: "50% 48%", swatch: ["#f4f3eb", "#315c67", "#98a890"] },
+  { id: "song-lotus-still", ref: 13, mode: "light", zh: "素荷清漪", hans: "素荷清漪", en: "Still Lotus", noteZh: "藕白荷影・暖墨茶色・水波留白", noteHans: "藕白荷影・暖墨茶色・水波留白", noteEn: "Ivory lotus, tea ink, spacious ripples", hero: "/art/scene-lotus-boat-v1.webp", focus: "50% 44%", swatch: ["#fbf4ed", "#6a604b", "#b39770"] },
+  { id: "song-osmanthus", ref: 14, mode: "light", zh: "桂月素箋", hans: "桂月素笺", en: "Osmanthus Letter", noteZh: "桂花暖金・月白宣紙・疏朗題跋", noteHans: "桂花暖金・月白宣纸・疏朗题跋", noteEn: "Osmanthus gold, moonlit paper, spare headings", hero: "/art/scene-osmanthus-tea-v1.webp", focus: "50% 45%", swatch: ["#f8f0e3", "#5c6044", "#b59a68"] },
 ];
 
 export function skinById(id: string | null | undefined) {

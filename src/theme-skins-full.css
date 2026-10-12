@@ -382,3 +382,141 @@ html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout,
   border-color: #b99a61 !important;
   background: rgba(226, 217, 196, .52) !important;
 }
+
+
+/* ============================================================================
+ * 宋式留白・四景 / Song Quiet collection
+ * New palette variants of the existing skin engine; deliberately no new runtime
+ * images, route markup, wallpaper storage, dependencies or payment/auth logic.
+ * Preserve the reading surface: no glass cards, ornamental overlays or giant hero.
+ * ========================================================================== */
+html[data-zws^="song-"] {
+  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", serif;
+  --zws-font-en: "Iowan Old Style", "Baskerville", Georgia, serif;
+  --zws-hw: 600;
+  --zws-veil: 80%;
+  --zws-frame: var(--zws-accent);
+  --zws-card-r: 9px;
+  --zws-card-radius: 9px;
+  --zws-radius: 9px;
+  --zws-card-border: 1px solid var(--zws-line);
+  --zws-card-orn: none;
+  --zws-card-frame: 0 3px 12px rgba(50, 60, 45, .055);
+  --zws-shadow: 0 3px 12px rgba(50, 60, 45, .055);
+  --zws-btn-bg: var(--zws-accent);
+  --zws-btn-radius: 10px;
+  --zws-pill-radius: 9px;
+  --zws-rule-w: 34px;
+  --zws-rule-h: 1px;
+  --zws-rule: var(--zws-gold);
+  --zws-pattern: none;
+  --zws-hero-radius: 9px;
+  --zws-hero-frame: 0 3px 12px rgba(50, 60, 45, .06);
+  --zws-hero-border: 1px solid var(--zws-line);
+}
+html[data-zws="song-clear-dragon"] { --zws-art: url(/art/zhaowu-dragon-lake-v1.webp); --zws-focus: 50% 52%; --zws-frame: #315e50; }
+html[data-zws="song-rain-bank"] { --zws-art: url(/hero-gallery/river-rain-boat.webp); --zws-focus: 50% 48%; --zws-frame: #315c67; }
+html[data-zws="song-lotus-still"] { --zws-art: url(/art/scene-lotus-boat-v1.webp); --zws-focus: 50% 44%; --zws-frame: #6a604b; }
+html[data-zws="song-osmanthus"] { --zws-art: url(/art/scene-osmanthus-tea-v1.webp); --zws-focus: 50% 45%; --zws-frame: #5c6044; }
+
+/* A clear paper field is the focal point. Art lives around the edges, not under copy. */
+html[data-zws^="song-"]:has(main.zw-hero-home) body { --zws-veil: 82%; }
+html[data-zws^="song-"] body main:is(.zw-hero-home, .zhaowu-home-layout)::before {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--zws-page) 94%, transparent), color-mix(in srgb, var(--zws-page) 48%, transparent)),
+    var(--zws-art) var(--zws-focus) / cover no-repeat !important;
+  height: clamp(128px, 34vw, 184px) !important;
+}
+html[data-zws^="song-"] body :is(button, a).zw-hero-card {
+  background:
+    linear-gradient(90deg, var(--zws-card) 0%, var(--zws-card) 57%, color-mix(in srgb, var(--zws-card) 90%, transparent) 77%, color-mix(in srgb, var(--zws-card) 68%, transparent)),
+    var(--zws-art) var(--zws-pc-pos, 50% 40%) / cover no-repeat !important;
+}
+html[data-zws^="song-"] body .zhaowu-site-header {
+  background: color-mix(in srgb, var(--zws-page) 95%, transparent) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html[data-zws^="song-"] body .zw-hero-inscription-title {
+  color: var(--zws-accent) !important;
+  text-shadow: none;
+}
+html[data-zws^="song-"] body :is(.zw-hero-nav-item.zw-hero-card, .seal-border, .zw-birth-entry-ticket) {
+  outline: none;
+}
+html[data-zws^="song-"] body :is(button[type="submit"], .bg-cinnabar, .zhaowu-primary-button) {
+  box-shadow: 0 2px 8px rgba(32, 54, 48, .08) !important;
+}
+
+
+/* ── Unified report cover backgrounds: all registered skins, no report-engine edits.
+ * Keep readable paper, charts, purchased text and saved report content intact.
+ * The background painting belongs only on report title/cover surfaces. */
+html[data-zws] body :is(
+  .zhaowu-report-header,
+  .zhaowu-unified-birth-report > header,
+  .zhaowu-specialist-hero,
+  .zhaowu-visual-book-head,
+  .zhaowu-luck-head,
+  .history-entry-report,
+  .zw-saved-report-card
+) {
+  background-image:
+    linear-gradient(90deg,
+      rgba(250, 247, 239, .97) 0%,
+      rgba(250, 247, 239, .94) 58%,
+      rgba(250, 247, 239, .83) 100%),
+    var(--zws-art) !important;
+  background-position: center, var(--zws-focus, 50% 40%) !important;
+  background-size: 100% 100%, cover !important;
+  background-repeat: no-repeat !important;
+  border-color: var(--zws-line) !important;
+}
+/* The focused report previously pinned a different lotus image into every header.
+ * Hide only this decorative image when a selected skin supplies its own art. */
+html[data-zws] body .zhaowu-report-header .zhaowu-report-art { display: none !important; }
+/* Header ink stays dark on the deliberately warm paper, including two night skins.
+ * Do not recolour the rest of the chart, specialist reading, or report body. */
+html[data-zws] body :is(
+  .zhaowu-report-header,
+  .zhaowu-unified-birth-report > header,
+  .zhaowu-specialist-hero,
+  .zhaowu-visual-book-head,
+  .zhaowu-luck-head,
+  .history-entry-report,
+  .zw-saved-report-card
+) :is(h1, h2, h3, h4, p, small, strong) {
+  color: #293c34 !important;
+  text-shadow: none !important;
+}
+html[data-zws] body .zhaowu-report-header .zhaowu-report-kicker {
+  color: var(--zws-accent) !important;
+}
+html[data-zws] body :is(.zhaowu-report-header, .zhaowu-specialist-hero, .zhaowu-unified-birth-report > header) {
+  border-bottom: 1px solid var(--zws-line) !important;
+}
+html[data-zws] body .zhaowu-unified-birth-report > header,
+html[data-zws] body .zhaowu-specialist-hero {
+  padding: clamp(16px, 4vw, 24px);
+}
+html[data-zws] body .zhaowu-report-continuous-sheet,
+html[data-zws] body .zhaowu-specialist-sheet {
+  --zws-report-paper: #faf7ef;
+  border-color: var(--zws-line) !important;
+}
+
+
+/* Night-skin contrast: warm report covers are not dark glass.
+ * Outrank the general dark-skin text tint only within these cover surfaces. */
+html[data-zws][data-zws-mode="dark"] body main :is(
+  .zhaowu-report-header,
+  .zhaowu-unified-birth-report > header,
+  .zhaowu-specialist-hero,
+  .zhaowu-visual-book-head,
+  .zhaowu-luck-head,
+  .history-entry-report,
+  .zw-saved-report-card
+) :is(h1, h2, h3, h4, p, small, strong, span):not(button *) {
+  color: #293c34 !important;
+  -webkit-text-fill-color: #293c34 !important;
+}
