@@ -6896,6 +6896,10 @@ html body .zhaowu-lotus-intro__fallback.is-neutral { background: #0b120e !import
 html body .zhaowu-lotus-intro__fallback.is-neutral > * { display: none !important; }
 
 /* Illustrated Destiny v1: one quiet local scene with readable warm-paper text. */
+.illustrated-destiny-welcome{display:grid;grid-template-columns:88px minmax(0,1fr);align-items:center;gap:12px;max-width:420px;margin:12px auto 0;text-align:left}
+.illustrated-destiny-welcome .illustrated-destiny-art{width:88px;border-radius:2px}
+.illustrated-destiny-welcome p{display:grid;gap:3px;margin:0;color:#242620;font-size:16px;line-height:1.45;overflow-wrap:anywhere}
+.illustrated-destiny-welcome strong{font-weight:600}
 .illustrated-destiny-panel{margin:18px 0;padding:0;color:#242620;background:#FFF9EE;border-block:1px solid rgba(84,66,44,.18)}
 .illustrated-destiny-art{display:block;width:100%;height:auto;max-width:100%}
 .illustrated-destiny-panel figcaption{padding:12px 16px;font-size:16px;line-height:1.65;color:#242620;overflow-wrap:anywhere}

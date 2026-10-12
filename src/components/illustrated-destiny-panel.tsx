@@ -1,4 +1,5 @@
 import type { AnalysisResult } from "@/lib/bazi/types";
+import { useI18n } from "@/lib/i18n";
 import { buildIllustratedDestiny, type IllustratedSceneType } from "@/lib/report/illustrated-destiny";
 
 const ART: Record<IllustratedSceneType, { horizon: string; accent: string; path: string }> = {
@@ -43,6 +44,22 @@ function SceneDrawing({ type }: { type: IllustratedSceneType }) {
       </g>
       <path d="M0 174 Q91 166 181 173 T400 169V190H0Z" fill="#F7F1E6" />
     </svg>
+  );
+}
+
+/** Small, non-judgemental home entry. It carries no chart-derived claim. */
+export function IllustratedDestinyWelcome() {
+  const { locale } = useI18n();
+  const copy = locale === "en"
+    ? ["Begin with one question", "What needs your attention now?"]
+    : locale === "zh-Hans"
+      ? ["今天先看一件事", "你现在最需要处理的是什么？"]
+      : ["今天先看一件事", "你現在最需要處理的是什麼？"];
+  return (
+    <aside className="illustrated-destiny-welcome" data-illustrated-welcome>
+      <SceneDrawing type="courtyard" />
+      <p><strong>{copy[0]}</strong><span>{copy[1]}</span></p>
+    </aside>
   );
 }
 
