@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { loadOwnerMusic, type OwnerMusicTrack } from "@/lib/owner-music-client";
 import { useI18n } from "@/lib/i18n";
 import { MusicIcon } from "@/components/music-icons";
+import { musicDisplayName } from "@/lib/music-display-name";
 
 const STORAGE_KEY = "zhaowu.backgroundMusic.v3";
 const LEGACY_STORAGE_KEY = "zhaowu.backgroundMusic.v1";
@@ -98,12 +99,12 @@ export function BackgroundMusic() {
         playing,
         loading,
         trackId: currentTrack?.id ?? null,
-        trackName: currentTrack?.name ?? null,
+        trackName: currentTrack ? musicDisplayName(currentTrack.name, locale).primary : null,
         loopEnabled,
         shuffleEnabled,
       },
     }));
-  }, [playing, loading, currentTrack?.id, currentTrack?.name, loopEnabled, shuffleEnabled]);
+  }, [playing, loading, currentTrack?.id, currentTrack?.name, locale, loopEnabled, shuffleEnabled]);
 
   const syncAudioSource = useCallback((track: OwnerMusicTrack | null) => {
     const audio = audioRef.current;
@@ -420,7 +421,7 @@ export function BackgroundMusic() {
 
   const markPlaybackUnavailable = () => setPlaying(false);
 
-  const musicTitle = currentTrack?.name || (locale === "en" ? "Zhaowu background music" : locale === "zh-Hans" ? "昭梧背景音乐" : "昭梧背景音樂");
+  const musicTitle = currentTrack ? musicDisplayName(currentTrack.name, locale).primary : (locale === "en" ? "Zhaowu background music" : locale === "zh-Hans" ? "昭梧背景音乐" : "昭梧背景音樂");
   const legacyPlayingStatus = locale === "en" ? "Music playing" : locale === "zh-Hans" ? "音乐播放中" : "音樂播放中";
   const copy = locale === "en"
     ? {
