@@ -1,4 +1,5 @@
 import { toTrad } from "./constants";
+import { SOLAR_TERM_JIE_EPOCH_SECONDS, SOLAR_TERM_TABLE_FIRST_YEAR, SOLAR_TERM_TABLE_LAST_YEAR } from "./solar-term-table";
 
 export const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"] as const;
 export const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"] as const;
@@ -97,6 +98,11 @@ function lonDiff(a: number, b: number): number {
 }
 
 export function solarTermUtc(year: number, longitude: number): Date {
+  // 12 month-opening 節: almanac-grade table (1900-2100). Everything else falls through to the analytic solver.
+  const jieIdx = (JIE_LONGITUDES as readonly number[]).indexOf(longitude);
+  if (jieIdx >= 0 && year >= SOLAR_TERM_TABLE_FIRST_YEAR && year <= SOLAR_TERM_TABLE_LAST_YEAR) {
+    return new Date(SOLAR_TERM_JIE_EPOCH_SECONDS[year][jieIdx] * 1000);
+  }
   const approxMonth = ((longitude + 90) / 30) % 12;
   let jd = julianDay(year, Math.floor(approxMonth) + 1, 5, 0);
   if (longitude >= 270 && longitude < 315) jd = julianDay(year, 1, 5, 0);
