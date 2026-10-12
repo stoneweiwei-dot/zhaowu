@@ -145,7 +145,12 @@ for (const skin of SKINS) {
       localStorage.setItem('zhaowu.report-history.v1', JSON.stringify([{ result, birth, savedAt: result.createdAt }]));
       localStorage.setItem('zhaowu.report-access-sessions.v1', JSON.stringify(['cs_test_themeacceptance1234567890']));
     }, { birth, result });
-    await open(`/?report=${result.id}#report`, '.zhaowu-report-continuous-sheet');
+    await open(`/?report=${result.id}#report`, '#report');
+    await page.getByRole('button', { name: language === 'en' ? 'View full reading' : '查看完整深批', exact: true }).click();
+    await expect(page.locator('.zhaowu-report-continuous-sheet')).toBeVisible();
+    for (const fold of await page.locator('.zhaowu-report-continuous-sheet details[data-report-fold] > summary').all()) {
+      if (await fold.isVisible()) await fold.click();
+    }
     await shot('report', '.zhaowu-report-continuous-sheet');
     await page.locator('[data-unified-birth-report]').first().scrollIntoViewIfNeeded().catch(() => undefined);
     await healthy(page, 'paid report');
