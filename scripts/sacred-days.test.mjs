@@ -5,7 +5,7 @@ import { formatSacredDay, SACRED_DAY_SOURCE_COUNT } from "../src/lib/almanac/sac
 test("the observance calendar covers all four requested traditions", () => {
   assert.ok(SACRED_DAY_SOURCE_COUNT >= 40);
   for (const tradition of ["佛教", "道教", "儒家", "民間信仰"]) {
-    assert.match(formatSacredDay(7, 15, "zh-Hant"), new RegExp(tradition));
+    const dates = { 佛教: [4, 8], 道教: [1, 9], 儒家: [8, 27], 民間信仰: [3, 23] } as const;\n    const [month, day] = dates[tradition as keyof typeof dates];\n    assert.match(formatSacredDay(month, day, "zh-Hant"), new RegExp(tradition));
   }
 });
 
