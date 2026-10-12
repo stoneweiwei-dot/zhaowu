@@ -37,6 +37,12 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
                   <p className="mt-1 text-sm leading-6 text-ink-soft">{tr(locale, "延續宋畫氣韻，減少裝飾、保留呼吸感；四款只使用站內現有畫作。", "延续宋画气韵，减少装饰、保留呼吸感；四款只使用站内现有画作。", "Four calmer interpretations, using existing site paintings and more breathing room.")}</p>
                 </div>
               ) : null}
+              {s.ref === 15 ? (
+                <div className="sm:col-span-2 border-t border-line/70 pt-5" data-qingmu-skin-collection>
+                  <h3 className="font-display text-lg text-ink">{tr(locale, "青木 · 生生不息", "青木 · 生生不息", "Verdant Wood · Endless Growth")}</h3>
+                  <p className="mt-1 text-sm leading-6 text-ink-soft">{tr(locale, "東方甲乙木：葉化青龍、煙嵐青峰、春雨柳亭、夜雨竹林；整站換裝。", "东方甲乙木：叶化青龙、烟岚青峰、春雨柳亭、夜雨竹林；整站换装。", "Eastern green-wood: leaf dragon, misty peaks, spring-rain willow, night bamboo rain — a full-site set.")}</p>
+                </div>
+              ) : null}
               <article className={`overflow-hidden rounded-xl border bg-paper/40 ${active ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"}`}>
               <div className="flex h-28 w-full overflow-hidden" role="group" aria-label={name(s)}>
                 <div className="relative w-1/2" style={{ background: `${s.swatch[0]} url(${s.hero}) ${s.focus} / cover no-repeat` }} role="img" aria-label={tr(locale, "頁面畫作", "页面画作", "Page painting")}>

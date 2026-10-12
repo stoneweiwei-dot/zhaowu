@@ -62,7 +62,7 @@
         try {
           var k = localStorage.getItem("zhaowu.skin.v1");
           if (!k || k === "none") return;
-          var dark = k === "night-flute" || k === "night-palace";
+          var dark = k === "night-flute" || k === "night-palace" || k === "verdant-rain";
           var r = document.documentElement;
           r.setAttribute("data-zws", k);
           r.setAttribute("data-zws-mode", dark ? "dark" : "light");

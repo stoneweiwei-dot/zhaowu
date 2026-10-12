@@ -21,7 +21,7 @@ export type SkinDef = {
   noteHans: string;
   noteEn: string;
   mode: SkinMode;
-  /** Catalog order; 1–10 map to the original mood-board, 11–14 to the Song whitespace series. */
+  /** Catalog order; 1–10 map to the original mood-board, 11–14 to the Song whitespace series, 15–18 to the 青木 (green-wood) series. */
   ref: number;
   /** High-resolution painting (existing site art or a graded video frame) used as the page backdrop and home banner. */
   hero: string;
@@ -47,6 +47,11 @@ export const SKINS: SkinDef[] = [
   { id: "song-rain-bank", ref: 12, mode: "light", zh: "煙汀雨過", hans: "烟汀雨过", en: "After the Rain", noteZh: "雨青湖色・薄墨水岸・細框無浮飾", noteHans: "雨青湖色・薄墨水岸・细框无浮饰", noteEn: "Rainwashed lake blue, thin ink, quiet frames", hero: "/hero-gallery/river-rain-boat.webp", focus: "50% 48%", swatch: ["#f4f3eb", "#315c67", "#98a890"] },
   { id: "song-lotus-still", ref: 13, mode: "light", zh: "素荷清漪", hans: "素荷清漪", en: "Still Lotus", noteZh: "藕白荷影・暖墨茶色・水波留白", noteHans: "藕白荷影・暖墨茶色・水波留白", noteEn: "Ivory lotus, tea ink, spacious ripples", hero: "/art/scene-lotus-boat-v1.webp", focus: "50% 44%", swatch: ["#fbf4ed", "#6a604b", "#b39770"] },
   { id: "song-osmanthus", ref: 14, mode: "light", zh: "桂月素箋", hans: "桂月素笺", en: "Osmanthus Letter", noteZh: "桂花暖金・月白宣紙・疏朗題跋", noteHans: "桂花暖金・月白宣纸・疏朗题跋", noteEn: "Osmanthus gold, moonlit paper, spare headings", hero: "/art/scene-osmanthus-tea-v1.webp", focus: "50% 45%", swatch: ["#f8f0e3", "#5c6044", "#b59a68"] },
+  // 青木・生生不息：東方甲乙木——新芽、竹雨、煙嵐、青龍；四款共用同一套全站主題引擎。
+  { id: "verdant-dragon", ref: 15, mode: "light", zh: "青龍・萬木生發", hans: "青龙・万木生发", en: "Azure Dragon of Spring", noteZh: "葉化青龍・暖紙・新綠金線，生生不息", noteHans: "叶化青龙・暖纸・新绿金线，生生不息", noteEn: "A dragon of leaves, warm paper, sprout-green and gold line", hero: "/theme-skins/verdant-dragon-art.webp", focus: "50% 22%", swatch: ["#f4eedb", "#2f6a4c", "#b9a54b"] },
+  { id: "verdant-mist", ref: 16, mode: "light", zh: "青木・煙嵐", hans: "青木・烟岚", en: "Verdant Mist", noteZh: "喀斯特青峰與湖霧，薄紗卡片", noteHans: "喀斯特青峰与湖雾，薄纱卡片", noteEn: "Green karst peaks and lake mist, gauze cards", hero: "/theme-skins/verdant-mist-art.webp", focus: "50% 38%", swatch: ["#eef2ea", "#2e6a52", "#7aa08a"] },
+  { id: "verdant-pavilion", ref: 17, mode: "light", zh: "青木・柳亭", hans: "青木・柳亭", en: "Willow Pavilion", noteZh: "春雨柳亭，新綠葉脈邊", noteHans: "春雨柳亭，新绿叶脉边", noteEn: "Spring-rain willow pavilion, leaf-vein edges", hero: "/theme-skins/verdant-pavilion-art.webp", focus: "50% 45%", swatch: ["#f1f5e4", "#3f7d3a", "#8fb54a"] },
+  { id: "verdant-rain", ref: 18, mode: "dark", zh: "夜・雨竹", hans: "夜・雨竹", en: "Bamboo Rain", noteZh: "深林雨竹，嫩芽綠光邊", noteHans: "深林雨竹，嫩芽绿光边", noteEn: "Deep bamboo rain, sprout-green glow", hero: "/theme-skins/verdant-rain-art.webp", focus: "50% 40%", swatch: ["#07150f", "#a8d38a", "#b9de92"] },
 ];
 
 export function skinById(id: string | null | undefined) {
