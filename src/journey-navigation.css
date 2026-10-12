@@ -1,7 +1,7 @@
 /* Explicit task navigation: scoped away from decorative header and report styles. */
 .zw-journey-nav { display:flex; flex-wrap:wrap; gap:.45rem; max-width:64rem; margin:.65rem auto 0; padding:0 1rem; position:relative; z-index:11; }
-.zw-journey-nav a,.zw-journey-nav .zw-journey-help { display:flex; align-items:center; justify-content:center; min-height:44px; padding:.55rem .85rem; border:1px solid #bdac8e; border-radius:.65rem; background:#fffbf2; color:#24483e; font-size:.875rem; font-weight:600; text-decoration:none; line-height:1.35; }
-.zw-journey-nav a[aria-current=page] { background:#24483e; color:#fffaf0; }
+.zw-journey-nav a,.zw-journey-nav .zw-journey-help { display:flex; align-items:center; justify-content:center; min-height:44px; padding:.55rem .85rem; border:0; border-bottom:1px solid transparent; border-radius:0; background:transparent; color:var(--zws-ink, #24483e); font-size:.875rem; font-weight:600; text-decoration:none; line-height:1.35; }
+.zw-journey-nav a[aria-current=page] { border-bottom:2px solid var(--zws-accent, #24483e); color:var(--zws-ink, #24483e); }
 .zw-owner-access-note,.zw-report-save-status { margin:.8rem 0; border:1px solid #b8cbbf; border-radius:.65rem; background:#f0f6ef; color:#24483e; padding:.8rem 1rem; font-size:.875rem; line-height:1.6; }
 .zw-report-save-status button { margin-left:.6rem; text-decoration:underline; min-height:44px; }
 /* Permission itself is checked by resolveReportAccess against the server.
@@ -31,21 +31,25 @@
 /* 2026-10-13 — one controllable flow, shared by the form and the site guide. */
 .zw-flow-progress { margin: 0 0 1rem; }
 .zw-flow-progress ol { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.4rem; list-style:none; margin:0; padding:0; }
-html body #birth-form .zw-flow-progress button { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.35rem; width:100%; min-height:48px; padding:.5rem .3rem; border:1px solid #b5bca7; border-radius:6px; background:#fffaf0; color:#294a3e; font-size:.94rem; font-weight:600; line-height:1.4; }
-html body #birth-form .zw-flow-progress button[aria-current=step] { border-color:#315e50; border-bottom-width:3px; background:#e5eddf; }
-html body #birth-form .zw-flow-progress button:disabled { color:#74746b; border-color:#d3cebf; cursor:not-allowed; }
+html body #birth-form .zw-flow-progress button { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.35rem; width:100%; min-height:48px; padding:.5rem .3rem; border:0; border-bottom:1px solid var(--zws-line, #b5bca7); border-radius:0; background:transparent; color:var(--zws-ink, #294a3e); font-size:.94rem; font-weight:600; line-height:1.4; }
+html body #birth-form .zw-flow-progress button[aria-current=step] { border-color:var(--zws-accent, #315e50); border-bottom-width:3px; background:color-mix(in srgb, var(--zws-accent, #315e50) 8%, transparent); }
+html body #birth-form .zw-flow-progress button:disabled { color:var(--zws-soft, #74746b); border-color:var(--zws-line, #d3cebf); cursor:not-allowed; }
 .zw-flow-progress button:focus-visible,.zw-flow-next:focus-visible,.zw-journey-help:focus-visible { outline:2px solid #315e50; outline-offset:3px; }
-.zw-flow-next { display:block; width:100%; min-height:48px; margin:1rem 0 .3rem; padding:.7rem 1rem; border:1px solid #315e50; border-radius:6px; background:#315e50; color:#fffaf0; font-size:1rem; }
-.zw-flow-note { margin:.4rem 0 1rem; font-size:.85rem; line-height:1.6; color:#4a554a; }
-.zw-flow-optional { padding:.6rem 0; border-top:1px solid #d5cbbb; color:#33493e; }
+.zw-flow-next { display:block; width:100%; min-height:48px; margin:1rem 0 .3rem; padding:.7rem 1rem; border:1px solid var(--zws-action-bg, #315e50); border-radius:6px; background:var(--zws-action-bg, #315e50); color:var(--zws-on-accent, #fffaf0); font-size:1rem; }
+.zw-flow-note { margin:.4rem 0 1rem; font-size:.85rem; line-height:1.6; color:var(--zws-soft, #4a554a); }
+.zw-flow-optional { padding:.6rem 0; border-top:1px solid var(--zws-line, #d5cbbb); color:var(--zws-ink, #33493e); }
 .zw-flow-optional > summary,.zw-guide-more summary { min-height:44px; padding:.65rem 0; cursor:pointer; font-weight:600; }
 .zw-flow-optional p { margin:.4rem 0 .8rem; line-height:1.8; }
-.zw-guide-steps { list-style:none; margin:.5rem 0 1rem; padding:0; color:#294a3e; }
+.zw-guide-steps { list-style:none; margin:.5rem 0 1rem; padding:0; color:var(--zws-ink, #294a3e); }
 .zw-guide-steps li + li { margin-top:.75rem; }
 .zw-guide-steps p { margin:.2rem 0 0; line-height:1.6; font-size:.94rem; }
-.zw-guide-more { border-top:1px solid #d5cbbb; color:#294a3e; }
+.zw-guide-more { border-top:1px solid var(--zws-line, #d5cbbb); color:var(--zws-ink, #294a3e); }
 .zw-guide-more nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.4rem; margin-bottom:.6rem; }
-.zw-guide-more a { display:flex; align-items:center; min-height:44px; padding:.5rem; color:#294a3e; border-bottom:1px solid #d5cbbb; text-decoration:none; font-size:.9rem; }
+.zw-guide-more a { display:flex; align-items:center; min-height:44px; padding:.5rem; color:var(--zws-ink, #294a3e); border-bottom:1px solid var(--zws-line, #d5cbbb); text-decoration:none; font-size:.9rem; }
 #birth-form #customer-record > .zhaowu-birth-summary { margin-bottom:.5rem; }
 #birth-form .zhaowu-time-calibration-note details > summary { cursor:pointer; min-height:44px; padding:.4rem 0; }
 @media (prefers-reduced-motion:reduce) { #birth-form { scroll-behavior:auto; } }
+
+/* Navigation is one quiet reading strip, not a row of separate cream labels. */
+.zw-journey-nav { background:var(--zws-surface, #f7f3ea); border-bottom:1px solid var(--zws-divider, #d5cbbb); border-radius:0; padding-block:.25rem; }
+.zw-journey-nav :is(a,button):focus-visible { outline:2px solid var(--zws-action-bg, #315e50); outline-offset:2px; }

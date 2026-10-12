@@ -79,3 +79,77 @@ test("all selected skins show the matching painting on report cover surfaces onl
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
   assert.match(manager, /Report colour preview/);
 });
+
+// Resolve the actual root token cascade, including shared and per-skin rules.
+// This checks readable foreground/background pairs rather than a copied palette.
+const { default: postcss } = await import('postcss');
+const skinRoots = [css, readFileSync('src/theme-skins-sets.css', 'utf8'), full].map(text => postcss.parse(text));
+function tokensForSkin(skin) {
+  const attributes = { 'data-zws': skin.id, 'data-zws-mode': skin.mode, ...(skin.mode === 'dark' ? {'data-zw-theme':'night'} : {}), lang:'zh-Hant' };
+  const vars = {}, ranks = {};
+  let order = 0;
+  for (const root of skinRoots) root.walkRules(rule => {
+    order++;
+    for (const selector of rule.selector.split(',')) {
+      const sel = selector.trim();
+      if (!/^html(?:\[[^\]]+\])+$/.test(sel)) continue;
+      const attrs = [...sel.matchAll(/\[([\w-]+)(?:(\^=|=)["']([^"']+)["'])?\]/g)];
+      if (!attrs.every(([,name,operator,value]) => name in attributes && (!operator || (operator === '=' ? attributes[name] === value : attributes[name].startsWith(value))))) continue;
+      for (const decl of rule.nodes.filter(n => n.type === 'decl' && n.prop.startsWith('--'))) {
+        const rank = [decl.important ? 1 : 0, attrs.length, order];
+        const prev = ranks[decl.prop];
+        if (!prev || rank[0] > prev[0] || (rank[0] === prev[0] && (rank[1] > prev[1] || (rank[1] === prev[1] && rank[2] >= prev[2])))) {
+          ranks[decl.prop] = rank; vars[decl.prop] = decl.value;
+        }
+      }
+    }
+  });
+  return vars;
+}
+function splitColourArgs(value) {
+  let depth = 0, start = 0; const parts = [];
+  for (let i = 0; i < value.length; i++) {
+    if (value[i] === '(') depth++;
+    if (value[i] === ')') depth--;
+    if (value[i] === ',' && depth === 0) { parts.push(value.slice(start, i).trim()); start = i + 1; }
+  }
+  parts.push(value.slice(start).trim()); return parts;
+}
+function colour(value, vars, visited = new Set()) {
+  const v = value.trim();
+  const reference = v.match(/^var\((--[\w-]+)\)$/);
+  if (reference) {
+    assert.ok(!visited.has(reference[1]), `circular colour token ${reference[1]}`);
+    assert.ok(vars[reference[1]], `missing colour token ${reference[1]}`);
+    return colour(vars[reference[1]], vars, new Set([...visited, reference[1]]));
+  }
+  if (/^#[\da-f]{3,6}$/i.test(v)) {
+    const hex = v.length === 4 ? [...v.slice(1)].map(c => c + c).join('') : v.slice(1);
+    return [0, 2, 4].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
+  }
+  if (v.startsWith('color-mix(')) {
+    const [space, first, second] = splitColourArgs(v.slice(10, -1));
+    assert.equal(space, 'in srgb');
+    const term = text => { const m = text.match(/\s+([\d.]+)%$/); return {rgb:colour(m ? text.slice(0,m.index) : text, vars, visited), weight:m ? Number(m[1])/100 : null}; };
+    const a = term(first), b = term(second);
+    const aw = a.weight ?? (b.weight === null ? .5 : 1 - b.weight), bw = b.weight ?? 1 - aw;
+    return a.rgb.map((x,i) => (x*aw+b.rgb[i]*bw)/(aw+bw));
+  }
+  throw new Error(`Unsupported contrast colour: ${v}`);
+}
+function contrast(a, b) {
+  const luminance = rgb => rgb.map(v => v <= .04045 ? v/12.92 : ((v+.055)/1.055)**2.4).reduce((n,v,i) => n+v*[.2126,.7152,.0722][i],0);
+  const la=luminance(a), lb=luminance(b); return (Math.max(la,lb)+.05)/(Math.min(la,lb)+.05);
+}
+test('all 18 actual skin palettes keep body, muted copy and primary actions readable', () => {
+  for (const skin of ids) {
+    const vars = tokensForSkin(skin);
+    for (const [fg, bg] of [['--zws-ink','--zws-surface'],['--zws-soft','--zws-surface'],['--zws-ink','--zws-surface-soft'],['--zws-on-accent','--zws-action-bg']]) {
+      const ratio = contrast(colour(vars[fg],vars),colour(vars[bg],vars));
+      assert.ok(ratio >= 4.5, `${skin.id}: ${fg} / ${bg} contrast ${ratio.toFixed(2)}`);
+    }
+    assert.equal(vars['--zws-card-orn'], 'none');
+    assert.equal(vars['--zws-card-frame'], 'none');
+    assert.equal(vars['--zws-card-blur'], 'none');
+  }
+});
