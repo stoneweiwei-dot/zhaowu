@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { AnalysisResult } from "@/lib/bazi/types";
+import type { AnalysisResult, Chart } from "@/lib/bazi/types";
 import { ReportSpriteArtwork } from "@/components/report-sprite-artwork";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { getDayStemCharacterAsset, getReportVisualAsset } from "@/lib/report/report-visual-assets";
@@ -54,11 +54,11 @@ const COPY: Record<Locale, {
  * artwork are decoration only and are never the source of truth. Never substitute
  * reference-site screenshots.
  */
-export function DayStemPortrait({ result }: { result: AnalysisResult }) {
+export function DayStemPortrait({ result, chart = result?.chart }: { result?: AnalysisResult; chart?: Chart }) {
   const { locale } = useI18n();
   const [failedCharacterKey, setFailedCharacterKey] = useState<string | null>(null);
-  if (!result?.chart) return null;
-  const model = buildReportVisualModel(result.chart, locale);
+  if (!chart) return null;
+  const model = buildReportVisualModel(chart, locale);
   const stem = model.dayMaster.stem;
   const english = STEM_ENGLISH[stem];
   if (!english) return null;

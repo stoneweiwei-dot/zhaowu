@@ -96,11 +96,13 @@ test("generic character panel visual contract stores Song Huizong art direction 
   assert.equal(isCharacterPanelVisualEligible({ category: "guardian", storage_path: "gallery/song-scholar.webp", title: "宋系山水人物" }), true);
 });
 
-test("generic character panel applies a second tea-art gate before gallery ranking", () => {
+test("the visible personal-art slot uses exact chart artwork instead of gallery ranking", () => {
   const component = readFileSync(new URL("../src/components/character-panel.tsx", import.meta.url), "utf8");
-  assert.match(component, /isCharacterPanelVisualEligible/);
-  const selection = readFileSync(new URL("../src/lib/report/personal-art.ts", import.meta.url), "utf8");
-  assert.match(selection, /reviewed\.filter/);
-  assert.match(selection, /storage_path:asset\.storage_path/);
-  assert.match(component, /9:16/);
+  assert.match(component, /<DayStemPortrait chart=\{chart\} \/>/);
+  assert.match(component, /<BranchScenery chart=\{chart\} \/>/);
+  assert.doesNotMatch(component, /loadCustomerGalleryCandidates|rankPersonalArt|personalArtReason|src=\{portraitUrl\}/);
+  const view = readFileSync(new URL("../src/components/result-view.tsx", import.meta.url), "utf8");
+  assert.match(view, /showChartArtwork=\{false\}/);
+  const report = readFileSync(new URL("../src/components/paid-report-pages.tsx", import.meta.url), "utf8");
+  assert.match(report, /showChartArtwork = true/);
 });

@@ -64,6 +64,7 @@ test("day-stem portrait prefers characters/, falls back to full/, keeps the text
   const hits = execFileSync("grep", ["-rlE", "report-visuals/characters|getDayStemCharacterAsset|day-stem-portrait", "src"], { cwd: new URL("..", import.meta.url), encoding: "utf8" })
     .split("\n").filter(Boolean).sort();
   assert.deepEqual(hits, [
+    "src/components/character-panel.tsx",
     "src/components/day-stem-portrait.css",
     "src/components/day-stem-portrait.tsx",
     "src/components/paid-report-pages.tsx",

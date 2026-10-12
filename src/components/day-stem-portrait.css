@@ -83,3 +83,9 @@
   .zhaowu-day-stem-portrait .zhaowu-sprite-artwork { width: min(60vw, 12rem); }
   .zhaowu-day-stem-portrait .zhaowu-sprite-artwork.is-character { width: min(86vw, 19rem); }
 }
+
+/* The legacy personal-art rule must not stretch the new near-square portraits. */
+.zhaowu-personal-art .zhaowu-day-stem-portrait .is-character img {
+  aspect-ratio: 720 / 773;
+  height: auto;
+}

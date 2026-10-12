@@ -355,7 +355,7 @@ function AnalysisNotes({
 /** Direct answer + one supporting line stay open; the rest of the overall summary folds. */
 const SUMMARY_VISIBLE_LINES = 1;
 
-export function FocusedReportSections({ sections, result }: { sections: ReportSection[]; result?: AnalysisResult }) {
+export function FocusedReportSections({ sections, result, showChartArtwork = true }: { sections: ReportSection[]; result?: AnalysisResult; showChartArtwork?: boolean }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const content = continuousReportContent(sections, locale);
@@ -412,8 +412,10 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
             <span><strong>{copy.visual}</strong><small>{copy.visualHint}</small></span>
           </summary>
           <div className="zhaowu-report-stage-fold__body">
-            <DayStemPortrait result={result} />
-            <BranchScenery result={result} />
+            {showChartArtwork ? <>
+              <DayStemPortrait result={result} />
+              <BranchScenery result={result} />
+            </> : null}
             <IllustratedDestinyPanel result={result} />
             <IllustratedShareCard result={result} />
             <ReportShareCard result={result} />
