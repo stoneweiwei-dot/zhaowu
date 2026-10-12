@@ -9982,3 +9982,10 @@ html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-compare 
 html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-compare b {
   color: #e0be80 !important;
 }
+
+/* Always-visible distribution meters: paper surface keeps dark ink under every skin. */
+.zhaowu-element-glance { margin: 18px 0; padding: 14px 16px; border: 1px solid var(--zw-line); border-radius: 14px; background: #fcf8ee; }
+html body main .zhaowu-element-glance :is(h4, p, span, b) { color: #29251f !important; }
+.zhaowu-element-glance > h4 { margin: 0 0 10px; font-size: 1rem; }
+.zhaowu-element-glance .zhaowu-element-bars { margin-top: 0; }
+.zhaowu-element-glance .zhaowu-visual-note { margin: 10px 0 0; background: #f7f0e2 !important; }

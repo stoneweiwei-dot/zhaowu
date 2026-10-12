@@ -150,6 +150,42 @@ function FiveElementFlow({ rows, title, note }: {
   );
 }
 
+const GLANCE_TITLE: Record<Locale, string> = {
+  "zh-Hant": "五行分布一覽",
+  "zh-Hans": "五行分布一览",
+  en: "Your element distribution",
+};
+
+const GLANCE_NOTE: Record<Locale, string> = {
+  "zh-Hant": "五行分布只作視覺參考，不等於喜忌或用神；判斷仍須看月令、根氣、透藏與制化。",
+  "zh-Hans": "五行分布只作视觉参考，不等于喜忌或用神；判断仍须看月令、根气、透藏与制化。",
+  en: "These bars show the chart's element mix. More or less does not mean helpful or harmful; the reading also considers the birth season and how the chart's parts work together.",
+};
+
+/** Always-visible level meters (no numbers); the full visual book stays in the collapsed detail section. */
+export function ReportElementMeters({ result }: { result: AnalysisResult }) {
+  const { locale } = useI18n();
+  const model = useMemo(() => buildReportVisualModel(result.chart, locale), [result.chart, locale]);
+  const title = GLANCE_TITLE[locale];
+  return (
+    <section className="zhaowu-element-glance" aria-label={title} data-element-glance>
+      <h4>{title}</h4>
+      <div className="zhaowu-element-bars">
+        {model.elements.rows.map((row) => (
+          <div key={row.element} className={`zhaowu-element-bar ${ELEMENT_CLASS[row.element]}`}>
+            <span>{row.label}</span>
+            <div className="zhaowu-meter" role="img" aria-label={`${row.label}: ${row.levelLabel}`}>
+              {[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= row.level ? "is-on" : ""} />)}
+            </div>
+            <b>{row.levelLabel}</b>
+          </div>
+        ))}
+      </div>
+      <p className="zhaowu-visual-note">{GLANCE_NOTE[locale]}</p>
+    </section>
+  );
+}
+
 export function ReportVisualBook({ result }: { result: AnalysisResult }) {
   const { locale } = useI18n();
   const copy = COPY[locale];

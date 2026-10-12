@@ -94,7 +94,7 @@ test("Phase 1 UI is programmatic and does not revive numbered multi-session repo
   const sprite = await source("src/components/report-sprite-artwork.tsx");
   const model = await source("src/lib/report/report-visual-model.ts");
   const report = await source("src/components/paid-report-pages.tsx");
-  const css = await source("src/report-visual-book.css");
+  const css = await source("src/zhaowu-layered-styles.css");
 
   assert.match(component, /<svg className="zhaowu-five-wheel"/);
   assert.match(model, /\/report-visuals\/day-master\//);
