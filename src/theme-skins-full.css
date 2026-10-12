@@ -336,3 +336,49 @@ html[data-zws][data-zws][data-zws-mode="dark"] body :is(#five-element-wardrobe, 
   color: var(--zws-ink) !important;
   -webkit-text-fill-color: currentColor !important;
 }
+
+/* The wardrobe palette is intentionally an opaque paper leaf even inside a
+   dark site skin. Its colour samples must retain their real pigment values and
+   its labels must stay dark-on-paper instead of inheriting pale night ink. */
+html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe {
+  color: #2d4038 !important;
+  background:
+    radial-gradient(circle at 92% 4%, rgba(190, 165, 109, .10), transparent 26%),
+    linear-gradient(180deg, #fbf7ed 0%, #f4ecdc 100%) !important;
+  border-color: transparent !important;
+}
+html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac .zhaowu-today-section.is-wardrobe :is(
+  [data-wardrobe-palette] > small,
+  [data-wardrobe-note] > small
+) {
+  color: #776548 !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac .zhaowu-today-section.is-wardrobe :is(
+  [data-wardrobe-additional] > summary,
+  [data-wardrobe-additional] > summary *,
+  .zhaowu-wardrobe-swatch > b,
+  [data-wardrobe-materials] > span,
+  [data-wardrobe-note="quiet-colours"] > strong
+) {
+  color: #273b34 !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac .zhaowu-today-section.is-wardrobe :is(
+  .zhaowu-wardrobe-swatch,
+  .zhaowu-today-guide__wardrobe-notes > span,
+  .zhaowu-today-guide__wardrobe-notes > section
+) {
+  border-color: rgba(84, 68, 46, .14) !important;
+  background: rgba(255, 252, 244, .78) !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe-notes > :is(span, section) {
+  border-width: 0 0 1px !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac .zhaowu-today-section.is-wardrobe [data-wardrobe-materials] > span {
+  border-color: #b99a61 !important;
+  background: rgba(226, 217, 196, .52) !important;
+}

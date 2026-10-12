@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-12-song-shell-wardrobe-swatches",
+    date: "2026-10-12",
+    zhHant: { title: "首頁穿衣加入對應色卡，共用介面收斂為宋式暖紙", summary: "每日穿衣的命盤主色、今日天時色與少量使用色改為可辨識的對應色卡，首飾與材質另列，不再只顯示一串淡色文字。首頁入口、音樂／導覽工具、登入與系統頁同步收斂為低圓角暖紙、細線與克制陰影，移除殘留玻璃膠囊感；五行取值與命盤計算不變。" },
+    zhHans: { title: "首页穿衣加入对应色卡，共用界面收敛为宋式暖纸", summary: "每日穿衣的命盘主色、今日天时色与少量使用色改为可辨识的对应色卡，首饰与材质另列，不再只显示一串淡色文字。首页入口、音乐／导览工具、登录与系统页同步收敛为低圆角暖纸、细线与克制阴影，移除残留玻璃胶囊感；五行取值与命盘计算不变。" },
+    en: { title: "True wardrobe swatches and a calmer Song-paper shared interface", summary: "Daily Dress now shows distinct, labelled swatches for your working palette, today's sky colours and colours to use lightly, with jewellery and materials kept separate. Home entrances, Music/Guide tools, login and system pages also move to low-radius warm paper, fine rules and restrained shadows instead of glassy pills; five-element selection and chart calculations are unchanged." },
+  },
+  {
     id: "2026-10-11-skin-sets-quiz-hub-d60",
     date: "2026-10-11",
     zhHant: { title: "主題皮膚改為整套樣式、趣味測驗入口統一、D60 業力分盤補回", summary: "十款主題皮膚不再只換頂圖：各自有背景紋理、卡片框線、按鈕、標題線與導覽膠囊，並修正首頁標語與頁尾偏淡的字。趣味測驗頁現在列出全部測驗，與首頁一致（新增「五行優勢內耗測驗」到首頁）。印度占星確認出生分鐘後，即使前後 ±2 分鐘會改變 D60 上升細分，也會生成 D60 業力分盤並標示為弱旁證，不再整段空白；只有計算失敗才不作判定。" },

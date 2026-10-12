@@ -4,47 +4,44 @@ import test from "node:test";
 
 const widget = await readFile(new URL("../src/components/daily-almanac-widget.tsx", import.meta.url), "utf8");
 const route = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
+const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 const form = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
 const layout = await readFile(new URL("../src/home-layout-r46.css", import.meta.url), "utf8");
-const hub = await readFile(new URL("../src/home-birth-hub-r60.css", import.meta.url), "utf8");
-const almanacStyle = await readFile(new URL("../src/daily-almanac-r69.css", import.meta.url), "utf8");
+const layered = await readFile(new URL("../src/zhaowu-layered-styles.css", import.meta.url), "utf8");
+const hub = layered;
+const almanacStyle = layered;
 const design = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 const hero = await readFile(new URL("../src/home-hero-v1.css", import.meta.url), "utf8");
 
-test("homepage puts Today Guide before the birth flow and preserves the approved full-guide mode", () => {
-  const daily = route.indexOf("<LazyDailyAlmanacWidget onExpand={() => setTodayExpanded(true)} />");
+test("homepage keeps Today Guide in its dedicated subview and preserves the approved full-guide mode", () => {
+  const daily = route.indexOf("<LazyDailyAlmanacWidget embedded />");
   const formMount = route.indexOf("<AnalysisForm />");
   const report = route.indexOf("<ResultView result={current} />");
   const deepReading = route.indexOf("<DeepReadingHeroCard />");
   assert.ok(daily >= 0 && formMount > daily && report > formMount && deepReading > report);
   assert.match(route, /id="home-today-guide"/);
-  assert.match(route, /const \[todayExpanded, setTodayExpanded\] = useState\(false\)/);
-  assert.match(route, /if \(id === "today"\) \{[\s\S]*setActiveSection\(null\);[\s\S]*setTodayExpanded\(true\);/);
-  assert.match(route, /setTodayExpanded\(false\);[\s\S]*setActiveSection\(\(prev\) => \(prev === id \? null : id\)\)/);
-  assert.match(route, /const openBirthBook = \(\) => \{[\s\S]*setTodayExpanded\(false\);[\s\S]*setActiveSection\("form"\)/);
+  assert.match(route, /activeSection === "today"/);
+  assert.match(route, /setActiveSection\("today"\)/);
+  assert.match(route, /const openBirthBook = \(options\?: \{ focusYear\?: boolean \}\) => \{[\s\S]*setActiveSection\("form"\)/);
   assert.match(route, /<LazyDailyAlmanacWidget embedded \/>/);
-  assert.match(route, /<LazyDailyAlmanacWidget onExpand=\{\(\) => setTodayExpanded\(true\)\} \/>/);
-  assert.match(route, /className="zw-home-today-collapse"/);
   assert.match(widget, /onExpand\?: \(\) => void/);
   assert.match(widget, /if \(onExpand\) onExpand\(\)/);
   assert.match(widget, /zhaowu-daily-details\$\{embedded \? " is-embedded-open"/);
   assert.match(widget, /<span>1\/3<\/span>/);
   assert.match(widget, /<span>2\/3<\/span>/);
   assert.match(widget, /<span>3\/3<\/span>/);
-  assert.doesNotMatch(route, /activeSection === "today"/);
   assert.match(route, /import\("@\/components\/daily-almanac-widget"\)/);
   assert.match(route, /navToday: "Today"/);
-  assert.match(route, /navToday: "今日"/);
+  assert.match(route, /navToday: "今日黄历"/);
+  assert.match(route, /navToday: "今日黃曆"/);
   assert.match(form, /id="customer-record" className="zhaowu-customer-record"/);
   assert.match(form, /id="bazi"/);
   assert.match(route, /home-layout-r46\.css/);
-  assert.match(route, /home-birth-hub-r60\.css/);
+  assert.match(main, /zhaowu-layered-styles\.css/);
 });
 
 test("home reserves Today loading space and stops automatic painting motion when requested", () => {
   assert.match(route, /className="zw-home-today-skeleton"/);
-  assert.match(route, /prefers-reduced-motion: reduce/);
-  assert.match(route, /heroManual/);
   assert.match(hero, /\.zw-home-today-skeleton/);
   assert.match(hero, /min-height:\s*168px/);
   assert.match(hero, /prefers-reduced-motion: reduce/);

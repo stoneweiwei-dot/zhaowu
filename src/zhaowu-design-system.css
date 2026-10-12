@@ -9398,3 +9398,376 @@ html:lang(en) [data-five-element-correspondence-grid] > div { grid-template-colu
 .zhaowu-site-utility-buttons { opacity: .9; }
 .zhaowu-site-utility-buttons > button { min-width: 52px; min-height: 44px; padding: 3px 7px; }
 .zhaowu-app-frame { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2026-10-09 · Song visual unification · Batch 1
+   Common shell, home portals, login and system states. This stays in the
+   canonical final authority so the rollout survives the pending CSS-layer
+   consolidation without adding another stylesheet or runtime injector.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --zw-card-radius: 10px;
+  --zw-control-radius: 8px;
+  --zw-shadow: 0 8px 28px rgba(55, 44, 29, .065);
+}
+
+/* The site chrome is warm paper, not a frosted pane over the painting. */
+html body .zhaowu-site-header,
+html body .zhaowu-route-home .zhaowu-site-header,
+html body:has(.zhaowu-home-layout) .zhaowu-site-header {
+  background: rgba(248, 243, 232, .97) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Four illustrated entrances remain distinct, but read as editorial plates. */
+html body .zw-hero-nav-item.zw-hero-card {
+  min-height: 142px;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 12px rgba(60, 48, 30, .055) !important;
+}
+
+html body .zw-birth-entry-ticket {
+  border-radius: 8px !important;
+  background: rgba(251, 247, 237, .96) !important;
+  box-shadow: 0 3px 12px rgba(55, 72, 62, .045) !important;
+}
+
+/* Music and guide are two quiet square-edged tools, never one floating pill. */
+html body .zhaowu-site-utility-buttons {
+  gap: 0;
+  border-radius: 10px !important;
+  padding: 3px;
+  background: rgba(251, 247, 237, .97) !important;
+  box-shadow: 0 5px 16px rgba(59, 48, 35, .085) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body .zhaowu-site-utility-buttons > button,
+html body .zhaowu-site-utility-buttons > button + button {
+  min-width: 56px;
+  min-height: 48px;
+  border-radius: 6px !important;
+}
+
+html body .zhaowu-site-utility-buttons > button + button {
+  border-left-color: rgba(116, 91, 56, .16);
+}
+
+html body .zhaowu-site-utility-buttons > button.is-active {
+  background: rgba(221, 231, 221, .68) !important;
+  box-shadow: inset 0 -1px 0 rgba(41, 75, 63, .22);
+}
+
+html body .zhaowu-site-utility-panel {
+  border-radius: 10px !important;
+  background: #fbf6eb !important;
+  box-shadow: 0 12px 34px rgba(45, 39, 31, .12) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body .zhaowu-site-utility-panel-head > button {
+  border-radius: 7px !important;
+}
+
+/* Login is a paper leaf set into the landscape, not a glass modal. */
+html body .zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-sheet {
+  border-radius: 10px !important;
+  background: rgba(255, 250, 239, .965) !important;
+  box-shadow: 0 10px 32px rgba(62, 49, 31, .10) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body .zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] :is(
+  .stone-login-form input,
+  .stone-login-primary
+) {
+  border-radius: 8px !important;
+}
+
+/* The public error page uses the same book geometry and visible actions. */
+html body [data-public-not-found] .seal-border {
+  border-radius: 10px !important;
+  background: rgba(252, 248, 238, .97) !important;
+  box-shadow: var(--zw-shadow) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body [data-public-not-found] a {
+  min-height: 44px;
+  border-radius: 8px !important;
+}
+
+@media (max-width: 580px) {
+  html body .zw-hero-inscription {
+    padding-inline: 14px;
+  }
+
+  html body .zw-hero-nav-wrap {
+    padding-inline: 12px !important;
+  }
+
+  html body .zw-hero-nav {
+    gap: 9px !important;
+  }
+
+  html body .zw-hero-nav-item.zw-hero-card {
+    min-height: 132px;
+    padding: 14px 12px 12px !important;
+  }
+
+  html body .zw-hero-card-copy {
+    max-width: 82%;
+  }
+
+  html body .zhaowu-site-utility-dock {
+    right: max(9px, env(safe-area-inset-right));
+    bottom: max(10px, calc(env(safe-area-inset-bottom) + 6px));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2026-10-12 · Personal wardrobe palette
+   Named colours must read as pigment samples, not a pale text-only card wall.
+   The chart calculation is untouched; this layer only gives each existing
+   colour result a visible, labelled Song-paper swatch.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe {
+  border-radius: 10px !important;
+  background: #f5eddd !important;
+  box-shadow: 0 5px 18px rgba(52, 43, 29, .06) !important;
+}
+
+html body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 18px 16px 20px !important;
+  color: #2d4038 !important;
+  background:
+    radial-gradient(circle at 92% 4%, rgba(190, 165, 109, .10), transparent 26%),
+    linear-gradient(180deg, #fbf7ed 0%, #f4ecdc 100%) !important;
+  box-shadow: none !important;
+}
+
+html body [data-personal-daily-wardrobe] {
+  display: grid;
+  gap: 0;
+}
+
+html body [data-wardrobe-palette] {
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid rgba(91, 72, 45, .15);
+  padding: 2px 0 18px;
+  background: transparent !important;
+}
+
+html body [data-wardrobe-palette] > small,
+html body [data-wardrobe-note] > small {
+  display: block;
+  margin: 0 0 10px;
+  color: #776548 !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: .12em;
+  line-height: 1.35;
+}
+
+html body .zhaowu-wardrobe-swatches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+html body .zhaowu-wardrobe-swatch {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 62px;
+  border: 1px solid rgba(84, 68, 46, .14);
+  border-radius: 7px;
+  padding: 7px;
+  color: #273b34 !important;
+  background: rgba(255, 252, 244, .78) !important;
+  box-shadow: 0 2px 8px rgba(61, 48, 30, .035);
+}
+
+html body .zhaowu-wardrobe-swatch > i {
+  display: block !important;
+  width: 48px;
+  height: 46px;
+  border: 1px solid rgba(55, 47, 37, .16);
+  border-radius: 4px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .28), transparent 46%, rgba(38, 34, 27, .07)),
+    var(--wardrobe-swatch) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .20);
+}
+
+html body .zhaowu-wardrobe-swatch > b {
+  min-width: 0;
+  color: #273b34 !important;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+
+html body .zhaowu-wardrobe-swatches.is-compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+html body .zhaowu-wardrobe-swatches.is-compact .zhaowu-wardrobe-swatch {
+  grid-template-columns: 1fr;
+  justify-items: stretch;
+  gap: 6px;
+  min-height: 70px;
+  padding: 6px;
+}
+
+html body .zhaowu-wardrobe-swatches.is-compact .zhaowu-wardrobe-swatch > i {
+  width: 100%;
+  height: 31px;
+}
+
+html body .zhaowu-wardrobe-swatches.is-compact .zhaowu-wardrobe-swatch > b {
+  font-size: 11px;
+  text-align: center;
+}
+
+html body #daily-almanac [data-wardrobe-additional] {
+  margin-top: 0;
+  border-top: 0;
+}
+
+html body #daily-almanac [data-wardrobe-additional] > summary {
+  border-bottom: 1px solid rgba(91, 72, 45, .13);
+  padding: 14px 2px 12px;
+  color: #2c5b4b !important;
+}
+
+html body #daily-almanac [data-wardrobe-additional][open] > summary {
+  margin-bottom: 2px;
+}
+
+html body #daily-almanac .zhaowu-today-guide__wardrobe-notes,
+html body #daily-almanac .zhaowu-today-guide__wardrobe-notes.is-personal {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html body #daily-almanac .zhaowu-today-guide__wardrobe-notes > :is(section, span) {
+  min-width: 0;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(91, 72, 45, .12) !important;
+  border-radius: 0 !important;
+  padding: 16px 2px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html body #daily-almanac .zhaowu-today-guide__wardrobe-notes > :is(section, span):last-child {
+  border-bottom: 0 !important;
+}
+
+html body [data-wardrobe-materials] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+html body [data-wardrobe-materials] > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  border-left: 2px solid #b99a61;
+  border-radius: 3px;
+  padding: 5px 9px;
+  color: #344840 !important;
+  background: rgba(226, 217, 196, .52) !important;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+html body #daily-almanac [data-wardrobe-note="quiet-colours"] > strong {
+  display: block;
+  margin-top: 2px;
+  color: #5e625b !important;
+}
+
+/* This information remains an opaque reading leaf in night mode: dark ink on
+   warm paper, so the low-contrast cream-on-cream failure cannot return. */
+html[data-zw-theme="night"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe,
+html[data-zw-theme="night"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe [data-personal-daily-wardrobe] {
+  color: #2d4038 !important;
+  background:
+    radial-gradient(circle at 92% 4%, rgba(190, 165, 109, .10), transparent 26%),
+    linear-gradient(180deg, #fbf7ed 0%, #f4ecdc 100%) !important;
+}
+
+html[data-zw-theme="night"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe :is(
+  [data-wardrobe-palette] > small,
+  [data-wardrobe-note] > small
+) {
+  color: #776548 !important;
+}
+
+html[data-zw-theme="night"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe :is(
+  .zhaowu-wardrobe-swatch > b,
+  [data-wardrobe-materials] > span,
+  [data-wardrobe-note="quiet-colours"] > strong
+) {
+  color: #273b34 !important;
+}
+
+@media (max-width: 430px) {
+  html body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe {
+    padding: 15px 12px 18px !important;
+  }
+
+  html body .zhaowu-wardrobe-swatches {
+    gap: 7px;
+  }
+
+  html body .zhaowu-wardrobe-swatch {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 8px;
+    min-height: 58px;
+    padding: 6px;
+  }
+
+  html body .zhaowu-wardrobe-swatch > i {
+    width: 42px;
+    height: 42px;
+  }
+
+  html body .zhaowu-wardrobe-swatch > b {
+    font-size: 12px;
+  }
+
+  html body .zhaowu-wardrobe-swatches.is-compact .zhaowu-wardrobe-swatch {
+    grid-template-columns: 1fr;
+    min-height: 66px;
+  }
+
+  html body .zhaowu-wardrobe-swatches.is-compact .zhaowu-wardrobe-swatch > i {
+    width: 100%;
+    height: 28px;
+  }
+}

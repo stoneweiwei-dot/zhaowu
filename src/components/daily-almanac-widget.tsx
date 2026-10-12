@@ -249,6 +249,50 @@ function dayStyle(stem: string, locale: Locale) {
   }
   if (locale === "zh-Hans") return Object.fromEntries(Object.entries(value).map(([key, text]) => [key, toSimplifiedCustomerText(text)])) as typeof value; return value;
 }
+
+type WardrobeColour = { label: string; hex: string };
+
+const WARDROBE_COLOUR_HEX: Record<string, string> = {
+  "青綠": "#557e69", "青绿": "#557e69", "Jade green": "#557e69",
+  "霧藍": "#9ab4ba", "雾蓝": "#9ab4ba", "Mist blue": "#9ab4ba",
+  "玉白": "#e8e4d8", "Jade white": "#e8e4d8", "Soft white": "#eee8dc",
+  "朱砂": "#a84237", "Vermilion": "#a84237",
+  "暖白": "#eee5d6", "Warm white": "#eee5d6",
+  "煙粉": "#cfa8a1", "烟粉": "#cfa8a1", "Dusty pink": "#cfa8a1",
+  "岩白": "#e3ddd0", "Stone white": "#e3ddd0",
+  "沙金": "#c3a36a", "Sand gold": "#c3a36a",
+  "暖灰": "#9f978c", "Warm grey": "#9f978c",
+  "銀灰": "#b8bbb9", "银灰": "#b8bbb9", "Silver grey": "#b8bbb9",
+  "墨藍": "#314b5c", "墨蓝": "#314b5c", "Ink blue": "#314b5c",
+  "銀白": "#d8d8d3", "银白": "#d8d8d3", "Silver white": "#d8d8d3",
+};
+
+function wardrobeColourSwatches(labels: string): WardrobeColour[] {
+  return labels
+    .split(/[・·]/u)
+    .map((label) => label.trim())
+    .filter(Boolean)
+    .map((label) => ({ label, hex: WARDROBE_COLOUR_HEX[label] ?? "#a79d8b" }));
+}
+
+function WardrobeSwatches({ items, compact = false, ariaLabel }: { items: WardrobeColour[]; compact?: boolean; ariaLabel: string }) {
+  return (
+    <div className={`zhaowu-wardrobe-swatches${compact ? " is-compact" : ""}`} role="list" aria-label={ariaLabel}>
+      {items.map((item) => (
+        <span
+          className="zhaowu-wardrobe-swatch"
+          role="listitem"
+          key={`${item.label}-${item.hex}`}
+          style={{ ["--wardrobe-swatch" as string]: item.hex }}
+        >
+          <i aria-hidden="true" />
+          <b>{item.label}</b>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 const SLIPS = {
   "zh-Hant": [
     ["靜心守中", "先把最重要的一件事守住，雜音自然會退。", "少猜一步，慢半拍確認。今日不求同時解開所有事，只求把真正重要的事做穩。"],
@@ -298,7 +342,7 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
   const personal = useMemo(() => birth ? buildPersonalPaidProfile(birth, locale) : null, [birth, locale]);
   const dayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
   const pillars = useMemo(() => { const day = dayGanzhi(now.getFullYear(), now.getMonth() + 1, now.getDate()); const ym = yearMonthPillars(now); return { year: ym.year, month: ym.month, day, hour: hourPillar(day, now.getHours()), jieName: ym.jieName }; }, [dayKey, now.getHours(), now.getMinutes()]);
-  const values = [pillars.year, pillars.month, pillars.day, pillars.hour]; const tone = dayStyle(pillars.day[0], locale); const slipIndex = useMemo(() => stableHash(`${dayKey}|daily-spirit-slip`) % SLIPS[locale].length, [dayKey, locale]); const slip = SLIPS[locale][slipIndex]; const slipSequence = String(slipIndex + 1).padStart(2, "0");
+  const values = [pillars.year, pillars.month, pillars.day, pillars.hour]; const tone = dayStyle(pillars.day[0], locale); const toneSwatches = wardrobeColourSwatches(tone.colors); const slipIndex = useMemo(() => stableHash(`${dayKey}|daily-spirit-slip`) % SLIPS[locale].length, [dayKey, locale]); const slip = SLIPS[locale][slipIndex]; const slipSequence = String(slipIndex + 1).padStart(2, "0");
   const labels = locale === "en" ? { title: "Today Guide", sub: "Local time · weather · almanac rhythm", almanac: "Daily Almanac", wardrobe: "Daily Dress · Five Elements", spirit: "Daily Spirit Slip", location: "Location & weather", sacred: "Sacred day", pillars: "Stems & branches", core: "Core dynamic", yi: "Good for", ji: "Avoid", relation: "Combine · clash · penalty", good: "Supportive hours", caution: "Caution hours", colors: "Colours", jewellery: "Jewellery", mask: "Persona mask", open: "Open today guide" } : locale === "zh-Hans" ? { title: "今日指引", sub: "当地时间・即时天气・今日气机", almanac: "每日黄历", wardrobe: "每日穿衣｜五行色彩", spirit: "今日灵签｜签文指引", location: "所在地｜天气", sacred: "今日圣日", pillars: "今日干支", core: "核心气机", yi: "宜", ji: "忌", relation: "合冲刑害", good: "吉时", caution: "慎时", colors: "适宜颜色", jewellery: "适宜首饰", mask: "性格面具", open: "查看今日完整指引" } : { title: "今日指引", sub: "當地時間・即時天氣・今日氣機", almanac: "每日黃曆", wardrobe: "每日穿衣｜五行色彩", spirit: "今日靈籤｜籤文指引", location: "所在地｜天氣", sacred: "今日聖日", pillars: "今日干支", core: "核心氣機", yi: "宜", ji: "忌", relation: "合沖刑害", good: "吉時", caution: "慎時", colors: "適宜顏色", jewellery: "適宜首飾", mask: "性格面具", open: "查看今日完整指引" };
   const personalLabels = locale === "en"
     ? { heroSub: "Your birth chart · local weather · today's rhythm", active: "Personal edition active", birth: "Your birth chart", core: "Your chart structure", cycle: "Current cycle", todayColors: "Today's sky palette", yourColors: "Your working palette", quietColors: "Use lightly", materials: "Jewellery / materials", relations: "Natal relations", persona: "Your persona" }
@@ -386,16 +430,30 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
             <div className="zhaowu-today-guide__wardrobe">
               {personal ? (
                 <div className="zhaowu-today-personal-wardrobe" data-personal-daily-wardrobe>
-                  <div className="zhaowu-today-personal-swatches">
-                    {personal.colorSwatches.map((item) => <span key={item.label}><i style={{ backgroundColor: item.hex }} aria-hidden="true" /><b>{item.label}</b></span>)}
-                  </div>
+                  <section className="zhaowu-today-personal-palette" data-wardrobe-palette>
+                    <small>{personalLabels.yourColors}</small>
+                    <WardrobeSwatches
+                      items={personal.colorSwatches}
+                      ariaLabel={`${personalLabels.yourColors}：${personal.colors.join("、")}`}
+                    />
+                  </section>
                   <details data-wardrobe-additional>
                     <summary>{locale === "en" ? "More outfit details" : locale === "zh-Hans" ? "更多穿搭参考" : "更多穿搭參考"}<span aria-hidden="true">＋</span></summary>
-                    <div className="zhaowu-today-guide__wardrobe-notes">
-                      <span><small>{personalLabels.todayColors}</small><strong>{tone.colors}</strong></span>
-                      <span><small>{personalLabels.yourColors}</small><strong>{personal.colors.join("・")}</strong></span>
-                      <span><small>{personalLabels.materials}</small><strong>{personal.materials.join("・")}</strong></span>
-                      <span><small>{personalLabels.quietColors}</small><strong>{personal.quietColors.join("・") || "—"}</strong></span>
+                    <div className="zhaowu-today-guide__wardrobe-notes is-personal">
+                      <section data-wardrobe-note="today-colours">
+                        <small>{personalLabels.todayColors}</small>
+                        <WardrobeSwatches items={toneSwatches} compact ariaLabel={`${personalLabels.todayColors}：${tone.colors}`} />
+                      </section>
+                      <section data-wardrobe-note="materials">
+                        <small>{personalLabels.materials}</small>
+                        <div data-wardrobe-materials>{personal.materials.map((item) => <span key={item}>{item}</span>)}</div>
+                      </section>
+                      <section data-wardrobe-note="quiet-colours">
+                        <small>{personalLabels.quietColors}</small>
+                        {personal.quietColors.length ? (
+                          <WardrobeSwatches items={personal.quietColorSwatches} compact ariaLabel={`${personalLabels.quietColors}：${personal.quietColors.join("、")}`} />
+                        ) : <strong>—</strong>}
+                      </section>
                     </div>
                   </details>
                 </div>
@@ -404,7 +462,7 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
                   <DailyColorsModule variant="embed" date={now} />
                   <details data-wardrobe-additional>
                     <summary>{locale === "en" ? "More outfit details" : locale === "zh-Hans" ? "更多穿搭参考" : "更多穿搭參考"}<span aria-hidden="true">＋</span></summary>
-                  <div className="zhaowu-today-guide__wardrobe-notes"><span><small>{labels.colors}</small><strong>{tone.colors}</strong></span><span><small>{labels.jewellery}</small><strong>{tone.jewellery}</strong></span><span><small>{labels.mask}</small><strong>{tone.mask}</strong></span></div>
+                  <div className="zhaowu-today-guide__wardrobe-notes"><span data-wardrobe-note="today-colours"><small>{labels.colors}</small><WardrobeSwatches items={toneSwatches} compact ariaLabel={`${labels.colors}：${tone.colors}`} /></span><span><small>{labels.jewellery}</small><strong>{tone.jewellery}</strong></span><span><small>{labels.mask}</small><strong>{tone.mask}</strong></span></div>
                   </details>
                 </>
               )}
