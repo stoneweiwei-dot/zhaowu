@@ -11,13 +11,13 @@ export type ReportAccessLevel = "none" | "quick" | "system" | "bundle";
 // carries no price and no longer renders as a purchasable card in
 // ReportAccessGate. `system`/`bundle` are the only two tiers still sold.
 //
-// Live Stripe Payment Links currently charge USD 4.99 per system and USD 9.99
-// for the six specialist systems bundle. Keep displayed currency explicit.
-// Changing labels alone never changes the charged Stripe amounts.
+// Live Stripe Payment Links charge USD 9.90 per system and USD 19.99
+// for the six specialist systems bundle. BaZi is a separate USD 9.90 purchase.
+// Keep displayed currency explicit; labels and Stripe amounts must stay aligned.
 export const REPORT_ACCESS_PRODUCTS = {
   quick: { amountCents: 0, price: "$0" },
-  system: { amountCents: 499, price: "US$4.99" },
-  bundle: { amountCents: 999, price: "US$9.99" },
+  system: { amountCents: 990, price: "US$9.90" },
+  bundle: { amountCents: 1999, price: "US$19.99" },
 } as const;
 
 const ACCESS_KEY_STORAGE = "zhaowu.report-access-key.v1";
@@ -27,38 +27,38 @@ const ACCESS_ENDPOINT = `${SUPABASE_URL}/functions/v1/stripe-checkout`;
 const PAYMENT_LINKS: Record<ReportSystemId, Record<ReportAccessProduct, string>> = {
   bazi: {
     quick: "", // Always free: never sell the quick tier.
-    system: "https://buy.stripe.com/8x2eVda51eHD7Sb4142sM0l", // Activate only after webhook deployment.
+    system: "https://buy.stripe.com/eVq5kD2Czbvrb4n7dg2sM0y",
     bundle: "", // Six-system bundle is NOT a BaZi purchase.
   },
   ziwei: {
-    quick: "https://buy.stripe.com/8x2bJ16SPgPL1tN8hk2sM03",
-    system: "https://buy.stripe.com/14A5kDelh42ZgoH69c2sM04",
-    bundle: "https://buy.stripe.com/8x27sLgtp9njb4naps2sM05",
+    quick: "",
+    system: "https://buy.stripe.com/7sY8wPdhdeHDb4n7dg2sM0m",
+    bundle: "https://buy.stripe.com/eVq3cv1yvfLHc8reFI2sM0n",
   },
   qizheng: {
-    quick: "https://buy.stripe.com/aFa6oHb959nj0pJ7dg2sM06",
-    system: "https://buy.stripe.com/7sY28r5OL573egzbtw2sM07",
-    bundle: "https://buy.stripe.com/eVq9AT7WTdDz8Wfaps2sM08",
+    quick: "",
+    system: "https://buy.stripe.com/14A6oH7WTdDz4FZ7dg2sM0o",
+    bundle: "https://buy.stripe.com/6oU7sL0ur7fb4FZ69c2sM0p",
   },
   western: {
-    quick: "https://buy.stripe.com/14AbJ190X7fb1tN69c2sM09",
-    system: "https://buy.stripe.com/dRmaEX1yv42Z5K37dg2sM0a",
-    bundle: "https://buy.stripe.com/9B68wPb95eHDegz2X02sM0b",
+    quick: "",
+    system: "https://buy.stripe.com/00w3cvb95gPL6O70OS2sM0q",
+    bundle: "https://buy.stripe.com/8x24gz5OL6b76O77dg2sM0r",
   },
   indian: {
-    quick: "https://buy.stripe.com/14A7sL4KH7fb1tNeFI2sM0c",
-    system: "https://buy.stripe.com/7sY4gzelharn0pJcxA2sM0d",
-    bundle: "https://buy.stripe.com/dRm28r4KH9nj6O7fJM2sM0e",
+    quick: "",
+    system: "https://buy.stripe.com/7sY14ncd9arn1tNgNQ2sM0s",
+    bundle: "https://buy.stripe.com/aFaaEX0urarnegzeFI2sM0t",
   },
   palm: {
-    quick: "https://buy.stripe.com/28E5kD3GDdDz8Wf69c2sM0f",
-    system: "https://buy.stripe.com/3cI8wPcd9arn4FZeFI2sM0g",
-    bundle: "https://buy.stripe.com/eVqdR93GD6b7a0japs2sM0h",
+    quick: "",
+    system: "https://buy.stripe.com/bJeaEXdhdarn5K3eFI2sM0u",
+    bundle: "https://buy.stripe.com/3cI6oH90Xbvr5K3gNQ2sM0v",
   },
   numerology: {
-    quick: "https://buy.stripe.com/28E5kDfpl1UR2xR2X02sM0i",
-    system: "https://buy.stripe.com/3cI4gz3GD9nj0pJdBE2sM0j",
-    bundle: "https://buy.stripe.com/14AeVdfplfLHgoH0OS2sM0k",
+    quick: "",
+    system: "https://buy.stripe.com/dRm00jgtpgPL1tN2X02sM0w",
+    bundle: "https://buy.stripe.com/eVq7sL6SP0QNa0jdBE2sM0x",
   },
 };
 
