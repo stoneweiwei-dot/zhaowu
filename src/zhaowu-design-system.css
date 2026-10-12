@@ -9371,6 +9371,26 @@ html body .zhaowu-focused-report :where(img, video, canvas, iframe, picture) { m
 html body .zhaowu-focused-report :where(p, li, dd, dt, h1, h2, h3, h4, h5, h6, td, th, summary, figcaption, blockquote) { overflow-wrap: break-word; }
 html body .zhaowu-focused-report :where(pre, code) { max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; }
 
+/* P1: one-question reading guide on the same warm-paper report surface. */
+.zhaowu-mobile-guide{min-width:0;padding:8px 0 20px;color:#242620}
+.zhaowu-mobile-guide header{padding:0 0 14px}
+.zhaowu-mobile-guide__eyebrow{margin:0 0 8px;color:#355E50;font-size:16px;letter-spacing:.04em}
+.zhaowu-mobile-guide h3{margin:0 0 8px;color:#242620;font-size:clamp(24px,7vw,31px);line-height:1.3}
+.zhaowu-mobile-guide header>p:last-child,.zhaowu-mobile-guide__limit{margin:0;color:#4A4A44;font-size:16px;line-height:1.65}
+.zhaowu-mobile-guide__chapter{min-width:0;padding:16px 0;border-top:1px solid rgba(84,66,44,.2)}
+.zhaowu-mobile-guide__chapter h4{margin:0 0 8px;color:#355E50;font-size:16px;line-height:1.5}
+.zhaowu-mobile-guide__chapter p{margin:0 0 8px;color:#242620;font-size:17px;line-height:1.7;overflow-wrap:anywhere}
+.zhaowu-mobile-guide__answer p{font-size:19px;font-weight:600;line-height:1.65}
+.zhaowu-mobile-guide__evidence{padding:12px 0;border-top:1px solid rgba(84,66,44,.2);font-size:16px;line-height:1.65}
+.zhaowu-mobile-guide__evidence summary,.zhaowu-professional-report>summary{min-height:44px;cursor:pointer;color:#355E50;font-size:16px;line-height:1.5;overflow-wrap:anywhere}
+.zhaowu-mobile-guide__evidence p{margin:8px 0;color:#242620;overflow-wrap:anywhere}
+.zhaowu-mobile-guide__limit{padding-top:10px}
+.zhaowu-professional-report{min-width:0;border-top:1px solid rgba(84,66,44,.3)}
+.zhaowu-professional-report>summary{display:flex;align-items:center;padding:14px 0;font-weight:600}
+.zhaowu-professional-report__body{min-width:0}
+html[data-zw-theme="night"] body .zhaowu-focused-report :is(.zhaowu-mobile-guide,.zhaowu-mobile-guide h3,.zhaowu-mobile-guide__chapter p,.zhaowu-mobile-guide__evidence p){color:#242620}
+html[data-zw-theme="night"] body .zhaowu-focused-report :is(.zhaowu-mobile-guide__eyebrow,.zhaowu-mobile-guide__chapter h4,.zhaowu-mobile-guide__evidence summary,.zhaowu-professional-report>summary){color:#355E50}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    2026-10-10 · English layout guard (long Latin labels must not squeeze or clip)
    Scope: html:lang(en) only — Chinese layouts are unchanged.
