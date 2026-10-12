@@ -12,12 +12,22 @@ test("10 skins, refs 1..10, unique ids", () => {
   assert.deepEqual(ids.map((s) => s.ref).sort((a, b) => a - b), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   assert.equal(new Set(ids.map((s) => s.id)).size, 10);
 });
-test("every skin has tokens, hero var and art file", () => {
+const full = readFileSync("src/theme-skins-full.css", "utf8");
+test("every skin has tokens, a full-set definition and crisp art on disk", () => {
   for (const { id } of ids) {
     assert.ok(css.includes(`html[data-zws="${id}"] { --zws-page`) || css.includes(`html[data-zws="${id}"], `), `tokens for ${id}`);
-    assert.ok(css.includes(`--zws-hero: url(/theme-skins/${id}-hero.webp)`), `hero var for ${id}`);
-    assert.ok(existsSync(`public/theme-skins/${id}-hero.webp`), `art for ${id}`);
+    const m = ts.match(new RegExp(`id: "${id}"[^\\n]*hero: "([^"]+)"[^\\n]*focus: "([^"]+)"`));
+    assert.ok(m, `hero + focus for ${id}`);
+    assert.ok(existsSync(`public${m[1]}`), `art file for ${id}: ${m[1]}`);
+    assert.ok(full.includes(`html[data-zws="${id}"]`), `full-set rules for ${id}`);
   }
+});
+test("full set paints every page, cards, type and almanac from the skin", () => {
+  for (const needle of ["--zws-art", "--zws-card-orn", "--zws-font-d", "zw-ink-board", "zhaowu-site-header", "#life-view"]) {
+    assert.ok(full.includes(needle), `theme-skins-full.css covers ${needle}`);
+  }
+  const main = readFileSync("src/main.tsx", "utf8");
+  assert.ok(main.indexOf("theme-skins.css") < main.indexOf("theme-skins-full.css"));
 });
 test("pre-paint script dark list matches registry", () => {
   const dark = ids.filter((s) => s.mode === "dark").map((s) => s.id).sort();

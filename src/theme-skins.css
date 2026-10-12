@@ -67,19 +67,6 @@ html[data-zws] body main.zhaowu-home-layout::before {
   background: var(--zws-hero) center / cover no-repeat;
   box-shadow: var(--zws-shadow);
 }
-html[data-zws="lotus-boat"] { --zws-hero: url(/theme-skins/lotus-boat-hero.webp); }
-html[data-zws="cloud-jade"] { --zws-hero: url(/theme-skins/cloud-jade-hero.webp); }
-html[data-zws="golden-phoenix"] { --zws-hero: url(/theme-skins/golden-phoenix-hero.webp); }
-html[data-zws="ink-dragon"] { --zws-hero: url(/theme-skins/ink-dragon-hero.webp); }
-html[data-zws="dragon-lotus"] { --zws-hero: url(/theme-skins/dragon-lotus-hero.webp); }
-html[data-zws="night-flute"] { --zws-hero: url(/theme-skins/night-flute-hero.webp); }
-html[data-zws="day-flute"] { --zws-hero: url(/theme-skins/day-flute-hero.webp); }
-html[data-zws="night-palace"] { --zws-hero: url(/theme-skins/night-palace-hero.webp); }
-html[data-zws="pine-ink"] { --zws-hero: url(/theme-skins/pine-ink-hero.webp); }
-html[data-zws="pastel-koi"] { --zws-hero: url(/theme-skins/pastel-koi-hero.webp); }
-html[data-zws="golden-phoenix"] body main.zhaowu-home-layout::before { background-position: 50% 30%; }
-html[data-zws="night-flute"] body main.zhaowu-home-layout::before { background-position: 50% 35%; }
-html[data-zws="night-palace"] body main.zhaowu-home-layout::before { background-position: 50% 30%; height: clamp(150px, 46vw, 260px); }
 
 /* titles & body type */
 html[data-zws] body :is(h1, h2, h3) { font-family: var(--zws-font-d) !important; color: var(--zws-ink); }
@@ -321,7 +308,6 @@ html[data-zws-mode="dark"] body #daily-almanac .zhaowu-today-guide__overview :is
  * Dark skins force headings/summaries to the light --zws-ink. Blocks that stay light paper
  * (birth form, report wayfinding, edit-details) then render pale-on-cream and vanish.
  * Blocks sitting directly on the dark page (journey directory) must use the light ink instead. */
-html[data-zws-mode="dark"] body main :is(.zhaowu-customer-record, .zhaowu-birth-fields) :is(label, label *, legend, h2, h3, summary, summary *),
 html[data-zws-mode="dark"] body main :is(.zw-report-wayfinding, .zw-report-edit) :is(h1, h2, h3, p, li, summary, summary *, small, strong, span) {
   color: #243e38 !important;
 }
@@ -329,7 +315,7 @@ html[data-zws-mode="dark"] body :is(.zw-journey-directory, .zw-journey-directory
 
 /* Dark skins reuse the night token set, which turns --zw-ink/--zw-ink-soft pale. Light-paper blocks put the day ink back
  * so every rule inside them (including `#birth-form label { color: var(--zw-ink-soft) !important }`) resolves dark again. */
-html[data-zws-mode="dark"] body main :is(.zhaowu-customer-record, .zhaowu-bazi-stage, .zhaowu-question-sheet, .zhaowu-focused-report, .zhaowu-report-continuous-sheet, .zhaowu-result-evidence, .zhaowu-bazi-chart, .zw-report-wayfinding, .zw-report-edit) {
+html[data-zws-mode="dark"] body :is(#daily-almanac, .zw-ink-board), html[data-zws-mode="dark"] body main :is(.zhaowu-bazi-stage, .zhaowu-question-sheet, .zhaowu-focused-report, .zhaowu-report-continuous-sheet, .zhaowu-result-evidence, .zhaowu-bazi-chart, .zw-report-wayfinding, .zw-report-edit) {
   --zw-ink: #29251f;
   --zw-ink-soft: #554e45;
   --zw-ink-mute: #6f675b;
@@ -338,10 +324,6 @@ html[data-zws-mode="dark"] body main :is(.zhaowu-customer-record, .zhaowu-bazi-s
   --color-ink-mute: #6f675b;
 }
 
-/* History cards stay light paper under dark skins (confirmed by rendering /history with night-flute). */
-html[data-zws-mode="dark"] body main :is(.history-hero, .history-empty) { --zw-ink: #29251f; --zw-ink-soft: #554e45; --zw-ink-mute: #6f675b; }
-html[data-zws-mode="dark"] body main :is(.history-hero, .history-empty) :is(h1, h2, h3, h4, strong) { color: #29251f !important; }
-html[data-zws-mode="dark"] body main :is(.history-hero, .history-empty) :is(p, small) { color: #554e45 !important; }
 /* gold owner-login pill in the header: dark label on gold */
 html[data-zws-mode="dark"] body .zhaowu-site-header :is(.zhaowu-header-owner-login, .zhaowu-header-owner-login *) { color: var(--zws-on-accent) !important; }
 
@@ -351,8 +333,6 @@ html[data-zws-mode="dark"] body .zhaowu-site-header :is(.zhaowu-header-owner-log
  * Found by rendering /history /updates /ziwei /knowledge /daily-colors with night-flute and measuring contrast. */
 html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(h1, h2, h3, h4, p, li, summary, dt, dd):not(button *):not([class*="bg-"]) { color: var(--zws-ink) !important; }
 html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(p, li, dd):not(button *):not([class*="bg-"]) { color: var(--zws-soft) !important; }
-html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(.seal-border, .history-hero, .history-empty) :is(h1, h2, h3, h4, p, li, summary, dt, dd):not(button *):not([class*="bg-"]) { color: #29251f !important; }
-html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(.seal-border, .history-hero, .history-empty) :is(p, li, dd):not(button *):not([class*="bg-"]) { color: #554e45 !important; }
 /* light chip-style links */
 html[data-zws-mode="dark"] body main :is(.zhaowu-updates-back, .zhaowu-specialist-actions a.is-secondary) { color: #29251f !important; }
 html[data-zws-mode="dark"] body :is(.history-topline span, .zhaowu-home-stage details > summary, .zhaowu-home-stage button strong) { color: var(--zws-ink) !important; }
