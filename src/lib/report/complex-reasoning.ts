@@ -1,3 +1,4 @@
+import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 import type { AnalysisResult } from "@/lib/bazi/types";
 import { analyzeStructure } from "@/lib/bazi/structure";
 import { buildQuestionGraph, type QuestionGraph } from "@/lib/qa/complex-question-ontology";
@@ -293,6 +294,7 @@ function comparisonFallback(result: AnalysisResult, graph: QuestionGraph, model:
 }
 
 export function buildComplexDeterministicAnswer(result: AnalysisResult): ComplexDeterministicAnswer | null {
+  if (foodPreferenceAnswer(result.question, result.locale)) return null;
   const graph = buildQuestionGraph(result.question, result.reading.kind);
   if (!graph.shouldReason) return null;
   const model = buildDecisionReportModel(result);
@@ -353,6 +355,7 @@ export function buildComplexDeterministicAnswer(result: AnalysisResult): Complex
 }
 
 export function buildComplexReasoningRequest(result: AnalysisResult): ComplexReasoningRequest | null {
+  if (foodPreferenceAnswer(result.question, result.locale)) return null;
   const graph = buildQuestionGraph(result.question, result.reading.kind);
   if (!graph.shouldReason) return null;
   const model = buildDecisionReportModel(result);

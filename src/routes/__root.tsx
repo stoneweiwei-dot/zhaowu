@@ -1,4 +1,4 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Link, Outlet, type ErrorComponentProps } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { SiteShell } from "@/components/site-shell";
@@ -27,8 +27,24 @@ function PublicNotFound() {
   );
 }
 
+/** Recover without deleting birth details, purchase references or saved reports. */
+export function PublicRouteError({ reset }: ErrorComponentProps) {
+  const { language } = useDisplayLanguage();
+  const text = (hant: string, hans: string, en: string) => language === "en" ? en : language === "zh-Hans" ? hans : hant;
+  return <main className="mx-auto max-w-xl px-5 py-16" data-route-recovery>
+    <h1 className="font-display text-2xl">{text("頁面暫時無法顯示", "页面暂时无法显示", "This page could not load")}</h1>
+    <p className="mt-4 text-sm leading-7">{text("已保存的生辰與報告不會被清除。請重新載入；若仍出現錯誤，可返回首頁或從「我的報告」重開。", "已保存的生辰与报告不会被清除。请重新载入；若仍出现错误，可返回首页或从“我的报告”重开。", "Your saved birth details and reports are kept. Reload, or return home and reopen the report from My reports.")}</p>
+    <div className="mt-5 flex flex-wrap gap-3">
+      <button type="button" className="min-h-11 rounded-lg bg-cinnabar px-5 text-cream" onClick={() => { reset(); window.location.reload(); }}>{text("重新載入", "重新载入", "Reload")}</button>
+      <a href="/" className="min-h-11 rounded-lg border border-line px-5 py-3">{text("返回首頁", "返回首页", "Home")}</a>
+      <a href="/history" className="min-h-11 rounded-lg border border-line px-5 py-3">{text("我的報告", "我的报告", "My reports")}</a>
+    </div>
+  </main>;
+}
+
 export const Route = createRootRoute({
   notFoundComponent: PublicNotFound,
+  errorComponent: PublicRouteError,
   component: () => (
     <>
       <PreviewHostBridge />

@@ -1,3 +1,4 @@
+import { BaziReadingUnlock, useBaziReadingAccess } from "@/components/bazi-reading-unlock";
 import { JourneySteps } from "@/components/journey-steps";
 import { currentJourneyStep, type JourneyStep } from "@/lib/site-journey";
 import { CharacterPanel } from "@/components/character-panel";
@@ -53,6 +54,7 @@ const EN_PATTERN: Record<string, string> = {
 
 export function AnalysisForm() {
   const { t, locale } = useI18n();
+  const readingUnlocked = useBaziReadingAccess();
   const { user, profile, session } = useCurrentUserState();
   const setCurrent = useAppStore((s) => s.setCurrent);
   const setSavedId = useAppStore((s) => s.setSavedId);
@@ -510,16 +512,16 @@ export function AnalysisForm() {
               </ol>
               <button type="button" className="zw-flow-next" onClick={() => selectStep(3)}>{locale === "en" ? "Ask a question" : locale === "zh-Hans" ? "继续：问个问题" : "繼續：問個問題"}<span aria-hidden="true"> →</span></button>
               <p className="zw-flow-note">{locale === "en" ? "Optional. Your birth details are already saved on this device." : locale === "zh-Hans" ? "提问是选填；生辰已保存在这台设备。" : "提問是選填；生辰已保存在這台裝置。"}</p>
-              <details className="zw-flow-optional"><summary>{locale === "en" ? "More about your chart" : locale === "zh-Hans" ? "更多命盘解读" : "更多命盤解讀"}</summary>
+              {readingUnlocked ? <details className="zw-flow-optional"><summary>{locale === "en" ? "More about your chart" : locale === "zh-Hans" ? "更多命盘解读" : "更多命盤解讀"}</summary>
                 {plainItems.slice(2).map(item => <div key={item.key}><strong>{item.title}</strong><p>{item.body}</p></div>)}
-              </details>
+              </details> : null}
             </section>
             <details className="zhaowu-chart-details zhaowu-bazi-fold" data-fold="chart">
               <summary>{locale === "en" ? "Chart and stem / branch artwork" : locale === "zh-Hans" ? "命盘与天干地支图" : "命盤與天干地支圖"}</summary>
               <BaziChart chart={previewChart} showHeader={false} expandDetails={false} />
               <CharacterPanel chart={previewChart} />
             </details>
-            <details className="zhaowu-chart-details zhaowu-bazi-fold" data-fold="terms">
+            {readingUnlocked ? <><details className="zhaowu-chart-details zhaowu-bazi-fold" data-fold="terms">
               <summary>{copy.foundation}</summary>
               <section className="zhaowu-bazi-foundation" aria-labelledby="zhaowu-bazi-foundation-title">
                 <h3 id="zhaowu-bazi-foundation-title" className="sr-only">{copy.foundation}</h3>
@@ -544,7 +546,7 @@ export function AnalysisForm() {
                   <ChartTrustPanel chart={previewChart} locale={locale} />
                 </div>
               ) : null}
-            </details>
+            </details></> : <BaziReadingUnlock locale={locale} />}
           </div>
         ) : <p role="status">{locale === "en" ? "Your chart could not be shown. Edit your birth details to try again." : locale === "zh-Hans" ? "命盘暂时无法显示，请修改出生资料后重试。" : "命盤暫時無法顯示，請修改出生資料後重試。"}</p>}
       </section> : null}

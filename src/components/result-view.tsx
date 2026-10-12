@@ -57,7 +57,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       if (!active) return;
       setAccessLevel(acc.level);
       setOwnerAccess(Boolean(acc.owner));
-    });
+    }).catch(() => { if (active) { setAccessLevel("none"); setOwnerAccess(false); } });
     return () => { active = false; };
   }, []);
 
@@ -72,6 +72,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       setPurchasing(null);
     }
   }
+  const unlocked = accessLevel === "system" || accessLevel === "bundle";
   const { chart, reading, question } = result;
   const petDecision = isPetDecisionQuestion(question) ? buildPetDecision(result, result.locale ?? locale) : null;
   const decisionModel = buildDecisionReportModel(result);
@@ -79,7 +80,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [written, setWritten] = useState<{ key: string; answer: string; next: string; source: "reasoned" | "written" } | null>(null);
   const writerKey = `${result.id ?? ""}|${question}`;
   const lockDeterministicVerdict = Boolean(complexRule?.comparison);
-  const writtenNow = !petDecision && !lockDeterministicVerdict && written?.key === writerKey ? written : null;
+  const writtenNow = unlocked && !petDecision && !lockDeterministicVerdict && written?.key === writerKey ? written : null;
   const ruleAnswer = petDecision?.directAnswer ?? complexRule?.answer ?? decisionModel.directAnswer;
   const answer = writtenNow?.answer ?? ruleAnswer;
   const answerParagraphs = customerParagraphs(answer);
@@ -89,7 +90,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     // Rule answer is already on screen. Complex questions get one bounded reasoning
     // pass first; simpler eligible questions keep the cheaper wording-only writer.
     // Either path may replace the rule answer only after its client/server validators pass.
-    if (petDecision || lockDeterministicVerdict) return;
+    if (!unlocked || petDecision || lockDeterministicVerdict) return;
     let cancelled = false;
 
     const runWriter = async () => {
@@ -117,7 +118,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     }
 
     return () => { cancelled = true; };
-  }, [writerKey, lockDeterministicVerdict]);
+  }, [writerKey, lockDeterministicVerdict, unlocked]);
   const decreeCouplet = customerCopy(reading.decree);
 
   useEffect(() => {
@@ -221,7 +222,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       <article className="zhaowu-result-card seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("resultQ")}</p>
         <h2 className="mt-2 font-display text-2xl">{question}</h2>
-        {!writtenNow && complexRule ? (
+        {unlocked && !writtenNow && complexRule ? (
           <div className="zhaowu-answer-steps" data-primary-answer data-answer-source="rule" data-complex-answer="true">
             <section className="zhaowu-answer-step">
               <span>{locale === "en" ? "01 · ANSWER" : locale === "zh-Hans" ? "01 · 直接结论" : "01 · 直接結論"}</span>
@@ -250,13 +251,23 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </div>
         ) : (
           <div className="mt-4 space-y-3 text-[15px] leading-8 text-ink-soft transition-opacity duration-300" data-primary-answer data-answer-source={writtenNow?.source ?? "rule"}>
-            {answerParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+            {(unlocked ? answerParagraphs : answerParagraphs.slice(0, 2)).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
           </div>
         )}
-        {nextAction ? <aside className="zhaowu-result-next mt-5 border-t border-line/70 pt-4" data-next-action><strong className="text-sm text-ink">{copy.next}</strong><p className="mt-1 text-[14px] leading-7 text-ink-soft">{nextAction}</p></aside> : null}
+        {unlocked && nextAction ? <aside className="zhaowu-result-next mt-5 border-t border-line/70 pt-4" data-next-action><strong className="text-sm text-ink">{copy.next}</strong><p className="mt-1 text-[14px] leading-7 text-ink-soft">{nextAction}</p></aside> : null}
       </article>
 
-      <FollowUpBox result={result} />
+      {unlocked ? <>
+        <details className="seal-border rounded-xl bg-cream/95 p-5" data-answer-detail>
+          <summary>{locale === "en" ? "Reasons, limits and next steps" : locale === "zh-Hans" ? "展开依据、限制与行动" : "展開依據、限制與行動"}</summary>
+          <div className="mt-3 space-y-3 text-sm leading-7">
+            {decisionModel.reasons.map((line, index) => <p key={`reason-${index}`}>{line}</p>)}
+            {decisionModel.risks.map((line, index) => <p key={`risk-${index}`}>{line}</p>)}
+            {decisionModel.actions.map((line, index) => <p key={`action-${index}`}>{line}</p>)}
+          </div>
+        </details>
+        <FollowUpBox result={result} />
+      </> : <p className="text-sm leading-6 text-ink-soft" data-follow-up-locked>{locale === "en" ? "This is a short preview. Unlock below for the full answer and follow-up questions." : locale === "zh-Hans" ? "当前为简短试读；完整答案与连续追问，解锁后开放。" : "目前為簡短試讀；完整答案與連續追問，解鎖後開放。"}</p>}
 
       <details className="zhaowu-result-evidence seal-border rounded-xl bg-cream/90" data-technical-evidence>
         <summary className="cursor-pointer list-none px-5 py-4 sm:px-6"><strong>{copy.evidence}</strong>{copy.evidenceLead ? <span className="mt-1 block text-xs leading-5 text-ink-mute">{copy.evidenceLead}</span> : null}</summary>
@@ -276,7 +287,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </div>
       </details>
 
-      <ReportTimingGuide chart={chart} unlocked={accessLevel === "system" || accessLevel === "bundle"} />
+      {unlocked ? <ReportTimingGuide chart={chart} unlocked /> : null}
 
       {/* ── 付費命書內容邊界與進階解鎖入口 ── */}
       <section className="zhaowu-destiny-unlock-gate seal-border rounded-xl bg-cream/95 p-5 sm:p-7 mt-6" data-destiny-unlock-gate>
@@ -296,17 +307,17 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </h3>
         <p className="mt-2 text-sm leading-6 text-ink-soft">
           {locale === "en"
-            ? "Your 3-part direct verdict is free forever. To unlock deep 10-year luck cycles, monthly timing rhythms, full shensha stars, and multi-system synthesis, select a reading depth below:"
+            ? "Your basic chart and short preview are free. Unlock the full BaZi reading, detailed timing, reasons and follow-up questions below:"
             : locale === "zh-Hans"
-            ? "上方三段式核心直断永久免费。若需进一步推演十年大运起伏、流年逐月吉凶、完整神煞星曜与多流派合参，请选择下方深批规格："
-            : "上方三段式核心直斷永久免費。若需進一步推演十年大運起伏、流年逐月吉凶、完整神煞星曜與多流派合參，請選擇下方深批規格："}
+            ? "基本排盘与简短试读免费；完整解读、详细时运、判断依据与连续追问，解锁后开放。"
+            : "基本排盤與簡短試讀免費；完整解讀、詳細時運、判斷依據與連續追問，解鎖後開放。"}
         </p>
 
         {/* 內容邊界清單 */}
         <ul className="my-4 space-y-2 rounded-lg bg-paper-clean/70 p-4 text-xs leading-5 text-ink-soft border border-line/40">
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
-            <span>{locale === "en" ? "10-Year Luck Cycle & Monthly Timing (Precise turning points)" : locale === "zh-Hans" ? toSimplifiedCustomerText("十年大運起伏與流年逐月節奏（精準定位轉折時機）") : "十年大運起伏與流年逐月節奏（精準定位轉折時機）"}</span>
+            <span>{locale === "en" ? "10-Year Luck Cycle & Monthly Timing (Conditions and timing)" : locale === "zh-Hans" ? toSimplifiedCustomerText("十年大運起伏與流年逐月節奏（整理轉折條件與時機）") : "十年大運起伏與流年逐月節奏（整理轉折條件與時機）"}</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
@@ -321,18 +332,6 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             <span>{locale === "en" ? "Five-Tone Harmonic Tuning & Personal Sacred Beast sequence" : locale === "zh-Hans" ? toSimplifiedCustomerText("五音調和聆聽序列與專屬命象瑞獸圖譜") : "五音調和聆聽序列與專屬命象瑞獸圖譜"}</span>
           </li>
         </ul>
-
-        {/* 新用戶福利：快速進階讀現已預設免費開放，不再是購買項目 */}
-        <div className="my-4 flex items-start gap-2 rounded-lg border border-wood/30 bg-wood/5 p-3 text-xs leading-5 text-ink-soft">
-          <span className="text-cinnabar">🎁</span>
-          <span>
-            {locale === "en"
-              ? "New-user welcome gift: Quick Read (core cycle & first key observation) is now included for everyone at no cost — no purchase needed."
-              : locale === "zh-Hans"
-              ? "新用户的福利：快速进阶读（核心大运走势与第一关键留心点）现已对所有人免费开放，不需购买。"
-              : "新用戶的福利：快速進階讀（核心大運走勢與第一關鍵留心點）現已對所有人免費開放，不需購買。"}
-          </span>
-        </div>
 
         {/* 價格卡：站主 2026-10-11 決定首頁只賣八字命書；六盤合購方案不在首頁出現（六盤頁面各自有入口）。
             站主登入（伺服器驗證的 owner session）一律免費，不顯示購買按鈕。 */}
@@ -371,15 +370,15 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         ) : null}
 
         <div className="mt-4 pt-3 border-t border-line/40 flex items-center justify-between text-xs text-ink-mute">
-          <span>{locale === "en" ? "Free 3-part report remains accessible anytime" : locale === "zh-Hans" ? toSimplifiedCustomerText("三段式免費報告隨時可查，無任何強制要求") : "三段式免費報告隨時可查，無任何強制要求"}</span>
-          <button
+          <span>{locale === "en" ? "Your short preview remains available" : locale === "zh-Hans" ? toSimplifiedCustomerText("簡短試讀可隨時重看") : "簡短試讀可隨時重看"}</span>
+          {unlocked ? <button
             type="button"
             disabled={busy !== null}
             onClick={() => void onFull()}
             className="text-xs text-cinnabar underline hover:opacity-80"
           >
             {reportSections ? (locale === "en" ? "Re-generate reading" : locale === "zh-Hans" ? toSimplifiedCustomerText("重新排布報告") : "重新排布報告") : (locale === "en" ? (accessLevel === "system" || accessLevel === "bundle" ? "View full reading" : "View free 3-part summary") : locale === "zh-Hans" ? toSimplifiedCustomerText(accessLevel === "system" || accessLevel === "bundle" ? "查看完整深批" : "查看免費三段摘要") : (accessLevel === "system" || accessLevel === "bundle" ? "查看完整深批" : "查看免費三段摘要"))}
-          </button>
+          </button> : null}
         </div>
       </section>
 
@@ -405,7 +404,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </div>
 
       {msg ? <p className="zhaowu-result-message text-sm text-cinnabar mt-2">{msg}</p> : null}
-      {reportSections ? <FocusedReportSections sections={reportSections} result={result} showChartArtwork={false} showReadingGuide={false} /> : null}
+      {unlocked && reportSections ? <FocusedReportSections sections={reportSections} result={result} showChartArtwork={false} showReadingGuide={false} /> : null}
       <p className="text-xs leading-6 text-ink-mute mt-4">{t("disclaimer")}</p>
     </section>
   );

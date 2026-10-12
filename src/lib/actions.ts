@@ -1,3 +1,4 @@
+import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 import { FEATURED_CITIES, filterFeatured } from "@/lib/bazi/cities";
 import { searchBirthPlaces } from "@/lib/geo/city-search";
 import type { AnalysisResult, AnalyzeInput, CityHit, RelationPref } from "@/lib/bazi/types";
@@ -93,6 +94,8 @@ function finishReading(question: string, chart: AnalysisResult["chart"], reading
   // that conversion instead of falling back to the real default. Resolve the
   // fallback once here so every caller of finishReading gets it consistently.
   const effectiveLocale = locale ?? "zh-Hant";
+  const food = foodPreferenceAnswer(question, effectiveLocale);
+  if (food) return { ...reading, directAnswer: food.answer, action: food.nextAction };
   const auxiliaryReading = applyThreeYuanAuxiliaryPolicy(question, chart, reading, effectiveLocale);
   return localizeReading(enforceDirectAnswerGuard(question, chart, auxiliaryReading, effectiveLocale), effectiveLocale);
 }

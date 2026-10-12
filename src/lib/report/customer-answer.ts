@@ -1,3 +1,4 @@
+import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 /**
  * Customer-facing first-screen answer composer (zh-Hant).
  *
@@ -334,21 +335,17 @@ export function leakFallback(result: AnalysisResult): ComposedCustomerAnswer | n
   if (!question || CHART_TALK_RE.test(question)) return null;
   // Dedicated answer types keep their own wording.
   if (isStructureQuestion(question) || isTalentQuestion(question) || isJobFitQuestion(question) || isCosmicSymbolicQuestion(question)) return null;
-  const { chart } = result;
-  const today = new Date();
-  const nowYear = today.getFullYear();
-  const summary = distinctTimingSummary(chart, "self", [nowYear], [], { year: nowYear, month: today.getMonth() + 1 });
-  const grade = gradeOf(summary[0]?.score ?? 0);
-  const answer = [
-    "這個問題命盤沒辦法直接給出具體答案，只能看你這段時間的整體節奏。",
-    verdict("self", "open", grade, yearWord(nowYear), chart),
-    timingLine(summary, chart.timeUnknown),
-  ].join("");
-  return { answer, nextAction: nextStep("self", "choice", summary, question), detail: [], route: "generic:leak" };
+  return {
+    answer: "這個問題目前沒有足夠的相關依據，不能從命盤直接推出具體答案。需要先釐清你想比較的選項、實際情況與判斷標準，再回答與問題有關的部分。",
+    nextAction: "補充你想知道的具體事情、正在考慮的選項，以及最在意的條件。",
+    detail: [], route: "generic:leak",
+  };
 }
 
 export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerAnswer | null {
   const locale = result.locale ?? "zh-Hant";
+  const food = foodPreferenceAnswer(result.question, locale);
+  if (food) return food;
   if (locale !== "zh-Hant") return null;
   const question = String(result.question ?? "").trim();
   if (!question) return null;
@@ -386,6 +383,11 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
 
   const generic = topics.length === 0 && form !== "when" && form !== "choice" && !explicitTime
     && !SELFISH_RE.test(question) && !["career", "money", "love", "health", "home"].includes(kind);
+  if (generic) return {
+    answer: "這個問題目前沒有足夠的相關依據，不能從命盤直接推出具體答案。需要先釐清你想比較的選項、實際情況與判斷標準，再回答與問題有關的部分。",
+    nextAction: "補充你想知道的具體事情、正在考慮的選項，以及最在意的條件。",
+    detail: [], route: "generic",
+  };
   let opener: string;
   if (form === "when") {
     opener = whenOpener(topic, summary);

@@ -1,3 +1,4 @@
+import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 import type { AnalysisResult, AppLocale, Chart, Reading } from "@/lib/bazi/types";
 import { composeCustomerAnswer } from "@/lib/report/customer-answer";
 import { toTraditionalCustomerText } from "@/lib/report/reading-locale";
@@ -263,6 +264,15 @@ export function composeFocusedReport(result: AnalysisResult): ReportSection[] {
   const locale = result.locale ?? "zh-Hans";
   const titles = REPORT_TITLES[locale];
   const { question, chart, reading } = result;
+  const food = foodPreferenceAnswer(question, locale);
+  if (food) {
+    const evidence = { facts: [], conditions: [], limits: [food.detail[2]], checks: [] };
+    return [
+      { sectionNo: 1, pageNo: 1, key: "summary", title: locale === "en" ? "Taste preference" : "口味偏好", body: [food.answer], evidence },
+      { sectionNo: 2, pageNo: 2, key: "body", title: locale === "en" ? "Flavour and texture" : locale === "zh-Hans" ? "风味与口感" : "風味與口感", body: food.detail, evidence },
+      { sectionNo: 3, pageNo: 3, key: "action", title: titles.action, body: [food.nextAction], evidence },
+    ];
+  }
   const req = inspectAnswerRequirements(question);
 
   // Section 1: Core verdict — direct answer + current cycle context

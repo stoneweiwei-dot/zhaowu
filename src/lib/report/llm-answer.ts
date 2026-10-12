@@ -1,3 +1,4 @@
+import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 /**
  * Optional LLM rewrite of the first-screen answer (zh-Hant only).
  *
@@ -35,6 +36,7 @@ export function ruleAnswerFor(result: AnalysisResult): ComposedCustomerAnswer | 
 }
 
 export function buildWriterRequest(result: AnalysisResult): WriterRequest | null {
+  if (foodPreferenceAnswer(result.question, result.locale)) return null;
   if ((result.locale ?? "zh-Hant") !== "zh-Hant") return null;
   const question = String(result.question ?? "").trim();
   if (!question || question.length > 300) return null;

@@ -1,3 +1,4 @@
+import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 import type { AnalysisResult, AppLocale, QuestionKind, Reading } from "@/lib/bazi/types";
 import { inferQuestionKind, inspectAnswerRequirements, isTalentQuestion, type AnswerRequirements } from "@/lib/core/answer-contract";
 import { customerCopy, customerDirectAnswer } from "@/lib/report/customer-copy";
@@ -337,6 +338,15 @@ export function validateDecisionReportModel(model: Omit<DecisionReportModel, "va
 export function buildDecisionReportModel(result: AnalysisResult): DecisionReportModel {
   const locale = localeOf(result);
   const contract = buildQuestionContract(result.question, result.reading.kind, locale);
+  const food = foodPreferenceAnswer(result.question, locale);
+  if (food) return {
+    contract, directAnswer: food.answer, nextAction: food.nextAction,
+    confidence: "limited", confidenceLabel: locale === "en" ? "Taste preference" : locale === "zh-Hans" ? "口味偏好" : "口味偏好",
+    confidenceBasis: food.detail[2], biggestVariable: food.nextAction,
+    reasons: food.detail.slice(0, 2), risks: [food.detail[2]], timing: [], actions: [food.nextAction],
+    sectionOrder: ["reasons", "risks", "actions"], supportingModules: [], validationIssues: [],
+    provenance: { directAnswer: "special-composer", nextAction: "special-composer", reasons: "question-template", risks: "question-template", timing: "question-template", actions: "question-template", confidence: "question-template", biggestVariable: "question-template" },
+  };
   const composed = composeCustomerAnswer(result);
   const directFull = customerDirectAnswer(result.question, result.reading.directAnswer);
   // Composed answers are already complete and ordered (answer → why → timing),
