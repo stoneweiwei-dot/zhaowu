@@ -53,7 +53,7 @@ const SHORT_NOTES: IllustratedArticle[] = LIFE_VIEW_SHORT_FORM_ARTICLES.map((art
   contentKind: "short-note" as const,
 }));
 
-// 觀世錄只收文章與觀點短札。命理教學／術語知識另由「昭梧 · 命理小知識」承載。
+// 文章區只收文章與觀點短札。命理教學／術語知識另由「昭梧 · 命理小知識」承載。
 const CONTENTS: IllustratedArticle[] = [...LONG_ARTICLES, ...SHORT_NOTES];
 CONTENTS.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
@@ -102,16 +102,16 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
   const copy = useMemo(() => {
     if (locale === "en") {
       return {
-        kicker: "STONE · NOTES",
-        title: "Zhaowu · Notes on Life",
+        kicker: "STONE · ARTICLES",
+        title: "Zhaowu · Articles",
         lead: archiveMode
           ? "Essays and reflective short notes live here. BaZi teaching cards are kept separately under Zhaowu · BaZi Knowledge."
-          : "Latest piece first. Open 觀世錄 for the full archive of essays and reflective short notes.",
+          : "Latest piece first. Open Articles for the full archive of essays and short notes.",
         latest: "Latest",
         all: "All essays & short notes",
         collapse: "Show less",
         read: "Read",
-        archive: "Open 觀世錄",
+        archive: "Open Articles",
         article: "Article",
         shortNote: "Short note",
         quizCta: "Take the Five-Element Strength Overdrive test",
@@ -120,16 +120,16 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
     }
     if (locale === "zh-Hans") {
       return {
-        kicker: "STONE · 观世",
-        title: "昭梧 · 观世录",
+        kicker: "STONE · 文章",
+        title: "昭梧 · 文章",
         lead: archiveMode
-          ? "这里只收文章与观世短札；八字教学、术语与方法统一另列在「昭梧 · 命理小知识」。"
-          : "首页先看最新内容；完整文章与观世短札都收在观世录。",
+          ? "文章与短札都收在这里；八字教学、术语与方法另列在「昭梧 · 命理小知识」。"
+          : "首页先看最新内容；所有文章与短札都收在文章。",
         latest: "最新",
         all: "全部文章与短札",
         collapse: "收起",
         read: "阅读全文",
-        archive: "进入观世录",
+        archive: "进入文章",
         article: "文章",
         shortNote: "短札",
         quizCta: "做五行优势内耗测验",
@@ -137,16 +137,16 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
       };
     }
     return {
-      kicker: "STONE · 觀世",
-      title: "昭梧 · 觀世錄",
+      kicker: "STONE · 文章",
+      title: "昭梧 · 文章",
       lead: archiveMode
-        ? "這裡只收文章與觀世短札；八字教學、術語與方法統一另列在「昭梧 · 命理小知識」。"
-        : "首頁先看最新內容；完整文章與觀世短札都收在觀世錄。",
+        ? "文章與短札都收在這裡；八字教學、術語與方法另列在「昭梧 · 命理小知識」。"
+        : "首頁先看最新內容；所有文章與短札都收在文章。",
       latest: "最新",
       all: "全部文章與短札",
       collapse: "收起",
       read: "閱讀全文",
-      archive: "進入觀世錄",
+      archive: "進入文章",
       article: "文章",
       shortNote: "短札",
       quizCta: "做五行優勢內耗測驗",

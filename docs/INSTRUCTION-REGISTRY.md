@@ -1,5 +1,26 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-13 Stripe 價格更新 supersession
+
+- ACTIVE：快速讀維持免費迎新內容，不再出售；單一系統完整深讀統一為一次性 **USD 9.90**，六個專項系統完整套裝為一次性 **USD 19.99**，均不自動續費。
+- ACTIVE：八字完整命書是獨立單盤購買，價格同為 USD 9.90；六盤套裝不包含八字。
+- ACTIVE：公開頁只使用 2026-10-13 新 Payment Links；webhook 同時保留舊連結／舊金額驗證，只為已開啟或已完成的舊付款回訪，不再作新銷售入口。
+- ACTIVE：`report_purchase_entitlements` 金額白名單同時接受舊價與新價；授權仍必須通過已登記 live Payment Link、精確 USD 金額、合法 access key 與 live event 的 server-side 驗證。
+- SUPERSEDED：本文件所有「USD 1.99／4.99／9.99 價格不變」及同義舊敘述；其付款安全、一次性收費、server-side entitlement 與六盤不含八字等非價格規則繼續有效。
+
+## 2026-10-12 每日穿衣色卡重設（站主畫面回饋）
+
+- ACTIVE：首頁「每日穿衣｜五行色彩」個人版不得只列低對比色名；每一個主色、今日天時色與少量使用色都必須有名稱相符、肉眼可辨的實體色卡。
+- ACTIVE：色卡維持宋式暖紙、礦物低飽和、細線與低圓角，不做高飽和電商色票、玻璃卡牆或大膠囊；首飾／材質另以文字材質籤呈現，不冒充顏色。
+- PROTECTED：只調整既有結果的視覺映射與排版，不改八字排盤、喜用／泄耗取值、每日干支、報告資料、權限或付款。
+- RELEASE：站主於 2026-10-12 已明確指示發佈；本批合併唯一 `main` 並觸發一次 `stone-zhaowu-official` 正式部署，不建立 Vercel Preview。
+
+## 2026-10-11 品牌水印（站主指令）
+
+- ACTIVE：站主後台發布的圖片一律在發布動作時燒入「昭梧 ZHAOWU」水印並加上 `wm-baked` 標籤（`src/lib/brand-watermark.ts`，接在 `uploadGalleryAsset` 與 `uploadBackground`）；影片、舊素材與非燒入素材以顯示層疊加（`src/brand-watermark.css`，class `zhaowu-wm`／`zhaowu-wm-on`），不改動已存放的原檔；報告頁加極淡平鋪水印。已燒入的素材不得再疊加顯示層水印，避免雙重。
+- SUPERSEDES（僅此部分）：`AGENTS.md` §6「no invented or unwanted logos, marks or decorative overlays」中針對品牌水印的禁止；其餘禁止（任意新增 Logo、遮擋文字／按鈕的裝飾）仍有效。
+- BOUNDARY：網頁無法阻止系統截圖，水印是追溯與威懾，不是防截圖。影片不燒入（手機端 ffmpeg.wasm 不穩定且耗時），僅顯示層疊加。舊素材批次重製需備份與 service key，未執行。
+
 ## 2026-10-10 站主免費閱讀與報告入口
 
 - ACTIVE：站主由同源 HttpOnly cookie 經伺服器確認後，可免費閱讀本人與所有人的已保存完整報告。不得以 localStorage、URL、前端自填 role 授權。訪客的付款權限維持既有伺服器核驗。
@@ -8,6 +29,13 @@
 - BOUNDARY：2026-10-10 查核 report_requests 為 0 筆。從未上傳、只存在其他訪客裝置的舊結果無法由站主後台還原；本次不改為自動收集其他訪客裝置資料。舊測驗保存規則不變。
 - COMPATIBLE：保留客戶資料隔離、既有付款／排盤引擎、單一 Production 與 A$0 新增基礎設施成本。
 
+## 2026-10-09 全站宋式視覺分批統一
+
+- ACTIVE：`docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 是全站視覺最高優先準則；既有功能可保留其專用資訊結構，但不得另起玻璃擬態、巨大膠囊、深色卡牆或高圓角 App 風格。
+- ACTIVE：全站視覺改造採「一次盤點、持續接續、分批落地」；固定路由清單、批次順序、重疊 PR 與每批驗證證據寫入 `docs/ZHAOWU-SONG-VISUAL-ROLL-OUT.md`，後續不得無故重做全站盤點。
+- ACTIVE：每批先改最小共用視覺面，再檢查實際畫面與手機可讀性；保留單一宋式礦物山水背景、暖紙閱讀面、墨色正文、松綠層級、局部礦物色與克制金／朱砂。
+- PROTECTED：不藉視覺統一改動命理計算、報告內容、登入／權限、付款、Supabase、資料、路由或多語邏輯。
+- RELEASE：原本的禁止部署限制已被站主 2026-10-12「去執行發佈」取代；本批可合併唯一 `main` 並觸發一次正式部署，仍禁止分支 Preview 與第二正式站。
 
 ## 2026-10-07 複雜／長尾問題推理層 supersession
 

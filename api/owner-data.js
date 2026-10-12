@@ -1,7 +1,8 @@
-import { createHash, timingSafeEqual } from "node:crypto";
+import { isValidOwnerSecret, ownerSecretFromRequest } from "../lib/owner-session-cookie.js";
+import { readPublishedSiteSkin, validSiteSkin } from "../lib/owner-site-skin-public.js";
 
-const OWNER_COOKIE = "__Host-zhaowu_owner_session";
-const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
+export { isValidOwnerSecret };
+
 const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
 
 const ACTIONS = new Set([
@@ -29,40 +30,12 @@ const ACTIONS = new Set([
   "upload.abort",
 ]);
 
-function hash(value) {
-  return createHash("sha256").update(String(value), "utf8").digest();
-}
-
-export function isValidOwnerSecret(value) {
-  if (!value || value.length < 8 || value.length > 256) return false;
-  const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
-  const actual = hash(value);
-  return actual.length === expected.length && timingSafeEqual(actual, expected);
-}
-
 function headerValue(req, name) {
   const headers = req?.headers;
   if (!headers) return "";
   if (typeof headers.get === "function") return String(headers.get(name) ?? "");
   const raw = headers[name] ?? headers[name.toLowerCase()];
   return String(Array.isArray(raw) ? raw[0] : raw ?? "");
-}
-
-function readCookie(req, name) {
-  const raw = headerValue(req, "cookie");
-  for (const part of raw.split(";")) {
-    const index = part.indexOf("=");
-    if (index < 0) continue;
-    const key = part.slice(0, index).trim();
-    if (key !== name) continue;
-    try { return decodeURIComponent(part.slice(index + 1)); } catch { return ""; }
-  }
-  return "";
-}
-
-function ownerSecretFrom(req) {
-  const secret = readCookie(req, OWNER_COOKIE);
-  return isValidOwnerSecret(secret) ? secret : "";
 }
 
 function normalizeOrigin(value) {
@@ -146,15 +119,41 @@ function bridgeSecret() {
 
 export default async function handler(req, res) {
   try {
-    if ((req.method || "GET") !== "POST") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
+    const method = req.method || "GET";
+    if (method === "GET") {
+      // The only public GET on this otherwise private owner-data bridge.
+      let view = String(req.query?.view ?? "");
+      if (!view) {
+        try { view = new URL(String(req.url || "/"), "https://zhaowu.local").searchParams.get("view") || ""; } catch {}
+      }
+      if (view !== "site-skin") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
+      try {
+        const record = await readPublishedSiteSkin();
+        return json(res, 200, { ok: true, ...record });
+      } catch {
+        return json(res, 503, { ok: false, error: "SHARED_SKIN_TEMPORARILY_UNAVAILABLE" });
+      }
+    }
+    if (method !== "POST") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
-    const ownerSecret = ownerSecretFrom(req);
+    const ownerSecret = ownerSecretFromRequest(req);
     if (!ownerSecret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
 
     const serverBridgeSecret = bridgeSecret();
 
     const payload = await readJsonBody(req);
     const action = String(payload?.action ?? "").trim();
+    if (action === "site-skin.publish") {
+      const skin = validSiteSkin(payload?.skin);
+      if (!skin) return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
+      try {
+        const { saveSharedSiteSkin } = await import("../lib/owner-music-git.js");
+        const published = await saveSharedSiteSkin(ownerSecret, skin);
+        return json(res, 200, { ok: true, ...published });
+      } catch {
+        return json(res, 503, { ok: false, error: "SHARED_SKIN_WRITE_FAILED" });
+      }
+    }
     if (!ACTIONS.has(action)) return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
     const upstream = await fetch(`${supabaseUrl()}/functions/v1/zhaowu-owner-data`, {
       method: "POST",

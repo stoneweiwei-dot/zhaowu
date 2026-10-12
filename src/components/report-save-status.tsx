@@ -29,16 +29,16 @@ export function ReportSaveStatus() {
   if (!result) return null;
   const en = locale === "en", hans = locale === "zh-Hans";
   const messages = en ? {
-    local: "Saved on this device · Find it in My reports", saving: "Saving to the owner report archive…",
-    cloud: "Saved to My reports and All reports", error: "Saved on this device. Cloud save failed; retry below.",
+    local: "Saved on this device · Find it in My reports", saving: "Saving report…",
+    cloud: "Saved · Find it in My reports", error: "Saved on this device. Cloud save failed; retry below.",
     "local-error": "This report could not be saved on this device. Keep this page open and retry.",
   } : hans ? {
-    local: "已保存在本机，可从「我的报告」重看", saving: "正在保存到站主报告后台…",
-    cloud: "已保存，可从「我的报告」或「所有人报告」重看", error: "已保存在本机；云端保存失败，请重试。",
+    local: "已保存在本机，可从「我的报告」重看", saving: "正在保存报告…",
+    cloud: "已保存，可从「我的报告」重看", error: "已保存在本机；云端保存失败，请重试。",
     "local-error": "本机未能保存这份报告，请保留页面并重试。",
   } : {
-    local: "已保存在本機，可從「我的報告」重看", saving: "正在保存到站主報告後台…",
-    cloud: "已保存，可從「我的報告」或「所有人報告」重看", error: "已保存在本機；雲端保存失敗，請重試。",
+    local: "已保存在本機，可從「我的報告」重看", saving: "正在保存報告…",
+    cloud: "已保存，可從「我的報告」重看", error: "已保存在本機；雲端保存失敗，請重試。",
     "local-error": "本機未能保存這份報告，請保留頁面並重試。",
   };
   return <p className="zw-report-save-status" role="status">{messages[state]}{state === "error" || state === "local-error" ? <button type="button" onClick={() => setAttempt(n => n + 1)}>{en ? "Retry saving" : hans ? "重新保存" : "重新保存"}</button> : null}</p>;

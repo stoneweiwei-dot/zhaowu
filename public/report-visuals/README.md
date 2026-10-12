@@ -41,3 +41,10 @@ The runtime mother-art layer is now protected by `qc-manifest.json` and
   manifest is deliberately updated after visual review.
 
 Preferred replacement target: 1080x1920 or higher, approximately 9:16.
+
+
+## Ten-stem character illustrations (2026-10-12)
+
+`characters/<key>.webp` (720x773, `jia-wood` … `gui-water`) are the report-only day-stem portrait art. `DayStemPortrait` loads them first and falls back to the reviewed `full/<key>.webp` mother image if one fails. They are not shown on the homepage and are not part of the QC-locked `full/` set.
+
+Glyphs painted on the characters' foreheads are AI-drawn decoration and are not authoritative (丁/庚/辛/癸 are slightly distorted at pixel scale); the stem is always rendered as text in the portrait heading. Width is below the 1080px preferred target, so the lightbox zoom is capped at native pixels. The original 9:16 posters from the handoff package are intentionally not shipped (no runtime consumer).

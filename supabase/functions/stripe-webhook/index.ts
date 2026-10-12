@@ -3,6 +3,22 @@ import { createClient } from "npm:@supabase/supabase-js@2.95.0";
 const WEBHOOK_TOKEN_SHA256 = "092ba513b79119e1a8b6340fe041ea4e6111fbff3ee653b0f6a346d5c87b60d0";
 
 const PAYMENT_LINKS = Object.freeze({
+  // BaZi standalone: USD 4.99; the six-system bundle does not include BaZi.
+  plink_1UP3HWFAzopdCCaxkt9pGy9Z: { product: "system", system: "bazi", amount: 499 },
+  plink_1UPlUXFAzopdCCaxV59sdJfq: { product: "system", system: "bazi", amount: 990 },
+  // 2026-10-11 repriced public links; legacy links remain accepted for already-open checkouts.
+  plink_1UP3ogFAzopdCCaxRqhS5z8P: { product: "system", system: "ziwei", amount: 990 },
+  plink_1UP3ohFAzopdCCaxFknNaARY: { product: "bundle", system: "ziwei", amount: 1999 },
+  plink_1UP3oiFAzopdCCaxM1vyKYB4: { product: "system", system: "qizheng", amount: 990 },
+  plink_1UP3ojFAzopdCCaxRTm6Hkg8: { product: "bundle", system: "qizheng", amount: 1999 },
+  plink_1UP3okFAzopdCCaxZRHjxXQj: { product: "system", system: "western", amount: 990 },
+  plink_1UP3olFAzopdCCaxpqV1qnfH: { product: "bundle", system: "western", amount: 1999 },
+  plink_1UP3omFAzopdCCaxhAkQByg2: { product: "system", system: "indian", amount: 990 },
+  plink_1UP3onFAzopdCCax0H311q2y: { product: "bundle", system: "indian", amount: 1999 },
+  plink_1UP3ooFAzopdCCaxurLK18pw: { product: "system", system: "palm", amount: 990 },
+  plink_1UP3opFAzopdCCax16euwSV5: { product: "bundle", system: "palm", amount: 1999 },
+  plink_1UP3oqFAzopdCCaxqwVUMqQZ: { product: "system", system: "numerology", amount: 990 },
+  plink_1UP3orFAzopdCCaxAo8jW4Zx: { product: "bundle", system: "numerology", amount: 1999 },
   plink_1UNco6FAzopdCCaxsi61vVPn: { product: "quick", system: "ziwei", amount: 199 },
   plink_1UNco8FAzopdCCaxNMJ9EbUo: { product: "system", system: "ziwei", amount: 499 },
   plink_1UNcoBFAzopdCCaxggjB7RO8: { product: "bundle", system: "ziwei", amount: 999 },

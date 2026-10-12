@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { dayGanzhi } from "@/lib/bazi/calendar";
 import type { Locale } from "@/lib/i18n";
 import { publicShareUrl } from "@/lib/share-url";
+import "@/song-comic-editorial.css";
 
 type ComicProfile = {
   element: "木" | "火" | "土" | "金" | "水";
@@ -75,102 +76,6 @@ export function ComicMascot({ stem, compact = false }: { stem: string; compact?:
   );
 }
 
-function ReportStemEmblem({ stem }: { stem: string }) {
-  const profile = profileForStem(stem);
-  const palette = {
-    木: { accent: "#6F907A", jadeLo: "#EEF2E8", jadeMid: "#C3D6C0", jadeHi: "#829A77", glow: "#DCE9D0" },
-    火: { accent: "#B85F4D", jadeLo: "#F4E6DA", jadeMid: "#E2C0AD", jadeHi: "#B9765F", glow: "#F2CFB8" },
-    土: { accent: "#9A7D4E", jadeLo: "#F1E9D3", jadeMid: "#DECBA0", jadeHi: "#AC8D5C", glow: "#ECDBB0" },
-    金: { accent: "#5D7A78", jadeLo: "#E9F0EE", jadeMid: "#C1D6D3", jadeHi: "#7E9A97", glow: "#D6E6E3" },
-    水: { accent: "#44677A", jadeLo: "#E6EEF2", jadeMid: "#B9D0DC", jadeHi: "#5E89A0", glow: "#CFE3EC" },
-  }[profile.element];
-
-  return (
-    <svg className="zhaowu-comic-mascot is-compact zhaowu-report-stem-emblem" viewBox="0 0 220 220" role="img" aria-label={stem}>
-      <defs>
-        <radialGradient id={`glow-${stem}`} cx="50%" cy="46%" r="58%">
-          <stop offset="0" stopColor={palette.glow} stopOpacity=".9" />
-          <stop offset="1" stopColor={palette.glow} stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id={`jade-${stem}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor={palette.jadeLo} />
-          <stop offset=".55" stopColor={palette.jadeMid} />
-          <stop offset="1" stopColor={palette.jadeHi} />
-        </linearGradient>
-        <linearGradient id={`gold-${stem}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#F1E2B2" />
-          <stop offset=".5" stopColor="#D3AD67" />
-          <stop offset="1" stopColor="#9C7739" />
-        </linearGradient>
-        <linearGradient id={`seal-${stem}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#FFFCF4" />
-          <stop offset="1" stopColor="#FBF0D9" />
-        </linearGradient>
-      </defs>
-
-      {/* soft under-glow, paper-and-light rather than a flat badge */}
-      <circle cx="110" cy="104" r="100" fill={`url(#glow-${stem})`} />
-
-      {/* octagon seal frame */}
-      <path
-        d="M56 18h108l38 38v108l-38 38H56l-38-38V56Z"
-        fill={`url(#jade-${stem})`}
-        stroke={`url(#gold-${stem})`}
-        strokeWidth="6"
-      />
-      <path
-        d="M62 24h96l34 34v92l-34 34H62l-34-34V58Z"
-        fill="none"
-        stroke="rgba(255,252,244,.55)"
-        strokeWidth="1.5"
-      />
-
-      {/* fine ink linework, distinct per element instead of one generic motif */}
-      {profile.element === "木" ? (
-        <g fill="none" stroke={palette.accent} strokeWidth="3" strokeLinecap="round">
-          <path d="M110 150V96" />
-          <path d="M110 112c-16-4-28-16-32-34" />
-          <path d="M110 128c18-3 31-16 36-33" />
-          <path d="M110 98c-10-14-10-28-2-42" />
-        </g>
-      ) : null}
-      {profile.element === "火" ? (
-        <g fill="none" stroke={palette.accent} strokeWidth="3" strokeLinecap="round">
-          <path d="M110 154c-20-14-26-32-16-54 4 10 10 14 16 14-4-16 2-30 16-40-6 22 2 34 14 42 10 18 4 36-10 44-2-8-6-12-10-12 2 6 0 10-10 6z" />
-        </g>
-      ) : null}
-      {profile.element === "土" ? (
-        <g fill="none" stroke={palette.accent} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M60 152 92 104l18 24 20-34 30 58" />
-          <path d="M60 152h100" />
-        </g>
-      ) : null}
-      {profile.element === "金" ? (
-        <g fill="none" stroke={palette.accent} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M110 92 142 124 110 156 78 124Z" />
-          <path d="M94 108h32M94 140h32" />
-        </g>
-      ) : null}
-      {profile.element === "水" ? (
-        <g fill="none" stroke={palette.accent} strokeWidth="3" strokeLinecap="round">
-          <path d="M58 120c14-12 24 12 36 0 14-12 24 12 36 0 14-12 24 12 36 0" />
-          <path d="M58 142c14-12 24 12 36 0 14-12 24 12 36 0 14-12 24 12 36 0" opacity=".6" />
-        </g>
-      ) : null}
-
-      {/* seal roundel with the stem itself, double ring for authenticity */}
-      <circle cx="110" cy="58" r="32" fill={`url(#seal-${stem})`} stroke={`url(#gold-${stem})`} strokeWidth="4" />
-      <circle cx="110" cy="58" r="26" fill="none" stroke={palette.accent} strokeWidth="1.2" opacity=".55" />
-      <text x="110" y="70" textAnchor="middle" fontSize="36" fontFamily="serif" fill={palette.accent}>{stem}</text>
-
-      {/* gold sparkle accents, matching the site's established ink-and-light motif */}
-      <circle cx="168" cy="70" r="3.4" fill="#E9CE85" opacity=".85" />
-      <circle cx="54" cy="86" r="2.4" fill="#E9CE85" opacity=".7" />
-      <circle cx="150" cy="168" r="2.6" fill="#E9CE85" opacity=".7" />
-    </svg>
-  );
-}
-
 function copyFor(locale: Locale) {
   return locale === "en"
     ? { today: "TODAY · ONE COMIC", explain: "A softer way into the idea", report: "DESTINY BOOK INSERT", plain: "One concept, translated into ordinary language", share: "SHAREABLE FRAME", shareButton: "Share this frame", copied: "Copied", boundary: "No stem is inherently better or worse. This is cultural imagery, not a balance prescription or deterministic verdict." }
@@ -206,8 +111,7 @@ export function SongComicReportInsert({ dayMaster, locale }: { dayMaster: string
   const copy = copyFor(locale);
 
   return (
-    <aside className="zhaowu-song-comic zhaowu-song-comic--report" data-song-comic-report aria-label={copy.report}>
-      <div className="zhaowu-song-comic__illustration"><ReportStemEmblem stem={stem} /></div>
+    <aside className="zhaowu-song-comic zhaowu-song-comic--report is-editorial" data-song-comic-report aria-label={copy.report}>
       <div className="zhaowu-song-comic__copy">
         <p className="zhaowu-song-comic__kicker">{copy.report}</p>
         <h5>{stem} · {profile.title[locale]}</h5>
@@ -226,8 +130,8 @@ export function SongComicShareCard({ dayMaster, locale }: { dayMaster: string; l
   const [status, setStatus] = useState(copy.shareButton);
 
   const shareText = locale === "en"
-    ? `${stem} · ${profile.genre.en}\n${profile.title.en}\n${profile.move.en}\nZHAOWU`
-    : `${stem}｜${profile.genre[locale]}\n${profile.title[locale]}\n${profile.move[locale]}\n昭梧 ZHAOWU`;
+    ? `${stem} · ${profile.title.en}\n${profile.move.en}\nZHAOWU`
+    : `${stem}｜${profile.title[locale]}\n${profile.move[locale]}\n昭梧 ZHAOWU`;
 
   async function share() {
     try {
@@ -245,11 +149,10 @@ export function SongComicShareCard({ dayMaster, locale }: { dayMaster: string; l
   }
 
   return (
-    <footer className="zhaowu-song-comic-share" data-song-comic-share>
-      <div className="zhaowu-song-comic-share__art"><ReportStemEmblem stem={stem} /></div>
-      <div>
+    <footer className="zhaowu-song-comic-share is-editorial" data-song-comic-share>
+      <div className="zhaowu-song-comic-share__copy">
         <p>{copy.share}</p>
-        <strong>{stem} · {profile.genre[locale]}</strong>
+        <strong>{stem} · {profile.title[locale]}</strong>
         <span>{profile.move[locale]}</span>
       </div>
       <button type="button" onClick={() => void share()}>{status}</button>

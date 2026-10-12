@@ -19,8 +19,11 @@ test.describe("iPhone Safari 390px Four Portals Navigation and View Switching", 
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await dismissInstallPromptIfVisible(page);
 
-    // Initial state: four portal cards visible on home screen
-    const portalForm = page.locator("[data-home-card='form']");
+    // Initial state: one birth ticket (single start) + three explore portals
+    const birthTicket = page.locator("[data-home-birth-entry]");
+    await expect(birthTicket).toBeVisible();
+    await expect(page.locator("[data-home-card='form']")).toHaveCount(0);
+    const portalForm = birthTicket;
     const portalToday = page.locator("[data-home-card='today']");
     const portalQuiz = page.locator("[data-home-card='quiz']");
     const portalNotes = page.locator("[data-home-card='notes']");

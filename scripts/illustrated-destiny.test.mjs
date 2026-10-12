@@ -17,9 +17,9 @@ test("illustration requires an evidence-backed claim and stays read-only", () =>
   for (const ratio of ["9:16", "4:5", "1:1"]) assert.ok(component.includes(ratio));
 });
 
-test("unknown birth time downgrades and suppresses illustration", () => {
+test("unknown birth time downgrades confidence without erasing a supported illustration", () => {
   assert.match(helper, /result\.chart\.timeUnknown \? "limited" : "medium"/);
-  assert.match(helper, /if \(confidence === "limited"\) return null/);
+  assert.doesNotMatch(helper, /if \(confidence === "limited"\) return null/);
 });
 
 test("provider or illustration failure cannot block the free answer", () => {
@@ -28,10 +28,13 @@ test("provider or illustration failure cannot block the free answer", () => {
   assert.doesNotMatch(component, /fetch\(|generateDecreeImage|supabase/i);
 });
 
-test("illustrations stay inside reports without adding a homepage welcome or duplicating legacy Comic Lite", () => {
-  assert.doesNotMatch(home, /IllustratedDestiny|illustrated-destiny-panel|data-illustrated-welcome/);
-  assert.doesNotMatch(component, /IllustratedDestinyWelcome|data-illustrated-welcome/);
-  assert.doesNotMatch(styles, /illustrated-destiny-welcome/);
+test("homepage gets one non-judgemental entry while legacy Comic Lite stays out of the report flow", () => {
+  assert.match(home, /<IllustratedDestinyWelcome \/>/);
+  assert.match(component, /data-illustrated-welcome/);
+  assert.match(styles, /\.illustrated-destiny-welcome/);
+  const welcomeStart = component.indexOf("export function IllustratedDestinyWelcome");
+  const welcomeEnd = component.indexOf("export function IllustratedDestinyPanel", welcomeStart);
+  assert.doesNotMatch(component.slice(welcomeStart, welcomeEnd), /buildIllustratedDestiny\(/);
   assert.match(report, /<IllustratedDestinyPanel result=\{result\} \/>/);
   assert.match(report, /<IllustratedShareCard result=\{result\} \/>/);
   assert.doesNotMatch(resultView, /ComicLiteReport|ReportComicLite/);

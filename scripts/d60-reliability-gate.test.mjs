@@ -26,15 +26,16 @@ test("confirmation is bound to a birth fingerprint that includes time, timezone 
   assert.match(gate, /padStart\(2, "0"\)\}:\$\{String\(reportBirth.minute\).padStart\(2, "0"\)/);
 });
 
-test("after minute confirmation D60 is shown only when stable; unstable or error is withheld; never rectify time", () => {
+test("after minute confirmation D60 is generated; unstable is labelled weak supporting evidence; only a failed calculation is withheld; never rectify time", () => {
   assert.match(gate, /signAt\(-2\) === base && signAt\(2\) === base/);
   assert.match(gate, /data-d60-withheld/);
   assert.match(gate, /不作判定|不作判断|WITHHELD/);
+  assert.match(gate, /只作弱旁證|只作弱旁证|weak supporting context/);
   assert.match(gate, /不用 D60 反向考時|不用 D60 反向考时|not used to rectify/);
-  assert.match(gate, /state === "unstable" \|\| state === "error"/);
-  assert.match(gate, /state === "unstable" \? copy\.unstable : copy\.error/);
-  assert.match(gate, /return <D60KarmaSection variant="standalone" reportBirth=\{reportBirth\} depth=\{depth\} \/>/);
-  assert.doesNotMatch(gate, /仍輸出 D60 盤面|still generated as weak supporting evidence/);
+  assert.match(gate, /if \(state === "error"\)/);
+  assert.match(gate, /data-d60-weak-evidence/);
+  assert.match(gate, /state === "unstable" \? \(/);
+  assert.match(gate, /<D60KarmaSection variant="standalone" reportBirth=\{reportBirth\} depth=\{depth\} \/>/);
   assert.doesNotMatch(gate, /Astronomy Engine formula change|rectifyBirth|suggestBetterMinute/);
 });
 

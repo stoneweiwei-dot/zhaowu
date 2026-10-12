@@ -74,6 +74,19 @@ export const REPORT_OVERVIEW_ASSET: ReportVisualAsset = {
   fullImageUrl: "/report-visuals/full/overview.webp",
 };
 
+/**
+ * Report-only ten-stem character illustrations (720x773, near-square).
+ * They are loaded by the day-stem portrait first; the reviewed 9:16 mother image in
+ * `full/` stays as the runtime fallback so a missing file can never produce a 404 gap.
+ */
+const CHARACTER_BASE = "/report-visuals/characters";
+
+export function getDayStemCharacterAsset(key: string): ReportVisualAsset | null {
+  if (!DAY_MASTER_ASSETS[key]) return null;
+  const url = `${CHARACTER_BASE}/${key}.webp`;
+  return { id: `${key}-character`, src: url, index: 0, count: 1, thumbnailUrl: url, fullImageUrl: url };
+}
+
 export function getReportVisualAsset(kind: ReportVisualAssetKind, key: string): ReportVisualAsset | null {
   if (kind === "overview") return REPORT_OVERVIEW_ASSET;
   return (kind === "day-master" ? DAY_MASTER_ASSETS[key] : MONTH_ASSETS[key]) ?? null;

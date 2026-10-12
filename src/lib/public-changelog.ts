@@ -15,6 +15,27 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-12-song-shell-wardrobe-swatches",
+    date: "2026-10-12",
+    zhHant: { title: "首頁穿衣加入對應色卡，共用介面收斂為宋式暖紙", summary: "每日穿衣的命盤主色、今日天時色與少量使用色改為可辨識的對應色卡，首飾與材質另列，不再只顯示一串淡色文字。首頁入口、音樂／導覽工具、登入與系統頁同步收斂為低圓角暖紙、細線與克制陰影，移除殘留玻璃膠囊感；五行取值與命盤計算不變。" },
+    zhHans: { title: "首页穿衣加入对应色卡，共用界面收敛为宋式暖纸", summary: "每日穿衣的命盘主色、今日天时色与少量使用色改为可辨识的对应色卡，首饰与材质另列，不再只显示一串淡色文字。首页入口、音乐／导览工具、登录与系统页同步收敛为低圆角暖纸、细线与克制阴影，移除残留玻璃胶囊感；五行取值与命盘计算不变。" },
+    en: { title: "True wardrobe swatches and a calmer Song-paper shared interface", summary: "Daily Dress now shows distinct, labelled swatches for your working palette, today's sky colours and colours to use lightly, with jewellery and materials kept separate. Home entrances, Music/Guide tools, login and system pages also move to low-radius warm paper, fine rules and restrained shadows instead of glassy pills; five-element selection and chart calculations are unchanged." },
+  },
+  {
+    id: "2026-10-11-skin-sets-quiz-hub-d60",
+    date: "2026-10-11",
+    zhHant: { title: "主題皮膚改為整套樣式、趣味測驗入口統一、D60 業力分盤補回", summary: "十款主題皮膚不再只換頂圖：各自有背景紋理、卡片框線、按鈕、標題線與導覽膠囊，並修正首頁標語與頁尾偏淡的字。趣味測驗頁現在列出全部測驗，與首頁一致（新增「五行優勢內耗測驗」到首頁）。印度占星確認出生分鐘後，即使前後 ±2 分鐘會改變 D60 上升細分，也會生成 D60 業力分盤並標示為弱旁證，不再整段空白；只有計算失敗才不作判定。" },
+    zhHans: { title: "主题皮肤改为整套样式、趣味测验入口统一、D60 业力分盘补回", summary: "十款主题皮肤不再只换顶图：各自有背景纹理、卡片框线、按钮、标题线与导览胶囊，并修正首页标语与页尾偏淡的字。趣味测验页现在列出全部测验，与首页一致（新增「五行优势内耗测验」到首页）。印度占星确认出生分钟后，即使前后 ±2 分钟会改变 D60 上升细分，也会生成 D60 业力分盘并标示为弱旁证，不再整段空白；只有计算失败才不作判断。" },
+    en: { title: "Full theme skin sets, one quiz hub, D60 karma chart restored", summary: "The ten theme skins now change more than the banner: each has its own background texture, card frame, buttons, title rule and nav pills, and faint tagline/footer text is fixed. The fun-tests page lists every quiz, matching the home page (the Five-Element Overuse Test is now on the home list). In Indian astrology, once you confirm the birth minute the D60 karma chart is generated even if a ±2-minute shift changes the rising subdivision, labelled as weak supporting context; only a failed calculation is withheld." },
+  },
+  {
+    id: "2026-10-10-dark-skin-readability",
+    date: "2026-10-10",
+    zhHant: { title: "深色主題皮膚文字可讀性修正、城市選單與浮動鈕不再遮擋", summary: "套用夜藍類主題皮膚時，出生資料表單標籤、報告導覽、我的報告與更新頁的標題不再變成淺色字壓在米色卡片上；出生城市選單不再被下一段標題蓋住；音樂／導覽浮動鈕縮小，頁尾也留出空間。" },
+    zhHans: { title: "深色主题皮肤文字可读性修正、城市菜单与浮动钮不再遮挡", summary: "套用夜蓝类主题皮肤时，出生资料表单标签、报告导览、我的报告与更新页的标题不再变成浅色字压在米色卡片上；出生城市菜单不再被下一段标题盖住；音乐／导览浮动钮缩小，页尾也留出空间。" },
+    en: { title: "Dark-skin readability fixes; city list and floating dock no longer cover content", summary: "With the night-blue theme skins, form labels, report wayfinding, My Reports and updates headings no longer render pale text on cream cards; the birth-city list is no longer covered by the next heading; the Music/Guide dock is smaller and the page end keeps clear of it." },
+  },
+  {
     id: "2026-10-10-hans-and-checkout-label-fix",
     date: "2026-10-10",
     zhHant: { title: "簡體報告用字修正、付費卡標示改為紫微", summary: "選擇簡體時，報告段落標題與旅行建議不再混入繁體字；結果頁付費區塊補上簡體文案。單盤付費卡改標為「紫微斗數完整深批」，與實際購買內容一致。" },

@@ -4,6 +4,7 @@ import { tenGod } from "@/lib/bazi/calendar";
 import { readSharedBirthRecord } from "@/lib/shared-birth";
 import { buildChart } from "@/lib/bazi/chart";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
+import "@/components/daily-almanac-accessory-art.css";
 
 /**
  * 今日黃曆 · ink board (owner 2026-10-08 reference: dark ink-teal almanac sheet).
@@ -198,6 +199,7 @@ export type AlmanacInkBoardProps = {
   sacred: string;
   pillarsSlot: ReactNode;
   locationControl: ReactNode;
+  accessoryArt: ReactNode;
 };
 
 function seasonAdvice(latitude: number | null, month: number, weather: string, locale: Locale) {
@@ -367,6 +369,14 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
           <strong>{isEnglish(locale) ? data.mask[1] : T(locale, data.mask[0], "")}</strong>
         </section>
       </div>
+
+      <section className="zw-ink-accessory-feature" aria-label={T(locale, "今日五行配飾意象", "Today's five-element accessory") }>
+        <div className="zw-ink-accessory-feature__copy">
+          <small>{T(locale, "今日五行配飾意象", "TODAY'S ELEMENTAL ACCESSORY")}</small>
+          <p>{T(locale, `依今日${element}行首飾建議，作為材質與搭配的視覺參考。`, `A visual reference for today's ${element} element jewellery materials and styling.`)}</p>
+        </div>
+        {props.accessoryArt}
+      </section>
 
       <p className="zw-ink-closing">{isEnglish(locale) ? data.closing[1] : T(locale, data.closing[0], "")}</p>
     </div>

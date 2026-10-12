@@ -3,6 +3,7 @@ import { ReportAccessGate } from "@/components/report-access-gate";
 import { PersonalPaidProfile } from "@/components/personal-paid-profile";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
+import { BirthDataNotice } from "@/components/birth-data-notice";
 import { CityPicker } from "@/components/city-picker";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { buildPalm } from "@/lib/yizhangjing/engine";
@@ -197,6 +198,7 @@ export function PalmStandalone() {
 
         <form onSubmit={onSubmit} className="palm-form relative overflow-hidden rounded-[1.4rem] border border-line/80 bg-cream/92 p-5 sm:p-7" noValidate>
           <div className="relative">
+            <BirthDataNotice locale={locale} variant="birth" />
             <label className="block text-sm font-medium text-ink">
               {copy.name}
               <input value={name} onChange={(event) => setName(event.target.value.slice(0, 40))} placeholder={copy.namePh} className="mt-2 min-h-14 w-full rounded-xl border border-line bg-white/72 px-4 text-base outline-none transition focus:border-cinnabar focus:ring-2 focus:ring-cinnabar/10" />

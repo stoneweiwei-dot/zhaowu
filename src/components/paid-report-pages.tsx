@@ -9,6 +9,8 @@ import { ReportShareCard } from "@/components/report-share-card";
 import { EvidenceGovernancePanel } from "@/components/evidence-governance-panel";
 import { FiveElementTrainingBlock } from "@/components/five-element-training-block";
 import { IllustratedDestinyPanel, IllustratedShareCard } from "@/components/illustrated-destiny-panel";
+import { DayStemPortrait } from "@/components/day-stem-portrait";
+import { BranchScenery } from "@/components/branch-scenery";
 
 const COPY = {
   "zh-Hant": {
@@ -41,6 +43,8 @@ const COPY = {
     methodologyStatement: "昭梧採用 STONE R6.2.2 推演體系，以傳統子平法為核心，依次校驗月令、調候、格局、病藥、流通、承載及歲運觸發。古籍依據、現代整理與輔助象意分層處理；無法確認的內容不會強行下斷。",
     methodologyMore: "了解方法",
     methodologyExpanded: "分析先看原局定下的結構，再看大運帶來的十年條件，然後流年觸發當年的具體事件，流月只用來縮小時間範圍。每一層證據都會標記是否確定、屬於較高概率、合理推論，還是暫時無法判定，避免用單一線索得出結論。",
+    subfoldChart: "展開四柱、圖解與五行練習",
+    subfoldMethod: "展開佐證資料與推演方法",
   },
   "zh-Hans": {
     title: "完整报告",
@@ -72,6 +76,8 @@ const COPY = {
     methodologyStatement: "昭梧采用 STONE R6.2.2 推演体系，以传统子平法为核心，依次校验月令、调候、格局、病药、流通、承载及岁运触发。古籍依据、现代整理与辅助象意分层处理；无法确认的内容不会强行下断。",
     methodologyMore: "了解方法",
     methodologyExpanded: "分析先看原局定下的结构，再看大运带来的十年条件，然后流年触发当年的具体事件，流月只用来缩小时间范围。每一层证据都会标记是否确定、属于较高概率、合理推论，还是暂时无法判定，避免用单一线索得出结论。",
+    subfoldChart: "展开四柱、图解与五行练习",
+    subfoldMethod: "展开佐证资料与推演方法",
   },
   en: {
     title: "Full report",
@@ -103,6 +109,8 @@ const COPY = {
     methodologyStatement: "Zhaowu's readings follow the STONE R6.2.2 method, built on traditional Zi Ping BaZi analysis. Each chart is checked in order — the governing energy of the birth month, seasonal balance, the chart's structure, where it's under strain, how the elements flow and support each other, and how later luck cycles bring things into play. Classical sources, modern interpretation, and supporting symbolism are kept in separate layers, and anything that can't be confirmed is left open rather than forced into an answer.",
     methodologyMore: "How this is worked out",
     methodologyExpanded: "The reading starts with the structure set at birth, then looks at how the current ten-year cycle shapes what's available, then how a given year can trigger something specific, with the month only narrowing the timing further. Each layer of evidence is marked as confirmed, more likely, a reasonable inference, or simply undetermined, so no conclusion rests on a single clue.",
+    subfoldChart: "Expand chart, illustrations & five-element practice",
+    subfoldMethod: "Expand supporting evidence & methodology",
   },
 } as const;
 
@@ -315,19 +323,29 @@ function AnalysisNotes({
           })}
         </div>
 
-        <ChartSnapshot result={result} locale={locale} />
-        <ReportVisualBook result={result} />
-        <FiveElementTrainingBlock result={result} />
-        {showLuck ? <ReportLuckBook result={result} /> : null}
-
-        {supportingSummary.length ? (
-          <div className="zhaowu-report-copy zhaowu-report-copy--notes">
-            {supportingSummary.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+        <details className="zhaowu-report-fold zhaowu-report-subfold" data-report-subfold="chart">
+          <summary>{copy.subfoldChart}</summary>
+          <div className="zhaowu-report-subfold__body">
+            <ChartSnapshot result={result} locale={locale} />
+            <ReportVisualBook result={result} />
+            <FiveElementTrainingBlock result={result} />
+            {showLuck ? <ReportLuckBook result={result} /> : null}
           </div>
-        ) : null}
+        </details>
 
-        <EvidenceGovernancePanel result={result} />
-        <MethodologyDisclosure locale={locale} />
+        <details className="zhaowu-report-fold zhaowu-report-subfold" data-report-subfold="method">
+          <summary>{copy.subfoldMethod}</summary>
+          <div className="zhaowu-report-subfold__body">
+            {supportingSummary.length ? (
+              <div className="zhaowu-report-copy zhaowu-report-copy--notes">
+                {supportingSummary.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
+              </div>
+            ) : null}
+
+            <EvidenceGovernancePanel result={result} />
+            <MethodologyDisclosure locale={locale} />
+          </div>
+        </details>
       </div>
     </details>
   );
@@ -391,6 +409,8 @@ export function FocusedReportSections({ sections, result }: { sections: ReportSe
             <span><strong>{copy.visual}</strong><small>{copy.visualHint}</small></span>
           </summary>
           <div className="zhaowu-report-stage-fold__body">
+            <DayStemPortrait result={result} />
+            <BranchScenery result={result} />
             <IllustratedDestinyPanel result={result} />
             <IllustratedShareCard result={result} />
             <ReportShareCard result={result} />

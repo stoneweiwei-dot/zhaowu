@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AstrologyRouteImport } from './routes/astrology'
 import { Route as AuspiciousAtlasRouteImport } from './routes/auspicious-atlas'
+import { Route as CopyrightRouteImport } from './routes/copyright'
 import { Route as DailyColorsRouteImport } from './routes/daily-colors'
 import { Route as FunTestsRouteImport } from './routes/fun-tests'
 import { Route as GalleryRouteImport } from './routes/gallery'
@@ -21,10 +22,12 @@ import { Route as IndianAstrologyRouteImport } from './routes/indian-astrology'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NumerologyRouteImport } from './routes/numerology'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as QizhengRouteImport } from './routes/qizheng'
 import { Route as SkyEventsRouteImport } from './routes/sky-events'
 import { Route as SocialRouteImport } from './routes/social'
 import { Route as TeaGuardianRouteImport } from './routes/tea-guardian'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TianjiDualRouteImport } from './routes/tianji-dual'
 import { Route as TianjiXinggongRouteImport } from './routes/tianji-xinggong'
 import { Route as UpdatesRouteImport } from './routes/updates'
@@ -58,6 +61,11 @@ const AstrologyRoute = AstrologyRouteImport.update({
 const AuspiciousAtlasRoute = AuspiciousAtlasRouteImport.update({
   id: '/auspicious-atlas',
   path: '/auspicious-atlas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CopyrightRoute = CopyrightRouteImport.update({
+  id: '/copyright',
+  path: '/copyright',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DailyColorsRoute = DailyColorsRouteImport.update({
@@ -100,6 +108,11 @@ const NumerologyRoute = NumerologyRouteImport.update({
   path: '/numerology',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QizhengRoute = QizhengRouteImport.update({
   id: '/qizheng',
   path: '/qizheng',
@@ -118,6 +131,11 @@ const SocialRoute = SocialRouteImport.update({
 const TeaGuardianRoute = TeaGuardianRouteImport.update({
   id: '/tea-guardian',
   path: '/tea-guardian',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TianjiDualRoute = TianjiDualRouteImport.update({
@@ -198,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
@@ -206,10 +225,12 @@ export interface FileRoutesByFullPath {
   '/knowledge': typeof KnowledgeRouteWithChildren
   '/login': typeof LoginRoute
   '/numerology': typeof NumerologyRoute
+  '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
   '/social': typeof SocialRoute
   '/tea-guardian': typeof TeaGuardianRoute
+  '/terms': typeof TermsRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/updates': typeof UpdatesRoute
@@ -230,6 +251,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
@@ -238,10 +260,12 @@ export interface FileRoutesByTo {
   '/knowledge': typeof KnowledgeRouteWithChildren
   '/login': typeof LoginRoute
   '/numerology': typeof NumerologyRoute
+  '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
   '/social': typeof SocialRoute
   '/tea-guardian': typeof TeaGuardianRoute
+  '/terms': typeof TermsRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/updates': typeof UpdatesRoute
@@ -263,6 +287,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
@@ -271,10 +296,12 @@ export interface FileRoutesById {
   '/knowledge': typeof KnowledgeRouteWithChildren
   '/login': typeof LoginRoute
   '/numerology': typeof NumerologyRoute
+  '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
   '/social': typeof SocialRoute
   '/tea-guardian': typeof TeaGuardianRoute
+  '/terms': typeof TermsRoute
   '/tianji-dual': typeof TianjiDualRoute
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/updates': typeof UpdatesRoute
@@ -297,6 +324,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
     | '/gallery'
@@ -305,10 +333,12 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/login'
     | '/numerology'
+    | '/privacy'
     | '/qizheng'
     | '/sky-events'
     | '/social'
     | '/tea-guardian'
+    | '/terms'
     | '/tianji-dual'
     | '/tianji-xinggong'
     | '/updates'
@@ -329,6 +359,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
     | '/gallery'
@@ -337,10 +368,12 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/login'
     | '/numerology'
+    | '/privacy'
     | '/qizheng'
     | '/sky-events'
     | '/social'
     | '/tea-guardian'
+    | '/terms'
     | '/tianji-dual'
     | '/tianji-xinggong'
     | '/updates'
@@ -361,6 +394,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
     | '/gallery'
@@ -369,10 +403,12 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/login'
     | '/numerology'
+    | '/privacy'
     | '/qizheng'
     | '/sky-events'
     | '/social'
     | '/tea-guardian'
+    | '/terms'
     | '/tianji-dual'
     | '/tianji-xinggong'
     | '/updates'
@@ -394,6 +430,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AstrologyRoute: typeof AstrologyRoute
   AuspiciousAtlasRoute: typeof AuspiciousAtlasRoute
+  CopyrightRoute: typeof CopyrightRoute
   DailyColorsRoute: typeof DailyColorsRoute
   FunTestsRoute: typeof FunTestsRouteWithChildren
   GalleryRoute: typeof GalleryRoute
@@ -402,10 +439,12 @@ export interface RootRouteChildren {
   KnowledgeRoute: typeof KnowledgeRouteWithChildren
   LoginRoute: typeof LoginRoute
   NumerologyRoute: typeof NumerologyRoute
+  PrivacyRoute: typeof PrivacyRoute
   QizhengRoute: typeof QizhengRoute
   SkyEventsRoute: typeof SkyEventsRoute
   SocialRoute: typeof SocialRoute
   TeaGuardianRoute: typeof TeaGuardianRoute
+  TermsRoute: typeof TermsRoute
   TianjiDualRoute: typeof TianjiDualRoute
   TianjiXinggongRoute: typeof TianjiXinggongRoute
   UpdatesRoute: typeof UpdatesRoute
@@ -446,6 +485,13 @@ declare module '@tanstack/react-router' {
       path: '/auspicious-atlas'
       fullPath: '/auspicious-atlas'
       preLoaderRoute: typeof AuspiciousAtlasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/copyright': {
+      id: '/copyright'
+      path: '/copyright'
+      fullPath: '/copyright'
+      preLoaderRoute: typeof CopyrightRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/daily-colors': {
@@ -504,6 +550,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NumerologyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/qizheng': {
       id: '/qizheng'
       path: '/qizheng'
@@ -530,6 +583,13 @@ declare module '@tanstack/react-router' {
       path: '/tea-guardian'
       fullPath: '/tea-guardian'
       preLoaderRoute: typeof TeaGuardianRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tianji-dual': {
@@ -666,6 +726,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AstrologyRoute: AstrologyRoute,
   AuspiciousAtlasRoute: AuspiciousAtlasRoute,
+  CopyrightRoute: CopyrightRoute,
   DailyColorsRoute: DailyColorsRoute,
   FunTestsRoute: FunTestsRouteWithChildren,
   GalleryRoute: GalleryRoute,
@@ -674,10 +735,12 @@ const rootRouteChildren: RootRouteChildren = {
   KnowledgeRoute: KnowledgeRouteWithChildren,
   LoginRoute: LoginRoute,
   NumerologyRoute: NumerologyRoute,
+  PrivacyRoute: PrivacyRoute,
   QizhengRoute: QizhengRoute,
   SkyEventsRoute: SkyEventsRoute,
   SocialRoute: SocialRoute,
   TeaGuardianRoute: TeaGuardianRoute,
+  TermsRoute: TermsRoute,
   TianjiDualRoute: TianjiDualRoute,
   TianjiXinggongRoute: TianjiXinggongRoute,
   UpdatesRoute: UpdatesRoute,

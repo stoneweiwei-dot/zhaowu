@@ -15,6 +15,7 @@ export type PersonalPaidProfileModel = {
   quietColors: string[];
   quietColorSwatches: Array<{ label: string; hex: string }>;
   materials: string[];
+  materialElement: Element;
   hours: string[];
   persona: string;
   note: string;
@@ -56,12 +57,12 @@ const COLORS: Record<Locale, Record<Element, string[]>> = {
   },
 };
 
-const ELEMENT_SWATCH: Record<Element, string> = {
-  木: "#6f907a",
-  火: "#b85f4d",
-  土: "#b79a6b",
-  金: "#c7c1b4",
-  水: "#617b88",
+const COLOR_SWATCH_HEX: Record<Element, readonly [string, string, string]> = {
+  木: ["#6f9b80", "#315849", "#758a87"],
+  火: ["#a84237", "#cf6f61", "#a66d3f"],
+  土: ["#e3ddd0", "#cdbc98", "#b99669"],
+  金: ["#f1ede3", "#b8bbb9", "#cbb47a"],
+  水: ["#9fb3ba", "#314b5c", "#343a3a"],
 };
 
 const MATERIALS: Record<Locale, Record<Element, string[]>> = {
@@ -208,12 +209,12 @@ export function buildPersonalPaidProfile(birth: SharedBirthRecord, locale: Local
   const useful = chart.useful.length ? chart.useful : [chart.dayMasterElement];
   const drain = chart.drain.length ? chart.drain : [];
   const colorSwatches = useful
-    .flatMap((element) => COLORS[locale][element].map((label) => ({ label, hex: ELEMENT_SWATCH[element] })))
+    .flatMap((element) => COLORS[locale][element].map((label, index) => ({ label, hex: COLOR_SWATCH_HEX[element][index] })))
     .filter((item, index, all) => all.findIndex((candidate) => candidate.label === item.label) === index)
     .slice(0, 4);
   const colors = colorSwatches.map((item) => item.label);
   const quietColorSwatches = drain
-    .flatMap((element) => COLORS[locale][element].map((label) => ({ label, hex: ELEMENT_SWATCH[element] })))
+    .flatMap((element) => COLORS[locale][element].map((label, index) => ({ label, hex: COLOR_SWATCH_HEX[element][index] })))
     .filter((item, index, all) => all.findIndex((candidate) => candidate.label === item.label) === index)
     .slice(0, 3);
   const quietColors = quietColorSwatches.map((item) => item.label);
@@ -250,6 +251,7 @@ export function buildPersonalPaidProfile(birth: SharedBirthRecord, locale: Local
     quietColors,
     quietColorSwatches,
     materials,
+    materialElement: useful[0],
     hours,
     persona: personaFor(chart.dayMasterElement, chart.strength.tendency, relations, locale),
     note,

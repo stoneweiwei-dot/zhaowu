@@ -121,7 +121,7 @@ function AccountPage() {
   const [selectedReportIds, setSelectedReportIds] = useState<string[]>([]);
 
   const c = useMemo(() => ({
-    ownerTitle: tr(locale, "所有人的報告", "所有人的报告", "All reports"),
+    ownerTitle: tr(locale, "昭梧後台", "昭梧后台", "Zhaowu console"),
     memberTitle: tr(locale, "我的昭梧", "我的昭梧", "My Zhaowu"),
     ownerBadge: tr(locale, "站主", "站主", "Owner"),
     reportsReadError: tr(locale, "報告讀取失敗。", "报告读取失败。", "Could not load reports."),
@@ -331,7 +331,7 @@ function AccountPage() {
         <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
           <p className="text-xs tracking-[0.28em] text-cinnabar">ZHAOWU ACCOUNT</p>
           <h1 className="mt-2 font-display text-3xl">{c.memberTitle}</h1>
-          <p className="mt-4 text-sm leading-7 text-ink-soft">{tr(locale, "登入或註冊後可保存這台手機的生辰與報告。站主請改用登入頁的「站主」分頁。", "登录或注册后可保存这台手机的生辰与报告。站主请改用登录页的「站主」分页。", "Sign in or create an account to keep this phone's birth record and reports. Owners use the Owner tab on the sign-in page.")}</p>
+          <p className="mt-4 text-sm leading-7 text-ink-soft">{tr(locale, "登入或註冊後可保存這台裝置的生辰與報告，並隨時同步您的紀錄。", "登录或注册后可保存这台设备的生辰与报告，并随时同步您的记录。", "Sign in or register to preserve birth records and reports on this device and sync your readings anytime.")}</p>
           <Link to="/login" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{tr(locale, "會員登入／註冊", "会员登录／注册", "Sign in / Register")}</Link>
         </section>
       </main>
@@ -363,19 +363,19 @@ function AccountPage() {
       <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs tracking-[0.28em] text-cinnabar">{user.isOwner ? "OWNER CONSOLE" : "MY ZHAOWU"}</p>
+            {!user.isOwner ? <p className="text-xs tracking-[0.28em] text-cinnabar">MY ZHAOWU</p> : null}
             <h1 className="mt-2 font-display text-3xl">{user.isOwner ? c.ownerTitle : c.memberTitle}</h1>
-            <p className="zw-owner-access-note">{tr(locale, "站主權限：可免費查看自己與所有人的完整報告。", "站主权限：可免费查看自己与所有人的完整报告。", "Owner access: read your own and everyone’s complete reports without payment.")}</p>
-            <a href="/history" className="underline">{tr(locale, "查看這台裝置的「我的報告」 →", "查看这台设备的“我的报告” →", "My reports on this device →")}</a>
+            
+            <a href="/history" className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">{tr(locale, "本機報告 →", "本机报告 →", "My saved reports →")}</a>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            {user.isOwner ? <span className="rounded-full border border-cinnabar/30 bg-cinnabar/5 px-3 py-1 text-xs text-cinnabar">{c.ownerBadge}</span> : null}
+            
             <button type="button" disabled={refreshBusy} onClick={() => void refreshAll()} className="rounded-full border border-line bg-paper/70 px-3 py-2 text-xs text-ink-soft disabled:opacity-50">
               {refreshBusy ? c.refreshing : c.refreshAll}
             </button>
           </div>
         </div>
-        <div className={`mt-5 grid gap-3 ${user.isOwner ? "" : "sm:grid-cols-2"}`}>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2" hidden={user.isOwner}>
           {!user.isOwner ? (
             <div className="rounded-lg border border-line bg-paper/45 p-4">
               <p className="text-xs tracking-[0.2em] text-ink-mute">{c.birthData}</p>

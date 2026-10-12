@@ -191,8 +191,8 @@ const TABLE = {
     "登录后，完整报告会自动保存到「我的昭梧」。",
   ],
   loginPageLead: [
-    "登入後會保存出生資料與最近報告；站主帳號可直接查看客戶目前可用的最高版本報告。",
-    "登录后会保存出生资料与最近报告；站主账号可直接查看客户目前可用的最高版本报告。",
+    "登入後會保存出生資料與最近報告，可隨時在不同裝置查看。",
+    "登录后会保存出生资料与最近报告，可随时在不同设备查看。",
   ],
   loginTab: ["登入", "登录"],
   signupTab: ["註冊", "注册"],
@@ -430,7 +430,7 @@ const EN: Record<CopyKey, string> = {
   loginTitle: "Sign in to Zhaowu",
   loginLead: "Sign in to save full reports to My Zhaowu.",
   loginPageLead:
-    "Sign in to save birth details and recent reports. The verified owner account can open each customer's highest available report.",
+    "Sign in to save birth details and recent reports, accessible anytime across your devices.",
   loginTab: "Sign in",
   signupTab: "Create account",
   signupTitle: "Create a Zhaowu account",

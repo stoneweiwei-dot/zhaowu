@@ -769,6 +769,15 @@ html[data-zw-theme="night"] .zhaowu-unified-report-flow article {
 .zhaowu-report-fold > summary:focus-visible { outline: 1px solid var(--zw-scroll-celadon, currentColor); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .zhaowu-report-fold > summary::after { transition: none; } }
 
+/* r229 — nested sub-folds inside the "附註" method-notes block (chart/visual assets in
+   one fold, evidence/methodology text in another) so they don't dump flat into one
+   long scroll. Reuses the .zhaowu-report-fold arrow treatment above for consistency;
+   keep any further tweaks to that shared rule rather than adding a second copy here. */
+.zhaowu-report-subfold { margin-top: 18px; }
+.zhaowu-report-subfold > summary { font-weight: 600; color: var(--zw-ink); padding-right: 26px; }
+.zhaowu-report-subfold__body { margin-top: 10px; }
+.zhaowu-report-subfold + .zhaowu-report-subfold { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--zw-line); }
+
 /* Folded destiny book: each core section and each specialist system opens on demand.
    Closed state shows the title plus a two-line teaser, so the report is a short list, not a wall of text. */
 .zhaowu-unified-fold > summary,
@@ -2585,60 +2594,71 @@ html[data-zw-theme="night"] .zhaowu-dragon-guide input::placeholder { color: #c9
 html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is(.zhaowu-section-kicker, .zhaowu-section-lead) { color: #d8d0c1 !important; }
 
 
-/* r165 — auditable chart package, kept inside the single Destiny Book flow. */
+/* r226 — chart-trust is a verification utility, not report content: it must read as
+   quieter than the Destiny Book it sits beside, never compete with it for attention.
+   Flat strip, no card chrome, small ghost button. Single source of truth — no later
+   override block restyles these selectors; r165/r223's duplicate tightening rules
+   were folded in here and removed. */
 .zhaowu-chart-trust {
-  margin-top: 0;
-  border: 1px solid rgba(93, 77, 55, .15);
-  border-radius: 16px;
-  padding: clamp(22px, 4vw, 30px);
-  background: #fffaf1;
+  margin-top: 28px;
+  border-top: 1px solid rgba(93, 77, 55, .16);
+  padding: 14px 0 0;
+  background: transparent;
+}
+.zhaowu-chart-trust > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 .zhaowu-chart-trust > header h3 {
-  margin: 8px 0 0;
-  color: var(--zw-ink);
-  font-family: var(--font-display, serif);
-  font-size: clamp(23px, 4.5vw, 30px);
-  font-weight: 560;
-  line-height: 1.35;
+  margin: 0;
+  color: var(--zw-muted);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  line-height: 1.4;
 }
 .zhaowu-chart-trust > header > p:last-child {
-  margin: 10px 0 0;
+  margin: 6px 0 0;
   color: var(--zw-muted);
-  font-size: 15px;
-  line-height: 1.75;
+  font-size: 12.5px;
+  line-height: 1.6;
 }
 .zhaowu-chart-copy {
-  width: 100%;
-  min-height: 48px;
-  margin-top: 18px;
-  border: 1px solid rgba(53, 91, 76, .28);
-  border-radius: 12px;
-  padding: 10px 16px;
-  background: #315345;
-  color: #fffaf1;
-  font-size: 15px;
-  font-weight: 720;
-  line-height: 1.4;
+  width: auto;
+  min-height: 34px;
+  margin: 0;
+  border: 1px solid rgba(93, 77, 55, .28);
+  border-radius: 8px;
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--zw-ink-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
 }
 .zhaowu-chart-trust-details {
   display: grid;
-  gap: 10px;
-  margin-top: 14px;
+  gap: 8px;
+  margin-top: 10px;
 }
 .zhaowu-chart-trust-details details {
   overflow: hidden;
-  border: 1px solid rgba(93, 77, 55, .14);
-  border-radius: 12px;
-  background: #fffdf8;
+  border: 1px solid rgba(93, 77, 55, .12);
+  border-radius: 10px;
+  background: transparent;
 }
 .zhaowu-chart-trust-details summary {
-  min-height: 48px;
-  padding: 13px 15px;
+  min-height: 40px;
+  padding: 10px 12px;
   cursor: pointer;
-  color: var(--zw-ink);
-  font-size: 15px;
-  font-weight: 680;
-  line-height: 1.45;
+  color: var(--zw-muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 .zhaowu-chart-trust-details details[open] summary {
   border-bottom: 1px solid rgba(93, 77, 55, .12);
@@ -2650,11 +2670,20 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
 .zhaowu-chart-trust-details details > p,
 .zhaowu-chart-trust-details details > a {
   color: var(--zw-ink-soft);
-  font-size: 14px;
-  line-height: 1.75;
+  font-size: 13px;
+  line-height: 1.7;
 }
-.zhaowu-chart-trust-details details > p:first-of-type { margin-top: 14px; }
-.zhaowu-chart-trust-details details > p:last-of-type { margin-bottom: 14px; }
+.zhaowu-chart-trust-details details > p:first-of-type { margin-top: 12px; }
+.zhaowu-chart-trust-details details > p:last-of-type { margin-bottom: 12px; }
+.zhaowu-chart-trust-details details > h4 {
+  margin: 12px 15px 0;
+  color: var(--zw-ink-soft);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+.zhaowu-chart-trust-details details > p.zhaowu-chart-trust-version { margin-top: 4px; }
+html[data-zw-theme="night"] .zhaowu-chart-trust-details details > h4 { color: #d3c9b8; }
 .zhaowu-chart-trust-details details > a {
   display: inline-flex;
   min-height: 44px;
@@ -2689,34 +2718,28 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage-head :is
   line-height: 1.65;
 }
 html[data-zw-theme="night"] .zhaowu-chart-trust {
-  border-color: rgba(212, 176, 116, .22);
-  background: #102a23;
+  border-color: rgba(212, 176, 116, .18);
 }
 html[data-zw-theme="night"] .zhaowu-chart-trust > header h3,
 html[data-zw-theme="night"] .zhaowu-chart-trust-details summary,
 html[data-zw-theme="night"] .zhaowu-chart-trust-details dd {
-  color: #f1e8d8;
+  color: #d3c9b8;
 }
 html[data-zw-theme="night"] .zhaowu-chart-trust > header > p:last-child,
 html[data-zw-theme="night"] .zhaowu-chart-trust-details dt,
 html[data-zw-theme="night"] .zhaowu-chart-trust-details details > p {
-  color: #d3c9b8;
+  color: #a79c86;
 }
 html[data-zw-theme="night"] .zhaowu-chart-trust-details details {
-  border-color: rgba(212, 176, 116, .2);
-  background: #16372d;
+  border-color: rgba(212, 176, 116, .18);
+  background: transparent;
 }
 html[data-zw-theme="night"] .zhaowu-chart-copy {
-  border-color: rgba(212, 176, 116, .45);
-  background: #d4b074;
-  color: #17332b;
+  border-color: rgba(212, 176, 116, .3);
+  color: #e2c48d;
 }
 html[data-zw-theme="night"] .zhaowu-chart-trust-details details > a {
   color: #e2c48d;
-}
-@media (max-width: 430px) {
-  .zhaowu-chart-trust { padding: 20px 16px; }
-  .zhaowu-chart-trust > header h3 { font-size: 24px; }
 }
 
 
@@ -6896,6 +6919,10 @@ html body .zhaowu-lotus-intro__fallback.is-neutral { background: #0b120e !import
 html body .zhaowu-lotus-intro__fallback.is-neutral > * { display: none !important; }
 
 /* Illustrated Destiny v1: one quiet local scene with readable warm-paper text. */
+.illustrated-destiny-welcome{display:grid;grid-template-columns:88px minmax(0,1fr);align-items:center;gap:12px;max-width:420px;margin:12px auto 0;text-align:left}
+.illustrated-destiny-welcome .illustrated-destiny-art{width:88px;border-radius:2px}
+.illustrated-destiny-welcome p{display:grid;gap:3px;margin:0;color:#242620;font-size:16px;line-height:1.45;overflow-wrap:anywhere}
+.illustrated-destiny-welcome strong{font-weight:600}
 .illustrated-destiny-panel{margin:18px 0;padding:0;color:#242620;background:#FFF9EE;border-block:1px solid rgba(84,66,44,.18)}
 .illustrated-destiny-art{display:block;width:100%;height:auto;max-width:100%}
 .illustrated-destiny-panel figcaption{padding:12px 16px;font-size:16px;line-height:1.65;color:#242620;overflow-wrap:anywhere}
@@ -7698,41 +7725,26 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-layout {
   padding: 70px clamp(18px,6vw,32px) 42px;
 }
 
-.zhaowu-report-mode-switch {
-  display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr));
-  width: 100%;
-  gap: 0;
-  margin-top: 15px;
-  border-bottom: 1px solid rgba(31,31,28,.12);
-}
-.zhaowu-report-mode-switch button {
-  min-width: 0;
-  min-height: 46px;
-  padding: 0 6px;
-  text-align: center;
-  letter-spacing: .05em;
-}
-.zhaowu-report-mode-switch button[aria-pressed="true"] { border-bottom-width: 2px; }
-
+/* r226 — a second, duller .zhaowu-report-mode-switch block used to live here and win
+   the cascade on mobile (it loaded after r225's tasteful underline tabs at line ~4899
+   and after their @media flex/gap refinement), silently reverting the tabs to a boxed
+   3-column grid. Removed so r225's rule is the only one and actually renders.
+   .zhaowu-report-reading-path is a static index, not a nav (the spans are not links or
+   buttons) — styled as a plain caption line so it doesn't look like a dead button row. */
 .zhaowu-report-reading-path {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 8px;
-  margin: 18px 0 4px;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 14px;
+  row-gap: 4px;
+  margin: 14px 0 2px;
 }
 .zhaowu-report-reading-path span {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid rgba(63,107,93,.13);
-  border-radius: 12px;
-  padding: 8px 10px;
-  background: rgba(247,244,236,.66);
-  color: var(--zw-ink-soft);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  color: var(--zw-muted);
   font-size: 12px;
-  line-height: 1.35;
+  line-height: 1.5;
 }
 .zhaowu-report-reading-path b,
 .zhaowu-unified-fold__step {
@@ -9392,8 +9404,568 @@ html:lang(en) #birth-form button[type="submit"] { text-wrap: balance; line-heigh
 /* Five-element correspondence list: the fixed 72px term column forced "Traditional organ link" etc. onto 2–3 lines. */
 html:lang(en) [data-five-element-correspondence-grid] > div { grid-template-columns: minmax(8.75rem, 44%) minmax(0, 1fr); }
 
-/* Always-visible element strength meters (report, above the folded sections) */
-.zhaowu-element-glance { margin: 18px 0; padding: 14px 16px; border: 1px solid rgba(26, 58, 92, .14); border-radius: 14px; background: rgba(255, 252, 245, .7); }
-.zhaowu-element-glance > h4 { margin: 0 0 10px; font-size: 1rem; color: #1a3a5c; }
+/* Birth-city results opened over the next report section: lift the whole form above later stacking contexts. */
+.zhaowu-customer-record { position: relative; z-index: 30; }
+/* Floating 音樂／導覽 dock: smaller and see-through so it covers less, plus end-of-page room so the footer is never hidden. */
+.zhaowu-site-utility-buttons { opacity: .9; }
+.zhaowu-site-utility-buttons > button { min-width: 52px; min-height: 44px; padding: 3px 7px; }
+.zhaowu-app-frame { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2026-10-09 · Song visual unification · Batch 1
+   Common shell, home portals, login and system states. This stays in the
+   canonical final authority so the rollout survives the pending CSS-layer
+   consolidation without adding another stylesheet or runtime injector.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --zw-card-radius: 10px;
+  --zw-control-radius: 8px;
+  --zw-shadow: 0 8px 28px rgba(55, 44, 29, .065);
+}
+
+/* The site chrome is warm paper, not a frosted pane over the painting. */
+html body .zhaowu-site-header,
+html body .zhaowu-route-home .zhaowu-site-header,
+html body:has(.zhaowu-home-layout) .zhaowu-site-header {
+  background: rgba(248, 243, 232, .97) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Four illustrated entrances remain distinct, but read as editorial plates. */
+html body .zw-hero-nav-item.zw-hero-card {
+  min-height: 142px;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 12px rgba(60, 48, 30, .055) !important;
+}
+
+html body .zw-birth-entry-ticket {
+  border-radius: 8px !important;
+  background: rgba(251, 247, 237, .96) !important;
+  box-shadow: 0 3px 12px rgba(55, 72, 62, .045) !important;
+}
+
+/* Music and guide are two quiet square-edged tools, never one floating pill. */
+html body .zhaowu-site-utility-buttons {
+  gap: 0;
+  border-radius: 10px !important;
+  padding: 3px;
+  background: rgba(251, 247, 237, .97) !important;
+  box-shadow: 0 5px 16px rgba(59, 48, 35, .085) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body .zhaowu-site-utility-buttons > button,
+html body .zhaowu-site-utility-buttons > button + button {
+  min-width: 56px;
+  min-height: 48px;
+  border-radius: 6px !important;
+}
+
+html body .zhaowu-site-utility-buttons > button + button {
+  border-left-color: rgba(116, 91, 56, .16);
+}
+
+html body .zhaowu-site-utility-buttons > button.is-active {
+  background: rgba(221, 231, 221, .68) !important;
+  box-shadow: inset 0 -1px 0 rgba(41, 75, 63, .22);
+}
+
+html body .zhaowu-site-utility-panel {
+  border-radius: 10px !important;
+  background: #fbf6eb !important;
+  box-shadow: 0 12px 34px rgba(45, 39, 31, .12) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body .zhaowu-site-utility-panel-head > button {
+  border-radius: 7px !important;
+}
+
+/* Login is a paper leaf set into the landscape, not a glass modal. */
+html body .zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .stone-login-sheet {
+  border-radius: 10px !important;
+  background: rgba(255, 250, 239, .965) !important;
+  box-shadow: 0 10px 32px rgba(62, 49, 31, .10) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body .zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] :is(
+  .stone-login-form input,
+  .stone-login-primary
+) {
+  border-radius: 8px !important;
+}
+
+/* The public error page uses the same book geometry and visible actions. */
+html body [data-public-not-found] .seal-border {
+  border-radius: 10px !important;
+  background: rgba(252, 248, 238, .97) !important;
+  box-shadow: var(--zw-shadow) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body [data-public-not-found] a {
+  min-height: 44px;
+  border-radius: 8px !important;
+}
+
+@media (max-width: 580px) {
+  html body .zw-hero-inscription {
+    padding-inline: 14px;
+  }
+
+  html body .zw-hero-nav-wrap {
+    padding-inline: 12px !important;
+  }
+
+  html body .zw-hero-nav {
+    gap: 9px !important;
+  }
+
+  html body .zw-hero-nav-item.zw-hero-card {
+    min-height: 132px;
+    padding: 14px 12px 12px !important;
+  }
+
+  html body .zw-hero-card-copy {
+    max-width: 82%;
+  }
+
+  html body .zhaowu-site-utility-dock {
+    right: max(9px, env(safe-area-inset-right));
+    bottom: max(10px, calc(env(safe-area-inset-bottom) + 6px));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2026-10-12 · Personal wardrobe palette
+   Named colours must read as pigment samples, not a pale text-only card wall.
+   The chart calculation is untouched; this layer only gives each existing
+   colour result a visible, labelled Song-paper swatch.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe {
+  border-radius: 10px !important;
+  background: #f5eddd !important;
+  box-shadow: 0 5px 18px rgba(52, 43, 29, .06) !important;
+}
+
+html body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 18px 16px 20px !important;
+  color: #2d4038 !important;
+  background:
+    radial-gradient(circle at 92% 4%, rgba(190, 165, 109, .10), transparent 26%),
+    linear-gradient(180deg, #fbf7ed 0%, #f4ecdc 100%) !important;
+  box-shadow: none !important;
+}
+
+html body [data-personal-daily-wardrobe] {
+  display: grid;
+  gap: 0;
+}
+
+html body [data-wardrobe-palette] {
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid rgba(91, 72, 45, .15);
+  padding: 2px 0 18px;
+  background: transparent !important;
+}
+
+html body [data-wardrobe-palette] > small,
+html body [data-wardrobe-note] > small {
+  display: block;
+  margin: 0 0 10px;
+  color: #776548 !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: .12em;
+  line-height: 1.35;
+}
+
+html body .zhaowu-wardrobe-swatches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+html body .zhaowu-wardrobe-swatch {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 62px;
+  border: 1px solid rgba(84, 68, 46, .14);
+  border-radius: 7px;
+  padding: 7px;
+  color: #273b34 !important;
+  background: rgba(255, 252, 244, .78) !important;
+  box-shadow: 0 2px 8px rgba(61, 48, 30, .035);
+}
+
+html body .zhaowu-wardrobe-swatch > i {
+  display: block !important;
+  width: 48px;
+  height: 46px;
+  border: 1px solid rgba(55, 47, 37, .16);
+  border-radius: 4px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .28), transparent 46%, rgba(38, 34, 27, .07)),
+    var(--wardrobe-swatch) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .20);
+}
+
+html body .zhaowu-wardrobe-swatch > b {
+  min-width: 0;
+  color: #273b34 !important;
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+
+html body .zhaowu-wardrobe-swatches.is-compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+html body .zhaowu-wardrobe-swatches.is-compact .zhaowu-wardrobe-swatch {
+  grid-template-columns: 1fr;
+  justify-items: stretch;
+  gap: 6px;
+  min-height: 70px;
+  padding: 6px;
+}
+
+html body .zhaowu-wardrobe-swatches.is-compact .zhaowu-wardrobe-swatch > i {
+  width: 100%;
+  height: 31px;
+}
+
+html body .zhaowu-wardrobe-swatches.is-compact .zhaowu-wardrobe-swatch > b {
+  font-size: 11px;
+  text-align: center;
+}
+
+html body #daily-almanac [data-wardrobe-additional] {
+  margin-top: 0;
+  border-top: 0;
+}
+
+html body #daily-almanac [data-wardrobe-additional] > summary {
+  border-bottom: 1px solid rgba(91, 72, 45, .13);
+  padding: 14px 2px 12px;
+  color: #2c5b4b !important;
+}
+
+html body #daily-almanac [data-wardrobe-additional][open] > summary {
+  margin-bottom: 2px;
+}
+
+html body #daily-almanac .zhaowu-today-guide__wardrobe-notes,
+html body #daily-almanac .zhaowu-today-guide__wardrobe-notes.is-personal {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html body #daily-almanac .zhaowu-today-guide__wardrobe-notes > :is(section, span) {
+  min-width: 0;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(91, 72, 45, .12) !important;
+  border-radius: 0 !important;
+  padding: 16px 2px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html body #daily-almanac .zhaowu-today-guide__wardrobe-notes > :is(section, span):last-child {
+  border-bottom: 0 !important;
+}
+
+html body [data-wardrobe-materials] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+html body [data-wardrobe-materials] > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  border-left: 2px solid #b99a61;
+  border-radius: 3px;
+  padding: 5px 9px;
+  color: #344840 !important;
+  background: rgba(226, 217, 196, .52) !important;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+html body #daily-almanac [data-wardrobe-note="quiet-colours"] > strong {
+  display: block;
+  margin-top: 2px;
+  color: #5e625b !important;
+}
+
+/* This information remains an opaque reading leaf in night mode: dark ink on
+   warm paper, so the low-contrast cream-on-cream failure cannot return. */
+html[data-zw-theme="night"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe,
+html[data-zw-theme="night"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe [data-personal-daily-wardrobe] {
+  color: #2d4038 !important;
+  background:
+    radial-gradient(circle at 92% 4%, rgba(190, 165, 109, .10), transparent 26%),
+    linear-gradient(180deg, #fbf7ed 0%, #f4ecdc 100%) !important;
+}
+
+html[data-zw-theme="night"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe :is(
+  [data-wardrobe-palette] > small,
+  [data-wardrobe-note] > small
+) {
+  color: #776548 !important;
+}
+
+html[data-zw-theme="night"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe :is(
+  .zhaowu-wardrobe-swatch > b,
+  [data-wardrobe-materials] > span,
+  [data-wardrobe-note="quiet-colours"] > strong
+) {
+  color: #273b34 !important;
+}
+
+/* The accessory artwork stays tied to the selected five-element suggestion. */
+html body #daily-almanac [data-wardrobe-accessory-art] {
+  min-width: 0;
+  margin: 0;
+  border-left: 1px solid rgba(91, 72, 45, .14);
+  padding-left: 10px;
+}
+
+html body #daily-almanac .zhaowu-wardrobe-accessory-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 104px;
+  align-items: center;
+  gap: 12px;
+}
+
+html body #daily-almanac [data-wardrobe-accessory-art] img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  border: 1px solid rgba(169, 145, 101, .28);
+  border-radius: 6px;
+}
+
+html body #daily-almanac [data-wardrobe-accessory-art] figcaption {
+  margin-top: 4px;
+  color: #746b5d;
+  font-size: 10px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+html body #daily-almanac [data-wardrobe-note="jewellery"] .zhaowu-wardrobe-accessory-layout {
+  grid-template-columns: minmax(0, 1fr) 88px;
+  align-items: start;
+}
+
+html body #daily-almanac [data-wardrobe-note="jewellery"] .zhaowu-wardrobe-accessory-layout strong {
+  margin-top: 0;
+}
+
+@media (max-width: 430px) {
+  html body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac.zhaowu-today-guide .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe {
+    padding: 15px 12px 18px !important;
+  }
+
+  html body .zhaowu-wardrobe-swatches {
+    gap: 7px;
+  }
+
+  html body .zhaowu-wardrobe-swatch {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 8px;
+    min-height: 58px;
+    padding: 6px;
+  }
+
+  html body .zhaowu-wardrobe-swatch > i {
+    width: 42px;
+    height: 42px;
+  }
+
+  html body .zhaowu-wardrobe-swatch > b {
+    font-size: 12px;
+  }
+
+  html body .zhaowu-wardrobe-swatches.is-compact .zhaowu-wardrobe-swatch {
+    grid-template-columns: 1fr;
+    min-height: 66px;
+  }
+
+  html body .zhaowu-wardrobe-swatches.is-compact .zhaowu-wardrobe-swatch > i {
+    width: 100%;
+    height: 28px;
+  }
+
+  html body #daily-almanac .zhaowu-wardrobe-accessory-layout {
+    grid-template-columns: minmax(0, 1fr) 94px;
+    gap: 9px;
+  }
+
+  html body #daily-almanac [data-wardrobe-note="jewellery"] .zhaowu-wardrobe-accessory-layout {
+    grid-template-columns: minmax(0, 1fr) 78px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2026-10-12 · Home entry consolidation
+   The birth ticket is the single start. The illustrated cards below it are the
+   optional "look around" entries (today / tests / notes), so they get a quiet
+   lead line and a 1-column (phone) / 3-column (≥720px) grid instead of 2/4.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html body .zw-hero-nav-lead {
+  margin: 0 0 8px;
+  padding: 0 2px;
+  color: #6b5f4a;
+  font-family: var(--font-display);
+  font-size: .82rem;
+  letter-spacing: .12em;
+  line-height: 1.5;
+}
+html body .zw-hero-nav.zw-hero-nav--explore { grid-template-columns: minmax(0, 1fr) !important; }
+html body .zw-hero-nav--explore .zw-hero-nav-item.zw-hero-card { min-height: 112px; }
+@media (min-width: 720px) {
+  html body .zw-hero-nav.zw-hero-nav--explore { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  html body .zw-hero-nav--explore .zw-hero-nav-item.zw-hero-card { min-height: 150px; }
+}
+
+/* r220 — condense the chart-detail folds into one grouped card, shrink trust-panel chrome, and give the answer's next step the weight it deserves. */
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details {
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(160, 136, 88, .28);
+  border-top-width: 0;
+  border-radius: 0;
+  background: #fffaf1;
+}
+html body .zhaowu-bazi-preview > .zhaowu-bazi-plain + details.zhaowu-chart-details {
+  margin-top: 16px;
+  border-top-width: 1px;
+  border-radius: 12px 12px 0 0;
+}
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details:last-child { border-radius: 0 0 12px 12px; }
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details > summary {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  list-style: none;
+  color: #3d5a4d;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details > summary::-webkit-details-marker { display: none; }
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details > summary::after { content: "＋"; color: #8a7547; font-size: 15px; }
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details[open] > summary::after { content: "－"; }
+html body .zhaowu-bazi-preview > details.zhaowu-chart-details[open] > summary { border-bottom: 1px solid rgba(160, 136, 88, .2); }
+html body .zhaowu-bazi-preview > details.zhaowu-bazi-full-details > .zhaowu-bazi-full-details__body { margin: 12px; }
+
+html body .zhaowu-answer-meta--notes { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+html body .zhaowu-answer-meta--notes > div { padding: 10px 12px !important; }
+html body .zhaowu-answer-meta--notes > small {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--zw-ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+@media (max-width: 430px) {
+  html body .zhaowu-answer-meta--notes { grid-template-columns: minmax(0, 1fr); }
+}
+
+html body .zhaowu-result-card [data-next-action] {
+  margin-top: 22px;
+  border: 1px solid rgba(160, 136, 88, .3);
+  border-left: 4px solid #2f5a48;
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: rgba(47, 90, 72, .06);
+}
+html body .zhaowu-result-card [data-next-action] strong { color: #2f5a48 !important; font-size: 1.05rem; font-weight: 700; letter-spacing: .06em; }
+html body .zhaowu-result-card [data-next-action] p {
+  margin-top: 6px;
+  color: #262624 !important;
+  font-family: var(--font-display);
+  font-size: 17px !important;
+  font-weight: 500;
+  line-height: 1.9 !important;
+}
+
+/* r220 — an unknown/stale saved skin id still sets data-zws before paint. Without these base tokens every
+   `background: var(--zws-accent) !important` rule resolves to transparent and cream button text vanishes on a cream page.
+   :where() keeps specificity at zero so every real skin overrides them. */
+:where(html[data-zws]) {
+  --zws-page: #f4efe3;
+  --zws-card: #fbf8ef;
+  --zws-ink: #243a32;
+  --zws-soft: #55625b;
+  --zws-accent: #2f5a48;
+  --zws-line: rgba(160, 136, 88, .4);
+}
+
+/* r220 — dark skins/night: the chart-detail folds sit on light paper (dark ink), the answer steps sit on the dark page (light ink on dark glass). */
+html[data-zws-mode="dark"] body #bazi .zhaowu-bazi-preview > details.zhaowu-chart-details > summary,
+html[data-zw-theme="night"] body #bazi .zhaowu-bazi-preview > details.zhaowu-chart-details > summary {
+  color: #2f5a48 !important;
+  -webkit-text-fill-color: #2f5a48 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-step,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-step {
+  background: rgba(9, 24, 34, .78) !important;
+  border-color: rgba(224, 190, 128, .38) !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-step > span,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-step > span {
+  color: #e0be80 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-step :is(strong, p),
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-step :is(strong, p) {
+  color: #f4ead6 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-compare > div,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-compare > div {
+  background: rgba(255, 255, 255, .08) !important;
+  color: #f1e8d4 !important;
+}
+html[data-zws-mode="dark"] body main .zhaowu-result-card .zhaowu-answer-compare b,
+html[data-zw-theme="night"] body main .zhaowu-result-card .zhaowu-answer-compare b {
+  color: #e0be80 !important;
+}
+
+/* Always-visible distribution meters: paper surface keeps dark ink under every skin. */
+.zhaowu-element-glance { margin: 18px 0; padding: 14px 16px; border: 1px solid var(--zw-line); border-radius: 14px; background: #fcf8ee; }
+html body main .zhaowu-element-glance :is(h4, p, span, b) { color: #29251f !important; }
+.zhaowu-element-glance > h4 { margin: 0 0 10px; font-size: 1rem; }
 .zhaowu-element-glance .zhaowu-element-bars { margin-top: 0; }
-.zhaowu-element-glance .zhaowu-visual-note { margin: 10px 0 0; }
+.zhaowu-element-glance .zhaowu-visual-note { margin: 10px 0 0; background: #f7f0e2 !important; }

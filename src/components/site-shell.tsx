@@ -17,9 +17,12 @@ import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { IntroGate } from "@/components/intro-gate";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
+import { resolveReportAccess } from "@/lib/report-access";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
-import { hydrateSkin } from "@/lib/theme-skins";
+import { hydrateSkin, refreshSharedSkin } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
+import "@/legal-pages.css";
+import "@/brand-watermark.css";
 
 const EMPTY_STATS: PublicSiteStats = {
   totalVisits: 0,
@@ -96,6 +99,28 @@ export function SiteShell({ children }: { children: ReactNode }) {
     };
   }, [isLogin]);
 
+  // One-time BaZi checkout return. Stripe redirects to the canonical homepage;
+  // restore the original local report and verify the paid entitlement server-side.
+  useEffect(() => {
+    if (pathname !== "/") return;
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id") || "";
+    if (params.get("checkout") !== "success" || !/^cs_live_[A-Za-z0-9]{10,200}$/.test(sessionId)) return;
+    let reportId = "";
+    try {
+      reportId = localStorage.getItem("zhaowu.pending-bazi-report.v1") || "";
+      localStorage.removeItem("zhaowu.pending-bazi-report.v1");
+    } catch { reportId = ""; }
+    if (/^[0-9a-f-]{36}$/i.test(reportId)) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("report", reportId);
+      url.hash = "report";
+      window.location.replace(url.toString());
+      return;
+    }
+    void resolveReportAccess("bazi").catch(() => undefined);
+  }, [pathname]);
+
   const shellStyle = wallpaperUrl
     ? ({ ["--zhaowu-shell-wallpaper" as string]: `url(${JSON.stringify(wallpaperUrl)})` } as CSSProperties)
     : undefined;
@@ -105,12 +130,25 @@ export function SiteShell({ children }: { children: ReactNode }) {
     hydrateDisplayLanguage();
     hydrateBrandTheme();
     hydrateSkin();
+    // Other visitor tabs/devices pick up the owner's published theme on focus
+    // and while visible, without page reload or per-change deployments.
+    const refreshTheme = () => { if (document.visibilityState === "visible") void refreshSharedSkin(); };
+    window.addEventListener("focus", refreshTheme);
+    window.addEventListener("pageshow", refreshTheme);
+    document.addEventListener("visibilitychange", refreshTheme);
+    const sharedSkinTimer = window.setInterval(refreshTheme, 60_000);
     runLocalHousekeeping();
     let alive = true;
     void recordVisit().catch(() => undefined).finally(() => {
       void getPublicSiteStats().then((value) => { if (alive) setStats(value); }).catch(() => undefined);
     });
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+      window.clearInterval(sharedSkinTimer);
+      window.removeEventListener("focus", refreshTheme);
+      window.removeEventListener("pageshow", refreshTheme);
+      document.removeEventListener("visibilitychange", refreshTheme);
+    };
   }, []);
 
   const releaseDate = formatReleaseDate(stats.publishedAt, language);
@@ -137,7 +175,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기", "गैलरी खोलें");
   const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
-  const ownerLoginLabel = displayText(language, "站主登入", "站主登录", "Owner sign-in", "站主ログイン", "관리자 로그인", "मालिक लॉगिन");
+  const ownerLoginLabel = displayText(language, "登入", "登录", "Sign in", "ログイン", "로그인", "लॉगिन");
   const homeLoginLabel = displayText(language, "登入", "登录", "Login", "ログイン", "로그인", "लॉगिन");
   const languageVisualLabel = displayText(language, "語言", "语言", "Language", "言語", "언어", "भाषा");
   const skipLabel = displayText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
@@ -254,7 +292,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 user?.isOwner ? (
                   <Link to="/account" className="zhaowu-home-login-inline" aria-label={t("navAdmin")}>
                     <BrandIcon name="account" />
-                    <span>{displayText(language, "所有報告", "所有报告", "All reports", "管理", "관리", "कंसोल")}</span>
+                    <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
                   </Link>
                 ) : (
                   <Link
@@ -290,7 +328,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <span>{viewsTotalLabel} <b>{stats.totalVisits.toLocaleString(numberLocale)}</b></span>
           </p>
         ) : null}
+        <ul className="zhaowu-footer-legal" aria-label={displayText(language, "法律資訊", "法律信息", "Legal", "法的情報", "법적 고지", "कानूनी")}>
+          <li><Link to="/privacy">{displayText(language, "隱私權政策", "隐私权政策", "Privacy", "プライバシー", "개인정보", "गोपनीयता")}</Link></li>
+          <li><Link to="/terms">{displayText(language, "服務條款", "服务条款", "Terms", "利用規約", "이용약관", "शर्तें")}</Link></li>
+          <li><Link to="/copyright">{displayText(language, "版權聲明", "版权声明", "Copyright", "著作権", "저작권", "कॉपीराइट")}</Link></li>
+        </ul>
         <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
+        <p className="text-xs text-ink-mute">© 2026 {t("brand")} ZHAOWU</p>
       </footer> : null}
     </div>
   );

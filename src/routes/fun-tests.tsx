@@ -3,6 +3,7 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { ConcealedSacredResultArt } from "@/components/concealed-sacred-result-art";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
+import { QUIZ_CATALOG } from "@/lib/quiz-catalog";
 import { deriveGuardianBeast } from "@/lib/report/guardian-beast";
 import { saveSpecialistHistory } from "@/lib/specialist-history";
 import {
@@ -292,6 +293,21 @@ function FunTestsIndex() {
             <span className="mt-2 block text-sm leading-6 text-ink-soft"><b className="text-ink">{pageCopy.best}：</b>{pageCopy.elementBest}</span>
             <span className="mt-4 inline-block text-sm text-cinnabar">{pageCopy.start} →</span>
           </button>
+        </section>
+      ) : null}
+
+      {mode === "menu" ? (
+        <section aria-labelledby="fun-tests-more" data-quiz-hub>
+          <h2 id="fun-tests-more" className="font-display text-xl text-ink">{tr(locale, "更多測驗", "更多测验", "More tests")}</h2>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            {QUIZ_CATALOG.filter((quiz) => !quiz.inline).map((quiz) => (
+              <a key={quiz.id} href={quiz.href} className="seal-border block rounded-2xl bg-paper p-4 shadow-sm" data-quiz-id={quiz.id}>
+                <strong className="block font-display text-lg text-ink">{quiz.text[locale].title}</strong>
+                <span className="mt-1 block text-sm leading-6 text-ink-soft">{quiz.text[locale].hint}</span>
+                <span className="mt-2 inline-block text-sm text-cinnabar">{pageCopy.start} →</span>
+              </a>
+            ))}
+          </div>
         </section>
       ) : null}
 

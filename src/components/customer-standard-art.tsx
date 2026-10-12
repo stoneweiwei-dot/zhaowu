@@ -49,7 +49,7 @@ export function CustomerStandardArt({ chart }: { chart: Chart }) {
 
   return (
     <article className="seal-border overflow-hidden rounded-[1.35rem] bg-cream/95">
-      <div className="relative mx-auto aspect-[9/16] w-full max-w-md overflow-hidden bg-paper-deep">
+      <div className="zhaowu-wm zhaowu-wm--top relative mx-auto aspect-[9/16] w-full max-w-md overflow-hidden bg-paper-deep">
         <img
           src={match.imageUrl}
           alt={copy.alt}

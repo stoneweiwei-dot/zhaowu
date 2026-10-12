@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { FiveToneGift } from "@/components/five-tone-gift";
+import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
 import type { Locale } from "@/lib/i18n";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
 import {
@@ -142,6 +143,7 @@ export function ReportAccessGate({
   const [pending, setPending] = useState(false);
   const [busy, setBusy] = useState<ReportAccessProduct | null>(null);
   const [error, setError] = useState("");
+  const consent = usePurchaseConsent();
 
   useEffect(() => {
     let cancelled = false;
@@ -155,6 +157,7 @@ export function ReportAccessGate({
   }, [system]);
 
   async function purchase(product: ReportAccessProduct) {
+    if (!consent.require()) return;
     setBusy(product);
     setError("");
     try {
@@ -196,6 +199,7 @@ export function ReportAccessGate({
           </article>
         ))}
       </div>
+      <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} />
       <p className="zhaowu-report-tone-boundary">{copy.toneBoundary}</p>
       {pending ? <p className="zhaowu-report-payment-note" role="status">{copy.pending}</p> : null}
       {error ? <p className="zhaowu-report-payment-note is-error" role="alert">{error}</p> : null}

@@ -40,11 +40,15 @@ test("short-form archive can keep growing while IDs remain unique and every note
   }
 });
 
-test("approved short-form themes remain as standalone notes", () => {
+test("approved short-form themes remain as standalone notes, including the 23-point folklore article", () => {
   const byId = new Map(LIFE_VIEW_SHORT_FORM_ARTICLES.map((article) => [article.id, article]));
 
   assert.match(byId.get("flowers-fall-mind-stays-steady")?.body["zh-Hans"] ?? "", /花开不喜，花落不悲，缘来不拒，缘去不追/);
   assert.match(byId.get("flowers-fall-mind-stays-steady")?.body["zh-Hans"] ?? "", /不以人言乱其神，不以世事动其心/);
   assert.match(byId.get("effort-in-causes-ease-with-results")?.body["zh-Hans"] ?? "", /因上努力，果上随缘/);
-  assert.match(byId.get("know-yourself-master-yourself")?.body["zh-Hans"] ?? "", /知人，是看懂世界；自知，是看懂自己/);
+  assert.match(byId.get("know-yourself-master-yourself")?.body["zh-Hans"] ?? "", /知人，是看懂世界；自知，是看懂自己/);\n\n  const folklore = byId.get("twenty-three-mysticism-life-reminders");
+  assert.ok(folklore, "the 23-point article should be included in the archive");
+  assert.match(folklore.body["zh-Hans"], /23\. 孝亲重在关心与陪伴/);
+  assert.equal(folklore.body["zh-Hans"].split(/\n\n/).filter((paragraph) => /^\d+\./.test(paragraph)).length, 23);
+  assert.equal(folklore.illustrations?.[0]?.src, "/images/articles/23-notes-on-mysticism.svg");
 });

@@ -102,7 +102,7 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
           {visible.map((asset) => (
             <article key={asset.id} className="overflow-hidden rounded-2xl border border-line/80 bg-paper/55">
               <a href={asset.url} target="_blank" rel="noreferrer" className="block" aria-label={copy.card}>
-                <div className="aspect-[9/16] bg-cream/60 p-1.5">
+                <div className="zhaowu-wm aspect-[9/16] bg-cream/60 p-1.5">
                   <img
                     src={asset.thumbnailUrl ?? asset.url}
                     alt={copy.card}

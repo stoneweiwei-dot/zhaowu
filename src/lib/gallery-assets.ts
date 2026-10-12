@@ -3,6 +3,7 @@ import { resolveLoginVideoType } from "@/lib/video-formats";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import { preferVerifiedPublicMedia } from "@/lib/public-media-preference";
 import { assertSupabaseStorageWritesEnabled } from "@/lib/storage-write-policy";
+import { applyBrandWatermark, WATERMARK_BAKED_TAG } from "@/lib/brand-watermark";
 
 const BUCKET = "zhaowu-gallery";
 
@@ -120,6 +121,13 @@ export async function uploadGalleryAsset(
     if (file.size > 10 * 1024 * 1024) throw new Error("單張圖片不可超過 10 MB。");
   }
 
+  // Publish-time watermark (images only; videos get the display-time overlay instead).
+  let tags = meta.tags ?? [];
+  if (!isVideo) {
+    const marked = await applyBrandWatermark(file);
+    if (marked.applied) { file = marked.file; tags = [...tags, WATERMARK_BAKED_TAG]; }
+  }
+
   const category = safeSlug(meta.category, "uncategorized");
   const baseName = file.name.replace(/\.[^.]+$/, "");
   const assetKey = safeSlug(meta.assetKey || baseName, crypto.randomUUID());
@@ -157,7 +165,7 @@ export async function uploadGalleryAsset(
       storage_path: path,
       bucket_id: BUCKET,
       content_type: file.type || null,
-      tags: (meta.tags ?? []).map((tag) => tag.trim()).filter(Boolean).slice(0, 20),
+      tags: tags.map((tag) => tag.trim()).filter(Boolean).slice(0, 20),
       enabled: true,
       is_primary: Boolean(meta.primary),
     }),

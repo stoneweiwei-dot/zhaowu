@@ -1,3 +1,4 @@
+import { BirthDataNotice } from "@/components/birth-data-notice";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { analyzeLife } from "@/lib/actions";
 import type { AnalyzeInput, CityHit } from "@/lib/bazi/types";
@@ -60,7 +61,7 @@ export function AnalysisForm() {
   const [hour, setHour] = useState("");
   const [minute, setMinute] = useState("");
   const [timeUnknown, setTimeUnknown] = useState(false);
-  const [gender, setGender] = useState<AnalyzeInput["gender"]>("unspecified");
+  const [gender, setGender] = useState<AnalyzeInput["gender"] | "">("");
   const [relation, setRelation] = useState<AnalyzeInput["relation"]>("unset");
   const [birthCity, setBirthCity] = useState<CityHit | null>(null);
   const [liveCity, setLiveCity] = useState<CityHit | null>(null);
@@ -91,7 +92,7 @@ export function AnalysisForm() {
         chartTitle: "Your Four Pillars and ZHAOWU Destiny Book",
 
 
-        foundation: "Technical terms (day master, month command, structure)",
+        foundation: "Technical terms",
         plainTitle: "Your chart in plain words",
         plainLead: "No jargon—just what your birth chart says about you. The technical chart is folded below.",
         chartToggle: "View the Four Pillars chart",
@@ -101,7 +102,7 @@ export function AnalysisForm() {
         structure: "Structure direction",
         features: "Main structural feature",
         noFeature: "—",
-        fullDetails: "View full chart details",
+        fullDetails: "Open your full Destiny Book reading",
 
         questionKicker: "STEP 3 · ASK YOUR DESTINY BOOK",
         questionTitle: "Continue from your Destiny Book",
@@ -132,7 +133,7 @@ export function AnalysisForm() {
           chartTitle: "你的四柱命盘与昭梧命书",
 
 
-          foundation: "专业术语版（日主、月令、格局）",
+          foundation: "术语版",
           plainTitle: "你的命盘白话版",
           plainLead: "不讲术语，直接告诉你命盘在说什么。专业命盘与术语都收在下面。",
           chartToggle: "看四柱命盘",
@@ -142,7 +143,7 @@ export function AnalysisForm() {
           structure: "格局方向",
           features: "主要结构特点",
           noFeature: "—",
-          fullDetails: "展开完整命盘细节",
+          fullDetails: "展开完整昭梧命书",
 
           questionKicker: "第三步 · 命书问答",
           questionTitle: "沿着这份命书，继续问你真正关心的事",
@@ -172,7 +173,7 @@ export function AnalysisForm() {
           chartTitle: "你的四柱命盤與昭梧命書",
 
 
-          foundation: "專業術語版（日主、月令、格局）",
+          foundation: "術語版",
           plainTitle: "你的命盤白話版",
           plainLead: "不講術語，直接告訴你命盤在說什麼。專業命盤與術語都收在下面。",
           chartToggle: "看四柱命盤",
@@ -182,7 +183,7 @@ export function AnalysisForm() {
           structure: "格局方向",
           features: "主要結構特點",
           noFeature: "—",
-          fullDetails: "展開完整命盤細節",
+          fullDetails: "展開完整昭梧命書",
 
           questionKicker: "第三步 · 命書問答",
           questionTitle: "沿著這份命書，繼續問你真正關心的事",
@@ -219,7 +220,7 @@ export function AnalysisForm() {
     if (!localRecord && serverRecord) writeSharedBirthRecord(serverRecord);
   }, [user?.id, user?.birthData]);
 
-  const draftBirth = useMemo(() => sharedBirthFromUnknown({
+  const draftBirth = useMemo(() => gender ? sharedBirthFromUnknown({
     year,
     month,
     day,
@@ -232,7 +233,7 @@ export function AnalysisForm() {
     liveCity,
     ziPolicy: "midnight",
     useTrueSolar: true,
-  }), [year, month, day, hour, minute, timeUnknown, gender, relation, birthCity, liveCity]);
+  }) : null, [year, month, day, hour, minute, timeUnknown, gender, relation, birthCity, liveCity]);
 
   async function saveBirthAndContinue(record: SharedBirthRecord) {
     writeSharedBirthRecord(record);
@@ -251,6 +252,11 @@ export function AnalysisForm() {
     setError(null);
 
     if (detailsOpen || !rememberedRecord) {
+      if (!gender) {
+        setError(locale === "en" ? "Choose a traditional chart option, or select Not specified." : locale === "zh-Hans" ? "请先选择性别排运选项，也可以选择不提供。" : "請先選擇性別排運選項，也可以選擇不提供。");
+        document.getElementById("birth-gender")?.focus();
+        return;
+      }
       if (!draftBirth) {
         setError(null);
         const dateInvalid = Boolean(year) && Boolean(month) && Boolean(day)
@@ -375,6 +381,7 @@ export function AnalysisForm() {
         ) : (
           <div className="zhaowu-birth-fields">
             <p className="zhaowu-birth-fields-title">{copy.birthData}</p>
+            <BirthDataNotice locale={locale} variant="birth" />
             <div className="zhaowu-time-calibration-note" data-auto-time-calibration="true">
               <strong>{copy.calibrationTitle}</strong>
               <span>{copy.calibrationBody}</span>
@@ -424,11 +431,13 @@ export function AnalysisForm() {
             <div className="zhaowu-birth-select-grid">
               <label htmlFor="birth-gender">
                 <span>{t("gender")}</span>
-                <select id="birth-gender" value={gender} onChange={(event) => setGender(event.target.value as AnalyzeInput["gender"])}>
+                <select id="birth-gender" required value={gender} onChange={(event) => setGender(event.target.value as AnalyzeInput["gender"])}>
+                  <option value="" disabled>{locale === "en" ? "Choose an option" : locale === "zh-Hans" ? "请选择" : "請選擇"}</option>
                   <option value="unspecified">{t("unset")}</option>
                   <option value="male">{t("male")}</option>
                   <option value="female">{t("female")}</option>
                 </select>
+                <small>{locale === "en" ? "Used for traditional luck-cycle direction and certain family readings. You may choose not to specify; the basic Four Pillars remain available. Relationship preference is separate." : locale === "zh-Hans" ? "用于传统大运顺逆及部分六亲判断。可以选择不提供，基本四柱仍可排出；伴侣偏好另行选择。" : "用於傳統大運順逆及部分六親判斷。可以選擇不提供，基本四柱仍可排出；伴侶偏好另行選擇。"}</small>
               </label>
               <label htmlFor="relationship-preference">
                 <span>{t("relation")}</span>
@@ -495,8 +504,8 @@ export function AnalysisForm() {
               <summary>{copy.fullDetails}</summary>
               {chartDetailsOpen ? (
                 <div className="zhaowu-bazi-full-details__body">
-                  <ChartTrustPanel chart={previewChart} locale={locale} />
                   {rememberedRecord ? <UnifiedBirthReport birth={rememberedRecord} locale={locale} foundation={foundationValues} plainLead={plainLead} /> : null}
+                  <ChartTrustPanel chart={previewChart} locale={locale} />
                 </div>
               ) : null}
             </details>
@@ -528,6 +537,7 @@ export function AnalysisForm() {
             placeholder={copy.questionPlaceholder}
             onChange={(event) => setQuestion(event.target.value)}
           />
+          <BirthDataNotice locale={locale} variant="question" />
           <div className="zhaowu-question-meta">
             <span>{rememberedRecord ? formatSharedBirthRecord(rememberedRecord, locale) : ""}</span>
             <span>{question.length}/400</span>
