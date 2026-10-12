@@ -486,3 +486,58 @@
     transition: none;
   }
 }
+
+/* ── 2026-10-12 owner: single home entry for older visitors ──────────
+   Title → three numbered plain steps → the birth form inline. Large type,
+   high-contrast ink on paper, no extra cards. */
+.zw-home-steps {
+  list-style: none;
+  width: min(100%, 420px);
+  margin: 16px auto 0;
+  padding: 12px 14px;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  border: 1px solid rgba(79, 101, 83, 0.16);
+  border-radius: 12px;
+  background: rgba(251, 248, 240, 0.88);
+}
+
+.zw-home-steps li {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  color: #1f2a26;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
+.zw-home-steps-num {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(36, 79, 67, 0.45);
+  color: #244f43;
+  background: rgba(251, 248, 240, 0.94);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.zw-hero-inscription .zw-birth-entry-copy strong {
+  font-size: 1.0625rem;
+}
+
+.zw-home-more {
+  margin-top: 28px;
+}
+
+.zw-home-more-title {
+  margin: 0 16px 10px;
+  color: rgba(31, 42, 38, 0.78);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
