@@ -115,6 +115,12 @@ for (const skin of SKINS) {
     await steps.first().focus();
     expect(await steps.first().evaluate(el => getComputedStyle(el).outlineStyle), 'keyboard focus is visible').not.toBe('none');
     await shot('birth-form', '#birth-form');
+    await page.locator('.zw-journey-help').click();
+    await expect(page.locator('[data-utility-panel="guide"]')).toBeVisible();
+    await shot('guide');
+    await page.locator('[data-utility-panel="guide"]').getByRole('button', { name: language === 'en' ? 'Close' : '關閉', exact: true }).click();
+    await open('/history', '.history-empty');
+    await shot('history-empty');
 
     // Restored chart and question stage: keep the guest paid boundary intact.
     await page.evaluate(birth => localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify(birth)), birth);
