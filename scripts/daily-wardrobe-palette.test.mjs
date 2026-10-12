@@ -35,6 +35,8 @@ test("daily wardrobe selects a local accessory illustration for each five-elemen
   }
   assert.match(widget, /personal\?\.materialElement \?\? stemElement\(pillars\.day\[0\]\)/);
   assert.match(widget, /<WardrobeAccessoryArt element=\{accessoryElement\} locale=\{locale\} \/>/);
+  assert.match(widget, /accessoryArt=\{<WardrobeAccessoryArt element=\{stemElement\(pillars\.day\[0\]\)/);
+  assert.match(readFileSync(new URL("../src/components/almanac-ink-board.tsx", import.meta.url), "utf8"), /zw-ink-accessory-feature[\s\S]*?props\.accessoryArt/);
 });
 
 test("wardrobe palette stays Song-paper legible on phones and dark skins", () => {

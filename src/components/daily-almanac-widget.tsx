@@ -398,6 +398,7 @@ export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: 
               season={season}
               latitude={visitor.latitude}
               sacred={sacredDay(now, pillars.jieName, locale)}
+              accessoryArt={<WardrobeAccessoryArt element={stemElement(pillars.day[0]) ?? "水"} locale={locale} />}
               locationControl={<>
                 {visitor.source !== "browser" ? (
                   <button
