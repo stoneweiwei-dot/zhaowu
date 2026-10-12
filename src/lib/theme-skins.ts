@@ -58,18 +58,17 @@ export function readSkinId(): string {
   return document.documentElement.getAttribute("data-zws") ?? "";
 }
 
-function storedSkin(): string | null {
-  try { return localStorage.getItem(SKIN_KEY); } catch { return null; }
-}
+/** Public site visual state. Local storage is migration-only, never a visitor override. */
+let syncSerial = 0;
+let migrationAttempted = false;
 
-export function applySkin(id: string, persist = true) {
+export function applySkin(id: string, persist = false) {
   if (typeof document === "undefined") return;
   const skin = skinById(id);
   const root = document.documentElement;
   if (skin) {
     root.setAttribute("data-zws", skin.id);
     root.setAttribute("data-zws-mode", skin.mode);
-    // dark skins reuse the audited night-mode contrast layer
     if (skin.mode === "dark") root.setAttribute("data-zw-theme", "night");
     else root.removeAttribute("data-zw-theme");
   } else {
@@ -77,19 +76,74 @@ export function applySkin(id: string, persist = true) {
     root.removeAttribute("data-zws-mode");
     root.removeAttribute("data-zw-theme");
   }
+  // Old per-device selections must not survive as hidden visitor overrides.
   if (persist) {
-    try { localStorage.setItem(SKIN_KEY, skin ? skin.id : "none"); } catch { /* private mode */ }
+    try { localStorage.removeItem(SKIN_KEY); } catch { /* unavailable storage */ }
   }
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute("content", skin ? skin.swatch[0] : "#fffaf0");
   window.dispatchEvent(new Event(SKIN_EVENT));
 }
 
+function legacyOwnerChoice(): string | null {
+  try {
+    const saved = localStorage.getItem(SKIN_KEY);
+    return saved === "none" ? "none" : skinById(saved)?.id ?? null;
+  } catch { return null; }
+}
+
+/** Fetch the same active skin for the owner and every guest, on every device. */
+export async function refreshSharedSkin(): Promise<string | null> {
+  if (typeof window === "undefined") return null;
+  const token = ++syncSerial;
+  try {
+    const response = await fetch("/api/site-skin", { cache: "no-store", credentials: "same-origin" });
+    if (!response.ok) return null; // keep last known skin if the setting service is unavailable
+    const payload = await response.json() as { skin?: unknown; configured?: boolean };
+    const selected = payload.skin === "none" ? "none" : typeof payload.skin === "string" && skinById(payload.skin) ? payload.skin : null;
+    if (selected === null || token !== syncSerial) return null;
+
+    // One-time migration: if no shared selection exists yet, publish the owner's
+    // existing phone selection after the SERVER confirms the owner cookie.
+    if (payload.configured === false && !migrationAttempted) {
+      const saved = legacyOwnerChoice();
+      if (saved !== null) {
+        migrationAttempted = true;
+        const auth = await fetch("/api/owner-session", { cache: "no-store", credentials: "same-origin" })
+          .then((r) => r.ok ? r.json() as Promise<{ authenticated?: boolean }> : null)
+          .catch(() => null);
+        if (auth?.authenticated === true && token === syncSerial) {
+          try { await publishSkin(saved); return saved; } catch { /* preserve public classic fallback */ }
+        }
+      }
+    }
+    if (token !== syncSerial) return null;
+    applySkin(selected);
+    return selected;
+  } catch { return null; }
+}
+
+/** Server requires a valid owner cookie and same-origin POST. Never silently fall back to local-only styling. */
+export async function publishSkin(id: string): Promise<void> {
+  const chosen = id === "" || id === "none" ? "none" : skinById(id)?.id;
+  if (!chosen) throw new Error("未知主題，不能發佈。");
+  const token = ++syncSerial;
+  const response = await fetch("/api/site-skin", {
+    method: "POST",
+    cache: "no-store",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ skin: chosen }),
+  });
+  if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : "全站主題尚未儲存，請稍後重試。");
+  const data = await response.json() as { ok?: boolean; skin?: string };
+  if (!data.ok || data.skin !== chosen) throw new Error("無法確認全站主題已更新。");
+  if (token === syncSerial) applySkin(chosen, true);
+}
+
+/** Boot uses server state, never the previous visitor's device-local preference. */
 export function hydrateSkin() {
-  if (typeof window === "undefined") return;
-  const stored = storedSkin();
-  const id = stored === "none" ? "" : stored ?? SITE_DEFAULT_SKIN;
-  if (id && skinById(id)) applySkin(id, false);
+  if (typeof window !== "undefined") void refreshSharedSkin();
 }
 
 export function useSkin() {
@@ -99,5 +153,5 @@ export function useSkin() {
     window.addEventListener(SKIN_EVENT, sync);
     return () => window.removeEventListener(SKIN_EVENT, sync);
   }, []);
-  return { id, skin: skinById(id), apply: (next: string) => applySkin(next) };
+  return { id, skin: skinById(id), apply: publishSkin };
 }
