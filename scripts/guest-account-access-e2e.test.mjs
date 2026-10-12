@@ -164,3 +164,93 @@ test("Client-side bridge: unauthenticated sessions never issue ownerData calls",
   assert.match(bridge, /if \(!isOwnerCookieSession\(session\)\) return base\.getReportRecord\(session, id\);/);
   assert.match(bridge, /if \(!isOwnerCookieSession\(session\)\) return base\.deleteReportRecord\(session, id\);/);
 });
+
+test("Real Browser: unauthenticated guest accessing /account directly receives no admin UI and management API blocks read/mutation", async (t) => {
+  const chromiumPath = process.env.CHROMIUM_PATH || "/bin/chromium";
+  let chromium;
+  try {
+    const pw = await import("@playwright/test");
+    chromium = pw.chromium;
+  } catch {
+    t.skip("Playwright not available in this runtime");
+    return;
+  }
+
+  let browser;
+  try {
+    browser = await chromium.launch({
+      headless: true,
+      executablePath: chromiumPath,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+  } catch (err) {
+    t.skip(`Chromium launch skipped: ${err.message}`);
+    return;
+  }
+
+  try {
+    const page = await browser.newPage();
+    const networkRequests = [];
+    page.on("request", (req) => {
+      networkRequests.push({ url: req.url(), method: req.method() });
+    });
+
+    const targetUrl = process.env.TARGET_URL || "https://stone-zhaowu-official.vercel.app/account";
+    await page.goto(targetUrl, { waitUntil: "networkidle" });
+
+    // 1. Verify owner console DOM markers are absent
+    const ownerConsoleCount = await page.locator("[data-owner-console=\"true\"]").count();
+    const ownerTabsCount = await page.locator("nav[role=\"tablist\"]").count();
+    const bulkToolbarCount = await page.locator("[data-owner-bulk-toolbar]").count();
+    const allReportsTextCount = await page.getByText("所有人報告", { exact: true }).count();
+
+    assert.equal(ownerConsoleCount, 0, "No owner console DOM element should exist for guest");
+    assert.equal(ownerTabsCount, 0, "No owner tablist should exist for guest");
+    assert.equal(bulkToolbarCount, 0, "No owner bulk toolbar should exist for guest");
+    assert.equal(allReportsTextCount, 0, "No '所有人報告' text should appear for guest");
+
+    // 2. Verify network calls during load
+    const ownerDataCalls = networkRequests.filter((r) => r.url.includes("/api/owner-data"));
+    assert.equal(ownerDataCalls.length, 0, "Zero /api/owner-data calls during guest /account load");
+
+    // 3. Browser-context API calls: unauthenticated fetch cannot read or mutate
+    const evalResult = await page.evaluate(async () => {
+      const sessionRes = await fetch("/api/owner-session");
+      const session = await sessionRes.json().catch(() => ({}));
+
+      const listRes = await fetch("/api/owner-data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "report.list", limit: 20 }),
+      });
+      const list = await listRes.json().catch(() => ({}));
+
+      const deleteRes = await fetch("/api/owner-data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "report.delete", id: "unauthorized-probe-id" }),
+      });
+      const del = await deleteRes.json().catch(() => ({}));
+
+      return {
+        sessionStatus: sessionRes.status,
+        authenticated: session.authenticated,
+        listStatus: listRes.status,
+        listError: list.error,
+        listItems: list.items,
+        deleteStatus: deleteRes.status,
+        deleteError: del.error,
+      };
+    });
+
+    assert.equal(evalResult.sessionStatus, 200);
+    assert.equal(evalResult.authenticated, false);
+    assert.equal(evalResult.listStatus, 401);
+    assert.equal(evalResult.listError, "OWNER_REQUIRED");
+    assert.equal(evalResult.listItems, undefined);
+    assert.equal(evalResult.deleteStatus, 401);
+    assert.equal(evalResult.deleteError, "OWNER_REQUIRED");
+  } finally {
+    await browser.close();
+  }
+});
