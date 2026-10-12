@@ -20,20 +20,17 @@ const rows: readonly (readonly [Observance["calendar"],number,number,Tradition,s
 ["lunar",2,15,"佛教","釋迦牟尼佛涅槃日","Buddha's Parinirvana"],
 ["lunar",2,19,"佛教","觀世音菩薩聖誕","Guanyin Bodhisattva's birthday"],
 ["lunar",2,21,"佛教","普賢菩薩聖誕","Samantabhadra Bodhisattva's birthday"],
-["lunar",2,25,"民間信仰","三山國王千秋","Three Mountain Kings' observance"],
 ["lunar",3,3,"道教","玄天上帝聖誕","Xuantian Emperor's birthday"],
 ["lunar",3,15,"道教","武財神趙公明聖誕","Zhao Gongming, God of Wealth"],
 ["lunar",3,19,"民間信仰","太陽星君千秋","Solar Star Lord's observance"],
 ["lunar",3,20,"民間信仰","註生娘娘千秋","Birth-Giving Goddess's observance"],
 ["lunar",3,23,"民間信仰","天上聖母（媽祖）聖誕","Mazu's birthday"],
-["lunar",4,2,"儒家","孟子誕辰（傳統紀念日）","Mencius (traditional observance)"],
 ["lunar",4,4,"佛教","文殊菩薩聖誕","Manjushri Bodhisattva's birthday"],
 ["lunar",4,8,"佛教","釋迦牟尼佛聖誕（佛誕）","Buddha's birthday (Han tradition)"],
 ["lunar",4,14,"道教","呂洞賓祖師聖誕","Lü Dongbin's birthday"],
 ["lunar",4,18,"民間信仰","華佗仙師千秋","Hua Tuo's observance"],
 ["lunar",5,5,"民間信仰","端午節","Dragon Boat Festival"],
 ["lunar",5,13,"民間信仰","城隍爺千秋（部分地區）","City God (regional observance)"],
-["lunar",5,18,"道教","張天師聖誕","Celestial Master Zhang's birthday"],
 ["lunar",6,3,"佛教","韋馱尊者聖誕","Skanda Bodhisattva's birthday"],
 ["lunar",6,19,"佛教","觀世音菩薩成道日","Guanyin's enlightenment"],
 ["lunar",6,24,"道教","關聖帝君聖誕","Guandi's birthday"],
@@ -60,7 +57,7 @@ const rows: readonly (readonly [Observance["calendar"],number,number,Tradition,s
 ] as const;
 
 const SIMPLIFIED: Readonly<Record<string,string>> = Object.fromEntries(
-  [..."彌觀薩誕傳齋聖釋關趙註媽國陽華韋馱勢蘭寶陰與燈藥師阿陀謝歲頭飛昇財呂張會曆紀念風見".split("")].map((c,i)=>[c,[..."弥观萨诞传斋圣释关赵注妈国阳华韦驮势兰宝阴与灯药师阿陀谢岁头飞升财吕张会历纪念风见"][i]])
+  [..."彌觀薩誕傳齋聖釋關趙註媽國陽華韋馱勢蘭寶陰與燈藥師阿陀謝歲頭飛昇財呂張會曆紀念風見間區".split("")].map((c,i)=>[c,[..."弥观萨诞传斋圣释关赵注妈国阳华韦驮势兰宝阴与灯药师阿陀谢岁头飞升财吕张会历纪念风见间区"][i]])
 );
 function zhHans(value:string){ return [...value].map((c)=>SIMPLIFIED[c]??c).join(""); }
 function traditionLabel(tradition:Tradition,locale:SacredDayLocale){
