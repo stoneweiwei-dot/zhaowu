@@ -92,7 +92,7 @@ export function AnalysisForm() {
         chartTitle: "Your Four Pillars and ZHAOWU Destiny Book",
 
 
-        foundation: "Technical terms (day master, month command, structure)",
+        foundation: "Technical terms",
         plainTitle: "Your chart in plain words",
         plainLead: "No jargon—just what your birth chart says about you. The technical chart is folded below.",
         chartToggle: "View the Four Pillars chart",
@@ -133,7 +133,7 @@ export function AnalysisForm() {
           chartTitle: "你的四柱命盘与昭梧命书",
 
 
-          foundation: "专业术语版（日主、月令、格局）",
+          foundation: "术语版",
           plainTitle: "你的命盘白话版",
           plainLead: "不讲术语，直接告诉你命盘在说什么。专业命盘与术语都收在下面。",
           chartToggle: "看四柱命盘",
@@ -173,7 +173,7 @@ export function AnalysisForm() {
           chartTitle: "你的四柱命盤與昭梧命書",
 
 
-          foundation: "專業術語版（日主、月令、格局）",
+          foundation: "術語版",
           plainTitle: "你的命盤白話版",
           plainLead: "不講術語，直接告訴你命盤在說什麼。專業命盤與術語都收在下面。",
           chartToggle: "看四柱命盤",

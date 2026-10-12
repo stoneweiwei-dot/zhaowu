@@ -259,8 +259,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <summary className="cursor-pointer list-none px-5 py-4 sm:px-6"><strong>{copy.evidence}</strong>{copy.evidenceLead ? <span className="mt-1 block text-xs leading-5 text-ink-mute">{copy.evidenceLead}</span> : null}</summary>
         <div className="space-y-5 border-t border-line/60 p-4 sm:p-6">
           <div className="zhaowu-answer-meta zhaowu-answer-meta--notes" data-answer-meta>
-            <div data-evidence-status><span>{locale === "en" ? "Evidence status" : locale === "zh-Hans" ? "依据状态" : "依據狀態"}</span><b>{decisionModel.confidenceLabel}</b><small>{decisionModel.confidenceBasis}</small></div>
+            <div data-evidence-status><span>{locale === "en" ? "Evidence status" : locale === "zh-Hans" ? "依据状态" : "依據狀態"}</span><b>{decisionModel.confidenceLabel}</b></div>
             <div data-biggest-variable><span>{locale === "en" ? "Biggest variable" : locale === "zh-Hans" ? "最大现实变量" : "最大現實變數"}</span><b>{decisionModel.biggestVariable}</b></div>
+            {decisionModel.confidenceBasis ? <small>{decisionModel.confidenceBasis}</small> : null}
           </div>
           {decreeCouplet ? <div className="zhaowu-free-decree rounded-xl border border-line/60 p-4" data-free-decree><strong className="text-sm text-ink">{copy.decree}</strong><p className="mt-2 text-[14px] leading-7 text-ink-soft">{decreeCouplet}</p></div> : null}
           <BaziChart chart={chart} expandDetails={false} />
