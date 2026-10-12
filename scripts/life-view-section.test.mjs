@@ -22,7 +22,7 @@ test("home exposes the Articles section as a latest-first expandable editorial a
   assert.match(section, /Zhaowu · Articles/);
   assert.match(section, /所有文章與短札都收在文章/);
   assert.match(section, /所有文章与短札都收在文章/);
-  assert.match(section, /full archive of essays and reflective short notes/);
+  assert.match(section, /full archive of essays and short notes/);
 
   // Editorial content may keep growing. Keep long articles and short notes
   // explicitly classified without locking an exact count or source order.
