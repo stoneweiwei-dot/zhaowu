@@ -5,11 +5,15 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("homepage (ZW-FE-02) has one birth entry ticket plus three explore portals and handles view switching", async () => {
+test("homepage renders the birth form inline plus three secondary portal cards", async () => {
   const home = await source("src/routes/index.tsx");
 
-  // 2026-10-12: the birth ticket is the single start; "form" is no longer a portal card.
+  // 2026-10-12 owner: one home entry. The birth form renders on the home page
+  // itself; only today / quiz / notes remain as portal cards below it.
   assert.match(home, /data-home-birth-entry/);
+  assert.match(home, /activeSection === null \|\| activeSection === "form"/);
+  assert.match(home, /data-home-steps/);
+  assert.match(home, /<AnalysisForm \/>/);
   assert.match(home, /data-home-card=\{id\}/);
   assert.match(home, /NAV_ITEMS: \{ id: Exclude<Section, "form">;/);
   assert.doesNotMatch(home, /\{ id: "form",\s+artSrc/);
