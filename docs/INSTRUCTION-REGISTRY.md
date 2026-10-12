@@ -7,6 +7,13 @@
 - SUPERSEDED：同一命書內每層重複主題卡框、厚重陰影／發光、玻璃模糊及固定深綠／米白操作貼片的展示方式。
 - PROTECTED：只改 CSS，不更動全站主題共享設定、站主選擇、價格、付費邊界、排盤、解讀、路由或資料。色卡顏料、黃曆文化色序、報告封面與圖像不隨一般控制文字重染。
 
+## 2026-10-12 多 Threads 帳號官方授權與零月費發布
+
+- ACTIVE：站主社群後台改用 Threads 官方 OAuth，可逐一連接多個 Threads 帳號，發布時可勾選單一或多個帳號；不再以 Metricool 付費品牌數作為多帳號發布前提。
+- ACTIVE：Threads 使用者令牌只以 AES-256-GCM 密文保存於 server-only Supabase 表；`public`、`anon`、`authenticated` 均無表權限，瀏覽器與 API 狀態只取得帳號公開資料。
+- ACTIVE：沿用現有 `/api/owner-session` 與 `zhaowu-owner-data`，不新增 Vercel Function、不新增付費 SaaS、不影響網站、排盤、報告、付款或未配置 Meta 時的正常營運。
+- COMPATIBLE：既有 Instagram／Threads 環境變數發布保留作相容回退；OAuth 多帳號存在時，Threads 發布按站主勾選的帳號執行。
+
 ## 2026-10-13 免費內容收斂與提問相關性
 
 - ACTIVE：八字首頁免費只保留基本排盤、兩段命書試讀與簡短提問摘要；完整命書、額外解讀、詳細時運、判斷依據與連續追問須經既有 server-verified system／owner access 才顯示。站主免費規則保持，不改價格、Stripe、webhook 或歷史購買授權。

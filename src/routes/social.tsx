@@ -9,8 +9,10 @@ import {
 } from "@/lib/bridge/gallery-assets";
 import { useI18n } from "@/lib/i18n";
 import {
+  disconnectThreadsAccount,
   publishOwnerSocialPost,
   readSocialConfiguration,
+  startThreadsConnection,
   type SocialChannel,
   type SocialConfiguration,
   type SocialPublishResult,
@@ -46,6 +48,8 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
   const [imageUrl, setImageUrl] = useState("");
   const [altText, setAltText] = useState("");
   const [channels, setChannels] = useState<SocialChannel[]>([]);
+  const [threadAccountIds, setThreadAccountIds] = useState<string[]>([]);
+  const [connectionNotice, setConnectionNotice] = useState("");
   const [results, setResults] = useState<Partial<Record<SocialChannel, SocialPublishResult>> | null>(null);
   const [busy, setBusy] = useState(false);
   const [galleryBusy, setGalleryBusy] = useState(false);
@@ -76,10 +80,18 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
         if (cancelled) return;
         setConfiguration(next);
         setChannels((current) => current.length ? current : CHANNELS.filter((channel) => next[channel]));
+        setThreadAccountIds((current) => current.length ? current : next.threadsAccounts.map((account) => account.id));
       })
       .catch(() => { if (!cancelled) setStatusError(tx("無法讀取平台連接狀態。", "无法读取平台连接状态。", "Could not read platform connection status.")); });
     return () => { cancelled = true; };
   }, [user?.isOwner, locale]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get("threads");
+    if (result === "connected") setConnectionNotice(tx(`Threads @${params.get("username") || ""} 已連接。`, `Threads @${params.get("username") || ""} 已连接。`, `Threads @${params.get("username") || ""} connected.`));
+    if (result === "error") setStatusError(tx("Threads 授權失敗，請重新連接。", "Threads 授权失败，请重新连接。", "Threads authorization failed. Please try again."));
+  }, [locale]);
 
   useEffect(() => {
     if (user?.isOwner && session) void loadGallery();
@@ -100,7 +112,42 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
 
   function toggle(channel: SocialChannel) {
     setChannels((current) => current.includes(channel) ? current.filter((item) => item !== channel) : [...current, channel]);
+    if (channel === "threads" && !channels.includes("threads") && !threadAccountIds.length) {
+      setThreadAccountIds(configuration?.threadsAccounts.map((account) => account.id) ?? []);
+    }
     setResults(null);
+  }
+
+  function toggleThreadAccount(id: string) {
+    setThreadAccountIds((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+    setResults(null);
+  }
+
+  async function connectThreads() {
+    setBusy(true);
+    setStatusError("");
+    try {
+      window.location.assign(await startThreadsConnection());
+    } catch (error) {
+      setStatusError(error instanceof Error ? error.message : tx("無法開始 Threads 授權。", "无法开始 Threads 授权。", "Could not start Threads authorization."));
+      setBusy(false);
+    }
+  }
+
+  async function disconnectThread(id: string) {
+    setBusy(true);
+    setStatusError("");
+    try {
+      await disconnectThreadsAccount(id);
+      const next = await readSocialConfiguration();
+      setConfiguration(next);
+      setThreadAccountIds((current) => current.filter((item) => item !== id));
+      if (!next.threads) setChannels((current) => current.filter((channel) => channel !== "threads"));
+    } catch (error) {
+      setStatusError(error instanceof Error ? error.message : tx("無法移除 Threads 帳號。", "无法移除 Threads 账号。", "Could not remove Threads account."));
+    } finally {
+      setBusy(false);
+    }
   }
 
   function chooseAsset(asset: GalleryAsset) {
@@ -145,13 +192,17 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
       setFormError(tx("Threads 文字超過 500 bytes，請先縮短。", "Threads 文字超过 500 bytes，请先缩短。", "Threads text is over 500 bytes."));
       return;
     }
+    if (channels.includes("threads") && configuration?.threadsAccounts.length && !threadAccountIds.length) {
+      setFormError(tx("請至少選一個 Threads 帳號。", "请至少选一个 Threads 账号。", "Choose at least one Threads account."));
+      return;
+    }
     if (channels.includes("instagram") && !imageUrl.trim()) {
       setFormError(tx("Instagram 需要一張圖片；請從圖庫選擇或直接上傳。", "Instagram 需要一张图片；请从图库选择或直接上传。", "Instagram needs an image. Choose one from the gallery or upload one."));
       return;
     }
     setBusy(true);
     try {
-      setResults(await publishOwnerSocialPost({ text, imageUrl, altText, channels }));
+      setResults(await publishOwnerSocialPost({ text, imageUrl, altText, channels, threadAccountIds }));
     } catch (error) {
       setFormError(error instanceof Error ? error.message : tx("發布失敗。", "发布失败。", "Publishing failed."));
     } finally {
@@ -183,8 +234,8 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[10px] tracking-[0.22em] text-cinnabar">SOCIAL PUBLISHER</p>
-            <Title className="mt-1 font-display text-3xl">{tx("一次發到兩邊", "一次发到两边", "Publish once")}</Title>
-            <p className="mt-2 text-sm leading-6 text-ink-soft">{tx("寫一次、選一張圖，直接送到 Instagram 與 Threads。", "写一次、选一张图，直接送到 Instagram 与 Threads。", "Write once, choose one image, then publish to Instagram and Threads.")}</p>
+            <Title className="mt-1 font-display text-3xl">{tx("一次發到多個帳號", "一次发到多个账号", "Publish to multiple accounts")}</Title>
+            <p className="mt-2 text-sm leading-6 text-ink-soft">{tx("寫一次、選一張圖，可同時送到 Instagram 與多個 Threads。", "写一次、选一张图，可同时发送到 Instagram 与多个 Threads。", "Write once, choose one image, then publish to Instagram and multiple Threads accounts.")}</p>
           </div>
           {!embedded ? <Link to="/account" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft">← {tx("後台", "后台", "Console")}</Link> : null}
         </div>
@@ -201,24 +252,41 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
             );
           })}
         </div>
+        {configuration?.threadsOauthReady ? (
+          <div className="mt-4 rounded-xl border border-line bg-paper/35 p-4" data-threads-account-manager>
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-ink">{tx("Threads 帳號", "Threads 账号", "Threads accounts")}</p>
+                <p className="mt-1 text-xs text-ink-mute">{tx("可連接多個帳號，發布時自由勾選。", "可连接多个账号，发布时自由勾选。", "Connect multiple accounts and choose targets for each post.")}</p>
+              </div>
+              <button type="button" disabled={busy} onClick={() => void connectThreads()} className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-[#315f51] px-4 text-xs font-medium text-[#fffaf0] disabled:opacity-45">
+                {tx("＋連接帳號", "＋连接账号", "+ Connect")}
+              </button>
+            </div>
+            {configuration.threadsAccounts.length ? (
+              <div className="mt-3 space-y-2">
+                {configuration.threadsAccounts.map((account) => (
+                  <div key={account.id} className="flex min-h-12 items-center gap-3 rounded-xl border border-line bg-cream/70 px-3 py-2">
+                    {account.profilePictureUrl ? <img src={account.profilePictureUrl} alt="" className="h-9 w-9 rounded-full object-cover" /> : <span className="h-9 w-9 rounded-full bg-paper-deep" />}
+                    <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2">
+                      <input type="checkbox" checked={threadAccountIds.includes(account.id)} onChange={() => toggleThreadAccount(account.id)} disabled={busy} />
+                      <span className="truncate text-sm font-medium text-ink">@{account.username}</span>
+                    </label>
+                    <button type="button" disabled={busy} onClick={() => void disconnectThread(account.id)} className="min-h-9 px-2 text-xs text-cinnabar disabled:opacity-45">{tx("移除", "移除", "Remove")}</button>
+                  </div>
+                ))}
+              </div>
+            ) : <p className="mt-3 text-xs leading-5 text-ink-mute">{tx("尚未連接 Threads。點「連接帳號」後登入要發布的 Threads 帳號；第二個帳號再連一次即可。", "尚未连接 Threads。点“连接账号”后登录要发布的 Threads 账号；第二个账号再连接一次即可。", "No Threads account connected yet. Connect once per account.")}</p>}
+          </div>
+        ) : null}
+        {connectionNotice ? <p className="mt-3 rounded-lg border border-wood/25 bg-wood/5 px-4 py-3 text-sm text-wood">{connectionNotice}</p> : null}
         {statusError ? <p className="mt-3 text-sm text-cinnabar">{statusError}</p> : null}
         {configuration && connectedCount === 0 ? (
           <div className="mt-4 rounded-xl border border-cinnabar/25 bg-cinnabar/5 px-4 py-3" data-social-connection-required>
             <p className="text-sm font-medium text-ink">{tx("Meta 尚未連接", "Meta 尚未连接", "Meta is not connected")}</p>
-            <p className="mt-1 text-xs leading-5 text-ink-soft">{tx("正式站目前還沒有 Instagram／Threads 的伺服器憑證；發布器已鎖定到指定帳號，連接時若 Meta 回傳的是其他帳號，系統會直接拒絕發布。", "正式站目前还没有 Instagram／Threads 的服务器凭证；发布器已锁定到指定账号，连接时如果 Meta 返回的是其他账号，系统会直接拒绝发布。", "Production still has no Instagram/Threads server credentials. The publisher is locked to the selected account and will refuse to publish if Meta resolves to another account.")}</p>
-            {configuration?.targets?.instagram ? <p className="mt-2 text-xs font-medium text-ink">{tx("目標帳號", "目标账号", "Target account")} · @{configuration.targets.instagram}</p> : null}
-            <a
-              href="https://developers.facebook.com/apps/"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-3 inline-flex min-h-11 items-center rounded-full border border-cinnabar/30 bg-cream px-4 text-xs font-medium text-cinnabar"
-            >
-              {tx("開啟 Meta Developers", "打开 Meta Developers", "Open Meta Developers")}
-            </a>
-            <details className="mt-2">
-              <summary className="cursor-pointer text-[11px] text-ink-mute">{tx("需要連接的四項資料", "需要连接的四项数据", "Required server settings")}</summary>
-              <code className="mt-2 block whitespace-pre-wrap rounded-lg bg-paper/55 p-2 text-[10px] leading-5 text-ink-soft">META_INSTAGRAM_USER_ID{"\n"}META_INSTAGRAM_ACCESS_TOKEN{"\n"}META_THREADS_USER_ID{"\n"}META_THREADS_ACCESS_TOKEN</code>
-            </details>
+            <p className="mt-1 text-xs leading-5 text-ink-soft">{configuration.threadsOauthReady
+              ? tx("點上方「連接帳號」完成一次官方授權；可重複連接第二個 Threads。", "点上方“连接账号”完成一次官方授权；可重复连接第二个 Threads。", "Use Connect above once for each Threads account.")
+              : tx("Meta 應用尚未配置完成。", "Meta 应用尚未配置完成。", "The Meta app is not configured yet.")}</p>
           </div>
         ) : null}
       </section>
@@ -337,9 +405,14 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
             {channels.map((channel) => {
               const result = results[channel];
               return (
-                <p key={channel} className={`rounded-xl border px-4 py-3 text-sm ${result?.ok ? "border-wood/30 bg-wood/5 text-wood" : "border-cinnabar/30 bg-cinnabar/5 text-cinnabar"}`}>
-                  {channel === "threads" ? "Threads" : "Instagram"} · {result?.ok ? tx("發布成功", "发布成功", "Published") : result?.message || tx("發布失敗", "发布失败", "Failed")}
-                </p>
+                <div key={channel} className={`rounded-xl border px-4 py-3 text-sm ${result?.ok ? "border-wood/30 bg-wood/5 text-wood" : "border-cinnabar/30 bg-cinnabar/5 text-cinnabar"}`}>
+                  <p>{channel === "threads" ? "Threads" : "Instagram"} · {result?.ok ? tx("發布完成", "发布完成", "Publishing completed") : result?.message || tx("發布失敗", "发布失败", "Failed")}</p>
+                  {result?.accounts?.length ? (
+                    <ul className="mt-2 space-y-1 border-t border-current/15 pt-2 text-xs">
+                      {result.accounts.map((account) => <li key={account.accountId}>@{account.username} · {account.ok ? tx("成功", "成功", "Published") : account.message || tx("失敗", "失败", "Failed")}</li>)}
+                    </ul>
+                  ) : null}
+                </div>
               );
             })}
           </div>
