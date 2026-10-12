@@ -65,6 +65,7 @@ export function readSkinId(): string {
 
 /** Public site visual state. Local storage is migration-only, never a visitor override. */
 let syncSerial = 0;
+let pendingPublishes = 0;
 let migrationAttempted = false;
 
 export function applySkin(id: string, persist = false) {
@@ -99,7 +100,7 @@ function legacyOwnerChoice(): string | null {
 
 /** Fetch the same active skin for the owner and every guest, on every device. */
 export async function refreshSharedSkin(): Promise<string | null> {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined" || pendingPublishes > 0) return null;
   const token = ++syncSerial;
   try {
     const response = await fetch("/api/owner-data?view=site-skin", { cache: "no-store", credentials: "same-origin" });
@@ -133,17 +134,22 @@ export async function publishSkin(id: string): Promise<void> {
   const chosen = id === "" || id === "none" ? "none" : skinById(id)?.id;
   if (!chosen) throw new Error("未知主題，不能發佈。");
   const token = ++syncSerial;
-  const response = await fetch("/api/owner-data", {
-    method: "POST",
-    cache: "no-store",
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ action: "site-skin.publish", skin: chosen }),
-  });
-  if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : "全站主題尚未儲存，請稍後重試。");
-  const data = await response.json() as { ok?: boolean; skin?: string };
-  if (!data.ok || data.skin !== chosen) throw new Error("無法確認全站主題已更新。");
-  if (token === syncSerial) applySkin(chosen, true);
+  pendingPublishes += 1;
+  try {
+    const response = await fetch("/api/owner-data", {
+      method: "POST",
+      cache: "no-store",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "site-skin.publish", skin: chosen }),
+    });
+    if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : "全站主題尚未儲存，請稍後重試。");
+    const data = await response.json() as { ok?: boolean; skin?: string };
+    if (!data.ok || data.skin !== chosen) throw new Error("無法確認全站主題已更新。");
+    if (token === syncSerial) applySkin(chosen, true);
+  } finally {
+    pendingPublishes -= 1;
+  }
 }
 
 /** Boot uses server state, never the previous visitor's device-local preference. */
