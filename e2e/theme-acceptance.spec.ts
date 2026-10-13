@@ -52,6 +52,17 @@ async function healthy(page: Page, label: string) {
     expect.soft(alpha(m.bg), `${label}: ${m.selector} heading is a pasted panel`).toBe(0);
     expect.soft(m.shadow, `${label}: ${m.selector} heading shadow`).toBe('none');
   }
+  // Covers deliberately keep warm paper: enforce the actual two foreground
+  // paint channels rather than skipping their image-backed contrast entirely.
+  const cover = await page.locator('.zhaowu-report-header :is(h3, p)').evaluateAll(nodes => nodes.filter(el => el.getClientRects().length).map(el => ({ color: getComputedStyle(el).color, fill: getComputedStyle(el).webkitTextFillColor })));
+  for (const m of cover) {
+    expect.soft(m.color, `${label}: warm cover ink`).toBe('rgb(41, 60, 52)');
+    expect.soft(m.fill, `${label}: warm cover text paint`).toBe(m.color);
+  }
+  for (const m of await metrics(page, ['.zhaowu-focused-progress span'])) {
+    expect.soft(alpha(m.bg), `${label}: reading-order label background`).toBe(0);
+    expect.soft(m.shadow, `${label}: reading-order label shadow`).toBe('none');
+  }
   const actions = await page.evaluate(() => {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 1;
     const ctx = canvas.getContext('2d')!;
@@ -76,7 +87,7 @@ async function healthy(page: Page, label: string) {
     const rgba = (value: string) => { ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = value; ctx.fillRect(0, 0, 1, 1); return Array.from(ctx.getImageData(0, 0, 1, 1).data); };
     const over = (front: number[], back: number[]) => { const a = front[3] / 255, b = back[3] / 255, opacity = a + b * (1 - a); return [...front.slice(0, 3).map((v, i) => opacity ? (v * a + back[i] * b * (1 - a)) / opacity : 0), opacity * 255]; };
     const lum = (c: number[]) => c.slice(0, 3).map(v => { const n = v / 255; return n <= .04045 ? n / 12.92 : ((n + .055) / 1.055) ** 2.4; }).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
-    return Array.from(document.querySelectorAll<HTMLElement>('#zhaowu-customer-title, .zw-flow-progress button, .zw-flow-next, .zw-journey-nav a, .zw-journey-help, .zw-subview-back-btn, .zhaowu-report-title, .zhaowu-report-copy p, .stone-login-primary, #birth-year, .zhaowu-home-login-inline, .zhaowu-home-fun-card strong, .zhaowu-home-fun-card small')).filter(el => el.getClientRects().length).map(el => {
+    return Array.from(document.querySelectorAll<HTMLElement>('#zhaowu-customer-title, .zw-flow-progress button, .zw-flow-next, .zw-journey-nav a, .zw-journey-help, .zw-subview-back-btn, .zhaowu-report-title, .zhaowu-report-copy p, .zhaowu-focused-progress span, .stone-login-primary, #birth-year, .zhaowu-home-login-inline, .zhaowu-home-fun-card strong, .zhaowu-home-fun-card small')).filter(el => el.getClientRects().length).map(el => {
       let bg = [0, 0, 0, 0], imageBacked = false;
       for (let node: HTMLElement | null = el; node && bg[3] < 254; node = node.parentElement) {
         const s = getComputedStyle(node);

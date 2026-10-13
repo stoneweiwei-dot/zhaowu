@@ -811,3 +811,28 @@ html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-footer-legal a {
   border-radius: 0 !important;
   box-shadow: none !important;
 }
+
+/* Warm illustrated covers need their own dark ink even on a night skin.
+ * Match the later section selectors' specificity and both text paint channels. */
+html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-app-frame :is(
+  .zhaowu-report-header, .zhaowu-unified-birth-report > header,
+  .zhaowu-specialist-hero, .zhaowu-visual-book-head, .zhaowu-luck-head,
+  .history-entry-report, .zw-saved-report-card
+) :is(h1, h2, h3, h4, p, small, strong, span):not(button *):not(a *) {
+  color: #293c34 !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+/* Reading-order labels share the report sheet instead of pale grey pills. */
+html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-focused-progress span {
+  background: transparent !important;
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--zws-divider) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-focused-progress span b {
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+}
