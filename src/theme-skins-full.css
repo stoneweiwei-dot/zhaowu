@@ -813,8 +813,8 @@ html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-footer-legal a {
 }
 
 /* Warm illustrated covers need their own dark ink even on a night skin.
- * Match the later section selectors' specificity and both text paint channels. */
-html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-app-frame :is(
+ * Outrank the legacy birth-stage ID rules and set both text paint channels. */
+html[data-zws][data-zws][data-zws][data-zws] body #zhaowu-main-content.zhaowu-app-frame :is(
   .zhaowu-report-header, .zhaowu-unified-birth-report > header,
   .zhaowu-specialist-hero, .zhaowu-visual-book-head, .zhaowu-luck-head,
   .history-entry-report, .zw-saved-report-card
@@ -834,5 +834,10 @@ html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-focused-progress span 
 }
 html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-focused-progress span b {
   color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+html[data-zws][data-zws][data-zws][data-zws] body #zhaowu-main-content .zhaowu-focused-report.zhaowu-report-continuous-sheet .zhaowu-report-header :is(h3, p) {
+  color: #293c34 !important;
   -webkit-text-fill-color: currentColor !important;
 }
