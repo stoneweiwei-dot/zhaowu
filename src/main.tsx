@@ -13,6 +13,8 @@ import './theme-skins-sets.css';
 import './theme-skins-full.css';
 // Preserve native document scrolling on narrow mobile browsers.
 import './mobile-page-scroll.css';
+// Owner reference compositions, scoped to the landing page.
+import './painted-home.css';
 
 
 const router = createRouter({ routeTree });

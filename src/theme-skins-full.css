@@ -11,7 +11,7 @@
 
 /* ── per-skin tokens: painting, focal point, type, frame, card ornament ───────────────────────────────── */
 html[data-zws="lotus-boat"] {
-  --zws-art: url(/art/zhaowu-lotus-ascend-v1.webp); --zws-focus: 50% 30%; --zws-veil: 38%;
+  --zws-art: url(/theme-skins/reference-dragon.webp); --zws-focus: 50% 30%; --zws-veil: 38%;
   --zws-frame: #1c4a3e;
   --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --zws-hw: 600;
   --zws-card-outline: 1px solid rgba(184, 147, 77, .55); --zws-card-outline-off: -5px;
@@ -39,7 +39,7 @@ html[data-zws="ink-dragon"] {
   --zws-card-orn: linear-gradient(#1d1a16, #1d1a16) left 0 top 0 / 5px 100% no-repeat, radial-gradient(60% 40% at 100% 0%, rgba(29, 26, 22, .08), transparent 70%);
 }
 html[data-zws="dragon-lotus"] {
-  --zws-art: url(/hero-gallery/cloud-dragon.webp); --zws-focus: 40% 18%; --zws-veil: 22%;
+  --zws-art: url(/theme-skins/reference-dragon.webp); --zws-focus: 40% 18%; --zws-veil: 22%;
   --zws-frame: #1e473c;
   --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 700;
   --zws-card-r: 8px;
@@ -52,7 +52,7 @@ html[data-zws="dragon-lotus"] {
     linear-gradient(180deg, #a8843f, #e0c88e) bottom 0 left 8px / calc(100% - 16px) 6px no-repeat;
 }
 html[data-zws="night-flute"] {
-  --zws-art: url(/theme-skins/night-flute-art.webp); --zws-focus: 50% 28%; --zws-veil: 8%;
+  --zws-art: url(/theme-skins/reference-night-flute.webp); --zws-focus: 50% 28%; --zws-veil: 8%;
   --zws-frame: #0a1e2c;
   --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
   --zws-card-border: 1px solid rgba(224, 190, 128, .42); --zws-card-blur: blur(10px);
@@ -60,7 +60,7 @@ html[data-zws="night-flute"] {
   --zws-card-outline: 1px solid rgba(120, 190, 235, .16); --zws-card-outline-off: -4px;
 }
 html[data-zws="day-flute"] {
-  --zws-art: url(/intro/zhaowu-opening-r148.jpg); --zws-focus: 50% 26%; --zws-veil: 40%;
+  --zws-art: url(/theme-skins/reference-day-flute.webp); --zws-focus: 50% 26%; --zws-veil: 40%;
   --zws-frame: #0f4059;
   --zws-font-d: "Noto Serif TC", "Songti TC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
   --zws-card-border: 1px solid rgba(15, 64, 89, .18); --zws-card-blur: blur(8px);
@@ -87,7 +87,7 @@ html[data-zws="pine-ink"] {
   --zws-card-orn: linear-gradient(#1f4a3a, #1f4a3a) left 0 top 0 / 4px 100% no-repeat;
 }
 html[data-zws="pastel-koi"] {
-  --zws-art: url(/hero-gallery/koi-dragon-rider.webp); --zws-focus: 50% 40%; --zws-veil: 22%;
+  --zws-art: url(/theme-skins/reference-koi.webp); --zws-focus: 50% 40%; --zws-veil: 22%;
   --zws-frame: #5b8a88;
   --zws-font-d: "Noto Sans TC", "PingFang TC", sans-serif; --zws-font-en: "Jost", "Helvetica Neue", Arial, sans-serif; --zws-hw: 400;
   --zws-card: rgba(255, 255, 255, .7); --zws-card-r: 24px; --zws-card-blur: blur(12px);

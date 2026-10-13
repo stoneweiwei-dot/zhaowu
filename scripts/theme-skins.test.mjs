@@ -45,6 +45,7 @@ test("every skin has tokens, a full-set definition and crisp art on disk", () =>
     assert.ok(css.includes(`html[data-zws="${id}"] { --zws-page`) || css.includes(`html[data-zws="${id}"], `), `tokens for ${id}`);
     assert.ok(hero.startsWith('/') && !hero.includes('..') && focus, `local hero + focus for ${id}`);
     assert.ok(existsSync(`public${hero}`), `art file for ${id}: ${hero}`);
+    assert.ok(existsSync(`public/theme-previews/${id}.jpg`), `actual homepage preview for ${id}`);
     assert.ok(full.includes(`html[data-zws="${id}"]`), `full-set rules for ${id}`);
   }
 });
@@ -91,7 +92,8 @@ test("all selected skins show the matching painting on report cover surfaces onl
   assert.ok(full.includes('html[data-zws][data-zws-mode="dark"] body main'), "night report ink stays readable");
   assert.ok(full.includes("body .zhaowu-report-header .zhaowu-report-art { display: none"), "do not show a second unrelated lotus image");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.match(manager, /Report colour preview/);
+  assert.match(manager, /Actual homepage layout/);
+  assert.match(manager, /theme-previews/);
 });
 
 // Resolve the actual root token cascade, including shared and per-skin rules.
