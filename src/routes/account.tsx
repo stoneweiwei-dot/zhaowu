@@ -448,7 +448,7 @@ function AccountPage() {
                           <div className="mb-4 rounded-lg border border-line bg-cream/70 p-3">
                             <p className="text-[11px] tracking-[0.18em] text-cinnabar">{c.finalSource}</p>
                             <div className="mt-3 flex flex-wrap gap-2">
-                              {[chartState, answerState, reportState, imageState].map((s) => <span key={s.label} className={`rounded-full border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
+                              {[chartState, answerState, reportState].map((s) => <span key={s.label} className={`rounded-full border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
                             </div>
                           </div>
                         ) : null}
