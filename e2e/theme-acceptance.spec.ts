@@ -30,11 +30,11 @@ async function healthy(page: Page, label: string) {
   // Read the settled UI rather than a transient interpolation between the old
   // skin and the new one. Keep the actual visitor transitions intact.
   await page.evaluate(async () => {
-    await Promise.all(document.getAnimations().filter(animation => animation.effect?.getTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => undefined)));
+    await Promise.all(document.getAnimations().filter(animation => animation.playState === 'running' && animation.effect?.getTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => undefined)));
   });
   const sizes = await page.evaluate(() => ({ width: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
   expect.soft(sizes.scroll, `${label}: horizontal overflow`).toBeLessThanOrEqual(sizes.width + 1);
-  const secondary = await metrics(page, ['.zw-journey-nav a:not([aria-current])', '.zw-journey-help', '.zhaowu-birth-edit', '.zw-subview-back-btn', '.zw-intro-replay']);
+  const secondary = await metrics(page, ['.zw-journey-nav a:not([aria-current])', '.zw-journey-help', '.zhaowu-birth-edit', '.zw-subview-back-btn', '.zw-intro-replay', '.zhaowu-home-fun-card']);
   for (const m of secondary) {
     expect.soft(alpha(m.bg), `${label}: ${m.selector} still has a pasted background`).toBe(0);
     expect.soft(m.shadow, `${label}: ${m.selector} has a floating shadow`).toBe('none');
@@ -69,7 +69,7 @@ async function healthy(page: Page, label: string) {
     const rgba = (value: string) => { ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = value; ctx.fillRect(0, 0, 1, 1); return Array.from(ctx.getImageData(0, 0, 1, 1).data); };
     const over = (front: number[], back: number[]) => { const a = front[3] / 255, b = back[3] / 255, opacity = a + b * (1 - a); return [...front.slice(0, 3).map((v, i) => opacity ? (v * a + back[i] * b * (1 - a)) / opacity : 0), opacity * 255]; };
     const lum = (c: number[]) => c.slice(0, 3).map(v => { const n = v / 255; return n <= .04045 ? n / 12.92 : ((n + .055) / 1.055) ** 2.4; }).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
-    return Array.from(document.querySelectorAll<HTMLElement>('#zhaowu-customer-title, .zw-flow-progress button, .zw-flow-next, .zw-journey-nav a, .zw-journey-help, .zw-subview-back-btn, .zhaowu-report-title, .zhaowu-report-copy p, .stone-login-primary, #birth-year, .zhaowu-home-login-inline')).filter(el => el.getClientRects().length).map(el => {
+    return Array.from(document.querySelectorAll<HTMLElement>('#zhaowu-customer-title, .zw-flow-progress button, .zw-flow-next, .zw-journey-nav a, .zw-journey-help, .zw-subview-back-btn, .zhaowu-report-title, .zhaowu-report-copy p, .stone-login-primary, #birth-year, .zhaowu-home-login-inline, .zhaowu-home-fun-card strong, .zhaowu-home-fun-card small')).filter(el => el.getClientRects().length).map(el => {
       let bg = [0, 0, 0, 0], imageBacked = false;
       for (let node: HTMLElement | null = el; node && bg[3] < 254; node = node.parentElement) {
         const s = getComputedStyle(node);
@@ -127,7 +127,14 @@ for (const skin of SKINS) {
       routeStyles[path] = await healthy(page, path);
     }
     async function shot(name: string, selector?: string) {
-      if (selector) await page.locator(selector).first().scrollIntoViewIfNeeded();
+      if (selector) await page.locator(selector).first().evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'start' }));
+      // Hash navigation and report folds use smooth scrolling. Wait for a
+      // stable viewport so evidence shows the target section, not a mid-scroll frame.
+      await page.evaluate(() => new Promise<void>(resolve => {
+        let previous = window.scrollY, stable = 0;
+        const check = () => { const now = window.scrollY; stable = Math.abs(now - previous) < .1 ? stable + 1 : 0; previous = now; if (stable >= 6) resolve(); else requestAnimationFrame(check); };
+        requestAnimationFrame(check);
+      }));
       await page.screenshot({ path: `${evidence}/${name}.jpg`, type: 'jpeg', quality: 78, animations: 'disabled' });
     }
 
@@ -171,7 +178,7 @@ for (const skin of SKINS) {
     for (const fold of await page.locator('.zhaowu-report-continuous-sheet details[data-report-fold] > summary').all()) {
       if (await fold.isVisible()) await fold.click();
     }
-    await shot('report', '.zhaowu-report-header');
+    await shot('report', '.zhaowu-report-continuous-sheet .zhaowu-report-header');
     await healthy(page, 'paid report');
 
     await open('/#today', '#daily-almanac');
