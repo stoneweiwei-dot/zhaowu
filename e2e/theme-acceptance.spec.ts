@@ -30,7 +30,14 @@ async function healthy(page: Page, label: string) {
   // Read the settled UI rather than a transient interpolation between the old
   // skin and the new one. Keep the actual visitor transitions intact.
   await page.evaluate(async () => {
-    await Promise.all(document.getAnimations().filter(animation => animation.playState === 'running' && animation.effect?.getTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => undefined)));
+    // Decorative scene animations can last a minute. Only style transitions
+    // determine these control assertions; an unexpectedly long transition must
+    // produce a style failure, not block the entire catalog for 90 seconds.
+    const transitions = document.getAnimations().filter(animation => animation.constructor.name === 'CSSTransition' && animation.playState === 'running');
+    await Promise.race([
+      Promise.all(transitions.map(animation => animation.finished.catch(() => undefined))),
+      new Promise(resolve => setTimeout(resolve, 1000)),
+    ]);
   });
   const sizes = await page.evaluate(() => ({ width: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
   expect.soft(sizes.scroll, `${label}: horizontal overflow`).toBeLessThanOrEqual(sizes.width + 1);
