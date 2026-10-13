@@ -124,6 +124,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
 
   async function ensureFullReport() {
+    if (foodAnswer) return renderFocusedReportText(foodSections, result.locale ?? locale);
     // The three free sections may be saved, but full paid text must never be
     // requested or persisted before a server-verified purchase or owner access.
     if (accessLevel !== "system" && accessLevel !== "bundle") {
