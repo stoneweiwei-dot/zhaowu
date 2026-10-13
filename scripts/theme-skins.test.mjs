@@ -151,6 +151,7 @@ function contrast(a, b) {
 test('every actual skin palette keeps body, muted copy and primary actions readable', () => {
   for (const skin of ids) {
     const vars = tokensForSkin(skin);
+    assert.ok(vars['--zws-art']?.includes(skin.hero), `${skin.id}: rendered art must match the catalog preview`);
     for (const [fg, bg] of [['--zws-ink','--zws-surface'],['--zws-soft','--zws-surface'],['--zws-ink','--zws-surface-soft'],['--zws-on-accent','--zws-action-bg']]) {
       const ratio = contrast(colour(vars[fg],vars),colour(vars[bg],vars));
       assert.ok(ratio >= 4.5, `${skin.id}: ${fg} / ${bg} contrast ${ratio.toFixed(2)}`);

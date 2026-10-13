@@ -714,6 +714,7 @@ html[data-zws][data-zws][data-zws][data-zws] body :is(
   .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type,
   .zhaowu-home-login-inline, .zhaowu-header-owner-login
 ) {
+  min-height: 44px !important;
   background: var(--zws-action-bg) !important;
   color: var(--zws-on-accent) !important;
   border: 1px solid var(--zws-action-bg) !important;

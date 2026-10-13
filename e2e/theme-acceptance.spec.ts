@@ -27,13 +27,18 @@ async function metrics(page: Page, selectors: string[]) {
 }
 
 async function healthy(page: Page, label: string) {
+  // Read the settled UI rather than a transient interpolation between the old
+  // skin and the new one. Keep the actual visitor transitions intact.
+  await page.evaluate(async () => {
+    await Promise.all(document.getAnimations().filter(animation => animation.effect?.getTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => undefined)));
+  });
   const sizes = await page.evaluate(() => ({ width: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
   expect.soft(sizes.scroll, `${label}: horizontal overflow`).toBeLessThanOrEqual(sizes.width + 1);
   const secondary = await metrics(page, ['.zw-journey-nav a:not([aria-current])', '.zw-journey-help', '.zhaowu-birth-edit', '.zw-subview-back-btn', '.zw-intro-replay']);
   for (const m of secondary) {
     expect.soft(alpha(m.bg), `${label}: ${m.selector} still has a pasted background`).toBe(0);
     expect.soft(m.shadow, `${label}: ${m.selector} has a floating shadow`).toBe('none');
-    expect.soft(m.height, `${label}: ${m.selector} touch target`).toBeGreaterThanOrEqual(44);
+    expect.soft(Math.round(m.height * 100) / 100, `${label}: ${m.selector} touch target`).toBeGreaterThanOrEqual(44);
   }
   const headings = await metrics(page, ['#zhaowu-customer-title', '.zhaowu-bazi-stage-head h2', '.zw-home-more-title', '.zw-subview-title', '.zhaowu-report-title', '.zhaowu-report-summary-block h4']);
   for (const m of headings) {
@@ -52,7 +57,8 @@ async function healthy(page: Page, label: string) {
   for (const m of actions) {
     expect.soft(m.actual, `${label}: ${m.text} must use this skin's action pigment`).toEqual(m.expected);
     expect.soft(m.shadow, `${label}: ${m.text} action shadow`).toBe('none');
-    expect.soft(m.height, `${label}: ${m.text} action touch target`).toBeGreaterThanOrEqual(44);
+    expect.soft(Math.round(m.height * 100) / 100, `${label}: ${m.text} action touch target`).toBeGreaterThanOrEqual(44);
+    expect.soft(parseFloat(m.radius), `${label}: ${m.text} must not become a large pill`).toBeLessThanOrEqual(12);
   }
   // Measure computed foreground against the real opaque ancestor surface.
   // Image-backed labels without an opaque carrier need screenshot review;
