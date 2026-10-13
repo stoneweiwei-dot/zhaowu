@@ -186,6 +186,9 @@ test('the birth flow uses one themed paper surface instead of nested cards', () 
   const themed = readFileSync('src/theme-skins-full.css', 'utf8');
   assert.match(journey, /\.zw-report-edit\s*\{[^}]*background:transparent/s);
   assert.doesNotMatch(themed, /#birth-form,\s*\.zw-report-edit/);
-  assert.match(themed, /body #birth-form #customer-record\s*\{[^}]*background:\s*var\(--zws-surface/s);
+  assert.match(themed, /#birth-form :is\(\s*#customer-record,[\s\S]*?background:\s*transparent/s);
+  assert.doesNotMatch(themed, /body #birth-form #customer-record\s*\{[^}]*background:\s*var\(--zws-surface/s);
+  assert.match(themed, /--zws-surface:\s*color-mix\(in srgb, var\(--zws-page\) 94%, #fff 6%\)/);
+  assert.match(themed, /html\[data-zws\] body \.zw-report-edit/);
   assert.match(themed, /body #birth-form :is\([\s\S]*?\.zhaowu-time-calibration-note[\s\S]*?background:\s*transparent/s);
 });
