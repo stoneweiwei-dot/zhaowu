@@ -182,10 +182,13 @@ for (const skin of SKINS) {
     await open(`/?report=${result.id}#report`, '#report');
     await page.getByRole('button', { name: language === 'en' ? 'View full reading' : '查看完整深批', exact: true }).click();
     await expect(page.locator('.zhaowu-report-continuous-sheet')).toBeVisible();
+    await page.locator('[data-professional-report] > summary').click();
+    await expect(page.locator('#focused-report-title')).toBeVisible();
+    await expect(page.locator('.zhaowu-report-summary-block .zhaowu-report-copy p').first()).toBeVisible();
     for (const fold of await page.locator('.zhaowu-report-continuous-sheet details[data-report-fold] > summary').all()) {
       if (await fold.isVisible()) await fold.click();
     }
-    await shot('report', '.zhaowu-report-continuous-sheet .zhaowu-report-header');
+    await shot('report', '#focused-report-title');
     await healthy(page, 'paid report');
 
     await open('/#today', '#daily-almanac');
