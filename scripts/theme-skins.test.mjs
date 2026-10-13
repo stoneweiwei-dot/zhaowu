@@ -1,17 +1,26 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
+import { readThemeCatalog } from './lib/theme-catalog.mjs';
+import { SITE_SKIN_IDS, validSiteSkin } from '../lib/owner-site-skin-public.js';
 
 const ts = readFileSync("src/lib/theme-skins.ts", "utf8");
 const css = readFileSync("src/theme-skins.css", "utf8");
 const html = readFileSync("index.html", "utf8");
-const ids = [...ts.matchAll(/\{ id: "([a-z-]+)", ref: (\d+), mode: "(light|dark)"/g)].map((m) => ({ id: m[1], ref: +m[2], mode: m[3] }));
+const ids = readThemeCatalog(ts);
 
-test("18 skins, original 10 preserved, unique ids and catalog order", () => {
-  assert.equal(ids.length, 18);
-  assert.deepEqual(ids.map((s) => s.ref).sort((a, b) => a - b), Array.from({ length: 18 }, (_, i) => i + 1));
-  assert.equal(new Set(ids.map((s) => s.id)).size, 18);
+test("all catalog skins are included, original 18 preserved, unique ids and catalog order", () => {
+  assert.ok(ids.length >= 18);
+  assert.deepEqual(ids.map((s) => s.ref), Array.from({ length: ids.length }, (_, i) => i + 1));
+  assert.equal(new Set(ids.map((s) => s.id)).size, ids.length);
   assert.deepEqual(ids.slice(0, 10).map((s) => s.ref), Array.from({ length: 10 }, (_, i) => i + 1));
+  for (const skin of ids) {
+    assert.match(skin.id, /^[a-z][a-z0-9-]+$/);
+    assert.ok(['light', 'dark'].includes(skin.mode));
+    for (const key of ['zh', 'hans', 'en', 'noteZh', 'noteHans', 'noteEn', 'hero', 'focus']) assert.ok(typeof skin[key] === 'string' && skin[key].trim(), `${skin.id}: missing ${key}`);
+    assert.equal(skin.swatch.length, 3);
+    for (const hex of skin.swatch) assert.match(hex, /^#[\da-f]{6}$/i);
+  }
 });
 const full = readFileSync("src/theme-skins-full.css", "utf8");
 test("Song Quiet group uses the existing skin engine and light contrast mode", () => {
@@ -23,7 +32,7 @@ test("Song Quiet group uses the existing skin engine and light contrast mode", (
   assert.ok(full.includes('html[data-zws^="song-"]'));
 });
 test("青木 series (15-18): three light skins and one dark rain skin on the existing engine", () => {
-  const g = ids.slice(14);
+  const g = ids.slice(14, 18);
   assert.equal(g.length, 4);
   assert.ok(g.every((s) => s.id.startsWith("verdant-")));
   assert.deepEqual(g.map((s) => s.mode), ["light", "light", "light", "dark"]);
@@ -32,11 +41,10 @@ test("青木 series (15-18): three light skins and one dark rain skin on the exi
   assert.ok(full.includes("ol.zw-home-steps") && full.includes("#birth-year"), "home panels + birth fields have dark-skin rules");
 });
 test("every skin has tokens, a full-set definition and crisp art on disk", () => {
-  for (const { id } of ids) {
+  for (const { id, hero, focus } of ids) {
     assert.ok(css.includes(`html[data-zws="${id}"] { --zws-page`) || css.includes(`html[data-zws="${id}"], `), `tokens for ${id}`);
-    const m = ts.match(new RegExp(`id: "${id}"[^\\n]*hero: "([^"]+)"[^\\n]*focus: "([^"]+)"`));
-    assert.ok(m, `hero + focus for ${id}`);
-    assert.ok(existsSync(`public${m[1]}`), `art file for ${id}: ${m[1]}`);
+    assert.ok(hero.startsWith('/') && !hero.includes('..') && focus, `local hero + focus for ${id}`);
+    assert.ok(existsSync(`public${hero}`), `art file for ${id}: ${hero}`);
     assert.ok(full.includes(`html[data-zws="${id}"]`), `full-set rules for ${id}`);
   }
 });
@@ -60,6 +68,12 @@ test("skin CSS is inert without data-zws and loaded after the design system", ()
 });
 test("site default is classic (no forced skin)", () => {
   assert.match(ts, /SITE_DEFAULT_SKIN = ""/);
+});
+
+test('every catalog theme is accepted by the shared server publisher, without extra unknown ids', () => {
+  assert.deepEqual([...SITE_SKIN_IDS].sort(), ['none', ...ids.map(s => s.id)].sort());
+  for (const { id } of ids) assert.equal(validSiteSkin(id), id, `${id}: server publisher must accept the catalog theme`);
+  assert.equal(validSiteSkin('unregistered-theme'), null);
 });
 
 test("all selected skins show the matching painting on report cover surfaces only", () => {
@@ -141,9 +155,10 @@ function contrast(a, b) {
   const luminance = rgb => rgb.map(v => v <= .04045 ? v/12.92 : ((v+.055)/1.055)**2.4).reduce((n,v,i) => n+v*[.2126,.7152,.0722][i],0);
   const la=luminance(a), lb=luminance(b); return (Math.max(la,lb)+.05)/(Math.min(la,lb)+.05);
 }
-test('all 18 actual skin palettes keep body, muted copy and primary actions readable', () => {
+test('every actual skin palette keeps body, muted copy and primary actions readable', () => {
   for (const skin of ids) {
     const vars = tokensForSkin(skin);
+    assert.ok(vars['--zws-art']?.includes(skin.hero), `${skin.id}: rendered art must match the catalog preview`);
     for (const [fg, bg] of [['--zws-ink','--zws-surface'],['--zws-soft','--zws-surface'],['--zws-ink','--zws-surface-soft'],['--zws-on-accent','--zws-action-bg']]) {
       const ratio = contrast(colour(vars[fg],vars),colour(vars[bg],vars));
       assert.ok(ratio >= 4.5, `${skin.id}: ${fg} / ${bg} contrast ${ratio.toFixed(2)}`);
@@ -152,4 +167,16 @@ test('all 18 actual skin palettes keep body, muted copy and primary actions read
     assert.equal(vars['--zws-card-frame'], 'none');
     assert.equal(vars['--zws-card-blur'], 'none');
   }
+});
+
+test('catalog reader includes future themes and rejects entries it cannot validate', () => {
+  const future = `export const SKINS = [\n { mode: "dark", ref: 19, id: "future-19", hero: "/art/example.webp" }\n];`;
+  assert.equal(readThemeCatalog(future)[0].id, 'future-19');
+  assert.throws(() => readThemeCatalog('export const SKINS = [makeTheme()]'), /must be literal/);
+});
+
+test('normal production builds validate every current and future theme before compiling', () => {
+  const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+  assert.match(pkg.scripts.prebuild, /npm run test:themes/);
+  assert.match(pkg.scripts['test:themes'], /theme-skins\.test\.mjs/);
 });

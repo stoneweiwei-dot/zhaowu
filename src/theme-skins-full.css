@@ -711,8 +711,10 @@ html[data-zws][data-zws][data-zws][data-zws] body #birth-form .zw-flow-progress 
 /* One solid accent for actions, one ink for the text on that accent. */
 html[data-zws][data-zws][data-zws][data-zws] body :is(
   button[type="submit"], .bg-cinnabar, .zhaowu-primary-button,
-  .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type
+  .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type,
+  .zhaowu-home-login-inline, .zhaowu-header-owner-login
 ) {
+  min-height: 44px !important;
   background: var(--zws-action-bg) !important;
   color: var(--zws-on-accent) !important;
   border: 1px solid var(--zws-action-bg) !important;
@@ -721,7 +723,8 @@ html[data-zws][data-zws][data-zws][data-zws] body :is(
 }
 html[data-zws][data-zws][data-zws][data-zws] body :is(
   button[type="submit"], .bg-cinnabar, .zhaowu-primary-button,
-  .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type
+  .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type,
+  .zhaowu-home-login-inline, .zhaowu-header-owner-login
 ) :is(span, strong, small, b) {
   color: var(--zws-on-accent) !important;
   -webkit-text-fill-color: currentColor !important;
@@ -762,4 +765,79 @@ html[data-zws][data-zws][data-zws][data-zws] body .zw-saved-report-card {
   --zws-control-ink: #293c34;
   box-shadow: none !important;
   outline: none;
+}
+
+/* Replay remains a real touch target even after its pill frame is removed. */
+html[data-zws] body .zw-intro-replay { min-height: 44px; }
+
+/* Legacy #birth-form rules outrank the generic action selector. Bind both
+ * submit actions to the same theme contract rather than their old green pill. */
+html[data-zws][data-zws][data-zws][data-zws] body #birth-form button[type="submit"] {
+  background: var(--zws-action-bg) !important;
+  color: var(--zws-on-accent) !important;
+  -webkit-text-fill-color: currentColor !important;
+  border: 1px solid var(--zws-action-bg) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+/* Quiz links share one readable sheet. Button-based rows inherit the same ink
+ * as links; otherwise the scent label keeps its old dark green on night art. */
+html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-home-fun-grid {
+  background: var(--zws-surface) !important;
+  color: var(--zws-ink) !important;
+  border-radius: 8px;
+  padding-block: 8px !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-home-fun-card {
+  background: transparent !important;
+  color: var(--zws-ink) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--zws-divider) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-home-fun-card :is(strong, small, span) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+  text-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-footer-legal a {
+  background: transparent !important;
+  color: var(--zws-ink) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--zws-divider) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Warm illustrated covers need their own dark ink even on a night skin.
+ * Outrank the legacy birth-stage ID rules and set both text paint channels. */
+html[data-zws][data-zws][data-zws][data-zws] body #zhaowu-main-content.zhaowu-app-frame :is(
+  .zhaowu-report-header, .zhaowu-unified-birth-report > header,
+  .zhaowu-specialist-hero, .zhaowu-visual-book-head, .zhaowu-luck-head,
+  .history-entry-report, .zw-saved-report-card
+) :is(h1, h2, h3, h4, p, small, strong, span):not(button *):not(a *) {
+  color: #293c34 !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+/* Reading-order labels share the report sheet instead of pale grey pills. */
+html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-focused-progress span {
+  background: transparent !important;
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--zws-divider) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-focused-progress span b {
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+html[data-zws][data-zws][data-zws][data-zws] body #zhaowu-main-content .zhaowu-focused-report.zhaowu-report-continuous-sheet .zhaowu-report-header :is(h3, p) {
+  color: #293c34 !important;
+  -webkit-text-fill-color: currentColor !important;
 }

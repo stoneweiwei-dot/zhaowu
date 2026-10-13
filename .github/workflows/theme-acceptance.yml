@@ -1,0 +1,54 @@
+name: Theme acceptance
+
+# Owner 2026-10-13: check every skin now and include future skins automatically.
+# Narrowly scoped; this does not re-enable the old site-wide diagnostics.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'src/lib/theme-skins.ts'
+      - 'lib/owner-site-skin-public.js'
+      - 'src/theme-skins*.css'
+      - 'src/journey-navigation.css'
+      - 'public/theme-skins/**'
+      - 'index.html'
+      - 'scripts/theme-skins.test.mjs'
+      - 'scripts/lib/theme-catalog.mjs'
+      - 'e2e/theme-acceptance.spec.ts'
+      - 'playwright.themes.config.ts'
+      - '.github/workflows/theme-acceptance.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: theme-acceptance-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  themes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      # Compile the same runtime without invoking unrelated live-site diagnostics
+      # from the legacy prebuild hook. Theme checks remain mandatory here.
+      - name: Validate themes and compile runtime
+        run: |
+          npm run test:themes
+          ./node_modules/.bin/vite build
+          npm run check
+      - run: ./node_modules/.bin/playwright install --with-deps chromium
+      - run: npm run test:themes:browser
+      - name: Keep per-theme evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: theme-acceptance
+          path: theme-results
+          retention-days: 7

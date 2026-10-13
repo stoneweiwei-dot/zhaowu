@@ -210,8 +210,14 @@ test("Real Browser: unauthenticated guest accessing /account directly receives n
     assert.equal(allReportsTextCount, 0, "No '所有人報告' text should appear for guest");
 
     // 2. Verify network calls during load
-    const ownerDataCalls = networkRequests.filter((r) => r.url.includes("/api/owner-data"));
-    assert.equal(ownerDataCalls.length, 0, "Zero /api/owner-data calls during guest /account load");
+    // Shared visual state is an intentionally public read. Only this exact GET
+    // is exempt; management reads and every POST remain forbidden for guests.
+    const ownerDataCalls = networkRequests.filter((r) => {
+      if (!r.url.includes("/api/owner-data")) return false;
+      const url = new URL(r.url);
+      return !(r.method === "GET" && url.pathname === "/api/owner-data" && url.searchParams.get("view") === "site-skin");
+    });
+    assert.equal(ownerDataCalls.length, 0, "Zero management /api/owner-data calls during guest /account load");
 
     // 3. Browser-context API calls: unauthenticated fetch cannot read or mutate
     const evalResult = await page.evaluate(async () => {
