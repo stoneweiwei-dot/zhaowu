@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { readThemeCatalog } from './lib/theme-catalog.mjs';
+import { SITE_SKIN_IDS, validSiteSkin } from '../lib/owner-site-skin-public.js';
 
 const ts = readFileSync("src/lib/theme-skins.ts", "utf8");
 const css = readFileSync("src/theme-skins.css", "utf8");
@@ -67,6 +68,12 @@ test("skin CSS is inert without data-zws and loaded after the design system", ()
 });
 test("site default is classic (no forced skin)", () => {
   assert.match(ts, /SITE_DEFAULT_SKIN = ""/);
+});
+
+test('every catalog theme is accepted by the shared server publisher, without extra unknown ids', () => {
+  assert.deepEqual([...SITE_SKIN_IDS].sort(), ['none', ...ids.map(s => s.id)].sort());
+  for (const { id } of ids) assert.equal(validSiteSkin(id), id, `${id}: server publisher must accept the catalog theme`);
+  assert.equal(validSiteSkin('unregistered-theme'), null);
 });
 
 test("all selected skins show the matching painting on report cover surfaces only", () => {
