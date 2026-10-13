@@ -711,7 +711,8 @@ html[data-zws][data-zws][data-zws][data-zws] body #birth-form .zw-flow-progress 
 /* One solid accent for actions, one ink for the text on that accent. */
 html[data-zws][data-zws][data-zws][data-zws] body :is(
   button[type="submit"], .bg-cinnabar, .zhaowu-primary-button,
-  .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type
+  .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type,
+  .zhaowu-home-login-inline, .zhaowu-header-owner-login
 ) {
   background: var(--zws-action-bg) !important;
   color: var(--zws-on-accent) !important;
@@ -721,7 +722,8 @@ html[data-zws][data-zws][data-zws][data-zws] body :is(
 }
 html[data-zws][data-zws][data-zws][data-zws] body :is(
   button[type="submit"], .bg-cinnabar, .zhaowu-primary-button,
-  .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type
+  .stone-login-primary, .zw-flow-next, .zw-saved-report-card button:first-of-type,
+  .zhaowu-home-login-inline, .zhaowu-header-owner-login
 ) :is(span, strong, small, b) {
   color: var(--zws-on-accent) !important;
   -webkit-text-fill-color: currentColor !important;

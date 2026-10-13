@@ -152,7 +152,6 @@ for (const skin of SKINS) {
       if (await fold.isVisible()) await fold.click();
     }
     await shot('report', '.zhaowu-report-continuous-sheet');
-    await page.locator('[data-unified-birth-report]').first().scrollIntoViewIfNeeded().catch(() => undefined);
     await healthy(page, 'paid report');
 
     await open('/#today', '#daily-almanac');
