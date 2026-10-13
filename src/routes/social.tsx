@@ -57,6 +57,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
   const [assets, setAssets] = useState<GalleryAsset[]>([]);
   const [selectedAssetId, setSelectedAssetId] = useState("");
   const [showAllAssets, setShowAllAssets] = useState(false);
+  const [xhsNotice, setXhsNotice] = useState("");
   const tx = (hant: string, hans: string, en: string) => locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
 
   async function loadGallery() {
@@ -109,6 +110,16 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
       : channels[0] === "threads"
         ? tx("發布到 Threads", "发布到 Threads", "Publish to Threads")
         : tx("選擇發布平台", "选择发布平台", "Choose a channel");
+  const xhsTitle = useMemo(() => {
+    const firstLine = text.trim().split(/\r?\n/).find(Boolean) || tx("今日的命理提醒", "今日的命理提醒", "A note for today");
+    return firstLine.replace(/^#+\s*/, "").slice(0, 28);
+  }, [text, locale]);
+  const xhsTags = useMemo(() => {
+    const keywords = ["昭梧", "命理", "八字", "人生觀察"];
+    const found = keywords.filter((keyword) => text.includes(keyword));
+    return [...new Set([...found, "自我探索", "傳統文化"])].slice(0, 5).map((tag) => `#${tag}`).join(" ");
+  }, [text]);
+  const xhsContent = `${xhsTitle}\n\n${text.trim()}\n\n${xhsTags}`.trim();
 
   function toggle(channel: SocialChannel) {
     setChannels((current) => current.includes(channel) ? current.filter((item) => item !== channel) : [...current, channel]);
@@ -156,6 +167,23 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
     if (!altText.trim()) setAltText(asset.title || "昭梧");
     setResults(null);
     setFormError("");
+  }
+
+  async function copyXhsContent() {
+    if (!text.trim()) {
+      setXhsNotice(tx("先寫一段貼文文字。", "先写一段帖子文字。", "Write the post text first."));
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(xhsContent);
+      setXhsNotice(tx("小紅書標題、正文與標籤已複製。", "小红书标题、正文和标签已复制。", "Xiaohongshu title, body and tags copied."));
+    } catch {
+      setXhsNotice(tx("瀏覽器未允許自動複製，請手動選取內容。", "浏览器不允许自动复制，请手动选择内容。", "Clipboard access was blocked; select the text manually."));
+    }
+  }
+
+  function openXhs() {
+    window.open("https://www.xiaohongshu.com/explore", "_blank", "noopener,noreferrer");
   }
 
   async function onUpload(event: ChangeEvent<HTMLInputElement>) {
@@ -324,6 +352,26 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
           className="mt-2 w-full resize-y rounded-xl border border-line bg-paper/55 px-4 py-3 text-base leading-7 text-ink outline-none focus:border-cinnabar"
           placeholder={tx("今天要說什麼？", "今天要说什么？", "What do you want to publish?")}
         />
+
+        <section className="mt-5 rounded-xl border border-[#c65b45]/25 bg-[#c65b45]/5 p-4" data-xiaohongshu-helper>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-ink">小紅書半自動發布</p>
+              <p className="mt-1 text-xs leading-5 text-ink-mute">自動整理標題、正文與標籤；複製後在小紅書貼上，再選擇上方圖片發布。</p>
+            </div>
+            <span className="shrink-0 rounded-full bg-[#c65b45]/10 px-2 py-1 text-[10px] text-[#9e402f]">半自動</span>
+          </div>
+          <div className="mt-3 rounded-lg border border-line/70 bg-cream/70 p-3">
+            <p className="text-sm font-medium text-ink">{xhsTitle}</p>
+            <p className="mt-2 max-h-20 overflow-hidden whitespace-pre-wrap text-xs leading-5 text-ink-soft">{text.trim() || tx("輸入文字後會在這裡預覽。", "输入文字后会在这里预览。", "Your preview appears here after you type.")}</p>
+            <p className="mt-2 text-xs text-[#9e402f]">{xhsTags}</p>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button type="button" onClick={() => void copyXhsContent()} className="min-h-10 rounded-full bg-[#c65b45] px-4 text-xs font-medium text-white">复制小红书内容</button>
+            <button type="button" onClick={openXhs} className="min-h-10 rounded-full border border-[#c65b45]/40 bg-cream px-4 text-xs text-[#9e402f]">打开小红书</button>
+          </div>
+          {xhsNotice ? <p className="mt-2 text-xs text-[#9e402f]" role="status">{xhsNotice}</p> : null}
+        </section>
 
         <section className="mt-5" aria-label={tx("選擇圖片", "选择图片", "Choose image")}>
           <div className="flex items-center justify-between gap-3">
