@@ -26,9 +26,11 @@ export function MobileReadingGuide({ model, locale }: { model: DecisionReportMod
       <h4>{copy.answer}</h4>
       <p>{model.directAnswer}</p>
     </div>
+    <div className="ph-decision-grid">
     {reasons.length ? <div className="zhaowu-mobile-guide__chapter"><h4>{copy.why}</h4>{reasons.map((line, index) => <p key={index}>{line}</p>)}</div> : null}
     {risks.length ? <div className="zhaowu-mobile-guide__chapter"><h4>{copy.risk}</h4>{risks.map((line, index) => <p key={index}>{line}</p>)}</div> : null}
     {model.nextAction ? <div className="zhaowu-mobile-guide__chapter"><h4>{copy.action}</h4><p>{model.nextAction}</p></div> : null}
+    </div>
     <details className="zhaowu-mobile-guide__evidence">
       <summary>{copy.evidence}</summary>
       <p>{model.confidenceBasis}</p>

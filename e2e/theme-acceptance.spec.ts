@@ -67,7 +67,7 @@ async function healthy(page: Page, label: string) {
     const canvas = document.createElement('canvas'); canvas.width = canvas.height = 1;
     const ctx = canvas.getContext('2d')!;
     const pixel = (value: string) => { ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = value; ctx.fillRect(0, 0, 1, 1); return Array.from(ctx.getImageData(0, 0, 1, 1).data); };
-    return Array.from(document.querySelectorAll<HTMLElement>('#birth-form button[type="submit"], .zw-flow-next, .stone-login-primary, .zhaowu-home-login-inline, .zhaowu-header-owner-login')).filter(el => el.getClientRects().length).map(el => {
+    return Array.from(document.querySelectorAll<HTMLElement>('#birth-form button[type="submit"], .zw-flow-next, .stone-login-primary, body:not(:has(.zw-painted-home)) .zhaowu-home-login-inline, .zhaowu-header-owner-login')).filter(el => el.getClientRects().length).map(el => {
       const s = getComputedStyle(el);
       return { text: el.textContent?.trim().slice(0, 40), actual: pixel(s.backgroundColor), expected: pixel(s.getPropertyValue('--zws-action-bg').trim()), shadow: s.boxShadow, radius: s.borderRadius, height: el.getBoundingClientRect().height };
     });
@@ -156,8 +156,9 @@ for (const skin of SKINS) {
       await page.screenshot({ path: `${evidence}/${name}.jpg`, type: 'jpeg', quality: 78, animations: 'disabled' });
     }
 
-    await open('/', '#birth-form');
+    await open('/', '.zw-painted-home');
     await shot('home');
+    await open('/#birth-form', '#birth-form');
     const steps = page.locator('.zw-flow-progress button');
     await expect(steps).toHaveCount(3);
     await expect(steps.nth(1)).toBeDisabled();
@@ -173,7 +174,7 @@ for (const skin of SKINS) {
 
     // Restored chart and question stage: keep the guest paid boundary intact.
     await page.evaluate(birth => localStorage.setItem('zhaowu.birth-record.v1', JSON.stringify(birth)), birth);
-    await open('/', '#bazi');
+    await open('/#birth-form', '#bazi');
     await expect(page.locator('[data-bazi-reading-locked]')).toBeVisible();
     await expect(page.locator('[data-unified-birth-report]')).toHaveCount(0);
     await page.locator('.zw-flow-next').click();

@@ -6,7 +6,7 @@ function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
 }
 
-/** 後台「主題皮膚」：原有 10 套 + 宋式留白 4 套，預覽圖使用實際的本地畫作。 */
+/** Owner theme catalog uses isolated screenshots of the actual homepage. */
 export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
   const { id, apply } = useSkin();
   const [saving, setSaving] = useState(false);
@@ -39,7 +39,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
       {success ? <p role="status" className="mt-3 text-sm text-wood">{success}</p> : null}
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <article className={`overflow-hidden rounded-xl border ${id === "" ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"} bg-paper/40`}>
-          <div className="flex h-28 items-center justify-center bg-paper-deep/40 text-sm text-ink-soft">{tr(locale, "現行樣式", "现行样式", "Classic")}</div>
+          <a href="/theme-previews/none.jpg" target="_blank" rel="noreferrer" className="block p-3"><img src="/theme-previews/none.jpg" alt={tr(locale, "預設首頁實際排版", "默认首页实际排版", "Default homepage layout")} loading="lazy" width="390" height="844" className="mx-auto h-80 w-auto max-w-full object-contain object-top" /></a>
           <div className="flex items-center justify-between gap-3 p-3">
             <div className="min-w-0"><p className="truncate font-medium">{tr(locale, "預設（現行）", "默认（现行）", "Default (current)")}</p></div>
             <button type="button" disabled={saving} onClick={() => void choose("none")} aria-pressed={id === ""} className="min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line px-4 text-sm disabled:opacity-50">{saving ? tr(locale, "同步中…", "同步中…", "Saving…") : id === "" ? tr(locale, "全站使用中", "全站使用中", "Live site theme") : tr(locale, "全站還原", "全站还原", "Reset site")}</button>
@@ -63,15 +63,10 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
                 </div>
               ) : null}
               <article className={`overflow-hidden rounded-xl border bg-paper/40 ${active ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"}`}>
-              <div className="flex h-28 w-full overflow-hidden" role="group" aria-label={name(s)}>
-                <div className="relative w-1/2" style={{ background: `${s.swatch[0]} url(${s.hero}) ${s.focus} / cover no-repeat` }} role="img" aria-label={tr(locale, "頁面畫作", "页面画作", "Page painting")}>
-                  <span className="absolute left-2 top-2 rounded-sm bg-[#fffaf0]/90 px-2 py-0.5 text-[10px] text-[#254238]">{tr(locale, "頁面", "页面", "Page")}</span>
-                </div>
-                <div className="relative flex w-1/2 flex-col justify-between border-l border-[#ad9c80]/30 p-2" style={{ background: `linear-gradient(90deg, rgba(250,247,239,.97), rgba(250,247,239,.80)), url(${s.hero}) ${s.focus} / cover no-repeat` }} role="img" aria-label={tr(locale, "報告背景示意", "报告背景示意", "Report colour preview")}>
-                  <span className="self-start rounded-sm bg-[#fffaf0]/90 px-2 py-0.5 text-[10px] text-[#254238]">{tr(locale, "報告", "报告", "Report")}</span>
-                  <div aria-hidden="true"><span className="block font-serif text-[13px] font-semibold text-[#293c34]">{tr(locale, "命書", "命书", "Reading")}</span><span className="mt-1 block h-px w-9 bg-[#b39770]"/><span className="mt-1 block text-[10px] text-[#4c5d52]">{tr(locale, "宋式閱讀紙", "宋式阅读纸", "Warm paper")}</span></div>
-                </div>
-              </div>
+              <a href={`/theme-previews/${s.id}.jpg`} target="_blank" rel="noreferrer" className="block bg-paper/40 p-3" aria-label={`${name(s)} · ${tr(locale, "查看完整首頁", "查看完整首页", "View full homepage")}`}>
+                <img src={`/theme-previews/${s.id}.jpg`} alt={`${name(s)} · ${tr(locale, "實際首頁排版", "实际首页排版", "Actual homepage layout")}`} loading="lazy" width="390" height="844" className="mx-auto h-80 w-auto max-w-full object-contain object-top" />
+                <span className="mt-2 block text-center text-xs text-ink-soft">{tr(locale, "實際首頁 · 點擊放大", "实际首页 · 点击放大", "Rendered homepage · Enlarge")}</span>
+              </a>
               <div className="flex items-center justify-between gap-3 p-3">
                 <div className="min-w-0">
                   <p className="truncate font-medium">{name(s)}</p>

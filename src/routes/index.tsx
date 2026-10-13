@@ -3,10 +3,10 @@ import { lazy, Suspense, useState, useEffect } from "react";
 import { useAuthState } from "@/lib/auth/provider";
 import { ReportSaveStatus } from "@/components/report-save-status";
 import { AnalysisForm } from "@/components/analysis-form";
+import { PaintedHome } from "@/components/painted-home";
 import { DeepReadingHeroCard } from "@/components/deep-reading-hero-card";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
 import { HomeSectionBoundary } from "@/components/home-section-boundary";
-import { IntroReplayButton } from "@/components/intro-gate";
 import { ResultView } from "@/components/result-view";
 import { useI18n } from "@/lib/i18n";
 import { readLocalReports } from "@/lib/local-report-history";
@@ -158,21 +158,6 @@ function heroUiCopy(locale: string) {
   };
 }
 
-/* ── Nav item data ─────────────────────────────────────────── */
-/* Owner 2026-10-12: the birth form is now inline on the home page (single entry
-   for older visitors), so only the three secondary portals remain as cards. */
-const NAV_ITEMS: { id: Exclude<Section, "form">; artSrc: string }[] = [
-  { id: "today", artSrc: "/art/scene-lotus-boat-v1.webp" },
-  { id: "quiz",  artSrc: "/art/scene-osmanthus-tea-v1.webp" },
-  { id: "notes", artSrc: "/art/scene-butterfly-dream-v1.webp" },
-];
-
-const NAV_HINTS: Record<"zh-Hant" | "zh-Hans" | "en", Record<Section, string>> = {
-  "zh-Hant": { form: "讀懂命運的紋理，看見更多可能。", today: "一日之氣，順勢而行。", quiz: "探索內心，遇見另一種自己。", notes: "看見更大的世界，也看見更深的自己。" },
-  "zh-Hans": { form: "读懂命运的纹理，看见更多可能。", today: "一日之气，顺势而行。", quiz: "探索内心，遇见另一种自己。", notes: "看见更大的世界，也看见更深的自己。" },
-  en: { form: "Read the grain of your life and see more options.", today: "Today's energy, and how to move with it.", quiz: "Explore within and meet another side of you.", notes: "See a wider world—and a deeper self." },
-};
-
 const LazyDailyAlmanacWidget = lazy(() =>
   import("@/components/daily-almanac-widget").then((mod) => ({ default: mod.DailyAlmanacWidget })),
 );
@@ -262,18 +247,6 @@ function Home() {
     });
   };
 
-  /* Home ticket: the form is already on the page, so only scroll + focus. */
-  const focusBirthForm = () => {
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        document.getElementById("birth-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
-        window.setTimeout(() => {
-          document.getElementById("birth-year")?.focus({ preventScroll: true });
-        }, 350);
-      });
-    });
-  };
-
   useEffect(() => {
     if (typeof window === "undefined") return;
     const BIRTH_HASHES = ["#birth-form", "#analysis", "#analysisForm", "#birth-year", "#form"];
@@ -323,28 +296,7 @@ function Home() {
   return (
     <main className="zw-hero-home">
 
-      {/* ── HOME MAIN: ONE ENTRY. Title → 3 plain steps → the birth form itself (rendered below). ── */}
-      {activeSection === null && (
-        <div className="zw-hero-inscription">
-          <p className="zw-hero-inscription-kicker">{copy.kicker}</p>
-          <h1 className="zw-hero-inscription-title">{copy.title}</h1>
-          <p className="zw-hero-inscription-tagline">{copy.tagline}</p>
-          <button
-            type="button"
-            className="zw-birth-entry-ticket"
-            data-home-birth-entry
-            aria-controls="birth-form"
-            onClick={focusBirthForm}
-          >
-            <span className="zw-birth-entry-seal" aria-hidden>命</span>
-            <span className="zw-birth-entry-copy">
-              <strong>{copy.birthCta}</strong>
-              <small>{copy.birthHint}</small>
-            </span>
-            <span className="zw-birth-entry-arrow" aria-hidden>↓</span>
-          </button>
-        </div>
-      )}
+      {activeSection === null && <PaintedHome onOpen={section => section === "form" ? openBirthBook() : toggleSection(section)} />}
 
       {/* ── SUBVIEW TOPBAR: RETURN TO 4 BIG PORTALS ──────────── */}
       {activeSection !== null && (
@@ -383,7 +335,7 @@ function Home() {
       )}
 
       {/* ── FORM & DESTINY BOOK: inline on the home page, and as the "form" subview ── */}
-      {(activeSection === null || activeSection === "form") && (
+      {activeSection === "form" && (
         <>
           {activeSection === "form" ? <section className="zw-report-wayfinding">
             <h2>{locale === "en" ? (current ? "Your report is ready" : "Create your report") : locale === "zh-Hans" ? (current ? "你的报告已生成" : "开始排盘与提问") : (current ? "你的報告已生成" : "開始排盤與提問")}</h2>
@@ -424,33 +376,6 @@ function Home() {
             </>
           )}
         </>
-      )}
-
-      {/* ── SECONDARY PORTALS (home only, below the form) ───── */}
-      {activeSection === null && (
-        <div className="zw-hero-nav-wrap zw-home-more">
-          <h2 className="zw-home-more-title">{copy.moreTitle}</h2>
-          <nav className="zw-hero-nav zw-hero-nav--explore" aria-label={heroUi.primaryNav}>
-            {NAV_ITEMS.map(({ id, artSrc }) => (
-              <button
-                key={id}
-                type="button"
-                data-home-card={id}
-                className="zw-hero-nav-item zw-hero-card"
-                aria-label={navLabels[id]}
-                onClick={() => toggleSection(id)}
-              >
-                <img src={artSrc} className="zw-hero-card-art" alt="" aria-hidden loading="lazy" decoding="async" width={760} height={504} />
-                <span className="zw-hero-card-copy">
-                  <span className="zw-hero-nav-label">{navLabels[id]}</span>
-                  <small>{NAV_HINTS[locale][id]}</small>
-                </span>
-                <span className="zw-hero-card-arrow" aria-hidden>→</span>
-              </button>
-            ))}
-          </nav>
-          <IntroReplayButton />
-        </div>
       )}
 
       {/* ── DEDICATED VIEW: QUIZ ────────────────────────────── */}
