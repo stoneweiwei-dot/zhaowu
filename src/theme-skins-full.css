@@ -872,3 +872,22 @@ html[data-zws] body .zhaowu-home-layout #birth-form .zhaowu-customer-record h2 {
   color: var(--zws-ink) !important;
   -webkit-text-fill-color: currentColor !important;
 }
+
+/* 2026-10-13: night birth form keeps its structural sheet and ink paired. */
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #birth-form #customer-record {
+  background: color-mix(in srgb, var(--zws-card) 90%, transparent) !important;
+  color: var(--zws-ink) !important;
+  border-color: var(--zws-line) !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #birth-form #customer-record :is(
+  h1, h2, h3, h4, p, li, span, strong, b, small, label, legend, summary, em, div
+):not(button):not(button *):not(svg *):not(.bg-cinnabar *) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #birth-form #customer-record :is(input, select, textarea) {
+  background: rgba(255, 255, 255, .07) !important;
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: var(--zws-ink) !important;
+}
