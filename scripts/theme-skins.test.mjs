@@ -180,3 +180,15 @@ test('normal production builds validate every current and future theme before co
   assert.match(pkg.scripts.prebuild, /npm run test:themes/);
   assert.match(pkg.scripts['test:themes'], /theme-skins\.test\.mjs/);
 });
+
+test('the birth flow uses one themed paper surface instead of nested cards', () => {
+  const journey = readFileSync('src/journey-navigation.css', 'utf8');
+  const themed = readFileSync('src/theme-skins-full.css', 'utf8');
+  assert.match(journey, /\.zw-report-edit\s*\{[^}]*background:transparent/s);
+  assert.doesNotMatch(themed, /#birth-form,\s*\.zw-report-edit/);
+  assert.match(themed, /#birth-form :is\(\s*#customer-record,[\s\S]*?background:\s*transparent/s);
+  assert.doesNotMatch(themed, /body #birth-form #customer-record\s*\{[^}]*background:\s*var\(--zws-surface/s);
+  assert.match(themed, /--zws-surface:\s*color-mix\(in srgb, var\(--zws-page\) 94%, #fff 6%\)/);
+  assert.match(themed, /html\[data-zws\] body \.zw-report-edit/);
+  assert.match(themed, /body #birth-form :is\([\s\S]*?\.zhaowu-time-calibration-note[\s\S]*?background:\s*transparent/s);
+});

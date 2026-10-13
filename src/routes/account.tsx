@@ -12,12 +12,10 @@ import {
 } from "@/lib/bridge/supabase-rest";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { customerCopy, customerDocument } from "@/lib/report/customer-copy";
-import { DecreeImageReason } from "@/components/decree-image-reason";
-import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
-import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 import { composeFocusedReport } from "@/lib/report/focused-report";
 import type { ReportSection } from "@/lib/report/focused-report";
-import { TeaGuardianReport } from "@/components/tea-guardian-report";
+import { CharacterPanel } from "@/components/character-panel";
+import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 
 const OwnerGalleryManager = lazy(() => import("@/components/owner-gallery-manager").then((m) => ({ default: m.OwnerGalleryManager })));
 const OwnerLoginVisualsManager = lazy(() => import("@/components/owner-login-visuals-manager").then((m) => ({ default: m.OwnerLoginVisualsManager })));
@@ -40,24 +38,21 @@ function reportLevel(row: Pick<ReportRecord, "status" | "payment_tier">, locale:
   return tr(locale, "待生成", "待生成", "Pending");
 }
 
+function reportQuestion(row: ReportRecord): string { return String(row.context?.question ?? row.alias ?? ""); }
+
 function fullText(row: ReportRecord): string | null {
   if (!row.paid_report || typeof row.paid_report !== "object") return null;
   const text = (row.paid_report as Record<string, unknown>).text;
   return typeof text === "string" ? customerDocument(text) : null;
 }
 
-function reportGalleryReferenceAssetId(row: ReportRecord): string | null {
-  if (!row.visual_profile || typeof row.visual_profile !== "object") return null;
-  const value = (row.visual_profile as Record<string, unknown>).galleryReferenceAssetId;
-  const id = String(value ?? "").trim();
-  return id || null;
-}
-
 /**
  * New records may use focused-report naming later; old records use `ninePages`.
  * The old key is read only as storage compatibility and is never surfaced as a product name.
  */
-function storedReportSections(row: ReportRecord): ReportSection[] {
+function storedReportSections(row: ReportRecord, locale: Locale): ReportSection[] {
+  const food = foodPreferenceAnswer(reportQuestion(row), locale);
+  if (food) return food.detail.map((body, index) => ({ sectionNo: index + 1, pageNo: index + 1, key: `food-${index + 1}` as ReportSection["key"], title: index === 0 ? tr(locale, "先從一餐開始", "先从一餐开始", "Start with one meal") : tr(locale, "實際選擇", "实际选择", "Practical choices"), body: [body], optional: false, evidence: { facts: [], conditions: [], limits: [], checks: [] } }));
   const sources = [row.mother_draft, row.paid_report];
   for (const source of sources) {
     if (!source || typeof source !== "object") continue;
@@ -113,10 +108,8 @@ function AccountPage() {
   const [busy, setBusy] = useState(true);
   const [refreshBusy, setRefreshBusy] = useState(false);
   const [detailBusyId, setDetailBusyId] = useState<string | null>(null);
-  const [actionBusyId, setActionBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reportMessages, setReportMessages] = useState<Record<string, string>>({});
-  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
   const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
   const [selectedReportIds, setSelectedReportIds] = useState<string[]>([]);
 
@@ -270,30 +263,6 @@ function AccountPage() {
     await refreshDetail(row.id);
   }
 
-  async function onReportImage(id: string, force: boolean) {
-    if (!session) {
-      setReportMessages((prev) => ({ ...prev, [id]: c.expired }));
-      return;
-    }
-    setActionBusyId(id);
-    setReportMessages((prev) => ({ ...prev, [id]: "" }));
-    try {
-      const existing = details[id]?.image_path;
-      const out = existing && !force
-        ? await loadExistingDecreeImage(session, id)
-        : await generateDecreeImage(session, id, force);
-      if (out.signedUrl) setImageUrls((prev) => ({ ...prev, [id]: out.signedUrl! }));
-      await refreshDetail(id, true);
-      await loadReports();
-      setReportMessages((prev) => ({ ...prev, [id]: c.imageReady }));
-    } catch (err) {
-      setReportMessages((prev) => ({ ...prev, [id]: err instanceof Error ? err.message : c.updateFailed }));
-      await refreshDetail(id, true);
-    } finally {
-      setActionBusyId(null);
-    }
-  }
-
   async function copyFinalAnswer(id: string, text: string) {
     try {
       await navigator.clipboard.writeText(text);
@@ -391,34 +360,29 @@ function AccountPage() {
       </section>
 
       {user.isOwner ? (
-        <nav className="grid grid-cols-2 gap-2 sm:grid-cols-5" role="tablist" aria-label={tr(locale, "站主後台分區", "站主后台分区", "Owner console sections")}>
-          {([
-            ["reports", tr(locale, "報告管理", "报告管理", "Reports")],
-            ["images", tr(locale, "背景與圖片", "背景与图片", "Backgrounds and images")],
-            ["opening", tr(locale, "開場影片", "开场视频", "Opening video")],
-            ["social", "Instagram / Threads"],
-            ["themes", tr(locale, "主題皮膚", "主题皮肤", "Theme skins")],
-          ] as [ConsoleView, string][]).map(([view, label], index, tabs) => (
-            <button key={view} id={`console-tab-${view}`} type="button" role="tab"
-              aria-selected={consoleView === view} aria-controls={`console-panel-${view}`}
-              tabIndex={consoleView === view ? 0 : -1}
-              onClick={() => selectConsoleView(view)}
-              onKeyDown={(event) => {
-                const offset = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
-                if (!offset && event.key !== "Home" && event.key !== "End") return;
-                event.preventDefault();
-                const next = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : (index + offset + tabs.length) % tabs.length;
-                selectConsoleView(tabs[next][0]);
-                document.getElementById(`console-tab-${tabs[next][0]}`)?.focus();
-              }}
-              className={`min-h-14 rounded-xl border px-3 py-3 text-left text-sm font-medium ${consoleView === view ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-cream/80 text-ink"}`}>
-              {label}
-            </button>
-          ))}
+        <nav className="space-y-2" aria-label={tr(locale, "站主後台導覽", "站主后台导航", "Owner console navigation")}>
+          <details open className="rounded-xl border border-line bg-paper/45 p-3">
+            <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "客戶報告", "客户报告", "Customer reports")}</summary>
+            <button id="console-tab-reports" type="button" aria-controls="console-panel-reports" aria-current={consoleView === "reports" ? "page" : undefined} onClick={() => selectConsoleView("reports")} className="mt-3 min-h-11 rounded-lg border border-line px-4 text-left">{tr(locale, "報告管理", "报告管理", "Reports")}</button>
+          </details>
+          <details className="rounded-xl border border-line bg-paper/45 p-3">
+            <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "網站外觀與內容", "网站外观与内容", "Website appearance and content")}</summary>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {([
+                ["images", tr(locale, "背景與圖片", "背景与图片", "Backgrounds and images")],
+                ["opening", tr(locale, "開場影片", "开场视频", "Opening video")],
+                ["themes", tr(locale, "主題皮膚", "主题皮肤", "Theme skins")],
+              ] as [ConsoleView, string][]).map(([view, label]) => <button key={view} id={`console-tab-${view}`} type="button" aria-controls={`console-panel-${view}`} aria-current={consoleView === view ? "page" : undefined} onClick={() => selectConsoleView(view)} className="min-h-11 rounded-lg border border-line px-4 text-left">{label}</button>)}
+            </div>
+          </details>
+          <details className="rounded-xl border border-line bg-paper/45 p-3">
+            <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "社群發布", "社群发布", "Social publishing")}</summary>
+            <button id="console-tab-social" type="button" aria-controls="console-panel-social" aria-current={consoleView === "social" ? "page" : undefined} onClick={() => selectConsoleView("social")} className="mt-3 min-h-11 rounded-lg border border-line px-4 text-left">Instagram / Threads</button>
+          </details>
         </nav>
       ) : null}
 
-      <div id="console-panel-reports" role={user.isOwner ? "tabpanel" : undefined} aria-labelledby={user.isOwner ? "console-tab-reports" : undefined} hidden={user.isOwner && consoleView !== "reports"}>
+      <div id="console-panel-reports" role={user.isOwner ? "region" : undefined} aria-labelledby={user.isOwner ? "console-tab-reports" : undefined} hidden={user.isOwner && consoleView !== "reports"}>
       <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -444,20 +408,17 @@ function AccountPage() {
             const open = openId === row.id;
             const detail = details[row.id] ?? null;
             const snapshot = detail?.engine_snapshot ?? null;
-            const sections = detail ? storedReportSections(detail) : [];
-            const text = detail ? fullText(detail) : null;
+            const question = detail ? reportQuestion(detail) : String(row.context?.question ?? row.alias ?? "");
+            const food = foodPreferenceAnswer(question, locale);
+            const sections = detail ? storedReportSections(detail, locale) : [];
+            const text = detail && !food ? fullText(detail) : null;
             const savedAnswer = sections[0]?.body?.[0] || null;
             const fallbackAnswer = snapshot?.reading?.directAnswer ? customerCopy(snapshot.reading.directAnswer) : null;
-            const displayAnswer = savedAnswer || fallbackAnswer;
+            const displayAnswer = food?.answer ?? savedAnswer ?? fallbackAnswer;
             const chartState = statusPill(Boolean(snapshot?.chart), c.chartDone, c.chartPending);
-            const answerState = statusPill(Boolean(savedAnswer || fallbackAnswer), c.answerDone, c.answerPending);
-            const reportState = statusPill(sections.length >= 4 || Boolean(text), c.reportDone, c.reportPending);
-            const imageState = detail?.image_path
-              ? { label: c.imageDone, className: "border-emerald-700/25 bg-emerald-700/5 text-emerald-800" }
-              : detail?.image_error
-                ? { label: c.imageFailed, className: "border-cinnabar/30 bg-cinnabar/5 text-cinnabar" }
-                : { label: c.imagePending, className: "border-line bg-paper/55 text-ink-mute" };
-            const rowBusy = detailBusyId === row.id || actionBusyId === row.id;
+            const answerState = statusPill(Boolean(displayAnswer), c.answerDone, c.answerPending);
+            const reportState = statusPill(food ? sections.length >= 3 : sections.length >= 4 || Boolean(text), c.reportDone, c.reportPending);
+            const rowBusy = detailBusyId === row.id;
 
             return (
               <article key={row.id} data-owner-selectable-file="report" className={`relative rounded-xl border bg-paper/35 p-3.5 ${selectedReportIds.includes(row.id) ? "border-wood/45 ring-1 ring-wood/15" : "border-line"}`}>
@@ -487,7 +448,7 @@ function AccountPage() {
                           <div className="mb-4 rounded-lg border border-line bg-cream/70 p-3">
                             <p className="text-[11px] tracking-[0.18em] text-cinnabar">{c.finalSource}</p>
                             <div className="mt-3 flex flex-wrap gap-2">
-                              {[chartState, answerState, reportState, imageState].map((s) => <span key={s.label} className={`rounded-full border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
+                              {[chartState, answerState, reportState].map((s) => <span key={s.label} className={`rounded-full border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
                             </div>
                           </div>
                         ) : null}
@@ -506,10 +467,6 @@ function AccountPage() {
                             <summary className="cursor-pointer list-none text-center text-xs font-medium text-ink-soft [&::-webkit-details-marker]:hidden">{c.manageActions} ＋</summary>
                             <div className="mt-3 flex flex-wrap justify-center gap-2 border-t border-line/70 pt-3">
                               {displayAnswer ? <button type="button" className="rounded-full border border-line bg-cream px-3 py-1.5 text-xs text-ink-soft" onClick={() => void copyFinalAnswer(row.id, displayAnswer)}>{c.copyAnswer}</button> : null}
-                              <button type="button" disabled={actionBusyId === row.id || (SUPABASE_STORAGE_WRITES_PAUSED && !detail.image_path)} className="rounded-full bg-cinnabar px-3 py-1.5 text-xs text-cream disabled:opacity-50" onClick={() => void onReportImage(row.id, false)}>
-                                {actionBusyId === row.id ? c.generatingImage : detail.image_path ? c.viewImage : c.generateImage}
-                              </button>
-                              {detail.image_path ? <button type="button" disabled={actionBusyId === row.id || SUPABASE_STORAGE_WRITES_PAUSED} className="rounded-full border border-cinnabar/35 bg-cinnabar/5 px-3 py-1.5 text-xs text-cinnabar disabled:opacity-50" onClick={() => void onReportImage(row.id, true)}>{c.regenerateImage}</button> : null}
                               <button type="button" className="rounded-full px-3 py-1.5 text-xs text-cinnabar" onClick={async () => {
                                 if (!window.confirm(c.deleteRecordConfirm)) return;
                                 await deleteReportRecord(session!, row.id);
@@ -523,19 +480,7 @@ function AccountPage() {
 
                         {reportMessages[row.id] ? <p className="mb-4 rounded-md border border-line bg-cream/70 px-3 py-2 text-xs text-cinnabar">{reportMessages[row.id]}</p> : null}
 
-                        {imageUrls[row.id] ? (
-                          <div className="mb-5 mx-auto max-w-sm">
-                            <div className="overflow-hidden rounded-xl border border-line bg-cream p-2">
-                              <img src={imageUrls[row.id]} alt={c.imageDone} className="aspect-[9/16] w-full rounded-lg object-cover" />
-                            </div>
-                            <DecreeImageReason
-                              chart={snapshot?.chart ?? null}
-                              question={String(row.alias || row.context?.question || c.reportFallback)}
-                              selectedAssetId={reportGalleryReferenceAssetId(detail)}
-                              compact
-                            />
-                          </div>
-                        ) : null}
+
 
                         {sections.length ? (
                           <div className="space-y-4">
@@ -548,7 +493,7 @@ function AccountPage() {
                           </div>
                         ) : text ? <div className="whitespace-pre-wrap">{text}</div> : !displayAnswer ? <p className="text-ink-mute">{c.noReadable}</p> : null}
 
-                        {snapshot?.chart && (sections.length || text) ? <div className="mt-5"><TeaGuardianReport chart={snapshot.chart} /></div> : null}
+                        {snapshot?.chart ? <div className="mt-5"><CharacterPanel chart={snapshot.chart} /></div> : null}
                       </>
                     ) : null}
                   </div>
@@ -564,16 +509,16 @@ function AccountPage() {
       </div>
 
       {user.isOwner && session ? (<>
-        <div id="console-panel-images" role="tabpanel" aria-labelledby="console-tab-images" hidden={consoleView !== "images"}>
+        <div id="console-panel-images" role="region" aria-labelledby="console-tab-images" hidden={consoleView !== "images"}>
           {visitedViews.has("images") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入圖庫…", "加载图库…", "Loading gallery…")}</p>}><OwnerGalleryManager session={session} locale={locale} /></Suspense> : null}
         </div>
-        <div id="console-panel-opening" role="tabpanel" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>
+        <div id="console-panel-opening" role="region" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>
           {visitedViews.has("opening") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入影片…", "加载视频…", "Loading videos…")}</p>}><OwnerLoginVisualsManager session={session} locale={locale} /></Suspense> : null}
         </div>
-        <div id="console-panel-themes" role="tabpanel" aria-labelledby="console-tab-themes" hidden={consoleView !== "themes"}>
+        <div id="console-panel-themes" role="region" aria-labelledby="console-tab-themes" hidden={consoleView !== "themes"}>
           {visitedViews.has("themes") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入主題…", "加载主题…", "Loading themes…")}</p>}><OwnerThemeSkinsManager locale={locale} /></Suspense> : null}
         </div>
-        <div id="console-panel-social" role="tabpanel" aria-labelledby="console-tab-social" hidden={consoleView !== "social"}>
+        <div id="console-panel-social" role="region" aria-labelledby="console-tab-social" hidden={consoleView !== "social"}>
           {visitedViews.has("social") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入發布器…", "加载发布器…", "Loading publisher…")}</p>}><SocialPublisherPage embedded /></Suspense> : null}
         </div>
       </>) : null}

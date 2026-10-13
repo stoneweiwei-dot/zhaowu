@@ -17,7 +17,6 @@ import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 import { buildWriterRequest, requestWrittenAnswer } from "@/lib/report/llm-answer";
 import { buildComplexDeterministicAnswer, buildComplexReasoningRequest, requestComplexReasoning } from "@/lib/report/complex-reasoning";
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
-import { generateDecreeImage, loadExistingDecreeImage } from "@/lib/bridge/decree-image";
 import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
 import {
   REPORT_ACCESS_PRODUCTS,
@@ -27,6 +26,7 @@ import {
   type ReportAccessProduct,
 } from "@/lib/report-access";
 import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
+import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 
 const RESULT_COPY = {
   "zh-Hant": { syncFailed: "內容已完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "補充內容暫時未能生成。", saved: "完整報告已保存。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "補充", fullGenerating: "整理中…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字內容不受影響。", next: "下一步", evidence: "命盤與天干地支圖", evidenceLead: "", decree: "命理解讀", chartDetail: "展開命盤與人物詳解" },
@@ -39,12 +39,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const copy = RESULT_COPY[locale];
   const { user, profile, session } = useCurrentUserState();
   const { fullReport, setFullReport, savedId, setSavedId, reset } = useAppStore();
-  const [busy, setBusy] = useState<"full" | "save" | "image" | null>(null);
+  const [busy, setBusy] = useState<"full" | "save" | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [reportSections, setReportSections] = useState<ReportSection[] | null>(null);
   const [reportSyncedId, setReportSyncedId] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [imageReferenceAssetId, setImageReferenceAssetId] = useState<string | null>(null);
   const [accessLevel, setAccessLevel] = useState<ReportAccessLevel>("none");
   const [ownerAccess, setOwnerAccess] = useState(false);
   const [purchasing, setPurchasing] = useState<ReportAccessProduct | null>(null);
@@ -74,23 +72,25 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   }
   const unlocked = accessLevel === "system" || accessLevel === "bundle";
   const { chart, reading, question } = result;
-  const petDecision = isPetDecisionQuestion(question) ? buildPetDecision(result, result.locale ?? locale) : null;
+  const foodAnswer = foodPreferenceAnswer(question, result.locale ?? locale);
+  const foodSections: ReportSection[] = foodAnswer ? foodAnswer.detail.map((body, index) => ({ sectionNo: index + 1, pageNo: index + 1, key: `food-${index + 1}` as ReportSection["key"], title: index === 0 ? (locale === "en" ? "Start with one meal" : locale === "zh-Hans" ? "先从一餐开始" : "先從一餐開始") : (locale === "en" ? "Practical choices" : locale === "zh-Hans" ? "实际选择" : "實際選擇"), body: [body], optional: false, evidence: { facts: [], conditions: [], limits: [], checks: [] } })) : [];
+  const petDecision = !foodAnswer && isPetDecisionQuestion(question) ? buildPetDecision(result, result.locale ?? locale) : null;
   const decisionModel = buildDecisionReportModel(result);
-  const complexRule = !petDecision ? buildComplexDeterministicAnswer(result) : null;
+  const complexRule = !foodAnswer && !petDecision ? buildComplexDeterministicAnswer(result) : null;
   const [written, setWritten] = useState<{ key: string; answer: string; next: string; source: "reasoned" | "written" } | null>(null);
   const writerKey = `${result.id ?? ""}|${question}`;
-  const lockDeterministicVerdict = Boolean(complexRule?.comparison);
-  const writtenNow = unlocked && !petDecision && !lockDeterministicVerdict && written?.key === writerKey ? written : null;
-  const ruleAnswer = petDecision?.directAnswer ?? complexRule?.answer ?? decisionModel.directAnswer;
+  const lockDeterministicVerdict = Boolean(foodAnswer || complexRule?.comparison);
+  const writtenNow = unlocked && !foodAnswer && !petDecision && !lockDeterministicVerdict && written?.key === writerKey ? written : null;
+  const ruleAnswer = foodAnswer?.answer ?? petDecision?.directAnswer ?? complexRule?.answer ?? decisionModel.directAnswer;
   const answer = writtenNow?.answer ?? ruleAnswer;
   const answerParagraphs = customerParagraphs(answer);
-  const nextAction = petDecision ? customerCopy(reading.action) : writtenNow?.next ?? complexRule?.next ?? decisionModel.nextAction;
+  const nextAction = foodAnswer?.nextAction ?? (petDecision ? customerCopy(reading.action) : writtenNow?.next ?? complexRule?.next ?? decisionModel.nextAction);
 
   useEffect(() => {
     // Rule answer is already on screen. Complex questions get one bounded reasoning
     // pass first; simpler eligible questions keep the cheaper wording-only writer.
     // Either path may replace the rule answer only after its client/server validators pass.
-    if (!unlocked || petDecision || lockDeterministicVerdict) return;
+    if (!unlocked || foodAnswer || petDecision || lockDeterministicVerdict) return;
     let cancelled = false;
 
     const runWriter = async () => {
@@ -118,27 +118,17 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     }
 
     return () => { cancelled = true; };
-  }, [writerKey, lockDeterministicVerdict, unlocked]);
+  }, [writerKey, lockDeterministicVerdict, unlocked, foodAnswer]);
   const decreeCouplet = customerCopy(reading.decree);
 
-  useEffect(() => {
-    let cancelled = false;
-    setImageUrl(null);
-    setImageReferenceAssetId(null);
-    if (!session || !user || !result.id) return () => { cancelled = true; };
-    void loadExistingDecreeImage(session, result.id).then((out) => {
-      if (cancelled) return;
-      if (out.signedUrl) setImageUrl(out.signedUrl);
-      setImageReferenceAssetId(out.galleryReferenceAssetId ?? null);
-    }).catch(() => {});
-    return () => { cancelled = true; };
-  }, [result.id, session?.access_token, user?.id]);
+
 
   async function ensureFullReport() {
+    if (foodAnswer) return renderFocusedReportText(foodSections, result.locale ?? locale);
     // The three free sections may be saved, but full paid text must never be
     // requested or persisted before a server-verified purchase or owner access.
     if (accessLevel !== "system" && accessLevel !== "bundle") {
-      return renderFocusedReportText(petDecision?.sections ?? composeFocusedReport(result), result.locale ?? locale);
+      return renderFocusedReportText(foodAnswer ? foodSections : petDecision?.sections ?? composeFocusedReport(result), result.locale ?? locale);
     }
     if (fullReport) return fullReport;
     if (petDecision) {
@@ -154,7 +144,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   async function ensureSavedReport() {
     if (!session || !user) throw new Error(t("needLogin"));
     const reportText = await ensureFullReport();
-    const sections = reportSections ?? petDecision?.sections ?? composeFocusedReport(result);
+    const sections = foodAnswer ? foodSections : reportSections ?? petDecision?.sections ?? composeFocusedReport(result);
     setReportSections(sections);
     const row = await saveReportRecord({ session, profile, result, fullReport: reportText, ninePages: sections });
     const reportId = row?.id ?? result.id;
@@ -166,7 +156,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   async function onFull() {
     setBusy("full");
     setMsg(null);
-    const sections = petDecision?.sections ?? composeFocusedReport(result);
+    const sections = foodAnswer ? foodSections : petDecision?.sections ?? composeFocusedReport(result);
     setReportSections(sections);
     if (accessLevel !== "system" && accessLevel !== "bundle") {
       setBusy(null); // Free preview is built locally; no paid full-report request.
@@ -198,20 +188,6 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setMsg(null);
     try { await ensureSavedReport(); setMsg(copy.saved); }
     catch (err) { setReportSyncedId(null); setMsg(err instanceof Error && locale !== "en" ? err.message : copy.saveFailed); }
-    finally { setBusy(null); }
-  }
-
-  async function onImage() {
-    if (!session || !user) return;
-    setBusy("image");
-    setMsg(null);
-    try {
-      const reportId = await ensureSavedReport();
-      const out = await generateDecreeImage(session, reportId, true);
-      if (out.signedUrl) setImageUrl(out.signedUrl);
-      setImageReferenceAssetId(out.galleryReferenceAssetId ?? null);
-      setMsg(out.galleryDirect ? copy.imageMatched : copy.imageReady);
-    } catch (err) { setMsg(err instanceof Error ? err.message : copy.fullFailed); }
     finally { setBusy(null); }
   }
 
@@ -281,7 +257,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             <div className="space-y-5 border-t border-line/40 p-4">
               {decreeCouplet ? <div className="zhaowu-free-decree rounded-xl border border-line/60 p-4" data-free-decree><strong className="text-sm text-ink">{copy.decree}</strong><p className="mt-2 text-[14px] leading-7 text-ink-soft">{decreeCouplet}</p></div> : null}
               <BaziChart chart={chart} expandDetails={false} />
-              <CharacterPanel chart={chart} question={question} portraitUrl={imageUrl} selectedAssetId={imageReferenceAssetId} onGenerate={session && user ? () => void onImage() : undefined} generating={busy === "image"} onImageError={() => { setImageUrl(null); setMsg(copy.imageLoadFailed); }} />
+              <CharacterPanel chart={chart} question={question} />
             </div>
           </div>
         </div>
@@ -329,7 +305,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </li>
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
-            <span>{locale === "en" ? "Five-Tone Harmonic Tuning & Personal Sacred Beast sequence" : locale === "zh-Hans" ? toSimplifiedCustomerText("五音調和聆聽序列與專屬命象瑞獸圖譜") : "五音調和聆聽序列與專屬命象瑞獸圖譜"}</span>
+            <span>{locale === "en" ? "Ten-Stem portrait and the branch scenery found in your chart" : locale === "zh-Hans" ? toSimplifiedCustomerText("十天干日主圖與命盤中實際出現的地支景色") : "十天干日主圖與命盤中實際出現的地支景色"}</span>
           </li>
         </ul>
 

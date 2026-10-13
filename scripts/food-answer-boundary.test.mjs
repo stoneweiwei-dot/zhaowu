@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
 import { analyzeLife, followUpLife } from "../src/lib/actions.ts";
 import { FEATURED_CITIES } from "../src/lib/bazi/cities.ts";
 import { foodPreferenceAnswer } from "../src/lib/report/food-preference-answer.ts";
@@ -54,4 +55,22 @@ test("locked full-reading card uses the existing BaZi product and preserves cons
   assert.match(html, /US\$9\.90/);
   assert.match(html, /data-purchase-consent/);
   assert.doesNotMatch(html, /zhaowu-unified-report|follow-up-question/);
+});
+
+
+test("basic food preference questions get meal guidance and use current chart visuals", async () => {
+  const basic = foodPreferenceAnswer("我适合吃什么食物", "zh-Hant");
+  assert.ok(basic);
+  assert.match(basic.answer, /主食/);
+  assert.match(basic.answer, /三個餐點選項/);
+  const [account, resultView] = await Promise.all([
+    readFileSync(new URL("../src/routes/account.tsx", import.meta.url), "utf8"),
+    readFileSync(new URL("../src/components/result-view.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(account, /storedReportSections\(detail, locale\)/);
+  assert.match(account, /<CharacterPanel chart=\{snapshot\.chart\} \/>/);
+  assert.doesNotMatch(account, /imageUrls\[row\.id\]|<DecreeImageReason|generateDecreeImage/);
+  assert.match(account, /網站外觀與內容/);
+  assert.match(resultView, /foodAnswer\?\.answer/);
+  assert.doesNotMatch(resultView, /Personal Sacred Beast sequence|專屬命象瑞獸圖譜|generateDecreeImage/);
 });

@@ -421,7 +421,7 @@ html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout,
 
 /* single-entry home (steps card, birth form, calibration notes): id/class rules keep these panels cream — make them dark glass with light ink */
 html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body :is(
-  ol.zw-home-steps, details.zw-report-edit, section#customer-record, div.zhaowu-time-calibration-note,
+  ol.zw-home-steps, div.zhaowu-time-calibration-note,
   p#time-importance, p.zhaowu-time-warning, #bazi.zhaowu-bazi-stage
 ) {
   background: color-mix(in srgb, var(--zws-card) 90%, transparent) !important;
@@ -429,7 +429,7 @@ html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body :is(
   box-shadow: none !important;
 }
 html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body :is(
-  ol.zw-home-steps, details.zw-report-edit, section#customer-record, div.zhaowu-time-calibration-note,
+  ol.zw-home-steps, div.zhaowu-time-calibration-note,
   p#time-importance, p.zhaowu-time-warning, #bazi.zhaowu-bazi-stage
 ) :is(h1, h2, h3, h4, p, li, span, strong, b, small, label, legend, summary, em, div):not(button):not(button *):not(svg *):not(.bg-cinnabar *) {
   color: var(--zws-ink) !important;
@@ -600,9 +600,9 @@ html[data-zws][data-zws-mode="dark"] body main :is(
  * reading or control contrast depend on the image underneath.
  */
 html[data-zws][data-zws] {
-  --zws-surface: color-mix(in srgb, var(--zws-page) 72%, #fff 28%);
-  --zws-surface-soft: color-mix(in srgb, var(--zws-surface) 96%, var(--zws-accent) 4%);
-  --zws-divider: color-mix(in srgb, var(--zws-ink) 18%, var(--zws-surface));
+  --zws-surface: color-mix(in srgb, var(--zws-page) 94%, #fff 6%);
+  --zws-surface-soft: color-mix(in srgb, var(--zws-surface) 98%, var(--zws-accent) 2%);
+  --zws-divider: color-mix(in srgb, var(--zws-ink) 14%, var(--zws-surface));
   --zws-soft: color-mix(in srgb, var(--zws-ink) 76%, var(--zws-surface));
   --zws-action-bg: var(--zws-accent);
   --zws-card: var(--zws-surface);
@@ -643,7 +643,7 @@ html[data-zws="pastel-koi"][data-zws] { --zws-action-bg: #467573; }
 
 /* A reading sheet carries the fill once. Popups stay opaque and independent. */
 html[data-zws][data-zws][data-zws][data-zws] body :is(
-  #birth-form, .zw-report-edit, .zhaowu-report-continuous-sheet,
+  #birth-form, .zhaowu-report-continuous-sheet,
   .zhaowu-specialist-sheet, .history-hero, .history-empty,
   .zhaowu-site-utility-panel, .zhaowu-site-utility-buttons
 ) {
@@ -840,4 +840,54 @@ html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-focused-progress span 
 html[data-zws][data-zws][data-zws][data-zws] body #zhaowu-main-content .zhaowu-focused-report.zhaowu-report-continuous-sheet .zhaowu-report-header :is(h3, p) {
   color: #293c34 !important;
   -webkit-text-fill-color: currentColor !important;
+}
+
+/* 2026-10-13: the birth-flow wrapper is structural, not a second paper card. */
+html[data-zws] body .zw-report-edit {
+  margin: .25rem 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+html[data-zws] body #birth-form.zhaowu-analysis-flow {
+  gap: 20px !important;
+}
+html[data-zws] body #birth-form :is(
+  .zhaowu-time-calibration-note, .zhaowu-birth-summary, #time-importance, .zhaowu-time-warning
+) {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Keep the birth title readable on both warm paper and dark theme sheets. */
+html[data-zws] body .zhaowu-home-layout #birth-form .zhaowu-customer-record h2 {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* 2026-10-13: night birth form keeps its structural sheet and ink paired. */
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #birth-form #customer-record {
+  background: color-mix(in srgb, var(--zws-card) 90%, transparent) !important;
+  color: var(--zws-ink) !important;
+  border-color: var(--zws-line) !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #birth-form #customer-record :is(
+  h1, h2, h3, h4, p, li, span, strong, b, small, label, legend, summary, em, div
+):not(button):not(button *):not(svg *):not(.bg-cinnabar *) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #birth-form #customer-record :is(input, select, textarea) {
+  background: rgba(255, 255, 255, .07) !important;
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: var(--zws-ink) !important;
 }
