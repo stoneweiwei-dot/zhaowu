@@ -600,9 +600,9 @@ html[data-zws][data-zws-mode="dark"] body main :is(
  * reading or control contrast depend on the image underneath.
  */
 html[data-zws][data-zws] {
-  --zws-surface: color-mix(in srgb, var(--zws-page) 72%, #fff 28%);
-  --zws-surface-soft: color-mix(in srgb, var(--zws-surface) 96%, var(--zws-accent) 4%);
-  --zws-divider: color-mix(in srgb, var(--zws-ink) 18%, var(--zws-surface));
+  --zws-surface: color-mix(in srgb, var(--zws-page) 94%, #fff 6%);
+  --zws-surface-soft: color-mix(in srgb, var(--zws-surface) 98%, var(--zws-accent) 2%);
+  --zws-divider: color-mix(in srgb, var(--zws-ink) 14%, var(--zws-surface));
   --zws-soft: color-mix(in srgb, var(--zws-ink) 76%, var(--zws-surface));
   --zws-action-bg: var(--zws-accent);
   --zws-card: var(--zws-surface);
@@ -659,7 +659,7 @@ html[data-zws][data-zws][data-zws][data-zws] body :is(
  * the almanac's symbolic pigment plates, images or the selected report covers.
  */
 html[data-zws][data-zws][data-zws][data-zws] body #birth-form :is(
-  #bazi, .zhaowu-bazi-preview, .zhaowu-bazi-plain,
+  #customer-record, #bazi, .zhaowu-bazi-preview, .zhaowu-bazi-plain,
   .zhaowu-question-sheet, .zhaowu-birth-summary, .zhaowu-time-calibration-note,
   #time-importance, .zhaowu-time-warning
 ) {
@@ -843,7 +843,7 @@ html[data-zws][data-zws][data-zws][data-zws] body #zhaowu-main-content .zhaowu-f
 }
 
 /* 2026-10-13: the birth-flow wrapper is structural, not a second paper card. */
-html body .zw-report-edit {
+html[data-zws] body .zw-report-edit {
   margin: .25rem 0 !important;
   padding: 0 !important;
   border: 0 !important;
@@ -852,24 +852,10 @@ html body .zw-report-edit {
   box-shadow: none !important;
   outline: none !important;
 }
-html body #birth-form.zhaowu-analysis-flow {
+html[data-zws] body #birth-form.zhaowu-analysis-flow {
   gap: 20px !important;
 }
-html body #birth-form #customer-record {
-  border: 1px solid var(--zws-divider, var(--zw-line, rgba(82, 65, 42, .16))) !important;
-  border-radius: 8px !important;
-  background: var(--zws-surface, var(--zw-paper-strong, #fcf8ee)) !important;
-  color: var(--zws-ink, var(--zw-ink, #29251f)) !important;
-  box-shadow: none !important;
-  outline: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-html[data-zw-theme="night"] body #birth-form #customer-record {
-  border-color: var(--zws-divider, rgba(212, 176, 116, .22)) !important;
-  background: var(--zws-surface, #102a23) !important;
-}
-html body #birth-form :is(
+html[data-zws] body #birth-form :is(
   .zhaowu-time-calibration-note, .zhaowu-birth-summary, #time-importance, .zhaowu-time-warning
 ) {
   border: 0 !important;
