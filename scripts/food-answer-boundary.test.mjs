@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
 import { analyzeLife, followUpLife } from "../src/lib/actions.ts";
 import { FEATURED_CITIES } from "../src/lib/bazi/cities.ts";
 import { foodPreferenceAnswer } from "../src/lib/report/food-preference-answer.ts";
