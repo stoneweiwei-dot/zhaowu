@@ -217,7 +217,9 @@ test("the owner console embeds the existing gallery-backed dual social publisher
   assert.match(route, /Instagram 需要一張圖片；請從圖庫選擇或直接上傳/);
   assert.doesNotMatch(route, /完成一次 Meta 授權後/);
   assert.match(userState, /"\/social"/);
-  assert.doesNotMatch(route, /小紅書|小红书|抖音/);
+  assert.match(route, /data-xiaohongshu-helper/);
+  assert.match(route, /navigator\.clipboard\.writeText/);
+  assert.match(route, /xiaohongshu\.com\/explore/);
 });
 
 test("the root no longer mounts the duplicate DOM-scanning owner console organizer", async () => {
