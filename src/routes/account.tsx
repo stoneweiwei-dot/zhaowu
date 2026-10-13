@@ -108,7 +108,6 @@ function AccountPage() {
   const [busy, setBusy] = useState(true);
   const [refreshBusy, setRefreshBusy] = useState(false);
   const [detailBusyId, setDetailBusyId] = useState<string | null>(null);
-  const [actionBusyId, setActionBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reportMessages, setReportMessages] = useState<Record<string, string>>({});
   const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
@@ -513,13 +512,13 @@ function AccountPage() {
         <div id="console-panel-images" role="region" aria-labelledby="console-tab-images" hidden={consoleView !== "images"}>
           {visitedViews.has("images") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入圖庫…", "加载图库…", "Loading gallery…")}</p>}><OwnerGalleryManager session={session} locale={locale} /></Suspense> : null}
         </div>
-        <div id="console-panel-opening" role="tabpanel" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>
+        <div id="console-panel-opening" role="region" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>
           {visitedViews.has("opening") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入影片…", "加载视频…", "Loading videos…")}</p>}><OwnerLoginVisualsManager session={session} locale={locale} /></Suspense> : null}
         </div>
-        <div id="console-panel-themes" role="tabpanel" aria-labelledby="console-tab-themes" hidden={consoleView !== "themes"}>
+        <div id="console-panel-themes" role="region" aria-labelledby="console-tab-themes" hidden={consoleView !== "themes"}>
           {visitedViews.has("themes") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入主題…", "加载主题…", "Loading themes…")}</p>}><OwnerThemeSkinsManager locale={locale} /></Suspense> : null}
         </div>
-        <div id="console-panel-social" role="tabpanel" aria-labelledby="console-tab-social" hidden={consoleView !== "social"}>
+        <div id="console-panel-social" role="region" aria-labelledby="console-tab-social" hidden={consoleView !== "social"}>
           {visitedViews.has("social") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入發布器…", "加载发布器…", "Loading publisher…")}</p>}><SocialPublisherPage embedded /></Suspense> : null}
         </div>
       </>) : null}
