@@ -768,3 +768,14 @@ html[data-zws][data-zws][data-zws][data-zws] body .zw-saved-report-card {
 
 /* Replay remains a real touch target even after its pill frame is removed. */
 html[data-zws] body .zw-intro-replay { min-height: 44px; }
+
+/* Legacy #birth-form rules outrank the generic action selector. Bind both
+ * submit actions to the same theme contract rather than their old green pill. */
+html[data-zws][data-zws][data-zws][data-zws] body #birth-form button[type="submit"] {
+  background: var(--zws-action-bg) !important;
+  color: var(--zws-on-accent) !important;
+  -webkit-text-fill-color: currentColor !important;
+  border: 1px solid var(--zws-action-bg) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}

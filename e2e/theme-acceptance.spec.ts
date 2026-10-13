@@ -40,6 +40,20 @@ async function healthy(page: Page, label: string) {
     expect.soft(alpha(m.bg), `${label}: ${m.selector} heading is a pasted panel`).toBe(0);
     expect.soft(m.shadow, `${label}: ${m.selector} heading shadow`).toBe('none');
   }
+  const actions = await page.evaluate(() => {
+    const canvas = document.createElement('canvas'); canvas.width = canvas.height = 1;
+    const ctx = canvas.getContext('2d')!;
+    const pixel = (value: string) => { ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = value; ctx.fillRect(0, 0, 1, 1); return Array.from(ctx.getImageData(0, 0, 1, 1).data); };
+    return Array.from(document.querySelectorAll<HTMLElement>('#birth-form button[type="submit"], .zw-flow-next, .stone-login-primary, .zhaowu-home-login-inline, .zhaowu-header-owner-login')).filter(el => el.getClientRects().length).map(el => {
+      const s = getComputedStyle(el);
+      return { text: el.textContent?.trim().slice(0, 40), actual: pixel(s.backgroundColor), expected: pixel(s.getPropertyValue('--zws-action-bg').trim()), shadow: s.boxShadow, radius: s.borderRadius, height: el.getBoundingClientRect().height };
+    });
+  });
+  for (const m of actions) {
+    expect.soft(m.actual, `${label}: ${m.text} must use this skin's action pigment`).toEqual(m.expected);
+    expect.soft(m.shadow, `${label}: ${m.text} action shadow`).toBe('none');
+    expect.soft(m.height, `${label}: ${m.text} action touch target`).toBeGreaterThanOrEqual(44);
+  }
   // Measure computed foreground against the real opaque ancestor surface.
   // Image-backed labels without an opaque carrier need screenshot review;
   // never report a palette estimate as a browser-measured contrast pass.
@@ -62,7 +76,7 @@ async function healthy(page: Page, label: string) {
     });
   });
   for (const m of contrasts) if (m.ratio !== null) expect.soft(m.ratio, `${label}: ${m.text} computed text contrast`).toBeGreaterThanOrEqual(4.5);
-  return { secondary, headings, contrasts };
+  return { secondary, headings, actions, contrasts };
 }
 
 for (const skin of SKINS) {
@@ -151,7 +165,7 @@ for (const skin of SKINS) {
     for (const fold of await page.locator('.zhaowu-report-continuous-sheet details[data-report-fold] > summary').all()) {
       if (await fold.isVisible()) await fold.click();
     }
-    await shot('report', '.zhaowu-report-continuous-sheet');
+    await shot('report', '.zhaowu-report-header');
     await healthy(page, 'paid report');
 
     await open('/#today', '#daily-almanac');
