@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - 'src/lib/theme-skins.ts'
+      - 'src/components/owner-theme-skins-manager.tsx'
       - 'lib/owner-site-skin-public.js'
       - 'src/theme-skins*.css'
       - 'src/journey-navigation.css'
