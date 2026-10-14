@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
  */
 export const SKIN_KEY = "zhaowu.skin.v1";
 export const SKIN_EVENT = "zhaowu-skin";
-/** Site-wide default for visitors without a saved choice. Pastel koi = first owner homepage reference. */
-export const SITE_DEFAULT_SKIN = "pastel-koi";
+/** Site-wide default for visitors without a saved choice. Empty string = classic look. */
+export const SITE_DEFAULT_SKIN = "";
 
 export type SkinMode = "light" | "dark";
 export type SkinDef = {
