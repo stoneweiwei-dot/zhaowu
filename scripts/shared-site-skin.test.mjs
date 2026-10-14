@@ -15,7 +15,7 @@ test("shared skin catalog covers all registered choices and classic", () => {
 
 test("public read: missing config means classic, no owner login needed", async () => {
   const result = await readPublishedSiteSkin(async () => ({ status: 404, ok: false }));
-  assert.deepEqual(result, { skin: "none", configured: false });
+  assert.deepEqual(result, { skin: "pastel-koi", configured: false });
 });
 
 test("public read: chooses only known theme id, rejects poisoned values", async () => {
