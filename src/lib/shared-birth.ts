@@ -63,7 +63,7 @@ export function sharedBirthFromUnknown(value: unknown): SharedBirthRecord | null
     city,
     liveCity,
     ziPolicy: "midnight",
-    useTrueSolar: true,
+    useTrueSolar: city.standardTimeFallback !== true,
   };
 }
 

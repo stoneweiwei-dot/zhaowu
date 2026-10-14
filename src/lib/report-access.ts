@@ -22,6 +22,7 @@ export const REPORT_ACCESS_PRODUCTS = {
 
 const ACCESS_KEY_STORAGE = "zhaowu.report-access-key.v1";
 const SESSION_STORAGE = "zhaowu.report-access-sessions.v1";
+const BAZI_RETURN_STORAGE = "zhaowu.pending-bazi-return.v1";
 const ACCESS_ENDPOINT = `${SUPABASE_URL}/functions/v1/stripe-checkout`;
 
 const PAYMENT_LINKS: Record<ReportSystemId, Record<ReportAccessProduct, string>> = {
@@ -123,10 +124,9 @@ async function payloadOf(response: Response): Promise<Verification> {
   return payload;
 }
 
-async function verifySession(sessionId: string, accessKey: string): Promise<Verification> {
+async function verifySession(sessionId: string): Promise<Verification> {
   const url = new URL(ACCESS_ENDPOINT);
   url.searchParams.set("session_id", sessionId);
-  url.searchParams.set("access_key", accessKey);
   const response = await fetch(url, { headers: apiHeaders(), cache: "no-store" });
   return payloadOf(response);
 }
@@ -157,7 +157,10 @@ export async function resolveReportAccess(system: ReportSystemId) {
   let pending = false;
   for (const sessionId of [...new Set([query, ...storedSessions()].filter(Boolean))]) {
     try {
-      const verification = await verifySession(sessionId, accessKey);
+      // The checkout session ID is the high-entropy return capability. Verification
+      // must also work when Stripe opens the success URL in a different browser whose
+      // localStorage cannot contain the original client reference key.
+      const verification = await verifySession(sessionId);
       pending ||= verification.pending === true;
       const candidate = levelFor(verification, system);
       if (rank[candidate] > rank[level]) level = candidate;
@@ -181,6 +184,9 @@ export async function startReportCheckout(product: ReportAccessProduct, system: 
   // still verifies the paid Stripe session before showing gated content.
   if (system === "bazi" && product === "system" && /^[0-9a-f-]{36}$/i.test(reportId || "")) {
     try { localStorage.setItem("zhaowu.pending-bazi-report.v1", reportId!); } catch { /* Recovery remains available in My reports. */ }
+  }
+  if (system === "bazi" && product === "system") {
+    try { localStorage.setItem(BAZI_RETURN_STORAGE, "bazi"); } catch { /* The success query still opens the birth flow. */ }
   }
   const url = new URL(link);
   url.searchParams.set("client_reference_id", accessKey);

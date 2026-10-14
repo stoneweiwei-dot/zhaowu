@@ -186,12 +186,19 @@ function Home() {
   useEffect(() => { setFormExpanded(!current); }, [current?.id]);
 
   useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get("report");
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("report");
     const saved = id ? readLocalReports().find(entry => entry.result.id === id) : null;
     if (saved) {
       if (saved.birth) writeSharedBirthRecord(saved.birth);
       setCurrent(saved.result);
       setActiveSection("form");
+    } else if (params.get("checkout") === "success") {
+      // A BaZi checkout can begin before a question/report ID exists. The birth
+      // record is already local, so return directly to its book stage.
+      setFormExpanded(true);
+      setActiveSection("form");
+      window.setTimeout(() => document.getElementById("bazi")?.scrollIntoView({ block: "start" }), 180);
     }
   }, [setCurrent]);
 
@@ -259,6 +266,10 @@ function Home() {
       if (hash === "#report") {
         setActiveSection("form");
         window.setTimeout(() => document.getElementById("report")?.scrollIntoView({ block: "start" }), 150);
+      } else if (hash === "#bazi") {
+        setFormExpanded(true);
+        setActiveSection("form");
+        window.setTimeout(() => document.getElementById("bazi")?.scrollIntoView({ block: "start" }), 150);
       } else if (BIRTH_HASHES.includes(hash)) {
         openBirthBook({ focusYear: false });
       } else if (TODAY_HASHES.includes(hash)) {

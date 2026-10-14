@@ -52,6 +52,8 @@ export type CityHit = {
   latitude: number;
   longitude: number;
   timezone: string;
+  /** The place could not be verified, so the chart uses Beijing standard time without longitude correction. */
+  standardTimeFallback?: boolean;
 };
 
 export type AnalyzeInput = {
@@ -115,6 +117,7 @@ export type Chart = {
   hemisphere: "N" | "S";
   ziPolicy: ZiPolicy;
   usedTrueSolar: boolean;
+  locationFallback?: boolean;
   timeUnknown: boolean;
   birthTimeReview: BirthTimeReview;
   gender: Gender;

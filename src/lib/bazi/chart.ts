@@ -282,7 +282,11 @@ export function buildChart(input: AnalyzeInput): Chart {
   const civilStamp = timeUnknown
     ? `${input.year}-${String(input.month).padStart(2, "0")}-${String(input.day).padStart(2, "0")} 時辰未定`
     : stamp(input.year, input.month, input.day, input.hour, input.minute);
-  const trueSolarStamp = timeUnknown ? "時辰未定，真太陽時不作校正" : stamp(y, m, d, h, min);
+  const trueSolarStamp = input.city.standardTimeFallback
+    ? "出生地未確認，未校正真太陽時（採北京標準時間）"
+    : timeUnknown
+      ? "時辰未定，真太陽時不作校正"
+      : stamp(y, m, d, h, min);
   const threeYuan = buildThreeYuanAuxiliary({
     yearGz: ym.year,
     monthGz: ym.month,
@@ -298,6 +302,9 @@ export function buildChart(input: AnalyzeInput): Chart {
   const threeYuanProvenance = timeUnknown
     ? " 胎元仍可按月柱固定推得；命宮、身宮因時辰未定而留白。"
     : " 胎元按月干進一、月支進三；命宮採農曆月古法並保留節令月敏感度；身宮按逢酉安身，完整干支僅作後世低權重研究口徑。";
+  const locationFallbackNote = input.city.standardTimeFallback
+    ? " 出生地未能確認，這份盤暫按 UTC+8 北京標準時間計算，未套用出生地經度或真太陽時校正；確認城市後應重新排盤。"
+    : "";
   const provenance = timeUnknown
     ? `時辰未定：年月柱按當日正午取節氣，日柱按公曆日，時柱、命宮、身宮、大運起運留白，不偽造午時柱。子時政策不套用。${threeYuanProvenance}`
     : usedTrueSolar
@@ -319,6 +326,7 @@ export function buildChart(input: AnalyzeInput): Chart {
     hemisphere: input.city.latitude < 0 ? "S" : "N",
     ziPolicy: "midnight",
     usedTrueSolar,
+    locationFallback: input.city.standardTimeFallback === true,
     timeUnknown,
     birthTimeReview,
     gender: input.gender,
@@ -339,7 +347,7 @@ export function buildChart(input: AnalyzeInput): Chart {
     shengongBranch: threeYuan.shengongBranch,
     shengongReliability: threeYuan.shengongReliability,
     threeYuanNote: threeYuan.note,
-    provenance,
+    provenance: `${provenance}${locationFallbackNote}`,
   };
 }
 

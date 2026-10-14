@@ -32,6 +32,7 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
         civilCandidate: 'Clock-time candidate',
         solarCandidate: 'True-solar candidate',
         verifyNote: 'True-solar correction crossed a two-hour branch boundary. Both candidates are retained for event-based verification; the working chart currently uses true solar time. Do not choose a chart from personality descriptions alone.',
+        fallbackNote: 'Birthplace could not be verified. This chart temporarily uses Beijing standard time (UTC+8) without true-solar correction. Confirm the birthplace and generate it again when possible.',
       }
     : {
         title: hans ? '四柱八字' : '四柱八字',
@@ -55,6 +56,9 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
         verifyNote: hans
           ? '真太阳时校正跨过了一个时辰边界。系统同时保留两组候选，用已发生且年份明确的事件反证；当前工作主盘暂按真太阳时。不能只凭性格描述选盘。'
           : '真太陽時校正跨過了一個時辰邊界。系統同時保留兩組候選，用已發生且年份明確的事件反證；目前工作主盤暫按真太陽時。不能只憑性格描述選盤。',
+        fallbackNote: hans
+          ? '出生地未能确认；本盘暂按北京时间（UTC+8）计算，未校正真太阳时。之后确认城市时，请重新生成命盘。'
+          : '出生地未能確認；本盤暫按北京標準時間（UTC+8）計算，未校正真太陽時。之後確認城市時，請重新生成命盤。',
       };
   const ready = (p: Pillar) => p.ready && !(chart.timeUnknown && p.key === 'time');
   const review = chart.birthTimeReview;
@@ -67,6 +71,7 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
         <p>{c.lead}</p>
       </header> : null}
       {chart.timeUnknown ? <p className="zhaowu-time-warning">{UNKNOWN_TIME_COPY[locale]}</p> : null}
+      {chart.locationFallback ? <p className="zhaowu-time-warning" data-location-fallback>{c.fallbackNote}</p> : null}
       {review?.required && review.civil && review.trueSolar ? (
         <aside className="zhaowu-time-warning" data-birth-time-review="needs-verification">
           <strong>{c.verifyTitle}</strong>

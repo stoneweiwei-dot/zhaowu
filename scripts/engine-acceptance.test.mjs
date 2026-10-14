@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 const { buildPalm } = await import("../src/lib/palm/engine.ts");
 const { buildChart } = await import("../src/lib/bazi/chart.ts");
-const { FEATURED_CITIES } = await import("../src/lib/bazi/cities.ts");
+const { FEATURED_CITIES, standardTimeFallbackCity } = await import("../src/lib/bazi/cities.ts");
 const { interpret, composeFullReport } = await import("../src/lib/bazi/interpret.ts");
 const { dayGanzhi, hourPillar } = await import("../src/lib/bazi/calendar.ts");
 
@@ -131,11 +131,21 @@ test("真太陽時完成後固定以午夜換日，23點不借次日天干", () 
   assert.equal(earlyZi[0], hourPillar(nextDay, 0)[0]);
 });
 
-test("客戶提交不能關閉真太陽時或改成晚子換日", async () => {
+test("已確認出生地的客戶提交不能關閉真太陽時或改成晚子換日", async () => {
   const actions = await import("../src/lib/actions.ts");
   const input = sample({ useTrueSolar: false, ziPolicy: "late" });
   const result = await actions.analyzeLife({ data: input });
   assert.equal(result.chart.usedTrueSolar, true);
   assert.equal(result.chart.ziPolicy, "midnight");
   assert.match(result.chart.provenance, /真太陽時|真太阳时/);
+});
+
+test("出生地搜尋失敗時只允許明示的北京標準時間降級", async () => {
+  const actions = await import("../src/lib/actions.ts");
+  const city = standardTimeFallbackCity("zh-Hant", "未定位城市");
+  const result = await actions.analyzeLife({ data: sample({ city, useTrueSolar: true }) });
+  assert.equal(result.chart.usedTrueSolar, false);
+  assert.equal(result.chart.locationFallback, true);
+  assert.match(result.chart.trueSolarStamp, /未校正真太陽時/);
+  assert.match(result.chart.provenance, /北京標準時間.*未套用.*真太陽時/);
 });

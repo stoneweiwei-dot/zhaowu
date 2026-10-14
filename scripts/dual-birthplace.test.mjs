@@ -17,9 +17,9 @@ test("双轨复用共享出生资料，并由系统自动校正时间", () => {
   assert.match(route, /出生資料直接沿用首頁四柱八字區，不再重填/);
   assert.doesNotMatch(route, /CityPicker|const MINUTES/);
   assert.match(form, /ziPolicy: "midnight"/);
-  assert.match(form, /useTrueSolar: true/);
+  assert.match(form, /useTrueSolar: !effectiveBirthCity\.standardTimeFallback/);
   assert.match(actions, /ziPolicy: "midnight"/);
-  assert.match(actions, /useTrueSolar: true/);
+  assert.match(actions, /useTrueSolar: raw\.city\.standardTimeFallback !== true/);
   assert.doesNotMatch(form, /setZiPolicy|setUseTrueSolar/);
   assert.doesNotMatch(route, /lead: "天机星宫读你如何/);
 });

@@ -127,24 +127,9 @@ test("API: POST /api/owner-data strictly protects all management actions from un
 test("Direct URL /account: Unauthenticated visitor view is isolated and renders no admin data or operations", async () => {
   const accountRoute = await readFile(new URL("../src/routes/account.tsx", import.meta.url), "utf8");
 
-  // 1. Check strict authentication branch in AccountPage:
-  // When !user, return guest view with memberTitle and login link only.
-  const guestCheckRegex = /if\s*\(!user\)\s*\{\s*return\s*\(\s*<main className="mx-auto max-w-xl">[\s\S]*?<\/main>\s*\);\s*\}/;
-  assert.match(accountRoute, guestCheckRegex, "Must have early return for !user");
-
-  // 2. Ensure guest return never references owner console data-attributes
-  const guestMatch = accountRoute.match(guestCheckRegex)?.[0] ?? "";
-  assert.doesNotMatch(guestMatch, /data-owner-console/);
-  assert.doesNotMatch(guestMatch, /data-owner-independent-console/);
-  assert.doesNotMatch(guestMatch, /OwnerGalleryManager/);
-  assert.doesNotMatch(guestMatch, /OwnerLoginVisualsManager/);
-  assert.doesNotMatch(guestMatch, /SocialPublisherPage/);
-  assert.doesNotMatch(guestMatch, /OwnerThemeSkinsManager/);
-  assert.doesNotMatch(guestMatch, /data-owner-bulk-toolbar/);
-  assert.doesNotMatch(guestMatch, /listOwnerReportPage/);
-
-  // 3. Ensure listOwnerReportPage is strictly gated behind user.isOwner
-  assert.match(accountRoute, /const page = user\.isOwner \? await listOwnerReportPage\(\) : null/);
+  assert.match(accountRoute, /if \(!user\?\.isOwner\) return/);
+  assert.doesNotMatch(accountRoute, /會員登入|會員登入／註冊|登入或註冊後|Sign in \/ Register/);
+  assert.match(accountRoute, /const page = await listOwnerReportPage\(\)/);
   assert.match(accountRoute, /if \(nextOffset === null \|\| moreBusy \|\| !user\?\.isOwner\) return/);
 
   // 4. Ensure bulk delete is strictly gated behind user.isOwner
@@ -197,6 +182,8 @@ test("Real Browser: unauthenticated guest accessing /account directly receives n
 
     const targetUrl = process.env.TARGET_URL || "https://stone-zhaowu-official.vercel.app/account";
     await page.goto(targetUrl, { waitUntil: "networkidle" });
+    assert.equal(new URL(page.url()).pathname, "/login", "Guest /account must resolve only to the owner login route");
+    assert.equal(await page.getByText("站主登入", { exact: true }).count(), 1);
 
     // 1. Verify owner console DOM markers are absent
     const ownerConsoleCount = await page.locator("[data-owner-console=\"true\"]").count();

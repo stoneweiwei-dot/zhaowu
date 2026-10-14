@@ -40,7 +40,8 @@ test("the browser can only query server-side entitlements; it cannot create paym
   assert.match(checkout, /PAYMENT_LINKS_ONLY/);
   assert.match(checkout, /report_purchase_entitlements/);
   assert.match(checkout, /\.eq\("checkout_session_id", sessionId\)/);
-  assert.match(checkout, /\.eq\("access_key", accessKey\)/);
+  assert.doesNotMatch(checkout, /\.eq\("access_key", accessKey\)/);
+  assert.doesNotMatch(client, /searchParams\.set\("access_key"/);
   assert.doesNotMatch(checkout, /npm:stripe|STRIPE_(?:SECRET|RESTRICTED)_KEY|checkout\.sessions\.create/);
 });
 
