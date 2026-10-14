@@ -60,8 +60,8 @@
     <script>
       (function () {
         try {
-          var k = localStorage.getItem("zhaowu.skin.v1");
-          if (!k || k === "none") return;
+          // Shared owner selection replaces this after load; old device choices never override it.
+          var k = "pastel-koi";
           var dark = k === "night-flute" || k === "night-palace" || k === "verdant-rain";
           var r = document.documentElement;
           r.setAttribute("data-zws", k);
