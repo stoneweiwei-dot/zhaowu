@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { SKINS, useSkin } from "@/lib/theme-skins";
 
@@ -6,12 +6,24 @@ function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
 }
 
+type ThemePreview = { src: string; alt: string };
+
 /** Owner theme catalog uses isolated screenshots of the actual homepage. */
 export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
   const { id, apply } = useSkin();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [preview, setPreview] = useState<ThemePreview | null>(null);
+
+  useEffect(() => {
+    if (!preview) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPreview(null);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [preview]);
   const choose = async (next: string) => {
     if (saving) return;
     setSaving(true);
@@ -39,7 +51,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
       {success ? <p role="status" className="mt-3 text-sm text-wood">{success}</p> : null}
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <article className={`overflow-hidden rounded-xl border ${id === "" ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"} bg-paper/40`}>
-          <a href="/theme-previews/none.jpg" target="_blank" rel="noreferrer" className="block p-3"><img src="/theme-previews/none.jpg" alt={tr(locale, "預設首頁實際排版", "默认首页实际排版", "Default homepage layout")} loading="lazy" width="390" height="844" className="mx-auto h-80 w-auto max-w-full object-contain object-top" /></a>
+          <button type="button" onClick={() => setPreview({ src: "/theme-previews/none.jpg", alt: tr(locale, "預設首頁實際排版", "默认首页实际排版", "Default homepage layout") })} aria-label={tr(locale, "放大預設首頁預覽", "放大默认首页预览", "Enlarge default homepage preview")} className="block w-full p-3 text-left"><img src="/theme-previews/none.jpg" alt={tr(locale, "預設首頁實際排版", "默认首页实际排版", "Default homepage layout")} loading="lazy" width="390" height="844" className="mx-auto h-80 w-auto max-w-full object-contain object-top" /></button>
           <div className="flex items-center justify-between gap-3 p-3">
             <div className="min-w-0"><p className="truncate font-medium">{tr(locale, "預設（現行）", "默认（现行）", "Default (current)")}</p></div>
             <button type="button" disabled={saving} onClick={() => void choose("none")} aria-pressed={id === ""} className="min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line px-4 text-sm disabled:opacity-50">{saving ? tr(locale, "同步中…", "同步中…", "Saving…") : id === "" ? tr(locale, "全站使用中", "全站使用中", "Live site theme") : tr(locale, "全站還原", "全站还原", "Reset site")}</button>
@@ -63,10 +75,10 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
                 </div>
               ) : null}
               <article className={`overflow-hidden rounded-xl border bg-paper/40 ${active ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"}`}>
-              <a href={`/theme-previews/${s.id}.jpg`} target="_blank" rel="noreferrer" className="block bg-paper/40 p-3" aria-label={`${name(s)} · ${tr(locale, "查看完整首頁", "查看完整首页", "View full homepage")}`}>
+              <button type="button" onClick={() => setPreview({ src: `/theme-previews/${s.id}.jpg`, alt: `${name(s)} · ${tr(locale, "實際首頁排版", "实际首页排版", "Actual homepage layout")}` })} className="block w-full bg-paper/40 p-3 text-left" aria-label={`${name(s)} · ${tr(locale, "查看完整首頁", "查看完整首页", "View full homepage")}`}>
                 <img src={`/theme-previews/${s.id}.jpg`} alt={`${name(s)} · ${tr(locale, "實際首頁排版", "实际首页排版", "Actual homepage layout")}`} loading="lazy" width="390" height="844" className="mx-auto h-80 w-auto max-w-full object-contain object-top" />
                 <span className="mt-2 block text-center text-xs text-ink-soft">{tr(locale, "實際首頁 · 點擊放大", "实际首页 · 点击放大", "Rendered homepage · Enlarge")}</span>
-              </a>
+              </button>
               <div className="flex items-center justify-between gap-3 p-3">
                 <div className="min-w-0">
                   <p className="truncate font-medium">{name(s)}</p>
@@ -80,6 +92,21 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
           );
         })}
       </div>
+      {preview ? (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-3 sm:p-6" onClick={() => setPreview(null)}>
+          <section role="dialog" aria-modal="true" aria-label={preview.alt} onClick={(event) => event.stopPropagation()} className="flex max-h-full w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-cream shadow-2xl">
+            <div className="flex min-h-14 items-center justify-between gap-3 border-b border-line px-4 py-2">
+              <p className="min-w-0 truncate text-sm font-medium text-ink">{preview.alt}</p>
+              <button type="button" autoFocus onClick={() => setPreview(null)} className="min-h-11 shrink-0 rounded-full border border-line bg-paper px-4 text-sm text-ink" aria-label={tr(locale, "返回主題列表", "返回主题列表", "Back to themes")}>
+                {tr(locale, "返回主題列表", "返回主题列表", "Back to themes")}
+              </button>
+            </div>
+            <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-2 sm:p-4">
+              <img src={preview.src} alt={preview.alt} className="max-h-[calc(100dvh-7rem)] max-w-full object-contain" />
+            </div>
+          </section>
+        </div>
+      ) : null}
     </section>
   );
 }
