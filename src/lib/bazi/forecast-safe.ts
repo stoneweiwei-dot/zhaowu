@@ -79,8 +79,8 @@ export function buildDistinctTimingAnswer(
     }
 
     const ranked = rankDistinct(periods);
-    const best = ranked.best.map(monthLabel).join("、");
-    const caution = ranked.caution.map(monthLabel).join("、");
+    const best = [...ranked.best].sort((a, b) => a.month - b.month).map(monthLabel).join("、");
+    const caution = [...ranked.caution].sort((a, b) => a.month - b.month).map(monthLabel).join("、");
     return [
       yearVerdict(topic, overallScore, year),
       scope.length ? "你指定的月份範圍內，" : "",
@@ -122,11 +122,11 @@ export function distinctTimingSummary(
   return years.map((year) => {
     const forecast = analyzeForecastYear(chart, year, topic);
     const scoped = scope.length ? forecast.months.filter((period) => scope.includes(period.month)) : forecast.months;
-    // Optional: drop months that have already passed (only the `from.year` itself),
-    // so a customer is never told to act in a month that is over. If nothing is
-    // left, keep the full list rather than return an empty window.
+    // Optional: drop months that have already passed (only the `from.year` itself).
+    // An empty remaining window must stay empty; reviving the full year would
+    // recommend months that are already over.
     const upcoming = from && year === from.year ? scoped.filter((period) => period.month >= from.month) : scoped;
-    const source = upcoming.length ? upcoming : scoped;
+    const source = upcoming;
     const periods = source.map((period) => withCycleAdjustment(chart, topic, period));
     const score = adjustedYearScore(chart, topic, forecast.score, periods);
     if (periods.length <= 1) {
@@ -134,6 +134,10 @@ export function distinctTimingSummary(
       return { year, score, best: only && only.score > -2 ? [only.month] : [], caution: only && only.score <= -2 ? [only.month] : [] };
     }
     const ranked = rankDistinct(periods);
-    return { year, score, best: ranked.best.map((p) => p.month), caution: ranked.caution.map((p) => p.month) };
+    return {
+      year, score,
+      best: ranked.best.map((p) => p.month).sort((a, b) => a - b),
+      caution: ranked.caution.map((p) => p.month).sort((a, b) => a - b),
+    };
   });
 }

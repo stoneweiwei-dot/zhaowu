@@ -4,6 +4,7 @@ import { test } from "node:test";
 const { buildChart } = await import("../src/lib/bazi/chart.ts");
 const { FEATURED_CITIES } = await import("../src/lib/bazi/cities.ts");
 const { analyzeForecastYear, buildTimingAnswer } = await import("../src/lib/bazi/forecast.ts");
+const { distinctTimingSummary } = await import("../src/lib/bazi/forecast-safe.ts");
 
 const CITY = FEATURED_CITIES[0];
 
@@ -44,4 +45,14 @@ test("用户看到的月份答案必须显示节气边界说明", () => {
   assert.match(answer, /月份名稱只是方便閱讀/);
   assert.match(answer, /命理月以節氣交接為邊界/);
   assert.doesNotMatch(answer, /公曆每月 1 日到月底.*等同|公历每月 1 日到月底.*等同/);
+});
+
+test("time windows stay chronological and never revive expired months", () => {
+  const year = 2027;
+  const [normal] = distinctTimingSummary(chart(), "career", [year]);
+  assert.deepEqual(normal.best, [...normal.best].sort((a, b) => a - b));
+  assert.deepEqual(normal.caution, [...normal.caution].sort((a, b) => a - b));
+  const [expired] = distinctTimingSummary(chart(), "career", [year], [1], { year, month: 2 });
+  assert.deepEqual(expired.best, []);
+  assert.deepEqual(expired.caution, []);
 });

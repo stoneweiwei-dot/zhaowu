@@ -5,6 +5,7 @@ import { buildQuestionGraph, type QuestionGraph } from "@/lib/qa/complex-questio
 import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
+import { hasUnsupportedNumbers, hasUnsupportedRelativeYear } from "@/lib/report/answer-number-guard";
 
 export type ReasoningFact = {
   id: string;
@@ -385,6 +386,8 @@ function validAnswer(out: any, req: ComplexReasoningRequest): out is ComplexReas
   const maxSentences = req.graph.modes.includes("multi-part") ? 5 : 3;
   if (sentenceCount < 1 || sentenceCount > maxSentences || answer.length > 520 || next.length > 180) return false;
   if (INTERNAL_RE.test(answer + next) || CERTAINTY_RE.test(answer + next) || JARGON_OVERLOAD_RE.test(answer + next)) return false;
+  const sources = [req.graph.sourceText, req.draft.answer, req.draft.next, ...req.facts.map((fact) => fact.text)];
+  if (hasUnsupportedNumbers(answer + next, sources) || hasUnsupportedRelativeYear(answer + next, sources)) return false;
   if (!directAnswerCoversQuestion(req.graph.primaryQuestion || req.graph.sourceText, answer)) return false;
   if (!["high", "medium", "limited"].includes(out.confidence)) return false;
   if (!Array.isArray(out.evidenceIds) || !out.evidenceIds.length) return false;

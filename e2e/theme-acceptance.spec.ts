@@ -52,12 +52,19 @@ async function healthy(page: Page, label: string) {
     expect.soft(alpha(m.bg), `${label}: ${m.selector} heading is a pasted panel`).toBe(0);
     expect.soft(m.shadow, `${label}: ${m.selector} heading shadow`).toBe('none');
   }
-  // Covers deliberately keep warm paper: enforce the actual two foreground
-  // paint channels rather than skipping their image-backed contrast entirely.
+  // Cover ink follows the light or night surface: check both foreground paint
+  // channels rather than skipping contrast because the cover has artwork.
   const cover = await page.locator('.zhaowu-report-header :is(h3, p)').evaluateAll(nodes => nodes.filter(el => el.getClientRects().length).map(el => ({ color: getComputedStyle(el).color, fill: getComputedStyle(el).webkitTextFillColor })));
+  const coverInk = await page.evaluate(() => document.documentElement.getAttribute('data-zws-mode') === 'dark'
+    ? getComputedStyle(document.documentElement).getPropertyValue('--zws-ink').trim()
+    : 'rgb(41, 60, 52)');
+  const measuredInk = await page.evaluate((value) => {
+    const el = document.createElement('span'); el.style.color = value; document.body.append(el);
+    const colour = getComputedStyle(el).color; el.remove(); return colour;
+  }, coverInk);
   for (const m of cover) {
-    expect.soft(m.color, `${label}: warm cover ink`).toBe('rgb(41, 60, 52)');
-    expect.soft(m.fill, `${label}: warm cover text paint`).toBe(m.color);
+    expect.soft(m.color, `${label}: cover ink follows the selected theme`).toBe(measuredInk);
+    expect.soft(m.fill, `${label}: cover text paint`).toBe(m.color);
   }
   for (const m of await metrics(page, ['.zhaowu-focused-progress span'])) {
     expect.soft(alpha(m.bg), `${label}: reading-order label background`).toBe(0);
@@ -138,9 +145,11 @@ for (const skin of SKINS) {
 
     async function open(path: string, ready: string) {
       await page.goto(path, { waitUntil: 'domcontentloaded' });
+      // A newly loaded route can briefly expose only the static shell while
+      // the application bundle hydrates, especially under parallel screenshots.
+      await expect(page.locator(ready).first()).toBeVisible({ timeout: 15_000 });
       await expect(page.locator('html')).toHaveAttribute('data-zws', skin.id);
       await expect(page.locator('html')).toHaveAttribute('data-zws-mode', skin.mode);
-      await expect(page.locator(ready).first()).toBeVisible();
       await page.evaluate(() => document.fonts.ready);
       routeStyles[path] = await healthy(page, path);
     }
