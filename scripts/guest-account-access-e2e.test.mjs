@@ -151,6 +151,10 @@ test("Client-side bridge: unauthenticated sessions never issue ownerData calls",
 });
 
 test("Real Browser: unauthenticated guest accessing /account directly receives no admin UI and management API blocks read/mutation", async (t) => {
+  if ((process.env.VERCEL && !process.env.TARGET_URL) || process.env.ZHAOWU_SKIP_LIVE_PRIVACY === "1") {
+    t.skip("Live-host privacy browser check runs separately from an offline production build");
+    return;
+  }
   const chromiumPath = process.env.CHROMIUM_PATH || "/bin/chromium";
   let chromium;
   try {
