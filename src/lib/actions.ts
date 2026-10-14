@@ -63,7 +63,9 @@ function parseInput(raw: AnalyzeInput): AnalyzeInput {
     minute: raw.timeUnknown ? 0 : minute,
     liveCity: raw.liveCity && isCity(raw.liveCity) ? raw.liveCity : null,
     ziPolicy: "midnight",
-    useTrueSolar: true,
+    // Verified places always use the locked true-solar path. The only exception
+    // is the explicit fail-open placeholder created when place search is unavailable.
+    useTrueSolar: raw.city.standardTimeFallback !== true,
     relation: raw.relation === "hetero" || raw.relation === "same" || raw.relation === "any" ? raw.relation : "unset",
   };
 }
@@ -79,8 +81,9 @@ export async function searchCities({ data }: { data: string }): Promise<CityHit[
   try {
     return await searchBirthPlaces(String(data ?? ""));
   } catch {
-    const local = filterFeatured(String(data ?? "").trim());
-    return local.length ? local : FEATURED_CITIES.slice(0, 6);
+    const query = String(data ?? "").trim();
+    const local = filterFeatured(query);
+    return query ? local : FEATURED_CITIES.slice(0, 6);
   }
 }
 

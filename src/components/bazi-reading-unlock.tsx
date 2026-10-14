@@ -16,7 +16,7 @@ export function useBaziReadingAccess() {
   return unlocked;
 }
 
-export function BaziReadingUnlock({ locale }: { locale: Locale }) {
+export function BaziReadingUnlock({ locale, reportId }: { locale: Locale; reportId?: string }) {
   const consent = usePurchaseConsent();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -25,10 +25,10 @@ export function BaziReadingUnlock({ locale }: { locale: Locale }) {
     if (!consent.require() || busy) return;
     setBusy(true);
     setError("");
-    try { await startReportCheckout("system", "bazi"); }
+    try { await startReportCheckout("system", "bazi", reportId); }
     catch { setError(text("暫時無法前往付款，請稍後重試。", "暂时无法前往付款，请稍后重试。", "Checkout could not open. Please try again.")); setBusy(false); }
   }
-  return <section className="mt-4 border-t border-line/60 pt-4" data-bazi-reading-locked>
+  return <section className="mb-4 mt-4 border-t border-line/60 pt-4" data-bazi-reading-locked>
     <h3 className="font-display text-lg">{text("完整命書", "完整命书", "Full BaZi reading")}</h3>
     <p className="mt-2 text-sm leading-6">{text("基本排盤與兩段試讀免費；完整解讀、詳細時運及連續追問，解鎖後閱讀。", "基本排盘与两段试读免费；完整解读、详细时运及连续追问，解锁后阅读。", "Your basic chart and two preview paragraphs are free. Unlock the full reading, detailed timing and follow-up questions.")}</p>
     <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} />

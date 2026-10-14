@@ -54,6 +54,25 @@ const FEATURED_ALIASES: Record<string, string[]> = {
 
 type CityDisplayLocale = "zh-Hant" | "zh-Hans" | "en";
 
+export function standardTimeFallbackCity(locale: CityDisplayLocale, typedPlace = ""): CityHit {
+  const place = typedPlace.trim();
+  const fallback = locale === "en"
+    ? "location unverified · Beijing standard time"
+    : locale === "zh-Hans"
+      ? "地点未确认 · 北京标准时间"
+      : "地點未確認 · 北京標準時間";
+  return {
+    name: place || (locale === "en" ? "Unspecified birthplace" : locale === "zh-Hans" ? "未提供出生地" : "未提供出生地"),
+    country: "",
+    display: place ? `${place} · ${fallback}` : fallback,
+    latitude: 39.9042,
+    // The UTC+8 standard meridian. No longitude/equation-of-time correction is applied.
+    longitude: 120,
+    timezone: "Asia/Shanghai",
+    standardTimeFallback: true,
+  };
+}
+
 const FEATURED_DISPLAY: Record<string, Record<Exclude<CityDisplayLocale, "zh-Hant">, string>> = {
   "25.033,121.5654": { "zh-Hans": "台北，台湾", en: "Taipei, Taiwan" },
   "25.0169,121.4628": { "zh-Hans": "新北，台湾", en: "New Taipei, Taiwan" },
@@ -85,6 +104,7 @@ function coordinateKey(city: Pick<CityHit, "latitude" | "longitude">) {
 }
 
 export function localizeCityHit(city: CityHit, locale: CityDisplayLocale): CityHit {
+  if (city.standardTimeFallback) return standardTimeFallbackCity(locale, city.name === "未提供出生地" || city.name === "Unspecified birthplace" ? "" : city.name);
   const canonical = FEATURED_CITIES.find((candidate) => coordinateKey(candidate) === coordinateKey(city));
   if (!canonical) return city;
   const display = locale === "zh-Hant" ? canonical.display : FEATURED_DISPLAY[coordinateKey(city)]?.[locale];

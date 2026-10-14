@@ -5,7 +5,6 @@ import { signOut } from "@/lib/auth/client";
 import {
   deleteReportRecord,
   getReportRecord,
-  listReportRecords,
   listOwnerReportPage,
   type ReportListRecord,
   type ReportRecord,
@@ -110,28 +109,18 @@ function AccountPage() {
   const [detailBusyId, setDetailBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reportMessages, setReportMessages] = useState<Record<string, string>>({});
-  const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
   const [selectedReportIds, setSelectedReportIds] = useState<string[]>([]);
 
   const c = useMemo(() => ({
     ownerTitle: tr(locale, "昭梧後台", "昭梧后台", "Zhaowu console"),
-    memberTitle: tr(locale, "我的昭梧", "我的昭梧", "My Zhaowu"),
     ownerBadge: tr(locale, "站主", "站主", "Owner"),
     reportsReadError: tr(locale, "報告讀取失敗。", "报告读取失败。", "Could not load reports."),
     reportReadError: tr(locale, "單筆報告讀取失敗。", "单笔报告读取失败。", "Could not load this report."),
     expired: tr(locale, "登入狀態已失效，請重新登入。", "登录状态已失效，请重新登录。", "Your session has expired. Sign in again."),
-    birthData: tr(locale, "出生資料", "出生资料", "Birth profile"),
-    birthSaved: tr(locale, "已保存", "已保存", "Saved"),
-    birthEmpty: tr(locale, "未保存", "未保存", "Not saved"),
-    reports: tr(locale, "報告", "报告", "Reports"),
-    ownerCount: (n: number) => tr(locale, `目前 ${n} 筆`, `目前 ${n} 笔`, `${n} reports`),
-    memberCount: (n: number) => tr(locale, `最近 ${n} 筆，最多顯示 3 筆`, `最近 ${n} 笔，最多显示 3 笔`, `${n} recent reports; up to 3 shown`),
     refreshAll: tr(locale, "刷新後台", "刷新后台", "Refresh console"),
     refreshing: tr(locale, "刷新中…", "刷新中…", "Refreshing…"),
-    refreshed: tr(locale, "已刷新", "已刷新", "Refreshed"),
     refreshOne: tr(locale, "刷新這筆", "刷新这笔", "Refresh"),
     customerReports: tr(locale, "所有已上傳的報告", "所有已上传的报告", "All uploaded reports"),
-    recentReports: tr(locale, "最近報告", "最近报告", "Recent reports"),
     search: tr(locale, "搜尋 Email / 問題", "搜索 Email / 问题", "Search email / question"),
     empty: tr(locale, "目前沒有已上傳的報告。本機保存的內容請到「我的報告」查看。", "目前没有已上传的报告。本机保存的内容请到“我的报告”查看。", "No uploaded reports yet. Open My reports for results saved on this device."),
     open: tr(locale, "閱讀完整報告", "阅读完整报告", "Read full report"),
@@ -178,7 +167,7 @@ function AccountPage() {
   }), [locale]);
 
   async function loadReports() {
-    if (!session || !user) {
+    if (!session || !user?.isOwner) {
       setRows([]);
       setBusy(false);
       return;
@@ -186,8 +175,8 @@ function AccountPage() {
     setBusy(true);
     setError(null);
     try {
-      const page = user.isOwner ? await listOwnerReportPage() : null;
-      const nextRows = page ? page.items : await listReportRecords(session, false);
+      const page = await listOwnerReportPage();
+      const nextRows = page.items;
       setNextOffset(page?.nextOffset ?? null);
       setRows(nextRows);
       const ids = new Set(nextRows.map((row) => row.id));
@@ -232,13 +221,12 @@ function AccountPage() {
   }
 
   async function refreshAll() {
-    if (!session || !user) return;
+    if (!session || !user?.isOwner) return;
     setRefreshBusy(true);
     setError(null);
     try {
       await loadReports();
       if (openId) await refreshDetail(openId, true);
-      setLastRefreshedAt(new Date());
     } finally {
       setRefreshBusy(false);
     }
@@ -294,20 +282,9 @@ function AccountPage() {
 
   if (isPending) return <div className="mx-auto h-52 max-w-xl animate-pulse rounded-xl bg-cream/70" />;
 
-  if (!user) {
-    return (
-      <main className="mx-auto max-w-xl">
-        <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
-          <p className="text-xs tracking-[0.28em] text-cinnabar">ZHAOWU ACCOUNT</p>
-          <h1 className="mt-2 font-display text-3xl">{c.memberTitle}</h1>
-          <p className="mt-4 text-sm leading-7 text-ink-soft">{tr(locale, "登入或註冊後可保存這台裝置的生辰與報告，並隨時同步您的紀錄。", "登录或注册后可保存这台设备的生辰与报告，并随时同步您的记录。", "Sign in or register to preserve birth records and reports on this device and sync your readings anytime.")}</p>
-          <Link to="/login" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{tr(locale, "會員登入／註冊", "会员登录／注册", "Sign in / Register")}</Link>
-        </section>
-      </main>
-    );
-  }
+  if (!user?.isOwner) return <div className="mx-auto h-52 max-w-xl animate-pulse rounded-xl bg-cream/70" />;
 
-  if (user.isOwner && !session) {
+  if (!session) {
     return (
       <main className="mx-auto max-w-3xl space-y-5" data-owner-independent-console>
         <section className="seal-border rounded-[1.35rem] bg-cream/95 p-5 sm:p-7">
@@ -328,12 +305,11 @@ function AccountPage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl space-y-5" data-owner-console={user.isOwner ? "true" : undefined}>
+    <main className="mx-auto max-w-3xl space-y-5" data-owner-console="true">
       <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            {!user.isOwner ? <p className="text-xs tracking-[0.28em] text-cinnabar">MY ZHAOWU</p> : null}
-            <h1 className="mt-2 font-display text-3xl">{user.isOwner ? c.ownerTitle : c.memberTitle}</h1>
+            <h1 className="mt-2 font-display text-3xl">{c.ownerTitle}</h1>
             
             <a href="/history" className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">{tr(locale, "本機報告 →", "本机报告 →", "My saved reports →")}</a>
           </div>
@@ -344,23 +320,9 @@ function AccountPage() {
             </button>
           </div>
         </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2" hidden={user.isOwner}>
-          {!user.isOwner ? (
-            <div className="rounded-lg border border-line bg-paper/45 p-4">
-              <p className="text-xs tracking-[0.2em] text-ink-mute">{c.birthData}</p>
-              <p className="mt-2 text-sm text-ink-soft">{user.birthData ? c.birthSaved : c.birthEmpty}</p>
-            </div>
-          ) : null}
-          <div className="rounded-lg border border-line bg-paper/45 p-4">
-            <p className="text-xs tracking-[0.2em] text-ink-mute">{c.reports}</p>
-            <p className="mt-2 text-sm text-ink-soft">{user.isOwner ? c.ownerCount(rows.length) : c.memberCount(rows.length)}</p>
-            {lastRefreshedAt ? <p className="mt-1 text-[11px] text-ink-mute">{c.refreshed} · {lastRefreshedAt.toLocaleTimeString()}</p> : null}
-          </div>
-        </div>
       </section>
 
-      {user.isOwner ? (
-        <nav className="space-y-2" aria-label={tr(locale, "站主後台導覽", "站主后台导航", "Owner console navigation")}>
+      <nav className="space-y-2" aria-label={tr(locale, "站主後台導覽", "站主后台导航", "Owner console navigation")}>
           <details open className="rounded-xl border border-line bg-paper/45 p-3">
             <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "客戶報告", "客户报告", "Customer reports")}</summary>
             <button id="console-tab-reports" type="button" aria-controls="console-panel-reports" aria-current={consoleView === "reports" ? "page" : undefined} onClick={() => selectConsoleView("reports")} className="mt-3 min-h-11 rounded-lg border border-line px-4 text-left">{tr(locale, "報告管理", "报告管理", "Reports")}</button>
@@ -379,25 +341,24 @@ function AccountPage() {
             <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "社群發布", "社群发布", "Social publishing")}</summary>
             <button id="console-tab-social" type="button" aria-controls="console-panel-social" aria-current={consoleView === "social" ? "page" : undefined} onClick={() => selectConsoleView("social")} className="mt-3 min-h-11 rounded-lg border border-line px-4 text-left">Instagram / Threads</button>
           </details>
-        </nav>
-      ) : null}
+      </nav>
 
-      <div id="console-panel-reports" role={user.isOwner ? "region" : undefined} aria-labelledby={user.isOwner ? "console-tab-reports" : undefined} hidden={user.isOwner && consoleView !== "reports"}>
+      <div id="console-panel-reports" role="region" aria-labelledby="console-tab-reports" hidden={consoleView !== "reports"}>
       <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs tracking-[0.28em] text-cinnabar">REPORTS</p>
-            <h2 className="mt-1 font-display text-2xl">{user.isOwner ? c.customerReports : c.recentReports}</h2>
+            <h2 className="mt-1 font-display text-2xl">{c.customerReports}</h2>
           </div>
-          {user.isOwner ? <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} /> : null}
+          <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} />
         </div>
 
-        {user.isOwner ? <details><summary className="min-h-11 py-3 text-sm">{c.batchManage} ＋</summary><div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
+        <details><summary className="min-h-11 py-3 text-sm">{c.batchManage} ＋</summary><div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
           <span className="mr-auto font-display text-sm text-ink">{selectedReportIds.length ? c.selected(selectedReportIds.length) : c.batchManage}</span>
           <button type="button" disabled={refreshBusy || !filtered.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedReportIds(filtered.map((row) => row.id))}>{c.selectAllShown}</button>
           <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedReportIds([])}>{c.clearSelection}</button>
           <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelectedReports()}>{c.deleteSelected}</button>
-        </div></details> : null}
+        </div></details>
 
         {busy ? <div className="mt-5 h-20 animate-pulse rounded-lg bg-paper-deep" /> : null}
         {error ? <p className="mt-4 rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm text-cinnabar-deep">{error}</p> : null}
@@ -422,12 +383,12 @@ function AccountPage() {
 
             return (
               <article key={row.id} data-owner-selectable-file="report" className={`relative rounded-xl border bg-paper/35 p-3.5 ${selectedReportIds.includes(row.id) ? "border-wood/45 ring-1 ring-wood/15" : "border-line"}`}>
-                {user.isOwner ? <button type="button" aria-pressed={selectedReportIds.includes(row.id)} onClick={() => setSelectedReportIds((current) => current.includes(row.id) ? current.filter((id) => id !== row.id) : [...current, row.id])} className={`absolute left-2 top-2 inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 text-[10px] font-medium ${selectedReportIds.includes(row.id) ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${c.select} ${row.alias || c.reportFallback}`}>
+                <button type="button" aria-pressed={selectedReportIds.includes(row.id)} onClick={() => setSelectedReportIds((current) => current.includes(row.id) ? current.filter((id) => id !== row.id) : [...current, row.id])} className={`absolute left-2 top-2 inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 text-[10px] font-medium ${selectedReportIds.includes(row.id) ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${c.select} ${row.alias || c.reportFallback}`}>
                   {selectedReportIds.includes(row.id) ? `✓ ${c.selectedOne}` : c.select}
-                </button> : null}
-                <div className={user.isOwner ? "pl-16 text-left" : "text-left"}>
+                </button>
+                <div className="pl-16 text-left">
                   <h3 className="font-display text-lg font-semibold break-words">{row.alias || String(row.context?.question ?? c.reportFallback)}</h3>
-                  {user.isOwner ? <p className="truncate text-xs text-cinnabar">{row.user_email || c.noEmail}</p> : null}
+                  <p className="truncate text-xs text-cinnabar">{row.user_email || c.noEmail}</p>
                   <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")} · {reportLevel(row, locale)}</p>
                   <p className="mt-1 text-[11px] text-ink-mute">{c.updated} {new Date(row.updated_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")}</p>
                 </div>
@@ -444,14 +405,12 @@ function AccountPage() {
                     {detailBusyId === row.id ? <div className="h-28 animate-pulse rounded-lg bg-paper-deep" /> : null}
                     {detailBusyId !== row.id && detail ? (
                       <>
-                        {user.isOwner ? (
-                          <div className="mb-4 rounded-lg border border-line bg-cream/70 p-3">
-                            <p className="text-[11px] tracking-[0.18em] text-cinnabar">{c.finalSource}</p>
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              {[chartState, answerState, reportState].map((s) => <span key={s.label} className={`rounded-full border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
-                            </div>
+                        <div className="mb-4 rounded-lg border border-line bg-cream/70 p-3">
+                          <p className="text-[11px] tracking-[0.18em] text-cinnabar">{c.finalSource}</p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {[chartState, answerState, reportState].map((s) => <span key={s.label} className={`rounded-full border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
                           </div>
-                        ) : null}
+                        </div>
 
                         {snapshot?.chart ? (
                           <div className="mb-4 rounded-md bg-cream/70 p-3">
@@ -462,21 +421,19 @@ function AccountPage() {
                           </div>
                         ) : displayAnswer ? <p className="mb-4 font-medium text-ink">{displayAnswer}</p> : null}
 
-                        {user.isOwner ? (
-                          <details data-report-secondary-actions className="mb-5 rounded-lg border border-line bg-paper/50 p-3">
-                            <summary className="cursor-pointer list-none text-center text-xs font-medium text-ink-soft [&::-webkit-details-marker]:hidden">{c.manageActions} ＋</summary>
-                            <div className="mt-3 flex flex-wrap justify-center gap-2 border-t border-line/70 pt-3">
-                              {displayAnswer ? <button type="button" className="rounded-full border border-line bg-cream px-3 py-1.5 text-xs text-ink-soft" onClick={() => void copyFinalAnswer(row.id, displayAnswer)}>{c.copyAnswer}</button> : null}
-                              <button type="button" className="rounded-full px-3 py-1.5 text-xs text-cinnabar" onClick={async () => {
-                                if (!window.confirm(c.deleteRecordConfirm)) return;
-                                await deleteReportRecord(session!, row.id);
-                                setOpenId(null);
-                                setDetails((prev) => { const next = { ...prev }; delete next[row.id]; return next; });
-                                await loadReports();
-                              }}>{c.deleteRecord}</button>
-                            </div>
-                          </details>
-                        ) : null}
+                        <details data-report-secondary-actions className="mb-5 rounded-lg border border-line bg-paper/50 p-3">
+                          <summary className="cursor-pointer list-none text-center text-xs font-medium text-ink-soft [&::-webkit-details-marker]:hidden">{c.manageActions} ＋</summary>
+                          <div className="mt-3 flex flex-wrap justify-center gap-2 border-t border-line/70 pt-3">
+                            {displayAnswer ? <button type="button" className="rounded-full border border-line bg-cream px-3 py-1.5 text-xs text-ink-soft" onClick={() => void copyFinalAnswer(row.id, displayAnswer)}>{c.copyAnswer}</button> : null}
+                            <button type="button" className="rounded-full px-3 py-1.5 text-xs text-cinnabar" onClick={async () => {
+                              if (!window.confirm(c.deleteRecordConfirm)) return;
+                              await deleteReportRecord(session, row.id);
+                              setOpenId(null);
+                              setDetails((prev) => { const next = { ...prev }; delete next[row.id]; return next; });
+                              await loadReports();
+                            }}>{c.deleteRecord}</button>
+                          </div>
+                        </details>
 
                         {reportMessages[row.id] ? <p className="mb-4 rounded-md border border-line bg-cream/70 px-3 py-2 text-xs text-cinnabar">{reportMessages[row.id]}</p> : null}
 
@@ -508,20 +465,18 @@ function AccountPage() {
 
       </div>
 
-      {user.isOwner && session ? (<>
-        <div id="console-panel-images" role="region" aria-labelledby="console-tab-images" hidden={consoleView !== "images"}>
-          {visitedViews.has("images") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入圖庫…", "加载图库…", "Loading gallery…")}</p>}><OwnerGalleryManager session={session} locale={locale} /></Suspense> : null}
-        </div>
-        <div id="console-panel-opening" role="region" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>
-          {visitedViews.has("opening") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入影片…", "加载视频…", "Loading videos…")}</p>}><OwnerLoginVisualsManager session={session} locale={locale} /></Suspense> : null}
-        </div>
-        <div id="console-panel-themes" role="region" aria-labelledby="console-tab-themes" hidden={consoleView !== "themes"}>
-          {visitedViews.has("themes") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入主題…", "加载主题…", "Loading themes…")}</p>}><OwnerThemeSkinsManager locale={locale} /></Suspense> : null}
-        </div>
-        <div id="console-panel-social" role="region" aria-labelledby="console-tab-social" hidden={consoleView !== "social"}>
-          {visitedViews.has("social") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入發布器…", "加载发布器…", "Loading publisher…")}</p>}><SocialPublisherPage embedded /></Suspense> : null}
-        </div>
-      </>) : null}
+      <div id="console-panel-images" role="region" aria-labelledby="console-tab-images" hidden={consoleView !== "images"}>
+        {visitedViews.has("images") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入圖庫…", "加载图库…", "Loading gallery…")}</p>}><OwnerGalleryManager session={session} locale={locale} /></Suspense> : null}
+      </div>
+      <div id="console-panel-opening" role="region" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>
+        {visitedViews.has("opening") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入影片…", "加载视频…", "Loading videos…")}</p>}><OwnerLoginVisualsManager session={session} locale={locale} /></Suspense> : null}
+      </div>
+      <div id="console-panel-themes" role="region" aria-labelledby="console-tab-themes" hidden={consoleView !== "themes"}>
+        {visitedViews.has("themes") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入主題…", "加载主题…", "Loading themes…")}</p>}><OwnerThemeSkinsManager locale={locale} /></Suspense> : null}
+      </div>
+      <div id="console-panel-social" role="region" aria-labelledby="console-tab-social" hidden={consoleView !== "social"}>
+        {visitedViews.has("social") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入發布器…", "加载发布器…", "Loading publisher…")}</p>}><SocialPublisherPage embedded /></Suspense> : null}
+      </div>
 
       <Link to="/" className="inline-flex h-11 items-center rounded-full border border-line bg-cream px-5 text-ink">{t("backHome")}</Link>
     </main>

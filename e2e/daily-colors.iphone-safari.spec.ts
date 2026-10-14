@@ -1,5 +1,14 @@
 import { expect, test } from "@playwright/test";
 
+test.beforeEach(async ({ page }) => {
+  await page.route(/ipwho\.is|open-meteo\.com|nominatim|geocoding/, route => route.abort());
+});
+
+async function openHomeToday(page: import("@playwright/test").Page) {
+  await page.getByRole("button", { name: "指引", exact: true }).click();
+  await expect(page.locator("#daily-almanac")).toBeVisible();
+}
+
 test("daily five-element colour guide is usable on iPhone Safari", async ({ page }) => {
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
   await page.goto("/daily-colors", { waitUntil: "domcontentloaded" });
@@ -26,18 +35,19 @@ test("daily five-element colour guide is usable on iPhone Safari", async ({ page
 test("home keeps almanac, dress colour and spirit slip in separate Today sections", async ({ page }) => {
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
   await page.goto("/", { waitUntil: "domcontentloaded" });
+  await openHomeToday(page);
 
   const almanac = page.locator("#daily-almanac");
   await expect(almanac).toBeVisible();
-  await expect(almanac.locator("details")).toHaveAttribute("open", "");
-  await expect(almanac.locator("summary")).toHaveCount(1);
-  await expect(almanac.locator("summary")).toBeHidden();
+  await expect(almanac.locator(".zhaowu-daily-details")).toHaveAttribute("open", "");
+  await expect(almanac.locator(".zhaowu-daily-details > summary")).toHaveCount(1);
+  await expect(almanac.locator(".zhaowu-daily-details > summary")).toBeHidden();
   await expect(almanac.locator(".zhaowu-today-section.is-almanac")).toBeVisible();
   await expect(almanac.locator(".zhaowu-today-section.is-wardrobe")).toBeVisible();
   await expect(almanac.locator(".zhaowu-today-section.is-spirit")).toBeVisible();
   const embed = almanac.locator('#five-element-wardrobe[data-daily-colors="embed"]');
   await expect(embed).toBeVisible();
-  await expect(embed.locator("[data-daily-color-swatch] i").first()).toBeVisible();
+  await expect(embed.locator("[data-daily-colors-featured-head] strong")).toBeVisible();
 });
 
 test("home almanac and standalone dress page use the same device date when IP timezone differs", async ({ page }) => {
@@ -50,37 +60,34 @@ test("home almanac and standalone dress page use the same device date when IP ti
   });
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
   await page.goto("/", { waitUntil: "domcontentloaded" });
+  await openHomeToday(page);
   const embeddedDate = await page.locator("#daily-almanac [data-daily-colors-date]").textContent();
-  const almanacDate = await page.locator("#daily-almanac .zhaowu-today-card.is-date strong").textContent();
-  expect(almanacDate).toBe("2026.09.30");
+  const almanacDate = await page.locator("#daily-almanac .zw-ink-datecard strong").textContent();
+  expect(almanacDate).toBe("09/30");
   await page.goto("/daily-colors", { waitUntil: "domcontentloaded" });
   await expect(page.locator("#five-element-wardrobe [data-daily-colors-date]")).toHaveText(embeddedDate ?? "");
 });
 
-test("night Today keeps selected labels and wardrobe copy legible", async ({ page }) => {
+test("a stale night preference cannot override the approved day-only Today surface", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("zhaowu.display-language", "zh-Hant");
+    localStorage.setItem("zhaowu.theme.v1", "night");
+  });
   await page.route("**/rest/v1/**", (route) => route.fulfill({ status: 503, body: "offline-test" }));
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await page.getByRole("button", { name: "切換夜間模式" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-zw-theme", "night");
+  await openHomeToday(page);
+  await expect(page.locator("html")).not.toHaveAttribute("data-zw-theme", "night");
 
   const selectors = [
     '.zhaowu-today-section__head h2',
     '[data-daily-colors-featured-head] small',
     '[data-daily-colors-featured-head] strong',
     '[data-daily-colors-featured-head] span',
-    '[data-daily-colors-choices] button strong',
   ];
   for (const selector of selectors) {
     const element = page.locator(`#daily-almanac ${selector}`).first();
     await expect(element).toBeVisible();
-    const luminance = await element.evaluate((node) => {
-      const channels = getComputedStyle(node).color.match(/[\d.]+/g)?.slice(0, 3).map(Number) ?? [];
-      const linear = channels.map((value) => {
-        const channel = value / 255;
-        return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
-      });
-      return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
-    });
-    expect(luminance, `${selector} should be light on the night surface`).toBeGreaterThan(0.5);
+    expect(await element.evaluate((node) => getComputedStyle(node).color)).not.toBe("rgba(0, 0, 0, 0)");
   }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });

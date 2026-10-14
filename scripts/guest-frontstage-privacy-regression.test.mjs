@@ -20,25 +20,23 @@ test("journey navigation never exposes owner/all reports link in the public head
   assert.doesNotMatch(journeyNav, /isOwner/);
 });
 
-test("site shell uses neutral visitor sign-in across all 6 supported languages", () => {
-  // Unauthenticated header button text must be neutral visitor sign-in in all languages
+test("site shell removes visitor sign-in and keeps owner access outside the public funnel", () => {
   assert.doesNotMatch(siteShell, /站主登入/);
   assert.doesNotMatch(siteShell, /站主登录/);
   assert.doesNotMatch(siteShell, /Owner sign-in/i);
   assert.doesNotMatch(siteShell, /オーナーサインイン/);
   assert.doesNotMatch(siteShell, /소유자 로그인/);
   
-  // Confirms displayText contains all 6 supported locales
-  assert.match(
-    siteShell,
-    /displayText\(language,\s*"登入",\s*"登录",\s*"Sign in",\s*"ログイン",\s*"로그인",\s*"लॉगिन"\)/
-  );
+  assert.doesNotMatch(siteShell, /to="\/login"/);
+  assert.doesNotMatch(siteShell, /data-owner-login-entry/);
+  assert.match(siteShell, /to="\/history"/);
+  assert.match(siteShell, /無需註冊/);
 
   // Authenticated owner link on home shell must be neutral admin, never "所有報告"
   assert.doesNotMatch(siteShell, /所有報告/);
   assert.doesNotMatch(siteShell, /所有报告/);
   assert.doesNotMatch(siteShell, /All reports/i);
-  assert.match(siteShell, /user\.isOwner \? t\("navAdmin"\) : t\("navMine"\)/);
+  assert.match(siteShell, /user\?\.isOwner/);
 });
 
 test("my reports (/history) removes owner cloud card, free read promises, and owner sync notes in all locales", () => {

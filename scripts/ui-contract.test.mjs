@@ -180,8 +180,8 @@ test("customer birth form keeps fixed time policy without exposing controls", as
   const chart = await source("src/lib/bazi/chart.ts");
   assert.doesNotMatch(form, /setZiPolicy|setUseTrueSolar/);
   assert.match(form, /ziPolicy: "midnight"/);
-  assert.match(form, /useTrueSolar: true/);
+  assert.match(form, /useTrueSolar: !effectiveBirthCity\.standardTimeFallback/);
   assert.match(actions, /ziPolicy: "midnight"/);
-  assert.match(actions, /useTrueSolar: true/);
+  assert.match(actions, /useTrueSolar: raw\.city\.standardTimeFallback !== true/);
   assert.match(chart, /換日固定以真太陽時午夜為界/);
 });

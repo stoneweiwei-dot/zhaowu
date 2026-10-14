@@ -16,18 +16,20 @@ test("optional city copy is not rendered twice when the label already includes i
 });
 
 
-test("exact city matches self-confirm and unresolved birth city stays blocked", () => {
+test("city input confirms the best result on Enter or blur and fails open to standard time", () => {
   assert.match(picker, /candidates\.includes\(normalizedQuery\)/);
   assert.doesNotMatch(picker, /localized\.length === 1/);
   assert.match(picker, /aria-invalid=\{invalid \|\| tzError \|\| undefined\}/);
   // 2026-10-08: typing is never rewritten mid-input; IME composition is respected.
   assert.match(picker, /onCompositionStart/);
   assert.match(picker, /resolveCityTimezone/);
+  assert.match(picker, /commitBestAvailable/);
+  assert.match(picker, /onBlur[\s\S]*commitBestAvailable/);
+  assert.match(picker, /standardTimeFallbackCity\(locale, q\)/);
   assert.match(picker, /role="alert"/);
-  assert.match(analysisForm, /setBirthCityError\(true\)/);
-  assert.match(analysisForm, /document\.getElementById\("birth-city"\)/);
-  assert.match(analysisForm, /cityInput\?\.focus\(\)/);
-  assert.match(analysisForm, /invalid=\{birthCityError\}/);
+  assert.match(analysisForm, /birthCity \?\? standardTimeFallbackCity\(locale\)/);
+  assert.doesNotMatch(analysisForm, /setBirthCityError/);
+  assert.match(analysisForm, /未校正真太陽時/);
 });
 
 test("home bazi leads with a plain-language summary and folds the technical chart", () => {
@@ -42,4 +44,6 @@ test("home bazi leads with a plain-language summary and folds the technical char
   assert.match(analysisForm, /<summary>\{copy\.fullDetails\}<\/summary>/);
   assert.match(analysisForm, /展開完整昭梧命書/);
   assert.match(analysisForm, /<UnifiedBirthReport birth=\{rememberedRecord\}/);
+  assert.ok(analysisForm.indexOf('data-fold="chart"') < analysisForm.indexOf('className="zw-flow-next"'));
+  assert.ok(analysisForm.indexOf('<BaziReadingUnlock') < analysisForm.indexOf('className="zw-flow-next"'));
 });

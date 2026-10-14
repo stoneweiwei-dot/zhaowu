@@ -57,11 +57,6 @@ function json(req: Request, env: Runtime, body: unknown, status = 200) {
   });
 }
 
-function cleanAccessKey(value: unknown) {
-  const key = String(value ?? "").trim();
-  return /^[A-Za-z0-9-]{20,100}$/.test(key) ? key : "";
-}
-
 function adminClient(env: Runtime) {
   if (!env.supabaseUrl || !env.supabaseSecretKey) return null;
   return createClient(env.supabaseUrl, env.supabaseSecretKey, { auth: { persistSession: false, autoRefreshToken: false } });
@@ -78,8 +73,7 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Pr
 
   const url = new URL(req.url);
   const sessionId = url.searchParams.get("session_id") || "";
-  const accessKey = cleanAccessKey(url.searchParams.get("access_key"));
-  if (!/^cs_(?:live|test)_[A-Za-z0-9]{10,200}$/.test(sessionId) || !accessKey) {
+  if (!/^cs_(?:live|test)_[A-Za-z0-9]{10,200}$/.test(sessionId)) {
     return json(req, env, { ok: false, error: { code: "BAD_VERIFICATION_REQUEST" } }, 400);
   }
 
@@ -90,7 +84,6 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Pr
     .from("report_purchase_entitlements")
     .select("product_id,system_id,status")
     .eq("checkout_session_id", sessionId)
-    .eq("access_key", accessKey)
     .maybeSingle();
 
   if (error) return json(req, env, { ok: false, error: { code: "PAYMENT_STORE_ERROR" } }, 502);

@@ -1,7 +1,6 @@
 import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useAuthState } from "@/lib/auth/provider";
 import { readLocalReports, removeLocalReport, REPORT_HISTORY_EVENT, type LocalReport } from "@/lib/local-report-history";
 import { readSharedBirthRecord } from "@/lib/shared-birth";
 import { useI18n, type Locale } from "@/lib/i18n";
@@ -30,7 +29,6 @@ function HistoryPage() {
   const { locale } = useI18n();
   const [entries, setEntries] = useState<SpecialistHistoryEntry[]>([]);
   const publicEntries = entries;
-  const { user } = useAuthState();
   const [reports, setReports] = useState<LocalReport[]>([]);
   const [hasBirth, setHasBirth] = useState(false);
   useEffect(() => {
@@ -49,16 +47,10 @@ function HistoryPage() {
     kicker: tr(locale, "昭梧 · 個人紀錄", "昭梧 · 个人记录", "ZHAOWU · MY HISTORY"),
     title: tr(locale, "我的報告", "我的报告", "My reports"),
     lead: tr(locale,
-      "這裡是這台裝置保存的提問報告與測驗。點「閱讀報告」可直接重看。",
-      "这里是这台设备保存的提问报告与测验。点“阅读报告”可直接重看。",
-      "Questions and tests saved on this device appear here. Open a report to read it again."),
+      "無需註冊；這裡是加密保存在這台裝置瀏覽器內的提問報告與測驗。點「閱讀報告」可直接重看。",
+      "无需注册；这里是加密保存在这台设备浏览器内的提问报告与测验。点“阅读报告”可直接重看。",
+      "No registration is required. Questions and tests are stored in this browser on this device; open a report to read it again."),
     local: tr(locale, "僅保存在這台裝置", "仅保存在这台设备", "Saved on this device only"),
-    cloudTitle: tr(locale, "八字提問與雲端報告", "八字提问与云端报告", "BaZi questions and cloud reports"),
-    cloudBody: tr(locale,
-      "登入後產生的八字提問與完整報告，繼續保存在「我的昭梧」。",
-      "登录后产生的八字提问与完整报告，继续保存在“我的昭梧”。",
-      "BaZi questions and full reports created while signed in remain in My Zhaowu."),
-    cloudCta: tr(locale, "查看我的昭梧", "查看我的昭梧", "Open My Zhaowu"),
     empty: tr(locale, "還沒有紀錄。完成一次分析或測驗後，結果會自動出現在這裡。", "还没有记录。完成一次分析或测验后，结果会自勘出现在这里。", "No saved results yet. Complete an analysis or test and it will appear here automatically."),
     generated: tr(locale, "生成時間", "生成时间", "Created"),
     open: tr(locale, "展開完整內容", "展开完整内容", "Open full result"),

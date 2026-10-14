@@ -110,15 +110,22 @@ export function SiteShell({ children }: { children: ReactNode }) {
     try {
       reportId = localStorage.getItem("zhaowu.pending-bazi-report.v1") || "";
       localStorage.removeItem("zhaowu.pending-bazi-report.v1");
+      localStorage.removeItem("zhaowu.pending-bazi-return.v1");
     } catch { reportId = ""; }
-    if (/^[0-9a-f-]{36}$/i.test(reportId)) {
+    void resolveReportAccess("bazi").catch(() => undefined).finally(() => {
       const url = new URL(window.location.href);
-      url.searchParams.set("report", reportId);
-      url.hash = "report";
-      window.location.replace(url.toString());
-      return;
-    }
-    void resolveReportAccess("bazi").catch(() => undefined);
+      url.searchParams.delete("checkout");
+      url.searchParams.delete("session_id");
+      if (/^[0-9a-f-]{36}$/i.test(reportId)) {
+        url.searchParams.set("report", reportId);
+        url.hash = "report";
+        window.location.replace(url.toString());
+        return;
+      }
+      url.hash = "bazi";
+      window.history.replaceState(null, "", url.toString());
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    });
   }, [pathname]);
 
   const shellStyle = wallpaperUrl
@@ -175,8 +182,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기", "गैलरी खोलें");
   const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
-  const ownerLoginLabel = displayText(language, "登入", "登录", "Sign in", "ログイン", "로그인", "लॉगिन");
-  const homeLoginLabel = displayText(language, "登入", "登录", "Login", "ログイン", "로그인", "लॉगिन");
   const languageVisualLabel = displayText(language, "語言", "语言", "Language", "言語", "언어", "भाषा");
   const skipLabel = displayText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
 
@@ -257,20 +262,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
               <div className="zhaowu-header-account-actions">
                 {user?.isOwner && pathname !== "/gallery" ? <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={openGalleryLabel}>{galleryLabel}</Link> : null}
-                {isPending ? <span className="zhaowu-header-pending" /> : user ? <>
-                  {(!user.isOwner || pathname !== "/account") ? <Link to="/account" className="zhaowu-header-utility"><BrandIcon name="account" />{user.isOwner ? t("navAdmin") : t("navMine")}</Link> : null}
+                {isPending ? <span className="zhaowu-header-pending" /> : user?.isOwner ? <>
+                  {pathname !== "/account" ? <Link to="/account" className="zhaowu-header-utility"><BrandIcon name="account" />{t("navAdmin")}</Link> : null}
                   <button type="button" onClick={() => void signOut()} className="zhaowu-header-utility zhaowu-header-signout">{t("logout")}</button>
-                </> : (
-                  <Link
-                    to="/login"
-                    className="zhaowu-header-utility zhaowu-header-owner-login"
-                    aria-label={ownerLoginLabel}
-                    data-owner-login-entry="true"
-                  >
-                    <BrandIcon name="account" />
-                    {ownerLoginLabel}
-                  </Link>
-                )}
+                </> : null}
               </div>
               </div>
             ) : null}
@@ -294,17 +289,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                     <BrandIcon name="account" />
                     <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
                   </Link>
-                ) : (
-                  <Link
-                    to="/login"
-                    className="zhaowu-home-login-inline"
-                    aria-label={ownerLoginLabel}
-                    data-owner-login-entry="true"
-                  >
-                    <BrandIcon name="account" />
-                    <span>{homeLoginLabel}</span>
-                  </Link>
-                )
+                ) : null
               ) : null}
 
               {NIGHT_MODE_ENABLED ? <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>
@@ -334,6 +319,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <li><Link to="/terms">{displayText(language, "服務條款", "服务条款", "Terms", "利用規約", "이용약관", "शर्तें")}</Link></li>
           <li><Link to="/copyright">{displayText(language, "版權聲明", "版权声明", "Copyright", "著作権", "저작권", "कॉपीराइट")}</Link></li>
         </ul>
+        <p className="text-xs leading-6 text-ink-mute"><Link to="/history" className="underline underline-offset-4">{displayText(language, "我的報告", "我的报告", "My reports", "履歴", "내 보고서", "मेरी रिपोर्ट")}</Link> · {displayText(language, "無需註冊，報告會加密保存在這台裝置的瀏覽器", "无需注册，报告会加密保存在这台设备的浏览器", "No registration required. Reports are stored in this browser on this device.", "登録不要。レポートはこの端末のブラウザに保存されます。", "가입 없이 이 기기의 브라우저에 저장됩니다.", "पंजीकरण की आवश्यकता नहीं; रिपोर्ट इस ब्राउज़र में सहेजी जाती हैं।")}</p>
         <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
         <p className="text-xs text-ink-mute">© 2026 {t("brand")} ZHAOWU</p>
       </footer> : null}

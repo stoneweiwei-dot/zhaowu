@@ -27,6 +27,7 @@ import { chartTerm } from "@/lib/bazi/presentation";
 import { UnifiedBirthReport } from "@/components/unified-birth-report";
 import { ChartTrustPanel } from "@/components/chart-trust-panel";
 import { buildPlainChartSummary } from "@/lib/bazi/plain-summary";
+import { standardTimeFallbackCity } from "@/lib/bazi/cities";
 
 const EN_STRENGTH: Record<string, string> = {
   "偏旺": "Relatively strong",
@@ -70,7 +71,6 @@ export function AnalysisForm() {
   const [relation, setRelation] = useState<AnalyzeInput["relation"]>("unset");
   const [birthCity, setBirthCity] = useState<CityHit | null>(null);
   const [liveCity, setLiveCity] = useState<CityHit | null>(null);
-  const [birthCityError, setBirthCityError] = useState(false);
   const [dateError, setDateError] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,7 +89,7 @@ export function AnalysisForm() {
         edit: "Edit details",
         birthData: "Birth record",
         calibrationTitle: "Time correction is automatic",
-        calibrationBody: "Enter the local time shown on the birth certificate and select the birthplace. Longitude, historical time zone, daylight saving and true solar time are handled automatically.",
+        calibrationBody: "Enter the local time shown on the birth certificate and select the birthplace. Longitude, historical time zone, daylight saving and true solar time are handled automatically. If place search is unavailable, the chart continues with Beijing standard time and clearly marks that true solar time was not corrected.",
         next: "Generate my Destiny Book",
         saving: "Saving…",
         saved: "Birth record saved on this phone.",
@@ -130,7 +130,7 @@ export function AnalysisForm() {
           edit: "修改资料",
           birthData: "出生资料",
           calibrationTitle: "时间校正由系统自动完成",
-          calibrationBody: "只需填写出生证明上的当地时间并选择出生城市；经度、历史时区、夏令时与真太阳时由系统自动处理。",
+          calibrationBody: "只需填写出生证明上的当地时间并选择出生城市；经度、历史时区、夏令时与真太阳时由系统自动处理。若地点搜索暂时不可用，会按北京时间继续排盘，并明确标示未校正真太阳时。",
           next: "生成我的命书",
           saving: "正在保存…",
           saved: "生辰已保存在这台手机。",
@@ -170,7 +170,7 @@ export function AnalysisForm() {
           edit: "修改資料",
           birthData: "出生資料",
           calibrationTitle: "時間校正由系統自動完成",
-          calibrationBody: "只需填寫出生證明上的當地時間並選擇出生城市；經度、歷史時區、夏令時與真太陽時由系統自動處理。",
+          calibrationBody: "只需填寫出生證明上的當地時間並選擇出生城市；經度、歷史時區、夏令時與真太陽時由系統自動處理。若地點搜尋暫時不可用，會按北京標準時間繼續排盤，並明確標示未校正真太陽時。",
           next: "生成我的命書",
           saving: "正在保存…",
           saved: "生辰已保存在這台手機。",
@@ -226,6 +226,7 @@ export function AnalysisForm() {
     if (!localRecord && serverRecord) writeSharedBirthRecord(serverRecord);
   }, [user?.id, user?.birthData]);
 
+  const effectiveBirthCity = useMemo(() => birthCity ?? standardTimeFallbackCity(locale), [birthCity, locale]);
   const draftBirth = useMemo(() => gender ? sharedBirthFromUnknown({
     year,
     month,
@@ -235,11 +236,11 @@ export function AnalysisForm() {
     timeUnknown,
     gender,
     relation,
-    city: birthCity,
+    city: effectiveBirthCity,
     liveCity,
     ziPolicy: "midnight",
-    useTrueSolar: true,
-  }) : null, [year, month, day, hour, minute, timeUnknown, gender, relation, birthCity, liveCity]);
+    useTrueSolar: !effectiveBirthCity.standardTimeFallback,
+  }) : null, [year, month, day, hour, minute, timeUnknown, gender, relation, effectiveBirthCity, liveCity]);
 
   async function saveBirthAndContinue(record: SharedBirthRecord) {
     writeSharedBirthRecord(record);
@@ -268,18 +269,6 @@ export function AnalysisForm() {
         setError(null);
         const dateInvalid = Boolean(year) && Boolean(month) && Boolean(day)
           && !validDate(Number(year), Number(month), Number(day));
-        if (!birthCity) {
-          setDateError(false);
-          setBirthCityError(true);
-          setDetailsOpen(true);
-          window.setTimeout(() => {
-            const cityInput = document.getElementById("birth-city");
-            cityInput?.scrollIntoView({ behavior: "smooth", block: "center" });
-            cityInput?.focus();
-          }, 0);
-          return;
-        }
-        setBirthCityError(false);
         if (dateInvalid) {
           setDateError(true);
           setDetailsOpen(true);
@@ -293,7 +282,6 @@ export function AnalysisForm() {
         setDetailsOpen(true);
         return;
       }
-      setBirthCityError(false);
       setDateError(false);
       setBusy(true);
       try {
@@ -463,7 +451,7 @@ export function AnalysisForm() {
             </div>
 
             <div className="zhaowu-birth-cities">
-              <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} invalid={birthCityError} errorMessage={birthCityError ? t("errCity") : undefined} onSelect={(city) => { setBirthCity(city); if (city) { setBirthCityError(false); setError(null); } }} />
+              <CityPicker id="birth-city" label={t("city")} placeholder={t("cityPh")} optionalLabel={t("optional")} popularLabel={t("popularCities")} locale={locale} value={birthCity} onSelect={(city) => { setBirthCity(city); if (city) setError(null); }} />
 
             </div>
             <details className="zw-flow-optional">
@@ -502,6 +490,7 @@ export function AnalysisForm() {
               <img className="zhaowu-bazi-plain__art" src="/art/zhaowu-dragon-lake-v1.webp" alt="" decoding="async" width={1200} height={675} />
               <h3 id="zhaowu-bazi-plain-title">{copy.plainTitle}</h3>
               <p className="zhaowu-bazi-plain__lead">{copy.plainLead}</p>
+              {rememberedRecord?.city.standardTimeFallback ? <p className="zhaowu-time-warning" data-location-fallback>{locale === "en" ? "Birthplace was not verified. This chart uses Beijing standard time (UTC+8) and has not been corrected to true solar time." : locale === "zh-Hans" ? "出生地未确认：本盘暂按北京时间（UTC+8）计算，未校正真太阳时。" : "出生地未確認：本盤暫按北京標準時間（UTC+8）計算，未校正真太陽時。"}</p> : null}
               <ol>
                 {plainItems.slice(0, 2).map((item) => (
                   <li key={item.key} data-plain-item={item.key}>
@@ -510,8 +499,6 @@ export function AnalysisForm() {
                   </li>
                 ))}
               </ol>
-              <button type="button" className="zw-flow-next" onClick={() => selectStep(3)}>{locale === "en" ? "Ask a question" : locale === "zh-Hans" ? "继续：问个问题" : "繼續：問個問題"}<span aria-hidden="true"> →</span></button>
-              <p className="zw-flow-note">{locale === "en" ? "Optional. Your birth details are already saved on this device." : locale === "zh-Hans" ? "提问是选填；生辰已保存在这台设备。" : "提問是選填；生辰已保存在這台裝置。"}</p>
               {readingUnlocked ? <details className="zw-flow-optional"><summary>{locale === "en" ? "More about your chart" : locale === "zh-Hans" ? "更多命盘解读" : "更多命盤解讀"}</summary>
                 {plainItems.slice(2).map(item => <div key={item.key}><strong>{item.title}</strong><p>{item.body}</p></div>)}
               </details> : null}
@@ -547,6 +534,8 @@ export function AnalysisForm() {
                 </div>
               ) : null}
             </details></> : <BaziReadingUnlock locale={locale} />}
+            <button type="button" className="zw-flow-next" onClick={() => selectStep(3)}>{locale === "en" ? "Ask a question" : locale === "zh-Hans" ? "继续：问个问题" : "繼續：問個問題"}<span aria-hidden="true"> →</span></button>
+            <p className="zw-flow-note">{locale === "en" ? "Optional. Your birth details are already saved on this device." : locale === "zh-Hans" ? "提问是选填；生辰已保存在这台设备。" : "提問是選填；生辰已保存在這台裝置。"}</p>
           </div>
         ) : <p role="status">{locale === "en" ? "Your chart could not be shown. Edit your birth details to try again." : locale === "zh-Hans" ? "命盘暂时无法显示，请修改出生资料后重试。" : "命盤暫時無法顯示，請修改出生資料後重試。"}</p>}
       </section> : null}

@@ -8561,6 +8561,12 @@ html body .zhaowu-bazi-plain__art {
   object-fit: cover;
   object-position: 50% 62%;
 }
+@media (max-width: 640px) {
+  html body .zhaowu-bazi-plain__art {
+    height: 32px;
+    aspect-ratio: auto;
+  }
+}
 html body .zhaowu-bazi-plain h3 {
   margin: 18px 20px 6px;
   color: #1f2a26;

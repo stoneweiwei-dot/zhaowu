@@ -3,8 +3,8 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const shell = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
-const guestCss = await readFile(new URL("../src/device-question-flow-r144.css", import.meta.url), "utf8");
-const main = await readFile(new URL("../src/legacy-visual-compat.css", import.meta.url), "utf8");
+const layeredStyles = await readFile(new URL("../src/zhaowu-layered-styles.css", import.meta.url), "utf8");
+const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
 const login = await readFile(new URL("../src/routes/login.tsx", import.meta.url), "utf8");
 const provider = await readFile(new URL("../src/lib/auth/provider.tsx", import.meta.url), "utf8");
 const client = await readFile(new URL("../src/lib/auth/client.ts", import.meta.url), "utf8");
@@ -15,15 +15,21 @@ const ownerSessionApi = await readFile(new URL("../api/owner-session.js", import
 const ownerServer = await readFile(new URL("../src/server/owner-auth.ts", import.meta.url), "utf8");
 const sharedBirth = await readFile(new URL("../src/lib/shared-birth.ts", import.meta.url), "utf8");
 const analysisForm = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
+const paintedHome = await readFile(new URL("../src/components/painted-home.tsx", import.meta.url), "utf8");
+const account = await readFile(new URL("../src/routes/account.tsx", import.meta.url), "utf8");
 
 test("ordinary visitors use device-local access while the owner entry remains explicit", () => {
-  assert.match(shell, /data-owner-login-entry="true"/);
-  assert.match(shell, /to="\/login"/);
-  assert.match(shell, /登入/);
+  assert.doesNotMatch(shell, /data-owner-login-entry="true"/);
+  assert.doesNotMatch(shell, /to="\/login"/);
+  assert.match(shell, /to="\/history"/);
+  assert.match(shell, /無需註冊/);
+  assert.match(paintedHome, /href="\/history"/);
+  assert.doesNotMatch(paintedHome, /href="\/account"/);
+  assert.doesNotMatch(account, /會員登入|會員登入／註冊|登入或註冊後|Sign in \/ Register/);
   assert.doesNotMatch(shell, /className="zhaowu-header-login"/);
   assert.doesNotMatch(shell, /BrandIcon name="login"/);
-  assert.match(guestCss, /\.zhaowu-site-header \.zhaowu-header-login \{ display: none !important; \}/);
-  assert.match(main, /device-question-flow-r144\.css/);
+  assert.match(layeredStyles, /device-question-flow-r144\.css/);
+  assert.match(main, /zhaowu-layered-styles\.css/);
   assert.doesNotMatch(provider, /captureOAuthRedirect|restoreSession|getProfile/);
   assert.doesNotMatch(provider, /memberFrom/);
   assert.match(provider, /mobile IPs rotate and may be shared/);

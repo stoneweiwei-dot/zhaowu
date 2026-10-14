@@ -3,6 +3,7 @@ import { searchCities } from "@/lib/actions";
 import type { CityHit } from "@/lib/bazi/types";
 import type { Locale } from "@/lib/i18n";
 import { localizePlaceHit as localizeCityHit, needsTimezone, resolveCityTimezone } from "@/lib/geo/city-search";
+import { standardTimeFallbackCity } from "@/lib/bazi/cities";
 
 type PickerProps = {
   id: string;
@@ -68,10 +69,10 @@ export function CityPicker({
     && !label.toLowerCase().includes(optionalToken);
 
   const copy = locale === "en"
-    ? { searching: "Searching places…", none: "No match yet — try the town name in English or a nearby city.", confirmed: "Confirmed", resolving: "Confirming time zone…", tzFailed: "Could not confirm this place's time zone. Please retry or choose a nearby town." }
+    ? { searching: "Searching places…", none: "No match yet — try the town name in English or a nearby city.", confirmed: "Confirmed", resolving: "Confirming time zone…", tzFailed: "Could not confirm this place's time zone. Beijing standard time will be used without true-solar correction." }
     : locale === "zh-Hans"
-      ? { searching: "正在搜索地点…", none: "暂时没有找到，可试试英文地名或附近城镇。", confirmed: "已确认", resolving: "正在确认时区…", tzFailed: "无法确认这个地点的时区，请重试或选择附近城镇。" }
-      : { searching: "正在搜尋地點…", none: "暫時沒有找到，可試試英文地名或附近城鎮。", confirmed: "已確認", resolving: "正在確認時區…", tzFailed: "無法確認這個地點的時區，請重試或選擇附近城鎮。" };
+      ? { searching: "正在搜索地点…", none: "暂时没有找到，可试试英文地名或附近城镇。", confirmed: "已确认", resolving: "正在确认时区…", tzFailed: "无法确认地点，将按北京时间排盘且不校正真太阳时。" }
+      : { searching: "正在搜尋地點…", none: "暫時沒有找到，可試試英文地名或附近城鎮。", confirmed: "已確認", resolving: "正在確認時區…", tzFailed: "無法確認地點，將按北京標準時間排盤且不校正真太陽時。" };
 
   useEffect(() => {
     const localized = value ? localizeCityHit(value, locale) : null;
@@ -98,6 +99,16 @@ export function CityPicker({
     if (rewriteText) setQuery(ready.display);
     setHits([]);
     onSelect(ready);
+  }
+
+  function commitBestAvailable() {
+    const q = query.trim();
+    const pick = exactMatch(hits, q) ?? hits[0];
+    if (pick) {
+      void commit(pick, true);
+      return;
+    }
+    if (!optional && q) void commit(standardTimeFallbackCity(locale, q), true);
   }
 
   function runSearch(raw: string) {
@@ -177,16 +188,17 @@ export function CityPicker({
           if (e.key === "Escape") setHits([]);
           if (e.key === "Enter" && !composing.current) {
             e.preventDefault();
-            const pick = exactMatch(hits, query) ?? hits[0];
-            if (pick) void commit(pick, true);
+            commitBestAvailable();
           }
         }}
         onBlur={() => {
-          // Normalise the visible label only after the visitor has finished typing.
-          window.setTimeout(() => {
+          // A visitor should never have to click the floating list. Blur confirms
+          // the best result synchronously so the following submit click sees it.
+          if (!selected) commitBestAvailable();
+          else {
             setHits([]);
-            if (selected && query !== selected.display && exactMatch([selected], query)) setQuery(selected.display);
-          }, 180);
+            if (query !== selected.display && exactMatch([selected], query)) setQuery(selected.display);
+          }
         }}
         onChange={(e) => {
           setQuery(e.target.value);
