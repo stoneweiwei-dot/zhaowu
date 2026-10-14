@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
  */
 export const SKIN_KEY = "zhaowu.skin.v1";
 export const SKIN_EVENT = "zhaowu-skin";
-/** Site-wide default for visitors without a saved choice. Empty string = classic look. */
-export const SITE_DEFAULT_SKIN = "";
+/** Site-wide default: first owner homepage reference (pastel koi). */
+export const SITE_DEFAULT_SKIN = "pastel-koi";
 
 export type SkinMode = "light" | "dark";
 export type SkinDef = {
@@ -124,8 +124,10 @@ export async function refreshSharedSkin(): Promise<string | null> {
       }
     }
     if (token !== syncSerial) return null;
-    applySkin(selected);
-    return selected;
+    // Legacy published day-flute → owner day homepage is pastel-koi (1st reference).
+    const resolved = selected === "day-flute" ? "pastel-koi" : selected;
+    applySkin(resolved);
+    return resolved;
   } catch { return null; }
 }
 
@@ -154,7 +156,10 @@ export async function publishSkin(id: string): Promise<void> {
 
 /** Boot uses server state, never the previous visitor's device-local preference. */
 export function hydrateSkin() {
-  if (typeof window !== "undefined") void refreshSharedSkin();
+  if (typeof window === "undefined") return;
+  // Day homepage = owner first reference until shared skin resolves.
+  if (SITE_DEFAULT_SKIN) applySkin(SITE_DEFAULT_SKIN);
+  void refreshSharedSkin();
 }
 
 export function useSkin() {
