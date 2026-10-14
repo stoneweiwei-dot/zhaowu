@@ -1,1 +1,246 @@
-placeholder
+/* Owner reference compositions, 2026-10-13. Scoped to the actual landing view.
+   The working form/report remains on its own existing subview. */
+html body #root:has(.zw-painted-home) { background: var(--zws-page, #f7efdf) !important; }
+html body #root:has(.zw-painted-home) .zhaowu-home-sheet-shell::before,
+html body #root:has(.zw-painted-home) .zhaowu-home-sheet-shell::after,
+html body #root:has(.zw-painted-home) main.zw-hero-home::before { display:none !important; }
+html body #root:has(.zw-painted-home) .zhaowu-home-app-frame { max-width:860px !important; padding:0 !important; }
+html body #root:has(.zw-painted-home) .zw-hero-home { padding:0 !important; margin:0 !important; width:100%; max-width:none !important; gap:0; overflow:visible; }
+html body #root:has(.zw-painted-home) .zw-journey-nav { display:none; }
+html body #root:has(.zw-painted-home) .zhaowu-site-header { position:absolute !important; top:8px; right:max(12px, calc((100vw - 820px)/2)); width:auto; max-width:58%; background:none !important; border:0 !important; box-shadow:none !important; backdrop-filter:none !important; z-index:30; }
+html body #root:has(.zw-painted-home) .zhaowu-header-shell { padding:0 !important; }
+html body #root:has(.zw-painted-home) [data-site-status-strip] { display:none !important; }
+html body #root:has(.zw-painted-home) .zhaowu-header-nav { padding:0 !important; margin:0 !important; gap:6px; border:0 !important; background:none !important; }
+html body #root:has(.zw-painted-home) .site-lang-group { padding:0 !important; background:none !important; border:0 !important; gap:0; }
+html body #root:has(.zw-painted-home) .site-lang-button { min-width:30px !important; min-height:44px; padding:4px !important; font-size:11px !important; border:0 !important; background:none !important; }
+html body #root:has(.zw-painted-home) .zhaowu-language-label { display:none; }
+html body #root:has(.zw-painted-home) .zhaowu-home-login-inline { min-width:44px; padding:4px 8px !important; background:none !important; border:0 !important; font-size:12px; }
+html body #root:has(.zw-painted-home) .zhaowu-site-footer { padding-bottom:100px; }
+html body #root .zw-painted-home { position:relative; isolation:isolate; width:100%; color:var(--ph-ink); background:var(--ph-paper); font-family:'Noto Serif TC','Songti TC',serif; padding-bottom:28px; }
+html body #root .zw-painted-home :is(h1,h2,h3,p,small,strong,span,a,button,em) { color:inherit !important; -webkit-text-fill-color:currentColor !important; }
+html body #root .zw-painted-home :is(h1,h2,h3,p) { margin:0; }
+html body #root .zw-painted-home :is(button,a) { touch-action:manipulation; -webkit-tap-highlight-color:transparent; text-decoration:none; font-family:inherit; cursor:pointer; }
+html body #root .zw-painted-home button { border:0; box-shadow:none; }
+html body #root .zw-painted-home :is(button,a):focus-visible { outline:2px solid var(--ph-accent); outline-offset:4px; }
+html body #root .zw-painted-home .ph-hero { position:relative; min-height:390px; aspect-ratio:1.05; }
+html body #root .zw-painted-home .ph-hero-art { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 50%; z-index:-1; }
+html body #root .zw-painted-home .ph-hero::after { content:''; pointer-events:none; position:absolute; inset:82% 0 0; background:linear-gradient(transparent,var(--ph-paper)); z-index:-1; }
+html body #root .zw-painted-home .ph-brand { position:absolute; top:14px; left:24px; display:flex; flex-direction:column; gap:0; }
+html body #root .zw-painted-home .ph-brand strong { font-size:32px; line-height:1.1; font-weight:600; letter-spacing:.12em; }
+html body #root .zw-painted-home .ph-brand small { font-size:8px; letter-spacing:.2em; margin-top:3px; }
+html body #root .zw-painted-home .ph-title { position:absolute; left:7%; top:24%; width:78%; }
+html body #root .zw-painted-home h1 { font-size:clamp(27px,7.3vw,62px) !important; line-height:1.5 !important; white-space:pre-line; letter-spacing:.07em !important; font-weight:600 !important; text-wrap:balance; }
+html body #root .zw-painted-home .ph-title p { font-size:clamp(14px,3.8vw,26px); line-height:1.7; letter-spacing:.13em; white-space:pre-line; }
+html body #root .zw-painted-home .ph-title small { display:block; margin-top:8px; font-size:clamp(10px,2.7vw,18px); letter-spacing:.1em; line-height:1.8; }
+html body #root .zw-painted-home .ph-motto { margin-top:12px; color:#91713c !important; }
+html body #root .zw-painted-home .ph-actions { position:absolute; left:6%; right:6%; bottom:12%; display:flex; gap:14px; }
+html body #root .zw-painted-home .ph-actions :is(button,a) { display:flex; justify-content:center; align-items:center; gap:18px; min-height:48px; padding:7px 18px; border-radius:60px; border:1px solid #c4a56e; background:var(--ph-accent); color:var(--ph-on-accent) !important; font-size:clamp(16px,4.4vw,26px); font-weight:600; letter-spacing:.12em; }
+html body #root .zw-painted-home .ph-actions a { background:color-mix(in srgb,var(--ph-paper) 92%,transparent); color:var(--ph-ink) !important; }
+html body #root .zw-painted-home .ph-actions span { font-size:24px; line-height:1; }
+html body #root .zw-painted-home[data-composition='scroll'] .ph-hero { aspect-ratio:1.08; min-height:355px; }
+html body #root .zw-painted-home[data-composition='scroll'] .ph-title { top:23%; }
+html body #root .zw-painted-home[data-composition='scroll'] .ph-actions { bottom:21%; flex-direction:column; align-items:flex-start; gap:8px; }
+html body #root .zw-painted-home[data-composition='scroll'] .ph-actions button { min-width:40%; }
+html body #root .zw-painted-home[data-composition='scroll'] .ph-actions a { font-size:15px; min-height:38px; }
+html body #root .zw-painted-home .ph-scroll-panels { display:grid; gap:9px; padding:0 4%; margin-top:-5px; }
+html body #root .zw-painted-home .ph-paper-panel { position:relative; overflow:hidden; text-align:left; border:1px solid #c3aa7c; border-radius:12px; background:transparent; padding:13px 16px; outline:1px solid #d8c6a2; outline-offset:-4px; }
+html body #root .zw-painted-home .ph-paper-panel>img { position:absolute; right:0; top:0; width:48%; height:100%; object-fit:cover; mask-image:linear-gradient(90deg,transparent,#000 60%); z-index:-1; }
+html body #root .zw-painted-home .ph-paper-panel>span { display:block; position:relative; }
+html body #root .zw-painted-home h2 { font-size:clamp(20px,5.3vw,32px) !important; font-weight:500; line-height:1.4; letter-spacing:.12em !important; }
+html body #root .zw-painted-home .ph-paper-panel small { font-size:12px; letter-spacing:.08em; }
+html body #root .zw-painted-home .ph-paper-panel h2 { margin:5px 0; }
+html body #root .zw-painted-home .ph-paper-panel p { white-space:pre-line; font-size:13px; line-height:1.6; }
+html body #root .zw-painted-home .ph-paper-panel em { display:inline-block; min-height:32px; border:1px solid #bda171; border-radius:40px; padding:4px 13px; margin-top:8px; font-style:normal; font-size:13px; }
+html body #root .zw-painted-home .ph-reading { padding-block:10px; }
+html body #root .zw-painted-home .ph-reading em { background:var(--ph-accent); color:var(--ph-on-accent) !important; }
+html body #root .zw-painted-home .ph-reading small { display:block; margin-top:5px; font-size:10px; }
+html body #root .zw-painted-home .ph-small-portals { display:flex; border:1px solid #c3aa7c; border-radius:9px; }
+html body #root .zw-painted-home .ph-small-portals button { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; min-height:50px; background:none; font-size:17px; }
+html body #root .zw-painted-home .ph-small-portals button+button { border-left:1px solid #c3aa7c; }
+html body #root .zw-painted-home .ph-small-portals svg { width:30px; height:30px; }
+html body #root .zw-painted-home[data-composition='koi'] .ph-hero { aspect-ratio:1.04; min-height:370px; }
+html body #root .zw-painted-home[data-composition='koi'] .ph-title { top:19%; left:8%; width:48%; color:#766039; }
+html body #root .zw-painted-home[data-composition='koi'] .ph-title h1 { font-family:'LXGW WenKai TC','Kaiti TC',serif; font-size:clamp(54px,14vw,108px) !important; line-height:1.05 !important; font-weight:400 !important; letter-spacing:.08em !important; }
+html body #root .zw-painted-home[data-composition='koi'] .ph-title p { margin-top:18px; font-size:clamp(13px,3.6vw,23px); }
+html body #root .zw-painted-home[data-composition='koi'] .ph-title small { border-top:1px solid #b8a987; padding-top:9px; font-size:clamp(9px,2.5vw,15px); }
+html body #root .zw-painted-home .ph-portals { display:grid; grid-template-columns:1fr 1fr; padding:0 4%; gap:8px; }
+html body #root .zw-painted-home .ph-portal { position:relative; overflow:hidden; min-height:104px; text-align:left; background:transparent; border:1px solid #fffcf1; border-radius:14px; padding:14px; }
+html body #root .zw-painted-home .ph-portal>img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-1; mask-image:linear-gradient(90deg,transparent,#000 80%); }
+html body #root .zw-painted-home .ph-portal strong { display:block; font-size:24px; font-weight:500; line-height:1.25; letter-spacing:.08em; }
+html body #root .zw-painted-home .ph-portal small { display:block; margin-top:7px; font-size:10px; line-height:1.6; white-space:pre-line; letter-spacing:.04em; }
+html body #root .zw-painted-home .ph-portal i { display:flex; width:28px; height:28px; justify-content:center; align-items:center; margin-top:7px; border:1px solid #d5bda0; border-radius:50%; font-style:normal; }
+html body #root .zw-painted-home .ph-dragon-panel { display:block; position:relative; isolation:isolate; overflow:hidden; text-align:left; margin:10px 4% 0; width:92%; border:1px solid #fffcf1; border-radius:16px; background:#e6ebdd; padding:15px; }
+html body #root .zw-painted-home .ph-dragon-panel img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 50%; z-index:-1; mask-image:linear-gradient(90deg,transparent,#000); }
+html body #root .zw-painted-home .ph-dragon-panel p { font-size:10px; line-height:1.6; margin:6px 0; }
+html body #root .zw-painted-home .ph-dragon-panel em { display:inline-block; border-radius:30px; background:#bdcfc6; padding:5px 15px; font-size:12px; font-style:normal; }
+html body #root .zw-painted-home[data-composition='flute'] .ph-hero { aspect-ratio:.93; min-height:405px; }
+html body #root .zw-painted-home[data-composition='flute'] .ph-title { top:61%; width:90%; }
+html body #root .zw-painted-home[data-composition='flute'] h1 { font-size:clamp(36px,10vw,76px) !important; line-height:1.25 !important; }
+html body #root .zw-painted-home[data-composition='flute'] .ph-title p { margin-top:7px; }
+html body #root .zw-painted-home[data-composition='flute'] .ph-actions { bottom:3%; }
+html body #root .zw-painted-home[data-composition='flute'] .ph-actions>* { flex:1; padding:7px 10px; font-size:17px; }
+html body #root .zw-painted-home[data-composition='flute'] .ph-portals { grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px; margin-top:10px; }
+html body #root .zw-painted-home[data-composition='flute'] .ph-portal { text-align:center; min-height:100px; padding:8px 2px; border-color:#b8a476; border-radius:12px; }
+html body #root .zw-painted-home[data-composition='flute'] .ph-portal strong { font-size:13px; margin-top:8px; }
+html body #root .zw-painted-home .ph-medallion { display:flex; width:50px; height:50px; border:1px solid #b8a476; outline:1px solid #b8a47666; outline-offset:4px; border-radius:50%; justify-content:center; align-items:center; margin:4px auto; color:var(--ph-accent) !important; }
+html body #root .zw-painted-home .ph-medallion svg { width:44px; height:44px; }
+html body #root .zw-painted-home[data-tone='dark'] .ph-portal { border:0; border-radius:0; }
+html body #root .zw-painted-home .ph-recent { margin:12px 4% 0; border-top:1px solid #ab997a66; padding-top:12px; }
+html body #root .zw-painted-home .ph-recent header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+html body #root .zw-painted-home .ph-recent header a { font-size:12px; min-height:44px; display:flex; align-items:center; }
+html body #root .zw-painted-home .ph-recent-row { display:flex; align-items:center; gap:14px; padding:8px; width:100%; background:transparent; border:1px solid #a7aea54d; border-radius:10px; margin:6px 0; text-align:left; }
+html body #root .zw-painted-home .ph-recent-row img { width:33%; aspect-ratio:1.8; object-fit:cover; border-radius:6px; }
+html body #root .zw-painted-home .ph-recent-row span { flex:1; }
+html body #root .zw-painted-home .ph-recent-row strong { font-size:18px; display:block; font-weight:500; }
+html body #root .zw-painted-home .ph-recent-row small { font-size:11px; display:block; margin-top:6px; line-height:1.6; }
+html body #root .zw-painted-home .ph-recent-row i { font-size:22px; font-style:normal; }
+html body #root .zw-painted-home .ph-bottom-nav { position:fixed; z-index:35; bottom:0; left:50%; transform:translateX(-50%); width:min(100%,860px); display:grid; grid-template-columns:repeat(4,1fr); padding:5px 10px max(7px,env(safe-area-inset-bottom)); background:var(--ph-paper); border-top:1px solid #b9a98666; border-radius:22px 22px 0 0; }
+html body #root .zw-painted-home .ph-bottom-nav>* { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:52px; background:none; font-size:12px; letter-spacing:.12em; }
+html body #root .zw-painted-home .ph-bottom-nav svg { width:30px; height:30px; }
+html body #root .zw-painted-home[data-composition='koi'] .ph-bottom-nav { position:relative; transform:none; left:auto; margin-top:14px; background:transparent; }
+html[lang='en'] body #root .zw-painted-home h1 { letter-spacing:0 !important; font-size:clamp(25px,7vw,56px) !important; }
+html[lang='en'] body #root .zw-painted-home .ph-portal strong { font-size:18px; letter-spacing:0; }
+html[lang='en'] body #root .zw-painted-home[data-composition='flute'] .ph-portal strong { font-size:12px; }
+html[lang='en'] body #root .zw-painted-home .ph-title { width:75%; }
+html[lang='en'] body #root .zw-painted-home[data-composition='koi'] .ph-title { width:48%; }
+@media(min-width:700px) {
+ html body #root .zw-painted-home .ph-portals {gap:16px;} html body #root .zw-painted-home .ph-portal {padding:24px; min-height:185px;}
+ html body #root .zw-painted-home .ph-portal strong {font-size:36px;} html body #root .zw-painted-home .ph-portal small {font-size:17px;}
+ html body #root .zw-painted-home .ph-paper-panel {padding:24px 28px;} html body #root .zw-painted-home .ph-paper-panel p {font-size:18px;}
+ html body #root .zw-painted-home .ph-paper-panel small {font-size:16px;} html body #root .zw-painted-home .ph-brand strong {font-size:42px;}
+ html body #root .zw-painted-home .ph-title {left:7%;} html body #root .zw-painted-home .ph-dragon-panel {padding:25px; min-height:150px;}
+ html body #root .zw-painted-home .ph-dragon-panel p {font-size:16px;} html body #root .zw-painted-home[data-composition='flute'] .ph-portal strong {font-size:20px;}
+ html body #root .zw-painted-home[data-composition='flute'] .ph-portal {min-height:130px;} html body #root .zw-painted-home .ph-recent-row strong {font-size:26px;}
+}
+html body #root:has(.zw-painted-home) .zhaowu-site-utility-dock {bottom:90px;}
+html body #root .zw-painted-home[data-tone='light'][data-composition='flute'] .ph-title {top:52%; width:70%;}
+html body #root .zw-painted-home[data-tone='light'][data-composition='flute'] .ph-title h1 {font-size:clamp(32px,9vw,68px) !important;}
+
+/* Keep inherited global control chrome out of the illustrated compositions. */
+html body #root .zw-painted-home .ph-actions :is(a,button) {border-radius:60px !important;}
+html body #root .zw-painted-home .ph-bottom-nav :is(a,button),
+html body #root .zw-painted-home .ph-recent header a {border:0 !important; background:none !important; box-shadow:none !important;}
+html body #root .zw-painted-home[data-composition='scroll'] .ph-hero {min-height:420px; aspect-ratio:.93;}
+html body #root .zw-painted-home[data-composition='scroll'] .ph-title {top:20%;}
+html body #root .zw-painted-home[data-composition='scroll'] .ph-actions {bottom:24%;}
+html body #root .zw-painted-home .ph-portal small {font-size:12px;}
+html body #root .zw-painted-home .ph-dragon-panel p {font-size:12px;}
+html body #root:has(.zw-painted-home) .zhaowu-site-utility-dock {position:relative !important; inset:auto !important; width:max-content; max-width:100%; margin:8px auto 80px; z-index:36;}
+html body #root:has(.zw-painted-home) .zhaowu-site-utility-panel {position:fixed; bottom:76px; right:12px; max-height:75dvh; overflow:auto;}
+html body #root .zw-painted-home .ph-paper-panel,
+html body #root .zw-painted-home .ph-portal {isolation:isolate;}
+
+html body #root:has(.zw-painted-home) .zhaowu-home-login-inline {color:var(--zws-ink,#203f36) !important; -webkit-text-fill-color:currentColor !important;}
+html body #root:has(.zw-painted-home) .zhaowu-home-login-inline :is(span,svg) {color:inherit !important; -webkit-text-fill-color:currentColor !important;}
+html body #root:has(.zw-painted-home) .zhaowu-site-header {background:color-mix(in srgb,var(--zws-page,#f7efdf) 88%,transparent) !important; border-radius:0 0 0 12px;}
+
+html body #root .zw-painted-home[data-composition='scroll'] .ph-hero {min-height:350px; aspect-ratio:1.11;}
+html body #root .zw-painted-home[data-composition='scroll'] .ph-title h1 {font-size:clamp(26px,6.7vw,56px) !important;line-height:1.25 !important;}
+html body #root .zw-painted-home[data-composition='scroll'] .ph-motto {margin-top:8px;font-size:14px;}
+html body #root .zw-painted-home[data-composition='scroll'] .ph-title small {margin-top:4px;}
+html body #root .zw-painted-home[data-composition='scroll'] .ph-actions {bottom:14%;gap:7px;}
+html body #root .zw-painted-home[data-composition='scroll'] .ph-actions :is(button,a) {min-height:44px;font-size:16px;padding:6px 20px;}
+html body #root .zw-painted-home[data-composition='comic'] .ph-hero {min-height:225px;aspect-ratio:1.7;}
+html body #root .zw-painted-home[data-composition='comic'] .ph-hero-art {opacity:.55;object-position:50% 35%;}
+html body #root .zw-painted-home[data-composition='comic'] .ph-title {top:61%;width:90%;left:6%;}
+html body #root .zw-painted-home[data-composition='comic'] h1 {font-size:clamp(17px,4.5vw,34px) !important;line-height:1.7 !important;font-weight:500 !important;}
+html body #root .zw-painted-home .ph-comic-panel {margin:0 3%;padding:22px 14px;border:1px solid #c7aa74;border-radius:18px;background:#faf5e9;outline:1px solid #e6d6b5;outline-offset:-4px;text-align:center;}
+html body #root .zw-painted-home .ph-comic-panel h2 {font-size:clamp(30px,8.2vw,58px) !important;letter-spacing:.08em !important;font-weight:600;}
+html body #root .zw-painted-home .ph-comic-panel p {margin:10px 0 16px;font-size:15px;line-height:1.7;}
+html body #root .zw-painted-home .ph-comic-panel>img {width:100%;height:auto;mix-blend-mode:multiply;mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);}
+html body #root .zw-painted-home .ph-comic-labels {display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:15px;}
+html body #root .zw-painted-home .ph-comic-labels span::after {content:'';display:block;width:24px;height:1px;background:#c3a975;margin:10px auto;}
+html body #root .zw-painted-home .ph-comic-cta {display:flex;justify-content:center;gap:20px;align-items:center;min-height:50px;width:86%;margin:15px auto;background:#437c8b;color:#fffaf0 !important;border-radius:60px;font-size:18px;letter-spacing:.1em;}
+html body #root .zw-painted-home .ph-comic-panel small {display:block;margin-top:10px;font-size:12px;opacity:.75;}
+html body #root .zw-painted-home .ph-comic-links {justify-content:center;gap:12px;margin:12px 4% 0;border:0;}
+html body #root .zw-painted-home .ph-comic-links button {min-height:44px;font-size:14px;}
+
+/* Decision grid remnants for non-flute layouts */
+html body #root .ph-decision-grid {display:grid;gap:10px;padding:0 4%;}
+html body #root .ph-decision-grid h4 {font-size:18px;font-weight:500;}
+html body #root .ph-decision-grid p {font-size:13px;line-height:1.55;}
+html body #root .zhaowu-mobile-guide__evidence {border:1px solid #b99a64 !important;border-radius:12px !important;padding:12px !important;background:linear-gradient(90deg,#f7efdf,#f7efdfe6),url('/art/scene-butterfly-dream-v1.webp') right/cover !important;}
+html body #root .zhaowu-mobile-guide__evidence summary {min-height:44px;display:flex;align-items:center;}
+@media(min-width:700px){html body #root .ph-decision-grid p{font-size:16px !important;}html body #root .ph-decision-grid h4{font-size:22px !important;}}
+
+html body #root .zw-painted-home[data-reference-art='false'][data-tone='light'] .ph-hero-art {opacity:.38;}
+
+html body #root:has(.zw-painted-home) .zhaowu-site-utility-buttons .zw-intro-replay {min-height:44px;background:none !important;border:0 !important;box-shadow:none !important;}
+
+/* ── Minimalist density pass (2026-10-14) ─────────────────────────
+   1. Single chrome: hide floating utility buttons on home (bottom nav covers)
+   2. Soften hero art so paper + type lead
+   3. Tighten title weight / line-height (core sentence only)
+   4. Reduce secondary text presence
+*/
+html body #root:has(.zw-painted-home) .zhaowu-site-utility-buttons {
+  display: none !important;
+}
+html body #root .zw-painted-home[data-composition='flute'] .ph-hero-art {
+  opacity: 0.88;
+}
+html body #root .zw-painted-home[data-composition='flute'] .ph-hero::after {
+  inset: 55% 0 0;
+  background: linear-gradient(transparent 0%, color-mix(in srgb, var(--ph-paper) 55%, transparent) 40%, var(--ph-paper) 100%);
+}
+html body #root .zw-painted-home[data-composition='flute'] .ph-title {
+  top: 58%;
+  width: 82%;
+}
+html body #root .zw-painted-home[data-composition='flute'] h1 {
+  font-weight: 500 !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.2 !important;
+}
+html body #root .zw-painted-home[data-composition='flute'] .ph-title p {
+  margin-top: 4px;
+  font-size: clamp(13px, 3.4vw, 20px);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1.45;
+  opacity: 0.88;
+}
+html body #root .zw-painted-home .ph-title small {
+  display: none;
+}
+html body #root .zw-painted-home[data-composition='flute'] .ph-actions {
+  bottom: 4%;
+  gap: 10px;
+}
+html body #root .zw-painted-home[data-composition='flute'] .ph-actions :is(button, a) {
+  min-height: 44px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding: 6px 14px;
+}
+/* Form density when birth entry is open from home */
+html body #root .zhaowu-analysis-flow .zhaowu-section-kicker {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  opacity: 0.7;
+}
+html body #root .zhaowu-analysis-flow .zhaowu-customer-head h2 {
+  font-size: clamp(22px, 5.5vw, 28px);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+html body #root .zhaowu-analysis-flow .zhaowu-birth-select-grid small {
+  display: none;
+}
+html body #root .zhaowu-analysis-flow .zhaowu-time-calibration-note strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+html body #root .zw-flow-progress ol {
+  gap: 4px;
+}
+html body #root .zw-flow-progress button {
+  min-height: 40px;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+html body #root .zw-flow-progress button span[aria-hidden] {
+  font-weight: 600;
+  margin-right: 4px;
+}
