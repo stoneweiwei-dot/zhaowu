@@ -69,6 +69,8 @@ test("skin CSS is inert without data-zws and loaded after the design system", ()
 });
 test("site default uses the owner-selected pastel koi skin", () => {
   assert.match(ts, /SITE_DEFAULT_SKIN = "pastel-koi"/);
+  assert.match(html, /var k = "pastel-koi"/);
+  assert.match(readFileSync("lib/owner-site-skin-public.js", "utf8"), /res\.status === 404\) return \{ skin: "pastel-koi", configured: false \}/);
 });
 
 test('every catalog theme is accepted by the shared server publisher, without extra unknown ids', () => {
