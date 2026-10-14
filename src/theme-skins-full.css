@@ -891,3 +891,30 @@ html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #birth-form #custo
   color: var(--zws-ink) !important;
   -webkit-text-fill-color: var(--zws-ink) !important;
 }
+
+/* Report covers on night skins belong to the same dark paper as the reading.
+ * The old fixed ivory overlay looked like a white strip pasted on top. */
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body :is(
+  .zhaowu-report-header, .zhaowu-unified-birth-report > header,
+  .zhaowu-specialist-hero, .zhaowu-visual-book-head,
+  .zhaowu-luck-head, .history-entry-report, .zw-saved-report-card
+) {
+  background-image:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--zws-page) 96%, transparent),
+      color-mix(in srgb, var(--zws-page) 86%, transparent)),
+    var(--zws-art) !important;
+  border-color: var(--zws-divider) !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body :is(
+  .zhaowu-report-header, .zhaowu-unified-birth-report > header,
+  .zhaowu-specialist-hero, .zhaowu-visual-book-head,
+  .zhaowu-luck-head, .history-entry-report, .zw-saved-report-card
+) :is(h1, h2, h3, h4, p, small, strong, span):not(button *):not(a *) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content .zhaowu-focused-report.zhaowu-report-continuous-sheet .zhaowu-report-header :is(h3, p) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}

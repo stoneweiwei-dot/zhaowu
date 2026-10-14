@@ -10,7 +10,7 @@ export default defineConfig({
   retries: 0,
   reporter: [['line'], ['json', { outputFile: 'theme-results/results.json' }]],
   outputDir: 'theme-results/test-output',
-  use: { baseURL: 'http://127.0.0.1:4173', browserName: 'chromium', serviceWorkers: 'block', reducedMotion: 'reduce', screenshot: 'only-on-failure' },
+  use: { baseURL: 'http://127.0.0.1:4173', browserName: 'chromium', launchOptions: process.env.ZHAOWU_CHROMIUM_PATH ? { executablePath: process.env.ZHAOWU_CHROMIUM_PATH } : {}, serviceWorkers: 'block', reducedMotion: 'reduce', screenshot: 'only-on-failure' },
   projects: [
     { name: 'mobile-hant', use: { viewport: { width: 390, height: 844 }, locale: 'zh-TW' } },
     { name: 'mobile-en', use: { viewport: { width: 390, height: 844 }, locale: 'en-AU' } },

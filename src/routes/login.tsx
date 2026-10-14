@@ -4,6 +4,7 @@ import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { ownerSignIn } from "@/lib/auth/owner-api";
 import { useI18n } from "@/lib/i18n";
+import { useSkin } from "@/lib/theme-skins";
 
 const LOGIN_BACKDROP = "/hero-gallery/dragon-scholar.webp";
 
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/login")({ component: LoginPage });
 
 function LoginPage() {
   const { t, locale } = useI18n();
+  const { skin } = useSkin();
   const navigate = useNavigate();
   const { user, reload } = useCurrentUserState();
   const [secret, setSecret] = useState("");
@@ -56,7 +58,7 @@ function LoginPage() {
     >
       <img
         className="stone-login-stage-media"
-        src={LOGIN_BACKDROP}
+        src={skin?.hero ?? LOGIN_BACKDROP}
         alt=""
         aria-hidden="true"
         decoding="async"
