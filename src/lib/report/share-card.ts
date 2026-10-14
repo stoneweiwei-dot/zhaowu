@@ -3,6 +3,7 @@ import type { Locale } from "@/lib/i18n";
 import { buildReportVisualModel } from "@/lib/report/report-visual-model";
 import { getReportVisualAsset, type ReportVisualAsset } from "@/lib/report/report-visual-assets";
 import { customerCopy } from "@/lib/report/customer-copy";
+import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 
 export type ShareCardModel = {
   brand: string;
@@ -22,7 +23,7 @@ function compactSummary(text: string): string {
 
 export function buildShareCardModel(result: AnalysisResult, locale: Locale): ShareCardModel {
   const visual = buildReportVisualModel(result.chart, locale);
-  const summary = compactSummary(result.reading.directAnswer || visual.dayMaster.summary);
+  const summary = compactSummary(buildDecisionReportModel(result).directAnswer || visual.dayMaster.summary);
   const artwork = getReportVisualAsset("day-master", visual.dayMaster.visualKey);
 
   if (locale === "en") {

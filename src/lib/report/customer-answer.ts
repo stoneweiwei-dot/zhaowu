@@ -40,6 +40,7 @@ const CHOICE_FORM_RE = /(該不該|该不该|要不要|值不值得|是否應該
 const YESNO_FORM_RE = /(嗎|吗|能不能|會不會|会不会|可不可以|適不適合|适不适合|有沒有|有没有|行不行|好不好)[？?]?$|^(?:我)?(?:能|會|会|可以|適合|适合)/;
 const YEAR_WORD_RE = /(今年|明年|後年|后年|這幾年|这几年|未來|未来|最近|近期|這陣子|这阵子|20\d{2})/;
 const CAREER_OBSTACLE_RE = /(問題|问题|卡住|卡點|卡点|瓶頸|瓶颈|困難|困难|阻礙|阻碍|內耗|内耗|為什麼|为什么)/;
+const CAREER_HABIT_RE = /((工作|做事).{0,8}(習慣|习惯|效率|專注|专注|拖延)|(改善|提升|提高|調整|调整).{0,8}(工作|做事).{0,8}(習慣|习惯|效率|專注|专注))/;
 
 const TOPIC_RES: [Topic, RegExp][] = [
   ["home", /((去|到|搬到|移居|前往).{0,6}(日本|韓國|韩国|美國|美国|英國|英国|加拿大|澳洲|新加坡|台灣|台湾|香港|歐洲|欧洲|海外|國外|国外)|家宅|搬家|房子|住宅|店面|風水|风水|買屋|买屋|買房|买房|住哪|坐向|搬到|移居|移民)/],
@@ -193,6 +194,13 @@ function careerObstacle(chart: Chart): string {
   return risk
     ? `工作上最值得核對的卡點，是${risk}。`
     : "工作上目前的卡點，需要先看哪些事反覆拖住你的交付。";
+}
+
+function careerHabit(chart: Chart): string {
+  const risk = stemParts(chart).risk;
+  return risk
+    ? `改善工作習慣，先固定每天最重要的一項交付，並核對${risk}是否正拖慢你。`
+    : "改善工作習慣，先固定每天最重要的一項交付，再找出最常拖慢你的一步。";
 }
 
 function structuralMoney(chart: Chart): string {
@@ -378,6 +386,7 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
   const req = inspectAnswerRequirements(question);
   const explicitTime = form === "when" || YEAR_WORD_RE.test(question) || req.targetMonths.length > 0;
   const asksCareerObstacle = topic === "career" && form === "open" && !explicitTime && CAREER_OBSTACLE_RE.test(question);
+  const asksCareerHabit = topic === "career" && form === "open" && !explicitTime && CAREER_HABIT_RE.test(question);
   const forecastTopic: ForecastTopic = topic;
   const years = req.targetYears.length
     ? req.targetYears
@@ -402,6 +411,8 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
     opener = whenOpener(topic, summary);
   } else if (asksCareerObstacle) {
     opener = careerObstacle(result.chart);
+  } else if (asksCareerHabit) {
+    opener = careerHabit(result.chart);
   } else if (!explicitTime && form !== "choice" && topic === "career") {
     opener = structuralCareer(result.chart);
   } else if (!explicitTime && form !== "choice" && topic === "money") {
@@ -414,7 +425,9 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
     opener = verdict(topic, form, grade, y, result.chart);
   }
 
-  const why = asksCareerObstacle
+  const why = asksCareerHabit
+    ? "這只是盤面提醒，要用最近的工作紀錄核實。"
+    : asksCareerObstacle
     ? "這是盤面傾向，是否正發生，要用最近的項目、工時和回饋核實。"
     : generic ? verdict("self", "open", grade, y, result.chart) : topic === "self" && form === "choice" ? "" : reason(topic, result, question);
   const showTiming = generic || explicitTime || form === "choice" || topic === "love" || topic === "health" || topic === "home";
@@ -431,12 +444,10 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
   if (!answer) return null;
 
   const detail: string[] = [];
-  if (topic === "career" && !asksCareerObstacle) {
-    const fullWork = String(result.reading.work ?? "").trim();
-    if (fullWork && sentences(fullWork).length > 1) detail.push(`補充｜${fullWork}`);
-  }
   const nextAction = asksCareerObstacle
     ? "這週記錄三個卡住的項目：耗時、交付與阻力，先處理最常重複的一項。"
+    : asksCareerHabit
+      ? "這週每天記下最重要的一項交付、實際耗時和卡點；週末只調整最常重複的一步。"
     : nextStep(topic, generic ? "choice" : form, showTiming ? summary : null, question);
   return { answer, nextAction, detail, route: generic ? "generic" : `topic:${topic}` };
 }

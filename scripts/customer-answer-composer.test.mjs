@@ -4,6 +4,7 @@ import test from "node:test";
 const { analyzeLife } = await import("../src/lib/actions.ts");
 const { buildDecisionReportModel } = await import("../src/lib/report/decision-report-model.ts");
 const { composeFocusedReport } = await import("../src/lib/report/focused-report.ts");
+const { buildShareCardModel } = await import("../src/lib/report/share-card.ts");
 const { FEATURED_CITIES } = await import("../src/lib/bazi/cities.ts");
 
 const JARGON = /月令|格局|正印格|十神|七殺|七杀|殺印|杀印|日主|喜用|用神|病藥|病药|承載|承载|制化|透干|藏干|庫氣|六親定位|六亲定位|主看日柱|結構完成度|结构完成度/;
@@ -43,6 +44,19 @@ test("an open work-bottleneck question names a bottleneck instead of answering y
   assert.doesNotMatch(model.directAnswer, /^可以|適合研究、教學/);
   assert.match(model.nextAction, /記錄三個卡住的項目/);
   assert.ok((model.directAnswer.match(/。/g) ?? []).length <= 3);
+});
+
+test("a work-habits question gives an on-topic step without repeating job-fit advice", async () => {
+  const { result, model } = await screen("我如何改善工作習慣？", {
+    year: 1990, month: 6, day: 15, hour: 12, minute: 0,
+  });
+  assert.match(model.directAnswer, /^改善工作習慣/);
+  assert.doesNotMatch(model.directAnswer, /可以考慮|適合高壓|選工作/);
+  assert.match(model.nextAction, /交付、實際耗時和卡點/);
+  assert.ok((model.directAnswer.match(/。/g) ?? []).length <= 3);
+  const summary = composeFocusedReport(result).find((s) => s.key === "summary").body;
+  assert.doesNotMatch(summary.join("\n"), /補充｜|選工作時優先比較四件事/);
+  assert.match(buildShareCardModel(result, "zh-Hant").summary, /^改善工作習慣/);
 });
 
 test("when-questions lead with the window itself", async () => {
