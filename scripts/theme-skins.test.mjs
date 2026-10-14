@@ -67,7 +67,7 @@ test("skin CSS is inert without data-zws and loaded after the design system", ()
   const bare = css.split("\n").filter((l) => /^(html body|html\[data-zws)/.test(l) === false && /^\s*(body|\.zw-|main)/.test(l));
   assert.equal(bare.length, 0, "no ungated top-level selectors");
 });
-test("site default is pastel-koi (owner day homepage reference)", () => {
+test("site default uses the owner-selected pastel koi skin", () => {
   assert.match(ts, /SITE_DEFAULT_SKIN = "pastel-koi"/);
 });
 
