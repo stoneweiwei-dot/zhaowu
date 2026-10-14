@@ -1,6 +1,6 @@
 import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 /**
- * Customer-facing first-screen answer composer (zh-Hant).
+ * Customer-facing first-screen answer composer (zh-Hant, with scoped English safety answers).
  *
  * Presentation layer only. It never recalculates the chart and adds no new
  * judgement: every verdict below is derived from values the engine already
@@ -299,6 +299,39 @@ function highStakes(question: string): ComposedCustomerAnswer | null {
   return null;
 }
 
+function commonBoundaryAnswer(result: AnalysisResult, question: string): ComposedCustomerAnswer | null {
+  const fixed = (answer: string, nextAction: string): ComposedCustomerAnswer => ({ answer, nextAction, detail: [], route: "safe:question-boundary" });
+  if (/現在.{0,5}(走|在).{0,3}大運/.test(question)) {
+    const period = result.chart.currentDayun;
+    return period
+      ? fixed(`若你問的是十年運程，你目前在${period.startYear}至${period.endYear}年的${period.ganZhi}大運；這不等於整段時間都順，還要看具體問題和當年的條件。`, "先說清楚你想核對工作、感情還是財務，再看這一階段與當年如何配合。")
+      : fixed("目前資料不足，無法確認你所處的十年大運，也不能據此說這段時間一定順或不順。", "補齊可確認的出生時間，再核對大運起迄與你關心的具體事情。");
+  }
+  if (/(日本|韓國|韩国|海外|國外|国外).{0,8}工作|工作.{0,8}(日本|韓國|韩国|海外|國外|国外)/.test(question)) {
+    return fixed("去海外工作可以列入選項，但命盤不能替你確認簽證、雇用條件和生活成本；沒有這些資料，不能直接說適不適合。", "先取得書面職缺條件，核對簽證、薪資、語言要求與扣除生活成本後的餘額。");
+  }
+  if (/(比我大|比我小).{0,12}(對象|对象|伴侶|伴侣)|(對象|对象|伴侶|伴侣).{0,12}(比我大|比我小)/.test(question)) {
+    return fixed("命盤不能判定年紀比你大或比你小的人一定更適合；關係能否走下去，要看對方的回應、承諾和相處方式。", "比較實際交往中的溝通、生活目標與界線，別只用年齡篩選。");
+  }
+  if (/(全職|全职).{0,5}(作家|寫作|写作)|(作家|寫作|写作).{0,5}(全職|全职)/.test(question)) {
+    return fixed("命盤不能保證全職寫作能養活你，也不能斷言一定失敗；先看穩定稿酬是否足以支付必要開支。", "先記下已有稿酬、每月固定支出與可支撐的存款，再決定是否離開現職。");
+  }
+  return null;
+}
+
+function commonEnglishAnswer(question: string): ComposedCustomerAnswer | null {
+  const fixed = (answer: string, nextAction: string): ComposedCustomerAnswer => ({ answer, nextAction, detail: [], route: "safe:english-question" });
+  if (/\bshould\s+i\s+(?:change|switch|leave|quit)\s+(?:my\s+)?jobs?\b/i.test(question)) {
+    const horizon = /\bthis\s+year\b/i.test(question) ? " this year" : "";
+    return fixed(`You should consider changing jobs${horizon} only if a real offer improves the work conditions you care about and leaves you a manageable workload and an exit route. A chart alone cannot establish that an offer is good.`, "Compare the written offer with your current job on pay, duties, support, commute, and what happens if the move fails.");
+  }
+  if (/\bwhat\s+should\s+i\s+(?:be\s+careful\s+of|watch\s+out\s+for)\s+(?:this|next)\s+month\b/i.test(question)) {
+    const horizon = /\bnext\s+month\b/i.test(question) ? "Next month" : "This month";
+    return fixed(`${horizon}, watch the commitments and deadlines you can actually carry; a chart cannot identify a guaranteed event to avoid.`, "Review upcoming deadlines, leave room for recovery, and confirm any new commitment before accepting it.");
+  }
+  return null;
+}
+
 // Old dedicated answers sometimes lead with chart bookkeeping. Customers who did not ask in
 // chart terms must never see it on the first screen.
 export const LEAK_RE = /月令|格局|(正|偏)?(印|財|财|官|殺|杀|食神|傷官|伤官|比肩|劫財|劫财|建祿|建禄|羊刃)格|十神|七殺|七杀|殺印|杀印|日主|喜用|用神|病藥|病药|承載|承载|制化|透干|藏干|庫氣|结构完成度|結構完成度|六親定位|六亲定位|主看(日柱|年柱|月柱|時柱|时柱)|結構摘要|结构摘要|主格.{0,4}格|完成度|月令.{0,3}[子丑寅卯辰巳午未申酉戌亥]/;
@@ -362,6 +395,7 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
   const locale = result.locale ?? "zh-Hant";
   const food = foodPreferenceAnswer(result.question, locale);
   if (food) return food;
+  if (locale === "en") return commonEnglishAnswer(String(result.question ?? "").trim());
   if (locale !== "zh-Hant") return null;
   const question = String(result.question ?? "").trim();
   if (!question) return null;
@@ -370,6 +404,8 @@ export function composeCustomerAnswer(result: AnalysisResult): ComposedCustomerA
   if (suspect) return composeIntent(suspect, result, question);
   const sensitive = highStakes(question);
   if (sensitive) return sensitive;
+  const boundary = commonBoundaryAnswer(result, question);
+  if (boundary) return boundary;
   if (intent) return composeIntent(intent, result, question);
   if (SPECIAL_RE.test(question) || isStructureQuestion(question) || isTalentQuestion(question) || isJobFitQuestion(question) || isCosmicSymbolicQuestion(question)) return null;
   if (/A\s*[：:].+?B\s*[：:]/s.test(question)) return null;
