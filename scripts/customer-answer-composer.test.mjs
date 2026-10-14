@@ -59,6 +59,39 @@ test("a work-habits question gives an on-topic step without repeating job-fit ad
   assert.match(buildShareCardModel(result, "zh-Hant").summary, /^改善工作習慣/);
 });
 
+test("common boundary questions answer their actual decision without inventing certainty", async () => {
+  const cases = [
+    ["我現在是不是走大運？", /大運|十年運程/, /當年|出生時間/],
+    ["我想去日本工作，可以嗎？", /海外工作|簽證/, /書面職缺條件/],
+    ["我適合找比我大還是比我小的對象？", /年紀比你大或比你小/, /實際交往/],
+    ["我想當全職作家，會不會餓死？", /全職寫作/, /稿酬/],
+  ];
+  for (const [question, answerPattern, actionPattern] of cases) {
+    const { model } = await screen(question);
+    assert.match(model.directAnswer, answerPattern, question);
+    assert.match(model.nextAction, actionPattern, question);
+    assert.doesNotMatch(model.directAnswer, /目前沒有足夠的相關依據/, question);
+  }
+});
+
+test("common English time and job questions do not fall into an unrelated-answer fallback", async () => {
+  for (const [question, answerPattern] of [
+    ["Should I change jobs this year?", /changing jobs/],
+    ["What should I be careful of this month?", /This month, watch/],
+    ["What should I watch out for next month?", /Next month, watch/],
+  ]) {
+    const result = await analyzeLife({ data: {
+      question, locale: "en", year: 1988, month: 10, day: 4, hour: 3, minute: 30,
+      timeUnknown: false, gender: "male", relation: "unset", city: FEATURED_CITIES[0],
+      liveCity: null, ziPolicy: "midnight", useTrueSolar: false,
+    } });
+    const model = buildDecisionReportModel(result);
+    assert.match(model.directAnswer, answerPattern, question);
+    assert.doesNotMatch(model.directAnswer, /does not directly cover/, question);
+    assert.ok(model.nextAction.length > 20, question);
+  }
+});
+
 test("when-questions lead with the window itself", async () => {
   const { model } = await screen("我什麼時候會結婚？");
   assert.match(model.directAnswer, /^感情比較容易有進展的時間，落在/);

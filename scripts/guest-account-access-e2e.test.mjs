@@ -182,6 +182,8 @@ test("Real Browser: unauthenticated guest accessing /account directly receives n
 
     const targetUrl = process.env.TARGET_URL || "https://stone-zhaowu-official.vercel.app/account";
     await page.goto(targetUrl, { waitUntil: "networkidle" });
+    // Owner-session verification redirects asynchronously after hydration.
+    await page.waitForURL("**/login", { timeout: 15000 });
     assert.equal(new URL(page.url()).pathname, "/login", "Guest /account must resolve only to the owner login route");
     assert.equal(await page.getByText("站主登入", { exact: true }).count(), 1);
 
