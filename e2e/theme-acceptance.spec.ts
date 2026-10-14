@@ -206,6 +206,10 @@ for (const skin of SKINS) {
     await page.locator('[data-professional-report] > summary').click();
     await expect(page.locator('#focused-report-title')).toBeVisible();
     await expect(page.locator('.zhaowu-report-summary-block .zhaowu-report-copy p').first()).toBeVisible();
+    if (language === 'zh-Hant') {
+      await expect(page.locator('.zhaowu-report-summary-block .zhaowu-report-copy p').first()).toContainText('改善工作習慣');
+      await expect(page.locator('.zhaowu-report-summary-block .zhaowu-report-copy p').first()).not.toContainText('工作合不合適');
+    }
     for (const fold of await page.locator('.zhaowu-report-continuous-sheet details[data-report-fold] > summary').all()) {
       if (await fold.isVisible()) await fold.click();
     }
@@ -218,6 +222,7 @@ for (const skin of SKINS) {
     await shot('quiz');
     await open('/history', '.zw-saved-report-card');
     await shot('history', '.zw-saved-report-card');
+    if (language === 'zh-Hant') await expect(page.locator('.zw-saved-report-card').filter({ hasText: question }).locator('p').first()).toContainText('改善工作習慣');
     await open('/login', '#zhaowu-main-content main');
     await shot('login');
     expect(errors, 'runtime exceptions').toEqual([]);

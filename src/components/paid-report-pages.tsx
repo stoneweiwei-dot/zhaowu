@@ -1,7 +1,6 @@
 import { useI18n, type Locale } from "@/lib/i18n";
 import type { AnalysisResult, Element, Pillar } from "@/lib/bazi/types";
 import type { ReportSection } from "@/lib/report/focused-report";
-import { customerDirectAnswer } from "@/lib/report/customer-copy";
 import { buildDecisionReportModel, type DecisionSectionKey } from "@/lib/report/decision-report-model";
 import { ReportElementMeters, ReportVisualBook } from "@/components/report-visual-book";
 import { ReportLuckBook } from "@/components/report-luck-book";
@@ -360,7 +359,7 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
   const copy = COPY[locale];
   const content = continuousReportContent(sections, locale);
   const model = result ? buildDecisionReportModel(result) : null;
-  const directFull = result ? normalizeReportLine(customerDirectAnswer(result.question, result.reading.directAnswer)) : "";
+  const directFull = model ? normalizeReportLine(model.directAnswer) : "";
   const supportingSummary = content.summary.filter((line) => normalizeReportLine(line) !== directFull);
   const showLuck = Boolean(model?.supportingModules.includes("luck"));
   const overviewLines = directFull ? [directFull, ...supportingSummary] : content.summary;

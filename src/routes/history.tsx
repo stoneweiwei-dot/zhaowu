@@ -1,4 +1,4 @@
-import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
+import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { readLocalReports, removeLocalReport, REPORT_HISTORY_EVENT, type LocalReport } from "@/lib/local-report-history";
@@ -88,7 +88,7 @@ function HistoryPage() {
       {reports.map(({ result, savedAt, cloudSaved }) => <article key={result.id} className="zw-saved-report-card">
         <small>{new Date(savedAt).toLocaleString()} · {cloudSaved ? tr(locale, "已安全備份", "已安全备份", "Securely backed up") : copy.local}</small>
         <h2>{result.question}</h2>
-        <p>{foodPreferenceAnswer(result.question, locale)?.answer ?? result.reading.directAnswer}</p>
+        <p>{buildDecisionReportModel(result).directAnswer}</p>
         <button type="button" onClick={() => { window.location.assign(`/?report=${encodeURIComponent(result.id)}#report`); }}>{tr(locale, "閱讀報告", "阅读报告", "Read report")}</button>
         <button type="button" onClick={() => { if (window.confirm(copy.confirmOne)) { removeLocalReport(result.id); setReports(readLocalReports()); } }}>{copy.remove}</button>
       </article>)}
