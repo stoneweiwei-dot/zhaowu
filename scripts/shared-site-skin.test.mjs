@@ -13,7 +13,7 @@ test("shared skin catalog covers all registered choices and classic", () => {
   for (const id of ["", "../../api", "auto", "unknown", 1, null]) assert.equal(validSiteSkin(id), null);
 });
 
-test("public read: missing config means classic, no owner login needed", async () => {
+test("public read: missing config uses pastel koi, no owner login needed", async () => {
   const result = await readPublishedSiteSkin(async () => ({ status: 404, ok: false }));
   assert.deepEqual(result, { skin: "pastel-koi", configured: false });
 });
