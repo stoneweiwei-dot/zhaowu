@@ -37,6 +37,14 @@ test("a time-word topic question answers the topic, not only a month list", asyn
   assert.match(model.directAnswer, /\d{1,2}月/);
 });
 
+test("an open work-bottleneck question names a bottleneck instead of answering yes", async () => {
+  const { model } = await screen("我現在工作最大的問題是什麼？");
+  assert.match(model.directAnswer, /^工作上最值得核對的卡點/);
+  assert.doesNotMatch(model.directAnswer, /^可以|適合研究、教學/);
+  assert.match(model.nextAction, /記錄三個卡住的項目/);
+  assert.ok((model.directAnswer.match(/。/g) ?? []).length <= 3);
+});
+
 test("when-questions lead with the window itself", async () => {
   const { model } = await screen("我什麼時候會結婚？");
   assert.match(model.directAnswer, /^感情比較容易有進展的時間，落在/);

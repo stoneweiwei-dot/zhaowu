@@ -54,7 +54,8 @@ test("简明报告固定三段式：核心直断 + 近期建议 + 核心依据",
   assert.equal(sections[1].title, "近期建议");
   assert.equal(sections[2].title, "核心依据");
   const summary = section(result, "summary").body.join("\n");
-  assert.ok(summary.includes(result.reading.work));
+  assert.match(summary, /工作上最值得核對的卡點/);
+  assert.ok(!summary.includes(result.reading.work), "a bottleneck question should not switch to job-fit advice");
   assert.ok(!summary.includes(result.reading.love));
   assert.ok(!summary.includes(result.reading.money));
 });
