@@ -25,6 +25,7 @@ import { Route as NumerologyRouteImport } from './routes/numerology'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as QizhengRouteImport } from './routes/qizheng'
 import { Route as SkyEventsRouteImport } from './routes/sky-events'
+import { Route as SoulChaptersRouteImport } from './routes/soul-chapters'
 import { Route as SocialRouteImport } from './routes/social'
 import { Route as TeaGuardianRouteImport } from './routes/tea-guardian'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -121,6 +122,11 @@ const QizhengRoute = QizhengRouteImport.update({
 const SkyEventsRoute = SkyEventsRouteImport.update({
   id: '/sky-events',
   path: '/sky-events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SoulChaptersRoute = SoulChaptersRouteImport.update({
+  id: '/soul-chapters',
+  path: '/soul-chapters',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SocialRoute = SocialRouteImport.update({
@@ -228,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
+  '/soul-chapters': typeof SoulChaptersRoute
   '/social': typeof SocialRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/terms': typeof TermsRoute
@@ -263,6 +270,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
+  '/soul-chapters': typeof SoulChaptersRoute
   '/social': typeof SocialRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/terms': typeof TermsRoute
@@ -299,6 +307,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
+  '/soul-chapters': typeof SoulChaptersRoute
   '/social': typeof SocialRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/terms': typeof TermsRoute
@@ -336,6 +345,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/qizheng'
     | '/sky-events'
+    | '/soul-chapters'
     | '/social'
     | '/tea-guardian'
     | '/terms'
@@ -371,6 +381,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/qizheng'
     | '/sky-events'
+    | '/soul-chapters'
     | '/social'
     | '/tea-guardian'
     | '/terms'
@@ -406,6 +417,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/qizheng'
     | '/sky-events'
+    | '/soul-chapters'
     | '/social'
     | '/tea-guardian'
     | '/terms'
@@ -442,6 +454,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   QizhengRoute: typeof QizhengRoute
   SkyEventsRoute: typeof SkyEventsRoute
+  SoulChaptersRoute: typeof SoulChaptersRoute
   SocialRoute: typeof SocialRoute
   TeaGuardianRoute: typeof TeaGuardianRoute
   TermsRoute: typeof TermsRoute
@@ -569,6 +582,13 @@ declare module '@tanstack/react-router' {
       path: '/sky-events'
       fullPath: '/sky-events'
       preLoaderRoute: typeof SkyEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/soul-chapters': {
+      id: '/soul-chapters'
+      path: '/soul-chapters'
+      fullPath: '/soul-chapters'
+      preLoaderRoute: typeof SoulChaptersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/social': {
@@ -738,6 +758,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   QizhengRoute: QizhengRoute,
   SkyEventsRoute: SkyEventsRoute,
+  SoulChaptersRoute: SoulChaptersRoute,
   SocialRoute: SocialRoute,
   TeaGuardianRoute: TeaGuardianRoute,
   TermsRoute: TermsRoute,
