@@ -41,7 +41,7 @@ test.describe("iPhone Safari display-language contract", () => {
     await expect(page.locator(".zhaowu-header-login")).toHaveCount(0);
     await expect.poll(() => page.evaluate(() => document.documentElement.lang)).toBe("zh-Hant");
 
-    const labels = await page.locator(".site-lang-button").evaluateAll((nodes) =>
+    const labels = await page.locator(".zw-langpick__opt").evaluateAll((nodes) =>
       nodes.map((node) => node.textContent?.trim() ?? ""),
     );
     expect(labels).toEqual(LANGUAGE_ORDER);
@@ -110,7 +110,7 @@ test.describe("iPhone Safari display-language contract", () => {
           const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
           for (let node = walker.nextNode(); node; node = walker.nextNode()) {
             const parent = (node as Text).parentElement;
-            if (!parent || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.tagName) || parent.closest(".site-lang-group")) continue;
+            if (!parent || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.tagName) || parent.closest("[data-language-switcher]")) continue;
             const text = node.textContent ?? "";
             const hit = [...text].filter((ch) => trad.includes(ch));
             if (hit.length) out.push(`[${[...new Set(hit)].join("")}] ${text.trim().slice(0, 50)}`);
