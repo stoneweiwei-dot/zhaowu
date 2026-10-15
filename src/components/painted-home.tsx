@@ -61,6 +61,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <strong>{item.title}</strong>{layout === 'koi' && <><small>{item.hint}</small><i aria-hidden>→</i></>}
     </button>)}</nav>}
     {layout === 'koi' ? <button className="ph-dragon-panel" onClick={() => window.dispatchEvent(new Event('zhaowu:open-guide'))}><img src="/art/zhaowu-dragon-lake-v1.webp" alt="" loading="lazy"/><span><h2>{t('青玉小龍','青玉小龙','Your little jade dragon')}</h2><p>{t('與溫柔的神獸，一起看見日常的微光。','与温柔的神兽，一起看见日常的微光。','A gentle guide to your next discovery.')}</p><em>{t('進入','进入','Explore')} →</em></span></button> : null}
+    <a href="/soul-chapters" className="sc-entry-strip" data-home-card="soul-chapters"><span className="sc-entry-kicker">{t('靈階鏡像','灵阶镜像','Soul Chapters')}</span><span className="sc-entry-text">{t('人生有十章，哪一章最像現在的你？','人生有十章，哪一章最像现在的你？','Ten life chapters. Which one feels like yours right now?')}</span><span className="sc-entry-arrow" aria-hidden>→</span></a>
     <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><a href="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></a><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命書','命书','Reading')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><a href="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></a></nav>
   </section>;
 }
