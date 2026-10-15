@@ -108,7 +108,8 @@ function isOffsetDay(date: Date, reference: Date, days: number): boolean {
  return date.getTime()===reference.getTime()+days*86400000;
 }
 function zhHans(value:string): string {
- return toSimplifiedCustomerText(value).replaceAll("爺","爷").replaceAll("僧","僧").replaceAll("祂","祂").replaceAll("讚","赞");
+ const extra:Readonly<Record<string,string>>={爺:"爷",誕:"诞",薩:"萨",彌:"弥",齋:"斋",聖:"圣",韋:"韦",馱:"驮",註:"注",蘭:"兰",禮:"礼",獻:"献",嬰:"婴",無:"无",臨:"临",週:"周",穌:"稣",領:"领",節:"节",聯:"联",廿:"廿",陰:"阴",曆:"历",總:"总",嚴:"严",讚:"赞",尊:"尊",傳:"传",見:"见",華:"华",寶:"宝",歲:"岁",陽:"阳",風:"风",東:"东",崇:"崇",舊:"旧",靈:"灵",歸:"归",進:"进",顯:"显",歷:"历",禱:"祷",禎:"祯",寧:"宁",媽:"妈",龍:"龙",頭:"头",終:"终",莊:"庄",鏡:"镜",慶:"庆",飛:"飞",國:"国",間:"间",顧:"顾"};
+ return [...toSimplifiedCustomerText(value)].map((char)=>extra[char]??char).join("");
 }
 function traditionLabel(tradition:Tradition,locale:SacredDayLocale):string {
  if(locale==="en")return ({佛教:"Buddhist",道教:"Taoist",儒家:"Confucian",民間信仰:"Folk",基督宗教:"Christian",東正教:"Eastern Orthodox"} as const)[tradition];
