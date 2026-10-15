@@ -244,3 +244,6 @@ html body #root .zw-flow-progress button span[aria-hidden] {
   font-weight: 600;
   margin-right: 4px;
 }
+
+/* 靈階鏡像 entry strip lines up with the cards above it (they use a 4% gutter) */
+html body #root .zw-painted-home .sc-entry-strip { margin: 10px 4% 0; width: auto; border-radius: 12px; }

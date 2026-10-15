@@ -248,11 +248,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       <details className="zhaowu-result-evidence seal-border rounded-xl bg-cream/90" data-technical-evidence>
         <summary className="cursor-pointer list-none px-5 py-4 sm:px-6"><strong>{copy.evidence}</strong>{copy.evidenceLead ? <span className="mt-1 block text-xs leading-5 text-ink-mute">{copy.evidenceLead}</span> : null}</summary>
         <div className="space-y-5 border-t border-line/60 p-4 sm:p-6">
-          <div className="zhaowu-answer-meta zhaowu-answer-meta--notes" data-answer-meta>
-            <div data-evidence-status><span>{locale === "en" ? "Evidence status" : locale === "zh-Hans" ? "依据状态" : "依據狀態"}</span><b>{decisionModel.confidenceLabel}</b></div>
-            <div data-biggest-variable><span>{locale === "en" ? "Biggest variable" : locale === "zh-Hans" ? "最大现实变量" : "最大現實變數"}</span><b>{decisionModel.biggestVariable}</b></div>
-            {decisionModel.confidenceBasis ? <small>{decisionModel.confidenceBasis}</small> : null}
-          </div>
+          <p className="zhaowu-answer-meta zhaowu-answer-meta--line text-xs leading-6 text-ink-mute" data-answer-meta>
+            <span data-evidence-status>{locale === "en" ? "Evidence" : locale === "zh-Hans" ? "依据" : "依據"}{locale === "en" ? ": " : "："}{decisionModel.confidenceLabel}</span>
+            {decisionModel.biggestVariable ? <><br /><span data-biggest-variable>{locale === "en" ? "Key variable" : locale === "zh-Hans" ? "关键变数" : "關鍵變數"}{locale === "en" ? ": " : "："}{decisionModel.biggestVariable}</span></> : null}
+          </p>
           <div className="zhaowu-result-evidence-chart" data-evidence-chart-detail>
             <div className="space-y-5 border-t border-line/40 p-4">
               {decreeCouplet ? <div className="zhaowu-free-decree rounded-xl border border-line/60 p-4" data-free-decree><strong className="text-sm text-ink">{copy.decree}</strong><p className="mt-2 text-[14px] leading-7 text-ink-soft">{decreeCouplet}</p></div> : null}

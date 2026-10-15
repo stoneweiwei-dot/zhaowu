@@ -40,7 +40,9 @@ test("个人命诰引用月令、日支、旺衰而不是只按日主套话", ()
   assert.ok(out.reading.decree.includes(out.chart.strength.tendency));
   assert.doesNotMatch(out.reading.decree, /^留住.+的本色，但不要讓它變成凡事由你硬扛/);
   assert.match(out.reading.decree, /月令偏|调候先跟月令走/);
-  assert.match(out.reading.decree, /已排定的干支|干支关系只按已排定/);
+  // Customer copy carries no internal pipeline caveats (owner 2026-10-16: "too much filler").
+  assert.doesNotMatch(out.reading.decree, /刑冲合害库|刑沖合害庫|接入前|尚不足以把它写成|硬撑到底/);
+  assert.ok(out.reading.decree.length < 220, `decree stays short (${out.reading.decree.length})`);
 });
 
 test("命诰继续保存在 final reading 供真实图片生成，但不强塞进每份文字报告", () => {
