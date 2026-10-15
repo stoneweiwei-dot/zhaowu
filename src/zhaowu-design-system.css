@@ -550,6 +550,49 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
   font-weight: 650 !important;
 }
 
+/* ── Quick prompt chips for the question stage ─────────────────── */
+.zhaowu-quick-prompts {
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+.zhaowu-quick-prompts-label {
+  display: block;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: .06em;
+  opacity: .6;
+  margin-bottom: 7px;
+}
+.zhaowu-quick-prompts-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.zhaowu-quick-prompt-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 5px 13px !important;
+  border: 1px solid rgba(73, 61, 45, .16) !important;
+  border-radius: 20px !important;
+  background: rgba(253, 251, 245, .6) !important;
+  color: var(--zw-ink) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .15s, border-color .15s;
+}
+.zhaowu-quick-prompt-chip:hover {
+  background: rgba(238, 233, 222, .78) !important;
+  border-color: rgba(73, 61, 45, .3) !important;
+}
+.zhaowu-quick-prompt-chip:active {
+  background: rgba(228, 221, 208, .85) !important;
+}
+
 .zhaowu-home-layout #birth-form .zhaowu-question-sheet textarea {
   width: 100%;
   min-height: 118px !important;
