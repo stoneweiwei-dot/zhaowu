@@ -1,5 +1,12 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-15 移除未擁有的自訂網域 `zhaowu.art`
+
+- ACTIVE：站主確認未購買／未連接任何自訂網域；正式網站僅 `stone-zhaowu-official.vercel.app`。`src/lib/supabase-config.ts` 的 `PROXY_HOST_DOMAINS` 清空，所有訪客維持 Supabase 直連。
+- SUPERSEDED：下方同日條目中所有以 `zhaowu.art` 為前提的內容（代理啟用網域、DNS 設定待辦）。`vercel.json` 的 `/sb/*` rewrite 與自家託管天文腳本保留，無副作用。
+- 後果：大陸可讀取／可登入目標未達成（`*.vercel.app` 在大陸不可達），需站主日後真正擁有網域再重啟。
+- 回滾＝還原本提交。
+
 ## 2026-10-15 中國大陸可讀取／可登入：同網域 Supabase 代理與自家託管天文腳本
 
 - ACTIVE：訪客端（登入、`rest/v1` 讀取、`functions/v1`、公開媒體 URL）在 `zhaowu.art`（含子網域）一律經本站同網域 `/sb/*`；`*.vercel.app` 本身在大陸不可達，維持原直連路徑以不影響現有訪客；`vercel.json` 以四條白名單 rewrite 轉到 Supabase（`/sb/auth/v1`、`/sb/rest/v1`、`/sb/functions/v1`、`/sb/storage/v1/object/public`）。`src/lib/supabase-config.ts` 匯出 `SUPABASE_URL`（瀏覽器在 `zhaowu.art` 時為 `<origin>/sb`，其餘環境維持直連）與 `SUPABASE_DIRECT_URL`（永遠直連）。

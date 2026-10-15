@@ -13,9 +13,9 @@ export const SUPABASE_DIRECT_URL = (VITE_ENV.VITE_SUPABASE_URL || DEFAULT_SUPABA
 // the page's own origin instead, so login, reads and public media need exactly one reachable
 // host. Anywhere else (localhost, tests, archive hosts) the direct URL is kept unchanged.
 const SAME_ORIGIN_PROXY_PREFIX = "/sb";
-// Only the China-facing custom domain opts in. *.vercel.app is itself unreachable from the mainland,
-// so existing visitors on the vercel.app origin keep the proven direct path.
-const PROXY_HOST_DOMAINS = ["zhaowu.art"];
+// No custom domain is connected: the site lives only on stone-zhaowu-official.vercel.app, which keeps
+// the proven direct path. Add a domain here only after the owner has registered it and pointed DNS to Vercel.
+const PROXY_HOST_DOMAINS: string[] = [];
 
 function resolveBrowserSupabaseUrl() {
   if (typeof window === "undefined" || !window.location) return SUPABASE_DIRECT_URL;

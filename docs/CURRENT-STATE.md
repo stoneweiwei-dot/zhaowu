@@ -17,7 +17,7 @@
 Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batched conversion/trust work; P2 is backlog-only polish.
 
 - 2026-10-15：開場影片 60 秒內完整播放；全站預設 English（中文瀏覽器才預設中文）；首頁版本更新與站主入口移至頁尾；換頁淡入；付費區新增優惠碼（`promo-code` Edge Function，與 Stripe 分離）。細節見 Instruction Registry 同日條目。
-- 2026-10-15：中國大陸可讀取／可登入——`zhaowu.art` 訪客端 Supabase 請求改走同網域 `/sb/*` Vercel rewrite，天文腳本改自家託管；網域 `zhaowu.art` 仍需站主在註冊商完成 DNS 指向（細節見 Instruction Registry 同日條目）。
+- 2026-10-15：站主未擁有、未連接任何自訂網域；正式網站僅 `stone-zhaowu-official.vercel.app`。先前誤掛的 `zhaowu.art` 已自程式設定移除（同網域 `/sb/*` 代理機制保留但無網域啟用）。
 
 
 ## 0.1 Complex question answering — 2026-10-07
