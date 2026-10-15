@@ -25,23 +25,33 @@ test("the webhook accepts new prices and preserves legacy checkout recovery", ()
   assert.match(webhook, /product: "quick".*amount: 199/);
 });
 
+// 2026-10-15: report-access.ts also carries startReportCheckout (the one and only function
+// allowed to build a Stripe URL/redirect) and, separately, a same-origin promo-code redemption
+// path (verifyPromo/redeemPromoCode) that POSTs to this project's own promo-code Edge Function,
+// never to Stripe. The two assertions below are scoped to startReportCheckout's own body so a
+// legitimate, unrelated POST or "access_key" query param elsewhere in the file (the promo path)
+// cannot be confused with a browser-side Stripe session creation, which remains forbidden.
+const startCheckoutFn = client.match(/export async function startReportCheckout[\s\S]*?\n}\n/)?.[0] ?? "";
+
 test("BaZi and all six specialist systems use the new live Stripe Payment Links", () => {
+  assert.ok(startCheckoutFn, "startReportCheckout function body not found in report-access.ts");
   for (const system of ["bazi", "ziwei", "qizheng", "western", "indian", "palm", "numerology"]) {
     assert.match(client, new RegExp(`${system}: \\{`));
   }
   assert.equal((client.match(/https:\/\/buy\.stripe\.com\//g) || []).length, 13);
-  assert.match(client, /url\.searchParams\.set\("client_reference_id", accessKey\)/);
-  assert.doesNotMatch(client, /method:\s*"POST"/);
+  assert.match(startCheckoutFn, /url\.searchParams\.set\("client_reference_id", accessKey\)/);
+  assert.doesNotMatch(startCheckoutFn, /method:\s*"POST"/);
   assert.doesNotMatch(client, /STRIPE_(?:SECRET|RESTRICTED)_KEY/);
 });
 
 test("the browser can only query server-side entitlements; it cannot create payment sessions", () => {
+  assert.ok(startCheckoutFn, "startReportCheckout function body not found in report-access.ts");
   assert.match(checkout, /req\.method !== "GET"/);
   assert.match(checkout, /PAYMENT_LINKS_ONLY/);
   assert.match(checkout, /report_purchase_entitlements/);
   assert.match(checkout, /\.eq\("checkout_session_id", sessionId\)/);
   assert.doesNotMatch(checkout, /\.eq\("access_key", accessKey\)/);
-  assert.doesNotMatch(client, /searchParams\.set\("access_key"/);
+  assert.doesNotMatch(startCheckoutFn, /searchParams\.set\("access_key"/);
   assert.doesNotMatch(checkout, /npm:stripe|STRIPE_(?:SECRET|RESTRICTED)_KEY|checkout\.sessions\.create/);
 });
 

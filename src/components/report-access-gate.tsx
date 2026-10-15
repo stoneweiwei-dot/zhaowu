@@ -5,6 +5,7 @@ import type { Locale } from "@/lib/i18n";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
 import {
   REPORT_ACCESS_PRODUCTS,
+  redeemPromoCode,
   resolveReportAccess,
   startReportCheckout,
   type ReportAccessLevel,
@@ -33,6 +34,11 @@ type Copy = {
   previewLabel: string;
   bonus: Record<ReportAccessProduct, string>;
   welcomeGift: string;
+  promoToggle: string;
+  promoPlaceholder: string;
+  promoSubmit: string;
+  promoSuccess: string;
+  promoError: Record<string, string>;
 };
 
 function copyFor(locale: Locale): Copy {
@@ -60,6 +66,19 @@ function copyFor(locale: Locale): Copy {
       bundle: "Included with the report · the complete 5-track tone cycle",
     },
     welcomeGift: "🎁 New-user welcome gift · Quick read is free for everyone",
+    promoToggle: "Have a code?",
+    promoPlaceholder: "Enter code",
+    promoSubmit: "Apply",
+    promoSuccess: "Code applied — unlocked below.",
+    promoError: {
+      PROMO_CODE_REQUIRED: "Enter a code first.",
+      PROMO_NOT_FOUND: "That code isn't recognised.",
+      PROMO_EXPIRED: "That code has expired.",
+      PROMO_EXHAUSTED: "That code has already reached its limit.",
+      PROMO_WRONG_SYSTEM: "That code doesn't apply to this system.",
+      PROMO_ALREADY_REDEEMED: "This browser has already used that code.",
+      PROMO_UNAVAILABLE: "The code could not be applied. Please try again.",
+    },
   };
   if (locale === "zh-Hans") return {
     title: "选择读取深度",
@@ -85,6 +104,19 @@ function copyFor(locale: Locale): Copy {
       bundle: "随报告附赠｜完整五音序列 5 首",
     },
     welcomeGift: "🎁 新用户的福利 · 快速读对所有人免费开放",
+    promoToggle: "有优惠码？",
+    promoPlaceholder: "输入代码",
+    promoSubmit: "使用",
+    promoSuccess: "代码已生效，已为你解锁。",
+    promoError: {
+      PROMO_CODE_REQUIRED: "请先输入代码。",
+      PROMO_NOT_FOUND: "这个代码无法识别。",
+      PROMO_EXPIRED: "这个代码已过期。",
+      PROMO_EXHAUSTED: "这个代码的名额已用完。",
+      PROMO_WRONG_SYSTEM: "这个代码不适用于本系统。",
+      PROMO_ALREADY_REDEEMED: "此浏览器已经使用过这个代码。",
+      PROMO_UNAVAILABLE: "代码暂时无法使用，请再试一次。",
+    },
   };
   return {
     title: "選擇讀取深度",
@@ -110,6 +142,19 @@ function copyFor(locale: Locale): Copy {
       bundle: "隨報告附贈｜完整五音序列 5 首",
     },
     welcomeGift: "🎁 新用戶的福利 · 快速讀對所有人免費開放",
+    promoToggle: "有優惠碼？",
+    promoPlaceholder: "輸入代碼",
+    promoSubmit: "使用",
+    promoSuccess: "代碼已生效，已為你解鎖。",
+    promoError: {
+      PROMO_CODE_REQUIRED: "請先輸入代碼。",
+      PROMO_NOT_FOUND: "這個代碼無法識別。",
+      PROMO_EXPIRED: "這個代碼已過期。",
+      PROMO_EXHAUSTED: "這個代碼的名額已用完。",
+      PROMO_WRONG_SYSTEM: "這個代碼不適用於本系統。",
+      PROMO_ALREADY_REDEEMED: "此瀏覽器已經使用過這個代碼。",
+      PROMO_UNAVAILABLE: "代碼暫時無法使用，請再試一次。",
+    },
   };
 }
 
@@ -144,6 +189,11 @@ export function ReportAccessGate({
   const [busy, setBusy] = useState<ReportAccessProduct | null>(null);
   const [error, setError] = useState("");
   const consent = usePurchaseConsent();
+  const [promoOpen, setPromoOpen] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoBusy, setPromoBusy] = useState(false);
+  const [promoError, setPromoError] = useState("");
+  const [promoSuccess, setPromoSuccess] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -166,6 +216,28 @@ export function ReportAccessGate({
       const code = cause instanceof Error ? cause.message : "";
       setError(code === "PAYMENT_NOT_CONFIGURED" ? copy.unavailable : copy.unavailable);
       setBusy(null);
+    }
+  }
+
+  async function applyPromoCode() {
+    if (!consent.require()) return;
+    setPromoError("");
+    setPromoSuccess(false);
+    if (!promoCode.trim()) {
+      setPromoError(copy.promoError.PROMO_CODE_REQUIRED);
+      return;
+    }
+    setPromoBusy(true);
+    try {
+      const unlocked = await redeemPromoCode(promoCode, system);
+      setLevel(unlocked);
+      setPromoSuccess(true);
+      setPromoCode("");
+    } catch (cause) {
+      const code = cause instanceof Error ? cause.message : "";
+      setPromoError(copy.promoError[code] ?? copy.promoError.PROMO_UNAVAILABLE);
+    } finally {
+      setPromoBusy(false);
     }
   }
 
@@ -198,6 +270,33 @@ export function ReportAccessGate({
             </button>
           </article>
         ))}
+      </div>
+      <div className="zhaowu-report-promo" data-report-promo>
+        {!promoOpen ? (
+          <button type="button" className="zhaowu-report-promo-toggle" onClick={() => setPromoOpen(true)}>{copy.promoToggle}</button>
+        ) : (
+          <form
+            className="zhaowu-report-promo-form"
+            onSubmit={(event) => { event.preventDefault(); void applyPromoCode(); }}
+          >
+            <label className="sr-only" htmlFor={`promo-code-${system}`}>{copy.promoToggle}</label>
+            <input
+              id={`promo-code-${system}`}
+              type="text"
+              inputMode="text"
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
+              placeholder={copy.promoPlaceholder}
+              value={promoCode}
+              disabled={promoBusy}
+              onChange={(event) => { setPromoCode(event.target.value); setPromoError(""); setPromoSuccess(false); }}
+            />
+            <button type="submit" disabled={promoBusy}>{promoBusy ? "…" : copy.promoSubmit}</button>
+          </form>
+        )}
+        {promoError ? <p className="zhaowu-report-promo-note is-error" role="alert">{promoError}</p> : null}
+        {promoSuccess ? <p className="zhaowu-report-promo-note is-success" role="status">{copy.promoSuccess}</p> : null}
       </div>
       <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} />
       <p className="zhaowu-report-tone-boundary">{copy.toneBoundary}</p>

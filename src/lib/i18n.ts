@@ -507,13 +507,32 @@ type I18nState = {
   t: (key: CopyKey) => string;
 };
 
+// Owner 2026-10-15: default language is English everywhere, except for visitors whose browser
+// reports a Chinese-speaking locale (device/region language, the only zero-cost region signal
+// available without a paid geo-IP service). Mainland China / Singapore browsers default to
+// Simplified; Taiwan / Hong Kong / Macau or a bare "zh" default to Traditional. An explicit
+// choice already stored in this browser always wins and is never overridden by this detection.
+export function detectDefaultLocale(): Locale {
+  if (typeof navigator === "undefined") return "en";
+  const candidates = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language])
+    .filter(Boolean)
+    .map((tag) => tag.toLowerCase());
+  for (const tag of candidates) {
+    if (!tag.startsWith("zh")) continue;
+    if (tag.includes("-cn") || tag.includes("-sg") || tag.includes("hans")) return "zh-Hans";
+    return "zh-Hant";
+  }
+  return "en";
+}
+
 function readLocale(): Locale {
-  if (typeof window === "undefined") return "zh-Hant";
+  if (typeof window === "undefined") return "en";
   try {
     const v = window.localStorage.getItem("zhaowu.locale");
-    return v === "zh-Hans" || v === "en" ? v : "zh-Hant";
+    if (v === "zh-Hans" || v === "en" || v === "zh-Hant") return v;
+    return detectDefaultLocale();
   } catch {
-    return "zh-Hant";
+    return detectDefaultLocale();
   }
 }
 

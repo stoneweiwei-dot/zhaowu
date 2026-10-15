@@ -5,9 +5,9 @@ export const INTRO_RETURN_SKIP_MS = 7 * 24 * 60 * 60 * 1000;
 export const INTRO_GATE_MIN_VISIBLE_MS = 5000;
 export const INTRO_GATE_NATIVE_MS = 5000;
 export const INTRO_GATE_TARGET_MS = INTRO_GATE_NATIVE_MS;
-/** Owner 2026-09-30: opening clips may run 10-15 s with sound; hard exit = 15 s cap + 2 s slack, guests can skip at any time. */
-export const INTRO_GATE_MAX_PLAY_S = 15;
-export const INTRO_GATE_HARD_EXIT_MS = 17000;
+/** Owner 2026-10-15: default playback allows the full clip up to 60 s; hard exit = 60 s cap + 2 s slack, guests can skip at any time. */
+export const INTRO_GATE_MAX_PLAY_S = 60;
+export const INTRO_GATE_HARD_EXIT_MS = 62000;
 export const INTRO_GATE_FADE_MS = 180;
 /** Forced-missing test clip only. The poster still remains until the five-second minimum is satisfied. */
 export const INTRO_GATE_ERROR_EXIT_MS = 1600;

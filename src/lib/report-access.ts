@@ -24,6 +24,7 @@ const ACCESS_KEY_STORAGE = "zhaowu.report-access-key.v1";
 const SESSION_STORAGE = "zhaowu.report-access-sessions.v1";
 const BAZI_RETURN_STORAGE = "zhaowu.pending-bazi-return.v1";
 const ACCESS_ENDPOINT = `${SUPABASE_URL}/functions/v1/stripe-checkout`;
+const PROMO_ENDPOINT = `${SUPABASE_URL}/functions/v1/promo-code`;
 
 const PAYMENT_LINKS: Record<ReportSystemId, Record<ReportAccessProduct, string>> = {
   bazi: {
@@ -131,6 +132,48 @@ async function verifySession(sessionId: string): Promise<Verification> {
   return payloadOf(response);
 }
 
+async function verifyPromo(accessKey: string, system: ReportSystemId): Promise<Verification> {
+  const url = new URL(PROMO_ENDPOINT);
+  url.searchParams.set("access_key", accessKey);
+  url.searchParams.set("system", system);
+  const response = await fetch(url, { headers: apiHeaders(), cache: "no-store" });
+  return payloadOf(response);
+}
+
+export type PromoRedeemError =
+  | "CONSENT_REQUIRED"
+  | "ACCESS_KEY_UNAVAILABLE"
+  | "PROMO_CODE_REQUIRED"
+  | "PROMO_NOT_FOUND"
+  | "PROMO_EXPIRED"
+  | "PROMO_EXHAUSTED"
+  | "PROMO_WRONG_SYSTEM"
+  | "PROMO_ALREADY_REDEEMED"
+  | "PROMO_UNAVAILABLE";
+
+/** Redeems a temporary free-access code for one report system. Never grants access itself:
+ * the server (promo-code Edge Function) is the sole authority, exactly like a Stripe purchase. */
+export async function redeemPromoCode(code: string, system: ReportSystemId): Promise<ReportAccessLevel> {
+  if (!hasPurchaseConsent()) throw new Error("CONSENT_REQUIRED" satisfies PromoRedeemError);
+  const accessKey = reportAccessKey();
+  if (!accessKey) throw new Error("ACCESS_KEY_UNAVAILABLE" satisfies PromoRedeemError);
+  const trimmed = code.trim();
+  if (!trimmed) throw new Error("PROMO_CODE_REQUIRED" satisfies PromoRedeemError);
+  const response = await fetch(PROMO_ENDPOINT, {
+    method: "POST",
+    headers: apiHeaders(),
+    cache: "no-store",
+    body: JSON.stringify({ code: trimmed, system, access_key: accessKey }),
+  });
+  const payload = await response.json().catch(() => ({})) as Verification;
+  if (!response.ok || !payload.paid) {
+    const raw = typeof payload.error === "string" ? payload.error : payload.error?.code;
+    const known: PromoRedeemError[] = ["PROMO_NOT_FOUND", "PROMO_EXPIRED", "PROMO_EXHAUSTED", "PROMO_WRONG_SYSTEM", "PROMO_ALREADY_REDEEMED"];
+    throw new Error((known as string[]).includes(raw || "") ? raw! : "PROMO_UNAVAILABLE" satisfies PromoRedeemError);
+  }
+  return levelFor(payload, system);
+}
+
 function levelFor(verification: Verification, system: ReportSystemId): ReportAccessLevel {
   if (!verification.paid || !verification.product) return "none";
   if (verification.product === "bundle") return system === "bazi" ? "none" : "bundle";
@@ -167,6 +210,17 @@ export async function resolveReportAccess(system: ReportSystemId) {
       if (level === "bundle") break;
     } catch {
       /* One expired or invalid session must not block other valid purchases. */
+    }
+  }
+  if (level !== "bundle") {
+    try {
+      // Server-authoritative, same as a Stripe session: the access key alone never grants
+      // access locally. A promo redemption only ever raises the floor, never lowers it.
+      const promoVerification = await verifyPromo(accessKey, system);
+      const promoLevel = levelFor(promoVerification, system);
+      if (rank[promoLevel] > rank[level]) level = promoLevel;
+    } catch {
+      /* Promo lookup failing must not block an otherwise-valid Stripe entitlement. */
     }
   }
   return { level, pending, owner: false };
