@@ -273,7 +273,7 @@ html[data-zws][data-zws-mode="dark"] main {
   --z41-paper: color-mix(in srgb, var(--zws-card) 90%, transparent);
 }
 /* panels that are not one of the framed cards above: dark glass instead of cream */
-html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body main :is(
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(
   [class*="bg-cream"], [class*="bg-paper"], [class*="bg-white"], [class*="bg-wood/"], [class*="bg-earth/"],
   blockquote, p.rounded-xl, p.rounded-2xl, p.rounded-lg, div.rounded-xl, div.rounded-2xl, div.rounded-lg, aside.rounded-xl, aside.rounded-2xl
 ):not(.seal-border):not(article):not(section):not(details):not(a):not(button):not(img):not(.zw-ink-board *):not(.bg-cinnabar) {
@@ -281,27 +281,27 @@ html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body main :is(
   border-color: var(--zws-line) !important;
 }
 /* sections / forms whose light fill is an arbitrary-value class (bg-[#fffaf0]/92 …) */
-html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body main :is(section, article, div, form, aside, header, fieldset)[class*="bg-["]:not(.bg-cinnabar):not(.zw-ink-board *):not(.zw-hero-card):not([class*="bg-[url"]):not([class*="bg-[radial"]):not([class*="bg-[linear"]) {
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(section, article, div, form, aside, header, fieldset)[class*="bg-["]:not(.bg-cinnabar):not(.zw-ink-board *):not(.zw-hero-card):not([class*="bg-[url"]):not([class*="bg-[radial"]):not([class*="bg-[linear"]) {
   background: color-mix(in srgb, var(--zws-card) 86%, transparent) !important;
   border-color: var(--zws-line) !important;
 }
 /* every text block reads as light ink */
-html[data-zws][data-zws-mode="dark"] body main :is(h1, h2, h3, h4, h5, p, li, dt, dd, th, td, blockquote, summary, strong, b, label, small, span, em, legend, figcaption):not(button:not(.seal-border) *):not(.bg-cinnabar *):not(.zw-ink-board *):not([class*="text-cinnabar"]):not([class*="text-earth"]):not([class*="text-wood"]):not([class*="text-ink-mute"]) {
+html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(h1, h2, h3, h4, h5, p, li, dt, dd, th, td, blockquote, summary, strong, b, label, small, span, em, legend, figcaption):not(button:not(.seal-border) *):not(.bg-cinnabar *):not(.zw-ink-board *):not([class*="text-cinnabar"]):not([class*="text-earth"]):not([class*="text-wood"]):not([class*="text-ink-mute"]) {
   color: var(--zws-ink) !important;
   -webkit-text-fill-color: currentColor !important;
 }
-html[data-zws][data-zws-mode="dark"] body main :is(p, li, dd, td, small, span):not(h1 *):not(h2 *):not(h3 *):not(strong *):not(button:not(.seal-border) *):not(.zw-ink-board *):not([class*="text-cinnabar"]):not([class*="text-earth"]):not([class*="text-wood"]) {
+html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(p, li, dd, td, small, span):not(h1 *):not(h2 *):not(h3 *):not(strong *):not(button:not(.seal-border) *):not(.zw-ink-board *):not([class*="text-cinnabar"]):not([class*="text-earth"]):not([class*="text-wood"]) {
   color: color-mix(in srgb, var(--zws-ink) 84%, transparent) !important;
   -webkit-text-fill-color: currentColor !important;
 }
-html[data-zws][data-zws-mode="dark"] body main :is([class*="text-cinnabar"], [class*="text-earth"], [class*="text-wood"], [class*="text-ink-mute"]):not(button:not(.seal-border) *):not(.zw-ink-board *) { color: color-mix(in srgb, var(--zws-gold) 92%, #fff) !important; -webkit-text-fill-color: currentColor !important; }
-html[data-zws][data-zws-mode="dark"] body main :is(a, button).rounded-full:not(.bg-cinnabar):not([type="submit"]),
-html[data-zws][data-zws-mode="dark"] body main :is(a, button).is-secondary {
+html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is([class*="text-cinnabar"], [class*="text-earth"], [class*="text-wood"], [class*="text-ink-mute"]):not(button:not(.seal-border) *):not(.zw-ink-board *) { color: color-mix(in srgb, var(--zws-gold) 92%, #fff) !important; -webkit-text-fill-color: currentColor !important; }
+html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(a, button).rounded-full:not(.bg-cinnabar):not([type="submit"]),
+html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(a, button).is-secondary {
   background: rgba(224, 190, 128, .12) !important;
   color: var(--zws-ink) !important;
   border: 1px solid rgba(224, 190, 128, .5) !important;
 }
-html[data-zws][data-zws-mode="dark"] body main :is(a, button).is-secondary * { color: var(--zws-ink) !important; }
+html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(a, button).is-secondary * { color: var(--zws-ink) !important; }
 
 /* #life-view pages (fun tests, life view) pin dark ink with an id selector — outrank it on dark skins */
 html[data-zws][data-zws-mode="dark"][data-zw-theme="night"] body #life-view :is(.font-display, strong, b, h2, h3, .text-ink, .text-ink-soft, span, p) {
@@ -322,14 +322,14 @@ html[data-zws][data-zws][data-zws] body #life-view {
 }
 
 /* form fields: dark glass with light ink on dark skins */
-html[data-zws][data-zws][data-zws-mode="dark"] body main :is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]), select, textarea) {
+html[data-zws][data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]), select, textarea) {
   background: rgba(255, 255, 255, .07) !important;
   color: var(--zws-ink) !important;
   -webkit-text-fill-color: var(--zws-ink) !important;
   border: 1px solid color-mix(in srgb, var(--zws-gold) 45%, transparent) !important;
   color-scheme: dark;
 }
-html[data-zws][data-zws][data-zws-mode="dark"] body main :is(input, textarea)::placeholder { color: color-mix(in srgb, var(--zws-ink) 45%, transparent) !important; -webkit-text-fill-color: color-mix(in srgb, var(--zws-ink) 45%, transparent) !important; }
+html[data-zws][data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(input, textarea)::placeholder { color: color-mix(in srgb, var(--zws-ink) 45%, transparent) !important; -webkit-text-fill-color: color-mix(in srgb, var(--zws-ink) 45%, transparent) !important; }
 
 /* owner-login pill in the header: on-accent label in every skin (the generic header-link ink rule otherwise wins on light skins) */
 html[data-zws][data-zws][data-zws] body .zhaowu-site-header :is(a, button).zhaowu-header-owner-login,
@@ -917,4 +917,91 @@ html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body :is(
 html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content .zhaowu-focused-report.zhaowu-report-continuous-sheet .zhaowu-report-header :is(h3, p) {
   color: var(--zws-ink) !important;
   -webkit-text-fill-color: currentColor !important;
+}
+
+
+/* ── 2026-10-15 contrast pass: every skin × every public page, measured by pixel sampling ─────────────── */
+/* 今日黃曆 jade banner: the title sits on the skin painting — a bottom scrim keeps the gold title readable on light art */
+html[data-zws][data-zws] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art {
+  background:
+    linear-gradient(0deg, rgba(6, 22, 17, .78) 0%, rgba(6, 22, 17, .42) 46%, rgba(6, 22, 17, 0) 78%),
+    linear-gradient(90deg, color-mix(in srgb, var(--zws-frame) 88%, transparent), color-mix(in srgb, var(--zws-frame) 38%, transparent) 58%, transparent),
+    var(--zws-art) var(--zws-focus, 50% 40%) / cover no-repeat !important;
+}
+html[data-zws][data-zws] body .zw-ink-board[data-variant="jade"] .zw-ink-title :is(h3, p) {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .55), 0 0 14px rgba(0, 0, 0, .35) !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body .zw-ink-board .zw-ink-variant button[aria-pressed="true"],
+html[data-zws][data-zws][data-zws][data-zws] body #daily-almanac .zw-ink-board .zw-ink-variant button[aria-pressed="true"] {
+  background: var(--j-gold, var(--zws-gold)) !important;
+  color: #142219 !important;
+  -webkit-text-fill-color: #142219 !important;
+}
+
+/* Night skins: illustrated report/specialist covers are dark paper — outrank the warm-cover ink rule (it carries an id) */
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content.zhaowu-app-frame :is(
+  .zhaowu-report-header, .zhaowu-unified-birth-report > header,
+  .zhaowu-specialist-hero, .zhaowu-visual-book-head, .zhaowu-luck-head,
+  .history-entry-report, .zw-saved-report-card
+) :is(h1, h2, h3, h4, p, small, strong, span):not(button *):not(a *) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content.zhaowu-app-frame .zhaowu-specialist-hero .zhaowu-specialist-kicker {
+  color: var(--zws-gold) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Sky Desk + Earth Online are self-contained paper pages with their own ink: keep their paper on night skins
+ * (section 6 skips them), and keep the shared header/nav above them on the skin. */
+html[data-zws][data-zws-mode="dark"] body main.sky-events-page { color-scheme: light; }
+
+/* Tea guardian on night skins: dark glass options, light ink */
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body .tea-quiz-page :is(.tea-options label, .tea-chart-status) {
+  background: rgba(255, 255, 255, .06) !important;
+  border-color: var(--zws-line) !important;
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body .tea-quiz-page .tea-options label :is(span, b, strong, small) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body .tea-quiz-page .tea-options label.is-selected {
+  background: color-mix(in srgb, var(--zws-accent) 22%, transparent) !important;
+  border-color: var(--zws-accent) !important;
+}
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body .tea-quiz-page :is(a.tea-back-link, .tea-guardian-boundary) {
+  color: color-mix(in srgb, var(--zws-ink) 82%, transparent) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Owner login sheet footer links and the painted-home motto on night skins */
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body .stone-login-footer a {
+  color: color-mix(in srgb, var(--zws-ink) 84%, transparent) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws-mode="dark"] body #root .zw-painted-home .ph-motto {
+  color: color-mix(in srgb, var(--zws-gold) 88%, #fff) !important;
+}
+html[data-zws][data-zws-mode="dark"] body #root .zw-painted-home :is(h1, .ph-motto, strong, small) {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .6), 0 0 18px rgba(0, 0, 0, .45);
+}
+/* 吉象圖鑑 cards stay paper on night skins: their caption row keeps dark ink */
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main a > .zhaowu-wm + div > span {
+  color: #3a4a42 !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+/* Paper pages keep their own heading ink on night skins (a night heading rule elsewhere repaints every h1/h2) */
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.sky-events-page :is(.sky-events-hero h1, .sky-today-header h2) { color: #17372f !important; -webkit-text-fill-color: currentColor !important; }
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.sky-events-page :is(.sky-events-watch h2, .sky-event-article h3, .sky-events-archive h2) { color: #24493e !important; -webkit-text-fill-color: currentColor !important; }
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.sky-events-page .sky-event-title h2 { color: #3b3230 !important; -webkit-text-fill-color: currentColor !important; }
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.earth-online-shell :is(.earth-online-hero h1, .earth-online-quiz-card h2, .earth-online-article > h2) { color: var(--eo-ink) !important; -webkit-text-fill-color: currentColor !important; }
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.earth-online-shell .earth-online-loot-card h2 { color: #fff8e9 !important; -webkit-text-fill-color: currentColor !important; }
+/* jade banner on night skins: the scrim also covers the left half where the English title runs long */
+html[data-zws][data-zws][data-zws-mode="dark"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art {
+  background:
+    linear-gradient(0deg, rgba(4, 14, 18, .82) 0%, rgba(4, 14, 18, .5) 50%, rgba(4, 14, 18, .1) 82%),
+    linear-gradient(90deg, rgba(4, 14, 18, .62), rgba(4, 14, 18, .22) 62%, transparent),
+    var(--zws-art) var(--zws-focus, 50% 40%) / cover no-repeat !important;
 }
