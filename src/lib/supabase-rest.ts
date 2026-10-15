@@ -7,7 +7,7 @@ import {
   upgradeStoredAnalysis,
   type VersionedAnalysisResult,
 } from "@/lib/report/legacy-upgrade";
-import { SUPABASE_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase-config";
+import { SUPABASE_DIRECT_URL, SUPABASE_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase-config";
 
 export { supabaseConfigured } from "@/lib/supabase-config";
 const SESSION_KEY = "zhaowu.supabase.session.v1";
@@ -213,7 +213,7 @@ export function startOAuth(provider: OAuthProvider, redirectTo?: string) {
   if (!supabaseConfigured) throw new Error("登入服務尚未配置。");
   if (typeof window === "undefined") throw new Error("OAuth 只能在瀏覽器啟動。");
   const target = redirectTo ?? `${window.location.origin}/auth/callback`;
-  const url = new URL(`${SUPABASE_URL}/auth/v1/authorize`);
+  const url = new URL(`${SUPABASE_DIRECT_URL}/auth/v1/authorize`);
   url.searchParams.set("provider", provider);
   url.searchParams.set("redirect_to", target);
   window.location.assign(url.toString());

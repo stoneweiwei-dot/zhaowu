@@ -5,7 +5,7 @@ import { useI18n, type Locale } from "@/lib/i18n";
 import { localBirthToUtc } from "@/lib/qizheng/engine";
 
 const ASTRO_SCRIPT_ID = "zhaowu-astronomy-engine-d60";
-const ASTRO_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js";
+const ASTRO_SCRIPT_URL = "/vendor/astronomy-engine-2.1.19.browser.min.js";
 
 type AstronomyApi = {
   SiderealTime: (date: Date) => number;

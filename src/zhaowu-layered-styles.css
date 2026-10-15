@@ -8353,7 +8353,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   opacity: .2;
   background-image:
     linear-gradient(180deg, rgba(255, 251, 242, .04) 18%, rgba(255, 251, 242, .28) 55%, rgba(255, 251, 242, .92) 86%),
-    url("https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/zhaowu-gallery/report-visuals/r62/overview-bg.webp"),
+    url("/sb/storage/v1/object/public/zhaowu-gallery/report-visuals/r62/overview-bg.webp"),
     url("/wallpaper-song.jpg");
   background-position: center, center, center;
   background-size: cover, cover, cover;

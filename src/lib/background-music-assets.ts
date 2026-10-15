@@ -1,5 +1,5 @@
 import type { SupabaseSession } from "@/lib/supabase-rest";
-import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+import { SUPABASE_DIRECT_URL, SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 
 const BUCKET = "zhaowu-audio";
 const ASSET_SELECT = "id,name,original_name,storage_path,fallback_storage_path,content_type,fallback_content_type,codec,bitrate_kbps,sample_rate_hz,channels,duration_seconds,file_size,enabled,created_at,updated_at";
@@ -218,7 +218,7 @@ export async function transcodeBackgroundMusic(
 }
 
 async function uploadObject(session: SupabaseSession, path: string, body: Blob, contentType: string) {
-  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
+  const res = await fetch(`${SUPABASE_DIRECT_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
     method: "POST",
     headers: {
       apikey: SUPABASE_KEY,
@@ -233,7 +233,7 @@ async function uploadObject(session: SupabaseSession, path: string, body: Blob, 
 
 async function deleteObject(session: SupabaseSession, path: string | null | undefined) {
   if (!path) return;
-  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
+  const res = await fetch(`${SUPABASE_DIRECT_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
     method: "DELETE",
     headers: apiHeaders(session.access_token, false),
   });

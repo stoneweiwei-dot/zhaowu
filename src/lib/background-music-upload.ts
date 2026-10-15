@@ -1,5 +1,5 @@
 import type { SupabaseSession } from "@/lib/supabase-rest";
-import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+import { SUPABASE_DIRECT_URL, SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import {
   activateBackgroundMusic,
   type BackgroundMusicAsset,
@@ -82,7 +82,7 @@ function uploadObjectWithProgress(
 ) {
   return new Promise<void>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`);
+    xhr.open("POST", `${SUPABASE_DIRECT_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`);
     xhr.timeout = UPLOAD_TIMEOUT_MS;
     xhr.setRequestHeader("apikey", SUPABASE_KEY);
     xhr.setRequestHeader("Authorization", `Bearer ${session.access_token}`);
@@ -118,7 +118,7 @@ function uploadObjectWithProgress(
 }
 
 async function deleteObject(session: SupabaseSession, path: string) {
-  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
+  const res = await fetch(`${SUPABASE_DIRECT_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
     method: "DELETE",
     headers: apiHeaders(session.access_token, false),
   });

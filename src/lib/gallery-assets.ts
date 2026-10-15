@@ -1,6 +1,6 @@
 import type { SupabaseSession } from "@/lib/supabase-rest";
 import { resolveLoginVideoType } from "@/lib/video-formats";
-import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+import { SUPABASE_DIRECT_URL, SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import { preferVerifiedPublicMedia } from "@/lib/public-media-preference";
 import { assertSupabaseStorageWritesEnabled } from "@/lib/storage-write-policy";
 import { applyBrandWatermark, WATERMARK_BAKED_TAG } from "@/lib/brand-watermark";
@@ -134,7 +134,7 @@ export async function uploadGalleryAsset(
   const ext = (file.name.split(".").pop() || "webp").toLowerCase().replace(/[^a-z0-9]/g, "") || "webp";
   const path = `${category}/${assetKey}/${new Date().toISOString().slice(0, 10)}-${crypto.randomUUID()}.${ext}`;
 
-  const upload = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
+  const upload = await fetch(`${SUPABASE_DIRECT_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
     method: "POST",
     headers: {
       apikey: SUPABASE_KEY,
@@ -175,7 +175,7 @@ export async function uploadGalleryAsset(
     const rows = await parse<GalleryAsset[]>(insert);
     return rows[0];
   } catch (error) {
-    await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
+    await fetch(`${SUPABASE_DIRECT_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
       method: "DELETE",
       headers: headers(session.access_token, false),
     }).catch(() => undefined);
@@ -236,7 +236,7 @@ export async function setLoginVisualCurrent(session: SupabaseSession, asset: Gal
 
 export async function deleteGalleryAsset(session: SupabaseSession, asset: GalleryAsset) {
   const bucketId = asset.bucket_id || BUCKET;
-  const storage = await fetch(`${SUPABASE_URL}/storage/v1/object/${encodeURIComponent(bucketId)}/${safePath(asset.storage_path)}`, {
+  const storage = await fetch(`${SUPABASE_DIRECT_URL}/storage/v1/object/${encodeURIComponent(bucketId)}/${safePath(asset.storage_path)}`, {
     method: "DELETE",
     headers: headers(session.access_token, false),
   });
