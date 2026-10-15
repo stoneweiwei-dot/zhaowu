@@ -1,0 +1,45 @@
+name: One-time Soul Chapters media import
+on:
+  push:
+    branches:
+      - feat/soul-chapters-five-volumes-bilingual-art
+    paths:
+      - .github/workflows/import-soul-chapters-art-once.yml
+permissions:
+  contents: write
+jobs:
+  import-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download and validate exact owner-provided ten-image bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fLsS --retry 2 --max-time 120 \
+            'https://zhaowu-media-vault.floot.app/_cdn/static/b7d54a9b-d248-44bc-b22c-38d38985b887-zhaowu_soul_chapters_art_v1.zip' \
+            -o "$RUNNER_TEMP/soul-art.zip"
+          echo "04dac2855ebe21146f3425b26401caa8198ac61aa37c0a5e20820a61c565f7fe  $RUNNER_TEMP/soul-art.zip" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/soul-art-extract"
+          unzip -q "$RUNNER_TEMP/soul-art.zip" 'zhaowu_soul_chapters_publish/public/images/soul-chapters/*' -d "$RUNNER_TEMP/soul-art-extract"
+          mkdir -p public/images/soul-chapters/zh public/images/soul-chapters/en
+          cp "$RUNNER_TEMP/soul-art-extract/zhaowu_soul_chapters_publish/public/images/soul-chapters/zh/"*.webp public/images/soul-chapters/zh/
+          cp "$RUNNER_TEMP/soul-art-extract/zhaowu_soul_chapters_publish/public/images/soul-chapters/en/"*.webp public/images/soul-chapters/en/
+          test "$(find public/images/soul-chapters/zh -maxdepth 1 -name 'volume-*.webp' | wc -l)" -eq 5
+          test "$(find public/images/soul-chapters/en -maxdepth 1 -name 'volume-*.webp' | wc -l)" -eq 5
+      - name: Commit same-origin static images to feature branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/images/soul-chapters/zh/ public/images/soul-chapters/en/
+          if git diff --cached --quiet; then
+            echo "Already imported; nothing to push."
+          else
+            git commit -m 'assets(soul-chapters): add ten verified bilingual WebP covers'
+            git push origin HEAD:feat/soul-chapters-five-volumes-bilingual-art
+          fi
