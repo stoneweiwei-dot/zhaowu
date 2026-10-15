@@ -23,7 +23,7 @@ test("global language selector exposes English, Traditional Chinese and Simplifi
   assert.match(shell, /setLanguage\(value\)/);
 });
 
-test("fresh public sessions default to Traditional Chinese, Simplified is a persisted choice, retired preferences fold to Traditional before hydration", async () => {
+test("fresh public sessions default to English unless the browser reports Chinese (2026-10-15), retired preferences fold before hydration", async () => {
   const [indexHtml, layer] = await Promise.all([
     source("index.html"),
     source("src/lib/display-language.ts"),
@@ -33,8 +33,11 @@ test("fresh public sessions default to Traditional Chinese, Simplified is a pers
   assert.doesNotMatch(indexHtml, /\["zh-Hant", "en", "ko", "hi"\]/);
   assert.match(layer, /value === "zh-Hant" \|\| value === "zh-Hans" \|\| value === "en"/);
   assert.match(layer, /value === "ko" \|\| value === "hi" \|\| value === "ja"/);
-  assert.match(indexHtml, /savedLanguage = "zh-Hant"/);
-  assert.match(indexHtml, /localStorage\.setItem\("zhaowu\.display-language", savedLanguage\)/);
+  // The pre-React bootstrap must not force Traditional or persist a default as if it were a choice.
+  assert.match(indexHtml, /savedLanguage = "en"/);
+  assert.match(indexHtml, /\/-cn\|-sg\|hans\/\.test\(tag\) \? "zh-Hans" : "zh-Hant"/);
+  assert.doesNotMatch(indexHtml, /savedLanguage = "zh-Hant";\s*localStorage\.setItem/);
+  assert.match(layer, /detectDefaultLocale/);
   assert.match(layer, /zhaowu\.display-language/);
 });
 

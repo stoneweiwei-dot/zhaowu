@@ -82,8 +82,16 @@
         try {
           var savedLanguage = localStorage.getItem("zhaowu.display-language");
           if (["zh-Hant", "zh-Hans", "en"].indexOf(savedLanguage) === -1) {
-            savedLanguage = "zh-Hant";
-            localStorage.setItem("zhaowu.display-language", savedLanguage);
+            /* Owner 2026-10-15: English unless the browser reports a Chinese locale. Same rule as
+               detectDefaultLocale() in src/lib/i18n.ts; not persisted, so it is never mistaken for a choice. */
+            savedLanguage = "en";
+            var tags = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+            for (var i = 0; i < tags.length; i++) {
+              var tag = String(tags[i] || "").toLowerCase();
+              if (tag.indexOf("zh") !== 0) continue;
+              savedLanguage = /-cn|-sg|hans/.test(tag) ? "zh-Hans" : "zh-Hant";
+              break;
+            }
           }
           document.documentElement.lang = savedLanguage;
           /* Night mode is switched off (owner 2026-10-03): always day, and drop any saved night choice. */
