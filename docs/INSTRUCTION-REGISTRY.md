@@ -1,5 +1,14 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-15 Cloudflare 免費層置於 zhaowu.art 前方（站主核准；僅 DNS／代理設定，無程式變更）
+
+- ACTIVE：站主於 2026-10-15 明確指示以 Cloudflare 代理處理大陸可讀取問題。核准範圍＝Cloudflare **Free** 方案，僅用於 `zhaowu.art` 的 DNS 與橘雲代理；不新增 Workers／KV／R2／D1 等運行時資源，不產生費用（A$0/月）。
+- ACTIVE：目標拓撲＝訪客 → Cloudflare（proxied）→ Vercel `stone-zhaowu-official` → `/sb/*` rewrite → Supabase。SSL/TLS 模式＝Full (strict)；Vercel 仍是唯一正式部署路徑，不新增部署、不改 `vercel.json`、不改 `src/lib/supabase-config.ts`（`/sb` 邏輯對 `zhaowu.art` 已適用）。
+- OPERATIONAL（需站主，BLOCKED BY 站主之 Cloudflare 帳號與 `.art` 註冊商權限）：Cloudflare 新增站點 `zhaowu.art` → 在註冊商把 NS 改成 Cloudflare 指定的兩組；DNS 記錄 `A @ 76.76.21.21`（或 Vercel 建議 IP）與 `CNAME www cname.vercel-dns.com`，皆 Proxied；SSL/TLS＝Full (strict)；Always Use HTTPS 開啟。Vercel 憑證簽發若因代理失敗，先暫時改為 DNS only 等 Vercel 顯示 Valid 再開橘雲。
+- 已知限制（如實）：Cloudflare 免費方案無大陸專屬網路（China Network 需企業方案＋ICP 備案），大陸連線品質與可達性**無法保證**，也無法從本環境測得；成效須由大陸實機（或站主親友）回報。若仍不穩，下一步＝ICP 備案＋國內 CDN。
+- COST（AGENTS §F）：消耗 Cloudflare Free 流量（無計量上限）與 Vercel 回源流量；失效模式＝Cloudflare 故障或誤設時全站不可達（回滾＝註冊商 NS 改回或 Cloudflare 記錄改 DNS only／直指 Vercel）；Supabase／Vercel 不可用時行為不變；不涉及資料遷移。
+- 不改：登入、付款、Supabase Schema／RLS、命理計算、報告內容。
+
 ## 2026-10-15 中國大陸可讀取／可登入：同網域 Supabase 代理與自家託管天文腳本
 
 - ACTIVE：訪客端（登入、`rest/v1` 讀取、`functions/v1`、公開媒體 URL）在正式站（`stone-zhaowu-official.vercel.app`）及自訂網域（`zhaowu.art`、`soul-terminal.com` 含子網域）一律經本站同網域 `/sb/*`；`vercel.json` 以四條白名單 rewrite 轉到 Supabase（`/sb/auth/v1`、`/sb/rest/v1`、`/sb/functions/v1`、`/sb/storage/v1/object/public`）。`src/lib/supabase-config.ts` 匯出 `SUPABASE_URL`（瀏覽器在上述生產網域時為 `<origin>/sb`，本機開發與測試維持直連）與 `SUPABASE_DIRECT_URL`（永遠直連）。
