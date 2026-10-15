@@ -53,3 +53,32 @@ html body #birth-form .zw-flow-progress button:disabled { color:var(--zws-soft, 
 /* Navigation is one quiet reading strip, not a row of separate cream labels. */
 .zw-journey-nav { background:var(--zws-surface, #f7f3ea); border-bottom:1px solid var(--zws-divider, #d5cbbb); border-radius:0; padding-block:.25rem; }
 .zw-journey-nav :is(a,button):focus-visible { outline:2px solid var(--zws-action-bg, #315e50); outline-offset:2px; }
+
+/* 2026-10-16 birth flow: the form grid track must not grow to its widest child's
+ * min-content (it pushed the whole column ~50px past a 390px phone). */
+html body #birth-form.zhaowu-analysis-flow { grid-template-columns: minmax(0, 1fr); }
+html body #birth-form .zhaowu-personal-art,
+html body #birth-form .zhaowu-day-stem-portrait,
+html body #birth-form .zhaowu-day-stem-portrait > * { min-width: 0; max-width: 100%; }
+
+/* Closing "go deeper" card under a finished report: six real links */
+.zw-deep-card { overflow: hidden; padding: 0 !important; border: 1px solid var(--zws-line, rgba(185, 173, 145, .6)); border-radius: var(--zws-card-r, 10px); background: var(--zws-card, #f7f3ea); }
+.zw-deep-card__art { display: block; width: 100%; height: 9rem; object-fit: cover; }
+.zw-deep-card__body { padding: 18px 18px 20px; }
+.zw-deep-card__kicker { font-size: 12px; letter-spacing: .18em; color: var(--zws-gold, #77523d); }
+.zw-deep-card__title { margin: 4px 0 0; font-family: var(--zws-font-d, var(--font-display, serif)); font-size: clamp(1.2rem, 5vw, 1.5rem); line-height: 1.3; color: var(--zws-ink, #1f1f1c); }
+.zw-deep-card__lead { margin: 6px 0 0; font-size: 14px; line-height: 1.6; color: var(--zws-soft, #5a5248); }
+.zw-deep-card__links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+.zw-deep-card__links a { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 46px; padding: 0 14px; border: 1px solid var(--zws-line, #d7cec0); border-radius: 10px; color: var(--zws-ink, #263d36); text-decoration: none; font-size: 15px; background: color-mix(in srgb, var(--zws-accent, #315e50) 6%, transparent); }
+.zw-deep-card__links a span { color: var(--zws-accent, #41675a); }
+.zw-deep-card__links a:focus-visible { outline: 2px solid var(--zws-accent, #315e50); outline-offset: 2px; }
+
+/* the "start over" control reads as a button, not a stray heading */
+html body .zhaowu-result-reset { border: 1px solid var(--zws-line, #d7cec0) !important; background: transparent; }
+
+/* report notes: evidence + key variable on one quiet line, not two big tiles */
+html body .zhaowu-answer-meta.zhaowu-answer-meta--line { display: block; margin: 0; padding: 0; border: 0; background: none; }
+html body .zhaowu-answer-meta.zhaowu-answer-meta--line > span { display: inline; }
+/* evidence fold: one padding layer, so the reading uses the full card width */
+html body [data-evidence-chart-detail] > div { padding: 0 !important; border-top: 0 !important; }
+html body [data-free-decree] { border-radius: 12px !important; }
