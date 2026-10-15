@@ -15,35 +15,32 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.10.06-r224",
-  updateNumber: 224,
-  publishedAt: "2026-10-06T20:16:00+11:00",
-  latestSummary: "更新頁改為逐次記錄網站改動，不再停在單一版本；補回近日首頁、報告、後台、PWA 與圖庫變化。開場影片已整理名稱，並將「雙生並蒂蓮」設為目前版本。",
-  summary: {
-    "zh-Hant": "更新頁改為逐次記錄網站改動，不再停在單一版本；補回近日首頁、報告、後台、PWA 與圖庫變化。開場影片已整理名稱，並將「雙生並蒂蓮」設為目前版本。",
-    "zh-Hans": "更新页改为逐次记录网站改动，不再停在单一版本；补回近日首页、报告、后台、PWA 与图库变化。开场影片已整理名称，并将「双生并蒂莲」设为目前版本。",
-    en: "The updates page now records site changes as they happen instead of freezing at one release. Recent home, report, owner-console, PWA and gallery changes have been backfilled, and Twin Lotus is now the selected opening video.",
+  "version": "ZW-WEB-2026.10.15-r225",
+  "updateNumber": 225,
+  "publishedAt": "2026-10-15T12:16:38.621Z",
+  "latestSummary": "近日天象新增冥王星於悉尼 10 月 16 日恢復視順行，附上 UTC／悉尼時間、月相、天文資料及非決定論占星解讀。",
+  "summary": {
+    "zh-Hant": "近日天象新增冥王星於悉尼 10 月 16 日恢復視順行，附上 UTC／悉尼時間、月相、天文資料及非決定論占星解讀。",
+    "zh-Hans": "近日天象新增冥王星于悉尼 10 月 16 日恢复视顺行，附上 UTC／悉尼时间、月相、天文资料及非决定论占星解读。",
+    "en": "Sky events now include Pluto's direct station on 16 October Sydney time, with UTC/AEDT timing, lunar facts, sources and clearly labelled symbolic astrology."
   },
-  details: {
+  "details": {
     "zh-Hant": [
-      "更新紀錄：今後每次網站功能、視覺、站主後台或正式 runtime 有實際改動，都必須在同一個變更加入公開紀錄；CI 會阻止漏寫。",
-      "開場影片：後台素材改成可讀名稱；目前使用「雙生並蒂蓮｜主版」MP4，其他影片保留作備用，沒有刪除原檔。",
-      "近日改動：已補入手機首頁與五行版面、站主批次操作、Instagram／Threads 發布器、報告手機版、PWA 自癒、宋式圖庫分組與正式圖像品質門檻等變化。",
-      "版本機制：正式 rN 仍可按一個完整發布批次更新；但「每次改動」清單會跟著實際產品變化走，不再等 release_history 才顯示。",
+      "新增天象：冥王星於 10 月 16 日 02:40 UTC／13:40 悉尼時間，在水瓶座約 3°04′恢復視順行。",
+      "本週月相：上弦月在悉尼 10 月 19 日凌晨，而非射手座月亮換座的同一天。",
+      "資料註明時區與來源；占星象徵和天文事實分開呈現，不將象徵解讀當作因果預測。"
     ],
     "zh-Hans": [
-      "更新记录：今后每次网站功能、视觉、站主后台或正式 runtime 有实际改动，都必须在同一个变更加入公开记录；CI 会阻止漏写。",
-      "开场影片：后台素材改成可读名称；目前使用「双生并蒂莲｜主版」MP4，其他影片保留作备用，没有删除原档。",
-      "近日改动：已补入手机首页与五行版面、站主批量操作、Instagram／Threads 发布器、报告手机版、PWA 自愈、宋式图库分组与正式图像质量门槛等变化。",
-      "版本机制：正式 rN 仍可按一个完整发布批次更新；但「每次改动」清单会跟着实际产品变化走，不再等 release_history 才显示。",
+      "新增天象：冥王星于 10 月 16 日 02:40 UTC／13:40 悉尼时间，在水瓶座约 3°04′恢复视顺行。",
+      "本周月相：上弦月在悉尼 10 月 19 日凌晨，而非射手座月亮换座的同一天。",
+      "资料注明时区与来源；占星象征和天文事实分开呈现，不将象征解读当作因果预测。"
     ],
-    en: [
-      "Change history: every real change to site features, visuals, the owner console or production runtime must now add a public note in the same change; CI blocks omissions.",
-      "Opening video: owner media now has readable names. Twin Lotus (main MP4) is selected, while every other clip remains available as a fallback and no original was deleted.",
-      "Recent changes have been backfilled, including the mobile home/five-element layout, owner bulk actions, Instagram/Threads publisher, report mobile cleanup, PWA self-heal, Song gallery grouping and formal-art QC.",
-      "Release numbering can still move in vetted batches, but the Every change list follows actual product changes and no longer waits for release_history before showing them.",
-    ],
-  },
+    "en": [
+      "Added Pluto's direct station at 02:40 UTC / 13:40 Sydney on 16 October, near 3°04′ tropical Aquarius.",
+      "First quarter falls early 19 October in Sydney, not at the Sagittarius Moon ingress.",
+      "Time zones and sources are explicit; astronomical facts are separated from symbolic astrological interpretation."
+    ]
+  }
 } as const;
 
 function fallbackStats(): PublicSiteStats {

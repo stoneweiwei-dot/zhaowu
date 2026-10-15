@@ -13,6 +13,145 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    "id": "pluto-stations-direct-2026-10-16",
+    "published": "2026-10-15",
+    "status": "active",
+    "title": {
+      "zh-Hant": "冥王星順行：深層轉變的轉折點",
+      "zh-Hans": "冥王星顺行：深层转变的转折点",
+      "en": "Pluto stations direct: a turning point for deep change"
+    },
+    "subtitle": {
+      "zh-Hant": "2026.10.16 悉尼｜五個多月的視逆行結束",
+      "zh-Hans": "2026.10.16 悉尼｜五个多月的视逆行结束",
+      "en": "16 Oct 2026 in Sydney | Five-month apparent retrograde ends"
+    },
+    "facts": [
+      {
+        "date": "2026-10-16",
+        "label": {
+          "zh-Hant": "冥王星約於 UTC 10 月 16 日 02:40、悉尼當日 13:40，在熱帶黃道水瓶座 3°04′轉為視順行。",
+          "zh-Hans": "冥王星约于 UTC 10 月 16 日 02:40、悉尼当日 13:40，在热带黄道水瓶座 3°04′转为视顺行。",
+          "en": "Pluto stations direct around 02:40 UTC / 13:40 Sydney on 16 Oct at 3°04′ tropical Aquarius."
+        }
+      },
+      {
+        "date": "2026-05-06",
+        "label": {
+          "zh-Hant": "本次冥王星視逆行始於 5 月 6 日，起點約在水瓶座 5°30′–5°31′。",
+          "zh-Hans": "本次冥王星视逆行始于 5 月 6 日，起点约在水瓶座 5°30′–5°31′。",
+          "en": "This apparent retrograde began 6 May near 5°30′–5°31′ Aquarius."
+        }
+      },
+      {
+        "date": "2026-10-14",
+        "label": {
+          "zh-Hant": "月亮約於悉尼時間 10 月 14 日中午進入射手座；並非週末換座。",
+          "zh-Hans": "月亮约于悉尼时间 10 月 14 日中午进入射手座；并非周末换座。",
+          "en": "Moon enters Sagittarius around midday on 14 Oct in Sydney, not during the weekend."
+        }
+      },
+      {
+        "date": "2026-10-19",
+        "label": {
+          "zh-Hant": "上弦月約發生於 10 月 18 日 16:12 UTC，即悉尼 10 月 19 日 03:12；當時月亮在摩羯座。",
+          "zh-Hans": "上弦月约发生于 10 月 18 日 16:12 UTC，即悉尼 10 月 19 日 03:12；当时月亮在摩羯座。",
+          "en": "First-quarter Moon occurs about 18 Oct 16:12 UTC / 19 Oct 03:12 Sydney, with Moon in Capricorn."
+        }
+      }
+    ],
+    "science": {
+      "zh-Hant": [
+        "天文上的「視逆行／順行」描述的是從地球觀察的行星視位置變化，並不代表冥王星真正停止或反向繞日運動。",
+        "以上黃道度數使用地心、熱帶黃道的占星座標；與天文學的星座邊界不同。",
+        "同一事件在美東時間為 10 月 15 日晚間，在 UTC 與悉尼均已是 10 月 16 日。悉尼當日使用 AEDT（UTC+11）。",
+        "本週月亮進入射手座與上弦月是兩個不同時間的事件，上弦月並非發生於射手座。"
+      ],
+      "zh-Hans": [
+        "天文上的「视逆行／顺行」描述的是从地球观察的行星视位置变化，并不代表冥王星真正停止或反向绕日运动。",
+        "以上黄道度数使用地心、热带黄道的占星坐标；与天文学的星座边界不同。",
+        "同一事件在美东时间为 10 月 15 日晚间，在 UTC 与悉尼均已是 10 月 16 日。悉尼当日使用 AEDT（UTC+11）。",
+        "本周月亮进入射手座与上弦月是两个不同时间的事件，上弦月并非发生于射手座。"
+      ],
+      "en": [
+        "Apparent retrograde/direct motion is a change in how a planet appears to move from Earth; Pluto does not physically reverse its orbit.",
+        "The degrees cited use the geocentric tropical zodiac for astrological reference, not IAU constellation boundaries.",
+        "The same station occurs late on 15 Oct in US Eastern time but on 16 Oct in UTC and Sydney (AEDT, UTC+11).",
+        "The Sagittarius Moon ingress and first-quarter phase occur at different times; the first quarter is not in Sagittarius."
+      ]
+    },
+    "interpretation": {
+      "zh-Hant": [
+        "在現代占星的象徵系統中，冥王星常與權力關係、深層模式和重組相連；順行可作為回顧長期改變的提示。",
+        "月亮進射手座常被解讀為探索、學習與視野拓展；上弦月則象徵由構想走向實踐的階段，兩者不應混為同一事件。",
+        "這些是象徵性詮釋，沒有科學證據顯示行星視運動能決定個人命運或造成特定社會事件。",
+        "可實際做的事：檢視過去五個月的計畫、資源與邊界，確定接下來要處理的一項具體問題。"
+      ],
+      "zh-Hans": [
+        "在现代占星的象征系统中，冥王星常与权力关系、深层模式和重组相连；顺行可作为回顾长期改变的提示。",
+        "月亮进射手座常被解读为探索、学习与视野拓展；上弦月则象征由构想走向实践的阶段，两者不应混为同一事件。",
+        "这些是象征性诠释，没有科学证据显示行星视运动能决定个人命运或造成特定社会事件。",
+        "可实际做的事：检视过去五个月的计划、资源与边界，确定接下来要处理的一项具体问题。"
+      ],
+      "en": [
+        "In modern astrological symbolism, Pluto is associated with power dynamics, deep patterns and restructuring. The direct station can be used as a prompt for reflection.",
+        "The Sagittarius Moon ingress is traditionally associated with exploration and learning, while first quarter symbolizes taking action; these are separate events.",
+        "These are symbolic readings. There is no scientific evidence that apparent planetary motion determines individual fate or specific social events.",
+        "A practical reflection: review plans, resources and boundaries from the past five months, then identify one concrete next step."
+      ]
+    },
+    "houses": [
+      {
+        "house": 1,
+        "zh-Hant": "自我定位與個人界線",
+        "zh-Hans": "自我定位与个人边界",
+        "en": "identity and personal boundaries"
+      },
+      {
+        "house": 2,
+        "zh-Hant": "資源分配與價值觀",
+        "zh-Hans": "资源分配与价值观",
+        "en": "resources and values"
+      },
+      {
+        "house": 4,
+        "zh-Hant": "家庭模式與安定感",
+        "zh-Hans": "家庭模式与安定感",
+        "en": "home patterns and security"
+      },
+      {
+        "house": 8,
+        "zh-Hant": "共同財務與信任",
+        "zh-Hans": "共同财务与信任",
+        "en": "shared finances and trust"
+      },
+      {
+        "house": 10,
+        "zh-Hant": "職涯定位與責任",
+        "zh-Hans": "职业定位与责任",
+        "en": "career position and responsibility"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Cafe Astrology · Pluto turns direct in Aquarius 2026",
+        "url": "https://cafeastrology.com/events/pluto-turns-direct-in-aquarius-2026/"
+      },
+      {
+        "label": "Lunary · Pluto retrograde 2026, time zones",
+        "url": "https://lunary.app/blog/transits/pluto-retrograde-aquarius-2026"
+      },
+      {
+        "label": "Cafe Astrology · October 2026 Moon Calendar",
+        "url": "https://cafeastrology.com/calendars/moon-calendar-2026.html"
+      },
+      {
+        "label": "Space.com · Lunar phases 2026",
+        "url": "https://www.space.com/18880-moon-phases.html"
+      }
+    ]
+  },
+  {
     "id": "moon-occults-jupiter-2026-10-06",
     "published": "2026-10-08",
     "status": "active",
