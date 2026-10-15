@@ -15,6 +15,8 @@ import './theme-skins-full.css';
 import './mobile-page-scroll.css';
 // Owner reference compositions, scoped to the landing page.
 import './painted-home.css';
+// Language switcher: new classes (zw-langpick*) only; independent of the legacy .site-lang-* cascade.
+import './language-switcher.css';
 
 
 const router = createRouter({ routeTree });

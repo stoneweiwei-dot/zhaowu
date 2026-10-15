@@ -1,0 +1,120 @@
+/*
+ * Language switcher (owner 2026-10-16: "too small, easy to miss").
+ *
+ * Independent of the legacy `.site-lang-*` rules. The legacy header layers force `color`, `min-height`
+ * and widths with `!important` on every `.zhaowu-site-header button` / `.zhaowu-header-nav button`
+ * (theme-skins.css:62, zhaowu-layered-styles.css:6502 ...). The `#root` prefix gives ID-level
+ * specificity so this component wins without adding yet another `!important` war, and `!important`
+ * is applied only to the properties those layers contest.
+ *
+ * Tokens come from the site palette, so every theme skin keeps its own colours:
+ * cream surface, fine gold hairline, jade (--color-wood) for the selected segment.
+ */
+html body #root .zw-langpick {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  max-width: 100%;
+  color: var(--color-ink-soft, #5a554c);
+}
+
+html body #root .zw-langpick .zw-langpick__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  color: var(--color-ink-soft, #5a554c) !important;
+}
+
+html body #root .zw-langpick .zw-langpick__label svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+html body #root .zw-langpick .zw-langpick__track {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: auto;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid color-mix(in srgb, var(--color-line, #d8c7a4) 70%, #b8934d);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-cream, #fffdf7) 94%, transparent);
+  box-shadow: 0 1px 0 rgba(184, 147, 77, .28), 0 8px 20px -12px rgba(71, 61, 47, .45);
+}
+
+html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt {
+  width: auto !important;
+  min-width: 56px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 14px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--color-ink-soft, #5a554c) !important;
+  font-family: inherit;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none !important;
+  transition: background-color .18s ease, color .18s ease;
+}
+
+html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:hover {
+  background: color-mix(in srgb, var(--color-wood, #2f6f5f) 12%, transparent) !important;
+}
+
+html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt[aria-checked="true"] {
+  background: var(--color-wood, #2f6f5f) !important;
+  color: #fffaf0 !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22), 0 3px 8px -4px rgba(26, 61, 52, .6) !important;
+}
+
+html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:focus-visible {
+  outline: 2px solid var(--color-cinnabar, #a7352b);
+  outline-offset: 2px;
+}
+
+/* Narrow phones: the pill gets the full row; the label keeps its icon. */
+@media (max-width: 520px) {
+  html body #root .zw-langpick { width: 100%; justify-content: center; gap: 8px; }
+  html body #root .zw-langpick .zw-langpick__label span { font-size: 12px; }
+  html body #root .zw-langpick .zw-langpick__track { flex: 1 1 auto; grid-auto-columns: minmax(0, 1fr); max-width: 340px; }
+  html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt { min-width: 0 !important; padding: 0 10px !important; }
+}
+
+/*
+ * Home header sits over the painted hero next to the brand mark and has little horizontal room:
+ * keep the globe icon (it still labels the control), drop the word, and use a slightly tighter pill.
+ */
+html body #root .zhaowu-site-header.is-home-compact .zw-langpick { width: auto; margin-left: auto; gap: 6px; }
+html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__label span { display: none; }
+html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__track { flex: 0 0 auto; grid-auto-columns: auto; max-width: none; }
+html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__track button.zw-langpick__opt {
+  min-width: 48px !important;
+  padding: 0 11px !important;
+  font-size: 14px !important;
+}
+
+html[data-zw-theme="night"] body #root .zw-langpick { color: #d9d2c0; }
+html[data-zw-theme="night"] body #root .zw-langpick .zw-langpick__label { color: #d9d2c0 !important; }
+html[data-zw-theme="night"] body #root .zw-langpick .zw-langpick__track { background: rgba(32, 30, 26, .82); border-color: rgba(201, 196, 178, .28); }
+html[data-zw-theme="night"] body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:not([aria-checked="true"]) { color: #d9d2c0 !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt { transition: none; }
+}

@@ -17,6 +17,9 @@ import {
   verifyThreadsAuthorization,
 } from "../lib/threads-oauth.js";
 import { threadsAccountStoreRequest } from "../lib/threads-account-store.js";
+import { runAutopublish } from "../lib/social-scheduler.js";
+import { handleAutopublishAction } from "../lib/social-owner-actions.js";
+import { timingSafeEqual } from "node:crypto";
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -69,6 +72,17 @@ function queryValue(req, name) {
   try { return new URL(String(req?.url || "/"), "https://zhaowu.local").searchParams.get(name) || ""; } catch { return ""; }
 }
 
+/** Vercel Cron sends `Authorization: Bearer $CRON_SECRET`. Fail closed when the secret is unset or short. */
+function requestIsAuthorizedCron(req) {
+  const expected = String(process.env.CRON_SECRET || "").trim();
+  if (expected.length < 16) return false;
+  const header = headerValue(req, "authorization").trim();
+  const actual = header.toLowerCase().startsWith("bearer ") ? header.slice(7).trim() : "";
+  const a = Buffer.from(actual);
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 function redirect(res, location, cookie = clearThreadsOauthCookie()) {
   const headers = { Location: location, "Cache-Control": "no-store", "Set-Cookie": cookie };
   if (res && typeof res.status === "function" && typeof res.setHeader === "function") {
@@ -98,8 +112,8 @@ async function handleThreadsCallback(req, res, ownerSecret) {
   const state = queryValue(req, "state");
   const code = queryValue(req, "code");
   const oauthError = queryValue(req, "error") || queryValue(req, "error_reason");
-  if (oauthError) return redirect(res, `/social?threads=error&reason=${encodeURIComponent(oauthError)}`);
-  if (!code || !verifyThreadsAuthorization(req, state)) return redirect(res, "/social?threads=error&reason=invalid_state");
+  if (oauthError) return redirect(res, `/account?view=autopublish&threads=error&reason=${encodeURIComponent(oauthError)}`);
+  if (!code || !verifyThreadsAuthorization(req, state)) return redirect(res, "/account?view=autopublish&threads=error&reason=invalid_state");
   try {
     const account = await exchangeThreadsAuthorizationCode(code);
     const accessTokenCiphertext = encryptThreadsAccessToken(account.accessToken);
@@ -111,10 +125,10 @@ async function handleThreadsCallback(req, res, ownerSecret) {
       tokenFingerprint: tokenFingerprint(account.accessToken),
       tokenExpiresAt: account.expiresAt,
     }, ownerSecret);
-    return redirect(res, `/social?threads=connected&username=${encodeURIComponent(account.username)}`);
+    return redirect(res, `/account?view=autopublish&threads=connected&username=${encodeURIComponent(account.username)}`);
   } catch (error) {
     const codeValue = error instanceof Error ? error.message.split(":")[0] : "oauth_failed";
-    return redirect(res, `/social?threads=error&reason=${encodeURIComponent(codeValue)}`);
+    return redirect(res, `/account?view=autopublish&threads=error&reason=${encodeURIComponent(codeValue)}`);
   }
 }
 
@@ -122,6 +136,15 @@ export default async function handler(req, res) {
   try {
     const method = req.method || "GET";
     if (method === "GET") {
+      if (queryValue(req, "action") === "cron.autopublish") {
+        if (!requestIsAuthorizedCron(req)) return json(res, 401, { ok: false, error: "CRON_UNAUTHORIZED" });
+        try {
+          const result = await runAutopublish({ env: process.env, fetchImpl: fetch });
+          return json(res, 200, { ok: true, result: { ran: result.ran, reason: result.reason, status: result.status } });
+        } catch (error) {
+          return json(res, 500, { ok: false, error: "CRON_FAILED", detail: error instanceof Error ? error.message.slice(0, 120) : "unknown" });
+        }
+      }
       let ownerSecret = ownerSecretFromRequest(req);
       if (queryValue(req, "action") === "threads.callback") {
         if (!ownerSecret) ownerSecret = ownerSecretFromCookieValue(threadsAuthorizationOwnerProof(req));
@@ -161,6 +184,14 @@ export default async function handler(req, res) {
       if (!/^[0-9a-f-]{36}$/i.test(id)) return json(res, 400, { ok: false, error: "INVALID_THREADS_ACCOUNT" });
       await threadsAccountStoreRequest("social.threads.delete", { id }, ownerSecret);
       return json(res, 200, { ok: true });
+    }
+    if (typeof payload?.action === "string" && payload.action.startsWith("autopublish.")) {
+      try {
+        const handled = await handleAutopublishAction(payload);
+        if (handled) return json(res, handled.status, handled.body);
+      } catch (error) {
+        return json(res, 502, { ok: false, error: error instanceof Error ? error.message.slice(0, 120) : "AUTOPUBLISH_FAILED" });
+      }
     }
     if (payload?.action !== "social.publish") {
       return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });

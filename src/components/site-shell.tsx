@@ -16,6 +16,7 @@ import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSite
 import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { IntroGate } from "@/components/intro-gate";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { resolveReportAccess } from "@/lib/report-access";
 import { routeMetaFor, routeMetaForLanguage, ROUTE_META_PATHS } from "@/lib/route-meta";
@@ -167,9 +168,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
   // Korean and Hindi remain implemented in the codebase but are intentionally
   // hidden from the public language selector until they are reactivated.
   const languageOptions = [
-    { value: "zh-Hant" as const, label: "繁體", short: "繁", aria: "繁體中文" },
-    { value: "zh-Hans" as const, label: "简体", short: "简", aria: "简体中文" },
-    { value: "en" as const, label: "English", short: "EN", aria: "English" },
+    { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
+    { value: "zh-Hans" as const, label: "简体", aria: "简体中文" },
+    { value: "en" as const, label: "English", aria: "English" },
   ];
 
   const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
@@ -277,16 +278,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
             ) : null}
 
             <nav className={`zhaowu-header-nav${isHome ? " is-home-entry-row" : ""}`} aria-label={siteControlsLabel}>
-              <div role="group" aria-label={t("language")} className="site-lang-group">
-                <span className="zhaowu-language-label">
-                  <BrandIcon name="language" />
-                  <span>{languageVisualLabel}</span>
-                </span>
-                {languageOptions.map(({ value, label, short, aria }) => {
-                  const active = language === value;
-                  return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button">{isHome ? short : label}</button>;
-                })}
-              </div>
+              <LanguageSwitcher
+                value={language}
+                options={languageOptions}
+                label={languageVisualLabel}
+                onChange={setLanguage}
+              />
 
               {NIGHT_MODE_ENABLED ? <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>
                 <button type="button" onClick={() => applyBrandTheme("day")} aria-pressed={!night} aria-label={dayModeLabel} data-active={!night ? "true" : "false"}>{displayText(language, "日", "日", "Day", "日", "낮", "दिन")}</button>
