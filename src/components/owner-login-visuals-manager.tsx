@@ -113,7 +113,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     common: tr(locale, "通用版", "通用版", "Common"),
     builtIn: tr(locale, "內置素材", "内置素材", "Built-in"),
     videoRequired: tr(locale, "開場影片只接受影片檔（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "开场视频只接受视频文件（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "The opening video must be a video file (MP4, MOV, M4V, WebM, 3GP, MKV, AVI, WMV, FLV, MPEG, TS, OGV)."),
-    clipped: tr(locale, "已上傳；首頁開場最長播放 15 秒，其餘片段不會播出。", "已上传；首页开场最长播放 15 秒，其余片段不会播出。", "Uploaded. The homepage opening plays for at most 15 seconds; the rest of the clip is not shown."),
+    clipped: tr(locale, `已上傳；首頁開場最長播放 ${LOGIN_VIDEO_MAX_SECONDS} 秒，其餘片段不會播出。`, `已上传；首页开场最长播放 ${LOGIN_VIDEO_MAX_SECONDS} 秒，其余片段不会播出。`, `Uploaded. The homepage opening plays for at most ${LOGIN_VIDEO_MAX_SECONDS} seconds; the rest of the clip is not shown.`),
     notPlayable: tr(locale, "已上傳；此格式瀏覽器無法直接播放，首頁會改顯示封面。建議改用 MP4 或 MOV。", "已上传；此格式浏览器无法直接播放，首页会改显示封面。建议改用 MP4 或 MOV。", "Uploaded. Browsers cannot play this format directly, so the homepage will show the poster instead. MP4 or MOV is recommended."),
     rename: tr(locale, "改名", "改名", "Rename"),
     save: tr(locale, "儲存", "保存", "Save"),
@@ -127,7 +127,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       `Compressed: ${(from / 1048576).toFixed(1)} MB → ${(to / 1048576).toFixed(1)} MB (max ${LOGIN_VIDEO_MAX_SECONDS} s).`,
     ),
     tooBig: () => {
-      return tr(locale, `此影片壓縮後仍太大，超過儲存空間單檔上限（Supabase 回報 413）。請先用手機「剪輯」裁成 15 秒內、或用較低畫質重新匯出後再上傳。`, `此视频压缩后仍太大，超过存储空间单文件上限（Supabase 返回 413）。请先用手机「剪辑」裁成 15 秒内、或用较低画质重新导出后再上传。`, `This video is still too large after compression and exceeds the storage per-file limit (Supabase returned 413). Trim it to 15 seconds or export at lower quality, then upload again.`);
+      return tr(locale, `此影片壓縮後仍太大，超過儲存空間單檔上限（Supabase 回報 413）。請先用手機「剪輯」裁成 ${LOGIN_VIDEO_MAX_SECONDS} 秒內、或用較低畫質重新匯出後再上傳。`, `此视频压缩后仍太大，超过存储空间单文件上限（Supabase 返回 413）。请先用手机「剪辑」裁成 ${LOGIN_VIDEO_MAX_SECONDS} 秒内、或用较低画质重新导出后再上传。`, `This video is still too large after compression and exceeds the storage per-file limit (Supabase returned 413). Trim it to ${LOGIN_VIDEO_MAX_SECONDS} seconds or export at lower quality, then upload again.`);
     },
     compressFailed: tr(locale, "此影片無法在瀏覽器內壓縮，已直接上傳原檔。", "此视频无法在浏览器内压缩，已直接上传原文件。", "This video could not be compressed in the browser; the original was uploaded."),
     failed: tr(locale, "開場影片操作失敗。", "开场视频操作失败。", "Opening-video update failed."),
@@ -176,7 +176,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         if (result.compressed) notes.add(copy.compressed(result.sourceBytes, result.outputBytes));
         else if (result.skippedReason === "failed") notes.add(copy.compressFailed);
         else if (duration === null || !playable) notes.add(copy.notPlayable);
-        else if (duration > 15) notes.add(copy.clipped);
+        else if (duration > LOGIN_VIDEO_MAX_SECONDS) notes.add(copy.clipped);
         await uploadGalleryAsset(session, result.file, {
           category: "loading",
           title: file.name,

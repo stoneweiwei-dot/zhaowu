@@ -1038,6 +1038,40 @@ html[data-zw-theme="night"] .zhaowu-specialist-node { border-top-color: rgba(236
 
 .zhaowu-site-footer { width: min(100%, 760px); }
 
+/* r229: homepage version-update + owner-admin entry relocated from the sticky header to the
+   footer. Deliberately its own attribute (not [data-site-status-strip]) so the existing
+   painted-home rule that hides the header strip does not also hide this footer placement. */
+[data-footer-status-strip] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 12px;
+  margin: 0 0 14px;
+}
+
+[data-zw-theme="night"] [data-footer-status-strip] .zhaowu-latest-update-link {
+  color: #e8dfca;
+  border-color: rgba(232, 223, 202, .3);
+  background: rgba(32, 40, 36, .5);
+}
+
+/* r229: soft cross-page fade so route changes read as one continuous site instead of a
+   slideshow jump-cut. Remount-triggered (key={pathname} in SiteShell), so it never fires
+   on in-page state changes, only on an actual route change. */
+.zhaowu-route-fade {
+  animation: zhaowu-route-fade-in 260ms ease-out both;
+}
+
+@keyframes zhaowu-route-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-route-fade { animation: none; }
+}
+
 @media (max-width: 780px) {
   .zhaowu-site-header > div,
   .zhaowu-header-shell {

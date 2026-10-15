@@ -1,12 +1,13 @@
 import { loadFfmpeg, withTimeout } from "@/lib/owner-music-transcode";
 
 /**
- * Opening-video compression (owner instruction 2026-09-30: uploaded login videos should be
- * squeezed to within 15 seconds, keeping the original soundtrack). Runs in the owner's browser with ffmpeg.wasm (same zero-cost,
- * client-side approach as the music optimiser) — no server transcoding, no paid service.
- * Output is an H.264 + AAC MP4, max 15 s, max 1280 px wide, which plays on every browser.
+ * Opening-video compression (owner instruction 2026-10-15: uploaded login videos should play in
+ * full up to 60 seconds, keeping the original soundtrack, at a sharper resolution). Runs in the
+ * owner's browser with ffmpeg.wasm (same zero-cost, client-side approach as the music optimiser)
+ * — no server transcoding, no paid service. Output is an H.264 + AAC MP4, max 60 s, max 1920 px
+ * wide, which plays on every browser.
  */
-export const LOGIN_VIDEO_MAX_SECONDS = 15;
+export const LOGIN_VIDEO_MAX_SECONDS = 60;
 const SKIP_IF_UNDER_BYTES = 6 * 1024 * 1024;
 const MAX_SOURCE_BYTES = 300 * 1024 * 1024;
 const TRANSCODE_TIMEOUT_MS = 240_000;
@@ -52,7 +53,7 @@ export async function compressLoginVideo(
     onProgress?.({ percent: 12, label: "讀取影片" });
     await ffmpeg.writeFile(inputName, new Uint8Array(await source.arrayBuffer()));
     const listener = ({ progress }: { progress: number }) => {
-      if (Number.isFinite(progress)) onProgress?.({ percent: 15 + Math.round(Math.min(1, Math.max(0, progress)) * 80), label: "壓縮影片（最長 15 秒，保留聲音）" });
+      if (Number.isFinite(progress)) onProgress?.({ percent: 15 + Math.round(Math.min(1, Math.max(0, progress)) * 80), label: `壓縮影片（最長 ${LOGIN_VIDEO_MAX_SECONDS} 秒，保留聲音）` });
     };
     ffmpeg.on("progress", listener);
     // `-t` before `-i` limits how much of the input is read, so long clips are not fully decoded.
@@ -60,8 +61,8 @@ export async function compressLoginVideo(
       ffmpeg.exec([
         "-y", "-t", String(LOGIN_VIDEO_MAX_SECONDS), "-i", inputName,
         "-map_metadata", "-1",
-        "-vf", "scale='min(1280,iw)':-2,fps=24",
-        "-c:v", "libx264", "-preset", "veryfast", "-crf", "27", "-pix_fmt", "yuv420p",
+        "-vf", "scale='min(1920,iw)':-2,fps=30",
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "22", "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "96k", "-ac", "2",
         "-movflags", "+faststart", outputName,
       ]),

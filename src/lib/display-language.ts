@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { useI18n, type CopyKey, type Locale } from "@/lib/i18n";
+import { detectDefaultLocale, useI18n, type CopyKey, type Locale } from "@/lib/i18n";
 
 export type DisplayLanguage = Locale | "ja" | "ko" | "hi";
 
@@ -575,21 +575,24 @@ export function intlTagFor(language: DisplayLanguage) {
   return language === "zh-Hans" ? "zh-CN" : "zh-TW";
 }
 
+// Owner 2026-10-15: same default-language rule as src/lib/i18n.ts — English everywhere except a
+// browser reporting a Chinese-speaking locale, and only until the visitor picks explicitly.
 function readDisplayLanguage(): DisplayLanguage {
-  if (typeof window === "undefined") return "zh-Hant";
+  if (typeof window === "undefined") return "en";
   try {
     const value = window.localStorage.getItem("zhaowu.display-language");
     if (value === "zh-Hant" || value === "zh-Hans" || value === "en") return value;
     if (value === "ko" || value === "hi" || value === "ja") {
-      window.localStorage.setItem("zhaowu.display-language", "zh-Hant");
-      return "zh-Hant";
+      const fallback = detectDefaultLocale();
+      window.localStorage.setItem("zhaowu.display-language", fallback);
+      return fallback;
     }
     const legacy = window.localStorage.getItem("zhaowu.locale");
     if (legacy === "zh-Hant" || legacy === "zh-Hans" || legacy === "en") return legacy;
   } catch {
-    /* ignore */
+    return detectDefaultLocale();
   }
-  return "zh-Hant";
+  return detectDefaultLocale();
 }
 
 function applyLanguage(language: DisplayLanguage) {

@@ -236,14 +236,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
       {!isLogin ? (
         <header className={`zhaowu-site-header sticky top-0 z-30${isHome ? " is-home-compact" : ""}`}>
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">
-            {!isOwnerWorkspace ? (
+            {!isOwnerWorkspace && !isHome ? (
               <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
-                {!isHome ? (
-                  <>
-                    <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
-                    <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
-                  </>
-                ) : null}
+                <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
+                <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
                 <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>
                   <span>{latestLabel}</span><span aria-hidden="true">›</span>
                 </Link>
@@ -282,16 +278,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 })}
               </div>
 
-              {isHome ? (
-                isPending ? <span className="zhaowu-home-login-inline is-pending" aria-hidden="true" /> :
-                user?.isOwner ? (
-                  <Link to="/account" className="zhaowu-home-login-inline" aria-label={t("navAdmin")}>
-                    <BrandIcon name="account" />
-                    <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
-                  </Link>
-                ) : null
-              ) : null}
-
               {NIGHT_MODE_ENABLED ? <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>
                 <button type="button" onClick={() => applyBrandTheme("day")} aria-pressed={!night} aria-label={dayModeLabel} data-active={!night ? "true" : "false"}>{displayText(language, "日", "日", "Day", "日", "낮", "दिन")}</button>
                 <button type="button" onClick={() => applyBrandTheme("night")} aria-pressed={night} aria-label={nightModeLabel} data-active={night ? "true" : "false"}>{displayText(language, "夜", "夜", "Night", "夜", "밤", "रात")}</button>
@@ -302,11 +288,30 @@ export function SiteShell({ children }: { children: ReactNode }) {
       ) : null}
 
       {!isLogin ? <JourneyNavigation showHelp={!isOwnerWorkspace} /> : null}
-      <div id="zhaowu-main-content" tabIndex={-1} className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
+      <div
+        id="zhaowu-main-content"
+        key={pathname}
+        tabIndex={-1}
+        className={`zhaowu-route-fade ${isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}`}
+      >{children}</div>
 
       {!isOwnerWorkspace ? <SiteUtilityDock /> : null}
 
       {!isLogin && !isOwnerWorkspace ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
+        {isHome ? (
+          <div className="zhaowu-footer-top-links" data-footer-status-strip>
+            <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>
+              <span>{latestLabel}</span><span aria-hidden="true">›</span>
+            </Link>
+            {isPending ? <span className="zhaowu-home-login-inline is-pending" aria-hidden="true" /> :
+              user?.isOwner ? (
+                <Link to="/account" className="zhaowu-home-login-inline" aria-label={t("navAdmin")}>
+                  <BrandIcon name="account" />
+                  <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
+                </Link>
+              ) : null}
+          </div>
+        ) : null}
         {stats.totalVisits > 0 ? (
           <p className="zhaowu-site-views" data-site-views aria-label={`${viewsTodayLabel} ${stats.todayVisits.toLocaleString(numberLocale)}，${viewsTotalLabel} ${stats.totalVisits.toLocaleString(numberLocale)}`}>
             <span>{viewsTodayLabel} <b>{stats.todayVisits.toLocaleString(numberLocale)}</b></span>
