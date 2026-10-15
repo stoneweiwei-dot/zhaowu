@@ -16,6 +16,8 @@
 
 Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batched conversion/trust work; P2 is backlog-only polish.
 
+- 2026-10-15：開場影片 60 秒內完整播放；全站預設 English（中文瀏覽器才預設中文）；首頁版本更新與站主入口移至頁尾；換頁淡入；付費區新增優惠碼（`promo-code` Edge Function，與 Stripe 分離）。細節見 Instruction Registry 同日條目。
+
 
 ## 0.1 Complex question answering — 2026-10-07
 

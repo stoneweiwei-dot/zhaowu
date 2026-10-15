@@ -1,5 +1,17 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-15 開場影片完整播放・英文預設語言・首頁頁尾・優惠碼 supersession（PR #746 + 後續）
+
+- ACTIVE：首頁 `IntroGate` 開場影片一分鐘以內一律完整播放：`INTRO_GATE_MAX_PLAY_S = 60`、`INTRO_GATE_HARD_EXIT_MS = 62000`；後台上傳壓縮上限 `LOGIN_VIDEO_MAX_SECONDS = 60`，輸出最寬 1920px、30fps、crf 22。訪客仍可隨時跳過。
+- SUPERSEDED：2026-09-30「開場影片最長 15 秒」以及 r197 條目中「登入動畫最長 15 秒」的秒數部分；其餘（MP4／WebM、7 日內不重播、內建 r148 退回）不變。
+- ACTIVE：全站預設語言為 English；只有瀏覽器語言為中文時才預設中文（zh-CN／zh-SG／Hans → 简体，其他 zh → 繁體）。訪客已明確選過的語言永遠優先。僅用瀏覽器語言判斷，不接付費 geo-IP 服務。
+- SUPERSEDED：`i18n.ts`／`display-language.ts` 原本一律預設 `zh-Hant` 的行為。
+- ACTIVE：首頁的「最新更新」連結與站主「後台管理」捷徑位於頁尾（`[data-footer-status-strip]`），不在頂部 header；非首頁的狀態列不變；站主工作區仍不顯示任何公開狀態列。
+- ACTIVE：換頁使用單一 CSS 淡入（`.zhaowu-route-fade`，260ms，遵守 `prefers-reduced-motion`）；不得引入動畫套件或第二套過場系統。
+- ACTIVE：付費區提供收合式「有優惠碼？」輸入。兌換只經 `promo-code` Edge Function 與 `promo_codes`／`promo_redemptions`（RLS、僅 service role），與 `report_purchase_entitlements`／Stripe 完全分離，不記任何金額。同一瀏覽器重輸已兌換的碼為冪等解鎖、不扣名額。
+- OPERATIONAL：建立優惠碼目前以 SQL 新增 `public.promo_codes` 列（`code`、`product_id` system／bundle、`system_id` 可空＝全系統、`max_redemptions`、`expires_at`）；後台管理介面列為 BACKLOG。
+- 不改：Stripe Payment Links、webhook、entitlement、命理計算、報告內容、Owner 登入。
+
 ## 2026-10-13 站主參考圖重排首頁與主題預覽
 
 - ACTIVE：以本次八張參考圖的構圖與版面為視覺依據；首頁按錦鯉四格、龍蓮卷軸、日夜龍吟、漫畫預覽四種構圖排版。主視覺、卡片插畫、標題與操作分層，真實文字／按鈕不得改成整張截圖熱區。
