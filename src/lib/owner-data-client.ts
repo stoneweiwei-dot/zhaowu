@@ -1,5 +1,5 @@
 import * as tus from "tus-js-client";
-import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+import { SUPABASE_DIRECT_URL, SUPABASE_KEY } from "@/lib/supabase-config";
 
 export const OWNER_COOKIE_ACCESS_TOKEN = "__zhaowu_owner_cookie_server_bridge__";
 
@@ -106,7 +106,7 @@ export type OwnerUploadTicket = {
 /** Upload bytes directly to Supabase Storage. Supabase createSignedUploadUrl URLs are valid for 2 hours; the separate server-signed uploadTicket binds finalize to this exact object. */
 export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: File, onProgress?: (percent: number) => void) {
   if (file.size > 6 * 1024 * 1024) {
-    if (!ticket.token || !SUPABASE_URL || !SUPABASE_KEY) throw new Error("大檔續傳通道尚未正確設定。");
+    if (!ticket.token || !SUPABASE_DIRECT_URL || !SUPABASE_KEY) throw new Error("大檔續傳通道尚未正確設定。");
     const signedUploadToken = ticket.token;
     onProgress?.(2);
     await new Promise<void>((resolve, reject) => {
@@ -122,7 +122,7 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
       // re-checking the caller's own role, and does not expect an Authorization bearer at all
       // (matches Supabase's own resumable-upload-signed-uppy example). See tools/mcp Supabase
       // `pg_policies` for storage.objects: zhaowu_gallery_owner_insert is roles={authenticated}.
-      const endpoint = `${SUPABASE_URL.replace(/\/$/, "").replace(".supabase.co", ".storage.supabase.co")}/storage/v1/upload/resumable/sign`;
+      const endpoint = `${SUPABASE_DIRECT_URL.replace(/\/$/, "").replace(".supabase.co", ".storage.supabase.co")}/storage/v1/upload/resumable/sign`;
       const upload = new tus.Upload(file, {
         endpoint,
         retryDelays: [0, 3000, 5000, 10000, 20000],
