@@ -21,12 +21,13 @@ import { Route as HistoryRouteImport } from './routes/history'
 import { Route as IndianAstrologyRouteImport } from './routes/indian-astrology'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as MemberRouteImport } from './routes/member'
 import { Route as NumerologyRouteImport } from './routes/numerology'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as QizhengRouteImport } from './routes/qizheng'
 import { Route as SkyEventsRouteImport } from './routes/sky-events'
-import { Route as SoulChaptersRouteImport } from './routes/soul-chapters'
 import { Route as SocialRouteImport } from './routes/social'
+import { Route as SoulChaptersRouteImport } from './routes/soul-chapters'
 import { Route as TeaGuardianRouteImport } from './routes/tea-guardian'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TianjiDualRouteImport } from './routes/tianji-dual'
@@ -104,6 +105,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MemberRoute = MemberRouteImport.update({
+  id: '/member',
+  path: '/member',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NumerologyRoute = NumerologyRouteImport.update({
   id: '/numerology',
   path: '/numerology',
@@ -124,14 +130,14 @@ const SkyEventsRoute = SkyEventsRouteImport.update({
   path: '/sky-events',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SoulChaptersRoute = SoulChaptersRouteImport.update({
-  id: '/soul-chapters',
-  path: '/soul-chapters',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SocialRoute = SocialRouteImport.update({
   id: '/social',
   path: '/social',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SoulChaptersRoute = SoulChaptersRouteImport.update({
+  id: '/soul-chapters',
+  path: '/soul-chapters',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeaGuardianRoute = TeaGuardianRouteImport.update({
@@ -230,12 +236,13 @@ export interface FileRoutesByFullPath {
   '/indian-astrology': typeof IndianAstrologyRoute
   '/knowledge': typeof KnowledgeRouteWithChildren
   '/login': typeof LoginRoute
+  '/member': typeof MemberRoute
   '/numerology': typeof NumerologyRoute
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
-  '/soul-chapters': typeof SoulChaptersRoute
   '/social': typeof SocialRoute
+  '/soul-chapters': typeof SoulChaptersRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/terms': typeof TermsRoute
   '/tianji-dual': typeof TianjiDualRoute
@@ -266,12 +273,13 @@ export interface FileRoutesByTo {
   '/indian-astrology': typeof IndianAstrologyRoute
   '/knowledge': typeof KnowledgeRouteWithChildren
   '/login': typeof LoginRoute
+  '/member': typeof MemberRoute
   '/numerology': typeof NumerologyRoute
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
-  '/soul-chapters': typeof SoulChaptersRoute
   '/social': typeof SocialRoute
+  '/soul-chapters': typeof SoulChaptersRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/terms': typeof TermsRoute
   '/tianji-dual': typeof TianjiDualRoute
@@ -303,12 +311,13 @@ export interface FileRoutesById {
   '/indian-astrology': typeof IndianAstrologyRoute
   '/knowledge': typeof KnowledgeRouteWithChildren
   '/login': typeof LoginRoute
+  '/member': typeof MemberRoute
   '/numerology': typeof NumerologyRoute
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
   '/sky-events': typeof SkyEventsRoute
-  '/soul-chapters': typeof SoulChaptersRoute
   '/social': typeof SocialRoute
+  '/soul-chapters': typeof SoulChaptersRoute
   '/tea-guardian': typeof TeaGuardianRoute
   '/terms': typeof TermsRoute
   '/tianji-dual': typeof TianjiDualRoute
@@ -341,12 +350,13 @@ export interface FileRouteTypes {
     | '/indian-astrology'
     | '/knowledge'
     | '/login'
+    | '/member'
     | '/numerology'
     | '/privacy'
     | '/qizheng'
     | '/sky-events'
-    | '/soul-chapters'
     | '/social'
+    | '/soul-chapters'
     | '/tea-guardian'
     | '/terms'
     | '/tianji-dual'
@@ -377,12 +387,13 @@ export interface FileRouteTypes {
     | '/indian-astrology'
     | '/knowledge'
     | '/login'
+    | '/member'
     | '/numerology'
     | '/privacy'
     | '/qizheng'
     | '/sky-events'
-    | '/soul-chapters'
     | '/social'
+    | '/soul-chapters'
     | '/tea-guardian'
     | '/terms'
     | '/tianji-dual'
@@ -413,12 +424,13 @@ export interface FileRouteTypes {
     | '/indian-astrology'
     | '/knowledge'
     | '/login'
+    | '/member'
     | '/numerology'
     | '/privacy'
     | '/qizheng'
     | '/sky-events'
-    | '/soul-chapters'
     | '/social'
+    | '/soul-chapters'
     | '/tea-guardian'
     | '/terms'
     | '/tianji-dual'
@@ -450,12 +462,13 @@ export interface RootRouteChildren {
   IndianAstrologyRoute: typeof IndianAstrologyRoute
   KnowledgeRoute: typeof KnowledgeRouteWithChildren
   LoginRoute: typeof LoginRoute
+  MemberRoute: typeof MemberRoute
   NumerologyRoute: typeof NumerologyRoute
   PrivacyRoute: typeof PrivacyRoute
   QizhengRoute: typeof QizhengRoute
   SkyEventsRoute: typeof SkyEventsRoute
-  SoulChaptersRoute: typeof SoulChaptersRoute
   SocialRoute: typeof SocialRoute
+  SoulChaptersRoute: typeof SoulChaptersRoute
   TeaGuardianRoute: typeof TeaGuardianRoute
   TermsRoute: typeof TermsRoute
   TianjiDualRoute: typeof TianjiDualRoute
@@ -556,6 +569,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/member': {
+      id: '/member'
+      path: '/member'
+      fullPath: '/member'
+      preLoaderRoute: typeof MemberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/numerology': {
       id: '/numerology'
       path: '/numerology'
@@ -584,18 +604,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SkyEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/soul-chapters': {
-      id: '/soul-chapters'
-      path: '/soul-chapters'
-      fullPath: '/soul-chapters'
-      preLoaderRoute: typeof SoulChaptersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/social': {
       id: '/social'
       path: '/social'
       fullPath: '/social'
       preLoaderRoute: typeof SocialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/soul-chapters': {
+      id: '/soul-chapters'
+      path: '/soul-chapters'
+      fullPath: '/soul-chapters'
+      preLoaderRoute: typeof SoulChaptersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tea-guardian': {
@@ -754,12 +774,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndianAstrologyRoute: IndianAstrologyRoute,
   KnowledgeRoute: KnowledgeRouteWithChildren,
   LoginRoute: LoginRoute,
+  MemberRoute: MemberRoute,
   NumerologyRoute: NumerologyRoute,
   PrivacyRoute: PrivacyRoute,
   QizhengRoute: QizhengRoute,
   SkyEventsRoute: SkyEventsRoute,
-  SoulChaptersRoute: SoulChaptersRoute,
   SocialRoute: SocialRoute,
+  SoulChaptersRoute: SoulChaptersRoute,
   TeaGuardianRoute: TeaGuardianRoute,
   TermsRoute: TermsRoute,
   TianjiDualRoute: TianjiDualRoute,
