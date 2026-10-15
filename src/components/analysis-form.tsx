@@ -115,6 +115,12 @@ export function AnalysisForm() {
 
         questionLabel: "Your question",
         questionPlaceholder: "For example: Should I stay in this job or leave? What changes most over the next six months?",
+        quickPrompts: [
+          "What should I eat today?",
+          "Should I change jobs?",
+          "How can I communicate better in my relationship?",
+        ],
+        quickPromptsLabel: "Quick questions",
 
         analyze: "Analyse this question",
         analysing: "Analysing…",
@@ -156,6 +162,12 @@ export function AnalysisForm() {
 
           questionLabel: "你的问题",
           questionPlaceholder: "例如：这份工作该继续还是离开？未来半年最大的变化在哪里？",
+          quickPrompts: [
+            "我今天适合吃什么？",
+            "这份工作该不该换？",
+            "感情沟通卡住了怎么办？",
+          ],
+          quickPromptsLabel: "快捷问题",
 
           analyze: "开始分析这个问题",
           analysing: "正在推演…",
@@ -196,6 +208,12 @@ export function AnalysisForm() {
 
           questionLabel: "你的問題",
           questionPlaceholder: "例如：這份工作該繼續還是離開？未來半年最大的變化在哪裡？",
+          quickPrompts: [
+            "我今天適合吃什麼？",
+            "這份工作該不該換？",
+            "感情溝通卡住了怎麼辦？",
+          ],
+          quickPromptsLabel: "快捷問題",
 
           analyze: "開始分析這個問題",
           analysing: "正在推演…",
@@ -550,6 +568,21 @@ export function AnalysisForm() {
             <button type="button" className="zhaowu-question-birth-edit" onClick={() => { setDetailsOpen(true); setError(null); }}>{copy.editBirth}</button>
           </div>
           <label htmlFor="analysis-question" className="zhaowu-question-label">{copy.questionLabel}</label>
+          <div className="zhaowu-quick-prompts" data-quick-prompts>
+            <span className="zhaowu-quick-prompts-label">{copy.quickPromptsLabel}</span>
+            <div className="zhaowu-quick-prompts-list">
+              {copy.quickPrompts.map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  className="zhaowu-quick-prompt-chip"
+                  onClick={() => { setQuestion(prompt); document.getElementById("analysis-question")?.focus(); }}
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          </div>
           <textarea
             id="analysis-question"
             value={question}
