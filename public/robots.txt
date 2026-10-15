@@ -13,6 +13,7 @@ User-agent: *
 Allow: /
 Disallow: /login
 Disallow: /account
+Disallow: /member
 Disallow: /history
 Disallow: /auth/
 Disallow: /gallery
