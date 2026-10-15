@@ -18,6 +18,7 @@ import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { IntroGate } from "@/components/intro-gate";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { resolveReportAccess } from "@/lib/report-access";
+import { routeMetaFor, routeMetaForLanguage, ROUTE_META_PATHS } from "@/lib/route-meta";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
 import { hydrateSkin, refreshSharedSkin } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
@@ -41,7 +42,9 @@ function formatReleaseDate(value: string | null, language: DisplayLanguage) {
 }
 
 const PRIVATE_ROUTES = ["/login", "/account", "/history", "/auth", "/gallery", "/social"];
-const SELF_CANONICAL_ROUTES = ["/", "/knowledge", "/knowledge/five-elements-tone-qi", "/knowledge/shushu-boundary", "/knowledge/system-map", "/updates", "/daily-colors"];
+// Sitemap-listed public routes self-canonicalise; everything else keeps "/".
+// The set lives in src/lib/route-meta.json (shared with the static-HTML build step).
+const SELF_CANONICAL_ROUTES = ROUTE_META_PATHS;
 
 function updateMeta(selector: string, content: string) {
   const node = document.querySelector<HTMLMetaElement>(selector);
@@ -186,7 +189,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const skipLabel = displayText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
 
   useEffect(() => {
-    const title = displayText(
+    // Per-route metadata from src/lib/route-meta.json; unknown routes keep the
+    // homepage defaults below (previous behaviour). Home fallback copy stays
+    // inline so ja/ko/hi keep their own site-wide defaults.
+    const routeMeta = routeMetaFor(pathname);
+    const routeEntry = routeMeta ? routeMetaForLanguage(routeMeta, language) : null;
+    const title = routeEntry?.title ?? displayText(
       language,
       "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費",
       "昭梧｜八字排盘・子平八字・真太阳时・流年运势｜免登录免费",
@@ -195,7 +203,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       "ZHAOWU｜출생 정보로 읽는 개인 명서",
       "ZHAOWU｜जन्म विवरण से व्यक्तिगत Destiny Book",
     );
-    const description = displayText(
+    const description = routeEntry?.description ?? displayText(
       language,
       "免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。",
       "免登录免费八字排盘：依子平八字与真太阳时校正，整理五行旺衰、大运与流年运势、今日提示。",
@@ -215,7 +223,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       'meta[property="og:locale"]',
       language === "en" ? "en_AU" : language === "zh-Hans" ? "zh_CN" : "zh_TW",
     );
-  }, [language]);
+  }, [language, pathname]);
 
   // SEO: private/account routes are noindex; sitemap-listed public routes self-canonicalise, everything else keeps "/".
   useEffect(() => {
