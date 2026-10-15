@@ -148,7 +148,9 @@ for (const skin of SKINS) {
       // A newly loaded route can briefly expose only the static shell while
       // the application bundle hydrates, especially under parallel screenshots.
       await expect(page.locator(ready).first()).toBeVisible({ timeout: 15_000 });
-      await expect(page.locator('html')).toHaveAttribute('data-zws', skin.id);
+      // PR #744: the legacy day-flute selection resolves to the owner's pastel-koi homepage.
+      const expectedSkinId = skin.id === 'day-flute' ? 'pastel-koi' : skin.id;
+      await expect(page.locator('html')).toHaveAttribute('data-zws', expectedSkinId);
       await expect(page.locator('html')).toHaveAttribute('data-zws-mode', skin.mode);
       await page.evaluate(() => document.fonts.ready);
       routeStyles[path] = await healthy(page, path);
