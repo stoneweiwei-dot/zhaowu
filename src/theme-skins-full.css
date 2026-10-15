@@ -1005,3 +1005,155 @@ html[data-zws][data-zws][data-zws-mode="dark"] body .zw-ink-board[data-variant="
     linear-gradient(90deg, rgba(4, 14, 18, .62), rgba(4, 14, 18, .22) 62%, transparent),
     var(--zws-art) var(--zws-focus, 50% 40%) / cover no-repeat !important;
 }
+
+/* ── 2026-10-16 night-skin component pass: charts, tables, report panels, today cards ──────────────────
+ * Found by scrolling every page WITH a saved birth record under verdant-rain / night-flute / night-palace
+ * and pixel-sampling each text run. These panels hard-code cream fills; under a night skin the global
+ * ink rules turn their text light, so they become light-on-light. Give them the night glass instead. */
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(
+  section.zw-chart, .zw-chart-table-block, .zw-chart-table, .zw-chart-table thead, .zw-chart-table tr,
+  .zw-chart-table th, .zw-chart-table td, article.zw-palace, .zw-ziwei-center,
+  .zhaowu-specialist-birth, article.zhaowu-specialist-overview, section.zhaowu-five-tone-gift,
+  details.zhaowu-chart-details, section.zw-report-wayfinding,
+  article[class*="bg-cream"], article[class*="bg-paper"], div[class*="bg-cream"], div[class*="bg-paper"],
+  div.rounded-xl.border.border-line, footer.rounded-2xl.border.border-line
+) {
+  background: color-mix(in srgb, var(--zws-card) 92%, transparent) !important;
+  background-image: none !important;
+  border-color: var(--zws-line) !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(.zw-chart-table thead, .zw-chart-table th) {
+  background: color-mix(in srgb, var(--zws-accent) 14%, var(--zws-page)) !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(
+  section.zw-chart, .zw-chart-table-block, article.zw-palace, .zw-ziwei-center,
+  .zhaowu-specialist-birth, article.zhaowu-specialist-overview, section.zhaowu-five-tone-gift,
+  details.zhaowu-chart-details, section.zw-report-wayfinding,
+  article[class*="bg-cream"], article[class*="bg-paper"], div[class*="bg-cream"], div[class*="bg-paper"],
+  div.rounded-xl.border.border-line, footer.rounded-2xl.border.border-line
+) :is(h1, h2, h3, h4, h5, p, li, dt, dd, th, td, small, span, strong, b, em, label, summary, div, figcaption, legend):not(button):not(button *):not(svg *):not(.bg-cinnabar):not(.bg-cinnabar *),
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(.zw-chart-table th, .zw-chart-table td, .zw-chart-table-title) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* 今日 personal cards (painted gradients) and the today wardrobe leaf */
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(
+  article.zhaowu-today-card[class*="is-personal"], div.zhaowu-today-personal-wardrobe
+) {
+  background: color-mix(in srgb, var(--zws-card) 92%, transparent) !important;
+  background-image: none !important;
+  border-color: var(--zws-line) !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(
+  article.zhaowu-today-card[class*="is-personal"], div.zhaowu-today-personal-wardrobe
+) :is(h2, h3, h4, p, li, small, span, strong, b, em, div):not(button *):not(svg *):not(.zhaowu-wardrobe-swatch *):not([data-wardrobe-materials] *) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* colour swatches: the label sits on the real pigment — read it in white with a soft halo */
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content .zhaowu-wardrobe-swatch > b,
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content [data-wardrobe-materials] > span {
+  color: #fffaf0 !important;
+  -webkit-text-fill-color: currentColor !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .7);
+}
+
+/* accent buttons: label in the skin's on-accent ink (night accents are light) */
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(
+  button[type="submit"], .bg-cinnabar, .zhaowu-primary-button, .stone-login-primary, .zw-flow-next,
+  .zhaowu-report-pricing article > button
+),
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(
+  button[type="submit"], .bg-cinnabar, .zhaowu-primary-button, .stone-login-primary, .zw-flow-next
+) * {
+  color: var(--zws-on-accent) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* saved report card controls, history clear, numerology/system-map notes, daily-colour names */
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body .zw-saved-report-card { --zws-control-ink: var(--zws-ink); }
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content .zw-saved-report-card :is(a, button:not(:first-of-type)) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content button.history-clear {
+  color: #f0a79c !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(div.rounded-xl.border.border-line, footer.rounded-2xl.border.border-line) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* 每日穿衣 leaf on night skins: one night glass, not a cream leaf with pale labels */
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content #daily-almanac :is(.zhaowu-today-guide__wardrobe, .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe) {
+  background: color-mix(in srgb, var(--zws-card) 92%, transparent) !important;
+  background-image: none !important;
+  color: var(--zws-ink) !important;
+  border-color: var(--zws-line) !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content #daily-almanac .zhaowu-today-guide__wardrobe :is(h2, h3, h4, p, small, strong, b, span, summary, summary *, em, div):not(i):not(svg *) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content #daily-almanac .zhaowu-today-guide__wardrobe :is(
+  .zhaowu-wardrobe-swatch, .zhaowu-today-guide__wardrobe-notes > span, .zhaowu-today-guide__wardrobe-notes > section, [data-wardrobe-materials] > span, details
+) {
+  background: rgba(255, 255, 255, .06) !important;
+  border-color: var(--zws-line) !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content #daily-almanac .zhaowu-today-guide__wardrobe :is(small, p) {
+  color: color-mix(in srgb, var(--zws-ink) 80%, transparent) !important;
+}
+/* 七政 wheel numbers, healing footnote, pricing card titles, quiz next, day-colour names, atlas back pill */
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(.zhaowu-five-tone-gift, section, article) > footer {
+  color: color-mix(in srgb, var(--zws-ink) 72%, transparent) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content .zhaowu-report-pricing article {
+  background: color-mix(in srgb, var(--zws-card) 92%, transparent) !important;
+  border-color: var(--zws-line) !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content .zhaowu-report-pricing article > :is(strong, span, p, small) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content #five-element-wardrobe button strong { filter: brightness(1.9) saturate(.85); }
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content .zw-chart-wheel { stroke: color-mix(in srgb, var(--zws-ink) 45%, transparent); }
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content .zw-chart-wheel text:not(.zw-star-label) { fill: var(--zws-ink) !important; }
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.earth-online-shell .earth-online-article :is(h3, h4) { color: var(--eo-ink) !important; -webkit-text-fill-color: currentColor !important; }
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(.zw-chart-table th, .zw-chart-table td)::before {
+  color: color-mix(in srgb, var(--zws-gold) 78%, #fff) !important;
+  opacity: 1 !important;
+}
+
+/* 八字 pillar cells and chakra colour cards on night skins: night glass, light ink */
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(.zhaowu-pillar-grid > section, [data-chakra-colour-item]) {
+  background: rgba(255, 255, 255, .06) !important;
+  border-color: var(--zws-line) !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content :is(.zhaowu-pillar-grid > section, [data-chakra-colour-item]) :is(h3, h4, strong, small, span, p, b, em) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content #bazi details.zhaowu-chart-details > summary,
+html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content details.zhaowu-chart-details > summary {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* pine pill links (knowledge "閱讀教學"): lost their fill under skins and showed white-on-paper */
+html[data-zws][data-zws][data-zws][data-zws] body #zhaowu-main-content a.bg-pine {
+  background: var(--zws-action-bg, var(--zws-accent)) !important;
+  color: var(--zws-on-accent) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+/* today section head kicker on painted headers */
+html[data-zws][data-zws][data-zws][data-zws] body #zhaowu-main-content #daily-almanac .zhaowu-today-section__head small {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .45);
+}
