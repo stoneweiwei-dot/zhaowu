@@ -8,14 +8,13 @@ const VITE_ENV = import.meta.env ?? {};
 /** Real Supabase origin. Server code, owner uploads and OAuth redirects always use this. */
 export const SUPABASE_DIRECT_URL = (VITE_ENV.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "");
 
-// Mainland-China visitors cannot reliably reach *.supabase.co. On the China-facing
-// production domain, which carries the `/sb/*` Vercel rewrite (vercel.json), the browser talks to Supabase through
-// the page's own origin instead, so login, reads and public media need exactly one reachable
-// host. Anywhere else (localhost, tests, archive hosts) the direct URL is kept unchanged.
+// Mainland-China visitors cannot reliably reach *.supabase.co. On the Vercel production host
+// and any China-facing custom domain, which carry the `/sb/*` Vercel rewrites (vercel.json),
+// the browser talks to Supabase through the page's own origin instead, so login, reads and
+// public media need only the page origin to be reachable. Local dev, tests and non-Vercel
+// archive hosts keep the direct Supabase URL unchanged.
 const SAME_ORIGIN_PROXY_PREFIX = "/sb";
-// Only the China-facing custom domain opts in. *.vercel.app is itself unreachable from the mainland,
-// so existing visitors on the vercel.app origin keep the proven direct path.
-const PROXY_HOST_DOMAINS = ["zhaowu.art"];
+const PROXY_HOST_DOMAINS = ["stone-zhaowu-official.vercel.app", "zhaowu.art", "soul-terminal.com"];
 
 function resolveBrowserSupabaseUrl() {
   if (typeof window === "undefined" || !window.location) return SUPABASE_DIRECT_URL;

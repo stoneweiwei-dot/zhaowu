@@ -2,13 +2,14 @@
 
 ## 2026-10-15 中國大陸可讀取／可登入：同網域 Supabase 代理與自家託管天文腳本
 
-- ACTIVE：訪客端（登入、`rest/v1` 讀取、`functions/v1`、公開媒體 URL）在 `zhaowu.art`（含子網域）一律經本站同網域 `/sb/*`；`*.vercel.app` 本身在大陸不可達，維持原直連路徑以不影響現有訪客；`vercel.json` 以四條白名單 rewrite 轉到 Supabase（`/sb/auth/v1`、`/sb/rest/v1`、`/sb/functions/v1`、`/sb/storage/v1/object/public`）。`src/lib/supabase-config.ts` 匯出 `SUPABASE_URL`（瀏覽器在 `zhaowu.art` 時為 `<origin>/sb`，其餘環境維持直連）與 `SUPABASE_DIRECT_URL`（永遠直連）。
+- ACTIVE：訪客端（登入、`rest/v1` 讀取、`functions/v1`、公開媒體 URL）在正式站（`stone-zhaowu-official.vercel.app`）及自訂網域（`zhaowu.art`、`soul-terminal.com` 含子網域）一律經本站同網域 `/sb/*`；`vercel.json` 以四條白名單 rewrite 轉到 Supabase（`/sb/auth/v1`、`/sb/rest/v1`、`/sb/functions/v1`、`/sb/storage/v1/object/public`）。`src/lib/supabase-config.ts` 匯出 `SUPABASE_URL`（瀏覽器在上述生產網域時為 `<origin>/sb`，本機開發與測試維持直連）與 `SUPABASE_DIRECT_URL`（永遠直連）。
+- ACTIVE：站主背景音樂與五音贈曲播放改由同網域 `/api/owner-music?track=<id>` 代理串流並設定邊緣快取（`s-maxage=604800`），訪客端不再直連大陸不可達的 `cdn.jsdelivr.net` 或 `raw.githubusercontent.com`；失敗時自動回退至本站靜態 `/audio/zhaowu-background.mp3`。
 - ACTIVE：站主上傳／刪除（`storage/v1/object/<bucket>`）、TUS 續傳簽名端點與 OAuth `authorize` 導向仍用 `SUPABASE_DIRECT_URL`，不經代理（大檔不佔用 Vercel 轉送，OAuth 提供商本就無法在大陸使用）。
 - ACTIVE：`astronomy-engine@2.1.19` 由 jsDelivr 改為自家 `/vendor/astronomy-engine-2.1.19.browser.min.js`（同一版本，不變更演算公式）；`/vendor/*` 以 immutable 快取。
-- SUPERSEDED：D60 元件從 `cdn.jsdelivr.net` 載入天文腳本的做法（`scripts/d60-reliability-gate.test.mjs` 契約同步更新）。
+- SUPERSEDED：D60 元件從 `cdn.jsdelivr.net` 載入天文腳本的做法（`scripts/d60-reliability-gate.test.mjs` 契約同步更新），以及 `/api/owner-music` 把訪客音訊重導向至 `cdn.jsdelivr.net` 的做法。
 - 不改：登入邏輯、Supabase 資料／Schema／RLS、付款、命理計算、報告內容、SPA fallback rewrite。
-- COST（AGENTS §F）：消耗 Vercel Fast Data Transfer（公開媒體加 `s-maxage` 邊緣快取以減量）；無新增付費服務；Supabase 或 Vercel 不可用時行為與先前相同（請求失敗）；回滾＝還原本提交，無資料遷移。
-- OPERATIONAL（非程式）：`zhaowu.art` 已掛在 Vercel 專案但 DNS 尚未指向 Vercel（Vercel 判定 misconfigured）；需站主在網域註冊商設定 `A @ 216.198.79.1`（或 `76.76.21.21`）與 `CNAME www 1661ee4eea28cc62.vercel-dns-017.com`。大陸可用性取決於網路路由，無法由程式保證。
+- COST（AGENTS §F）：消耗 Vercel Fast Data Transfer（公開媒體與音訊加 `s-maxage` 邊緣快取以減量）；無新增付費服務；Supabase 或 Vercel 不可用時行為與先前相同（請求失敗或回退本地靜態資源）；回滾＝還原本提交，無資料遷移。
+- OPERATIONAL（非程式）：`*.vercel.app` 共享網域在中國大陸部分電信商會有 DNS 污染／SNI 阻斷；程式端已確保單一網域可達即可完成全站載入、排盤、讀取、登入與聽音樂，但若大陸直連 `*.vercel.app` 入口本身被牆，仍需綁定一個已指向 Vercel（或經 Cloudflare 指向 Vercel）的自訂網域。
 - BACKLOG（P2）：站主後台影片轉檔的 ffmpeg 核心仍來自 jsDelivr（僅站主使用）。
 
 ## 2026-10-15 開場影片完整播放・英文預設語言・首頁頁尾・優惠碼 supersession（PR #746 + 後續）
