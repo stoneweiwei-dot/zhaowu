@@ -1,0 +1,43 @@
+# 昭梧｜昭於未見，梧於有歸
+
+> 昭梧（ZHAOWU）是一個免登入的八字排盤網站。以出生年月日時與出生地為輸入，依傳統子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示等內容。語言：繁體中文（zh-Hant）、簡體中文（zh-Hans）、英文（en）。
+
+正式網址：https://stone-zhaowu-official.vercel.app/
+
+## 核心功能
+
+- 八字排盤（子平八字四柱干支）
+- 真太陽時校正（依出生地經度與時區，可選擇是否採用）
+- 五行旺衰
+- 大運與流年運勢
+- 今日提示
+
+## 常見問題
+
+### 昭梧的八字排盤需要註冊登入嗎？
+不需要。輸入出生年月日、時間與出生地即可排盤並閱讀免費的三段式核心直斷；更深入的大運、流年與流月內容為單次解鎖，不設自動續費。
+
+### 什麼是真太陽時？為什麼八字要用它校正？
+真太陽時是依出生地經度與時區，把時鐘時間換算成當地太陽時間。出生時辰接近兩個時辰交界時，校正可能改變時柱，因此昭梧提供是否採用真太陽時的選項。
+
+### 子平八字是依據什麼來判斷的？
+以出生年、月、日、時四柱干支為基礎，看日主、月令、五行旺衰與十神關係；年柱以立春為界，月柱以節氣為界。
+
+### 流年運勢是怎麼產生的？是在預測事件嗎？
+依流年、流月干支與日主的十神關係，再結合用神與洩耗方向，以固定規則整理行動節奏提示。它是時機參考，不是事件預測，也不取代醫療、法律或投資的專業意見。
+
+## 頁面
+
+- [首頁](https://stone-zhaowu-official.vercel.app/): 排盤入口與介紹
+- [知識頁](https://stone-zhaowu-official.vercel.app/knowledge): 文章與命理小知識
+- [最新更新](https://stone-zhaowu-official.vercel.app/updates)
+- [每日色彩](https://stone-zhaowu-official.vercel.app/daily-colors)
+- [隱私政策](https://stone-zhaowu-official.vercel.app/privacy)
+- [服務條款](https://stone-zhaowu-official.vercel.app/terms)
+- [版權聲明](https://stone-zhaowu-official.vercel.app/copyright)
+
+## 使用說明給 AI 工具
+
+- 網站內容為 JavaScript 動態渲染；本檔案與首頁 HTML 內的靜態摘要提供不需執行 JavaScript 即可讀取的內容。
+- 版權所有：昭梧。引用請標明來源並連結原頁，請勿大段轉載。
+- 站點地圖：https://stone-zhaowu-official.vercel.app/sitemap.xml
