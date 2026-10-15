@@ -189,11 +189,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const skipLabel = displayText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
 
   useEffect(() => {
-    // Per-route metadata from src/lib/route-meta.json; unknown routes keep the
-    // homepage defaults below (previous behaviour). Home fallback copy stays
-    // inline so ja/ko/hi keep their own site-wide defaults.
+    // Per-route metadata from src/lib/route-meta.json for the three public
+    // languages (zh-Hant/zh-Hans/en). Hidden languages (ja/ko/hi) and unknown
+    // routes keep the previous inline site-wide defaults below.
     const routeMeta = routeMetaFor(pathname);
-    const routeEntry = routeMeta ? routeMetaForLanguage(routeMeta, language) : null;
+    const routeEntry = routeMeta && (language === "zh-Hant" || language === "zh-Hans" || language === "en")
+      ? routeMetaForLanguage(routeMeta, language)
+      : null;
     const title = routeEntry?.title ?? displayText(
       language,
       "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費",
