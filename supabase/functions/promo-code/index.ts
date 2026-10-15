@@ -132,16 +132,28 @@ async function handleRedeem(req: Request, env: Runtime, admin: ReturnType<typeof
   if (promo.system_id && promo.system_id !== system) {
     return json(req, env, { ok: false, error: { code: "PROMO_WRONG_SYSTEM" } }, 409);
   }
+
+  const redemptionSystemId = promo.product_id === "bundle" ? "all" : system;
+  const granted = { ok: true, paid: true, product: promo.product_id, system: promo.product_id === "bundle" ? null : system };
+
+  // Re-entering a code this browser already redeemed is idempotent: unlock again, use no new slot.
+  const { data: existing, error: existingError } = await admin
+    .from("promo_redemptions")
+    .select("id")
+    .match({ promo_code_id: promo.id, access_key: accessKey, system_id: redemptionSystemId })
+    .maybeSingle();
+  if (existingError) return json(req, env, { ok: false, error: { code: "PROMO_STORE_ERROR" } }, 502);
+  if (existing) return json(req, env, granted);
+
   if (promo.max_redemptions !== null && promo.redeemed_count >= promo.max_redemptions) {
     return json(req, env, { ok: false, error: { code: "PROMO_EXHAUSTED" } }, 410);
   }
-
-  const redemptionSystemId = promo.product_id === "bundle" ? "all" : system;
   const { error: insertError } = await admin
     .from("promo_redemptions")
     .insert({ promo_code_id: promo.id, access_key: accessKey, product_id: promo.product_id, system_id: redemptionSystemId });
   if (insertError) {
-    if (insertError.code === "23505") return json(req, env, { ok: false, error: { code: "PROMO_ALREADY_REDEEMED" } }, 409);
+    // A concurrent request from the same browser won the insert: same idempotent outcome.
+    if (insertError.code === "23505") return json(req, env, granted);
     return json(req, env, { ok: false, error: { code: "PROMO_STORE_ERROR" } }, 502);
   }
 
@@ -157,12 +169,7 @@ async function handleRedeem(req: Request, env: Runtime, admin: ReturnType<typeof
     return json(req, env, { ok: false, error: { code: "PROMO_EXHAUSTED" } }, 410);
   }
 
-  return json(req, env, {
-    ok: true,
-    paid: true,
-    product: promo.product_id,
-    system: promo.product_id === "bundle" ? null : system,
-  });
+  return json(req, env, granted);
 }
 
 export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Promise<Response> {
