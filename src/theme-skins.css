@@ -344,8 +344,8 @@ html[data-zws-mode="dark"] body .zhaowu-site-header :is(.zhaowu-header-owner-log
  * skin turns the page itself dark. Block text on the page therefore takes the skin's light ink; the cards that really
  * are light paper (.seal-border, history) keep dark ink. Inline chips, buttons and links keep their own colours.
  * Found by rendering /history /updates /ziwei /knowledge /daily-colors with night-flute and measuring contrast. */
-html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(h1, h2, h3, h4, p, li, summary, dt, dd):not(button *):not([class*="bg-"]) { color: var(--zws-ink) !important; }
-html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(p, li, dd):not(button *):not([class*="bg-"]) { color: var(--zws-soft) !important; }
+html[data-zws-mode="dark"] body main:not(.zw-hero-home):not(.sky-events-page):not(.earth-online-shell) :is(h1, h2, h3, h4, p, li, summary, dt, dd):not(button *):not([class*="bg-"]) { color: var(--zws-ink) !important; }
+html[data-zws-mode="dark"] body main:not(.zw-hero-home):not(.sky-events-page):not(.earth-online-shell) :is(p, li, dd):not(button *):not([class*="bg-"]) { color: var(--zws-soft) !important; }
 /* light chip-style links */
 html[data-zws-mode="dark"] body main :is(.zhaowu-updates-back, .zhaowu-specialist-actions a.is-secondary) { color: #29251f !important; }
 html[data-zws-mode="dark"] body :is(.history-topline span, .zhaowu-home-stage details > summary, .zhaowu-home-stage button strong) { color: var(--zws-ink) !important; }
