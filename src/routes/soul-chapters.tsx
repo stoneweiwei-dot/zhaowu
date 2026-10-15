@@ -10,6 +10,7 @@ import {
   type Locale,
 } from "@/lib/soul-chapters-data";
 import "@/soul-chapters.css";
+import { SoulVolumeGallery } from "@/components/soul-volume-gallery";
 
 export const Route = createFileRoute("/soul-chapters")({ component: SoulChaptersPage });
 
@@ -90,9 +91,12 @@ function SoulChaptersPage() {
         </details>
       </header>
 
+      {/* One shared gallery route; separate Chinese and English art and narrative. */}
+      <SoulVolumeGallery locale={locale} />
+
       {/* Chapter grid */}
       <section className="space-y-6">
-        {CHAPTER_GROUPS[locale].map((group) => {
+        {CHAPTER_GROUPS[locale].map((group, index) => {
           const chapters = SOUL_CHAPTERS.filter(
             (c) => c.fields[locale].title !== "" && c.group === group.name
           );
@@ -107,7 +111,7 @@ function SoulChaptersPage() {
               });
 
           return (
-            <div key={group.name}>
+            <div key={group.name} id={`sc-chapter-volume-${index + 1}`}>
               <div className="sc-group-header">
                 <h2 className="font-display text-lg text-ink">{group.name}</h2>
                 <span className="text-xs text-ink-mute">{group.range}</span>
