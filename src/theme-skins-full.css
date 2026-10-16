@@ -131,6 +131,53 @@ html[data-zws="verdant-rain"] {
   --zws-card-orn: linear-gradient(90deg, transparent, #a8d38a, transparent) top 0 left 12% / 76% 1.5px no-repeat, linear-gradient(90deg, transparent, rgba(168, 211, 138, .5), transparent) bottom 0 left 12% / 76% 1px no-repeat;
 }
 
+/* ── 畫中六景 series (19–24): owner private uploads, text-free full paintings ────────────────────────── */
+html[data-zws="dawn-dragon"] {
+  --zws-art: url(/theme-skins/dawn-dragon-art.webp); --zws-focus: 50% 38%; --zws-veil: 34%;
+  --zws-frame: #2f5d55;
+  --zws-font-d: "LXGW WenKai TC", "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
+  --zws-card-r: 18px; --zws-card-border: 1px solid rgba(200, 154, 92, .5);
+  --zws-card-orn: linear-gradient(90deg, transparent, #d6a96a, transparent) top 0 left 10% / 80% 2px no-repeat, radial-gradient(circle at 100% 0%, rgba(255, 205, 140, .30), transparent 44%);
+}
+html[data-zws="moon-lotus-boat"] {
+  --zws-art: url(/theme-skins/moon-lotus-boat-art.webp); --zws-focus: 50% 30%; --zws-veil: 34%;
+  --zws-frame: #3d5f52;
+  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
+  --zws-card-r: 16px; --zws-card-border: 1px solid rgba(201, 164, 103, .55);
+  --zws-card-outline: 1px solid rgba(201, 164, 103, .32); --zws-card-outline-off: -5px;
+  --zws-card-orn: radial-gradient(circle at 12% 0%, rgba(255, 232, 180, .45), transparent 34%);
+}
+html[data-zws="bamboo-falls"] {
+  --zws-art: url(/theme-skins/bamboo-falls-art.webp); --zws-focus: 50% 40%; --zws-veil: 44%;
+  --zws-frame: #2c4a44;
+  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Playfair Display", Georgia, serif; --zws-hw: 700;
+  --zws-card-r: 10px; --zws-card-border: 1px solid rgba(44, 74, 68, .24);
+  --zws-card-orn: linear-gradient(#2c4a44, #2c4a44) left 0 top 0 / 4px 100% no-repeat;
+}
+html[data-zws="petal-immortal"] {
+  --zws-art: url(/theme-skins/petal-immortal-art.webp); --zws-focus: 50% 30%; --zws-veil: 26%;
+  --zws-frame: #4f6f76;
+  --zws-font-d: "LXGW WenKai TC", "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 500;
+  --zws-card-r: 24px; --zws-card-blur: blur(10px);
+  --zws-card-border: 1px solid rgba(255, 255, 255, .9);
+  --zws-card-frame: 0 0 0 1px rgba(227, 169, 164, .55), 0 10px 26px rgba(180, 130, 130, .12);
+}
+html[data-zws="pink-lotus-stream"] {
+  --zws-art: url(/theme-skins/pink-lotus-stream-art.webp); --zws-focus: 50% 40%; --zws-veil: 30%;
+  --zws-frame: #43707a;
+  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 500;
+  --zws-card-r: 22px; --zws-card-blur: blur(10px);
+  --zws-card-border: 1px solid rgba(255, 255, 255, .88);
+  --zws-card-frame: 0 0 0 1px rgba(230, 179, 181, .7), 0 0 0 5px rgba(140, 190, 215, .18), 0 12px 28px rgba(150, 120, 140, .12);
+}
+html[data-zws="butterfly-lotus"] {
+  --zws-art: url(/theme-skins/butterfly-lotus-art.webp); --zws-focus: 50% 30%; --zws-veil: 36%;
+  --zws-frame: #4a6a62;
+  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
+  --zws-card-r: 14px; --zws-card-border: 1px solid rgba(74, 106, 98, .22);
+  --zws-card-orn: linear-gradient(90deg, #4a6a62, #c9a3ad 70%, transparent) top 0 left 0 / 100% 2px no-repeat;
+}
+
 /* ── 1. page painting — every page, not only the home banner ──────────────────────────────────────────── */
 /* The painting is painted on <body> itself (fixed to the viewport): body's own background would otherwise cover any
  * pseudo-element behind it. A veil gradient fades the painting into the page colour, so text on cards stays legible

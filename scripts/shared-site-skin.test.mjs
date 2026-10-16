@@ -6,7 +6,7 @@ import { validSiteSkin, SITE_SKIN_IDS, readPublishedSiteSkin } from "../lib/owne
 test("shared skin catalog covers all registered choices and classic", () => {
   const src = readFileSync("src/lib/theme-skins.ts", "utf8");
   const ids = [...src.matchAll(/\{ id: "([a-z-]+)", ref: (\d+), mode: "(light|dark)"/g)].map((match) => match[1]);
-  assert.equal(ids.length, 18);
+  assert.equal(ids.length, 24);
   assert.equal(SITE_SKIN_IDS.size, ids.length + 1);
   for (const id of ids) assert.equal(validSiteSkin(id), id);
   assert.equal(validSiteSkin("none"), "none");

@@ -277,3 +277,11 @@ html[lang='en'] body #root .zw-painted-home .ph-tree-head strong { font-size:19p
 @keyframes ph-tree-in { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
 html body #root .zw-painted-home .ph-comic-scenes { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:12px 0 0; }
 html body #root .zw-painted-home .ph-comic-scenes img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:10px; }
+
+/* Own-painting skins on the koi composition: a paper glow behind the vertical title + motto keeps
+   them legible over busy mountains, while the right side of the painting stays at full strength. */
+html body #root .zw-painted-home[data-composition='koi'][data-title-veil='true'] .ph-hero::before {
+  content:''; pointer-events:none; position:absolute; inset:0; z-index:0;
+  background:radial-gradient(ellipse 58% 62% at 16% 36%, color-mix(in srgb,var(--ph-paper) 90%,transparent) 0%, color-mix(in srgb,var(--ph-paper) 70%,transparent) 45%, transparent 76%);
+}
+html body #root .zw-painted-home[data-composition='koi'][data-title-veil='true'] .ph-title { color:#5e4b2c; }

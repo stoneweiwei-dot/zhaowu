@@ -52,6 +52,13 @@ export const SKINS: SkinDef[] = [
   { id: "verdant-mist", ref: 16, mode: "light", zh: "青木・煙嵐", hans: "青木・烟岚", en: "Verdant Mist", noteZh: "喀斯特青峰與湖霧，薄紗卡片", noteHans: "喀斯特青峰与湖雾，薄纱卡片", noteEn: "Green karst peaks and lake mist, gauze cards", hero: "/theme-skins/verdant-mist-art.webp", focus: "50% 38%", swatch: ["#eef2ea", "#2e6a52", "#7aa08a"] },
   { id: "verdant-pavilion", ref: 17, mode: "light", zh: "青木・柳亭", hans: "青木・柳亭", en: "Willow Pavilion", noteZh: "春雨柳亭，新綠葉脈邊", noteHans: "春雨柳亭，新绿叶脉边", noteEn: "Spring-rain willow pavilion, leaf-vein edges", hero: "/theme-skins/verdant-pavilion-art.webp", focus: "50% 45%", swatch: ["#f1f5e4", "#3f7d3a", "#8fb54a"] },
   { id: "verdant-rain", ref: 18, mode: "dark", zh: "夜・雨竹", hans: "夜・雨竹", en: "Bamboo Rain", noteZh: "深林雨竹，嫩芽綠光邊", noteHans: "深林雨竹，嫩芽绿光边", noteEn: "Deep bamboo rain, sprout-green glow", hero: "/theme-skins/verdant-rain-art.webp", focus: "50% 40%", swatch: ["#07150f", "#a8d38a", "#b9de92"] },
+  // 畫中六景：站主私人上傳的無字完整畫作；共用同一套全站主題引擎。
+  { id: "dawn-dragon", ref: 19, mode: "light", zh: "曉日雲龍", hans: "晓日云龙", en: "Dragon at Dawn", noteZh: "朝霞雲龍・金色水光・青綠群峰", noteHans: "朝霞云龙・金色水光・青绿群峰", noteEn: "Dawn-cloud dragon, gold water light, jade peaks", hero: "/theme-skins/dawn-dragon-art.webp", focus: "50% 6%", swatch: ["#f6ecdc", "#2f5d55", "#d6a96a"] },
+  { id: "moon-lotus-boat", ref: 20, mode: "light", zh: "月下荷舟", hans: "月下荷舟", en: "Moonlit Lotus Boat", noteZh: "滿月白鶴・荷塘小舟・暖金暮色", noteHans: "满月白鹤・荷塘小舟・暖金暮色", noteEn: "Full moon, white crane, lotus pond skiff", hero: "/theme-skins/moon-lotus-boat-art.webp", focus: "50% 30%", swatch: ["#f3ead8", "#3d5f52", "#c9a467"] },
+  { id: "bamboo-falls", ref: 21, mode: "light", zh: "竹瀑漁舟", hans: "竹瀑渔舟", en: "Bamboo Falls", noteZh: "飛瀑竹影・墨青山水・沉靜漁舟", noteHans: "飞瀑竹影・墨青山水・沉静渔舟", noteEn: "Waterfall and bamboo, ink-green calm", hero: "/theme-skins/bamboo-falls-art.webp", focus: "50% 40%", swatch: ["#eeebe2", "#2c4a44", "#a59a78"] },
+  { id: "petal-immortal", ref: 22, mode: "light", zh: "荷舟仙羽", hans: "荷舟仙羽", en: "Petal Skiff", noteZh: "荷瓣為舟・仙羽飛來・大片留白", noteHans: "荷瓣为舟・仙羽飞来・大片留白", noteEn: "A lotus-petal skiff, a spirit bird, open paper", hero: "/theme-skins/petal-immortal-art.webp", focus: "50% 30%", swatch: ["#f8efe4", "#4f6f76", "#e3a9a4"] },
+  { id: "pink-lotus-stream", ref: 23, mode: "light", zh: "粉蓮雲溪", hans: "粉莲云溪", en: "Lotus over the Stream", noteZh: "巨蓮浮雲・青藍溪流・金線水紋", noteHans: "巨莲浮云・青蓝溪流・金线水纹", noteEn: "A vast lotus, cloud stream, gold ripples", hero: "/theme-skins/pink-lotus-stream-art.webp", focus: "50% 40%", swatch: ["#f7efe4", "#43707a", "#e6b3b5"] },
+  { id: "butterfly-lotus", ref: 24, mode: "light", zh: "蝶戀荷塘", hans: "蝶恋荷塘", en: "Butterfly & Lotus", noteZh: "白蝶荷花・霧青湖光・素雅灰綠", noteHans: "白蝶荷花・雾青湖光・素雅灰绿", noteEn: "White butterfly, lotus, misty lake grey-green", hero: "/theme-skins/butterfly-lotus-art.webp", focus: "50% 30%", swatch: ["#efece4", "#4a6a62", "#c9a3ad"] },
 ];
 
 export function skinById(id: string | null | undefined) {
@@ -91,6 +98,24 @@ export function applySkin(id: string, persist = false) {
   window.dispatchEvent(new Event(SKIN_EVENT));
 }
 
+/**
+ * Cache of the last skin the SERVER confirmed (never a visitor choice), so the next page load
+ * paints the published theme immediately instead of flashing the koi default. index.html reads
+ * the same key in its pre-paint script; the server value still wins once it arrives.
+ */
+export const PUBLISHED_SKIN_CACHE_KEY = "zhaowu.skin.published.v1";
+
+function rememberPublishedSkin(id: string) {
+  try { localStorage.setItem(PUBLISHED_SKIN_CACHE_KEY, id); } catch { /* unavailable storage */ }
+}
+
+function cachedPublishedSkin(): string | null {
+  try {
+    const cached = localStorage.getItem(PUBLISHED_SKIN_CACHE_KEY);
+    return cached === "none" ? "none" : skinById(cached)?.id ?? null;
+  } catch { return null; }
+}
+
 function legacyOwnerChoice(): string | null {
   try {
     const saved = localStorage.getItem(SKIN_KEY);
@@ -124,10 +149,9 @@ export async function refreshSharedSkin(): Promise<string | null> {
       }
     }
     if (token !== syncSerial) return null;
-    // Legacy published day-flute → owner day homepage is pastel-koi (1st reference).
-    const resolved = selected === "day-flute" ? "pastel-koi" : selected;
-    applySkin(resolved);
-    return resolved;
+    applySkin(selected);
+    rememberPublishedSkin(selected);
+    return selected;
   } catch { return null; }
 }
 
@@ -148,7 +172,10 @@ export async function publishSkin(id: string): Promise<void> {
     if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : "全站主題尚未儲存，請稍後重試。");
     const data = await response.json() as { ok?: boolean; skin?: string };
     if (!data.ok || data.skin !== chosen) throw new Error("無法確認全站主題已更新。");
-    if (token === syncSerial) applySkin(chosen, true);
+    if (token === syncSerial) {
+      applySkin(chosen, true);
+      rememberPublishedSkin(chosen);
+    }
   } finally {
     pendingPublishes -= 1;
   }
@@ -157,8 +184,8 @@ export async function publishSkin(id: string): Promise<void> {
 /** Boot uses server state, never the previous visitor's device-local preference. */
 export function hydrateSkin() {
   if (typeof window === "undefined") return;
-  // Day homepage = owner first reference until shared skin resolves.
-  if (SITE_DEFAULT_SKIN) applySkin(SITE_DEFAULT_SKIN);
+  // Last server-confirmed skin first; the koi default only for a first-ever visit.
+  applySkin(cachedPublishedSkin() ?? SITE_DEFAULT_SKIN);
   void refreshSharedSkin();
 }
 
