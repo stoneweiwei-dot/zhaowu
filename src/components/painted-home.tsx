@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { useSkin, type SkinDef } from '@/lib/theme-skins';
 import { useI18n } from '@/lib/i18n';
 import { BrandIcon } from '@/components/brand-icon';
+import { HomeTree } from '@/components/home-tree';
 
 type Section = 'form' | 'today' | 'quiz' | 'notes';
 export function homeComposition(skin: SkinDef | null) {
@@ -23,12 +24,6 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     : layout === 'scroll' && dark
       ? (skin?.hero || '/theme-skins/reference-dragon.webp')
       : (skin?.hero || '/theme-skins/reference-koi.webp');
-  const items: { id: Section; title: string; hint: string; art: string; icon: 'reports' | 'calendar' | 'insight' | 'articles' }[] = [
-    { id: 'form', title: t('命書', '命书', 'Your reading'), hint: t('讀懂命運的紋理，\n看見更多可能。', '读懂命运的纹理，\n看见更多可能。', 'Understand your patterns.\nSee more possibilities.'), art: '/art/scene-koi-rider-v1.webp', icon: 'reports' },
-    { id: 'today', title: t('今日', '今日', 'Today'), hint: t('一日之氣，\n順勢而行。', '一日之气，\n顺势而行。', 'A moment to pause.\nFind your rhythm.'), art: '/art/scene-lotus-boat-v1.webp', icon: 'calendar' },
-    { id: 'quiz', title: t('測驗', '测验', 'Explore'), hint: t('探索內心，\n遇見另一種自己。', '探索内心，\n遇见另一种自己。', 'Look within.\nMeet another side of you.'), art: '/art/scene-osmanthus-tea-v1.webp', icon: 'insight' },
-    { id: 'notes', title: t('觀世錄', '观世录', 'Stories'), hint: t('看見更大的世界，\n也看見更深的自己。', '看见更大的世界，\n也看见更深的自己。', 'A wider world.\nA deeper understanding.'), art: '/art/scene-butterfly-dream-v1.webp', icon: 'articles' },
-  ];
   const style = {
     '--ph-art': `url("${art}")`, '--ph-paper': skin?.swatch[0] || '#f7efdf',
     '--ph-ink': dark ? '#f8eace' : '#203f36', '--ph-muted': dark ? '#dfdacb' : '#595447',
@@ -45,23 +40,20 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       {layout === 'scroll' && <div className="ph-actions"><button onClick={() => onOpen('form')} data-home-birth-entry>{t('開始分析', '开始分析', 'Begin analysis')} <span>›</span></button><a href="#today" onClick={e => {e.preventDefault(); onOpen('today');}}>{t('今日指引', '今日指引', 'Today’s guide')} <span>›</span></a></div>}
     </div>
     {layout === 'comic' ? <section className="ph-comic-panel">
-      <h2>{t('漫畫命書預覽','漫画命书预览','Your illustrated reading')}</h2>
+      <h2>{t('漫畫命盤預覽','漫画命盘预览','Your illustrated chart')}</h2>
       <p>{t('把抽象命理，講成你看得懂的圖。','把抽象命理，讲成你看得懂的图。','Discover the ideas through gentle illustrations.')}</p>
-      <img src="/theme-skins/reference-comic-dragons.webp" alt={t('藍色、粉色與青玉小龍插畫','蓝色、粉色与青玉小龙插画','Blue, pink and jade dragon illustrations')} width="1942" height="809" />
+      <div className="ph-comic-scenes" aria-hidden><img src="/art/scene-koi-rider-v1.webp" alt="" loading="lazy" width="400" height="400"/><img src="/art/scene-butterfly-dream-v1.webp" alt="" loading="lazy" width="400" height="400"/><img src="/art/scene-lotus-boat-v1.webp" alt="" loading="lazy" width="400" height="400"/></div>
       <div className="ph-comic-labels"><span>{t('你的日主','你的日主','Your nature')}</span><span>{t('你的感情','你的感情','Relationships')}</span><span>{t('你的五行','你的五行','Five elements')}</span></div>
-      <button className="ph-comic-cta" onClick={() => onOpen('form')}>{t('開始我的命書','开始我的命书','Begin my reading')} <span>›</span></button>
+      <button className="ph-comic-cta" onClick={() => onOpen('form')}>{t('開始我的命盤','开始我的命盘','Begin my chart')} <span>›</span></button>
       <small>{t('以宋式留白，讀懂命理的文化意象。','以宋式留白，读懂命理的文化意象。','A quiet introduction to traditional imagery.')}</small>
     </section> : null}
-    {layout === 'comic' ? <nav className="ph-small-portals ph-comic-links">{items.slice(1).map(item=><button key={item.id} onClick={()=>onOpen(item.id)}>{item.title} ›</button>)}</nav> : layout === 'scroll' ? <div className="ph-scroll-panels">
+    {layout === 'scroll' ? <div className="ph-scroll-panels">
       <button className="ph-daily ph-paper-panel" onClick={() => onOpen('today')}><img src="/today/almanac-lotus-v1.webp" alt=""/><span><small>{t('今日指引','今日指引','TODAY’S GUIDE')}</small><h2>{t('觀今日，從容而行','观今日，从容而行','A calmer way through today')}</h2><p>{t('黃曆、每日穿衣與文化節日，\n在日常裡找到自己的節奏。','黄历、每日穿衣与文化节日，\n在日常里找到自己的节奏。','Almanac, colours and cultural dates.\nFind a little space in your day.')}</p><em>{t('查看詳情','查看详情','Explore')} ›</em></span></button>
       <button className="ph-reading ph-paper-panel" onClick={() => onOpen('form')}><img src="/art/scene-butterfly-dream-v1.webp" alt=""/><span><h2>{t('深度解讀','深度解读','Your personal reading')}</h2><p>{t('從命盤看見更完整的你','从命盘看见更完整的你','A fuller view of your patterns')}</p><small>{t('性格天賦 / 人生節奏 / 關係緣分 / 事業財運','性格天赋 / 人生节奏 / 关系缘分 / 事业财运','Strengths · Life patterns · Relationships · Work')}</small><em>{t('開始深度解讀','开始深度解读','Begin your reading')} ›</em></span></button>
-      <div className="ph-small-portals">{items.slice(2).map(item => <button key={item.id} onClick={() => onOpen(item.id)}><BrandIcon name={item.icon}/>{item.title}<span>›</span></button>)}</div>
-    </div> : <nav className="ph-portals" aria-label={t('主要功能','主要功能','Main features')}>{items.map(item => <button key={item.id} className="ph-portal" data-home-card={item.id} onClick={() => onOpen(item.id)}>
-      {layout === 'koi' ? <img src={item.art} alt="" loading="lazy"/> : <span className="ph-medallion"><BrandIcon name={item.icon}/></span>}
-      <strong>{item.title}</strong>{layout === 'koi' && <><small>{item.hint}</small><i aria-hidden>→</i></>}
-    </button>)}</nav>}
-    {layout === 'koi' ? <button className="ph-dragon-panel" onClick={() => window.dispatchEvent(new Event('zhaowu:open-guide'))}><img src="/art/zhaowu-dragon-lake-v1.webp" alt="" loading="lazy"/><span><h2>{t('青玉小龍','青玉小龙','Your little jade dragon')}</h2><p>{t('與溫柔的神獸，一起看見日常的微光。','与温柔的神兽，一起看见日常的微光。','A gentle guide to your next discovery.')}</p><em>{t('進入','进入','Explore')} →</em></span></button> : null}
+    </div> : null}
+    <HomeTree t={t} onOpen={onOpen} />
+    {layout === 'koi' ? <button className="ph-guide-panel" onClick={() => window.dispatchEvent(new Event('zhaowu:open-guide'))}><img src="/art/zhaowu-lotus-ascend-v1.webp" alt="" loading="lazy"/><span><h2>{t('不知道從哪開始？','不知道从哪开始？','Not sure where to start?')}</h2><p>{t('兩分鐘導覽，帶你走到最適合你的那一頁。','两分钟导览，带你走到最适合你的那一页。','A two-minute guide to the page that suits you.')}</p><em>{t('打開導覽','打开导览','Open the guide')} →</em></span></button> : null}
     <a href="/soul-chapters" className="sc-entry-strip" data-home-card="soul-chapters"><span className="sc-entry-kicker">{t('靈階鏡像','灵阶镜像','Soul Chapters')}</span><span className="sc-entry-text">{t('人生有十章，哪一章最像現在的你？','人生有十章，哪一章最像现在的你？','Ten life chapters. Which one feels like yours right now?')}</span><span className="sc-entry-arrow" aria-hidden>→</span></a>
-    <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><a href="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></a><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命書','命书','Reading')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><a href="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></a></nav>
+    <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><a href="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></a><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><a href="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></a></nav>
   </section>;
 }
