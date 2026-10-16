@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { clearPurchaseConsent, hasPurchaseConsent, recordPurchaseConsent } from "@/lib/purchase-consent";
+import type { DataGradeReport } from "@/lib/bazi/data-grade";
+import { dataGradeAckText, dataGradeLabel, dataGradeNoticeLines } from "@/lib/data-grade-copy";
 
 type ConsentLocale = "zh-Hant" | "zh-Hans" | "en";
 
@@ -33,23 +35,39 @@ const COPY = {
   },
 } as const;
 
+/** Grade A needs no acknowledgement; B and C must be acknowledged before checkout. */
+function gradeNeedsAck(grade: DataGradeReport | null | undefined) {
+  return Boolean(grade && grade.grade !== "A");
+}
+
 /** Unticked on every page load; ticking records the consent version, unticking withdraws it. */
-export function usePurchaseConsent() {
+export function usePurchaseConsent(grade?: DataGradeReport | null) {
   const [checked, setChecked] = useState(false);
   const [needed, setNeeded] = useState(false);
+  const [gradeAck, setGradeAck] = useState(false);
+  const [gradeNeeded, setGradeNeeded] = useState(false);
+  const ackRequired = gradeNeedsAck(grade);
   return {
     checked,
     needed,
+    gradeAck,
+    gradeNeeded,
     toggle(next: boolean) {
       setChecked(next);
       setNeeded(false);
       if (next) recordPurchaseConsent(); else clearPurchaseConsent();
     },
-    /** Call before starting checkout; shows the prompt and returns false when consent is missing. */
+    toggleGrade(next: boolean) {
+      setGradeAck(next);
+      setGradeNeeded(false);
+    },
+    /** Call before starting checkout; shows every missing prompt and returns false unless all are satisfied. */
     require() {
-      if (checked && hasPurchaseConsent()) return true;
-      setNeeded(true);
-      return false;
+      const termsOk = checked && hasPurchaseConsent();
+      const gradeOk = !ackRequired || gradeAck;
+      if (!termsOk) setNeeded(true);
+      if (!gradeOk) setGradeNeeded(true);
+      return termsOk && gradeOk;
     },
   };
 }
@@ -58,15 +76,42 @@ export function consentNeededText(locale: ConsentLocale) {
   return COPY[locale].needed;
 }
 
-export function PurchaseConsent({ locale, checked, needed, onChange }: {
+export function PurchaseConsent({ locale, checked, needed, onChange, grade, gradeAck, gradeNeeded, onGradeChange }: {
   locale: ConsentLocale;
   checked: boolean;
   needed: boolean;
   onChange: (next: boolean) => void;
+  grade?: DataGradeReport | null;
+  gradeAck?: boolean;
+  gradeNeeded?: boolean;
+  onGradeChange?: (next: boolean) => void;
 }) {
   const copy = COPY[locale];
+  const ack = dataGradeAckText(locale);
   return (
     <div className="zhaowu-purchase-consent" data-purchase-consent data-needed={needed ? "true" : "false"}>
+      {grade ? (
+        <div className="zhaowu-data-grade-notice" data-data-grade={grade.grade} data-needed={gradeNeeded ? "true" : "false"}>
+          {grade.grade === "A" ? (
+            <p>{dataGradeLabel("A", locale)}</p>
+          ) : (
+            <>
+              {dataGradeNoticeLines(grade.grade, grade.reasons, grade.parts, locale).map((line, index) => <p key={index}>{line}</p>)}
+              <label>
+                <input
+                  type="checkbox"
+                  checked={Boolean(gradeAck)}
+                  aria-invalid={Boolean(gradeNeeded)}
+                  aria-describedby={gradeNeeded ? "data-grade-ack-needed" : undefined}
+                  onChange={(event) => onGradeChange?.(event.target.checked)}
+                />
+                <span>{ack.ack}</span>
+              </label>
+              {gradeNeeded ? <p id="data-grade-ack-needed" role="alert">{ack.needed}</p> : null}
+            </>
+          )}
+        </div>
+      ) : null}
       <label>
         <input
           type="checkbox"

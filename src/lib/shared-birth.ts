@@ -1,4 +1,5 @@
 import type { AnalyzeInput, AppLocale, CityHit, Gender, RelationPref } from "@/lib/bazi/types";
+import { normalizeTimeSource } from "@/lib/bazi/time-source";
 
 export const SHARED_BIRTH_STORAGE_KEY = "zhaowu.birth-record.v1";
 export const SHARED_BIRTH_OWNER_KEY = "zhaowu.birth-record-owner.v1";
@@ -50,6 +51,8 @@ export function sharedBirthFromUnknown(value: unknown): SharedBirthRecord | null
   const gender: Gender = raw.gender === "male" || raw.gender === "female" || raw.gender === "unspecified" ? raw.gender : "unspecified";
   const relation: RelationPref = raw.relation === "any" || raw.relation === "hetero" || raw.relation === "same" || raw.relation === "unset" ? raw.relation : "unset";
   const liveCity = raw.liveCity == null ? null : asCity(raw.liveCity);
+  // An unknown hour has no source to record; legacy records without one stay without one.
+  const timeSource = timeUnknown ? undefined : normalizeTimeSource(raw.timeSource);
 
   return {
     year,
@@ -64,6 +67,7 @@ export function sharedBirthFromUnknown(value: unknown): SharedBirthRecord | null
     liveCity,
     ziPolicy: "midnight",
     useTrueSolar: city.standardTimeFallback !== true,
+    ...(timeSource ? { timeSource } : {}),
   };
 }
 

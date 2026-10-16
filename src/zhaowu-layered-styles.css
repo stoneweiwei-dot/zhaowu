@@ -8579,6 +8579,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   gap: 10px;
 }
 
+.zhaowu-birth-time-source { display: block; margin-top: 10px; }
 .zhaowu-birth-date-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .zhaowu-birth-time-grid,
 .zhaowu-birth-select-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

@@ -18,9 +18,13 @@
  */
 import { timezoneOffsetHours } from "./cities";
 import { jieqiAround } from "./calendar";
-import type { AnalyzeInput, Chart } from "./types";
+import { buildChart } from "./chart";
+import { dataGradeNoticeLines } from "../data-grade-copy";
+import { effectiveTimeSource } from "./time-source";
+import type { AnalyzeInput, BirthTimeSource, Chart } from "./types";
 
-export type BirthTimeSource = "certificate" | "family-memory" | "estimate" | "unknown";
+export type { BirthTimeSource };
+export { effectiveTimeSource, normalizeTimeSource } from "./time-source";
 export type DataGrade = "A" | "B" | "C";
 export type PartStatus = "full" | "caveat" | "withheld";
 
@@ -58,6 +62,16 @@ const JIE_WINDOW_MINUTES: Record<Exclude<BirthTimeSource, "unknown" | "estimate"
   certificate: 3,
   "family-memory": 60,
 };
+
+/** Grade a birth record on its own (builds the chart the same way every other caller does). */
+export function assessBirthRecord(record: Omit<AnalyzeInput, "question">): DataGradeReport | null {
+  try {
+    const input: AnalyzeInput = { ...record, question: "" };
+    return assessDataGrade(input, effectiveTimeSource(input), buildChart(input));
+  } catch {
+    return null;
+  }
+}
 
 function civilToUtcMs(y: number, m: number, d: number, h: number, min: number, tzOffsetHours: number): number {
   return Date.UTC(y, m - 1, d, h, min) - tzOffsetHours * 3_600_000;
@@ -149,33 +163,5 @@ export function assessDataGrade(
           minggongShengong: grade === "A" && !conflict ? "full" : "caveat",
         };
 
-  return { grade, source: effectiveSource, reasons, parts, nearestJie, notice: buildNotice(grade, reasons, parts) };
-}
-
-function buildNotice(grade: DataGrade, reasons: DataGradeReason[], parts: DataGradeParts): string {
-  const label: Record<DataGrade, string> = {
-    A: "A 級：出生時間取自正式紀錄，精確到分鐘",
-    B: "B 級：出生時間精確到時辰，未經證件驗證",
-    C: "C 級：出生時間未知或僅知大概",
-  };
-  const lines = [`資料可信度【${label[grade]}】`];
-  if (parts.timePillar === "withheld") {
-    lines.push("時柱、命宮、身宮與大運起運不作論斷；本報告僅依年、月、日三柱，不用午時之類的預設值替代。");
-  } else if (parts.timePillar === "caveat") {
-    lines.push("與時柱、命宮、身宮相關的結論可信度有限，請以出生紀錄核對後再作定論。");
-  }
-  if (reasons.includes("jie-within-birth-day")) {
-    lines.push("你的出生日當天恰有節氣交接，月柱（若為立春則含年柱）無法在不知時間時確定，已不作論斷。");
-  }
-  if (reasons.includes("jie-near-birth-instant")) {
-    lines.push("出生時間貼近節氣交接，月柱可能因時間誤差而不同，相關結論附註保留。");
-  }
-  if (reasons.includes("place-unverified")) {
-    lines.push("出生地未能確認，未校正真太陽時，時辰邊界附近的判斷可能偏移。");
-  }
-  if (reasons.includes("true-solar-candidate-conflict")) {
-    lines.push("民用時間與真太陽時落在不同時辰或日界，已列為待驗證候選，定盤須以出生紀錄為準。");
-  }
-  lines.push("我們不以不完整的資料製造虛假的精確。");
-  return lines.join("\n");
+  return { grade, source: effectiveSource, reasons, parts, nearestJie, notice: dataGradeNoticeLines(grade, reasons, parts, "zh-Hant").join("\n") };
 }

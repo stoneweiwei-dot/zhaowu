@@ -6,6 +6,7 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
+import { DataGradeFooter } from "@/components/data-grade-footer";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { CharacterPanel } from "@/components/character-panel";
@@ -47,7 +48,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [ownerAccess, setOwnerAccess] = useState(false);
   const [purchasing, setPurchasing] = useState<ReportAccessProduct | null>(null);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
-  const consent = usePurchaseConsent();
+  const consent = usePurchaseConsent(result.dataGrade);
 
   useEffect(() => {
     let active = true;
@@ -263,6 +264,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </details>
 
       {unlocked ? <ReportTimingGuide chart={chart} unlocked /> : null}
+      {unlocked ? <DataGradeFooter grade={result.dataGrade} locale={locale} /> : null}
 
       {/* ── 付費命書內容邊界與進階解鎖入口 ── */}
       <section className="zhaowu-destiny-unlock-gate seal-border rounded-xl bg-cream/95 p-5 sm:p-7 mt-6" data-destiny-unlock-gate>
@@ -338,7 +340,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </div>
         )}
 
-        <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} />
+        <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} grade={result.dataGrade} gradeAck={consent.gradeAck} gradeNeeded={consent.gradeNeeded} onGradeChange={consent.toggleGrade} />
 
         {purchaseError ? (
           <p className="mt-2 text-xs text-cinnabar" role="alert">{purchaseError}</p>

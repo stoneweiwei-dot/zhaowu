@@ -113,6 +113,43 @@
 }
 .zhaowu-purchase-consent[data-needed="true"] input[type="checkbox"] { outline: 2px solid rgba(169, 97, 94, .8); outline-offset: 2px; }
 
+/* Birth-data reliability grade, shown above the terms consent and in the report footer. */
+.zhaowu-purchase-consent .zhaowu-data-grade-notice {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(116, 105, 93, .35);
+  border-radius: 8px;
+}
+.zhaowu-purchase-consent .zhaowu-data-grade-notice p {
+  margin: 0 0 6px;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font-size: 13px;
+}
+.zhaowu-purchase-consent .zhaowu-data-grade-notice p[role="alert"] {
+  margin: 8px 0 0 32px;
+  border-left: 2px solid rgba(169, 97, 94, .7);
+  padding-left: 10px;
+  color: #7c3733;
+}
+.zhaowu-purchase-consent .zhaowu-data-grade-notice[data-needed="true"] input[type="checkbox"] { outline: 2px solid rgba(169, 97, 94, .8); outline-offset: 2px; }
+.zhaowu-data-grade-footer {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(116, 105, 93, .35);
+  color: var(--zw-muted, #74695d);
+  font-size: 12.5px;
+  line-height: 1.7;
+  text-align: left;
+}
+.zhaowu-data-grade-footer h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--zw-ink, #2a2218);
+}
+.zhaowu-data-grade-footer p { margin: 0 0 4px; }
+
 /* One-line reminder beside birth-data / question inputs (not a blocking consent). */
 .zhaowu-data-notice {
   margin: 0 0 12px;

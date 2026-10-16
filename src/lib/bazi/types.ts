@@ -2,6 +2,8 @@ export type Element = "木" | "火" | "土" | "金" | "水";
 export type Gender = "male" | "female" | "unspecified";
 export type RelationPref = "any" | "hetero" | "same" | "unset";
 export type ZiPolicy = "midnight" | "late";
+/** How the birth time is known. Absent on records saved before the grade feature (treated as family-memory). */
+export type BirthTimeSource = "certificate" | "family-memory" | "estimate" | "unknown";
 export type AppLocale = "zh-Hant" | "zh-Hans" | "en";
 export type QuestionKind =
   | "career"
@@ -71,6 +73,7 @@ export type AnalyzeInput = {
   liveCity?: CityHit | null;
   ziPolicy: ZiPolicy;
   useTrueSolar: boolean;
+  timeSource?: BirthTimeSource;
 };
 
 export type ElementScores = Record<Element, number>;
@@ -173,6 +176,8 @@ export type AnalysisResult = {
   createdAt: string;
   methodProtocol?: import("@/lib/core/types").MethodProtocol;
   palm?: import("@/lib/core/types").PalmReading | null;
+  /** Birth-data evidence grade computed when the result was created; absent on older saved reports. */
+  dataGrade?: import("@/lib/bazi/data-grade").DataGradeReport;
 };
 
 export type SavedReport = {

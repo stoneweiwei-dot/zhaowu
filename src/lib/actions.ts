@@ -3,6 +3,8 @@ import { FEATURED_CITIES, filterFeatured } from "@/lib/bazi/cities";
 import { searchBirthPlaces } from "@/lib/geo/city-search";
 import type { AnalysisResult, AnalyzeInput, CityHit, RelationPref } from "@/lib/bazi/types";
 import { buildChart, currentAlmanac } from "@/lib/bazi/chart";
+import { assessDataGrade } from "@/lib/bazi/data-grade";
+import { effectiveTimeSource, normalizeTimeSource } from "@/lib/bazi/time-source";
 import { classifyQuestion, interpret } from "@/lib/bazi/interpret";
 import { applyMonthStageFeedbackPolicy } from "@/lib/bazi/month-stage-feedback";
 import { applyFourTombsRuntimePolicy } from "@/lib/bazi/four-tombs-runtime";
@@ -67,6 +69,7 @@ function parseInput(raw: AnalyzeInput): AnalyzeInput {
     // is the explicit fail-open placeholder created when place search is unavailable.
     useTrueSolar: raw.city.standardTimeFallback !== true,
     relation: raw.relation === "hetero" || raw.relation === "same" || raw.relation === "any" ? raw.relation : "unset",
+    timeSource: raw.timeUnknown ? undefined : normalizeTimeSource(raw.timeSource),
   };
 }
 
@@ -153,6 +156,7 @@ export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promis
       createdAt: new Date().toISOString(),
       methodProtocol,
       palm,
+      dataGrade: assessDataGrade(data, effectiveTimeSource(data), chart),
     };
     trackAnswerResult({ result, expectedKind: kind, startedAt, source: "initial" });
     return result;
@@ -213,6 +217,7 @@ export async function followUpLife({
       createdAt: new Date().toISOString(),
       methodProtocol,
       palm,
+      dataGrade: data.base.dataGrade,
     };
     trackAnswerResult({ result, expectedKind: kind, startedAt, source: "follow-up" });
     return result;
