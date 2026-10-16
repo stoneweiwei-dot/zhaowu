@@ -8855,7 +8855,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-home-layout .zhaowu-today-guide__hero p {
   margin: 0;
   color: #f2dfad;
-  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: clamp(26px,6vw,36px);
   font-weight: 600;
   letter-spacing: .045em;
@@ -8892,7 +8892,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 }
 .zhaowu-home-layout .zhaowu-today-guide__page-title strong {
   color: #fff9e9;
-  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 20px;
   font-weight: 600;
 }
@@ -8915,7 +8915,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   box-shadow: inset 0 1px rgba(255,255,255,.8);
 }
 .zhaowu-home-layout .zhaowu-today-card small { display:block; margin-bottom:7px; color:#7f6b48; font-size:12px; font-weight:700; letter-spacing:.08em; }
-.zhaowu-home-layout .zhaowu-today-card > strong { display:block; color:#263c35; font-family:var(--font-display, "Noto Serif TC", "Songti TC", serif); font-size:16px; font-weight:600; line-height:1.5; }
+.zhaowu-home-layout .zhaowu-today-card > strong { display:block; color:#263c35; font-family:var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif); font-size:16px; font-weight:600; line-height:1.5; }
 .zhaowu-home-layout .zhaowu-today-card > span { display:block; margin-top:6px; color:#6c756f; font-size:12px; line-height:1.55; }
 .zhaowu-home-layout .zhaowu-today-card.is-date strong { font-size:21px; }
 .zhaowu-home-layout .zhaowu-today-card.is-date span { color:#2f6b5a; font-size:18px; font-weight:650; }
@@ -8931,7 +8931,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   display: grid;
   grid-template-columns: repeat(4,minmax(0,1fr));
   gap: 7px;
-  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
 }
 .zhaowu-home-layout .zhaowu-today-pillars > span { display:flex; min-width:0; flex-direction:column; align-items:center; padding:9px 4px; border:1px solid rgba(40,68,58,.12); border-radius:10px; background:rgba(236,231,216,.55); }
 .zhaowu-home-layout .zhaowu-today-pillars b { color:#224a3d; font-size:19px; font-weight:650; white-space:nowrap; }
@@ -8978,9 +8978,9 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 
 /* 3/3 靈籤：定位為當日反思，不作宿命預測。 */
 .zhaowu-home-layout .zhaowu-today-guide__spirit { display:grid; grid-template-columns:86px minmax(0,1fr); gap:18px; margin:0 14px 18px; padding:20px; border:1px solid rgba(185,154,98,.48); border-radius:17px; color:var(--tg-ink); background:linear-gradient(135deg,rgba(255,252,244,.98),rgba(239,231,211,.96)); }
-.zhaowu-home-layout .zhaowu-today-slip-mark { display:grid; width:74px; height:150px; place-items:center; border:1px solid rgba(160,72,60,.4); border-radius:8px; color:#9a4038; background:#ead8b8; font-family:var(--font-display, "Noto Serif TC", "Songti TC", serif); font-size:34px; box-shadow:inset 0 0 0 5px rgba(255,248,231,.52); }
+.zhaowu-home-layout .zhaowu-today-slip-mark { display:grid; width:74px; height:150px; place-items:center; border:1px solid rgba(160,72,60,.4); border-radius:8px; color:#9a4038; background:#ead8b8; font-family:var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif); font-size:34px; box-shadow:inset 0 0 0 5px rgba(255,248,231,.52); }
 .zhaowu-home-layout .zhaowu-today-guide__spirit p { margin:0; color:#7c715e; font-size:12px; }
-.zhaowu-home-layout .zhaowu-today-guide__spirit h3 { margin:7px 0 9px; color:#263d35; font-family:var(--font-display, "Noto Serif TC", "Songti TC", serif); font-size:26px; font-weight:600; }
+.zhaowu-home-layout .zhaowu-today-guide__spirit h3 { margin:7px 0 9px; color:#263d35; font-family:var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif); font-size:26px; font-weight:600; }
 .zhaowu-home-layout .zhaowu-today-guide__spirit strong,
 .zhaowu-home-layout .zhaowu-today-guide__spirit span { display:block; color:#34433d; font-size:13px; line-height:1.65; }
 .zhaowu-home-layout .zhaowu-today-guide__spirit span { margin-top:6px; color:#68716b; }
@@ -9021,7 +9021,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-home-layout .zhaowu-today-guide__summary-head p {
   margin: 0;
   color: #f2dfad;
-  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: clamp(22px, 5.6vw, 30px);
   font-weight: 600;
   letter-spacing: .045em;
@@ -9055,7 +9055,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 }
 .zhaowu-home-layout .zhaowu-today-guide__summary-row strong {
   color: #fff9e9;
-  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 16px;
   font-weight: 600;
 }
@@ -9232,7 +9232,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 
 .zhaowu-home-layout .zhaowu-today-personal-pillars b {
   color: #275446;
-  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: clamp(16px, 4vw, 20px);
   font-weight: 650;
   white-space: nowrap;
@@ -9350,7 +9350,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 
 .zhaowu-home-layout .zhaowu-today-personal-mask strong {
   color: #285a4b;
-  font-family: var(--font-display, "Noto Serif TC", "Songti TC", serif);
+  font-family: var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 16px;
   font-weight: 650;
 }
@@ -9467,7 +9467,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   right: .08em;
   top: -.18em;
   color: rgba(49, 95, 80, .04);
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: clamp(6rem, 20vw, 10rem);
   line-height: 1;
   pointer-events: none;
@@ -9555,7 +9555,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   padding: 5px 4px !important;
   color: rgba(68, 54, 38, .68) !important;
   background: linear-gradient(180deg, transparent, rgba(249, 241, 225, .82)) !important;
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 9px !important;
   letter-spacing: .04em;
 }
@@ -10380,7 +10380,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-brand-ui-library__section-title {
   margin: 0 0 12px;
   color: var(--zw-jade, #294b3f);
-  font-family: "Noto Serif TC", "Songti TC", serif;
+  font-family: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif;
   font-size: 15px;
   letter-spacing: .18em;
 }
@@ -12921,7 +12921,7 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
 .sky-event-essay-section:last-child{border-bottom:0}
 .sky-event-essay-section h3{font-size:clamp(1.2rem,3.4vw,1.65rem);margin:0 0 14px;line-height:1.35}
 .sky-event-essay-section p{margin:0 0 12px;line-height:1.95;color:#3f4c46;font-size:.98rem}
-.sky-event-essay-section blockquote{margin:18px 0 2px;padding:15px 18px;border-left:3px solid var(--sky-gold);background:rgba(255,255,255,.58);font-family:"Noto Serif TC","Songti TC",serif;font-size:1.02rem;line-height:1.8;color:#5d4a30}
+.sky-event-essay-section blockquote{margin:18px 0 2px;padding:15px 18px;border-left:3px solid var(--sky-gold);background:rgba(255,255,255,.58);font-family:"Noto Serif TC","Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif;font-size:1.02rem;line-height:1.8;color:#5d4a30}
 @media(max-width:600px){.sky-event-essay{margin-top:26px}.sky-event-essay-intro{padding:15px 16px}.sky-event-essay-section{padding:22px 0}.sky-event-essay-section p{font-size:.96rem;line-height:1.85}}
 
 /* ─── device-question-flow-r144.css ─── */

@@ -28,7 +28,7 @@
 .zhaowu-legal-page .zhaowu-updates-card h2 {
   margin: 0 0 10px;
   color: var(--zw-ink);
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: clamp(18px, 4.4vw, 21px);
   font-weight: 600;
   line-height: 1.4;

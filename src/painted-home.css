@@ -16,7 +16,7 @@ html body #root:has(.zw-painted-home) .site-lang-button { min-width:30px !import
 html body #root:has(.zw-painted-home) .zhaowu-language-label { display:none; }
 html body #root:has(.zw-painted-home) .zhaowu-home-login-inline { min-width:44px; padding:4px 8px !important; background:none !important; border:0 !important; font-size:12px; }
 html body #root:has(.zw-painted-home) .zhaowu-site-footer { padding-bottom:100px; }
-html body #root .zw-painted-home { position:relative; isolation:isolate; width:100%; color:var(--ph-ink); background:var(--ph-paper); font-family:'Noto Serif TC','Songti TC',serif; padding-bottom:28px; }
+html body #root .zw-painted-home { position:relative; isolation:isolate; width:100%; color:var(--ph-ink); background:var(--ph-paper); font-family:'Noto Serif TC','Songti TC', 'Songti SC', 'STSong', 'SimSun', 'PMingLiU', 'Noto Serif CJK TC', 'Noto Serif SC', serif; padding-bottom:28px; }
 html body #root .zw-painted-home :is(h1,h2,h3,p,small,strong,span,a,button,em) { color:inherit !important; -webkit-text-fill-color:currentColor !important; }
 html body #root .zw-painted-home :is(h1,h2,h3,p) { margin:0; }
 html body #root .zw-painted-home :is(button,a) { touch-action:manipulation; -webkit-tap-highlight-color:transparent; text-decoration:none; font-family:inherit; cursor:pointer; }

@@ -232,7 +232,7 @@
   right: -4px;
   bottom: -26px;
   color: rgba(100, 85, 58, .045);
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 82px;
   letter-spacing: -.12em;
   pointer-events: none;
@@ -259,7 +259,7 @@
 .zhaowu-five-tone-gift > header h3 {
   margin: 5px 0 0 !important;
   color: #263c35 !important;
-  font-family: var(--font-display, "Songti TC", serif) !important;
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif) !important;
   font-size: clamp(21px, 4.8vw, 28px) !important;
   font-weight: 560 !important;
   line-height: 1.25 !important;
@@ -340,7 +340,7 @@
   overflow: hidden;
   margin-top: 3px;
   color: #30473f;
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 14px;
   font-weight: 560;
   line-height: 1.5;
@@ -420,7 +420,7 @@
   bottom: -72px;
   z-index: -1;
   color: rgba(245, 226, 180, .055);
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 190px;
   font-weight: 700;
   line-height: 1;
@@ -447,7 +447,7 @@
 .zhaowu-paid-personal-profile__head h3 {
   margin: 6px 0 0 !important;
   color: #fff8e9 !important;
-  font-family: var(--font-display, "Songti TC", serif) !important;
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif) !important;
   font-size: clamp(24px, 5vw, 34px) !important;
   font-weight: 560 !important;
   line-height: 1.2 !important;
@@ -505,7 +505,7 @@
 
 .zhaowu-paid-personal-profile__page-title strong {
   color: #f5dda8;
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 18px;
   font-weight: 560;
   letter-spacing: .06em;
@@ -546,7 +546,7 @@
 .zhaowu-paid-personal-card > strong {
   display: block;
   color: #2a3e37;
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 15px;
   font-weight: 560;
   line-height: 1.7;
@@ -593,7 +593,7 @@
 
 .zhaowu-paid-personal-pillars b {
   color: #244d40;
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: clamp(16px, 4vw, 21px);
   font-weight: 650;
   white-space: nowrap;
@@ -680,7 +680,7 @@
 
 .zhaowu-paid-personal-profile__foot > span {
   color: rgba(239, 214, 154, .46);
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 22px;
   letter-spacing: .14em;
   white-space: nowrap;
