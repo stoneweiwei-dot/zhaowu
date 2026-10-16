@@ -4,7 +4,9 @@ import { tenGod } from "@/lib/bazi/calendar";
 import { readSharedBirthRecord } from "@/lib/shared-birth";
 import { buildChart } from "@/lib/bazi/chart";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
+import { sacredDayRoster } from "@/lib/almanac/sacred-days";
 import "@/components/daily-almanac-accessory-art.css";
+import "@/components/almanac-sacred-roster.css";
 
 /**
  * 今日黃曆 · ink board (owner 2026-10-08 reference: dark ink-teal almanac sheet).
@@ -313,6 +315,22 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
           <strong>{props.sacred}</strong>
         </section>
       </div>
+
+      <details className="zw-ink-sacred-roster">
+        <summary>{T(locale, "仙佛聖誕名錄｜佛・道・儒・民間信仰", "Sacred observance directory · four traditions")}</summary>
+        <p>{T(locale, "按所列宮廟與傳統紀日；地方及宗派日期可能不同，以當地公告為準。", "Dates follow the listed temples and traditions. Local and lineage calendars may differ.")}</p>
+        <div className="zw-ink-sacred-roster__groups">
+          {sacredDayRoster(locale).map((group) => (
+            <details key={group.tradition}>
+              <summary>{group.tradition} · {group.entries.length}</summary>
+              <ul>{group.entries.map((entry, index) => (
+                <li key={`${entry.date}-${entry.name}-${index}`}><time>{entry.date}</time><span>{entry.name}</span></li>
+              ))}</ul>
+            </details>
+          ))}
+        </div>
+        <p>{T(locale, "閏月不重複計入一般農曆聖誕；地藏與藥師佛的廿九／三十依該月實際月末顯示。", "Leap months do not repeat ordinary lunar observances. Day 29/30 variants follow the actual final day of the lunar month.")}</p>
+      </details>
 
       <section className="zw-ink-panel zw-ink-core">
         <ElementWheel active={element} locale={locale} />
