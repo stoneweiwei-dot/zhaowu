@@ -34,11 +34,18 @@ const ACTIONS = new Set([
   "promo.create",
   "promo.update",
   "promo.setActive",
+  "article.list",
+  "article.save",
+  "article.archive",
+  "article.reset",
 ]);
 
 const PROMO_FUNCTION = "zhaowu-owner-promo";
+const ARTICLE_FUNCTION = "zhaowu-owner-articles";
 export function ownerUpstreamFunction(action) {
-  return String(action).startsWith("promo.") ? PROMO_FUNCTION : "zhaowu-owner-data";
+  if (String(action).startsWith("promo.")) return PROMO_FUNCTION;
+  if (String(action).startsWith("article.")) return ARTICLE_FUNCTION;
+  return "zhaowu-owner-data";
 }
 
 function headerValue(req, name) {
