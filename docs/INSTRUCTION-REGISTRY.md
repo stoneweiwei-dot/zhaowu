@@ -1,14 +1,11 @@
+# 昭梧｜Instruction Registry
+
 ## 2026-10-16 正式域名更正
 
 - ACTIVE：站主沒有購買或授權任何自訂網域。唯一正式網站為 `https://stone-zhaowu-official.vercel.app/`；未擁有的網域不得列作正式、備援或計畫部署地址。
 - SUPERSEDED：任何舊 Cloudflare／DNS／自訂網域設定指示均非當前執行規則。
 
-# 昭梧｜Instruction Registry
 
-
-- 已知限制（如實）：Cloudflare 免費方案無大陸專屬網路（China Network 需企業方案＋ICP 備案），大陸連線品質與可達性**無法保證**，也無法從本環境測得；成效須由大陸實機（或站主親友）回報。若仍不穩，下一步＝ICP 備案＋國內 CDN。
-- COST（AGENTS §F）：消耗 Cloudflare Free 流量（無計量上限）與 Vercel 回源流量；失效模式＝Cloudflare 故障或誤設時全站不可達（回滾＝註冊商 NS 改回或 Cloudflare 記錄改 DNS only／直指 Vercel）；Supabase／Vercel 不可用時行為不變；不涉及資料遷移。
-- 不改：登入、付款、Supabase Schema／RLS、命理計算、報告內容。
 
 ## 2026-10-15 中國大陸可讀取／可登入：同網域 Supabase 代理與自家託管天文腳本
 
