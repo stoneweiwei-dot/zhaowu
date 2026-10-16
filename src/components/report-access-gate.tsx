@@ -6,7 +6,7 @@ import { assessBirthRecord } from "@/lib/bazi/data-grade";
 import type { Locale } from "@/lib/i18n";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
 import {
-  REPORT_ACCESS_PRODUCTS,
+  reportAccessPrice,
   redeemPromoCode,
   resolveReportAccess,
   startReportCheckout,
@@ -265,11 +265,11 @@ export function ReportAccessGate({
         {tiers.filter((tier) => level !== "quick" || tier.id !== "quick").map((tier) => (
           <article role="listitem" key={tier.id} className={tier.id === "system" ? "is-featured" : undefined}>
             <strong>{copy[tier.copy]}</strong>
-            <span>{REPORT_ACCESS_PRODUCTS[tier.id].price}</span>
+            <span>{reportAccessPrice(tier.id, system).price}</span>
             <p>{copy[tier.body]}</p>
             <small>{copy.bonus[tier.id]}</small>
             <button type="button" disabled={busy !== null} onClick={() => void purchase(tier.id)}>
-              {busy === tier.id ? "…" : `${copy.buy} ${REPORT_ACCESS_PRODUCTS[tier.id].price}`}
+              {busy === tier.id ? "…" : `${copy.buy} ${reportAccessPrice(tier.id, system).price}`}
             </button>
           </article>
         ))}

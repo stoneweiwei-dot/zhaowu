@@ -71,13 +71,15 @@ test("BaZi checkout preserves report ID and passes only opaque reference to Stri
     assert.equal(checkoutUrl.searchParams.get("client_reference_id"), "12345678-1234-4234-8234-123456789abc");
     assert.equal(browser.data.get("zhaowu.pending-bazi-report.v1"), id);
     assert.equal(browser.data.get("zhaowu.pending-bazi-return.v1"), "bazi");
-    assert.ok(browser.redirected().includes("eVq5kD2Czbvrb4n7dg2sM0y"));
+    assert.ok(browser.redirected().includes("7sY9AT7WT42Za0j7dg2sM0z"));
     await assert.rejects(startReportCheckout("bundle", "bazi"), /PAYMENT_LINK_MISSING/);
   } finally { clearPurchaseConsent(); browser.restore(); }
 });
 
 test("USD prices and webhook entitlement agree with new Stripe link", () => {
   assert.match(client, /system: \{ amountCents: 990, price: "US\$9\.90" \}/);
+  assert.match(client, /SYSTEM_PRICE_1999[^\n]*new Set<ReportSystemId>\(\["bazi", "ziwei"\]\)/);
+  assert.match(webhook, /plink_1URIwkFAzopdCCax8ZVKkNPH: \{ product: "system", system: "bazi", amount: 1999 \}/);
   assert.match(client, /bundle: \{ amountCents: 1999, price: "US\$19\.99" \}/);
   assert.match(webhook, /plink_1UPlUXFAzopdCCaxV59sdJfq: \{ product: "system", system: "bazi", amount: 990 \}/);
   assert.match(resultView, /resolveReportAccess\("bazi"\)/);

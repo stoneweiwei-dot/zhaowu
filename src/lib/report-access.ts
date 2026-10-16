@@ -12,13 +12,24 @@ export type ReportAccessLevel = "none" | "quick" | "system" | "bundle";
 // ReportAccessGate. `system`/`bundle` are the only two tiers still sold.
 //
 // Live Stripe Payment Links charge USD 9.90 per system and USD 19.99
-// for the six specialist systems bundle. BaZi is a separate USD 9.90 purchase.
+// for the six specialist systems bundle. BaZi is a separate purchase.
+// 2026-10-16 owner repricing: the BaZi and Zi Wei single-system readings are
+// USD 19.99 (see SYSTEM_PRICE_1999 / reportAccessPrice); the other five
+// systems stay USD 9.90. Use reportAccessPrice(product, system) for any
+// system-specific label; REPORT_ACCESS_PRODUCTS.system is the USD 9.90 default.
 // Keep displayed currency explicit; labels and Stripe amounts must stay aligned.
 export const REPORT_ACCESS_PRODUCTS = {
   quick: { amountCents: 0, price: "$0" },
   system: { amountCents: 990, price: "US$9.90" },
   bundle: { amountCents: 1999, price: "US$19.99" },
 } as const;
+
+const SYSTEM_PRICE_1999: ReadonlySet<ReportSystemId> = new Set<ReportSystemId>(["bazi", "ziwei"]);
+
+export function reportAccessPrice(product: ReportAccessProduct, system: ReportSystemId): { amountCents: number; price: string } {
+  if (product === "system" && SYSTEM_PRICE_1999.has(system)) return { amountCents: 1999, price: "US$19.99" };
+  return REPORT_ACCESS_PRODUCTS[product];
+}
 
 const ACCESS_KEY_STORAGE = "zhaowu.report-access-key.v1";
 const SESSION_STORAGE = "zhaowu.report-access-sessions.v1";
@@ -29,12 +40,12 @@ const PROMO_ENDPOINT = `${SUPABASE_URL}/functions/v1/promo-code`;
 const PAYMENT_LINKS: Record<ReportSystemId, Record<ReportAccessProduct, string>> = {
   bazi: {
     quick: "", // Always free: never sell the quick tier.
-    system: "https://buy.stripe.com/eVq5kD2Czbvrb4n7dg2sM0y",
+    system: "https://buy.stripe.com/7sY9AT7WT42Za0j7dg2sM0z", // 2026-10-16 USD 19.99 (replaces 9.90 link plink_1UPlUXFAzopdCCaxV59sdJfq)
     bundle: "", // Six-system bundle is NOT a BaZi purchase.
   },
   ziwei: {
     quick: "",
-    system: "https://buy.stripe.com/7sY8wPdhdeHDb4n7dg2sM0m",
+    system: "https://buy.stripe.com/3cI28r6SP1UR2xR1SW2sM0A", // 2026-10-16 USD 19.99 (replaces 9.90 link plink_1UP3ogFAzopdCCaxRqhS5z8P)
     bundle: "https://buy.stripe.com/eVq3cv1yvfLHc8reFI2sM0n",
   },
   qizheng: {
