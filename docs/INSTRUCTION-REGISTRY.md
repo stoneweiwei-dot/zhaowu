@@ -7,6 +7,13 @@
 - SUPERSEDED：本檔下方 2026-10-03 對舊 PR #584「神佛聖日資料列為 BACKLOG，需新指令」的部分；該舊分支仍不合併，其黃曆首頁與靈籤畫面仍不移植。站主已於本次明確指定四類名單並要求接入現有三段式黃曆。
 - PROTECTED：不改節氣、農曆換算、命盤、登入、付款或其他三段式內容。
 
+## 2026-10-17 站主後台優惠碼管理（取代「後台管理介面列為 BACKLOG」）
+
+- ACTIVE：站主後台新增「優惠碼」分頁，可建立（單一系統／全系統套組、名額、有效天數、備註、自訂或自動產生 `ZW-XXXX-XXXX` 碼）、列表、停用／啟用、名額 +1、延長 30 天。動作 `promo.list`／`promo.create`／`promo.update`／`promo.setActive` 經既有 `/api/owner-data`（站主 cookie＋同源）轉送到獨立 Edge Function `zhaowu-owner-promo`。
+- ACTIVE：因 Vercel Hobby 已達 12 個 serverless function 上限，不新增 `api/*.js`，也不改動 836 行的 `zhaowu-owner-data`；`api/owner-data.js` 只新增 `ownerUpstreamFunction(action)` 路由。
+- PROTECTED：只能新增與修改 `promo_codes`；不提供刪除、不寫 `redeemed_count`、不碰 `promo_redemptions` 與客人兌換路徑 `promo-code`。名額不得低於已兌換數。兌換仍不記金額、與 Stripe 完全分離。
+- 驗證：`scripts/owner-promo-admin.test.mjs`（8 項）、tsc、build；Edge Function 部署後以真實呼叫驗證見 PR 說明。
+
 ## 2026-10-16 正式域名更正
 
 - ACTIVE：站主沒有購買或授權任何自訂網域。唯一正式網站為 `https://stone-zhaowu-official.vercel.app/`；未擁有的網域不得列作正式、備援或計畫部署地址。
@@ -35,7 +42,7 @@
 - ACTIVE：首頁的「最新更新」連結與站主「後台管理」捷徑位於頁尾（`[data-footer-status-strip]`），不在頂部 header；非首頁的狀態列不變；站主工作區仍不顯示任何公開狀態列。
 - ACTIVE：換頁使用單一 CSS 淡入（`.zhaowu-route-fade`，260ms，遵守 `prefers-reduced-motion`）；不得引入動畫套件或第二套過場系統。
 - ACTIVE：付費區提供收合式「有優惠碼？」輸入。兌換只經 `promo-code` Edge Function 與 `promo_codes`／`promo_redemptions`（RLS、僅 service role），與 `report_purchase_entitlements`／Stripe 完全分離，不記任何金額。同一瀏覽器重輸已兌換的碼為冪等解鎖、不扣名額。
-- OPERATIONAL：建立優惠碼目前以 SQL 新增 `public.promo_codes` 列（`code`、`product_id` system／bundle、`system_id` 可空＝全系統、`max_redemptions`、`expires_at`）；後台管理介面列為 BACKLOG。
+- OPERATIONAL：建立優惠碼目前以 SQL 新增 `public.promo_codes` 列（`code`、`product_id` system／bundle、`system_id` 可空＝全系統、`max_redemptions`、`expires_at`）；後台管理介面已於 2026-10-17 啟用（見下方最新條目），SQL 方式僅作備援。
 - 不改：Stripe Payment Links、webhook、entitlement、命理計算、報告內容、Owner 登入。
 
 ## 2026-10-13 站主參考圖重排首頁與主題預覽
