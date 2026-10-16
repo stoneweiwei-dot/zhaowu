@@ -200,7 +200,9 @@ export function sacredDayRoster(locale: SacredDayLocale) {
    entries: rows.filter((row)=>row[3]===tradition)
      .sort((a,b)=>a[1]-b[1]||a[2]-b[2])
      .map(([calendar,month,day,,hant,en])=>({
-       date: calendar==="solar" ? (locale==="en"?`Solar ${month}/${day}`:`公曆 ${month}/${day}`) : (locale==="en"?`Lunar ${month}/${day}`:`農曆 ${month}/${day}`),
+       date: calendar==="solar"
+         ? (locale==="en"?`Solar ${month}/${day}`:locale==="zh-Hans"?`公历 ${month}/${day}`:`公曆 ${month}/${day}`)
+         : (locale==="en"?`Lunar ${month}/${day}`:locale==="zh-Hans"?`农历 ${month}/${day}`:`農曆 ${month}/${day}`),
        name:locale==="en"?en:locale==="zh-Hans"?zhHans(hant):hant,
      })),
  }));
