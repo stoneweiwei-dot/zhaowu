@@ -1,8 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SpecialistSystemPage } from "@/components/specialist-system-page";
+import { IndianAstrologyPage } from "@/components/indian-astrology-page";
 
 export const Route = createFileRoute("/indian-astrology")({ component: IndianAstrologyPage });
-
-function IndianAstrologyPage() {
-  return <SpecialistSystemPage id="indian" />;
-}
