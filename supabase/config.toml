@@ -3,3 +3,6 @@ verify_jwt = false
 
 [functions.stripe-webhook]
 verify_jwt = false
+
+[functions.zhaowu-owner-articles]
+verify_jwt = false

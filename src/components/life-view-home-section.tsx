@@ -190,14 +190,6 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
       </section>
     );
   }
-  if (false) {
-    return (
-      <section id="life-view" className="rounded-2xl border border-line/80 bg-paper px-5 py-5">
-        <p className="text-sm text-ink-mute">{copy.empty}</p>
-      </section>
-    );
-  }
-
   const latestParagraph = latest.body[locale].split(/\n\n+/)[0] ?? "";
   const visibleArticles = archiveMode || showAll ? contents : [latest];
 
