@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
 import {
   TEN_PLANETS, analyzeWesternChart, westernGroupNarrative,
   type WesternAnalysis, type WesternLocale, type WesternPlacement,
 } from "@/lib/astrology/deep-engine";
 import { computeAngles, computeHouses, houseOf, julianDay, ZODIAC_SIGNS, type HouseSystem } from "@/lib/astrology/engine";
+import { buildWesternReportChapters, type WesternReportFacts, type WesternReportConfig } from "@/lib/astrology/report-protocol";
 
 type Astronomy = {
   GeoVector: (body: string, date: Date, aberration: boolean) => unknown;
@@ -19,6 +20,8 @@ type Snapshot = {
   quality: "high" | "medium" | "low";
   provenance: "confirmed-minute" | "entered-minute" | "unknown";
   placements: WesternPlacement[];
+  angles?: { ascendant: number; mc: number };
+  houseCusps?: number[];
   analysis: WesternAnalysis;
 };
 const SCRIPT_ID = "zhaowu-astronomy-engine-d60";
@@ -126,7 +129,10 @@ async function calculate(b: SharedBirthRecord, system: HouseSystem, confirmed: b
   return {
     format: "zhaowu-western-chart-v1",signature:signature(b),houseSystem:system,
     referenceUtc:reference.toISOString(),source:"astronomy-engine@2.1.19",
-    quality,provenance,placements:positions,analysis,
+    quality,provenance,placements:positions,
+    angles: refAngles && stableHouseFrames ? { ascendant:refAngles.ascendant,mc:refAngles.mc } : undefined,
+    houseCusps: stableHouseFrames ? refHouse!.cusps : undefined,
+    analysis,
   };
 }
 
@@ -205,6 +211,25 @@ export function WesternDepthSection({ birth, locale, mode, houseSystem, onHouseS
   const label=(name:string)=>labels[name][locale];
   const analysis=snapshot?.analysis;
   const groups=analysis?.densities ?? [];
+  const chapters = useMemo(() => {
+    if (!snapshot) return [];
+    try {
+      const facts: WesternReportFacts = {
+        zodiac:"tropical",houseSystem,
+        source:snapshot.source,
+        birthTimeBasis: snapshot.provenance==="confirmed-minute"?"documented-minute":snapshot.provenance,
+        analysis:snapshot.analysis,planets:snapshot.placements,
+        angles:snapshot.angles,
+        houses:snapshot.houseCusps?{cusps:snapshot.houseCusps,system:houseSystem}:undefined,
+      };
+      const config:WesternReportConfig = {
+        locale,style:"direct",targetCharacters:4000,
+        includeBazi:false,includeZiwei:false,includeVedic:false,includeTransits:false,
+      };
+      return buildWesternReportChapters(facts,config);
+    } catch { return []; }
+  },[snapshot,houseSystem,locale]);
+
 
   if (mode === "paid") return <section className="zhaowu-specialist-overview" data-western-depth="paid">
     <h2>{locale==="en"?"Life themes · evidence and action":locale==="zh-Hans"?"人生主轴・证据与行动":"人生主軸・證據與行動"}</h2>
@@ -224,6 +249,20 @@ export function WesternDepthSection({ birth, locale, mode, houseSystem, onHouseS
           </article>;
         })}
         <p>{locale==="en"?"Closest major aspects: ":"主要相位（按容許度）："}{analysis.aspects.slice(0,3).map(a=>`${planetNames[a.a][locale]}–${planetNames[a.b][locale]} ${a.type} ${a.orb.toFixed(1)}°`).join("；")||"—"}</p>
+        <section aria-label={locale==="en"?"Ten-chapter Western report":"西方占星十章報告"}>
+          <h3>{locale==="en"?"Personal ten-chapter report outline":"個人化十章報告"}</h3>
+          <p>{locale==="en"
+            ?"Each chapter cites actual chart positions. Unsupported techniques and future transits are explicitly withheld. No fabricated 3,000–5,000-character AI expansion is shown."
+            :"每章只使用已有命盤證據；未計算的行運、特殊點與跨系統旁證明確留白，不以模板灌水冒充三至五千字 AI 深讀。"}</p>
+          {chapters.map(ch=><details key={ch.number} style={{marginBlock:12}}>
+            <summary style={{cursor:"pointer",fontWeight:650,paddingBlock:6}}>【{ch.number}｜{ch.title}】{ch.status==="limited"?" · "+(locale==="en"?"unavailable":"未判"):""}</summary>
+            <p>{ch.summary}</p>
+            <p>{ch.action}</p>
+            <p style={{fontSize:"0.9em"}}><strong>{locale==="en"?"Evidence":"依據"}：</strong>{ch.evidence.length
+              ?ch.evidence.slice(0,12).map(item=>item.source+":"+item.text).join("；")
+              :(locale==="en"?"Not calculated":"未計算")}</p>
+          </details>)}
+        </section>
         <p>{locale==="en"?"Vedic context is separate: use its D1/D60 reliability rules, never force agreement.":"印度占星只作獨立旁證：須另依 D1／D60 自身精度規則核算，不能為一致而強行互證。"} <a href="/indian-astrology">{locale==="en"?"Indian astrology":"印度占星"}</a></p>
       </>}
     <p><small>{label("disclaimer")}</small></p>
