@@ -4,6 +4,7 @@ import { PersonalPaidProfile } from "@/components/personal-paid-profile";
 import { useEffect, useMemo, useState } from "react";
 import { D60ReliabilityGate } from "@/components/d60-reliability-gate";
 import { WesternDepthSection } from "@/components/western-depth-section";
+import type { HouseSystem } from "@/lib/astrology/engine";
 import { specialistHeadline, type HeadlineSystem } from "@/lib/specialist-headline";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
@@ -107,6 +108,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
   const page = PAGE[id][locale];
   const { user } = useCurrentUserState();
   const [birth, setBirth] = useState<SharedBirthRecord | null>(() => readSharedBirthRecord());
+  const [westernHouseSystem, setWesternHouseSystem] = useState<HouseSystem>("placidus");
 
   useEffect(() => {
     const server = sharedBirthFromUnknown(user?.birthData);
@@ -157,7 +159,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
 
         {reading?.chart ? <SpecialistChart chart={reading.chart} locale={locale} /> : null}
         {reading?.chart ? <p className="zhaowu-specialist-free-note">{copy.basicFree}</p> : null}
-        {id === "western" && birth ? <WesternDepthSection birth={birth} locale={locale} mode="free" /> : null}
+        {id === "western" && birth ? <WesternDepthSection birth={birth} locale={locale} mode="free" houseSystem={westernHouseSystem} onHouseSystemChange={setWesternHouseSystem} /> : null}
 
         {reading ? (
           <ReportAccessGate
@@ -175,7 +177,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
               {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
               {reading.sections.map((section) => <ReadingSection key={`${section.title}-${section.body.slice(0, 24)}`} section={section} />)}
               {id === "indian" ? <div className="mt-6"><D60ReliabilityGate reportBirth={birth && !birth.timeUnknown && birth.city ? { year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute, city: birth.city } : null} /></div> : null}
-              {id === "western" && birth ? <WesternDepthSection birth={birth} locale={locale} mode="paid" /> : null}
+              {id === "western" && birth ? <WesternDepthSection birth={birth} locale={locale} mode="paid" houseSystem={westernHouseSystem} onHouseSystemChange={setWesternHouseSystem} /> : null}
             </div>}
           />
         ) : null}
