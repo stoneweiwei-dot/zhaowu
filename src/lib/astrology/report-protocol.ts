@@ -208,7 +208,7 @@ export function buildWesternReportChapters(f:WesternReportFacts, cfg:WesternRepo
 
 export function buildWesternReportPrompt(f:WesternReportFacts,cfg:WesternReportConfig) {
   const chapters=buildWesternReportChapters(f,cfg);
-  const target=Math.max(1800,Math.min(5500,Math.floor(cfg.targetCharacters||4000)));
+  const target=Math.max(3000,Math.min(5000,Math.floor(cfg.targetCharacters||4000)));
   const system=[
     "你是昭梧獨立西方占星報告編輯。依據傳入的可追溯天文資料與各系統獨立證據，產生個人化報告。",
     "絕不可自行排盤、補算缺失的行星/交點/福點/凱龍星/行運，也不可將本命 MC 視為 Whole Sign 必然第10宮。",
