@@ -253,6 +253,12 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                       </Fragment>
                     );
                   })}
+
+                  {article.id === "china-accessibility-diagnosis" ? (
+                    <a href="/articles/china-accessibility-diagnosis.html" target="_blank" rel="noreferrer" className="mt-6 inline-flex min-h-11 items-center rounded-full border border-cinnabar/30 bg-cream px-5 py-2 text-sm font-medium text-cinnabar">
+                      {locale === "en" ? "Read the full report in Chinese" : locale === "zh-Hans" ? "阅读完整诊断报告" : "閱讀完整診斷報告"} →
+                    </a>
+                  ) : null}
                   {article.id === "strength-overdrive-five-elements" ? (
                     <Link to="/quiz/five-element-overdrive" className="mt-6 inline-flex min-h-11 items-center rounded-full border border-cinnabar/30 bg-cream px-5 py-2 text-sm font-medium text-cinnabar">
                       {copy.quizCta} →

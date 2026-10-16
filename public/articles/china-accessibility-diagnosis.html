@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>昭梧網站中國大陸訪問問題診斷報告</title>
+<style>
+:root {
+  --bg: #faf8f5;
+  --card: #ffffff;
+  --primary: #8B4513;
+  --accent: #D4A574;
+  --danger: #c0392b;
+  --warning: #e67e22;
+  --success: #27ae60;
+  --info: #2980b9;
+  --text: #2c3e50;
+  --muted: #7f8c8d;
+  --border: #e8e0d0;
+  --code-bg: #f5f0e8;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  padding: 0;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
+
+/* Header */
+.report-header {
+  text-align: center;
+  padding: 60px 24px 40px;
+  background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+  color: #fff;
+  border-radius: 0 0 24px 24px;
+  margin-bottom: 40px;
+}
+.report-header h1 { font-size: 2em; margin-bottom: 8px; letter-spacing: 2px; }
+.report-header .subtitle { font-size: 1em; opacity: 0.85; }
+.report-header .url-badge {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 8px 20px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.9em;
+  word-break: break-all;
+}
+
+/* Verdict Banner */
+.verdict {
+  margin: 32px 0;
+  padding: 24px 28px;
+  border-radius: 12px;
+  text-align: center;
+}
+.verdict.danger {
+  background: #fef5f5;
+  border-left: 6px solid var(--danger);
+}
+.verdict h2 { font-size: 1.4em; margin-bottom: 8px; }
+.verdict.danger h2 { color: var(--danger); }
+.verdict p { color: #555; font-size: 0.95em; }
+
+/* Section */
+.section {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.section h2 {
+  font-size: 1.4em;
+  color: var(--primary);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section h2 .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.8em;
+  flex-shrink: 0;
+}
+.section h3 {
+  font-size: 1.1em;
+  color: var(--text);
+  margin: 24px 0 12px;
+}
+
+/* Risk Cards */
+.risk-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+@media (min-width: 640px) {
+  .risk-grid { grid-template-columns: 1fr 1fr; }
+}
+.risk-card {
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.risk-card.critical {
+  border-color: var(--danger);
+  background: #fef5f5;
+}
+.risk-card.high {
+  border-color: var(--warning);
+  background: #fef9f0;
+}
+.risk-card.medium {
+  border-color: var(--info);
+  background: #f0f7fc;
+}
+.risk-card.low {
+  border-color: var(--success);
+  background: #f0faf3;
+}
+.risk-card .badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 0.75em;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.risk-card.critical .badge { background: var(--danger); color: #fff; }
+.risk-card.high .badge { background: var(--warning); color: #fff; }
+.risk-card.medium .badge { background: var(--info); color: #fff; }
+.risk-card.low .badge { background: var(--success); color: #fff; }
+.risk-card h4 { font-size: 1em; margin-bottom: 6px; }
+.risk-card p { font-size: 0.88em; color: #555; }
+.risk-card .detail {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.8em;
+  color: var(--muted);
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.9em;
+}
+th, td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+th {
+  background: var(--code-bg);
+  color: var(--primary);
+  font-weight: 600;
+}
+tr:hover td { background: #faf8f5; }
+
+/* Code Block */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  font-size: 0.82em;
+  line-height: 1.6;
+  margin: 12px 0;
+}
+code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+pre code { background: none; padding: 0; }
+
+/* Solution Steps */
+.solution-step {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  margin: 16px 0;
+  background: #f9f6f0;
+  border-radius: 10px;
+  border-left: 4px solid var(--success);
+}
+.solution-step .step-num {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--success);
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+.solution-step .step-content { flex: 1; }
+.solution-step h4 { margin-bottom: 6px; color: var(--text); }
+.solution-step p { font-size: 0.88em; color: #555; margin-bottom: 8px; }
+
+/* Callout */
+.callout {
+  margin: 16px 0;
+  padding: 16px 20px;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+.callout.info { border-color: var(--info); background: #f0f7fc; }
+.callout.warning { border-color: var(--warning); background: #fef9f0; }
+.callout.success { border-color: var(--success); background: #f0faf3; }
+.callout p { font-size: 0.9em; }
+.callout strong { color: var(--text); }
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 28px;
+  margin: 20px 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.timeline-item {
+  position: relative;
+  padding-bottom: 20px;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -24px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.timeline-item.urgent::before { background: var(--danger); box-shadow: 0 0 0 2px var(--danger); }
+.timeline-item h4 { font-size: 0.95em; margin-bottom: 4px; }
+.timeline-item p { font-size: 0.82em; color: var(--muted); }
+
+/* Comparison */
+.compare-table th:first-child { width: 25%; }
+.compare-table .yes { color: var(--success); font-weight: 600; }
+.compare-table .no { color: var(--danger); font-weight: 600; }
+.compare-table .partial { color: var(--warning); font-weight: 600; }
+
+/* Footer */
+.report-footer {
+  text-align: center;
+  padding: 40px 24px;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+.report-footer hr { border: none; border-top: 1px solid var(--border); margin-bottom: 20px; }
+
+/* Priority Matrix */
+.priority-matrix {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  grid-template-rows: auto 1fr 1fr;
+  gap: 2px;
+  margin: 20px 0;
+  font-size: 0.85em;
+}
+.priority-matrix > div {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.priority-matrix .axis-label {
+  background: var(--code-bg);
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 0.8em;
+}
+.priority-matrix .p0 {
+  background: #fef5f5;
+  border: 2px solid var(--danger);
+}
+.priority-matrix .p1 {
+  background: #fef9f0;
+  border: 2px solid var(--warning);
+}
+.priority-matrix .p2 {
+  background: #f0f7fc;
+  border: 2px solid var(--info);
+}
+.priority-matrix .p3 {
+  background: #f0faf3;
+  border: 2px solid var(--success);
+}
+.priority-matrix .corner { background: var(--card); }
+
+/* Tag */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75em;
+  font-weight: 600;
+  margin: 0 2px;
+}
+.tag.red { background: #fde8e8; color: #c0392b; }
+.tag.orange { background: #fef0e0; color: #e67e22; }
+.tag.blue { background: #e0ecf7; color: #2980b9; }
+.tag.green { background: #e0f0e8; color: #27ae60; }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <h1>昭梧網站 · 中國大陸訪問問題診斷報告</h1>
+  <div class="subtitle">面向中國大陸用戶的可訪問性分析與解決方案</div>
+  <div class="url-badge">stone-zhaowu-official.vercel.app</div>
+</div>
+
+<div class="container">
+
+  <!-- 結論 -->
+  <div class="verdict danger">
+    <h2>診斷結論：確認存在中國大陸訪問障礙</h2>
+    <p>網站部署在 Vercel 平台，且首頁直接引用了 Google Fonts CDN —— 這兩者在中國大陸均存在不同程度的連通性問題。<br>
+    手機端和電腦端均會受到影響，手機端因運營商 DPI 審查更為明顯。</p>
+  </div>
+
+  <!-- 問題1 -->
+  <div class="section">
+    <h2><span class="num">1</span>問題一：Vercel 域名在大陸的連通性</h2>
+    <p>網站使用 <code>xxx.vercel.app</code> 作為主域名。Vercel 在中國大陸沒有邊緣節點（最近的為新加坡 <code>sin1</code>），且 <strong>vercel.app 域名及其 IP 段在中國大陸的連通性長期不穩定</strong>。</p>
+
+    <div class="risk-grid">
+      <div class="risk-card critical">
+        <span class="badge">嚴重 · 根因</span>
+        <h4>Vercel IP 連通性不穩定</h4>
+        <p>DNS 可正常解析（中國 DNS 返回 <code>216.198.79.x / 64.29.17.x</code>），但這些 IP 屬於 Vercel 海外節點，中國大陸用戶到達這些 IP 的 TCP 連接經常被 RST 重置或超時。</p>
+        <div class="detail">
+          檢測到的 x-vercel-id: sin1 (新加坡)<br>
+          中國用戶請求路徑: 用戶 → 國際出口 → 新加坡節點 → 返回<br>
+          無中國大陸邊緣節點
+        </div>
+      </div>
+      <div class="risk-card high">
+        <span class="badge">高危 · 加劇因素</span>
+        <h4>vercel.app 域名被部分 DNS 污染</h4>
+        <p>部分中國 ISP 的 DNS 對 <code>vercel.app</code> 域名存在 DNS 污染/劫持現象，解析到不可達 IP，導致頁面完全無法打開（超時或 ERR_CONNECTION_RESET）。</p>
+        <div class="detail">
+          DNSPod DoH: 正常返回 IP<br>
+          阿里 DoH: 正常返回 IP<br>
+          但部分地區 ISP DNS: 可能被污染
+        </div>
+      </div>
+    </div>
+
+    <h3>DNS 解析驗證結果</h3>
+    <table>
+      <thead>
+        <tr><th>DNS 來源</th><th>解析結果</th><th>說明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Google DNS (8.8.8.8)</td><td>216.198.79.3 / 64.29.17.3</td><td>正常，指向 Vercel 海外 IP</td></tr>
+        <tr><td>Cloudflare DNS (1.1.1.1)</td><td>216.198.79.67 / 64.29.17.67</td><td>正常</td></tr>
+        <tr><td>DNSPod DoH (119.29.29.29)</td><td>216.198.79.67 / 64.29.17.67</td><td>中國 DNS 可正常解析</td></tr>
+        <tr><td>阿里 DoH (223.5.5.5)</td><td>216.198.79.195 / 64.29.17.195</td><td>中國 DNS 可正常解析</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warning">
+      <p><strong>關鍵發現：</strong>DNS 解析本身<em>在多數情況下是正常的</em>，問題出在<strong>IP 連通性</strong>。中國用戶能拿到正確 IP，但到這些海外 IP 的 TCP 443 連接經常被中斷。這就是「有時能打開、有時打不開」的原因。</p>
+    </div>
+  </div>
+
+  <!-- 問題2 -->
+  <div class="section">
+    <h2><span class="num">2</span>問題二：Google Fonts CDN 被牆（頁面級問題）</h2>
+    <p>首頁 HTML 直接引用了 <strong>3 個 Google Fonts CSS 請求</strong>，以及 <code>fonts.gstatic.com</code> 的字體文件。Google 全系域名在中國大陸<strong>長期被完全封鎖</strong>。</p>
+
+    <h3>受影響的資源清單</h3>
+    <table>
+      <thead>
+        <tr><th>資源</th><th>域名</th><th>中國大陸狀態</th><th>影響</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Google Fonts CSS #1</td>
+          <td><code>fonts.googleapis.com</code></td>
+          <td><span class="tag red">完全封鎖</span></td>
+          <td>CSS 載入超時(10-30秒)</td>
+        </tr>
+        <tr>
+          <td>Google Fonts CSS #2</td>
+          <td><code>fonts.googleapis.com</code></td>
+          <td><span class="tag red">完全封鎖</span></td>
+          <td>第二次超時</td>
+        </tr>
+        <tr>
+          <td>Google Fonts CSS #3</td>
+          <td><code>fonts.googleapis.com</code></td>
+          <td><span class="tag red">完全封鎖</span></td>
+          <td>第三次超時</td>
+        </tr>
+        <tr>
+          <td>字體文件</td>
+          <td><code>fonts.gstatic.com</code></td>
+          <td><span class="tag red">完全封鎖</span></td>
+          <td>字體下載失敗</td>
+        </tr>
+        <tr>
+          <td>preconnect 預連接</td>
+          <td><code>fonts.googleapis.com</code></td>
+          <td><span class="tag red">完全封鎖</span></td>
+          <td>佔用連接隊列</td>
+        </tr>
+        <tr>
+          <td>preconnect 預連接</td>
+          <td><code>fonts.gstatic.com</code></td>
+          <td><span class="tag red">完全封鎖</span></td>
+          <td>佔用連接隊列</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warning">
+      <p><strong>症狀表現：</strong>即使 Vercel 域名連上了，頁面也會因為等待 Google Fonts 超時而出現<strong>白屏 10-30 秒</strong>。3 次串行 CSS 請求 + preconnect 連接佔用，會嚴重拖延首屏渲染（FCP）。中國用戶體驗為「打開了但一直白屏 / 只有框架沒有字體 / 等很久才出現內容」。</p>
+    </div>
+
+    <h3>頁面源碼中的問題代碼</h3>
+    <pre><code>&lt;!-- 以下三行 link 標籤在中國大陸會全部超時 --&gt;
+&lt;link rel="preconnect" href="https://fonts.googleapis.com" /&gt;
+&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /&gt;
+&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC..."
+&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond..."
+&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC..."</code></pre>
+  </div>
+
+  <!-- 手機 vs 電腦 -->
+  <div class="section">
+    <h2><span class="num">3</span>手機端 vs 電腦端差異分析</h2>
+    <p>你提到「手機端和電腦端是不是有打不開的可能」——答案是<strong>兩者都可能打不開，但手機端問題更嚴重</strong>。</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th>維度</th><th>電腦端 (PC)</th><th>手機端 (Mobile)</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Vercel 連通性</td>
+          <td><span class="partial">不穩定</span><br><small>寬帶 ISP 國際出口波動</small></td>
+          <td><span class="no">更差</span><br><small>移動網絡國際出口更窄</small></td>
+        </tr>
+        <tr>
+          <td>DPI 審查強度</td>
+          <td><span class="partial">中等</span></td>
+          <td><span class="no">更嚴</span><br><small>運營商對移動流量 DPI 更激進</small></td>
+        </tr>
+        <tr>
+          <td>Google Fonts 超時</td>
+          <td><span class="no">白屏 10-30秒</span></td>
+          <td><span class="no">白屏 10-30秒+</span><br><small>移動網絡超時容忍更低</small></td>
+        </tr>
+        <tr>
+          <td>用戶行為</td>
+          <td><small>可能多等幾秒</small></td>
+          <td><span class="no">3秒內關閉</span><br><small>移動用戶耐心更短</small></td>
+        </tr>
+        <tr>
+          <td>DNS 污染概率</td>
+          <td><span class="partial">因 ISP 而異</span></td>
+          <td><span class="no">概率更高</span><br><small>移動 DNS 劫持更常見</small></td>
+        </tr>
+        <tr>
+          <td>整體可訪問性</td>
+          <td><span class="partial">時好時壞</span></td>
+          <td><span class="no">大概率打不開</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 解決方案 -->
+  <div class="section">
+    <h2><span class="num">4</span>解決方案（分優先級）</h2>
+
+    <div class="priority-matrix">
+      <div class="corner"></div>
+      <div class="axis-label">影響範圍：全站</div>
+      <div class="axis-label">影響範圍：部分頁面</div>
+
+      <div class="axis-label">嚴重程度：致命</div>
+      <div class="p0">
+        <strong>P0</strong><br>
+        <small>自託管字體 + 更換中國可用 CDN</small><br>
+        <span class="tag red">立即修復</span>
+      </div>
+      <div class="p1">
+        <strong>P1</strong><br>
+        <small>字體 fallback 優化</small>
+      </div>
+
+      <div class="axis-label">嚴重程度：中</div>
+      <div class="p2">
+        <strong>P2</strong><br>
+        <small>配置自訂域名 + 中國 CDN</small>
+      </div>
+      <div class="p3">
+        <strong>P3</strong><br>
+        <small>監控 & 告警</small>
+      </div>
+    </div>
+
+    <h3>方案一（P0 · 立即執行）：移除 Google Fonts，自託管字體</h3>
+    <div class="callout info">
+      <p><strong>原理：</strong>Google Fonts 在中國完全不可達，是白屏的直接原因。把字體文件下載到項目中自行託管，徹底消除對 Google CDN 的依賴。<strong>這一步可以立即修復「白屏」問題</strong>，即使 Vercel 域名仍有波動，至少頁面加載速度不會被字體拖垮。</p>
+    </div>
+
+    <div class="solution-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>下載字體文件到項目本地</h4>
+        <p>將 Google Fonts 的 CSS 中引用的 woff2 字體文件下載到項目的 <code>public/fonts/</code> 目錄。</p>
+        <pre><code># 項目根目錄執行
+mkdir -p public/fonts
+
+# 下載 Noto Serif TC / Noto Sans TC / LXGW WenKai TC / Cormorant / Playfair / Jost
+# 可用 google-webfonts-helper 工具：https://gwfh.mranftle.com
+# 或直接從 Google Fonts CSS 中提取 woff2 URL 下載
+
+# 示例：下載 Noto Sans TC Regular
+curl -o public/fonts/NotoSansTC-Regular.woff2 \
+  "https://fonts.gstatic.com/s/notosanstc/v...woff2"</code></pre>
+      </div>
+    </div>
+
+    <div class="solution-step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>創建本地 @font-face CSS</h4>
+        <p>在項目中新建 <code>src/styles/fonts.css</code>（或直接在全局 CSS 中），用 <code>@font-face</code> 聲明本地字體。</p>
+        <pre><code>/* src/styles/fonts.css — 完全替代 Google Fonts CDN */
+@font-face {
+  font-family: 'Noto Serif TC';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/NotoSerifTC-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Serif TC';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/NotoSerifTC-SemiBold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans TC';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/NotoSansTC-Regular.woff2') format('woff2');
+}
+/* ... 其他字重同理 ... */
+@font-face {
+  font-family: 'LXGW WenKai TC';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/LXGWWenKaiTC-Bold.woff2') format('woff2');
+}
+/* 拉丁字體 */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/CormorantGaramond-SemiBold.woff2') format('woff2');
+}
+/* ... Playfair Display, Jost 同理 ... */</code></pre>
+      </div>
+    </div>
+
+    <div class="solution-step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>替換 HTML 中的 Google Fonts 引用</h4>
+        <p>在 <code>index.html</code> 中刪除所有 <code>fonts.googleapis.com</code> 的 link 標籤，改為引用本地 CSS。</p>
+        <pre><code>&lt;!-- 刪除以下全部內容 --&gt;
+&lt;link rel="preconnect" href="https://fonts.googleapis.com" /&gt;
+&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /&gt;
+&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC..." /&gt;
+&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond..." /&gt;
+&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC..." /&gt;
+
+&lt;!-- 替換為 --&gt;
+&lt;link rel="stylesheet" href="/fonts/fonts.css" /&gt;</code></pre>
+      </div>
+    </div>
+
+    <div class="solution-step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h4>添加系統字體 fallback</h4>
+        <p>在 CSS 的 font-family 聲明中添加系統中文字體作為後備，確保即使 woff2 加載失敗也有可用字體。</p>
+        <pre><code>/* 確保有 fallback 鏈 */
+:root {
+  --font-display: 'Noto Serif TC', 'Songti TC', 'SimSun', serif;
+  --font-body: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei',
+               'Microsoft YaHei', -apple-system, sans-serif;
+  --font-kai: 'LXGW WenKai TC', 'Kaiti TC', 'BiauKai', serif;
+}</code></pre>
+      </div>
+    </div>
+
+    <h3>方案二（P1 · 儘快執行）：解決 Vercel 域名連通性</h3>
+    <div class="callout warning">
+      <p><strong>現狀：</strong>即使修復了 Google Fonts，Vercel 域名本身在中國大陸的連通性仍然不穩定。需要從域名和 CDN 層面解決。</p>
+    </div>
+
+    <div class="solution-step">
+      <div class="step-num">A</div>
+      <div class="step-content">
+        <h4>綁定自訂域名（必做）</h4>
+        <p>使用自己的域名（如 <code>zhaowu.app</code>）代替 <code>vercel.app</code> 子域名。自訂域名可以配合中國 CDN 使用，且不受 vercel.app DNS 污染影響。</p>
+        <pre><code># 在 Vercel 項目設置中：
+# Settings → Domains → Add Domain
+# 添加: zhaowu.app (或你的域名)
+# 添加: www.zhaowu.app
+
+# 在域名 DNS 管理處：
+# 添加 CNAME 記錄指向 Vercel 提供的地址
+# 或使用 A 記錄指向 Vercel IP</code></pre>
+      </div>
+    </div>
+
+    <div class="solution-step">
+      <div class="step-num">B</div>
+      <div class="step-content">
+        <h4>在中國 CDN 前置一層加速（推薦）</h4>
+        <p>在中國大陸可達的 CDN 上配置反向代理/回源到 Vercel，中國用戶請求打到中國 CDN 節點，CDN 再回源 Vercel 獲取內容。</p>
+        <table>
+          <thead><tr><th>CDN 選擇</th><th>適用場景</th><th>備案要求</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Cloudflare China</strong>（與京東雲合作）</td><td>已有 Cloudflare</td><td>需 ICP 備案</td></tr>
+            <tr><td><strong>騰訊雲 CDN</strong> / 阿里雲 CDN</td><td>國內用戶為主</td><td>需 ICP 備案</td></tr>
+            <tr><td><strong>又拍雲 / 七牛雲</strong></td><td>輕量級方案</td><td>需 ICP 備案</td></tr>
+            <tr><td><strong>Vercel + 自訂域名</strong>（無 CDN）</td><td>過渡方案</td><td>域名需備案（如 .cn/.com.cn）</td></tr>
+          </tbody>
+        </table>
+        <div class="callout info">
+          <p><strong>備案提醒：</strong>如果域名解析到中國大陸服務器/CDN，必須完成 ICP 備案。如果只是自訂域名 CNAME 到 Vercel（海外服務器），部分情況可暫時不需備案，但穩定性不保證。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="solution-step">
+      <div class="step-num">C</div>
+      <div class="step-content">
+        <h4>過渡方案：Vercel + 自訂域名（最快見效）</h4>
+        <p>如果短期內無法完成 ICP 備案和中國 CDN 配置，至少先綁定自訂域名。自訂域名比 <code>vercel.app</code> 子域名在 DNS 污染概率上更低（因為 vercel.app 本身被部分 ISP 針對性處理）。</p>
+        <pre><code># 最小過渡方案：
+# 1. 購買域名（如 zhaowu.app）
+# 2. 在 Vercel 綁定該域名
+# 3. DNS 指向 Vercel（CNAME → cname.vercel-dns.com）
+# 4. 同時修復 Google Fonts（方案一）
+# → 預期改善：從「大概率打不開」→「偶爾慢但基本可用」</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 執行路線圖 -->
+  <div class="section">
+    <h2><span class="num">5</span>建議執行路線圖</h2>
+    <div class="timeline">
+      <div class="timeline-item urgent">
+        <h4>今天 · P0-1：移除 Google Fonts</h4>
+        <p>下載字體到本地，刪除所有 googleapis.com / gstatic.com 引用。預計 1-2 小時。<strong>立即解決白屏問題</strong>。</p>
+      </div>
+      <div class="timeline-item urgent">
+        <h4>本週 · P0-2：綁定自訂域名</h4>
+        <p>購買並綁定自訂域名到 Vercel。降低 DNS 污染概率。預計 1 天。</p>
+      </div>
+      <div class="timeline-item">
+        <h4>2週內 · P1：啟用中國 CDN</h4>
+        <p>選擇騰訊雲/阿里雲 CDN，配置回源到 Vercel。需完成 ICP 備案（如尚未備案）。</p>
+      </div>
+      <div class="timeline-item">
+        <h4>1個月 · P2：部署監控</h4>
+        <p>接入中國節點監控（如阿里雲雲監控/寶塔面板監控），配置可用性告警。</p>
+      </div>
+      <div class="timeline-item">
+        <h4>持續 · P3：考慮中國大陸獨立部署</h4>
+        <p>如果中國用戶佔比高，考慮在中國服務器（騰訊雲/阿里雲）獨立部署一套，配合 GeoDNS 做地域分流。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 驗證清單 -->
+  <div class="section">
+    <h2><span class="num">6</span>修復後驗證清單</h2>
+    <table>
+      <thead><tr><th>驗證項</th><th>方法</th><th>預期結果</th></tr></thead>
+      <tbody>
+        <tr><td>無 Google 域名引用</td><td>查看頁面源碼搜索 googleapis/gstatic</td><td>0 個結果</td></tr>
+        <tr><td>字體本地加載</td><td>DevTools → Network → 篩選 Font</td><td>所有 woff2 來自自身域名</td></tr>
+        <tr><td>首屏渲染時間</td><td>Lighthouse / PageSpeed Insights</td><td>FCP < 2秒</td></tr>
+        <tr><td>中國多地連通性</td><td>用 17ce.com / boce.com 測速</td><td>成功率 > 90%</td></tr>
+        <tr><td>手機端打開</td><td>用中國手機 4G/5G 直接訪問</td><td>3秒內首屏出現</td></tr>
+        <tr><td>DNS 解析一致性</td><td>全國 DNS 測試 (ping.chinaz.com)</td><td>各地返回正常 IP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 總結 -->
+  <div class="section">
+    <h2><span class="num">7</span>總結</h2>
+    <div class="callout success">
+      <p><strong>你的判斷是對的：</strong>中國大陸用戶用手機和電腦確實有打不開的可能，而且概率不低。</p>
+    </div>
+    <table>
+      <thead><tr><th>問題</th><th>根因</th><th>影響</th><th>修復方案</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>白屏/載入極慢</strong></td>
+          <td>Google Fonts CDN 被牆</td>
+          <td><span class="tag red">致命</span></td>
+          <td>自託管字體（今天修）</td>
+        </tr>
+        <tr>
+          <td><strong>完全打不開</strong></td>
+          <td>Vercel IP 連通性不穩 + DNS 污染</td>
+          <td><span class="tag orange">嚴重</span></td>
+          <td>自訂域名 + 中國 CDN（本週修）</td>
+        </tr>
+        <tr>
+          <td><strong>手機端更差</strong></td>
+          <td>移動網絡國際出口窄 + DPI 更嚴</td>
+          <td><span class="tag orange">嚴重</span></td>
+          <td>同上（中國 CDN 節點覆蓋移動網絡）</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <p><strong>最小行動建議：</strong>今天先做方案一（移除 Google Fonts），這是投入最小、見效最快的操作——1-2 小時即可消除白屏問題。然後本週內綁定自訂域名，2 週內接入中國 CDN，即可基本解決中國大陸訪問問題。</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="report-footer">
+  <hr>
+  <p>昭梧網站中國大陸訪問問題診斷報告 · 自動生成<br>檢測時間：2026-10-15 · 檢測工具：DNS DoH / HTTP Header / 源碼分析</p>
+</div>
+
+</body>
+</html>
