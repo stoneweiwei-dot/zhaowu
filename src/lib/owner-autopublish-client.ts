@@ -42,6 +42,7 @@ export type AutopublishOverview = {
     instagram: boolean;
     threadsAccounts: Array<{ id: string; username: string; expiresAt: string | null }>;
     targets: { instagram: string; threads: string };
+    oauth?: { ready: boolean; redirectUri: string };
   };
   bank?: { total: number; next: { key: string; text: string } | null };
   schedule?: { cronHourUtc: number; todayIsPublishDay: boolean; upcoming: string[] };

@@ -56,6 +56,13 @@ function Pill({ tone, children }: { tone: keyof typeof TONE_CLASS; children: Rea
   return <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${TONE_CLASS[tone]}`}>{children}</span>;
 }
 
+function threadsErrorText(code: string) {
+  if (code.includes("OWNER_REQUIRED")) return "後台登入已過期。請重新登入後台，再按一次。";
+  if (code.includes("ORIGIN_REJECTED")) return "請從 stone-zhaowu-official.vercel.app 這個網址打開後台再按，換網域的話授權會失敗。";
+  if (code.includes("THREADS_OAUTH_NOT_CONFIGURED")) return "伺服器還沒設定 Meta 應用（META_APP_ID / META_APP_SECRET）。";
+  return `無法開始授權：${code || "未知錯誤"}`;
+}
+
 async function copyText(text: string) {
   try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
 }
@@ -64,6 +71,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
   const [data, setData] = useState<AutopublishOverview | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState(initialNotice);
+  const [threadsStatus, setThreadsStatus] = useState<{ tone: "info" | "error"; text: string; url?: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [draftBody, setDraftBody] = useState("");
@@ -83,6 +91,17 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
   }, []);
 
   useEffect(() => { void reload(); }, [reload]);
+
+  async function connectThreads() {
+    setThreadsStatus({ tone: "info", text: "正在準備 Threads 授權頁…" });
+    try {
+      const url = await startThreadsConnection();
+      setThreadsStatus({ tone: "info", text: "正在前往 Threads。到了之後請登入並按「允許」。如果沒有自動跳轉，請點下面的按鈕。", url });
+      window.setTimeout(() => window.location.assign(url), 400);
+    } catch (err) {
+      setThreadsStatus({ tone: "error", text: threadsErrorText(err instanceof Error ? err.message : "") });
+    }
+  }
 
   async function act(task: () => Promise<unknown>, success = "") {
     setBusy(true);
@@ -228,9 +247,26 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
                 ))}
               </ul>
             ) : <p className="mt-3 text-sm leading-6 text-ink-soft">按下按鈕，用 Threads 帳號授權一次，之後就不用再碰。{data.channels?.targets.threads ? `已鎖定發布到 @${data.channels.targets.threads}。` : ""}</p>}
-            <button type="button" disabled={busy} className="mt-3 min-h-11 rounded-full border border-line bg-cream px-4 text-sm text-ink disabled:opacity-50" onClick={() => void act(async () => { window.location.assign(await startThreadsConnection()); })}>
+            <button type="button" disabled={busy || threadsStatus?.tone === "info"} className="mt-3 min-h-11 rounded-full bg-wood px-5 text-sm text-cream disabled:opacity-60" onClick={() => void connectThreads()}>
               {threadsConnected ? "新增另一個 Threads 帳號" : "連接 Threads"}
             </button>
+            {threadsStatus ? (
+              <div role={threadsStatus.tone === "error" ? "alert" : "status"} className={`mt-3 rounded-md border px-3 py-3 text-sm leading-6 ${threadsStatus.tone === "error" ? "border-cinnabar/30 bg-cinnabar/5 text-cinnabar-deep" : "border-line bg-paper/70 text-ink-soft"}`}>
+                {threadsStatus.text}
+                {threadsStatus.url ? <a href={threadsStatus.url} className="mt-2 flex min-h-11 items-center justify-center rounded-full border border-line bg-cream px-4 text-ink">前往 Threads 授權</a> : null}
+              </div>
+            ) : null}
+            {!threadsConnected ? (
+              <details className="mt-2 text-sm text-ink-soft">
+                <summary className="min-h-11 cursor-pointer py-3 text-ink">按了之後沒有看到「允許」？</summary>
+                <ol className="list-decimal space-y-1 pl-5 leading-6">
+                  <li>授權頁在 Threads 網站上，不是彈窗。要在已登入 @{data.channels?.targets.threads || "你的帳號"} 的瀏覽器（Safari）裡做；如果跳進 Threads App，回到 Safari 重按。</li>
+                  <li>Meta 開發者後台 → 你的應用 → Threads API → 把這個 Threads 帳號加為「Threads 測試人員」，再到 Threads App：設定 → 帳號 → 網站權限 → 邀請，按「接受」。</li>
+                  <li>同一頁的「有效的 OAuth 重新導向 URI」要填：{data.channels?.oauth?.redirectUri ? <code className="break-all rounded bg-paper px-1">{data.channels.oauth.redirectUri}</code> : "（讀取中）"}</li>
+                  {data.channels?.oauth && !data.channels.oauth.ready ? <li className="text-cinnabar">伺服器還沒設定 Meta 應用金鑰，這一步會失敗。</li> : null}
+                </ol>
+              </details>
+            ) : null}
           </article>
           <article className="rounded-xl border border-line bg-paper/40 p-4">
             <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Instagram</h4><Pill tone={data.channels?.instagram ? "ok" : "mute"}>{data.channels?.instagram ? "已設定" : "未設定"}</Pill></div>
