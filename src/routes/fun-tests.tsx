@@ -1,3 +1,4 @@
+import { pickElementArt } from "@/lib/quiz-result-art";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { ConcealedSacredResultArt } from "@/components/concealed-sacred-result-art";
@@ -386,7 +387,7 @@ function FunTestsIndex() {
             {elementScore.overdrive ? <p className="mt-4 rounded-xl border border-cinnabar/25 bg-paper px-4 py-3 text-sm leading-6 text-ink">{elementUi.overdrive}</p> : null}
           </article>
 
-          <ConcealedSacredResultArt locale={locale} seed={`element:${elementScore.primary}`} title={`${elementResult.name}｜${elementResult.title}`} kind="element" />
+          <ConcealedSacredResultArt locale={locale} seed={`element:${elementScore.primary}`} title={`${elementResult.name}｜${elementResult.title}`} kind="element" imageSrc={pickElementArt(elementScore.primary, elementAnswers, elementScore.secondary)} />
 
           <article className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
             <h3 className="font-display text-xl text-ink">{elementUi.actionsTitle}</h3>
