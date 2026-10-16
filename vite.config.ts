@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { execFileSync } from "node:child_process";
+import { copyFileSync, existsSync, mkdirSync } from "node:fs";
 import { defineConfig, type Plugin } from "vite";
 
 function resolveReleaseId() {
@@ -48,6 +49,28 @@ function writeGeneratedPublicAssets(): Plugin {
   };
 }
 
+/**
+ * Self-host the ffmpeg.wasm core (owner-only audio optimiser) so it no longer depends on jsDelivr.
+ * The 31 MB binary is copied from the pinned devDependency into dist at build time and is never committed.
+ */
+function selfHostFfmpegCore(): Plugin {
+  const files = ["ffmpeg-core.js", "ffmpeg-core.wasm"];
+  return {
+    name: "zhaowu-selfhost-ffmpeg-core",
+    apply: "build",
+    closeBundle() {
+      const from = "node_modules/@ffmpeg/core/dist/esm";
+      const to = "dist/vendor/ffmpeg-core";
+      if (!files.every((f) => existsSync(`${from}/${f}`))) {
+        console.warn("zhaowu-selfhost-ffmpeg-core: @ffmpeg/core not installed; owner optimiser falls back to jsDelivr.");
+        return;
+      }
+      mkdirSync(to, { recursive: true });
+      for (const f of files) copyFileSync(`${from}/${f}`, `${to}/${f}`);
+    },
+  };
+}
+
 export default defineConfig({
   base: "/",
   define: {
@@ -55,6 +78,7 @@ export default defineConfig({
   },
   plugins: [
     writeGeneratedPublicAssets(),
+    selfHostFfmpegCore(),
     tailwindcss(),
     tanstackRouter({ target: "react", autoCodeSplitting: true }),
     tsconfigPaths(),

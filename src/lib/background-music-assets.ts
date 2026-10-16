@@ -8,8 +8,9 @@ const MAX_SOURCE_BYTES = 120 * 1024 * 1024;
 
 const FFMPEG_MODULE_URL = "https://esm.sh/@ffmpeg/ffmpeg@0.12.15?bundle";
 const FFMPEG_CLASS_WORKER_URL = "https://esm.sh/@ffmpeg/ffmpeg@0.12.15/dist/esm/worker.js?bundle";
-const FFMPEG_CORE_URL = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js";
-const FFMPEG_WASM_URL = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm";
+// Same-origin copy first (copied into dist at build time); jsDelivr stays only as a fallback.
+const FFMPEG_CORE_URLS = ["/vendor/ffmpeg-core/ffmpeg-core.js", "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js"];
+const FFMPEG_WASM_URLS = ["/vendor/ffmpeg-core/ffmpeg-core.wasm", "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm"];
 
 export type BackgroundMusicAsset = {
   id: string;
@@ -110,10 +111,25 @@ export async function listOwnerBackgroundMusic(session: SupabaseSession): Promis
   return parse<BackgroundMusicAsset[]>(res);
 }
 
-async function toBlobUrl(url: string, mimeType: string) {
-  const res = await fetch(url, { cache: "force-cache" });
-  if (!res.ok) throw new Error(`轉碼核心下載失敗（HTTP ${res.status}）。`);
-  return URL.createObjectURL(new Blob([await res.arrayBuffer()], { type: mimeType }));
+async function toBlobUrl(urls: string | string[], mimeType: string) {
+  const list = Array.isArray(urls) ? urls : [urls];
+  let lastError: Error | null = null;
+  for (const url of list) {
+    try {
+      const res = await fetch(url, { cache: "force-cache" });
+      if (!res.ok) throw new Error(`轉碼核心下載失敗（HTTP ${res.status}）。`);
+      // A dev server / SPA rewrite answers unknown paths with index.html (HTTP 200); never treat that as the core.
+      if ((res.headers.get("content-type") || "").includes("text/html")) throw new Error("轉碼核心下載失敗（收到網頁而非核心檔）。");
+      const bytes = await res.arrayBuffer();
+      if (mimeType === "application/wasm" && !(bytes.byteLength > 4 && new Uint8Array(bytes, 0, 4).join(",") === "0,97,115,109")) {
+        throw new Error("轉碼核心下載失敗（檔案不是有效的 WebAssembly）。");
+      }
+      return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+    }
+  }
+  throw lastError ?? new Error("轉碼核心下載失敗。");
 }
 
 async function loadFfmpeg(onProgress?: (progress: MusicUploadProgress) => void): Promise<FfmpegLike> {
@@ -123,8 +139,8 @@ async function loadFfmpeg(onProgress?: (progress: MusicUploadProgress) => void):
 
   const ffmpeg = new imported.FFmpeg();
   const [coreURL, wasmURL, classWorkerURL] = await Promise.all([
-    toBlobUrl(FFMPEG_CORE_URL, "text/javascript"),
-    toBlobUrl(FFMPEG_WASM_URL, "application/wasm"),
+    toBlobUrl(FFMPEG_CORE_URLS, "text/javascript"),
+    toBlobUrl(FFMPEG_WASM_URLS, "application/wasm"),
     toBlobUrl(FFMPEG_CLASS_WORKER_URL, "text/javascript"),
   ]);
   try {

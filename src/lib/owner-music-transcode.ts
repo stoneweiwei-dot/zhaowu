@@ -2,8 +2,9 @@ import { decodeOwnerAudioPcm, encodeDecodedOwnerMp3 } from "@/lib/owner-music-na
 
 const FFMPEG_MODULE_URL = "https://esm.sh/@ffmpeg/ffmpeg@0.12.15?bundle";
 const FFMPEG_CLASS_WORKER_URL = "https://esm.sh/@ffmpeg/ffmpeg@0.12.15/dist/esm/worker.js?bundle";
-const FFMPEG_CORE_URL = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js";
-const FFMPEG_WASM_URL = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm";
+// Same-origin copy first (copied into dist at build time); jsDelivr stays only as a fallback.
+const FFMPEG_CORE_URLS = ["/vendor/ffmpeg-core/ffmpeg-core.js", "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js"];
+const FFMPEG_WASM_URLS = ["/vendor/ffmpeg-core/ffmpeg-core.wasm", "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm"];
 
 const TARGET_UPLOAD_BYTES = 3_550_000;
 export const MAX_OWNER_UPLOAD_BYTES = 12 * 1024 * 1024;
@@ -80,11 +81,25 @@ export async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, mes
   }
 }
 
-async function toBlobUrl(url: string, mimeType: string) {
-  const r = await withTimeout(fetch(url, { cache: "force-cache" }), CORE_LOAD_TIMEOUT_MS, "音訊優化器下載逾時，請確認網路後再試。");
-  if (!r.ok) throw new Error(`音訊轉碼核心載入失敗（HTTP ${r.status}）。`);
-  const bytes = await withTimeout(r.arrayBuffer(), CORE_LOAD_TIMEOUT_MS, "音訊優化器讀取逾時，請重新再試。");
-  return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
+async function toBlobUrl(urls: string | string[], mimeType: string) {
+  const list = Array.isArray(urls) ? urls : [urls];
+  let lastError: Error | null = null;
+  for (const url of list) {
+    try {
+      const r = await withTimeout(fetch(url, { cache: "force-cache" }), CORE_LOAD_TIMEOUT_MS, "音訊優化器下載逾時，請確認網路後再試。");
+      if (!r.ok) throw new Error(`音訊轉碼核心載入失敗（HTTP ${r.status}）。`);
+      // A dev server / SPA rewrite answers unknown paths with index.html (HTTP 200); never treat that as the core.
+      if ((r.headers.get("content-type") || "").includes("text/html")) throw new Error("音訊轉碼核心載入失敗（收到網頁而非核心檔）。");
+      const bytes = await withTimeout(r.arrayBuffer(), CORE_LOAD_TIMEOUT_MS, "音訊優化器讀取逾時，請重新再試。");
+      if (mimeType === "application/wasm" && !(bytes.byteLength > 4 && new Uint8Array(bytes, 0, 4).join(",") === "0,97,115,109")) {
+        throw new Error("音訊轉碼核心載入失敗（檔案不是有效的 WebAssembly）。");
+      }
+      return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+    }
+  }
+  throw lastError ?? new Error("音訊轉碼核心載入失敗。");
 }
 
 export async function loadFfmpeg(onProgress?: (p: OwnerMusicOptimizeProgress) => void, noun = "音訊"): Promise<FfmpegLike> {
@@ -96,7 +111,7 @@ export async function loadFfmpeg(onProgress?: (p: OwnerMusicOptimizeProgress) =>
   );
   if (!imported.FFmpeg) throw new Error("無法載入音訊優化器，請重新整理後再試。");
   const ffmpeg = new imported.FFmpeg();
-  const [coreURL, wasmURL, classWorkerURL] = await Promise.all([toBlobUrl(FFMPEG_CORE_URL,"text/javascript"), toBlobUrl(FFMPEG_WASM_URL,"application/wasm"), toBlobUrl(FFMPEG_CLASS_WORKER_URL,"text/javascript")]);
+  const [coreURL, wasmURL, classWorkerURL] = await Promise.all([toBlobUrl(FFMPEG_CORE_URLS,"text/javascript"), toBlobUrl(FFMPEG_WASM_URLS,"application/wasm"), toBlobUrl(FFMPEG_CLASS_WORKER_URL,"text/javascript")]);
   const blobs = [coreURL, wasmURL, classWorkerURL];
   const forgetBlobs = () => { for (const url of blobs) URL.revokeObjectURL(url); };
   try {
