@@ -68,6 +68,17 @@ const I18N = {
 } as const;
 
 const selectValues: readonly TimePrecision[] = ["minute", "five_minutes", "fifteen_minutes", "two_hours", "unknown"];
+const precisionEnglishDetail: Record<TimePrecision, string> = {
+  second: "Second-level precision; D60 still requires an independent verified calculator.",
+  minute: "Minute-level precision; D60 requires a ±2-minute stability check.",
+  five_minutes: "Approximate five-minute record: rising degrees, houses and divisional signs may shift.",
+  fifteen_minutes: "Approximate fifteen-minute record: Lagna, house boundaries and nakshatra can change.",
+  two_hours: "Only stable planetary signs: Lagna, vargas, SAV and dasha are withheld.",
+  unknown: "Only stable planetary signs across the local civil day are shown.",
+};
+const precisionExplanation = (precision: TimePrecision, locale: Locale) =>
+  locale === "en" ? precisionEnglishDetail[precision] : TIME_PRECISION_RULES[precision].detail;
+
 const precisionEnglish: Record<TimePrecision, string> = {
   second: "Recorded second", minute: "Recorded minute", five_minutes: "Within 5 minutes",
   fifteen_minutes: "Within 15 minutes", two_hours: "Within 2 hours", unknown: "Unknown",
@@ -286,10 +297,10 @@ export function IndianAstrologyPage() {
             {selectValues.map(key => <option key={key} value={key}>{locale === "en" ? precisionEnglish[key] : TIME_PRECISION_RULES[key].label}</option>)}
           </select>
           {birth.timeUnknown ? <p className="mt-2 text-sm text-ink-soft">{copy.timeUnknown}</p> : null}
-          <p className="mt-3 text-sm leading-7 text-ink-soft">{TIME_PRECISION_RULES[effectivePrecision].detail}</p>
+          <p className="mt-3 text-sm leading-7 text-ink-soft">{precisionExplanation(effectivePrecision, locale)}</p>
           <details className="mt-2 text-xs leading-6 text-ink-soft"><summary>{copy.check}</summary>
             <ul className="mt-2 list-disc pl-5">{Object.entries(TIME_PRECISION_RULES).map(([key,v]) =>
-              <li key={key}>{locale === "en" ? precisionEnglish[key as TimePrecision] : v.label} · {v.reliability} · {v.detail}</li>)}</ul>
+              <li key={key}>{locale === "en" ? precisionEnglish[key as TimePrecision] : v.label} · {v.reliability} · {precisionExplanation(key as TimePrecision, locale)}</li>)}</ul>
           </details>
           <p className="mt-2 text-xs text-ink-soft">Ayanamsa: Lahiri (project approximation). Raman / KP: {copy.unavailable}.</p>
         </section>
