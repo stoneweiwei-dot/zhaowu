@@ -49,6 +49,6 @@ test("prompt is grounded by allowed evidence and explicit missing-data rules",()
   const p=buildWesternReportPrompt(facts,config);
   assert.ok(p.system.includes("不能硬湊"));
   assert.ok(p.system.includes("不作判定"));
-  assert.ok(p.user.includes("transit"));
+  assert.ok(p.user.includes("不作判定"));
   assert.equal(p.chapters.length,10);
 });
