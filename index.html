@@ -30,33 +30,7 @@
           .catch(() => undefined);
       })();
     </script>
-    <!-- Non-blocking web fonts: blocked Google font hosts must never delay the first paint. Native fallback faces remain in CSS. -->
-    <!-- Canonical display typeface: declared as --font-display across the CSS authority chain
-         but never previously loaded as a web font, so it only ever rendered on devices with
-         Songti TC pre-installed (Apple only). Loading it here fixes CJK typography on
-         Android/Windows/Linux without touching any component or layout file. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <!-- Theme skins: Latin display faces so each skin has its own English type (zh stays on the CJK faces above). -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Playfair+Display:wght@500;700&family=Jost:wght@300;400;500;600&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <!-- ZW-FE-03: brush-kai display face for almanac titles (unicode-range sliced by Google). -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@700&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
+    <!-- China mainland: no Google Fonts. System stacks in CSS (Songti/PingFang/Iowan etc.) render immediately. -->
     <link rel="apple-touch-icon" href="/apple-touch-icon-r113.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-r113.png" />
     <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-r113-precomposed.png" />
