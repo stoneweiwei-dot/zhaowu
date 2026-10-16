@@ -6,6 +6,10 @@ const PAYMENT_LINKS = Object.freeze({
   // BaZi standalone: USD 4.99; the six-system bundle does not include BaZi.
   plink_1UP3HWFAzopdCCaxkt9pGy9Z: { product: "system", system: "bazi", amount: 499 },
   plink_1UPlUXFAzopdCCaxV59sdJfq: { product: "system", system: "bazi", amount: 990 },
+  // 2026-10-16 owner repricing: BaZi and Zi Wei single-system readings are USD 19.99.
+  // The USD 9.90 links above/below stay registered only for already-open or completed checkouts.
+  plink_1URIwkFAzopdCCax8ZVKkNPH: { product: "system", system: "bazi", amount: 1999 },
+  plink_1URIxFFAzopdCCaxRrt9wTyH: { product: "system", system: "ziwei", amount: 1999 },
   // 2026-10-11 repriced public links; legacy links remain accepted for already-open checkouts.
   plink_1UP3ogFAzopdCCaxRqhS5z8P: { product: "system", system: "ziwei", amount: 990 },
   plink_1UP3ohFAzopdCCaxFknNaARY: { product: "bundle", system: "ziwei", amount: 1999 },

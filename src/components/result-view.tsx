@@ -20,7 +20,7 @@ import { buildComplexDeterministicAnswer, buildComplexReasoningRequest, requestC
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
 import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
 import {
-  REPORT_ACCESS_PRODUCTS,
+  reportAccessPrice,
   resolveReportAccess,
   startReportCheckout,
   type ReportAccessLevel,
@@ -324,7 +324,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             </span>
             <div>
               <strong className="block text-sm text-ink">{locale === "en" ? "BaZi Full Reading" : locale === "zh-Hans" ? "八字命书完整深批" : "八字命書完整深批"}</strong>
-              <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.system.price}</span>
+              <span className="mt-1 block font-display text-lg text-cinnabar">{reportAccessPrice("system", "bazi").price}</span>
               <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Full BaZi reading, luck cycles and monthly guidance" : locale === "zh-Hans" ? "八字命书完整解读、大运流年与流月指引" : "八字命書完整解讀、大運流年與流月指引"}</p>
             </div>
             <button
@@ -333,7 +333,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
               onClick={() => void handleUnlock("system")}
               className="mt-3 w-full rounded-full bg-cinnabar py-2 text-xs font-medium text-cream hover:opacity-90 disabled:opacity-60"
             >
-              {purchasing === "system" ? "…" : (locale === "en" ? `Unlock ${REPORT_ACCESS_PRODUCTS.system.price}` : `解鎖 ${REPORT_ACCESS_PRODUCTS.system.price}`)}
+              {purchasing === "system" ? "…" : (locale === "en" ? `Unlock ${reportAccessPrice("system", "bazi").price}` : `解鎖 ${reportAccessPrice("system", "bazi").price}`)}
             </button>
           </div>
 

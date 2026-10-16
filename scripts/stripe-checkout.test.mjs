@@ -7,6 +7,7 @@ const checkout = await readFile(new URL("../supabase/functions/stripe-checkout/i
 const webhook = await readFile(new URL("../supabase/functions/stripe-webhook/index.ts", import.meta.url), "utf8");
 const migration = await readFile(new URL("../supabase/migrations/20261003170000_report_purchase_entitlements.sql", import.meta.url), "utf8");
 const repriceMigration = await readFile(new URL("../supabase/migrations/20261013025000_reprice_report_entitlements.sql", import.meta.url), "utf8");
+const system1999Migration = await readFile(new URL("../supabase/migrations/20261016200000_allow_system_1999_entitlement.sql", import.meta.url), "utf8");
 
 // 2026-10-10: quick is now a free new-user welcome gift (client-side
 // display only — see REPORT_ACCESS_PRODUCTS in report-access.ts). The
@@ -61,7 +62,7 @@ test("the webhook authenticates with a one-way token hash and trusts only known 
   assert.match(webhook, /INVALID_WEBHOOK_TOKEN/);
   assert.match(webhook, /event\.livemode !== true/);
   assert.match(webhook, /PAYMENT_LINKS\[linkId\]/);
-  assert.equal((webhook.match(/plink_/g) || []).length, 32);
+  assert.equal((webhook.match(/plink_/g) || []).length, 34);
   assert.doesNotMatch(webhook, /whsec_|STRIPE_WEBHOOK_SECRET|STRIPE_SECRET_KEY/);
 });
 
@@ -85,4 +86,8 @@ test("entitlements remain server-only, constrained and protected by RLS", () => 
   assert.match(repriceMigration, /amount_cents in \(199, 499, 990, 999, 1999\)/i);
   assert.match(repriceMigration, /product_id = 'system' and amount_cents in \(499, 990\)/i);
   assert.match(repriceMigration, /product_id = 'bundle' and amount_cents in \(999, 1999\)/i);
+  // 2026-10-16: BaZi / Zi Wei single-system readings are USD 19.99; the constraint must accept it additively.
+  assert.match(system1999Migration, /product_id = 'system' and amount_cents in \(499, 990, 1999\)/i);
+  assert.match(system1999Migration, /product_id = 'bundle' and amount_cents in \(999, 1999\)/i);
+  assert.doesNotMatch(system1999Migration, /delete\s+from|truncate|drop\s+table/i);
 });
