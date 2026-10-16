@@ -1,5 +1,15 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-16 西洋占星十大行星深度旁證（PR #772，尚未正式上線）
+
+- PENDING／PR ONLY：現有 `/astrology` 保留七曜古典視角與既有 `ReportAccessGate`，額外增加獨立的現代十行星（太陽至冥王星）熱帶黃經、主要相位、全十二宮落星分布與 A/B/C 宮位主題，免費統計與付費人生方向分層。
+- 計算來源使用現有本站自家託管 `/vendor/astronomy-engine-2.1.19.browser.min.js`，不用未核准的 Swiss Ephemeris 專業授權，也不建立新付費 SaaS／第二部署。七曜舊源與現代十星源分開標示；不得假裝兩者已完成精度同源化。
+- A＝1/8/9/12、B＝2/6/10、C＝3/4/5/7/11。每組同時列原始顆數與每宮密度；兩套排名不一致、交界不穩或資料不足時不強定人生主軸。這是占星文化象意而非八字十神換算，更不得用數量決定人格、富貴或健康。
+- 已知時間但未核對出生證明的分鐘最高只標 `medium`；出生證明分鐘已確認且 ±2 分鐘落宮穩定才允許 `high`；未知時間或 Placidus 不成立時落宮／宮位主題降為 `low`，不得自動改宮制隱瞞。
+- 排盤資料的本地 IndexedDB、JSON 匯入匯出僅為西占副本；不額外寫站主 Supabase、不修改共享出生資料、會員或付款授權。付費解鎖維持既有 server-side entitlement 驗證，不採裝置旗標繞過付款。
+- 印度占星是獨立 D1/D60 旁證入口，不因宮位意義相似就判定互證成功；原有 `/indian-astrology` 的分鐘校驗與 D60 算法不變。
+- TEST／RELEASE：先核對新程式的 TypeScript、十星算例與 iPhone Safari 客戶路徑，符合站主核准的一次正式部署策略後才 merge；PR 存在不等於已部署或驗證。
+
 ## 2026-10-15 Cloudflare 免費層置於 zhaowu.art 前方（站主核准；僅 DNS／代理設定，無程式變更）
 
 - ACTIVE：站主於 2026-10-15 明確指示以 Cloudflare 代理處理大陸可讀取問題。核准範圍＝Cloudflare **Free** 方案，僅用於 `zhaowu.art` 的 DNS 與橘雲代理；不新增 Workers／KV／R2／D1 等運行時資源，不產生費用（A$0/月）。
