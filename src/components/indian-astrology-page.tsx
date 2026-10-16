@@ -310,14 +310,17 @@ export function IndianAstrologyPage() {
           <p className="my-3 text-sm leading-7 text-ink-soft">{copy.basic} {copy.storage}</p>
           <p className="text-xs text-ink-soft">Reliability: {chart.reliability} · {chart.provenance}</p>
           <ChartArea chart={chart} locale={locale}/>
+          <section className="my-5 rounded-xl border border-line bg-paper/80 p-4" data-indian-quick-report>
+            <h2 className="font-display text-xl text-ink">{copy.summary}</h2>
+            <p className="mt-2 text-sm leading-7 text-ink-soft">{report?.directAnswer}</p>
+            <h3 className="mt-3 font-semibold text-ink">{copy.next}</h3>
+            <p className="text-sm leading-7 text-ink-soft">{report?.nextStep}</p>
+            <h3 className="mt-3 font-semibold text-ink">{copy.script}</h3>
+            <p className="text-sm leading-7 text-ink-soft">{report?.scriptTone}</p>
+          </section>
           <button type="button" className="my-4 rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink" onClick={() => exportChart(chart)}>{copy.export}</button>
           <ReportAccessGate system="indian" locale={locale} birth={birth} preview={report?.directAnswer}
-            quick={<div className="space-y-3" data-indian-quick-report>
-              <h2 className="font-display text-xl text-ink">{copy.summary}</h2>
-              <p>{report?.directAnswer}</p><h3>{copy.next}</h3><p>{report?.nextStep}</p>
-              <h3>{copy.script}</h3><p>{report?.scriptTone}</p>
-              <D60ReliabilityGate depth="quick" reportBirth={d60Birth}/>
-            </div>}
+            quick={<D60ReliabilityGate depth="quick" reportBirth={d60Birth}/>} 
             full={<>
               <ReadingContent chart={chart} locale={locale}/>
               <div className="mt-6"><D60ReliabilityGate reportBirth={d60Birth}/></div>
