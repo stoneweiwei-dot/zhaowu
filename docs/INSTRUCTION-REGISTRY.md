@@ -1,3 +1,9 @@
+## 2026-10-17 文章管理：站主編輯與下架
+
+- ACTIVE：`/account?view=articles` 提供站主 cookie 驗證的文章清單、繁中／簡中／英文標題／摘要／正文編輯、下架、還原及恢復原文；公開 `/knowledge` 與首頁讀取 `article_editor_overrides`，保留原文編譯資產與插圖／互動元件。一般訪客不得寫入，只有 `/api/owner-data` 同源 cookie bridge 能呼叫獨立的 `zhaowu-owner-articles` Edge Function 寫入。新增資料表 RLS 僅允許匿名讀，沒有匿名寫入政策。
+- ACTIVE：按站主要求，過時的中國大陸可訪問性診斷《昭梧網站在中國大陸的訪問診斷》從編譯文章名錄與靜態 HTML 完全移除，三語界面都不可再列出；其他文章與知識教學維持。
+- 不新增 Vercel serverless function，不另建 Production。編輯會立即影響公開內容；若公開 Supabase 查詢失敗，文章區暫停顯示以免下架稿件重新曝光，支付與排盤互不受影響。
+
 # 昭梧｜Instruction Registry
 
 ## 2026-10-17 黃曆仙佛聖誕名錄啟用與擴充
