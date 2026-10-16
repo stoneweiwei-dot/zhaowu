@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { StellarLifeCycleInteractive } from "@/components/stellar-life-cycle-interactive";
 import { Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 import type { LifeViewArticle } from "@/lib/life-view";
@@ -225,6 +226,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
               {isOpen ? (
                 <div className="mt-4 border-l border-cinnabar/20 pl-4 text-[15px] leading-8 text-ink">
                   <div className="mb-3 flex items-center justify-between gap-3 text-xs text-ink-mute"><time dateTime={article.publishedAt}>{article.publishedAt}</time><span>{viewsLabel(article.id)}</span></div>
+                  {article.id === "stellar-life-cycle-interactive" ? <StellarLifeCycleInteractive /> : null}
                   {paragraphs.map((paragraph, paragraphIndex) => {
                     const illustration = article.illustrations?.find((item) => item.afterParagraph === paragraphIndex + 1);
                     return (
