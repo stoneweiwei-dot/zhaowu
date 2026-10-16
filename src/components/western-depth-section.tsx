@@ -4,7 +4,7 @@ import {
   TEN_PLANETS, analyzeWesternChart, westernGroupNarrative,
   type WesternAnalysis, type WesternLocale, type WesternPlacement,
 } from "@/lib/astrology/deep-engine";
-import { computeAngles, computeHouses, houseOf, julianDay, type HouseSystem } from "@/lib/astrology/engine";
+import { computeAngles, computeHouses, houseOf, julianDay, ZODIAC_SIGNS, type HouseSystem } from "@/lib/astrology/engine";
 
 type Astronomy = {
   GeoVector: (body: string, date: Date, aberration: boolean) => unknown;
@@ -64,8 +64,8 @@ function localToUtc(b: SharedBirthRecord, hour: number, minute: number): Date {
   const target = [b.year,b.month,b.day,hour,minute].join(",");
   const matches: number[] = [];
   const localMs = Date.UTC(b.year,b.month-1,b.day,hour,minute);
-  for (let i = -18; i <= 18; i++) {
-    const ms = localMs + i * 60 * 60 * 1000;
+  for (let i = -72; i <= 72; i++) {
+    const ms = localMs + i * 15 * 60 * 1000;
     const record: Record<string, number> = {};
     for (const p of fmt.formatToParts(new Date(ms))) if (p.type !== "literal") record[p.type] = Number(p.value);
     if ([record.year,record.month,record.day,record.hour,record.minute].join(",") === target) matches.push(ms);
@@ -172,10 +172,10 @@ const planetNames: Record<string,Record<WesternLocale,string>> = {
   Pluto:{"zh-Hant":"冥王星","zh-Hans":"冥王星",en:"Pluto"},
 };
 
-export function WesternDepthSection({ birth, locale, mode }: {
+export function WesternDepthSection({ birth, locale, mode, houseSystem, onHouseSystemChange }: {
   birth: SharedBirthRecord; locale: WesternLocale; mode:"free"|"paid";
+  houseSystem: HouseSystem; onHouseSystemChange: (system: HouseSystem) => void;
 }) {
-  const [houseSystem,setHouseSystem] = useState<HouseSystem>("placidus");
   const [confirmed,setConfirmed] = useState(false);
   const [snapshot,setSnapshot] = useState<Snapshot | null>(null);
   const [error,setError] = useState("");
@@ -237,8 +237,8 @@ export function WesternDepthSection({ birth, locale, mode }: {
         window.dispatchEvent(new Event("zhaowu-western-minute"));
       }}/> {label("verified")}
     </label>:null}
-    <label>{locale==="en"?"House system":"宮位制"}{" "}
-      <select value={houseSystem} onChange={e=>setHouseSystem(e.target.value as HouseSystem)}>
+    <label>{locale==="en"?"Ten-planet house system (the classical wheel above remains Placidus)":"十大行星宮位制（上方古典星輪維持 Placidus）"}{" "}
+      <select value={houseSystem} onChange={e=>onHouseSystemChange(e.target.value as HouseSystem)}>
         <option value="placidus">Placidus</option><option value="whole">Whole Sign</option>
       </select>
     </label>
@@ -247,6 +247,9 @@ export function WesternDepthSection({ birth, locale, mode }: {
       {locale==="en"?" Houses confirmed ":" 已確認落宮 "}{analysis.houseCount}/10 ·
       {locale==="en"?" Reliability ":" 可靠度 "}{snapshot!.quality}</p>
       {analysis.houseCount!==10 ? <p>{label("withheld")}</p> : <p>{locale==="en"?"Main theme: ":"全盤主軸："}{analysis.leadingGroup?westernGroupNarrative(analysis.leadingGroup,locale).label:(locale==="en"?"mixed / not asserted":"混合／不強判")}</p>}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:8,marginTop:12}} aria-label={locale==="en"?"Ten planetary positions":"十大行星黃經"}>
+        {snapshot!.placements.map(p=><span key={p.key} style={{fontSize:"0.9em"}}>{planetNames[p.key][locale]}：{p.signReliable?ZODIAC_SIGNS[Math.floor(norm(p.longitude)/30)]:"?"} {p.longitude.toFixed(2)}°{p.retrograde?" R":""}</span>)}
+      </div>
       {analysis.houseCount ? <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8}}>
         {analysis.byHouse.map((number,i)=><span key={i}>{locale==="en"?"H":"宮"}{i+1}：{number}</span>)}
       </div>:null}
