@@ -10,7 +10,7 @@ import {
   type WesternAnalysis, type WesternLocale, type WesternPlacement,
 } from "./deep-engine";
 import {
-  ZODIAC_SIGNS, traditionalDignity,
+  ZODIAC_SIGNS, traditionalDignity, traditionalRuler, houseOf,
   type ChartAngles, type HouseChart, type ClassicalPlanetKey,
   type ModernPlanetKey,
 } from "./engine";
@@ -116,7 +116,18 @@ export function buildWesternReportChapters(f:WesternReportFacts, cfg:WesternRepo
   const entry=(keys:ModernPlanetKey[])=>keys.map(k=>e("planet."+k,position(k)));
   const occupants=(houses:number[])=>f.planets.filter(p=>p.house!==null&&houses.includes(p.house));
   const inH=(houses:number[])=>occupants(houses).map(p=>e("house."+p.house+"."+p.key,position(p.key)));
-  const angleEv=timeOK&&f.angles?[e("angle.asc","ASC "+fmt(f.angles.ascendant)+"°"),e("angle.mc","MC "+fmt(f.angles.mc)+"°")]:[];
+  const cuspEv=(houses:number[])=> timeOK&&f.houses? houses.map(h=>{
+    const longitude=f.houses!.cusps[h-1];
+    const signIndex=Math.floor(((longitude%360)+360)%360/30);
+    return e("cusp."+h,"H"+h+" "+ZZ[lang][signIndex]+" "+fmt(longitude%30)+"°; classical ruler "+traditionalRuler(signIndex));
+  }):[];
+  const mcHouse=timeOK&&f.houses&&f.angles?houseOf(f.angles.mc,{
+    system:f.houses.system,requestedSystem:f.houses.system,cusps:f.houses.cusps,
+  }):null;
+  const angleEv=timeOK&&f.angles?[
+    e("angle.asc","ASC "+fmt(f.angles.ascendant)+"°"),
+    e("angle.mc","MC "+fmt(f.angles.mc)+"°"+(mcHouse?" H"+mcHouse:"")),
+  ]:[];
   const generic=(text:string, action:string, evidence:Evidence[],number:number):ReportChapter=>({
     number,title:labels[number-1],status:evidence.length?"supported":"limited",
     evidence,summary:evidence.length?text:PLACEHOLDER[lang],action:advicePrefix(lang)+action,
@@ -129,7 +140,7 @@ export function buildWesternReportChapters(f:WesternReportFacts, cfg:WesternRepo
     note("本命十大行星以此盤星位為基礎，主題為："+mainTheme+"；這是詮釋線索，不是人格定律。",
       "Ten natal planets form the basis of this reading. Main theme: "+mainTheme+"; this is an interpretive lens."),
     note("對照自己的真實經歷，先鎖定一項最值得投入的議題。","Check this against your experience and select one useful area to focus on."),
-    [...entry(["Sun","Moon"]),...angleEv,...(timeOK?f.analysis.densities.map(g=>e("group."+g.group,g.group+" "+g.count+"/10")):[])],1));
+    [...entry(["Sun","Moon"]),...angleEv,...cuspEv([1]),...(timeOK?f.analysis.densities.map(g=>e("group."+g.group,g.group+" "+g.count+"/10")):[])],1));
   chapter.push(generic(
     note("以太陽看主動表達、月亮看情緒需要，再觀察命主星及上升是否有可靠資料。","Read the Sun as volition and Moon as emotional needs; chart ruler and Ascendant require verified birth time."),
     note("記錄高效時與壓力下的行為差異，不依單一星座貼標籤。","Compare your decisions in calm and stressed situations."),
@@ -137,23 +148,23 @@ export function buildWesternReportChapters(f:WesternReportFacts, cfg:WesternRepo
   chapter.push(generic(
     note("2／6／10 宮與 MC 是資源、日常技藝與公共角色的觀察入口；職涯適配還需現實經驗。","Houses 2/6/10 and MC describe themes of resources, craft and public contribution; real-world experience remains decisive."),
     note("列出可變現的能力、工作負荷和風險上限，再選擇發展方向。","Identify marketable skills, workload limits and risks before choosing a career move."),
-    [...inH([2,6,10]),...angleEv],3));
+    [...inH([2,6,10]),...cuspEv([2,6,10]),...angleEv],3));
   chapter.push(generic(
     note("金星、火星、月亮與第7宮提供關係偏好及行動風格的象徵視角，不決定婚姻結果。","Venus, Mars, Moon and house 7 provide symbolic lenses for attachment and action; they cannot determine relationship outcomes."),
     note("明確說出需求、界線與可以接受的合作方式。","State your needs and boundaries in plain language."),
-    [...entry(["Venus","Mars","Moon"]),...inH([7])],4));
+    [...entry(["Venus","Mars","Moon"]),...inH([7]),...cuspEv([7])],4));
   chapter.push(generic(
     note("第4宮、月亮與土星可用來討論家庭角色、情緒根基和責任分配；不對親屬貼性格標籤。","House 4, Moon and Saturn can frame domestic roles and responsibilities, not diagnose relatives."),
     note("把需要承擔與不必承擔的責任分開，維持自主生活節奏。","Separate your responsibilities from others' expectations."),
-    [...entry(["Moon","Saturn"]),...inH([4])],5));
+    [...entry(["Moon","Saturn"]),...inH([4]),...cuspEv([4])],5));
   chapter.push(generic(
     note("第6與12宮只討論生活規律、休息及壓力照護；不得據此推斷器官疾病。","Houses 6 and 12 address routine, rest and stress care, not bodily disease prediction."),
     note("優先使用睡眠、休息與可量測的現實健康指標；有症狀尋求醫療。","Use practical rest and health indicators, and seek medical care for symptoms."),
-    [...inH([6,12]),...entry(["Moon","Neptune"])],6));
+    [...inH([6,12]),...cuspEv([6,12]),...entry(["Moon","Neptune"])],6));
   chapter.push(generic(
     note("第9與12宮可作信念、自省與精神實踐的文化解讀；交點未核算時不杜撰靈魂歷史。","Houses 9 and 12 allow a symbolic reading of belief and introspection; uncomputed lunar nodes are not invented."),
     note("保留獨處、求知與現實行動的平衡。","Balance reflection with learning and action."),
-    [...inH([9,12])],7));
+    [...inH([9,12]),...cuspEv([9,12])],7));
   const validTransits=cfg.includeTransits?(f.transits??[]).filter(t=>Number.isFinite(Date.parse(t.utc))&&Number.isFinite(t.orb)&&t.orb>=0&&t.orb<=10):[];
   chapter.push(generic(
     note("列出已計算的行運相位與日期；沒有行運星曆資料就不宣稱未來事件。","Only verified transit aspects and dates are described; future events are never fabricated."),
@@ -182,6 +193,12 @@ export function buildWesternReportChapters(f:WesternReportFacts, cfg:WesternRepo
   chapter[6].evidence.push(...extra("vedic",f.vedic,cfg.includeVedic));
   for (const part of chapter) {
     part.status=part.evidence.length?"supported":"limited";
+    if (!timeOK && [1,2,3,4,5,6,7].includes(part.number)) {
+      part.status="limited";
+      part.summary+=(isEn?" Birth time does not support house- or angle-based conclusions.":
+        lang==="zh-Hans"?" 出生时间不足以确认宫位与四轴；相关部分不作判断。":
+        " 出生時間不足以確認宮位與四軸；相關部分不作判定。");
+    }
     if (!part.evidence.length) part.summary=PLACEHOLDER[lang];
   }
   const order=(cfg.order??Array.from({length:10},(_,i)=>i+1));
