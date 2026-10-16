@@ -9,8 +9,8 @@ import {
 } from "@/lib/shared-birth";
 import { localBirthToUtc } from "@/lib/qizheng/engine";
 import {
-  GRAHAS, TIME_PRECISION_RULES, SIGNS, type TimePrecision,
-  type BirthInput, type JyotishChartResult,
+  GRAHAS, TIME_PRECISION_RULES, type TimePrecision,
+  type BirthInput, type JyotishChartResult, type ChartPoint,
 } from "@/lib/indian-astrology/parashari-engine";
 import { calculateJyotishChart } from "@/lib/indian-astrology/parashari-engine";
 import { createBrowserJyotishEphemeris } from "@/lib/indian-astrology/browser-ephemeris";
@@ -140,7 +140,7 @@ function exportChart(chart: JyotishChartResult) {
 function ChartArea({ chart, locale }: { chart: JyotishChartResult; locale: Locale }) {
   const copy = I18N[locale];
   const d1 = chart.d1;
-  const showPoints = d1 ? ([
+  const showPoints: Array<readonly [string, ChartPoint]> = d1 ? ([
     ["Lagna", d1.lagna],
     ...GRAHAS.map(p => [p, d1.planets[p]] as const),
   ]) : [];
