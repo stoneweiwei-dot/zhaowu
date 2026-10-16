@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { readAutopublishOverview, type AutopublishOverview } from "@/lib/owner-autopublish-client";
+import { pendingManualChannels, readAutopublishOverview, type AutopublishOverview } from "@/lib/owner-autopublish-client";
 import type { ReportListRecord } from "@/lib/bridge/supabase-rest";
 
 export type OverviewTarget = "reports" | "autopublish" | "images" | "opening" | "themes";
@@ -39,7 +39,7 @@ export function ConsoleOverview({ reports, hasMoreReports, reportsLoading, onNav
     const threads = Boolean(auto.channels?.threads);
     if (!threads) todos.push({ tone: "bad", text: "Threads 還沒連接：連接前，任何自動發佈都不會發出貼文。", go: "autopublish", cta: "一鍵連接 Threads" });
     if (!auto.settings.enabled) todos.push({ tone: "warn", text: "自動發佈目前是暫停狀態。", go: "autopublish", cta: "前往開啟" });
-    const manual = (auto.items ?? []).filter((item) => item.status === "manual").length;
+    const manual = (auto.items ?? []).filter((item) => pendingManualChannels(item).length > 0).length;
     if (manual) todos.push({ tone: "warn", text: `有 ${manual} 則貼文等你手動發到小紅書 / Facebook / X。`, go: "autopublish", cta: "去處理" });
     const lastFail = (auto.items ?? []).find((item) => item.status === "failed" || item.status === "partial");
     if (lastFail) todos.push({ tone: "bad", text: `最近一次發佈${lastFail.status === "failed" ? "失敗" : "只成功一部分"}：${lastFail.last_error || "請看紀錄"}`, go: "autopublish", cta: "查看紀錄" });

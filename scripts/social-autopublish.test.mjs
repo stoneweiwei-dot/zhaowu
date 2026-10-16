@@ -111,3 +111,28 @@ test("owner 'publish now' ignores the weekday schedule and does not use the dail
   assert.equal(result.ran, true);
   assert.equal(state.claimed.slotDate, null);
 });
+
+function withThreads(g) {
+  return async (url, init) => {
+    if (String(url).includes("graph.threads.net")) return { ok: true, status: 200, json: async () => ({ id: "123", status: "FINISHED", permalink: "https://www.threads.com/@x/post/1" }) };
+    return g.fetchImpl(url, init);
+  };
+}
+const ENV_THREADS = { ...ENV, META_THREADS_USER_ID: "1", META_THREADS_ACCESS_TOKEN: "t".repeat(30) };
+
+test("Threads publishes and the manual channels stay visible as pending tasks (not lost behind 'published')", async () => {
+  const state = { settings: { enabled: true, publish_days: [5], channels: ["threads", "x", "xiaohongshu"] } };
+  const result = await runAutopublish({ env: ENV_THREADS, fetchImpl: withThreads(gateway(state)), now: FRIDAY });
+  assert.equal(result.status, "published");
+  assert.equal(state.finished.results.threads.ok, true);
+  assert.equal(state.finished.results.x.manual, true);
+  assert.equal(state.finished.results.xiaohongshu.manual, true);
+});
+
+test("Instagram without credentials/image becomes a manual task instead of a silent failure", async () => {
+  const state = { settings: { enabled: true, publish_days: [5], channels: ["threads", "instagram"] } };
+  const result = await runAutopublish({ env: ENV_THREADS, fetchImpl: withThreads(gateway(state)), now: FRIDAY });
+  assert.equal(result.status, "published");
+  assert.equal(state.finished.results.instagram.manual, true);
+  assert.equal(state.finished.results.threads.ok, true);
+});
