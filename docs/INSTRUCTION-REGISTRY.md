@@ -1,5 +1,14 @@
 # 昭梧｜Instruction Registry
 
+## 2026-10-16 西方占星十章客戶報告模板 V2.0（PR #772，同一分支）
+
+- PENDING：`docs/ASTROLOGY-REPORT-PROTOCOL-v2.md` 為本次十章報告正式規格；`src/lib/astrology/report-protocol.ts` 為純函式章節摘要與 AI Prompt Builder，不在瀏覽器自動呼叫計費模型。
+- 十章依序：總覽、自我、事業財富、關係、家庭、身心照顧、精神課題、未來 12–18 個月行運、特殊配置、綜合建議。輸出先結論、明示證據、利弊、行動；可調語氣、語系、目標字數與章節順序。
+- 限制：只接 Tropical 與已有 Placidus／Whole Sign；Sidereal ayanamsa、Alcabitius、北交點、福點、Chiron、完整行運與跨系統自動資料抓取尚未驗證；缺資料一律不判，不准由 LLM 虛構。Whole Sign 下 MC 不必在第十宮。
+- 付費全文繼續由原有 `ReportAccessGate` 驗證；不得因裝置本地資料、匯入 JSON 或前端旗標繞過付款。尚未接通正式 AI provider，不得宣稱有 3000–5000 字 AI 自動文稿。
+- 不使用命理推斷醫學診斷、疾病部位、一定婚嫁或災難；八字、紫微、印度占星僅具獨立計算證據且客人勾選時才作獨立旁證。
+- 新模板不改其他五個專項、八字主判、Stripe/Supabase/Owner 行為，不自動觸發額外 Vercel 部署。
+
 ## 2026-10-16 西洋占星十大行星深度旁證（PR #772，尚未正式上線）
 
 - PENDING／PR ONLY：現有 `/astrology` 保留七曜古典視角與既有 `ReportAccessGate`，額外增加獨立的現代十行星（太陽至冥王星）熱帶黃經、主要相位、全十二宮落星分布與 A/B/C 宮位主題，免費統計與付費人生方向分層。
