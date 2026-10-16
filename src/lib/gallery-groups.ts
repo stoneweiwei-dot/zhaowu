@@ -116,12 +116,17 @@ export function matchesOwnerGalleryGroup(asset: GalleryAsset, group: OwnerGaller
   if (asset.category !== "visual-library") return false;
 
   const official = isOfficialSongGalleryAsset(asset);
+  const bundled = asset.bucket_id === "public-fallback" && hasTag(asset, "bundled-report-art");
   if (group === "song-master") return official;
   if (group === "day-master") {
-    return official && hasTag(asset, "official-report-mother") && hasTag(asset, "day-master");
+    return hasTag(asset, "day-master") && (
+      (official && hasTag(asset, "official-report-mother")) || bundled
+    );
   }
   if (group === "month-command") {
-    return official && hasTag(asset, "official-report-mother") && hasTag(asset, "month-command");
+    return hasTag(asset, "month-command") && (
+      (official && hasTag(asset, "official-report-mother")) || bundled
+    );
   }
   if (group === "luck-five-elements") {
     return official && hasTag(asset, "official-report-mother") && hasTag(asset, "luck-five-elements");
@@ -134,7 +139,7 @@ export function matchesOwnerGalleryGroup(asset: GalleryAsset, group: OwnerGaller
   }
   if (group === "legacy") {
     return asset.bucket_id === "zhaowu-backgrounds"
-      || (!official && !hasTag(asset, "owner-upload") && !hasTag(asset, "auspicious") && !hasTag(asset, "ornament"));
+      || (!official && !bundled && !hasTag(asset, "owner-upload") && !hasTag(asset, "auspicious") && !hasTag(asset, "ornament"));
   }
   return false;
 }
