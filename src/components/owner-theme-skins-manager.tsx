@@ -74,6 +74,12 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
                   <p className="mt-1 text-sm leading-6 text-ink-soft">{tr(locale, "東方甲乙木：葉化青龍、煙嵐青峰、春雨柳亭、夜雨竹林；整站換裝。", "东方甲乙木：叶化青龙、烟岚青峰、春雨柳亭、夜雨竹林；整站换装。", "Eastern green-wood: leaf dragon, misty peaks, spring-rain willow, night bamboo rain — a full-site set.")}</p>
                 </div>
               ) : null}
+              {s.ref === 19 ? (
+                <div className="sm:col-span-2 border-t border-line/70 pt-5" data-private-art-skin-collection>
+                  <h3 className="font-display text-lg text-ink">{tr(locale, "畫中六景 · 私藏畫作", "画中六景 · 私藏画作", "Six Painted Scenes · Private Art")}</h3>
+                  <p className="mt-1 text-sm leading-6 text-ink-soft">{tr(locale, "取自圖庫私人上傳的無字完整畫作：曉日雲龍、月下荷舟、竹瀑漁舟、荷舟仙羽、粉蓮雲溪、蝶戀荷塘；首頁與全站同步換裝。", "取自图库私人上传的无字完整画作：晓日云龙、月下荷舟、竹瀑渔舟、荷舟仙羽、粉莲云溪、蝶恋荷塘；首页与全站同步换装。", "Text-free paintings from the private uploads; the homepage and every page change together.")}</p>
+                </div>
+              ) : null}
               <article className={`overflow-hidden rounded-xl border bg-paper/40 ${active ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"}`}>
               <button type="button" onClick={() => setPreview({ src: `/theme-previews/${s.id}.jpg`, alt: `${name(s)} · ${tr(locale, "實際首頁排版", "实际首页排版", "Actual homepage layout")}` })} className="block w-full bg-paper/40 p-3 text-left" aria-label={`${name(s)} · ${tr(locale, "查看完整首頁", "查看完整首页", "View full homepage")}`}>
                 <img src={`/theme-previews/${s.id}.jpg`} alt={`${name(s)} · ${tr(locale, "實際首頁排版", "实际首页排版", "Actual homepage layout")}`} loading="lazy" width="390" height="844" className="mx-auto h-80 w-auto max-w-full object-contain object-top" />

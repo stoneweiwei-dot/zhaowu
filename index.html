@@ -44,8 +44,11 @@
       (function () {
         try {
           var k = "pastel-koi";
-          var dark = k === "night-flute" || k === "night-palace" || k === "verdant-rain";
+          // Last theme the server confirmed (see PUBLISHED_SKIN_CACHE_KEY); avoids the koi flash.
+          try { var c = localStorage.getItem("zhaowu.skin.published.v1"); if (c && /^[a-z][a-z0-9-]+$/.test(c)) k = c; } catch (e2) {}
           var r = document.documentElement;
+          if (k === "none") return;
+          var dark = k === "night-flute" || k === "night-palace" || k === "verdant-rain";
           r.setAttribute("data-zws", k);
           r.setAttribute("data-zws-mode", dark ? "dark" : "light");
           if (dark) r.setAttribute("data-zw-theme", "night");

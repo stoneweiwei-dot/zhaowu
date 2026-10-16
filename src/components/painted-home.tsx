@@ -5,6 +5,11 @@ import { BrandIcon } from '@/components/brand-icon';
 import { HomeTree } from '@/components/home-tree';
 
 type Section = 'form' | 'today' | 'quiz' | 'notes';
+/** Skins whose painting is clean enough to show at full strength behind the home title. */
+const FULL_PAINTING_HOMES = new Set([
+  'pastel-koi', 'dragon-lotus', 'lotus-boat', 'night-flute', 'day-flute', 'cloud-jade',
+  'dawn-dragon', 'moon-lotus-boat', 'bamboo-falls', 'petal-immortal', 'pink-lotus-stream', 'butterfly-lotus',
+]);
 export function homeComposition(skin: SkinDef | null) {
   // Product lock from owner refs: day = koi (1st image); night = scroll (2nd image).
   if (skin?.mode === 'dark') return 'scroll';
@@ -19,20 +24,17 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   const t = (zh: string, hans: string, en: string) => locale === 'en' ? en : locale === 'zh-Hans' ? hans : zh;
   const layout = homeComposition(skin);
   const dark = skin?.mode === 'dark';
-  const art = layout === 'koi'
-    ? '/theme-skins/reference-koi.webp'
-    : layout === 'scroll' && dark
-      ? (skin?.hero || '/theme-skins/reference-dragon.webp')
-      : (skin?.hero || '/theme-skins/reference-koi.webp');
+  // Every skin shows ITS OWN painting; the koi painting is only the no-skin / pastel-koi default.
+  const art = skin?.hero || (dark ? '/theme-skins/reference-dragon.webp' : '/theme-skins/reference-koi.webp');
   const style = {
     '--ph-art': `url("${art}")`, '--ph-paper': skin?.swatch[0] || '#f7efdf',
     '--ph-ink': dark ? '#f8eace' : '#203f36', '--ph-muted': dark ? '#dfdacb' : '#595447',
     '--ph-accent': dark ? '#e1bd7d' : skin?.swatch[1] || '#557f79',
     '--ph-on-accent': dark ? '#142b32' : '#fff9e9',
   } as CSSProperties;
-  return <section className="zw-painted-home" data-composition={layout} data-reference-art={!skin || ['pastel-koi','dragon-lotus','lotus-boat','night-flute','day-flute','cloud-jade'].includes(skin.id)} data-tone={dark ? 'dark' : 'light'} style={style}>
+  return <section className="zw-painted-home" data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id)} data-tone={dark ? 'dark' : 'light'} data-title-veil={layout === 'koi' && Boolean(skin) && skin?.id !== 'pastel-koi'} style={style}>
     <div className="ph-hero">
-      <img className="ph-hero-art" src={art} alt="" fetchPriority="high" width="1248" height="1248" />
+      <img className="ph-hero-art" src={art} alt="" fetchPriority="high" width="1248" height="1248" style={skin?.focus ? { objectPosition: skin.focus } : undefined} />
       <a className="ph-brand" href="/" aria-label="昭梧 Zhaowu"><strong>昭梧</strong><small>Z H A O W U</small></a>
       <div className="ph-title">
         {layout === 'comic' ? <><h1>{t('命理不只是答案，\n更是看見自己的另一種方式。','命理不只是答案，\n更是看见自己的另一种方式。','Another way to\nunderstand yourself.')}</h1></> : layout === 'koi' ? <><h1>昭<br/>梧</h1><p>{t('觀天地之氣，\n照你心中之梧。', '观天地之气，\n照你心中之梧。', 'See the world clearly.\nFind your own way.')}</p><small>{t('以東方智慧，尋見更清明的自己。', '以东方智慧，寻见更清明的自己。', 'Eastern wisdom, a clearer sense of self.')}</small></> : <><h1>{t('順應天時\n看見更好的選擇', '顺应天时\n看见更好的选择', 'Find your rhythm.\nSee your next step.')}</h1><p className="ph-motto">{t('命 · 勢 · 選', '命 · 势 · 选', 'LIFE · TIMING · CHOICE')}</p><small>{t('在變動的時代，找到屬於你的節奏', '在变动的时代，找到属于你的节奏', 'Find your own rhythm in a changing world.')}</small></>}
