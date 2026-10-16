@@ -41,7 +41,7 @@
 `src/lib/astrology/report-protocol.ts` 匯出：
 - `validateWesternReportFacts(facts)`：計算依據與欄位前置檢查。
 - `buildWesternReportChapters(facts, config)`：純資料的十章個人化摘要，**不呼叫 AI**。
-- `buildWesternReportPrompt(facts, config)`：封裝 AI 系統指令及證據化使用者輸入。字數目標預設 4000 字元，可設定 1800–5500；**尚未連線或授權任何模型**。
+- `buildWesternReportPrompt(facts, config)`：封裝 AI 系統指令及證據化使用者輸入。字數目標預設 4000 字元，可設定 3000–5000；**尚未連線或授權任何模型**。
 
 正式接 AI 時，採**伺服器驗證 entitlement → 對資料來源/輸入 schema 驗證 → 最小必要個資傳遞 → 固定 system prompt → 輸出 evidence ID 檢查 → 缺資料退回可追溯規則摘要**。
 不得直接讓瀏覽器呼叫計費 AI、上傳私人命盤給任意第三方、使用未同意個資的外部背景，或在未付費狀態取得 AI 全文。
