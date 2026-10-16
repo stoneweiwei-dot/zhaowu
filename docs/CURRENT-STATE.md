@@ -18,7 +18,7 @@ Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batch
 
 - 2026-10-15：開場影片 60 秒內完整播放；全站預設 English（中文瀏覽器才預設中文）；首頁版本更新與站主入口移至頁尾；換頁淡入；付費區新增優惠碼（`promo-code` Edge Function，與 Stripe 分離）。細節見 Instruction Registry 同日條目。
 - 2026-10-16：測驗結果圖改接圖庫——`/quiz/divine-affinity` 依答案（主本緣＋次本緣＋作答序列的穩定雜湊）從 `public/quiz-art/divine/` 已審核畫像挑圖，五行測驗（`/fun-tests?test=element`）依主元素接已通過 QC 的天干畫作；線條 SVG 只在圖片載入失敗時作備援。動物測驗與六道測驗圖庫目前沒有真實對應畫像，仍用 SVG。選圖邏輯在 `src/lib/quiz-result-art.ts`。
-- 2026-10-15：中國大陸可讀取／可登入——正式站（`stone-zhaowu-official.vercel.app`）及自訂網域（`zhaowu.art`、`soul-terminal.com`）訪客端 Supabase 請求一律改走同網域 `/sb/*` Vercel rewrite，站主背景音樂改走同網域 `/api/owner-music?track=<id>` 代理串流（不再重導向至 jsDelivr），天文腳本改自家託管（細節見 Instruction Registry 同日條目）。
+- 2026-10-15：中國大陸可讀取／可登入——唯一正式站（`stone-zhaowu-official.vercel.app`）訪客端 Supabase 請求一律改走同網域 `/sb/*` Vercel rewrite，站主背景音樂改走同網域 `/api/owner-music?track=<id>` 代理串流（不再重導向至 jsDelivr），天文腳本改自家託管（細節見 Instruction Registry 同日條目）。
 
 
 ## 0.1 Complex question answering — 2026-10-07
