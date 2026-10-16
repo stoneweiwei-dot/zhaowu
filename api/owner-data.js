@@ -28,7 +28,18 @@ const ACTIONS = new Set([
   "gallery.setLoginCurrent",
   "gallery.delete",
   "upload.abort",
+  // Owner promo-code console. Same owner gate as everything above, but forwarded to its own isolated
+  // Edge Function (see PROMO_FUNCTION) so the report/gallery function is never touched.
+  "promo.list",
+  "promo.create",
+  "promo.update",
+  "promo.setActive",
 ]);
+
+const PROMO_FUNCTION = "zhaowu-owner-promo";
+export function ownerUpstreamFunction(action) {
+  return String(action).startsWith("promo.") ? PROMO_FUNCTION : "zhaowu-owner-data";
+}
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -155,7 +166,7 @@ export default async function handler(req, res) {
       }
     }
     if (!ACTIONS.has(action)) return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
-    const upstream = await fetch(`${supabaseUrl()}/functions/v1/zhaowu-owner-data`, {
+    const upstream = await fetch(`${supabaseUrl()}/functions/v1/${ownerUpstreamFunction(action)}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

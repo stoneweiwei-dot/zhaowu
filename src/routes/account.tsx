@@ -18,11 +18,12 @@ import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 
 const OwnerGalleryManager = lazy(() => import("@/components/owner-gallery-manager").then((m) => ({ default: m.OwnerGalleryManager })));
 const OwnerLoginVisualsManager = lazy(() => import("@/components/owner-login-visuals-manager").then((m) => ({ default: m.OwnerLoginVisualsManager })));
+const PromoPanel = lazy(() => import("@/components/owner/promo-panel").then((m) => ({ default: m.PromoPanel })));
 const AutopublishPanel = lazy(() => import("@/components/owner/autopublish-panel").then((m) => ({ default: m.AutopublishPanel })));
 const OwnerThemeSkinsManager = lazy(() => import("@/components/owner-theme-skins-manager").then((m) => ({ default: m.OwnerThemeSkinsManager })));
 import { ConsoleOverview, type OverviewTarget } from "@/components/owner/console-overview";
-type ConsoleView = "overview" | "reports" | "autopublish" | "images" | "opening" | "themes";
-const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "autopublish", "images", "opening", "themes"];
+type ConsoleView = "overview" | "reports" | "autopublish" | "images" | "opening" | "themes" | "promo";
+const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "autopublish", "images", "opening", "themes", "promo"];
 
 /** Initial tab: `?view=` (used by the Threads OAuth return) otherwise the overview. */
 function initialConsoleView(): ConsoleView {
@@ -349,6 +350,7 @@ function AccountPage() {
             ["images", tr(locale, "背景與圖片", "背景与图片", "Images")],
             ["opening", tr(locale, "開場影片", "开场视频", "Opening video")],
             ["themes", tr(locale, "主題皮膚", "主题皮肤", "Themes")],
+            ["promo", tr(locale, "優惠碼", "优惠码", "Promo codes")],
           ] as [ConsoleView, string][]).map(([view, label]) => (
             <button
               key={view}
@@ -498,6 +500,9 @@ function AccountPage() {
       </div>
       <div id="console-panel-themes" role="region" aria-labelledby="console-tab-themes" hidden={consoleView !== "themes"}>
         {visitedViews.has("themes") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入主題…", "加载主题…", "Loading themes…")}</p>}><OwnerThemeSkinsManager locale={locale} /></Suspense> : null}
+      </div>
+      <div id="console-panel-promo" role="region" aria-labelledby="console-tab-promo" hidden={consoleView !== "promo"}>
+        {visitedViews.has("promo") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入優惠碼…", "加载优惠码…", "Loading promo codes…")}</p>}><PromoPanel /></Suspense> : null}
       </div>
       <div id="console-panel-autopublish" role="region" aria-labelledby="console-tab-autopublish" hidden={consoleView !== "autopublish"}>
         {visitedViews.has("autopublish") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入自動發佈…", "加载自动发布…", "Loading auto-publish…")}</p>}><AutopublishPanel initialNotice={threadsNotice} /></Suspense> : null}
