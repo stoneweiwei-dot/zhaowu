@@ -6,7 +6,7 @@
 
 /* ── 1. skin tokens ───────────────────────────────────────────────────────── */
 html[data-zws] {
-  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "PMingLiU", serif;
+  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif;
   --zws-font-en: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, "Times New Roman", serif;
   --zws-radius: 18px;
   --zws-radius-sm: 12px;

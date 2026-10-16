@@ -69,7 +69,7 @@
   border-radius: 0;
   background: linear-gradient(180deg, transparent, rgba(249, 241, 225, .82));
   color: rgba(68, 54, 38, .68);
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 9px;
   line-height: 1.45;
   letter-spacing: .04em;
@@ -94,7 +94,7 @@
 .zhaowu-luck-visual-card > span {
   display: block;
   color: rgba(71, 58, 42, .72);
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 11px;
   letter-spacing: .08em;
   text-align: center;
