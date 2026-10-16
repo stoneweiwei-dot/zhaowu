@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ARTICLE_CATALOG } from "@/components/life-view-home-section";
-import { applyArticleOverrides, type ArticleOverride } from "@/lib/article-overrides";
+import type { ArticleOverride } from "@/lib/article-overrides";
 import { ownerData } from "@/lib/owner-data-client";
 import type { Locale } from "@/lib/i18n";
 import type { LifeViewArticle } from "@/lib/life-view";
@@ -34,7 +34,12 @@ export function OwnerArticleManager({ locale }: { locale: Locale }) {
 
   const entries = useMemo(() => ARTICLE_CATALOG.map((base) => {
     const override = rows.find((row) => row.id === base.id);
-    const merged = applyArticleOverrides([base], override && !override.archived ? [override] : [])[0];
+    const merged = override ? {
+      ...base,
+      title: { ...base.title, ...(override.title ?? {}) },
+      summary: { ...base.summary, ...(override.summary ?? {}) },
+      body: { ...base.body, ...(override.body ?? {}) },
+    } : base;
     return { base, article: merged, archived: Boolean(override?.archived), changed: Boolean(override?.body || override?.title || override?.summary) };
   }), [rows]);
   const selected = entries.find((item) => item.base.id === selectedId);
