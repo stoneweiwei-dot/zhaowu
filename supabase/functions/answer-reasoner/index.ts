@@ -47,7 +47,6 @@ function allowedOrigin(origin: string | null) {
     const url = new URL(origin);
     if (
       url.hostname === "stone-zhaowu-official.vercel.app" ||
-      url.hostname === "zhaowu.soul-terminal.com" ||
       (url.hostname.startsWith("stone-zhaowu-official-") && url.hostname.endsWith(".vercel.app")) ||
       url.hostname === "localhost" ||
       url.hostname === "127.0.0.1"
