@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ConcealedSacredResultArt } from "@/components/concealed-sacred-result-art";
+import { RealmEmblemArt } from "@/components/realm-emblem-art";
 import { useI18n } from "@/lib/i18n";
 import { SIX_REALM_QUESTIONS, SIX_REALM_RESULTS, scoreSixRealmAnswers, type SixRealmKey } from "@/lib/fun-tests/six-realms";
 
@@ -158,7 +158,7 @@ function SixRealmsQuiz() {
         </section>
       ) : (
         <section className="space-y-4">
-          <ConcealedSacredResultArt locale={locale} seed={`six-realms:${finalScore.primary.join("-")}`} title={sacredTitle} kind="realm" />
+          <RealmEmblemArt locale={locale} realm={finalScore.primary[0]} title={sacredTitle} />
 
           <article className="seal-border rounded-2xl bg-cream/95 p-5 sm:p-8">
             <p className="text-xs tracking-[0.24em] text-cinnabar">{finalScore.tied ? copy.mixed : copy.primary}</p>
