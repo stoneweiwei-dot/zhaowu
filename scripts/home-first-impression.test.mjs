@@ -5,6 +5,7 @@ import test from "node:test";
 const source = await readFile(new URL("../src/components/analysis-form.tsx", import.meta.url), "utf8");
 const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
 const painted = await readFile(new URL("../src/components/painted-home.tsx", import.meta.url), "utf8");
+const tree = await readFile(new URL("../src/components/home-tree.tsx", import.meta.url), "utf8");
 const heroCss = await readFile(new URL("../src/painted-home.css", import.meta.url), "utf8");
 
 test("homepage first impression is birth-first, followed by the chart and then the question", () => {
@@ -31,7 +32,8 @@ test("question sheet is concise and explicitly answer-first", () => {
 
 
 test("hero offers one quiet birth-book entry that opens the existing form instead of a second flow", () => {
-  assert.match(painted, /id: 'form', title: t\('命書', '命书', 'Your reading'\)/);
+  assert.match(tree, /id: 'form'[\s\S]*title: t\('我的命盤', '我的命盘', 'My chart'\)/);
+  assert.match(tree, /section: 'form'/);
   assert.match(painted, /data-home-birth-entry/);
   assert.match(painted, /onOpen\('form'\)/);
   assert.match(home, /openBirthBook/);

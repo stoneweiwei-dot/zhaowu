@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { StellarLifeCycleInteractive } from "@/components/stellar-life-cycle-interactive";
 import { Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 import type { LifeViewArticle } from "@/lib/life-view";
@@ -225,6 +226,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
               {isOpen ? (
                 <div className="mt-4 border-l border-cinnabar/20 pl-4 text-[15px] leading-8 text-ink">
                   <div className="mb-3 flex items-center justify-between gap-3 text-xs text-ink-mute"><time dateTime={article.publishedAt}>{article.publishedAt}</time><span>{viewsLabel(article.id)}</span></div>
+                  {article.id === "stellar-life-cycle-interactive" ? <StellarLifeCycleInteractive /> : null}
                   {paragraphs.map((paragraph, paragraphIndex) => {
                     const illustration = article.illustrations?.find((item) => item.afterParagraph === paragraphIndex + 1);
                     return (
@@ -251,6 +253,12 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                       </Fragment>
                     );
                   })}
+
+                  {article.id === "china-accessibility-diagnosis" ? (
+                    <a href="/articles/china-accessibility-diagnosis.html" target="_blank" rel="noreferrer" className="mt-6 inline-flex min-h-11 items-center rounded-full border border-cinnabar/30 bg-cream px-5 py-2 text-sm font-medium text-cinnabar">
+                      {locale === "en" ? "Read the full report in Chinese" : locale === "zh-Hans" ? "阅读完整诊断报告" : "閱讀完整診斷報告"} →
+                    </a>
+                  ) : null}
                   {article.id === "strength-overdrive-five-elements" ? (
                     <Link to="/quiz/five-element-overdrive" className="mt-6 inline-flex min-h-11 items-center rounded-full border border-cinnabar/30 bg-cream px-5 py-2 text-sm font-medium text-cinnabar">
                       {copy.quizCta} →

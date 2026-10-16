@@ -30,33 +30,7 @@
           .catch(() => undefined);
       })();
     </script>
-    <!-- Non-blocking web fonts: blocked Google font hosts must never delay the first paint. Native fallback faces remain in CSS. -->
-    <!-- Canonical display typeface: declared as --font-display across the CSS authority chain
-         but never previously loaded as a web font, so it only ever rendered on devices with
-         Songti TC pre-installed (Apple only). Loading it here fixes CJK typography on
-         Android/Windows/Linux without touching any component or layout file. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <!-- Theme skins: Latin display faces so each skin has its own English type (zh stays on the CJK faces above). -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Playfair+Display:wght@500;700&family=Jost:wght@300;400;500;600&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <!-- ZW-FE-03: brush-kai display face for almanac titles (unicode-range sliced by Google). -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@700&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
+    <!-- China mainland: no Google Fonts. System stacks render immediately. -->
     <link rel="apple-touch-icon" href="/apple-touch-icon-r113.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-r113.png" />
     <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-r113-precomposed.png" />
@@ -67,7 +41,6 @@
     <script>
       (function () {
         try {
-          // Shared owner selection replaces this after load; old device choices never override it.
           var k = "pastel-koi";
           var dark = k === "night-flute" || k === "night-palace" || k === "verdant-rain";
           var r = document.documentElement;
@@ -82,8 +55,6 @@
         try {
           var savedLanguage = localStorage.getItem("zhaowu.display-language");
           if (["zh-Hant", "zh-Hans", "en"].indexOf(savedLanguage) === -1) {
-            /* Owner 2026-10-15: English unless the browser reports a Chinese locale. Same rule as
-               detectDefaultLocale() in src/lib/i18n.ts; not persisted, so it is never mistaken for a choice. */
             savedLanguage = "en";
             var tags = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
             for (var i = 0; i < tags.length; i++) {
@@ -94,7 +65,6 @@
             }
           }
           document.documentElement.lang = savedLanguage;
-          /* Night mode is switched off (owner 2026-10-03): always day, and drop any saved night choice. */
           if (localStorage.getItem("zhaowu.theme.v1") === "night") localStorage.setItem("zhaowu.theme.v1", "day");
         } catch (e) {}
       })();
@@ -120,6 +90,24 @@
     <meta name="twitter:description" content="昭梧以出生資料與傳統子平八字為基礎，整理個人命盤、人生節奏、今日提示與自我探索內容。" />
     <meta name="twitter:image" content="https://stone-zhaowu-official.vercel.app/og.jpg" />
     <meta name="twitter:image:alt" content="昭梧命理服務分享預覽" />
+    <style>
+      /* Inline critical styles so content is readable even if CSS/JS bundles fail (CN connectivity). */
+      html, body { margin: 0; padding: 0; background: #f7f2e8; color: #27241f;
+        font-family: "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei",
+          "Noto Sans TC", "Noto Sans SC", system-ui, sans-serif; line-height: 1.7; }
+      #root:empty, .zw-static-shell {
+        max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem;
+      }
+      .zw-static-shell h1 { font-size: 1.75rem; letter-spacing: 0.12em; margin: 0 0 1rem;
+        font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif; }
+      .zw-static-shell h2 { font-size: 1.15rem; margin: 1.75rem 0 0.6rem; letter-spacing: 0.08em; }
+      .zw-static-shell h3 { font-size: 1rem; margin: 1.1rem 0 0.35rem; }
+      .zw-static-shell p, .zw-static-shell li { color: #5a554c; font-size: 0.95rem; }
+      .zw-static-shell ul { padding-left: 1.25rem; }
+      .zw-static-shell a { color: #8f3027; }
+      .zw-static-note { margin-top: 2rem; padding: 0.9rem 1rem; border: 1px solid #d8c7a4;
+        border-radius: 8px; background: #fffdf7; font-size: 0.88rem; color: #5a554c; }
+    </style>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -183,39 +171,42 @@
     </script>
   </head>
   <body>
-    <div id="root"><main class="zw-static-shell" lang="zh-Hant" style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0"><!-- 非 JavaScript 讀取器（含 AI 抓取工具）的靜態摘要；React 掛載後會以完整介面取代，視覺上不可見。 -->
-      <h1>昭梧｜昭於未見，梧於有歸</h1>
-      <p>免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。</p>
-      <p>昭梧以出生資料與傳統子平八字為基礎，整理個人命盤、人生節奏、今日提示與自我探索內容。</p>
-      <h2>主要功能</h2>
-      <ul>
-        <li>八字排盤</li>
-        <li>子平八字</li>
-        <li>真太陽時校正</li>
-        <li>五行旺衰</li>
-        <li>大運與流年運勢</li>
-        <li>今日提示</li>
-      </ul>
-      <h2>常見問題</h2>
-      <h3>昭梧的八字排盤需要註冊登入嗎？</h3>
-      <p>不需要。輸入出生年月日、時間與出生地即可排盤並閱讀免費的三段式核心直斷；更深入的大運、流年與流月內容為單次解鎖，不設自動續費。</p>
-      <h3>什麼是真太陽時？為什麼八字要用它校正？</h3>
-      <p>真太陽時是依出生地經度與時區，把時鐘時間換算成當地太陽時間。出生時辰接近兩個時辰交界時，校正可能改變時柱，因此昭梧提供是否採用真太陽時的選項。</p>
-      <h3>子平八字是依據什麼來判斷的？</h3>
-      <p>以出生年、月、日、時四柱干支為基礎，看日主、月令、五行旺衰與十神關係；年柱以立春為界，月柱以節氣為界。</p>
-      <h3>流年運勢是怎麼產生的？是在預測事件嗎？</h3>
-      <p>依流年、流月干支與日主的十神關係，再結合用神與洩耗方向，以固定規則整理行動節奏提示。它是時機參考，不是事件預測，也不取代醫療、法律或投資的專業意見。</p>
-      <h2>頁面</h2>
-      <ul>
-        <li><a href="/knowledge">知識頁</a></li>
-        <li><a href="/updates">最新更新</a></li>
-        <li><a href="/daily-colors">每日色彩</a></li>
-        <li><a href="/privacy">隱私政策</a></li>
-        <li><a href="/terms">服務條款</a></li>
-        <li><a href="/copyright">版權聲明</a></li>
-      </ul>
-      <p>排盤、報告與登入等互動功能需要啟用 JavaScript。完整機器可讀摘要見 <a href="/llms.txt">/llms.txt</a>。</p>
-    </main></div>
+    <div id="root">
+      <main class="zw-static-shell" lang="zh-Hant">
+        <h1>昭梧｜昭於未見，梧於有歸</h1>
+        <p>免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。</p>
+        <p>昭梧以出生資料與傳統子平八字為基礎，整理個人命盤、人生節奏、今日提示與自我探索內容。</p>
+        <h2>主要功能</h2>
+        <ul>
+          <li>八字排盤</li>
+          <li>子平八字</li>
+          <li>真太陽時校正</li>
+          <li>五行旺衰</li>
+          <li>大運與流年運勢</li>
+          <li>今日提示</li>
+        </ul>
+        <h2>常見問題</h2>
+        <h3>昭梧的八字排盤需要註冊登入嗎？</h3>
+        <p>不需要。輸入出生年月日、時間與出生地即可排盤並閱讀免費的三段式核心直斷；更深入的大運、流年與流月內容為單次解鎖，不設自動續費。</p>
+        <h3>什麼是真太陽時？為什麼八字要用它校正？</h3>
+        <p>真太陽時是依出生地經度與時區，把時鐘時間換算成當地太陽時間。出生時辰接近兩個時辰交界時，校正可能改變時柱，因此昭梧提供是否採用真太陽時的選項。</p>
+        <h3>子平八字是依據什麼來判斷的？</h3>
+        <p>以出生年、月、日、時四柱干支為基礎，看日主、月令、五行旺衰與十神關係；年柱以立春為界，月柱以節氣為界。</p>
+        <h3>流年運勢是怎麼產生的？是在預測事件嗎？</h3>
+        <p>依流年、流月干支與日主的十神關係，再結合用神與洩耗方向，以固定規則整理行動節奏提示。它是時機參考，不是事件預測，也不取代醫療、法律或投資的專業意見。</p>
+        <h2>頁面</h2>
+        <ul>
+          <li><a href="/knowledge">知識頁</a></li>
+          <li><a href="/updates">最新更新</a></li>
+          <li><a href="/daily-colors">每日色彩</a></li>
+          <li><a href="/privacy">隱私政策</a></li>
+          <li><a href="/terms">服務條款</a></li>
+          <li><a href="/copyright">版權聲明</a></li>
+        </ul>
+        <p class="zw-static-note">完整排盤介面需要載入應用程式。若長時間停留在此頁，請稍後重試，或改用較穩定網路。</p>
+        <p>完整機器可讀摘要見 <a href="/llms.txt">/llms.txt</a>。</p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

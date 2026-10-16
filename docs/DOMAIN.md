@@ -7,11 +7,10 @@
 - 正式 URL：`https://stone-zhaowu-official.vercel.app/`
 - Canonical／Open Graph／Twitter 分享來源：同上
 - Netlify `archive-stone-zhaowu-official`：archive／compatibility only；自動 build 必須保持停用，不是 Production。
-- `zhaowu.soul-terminal.com`：預留正式子域名；DNS 尚未完成前不得取代 Vercel Production URL。
 
 ## DNS 規則
 
-主站 `soul-terminal.com` 與 `www` 繼續由原 WordPress 使用，不得改動。日後如啟用 `zhaowu.soul-terminal.com`，只新增 `zhaowu` 子域名並在 Vercel `stone-zhaowu-official` 完成 custom domain、DNS 與 TLS 驗證。
+目前本項目沒有自定義域名。站主若日後另行指定域名，才依下列步驟新增：在 Vercel `stone-zhaowu-official` 完成 custom domain、DNS 與 TLS 驗證，並由站主提供 DNS 權限。
 
 ## 禁止事項
 

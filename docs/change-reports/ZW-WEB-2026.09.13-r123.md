@@ -24,7 +24,7 @@ IntroGate 媒體與時長、D60 前台 Gate、專卷命盤可見性測試、Prod
 
 ## 驗證
 
-合併前要求 Deploy gate、Engine suite、iPhone Safari 全部通過。Safari 需確認：webdriver 下普通流程不被 10 秒 intro 拖死；force=1 時 Skip 在右下且 ≥44px；影片錯誤 fail-open；D60 確認前無「核心慣性」與 D60 盤；七政／紫微有生辰時顯示命盤；西洋七曜 7 列、十二宮 12 列、四軸 4 列。合併後必須確認 Vercel Production READY、exact SHA match。真實 iPhone 與 `zhaowu.soul-terminal.com` DNS 仍不能由 CI 代替。
+合併前要求 Deploy gate、Engine suite、iPhone Safari 全部通過。Safari 需確認：webdriver 下普通流程不被 10 秒 intro 拖死；force=1 時 Skip 在右下且 ≥44px；影片錯誤 fail-open；D60 確認前無「核心慣性」與 D60 盤；七政／紫微有生辰時顯示命盤；西洋七曜 7 列、十二宮 12 列、四軸 4 列。合併後必須確認 Vercel Production READY、exact SHA match。真實 iPhone 與 自定義域名 DNS 仍不能由 CI 代替。
 
 ## 回滾
 
