@@ -43,14 +43,18 @@ export async function handle(req: Request, env: Runtime = fromEnv()): Promise<Re
     const { error } = await table.delete().eq("id", id);
     return error ? json({ ok: false, error: "ARTICLE_STORE_ERROR" }, 502) : json({ ok: true, id });
   }
+  const { data: existing, error: existingError } = await table.select("id").eq("id", id).maybeSingle();
+  if (existingError) return json({ ok: false, error: "ARTICLE_STORE_ERROR" }, 502);
   if (action === "article.archive") {
     if (typeof payload?.archived !== "boolean") return json({ ok: false, error: "INVALID_STATUS" }, 400);
-    const { data, error } = await table.upsert({ id, archived: payload.archived, updated_at: new Date().toISOString() }, { onConflict: "id" }).select("*").single();
+    const update = { archived: payload.archived, updated_at: new Date().toISOString() };
+    const { data, error } = await (existing ? table.update(update).eq("id", id) : table.insert({ id, ...update })).select("*").single();
     return error ? json({ ok: false, error: "ARTICLE_STORE_ERROR" }, 502) : json({ ok: true, article: data });
   }
   const title = localized(payload?.title, 240), summary = localized(payload?.summary, 1500), body = localized(payload?.body, 80000);
   if (!title || !summary || !body) return json({ ok: false, error: "INVALID_ARTICLE_FIELDS" }, 400);
-  const { data, error } = await table.upsert({ id, title, summary, body, updated_at: new Date().toISOString() }, { onConflict: "id" }).select("*").single();
+  const update = { title, summary, body, updated_at: new Date().toISOString() };
+  const { data, error } = await (existing ? table.update(update).eq("id", id) : table.insert({ id, ...update })).select("*").single();
   return error ? json({ ok: false, error: "ARTICLE_STORE_ERROR" }, 502) : json({ ok: true, article: data });
 }
 const D = (globalThis as { Deno?: { serve(fn: (req: Request) => Promise<Response>): void } }).Deno;
