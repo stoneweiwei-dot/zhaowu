@@ -1,6 +1,8 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { FiveToneGift } from "@/components/five-tone-gift";
 import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
+import { DataGradeFooter } from "@/components/data-grade-footer";
+import { assessBirthRecord } from "@/lib/bazi/data-grade";
 import type { Locale } from "@/lib/i18n";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
 import {
@@ -188,7 +190,8 @@ export function ReportAccessGate({
   const [pending, setPending] = useState(false);
   const [busy, setBusy] = useState<ReportAccessProduct | null>(null);
   const [error, setError] = useState("");
-  const consent = usePurchaseConsent();
+  const grade = useMemo(() => (birth ? assessBirthRecord(birth) : null), [birth]);
+  const consent = usePurchaseConsent(grade);
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [promoBusy, setPromoBusy] = useState(false);
@@ -242,7 +245,7 @@ export function ReportAccessGate({
   }
 
   if (checking) return <div className="zhaowu-report-access-loading" aria-live="polite">{locale === "en" ? "Checking access…" : locale === "zh-Hans" ? "正在确认读取权限……" : "正在確認讀取權限……"}</div>;
-  if (level === "bundle" || level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{owner ? (locale === "en" ? "Owner access · Full report, no payment" : locale === "zh-Hans" ? "站主权限 · 完整报告免费阅读" : "站主權限 · 完整報告免費閱讀") : copy.unlocked}</p>{personal}{full}<FiveToneGift birth={birth} locale={locale} level={level} /></section>;
+  if (level === "bundle" || level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{owner ? (locale === "en" ? "Owner access · Full report, no payment" : locale === "zh-Hans" ? "站主权限 · 完整报告免费阅读" : "站主權限 · 完整報告免費閱讀") : copy.unlocked}</p>{personal}{full}<FiveToneGift birth={birth} locale={locale} level={level} /><DataGradeFooter grade={grade} locale={locale} /></section>;
 
   return (
     <section className="zhaowu-report-paywall" data-report-paywall={system}>
@@ -298,7 +301,7 @@ export function ReportAccessGate({
         {promoError ? <p className="zhaowu-report-promo-note is-error" role="alert">{promoError}</p> : null}
         {promoSuccess ? <p className="zhaowu-report-promo-note is-success" role="status">{copy.promoSuccess}</p> : null}
       </div>
-      <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} />
+      <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} grade={grade} gradeAck={consent.gradeAck} gradeNeeded={consent.gradeNeeded} onGradeChange={consent.toggleGrade} />
       <p className="zhaowu-report-tone-boundary">{copy.toneBoundary}</p>
       {pending ? <p className="zhaowu-report-payment-note" role="status">{copy.pending}</p> : null}
       {error ? <p className="zhaowu-report-payment-note is-error" role="alert">{error}</p> : null}

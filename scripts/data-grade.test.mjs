@@ -103,3 +103,55 @@ test("notice never claims precision it withholds", () => {
   assert.match(r.notice, /不作論斷/);
   assert.match(r.notice, /C 級/);
 });
+
+import { readFileSync } from "node:fs";
+import { assessBirthRecord, effectiveTimeSource, normalizeTimeSource } from "../src/lib/bazi/data-grade.ts";
+import { sharedBirthFromUnknown } from "../src/lib/shared-birth.ts";
+import { dataGradeNoticeLines } from "../src/lib/data-grade-copy.ts";
+
+test("normalizeTimeSource accepts only known values", () => {
+  assert.equal(normalizeTimeSource("certificate"), "certificate");
+  assert.equal(normalizeTimeSource("family-memory"), "family-memory");
+  assert.equal(normalizeTimeSource("<script>"), undefined);
+  assert.equal(normalizeTimeSource(undefined), undefined);
+  assert.equal(normalizeTimeSource(7), undefined);
+});
+
+test("legacy records without a source are grade B when the time is known, C when unknown", () => {
+  assert.equal(effectiveTimeSource({ timeUnknown: false }), "family-memory");
+  assert.equal(effectiveTimeSource({ timeUnknown: true, timeSource: "certificate" }), "unknown");
+  const base = inputAt(JIE_MS - 10 * 24 * 3_600_000);
+  assert.equal(assessBirthRecord(base).grade, "B");
+  assert.equal(assessBirthRecord({ ...base, timeSource: "certificate" }).grade, "A");
+  assert.equal(assessBirthRecord({ ...base, timeUnknown: true }).grade, "C");
+});
+
+test("shared birth record keeps a valid source, drops invalid ones, and never keeps one for an unknown hour", () => {
+  const rec = { ...inputAt(JIE_MS - 10 * 24 * 3_600_000), timeSource: "certificate" };
+  assert.equal(sharedBirthFromUnknown(rec).timeSource, "certificate");
+  assert.equal("timeSource" in sharedBirthFromUnknown({ ...rec, timeSource: "nonsense" }), false);
+  assert.equal("timeSource" in sharedBirthFromUnknown({ ...rec, timeUnknown: true }), false);
+  assert.equal("timeSource" in sharedBirthFromUnknown({ ...rec, timeSource: undefined }), false);
+});
+
+test("notice copy exists in every locale and never promises precision for a withheld part", () => {
+  const r = assessBirthRecord({ ...inputAt(JIE_MS - 10 * 24 * 3_600_000), timeUnknown: true });
+  for (const locale of ["zh-Hant", "zh-Hans", "en"]) {
+    const lines = dataGradeNoticeLines(r.grade, r.reasons, r.parts, locale);
+    assert.ok(lines.length >= 3, locale);
+    assert.ok(lines.every((l) => l.trim().length > 0), locale);
+  }
+  assert.match(dataGradeNoticeLines("C", [], r.parts, "zh-Hans").join(""), /不作论断/);
+  assert.match(dataGradeNoticeLines("C", [], r.parts, "en").join(" "), /not interpreted/);
+});
+
+test("all three checkout sites pass the grade into the consent gate and the result carries it", () => {
+  const read = (f) => readFileSync(new URL(`../${f}`, import.meta.url), "utf8");
+  assert.match(read("src/components/result-view.tsx"), /usePurchaseConsent\(result\.dataGrade\)/);
+  assert.match(read("src/components/report-access-gate.tsx"), /usePurchaseConsent\(grade\)/);
+  assert.match(read("src/components/bazi-reading-unlock.tsx"), /usePurchaseConsent\(grade\)/);
+  assert.match(read("src/components/analysis-form.tsx"), /BaziReadingUnlock locale=\{locale\} grade=\{rememberedGrade\}/);
+  const actions = read("src/lib/actions.ts");
+  assert.match(actions, /dataGrade: assessDataGrade\(data, effectiveTimeSource\(data\), chart\)/);
+  assert.match(actions, /dataGrade: data\.base\.dataGrade/);
+});
