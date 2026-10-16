@@ -69,10 +69,10 @@ html body #root .zw-painted-home .ph-portal>img { position:absolute; inset:0; wi
 html body #root .zw-painted-home .ph-portal strong { display:block; font-size:24px; font-weight:500; line-height:1.25; letter-spacing:.08em; }
 html body #root .zw-painted-home .ph-portal small { display:block; margin-top:7px; font-size:10px; line-height:1.6; white-space:pre-line; letter-spacing:.04em; }
 html body #root .zw-painted-home .ph-portal i { display:flex; width:28px; height:28px; justify-content:center; align-items:center; margin-top:7px; border:1px solid #d5bda0; border-radius:50%; font-style:normal; }
-html body #root .zw-painted-home .ph-dragon-panel { display:block; position:relative; isolation:isolate; overflow:hidden; text-align:left; margin:10px 4% 0; width:92%; border:1px solid #fffcf1; border-radius:16px; background:#e6ebdd; padding:15px; }
-html body #root .zw-painted-home .ph-dragon-panel img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 50%; z-index:-1; mask-image:linear-gradient(90deg,transparent,#000); }
-html body #root .zw-painted-home .ph-dragon-panel p { font-size:10px; line-height:1.6; margin:6px 0; }
-html body #root .zw-painted-home .ph-dragon-panel em { display:inline-block; border-radius:30px; background:#bdcfc6; padding:5px 15px; font-size:12px; font-style:normal; }
+html body #root .zw-painted-home .ph-guide-panel { display:block; position:relative; isolation:isolate; overflow:hidden; text-align:left; margin:10px 4% 0; width:92%; border:1px solid #fffcf1; border-radius:16px; background:#e6ebdd; padding:15px; }
+html body #root .zw-painted-home .ph-guide-panel img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 50%; z-index:-1; mask-image:linear-gradient(90deg,transparent,#000); }
+html body #root .zw-painted-home .ph-guide-panel p { font-size:10px; line-height:1.6; margin:6px 0; }
+html body #root .zw-painted-home .ph-guide-panel em { display:inline-block; border-radius:30px; background:#bdcfc6; padding:5px 15px; font-size:12px; font-style:normal; }
 html body #root .zw-painted-home[data-composition='flute'] .ph-hero { aspect-ratio:.93; min-height:405px; }
 html body #root .zw-painted-home[data-composition='flute'] .ph-title { top:61%; width:90%; }
 html body #root .zw-painted-home[data-composition='flute'] h1 { font-size:clamp(36px,10vw,76px) !important; line-height:1.25 !important; }
@@ -108,8 +108,8 @@ html[lang='en'] body #root .zw-painted-home[data-composition='koi'] .ph-title { 
  html body #root .zw-painted-home .ph-portal strong {font-size:36px;} html body #root .zw-painted-home .ph-portal small {font-size:17px;}
  html body #root .zw-painted-home .ph-paper-panel {padding:24px 28px;} html body #root .zw-painted-home .ph-paper-panel p {font-size:18px;}
  html body #root .zw-painted-home .ph-paper-panel small {font-size:16px;} html body #root .zw-painted-home .ph-brand strong {font-size:42px;}
- html body #root .zw-painted-home .ph-title {left:7%;} html body #root .zw-painted-home .ph-dragon-panel {padding:25px; min-height:150px;}
- html body #root .zw-painted-home .ph-dragon-panel p {font-size:16px;} html body #root .zw-painted-home[data-composition='flute'] .ph-portal strong {font-size:20px;}
+ html body #root .zw-painted-home .ph-title {left:7%;} html body #root .zw-painted-home .ph-guide-panel {padding:25px; min-height:150px;}
+ html body #root .zw-painted-home .ph-guide-panel p {font-size:16px;} html body #root .zw-painted-home[data-composition='flute'] .ph-portal strong {font-size:20px;}
  html body #root .zw-painted-home[data-composition='flute'] .ph-portal {min-height:130px;} html body #root .zw-painted-home .ph-recent-row strong {font-size:26px;}
 }
 html body #root:has(.zw-painted-home) .zhaowu-site-utility-dock {bottom:90px;}
@@ -124,7 +124,7 @@ html body #root .zw-painted-home[data-composition='scroll'] .ph-hero {min-height
 html body #root .zw-painted-home[data-composition='scroll'] .ph-title {top:20%;}
 html body #root .zw-painted-home[data-composition='scroll'] .ph-actions {bottom:24%;}
 html body #root .zw-painted-home .ph-portal small {font-size:12px;}
-html body #root .zw-painted-home .ph-dragon-panel p {font-size:12px;}
+html body #root .zw-painted-home .ph-guide-panel p {font-size:12px;}
 html body #root:has(.zw-painted-home) .zhaowu-site-utility-dock {position:relative !important; inset:auto !important; width:max-content; max-width:100%; margin:8px auto 80px; z-index:36;}
 html body #root:has(.zw-painted-home) .zhaowu-site-utility-panel {position:fixed; bottom:76px; right:12px; max-height:75dvh; overflow:auto;}
 html body #root .zw-painted-home .ph-paper-panel,
@@ -247,3 +247,33 @@ html body #root .zw-flow-progress button span[aria-hidden] {
 
 /* 靈階鏡像 entry strip lines up with the cards above it (they use a 4% gutter) */
 html body #root .zw-painted-home .sc-entry-strip { margin: 10px 4% 0; width: auto; border-radius: 12px; }
+
+/* ── Expandable tree guide (home) · four plain entrances → branches → pages ───────── */
+html body #root .zw-painted-home .ph-tree { display:flex; flex-direction:column; gap:10px; padding:0 4%; max-width:760px; margin:0 auto; }
+html body #root .zw-painted-home .ph-tree-node { border:1px solid color-mix(in srgb,var(--ph-accent) 35%,#fffcf1); border-radius:16px; background:color-mix(in srgb,var(--ph-paper) 88%,#fff); overflow:hidden; }
+html body #root .zw-painted-home .ph-tree-head { position:relative; isolation:isolate; display:flex; align-items:center; gap:12px; width:100%; min-height:88px; padding:14px 16px; text-align:left; background:transparent; border:0; color:var(--ph-ink); cursor:pointer; }
+html body #root .zw-painted-home .ph-tree-head>img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-1; opacity:.55; mask-image:linear-gradient(90deg,transparent 15%,#000); -webkit-mask-image:linear-gradient(90deg,transparent 15%,#000); }
+html body #root .zw-painted-home .ph-tree-head-text { flex:1; min-width:0; }
+html body #root .zw-painted-home .ph-tree-head strong { display:block; font-size:22px; font-weight:500; line-height:1.25; letter-spacing:.06em; }
+html body #root .zw-painted-home .ph-tree-head small { display:block; margin-top:5px; font-size:13px; line-height:1.55; color:var(--ph-muted); }
+html body #root .zw-painted-home .ph-tree-head>i { display:none; }
+html body #root .zw-painted-home .ph-tree-toggle { flex:none; display:flex; width:32px; height:32px; align-items:center; justify-content:center; border:1px solid color-mix(in srgb,var(--ph-accent) 60%,transparent); border-radius:50%; font-size:20px; font-weight:400; line-height:1; background:color-mix(in srgb,var(--ph-paper) 80%,#fff); }
+html body #root .zw-painted-home .ph-tree-body { padding:4px 12px 14px; display:flex; flex-direction:column; gap:8px; }
+html body #root .zw-painted-home .ph-tree-body[hidden], html body #root .zw-painted-home .ph-tree-branch>ul[hidden] { display:none; }
+html body #root .zw-painted-home .ph-tree ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+html body #root .zw-painted-home .ph-tree-primary, html body #root .zw-painted-home .ph-tree-leaf, html body #root .zw-painted-home .ph-tree-branch-head { display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; min-height:48px; padding:10px 14px; border-radius:12px; text-align:left; text-decoration:none; cursor:pointer; color:var(--ph-ink); }
+html body #root .zw-painted-home .ph-tree-primary { background:var(--ph-accent); color:var(--ph-on-accent); border:0; }
+html body #root .zw-painted-home .ph-tree-primary small { color:inherit; opacity:.85; }
+html body #root .zw-painted-home .ph-tree-leaf, html body #root .zw-painted-home .ph-tree-branch-head { background:color-mix(in srgb,var(--ph-paper) 70%,#fff); border:1px solid color-mix(in srgb,var(--ph-accent) 28%,transparent); }
+html body #root .zw-painted-home .ph-tree-branch ul { margin:6px 0 0 14px; padding-left:10px; border-left:2px solid color-mix(in srgb,var(--ph-accent) 40%,transparent); }
+html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head) strong { display:block; font-size:15px; font-weight:600; letter-spacing:.03em; }
+html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head) small { display:block; margin-top:2px; font-size:12.5px; line-height:1.5; }
+html body #root .zw-painted-home .ph-tree :is(.ph-tree-leaf,.ph-tree-branch-head) small { color:var(--ph-muted); }
+html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head)>i { flex:none; font-style:normal; font-size:18px; }
+html body #root .zw-painted-home .ph-tree :is(.ph-tree-head,.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head):focus-visible { outline:2px solid var(--ph-accent); outline-offset:2px; }
+html[lang='en'] body #root .zw-painted-home .ph-tree-head strong { font-size:19px; letter-spacing:0; }
+@media(min-width:700px) { html body #root .zw-painted-home .ph-tree-head { min-height:120px; padding:20px 24px; } html body #root .zw-painted-home .ph-tree-head strong { font-size:30px; } html body #root .zw-painted-home .ph-tree-head small { font-size:16px; } html body #root .zw-painted-home .ph-tree-body { padding:6px 20px 20px; } html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head) strong { font-size:17px; } }
+@media (prefers-reduced-motion:no-preference) { html body #root .zw-painted-home .ph-tree-body:not([hidden]) { animation:ph-tree-in .22s ease-out; } }
+@keyframes ph-tree-in { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+html body #root .zw-painted-home .ph-comic-scenes { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:12px 0 0; }
+html body #root .zw-painted-home .ph-comic-scenes img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:10px; }

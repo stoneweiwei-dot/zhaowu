@@ -34,7 +34,6 @@ function runtimeFromDeno(): Runtime {
 function allowedOrigins(env: Runtime) {
   return new Set([
     DEFAULT_ORIGIN,
-    "https://zhaowu.soul-terminal.com",
     ...(env.origins || "").split(",").map((item) => item.trim()).filter(Boolean),
   ]);
 }

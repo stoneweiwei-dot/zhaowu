@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { pickDivineArt } from "@/lib/quiz-result-art";
 
 export const Route = createFileRoute("/quiz/divine-affinity")({ component: DivineAffinityQuiz });
 
@@ -125,21 +126,21 @@ const UI: Record<Locale, {
     title: "仙佛淵源本緣測試",
     lead: "從魂格、象徵脈象、能量體、前世象徵、命格深層與天命六層，看看你此刻更接近佛／菩薩／護法／仙哪一種神聖原型。",
     boundary: "這是昭梧的文化象徵與自我探索測驗，不證明前世、神佛轉世、宗教身份、仙緣事實或身體能量狀態。結果只描述你回答中呈現的象徵傾向。",
-    question: "題", choose: "依第一直覺選一項", result: "查看本緣結果", primary: "主本緣", secondary: "次本緣", representative: "本系代表尊", blueprint: "天命藍圖", pattern: "魂格圖譜", score: "本次四系分數", art: "含藏聖相 · 本緣結果", artNote: "以濃郁宋彩、古金月輪與半遮面聖相呈現你的主結果；這張圖是藝術化身，不是對某位神佛身份的判定。", restart: "重新測驗", home: "返回首頁",
+    question: "題", choose: "依第一直覺選一項", result: "查看本緣結果", primary: "主本緣", secondary: "次本緣", representative: "本系代表尊", blueprint: "天命藍圖", pattern: "魂格圖譜", score: "本次四系分數", art: "含藏聖相 · 本緣結果", artNote: "依你的答案，從昭梧圖庫挑出最貼近本緣氣質的一幅聖相畫像；這張圖是象徵性的藝術畫像，不是對某位神佛身份的判定。", restart: "重新測驗", home: "返回首頁",
   },
   "zh-Hans": {
     kicker: "魂格 × 天命 × 本缘 · 16 题深层版",
     title: "仙佛渊源本缘测试",
     lead: "从魂格、象征脉象、能量体、前世象征、命格深层与天命六层，看看你此刻更接近佛／菩萨／护法／仙哪一种神圣原型。",
     boundary: "这是昭梧的文化象征与自我探索测试，不证明前世、神佛转世、宗教身份、仙缘事实或身体能量状态。结果只描述你回答中呈现的象征倾向。",
-    question: "题", choose: "依第一直觉选一项", result: "查看本缘结果", primary: "主本缘", secondary: "次本缘", representative: "本系代表尊", blueprint: "天命蓝图", pattern: "魂格图谱", score: "本次四系分数", art: "含藏圣相 · 本缘结果", artNote: "以浓郁宋彩、古金月轮与半遮面圣相呈现你的主结果；这张图是艺术化身，不是对某位神佛身份的判定。", restart: "重新测试", home: "返回首页",
+    question: "题", choose: "依第一直觉选一项", result: "查看本缘结果", primary: "主本缘", secondary: "次本缘", representative: "本系代表尊", blueprint: "天命蓝图", pattern: "魂格图谱", score: "本次四系分数", art: "含藏圣相 · 本缘结果", artNote: "依你的答案，从昭梧图库挑出最贴近本缘气质的一幅圣相画像；这张图是象征性的艺术画像，不是对某位神佛身份的判定。", restart: "重新测试", home: "返回首页",
   },
   en: {
     kicker: "SOUL × MANDATE × AFFINITY · 16 QUESTIONS",
     title: "Divine Affinity Scan",
     lead: "Across six symbolic layers—Soul Pattern, Symbolic Pulse, Aura Body, Symbolic Lineage, Fate Deep Structure and Celestial Mandate—see which sacred archetype your current answers resemble most: Buddha, Bodhisattva, Guardian or Immortal.",
     boundary: "This is a cultural-symbolic self-reflection test. It does not prove past lives, reincarnation, religious identity, literal divine affinity or a measurable energy state. The result describes patterns in your answers only.",
-    question: "Question", choose: "Choose the first option that feels true", result: "See affinity result", primary: "Primary affinity", secondary: "Secondary affinity", representative: "Representative figures", blueprint: "Mandate blueprint", pattern: "Soul Pattern atlas", score: "Four-family score", art: "Concealed Sacred Icon · Affinity result", artNote: "A saturated Song-mineral, antique-gold moon-disc portrait of the result archetype. It is an artistic embodiment, not an identity claim about a deity.", restart: "Retake test", home: "Back to home",
+    question: "Question", choose: "Choose the first option that feels true", result: "See affinity result", primary: "Primary affinity", secondary: "Secondary affinity", representative: "Representative figures", blueprint: "Mandate blueprint", pattern: "Soul Pattern atlas", score: "Four-family score", art: "Concealed Sacred Icon · Affinity result", artNote: "The portrait from the Zhaowu library closest to your answers for this archetype. It is a symbolic artwork, not an identity claim about any deity.", restart: "Retake test", home: "Back to home",
   },
 };
 
@@ -171,12 +172,17 @@ const BLUEPRINT_LABELS: Record<Locale, string[]> = {
   en: ["Mandate", "Soul", "Aspect", "Seal", "Calling", "Path", "Principle"],
 };
 
-function AffinityArt({ family, label, note, locale }: { family: AffinityKey; label: string; note: string; locale: Locale }) {
+function AffinityArt({ family, label, note, locale, src }: { family: AffinityKey; label: string; note: string; locale: Locale; src: string | null }) {
   const palette = ART[family];
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const showPhoto = Boolean(src) && failedSrc !== src;
   return (
     <article className="seal-border overflow-hidden rounded-2xl bg-cream/95 p-4 sm:p-6" data-divine-affinity-art={family}>
       <div className="grid items-center gap-5 sm:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         <div className="mx-auto w-full max-w-[320px] overflow-hidden rounded-[28px] border border-line bg-paper shadow-sm">
+          {showPhoto ? (
+            <img src={src ?? undefined} alt={`${label} · ${ART_MOTTO[locale][family]}`} width={540} height={960} loading="eager" decoding="async" onError={() => setFailedSrc(src)} className="block aspect-[9/16] h-auto w-full object-cover" data-divine-affinity-photo={src} />
+          ) : (
           <svg viewBox="0 0 540 960" role="img" aria-label={`${label} · ${family}`} className="block aspect-[9/16] h-auto w-full">
             <rect width="540" height="960" fill={palette.field} />
             <rect x="24" y="24" width="492" height="912" rx="30" fill="none" stroke={palette.gold} strokeWidth="2" opacity="0.48" />
@@ -219,6 +225,7 @@ function AffinityArt({ family, label, note, locale }: { family: AffinityKey; lab
             <path d="M74 190 Q118 147 162 190 M378 190 Q422 147 466 190" fill="none" stroke={palette.gold} strokeWidth="3" opacity="0.42" />
             <path d="M82 848 Q126 816 174 848 Q126 878 82 848Z M366 848 Q414 816 458 848 Q414 878 366 848Z" fill={palette.deep} opacity="0.16" />
           </svg>
+          )}
         </div>
         <div className="min-w-0">
           <p className="text-xs tracking-[0.24em] text-cinnabar">{label}</p>
@@ -276,6 +283,7 @@ function DivineAffinityQuiz() {
   const finalScore = done ? scoreAnswers(answers) : score;
   const primary = profiles[finalScore.primary];
   const secondary = profiles[finalScore.secondary];
+  const artSrc = done ? pickDivineArt(finalScore.primary, answers, finalScore.secondary) : null;
   const showSecondary = done && finalScore.counts[finalScore.primary] - finalScore.counts[finalScore.secondary] <= 2;
 
   return (
@@ -328,7 +336,7 @@ function DivineAffinityQuiz() {
             {showSecondary ? <p className="mt-3 text-sm leading-7 text-ink-soft"><b className="text-ink">{copy.secondary}：</b>{secondary.name} · {secondary.essence}</p> : null}
           </article>
 
-          <AffinityArt family={finalScore.primary} label={copy.art} note={copy.artNote} locale={locale} />
+          <AffinityArt family={finalScore.primary} label={copy.art} note={copy.artNote} locale={locale} src={artSrc} />
 
           <article className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
             <p className="text-xs tracking-[0.22em] text-cinnabar">{copy.blueprint}</p>
