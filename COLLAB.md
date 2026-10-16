@@ -40,7 +40,6 @@ Claude 的固定入口另见 [CLAUDE.md](./CLAUDE.md)，但其内容不得覆盖
 | 分支 | `main` |
 | Hosting | Vercel `stone-zhaowu-official` |
 | Database/Auth | 当前 Supabase |
-| 正式子域名 | `zhaowu.soul-terminal.com` |
 | AppDeploy / Netlify / Grok 临时站 | 只读参考，禁止作为 production |
 
 ## 防止重复返工
