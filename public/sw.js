@@ -1,4 +1,4 @@
-const RELEASE = "ff7f48fbc0dd4dacab3302ee969a0b3a038d3278";
+const RELEASE = "dev";
 const CACHE = `zhaowu-shell-${RELEASE.slice(0, 16)}`;
 const SHELL = [
   "/",
