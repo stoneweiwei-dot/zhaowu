@@ -10,8 +10,8 @@ import {
   type WesternAnalysis, type WesternLocale, type WesternPlacement,
 } from "./deep-engine";
 import {
-  ZODIAC_SIGNS, traditionalRuler, traditionalDignity,
-  decoratePosition, houseOf, type ChartAngles, type HouseChart,
+  ZODIAC_SIGNS, traditionalDignity,
+  type ChartAngles, type HouseChart, type ClassicalPlanetKey,
   type ModernPlanetKey,
 } from "./engine";
 
@@ -154,7 +154,7 @@ export function buildWesternReportChapters(f:WesternReportFacts, cfg:WesternRepo
     note("第9與12宮可作信念、自省與精神實踐的文化解讀；交點未核算時不杜撰靈魂歷史。","Houses 9 and 12 allow a symbolic reading of belief and introspection; uncomputed lunar nodes are not invented."),
     note("保留獨處、求知與現實行動的平衡。","Balance reflection with learning and action."),
     [...inH([9,12])],7));
-  const validTransits=cfg.includeTransits&&(f.transits??[]).filter(t=>Date.parse(t.utc)&&Number.isFinite(t.orb)&&t.orb>=0&&t.orb<=10);
+  const validTransits=cfg.includeTransits?(f.transits??[]).filter(t=>Number.isFinite(Date.parse(t.utc))&&Number.isFinite(t.orb)&&t.orb>=0&&t.orb<=10):[];
   chapter.push(generic(
     note("列出已計算的行運相位與日期；沒有行運星曆資料就不宣稱未來事件。","Only verified transit aspects and dates are described; future events are never fabricated."),
     note("依真實工作、財務與關係目標規劃未來12–18個月，不用占星代替決策。","Plan the next 12–18 months against real commitments, not predictions."),
@@ -164,7 +164,8 @@ export function buildWesternReportChapters(f:WesternReportFacts, cfg:WesternRepo
   chapter.push(generic(
     note("特殊配置須逐條核對：逆行與主要相位是天文描述；尊貴狀態只用於有傳統規則的七曜。","Configuration requires specific evidence: retrograde and aspects are astronomical; traditional dignity applies to classical planets."),
     note("區分可驗證配置與尚未計算的福點、凱龍及特殊度數。","Separate calculated configurations from uncomputed lots, Chiron and degree doctrines."),
-    [...retro.map(p=>e("retrograde."+p.key,position(p.key)+" retrograde")),
+    [...TEN_PLANETS.slice(0,7).filter(key=>pl(key).signReliable).map(key=>e("dignity."+key,key+" "+traditionalDignity(key as ClassicalPlanetKey,Math.floor(pl(key).longitude/30)))),
+      ...retro.map(p=>e("retrograde."+p.key,position(p.key)+" retrograde")),
       ...aspects.map((a,i)=>e("aspect."+i,a.a+"-"+a.b+" "+a.type+" "+fmt(a.orb)+"°"))],9));
   const groups=top&&timeOK?westernGroupNarrative(top,lang):null;
   chapter.push(generic(
