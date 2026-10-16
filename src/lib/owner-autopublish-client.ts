@@ -77,3 +77,11 @@ export const markQueuePostDone = (id: string) => call("autopublish.markDone", { 
 
 export const runAutopublishNow = (queueId?: string) =>
   call<{ result: { ran: boolean; reason?: string; status?: string } }>("autopublish.run", queueId ? { queueId } : {});
+
+/** Manual channels (小紅書 / Facebook / X / unconnected Instagram) still waiting for the owner to post by hand. */
+export function pendingManualChannels(item: QueueItem): QueueChannel[] {
+  if (item.results?.manualDone) return [];
+  return (Object.entries(item.results ?? {}) as Array<[QueueChannel, { manual?: boolean }]>)
+    .filter(([, result]) => result?.manual === true)
+    .map(([channel]) => channel);
+}

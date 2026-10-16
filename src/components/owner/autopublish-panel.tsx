@@ -3,6 +3,7 @@ import {
   createQueuePost,
   deleteQueuePost,
   markQueuePostDone,
+  pendingManualChannels,
   readAutopublishOverview,
   runAutopublishNow,
   saveAutopublishSettings,
@@ -56,6 +57,14 @@ function Pill({ tone, children }: { tone: keyof typeof TONE_CLASS; children: Rea
   return <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${TONE_CLASS[tone]}`}>{children}</span>;
 }
 
+/** Where to paste each manual channel. X accepts prefilled text; the others open their composer. */
+function composeLink(channel: QueueChannel, body: string): { href: string; label: string } | null {
+  if (channel === "x") return { href: `https://x.com/intent/post?text=${encodeURIComponent(body.slice(0, 280))}`, label: "打開 X（文案已帶入）" };
+  if (channel === "xiaohongshu") return { href: "https://creator.xiaohongshu.com/publish/publish", label: "打開小紅書發佈頁" };
+  if (channel === "facebook") return { href: "https://www.facebook.com/", label: "打開 Facebook" };
+  return null;
+}
+
 async function copyText(text: string) {
   try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
 }
@@ -102,7 +111,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
   const items = data?.items ?? [];
   const threadsConnected = Boolean(data?.channels?.threads);
   const autoChannelConnected = (channel: QueueChannel) => channel === "threads" ? threadsConnected : channel === "instagram" ? Boolean(data?.channels?.instagram) : true;
-  const manualTasks = items.filter((item) => item.status === "manual");
+  const manualTasks = items.filter((item) => pendingManualChannels(item).length > 0);
   const queued = items.filter((item) => item.status === "scheduled" || item.status === "draft");
   const history = items.filter((item) => !["scheduled", "draft", "manual"].includes(item.status));
 
@@ -234,7 +243,8 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
           </article>
           <article className="rounded-xl border border-line bg-paper/40 p-4">
             <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Instagram</h4><Pill tone={data.channels?.instagram ? "ok" : "mute"}>{data.channels?.instagram ? "已設定" : "未設定"}</Pill></div>
-            <p className="mt-3 text-sm leading-6 text-ink-soft">官方接口只能發「帶圖」貼文，且需要 Instagram 商業帳號憑證。目前未設定時，勾選 Instagram 的貼文會改成待辦，不會發出。</p>
+            <p className="mt-3 text-sm leading-6 text-ink-soft">Instagram 官方接口只能發「帶圖」貼文，而且要「專業帳號」加上 Meta 開發者授權，這一步只有你的帳號能做。{data.channels?.instagram ? "目前已設定，貼文會附圖自動發出。" : "在這之前，勾選 Instagram 的貼文會進「待手動發布」，不會漏掉。"}</p>
+            {!data.channels?.instagram ? <details className="mt-2 text-sm text-ink-soft"><summary className="min-h-11 cursor-pointer py-3 text-ink">怎麼接上 Instagram？</summary><ol className="list-decimal space-y-1 pl-5 leading-6"><li>Instagram 帳號切成「專業帳號」（設定 → 帳號類型）。</li><li>Meta 開發者後台（developers.facebook.com）→ 你的應用 → 加入「Instagram」產品，把自己加為測試人員。</li><li>產生長效存取權杖，連同 Instagram 用戶 ID，交給我設定到 Vercel（META_INSTAGRAM_USER_ID / META_INSTAGRAM_ACCESS_TOKEN）。</li></ol></details> : null}
           </article>
           <article className="rounded-xl border border-line bg-paper/40 p-4 sm:col-span-2">
             <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">小紅書 / Facebook / X</h4><Pill tone="warn">半自動</Pill></div>
@@ -278,10 +288,14 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
           <ul className="mt-4 space-y-3">
             {manualTasks.map((item) => (
               <li key={item.id} className="rounded-xl border border-amber-700/30 bg-amber-600/5 p-4">
-                <div className="flex flex-wrap items-center gap-2 text-xs text-ink-mute">{item.channels.filter((c) => MANUAL_CHANNELS.includes(c)).map((c) => <Pill key={c} tone="warn">{CHANNEL_LABEL[c]}</Pill>)}<span>{taipei(item.created_at)}</span></div>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-ink-mute">{pendingManualChannels(item).map((c) => <Pill key={c} tone="warn">{CHANNEL_LABEL[c]}</Pill>)}<span>{taipei(item.created_at)}</span></div>
                 <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-ink">{item.body}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button type="button" className="min-h-11 rounded-full border border-line bg-cream px-4 text-sm" onClick={async () => setNotice((await copyText(item.body)) ? "文案已複製。" : "複製失敗，請手動選取。")}>複製文案</button>
+                  {pendingManualChannels(item).map((c) => {
+                    const link = composeLink(c, item.body);
+                    return link ? <a key={c} href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-4 text-sm text-ink" onClick={() => { void copyText(item.body); }}>{link.label}</a> : null;
+                  })}
                   <button type="button" disabled={busy} className="min-h-11 rounded-full bg-wood px-4 text-sm text-cream disabled:opacity-50" onClick={() => void act(() => markQueuePostDone(item.id), "已標記為已發布。")}>我已經發了</button>
                   <button type="button" disabled={busy} className="min-h-11 px-3 text-sm text-ink-mute underline disabled:opacity-50" onClick={() => void act(() => updateQueuePost(item.id, { status: "skipped" }))}>略過</button>
                 </div>
