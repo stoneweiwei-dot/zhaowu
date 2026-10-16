@@ -3,6 +3,8 @@ import { ReportAccessGate } from "@/components/report-access-gate";
 import { PersonalPaidProfile } from "@/components/personal-paid-profile";
 import { useEffect, useMemo, useState } from "react";
 import { D60ReliabilityGate } from "@/components/d60-reliability-gate";
+import { WesternDepthSection } from "@/components/western-depth-section";
+import type { HouseSystem } from "@/lib/astrology/engine";
 import { specialistHeadline, type HeadlineSystem } from "@/lib/specialist-headline";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
@@ -33,9 +35,9 @@ const PAGE = {
     en: { title: "Classical Indian astrology", hint: "An independent classical Indian reading. D60 is highly sensitive to the birth minute." },
   },
   western: {
-    "zh-Hant": { title: "西洋星座", hint: "從完整本命盤、七曜落宮、十二宮、四軸與主要相位看另一種性格與生活視角。" },
-    "zh-Hans": { title: "西洋星座", hint: "从完整本命盘、七曜落宫、十二宫、四轴与主要相位看另一种性格与生活视角。" },
-    en: { title: "Western astrology", hint: "A separate view through the full natal chart, seven classical planets, twelve houses, four angles and major aspects." },
+    "zh-Hant": { title: "西洋占星", hint: "七曜古典判讀＋現代十大行星落宮統計：區分天文資料、時間精度與人生主題的文化詮釋。" },
+    "zh-Hans": { title: "西洋占星", hint: "七曜古典判读＋现代十大行星落宫统计：区分天文数据、时间精度与人生主题的文化诠释。" },
+    en: { title: "Western astrology", hint: "Classical seven-planet reading plus a modern ten-planet house census, with explicit birth-time reliability and independent symbolic interpretation." },
   },
   ziwei: {
     "zh-Hant": { title: "紫微斗數", hint: "以宮位與時限作獨立旁證，重點看性格、關係、事業、財務與階段主軸。" },
@@ -106,6 +108,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
   const page = PAGE[id][locale];
   const { user } = useCurrentUserState();
   const [birth, setBirth] = useState<SharedBirthRecord | null>(() => readSharedBirthRecord());
+  const [westernHouseSystem, setWesternHouseSystem] = useState<HouseSystem>("placidus");
 
   useEffect(() => {
     const server = sharedBirthFromUnknown(user?.birthData);
@@ -156,6 +159,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
 
         {reading?.chart ? <SpecialistChart chart={reading.chart} locale={locale} /> : null}
         {reading?.chart ? <p className="zhaowu-specialist-free-note">{copy.basicFree}</p> : null}
+        {id === "western" && birth ? <WesternDepthSection birth={birth} locale={locale} mode="free" houseSystem={westernHouseSystem} onHouseSystemChange={setWesternHouseSystem} /> : null}
 
         {reading ? (
           <ReportAccessGate
@@ -173,6 +177,7 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
               {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
               {reading.sections.map((section) => <ReadingSection key={`${section.title}-${section.body.slice(0, 24)}`} section={section} />)}
               {id === "indian" ? <div className="mt-6"><D60ReliabilityGate reportBirth={birth && !birth.timeUnknown && birth.city ? { year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute, city: birth.city } : null} /></div> : null}
+              {id === "western" && birth ? <WesternDepthSection birth={birth} locale={locale} mode="paid" houseSystem={westernHouseSystem} onHouseSystemChange={setWesternHouseSystem} /> : null}
             </div>}
           />
         ) : null}

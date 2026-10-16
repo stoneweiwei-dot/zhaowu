@@ -13,6 +13,27 @@
 - SUPERSEDED：任何舊 Cloudflare／DNS／自訂網域設定指示均非當前執行規則。
 
 
+## 2026-10-17 西方占星十章客戶報告模板 V2.0（承接 PR #772）
+
+- ACTIVE：`docs/ASTROLOGY-REPORT-PROTOCOL-v2.md` 為本次十章報告正式規格；`src/lib/astrology/report-protocol.ts` 為純函式章節摘要與 AI Prompt Builder，不在瀏覽器自動呼叫計費模型。
+- 十章依序：總覽、自我、事業財富、關係、家庭、身心照顧、精神課題、未來 12–18 個月行運、特殊配置、綜合建議。輸出先結論、明示證據、利弊、行動；可調語氣、語系、目標字數與章節順序。
+- 限制：只接 Tropical 與已有 Placidus／Whole Sign；Sidereal ayanamsa、Alcabitius、北交點、福點、Chiron、完整行運與跨系統自動資料抓取尚未驗證；缺資料一律不判，不准由 LLM 虛構。Whole Sign 下 MC 不必在第十宮。
+- 付費全文繼續由原有 `ReportAccessGate` 驗證；不得因裝置本地資料、匯入 JSON 或前端旗標繞過付款。尚未接通正式 AI provider，不得宣稱有 3000–5000 字 AI 自動文稿。
+- 不使用命理推斷醫學診斷、疾病部位、一定婚嫁或災難；八字、紫微、印度占星僅具獨立計算證據且客人勾選時才作獨立旁證。
+- 新模板不改其他五個專項、八字主判、Stripe/Supabase/Owner 行為，不自動觸發額外 Vercel 部署。
+
+## 2026-10-17 西洋占星十大行星深度旁證（承接 PR #772）
+
+- ACTIVE：現有 `/astrology` 保留七曜古典視角與既有 `ReportAccessGate`，額外增加獨立的現代十行星（太陽至冥王星）熱帶黃經、主要相位、全十二宮落星分布與 A/B/C 宮位主題，免費統計與付費人生方向分層。
+- 計算來源使用現有本站自家託管 `/vendor/astronomy-engine-2.1.19.browser.min.js`，不用未核准的 Swiss Ephemeris 專業授權，也不建立新付費 SaaS／第二部署。七曜舊源與現代十星源分開標示；不得假裝兩者已完成精度同源化。
+- A＝1/8/9/12、B＝2/6/10、C＝3/4/5/7/11。每組同時列原始顆數與每宮密度；兩套排名不一致、交界不穩或資料不足時不強定人生主軸。這是占星文化象意而非八字十神換算，更不得用數量決定人格、富貴或健康。
+- 已知時間但未核對出生證明的分鐘最高只標 `medium`；出生證明分鐘已確認且 ±2 分鐘落宮穩定才允許 `high`；未知時間或 Placidus 不成立時落宮／宮位主題降為 `low`，不得自動改宮制隱瞞。
+- 排盤資料的本地 IndexedDB、JSON 匯入匯出僅為西占副本；不額外寫站主 Supabase、不修改共享出生資料、會員或付款授權。付費解鎖維持既有 server-side entitlement 驗證，不採裝置旗標繞過付款。
+- 印度占星是獨立 D1/D60 旁證入口，不因宮位意義相似就判定互證成功；原有 `/indian-astrology` 的分鐘校驗與 D60 算法不變。
+- VERIFIED（2026-10-17，合併前）：`tsc --noEmit`、`npm run build`、`western-house-depth`／`western-report-protocol` 共 11 項測試通過；Chromium 320px 實測 /astrology：訪客只見免費十星區（10/10 星位、10/10 落宮）且無付費章節，站主 session 才見十章，第 8 章（未來 12–18 個月）明確標示未判，無 console 錯誤、無橫向捲動。iPhone Safari(WebKit) 未跑。
+
+
+
 
 ## 2026-10-15 中國大陸可讀取／可登入：同網域 Supabase 代理與自家託管天文腳本
 
