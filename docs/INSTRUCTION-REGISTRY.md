@@ -24,7 +24,8 @@
 - 不改：登入邏輯、Supabase 資料／Schema／RLS、付款、命理計算、報告內容、SPA fallback rewrite。
 - COST（AGENTS §F）：消耗 Vercel Fast Data Transfer（公開媒體與音訊加 `s-maxage` 邊緣快取以減量）；無新增付費服務；Supabase 或 Vercel 不可用時行為與先前相同（請求失敗或回退本地靜態資源）；回滾＝還原本提交，無資料遷移。
 - OPERATIONAL（非程式）：`*.vercel.app` 共享網域在中國大陸部分電信商會有 DNS 污染／SNI 阻斷；程式端已確保單一網域可達即可完成全站載入、排盤、讀取、登入與聽音樂，但若大陸直連 `*.vercel.app` 入口本身被牆，仍需綁定一個已指向 Vercel（或經 Cloudflare 指向 Vercel）的自訂網域。
-- BACKLOG（P2）：站主後台影片轉檔的 ffmpeg 核心仍來自 jsDelivr（僅站主使用）。
+- ACTIVE（2026-10-17）：站主後台音訊／影片轉檔的 ffmpeg 核心（`@ffmpeg/core@0.12.10`，釘版 devDependency）於建置時由 `vite.config.ts` 外掛複製到 `dist/vendor/ffmpeg-core/`，載入端先走同源、失敗才退回 jsDelivr；同源回傳若為 HTML 或非 WebAssembly 位元組一律拒收。31 MB 的 wasm 不進 repo，只進每次 production 產物。
+- BACKLOG（P2）：`@ffmpeg/ffmpeg` 封裝與 worker 仍由 esm.sh 載入（僅站主使用），尚未自架。
 
 ## 2026-10-15 開場影片完整播放・英文預設語言・首頁頁尾・優惠碼 supersession（PR #746 + 後續）
 
