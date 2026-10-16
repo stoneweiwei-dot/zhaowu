@@ -36,6 +36,23 @@ test("four-tradition directory exposes the same dated observances as today",()=>
  assert.match(fmt(5,2,"zh-Hans"),/保安宫/);
  assert.match(sacredDayRoster("en").find((group)=>group.tradition==="Confucian").entries.find((entry)=>entry.date==="Solar 9/28").name,/Confucius/);
 });
+test("directory dates use the correct script in all three locales",()=>{
+ const expected={
+   "zh-Hant":{lunar:"農曆 8/27",solar:"公曆 9/28",prefix:/^(農曆|公曆) \d{1,2}\/\d{1,2}$/},
+   "zh-Hans":{lunar:"农历 8/27",solar:"公历 9/28",prefix:/^(农历|公历) \d{1,2}\/\d{1,2}$/},
+   en:{lunar:"Lunar 8/27",solar:"Solar 9/28",prefix:/^(Lunar|Solar) \d{1,2}\/\d{1,2}$/},
+ };
+ for(const [locale,{lunar,solar,prefix}] of Object.entries(expected)){
+   const groups=sacredDayRoster(locale);
+   const confucian=groups.find((group)=>group.tradition===(locale==="en"?"Confucian":"儒家"));
+   assert.ok(confucian,locale+" Confucian group missing");
+   assert.ok(confucian.entries.some((entry)=>entry.date===lunar),locale+" lunar date");
+   assert.ok(confucian.entries.some((entry)=>entry.date===solar),locale+" solar date");
+   for(const group of groups)for(const entry of group.entries){
+     assert.match(entry.date,prefix,locale+" incorrect date: "+entry.date);
+   }
+ }
+});
 test("lunar leap month never repeats ordinary-month birthdays",()=>{
  assert.match(fmt(3,23),/媽祖/);
  assert.doesNotMatch(fmt(3,23,"zh-Hant",undefined,{isLeapMonth:true}),/媽祖/);
