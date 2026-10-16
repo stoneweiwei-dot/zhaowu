@@ -12,53 +12,78 @@ type Observance = { calendar:"lunar"|"solar"; month:number; day:number; traditio
 // https://tct.gov.taipei/
 const rows: readonly (readonly [Observance["calendar"],number,number,Tradition,string,string])[] = [
 ["lunar",1,1,"佛教","彌勒菩薩聖誕","Maitreya Bodhisattva's birthday"],
+["lunar",1,1,"道教","元始天尊萬壽（三清靈學院紀日）","Yuanshi Tianzun's observance (Sanqing calendar)"],
 ["lunar",1,9,"道教","玉皇上帝聖誕","Jade Emperor's birthday"],
+["lunar",1,6,"民間信仰","清水祖師聖誕（三清靈學院紀日）","Qingshui Patriarch's observance (Sanqing calendar)"],
 ["lunar",1,13,"民間信仰","關聖帝君飛昇","Guandi's ascension"],
 ["lunar",1,15,"道教","上元天官聖誕","Heavenly Official of Upper Yuan"],
+["lunar",1,15,"民間信仰","臨水夫人陳靖姑千秋（三清靈學院紀日）","Lady Linshui Chen Jinggu (Sanqing calendar)"],
 ["lunar",1,20,"民間信仰","池頭夫人千秋","Lady Chitou's observance"],
 ["lunar",2,2,"民間信仰","福德正神聖誕","Earth God (Fude Zhengshen)"],
 ["lunar",2,3,"道教","文昌帝君聖誕","Wenchang Emperor's birthday"],
 ["lunar",2,8,"佛教","釋迦牟尼佛出家日","Buddha's renunciation"],
 ["lunar",2,15,"佛教","釋迦牟尼佛涅槃日","Buddha's Parinirvana"],
 ["lunar",2,15,"道教","太上老君聖誕（道教節）","Taishang Laojun's birthday (Taoist Day)"],
+["lunar",2,15,"道教","九天玄女娘娘聖誕（三清靈學院紀日）","Jiutian Xuannu's birthday (Sanqing calendar)"],
+["lunar",2,16,"民間信仰","開漳聖王千秋（三清靈學院紀日）","Kaizhang Shengwang (Sanqing calendar)"],
 ["lunar",2,19,"佛教","觀世音菩薩聖誕","Guanyin Bodhisattva's birthday"],
 ["lunar",2,21,"佛教","普賢菩薩聖誕","Samantabhadra Bodhisattva's birthday"],
 ["lunar",3,3,"道教","玄天上帝聖誕","Xuantian Emperor's birthday"],
 ["lunar",3,15,"道教","武財神趙公明聖誕","Zhao Gongming, God of Wealth"],
+["lunar",3,15,"民間信仰","保生大帝聖誕","Baosheng Dadi's birthday"],
 ["lunar",3,19,"民間信仰","太陽星君千秋","Solar Star Lord's observance"],
 ["lunar",3,16,"佛教","準提菩薩聖誕","Cundi Bodhisattva's birthday"],
 ["lunar",3,20,"民間信仰","註生娘娘千秋","Birth-Giving Goddess's observance"],
 ["lunar",3,23,"民間信仰","天上聖母（媽祖）聖誕","Mazu's birthday"],
+["lunar",3,28,"道教","東嶽大帝聖誕（三清靈學院紀日）","Dongyue Dadi's birthday (Sanqing calendar)"],
 ["lunar",4,4,"佛教","文殊菩薩聖誕","Manjushri Bodhisattva's birthday"],
 ["lunar",4,8,"佛教","釋迦牟尼佛聖誕（佛誕）","Buddha's birthday (Han tradition)"],
 ["lunar",4,14,"道教","呂洞賓祖師聖誕","Lü Dongbin's birthday"],
 ["lunar",4,18,"民間信仰","華佗仙師千秋","Hua Tuo's observance"],
+["lunar",4,18,"道教","北極紫微帝君千秋（三清靈學院紀日）","Ziwei Emperor's observance (Sanqing calendar)"],
+["lunar",4,26,"民間信仰","神農大帝聖誕（保安宮紀日）","Shennong Dadi's birthday (Baoan Temple calendar)"],
 ["lunar",4,28,"佛教","藥王菩薩聖誕","Medicine King Bodhisattva's birthday"],
 ["lunar",5,5,"民間信仰","端午節","Dragon Boat Festival"],
+["lunar",5,2,"民間信仰","保生大帝飛昇（保安宮紀日）","Baosheng Dadi's ascension (Baoan Temple calendar)"],
+["lunar",5,7,"民間信仰","巧聖先師魯班千秋（三清靈學院紀日）","Lu Ban's observance (Sanqing calendar)"],
 ["lunar",5,13,"民間信仰","城隍爺千秋（部分地區）","City God (regional observance)"],
 ["lunar",5,13,"佛教","伽藍菩薩聖誕","Sangharama Bodhisattva's birthday"],
 ["lunar",6,3,"佛教","韋馱尊者聖誕","Skanda Bodhisattva's birthday"],
+["lunar",6,11,"民間信仰","田都元帥千秋（三清靈學院紀日）","Tiandu Marshal (Sanqing calendar)"],
+["lunar",6,15,"道教","王靈官聖誕（三清靈學院紀日）","Wang Lingguan's birthday (Sanqing calendar)"],
 ["lunar",6,19,"佛教","觀世音菩薩成道日","Guanyin's enlightenment"],
 ["lunar",6,24,"道教","關聖帝君聖誕","Guandi's birthday"],
+["lunar",6,24,"道教","雷祖大帝聖誕（三清靈學院紀日）","Thunder Patriarch's birthday (Sanqing calendar)"],
 ["lunar",7,7,"民間信仰","魁星爺千秋","Kui Xing's observance"],
 ["lunar",7,13,"佛教","大勢至菩薩聖誕","Mahasthamaprapta Bodhisattva's birthday"],
 ["lunar",7,15,"佛教","盂蘭盆節／僧自恣日","Ullambana / Buddhist Sangha Day"],
 ["lunar",7,15,"道教","中元地官聖誕","Earth Official of Middle Yuan"],
 ["lunar",7,15,"民間信仰","中元普度","Ghost Festival / Zhongyuan"],
+["lunar",7,18,"道教","瑤池金母聖誕（三清靈學院紀日）","Queen Mother of the West (Sanqing calendar)"],
+["lunar",7,23,"民間信仰","諸葛武侯千秋（三清靈學院紀日）","Zhuge Liang's observance (Sanqing calendar)"],
 ["lunar",7,29,"佛教","地藏菩薩聖誕（部分寺院）","Ksitigarbha's birthday (some temples)"],
 ["lunar",7,30,"佛教","地藏菩薩聖誕（部分寺院）","Ksitigarbha's birthday (some temples)"],
 ["lunar",8,15,"民間信仰","太陰娘娘千秋","Moon Goddess's observance"],
 ["lunar",8,15,"民間信仰","月老神君千秋","Matchmaker God's observance"],
+["lunar",8,3,"道教","北斗星君聖誕（三清靈學院紀日）","Northern Dipper Lord's birthday (Sanqing calendar)"],
 ["lunar",8,22,"佛教","燃燈佛聖誕","Dipankara Buddha's birthday"],
+["lunar",8,22,"民間信仰","廣澤尊王千秋（三清靈學院紀日）","Guangze Zunwang (Sanqing calendar)"],
 ["lunar",8,27,"儒家","孔子誕辰（傳統農曆紀日）","Confucius's birthday (traditional lunar date)"],
 ["lunar",9,9,"道教","斗姆元君聖誕","Doumu Yuanjun's birthday"],
+["lunar",9,1,"道教","南斗星君聖誕（三清靈學院紀日）","Southern Dipper Lord's birthday (Sanqing calendar)"],
+["lunar",9,9,"道教","九皇大帝聖誕（三清靈學院紀日）","Nine Emperor Gods (Sanqing calendar)"],
+["lunar",9,9,"民間信仰","中壇元帥千秋（三清靈學院紀日）","Nezha's observance (Sanqing calendar)"],
 ["lunar",9,15,"儒家","紫陽夫子（朱熹）千秋（龍山寺紀日）","Master Ziyang (Zhu Xi), Longshan Temple observance"],
 ["lunar",9,19,"佛教","觀世音菩薩出家日","Guanyin's renunciation"],
 ["lunar",9,29,"佛教","藥師琉璃光如來聖誕（小月廿九）","Medicine Buddha (short lunar month)"],
 ["lunar",9,30,"佛教","藥師琉璃光如來聖誕","Medicine Buddha's birthday"],
 ["lunar",10,10,"民間信仰","水仙尊王千秋（龍山寺紀日）","Water Immortal Lords (Longshan Temple)"],
+["lunar",10,5,"佛教","達摩祖師聖誕（三清靈學院紀日）","Bodhidharma's observance (Sanqing calendar)"],
 ["lunar",10,15,"道教","下元水官聖誕","Water Official of Lower Yuan"],
+["lunar",10,22,"民間信仰","青山靈安尊王千秋（三清靈學院紀日）","Qingshan Ling'an Zunwang (Sanqing calendar)"],
+["lunar",11,11,"道教","太乙救苦天尊聖誕（三清靈學院紀日）","Taiyi Jiuku Tianzun's birthday (Sanqing calendar)"],
 ["lunar",11,17,"佛教","阿彌陀佛聖誕","Amitabha Buddha's birthday"],
+["lunar",11,19,"佛教","九蓮菩薩聖誕（三清靈學院紀日）","Nine-Lotus Bodhisattva (Sanqing calendar)"],
 ["lunar",12,8,"佛教","釋迦牟尼佛成道日（法寶節）","Buddha's enlightenment (Dharma Treasure Day)"],
 ["lunar",12,16,"民間信仰","尾牙謝土地公","Year-end Earth God thanksgiving"],
 ["lunar",12,23,"民間信仰","送神／祭灶（北方多見）","Kitchen God farewell (common in northern China)"],
@@ -108,7 +133,7 @@ function isOffsetDay(date: Date, reference: Date, days: number): boolean {
  return date.getTime()===reference.getTime()+days*86400000;
 }
 function zhHans(value:string): string {
- const extra:Readonly<Record<string,string>>={爺:"爷",誕:"诞",薩:"萨",彌:"弥",齋:"斋",聖:"圣",韋:"韦",馱:"驮",註:"注",蘭:"兰",禮:"礼",獻:"献",嬰:"婴",無:"无",臨:"临",週:"周",穌:"稣",領:"领",節:"节",聯:"联",廿:"廿",陰:"阴",曆:"历",總:"总",嚴:"严",讚:"赞",尊:"尊",傳:"传",見:"见",華:"华",寶:"宝",歲:"岁",陽:"阳",風:"风",東:"东",崇:"崇",舊:"旧",靈:"灵",歸:"归",進:"进",顯:"显",歷:"历",禱:"祷",禎:"祯",寧:"宁",媽:"妈",龍:"龙",頭:"头",終:"终",莊:"庄",鏡:"镜",慶:"庆",飛:"飞",國:"国",間:"间",顧:"顾"};
+ const extra:Readonly<Record<string,string>>={爺:"爷",誕:"诞",薩:"萨",彌:"弥",齋:"斋",聖:"圣",韋:"韦",馱:"驮",註:"注",蘭:"兰",禮:"礼",獻:"献",嬰:"婴",無:"无",臨:"临",週:"周",穌:"稣",領:"领",節:"节",聯:"联",廿:"廿",陰:"阴",曆:"历",總:"总",嚴:"严",讚:"赞",尊:"尊",傳:"传",見:"见",華:"华",寶:"宝",歲:"岁",陽:"阳",風:"风",東:"东",崇:"崇",舊:"旧",靈:"灵",歸:"归",進:"进",顯:"显",歷:"历",禱:"祷",禎:"祯",寧:"宁",媽:"妈",龍:"龙",頭:"头",終:"终",莊:"庄",鏡:"镜",慶:"庆",飛:"飞",國:"国",間:"间",顧:"顾",宮:"宫",昇:"升",壇:"坛",師:"师",廣:"广",澤:"泽",學:"学",紀:"纪",瑤:"瑶"};
  return [...toSimplifiedCustomerText(value)].map((char)=>extra[char]??char).join("");
 }
 function traditionLabel(tradition:Tradition,locale:SacredDayLocale):string {
@@ -166,3 +191,17 @@ export function formatSacredDay(lunarMonth:number,lunarDay:number,locale:SacredD
 export const SACRED_DAY_CASES = rows.map(([calendar,month,day,tradition,hant,en])=>({calendar,month,day,tradition,hant,en}));
 export const SACRED_DAY_SOURCE_COUNT=rows.length;
 export const SACRED_DAY_MOVABLE_COUNT=13;
+
+const chineseTraditions = ["佛教","道教","儒家","民間信仰"] as const;
+/** Source-backed fixed dates for the expandable almanac directory. */
+export function sacredDayRoster(locale: SacredDayLocale) {
+ return chineseTraditions.map((tradition) => ({
+   tradition: traditionLabel(tradition,locale),
+   entries: rows.filter((row)=>row[3]===tradition)
+     .sort((a,b)=>a[1]-b[1]||a[2]-b[2])
+     .map(([calendar,month,day,,hant,en])=>({
+       date: calendar==="solar" ? (locale==="en"?`Solar ${month}/${day}`:`公曆 ${month}/${day}`) : (locale==="en"?`Lunar ${month}/${day}`:`農曆 ${month}/${day}`),
+       name:locale==="en"?en:locale==="zh-Hans"?zhHans(hant):hant,
+     })),
+ }));
+}

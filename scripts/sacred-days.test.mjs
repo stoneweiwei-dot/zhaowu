@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {formatSacredDay,SACRED_DAY_CASES,SACRED_DAY_SOURCE_COUNT,SACRED_DAY_MOVABLE_COUNT} from "../src/lib/almanac/sacred-days.ts";
+import {formatSacredDay,sacredDayRoster,SACRED_DAY_CASES,SACRED_DAY_SOURCE_COUNT,SACRED_DAY_MOVABLE_COUNT} from "../src/lib/almanac/sacred-days.ts";
 const fmt=(m,d,loc="zh-Hant",date,opts={})=>formatSacredDay(m,d,loc,date,opts);
 test("every fixed lunar/solar entry is reachable in all three locales",()=>{
  assert.equal(SACRED_DAY_CASES.length,SACRED_DAY_SOURCE_COUNT);
@@ -24,6 +24,17 @@ test("overlapping celebrations preserve all faith labels",()=>{
  for(const name of ["盂蘭盆節","中元地官聖誕","中元普度"])assert.ok(s.includes(name));
  assert.ok(fmt(5,13).includes("伽藍菩薩"));
  assert.ok(fmt(5,13).includes("城隍爺"));
+});
+test("four-tradition directory exposes the same dated observances as today",()=>{
+ const groups=sacredDayRoster("zh-Hant");
+ assert.deepEqual(groups.map((group)=>group.tradition),["佛教","道教","儒家","民間信仰"]);
+ assert.equal(groups.reduce((total,group)=>total+group.entries.length,0),SACRED_DAY_CASES.filter((row)=>groups.some((group)=>group.tradition===row.tradition)).length);
+ assert.ok(groups.find((group)=>group.tradition==="民間信仰").entries.some((entry)=>entry.date==="農曆 3/15"&&entry.name.includes("保生大帝")));
+ assert.match(fmt(3,15),/保生大帝/);
+ assert.match(fmt(4,26),/神農大帝/);
+ assert.match(fmt(9,9),/中壇元帥/);
+ assert.match(fmt(5,2,"zh-Hans"),/保安宫/);
+ assert.match(sacredDayRoster("en").find((group)=>group.tradition==="Confucian").entries.find((entry)=>entry.date==="Solar 9/28").name,/Confucius/);
 });
 test("lunar leap month never repeats ordinary-month birthdays",()=>{
  assert.match(fmt(3,23),/媽祖/);
@@ -60,6 +71,6 @@ test("fixed solar observances are not misread as lunar and short dates fallback"
  assert.ok(fmt(1,1,"zh-Hant","12-25",{year:2026}).includes("聖誕節"));
  assert.ok(fmt(1,1,"zh-Hant","9-28",{year:2026}).includes("孔子誕辰"));
  assert.doesNotMatch(fmt(1,1,"zh-Hant","9-27",{year:2026}),/孔子誕辰紀念暨祭孔/);
- assert.match(fmt(5,2,"zh-Hans"),/未列主要圣日/);
+ assert.match(fmt(5,3,"zh-Hans"),/未列主要圣日/);
  assert.match(fmt(5,8,"zh-Hant"),/傳統六齋日/);
 });
