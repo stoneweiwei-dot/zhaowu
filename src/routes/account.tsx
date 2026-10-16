@@ -490,6 +490,7 @@ function AccountPage() {
       </div>
 
       <div id="console-panel-images" role="region" aria-labelledby="console-tab-images" hidden={consoleView !== "images"}>
+        <div data-owner-music-slot />
         {visitedViews.has("images") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入圖庫…", "加载图库…", "Loading gallery…")}</p>}><OwnerGalleryManager session={session} locale={locale} /></Suspense> : null}
       </div>
       <div id="console-panel-opening" role="region" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>
