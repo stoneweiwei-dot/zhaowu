@@ -75,3 +75,13 @@ test("premium gate only mounts afterword after a verified bundle result", async 
   assert.match(gate, /level === "bundle" && poeticContext \? <PremiumPoeticAfterword/);
   assert.doesNotMatch(gate, /level === "system" && poeticContext \? <PremiumPoeticAfterword/);
 });
+
+test("numerology number-four real report text yields a sourced literary theme in three languages", async () => {
+  const { matchPoeticTheme } = await import("../src/components/premium-poetic-afterword.tsx");
+  const { NUMEROLOGY_PROFILES, tx } = await import("../src/lib/numerology.ts");
+  const p = NUMEROLOGY_PROFILES[4];
+  for (const locale of ["zh-Hant", "zh-Hans", "en"]) {
+    const context = tx(locale, p.core) + " " + tx(locale, p.lesson);
+    assert.equal(matchPoeticTheme(context), "turning-point", locale);
+  }
+});
