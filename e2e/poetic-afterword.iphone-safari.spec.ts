@@ -1,5 +1,8 @@
 import { expect, test } from "@playwright/test";
 
+// Playwright route mocks must not be swallowed by the site PWA service worker.
+test.use({ serviceWorkers: "block" });
+
 test("unpaid iPhone visitors never see the premium poetic afterword", async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem("zhaowu.locale", "zh-Hant");
