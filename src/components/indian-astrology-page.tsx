@@ -320,6 +320,7 @@ export function IndianAstrologyPage() {
           </section>
           <button type="button" className="my-4 rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink" onClick={() => exportChart(chart)}>{copy.export}</button>
           <ReportAccessGate system="indian" locale={locale} birth={birth} preview={report?.directAnswer}
+            poeticContext={report?.directAnswer && report?.nextStep ? { conclusion: report.directAnswer, action: report.nextStep } : undefined}
             quick={<D60ReliabilityGate depth="quick" reportBirth={d60Birth}/>} 
             full={<>
               <ReadingContent chart={chart} locale={locale}/>
