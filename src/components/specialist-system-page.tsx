@@ -167,6 +167,10 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
             locale={locale}
             birth={birth}
             preview={headline}
+            poeticContext={headline && reading.lead && reading.sections.length ? {
+              conclusion: `${headline}。${reading.lead}`,
+              action: reading.sections.at(-1)?.body || "",
+            } : undefined}
             quick={<div className="zhaowu-specialist-sections">
               {reading.lead ? <article className="zhaowu-specialist-overview"><h2>{copy.overview}</h2><p>{reading.lead}</p></article> : null}
               {reading.sections.slice(0, 2).map((section) => <ReadingSection key={`${section.title}-quick`} section={section} />)}
