@@ -24,10 +24,10 @@ test('JSON-LD parses and includes WebSite, WebApplication and FAQPage with 4 que
 
 test('robots.txt and sitemap.xml agree: private routes disallowed, sitemap url declared, listed paths exist as routes', () => {
   const robots = read('public/robots.txt');
-  assert.match(robots, /Sitemap: https:\/\/stone-zhaowu-official\.vercel\.app\/sitemap\.xml/);
+  assert.match(robots, /Sitemap: https:\/\/zhao-wu\.com\/sitemap\.xml/);
   for (const p of ['/login', '/account', '/history']) assert.match(robots, new RegExp(`Disallow: ${p}`));
   const sitemap = read('public/sitemap.xml');
-  const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].replace('https://stone-zhaowu-official.vercel.app', '') || '/');
+  const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].replace('https://zhao-wu.com', '') || '/');
   assert.ok(locs.includes('/'));
   const tree = read('src/routeTree.gen.ts');
   for (const p of locs.filter((x) => x !== '/')) assert.ok(tree.includes(`'${p}'`) || tree.includes(`"${p}"`), `route ${p} missing from routeTree`);
