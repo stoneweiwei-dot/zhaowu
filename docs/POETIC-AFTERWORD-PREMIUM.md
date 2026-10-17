@@ -1,27 +1,27 @@
-# 昭梧・詩證天機｜最高階命書收卷（草稿）
+# 昭梧・詩證天機｜現行最高付費套組之報告收卷
 
-狀態：DRAFT / NOT LIVE，2026-10-17。此分支只建立可追溯古詩庫、三語文學呼應純函式及單元測試；沒有修改任何 runtime callsite、收費、登入、授權、報告持久化或正式站。
+狀態：PR #795 待驗證及正式部署，2026-10-17。
 
-## 產品位置
+## 本次立即發佈範圍（取代先前 draft 暫緩說明）
 
-留給未來**真正最高階付費命書**的最後一段文字。現行單一報告首屏仍先回答問題，維持「直接答案 → 總體概括 → 身體需要注意 → 判斷備註」的閱讀契約，不恢復九頁、十五頁或多套相矛盾的結論。最後以宋式宣紙留白與一則適配詩詞收束；390px iPhone 單欄可讀，英文以獨立原創譯文呈現並留中文原詩。
+使用者已明確要求「發佈」已提案的最高價付費命書詩證。**目前唯一可用的最高存取層是現行 `bundle`（六系統套組，US$19.99）**；它是現行 highest access rank，**不是未啟用的 Zenith 訂閱**。此功能僅附於既有六系統套組的正式閱讀末尾：紫微、七政、西占、印度占星、一掌經、生命靈數。原八字 USD 19.99 單系統不屬於該套組，本次不改售賣、解鎖或八字的完整命書主流程，也不新增訂閱、收費或 Stripe Link。若將來另建 Zenith，必須獨立制定付費與 server entitlement，不得混淆名稱。
 
-## 權限硬邊界（阻擋上線）
+目前 `ReportAccessGate` 依 `resolveReportAccess(system)`，透過伺服器驗證 Stripe session/優惠碼或 owner cookie。此次新增的 `poeticContext` 是**純文學段落輸入**，不是付費授權：僅當 `level === "bundle"` 且文本能適配核驗過的詩句時，才於現有完整報告、五音與資料等級說明後呈現收卷。原 `quick` / `system` 均不得展示；`bundle` 的權限由既有伺服器可驗證途徑取得。現有 Bundle 本來就不含 BaZi，不可暗示此功能會新增八字解鎖。
 
-現行 ReportAccessLevel 僅有 quick / system / bundle，六系統 bundle 不含八字；現行最高售價為 US$19.99，與尚未正式啟用的 Zenith 頂級方案並非同一權限。未來新增頂級商品前，需要先確定其購買/退款/持久化方案，再由受信任後端驗證 entitlement。不得靠前端 boolean、localStorage、query、套組價格或既有 bundle 權限偽造專屬內容。此模組中的 editorialApproved 只表示文獻/文案審核，不是任何付費授權。目前純函式沒有被任何頁面呼叫。
+## 內容和來源品質
 
-## 內容結構與驗證
+匹配順序：**已完成的報告文字 → 已知文學主題 → 經核對詩句**。不得以五行/天干/生肖/神煞反推出高階命局結論；不得將詩句視作吉凶或醫療、投資、法律、婚姻判定的證據。若沒有合適詩句、最後報告缺可信結論或行動、關鍵詞匹配並列，則**省略附錄**，不強行美化。核心完整報告不受影響。
 
-輸出依次為：已審核詩句（作者/朝代/篇名）→ 古典作品來源連結 → 該詩的實際文學語境 → 直接沿用 canonical report 已完成的解讀 → 沿用唯一現實行動 → 明示「詩句只是文學呼應，不是命理證據」。不以單一五行、生肖、神煞、日干自動匹配詩詞；不以詩重新判旺衰、格局、喜用、宮位或流年。沒有匹配主題、未審核、沒有主結論或沒有現實行動時，返回 null，不以泛吉祥詩湊數。敏感健康、金錢或安全決策禁止把詩句當證據。
+讀者看見：原詩和作者/朝代/作品 → 三語文學解說 → 原報告結論 → 原報告行動 → 文學非命理證據聲明 → 可點擊作品來源；英文保留原始中文。布局沿用宋式宣紙米白、文字清楚、無暗黑粒子。
 
-資料：本版五則原文已以外部維基文庫文本交叉核對，來源 URL 逐首附於模組。雖參照 palemoky/chinese-poetry-api v0.6.0 的整合方向，**尚未下載並核對該版 SQLite 中五首作品的具體 record ID**，因此一律記錄 apiRecordId=null，嚴禁宣稱逐首在該版本 API 已命中。未來若依 API 擴充，必須在離線流程固定 v0.6.0 checksum、檢查作者/篇名/段落/異文和逐首權利；不可在 Production 自動下載 639 MB 資料或將第三方 API 成為客戶依賴。Go API 的 GPL 與原始資料 MIT 權利分別處理；英文譯文為昭梧自撰。文學類引用不能混作既有古籍命理引文的 verified calculation evidence。
+詩泉 `palemoky/chinese-poetry-api` v0.6.0 的 SQLite 真正詩詞 record ID 尚未核對，因此 `apiRecordId: null`；五則候選作品的引文以維基文庫作品頁逐一核對，沒有引入 GPL 的 Go API server，也不宣稱詩泉 API 已和 Production 串接。作品為原有公有領域詩詞；英文解說/翻譯為昭梧文學轉述。來源須保留，後續擴大庫時應固定 v0.6.0 資料版本、確認每篇來源校勘與授權。
 
-## 尚未完成的工作與最小 QA
+## 必須通過的發佈門檻
 
-1. 建立未來最高級別的正式 server-side entitlement/購買契約。沒有這步不得顯示專屬章節。
-2. 核對 v0.6.0 來源庫逐首實際存在、變體和作品編號；補充 approved corpus 後才能聲稱使用 API 中的作品。
-3. 將 afterword 作為**最後的可選文字段落**接至受授權的報告正文、持久化和匯出，且不影響現有 summary/body 或 first-screen。
-4. 測試：node --import tsx --test scripts/poetic-afterword.test.mjs；npm run check；npm run build；最小 390px Safari；未登入、免費、單系統、bundle、優惠碼都不能冒充頂級 entitlement。
-5. 不啟用第三方 provider，不新建 Production，不為測試觸發 Vercel preview，統一經 PR 審核與一次正式發布。
+1. `node --import tsx --test scripts/poetic-afterword.test.mjs` 及新增的付費分層回歸。
+2. `npm run check`、`npm run build`。
+3. 最小 390px Safari smoke，檢查 `quick`、`system`、無效/無權限、`bundle` 及 owner，特別不能僅靠 query/localStorage 解鎖。
+4. 確認初始 loading / Source failure 都不會導致主要報告回歸或掉付款閘門。
+5. 保持 **唯一** `stone-zhaowu-official` Production，main 合併後一次部署、正式站 SHA 與基本頁面驗證；不開 preview host。
 
-此 PR 合併前仍需完成上列涉及正式授權及整合的工作，當前只代表安全的模組預備，不代表已上線。
+文字段屬可選最後一節，不改 `summary/body` 存檔契約、不新增圖像生成或費用。新詩句不算命理計算證據。若上述無法驗證，PR 停留待審核，不能宣稱「已發佈」。
