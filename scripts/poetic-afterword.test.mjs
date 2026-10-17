@@ -63,6 +63,7 @@ test("theme derives only from report-language content, and abstains on ambiguity
   const { matchPoeticTheme } = await import("../src/components/premium-poetic-afterword.tsx");
   assert.equal(matchPoeticTheme("目前應當等待與準備，先整備資源再確認方向。"), "patience");
   assert.equal(matchPoeticTheme("工作與家庭的責任及界線，需要清楚承擔與調整。"), "resilience");
+  assert.equal(matchPoeticTheme("The lesson is to keep the structure and leave a window for change."), "turning-point");
   assert.equal(matchPoeticTheme("現階段暫不確定結論。"), null);
   assert.equal(matchPoeticTheme(""), null);
 });
