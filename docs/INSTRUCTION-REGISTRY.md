@@ -58,7 +58,7 @@
 
 ## 2026-10-15 中國大陸可讀取／可登入：同網域 Supabase 代理與自家託管天文腳本
 
-- ACTIVE：訪客端（登入、`rest/v1` 讀取、`functions/v1`、公開媒體 URL）在唯一正式站（`stone-zhaowu-official.vercel.app`）一律經本站同網域 `/sb/*`；`vercel.json` 以四條白名單 rewrite 轉到 Supabase（`/sb/auth/v1`、`/sb/rest/v1`、`/sb/functions/v1`、`/sb/storage/v1/object/public`）。`src/lib/supabase-config.ts` 匯出 `SUPABASE_URL`（瀏覽器在上述生產網域時為 `<origin>/sb`，本機開發與測試維持直連）與 `SUPABASE_DIRECT_URL`（永遠直連）。
+- ACTIVE：訪客端（登入、`rest/v1` 讀取、`functions/v1`、公開媒體 URL）在正式主域名 `zhao-wu.com` 與相容入口 `stone-zhaowu-official.vercel.app` 一律經本站同網域 `/sb/*`；`vercel.json` 以四條白名單 rewrite 轉到 Supabase（`/sb/auth/v1`、`/sb/rest/v1`、`/sb/functions/v1`、`/sb/storage/v1/object/public`）。`src/lib/supabase-config.ts` 匯出 `SUPABASE_URL`（瀏覽器在上述生產網域時為 `<origin>/sb`，本機開發與測試維持直連）與 `SUPABASE_DIRECT_URL`（永遠直連）。
 - ACTIVE：站主背景音樂與五音贈曲播放改由同網域 `/api/owner-music?track=<id>` 代理串流並設定邊緣快取（`s-maxage=604800`），訪客端不再直連大陸不可達的 `cdn.jsdelivr.net` 或 `raw.githubusercontent.com`；失敗時自動回退至本站靜態 `/audio/zhaowu-background.mp3`。
 - ACTIVE：站主上傳／刪除（`storage/v1/object/<bucket>`）、TUS 續傳簽名端點與 OAuth `authorize` 導向仍用 `SUPABASE_DIRECT_URL`，不經代理（大檔不佔用 Vercel 轉送，OAuth 提供商本就無法在大陸使用）。
 - ACTIVE：`astronomy-engine@2.1.19` 由 jsDelivr 改為自家 `/vendor/astronomy-engine-2.1.19.browser.min.js`（同一版本，不變更演算公式）；`/vendor/*` 以 immutable 快取。
