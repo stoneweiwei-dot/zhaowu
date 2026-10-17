@@ -9,7 +9,7 @@ import type { Locale } from "@/lib/i18n";
 const CUES: Record<PoeticTheme, RegExp[]> = {
   patience: [/等待|觀察|观察|積累|积累|耐心|謹慎|谨慎|循序|準備|准备|沉澱|沉淀/i, /\bwait\b|\bpatient\b|\bprepar\w*\b|\bsteady\b|\bgradual\b|\bobserve\b/i],
   resilience: [/韌|韧|承擔|承担|壓力|压力|界線|界限|守住|堅持|坚持|自律/i, /\bresilien\w*\b|\bpressure\b|\bboundar\w*\b|\bresponsib\w*\b|\bpersist\b/i],
-  "turning-point": [/轉折|转折|轉型|转型|轉換|转换|困局|阻礙|阻碍|改變方向|改变方向|新選擇|新选择|變化|变化/i, /\btransition\b|\bturning point\b|\breorient\w*\b|\bchange course\b|\bnew option\b/i],
+  "turning-point": [/轉折|转折|轉型|转型|轉換|转换|困局|阻礙|阻碍|改變方向|改变方向|新選擇|新选择|變化|变化/i, /\btransition\b|\bturning point\b|\breorient\w*\b|\bchange(?: course)?\b|\bnew option\b/i],
   perspective: [/全局|整體|整体|看清|視角|视角|認知|认知|辨認|辨认|長遠|长远/i, /\bperspective\b|\bclarity\b|\blong.term\b|\bbig picture\b|\bunderstand\b/i],
   "forward-motion": [/行動|行动|推進|推进|突破|主動|主动|前進|前进|實踐|实践/i, /\baction\b|\binitiative\b|\bmove forward\b|\bprogress\b|\bact\b/i],
 };
