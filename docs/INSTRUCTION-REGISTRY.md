@@ -1,3 +1,11 @@
+## 2026-10-17 自訂正式域名與大陸同源代理
+
+- ACTIVE：站主已購買並指定 `https://zhao-wu.com/` 為唯一 canonical 正式網址；此域名與 `www.zhao-wu.com` 已在既有 Vercel Production project `stone-zhaowu-official` 驗證，www 以 308 轉向主域名。舊 `stone-zhaowu-official.vercel.app` 保留為同專案相容入口，不另建主機。
+- ACTIVE：`src/lib/supabase-config.ts` 將 `zhao-wu.com` 納入 `/sb/*` 同源 Supabase 代理白名單；既有代理 rewrites 不變，讓正式新域名沿用大陸訪客端登入／讀取路徑。
+- ACTIVE：`index.html` 的 canonical、Open Graph、Twitter 與 JSON-LD，`robots.txt`、`sitemap.xml`、`llms.txt` 和 SEO 測試均使用新 canonical。
+- PROTECTED：保留 `.vercel.app` 入口、Vercel 單一 Production、既有付款／命盤／登入邏輯及 Supabase 設定；不假設自訂域名能保證所有大陸網路可達。
+- SUPERSEDES：下方 2026-10-16「正式域名更正」條目的未購買自訂域名與 `.vercel.app` canonical 狀態。
+
 ## 2026-10-17 文章管理：站主編輯與下架
 
 - ACTIVE：`/account?view=articles` 提供站主 cookie 驗證的文章清單、繁中／簡中／英文標題／摘要／正文編輯、下架、還原及恢復原文；公開 `/knowledge` 與首頁讀取 `article_editor_overrides`，保留原文編譯資產與插圖／互動元件。一般訪客不得寫入，只有 `/api/owner-data` 同源 cookie bridge 能呼叫獨立的 `zhaowu-owner-articles` Edge Function 寫入。新增資料表 RLS 僅允許匿名讀，沒有匿名寫入政策。
@@ -20,9 +28,9 @@
 - PROTECTED：只能新增與修改 `promo_codes`；不提供刪除、不寫 `redeemed_count`、不碰 `promo_redemptions` 與客人兌換路徑 `promo-code`。名額不得低於已兌換數。兌換仍不記金額、與 Stripe 完全分離。
 - 驗證：`scripts/owner-promo-admin.test.mjs`（8 項）、tsc、build；Edge Function 部署後以真實呼叫驗證見 PR 說明。
 
-## 2026-10-16 正式域名更正
+## 2026-10-16 正式域名更正（SUPERSEDED 2026-10-17）
 
-- ACTIVE：站主沒有購買或授權任何自訂網域。唯一正式網站為 `https://stone-zhaowu-official.vercel.app/`；未擁有的網域不得列作正式、備援或計畫部署地址。
+- HISTORICAL：當時尚未購買或授權自訂網域，因此 canonical 為 `https://stone-zhaowu-official.vercel.app/`；此狀態已由 2026-10-17 站主購買並指定 `zhao-wu.com` 的明確指示取代。
 - SUPERSEDED：任何舊 Cloudflare／DNS／自訂網域設定指示均非當前執行規則。
 
 

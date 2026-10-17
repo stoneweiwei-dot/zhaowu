@@ -50,3 +50,13 @@ test("index provides conservative JSON-LD without invented ratings or testimonia
   assert.match(html, /"@type": "WebApplication"/);
   assert.doesNotMatch(html, /aggregateRating|review|offers/);
 });
+
+test("custom domain is canonical and uses the same-origin Supabase proxy", async () => {
+  const html = await source("index.html");
+  assert.match(html, /<link rel="canonical" href="https:\/\/zhao-wu\.com\/" \/>/);
+  assert.match(html, /"url": "https:\/\/zhao-wu\.com\//);
+  assert.doesNotMatch(html, /stone-zhaowu-official\.vercel\.app/);
+  const config = await source("src/lib/supabase-config.ts");
+  assert.match(config, /PROXY_HOST_DOMAINS = \["stone-zhaowu-official\.vercel\.app", "zhao-wu\.com"\]/);
+  assert.match(config, /return onProxyHost \? `\$\{origin\}\$\{SAME_ORIGIN_PROXY_PREFIX\}`/);
+});

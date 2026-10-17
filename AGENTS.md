@@ -4,7 +4,7 @@ This file is the highest repository-level execution protocol for all work on **Z
 
 Repository: `stoneweiwei-dot/zhaowu`
 Production project: Vercel `stone-zhaowu-official`
-Production URL: `https://stone-zhaowu-official.vercel.app/`
+Production URL: `https://zhao-wu.com/` (Vercel alias: `https://stone-zhaowu-official.vercel.app/`)
 Database/Auth/Storage: Supabase `plgpxusmemnmzckbwtiv`
 Primary branch: `main`
 Cost posture: **A$0/month target unless the owner explicitly approves paid infrastructure**
@@ -68,7 +68,7 @@ This is the owner's newest explicit infrastructure instruction and has **highest
 
 - GitHub `stoneweiwei-dot/zhaowu` branch `main` is the only source of truth.
 - Vercel project `stone-zhaowu-official` is the **only active production host**.
-- Canonical production origin is `https://stone-zhaowu-official.vercel.app/` until the owner explicitly assigns another canonical domain.
+- Canonical production origin is `https://zhao-wu.com/`, explicitly assigned by the owner on 2026-10-17. Keep `stone-zhaowu-official.vercel.app` as a compatible alias on the same sole Vercel Production project.
 - Netlify `archive-stone-zhaowu-official`, Replit, Sites, AppDeploy, Lovable, Floot, Cloudflare or any other platform may be used only as development/reference tooling when needed. They must not become a second production source, canonical URL, auth callback origin or runtime dependency unless the owner explicitly changes this rule.
 - Older Netlify-as-production wording in docs/issues/chats is **superseded** and must not be revived.
 

@@ -18,7 +18,7 @@ Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batch
 
 - 2026-10-15：開場影片 60 秒內完整播放；全站預設 English（中文瀏覽器才預設中文）；首頁版本更新與站主入口移至頁尾；換頁淡入；付費區新增優惠碼（`promo-code` Edge Function，與 Stripe 分離）。細節見 Instruction Registry 同日條目。
 - 2026-10-16：測驗結果圖改接圖庫——`/quiz/divine-affinity` 依答案（主本緣＋次本緣＋作答序列的穩定雜湊）從 `public/quiz-art/divine/` 已審核畫像挑圖，五行測驗（`/fun-tests?test=element`）依主元素接已通過 QC 的天干畫作；線條 SVG 只在圖片載入失敗時作備援。動物測驗（`/fun-tests?test=animal`）圖庫沒有真實動物畫像，改用 8 種動物圖騰（`src/components/animal-totem-art.tsx`），不再顯示人臉 SVG；六道測驗改用 6 個象徵圖（`src/components/realm-emblem-art.tsx`），不再顯示人臉 SVG。選圖邏輯在 `src/lib/quiz-result-art.ts`。
-- 2026-10-15：中國大陸可讀取／可登入——唯一正式站（`stone-zhaowu-official.vercel.app`）訪客端 Supabase 請求一律改走同網域 `/sb/*` Vercel rewrite，站主背景音樂改走同網域 `/api/owner-music?track=<id>` 代理串流（不再重導向至 jsDelivr），天文腳本改自家託管（細節見 Instruction Registry 同日條目）。
+- 2026-10-15：中國大陸可讀取／可登入基礎——Production 訪客端 Supabase 請求經同網域 `/sb/*` Vercel rewrite，站主背景音樂經同網域 `/api/owner-music?track=<id>` 代理串流，天文腳本自家託管（細節見 Instruction Registry）。2026-10-17 正式 canonical 改為 `zhao-wu.com`，並納入同源 Supabase 代理白名單；舊 `.vercel.app` 入口保留。
 
 
 ## 0.1 Complex question answering — 2026-10-07
@@ -52,7 +52,7 @@ Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batch
 - current main：以 GitHub `main` 即時 SHA 為準；不得把文件內固定 SHA 當永久 CURRENT。
 - Hosting：Vercel
 - Project：`stone-zhaowu-official`
-- Production URL：`https://stone-zhaowu-official.vercel.app/`
+- Production URL / canonical：`https://zhao-wu.com/`（`stone-zhaowu-official.vercel.app` 保留為同專案相容入口）
 - current Production：以 Vercel `stone-zhaowu-official` Production 即時 SHA 為準。
 - 發布前必須確認 Production SHA = current main SHA。
 - Vercel Git policy：只有 `main` 可觸發 Production；`deploymentEnabled` 以 `**: false + main: true` 覆蓋含 `/` 的分支名，`ignoreCommand` 再用 `VERCEL_GIT_COMMIT_REF != main` 作第二道硬擋；純 docs/Markdown／GitHub workflow 變更亦跳過。

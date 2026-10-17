@@ -27,7 +27,7 @@ test('robots.txt and sitemap.xml agree: private routes disallowed, sitemap url d
   assert.match(robots, /Sitemap: https:\/\/stone-zhaowu-official\.vercel\.app\/sitemap\.xml/);
   for (const p of ['/login', '/account', '/history']) assert.match(robots, new RegExp(`Disallow: ${p}`));
   const sitemap = read('public/sitemap.xml');
-  const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].replace('https://stone-zhaowu-official.vercel.app', '') || '/');
+  const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].replace('https://zhao-wu.com', '') || '/');
   assert.ok(locs.includes('/'));
   const tree = read('src/routeTree.gen.ts');
   for (const p of locs.filter((x) => x !== '/')) assert.ok(tree.includes(`'${p}'`) || tree.includes(`"${p}"`), `route ${p} missing from routeTree`);
