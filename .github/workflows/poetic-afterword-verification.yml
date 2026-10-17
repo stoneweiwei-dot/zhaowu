@@ -1,0 +1,32 @@
+name: Poetic afterword focused verification (temporary)
+
+on:
+  pull_request:
+    paths:
+      - "src/lib/report/poetic-afterword.ts"
+      - "src/components/premium-poetic-afterword.tsx"
+      - "src/components/report-access-gate.tsx"
+      - "src/components/specialist-system-page.tsx"
+      - "src/components/indian-astrology-page.tsx"
+      - "src/components/palm-standalone.tsx"
+      - "src/routes/numerology.tsx"
+      - "scripts/poetic-afterword.test.mjs"
+      - ".github/workflows/poetic-afterword-verification.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: node --import tsx --test scripts/poetic-afterword.test.mjs
+      - run: npm run check
+      - run: npm run build
