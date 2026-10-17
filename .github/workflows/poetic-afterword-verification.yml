@@ -11,6 +11,7 @@ on:
       - "src/components/palm-standalone.tsx"
       - "src/routes/numerology.tsx"
       - "scripts/poetic-afterword.test.mjs"
+      - "e2e/poetic-afterword.iphone-safari.spec.ts"
       - ".github/workflows/poetic-afterword-verification.yml"
 
 permissions:
@@ -19,7 +20,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,4 +30,7 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: node --import tsx --test scripts/poetic-afterword.test.mjs
       - run: npm run check
-      - run: npm run build
+      # Prebuild includes a separate live production browser probe; skip in offline CI.
+      - run: ZHAOWU_SKIP_LIVE_PRIVACY=1 npm run build
+      - run: npx playwright install --with-deps webkit
+      - run: npx playwright test e2e/poetic-afterword.iphone-safari.spec.ts --project=iphone-safari
