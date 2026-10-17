@@ -35,6 +35,14 @@ test("verified-owner preview renders the literary afterword at the end without m
     status: 200, contentType: "application/json", body: JSON.stringify({ authenticated: true }),
   }));
   await page.goto("/numerology", { waitUntil: "domcontentloaded" });
+  await expect(page.locator('[data-report-access="bundle"]')).toBeVisible({ timeout: 12_000 });
+  const debug = await page.evaluate(() => ({
+    language: document.documentElement.lang,
+    storedLanguage: localStorage.getItem("zhaowu.locale"),
+    access: Array.from(document.querySelectorAll("[data-report-access]")).map((el) => el.getAttribute("data-report-access")),
+    lifeNumber: document.querySelector('[data-natal-chart="numerology"]')?.textContent?.slice(0,60),
+  }));
+  console.log("POETRY_SMOKE_AUTH_CONTEXT", JSON.stringify(debug));
   const afterword = page.locator('[data-premium-poetic-afterword="true"]');
   await expect(afterword).toBeVisible({ timeout: 20_000 });
   await expect(afterword.getByRole("link")).toHaveAttribute("href", /wikisource\.org/);
