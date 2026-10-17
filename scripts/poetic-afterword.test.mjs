@@ -58,3 +58,19 @@ test("explicit semantic theme selects each source without inspecting a day stem"
   assert.equal(selected.every(Boolean), true);
   assert.equal(new Set(selected.map((item) => item.verseId)).size, 5);
 });
+
+test("theme derives only from report-language content, and abstains on ambiguity", async () => {
+  const { matchPoeticTheme } = await import("../src/components/premium-poetic-afterword.tsx");
+  assert.equal(matchPoeticTheme("目前應當等待與準備，先整備資源再確認方向。"), "patience");
+  assert.equal(matchPoeticTheme("工作與家庭的責任及界線，需要清楚承擔與調整。"), "resilience");
+  assert.equal(matchPoeticTheme("現階段暫不確定結論。"), null);
+  assert.equal(matchPoeticTheme(""), null);
+});
+
+test("premium gate only mounts afterword after a verified bundle result", async () => {
+  const { readFileSync } = await import("node:fs");
+  const gate = readFileSync(new URL("../src/components/report-access-gate.tsx", import.meta.url), "utf8");
+  assert.match(gate, /if \(level === "bundle" \|\| level === "system"\)/);
+  assert.match(gate, /level === "bundle" && poeticContext \? <PremiumPoeticAfterword/);
+  assert.doesNotMatch(gate, /level === "system" && poeticContext \? <PremiumPoeticAfterword/);
+});
