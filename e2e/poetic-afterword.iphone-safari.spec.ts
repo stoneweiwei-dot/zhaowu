@@ -31,10 +31,20 @@ test("verified-owner preview renders the literary afterword at the end without m
     }));
   });
   // This mocked owner response tests DOM layout only; it is not payment-auth evidence.
-  await page.route("**/api/owner-session", (route) => route.fulfill({
+  await page.route("**/api/owner-session**", (route) => { console.log("POETRY_MOCK_OWNER_HIT", route.request().url()); return route.fulfill({
     status: 200, contentType: "application/json", body: JSON.stringify({ authenticated: true }),
-  }));
+  }); });
   await page.goto("/numerology", { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(2_500);
+  console.log("POETRY_PRE_AUTH", JSON.stringify(await page.evaluate(() => ({
+    url: window.location.href,
+    documentLang: document.documentElement.lang,
+    locale: localStorage.getItem("zhaowu.locale"),
+    access: [...document.querySelectorAll("[data-report-access]")].map(el=>el.getAttribute("data-report-access")),
+    loading: [...document.querySelectorAll(".zhaowu-report-access-loading")].map(el=>el.textContent),
+    paywall: [...document.querySelectorAll("[data-report-paywall]")].map(el=>el.getAttribute("data-report-paywall")),
+    snippet: (document.body?.innerText||"").slice(-550),
+  }))));
   await expect(page.locator('[data-report-access="bundle"]')).toBeVisible({ timeout: 12_000 });
   const debug = await page.evaluate(() => ({
     language: document.documentElement.lang,
