@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("unpaid iPhone visitors never see the premium poetic afterword", async ({ page }) => {
   await page.addInitScript(() => {
+    localStorage.setItem("zhaowu.locale", "zh-Hant");
     localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify({
       year: 1990, month: 6, day: 15, hour: 10, minute: 30, timeUnknown: false,
       gender: "male", relation: "unset",
@@ -22,6 +23,7 @@ test("unpaid iPhone visitors never see the premium poetic afterword", async ({ p
 
 test("verified-owner preview renders the literary afterword at the end without mobile overflow", async ({ page }) => {
   await page.addInitScript(() => {
+    localStorage.setItem("zhaowu.locale", "zh-Hant");
     localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify({
       year: 1990, month: 6, day: 15, hour: 10, minute: 30, timeUnknown: false,
       gender: "male", relation: "unset",
