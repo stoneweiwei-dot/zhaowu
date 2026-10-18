@@ -108,9 +108,10 @@ test("Threads OAuth state and stored tokens are authenticated and encrypted", ()
     META_APP_ID: "1234567890",
     META_APP_SECRET: "app-secret-for-unit-test-123456",
     ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-unit-test-123456",
-    PUBLIC_SITE_ORIGIN: "https://stone-zhaowu-official.vercel.app",
+    PUBLIC_SITE_ORIGIN: "https://zhao-wu.com",
   };
   const authorization = createThreadsAuthorization(env, 1_000_000, "sealed-owner-proof");
+  assert.equal(new URL(authorization.url).searchParams.get("redirect_uri"), "https://zhao-wu.com/api/owner-session?action=threads.callback");
   const state = new URL(authorization.url).searchParams.get("state");
   const cookieValue = decodeURIComponent(authorization.cookie.match(/=([^;]+)/)[1]);
   const request = { headers: { cookie: `__Host-zhaowu_threads_oauth=${encodeURIComponent(cookieValue)}` } };

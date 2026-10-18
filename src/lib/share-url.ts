@@ -7,9 +7,9 @@
  * - Query string and hash are always dropped. They can carry cache-busting
  *   params (`zw_release`, `zw_retry`) and checkout/access tokens
  *   (`session_id`, `access_key`) that must never be shared.
- * - Non-vercel hosts (a future custom domain, localhost) keep their own origin.
+ * - The production custom domain and localhost keep their own origin.
  */
-export const CANONICAL_SITE_ORIGIN = "https://stone-zhaowu-official.vercel.app";
+export const CANONICAL_SITE_ORIGIN = "https://zhao-wu.com";
 
 type LocationLike = Pick<Location, "origin" | "hostname" | "pathname">;
 

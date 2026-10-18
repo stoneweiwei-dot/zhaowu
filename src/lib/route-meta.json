@@ -1,5 +1,5 @@
 {
-  "origin": "https://stone-zhaowu-official.vercel.app",
+  "origin": "https://zhao-wu.com",
   "routes": {
     "/": {
       "zh-Hant": { "title": "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費", "description": "免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。" },

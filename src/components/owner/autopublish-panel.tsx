@@ -59,7 +59,7 @@ function Pill({ tone, children }: { tone: keyof typeof TONE_CLASS; children: Rea
 
 function threadsErrorText(code: string) {
   if (code.includes("OWNER_REQUIRED")) return "後台登入已過期。請重新登入後台，再按一次。";
-  if (code.includes("ORIGIN_REJECTED")) return "請從 stone-zhaowu-official.vercel.app 這個網址打開後台再按，換網域的話授權會失敗。";
+  if (code.includes("ORIGIN_REJECTED")) return "請從 zhao-wu.com 打開後台再按；舊網址會自動轉到正式網址。";
   if (code.includes("THREADS_OAUTH_NOT_CONFIGURED")) return "伺服器還沒設定 Meta 應用（META_APP_ID / META_APP_SECRET）。";
   return `無法開始授權：${code || "未知錯誤"}`;
 }

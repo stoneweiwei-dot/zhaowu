@@ -230,7 +230,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   // SEO: private/account routes are noindex; sitemap-listed public routes self-canonicalise, everything else keeps "/".
   useEffect(() => {
-    const origin = "https://stone-zhaowu-official.vercel.app";
+    const origin = "https://zhao-wu.com";
     const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
     const isPrivate = PRIVATE_ROUTES.some((route) => normalized === route || normalized.startsWith(`${route}/`));
     const canonicalPath = SELF_CANONICAL_ROUTES.includes(normalized) ? normalized : "/";

@@ -6,7 +6,7 @@
  * deterministic R6.2.1 + P2 + P3 runtime. The model may connect/prioritise those
  * facts only. Every accepted answer must cite existing fact IDs.
  */
-const PRIMARY_ORIGIN = "https://stone-zhaowu-official.vercel.app";
+const PRIMARY_ORIGIN = "https://zhao-wu.com";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
@@ -46,6 +46,7 @@ function allowedOrigin(origin: string | null) {
   try {
     const url = new URL(origin);
     if (
+      url.hostname === "zhao-wu.com" ||
       url.hostname === "stone-zhaowu-official.vercel.app" ||
       (url.hostname.startsWith("stone-zhaowu-official-") && url.hostname.endsWith(".vercel.app")) ||
       url.hostname === "localhost" ||

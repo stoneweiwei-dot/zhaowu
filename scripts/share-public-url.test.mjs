@@ -20,8 +20,12 @@ test("query string and hash never reach the shared link", () => {
   assert.doesNotMatch(out, /secret|access_key|session_id|zw_|#/);
 });
 
-test("canonical host keeps its current path", () => {
+test("legacy Vercel alias is replaced by the canonical custom domain", () => {
   assert.equal(publicShareUrl(loc("https://stone-zhaowu-official.vercel.app/today")), `${CANONICAL_SITE_ORIGIN}/today`);
+});
+
+test("canonical custom domain keeps its current path", () => {
+  assert.equal(publicShareUrl(loc("https://zhao-wu.com/today")), `${CANONICAL_SITE_ORIGIN}/today`);
 });
 
 test("non-vercel hosts (custom domain, localhost) keep their own origin", () => {

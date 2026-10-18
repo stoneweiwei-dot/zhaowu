@@ -23,10 +23,10 @@ test("prebuild restores the committed 1200x630 JPEG without network access", () 
   assert.equal(og.readUInt16BE(og.length - 2), 0xffd9);
 });
 
-test("index.html exposes the Vercel canonical origin and large-image social cards", () => {
-  assert.match(html, /rel="canonical" href="https:\/\/stone-zhaowu-official\.vercel\.app\/"/);
-  assert.match(html, /property="og:url" content="https:\/\/stone-zhaowu-official\.vercel\.app\/"/);
-  assert.match(html, /property="og:image" content="https:\/\/stone-zhaowu-official\.vercel\.app\/og\.jpg"/);
+test("index.html exposes the custom-domain canonical origin and large-image social cards", () => {
+  assert.match(html, /rel="canonical" href="https:\/\/zhao-wu\.com\/"/);
+  assert.match(html, /property="og:url" content="https:\/\/zhao-wu\.com\/"/);
+  assert.match(html, /property="og:image" content="https:\/\/zhao-wu\.com\/og\.jpg"/);
   assert.match(html, /property="og:image:width" content="1200"/);
   assert.match(html, /property="og:image:height" content="630"/);
   assert.match(html, /property="og:image:type" content="image\/jpeg"/);
@@ -34,7 +34,7 @@ test("index.html exposes the Vercel canonical origin and large-image social card
   assert.match(html, /property="og:title" content="昭梧｜昭於未見，梧於有歸"/);
   assert.match(html, /property="og:description" content="昭梧以出生資料與傳統子平八字為基礎，整理個人命盤、人生節奏、今日提示與自我探索內容。"/);
   assert.match(html, /name="twitter:card" content="summary_large_image"/);
-  assert.match(html, /name="twitter:image" content="https:\/\/stone-zhaowu-official\.vercel\.app\/og\.jpg"/);
+  assert.match(html, /name="twitter:image" content="https:\/\/zhao-wu\.com\/og\.jpg"/);
   assert.doesNotMatch(html, /x-banner|twitter-banner|feed-banner/);
 });
 

@@ -6,7 +6,8 @@ import { createClient } from "npm:@supabase/supabase-js@2.95.0";
 // enabled, no public policies; only this function's service-role key can touch them). It never
 // records a Stripe-tracked charge or amount, so it cannot distort payment/revenue reporting.
 
-const DEFAULT_ORIGIN = "https://stone-zhaowu-official.vercel.app";
+const DEFAULT_ORIGIN = "https://zhao-wu.com";
+const LEGACY_ORIGIN = "https://stone-zhaowu-official.vercel.app";
 const SYSTEM_IDS = ["bazi", "ziwei", "qizheng", "western", "indian", "palm", "numerology"] as const;
 type SystemId = (typeof SYSTEM_IDS)[number];
 
@@ -34,6 +35,7 @@ function runtimeFromDeno(): Runtime {
 function allowedOrigins(env: Runtime) {
   return new Set([
     DEFAULT_ORIGIN,
+    LEGACY_ORIGIN,
     ...(env.origins || "").split(",").map((item) => item.trim()).filter(Boolean),
   ]);
 }
