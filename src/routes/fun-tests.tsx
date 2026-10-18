@@ -359,7 +359,7 @@ function FunTestsIndex() {
             </article>
           )}
 
-          <SongBeastPromptDisclosure locale={locale} innerAnimal={animalResultKey} guardianElement={guardian?.element} />
+          <SongBeastPromptDisclosure locale={locale} innerAnimal={animalResultKey ?? "eagle"} guardianElement={guardian?.element} />
 
           <div className="grid gap-3 sm:grid-cols-2">
             <button type="button" onClick={startAnimal} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{pageCopy.restart}</button>
