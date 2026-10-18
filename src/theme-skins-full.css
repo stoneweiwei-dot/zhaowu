@@ -1221,3 +1221,128 @@ html[data-zws][data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-
   color: var(--zws-ink) !important;
   -webkit-text-fill-color: currentColor !important;
 }
+
+
+/* ===========================================================================
+ * SONG GALLERY EDITION — 2026-10-18
+ * Shared editorial material language across all 24 owner-selectable skins.
+ * Intentionally preserves each skin's art, hero focus, accent and mode.
+ * No auth/payment/owner-publisher changes. Removing this block reverts styling.
+ * ======================================================================== */
+html[data-zws] {
+  --zws-radius: 8px;
+  --zws-radius-sm: 6px;
+  --zws-card-r: 8px;
+  --zws-card-radius: 8px;
+  --zws-card-frame: none;
+  --zws-card-outline: none;
+  --zws-card-outline-off: 0px;
+  --zws-card-orn: none;
+  --zws-card-blur: none;
+  --zws-shadow: none;
+  --zws-btn-radius: 7px;
+  --zws-pill-radius: 7px;
+  --zws-hero-radius: 8px;
+  --zws-hero-frame: none;
+  --zws-title-shadow: none;
+  --zws-title-track: .045em;
+  --zws-title-weight: 500;
+  --zws-rule-h: 1px;
+  --zws-rule-w: 36px;
+  --zws-rule: linear-gradient(90deg, var(--zws-gold), transparent);
+  --zws-card-border: 1px solid var(--zws-line);
+  --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", "Noto Serif SC", "STSong", serif;
+  --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+}
+html[data-zws]:not([data-zws-mode="dark"]) {
+  --zws-page: #f7f6f0;
+  --zws-card: #fcfbf7;
+  --zws-shadow: none;
+  --zws-wash: none;
+  --zws-pattern: none;
+  --zws-pattern-opacity: 0;
+}
+/* Dark collections retain pale ink on dark environmental surfaces; light
+   report/read sheets are not recoloured by a blanket light-theme selector. */
+html[data-zws][data-zws-mode="dark"] {
+  --zws-card-frame: none;
+  --zws-card-outline: none;
+  --zws-card-orn: none;
+  --zws-pattern: none;
+  --zws-pattern-opacity: 0;
+}
+html[data-zws] body,
+html[data-zws] body:has(.zhaowu-home-sheet-shell),
+html[data-zws] body:has(.zhaowu-has-wallpaper) {
+  background-image:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--zws-page) 74%, transparent),
+      color-mix(in srgb, var(--zws-page) 91%, transparent) 35%,
+      var(--zws-page) 83%),
+    var(--zws-art) !important;
+  background-size: 100% 100%, cover !important;
+  background-position: center, var(--zws-focus, 50% 40%) !important;
+  box-shadow: none !important;
+}
+html[data-zws][data-zws][data-zws][data-zws] body :is(
+  .seal-border, .zhaowu-result-card, .zhaowu-customer-record,
+  .zhaowu-updates-card, .zhaowu-updates-hero, .history-hero, .history-empty,
+  .zhaowu-specialist-sheet, .stone-login-sheet, .zw-birth-entry-ticket,
+  main article.rounded-xl, main section.rounded-2xl,
+  main a.rounded-2xl.border, main details.rounded-xl
+):not(.zw-hero-card) {
+  background: var(--zws-card) !important;
+  border: 1px solid var(--zws-line) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* Continuous paper report instead of shiny disconnected UI tiles. */
+html[data-zws] body :is(
+  .zhaowu-report-header, .zhaowu-unified-birth-report, .zhaowu-specialist-sheet,
+  .zhaowu-visual-book-head, .zhaowu-luck-head, .stone-login-sheet
+) { box-shadow: none !important; }
+html[data-zws] body .zhaowu-app-frame h1:not(.zw-hero-inscription-title)::after {
+  height: 1px !important;
+  width: 35px !important;
+  border-radius: 0 !important;
+  background: var(--zws-gold) !important;
+}
+html[data-zws] body .zhaowu-site-header {
+  box-shadow: none !important;
+  border-bottom: 1px solid var(--zws-line) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html[data-zws] body :is(
+  .zhaowu-primary-button, button[type="submit"], .zw-hero-primary-cta
+) {
+  border-radius: 7px !important;
+  box-shadow: none !important;
+}
+html[data-zws] body :is(
+  .zw-journey-nav a, .zw-journey-nav button,
+  .zhaowu-site-header a, .zhaowu-site-header button
+) { box-shadow: none !important; }
+html[data-zws] body :is(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--zws-accent) !important;
+  outline-offset: 3px;
+}
+html[data-zws] body :is(input, select, textarea) { font-size: max(16px, 1em); }
+html[data-zws] body :is(button[type="submit"], .zhaowu-primary-button) { min-height: 44px; }
+html[data-zws] body .zw-hero-inscription-title { text-shadow: none !important; font-weight: 500 !important; }
+html[data-zws] body .zw-hero-inscription-title::after {
+  height: 1px !important; width: 34px !important;
+  border-radius: 0 !important; background: var(--zws-gold) !important;
+}
+html[lang="en"][data-zws] body :is(h1, h2, h3, .font-display) {
+  font-family: var(--zws-font-en) !important;
+  letter-spacing: .01em !important;
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-zws] body :is(button, a) { transition: none !important; }
+}
+/* END SONG GALLERY EDITION */
