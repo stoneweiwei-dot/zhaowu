@@ -23,7 +23,7 @@ test("all three modes retain Song art style and no generated text", () => {
     assert.match(prompt, /9:16/);
     assert.match(prompt, /留白/);
     assert.match(prompt, /STONE 原創/);
-    assert.match(prompt, /無字/);
+    assert.match(prompt, /no generated letters|不生成任何文字|無字/);
     assert.ok(prompt.includes(SONG_BEAST_ART_VERSION));
   }
 });
