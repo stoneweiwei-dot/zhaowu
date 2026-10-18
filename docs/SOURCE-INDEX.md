@@ -52,8 +52,8 @@ For conflicting project behavior, use the precedence already defined in `AGENTS.
 - Name: Vercel `stone-zhaowu-official`
 - Authority: PRIMARY — live runtime state
 - Scope: only active production host
-- Location: https://stone-zhaowu-official.vercel.app/
-- Runtime release evidence: https://stone-zhaowu-official.vercel.app/release.json
+- Location: https://zhao-wu.com/
+- Runtime release evidence: https://zhao-wu.com/release.json
 - Freshness: inspect only when runtime/live status is in scope; docs/governance-only work does not require production verification
 
 ### Data/Auth/Storage

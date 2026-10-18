@@ -8,17 +8,18 @@ const ELIGIBLE_TIERS = new Set(["full"]);
 const ELIGIBLE_PAYMENT_STATES = new Set(["paid", "not_required"]);
 
 function allowedOrigin(origin: string | null) {
-  if (!origin) return "https://stone-zhaowu-official.vercel.app";
+  if (!origin) return "https://zhao-wu.com";
   try {
     const url = new URL(origin);
     if (
+      url.hostname === "zhao-wu.com" ||
       url.hostname === "stone-zhaowu-official.vercel.app" ||
       (url.hostname.startsWith("stone-zhaowu-official-") && url.hostname.endsWith(".vercel.app")) ||
       url.hostname === "localhost" ||
       url.hostname === "127.0.0.1"
     ) return origin;
   } catch { /* fall through */ }
-  return "https://stone-zhaowu-official.vercel.app";
+  return "https://zhao-wu.com";
 }
 
 function cors(req: Request) {

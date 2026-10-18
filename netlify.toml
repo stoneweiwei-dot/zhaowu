@@ -12,7 +12,7 @@
 # only for already-installed PWAs and transparently proxies the live Vercel app.
 [[redirects]]
   from = "/*"
-  to = "https://stone-zhaowu-official.vercel.app/:splat"
+  to = "https://zhao-wu.com/:splat"
   status = 200
   force = true
 

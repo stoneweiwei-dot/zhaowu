@@ -14,7 +14,7 @@ export default defineConfig({
   timeout: 45_000,
   reporter: process.env.CI ? [["line"], ["github"]] : "line",
   use: {
-    baseURL: process.env.PROD_URL || "https://stone-zhaowu-official.vercel.app",
+    baseURL: process.env.PROD_URL || "https://zhao-wu.com",
     trace: "retain-on-failure",
     ...devices["iPhone 13"],
     browserName: "webkit",

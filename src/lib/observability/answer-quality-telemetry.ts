@@ -15,6 +15,7 @@ const POSTHOG_HOST = String(env.VITE_POSTHOG_HOST || "https://us.i.posthog.com")
 const DEFAULT_ALLOWED_HOSTS = [
   "archive-stone-zhaowu-official.netlify.app",
   "stone-zhaowu-official.vercel.app",
+  "zhao-wu.com",
 ];
 const ALLOWED_HOSTS = new Set(
   String(env.VITE_POSTHOG_ALLOWED_HOSTS || DEFAULT_ALLOWED_HOSTS.join(","))

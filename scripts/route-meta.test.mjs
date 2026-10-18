@@ -11,7 +11,7 @@ const AMP = "\u0026";
 
 test("route-meta.json is well-formed with 3 languages per route", () => {
   const { origin, routes } = readRouteMeta();
-  assert.equal(origin, "https://stone-zhaowu-official.vercel.app");
+  assert.equal(origin, "https://zhao-wu.com");
   const paths = Object.keys(routes);
   assert.equal(paths.length, 26, "expected the 26 sitemap-listed routes");
   assert.ok(paths.includes("/"));
@@ -30,7 +30,7 @@ test("route-meta.json is well-formed with 3 languages per route", () => {
 test("every sitemap URL has a route-meta entry (and vice versa)", () => {
   const { routes } = readRouteMeta();
   const sitemap = read("public/sitemap.xml");
-  const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].replace("https://stone-zhaowu-official.vercel.app", "") || "/");
+  const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].replace("https://zhao-wu.com", "") || "/");
   for (const loc of locs) assert.ok(routes[loc], `sitemap URL ${loc} has no route-meta entry`);
   for (const path of Object.keys(routes)) assert.ok(locs.includes(path), `route-meta entry ${path} is not in the sitemap`);
 });
@@ -53,19 +53,19 @@ test("injectRouteMeta writes per-route title/description/og/canonical and drops 
   const fixture = [
     "<title>home</title>",
     '<meta name="description" content="home desc" />',
-    '<link rel="canonical" href="https://stone-zhaowu-official.vercel.app/" />',
+    '<link rel="canonical" href="https://zhao-wu.com/" />',
     '<meta property="og:title" content="home" />',
-    '<meta property="og:url" content="https://stone-zhaowu-official.vercel.app/" />',
+    '<meta property="og:url" content="https://zhao-wu.com/" />',
     '<meta name="twitter:title" content="home" />',
     '<script type="application/ld+json">{"@type":"WebSite"}</script>',
     '<script type="module" src="/app.js"></script>',
     '<div id="root"></div>',
   ].join("\n");
-  const out = injectRouteMeta(fixture, { title: "T", description: "D" }, "/ziwei", "https://stone-zhaowu-official.vercel.app");
+  const out = injectRouteMeta(fixture, { title: "T", description: "D" }, "/ziwei", "https://zhao-wu.com");
   assert.match(out, /<title>T<\/title>/);
   assert.match(out, /<meta name="description" content="D" \/>/);
-  assert.match(out, /<link rel="canonical" href="https:\/\/stone-zhaowu-official\.vercel\.app\/ziwei" \/>/);
-  assert.match(out, /<meta property="og:url" content="https:\/\/stone-zhaowu-official\.vercel\.app\/ziwei" \/>/);
+  assert.match(out, /<link rel="canonical" href="https:\/\/zhao-wu\.com\/ziwei" \/>/);
+  assert.match(out, /<meta property="og:url" content="https:\/\/zhao-wu\.com\/ziwei" \/>/);
   assert.match(out, /<meta name="twitter:title" content="T" \/>/);
   assert.doesNotMatch(out, /application\/ld\+json/);
   assert.match(out, /<script type="module" src="\/app\.js"><\/script>/);

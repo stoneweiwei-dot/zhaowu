@@ -60,3 +60,12 @@ test("custom domain is canonical and uses the same-origin Supabase proxy", async
   assert.match(config, /PROXY_HOST_DOMAINS = \["stone-zhaowu-official\.vercel\.app", "zhao-wu\.com"\]/);
   assert.match(config, /return onProxyHost \? `\$\{origin\}\$\{SAME_ORIGIN_PROXY_PREFIX\}`/);
 });
+
+test("the legacy Vercel alias redirects to the canonical custom domain", async () => {
+  const vercel = JSON.parse(await source("vercel.json"));
+  const redirect = vercel.redirects?.find((item) =>
+    item.has?.some((condition) => condition.type === "host" && condition.value === "stone-zhaowu-official.vercel.app"),
+  );
+  assert.equal(redirect?.destination, "https://zhao-wu.com/:path*");
+  assert.equal(redirect?.permanent, true);
+});

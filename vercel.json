@@ -182,6 +182,19 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "stone-zhaowu-official.vercel.app"
+        }
+      ],
+      "destination": "https://zhao-wu.com/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/gallery-ingest-finalize",

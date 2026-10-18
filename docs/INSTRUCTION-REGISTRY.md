@@ -1,6 +1,6 @@
 ## 2026-10-17 自訂正式域名與大陸同源代理
 
-- ACTIVE：站主已購買並指定 `https://zhao-wu.com/` 為唯一 canonical 正式網址；此域名與 `www.zhao-wu.com` 已在既有 Vercel Production project `stone-zhaowu-official` 驗證，www 以 308 轉向主域名。舊 `stone-zhaowu-official.vercel.app` 保留為同專案相容入口，不另建主機。
+- ACTIVE：站主已購買並指定 `https://zhao-wu.com/` 為唯一 canonical 正式網址；此域名與 `www.zhao-wu.com` 已在既有 Vercel Production project `stone-zhaowu-official` 驗證。`www` 與舊 `stone-zhaowu-official.vercel.app` 均以 308 保留路徑與查詢參數轉向主域名，不另建主機。
 - ACTIVE：`src/lib/supabase-config.ts` 將 `zhao-wu.com` 納入 `/sb/*` 同源 Supabase 代理白名單；既有代理 rewrites 不變，讓正式新域名沿用大陸訪客端登入／讀取路徑。
 - ACTIVE：`index.html` 的 canonical、Open Graph、Twitter 與 JSON-LD，`robots.txt`、`sitemap.xml`、`llms.txt` 和 SEO 測試均使用新 canonical。
 - PROTECTED：保留 `.vercel.app` 入口、Vercel 單一 Production、既有付款／命盤／登入邏輯及 Supabase 設定；不假設自訂域名能保證所有大陸網路可達。

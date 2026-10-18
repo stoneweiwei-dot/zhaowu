@@ -1,6 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.95.0";
 
-const DEFAULT_ORIGIN = "https://stone-zhaowu-official.vercel.app";
+const DEFAULT_ORIGIN = "https://zhao-wu.com";
+const LEGACY_ORIGIN = "https://stone-zhaowu-official.vercel.app";
 
 type Runtime = {
   supabaseUrl?: string;
@@ -26,6 +27,7 @@ function runtimeFromDeno(): Runtime {
 function allowedOrigins(env: Runtime) {
   return new Set([
     DEFAULT_ORIGIN,
+    LEGACY_ORIGIN,
     ...(env.origins || "").split(",").map((item) => item.trim()).filter(Boolean),
   ]);
 }
