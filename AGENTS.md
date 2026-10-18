@@ -9,6 +9,11 @@ Database/Auth/Storage: Supabase `plgpxusmemnmzckbwtiv`
 Primary branch: `main`
 Cost posture: **A$0/month target unless the owner explicitly approves paid infrastructure**
 
+### 2026-10-19｜異獸畫像生成指令唯一版本（owner instruction）
+
+只要現有功能需要**內在動物／本命異獸／命局瑞獸**的創作提示詞，預設先讀 `docs/SONG-BEAST-ART-PROMPT-v1.md`，並調用 `src/lib/song-beast-art-prompt.ts` 的 `buildSongBeastArtPrompt`（版本 `ZW-SONG-BEAST-ART-v1.0-20261019`）；不要另外創造黑底仙俠、滿版金飾、遊戲角色卡或通用鹿狐混種的 prompt。這只是既有結果的宋式畫像轉譯，不改八字 Truth Layer／測驗答案，不創建每位訪客即時付費生圖，不擴大至非異獸題材；新增圖片供應商／額度消耗需站主另行授權。站主後台 `/gallery` 及 `/fun-tests?test=animal` 結果提供零成本指令組裝／複製入口。真正上線以 main + 唯一 Production 驗證為準。
+
+
 ## 2026-10-07 OWNER LAUNCH / OPERATIONS MODE SUPERSESSION
 
 ZHAOWU is now in **Launch / Operations mode**. The default objective is no longer continuous feature development or cosmetic perfection. The product objective is: **keep the live service stable, let real users complete the core flow, accept paid orders reliably, and promote the product.**
