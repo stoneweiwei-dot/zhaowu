@@ -220,9 +220,9 @@ test("all published skins keep the owner footer action, not the obsolete header-
   const painted = readFileSync("src/painted-home.css", "utf8");
   assert.match(shell, /data-owner-login-entry/);
   assert.match(shell, /data-footer-status-strip/);
-  assert.match(shell, /to="\\/login"/);
-  assert.match(css, /html\\[data-zws\\] body \\.zhaowu-home-login-inline/);
-  assert.match(full, /\\.zhaowu-home-login-inline, \\.zhaowu-header-owner-login/);
-  assert.doesNotMatch(painted, /#root:has\\(\\.zw-painted-home\\) \\.zhaowu-home-login-inline/);
+  assert.match(shell, /to="\/login"/);
+  assert.match(css, /html\[data-zws\] body \.zhaowu-home-login-inline/);
+  assert.match(full, /\.zhaowu-home-login-inline, \.zhaowu-header-owner-login/);
+  assert.doesNotMatch(painted, /#root:has\(\.zw-painted-home\) \.zhaowu-home-login-inline/);
   assert.ok(ids.every(({ id }) => full.includes(`html[data-zws="${id}"]`)));
 });
