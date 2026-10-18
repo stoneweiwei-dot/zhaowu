@@ -4,20 +4,22 @@ import {
   SONG_BEAST_ARCHETYPES,
   SONG_BEAST_ART_VERSION,
   buildSongBeastArtPrompt,
-  type SongBeastArchetype,
+  type SongBeastSelection,
   type SongBeastMode,
 } from "@/lib/song-beast-art-prompt";
 
 /** Owner-only prompt authoring tool; does not call paid image providers or write Storage. */
 export function OwnerSongBeastPromptPanel({ locale }: { locale: Locale }) {
-  const [beast, setBeast] = useState<SongBeastArchetype>("yinglong");
+  const [beast, setBeast] = useState<SongBeastSelection>("original");
+  const [originalName, setOriginalName] = useState("");
+  const [originalForm, setOriginalForm] = useState("");
   const [mode, setMode] = useState<SongBeastMode>("solo");
   const [person, setPerson] = useState("");
   const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
   const tx = (hant: string, hans: string, en: string) => locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
   const prompt = useMemo(
-    () => buildSongBeastArtPrompt({ archetype: beast, mode, personDescription: person }),
-    [beast, mode, person],
+    () => buildSongBeastArtPrompt({ archetype: beast, mode, personDescription: person, originalName, originalForm }),
+    [beast, mode, person, originalName, originalForm],
   );
 
   async function copyPrompt() {
@@ -42,7 +44,8 @@ export function OwnerSongBeastPromptPanel({ locale }: { locale: Locale }) {
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <label className="block text-sm text-ink" htmlFor="song-beast-archetype">
           {tx("異獸原型", "异兽原型", "Beast archetype")}
-          <select id="song-beast-archetype" value={beast} onChange={(event) => { setBeast(event.target.value as SongBeastArchetype); setStatus("idle"); }} className="mt-1 block min-h-11 w-full rounded-lg border border-line bg-paper px-3 text-base text-ink">
+          <select id="song-beast-archetype" value={beast} onChange={(event) => { setBeast(event.target.value as SongBeastSelection); setStatus("idle"); }} className="mt-1 block min-h-11 w-full rounded-lg border border-line bg-paper px-3 text-base text-ink">
+            <option value="original">{tx("原創本命異獸（自訂）", "原创本命异兽（自定义）", "Original beast (custom)")}</option>
             {SONG_BEAST_ARCHETYPES.map((entry) => <option key={entry.id} value={entry.id}>{locale === "en" ? entry.en : locale === "zh-Hans" ? entry.hans : entry.hant}</option>)}
           </select>
         </label>
@@ -55,6 +58,16 @@ export function OwnerSongBeastPromptPanel({ locale }: { locale: Locale }) {
           </select>
         </label>
       </div>
+      {beast === "original" ? (
+        <div className="mt-3 grid gap-3">
+          <label className="block text-sm text-ink" htmlFor="song-beast-original-name">{tx("原創異獸名稱（可選）", "原创异兽名称（可选）", "Original beast name (optional)")}
+            <input id="song-beast-original-name" value={originalName} onChange={(event) => { setOriginalName(event.target.value); setStatus("idle"); }} maxLength={80} className="mt-1 block min-h-11 w-full rounded-lg border border-line bg-paper px-3 text-base text-ink" />
+          </label>
+          <label className="block text-sm text-ink" htmlFor="song-beast-original-form">{tx("外形與象徵（越具體越不會畫成同一隻）", "外形与象征（越具体越不会画成同一只）", "Morphology and symbolism")}
+            <textarea id="song-beast-original-form" value={originalForm} onChange={(event) => { setOriginalForm(event.target.value); setStatus("idle"); }} maxLength={350} rows={3} placeholder={tx("例：白羽、蜿蜒水紋、層疊山骨；明確交代角、翼、足和尾如何連接", "例：白羽、蜿蜒水纹、层叠山骨；明确交代角、翼、足和尾如何连接", "Describe head, horns, wings, limbs and tail as one coherent creature.")} className="mt-1 block w-full rounded-lg border border-line bg-paper px-3 py-2 text-base text-ink" />
+          </label>
+        </div>
+      ) : null}
       {mode === "companion" ? (
         <label className="mt-3 block text-sm text-ink" htmlFor="song-beast-person">
           {tx("人物描述（選填；需另附真人參考照才可要求相似）", "人物描述（选填；需另附真人参考照才可要求相似）", "Person description (optional; photo reference needed for resemblance)")}
