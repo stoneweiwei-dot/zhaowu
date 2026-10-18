@@ -11,10 +11,9 @@ const FULL_PAINTING_HOMES = new Set([
   'dawn-dragon', 'moon-lotus-boat', 'bamboo-falls', 'petal-immortal', 'pink-lotus-stream', 'butterfly-lotus',
 ]);
 export function homeComposition(skin: SkinDef | null) {
-  // Product lock from owner refs: day = koi (1st image); night = scroll (2nd image).
-  if (skin?.mode === 'dark') return 'scroll';
-  if (skin?.id === 'cloud-jade') return 'comic';
-  return 'koi';
+  // All published skins share one Song editorial shell; preserve the unskinned classic fallback.
+  // Artwork, colour and title still come from each individual SkinDef.
+  return skin ? 'scroll' : 'koi';
 }
 
 /** Real links and controls over separate art layers; never a screenshot with hotspots. */
@@ -37,7 +36,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <img className="ph-hero-art" src={art} alt="" fetchPriority="high" width="1248" height="1248" style={skin?.focus ? { objectPosition: skin.focus } : undefined} />
       <a className="ph-brand" href="/" aria-label="昭梧 Zhaowu"><strong>昭梧</strong><small>Z H A O W U</small></a>
       <div className="ph-title">
-        {layout === 'comic' ? <><h1>{t('命理不只是答案，\n更是看見自己的另一種方式。','命理不只是答案，\n更是看见自己的另一种方式。','Another way to\nunderstand yourself.')}</h1></> : layout === 'koi' ? <><h1>昭<br/>梧</h1><p>{t('觀天地之氣，\n照你心中之梧。', '观天地之气，\n照你心中之梧。', 'See the world clearly.\nFind your own way.')}</p><small>{t('以東方智慧，尋見更清明的自己。', '以东方智慧，寻见更清明的自己。', 'Eastern wisdom, a clearer sense of self.')}</small></> : <><h1>{t('順應天時\n看見更好的選擇', '顺应天时\n看见更好的选择', 'Find your rhythm.\nSee your next step.')}</h1><p className="ph-motto">{t('命 · 勢 · 選', '命 · 势 · 选', 'LIFE · TIMING · CHOICE')}</p><small>{t('在變動的時代，找到屬於你的節奏', '在变动的时代，找到属于你的节奏', 'Find your own rhythm in a changing world.')}</small></>}
+        {layout === 'comic' ? <><h1>{t('命理不只是答案，\n更是看見自己的另一種方式。','命理不只是答案，\n更是看见自己的另一种方式。','Another way to\nunderstand yourself.')}</h1></> : layout === 'koi' ? <><h1>昭<br/>梧</h1><p>{t('觀天地之氣，\n照你心中之梧。', '观天地之气，\n照你心中之梧。', 'See the world clearly.\nFind your own way.')}</p><small>{t('以東方智慧，尋見更清明的自己。', '以东方智慧，寻见更清明的自己。', 'Eastern wisdom, a clearer sense of self.')}</small></> : <><h1>{skin ? (locale === 'en' ? skin.en : locale === 'zh-Hans' ? skin.hans : skin.zh) : t('順應天時\n看見更好的選擇', '顺应天时\n看见更好的选择', 'Find your rhythm.\nSee your next step.')}</h1><p className="ph-motto">{t('命 · 勢 · 選', '命 · 势 · 选', 'LIFE · TIMING · CHOICE')}</p><small>{t('在變動的時代，找到屬於你的節奏', '在变动的时代，找到属于你的节奏', 'Find your own rhythm in a changing world.')}</small></>}
       </div>
       {layout === 'scroll' && <div className="ph-actions"><button onClick={() => onOpen('form')} data-home-birth-entry>{t('開始分析', '开始分析', 'Begin analysis')} <span>›</span></button><a href="#today" onClick={e => {e.preventDefault(); onOpen('today');}}>{t('今日指引', '今日指引', 'Today’s guide')} <span>›</span></a></div>}
     </div>
