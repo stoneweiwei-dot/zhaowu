@@ -20,23 +20,24 @@ test("journey navigation never exposes owner/all reports link in the public head
   assert.doesNotMatch(journeyNav, /isOwner/);
 });
 
-test("site shell removes visitor sign-in and keeps owner access outside the public funnel", () => {
-  assert.doesNotMatch(siteShell, /站主登入/);
-  assert.doesNotMatch(siteShell, /站主登录/);
-  assert.doesNotMatch(siteShell, /Owner sign-in/i);
-  assert.doesNotMatch(siteShell, /オーナーサインイン/);
-  assert.doesNotMatch(siteShell, /소유자 로그인/);
-  
-  assert.doesNotMatch(siteShell, /to="\/login"/);
-  assert.doesNotMatch(siteShell, /data-owner-login-entry/);
-  assert.match(siteShell, /to="\/history"/);
+test("owner sign-in is discoverable only in the shared footer, with no report-access leak", () => {
+  const header = siteShell.split('<header className=')[1]?.split('</header>')[0] || '';
+  const footer = siteShell.split('<footer className=')[1]?.split('</footer>')[0] || '';
+  assert.ok(footer.includes('data-footer-status-strip'));
+  assert.match(footer, /to="\\/login" className="zhaowu-home-login-inline" data-owner-login-entry/);
+  assert.match(footer, /站主登入/);
+  assert.match(footer, /站主登录/);
+  assert.match(footer, /Owner sign-in/);
+  assert.match(footer, /user\\?\\.isOwner/);
+  assert.match(footer, /to="\\/account"/);
+  assert.doesNotMatch(header, /data-owner-login-entry/);
+  assert.doesNotMatch(header, /to="\\/login"/);
+  assert.match(siteShell, /to="\\/history"/);
   assert.match(siteShell, /無需註冊/);
-
-  // Authenticated owner link on home shell must be neutral admin, never "所有報告"
+  // Owner data and archives remain behind the existing server-verified owner gate.
   assert.doesNotMatch(siteShell, /所有報告/);
   assert.doesNotMatch(siteShell, /所有报告/);
   assert.doesNotMatch(siteShell, /All reports/i);
-  assert.match(siteShell, /user\?\.isOwner/);
 });
 
 test("my reports (/history) removes owner cloud card, free read promises, and owner sync notes in all locales", () => {
