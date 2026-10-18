@@ -94,8 +94,8 @@ test("all selected skins show the matching painting on report cover surfaces onl
   assert.ok(full.includes('html[data-zws][data-zws-mode="dark"] body main'), "night report ink stays readable");
   assert.ok(full.includes("body .zhaowu-report-header .zhaowu-report-art { display: none"), "do not show a second unrelated lotus image");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.match(manager, /Actual homepage layout/);
-  assert.match(manager, /theme-previews/);
+  assert.match(manager, /data-editorial-skin-preview/);
+  assert.match(manager, /setPreview\(\{ src: s.hero/);
 });
 
 // Resolve the actual root token cascade, including shared and per-skin rules.
@@ -195,4 +195,22 @@ test('the birth flow uses one themed paper surface instead of nested cards', () 
   assert.match(themed, /--zws-surface:\s*color-mix\(in srgb, var\(--zws-page\) 94%, #fff 6%\)/);
   assert.match(themed, /html\[data-zws\] body \.zw-report-edit/);
   assert.match(themed, /body #birth-form :is\([\s\S]*?\.zhaowu-time-calibration-note[\s\S]*?background:\s*transparent/s);
+});
+
+test("all 24 selectable skins share the Song editorial shell without overwriting the individual paintings", () => {
+  const home = readFileSync("src/components/painted-home.tsx", "utf8");
+  const homeCss = readFileSync("src/painted-home.css", "utf8");
+  const skinCss = readFileSync("src/theme-skins-full.css", "utf8");
+  const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
+  assert.equal(ids.length, 24);
+  assert.match(home, /return skin \? 'scroll' : 'koi'/);
+  assert.match(home, /const art = skin\?\.hero/);
+  assert.match(homeCss, /SONG GALLERY EDITION/);
+  assert.match(homeCss, /\.ph-hero-art/);
+  assert.match(homeCss, /\.ph-actions/);
+  assert.match(skinCss, /SONG GALLERY EDITION/);
+  assert.match(skinCss, /--zws-card-orn: none/);
+  assert.match(skinCss, /html\[data-zws\]\[data-zws-mode="dark"\]/);
+  assert.match(manager, /data-editorial-skin-preview=\{s\.id\}/);
+  assert.match(manager, /src=\{s\.hero\}/);
 });

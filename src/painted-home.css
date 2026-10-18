@@ -285,3 +285,239 @@ html body #root .zw-painted-home[data-composition='koi'][data-title-veil='true']
   background:radial-gradient(ellipse 58% 62% at 16% 36%, color-mix(in srgb,var(--ph-paper) 90%,transparent) 0%, color-mix(in srgb,var(--ph-paper) 70%,transparent) 45%, transparent 76%);
 }
 html body #root .zw-painted-home[data-composition='koi'][data-title-veil='true'] .ph-title { color:#5e4b2c; }
+
+
+/* ===========================================================================
+ * SONG GALLERY EDITION — shared across every owner-selectable skin.
+ * Art stays as the skin's actual <img>; text and controls stay live DOM.
+ * No extra media, no duplicate homepage background, no new product flow.
+ * ======================================================================== */
+html[data-zws] body #root .zw-painted-home {
+  --ph-gallery-rule: color-mix(in srgb, var(--ph-ink) 23%, transparent);
+  background: var(--ph-paper) !important;
+  color: var(--ph-ink) !important;
+  font-size: 16px;
+  box-shadow: none !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-hero {
+  display: flex !important;
+  flex-direction: column;
+  aspect-ratio: auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 22px clamp(18px, 5.5vw, 28px) 0 !important;
+  border: 0 !important;
+  background: var(--ph-paper) !important;
+  overflow: hidden;
+}
+html[data-zws] body #root .zw-painted-home .ph-hero::after { display: none !important; }
+html[data-zws] body #root .zw-painted-home .ph-brand {
+  order: 0;
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  align-self: flex-start;
+  gap: 12px;
+  min-height: 44px;
+  color: var(--ph-ink) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-brand strong {
+  font-size: 22px !important;
+  line-height: 1.25;
+  font-weight: 500 !important;
+  text-shadow: none !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-brand small {
+  border-left: 1px solid var(--ph-gallery-rule);
+  padding-left: 11px;
+  margin: 0;
+  font: 11px/1.4 "Iowan Old Style", Georgia, serif !important;
+  letter-spacing: .16em;
+  color: var(--ph-muted) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-title,
+html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-title {
+  order: 1;
+  position: relative !important;
+  inset: auto !important;
+  margin: 28px 0 20px !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100%;
+  color: var(--ph-ink) !important;
+  text-align: left !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-title h1,
+html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-title h1 {
+  font-family: "Songti TC","Noto Serif TC","Songti SC",serif !important;
+  font-size: clamp(30px, 8.4vw, 46px) !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  letter-spacing: .065em !important;
+  margin: 0 !important;
+  color: var(--ph-ink) !important;
+  text-shadow: none !important;
+  overflow-wrap: anywhere;
+}
+html[lang="en"][data-zws] body #root .zw-painted-home .ph-title h1 {
+  font-family: "Iowan Old Style", Baskerville, Georgia, serif !important;
+  letter-spacing: .01em !important;
+  font-size: clamp(29px, 7.8vw, 46px) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-title p,
+html[data-zws] body #root .zw-painted-home .ph-title small {
+  color: var(--ph-muted) !important;
+  text-shadow: none !important;
+  font-size: 14px !important;
+  line-height: 1.8 !important;
+  letter-spacing: .025em !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-title .ph-motto {
+  display: inline-block;
+  padding-top: 10px;
+  border-top: 1px solid var(--ph-gallery-rule);
+  margin-top: 12px;
+  font-size: 11px !important;
+  font-weight: 500;
+  letter-spacing: .12em !important;
+  color: var(--ph-muted) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-hero-art {
+  order: 2;
+  position: relative !important;
+  inset: auto !important;
+  display: block;
+  z-index: auto !important;
+  width: 100% !important;
+  height: clamp(184px, 55vw, 284px) !important;
+  min-height: 0 !important;
+  aspect-ratio: auto !important;
+  object-fit: cover !important;
+  border-radius: 4px !important;
+  filter: saturate(.86);
+  box-shadow: none !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-actions,
+html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-actions {
+  order: 3;
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
+  flex-wrap: wrap;
+  gap: 0 !important;
+  padding: 11px 0 20px !important;
+  border-bottom: 1px solid var(--ph-gallery-rule);
+  width: 100%;
+}
+html[data-zws] body #root .zw-painted-home .ph-actions :is(button,a),
+html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-actions :is(button,a) {
+  flex: 1 1 48%;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 48px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 8px 11px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  background: transparent !important;
+  color: var(--ph-ink) !important;
+  font: 500 14px/1.6 "Avenir Next", system-ui, sans-serif !important;
+  letter-spacing: .025em !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-actions :is(button,a):first-child {
+  border-right: 1px solid var(--ph-gallery-rule) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-actions span { color: var(--ph-accent); font-size: 20px !important; }
+html[data-zws] body #root .zw-painted-home .ph-scroll-panels {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 clamp(18px, 5.5vw, 28px) !important;
+  background: var(--ph-paper);
+}
+html[data-zws] body #root .zw-painted-home .ph-paper-panel {
+  display: block !important;
+  margin: 0 !important;
+  padding: 19px 2px !important;
+  width: 100%;
+  min-height: 88px;
+  border: 0 !important;
+  border-bottom: 1px solid var(--ph-gallery-rule) !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: var(--ph-ink) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-paper-panel > img { display: none !important; }
+html[data-zws] body #root .zw-painted-home .ph-paper-panel :is(h2, p, small, em) {
+  text-shadow: none !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-paper-panel h2 {
+  font: 500 21px/1.4 "Songti TC", "Noto Serif TC", "Songti SC",serif !important;
+  letter-spacing: .045em !important;
+  color: var(--ph-ink) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-paper-panel p {
+  font: 14px/1.8 "Songti TC", "Noto Serif TC", serif !important;
+  color: var(--ph-muted) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-paper-panel em {
+  display: inline-flex !important;
+  align-items: center;
+  min-height: 44px !important;
+  padding: 4px 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-size: 13px !important;
+  color: var(--ph-ink) !important;
+}
+/* Preserve the functional expandable HomeTree; remove app-card chrome. */
+html[data-zws] body #root .zw-painted-home .ph-tree {
+  padding: 8px clamp(18px, 5.5vw, 28px) !important;
+  background: var(--ph-paper) !important;
+}
+html[data-zws] body #root .zw-painted-home :is(.ph-tree-node, .ph-tree-head, .ph-tree-leaf, .ph-tree-branch-head) {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-node {
+  border: 0 !important;
+  border-bottom: 1px solid var(--ph-gallery-rule) !important;
+  background: transparent !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-head {
+  background: transparent !important;
+  border: 0 !important;
+  min-height: 58px !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-node img { opacity: .25; }
+html[data-zws] body #root .zw-painted-home .ph-bottom-nav {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border-top: 1px solid var(--ph-gallery-rule) !important;
+  background: var(--ph-paper) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-bottom-nav>* { min-height: 52px !important; font-size: 12px !important; }
+html[data-zws] body #root .zw-painted-home .ph-bottom-nav svg { width: 22px !important; height: 22px !important; }
+html[data-zws] body #root .zw-painted-home :is(button,a):focus-visible {
+  outline: 2px solid var(--ph-accent) !important;
+  outline-offset: 2px !important;
+}
+@media (max-width: 360px) {
+  html[data-zws] body #root .zw-painted-home .ph-hero { padding-inline: 16px !important; }
+  html[data-zws] body #root .zw-painted-home .ph-actions :is(button,a) { font-size: 13px !important; }
+  html[lang="en"][data-zws] body #root .zw-painted-home .ph-title h1 { font-size: 29px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-zws] body #root .zw-painted-home * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+/* END SONG GALLERY EDITION */
