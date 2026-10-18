@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
-import { restoreSession, signInWithPassword, signOutRemote, type SupabaseSession } from "@/lib/supabase-rest";
+import {
+  capturePasswordRecovery,
+  requestPasswordReset as requestSupabasePasswordReset,
+  restoreSession,
+  signInWithPassword,
+  signOutRemote,
+  updateVisitorPassword as updateSupabaseVisitorPassword,
+  type SupabaseSession,
+} from "@/lib/supabase-rest";
 
 /**
  * Optional visitor accounts (2026-10-16 owner instruction: mainland visitors must be able to log in).
@@ -16,6 +24,7 @@ import { restoreSession, signInWithPassword, signOutRemote, type SupabaseSession
 
 export type VisitorSignupError = "INVALID_EMAIL" | "INVALID_PASSWORD" | "EMAIL_EXISTS" | "RATE_LIMITED" | "NETWORK" | "FAILED";
 export type VisitorLoginError = "BAD_CREDENTIALS" | "NETWORK" | "FAILED";
+export type VisitorPasswordResetError = "NETWORK" | "FAILED";
 
 export class VisitorAuthError<T extends string> extends Error {
   code: T;
@@ -53,6 +62,40 @@ export async function loginVisitor(email: string, password: string): Promise<Sup
     if (error instanceof TypeError) throw new VisitorAuthError<VisitorLoginError>("NETWORK");
     const message = error instanceof Error ? error.message.toLowerCase() : "";
     throw new VisitorAuthError<VisitorLoginError>(message.includes("invalid") || message.includes("credentials") ? "BAD_CREDENTIALS" : "FAILED");
+  }
+}
+
+export async function requestVisitorPasswordReset(email: string): Promise<void> {
+  try {
+    await requestSupabasePasswordReset(email);
+  } catch (error) {
+    if (error instanceof TypeError) throw new VisitorAuthError<VisitorPasswordResetError>("NETWORK");
+    throw new VisitorAuthError<VisitorPasswordResetError>("FAILED");
+  }
+}
+
+export async function startVisitorPasswordRecovery(): Promise<SupabaseSession | null> {
+  try {
+    const session = await capturePasswordRecovery();
+    if (session) window.dispatchEvent(new Event(CHANGE_EVENT));
+    return session;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (message === "RESET_LINK_INVALID") throw error;
+    if (error instanceof TypeError) throw new VisitorAuthError<VisitorPasswordResetError>("NETWORK");
+    throw new VisitorAuthError<VisitorPasswordResetError>("FAILED");
+  }
+}
+
+export async function updateVisitorPassword(password: string): Promise<void> {
+  const session = await restoreSession();
+  if (!session) throw new Error("RESET_LINK_INVALID");
+  try {
+    await updateSupabaseVisitorPassword(session, password);
+    window.dispatchEvent(new Event(CHANGE_EVENT));
+  } catch (error) {
+    if (error instanceof TypeError) throw new VisitorAuthError<VisitorPasswordResetError>("NETWORK");
+    throw new VisitorAuthError<VisitorPasswordResetError>("FAILED");
   }
 }
 
