@@ -81,9 +81,29 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
                 </div>
               ) : null}
               <article className={`overflow-hidden rounded-xl border bg-paper/40 ${active ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"}`}>
-              <button type="button" onClick={() => setPreview({ src: `/theme-previews/${s.id}.jpg`, alt: `${name(s)} · ${tr(locale, "實際首頁排版", "实际首页排版", "Actual homepage layout")}` })} className="block w-full bg-paper/40 p-3 text-left" aria-label={`${name(s)} · ${tr(locale, "查看完整首頁", "查看完整首页", "View full homepage")}`}>
-                <img src={`/theme-previews/${s.id}.jpg`} alt={`${name(s)} · ${tr(locale, "實際首頁排版", "实际首页排版", "Actual homepage layout")}`} loading="lazy" width="390" height="844" className="mx-auto h-80 w-auto max-w-full object-contain object-top" />
-                <span className="mt-2 block text-center text-xs text-ink-soft">{tr(locale, "實際首頁 · 點擊放大", "实际首页 · 点击放大", "Rendered homepage · Enlarge")}</span>
+              <button type="button" onClick={() => setPreview({ src: s.hero, alt: `${name(s)} · ${tr(locale, "原畫", "原画", "Original artwork")}` })} className="block w-full bg-paper/40 p-3 text-left" aria-label={`${name(s)} · ${tr(locale, "查看原畫", "查看原画", "View original artwork")}`}>
+                <div data-editorial-skin-preview={s.id} className="mx-auto max-w-[300px] overflow-hidden border border-black/10 text-left" style={{ background: s.swatch[0], color: s.mode === "dark" ? "#F7F6F0" : "#202925" }}>
+                  <div className="px-4 pt-4 pb-3">
+                    <div className="flex items-center justify-between border-b pb-2 text-xs tracking-widest" style={{ borderColor: s.mode === "dark" ? "#ffffff40" : "#20292530" }}>
+                      <span className="font-display">{tr(locale, "昭梧", "昭梧", "ZHAOWU")}</span>
+                      <span className="opacity-70">EDITORIAL / {String(s.ref).padStart(2, "0")}</span>
+                    </div>
+                    <div className="pt-5 pb-4">
+                      <strong className="block font-display text-[25px] font-normal leading-snug break-words">{name(s)}</strong>
+                      <small className="mt-2 block text-xs leading-relaxed opacity-75">{note(s)}</small>
+                    </div>
+                    <img src={s.hero} alt="" loading="lazy" className="h-40 w-full rounded-[3px] object-cover" style={{ objectPosition: s.focus }} />
+                    <div className="mt-3 flex items-center justify-between border-y py-3 text-sm" style={{ borderColor: s.mode === "dark" ? "#ffffff40" : "#20292530" }}>
+                      <span>{tr(locale, "今日指引", "今日指引", "Today’s guide")}</span>
+                      <span aria-hidden="true">↗</span>
+                    </div>
+                    <div className="flex items-center justify-between border-b py-3 text-sm" style={{ borderColor: s.mode === "dark" ? "#ffffff40" : "#20292530" }}>
+                      <span>{tr(locale, "深度解讀", "深度解读", "In-depth reading")}</span>
+                      <span aria-hidden="true">↗</span>
+                    </div>
+                  </div>
+                </div>
+                <span className="mt-2 block text-center text-xs text-ink-soft">{tr(locale, "畫冊版示意 · 點擊看原畫", "画册版示意 · 点击看原画", "Editorial layout study · view painting")}</span>
               </button>
               <div className="flex items-center justify-between gap-3 p-3">
                 <div className="min-w-0">
