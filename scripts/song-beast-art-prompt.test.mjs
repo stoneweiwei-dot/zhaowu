@@ -45,9 +45,21 @@ test("different species do not get the same morphology", () => {
   assert.notEqual(crane, leopard);
 });
 
+test("owner-defined original beast keeps custom morphology separate from predefined chart beasts", () => {
+  const original = buildSongBeastArtPrompt({
+    archetype: "original", originalName: "溯光玄隱",
+    originalForm: "白羽、木角、水紋軀幹，四足與尾羽解剖比例協調", mode: "companion",
+  });
+  assert.match(original, /溯光玄隱/);
+  assert.match(original, /四足與尾羽/);
+  assert.match(original, /未附照片/);
+  assert.notEqual(original, buildSongBeastArtPrompt({ archetype: "qilin", mode: "companion" }));
+});
+
 test("legacy provider prompt selector only matches beast topics", () => {
   assert.equal(isSongBeastImageContext("命局瑞獸：應龍"), true);
   assert.equal(isSongBeastImageContext("inner animal"), true);
+  assert.equal(isSongBeastImageContext("神兽原创图鉴"), true);
   assert.equal(isSongBeastImageContext("personal destiny report, general finance"), false);
   assert.equal(isSongBeastImageContext("tea guardian portrait"), false);
 });
