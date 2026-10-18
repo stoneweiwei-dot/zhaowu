@@ -24,15 +24,15 @@ test("owner sign-in is discoverable only in the shared footer, with no report-ac
   const header = siteShell.split('<header className=')[1]?.split('</header>')[0] || '';
   const footer = siteShell.split('<footer className=')[1]?.split('</footer>')[0] || '';
   assert.ok(footer.includes('data-footer-status-strip'));
-  assert.match(footer, /to="\\/login" className="zhaowu-home-login-inline" data-owner-login-entry/);
+  assert.match(footer, /to="\/login" className="zhaowu-home-login-inline" data-owner-login-entry/);
   assert.match(footer, /站主登入/);
   assert.match(footer, /站主登录/);
   assert.match(footer, /Owner sign-in/);
-  assert.match(footer, /user\\?\\.isOwner/);
-  assert.match(footer, /to="\\/account"/);
+  assert.match(footer, /user\?\.isOwner/);
+  assert.match(footer, /to="\/account"/);
   assert.doesNotMatch(header, /data-owner-login-entry/);
-  assert.doesNotMatch(header, /to="\\/login"/);
-  assert.match(siteShell, /to="\\/history"/);
+  assert.doesNotMatch(header, /to="\/login"/);
+  assert.match(siteShell, /to="\/history"/);
   assert.match(siteShell, /無需註冊/);
   // Owner data and archives remain behind the existing server-verified owner gate.
   assert.doesNotMatch(siteShell, /所有報告/);
