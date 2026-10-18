@@ -10,7 +10,7 @@ const FULL_PAINTING_HOMES = new Set([
   'pastel-koi', 'dragon-lotus', 'lotus-boat', 'night-flute', 'day-flute', 'cloud-jade',
   'dawn-dragon', 'moon-lotus-boat', 'bamboo-falls', 'petal-immortal', 'pink-lotus-stream', 'butterfly-lotus',
 ]);
-export function homeComposition(skin: SkinDef | null) {
+export function homeComposition(skin: SkinDef | null): 'scroll' | 'comic' | 'koi' {
   // All published skins share one Song editorial shell; preserve the unskinned classic fallback.
   // Artwork, colour and title still come from each individual SkinDef.
   return skin ? 'scroll' : 'koi';
