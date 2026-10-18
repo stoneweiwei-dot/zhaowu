@@ -23,6 +23,7 @@ export const SONG_BEAST_ARCHETYPES = [
 
 export type SongBeastArchetype = typeof SONG_BEAST_ARCHETYPES[number]["id"];
 export type SongBeastMode = "solo" | "companion" | "atlas";
+export type SongBeastSelection = SongBeastArchetype | "original";
 export const GUARDIAN_BEAST_ART_BY_ELEMENT = {
   "木": "azure-luan",
   "火": "vermilion-bird",
@@ -37,20 +38,25 @@ export const SONG_BEAST_VISUAL_DIRECTIVE = [
   "Strong asymmetrical composition with legible animal anatomy, meaningful negative space (roughly one third or more), readable foreground and distant mountains, fine ink linework, subtly restrained antique gold only at selected details.",
   "Poetic and contemplative, not a crowded xianxia fantasy-game poster. No full-black or midnight backdrop, neon light, glowing particles, gold glitter, ornate jewelry overload, throne, generic fantasy armor, photo-real CG, thick fog filter, anime card UI, copied reference composition or excessive collage.",
   "Produce one 9:16 upright art image with no generated letters, symbols posing as readable Chinese, typography, captions, fake seals, signatures or watermark. Exact tri-lingual text, dossier labels and STONE 原創 credit must be overlaid separately by the website.",
-  "The selected beast must retain its own species-defining silhouette and unique scene. Do not reuse the same deer-fox face, antlers, wings, props, pose or landscape for other archetypes.",
+  "The selected beast must retain its own species-defining silhouette and unique scene; for an original creature, establish one coherent anatomy that stays consistent across every image. Do not reuse the same deer-fox face, antlers, wings, props, pose or landscape for other archetypes.",
 ].join(" ");
 
 export function isSongBeastImageContext(text: string): boolean {
-  return /本命[異异]獸|命局瑞[獸兽]|守[護护][獸兽]|靈[獸兽]|[神瑞异異]獸|青[鸞鸾]|朱雀|麒麟|白[澤泽]|應龍|应龙|龍獸|龙兽|spirit[- ]?beast|guardian[- ]?beast|inner[- ]?animal|mythical[- ]?beast|qilin|bai[ -]?ze|yinglong/i.test(text);
+  return /本命[異异][獸兽]|命局瑞[獸兽]|守[護护][獸兽]|[靈灵][獸兽]|[神瑞异異][獸兽]|青[鸞鸾]|朱雀|麒麟|白[澤泽]|應龍|应龙|龍獸|龙兽|spirit[- ]?beast|guardian[- ]?beast|inner[- ]?animal|mythical[- ]?beast|qilin|bai[ -]?ze|yinglong/i.test(text);
 }
 
 export function buildSongBeastArtPrompt(input: {
-  archetype: SongBeastArchetype;
+  archetype: SongBeastSelection;
   mode?: SongBeastMode;
   personDescription?: string;
+  originalName?: string;
+  originalForm?: string;
 }): string {
   const creature = SONG_BEAST_ARCHETYPES.find((item) => item.id === input.archetype);
-  if (!creature) throw new Error("UNKNOWN_BEAST_ARCHETYPE");
+  if (!creature && input.archetype !== "original") throw new Error("UNKNOWN_BEAST_ARCHETYPE");
+  const identity = input.archetype === "original"
+    ? `${(input.originalName ?? "").trim().slice(0, 80) || "原創本命異獸"}：${(input.originalForm ?? "").trim().slice(0, 350) || "根據指定性格與世界觀創造一種輪廓清晰、四肢／翼／尾有一致結構的獨立異獸，不能只是常見鹿狐麒麟拼貼"}`
+    : `${creature!.hant}（${creature!.en}）：${creature!.form}`;
   const mode = input.mode ?? "solo";
   const personDescription = (input.personDescription ?? "").trim().slice(0, 200);
   const shot =
@@ -61,7 +67,7 @@ export function buildSongBeastArtPrompt(input: {
         : "異獸獨像：只出現這一隻異獸，禁止人物。山水作為尺度與氣韻背景，異獸不必置中，讓視線在山、水、雲與空白間流動。";
   return [
     `昭梧 ZHAOWU｜宋式本命異獸畫像｜${SONG_BEAST_ART_VERSION}`,
-    `選定象徵：${creature.hant}（${creature.en}）。此物種外形不可混淆：${creature.form}。`,
+    `選定異獸：${identity}。原創異獸請維持同系列的輪廓、角翼肢體比例與象徵連貫；不可每張換一副身體。`,
     "畫幅：9:16 iPhone 直式。視覺主軸：北宋院畫工筆、宋人青綠山水、紙絹岩彩與淡墨。米白宣紙、石青石綠、天青淺赭、局部少量泥金；一景一獸，留白有構圖功能，遠山清晰可辨，不要整幅模糊。",
     shot,
     SONG_BEAST_VISUAL_DIRECTIVE,
