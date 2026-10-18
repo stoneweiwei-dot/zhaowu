@@ -24,6 +24,7 @@ function LoginPage() {
   const [secret, setSecret] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     if (user?.isOwner) void navigate({ to: "/account" });
@@ -32,14 +33,19 @@ function LoginPage() {
   async function onOwnerSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
+    setNotice(null);
     if (!email.trim() || secret.length < 8) {
       setError(ownerText(locale, "請輸入帳號與站主密碼。", "请输入账号与站主密码。", "Enter the owner account and passcode."));
       return;
     }
     setBusy(true);
     try {
-      await ownerSignIn(email.trim(), secret);
+      const mode = await ownerSignIn(email.trim(), secret);
       setSecret("");
+      if (mode === "tester") {
+        setNotice(ownerText(locale, "測試帳號登入成功。此帳號僅供驗證登入流程，沒有任何後台權限。", "测试账号登录成功。此账号仅供验证登录流程，没有任何后台权限。", "Test account sign-in succeeded. This account only verifies the sign-in flow and has no console access."));
+        return;
+      }
       await reload();
       await navigate({ to: "/account" });
     } catch (err) {
@@ -107,6 +113,7 @@ function LoginPage() {
             />
           </label>
           {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
+          {notice ? <p className="stone-login-message" role="status" data-login-test-account="true">{notice}</p> : null}
           <button type="submit" disabled={busy} className="stone-login-primary">
             {busy ? t("processing") : ownerText(locale, "進入站主後台", "进入站主后台", "Enter owner console")}
           </button>

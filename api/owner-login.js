@@ -1,8 +1,9 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { isValidOwnerSecret, ownerSetCookie } from "../lib/owner-session-cookie.js";
+import { isPublicTestCredential } from "../lib/owner-test-account.js";
 
 // SHA-256 of the lower-cased owner account email. The raw address is not committed.
-const OWNER_ACCOUNT_SHA256 = "c85df10c65b54e130904093fcc2517c4183cca6bd70edc8c34df312376ecd3dd";
+const OWNER_ACCOUNT_SHA256 = "1f808bf0e93c81242590f1acb88e79e9983383cca1f1acfe4555695765f39c94";
 
 function isValidOwnerAccount(value) {
   const normalized = String(value ?? "").trim().toLowerCase();
@@ -68,6 +69,8 @@ export default async function handler(req, res) {
     const body = await readJsonBody(req);
     const secret = String(body?.secret ?? req.body?.secret ?? "");
     const account = body?.email ?? req.body?.email ?? "";
+    // Public demo credential: confirms the sign-in flow works but issues no cookie and grants no access.
+    if (isPublicTestCredential(account, secret)) return json(res, 200, { ok: true, mode: "tester" });
     if (!isValidOwnerAccount(account) || !isValidOwnerSecret(secret)) return json(res, 401, { ok: false, error: "INVALID_OWNER_CREDENTIAL" });
     const cookie = ownerSetCookie(secret);
     return json(res, 200, { ok: true }, { "Set-Cookie": cookie });
