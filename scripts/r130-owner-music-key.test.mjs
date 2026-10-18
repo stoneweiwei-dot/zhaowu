@@ -41,13 +41,13 @@ test("owner key hash is rotated and the raw secret is not in the repo", async ()
   const music = await source("api/owner-music-write.js");
   // Login, session and music-write now share one validator in lib/owner-session-cookie.js.
   const shared = await source("lib/owner-session-cookie.js");
-  assert.match(shared, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
+  assert.match(shared, /785e70fa759f63896bb714e7440f6d756d5696583fd2864d98a25ff642e840cb/);
   assert.match(shared, /value\.length < 8/);
-  assert.match(server, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
+  assert.match(server, /785e70fa759f63896bb714e7440f6d756d5696583fd2864d98a25ff642e840cb/);
   assert.match(server, /value\.length < 8/);
   for (const api of [login, session, music]) {
     assert.match(api, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
-    assert.doesNotMatch(api, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
+    assert.doesNotMatch(api, /785e70fa759f63896bb714e7440f6d756d5696583fd2864d98a25ff642e840cb/);
   }
   assert.doesNotMatch(shared, /value\.length < 32/);
   assert.doesNotMatch(shared, /BEGIN OPENSSH PRIVATE KEY/);

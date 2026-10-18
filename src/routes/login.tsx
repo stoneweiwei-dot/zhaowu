@@ -20,6 +20,7 @@ function LoginPage() {
   const { skin } = useSkin();
   const navigate = useNavigate();
   const { user, reload } = useCurrentUserState();
+  const [email, setEmail] = useState("");
   const [secret, setSecret] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,13 +32,13 @@ function LoginPage() {
   async function onOwnerSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
-    if (secret.length < 8) {
-      setError(ownerText(locale, "請輸入站主密碼。", "请输入站主密码。", "Enter the owner passcode."));
+    if (!email.trim() || secret.length < 8) {
+      setError(ownerText(locale, "請輸入帳號與站主密碼。", "请输入账号与站主密码。", "Enter the owner account and passcode."));
       return;
     }
     setBusy(true);
     try {
-      await ownerSignIn(secret);
+      await ownerSignIn(email.trim(), secret);
       setSecret("");
       await reload();
       await navigate({ to: "/account" });
@@ -84,11 +85,21 @@ function LoginPage() {
 
         <form onSubmit={onOwnerSubmit} className="stone-login-form">
           <label>
+            <span>{ownerText(locale, "帳號", "账号", "Account")}</span>
+            <input
+              id="owner-account"
+              type="email"
+              autoComplete="username"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder={ownerText(locale, "輸入帳號（Email）", "输入账号（Email）", "Enter account email")}
+            />
+          </label>
+          <label>
             <span>{ownerText(locale, "站主密碼", "站主密码", "Owner password")}</span>
             <input
               id="login-secret"
               type="password"
-              inputMode="numeric"
               autoComplete="current-password"
               value={secret}
               onChange={(event) => setSecret(event.target.value.trim())}

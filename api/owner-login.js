@@ -1,4 +1,16 @@
+import { createHash, timingSafeEqual } from "node:crypto";
 import { isValidOwnerSecret, ownerSetCookie } from "../lib/owner-session-cookie.js";
+
+// SHA-256 of the lower-cased owner account email. The raw address is not committed.
+const OWNER_ACCOUNT_SHA256 = "c85df10c65b54e130904093fcc2517c4183cca6bd70edc8c34df312376ecd3dd";
+
+function isValidOwnerAccount(value) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (!normalized || normalized.length > 256) return false;
+  const expected = Buffer.from(OWNER_ACCOUNT_SHA256, "hex");
+  const actual = createHash("sha256").update(normalized, "utf8").digest();
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -55,7 +67,8 @@ export default async function handler(req, res) {
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const body = await readJsonBody(req);
     const secret = String(body?.secret ?? req.body?.secret ?? "");
-    if (!isValidOwnerSecret(secret)) return json(res, 401, { ok: false, error: "INVALID_OWNER_CREDENTIAL" });
+    const account = body?.email ?? req.body?.email ?? "";
+    if (!isValidOwnerAccount(account) || !isValidOwnerSecret(secret)) return json(res, 401, { ok: false, error: "INVALID_OWNER_CREDENTIAL" });
     const cookie = ownerSetCookie(secret);
     return json(res, 200, { ok: true }, { "Set-Cookie": cookie });
   } catch (error) {
