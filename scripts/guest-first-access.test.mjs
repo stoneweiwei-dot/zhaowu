@@ -44,7 +44,7 @@ test("owner cookie remains the only active login path", () => {
   assert.doesNotMatch(login, /signInWithPassword|signUpWithPassword|signupTab|login-email/);
   assert.match(provider, /readOwnerSession/);
   assert.match(client, /ownerSignOut/);
-  assert.match(ownerApi, /JSON\.stringify\(\{ secret \}\)/);
+  assert.match(ownerApi, /JSON\.stringify\(\{ email, secret \}\)/);
   assert.match(ownerApi, /\/api\/owner-login/);
   assert.match(ownerSessionApi, /requestHasOwnerSession/);
   assert.match(ownerLoginApi, /req\.body\?\.secret/);

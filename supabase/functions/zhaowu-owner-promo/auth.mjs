@@ -5,7 +5,7 @@
 // scripts/owner-promo-admin.test.mjs fails if the two owner-key hashes ever drift apart.
 import { createHash, timingSafeEqual } from "node:crypto";
 
-export const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
+export const OWNER_KEY_SHA256 = "785e70fa759f63896bb714e7440f6d756d5696583fd2864d98a25ff642e840cb";
 
 function text(value) {
   return String(value ?? "").trim();
