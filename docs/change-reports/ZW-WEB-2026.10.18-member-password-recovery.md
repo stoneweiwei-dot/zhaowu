@@ -24,4 +24,8 @@ The reset redirect is `/member?mode=recovery` on the active site origin (`https:
 
 ## Release evidence
 
-To be completed after the branch is reviewed and merged: PR/merge commit, Vercel Production deployment SHA and direct verification of `/member`.
+- PR #800: https://github.com/stoneweiwei-dot/zhaowu/pull/800
+- Merge commit: `a08ef1d9151ce23afb76138b8e7f030a16fa3d9b`.
+- Vercel Production deployment `dpl_EhW9of5o45tCfm7LnQAGHk8uPB6C`: READY, built from the same merge SHA. Inspector: https://vercel.com/stone-weiwei-5213s-projects/stone-zhaowu-official/EhW9of5o45tCfm7LnQAGHk8uPB6C
+- Direct production verification on 2026-10-18: `https://zhao-wu.com/member` and `https://stone-zhaowu-official.vercel.app/member` both returned HTTP 200; the canonical page embeds the merge SHA, and its served member JavaScript includes the new “Forgot password?” / `忘記密碼` flow.
+- Actual email delivery and recovery-link redemption were not exercised; see the production dependency above.
