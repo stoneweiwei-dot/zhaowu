@@ -93,6 +93,78 @@ const WHEEL_POINTS: Record<Element, { x: number; y: number }> = {
 
 const FLOW_ORDER: Element[] = ["木", "火", "土", "金", "水"];
 
+/** Editorial names only: these do not change element shares, favourability or BaZi judgements. */
+const ELEMENT_POETIC_COPY: Record<Locale, {
+  heading: string;
+  note: string;
+  entries: Record<Element, { name: string; theme: string }>;
+}> = {
+  "zh-Hant": {
+    heading: "五行五象",
+    note: "雅稱只作五行意象的文字詮釋，不代表個人性格、財運或喜用神；仍須依完整命局判斷。",
+    entries: {
+      木: { name: "青木", theme: "生發之機" },
+      火: { name: "曜火", theme: "顯化之勢" },
+      土: { name: "厚土", theme: "承載之基" },
+      金: { name: "清金", theme: "裁成之度" },
+      水: { name: "玄水", theme: "通變之智" },
+    },
+  },
+  "zh-Hans": {
+    heading: "五行五象",
+    note: "雅称只作五行意象的文字诠释，不代表个人性格、财运或喜用神；仍须依完整命局判断。",
+    entries: {
+      木: { name: "青木", theme: "生发之机" },
+      火: { name: "曜火", theme: "显化之势" },
+      土: { name: "厚土", theme: "承载之基" },
+      金: { name: "清金", theme: "裁成之度" },
+      水: { name: "玄水", theme: "通变之智" },
+    },
+  },
+  en: {
+    heading: "The five elemental motifs",
+    note: "These are poetic labels, not personality, wealth or favourable-element predictions. Any judgement requires the full chart.",
+    entries: {
+      木: { name: "Verdant Wood", theme: "Growth and emergence" },
+      火: { name: "Radiant Fire", theme: "Expression and action" },
+      土: { name: "Grounded Earth", theme: "Support and integration" },
+      金: { name: "Clear Metal", theme: "Discernment and refinement" },
+      水: { name: "Deep Water", theme: "Reflection and adaptability" },
+    },
+  },
+};
+
+function ElementPoeticNames({ locale, compact = false }: { locale: Locale; compact?: boolean }) {
+  const copy = ELEMENT_POETIC_COPY[locale];
+  if (compact) {
+    return (
+      <p className="mt-3 text-sm leading-relaxed" data-element-poetic-summary>
+        <strong className="mr-2 font-display text-ink">{copy.heading}</strong>
+        <span className="text-ink/70">{FLOW_ORDER.map((element) => copy.entries[element].name).join(" · ")}</span>
+      </p>
+    );
+  }
+  return (
+    <section className="mt-4 border-t border-ink/10 pt-4" data-element-poetic-names aria-label={copy.heading}>
+      <h6 className="font-display text-lg text-ink">{copy.heading}</h6>
+      <dl className="mt-3 grid gap-2">
+        {FLOW_ORDER.map((element) => (
+          <div key={element} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <dt className="min-w-24 font-display text-base text-ink">
+              {copy.entries[element].name}
+              <span className="ml-2 text-xs text-ink/60">
+                {locale === "en" ? { 木: "Wood", 火: "Fire", 土: "Earth", 金: "Metal", 水: "Water" }[element] : element}
+              </span>
+            </dt>
+            <dd className="text-sm text-ink/75">{copy.entries[element].theme}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="mt-3 text-sm leading-relaxed text-ink/70">{copy.note}</p>
+    </section>
+  );
+}
+
 function FiveElementWheel({ rows, ariaLabel }: { rows: ReturnType<typeof buildReportVisualModel>["elements"]["rows"]; ariaLabel: string }) {
   const generation: Array<[Element, Element]> = [["木", "火"], ["火", "土"], ["土", "金"], ["金", "水"], ["水", "木"]];
   const control: Array<[Element, Element]> = [["木", "土"], ["土", "水"], ["水", "火"], ["火", "金"], ["金", "木"]];
@@ -181,6 +253,7 @@ export function ReportElementMeters({ result }: { result: AnalysisResult }) {
           </div>
         ))}
       </div>
+      <ElementPoeticNames locale={locale} compact />
       <p className="zhaowu-visual-note">{GLANCE_NOTE[locale]}</p>
     </section>
   );
@@ -306,6 +379,7 @@ export function ReportVisualBook({ result }: { result: AnalysisResult }) {
               ))}
             </div>
             <FiveElementFlow rows={model.elements.rows} title={copy.flowTitle} note={copy.flowNote} />
+            <ElementPoeticNames locale={locale} />
             <div className="zhaowu-element-judgement">
               <div><span>{model.elements.usefulLabel}</span><b>{model.elements.useful}</b></div>
               <div><span>{model.elements.restraintLabel}</span><b>{model.elements.restraint}</b></div>
