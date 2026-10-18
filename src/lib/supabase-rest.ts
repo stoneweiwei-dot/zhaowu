@@ -183,6 +183,73 @@ export async function signInWithPassword(email: string, password: string): Promi
   return saveSession(await jsonOrError<Omit<SupabaseSession, "expires_at">>(res));
 }
 
+/** Send a password-recovery email and return to the member page on this same origin. */
+export async function requestPasswordReset(email: string): Promise<void> {
+  if (!supabaseConfigured) throw new Error("RESET_UNAVAILABLE");
+  if (typeof window === "undefined") throw new Error("RESET_UNAVAILABLE");
+  const redirectTo = new URL("/member", window.location.origin);
+  redirectTo.searchParams.set("mode", "recovery");
+  const url = new URL(`${SUPABASE_URL}/auth/v1/recover`);
+  url.searchParams.set("redirect_to", redirectTo.toString());
+  const response = await fetch(url.toString(), {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify({ email: email.trim().toLowerCase() }),
+  });
+  await jsonOrError<unknown>(response);
+}
+
+/** Capture Supabase's implicit-flow recovery tokens, then immediately remove them from the URL. */
+export async function capturePasswordRecovery(): Promise<SupabaseSession | null> {
+  if (!supabaseConfigured || typeof window === "undefined") return null;
+  const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : "";
+  const query = window.location.search.startsWith("?") ? window.location.search.slice(1) : "";
+  const params = new URLSearchParams(hash || query);
+  if (params.get("type") !== "recovery") return null;
+
+  const cleanRecoveryUrl = () => {
+    const clean = new URL(window.location.href);
+    clean.hash = "";
+    clean.searchParams.set("mode", "recovery");
+    window.history.replaceState(window.history.state, document.title, `${clean.pathname}${clean.search}`);
+  };
+  const error = params.get("error") || params.get("error_description");
+  const accessToken = params.get("access_token");
+  const refreshToken = params.get("refresh_token");
+  if (error || !accessToken || !refreshToken) {
+    cleanRecoveryUrl();
+    throw new Error("RESET_LINK_INVALID");
+  }
+
+  try {
+    const user = await fetchUser(accessToken);
+    const session = saveSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      expires_in: Number(params.get("expires_in") ?? 3600),
+      token_type: params.get("token_type") ?? "bearer",
+      user,
+    });
+    cleanRecoveryUrl();
+    return session;
+  } catch {
+    clearSession();
+    cleanRecoveryUrl();
+    throw new Error("RESET_LINK_INVALID");
+  }
+}
+
+/** Apply a new password using the short-lived recovery session. */
+export async function updateVisitorPassword(session: SupabaseSession, password: string): Promise<void> {
+  if (!supabaseConfigured) throw new Error("RESET_UNAVAILABLE");
+  const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    method: "PUT",
+    headers: headers(session.access_token),
+    body: JSON.stringify({ password }),
+  });
+  await jsonOrError<unknown>(response);
+}
+
 export async function signUpWithPassword(email: string, password: string, displayName: string): Promise<{ session: SupabaseSession | null; user: SupabaseUser }> {
   if (!supabaseConfigured) throw new Error("登入服務尚未配置。");
   const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
