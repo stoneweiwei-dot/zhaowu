@@ -311,8 +311,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span>{latestLabel}</span><span aria-hidden="true">›</span>
             </Link>
           ) : null}
-          {isPending ? <span className="zhaowu-home-login-inline is-pending" aria-hidden="true" /> :
-            user?.isOwner ? (
+          {user?.isOwner ? (
               <Link to="/account" className="zhaowu-home-login-inline" data-owner-console-entry aria-label={t("navAdmin")}>
                 <BrandIcon name="account" />
                 <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
