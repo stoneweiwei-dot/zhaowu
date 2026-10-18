@@ -305,20 +305,24 @@ export function SiteShell({ children }: { children: ReactNode }) {
       {!isOwnerWorkspace ? <SiteUtilityDock /> : null}
 
       {!isLogin && !isOwnerWorkspace ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
-        {isHome ? (
-          <div className="zhaowu-footer-top-links" data-footer-status-strip>
+        <div className="zhaowu-footer-top-links" data-footer-status-strip>
+          {isHome ? (
             <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>
               <span>{latestLabel}</span><span aria-hidden="true">›</span>
             </Link>
-            {isPending ? <span className="zhaowu-home-login-inline is-pending" aria-hidden="true" /> :
-              user?.isOwner ? (
-                <Link to="/account" className="zhaowu-home-login-inline" aria-label={t("navAdmin")}>
-                  <BrandIcon name="account" />
-                  <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
-                </Link>
-              ) : null}
-          </div>
-        ) : null}
+          ) : null}
+          {user?.isOwner ? (
+              <Link to="/account" className="zhaowu-home-login-inline" data-owner-console-entry aria-label={t("navAdmin")}>
+                <BrandIcon name="account" />
+                <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
+              </Link>
+            ) : (
+              <Link to="/login" className="zhaowu-home-login-inline" data-owner-login-entry aria-label={displayText(language, "站主登入", "站主登录", "Owner sign-in", "管理者ログイン", "관리자 로그인", "मालिक लॉगिन")}>
+                <BrandIcon name="account" />
+                <span>{displayText(language, "站主登入", "站主登录", "Owner sign-in", "管理者ログイン", "관리자 로그인", "मालिक लॉगिन")}</span>
+              </Link>
+            )}
+        </div>
         {stats.totalVisits > 0 ? (
           <p className="zhaowu-site-views" data-site-views aria-label={`${viewsTodayLabel} ${stats.todayVisits.toLocaleString(numberLocale)}，${viewsTotalLabel} ${stats.totalVisits.toLocaleString(numberLocale)}`}>
             <span>{viewsTodayLabel} <b>{stats.todayVisits.toLocaleString(numberLocale)}</b></span>

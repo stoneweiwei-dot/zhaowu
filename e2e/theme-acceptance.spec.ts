@@ -168,6 +168,22 @@ for (const skin of SKINS) {
     }
 
     await open('/', '.zw-painted-home');
+    // Every published skin must show an actionable guest owner entry in the HOME footer.
+    // Unlike the legacy header pill, it must retain a painted surface and 44px target.
+    const guestOwnerEntry = page.locator('[data-footer-status-strip] [data-owner-login-entry]');
+    await expect(guestOwnerEntry).toBeVisible();
+    await expect(guestOwnerEntry).toHaveAttribute('href', '/login');
+    const ownerEntryVisual = await guestOwnerEntry.evaluate(el => {
+      const style = getComputedStyle(el);
+      return {
+        height: el.getBoundingClientRect().height,
+        painted: style.backgroundImage !== 'none' || style.backgroundColor !== 'rgba(0, 0, 0, 0)',
+        text: el.textContent?.trim(),
+      };
+    });
+    expect(ownerEntryVisual.height, 'footer owner link touch target').toBeGreaterThanOrEqual(44);
+    expect(ownerEntryVisual.painted, 'footer owner link is not transparent on the home skin').toBe(true);
+    expect(ownerEntryVisual.text, 'footer owner label').toBe(language === 'en' ? 'Owner sign-in' : '站主登入');
     await shot('home');
     await open('/#birth-form', '#birth-form');
     const steps = page.locator('.zw-flow-progress button');
@@ -181,6 +197,7 @@ for (const skin of SKINS) {
     await shot('guide');
     await page.locator('[data-utility-panel="guide"]').getByRole('button', { name: language === 'en' ? 'Close' : '關閉', exact: true }).click();
     await open('/history', '.history-empty');
+    await expect(page.locator('[data-footer-status-strip] [data-owner-login-entry]')).toBeVisible();
     await shot('history-empty');
 
     // Restored chart and question stage: keep the guest paid boundary intact.
@@ -226,6 +243,7 @@ for (const skin of SKINS) {
     await shot('history', '.zw-saved-report-card');
     if (language === 'zh-Hant') await expect(page.locator('.zw-saved-report-card').filter({ hasText: question }).locator('p').first()).toContainText('改善工作習慣');
     await open('/login', '#zhaowu-main-content main');
+    await expect(page.locator('[data-owner-login-entry]')).toHaveCount(0);
     await shot('login');
     expect(errors, 'runtime exceptions').toEqual([]);
     expect(themeWrites, 'theme preview must never publish a live setting').toBe(0);
