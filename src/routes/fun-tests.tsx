@@ -2,6 +2,7 @@ import { pickElementArt } from "@/lib/quiz-result-art";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { AnimalTotemArt } from "@/components/animal-totem-art";
+import { SongBeastPromptDisclosure } from "@/components/song-beast-prompt-disclosure";
 import { ConcealedSacredResultArt } from "@/components/concealed-sacred-result-art";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
@@ -357,6 +358,8 @@ function FunTestsIndex() {
               <Link to="/" className="mt-4 inline-flex rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{pageCopy.home}</Link>
             </article>
           )}
+
+          <SongBeastPromptDisclosure locale={locale} innerAnimal={animalResultKey ?? "eagle"} guardianElement={guardian?.element} />
 
           <div className="grid gap-3 sm:grid-cols-2">
             <button type="button" onClick={startAnimal} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{pageCopy.restart}</button>
