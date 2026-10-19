@@ -14,19 +14,20 @@ const localizedMigration = await readFile(new URL("../supabase/migrations/202610
 // USD/AUD/CNY prices and preserve legacy USD links for checkout recovery.
 
 test("the public paid catalogue shows the new fixed prices", () => {
-  assert.match(client, /quick: \\{ amountCents: 0, price: "\\$0" \\}/);
-  assert.match(client, /usd: \\{ amountCents: 990, price: "US\\$9\\.90" \\}/);
-  assert.match(client, /usd: \\{ amountCents: 1690, price: "US\\$16\\.90" \\}/);
-  assert.match(client, /usd: \\{ amountCents: 2690, price: "US\\$26\\.90" \\}/);
-  assert.match(client, /aud: \\{ amountCents: 1490, price: "A\\$14\\.90" \\}/);
-  assert.match(client, /cny: \\{ amountCents: 16800, price: "¥168" \\}/);
+  assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
+  assert.match(client, /usd: \{ amountCents: 990, price: "US\$9\.90" \}/);
+  assert.match(client, /usd: \{ amountCents: 1690, price: "US\$16\.90" \}/);
+  assert.match(client, /usd: \{ amountCents: 2690, price: "US\$26\.90" \}/);
+  assert.match(client, /aud: \{ amountCents: 1490, price: "A\$14\.90" \}/);
+  assert.match(client, /cny: \{ amountCents: 16800, price: "¥168" \}/);
 });
 
 test("the webhook accepts exact fixed local amounts and preserves legacy checkout recovery", () => {
-  assert.match(webhook, /amounts: \\{ usd: 990, aud: 1490, cny: 6800 \\}/);
-  assert.match(webhook, /amounts: \\{ usd: 1690, aud: 2490, cny: 10800 \\}/);
-  assert.match(webhook, /amounts: \\{ usd: 2690, aud: 3990, cny: 16800 \\}/);
-  assert.match(webhook, /definition\\.amounts\\?\\.\\[currency\\]/);
+  assert.match(webhook, /amounts: \{ usd: 990, aud: 1490, cny: 6800 \}/);
+  assert.match(webhook, /amounts: \{ usd: \[1999, 1690\], aud: 2490, cny: 10800 \}/);
+  assert.match(webhook, /amounts: \{ usd: \[1999, 2690\], aud: 3990, cny: 16800 \}/);
+  assert.match(webhook, /definition\.amounts\?\.\[currency\]/);
+  assert.match(webhook, /allowedAmounts\.includes\(amount\)/);
   assert.match(webhook, /amount_cents: amount/);
   assert.match(webhook, /currency,/);
   assert.match(webhook, /product: "quick".*amount: 199/);
@@ -97,10 +98,10 @@ test("entitlements remain server-only, constrained and protected by RLS", () => 
   assert.match(system1999Migration, /product_id = 'system' and amount_cents in \(499, 990, 1999\)/i);
   assert.match(system1999Migration, /product_id = 'bundle' and amount_cents in \(999, 1999\)/i);
   assert.doesNotMatch(system1999Migration, /delete\s+from|truncate|drop\s+table/i);
-  assert.match(localizedMigration, /currency in \\('usd', 'aud', 'cny'\\)/i);
-  assert.match(localizedMigration, /currency = 'aud' and amount_cents in \\(1490, 2490\\)/i);
-  assert.match(localizedMigration, /currency = 'cny' and amount_cents in \\(6800, 10800\\)/i);
+  assert.match(localizedMigration, /currency in \('usd', 'aud', 'cny'\)/i);
+  assert.match(localizedMigration, /currency = 'aud' and amount_cents in \(1490, 2490\)/i);
+  assert.match(localizedMigration, /currency = 'cny' and amount_cents in \(6800, 10800\)/i);
   assert.match(localizedMigration, /currency = 'aud' and amount_cents = 3990/i);
   assert.match(localizedMigration, /currency = 'cny' and amount_cents = 16800/i);
-  assert.doesNotMatch(localizedMigration, /delete\\s+from|truncate|drop\\s+table/i);
+  assert.doesNotMatch(localizedMigration, /delete\s+from|truncate|drop\s+table/i);
 });
