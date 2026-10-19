@@ -1,3 +1,11 @@
+## 2026-10-19 固定多幣別報告定價
+
+- ACTIVE：快速讀維持免費。七政四餘／西洋占星／印度占星／一掌經／生命靈數單項固定為 US$9.90／A$14.90／¥68；八字與紫微深度單項固定為 US$16.90／A$24.90／¥108；六系統合集（不含八字）固定為 US$26.90／A$39.90／¥168。
+- ACTIVE：Stripe Payment Links 保留原網址，Price 以手動 `currency_options` 寫死 USD／AUD／CNY；Checkout 依所在地顯示已配置貨幣，不用即時匯率。網站只以瀏覽器地區／時區在 AUD、CNY、USD 三者間顯示對應固定價；無法判斷時回退 USD。
+- ACTIVE：Webhook 只接受已知 Live Payment Link 與該幣別的精確固定金額，並把實際 `amount_total`／`currency` 寫入既有 server-only entitlement；舊 USD 金額與舊連結僅保留歷史訂單及已開啟 Checkout 的恢復相容。
+- SUPERSEDES：2026-10-16「八字／紫微單項 US$19.99」及「六系統合集 US$19.99」的公開售價；不改既有購買授權、優惠碼、報告內容、命理計算或會員資料。
+- PROTECTED：不得先改 Live Payment Links 再部署資料庫約束與 Webhook，避免付款成功但無法解鎖；履約仍只由 Stripe Webhook 驗證，不以成功頁或瀏覽器狀態授權。
+
 ## 2026-10-17 自訂正式域名與大陸同源代理
 
 - ACTIVE：站主已購買並指定 `https://zhao-wu.com/` 為唯一 canonical 正式網址；此域名與 `www.zhao-wu.com` 已在既有 Vercel Production project `stone-zhaowu-official` 驗證。`www` 與舊 `stone-zhaowu-official.vercel.app` 均以 308 保留路徑與查詢參數轉向主域名，不另建主機。
