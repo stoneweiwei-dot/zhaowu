@@ -66,38 +66,38 @@ const PROMO_ENDPOINT = `${SUPABASE_URL}/functions/v1/promo-code`;
 const PAYMENT_LINKS: Record<ReportSystemId, Record<ReportAccessProduct, string>> = {
   bazi: {
     quick: "", // Always free: never sell the quick tier.
-    system: "https://buy.stripe.com/7sY9AT7WT42Za0j7dg2sM0z", // 2026-10-19 fixed deep price; URL preserved
+    system: "https://buy.stripe.com/9B600ja510QNgoH5582sM0C", // 2026-10-19 fixed deep price
     bundle: "", // Six-system bundle is NOT a BaZi purchase.
   },
   ziwei: {
     quick: "",
-    system: "https://buy.stripe.com/3cI28r6SP1UR2xR1SW2sM0A", // 2026-10-19 fixed deep price; URL preserved
-    bundle: "https://buy.stripe.com/eVq3cv1yvfLHc8reFI2sM0n",
+    system: "https://buy.stripe.com/9B69AT0urbvr6O77dg2sM0B", // 2026-10-19 fixed deep price
+    bundle: "https://buy.stripe.com/6oU8wPelh7fb5K3gNQ2sM0E",
   },
   qizheng: {
     quick: "",
     system: "https://buy.stripe.com/14A6oH7WTdDz4FZ7dg2sM0o",
-    bundle: "https://buy.stripe.com/6oU7sL0ur7fb4FZ69c2sM0p",
+    bundle: "https://buy.stripe.com/cNi8wPdhdarndcvcxA2sM0D",
   },
   western: {
     quick: "",
     system: "https://buy.stripe.com/00w3cvb95gPL6O70OS2sM0q",
-    bundle: "https://buy.stripe.com/8x24gz5OL6b76O77dg2sM0r",
+    bundle: "https://buy.stripe.com/9B6bJ12CzeHDc8r1SW2sM0F",
   },
   indian: {
     quick: "",
     system: "https://buy.stripe.com/7sY14ncd9arn1tNgNQ2sM0s",
-    bundle: "https://buy.stripe.com/aFaaEX0urarnegzeFI2sM0t",
+    bundle: "https://buy.stripe.com/eVqaEXb959nj5K3btw2sM0G",
   },
   palm: {
     quick: "",
     system: "https://buy.stripe.com/bJeaEXdhdarn5K3eFI2sM0u",
-    bundle: "https://buy.stripe.com/3cI6oH90Xbvr5K3gNQ2sM0v",
+    bundle: "https://buy.stripe.com/bJe00j5OLgPLdcv9lo2sM0H",
   },
   numerology: {
     quick: "",
     system: "https://buy.stripe.com/dRm00jgtpgPL1tN2X02sM0w",
-    bundle: "https://buy.stripe.com/eVq7sL6SP0QNa0jdBE2sM0x",
+    bundle: "https://buy.stripe.com/9B6bJ16SP42Z8WfdBE2sM0I",
   },
 };
 
