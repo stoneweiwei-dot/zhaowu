@@ -4,6 +4,8 @@
  */
 
 :root {
+  --zw-font-heading: "Songti TC", "Songti SC", "Noto Serif CJK TC", "Noto Serif TC", "Noto Serif SC", "STSong", serif;
+  --zw-font-body: -apple-system, BlinkMacSystemFont, "PingFang TC", "PingFang SC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
   --zw-paper: #f7f0e2;
   --zw-paper-soft: rgba(252, 248, 238, .86);
   --zw-paper-strong: #fcf8ee;
@@ -31,6 +33,7 @@ html {
 
 body {
   color: var(--zw-ink) !important;
+  font-family: var(--zw-font-body);
   font-size: 16px;
   line-height: 1.72;
   text-rendering: optimizeLegibility;

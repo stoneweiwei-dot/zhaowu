@@ -1245,13 +1245,13 @@ html[data-zws] {
   --zws-hero-radius: 8px;
   --zws-hero-frame: none;
   --zws-title-shadow: none;
-  --zws-title-track: .045em;
+  --zws-title-track: .025em;
   --zws-title-weight: 500;
   --zws-rule-h: 1px;
   --zws-rule-w: 36px;
   --zws-rule: linear-gradient(90deg, var(--zws-gold), transparent);
   --zws-card-border: 1px solid var(--zws-line);
-  --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", "Noto Serif SC", "STSong", serif;
+  --zws-font-d: var(--zw-font-heading);
   --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
 }
 html[data-zws]:not([data-zws-mode="dark"]) {
@@ -1337,10 +1337,28 @@ html[data-zws] body .zw-hero-inscription-title::after {
   height: 1px !important; width: 34px !important;
   border-radius: 0 !important; background: var(--zws-gold) !important;
 }
+/* Shared editorial type: real reading hierarchy, without heavy UI-style titles. */
+html[data-zws] body #root main :is(h1, h2, h3, h4, .font-display) {
+  font-family: var(--zws-font-d) !important;
+  font-weight: 500 !important;
+  letter-spacing: .025em !important;
+  text-shadow: none !important;
+  line-break: strict;
+  text-wrap: pretty;
+}
+html[data-zws] body #root main :is(input, select, textarea) {
+  font-family: var(--zw-font-body) !important;
+  letter-spacing: normal;
+}
 html[lang="en"][data-zws] body :is(h1, h2, h3, .font-display) {
   font-family: var(--zws-font-en) !important;
   letter-spacing: .01em !important;
   overflow-wrap: anywhere;
+}
+html[lang="en"][data-zws] body #root main :is(h1, h2, h3, h4, .font-display) {
+  font-family: var(--zws-font-en) !important;
+  letter-spacing: 0 !important;
+  overflow-wrap: break-word;
 }
 @media (prefers-reduced-motion: reduce) {
   html[data-zws] body :is(button, a) { transition: none !important; }
