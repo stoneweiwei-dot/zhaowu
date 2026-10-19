@@ -6,23 +6,23 @@ const PAYMENT_LINKS = Object.freeze({
   // BaZi standalone: USD 4.99; the six-system bundle does not include BaZi.
   plink_1UP3HWFAzopdCCaxkt9pGy9Z: { product: "system", system: "bazi", amount: 499 },
   plink_1UPlUXFAzopdCCaxV59sdJfq: { product: "system", system: "bazi", amount: 990 },
-  // 2026-10-16 owner repricing: BaZi and Zi Wei single-system readings are USD 19.99.
-  // The USD 9.90 links above/below stay registered only for already-open or completed checkouts.
-  plink_1URIwkFAzopdCCax8ZVKkNPH: { product: "system", system: "bazi", amount: 1999 },
-  plink_1URIxFFAzopdCCaxRrt9wTyH: { product: "system", system: "ziwei", amount: 1999 },
+  // 2026-10-19 fixed local pricing: BaZi and Zi Wei accept USD/AUD/CNY.
+  // Older USD links stay registered only for already-open or completed checkouts.
+  plink_1URIwkFAzopdCCax8ZVKkNPH: { product: "system", system: "bazi", amount: 1690, amounts: { usd: 1690, aud: 2490, cny: 10800 } },
+  plink_1URIxFFAzopdCCaxRrt9wTyH: { product: "system", system: "ziwei", amount: 1690, amounts: { usd: 1690, aud: 2490, cny: 10800 } },
   // 2026-10-11 repriced public links; legacy links remain accepted for already-open checkouts.
   plink_1UP3ogFAzopdCCaxRqhS5z8P: { product: "system", system: "ziwei", amount: 990 },
-  plink_1UP3ohFAzopdCCaxFknNaARY: { product: "bundle", system: "ziwei", amount: 1999 },
-  plink_1UP3oiFAzopdCCaxM1vyKYB4: { product: "system", system: "qizheng", amount: 990 },
-  plink_1UP3ojFAzopdCCaxRTm6Hkg8: { product: "bundle", system: "qizheng", amount: 1999 },
-  plink_1UP3okFAzopdCCaxZRHjxXQj: { product: "system", system: "western", amount: 990 },
-  plink_1UP3olFAzopdCCaxpqV1qnfH: { product: "bundle", system: "western", amount: 1999 },
-  plink_1UP3omFAzopdCCaxhAkQByg2: { product: "system", system: "indian", amount: 990 },
-  plink_1UP3onFAzopdCCax0H311q2y: { product: "bundle", system: "indian", amount: 1999 },
-  plink_1UP3ooFAzopdCCaxurLK18pw: { product: "system", system: "palm", amount: 990 },
-  plink_1UP3opFAzopdCCax16euwSV5: { product: "bundle", system: "palm", amount: 1999 },
-  plink_1UP3oqFAzopdCCaxqwVUMqQZ: { product: "system", system: "numerology", amount: 990 },
-  plink_1UP3orFAzopdCCaxAo8jW4Zx: { product: "bundle", system: "numerology", amount: 1999 },
+  plink_1UP3ohFAzopdCCaxFknNaARY: { product: "bundle", system: "ziwei", amount: 2690, amounts: { usd: 2690, aud: 3990, cny: 16800 } },
+  plink_1UP3oiFAzopdCCaxM1vyKYB4: { product: "system", system: "qizheng", amount: 990, amounts: { usd: 990, aud: 1490, cny: 6800 } },
+  plink_1UP3ojFAzopdCCaxRTm6Hkg8: { product: "bundle", system: "qizheng", amount: 2690, amounts: { usd: 2690, aud: 3990, cny: 16800 } },
+  plink_1UP3okFAzopdCCaxZRHjxXQj: { product: "system", system: "western", amount: 990, amounts: { usd: 990, aud: 1490, cny: 6800 } },
+  plink_1UP3olFAzopdCCaxpqV1qnfH: { product: "bundle", system: "western", amount: 2690, amounts: { usd: 2690, aud: 3990, cny: 16800 } },
+  plink_1UP3omFAzopdCCaxhAkQByg2: { product: "system", system: "indian", amount: 990, amounts: { usd: 990, aud: 1490, cny: 6800 } },
+  plink_1UP3onFAzopdCCax0H311q2y: { product: "bundle", system: "indian", amount: 2690, amounts: { usd: 2690, aud: 3990, cny: 16800 } },
+  plink_1UP3ooFAzopdCCaxurLK18pw: { product: "system", system: "palm", amount: 990, amounts: { usd: 990, aud: 1490, cny: 6800 } },
+  plink_1UP3opFAzopdCCax16euwSV5: { product: "bundle", system: "palm", amount: 2690, amounts: { usd: 2690, aud: 3990, cny: 16800 } },
+  plink_1UP3oqFAzopdCCaxqwVUMqQZ: { product: "system", system: "numerology", amount: 990, amounts: { usd: 990, aud: 1490, cny: 6800 } },
+  plink_1UP3orFAzopdCCaxAo8jW4Zx: { product: "bundle", system: "numerology", amount: 2690, amounts: { usd: 2690, aud: 3990, cny: 16800 } },
   plink_1UNco6FAzopdCCaxsi61vVPn: { product: "quick", system: "ziwei", amount: 199 },
   plink_1UNco8FAzopdCCaxNMJ9EbUo: { product: "system", system: "ziwei", amount: 499 },
   plink_1UNcoBFAzopdCCaxggjB7RO8: { product: "bundle", system: "ziwei", amount: 999 },
@@ -44,6 +44,18 @@ const PAYMENT_LINKS = Object.freeze({
 } as const);
 
 type PaymentLinkId = keyof typeof PAYMENT_LINKS;
+
+type PaymentDefinition = {
+  product: "quick" | "system" | "bundle";
+  system: string;
+  amount: number;
+  amounts?: Partial<Record<string, number>>;
+};
+
+function expectedAmount(definition: PaymentDefinition | undefined, currency: string) {
+  if (!definition) return undefined;
+  return definition.amounts?.[currency] ?? (currency === "usd" ? definition.amount : undefined);
+}
 
 function secretFromJson(name: string) {
   try { return JSON.parse(Deno.env.get(name) || "{}").default as string | undefined; } catch { return undefined; }
@@ -101,15 +113,17 @@ export async function handle(req: Request) {
   const session = event.data?.object ?? {};
   const sessionId = String(session.id || "");
   const linkId = paymentLinkId(session.payment_link) as PaymentLinkId;
-  const definition = PAYMENT_LINKS[linkId];
+  const definition = PAYMENT_LINKS[linkId] as PaymentDefinition | undefined;
   const accessKey = String(session.client_reference_id || "").trim();
+  const currency = String(session.currency || "").toLowerCase();
+  const amount = expectedAmount(definition, currency);
 
   if (
     !/^cs_live_[A-Za-z0-9]{10,200}$/.test(sessionId)
     || !definition
     || !/^[A-Za-z0-9-]{20,100}$/.test(accessKey)
-    || session.amount_total !== definition.amount
-    || String(session.currency || "").toLowerCase() !== "usd"
+    || typeof amount !== "number"
+    || session.amount_total !== amount
   ) {
     return response({ ok: false, error: "INVALID_CHECKOUT_SESSION" }, 400);
   }
@@ -134,8 +148,8 @@ export async function handle(req: Request) {
     access_key: accessKey,
     product_id: definition.product,
     system_id: definition.product === "bundle" ? null : definition.system,
-    amount_cents: definition.amount,
-    currency: "usd",
+    amount_cents: amount,
+    currency,
     status: nextStatus,
     updated_at: new Date().toISOString(),
   }, { onConflict: "checkout_session_id" });
