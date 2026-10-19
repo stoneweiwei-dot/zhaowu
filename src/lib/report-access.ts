@@ -6,29 +6,55 @@ export type ReportSystemId = "bazi" | "ziwei" | "qizheng" | "western" | "indian"
 export type ReportAccessProduct = "quick" | "system" | "bundle";
 export type ReportAccessLevel = "none" | "quick" | "system" | "bundle";
 
-// The "quick" tier is no longer sold: every visitor gets it for free by
-// default (see resolveReportAccess below) as a new-user welcome gift, so it
-// carries no price and no longer renders as a purchasable card in
-// ReportAccessGate. `system`/`bundle` are the only two tiers still sold.
-//
-// Live Stripe Payment Links charge USD 9.90 per system and USD 19.99
-// for the six specialist systems bundle. BaZi is a separate purchase.
-// 2026-10-16 owner repricing: the BaZi and Zi Wei single-system readings are
-// USD 19.99 (see SYSTEM_PRICE_1999 / reportAccessPrice); the other five
-// systems stay USD 9.90. Use reportAccessPrice(product, system) for any
-// system-specific label; REPORT_ACCESS_PRODUCTS.system is the USD 9.90 default.
-// Keep displayed currency explicit; labels and Stripe amounts must stay aligned.
+// The "quick" tier is no longer sold: every visitor gets it for free.
+export type ReportPriceCurrency = "usd" | "aud" | "cny";
+type FixedReportPrice = { amountCents: number; price: string };
+
+const FIXED_REPORT_PRICES = {
+  standard: {
+    usd: { amountCents: 990, price: "US$9.90" },
+    aud: { amountCents: 1490, price: "A$14.90" },
+    cny: { amountCents: 6800, price: "¥68" },
+  },
+  deep: {
+    usd: { amountCents: 1690, price: "US$16.90" },
+    aud: { amountCents: 2490, price: "A$24.90" },
+    cny: { amountCents: 10800, price: "¥108" },
+  },
+  bundle: {
+    usd: { amountCents: 2690, price: "US$26.90" },
+    aud: { amountCents: 3990, price: "A$39.90" },
+    cny: { amountCents: 16800, price: "¥168" },
+  },
+} as const satisfies Record<"standard" | "deep" | "bundle", Record<ReportPriceCurrency, FixedReportPrice>>;
+
+// Canonical USD values remain exported for contracts that need a stable base.
+// Customer-facing labels use reportAccessPrice(), which selects one of the
+// manually fixed Stripe currencies; it never calculates a live exchange rate.
 export const REPORT_ACCESS_PRODUCTS = {
   quick: { amountCents: 0, price: "$0" },
-  system: { amountCents: 990, price: "US$9.90" },
-  bundle: { amountCents: 1999, price: "US$19.99" },
+  system: FIXED_REPORT_PRICES.standard.usd,
+  bundle: FIXED_REPORT_PRICES.bundle.usd,
 } as const;
 
-const SYSTEM_PRICE_1999: ReadonlySet<ReportSystemId> = new Set<ReportSystemId>(["bazi", "ziwei"]);
+const DEEP_REPORT_SYSTEMS: ReadonlySet<ReportSystemId> = new Set<ReportSystemId>(["bazi", "ziwei"]);
 
-export function reportAccessPrice(product: ReportAccessProduct, system: ReportSystemId): { amountCents: number; price: string } {
-  if (product === "system" && SYSTEM_PRICE_1999.has(system)) return { amountCents: 1999, price: "US$19.99" };
-  return REPORT_ACCESS_PRODUCTS[product];
+export function detectReportPriceCurrency(): ReportPriceCurrency {
+  if (typeof window === "undefined" || typeof navigator === "undefined") return "usd";
+  const locales = navigator.languages?.length ? navigator.languages : [navigator.language];
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  const hasRegion = (region: string) => locales.some((locale) => new RegExp(`[-_]${region}(?:$|[-_])`, "i").test(locale));
+
+  if (hasRegion("AU") || timeZone.startsWith("Australia/") || timeZone === "Antarctica/Macquarie") return "aud";
+  if (hasRegion("CN") || ["Asia/Shanghai", "Asia/Urumqi", "Asia/Chongqing", "Asia/Harbin"].includes(timeZone)) return "cny";
+  return "usd";
+}
+
+export function reportAccessPrice(product: ReportAccessProduct, system: ReportSystemId): FixedReportPrice {
+  if (product === "quick") return REPORT_ACCESS_PRODUCTS.quick;
+  const currency = detectReportPriceCurrency();
+  if (product === "bundle") return FIXED_REPORT_PRICES.bundle[currency];
+  return FIXED_REPORT_PRICES[DEEP_REPORT_SYSTEMS.has(system) ? "deep" : "standard"][currency];
 }
 
 const ACCESS_KEY_STORAGE = "zhaowu.report-access-key.v1";
@@ -40,12 +66,12 @@ const PROMO_ENDPOINT = `${SUPABASE_URL}/functions/v1/promo-code`;
 const PAYMENT_LINKS: Record<ReportSystemId, Record<ReportAccessProduct, string>> = {
   bazi: {
     quick: "", // Always free: never sell the quick tier.
-    system: "https://buy.stripe.com/7sY9AT7WT42Za0j7dg2sM0z", // 2026-10-16 USD 19.99 (replaces 9.90 link plink_1UPlUXFAzopdCCaxV59sdJfq)
+    system: "https://buy.stripe.com/7sY9AT7WT42Za0j7dg2sM0z", // 2026-10-19 fixed deep price; URL preserved
     bundle: "", // Six-system bundle is NOT a BaZi purchase.
   },
   ziwei: {
     quick: "",
-    system: "https://buy.stripe.com/3cI28r6SP1UR2xR1SW2sM0A", // 2026-10-16 USD 19.99 (replaces 9.90 link plink_1UP3ogFAzopdCCaxRqhS5z8P)
+    system: "https://buy.stripe.com/3cI28r6SP1UR2xR1SW2sM0A", // 2026-10-19 fixed deep price; URL preserved
     bundle: "https://buy.stripe.com/eVq3cv1yvfLHc8reFI2sM0n",
   },
   qizheng: {
