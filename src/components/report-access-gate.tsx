@@ -85,7 +85,7 @@ function copyFor(locale: Locale): Copy {
   };
   if (locale === "zh-Hans") return {
     title: "选择读取深度",
-    lead: "基本盘免费；付费解读按次购买，并优先显示已固定的当地货币价格，不按实时汇率变化。",
+    lead: "基本盘免费；付费解读按次购买、不自动续费，并优先显示已固定的当地货币价格，不按实时汇率变化。",
     free: "免费",
     freeBody: "基本盘、落位与计算结果",
     quick: "快速读",
@@ -123,7 +123,7 @@ function copyFor(locale: Locale): Copy {
   };
   return {
     title: "選擇讀取深度",
-    lead: "基本盤免費；付費解讀按次購買，並優先顯示已固定的當地貨幣價格，不按即時匯率變化。",
+    lead: "基本盤免費；付費解讀按次購買、不自動續費，並優先顯示已固定的當地貨幣價格，不按即時匯率變化。",
     free: "免費",
     freeBody: "基本盤、落位與計算結果",
     quick: "快速讀",
