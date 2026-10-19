@@ -18,32 +18,32 @@ const [client, gate, specialist, palm, numerology, unified, personalComponent, p
 // 2026-10-19: quick remains free. Paid prices are fixed manually in
 // USD/AUD/CNY; no live exchange-rate calculation is performed.
 test("the report catalogue keeps quick free and exposes the new canonical USD prices", () => {
-  assert.match(client, /quick: \\{ amountCents: 0, price: "\\$0" \\}/);
-  assert.match(client, /system: FIXED_REPORT_PRICES\\.standard\\.usd/);
-  assert.match(client, /bundle: FIXED_REPORT_PRICES\\.bundle\\.usd/);
-  assert.match(client, /usd: \\{ amountCents: 990, price: "US\\$9\\.90" \\}/);
-  assert.match(client, /usd: \\{ amountCents: 2690, price: "US\\$26\\.90" \\}/);
+  assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
+  assert.match(client, /system: FIXED_REPORT_PRICES\.standard\.usd/);
+  assert.match(client, /bundle: FIXED_REPORT_PRICES\.bundle\.usd/);
+  assert.match(client, /usd: \{ amountCents: 990, price: "US\$9\.90" \}/);
+  assert.match(client, /usd: \{ amountCents: 2690, price: "US\$26\.90" \}/);
   assert.match(gate, /basic chart is free/i);
   assert.match(gate, /不自動續費/);
 });
 
 test("standard, deep and bundle tiers use fixed AUD and CNY amounts", () => {
-  assert.match(client, /aud: \\{ amountCents: 1490, price: "A\\$14\\.90" \\}/);
-  assert.match(client, /cny: \\{ amountCents: 6800, price: "¥68" \\}/);
-  assert.match(client, /aud: \\{ amountCents: 2490, price: "A\\$24\\.90" \\}/);
-  assert.match(client, /cny: \\{ amountCents: 10800, price: "¥108" \\}/);
-  assert.match(client, /aud: \\{ amountCents: 3990, price: "A\\$39\\.90" \\}/);
-  assert.match(client, /cny: \\{ amountCents: 16800, price: "¥168" \\}/);
-  assert.match(client, /DEEP_REPORT_SYSTEMS[^\\n]*\\["bazi", "ziwei"\\]/);
+  assert.match(client, /aud: \{ amountCents: 1490, price: "A\$14\.90" \}/);
+  assert.match(client, /cny: \{ amountCents: 6800, price: "¥68" \}/);
+  assert.match(client, /aud: \{ amountCents: 2490, price: "A\$24\.90" \}/);
+  assert.match(client, /cny: \{ amountCents: 10800, price: "¥108" \}/);
+  assert.match(client, /aud: \{ amountCents: 3990, price: "A\$39\.90" \}/);
+  assert.match(client, /cny: \{ amountCents: 16800, price: "¥168" \}/);
+  assert.match(client, /DEEP_REPORT_SYSTEMS[^\n]*\["bazi", "ziwei"\]/);
 });
 
 test("browser price detection selects only fixed configured currencies", () => {
   assert.match(client, /detectReportPriceCurrency/);
-  assert.match(client, /timeZone\\.startsWith\\("Australia\\/"\\)/);
-  assert.match(client, /hasRegion\\("CN"\\)/);
-  const detector = client.match(/export function detectReportPriceCurrency[\\s\\S]*?\\n}/)?.[0] ?? "";
+  assert.match(client, /timeZone\.startsWith\("Australia\/"\)/);
+  assert.match(client, /hasRegion\("CN"\)/);
+  const detector = client.match(/export function detectReportPriceCurrency[\s\S]*?\n}/)?.[0] ?? "";
   assert.ok(detector, "detectReportPriceCurrency not found");
-  assert.doesNotMatch(detector, /fetch\\(|exchange|rate/i);
+  assert.doesNotMatch(detector, /fetch\(|exchange|rate/i);
 });
 
 test("resolveReportAccess floors everyone at the free quick welcome gift", () => {
