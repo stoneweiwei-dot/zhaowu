@@ -8,21 +8,27 @@ const webhook = await readFile(new URL("../supabase/functions/stripe-webhook/ind
 const migration = await readFile(new URL("../supabase/migrations/20261003170000_report_purchase_entitlements.sql", import.meta.url), "utf8");
 const repriceMigration = await readFile(new URL("../supabase/migrations/20261013025000_reprice_report_entitlements.sql", import.meta.url), "utf8");
 const system1999Migration = await readFile(new URL("../supabase/migrations/20261016200000_allow_system_1999_entitlement.sql", import.meta.url), "utf8");
+const localizedMigration = await readFile(new URL("../supabase/migrations/20261019080000_fixed_local_report_pricing.sql", import.meta.url), "utf8");
 
-// 2026-10-10: quick is now a free new-user welcome gift (client-side
-// display only — see REPORT_ACCESS_PRODUCTS in report-access.ts). The
-// server-side webhook accepts new US$9.90/US$19.99 Payment Links and
-// preserves legacy links only for already-open or completed checkout recovery.
+// 2026-10-19: quick is free. Public paid links use manually fixed
+// USD/AUD/CNY prices and preserve legacy USD links for checkout recovery.
 
-test("the public paid catalogue shows quick as free and new live prices", () => {
-  assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
-  assert.match(client, /system: \{ amountCents: 990, price: "US\$9\.90" \}/);
-  assert.match(client, /bundle: \{ amountCents: 1999, price: "US\$19\.99" \}/);
+test("the public paid catalogue shows the new fixed prices", () => {
+  assert.match(client, /quick: \\{ amountCents: 0, price: "\\$0" \\}/);
+  assert.match(client, /usd: \\{ amountCents: 990, price: "US\\$9\\.90" \\}/);
+  assert.match(client, /usd: \\{ amountCents: 1690, price: "US\\$16\\.90" \\}/);
+  assert.match(client, /usd: \\{ amountCents: 2690, price: "US\\$26\\.90" \\}/);
+  assert.match(client, /aud: \\{ amountCents: 1490, price: "A\\$14\\.90" \\}/);
+  assert.match(client, /cny: \\{ amountCents: 16800, price: "¥168" \\}/);
 });
 
-test("the webhook accepts new prices and preserves legacy checkout recovery", () => {
-  assert.match(webhook, /product: "system".*amount: 990/);
-  assert.match(webhook, /product: "bundle".*amount: 1999/);
+test("the webhook accepts exact fixed local amounts and preserves legacy checkout recovery", () => {
+  assert.match(webhook, /amounts: \\{ usd: 990, aud: 1490, cny: 6800 \\}/);
+  assert.match(webhook, /amounts: \\{ usd: 1690, aud: 2490, cny: 10800 \\}/);
+  assert.match(webhook, /amounts: \\{ usd: 2690, aud: 3990, cny: 16800 \\}/);
+  assert.match(webhook, /definition\\.amounts\\?\\.\\[currency\\]/);
+  assert.match(webhook, /amount_cents: amount/);
+  assert.match(webhook, /currency,/);
   assert.match(webhook, /product: "quick".*amount: 199/);
 });
 
@@ -73,7 +79,8 @@ test("only paid Stripe events grant paid access and stale failure cannot downgra
   assert.match(webhook, /session\.payment_status === "paid"/);
   assert.match(webhook, /existing\?\.status === "paid" && nextStatus !== "paid"/);
   assert.match(webhook, /product_id: definition\.product/);
-  assert.match(webhook, /amount_cents: definition\.amount/);
+  assert.match(webhook, /amount_cents: amount/);
+  assert.match(webhook, /currency,/);
   assert.match(webhook, /system_id: definition\.product === "bundle" \? null : definition\.system/);
 });
 
@@ -90,4 +97,10 @@ test("entitlements remain server-only, constrained and protected by RLS", () => 
   assert.match(system1999Migration, /product_id = 'system' and amount_cents in \(499, 990, 1999\)/i);
   assert.match(system1999Migration, /product_id = 'bundle' and amount_cents in \(999, 1999\)/i);
   assert.doesNotMatch(system1999Migration, /delete\s+from|truncate|drop\s+table/i);
+  assert.match(localizedMigration, /currency in \\('usd', 'aud', 'cny'\\)/i);
+  assert.match(localizedMigration, /currency = 'aud' and amount_cents in \\(1490, 2490\\)/i);
+  assert.match(localizedMigration, /currency = 'cny' and amount_cents in \\(6800, 10800\\)/i);
+  assert.match(localizedMigration, /currency = 'aud' and amount_cents = 3990/i);
+  assert.match(localizedMigration, /currency = 'cny' and amount_cents = 16800/i);
+  assert.doesNotMatch(localizedMigration, /delete\\s+from|truncate|drop\\s+table/i);
 });
