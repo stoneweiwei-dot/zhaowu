@@ -59,6 +59,7 @@ export const SKINS: SkinDef[] = [
   { id: "petal-immortal", ref: 22, mode: "light", zh: "荷舟仙羽", hans: "荷舟仙羽", en: "Petal Skiff", noteZh: "荷瓣為舟・仙羽飛來・大片留白", noteHans: "荷瓣为舟・仙羽飞来・大片留白", noteEn: "A lotus-petal skiff, a spirit bird, open paper", hero: "/theme-skins/petal-immortal-art.webp", focus: "50% 30%", swatch: ["#f8efe4", "#4f6f76", "#e3a9a4"] },
   { id: "pink-lotus-stream", ref: 23, mode: "light", zh: "粉蓮雲溪", hans: "粉莲云溪", en: "Lotus over the Stream", noteZh: "巨蓮浮雲・青藍溪流・金線水紋", noteHans: "巨莲浮云・青蓝溪流・金线水纹", noteEn: "A vast lotus, cloud stream, gold ripples", hero: "/theme-skins/pink-lotus-stream-art.webp", focus: "50% 40%", swatch: ["#f7efe4", "#43707a", "#e6b3b5"] },
   { id: "butterfly-lotus", ref: 24, mode: "light", zh: "蝶戀荷塘", hans: "蝶恋荷塘", en: "Butterfly & Lotus", noteZh: "白蝶荷花・霧青湖光・素雅灰綠", noteHans: "白蝶荷花・雾青湖光・素雅灰绿", noteEn: "White butterfly, lotus, misty lake grey-green", hero: "/theme-skins/butterfly-lotus-art.webp", focus: "50% 30%", swatch: ["#efece4", "#4a6a62", "#c9a3ad"] },
+  { id: "song-gallery-frostleaf", ref: 25, mode: "light", zh: "霜葉照溪・宋式畫冊", hans: "霜叶照溪・宋式画册", en: "Frostleaf Brook · Song Gallery", noteZh: "清墨・宣紙・青綠山水，輕線與連續閱讀面", noteHans: "清墨・宣纸・青绿山水，轻线与连续阅读面", noteEn: "Song editorial paper, mineral-green mountains and restrained lines", hero: "/theme-skins/song-gallery-frostleaf-art.webp", focus: "50% 48%", swatch: ["#f7f6f0", "#315e50", "#9c8b6b"] },
 ];
 
 export function skinById(id: string | null | undefined) {

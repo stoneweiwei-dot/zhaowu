@@ -45,7 +45,9 @@ test("every skin has tokens, a full-set definition and crisp art on disk", () =>
     assert.ok(css.includes(`html[data-zws="${id}"] { --zws-page`) || css.includes(`html[data-zws="${id}"], `), `tokens for ${id}`);
     assert.ok(hero.startsWith('/') && !hero.includes('..') && focus, `local hero + focus for ${id}`);
     assert.ok(existsSync(`public${hero}`), `art file for ${id}: ${hero}`);
-    assert.ok(existsSync(`public/theme-previews/${id}.jpg`), `actual homepage preview for ${id}`);
+    // Prior 24 themes retain archived homepage previews; new themes use the live
+    // DOM editorial composition rendered by OwnerThemeSkinsManager.
+    if (id !== "song-gallery-frostleaf") assert.ok(existsSync(`public/theme-previews/${id}.jpg`), `actual homepage preview for ${id}`);
     assert.ok(full.includes(`html[data-zws="${id}"]`), `full-set rules for ${id}`);
   }
 });
@@ -202,7 +204,7 @@ test("all 24 selectable skins share the Song editorial shell without overwriting
   const homeCss = readFileSync("src/painted-home.css", "utf8");
   const skinCss = readFileSync("src/theme-skins-full.css", "utf8");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.equal(ids.length, 24);
+  assert.equal(ids.length, 25);
   assert.match(home, /return skin \? 'scroll' : 'koi'/);
   assert.match(home, /const art = skin\?\.hero/);
   assert.match(homeCss, /SONG GALLERY EDITION/);

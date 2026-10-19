@@ -357,3 +357,6 @@ html[data-zws-mode="dark"] body main :is(.zhaowu-updates-back, .zhaowu-specialis
 html[data-zws-mode="dark"] body :is(.history-topline span, .zhaowu-home-stage details > summary, .zhaowu-home-stage button strong) { color: var(--zws-ink) !important; }
 html[data-zws-mode="dark"][data-zw-theme="night"] body .zhaowu-site-header a.zhaowu-header-owner-login,
 html[data-zws-mode="dark"][data-zw-theme="night"] body .zhaowu-site-header a.zhaowu-header-owner-login * { color: var(--zws-on-accent) !important; }
+
+/* Song Gallery V3: new owner-selectable light skin. No effect until published. */
+html[data-zws="song-gallery-frostleaf"] { --zws-page: #f7f6f0; --zws-card: #fcfbf7; --zws-ink: #202925; --zws-soft: #59675e; --zws-accent: #315e50; --zws-line: rgba(115,120,103,.26); --zws-gold: #9c8b6b; --zws-wash: none; --zws-on-accent: #fffaf0; }

@@ -1346,3 +1346,15 @@ html[lang="en"][data-zws] body :is(h1, h2, h3, .font-display) {
   html[data-zws] body :is(button, a) { transition: none !important; }
 }
 /* END SONG GALLERY EDITION */
+
+/* Song Gallery / Frostleaf V3: applies only to this selection, never to auth or report logic. */
+html[data-zws="song-gallery-frostleaf"] {
+ --zws-art: url(/theme-skins/song-gallery-frostleaf-art.webp); --zws-focus: 50% 48%; --zws-frame: #315e50; --zws-veil: 75%;
+ --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", "Noto Serif SC", serif;
+ --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+ --zws-hw: 500; --zws-card-r: 8px; --zws-card-orn: none;
+ --zws-card-frame: none; --zws-card-blur: none; --zws-shadow: none;
+ --zws-btn-bg: #315e50; --zws-btn-radius: 7px; --zws-pill-radius: 7px;
+ --zws-rule: #9c8b6b; --zws-rule-h: 1px; --zws-rule-w: 36px;
+ --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line);
+}
