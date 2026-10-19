@@ -24,8 +24,10 @@ test("the public paid catalogue shows the new fixed prices", () => {
 
 test("the webhook accepts exact fixed local amounts and preserves legacy checkout recovery", () => {
   assert.match(webhook, /amounts: \{ usd: 990, aud: 1490, cny: 6800 \}/);
-  assert.match(webhook, /amounts: \{ usd: \[1999, 1690\], aud: 2490, cny: 10800 \}/);
-  assert.match(webhook, /amounts: \{ usd: \[1999, 2690\], aud: 3990, cny: 16800 \}/);
+  assert.match(webhook, /amounts: \{ usd: 1690, aud: 2490, cny: 10800 \}/);
+  assert.match(webhook, /amounts: \{ usd: 2690, aud: 3990, cny: 16800 \}/);
+  assert.match(webhook, /plink_1URIwkFAzopdCCax8ZVKkNPH: \{ product: "system", system: "bazi", amount: 1999 \}/);
+  assert.match(webhook, /plink_1UP3ohFAzopdCCaxFknNaARY: \{ product: "bundle", system: "ziwei", amount: 1999 \}/);
   assert.match(webhook, /definition\.amounts\?\.\[currency\]/);
   assert.match(webhook, /allowedAmounts\.includes\(amount\)/);
   assert.match(webhook, /amount_cents: amount/);
@@ -47,6 +49,9 @@ test("BaZi and all six specialist systems use the new live Stripe Payment Links"
     assert.match(client, new RegExp(`${system}: \\{`));
   }
   assert.equal((client.match(/https:\/\/buy\.stripe\.com\//g) || []).length, 13);
+  assert.match(client, /9B600ja510QNgoH5582sM0C/);
+  assert.match(client, /9B69AT0urbvr6O77dg2sM0B/);
+  assert.match(client, /9B6bJ16SP42Z8WfdBE2sM0I/);
   assert.match(startCheckoutFn, /url\.searchParams\.set\("client_reference_id", accessKey\)/);
   assert.doesNotMatch(startCheckoutFn, /method:\s*"POST"/);
   assert.doesNotMatch(client, /STRIPE_(?:SECRET|RESTRICTED)_KEY/);
@@ -69,7 +74,7 @@ test("the webhook authenticates with a one-way token hash and trusts only known 
   assert.match(webhook, /INVALID_WEBHOOK_TOKEN/);
   assert.match(webhook, /event\.livemode !== true/);
   assert.match(webhook, /PAYMENT_LINKS\[linkId\]/);
-  assert.equal((webhook.match(/plink_/g) || []).length, 34);
+  assert.equal((webhook.match(/plink_/g) || []).length, 42);
   assert.doesNotMatch(webhook, /whsec_|STRIPE_WEBHOOK_SECRET|STRIPE_SECRET_KEY/);
 });
 
