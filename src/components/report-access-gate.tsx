@@ -47,7 +47,7 @@ type Copy = {
 function copyFor(locale: Locale): Copy {
   if (locale === "en") return {
     title: "Choose how far to read",
-    lead: "The basic chart is free. Interpretation after the chart is a one-time purchase in USD, never auto-renewed.",
+    lead: "The basic chart is free. Paid reports are one-time purchases shown in a fixed local currency when available, never auto-renewed.",
     free: "Free",
     freeBody: "Basic chart and calculated placements",
     quick: "Quick read",
@@ -85,7 +85,7 @@ function copyFor(locale: Locale): Copy {
   };
   if (locale === "zh-Hans") return {
     title: "选择读取深度",
-    lead: "基本盘免费；基本盘之后的解读按次付费，不自动续费。价格以美元计，一次付款。",
+    lead: "基本盘免费；付费解读按次购买，并优先显示已固定的当地货币价格，不按实时汇率变化。",
     free: "免费",
     freeBody: "基本盘、落位与计算结果",
     quick: "快速读",
@@ -123,7 +123,7 @@ function copyFor(locale: Locale): Copy {
   };
   return {
     title: "選擇讀取深度",
-    lead: "基本盤免費；基本盤之後的解讀按次付費，不自動續費。價格以美元計，一次付款。",
+    lead: "基本盤免費；付費解讀按次購買，並優先顯示已固定的當地貨幣價格，不按即時匯率變化。",
     free: "免費",
     freeBody: "基本盤、落位與計算結果",
     quick: "快速讀",
