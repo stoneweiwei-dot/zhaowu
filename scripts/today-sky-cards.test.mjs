@@ -3,8 +3,10 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   getAspectAffectedSigns,
+  getFeaturedSkyEvent,
   getTodaySkyCards,
-  getTodaySkyUpdatedDate
+  getTodaySkyUpdatedDate,
+  SKY_EVENTS
 } from "../src/lib/sky-events.ts";
 
 const source = await readFile(new URL("../src/lib/sky-events.ts", import.meta.url), "utf8");
@@ -81,6 +83,18 @@ test("corrected Uranus/Neptune signs are no longer misstated in SKY_EVENTS sourc
   assert.doesNotMatch(source, /海王星（雙魚|海王星（双鱼|Neptune \(Pisces\)/);
   assert.match(source, /天王星逆行（雙子|Uranus \(Gemini\)/);
   assert.match(source, /海王星逆行（白羊|Neptune \(Aries\)/);
+});
+
+
+test("the featured Sun–North Node trine separates orbital facts from symbolic reading", () => {
+  const event = SKY_EVENTS.find((item) => item.id === "sun-trine-north-node-2026-10-20");
+  assert.ok(event, "expected the 20 Oct Sydney event");
+  assert.equal(getFeaturedSkyEvent().id, event.id);
+  assert.match(event.subtitle["zh-Hant"], /13:04 AEDT/);
+  assert.match(event.science["zh-Hant"].join(" "), /不是行星/);
+  assert.match(event.science.en.join(" "), /not a planet/);
+  assert.match(event.interpretation["zh-Hant"].join(" "), /不是天體造成事件的科學結論/);
+  assert.ok(event.sources.some((source) => source.url.includes("line_of_nodes")));
 });
 
 test("today sky cards render on the /sky-events route above the deep-dive article", () => {
