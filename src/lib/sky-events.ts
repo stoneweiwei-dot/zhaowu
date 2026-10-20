@@ -13,6 +13,75 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    id: "sun-trine-north-node-2026-10-20",
+    published: "2026-10-20",
+    status: "active",
+    title: {
+      "zh-Hant": "太陽三分北交點：關係與群體方向的交會",
+      "zh-Hans": "太阳三分北交点：关系与群体方向的交会",
+      en: "Sun trine the North Node: relationships meet collective direction"
+    },
+    subtitle: {
+      "zh-Hant": "占星曆時刻｜10/20 13:04 AEDT（悉尼）＝10/19 22:04 EDT",
+      "zh-Hans": "占星历时刻｜10/20 13:04 AEDT（悉尼）＝10/19 22:04 EDT",
+      en: "Astrological ephemeris time | 19 Oct 22:04 EDT = 20 Oct 13:04 AEDT (Sydney)"
+    },
+    facts: [{
+      date: "2026-10-20",
+      label: {
+        "zh-Hant": "占星曆將精確三分相列於悉尼時間 10 月 20 日 13:04（AEDT，UTC+11）；Instagram 原文以美東時間標示為 10 月 19 日 22:04（EDT，UTC−4）。",
+        "zh-Hans": "占星历将精确三分相列于悉尼时间 10 月 20 日 13:04（AEDT，UTC+11）；Instagram 原文以美东时间标示为 10 月 19 日 22:04（EDT，UTC−4）。",
+        en: "The astrology calendar lists the exact trine at 13:04 AEDT on 20 Oct (Sydney), corresponding to 22:04 EDT on 19 Oct in the Instagram post."
+      }
+    }],
+    science: {
+      "zh-Hant": [
+        "月球軌道面相對黃道面傾斜；北交點是月球軌道由南向北穿越黃道面的計算交點，不是行星、恆星或發光天體。",
+        "這裡的三分相指熱帶黃道座標下，地心視黃經約相差 120°：太陽位於天秤座，北交點位於水瓶座。這是角度關係，不代表兩個物體在三維空間靠近或排成一線。",
+        "北交點本身無法肉眼看見；太陽與北交點形成三分相也不是日食、月食或可辨認的夜空奇觀。實際日月食需要日月靠近月球軌道交點。",
+        "時刻採占星曆所列的熱帶黃道相位時間；採用平均或真交點、座標慣例不同，結果可能略有差異。"
+      ],
+      "zh-Hans": [
+        "月球轨道面相对黄道面倾斜；北交点是月球轨道由南向北穿越黄道面的计算交点，不是行星、恒星或发光天体。",
+        "这里的三分相指热带黄道坐标下，地心视黄经约相差 120°：太阳位于天秤座，北交点位于水瓶座。这是角度关系，不代表两个物体在三维空间靠近或排成一线。",
+        "北交点本身无法肉眼看见；太阳与北交点形成三分相也不是日食、月食或可辨认的夜空奇观。实际日月食需要日月靠近月球轨道交点。",
+        "时刻采用占星历所列的热带黄道相位时间；采用平均或真交点、坐标惯例不同，结果可能略有差异。"
+      ],
+      en: [
+        "The Moon's orbital plane is tilted to the ecliptic. The North Node is the calculated point where the Moon crosses the ecliptic from south to north; it is not a planet, star or luminous body.",
+        "Here, a trine means about 120° of geocentric apparent ecliptic-longitude separation in the tropical zodiac: the Sun is in Libra and the North Node in Aquarius. This is an angular relationship, not a close physical approach or straight-line alignment in 3D space.",
+        "The North Node is not visible to the naked eye, and a Sun–node trine is not an eclipse or visually identifiable sky spectacle. Eclipses require the Sun and Moon to be near a lunar orbital node.",
+        "The time follows the cited astrology calendar's tropical-zodiac aspect timing; coordinate conventions and mean versus true node can create small differences."
+      ]
+    },
+    interpretation: {
+      "zh-Hant": [
+        "在西洋占星的象徵語言裡，太陽常被用來談自我表達與當下方向；天秤座常連結協商、公平與一對一關係；北交點常被解讀為需要探索的成長方向，水瓶座象徵群體、理念與未來可能。",
+        "三分相在占星傳統裡通常被視為較順暢的連結。貼文因此把焦點放在「一段關係中的協調，如何與更大的群體目標並行」；這是文化象徵的閱讀方式，不是天體造成事件的科學結論。",
+        "可把它當作一個提問：我正在維護的合作或關係，是否也容得下自己的長期理念？若答案是否定的，下一步可以是一次清楚的協商，而不是因為星象而倉促做重大決定。",
+        "占星詮釋不等於個人預測。若要談本命盤中的生活領域，還需要出生資料、採用的宮制與完整盤面；此專欄不代替個人命盤分析。"
+      ],
+      "zh-Hans": [
+        "在西洋占星的象征语言里，太阳常被用来谈自我表达与当下方向；天秤座常连接协商、公平与一对一关系；北交点常被解读为需要探索的成长方向，水瓶座象征群体、理念与未来可能。",
+        "三分相在占星传统里通常被视为较顺畅的连接。贴文因此把焦点放在“一段关系中的协调，如何与更大的群体目标并行”；这是文化象征的阅读方式，不是天体造成事件的科学结论。",
+        "可以把它当作一个提问：我正在维护的合作或关系，是否也容得下自己的长期理念？若答案是否定的，下一步可以是一次清楚的协商，而不是因为星象而仓促做重大决定。",
+        "占星诠释不等于个人预测。若要谈本命盘中的生活领域，还需要出生资料、采用的宫制与完整盘面；此专栏不代替个人命盘分析。"
+      ],
+      en: [
+        "In Western astrological symbolism, the Sun is often used to discuss self-expression and present direction; Libra is associated with negotiation, fairness and one-to-one relationships. The North Node is traditionally read as a growth direction, while Aquarius evokes groups, ideals and future possibilities.",
+        "A trine is traditionally treated as an easier symbolic connection. The post frames this as how relationship balance might coexist with a wider collective purpose. This is a cultural interpretation, not a scientific conclusion that planets cause events.",
+        "Use it as a reflective prompt: can the partnership or agreement I am maintaining make room for my longer-term values? If not, a clear conversation is more grounded than making a major decision because of a transit.",
+        "Astrological symbolism is not an individual prediction. A natal-house reading needs birth data, a chosen house system and the complete chart; this public note is not a substitute for one."
+      ]
+    },
+    houses: [],
+    sources: [
+      { label: "NASA CNEOS · Line of nodes", url: "https://cneos.jpl.nasa.gov/glossary/line_of_nodes.html" },
+      { label: "NASA Science · Planetary orbits and nodes", url: "https://science.nasa.gov/learn/basics-of-space-flight/chapter5-1/" },
+      { label: "Astrolis · October 2026 Transit Calendar", url: "https://www.astrolis.com/astrology/calendar/2026/october" }
+    ]
+  },
+  {
     "id": "pluto-stations-direct-2026-10-16",
     "published": "2026-10-15",
     "status": "active",
