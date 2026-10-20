@@ -100,7 +100,7 @@ export function BaziKnowledgeNotesSection() {
         <p className="text-xs tracking-[0.26em] text-cinnabar">{tr(locale,"昭梧 · 命理小知識","昭梧 · 命理小知识","ZHAOWU · BAZI KNOWLEDGE")}</p>
         <h2 className="mt-2 font-display text-3xl leading-tight text-ink">{tr(locale,"命理知識就是知識，不混進觀世錄文章。","命理知识就是知识，不混进观世录文章。","Teaching notes stay teaching notes, separate from essays.")}</h2>
         <p className="mt-4 max-w-3xl text-[15px] leading-7 text-ink-soft">
-          {tr(locale,"這裡集中放八字用途、基礎概念、天干本象、判讀步驟、神煞規則與來源辨識。它們是教學卡與方法說明，不當作站主文章，也不與觀世錄混排。","这里集中放八字用途、基础概念、天干本象、判读步骤、神煞规则与来源辨识。它们是教学卡与方法说明，不当作站主文章，也不与观世录混排。","This section contains BaZi applications, core concepts, stem imagery, reading steps, auxiliary-star rules and source checks. These are teaching cards and method notes, not editorial articles.")}
+          {tr(locale,"這裡集中放八字用途、基礎概念、天干本象、判讀步驟、神煞規則與來源辨識。它們是教學卡與方法說明，不當作專欄文章，也不與觀世錄混排。","这里集中放八字用途、基础概念、天干本象、判读步骤、神煞规则与来源辨识。它们是教学卡与方法说明，不当作专栏文章，也不与观世录混排。","This section contains BaZi applications, core concepts, stem imagery, reading steps, auxiliary-star rules and source checks. These are teaching cards and method notes, not editorial articles.")}
         </p>
       </section>
 

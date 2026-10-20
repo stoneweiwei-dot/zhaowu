@@ -230,10 +230,10 @@ export function buildPersonalPaidProfile(birth: SharedBirthRecord, locale: Local
     : locale === "en" ? "Not fixed when birth time / sequence is insufficient" : locale === "zh-Hans" ? "资料不足时不强定大运" : "資料不足時不強定大運";
 
   const note = locale === "en"
-    ? "This premium page is generated only from this customer's saved birth record and calculated chart. It never imports the site owner's chart. Colours, materials and time windows are cultural/functional suggestions, not guarantees of luck."
+    ? "This premium page is generated only from this customer's saved birth record and calculated chart. It never imports anyone else's chart. Colours, materials and time windows are cultural/functional suggestions, not guarantees of luck."
     : locale === "zh-Hans"
-      ? "本页只读取这位客户保存的出生资料与计算命盘，不引用站主命盘。颜色、材质与时段属于文化／功能建议，不作改运或吉凶保证。"
-      : "本頁只讀取這位客戶保存的出生資料與計算命盤，不引用站主命盤。顏色、材質與時段屬於文化／功能建議，不作改運或吉凶保證。";
+      ? "本页只读取这位客户保存的出生资料与计算命盘，不引用任何他人命盘。颜色、材质与时段属于文化／功能建议，不作改运或吉凶保证。"
+      : "本頁只讀取這位客戶保存的出生資料與計算命盤，不引用任何他人命盤。顏色、材質與時段屬於文化／功能建議，不作改運或吉凶保證。";
 
   return {
     birthLine,
