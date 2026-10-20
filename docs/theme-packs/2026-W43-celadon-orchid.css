@@ -1,0 +1,87 @@
+/* ZHAOWU W43 — DESIGN DRAFT ONLY. Not imported by the application.
+ * Requires real /theme-skins/song-celadon-orchid-art.webp before registration.
+ * The existing theme-skins.css -> sets.css -> full.css cascade remains authority.
+ */
+html[data-zws="song-celadon-orchid"] {
+  --zws-page: #f7f3ea;
+  --zws-card: #faf7ef;
+  --zws-ink: #243c36;
+  --zws-soft: #53645c;
+  --zws-accent: #315e50;
+  --zws-line: rgba(65, 95, 83, .22);
+  --zws-gold: #a99570;
+  --zws-on-accent: #fffdf8;
+  --zws-action-bg: #315e50;
+  --zws-surface: #faf7ef;
+  --zws-surface-soft: #f5f1e7;
+  --zws-divider: rgba(65, 95, 83, .20);
+  --zws-art: url("/theme-skins/song-celadon-orchid-art.webp");
+  --zws-focus: 52% 60%;
+  --zws-veil: 82%;
+  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", serif;
+  --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+  --zws-hw: 600;
+  --zws-radius: 8px;
+  --zws-card-r: 8px;
+  --zws-card-radius: 8px;
+  --zws-btn-radius: 7px;
+  --zws-pill-radius: 7px;
+  --zws-card-frame: none;
+  --zws-card-orn: none;
+  --zws-card-blur: none;
+  --zws-shadow: none;
+  --zws-hero-frame: none;
+  --zws-hero-border: 1px solid rgba(65, 95, 83, .22);
+  --zws-hero-radius: 8px;
+  --zws-rule: #a99570;
+  --zws-rule-w: 36px;
+  --zws-rule-h: 1px;
+  --zws-pattern: none;
+}
+/* Specific decoration only; shared rules already handle the report and controls. */
+html[data-zws="song-celadon-orchid"] body :is(
+  #daily-almanac, .zhaowu-report-continuous-sheet, .zhaowu-specialist-sheet,
+  .zw-saved-report-card, .zhaowu-site-utility-panel, #life-view
+) {
+  --zws-card-frame: none;
+  --zws-card-orn: none;
+  --zws-card-blur: none;
+}
+html[data-zws="song-celadon-orchid"] body :is(
+  #daily-almanac, .zhaowu-report-continuous-sheet, .zhaowu-specialist-sheet
+) :is(h2, h3) {
+  text-wrap: pretty;
+  text-shadow: none;
+}
+html[data-zws="song-celadon-orchid"] body :is(
+  button[type="submit"], .zhaowu-primary-button, .stone-login-primary
+):focus-visible {
+  outline: 2px solid #315e50;
+  outline-offset: 3px;
+}
+html[data-zws="song-celadon-orchid"] body :is(
+  .zhaowu-report-continuous-sheet, .zhaowu-specialist-sheet, .zw-saved-report-card
+) {
+  background-color: #faf7ef;
+  color: #243c36;
+}
+html[data-zws="song-celadon-orchid"][data-zw-theme="night"] {
+  /* Night ambience is ink, but reading paper keeps dark-on-light text. */
+  --zws-page: #1c342f;
+  --zws-surface: #f7f3ea;
+  --zws-surface-soft: #f1ecdf;
+  --zws-ink: #243c36;
+  --zws-soft: #53645c;
+  --zws-on-accent: #fffdf8;
+}
+@media (max-width: 430px) {
+  html[data-zws="song-celadon-orchid"] body :is(
+    .zhaowu-report-continuous-sheet, .zhaowu-specialist-sheet
+  ) { max-width: 100%; overflow-wrap: anywhere; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-zws="song-celadon-orchid"] body :is(.zws-orchid-loading, .zws-orchid-enter) {
+    animation: none !important;
+    transition: none !important;
+  }
+}
