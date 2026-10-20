@@ -120,7 +120,13 @@ function SkyEventsPage() {
   const event = getFeaturedSkyEvent();
   const archive = getArchivedSkyEvents();
   const isSaturn = event.id === "saturn-opposition-2026";
-  const glyph = event.id === "saturn-opposition-2026" ? "♄" : event.id === "venus-scorpio-2026" ? "♀" : event.id.startsWith("mars-") ? "♂" : "✦";
+  const isSunNodeTrine = event.id === "sun-trine-north-node-2026-10-20";
+  const illustrationAlt = locale === "en"
+    ? "A geocentric diagram showing the Sun and calculated North Node about 120 degrees apart; the Node is not a visible body."
+    : locale === "zh-Hans"
+      ? "地心示意图：太阳与计算得出的北交点相隔约 120°；交点不是可见天体。"
+      : "地心示意圖：太陽與計算所得的北交點相隔約 120°；交點不是可見天體。";
+  const glyph = isSunNodeTrine ? "☉△☊" : isSaturn ? "♄" : event.id === "venus-scorpio-2026" ? "♀" : event.id.startsWith("mars-") ? "♂" : "✦";
   const ui = locale === "en"
     ? { title: "Recent Sky Events", lead: "Astronomical reality × symbolic astrology", back: "Home", science: "Astronomy layer · verifiable", symbolic: "Astrology layer · symbolic", houses: "Where this sign falls in your natal chart", sources: "Sources & verification", watch: "What this desk will publish first", archive: "Earlier sky events", note: "Astronomy and astrology are not presented as the same kind of knowledge. Measurable celestial motion is factual; personal meaning is a symbolic interpretive tradition." }
     : locale === "zh-Hans"
@@ -149,6 +155,17 @@ function SkyEventsPage() {
           <div className={`sky-event-orbit ${isSaturn ? "is-saturn" : ""}`} aria-hidden="true"><span>{glyph}</span></div>
           <div><span className="sky-events-kicker">{event.published}</span><h2>{event.title[lang]}</h2><p>{event.subtitle[lang]}</p></div>
         </header>
+
+        {isSunNodeTrine ? (
+          <figure className="sky-event-illustration">
+            <img src="/articles/sun-trine-north-node-2026.svg" alt={illustrationAlt} loading="lazy" />
+            <figcaption>{locale === "en"
+              ? "A geometric guide to the 120° tropical-zodiac aspect; the North Node is a calculated orbital point."
+              : locale === "zh-Hans"
+                ? "120° 热带黄道相位示意；北交点是计算出的轨道交点。"
+                : "120° 熱帶黃道相位示意；北交點是計算出的軌道交點。"}</figcaption>
+          </figure>
+        ) : null}
 
         <div className="sky-event-timeline">
           {event.facts.map((fact) => <div key={fact.date}><time>{fact.date}</time><span>{fact.label[lang]}</span></div>)}
