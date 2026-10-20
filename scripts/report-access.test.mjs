@@ -85,7 +85,7 @@ test("the paid personal page is derived from each customer's saved birth data, n
   assert.match(personalModel, /buildChart\(\{ \.\.\.birth, question: "personal-paid-profile", locale \}\)/);
   assert.match(personalComponent, /data-personal-source="customer-birth-only"/);
   assert.match(personalComponent, /birth: SharedBirthRecord/);
-  assert.match(personalModel, /不引用站主命盤/);
+  assert.match(personalModel, /不引用任何他人命盤/);
   assert.doesNotMatch(personalModel, /壬辰|金水結構|金水结构|辰辰自刑/);
 });
 

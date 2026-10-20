@@ -6,6 +6,7 @@ export const SITE_GUIDE_ROUTES = [
   "/history",
   "/account",
   "/login",
+  "/member",
 ] as const;
 export type SiteGuideRoute = (typeof SITE_GUIDE_ROUTES)[number];
 
@@ -64,7 +65,7 @@ export function resolveLocalSiteGuide(message: string, locale: Locale): SiteGuid
   const text = message.trim();
   if (!text) return null;
   const copy = COPY[locale];
-  if (LOGIN.test(text)) return answer(copy.login, "/login");
+  if (LOGIN.test(text)) return answer(copy.login, "/member");
   if (ACCOUNT.test(text)) return answer(copy.account, "/account");
   if (SPECIALIST.test(text)) return answer(copy.analysis, "/#birth-form");
   if (FULL_REPORT.test(text)) return answer(copy.analysis, "/#birth-form");

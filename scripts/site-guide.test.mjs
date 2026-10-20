@@ -10,7 +10,7 @@ test("common navigation requests resolve locally in all three languages", () => 
   assert.equal(resolveLocalSiteGuide("Show me two sides of character", "en"), null);
   assert.equal(
     resolveLocalSiteGuide("我要登入保存報告", "zh-Hant")?.route,
-    "/login",
+    "/member",
   );
   assert.equal(
     resolveLocalSiteGuide("Where are my saved reports?", "en")?.route,
@@ -40,6 +40,7 @@ test("the guide can only recommend real public site routes", () => {
     "/history",
     "/account",
     "/login",
+    "/member",
   ]);
 });
 

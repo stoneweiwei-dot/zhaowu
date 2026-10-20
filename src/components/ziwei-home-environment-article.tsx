@@ -152,7 +152,7 @@ export function ZiweiHomeEnvironmentArticle() {
         </a>
         {" · "}
         <a className="text-cinnabar underline underline-offset-2" href="https://www.instagram.com/p/DeKEZlpT0mc/" target="_blank" rel="noopener noreferrer">
-          {tr(locale, "站主提供的參考貼文", "站主提供的参考帖文", "Owner-supplied reference")}
+          {tr(locale, "參考貼文", "参考帖文", "Reference post")}
         </a>
       </p>
     </section>
