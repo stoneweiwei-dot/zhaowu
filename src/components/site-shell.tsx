@@ -330,6 +330,29 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <span>{viewsTotalLabel} <b>{stats.totalVisits.toLocaleString(numberLocale)}</b></span>
           </p>
         ) : null}
+        {isHome ? (
+          <details className="zhaowu-why" data-why-zhaowu>
+            <summary>{displayText(language, "為何做昭梧", "为何做昭梧", "Why ZHAOWU exists", "昭梧をつくる理由", "昭梧를 만든 이유")}</summary>
+            <div className="zhaowu-why__body">
+              <p>{displayText(
+                language,
+                "命理不是宿命，而是理解自己的方法；運勢不是答案，而是看見時機的能力。真正改變人生的，始終是每一次清醒而有意識的選擇。",
+                "命理不是宿命，而是理解自己的方法；运势不是答案，而是看见时机的能力。真正改变人生的，始终是每一次清醒而有意识的选择。",
+                "Destiny reading is not fate — it is a way to understand yourself. Timing is not an answer — it is the ability to see the moment. What truly changes a life is each clear, conscious choice.",
+                "命理は宿命ではなく、自分を理解するための方法。運勢は答えではなく、時機を見る力。人生を本当に変えるのは、いつも、澄んだ意識で行う一つひとつの選択です。",
+                "명리는 숙명이 아니라 자신을 이해하는 방법이고, 운세는 답이 아니라 때를 보는 힘입니다. 삶을 정말로 바꾸는 것은 언제나 깨어 있는 의식으로 하는 매번의 선택입니다.",
+              )}</p>
+              <p>{displayText(
+                language,
+                "所以排盤與快速讀免費、免登入，報告加密保存在這台裝置的瀏覽器；完整報告為單次付費，不自動續費。昭梧只提供傳統象義的參考，不作醫療診斷，決定仍由你自己做。",
+                "所以排盘与快速读免费、免登录，报告加密保存在这台设备的浏览器；完整报告为单次付费，不自动续费。昭梧只提供传统象义的参考，不作医疗诊断，决定仍由你自己做。",
+                "So charting and the quick reading are free with no sign-up, and reports are stored encrypted in this browser on this device. A full report is a one-time purchase with no subscription. ZHAOWU offers traditional symbolism for reflection — not a medical diagnosis — and the decision stays yours.",
+                "そのため、命盤とクイックリーディングは無料・登録不要で、レポートはこの端末のブラウザに暗号化して保存されます。完全版レポートは一回払いで、自動更新はありません。昭梧が示すのは伝統的な象意の参考であり、医療診断ではありません。決めるのは、あなた自身です。",
+                "그래서 명반과 빠른 해석은 무료이며 가입이 필요 없고, 보고서는 이 기기의 브라우저에 암호화되어 저장됩니다. 전체 보고서는 1회 결제이며 자동 갱신되지 않습니다. 昭梧는 전통 상징에 기반한 참고 자료일 뿐 의료 진단이 아니며, 결정은 언제나 당신의 몫입니다.",
+              )}</p>
+            </div>
+          </details>
+        ) : null}
         <ul className="zhaowu-footer-legal" aria-label={displayText(language, "法律資訊", "法律信息", "Legal", "法的情報", "법적 고지", "कानूनी")}>
           <li><Link to="/privacy">{displayText(language, "隱私權政策", "隐私权政策", "Privacy", "プライバシー", "개인정보", "गोपनीयता")}</Link></li>
           <li><Link to="/terms">{displayText(language, "服務條款", "服务条款", "Terms", "利用規約", "이용약관", "शर्तें")}</Link></li>

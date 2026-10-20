@@ -70,6 +70,35 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+/* "Why ZHAOWU exists": footer-level disclosure, expands in place, no navigation, no motion. */
+.zhaowu-site-footer .zhaowu-why {
+  margin: 0 auto 6px;
+  max-width: 34em;
+  font-size: 12px;
+}
+.zhaowu-site-footer .zhaowu-why > summary {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+  color: var(--zw-ink-mute, rgba(32, 28, 20, .62));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.zhaowu-site-footer .zhaowu-why > summary::-webkit-details-marker { display: none; }
+.zhaowu-site-footer .zhaowu-why > summary:focus-visible {
+  outline: 2px solid var(--zw-jade, #557f79);
+  outline-offset: 2px;
+}
+.zhaowu-site-footer .zhaowu-why__body {
+  padding: 4px 0 10px;
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--zw-ink, #2a2218);
+}
+.zhaowu-site-footer .zhaowu-why__body p { margin: 0 0 8px; }
 
 /* Pre-payment consent (checkbox before any Stripe redirect). */
 .zhaowu-purchase-consent {
