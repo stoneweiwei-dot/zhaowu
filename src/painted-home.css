@@ -519,6 +519,27 @@ html[data-zws] body #root .zw-painted-home :is(button,a):focus-visible {
   outline: 2px solid var(--ph-accent) !important;
   outline-offset: 2px !important;
 }
+/* 題跋: one quiet line under the painting. Hidden outside the Song gallery layout; static, no motion. */
+html body #root .zw-painted-home .ph-resolve { display: none; }
+html[data-zws] body #root .zw-painted-home .ph-resolve {
+  display: block;
+  order: 2; /* same order as the painting; DOM order puts it right after the image */
+  margin: 10px 0 0;
+  padding: 0;
+  font-family: var(--zw-font-heading);
+  font-size: 13px;
+  line-height: 1.8;
+  letter-spacing: .08em;
+  text-align: left;
+  color: var(--ph-muted) !important;
+  text-shadow: none !important;
+  text-wrap: balance;
+}
+html[lang="en"][data-zws] body #root .zw-painted-home .ph-resolve {
+  font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+  font-style: italic;
+  letter-spacing: .01em;
+}
 @media (max-width: 360px) {
   html[data-zws] body #root .zw-painted-home .ph-hero { padding-inline: 16px !important; }
   html[data-zws] body #root .zw-painted-home .ph-actions :is(button,a) { font-size: 13px !important; }
