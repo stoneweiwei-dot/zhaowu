@@ -10,7 +10,7 @@ test("r197 owner media shows one focused manager at a time", async () => {
   assert.match(route, /type MediaView = "login" \| "content"/);
   assert.match(route, /useState<MediaView>\("content"\)/);
   assert.match(route, /role="tablist"/);
-  assert.match(route, /開場影片/);
+  assert.match(route, /影片素材/);
   assert.match(route, /內容圖片/);
   assert.match(route, /view === "login"[\s\S]*OwnerLoginVisualsManager[\s\S]*OwnerGalleryManager/);
 });
