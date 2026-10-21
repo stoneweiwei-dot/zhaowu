@@ -21,43 +21,43 @@ export const ABHIDHAMMA_THIRTY_ONE_PLANES: LifeViewArticle = {
   },
   "illustrations": [
     {
-      "src": "/art/zhaowu-lotus-ascend-v1.webp",
+      "src": "/articles/abhidhamma-31-realms-overview-stone-original.png",
       "afterParagraph": 2,
       "display": "wide",
       "alt": {
-        "zh-Hant": "昭梧宋式蓮境畫作，作為三界觀的視覺引子；非教理分層圖表。",
-        "zh-Hans": "昭梧宋式莲境画作，作为三界观的视觉引子；非教理分层图表。",
-        "en": "Existing Song-inspired lotus artwork serving as a visual introduction, not a doctrinal diagram."
+        "zh-Hant": "昭梧原創宋式三界總覽畫卷，借蓮華、山河與雲中宮闕呈現輪迴境界的象徵意境；非教理分層圖表。",
+        "zh-Hans": "昭梧原创宋式三界总览画卷，借莲华、山河与云中宫阙表现轮回境界的象征意境；非教理分层图表。",
+        "en": "Original ZHAOWU lotus, mountains and celestial courts painting evoking the three spheres; not a doctrinal diagram."
       }
     },
     {
-      "src": "/hero-gallery/river-rain-boat.webp",
+      "src": "/articles/abhidhamma-31-realms-desire-stone-original.png",
       "afterParagraph": 4,
       "display": "wide",
       "alt": {
-        "zh-Hant": "昭梧江城舟行宋式畫作，借人間景象映照欲界；非十一境結構圖。",
-        "zh-Hans": "昭梧江城舟行宋式画作，借人间景象映照欲界；非十一境结构图。",
-        "en": "Existing river-and-boat artwork evoking human experience; not an eleven-plane diagram."
+        "zh-Hant": "昭梧原創欲界畫卷，以人間舟行、村鎮及雲上天宮象徵欲界的不同去處；非十一境結構圖。",
+        "zh-Hans": "昭梧原创欲界画卷，以人间舟行、村镇及云上天宫象征欲界的不同去处；非十一境结构图。",
+        "en": "Original ZHAOWU painting evoking human life and celestial realms within the sense-sphere; not an eleven-plane diagram."
       }
     },
     {
-      "src": "/hero-gallery/temple-bamboo-rain.webp",
+      "src": "/articles/abhidhamma-31-realms-form-stone-original.png",
       "afterParagraph": 6,
       "display": "wide",
       "alt": {
-        "zh-Hant": "昭梧寺院山水宋式畫作，作為色界禪修意境襯圖；非十六境分層圖。",
-        "zh-Hans": "昭梧寺院山水宋式画作，作为色界禅修意境衬图；非十六境分层图。",
-        "en": "Existing temple landscape used as meditative atmosphere, not a sixteen-plane classification chart."
+        "zh-Hant": "昭梧原創色界畫卷，以禪定者、山寺與雲中清淨宮闕象徵禪那相應境界；非十六境分層圖。",
+        "zh-Hans": "昭梧原创色界画卷，以禅定者、山寺与云中清净宫阙象征禅那相应境界；非十六境分层图。",
+        "en": "Original ZHAOWU meditation-inspired celestial monastery painting; not a sixteen-plane classification chart."
       }
     },
     {
-      "src": "/hero-gallery/misty-mountains-lake.webp",
+      "src": "/articles/abhidhamma-31-realms-formless-stone-original.png",
       "afterParagraph": 8,
       "display": "wide",
       "alt": {
-        "zh-Hant": "昭梧空濛山水宋式畫作，借寂靜景象提示無色定；非無色界實景。",
-        "zh-Hans": "昭梧空蒙山水宋式画作，借寂静景象提示无色定；非无色界实景。",
-        "en": "Existing misty landscape suggesting contemplative stillness, not a literal depiction of immaterial planes."
+        "zh-Hant": "昭梧原創無色界象徵畫卷，以廣大光空、蓮華與寂靜雲海提示無色定；非無色界實景。",
+        "zh-Hans": "昭梧原创无色界象征画卷，以广大光空、莲华与寂静云海提示无色定；非无色界实景。",
+        "en": "Original ZHAOWU luminous cloud-and-lotus painting suggesting contemplative stillness, not a literal depiction of immaterial planes."
       }
     }
   ]

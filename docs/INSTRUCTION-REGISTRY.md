@@ -1,7 +1,7 @@
 ## 2026-10-21 畫作／圖表分類與文章視覺失真修復
 
 - ACTIVE（站主最新明確指令）：昭梧文章「配圖／畫作」不得以大量文字框、數字卡、漸層山形的程式 SVG 冒充真實創作；只有明確要求資訊圖表時才用圖表。執行契約為 `AGENTS.md` 第 6 節新規、`docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 與 `docs/ARTWORK-ACCEPTANCE.md`。
-- ROOT CAUSE（已核）：PR #820 將本應連結真正生成繪畫的四張文章插圖換成純程式 SVG（不是 CDN 壓縮、手機渲染或文章元件把畫作變成 SVG）。圖檔結構比對站主實拍吻合。將該篇文章中的錯誤卡片引用換成已存在的清晰 WebP 宋式畫作，**明示為暫用舊作**，保留三語原文，不宣稱四幅新原創已正式上傳。
+- ROOT CAUSE（已核）：PR #820 將本應連結真正生成繪畫的四張文章插圖換成純程式 SVG（不是 CDN 壓縮、手機渲染或文章元件把畫作變成 SVG）。圖檔結構比對站主實拍吻合。原曾暫用既有 WebP 畫作；2026-10-21 最新指令改為四張新的原創宋式三界總覽／欲界／色界／無色界繪畫，在各自原文章位置替換。四張原創素材以原始 PNG 分段保存在 GitHub，`scripts/assemble-abhidhamma-art.mjs` 在 prebuild 自本地二進位片段重組，核對 SHA-256，產生 `public/articles/` 本地檔；無執行時第三方 CDN 依賴。保留三語原文，畫作均屬象徵表現而非教理精確分層圖。正式生效仍以 Production 實際驗收為準。
 - ACTIVE：`scripts/article-artwork-acceptance.test.mjs` 驗證該篇文章繪畫引用均指向存在的本地影像二進位檔，不可用 code-only SVG 或外部臨時 URL 冒充；`prebuild` 在編譯前執行。這是防止相同文件失誤的機械檢查；藝術品質仍需實際看圖，不可憑測試就報高品質完成。
 - BOUNDARY：不改文章系統、會員權限、付款、報告、Supabase Schema／Storage 或全站主題。不重寫原有真正適用於圖表/互動的 SVG，不新增付費生成服務／外部 runtime 依賴。
 
