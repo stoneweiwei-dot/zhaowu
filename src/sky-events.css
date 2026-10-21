@@ -2,3 +2,51 @@
 .sky-today{margin-bottom:30px;padding-bottom:26px;border-bottom:1px solid rgba(88,74,53,.15)}.sky-today-header h2{font-family:"Noto Serif TC","Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif;font-size:clamp(1.5rem,4vw,2.1rem);margin:.2rem 0;color:#17372f}.sky-today-updated{margin:0 0 4px;font-size:.78rem;color:#8a6130;font-weight:700;font-variant-numeric:tabular-nums}.sky-today-note{margin:0 0 18px;color:#6d6355;font-size:.88rem;line-height:1.6}.sky-today-list{display:grid;gap:12px}.sky-today-card{display:grid;grid-template-columns:52px 1fr;gap:14px;padding:16px;border-radius:18px;border:1px solid rgba(104,78,41,.18);background:rgba(255,252,245,.78)}.sky-today-card.grade-A{border-color:rgba(160,63,49,.35);background:rgba(250,240,230,.85)}.sky-today-card-mark{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:1.05rem;color:#f2d39a;background:radial-gradient(circle,#3a2540,#1a171c 65%,#0c0d0f)}.sky-today-card.grade-A .sky-today-card-mark{background:radial-gradient(circle,#6f3540,#291e27 62%,#14171a)}.sky-today-card-body{display:grid;gap:6px}.sky-today-badges{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.sky-today-date{font-size:.72rem;font-weight:800;color:#74562f;font-variant-numeric:tabular-nums}.sky-today-grade{font-size:.66rem;font-weight:800;letter-spacing:.06em;padding:2px 8px;border-radius:999px;background:#e8f1ee;color:#1e5a4c}.sky-today-grade.grade-A{background:#f6e3dd;color:#8a3f2f}.sky-today-visibility{font-size:.66rem;font-weight:700;padding:2px 8px;border-radius:999px;background:#efe5d4;color:#765525}.sky-today-visibility.is-visible{background:#dfeeea;color:#1e5a4c}.sky-today-title{font-size:1.02rem;color:#263b34}.sky-today-science{margin:0;font-size:.84rem;line-height:1.6;color:#5c6b64}.sky-today-impact{margin-top:6px;padding-top:10px;border-top:1px dashed rgba(88,74,53,.2);display:grid;gap:4px}.sky-today-theme{font-weight:800;color:#8b5e3b;font-size:.86rem}.sky-today-impact-label{font-size:.66rem;letter-spacing:.1em;color:#9a8b72;text-transform:uppercase}.sky-today-impact ul{margin:4px 0 0;padding-left:1.1rem;display:grid;gap:4px}.sky-today-impact li{font-size:.82rem;line-height:1.55;color:#4c5852}.sky-today-impact li b{color:#1f5a4a;margin-right:4px}@media(max-width:520px){.sky-today-card{grid-template-columns:40px 1fr;padding:13px}.sky-today-card-mark{width:38px;height:38px;font-size:.85rem}}
 
 .sky-event-illustration{width:min(100%,540px);margin:1.1rem auto 1.4rem}.sky-event-illustration img{display:block;width:100%;height:auto;border:1px solid rgba(105,91,66,.28);border-radius:8px}.sky-event-illustration figcaption{margin-top:.55rem;color:inherit;font-size:.82rem;line-height:1.6;text-align:center;opacity:.82}
+
+/* 2026-10-21: clearer reading order and phone-safe sky-event details */
+.sky-events-page{box-sizing:border-box;width:min(100%,920px);overflow-wrap:anywhere}
+.sky-events-page>*{max-width:100%}
+.sky-events-hero{padding:clamp(28px,6vw,48px) 0 20px}
+.sky-events-truth-note{font-size:.94rem}
+.sky-events-shortcuts{display:flex;flex-wrap:wrap;gap:8px;margin:0 auto 18px}
+.sky-events-shortcuts a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:1px solid rgba(31,90,74,.2);border-radius:999px;background:rgba(255,252,245,.84);color:#1f5a4a;text-decoration:none;font-size:.88rem;font-weight:700}
+.sky-events-shortcuts a:focus-visible,.sky-section-disclosure>summary:focus-visible{outline:3px solid #a77a31;outline-offset:3px}
+.sky-event-article{scroll-margin-top:16px}
+.sky-event-kind-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.sky-event-kind-tags span{display:inline-flex;align-items:center;min-height:32px;padding:0 11px;border-radius:999px;font-size:.78rem;font-weight:800}
+.sky-event-kind-tags .is-fact{background:#e2efea;color:#1e5a4c}
+.sky-event-kind-tags .is-symbol{background:#f2e8d9;color:#765525}
+.sky-section-disclosure{border:1px solid rgba(104,78,41,.2);border-radius:18px;background:rgba(255,252,245,.88);box-shadow:0 8px 24px rgba(63,49,27,.06);margin:14px auto;padding:0;scroll-margin-top:16px}
+.sky-section-disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:8px 16px;cursor:pointer;list-style:none;color:#24493e}
+.sky-section-disclosure>summary::-webkit-details-marker{display:none}
+.sky-section-disclosure>summary strong{font-size:.98rem;line-height:1.35}
+.sky-section-disclosure>summary span{color:#7b6847;font-size:.8rem;line-height:1.35;text-align:right}
+.sky-section-disclosure[open]>summary{border-bottom:1px solid rgba(88,74,53,.13)}
+.sky-event-details{margin:18px 0 0}
+.sky-event-disclosure-body{padding:0 clamp(14px,3vw,26px) 22px}
+.sky-event-timeline{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));overflow:visible;padding:18px 0}
+.sky-event-two-layers{align-items:start}
+.sky-week-disclosure,.sky-watch-disclosure,.sky-events-archive{padding:0 16px 16px}
+.sky-week-disclosure>summary,.sky-watch-disclosure>summary,.sky-events-archive>summary{margin:0 -16px 14px}
+.sky-week-disclosure .sky-today{margin-top:16px}
+.sky-events-archive-grid{margin-top:0}
+.sky-events-archive[open]>summary{margin-bottom:14px}
+.sky-long-read{padding:0 16px 18px}
+.sky-long-read>summary{margin:0 -16px 12px}
+.sky-source-details{margin-top:24px}
+.sky-source-details .sky-event-sources{border:0;margin:0;padding:14px 0 4px}
+.sky-source-details .sky-event-sources>div{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:8px}
+.sky-source-details .sky-event-sources a{display:flex;align-items:center;min-height:44px;overflow-wrap:anywhere}
+@media(max-width:520px){
+ .sky-events-page{padding:14px}
+ .sky-events-nav{gap:10px}
+ .sky-events-hero h1{font-size:clamp(2.1rem,12vw,3rem)}
+ .sky-events-shortcuts a{padding:0 12px;font-size:.82rem}
+ .sky-event-title{align-items:flex-start}
+ .sky-event-title h2{font-size:clamp(1.45rem,7vw,2rem)}
+ .sky-event-timeline{grid-template-columns:minmax(0,1fr)}
+ .sky-event-two-layers{grid-template-columns:minmax(0,1fr)}
+ .sky-section-disclosure>summary{padding:8px 13px}
+ .sky-event-disclosure-body{padding-right:12px;padding-left:12px}
+ .sky-events-archive-grid{grid-template-columns:minmax(0,1fr)}
+}
