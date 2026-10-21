@@ -130,6 +130,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       return tr(locale, `此影片壓縮後仍太大，超過儲存空間單檔上限（Supabase 回報 413）。請先用手機「剪輯」裁成 ${LOGIN_VIDEO_MAX_SECONDS} 秒內、或用較低畫質重新匯出後再上傳。`, `此视频压缩后仍太大，超过存储空间单文件上限（Supabase 返回 413）。请先用手机「剪辑」裁成 ${LOGIN_VIDEO_MAX_SECONDS} 秒内、或用较低画质重新导出后再上传。`, `This video is still too large after compression and exceeds the storage per-file limit (Supabase returned 413). Trim it to ${LOGIN_VIDEO_MAX_SECONDS} seconds or export at lower quality, then upload again.`);
     },
     compressFailed: tr(locale, "此影片無法在瀏覽器內壓縮，已直接上傳原檔。", "此视频无法在浏览器内压缩，已直接上传原文件。", "This video could not be compressed in the browser; the original was uploaded."),
+    mobileDirect: tr(locale, "iPhone／iPad 已略過耗時壓縮，直接傳送原始影片。", "iPhone／iPad 已跳过耗时压缩，直接传送原始视频。", "iPhone/iPad uploads the original video without slow on-device compression."),
     failed: tr(locale, "開場影片操作失敗。", "开场视频操作失败。", "Opening-video update failed."),
     empty: tr(locale, "尚未設定自訂開場影片，首頁會使用內建蓮開影片。", "尚未设置自定义开场视频，首页会使用内置莲开视频。", "No custom opening video set. The homepage uses the built-in lotus clip."),
   }), [locale]);
@@ -175,6 +176,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         setMessage(null);
         if (result.compressed) notes.add(copy.compressed(result.sourceBytes, result.outputBytes));
         else if (result.skippedReason === "failed") notes.add(copy.compressFailed);
+        else if (result.skippedReason === "mobile-direct") notes.add(copy.mobileDirect);
         else if (duration === null || !playable) notes.add(copy.notPlayable);
         else if (duration > LOGIN_VIDEO_MAX_SECONDS) notes.add(copy.clipped);
         await uploadGalleryAsset(session, result.file, {
@@ -182,7 +184,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
           title: file.name,
           tags: ["loading", "login-background", "login-common", "owner-upload"],
           primary: false,
-        });
+        }, (percent) => setMessage(tr(locale, `上傳中 ${percent}%`, `上传中 ${percent}%`, `Uploading ${percent}%`)));
         uploadedCount += 1;
       }
       if (notes.size) setMessage([...notes].join(" "));

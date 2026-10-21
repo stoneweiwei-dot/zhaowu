@@ -25,6 +25,7 @@ export async function uploadGalleryAsset(
   session: SupabaseSession,
   file: File,
   meta: { category: string; assetKey?: string; title?: string; tags?: string[]; primary?: boolean },
+  onProgress?: (percent: number) => void,
 ): Promise<base.GalleryAsset> {
   assertSupabaseStorageWritesEnabled();
   if (!isOwnerCookieSession(session)) return base.uploadGalleryAsset(session, file, meta);
@@ -52,7 +53,7 @@ export async function uploadGalleryAsset(
     assetKey,
   });
   try {
-    await uploadOwnerSignedFile(prep, file);
+    await uploadOwnerSignedFile(prep, file, onProgress);
     const out = await ownerData<{ ok: true; item: base.GalleryAsset }>("gallery.finalizeUpload", {
       uploadTicket: prep.uploadTicket,
       path: prep.path,

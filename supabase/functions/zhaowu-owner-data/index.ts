@@ -69,6 +69,7 @@ const ALLOWED_ACTIONS = new Set([
   "social.threads.upsert",
   "social.threads.delete",
   "upload.abort",
+  "site-skin.publish",
 ]);
 
 type Payload = Record<string, unknown>;
@@ -777,6 +778,18 @@ async function threadsAccountDelete(service: ReturnType<typeof createClient>, pa
   return { ok: true };
 }
 
+/** Owner-cookie and same-origin checks happen in Vercel; the Edge bridge validates both secrets. */
+async function publishSiteSkin(service: ReturnType<typeof createClient>, payload: Payload) {
+  const skin = text(payload.skin);
+  if (!/^[a-z][a-z0-9-]{0,63}$/.test(skin)) throw new OwnerDataError("UNKNOWN_SITE_SKIN", 400);
+  const updatedAt = new Date().toISOString();
+  const { data, error } = await service.from("site_settings").upsert({
+    key: "published_site_skin_v1", value: { skin, updatedAt }, public_read: true, updated_at: updatedAt,
+  }, { onConflict: "key" }).select("value").single();
+  if (error || data?.value?.skin !== skin) throw new OwnerDataError("SHARED_SKIN_WRITE_FAILED", 503, error?.message ?? "Not saved");
+  return { ok: true, skin, updatedAt };
+}
+
 async function dispatch(service: ReturnType<typeof createClient>, action: string, payload: Payload) {
   switch (action) {
     case "report.list": return reportList(service, payload);
@@ -809,6 +822,7 @@ async function dispatch(service: ReturnType<typeof createClient>, action: string
     case "social.threads.upsert": return threadsAccountUpsert(service, payload);
     case "social.threads.delete": return threadsAccountDelete(service, payload);
     case "upload.abort": return abortUpload(service, payload);
+    case "site-skin.publish": return publishSiteSkin(service, payload);
     default: throw new OwnerDataError("ACTION_NOT_ALLOWED", 400);
   }
 }

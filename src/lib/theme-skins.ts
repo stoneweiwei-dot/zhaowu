@@ -197,7 +197,7 @@ export async function publishSkin(id: string): Promise<void> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "site-skin.publish", skin: chosen }),
     });
-    if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : "全站主題尚未儲存，請稍後重試。");
+    if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : `全站主題尚未儲存（HTTP ${response.status}），請稍後重試。`);
     const data = await response.json() as { ok?: boolean; skin?: string };
     if (!data.ok || data.skin !== chosen) throw new Error("無法確認全站主題已更新。");
     if (token === syncSerial) {
