@@ -7,10 +7,12 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 
 test("homepage starts with the owner-selected wallpaper and the birth entry", async () => {
   const home = await source("src/routes/index.tsx");
+  const paintedHome = await source("src/components/painted-home.tsx");
   const shell = await source("src/components/site-shell.tsx");
   assert.doesNotMatch(home, /HERO_PAINTINGS|zw-hero-gallery|visibleHeroIndexes/);
-  assert.match(home, /zw-hero-inscription/);
-  assert.match(home, /data-home-birth-entry/);
+  assert.match(home, /import \{ PaintedHome \} from "@\/components\/painted-home"/);
+  assert.match(paintedHome, /data-home-resolve/);
+  assert.match(paintedHome, /data-home-birth-entry/);
   assert.match(shell, /--zhaowu-shell-wallpaper/);
 });
 

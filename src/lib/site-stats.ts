@@ -15,30 +15,30 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  "version": "ZW-WEB-2026.10.15-r225",
-  "updateNumber": 225,
-  "publishedAt": "2026-10-15T12:16:38.621Z",
-  "latestSummary": "近日天象新增冥王星於悉尼 10 月 16 日恢復視順行，附上 UTC／悉尼時間、月相、天文資料及非決定論占星解讀。",
+  "version": "ZW-WEB-2026.10.21-r226",
+  "updateNumber": 226,
+  "publishedAt": "2026-10-21T00:00:00+11:00",
+  "latestSummary": "近日天象新增太陽進入天蠍、水星在天蠍轉為視逆行，以及太陽合金星；附悉尼時刻、星曆來源與非因果占星象徵解讀。",
   "summary": {
-    "zh-Hant": "近日天象新增冥王星於悉尼 10 月 16 日恢復視順行，附上 UTC／悉尼時間、月相、天文資料及非決定論占星解讀。",
-    "zh-Hans": "近日天象新增冥王星于悉尼 10 月 16 日恢复视顺行，附上 UTC／悉尼时间、月相、天文资料及非决定论占星解读。",
-    "en": "Sky events now include Pluto's direct station on 16 October Sydney time, with UTC/AEDT timing, lunar facts, sources and clearly labelled symbolic astrology."
+    "zh-Hant": "近日天象新增太陽進入天蠍、水星在天蠍轉為視逆行，以及太陽合金星；附悉尼時刻、星曆來源與非因果占星象徵解讀。",
+    "zh-Hans": "近日天象新增太阳进入天蝎、水星在天蝎转为视逆行，以及太阳合金星；附悉尼时刻、星历来源与非因果占星象征解读。",
+    "en": "Sky events now cover the Sun's Scorpio ingress, Mercury's retrograde station in Scorpio, and the Sun–Venus conjunction, with Sydney timings, ephemeris sources and non-causal symbolic readings."
   },
   "details": {
     "zh-Hant": [
-      "新增天象：冥王星於 10 月 16 日 02:40 UTC／13:40 悉尼時間，在水瓶座約 3°04′恢復視順行。",
-      "本週月相：上弦月在悉尼 10 月 19 日凌晨，而非射手座月亮換座的同一天。",
-      "資料註明時區與來源；占星象徵和天文事實分開呈現，不將象徵解讀當作因果預測。"
+      "新增天象：太陽約於悉尼 10 月 23 日 20:38 AEDT 進入熱帶黃道天蠍座。",
+      "水星約於悉尼 10 月 24 日 18:12 AEDT，在天蠍座 20°58′–20°59′開始視逆行；同日太陽合金星約在 14:44 AEDT。",
+      "資料註明悉尼時區與可查星曆來源；天文座標事實與傳統占星象徵分開，不將象徵解讀寫成因果預測。"
     ],
     "zh-Hans": [
-      "新增天象：冥王星于 10 月 16 日 02:40 UTC／13:40 悉尼时间，在水瓶座约 3°04′恢复视顺行。",
-      "本周月相：上弦月在悉尼 10 月 19 日凌晨，而非射手座月亮换座的同一天。",
-      "资料注明时区与来源；占星象征和天文事实分开呈现，不将象征解读当作因果预测。"
+      "新增天象：太阳约于悉尼 10 月 23 日 20:38 AEDT 进入热带黄道天蝎座。",
+      "水星约于悉尼 10 月 24 日 18:12 AEDT，在天蝎座 20°58′–20°59′开始视逆行；同日太阳合金星约在 14:44 AEDT。",
+      "资料注明悉尼时区与可查星历来源；天文坐标事实与传统占星象征分开，不将象征解读写成因果预测。"
     ],
     "en": [
-      "Added Pluto's direct station at 02:40 UTC / 13:40 Sydney on 16 October, near 3°04′ tropical Aquarius.",
-      "First quarter falls early 19 October in Sydney, not at the Sagittarius Moon ingress.",
-      "Time zones and sources are explicit; astronomical facts are separated from symbolic astrological interpretation."
+      "Added the Sun's tropical ingress into Scorpio at about 20:38 AEDT on 23 October in Sydney.",
+      "Mercury stations retrograde near 20°58′–20°59′ Scorpio at about 18:12 AEDT on 24 October; the Sun–Venus conjunction is about 14:44 AEDT that day.",
+      "Sydney time zone and ephemeris sources are explicit; coordinate facts are separated from traditional, non-causal astrological symbolism."
     ]
   }
 } as const;

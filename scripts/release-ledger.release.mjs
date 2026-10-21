@@ -13,8 +13,8 @@ const indexHtml = await readFile(new URL("../index.html", import.meta.url), "utf
 const manifest = await readFile(new URL("../public/manifest.webmanifest", import.meta.url), "utf8");
 const agents = await readFile(new URL("../AGENTS.md", import.meta.url), "utf8");
 
-const version = stats.match(/version:\s*"(ZW-WEB-\d{4}\.\d{2}\.\d{2}-r(\d+))"/);
-const updateNumber = stats.match(/updateNumber:\s*(\d+)/);
+const version = stats.match(/"version":\s*"(ZW-WEB-\d{4}\.\d{2}\.\d{2}-r(\d+))"/);
+const updateNumber = stats.match(/"updateNumber":\s*(\d+)/);
 const reportPath = version ? `docs/change-reports/${version[1]}.md` : null;
 
 test("public footer always exposes current release and cumulative update count", () => {
@@ -29,8 +29,8 @@ test("public footer always exposes current release and cumulative update count",
 
 test("fresh static shell defaults to Traditional Chinese before hydration", () => {
   assert.match(indexHtml, /<html lang="zh-Hant">/);
-  assert.match(indexHtml, /<title>昭梧｜昭於未見，梧於有歸<\/title>/);
-  assert.match(indexHtml, /name="description" content="看見命運的節奏，選擇屬於你的道路"/);
+  assert.match(indexHtml, /<title>昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費<\/title>/);
+  assert.match(indexHtml, /name="description" content="免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。"/);
   assert.match(indexHtml, /property="og:locale" content="zh_TW"/);
   assert.match(indexHtml, /localStorage\.getItem\("zhaowu\.display-language"\)/);
   assert.match(manifest, /"lang":\s*"zh-TW"/);

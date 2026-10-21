@@ -86,15 +86,30 @@ test("corrected Uranus/Neptune signs are no longer misstated in SKY_EVENTS sourc
 });
 
 
-test("the featured Sun–North Node trine separates orbital facts from symbolic reading", () => {
+test("weekly featured event is newest while the Sun–North Node entry stays intact", () => {
   const event = SKY_EVENTS.find((item) => item.id === "sun-trine-north-node-2026-10-20");
-  assert.ok(event, "expected the 20 Oct Sydney event");
-  assert.equal(getFeaturedSkyEvent().id, event.id);
+  assert.ok(event, "expected the 20 Oct Sydney event to remain archived");
+  assert.equal(getFeaturedSkyEvent().id, "scorpio-ingress-mercury-retrograde-2026-10-23-24");
   assert.match(event.subtitle["zh-Hant"], /13:04 AEDT/);
   assert.match(event.science["zh-Hant"].join(" "), /不是行星/);
   assert.match(event.science.en.join(" "), /not a planet/);
   assert.match(event.interpretation["zh-Hant"].join(" "), /不是天體造成事件的科學結論/);
   assert.ok(event.sources.some((source) => source.url.includes("line_of_nodes")));
+});
+
+test("weekly sky feature has sourced trilingual facts and separates astronomy from astrology", () => {
+  const event = getFeaturedSkyEvent();
+  assert.equal(event.id, "scorpio-ingress-mercury-retrograde-2026-10-23-24");
+  assert.equal(event.published, "2026-10-21");
+  assert.deepEqual(event.facts.map((fact) => fact.date), ["2026-10-23", "2026-10-24", "2026-10-24"]);
+  assert.ok(event.sources.length >= 3);
+  for (const lang of ["zh-Hant", "zh-Hans", "en"]) {
+    assert.ok(event.title[lang]);
+    assert.ok(event.science[lang].length >= 3);
+    assert.ok(event.interpretation[lang].some((text) => /因果|cause-and-effect|因果/.test(text)));
+    for (const fact of event.facts) assert.ok(fact.label[lang]);
+  }
+  assert.deepEqual(event.houses, []);
 });
 
 test("today sky cards render on the /sky-events route above the deep-dive article", () => {
