@@ -7,7 +7,7 @@ const root = process.cwd();
 const lib = path.join(root, "src", "lib");
 const articleDirs = [/^life-view(?:-.+)?\.ts$/, /^life-view-long-form\/.*\.ts$/];
 
-// These six legacy SVGs are actual data diagrams or clearly identified text infographics,
+// These thirteen explicitly scoped legacy SVGs are actual data diagrams or clearly identified text infographics,
 // not supposed "original paintings". Every NEW SVG needs explicit review and approval.
 const approvedDiagrams = new Set([
   "/articles/bazi-health-five-phases.svg",
@@ -15,6 +15,14 @@ const approvedDiagrams = new Set([
   "/articles/bazi-health-timing-rings.svg",
   "/articles/bazi-health-balance.svg",
   "/images/articles/23-notes-on-mysticism.svg",
+  "/articles/cern-lhc-2026/01.svg",
+  "/articles/cern-lhc-2026/02.svg",
+  "/articles/cern-lhc-2026/03.svg",
+  "/articles/cern-lhc-2026/04.svg",
+  "/articles/cern-lhc-2026/05.svg",
+  "/articles/cern-lhc-2026/06.svg",
+  "/articles/cern-lhc-2026/07.svg",
+  "/articles/cern-lhc-2026/08.svg",
 ]);
 
 function articleFiles(directory, prefix = "") {
