@@ -6,7 +6,7 @@ The patch removes committed owner email/password hash defaults from the Node log
 
 ## Required secure configuration before release
 
-- Vercel Production: ZHAOWU_OWNER_ACCOUNT_SHA256 and ZHAOWU_OWNER_KEY_SHA256, each an exact SHA-256 hex digest supplied through server-only environment configuration. Keep the existing ZHAOWU_OWNER_BRIDGE_SECRET. No VITE_ prefix, credentials in PRs, or plaintext passwords in chat.
+- Vercel Production: ZHAOWU_OWNER_ACCOUNT_SHA256 and ZHAOWU_OWNER_KEY_SHA256, each an exact SHA-256 hex digest supplied through server-only environment configuration. Keep the existing ZHAOWU_OWNER_BRIDGE_SECRET and verify it is configured on both platforms with at least 32 characters. No VITE_ prefix, credentials in PRs, or plaintext passwords in chat.
 - Supabase project plgpxusmemnmzckbwtiv: set ZHAOWU_OWNER_KEY_SHA256 to the same new password digest before deploying the three owner Edge functions. Existing owner-data/promo/articles helpers intentionally remain independent.
 - Generate the new high-entropy password with a password manager and retain it there. Do not reuse any credential previously disclosed in chat, source or logs.
 - MUSIC / SKIN RELEASE BLOCKER: lib/owner-music-git.js decrypts lib/owner-music-ssh.json using the owner password. Rotating the password alone breaks owner music and shared-skin writes. The committed password-encrypted SSH blob also remains an offline password-checking oracle. Securely rotate the underlying SSH credential, move its material to server configuration, and retire the publicly exposed encrypted copy before declaring the incident closed. Do not decrypt or print its contents as part of a QA run.
@@ -22,3 +22,5 @@ The patch removes committed owner email/password hash defaults from the Node log
 ## Current verification
 
 Focused tests use only synthetic credentials. The original plaintext-cookie trigger is rejected; valid sealed sessions round-trip; missing/malformed runtime credentials fail closed; wrong pairs never receive a cookie; password-digest rotation revokes old sealed sessions. No real credential was tested or rotated, no customer data changed, and no deployment performed.
+
+Independent candidate review found no surviving plaintext-cookie path in the selected code. The pre-existing Edge behavior that omits bridge-secret enforcement when its configured value is short/missing remains unchanged and is a rollout configuration risk. The nearest bridge-forwarding test was updated to synthetic sealed-cookie authentication. Latest focused result: 33 passed, 0 failed, 1 real-credential test skipped.
