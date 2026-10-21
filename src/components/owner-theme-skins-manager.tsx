@@ -1,9 +1,12 @@
+import { FROST_SKIN_ID, SEASONAL_AUTO_ID, FROST_PHASES } from "@/lib/seasonal-skins";
 import { useEffect, useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import {
   ARCHIVED_SKINS,
   CURATED_SKINS,
   SKINS,
+  SEASONAL_SKINS,
+  skinById,
   useSkin,
   type SkinDef,
   type SkinFamily,
@@ -66,6 +69,7 @@ function ThemeCard({ locale, skin, active, saving, compact = false, family, onCh
           <div className="min-w-0">
             <p className="font-display text-lg leading-7">{name}</p>
             <p className="mt-1 text-sm leading-6 opacity-80">{localNote(locale, skin)}</p>
+            {skin.id === FROST_SKIN_ID && <p className="mt-1 text-sm leading-6"><span lang="zh">霜降</span> · <span lang="en">Frost’s Descent</span></p>}
           </div>
           {family ? <span className="shrink-0 rounded-full border border-current/25 px-2.5 py-1 text-[11px] opacity-75">{familyName(locale, family)}</span> : null}
         </div>
@@ -88,7 +92,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [preview, setPreview] = useState<ThemePreview | null>(null);
-  const current = SKINS.find((skin) => skin.id === id) ?? null;
+  const current = skinById(id);
   const visibleThemes = useMemo(() => CURATED_SKINS.filter((entry) => filter === "all" || entry.family === filter), [filter]);
 
   useEffect(() => {
@@ -135,6 +139,19 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
 
       {error ? <p role="alert" className="mt-3 text-sm text-cinnabar">{error}</p> : null}
       {success ? <p role="status" className="mt-3 text-sm text-wood">{success}</p> : null}
+
+      <section className="mt-5 border-y border-line py-4" data-seasonal-theme-collection>
+        <h3 className="font-display text-xl">{tr(locale, "節氣主題", "节气主题", "Seasonal themes")}</h3>
+        <p className="mt-2 text-sm leading-7">{tr(locale, "按悉尼日期輪替已上架的節氣與三候；新一套未就緒時保留上一套。選擇其他主題即可停止自動模式。", "按悉尼日期轮替已上架的节气与三候；新一套未就绪时保留上一套。选择其他主题即可停止自动模式。", "Follow the published seasonal schedule in Sydney time. Keep the last verified theme when the next is unavailable. Choose any other theme to leave automatic mode.")}</p>
+        <button type="button" disabled={saving} aria-pressed={id === SEASONAL_AUTO_ID} onClick={() => void choose(SEASONAL_AUTO_ID)} className="mt-3 min-h-11 w-full rounded-lg border border-wood px-4 py-2 text-sm">
+          {id === SEASONAL_AUTO_ID ? tr(locale, "節氣自動模式使用中", "节气自动模式使用中", "Seasonal automatic mode is live") : tr(locale, "啟用節氣自動模式", "启用节气自动模式", "Enable seasonal automatic mode")}
+        </button>
+        <p className="my-3 text-sm leading-7">{tr(locale, "霜降：10月23日／二候：10月28日／三候：11月2日，悉尼 00:01；此為網站排程，非天文交節時刻。", "霜降：10月23日／二候：10月28日／三候：11月2日，悉尼 00:01；此为网站排程，非天文交节时刻。", "2026: 23 Oct / 28 Oct / 2 Nov at 00:01 Sydney time. Website schedule, not the astronomical transition.")}</p>
+        <div className="grid gap-4 sm:grid-cols-2">{SEASONAL_SKINS.map(skin => <ThemeCard key={skin.id} locale={locale} skin={skin} active={id === skin.id} saving={saving} onChoose={(next) => void choose(next)} onPreview={setPreview} />)}</div>
+        <details className="mt-3 border-t border-line pt-2"><summary className="flex min-h-11 cursor-pointer items-center text-sm">{tr(locale, "查看三候畫作", "查看三候画作", "View the three seasonal scenes")}</summary>
+          <div className="grid gap-3 sm:grid-cols-3">{FROST_PHASES.map(phase => <button key={phase.start} type="button" onClick={() => setPreview({ src: phase.art, alt: phase.name[locale] })} className="min-h-11 text-left"><img src={phase.art} alt="" loading="lazy" className="aspect-[9/16] w-full rounded-lg object-cover" /><span className="block py-2 text-sm">{phase.name[locale]}</span></button>)}</div>
+        </details>
+      </section>
 
       <nav className="mt-5 flex gap-2 overflow-x-auto pb-1" aria-label={tr(locale, "按色系篩選", "按色系筛选", "Filter by palette")}>
         {FAMILY_FILTERS.map((family) => (

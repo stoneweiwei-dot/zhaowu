@@ -1,3 +1,10 @@
+## 2026-10-21 節氣主題實體素材與安全輪替
+
+- ACTIVE：站主明確要求把未上架的節氣圖資部署到既有後台。霜降既有原畫三張與八張分區裁切接入`solar-frost-descent`，新增獨立節氣區，不擴增精選主題卡牆。
+- ACTIVE：`solar-auto`沿用既有站主cookie／同源發布，按已驗收素材的悉尼排程日期輪替；選其他主題即可回退。缺下一套時保留上一套。非24節氣／72候全量圖資已完成的聲明。
+- SUPERSEDES：設計稿僅停留docs、不上傳binary／未接SKINS的阻塞；保留原排程、宋式框架、三語、手機可讀、手動回退要求。
+- PROTECTED：不改排盤、曆法、認證、付款、Supabase schema／Storage。十二地支報告原圖保留，不為新任務重畫。
+
 ## 2026-10-21 畫作／圖表分類與文章視覺失真修復
 
 - ACTIVE（站主最新明確指令）：昭梧文章「配圖／畫作」不得以大量文字框、數字卡、漸層山形的程式 SVG 冒充真實創作；只有明確要求資訊圖表時才用圖表。執行契約為 `AGENTS.md` 第 6 節新規、`docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 與 `docs/ARTWORK-ACCEPTANCE.md`。

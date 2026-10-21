@@ -16,7 +16,7 @@
     "test:visual": "playwright test --project=visual-regression",
     "test:visual:update": "playwright test --project=visual-regression --update-snapshots",
     "test:privacy": "node --test scripts/guest-frontstage-privacy-regression.test.mjs scripts/guest-account-access-e2e.test.mjs",
-    "test:themes": "node --test scripts/theme-skins.test.mjs",
+    "test:themes": "node --import tsx --test scripts/theme-skins.test.mjs scripts/seasonal-skins.test.mjs",
     "test:themes:browser": "playwright test -c playwright.themes.config.ts"
   },
   "dependencies": {
