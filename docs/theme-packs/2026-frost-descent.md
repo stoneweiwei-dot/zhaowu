@@ -1,5 +1,5 @@
 # 昭梧｜霜降 Frost’s Descent · 2026 宋式主題設計包（待接入）
-狀態：**設計稿／圖像已在對話中生成，GitHub binary 尚未上傳；未加入 SKINS、未套用、未部署**。
+狀態：**已接入程式與本地原畫，正式部署／啟用狀態以最新 release 證據為準。**
 範圍：只使用現有 `stoneweiwei-dot/zhaowu` → `main` → `stone-zhaowu-official`；不得創建第二正式站。
 
 ## 1. 節氣與雙語標題
@@ -59,3 +59,13 @@
 - 既有主題目錄 25 款，`owner-theme-skins-manager.tsx` 使用 `SKINS`；`publishSkin` 向 `/api/owner-data` 以站主憑證提交；伺服器另有 `SITE_SKIN_IDS` 白名單。
 - 本對話生成三張 9:16 WebP、三語 HTML 預覽與 manifest，可下載交付；**尚未將二進位圖資上傳至 GitHub**。
 - 目前沒有經過正式站 390px、三語、無溢出和手動回退驗收；因此不允許宣稱上架／部署／自動套用完成。
+
+
+## 2026-10-21 實際接入
+- 原有素材包的三張1080×1920主圖及八張分區裁切，已放入 `public/theme-skins/solar-frost-descent/`；不是本輪重新生圖。
+- `solar-frost-descent` 為第26個手動主題；獨立「節氣主題」區保留既有10套精選與15套歷史主題。
+- `solar-auto` 是同一套既有站主發布流程的自動選項，伺服器白名單同步；手動選任一其他主題即可退出，不改驗證與權限。
+- 自動模式在2026-10-23悉尼00:01前沿用` song-gallery-frostleaf`，之後依三候日期切換已發布原畫。缺下一節氣素材時保留最後已驗收皮膚，不假造24套或72張已完成。
+- 日期只是網站內容排程，並非排盤或天文交節；不改八字、付款、登入、Supabase。
+- 十二地支既有12張圖在`public/report-visuals/branches/`，由報告按實際地支選取；已保留，不重畫。
+- 任務`6acd01aa88dc819192526480f8ee71e0`已補入十二地支查缺，原二十四節氣／七十二候排程保留。

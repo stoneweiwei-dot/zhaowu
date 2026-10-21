@@ -360,3 +360,5 @@ html[data-zws-mode="dark"][data-zw-theme="night"] body .zhaowu-site-header a.zha
 
 /* Song Gallery V3: new owner-selectable light skin. No effect until published. */
 html[data-zws="song-gallery-frostleaf"] { --zws-page: #ead9c5; --zws-card: #fbf1df; --zws-ink: #382b25; --zws-soft: #6f5d52; --zws-accent: #8a4d38; --zws-line: rgba(97,75,58,.30); --zws-gold: #607f69; --zws-wash: radial-gradient(circle at 82% 8%, rgba(172,92,55,.20), transparent 42%); --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-frost-descent"] { --zws-page: #f6f1e6; --zws-card: #f2ece0; --zws-ink: #253d38; --zws-soft: #526963; --zws-accent: #375f5b; --zws-line: #c8b79c; --zws-gold: #b59a70; --zws-wash: none; --zws-on-accent: #fffaf0; }

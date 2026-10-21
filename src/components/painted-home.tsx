@@ -1,3 +1,4 @@
+import { FROST_SKIN_ID, frostEdition } from '@/lib/seasonal-skins';
 import type { CSSProperties } from 'react';
 import { useSkin, type SkinDef } from '@/lib/theme-skins';
 import { useI18n } from '@/lib/i18n';
@@ -8,7 +9,7 @@ import { CuratedVideoShelf } from '@/components/curated-video-shelf';
 type Section = 'form' | 'today' | 'quiz' | 'notes';
 /** Skins whose painting is clean enough to show at full strength behind the home title. */
 const FULL_PAINTING_HOMES = new Set([
-  'pastel-koi', 'dragon-lotus', 'lotus-boat', 'night-flute', 'day-flute', 'cloud-jade',
+  'solar-frost-descent', 'pastel-koi', 'dragon-lotus', 'lotus-boat', 'night-flute', 'day-flute', 'cloud-jade',
   'dawn-dragon', 'moon-lotus-boat', 'bamboo-falls', 'petal-immortal', 'pink-lotus-stream', 'butterfly-lotus',
 ]);
 export function homeComposition(skin: SkinDef | null): 'scroll' | 'comic' | 'koi' {
@@ -23,6 +24,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   const { locale } = useI18n();
   const t = (zh: string, hans: string, en: string) => locale === 'en' ? en : locale === 'zh-Hans' ? hans : zh;
   const layout = homeComposition(skin);
+  const seasonal = skin?.id === FROST_SKIN_ID ? frostEdition() : null;
   const dark = skin?.mode === 'dark';
   // Every skin shows ITS OWN painting; the koi painting is only the no-skin / pastel-koi default.
   const art = skin?.hero || (dark ? '/theme-skins/reference-dragon.webp' : '/theme-skins/reference-koi.webp');
@@ -50,6 +52,12 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <button className="ph-comic-cta" onClick={() => onOpen('form')}>{t('開始我的命盤','开始我的命盘','Begin my chart')} <span>›</span></button>
       <small>{t('以宋式留白，讀懂命理的文化意象。','以宋式留白，读懂命理的文化意象。','A quiet introduction to traditional imagery.')}</small>
     </section> : null}
+    {seasonal && <aside className="ph-seasonal-note" data-seasonal-note>
+      <p className="ph-seasonal-term"><span lang="zh">霜降</span><span lang="en">Frost’s Descent</span></p>
+      <p>{seasonal.name[locale]}</p>
+      <blockquote>{seasonal.quote[locale]}</blockquote>
+      <small>{t('中國傳統物候意象', '中国传统物候意象', 'Traditional Chinese seasonal imagery')}</small>
+    </aside>}
     <HomeTree t={t} onOpen={onOpen} />
     <CuratedVideoShelf placement="home" />
     <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><a href="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></a><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><a href="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></a></nav>

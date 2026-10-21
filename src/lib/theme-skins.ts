@@ -1,3 +1,4 @@
+import { FROST_SKIN_ID, SEASONAL_AUTO_ID, seasonalSkinId, frostEdition } from './seasonal-skins';
 import { useEffect, useState } from "react";
 
 /**
@@ -60,6 +61,7 @@ export const SKINS: SkinDef[] = [
   { id: "pink-lotus-stream", ref: 23, mode: "light", zh: "粉蓮雲溪", hans: "粉莲云溪", en: "Lotus over the Stream", noteZh: "溪水藍・珊瑚粉・深湖青", noteHans: "溪水蓝・珊瑚粉・深湖青", noteEn: "Stream blue, coral pink and deep teal", hero: "/theme-skins/pink-lotus-stream-art.webp", focus: "50% 40%", swatch: ["#dcecf1", "#2e7280", "#d28a9c"] },
   { id: "butterfly-lotus", ref: 24, mode: "light", zh: "蝶戀荷塘", hans: "蝶恋荷塘", en: "Butterfly & Lotus", noteZh: "白蝶荷花・霧青湖光・素雅灰綠", noteHans: "白蝶荷花・雾青湖光・素雅灰绿", noteEn: "White butterfly, lotus, misty lake grey-green", hero: "/theme-skins/butterfly-lotus-art.webp", focus: "50% 30%", swatch: ["#efece4", "#4a6a62", "#c9a3ad"] },
   { id: "song-gallery-frostleaf", ref: 25, mode: "light", zh: "霜葉照溪・宋式畫冊", hans: "霜叶照溪・宋式画册", en: "Frostleaf Brook · Song Gallery", noteZh: "秋葉赭・苔綠・溪石褐", noteHans: "秋叶赭・苔绿・溪石褐", noteEn: "Autumn rust, moss green and river-stone brown", hero: "/theme-skins/song-gallery-frostleaf-art.webp", focus: "50% 48%", swatch: ["#ead9c5", "#8a4d38", "#607f69"] },
+  { id: "solar-frost-descent", ref: 26, mode: "light", zh: "霜降・霜林歸靜", hans: "霜降・霜林归静", en: "Frost’s Descent · Quiet Autumn", noteZh: "霜青・秋赭・淡金，三候輪替", noteHans: "霜青・秋赭・淡金，三候轮替", noteEn: "Frost teal, autumn ochre and pale gold; three seasonal scenes", hero: "/theme-skins/solar-frost-descent/hero-frost-descent.webp", focus: "50% 55%", swatch: ["#f6f1e6", "#375f5b", "#b87345"] },
 ];
 
 export type SkinFamily = "soft" | "water" | "warm" | "green" | "night";
@@ -78,15 +80,18 @@ export const CURATED_SKIN_CATALOG: ReadonlyArray<{ id: string; family: SkinFamil
 
 export const CURATED_SKINS = CURATED_SKIN_CATALOG
   .map(({ id, family }) => ({ skin: SKINS.find((candidate) => candidate.id === id)!, family }));
-export const ARCHIVED_SKINS = SKINS.filter((skin) => !CURATED_SKIN_CATALOG.some((entry) => entry.id === skin.id));
+export const SEASONAL_SKINS = SKINS.filter((skin) => skin.id.startsWith("solar-"));
+export const ARCHIVED_SKINS = SKINS.filter((skin) => !skin.id.startsWith("solar-") && !CURATED_SKIN_CATALOG.some((entry) => entry.id === skin.id));
 
 export function skinById(id: string | null | undefined) {
-  return SKINS.find((s) => s.id === id) ?? null;
+  const resolved = id === SEASONAL_AUTO_ID ? seasonalSkinId() : id;
+  const skin = SKINS.find((s) => s.id === resolved) ?? null;
+  return skin?.id === FROST_SKIN_ID ? { ...skin, hero: frostEdition().art } : skin;
 }
 
 export function readSkinId(): string {
   if (typeof document === "undefined") return "";
-  return document.documentElement.getAttribute("data-zws") ?? "";
+  return document.documentElement.getAttribute("data-zws-selection") ?? document.documentElement.getAttribute("data-zws") ?? "";
 }
 
 /** Public site visual state. Local storage is migration-only, never a visitor override. */
@@ -98,12 +103,16 @@ export function applySkin(id: string, persist = false) {
   if (typeof document === "undefined") return;
   const skin = skinById(id);
   const root = document.documentElement;
+  root.setAttribute("data-zws-selection", skin ? id : "none");
   if (skin) {
     root.setAttribute("data-zws", skin.id);
+    if (skin.id === FROST_SKIN_ID) root.style.setProperty('--zws-art', `url("${skin.hero}")`);
+    else root.style.removeProperty('--zws-art');
     root.setAttribute("data-zws-mode", skin.mode);
     if (skin.mode === "dark") root.setAttribute("data-zw-theme", "night");
     else root.removeAttribute("data-zw-theme");
   } else {
+    root.style.removeProperty("--zws-art");
     root.removeAttribute("data-zws");
     root.removeAttribute("data-zws-mode");
     root.removeAttribute("data-zw-theme");
@@ -125,13 +134,13 @@ export function applySkin(id: string, persist = false) {
 export const PUBLISHED_SKIN_CACHE_KEY = "zhaowu.skin.published.v1";
 
 function rememberPublishedSkin(id: string) {
-  try { localStorage.setItem(PUBLISHED_SKIN_CACHE_KEY, id); } catch { /* unavailable storage */ }
+  try { localStorage.setItem(PUBLISHED_SKIN_CACHE_KEY, id); localStorage.setItem("zhaowu.skin.published.resolved.v1", skinById(id)?.id ?? "none"); } catch { /* unavailable storage */ }
 }
 
 function cachedPublishedSkin(): string | null {
   try {
     const cached = localStorage.getItem(PUBLISHED_SKIN_CACHE_KEY);
-    return cached === "none" ? "none" : skinById(cached)?.id ?? null;
+    return cached === "none" || cached === SEASONAL_AUTO_ID ? cached : skinById(cached)?.id ?? null;
   } catch { return null; }
 }
 
@@ -176,7 +185,7 @@ export async function refreshSharedSkin(): Promise<string | null> {
 
 /** Server requires a valid owner cookie and same-origin POST. Never silently fall back to local-only styling. */
 export async function publishSkin(id: string): Promise<void> {
-  const chosen = id === "" || id === "none" ? "none" : skinById(id)?.id;
+  const chosen = id === "" || id === "none" ? "none" : id === SEASONAL_AUTO_ID ? SEASONAL_AUTO_ID : skinById(id)?.id;
   if (!chosen) throw new Error("未知主題，不能發佈。");
   const token = ++syncSerial;
   pendingPublishes += 1;
@@ -188,7 +197,7 @@ export async function publishSkin(id: string): Promise<void> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "site-skin.publish", skin: chosen }),
     });
-    if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : "全站主題尚未儲存，請稍後重試。");
+    if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : `全站主題尚未儲存（HTTP ${response.status}），請稍後重試。`);
     const data = await response.json() as { ok?: boolean; skin?: string };
     if (!data.ok || data.skin !== chosen) throw new Error("無法確認全站主題已更新。");
     if (token === syncSerial) {
@@ -209,9 +218,11 @@ export function hydrateSkin() {
 }
 
 export function useSkin() {
-  const [id, setId] = useState<string>(readSkinId);
+  const [, render] = useState(0);
+  const id = readSkinId();
   useEffect(() => {
-    const sync = () => setId(readSkinId());
+    // The same selected id can now resolve to a new phase's artwork and copy.
+    const sync = () => render(value => value + 1);
     window.addEventListener(SKIN_EVENT, sync);
     return () => window.removeEventListener(SKIN_EVENT, sync);
   }, []);

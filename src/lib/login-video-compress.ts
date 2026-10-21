@@ -19,7 +19,7 @@ export type LoginVideoCompressResult = {
   sourceBytes: number;
   outputBytes: number;
   /** Set when compression was skipped or failed and the original is uploaded unchanged. */
-  skippedReason?: "small-enough" | "too-large" | "failed";
+  skippedReason?: "small-enough" | "too-large" | "failed" | "mobile-direct";
 };
 
 function baseName(file: File) {
@@ -41,6 +41,11 @@ export async function compressLoginVideo(
   const unchanged = (skippedReason: LoginVideoCompressResult["skippedReason"]): LoginVideoCompressResult => ({
     file: source, compressed: false, sourceBytes: source.size, outputBytes: source.size, skippedReason,
   });
+  // ffmpeg.wasm can stall for four minutes or exhaust iPhone Safari memory.
+  // Keep the original media and use the signed resumable path on iOS.
+  if (typeof navigator !== "undefined" && /iPhone|iPad|iPod|Macintosh.*Mobile/i.test(navigator.userAgent)) {
+    return unchanged("mobile-direct");
+  }
   if (source.size > MAX_SOURCE_BYTES) return unchanged("too-large");
   if (!shouldCompressLoginVideo(source, durationSeconds, playable)) return unchanged("small-enough");
 

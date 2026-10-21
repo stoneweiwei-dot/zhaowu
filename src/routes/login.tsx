@@ -65,7 +65,7 @@ function LoginPage() {
     >
       <img
         className="stone-login-stage-media"
-        src={skin?.hero ?? LOGIN_BACKDROP}
+        src={skin?.id === "solar-frost-descent" ? "/theme-skins/solar-frost-descent/login-wash.webp" : skin?.hero ?? LOGIN_BACKDROP}
         alt=""
         aria-hidden="true"
         decoding="async"

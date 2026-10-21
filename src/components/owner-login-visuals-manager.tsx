@@ -113,7 +113,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     common: tr(locale, "通用版", "通用版", "Common"),
     builtIn: tr(locale, "內置素材", "内置素材", "Built-in"),
     videoRequired: tr(locale, "影片素材接受 MP4、MOV、M4V、WebM 等格式；公開播放能力依訪客瀏覽器而定。", "视频素材支持 MP4、MOV、M4V、WebM 等格式；能否播放取决于访客浏览器。", "The library accepts video files; browser playback depends on the format. MP4 is preferred."),
-    clipped: tr(locale, `已上傳；單檔最長保留 ${LOGIN_VIDEO_MAX_SECONDS} 秒，其餘片段不會播出。`, `已上传；单个视频最多保留 ${LOGIN_VIDEO_MAX_SECONDS} 秒，其余片段不会播放。`, `Uploaded. Each film is trimmed to at most ${LOGIN_VIDEO_MAX_SECONDS} seconds; any remainder is not retained.`),
+    clipped: tr(locale, `已上傳原始影片，未進行裁切。`, `已上传原始视频，未进行裁切。`, `The original film was uploaded without trimming.`),
     notPlayable: tr(locale, "已上傳；部分瀏覽器可能無法播放此格式。觀眾可另行開啟原始影片，建議改用 MP4。", "已上传；部分浏览器可能无法播放此格式。访客可另行打开原始视频，建议改用 MP4。", "Uploaded. Some browsers may not play this format. Visitors can open the original file. MP4 is recommended."),
     rename: tr(locale, "改名", "改名", "Rename"),
     save: tr(locale, "儲存", "保存", "Save"),
@@ -130,6 +130,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       return tr(locale, `此影片壓縮後仍太大，超過儲存空間單檔上限（Supabase 回報 413）。請先用手機「剪輯」裁成 ${LOGIN_VIDEO_MAX_SECONDS} 秒內、或用較低畫質重新匯出後再上傳。`, `此视频压缩后仍太大，超过存储空间单文件上限（Supabase 返回 413）。请先用手机「剪辑」裁成 ${LOGIN_VIDEO_MAX_SECONDS} 秒内、或用较低画质重新导出后再上传。`, `This video is still too large after compression and exceeds the storage per-file limit (Supabase returned 413). Trim it to ${LOGIN_VIDEO_MAX_SECONDS} seconds or export at lower quality, then upload again.`);
     },
     compressFailed: tr(locale, "此影片無法在瀏覽器內壓縮，已直接上傳原檔。", "此视频无法在浏览器内压缩，已直接上传原文件。", "This video could not be compressed in the browser; the original was uploaded."),
+    mobileDirect: tr(locale, "iPhone／iPad 已略過耗時壓縮，直接傳送原始影片。", "iPhone／iPad 已跳过耗时压缩，直接传送原始视频。", "iPhone/iPad uploads the original video without slow on-device compression."),
     failed: tr(locale, "影片素材操作失敗。", "视频素材操作失败。", "Film library update failed."),
     empty: tr(locale, "尚無自訂影片；已啟用作品會按主題出現在網站影像展廊。", "暂无自定义视频；已启用作品会按主题出现在网站影像展廊。", "No custom films yet. Enabled uploads appear in the public film collections."),
   }), [locale]);
@@ -175,6 +176,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         setMessage(null);
         if (result.compressed) notes.add(copy.compressed(result.sourceBytes, result.outputBytes));
         else if (result.skippedReason === "failed") notes.add(copy.compressFailed);
+        else if (result.skippedReason === "mobile-direct") notes.add(copy.mobileDirect);
         else if (duration === null || !playable) notes.add(copy.notPlayable);
         else if (duration > LOGIN_VIDEO_MAX_SECONDS) notes.add(copy.clipped);
         await uploadGalleryAsset(session, result.file, {
@@ -182,7 +184,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
           title: file.name,
           tags: ["loading", "login-background", "login-common", "owner-upload"],
           primary: false,
-        });
+        }, (percent) => setMessage(tr(locale, `上傳中 ${percent}%`, `上传中 ${percent}%`, `Uploading ${percent}%`)));
         uploadedCount += 1;
       }
       if (notes.size) setMessage([...notes].join(" "));

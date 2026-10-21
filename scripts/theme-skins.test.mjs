@@ -47,7 +47,7 @@ test("every skin has tokens, a full-set definition and crisp art on disk", () =>
     assert.ok(existsSync(`public${hero}`), `art file for ${id}: ${hero}`);
     // Prior 24 themes retain archived homepage previews; new themes use the live
     // DOM editorial composition rendered by OwnerThemeSkinsManager.
-    if (id !== "song-gallery-frostleaf") assert.ok(existsSync(`public/theme-previews/${id}.jpg`), `actual homepage preview for ${id}`);
+    if (!id.startsWith("solar-") && id !== "song-gallery-frostleaf") assert.ok(existsSync(`public/theme-previews/${id}.jpg`), `actual homepage preview for ${id}`);
     assert.ok(full.includes(`html[data-zws="${id}"]`), `full-set rules for ${id}`);
   }
 });
@@ -76,7 +76,7 @@ test("site default uses the owner-selected pastel koi skin", () => {
 });
 
 test('every catalog theme is accepted by the shared server publisher, without extra unknown ids', () => {
-  assert.deepEqual([...SITE_SKIN_IDS].sort(), ['none', ...ids.map(s => s.id)].sort());
+  assert.deepEqual([...SITE_SKIN_IDS].sort(), ['none', 'solar-auto', ...ids.map(s => s.id)].sort());
   for (const { id } of ids) assert.equal(validSiteSkin(id), id, `${id}: server publisher must accept the catalog theme`);
   assert.equal(validSiteSkin('unregistered-theme'), null);
 });
@@ -214,7 +214,7 @@ test("all selectable skins share the Song editorial shell without overwriting th
   const homeCss = readFileSync("src/painted-home.css", "utf8");
   const skinCss = readFileSync("src/theme-skins-full.css", "utf8");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.equal(ids.length, 25);
+  assert.equal(ids.length, 26);
   assert.match(home, /return skin \? 'scroll' : 'koi'/);
   assert.match(home, /const art = skin\?\.hero/);
   assert.match(homeCss, /SONG GALLERY EDITION/);

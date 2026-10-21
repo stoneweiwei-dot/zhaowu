@@ -46,6 +46,7 @@
           var k = "pastel-koi";
           // Last theme the server confirmed (see PUBLISHED_SKIN_CACHE_KEY); avoids the koi flash.
           try { var c = localStorage.getItem("zhaowu.skin.published.v1"); if (c && /^[a-z][a-z0-9-]+$/.test(c)) k = c; } catch (e2) {}
+          if (["solar-auto"].includes(k)) k = localStorage.getItem("zhaowu.skin.published.resolved.v1") || "song-gallery-frostleaf";
           var r = document.documentElement;
           if (k === "none") return;
           var dark = k === "night-flute" || k === "night-palace" || k === "verdant-rain";

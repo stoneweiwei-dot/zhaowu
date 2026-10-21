@@ -140,12 +140,12 @@ Physiognomy cannot decide your destiny. Long-term patterns of mind and life can,
   },
   illustrations: [
     {
-      src: "/articles/face-mind-cultivation-2026-09-14.svg",
+      src: "/hero-gallery/dragon-scholar.webp",
       afterParagraph: 5,
       alt: {
-        "zh-Hant": "同一名男子由緊繃走向安定的宋式水墨意象，象徵心境、身體與環境的長期回饋",
-        "zh-Hans": "同一名男子由紧绷走向安定的宋式水墨意象，象征心境、身体与环境的长期反馈",
-        en: "Song-inspired ink illustration of one man moving from tension toward calm, symbolising long-term feedback among mind, body and environment",
+        "zh-Hant": "昭梧既有宋式人物山水畫，用於修心文章的意境配圖；並非心理狀態變化的科學影像",
+        "zh-Hans": "昭梧既有宋式人物山水画，用于修心文章的意境配图；并非心理状态变化的科学影像",
+        en: "Existing Song-inspired character landscape used as a symbolic companion to the essay, not scientific imagery of mental change",
       },
     },
   ],

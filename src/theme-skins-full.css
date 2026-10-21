@@ -1374,3 +1374,23 @@ html[data-zws="song-gallery-frostleaf"] {
  --zws-rule: #9c8b6b; --zws-rule-h: 1px; --zws-rule-w: 36px;
  --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line);
 }
+
+/* Verified 2026 seasonal pack, using the existing full-site skin engine. */
+html[data-zws="solar-frost-descent"] {
+ --zws-art: url(/theme-skins/solar-frost-descent/hero-frost-descent.webp); --zws-focus: 50% 55%; --zws-frame: #375f5b; --zws-veil: 84%;
+ --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif;
+ --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+ --zws-card-orn: none; --zws-card-frame: none; --zws-card-blur: none;
+ --zws-hw: 500; --zws-shadow: none; --zws-btn-bg: #375f5b; --zws-btn-radius: 7px; --zws-pill-radius: 7px;
+ --zws-rule: #b59a70; --zws-rule-h: 1px; --zws-rule-w: 36px;
+ --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line);
+}
+html[data-zws="solar-frost-descent"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { background: linear-gradient(90deg,rgba(246,241,230,.94),rgba(246,241,230,.30)), url(/theme-skins/solar-frost-descent/today-guide.webp) center/cover !important; }
+html[data-zws="solar-frost-descent"] body .stone-login-screen { --login-art: url(/theme-skins/solar-frost-descent/login-wash.webp); }
+html[data-zws="solar-frost-descent"] body .zhaowu-specialist-hero { background-image: linear-gradient(90deg,rgba(246,241,230,.96),rgba(246,241,230,.86)), url(/theme-skins/solar-frost-descent/deep-reading.webp) !important; }
+html[data-zws="solar-frost-descent"] body :is(.zhaowu-report-header,.zhaowu-visual-book-head) { background-image: linear-gradient(90deg,rgba(246,241,230,.94),rgba(246,241,230,.84)), url(/theme-skins/solar-frost-descent/report-cover.webp) !important; }
+html[data-zws="solar-frost-descent"] body .history-hero { background-image: linear-gradient(90deg,rgba(246,241,230,.96),rgba(246,241,230,.88)), url(/theme-skins/solar-frost-descent/account-wash.webp) !important; }
+html[data-zws="solar-frost-descent"] body .history-empty { background-image: linear-gradient(rgba(246,241,230,.95),rgba(246,241,230,.95)), url(/theme-skins/solar-frost-descent/empty-state.webp) !important; }
+
+html[data-zws="solar-frost-descent"] body .zhaowu-today-guide__spirit-paper { background-image: linear-gradient(rgba(246,241,230,.92),rgba(246,241,230,.92)), url(/theme-skins/solar-frost-descent/spirit-slip.webp) !important; background-size:cover !important; }
+html[data-zws="solar-frost-descent"] body .zw-home-inline-loading { background: linear-gradient(90deg,rgba(246,241,230,.96),rgba(246,241,230,.90)), url(/theme-skins/solar-frost-descent/loading-state.webp) center/cover; }
