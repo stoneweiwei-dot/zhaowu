@@ -21,43 +21,43 @@ export const ABHIDHAMMA_THIRTY_ONE_PLANES: LifeViewArticle = {
   },
   "illustrations": [
     {
-      "src": "/articles/abhidhamma-31-realms-overview.svg",
+      "src": "/art/zhaowu-lotus-ascend-v1.webp",
       "afterParagraph": 2,
       "display": "wide",
       "alt": {
-        "zh-Hant": "三界三十一界總覽：欲界十一、色界十六、無色界四",
-        "zh-Hans": "三界三十一界总览：欲界十一、色界十六、无色界四",
-        "en": "Overview: 11 sense-sphere, 16 fine-material, 4 immaterial planes"
+        "zh-Hant": "昭梧宋式蓮境畫作，作為三界觀的視覺引子；非教理分層圖表。",
+        "zh-Hans": "昭梧宋式莲境画作，作为三界观的视觉引子；非教理分层图表。",
+        "en": "Existing Song-inspired lotus artwork serving as a visual introduction, not a doctrinal diagram."
       }
     },
     {
-      "src": "/articles/abhidhamma-31-realms-desire.svg",
+      "src": "/hero-gallery/river-rain-boat.webp",
       "afterParagraph": 4,
       "display": "wide",
       "alt": {
-        "zh-Hant": "欲界十一境：六欲天、人間與四惡趣",
-        "zh-Hans": "欲界十一境：六欲天、人间与四恶趣",
-        "en": "Eleven sense-sphere planes: six heavens, humans and four woeful planes"
+        "zh-Hant": "昭梧江城舟行宋式畫作，借人間景象映照欲界；非十一境結構圖。",
+        "zh-Hans": "昭梧江城舟行宋式画作，借人间景象映照欲界；非十一境结构图。",
+        "en": "Existing river-and-boat artwork evoking human experience; not an eleven-plane diagram."
       }
     },
     {
-      "src": "/articles/abhidhamma-31-realms-form.svg",
+      "src": "/hero-gallery/temple-bamboo-rain.webp",
       "afterParagraph": 6,
       "display": "wide",
       "alt": {
-        "zh-Hant": "色界十六境：初禪三、二禪三、三禪三、四禪七",
-        "zh-Hans": "色界十六境：初禅三、二禅三、三禅三、四禅七",
-        "en": "Sixteen fine-material planes divided into groups of 3, 3, 3 and 7"
+        "zh-Hant": "昭梧寺院山水宋式畫作，作為色界禪修意境襯圖；非十六境分層圖。",
+        "zh-Hans": "昭梧寺院山水宋式画作，作为色界禅修意境衬图；非十六境分层图。",
+        "en": "Existing temple landscape used as meditative atmosphere, not a sixteen-plane classification chart."
       }
     },
     {
-      "src": "/articles/abhidhamma-31-realms-formless.svg",
+      "src": "/hero-gallery/misty-mountains-lake.webp",
       "afterParagraph": 8,
       "display": "wide",
       "alt": {
-        "zh-Hant": "無色界四境：空無邊、識無邊、無所有、非想非非想",
-        "zh-Hans": "无色界四境：空无边、识无边、无所有、非想非非想",
-        "en": "Four immaterial planes; none is liberation"
+        "zh-Hant": "昭梧空濛山水宋式畫作，借寂靜景象提示無色定；非無色界實景。",
+        "zh-Hans": "昭梧空蒙山水宋式画作，借寂静景象提示无色定；非无色界实景。",
+        "en": "Existing misty landscape suggesting contemplative stillness, not a literal depiction of immaterial planes."
       }
     }
   ]
