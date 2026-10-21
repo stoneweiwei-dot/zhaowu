@@ -25,7 +25,7 @@
 | 深度解讀、命書、登入、帳戶、靈籤 | 同一套淡彩背景、細金線、局部插畫裁切 | 保留連續紙面 |
 | Loading／空狀態 | CSS 細線和輕量 SVG（若經 QA） | 不烘焙文字 |
 
-二進位 WebP 需經可驗證的上傳途徑放入 repo，確保 200/尺寸/色彩空間與許可，不能以本地設計包或圖片工具輸出冒充正式站資產。
+本次已從同一組原創宋式畫作另行裁切 8 張分區 WebP：`today-guide.webp`、`deep-reading.webp`、`report-cover.webp`、`login-wash.webp`、`account-wash.webp`、`spirit-slip.webp`、`loading-state.webp`、`empty-state.webp`；它們是分區裁切，不是 8 張獨立生圖。\n\n二進位 WebP 需經可驗證的上傳途徑放入 repo，確保 200/尺寸/色彩空間與許可，不能以本地設計包或圖片工具輸出冒充正式站資產。
 
 ## 4. 全站設計 token
 - 宣紙底：`#F6F1E6`
