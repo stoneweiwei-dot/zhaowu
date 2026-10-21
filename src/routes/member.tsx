@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { validateMemberForm, type MemberMode } from "@/lib/auth/member-form";
 import {
   loginVisitor,
   logoutVisitor,
@@ -14,7 +15,7 @@ import {
 
 export const Route = createFileRoute("/member")({ component: MemberPage });
 
-type Mode = "login" | "signup" | "forgot" | "reset";
+type Mode = MemberMode;
 
 function MemberPage() {
   const { locale } = useI18n();
@@ -28,6 +29,9 @@ function MemberPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
 
   useEffect(() => {
     void startVisitorPasswordRecovery()
@@ -43,15 +47,17 @@ function MemberPage() {
 
   const errorText: Record<string, string> = {
     INVALID_EMAIL: tx("Email 格式不正確。", "Email 格式不正确。", "That email address looks invalid."),
+    PASSWORD_MISMATCH: tx("兩次輸入的密碼不一致。", "两次输入的密码不一致。", "The passwords do not match."),
     INVALID_PASSWORD: tx("密碼需要 8 到 72 個字元。", "密码需要 8 到 72 个字符。", "Password must be 8 to 72 characters."),
     EMAIL_EXISTS: tx("這個 Email 已註冊，請直接登入。", "这个 Email 已注册，请直接登录。", "This email is already registered. Please sign in."),
     RATE_LIMITED: tx("嘗試次數太多，請一小時後再試。", "尝试次数太多，请一小时后再试。", "Too many attempts. Please try again in an hour."),
     BAD_CREDENTIALS: tx("Email 或密碼不正確。", "Email 或密码不正确。", "Incorrect email or password."),
-    NETWORK: tx("連線失敗，請檢查網路後再試。", "连接失败，请检查网络后再试。", "Connection failed. Check your network and try again."),
+    NETWORK: tx("連線失敗或逾時，請檢查網路後再試。", "连接失败或超时，请检查网络后再试。", "Connection failed or timed out. Check your network and try again."),
     FAILED: tx("操作失敗，請稍後再試。", "操作失败，请稍后再试。", "Something went wrong. Please try again."),
   };
 
   function changeMode(next: Mode) {
+    if (busy) return;
     setMode(next);
     setError("");
     setNotice("");
@@ -61,13 +67,15 @@ function MemberPage() {
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
+    if (busy) return;
     setError("");
     setNotice("");
     const cleanEmail = email.trim().toLowerCase();
+    const validation = validateMemberForm(mode, cleanEmail, password, confirmPassword);
+    if (validation) { setError(errorText[validation]); return; }
     setBusy(true);
     try {
       if (mode === "forgot") {
-        if (!cleanEmail) { setError(errorText.INVALID_EMAIL); return; }
         await requestVisitorPasswordReset(cleanEmail);
         setNotice(tx(
           "如果這個信箱已註冊，重設連結就會寄出。請查看收件匣與垃圾郵件。",
@@ -76,12 +84,7 @@ function MemberPage() {
         ));
         return;
       }
-      if (password.length < 8 || password.length > 72) { setError(errorText.INVALID_PASSWORD); return; }
       if (mode === "reset") {
-        if (password !== confirmPassword) {
-          setError(tx("兩次輸入的密碼不一致。", "两次输入的密码不一致。", "The passwords do not match."));
-          return;
-        }
         await updateVisitorPassword(password);
         setPassword("");
         setConfirmPassword("");
@@ -120,6 +123,8 @@ function MemberPage() {
         <p className="mt-3 text-sm leading-7 text-ink-soft">
           {tx("不登入也能使用目前所有功能。帳號用來之後跨裝置保存報告與購買紀錄，註冊不需要收驗證信。", "不登录也能使用目前所有功能。账号用来之后跨设备保存报告与购买记录，注册不需要收验证邮件。", "Everything works without signing in. An account is for keeping reports and purchases across devices later. No confirmation email is needed.")}
         </p>
+        {error ? <p ref={errorRef} id="member-form-error" role="alert" tabIndex={-1} className="mt-4 rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm text-cinnabar-deep">{error}</p> : null}
+        {busy ? <p role="status" aria-live="polite" className="mt-4 text-sm text-ink-soft">{tx("處理中…", "处理中…", "Working…")}</p> : null}
         {notice ? <p role="status" className="mt-4 rounded-lg border border-line bg-paper/60 px-4 py-3 text-sm leading-6 text-ink-soft">{notice}</p> : null}
 
         {pending && mode !== "forgot" && mode !== "reset" ? <div className="mt-6 h-24 animate-pulse rounded-lg bg-paper-deep" /> : visitor && mode !== "reset" && mode !== "forgot" ? (
@@ -138,13 +143,13 @@ function MemberPage() {
             {mode === "login" || mode === "signup" ? (
               <div className="mt-6 grid grid-cols-2 gap-1 rounded-full border border-line bg-paper/60 p-1" role="tablist">
                 {(["login", "signup"] as const).map((value) => (
-                  <button key={value} type="button" role="tab" aria-selected={mode === value} onClick={() => changeMode(value)} className={`min-h-11 rounded-full text-sm font-medium ${mode === value ? "bg-wood text-cream" : "text-ink-soft"}`}>
+                  <button key={value} type="button" role="tab" aria-selected={mode === value} disabled={busy} onClick={() => changeMode(value)} className={`min-h-11 rounded-full text-sm font-medium ${mode === value ? "bg-wood text-cream" : "text-ink-soft"}`}>
                     {value === "login" ? tx("登入", "登录", "Sign in") : tx("註冊", "注册", "Sign up")}
                   </button>
                 ))}
               </div>
             ) : null}
-            <form onSubmit={onSubmit} className="mt-5 space-y-4">
+            <form noValidate aria-busy={busy} onSubmit={onSubmit} className="mt-5 space-y-4">
               {mode === "signup" ? (
                 <label className="block text-sm"><span>{tx("暱稱（選填）", "昵称（选填）", "Nickname (optional)")}</span>
                   <input className={field} value={name} maxLength={40} autoComplete="nickname" onChange={(e) => setName(e.target.value)} />
@@ -165,14 +170,13 @@ function MemberPage() {
                   <input className={field} type="password" autoComplete="new-password" required minLength={8} maxLength={72} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                 </label>
               ) : null}
-              {error ? <p role="alert" className="rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm text-cinnabar-deep">{error}</p> : null}
               <button type="submit" disabled={busy} className="min-h-12 w-full rounded-full bg-cinnabar px-5 text-base font-medium text-cream disabled:opacity-50">
                 {busy ? tx("處理中…", "处理中…", "Working…") : mode === "login" ? tx("登入", "登录", "Sign in") : mode === "signup" ? tx("建立帳號並登入", "创建账号并登录", "Create account and sign in") : mode === "reset" ? tx("更新密碼", "更新密码", "Update password") : tx("寄送重設連結", "发送重置链接", "Send reset link")}
               </button>
             </form>
             <p className="mt-4 text-xs leading-6 text-ink-mute">
-              {mode === "login" ? <button type="button" className="underline" onClick={() => changeMode("forgot")}>{tx("忘記密碼？", "忘记密码？", "Forgot password?")}</button> : null}
-              {mode === "forgot" || mode === "reset" ? <button type="button" className="underline" onClick={() => changeMode("login")}>{tx("返回登入", "返回登录", "Back to sign in")}</button> : null}
+              {mode === "login" ? <button type="button" disabled={busy} className="underline" onClick={() => changeMode("forgot")}>{tx("忘記密碼？", "忘记密码？", "Forgot password?")}</button> : null}
+              {mode === "forgot" || mode === "reset" ? <button type="button" disabled={busy} className="underline" onClick={() => changeMode("login")}>{tx("返回登入", "返回登录", "Back to sign in")}</button> : null}
               {mode === "signup" ? tx("註冊後可用信箱重設密碼。", "注册后可用邮箱重置密码。", "You can reset your password by email after signing up.") : null}
             </p>
           </>
