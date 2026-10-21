@@ -58,6 +58,22 @@ test("full set paints every page, cards, type and almanac from the skin", () => 
   const main = readFileSync("src/main.tsx", "utf8");
   assert.ok(main.indexOf("theme-skins.css") < main.indexOf("theme-skins-full.css"));
 });
+test("a selected theme drives the full page environment, icon palette and typography", () => {
+  const home = readFileSync("src/components/painted-home.tsx", "utf8");
+  const painted = readFileSync("src/painted-home.css", "utf8");
+  assert.match(home, /'--ph-highlight': skin\?\.swatch\[2\]/);
+  assert.match(painted, /var\(--ph-art\) var\(--zws-focus/);
+  assert.match(painted, /--zw-icon-pine:\s*var\(--ph-accent\)/);
+  assert.match(painted, /font-family:\s*var\(--zws-font-d/);
+  assert.match(painted, /#root:has\(\.zw-painted-home\)\s*\{\s*background:\s*transparent/);
+  assert.match(full, /\.zhaowu-home-sheet-shell\s*\{[\s\S]*?background-color:\s*transparent/);
+});
+test("empty report history presents one clear chart path without a quiz detour", () => {
+  const history = readFileSync("src/routes/history.tsx", "utf8");
+  assert.match(history, /<BrandIcon name="reports" size="lg" \/>/);
+  assert.match(history, /<div><a href="\/#birth-form">\{copy\.createFirst\}<\/a><\/div>/);
+  assert.doesNotMatch(history, /<Link to="\/fun-tests">\{kindLabel\("fun-five-element"/);
+});
 test("pre-paint script dark list matches registry", () => {
   const dark = ids.filter((s) => s.mode === "dark").map((s) => s.id).sort();
   const inHtml = [...html.matchAll(/k === "([a-z-]+)"/g)].map((m) => m[1]).filter((x) => x !== "none").sort();

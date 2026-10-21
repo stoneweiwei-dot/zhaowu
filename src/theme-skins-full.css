@@ -1251,8 +1251,9 @@ html[data-zws] {
   --zws-rule-w: 36px;
   --zws-rule: linear-gradient(90deg, var(--zws-gold), transparent);
   --zws-card-border: 1px solid var(--zws-line);
-  --zws-font-d: var(--zw-font-heading);
-  --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+  --zw-icon-pine: var(--zws-accent);
+  --zw-icon-gold: var(--zws-gold);
+  --zw-icon-seal: color-mix(in srgb, var(--zws-gold) 62%, var(--zws-accent));
 }
 html[data-zws]:not([data-zws-mode="dark"]) {
   --zws-shadow: none;
@@ -1274,13 +1275,17 @@ html[data-zws] body:has(.zhaowu-home-sheet-shell),
 html[data-zws] body:has(.zhaowu-has-wallpaper) {
   background-image:
     linear-gradient(180deg,
-      color-mix(in srgb, var(--zws-page) 74%, transparent),
-      color-mix(in srgb, var(--zws-page) 91%, transparent) 35%,
-      var(--zws-page) 83%),
+      color-mix(in srgb, var(--zws-page) 46%, transparent),
+      color-mix(in srgb, var(--zws-page) 78%, transparent) 42%,
+      color-mix(in srgb, var(--zws-page) 94%, transparent) 100%),
     var(--zws-art) !important;
   background-size: 100% 100%, cover !important;
   background-position: center, var(--zws-focus, 50% 40%) !important;
   box-shadow: none !important;
+}
+html[data-zws] body .zhaowu-home-sheet-shell {
+  background-color: transparent !important;
+  background-image: none !important;
 }
 html[data-zws][data-zws][data-zws][data-zws] body :is(
   .seal-border, .zhaowu-result-card, .zhaowu-customer-record,
@@ -1289,13 +1294,63 @@ html[data-zws][data-zws][data-zws][data-zws] body :is(
   main article.rounded-xl, main section.rounded-2xl,
   main a.rounded-2xl.border, main details.rounded-xl
 ):not(.zw-hero-card) {
-  background: var(--zws-card) !important;
+  background:
+    linear-gradient(165deg,
+      color-mix(in srgb, var(--zws-card) 96%, var(--zws-gold) 4%),
+      var(--zws-card) 48%),
+    var(--zws-card) !important;
   border: 1px solid var(--zws-line) !important;
+  border-top-color: color-mix(in srgb, var(--zws-gold) 48%, var(--zws-line)) !important;
   outline: none !important;
   box-shadow: none !important;
   border-radius: 8px !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+html[data-zws] body .history-hero {
+  background-image:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--zws-card) 97%, transparent) 0 58%,
+      color-mix(in srgb, var(--zws-card) 76%, transparent)),
+    var(--zws-art) !important;
+  background-position: center, var(--zws-focus, 50% 40%) !important;
+  background-size: 100% 100%, cover !important;
+}
+html[data-zws] body .history-empty {
+  background:
+    radial-gradient(circle at 50% 0, color-mix(in srgb, var(--zws-gold) 10%, transparent), transparent 46%),
+    var(--zws-card) !important;
+  border-radius: 16px !important;
+  padding: 34px 20px !important;
+}
+html[data-zws] body .history-empty > .zw-brand-icon {
+  display: block;
+  width: 62px !important;
+  height: 62px !important;
+  margin: 0 auto;
+}
+html[data-zws] body .history-empty h2 {
+  margin-top: 18px;
+  font-size: clamp(28px, 7vw, 38px);
+  font-weight: 500;
+  line-height: 1.4;
+}
+html[data-zws] body .history-empty > p {
+  max-width: 32rem;
+  margin: 10px auto 0;
+  font-size: 14px;
+  line-height: 1.8;
+}
+html[data-zws] body .history-empty > div {
+  grid-template-columns: minmax(0, 320px);
+  justify-content: center;
+  margin-top: 24px;
+}
+html[data-zws] body .history-empty a {
+  background: var(--zws-action-bg) !important;
+  color: var(--zws-on-accent) !important;
+  border-color: var(--zws-action-bg) !important;
+  border-radius: 7px !important;
 }
 /* Continuous paper report instead of shiny disconnected UI tiles. */
 html[data-zws] body :is(

@@ -32,6 +32,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     '--ph-art': `url("${art}")`, '--ph-paper': skin?.swatch[0] || '#f7efdf',
     '--ph-ink': dark ? '#f8eace' : '#203f36', '--ph-muted': dark ? '#dfdacb' : '#595447',
     '--ph-accent': dark ? '#e1bd7d' : skin?.swatch[1] || '#557f79',
+    '--ph-highlight': skin?.swatch[2] || '#c7a468',
     '--ph-on-accent': dark ? '#142b32' : '#fff9e9',
   } as CSSProperties;
   return <section className="zw-painted-home" data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id)} data-tone={dark ? 'dark' : 'light'} data-title-veil={layout === 'koi' && Boolean(skin) && skin?.id !== 'pastel-koi'} style={style}>
