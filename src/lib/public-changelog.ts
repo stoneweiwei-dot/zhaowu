@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-21-owner-auth-runtime-config",
+    date: "2026-10-21",
+    zhHant: { title: "管理登入安全加固", summary: "管理登入憑證改由伺服器設定提供，統一加密登入狀態與失效檢查；一般訪客、命盤與付款流程不變。" },
+    zhHans: { title: "管理登录安全加固", summary: "管理登录凭证改由服务器配置提供，统一加密登录状态与失效检查；普通访客、命盘与付款流程不变。" },
+    en: { title: "Admin sign-in security hardening", summary: "Admin credentials move to server configuration with consistent encrypted-session validation. Visitor, chart and payment flows are unchanged." },
+  },
+  {
     id: "2026-10-20-guide-member-login-wording",
     date: "2026-10-20",
     zhHant: { title: "導覽登入指向會員頁，更新記錄與說明用詞調整", summary: "向網站導覽詢問登入或註冊時，現在會指向會員登入頁；更新記錄、紫微環境文章、八字筆記與付費報告說明中的後台用語改為更中性的描述。功能、命盤計算與付款流程不變。" },

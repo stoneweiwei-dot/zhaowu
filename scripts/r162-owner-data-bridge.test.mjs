@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { authorizeBridgeHeaders } from "../supabase/functions/zhaowu-owner-data/security.mjs";
 import ownerDataHandler from "../api/owner-data.js";
+import { OWNER_COOKIE, ownerCookieValue } from "../lib/owner-session-cookie.js";
 
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
@@ -59,9 +60,13 @@ test("uploads are bound to signed tickets before database finalization", async (
   assert.match(security, /UPLOADED_OBJECT_MIME_MISMATCH/);
 });
 
-const ownerTestSecret = process.env.ZHAOWU_OWNER_TEST_SECRET ?? "";
+const ownerTestSecret = "synthetic-owner-forwarding-test-secret";
 
-test("the Netlify bridge parses a Fetch Request body before forwarding it", { skip: !ownerTestSecret && "ZHAOWU_OWNER_TEST_SECRET not set" }, async () => {
+test("the Netlify bridge parses a Fetch Request body before forwarding it", async () => {
+  const keys = ["ZHAOWU_OWNER_KEY_SHA256", "ZHAOWU_OWNER_BRIDGE_SECRET"];
+  const previous = keys.map((key) => process.env[key]);
+  process.env.ZHAOWU_OWNER_KEY_SHA256 = createHash("sha256").update(ownerTestSecret).digest("hex");
+  process.env.ZHAOWU_OWNER_BRIDGE_SECRET = "synthetic-forwarding-bridge-key-0123456789";
   const originalFetch = globalThis.fetch;
   let forwarded = null;
   globalThis.fetch = async (_url, init) => {
@@ -79,7 +84,7 @@ test("the Netlify bridge parses a Fetch Request body before forwarding it", { sk
         origin: "https://archive-stone-zhaowu-official.netlify.app",
         host: "archive-stone-zhaowu-official.netlify.app",
         "sec-fetch-site": "same-origin",
-        cookie: `__Host-zhaowu_owner_session=${encodeURIComponent(ownerTestSecret)}`,
+        cookie: `${OWNER_COOKIE}=${encodeURIComponent(ownerCookieValue(ownerTestSecret))}`,
         "content-type": "application/json",
       },
       body: JSON.stringify({ action: "report.list" }),
@@ -89,5 +94,9 @@ test("the Netlify bridge parses a Fetch Request body before forwarding it", { sk
     assert.equal(response.status, 402);
   } finally {
     globalThis.fetch = originalFetch;
+    keys.forEach((key, index) => {
+      if (previous[index] === undefined) delete process.env[key];
+      else process.env[key] = previous[index];
+    });
   }
 });

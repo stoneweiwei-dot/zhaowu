@@ -2,13 +2,12 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { isValidOwnerSecret, ownerSetCookie } from "../lib/owner-session-cookie.js";
 import { isPublicTestCredential } from "../lib/owner-test-account.js";
 
-// SHA-256 of the lower-cased owner account email. The raw address is not committed.
-const OWNER_ACCOUNT_SHA256 = "1f808bf0e93c81242590f1acb88e79e9983383cca1f1acfe4555695765f39c94";
-
 function isValidOwnerAccount(value) {
   const normalized = String(value ?? "").trim().toLowerCase();
   if (!normalized || normalized.length > 256) return false;
-  const expected = Buffer.from(OWNER_ACCOUNT_SHA256, "hex");
+  const hash = String(process.env.ZHAOWU_OWNER_ACCOUNT_SHA256 ?? "").trim();
+  if (!/^[a-f0-9]{64}$/i.test(hash)) return false;
+  const expected = Buffer.from(hash, "hex");
   const actual = createHash("sha256").update(normalized, "utf8").digest();
   return actual.length === expected.length && timingSafeEqual(actual, expected);
 }
@@ -75,6 +74,6 @@ export default async function handler(req, res) {
     const cookie = ownerSetCookie(secret);
     return json(res, 200, { ok: true }, { "Set-Cookie": cookie });
   } catch (error) {
-    return json(res, 500, { ok: false, error: "OWNER_LOGIN_FAILED", detail: error instanceof Error ? error.message : "unknown" });
+    return json(res, 503, { ok: false, error: "OWNER_LOGIN_UNAVAILABLE" });
   }
 }

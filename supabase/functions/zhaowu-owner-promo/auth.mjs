@@ -1,17 +1,20 @@
 // Owner bridge authorisation for zhaowu-owner-promo.
 // Deliberately a self-contained copy of the check used by zhaowu-owner-data/security.mjs
-// (same bridge versions, same ZHAOWU_OWNER_BRIDGE_SECRET, same owner-key SHA-256) so this function
+// (same bridge versions, same ZHAOWU_OWNER_BRIDGE_SECRET, same runtime-configured owner-key SHA-256) so this function
 // deploys on its own and never has to import across function directories.
-// scripts/owner-promo-admin.test.mjs fails if the two owner-key hashes ever drift apart.
+// No real owner credential verifier belongs in repository source.
 import { createHash, timingSafeEqual } from "node:crypto";
 
-export const OWNER_KEY_SHA256 = "9270375f4bb55dba6f17b4d3e24c277bcac66b256779f21357762bbb6dda0976";
+function ownerKeyHash() {
+  if (typeof Deno !== "undefined") return Deno.env.get("ZHAOWU_OWNER_KEY_SHA256") ?? "";
+  return typeof process !== "undefined" ? process.env.ZHAOWU_OWNER_KEY_SHA256 ?? "" : "";
+}
 
 function text(value) {
   return String(value ?? "").trim();
 }
 
-export function isValidOwnerSecret(value, expectedHash = OWNER_KEY_SHA256) {
+export function isValidOwnerSecret(value, expectedHash = ownerKeyHash()) {
   const secret = text(value);
   if (secret.length < 8 || secret.length > 256) return false;
   const hash = text(expectedHash).toLowerCase();
@@ -21,7 +24,7 @@ export function isValidOwnerSecret(value, expectedHash = OWNER_KEY_SHA256) {
   return actual.length === expected.length && timingSafeEqual(actual, expected);
 }
 
-export function authorizeBridgeHeaders(headers, expectedSecret, expectedOwnerHash = OWNER_KEY_SHA256) {
+export function authorizeBridgeHeaders(headers, expectedSecret, expectedOwnerHash = ownerKeyHash()) {
   const bridgeVersion = text(headers?.get?.("x-zhaowu-server-bridge"));
   if (bridgeVersion !== "r146" && bridgeVersion !== "r161" && bridgeVersion !== "r162") {
     return { ok: false, status: 403, error: "BRIDGE_REQUIRED" };

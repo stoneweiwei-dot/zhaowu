@@ -54,16 +54,18 @@ test("sealed cookies fail closed when the server key is missing", () => {
   assert.equal(ownerSecretFromCookieValue(value, { env: {}, now, isValid }), "");
 });
 
-test("without a server key login still works (legacy plain cookie) so the owner is never locked out", () => {
-  const value = ownerCookieValue(SECRET, { env: {}, now });
-  assert.equal(value, SECRET);
-  assert.equal(ownerSecretFromCookieValue(value, { env: {}, now, isValid }), SECRET);
+test("missing or short server keys never issue a cookie", () => {
+  for (const invalidEnv of [{}, { ZHAOWU_OWNER_BRIDGE_SECRET: "short" }]) {
+    assert.throws(() => ownerCookieValue(SECRET, { env: invalidEnv, now }), /OWNER_SESSION_NOT_CONFIGURED/);
+    assert.throws(() => ownerSetCookie(SECRET, { env: invalidEnv, now }), /OWNER_SESSION_NOT_CONFIGURED/);
+  }
 });
 
-test("legacy plain cookies issued before this change stay valid until they expire", () => {
-  assert.equal(ownerSecretFromCookieValue(SECRET, { env, now, isValid }), SECRET);
-  assert.equal(ownerSecretFromCookieValue("wrong", { env, now, isValid }), "");
-  assert.equal(ownerSecretFromCookieValue("", { env, now, isValid }), "");
+test("plaintext passwords and encoded alternatives cannot act as session cookies", () => {
+  for (const value of [SECRET, encodeURIComponent(SECRET), "wrong", ""]) {
+    assert.equal(ownerSecretFromCookieValue(value, { env, now, isValid }), "");
+    assert.equal(ownerSecretFromCookieValue(value, { env: {}, now, isValid }), "");
+  }
 });
 
 test("set/clear cookie headers keep the hardened attributes", () => {
