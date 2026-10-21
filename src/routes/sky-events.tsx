@@ -192,6 +192,7 @@ function SkyEventsPage() {
             <ul>{event.interpretation[lang].map((x) => <li key={x}>{x}</li>)}</ul>
           </section>
           </div>
+          </div>
         </details>
 
         {isSaturn ? <details className="sky-section-disclosure sky-long-read"><summary><strong>{labels.longRead}</strong><span>{labels.expand}</span></summary><SaturnEssay lang={lang} /></details> : event.houses.length > 0 ? (
