@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { isVisitorNetworkError, withVisitorAuthTimeout } from "@/lib/auth/request-timeout";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import {
   capturePasswordRecovery,
@@ -37,20 +38,24 @@ export class VisitorAuthError<T extends string> extends Error {
 const CHANGE_EVENT = "zhaowu-visitor-change";
 
 export async function registerVisitor(email: string, password: string, name: string): Promise<void> {
-  let response: Response;
-  try {
-    response = await fetch(`${SUPABASE_URL}/functions/v1/visitor-signup`, {
-      method: "POST",
-      headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, name }),
-    });
-  } catch {
-    throw new VisitorAuthError<VisitorSignupError>("NETWORK");
-  }
-  if (response.ok) return;
-  const body = await response.json().catch(() => ({})) as { error?: string };
-  const known: VisitorSignupError[] = ["INVALID_EMAIL", "INVALID_PASSWORD", "EMAIL_EXISTS", "RATE_LIMITED"];
-  throw new VisitorAuthError<VisitorSignupError>(known.includes(body.error as VisitorSignupError) ? (body.error as VisitorSignupError) : "FAILED");
+  return withVisitorAuthTimeout(async (signal) => {
+    let response: Response;
+    try {
+      response = await fetch(`${SUPABASE_URL}/functions/v1/visitor-signup`, {
+        method: "POST",
+        signal,
+        headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, name }),
+      });
+      if (response.ok) return;
+      const body = await response.json().catch((error) => { if (signal.aborted) throw error; return {}; }) as { error?: string };
+      const known: VisitorSignupError[] = ["INVALID_EMAIL", "INVALID_PASSWORD", "EMAIL_EXISTS", "RATE_LIMITED"];
+      throw new VisitorAuthError<VisitorSignupError>(known.includes(body.error as VisitorSignupError) ? (body.error as VisitorSignupError) : "FAILED");
+    } catch (error) {
+      if (error instanceof VisitorAuthError) throw error;
+      throw new VisitorAuthError<VisitorSignupError>("NETWORK");
+    }
+  });
 }
 
 export async function loginVisitor(email: string, password: string): Promise<SupabaseSession> {
@@ -59,7 +64,7 @@ export async function loginVisitor(email: string, password: string): Promise<Sup
     window.dispatchEvent(new Event(CHANGE_EVENT));
     return session;
   } catch (error) {
-    if (error instanceof TypeError) throw new VisitorAuthError<VisitorLoginError>("NETWORK");
+    if (isVisitorNetworkError(error)) throw new VisitorAuthError<VisitorLoginError>("NETWORK");
     const message = error instanceof Error ? error.message.toLowerCase() : "";
     throw new VisitorAuthError<VisitorLoginError>(message.includes("invalid") || message.includes("credentials") ? "BAD_CREDENTIALS" : "FAILED");
   }
@@ -69,7 +74,7 @@ export async function requestVisitorPasswordReset(email: string): Promise<void> 
   try {
     await requestSupabasePasswordReset(email);
   } catch (error) {
-    if (error instanceof TypeError) throw new VisitorAuthError<VisitorPasswordResetError>("NETWORK");
+    if (isVisitorNetworkError(error)) throw new VisitorAuthError<VisitorPasswordResetError>("NETWORK");
     throw new VisitorAuthError<VisitorPasswordResetError>("FAILED");
   }
 }
@@ -82,7 +87,7 @@ export async function startVisitorPasswordRecovery(): Promise<SupabaseSession | 
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
     if (message === "RESET_LINK_INVALID") throw error;
-    if (error instanceof TypeError) throw new VisitorAuthError<VisitorPasswordResetError>("NETWORK");
+    if (isVisitorNetworkError(error)) throw new VisitorAuthError<VisitorPasswordResetError>("NETWORK");
     throw new VisitorAuthError<VisitorPasswordResetError>("FAILED");
   }
 }
@@ -94,7 +99,7 @@ export async function updateVisitorPassword(password: string): Promise<void> {
     await updateSupabaseVisitorPassword(session, password);
     window.dispatchEvent(new Event(CHANGE_EVENT));
   } catch (error) {
-    if (error instanceof TypeError) throw new VisitorAuthError<VisitorPasswordResetError>("NETWORK");
+    if (isVisitorNetworkError(error)) throw new VisitorAuthError<VisitorPasswordResetError>("NETWORK");
     throw new VisitorAuthError<VisitorPasswordResetError>("FAILED");
   }
 }
