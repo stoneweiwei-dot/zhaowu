@@ -25,7 +25,7 @@ test("owner media surfaces only the actions the owner actually needs", async () 
   assert.doesNotMatch(login, /data-owner-bulk-toolbar="login-visuals"/);
   assert.doesNotMatch(gallery, /data-owner-bulk-toolbar="gallery"/);
   assert.match(gallery, /設為首頁背景/);
-  assert.match(login, /設為目前使用/);
+  assert.match(login, /設為首頁精選/);
   assert.match(login, /改名/);
   assert.match(music, /data-owner-bulk-toolbar="music"/);
   assert.match(account, /data-owner-bulk-toolbar="reports"/);
