@@ -68,10 +68,10 @@ test('opening contract is a full five seconds with only a later emergency hard e
   assert.equal(INTRO_GATE_MIN_VISIBLE_MS, 5000);
   assert.equal(INTRO_GATE_NATIVE_MS, 5000);
   assert.equal(INTRO_GATE_TARGET_MS, 5000);
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 17000);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 62000);
   assert.equal(INTRO_GATE_ERROR_EXIT_MS, 1600);
   assert.ok(INTRO_GATE_HARD_EXIT_MS > INTRO_GATE_MIN_VISIBLE_MS);
-  assert.equal(scheduledDelay, 17000);
+  assert.equal(scheduledDelay, 62000);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
