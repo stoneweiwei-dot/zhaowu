@@ -116,7 +116,7 @@ export function CuratedVideoShelf({ placement }: { placement: VideoPlacement }) 
   const [status, setStatus] = useState<Status>("idle");
   const [rows, setRows] = useState<GalleryVideo[]>([]);
   useEffect(() => {
-    if (!open || status !== "idle") return;
+    if (!open) return;
     const controller = new AbortController();
     setStatus("loading");
     const url = SUPABASE_URL + "/rest/v1/gallery_assets?category=eq.loading&enabled=eq.true&select=id,title,storage_path,bucket_id,content_type,tags,enabled,is_primary&order=created_at.desc&limit=100";
@@ -132,12 +132,7 @@ export function CuratedVideoShelf({ placement }: { placement: VideoPlacement }) 
       setStatus("ready");
     }).catch(() => { if (!controller.signal.aborted) setStatus("unavailable"); });
     return () => controller.abort();
-  }, [open, status]);
-
-  // If the visitor closes during an in-flight read, allow the next open to retry.
-  useEffect(() => {
-    if (!open && status === "loading") setStatus("idle");
-  }, [open, status]);
+  }, [open]);
 
   const videos = useMemo(() => chooseVideos(rows, placement, locale), [rows, placement, locale]);
   const title = {
