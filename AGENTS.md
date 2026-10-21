@@ -245,6 +245,10 @@ If a request says add/fix/change/update/remove something on the website, the def
 
 A ZIP, SVG, PNG, code snippet, patch file, local asset or draft is not "added to the website" until it is actually integrated and verified in production.
 
+### 2026-10-21｜GLOBAL ARTICLE ARTWORK GATE (owner confirmation; ACTIVE)
+
+Extend artwork inspection beyond one illustrated essay. Source-audit `src/lib/life-view*.ts` and `src/lib/life-view-long-form/**/*.ts`: reject unapproved SVG pictures masquerading as artwork, missing image sources, invalid real-file signatures, and the three confirmed problematic code-art articles. Genuine five-phases/timing educational diagrams remain explicitly permitted. This gate is structural only, never a substitute for source→production visual QA. Do not rebrand older in-repository WebP assets as fresh generated art.
+
 ### 2026-10-21｜ARTICLE ARTWORK MUST BE ARTWORK (owner visual bugfix; ACTIVE)
 
 The user reported that published article illustrations repeatedly look like low-grade code-generated cards. Root cause confirmed in PR #820: an agent authored geometric SVG posters (`<rect>`, `<text>`, gradient bands) and passed them off as paintings, while genuine generated images were never connected to the article. This is an authoring/asset-choice failure, **not** a browser image transformation or a Supabase upload bug.
