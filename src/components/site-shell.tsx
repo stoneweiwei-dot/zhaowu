@@ -15,7 +15,6 @@ import {
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
-import { IntroGate } from "@/components/intro-gate";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { resolveReportAccess } from "@/lib/report-access";
@@ -243,7 +242,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
   return (
     <div data-owner-view={user?.isOwner ? "true" : undefined} style={shellStyle} className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
       <a className="zhaowu-skip-link" href="#zhaowu-main-content">{skipLabel}</a>
-      {isHome ? <IntroGate /> : null}
       {!isLogin ? (
         <header className={`zhaowu-site-header sticky top-0 z-30${isHome ? " is-home-compact" : ""}`}>
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">

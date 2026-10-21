@@ -1,6 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import { IntroReplayButton } from "@/components/intro-gate";
 import { BackgroundMusic } from "@/components/background-music";
 import { askSiteGuide, defaultSiteGuide, type SiteGuideAnswer, type SiteGuideRoute } from "@/lib/site-guide";
 import { JOURNEY_COPY } from "@/lib/site-journey";
@@ -172,7 +171,6 @@ export function SiteUtilityDock() {
       </section>
 
       <div className="zhaowu-site-utility-buttons">
-        {pathname === "/" ? <IntroReplayButton /> : null}
         <button
           type="button"
           className={panel === "music" ? "is-active" : ""}

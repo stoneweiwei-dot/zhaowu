@@ -24,11 +24,11 @@ const {
   markIntroSeen,
 } = await import('../src/lib/intro-gate-policy.ts');
 
-test('home mounts IntroGate once and owner login uses the static Song backdrop', async () => {
+test('home no longer mounts an automatic opening, and owner login uses the static Song backdrop', async () => {
   const login = await readFile(new URL('../src/routes/login.tsx', import.meta.url), 'utf8');
   assert.doesNotMatch(root, /IntroGate/);
   assert.match(root, /<SiteShell>/);
-  assert.match(shell, /isHome \? <IntroGate \/> : null/);
+  assert.doesNotMatch(shell, /<IntroGate\s*\/>/);
   assert.match(login, /\/hero-gallery\/dragon-scholar\.webp/);
   assert.match(login, /data-login-stage-static="true"/);
   assert.doesNotMatch(login, /<video|LoginStageBackdrop|stone-login-sound/);

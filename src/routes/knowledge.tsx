@@ -4,6 +4,7 @@ import { ZiweiKnowledgeNotesSection } from "@/components/ziwei-knowledge-notes-s
 import { ZiweiHomeEnvironmentArticle } from "@/components/ziwei-home-environment-article";
 import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { CuratedVideoShelf } from "@/components/curated-video-shelf";
 
 export const Route = createFileRoute("/knowledge")({ component: KnowledgePage });
 
@@ -55,6 +56,8 @@ function KnowledgePage() {
       <BaziKnowledgeNotesSection />
       <ZiweiKnowledgeNotesSection />
       <ZiweiHomeEnvironmentArticle />
+
+      <CuratedVideoShelf placement="knowledge" />
 
       <a href="/#birth-form" className="seal-border flex min-h-14 items-center justify-between rounded-2xl bg-cream px-5 py-4 text-sm text-ink">
         <span>{tr(locale,"產生完整命盤","产生完整命盘","Create complete chart")}</span>

@@ -46,11 +46,11 @@ test("the /gallery admin panel is relabeled as the homepage opening-video manage
   const manager = await source("src/components/owner-login-visuals-manager.tsx");
   const route = await source("src/routes/gallery.tsx");
 
-  assert.match(manager, /首頁開場影片管理/);
-  assert.match(manager, /Homepage opening video/);
+  assert.match(manager, /昭梧影片素材管理/);
+  assert.match(manager, /ZHAOWU film library/);
   assert.doesNotMatch(manager, /登入動畫管理/);
   assert.doesNotMatch(manager, /"Login visuals"/);
-  assert.match(route, /開場影片/);
+  assert.match(route, /影片素材/);
   assert.doesNotMatch(route, /登入影片/);
 
   // Internal identifiers (data attributes, section id, component/file name)

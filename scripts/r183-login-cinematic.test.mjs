@@ -33,7 +33,7 @@ test("current runtime documents static owner login and a mascot-free utility doc
   assert.match(current, /dragon-scholar\.webp/);
   assert.match(current, /青玉小龍已退出公開 runtime/);
   assert.match(current, /SiteUtilityDock/);
-  assert.match(shell, /isHome \? <IntroGate \/> : null/);
+  assert.doesNotMatch(shell, /<IntroGate\s*\/>/);
   assert.match(shell, /<SiteUtilityDock \/>/);
   assert.doesNotMatch(shell, /<GreenDragonGuide \/>/);
   assert.doesNotMatch(rootRoute, /IntroGate/);
