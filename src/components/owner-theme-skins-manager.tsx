@@ -1,20 +1,95 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
-import { SKINS, useSkin } from "@/lib/theme-skins";
+import {
+  ARCHIVED_SKINS,
+  CURATED_SKINS,
+  SKINS,
+  useSkin,
+  type SkinDef,
+  type SkinFamily,
+} from "@/lib/theme-skins";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
 }
 
 type ThemePreview = { src: string; alt: string };
+type FamilyFilter = "all" | SkinFamily;
 
-/** Owner theme catalog uses isolated screenshots of the actual homepage. */
+const FAMILY_FILTERS: FamilyFilter[] = ["all", "soft", "water", "warm", "green", "night"];
+
+function familyName(locale: Locale, family: FamilyFilter) {
+  const labels: Record<FamilyFilter, [string, string, string]> = {
+    all: ["全部精選", "全部精选", "All curated"],
+    soft: ["粉彩", "粉彩", "Pastel"],
+    water: ["水色", "水色", "Water"],
+    warm: ["暖金", "暖金", "Warm"],
+    green: ["青木", "青木", "Green"],
+    night: ["夜色", "夜色", "Night"],
+  };
+  return tr(locale, ...labels[family]);
+}
+
+function localName(locale: Locale, skin: SkinDef) {
+  return locale === "en" ? skin.en : locale === "zh-Hans" ? skin.hans : skin.zh;
+}
+
+function localNote(locale: Locale, skin: SkinDef) {
+  return locale === "en" ? skin.noteEn : locale === "zh-Hans" ? skin.noteHans : skin.noteZh;
+}
+
+type ThemeCardProps = {
+  locale: Locale;
+  skin: SkinDef;
+  active: boolean;
+  saving: boolean;
+  compact?: boolean;
+  family?: SkinFamily;
+  onChoose: (id: string) => void;
+  onPreview: (preview: ThemePreview) => void;
+};
+
+function ThemeCard({ locale, skin, active, saving, compact = false, family, onChoose, onPreview }: ThemeCardProps) {
+  const name = localName(locale, skin);
+  const dark = skin.mode === "dark";
+  return (
+    <article
+      className={`overflow-hidden rounded-[18px] border ${active ? "ring-2 ring-offset-2" : ""}`}
+      style={{ backgroundColor: skin.swatch[0], borderColor: skin.swatch[1], color: dark ? "#f7f1e5" : "#202925", outlineColor: skin.swatch[1] }}
+      data-owner-theme-card={skin.id}
+    >
+      <button type="button" onClick={() => onPreview({ src: skin.hero, alt: `${name} · ${tr(locale, "原畫", "原画", "Original artwork")}` })} className="block w-full text-left" aria-label={`${name} · ${tr(locale, "查看原畫", "查看原画", "View original artwork")}`}>
+        <img src={skin.hero} alt="" loading="lazy" className={`${compact ? "h-28" : "h-44"} w-full object-cover`} style={{ objectPosition: skin.focus }} />
+      </button>
+      <div className="p-4" style={{ background: dark ? "rgba(4,12,18,.74)" : "rgba(255,255,255,.58)" }}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="font-display text-lg leading-7">{name}</p>
+            <p className="mt-1 text-sm leading-6 opacity-80">{localNote(locale, skin)}</p>
+          </div>
+          {family ? <span className="shrink-0 rounded-full border border-current/25 px-2.5 py-1 text-[11px] opacity-75">{familyName(locale, family)}</span> : null}
+        </div>
+        <div className="mt-3 flex items-center gap-2" aria-label={tr(locale, "主題色票", "主题色票", "Theme palette")}>
+          {skin.swatch.map((colour) => <i key={colour} className="h-5 flex-1 rounded-full border border-black/10" style={{ backgroundColor: colour }} />)}
+        </div>
+        <button type="button" disabled={saving} onClick={() => onChoose(skin.id)} aria-pressed={active} className="mt-4 min-h-11 w-full rounded-full border px-4 text-sm font-medium disabled:opacity-50" style={{ borderColor: skin.swatch[1], backgroundColor: active ? skin.swatch[1] : "transparent", color: active ? (dark ? skin.swatch[0] : "#fffaf0") : "inherit" }}>
+          {saving ? tr(locale, "同步中…", "同步中…", "Saving…") : active ? tr(locale, "全站使用中", "全站使用中", "Live site theme") : tr(locale, "套用這套主題", "套用这套主题", "Publish this theme")}
+        </button>
+      </div>
+    </article>
+  );
+}
+
+/** Curated owner catalog: ten distinct palettes first, similar historical skins kept in one disclosure. */
 export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
   const { id, apply } = useSkin();
+  const [filter, setFilter] = useState<FamilyFilter>("all");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [preview, setPreview] = useState<ThemePreview | null>(null);
+  const current = SKINS.find((skin) => skin.id === id) ?? null;
+  const visibleThemes = useMemo(() => CURATED_SKINS.filter((entry) => filter === "all" || entry.family === filter), [filter]);
 
   useEffect(() => {
     if (!preview) return;
@@ -24,6 +99,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [preview]);
+
   const choose = async (next: string) => {
     if (saving) return;
     setSaving(true);
@@ -38,92 +114,54 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
       setSaving(false);
     }
   };
-  const name = (s: (typeof SKINS)[number]) => (locale === "en" ? s.en : locale === "zh-Hans" ? s.hans : s.zh);
-  const note = (s: (typeof SKINS)[number]) => (locale === "en" ? s.noteEn : locale === "zh-Hans" ? s.noteHans : s.noteZh);
+
   return (
     <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7" data-owner-theme-skins>
-      <p className="text-xs tracking-[0.28em] text-cinnabar">THEME SKINS</p>
-      <h2 className="mt-1 font-display text-2xl">{tr(locale, "主題皮膚", "主题皮肤", "Theme skins")}</h2>
-      <p className="mt-2 text-sm leading-7 text-ink-soft">
-        {tr(locale, "在這裡選擇一款，所有訪客就會使用同款主題與報告背景；切換免部署。已開啟的頁面約一分鐘內同步。", "在这里选择一款，所有访客就会使用同款主题与报告背景；切换无需部署。已打开的页面约一分钟内同步。", "Choose once for every visitor. Pages and report covers update without redeploying; open tabs sync within about a minute.")}
+      <p className="text-xs tracking-[0.28em] text-cinnabar">CURATED THEMES</p>
+      <h2 className="mt-1 font-display text-2xl">{tr(locale, "主題管理", "主题管理", "Theme manager")}</h2>
+      <p className="mt-2 max-w-3xl text-sm leading-7 text-ink-soft">
+        {tr(locale, "主選區只保留色系與氣質差異清楚的 10 套。相近版本已收進下方的歷史主題，不會刪除。", "主选区只保留色系与气质差异清楚的 10 套。相近版本已收进下方的历史主题，不会删除。", "The main catalog keeps ten clearly distinct themes. Similar versions remain available in Historical themes below.")}
       </p>
+
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-paper/55 p-3">
+        <div>
+          <p className="text-xs text-ink-mute">{tr(locale, "目前全站", "目前全站", "Live across the site")}</p>
+          <p className="mt-0.5 font-medium text-ink">{current ? localName(locale, current) : tr(locale, "系統預設", "系统默认", "System default")}</p>
+        </div>
+        <button type="button" disabled={saving || id === ""} onClick={() => void choose("none")} className="min-h-11 rounded-full border border-line px-4 text-sm text-ink disabled:opacity-40">
+          {tr(locale, "恢復系統預設", "恢复系统默认", "Restore default")}
+        </button>
+      </div>
+
       {error ? <p role="alert" className="mt-3 text-sm text-cinnabar">{error}</p> : null}
       {success ? <p role="status" className="mt-3 text-sm text-wood">{success}</p> : null}
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <article className={`overflow-hidden rounded-xl border ${id === "" ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"} bg-paper/40`}>
-          <button type="button" onClick={() => setPreview({ src: "/theme-previews/none.jpg", alt: tr(locale, "預設首頁實際排版", "默认首页实际排版", "Default homepage layout") })} aria-label={tr(locale, "放大預設首頁預覽", "放大默认首页预览", "Enlarge default homepage preview")} className="block w-full p-3 text-left"><img src="/theme-previews/none.jpg" alt={tr(locale, "預設首頁實際排版", "默认首页实际排版", "Default homepage layout")} loading="lazy" width="390" height="844" className="mx-auto h-80 w-auto max-w-full object-contain object-top" /></button>
-          <div className="flex items-center justify-between gap-3 p-3">
-            <div className="min-w-0"><p className="truncate font-medium">{tr(locale, "預設（現行）", "默认（现行）", "Default (current)")}</p></div>
-            <button type="button" disabled={saving} onClick={() => void choose("none")} aria-pressed={id === ""} className="min-h-11 shrink-0 whitespace-nowrap rounded-full border border-line px-4 text-sm disabled:opacity-50">{saving ? tr(locale, "同步中…", "同步中…", "Saving…") : id === "" ? tr(locale, "全站使用中", "全站使用中", "Live site theme") : tr(locale, "全站還原", "全站还原", "Reset site")}</button>
-          </div>
-        </article>
-        {SKINS.map((s) => {
-          const active = id === s.id;
-          return (
-            <Fragment key={s.id}>
-              {s.ref === 1 ? <div className="sm:col-span-2 border-t border-line/70 pt-4"><h3 className="font-display text-lg text-ink">{tr(locale, "原有主題 · 十景", "原有主题 · 十景", "Original Ten Skins")}</h3></div> : null}
-              {s.ref === 11 ? (
-                <div className="sm:col-span-2 border-t border-line/70 pt-5" data-song-quiet-skin-collection>
-                  <h3 className="font-display text-lg text-ink">{tr(locale, "宋式留白 · 四景", "宋式留白 · 四景", "Song Whitespace · Four Scenes")}</h3>
-                  <p className="mt-1 text-sm leading-6 text-ink-soft">{tr(locale, "延續宋畫氣韻，減少裝飾、保留呼吸感；四款只使用站內現有畫作。", "延续宋画气韵，减少装饰、保留呼吸感；四款只使用站内现有画作。", "Four calmer interpretations, using existing site paintings and more breathing room.")}</p>
-                </div>
-              ) : null}
-              {s.ref === 15 ? (
-                <div className="sm:col-span-2 border-t border-line/70 pt-5" data-qingmu-skin-collection>
-                  <h3 className="font-display text-lg text-ink">{tr(locale, "青木 · 生生不息", "青木 · 生生不息", "Verdant Wood · Endless Growth")}</h3>
-                  <p className="mt-1 text-sm leading-6 text-ink-soft">{tr(locale, "東方甲乙木：葉化青龍、煙嵐青峰、春雨柳亭、夜雨竹林；整站換裝。", "东方甲乙木：叶化青龙、烟岚青峰、春雨柳亭、夜雨竹林；整站换装。", "Eastern green-wood: leaf dragon, misty peaks, spring-rain willow, night bamboo rain — a full-site set.")}</p>
-                </div>
-              ) : null}
-              {s.ref === 19 ? (
-                <div className="sm:col-span-2 border-t border-line/70 pt-5" data-private-art-skin-collection>
-                  <h3 className="font-display text-lg text-ink">{tr(locale, "畫中六景 · 私藏畫作", "画中六景 · 私藏画作", "Six Painted Scenes · Private Art")}</h3>
-                  <p className="mt-1 text-sm leading-6 text-ink-soft">{tr(locale, "取自圖庫私人上傳的無字完整畫作：曉日雲龍、月下荷舟、竹瀑漁舟、荷舟仙羽、粉蓮雲溪、蝶戀荷塘；首頁與全站同步換裝。", "取自图库私人上传的无字完整画作：晓日云龙、月下荷舟、竹瀑渔舟、荷舟仙羽、粉莲云溪、蝶恋荷塘；首页与全站同步换装。", "Text-free paintings from the private uploads; the homepage and every page change together.")}</p>
-                </div>
-              ) : null}
-              {s.ref === 25 ? (
-                <div className="sm:col-span-2 border-t border-line/70 pt-5" data-song-gallery-v3-collection>
-                  <h3 className="font-display text-lg text-ink">{tr(locale, "宋式畫冊 · 秋景", "宋式画册 · 秋景", "Song Gallery · Autumn")}</h3>
-                  <p className="mt-1 text-sm leading-6 text-ink-soft">{tr(locale, "霜葉照溪：無字山水、暖紙與細線，沿用同一套全站主題。", "霜叶照溪：无字山水、暖纸与细线，沿用同一套全站主题。", "Text-free painting, continuous paper and restrained rules on the existing full-site theme engine.")}</p>
-                </div>
-              ) : null}
-              <article className={`overflow-hidden rounded-xl border bg-paper/40 ${active ? "border-[#315f51] ring-2 ring-[#315f51]/25" : "border-line"}`}>
-              <button type="button" onClick={() => setPreview({ src: s.hero, alt: `${name(s)} · ${tr(locale, "原畫", "原画", "Original artwork")}` })} className="block w-full bg-paper/40 p-3 text-left" aria-label={`${name(s)} · ${tr(locale, "查看原畫", "查看原画", "View original artwork")}`}>
-                <div data-editorial-skin-preview={s.id} className="mx-auto max-w-[300px] overflow-hidden border border-black/10 text-left" style={{ background: s.swatch[0], color: s.mode === "dark" ? "#F7F6F0" : "#202925" }}>
-                  <div className="px-4 pt-4 pb-3">
-                    <div className="flex items-center justify-between border-b pb-2 text-xs tracking-widest" style={{ borderColor: s.mode === "dark" ? "#ffffff40" : "#20292530" }}>
-                      <span className="font-display">{tr(locale, "昭梧", "昭梧", "ZHAOWU")}</span>
-                      <span className="opacity-70">EDITORIAL / {String(s.ref).padStart(2, "0")}</span>
-                    </div>
-                    <div className="pt-5 pb-4">
-                      <strong className="block font-display text-[25px] font-normal leading-snug break-words">{name(s)}</strong>
-                      <small className="mt-2 block text-xs leading-relaxed opacity-75">{note(s)}</small>
-                    </div>
-                    <img src={s.hero} alt="" loading="lazy" className="h-40 w-full rounded-[3px] object-cover" style={{ objectPosition: s.focus }} />
-                    <div className="mt-3 flex items-center justify-between border-y py-3 text-sm" style={{ borderColor: s.mode === "dark" ? "#ffffff40" : "#20292530" }}>
-                      <span>{tr(locale, "今日指引", "今日指引", "Today’s guide")}</span>
-                      <span aria-hidden="true">↗</span>
-                    </div>
-                    <div className="flex items-center justify-between border-b py-3 text-sm" style={{ borderColor: s.mode === "dark" ? "#ffffff40" : "#20292530" }}>
-                      <span>{tr(locale, "深度解讀", "深度解读", "In-depth reading")}</span>
-                      <span aria-hidden="true">↗</span>
-                    </div>
-                  </div>
-                </div>
-                <span className="mt-2 block text-center text-xs text-ink-soft">{tr(locale, "畫冊版示意 · 點擊看原畫", "画册版示意 · 点击看原画", "Editorial layout study · view painting")}</span>
-              </button>
-              <div className="flex items-center justify-between gap-3 p-3">
-                <div className="min-w-0">
-                  <p className="truncate font-medium">{name(s)}</p>
-                  <p className="truncate text-xs text-ink-mute">{note(s)}</p>
-                  <div className="mt-1.5 flex gap-1" aria-hidden="true">{s.swatch.map((c) => <i key={c} className="h-3.5 w-3.5 rounded-full border border-black/10" style={{ background: c }} />)}</div>
-                </div>
-                <button type="button" disabled={saving} onClick={() => void choose(s.id)} aria-pressed={active} className={`min-h-11 shrink-0 whitespace-nowrap rounded-full px-4 text-sm disabled:opacity-50 ${active ? "bg-[#315f51] text-[#fffaf0]" : "border border-[#315f51] text-[#315f51]"}`}>{saving ? tr(locale, "同步中…", "同步中…", "Saving…") : active ? tr(locale, "全站使用中", "全站使用中", "Live site theme") : tr(locale, "全站套用", "全站套用", "Publish")}</button>
-              </div>
-              </article>
-            </Fragment>
-          );
-        })}
+
+      <nav className="mt-5 flex gap-2 overflow-x-auto pb-1" aria-label={tr(locale, "按色系篩選", "按色系筛选", "Filter by palette")}>
+        {FAMILY_FILTERS.map((family) => (
+          <button key={family} type="button" aria-pressed={filter === family} onClick={() => setFilter(family)} className={`min-h-11 shrink-0 rounded-full border px-4 text-sm ${filter === family ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink"}`}>
+            {familyName(locale, family)}
+          </button>
+        ))}
+      </nav>
+
+      <div className="mt-4 grid gap-4 sm:grid-cols-2" data-curated-theme-grid>
+        {visibleThemes.map(({ skin, family }) => (
+          <ThemeCard key={skin.id} locale={locale} skin={skin} family={family} active={id === skin.id} saving={saving} onChoose={(next) => void choose(next)} onPreview={setPreview} />
+        ))}
       </div>
+
+      <details className="mt-6 rounded-lg border border-line bg-paper/35" data-archived-theme-collection>
+        <summary className="flex min-h-14 cursor-pointer items-center justify-between gap-3 px-4 py-3 text-ink">
+          <span><strong className="block">{tr(locale, "歷史主題", "历史主题", "Historical themes")}</strong><small className="mt-1 block text-ink-mute">{tr(locale, "相近版本集中收納，需要時仍可套用", "相近版本集中收纳，需要时仍可套用", "Similar editions are tucked away and still available")}</small></span>
+          <span className="rounded-full border border-line px-2.5 py-1 text-xs">{ARCHIVED_SKINS.length}</span>
+        </summary>
+        <div className="grid gap-3 border-t border-line p-3 sm:grid-cols-2">
+          {ARCHIVED_SKINS.map((skin) => (
+            <ThemeCard key={skin.id} locale={locale} skin={skin} compact active={id === skin.id} saving={saving} onChoose={(next) => void choose(next)} onPreview={setPreview} />
+          ))}
+        </div>
+      </details>
+
       {preview ? (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-3 sm:p-6" onClick={() => setPreview(null)}>
           <section role="dialog" aria-modal="true" aria-label={preview.alt} onClick={(event) => event.stopPropagation()} className="flex max-h-full w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-cream shadow-2xl">

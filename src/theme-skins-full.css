@@ -1255,8 +1255,6 @@ html[data-zws] {
   --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
 }
 html[data-zws]:not([data-zws-mode="dark"]) {
-  --zws-page: #f7f6f0;
-  --zws-card: #fcfbf7;
   --zws-shadow: none;
   --zws-wash: none;
   --zws-pattern: none;
