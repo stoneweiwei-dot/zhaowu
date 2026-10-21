@@ -29,17 +29,12 @@ const OWNER_HASH_FILES = [
   "supabase/functions/zhaowu-owner-promo/auth.mjs",
 ];
 
-test("all five owner password hashes agree and differ from the public tester hash", async () => {
-  const hashes = new Set();
-  for (const file of OWNER_HASH_FILES) {
-    const hash = (await source(file)).match(/OWNER_KEY_SHA256\s*=\s*"([0-9a-f]{64})"/)?.[1];
-    assert.ok(hash, `${file} must define OWNER_KEY_SHA256`);
-    hashes.add(hash);
+test("owner verifiers are supplied only by runtime configuration", async () => {
+  for (const file of [...OWNER_HASH_FILES, "api/owner-login.js"]) {
+    const code = await source(file);
+    assert.doesNotMatch(code, /OWNER_(?:KEY|ACCOUNT)_SHA256\s*=\s*"[0-9a-f]{64}"/);
+    if (file !== "src/server/owner-auth.ts") assert.match(code, /ZHAOWU_OWNER_(?:KEY|ACCOUNT)_SHA256/);
   }
-  assert.equal(hashes.size, 1, "owner hash must be identical in Vercel, server helper and all Supabase functions");
-  const testerPasscodeHash = (await source("lib/owner-test-account.js")).match(/TEST_PASSCODE_SHA256\s*=\s*"([0-9a-f]{64})"/)?.[1];
-  assert.ok(testerPasscodeHash);
-  assert.ok(!hashes.has(testerPasscodeHash), "the public tester passcode must not open the owner bridge");
 });
 
 test("the public tester module is not imported by any owner-privilege path", async () => {

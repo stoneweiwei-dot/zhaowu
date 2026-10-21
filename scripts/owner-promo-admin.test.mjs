@@ -74,10 +74,6 @@ test("status and public row shape", () => {
 });
 
 test("promo function auth is the same gate as zhaowu-owner-data", () => {
-  const hashOf = (file) => readFileSync(new URL(file, import.meta.url), "utf8").match(/OWNER_KEY_SHA256\s*=\s*"([0-9a-f]{64})"/)?.[1];
-  assert.ok(hashOf("../supabase/functions/zhaowu-owner-promo/auth.mjs"));
-  assert.equal(hashOf("../supabase/functions/zhaowu-owner-promo/auth.mjs"), hashOf("../supabase/functions/zhaowu-owner-data/security.mjs"));
-
   const ownerKey = "test-owner-key";
   const ownerHash = createHash("sha256").update(ownerKey, "utf8").digest("hex");
   const secret = "s".repeat(40);

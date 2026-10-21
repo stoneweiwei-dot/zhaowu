@@ -1,44 +1,9 @@
-import { createHash, timingSafeEqual } from "node:crypto";
+// Keep all Node entrypoints on the same sealed-cookie and runtime-credential boundary.
+import { ownerSetCookie, ownerClearCookie } from "../../lib/owner-session-cookie.js";
+export { OWNER_COOKIE, isValidOwnerSecret, readCookie, requestHasOwnerSession } from "../../lib/owner-session-cookie.js";
 
-export const OWNER_COOKIE = "__Host-zhaowu_owner_session";
-// SHA-256 of the owner passcode. The raw passcode is never committed.
-const OWNER_KEY_SHA256 = "9270375f4bb55dba6f17b4d3e24c277bcac66b256779f21357762bbb6dda0976";
-const MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
-
-function hash(value: string) {
-  return createHash("sha256").update(value, "utf8").digest();
-}
-
-export function isValidOwnerSecret(value: string | null | undefined) {
-  if (!value || value.length < 8 || value.length > 256) return false;
-  const expected = Buffer.from(OWNER_KEY_SHA256, "hex");
-  const actual = hash(value);
-  return actual.length === expected.length && timingSafeEqual(actual, expected);
-}
-
-export function readCookie(req: any, name: string) {
-  const raw = String(req?.headers?.cookie ?? "");
-  for (const part of raw.split(";")) {
-    const index = part.indexOf("=");
-    if (index < 0) continue;
-    const key = part.slice(0, index).trim();
-    if (key !== name) continue;
-    try { return decodeURIComponent(part.slice(index + 1)); } catch { return ""; }
-  }
-  return "";
-}
-
-export function ownerCookie(secret: string) {
-  return `${OWNER_COOKIE}=${encodeURIComponent(secret)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${MAX_AGE_SECONDS}`;
-}
-
-export function clearOwnerCookie() {
-  return `${OWNER_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
-}
-
-export function requestHasOwnerSession(req: any) {
-  return isValidOwnerSecret(readCookie(req, OWNER_COOKIE));
-}
+export const ownerCookie = ownerSetCookie;
+export const clearOwnerCookie = ownerClearCookie;
 
 export function requestIsSameOrigin(req: any) {
   const origin = String(req?.headers?.origin ?? "").trim();
