@@ -5,12 +5,16 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("homepage starts with the owner-selected wallpaper and the birth entry", async () => {
+test("homepage starts with the owner-selected theme and one guided accordion entry", async () => {
   const home = await source("src/routes/index.tsx");
+  const painted = await source("src/components/painted-home.tsx");
+  const tree = await source("src/components/home-tree.tsx");
   const shell = await source("src/components/site-shell.tsx");
   assert.doesNotMatch(home, /HERO_PAINTINGS|zw-hero-gallery|visibleHeroIndexes/);
-  assert.match(home, /zw-hero-inscription/);
-  assert.match(home, /data-home-birth-entry/);
+  assert.match(home, /<PaintedHome/);
+  assert.match(painted, /ph-guide-start/);
+  assert.match(painted, /<HomeTree/);
+  assert.match(tree, /useState<HomeSection \| null>\('form'\)/);
   assert.match(shell, /--zhaowu-shell-wallpaper/);
 });
 

@@ -245,6 +245,21 @@ If a request says add/fix/change/update/remove something on the website, the def
 
 A ZIP, SVG, PNG, code snippet, patch file, local asset or draft is not "added to the website" until it is actually integrated and verified in production.
 
+### 2026-10-21｜GLOBAL ARTICLE ARTWORK GATE (owner confirmation; ACTIVE)
+
+Extend artwork inspection beyond one illustrated essay. Source-audit `src/lib/life-view*.ts` and `src/lib/life-view-long-form/**/*.ts`: reject unapproved SVG pictures masquerading as artwork, missing image sources, invalid real-file signatures, and the three confirmed problematic code-art articles. Genuine five-phases/timing educational diagrams remain explicitly permitted. This gate is structural only, never a substitute for source→production visual QA. Do not rebrand older in-repository WebP assets as fresh generated art.
+
+### 2026-10-21｜ARTICLE ARTWORK MUST BE ARTWORK (owner visual bugfix; ACTIVE)
+
+The user reported that published article illustrations repeatedly look like low-grade code-generated cards. Root cause confirmed in PR #820: an agent authored geometric SVG posters (`<rect>`, `<text>`, gradient bands) and passed them off as paintings, while genuine generated images were never connected to the article. This is an authoring/asset-choice failure, **not** a browser image transformation or a Supabase upload bug.
+
+For future website images (all agents/workflows):
+- Classify the requested output **before creation**: **painting/illustration**, **diagram/chart**, **UI mockup**, or **text-led infographic**. Never substitute one class for another merely because SVG/source code is cheaper or simpler to commit.
+- If the owner asks for artwork, create/obtain the actual visually rich source image; compositional substance, painted details and material feel must dominate. A box-and-number SVG, CSS gradients, geometric mountains or bare text are NOT an acceptable substitute. Use text/HTML outside the art for exact facts and accessible multilingual explanations. Use SVG only for genuinely visual illustration or a specifically requested scalable diagram, not to disguise a simple card as a painting.
+- **No fake success**: the generated file, uploaded file, code reference, public URL, and browser-visible pixels must all be traced as the SAME intended asset. A generated preview is not live media. The existence of an SVG/WebP path is not evidence of artistic quality. Visual acceptance must inspect the actual rendered picture, including at iPhone width; reject poor detail, mass-produced template blocks, illegible fake writing and unsupported labels.
+- If image bytes cannot be reliably transferred to the approved GitHub/Supabase destination, STOP at staged/pending for that specific art. Never silently generate a replacement SVG via code, link to expiring third-party media, claim Gallery ingestion, or call placeholders "approved original art". Existing legitimate local raster art may be used only as an **explicitly identified interim editorial illustration**, not a new original commissioned painting.
+- Reusable policy: `docs/ARTWORK-ACCEPTANCE.md`. Retain existing protected artwork, calculations, users, payments and storage contracts. No new paid generation service or second production host is authorized.
+
 ## 6. Visual asset rules
 
 For every new image generated for ZHAOWU, Codex and other agents must use the active image-generation direction in `docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` by default: Song-informed composition, warm paper/silk texture, soft mineral-pastel washes, fine ink lines, restrained gold, spacious scale and a quiet poetic narrative. Default to a single 9:16 artwork without collage or multi-panel layouts unless the owner explicitly specifies otherwise. Preserve the source culture's own visual language for non-Chinese subjects, then apply the shared material and compositional qualities. A per-task explicit style request overrides this default for that task only.

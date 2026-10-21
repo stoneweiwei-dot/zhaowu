@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AuspiciousGallerySection } from "@/components/auspicious-gallery-section";
+import { CuratedVideoShelf } from "@/components/curated-video-shelf";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auspicious-atlas")({ component: AuspiciousAtlasPage });
@@ -17,6 +18,7 @@ function AuspiciousAtlasPage() {
         ← {back}
       </Link>
       <AuspiciousGallerySection mode="full" />
+      <CuratedVideoShelf placement="atlas" />
     </main>
   );
 }

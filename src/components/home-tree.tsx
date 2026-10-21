@@ -99,17 +99,24 @@ function Branch({ branch, onOpen }: { branch: TreeBranch; onOpen: (s: HomeSectio
   </li>;
 }
 
-/** Expandable, layer-by-layer guide. One entrance open at a time; everything starts collapsed. */
+/** Guided accordion. One step stays open at a time and the first step gives new visitors a clear start. */
 export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSection) => void }) {
-  const [openId, setOpenId] = useState<HomeSection | null>(null);
+  const [openId, setOpenId] = useState<HomeSection | null>('form');
   const tree = homeTree(t);
-  return <nav className="ph-tree" data-home-tree aria-label={t('網站導覽', '网站导览', 'Site guide')}>
-    {tree.map(node => {
+  return <nav id="home-guide" className="ph-tree" data-home-tree aria-label={t('網站導覽', '网站导览', 'Site guide')}>
+    <header className="ph-tree-intro">
+      <span>{t('四步導覽', '四步导览', 'FOUR-STEP GUIDE')}</span>
+      <h2>{t('從第一步開始，慢慢走完整個昭梧', '从第一步开始，慢慢走完整个昭梧', 'Start with step one and explore Zhaowu at your pace')}</h2>
+      <p>{t('每次只展開一個主題。看完後按「下一步」，也可以直接跳到你需要的內容。', '每次只展开一个主题。看完后按“下一步”，也可以直接跳到你需要的内容。', 'Only one topic opens at a time. Continue with “Next step”, or jump straight to what you need.')}</p>
+    </header>
+    {tree.map((node, index) => {
       const open = openId === node.id;
       const bodyId = `ph-tree-${node.id}`;
-      return <section key={node.id} className="ph-tree-node" data-open={open} data-home-card={node.id}>
-        <button type="button" className="ph-tree-head" aria-expanded={open} aria-controls={bodyId} onClick={() => setOpenId(open ? null : node.id)}>
+      const next = tree[(index + 1) % tree.length];
+      return <section key={node.id} className="ph-tree-node" data-open={open} data-home-card={node.id} data-guide-step={index + 1}>
+        <button type="button" className="ph-tree-head" aria-expanded={open} aria-controls={bodyId} aria-current={open ? 'step' : undefined} onClick={() => setOpenId(open ? null : node.id)}>
           <img src={node.art} alt="" loading="lazy" />
+          <span className="ph-tree-step" aria-hidden>{String(index + 1).padStart(2, '0')}<small>/ {String(tree.length).padStart(2, '0')}</small></span>
           <span className="ph-tree-head-text"><strong>{node.title}</strong><small>{node.hint}</small></span>
           <i aria-hidden><BrandIcon name={node.icon} /></i>
           <b aria-hidden className="ph-tree-toggle">{open ? '−' : '+'}</b>
@@ -121,6 +128,10 @@ export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSection) => void
           <ul>{node.items.map(item => item.kind === 'branch'
             ? <Branch key={item.id} branch={item} onOpen={onOpen} />
             : <li key={item.title}><Leaf leaf={item} onOpen={onOpen} /></li>)}</ul>
+          <button type="button" className="ph-tree-next" onClick={() => setOpenId(next.id)}>
+            <span>{index === tree.length - 1 ? t('導覽完成', '导览完成', 'Guide complete') : t('下一步', '下一步', 'Next step')}</span>
+            <strong>{next.title}</strong><i aria-hidden>→</i>
+          </button>
         </div>
       </section>;
     })}

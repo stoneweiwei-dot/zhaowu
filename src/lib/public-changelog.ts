@@ -29,6 +29,13 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
     en: { title: "Guide sign-in now points to Member sign-in; calmer wording in notes", summary: "Asking the site guide about signing in or registering now points to Member sign-in. Back-office wording in the update notes, the Zi Wei environment article, BaZi notes and the paid-report note is neutralised. Features, chart calculation and payments are unchanged." },
   },
   {
+    id: "2026-10-21-member-form-feedback",
+    date: "2026-10-21",
+    zhHant: { title: "會員表單補齊錯誤與連線提示", summary: "登入、註冊與找回密碼改用頁內欄位提示；處理中狀態清楚顯示，連線逾時會停止等待並提供重試訊息。" },
+    zhHans: { title: "会员表单补齐错误与连接提示", summary: "登录、注册与找回密码改用页内字段提示；处理中状态清楚显示，连接超时会停止等待并提供重试信息。" },
+    en: { title: "Clearer member-form and connection feedback", summary: "Sign-in, sign-up and password recovery show persistent field feedback, a visible working state and a retry message when a connection times out." },
+  },
+  {
     id: "2026-10-12-song-shell-wardrobe-swatches",
     date: "2026-10-12",
     zhHant: { title: "首頁穿衣加入對應色卡，共用介面收斂為宋式暖紙", summary: "每日穿衣的命盤主色、今日天時色與少量使用色改為可辨識的對應色卡，首飾與材質另列，不再只顯示一串淡色文字。首頁入口、音樂／導覽工具、登入與系統頁同步收斂為低圓角暖紙、細線與克制陰影，移除殘留玻璃膠囊感；五行取值與命盤計算不變。" },

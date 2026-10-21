@@ -1251,12 +1251,11 @@ html[data-zws] {
   --zws-rule-w: 36px;
   --zws-rule: linear-gradient(90deg, var(--zws-gold), transparent);
   --zws-card-border: 1px solid var(--zws-line);
-  --zws-font-d: var(--zw-font-heading);
-  --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+  --zw-icon-pine: var(--zws-accent);
+  --zw-icon-gold: var(--zws-gold);
+  --zw-icon-seal: color-mix(in srgb, var(--zws-gold) 62%, var(--zws-accent));
 }
 html[data-zws]:not([data-zws-mode="dark"]) {
-  --zws-page: #f7f6f0;
-  --zws-card: #fcfbf7;
   --zws-shadow: none;
   --zws-wash: none;
   --zws-pattern: none;
@@ -1276,13 +1275,17 @@ html[data-zws] body:has(.zhaowu-home-sheet-shell),
 html[data-zws] body:has(.zhaowu-has-wallpaper) {
   background-image:
     linear-gradient(180deg,
-      color-mix(in srgb, var(--zws-page) 74%, transparent),
-      color-mix(in srgb, var(--zws-page) 91%, transparent) 35%,
-      var(--zws-page) 83%),
+      color-mix(in srgb, var(--zws-page) 46%, transparent),
+      color-mix(in srgb, var(--zws-page) 78%, transparent) 42%,
+      color-mix(in srgb, var(--zws-page) 94%, transparent) 100%),
     var(--zws-art) !important;
   background-size: 100% 100%, cover !important;
   background-position: center, var(--zws-focus, 50% 40%) !important;
   box-shadow: none !important;
+}
+html[data-zws] body .zhaowu-home-sheet-shell {
+  background-color: transparent !important;
+  background-image: none !important;
 }
 html[data-zws][data-zws][data-zws][data-zws] body :is(
   .seal-border, .zhaowu-result-card, .zhaowu-customer-record,
@@ -1291,13 +1294,63 @@ html[data-zws][data-zws][data-zws][data-zws] body :is(
   main article.rounded-xl, main section.rounded-2xl,
   main a.rounded-2xl.border, main details.rounded-xl
 ):not(.zw-hero-card) {
-  background: var(--zws-card) !important;
+  background:
+    linear-gradient(165deg,
+      color-mix(in srgb, var(--zws-card) 96%, var(--zws-gold) 4%),
+      var(--zws-card) 48%),
+    var(--zws-card) !important;
   border: 1px solid var(--zws-line) !important;
+  border-top-color: color-mix(in srgb, var(--zws-gold) 48%, var(--zws-line)) !important;
   outline: none !important;
   box-shadow: none !important;
   border-radius: 8px !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+html[data-zws] body .history-hero {
+  background-image:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--zws-card) 97%, transparent) 0 58%,
+      color-mix(in srgb, var(--zws-card) 76%, transparent)),
+    var(--zws-art) !important;
+  background-position: center, var(--zws-focus, 50% 40%) !important;
+  background-size: 100% 100%, cover !important;
+}
+html[data-zws] body .history-empty {
+  background:
+    radial-gradient(circle at 50% 0, color-mix(in srgb, var(--zws-gold) 10%, transparent), transparent 46%),
+    var(--zws-card) !important;
+  border-radius: 16px !important;
+  padding: 34px 20px !important;
+}
+html[data-zws] body .history-empty > .zw-brand-icon {
+  display: block;
+  width: 62px !important;
+  height: 62px !important;
+  margin: 0 auto;
+}
+html[data-zws] body .history-empty h2 {
+  margin-top: 18px;
+  font-size: clamp(28px, 7vw, 38px);
+  font-weight: 500;
+  line-height: 1.4;
+}
+html[data-zws] body .history-empty > p {
+  max-width: 32rem;
+  margin: 10px auto 0;
+  font-size: 14px;
+  line-height: 1.8;
+}
+html[data-zws] body .history-empty > div {
+  grid-template-columns: minmax(0, 320px);
+  justify-content: center;
+  margin-top: 24px;
+}
+html[data-zws] body .history-empty a {
+  background: var(--zws-action-bg) !important;
+  color: var(--zws-on-accent) !important;
+  border-color: var(--zws-action-bg) !important;
+  border-radius: 7px !important;
 }
 /* Continuous paper report instead of shiny disconnected UI tiles. */
 html[data-zws] body :is(
@@ -1376,3 +1429,23 @@ html[data-zws="song-gallery-frostleaf"] {
  --zws-rule: #9c8b6b; --zws-rule-h: 1px; --zws-rule-w: 36px;
  --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line);
 }
+
+/* Verified 2026 seasonal pack, using the existing full-site skin engine. */
+html[data-zws="solar-frost-descent"] {
+ --zws-art: url(/theme-skins/solar-frost-descent/hero-frost-descent.webp); --zws-focus: 50% 55%; --zws-frame: #375f5b; --zws-veil: 84%;
+ --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif;
+ --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+ --zws-card-orn: none; --zws-card-frame: none; --zws-card-blur: none;
+ --zws-hw: 500; --zws-shadow: none; --zws-btn-bg: #375f5b; --zws-btn-radius: 7px; --zws-pill-radius: 7px;
+ --zws-rule: #b59a70; --zws-rule-h: 1px; --zws-rule-w: 36px;
+ --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line);
+}
+html[data-zws="solar-frost-descent"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { background: linear-gradient(90deg,rgba(246,241,230,.94),rgba(246,241,230,.30)), url(/theme-skins/solar-frost-descent/today-guide.webp) center/cover !important; }
+html[data-zws="solar-frost-descent"] body .stone-login-screen { --login-art: url(/theme-skins/solar-frost-descent/login-wash.webp); }
+html[data-zws="solar-frost-descent"] body .zhaowu-specialist-hero { background-image: linear-gradient(90deg,rgba(246,241,230,.96),rgba(246,241,230,.86)), url(/theme-skins/solar-frost-descent/deep-reading.webp) !important; }
+html[data-zws="solar-frost-descent"] body :is(.zhaowu-report-header,.zhaowu-visual-book-head) { background-image: linear-gradient(90deg,rgba(246,241,230,.94),rgba(246,241,230,.84)), url(/theme-skins/solar-frost-descent/report-cover.webp) !important; }
+html[data-zws="solar-frost-descent"] body .history-hero { background-image: linear-gradient(90deg,rgba(246,241,230,.96),rgba(246,241,230,.88)), url(/theme-skins/solar-frost-descent/account-wash.webp) !important; }
+html[data-zws="solar-frost-descent"] body .history-empty { background-image: linear-gradient(rgba(246,241,230,.95),rgba(246,241,230,.95)), url(/theme-skins/solar-frost-descent/empty-state.webp) !important; }
+
+html[data-zws="solar-frost-descent"] body .zhaowu-today-guide__spirit-paper { background-image: linear-gradient(rgba(246,241,230,.92),rgba(246,241,230,.92)), url(/theme-skins/solar-frost-descent/spirit-slip.webp) !important; background-size:cover !important; }
+html[data-zws="solar-frost-descent"] body .zw-home-inline-loading { background: linear-gradient(90deg,rgba(246,241,230,.96),rgba(246,241,230,.90)), url(/theme-skins/solar-frost-descent/loading-state.webp) center/cover; }

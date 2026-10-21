@@ -1,3 +1,4 @@
+import { FROST_PHASES } from '@/lib/seasonal-skins';
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
@@ -15,13 +16,12 @@ import {
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
-import { IntroGate } from "@/components/intro-gate";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { resolveReportAccess } from "@/lib/report-access";
 import { routeMetaFor, routeMetaForLanguage, ROUTE_META_PATHS } from "@/lib/route-meta";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
-import { hydrateSkin, refreshSharedSkin } from "@/lib/theme-skins";
+import { applySkin, readSkinId, hydrateSkin, refreshSharedSkin } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 import "@/legal-pages.css";
 import "@/brand-watermark.css";
@@ -143,11 +143,19 @@ export function SiteShell({ children }: { children: ReactNode }) {
     hydrateSkin();
     // Other visitor tabs/devices pick up the owner's published theme on focus
     // and while visible, without page reload or per-change deployments.
-    const refreshTheme = () => { if (document.visibilityState === "visible") void refreshSharedSkin(); };
+    const refreshTheme = () => {
+      if (document.visibilityState !== "visible") return;
+      const selected = readSkinId();
+      if (selected === 'solar-auto' || selected === 'solar-frost-descent') applySkin(selected);
+      void refreshSharedSkin();
+    };
     window.addEventListener("focus", refreshTheme);
     window.addEventListener("pageshow", refreshTheme);
     document.addEventListener("visibilitychange", refreshTheme);
     const sharedSkinTimer = window.setInterval(refreshTheme, 60_000);
+    const seasonalTimers = FROST_PHASES.map(phase => Date.parse(phase.start) - Date.now())
+      .filter(delay => delay > 0 && delay < 2_147_483_647)
+      .map(delay => window.setTimeout(refreshTheme, delay));
     runLocalHousekeeping();
     let alive = true;
     void recordVisit().catch(() => undefined).finally(() => {
@@ -156,6 +164,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     return () => {
       alive = false;
       window.clearInterval(sharedSkinTimer);
+      seasonalTimers.forEach(timer => window.clearTimeout(timer));
       window.removeEventListener("focus", refreshTheme);
       window.removeEventListener("pageshow", refreshTheme);
       document.removeEventListener("visibilitychange", refreshTheme);
@@ -243,7 +252,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
   return (
     <div data-owner-view={user?.isOwner ? "true" : undefined} style={shellStyle} className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
       <a className="zhaowu-skip-link" href="#zhaowu-main-content">{skipLabel}</a>
-      {isHome ? <IntroGate /> : null}
       {!isLogin ? (
         <header className={`zhaowu-site-header sticky top-0 z-30${isHome ? " is-home-compact" : ""}`}>
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">

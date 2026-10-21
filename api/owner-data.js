@@ -1,5 +1,5 @@
 import { isValidOwnerSecret, ownerSecretFromRequest } from "../lib/owner-session-cookie.js";
-import { readPublishedSiteSkin, validSiteSkin } from "../lib/owner-site-skin-public.js";
+import { readPublishedSiteSkin, readPublishedSiteSkinFromSettings, validSiteSkin } from "../lib/owner-site-skin-public.js";
 
 export { isValidOwnerSecret };
 
@@ -28,6 +28,7 @@ const ACTIONS = new Set([
   "gallery.setLoginCurrent",
   "gallery.delete",
   "upload.abort",
+  "site-skin.publish",
   // Owner promo-code console. Same owner gate as everything above, but forwarded to its own isolated
   // Edge Function (see PROMO_FUNCTION) so the report/gallery function is never touched.
   "promo.list",
@@ -146,7 +147,7 @@ export default async function handler(req, res) {
       }
       if (view !== "site-skin") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
       try {
-        const record = await readPublishedSiteSkin();
+        const record = await readPublishedSiteSkinFromSettings().catch(() => null) ?? await readPublishedSiteSkin();
         return json(res, 200, { ok: true, ...record });
       } catch {
         return json(res, 503, { ok: false, error: "SHARED_SKIN_TEMPORARILY_UNAVAILABLE" });
@@ -161,16 +162,8 @@ export default async function handler(req, res) {
 
     const payload = await readJsonBody(req);
     const action = String(payload?.action ?? "").trim();
-    if (action === "site-skin.publish") {
-      const skin = validSiteSkin(payload?.skin);
-      if (!skin) return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
-      try {
-        const { saveSharedSiteSkin } = await import("../lib/owner-music-git.js");
-        const published = await saveSharedSiteSkin(ownerSecret, skin);
-        return json(res, 200, { ok: true, ...published });
-      } catch {
-        return json(res, 503, { ok: false, error: "SHARED_SKIN_WRITE_FAILED" });
-      }
+    if (action === "site-skin.publish" && !validSiteSkin(payload?.skin)) {
+      return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
     }
     if (!ACTIONS.has(action)) return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
     const upstream = await fetch(`${supabaseUrl()}/functions/v1/${ownerUpstreamFunction(action)}`, {

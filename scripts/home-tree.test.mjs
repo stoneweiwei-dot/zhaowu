@@ -12,8 +12,10 @@ test("home shows four plain-language entrances as an expandable tree", async () 
   for (const name of ["My chart", "Today’s guide", "Quizzes", "Articles"]) assert.match(tree, new RegExp(name));
   assert.match(tree, /aria-expanded=\{open\}/);
   assert.match(tree, /aria-controls=\{bodyId\}/);
-  assert.match(tree, /useState<HomeSection \| null>\(null\)/, "starts fully collapsed, one open at a time");
+  assert.match(tree, /useState<HomeSection \| null>\('form'\)/, "opens step one by default and keeps one step open at a time");
   assert.match(tree, /data-home-tree/);
+  assert.match(tree, /data-guide-step=\{index \+ 1\}/);
+  assert.match(tree, /ph-tree-next/);
 });
 
 test("tree lists only public pages, never gated professional routes", async () => {
@@ -26,6 +28,7 @@ test("tree lists only public pages, never gated professional routes", async () =
 test("painted home mounts the tree and no longer shows the jade dragon", async () => {
   const home = await source("src/components/painted-home.tsx");
   assert.match(home, /<HomeTree t=\{t\} onOpen=\{onOpen\} \/>/);
+  assert.doesNotMatch(home, /ph-scroll-panels|ph-guide-panel|sc-entry-strip/, "duplicate home portals stay inside the accordion tree");
   assert.doesNotMatch(home, /青玉小龍|青玉小龙|jade dragon/i);
   assert.doesNotMatch(home, /reference-comic-dragons|zhaowu-dragon-lake/);
   assert.doesNotMatch(home, /觀世錄|观世录/, "obscure entrance name must not be a top-level label");

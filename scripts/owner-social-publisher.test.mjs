@@ -111,6 +111,10 @@ test("Threads OAuth state and stored tokens are authenticated and encrypted", ()
     PUBLIC_SITE_ORIGIN: "https://zhao-wu.com",
   };
   const authorization = createThreadsAuthorization(env, 1_000_000, "sealed-owner-proof");
+  assert.equal(new URL(authorization.url).origin, "https://threads.com");
+  assert.equal(new URL(authorization.url).pathname, "/oauth/authorize");
+  assert.equal(new URL(authorization.url).searchParams.get("client_id"), env.META_APP_ID);
+  assert.equal(new URL(authorization.url).searchParams.get("scope"), "threads_basic,threads_content_publish");
   assert.equal(new URL(authorization.url).searchParams.get("redirect_uri"), "https://zhao-wu.com/api/owner-session?action=threads.callback");
   const state = new URL(authorization.url).searchParams.get("state");
   const cookieValue = decodeURIComponent(authorization.cookie.match(/=([^;]+)/)[1]);

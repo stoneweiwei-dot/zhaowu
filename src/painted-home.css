@@ -1,6 +1,6 @@
 /* Owner reference compositions, 2026-10-13. Scoped to the actual landing view.
    The working form/report remains on its own existing subview. */
-html body #root:has(.zw-painted-home) { background: var(--zws-page, #f7efdf) !important; }
+html body #root:has(.zw-painted-home) { background: transparent !important; }
 html body #root:has(.zw-painted-home) .zhaowu-home-sheet-shell::before,
 html body #root:has(.zw-painted-home) .zhaowu-home-sheet-shell::after,
 html body #root:has(.zw-painted-home) main.zw-hero-home::before { display:none !important; }
@@ -249,10 +249,16 @@ html body #root .zw-flow-progress button span[aria-hidden] {
 html body #root .zw-painted-home .sc-entry-strip { margin: 10px 4% 0; width: auto; border-radius: 12px; }
 
 /* ── Expandable tree guide (home) · four plain entrances → branches → pages ───────── */
-html body #root .zw-painted-home .ph-tree { display:flex; flex-direction:column; gap:10px; padding:0 4%; max-width:760px; margin:0 auto; }
+html body #root .zw-painted-home .ph-tree { display:flex; flex-direction:column; gap:10px; padding:0 4%; max-width:760px; margin:0 auto; scroll-margin-top:16px; }
+html body #root .zw-painted-home .ph-tree-intro { padding:24px 4px 12px; }
+html body #root .zw-painted-home .ph-tree-intro>span { display:block; color:var(--ph-accent) !important; font:600 11px/1.4 var(--zw-font-body); letter-spacing:.2em; }
+html body #root .zw-painted-home .ph-tree-intro h2 { margin-top:7px; max-width:20em; font-size:clamp(23px,5.6vw,34px) !important; line-height:1.45 !important; letter-spacing:.035em !important; }
+html body #root .zw-painted-home .ph-tree-intro p { margin-top:8px; max-width:42em; color:var(--ph-muted) !important; font:400 14px/1.8 var(--zw-font-body); letter-spacing:normal; }
 html body #root .zw-painted-home .ph-tree-node { border:1px solid color-mix(in srgb,var(--ph-accent) 35%,#fffcf1); border-radius:16px; background:color-mix(in srgb,var(--ph-paper) 88%,#fff); overflow:hidden; }
 html body #root .zw-painted-home .ph-tree-head { position:relative; isolation:isolate; display:flex; align-items:center; gap:12px; width:100%; min-height:88px; padding:14px 16px; text-align:left; background:transparent; border:0; color:var(--ph-ink); cursor:pointer; }
 html body #root .zw-painted-home .ph-tree-head>img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-1; opacity:.55; mask-image:linear-gradient(90deg,transparent 15%,#000); -webkit-mask-image:linear-gradient(90deg,transparent 15%,#000); }
+html body #root .zw-painted-home .ph-tree-step { flex:none; display:flex; align-items:baseline; gap:2px; min-width:44px; color:var(--ph-accent) !important; font:600 20px/1 var(--zw-font-heading); }
+html body #root .zw-painted-home .ph-tree-step small { margin:0; color:var(--ph-muted) !important; font:400 10px/1 var(--zw-font-body); letter-spacing:0; }
 html body #root .zw-painted-home .ph-tree-head-text { flex:1; min-width:0; }
 html body #root .zw-painted-home .ph-tree-head strong { display:block; font-family:var(--zw-font-heading); font-size:22px; font-weight:500; line-height:1.5; letter-spacing:.025em; }
 html body #root .zw-painted-home .ph-tree-head small { display:block; font-family:var(--zw-font-body); margin-top:5px; font-size:15px; line-height:1.75; letter-spacing:normal; color:var(--ph-muted); }
@@ -270,11 +276,17 @@ html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph
 html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head) small { display:block; margin-top:2px; font-size:12.5px; line-height:1.5; }
 html body #root .zw-painted-home .ph-tree :is(.ph-tree-leaf,.ph-tree-branch-head) small { color:var(--ph-muted); }
 html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head)>i { flex:none; font-style:normal; font-size:18px; }
-html body #root .zw-painted-home .ph-tree :is(.ph-tree-head,.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head):focus-visible { outline:2px solid var(--ph-accent); outline-offset:2px; }
+html body #root .zw-painted-home .ph-tree-next { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:8px; width:100%; min-height:48px; margin-top:2px; padding:10px 14px; border-top:1px solid color-mix(in srgb,var(--ph-accent) 28%,transparent); background:transparent; text-align:left; color:var(--ph-ink); }
+html body #root .zw-painted-home .ph-tree-next span { color:var(--ph-muted) !important; font-size:11px; letter-spacing:.08em; }
+html body #root .zw-painted-home .ph-tree-next strong { font-size:14px; font-weight:600; }
+html body #root .zw-painted-home .ph-tree-next i { color:var(--ph-accent) !important; font-style:normal; font-size:18px; }
+html body #root .zw-painted-home .ph-tree :is(.ph-tree-head,.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head,.ph-tree-next):focus-visible { outline:2px solid var(--ph-accent); outline-offset:2px; }
 html[lang='en'] body #root .zw-painted-home .ph-tree-head strong { font-family:var(--zws-font-en, Georgia, serif); font-size:22px; letter-spacing:0; }
 @media(min-width:700px) { html body #root .zw-painted-home .ph-tree-head { min-height:120px; padding:20px 24px; } html body #root .zw-painted-home .ph-tree-head strong { font-size:24px; } html body #root .zw-painted-home .ph-tree-head small { font-size:16px; } html body #root .zw-painted-home .ph-tree-body { padding:6px 20px 20px; } html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head) strong { font-size:17px; } }
 @media (prefers-reduced-motion:no-preference) { html body #root .zw-painted-home .ph-tree-body:not([hidden]) { animation:ph-tree-in .22s ease-out; } }
 @keyframes ph-tree-in { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+html body #root .zw-painted-home .ph-guide-start>* { flex:1 1 100% !important; }
+html body #root .zw-painted-home .ph-guide-start>*:first-child { border-right:0 !important; }
 html body #root .zw-painted-home .ph-comic-scenes { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:12px 0 0; }
 html body #root .zw-painted-home .ph-comic-scenes img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:10px; }
 
@@ -288,13 +300,24 @@ html body #root .zw-painted-home[data-composition='koi'][data-title-veil='true']
 
 
 /* ===========================================================================
- * SONG GALLERY EDITION — shared across every owner-selectable skin.
- * Art stays as the skin's actual <img>; text and controls stay live DOM.
- * No extra media, no duplicate homepage background, no new product flow.
+ * THEME SUITE — shared across every owner-selectable skin.
+ * The selected painting, palette, typography and icon colours form one page
+ * environment while text and controls stay live DOM and fully readable.
  * ======================================================================== */
 html[data-zws] body #root .zw-painted-home {
-  --ph-gallery-rule: color-mix(in srgb, var(--ph-ink) 23%, transparent);
-  background: var(--ph-paper) !important;
+  --ph-gallery-rule: color-mix(in srgb, var(--ph-accent) 34%, transparent);
+  --zw-icon-pine: var(--ph-accent);
+  --zw-icon-gold: var(--ph-highlight);
+  --zw-icon-seal: color-mix(in srgb, var(--ph-highlight) 64%, var(--ph-accent));
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--ph-paper) 40%, transparent) 0,
+      color-mix(in srgb, var(--ph-paper) 72%, transparent) 26rem,
+      color-mix(in srgb, var(--ph-paper) 90%, transparent) 58rem,
+      var(--ph-paper) 100%),
+    radial-gradient(circle at 12% 36%, color-mix(in srgb, var(--ph-highlight) 18%, transparent), transparent 30rem),
+    var(--ph-art) var(--zws-focus, 50% 32%) / cover no-repeat fixed,
+    var(--ph-paper) !important;
   color: var(--ph-ink) !important;
   font-size: 16px;
   box-shadow: none !important;
@@ -307,7 +330,10 @@ html[data-zws] body #root .zw-painted-home .ph-hero {
   height: auto !important;
   padding: 22px clamp(18px, 5.5vw, 28px) 0 !important;
   border: 0 !important;
-  background: var(--ph-paper) !important;
+  background:
+    linear-gradient(145deg,
+      color-mix(in srgb, var(--ph-paper) 92%, transparent),
+      color-mix(in srgb, var(--ph-paper) 76%, var(--ph-highlight) 24%)) !important;
   overflow: hidden;
 }
 html[data-zws] body #root .zw-painted-home .ph-hero::after { display: none !important; }
@@ -351,7 +377,7 @@ html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-title 
 }
 html[data-zws] body #root .zw-painted-home .ph-title h1,
 html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-title h1 {
-  font-family: var(--zw-font-heading) !important;
+  font-family: var(--zws-font-d, var(--zw-font-heading)) !important;
   font-size: clamp(30px, 8.4vw, 46px) !important;
   font-weight: 500 !important;
   line-height: 1.5 !important;
@@ -397,9 +423,10 @@ html[data-zws] body #root .zw-painted-home .ph-hero-art {
   min-height: 0 !important;
   aspect-ratio: auto !important;
   object-fit: cover !important;
-  border-radius: 4px !important;
-  filter: saturate(.86);
-  box-shadow: none !important;
+  border: 1px solid color-mix(in srgb, var(--ph-accent) 38%, transparent) !important;
+  border-radius: var(--zws-hero-radius, 8px) !important;
+  filter: saturate(.96) contrast(1.01);
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--ph-accent) 13%, transparent) !important;
 }
 html[data-zws] body #root .zw-painted-home .ph-actions,
 html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-actions {
@@ -436,7 +463,19 @@ html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-action
 html[data-zws] body #root .zw-painted-home .ph-actions :is(button,a):first-child {
   border-right: 1px solid var(--ph-gallery-rule) !important;
 }
+html[data-zws] body #root .zw-painted-home .ph-actions.ph-guide-start :is(button,a):first-child {
+  flex-basis: 100% !important;
+  border-right: 0 !important;
+}
 html[data-zws] body #root .zw-painted-home .ph-actions span { color: var(--ph-accent); font-size: 20px !important; }
+html[data-zws] body #root .zw-painted-home .ph-actions.ph-guide-start :is(button,a) {
+  background: var(--ph-accent) !important;
+  color: var(--ph-on-accent) !important;
+  border: 1px solid color-mix(in srgb, var(--ph-highlight) 74%, var(--ph-accent)) !important;
+  border-radius: 7px !important;
+  padding-inline: 16px !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-actions.ph-guide-start span { color: inherit !important; }
 html[data-zws] body #root .zw-painted-home .ph-scroll-panels {
   display: block !important;
   margin: 0 !important;
@@ -462,7 +501,7 @@ html[data-zws] body #root .zw-painted-home .ph-paper-panel :is(h2, p, small, em)
   text-shadow: none !important;
 }
 html[data-zws] body #root .zw-painted-home .ph-paper-panel h2 {
-  font: 500 22px/1.5 var(--zw-font-heading) !important;
+  font: 500 22px/1.5 var(--zws-font-d, var(--zw-font-heading)) !important;
   letter-spacing: .025em !important;
   color: var(--ph-ink) !important;
 }
@@ -489,32 +528,69 @@ html[lang="en"][data-zws] body #root .zw-painted-home .ph-paper-panel h2 {
 /* Preserve the functional expandable HomeTree; remove app-card chrome. */
 html[data-zws] body #root .zw-painted-home .ph-tree {
   padding: 8px clamp(18px, 5.5vw, 28px) !important;
-  background: var(--ph-paper) !important;
+  background: transparent !important;
 }
 html[data-zws] body #root .zw-painted-home :is(.ph-tree-node, .ph-tree-head, .ph-tree-leaf, .ph-tree-branch-head) {
-  border-radius: 0 !important;
   box-shadow: none !important;
   outline: none !important;
 }
 html[data-zws] body #root .zw-painted-home .ph-tree-node {
-  border: 0 !important;
-  border-bottom: 1px solid var(--ph-gallery-rule) !important;
-  background: transparent !important;
+  border: 1px solid var(--ph-gallery-rule) !important;
+  border-top-color: color-mix(in srgb, var(--ph-highlight) 58%, transparent) !important;
+  border-radius: 8px !important;
+  background: color-mix(in srgb, var(--ph-paper) 90%, transparent) !important;
+  overflow: hidden;
 }
 html[data-zws] body #root .zw-painted-home .ph-tree-head {
-  background: transparent !important;
+  border-radius: 8px 8px 0 0 !important;
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--ph-paper) 97%, transparent) 0 58%,
+      color-mix(in srgb, var(--ph-paper) 68%, transparent)) !important;
   border: 0 !important;
-  min-height: 58px !important;
+  min-height: 78px !important;
 }
-html[data-zws] body #root .zw-painted-home .ph-tree-node img { opacity: .25; }
+html[data-zws] body #root .zw-painted-home .ph-tree-node img { opacity: .58; filter: saturate(.9); }
 html[data-zws] body #root .zw-painted-home .ph-bottom-nav {
-  border-radius: 0 !important;
+  border-radius: 8px 8px 0 0 !important;
   box-shadow: none !important;
-  border-top: 1px solid var(--ph-gallery-rule) !important;
-  background: var(--ph-paper) !important;
+  border: 1px solid var(--ph-gallery-rule) !important;
+  border-bottom: 0 !important;
+  background: color-mix(in srgb, var(--ph-paper) 96%, var(--ph-highlight) 4%) !important;
 }
 html[data-zws] body #root .zw-painted-home .ph-bottom-nav>* { min-height: 52px !important; font-size: 12px !important; }
 html[data-zws] body #root .zw-painted-home .ph-bottom-nav svg { width: 22px !important; height: 22px !important; }
+html[data-zws] body #root .zw-painted-home .ph-bottom-nav > [aria-current="page"] {
+  color: var(--ph-accent) !important;
+  background: color-mix(in srgb, var(--ph-highlight) 12%, transparent) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-intro {
+  margin: 10px 0 4px;
+  padding: 22px 18px 18px !important;
+  border-left: 3px solid var(--ph-accent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ph-paper) 94%, transparent), transparent);
+}
+html[data-zws] body #root .zw-painted-home :is(.ph-tree-head strong, .ph-tree-intro h2, .ph-tree-step) {
+  font-family: var(--zws-font-d, var(--zw-font-heading)) !important;
+}
+html[data-zws] body #root:has(.zw-painted-home) .site-lang-group {
+  padding: 3px !important;
+  border: 1px solid color-mix(in srgb, var(--zws-accent) 32%, transparent) !important;
+  border-radius: 9px !important;
+  background: color-mix(in srgb, var(--zws-page) 93%, transparent) !important;
+  gap: 2px !important;
+}
+html[data-zws] body #root:has(.zw-painted-home) .site-lang-button {
+  min-width: 42px !important;
+  padding-inline: 7px !important;
+  border-radius: 6px !important;
+  color: var(--zws-soft) !important;
+}
+html[data-zws] body #root:has(.zw-painted-home) .site-lang-button[data-active="true"],
+html[data-zws] body #root:has(.zw-painted-home) .site-lang-button[aria-pressed="true"] {
+  background: var(--zws-accent) !important;
+  color: var(--zws-on-accent) !important;
+}
 html[data-zws] body #root .zw-painted-home :is(button,a):focus-visible {
   outline: 2px solid var(--ph-accent) !important;
   outline-offset: 2px !important;
@@ -549,3 +625,9 @@ html[lang="en"][data-zws] body #root .zw-painted-home .ph-resolve {
   html[data-zws] body #root .zw-painted-home * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 /* END SONG GALLERY EDITION */
+
+html body #root .zw-painted-home .ph-seasonal-note { margin: 12px 5% 16px; padding: 12px 0; border-block: 1px solid var(--zws-line); color: var(--zws-ink); }
+html body #root .zw-painted-home .ph-seasonal-term { display:flex; flex-wrap:wrap; gap:4px 12px; font-size:18px; line-height:1.6; }
+html body #root .zw-painted-home .ph-seasonal-note p { line-height:1.7; }
+html body #root .zw-painted-home .ph-seasonal-note blockquote { margin:8px 0; font-size:16px; line-height:1.8; }
+html body #root .zw-painted-home .ph-seasonal-note small { font-size:13px; color:var(--zws-soft); }

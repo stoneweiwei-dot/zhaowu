@@ -28,7 +28,7 @@ test("Song Quiet group uses the existing skin engine and light contrast mode", (
   assert.equal(quiet.length, 4);
   assert.ok(quiet.every((s) => s.id.startsWith("song-") && s.mode === "light"));
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.match(manager, /data-song-quiet-skin-collection/);
+  assert.match(manager, /data-archived-theme-collection/);
   assert.ok(full.includes('html[data-zws^="song-"]'));
 });
 test("青木 series (15-18): three light skins and one dark rain skin on the existing engine", () => {
@@ -37,7 +37,7 @@ test("青木 series (15-18): three light skins and one dark rain skin on the exi
   assert.ok(g.every((s) => s.id.startsWith("verdant-")));
   assert.deepEqual(g.map((s) => s.mode), ["light", "light", "light", "dark"]);
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.match(manager, /data-qingmu-skin-collection/);
+  assert.match(manager, /data-curated-theme-grid/);
   assert.ok(full.includes("ol.zw-home-steps") && full.includes("#birth-year"), "home panels + birth fields have dark-skin rules");
 });
 test("every skin has tokens, a full-set definition and crisp art on disk", () => {
@@ -47,7 +47,7 @@ test("every skin has tokens, a full-set definition and crisp art on disk", () =>
     assert.ok(existsSync(`public${hero}`), `art file for ${id}: ${hero}`);
     // Prior 24 themes retain archived homepage previews; new themes use the live
     // DOM editorial composition rendered by OwnerThemeSkinsManager.
-    if (id !== "song-gallery-frostleaf") assert.ok(existsSync(`public/theme-previews/${id}.jpg`), `actual homepage preview for ${id}`);
+    if (!id.startsWith("solar-") && id !== "song-gallery-frostleaf") assert.ok(existsSync(`public/theme-previews/${id}.jpg`), `actual homepage preview for ${id}`);
     assert.ok(full.includes(`html[data-zws="${id}"]`), `full-set rules for ${id}`);
   }
 });
@@ -57,6 +57,22 @@ test("full set paints every page, cards, type and almanac from the skin", () => 
   }
   const main = readFileSync("src/main.tsx", "utf8");
   assert.ok(main.indexOf("theme-skins.css") < main.indexOf("theme-skins-full.css"));
+});
+test("a selected theme drives the full page environment, icon palette and typography", () => {
+  const home = readFileSync("src/components/painted-home.tsx", "utf8");
+  const painted = readFileSync("src/painted-home.css", "utf8");
+  assert.match(home, /'--ph-highlight': skin\?\.swatch\[2\]/);
+  assert.match(painted, /var\(--ph-art\) var\(--zws-focus/);
+  assert.match(painted, /--zw-icon-pine:\s*var\(--ph-accent\)/);
+  assert.match(painted, /font-family:\s*var\(--zws-font-d/);
+  assert.match(painted, /#root:has\(\.zw-painted-home\)\s*\{\s*background:\s*transparent/);
+  assert.match(full, /\.zhaowu-home-sheet-shell\s*\{[\s\S]*?background-color:\s*transparent/);
+});
+test("empty report history presents one clear chart path without a quiz detour", () => {
+  const history = readFileSync("src/routes/history.tsx", "utf8");
+  assert.match(history, /<BrandIcon name="reports" size="lg" \/>/);
+  assert.match(history, /<div><a href="\/#birth-form">\{copy\.createFirst\}<\/a><\/div>/);
+  assert.doesNotMatch(history, /<Link to="\/fun-tests">\{kindLabel\("fun-five-element"/);
 });
 test("pre-paint script dark list matches registry", () => {
   const dark = ids.filter((s) => s.mode === "dark").map((s) => s.id).sort();
@@ -76,7 +92,7 @@ test("site default uses the owner-selected pastel koi skin", () => {
 });
 
 test('every catalog theme is accepted by the shared server publisher, without extra unknown ids', () => {
-  assert.deepEqual([...SITE_SKIN_IDS].sort(), ['none', ...ids.map(s => s.id)].sort());
+  assert.deepEqual([...SITE_SKIN_IDS].sort(), ['none', 'solar-auto', ...ids.map(s => s.id)].sort());
   for (const { id } of ids) assert.equal(validSiteSkin(id), id, `${id}: server publisher must accept the catalog theme`);
   assert.equal(validSiteSkin('unregistered-theme'), null);
 });
@@ -96,8 +112,8 @@ test("all selected skins show the matching painting on report cover surfaces onl
   assert.ok(full.includes('html[data-zws][data-zws-mode="dark"] body main'), "night report ink stays readable");
   assert.ok(full.includes("body .zhaowu-report-header .zhaowu-report-art { display: none"), "do not show a second unrelated lotus image");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.match(manager, /data-editorial-skin-preview/);
-  assert.match(manager, /setPreview\(\{ src: s.hero/);
+  assert.match(manager, /data-owner-theme-card=\{skin\.id\}/);
+  assert.match(manager, /onPreview\(\{ src: skin\.hero/);
 });
 
 // Resolve the actual root token cascade, including shared and per-skin rules.
@@ -175,6 +191,16 @@ test('every actual skin palette keeps body, muted copy and primary actions reada
   }
 });
 
+test('curated themes keep visibly different page palettes instead of one shared paper colour', () => {
+  const registry = readFileSync("src/lib/theme-skins.ts", "utf8");
+  const curatedBlock = registry.match(/CURATED_SKIN_CATALOG:[\s\S]*?= \[([\s\S]*?)\] as const;/)?.[1] ?? "";
+  const curatedIds = [...curatedBlock.matchAll(/\{ id: "([a-z-]+)", family:/g)].map((match) => match[1]);
+  const pages = curatedIds.map((id) => tokensForSkin(ids.find((skin) => skin.id === id))['--zws-page']);
+  assert.equal(curatedIds.length, 10);
+  assert.equal(new Set(pages).size, curatedIds.length);
+  assert.doesNotMatch(full, /html\[data-zws\]:not\(\[data-zws-mode="dark"\]\)\s*\{[^}]*--zws-page/s);
+});
+
 test('catalog reader includes future themes and rejects entries it cannot validate', () => {
   const future = `export const SKINS = [\n { mode: "dark", ref: 19, id: "future-19", hero: "/art/example.webp" }\n];`;
   assert.equal(readThemeCatalog(future)[0].id, 'future-19');
@@ -199,12 +225,12 @@ test('the birth flow uses one themed paper surface instead of nested cards', () 
   assert.match(themed, /body #birth-form :is\([\s\S]*?\.zhaowu-time-calibration-note[\s\S]*?background:\s*transparent/s);
 });
 
-test("all 24 selectable skins share the Song editorial shell without overwriting the individual paintings", () => {
+test("all selectable skins share the Song editorial shell without overwriting the individual paintings", () => {
   const home = readFileSync("src/components/painted-home.tsx", "utf8");
   const homeCss = readFileSync("src/painted-home.css", "utf8");
   const skinCss = readFileSync("src/theme-skins-full.css", "utf8");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.equal(ids.length, 25);
+  assert.equal(ids.length, 26);
   assert.match(home, /return skin \? 'scroll' : 'koi'/);
   assert.match(home, /const art = skin\?\.hero/);
   assert.match(homeCss, /SONG GALLERY EDITION/);
@@ -213,8 +239,18 @@ test("all 24 selectable skins share the Song editorial shell without overwriting
   assert.match(skinCss, /SONG GALLERY EDITION/);
   assert.match(skinCss, /--zws-card-orn: none/);
   assert.match(skinCss, /html\[data-zws\]\[data-zws-mode="dark"\]/);
-  assert.match(manager, /data-editorial-skin-preview=\{s\.id\}/);
-  assert.match(manager, /src=\{s\.hero\}/);
+  assert.match(manager, /data-owner-theme-card=\{skin\.id\}/);
+  assert.match(manager, /src=\{skin\.hero\}/);
+});
+
+test("owner theme manager curates ten distinct choices and keeps the other fifteen in one disclosure", () => {
+  const registry = readFileSync("src/lib/theme-skins.ts", "utf8");
+  const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
+  const curated = registry.match(/CURATED_SKIN_CATALOG:[\s\S]*?= \[([\s\S]*?)\] as const;/)?.[1] ?? "";
+  assert.equal([...curated.matchAll(/\{ id: "[a-z-]+", family: "[a-z]+" \}/g)].length, 10);
+  assert.match(manager, /CURATED_SKINS/);
+  assert.match(manager, /ARCHIVED_SKINS/);
+  assert.match(manager, /data-archived-theme-collection/);
 });
 
 test("all published skins keep the owner footer action, not the obsolete header-only transparency override", () => {
