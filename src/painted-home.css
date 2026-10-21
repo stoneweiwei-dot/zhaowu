@@ -249,10 +249,16 @@ html body #root .zw-flow-progress button span[aria-hidden] {
 html body #root .zw-painted-home .sc-entry-strip { margin: 10px 4% 0; width: auto; border-radius: 12px; }
 
 /* ── Expandable tree guide (home) · four plain entrances → branches → pages ───────── */
-html body #root .zw-painted-home .ph-tree { display:flex; flex-direction:column; gap:10px; padding:0 4%; max-width:760px; margin:0 auto; }
+html body #root .zw-painted-home .ph-tree { display:flex; flex-direction:column; gap:10px; padding:0 4%; max-width:760px; margin:0 auto; scroll-margin-top:16px; }
+html body #root .zw-painted-home .ph-tree-intro { padding:24px 4px 12px; }
+html body #root .zw-painted-home .ph-tree-intro>span { display:block; color:var(--ph-accent) !important; font:600 11px/1.4 var(--zw-font-body); letter-spacing:.2em; }
+html body #root .zw-painted-home .ph-tree-intro h2 { margin-top:7px; max-width:20em; font-size:clamp(23px,5.6vw,34px) !important; line-height:1.45 !important; letter-spacing:.035em !important; }
+html body #root .zw-painted-home .ph-tree-intro p { margin-top:8px; max-width:42em; color:var(--ph-muted) !important; font:400 14px/1.8 var(--zw-font-body); letter-spacing:normal; }
 html body #root .zw-painted-home .ph-tree-node { border:1px solid color-mix(in srgb,var(--ph-accent) 35%,#fffcf1); border-radius:16px; background:color-mix(in srgb,var(--ph-paper) 88%,#fff); overflow:hidden; }
 html body #root .zw-painted-home .ph-tree-head { position:relative; isolation:isolate; display:flex; align-items:center; gap:12px; width:100%; min-height:88px; padding:14px 16px; text-align:left; background:transparent; border:0; color:var(--ph-ink); cursor:pointer; }
 html body #root .zw-painted-home .ph-tree-head>img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-1; opacity:.55; mask-image:linear-gradient(90deg,transparent 15%,#000); -webkit-mask-image:linear-gradient(90deg,transparent 15%,#000); }
+html body #root .zw-painted-home .ph-tree-step { flex:none; display:flex; align-items:baseline; gap:2px; min-width:44px; color:var(--ph-accent) !important; font:600 20px/1 var(--zw-font-heading); }
+html body #root .zw-painted-home .ph-tree-step small { margin:0; color:var(--ph-muted) !important; font:400 10px/1 var(--zw-font-body); letter-spacing:0; }
 html body #root .zw-painted-home .ph-tree-head-text { flex:1; min-width:0; }
 html body #root .zw-painted-home .ph-tree-head strong { display:block; font-family:var(--zw-font-heading); font-size:22px; font-weight:500; line-height:1.5; letter-spacing:.025em; }
 html body #root .zw-painted-home .ph-tree-head small { display:block; font-family:var(--zw-font-body); margin-top:5px; font-size:15px; line-height:1.75; letter-spacing:normal; color:var(--ph-muted); }
@@ -270,11 +276,17 @@ html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph
 html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head) small { display:block; margin-top:2px; font-size:12.5px; line-height:1.5; }
 html body #root .zw-painted-home .ph-tree :is(.ph-tree-leaf,.ph-tree-branch-head) small { color:var(--ph-muted); }
 html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head)>i { flex:none; font-style:normal; font-size:18px; }
-html body #root .zw-painted-home .ph-tree :is(.ph-tree-head,.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head):focus-visible { outline:2px solid var(--ph-accent); outline-offset:2px; }
+html body #root .zw-painted-home .ph-tree-next { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:8px; width:100%; min-height:48px; margin-top:2px; padding:10px 14px; border-top:1px solid color-mix(in srgb,var(--ph-accent) 28%,transparent); background:transparent; text-align:left; color:var(--ph-ink); }
+html body #root .zw-painted-home .ph-tree-next span { color:var(--ph-muted) !important; font-size:11px; letter-spacing:.08em; }
+html body #root .zw-painted-home .ph-tree-next strong { font-size:14px; font-weight:600; }
+html body #root .zw-painted-home .ph-tree-next i { color:var(--ph-accent) !important; font-style:normal; font-size:18px; }
+html body #root .zw-painted-home .ph-tree :is(.ph-tree-head,.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head,.ph-tree-next):focus-visible { outline:2px solid var(--ph-accent); outline-offset:2px; }
 html[lang='en'] body #root .zw-painted-home .ph-tree-head strong { font-family:var(--zws-font-en, Georgia, serif); font-size:22px; letter-spacing:0; }
 @media(min-width:700px) { html body #root .zw-painted-home .ph-tree-head { min-height:120px; padding:20px 24px; } html body #root .zw-painted-home .ph-tree-head strong { font-size:24px; } html body #root .zw-painted-home .ph-tree-head small { font-size:16px; } html body #root .zw-painted-home .ph-tree-body { padding:6px 20px 20px; } html body #root .zw-painted-home .ph-tree :is(.ph-tree-primary,.ph-tree-leaf,.ph-tree-branch-head) strong { font-size:17px; } }
 @media (prefers-reduced-motion:no-preference) { html body #root .zw-painted-home .ph-tree-body:not([hidden]) { animation:ph-tree-in .22s ease-out; } }
 @keyframes ph-tree-in { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+html body #root .zw-painted-home .ph-guide-start>* { flex:1 1 100% !important; }
+html body #root .zw-painted-home .ph-guide-start>*:first-child { border-right:0 !important; }
 html body #root .zw-painted-home .ph-comic-scenes { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:12px 0 0; }
 html body #root .zw-painted-home .ph-comic-scenes img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:10px; }
 
@@ -435,6 +447,10 @@ html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-action
 }
 html[data-zws] body #root .zw-painted-home .ph-actions :is(button,a):first-child {
   border-right: 1px solid var(--ph-gallery-rule) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-actions.ph-guide-start :is(button,a):first-child {
+  flex-basis: 100% !important;
+  border-right: 0 !important;
 }
 html[data-zws] body #root .zw-painted-home .ph-actions span { color: var(--ph-accent); font-size: 20px !important; }
 html[data-zws] body #root .zw-painted-home .ph-scroll-panels {
