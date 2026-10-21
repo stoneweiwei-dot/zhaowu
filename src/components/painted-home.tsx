@@ -4,6 +4,7 @@ import { useSkin, type SkinDef } from '@/lib/theme-skins';
 import { useI18n } from '@/lib/i18n';
 import { BrandIcon } from '@/components/brand-icon';
 import { HomeTree } from '@/components/home-tree';
+import { CuratedVideoShelf } from '@/components/curated-video-shelf';
 
 type Section = 'form' | 'today' | 'quiz' | 'notes';
 /** Skins whose painting is clean enough to show at full strength behind the home title. */
@@ -58,6 +59,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <small>{t('中國傳統物候意象', '中国传统物候意象', 'Traditional Chinese seasonal imagery')}</small>
     </aside>}
     <HomeTree t={t} onOpen={onOpen} />
+    <CuratedVideoShelf placement="home" />
     <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><a href="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></a><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><a href="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></a></nav>
   </section>;
 }

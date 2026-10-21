@@ -1,3 +1,4 @@
+import { CuratedVideoShelf } from "@/components/curated-video-shelf";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
@@ -162,6 +163,8 @@ function MythicAtlasPage() {
           <p className="mt-5 border-t border-[#e2d8c5] pt-4 text-xs leading-6 text-[#766b5c]">{copy.story}：{copy.originalLabel}</p>
         </article>
       </section> : null}
+
+      <CuratedVideoShelf placement="mythic" />
 
       <footer className="rounded-2xl border border-[#d9ceb8] bg-[#f3efe4] p-5 sm:p-6">
         <p className="font-display text-lg text-[#293a31]">{copy.source} · {copy.sourceBadge}</p>

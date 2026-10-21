@@ -24,11 +24,11 @@ const {
   markIntroSeen,
 } = await import('../src/lib/intro-gate-policy.ts');
 
-test('home mounts IntroGate once and owner login uses the static Song backdrop', async () => {
+test('home no longer mounts an automatic opening, and owner login uses the static Song backdrop', async () => {
   const login = await readFile(new URL('../src/routes/login.tsx', import.meta.url), 'utf8');
   assert.doesNotMatch(root, /IntroGate/);
   assert.match(root, /<SiteShell>/);
-  assert.match(shell, /isHome \? <IntroGate \/> : null/);
+  assert.doesNotMatch(shell, /<IntroGate\s*\/>/);
   assert.match(login, /\/hero-gallery\/dragon-scholar\.webp/);
   assert.match(login, /data-login-stage-static="true"/);
   assert.doesNotMatch(login, /<video|LoginStageBackdrop|stone-login-sound/);
@@ -68,10 +68,10 @@ test('opening contract is a full five seconds with only a later emergency hard e
   assert.equal(INTRO_GATE_MIN_VISIBLE_MS, 5000);
   assert.equal(INTRO_GATE_NATIVE_MS, 5000);
   assert.equal(INTRO_GATE_TARGET_MS, 5000);
-  assert.equal(INTRO_GATE_HARD_EXIT_MS, 17000);
+  assert.equal(INTRO_GATE_HARD_EXIT_MS, 62000);
   assert.equal(INTRO_GATE_ERROR_EXIT_MS, 1600);
   assert.ok(INTRO_GATE_HARD_EXIT_MS > INTRO_GATE_MIN_VISIBLE_MS);
-  assert.equal(scheduledDelay, 17000);
+  assert.equal(scheduledDelay, 62000);
   scheduledCallback();
   assert.equal(exited, true);
   cancel();
