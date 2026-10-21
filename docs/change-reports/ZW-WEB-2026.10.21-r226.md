@@ -26,9 +26,10 @@
 - 天象時刻由 Cafe Astrology、CHANI、Astrolis 與 Swiss Ephemeris 相關星曆交叉查核；悉尼時刻按 AEDT（UTC+11）換算。各來源約一分鐘的時刻差異已標示為近似值。
 - 本地 `npm run check` 與 `npm run build`：通過；建置輸出含獨立 lazy `sky-events` chunk。
 - 定向測試 `scripts/today-sky-cards.test.mjs` 與 `scripts/release-ledger.release.mjs`：14/14 通過。`npm run test:deploy` 的原有首頁斷言與目前 `PaintedHome` 標記不一致，已調整測試定位至 `data-home-resolve`／`data-home-birth-entry`，待重跑。
-- Engine suite 曾以 main 基線重跑：1180 項中 108 項失敗，包含多個既有缺檔／舊契約錯誤；待確認分支結果是否相同，未將其視為通過。
-- GitHub Actions：待確認 Deploy gate、Engine suite、iPhone Safari 三項檢查。
-- Production deployment 與部署 bundle：待確認；未完成驗證前不得寫入 Supabase release ledger。
+- 本地 `npm run test:deploy`：前置 Deploy pretest 45/45 通過；其後部署契約測試 225/250 通過、23 項失敗、2 項略過。
+- 本地 `npm run test:engine`：1,181 項中 1,069 通過、107 失敗、4 項略過、1 項 todo；全套不通過，不以部分通過替代。
+- GitHub PR #818 / commit `9c3b8ad33278eb486009115f5e36c3df367a07cd`：check-runs 目前為 0。`build.yml` 僅由 `workflow_dispatch` 觸發，且其中 iPhone Safari job 設為 `if: false`；本執行環境沒有 workflow-dispatch 寫入工具，三項指定 Actions 尚未執行。
+- Vercel 唯一 Production 最新部署仍為 READY `dpl_DnfqKLCyqK4oW87mwYg2u63Aba2q`，SHA `35baa8d4bf0a636f4c83f24db059f9e1da5383b8`；本 PR 尚未部署。故不寫入 Supabase release ledger。
 
 ## 回滾
 
