@@ -60,7 +60,7 @@ function Pill({ tone, children }: { tone: keyof typeof TONE_CLASS; children: Rea
 function threadsErrorText(code: string) {
   if (code.includes("OWNER_REQUIRED")) return "後台登入已過期。請重新登入後台，再按一次。";
   if (code.includes("ORIGIN_REJECTED")) return "請從 zhao-wu.com 打開後台再按；舊網址會自動轉到正式網址。";
-  if (code.includes("THREADS_OAUTH_NOT_CONFIGURED")) return "伺服器還沒設定 Meta 應用（META_APP_ID / META_APP_SECRET）。";
+  if (code.includes("THREADS_OAUTH_NOT_CONFIGURED")) return "伺服器尚未設定 Threads 專用應用程式憑證（THREADS_APP_ID / THREADS_APP_SECRET）；不能沿用 Facebook 的 META_APP_ID。";
   return `無法開始授權：${code || "未知錯誤"}`;
 }
 
@@ -289,9 +289,10 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
                 <summary className="min-h-11 cursor-pointer py-3 text-ink">按了之後沒有看到「允許」？</summary>
                 <ol className="list-decimal space-y-1 pl-5 leading-6">
                   <li>授權頁在 Threads 網站上，不是彈窗。要在已登入 @{data.channels?.targets.threads || "你的帳號"} 的瀏覽器（Safari）裡做；如果跳進 Threads App，回到 Safari 重按。</li>
-                  <li>Meta 開發者後台 → 你的應用 → Threads API → 把這個 Threads 帳號加為「Threads 測試人員」，再到 Threads App：設定 → 帳號 → 網站權限 → 邀請，按「接受」。</li>
+                  <li>Meta 開發者後台 → Threads 專屬 App（不是 Facebook App）→ Threads API → 把這個 Threads 帳號加為「Threads 測試人員」，再到 Threads App：設定 → 帳號 → 網站權限 → 邀請，按「接受」。</li>
                   <li>同一頁的「有效的 OAuth 重新導向 URI」要填：{data.channels?.oauth?.redirectUri ? <code className="break-all rounded bg-paper px-1">{data.channels.oauth.redirectUri}</code> : "（讀取中）"}</li>
-                  {data.channels?.oauth && !data.channels.oauth.ready ? <li className="text-cinnabar">伺服器還沒設定 Meta 應用金鑰，這一步會失敗。</li> : null}
+                  <li>Threads 表單三欄必填；OAuth 回呼使用上一行網址。解除安裝回呼填 <code className="break-all rounded bg-paper px-1">https://zhao-wu.com/api/owner-session?action=threads.deauthorize</code>；資料刪除回呼填 <code className="break-all rounded bg-paper px-1">https://zhao-wu.com/api/owner-session?action=threads.data-deletion</code>。這兩個安全回呼必須先正式部署才可供 Meta 使用，不能拿登入回呼冒充。</li>
+                  {data.channels?.oauth && !data.channels.oauth.ready ? <li className="text-cinnabar">Threads 專用 App ID／Secret 尚未完成設定，OAuth 暫不可用。</li> : null}
                 </ol>
               </details>
             ) : null}

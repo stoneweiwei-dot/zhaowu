@@ -32,6 +32,7 @@ import { metaAccountStoreRequest } from "../lib/meta-account-store.js";
 import { runAutopublish } from "../lib/social-scheduler.js";
 import { handleAutopublishAction } from "../lib/social-owner-actions.js";
 import { timingSafeEqual } from "node:crypto";
+import { handleThreadsMetaCallback } from "../lib/threads-meta-callback.js";
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -192,6 +193,10 @@ async function handleMetaCallback(req, res, ownerSecret) {
 export default async function handler(req, res) {
   try {
     const method = req.method || "GET";
+    const threadsEvent = queryValue(req, "action");
+    if (["threads.deauthorize", "threads.data-deletion", "threads.deletion-status"].includes(threadsEvent)) {
+      return handleThreadsMetaCallback(req, res);
+    }
     if (method === "GET") {
       if (queryValue(req, "action") === "cron.autopublish") {
         if (!requestIsAuthorizedCron(req)) return json(res, 401, { ok: false, error: "CRON_UNAUTHORIZED" });
