@@ -15,6 +15,8 @@ import {
   exchangeMetaAuthorizationCode,
   metaAuthorizationOwnerProof,
   verifyMetaAuthorization,
+  encryptMetaAccessToken,
+  decryptMetaAccessToken,
 } from "../lib/meta-oauth.js";
 
 const root = new URL("../", import.meta.url);
@@ -319,4 +321,18 @@ test("Threads OAuth never borrows the Facebook app credentials", () => {
   const facebookOnly = { META_APP_ID: "facebook-app", META_APP_SECRET: "facebook-secret" };
   assert.equal(threadsOauthConfiguration(facebookOnly).ready, false);
   assert.throws(() => createThreadsAuthorization(facebookOnly), /THREADS_OAUTH_NOT_CONFIGURED/);
+});
+
+test("Meta token encryption retains legacy key after dedicated Threads OAuth setup", () => {
+  const legacy = {
+    META_APP_SECRET: "facebook-legacy-token-key",
+    THREADS_APP_SECRET: "facebook-legacy-token-key",
+    ZHAOWU_OWNER_BRIDGE_SECRET: "stable-bridge",
+  };
+  const split = { ...legacy, THREADS_APP_SECRET: "different-threads-token-key" };
+  const savedBeforeMigration = encryptThreadsAccessToken("existing-facebook-token", legacy);
+  assert.equal(decryptMetaAccessToken(savedBeforeMigration, split), "existing-facebook-token");
+  const newFacebookCipher = encryptMetaAccessToken("new-facebook-token", split);
+  assert.equal(decryptMetaAccessToken(newFacebookCipher, split), "new-facebook-token");
+  assert.throws(() => decryptThreadsAccessToken(newFacebookCipher, split));
 });
