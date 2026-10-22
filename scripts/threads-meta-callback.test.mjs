@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
-import { handleThreadsMetaCallback, verifyThreadsSignedRequest } from "../api/threads-meta-callback.js";
+import { handleThreadsMetaCallback, verifyThreadsSignedRequest } from "../lib/threads-meta-callback.js";
 
 const secret = "threads-test-secret-not-production";
 const env = { THREADS_APP_SECRET: secret, SUPABASE_SERVICE_ROLE_KEY: "fake-test-service-key", SUPABASE_URL: "https://example.supabase.co", PUBLIC_SITE_ORIGIN: "https://zhao-wu.com" };
@@ -10,7 +10,7 @@ function signed(userId = "123456789", at = Date.now()) {
   return createHmac("sha256", secret).update(payload).digest("base64url") + "." + payload;
 }
 function request(action, input, method = "POST") {
-  return { method, url: "/api/threads-meta-callback?action=" + action, body: { signed_request: input } };
+  return { method, url: "/api/owner-session?action=threads." + action, body: { signed_request: input } };
 }
 
 test("reject forged or stale signed_request before any deletion", async () => {
@@ -43,7 +43,7 @@ test("data deletion records completed status only after success and provides sta
   });
   const body = await response.json();
   assert.equal(response.status, 200);
-  assert.match(body.url, /^https:\/\/zhao-wu.com\/api\/threads-meta-callback\?code=[a-f0-9]{48}$/);
+  assert.match(body.url, /^https:\/\/zhao-wu.com\/api\/owner-session\?action=threads\.deletion-status&code=[a-f0-9]{48}$/);
   assert.match(body.confirmation_code, /^[a-f0-9]{48}$/);
   assert.equal(calls[0].method, "DELETE");
   assert.equal(calls[1].method, "POST");
@@ -56,6 +56,6 @@ test("upstream delete failures never emit false completed status", async () => {
 });
 
 test("GET health check cannot erase any account", async () => {
-  const response = await handleThreadsMetaCallback({ method: "GET", url: "/api/threads-meta-callback?action=deauthorize" }, null, env, async () => { throw Error("should not call"); });
+  const response = await handleThreadsMetaCallback({ method: "GET", url: "/api/owner-session?action=threads.deauthorize" }, null, env, async () => { throw Error("should not call"); });
   assert.equal(response.status, 200);
 });
