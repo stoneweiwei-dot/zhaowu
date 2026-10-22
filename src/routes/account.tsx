@@ -26,7 +26,7 @@ import { ConsoleOverview, type OverviewTarget } from "@/components/owner/console
 type ConsoleView = "overview" | "reports" | "autopublish" | "images" | "opening" | "themes" | "promo" | "articles";
 const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "autopublish", "images", "opening", "themes", "promo", "articles"];
 
-/** Initial tab: `?view=` (used by the Threads OAuth return) otherwise the overview. */
+/** Initial tab: `?view=` (used by Meta OAuth returns) otherwise the overview. */
 function initialConsoleView(): ConsoleView {
   try {
     const requested = new URLSearchParams(window.location.search).get("view");
@@ -35,12 +35,15 @@ function initialConsoleView(): ConsoleView {
   return "overview";
 }
 
-function initialThreadsNotice(): string {
+function initialSocialNotice(): string {
   try {
     const params = new URLSearchParams(window.location.search);
     const result = params.get("threads");
     if (result === "connected") return `Threads @${params.get("username") || ""} 已連接，自動發佈會在排程日自動開始。`;
     if (result === "error") return "Threads 授權失敗，請再試一次。";
+    const meta = params.get("meta");
+    if (meta === "connected") return `Meta 已連接 ${params.get("pages") || ""} 個 Facebook 粉絲專頁；關聯的 Instagram 也已可用。`;
+    if (meta === "error") return "Meta 授權失敗，請再按一次「連接 Meta」。";
   } catch { /* ignore */ }
   return "";
 }
@@ -117,7 +120,7 @@ function AccountPage() {
   const { user, session, isPending } = useCurrentUserState();
   const [consoleView, setConsoleView] = useState<ConsoleView>(initialConsoleView);
   const [visitedViews, setVisitedViews] = useState<Set<ConsoleView>>(() => new Set([initialConsoleView(), "reports"]));
-  const [threadsNotice] = useState(initialThreadsNotice);
+  const [socialNotice] = useState(initialSocialNotice);
   function selectConsoleView(view: ConsoleView) {
     setConsoleView(view);
     setVisitedViews((previous) => new Set([...previous, view]));
@@ -510,7 +513,7 @@ function AccountPage() {
         {visitedViews.has("articles") ? <Suspense fallback={<p role="status" className="p-5 text-ink">Loading articles…</p>}><OwnerArticleManager locale={locale} /></Suspense> : null}
       </div>
       <div id="console-panel-autopublish" role="region" aria-labelledby="console-tab-autopublish" hidden={consoleView !== "autopublish"}>
-        {visitedViews.has("autopublish") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入自動發佈…", "加载自动发布…", "Loading auto-publish…")}</p>}><AutopublishPanel initialNotice={threadsNotice} /></Suspense> : null}
+        {visitedViews.has("autopublish") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入自動發佈…", "加载自动发布…", "Loading auto-publish…")}</p>}><AutopublishPanel initialNotice={socialNotice} /></Suspense> : null}
       </div>
 
       <Link to="/" className="inline-flex h-11 items-center rounded-full border border-line bg-cream px-5 text-ink">{t("backHome")}</Link>

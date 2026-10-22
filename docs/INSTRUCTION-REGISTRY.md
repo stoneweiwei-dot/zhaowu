@@ -1,3 +1,10 @@
+## 2026-10-22｜Meta 官方授權 × Facebook／Instagram 自動發佈
+
+- ACTIVE：昭梧站主後台沿用既有 `/api/owner-session`，新增 Facebook Login 官方 OAuth；站主同意一次後，系統自動讀取其管理的 Facebook 粉絲專頁，以及每個粉絲專頁關聯的 Instagram 專業帳號。Facebook 粉絲專頁可自動發純文字或圖片，Instagram 依官方接口發公開圖片貼文；兩者皆可加入既有排程，不以 Metricool 付費方案為前提。
+- ACTIVE：Facebook Page access token 以 AES-256-GCM 密文保存於 server-only `social_meta_accounts`；`public`、`anon`、`authenticated` 均無表權限。瀏覽器只取得粉絲專頁名稱、ID、Instagram 公開帳號資料與連接狀態，不取得令牌。
+- ACTIVE：即時發布與每日排程共用同一批已勾選的 Meta 連接；排程仍由既有 Vercel Cron、`zhaowu-social-queue` 與一天一次防重複機制執行。不新增 Vercel Function、不新增付費 SaaS；Metricool 可保留作外部工具，但不再是昭梧發布必要依賴。
+- COMPATIBLE：既有 Threads 多帳號 OAuth 與舊 Instagram／Threads 環境變數回退保留。小紅書與 X 仍為文案準備完成後手動確認；Facebook 自本條起不再歸類為手動平台。
+
 ## 2026-10-23｜第二波指令 10–14：manifest 三語 × /guide 收編 × 空模組閘門 × release.json 監控
 
 - 站主指令：10 manifest 依語言輸出（zh-TW／zh-Hans／en）；11 /guide 二選一收編；12 atlas 空區塊「有內容或入口不存在」；13 release.json 每日監控；14 把「空狀態不得進對外導航」寫成 CI。

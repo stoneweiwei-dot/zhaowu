@@ -14,6 +14,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const SETTINGS_SELECT = "id,enabled,publish_days,channels,attach_image,paused_reason,updated_at";
 const QUEUE_SELECT = "id,status,source,bank_key,body,image_url,alt_text,channels,not_before,slot_date,results,attempts,last_error,published_at,created_at,updated_at";
 const THREADS_SELECT = "id,threads_user_id,username,access_token_ciphertext,token_expires_at";
+const META_SELECT = "id,page_id,page_name,instagram_user_id,instagram_username,access_token_ciphertext,token_expires_at";
 const CHANNELS = new Set(["threads", "instagram", "xiaohongshu", "facebook", "x"]);
 const EDITABLE = new Set(["draft", "scheduled", "failed", "manual", "skipped"]);
 const STALE_PUBLISHING_MS = 15 * 60 * 1000;
@@ -24,6 +25,7 @@ const ALLOWED = new Set([
   "queue.nextOwner", "queue.recentBankKeys",
   "run.claim", "run.finish",
   "accounts.list",
+  "metaAccounts.list",
 ]);
 
 function text(value: unknown) { return String(value ?? "").trim(); }
@@ -267,6 +269,12 @@ Deno.serve(async (request: Request) => {
 
     if (action === "accounts.list") {
       const { data, error } = await db.from("social_threads_accounts").select(THREADS_SELECT).order("connected_at", { ascending: true });
+      if (error) throw error;
+      return json(200, { ok: true, items: data ?? [] });
+    }
+
+    if (action === "metaAccounts.list") {
+      const { data, error } = await db.from("social_meta_accounts").select(META_SELECT).order("connected_at", { ascending: true });
       if (error) throw error;
       return json(200, { ok: true, items: data ?? [] });
     }

@@ -17,6 +17,18 @@ import {
   verifyThreadsAuthorization,
 } from "../lib/threads-oauth.js";
 import { threadsAccountStoreRequest } from "../lib/threads-account-store.js";
+import {
+  clearMetaOauthCookie,
+  createMetaAuthorization,
+  decryptMetaAccessToken,
+  encryptMetaAccessToken,
+  exchangeMetaAuthorizationCode,
+  metaAuthorizationOwnerProof,
+  metaOauthConfiguration,
+  tokenFingerprint as metaTokenFingerprint,
+  verifyMetaAuthorization,
+} from "../lib/meta-oauth.js";
+import { metaAccountStoreRequest } from "../lib/meta-account-store.js";
 import { runAutopublish } from "../lib/social-scheduler.js";
 import { handleAutopublishAction } from "../lib/social-owner-actions.js";
 import { timingSafeEqual } from "node:crypto";
@@ -103,8 +115,26 @@ function publicThreadAccount(row, source = "oauth") {
   };
 }
 
+function publicMetaAccount(row, source = "oauth") {
+  return {
+    id: String(row.id),
+    pageId: String(row.page_id || row.pageId || ""),
+    pageName: String(row.page_name || row.pageName || ""),
+    instagramUserId: String(row.instagram_user_id || row.instagramUserId || ""),
+    instagramUsername: String(row.instagram_username || row.instagramUsername || "").replace(/^@+/, ""),
+    profilePictureUrl: String(row.profile_picture_url || row.profilePictureUrl || ""),
+    expiresAt: row.token_expires_at || row.expiresAt || null,
+    source,
+  };
+}
+
 async function storedThreadsAccounts(ownerSecret) {
   const body = await threadsAccountStoreRequest("social.threads.list", {}, ownerSecret);
+  return Array.isArray(body?.items) ? body.items : [];
+}
+
+async function storedMetaAccounts(ownerSecret) {
+  const body = await metaAccountStoreRequest("social.meta.list", {}, ownerSecret);
   return Array.isArray(body?.items) ? body.items : [];
 }
 
@@ -132,6 +162,33 @@ async function handleThreadsCallback(req, res, ownerSecret) {
   }
 }
 
+async function handleMetaCallback(req, res, ownerSecret) {
+  const state = queryValue(req, "state");
+  const code = queryValue(req, "code");
+  const oauthError = queryValue(req, "error") || queryValue(req, "error_reason");
+  if (oauthError) return redirect(res, `/account?view=autopublish&meta=error&reason=${encodeURIComponent(oauthError)}`, clearMetaOauthCookie());
+  if (!code || !verifyMetaAuthorization(req, state)) return redirect(res, "/account?view=autopublish&meta=error&reason=invalid_state", clearMetaOauthCookie());
+  try {
+    const accounts = await exchangeMetaAuthorizationCode(code);
+    for (const account of accounts) {
+      await metaAccountStoreRequest("social.meta.upsert", {
+        pageId: account.pageId,
+        pageName: account.pageName,
+        instagramUserId: account.instagramUserId,
+        instagramUsername: account.instagramUsername,
+        profilePictureUrl: account.profilePictureUrl,
+        accessTokenCiphertext: encryptMetaAccessToken(account.accessToken),
+        tokenFingerprint: metaTokenFingerprint(account.accessToken),
+        tokenExpiresAt: account.tokenExpiresAt,
+      }, ownerSecret);
+    }
+    return redirect(res, `/account?view=autopublish&meta=connected&pages=${accounts.length}`, clearMetaOauthCookie());
+  } catch (error) {
+    const codeValue = error instanceof Error ? error.message.split(":")[0] : "oauth_failed";
+    return redirect(res, `/account?view=autopublish&meta=error&reason=${encodeURIComponent(codeValue)}`, clearMetaOauthCookie());
+  }
+}
+
 export default async function handler(req, res) {
   try {
     const method = req.method || "GET";
@@ -151,6 +208,11 @@ export default async function handler(req, res) {
         if (!ownerSecret) return redirect(res, "/login?redirect=%2Fsocial");
         return handleThreadsCallback(req, res, ownerSecret);
       }
+      if (queryValue(req, "action") === "meta.callback") {
+        if (!ownerSecret) ownerSecret = ownerSecretFromCookieValue(metaAuthorizationOwnerProof(req));
+        if (!ownerSecret) return redirect(res, "/login?redirect=%2Faccount%3Fview%3Dautopublish", clearMetaOauthCookie());
+        return handleMetaCallback(req, res, ownerSecret);
+      }
       return json(res, 200, { authenticated: Boolean(ownerSecret) });
     }
     if (method !== "POST") return json(res, 405, { authenticated: false });
@@ -161,17 +223,24 @@ export default async function handler(req, res) {
     const payload = await readJsonBody(req);
     if (payload?.action === "social.status") {
       const base = socialConfiguration();
-      let rows = [];
-      try { rows = await storedThreadsAccounts(ownerSecret); } catch { /* legacy env publishing may still work */ }
-      const threadsAccounts = rows.map((row) => publicThreadAccount(row));
+      let threadRows = [];
+      let metaRows = [];
+      try { threadRows = await storedThreadsAccounts(ownerSecret); } catch { /* legacy env publishing may still work */ }
+      try { metaRows = await storedMetaAccounts(ownerSecret); } catch { /* legacy env publishing may still work */ }
+      const threadsAccounts = threadRows.map((row) => publicThreadAccount(row));
+      const metaAccounts = metaRows.map((row) => publicMetaAccount(row));
       return json(res, 200, {
         ok: true,
         channels: {
           ...base,
           threads: threadsAccounts.length > 0 || base.threads,
-          ready: base.instagram || base.threads || threadsAccounts.length > 0,
+          instagram: metaAccounts.some((account) => account.instagramUserId) || base.instagram,
+          facebook: metaAccounts.length > 0 || base.facebook,
+          ready: base.instagram || base.facebook || base.threads || threadsAccounts.length > 0 || metaAccounts.length > 0,
           threadsOauthReady: threadsOauthConfiguration().ready,
+          metaOauthReady: metaOauthConfiguration().ready,
           threadsAccounts,
+          metaAccounts,
         },
       });
     }
@@ -183,6 +252,16 @@ export default async function handler(req, res) {
       const id = String(payload?.accountId || "").trim();
       if (!/^[0-9a-f-]{36}$/i.test(id)) return json(res, 400, { ok: false, error: "INVALID_THREADS_ACCOUNT" });
       await threadsAccountStoreRequest("social.threads.delete", { id }, ownerSecret);
+      return json(res, 200, { ok: true });
+    }
+    if (payload?.action === "social.meta.connect") {
+      const authorization = createMetaAuthorization(process.env, Date.now(), ownerCookieValue(ownerSecret));
+      return json(res, 200, { ok: true, url: authorization.url }, { "Set-Cookie": authorization.cookie });
+    }
+    if (payload?.action === "social.meta.disconnect") {
+      const id = String(payload?.accountId || "").trim();
+      if (!/^[0-9a-f-]{36}$/i.test(id)) return json(res, 400, { ok: false, error: "INVALID_META_ACCOUNT" });
+      await metaAccountStoreRequest("social.meta.delete", { id }, ownerSecret);
       return json(res, 200, { ok: true });
     }
     if (typeof payload?.action === "string" && payload.action.startsWith("autopublish.")) {
@@ -209,7 +288,22 @@ export default async function handler(req, res) {
         accessToken: decryptThreadsAccessToken(row.access_token_ciphertext),
       }));
     }
-    const results = await publishSocialPost(payload, process.env, fetch, threadAccounts);
+    let metaAccounts = [];
+    if (Array.isArray(payload?.channels) && (payload.channels.includes("instagram") || payload.channels.includes("facebook"))) {
+      const rows = await storedMetaAccounts(ownerSecret);
+      const requested = new Set(Array.isArray(payload?.metaAccountIds) ? payload.metaAccountIds.map(String) : []);
+      const selectedRows = requested.size ? rows.filter((row) => requested.has(String(row.id))) : rows;
+      if (requested.size && selectedRows.length !== requested.size) return json(res, 400, { ok: false, error: "UNKNOWN_META_ACCOUNT" });
+      metaAccounts = selectedRows.map((row) => ({
+        id: String(row.id),
+        pageId: String(row.page_id),
+        pageName: String(row.page_name),
+        instagramUserId: String(row.instagram_user_id || ""),
+        instagramUsername: String(row.instagram_username || ""),
+        accessToken: decryptMetaAccessToken(row.access_token_ciphertext),
+      }));
+    }
+    const results = await publishSocialPost(payload, process.env, fetch, threadAccounts, metaAccounts);
     const successCount = Object.values(results).filter((result) => result?.ok).length;
     return json(res, successCount ? 200 : 502, { ok: successCount > 0, results });
   } catch (error) {

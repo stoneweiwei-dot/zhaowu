@@ -13,7 +13,7 @@ import {
   type QueueItem,
   type QueueStatus,
 } from "@/lib/owner-autopublish-client";
-import { disconnectThreadsAccount, startThreadsConnection } from "@/lib/owner-social-client";
+import { disconnectMetaAccount, disconnectThreadsAccount, startMetaConnection, startThreadsConnection } from "@/lib/owner-social-client";
 
 const SocialPublisherPage = lazy(() => import("@/routes/social").then((m) => ({ default: m.SocialPublisherPage })));
 
@@ -25,8 +25,8 @@ const CHANNEL_LABEL: Record<QueueChannel, string> = {
   facebook: "Facebook",
   x: "X",
 };
-const AUTO_CHANNELS: QueueChannel[] = ["threads", "instagram"];
-const MANUAL_CHANNELS: QueueChannel[] = ["xiaohongshu", "facebook", "x"];
+const AUTO_CHANNELS: QueueChannel[] = ["threads", "instagram", "facebook"];
+const MANUAL_CHANNELS: QueueChannel[] = ["xiaohongshu", "x"];
 const STATUS_LABEL: Record<QueueStatus, { text: string; tone: "ok" | "warn" | "bad" | "mute" }> = {
   draft: { text: "草稿", tone: "mute" },
   scheduled: { text: "排隊中", tone: "warn" },
@@ -64,6 +64,13 @@ function threadsErrorText(code: string) {
   return `無法開始授權：${code || "未知錯誤"}`;
 }
 
+function metaErrorText(code: string) {
+  if (code.includes("OWNER_REQUIRED")) return "後台登入已過期。請重新登入，再按一次。";
+  if (code.includes("ORIGIN_REJECTED")) return "請從 zhao-wu.com 打開後台再按。";
+  if (code.includes("META_OAUTH_NOT_CONFIGURED")) return "伺服器還沒設定 Meta 應用金鑰。";
+  return `無法開始 Meta 授權：${code || "未知錯誤"}`;
+}
+
 /** Where to paste each manual channel. X accepts prefilled text; the others open their composer. */
 function composeLink(channel: QueueChannel, body: string): { href: string; label: string } | null {
   if (channel === "x") return { href: `https://x.com/intent/post?text=${encodeURIComponent(body.slice(0, 280))}`, label: "打開 X（文案已帶入）" };
@@ -81,6 +88,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
   const [error, setError] = useState("");
   const [notice, setNotice] = useState(initialNotice);
   const [threadsStatus, setThreadsStatus] = useState<{ tone: "info" | "error"; text: string; url?: string } | null>(null);
+  const [metaStatus, setMetaStatus] = useState<{ tone: "info" | "error"; text: string; url?: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [draftBody, setDraftBody] = useState("");
@@ -112,6 +120,17 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
     }
   }
 
+  async function connectMeta() {
+    setMetaStatus({ tone: "info", text: "正在準備 Meta 授權頁…" });
+    try {
+      const url = await startMetaConnection();
+      setMetaStatus({ tone: "info", text: "正在前往 Facebook。登入後按「繼續」與「允許」，系統會自動帶回你的粉絲專頁及 Instagram。", url });
+      window.setTimeout(() => window.location.assign(url), 400);
+    } catch (err) {
+      setMetaStatus({ tone: "error", text: metaErrorText(err instanceof Error ? err.message : "") });
+    }
+  }
+
   async function act(task: () => Promise<unknown>, success = "") {
     setBusy(true);
     setError("");
@@ -129,7 +148,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
   const settings = data?.settings;
   const items = data?.items ?? [];
   const threadsConnected = Boolean(data?.channels?.threads);
-  const autoChannelConnected = (channel: QueueChannel) => channel === "threads" ? threadsConnected : channel === "instagram" ? Boolean(data?.channels?.instagram) : true;
+  const autoChannelConnected = (channel: QueueChannel) => channel === "threads" ? threadsConnected : channel === "instagram" ? Boolean(data?.channels?.instagram) : channel === "facebook" ? Boolean(data?.channels?.facebook) : true;
   const manualTasks = items.filter((item) => pendingManualChannels(item).length > 0);
   const queued = items.filter((item) => item.status === "scheduled" || item.status === "draft");
   const history = items.filter((item) => !["scheduled", "draft", "manual"].includes(item.status));
@@ -278,13 +297,27 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
             ) : null}
           </article>
           <article className="rounded-xl border border-line bg-paper/40 p-4">
-            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Instagram</h4><Pill tone={data.channels?.instagram ? "ok" : "mute"}>{data.channels?.instagram ? "已設定" : "未設定"}</Pill></div>
-            <p className="mt-3 text-sm leading-6 text-ink-soft">Instagram 官方接口只能發「帶圖」貼文，而且要「專業帳號」加上 Meta 開發者授權，這一步只有你的帳號能做。{data.channels?.instagram ? "目前已設定，貼文會附圖自動發出。" : "在這之前，勾選 Instagram 的貼文會進「待手動發布」，不會漏掉。"}</p>
-            {!data.channels?.instagram ? <details className="mt-2 text-sm text-ink-soft"><summary className="min-h-11 cursor-pointer py-3 text-ink">怎麼接上 Instagram？</summary><ol className="list-decimal space-y-1 pl-5 leading-6"><li>Instagram 帳號切成「專業帳號」（設定 → 帳號類型）。</li><li>Meta 開發者後台（developers.facebook.com）→ 你的應用 → 加入「Instagram」產品，把自己加為測試人員。</li><li>產生長效存取權杖，連同 Instagram 用戶 ID，交給我設定到 Vercel（META_INSTAGRAM_USER_ID / META_INSTAGRAM_ACCESS_TOKEN）。</li></ol></details> : null}
+            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Facebook + Instagram</h4><Pill tone={data.channels?.facebook || data.channels?.instagram ? "ok" : "mute"}>{data.channels?.facebook || data.channels?.instagram ? "已連接" : "未連接"}</Pill></div>
+            {data.channels?.metaAccounts?.length ? (
+              <ul className="mt-3 space-y-2 text-sm">
+                {data.channels.metaAccounts.map((account) => (
+                  <li key={account.id} className="flex items-start justify-between gap-2 rounded-lg border border-line bg-cream/60 p-2">
+                    <span className="min-w-0"><span className="block truncate font-medium">{account.pageName}</span><span className="block truncate text-xs text-ink-mute">Facebook 粉絲專頁{account.instagramUsername ? ` · Instagram @${account.instagramUsername}` : " · 未連結 Instagram 專業帳號"}</span></span>
+                    <button type="button" disabled={busy} className="shrink-0 text-xs text-cinnabar underline disabled:opacity-40" onClick={() => { if (window.confirm(`中斷 ${account.pageName}？`)) void act(() => disconnectMetaAccount(account.id), "已中斷連接。"); }}>中斷</button>
+                  </li>
+                ))}
+              </ul>
+            ) : <p className="mt-3 text-sm leading-6 text-ink-soft">按一次 Meta 授權，系統會自動讀取你管理的 Facebook 粉絲專頁，以及與它連結的 Instagram 專業帳號。以後排程會自己發。</p>}
+            <button type="button" disabled={busy || metaStatus?.tone === "info"} className="mt-3 min-h-11 rounded-full bg-wood px-5 text-sm text-cream disabled:opacity-60" onClick={() => void connectMeta()}>
+              {data.channels?.metaAccounts?.length ? "重新授權 / 新增粉絲專頁" : "連接 Meta"}
+            </button>
+            {metaStatus ? <div role={metaStatus.tone === "error" ? "alert" : "status"} className={`mt-3 rounded-md border px-3 py-3 text-sm leading-6 ${metaStatus.tone === "error" ? "border-cinnabar/30 bg-cinnabar/5 text-cinnabar-deep" : "border-line bg-paper/70 text-ink-soft"}`}>{metaStatus.text}{metaStatus.url ? <a href={metaStatus.url} className="mt-2 flex min-h-11 items-center justify-center rounded-full border border-line bg-cream px-4 text-ink">前往 Meta 授權</a> : null}</div> : null}
+            {!data.channels?.metaOauth?.ready ? <p className="mt-2 text-xs text-cinnabar">Meta 應用金鑰尚未設定，暫時不能開始授權。</p> : null}
+            <p className="mt-3 text-xs leading-5 text-ink-mute">Instagram 官方接口只接受帶圖貼文；Facebook 可發純文字或圖片。授權畫面上看到的粉絲專頁就是系統之後會代你發布的位置。</p>
           </article>
           <article className="rounded-xl border border-line bg-paper/40 p-4 sm:col-span-2">
-            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">小紅書 / Facebook / X</h4><Pill tone="warn">半自動</Pill></div>
-            <p className="mt-3 text-sm leading-6 text-ink-soft">這些平台沒有可用的官方個人發佈接口（強行自動化會有封號風險）。勾選後，到發佈日系統會把文案準備好放進下方「待手動發布」，你只要複製、貼上、按一下「已發布」。</p>
+            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">小紅書 / X</h4><Pill tone="warn">半自動</Pill></div>
+            <p className="mt-3 text-sm leading-6 text-ink-soft">這兩個平台目前仍需要手動確認。到發佈日系統會把文案準備好放進下方「待手動發布」，你只要複製、貼上、按一下「已發布」。</p>
           </article>
         </div>
       </section>
