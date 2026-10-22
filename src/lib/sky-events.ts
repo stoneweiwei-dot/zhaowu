@@ -13,6 +13,87 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    id: "sun-scorpio-venus-inferior-conjunction-2026-10-23",
+    published: "2026-10-22",
+    status: "active",
+    title: {
+      "zh-Hant": "太陽入天蠍、金星下合：10 月 23–24 日的交界時刻",
+      "zh-Hans": "太阳入天蝎、金星下合：10 月 23–24 日的交界时刻",
+      en: "Sun enters Scorpio and Venus passes inferior conjunction, 23–24 October"
+    },
+    subtitle: {
+      "zh-Hant": "悉尼時間（AEDT，UTC+11）｜10/23 20:37 太陽入天蠍；10/24 15:39 金星下合、18:12 水星開始視逆行",
+      "zh-Hans": "悉尼时间（AEDT，UTC+11）｜10/23 20:37 太阳入天蝎；10/24 15:39 金星下合、18:12 水星开始视逆行",
+      en: "Sydney (AEDT, UTC+11) | 23 Oct 20:37 Sun enters Scorpio; 24 Oct 15:39 Venus inferior conjunction, 18:12 Mercury stations retrograde"
+    },
+    facts: [
+      {
+        date: "2026-10-23",
+        label: {
+          "zh-Hant": "太陽於 UTC 10 月 23 日約 09:37（悉尼 20:37）進入熱帶黃道天蠍座 0°。",
+          "zh-Hans": "太阳于 UTC 10 月 23 日约 09:37（悉尼 20:37）进入热带黄道天蝎座 0°。",
+          en: "The Sun enters 0° tropical Scorpio at about 09:37 UTC on 23 Oct (20:37 Sydney)."
+        }
+      },
+      {
+        date: "2026-10-24",
+        label: {
+          "zh-Hant": "金星於 UTC 10 月 24 日約 04:00–04:39（悉尼約 15:00–15:39）抵達下合：金星位於地球與太陽之間，視黃經與太陽相同。",
+          "zh-Hans": "金星于 UTC 10 月 24 日约 04:00–04:39（悉尼约 15:00–15:39）抵达下合：金星位于地球与太阳之间，视黄经与太阳相同。",
+          en: "Venus reaches inferior conjunction at about 04:00–04:39 UTC on 24 Oct (about 15:00–15:39 Sydney): Venus lies between Earth and the Sun at the same ecliptic longitude."
+        }
+      },
+      {
+        date: "2026-10-24",
+        label: {
+          "zh-Hant": "水星於 UTC 10 月 24 日約 07:12（悉尼 18:12）在天蠍約 20°59′轉為視逆行，至 11 月中旬恢復順行。",
+          "zh-Hans": "水星于 UTC 10 月 24 日约 07:12（悉尼 18:12）在天蝎约 20°59′转为视逆行，至 11 月中旬恢复顺行。",
+          en: "Mercury stations retrograde at about 07:12 UTC on 24 Oct (18:12 Sydney) near 20°59′ Scorpio and turns direct in mid-November."
+        }
+      }
+    ],
+    science: {
+      "zh-Hant": [
+        "太陽入天蠍是熱帶黃道上太陽黃經達到 210° 的時刻；它是季節性座標分界，不代表太陽進入天蠍座星群，也不是肉眼可見的事件。",
+        "金星下合時，金星位於地球與太陽之間，但軌道略偏離黃道面，因此通常不會凌日，也因離太陽太近而無法觀測；之後金星會由傍晚天空轉入黎明天空。切勿用肉眼或未加濾光的儀器尋找太陽附近的金星。",
+        "水星的「逆行」是地球與水星相對運動造成的視運動方向改變，行星並未真的倒退。三個事件的時刻在不同來源中差約 1 分鐘至數十分鐘，取決於座標慣例與取整；此處以 UTC 為準，悉尼時間按 AEDT（UTC+11）換算。"
+      ],
+      "zh-Hans": [
+        "太阳入天蝎是热带黄道上太阳黄经达到 210° 的时刻；它是季节性坐标分界，不代表太阳进入天蝎座星群，也不是肉眼可见的事件。",
+        "金星下合时，金星位于地球与太阳之间，但轨道略偏离黄道面，因此通常不会凌日，也因离太阳太近而无法观测；之后金星会由傍晚天空转入黎明天空。切勿用肉眼或未加滤光的仪器寻找太阳附近的金星。",
+        "水星的“逆行”是地球与水星相对运动造成的视运动方向改变，行星并未真的倒退。三个事件的时刻在不同来源中相差约 1 分钟至数十分钟，取决于坐标惯例与取整；此处以 UTC 为准，悉尼时间按 AEDT（UTC+11）换算。"
+      ],
+      en: [
+        "The Sun's ingress into Scorpio is the moment its tropical ecliptic longitude reaches 210°. It is a seasonal coordinate boundary, not the Sun entering the Scorpius constellation, and nothing is visible to the eye.",
+        "At inferior conjunction Venus lies between Earth and the Sun, but its orbit is slightly tilted to the ecliptic, so it normally does not transit the Sun; it is also too close to the Sun to observe. Afterwards Venus moves from the evening sky to the pre-dawn sky. Never look for Venus near the Sun with the naked eye or unfiltered optics.",
+        "Mercury's retrograde is an apparent change in direction caused by relative motion between Earth and Mercury; the planet does not reverse its orbit. Sources differ by about a minute to a few tens of minutes depending on coordinate conventions and rounding, so UTC is the reference and Sydney times are converted at AEDT (UTC+11)."
+      ]
+    },
+    interpretation: {
+      "zh-Hant": [
+        "在西洋占星的象徵語言裡，天蠍常連結深度、信任、界線與共享資源。太陽入天蠍常被視為『季節轉向內在』的標記；金星下合與水星逆行相疊，則常被用來象徵重新檢視關係、價值與溝通。",
+        "這是文化象徵的反思框架，不是天體造成事件的科學結論，也不預測復合、爭執或延誤。實務上可以把重要約定寫清楚、修改前後核對條件，不必只因逆行而延後決定。",
+        "個人層面需要出生資料與完整盤面，才能判斷天蠍落入哪一宮；此專欄不代替個人命盤分析。"
+      ],
+      "zh-Hans": [
+        "在西洋占星的象征语言里，天蝎常连接深度、信任、界线与共享资源。太阳入天蝎常被视为“季节转向内在”的标记；金星下合与水星逆行相叠，则常被用来象征重新检视关系、价值与沟通。",
+        "这是文化象征的反思框架，不是天体造成事件的科学结论，也不预测复合、争执或延误。实务上可以把重要约定写清楚、修改前后核对条件，不必只因逆行而延后决定。",
+        "个人层面需要出生资料与完整盘面，才能判断天蝎落入哪一宫；此专栏不代替个人命盘分析。"
+      ],
+      en: [
+        "In Western astrological symbolism Scorpio is associated with depth, trust, boundaries and shared resources. The Sun's ingress is often read as a seasonal turn inward, while Venus's inferior conjunction overlapping Mercury's retrograde is used to symbolise reviewing relationships, values and communication.",
+        "This is a cultural framework for reflection, not a scientific claim that planets cause events, and it does not predict reunions, arguments or delays. Practically: put agreements in writing and check revised terms; there is no need to postpone decisions only because Mercury is retrograde.",
+        "A personal reading needs birth data and the full chart to place Scorpio in a natal house; this public note is not a substitute for one."
+      ]
+    },
+    houses: [],
+    sources: [
+      { label: "EarthSky · Inferior conjunction of Venus, 24 Oct 2026", url: "https://earthsky.org/astronomy-essentials/inferior-conjunction-venus-between-sun-and-earth/" },
+      { label: "Astrolis · October 2026 Transit Calendar", url: "https://www.astrolis.com/astrology/calendar/2026/october" },
+      { label: "Bonnie Sorsby · October 2026 Astrology Forecast", url: "https://bonniesorsby.com/october-2026-astrology-forecast/" }
+    ]
+  },
+  {
     id: "sun-trine-north-node-2026-10-20",
     published: "2026-10-20",
     status: "active",

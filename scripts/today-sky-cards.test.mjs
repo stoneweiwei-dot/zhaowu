@@ -86,10 +86,10 @@ test("corrected Uranus/Neptune signs are no longer misstated in SKY_EVENTS sourc
 });
 
 
-test("the featured Sun–North Node trine separates orbital facts from symbolic reading", () => {
+test("weekly featured event is newest while the Sun–North Node entry stays intact", () => {
   const event = SKY_EVENTS.find((item) => item.id === "sun-trine-north-node-2026-10-20");
-  assert.ok(event, "expected the 20 Oct Sydney event");
-  assert.equal(getFeaturedSkyEvent().id, event.id);
+  assert.ok(event, "expected the 20 Oct Sydney event to remain archived");
+  assert.equal(getFeaturedSkyEvent().id, "sun-scorpio-venus-inferior-conjunction-2026-10-23");
   assert.match(event.subtitle["zh-Hant"], /13:04 AEDT/);
   assert.match(event.science["zh-Hant"].join(" "), /不是行星/);
   assert.match(event.science.en.join(" "), /not a planet/);
