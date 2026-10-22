@@ -1,8 +1,11 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import {
+  META_ACCOUNTS_UNAVAILABLE,
+  THREADS_ACCOUNTS_UNAVAILABLE,
   createQueuePost,
   deleteQueuePost,
   markQueuePostDone,
+  overviewWarningText,
   pendingManualChannels,
   readAutopublishOverview,
   runAutopublishNow,
@@ -148,6 +151,10 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
   const settings = data?.settings;
   const items = data?.items ?? [];
   const threadsConnected = Boolean(data?.channels?.threads);
+  const warnings = data?.warnings ?? [];
+  const threadsUnverified = warnings.includes(THREADS_ACCOUNTS_UNAVAILABLE);
+  const metaUnverified = warnings.includes(META_ACCOUNTS_UNAVAILABLE);
+  const accountsUnverified = threadsUnverified || metaUnverified;
   const autoChannelConnected = (channel: QueueChannel) => channel === "threads" ? threadsConnected : channel === "instagram" ? Boolean(data?.channels?.instagram) : channel === "facebook" ? Boolean(data?.channels?.facebook) : true;
   const manualTasks = items.filter((item) => pendingManualChannels(item).length > 0);
   const queued = items.filter((item) => item.status === "scheduled" || item.status === "draft");
@@ -158,7 +165,11 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
     const connectedAuto = (settings.channels ?? []).some((channel) => AUTO_CHANNELS.includes(channel) && autoChannelConnected(channel));
     const hasManual = (settings.channels ?? []).some((channel) => MANUAL_CHANNELS.includes(channel));
     if (!settings.enabled) return { tone: "mute" as const, title: "自動發佈已暫停", detail: "打開開關後，系統會依下方排程自己發文。" };
-    if (!connectedAuto && !hasManual) return { tone: "bad" as const, title: "已開啟，但目前不會發出任何貼文", detail: "還沒有連接可自動發布的平台。先連接 Threads（下方一鍵授權），連接完成後會自動開始。" };
+    if (!connectedAuto && !hasManual) {
+      return accountsUnverified
+        ? { tone: "mute" as const, title: "帳號連接狀態暫時無法確認", detail: "帳號清單暫時讀不到，所以不能判斷是否已連接。稍後重新整理再確認。" }
+        : { tone: "bad" as const, title: "已開啟，但目前不會發出任何貼文", detail: "還沒有連接可自動發布的平台。先連接 Threads（下方一鍵授權），連接完成後會自動開始。" };
+    }
     const next = data?.schedule?.upcoming?.[0];
     return {
       tone: "ok" as const,
@@ -257,6 +268,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         </div>
         {error ? <p role="alert" className="mt-4 rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm text-cinnabar-deep">{error}</p> : null}
         {notice ? <p role="status" className="mt-4 rounded-md border border-line bg-paper/70 px-4 py-3 text-sm text-ink-soft">{notice}</p> : null}
+        {warnings.length ? <ul role="status" data-overview-warnings className="mt-4 space-y-1 rounded-md border border-amber-700/30 bg-amber-600/10 px-4 py-3 text-sm leading-6 text-amber-900">{warnings.map((code) => <li key={code}>{overviewWarningText(code)}</li>)}</ul> : null}
       </section>
 
       {/* 2. Platforms */}
@@ -264,7 +276,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         <h3 className="font-display text-xl">平台連接</h3>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <article className="rounded-xl border border-line bg-paper/40 p-4">
-            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Threads</h4><Pill tone={threadsConnected ? "ok" : "bad"}>{threadsConnected ? "已連接" : "未連接"}</Pill></div>
+            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Threads</h4>{threadsUnverified && !threadsConnected ? <Pill tone="warn">無法確認</Pill> : <Pill tone={threadsConnected ? "ok" : "bad"}>{threadsConnected ? "已連接" : "未連接"}</Pill>}</div>
             {data.channels?.threadsAccounts.length ? (
               <ul className="mt-3 space-y-2 text-sm">
                 {data.channels.threadsAccounts.map((account) => (
@@ -291,13 +303,13 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
                   <li>授權頁在 Threads 網站上，不是彈窗。要在已登入 @{data.channels?.targets.threads || "你的帳號"} 的瀏覽器（Safari）裡做；如果跳進 Threads App，回到 Safari 重按。</li>
                   <li>Meta 開發者後台 → 你的應用 → Threads API → 把這個 Threads 帳號加為「Threads 測試人員」，再到 Threads App：設定 → 帳號 → 網站權限 → 邀請，按「接受」。</li>
                   <li>同一頁的「有效的 OAuth 重新導向 URI」要填：{data.channels?.oauth?.redirectUri ? <code className="break-all rounded bg-paper px-1">{data.channels.oauth.redirectUri}</code> : "（讀取中）"}</li>
-                  {data.channels?.oauth && !data.channels.oauth.ready ? <li className="text-cinnabar">伺服器還沒設定 Meta 應用金鑰，這一步會失敗。</li> : null}
+                  {data.channels?.oauth && !data.channels.oauth.ready ? <li className="text-cinnabar">伺服器還沒設定 Threads 專用應用程式（THREADS_APP_ID / THREADS_APP_SECRET），這一步會失敗。</li> : null}
                 </ol>
               </details>
             ) : null}
           </article>
           <article className="rounded-xl border border-line bg-paper/40 p-4">
-            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Facebook + Instagram</h4><Pill tone={data.channels?.facebook || data.channels?.instagram ? "ok" : "mute"}>{data.channels?.facebook || data.channels?.instagram ? "已連接" : "未連接"}</Pill></div>
+            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Facebook + Instagram</h4>{metaUnverified && !(data.channels?.facebook || data.channels?.instagram) ? <Pill tone="warn">無法確認</Pill> : <Pill tone={data.channels?.facebook || data.channels?.instagram ? "ok" : "mute"}>{data.channels?.facebook || data.channels?.instagram ? "已連接" : "未連接"}</Pill>}</div>
             {data.channels?.metaAccounts?.length ? (
               <ul className="mt-3 space-y-2 text-sm">
                 {data.channels.metaAccounts.map((account) => (

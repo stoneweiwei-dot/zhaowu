@@ -1,4 +1,4 @@
-import ownerDataHandler from "./owner-data.js";
+import { handleOwnerData } from "./owner-data.js";
 import { publishSocialPost, socialConfiguration, SocialPublishError } from "../lib/meta-social-publisher.js";
 import {
   ownerCookieValue,
@@ -223,8 +223,9 @@ export default async function handler(req, res) {
 
     const payload = await readJsonBody(req);
     // Fallback for old Vercel function manifests that return 404 on /api/owner-data.
-    // Reuse the original owner-data handler, including its strict origin and owner checks.
-    if (payload?.action === "site-skin.publish") return ownerDataHandler(req, res);
+    // Reuse the original owner-data handler, including its strict origin and owner checks. The body was
+    // already consumed above, so hand over the parsed payload instead of letting owner-data read it again.
+    if (payload?.action === "site-skin.publish") return handleOwnerData(req, res, payload);
     if (payload?.action === "social.status") {
       const base = socialConfiguration();
       let threadRows = [];
