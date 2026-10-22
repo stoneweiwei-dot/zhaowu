@@ -59,12 +59,19 @@ function json(res, status, body) {
   return new Response(JSON.stringify(body), { status, headers });
 }
 
-function playbackUrl(url) {
-  const raw = String(url || "").trim();
-  const githubRaw = raw.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/?#]+)\/(.+?)(?:[?#].*)?$/);
-  if (githubRaw) {
-    const [, owner, repo, ref, path] = githubRaw;
-    return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${ref}/${path}`;
+function playbackUrl(rowOrUrl) {
+  if (rowOrUrl && typeof rowOrUrl === "object") {
+    const id = String(rowOrUrl.id || "").trim();
+    const raw = String(rowOrUrl.url || "").trim();
+    if (id && /^https:\/\/(?:raw\.githubusercontent\.com|cdn\.jsdelivr\.net\/gh)\//.test(raw)) {
+      return `/api/owner-music?track=${encodeURIComponent(id)}`;
+    }
+    return playbackUrl(raw);
+  }
+  const raw = String(rowOrUrl || "").trim();
+  const trackMatch = raw.match(/^https:\/\/(?:raw\.githubusercontent\.com|cdn\.jsdelivr\.net\/gh)\/[^/]+\/[^/@]+(?:\/|@)[^/?#]+\/public\/audio\/tracks\/([a-zA-Z0-9_-]+)\.[a-z0-9]+(?:[?#].*)?$/);
+  if (trackMatch) {
+    return `/api/owner-music?track=${encodeURIComponent(trackMatch[1])}`;
   }
   return raw;
 }
@@ -77,13 +84,13 @@ function publicPayload(manifest) {
     active: active ? {
       id: active.id,
       name: active.name,
-      url: playbackUrl(active.url),
+      url: playbackUrl(active),
       contentType: active.contentType || "audio/mpeg",
     } : null,
     tracks: tracks.map((row) => ({
       id: row.id,
       name: row.name,
-      url: playbackUrl(row.url),
+      url: playbackUrl(row),
       contentType: row.contentType || "audio/mpeg",
       fileSize: row.fileSize ?? null,
       enabled: row.id === (manifest.activeId || active?.id),

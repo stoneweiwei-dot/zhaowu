@@ -35,7 +35,7 @@ test("ordinary visitors use device-local access while the owner entry remains ex
   assert.match(provider, /mobile IPs rotate and may be shared/);
 });
 
-test("owner cookie remains the only active login path", () => {
+test("owner cookie remains the only active login path", async () => {
   assert.match(login, /ownerSignIn/);
   assert.match(login, /data-owner-only-login="true"/);
   assert.match(login, /vercel-owner-cookie/);
@@ -44,19 +44,24 @@ test("owner cookie remains the only active login path", () => {
   assert.doesNotMatch(login, /signInWithPassword|signUpWithPassword|signupTab|login-email/);
   assert.match(provider, /readOwnerSession/);
   assert.match(client, /ownerSignOut/);
-  assert.match(ownerApi, /JSON\.stringify\(\{ secret \}\)/);
+  assert.match(ownerApi, /JSON\.stringify\(\{ email, secret \}\)/);
   assert.match(ownerApi, /\/api\/owner-login/);
   assert.match(ownerSessionApi, /authenticateOwner/);
   assert.match(ownerLoginApi, /req\.body\?\.secret/);
   assert.match(ownerLoginApi, /requestIsSameOrigin/);
   assert.match(ownerLogoutApi, /requestIsSameOrigin/);
   assert.match(ownerLoginApi, /Set-Cookie/);
-  assert.match(ownerServer, /__Host-zhaowu_owner_session/);
-  assert.match(ownerServer, /OWNER_KEY_SHA256/);
-  assert.match(ownerServer, /HttpOnly/);
-  assert.match(ownerServer, /Secure/);
-  assert.match(ownerServer, /SameSite=Strict/);
-  assert.match(ownerServer, /timingSafeEqual/);
+  // The TypeScript helper re-exports the single sealed-cookie boundary; the verifier comes from runtime env, never from source.
+  const ownerCookieLib = await readFile(new URL("../lib/owner-session-cookie.js", import.meta.url), "utf8");
+  assert.match(ownerServer, /from "\.\.\/\.\.\/lib\/owner-session-cookie\.js"/);
+  assert.match(ownerCookieLib, /__Host-zhaowu_owner_session/);
+  assert.match(ownerCookieLib, /ZHAOWU_OWNER_KEY_SHA256/);
+  assert.match(ownerCookieLib, /HttpOnly/);
+  assert.match(ownerCookieLib, /Secure/);
+  assert.match(ownerCookieLib, /SameSite=Strict/);
+  assert.match(ownerCookieLib, /timingSafeEqual/);
+  assert.doesNotMatch(ownerCookieLib, /["'][a-f0-9]{64}["']/i);
+  assert.doesNotMatch(ownerServer, /["'][a-f0-9]{64}["']/i);
 });
 
 test("device birth data is never wiped and does not pretend IP is identity", () => {

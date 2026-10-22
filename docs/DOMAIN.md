@@ -1,23 +1,9 @@
 # 域名與正式站
 
-## 當前唯一真相
-
-- 源碼：GitHub `stoneweiwei-dot/zhaowu` → `main`
-- 唯一 Production：Vercel `stone-zhaowu-official`
-- 正式 URL：`https://stone-zhaowu-official.vercel.app/`
-- Canonical／Open Graph／Twitter 分享來源：同上
-- Netlify `archive-stone-zhaowu-official`：archive／compatibility only；自動 build 必須保持停用，不是 Production。
-- `zhaowu.soul-terminal.com`：預留正式子域名；DNS 尚未完成前不得取代 Vercel Production URL。
-
-## DNS 規則
-
-主站 `soul-terminal.com` 與 `www` 繼續由原 WordPress 使用，不得改動。日後如啟用 `zhaowu.soul-terminal.com`，只新增 `zhaowu` 子域名並在 Vercel `stone-zhaowu-official` 完成 custom domain、DNS 與 TLS 驗證。
-
-## 禁止事項
-
-- 不把 Netlify、AppDeploy、Cloudflare 或任何 preview URL 當 Production。
-- 不建立第二個 Vercel production project。
-- 不把舊 Netlify canonical 寫回 HTML、OAuth callback、分享 metadata 或文件。
-- 不在文件寫死 deployment ID；驗收時即時核對 `main` SHA 與 Vercel Production SHA。
-
-項目總狀態以 [CURRENT-STATE.md](./CURRENT-STATE.md) 為準。
+- 正式 URL 與 canonical：`https://zhao-wu.com/`
+- Vercel Production project：`stone-zhaowu-official`（唯一正式主機）
+- `zhao-wu.com` 已綁定專案，Vercel DNS 與自動 TLS 已驗證；`www.zhao-wu.com` 使用 HTTP 308 跳轉至主域名。
+- `stone-zhaowu-official.vercel.app` 保留為同一 Vercel 專案的相容入口，並以 308 保留路徑與查詢參數轉向 `zhao-wu.com`，不列為 canonical。
+- 大陸訪客端 Supabase 請求須經本網站同源 `/sb/*`；`src/lib/supabase-config.ts` 必須把正式主域名列入代理主機白名單。
+- 新增正式網域時，先完成 Vercel domain、DNS 與 TLS 驗證，再更新代理白名單、canonical／Open Graph／Twitter metadata、robots、sitemap、llms 摘要與測試。保留既有入口的相容性。
+- 自訂網域可改善入口可達性，但不保證所有中國大陸網路服務商都能連線。

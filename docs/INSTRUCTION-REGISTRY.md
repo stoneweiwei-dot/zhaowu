@@ -1,4 +1,136 @@
+## 2026-10-22｜Meta 官方授權 × Facebook／Instagram 自動發佈
+
+- ACTIVE：昭梧站主後台沿用既有 `/api/owner-session`，新增 Facebook Login 官方 OAuth；站主同意一次後，系統自動讀取其管理的 Facebook 粉絲專頁，以及每個粉絲專頁關聯的 Instagram 專業帳號。Facebook 粉絲專頁可自動發純文字或圖片，Instagram 依官方接口發公開圖片貼文；兩者皆可加入既有排程，不以 Metricool 付費方案為前提。
+- ACTIVE：Facebook Page access token 以 AES-256-GCM 密文保存於 server-only `social_meta_accounts`；`public`、`anon`、`authenticated` 均無表權限。瀏覽器只取得粉絲專頁名稱、ID、Instagram 公開帳號資料與連接狀態，不取得令牌。
+- ACTIVE：即時發布與每日排程共用同一批已勾選的 Meta 連接；排程仍由既有 Vercel Cron、`zhaowu-social-queue` 與一天一次防重複機制執行。不新增 Vercel Function、不新增付費 SaaS；Metricool 可保留作外部工具，但不再是昭梧發布必要依賴。
+- COMPATIBLE：既有 Threads 多帳號 OAuth 與舊 Instagram／Threads 環境變數回退保留。小紅書與 X 仍為文案準備完成後手動確認；Facebook 自本條起不再歸類為手動平台。
+
+## 2026-10-23｜第二波指令 10–14：manifest 三語 × /guide 收編 × 空模組閘門 × release.json 監控
+
+- 站主指令：10 manifest 依語言輸出（zh-TW／zh-Hans／en）；11 /guide 二選一收編；12 atlas 空區塊「有內容或入口不存在」；13 release.json 每日監控；14 把「空狀態不得進對外導航」寫成 CI。
+- 現行：三份靜態 manifest（同一 id／start_url／scope／icons，僅 lang／name／description 不同），`index.html` 啟動腳本與 `applyManifestLocale` 依顯示語言切換 `<link rel=manifest>`；`/guide/*` 在 vercel.json 307 導向 `/?guide=1`（首頁開啟導覽面板），不進 sitemap；`CuratedVideoShelf`／`AuspiciousGallerySection` 無可播放／可顯示內容時 `return null`；`/api/release-watch` 暫緩（Vercel Hobby 上限 12 個 Serverless Functions，加入第 13 個會使 production 部署 ERROR；待有不佔函式名額的做法再恢復，BACKLOG）；`scripts/empty-state-gate.mjs` 掛在 `prebuild`，`--diff` 為新增空狀態文案攔截（例外須附 `empty-state-ok: <理由>`）。
+- 不動：八字核心、付款、auth、Supabase schema；不新增 runtime 依賴；A$0。
+- 已知限制：已安裝 PWA 的 manifest 由瀏覽器自行重新評估；其他未知路徑仍為 SPA soft-404（BACKLOG）。
+- 測試：`scripts/empty-state-gate.test.mjs`、`scripts/manifest-locale-guide.test.mjs`。
+
+## 2026-10-21｜昭梧影片改為自主觀看 × 各頁分類展映（最新站主指令）
+
+- ACTIVE：新訪客進入首頁直接看到宋式畫作與既有三語題跋，不再於首頁掛載強制 `IntroGate`。舊「首訪影片最多 60 秒／7 天內跳過」只保留為未被掛載的相容程式，不得再作為訪客入口義務；首頁也不再提供會啟用覆蓋層的「重播開場影片」按鈕。
+- ACTIVE：保留既有 Supabase `gallery_assets` 與 Storage 影片二進位、啟用／停用、`is_primary` 與 `login-background` 內部標籤，不修改資料結構或刪除任何影音；舊後台「開場影片」更名為「影片素材」。入口按需折疊：首頁精選 2 部、文化知識庫 3 部、異聞錄 4 部、吉象圖鑑列出全部最多 30 部啟用影片；在用戶展開之後才讀取已啟用的公用影片目錄；影片點擊才播放、無自動播放。
+- 相容與風險：MOV 可能不支援網頁直接播放，顯示原始影片開啟選項；資料讀取失敗不阻塞頁面。不把停用影片公開、不增加付費生成、Storage 寫入或新的 SaaS。僅沿用已存在的匿名公開讀取與 Storage URL。分類透過既有名稱／標籤，未辨識片段保留在吉象圖鑑完整展廊。
+- SUPERSEDES：本文件既有 2026-10-15「開場完整播放」、2026-09-28「恢復首頁 IntroGate」，以及 2026-10-21 首頁題跋條目對 `IntroGate`「保留不變」的部分；原本人手上傳、後台權限和素材庫本身仍受保護。不可改動登入、會員、付款、命盤、報告、部署或主題輪換核心。
+
+## 2026-10-21 節氣主題實體素材與安全輪替
+
+- ACTIVE：站主明確要求把未上架的節氣圖資部署到既有後台。霜降既有原畫三張與八張分區裁切接入`solar-frost-descent`，新增獨立節氣區，不擴增精選主題卡牆。
+- ACTIVE：`solar-auto`沿用既有站主cookie／同源發布，按已驗收素材的悉尼排程日期輪替；選其他主題即可回退。缺下一套時保留上一套。非24節氣／72候全量圖資已完成的聲明。
+- SUPERSEDES：設計稿僅停留docs、不上傳binary／未接SKINS的阻塞；保留原排程、宋式框架、三語、手機可讀、手動回退要求。
+- PROTECTED：不改排盤、曆法、認證、付款、Supabase schema／Storage。十二地支報告原圖保留，不為新任務重畫。
+
+## 2026-10-21 畫作／圖表分類與文章視覺失真修復
+
+- ACTIVE（站主最新明確指令）：昭梧文章「配圖／畫作」不得以大量文字框、數字卡、漸層山形的程式 SVG 冒充真實創作；只有明確要求資訊圖表時才用圖表。執行契約為 `AGENTS.md` 第 6 節新規、`docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 與 `docs/ARTWORK-ACCEPTANCE.md`。
+- ROOT CAUSE（已核）：PR #820 將本應連結真正生成繪畫的四張文章插圖換成純程式 SVG（不是 CDN 壓縮、手機渲染或文章元件把畫作變成 SVG）。圖檔結構比對站主實拍吻合。原曾暫用既有 WebP 畫作；2026-10-21 最新指令改為四張新的原創宋式三界總覽／欲界／色界／無色界繪畫，在各自原文章位置替換。四張原創素材以原始 PNG 分段保存在 GitHub，`scripts/assemble-abhidhamma-art.mjs` 在 prebuild 自本地二進位片段重組，核對 SHA-256，產生 `public/articles/` 本地檔；無執行時第三方 CDN 依賴。保留三語原文，畫作均屬象徵表現而非教理精確分層圖。正式生效仍以 Production 實際驗收為準。
+- ACTIVE：`scripts/article-artwork-acceptance.test.mjs` 驗證該篇文章繪畫引用均指向存在的本地影像二進位檔，不可用 code-only SVG 或外部臨時 URL 冒充；`prebuild` 在編譯前執行。這是防止相同文件失誤的機械檢查；藝術品質仍需實際看圖，不可憑測試就報高品質完成。
+- BOUNDARY：不改文章系統、會員權限、付款、報告、Supabase Schema／Storage 或全站主題。不重寫原有真正適用於圖表/互動的 SVG，不新增付費生成服務／外部 runtime 依賴。
+
+## 2026-10-21 首頁題跋與頁尾「為何做昭梧」
+
+- ACTIVE：站主要求以最輕方式在首頁表達初心。`PaintedHome`（Song gallery 排版）在畫作與兩顆入口按鈕之間新增單行靜態三語題跋；首頁頁尾（僅首頁）新增原地展開的「為何做昭梧」`<details>`。文案只沿用站內既有宣言與已成立的產品事實：排盤與快速讀免費免登入、報告加密保存在本機瀏覽器、完整報告單次付費不自動續費、不作醫療診斷。
+- DECIDED NOT TO DO：開場影片不放首屏；首屏不加第二行字（與現有標題／命 · 勢 · 選層級重疊，按鈕已承擔行動引導，且「便見分晓」過度承諾）；不做背景「呼吸」縮放動畫——Aesthetic Framework 規定動效以透明度與輕微位移為限，且現行首頁畫作是版面內框圖而非全頁背景，縮放會溢出圓角裁切。
+- PROTECTED／UNCHANGED：Hero 標題與皮膚機制、`命 · 勢 · 選`、IntroGate、命盤／付款／登入／Supabase、頁尾的法律／站主入口／會員入口契約。
+- 驗證：`scripts/home-origin-note.test.mjs`；Chromium 實測三語 × 390／320／1280 寬無橫向溢出、無 JS 錯誤。基線（main）已紅且與本項無關：`brand-system-r97`、`guest-first-access`（記為 BACKLOG，不在本 PR 處理）。
+
+## 2026-10-19 固定多幣別報告定價
+
+- ACTIVE：快速讀維持免費。七政四餘／西洋占星／印度占星／一掌經／生命靈數單項固定為 US$9.90／A$14.90／¥68；八字與紫微深度單項固定為 US$16.90／A$24.90／¥108；六系統合集（不含八字）固定為 US$26.90／A$39.90／¥168。
+- ACTIVE：Stripe Payment Links 保留原網址，Price 以手動 `currency_options` 寫死 USD／AUD／CNY；Checkout 依所在地顯示已配置貨幣，不用即時匯率。網站只以瀏覽器地區／時區在 AUD、CNY、USD 三者間顯示對應固定價；無法判斷時回退 USD。
+- ACTIVE：Webhook 只接受已知 Live Payment Link 與該幣別的精確固定金額，並把實際 `amount_total`／`currency` 寫入既有 server-only entitlement；舊 USD 金額與舊連結僅保留歷史訂單及已開啟 Checkout 的恢復相容。
+- SUPERSEDES：2026-10-16「八字／紫微單項 US$19.99」及「六系統合集 US$19.99」的公開售價；不改既有購買授權、優惠碼、報告內容、命理計算或會員資料。
+- PROTECTED：不得先改 Live Payment Links 再部署資料庫約束與 Webhook，避免付款成功但無法解鎖；履約仍只由 Stripe Webhook 驗證，不以成功頁或瀏覽器狀態授權。
+
+## 2026-10-17 自訂正式域名與大陸同源代理
+
+- ACTIVE：站主已購買並指定 `https://zhao-wu.com/` 為唯一 canonical 正式網址；此域名與 `www.zhao-wu.com` 已在既有 Vercel Production project `stone-zhaowu-official` 驗證。`www` 與舊 `stone-zhaowu-official.vercel.app` 均以 308 保留路徑與查詢參數轉向主域名，不另建主機。
+- ACTIVE：`src/lib/supabase-config.ts` 將 `zhao-wu.com` 納入 `/sb/*` 同源 Supabase 代理白名單；既有代理 rewrites 不變，讓正式新域名沿用大陸訪客端登入／讀取路徑。
+- ACTIVE：`index.html` 的 canonical、Open Graph、Twitter 與 JSON-LD，`robots.txt`、`sitemap.xml`、`llms.txt` 和 SEO 測試均使用新 canonical。
+- PROTECTED：保留 `.vercel.app` 入口、Vercel 單一 Production、既有付款／命盤／登入邏輯及 Supabase 設定；不假設自訂域名能保證所有大陸網路可達。
+- SUPERSEDES：下方 2026-10-16「正式域名更正」條目的未購買自訂域名與 `.vercel.app` canonical 狀態。
+
+## 2026-10-17 文章管理：站主編輯與下架
+
+- ACTIVE：`/account?view=articles` 提供站主 cookie 驗證的文章清單、繁中／簡中／英文標題／摘要／正文編輯、下架、還原及恢復原文；公開 `/knowledge` 與首頁讀取 `article_editor_overrides`，保留原文編譯資產與插圖／互動元件。一般訪客不得寫入，只有 `/api/owner-data` 同源 cookie bridge 能呼叫獨立的 `zhaowu-owner-articles` Edge Function 寫入。新增資料表 RLS 僅允許匿名讀，沒有匿名寫入政策。
+- ACTIVE：按站主要求，過時的中國大陸可訪問性診斷《昭梧網站在中國大陸的訪問診斷》從編譯文章名錄與靜態 HTML 完全移除，三語界面都不可再列出；其他文章與知識教學維持。
+- 不新增 Vercel serverless function，不另建 Production。編輯會立即影響公開內容；若公開 Supabase 查詢失敗，文章區暫停顯示以免下架稿件重新曝光，支付與排盤互不受影響。
+
 # 昭梧｜Instruction Registry
+
+## 2026-10-17 黃曆仙佛聖誕名錄啟用與擴充
+
+- ACTIVE：每日黃曆的「今日聖日」已由 `src/lib/almanac/sacred-days.ts` 計算並送入 `AlmanacInkBoard`；現在另可展開佛、道、儒、民間信仰四類完整已收錄名錄，直接按農曆或公曆日期查閱。今日資料與全表共用同一份列，三語可讀。
+- ACTIVE：補入有公開來源的道教及地方民間紀日，並保留儒家孔子、朱熹紀日與既有佛教紀日；地方/宗派變體標示來源，不宣稱所有神佛聖誕都只有一個通用日期。來源與閏月／大小月政策見 `docs/sacred-day-source-policy.md`。
+- SUPERSEDED：本檔下方 2026-10-03 對舊 PR #584「神佛聖日資料列為 BACKLOG，需新指令」的部分；該舊分支仍不合併，其黃曆首頁與靈籤畫面仍不移植。站主已於本次明確指定四類名單並要求接入現有三段式黃曆。
+- PROTECTED：不改節氣、農曆換算、命盤、登入、付款或其他三段式內容。
+
+## 2026-10-17 站主後台優惠碼管理（取代「後台管理介面列為 BACKLOG」）
+
+- ACTIVE：站主後台新增「優惠碼」分頁，可建立（單一系統／全系統套組、名額、有效天數、備註、自訂或自動產生 `ZW-XXXX-XXXX` 碼）、列表、停用／啟用、名額 +1、延長 30 天。動作 `promo.list`／`promo.create`／`promo.update`／`promo.setActive` 經既有 `/api/owner-data`（站主 cookie＋同源）轉送到獨立 Edge Function `zhaowu-owner-promo`。
+- ACTIVE：因 Vercel Hobby 已達 12 個 serverless function 上限，不新增 `api/*.js`，也不改動 836 行的 `zhaowu-owner-data`；`api/owner-data.js` 只新增 `ownerUpstreamFunction(action)` 路由。
+- PROTECTED：只能新增與修改 `promo_codes`；不提供刪除、不寫 `redeemed_count`、不碰 `promo_redemptions` 與客人兌換路徑 `promo-code`。名額不得低於已兌換數。兌換仍不記金額、與 Stripe 完全分離。
+- 驗證：`scripts/owner-promo-admin.test.mjs`（8 項）、tsc、build；Edge Function 部署後以真實呼叫驗證見 PR 說明。
+
+## 2026-10-16 正式域名更正（SUPERSEDED 2026-10-17）
+
+- HISTORICAL：當時尚未購買或授權自訂網域，因此 canonical 為 `https://stone-zhaowu-official.vercel.app/`；此狀態已由 2026-10-17 站主購買並指定 `zhao-wu.com` 的明確指示取代。
+- SUPERSEDED：任何舊 Cloudflare／DNS／自訂網域設定指示均非當前執行規則。
+
+
+## 2026-10-17 西方占星十章客戶報告模板 V2.0（承接 PR #772）
+
+- ACTIVE：`docs/ASTROLOGY-REPORT-PROTOCOL-v2.md` 為本次十章報告正式規格；`src/lib/astrology/report-protocol.ts` 為純函式章節摘要與 AI Prompt Builder，不在瀏覽器自動呼叫計費模型。
+- 十章依序：總覽、自我、事業財富、關係、家庭、身心照顧、精神課題、未來 12–18 個月行運、特殊配置、綜合建議。輸出先結論、明示證據、利弊、行動；可調語氣、語系、目標字數與章節順序。
+- 限制：只接 Tropical 與已有 Placidus／Whole Sign；Sidereal ayanamsa、Alcabitius、北交點、福點、Chiron、完整行運與跨系統自動資料抓取尚未驗證；缺資料一律不判，不准由 LLM 虛構。Whole Sign 下 MC 不必在第十宮。
+- 付費全文繼續由原有 `ReportAccessGate` 驗證；不得因裝置本地資料、匯入 JSON 或前端旗標繞過付款。尚未接通正式 AI provider，不得宣稱有 3000–5000 字 AI 自動文稿。
+- 不使用命理推斷醫學診斷、疾病部位、一定婚嫁或災難；八字、紫微、印度占星僅具獨立計算證據且客人勾選時才作獨立旁證。
+- 新模板不改其他五個專項、八字主判、Stripe/Supabase/Owner 行為，不自動觸發額外 Vercel 部署。
+
+## 2026-10-17 西洋占星十大行星深度旁證（承接 PR #772）
+
+- ACTIVE：現有 `/astrology` 保留七曜古典視角與既有 `ReportAccessGate`，額外增加獨立的現代十行星（太陽至冥王星）熱帶黃經、主要相位、全十二宮落星分布與 A/B/C 宮位主題，免費統計與付費人生方向分層。
+- 計算來源使用現有本站自家託管 `/vendor/astronomy-engine-2.1.19.browser.min.js`，不用未核准的 Swiss Ephemeris 專業授權，也不建立新付費 SaaS／第二部署。七曜舊源與現代十星源分開標示；不得假裝兩者已完成精度同源化。
+- A＝1/8/9/12、B＝2/6/10、C＝3/4/5/7/11。每組同時列原始顆數與每宮密度；兩套排名不一致、交界不穩或資料不足時不強定人生主軸。這是占星文化象意而非八字十神換算，更不得用數量決定人格、富貴或健康。
+- 已知時間但未核對出生證明的分鐘最高只標 `medium`；出生證明分鐘已確認且 ±2 分鐘落宮穩定才允許 `high`；未知時間或 Placidus 不成立時落宮／宮位主題降為 `low`，不得自動改宮制隱瞞。
+- 排盤資料的本地 IndexedDB、JSON 匯入匯出僅為西占副本；不額外寫站主 Supabase、不修改共享出生資料、會員或付款授權。付費解鎖維持既有 server-side entitlement 驗證，不採裝置旗標繞過付款。
+- 印度占星是獨立 D1/D60 旁證入口，不因宮位意義相似就判定互證成功；原有 `/indian-astrology` 的分鐘校驗與 D60 算法不變。
+- VERIFIED（2026-10-17，合併前）：`tsc --noEmit`、`npm run build`、`western-house-depth`／`western-report-protocol` 共 11 項測試通過；Chromium 320px 實測 /astrology：訪客只見免費十星區（10/10 星位、10/10 落宮）且無付費章節，站主 session 才見十章，第 8 章（未來 12–18 個月）明確標示未判，無 console 錯誤、無橫向捲動。iPhone Safari(WebKit) 未跑。
+
+
+
+
+## 2026-10-15 中國大陸可讀取／可登入：同網域 Supabase 代理與自家託管天文腳本
+
+- ACTIVE：訪客端（登入、`rest/v1` 讀取、`functions/v1`、公開媒體 URL）在正式主域名 `zhao-wu.com` 與相容入口 `stone-zhaowu-official.vercel.app` 一律經本站同網域 `/sb/*`；`vercel.json` 以四條白名單 rewrite 轉到 Supabase（`/sb/auth/v1`、`/sb/rest/v1`、`/sb/functions/v1`、`/sb/storage/v1/object/public`）。`src/lib/supabase-config.ts` 匯出 `SUPABASE_URL`（瀏覽器在上述生產網域時為 `<origin>/sb`，本機開發與測試維持直連）與 `SUPABASE_DIRECT_URL`（永遠直連）。
+- ACTIVE：站主背景音樂與五音贈曲播放改由同網域 `/api/owner-music?track=<id>` 代理串流並設定邊緣快取（`s-maxage=604800`），訪客端不再直連大陸不可達的 `cdn.jsdelivr.net` 或 `raw.githubusercontent.com`；失敗時自動回退至本站靜態 `/audio/zhaowu-background.mp3`。
+- ACTIVE：站主上傳／刪除（`storage/v1/object/<bucket>`）、TUS 續傳簽名端點與 OAuth `authorize` 導向仍用 `SUPABASE_DIRECT_URL`，不經代理（大檔不佔用 Vercel 轉送，OAuth 提供商本就無法在大陸使用）。
+- ACTIVE：`astronomy-engine@2.1.19` 由 jsDelivr 改為自家 `/vendor/astronomy-engine-2.1.19.browser.min.js`（同一版本，不變更演算公式）；`/vendor/*` 以 immutable 快取。
+- SUPERSEDED：D60 元件從 `cdn.jsdelivr.net` 載入天文腳本的做法（`scripts/d60-reliability-gate.test.mjs` 契約同步更新），以及 `/api/owner-music` 把訪客音訊重導向至 `cdn.jsdelivr.net` 的做法。
+- 不改：登入邏輯、Supabase 資料／Schema／RLS、付款、命理計算、報告內容、SPA fallback rewrite。
+- COST（AGENTS §F）：消耗 Vercel Fast Data Transfer（公開媒體與音訊加 `s-maxage` 邊緣快取以減量）；無新增付費服務；Supabase 或 Vercel 不可用時行為與先前相同（請求失敗或回退本地靜態資源）；回滾＝還原本提交，無資料遷移。
+- OPERATIONAL（非程式）：`*.vercel.app` 共享網域在中國大陸部分電信商會有 DNS 污染／SNI 阻斷；程式端已確保單一網域可達即可完成全站載入、排盤、讀取、登入與聽音樂，但若大陸直連 `*.vercel.app` 入口本身被牆，仍需綁定一個已指向 Vercel（或經 Cloudflare 指向 Vercel）的自訂網域。
+- ACTIVE（2026-10-17）：站主後台音訊／影片轉檔的 ffmpeg 核心（`@ffmpeg/core@0.12.10`，釘版 devDependency）於建置時由 `vite.config.ts` 外掛複製到 `dist/vendor/ffmpeg-core/`，載入端先走同源、失敗才退回 jsDelivr；同源回傳若為 HTML 或非 WebAssembly 位元組一律拒收。31 MB 的 wasm 不進 repo，只進每次 production 產物。
+- BACKLOG（P2）：`@ffmpeg/ffmpeg` 封裝與 worker 仍由 esm.sh 載入（僅站主使用），尚未自架。
+
+## 2026-10-15 開場影片完整播放・英文預設語言・首頁頁尾・優惠碼 supersession（PR #746 + 後續）
+
+- ACTIVE：首頁 `IntroGate` 開場影片一分鐘以內一律完整播放：`INTRO_GATE_MAX_PLAY_S = 60`、`INTRO_GATE_HARD_EXIT_MS = 62000`；後台上傳壓縮上限 `LOGIN_VIDEO_MAX_SECONDS = 60`，輸出最寬 1920px、30fps、crf 22。訪客仍可隨時跳過。
+- SUPERSEDED：2026-09-30「開場影片最長 15 秒」以及 r197 條目中「登入動畫最長 15 秒」的秒數部分；其餘（MP4／WebM、7 日內不重播、內建 r148 退回）不變。
+- ACTIVE：全站預設語言為 English；只有瀏覽器語言為中文時才預設中文（zh-CN／zh-SG／Hans → 简体，其他 zh → 繁體）。訪客已明確選過的語言永遠優先。僅用瀏覽器語言判斷，不接付費 geo-IP 服務。
+- SUPERSEDED：`i18n.ts`／`display-language.ts` 原本一律預設 `zh-Hant` 的行為。
+- ACTIVE：首頁的「最新更新」連結與站主「後台管理」捷徑位於頁尾（`[data-footer-status-strip]`），不在頂部 header；非首頁的狀態列不變；站主工作區仍不顯示任何公開狀態列。
+- ACTIVE：換頁使用單一 CSS 淡入（`.zhaowu-route-fade`，260ms，遵守 `prefers-reduced-motion`）；不得引入動畫套件或第二套過場系統。
+- ACTIVE：付費區提供收合式「有優惠碼？」輸入。兌換只經 `promo-code` Edge Function 與 `promo_codes`／`promo_redemptions`（RLS、僅 service role），與 `report_purchase_entitlements`／Stripe 完全分離，不記任何金額。同一瀏覽器重輸已兌換的碼為冪等解鎖、不扣名額。
+- OPERATIONAL：建立優惠碼目前以 SQL 新增 `public.promo_codes` 列（`code`、`product_id` system／bundle、`system_id` 可空＝全系統、`max_redemptions`、`expires_at`）；後台管理介面已於 2026-10-17 啟用（見下方最新條目），SQL 方式僅作備援。
+- 不改：Stripe Payment Links、webhook、entitlement、命理計算、報告內容、Owner 登入。
 
 ## 2026-10-13 站主參考圖重排首頁與主題預覽
 
@@ -54,6 +186,14 @@
 - ACTIVE：報告「日主／月令／日柱納音／出生時辰」下方的命象改用已接入的十天干人物圖與十二地支景色圖；日主按 chart.dayMaster 精確對應，地支按實際有效四柱去重，最多四款。
 - SUPERSEDED：此位置原先按喜用／題目從公共圖庫選取畫作、以生成圖 URL 覆蓋或提供製作命象按鈕的行為。圖庫與既有生成 API 保留供獨立功能相容使用，不再決定此位置圖片。
 - COMPATIBLE：保留文字四柱資料、三語、同一天干舊母圖備援與地支圖片失敗文字回退。完整命書獨立閱讀仍展示天干地支；結果頁已有此展示時，不在命書圖解重複。僅調整展示，不改排盤、解讀、付款、登入或資料。
+
+## 2026-10-16 八字／紫微單盤價格更新 supersession
+
+- ACTIVE：八字完整命書與紫微斗數單盤完整深讀的一次性價格由 USD 9.90 調整為 **USD 19.99**（站主 2026-10-16 指示）；不自動續費。
+- ACTIVE：七政、西占、印度古法、一掌經／前世今生、生命靈數單盤維持 USD 9.90；六盤套裝維持 USD 19.99（不含八字）；免費快速讀不變。
+- ACTIVE：八字與紫微單盤使用 2026-10-16 新 live Payment Links；舊 USD 9.90 連結只在 webhook 保留，供已開啟或已完成的舊付款回訪，不再作銷售入口。
+- ACTIVE：`report_purchase_entitlements` 的 `system` 金額白名單新增 1999；授權仍須通過已登記 live Payment Link、精確 USD 金額、合法 access key 與 live event 驗證。
+- SUPERSEDED：2026-10-13 區段中「單一系統一律 USD 9.90」與「八字 USD 9.90」僅對八字與紫微失效，其餘付款安全規則繼續有效。
 
 ## 2026-10-13 Stripe 價格更新 supersession
 
@@ -622,7 +762,7 @@
 
 - 正式站 r128 `main` = Vercel Production `58ee4a9bd923a790b42a954b7764c753a7887454` / `dpl_FtfGFpaweLcpuX966R9ZspUrWfvo`。r129 合併後再核 SHA。
 - D60 gate、西洋完整盤、專卷命盤、branch protection、Netlify skip、#295 暫停均已在 r123–r127。不得 merge #304。不得因舊清單再發一輪功能 build。
-- 仍需站主：Supabase spend cap（報告／圖庫）、DNS `zhaowu.soul-terminal.com`、真實 iPhone、Dashboard security 勾選。Linear 未接入。
+- 仍需站主：Supabase spend cap（報告／圖庫）、真實 iPhone、Dashboard security 勾選。Linear 未接入。
 - PR #322 已合併為 r128；不得再當「未綠燈實驗」擋獨立登入。
 
 ## 2026-09-14 r128 independent owner login
@@ -776,6 +916,15 @@
 - 只有密碼 session 能：加入新裝置（`owner.device.create`）、上傳音樂、發布主題皮膚（部署金鑰由站主密碼加密，裝置 session 沒有密碼）。撤銷與列表任一受信任裝置都可。
 - 儲存：`public.owner_devices`（RLS 啟用、無 policy，僅 Edge Function service role）。撤銷是軟刪除，憑證 id 永遠不能重新註冊；最多 5 台有效裝置。
 - 新依賴：`@simplewebauthn/server` 13（僅 Vercel API 使用）。沒有新增 API 檔（Hobby 上限 12 個），Passkey 動作併入 `api/owner-session.js`。
-- Passkey 綁定在註冊時的網域；請在正式網域 `zhaowu.soul-terminal.com` 註冊，`*.vercel.app` 上註冊的 Passkey 不能在正式網域用。
+- Passkey 綁定在註冊時的網域；請在正式網域 `zhao-wu.com` 註冊，`*.vercel.app` 上註冊的 Passkey 不能在正式網域用。
 - 部署順序（不可顛倒）：① 套用 migration `20261022000000_owner_devices.sql` → ② 部署 Edge Function `zhaowu-owner-data` → ③ 合併本 PR 部署 Vercel。確認 `ZHAOWU_OWNER_BRIDGE_SECRET` 至少 32 字元。
 - 測試：`owner-passkey`、`owner-devices-edge`、`owner-session-passkey-api`（虛擬驗證器跑完整註冊/登入/撤銷流程）。
+
+## 2026-10-16 首頁四入口白話化 × 樹狀展開導覽 × 青玉小龍面板撤換
+
+- 站主明確指令：預設主題首頁的「青玉小龍」面板必須換掉；四大入口名稱改白話但不要太土；網站改成展開式樹狀引導，讓訪客一層層讀到內容。
+- 現行：四入口＝「我的命盤／今日指引／趣味測驗／文章專欄」（簡：我的命盘／今日指引／趣味测验／文章专栏；EN：My chart／Today’s guide／Quizzes／Articles）。首頁預設全收起、同一時間只展開一個；展開後為「主行動 → 子頁／子分支」。
+- 樹內只列公開頁（歷史報告、靈階鏡像、每日幸運色、吉象圖鑑、各測驗、茶、觀世錄文章、命理小知識、更新）；專項流派路由不上首頁（保持 r162／分系統深讀樹的邊界）。
+- 首頁底部面板改為「不知道從哪開始？」→ 打開導覽（`zhaowu:open-guide`），不再使用青玉小龍文字與 `zhaowu-dragon-lake-v1` 圖；雲山青綠主題不再使用 Q 版小龍插圖，改三幅工筆場景。
+- 不動：浮層早已下架（r183）；`GreenDragonGuide` 元件仍未掛載；公開更新紀錄為歷史，不改寫。
+- 測試：`scripts/home-tree.test.mjs`。

@@ -2,7 +2,7 @@
 
 > 昭梧（ZHAOWU）是一個免登入的八字排盤網站。以出生年月日時與出生地為輸入，依傳統子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示等內容。語言：繁體中文（zh-Hant）、簡體中文（zh-Hans）、英文（en）。
 
-正式網址：https://stone-zhaowu-official.vercel.app/
+正式網址：https://zhao-wu.com/
 
 ## 核心功能
 
@@ -28,16 +28,17 @@
 
 ## 頁面
 
-- [首頁](https://stone-zhaowu-official.vercel.app/): 排盤入口與介紹
-- [知識頁](https://stone-zhaowu-official.vercel.app/knowledge): 文章與命理小知識
-- [最新更新](https://stone-zhaowu-official.vercel.app/updates)
-- [每日色彩](https://stone-zhaowu-official.vercel.app/daily-colors)
-- [隱私政策](https://stone-zhaowu-official.vercel.app/privacy)
-- [服務條款](https://stone-zhaowu-official.vercel.app/terms)
-- [版權聲明](https://stone-zhaowu-official.vercel.app/copyright)
+- [首頁](https://zhao-wu.com/): 排盤入口與介紹
+- [知識頁](https://zhao-wu.com/knowledge): 文章與命理小知識
+- [真太陽時計算說明](https://zhao-wu.com/knowledge/true-solar-time): 經度差、均時差與夏令時的公式、實例（含南半球）與誤差限制
+- [最新更新](https://zhao-wu.com/updates)
+- [每日色彩](https://zhao-wu.com/daily-colors)
+- [隱私政策](https://zhao-wu.com/privacy)
+- [服務條款](https://zhao-wu.com/terms)
+- [版權聲明](https://zhao-wu.com/copyright)
 
 ## 使用說明給 AI 工具
 
 - 網站內容為 JavaScript 動態渲染；本檔案與首頁 HTML 內的靜態摘要提供不需執行 JavaScript 即可讀取的內容。
 - 版權所有：昭梧。引用請標明來源並連結原頁，請勿大段轉載。
-- 站點地圖：https://stone-zhaowu-official.vercel.app/sitemap.xml
+- 站點地圖：https://zhao-wu.com/sitemap.xml

@@ -7,7 +7,7 @@ import { calculateD60, type AstronomyApi, type D60Key, type D60Placement, type D
 import { readSpecialistHistory, saveSpecialistHistory } from "@/lib/specialist-history";
 
 const ASTRO_SCRIPT_ID = "zhaowu-astronomy-engine-d60";
-const ASTRO_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js";
+const ASTRO_SCRIPT_URL = "/vendor/astronomy-engine-2.1.19.browser.min.js";
 const D60_BIRTH_EVENT = "zhaowu:d60-birth";
 type ThemeKey = "core" | "emotion" | "duty" | "resource" | "relation";
 

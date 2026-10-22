@@ -6,60 +6,98 @@ export type ReportSystemId = "bazi" | "ziwei" | "qizheng" | "western" | "indian"
 export type ReportAccessProduct = "quick" | "system" | "bundle";
 export type ReportAccessLevel = "none" | "quick" | "system" | "bundle";
 
-// The "quick" tier is no longer sold: every visitor gets it for free by
-// default (see resolveReportAccess below) as a new-user welcome gift, so it
-// carries no price and no longer renders as a purchasable card in
-// ReportAccessGate. `system`/`bundle` are the only two tiers still sold.
-//
-// Live Stripe Payment Links charge USD 9.90 per system and USD 19.99
-// for the six specialist systems bundle. BaZi is a separate USD 9.90 purchase.
-// Keep displayed currency explicit; labels and Stripe amounts must stay aligned.
+// The "quick" tier is no longer sold: every visitor gets it for free.
+export type ReportPriceCurrency = "usd" | "aud" | "cny";
+type FixedReportPrice = { amountCents: number; price: string };
+
+const FIXED_REPORT_PRICES = {
+  standard: {
+    usd: { amountCents: 990, price: "US$9.90" },
+    aud: { amountCents: 1490, price: "A$14.90" },
+    cny: { amountCents: 6800, price: "¥68" },
+  },
+  deep: {
+    usd: { amountCents: 1690, price: "US$16.90" },
+    aud: { amountCents: 2490, price: "A$24.90" },
+    cny: { amountCents: 10800, price: "¥108" },
+  },
+  bundle: {
+    usd: { amountCents: 2690, price: "US$26.90" },
+    aud: { amountCents: 3990, price: "A$39.90" },
+    cny: { amountCents: 16800, price: "¥168" },
+  },
+} as const satisfies Record<"standard" | "deep" | "bundle", Record<ReportPriceCurrency, FixedReportPrice>>;
+
+// Canonical USD values remain exported for contracts that need a stable base.
+// Customer-facing labels use reportAccessPrice(), which selects one of the
+// manually fixed Stripe currencies; it never calculates a live exchange rate.
 export const REPORT_ACCESS_PRODUCTS = {
   quick: { amountCents: 0, price: "$0" },
-  system: { amountCents: 990, price: "US$9.90" },
-  bundle: { amountCents: 1999, price: "US$19.99" },
+  system: FIXED_REPORT_PRICES.standard.usd,
+  bundle: FIXED_REPORT_PRICES.bundle.usd,
 } as const;
+
+const DEEP_REPORT_SYSTEMS: ReadonlySet<ReportSystemId> = new Set<ReportSystemId>(["bazi", "ziwei"]);
+
+export function detectReportPriceCurrency(): ReportPriceCurrency {
+  if (typeof window === "undefined" || typeof navigator === "undefined") return "usd";
+  const locales = navigator.languages?.length ? navigator.languages : [navigator.language];
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  const hasRegion = (region: string) => locales.some((locale) => new RegExp(`[-_]${region}(?:$|[-_])`, "i").test(locale));
+
+  if (hasRegion("AU") || timeZone.startsWith("Australia/") || timeZone === "Antarctica/Macquarie") return "aud";
+  if (hasRegion("CN") || ["Asia/Shanghai", "Asia/Urumqi", "Asia/Chongqing", "Asia/Harbin"].includes(timeZone)) return "cny";
+  return "usd";
+}
+
+export function reportAccessPrice(product: ReportAccessProduct, system: ReportSystemId): FixedReportPrice {
+  if (product === "quick") return REPORT_ACCESS_PRODUCTS.quick;
+  const currency = detectReportPriceCurrency();
+  if (product === "bundle") return FIXED_REPORT_PRICES.bundle[currency];
+  return FIXED_REPORT_PRICES[DEEP_REPORT_SYSTEMS.has(system) ? "deep" : "standard"][currency];
+}
 
 const ACCESS_KEY_STORAGE = "zhaowu.report-access-key.v1";
 const SESSION_STORAGE = "zhaowu.report-access-sessions.v1";
 const BAZI_RETURN_STORAGE = "zhaowu.pending-bazi-return.v1";
 const ACCESS_ENDPOINT = `${SUPABASE_URL}/functions/v1/stripe-checkout`;
+const PROMO_ENDPOINT = `${SUPABASE_URL}/functions/v1/promo-code`;
 
 const PAYMENT_LINKS: Record<ReportSystemId, Record<ReportAccessProduct, string>> = {
   bazi: {
     quick: "", // Always free: never sell the quick tier.
-    system: "https://buy.stripe.com/eVq5kD2Czbvrb4n7dg2sM0y",
+    system: "https://buy.stripe.com/9B600ja510QNgoH5582sM0C", // 2026-10-19 fixed deep price
     bundle: "", // Six-system bundle is NOT a BaZi purchase.
   },
   ziwei: {
     quick: "",
-    system: "https://buy.stripe.com/7sY8wPdhdeHDb4n7dg2sM0m",
-    bundle: "https://buy.stripe.com/eVq3cv1yvfLHc8reFI2sM0n",
+    system: "https://buy.stripe.com/9B69AT0urbvr6O77dg2sM0B", // 2026-10-19 fixed deep price
+    bundle: "https://buy.stripe.com/6oU8wPelh7fb5K3gNQ2sM0E",
   },
   qizheng: {
     quick: "",
     system: "https://buy.stripe.com/14A6oH7WTdDz4FZ7dg2sM0o",
-    bundle: "https://buy.stripe.com/6oU7sL0ur7fb4FZ69c2sM0p",
+    bundle: "https://buy.stripe.com/cNi8wPdhdarndcvcxA2sM0D",
   },
   western: {
     quick: "",
     system: "https://buy.stripe.com/00w3cvb95gPL6O70OS2sM0q",
-    bundle: "https://buy.stripe.com/8x24gz5OL6b76O77dg2sM0r",
+    bundle: "https://buy.stripe.com/9B6bJ12CzeHDc8r1SW2sM0F",
   },
   indian: {
     quick: "",
     system: "https://buy.stripe.com/7sY14ncd9arn1tNgNQ2sM0s",
-    bundle: "https://buy.stripe.com/aFaaEX0urarnegzeFI2sM0t",
+    bundle: "https://buy.stripe.com/eVqaEXb959nj5K3btw2sM0G",
   },
   palm: {
     quick: "",
     system: "https://buy.stripe.com/bJeaEXdhdarn5K3eFI2sM0u",
-    bundle: "https://buy.stripe.com/3cI6oH90Xbvr5K3gNQ2sM0v",
+    bundle: "https://buy.stripe.com/bJe00j5OLgPLdcv9lo2sM0H",
   },
   numerology: {
     quick: "",
     system: "https://buy.stripe.com/dRm00jgtpgPL1tN2X02sM0w",
-    bundle: "https://buy.stripe.com/eVq7sL6SP0QNa0jdBE2sM0x",
+    bundle: "https://buy.stripe.com/9B6bJ16SP42Z8WfdBE2sM0I",
   },
 };
 
@@ -131,6 +169,48 @@ async function verifySession(sessionId: string): Promise<Verification> {
   return payloadOf(response);
 }
 
+async function verifyPromo(accessKey: string, system: ReportSystemId): Promise<Verification> {
+  const url = new URL(PROMO_ENDPOINT);
+  url.searchParams.set("access_key", accessKey);
+  url.searchParams.set("system", system);
+  const response = await fetch(url, { headers: apiHeaders(), cache: "no-store" });
+  return payloadOf(response);
+}
+
+export type PromoRedeemError =
+  | "CONSENT_REQUIRED"
+  | "ACCESS_KEY_UNAVAILABLE"
+  | "PROMO_CODE_REQUIRED"
+  | "PROMO_NOT_FOUND"
+  | "PROMO_EXPIRED"
+  | "PROMO_EXHAUSTED"
+  | "PROMO_WRONG_SYSTEM"
+  | "PROMO_ALREADY_REDEEMED"
+  | "PROMO_UNAVAILABLE";
+
+/** Redeems a temporary free-access code for one report system. Never grants access itself:
+ * the server (promo-code Edge Function) is the sole authority, exactly like a Stripe purchase. */
+export async function redeemPromoCode(code: string, system: ReportSystemId): Promise<ReportAccessLevel> {
+  if (!hasPurchaseConsent()) throw new Error("CONSENT_REQUIRED" satisfies PromoRedeemError);
+  const accessKey = reportAccessKey();
+  if (!accessKey) throw new Error("ACCESS_KEY_UNAVAILABLE" satisfies PromoRedeemError);
+  const trimmed = code.trim();
+  if (!trimmed) throw new Error("PROMO_CODE_REQUIRED" satisfies PromoRedeemError);
+  const response = await fetch(PROMO_ENDPOINT, {
+    method: "POST",
+    headers: apiHeaders(),
+    cache: "no-store",
+    body: JSON.stringify({ code: trimmed, system, access_key: accessKey }),
+  });
+  const payload = await response.json().catch(() => ({})) as Verification;
+  if (!response.ok || !payload.paid) {
+    const raw = typeof payload.error === "string" ? payload.error : payload.error?.code;
+    const known: PromoRedeemError[] = ["PROMO_NOT_FOUND", "PROMO_EXPIRED", "PROMO_EXHAUSTED", "PROMO_WRONG_SYSTEM", "PROMO_ALREADY_REDEEMED"];
+    throw new Error((known as string[]).includes(raw || "") ? raw! : "PROMO_UNAVAILABLE" satisfies PromoRedeemError);
+  }
+  return levelFor(payload, system);
+}
+
 function levelFor(verification: Verification, system: ReportSystemId): ReportAccessLevel {
   if (!verification.paid || !verification.product) return "none";
   if (verification.product === "bundle") return system === "bazi" ? "none" : "bundle";
@@ -167,6 +247,17 @@ export async function resolveReportAccess(system: ReportSystemId) {
       if (level === "bundle") break;
     } catch {
       /* One expired or invalid session must not block other valid purchases. */
+    }
+  }
+  if (level !== "bundle") {
+    try {
+      // Server-authoritative, same as a Stripe session: the access key alone never grants
+      // access locally. A promo redemption only ever raises the floor, never lowers it.
+      const promoVerification = await verifyPromo(accessKey, system);
+      const promoLevel = levelFor(promoVerification, system);
+      if (rank[promoLevel] > rank[level]) level = promoLevel;
+    } catch {
+      /* Promo lookup failing must not block an otherwise-valid Stripe entitlement. */
     }
   }
   return { level, pending, owner: false };

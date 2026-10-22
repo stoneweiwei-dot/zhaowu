@@ -15,6 +15,34 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-23-pwa-language-guide-empty-state",
+    date: "2026-10-23",
+    zhHant: { title: "安裝版語言對應、導覽頁收編、空內容區塊不再顯示", summary: "安裝為 App 後，名稱與語言標記會跟隨繁中／簡中／英文；舊的 /guide 網址改導向首頁導覽；吉象圖鑑與影片區在沒有內容時直接隱藏，不再出現空區塊。命盤計算與付款流程不變。" },
+    zhHans: { title: "安装版语言对应、导览页收编、空内容区块不再显示", summary: "安装为 App 后，名称与语言标记会跟随繁中／简中／英文；旧的 /guide 网址改导向首页导览；吉象图鉴与影片区在没有内容时直接隐藏，不再出现空区块。命盘计算与付款流程不变。" },
+    en: { title: "Installed-app language, guide URL tidy-up, no empty sections", summary: "The installed app now takes its name and language from your display language (Traditional Chinese, Simplified Chinese or English). The old /guide address redirects to the home-page guide, and atlas image and film sections hide themselves when they have nothing to show. Chart calculation and payments are unchanged." },
+  },
+  {
+    id: "2026-10-21-owner-auth-runtime-config",
+    date: "2026-10-21",
+    zhHant: { title: "管理登入安全加固", summary: "管理登入憑證改由伺服器設定提供，統一加密登入狀態與失效檢查；一般訪客、命盤與付款流程不變。" },
+    zhHans: { title: "管理登录安全加固", summary: "管理登录凭证改由服务器配置提供，统一加密登录状态与失效检查；普通访客、命盘与付款流程不变。" },
+    en: { title: "Admin sign-in security hardening", summary: "Admin credentials move to server configuration with consistent encrypted-session validation. Visitor, chart and payment flows are unchanged." },
+  },
+  {
+    id: "2026-10-20-guide-member-login-wording",
+    date: "2026-10-20",
+    zhHant: { title: "導覽登入指向會員頁，更新記錄與說明用詞調整", summary: "向網站導覽詢問登入或註冊時，現在會指向會員登入頁；更新記錄、紫微環境文章、八字筆記與付費報告說明中的後台用語改為更中性的描述。功能、命盤計算與付款流程不變。" },
+    zhHans: { title: "导览登录指向会员页，更新记录与说明用词调整", summary: "向网站导览询问登录或注册时，现在会指向会员登录页；更新记录、紫微环境文章、八字笔记与付费报告说明中的后台用语改为更中性的描述。功能、命盘计算与付款流程不变。" },
+    en: { title: "Guide sign-in now points to Member sign-in; calmer wording in notes", summary: "Asking the site guide about signing in or registering now points to Member sign-in. Back-office wording in the update notes, the Zi Wei environment article, BaZi notes and the paid-report note is neutralised. Features, chart calculation and payments are unchanged." },
+  },
+  {
+    id: "2026-10-21-member-form-feedback",
+    date: "2026-10-21",
+    zhHant: { title: "會員表單補齊錯誤與連線提示", summary: "登入、註冊與找回密碼改用頁內欄位提示；處理中狀態清楚顯示，連線逾時會停止等待並提供重試訊息。" },
+    zhHans: { title: "会员表单补齐错误与连接提示", summary: "登录、注册与找回密码改用页内字段提示；处理中状态清楚显示，连接超时会停止等待并提供重试信息。" },
+    en: { title: "Clearer member-form and connection feedback", summary: "Sign-in, sign-up and password recovery show persistent field feedback, a visible working state and a retry message when a connection times out." },
+  },
+  {
     id: "2026-10-12-song-shell-wardrobe-swatches",
     date: "2026-10-12",
     zhHant: { title: "首頁穿衣加入對應色卡，共用介面收斂為宋式暖紙", summary: "每日穿衣的命盤主色、今日天時色與少量使用色改為可辨識的對應色卡，首飾與材質另列，不再只顯示一串淡色文字。首頁入口、音樂／導覽工具、登入與系統頁同步收斂為低圓角暖紙、細線與克制陰影，移除殘留玻璃膠囊感；五行取值與命盤計算不變。" },
@@ -45,9 +73,9 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
     id: "2026-10-09-owner-console-integration",
     date: "2026-10-09",
-    zhHant: { title: "站主後台集中管理", summary: "報告、背景圖片、開場影片與 Instagram／Threads 改為同頁切換；音樂管理保留在後台入口。切換分區保留報告選取與社群草稿，沿用原有站主權限與資料接口。" },
-    zhHans: { title: "站主后台集中管理", summary: "报告、背景图片、开场视频与 Instagram／Threads 改为同页切换；音乐管理保留在后台入口。切换分区保留报告选择与社交草稿，沿用原有站主权限与数据接口。" },
-    en: { title: "One owner console", summary: "Reports, backgrounds, opening videos and Instagram/Threads now share one console. Music management remains available at the console entry. Switching sections retains report selection and social drafts while keeping the existing owner permissions and data APIs." },
+    zhHant: { title: "後台集中管理", summary: "報告、背景圖片、開場影片與 Instagram／Threads 改為同頁切換；音樂管理保留在後台入口。切換分區保留報告選取與社群草稿，沿用原有管理權限與資料接口。" },
+    zhHans: { title: "后台集中管理", summary: "报告、背景图片、开场视频与 Instagram／Threads 改为同页切换；音乐管理保留在后台入口。切换分区保留报告选择与社交草稿，沿用原有管理权限与数据接口。" },
+    en: { title: "One admin console", summary: "Reports, backgrounds, opening videos and Instagram/Threads now share one console. Music management remains available at the console entry. Switching sections retains report selection and social drafts while keeping the existing admin permissions and data APIs." },
   },
   {
     id: "2026-10-07-offline-china-place-gazetteer",
@@ -66,9 +94,9 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
     id: "2026-10-07-owner-media-home-background-simplify",
     date: "2026-10-07",
-    zhHant: { title: "後台圖片操作收斂，首頁背景可直接從圖庫套用", summary: "移除圖片與開場影片裡難懂的批次顯示／隱藏／啟用控制；圖片卡改為直接預覽、設為首頁背景與必要的刪除，站主首頁不再顯示獨立空白的首頁背景入口。今日指引的首頁小卡同步恢復暖宣紙與山水感，深青玉只保留在局部欄頭。" },
-    zhHans: { title: "后台图片操作收敛，首页背景可直接从图库套用", summary: "移除图片与开场视频里难懂的批量显示／隐藏／启用控制；图片卡改为直接预览、设为首页背景与必要的删除，站主首页不再显示独立空白的首页背景入口。今日指引的首页小卡同步恢复暖宣纸与山水感，深青玉只保留在局部栏头。" },
-    en: { title: "Owner media controls simplified; gallery images can set the homepage background directly", summary: "Confusing bulk show/hide/enable controls were removed from image and opening-video managers. Image cards now focus on preview, set-as-home-background and necessary deletion, while the empty standalone Home Backgrounds entry is no longer shown. The Today Guide summary also returns to a warm paper-and-landscape surface with deep jade reserved for section headers." },
+    zhHant: { title: "後台圖片操作收斂，首頁背景可直接從圖庫套用", summary: "移除圖片與開場影片裡難懂的批次顯示／隱藏／啟用控制；圖片卡改為直接預覽、設為首頁背景與必要的刪除，管理端首頁不再顯示獨立空白的首頁背景入口。今日指引的首頁小卡同步恢復暖宣紙與山水感，深青玉只保留在局部欄頭。" },
+    zhHans: { title: "后台图片操作收敛，首页背景可直接从图库套用", summary: "移除图片与开场视频里难懂的批量显示／隐藏／启用控制；图片卡改为直接预览、设为首页背景与必要的删除，管理端首页不再显示独立空白的首页背景入口。今日指引的首页小卡同步恢复暖宣纸与山水感，深青玉只保留在局部栏头。" },
+    en: { title: "Admin media controls simplified; gallery images can set the homepage background directly", summary: "Confusing bulk show/hide/enable controls were removed from image and opening-video managers. Image cards now focus on preview, set-as-home-background and necessary deletion, while the empty standalone Home Backgrounds entry is no longer shown. The Today Guide summary also returns to a warm paper-and-landscape surface with deep jade reserved for section headers." },
   },
   {
     id: "2026-10-07-today-native-dashboard",
@@ -80,16 +108,16 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
     id: "2026-10-07-auto-location-home-visuals",
     date: "2026-10-07",
-    zhHant: { title: "定位與首頁視覺再收斂", summary: "已授權的定位會自動沿用並定期刷新；未取得精準定位時以 Vercel IP 的城市級位置兜底。首頁背景專區會在打開時主動載入現有背景，站主資料橋接偶發讀取失敗時以公開背景庫兜底，不再出現空白分區；單張上傳即直接套用，選中的背景會真正顯示在首頁，底部白色輪播條已徹底移除。" },
-    zhHans: { title: "定位与首页视觉再收敛", summary: "已授权的定位会自动沿用并定期刷新；未取得精准定位时以 Vercel IP 的城市级位置兜底。首页背景专区会在打开时主动载入现有背景，站主数据桥接偶发读取失败时以公开背景库兜底，不再出现空白分区；单张上传即直接套用，选中的背景会真正显示在首页，底部白色轮播条已彻底移除。" },
-    en: { title: "Automatic location and cleaner homepage visuals", summary: "Granted location is reused and refreshed automatically, with Vercel IP city-level geolocation as a coarse fallback. Homepage Backgrounds now reloads its library whenever opened and falls back to the public background library if the owner read bridge fails, so the section no longer appears empty. A single upload applies immediately, the selected wallpaper is visible on the homepage, and the white carousel rail is fully removed." },
+    zhHant: { title: "定位與首頁視覺再收斂", summary: "已授權的定位會自動沿用並定期刷新；未取得精準定位時以 Vercel IP 的城市級位置兜底。首頁背景專區會在打開時主動載入現有背景，後台資料橋接偶發讀取失敗時以公開背景庫兜底，不再出現空白分區；單張上傳即直接套用，選中的背景會真正顯示在首頁，底部白色輪播條已徹底移除。" },
+    zhHans: { title: "定位与首页视觉再收敛", summary: "已授权的定位会自动沿用并定期刷新；未取得精准定位时以 Vercel IP 的城市级位置兜底。首页背景专区会在打开时主动载入现有背景，后台数据桥接偶发读取失败时以公开背景库兜底，不再出现空白分区；单张上传即直接套用，选中的背景会真正显示在首页，底部白色轮播条已彻底移除。" },
+    en: { title: "Automatic location and cleaner homepage visuals", summary: "Granted location is reused and refreshed automatically, with Vercel IP city-level geolocation as a coarse fallback. Homepage Backgrounds now reloads its library whenever opened and falls back to the public background library if the admin read bridge fails, so the section no longer appears empty. A single upload applies immediately, the selected wallpaper is visible on the homepage, and the white carousel rail is fully removed." },
   },
   {
     id: "2026-10-06-owner-live-controls",
     date: "2026-10-06",
-    zhHant: { title: "定位、五行版面與首頁背景控制修正", summary: "今日定位加入明確重試與權限提示；五行五格收緊為同列緊湊控制；站主選定的首頁背景現在真正驅動正式站背景。Instagram／Threads 發布器同步顯示目前缺少 Meta 連接，不再假裝可發布。" },
-    zhHans: { title: "定位、五行版面与首页背景控制修正", summary: "今日定位加入明确重试与权限提示；五行五格收紧为同列紧凑控制；站主选定的首页背景现在真正驱动正式站背景。Instagram／Threads 发布器同步显示目前缺少 Meta 连接，不再假装可发布。" },
-    en: { title: "Location, five-element layout and live wallpaper controls fixed", summary: "Today location now exposes retry and permission feedback; the five choices use a compact single-row control; owner-selected home backgrounds now drive the live shell. The Instagram/Threads publisher also shows the missing Meta connection instead of presenting a false ready state." },
+    zhHant: { title: "定位、五行版面與首頁背景控制修正", summary: "今日定位加入明確重試與權限提示；五行五格收緊為同列緊湊控制；後台選定的首頁背景現在真正驅動正式站背景。Instagram／Threads 發布器同步顯示目前缺少 Meta 連接，不再假裝可發布。" },
+    zhHans: { title: "定位、五行版面与首页背景控制修正", summary: "今日定位加入明确重试与权限提示；五行五格收紧为同列紧凑控制；后台选定的首页背景现在真正驱动正式站背景。Instagram／Threads 发布器同步显示目前缺少 Meta 连接，不再假装可发布。" },
+    en: { title: "Location, five-element layout and live wallpaper controls fixed", summary: "Today location now exposes retry and permission feedback; the five choices use a compact single-row control; admin-selected home backgrounds now drive the live shell. The Instagram/Threads publisher also shows the missing Meta connection instead of presenting a false ready state." },
   },
   {
     id: "2026-10-06-answer-routing-credit-talent",
@@ -110,21 +138,21 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
     date: "2026-10-06",
     zhHant: { title: "更新紀錄改為每次改動必寫", summary: "網站功能、視覺、後台或正式 runtime 有實際變化時，同一個 PR 必須加入公開更新紀錄；CI 會阻止漏寫的產品變更。" },
     zhHans: { title: "更新记录改为每次改动必写", summary: "网站功能、视觉、后台或正式 runtime 有实际变化时，同一个 PR 必须加入公开更新记录；CI 会阻止漏写的产品变更。" },
-    en: { title: "Every product change now needs a public note", summary: "Any real change to the site, visuals, owner console or production runtime must add a public change note in the same PR; CI blocks product changes that omit it." },
+    en: { title: "Every product change now needs a public note", summary: "Any real change to the site, visuals, admin console or production runtime must add a public change note in the same PR; CI blocks product changes that omit it." },
   },
   {
     id: "2026-10-06-opening-library",
     date: "2026-10-06",
     zhHant: { title: "開場動畫整理並選定雙生並蒂蓮", summary: "後台開場影片改用可讀名稱；目前開場切換為較輕的 MP4「雙生並蒂蓮」，並保留其他版本作備用。" },
     zhHans: { title: "开场动画整理并选定双生并蒂莲", summary: "后台开场影片改用可读名称；目前开场切换为较轻的 MP4「双生并蒂莲」，并保留其他版本作备用。" },
-    en: { title: "Opening-video library cleaned up", summary: "Owner opening videos now use readable names. The lighter MP4 Twin Lotus clip is the current opening, while the other versions remain available as fallbacks." },
+    en: { title: "Opening-video library cleaned up", summary: "Opening videos now use readable names. The lighter MP4 Twin Lotus clip is the current opening, while the other versions remain available as fallbacks." },
   },
   {
     id: "2026-10-06-song-visual-qc",
     date: "2026-10-06",
-    zhHant: { title: "正式宋式圖像加入硬性品質門檻", summary: "正式母圖加入解析度與重影檢查；不合格素材不再回到報告或站主圖庫，圖片放大也不超過原始解析度。" },
-    zhHans: { title: "正式宋式图像加入硬性质量门槛", summary: "正式母图加入分辨率与重影检查；不合格素材不再回到报告或站主图库，图片放大也不超过原始分辨率。" },
-    en: { title: "Formal Song artwork now has a hard QC gate", summary: "Formal source art is checked for resolution and ghosting; blocked art cannot return to reports or the owner gallery, and zoom is capped at native resolution." },
+    zhHant: { title: "正式宋式圖像加入硬性品質門檻", summary: "正式母圖加入解析度與重影檢查；不合格素材不再回到報告或後台圖庫，圖片放大也不超過原始解析度。" },
+    zhHans: { title: "正式宋式图像加入硬性质量门槛", summary: "正式母图加入分辨率与重影检查；不合格素材不再回到报告或后台图库，图片放大也不超过原始分辨率。" },
+    en: { title: "Formal Song artwork now has a hard QC gate", summary: "Formal source art is checked for resolution and ghosting; blocked art cannot return to reports or the admin gallery, and zoom is capped at native resolution." },
   },
   {
     id: "2026-10-06-gallery-groups",
@@ -136,23 +164,23 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
     id: "2026-10-05-owner-bulk",
     date: "2026-10-05",
-    zhHant: { title: "站主後台改為精簡、多選優先", summary: "音樂、圖庫、開場影片、首頁背景與客戶報告加入全選、清除與批次操作；縮小過大的控制區並移除含糊選項。" },
-    zhHans: { title: "站主后台改为精简、多选优先", summary: "音乐、图库、开场影片、首页背景与客户报告加入全选、清除与批量操作；缩小过大的控制区并移除含糊选项。" },
-    en: { title: "Owner console is denser and bulk-first", summary: "Music, gallery, opening-video, home-background and customer-report managers gained select-all, clear and bulk actions, while oversized and ambiguous controls were removed." },
+    zhHant: { title: "後台改為精簡、多選優先", summary: "音樂、圖庫、開場影片、首頁背景與客戶報告加入全選、清除與批次操作；縮小過大的控制區並移除含糊選項。" },
+    zhHans: { title: "后台改为精简、多选优先", summary: "音乐、图库、开场影片、首页背景与客户报告加入全选、清除与批量操作；缩小过大的控制区并移除含糊选项。" },
+    en: { title: "Admin console is denser and bulk-first", summary: "Music, gallery, opening-video, home-background and customer-report managers gained select-all, clear and bulk actions, while oversized and ambiguous controls were removed." },
   },
   {
     id: "2026-10-05-mobile-home-five-elements",
     date: "2026-10-05",
-    zhHant: { title: "手機首頁與每日五行重新收口", summary: "首頁頂部資訊合併成單排，主視覺上移，站主入口移到頁尾；每日五行五格改為同屏完整顯示，不再橫向滑動。" },
-    zhHans: { title: "手机首页与每日五行重新收口", summary: "首页顶部信息合并成单排，主视觉上移，站主入口移到页尾；每日五行五格改为同屏完整显示，不再横向滑动。" },
-    en: { title: "Mobile home and five-element layout tightened", summary: "Home utilities now share one compact row, the hero sits higher, owner access moved to the footer, and all five daily-element choices fit the phone viewport without horizontal swiping." },
+    zhHant: { title: "手機首頁與每日五行重新收口", summary: "首頁頂部資訊合併成單排，主視覺上移，管理入口移到頁尾；每日五行五格改為同屏完整顯示，不再橫向滑動。" },
+    zhHans: { title: "手机首页与每日五行重新收口", summary: "首页顶部信息合并成单排，主视觉上移，管理入口移到页尾；每日五行五格改为同屏完整显示，不再横向滑动。" },
+    en: { title: "Mobile home and five-element layout tightened", summary: "Home utilities now share one compact row, the hero sits higher, admin access moved to the footer, and all five daily-element choices fit the phone viewport without horizontal swiping." },
   },
   {
     id: "2026-10-05-social-publisher",
     date: "2026-10-05",
-    zhHant: { title: "Instagram／Threads 發布器完成整合", summary: "站主發布器可從圖庫選素材、手機上傳、預覽與填 alt text，並支援 Instagram 與 Threads 並行提交；後台收斂為單一入口。" },
-    zhHans: { title: "Instagram／Threads 发布器完成整合", summary: "站主发布器可从图库选素材、手机上传、预览与填写 alt text，并支持 Instagram 与 Threads 并行提交；后台收敛为单一入口。" },
-    en: { title: "Instagram and Threads publisher integrated", summary: "The owner publisher can use gallery assets, mobile uploads, previews and alt text, then submit to Instagram and Threads in parallel from a single console flow." },
+    zhHant: { title: "Instagram／Threads 發布器完成整合", summary: "發布器可從圖庫選素材、手機上傳、預覽與填 alt text，並支援 Instagram 與 Threads 並行提交；後台收斂為單一入口。" },
+    zhHans: { title: "Instagram／Threads 发布器完成整合", summary: "发布器可从图库选素材、手机上传、预览与填写 alt text，并支持 Instagram 与 Threads 并行提交；后台收敛为单一入口。" },
+    en: { title: "Instagram and Threads publisher integrated", summary: "The publisher can use gallery assets, mobile uploads, previews and alt text, then submit to Instagram and Threads in parallel from a single console flow." },
   },
   {
     id: "2026-10-05-report-mobile",
@@ -220,8 +248,8 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
     id: "2026-10-03-today-intro",
     date: "2026-10-03",
-    zhHant: { title: "今日指引重排，開場影片不再先閃舊片", summary: "黃曆、五行穿衣、靈籤改為三段獨立閱讀；站主影片載入時先保持中性畫面，不再短暫播放舊的內建開場。" },
-    zhHans: { title: "今日指引重排，开场影片不再先闪旧片", summary: "黄历、五行穿衣、灵签改为三段独立阅读；站主影片加载时先保持中性画面，不再短暂播放旧的内建开场。" },
+    zhHant: { title: "今日指引重排，開場影片不再先閃舊片", summary: "黃曆、五行穿衣、靈籤改為三段獨立閱讀；自訂影片載入時先保持中性畫面，不再短暫播放舊的內建開場。" },
+    zhHans: { title: "今日指引重排，开场影片不再先闪旧片", summary: "黄历、五行穿衣、灵签改为三段独立阅读；自定义影片加载时先保持中性画面，不再短暂播放旧的内建开场。" },
     en: { title: "Today guide reorganised; old intro flash removed", summary: "Almanac, five-element dressing and spirit slips now read as three separate sections, while custom opening videos resolve over a neutral field instead of briefly flashing the old built-in clip." },
   },
   {
@@ -234,9 +262,9 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
     id: "2026-10-02-owner-report-structure",
     date: "2026-10-02",
-    zhHant: { title: "站主後台分區，完整報告恢復連續閱讀", summary: "後台管理區重新分開，減少功能混在同一頁；完整報告恢復單一連續 summary／body，不再被舊分組切碎。" },
-    zhHans: { title: "站主后台分区，完整报告恢复连续阅读", summary: "后台管理区重新分开，减少功能混在同一页；完整报告恢复单一连续 summary／body，不再被旧分组切碎。" },
-    en: { title: "Owner console separated; full report flow restored", summary: "Back-office sections were separated to reduce clutter, while the full report returned to one continuous summary/body instead of being fragmented by older grouping." },
+    zhHant: { title: "後台分區，完整報告恢復連續閱讀", summary: "後台管理區重新分開，減少功能混在同一頁；完整報告恢復單一連續 summary／body，不再被舊分組切碎。" },
+    zhHans: { title: "后台分区，完整报告恢复连续阅读", summary: "后台管理区重新分开，减少功能混在同一页；完整报告恢复单一连续 summary／body，不再被旧分组切碎。" },
+    en: { title: "Admin console separated; full report flow restored", summary: "Back-office sections were separated to reduce clutter, while the full report returned to one continuous summary/body instead of being fragmented by older grouping." },
   },
 ] as const;
 

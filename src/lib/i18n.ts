@@ -147,8 +147,8 @@ const TABLE = {
   wuxing: ["旺衰底盤", "旺衰底盘"],
   favorEl: ["流通粗候選", "流通粗候选"],
   drainEl: ["暫不必放大", "暂不必放大"],
-  useful: ["流通粗候選（待覆核）", "流通粗候选（待覆核）"],
-  drain: ["暫不必放大（待覆核）", "暂不必放大（待覆核）"],
+  useful: ["可參考的流通方向", "可参考的流通方向"],
+  drain: ["暫不必放大", "暂不必放大"],
   strength: ["旺衰底盤", "旺衰底盘"],
   dayun: ["大運節奏", "大运节奏"],
   rhythm: ["你的整體人生節奏", "你的整体人生节奏"],
@@ -396,8 +396,8 @@ const EN: Record<CopyKey, string> = {
   wuxing: "Strength baseline",
   favorEl: "Provisional flow candidates",
   drainEl: "Do not amplify yet",
-  useful: "Provisional flow candidates (review pending)",
-  drain: "Do not amplify yet (review pending)",
+  useful: "Flow directions worth considering",
+  drain: "Do not amplify yet",
   strength: "Strength baseline",
   dayun: "Luck-cycle rhythm",
   rhythm: "Your overall life rhythm",
@@ -507,13 +507,32 @@ type I18nState = {
   t: (key: CopyKey) => string;
 };
 
+// Owner 2026-10-15: default language is English everywhere, except for visitors whose browser
+// reports a Chinese-speaking locale (device/region language, the only zero-cost region signal
+// available without a paid geo-IP service). Mainland China / Singapore browsers default to
+// Simplified; Taiwan / Hong Kong / Macau or a bare "zh" default to Traditional. An explicit
+// choice already stored in this browser always wins and is never overridden by this detection.
+export function detectDefaultLocale(): Locale {
+  if (typeof navigator === "undefined") return "en";
+  const candidates = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language])
+    .filter(Boolean)
+    .map((tag) => tag.toLowerCase());
+  for (const tag of candidates) {
+    if (!tag.startsWith("zh")) continue;
+    if (tag.includes("-cn") || tag.includes("-sg") || tag.includes("hans")) return "zh-Hans";
+    return "zh-Hant";
+  }
+  return "en";
+}
+
 function readLocale(): Locale {
-  if (typeof window === "undefined") return "zh-Hant";
+  if (typeof window === "undefined") return "en";
   try {
     const v = window.localStorage.getItem("zhaowu.locale");
-    return v === "zh-Hans" || v === "en" ? v : "zh-Hant";
+    if (v === "zh-Hans" || v === "en" || v === "zh-Hant") return v;
+    return detectDefaultLocale();
   } catch {
-    return "zh-Hant";
+    return detectDefaultLocale();
   }
 }
 

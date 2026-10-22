@@ -1,3 +1,4 @@
+import { FROST_PHASES } from '@/lib/seasonal-skins';
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandSeal } from "@/components/brand-seal";
@@ -15,11 +16,12 @@ import {
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
-import { IntroGate } from "@/components/intro-gate";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { resolveReportAccess } from "@/lib/report-access";
+import { routeMetaFor, routeMetaForLanguage, ROUTE_META_PATHS } from "@/lib/route-meta";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
-import { hydrateSkin, refreshSharedSkin } from "@/lib/theme-skins";
+import { applySkin, readSkinId, hydrateSkin, refreshSharedSkin } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 import "@/legal-pages.css";
 import "@/brand-watermark.css";
@@ -40,8 +42,10 @@ function formatReleaseDate(value: string | null, language: DisplayLanguage) {
   return new Intl.DateTimeFormat(intlTagFor(language), { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 }
 
-const PRIVATE_ROUTES = ["/login", "/account", "/history", "/auth", "/gallery", "/social"];
-const SELF_CANONICAL_ROUTES = ["/", "/knowledge", "/knowledge/five-elements-tone-qi", "/knowledge/shushu-boundary", "/knowledge/system-map", "/updates", "/daily-colors"];
+const PRIVATE_ROUTES = ["/login", "/account", "/history", "/auth", "/gallery", "/social", "/member"];
+// Sitemap-listed public routes self-canonicalise; everything else keeps "/".
+// The set lives in src/lib/route-meta.json (shared with the static-HTML build step).
+const SELF_CANONICAL_ROUTES = ROUTE_META_PATHS;
 
 function updateMeta(selector: string, content: string) {
   const node = document.querySelector<HTMLMetaElement>(selector);
@@ -139,11 +143,19 @@ export function SiteShell({ children }: { children: ReactNode }) {
     hydrateSkin();
     // Other visitor tabs/devices pick up the owner's published theme on focus
     // and while visible, without page reload or per-change deployments.
-    const refreshTheme = () => { if (document.visibilityState === "visible") void refreshSharedSkin(); };
+    const refreshTheme = () => {
+      if (document.visibilityState !== "visible") return;
+      const selected = readSkinId();
+      if (selected === 'solar-auto' || selected === 'solar-frost-descent') applySkin(selected);
+      void refreshSharedSkin();
+    };
     window.addEventListener("focus", refreshTheme);
     window.addEventListener("pageshow", refreshTheme);
     document.addEventListener("visibilitychange", refreshTheme);
     const sharedSkinTimer = window.setInterval(refreshTheme, 60_000);
+    const seasonalTimers = FROST_PHASES.map(phase => Date.parse(phase.start) - Date.now())
+      .filter(delay => delay > 0 && delay < 2_147_483_647)
+      .map(delay => window.setTimeout(refreshTheme, delay));
     runLocalHousekeeping();
     let alive = true;
     void recordVisit().catch(() => undefined).finally(() => {
@@ -152,6 +164,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     return () => {
       alive = false;
       window.clearInterval(sharedSkinTimer);
+      seasonalTimers.forEach(timer => window.clearTimeout(timer));
       window.removeEventListener("focus", refreshTheme);
       window.removeEventListener("pageshow", refreshTheme);
       document.removeEventListener("visibilitychange", refreshTheme);
@@ -164,9 +177,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
   // Korean and Hindi remain implemented in the codebase but are intentionally
   // hidden from the public language selector until they are reactivated.
   const languageOptions = [
-    { value: "zh-Hant" as const, label: "繁體", short: "繁", aria: "繁體中文" },
-    { value: "zh-Hans" as const, label: "简体", short: "简", aria: "简体中文" },
-    { value: "en" as const, label: "English", short: "EN", aria: "English" },
+    { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
+    { value: "zh-Hans" as const, label: "简体", aria: "简体中文" },
+    { value: "en" as const, label: "English", aria: "English" },
   ];
 
   const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
@@ -186,7 +199,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const skipLabel = displayText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
 
   useEffect(() => {
-    const title = displayText(
+    // Per-route metadata from src/lib/route-meta.json for the three public
+    // languages (zh-Hant/zh-Hans/en). Hidden languages (ja/ko/hi) and unknown
+    // routes keep the previous inline site-wide defaults below.
+    const routeMeta = routeMetaFor(pathname);
+    const routeEntry = routeMeta && (language === "zh-Hant" || language === "zh-Hans" || language === "en")
+      ? routeMetaForLanguage(routeMeta, language)
+      : null;
+    const title = routeEntry?.title ?? displayText(
       language,
       "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費",
       "昭梧｜八字排盘・子平八字・真太阳时・流年运势｜免登录免费",
@@ -195,7 +215,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       "ZHAOWU｜출생 정보로 읽는 개인 명서",
       "ZHAOWU｜जन्म विवरण से व्यक्तिगत Destiny Book",
     );
-    const description = displayText(
+    const description = routeEntry?.description ?? displayText(
       language,
       "免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。",
       "免登录免费八字排盘：依子平八字与真太阳时校正，整理五行旺衰、大运与流年运势、今日提示。",
@@ -215,11 +235,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
       'meta[property="og:locale"]',
       language === "en" ? "en_AU" : language === "zh-Hans" ? "zh_CN" : "zh_TW",
     );
-  }, [language]);
+  }, [language, pathname]);
 
   // SEO: private/account routes are noindex; sitemap-listed public routes self-canonicalise, everything else keeps "/".
   useEffect(() => {
-    const origin = "https://stone-zhaowu-official.vercel.app";
+    const origin = "https://zhao-wu.com";
     const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
     const isPrivate = PRIVATE_ROUTES.some((route) => normalized === route || normalized.startsWith(`${route}/`));
     const canonicalPath = SELF_CANONICAL_ROUTES.includes(normalized) ? normalized : "/";
@@ -232,18 +252,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
   return (
     <div data-owner-view={user?.isOwner ? "true" : undefined} style={shellStyle} className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
       <a className="zhaowu-skip-link" href="#zhaowu-main-content">{skipLabel}</a>
-      {isHome ? <IntroGate /> : null}
       {!isLogin ? (
         <header className={`zhaowu-site-header sticky top-0 z-30${isHome ? " is-home-compact" : ""}`}>
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">
-            {!isOwnerWorkspace ? (
+            {!isOwnerWorkspace && !isHome ? (
               <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
-                {!isHome ? (
-                  <>
-                    <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
-                    <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
-                  </>
-                ) : null}
+                <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
+                <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
                 <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>
                   <span>{latestLabel}</span><span aria-hidden="true">›</span>
                 </Link>
@@ -271,26 +286,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
             ) : null}
 
             <nav className={`zhaowu-header-nav${isHome ? " is-home-entry-row" : ""}`} aria-label={siteControlsLabel}>
-              <div role="group" aria-label={t("language")} className="site-lang-group">
-                <span className="zhaowu-language-label">
-                  <BrandIcon name="language" />
-                  <span>{languageVisualLabel}</span>
-                </span>
-                {languageOptions.map(({ value, label, short, aria }) => {
-                  const active = language === value;
-                  return <button key={value} type="button" onClick={() => setLanguage(value)} aria-label={aria} aria-pressed={active} data-active={active ? "true" : "false"} className="site-lang-button">{isHome ? short : label}</button>;
-                })}
-              </div>
-
-              {isHome ? (
-                isPending ? <span className="zhaowu-home-login-inline is-pending" aria-hidden="true" /> :
-                user?.isOwner ? (
-                  <Link to="/account" className="zhaowu-home-login-inline" aria-label={t("navAdmin")}>
-                    <BrandIcon name="account" />
-                    <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
-                  </Link>
-                ) : null
-              ) : null}
+              <LanguageSwitcher
+                value={language}
+                options={languageOptions}
+                label={languageVisualLabel}
+                onChange={setLanguage}
+              />
 
               {NIGHT_MODE_ENABLED ? <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>
                 <button type="button" onClick={() => applyBrandTheme("day")} aria-pressed={!night} aria-label={dayModeLabel} data-active={!night ? "true" : "false"}>{displayText(language, "日", "日", "Day", "日", "낮", "दिन")}</button>
@@ -302,11 +303,34 @@ export function SiteShell({ children }: { children: ReactNode }) {
       ) : null}
 
       {!isLogin ? <JourneyNavigation showHelp={!isOwnerWorkspace} /> : null}
-      <div id="zhaowu-main-content" tabIndex={-1} className={isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}>{children}</div>
+      <div
+        id="zhaowu-main-content"
+        key={pathname}
+        tabIndex={-1}
+        className={`zhaowu-route-fade ${isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}`}
+      >{children}</div>
 
       {!isOwnerWorkspace ? <SiteUtilityDock /> : null}
 
       {!isLogin && !isOwnerWorkspace ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
+        <div className="zhaowu-footer-top-links" data-footer-status-strip>
+          {isHome ? (
+            <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>
+              <span>{latestLabel}</span><span aria-hidden="true">›</span>
+            </Link>
+          ) : null}
+          {user?.isOwner ? (
+              <Link to="/account" className="zhaowu-home-login-inline" data-owner-console-entry aria-label={t("navAdmin")}>
+                <BrandIcon name="account" />
+                <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
+              </Link>
+            ) : (
+              <Link to="/login" className="zhaowu-home-login-inline" data-owner-login-entry aria-label={displayText(language, "站主登入", "站主登录", "Owner sign-in", "管理者ログイン", "관리자 로그인", "मालिक लॉगिन")}>
+                <BrandIcon name="account" />
+                <span>{displayText(language, "站主登入", "站主登录", "Owner sign-in", "管理者ログイン", "관리자 로그인", "मालिक लॉगिन")}</span>
+              </Link>
+            )}
+        </div>
         {stats.totalVisits > 0 ? (
           <p className="zhaowu-site-views" data-site-views aria-label={`${viewsTodayLabel} ${stats.todayVisits.toLocaleString(numberLocale)}，${viewsTotalLabel} ${stats.totalVisits.toLocaleString(numberLocale)}`}>
             <span>{viewsTodayLabel} <b>{stats.todayVisits.toLocaleString(numberLocale)}</b></span>
@@ -314,11 +338,35 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <span>{viewsTotalLabel} <b>{stats.totalVisits.toLocaleString(numberLocale)}</b></span>
           </p>
         ) : null}
+        {isHome ? (
+          <details className="zhaowu-why" data-why-zhaowu>
+            <summary>{displayText(language, "為何做昭梧", "为何做昭梧", "Why ZHAOWU exists", "昭梧をつくる理由", "昭梧를 만든 이유")}</summary>
+            <div className="zhaowu-why__body">
+              <p>{displayText(
+                language,
+                "命理不是宿命，而是理解自己的方法；運勢不是答案，而是看見時機的能力。真正改變人生的，始終是每一次清醒而有意識的選擇。",
+                "命理不是宿命，而是理解自己的方法；运势不是答案，而是看见时机的能力。真正改变人生的，始终是每一次清醒而有意识的选择。",
+                "Destiny reading is not fate — it is a way to understand yourself. Timing is not an answer — it is the ability to see the moment. What truly changes a life is each clear, conscious choice.",
+                "命理は宿命ではなく、自分を理解するための方法。運勢は答えではなく、時機を見る力。人生を本当に変えるのは、いつも、澄んだ意識で行う一つひとつの選択です。",
+                "명리는 숙명이 아니라 자신을 이해하는 방법이고, 운세는 답이 아니라 때를 보는 힘입니다. 삶을 정말로 바꾸는 것은 언제나 깨어 있는 의식으로 하는 매번의 선택입니다.",
+              )}</p>
+              <p>{displayText(
+                language,
+                "所以排盤與快速讀免費、免登入，報告加密保存在這台裝置的瀏覽器；完整報告為單次付費，不自動續費。昭梧只提供傳統象義的參考，不作醫療診斷，決定仍由你自己做。",
+                "所以排盘与快速读免费、免登录，报告加密保存在这台设备的浏览器；完整报告为单次付费，不自动续费。昭梧只提供传统象义的参考，不作医疗诊断，决定仍由你自己做。",
+                "So charting and the quick reading are free with no sign-up, and reports are stored encrypted in this browser on this device. A full report is a one-time purchase with no subscription. ZHAOWU offers traditional symbolism for reflection — not a medical diagnosis — and the decision stays yours.",
+                "そのため、命盤とクイックリーディングは無料・登録不要で、レポートはこの端末のブラウザに暗号化して保存されます。完全版レポートは一回払いで、自動更新はありません。昭梧が示すのは伝統的な象意の参考であり、医療診断ではありません。決めるのは、あなた自身です。",
+                "그래서 명반과 빠른 해석은 무료이며 가입이 필요 없고, 보고서는 이 기기의 브라우저에 암호화되어 저장됩니다. 전체 보고서는 1회 결제이며 자동 갱신되지 않습니다. 昭梧는 전통 상징에 기반한 참고 자료일 뿐 의료 진단이 아니며, 결정은 언제나 당신의 몫입니다.",
+              )}</p>
+            </div>
+          </details>
+        ) : null}
         <ul className="zhaowu-footer-legal" aria-label={displayText(language, "法律資訊", "法律信息", "Legal", "法的情報", "법적 고지", "कानूनी")}>
           <li><Link to="/privacy">{displayText(language, "隱私權政策", "隐私权政策", "Privacy", "プライバシー", "개인정보", "गोपनीयता")}</Link></li>
           <li><Link to="/terms">{displayText(language, "服務條款", "服务条款", "Terms", "利用規約", "이용약관", "शर्तें")}</Link></li>
           <li><Link to="/copyright">{displayText(language, "版權聲明", "版权声明", "Copyright", "著作権", "저작권", "कॉपीराइट")}</Link></li>
         </ul>
+        {!user?.isOwner ? <p className="zhaowu-member-link text-sm leading-7"><Link to="/member" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream/80 px-5 font-medium text-ink underline-offset-4" data-member-entry>{displayText(language, "會員登入／註冊", "会员登录／注册", "Sign in / Sign up", "ログイン／登録", "로그인／가입", "साइन इन／साइन अप")}</Link></p> : null}
         <p className="text-xs leading-6 text-ink-mute"><Link to="/history" className="underline underline-offset-4">{displayText(language, "我的報告", "我的报告", "My reports", "履歴", "내 보고서", "मेरी रिपोर्ट")}</Link> · {displayText(language, "無需註冊，報告會加密保存在這台裝置的瀏覽器", "无需注册，报告会加密保存在这台设备的浏览器", "No registration required. Reports are stored in this browser on this device.", "登録不要。レポートはこの端末のブラウザに保存されます。", "가입 없이 이 기기의 브라우저에 저장됩니다.", "पंजीकरण की आवश्यकता नहीं; रिपोर्ट इस ब्राउज़र में सहेजी जाती हैं।")}</p>
         <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
         <p className="text-xs text-ink-mute">© 2026 {t("brand")} ZHAOWU</p>

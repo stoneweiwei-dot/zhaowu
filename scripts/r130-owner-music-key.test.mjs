@@ -42,14 +42,18 @@ test("owner key hash is rotated and the raw secret is not in the repo", async ()
   const music = await source("api/owner-music-write.js");
   // Login, session and music-write now share one validator in lib/owner-session-cookie.js.
   const shared = await source("lib/owner-session-cookie.js");
-  assert.match(shared, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
+  // Verifier digests are supplied at runtime (ZHAOWU_OWNER_KEY_SHA256); no digest literal may be committed.
+  const committedDigest = /["'][a-f0-9]{64}["']/i;
+  assert.match(shared, /ZHAOWU_OWNER_KEY_SHA256/);
   assert.match(shared, /value\.length < 8/);
-  assert.match(server, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
-  assert.match(server, /value\.length < 8/);
+  assert.match(server, /from ["']\.\.\/\.\.\/lib\/owner-session-cookie\.js["']/);
+  assert.doesNotMatch(shared, committedDigest);
+  assert.doesNotMatch(server, committedDigest);
+  // Login reads the cookie module directly; session and music-write go through the shared owner-auth module.
   assert.match(login, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
   for (const api of [session, music]) assert.match(api, /from ["']\.\.\/lib\/owner-auth\.js["']/);
   for (const api of [login, session, music]) {
-    assert.doesNotMatch(api, /6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07/);
+    assert.doesNotMatch(api, committedDigest);
   }
   assert.doesNotMatch(shared, /value\.length < 32/);
   assert.doesNotMatch(shared, /BEGIN OPENSSH PRIVATE KEY/);

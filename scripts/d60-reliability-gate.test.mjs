@@ -40,7 +40,9 @@ test("after minute confirmation D60 is generated; unstable is labelled weak supp
 });
 
 test("Astronomy Engine, Lahiri, Ascendant and D60 segment formulas stay local copies, not a new engine", () => {
-  assert.match(gate, /astronomy-engine@2.1.19/);
+  // Same pinned 2.1.19 build, now served from our own origin (public/vendor) so mainland visitors do not depend on jsDelivr.
+  assert.match(gate, /\/vendor\/astronomy-engine-2\.1\.19\.browser\.min\.js/);
+  assert.doesNotMatch(gate, /cdn\.jsdelivr\.net/);
   assert.match(gate, /function lahiriAyanamsa/);
   assert.match(gate, /function tropicalAscendant/);
   assert.match(gate, /function d60Sign/);

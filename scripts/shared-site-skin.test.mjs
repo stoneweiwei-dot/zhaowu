@@ -6,8 +6,8 @@ import { validSiteSkin, SITE_SKIN_IDS, readPublishedSiteSkin } from "../lib/owne
 test("shared skin catalog covers all registered choices and classic", () => {
   const src = readFileSync("src/lib/theme-skins.ts", "utf8");
   const ids = [...src.matchAll(/\{ id: "([a-z-]+)", ref: (\d+), mode: "(light|dark)"/g)].map((match) => match[1]);
-  assert.equal(ids.length, 18);
-  assert.equal(SITE_SKIN_IDS.size, ids.length + 1);
+  assert.equal(ids.length, 26); // includes the new Frost Descent seasonal artwork
+  assert.equal(SITE_SKIN_IDS.size, ids.length + 2); // none + solar-auto
   for (const id of ids) assert.equal(validSiteSkin(id), id);
   assert.equal(validSiteSkin("none"), "none");
   for (const id of ["", "../../api", "auto", "unknown", 1, null]) assert.equal(validSiteSkin(id), null);
@@ -113,4 +113,25 @@ test("public reader accepts each of the four new verdant skins", async () => {
     assert.equal(result.skin, skin);
     assert.equal(result.configured, true);
   }
+});
+
+test("public settings reader recognizes published skin and falls back on missing row", async () => {
+  const { readPublishedSiteSkinFromSettings } = await import("../lib/owner-site-skin-public.js");
+  const hit = await readPublishedSiteSkinFromSettings(async (_url, options) => {
+    assert.ok(options.headers.apikey);
+    return { ok: true, json: async () => [{ value: { skin: "song-rain-bank", updatedAt: "2026-10-21T00:00:00Z" } }] };
+  });
+  assert.equal(hit.skin, "song-rain-bank");
+  assert.equal(hit.configured, true);
+  assert.equal(await readPublishedSiteSkinFromSettings(async () => ({ ok: true, json: async () => [] })), null);
+  await assert.rejects(readPublishedSiteSkinFromSettings(async () => ({ ok: true, json: async () => [{ value: { skin: "invalid" } }] })));
+});
+
+test("theme publication uses the existing authenticated Edge bridge instead of Git SSH", () => {
+  const api = readFileSync("api/owner-data.js", "utf8");
+  const edge = readFileSync("supabase/functions/zhaowu-owner-data/index.ts", "utf8");
+  assert.match(api, /"site-skin.publish",/);
+  assert.doesNotMatch(api, /saveSharedSiteSkin/);
+  assert.match(edge, /case "site-skin.publish": return publishSiteSkin/);
+  assert.match(edge, /from\("site_settings"\)\.upsert/);
 });

@@ -1,5 +1,8 @@
+import { pickElementArt } from "@/lib/quiz-result-art";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { AnimalTotemArt } from "@/components/animal-totem-art";
+import { SongBeastPromptDisclosure } from "@/components/song-beast-prompt-disclosure";
 import { ConcealedSacredResultArt } from "@/components/concealed-sacred-result-art";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
@@ -336,7 +339,7 @@ function FunTestsIndex() {
             <p className="mt-4 text-sm leading-7 text-ink-soft"><b className="text-ink">{pageCopy.animalShadow}：</b>{inner.shadow}</p>
           </article>
 
-          <ConcealedSacredResultArt locale={locale} seed={`animal:${animalResultKey ?? inner.name}`} title={`${inner.name} · ${inner.subtitle}`} kind="animal" />
+          <AnimalTotemArt locale={locale} animal={animalResultKey ?? "eagle"} title={`${inner.name} · ${inner.subtitle}`} />
 
           {guardian && relation ? (
             <article className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
@@ -355,6 +358,8 @@ function FunTestsIndex() {
               <Link to="/" className="mt-4 inline-flex rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{pageCopy.home}</Link>
             </article>
           )}
+
+          <SongBeastPromptDisclosure locale={locale} innerAnimal={animalResultKey ?? "eagle"} guardianElement={guardian?.element} />
 
           <div className="grid gap-3 sm:grid-cols-2">
             <button type="button" onClick={startAnimal} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{pageCopy.restart}</button>
@@ -386,7 +391,7 @@ function FunTestsIndex() {
             {elementScore.overdrive ? <p className="mt-4 rounded-xl border border-cinnabar/25 bg-paper px-4 py-3 text-sm leading-6 text-ink">{elementUi.overdrive}</p> : null}
           </article>
 
-          <ConcealedSacredResultArt locale={locale} seed={`element:${elementScore.primary}`} title={`${elementResult.name}｜${elementResult.title}`} kind="element" />
+          <ConcealedSacredResultArt locale={locale} seed={`element:${elementScore.primary}`} title={`${elementResult.name}｜${elementResult.title}`} kind="element" imageSrc={pickElementArt(elementScore.primary, elementAnswers, elementScore.secondary)} />
 
           <article className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
             <h3 className="font-display text-xl text-ink">{elementUi.actionsTitle}</h3>

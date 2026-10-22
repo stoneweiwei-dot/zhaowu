@@ -57,6 +57,18 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(self), payment=(), usb=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://esm.sh https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' blob: data: https://plgpxusmemnmzckbwtiv.supabase.co https://api.open-meteo.com https://geocoding-api.open-meteo.com https://photon.komoot.io https://us.i.posthog.com https://esm.sh https://cdn.jsdelivr.net; worker-src 'self' blob:; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
         }
       ]
     },
@@ -110,11 +122,47 @@
       ]
     },
     {
+      "source": "/manifest.zh-Hans.webmanifest",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.en.webmanifest",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
+    {
       "source": "/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/vendor/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/sb/storage/v1/object/public/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800"
         }
       ]
     },
@@ -164,15 +212,55 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/guide/:path*",
+      "destination": "/?guide=1",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "stone-zhaowu-official.vercel.app"
+        }
+      ],
+      "destination": "https://zhao-wu.com/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/gallery-ingest-finalize",
       "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize"
     },
     {
+      "source": "/sb/auth/v1/:path*",
+      "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/auth/v1/:path*"
+    },
+    {
+      "source": "/sb/rest/v1/:path*",
+      "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/rest/v1/:path*"
+    },
+    {
+      "source": "/sb/functions/v1/:path*",
+      "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/:path*"
+    },
+    {
+      "source": "/sb/storage/v1/object/public/:path*",
+      "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/:path*"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ],
-  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" != \"main\" ]; then exit 0; fi; git diff --quiet HEAD^ HEAD -- . ':(exclude)docs/**' ':(exclude)**/*.md' ':(exclude).github/**'"
+  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" != \"main\" ]; then exit 0; fi; git diff --quiet HEAD^ HEAD -- . ':(exclude)docs/**' ':(exclude)**/*.md' ':(exclude).github/**'",
+  "crons": [
+    {
+      "path": "/api/owner-session?action=cron.autopublish",
+      "schedule": "0 12 * * *"
+    }
+  ]
 }

@@ -18,10 +18,36 @@ import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 
 const OwnerGalleryManager = lazy(() => import("@/components/owner-gallery-manager").then((m) => ({ default: m.OwnerGalleryManager })));
 const OwnerLoginVisualsManager = lazy(() => import("@/components/owner-login-visuals-manager").then((m) => ({ default: m.OwnerLoginVisualsManager })));
-const SocialPublisherPage = lazy(() => import("./social").then((m) => ({ default: m.SocialPublisherPage })));
+const PromoPanel = lazy(() => import("@/components/owner/promo-panel").then((m) => ({ default: m.PromoPanel })));
+const OwnerArticleManager = lazy(() => import("@/components/owner/article-manager").then((m) => ({ default: m.OwnerArticleManager })));
+const AutopublishPanel = lazy(() => import("@/components/owner/autopublish-panel").then((m) => ({ default: m.AutopublishPanel })));
 const OwnerThemeSkinsManager = lazy(() => import("@/components/owner-theme-skins-manager").then((m) => ({ default: m.OwnerThemeSkinsManager })));
+import { ConsoleOverview, type OverviewTarget } from "@/components/owner/console-overview";
 const OwnerDevicesManager = lazy(() => import("@/components/owner-devices-manager").then((m) => ({ default: m.OwnerDevicesManager })));
-type ConsoleView = "reports" | "images" | "opening" | "social" | "themes" | "devices";
+type ConsoleView = "overview" | "reports" | "autopublish" | "images" | "opening" | "themes" | "promo" | "articles" | "devices";
+const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "autopublish", "images", "opening", "themes", "promo", "articles", "devices"];
+
+/** Initial tab: `?view=` (used by Meta OAuth returns) otherwise the overview. */
+function initialConsoleView(): ConsoleView {
+  try {
+    const requested = new URLSearchParams(window.location.search).get("view");
+    if (requested && (CONSOLE_VIEWS as string[]).includes(requested)) return requested as ConsoleView;
+  } catch { /* SSR / blocked */ }
+  return "overview";
+}
+
+function initialSocialNotice(): string {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get("threads");
+    if (result === "connected") return `Threads @${params.get("username") || ""} 已連接，自動發佈會在排程日自動開始。`;
+    if (result === "error") return "Threads 授權失敗，請再試一次。";
+    const meta = params.get("meta");
+    if (meta === "connected") return `Meta 已連接 ${params.get("pages") || ""} 個 Facebook 粉絲專頁；關聯的 Instagram 也已可用。`;
+    if (meta === "error") return "Meta 授權失敗，請再按一次「連接 Meta」。";
+  } catch { /* ignore */ }
+  return "";
+}
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -93,8 +119,9 @@ function statusPill(ok: boolean, label: string, pendingLabel: string) {
 function AccountPage() {
   const { t, locale } = useI18n();
   const { user, session, isPending } = useCurrentUserState();
-  const [consoleView, setConsoleView] = useState<ConsoleView>("reports");
-  const [visitedViews, setVisitedViews] = useState<Set<ConsoleView>>(() => new Set(["reports"]));
+  const [consoleView, setConsoleView] = useState<ConsoleView>(initialConsoleView);
+  const [visitedViews, setVisitedViews] = useState<Set<ConsoleView>>(() => new Set([initialConsoleView(), "reports"]));
+  const [socialNotice] = useState(initialSocialNotice);
   function selectConsoleView(view: ConsoleView) {
     setConsoleView(view);
     setVisitedViews((previous) => new Set([...previous, view]));
@@ -307,46 +334,47 @@ function AccountPage() {
 
   return (
     <main className="mx-auto max-w-3xl space-y-5" data-owner-console="true">
-      <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+      <header className="seal-border rounded-xl bg-cream/95 p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="mt-2 font-display text-3xl">{c.ownerTitle}</h1>
-            
-            <a href="/history" className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">{tr(locale, "本機報告 →", "本机报告 →", "My saved reports →")}</a>
+            <p className="text-[10px] tracking-[0.22em] text-cinnabar">OWNER CONSOLE</p>
+            <h1 className="mt-1 font-display text-3xl">{c.ownerTitle}</h1>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            
-            <button type="button" disabled={refreshBusy} onClick={() => void refreshAll()} className="rounded-full border border-line bg-paper/70 px-3 py-2 text-xs text-ink-soft disabled:opacity-50">
+            <a href="/history" className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft">{tr(locale, "本機報告", "本机报告", "My saved reports")}</a>
+            <button type="button" disabled={refreshBusy} onClick={() => void refreshAll()} className="min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft disabled:opacity-50">
               {refreshBusy ? c.refreshing : c.refreshAll}
             </button>
           </div>
         </div>
-      </section>
+        <nav className="mt-4 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" aria-label={tr(locale, "站主後台導覽", "站主后台导航", "Owner console navigation")}>
+          {([
+            ["overview", tr(locale, "總覽", "总览", "Overview")],
+            ["autopublish", tr(locale, "自動發佈", "自动发布", "Auto-publish")],
+            ["reports", tr(locale, "客戶報告", "客户报告", "Reports")],
+            ["images", tr(locale, "背景與圖片", "背景与图片", "Images")],
+            ["opening", tr(locale, "開場影片", "开场视频", "Opening video")],
+            ["themes", tr(locale, "主題皮膚", "主题皮肤", "Themes")],
+            ["promo", tr(locale, "優惠碼", "优惠码", "Promo codes")],
+            ["articles", tr(locale, "文章管理", "文章管理", "Articles")],
+            ["devices", tr(locale, "登入與裝置", "登录与设备", "Sign-in")],
+          ] as [ConsoleView, string][]).map(([view, label]) => (
+            <button
+              key={view}
+              id={`console-tab-${view}`}
+              type="button"
+              aria-controls={`console-panel-${view}`}
+              aria-current={consoleView === view ? "page" : undefined}
+              onClick={() => selectConsoleView(view)}
+              className={`min-h-11 shrink-0 whitespace-nowrap rounded-full border px-4 text-sm font-medium transition ${consoleView === view ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}
+            >{label}</button>
+          ))}
+        </nav>
+      </header>
 
-      <nav className="space-y-2" aria-label={tr(locale, "站主後台導覽", "站主后台导航", "Owner console navigation")}>
-          <details open className="rounded-xl border border-line bg-paper/45 p-3">
-            <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "客戶報告", "客户报告", "Customer reports")}</summary>
-            <button id="console-tab-reports" type="button" aria-controls="console-panel-reports" aria-current={consoleView === "reports" ? "page" : undefined} onClick={() => selectConsoleView("reports")} className="mt-3 min-h-11 rounded-lg border border-line px-4 text-left">{tr(locale, "報告管理", "报告管理", "Reports")}</button>
-          </details>
-          <details className="rounded-xl border border-line bg-paper/45 p-3">
-            <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "網站外觀與內容", "网站外观与内容", "Website appearance and content")}</summary>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {([
-                ["images", tr(locale, "背景與圖片", "背景与图片", "Backgrounds and images")],
-                ["opening", tr(locale, "開場影片", "开场视频", "Opening video")],
-                ["themes", tr(locale, "主題皮膚", "主题皮肤", "Theme skins")],
-              ] as [ConsoleView, string][]).map(([view, label]) => <button key={view} id={`console-tab-${view}`} type="button" aria-controls={`console-panel-${view}`} aria-current={consoleView === view ? "page" : undefined} onClick={() => selectConsoleView(view)} className="min-h-11 rounded-lg border border-line px-4 text-left">{label}</button>)}
-            </div>
-          </details>
-          <details className="rounded-xl border border-line bg-paper/45 p-3">
-            <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "社群發布", "社群发布", "Social publishing")}</summary>
-            <button id="console-tab-social" type="button" aria-controls="console-panel-social" aria-current={consoleView === "social" ? "page" : undefined} onClick={() => selectConsoleView("social")} className="mt-3 min-h-11 rounded-lg border border-line px-4 text-left">Instagram / Threads</button>
-          </details>
-          <details className="rounded-xl border border-line bg-paper/45 p-3">
-            <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "登入與安全", "登录与安全", "Sign-in and security")}</summary>
-            <button id="console-tab-devices" type="button" aria-controls="console-panel-devices" aria-current={consoleView === "devices" ? "page" : undefined} onClick={() => selectConsoleView("devices")} className="mt-3 min-h-11 rounded-lg border border-line px-4 text-left">{tr(locale, "受信任裝置", "受信任设备", "Trusted devices")}</button>
-          </details>
-      </nav>
+      <div id="console-panel-overview" role="region" aria-labelledby="console-tab-overview" hidden={consoleView !== "overview"}>
+        <ConsoleOverview reports={rows} hasMoreReports={nextOffset !== null} reportsLoading={busy} onNavigate={(target: OverviewTarget) => selectConsoleView(target)} />
+      </div>
 
       <div id="console-panel-reports" role="region" aria-labelledby="console-tab-reports" hidden={consoleView !== "reports"}>
       <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
@@ -471,6 +499,7 @@ function AccountPage() {
       </div>
 
       <div id="console-panel-images" role="region" aria-labelledby="console-tab-images" hidden={consoleView !== "images"}>
+        <div data-owner-music-slot />
         {visitedViews.has("images") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入圖庫…", "加载图库…", "Loading gallery…")}</p>}><OwnerGalleryManager session={session} locale={locale} /></Suspense> : null}
       </div>
       <div id="console-panel-opening" role="region" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>
@@ -479,8 +508,14 @@ function AccountPage() {
       <div id="console-panel-themes" role="region" aria-labelledby="console-tab-themes" hidden={consoleView !== "themes"}>
         {visitedViews.has("themes") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入主題…", "加载主题…", "Loading themes…")}</p>}><OwnerThemeSkinsManager locale={locale} /></Suspense> : null}
       </div>
-      <div id="console-panel-social" role="region" aria-labelledby="console-tab-social" hidden={consoleView !== "social"}>
-        {visitedViews.has("social") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入發布器…", "加载发布器…", "Loading publisher…")}</p>}><SocialPublisherPage embedded /></Suspense> : null}
+      <div id="console-panel-promo" role="region" aria-labelledby="console-tab-promo" hidden={consoleView !== "promo"}>
+        {visitedViews.has("promo") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入優惠碼…", "加载优惠码…", "Loading promo codes…")}</p>}><PromoPanel /></Suspense> : null}
+      </div>
+      <div id="console-panel-articles" role="region" aria-labelledby="console-tab-articles" hidden={consoleView !== "articles"}>
+        {visitedViews.has("articles") ? <Suspense fallback={<p role="status" className="p-5 text-ink">Loading articles…</p>}><OwnerArticleManager locale={locale} /></Suspense> : null}
+      </div>
+      <div id="console-panel-autopublish" role="region" aria-labelledby="console-tab-autopublish" hidden={consoleView !== "autopublish"}>
+        {visitedViews.has("autopublish") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入自動發佈…", "加载自动发布…", "Loading auto-publish…")}</p>}><AutopublishPanel initialNotice={socialNotice} /></Suspense> : null}
       </div>
 
       <div id="console-panel-devices" role="region" aria-labelledby="console-tab-devices" hidden={consoleView !== "devices"}>

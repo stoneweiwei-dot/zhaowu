@@ -5,12 +5,16 @@ import test from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("homepage starts with the owner-selected wallpaper and the birth entry", async () => {
+test("homepage starts with the owner-selected theme and one guided accordion entry", async () => {
   const home = await source("src/routes/index.tsx");
+  const painted = await source("src/components/painted-home.tsx");
+  const tree = await source("src/components/home-tree.tsx");
   const shell = await source("src/components/site-shell.tsx");
   assert.doesNotMatch(home, /HERO_PAINTINGS|zw-hero-gallery|visibleHeroIndexes/);
-  assert.match(home, /zw-hero-inscription/);
-  assert.match(home, /data-home-birth-entry/);
+  assert.match(home, /<PaintedHome/);
+  assert.match(painted, /ph-guide-start/);
+  assert.match(painted, /<HomeTree/);
+  assert.match(tree, /useState<HomeSection \| null>\('form'\)/);
   assert.match(shell, /--zhaowu-shell-wallpaper/);
 });
 
@@ -49,4 +53,23 @@ test("index provides conservative JSON-LD without invented ratings or testimonia
   assert.match(html, /"@type": "WebSite"/);
   assert.match(html, /"@type": "WebApplication"/);
   assert.doesNotMatch(html, /aggregateRating|review|offers/);
+});
+
+test("custom domain is canonical and uses the same-origin Supabase proxy", async () => {
+  const html = await source("index.html");
+  assert.match(html, /<link rel="canonical" href="https:\/\/zhao-wu\.com\/" \/>/);
+  assert.match(html, /"url": "https:\/\/zhao-wu\.com\//);
+  assert.doesNotMatch(html, /stone-zhaowu-official\.vercel\.app/);
+  const config = await source("src/lib/supabase-config.ts");
+  assert.match(config, /PROXY_HOST_DOMAINS = \["stone-zhaowu-official\.vercel\.app", "zhao-wu\.com"\]/);
+  assert.match(config, /return onProxyHost \? `\$\{origin\}\$\{SAME_ORIGIN_PROXY_PREFIX\}`/);
+});
+
+test("the legacy Vercel alias redirects to the canonical custom domain", async () => {
+  const vercel = JSON.parse(await source("vercel.json"));
+  const redirect = vercel.redirects?.find((item) =>
+    item.has?.some((condition) => condition.type === "host" && condition.value === "stone-zhaowu-official.vercel.app"),
+  );
+  assert.equal(redirect?.destination, "https://zhao-wu.com/:path*");
+  assert.equal(redirect?.permanent, true);
 });

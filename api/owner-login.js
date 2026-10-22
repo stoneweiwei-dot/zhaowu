@@ -1,4 +1,16 @@
+import { createHash, timingSafeEqual } from "node:crypto";
 import { isValidOwnerSecret, ownerSetCookie } from "../lib/owner-session-cookie.js";
+import { isPublicTestCredential } from "../lib/owner-test-account.js";
+
+function isValidOwnerAccount(value) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (!normalized || normalized.length > 256) return false;
+  const hash = String(process.env.ZHAOWU_OWNER_ACCOUNT_SHA256 ?? "").trim();
+  if (!/^[a-f0-9]{64}$/i.test(hash)) return false;
+  const expected = Buffer.from(hash, "hex");
+  const actual = createHash("sha256").update(normalized, "utf8").digest();
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -55,10 +67,13 @@ export default async function handler(req, res) {
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const body = await readJsonBody(req);
     const secret = String(body?.secret ?? req.body?.secret ?? "");
-    if (!isValidOwnerSecret(secret)) return json(res, 401, { ok: false, error: "INVALID_OWNER_CREDENTIAL" });
+    const account = body?.email ?? req.body?.email ?? "";
+    // Public demo credential: confirms the sign-in flow works but issues no cookie and grants no access.
+    if (isPublicTestCredential(account, secret)) return json(res, 200, { ok: true, mode: "tester" });
+    if (!isValidOwnerAccount(account) || !isValidOwnerSecret(secret)) return json(res, 401, { ok: false, error: "INVALID_OWNER_CREDENTIAL" });
     const cookie = ownerSetCookie(secret);
     return json(res, 200, { ok: true }, { "Set-Cookie": cookie });
   } catch (error) {
-    return json(res, 500, { ok: false, error: "OWNER_LOGIN_FAILED", detail: error instanceof Error ? error.message : "unknown" });
+    return json(res, 503, { ok: false, error: "OWNER_LOGIN_UNAVAILABLE" });
   }
 }

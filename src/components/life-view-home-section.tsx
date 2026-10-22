@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { StellarLifeCycleInteractive } from "@/components/stellar-life-cycle-interactive";
 import { Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 import type { LifeViewArticle } from "@/lib/life-view";
@@ -15,7 +16,11 @@ import { AFTER_MIRACLES_PRACTICE_LONG_FORM } from "@/lib/life-view-long-form/aft
 import { SEE_BREAK_RETURN_LONG_FORM } from "@/lib/life-view-long-form/see-break-return";
 import { TIME_IS_IT_FASTER_LONG_FORM } from "@/lib/life-view-long-form/time-is-it-faster";
 import { A_DAY_WITH_INCENSE_LONG_FORM } from "@/lib/life-view-long-form/a-day-with-incense";
+import { ABHIDHAMMA_THIRTY_ONE_PLANES } from "@/lib/life-view-long-form/abhidhamma-thirty-one-planes";
 import { fetchLifeViewCounts, incrementLifeViewCount, type LifeViewCounts } from "@/lib/life-view-views";
+import { fetchArticleOverrides, applyArticleOverrides, type ArticleOverride } from "@/lib/article-overrides";
+import { useAuthState } from "@/lib/auth/provider";
+import { ownerData } from "@/lib/owner-data-client";
 
 type ContentKind = "article" | "short-note";
 
@@ -34,6 +39,7 @@ type LifeViewHomeSectionProps = {
 };
 
 const LONG_ARTICLES: IllustratedArticle[] = [
+  ABHIDHAMMA_THIRTY_ONE_PLANES,
   A_DAY_WITH_INCENSE_LONG_FORM,
   TIME_IS_IT_FASTER_LONG_FORM,
   SEE_BREAK_RETURN_LONG_FORM,
@@ -54,16 +60,39 @@ const SHORT_NOTES: IllustratedArticle[] = LIFE_VIEW_SHORT_FORM_ARTICLES.map((art
 }));
 
 // 文章區只收文章與觀點短札。命理教學／術語知識另由「昭梧 · 命理小知識」承載。
-const CONTENTS: IllustratedArticle[] = [...LONG_ARTICLES, ...SHORT_NOTES];
-CONTENTS.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+export const ARTICLE_CATALOG: IllustratedArticle[] = [...LONG_ARTICLES, ...SHORT_NOTES];
+ARTICLE_CATALOG.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
 export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSectionProps) {
   const { locale } = useI18n();
+  const { user } = useAuthState();
+  const isOwner = user?.isOwner === true;
+  const [overrides, setOverrides] = useState<ArticleOverride[] | null>(null);
+  const [articlesError, setArticlesError] = useState(false);
   const [showAll, setShowAll] = useState(archiveMode);
   const [openId, setOpenId] = useState<string | null>(null);
   const [viewCounts, setViewCounts] = useState<LifeViewCounts>({});
   const countedThisVisit = useRef(new Set<string>());
-  const latest = CONTENTS[0] ?? null;
+  const contents = useMemo(() => overrides === null ? [] : applyArticleOverrides(ARTICLE_CATALOG, overrides), [overrides]);
+  const latest = contents[0] ?? null;
+  async function removeArticle(id: string) {
+    const article = contents.find((item) => item.id === id);
+    if (!article || !window.confirm(locale === "en" ? `Remove “${article.title[locale]}” from public articles?` : `將「${article.title[locale]}」從公開文章下架？可在後台還原。`)) return;
+    try {
+      const result = await ownerData<{ article: ArticleOverride }>("article.archive", { id, archived: true });
+      setOverrides((current) => [...(current ?? []).filter((row) => row.id !== id), result.article]);
+      setOpenId(null);
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : "Article removal failed");
+    }
+  }
+
+  useEffect(() => {
+    let active = true;
+    void fetchArticleOverrides().then((rows) => { if (active) setOverrides(rows); })
+      .catch(() => { if (active) setArticlesError(true); });
+    return () => { active = false; };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -157,13 +186,14 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
   if (!latest) {
     return (
       <section id="life-view" className="rounded-2xl border border-line/80 bg-paper px-5 py-5">
-        <p className="text-sm text-ink-mute">{copy.empty}</p>
+        <p role="status" className="text-sm text-ink-mute">{articlesError
+          ? (locale === "en" ? "Articles are temporarily unavailable." : locale === "zh-Hans" ? "文章暂时无法加载。" : "文章暫時無法載入。")
+          : overrides === null ? (locale === "en" ? "Loading articles…" : "文章載入中…") : copy.empty}</p>
       </section>
     );
   }
-
   const latestParagraph = latest.body[locale].split(/\n\n+/)[0] ?? "";
-  const visibleArticles = archiveMode || showAll ? CONTENTS : [latest];
+  const visibleArticles = archiveMode || showAll ? contents : [latest];
 
   const header = (
     <span className="min-w-0">
@@ -222,9 +252,16 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                 <span className="shrink-0 pt-1 text-sm text-cinnabar">{isOpen ? "−" : "+"}</span>
               </button>
 
+              {isOwner ? (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <a href={`/account?view=articles&edit=${encodeURIComponent(article.id)}`} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-xs text-ink">{locale === "en" ? "Edit" : locale === "zh-Hans" ? "编辑" : "編輯"}</a>
+                  <button type="button" onClick={() => void removeArticle(article.id)} className="min-h-11 rounded-full border border-cinnabar/30 px-4 text-xs text-cinnabar">{locale === "en" ? "Remove" : locale === "zh-Hans" ? "删除" : "刪除"}</button>
+                </div>
+              ) : null}
               {isOpen ? (
                 <div className="mt-4 border-l border-cinnabar/20 pl-4 text-[15px] leading-8 text-ink">
                   <div className="mb-3 flex items-center justify-between gap-3 text-xs text-ink-mute"><time dateTime={article.publishedAt}>{article.publishedAt}</time><span>{viewsLabel(article.id)}</span></div>
+                  {article.id === "stellar-life-cycle-interactive" ? <StellarLifeCycleInteractive /> : null}
                   {paragraphs.map((paragraph, paragraphIndex) => {
                     const illustration = article.illustrations?.find((item) => item.afterParagraph === paragraphIndex + 1);
                     return (

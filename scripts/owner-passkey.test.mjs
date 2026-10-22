@@ -38,7 +38,7 @@ const toDeviceRow = (registered, overrides = {}) => ({
 });
 
 test("rp id and origin come from the request host", () => {
-  assert.deepEqual(rpFromRequest({ headers: { host: "zhaowu.soul-terminal.com" } }), { rpID: "zhaowu.soul-terminal.com", origin: "https://zhaowu.soul-terminal.com" });
+  assert.deepEqual(rpFromRequest({ headers: { host: "zhao-wu.com" } }), { rpID: "zhao-wu.com", origin: "https://zhao-wu.com" });
   assert.deepEqual(rpFromRequest({ headers: { "x-forwarded-host": "a.example, b.example", host: "internal" } }), { rpID: "a.example", origin: "https://a.example" });
   assert.equal(rpFromRequest({ headers: {} }), null);
 });

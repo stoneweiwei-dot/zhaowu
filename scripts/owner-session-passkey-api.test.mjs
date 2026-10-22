@@ -164,7 +164,7 @@ test("device and passkey actions refuse anonymous callers and cross-site request
   });
 });
 
-test("Passkey sessions reach owner-data through the device header but cannot write to Git", async () => {
+test("Passkey sessions reach owner-data through the device header, but music upload and promo/article actions need the password", async () => {
   await withEdge(async (edge) => {
     const { phone, row } = await enrol(edge);
     const { verified } = await signIn(edge, phone);
@@ -176,9 +176,16 @@ test("Passkey sessions reach owner-data through the device header but cannot wri
     assert.equal(forwarded.headers.get("x-zhaowu-owner-device"), row.id);
     assert.equal(forwarded.headers.get("x-zhaowu-owner-secret"), null);
 
+    // Theme skins are published through the owner-data Edge Function now, so Face ID may do it.
     const skin = await call(ownerData, { cookie, body: { action: "site-skin.publish", skin: "lotus-boat" } });
-    assert.equal(skin.status, 403);
-    assert.equal(skin.body.error, "OWNER_PASSWORD_REQUIRED");
+    assert.equal(skin.status, 200);
+    assert.equal(edge.calls.findLast((item) => item.action === "site-skin.publish").headers.get("x-zhaowu-owner-device"), row.id);
+    // Promo codes and articles live in separate Edge Functions that only know the password.
+    for (const action of ["promo.list", "article.list"]) {
+      const refused = await call(ownerData, { cookie, body: { action } });
+      assert.equal(refused.status, 403, action);
+      assert.equal(refused.body.error, "OWNER_PASSWORD_REQUIRED");
+    }
     const music = await call(musicWrite, { cookie, body: Buffer.from("x"), headers: { "content-type": "audio/mpeg", "x-zhaowu-music-name": "a.mp3" } });
     assert.equal(music.status, 403);
     assert.equal(music.body.error, "OWNER_PASSWORD_REQUIRED");

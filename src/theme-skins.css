@@ -6,7 +6,7 @@
 
 /* ── 1. skin tokens ───────────────────────────────────────────────────────── */
 html[data-zws] {
-  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "PMingLiU", serif;
+  --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif;
   --zws-font-en: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, "Times New Roman", serif;
   --zws-radius: 18px;
   --zws-radius-sm: 12px;
@@ -16,23 +16,29 @@ html[data-zws] {
 }
 html[data-zws="lotus-boat"] { --zws-page: #f4ead7; --zws-card: #fbf4e4; --zws-ink: #1f3d35; --zws-soft: #5a665d; --zws-accent: #285044; --zws-line: rgba(184,147,77,.5); --zws-gold: #b8934d; --zws-wash: radial-gradient(circle at 80% 8%, rgba(214,150,150,.18), transparent 38%), radial-gradient(circle at 10% 40%, rgba(120,160,150,.16), transparent 40%); }
 html[data-zws="cloud-jade"] { --zws-page: #efe9db; --zws-card: #f7f2e6; --zws-ink: #243a32; --zws-soft: #5b655d; --zws-accent: #2b5545; --zws-line: rgba(160,150,120,.45); --zws-gold: #a99567; --zws-radius: 20px; --zws-wash: radial-gradient(circle at 20% 5%, rgba(255,255,255,.7), transparent 40%); }
-html[data-zws="golden-phoenix"] { --zws-page: #f3e6c8; --zws-card: #fbf1d8; --zws-ink: #2c2a22; --zws-soft: #6b5f45; --zws-accent: #26493c; --zws-line: rgba(201,162,79,.6); --zws-gold: #c9a24f; --zws-wash: radial-gradient(circle at 70% 0%, rgba(255,214,120,.45), transparent 45%); }
+html[data-zws="golden-phoenix"] { --zws-page: #f5dfad; --zws-card: #fff5dd; --zws-ink: #362615; --zws-soft: #6f5431; --zws-accent: #8a4d26; --zws-line: rgba(153,101,31,.42); --zws-gold: #c99535; --zws-wash: radial-gradient(circle at 70% 0%, rgba(255,214,120,.52), transparent 45%); }
 html[data-zws="ink-dragon"] { --zws-page: #efe6d4; --zws-card: #f7efde; --zws-ink: #1d1a16; --zws-soft: #5d554a; --zws-accent: #3f5f58; --zws-line: rgba(183,154,90,.5); --zws-gold: #b79a5a; --zws-radius: 10px; --zws-wash: radial-gradient(circle at 85% 0%, rgba(150,190,185,.28), transparent 45%); }
 html[data-zws="dragon-lotus"] { --zws-page: #f1e8d8; --zws-card: #fdf7ea; --zws-ink: #1f3a33; --zws-soft: #5b6a62; --zws-accent: #234e43; --zws-line: rgba(196,162,99,.7); --zws-gold: #c4a263; --zws-radius: 22px; --zws-wash: radial-gradient(circle at 90% 0%, rgba(160,200,215,.35), transparent 42%), radial-gradient(circle at 0% 60%, rgba(240,200,200,.25), transparent 40%); }
 html[data-zws="day-flute"] { --zws-page: #eee6d6; --zws-card: #f8f2e6; --zws-ink: #12313f; --zws-soft: #4f636b; --zws-accent: #0f4059; --zws-line: rgba(185,160,106,.55); --zws-gold: #b9a06a; --zws-wash: radial-gradient(circle at 80% 0%, rgba(120,170,200,.35), transparent 45%); }
 html[data-zws="pine-ink"] { --zws-page: #f4efe3; --zws-card: #fbf8ef; --zws-ink: #172b25; --zws-soft: #55625b; --zws-accent: #1f4a3a; --zws-line: rgba(23,43,37,.16); --zws-gold: #1f4a3a; --zws-radius: 14px; --zws-shadow: 0 6px 18px rgba(23,43,37,.07); --zws-wash: none; }
-html[data-zws="pastel-koi"] { --zws-page: #f7efe3; --zws-card: rgba(255,255,255,.62); --zws-ink: #3b3a3a; --zws-soft: #7a7370; --zws-accent: #6f9a98; --zws-line: rgba(232,201,193,.9); --zws-gold: #d9b9a8; --zws-radius: 22px; --zws-shadow: 0 10px 26px rgba(170,140,170,.14); --zws-wash: radial-gradient(circle at 85% 5%, rgba(160,200,230,.35), transparent 42%), radial-gradient(circle at 10% 55%, rgba(240,190,200,.3), transparent 42%), radial-gradient(circle at 70% 90%, rgba(190,175,230,.25), transparent 40%); }
+html[data-zws="pastel-koi"] { --zws-page: #e9f0f3; --zws-card: #fff8f4; --zws-ink: #28353f; --zws-soft: #665f69; --zws-accent: #4e7f88; --zws-line: rgba(176,126,143,.42); --zws-gold: #b56f82; --zws-radius: 22px; --zws-shadow: 0 10px 26px rgba(116,145,165,.14); --zws-wash: radial-gradient(circle at 85% 5%, rgba(160,200,230,.42), transparent 42%), radial-gradient(circle at 10% 55%, rgba(240,190,200,.38), transparent 42%), radial-gradient(circle at 70% 90%, rgba(190,175,230,.28), transparent 40%); }
 
 /* ── 宋式留白・四景（站內已有畫作，紙面和細框優先） ─────────────────────────────── */
 html[data-zws="song-clear-dragon"] { --zws-page: #f8f4eb; --zws-card: #fffaf1; --zws-ink: #213931; --zws-soft: #52645b; --zws-accent: #315e50; --zws-line: rgba(93,119,106,.30); --zws-gold: #a99570; --zws-wash: radial-gradient(ellipse at 90% 10%, rgba(151,180,168,.10), transparent 45%); }
-html[data-zws="song-rain-bank"] { --zws-page: #f4f3eb; --zws-card: #fdfbf3; --zws-ink: #213b42; --zws-soft: #526a6f; --zws-accent: #315c67; --zws-line: rgba(87,129,140,.28); --zws-gold: #98a890; --zws-wash: radial-gradient(ellipse at 15% 14%, rgba(142,180,188,.11), transparent 42%); }
-html[data-zws="song-lotus-still"] { --zws-page: #fbf4ed; --zws-card: #fffaf6; --zws-ink: #42382f; --zws-soft: #6b5f55; --zws-accent: #6a604b; --zws-line: rgba(155,129,112,.27); --zws-gold: #b39770; --zws-wash: radial-gradient(ellipse at 86% 16%, rgba(220,174,171,.12), transparent 40%); }
+html[data-zws="song-rain-bank"] { --zws-page: #dfeaec; --zws-card: #f7fbfa; --zws-ink: #193b44; --zws-soft: #4e6970; --zws-accent: #285f6b; --zws-line: rgba(40,95,107,.30); --zws-gold: #728f83; --zws-wash: radial-gradient(ellipse at 15% 14%, rgba(142,180,188,.30), transparent 42%); }
+html[data-zws="song-lotus-still"] { --zws-page: #f2e4e6; --zws-card: #fff8f8; --zws-ink: #473039; --zws-soft: #735b63; --zws-accent: #7a4d5f; --zws-line: rgba(122,77,95,.28); --zws-gold: #9a765e; --zws-wash: radial-gradient(ellipse at 86% 16%, rgba(220,174,171,.30), transparent 40%); }
 html[data-zws="song-osmanthus"] { --zws-page: #f8f0e3; --zws-card: #fff8ed; --zws-ink: #463728; --zws-soft: #6d5d4a; --zws-accent: #5c6044; --zws-line: rgba(156,142,112,.29); --zws-gold: #b59a68; --zws-wash: radial-gradient(ellipse at 85% 8%, rgba(211,173,114,.12), transparent 43%); }
 
 /* ── 青木・生生不息（東方甲乙木）：四景 ─────────────────────────────────────────────── */
 html[data-zws="verdant-dragon"] { --zws-page: #f4eedb; --zws-card: #fbf6e6; --zws-ink: #1d3a2c; --zws-soft: #56654f; --zws-accent: #2f6a4c; --zws-line: rgba(155,160,95,.5); --zws-gold: #b9a54b; --zws-radius: 20px; --zws-wash: radial-gradient(circle at 12% 6%, rgba(190,215,120,.28), transparent 42%), radial-gradient(circle at 92% 30%, rgba(210,190,110,.18), transparent 40%); }
 html[data-zws="verdant-mist"] { --zws-page: #eef2ea; --zws-card: #f7faf2; --zws-ink: #1d3b30; --zws-soft: #4f6b5d; --zws-accent: #2e6a52; --zws-line: rgba(88,138,112,.38); --zws-gold: #7aa08a; --zws-radius: 18px; --zws-shadow: 0 10px 28px rgba(40,80,60,.09); --zws-wash: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.7), transparent 55%); }
-html[data-zws="verdant-pavilion"] { --zws-page: #f1f5e4; --zws-card: #fafdf0; --zws-ink: #1b3a22; --zws-soft: #52674a; --zws-accent: #3f7d3a; --zws-line: rgba(120,165,80,.45); --zws-gold: #8fb54a; --zws-radius: 14px; --zws-shadow: 0 8px 22px rgba(50,90,40,.10); --zws-wash: radial-gradient(circle at 85% 4%, rgba(170,210,110,.30), transparent 42%); }
+html[data-zws="verdant-pavilion"] { --zws-page: #dcebd5; --zws-card: #f6fbf2; --zws-ink: #173824; --zws-soft: #4c6752; --zws-accent: #2f6f43; --zws-line: rgba(47,111,67,.32); --zws-gold: #668a42; --zws-radius: 14px; --zws-shadow: 0 8px 22px rgba(50,90,40,.10); --zws-wash: radial-gradient(circle at 85% 4%, rgba(170,210,110,.42), transparent 42%); }
+html[data-zws="dawn-dragon"] { --zws-page: #f2ddd0; --zws-card: #fff5ed; --zws-ink: #3c2925; --zws-soft: #795e58; --zws-accent: #356f69; --zws-line: rgba(168,92,70,.34); --zws-gold: #b45f42; --zws-radius: 18px; --zws-wash: radial-gradient(circle at 78% 30%, rgba(255,170,125,.38), transparent 42%), radial-gradient(circle at 15% 6%, rgba(120,185,195,.25), transparent 40%); }
+html[data-zws="moon-lotus-boat"] { --zws-page: #f3ead8; --zws-card: #fbf5e7; --zws-ink: #233a32; --zws-soft: #5e665b; --zws-accent: #3d5f52; --zws-line: rgba(201,164,103,.5); --zws-gold: #c9a467; --zws-radius: 18px; --zws-wash: radial-gradient(circle at 25% 10%, rgba(255,232,180,.38), transparent 40%), radial-gradient(circle at 80% 85%, rgba(232,180,190,.20), transparent 40%); }
+html[data-zws="bamboo-falls"] { --zws-page: #eeebe2; --zws-card: #f8f6ef; --zws-ink: #1e302c; --zws-soft: #56625d; --zws-accent: #2c4a44; --zws-line: rgba(44,74,68,.22); --zws-gold: #a59a78; --zws-radius: 12px; --zws-wash: radial-gradient(circle at 80% 20%, rgba(255,226,170,.22), transparent 40%); }
+html[data-zws="petal-immortal"] { --zws-page: #f8efe4; --zws-card: rgba(255,251,246,.82); --zws-ink: #3a3638; --zws-soft: #6f6668; --zws-accent: #4f6f76; --zws-line: rgba(227,169,164,.55); --zws-gold: #d4a191; --zws-radius: 22px; --zws-wash: radial-gradient(circle at 20% 70%, rgba(240,180,180,.24), transparent 42%), radial-gradient(circle at 85% 10%, rgba(170,205,230,.26), transparent 40%); }
+html[data-zws="pink-lotus-stream"] { --zws-page: #dcecf1; --zws-card: #fff4f5; --zws-ink: #2f3b46; --zws-soft: #6a6269; --zws-accent: #2e7280; --zws-line: rgba(179,92,116,.38); --zws-gold: #b8657b; --zws-radius: 22px; --zws-wash: radial-gradient(circle at 70% 30%, rgba(245,160,180,.38), transparent 42%), radial-gradient(circle at 20% 85%, rgba(110,180,215,.34), transparent 42%); }
+html[data-zws="butterfly-lotus"] { --zws-page: #efece4; --zws-card: #f8f6f0; --zws-ink: #263832; --zws-soft: #5d6762; --zws-accent: #4a6a62; --zws-line: rgba(201,163,173,.5); --zws-gold: #b49a86; --zws-radius: 16px; --zws-wash: radial-gradient(circle at 75% 15%, rgba(225,190,205,.24), transparent 40%); }
 html[data-zws="verdant-rain"] { --zws-page: #07150f; --zws-card: rgba(10,32,22,.84); --zws-ink: #e6f0d8; --zws-soft: #b3c7a8; --zws-accent: #a8d38a; --zws-on-accent: #0c2014; --zws-line: rgba(168,211,138,.36); --zws-gold: #b9de92; --zws-radius: 12px; --zws-shadow: 0 12px 34px rgba(0,0,0,.5); --zws-wash: radial-gradient(120% 60% at 50% 0%, rgba(70,140,90,.38), transparent 60%); }
 
 /* dark skins */
@@ -344,10 +350,15 @@ html[data-zws-mode="dark"] body .zhaowu-site-header :is(.zhaowu-header-owner-log
  * skin turns the page itself dark. Block text on the page therefore takes the skin's light ink; the cards that really
  * are light paper (.seal-border, history) keep dark ink. Inline chips, buttons and links keep their own colours.
  * Found by rendering /history /updates /ziwei /knowledge /daily-colors with night-flute and measuring contrast. */
-html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(h1, h2, h3, h4, p, li, summary, dt, dd):not(button *):not([class*="bg-"]) { color: var(--zws-ink) !important; }
-html[data-zws-mode="dark"] body main:not(.zw-hero-home) :is(p, li, dd):not(button *):not([class*="bg-"]) { color: var(--zws-soft) !important; }
+html[data-zws-mode="dark"] body main:not(.zw-hero-home):not(.sky-events-page):not(.earth-online-shell) :is(h1, h2, h3, h4, p, li, summary, dt, dd):not(button *):not([class*="bg-"]) { color: var(--zws-ink) !important; }
+html[data-zws-mode="dark"] body main:not(.zw-hero-home):not(.sky-events-page):not(.earth-online-shell) :is(p, li, dd):not(button *):not([class*="bg-"]) { color: var(--zws-soft) !important; }
 /* light chip-style links */
 html[data-zws-mode="dark"] body main :is(.zhaowu-updates-back, .zhaowu-specialist-actions a.is-secondary) { color: #29251f !important; }
 html[data-zws-mode="dark"] body :is(.history-topline span, .zhaowu-home-stage details > summary, .zhaowu-home-stage button strong) { color: var(--zws-ink) !important; }
 html[data-zws-mode="dark"][data-zw-theme="night"] body .zhaowu-site-header a.zhaowu-header-owner-login,
 html[data-zws-mode="dark"][data-zw-theme="night"] body .zhaowu-site-header a.zhaowu-header-owner-login * { color: var(--zws-on-accent) !important; }
+
+/* Song Gallery V3: new owner-selectable light skin. No effect until published. */
+html[data-zws="song-gallery-frostleaf"] { --zws-page: #ead9c5; --zws-card: #fbf1df; --zws-ink: #382b25; --zws-soft: #6f5d52; --zws-accent: #8a4d38; --zws-line: rgba(97,75,58,.30); --zws-gold: #607f69; --zws-wash: radial-gradient(circle at 82% 8%, rgba(172,92,55,.20), transparent 42%); --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-frost-descent"] { --zws-page: #f6f1e6; --zws-card: #f2ece0; --zws-ink: #253d38; --zws-soft: #526963; --zws-accent: #375f5b; --zws-line: #c8b79c; --zws-gold: #b59a70; --zws-wash: none; --zws-on-accent: #fffaf0; }

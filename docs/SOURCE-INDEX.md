@@ -52,8 +52,8 @@ For conflicting project behavior, use the precedence already defined in `AGENTS.
 - Name: Vercel `stone-zhaowu-official`
 - Authority: PRIMARY — live runtime state
 - Scope: only active production host
-- Location: https://stone-zhaowu-official.vercel.app/
-- Runtime release evidence: https://stone-zhaowu-official.vercel.app/release.json
+- Location: https://zhao-wu.com/
+- Runtime release evidence: https://zhao-wu.com/release.json
 - Freshness: inspect only when runtime/live status is in scope; docs/governance-only work does not require production verification
 
 ### Data/Auth/Storage
@@ -80,3 +80,12 @@ For conflicting project behavior, use the precedence already defined in `AGENTS.
 - Location: https://github.com/stoneweiwei-dot/zhaowu/blob/main/docs/OPEN-SOURCE-RADAR.md
 - Freshness: re-check a project's current repository/licence/security state before any actual adoption
 
+### 易經智慧精編講義（第二版）— 2026-10-20 owner upload
+- Name: 《易經智慧精編講義（第二版）》— 校勘與入庫裁決
+- Authority: REFERENCE ONLY — OWNER_MATERIAL / MODERN_INTERPRETATION; not classical or runtime truth
+- Scope: Bazi／盲派教學的來源界線、形式錯盤負例與去重規則
+- Location: [內部研究裁決](STONE-THEORY-LECTURE-V2-INGESTION-20261020.md); 原始 DOCX 為 2026-10-20 私人聊天附件，未在 repository 重製
+- Test: `node --test docs/theory-audit/lecture-v2-audit.test.mjs`（僅檢核負面樣本，不是正式引擎測試）
+- Rights: 來源明示未經許可不得轉載、改編、公開傳播或商用；作者／授權 UNKNOWN
+- Freshness: 要公開再利用、修改判讀規則或宣稱案例應驗之前，重新取得合法來源、核對原始記錄並重跑主鏈／證據 Gate
+- Supersession: R6.2.2 governance + R6.2.1 runtime + P2/P3 + 既有 12 組 TUC 優先；此來源不另立 active 盲派主判

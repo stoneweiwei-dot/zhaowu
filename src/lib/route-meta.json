@@ -1,0 +1,140 @@
+{
+  "origin": "https://zhao-wu.com",
+  "routes": {
+    "/": {
+      "zh-Hant": { "title": "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費", "description": "免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。" },
+      "zh-Hans": { "title": "昭梧｜八字排盘・子平八字・真太阳时・流年运势｜免登录免费", "description": "免登录免费八字排盘：依子平八字与真太阳时校正，整理五行旺衰、大运与流年运势、今日提示。" },
+      "en": { "title": "ZHAOWU｜Free BaZi Chart · Four Pillars · True Solar Time · Annual Luck · No Sign-up", "description": "Free BaZi (Four Pillars) chart with true solar time correction: five-element balance, luck cycles, annual luck and daily guidance. No sign-up needed." }
+    },
+    "/knowledge": {
+      "zh-Hant": { "title": "昭梧知識庫｜命理文章與命理小知識", "description": "文章與短札讀觀點與研究；命理小知識查方法、術語與判讀規則，證據等級分開標示。" },
+      "zh-Hans": { "title": "昭梧知识库｜命理文章与命理小知识", "description": "文章与短札读观点与研究；命理小知识查方法、术语与判读规则，证据等级分开标示。" },
+      "en": { "title": "ZHAOWU Knowledge Base | Essays & Reference Cards", "description": "Essays and notes on viewpoints and research; concise reference cards for methods, terms and reading rules." }
+    },
+    "/knowledge/five-elements-tone-qi": {
+      "zh-Hant": { "title": "五行五色、五音與五氣｜傳統象義與使用邊界", "description": "五行對應的色、音、氣是傳統象義系統，用來理解功能語言，不是物理測量，也不直接改變命局。" },
+      "zh-Hans": { "title": "五行五色、五音与五气｜传统象义与使用边界", "description": "五行对应的色、音、气是传统象义系统，用来理解功能语言，不是物理测量，也不直接改变命局。" },
+      "en": { "title": "Five Elements, Colours, Tones & Qi | Traditional Symbolism", "description": "The colour, tone and qi correspondences are traditional symbolism for understanding functions — not physical measurements." }
+    },
+    "/knowledge/shushu-boundary": {
+      "zh-Hant": { "title": "術數的邊界：資料求真，規則求明｜昭梧研究札記", "description": "從《荀子》「善為易者不占」出發，區分事實、模型、證據與選擇；術數是分析工具，不是替人決定人生的主人。" },
+      "zh-Hans": { "title": "术数的边界：资料求真，规则求明｜昭梧研究札记", "description": "从《荀子》「善为易者不占」出发，区分事实、模型、证据与选择；术数是分析工具，不是替人决定人生的主人。" },
+      "en": { "title": "The Boundary of the Divination Arts | ZHAOWU Research Note", "description": "Starting from Xunzi, separating facts, models, evidence and choice: divination as an analysis tool, never the master of your life." }
+    },
+    "/knowledge/system-map": {
+      "zh-Hant": { "title": "昭梧命理系統能力地圖｜正式運行與研究中的分界", "description": "把正式運行、部分運行、研究中與象徵性內容分開；狀態標籤就是目前真實能力，不把研究冒充完成。" },
+      "zh-Hans": { "title": "昭梧命理系统能力地图｜正式运行与研究中的分界", "description": "把正式运行、部分运行、研究中与象征性内容分开；状态标签就是目前真实能力，不把研究冒充完成。" },
+      "en": { "title": "ZHAOWU System Capability Map | Live vs In-Research", "description": "What is live, partially running, in research or symbolic is kept separate; status labels are the real current capability." }
+    },
+    "/knowledge/true-solar-time": {
+      "zh-Hant": { "title": "真太陽時怎麼算？經度差、均時差與夏令時（含南半球／澳洲實例）｜昭梧", "description": "八字真太陽時的計算公式與實例：經度差每度 4 分鐘、均時差約 −14 至 +16 分、夏令時以實際 UTC 偏移代入；含悉尼、台北、北京數值範例，並說明誤差與限制。" },
+      "zh-Hans": { "title": "真太阳时怎么算？经度差、均时差与夏令时（含南半球／澳洲实例）｜昭梧", "description": "八字真太阳时的计算公式与实例：经度差每度 4 分钟、均时差约 −14 至 +16 分、夏令时以实际 UTC 偏移代入；含悉尼、台北、北京数值范例，并说明误差与限制。" },
+      "en": { "title": "True Solar Time for BaZi: Formula, Equation of Time & DST (Sydney Examples) | ZHAOWU", "description": "How true solar time is calculated for a BaZi chart: 4 minutes per degree of longitude, the equation of time (about −14 to +16 min) and daylight saving via the actual UTC offset, with Sydney, Taipei and Beijing worked examples, plus error and limits." }
+    },
+    "/updates": {
+      "zh-Hant": { "title": "最新版本更新內容｜昭梧", "description": "昭梧正式版本更新紀錄：新功能、修正與天象新增，依日期與版本整理。" },
+      "zh-Hans": { "title": "最新版本更新内容｜昭梧", "description": "昭梧正式版本更新纪录：新功能、修正与天象新增，依日期与版本整理。" },
+      "en": { "title": "Release Notes | ZHAOWU", "description": "ZHAOWU production release notes: features, fixes and sky-event additions, organized by date and version." }
+    },
+    "/daily-colors": {
+      "zh-Hant": { "title": "每日穿衣五行色彩｜昭梧", "description": "依今日五行狀態給穿衣顏色建議：靜心、提氣等五種狀態對應不同顏色；是生活提示，不是保證改運。" },
+      "zh-Hans": { "title": "每日穿衣五行色彩｜昭梧", "description": "依今日五行状态给穿衣颜色建议：静心、提气等五种状态对应不同颜色；是生活提示，不是保证改运。" },
+      "en": { "title": "Daily Five-Element Colour Guide | ZHAOWU", "description": "Dressing colour suggestions by today's five-element state: five states, five colours — a daily nudge, not a luck guarantee." }
+    },
+    "/privacy": {
+      "zh-Hant": { "title": "隱私權政策｜昭梧", "description": "昭梧以澳洲為營運基地，依《1988 年澳洲隱私法》說明資料收集、用途、第三方與查閱刪除權。" },
+      "zh-Hans": { "title": "隐私权政策｜昭梧", "description": "昭梧以澳洲为营运基地，依《1988 年澳洲隐私法》说明资料收集、用途、第三方与查阅删除权。" },
+      "en": { "title": "Privacy Policy | ZHAOWU", "description": "ZHAOWU operates from Australia: what we collect, why, third parties involved, and your rights to access and deletion." }
+    },
+    "/terms": {
+      "zh-Hant": { "title": "服務條款｜昭梧", "description": "使用昭梧網站與服務的條款：命理內容屬傳統文化與自我反思工具，不是對未來的保證或科學驗證的預測。" },
+      "zh-Hans": { "title": "服务条款｜昭梧", "description": "使用昭梧网站与服务的条款：命理内容属传统文化与自我反思工具，不是对未来的保证或科学验证的预测。" },
+      "en": { "title": "Terms of Service | ZHAOWU", "description": "Terms for using ZHAOWU: readings are traditional culture and self-reflection tools, not guarantees or scientifically verified predictions." }
+    },
+    "/copyright": {
+      "zh-Hant": { "title": "版權聲明｜昭梧", "description": "昭梧原創內容受澳洲《1968 年版權法》與國際條約保護；傳統命理方法屬公共知識，主張的是自己的表達與編排。" },
+      "zh-Hans": { "title": "版权声明｜昭梧", "description": "昭梧原创内容受澳洲《1968 年版权法》与国际条约保护；传统命理方法属公共知识，主张的是自己的表达与编排。" },
+      "en": { "title": "Copyright Notice | ZHAOWU", "description": "Original ZHAOWU content is protected under Australian and international copyright; traditional methods remain public knowledge." }
+    },
+    "/ziwei": {
+      "zh-Hant": { "title": "昭梧｜紫微斗數排盤・宮位四化・大限流年｜免登入", "description": "紫微斗數獨立分析：以宮位與時限作旁證，看性格、關係、事業、財務與階段主軸；填一次生辰，六種命理專卷共用。" },
+      "zh-Hans": { "title": "昭梧｜紫微斗数排盘・宫位四化・大限流年｜免登录", "description": "紫微斗数独立分析：以宫位与时限作旁证，看性格、关系、事业、财务与阶段主轴；填一次生辰，六种命理专卷共用。" },
+      "en": { "title": "ZHAOWU | Zi Wei Dou Shu Chart · Palaces · Decadal Luck | No Sign-up", "description": "Independent Zi Wei Dou Shu (Chinese astrology) analysis: palaces and timings as corroboration for character, relations, career and life stages." }
+    },
+    "/astrology": {
+      "zh-Hant": { "title": "昭梧｜西洋星座本命盤・七曜落宮・十二宮與相位", "description": "西洋占星獨立分析：從完整本命盤、七曜落宮、十二宮、四軸與主要相位，看另一種性格與生活視角。" },
+      "zh-Hans": { "title": "昭梧｜西洋星座本命盘・七曜落宫・十二宫与相位", "description": "西洋占星独立分析：从完整本命盘、七曜落宫、十二宫、四轴与主要相位，看另一种性格与生活视角。" },
+      "en": { "title": "ZHAOWU | Western Astrology Natal Chart · Houses & Aspects", "description": "Independent Western astrology analysis: full natal chart, planets in houses, angles and major aspects as another lens on character and life." }
+    },
+    "/qizheng": {
+      "zh-Hant": { "title": "昭梧｜七政四餘・七曜運行與天時變化", "description": "七政四餘獨立分析：從七曜運行看性情、節奏、壓力反應與天時變化。" },
+      "zh-Hans": { "title": "昭梧｜七政四余・七曜运行与天时变化", "description": "七政四余独立分析：从七曜运行看性情、节奏、压力反应与天时变化。" },
+      "en": { "title": "ZHAOWU | Qi Zheng Si Yu · Seven Luminaries & Timing", "description": "Independent Qi Zheng Si Yu analysis: temperament, rhythm, stress responses and timing through the motions of the seven luminaries." }
+    },
+    "/indian-astrology": {
+      "zh-Hant": { "title": "昭梧｜印度古法占星・古典吠陀星盤", "description": "古典印度占星的獨立旁證：D60 分盤對出生分鐘非常敏感，解讀時會標示資料限制。" },
+      "zh-Hans": { "title": "昭梧｜印度古法占星・古典吠陀星盘", "description": "古典印度占星的独立旁证：D60 分盘对出生分钟非常敏感，解读时会标示资料限制。" },
+      "en": { "title": "ZHAOWU | Indian (Vedic) Astrology · Classical Chart", "description": "Independent classical Indian astrology analysis; the D60 division is very sensitive to birth minutes, and data limits are stated." }
+    },
+    "/numerology": {
+      "zh-Hant": { "title": "昭梧｜生命靈數報告", "description": "生命靈數獨立報告：從出生年月日計算靈數組合，看性格傾向與人生課題；填一次生辰自動生成。" },
+      "zh-Hans": { "title": "昭梧｜生命灵数报告", "description": "生命灵数独立报告：从出生年月日计算灵数组合，看性格倾向与人生课题；填一次生辰自动生成。" },
+      "en": { "title": "ZHAOWU | Numerology Report", "description": "Independent numerology report from your birth date: number combinations, character tendencies and life lessons." }
+    },
+    "/yizhangjing": {
+      "zh-Hant": { "title": "昭梧｜達摩一掌經・前世今生四宮", "description": "達摩一掌經前世今生專題：四宮串成前世到今生的因果線，看從哪一道來、留下什麼習氣、今生怎麼用。" },
+      "zh-Hans": { "title": "昭梧｜达摩一掌经・前世今生四宫", "description": "达摩一掌经前世今生专题：四宫串成前世到今生的因果线，看从哪一道来、留下什么习气、今生怎么用。" },
+      "en": { "title": "ZHAOWU | Da Mo Yi Zhang Jing · Past-Life Four Palaces", "description": "The Da Mo Yi Zhang Jing past-life topic: four palaces as a karmic line — where you came from, what habits remain, how to use them." }
+    },
+    "/sky-events": {
+      "zh-Hant": { "title": "昭梧近日天象｜天文實況與星象解讀", "description": "天文事實優先、占星象徵解讀獨立標示：行星順逆行、月相與角度，附 UTC／悉尼時間，不使用出生資料。" },
+      "zh-Hans": { "title": "昭梧近日天象｜天文实况与星象解读", "description": "天文事实优先、占星象征解读独立标示：行星顺逆行、月相与角度，附 UTC／悉尼时间，不使用出生资料。" },
+      "en": { "title": "ZHAOWU Sky Events | Astronomy First, Astrology Separate", "description": "Planetary stations, moon phases and aspects with UTC/Sydney times. Measurable astronomy stays separate from symbolic readings." }
+    },
+    "/auspicious-atlas": {
+      "zh-Hant": { "title": "昭梧吉象圖鑑｜結緣聖像與瑞獸意象", "description": "從昭梧總圖庫整理的結緣聖像、吉祥風水、瑞獸與命理意象，點開即可查看原圖。" },
+      "zh-Hans": { "title": "昭梧吉象图鉴｜结缘圣像与瑞兽意象", "description": "从昭梧总图库整理的结缘圣像、吉祥风水、瑞兽与命理意象，点开即可查看原图。" },
+      "en": { "title": "ZHAOWU Auspicious Atlas | Sacred Images & Guardians", "description": "Sacred images, auspicious motifs, mythical guardians and symbolic illustrations curated from the ZHAOWU gallery." }
+    },
+    "/soul-chapters": {
+      "zh-Hant": { "title": "昭梧靈階十章｜人生有十章，哪一章最像現在的你？", "description": "靈階十章圖鑑：從萌芽、初啼到圓滿的十章人生地圖，看現在的自己正在哪一章。" },
+      "zh-Hans": { "title": "昭梧灵阶十章｜人生有十章，哪一章最像现在的你？", "description": "灵阶十章图鉴：从萌芽、初啼到圆满的十章人生地图，看现在的自己正在哪一章。" },
+      "en": { "title": "ZHAOWU Soul Chapters | Ten Chapters of a Life", "description": "The Soul Chapters illustrated map: from first light to completion — which chapter are you living right now?" }
+    },
+    "/fun-tests": {
+      "zh-Hant": { "title": "昭梧趣味測驗系列｜內在動物・五行功能・六道", "description": "從行為、選擇與狀態認識自己的趣味測驗：自評歸自評，不把趣味測驗冒充命盤。" },
+      "zh-Hans": { "title": "昭梧趣味测验系列｜内在动物・五行功能・六道", "description": "从行为、选择与状态认识自己的趣味测验：自评归自评，不把趣味测验冒充命盘。" },
+      "en": { "title": "ZHAOWU Fun Tests | Inner Animal, Five Elements & Six Realms", "description": "Playful self-knowledge quizzes based on behaviour and state — never presented as a substitute for a real chart." }
+    },
+    "/fun-tests/earth-online": {
+      "zh-Hant": { "title": "地球 ONLINE 古籍攻略｜八題看你卡在哪一關", "description": "八道題看古人會塞給你哪一本攻略：人生卡關不一定是缺答案，有時只是拿錯攻略本。" },
+      "zh-Hans": { "title": "地球 ONLINE 古籍攻略｜八题看你卡在哪一关", "description": "八道题看古人会塞给你哪一本攻略：人生卡关不一定是缺答案，有时只是拿错攻略本。" },
+      "en": { "title": "Earth ONLINE | Which Classic Is Your Walkthrough?", "description": "Eight questions to find which classic text the ancients would hand you: sometimes being stuck is just holding the wrong manual." }
+    },
+    "/tea-guardian": {
+      "zh-Hant": { "title": "昭梧茶仙守護測驗｜七題找到你真正適合的茶", "description": "口味與生活狀態先獨立計算，有命盤時再加入月令與旺衰底盤，避免只靠五行貼標籤。" },
+      "zh-Hans": { "title": "昭梧茶仙守护测验｜七题找到你真正适合的茶", "description": "口味与生活状态先独立计算，有命盘时再加入月令与旺衰底盘，避免只靠五行贴标签。" },
+      "en": { "title": "ZHAOWU Tea Guardian Quiz | Seven Questions to Your Tea", "description": "Taste and life-state are scored independently; your chart adds depth when available — no crude five-element labels." }
+    },
+    "/quiz/cultivation-destiny": {
+      "zh-Hant": { "title": "修仙命格靈測｜昭梧趣味測驗", "description": "把已保存的生辰命盤轉譯成仙俠世界的靈根、宗門、峰脈與修行道途；不靠答題反推八字。" },
+      "zh-Hans": { "title": "修仙命格灵测｜昭梧趣味测验", "description": "把已保存的生辰命盘转译成仙侠世界的灵根、宗门、峰脉与修行道途；不靠答题反推八字。" },
+      "en": { "title": "Cultivation Destiny Test | ZHAOWU Fun Test", "description": "Translates your saved birth chart into a xianxia build: spiritual root, sect, peak and path — never reverse-engineered from answers." }
+    },
+    "/quiz/divine-affinity": {
+      "zh-Hant": { "title": "仙佛淵源本緣測試｜16 題深層版", "description": "從魂格、象徵脈象到天命六層，看你此刻更接近哪種神聖原型；結果只描述象徵傾向，不證明前世或宗教身份。" },
+      "zh-Hans": { "title": "仙佛渊源本缘测试｜16 题深层版", "description": "从魂格、象征脉象到天命六层，看你此刻更接近哪种神圣原型；结果只描述象征倾向，不证明前世或宗教身份。" },
+      "en": { "title": "Divine Affinity Test | 16 Questions", "description": "From soul pattern to life mission: which sacred archetype do you lean toward? Symbolic tendencies only — never proof of identity." }
+    },
+    "/quiz/five-element-overdrive": {
+      "zh-Hant": { "title": "五行功能測驗｜你最容易把哪種優勢用成內耗？", "description": "十個日常情境看你最常使用的功能與壓力下怎麼用過頭；只反映目前行為傾向，不等同八字命盤。" },
+      "zh-Hans": { "title": "五行功能测验｜你最容易把哪种优势用成内耗？", "description": "十个日常情境看你最常使用的功能与压力下怎么用过头；只反映目前行为倾向，不等同八字命盘。" },
+      "en": { "title": "Five-Element Overdrive | Which Strength Backfires?", "description": "Ten everyday scenarios show which function you overuse under pressure. Behavioural tendencies only — not a BaZi chart." }
+    },
+    "/quiz/six-realms": {
+      "zh-Hant": { "title": "六道習氣測驗｜你今天正在經歷哪一道？", "description": "六個日常情境看你此刻較常落入的主導心境；六道作為意識與情緒的觀察框架，不是斷定死後去處。" },
+      "zh-Hans": { "title": "六道习气测验｜你今天正在经历哪一道？", "description": "六个日常情境看你此刻较常落入的主导心境；六道作为意识与情绪的观察框架，不是断定死后去处。" },
+      "en": { "title": "Six Realms Quiz | Which Mind-State Are You In?", "description": "Six everyday scenarios locate your dominant mind-state today. The realms are an observation framework, not a verdict on afterlives." }
+    }
+  }
+}

@@ -13,6 +13,214 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    id: "sun-trine-north-node-2026-10-20",
+    published: "2026-10-20",
+    status: "active",
+    title: {
+      "zh-Hant": "太陽三分北交點：關係與群體方向的交會",
+      "zh-Hans": "太阳三分北交点：关系与群体方向的交会",
+      en: "Sun trine the North Node: relationships meet collective direction"
+    },
+    subtitle: {
+      "zh-Hant": "占星曆時刻｜10/20 13:04 AEDT（悉尼）＝10/19 22:04 EDT",
+      "zh-Hans": "占星历时刻｜10/20 13:04 AEDT（悉尼）＝10/19 22:04 EDT",
+      en: "Astrological ephemeris time | 19 Oct 22:04 EDT = 20 Oct 13:04 AEDT (Sydney)"
+    },
+    facts: [{
+      date: "2026-10-20",
+      label: {
+        "zh-Hant": "占星曆將精確三分相列於悉尼時間 10 月 20 日 13:04（AEDT，UTC+11）；Instagram 原文以美東時間標示為 10 月 19 日 22:04（EDT，UTC−4）。",
+        "zh-Hans": "占星历将精确三分相列于悉尼时间 10 月 20 日 13:04（AEDT，UTC+11）；Instagram 原文以美东时间标示为 10 月 19 日 22:04（EDT，UTC−4）。",
+        en: "The astrology calendar lists the exact trine at 13:04 AEDT on 20 Oct (Sydney), corresponding to 22:04 EDT on 19 Oct in the Instagram post."
+      }
+    }],
+    science: {
+      "zh-Hant": [
+        "月球軌道面相對黃道面傾斜；北交點是月球軌道由南向北穿越黃道面的計算交點，不是行星、恆星或發光天體。",
+        "這裡的三分相指熱帶黃道座標下，地心視黃經約相差 120°：太陽位於天秤座，北交點位於水瓶座。這是角度關係，不代表兩個物體在三維空間靠近或排成一線。",
+        "北交點本身無法肉眼看見；太陽與北交點形成三分相也不是日食、月食或可辨認的夜空奇觀。實際日月食需要日月靠近月球軌道交點。",
+        "時刻採占星曆所列的熱帶黃道相位時間；採用平均或真交點、座標慣例不同，結果可能略有差異。"
+      ],
+      "zh-Hans": [
+        "月球轨道面相对黄道面倾斜；北交点是月球轨道由南向北穿越黄道面的计算交点，不是行星、恒星或发光天体。",
+        "这里的三分相指热带黄道坐标下，地心视黄经约相差 120°：太阳位于天秤座，北交点位于水瓶座。这是角度关系，不代表两个物体在三维空间靠近或排成一线。",
+        "北交点本身无法肉眼看见；太阳与北交点形成三分相也不是日食、月食或可辨认的夜空奇观。实际日月食需要日月靠近月球轨道交点。",
+        "时刻采用占星历所列的热带黄道相位时间；采用平均或真交点、坐标惯例不同，结果可能略有差异。"
+      ],
+      en: [
+        "The Moon's orbital plane is tilted to the ecliptic. The North Node is the calculated point where the Moon crosses the ecliptic from south to north; it is not a planet, star or luminous body.",
+        "Here, a trine means about 120° of geocentric apparent ecliptic-longitude separation in the tropical zodiac: the Sun is in Libra and the North Node in Aquarius. This is an angular relationship, not a close physical approach or straight-line alignment in 3D space.",
+        "The North Node is not visible to the naked eye, and a Sun–node trine is not an eclipse or visually identifiable sky spectacle. Eclipses require the Sun and Moon to be near a lunar orbital node.",
+        "The time follows the cited astrology calendar's tropical-zodiac aspect timing; coordinate conventions and mean versus true node can create small differences."
+      ]
+    },
+    interpretation: {
+      "zh-Hant": [
+        "在西洋占星的象徵語言裡，太陽常被用來談自我表達與當下方向；天秤座常連結協商、公平與一對一關係；北交點常被解讀為需要探索的成長方向，水瓶座象徵群體、理念與未來可能。",
+        "三分相在占星傳統裡通常被視為較順暢的連結。貼文因此把焦點放在「一段關係中的協調，如何與更大的群體目標並行」；這是文化象徵的閱讀方式，不是天體造成事件的科學結論。",
+        "可把它當作一個提問：我正在維護的合作或關係，是否也容得下自己的長期理念？若答案是否定的，下一步可以是一次清楚的協商，而不是因為星象而倉促做重大決定。",
+        "占星詮釋不等於個人預測。若要談本命盤中的生活領域，還需要出生資料、採用的宮制與完整盤面；此專欄不代替個人命盤分析。"
+      ],
+      "zh-Hans": [
+        "在西洋占星的象征语言里，太阳常被用来谈自我表达与当下方向；天秤座常连接协商、公平与一对一关系；北交点常被解读为需要探索的成长方向，水瓶座象征群体、理念与未来可能。",
+        "三分相在占星传统里通常被视为较顺畅的连接。贴文因此把焦点放在“一段关系中的协调，如何与更大的群体目标并行”；这是文化象征的阅读方式，不是天体造成事件的科学结论。",
+        "可以把它当作一个提问：我正在维护的合作或关系，是否也容得下自己的长期理念？若答案是否定的，下一步可以是一次清楚的协商，而不是因为星象而仓促做重大决定。",
+        "占星诠释不等于个人预测。若要谈本命盘中的生活领域，还需要出生资料、采用的宫制与完整盘面；此专栏不代替个人命盘分析。"
+      ],
+      en: [
+        "In Western astrological symbolism, the Sun is often used to discuss self-expression and present direction; Libra is associated with negotiation, fairness and one-to-one relationships. The North Node is traditionally read as a growth direction, while Aquarius evokes groups, ideals and future possibilities.",
+        "A trine is traditionally treated as an easier symbolic connection. The post frames this as how relationship balance might coexist with a wider collective purpose. This is a cultural interpretation, not a scientific conclusion that planets cause events.",
+        "Use it as a reflective prompt: can the partnership or agreement I am maintaining make room for my longer-term values? If not, a clear conversation is more grounded than making a major decision because of a transit.",
+        "Astrological symbolism is not an individual prediction. A natal-house reading needs birth data, a chosen house system and the complete chart; this public note is not a substitute for one."
+      ]
+    },
+    houses: [],
+    sources: [
+      { label: "NASA CNEOS · Line of nodes", url: "https://cneos.jpl.nasa.gov/glossary/line_of_nodes.html" },
+      { label: "NASA Science · Planetary orbits and nodes", url: "https://science.nasa.gov/learn/basics-of-space-flight/chapter5-1/" },
+      { label: "Astrolis · October 2026 Transit Calendar", url: "https://www.astrolis.com/astrology/calendar/2026/october" }
+    ]
+  },
+  {
+    "id": "pluto-stations-direct-2026-10-16",
+    "published": "2026-10-15",
+    "status": "active",
+    "title": {
+      "zh-Hant": "冥王星順行：深層轉變的轉折點",
+      "zh-Hans": "冥王星顺行：深层转变的转折点",
+      "en": "Pluto stations direct: a turning point for deep change"
+    },
+    "subtitle": {
+      "zh-Hant": "2026.10.16 悉尼｜五個多月的視逆行結束",
+      "zh-Hans": "2026.10.16 悉尼｜五个多月的视逆行结束",
+      "en": "16 Oct 2026 in Sydney | Five-month apparent retrograde ends"
+    },
+    "facts": [
+      {
+        "date": "2026-10-16",
+        "label": {
+          "zh-Hant": "冥王星約於 UTC 10 月 16 日 02:40、悉尼當日 13:40，在熱帶黃道水瓶座 3°04′轉為視順行。",
+          "zh-Hans": "冥王星约于 UTC 10 月 16 日 02:40、悉尼当日 13:40，在热带黄道水瓶座 3°04′转为视顺行。",
+          "en": "Pluto stations direct around 02:40 UTC / 13:40 Sydney on 16 Oct at 3°04′ tropical Aquarius."
+        }
+      },
+      {
+        "date": "2026-05-06",
+        "label": {
+          "zh-Hant": "本次冥王星視逆行始於 5 月 6 日，起點約在水瓶座 5°30′–5°31′。",
+          "zh-Hans": "本次冥王星视逆行始于 5 月 6 日，起点约在水瓶座 5°30′–5°31′。",
+          "en": "This apparent retrograde began 6 May near 5°30′–5°31′ Aquarius."
+        }
+      },
+      {
+        "date": "2026-10-14",
+        "label": {
+          "zh-Hant": "月亮約於悉尼時間 10 月 14 日中午進入射手座；並非週末換座。",
+          "zh-Hans": "月亮约于悉尼时间 10 月 14 日中午进入射手座；并非周末换座。",
+          "en": "Moon enters Sagittarius around midday on 14 Oct in Sydney, not during the weekend."
+        }
+      },
+      {
+        "date": "2026-10-19",
+        "label": {
+          "zh-Hant": "上弦月約發生於 10 月 18 日 16:12 UTC，即悉尼 10 月 19 日 03:12；當時月亮在摩羯座。",
+          "zh-Hans": "上弦月约发生于 10 月 18 日 16:12 UTC，即悉尼 10 月 19 日 03:12；当时月亮在摩羯座。",
+          "en": "First-quarter Moon occurs about 18 Oct 16:12 UTC / 19 Oct 03:12 Sydney, with Moon in Capricorn."
+        }
+      }
+    ],
+    "science": {
+      "zh-Hant": [
+        "天文上的「視逆行／順行」描述的是從地球觀察的行星視位置變化，並不代表冥王星真正停止或反向繞日運動。",
+        "以上黃道度數使用地心、熱帶黃道的占星座標；與天文學的星座邊界不同。",
+        "同一事件在美東時間為 10 月 15 日晚間，在 UTC 與悉尼均已是 10 月 16 日。悉尼當日使用 AEDT（UTC+11）。",
+        "本週月亮進入射手座與上弦月是兩個不同時間的事件，上弦月並非發生於射手座。"
+      ],
+      "zh-Hans": [
+        "天文上的「视逆行／顺行」描述的是从地球观察的行星视位置变化，并不代表冥王星真正停止或反向绕日运动。",
+        "以上黄道度数使用地心、热带黄道的占星坐标；与天文学的星座边界不同。",
+        "同一事件在美东时间为 10 月 15 日晚间，在 UTC 与悉尼均已是 10 月 16 日。悉尼当日使用 AEDT（UTC+11）。",
+        "本周月亮进入射手座与上弦月是两个不同时间的事件，上弦月并非发生于射手座。"
+      ],
+      "en": [
+        "Apparent retrograde/direct motion is a change in how a planet appears to move from Earth; Pluto does not physically reverse its orbit.",
+        "The degrees cited use the geocentric tropical zodiac for astrological reference, not IAU constellation boundaries.",
+        "The same station occurs late on 15 Oct in US Eastern time but on 16 Oct in UTC and Sydney (AEDT, UTC+11).",
+        "The Sagittarius Moon ingress and first-quarter phase occur at different times; the first quarter is not in Sagittarius."
+      ]
+    },
+    "interpretation": {
+      "zh-Hant": [
+        "在現代占星的象徵系統中，冥王星常與權力關係、深層模式和重組相連；順行可作為回顧長期改變的提示。",
+        "月亮進射手座常被解讀為探索、學習與視野拓展；上弦月則象徵由構想走向實踐的階段，兩者不應混為同一事件。",
+        "這些是象徵性詮釋，沒有科學證據顯示行星視運動能決定個人命運或造成特定社會事件。",
+        "可實際做的事：檢視過去五個月的計畫、資源與邊界，確定接下來要處理的一項具體問題。"
+      ],
+      "zh-Hans": [
+        "在现代占星的象征系统中，冥王星常与权力关系、深层模式和重组相连；顺行可作为回顾长期改变的提示。",
+        "月亮进射手座常被解读为探索、学习与视野拓展；上弦月则象征由构想走向实践的阶段，两者不应混为同一事件。",
+        "这些是象征性诠释，没有科学证据显示行星视运动能决定个人命运或造成特定社会事件。",
+        "可实际做的事：检视过去五个月的计划、资源与边界，确定接下来要处理的一项具体问题。"
+      ],
+      "en": [
+        "In modern astrological symbolism, Pluto is associated with power dynamics, deep patterns and restructuring. The direct station can be used as a prompt for reflection.",
+        "The Sagittarius Moon ingress is traditionally associated with exploration and learning, while first quarter symbolizes taking action; these are separate events.",
+        "These are symbolic readings. There is no scientific evidence that apparent planetary motion determines individual fate or specific social events.",
+        "A practical reflection: review plans, resources and boundaries from the past five months, then identify one concrete next step."
+      ]
+    },
+    "houses": [
+      {
+        "house": 1,
+        "zh-Hant": "自我定位與個人界線",
+        "zh-Hans": "自我定位与个人边界",
+        "en": "identity and personal boundaries"
+      },
+      {
+        "house": 2,
+        "zh-Hant": "資源分配與價值觀",
+        "zh-Hans": "资源分配与价值观",
+        "en": "resources and values"
+      },
+      {
+        "house": 4,
+        "zh-Hant": "家庭模式與安定感",
+        "zh-Hans": "家庭模式与安定感",
+        "en": "home patterns and security"
+      },
+      {
+        "house": 8,
+        "zh-Hant": "共同財務與信任",
+        "zh-Hans": "共同财务与信任",
+        "en": "shared finances and trust"
+      },
+      {
+        "house": 10,
+        "zh-Hant": "職涯定位與責任",
+        "zh-Hans": "职业定位与责任",
+        "en": "career position and responsibility"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Cafe Astrology · Pluto turns direct in Aquarius 2026",
+        "url": "https://cafeastrology.com/events/pluto-turns-direct-in-aquarius-2026/"
+      },
+      {
+        "label": "Lunary · Pluto retrograde 2026, time zones",
+        "url": "https://lunary.app/blog/transits/pluto-retrograde-aquarius-2026"
+      },
+      {
+        "label": "Cafe Astrology · October 2026 Moon Calendar",
+        "url": "https://cafeastrology.com/calendars/moon-calendar-2026.html"
+      },
+      {
+        "label": "Space.com · Lunar phases 2026",
+        "url": "https://www.space.com/18880-moon-phases.html"
+      }
+    ]
+  },
+  {
     "id": "moon-occults-jupiter-2026-10-06",
     "published": "2026-10-08",
     "status": "active",

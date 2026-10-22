@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { OwnerGalleryManager } from "@/components/owner-gallery-manager";
+import { OwnerSongBeastPromptPanel } from "@/components/owner-song-beast-prompt-panel";
 import { OwnerLoginVisualsManager } from "@/components/owner-login-visuals-manager";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
@@ -38,7 +39,7 @@ function GalleryPage() {
             onClick={() => setView("login")}
             className={`min-h-11 rounded-lg border px-3 text-sm font-medium ${view === "login" ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-paper/55 text-ink-soft"}`}
           >
-            {tx("開場影片", "开场视频", "Opening video")}
+            {tx("影片素材", "视频素材", "Film library")}
           </button>
           <button
             type="button"
@@ -55,7 +56,10 @@ function GalleryPage() {
       {session ? (
         view === "login"
           ? <OwnerLoginVisualsManager session={session} locale={locale} />
-          : <OwnerGalleryManager session={session} locale={locale} />
+          : <div className="space-y-4">
+              <OwnerSongBeastPromptPanel locale={locale} />
+              <OwnerGalleryManager session={session} locale={locale} />
+            </div>
       ) : (
         <section className="rounded-xl border border-line bg-paper/45 px-4 py-4" data-owner-gallery-data-offline>
           <div className="flex items-center justify-between gap-3">

@@ -100,11 +100,11 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
   const [draftName, setDraftName] = useState("");
 
   const copy = useMemo(() => ({
-    kicker: "OPENING VIDEO",
-    title: tr(locale, "首頁開場影片管理", "首页开场视频管理", "Homepage opening video"),
-    upload: tr(locale, "上傳開場影片", "上传开场视频", "Upload opening video"),
-    current: tr(locale, "目前使用中", "目前使用中", "Currently in use"),
-    use: tr(locale, "設為目前使用", "设为目前使用", "Set as current"),
+    kicker: "ZHAOWU FILMS",
+    title: tr(locale, "昭梧影片素材管理", "昭梧视频素材管理", "ZHAOWU film library"),
+    upload: tr(locale, "上傳影片", "上传视频", "Upload film"),
+    current: tr(locale, "首頁精選", "首页精选", "Featured on home"),
+    use: tr(locale, "設為首頁精選", "设为首页精选", "Feature on home"),
     remove: tr(locale, "刪除", "删除", "Delete"),
     preview: tr(locale, "預覽", "预览", "Preview"),
     close: tr(locale, "關閉", "关闭", "Close"),
@@ -112,9 +112,9 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     night: tr(locale, "夜間版", "夜间版", "Night"),
     common: tr(locale, "通用版", "通用版", "Common"),
     builtIn: tr(locale, "內置素材", "内置素材", "Built-in"),
-    videoRequired: tr(locale, "開場影片只接受影片檔（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "开场视频只接受视频文件（MP4、MOV、M4V、WebM、3GP、MKV、AVI、WMV、FLV、MPEG、TS、OGV）。", "The opening video must be a video file (MP4, MOV, M4V, WebM, 3GP, MKV, AVI, WMV, FLV, MPEG, TS, OGV)."),
-    clipped: tr(locale, "已上傳；首頁開場最長播放 15 秒，其餘片段不會播出。", "已上传；首页开场最长播放 15 秒，其余片段不会播出。", "Uploaded. The homepage opening plays for at most 15 seconds; the rest of the clip is not shown."),
-    notPlayable: tr(locale, "已上傳；此格式瀏覽器無法直接播放，首頁會改顯示封面。建議改用 MP4 或 MOV。", "已上传；此格式浏览器无法直接播放，首页会改显示封面。建议改用 MP4 或 MOV。", "Uploaded. Browsers cannot play this format directly, so the homepage will show the poster instead. MP4 or MOV is recommended."),
+    videoRequired: tr(locale, "影片素材接受 MP4、MOV、M4V、WebM 等格式；公開播放能力依訪客瀏覽器而定。", "视频素材支持 MP4、MOV、M4V、WebM 等格式；能否播放取决于访客浏览器。", "The library accepts video files; browser playback depends on the format. MP4 is preferred."),
+    clipped: tr(locale, `已上傳原始影片，未進行裁切。`, `已上传原始视频，未进行裁切。`, `The original film was uploaded without trimming.`),
+    notPlayable: tr(locale, "已上傳；部分瀏覽器可能無法播放此格式。觀眾可另行開啟原始影片，建議改用 MP4。", "已上传；部分浏览器可能无法播放此格式。访客可另行打开原始视频，建议改用 MP4。", "Uploaded. Some browsers may not play this format. Visitors can open the original file. MP4 is recommended."),
     rename: tr(locale, "改名", "改名", "Rename"),
     save: tr(locale, "儲存", "保存", "Save"),
     cancel: tr(locale, "取消", "取消", "Cancel"),
@@ -127,11 +127,12 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       `Compressed: ${(from / 1048576).toFixed(1)} MB → ${(to / 1048576).toFixed(1)} MB (max ${LOGIN_VIDEO_MAX_SECONDS} s).`,
     ),
     tooBig: () => {
-      return tr(locale, `此影片壓縮後仍太大，超過儲存空間單檔上限（Supabase 回報 413）。請先用手機「剪輯」裁成 15 秒內、或用較低畫質重新匯出後再上傳。`, `此视频压缩后仍太大，超过存储空间单文件上限（Supabase 返回 413）。请先用手机「剪辑」裁成 15 秒内、或用较低画质重新导出后再上传。`, `This video is still too large after compression and exceeds the storage per-file limit (Supabase returned 413). Trim it to 15 seconds or export at lower quality, then upload again.`);
+      return tr(locale, `此影片壓縮後仍太大，超過儲存空間單檔上限（Supabase 回報 413）。請先用手機「剪輯」裁成 ${LOGIN_VIDEO_MAX_SECONDS} 秒內、或用較低畫質重新匯出後再上傳。`, `此视频压缩后仍太大，超过存储空间单文件上限（Supabase 返回 413）。请先用手机「剪辑」裁成 ${LOGIN_VIDEO_MAX_SECONDS} 秒内、或用较低画质重新导出后再上传。`, `This video is still too large after compression and exceeds the storage per-file limit (Supabase returned 413). Trim it to ${LOGIN_VIDEO_MAX_SECONDS} seconds or export at lower quality, then upload again.`);
     },
     compressFailed: tr(locale, "此影片無法在瀏覽器內壓縮，已直接上傳原檔。", "此视频无法在浏览器内压缩，已直接上传原文件。", "This video could not be compressed in the browser; the original was uploaded."),
-    failed: tr(locale, "開場影片操作失敗。", "开场视频操作失败。", "Opening-video update failed."),
-    empty: tr(locale, "尚未設定自訂開場影片，首頁會使用內建蓮開影片。", "尚未设置自定义开场视频，首页会使用内置莲开视频。", "No custom opening video set. The homepage uses the built-in lotus clip."),
+    mobileDirect: tr(locale, "iPhone／iPad 已略過耗時壓縮，直接傳送原始影片。", "iPhone／iPad 已跳过耗时压缩，直接传送原始视频。", "iPhone/iPad uploads the original video without slow on-device compression."),
+    failed: tr(locale, "影片素材操作失敗。", "视频素材操作失败。", "Film library update failed."),
+    empty: tr(locale, "尚無自訂影片；已啟用作品會按主題出現在網站影像展廊。", "暂无自定义视频；已启用作品会按主题出现在网站影像展廊。", "No custom films yet. Enabled uploads appear in the public film collections."),
   }), [locale]);
 
   async function load() {
@@ -175,14 +176,15 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
         setMessage(null);
         if (result.compressed) notes.add(copy.compressed(result.sourceBytes, result.outputBytes));
         else if (result.skippedReason === "failed") notes.add(copy.compressFailed);
+        else if (result.skippedReason === "mobile-direct") notes.add(copy.mobileDirect);
         else if (duration === null || !playable) notes.add(copy.notPlayable);
-        else if (duration > 15) notes.add(copy.clipped);
+        else if (duration > LOGIN_VIDEO_MAX_SECONDS) notes.add(copy.clipped);
         await uploadGalleryAsset(session, result.file, {
           category: "loading",
           title: file.name,
           tags: ["loading", "login-background", "login-common", "owner-upload"],
           primary: false,
-        });
+        }, (percent) => setMessage(tr(locale, `上傳中 ${percent}%`, `上传中 ${percent}%`, `Uploading ${percent}%`)));
         uploadedCount += 1;
       }
       if (notes.size) setMessage([...notes].join(" "));

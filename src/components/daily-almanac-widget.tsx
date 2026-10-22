@@ -241,7 +241,10 @@ function useVisitorContext() {
 function sacredDay(date: Date, jieName: string, locale: Locale) {
   const lunar = toLunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
   if (!lunar) return jieLabel(jieName, locale);
-  const observance = formatSacredDay(lunar.month, lunar.day, locale, `${date.getMonth() + 1}-${date.getDate()}`);
+  const tomorrow = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+  const nextLunar = toLunar(tomorrow.getFullYear(), tomorrow.getMonth() + 1, tomorrow.getDate());
+  const isLunarMonthEnd = Boolean(nextLunar && nextLunar.day === 1);
+  const observance = formatSacredDay(lunar.month, lunar.day, locale, `${date.getMonth() + 1}-${date.getDate()}`, { year:date.getFullYear(), isLeapMonth:lunar.isLeap, isLunarMonthEnd });
   const season = jieLabel(jieName, locale);
   return locale === "en" ? `${observance} · ${season}` : `${observance}｜${locale === "zh-Hans" ? "节令" : "節令"}：${season}`;
 }

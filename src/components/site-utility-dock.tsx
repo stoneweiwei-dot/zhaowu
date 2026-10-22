@@ -1,6 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import { IntroReplayButton } from "@/components/intro-gate";
 import { BackgroundMusic } from "@/components/background-music";
 import { askSiteGuide, defaultSiteGuide, type SiteGuideAnswer, type SiteGuideRoute } from "@/lib/site-guide";
 import { JOURNEY_COPY } from "@/lib/site-journey";
@@ -112,6 +111,17 @@ export function SiteUtilityDock() {
     };
   }, []);
   useEffect(() => { setPanel(null); setAsked(false); }, [pathname]);
+  // `/guide` has no page of its own: vercel.json redirects it to `/?guide=1`, which opens the
+  // guide panel once and then cleans the URL. Declared after the pathname effect so it wins on mount.
+  useEffect(() => {
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("guide") !== "1") return;
+      setPanel("guide");
+      url.searchParams.delete("guide");
+      window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+    } catch { /* never block the dock on URL parsing */ }
+  }, []);
 
   function navigate(route: SiteGuideRoute) { setPanel(null); go(route); }
 
@@ -172,7 +182,6 @@ export function SiteUtilityDock() {
       </section>
 
       <div className="zhaowu-site-utility-buttons">
-        {pathname === "/" ? <IntroReplayButton /> : null}
         <button
           type="button"
           className={panel === "music" ? "is-active" : ""}

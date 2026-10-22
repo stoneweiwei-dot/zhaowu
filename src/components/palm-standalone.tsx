@@ -273,6 +273,7 @@ export function PalmStandalone() {
               system="palm"
               locale={locale}
               birth={personalBirth}
+              poeticContext={synthesis?.presentBody && synthesis?.directionBody ? { conclusion: synthesis.presentBody, action: synthesis.directionBody } : undefined}
               quick={<article className="rounded-2xl border border-[#b99755]/35 bg-paper/65 p-5"><h3 className="font-display text-xl font-semibold tracking-[0.06em] text-ink">{copy.readingTitle}</h3><p className="mt-3 text-sm leading-7 text-ink-soft">{copy.readingBody}</p></article>}
               personal={personalBirth ? <PersonalPaidProfile birth={personalBirth} locale={locale} /> : undefined}
               full={<>

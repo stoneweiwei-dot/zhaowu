@@ -4,10 +4,15 @@ This file is the highest repository-level execution protocol for all work on **Z
 
 Repository: `stoneweiwei-dot/zhaowu`
 Production project: Vercel `stone-zhaowu-official`
-Production URL: `https://stone-zhaowu-official.vercel.app/`
+Production URL: `https://zhao-wu.com/` (Vercel alias: `https://stone-zhaowu-official.vercel.app/`)
 Database/Auth/Storage: Supabase `plgpxusmemnmzckbwtiv`
 Primary branch: `main`
 Cost posture: **A$0/month target unless the owner explicitly approves paid infrastructure**
+
+### 2026-10-19｜異獸畫像生成指令唯一版本（owner instruction）
+
+只要現有功能需要**內在動物／本命異獸／命局瑞獸**的創作提示詞，預設先讀 `docs/SONG-BEAST-ART-PROMPT-v1.md`，並調用 `src/lib/song-beast-art-prompt.ts` 的 `buildSongBeastArtPrompt`（版本 `ZW-SONG-BEAST-ART-v1.0-20261019`）；不要另外創造黑底仙俠、滿版金飾、遊戲角色卡或通用鹿狐混種的 prompt。這只是既有結果的宋式畫像轉譯，不改八字 Truth Layer／測驗答案，不創建每位訪客即時付費生圖，不擴大至非異獸題材；新增圖片供應商／額度消耗需站主另行授權。站主後台 `/gallery` 及 `/fun-tests?test=animal` 結果提供零成本指令組裝／複製入口。真正上線以 main + 唯一 Production 驗證為準。
+
 
 ## 2026-10-07 OWNER LAUNCH / OPERATIONS MODE SUPERSESSION
 
@@ -68,7 +73,7 @@ This is the owner's newest explicit infrastructure instruction and has **highest
 
 - GitHub `stoneweiwei-dot/zhaowu` branch `main` is the only source of truth.
 - Vercel project `stone-zhaowu-official` is the **only active production host**.
-- Canonical production origin is `https://stone-zhaowu-official.vercel.app/` until the owner explicitly assigns another canonical domain.
+- Canonical production origin is `https://zhao-wu.com/`, explicitly assigned by the owner on 2026-10-17. Keep `stone-zhaowu-official.vercel.app` as a compatible alias on the same sole Vercel Production project.
 - Netlify `archive-stone-zhaowu-official`, Replit, Sites, AppDeploy, Lovable, Floot, Cloudflare or any other platform may be used only as development/reference tooling when needed. They must not become a second production source, canonical URL, auth callback origin or runtime dependency unless the owner explicitly changes this rule.
 - Older Netlify-as-production wording in docs/issues/chats is **superseded** and must not be revived.
 
@@ -239,6 +244,21 @@ If a request says add/fix/change/update/remove something on the website, the def
 **source change -> GitHub main -> tests/build -> active production host -> production URL verification**
 
 A ZIP, SVG, PNG, code snippet, patch file, local asset or draft is not "added to the website" until it is actually integrated and verified in production.
+
+### 2026-10-21｜GLOBAL ARTICLE ARTWORK GATE (owner confirmation; ACTIVE)
+
+Extend artwork inspection beyond one illustrated essay. Source-audit `src/lib/life-view*.ts` and `src/lib/life-view-long-form/**/*.ts`: reject unapproved SVG pictures masquerading as artwork, missing image sources, invalid real-file signatures, and the three confirmed problematic code-art articles. Genuine five-phases/timing educational diagrams remain explicitly permitted. This gate is structural only, never a substitute for source→production visual QA. Do not rebrand older in-repository WebP assets as fresh generated art.
+
+### 2026-10-21｜ARTICLE ARTWORK MUST BE ARTWORK (owner visual bugfix; ACTIVE)
+
+The user reported that published article illustrations repeatedly look like low-grade code-generated cards. Root cause confirmed in PR #820: an agent authored geometric SVG posters (`<rect>`, `<text>`, gradient bands) and passed them off as paintings, while genuine generated images were never connected to the article. This is an authoring/asset-choice failure, **not** a browser image transformation or a Supabase upload bug.
+
+For future website images (all agents/workflows):
+- Classify the requested output **before creation**: **painting/illustration**, **diagram/chart**, **UI mockup**, or **text-led infographic**. Never substitute one class for another merely because SVG/source code is cheaper or simpler to commit.
+- If the owner asks for artwork, create/obtain the actual visually rich source image; compositional substance, painted details and material feel must dominate. A box-and-number SVG, CSS gradients, geometric mountains or bare text are NOT an acceptable substitute. Use text/HTML outside the art for exact facts and accessible multilingual explanations. Use SVG only for genuinely visual illustration or a specifically requested scalable diagram, not to disguise a simple card as a painting.
+- **No fake success**: the generated file, uploaded file, code reference, public URL, and browser-visible pixels must all be traced as the SAME intended asset. A generated preview is not live media. The existence of an SVG/WebP path is not evidence of artistic quality. Visual acceptance must inspect the actual rendered picture, including at iPhone width; reject poor detail, mass-produced template blocks, illegible fake writing and unsupported labels.
+- If image bytes cannot be reliably transferred to the approved GitHub/Supabase destination, STOP at staged/pending for that specific art. Never silently generate a replacement SVG via code, link to expiring third-party media, claim Gallery ingestion, or call placeholders "approved original art". Existing legitimate local raster art may be used only as an **explicitly identified interim editorial illustration**, not a new original commissioned painting.
+- Reusable policy: `docs/ARTWORK-ACCEPTANCE.md`. Retain existing protected artwork, calculations, users, payments and storage contracts. No new paid generation service or second production host is authorized.
 
 ## 6. Visual asset rules
 

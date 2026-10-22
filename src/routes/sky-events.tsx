@@ -120,12 +120,24 @@ function SkyEventsPage() {
   const event = getFeaturedSkyEvent();
   const archive = getArchivedSkyEvents();
   const isSaturn = event.id === "saturn-opposition-2026";
-  const glyph = event.id === "saturn-opposition-2026" ? "♄" : event.id === "venus-scorpio-2026" ? "♀" : event.id.startsWith("mars-") ? "♂" : "✦";
+  const isSunNodeTrine = event.id === "sun-trine-north-node-2026-10-20";
+  const illustrationAlt = locale === "en"
+    ? "A geocentric diagram showing the Sun and calculated North Node about 120 degrees apart; the Node is not a visible body."
+    : locale === "zh-Hans"
+      ? "地心示意图：太阳与计算得出的北交点相隔约 120°；交点不是可见天体。"
+      : "地心示意圖：太陽與計算所得的北交點相隔約 120°；交點不是可見天體。";
+  const glyph = isSunNodeTrine ? "☉△☊" : isSaturn ? "♄" : event.id === "venus-scorpio-2026" ? "♀" : event.id.startsWith("mars-") ? "♂" : "✦";
   const ui = locale === "en"
     ? { title: "Recent Sky Events", lead: "Astronomical reality × symbolic astrology", back: "Home", science: "Astronomy layer · verifiable", symbolic: "Astrology layer · symbolic", houses: "Where this sign falls in your natal chart", sources: "Sources & verification", watch: "What this desk will publish first", archive: "Earlier sky events", note: "Astronomy and astrology are not presented as the same kind of knowledge. Measurable celestial motion is factual; personal meaning is a symbolic interpretive tradition." }
     : locale === "zh-Hans"
       ? { title: "近日天象", lead: "天文实况 × 星象解读", back: "返回首页", science: "天文层｜可验证事实", symbolic: "占星层｜象征性解读", houses: "本次星座落入本命不同宫位", sources: "资料来源与核验", watch: "本专栏第一时间发布", archive: "早前天象", note: "本站不会把天文学与占星解释混成同一种证据。可测量的天体运动属于事实层；个人意义属于传统占星的象征解释层。" }
       : { title: "近日天象", lead: "天文實況 × 星象解讀", back: "返回首頁", science: "天文層｜可驗證事實", symbolic: "占星層｜象徵性解讀", houses: "本次星座落入本命不同宮位", sources: "資料來源與核驗", watch: "本專欄第一時間發布", archive: "早前天象", note: "本站不會把天文學與占星解讀混成同一種證據。可測量的天體運動屬於事實層；個人意義屬於傳統占星的象徵解讀層。" };
+
+  const labels = locale === "en"
+    ? { navigation: "On this page", feature: "Featured event", week: "This week", archive: "Earlier events", expand: "Open section", eventDetails: "What is fact, and what is interpretation?", longRead: "Read the full interpretation", sourceDetails: "Sources and verification", featureKinds: ["Astronomy facts", "Astrological symbolism"] }
+    : locale === "zh-Hans"
+      ? { navigation: "本页导览", feature: "本期焦点", week: "本周速览", archive: "过往天象", expand: "展开内容", eventDetails: "天文事实与占星解读", longRead: "阅读完整解读", sourceDetails: "资料来源与核验", featureKinds: ["天文事实", "占星象征"] }
+      : { navigation: "本頁導覽", feature: "本期焦點", week: "本週速覽", archive: "過往天象", expand: "展開內容", eventDetails: "天文事實與占星解讀", longRead: "閱讀完整解讀", sourceDetails: "資料來源與核驗", featureKinds: ["天文事實", "占星象徵"] };
 
   return (
     <main className="sky-events-page">
@@ -137,19 +149,35 @@ function SkyEventsPage() {
         <div className="sky-events-truth-note">{ui.note}</div>
       </header>
 
-      <TodaySkyCards />
+      <nav className="sky-events-shortcuts" aria-label={labels.navigation}>
+        <a href="#sky-featured">{labels.feature}</a>
+        <a href="#sky-week">{labels.week}</a>
+        <a href="#sky-archive">{labels.archive}</a>
+      </nav>
 
-      <section className="sky-events-watch">
-        <h2>{ui.watch}</h2>
-        <div className="sky-events-category-grid">{SKY_EVENT_CATEGORIES.map((x) => <span key={x}>{lang === "zh-Hans" ? toSimplifiedCustomerText(x) : x}</span>)}</div>
-      </section>
-
-      <article className="sky-event-article">
+      <article className="sky-event-article" id="sky-featured">
+        <div className="sky-event-kind-tags" aria-label={labels.featureKinds.join(" / ")}>
+          {labels.featureKinds.map((label, index) => <span key={label} className={index === 0 ? "is-fact" : "is-symbol"}>{label}</span>)}
+        </div>
         <header className="sky-event-title">
           <div className={`sky-event-orbit ${isSaturn ? "is-saturn" : ""}`} aria-hidden="true"><span>{glyph}</span></div>
           <div><span className="sky-events-kicker">{event.published}</span><h2>{event.title[lang]}</h2><p>{event.subtitle[lang]}</p></div>
         </header>
 
+        {isSunNodeTrine ? (
+          <figure className="sky-event-illustration">
+            <img src="/articles/sun-trine-north-node-2026.svg" alt={illustrationAlt} loading="lazy" />
+            <figcaption>{locale === "en"
+              ? "A geometric guide to the 120° tropical-zodiac aspect; the North Node is a calculated orbital point."
+              : locale === "zh-Hans"
+                ? "120° 热带黄道相位示意；北交点是计算出的轨道交点。"
+                : "120° 熱帶黃道相位示意；北交點是計算出的軌道交點。"}</figcaption>
+          </figure>
+        ) : null}
+
+        <details className="sky-section-disclosure sky-event-details">
+          <summary><strong>{labels.eventDetails}</strong><span>{labels.expand}</span></summary>
+          <div className="sky-event-disclosure-body">
         <div className="sky-event-timeline">
           {event.facts.map((fact) => <div key={fact.date}><time>{fact.date}</time><span>{fact.label[lang]}</span></div>)}
         </div>
@@ -163,24 +191,41 @@ function SkyEventsPage() {
             <span className="sky-layer-tag">INTERPRETIVE</span><h3>{ui.symbolic}</h3>
             <ul>{event.interpretation[lang].map((x) => <li key={x}>{x}</li>)}</ul>
           </section>
-        </div>
+          </div>
+          </div>
+        </details>
 
-        {isSaturn ? <SaturnEssay lang={lang} /> : event.houses.length > 0 ? (
+        {isSaturn ? <details className="sky-section-disclosure sky-long-read"><summary><strong>{labels.longRead}</strong><span>{labels.expand}</span></summary><SaturnEssay lang={lang} /></details> : event.houses.length > 0 ? (
           <section className="sky-event-houses">
             <h3>{ui.houses}</h3>
             <div>{event.houses.map((x) => <article key={x.house}><b>{x.house}</b><span>{x[lang]}</span></article>)}</div>
           </section>
         ) : null}
 
-        <footer className="sky-event-sources">
-          <h3>{ui.sources}</h3>
-          <div>{event.sources.map((s) => <a key={s.url} href={s.url} target="_blank" rel="noreferrer">{s.label} ↗</a>)}</div>
-        </footer>
+        <details className="sky-section-disclosure sky-source-details">
+          <summary><strong>{labels.sourceDetails}</strong><span>{event.sources.length}</span></summary>
+          <footer className="sky-event-sources">
+            <h3>{ui.sources}</h3>
+            <div>{event.sources.map((s) => <a key={s.url} href={s.url} target="_blank" rel="noreferrer">{s.label} ↗</a>)}</div>
+          </footer>
+        </details>
       </article>
 
+      <details className="sky-section-disclosure sky-week-disclosure" id="sky-week">
+        <summary><strong>{labels.week}</strong><span>{labels.expand}</span></summary>
+        <TodaySkyCards />
+      </details>
+
+      <details className="sky-section-disclosure sky-watch-disclosure">
+        <summary><strong>{ui.watch}</strong><span>{SKY_EVENT_CATEGORIES.length}</span></summary>
+        <div className="sky-events-watch">
+          <div className="sky-events-category-grid">{SKY_EVENT_CATEGORIES.map((x) => <span key={x}>{lang === "zh-Hans" ? toSimplifiedCustomerText(x) : x}</span>)}</div>
+        </div>
+      </details>
+
       {archive.length > 0 ? (
-        <section className="sky-events-archive" aria-label={ui.archive}>
-          <h2>{ui.archive}</h2>
+        <details className="sky-section-disclosure sky-events-archive" id="sky-archive" aria-label={ui.archive}>
+          <summary><strong>{ui.archive}</strong><span>{archive.length}</span></summary>
           <div className="sky-events-archive-grid">
             {archive.map((row) => (
               <article key={row.id} className="sky-events-archive-card">
@@ -190,7 +235,7 @@ function SkyEventsPage() {
               </article>
             ))}
           </div>
-        </section>
+        </details>
       ) : null}
     </main>
   );

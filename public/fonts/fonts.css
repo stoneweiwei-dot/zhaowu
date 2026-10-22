@@ -1,0 +1,74 @@
+/* ============================================================
+   昭梧本地字体 — 完全替代 Google Fonts CDN
+   生成时间: 2026-10-17
+   说明: 拉丁字体自托管, 中文字体使用系统fallback
+   ============================================================ */
+
+/* ---- Cormorant Garamond (拉丁衬线, 用于英文展示标题) ---- */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/CormorantGaramond-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/CormorantGaramond-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/CormorantGaramond-700.woff2') format('woff2');
+}
+
+/* ---- Playfair Display (拉丁衬线, 用于英文展示标题) ---- */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-700.woff2') format('woff2');
+}
+
+/* ---- Jost (拉丁无衬线, 用于英文正文/UI) ---- */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/Jost-300.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/Jost-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/Jost-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/Jost-600.woff2') format('woff2');
+}

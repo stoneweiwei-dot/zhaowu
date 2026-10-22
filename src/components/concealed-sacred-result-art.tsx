@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Locale } from "@/lib/i18n";
 
 type SacredResultKind = "animal" | "element" | "realm";
@@ -7,6 +8,8 @@ type ConcealedSacredResultArtProps = {
   seed: string;
   title: string;
   kind: SacredResultKind;
+  /** Library painting matched to the result; the generic SVG portrait is only the fallback. */
+  imageSrc?: string | null;
 };
 
 type Palette = {
@@ -42,16 +45,19 @@ function copy(locale: Locale) {
     kicker: "CONCEALED SACRED ICON",
     title: "Sacred result portrait",
     note: "A saturated Song-mineral visual layer for this quiz result. It does not add a deity, affinity or fate judgement.",
+    photoNote: "A Zhaowu library painting matched to your result. It is symbolic art only and adds no deity, affinity or fate judgement.",
   };
   if (locale === "zh-Hans") return {
     kicker: "含藏圣相 · 测验结果",
     title: "本次结果圣相",
     note: "用浓郁宋彩、薄金月轮与半遮面圣相呈现本次测验结果；只做视觉化，不新增仙佛本缘或命理判定。",
+    photoNote: "依你的结果从昭梧图库挑出的对应画作；仅为象征性艺术，不新增仙佛本缘或命理判定。",
   };
   return {
     kicker: "含藏聖相 · 測驗結果",
     title: "本次結果聖相",
     note: "用濃郁宋彩、薄金月輪與半遮面聖相呈現本次測驗結果；只做視覺化，不新增仙佛本緣或命理判定。",
+    photoNote: "依你的結果從昭梧圖庫挑出的對應畫作；僅為象徵性藝術，不新增仙佛本緣或命理判定。",
   };
 }
 
@@ -93,7 +99,9 @@ function CoverObject({ type, palette }: { type: number; palette: Palette }) {
   );
 }
 
-export function ConcealedSacredResultArt({ locale, seed, title, kind }: ConcealedSacredResultArtProps) {
+export function ConcealedSacredResultArt({ locale, seed, title, kind, imageSrc }: ConcealedSacredResultArtProps) {
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const showPhoto = Boolean(imageSrc) && failedSrc !== imageSrc;
   const hash = hashSeed(`${kind}:${seed}`);
   const palette = PALETTES[hash % PALETTES.length];
   const coverType = (hash >>> 3) % 4;
@@ -103,6 +111,9 @@ export function ConcealedSacredResultArt({ locale, seed, title, kind }: Conceale
     <article className="seal-border overflow-hidden rounded-2xl bg-cream/95 p-4 sm:p-6" data-quiz-sacred-result={kind}>
       <div className="grid items-center gap-5 sm:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         <div className="mx-auto w-full max-w-[320px] overflow-hidden rounded-[28px] border border-line bg-paper shadow-sm">
+          {showPhoto ? (
+            <img src={imageSrc ?? undefined} alt={`${text.title}: ${title}`} width={480} height={854} loading="eager" decoding="async" onError={() => setFailedSrc(imageSrc ?? null)} className="block aspect-[9/16] h-auto w-full object-cover" data-quiz-sacred-photo={imageSrc} />
+          ) : (
           <svg viewBox="0 0 540 960" role="img" aria-label={`${text.title}: ${title}`} className="block aspect-[9/16] h-auto w-full">
             <rect width="540" height="960" fill={palette.field} />
             <rect x="24" y="24" width="492" height="912" rx="28" fill="none" stroke={palette.gold} strokeWidth="2" opacity="0.45" />
@@ -129,13 +140,14 @@ export function ConcealedSacredResultArt({ locale, seed, title, kind }: Conceale
             <path d="M72 842 Q122 812 168 842 Q122 872 72 842Z" fill={palette.mineral} opacity="0.2" />
             <path d="M372 842 Q418 812 468 842 Q418 872 372 842Z" fill={palette.mineral} opacity="0.2" />
           </svg>
+          )}
         </div>
 
         <div className="min-w-0">
           <p className="text-xs tracking-[0.24em] text-cinnabar">{text.kicker}</p>
           <h3 className="mt-2 font-display text-2xl text-ink">{text.title}</h3>
           <p className="mt-2 font-display text-lg leading-7 text-ink">{title}</p>
-          <p className="mt-4 text-sm leading-7 text-ink-soft">{text.note}</p>
+          <p className="mt-4 text-sm leading-7 text-ink-soft">{showPhoto ? text.photoNote : text.note}</p>
           <div className="mt-5 h-px bg-line" />
           <p className="mt-3 text-[11px] tracking-[0.2em] text-ink-mute">STONE · 昭梧</p>
         </div>

@@ -96,7 +96,7 @@ export function OwnerBackgroundMusicManager() {
     const sync = () => {
       const active = window.location.pathname === "/account" || window.location.pathname.startsWith("/account/");
       setOnAccount(active);
-      setPortalTarget(active ? document.querySelector<HTMLElement>("main > section:first-child") : null);
+      setPortalTarget(active ? (document.querySelector<HTMLElement>("[data-owner-music-slot]") ?? document.querySelector<HTMLElement>("main > section:first-child")) : null);
     };
     sync(); window.addEventListener("popstate", sync); const timer = window.setInterval(sync, 300);
     return () => { window.removeEventListener("popstate", sync); window.clearInterval(timer); };

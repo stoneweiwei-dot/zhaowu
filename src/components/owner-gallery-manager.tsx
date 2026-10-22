@@ -12,6 +12,7 @@ import { OWNER_GALLERY_GROUP_ORDER, isLoadingGalleryAsset, isOfficialSongGallery
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 import { setBackgroundWallpaper, uploadBackground } from "@/lib/bridge/background-assets";
 import { isBakedWatermark } from "@/lib/brand-watermark";
+import { BUNDLED_REPORT_ART, isBundledReportArt } from "@/lib/owner-bundled-report-art";
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
@@ -31,7 +32,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   const [assets, setAssets] = useState<GalleryAsset[]>([]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [group, setGroup] = useState<OwnerGalleryGroup>("owner-upload");
+  const [group, setGroup] = useState<OwnerGalleryGroup>("song-master");
   const [open, setOpen] = useState(true);
   const [shown, setShown] = useState(PAGE_SIZE);
   const [preview, setPreview] = useState<GalleryAsset | null>(null);
@@ -51,6 +52,8 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     openGallery: tr(locale, "打開圖庫", "打开图库", "Open gallery"),
     closeGallery: tr(locale, "收起圖庫", "收起图库", "Close gallery"),
     empty: tr(locale, "目前沒有圖片。", "目前没有图片。", "No images in this view."),
+    bundledSummary: tr(locale, "網站內建：十天干角色 10 張、十二地支景象 12 張；原檔受保護。", "网站内置：十天干角色 10 张、十二地支景象 12 张；原文件受保护。", "Built-in: 10 stem portraits and 12 branch scenes; originals are protected."),
+    bundledLabel: tr(locale, "報告正式素材 · 唯讀", "报告正式素材 · 只读", "Live report artwork · read-only"),
     remove: tr(locale, "刪除", "删除", "Delete"),
     qcBlocked: tr(locale, "品質未通過", "质量未通过", "Quality blocked"),
     setHomeBackground: tr(locale, "設為首頁背景", "设为首页背景", "Set as homepage background"),
@@ -101,10 +104,11 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     }
   }
 
-  const libraryAssets = useMemo(
-    () => assets.filter((asset) => asset.category === "visual-library" && !isLoadingGalleryAsset(asset)),
-    [assets],
-  );
+  const libraryAssets = useMemo(() => {
+    const stored = assets.filter((asset) => asset.category === "visual-library" && !isLoadingGalleryAsset(asset));
+    const storedPaths = new Set(stored.map((asset) => asset.storage_path));
+    return [...BUNDLED_REPORT_ART.filter((asset) => !storedPaths.has(asset.storage_path)), ...stored];
+  }, [assets]);
   const groupCounts = useMemo(() => Object.fromEntries(
     OWNER_GALLERY_GROUP_ORDER.map((item) => [
       item,
@@ -116,7 +120,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
     [libraryAssets, group],
   );
   const renderedAssets = visibleAssets.slice(0, shown);
-  const protectedAsset = (asset: GalleryAsset) => isOfficialSongGalleryAsset(asset) || asset.bucket_id === "public-fallback";
+  const protectedAsset = (asset: GalleryAsset) => isBundledReportArt(asset) || isOfficialSongGalleryAsset(asset) || asset.bucket_id === "public-fallback";
   const qcBlockedAsset = (asset: GalleryAsset) => asset.tags.includes("qc-blocked-ghosting");
   const switchGroup = (next: OwnerGalleryGroup) => {
     setGroup(next);
@@ -134,7 +138,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   };
 
   async function setAsHomepageBackground(asset: GalleryAsset) {
-    if (busy || backgroundBusyId || SUPABASE_STORAGE_WRITES_PAUSED || qcBlockedAsset(asset)) return;
+    if (busy || backgroundBusyId || SUPABASE_STORAGE_WRITES_PAUSED || qcBlockedAsset(asset) || isBundledReportArt(asset)) return;
     setBackgroundBusyId(asset.id);
     setMessage(null);
     try {
@@ -167,6 +171,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       </div>
 
       <p className="mt-3 text-sm leading-6 text-ink-mute">{copy.homeBackgroundHint}</p>
+      <p className="mt-2 text-xs leading-5 text-ink-mute" data-bundled-report-count="22">{copy.bundledSummary}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <label className={`inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-4 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
@@ -207,16 +212,17 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
                   <img src={assetSrc(asset)} alt={asset.title || "gallery image"} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover object-top" />
                 </button>
                 <div className="p-3">
-                  <p className="truncate text-xs font-medium sm:text-sm">{asset.title}</p>
+                  <p className="truncate text-xs font-medium sm:text-sm" title={asset.title}>{asset.title}</p>
+                  {isBundledReportArt(asset) ? <p className="mt-1 text-[11px] leading-5 text-ink-mute" data-bundled-report-art>{copy.bundledLabel}</p> : null}
                   <div className="mt-3 grid gap-2">
-                    <button
+                    {!isBundledReportArt(asset) ? <button
                       type="button"
                       disabled={Boolean(backgroundBusyId) || SUPABASE_STORAGE_WRITES_PAUSED || qcBlockedAsset(asset)}
                       className="min-h-10 rounded-full bg-[#315f51] px-3 text-xs font-medium text-[#fffaf0] disabled:opacity-40"
                       onClick={() => void setAsHomepageBackground(asset)}
                     >
                       {backgroundBusyId === asset.id ? copy.settingHomeBackground : qcBlockedAsset(asset) ? copy.qcBlocked : copy.setHomeBackground}
-                    </button>
+                    </button> : null}
                     {!protectedAsset(asset) ? (
                       <button type="button" onClick={async () => {
                         if (!window.confirm(`${copy.remove} ${asset.title}?`)) return;

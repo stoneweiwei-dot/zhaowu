@@ -21,9 +21,11 @@ function LoginPage() {
   const { skin } = useSkin();
   const navigate = useNavigate();
   const { user, reload } = useCurrentUserState();
+  const [email, setEmail] = useState("");
   const [secret, setSecret] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     if (user?.isOwner) void navigate({ to: "/account" });
@@ -32,14 +34,19 @@ function LoginPage() {
   async function onOwnerSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
-    if (secret.length < 8) {
-      setError(ownerText(locale, "請輸入站主密碼。", "请输入站主密码。", "Enter the owner passcode."));
+    setNotice(null);
+    if (!email.trim() || secret.length < 8) {
+      setError(ownerText(locale, "請輸入帳號與站主密碼。", "请输入账号与站主密码。", "Enter the owner account and passcode."));
       return;
     }
     setBusy(true);
     try {
-      await ownerSignIn(secret);
+      const mode = await ownerSignIn(email.trim(), secret);
       setSecret("");
+      if (mode === "tester") {
+        setNotice(ownerText(locale, "測試帳號登入成功。此帳號僅供驗證登入流程，沒有任何後台權限。", "测试账号登录成功。此账号仅供验证登录流程，没有任何后台权限。", "Test account sign-in succeeded. This account only verifies the sign-in flow and has no console access."));
+        return;
+      }
       await reload();
       await navigate({ to: "/account" });
     } catch (err) {
@@ -77,7 +84,7 @@ function LoginPage() {
     >
       <img
         className="stone-login-stage-media"
-        src={skin?.hero ?? LOGIN_BACKDROP}
+        src={skin?.id === "solar-frost-descent" ? "/theme-skins/solar-frost-descent/login-wash.webp" : skin?.hero ?? LOGIN_BACKDROP}
         alt=""
         aria-hidden="true"
         decoding="async"
@@ -101,30 +108,47 @@ function LoginPage() {
           {ownerText(locale, "站主登入", "站主登录", "Owner sign-in")}
         </h1>
 
+        {passkeySupported() ? (
+          <div className="stone-login-form" data-owner-passkey-block>
+            <button type="button" disabled={busy} onClick={() => void onPasskey()} className="stone-login-primary" data-owner-passkey-login>
+              {busy ? t("processing") : ownerText(locale, "用 Face ID 登入", "用 Face ID 登录", "Sign in with Face ID")}
+            </button>
+            {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
+            <p className="stone-login-message" data-owner-passkey-hint>
+              {ownerText(locale, "手機已加入受信任裝置就直接按。第一次請用下方帳號密碼登入，再到後台「登入與裝置」加入。", "手机已加入受信任设备就直接按。第一次请用下方账号密码登录，再到后台“登录与设备”加入。", "Tap if this phone is already trusted. First time: sign in below, then add this phone under “Sign-in” in the owner console.")}
+            </p>
+          </div>
+        ) : null}
+
         <form onSubmit={onOwnerSubmit} className="stone-login-form">
+          <label>
+            <span>{ownerText(locale, "帳號", "账号", "Account")}</span>
+            <input
+              id="owner-account"
+              type="email"
+              autoComplete="username"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder={ownerText(locale, "輸入帳號（Email）", "输入账号（Email）", "Enter account email")}
+            />
+          </label>
           <label>
             <span>{ownerText(locale, "站主密碼", "站主密码", "Owner password")}</span>
             <input
               id="login-secret"
               type="password"
-              inputMode="numeric"
               autoComplete="current-password"
               value={secret}
               onChange={(event) => setSecret(event.target.value.trim())}
               placeholder={ownerText(locale, "輸入站主密碼", "输入站主密码", "Enter owner password")}
             />
           </label>
-          {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
+          {!passkeySupported() && error ? <p className="stone-login-error" role="alert">{error}</p> : null}
+          {notice ? <p className="stone-login-message" role="status" data-login-test-account="true">{notice}</p> : null}
           <button type="submit" disabled={busy} className="stone-login-primary">
-            {busy ? t("processing") : ownerText(locale, "進入站主後台", "进入站主后台", "Enter owner console")}
+            {busy ? t("processing") : ownerText(locale, "用帳號密碼登入", "用账号密码登录", "Sign in with password")}
           </button>
         </form>
-
-        {passkeySupported() ? (
-          <button type="button" disabled={busy} onClick={() => void onPasskey()} className="stone-login-primary" data-owner-passkey-login>
-            {ownerText(locale, "用 Face ID 登入", "用 Face ID 登录", "Sign in with Face ID")}
-          </button>
-        ) : null}
 
         <div className="stone-login-footer">
           <span>{t("tagline")}</span>

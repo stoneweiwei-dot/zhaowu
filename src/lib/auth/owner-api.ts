@@ -2,17 +2,18 @@ async function jsonOrEmpty(response: Response) {
   return response.json().catch(() => ({})) as Promise<Record<string, unknown>>;
 }
 
-export async function ownerSignIn(secret: string) {
+export async function ownerSignIn(email: string, secret: string): Promise<"owner" | "tester"> {
   const response = await fetch("/api/owner-login", {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ secret }),
+    body: JSON.stringify({ email, secret }),
   });
   const body = await jsonOrEmpty(response);
   if (!response.ok) {
-    throw new Error(body.error === "INVALID_OWNER_CREDENTIAL" ? "站主密碼不正確。" : "站主登入暫時不可用。");
+    throw new Error(body.error === "INVALID_OWNER_CREDENTIAL" ? "帳號或站主密碼不正確。" : "站主登入暫時不可用。");
   }
+  return body.mode === "tester" ? "tester" : "owner";
 }
 
 export async function readOwnerSession() {

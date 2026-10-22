@@ -184,7 +184,7 @@ test("Real Browser: unauthenticated guest accessing /account directly receives n
       networkRequests.push({ url: req.url(), method: req.method() });
     });
 
-    const targetUrl = process.env.TARGET_URL || "https://stone-zhaowu-official.vercel.app/account";
+    const targetUrl = process.env.TARGET_URL || "https://zhao-wu.com/account";
     await page.goto(targetUrl, { waitUntil: "networkidle" });
     // Owner-session verification redirects asynchronously after hydration.
     await page.waitForURL("**/login", { timeout: 15000 });

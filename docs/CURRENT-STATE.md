@@ -10,11 +10,15 @@
 - Current GitHub `main` may be ahead of Production by docs/governance-only commits. This is intentional when Vercel skips non-runtime changes; runtime freshness is judged against the latest runtime-affecting commit, not literal docs-only HEAD.
 - Vercel `stone-zhaowu-official` is serving runtime release `943f79a1ac0abc3a66dec85dd90a69fddcd8570b` as verified on 2026-10-07. Newer `main` commit `b79f9ab109c04b6c03a6a59b3f220fb55b33eb6e` is docs/reference-only and its Vercel deployment was intentionally canceled/skipped.
 - Stripe live account is enabled for charges and payouts. Supabase `stripe-checkout` and `stripe-webhook` functions are ACTIVE and the `report_purchase_entitlements` schema is applied.
-- **PAYMENT LIVE PATH:** Stripe live account is enabled for charges/payouts. The public paid flow uses 18 live Stripe Payment Links (3 price tiers × 6 systems). Each link returns directly to the originating report route with `{CHECKOUT_SESSION_ID}`; `client_reference_id` carries only the browser access key. Stripe sends completed/async payment events to the Supabase `stripe-webhook`, which accepts only the private high-entropy endpoint token, known live Payment Link IDs, exact USD amount/currency, and a valid access key before writing the server-only entitlement. The browser can only query entitlement state through `stripe-checkout`.
+- **PAYMENT LIVE PATH:** Stripe live account is enabled for charges/payouts. The public paid flow uses 13 live Stripe Payment Links under the 2026-10-19 fixed multi-currency pricing (manual `currency_options`, no live FX; USD/AUD/CNY chosen by browser locale/timezone, fallback USD): five standard single-system links (七政/西占/印度/一掌/生命靈數) at US$9.90 / A$14.90 / ¥68, BaZi and Zi Wei deep single-system links at US$16.90 / A$24.90 / ¥108, and six six-system bundle links (excluding BaZi) at US$26.90 / A$39.90 / ¥168. Superseded links (including the US$1.99/4.99/9.99 and US$19.99 generations) are inactive in Stripe and stay registered in the webhook only so already-opened or completed old payments still resolve; they are no longer sales entry points. Each link returns directly to the originating report route with `{CHECKOUT_SESSION_ID}`; `client_reference_id` carries only the browser access key. Stripe sends completed/async payment events to the Supabase `stripe-webhook`, which accepts only the private high-entropy endpoint token, known live Payment Link IDs, exact per-currency fixed amount (USD/AUD/CNY), and a valid access key before writing the server-only entitlement. The browser can only query entitlement state through `stripe-checkout`.
 - Pre-launch entitlement count was 0 paid / 0 pending / 0 failed, so there is no existing-customer migration problem. The new entitlement lookup endpoint was smoke-tested in Production Supabase and returns `200` without requiring a Stripe server API key. The first real paid order is the final operational proof of Stripe→webhook delivery, not a pre-launch blocker.
 - Instagram / Threads automatic publishing remains optional and depends on Meta credentials; it is not a launch blocker.
 
 Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batched conversion/trust work; P2 is backlog-only polish.
+
+- 2026-10-15：開場影片 60 秒內完整播放；全站預設 English（中文瀏覽器才預設中文）；首頁版本更新與站主入口移至頁尾；換頁淡入；付費區新增優惠碼（`promo-code` Edge Function，與 Stripe 分離）。細節見 Instruction Registry 同日條目。
+- 2026-10-16：測驗結果圖改接圖庫——`/quiz/divine-affinity` 依答案（主本緣＋次本緣＋作答序列的穩定雜湊）從 `public/quiz-art/divine/` 已審核畫像挑圖，五行測驗（`/fun-tests?test=element`）依主元素接已通過 QC 的天干畫作；線條 SVG 只在圖片載入失敗時作備援。動物測驗（`/fun-tests?test=animal`）圖庫沒有真實動物畫像，改用 8 種動物圖騰（`src/components/animal-totem-art.tsx`），不再顯示人臉 SVG；六道測驗改用 6 個象徵圖（`src/components/realm-emblem-art.tsx`），不再顯示人臉 SVG。選圖邏輯在 `src/lib/quiz-result-art.ts`。
+- 2026-10-15：中國大陸可讀取／可登入基礎——Production 訪客端 Supabase 請求經同網域 `/sb/*` Vercel rewrite，站主背景音樂經同網域 `/api/owner-music?track=<id>` 代理串流，天文腳本自家託管（細節見 Instruction Registry）。2026-10-17 正式 canonical 改為 `zhao-wu.com`，並納入同源 Supabase 代理白名單；舊 `.vercel.app` 入口保留。
 
 
 ## 0.1 Complex question answering — 2026-10-07
@@ -48,7 +52,7 @@ Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batch
 - current main：以 GitHub `main` 即時 SHA 為準；不得把文件內固定 SHA 當永久 CURRENT。
 - Hosting：Vercel
 - Project：`stone-zhaowu-official`
-- Production URL：`https://stone-zhaowu-official.vercel.app/`
+- Production URL / canonical：`https://zhao-wu.com/`（`stone-zhaowu-official.vercel.app` 保留為同專案相容入口）
 - current Production：以 Vercel `stone-zhaowu-official` Production 即時 SHA 為準。
 - 發布前必須確認 Production SHA = current main SHA。
 - Vercel Git policy：只有 `main` 可觸發 Production；`deploymentEnabled` 以 `**: false + main: true` 覆蓋含 `/` 的分支名，`ignoreCommand` 再用 `VERCEL_GIT_COMMIT_REF != main` 作第二道硬擋；純 docs/Markdown／GitHub workflow 變更亦跳過。
@@ -68,7 +72,7 @@ Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batch
 - 公開不存在路由使用昭梧雙語 404 引導頁，提供返回首頁與查看最新更新；Vite SPA fallback 仍由 TanStack Router 判定 client-side not found。
 - 公開回應由 Vercel 全域補上 `X-Content-Type-Options: nosniff` 與 `Referrer-Policy: strict-origin-when-cross-origin`；Vercel 既有 HSTS 維持有效。
 
-- 紫微、七政、西占、印度古法、一掌經／前世今生、生命靈數六類專卷的基本盤與計算落位公開；盤後文字解讀按次付費（USD 1.99 快速讀／USD 4.99 單盤完整讀／USD 9.99 六盤全讀），不自動續費。
+- 紫微、七政、西占、印度古法、一掌經／前世今生、生命靈數六類專卷的基本盤與計算落位公開；盤後文字解讀按次付費（快速讀為免費迎新、不再出售；標準單盤 US$9.90／A$14.90／¥68；八字與紫微深度單盤 US$16.90／A$24.90／¥108；六盤全讀 US$26.90／A$39.90／¥168，不含八字），均一次性付款、不自動續費。依據 `docs/INSTRUCTION-REGISTRY.md` 2026-10-19「固定多幣別報告定價」與 `src/lib/report-access.ts`。
 - 天機雙盤／星宮等未納入六類公開產品的內部 routes 仍維持 owner-only。
 - 首頁吉象圖鑑入口隱藏；獨立頁與站主圖庫保留。
 - 完整報告第一屏只保留原問題、1–3 句直接答案與最多一個現實下一步；可信度、最大變數、命盤與完整分析過程不得與主答案並排。
@@ -264,3 +268,7 @@ GitHub Production CI、Deploy gate、Engine suite、iPhone Safari、Visual regre
 - 來源性格句只作可能表現：木偏直接、少迂迴、執行快；火偏冷靜、穩定、耐心、不偏焦點。是否屬優點、代價或真缺仍由 CURRENT 主鏈喜忌／結構判定。
 - 綠色、植物、木質物、紅橙紫、日照、主動表達等只稱象義練習，不稱改命／治療／硬補五行。
 - 肝膽、筋骨、毛髮、心、血液、視力只保留來源傳統對應，不作醫療判斷。
+
+### 2026-10-16｜首頁四入口白話化與樹狀導覽
+- 首頁四入口改為「我的命盤／今日指引／趣味測驗／文章專欄」，點開在原地展開子項（`src/components/home-tree.tsx`），預設全收起、單開。
+- 預設主題底部「青玉小龍」面板已換成「不知道從哪開始？」導覽入口；雲山青綠主題的 Q 版小龍插圖已移除。

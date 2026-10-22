@@ -6,6 +6,7 @@ import {
   chooseGuardianStyle,
   type GuardianStyle,
 } from "./style-pool.ts";
+import { isSongBeastImageContext, SONG_BEAST_VISUAL_DIRECTIVE, SONG_BEAST_ART_VERSION } from "../../../src/lib/song-beast-art-prompt.ts";
 
 const IMAGE_STYLE_VERSION = "gallery-seeded-reviewed-r28-20260902";
 const GALLERY_DIRECT_VERSION = "gallery-direct-v1-20260827";
@@ -261,12 +262,14 @@ function visualPrompt(report: any, decree: string, guardianStyle: GuardianStyle,
     : "";
   const question = String(report?.alias ?? report?.engine_snapshot?.question ?? "").trim();
   const direct = String(reading?.directAnswer ?? "").trim();
+  const beastSubject = isSongBeastImageContext(question) || isSongBeastImageContext(referenceTitle) || /(?:dragon|phoenix|龍|龙|鳳|凤|靈狐|灵狐|蒼鷹|苍鹰|狼|玄鹿|玄豹|鶴|鹤|鯨|鲸|天馬|天马)/i.test(referenceTitle);
 
   return [
     "Create one original premium vertical 9:16 personal destiny decree artwork for ZHAOWU / 昭梧. Not a UI screenshot.",
     `Use the supplied owner-approved Gallery image (${referenceTitle || "approved reference"}) as the visual mother-image. Preserve its historical painting language, civilization, paper/silk atmosphere, palette family, brush density and spatial rhythm, but create a new original composition for this chart. Do not copy its text, watermark, exact figure, seals or object placement.`,
     "Primary visual language: refined old xuan-paper or silk painting, Song-inspired mineral color, museum-like depth, visible paper fiber and restrained aged print character. Avoid modern CG, xianxia poster, glossy game-card rendering and plastic highlights.",
     `Selected visual mode (${guardianStyle.id} / ${guardianStyle.label}): ${guardianStyle.directive}`,
+    ...(beastSubject ? [`Beast artwork contract (${SONG_BEAST_ART_VERSION}). For a creature subject, this quiet Northern Song academy treatment takes priority over any richer-saturation or ornamentation direction above.`, SONG_BEAST_VISUAL_DIRECTIVE, "Respect the actual creature species already identified by the approved reference or reading. Do not replace another figure with a generic deer-fox-winged chimera; do not guess the user\u0027s face, destiny outcome, or extra BaZi facts."] : []),
     `Question direction: ${visualTheme(question)}`,
     "Keep one clear focal subject, generous negative space, and enough tonal contrast for phone viewing. Important objects must translate supported report meanings rather than inventing new fortune conclusions.",
     "No tea immortal, tea deity, teapot, teacup, tea ceremony or beverage props. The subject must follow the chart and the reviewed reference, never a fixed Tea Guardian identity.",

@@ -1,5 +1,5 @@
 import * as tus from "tus-js-client";
-import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+import { SUPABASE_DIRECT_URL, SUPABASE_KEY } from "@/lib/supabase-config";
 
 export const OWNER_COOKIE_ACCESS_TOKEN = "__zhaowu_owner_cookie_server_bridge__";
 
@@ -106,10 +106,11 @@ export type OwnerUploadTicket = {
 /** Upload bytes directly to Supabase Storage. Supabase createSignedUploadUrl URLs are valid for 2 hours; the separate server-signed uploadTicket binds finalize to this exact object. */
 export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: File, onProgress?: (percent: number) => void) {
   if (file.size > 6 * 1024 * 1024) {
-    if (!ticket.token || !SUPABASE_URL || !SUPABASE_KEY) throw new Error("大檔續傳通道尚未正確設定。");
+    if (!ticket.token || !SUPABASE_DIRECT_URL || !SUPABASE_KEY) throw new Error("大檔續傳通道尚未正確設定。");
     const signedUploadToken = ticket.token;
     onProgress?.(2);
-    await new Promise<void>((resolve, reject) => {
+    try {
+      await new Promise<void>((resolve, reject) => {
       // The plain /storage/v1/upload/resumable endpoint authorizes the caller the normal way:
       // it checks storage.objects' RLS policies against the Authorization header's JWT role,
       // which for this bucket requires role=authenticated plus an owner check. There is no real
@@ -122,7 +123,7 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
       // re-checking the caller's own role, and does not expect an Authorization bearer at all
       // (matches Supabase's own resumable-upload-signed-uppy example). See tools/mcp Supabase
       // `pg_policies` for storage.objects: zhaowu_gallery_owner_insert is roles={authenticated}.
-      const endpoint = `${SUPABASE_URL.replace(/\/$/, "").replace(".supabase.co", ".storage.supabase.co")}/storage/v1/upload/resumable/sign`;
+      const endpoint = `${SUPABASE_DIRECT_URL.replace(/\/$/, "").replace(".supabase.co", ".storage.supabase.co")}/storage/v1/upload/resumable/sign`;
       const upload = new tus.Upload(file, {
         endpoint,
         retryDelays: [0, 3000, 5000, 10000, 20000],
@@ -140,19 +141,36 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
           contentType: ticket.contentType,
           cacheControl: "3600",
         },
-        onError: reject,
+        onError: (error) => reject(new Error(`影片續傳失敗：${error?.message || "網路或儲存服務錯誤"}`)),
         onProgress(bytesUploaded, bytesTotal) {
           onProgress?.(Math.max(2, Math.min(85, Math.round((bytesUploaded / bytesTotal) * 83) + 2)));
         },
         onSuccess: () => resolve(),
       });
+      // Safari private browsing can block the local fingerprint cache. That is
+      // not an upload failure: start a new signed resumable upload instead.
       void upload.findPreviousUploads().then((previous) => {
         if (previous.length) upload.resumeFromPreviousUpload(previous[0]);
         upload.start();
-      }).catch(reject);
-    });
-    onProgress?.(85);
-    return;
+      }).catch(() => upload.start());
+      });
+      onProgress?.(85);
+      return;
+    } catch (error) {
+      // A signed, direct PUT is a bounded fallback for smaller uploads if iOS
+      // blocks TUS. Do not retry huge videos as an unbounded second transfer.
+      if (file.size > 64 * 1024 * 1024) throw error;
+      onProgress?.(10);
+      const fallbackBody = new FormData();
+      fallbackBody.append("cacheControl", "3600");
+      fallbackBody.append("", file.type === ticket.contentType ? file : new File([file], file.name, { type: ticket.contentType }));
+      const fallback = await fetch(ticket.signedUrl, {
+        method: "PUT", headers: { "x-upsert": "false" }, body: fallbackBody,
+      });
+      if (!fallback.ok) throw new Error(`影片續傳與一般上傳都失敗（HTTP ${fallback.status}）。`);
+      onProgress?.(85);
+      return;
+    }
   }
   onProgress?.(10);
   const body = new FormData();

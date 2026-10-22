@@ -75,7 +75,9 @@ test("owner Gallery separates protected Song assets from uploads and legacy mate
 
 test("owner workspace hides public counters, the utility dock and technical status walls", () => {
   assert.match(shellSource, /const isOwnerWorkspace = Boolean/);
-  assert.match(shellSource, /!isOwnerWorkspace \? \(/);
+  // r229: the home-only status strip also now skips isHome (it relocated to the footer there),
+  // so this still guards "never for the owner workspace" without pinning the exact condition text.
+  assert.match(shellSource, /!isOwnerWorkspace(?: && !isHome)? \? \(/);
   assert.match(shellSource, /!isOwnerWorkspace \? <SiteUtilityDock \/>/);
   assert.doesNotMatch(shellSource, /<GreenDragonGuide \/>/);
   assert.doesNotMatch(account, /402 spend cap|Supabase Auth/);

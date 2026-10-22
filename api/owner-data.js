@@ -1,6 +1,6 @@
 import { authenticateOwner, ownerAuthHeaders } from "../lib/owner-auth.js";
 import { isValidOwnerSecret } from "../lib/owner-session-cookie.js";
-import { readPublishedSiteSkin, validSiteSkin } from "../lib/owner-site-skin-public.js";
+import { readPublishedSiteSkin, readPublishedSiteSkinFromSettings, validSiteSkin } from "../lib/owner-site-skin-public.js";
 
 export { isValidOwnerSecret };
 
@@ -29,7 +29,26 @@ const ACTIONS = new Set([
   "gallery.setLoginCurrent",
   "gallery.delete",
   "upload.abort",
+  "site-skin.publish",
+  // Owner promo-code console. Same owner gate as everything above, but forwarded to its own isolated
+  // Edge Function (see PROMO_FUNCTION) so the report/gallery function is never touched.
+  "promo.list",
+  "promo.create",
+  "promo.update",
+  "promo.setActive",
+  "article.list",
+  "article.save",
+  "article.archive",
+  "article.reset",
 ]);
+
+const PROMO_FUNCTION = "zhaowu-owner-promo";
+const ARTICLE_FUNCTION = "zhaowu-owner-articles";
+export function ownerUpstreamFunction(action) {
+  if (String(action).startsWith("promo.")) return PROMO_FUNCTION;
+  if (String(action).startsWith("article.")) return ARTICLE_FUNCTION;
+  return "zhaowu-owner-data";
+}
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -118,6 +137,45 @@ function bridgeSecret() {
   return String(process.env.ZHAOWU_OWNER_BRIDGE_SECRET ?? "").trim();
 }
 
+/**
+ * Owner-cookie-only fallback for a backend 404 on site-skin.publish.
+ * Uses the existing Supabase service role server-side; no browser secrets,
+ * public write grants, schema changes, or extra Vercel functions.
+ */
+export async function publishSiteSkinFallback(skin, env = process.env, fetchImpl = fetch) {
+  if (!validSiteSkin(skin)) return { status: 400, body: { ok: false, error: "UNKNOWN_SITE_SKIN" } };
+  const key = String(env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
+  if (!key) return { status: 503, body: { ok: false, error: "SITE_SKIN_SERVICE_NOT_CONFIGURED" } };
+  const updatedAt = new Date().toISOString();
+  const url = String(env.SUPABASE_URL || env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "") +
+    "/rest/v1/site_settings?on_conflict=key&select=value,updated_at";
+  try {
+    const response = await fetchImpl(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: key,
+        Authorization: "Bearer " + key,
+        Prefer: "resolution=merge-duplicates,return=representation",
+      },
+      body: JSON.stringify({
+        key: "published_site_skin_v1",
+        value: { skin, updatedAt },
+        public_read: true,
+        updated_at: updatedAt,
+      }),
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!response.ok) return { status: 503, body: { ok: false, error: "SHARED_SKIN_WRITE_FAILED" } };
+    const rows = await response.json();
+    if (!Array.isArray(rows) || rows[0]?.value?.skin !== skin)
+      return { status: 503, body: { ok: false, error: "SHARED_SKIN_VERIFY_FAILED" } };
+    return { status: 200, body: { ok: true, skin, updatedAt } };
+  } catch {
+    return { status: 503, body: { ok: false, error: "SHARED_SKIN_FALLBACK_UNAVAILABLE" } };
+  }
+}
+
 export default async function handler(req, res) {
   try {
     const method = req.method || "GET";
@@ -129,7 +187,7 @@ export default async function handler(req, res) {
       }
       if (view !== "site-skin") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
       try {
-        const record = await readPublishedSiteSkin();
+        const record = await readPublishedSiteSkinFromSettings().catch(() => null) ?? await readPublishedSiteSkin();
         return json(res, 200, { ok: true, ...record });
       } catch {
         return json(res, 503, { ok: false, error: "SHARED_SKIN_TEMPORARILY_UNAVAILABLE" });
@@ -144,21 +202,15 @@ export default async function handler(req, res) {
 
     const payload = await readJsonBody(req);
     const action = String(payload?.action ?? "").trim();
-    if (action === "site-skin.publish") {
-      const skin = validSiteSkin(payload?.skin);
-      if (!skin) return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
-      // Publishing commits to Git with a deploy key sealed by the owner password; Passkey sessions have no password.
-      if (owner.kind !== "secret") return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
-      try {
-        const { saveSharedSiteSkin } = await import("../lib/owner-music-git.js");
-        const published = await saveSharedSiteSkin(owner.secret, skin);
-        return json(res, 200, { ok: true, ...published });
-      } catch {
-        return json(res, 503, { ok: false, error: "SHARED_SKIN_WRITE_FAILED" });
-      }
+    if (action === "site-skin.publish" && !validSiteSkin(payload?.skin)) {
+      return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
     }
     if (!ACTIONS.has(action)) return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
-    const upstream = await fetch(`${supabaseUrl()}/functions/v1/zhaowu-owner-data`, {
+    // Promo and article actions go to their own isolated Edge Functions, which only accept the owner password.
+    if (ownerUpstreamFunction(action) !== "zhaowu-owner-data" && owner.kind !== "secret") {
+      return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
+    }
+    const upstream = await fetch(`${supabaseUrl()}/functions/v1/${ownerUpstreamFunction(action)}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -168,6 +220,13 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify(payload),
     });
+    // A stale/missing Edge action can return 404 while the authenticated
+    // owner-data API itself is live. Retry this one whitelisted write through
+    // the existing server-side service role, never through the browser.
+    if (action === "site-skin.publish" && upstream.status === 404) {
+      const fallback = await publishSiteSkinFallback(payload.skin);
+      return json(res, fallback.status, fallback.body);
+    }
     const text = await upstream.text();
     let body = null;
     try { body = text ? JSON.parse(text) : null; } catch { body = { ok: false, error: "UPSTREAM_INVALID_RESPONSE" }; }

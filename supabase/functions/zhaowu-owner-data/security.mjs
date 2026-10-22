@@ -1,8 +1,11 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 
 const encoder = new TextEncoder();
-const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+function ownerKeyHash() {
+  if (typeof Deno !== "undefined") return Deno.env.get("ZHAOWU_OWNER_KEY_SHA256") ?? "";
+  return typeof process !== "undefined" ? process.env.ZHAOWU_OWNER_KEY_SHA256 ?? "" : "";
+}
 
 function text(value) {
   return String(value ?? "").trim();
@@ -32,7 +35,7 @@ function constantTimeEqual(actual, expected) {
   return timingSafeEqual(actual, expected);
 }
 
-function isValidOwnerSecret(value, expectedHash = OWNER_KEY_SHA256) {
+function isValidOwnerSecret(value, expectedHash = ownerKeyHash()) {
   const secret = text(value);
   if (secret.length < 8 || secret.length > 256) return false;
   const expected = expectedHashBytes(expectedHash);
@@ -57,7 +60,7 @@ async function hmacVerify(value, signature, secret) {
   return crypto.subtle.verify("HMAC", key, signature, encoder.encode(value));
 }
 
-export function authorizeBridgeHeaders(headers, expectedSecret, expectedOwnerHash = OWNER_KEY_SHA256) {
+export function authorizeBridgeHeaders(headers, expectedSecret, expectedOwnerHash = ownerKeyHash()) {
   const bridgeVersion = text(headers?.get?.("x-zhaowu-server-bridge"));
   if (bridgeVersion !== "r146" && bridgeVersion !== "r161" && bridgeVersion !== "r162") {
     return { ok: false, status: 403, error: "BRIDGE_REQUIRED" };

@@ -10,7 +10,7 @@
  * Any failure returns { source: "rule" } and the site keeps the rule answer.
  * The model never recalculates the chart; the browser validates the output again.
  */
-const PRIMARY_ORIGIN = "https://stone-zhaowu-official.vercel.app";
+const PRIMARY_ORIGIN = "https://zhao-wu.com";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
@@ -22,8 +22,8 @@ function allowedOrigin(origin: string | null) {
   try {
     const url = new URL(origin);
     if (
+      url.hostname === "zhao-wu.com" ||
       url.hostname === "stone-zhaowu-official.vercel.app" ||
-      url.hostname === "zhaowu.soul-terminal.com" ||
       (url.hostname.startsWith("stone-zhaowu-official-") && url.hostname.endsWith(".vercel.app")) ||
       url.hostname === "localhost" || url.hostname === "127.0.0.1"
     ) return origin;

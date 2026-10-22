@@ -87,12 +87,12 @@ In Zhaowu's modern phrasing: “Methods reach only as far as circumstances; circ
   },
   illustrations: [
     {
-      src: "/article-shushu-choice.svg",
+      src: "/art/zhaowu-yunshui-changsui-v1.webp",
       afterParagraph: 6,
       alt: {
-        "zh-Hant": "昭梧觀世錄：術數照見局勢，最後仍由人作選擇",
-        "zh-Hans": "昭梧观世录：术数照见局势，最后仍由人作选择",
-        en: "Zhaowu illustration: divination may reveal conditions, while the final choice remains human",
+        "zh-Hant": "昭梧既有宋式山水畫，以雲水行路意境襯托人生選擇",
+        "zh-Hans": "昭梧既有宋式山水画，以云水行路意境衬托人生选择",
+        en: "Existing Song-style cloud-and-water landscape accompanying an essay about human choice",
       },
     },
   ],

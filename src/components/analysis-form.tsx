@@ -5,7 +5,8 @@ import { CharacterPanel } from "@/components/character-panel";
 import { BirthDataNotice } from "@/components/birth-data-notice";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { analyzeLife } from "@/lib/actions";
-import type { AnalyzeInput, CityHit } from "@/lib/bazi/types";
+import type { AnalyzeInput, BirthTimeSource, CityHit } from "@/lib/bazi/types";
+import { assessBirthRecord } from "@/lib/bazi/data-grade";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
@@ -67,6 +68,7 @@ export function AnalysisForm() {
   const [hour, setHour] = useState("");
   const [minute, setMinute] = useState("");
   const [timeUnknown, setTimeUnknown] = useState(false);
+  const [timeSource, setTimeSource] = useState<BirthTimeSource>("family-memory");
   const [gender, setGender] = useState<AnalyzeInput["gender"] | "">("");
   const [relation, setRelation] = useState<AnalyzeInput["relation"]>("unset");
   const [birthCity, setBirthCity] = useState<CityHit | null>(null);
@@ -115,6 +117,12 @@ export function AnalysisForm() {
 
         questionLabel: "Your question",
         questionPlaceholder: "For example: Should I stay in this job or leave? What changes most over the next six months?",
+        quickPrompts: [
+          "What should I eat today?",
+          "Should I change jobs?",
+          "How can I communicate better in my relationship?",
+        ],
+        quickPromptsLabel: "Quick questions",
 
         analyze: "Analyse this question",
         analysing: "Analysing…",
@@ -156,6 +164,12 @@ export function AnalysisForm() {
 
           questionLabel: "你的问题",
           questionPlaceholder: "例如：这份工作该继续还是离开？未来半年最大的变化在哪里？",
+          quickPrompts: [
+            "我今天适合吃什么？",
+            "这份工作该不该换？",
+            "感情沟通卡住了怎么办？",
+          ],
+          quickPromptsLabel: "快捷问题",
 
           analyze: "开始分析这个问题",
           analysing: "正在推演…",
@@ -196,6 +210,12 @@ export function AnalysisForm() {
 
           questionLabel: "你的問題",
           questionPlaceholder: "例如：這份工作該繼續還是離開？未來半年最大的變化在哪裡？",
+          quickPrompts: [
+            "我今天適合吃什麼？",
+            "這份工作該不該換？",
+            "感情溝通卡住了怎麼辦？",
+          ],
+          quickPromptsLabel: "快捷問題",
 
           analyze: "開始分析這個問題",
           analysing: "正在推演…",
@@ -209,6 +229,7 @@ export function AnalysisForm() {
     setHour(record.timeUnknown ? "" : String(record.hour));
     setMinute(record.timeUnknown ? "" : String(record.minute));
     setTimeUnknown(record.timeUnknown);
+    setTimeSource(record.timeSource === "certificate" ? "certificate" : "family-memory");
     setGender(record.gender);
     setRelation(record.relation);
     setBirthCity(record.city);
@@ -240,7 +261,8 @@ export function AnalysisForm() {
     liveCity,
     ziPolicy: "midnight",
     useTrueSolar: !effectiveBirthCity.standardTimeFallback,
-  }) : null, [year, month, day, hour, minute, timeUnknown, gender, relation, effectiveBirthCity, liveCity]);
+    timeSource: timeUnknown ? undefined : timeSource,
+  }) : null, [year, month, day, hour, minute, timeUnknown, timeSource, gender, relation, effectiveBirthCity, liveCity]);
 
   async function saveBirthAndContinue(record: SharedBirthRecord) {
     writeSharedBirthRecord(record);
@@ -327,6 +349,7 @@ export function AnalysisForm() {
       return null;
     }
   }, [locale, rememberedRecord, showQuestion]);
+  const rememberedGrade = useMemo(() => (rememberedRecord ? assessBirthRecord(rememberedRecord) : null), [rememberedRecord]);
   const structure = useMemo(() => {
     if (!previewChart) return null;
     try { return analyzeStructure(previewChart); } catch { return null; }
@@ -429,11 +452,20 @@ export function AnalysisForm() {
                   {t("timeUnknown")}
                 </label>
               </div>
-              <p id="time-importance" className="zhaowu-time-warning">{timeUnknown ? UNKNOWN_TIME_COPY[locale] : locale === "en" ? "If you do not know the time, tick the box above." : locale === "zh-Hans" ? "不知道出生时间，也可以勾选后继续。" : "不知道出生時間，也可以勾選後繼續。"}</p>
+              <p id="time-importance" className="zhaowu-time-warning">{timeUnknown ? UNKNOWN_TIME_COPY[locale] : locale === "en" ? "If you do not know the time, or only roughly, tick the box above." : locale === "zh-Hans" ? "不知道或只记得大概时间，请勾选后继续。" : "不知道或只記得大概時間，請勾選後繼續。"}</p>
               <div className="zhaowu-birth-time-grid">
                 <input id="birth-hour" aria-label={t("hourPh")} type="number" inputMode="numeric" min={0} max={23} required={!timeUnknown} disabled={timeUnknown} value={hour} placeholder={t("hourPh")} onChange={(event) => setHour(event.target.value)} />
                 <input id="birth-minute" aria-label={t("minutePh")} type="number" inputMode="numeric" min={0} max={59} disabled={timeUnknown} value={minute} placeholder={t("minutePh")} onChange={(event) => setMinute(event.target.value)} />
               </div>
+              {timeUnknown ? null : (
+                <label className="zhaowu-birth-time-source" htmlFor="birth-time-source">
+                  <span>{locale === "en" ? "Where does this birth time come from?" : locale === "zh-Hans" ? "这个出生时间从哪里来？" : "這個出生時間從哪裡來？"}</span>
+                  <select id="birth-time-source" value={timeSource} onChange={(event) => setTimeSource(event.target.value === "certificate" ? "certificate" : "family-memory")}>
+                    <option value="certificate">{locale === "en" ? "Birth certificate or hospital record (to the minute)" : locale === "zh-Hans" ? "出生证明或医院记录（精确到分钟）" : "出生證明或醫院紀錄（精確到分鐘）"}</option>
+                    <option value="family-memory">{locale === "en" ? "Family memory (to the two-hour period)" : locale === "zh-Hans" ? "家人记忆（精确到时辰）" : "家人記憶（精確到時辰）"}</option>
+                  </select>
+                </label>
+              )}
             </div>
 
             <div className="zhaowu-birth-select-grid">
@@ -533,7 +565,7 @@ export function AnalysisForm() {
                   <ChartTrustPanel chart={previewChart} locale={locale} />
                 </div>
               ) : null}
-            </details></> : <BaziReadingUnlock locale={locale} />}
+            </details></> : <BaziReadingUnlock locale={locale} grade={rememberedGrade} />}
             <button type="button" className="zw-flow-next" onClick={() => selectStep(3)}>{locale === "en" ? "Ask a question" : locale === "zh-Hans" ? "继续：问个问题" : "繼續：問個問題"}<span aria-hidden="true"> →</span></button>
             <p className="zw-flow-note">{locale === "en" ? "Optional. Your birth details are already saved on this device." : locale === "zh-Hans" ? "提问是选填；生辰已保存在这台设备。" : "提問是選填；生辰已保存在這台裝置。"}</p>
           </div>
@@ -550,6 +582,21 @@ export function AnalysisForm() {
             <button type="button" className="zhaowu-question-birth-edit" onClick={() => { setDetailsOpen(true); setError(null); }}>{copy.editBirth}</button>
           </div>
           <label htmlFor="analysis-question" className="zhaowu-question-label">{copy.questionLabel}</label>
+          <div className="zhaowu-quick-prompts" data-quick-prompts>
+            <span className="zhaowu-quick-prompts-label">{copy.quickPromptsLabel}</span>
+            <div className="zhaowu-quick-prompts-list">
+              {copy.quickPrompts.map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  className="zhaowu-quick-prompt-chip"
+                  onClick={() => { setQuestion(prompt); document.getElementById("analysis-question")?.focus(); }}
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          </div>
           <textarea
             id="analysis-question"
             value={question}

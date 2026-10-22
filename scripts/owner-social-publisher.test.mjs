@@ -4,11 +4,18 @@ import test from "node:test";
 import { publishSocialPost, socialConfiguration, validateSocialPost } from "../lib/meta-social-publisher.js";
 import {
   createThreadsAuthorization,
+  threadsOauthConfiguration,
   decryptThreadsAccessToken,
   encryptThreadsAccessToken,
   threadsAuthorizationOwnerProof,
   verifyThreadsAuthorization,
 } from "../lib/threads-oauth.js";
+import {
+  createMetaAuthorization,
+  exchangeMetaAuthorizationCode,
+  metaAuthorizationOwnerProof,
+  verifyMetaAuthorization,
+} from "../lib/meta-oauth.js";
 
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
@@ -23,6 +30,7 @@ const configuredEnv = {
 test("social credentials stay server-side and configuration exposes booleans only", async () => {
   assert.deepEqual(socialConfiguration(configuredEnv), {
     instagram: true,
+    facebook: false,
     threads: true,
     ready: true,
     targets: { instagram: "", threads: "" },
@@ -36,6 +44,65 @@ test("social credentials stay server-side and configuration exposes booleans onl
   assert.match(client, /fetch\("\/api\/owner-session"/);
   assert.match(client, /social\.status/);
   assert.match(client, /social\.publish/);
+});
+
+test("Meta OAuth state is bound to the owner and discovers managed Pages with linked Instagram", async () => {
+  const env = {
+    META_APP_ID: "1234567890",
+    META_APP_SECRET: "app-secret-for-unit-test-123456",
+    ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-unit-test-123456",
+    PUBLIC_SITE_ORIGIN: "https://zhao-wu.com",
+  };
+  const authorization = createMetaAuthorization(env, 1_000_000, "sealed-owner-proof");
+  const authUrl = new URL(authorization.url);
+  assert.equal(authUrl.origin, "https://www.facebook.com");
+  assert.match(authUrl.pathname, /\/dialog\/oauth$/);
+  assert.match(authUrl.searchParams.get("scope"), /pages_manage_posts/);
+  assert.match(authUrl.searchParams.get("scope"), /instagram_content_publish/);
+  const state = authUrl.searchParams.get("state");
+  const cookieValue = decodeURIComponent(authorization.cookie.match(/=([^;]+)/)[1]);
+  const request = { headers: { cookie: `__Host-zhaowu_meta_oauth=${encodeURIComponent(cookieValue)}` } };
+  assert.equal(verifyMetaAuthorization(request, state, env, 1_000_001), true);
+  assert.equal(metaAuthorizationOwnerProof(request), "sealed-owner-proof");
+
+  const calls = [];
+  const fakeFetch = async (url) => {
+    calls.push(String(url));
+    if (calls.length === 1) return new Response(JSON.stringify({ access_token: "short-token" }), { status: 200 });
+    if (calls.length === 2) return new Response(JSON.stringify({ access_token: "long-user-token", expires_in: 5_000_000 }), { status: 200 });
+    return new Response(JSON.stringify({ data: [{
+      id: "123456789",
+      name: "昭梧",
+      access_token: "page-token",
+      instagram_business_account: { id: "987654321", username: "fkofflove", profile_picture_url: "https://example.com/a.jpg" },
+    }] }), { status: 200 });
+  };
+  const accounts = await exchangeMetaAuthorizationCode("code", env, fakeFetch);
+  assert.equal(accounts.length, 1);
+  assert.equal(accounts[0].pageName, "昭梧");
+  assert.equal(accounts[0].instagramUsername, "fkofflove");
+  assert.equal(accounts[0].accessToken, "page-token");
+});
+
+test("one Meta connection publishes to its Facebook Page and linked Instagram without exposing the token", async () => {
+  const calls = [];
+  const fakeFetch = async (url, init = {}) => {
+    calls.push({ url: String(url), method: init.method || "GET", values: Object.fromEntries(new URLSearchParams(String(init.body || ""))) });
+    if ((init.method || "GET") === "GET") return new Response(JSON.stringify({ username: "fkofflove" }), { status: 200 });
+    return new Response(JSON.stringify({ id: String(url).endsWith("media") ? "container" : "published" }), { status: 200 });
+  };
+  const results = await publishSocialPost({
+    text: "昭梧測試",
+    imageUrl: "https://zhao-wu.com/og-preview.png",
+    channels: ["instagram", "facebook"],
+  }, {}, fakeFetch, [], [{
+    id: "meta-1", pageId: "123", pageName: "昭梧", instagramUserId: "456", instagramUsername: "fkofflove", accessToken: "page-secret",
+  }]);
+  assert.equal(results.instagram.ok, true);
+  assert.equal(results.facebook.ok, true);
+  assert.ok(calls.some((call) => call.url.endsWith("/456/media")));
+  assert.ok(calls.some((call) => call.url.endsWith("/123/photos")));
+  assert.doesNotMatch(JSON.stringify(results), /page-secret/);
 });
 
 test("validation preserves platform-specific limits", () => {
@@ -105,12 +172,20 @@ test("one Threads publish can target multiple OAuth accounts without exposing to
 
 test("Threads OAuth state and stored tokens are authenticated and encrypted", () => {
   const env = {
+    THREADS_APP_ID: "9988776655",
     META_APP_ID: "1234567890",
+    THREADS_APP_SECRET: "threads-app-secret-for-unit-test-123456",
     META_APP_SECRET: "app-secret-for-unit-test-123456",
     ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-unit-test-123456",
-    PUBLIC_SITE_ORIGIN: "https://stone-zhaowu-official.vercel.app",
+    PUBLIC_SITE_ORIGIN: "https://zhao-wu.com",
   };
+  assert.equal(threadsOauthConfiguration({ META_APP_ID: env.META_APP_ID, META_APP_SECRET: env.META_APP_SECRET }).ready, false, "Threads must not silently use Facebook credentials");
   const authorization = createThreadsAuthorization(env, 1_000_000, "sealed-owner-proof");
+  assert.equal(new URL(authorization.url).origin, "https://threads.com");
+  assert.equal(new URL(authorization.url).pathname, "/oauth/authorize");
+  assert.equal(new URL(authorization.url).searchParams.get("client_id"), env.THREADS_APP_ID);
+  assert.equal(new URL(authorization.url).searchParams.get("scope"), "threads_basic,threads_content_publish");
+  assert.equal(new URL(authorization.url).searchParams.get("redirect_uri"), "https://zhao-wu.com/api/owner-session?action=threads.callback");
   const state = new URL(authorization.url).searchParams.get("state");
   const cookieValue = decodeURIComponent(authorization.cookie.match(/=([^;]+)/)[1]);
   const request = { headers: { cookie: `__Host-zhaowu_threads_oauth=${encodeURIComponent(cookieValue)}` } };
@@ -194,6 +269,8 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
   assert.match(api, /social\.status/);
   assert.match(api, /social\.publish/);
   assert.match(api, /social\.threads\.connect/);
+  assert.match(api, /social\.meta\.connect/);
+  assert.match(api, /meta\.callback/);
   assert.match(api, /threads\.callback/);
   assert.equal(vercel.functions["api/owner-session.js"].maxDuration, 60);
   assert.equal(vercel.functions["api/owner-social.js"], undefined);
@@ -202,10 +279,13 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
 
 test("the owner console embeds the existing gallery-backed dual social publisher", async () => {
   const account = await source("src/routes/account.tsx");
+  const panel = await source("src/components/owner/autopublish-panel.tsx");
   const route = await source("src/routes/social.tsx");
   const userState = await source("src/lib/auth/use-current-user.ts");
-  assert.match(account, /<SocialPublisherPage embedded/);
-  assert.match(account, /Instagram \/ Threads/);
+  // 2026-10-16: the console rebuild puts auto-publishing first and keeps the manual publisher inside it.
+  assert.match(account, /<AutopublishPanel/);
+  assert.match(panel, /<SocialPublisherPage embedded/);
+  assert.match(panel, /Instagram/);
   assert.match(route, /data-owner-social-publisher/);
   assert.match(route, /configuration\.targets/);
   assert.match(route, /useCurrentUserState/);
@@ -234,4 +314,13 @@ test("unconfigured production does not pretend the Meta publisher is ready", asy
   assert.match(route, /Meta 尚未連接/);
   assert.match(route, /連接帳號/);
   assert.doesNotMatch(route, /META_.*ACCESS_TOKEN/);
+});
+
+test("Meta (Facebook/Instagram) token encryption is independent of the Threads app secret", async () => {
+  const { encryptMetaAccessToken, decryptMetaAccessToken } = await import("../lib/meta-oauth.js");
+  const base = { META_APP_SECRET: "meta-secret-for-key-isolation-123456", ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-key-isolation-123456" };
+  const sealed = encryptMetaAccessToken("page-token", base);
+  assert.equal(decryptMetaAccessToken(sealed, base), "page-token", "works with no Threads credentials configured");
+  assert.equal(decryptMetaAccessToken(sealed, { ...base, THREADS_APP_SECRET: "some-other-threads-secret-123456" }), "page-token", "Threads secret must not rekey Meta");
+  assert.throws(() => encryptMetaAccessToken("x", { ZHAOWU_OWNER_BRIDGE_SECRET: base.ZHAOWU_OWNER_BRIDGE_SECRET, THREADS_APP_SECRET: "threads-only-secret-123456" }), /THREADS_TOKEN_KEY_NOT_CONFIGURED/, "Threads secret alone must not unlock Meta");
 });

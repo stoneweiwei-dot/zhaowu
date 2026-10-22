@@ -51,6 +51,7 @@ function useCopy(locale: string) {
         { href: "/fun-tests?test=element",     title: "Five-Element Function Test",     hint: "which function you currently want to strengthen" },
         { href: "/quiz/six-realms",            title: "Six Realms Habit Test",          hint: "which everyday habit pattern is strongest now" },
         { href: "/quiz/five-element-overdrive", title: "Five-Element Overuse Test",     hint: "10 everyday situations: which strength you overuse into friction" },
+        { href: "/mythic-atlas", title: "Mythic Atlas · Yellow Springs Rift", hint: "Explore realms, figures and chapters in an original mythic setting" },
       ],
     };
   }
@@ -81,6 +82,7 @@ function useCopy(locale: string) {
         { href: "/fun-tests?test=element",     title: "五行功能测验",        hint: "看现在主观上最想加强哪一种功能" },
         { href: "/quiz/six-realms",            title: "六道习气测验",        hint: "看目前最明显的日常惯性" },
         { href: "/quiz/five-element-overdrive", title: "五行优势内耗测验",    hint: "10 个日常情境，看你最容易把哪一种优势用成内耗" },
+        { href: "/mythic-atlas", title: "异闻录 · 黄泉裂隙", hint: "互动探索天地图谱、人物名录与故事篇章" },
       ],
     };
   }
@@ -111,6 +113,7 @@ function useCopy(locale: string) {
       { href: "/fun-tests?test=element",     title: "五行功能測驗",        hint: "看現在主觀上最想加強哪一種功能" },
       { href: "/quiz/six-realms",            title: "六道習氣測驗",        hint: "看目前最明顯的日常慣性" },
       { href: "/quiz/five-element-overdrive", title: "五行優勢內耗測驗",    hint: "10 個日常情境，看你最容易把哪一種優勢用成內耗" },
+      { href: "/mythic-atlas", title: "異聞錄 · 黃泉裂隙", hint: "互動探索天地圖譜、人物名錄與故事篇章" },
     ],
   };
 }

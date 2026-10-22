@@ -1,5 +1,5 @@
 import type { SupabaseSession } from "@/lib/supabase-rest";
-import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
+import { SUPABASE_DIRECT_URL, SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import { preferVerifiedPublicMedia } from "@/lib/public-media-preference";
 import { assertSupabaseStorageWritesEnabled } from "@/lib/storage-write-policy";
 const BUCKET = "zhaowu-backgrounds";
@@ -129,7 +129,7 @@ export async function uploadBackground(
   onProgress?.(5);
   const ext = (file.name.split(".").pop() || "webp").toLowerCase().replace(/[^a-z0-9]/g, "") || "webp";
   const path = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${ext}`;
-  const upload = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
+  const upload = await fetch(`${SUPABASE_DIRECT_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
     method: "POST",
     headers: {
       apikey: SUPABASE_KEY,
@@ -163,7 +163,7 @@ export async function uploadBackground(
     onProgress?.(100);
     return rows[0];
   } catch (error) {
-    await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
+    await fetch(`${SUPABASE_DIRECT_URL}/storage/v1/object/${BUCKET}/${safePath(path)}`, {
       method: "DELETE",
       headers: apiHeaders(session.access_token, false),
     }).catch(() => undefined);
@@ -232,7 +232,7 @@ export async function clearBackgroundWallpaper(session: SupabaseSession, id: str
 }
 
 export async function deleteBackground(session: SupabaseSession, asset: BackgroundAsset) {
-  const storage = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${safePath(asset.storage_path)}`, {
+  const storage = await fetch(`${SUPABASE_DIRECT_URL}/storage/v1/object/${BUCKET}/${safePath(asset.storage_path)}`, {
     method: "DELETE",
     headers: apiHeaders(session.access_token, false),
   });

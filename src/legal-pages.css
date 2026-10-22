@@ -28,7 +28,7 @@
 .zhaowu-legal-page .zhaowu-updates-card h2 {
   margin: 0 0 10px;
   color: var(--zw-ink);
-  font-family: var(--font-display, "Songti TC", serif);
+  font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: clamp(18px, 4.4vw, 21px);
   font-weight: 600;
   line-height: 1.4;
@@ -70,6 +70,35 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+/* "Why ZHAOWU exists": footer-level disclosure, expands in place, no navigation, no motion. */
+.zhaowu-site-footer .zhaowu-why {
+  margin: 0 auto 6px;
+  max-width: 34em;
+  font-size: 12px;
+}
+.zhaowu-site-footer .zhaowu-why > summary {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+  color: var(--zw-ink-mute, rgba(32, 28, 20, .62));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.zhaowu-site-footer .zhaowu-why > summary::-webkit-details-marker { display: none; }
+.zhaowu-site-footer .zhaowu-why > summary:focus-visible {
+  outline: 2px solid var(--zw-jade, #557f79);
+  outline-offset: 2px;
+}
+.zhaowu-site-footer .zhaowu-why__body {
+  padding: 4px 0 10px;
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--zw-ink, #2a2218);
+}
+.zhaowu-site-footer .zhaowu-why__body p { margin: 0 0 8px; }
 
 /* Pre-payment consent (checkbox before any Stripe redirect). */
 .zhaowu-purchase-consent {
@@ -112,6 +141,43 @@
   font-size: 13px;
 }
 .zhaowu-purchase-consent[data-needed="true"] input[type="checkbox"] { outline: 2px solid rgba(169, 97, 94, .8); outline-offset: 2px; }
+
+/* Birth-data reliability grade, shown above the terms consent and in the report footer. */
+.zhaowu-purchase-consent .zhaowu-data-grade-notice {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(116, 105, 93, .35);
+  border-radius: 8px;
+}
+.zhaowu-purchase-consent .zhaowu-data-grade-notice p {
+  margin: 0 0 6px;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font-size: 13px;
+}
+.zhaowu-purchase-consent .zhaowu-data-grade-notice p[role="alert"] {
+  margin: 8px 0 0 32px;
+  border-left: 2px solid rgba(169, 97, 94, .7);
+  padding-left: 10px;
+  color: #7c3733;
+}
+.zhaowu-purchase-consent .zhaowu-data-grade-notice[data-needed="true"] input[type="checkbox"] { outline: 2px solid rgba(169, 97, 94, .8); outline-offset: 2px; }
+.zhaowu-data-grade-footer {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(116, 105, 93, .35);
+  color: var(--zw-muted, #74695d);
+  font-size: 12.5px;
+  line-height: 1.7;
+  text-align: left;
+}
+.zhaowu-data-grade-footer h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--zw-ink, #2a2218);
+}
+.zhaowu-data-grade-footer p { margin: 0 0 4px; }
 
 /* One-line reminder beside birth-data / question inputs (not a blocking consent). */
 .zhaowu-data-notice {

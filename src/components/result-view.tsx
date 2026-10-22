@@ -6,6 +6,8 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
+import { DataGradeFooter } from "@/components/data-grade-footer";
+import { MobileReadingGuide } from "@/components/mobile-reading-guide";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { CharacterPanel } from "@/components/character-panel";
@@ -19,7 +21,7 @@ import { buildComplexDeterministicAnswer, buildComplexReasoningRequest, requestC
 import { buildPetDecision, isPetDecisionQuestion } from "@/lib/report/pet-decision";
 import { patchReportRecord, saveReportRecord } from "@/lib/bridge/supabase-rest";
 import {
-  REPORT_ACCESS_PRODUCTS,
+  reportAccessPrice,
   resolveReportAccess,
   startReportCheckout,
   type ReportAccessLevel,
@@ -47,7 +49,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [ownerAccess, setOwnerAccess] = useState(false);
   const [purchasing, setPurchasing] = useState<ReportAccessProduct | null>(null);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
-  const consent = usePurchaseConsent();
+  const consent = usePurchaseConsent(result.dataGrade);
 
   useEffect(() => {
     let active = true;
@@ -234,25 +236,19 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </article>
 
       {unlocked ? <>
-        <details className="seal-border rounded-xl bg-cream/95 p-5" data-answer-detail>
-          <summary>{locale === "en" ? "Reasons, limits and next steps" : locale === "zh-Hans" ? "展开依据、限制与行动" : "展開依據、限制與行動"}</summary>
-          <div className="mt-3 space-y-3 text-sm leading-7">
-            {decisionModel.reasons.map((line, index) => <p key={`reason-${index}`}>{line}</p>)}
-            {decisionModel.risks.map((line, index) => <p key={`risk-${index}`}>{line}</p>)}
-            {decisionModel.actions.map((line, index) => <p key={`action-${index}`}>{line}</p>)}
-          </div>
-        </details>
+        <div className="seal-border rounded-xl bg-cream/95 p-5" data-answer-detail>
+          <MobileReadingGuide model={decisionModel} locale={locale} showPrimary={false} narrative={reportSections?.find((section) => section.narrative)?.narrative} />
+        </div>
         <FollowUpBox result={result} />
       </> : <p className="text-sm leading-6 text-ink-soft" data-follow-up-locked>{locale === "en" ? "This is a short preview. Unlock below for the full answer and follow-up questions." : locale === "zh-Hans" ? "当前为简短试读；完整答案与连续追问，解锁后开放。" : "目前為簡短試讀；完整答案與連續追問，解鎖後開放。"}</p>}
 
       <details className="zhaowu-result-evidence seal-border rounded-xl bg-cream/90" data-technical-evidence>
         <summary className="cursor-pointer list-none px-5 py-4 sm:px-6"><strong>{copy.evidence}</strong>{copy.evidenceLead ? <span className="mt-1 block text-xs leading-5 text-ink-mute">{copy.evidenceLead}</span> : null}</summary>
         <div className="space-y-5 border-t border-line/60 p-4 sm:p-6">
-          <div className="zhaowu-answer-meta zhaowu-answer-meta--notes" data-answer-meta>
-            <div data-evidence-status><span>{locale === "en" ? "Evidence status" : locale === "zh-Hans" ? "依据状态" : "依據狀態"}</span><b>{decisionModel.confidenceLabel}</b></div>
-            <div data-biggest-variable><span>{locale === "en" ? "Biggest variable" : locale === "zh-Hans" ? "最大现实变量" : "最大現實變數"}</span><b>{decisionModel.biggestVariable}</b></div>
-            {decisionModel.confidenceBasis ? <small>{decisionModel.confidenceBasis}</small> : null}
-          </div>
+          <p className="zhaowu-answer-meta zhaowu-answer-meta--line text-xs leading-6 text-ink-mute" data-answer-meta>
+            <span data-evidence-status>{locale === "en" ? "Evidence" : locale === "zh-Hans" ? "依据" : "依據"}{locale === "en" ? ": " : "："}{decisionModel.confidenceLabel}</span>
+            {decisionModel.biggestVariable ? <><br /><span data-biggest-variable>{locale === "en" ? "Key variable" : locale === "zh-Hans" ? "关键变数" : "關鍵變數"}{locale === "en" ? ": " : "："}{decisionModel.biggestVariable}</span></> : null}
+          </p>
           <div className="zhaowu-result-evidence-chart" data-evidence-chart-detail>
             <div className="space-y-5 border-t border-line/40 p-4">
               {decreeCouplet ? <div className="zhaowu-free-decree rounded-xl border border-line/60 p-4" data-free-decree><strong className="text-sm text-ink">{copy.decree}</strong><p className="mt-2 text-[14px] leading-7 text-ink-soft">{decreeCouplet}</p></div> : null}
@@ -264,6 +260,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </details>
 
       {unlocked ? <ReportTimingGuide chart={chart} unlocked /> : null}
+      {unlocked ? <DataGradeFooter grade={result.dataGrade} locale={locale} /> : null}
 
       {/* ── 付費命書內容邊界與進階解鎖入口 ── */}
       <section className="zhaowu-destiny-unlock-gate seal-border rounded-xl bg-cream/95 p-5 sm:p-7 mt-6" data-destiny-unlock-gate>
@@ -323,7 +320,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             </span>
             <div>
               <strong className="block text-sm text-ink">{locale === "en" ? "BaZi Full Reading" : locale === "zh-Hans" ? "八字命书完整深批" : "八字命書完整深批"}</strong>
-              <span className="mt-1 block font-display text-lg text-cinnabar">{REPORT_ACCESS_PRODUCTS.system.price}</span>
+              <span className="mt-1 block font-display text-lg text-cinnabar">{reportAccessPrice("system", "bazi").price}</span>
               <p className="mt-1 text-xs text-ink-mute">{locale === "en" ? "Full BaZi reading, luck cycles and monthly guidance" : locale === "zh-Hans" ? "八字命书完整解读、大运流年与流月指引" : "八字命書完整解讀、大運流年與流月指引"}</p>
             </div>
             <button
@@ -332,14 +329,14 @@ export function ResultView({ result }: { result: AnalysisResult }) {
               onClick={() => void handleUnlock("system")}
               className="mt-3 w-full rounded-full bg-cinnabar py-2 text-xs font-medium text-cream hover:opacity-90 disabled:opacity-60"
             >
-              {purchasing === "system" ? "…" : (locale === "en" ? `Unlock ${REPORT_ACCESS_PRODUCTS.system.price}` : `解鎖 ${REPORT_ACCESS_PRODUCTS.system.price}`)}
+              {purchasing === "system" ? "…" : (locale === "en" ? `Unlock ${reportAccessPrice("system", "bazi").price}` : `解鎖 ${reportAccessPrice("system", "bazi").price}`)}
             </button>
           </div>
 
         </div>
         )}
 
-        <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} />
+        <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} grade={result.dataGrade} gradeAck={consent.gradeAck} gradeNeeded={consent.gradeNeeded} onGradeChange={consent.toggleGrade} />
 
         {purchaseError ? (
           <p className="mt-2 text-xs text-cinnabar" role="alert">{purchaseError}</p>

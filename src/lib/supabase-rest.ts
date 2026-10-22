@@ -1,3 +1,4 @@
+import { withVisitorAuthTimeout } from "@/lib/auth/request-timeout";
 import type { AnalysisResult } from "@/lib/bazi/types";
 import type { NinePage } from "@/lib/report/nine-page";
 import { composeFocusedReport, composeFocusedReportText } from "@/lib/report/focused-report";
@@ -7,7 +8,7 @@ import {
   upgradeStoredAnalysis,
   type VersionedAnalysisResult,
 } from "@/lib/report/legacy-upgrade";
-import { SUPABASE_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase-config";
+import { SUPABASE_DIRECT_URL, SUPABASE_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase-config";
 
 export { supabaseConfigured } from "@/lib/supabase-config";
 const SESSION_KEY = "zhaowu.supabase.session.v1";
@@ -152,13 +153,16 @@ function readStoredSession(): SupabaseSession | null {
 export async function refreshSession(session: SupabaseSession): Promise<SupabaseSession | null> {
   if (!supabaseConfigured) return null;
   try {
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
-      method: "POST",
-      headers: headers(),
-      body: JSON.stringify({ refresh_token: session.refresh_token }),
+    return await withVisitorAuthTimeout(async (signal) => {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+        method: "POST",
+        signal,
+        headers: headers(),
+        body: JSON.stringify({ refresh_token: session.refresh_token }),
+      });
+      const next = await jsonOrError<Omit<SupabaseSession, "expires_at">>(res);
+      return saveSession(next);
     });
-    const next = await jsonOrError<Omit<SupabaseSession, "expires_at">>(res);
-    return saveSession(next);
   } catch {
     clearSession();
     return null;
@@ -175,12 +179,88 @@ export async function restoreSession(): Promise<SupabaseSession | null> {
 
 export async function signInWithPassword(email: string, password: string): Promise<SupabaseSession> {
   if (!supabaseConfigured) throw new Error("登入服務尚未配置。");
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-    method: "POST",
-    headers: headers(),
-    body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+  return withVisitorAuthTimeout(async (signal) => {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      signal,
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+    });
+    return saveSession(await jsonOrError<Omit<SupabaseSession, "expires_at">>(res));
   });
-  return saveSession(await jsonOrError<Omit<SupabaseSession, "expires_at">>(res));
+}
+
+/** Send a password-recovery email and return to the member page on this same origin. */
+export async function requestPasswordReset(email: string): Promise<void> {
+  if (!supabaseConfigured) throw new Error("RESET_UNAVAILABLE");
+  if (typeof window === "undefined") throw new Error("RESET_UNAVAILABLE");
+  return withVisitorAuthTimeout(async (signal) => {
+    const redirectTo = new URL("/member", window.location.origin);
+    redirectTo.searchParams.set("mode", "recovery");
+    const url = new URL(`${SUPABASE_URL}/auth/v1/recover`);
+    url.searchParams.set("redirect_to", redirectTo.toString());
+    const response = await fetch(url.toString(), {
+      signal,
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify({ email: email.trim().toLowerCase() }),
+    });
+    await jsonOrError<unknown>(response);
+  });
+}
+
+/** Capture Supabase's implicit-flow recovery tokens, then immediately remove them from the URL. */
+export async function capturePasswordRecovery(): Promise<SupabaseSession | null> {
+  if (!supabaseConfigured || typeof window === "undefined") return null;
+  const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : "";
+  const query = window.location.search.startsWith("?") ? window.location.search.slice(1) : "";
+  const params = new URLSearchParams(hash || query);
+  if (params.get("type") !== "recovery") return null;
+
+  const cleanRecoveryUrl = () => {
+    const clean = new URL(window.location.href);
+    clean.hash = "";
+    clean.searchParams.set("mode", "recovery");
+    window.history.replaceState(window.history.state, document.title, `${clean.pathname}${clean.search}`);
+  };
+  const error = params.get("error") || params.get("error_description");
+  const accessToken = params.get("access_token");
+  const refreshToken = params.get("refresh_token");
+  if (error || !accessToken || !refreshToken) {
+    cleanRecoveryUrl();
+    throw new Error("RESET_LINK_INVALID");
+  }
+
+  try {
+    const user = await fetchUser(accessToken);
+    const session = saveSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      expires_in: Number(params.get("expires_in") ?? 3600),
+      token_type: params.get("token_type") ?? "bearer",
+      user,
+    });
+    cleanRecoveryUrl();
+    return session;
+  } catch {
+    clearSession();
+    cleanRecoveryUrl();
+    throw new Error("RESET_LINK_INVALID");
+  }
+}
+
+/** Apply a new password using the short-lived recovery session. */
+export async function updateVisitorPassword(session: SupabaseSession, password: string): Promise<void> {
+  if (!supabaseConfigured) throw new Error("RESET_UNAVAILABLE");
+  return withVisitorAuthTimeout(async (signal) => {
+    const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      signal,
+      method: "PUT",
+      headers: headers(session.access_token),
+      body: JSON.stringify({ password }),
+    });
+    await jsonOrError<unknown>(response);
+  });
 }
 
 export async function signUpWithPassword(email: string, password: string, displayName: string): Promise<{ session: SupabaseSession | null; user: SupabaseUser }> {
@@ -213,7 +293,7 @@ export function startOAuth(provider: OAuthProvider, redirectTo?: string) {
   if (!supabaseConfigured) throw new Error("登入服務尚未配置。");
   if (typeof window === "undefined") throw new Error("OAuth 只能在瀏覽器啟動。");
   const target = redirectTo ?? `${window.location.origin}/auth/callback`;
-  const url = new URL(`${SUPABASE_URL}/auth/v1/authorize`);
+  const url = new URL(`${SUPABASE_DIRECT_URL}/auth/v1/authorize`);
   url.searchParams.set("provider", provider);
   url.searchParams.set("redirect_to", target);
   window.location.assign(url.toString());
