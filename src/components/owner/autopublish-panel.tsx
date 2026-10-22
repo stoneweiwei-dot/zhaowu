@@ -291,7 +291,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
                   <li>授權頁在 Threads 網站上，不是彈窗。要在已登入 @{data.channels?.targets.threads || "你的帳號"} 的瀏覽器（Safari）裡做；如果跳進 Threads App，回到 Safari 重按。</li>
                   <li>Meta 開發者後台 → Threads 專屬 App（不是 Facebook App）→ Threads API → 把這個 Threads 帳號加為「Threads 測試人員」，再到 Threads App：設定 → 帳號 → 網站權限 → 邀請，按「接受」。</li>
                   <li>同一頁的「有效的 OAuth 重新導向 URI」要填：{data.channels?.oauth?.redirectUri ? <code className="break-all rounded bg-paper px-1">{data.channels.oauth.redirectUri}</code> : "（讀取中）"}</li>
-                  <li>Threads 表單三欄必填；OAuth 回呼使用上一行網址。解除安裝回呼填 <code className="break-all rounded bg-paper px-1">https://zhao-wu.com/api/threads-meta-callback?action=deauthorize</code>；資料刪除回呼填 <code className="break-all rounded bg-paper px-1">https://zhao-wu.com/api/threads-meta-callback?action=data-deletion</code>。這兩個安全回呼必須先正式部署才可供 Meta 使用，不能拿登入回呼冒充。</li>
+                  <li>Threads 表單三欄必填；OAuth 回呼使用上一行網址。解除安裝回呼填 <code className="break-all rounded bg-paper px-1">https://zhao-wu.com/api/owner-session?action=threads.deauthorize</code>；資料刪除回呼填 <code className="break-all rounded bg-paper px-1">https://zhao-wu.com/api/owner-session?action=threads.data-deletion</code>。這兩個安全回呼必須先正式部署才可供 Meta 使用，不能拿登入回呼冒充。</li>
                   {data.channels?.oauth && !data.channels.oauth.ready ? <li className="text-cinnabar">Threads 專用 App ID／Secret 尚未完成設定，OAuth 暫不可用。</li> : null}
                 </ol>
               </details>
