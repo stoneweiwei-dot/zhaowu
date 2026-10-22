@@ -38,8 +38,8 @@ test("new layout uses local real landscape assets and stays phone responsive", a
 });
 test("stale astronomy never pretends to be an up-to-date forecast", async () => {
   const home = await read("src/components/sky-events-home-section.tsx");
-  assert.match(home, /getTodaySkyUpdatedDate/);
+  assert.match(home, /getTodaySkyReportWindow/);
   assert.match(home, /currentSydneyDate/);
-  assert.match(home, /歷史播報/);
+  assert.match(home, /歷史週報/);
   assert.match(home, /<TodaySkyCards \/>/);
 });
