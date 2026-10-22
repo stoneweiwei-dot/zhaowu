@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { test } from "node:test";
 
 const read = (path) => readFile(new URL("../" + path, import.meta.url), "utf8");
@@ -42,4 +43,14 @@ test("stale astronomy never pretends to be an up-to-date forecast", async () => 
   assert.match(home, /currentSydneyDate/);
   assert.match(home, /歷史週報/);
   assert.match(home, /<TodaySkyCards \/>/);
+});
+
+test("owner supplied Star Imagery crop is an actual tracked WebP painting, not CSS geometry", async () => {
+  const css = await read("src/sky-art-restore.css");
+  const path = "public/sky-art/stone-star-imagery-original-detail.webp";
+  const bytes = await readFile(new URL("../" + path, import.meta.url));
+  assert.match(css, /sky-art\\/stone-star-imagery-original-detail\\.webp/);
+  assert.equal(bytes.toString("ascii", 0, 4), "RIFF");
+  assert.equal(bytes.toString("ascii", 8, 12), "WEBP");
+  assert.equal(createHash("sha256").update(bytes).digest("hex"), "5b47abe9b2af3fbe56a26b8e1625b5243fa345696b8368fbe5354d5039bc2207");
 });
