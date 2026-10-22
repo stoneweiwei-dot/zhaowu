@@ -24,16 +24,16 @@ export function ConsoleOverview({ reports, hasMoreReports, reportsLoading, onNav
   onNavigate: (target: OverviewTarget) => void;
 }) {
   const [auto, setAuto] = useState<AutopublishOverview | null>(null);
-  const [autoError, setAutoError] = useState(false);
+  const [autoError, setAutoError] = useState("");
 
   useEffect(() => {
     let alive = true;
-    void readAutopublishOverview().then((value) => { if (alive) setAuto(value); }).catch(() => { if (alive) setAutoError(true); });
+    void readAutopublishOverview().then((value) => { if (alive) { setAuto(value); setAutoError(""); } }).catch((error) => { if (alive) setAutoError(error instanceof Error ? error.message.slice(0, 160) : "Unknown error"); });
     return () => { alive = false; };
   }, []);
 
   const todos: Todo[] = [];
-  if (autoError) todos.push({ tone: "bad", text: "讀不到自動發佈狀態。", go: "autopublish", cta: "打開檢查" });
+  if (autoError) todos.push({ tone: "bad", text: `讀不到自動發佈狀態（${autoError}）。`, go: "autopublish", cta: "打開檢查" });
   else if (auto && !auto.configured) todos.push({ tone: "bad", text: "自動發佈尚未啟用（伺服器未設定佇列密鑰）。", go: "autopublish", cta: "查看" });
   else if (auto?.settings) {
     const anyAutomatic = Boolean(auto.channels?.threads || auto.channels?.instagram || auto.channels?.facebook);
