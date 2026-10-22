@@ -41,7 +41,7 @@ export function TodaySkyCards() {
   const dateParts = new Intl.DateTimeFormat("en-GB", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
   const today = ["year", "month", "day"].map((type) => dateParts.find((part) => part.type === type)?.value ?? "00").join("-");
   const isArchive = today > window.end;
-  const range = window;
+  const range: { start: string; end: string } = window;
   const weekTheme = getSkyWeekTheme(cards);
 
   const ui = lang === "en"
