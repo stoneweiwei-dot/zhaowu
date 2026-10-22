@@ -13,6 +13,93 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    id: "scorpio-season-mercury-retrograde-venus-conjunct-sun-2026-10-23-24",
+    published: "2026-10-22",
+    status: "upcoming",
+    title: {
+      "zh-Hant": "太陽入天蠍、水星留逆行與金星合日：週末的天蠍集中帶",
+      "zh-Hans": "太阳入天蝎、水星留逆行与金星合日：周末的天蝎集中带",
+      en: "Sun enters Scorpio, Mercury stations retrograde and Venus meets the Sun"
+    },
+    subtitle: {
+      "zh-Hant": "悉尼 10/23–10/24（AEDT，UTC+11）｜三件事在約 24 小時內相繼發生",
+      "zh-Hans": "悉尼 10/23–10/24（AEDT，UTC+11）｜三件事在约 24 小时内相继发生",
+      en: "Sydney, 23–24 Oct (AEDT, UTC+11) | three events within roughly 24 hours"
+    },
+    facts: [
+      {
+        date: "2026-10-23",
+        label: {
+          "zh-Hant": "太陽約於 UTC 10 月 23 日 09:37（悉尼 20:37）進入熱帶黃道天蠍座 0°；各來源時刻略有出入，這裡取多數來源的時間。",
+          "zh-Hans": "太阳约于 UTC 10 月 23 日 09:37（悉尼 20:37）进入热带黄道天蝎座 0°；各来源时刻略有出入，这里取多数来源的时间。",
+          en: "The Sun enters 0° tropical Scorpio at about 09:37 UTC on 23 Oct (20:37 Sydney). Sources differ slightly; this is the time most of them give."
+        }
+      },
+      {
+        date: "2026-10-24",
+        label: {
+          "zh-Hant": "金星與太陽下合（金星在地球與太陽之間），約為 UTC 10 月 24 日 04:00（悉尼約 15:00），位置在天蠍座 0° 附近；金星此時正處於逆行期（10/3 起）。",
+          "zh-Hans": "金星与太阳下合（金星在地球与太阳之间），约为 UTC 10 月 24 日 04:00（悉尼约 15:00），位置在天蝎座 0° 附近；金星此时正处于逆行期（10/3 起）。",
+          en: "Venus reaches inferior conjunction with the Sun (between Earth and Sun) at about 04:00 UTC on 24 Oct (about 15:00 Sydney), near 0° Scorpio, during its retrograde that began on 3 Oct."
+        }
+      },
+      {
+        date: "2026-10-24",
+        label: {
+          "zh-Hant": "水星約於 UTC 10 月 24 日 07:12（悉尼 18:12）在天蠍座約 20°59′ 停留並轉為視逆行，預計 11 月 13 日轉回順行。",
+          "zh-Hans": "水星约于 UTC 10 月 24 日 07:12（悉尼 18:12）在天蝎座约 20°59′ 停留并转为视逆行，预计 11 月 13 日转回顺行。",
+          en: "Mercury stations retrograde at about 07:12 UTC on 24 Oct (18:12 Sydney) near 20°59′ Scorpio, and is expected to turn direct on 13 Nov."
+        }
+      }
+    ],
+    science: {
+      "zh-Hant": [
+        "太陽「進入天蠍座」指熱帶黃道上太陽的視黃經到達 210°，是以春分點為起點的季節性座標，不等於太陽進入天文學上的天蠍座星區。",
+        "金星下合是金星運行到地球與太陽之間的幾何位置。此時金星靠近太陽方向，被日光淹沒，通常無法用肉眼觀察；之後它會從黃昏天空轉到清晨天空。",
+        "水星的「逆行」是視運動：地球與水星在各自軌道上的相對位置，使水星在天空背景中看起來暫時向後移動，並不表示水星真的倒著繞日。",
+        "各網站對精確時刻、度數有數分鐘到數十分鐘的差異；本文引用的來源未能逐一在 NASA/JPL Horizons 核對，請以星曆原始資料為準。"
+      ],
+      "zh-Hans": [
+        "太阳“进入天蝎座”指热带黄道上太阳的视黄经到达 210°，是以春分点为起点的季节性坐标，不等于太阳进入天文学上的天蝎座星区。",
+        "金星下合是金星运行到地球与太阳之间的几何位置。此时金星靠近太阳方向，被日光淹没，通常无法用肉眼观察；之后它会从黄昏天空转到清晨天空。",
+        "水星的“逆行”是视运动：地球与水星在各自轨道上的相对位置，使水星在天空背景中看起来暂时向后移动，并不表示水星真的倒着绕日。",
+        "各网站对精确时刻、度数有数分钟到数十分钟的差异；本文引用的来源未能逐一在 NASA/JPL Horizons 核对，请以星历原始资料为准。"
+      ],
+      en: [
+        "\"Sun enters Scorpio\" means the Sun's tropical ecliptic longitude reaches 210°. It is a season-based coordinate measured from the March equinox, not the Sun entering the astronomical constellation Scorpius.",
+        "Venus's inferior conjunction is the geometry in which Venus passes between Earth and the Sun. It is lost in the Sun's glare and normally cannot be seen with the naked eye; afterwards it shifts from the evening sky to the morning sky.",
+        "Mercury's retrograde is apparent motion: the relative positions of Earth and Mercury in their orbits make Mercury seem to drift backwards against the stars for a while. It does not actually orbit backwards.",
+        "Websites differ by minutes to tens of minutes on exact times and degrees. The cited sources were not individually cross-checked against NASA/JPL Horizons, so treat the ephemeris as the final authority."
+      ]
+    },
+    interpretation: {
+      "zh-Hant": [
+        "在西洋占星的象徵語言裡，天蠍座常與深度、信任、共享資源和不輕易示人的動機相連。太陽進入天蠍，常被視為「季節的主題轉向」。",
+        "水星象徵溝通與思考，金星象徵價值與關係；兩者同時處於逆行相關的階段，傳統上被用作「回頭檢視」的提示，例如重讀合約、確認訊息、重新談定條件。",
+        "這些都是文化象徵的閱讀方式，並無科學證據顯示水星逆行會造成通訊故障或人際事件。",
+        "可實際做的事：在重大簽約、購買或表態之前多做一次確認，並把不急的決定留到水星轉直之後。"
+      ],
+      "zh-Hans": [
+        "在西洋占星的象征语言里，天蝎座常与深度、信任、共享资源和不轻易示人的动机相连。太阳进入天蝎，常被视为“季节的主题转向”。",
+        "水星象征沟通与思考，金星象征价值与关系；两者同时处于逆行相关的阶段，传统上被用作“回头检视”的提示，例如重读合约、确认信息、重新谈定条件。",
+        "这些都是文化象征的阅读方式，并无科学证据显示水星逆行会造成通讯故障或人际事件。",
+        "可实际做的事：在重大签约、购买或表态之前多做一次确认，并把不急的决定留到水星转直之后。"
+      ],
+      en: [
+        "In Western astrological symbolism, Scorpio is associated with depth, trust, shared resources and motives people do not readily show. The Sun entering Scorpio is often read as the season's theme turning.",
+        "Mercury symbolises communication and thinking, and Venus values and relationships. With both in retrograde-related phases, tradition uses it as a prompt to look back: reread contracts, confirm messages, renegotiate terms.",
+        "These are cultural, symbolic readings. There is no scientific evidence that Mercury retrograde causes communication failures or social events.",
+        "A practical step: double-check before major signings, purchases or commitments, and leave non-urgent decisions until Mercury turns direct."
+      ]
+    },
+    houses: [],
+    sources: [
+      { label: "EarthSky · Venus inferior conjunction", url: "https://earthsky.org/astronomy-essentials/inferior-conjunction-venus-between-sun-and-earth/" },
+      { label: "Astrology.com · Mercury Retrograde in Scorpio 2026", url: "https://www.astrology.com/article/mercury-retrograde-scorpio-2026/" },
+      { label: "Bonnie Sorsby · October 2026 Astrology Forecast", url: "https://bonniesorsby.com/october-2026-astrology-forecast/" }
+    ]
+  },
+  {
     id: "sun-trine-north-node-2026-10-20",
     published: "2026-10-20",
     status: "active",
