@@ -6,6 +6,8 @@ import {
   getFeaturedSkyEvent,
   getTodaySkyCards,
   getTodaySkyUpdatedDate,
+  getTodaySkyReportWindow,
+  TODAY_SKY_CARDS,
   SKY_EVENTS
 } from "../src/lib/sky-events.ts";
 
@@ -54,7 +56,7 @@ test("today sky cards carry no invented timestamp precision and are internally c
 });
 
 test("only Saturn's own observable opposition is marked visible to the naked eye", () => {
-  const cards = getTodaySkyCards();
+  const cards = TODAY_SKY_CARDS;
   const pureAspectOrIngressIds = [
     "sun-trine-uranus-2026-09-28",
     "mercury-into-scorpio-2026-10-01",
@@ -72,10 +74,10 @@ test("only Saturn's own observable opposition is marked visible to the naked eye
   assert.equal(saturn.visibleToNakedEye, true, "Saturn at opposition is the one genuinely observable event and must stay marked visible");
 });
 
-test("getTodaySkyUpdatedDate reflects the latest card date", () => {
-  const cards = getTodaySkyCards();
-  const latest = [...cards].map((c) => c.date).sort().at(-1);
-  assert.equal(getTodaySkyUpdatedDate(), latest);
+test("weekly report metadata separates verification date from future event dates", () => {
+  assert.deepEqual(getTodaySkyReportWindow(), { start: "2026-10-19", end: "2026-10-25", verifiedOn: "2026-10-23" });
+  assert.equal(getTodaySkyUpdatedDate(), "2026-10-23");
+  assert.deepEqual(getTodaySkyCards().map((c) => c.date), ["2026-10-23", "2026-10-24", "2026-10-24"]);
 });
 
 test("corrected Uranus/Neptune signs are no longer misstated in SKY_EVENTS source", () => {
@@ -89,7 +91,7 @@ test("corrected Uranus/Neptune signs are no longer misstated in SKY_EVENTS sourc
 test("the featured Sun–North Node trine separates orbital facts from symbolic reading", () => {
   const event = SKY_EVENTS.find((item) => item.id === "sun-trine-north-node-2026-10-20");
   assert.ok(event, "expected the 20 Oct Sydney event");
-  assert.equal(getFeaturedSkyEvent().id, event.id);
+  assert.equal(getFeaturedSkyEvent().id, "scorpio-ingress-mercury-retrograde-2026-10-23-24");
   assert.match(event.subtitle["zh-Hant"], /13:04 AEDT/);
   assert.match(event.science["zh-Hant"].join(" "), /不是行星/);
   assert.match(event.science.en.join(" "), /not a planet/);
@@ -103,4 +105,18 @@ test("today sky cards render on the /sky-events route above the deep-dive articl
   const todayIndex = route.indexOf("<TodaySkyCards");
   const articleIndex = route.indexOf("sky-event-article");
   assert.ok(todayIndex > -1 && articleIndex > -1 && todayIndex < articleIndex, "today cards must appear before the deep-dive article");
+});
+
+test("current weekly cards are sourced and older September cards are retained", () => {
+  assert.equal(TODAY_SKY_CARDS.length, 6);
+  assert.deepEqual(getTodaySkyCards().map((c) => c.id), [
+    "sun-into-scorpio-2026-10-23",
+    "sun-venus-conjunction-2026-10-24",
+    "mercury-retrograde-scorpio-2026-10-24"
+  ]);
+  const featured = getFeaturedSkyEvent();
+  assert.equal(featured.facts.length, 3);
+  assert.ok(featured.sources.length >= 4);
+  assert.ok(featured.science.en.some((x) => /geocentric/.test(x)));
+  assert.ok(featured.interpretation.en.some((x) => /cause-and-effect/.test(x)));
 });
