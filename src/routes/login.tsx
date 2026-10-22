@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { ownerSignIn } from "@/lib/auth/owner-api";
+import { passkeySignIn, passkeySupported } from "@/lib/auth/passkey-client";
 import { useI18n } from "@/lib/i18n";
 import { useSkin } from "@/lib/theme-skins";
 
@@ -55,6 +56,24 @@ function LoginPage() {
     }
   }
 
+  async function onPasskey() {
+    setError(null);
+    setBusy(true);
+    try {
+      await passkeySignIn();
+      await reload();
+      await navigate({ to: "/account" });
+    } catch (err) {
+      const code = err instanceof Error ? err.message : "";
+      if (code === "PASSKEY_CANCELLED") return;
+      setError(code === "PASSKEY_DEVICE_UNKNOWN"
+        ? ownerText(locale, "這支手機還不是受信任裝置。請先用密碼登入，再到站主後台加入。", "这支手机还不是受信任设备。请先用密码登录，再到站主后台加入。", "This phone is not a trusted device yet. Sign in with the password first, then add it in the owner console.")
+        : ownerText(locale, "Face ID 登入失敗，請改用密碼。", "Face ID 登录失败，请改用密码。", "Face ID sign-in failed. Use the password instead."));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <main
       className="stone-login-screen"
@@ -89,6 +108,18 @@ function LoginPage() {
           {ownerText(locale, "站主登入", "站主登录", "Owner sign-in")}
         </h1>
 
+        {passkeySupported() ? (
+          <div className="stone-login-form" data-owner-passkey-block>
+            <button type="button" disabled={busy} onClick={() => void onPasskey()} className="stone-login-primary" data-owner-passkey-login>
+              {busy ? t("processing") : ownerText(locale, "用 Face ID 登入", "用 Face ID 登录", "Sign in with Face ID")}
+            </button>
+            {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
+            <p className="stone-login-message" data-owner-passkey-hint>
+              {ownerText(locale, "手機已加入受信任裝置就直接按。第一次請用下方帳號密碼登入，再到後台「登入與裝置」加入。", "手机已加入受信任设备就直接按。第一次请用下方账号密码登录，再到后台“登录与设备”加入。", "Tap if this phone is already trusted. First time: sign in below, then add this phone under “Sign-in” in the owner console.")}
+            </p>
+          </div>
+        ) : null}
+
         <form onSubmit={onOwnerSubmit} className="stone-login-form">
           <label>
             <span>{ownerText(locale, "帳號", "账号", "Account")}</span>
@@ -112,10 +143,10 @@ function LoginPage() {
               placeholder={ownerText(locale, "輸入站主密碼", "输入站主密码", "Enter owner password")}
             />
           </label>
-          {error ? <p className="stone-login-error" role="alert">{error}</p> : null}
+          {!passkeySupported() && error ? <p className="stone-login-error" role="alert">{error}</p> : null}
           {notice ? <p className="stone-login-message" role="status" data-login-test-account="true">{notice}</p> : null}
           <button type="submit" disabled={busy} className="stone-login-primary">
-            {busy ? t("processing") : ownerText(locale, "進入站主後台", "进入站主后台", "Enter owner console")}
+            {busy ? t("processing") : ownerText(locale, "用帳號密碼登入", "用账号密码登录", "Sign in with password")}
           </button>
         </form>
 

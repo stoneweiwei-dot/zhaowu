@@ -23,8 +23,9 @@ const OwnerArticleManager = lazy(() => import("@/components/owner/article-manage
 const AutopublishPanel = lazy(() => import("@/components/owner/autopublish-panel").then((m) => ({ default: m.AutopublishPanel })));
 const OwnerThemeSkinsManager = lazy(() => import("@/components/owner-theme-skins-manager").then((m) => ({ default: m.OwnerThemeSkinsManager })));
 import { ConsoleOverview, type OverviewTarget } from "@/components/owner/console-overview";
-type ConsoleView = "overview" | "reports" | "autopublish" | "images" | "opening" | "themes" | "promo" | "articles";
-const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "autopublish", "images", "opening", "themes", "promo", "articles"];
+const OwnerDevicesManager = lazy(() => import("@/components/owner-devices-manager").then((m) => ({ default: m.OwnerDevicesManager })));
+type ConsoleView = "overview" | "reports" | "autopublish" | "images" | "opening" | "themes" | "promo" | "articles" | "devices";
+const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "autopublish", "images", "opening", "themes", "promo", "articles", "devices"];
 
 /** Initial tab: `?view=` (used by Meta OAuth returns) otherwise the overview. */
 function initialConsoleView(): ConsoleView {
@@ -356,6 +357,7 @@ function AccountPage() {
             ["themes", tr(locale, "主題皮膚", "主题皮肤", "Themes")],
             ["promo", tr(locale, "優惠碼", "优惠码", "Promo codes")],
             ["articles", tr(locale, "文章管理", "文章管理", "Articles")],
+            ["devices", tr(locale, "登入與裝置", "登录与设备", "Sign-in")],
           ] as [ConsoleView, string][]).map(([view, label]) => (
             <button
               key={view}
@@ -514,6 +516,10 @@ function AccountPage() {
       </div>
       <div id="console-panel-autopublish" role="region" aria-labelledby="console-tab-autopublish" hidden={consoleView !== "autopublish"}>
         {visitedViews.has("autopublish") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入自動發佈…", "加载自动发布…", "Loading auto-publish…")}</p>}><AutopublishPanel initialNotice={socialNotice} /></Suspense> : null}
+      </div>
+
+      <div id="console-panel-devices" role="region" aria-labelledby="console-tab-devices" hidden={consoleView !== "devices"}>
+        {visitedViews.has("devices") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入裝置…", "加载设备…", "Loading devices…")}</p>}><OwnerDevicesManager locale={locale} /></Suspense> : null}
       </div>
 
       <Link to="/" className="inline-flex h-11 items-center rounded-full border border-line bg-cream px-5 text-ink">{t("backHome")}</Link>

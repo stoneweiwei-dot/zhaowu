@@ -29,7 +29,7 @@ test("client guidance never pretends that Threads OAuth uses the Facebook app", 
 test("owner-only theme fallback cannot be called before origin and owner authorization", async () => {
   const ownerData = await source("api/owner-data.js");
   const origin = ownerData.indexOf("if (!requestIsSameOrigin(req))");
-  const owner = ownerData.indexOf("const ownerSecret = ownerSecretFromRequest(req);");
+  const owner = ownerData.indexOf("const owner = await authenticateOwner(req);");
   const fallback = ownerData.indexOf('if (action === "site-skin.publish" && upstream.status === 404)');
   assert.ok(origin >= 0 && owner > origin && fallback > owner);
   assert.match(ownerData, /if \(!validSiteSkin\(skin\)\)/);
