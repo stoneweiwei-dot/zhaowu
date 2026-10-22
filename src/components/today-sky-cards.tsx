@@ -38,7 +38,8 @@ export function TodaySkyCards() {
   const cards = getTodaySkyCards();
   const updated = getTodaySkyUpdatedDate();
   const window = getTodaySkyReportWindow();
-  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  const dateParts = new Intl.DateTimeFormat("en-GB", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+  const today = ["year", "month", "day"].map((type) => dateParts.find((part) => part.type === type)?.value ?? "00").join("-");
   const isArchive = today > window.end;
   const range = window;
   const weekTheme = getSkyWeekTheme(cards);
