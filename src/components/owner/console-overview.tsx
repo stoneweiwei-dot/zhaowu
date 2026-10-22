@@ -35,6 +35,7 @@ export function ConsoleOverview({ reports, hasMoreReports, reportsLoading, onNav
   const todos: Todo[] = [];
   if (autoError) todos.push({ tone: "bad", text: `讀不到自動發佈狀態（${autoError}）。請到自動發佈查看完整錯誤，尚未證明發佈服務正常。`, go: "autopublish", cta: "打開檢查" });
   else if (auto && !auto.configured) todos.push({ tone: "bad", text: "自動發佈尚未啟用（伺服器未設定佇列密鑰）。", go: "autopublish", cta: "查看" });
+  else if (auto?.accountWarnings?.length) todos.push({ tone: "warn", text: "部分社群帳號列表讀取失敗，連接狀態未確認；請檢查自動發佈設定。", go: "autopublish", cta: "查看詳情" });
   else if (auto?.settings) {
     const anyAutomatic = Boolean(auto.channels?.threads || auto.channels?.instagram || auto.channels?.facebook);
     if (!anyAutomatic) todos.push({ tone: "bad", text: "還沒有連接可自動發布的平台。", go: "autopublish", cta: "連接 Meta / Threads" });
