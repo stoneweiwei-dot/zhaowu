@@ -4,6 +4,7 @@ import test from "node:test";
 import { publishSocialPost, socialConfiguration, validateSocialPost } from "../lib/meta-social-publisher.js";
 import {
   createThreadsAuthorization,
+  threadsOauthConfiguration,
   decryptThreadsAccessToken,
   encryptThreadsAccessToken,
   threadsAuthorizationOwnerProof,
@@ -171,15 +172,17 @@ test("one Threads publish can target multiple OAuth accounts without exposing to
 
 test("Threads OAuth state and stored tokens are authenticated and encrypted", () => {
   const env = {
-    META_APP_ID: "1234567890",
-    META_APP_SECRET: "app-secret-for-unit-test-123456",
+    THREADS_APP_ID: "961840029733421",
+    THREADS_APP_SECRET: "threads-app-secret-for-unit-test",
+    META_APP_ID: "different-facebook-app-id",
+    META_APP_SECRET: "different-facebook-app-secret",
     ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-unit-test-123456",
     PUBLIC_SITE_ORIGIN: "https://zhao-wu.com",
   };
   const authorization = createThreadsAuthorization(env, 1_000_000, "sealed-owner-proof");
   assert.equal(new URL(authorization.url).origin, "https://threads.com");
   assert.equal(new URL(authorization.url).pathname, "/oauth/authorize");
-  assert.equal(new URL(authorization.url).searchParams.get("client_id"), env.META_APP_ID);
+  assert.equal(new URL(authorization.url).searchParams.get("client_id"), env.THREADS_APP_ID);
   assert.equal(new URL(authorization.url).searchParams.get("scope"), "threads_basic,threads_content_publish");
   assert.equal(new URL(authorization.url).searchParams.get("redirect_uri"), "https://zhao-wu.com/api/owner-session?action=threads.callback");
   const state = new URL(authorization.url).searchParams.get("state");
@@ -310,4 +313,10 @@ test("unconfigured production does not pretend the Meta publisher is ready", asy
   assert.match(route, /Meta 尚未連接/);
   assert.match(route, /連接帳號/);
   assert.doesNotMatch(route, /META_.*ACCESS_TOKEN/);
+});
+
+test("Threads OAuth never borrows the Facebook app credentials", () => {
+  const facebookOnly = { META_APP_ID: "facebook-app", META_APP_SECRET: "facebook-secret" };
+  assert.equal(threadsOauthConfiguration(facebookOnly).ready, false);
+  assert.throws(() => createThreadsAuthorization(facebookOnly), /THREADS_OAUTH_NOT_CONFIGURED/);
 });
