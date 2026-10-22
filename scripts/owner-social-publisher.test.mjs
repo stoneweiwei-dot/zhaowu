@@ -167,7 +167,10 @@ test("one Threads publish can target multiple OAuth accounts without exposing to
   assert.equal(results.threads.ok, true);
   assert.deepEqual(results.threads.accounts.map((item) => item.username), ["first", "second"]);
   assert.equal(calls.filter((call) => call.method === "POST").length, 4);
-  assert.doesNotMatch(JSON.stringify(results), /stest("Threads OAuth state and stored tokens are authenticated and encrypted", () => {
+  assert.doesNotMatch(JSON.stringify(results), /secret-one|secret-two/);
+});
+
+test("Threads OAuth state and stored tokens are authenticated and encrypted", () => {
   const env = {
     THREADS_APP_ID: "9988776655",
     META_APP_ID: "1234567890",
@@ -311,4 +314,13 @@ test("unconfigured production does not pretend the Meta publisher is ready", asy
   assert.match(route, /Meta 尚未連接/);
   assert.match(route, /連接帳號/);
   assert.doesNotMatch(route, /META_.*ACCESS_TOKEN/);
+});
+
+test("Meta (Facebook/Instagram) token encryption is independent of the Threads app secret", async () => {
+  const { encryptMetaAccessToken, decryptMetaAccessToken } = await import("../lib/meta-oauth.js");
+  const base = { META_APP_SECRET: "meta-secret-for-key-isolation-123456", ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-key-isolation-123456" };
+  const sealed = encryptMetaAccessToken("page-token", base);
+  assert.equal(decryptMetaAccessToken(sealed, base), "page-token", "works with no Threads credentials configured");
+  assert.equal(decryptMetaAccessToken(sealed, { ...base, THREADS_APP_SECRET: "some-other-threads-secret-123456" }), "page-token", "Threads secret must not rekey Meta");
+  assert.throws(() => encryptMetaAccessToken("x", { ZHAOWU_OWNER_BRIDGE_SECRET: base.ZHAOWU_OWNER_BRIDGE_SECRET, THREADS_APP_SECRET: "threads-only-secret-123456" }), /THREADS_TOKEN_KEY_NOT_CONFIGURED/, "Threads secret alone must not unlock Meta");
 });
