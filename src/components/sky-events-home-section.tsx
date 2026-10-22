@@ -10,7 +10,8 @@ export function SkyEventsHomeSection() {
   const { locale } = useI18n();
   const lang = locale === "en" ? "en" : locale === "zh-Hans" ? "zh-Hans" : "zh-Hant";
   const report = getTodaySkyReportWindow();
-  const currentSydneyDate = new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  const dateParts = new Intl.DateTimeFormat("en-GB", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+  const currentSydneyDate = ["year", "month", "day"].map((type) => dateParts.find((part) => part.type === type)?.value ?? "00").join("-");
   const outdated = currentSydneyDate > report.end;
   const title = lang === "en" ? "Today’s sky · Star Imagery" : "今日星象 · 星辰形象";
   const note = outdated
