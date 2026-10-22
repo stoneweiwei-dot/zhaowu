@@ -44,6 +44,9 @@
     "api/owner-music-write.js": {
       "maxDuration": 60,
       "includeFiles": "lib/owner-music-ssh.json"
+    },
+    "api/release-watch.js": {
+      "maxDuration": 20
     }
   },
   "headers": [
@@ -114,6 +117,24 @@
     },
     {
       "source": "/manifest.webmanifest",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.zh-Hans.webmanifest",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.en.webmanifest",
       "headers": [
         {
           "key": "Cache-Control",
@@ -196,6 +217,11 @@
   ],
   "redirects": [
     {
+      "source": "/guide/:path*",
+      "destination": "/?guide=1",
+      "permanent": false
+    },
+    {
       "source": "/:path*",
       "has": [
         {
@@ -238,6 +264,10 @@
     {
       "path": "/api/owner-session?action=cron.autopublish",
       "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/release-watch",
+      "schedule": "41 17 * * *"
     }
   ]
 }
