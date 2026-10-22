@@ -37,6 +37,9 @@ export function TodaySkyCards() {
   const lang: Lang = locale === "en" ? "en" : locale === "zh-Hans" ? "zh-Hans" : "zh-Hant";
   const cards = getTodaySkyCards();
   const updated = getTodaySkyUpdatedDate();
+  const dateParts = new Intl.DateTimeFormat("en-GB", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+  const field = (type: string) => dateParts.find((part) => part.type === type)?.value || "00";
+  const isArchive = updated < field("year") + "-" + field("month") + "-" + field("day");
   const range = getSkyWeekRange(cards);
   const weekTheme = getSkyWeekTheme(cards);
 
@@ -103,6 +106,12 @@ export function TodaySkyCards() {
         </div>
         {badge ? <div className="sky-today-week-badge">{badge}</div> : null}
       </header>
+
+      {isArchive ? (
+        <p className="sky-today-archive-status">
+          {lang === "en" ? "Archived star report · last verified " + updated + " · not today's live sky" : lang === "zh-Hans" ? "历史星象播报 · 最近核验 " + updated + " · 非今日实时天象" : "歷史星象播報 · 最近核驗 " + updated + " · 非今日即時天象"}
+        </p>
+      ) : null}
 
       {weekTheme ? (
         <div className="sky-today-theme-block">
