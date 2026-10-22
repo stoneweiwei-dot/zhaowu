@@ -194,6 +194,9 @@ export default async function handler(req, res) {
   try {
     const method = req.method || "GET";
     if (method === "GET") {
+      // Public read-only fallback when the owner-data route is absent from an older deployment.
+      // Delegate to the same source of truth; no owner mutation or credential exposure.
+      if (queryValue(req, "view") === "site-skin") return handleOwnerData(req, res);
       if (queryValue(req, "action") === "cron.autopublish") {
         if (!requestIsAuthorizedCron(req)) return json(res, 401, { ok: false, error: "CRON_UNAUTHORIZED" });
         try {
