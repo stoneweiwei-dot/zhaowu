@@ -1,45 +1,37 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { getFeaturedSkyEvent } from "@/lib/sky-events";
+import { getTodaySkyReportWindow } from "@/lib/sky-events";
+import { TodaySkyCards } from "@/components/today-sky-cards";
 import "@/sky-events.css";
+import "@/sky-art-restore.css";
 
+/** Accessible, same-level sibling to the almanac. Uses only dated, verified material. */
 export function SkyEventsHomeSection() {
   const { locale } = useI18n();
-  const item = getFeaturedSkyEvent();
   const lang = locale === "en" ? "en" : locale === "zh-Hans" ? "zh-Hans" : "zh-Hant";
-  const isSaturn = item.id === "saturn-opposition-2026";
-  const glyph = item.id === "saturn-opposition-2026" ? "♄" : item.id === "venus-scorpio-2026" ? "♀" : item.id.startsWith("mars-") ? "♂" : "✦";
-  const title = locale === "en" ? "Recent sky events" : locale === "zh-Hans" ? "近日天象" : "近日天象";
-  const lead = locale === "en"
-    ? "Astronomical facts first; symbolic astrology is shown separately."
-    : locale === "zh-Hans"
-      ? "先核对天文事实，再把占星象征解释独立呈现。"
-      : "先核對天文事實，再把占星象徵解讀獨立呈現。";
-  const cta = locale === "en" ? "Open sky-events desk" : locale === "zh-Hans" ? "查看天象专栏" : "查看天象專欄";
-  const timeline = item.facts
-    .map((fact) => { const [, month, day] = fact.date.split("-"); return `${Number(month)}/${Number(day)}`; })
-    .join(" → ");
-
+  const report = getTodaySkyReportWindow();
+  const dateParts = new Intl.DateTimeFormat("en-GB", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+  const currentSydneyDate = ["year", "month", "day"].map((type) => dateParts.find((part) => part.type === type)?.value ?? "00").join("-");
+  const outdated = currentSydneyDate > report.end;
+  const title = lang === "en" ? "Today’s sky · Star Imagery" : "今日星象 · 星辰形象";
+  const note = outdated
+    ? lang === "en" ? `Archived week ${report.start}–${report.end}; not today's live sky.`
+      : lang === "zh-Hans" ? `历史周报 ${report.start}—${report.end}；不是今日实时星象。`
+      : `歷史週報 ${report.start}—${report.end}；不是今日即時星象。`
+    : lang === "en" ? `Verified weekly report ${report.start}–${report.end}; not a live feed.`
+      : lang === "zh-Hans" ? `已核对当周星象 ${report.start}—${report.end}；非实时观测。`
+      : `已核對當週星象 ${report.start}—${report.end}；非即時觀測。`;
   return (
-    <section className="sky-events-home" aria-label={title}>
-      <header>
-        <span className="sky-events-kicker">ASTRONOMY × ASTROLOGY</span>
+    <section className="sky-events-home sky-art-home" aria-label={title} id="today-sky">
+      <header className="sky-art-intro">
+        <span className="sky-art-eyebrow">ZHAOWU · CELESTIAL JOURNAL</span>
         <h2>{title}</h2>
-        <p>{lead}</p>
+        <p>{note}</p>
+        <Link to="/sky-events" className="sky-art-deep-link">
+          {lang === "en" ? "Open the full sky journal" : lang === "zh-Hans" ? "阅读完整天象专栏" : "閱讀完整天象專欄"} <span aria-hidden="true">↗</span>
+        </Link>
       </header>
-      <Link to="/sky-events" className="sky-events-feature">
-        <div className={`sky-events-feature-mark ${isSaturn ? "is-saturn" : ""}`} aria-hidden="true">{glyph}</div>
-        <div className="sky-events-feature-copy">
-          <div className="sky-events-badges">
-            <span className="is-science">{locale === "en" ? "Astronomy verified" : locale === "zh-Hans" ? "天文可验证" : "天文可驗證"}</span>
-            <span className="is-symbolic">{locale === "en" ? "Symbolic layer" : locale === "zh-Hans" ? "星象象征层" : "星象象徵層"}</span>
-          </div>
-          <strong>{item.title[lang]}</strong>
-          <small>{item.subtitle[lang]}</small>
-          <span className="sky-events-timeline">{timeline}</span>
-        </div>
-        <span className="sky-events-open">{cta} ›</span>
-      </Link>
+      <TodaySkyCards />
     </section>
   );
 }

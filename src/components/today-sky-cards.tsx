@@ -1,7 +1,8 @@
 import { useI18n } from "@/lib/i18n";
-import { getTodaySkyCards, getTodaySkyUpdatedDate } from "@/lib/sky-events";
-import { getSkyCardTone, getSkyWeekRange, getSkyWeekTheme, type SkyTone } from "@/lib/sky-week-presentation";
+import { getTodaySkyCards, getTodaySkyUpdatedDate, getTodaySkyReportWindow } from "@/lib/sky-events";
+import { getSkyCardTone, getSkyWeekTheme, type SkyTone } from "@/lib/sky-week-presentation";
 import "@/sky-events.css";
+import "@/sky-art-restore.css";
 
 type Lang = "zh-Hant" | "zh-Hans" | "en";
 
@@ -36,18 +37,22 @@ export function TodaySkyCards() {
   const lang: Lang = locale === "en" ? "en" : locale === "zh-Hans" ? "zh-Hans" : "zh-Hant";
   const cards = getTodaySkyCards();
   const updated = getTodaySkyUpdatedDate();
-  const range = getSkyWeekRange(cards);
+  const window = getTodaySkyReportWindow();
+  const dateParts = new Intl.DateTimeFormat("en-GB", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+  const today = ["year", "month", "day"].map((type) => dateParts.find((part) => part.type === type)?.value ?? "00").join("-");
+  const isArchive = today > window.end;
+  const range: { start: string; end: string } = window;
   const weekTheme = getSkyWeekTheme(cards);
 
   const ui = lang === "en"
     ? {
         label: "ZHAOWU · WEEKLY BROADCAST",
         title: "Star Imagery",
-        themeLabel: "THIS WEEK'S THEME",
+        themeLabel: isArchive ? "ARCHIVED WEEK THEME" : "WEEKLY THEME",
         science: "ASTRONOMY",
         symbol: "SYMBOLISM",
         signs: "Signs touched",
-        updated: `Updated through ${formatDate(updated, lang)}`,
+        updated: `Verified ${formatDate(updated, lang)}`,
         visible: "Naked-eye visible",
         notVisible: "Requires calculation",
         gradeA: "Major",
@@ -59,11 +64,11 @@ export function TodaySkyCards() {
       ? {
           label: "昭梧 · 每周播报",
           title: "星辰形象",
-          themeLabel: "本周主题",
+          themeLabel: isArchive ? "历史周主题" : "本周主题",
           science: "天文事实",
           symbol: "占星象征",
           signs: "影响星座",
-          updated: `更新至 ${formatDate(updated, lang)}`,
+          updated: `核驗日期 ${formatDate(updated, lang)}`,
           visible: "肉眼可见",
           notVisible: "需星历测算",
           gradeA: "重要天象",
@@ -74,7 +79,7 @@ export function TodaySkyCards() {
       : {
           label: "昭梧 · 每週播報",
           title: "星辰形象",
-          themeLabel: "本週主題",
+          themeLabel: isArchive ? "歷史週主題" : "本週主題",
           science: "天文事實",
           symbol: "占星象徵",
           signs: "影響星座",
@@ -102,6 +107,12 @@ export function TodaySkyCards() {
         </div>
         {badge ? <div className="sky-today-week-badge">{badge}</div> : null}
       </header>
+
+      {isArchive ? (
+        <p className="sky-today-archive-status">
+          {lang === "en" ? "Archived star report · last verified " + updated + " · not today's live sky" : lang === "zh-Hans" ? "历史星象播报 · 资料核验 " + updated + " · 非今日实时天象" : "歷史星象播報 · 資料核驗 " + updated + " · 非今日即時天象"}
+        </p>
+      ) : null}
 
       {weekTheme ? (
         <div className="sky-today-theme-block">

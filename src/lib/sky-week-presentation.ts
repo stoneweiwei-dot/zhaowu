@@ -16,7 +16,10 @@ const TONE_BY_CARD_ID: Record<string, SkyTone> = {
   "mars-square-mercury-2026-10-02": "mid",
   "mars-trine-neptune-2026-10-02": "shift",
   "mars-opposite-pluto-2026-10-03": "high",
-  "saturn-opposition-2026-10-04": "high"
+  "saturn-opposition-2026-10-04": "high",
+  "sun-into-scorpio-2026-10-23": "shift",
+  "sun-venus-conjunction-2026-10-24": "mid",
+  "mercury-retrograde-scorpio-2026-10-24": "shift"
 };
 
 export function getSkyCardTone(card: Pick<SkyImpactCard, "id" | "grade">): SkyTone {
@@ -24,6 +27,11 @@ export function getSkyCardTone(card: Pick<SkyImpactCard, "id" | "grade">): SkyTo
 }
 
 const WEEK_THEME_BY_RANGE: Record<string, SkyTri> = {
+  "2026-10-23/2026-10-24": {
+    "zh-Hant": "10/23 太陽進入熱帶黃道天蠍；10/24 太陽合逆行金星、水星於天蠍開始視逆行。以下分開呈現可核對的天文座標與非因果的占星象徵，並按悉尼 AEDT 日期列示。",
+    "zh-Hans": "10/23 太阳进入热带黄道天蝎；10/24 太阳合逆行金星、水星于天蝎开始视逆行。以下分开呈现可核对的天文坐标与非因果的占星象征，并按悉尼 AEDT 日期列示。",
+    en: "23 Oct: the Sun enters tropical Scorpio. 24 Oct: Sun meets retrograde Venus and Mercury stations retrograde. Verifiable sky coordinates are kept separate from non-causal astrological symbolism; all dates use Sydney AEDT."
+  },
   "2026-09-28/2026-10-04": {
     "zh-Hant": "9/28 太陽三分天王星起步，10/1 水星進入天蠍，10/2–10/3 火星連續與水星、海王星、冥王星成相，10/4 土星衝日收束。天文事實可由星曆驗證；占星象徵是檢視結構的語言，不是命運因果。",
     "zh-Hans": "9/28 太阳三分天王星起步，10/1 水星进入天蝎，10/2–10/3 火星连续与水星、海王星、冥王星成相，10/4 土星冲日收束。天文事实可由星历验证；占星象征是检视结构的语言，不是命运因果。",

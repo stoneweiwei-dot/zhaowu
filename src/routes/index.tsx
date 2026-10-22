@@ -17,6 +17,7 @@ import "@/home-polish-v3.css";
 import "@/home-portals.css";
 import "@/home-portals-astrology.css";
 import "@/home-layout-r46.css";
+import "@/sky-art-restore.css";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -184,6 +185,7 @@ function Home() {
   const setCurrent = useAppStore((s) => s.setCurrent);
 
   const [activeSection, setActiveSection] = useState<Section | null>(null);
+  const [todayFocus, setTodayFocus] = useState<"almanac" | "sky">("almanac");
   const [scentOpen, setScentOpen] = useState(false);
   const [formExpanded, setFormExpanded] = useState(!current);
   useEffect(() => { setFormExpanded(!current); }, [current?.id]);
@@ -332,17 +334,22 @@ function Home() {
       {activeSection === "today" && (
         <div className="zw-hero-secondary-panel zw-subview-panel">
           <section id="home-today-guide" className="zw-home-today-priority" aria-label={copy.navToday}>
+            <nav className="zw-today-dual-nav" aria-label={locale === "en" ? "Choose today’s guide" : locale === "zh-Hans" ? "选择今日指引" : "選擇今日指引"}>
+              <button type="button" aria-pressed={todayFocus === "almanac"} className={todayFocus === "almanac" ? "is-current" : ""} onClick={() => setTodayFocus("almanac")}>
+                <span aria-hidden="true">☷</span><strong>{locale === "en" ? "Today’s almanac" : locale === "zh-Hans" ? "今日黄历" : "今日黃曆"}</strong>
+              </button>
+              <button type="button" aria-pressed={todayFocus === "sky"} className={todayFocus === "sky" ? "is-current" : ""} onClick={() => setTodayFocus("sky")}>
+                <span aria-hidden="true">✦</span><strong>{locale === "en" ? "Today’s sky" : locale === "zh-Hans" ? "今日星象" : "今日星象"}</strong>
+              </button>
+            </nav>
             <Suspense
               fallback={
                 <div className="zw-home-today-skeleton" role="status" aria-label={locale === "en" ? "Loading Today Guide" : locale === "zh-Hans" ? "正在载入今日指引" : "正在載入今日指引"}>
-                  <span />
-                  <strong />
-                  <i />
+                  <span /><strong /><i />
                 </div>
               }
             >
-              <LazyDailyAlmanacWidget embedded />
-              <LazySkyEventsHomeSection />
+              {todayFocus === "almanac" ? <LazyDailyAlmanacWidget embedded /> : <LazySkyEventsHomeSection />}
             </Suspense>
           </section>
         </div>
