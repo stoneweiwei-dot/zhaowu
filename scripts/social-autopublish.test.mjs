@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { SOCIAL_CONTENT_BANK, bankPostText, pickBankEntry } from "../lib/social-content-bank.js";
 import { isPublishDay, runAutopublish, taipeiClock } from "../lib/social-scheduler.js";
 import { upcomingPublishDates } from "../lib/social-owner-actions.js";
+import { encryptMetaAccessToken } from "../lib/meta-oauth.js";
 
 test("every bank post fits Threads (<=500 UTF-8 bytes), is unique, and has no outcome promises", () => {
   const keys = new Set();
@@ -48,6 +49,7 @@ function gateway(state) {
       case "queue.nextOwner": return respond({ ok: true, item: state.ownerItem || null });
       case "queue.recentBankKeys": return respond({ ok: true, keys: state.keys || [] });
       case "accounts.list": return respond({ ok: true, items: state.accounts || [] });
+      case "metaAccounts.list": return respond({ ok: true, items: state.metaAccounts || [] });
       case "run.claim":
         if (state.claimed) return respond({ ok: true, claimed: false, reason: "ALREADY_RAN_TODAY" });
         state.claimed = body;
@@ -97,7 +99,7 @@ test("a second cron call the same day is rejected by the day slot", async () => 
 test("owner-written queued posts are published before the bank and keep their own channels", async () => {
   const state = {
     settings: { enabled: true, publish_days: [5], channels: ["threads"] },
-    ownerItem: { id: "22222222-2222-2222-2222-222222222222", body: "自己寫的貼文", image_url: null, alt_text: null, channels: ["facebook"] },
+    ownerItem: { id: "22222222-2222-2222-2222-222222222222", body: "自己寫的貼文", image_url: null, alt_text: null, channels: ["x"] },
   };
   const result = await runAutopublish({ env: ENV, fetchImpl: gateway(state).fetchImpl, now: FRIDAY });
   assert.equal(result.status, "manual");
@@ -135,4 +137,46 @@ test("Instagram without credentials/image becomes a manual task instead of a sil
   assert.equal(result.status, "published");
   assert.equal(state.finished.results.instagram.manual, true);
   assert.equal(state.finished.results.threads.ok, true);
+});
+
+test("one stored Meta connection lets the scheduler publish Facebook and linked Instagram automatically", async () => {
+  const env = {
+    ...ENV,
+    META_APP_SECRET: "meta-app-secret-for-scheduler-test-123456",
+    ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-scheduler-test-123456",
+  };
+  const state = {
+    settings: { enabled: true, publish_days: [5], channels: ["facebook", "instagram"] },
+    ownerItem: {
+      id: "33333333-3333-3333-3333-333333333333",
+      body: "Meta 排程測試",
+      image_url: "https://zhao-wu.com/og-preview.png",
+      alt_text: "昭梧",
+      channels: ["facebook", "instagram"],
+    },
+    metaAccounts: [{
+      id: "44444444-4444-4444-4444-444444444444",
+      page_id: "123456789",
+      page_name: "昭梧",
+      instagram_user_id: "987654321",
+      instagram_username: "fkofflove",
+      access_token_ciphertext: encryptMetaAccessToken("page-token-secret", env),
+      token_expires_at: null,
+    }],
+  };
+  const g = gateway(state);
+  const calls = [];
+  const fetchImpl = async (url, init = {}) => {
+    if (!String(url).includes("graph.facebook.com")) return g.fetchImpl(url, init);
+    calls.push({ url: String(url), method: init.method || "GET" });
+    if ((init.method || "GET") === "GET") return { ok: true, status: 200, json: async () => ({ username: "fkofflove" }) };
+    return { ok: true, status: 200, json: async () => ({ id: String(url).endsWith("/media") ? "container" : "published" }) };
+  };
+  const result = await runAutopublish({ env, fetchImpl, now: FRIDAY });
+  assert.equal(result.status, "published");
+  assert.equal(state.finished.results.facebook.ok, true);
+  assert.equal(state.finished.results.instagram.ok, true);
+  assert.ok(calls.some((call) => call.url.endsWith("/123456789/photos")));
+  assert.ok(calls.some((call) => call.url.endsWith("/987654321/media_publish")));
+  assert.doesNotMatch(JSON.stringify(state.finished.results), /page-token-secret/);
 });

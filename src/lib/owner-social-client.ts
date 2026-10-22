@@ -1,7 +1,8 @@
-export type SocialChannel = "instagram" | "threads";
+export type SocialChannel = "instagram" | "facebook" | "threads";
 
 export type SocialConfiguration = {
   instagram: boolean;
+  facebook: boolean;
   threads: boolean;
   ready: boolean;
   targets: {
@@ -9,7 +10,20 @@ export type SocialConfiguration = {
     threads: string;
   };
   threadsOauthReady: boolean;
+  metaOauthReady: boolean;
   threadsAccounts: ThreadsAccount[];
+  metaAccounts: MetaAccount[];
+};
+
+export type MetaAccount = {
+  id: string;
+  pageId: string;
+  pageName: string;
+  instagramUserId: string;
+  instagramUsername: string;
+  profilePictureUrl: string;
+  expiresAt: string | null;
+  source: "oauth" | "env";
 };
 
 export type ThreadsAccount = {
@@ -69,6 +83,7 @@ export async function publishOwnerSocialPost(input: {
   altText: string;
   channels: SocialChannel[];
   threadAccountIds?: string[];
+  metaAccountIds?: string[];
 }): Promise<Partial<Record<SocialChannel, SocialPublishResult>>> {
   const response = await fetch("/api/owner-session", {
     method: "POST",
@@ -102,4 +117,14 @@ export async function startThreadsConnection(): Promise<string> {
 
 export async function disconnectThreadsAccount(accountId: string): Promise<void> {
   await socialAction("social.threads.disconnect", { accountId });
+}
+
+export async function startMetaConnection(): Promise<string> {
+  const body = await socialAction("social.meta.connect");
+  if (!body.url) throw new Error("META_OAUTH_URL_MISSING");
+  return body.url;
+}
+
+export async function disconnectMetaAccount(accountId: string): Promise<void> {
+  await socialAction("social.meta.disconnect", { accountId });
 }

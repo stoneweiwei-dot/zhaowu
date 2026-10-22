@@ -1,5 +1,5 @@
-export type AutoChannel = "threads" | "instagram";
-export type ManualChannel = "xiaohongshu" | "facebook" | "x";
+export type AutoChannel = "threads" | "instagram" | "facebook";
+export type ManualChannel = "xiaohongshu" | "x";
 export type QueueChannel = AutoChannel | ManualChannel;
 
 export type QueueStatus = "draft" | "scheduled" | "publishing" | "published" | "partial" | "failed" | "manual" | "skipped";
@@ -40,9 +40,12 @@ export type AutopublishOverview = {
   channels?: {
     threads: boolean;
     instagram: boolean;
+    facebook: boolean;
     threadsAccounts: Array<{ id: string; username: string; expiresAt: string | null }>;
+    metaAccounts: Array<{ id: string; pageId: string; pageName: string; instagramUserId: string; instagramUsername: string; expiresAt: string | null }>;
     targets: { instagram: string; threads: string };
     oauth?: { ready: boolean; redirectUri: string };
+    metaOauth?: { ready: boolean; redirectUri: string };
   };
   bank?: { total: number; next: { key: string; text: string } | null };
   schedule?: { cronHourUtc: number; todayIsPublishDay: boolean; upcoming: string[] };
