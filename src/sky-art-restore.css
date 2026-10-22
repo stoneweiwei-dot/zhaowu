@@ -58,3 +58,10 @@
  .sky-today-week-badge{font-size:.84rem}
 }
 @media(prefers-reduced-motion:reduce){.zw-today-dual-nav button{transition:none}}
+
+/* Match specificity of legacy .sky-events-home header rules. */
+.sky-art-home .sky-art-intro h2{font-size:clamp(22px,5.7vw,34px);color:#18384d}
+.sky-art-home .sky-art-intro p{margin:5px 0 12px;color:#4d554e}
+.sky-art-home .sky-today-header h2{font-size:clamp(2rem,7vw,3.5rem);color:#16374c}
+.sky-today-archive-status{margin:-5px 0 16px;padding:8px 12px;border:1px solid rgba(146,106,57,.35);border-radius:6px;background:#f8f0e1;color:#775333;font-size:clamp(.79rem,2.8vw,.91rem);line-height:1.65}
+@media(max-width:520px){.sky-art-home .sky-today-header h2{font-size:clamp(2rem,9vw,2.6rem)}}
