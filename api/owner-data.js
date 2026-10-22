@@ -142,6 +142,7 @@ function bridgeSecret() {
  * public write grants, schema changes, or extra Vercel functions.
  */
 export async function publishSiteSkinFallback(skin, env = process.env, fetchImpl = fetch) {
+  if (!validSiteSkin(skin)) return { status: 400, body: { ok: false, error: "UNKNOWN_SITE_SKIN" } };
   const key = String(env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
   if (!key) return { status: 503, body: { ok: false, error: "SITE_SKIN_SERVICE_NOT_CONFIGURED" } };
   const updatedAt = new Date().toISOString();
