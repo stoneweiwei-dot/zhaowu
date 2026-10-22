@@ -366,14 +366,34 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
   const fallbackNotes = result ? [] : supportingSummary.slice(3);
   const bodyLines = content.body.length ? content.body : [copy.bodyUnavailable];
 
-  if (!content.summary.length && !content.body.length) return null;
+  // Technical-only legacy chapters must remain accessible even when the
+  // plain-language overview filters every line.
+  if (!sections.length) return null;
 
   return (
     <section className="zhaowu-focused-report zhaowu-report-continuous-sheet" aria-label={locale === "en" ? "Reading and full report" : locale === "zh-Hans" ? "导读与完整命书" : "導讀與完整命書"}>
-      {model && showReadingGuide ? <MobileReadingGuide model={model} locale={locale} /> : null}
+      {model && showReadingGuide ? <MobileReadingGuide model={model} locale={locale} narrative={sections.find((section) => section.narrative)?.narrative} /> : null}
       <details className="zhaowu-professional-report" data-professional-report>
         <summary>{locale === "en" ? "Open the full professional report" : locale === "zh-Hans" ? "展开专业命书与完整依据" : "展開專業命書與完整依據"}</summary>
       <div className="zhaowu-professional-report__body">
+      <section className="zhaowu-mobile-guide" data-original-report-chapters aria-label={locale === "en" ? "Complete source chapters" : locale === "zh-Hans" ? "完整原文章节" : "完整原文章節"}>
+        <h3>{locale === "en" ? "Complete chapters and evidence" : locale === "zh-Hans" ? "完整章节与证据" : "完整章節與證據"}</h3>
+        {sections.map((section, index) => (
+          <details className="zhaowu-mobile-guide__evidence" key={`${section.key}-${index}`}>
+            <summary>{String(index + 1).padStart(2, "0")} · {section.title}</summary>
+            {section.body.map((paragraph, paragraphIndex) => <p className="whitespace-pre-line" key={paragraphIndex}>{paragraph}</p>)}
+            <details className="zhaowu-mobile-guide__evidence">
+              <summary>{locale === "en" ? "Open reading basis" : locale === "zh-Hans" ? "展开命理依据" : "展開命理依據"}</summary>
+              {Object.entries(section.evidence ?? {}).map(([kind, lines]) => (
+                <div key={kind}>
+                  {lines.length ? <h4>{({ facts: ["事實", "事实", "Facts"], conditions: ["條件", "条件", "Conditions"], limits: ["限制", "限制", "Limits"], checks: ["核對", "核对", "Checks"] }[kind] ?? [kind, kind, kind])[locale === "en" ? 2 : locale === "zh-Hans" ? 1 : 0]}</h4> : null}
+                  {lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
+                </div>
+              ))}
+            </details>
+          </details>
+        ))}
+      </section>
       <header className="zhaowu-report-header">
         <img className="zhaowu-report-art" src="/art/zhaowu-lotus-ascend-v1.webp" alt="" loading="lazy" decoding="async" width={900} height={1272} />
         {copy.kicker ? <p className="zhaowu-report-kicker">{copy.kicker}</p> : null}
