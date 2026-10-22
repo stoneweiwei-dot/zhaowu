@@ -15,6 +15,8 @@ const model = {
   nextAction: "Write down the two options.",
   confidenceBasis: "Birth time is unconfirmed.",
   biggestVariable: "The actual offer terms.",
+  actions: ["Keep the original action detail."],
+  timing: ["Timing is conditional."],
 };
 
 test("guide renders only existing claims and leaves the decision model intact", () => {
@@ -40,11 +42,28 @@ test("three languages keep the same claims and readable, bounded mobile styles",
 });
 
 test("professional report content remains in one collapsed chapter", () => {
-  assert.match(renderer, /<MobileReadingGuide model=\{model\} locale=\{locale\} \/>/);
+  assert.match(renderer, /<MobileReadingGuide model=\{model\} locale=\{locale\} narrative=/);
   assert.match(renderer, /<details className="zhaowu-professional-report" data-professional-report>/);
   const fold = renderer.slice(renderer.indexOf('data-professional-report>'));
   for (const marker of ["zhaowu-report-summary-block", "data-report-stage=\"visual\"", "zhaowu-report-body-block", "<AnalysisNotes result={result}"]) {
     assert.ok(fold.includes(marker), marker);
   }
   assert.doesNotMatch(renderer, /ComicLiteReport|ReportComicLite/);
+});
+
+ test("guide prioritises action and never invents a strength from the day stem", () => {
+  const html = renderToStaticMarkup(createElement(MobileReadingGuide, { model, locale: "en" }));
+  assert.ok(html.indexOf(model.nextAction) < html.indexOf("data-guide-explanation"));
+  assert.match(html, /no separate strength statement/);
+  assert.doesNotMatch(html, /data-guide-explanation[^>]*open/);
+  const withNarrative = renderToStaticMarkup(createElement(MobileReadingGuide, { model, locale: "en", narrative: { strength: "Existing source strength" } }));
+  assert.match(withNarrative, /Existing source strength/);
+});
+
+ test("result-page guide does not duplicate the primary answer or drop actions", () => {
+  const html = renderToStaticMarkup(createElement(MobileReadingGuide, { model, locale: "en", showPrimary: false }));
+  assert.ok(!html.includes(model.directAnswer));
+  assert.ok(!html.includes(model.contract.primaryQuestion));
+  assert.ok(html.includes(model.actions[0]));
+  assert.ok(html.includes(model.timing[0]));
 });

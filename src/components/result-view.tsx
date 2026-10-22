@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
 import { DataGradeFooter } from "@/components/data-grade-footer";
+import { MobileReadingGuide } from "@/components/mobile-reading-guide";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { FollowUpBox } from "@/components/follow-up-box";
 import { CharacterPanel } from "@/components/character-panel";
@@ -235,14 +236,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </article>
 
       {unlocked ? <>
-        <details className="seal-border rounded-xl bg-cream/95 p-5" data-answer-detail>
-          <summary>{locale === "en" ? "Reasons, limits and next steps" : locale === "zh-Hans" ? "展开依据、限制与行动" : "展開依據、限制與行動"}</summary>
-          <div className="mt-3 space-y-3 text-sm leading-7">
-            {decisionModel.reasons.map((line, index) => <p key={`reason-${index}`}>{line}</p>)}
-            {decisionModel.risks.map((line, index) => <p key={`risk-${index}`}>{line}</p>)}
-            {decisionModel.actions.map((line, index) => <p key={`action-${index}`}>{line}</p>)}
-          </div>
-        </details>
+        <div className="seal-border rounded-xl bg-cream/95 p-5" data-answer-detail>
+          <MobileReadingGuide model={decisionModel} locale={locale} showPrimary={false} narrative={reportSections?.find((section) => section.narrative)?.narrative} />
+        </div>
         <FollowUpBox result={result} />
       </> : <p className="text-sm leading-6 text-ink-soft" data-follow-up-locked>{locale === "en" ? "This is a short preview. Unlock below for the full answer and follow-up questions." : locale === "zh-Hans" ? "当前为简短试读；完整答案与连续追问，解锁后开放。" : "目前為簡短試讀；完整答案與連續追問，解鎖後開放。"}</p>}
 
