@@ -194,8 +194,6 @@ test("one Threads publish can target multiple OAuth accounts without exposing to
   assert.doesNotMatch(encrypted, /threads-user-token/);
   assert.equal(decryptThreadsAccessToken(encrypted, env), "threads-user-token");
 });
-, "threads-user-token");
-});
 
 test("locked target handles reject the wrong Meta account before any publish call", async () => {
   const calls = [];
