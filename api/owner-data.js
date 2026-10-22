@@ -136,6 +136,45 @@ function bridgeSecret() {
   return String(process.env.ZHAOWU_OWNER_BRIDGE_SECRET ?? "").trim();
 }
 
+/**
+ * Owner-cookie-only fallback for a backend 404 on site-skin.publish.
+ * Uses the existing Supabase service role server-side; no browser secrets,
+ * public write grants, schema changes, or extra Vercel functions.
+ */
+export async function publishSiteSkinFallback(skin, env = process.env, fetchImpl = fetch) {
+  if (!validSiteSkin(skin)) return { status: 400, body: { ok: false, error: "UNKNOWN_SITE_SKIN" } };
+  const key = String(env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
+  if (!key) return { status: 503, body: { ok: false, error: "SITE_SKIN_SERVICE_NOT_CONFIGURED" } };
+  const updatedAt = new Date().toISOString();
+  const url = String(env.SUPABASE_URL || env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "") +
+    "/rest/v1/site_settings?on_conflict=key&select=value,updated_at";
+  try {
+    const response = await fetchImpl(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: key,
+        Authorization: "Bearer " + key,
+        Prefer: "resolution=merge-duplicates,return=representation",
+      },
+      body: JSON.stringify({
+        key: "published_site_skin_v1",
+        value: { skin, updatedAt },
+        public_read: true,
+        updated_at: updatedAt,
+      }),
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!response.ok) return { status: 503, body: { ok: false, error: "SHARED_SKIN_WRITE_FAILED" } };
+    const rows = await response.json();
+    if (!Array.isArray(rows) || rows[0]?.value?.skin !== skin)
+      return { status: 503, body: { ok: false, error: "SHARED_SKIN_VERIFY_FAILED" } };
+    return { status: 200, body: { ok: true, skin, updatedAt } };
+  } catch {
+    return { status: 503, body: { ok: false, error: "SHARED_SKIN_FALLBACK_UNAVAILABLE" } };
+  }
+}
+
 export default async function handler(req, res) {
   try {
     const method = req.method || "GET";
@@ -176,6 +215,13 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify(payload),
     });
+    // A stale/missing Edge action can return 404 while the authenticated
+    // owner-data API itself is live. Retry this one whitelisted write through
+    // the existing server-side service role, never through the browser.
+    if (action === "site-skin.publish" && upstream.status === 404) {
+      const fallback = await publishSiteSkinFallback(payload.skin);
+      return json(res, fallback.status, fallback.body);
+    }
     const text = await upstream.text();
     let body = null;
     try { body = text ? JSON.parse(text) : null; } catch { body = { ok: false, error: "UPSTREAM_INVALID_RESPONSE" }; }
