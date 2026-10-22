@@ -120,3 +120,17 @@ test("handleOwnerData prefers the supplied payload over re-reading a consumed bo
     assert.deepEqual(JSON.parse(upstream[0].init.body), publish);
   });
 });
+
+test("public GET site-skin is delegated without requiring owner authentication", async () => {
+  const original = globalThis.fetch;
+  try {
+    // Deliberately no owner cookie: the setting read must remain public, read-only.
+    const req = { method: "GET", url: "/api/owner-session?view=site-skin", headers: new Headers({ host: "zhao-wu.com" }) };
+    const response = await ownerSession(req);
+    assert.notEqual(response.status, 401);
+    assert.notEqual(response.status, 405);
+    assert.equal(response.headers.get("Cache-Control"), "no-store");
+  } finally {
+    globalThis.fetch = original;
+  }
+});
