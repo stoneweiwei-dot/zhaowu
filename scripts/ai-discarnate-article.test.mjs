@@ -22,7 +22,7 @@ test("AI essay has a real image for each of nine bilingual sections, without dra
   assert.equal(article.illustrations?.length, 9);
   assert.equal(new Set(article.illustrations?.map(x => x.src)).size, 9);
   for (const locale of ["zh-Hant", "zh-Hans", "en"]) {
-    assert.equal(article.body[locale].split(/\\n\\n+/).length, 9);
+    assert.equal(article.body[locale].split(/\n\n+/).length, 9);
   }
   for (const [i, item] of article.illustrations.entries()) {
     const index = String(i + 1).padStart(2, "0");
@@ -39,7 +39,7 @@ test("Optional byte-for-byte live media verification, only when specifically req
   for (let i=0;i<9;i++) {
     const res = await fetch("https://zhao-wu.com" + article.illustrations[i].src);
     assert.equal(res.status, 200, `Slide ${i+1} HTTP`);
-    assert.match(res.headers.get("content-type")||"", /image\\/png/);
+    assert.match(res.headers.get("content-type")||"", /image\/png/);
     const bytes = Buffer.from(await res.arrayBuffer());
     assert.equal(bytes.length, originalSizes[i], `Slide ${i+1} size`);
     assert.equal(bytes.subarray(0,8).toString("hex"), "89504e470d0a1a0a");
