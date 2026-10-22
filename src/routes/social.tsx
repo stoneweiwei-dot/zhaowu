@@ -9,9 +9,11 @@ import {
 } from "@/lib/bridge/gallery-assets";
 import { useI18n } from "@/lib/i18n";
 import {
+  disconnectMetaAccount,
   disconnectThreadsAccount,
   publishOwnerSocialPost,
   readSocialConfiguration,
+  startMetaConnection,
   startThreadsConnection,
   type SocialChannel,
   type SocialConfiguration,
@@ -21,8 +23,10 @@ import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 
 export const Route = createFileRoute("/social")({ component: SocialPublisherPage });
 
-const CHANNELS: SocialChannel[] = ["instagram", "threads"];
+const CHANNELS: SocialChannel[] = ["instagram", "facebook", "threads"];
 const GALLERY_LIMIT = 12;
+
+const CHANNEL_LABEL: Record<SocialChannel, string> = { instagram: "Instagram", facebook: "Facebook", threads: "Threads" };
 
 function assetUrl(asset: GalleryAsset) {
   const cdn = String(asset.cdn_url ?? "").trim();
@@ -49,6 +53,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
   const [altText, setAltText] = useState("");
   const [channels, setChannels] = useState<SocialChannel[]>([]);
   const [threadAccountIds, setThreadAccountIds] = useState<string[]>([]);
+  const [metaAccountIds, setMetaAccountIds] = useState<string[]>([]);
   const [connectionNotice, setConnectionNotice] = useState("");
   const [results, setResults] = useState<Partial<Record<SocialChannel, SocialPublishResult>> | null>(null);
   const [busy, setBusy] = useState(false);
@@ -82,6 +87,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
         setConfiguration(next);
         setChannels((current) => current.length ? current : CHANNELS.filter((channel) => next[channel]));
         setThreadAccountIds((current) => current.length ? current : next.threadsAccounts.map((account) => account.id));
+        setMetaAccountIds((current) => current.length ? current : next.metaAccounts.map((account) => account.id));
       })
       .catch(() => { if (!cancelled) setStatusError(tx("無法讀取平台連接狀態。", "无法读取平台连接状态。", "Could not read platform connection status.")); });
     return () => { cancelled = true; };
@@ -92,24 +98,23 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
     const result = params.get("threads");
     if (result === "connected") setConnectionNotice(tx(`Threads @${params.get("username") || ""} 已連接。`, `Threads @${params.get("username") || ""} 已连接。`, `Threads @${params.get("username") || ""} connected.`));
     if (result === "error") setStatusError(tx("Threads 授權失敗，請重新連接。", "Threads 授权失败，请重新连接。", "Threads authorization failed. Please try again."));
+    const metaResult = params.get("meta");
+    if (metaResult === "connected") setConnectionNotice(tx(`Meta 已連接 ${params.get("pages") || ""} 個粉絲專頁。`, `Meta 已连接 ${params.get("pages") || ""} 个粉丝专页。`, `Meta connected ${params.get("pages") || ""} Page(s).`));
+    if (metaResult === "error") setStatusError(tx("Meta 授權失敗，請重新連接。", "Meta 授权失败，请重新连接。", "Meta authorization failed. Please try again."));
   }, [locale]);
 
   useEffect(() => {
     if (user?.isOwner && session) void loadGallery();
   }, [user?.isOwner, session?.access_token]);
 
-  const connectedCount = Number(configuration?.threads) + Number(configuration?.instagram);
+  const connectedCount = Number(configuration?.threads) + Number(configuration?.instagram) + Number(configuration?.facebook);
   const threadsBytes = useMemo(() => new TextEncoder().encode(text.trim()).length, [text]);
   const selectedAsset = useMemo(() => assets.find((asset) => asset.id === selectedAssetId) ?? null, [assets, selectedAssetId]);
   const visibleAssets = showAllAssets ? assets : assets.slice(0, GALLERY_LIMIT);
   const previewUrl = selectedAsset ? assetUrl(selectedAsset) : imageUrl.trim();
-  const publishLabel = channels.length === 2
-    ? tx("一次發布到 Instagram + Threads", "一次发布到 Instagram + Threads", "Publish to Instagram + Threads")
-    : channels[0] === "instagram"
-      ? tx("發布到 Instagram", "发布到 Instagram", "Publish to Instagram")
-      : channels[0] === "threads"
-        ? tx("發布到 Threads", "发布到 Threads", "Publish to Threads")
-        : tx("選擇發布平台", "选择发布平台", "Choose a channel");
+  const publishLabel = channels.length
+    ? `${tx("發布到", "发布到", "Publish to")} ${channels.map((channel) => CHANNEL_LABEL[channel]).join(" + ")}`
+    : tx("選擇發布平台", "选择发布平台", "Choose a channel");
   const xhsTitle = useMemo(() => {
     const firstLine = text.trim().split(/\r?\n/).find(Boolean) || tx("今日的命理提醒", "今日的命理提醒", "A note for today");
     return firstLine.replace(/^#+\s*/, "").slice(0, 28);
@@ -126,11 +131,19 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
     if (channel === "threads" && !channels.includes("threads") && !threadAccountIds.length) {
       setThreadAccountIds(configuration?.threadsAccounts.map((account) => account.id) ?? []);
     }
+    if ((channel === "instagram" || channel === "facebook") && !channels.includes(channel) && !metaAccountIds.length) {
+      setMetaAccountIds(configuration?.metaAccounts.map((account) => account.id) ?? []);
+    }
     setResults(null);
   }
 
   function toggleThreadAccount(id: string) {
     setThreadAccountIds((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+    setResults(null);
+  }
+
+  function toggleMetaAccount(id: string) {
+    setMetaAccountIds((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
     setResults(null);
   }
 
@@ -156,6 +169,34 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
       if (!next.threads) setChannels((current) => current.filter((channel) => channel !== "threads"));
     } catch (error) {
       setStatusError(error instanceof Error ? error.message : tx("無法移除 Threads 帳號。", "无法移除 Threads 账号。", "Could not remove Threads account."));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function connectMeta() {
+    setBusy(true);
+    setStatusError("");
+    try {
+      window.location.assign(await startMetaConnection());
+    } catch (error) {
+      setStatusError(error instanceof Error ? error.message : tx("無法開始 Meta 授權。", "无法开始 Meta 授权。", "Could not start Meta authorization."));
+      setBusy(false);
+    }
+  }
+
+  async function disconnectMeta(id: string) {
+    setBusy(true);
+    setStatusError("");
+    try {
+      await disconnectMetaAccount(id);
+      const next = await readSocialConfiguration();
+      setConfiguration(next);
+      setMetaAccountIds((current) => current.filter((item) => item !== id));
+      if (!next.instagram) setChannels((current) => current.filter((channel) => channel !== "instagram"));
+      if (!next.facebook) setChannels((current) => current.filter((channel) => channel !== "facebook"));
+    } catch (error) {
+      setStatusError(error instanceof Error ? error.message : tx("無法移除 Meta 帳號。", "无法移除 Meta 账号。", "Could not remove Meta account."));
     } finally {
       setBusy(false);
     }
@@ -224,13 +265,17 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
       setFormError(tx("請至少選一個 Threads 帳號。", "请至少选一个 Threads 账号。", "Choose at least one Threads account."));
       return;
     }
+    if ((channels.includes("instagram") || channels.includes("facebook")) && configuration?.metaAccounts.length && !metaAccountIds.length) {
+      setFormError(tx("請至少選一個 Meta 粉絲專頁。", "请至少选一个 Meta 粉丝专页。", "Choose at least one Meta Page."));
+      return;
+    }
     if (channels.includes("instagram") && !imageUrl.trim()) {
       setFormError(tx("Instagram 需要一張圖片；請從圖庫選擇或直接上傳。", "Instagram 需要一张图片；请从图库选择或直接上传。", "Instagram needs an image. Choose one from the gallery or upload one."));
       return;
     }
     setBusy(true);
     try {
-      setResults(await publishOwnerSocialPost({ text, imageUrl, altText, channels, threadAccountIds }));
+      setResults(await publishOwnerSocialPost({ text, imageUrl, altText, channels, threadAccountIds, metaAccountIds }));
     } catch (error) {
       setFormError(error instanceof Error ? error.message : tx("發布失敗。", "发布失败。", "Publishing failed."));
     } finally {
@@ -263,23 +308,50 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
           <div>
             <p className="text-[10px] tracking-[0.22em] text-cinnabar">SOCIAL PUBLISHER</p>
             <Title className="mt-1 font-display text-3xl">{tx("一次發到多個帳號", "一次发到多个账号", "Publish to multiple accounts")}</Title>
-            <p className="mt-2 text-sm leading-6 text-ink-soft">{tx("寫一次、選一張圖，可同時送到 Instagram 與多個 Threads。", "写一次、选一张图，可同时发送到 Instagram 与多个 Threads。", "Write once, choose one image, then publish to Instagram and multiple Threads accounts.")}</p>
+            <p className="mt-2 text-sm leading-6 text-ink-soft">{tx("寫一次，可同時送到 Instagram、Facebook 粉絲專頁與多個 Threads。", "写一次，可同时发送到 Instagram、Facebook 粉丝专页与多个 Threads。", "Write once, then publish to Instagram, Facebook Pages, and multiple Threads accounts.")}</p>
           </div>
           {!embedded ? <Link to="/account" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft">← {tx("後台", "后台", "Console")}</Link> : null}
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-2" aria-label={tx("平台連接", "平台连接", "Platform connections")}>
+        <div className="mt-5 grid grid-cols-3 gap-2" aria-label={tx("平台連接", "平台连接", "Platform connections")}>
           {CHANNELS.map((channel) => {
             const connected = configuration?.[channel] === true;
             return (
               <div key={channel} className={`rounded-xl border px-3 py-3 ${connected ? "border-wood/30 bg-wood/5" : "border-line bg-paper/35"}`}>
-                <p className="text-sm font-medium text-ink">{channel === "threads" ? "Threads" : "Instagram"}</p>
-                {configuration?.targets?.[channel] ? <p className="mt-1 text-xs font-medium text-ink-soft">@{configuration.targets[channel]}</p> : null}
+                <p className="text-sm font-medium text-ink">{CHANNEL_LABEL[channel]}</p>
+                {channel !== "facebook" && configuration?.targets?.[channel] ? <p className="mt-1 text-xs font-medium text-ink-soft">@{configuration.targets[channel]}</p> : null}
                 <p className={`mt-1 text-xs ${connected ? "text-wood" : "text-ink-mute"}`}>{connected ? tx("已連接並鎖定", "已连接并锁定", "Connected and locked") : tx("未連接", "未连接", "Not connected")}</p>
               </div>
             );
           })}
         </div>
+        {configuration?.metaOauthReady ? (
+          <div className="mt-4 rounded-xl border border-line bg-paper/35 p-4" data-meta-account-manager>
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-ink">Facebook + Instagram</p>
+                <p className="mt-1 text-xs text-ink-mute">{tx("授權一次，自動讀取粉絲專頁與其 Instagram 專業帳號。", "授权一次，自动读取粉丝专页及其 Instagram 专业账号。", "Authorize once to load Pages and linked Instagram professional accounts.")}</p>
+              </div>
+              <button type="button" disabled={busy} onClick={() => void connectMeta()} className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-[#315f51] px-4 text-xs font-medium text-[#fffaf0] disabled:opacity-45">
+                {configuration.metaAccounts.length ? tx("重新授權", "重新授权", "Reconnect") : tx("＋連接 Meta", "＋连接 Meta", "+ Connect Meta")}
+              </button>
+            </div>
+            {configuration.metaAccounts.length ? (
+              <div className="mt-3 space-y-2">
+                {configuration.metaAccounts.map((account) => (
+                  <div key={account.id} className="flex min-h-12 items-center gap-3 rounded-xl border border-line bg-cream/70 px-3 py-2">
+                    {account.profilePictureUrl ? <img src={account.profilePictureUrl} alt="" className="h-9 w-9 rounded-full object-cover" /> : <span className="h-9 w-9 rounded-full bg-paper-deep" />}
+                    <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2">
+                      <input type="checkbox" checked={metaAccountIds.includes(account.id)} onChange={() => toggleMetaAccount(account.id)} disabled={busy} />
+                      <span className="min-w-0"><span className="block truncate text-sm font-medium text-ink">{account.pageName}</span><span className="block truncate text-[11px] text-ink-mute">Facebook{account.instagramUsername ? ` · Instagram @${account.instagramUsername}` : ""}</span></span>
+                    </label>
+                    <button type="button" disabled={busy} onClick={() => void disconnectMeta(account.id)} className="min-h-9 px-2 text-xs text-cinnabar disabled:opacity-45">{tx("移除", "移除", "Remove")}</button>
+                  </div>
+                ))}
+              </div>
+            ) : <p className="mt-3 text-xs leading-5 text-ink-mute">{tx("尚未連接。按一次「連接 Meta」，在 Facebook 畫面同意權限即可。", "尚未连接。按一次“连接 Meta”，在 Facebook 页面同意权限即可。", "Not connected. Use Connect Meta once and approve on Facebook.")}</p>}
+          </div>
+        ) : null}
         {configuration?.threadsOauthReady ? (
           <div className="mt-4 rounded-xl border border-line bg-paper/35 p-4" data-threads-account-manager>
             <div className="flex items-center justify-between gap-3">
@@ -313,7 +385,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
           <div className="mt-4 rounded-xl border border-cinnabar/25 bg-cinnabar/5 px-4 py-3" data-social-connection-required>
             <p className="text-sm font-medium text-ink">{tx("Meta 尚未連接", "Meta 尚未连接", "Meta is not connected")}</p>
             <p className="mt-1 text-xs leading-5 text-ink-soft">{configuration.threadsOauthReady
-              ? tx("點上方「連接帳號」完成一次官方授權；可重複連接第二個 Threads。", "点上方“连接账号”完成一次官方授权；可重复连接第二个 Threads。", "Use Connect above once for each Threads account.")
+              ? tx("點上方連接按鈕完成官方授權。", "点上方连接按钮完成官方授权。", "Use the connection buttons above to authorize your accounts.")
               : tx("Meta 應用尚未配置完成。", "Meta 应用尚未配置完成。", "The Meta app is not configured yet.")}</p>
           </div>
         ) : null}
@@ -322,7 +394,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
       <form onSubmit={(event) => void publish(event)} className="seal-border rounded-[1.35rem] bg-cream/95 p-5 sm:p-7">
         <fieldset>
           <legend className="text-sm font-medium text-ink">{tx("1 · 發到哪裡", "1 · 发到哪里", "1 · Publish to")}</legend>
-          <div className="mt-2 grid grid-cols-2 gap-2">
+          <div className="mt-2 grid grid-cols-3 gap-2">
             {CHANNELS.map((channel) => {
               const connected = configuration?.[channel] === true;
               const selected = channels.includes(channel);
@@ -335,7 +407,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
                   onClick={() => toggle(channel)}
                   className={`min-h-12 rounded-xl border px-4 text-left text-sm font-medium ${selected ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : connected ? "border-line bg-paper/55 text-ink" : "cursor-not-allowed border-line/60 bg-paper/25 text-ink-mute opacity-55"}`}
                 >
-                  {channel === "threads" ? "Threads" : "Instagram"}<span className="block text-[11px] font-normal opacity-75">{connected ? tx(selected ? "已選" : "可發布", selected ? "已选" : "可发布", selected ? "Selected" : "Ready") : tx("未連接", "未连接", "Not connected")}</span>
+                  {CHANNEL_LABEL[channel]}<span className="block text-[11px] font-normal opacity-75">{connected ? tx(selected ? "已選" : "可發布", selected ? "已选" : "可发布", selected ? "Selected" : "Ready") : tx("未連接", "未连接", "Not connected")}</span>
                 </button>
               );
             })}
@@ -454,7 +526,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
               const result = results[channel];
               return (
                 <div key={channel} className={`rounded-xl border px-4 py-3 text-sm ${result?.ok ? "border-wood/30 bg-wood/5 text-wood" : "border-cinnabar/30 bg-cinnabar/5 text-cinnabar"}`}>
-                  <p>{channel === "threads" ? "Threads" : "Instagram"} · {result?.ok ? tx("發布完成", "发布完成", "Publishing completed") : result?.message || tx("發布失敗", "发布失败", "Failed")}</p>
+                  <p>{CHANNEL_LABEL[channel]} · {result?.ok ? tx("發布完成", "发布完成", "Publishing completed") : result?.message || tx("發布失敗", "发布失败", "Failed")}</p>
                   {result?.accounts?.length ? (
                     <ul className="mt-2 space-y-1 border-t border-current/15 pt-2 text-xs">
                       {result.accounts.map((account) => <li key={account.accountId}>@{account.username} · {account.ok ? tx("成功", "成功", "Published") : account.message || tx("失敗", "失败", "Failed")}</li>)}

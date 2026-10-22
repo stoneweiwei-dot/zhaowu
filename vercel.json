@@ -44,9 +44,6 @@
     "api/owner-music-write.js": {
       "maxDuration": 60,
       "includeFiles": "lib/owner-music-ssh.json"
-    },
-    "api/release-watch.js": {
-      "maxDuration": 20
     }
   },
   "headers": [
@@ -264,10 +261,6 @@
     {
       "path": "/api/owner-session?action=cron.autopublish",
       "schedule": "0 12 * * *"
-    },
-    {
-      "path": "/api/release-watch",
-      "schedule": "41 17 * * *"
     }
   ]
 }

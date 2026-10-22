@@ -9,6 +9,12 @@ import {
   threadsAuthorizationOwnerProof,
   verifyThreadsAuthorization,
 } from "../lib/threads-oauth.js";
+import {
+  createMetaAuthorization,
+  exchangeMetaAuthorizationCode,
+  metaAuthorizationOwnerProof,
+  verifyMetaAuthorization,
+} from "../lib/meta-oauth.js";
 
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
@@ -23,6 +29,7 @@ const configuredEnv = {
 test("social credentials stay server-side and configuration exposes booleans only", async () => {
   assert.deepEqual(socialConfiguration(configuredEnv), {
     instagram: true,
+    facebook: false,
     threads: true,
     ready: true,
     targets: { instagram: "", threads: "" },
@@ -36,6 +43,65 @@ test("social credentials stay server-side and configuration exposes booleans onl
   assert.match(client, /fetch\("\/api\/owner-session"/);
   assert.match(client, /social\.status/);
   assert.match(client, /social\.publish/);
+});
+
+test("Meta OAuth state is bound to the owner and discovers managed Pages with linked Instagram", async () => {
+  const env = {
+    META_APP_ID: "1234567890",
+    META_APP_SECRET: "app-secret-for-unit-test-123456",
+    ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-unit-test-123456",
+    PUBLIC_SITE_ORIGIN: "https://zhao-wu.com",
+  };
+  const authorization = createMetaAuthorization(env, 1_000_000, "sealed-owner-proof");
+  const authUrl = new URL(authorization.url);
+  assert.equal(authUrl.origin, "https://www.facebook.com");
+  assert.match(authUrl.pathname, /\/dialog\/oauth$/);
+  assert.match(authUrl.searchParams.get("scope"), /pages_manage_posts/);
+  assert.match(authUrl.searchParams.get("scope"), /instagram_content_publish/);
+  const state = authUrl.searchParams.get("state");
+  const cookieValue = decodeURIComponent(authorization.cookie.match(/=([^;]+)/)[1]);
+  const request = { headers: { cookie: `__Host-zhaowu_meta_oauth=${encodeURIComponent(cookieValue)}` } };
+  assert.equal(verifyMetaAuthorization(request, state, env, 1_000_001), true);
+  assert.equal(metaAuthorizationOwnerProof(request), "sealed-owner-proof");
+
+  const calls = [];
+  const fakeFetch = async (url) => {
+    calls.push(String(url));
+    if (calls.length === 1) return new Response(JSON.stringify({ access_token: "short-token" }), { status: 200 });
+    if (calls.length === 2) return new Response(JSON.stringify({ access_token: "long-user-token", expires_in: 5_000_000 }), { status: 200 });
+    return new Response(JSON.stringify({ data: [{
+      id: "123456789",
+      name: "昭梧",
+      access_token: "page-token",
+      instagram_business_account: { id: "987654321", username: "fkofflove", profile_picture_url: "https://example.com/a.jpg" },
+    }] }), { status: 200 });
+  };
+  const accounts = await exchangeMetaAuthorizationCode("code", env, fakeFetch);
+  assert.equal(accounts.length, 1);
+  assert.equal(accounts[0].pageName, "昭梧");
+  assert.equal(accounts[0].instagramUsername, "fkofflove");
+  assert.equal(accounts[0].accessToken, "page-token");
+});
+
+test("one Meta connection publishes to its Facebook Page and linked Instagram without exposing the token", async () => {
+  const calls = [];
+  const fakeFetch = async (url, init = {}) => {
+    calls.push({ url: String(url), method: init.method || "GET", values: Object.fromEntries(new URLSearchParams(String(init.body || ""))) });
+    if ((init.method || "GET") === "GET") return new Response(JSON.stringify({ username: "fkofflove" }), { status: 200 });
+    return new Response(JSON.stringify({ id: String(url).endsWith("media") ? "container" : "published" }), { status: 200 });
+  };
+  const results = await publishSocialPost({
+    text: "昭梧測試",
+    imageUrl: "https://zhao-wu.com/og-preview.png",
+    channels: ["instagram", "facebook"],
+  }, {}, fakeFetch, [], [{
+    id: "meta-1", pageId: "123", pageName: "昭梧", instagramUserId: "456", instagramUsername: "fkofflove", accessToken: "page-secret",
+  }]);
+  assert.equal(results.instagram.ok, true);
+  assert.equal(results.facebook.ok, true);
+  assert.ok(calls.some((call) => call.url.endsWith("/456/media")));
+  assert.ok(calls.some((call) => call.url.endsWith("/123/photos")));
+  assert.doesNotMatch(JSON.stringify(results), /page-secret/);
 });
 
 test("validation preserves platform-specific limits", () => {
@@ -199,6 +265,8 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
   assert.match(api, /social\.status/);
   assert.match(api, /social\.publish/);
   assert.match(api, /social\.threads\.connect/);
+  assert.match(api, /social\.meta\.connect/);
+  assert.match(api, /meta\.callback/);
   assert.match(api, /threads\.callback/);
   assert.equal(vercel.functions["api/owner-session.js"].maxDuration, 60);
   assert.equal(vercel.functions["api/owner-social.js"], undefined);
