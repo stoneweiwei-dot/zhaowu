@@ -41,8 +41,9 @@ test("browser code contains no Supabase service credential and calls only the sa
   assert.match(client, /fetch\("\/api\/owner-data"/);
   assert.match(client, /credentials: "same-origin"/);
   assert.match(api, /requestIsSameOrigin/);
-  assert.match(api, /ownerSecretFrom/);
-  assert.match(api, /X-Zhaowu-Owner-Secret/i);
+  assert.match(api, /authenticateOwner/);
+  assert.match(api, /ownerAuthHeaders/);
+  assert.match(await source("lib/owner-auth.js"), /X-Zhaowu-Owner-Secret/i);
   assert.doesNotMatch(api, /SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SECRET_KEY/);
   assert.match(edge, /SUPABASE_SERVICE_ROLE_KEY/);
   assert.match(edge, /ALLOWED_ACTIONS/);

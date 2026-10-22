@@ -38,9 +38,11 @@ test("owner write is cookie gated, same-origin only and the UI never reports loc
   const skin = readFileSync("src/lib/theme-skins.ts", "utf8");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
   const shell = readFileSync("src/components/site-shell.tsx", "utf8");
-  assert.match(api, /ownerSecretFromRequest\(req\)/);
+  assert.match(api, /authenticateOwner\(req\)/);
   assert.match(api, /if \(!requestIsSameOrigin\(req\)\)/);
-  assert.match(api, /if \(!ownerSecret\)/);
+  assert.match(api, /if \(!owner\)/);
+  // Publishing writes to Git with a key sealed by the owner password, so Passkey sessions are refused.
+  assert.match(api, /owner\.kind !== "secret"[\s\S]{0,120}OWNER_PASSWORD_REQUIRED/);
   assert.match(api, /validSiteSkin\(payload\?\.skin\)/);
   assert.match(skin, /await fetch\("\/api\/owner-data", \{/);
   assert.match(skin, /if \(!response\.ok\) throw new Error/);

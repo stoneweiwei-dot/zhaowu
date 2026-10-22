@@ -20,7 +20,8 @@ const OwnerGalleryManager = lazy(() => import("@/components/owner-gallery-manage
 const OwnerLoginVisualsManager = lazy(() => import("@/components/owner-login-visuals-manager").then((m) => ({ default: m.OwnerLoginVisualsManager })));
 const SocialPublisherPage = lazy(() => import("./social").then((m) => ({ default: m.SocialPublisherPage })));
 const OwnerThemeSkinsManager = lazy(() => import("@/components/owner-theme-skins-manager").then((m) => ({ default: m.OwnerThemeSkinsManager })));
-type ConsoleView = "reports" | "images" | "opening" | "social" | "themes";
+const OwnerDevicesManager = lazy(() => import("@/components/owner-devices-manager").then((m) => ({ default: m.OwnerDevicesManager })));
+type ConsoleView = "reports" | "images" | "opening" | "social" | "themes" | "devices";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -341,6 +342,10 @@ function AccountPage() {
             <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "社群發布", "社群发布", "Social publishing")}</summary>
             <button id="console-tab-social" type="button" aria-controls="console-panel-social" aria-current={consoleView === "social" ? "page" : undefined} onClick={() => selectConsoleView("social")} className="mt-3 min-h-11 rounded-lg border border-line px-4 text-left">Instagram / Threads</button>
           </details>
+          <details className="rounded-xl border border-line bg-paper/45 p-3">
+            <summary className="cursor-pointer font-semibold text-ink">{tr(locale, "登入與安全", "登录与安全", "Sign-in and security")}</summary>
+            <button id="console-tab-devices" type="button" aria-controls="console-panel-devices" aria-current={consoleView === "devices" ? "page" : undefined} onClick={() => selectConsoleView("devices")} className="mt-3 min-h-11 rounded-lg border border-line px-4 text-left">{tr(locale, "受信任裝置", "受信任设备", "Trusted devices")}</button>
+          </details>
       </nav>
 
       <div id="console-panel-reports" role="region" aria-labelledby="console-tab-reports" hidden={consoleView !== "reports"}>
@@ -476,6 +481,10 @@ function AccountPage() {
       </div>
       <div id="console-panel-social" role="region" aria-labelledby="console-tab-social" hidden={consoleView !== "social"}>
         {visitedViews.has("social") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入發布器…", "加载发布器…", "Loading publisher…")}</p>}><SocialPublisherPage embedded /></Suspense> : null}
+      </div>
+
+      <div id="console-panel-devices" role="region" aria-labelledby="console-tab-devices" hidden={consoleView !== "devices"}>
+        {visitedViews.has("devices") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入裝置…", "加载设备…", "Loading devices…")}</p>}><OwnerDevicesManager locale={locale} /></Suspense> : null}
       </div>
 
       <Link to="/" className="inline-flex h-11 items-center rounded-full border border-line bg-cream px-5 text-ink">{t("backHome")}</Link>

@@ -1,4 +1,5 @@
-import { isValidOwnerSecret, ownerSecretFromRequest } from "../lib/owner-session-cookie.js";
+import { authenticateOwner, ownerAuthHeaders } from "../lib/owner-auth.js";
+import { isValidOwnerSecret } from "../lib/owner-session-cookie.js";
 import { readPublishedSiteSkin, validSiteSkin } from "../lib/owner-site-skin-public.js";
 
 export { isValidOwnerSecret };
@@ -136,8 +137,8 @@ export default async function handler(req, res) {
     }
     if (method !== "POST") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
-    const ownerSecret = ownerSecretFromRequest(req);
-    if (!ownerSecret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+    const owner = await authenticateOwner(req);
+    if (!owner) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
 
     const serverBridgeSecret = bridgeSecret();
 
@@ -146,9 +147,11 @@ export default async function handler(req, res) {
     if (action === "site-skin.publish") {
       const skin = validSiteSkin(payload?.skin);
       if (!skin) return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
+      // Publishing commits to Git with a deploy key sealed by the owner password; Passkey sessions have no password.
+      if (owner.kind !== "secret") return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
       try {
         const { saveSharedSiteSkin } = await import("../lib/owner-music-git.js");
-        const published = await saveSharedSiteSkin(ownerSecret, skin);
+        const published = await saveSharedSiteSkin(owner.secret, skin);
         return json(res, 200, { ok: true, ...published });
       } catch {
         return json(res, 503, { ok: false, error: "SHARED_SKIN_WRITE_FAILED" });
@@ -160,7 +163,7 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         ...(serverBridgeSecret ? { "X-Zhaowu-Bridge-Secret": serverBridgeSecret } : {}),
-        "X-Zhaowu-Owner-Secret": ownerSecret,
+        ...ownerAuthHeaders(owner),
         "X-Zhaowu-Server-Bridge": "r162",
       },
       body: JSON.stringify(payload),

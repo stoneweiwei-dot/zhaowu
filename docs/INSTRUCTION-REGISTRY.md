@@ -767,3 +767,15 @@
 - 保留不變：子平八字唯一結構主判，專項只作旁證；首頁不顯示任何流派入口（`data-specialist-link` 保持 0）；不恢復多 Session／多卡片／九頁；專項 routes 與 deterministic engines 不動；不新增 runtime 依賴。
 - 摺疊落點：命書六段（核心底盤…反覆課題）各自 `<details>`，收合時只顯示標題＋兩行摘要；完整報告「總體概括」保留前兩行、其餘收進「展開完整概括」，「身體需要注意的地方」標題常顯、內文收合。直接回答與下一步在 `ResultView` 首屏，維持不變。
 - 測試：`scripts/report-fold-specialist-tree.test.mjs`。
+
+## 2026-10-22 站主 Passkey 受信任裝置（兩台 iPhone 免密碼）
+
+- 站主指令：兩台手機平時直接進站主後台、不必每次輸密碼；要可單獨撤銷遺失的手機；不用 IP 白名單。
+- 取代範圍（僅此）：「站主 session 一律是密碼 Cookie」。現行有兩種 session：密碼 session（Cookie 為伺服器金鑰加密的 `v1.`，見 #702）與 Passkey 裝置 session（Cookie `d1.`，只含裝置 id，90 天）。
+- 授權：`lib/owner-auth.js` 的 `authenticateOwner()` 是所有站主 API 的唯一入口。裝置 session 每次都對 Edge Function 查撤銷狀態（每實例快取 60 秒；查不到一律視為未授權）。
+- 只有密碼 session 能：加入新裝置（`owner.device.create`）、上傳音樂、發布主題皮膚（部署金鑰由站主密碼加密，裝置 session 沒有密碼）。撤銷與列表任一受信任裝置都可。
+- 儲存：`public.owner_devices`（RLS 啟用、無 policy，僅 Edge Function service role）。撤銷是軟刪除，憑證 id 永遠不能重新註冊；最多 5 台有效裝置。
+- 新依賴：`@simplewebauthn/server` 13（僅 Vercel API 使用）。沒有新增 API 檔（Hobby 上限 12 個），Passkey 動作併入 `api/owner-session.js`。
+- Passkey 綁定在註冊時的網域；請在正式網域 `zhaowu.soul-terminal.com` 註冊，`*.vercel.app` 上註冊的 Passkey 不能在正式網域用。
+- 部署順序（不可顛倒）：① 套用 migration `20261022000000_owner_devices.sql` → ② 部署 Edge Function `zhaowu-owner-data` → ③ 合併本 PR 部署 Vercel。確認 `ZHAOWU_OWNER_BRIDGE_SECRET` 至少 32 字元。
+- 測試：`owner-passkey`、`owner-devices-edge`、`owner-session-passkey-api`（虛擬驗證器跑完整註冊/登入/撤銷流程）。

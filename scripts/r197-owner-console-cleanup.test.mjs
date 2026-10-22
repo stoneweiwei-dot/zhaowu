@@ -57,7 +57,7 @@ test("r214 public owner-music GET is a separate function from the Git writer", a
   assert.doesNotMatch(api, /owner-music-git|isomorphic-git|ssh2|OWNER_KEY_SHA256/);
   assert.match(api, /readOwnerMusicManifest/);
   assert.match(writeApi, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
-  assert.match(writeApi, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
+  assert.match(writeApi, /from ["']\.\.\/lib\/owner-auth\.js["']/);
   assert.match(writeApi, /OWNER_REQUIRED/);
   assert.doesNotMatch(publicRead, /isomorphic-git\/http\/node|isomorphic-git|ssh2/);
   assert.doesNotMatch(git, /import git from ["']isomorphic-git["']/);

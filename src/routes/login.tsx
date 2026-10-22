@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { BrandSeal } from "@/components/brand-seal";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { ownerSignIn } from "@/lib/auth/owner-api";
+import { passkeySignIn, passkeySupported } from "@/lib/auth/passkey-client";
 import { useI18n } from "@/lib/i18n";
 import { useSkin } from "@/lib/theme-skins";
 
@@ -43,6 +44,24 @@ function LoginPage() {
       await navigate({ to: "/account" });
     } catch (err) {
       setError(err instanceof Error ? err.message : t("loginFailed"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onPasskey() {
+    setError(null);
+    setBusy(true);
+    try {
+      await passkeySignIn();
+      await reload();
+      await navigate({ to: "/account" });
+    } catch (err) {
+      const code = err instanceof Error ? err.message : "";
+      if (code === "PASSKEY_CANCELLED") return;
+      setError(code === "PASSKEY_DEVICE_UNKNOWN"
+        ? ownerText(locale, "這支手機還不是受信任裝置。請先用密碼登入，再到站主後台加入。", "这支手机还不是受信任设备。请先用密码登录，再到站主后台加入。", "This phone is not a trusted device yet. Sign in with the password first, then add it in the owner console.")
+        : ownerText(locale, "Face ID 登入失敗，請改用密碼。", "Face ID 登录失败，请改用密码。", "Face ID sign-in failed. Use the password instead."));
     } finally {
       setBusy(false);
     }
@@ -100,6 +119,12 @@ function LoginPage() {
             {busy ? t("processing") : ownerText(locale, "進入站主後台", "进入站主后台", "Enter owner console")}
           </button>
         </form>
+
+        {passkeySupported() ? (
+          <button type="button" disabled={busy} onClick={() => void onPasskey()} className="stone-login-primary" data-owner-passkey-login>
+            {ownerText(locale, "用 Face ID 登入", "用 Face ID 登录", "Sign in with Face ID")}
+          </button>
+        ) : null}
 
         <div className="stone-login-footer">
           <span>{t("tagline")}</span>

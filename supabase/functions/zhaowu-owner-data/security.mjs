@@ -2,6 +2,7 @@ import { createHash, timingSafeEqual } from "node:crypto";
 
 const encoder = new TextEncoder();
 const OWNER_KEY_SHA256 = "6236d83b2be351c9c80cd4ed07e8cadac684ab8d5a659096eb26b2e984a33c07";
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 function text(value) {
   return String(value ?? "").trim();
@@ -71,10 +72,28 @@ export function authorizeBridgeHeaders(headers, expectedSecret, expectedOwnerHas
   }
 
   const ownerSecret = text(headers?.get?.("x-zhaowu-owner-secret"));
-  if (!isValidOwnerSecret(ownerSecret, expectedOwnerHash)) {
-    return { ok: false, status: 401, error: "OWNER_UNAUTHORIZED" };
-  }
-  return { ok: true };
+  if (isValidOwnerSecret(ownerSecret, expectedOwnerHash)) return { ok: true, mode: "secret" };
+
+  // Passkey sessions carry no password. The caller (index.ts) must still confirm the device is not revoked.
+  const deviceId = text(headers?.get?.("x-zhaowu-owner-device")).toLowerCase();
+  if (UUID_PATTERN.test(deviceId)) return { ok: true, mode: "device", deviceId };
+  return { ok: false, status: 401, error: "OWNER_UNAUTHORIZED" };
+}
+
+/**
+ * For actions that run before anybody is signed in (looking up a Passkey while signing in).
+ * Unlike authorizeBridgeHeaders this never skips the bridge secret: if none is configured it refuses.
+ */
+export function authorizeBridgeOnly(headers, expectedSecret) {
+  const bridgeVersion = text(headers?.get?.("x-zhaowu-server-bridge"));
+  if (bridgeVersion !== "r162") return { ok: false, status: 403, error: "BRIDGE_REQUIRED" };
+  const expected = text(expectedSecret);
+  if (expected.length < 32) return { ok: false, status: 503, error: "BRIDGE_NOT_CONFIGURED" };
+  const actual = text(headers?.get?.("x-zhaowu-bridge-secret"));
+  if (actual.length !== expected.length) return { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
+  let diff = 0;
+  for (let index = 0; index < actual.length; index += 1) diff |= actual.charCodeAt(index) ^ expected.charCodeAt(index);
+  return diff === 0 ? { ok: true } : { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
 }
 
 export async function createUploadTicket(fields, secret, nowSeconds = Math.floor(Date.now() / 1000), ttlSeconds = 7200) {

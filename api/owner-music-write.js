@@ -1,5 +1,5 @@
 import { MAX_BYTES } from "../lib/owner-music-public.js";
-import { ownerSecretFromRequest } from "../lib/owner-session-cookie.js";
+import { authenticateOwner } from "../lib/owner-auth.js";
 import {
   activateOwnerMusicTrack,
   deleteOwnerMusicTrack,
@@ -158,8 +158,11 @@ export default async function handler(req, res) {
     const method = req.method || "GET";
     if (method === "GET" || method === "HEAD") return json(res, 405, { ok: false });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
-    const secret = ownerSecretFromRequest(req);
-    if (!secret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+    const owner = await authenticateOwner(req);
+    if (!owner) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+    // The Git deploy key is sealed with the owner password, so a Passkey session cannot write music.
+    if (owner.kind !== "secret") return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
+    const secret = owner.secret;
 
     if (method === "POST") {
       const declaredType = headerValue(req, "content-type").split(";")[0].trim().toLowerCase();

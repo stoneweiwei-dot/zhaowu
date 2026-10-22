@@ -1,5 +1,5 @@
 import { classifyMingshuSource, fetchMingshuJson, jsonResponse, sanitizeChartInput } from "../lib/mingshu-client.js";
-import { requestHasOwnerSession } from "../lib/owner-session-cookie.js";
+import { authenticateOwner } from "../lib/owner-auth.js";
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     if ((req.method || "POST") !== "POST") {
       return jsonResponse(res, 405, { ok: false, error: { code: "METHOD_NOT_ALLOWED" } });
     }
-    if (!requestHasOwnerSession(req)) {
+    if (!(await authenticateOwner(req))) {
       return jsonResponse(res, 401, { ok: false, error: { code: "OWNER_REQUIRED", message: "Mingshu chart proxy is owner-gated." } });
     }
     let body;
