@@ -156,7 +156,11 @@ export async function refreshSharedSkin(): Promise<string | null> {
   if (typeof window === "undefined" || pendingPublishes > 0) return null;
   const token = ++syncSerial;
   try {
-    const response = await fetch("/api/owner-data?view=site-skin", { cache: "no-store", credentials: "same-origin" });
+    let response = await fetch("/api/owner-data?view=site-skin", { cache: "no-store", credentials: "same-origin" });
+    // Read-only fallback: mirror the publish route recovery without changing stored preferences.
+    if (response.status === 404) {
+      response = await fetch("/api/owner-session?view=site-skin", { cache: "no-store", credentials: "same-origin" });
+    }
     if (!response.ok) return null; // keep last known skin if the setting service is unavailable
     const payload = await response.json() as { skin?: unknown; configured?: boolean };
     const selected = payload.skin === "none" ? "none" : typeof payload.skin === "string" && skinById(payload.skin) ? payload.skin : null;
