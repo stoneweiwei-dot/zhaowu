@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { BaziKnowledgeNotesSection } from "@/components/bazi-knowledge-notes-section";
 import { ZiweiKnowledgeNotesSection } from "@/components/ziwei-knowledge-notes-section";
 import { ZiweiHomeEnvironmentArticle } from "@/components/ziwei-home-environment-article";
@@ -58,6 +58,12 @@ function KnowledgePage() {
       <ZiweiHomeEnvironmentArticle />
 
       <CuratedVideoShelf placement="knowledge" />
+
+      <Link to="/knowledge/true-solar-time" className="seal-border block rounded-2xl bg-paper px-5 py-4 transition hover:border-cinnabar/40" data-true-solar-time-link>
+        <span className="text-xs font-semibold tracking-[0.14em] text-cinnabar">{tr(locale,"計算說明","计算说明","HOW IT IS CALCULATED")}</span>
+        <strong className="mt-2 block font-display text-xl text-ink">{tr(locale,"真太陽時怎麼算：經度差、均時差與夏令時","真太阳时怎么算：经度差、均时差与夏令时","How true solar time is calculated: longitude, equation of time and DST")}</strong>
+        <span className="mt-2 block text-sm leading-6 text-ink-soft">{tr(locale,"公式、悉尼／台北／北京實例、對命盤的影響與誤差限制。","公式、悉尼／台北／北京实例、对命盘的影响与误差限制。","The formula, Sydney / Taipei / Beijing examples, what it changes in a chart, and its error limits.")}</span>
+      </Link>
 
       <a href="/#birth-form" className="seal-border flex min-h-14 items-center justify-between rounded-2xl bg-cream px-5 py-4 text-sm text-ink">
         <span>{tr(locale,"產生完整命盤","产生完整命盘","Create complete chart")}</span>
