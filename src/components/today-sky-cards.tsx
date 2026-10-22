@@ -2,6 +2,7 @@ import { useI18n } from "@/lib/i18n";
 import { getTodaySkyCards, getTodaySkyUpdatedDate } from "@/lib/sky-events";
 import { getSkyCardTone, getSkyWeekRange, getSkyWeekTheme, type SkyTone } from "@/lib/sky-week-presentation";
 import "@/sky-events.css";
+import "@/sky-art-restore.css";
 
 type Lang = "zh-Hant" | "zh-Hans" | "en";
 
