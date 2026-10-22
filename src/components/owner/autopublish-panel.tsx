@@ -170,6 +170,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         ? { tone: "mute" as const, title: "帳號連接狀態暫時無法確認", detail: "帳號清單暫時讀不到，所以不能判斷是否已連接。稍後重新整理再確認。" }
         : { tone: "bad" as const, title: "已開啟，但目前不會發出任何貼文", detail: "還沒有連接可自動發布的平台。先連接 Threads（下方一鍵授權），連接完成後會自動開始。" };
     }
+    if (accountsUnverified) return { tone: "warn" as const, title: "部分帳號狀態無法確認", detail: "帳號清單讀取失敗，不能確認全部自動發布渠道正常；請先檢查平台連接。" };
     const next = data?.schedule?.upcoming?.[0];
     return {
       tone: "ok" as const,
