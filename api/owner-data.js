@@ -1,4 +1,5 @@
-import { isValidOwnerSecret, ownerSecretFromRequest } from "../lib/owner-session-cookie.js";
+import { authenticateOwner, ownerAuthHeaders } from "../lib/owner-auth.js";
+import { isValidOwnerSecret } from "../lib/owner-session-cookie.js";
 import { readPublishedSiteSkin, readPublishedSiteSkinFromSettings, validSiteSkin } from "../lib/owner-site-skin-public.js";
 
 export { isValidOwnerSecret };
@@ -194,8 +195,8 @@ export default async function handler(req, res) {
     }
     if (method !== "POST") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
-    const ownerSecret = ownerSecretFromRequest(req);
-    if (!ownerSecret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+    const owner = await authenticateOwner(req);
+    if (!owner) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
 
     const serverBridgeSecret = bridgeSecret();
 
@@ -205,12 +206,16 @@ export default async function handler(req, res) {
       return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
     }
     if (!ACTIONS.has(action)) return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
+    // Promo and article actions go to their own isolated Edge Functions, which only accept the owner password.
+    if (ownerUpstreamFunction(action) !== "zhaowu-owner-data" && owner.kind !== "secret") {
+      return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
+    }
     const upstream = await fetch(`${supabaseUrl()}/functions/v1/${ownerUpstreamFunction(action)}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         ...(serverBridgeSecret ? { "X-Zhaowu-Bridge-Secret": serverBridgeSecret } : {}),
-        "X-Zhaowu-Owner-Secret": ownerSecret,
+        ...ownerAuthHeaders(owner),
         "X-Zhaowu-Server-Bridge": "r162",
       },
       body: JSON.stringify(payload),

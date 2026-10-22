@@ -261,9 +261,9 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
   const api = await source("api/owner-session.js");
   const vercel = JSON.parse(await source("vercel.json"));
   const apiFiles = (await readdir(new URL("api/", root))).filter((name) => name.endsWith(".js"));
-  assert.match(api, /requestHasOwnerSession/);
+  assert.match(api, /authenticateOwner/);
   assert.match(api, /requestIsSameOrigin/);
-  assert.match(api, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
+  assert.match(api, /from ["']\.\.\/lib\/owner-auth\.js["']/);
   assert.match(await source("lib/owner-session-cookie.js"), /timingSafeEqual/);
   assert.match(api, /Cache-Control.*no-store/s);
   assert.match(api, /social\.status/);
