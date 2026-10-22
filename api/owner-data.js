@@ -136,7 +136,12 @@ function bridgeSecret() {
   return String(process.env.ZHAOWU_OWNER_BRIDGE_SECRET ?? "").trim();
 }
 
-export default async function handler(req, res) {
+/**
+ * `parsedPayload` exists only for in-process delegation (api/owner-session.js has already consumed the
+ * request body, and a Fetch-style `req.json()` can be read once). Vercel calls the default export below
+ * with (req, res) only, so for every real HTTP request the body is read here exactly as before.
+ */
+export async function handleOwnerData(req, res, parsedPayload) {
   try {
     const method = req.method || "GET";
     if (method === "GET") {
@@ -160,7 +165,7 @@ export default async function handler(req, res) {
 
     const serverBridgeSecret = bridgeSecret();
 
-    const payload = await readJsonBody(req);
+    const payload = parsedPayload ?? await readJsonBody(req);
     const action = String(payload?.action ?? "").trim();
     if (action === "site-skin.publish" && !validSiteSkin(payload?.skin)) {
       return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
@@ -195,4 +200,8 @@ export default async function handler(req, res) {
       detail: error instanceof Error ? error.message : "unknown",
     });
   }
+}
+
+export default async function handler(req, res) {
+  return handleOwnerData(req, res);
 }

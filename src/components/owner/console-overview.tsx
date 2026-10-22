@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { pendingManualChannels, readAutopublishOverview, type AutopublishOverview } from "@/lib/owner-autopublish-client";
+import {
+  META_ACCOUNTS_UNAVAILABLE,
+  THREADS_ACCOUNTS_UNAVAILABLE,
+  overviewWarningText,
+  pendingManualChannels,
+  readAutopublishOverview,
+  type AutopublishOverview,
+} from "@/lib/owner-autopublish-client";
 import type { ReportListRecord } from "@/lib/bridge/supabase-rest";
 
 export type OverviewTarget = "reports" | "autopublish" | "images" | "opening" | "themes";
@@ -36,14 +43,18 @@ export function ConsoleOverview({ reports, hasMoreReports, reportsLoading, onNav
   if (autoError) todos.push({ tone: "bad", text: `讀不到自動發佈狀態（${autoError}）。`, go: "autopublish", cta: "打開檢查" });
   else if (auto && !auto.configured) todos.push({ tone: "bad", text: "自動發佈尚未啟用（伺服器未設定佇列密鑰）。", go: "autopublish", cta: "查看" });
   else if (auto?.settings) {
+    const warnings = auto.warnings ?? [];
+    const accountsUnverified = warnings.includes(THREADS_ACCOUNTS_UNAVAILABLE) || warnings.includes(META_ACCOUNTS_UNAVAILABLE);
     const anyAutomatic = Boolean(auto.channels?.threads || auto.channels?.instagram || auto.channels?.facebook);
-    if (!anyAutomatic) todos.push({ tone: "bad", text: "還沒有連接可自動發布的平台。", go: "autopublish", cta: "連接 Meta / Threads" });
+    // A failed account lookup is not evidence that nothing is connected.
+    if (!anyAutomatic && !accountsUnverified) todos.push({ tone: "bad", text: "還沒有連接可自動發布的平台。", go: "autopublish", cta: "連接 Meta / Threads" });
+    for (const code of warnings) todos.push({ tone: "warn", text: overviewWarningText(code), go: "autopublish", cta: "查看" });
     if (!auto.settings.enabled) todos.push({ tone: "warn", text: "自動發佈目前是暫停狀態。", go: "autopublish", cta: "前往開啟" });
     const manual = (auto.items ?? []).filter((item) => pendingManualChannels(item).length > 0).length;
     if (manual) todos.push({ tone: "warn", text: `有 ${manual} 則貼文等你手動發到小紅書 / X。`, go: "autopublish", cta: "去處理" });
     const lastFail = (auto.items ?? []).find((item) => item.status === "failed" || item.status === "partial");
     if (lastFail) todos.push({ tone: "bad", text: `最近一次發佈${lastFail.status === "failed" ? "失敗" : "只成功一部分"}：${lastFail.last_error || "請看紀錄"}`, go: "autopublish", cta: "查看紀錄" });
-    if (anyAutomatic && auto.settings.enabled && !manual && !lastFail) todos.push({ tone: "ok", text: `自動發佈正常，下一次：${auto.schedule?.upcoming?.[0] ?? "—"}。` });
+    if (anyAutomatic && auto.settings.enabled && !manual && !lastFail && !warnings.length) todos.push({ tone: "ok", text: `自動發佈正常，下一次：${auto.schedule?.upcoming?.[0] ?? "—"}。` });
   }
   if (!todos.length && !auto && !autoError) todos.push({ tone: "warn", text: "讀取中…" });
 
