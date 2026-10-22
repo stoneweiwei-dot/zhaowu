@@ -345,6 +345,9 @@ function AccountPage() {
             <button type="button" disabled={refreshBusy} onClick={() => void refreshAll()} className="min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft disabled:opacity-50">
               {refreshBusy ? c.refreshing : c.refreshAll}
             </button>
+            <button type="button" onClick={() => void signOut()} className="min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft">
+              {tr(locale, "登出", "登出", "Sign out")}
+            </button>
           </div>
         </div>
         <nav className="mt-4 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" aria-label={tr(locale, "站主後台導覽", "站主后台导航", "Owner console navigation")}>
