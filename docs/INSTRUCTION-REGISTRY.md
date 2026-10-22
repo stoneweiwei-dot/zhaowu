@@ -1,3 +1,11 @@
+## 2026-10-23｜第二波指令 10–14：manifest 三語 × /guide 收編 × 空模組閘門 × release.json 監控
+
+- 站主指令：10 manifest 依語言輸出（zh-TW／zh-Hans／en）；11 /guide 二選一收編；12 atlas 空區塊「有內容或入口不存在」；13 release.json 每日監控；14 把「空狀態不得進對外導航」寫成 CI。
+- 現行：三份靜態 manifest（同一 id／start_url／scope／icons，僅 lang／name／description 不同），`index.html` 啟動腳本與 `applyManifestLocale` 依顯示語言切換 `<link rel=manifest>`；`/guide/*` 在 vercel.json 307 導向 `/?guide=1`（首頁開啟導覽面板），不進 sitemap；`CuratedVideoShelf`／`AuspiciousGallerySection` 無可播放／可顯示內容時 `return null`；`/api/release-watch`（Vercel cron 每日、`CRON_SECRET` 驗證、5s 逾時＋重試一次、失敗回 503＋log，可選 `RELEASE_WATCH_WEBHOOK_URL`）；`scripts/empty-state-gate.mjs` 掛在 `prebuild`，`--diff` 為新增空狀態文案攔截（例外須附 `empty-state-ok: <理由>`）。
+- 不動：八字核心、付款、auth、Supabase schema；不新增 runtime 依賴；A$0。
+- 已知限制：已安裝 PWA 的 manifest 由瀏覽器自行重新評估；其他未知路徑仍為 SPA soft-404（BACKLOG）。
+- 測試：`scripts/empty-state-gate.test.mjs`、`scripts/manifest-locale-guide.test.mjs`、`scripts/release-watch.test.mjs`。
+
 ## 2026-10-21｜昭梧影片改為自主觀看 × 各頁分類展映（最新站主指令）
 
 - ACTIVE：新訪客進入首頁直接看到宋式畫作與既有三語題跋，不再於首頁掛載強制 `IntroGate`。舊「首訪影片最多 60 秒／7 天內跳過」只保留為未被掛載的相容程式，不得再作為訪客入口義務；首頁也不再提供會啟用覆蓋層的「重播開場影片」按鈕。

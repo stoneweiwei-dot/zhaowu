@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { applyManifestLocale } from "@/lib/manifest-locale";
 import { detectDefaultLocale, useI18n, type CopyKey, type Locale } from "@/lib/i18n";
 
 export type DisplayLanguage = Locale | "ja" | "ko" | "hi";
@@ -607,7 +608,10 @@ function applyLanguage(language: DisplayLanguage) {
   } else {
     useI18n.setState({ t: BASE_TRANSLATOR });
   }
-  if (typeof document !== "undefined") document.documentElement.lang = language;
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = language;
+    applyManifestLocale(language);
+  }
 }
 
 type DisplayLanguageState = {

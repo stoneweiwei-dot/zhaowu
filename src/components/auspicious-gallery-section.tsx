@@ -31,7 +31,6 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
         open: "Open the full atlas",
         more: "Show 24 more",
         count: (value: number) => `${value} images in this atlas`,
-        empty: "No public images are available yet.",
       };
     }
     if (locale === "zh-Hans") {
@@ -46,7 +45,6 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
         open: "进入完整图鉴",
         more: "再看 24 张",
         count: (value: number) => `当前图鉴共 ${value} 张`,
-        empty: "目前没有可公开展示的图片。",
       };
     }
     return {
@@ -60,7 +58,6 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
       open: "進入完整圖鑑",
       more: "再看 24 張",
       count: (value: number) => `目前圖鑑共 ${value} 張`,
-      empty: "目前沒有可公開展示的圖片。",
     };
   }, [locale]);
 
@@ -73,6 +70,10 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
     if (mode !== "preview" || !usableAssets.length) return;
     setSelectedId(nextHomepageArt([...usableAssets])?.id ?? null);
   }, [usableAssets, mode, user?.id]);
+
+  // EMPTY_STATE_GATE: if no artwork can be shown (empty catalogue or every image failed to load),
+  // render nothing rather than a heading over an empty grid (owner rule 2026-10-23).
+  if (!usableAssets.length) return null;
 
   const visibleLimit = mode === "preview" ? PREVIEW_VISIBLE : visibleCount;
   const visible = mode === "preview"
@@ -90,12 +91,10 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
         <h2 className="mt-2 font-display text-3xl leading-tight sm:text-4xl">{copy.title}</h2>
         <p className="mt-3 text-sm leading-7 text-ink-soft">{copy.lead}</p>
         <p className="mt-2 text-xs leading-6 text-ink-mute">{mode === "preview" ? copy.previewNote : copy.fullNote}</p>
-        {mode === "full" && PUBLIC_ATLAS_ASSETS.length ? (
+        {mode === "full" ? (
           <p className="mt-2 text-xs tracking-[0.08em] text-ink-mute">{copy.count(usableAssets.length)}</p>
         ) : null}
       </header>
-
-      {!usableAssets.length ? <p className="mt-5 text-sm text-ink-mute">{copy.empty}</p> : null}
 
       {visible.length ? (
         <div className={mode === "preview" ? "zhaowu-single-art mt-5" : "mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"}>

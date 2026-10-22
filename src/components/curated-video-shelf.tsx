@@ -16,7 +16,6 @@ type GalleryVideo = {
   is_primary: boolean;
 };
 type VideoEntry = { id: string; name: string; url: string; mime: string };
-type Status = "idle" | "loading" | "ready" | "unavailable";
 
 const MAX_PER_PLACEMENT: Record<VideoPlacement, number> = {
   home: 2, knowledge: 3, mythic: 4, atlas: 30,
@@ -109,32 +108,62 @@ function FilmCard({ video, locale }: { video: VideoEntry; locale: Locale }) {
   );
 }
 
-/** Existing owner-uploaded public films: no new Storage writes, auto-play, or first-visit gate. */
-export function CuratedVideoShelf({ placement }: { placement: VideoPlacement }) {
-  const { locale } = useI18n();
-  const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState<Status>("idle");
-  const [rows, setRows] = useState<GalleryVideo[]>([]);
-  useEffect(() => {
-    if (!open) return;
-    const controller = new AbortController();
-    setStatus("loading");
-    const url = SUPABASE_URL + "/rest/v1/gallery_assets?category=eq.loading&enabled=eq.true&select=id,title,storage_path,bucket_id,content_type,tags,enabled,is_primary&order=created_at.desc&limit=100";
-    void fetch(url, {
+const FILM_ROWS_URL = SUPABASE_URL + "/rest/v1/gallery_assets?category=eq.loading&enabled=eq.true&select=id,title,storage_path,bucket_id,content_type,tags,enabled,is_primary&order=created_at.desc&limit=100";
+
+// One shared request per page session, however many shelves are mounted. A failed request is not
+// cached, so the next mount can retry.
+let filmRowsPromise: Promise<GalleryVideo[]> | null = null;
+function loadFilmRows(): Promise<GalleryVideo[]> {
+  if (!filmRowsPromise) {
+    filmRowsPromise = fetch(FILM_ROWS_URL, {
       headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY },
-      signal: controller.signal,
     }).then((response) => {
       if (!response.ok) throw new Error("gallery fetch failed");
       return response.json() as Promise<GalleryVideo[]>;
-    }).then((data) => {
-      if (controller.signal.aborted) return;
-      setRows(Array.isArray(data) ? data : []);
-      setStatus("ready");
-    }).catch(() => { if (!controller.signal.aborted) setStatus("unavailable"); });
-    return () => controller.abort();
-  }, [open]);
+    }).then((data) => (Array.isArray(data) ? data : [])).catch((error) => {
+      filmRowsPromise = null;
+      throw error;
+    });
+  }
+  return filmRowsPromise;
+}
 
-  const videos = useMemo(() => chooseVideos(rows, placement, locale), [rows, placement, locale]);
+/**
+ * Existing owner-uploaded public films: no new Storage writes, auto-play, or first-visit gate.
+ *
+ * EMPTY_STATE_GATE: the shelf renders nothing until the catalogue has been read AND holds at least
+ * one playable film for this placement. A load failure, an empty catalogue or a placement with no
+ * match all hide the entry — the page never advertises a film gallery it cannot show
+ * (owner rule 2026-10-23: no false ready state). The probe is deferred to idle time on every page
+ * except the atlas, so Supabase stays off the home/knowledge critical path (r174).
+ */
+export function CuratedVideoShelf({ placement }: { placement: VideoPlacement }) {
+  const { locale } = useI18n();
+  const [open, setOpen] = useState(false);
+  const [rows, setRows] = useState<GalleryVideo[] | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    const run = () => {
+      loadFilmRows()
+        .then((data) => { if (!cancelled) setRows(data); })
+        .catch(() => { if (!cancelled) setRows([]); });
+    };
+    if (placement === "atlas") {
+      run();
+      return () => { cancelled = true; };
+    }
+    const hasIdle = typeof window.requestIdleCallback === "function";
+    const handle = hasIdle ? window.requestIdleCallback(run, { timeout: 4000 }) : window.setTimeout(run, 1500);
+    return () => {
+      cancelled = true;
+      if (hasIdle) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+    };
+  }, [placement]);
+
+  const videos = useMemo(() => (rows ? chooseVideos(rows, placement, locale) : []), [rows, placement, locale]);
+  if (videos.length === 0) return null;
+
   const title = {
     home: tr(locale, "昭梧影像 · 作品選映", "昭梧影像 · 作品选映", "ZHAOWU films · Selected works"),
     knowledge: tr(locale, "文化影像 · 選映", "文化影像 · 选映", "Culture · Short films"),
@@ -148,10 +177,7 @@ export function CuratedVideoShelf({ placement }: { placement: VideoPlacement }) 
         <span className="zw-video-shelf__hint">{tr(locale, "按需觀看，不自動播放", "按需观看，不自动播放", "Watch by choice · Never autoplays")}</span>
       </summary>
       {open ? <div className="zw-video-shelf__body">
-        {status === "loading" ? <p role="status">{tr(locale, "正在載入影片目錄…", "正在加载视频目录…", "Loading film library…")}</p> : null}
-        {status === "unavailable" ? <p role="status">{tr(locale, "影片目錄暫時無法讀取，其他網站功能不受影響。", "视频目录暂时无法读取，其他网站功能不受影响。", "The film library is temporarily unavailable; other site features still work.")}</p> : null}
-        {status === "ready" && videos.length === 0 ? <p>{tr(locale, "此分類暫無已啟用的影片。", "此分类暂无已启用的视频。", "No enabled films in this collection yet.")}</p> : null}
-        {status === "ready" && videos.length > 0 ? <div className="zw-video-shelf__grid">{videos.map((video) => <FilmCard key={video.id} video={video} locale={locale} />)}</div> : null}
+        <div className="zw-video-shelf__grid">{videos.map((video) => <FilmCard key={video.id} video={video} locale={locale} />)}</div>
         {placement !== "atlas" ? <a className="zw-video-shelf__all" href="/auspicious-atlas">{tr(locale, "前往完整影像展廊 →", "前往完整影像展廊 →", "Browse the full film gallery →")}</a> : null}
       </div> : null}
     </details>

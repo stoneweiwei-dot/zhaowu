@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-23-pwa-language-guide-empty-state",
+    date: "2026-10-23",
+    zhHant: { title: "安裝版語言對應、導覽頁收編、空內容區塊不再顯示", summary: "安裝為 App 後，名稱與語言標記會跟隨繁中／簡中／英文；舊的 /guide 網址改導向首頁導覽；吉象圖鑑與影片區在沒有內容時直接隱藏，不再出現空區塊。命盤計算與付款流程不變。" },
+    zhHans: { title: "安装版语言对应、导览页收编、空内容区块不再显示", summary: "安装为 App 后，名称与语言标记会跟随繁中／简中／英文；旧的 /guide 网址改导向首页导览；吉象图鉴与影片区在没有内容时直接隐藏，不再出现空区块。命盘计算与付款流程不变。" },
+    en: { title: "Installed-app language, guide URL tidy-up, no empty sections", summary: "The installed app now takes its name and language from your display language (Traditional Chinese, Simplified Chinese or English). The old /guide address redirects to the home-page guide, and atlas image and film sections hide themselves when they have nothing to show. Chart calculation and payments are unchanged." },
+  },
+  {
     id: "2026-10-21-owner-auth-runtime-config",
     date: "2026-10-21",
     zhHant: { title: "管理登入安全加固", summary: "管理登入憑證改由伺服器設定提供，統一加密登入狀態與失效檢查；一般訪客、命盤與付款流程不變。" },
