@@ -18,6 +18,7 @@ const GALLERY_SELECT = "id,category,asset_key,title,storage_path,bucket_id,conte
 const REPORT_LIST_SELECT = "id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,created_at,updated_at";
 const REPORT_DETAIL_SELECT = "id,public_code,user_id,user_email,alias,record_kind,status,access_mode,payment_tier,payment_status,context,engine_snapshot,mother_draft,paid_report,visual_profile,image_path,image_error,created_at,updated_at";
 const THREADS_ACCOUNT_SELECT = "id,threads_user_id,username,profile_picture_url,access_token_ciphertext,token_fingerprint,token_expires_at,connected_at,last_verified_at,updated_at";
+const META_ACCOUNT_SELECT = "id,page_id,page_name,instagram_user_id,instagram_username,profile_picture_url,access_token_ciphertext,token_fingerprint,token_expires_at,connected_at,last_verified_at,updated_at";
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const MAX_LOADING_VIDEO_BYTES = 500 * 1024 * 1024;
 const MAX_REPORT_IMAGE_BYTES = 15 * 1024 * 1024;
@@ -68,6 +69,9 @@ const ALLOWED_ACTIONS = new Set([
   "social.threads.list",
   "social.threads.upsert",
   "social.threads.delete",
+  "social.meta.list",
+  "social.meta.upsert",
+  "social.meta.delete",
   "upload.abort",
   "site-skin.publish",
 ]);
@@ -778,6 +782,58 @@ async function threadsAccountDelete(service: ReturnType<typeof createClient>, pa
   return { ok: true };
 }
 
+async function metaAccountList(service: ReturnType<typeof createClient>) {
+  const { data, error } = await service
+    .from("social_meta_accounts")
+    .select(META_ACCOUNT_SELECT)
+    .order("connected_at", { ascending: true });
+  if (error) throw new OwnerDataError("META_ACCOUNT_LIST_FAILED", 502, error.message);
+  return { ok: true, items: data ?? [] };
+}
+
+async function metaAccountUpsert(service: ReturnType<typeof createClient>, payload: Payload) {
+  const pageId = text(payload.pageId);
+  const pageName = text(payload.pageName);
+  const instagramUserId = text(payload.instagramUserId) || null;
+  const instagramUsername = text(payload.instagramUsername).replace(/^@+/, "") || null;
+  const profilePictureUrl = text(payload.profilePictureUrl) || null;
+  const ciphertext = text(payload.accessTokenCiphertext);
+  const fingerprint = text(payload.tokenFingerprint);
+  const expiresAt = text(payload.tokenExpiresAt) || null;
+  if (!/^[0-9]{3,30}$/.test(pageId) || !pageName || pageName.length > 160) {
+    throw new OwnerDataError("META_ACCOUNT_INVALID", 400);
+  }
+  if (instagramUserId && !/^[0-9]{3,30}$/.test(instagramUserId)) throw new OwnerDataError("META_INSTAGRAM_ID_INVALID", 400);
+  if (instagramUsername && !/^[A-Za-z0-9._]{1,80}$/.test(instagramUsername)) throw new OwnerDataError("META_INSTAGRAM_USERNAME_INVALID", 400);
+  if (!/^v1\.[A-Za-z0-9_-]{40,}$/.test(ciphertext) || !/^[a-f0-9]{16}$/.test(fingerprint)) {
+    throw new OwnerDataError("META_TOKEN_INVALID", 400);
+  }
+  if (profilePictureUrl && !/^https:\/\//i.test(profilePictureUrl)) throw new OwnerDataError("META_PROFILE_URL_INVALID", 400);
+  if (expiresAt && !Number.isFinite(Date.parse(expiresAt))) throw new OwnerDataError("META_TOKEN_EXPIRY_INVALID", 400);
+  const now = new Date().toISOString();
+  const { data, error } = await service.from("social_meta_accounts").upsert({
+    page_id: pageId,
+    page_name: pageName,
+    instagram_user_id: instagramUserId,
+    instagram_username: instagramUsername,
+    profile_picture_url: profilePictureUrl,
+    access_token_ciphertext: ciphertext,
+    token_fingerprint: fingerprint,
+    token_expires_at: expiresAt,
+    last_verified_at: now,
+    updated_at: now,
+  }, { onConflict: "page_id" }).select(META_ACCOUNT_SELECT).single();
+  if (error || !data) throw new OwnerDataError("META_ACCOUNT_SAVE_FAILED", 502, error?.message ?? "Account was not saved");
+  return { ok: true, item: data };
+}
+
+async function metaAccountDelete(service: ReturnType<typeof createClient>, payload: Payload) {
+  const id = requireId(payload);
+  const { error } = await service.from("social_meta_accounts").delete().eq("id", id);
+  if (error) throw new OwnerDataError("META_ACCOUNT_DELETE_FAILED", 502, error.message);
+  return { ok: true };
+}
+
 /** Owner-cookie and same-origin checks happen in Vercel; the Edge bridge validates both secrets. */
 async function publishSiteSkin(service: ReturnType<typeof createClient>, payload: Payload) {
   const skin = text(payload.skin);
@@ -821,6 +877,9 @@ async function dispatch(service: ReturnType<typeof createClient>, action: string
     case "social.threads.list": return threadsAccountList(service);
     case "social.threads.upsert": return threadsAccountUpsert(service, payload);
     case "social.threads.delete": return threadsAccountDelete(service, payload);
+    case "social.meta.list": return metaAccountList(service);
+    case "social.meta.upsert": return metaAccountUpsert(service, payload);
+    case "social.meta.delete": return metaAccountDelete(service, payload);
     case "upload.abort": return abortUpload(service, payload);
     case "site-skin.publish": return publishSiteSkin(service, payload);
     default: throw new OwnerDataError("ACTION_NOT_ALLOWED", 400);

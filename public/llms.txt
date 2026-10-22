@@ -30,6 +30,7 @@
 
 - [首頁](https://zhao-wu.com/): 排盤入口與介紹
 - [知識頁](https://zhao-wu.com/knowledge): 文章與命理小知識
+- [真太陽時計算說明](https://zhao-wu.com/knowledge/true-solar-time): 經度差、均時差與夏令時的公式、實例（含南半球）與誤差限制
 - [最新更新](https://zhao-wu.com/updates)
 - [每日色彩](https://zhao-wu.com/daily-colors)
 - [隱私政策](https://zhao-wu.com/privacy)

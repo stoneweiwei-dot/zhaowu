@@ -26,6 +26,11 @@
       "zh-Hans": { "title": "昭梧命理系统能力地图｜正式运行与研究中的分界", "description": "把正式运行、部分运行、研究中与象征性内容分开；状态标签就是目前真实能力，不把研究冒充完成。" },
       "en": { "title": "ZHAOWU System Capability Map | Live vs In-Research", "description": "What is live, partially running, in research or symbolic is kept separate; status labels are the real current capability." }
     },
+    "/knowledge/true-solar-time": {
+      "zh-Hant": { "title": "真太陽時怎麼算？經度差、均時差與夏令時（含南半球／澳洲實例）｜昭梧", "description": "八字真太陽時的計算公式與實例：經度差每度 4 分鐘、均時差約 −14 至 +16 分、夏令時以實際 UTC 偏移代入；含悉尼、台北、北京數值範例，並說明誤差與限制。" },
+      "zh-Hans": { "title": "真太阳时怎么算？经度差、均时差与夏令时（含南半球／澳洲实例）｜昭梧", "description": "八字真太阳时的计算公式与实例：经度差每度 4 分钟、均时差约 −14 至 +16 分、夏令时以实际 UTC 偏移代入；含悉尼、台北、北京数值范例，并说明误差与限制。" },
+      "en": { "title": "True Solar Time for BaZi: Formula, Equation of Time & DST (Sydney Examples) | ZHAOWU", "description": "How true solar time is calculated for a BaZi chart: 4 minutes per degree of longitude, the equation of time (about −14 to +16 min) and daylight saving via the actual UTC offset, with Sydney, Taipei and Beijing worked examples, plus error and limits." }
+    },
     "/updates": {
       "zh-Hant": { "title": "最新版本更新內容｜昭梧", "description": "昭梧正式版本更新紀錄：新功能、修正與天象新增，依日期與版本整理。" },
       "zh-Hans": { "title": "最新版本更新内容｜昭梧", "description": "昭梧正式版本更新纪录：新功能、修正与天象新增，依日期与版本整理。" },
