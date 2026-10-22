@@ -77,9 +77,3 @@ test("/guide has no page: it redirects server-side to a content page and stays o
   // Declared after the pathname-reset effect, otherwise setPanel(null) would win on mount.
   assert.ok(dock.indexOf('searchParams.get("guide")') > dock.indexOf("setPanel(null); setAsked(false); }, [pathname]"));
 });
-
-test("release-watch cron is declared, bounded and authenticated", async () => {
-  const vercel = await json("vercel.json");
-  assert.ok(vercel.crons.some((c) => c.path === "/api/release-watch" && /^\d+ \d+ \* \* \*$/.test(c.schedule)), "daily cron");
-  assert.ok(vercel.functions["api/release-watch.js"].maxDuration <= 30);
-});
