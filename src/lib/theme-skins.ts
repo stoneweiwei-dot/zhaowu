@@ -190,13 +190,23 @@ export async function publishSkin(id: string): Promise<void> {
   const token = ++syncSerial;
   pendingPublishes += 1;
   try {
-    const response = await fetch("/api/owner-data", {
+    let response = await fetch("/api/owner-data", {
       method: "POST",
       cache: "no-store",
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "site-skin.publish", skin: chosen }),
     });
+    // Some production versions omit /api/owner-data from the deployed function manifest.
+    // Only a missing route (404) retries the exact same authenticated operation through
+    // the existing /api/owner-session function. No local-only success or theme reset.
+    if (response.status === 404) {
+      response = await fetch("/api/owner-session", {
+        method: "POST", cache: "no-store", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "site-skin.publish", skin: chosen }),
+      });
+    }
     if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : `全站主題尚未儲存（HTTP ${response.status}），請稍後重試。`);
     const data = await response.json() as { ok?: boolean; skin?: string };
     if (!data.ok || data.skin !== chosen) throw new Error("無法確認全站主題已更新。");
