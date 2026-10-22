@@ -1,0 +1,60 @@
+/*
+ * 星辰形象 — painterly editorial layer, 2026-10-23.
+ * Real existing repository WebP paintings, NOT fake SVG landscape code.
+ * Existing works are temporary editorial assets; no claim that they reproduce
+ * the owner's distinct image-generation reference. Text stays selectable.
+ */
+.zw-today-dual-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 20px;padding:8px;border:1px solid rgba(169,130,73,.38);border-radius:12px;background:#f8f3e9;box-sizing:border-box;max-width:100%}
+.zw-today-dual-nav button{appearance:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0;min-height:72px;padding:12px 8px;border:1px solid transparent;border-radius:8px;background:transparent;color:#25445a;cursor:pointer;text-align:center;font:inherit;line-height:1.4}
+.zw-today-dual-nav button>span{font-family:Georgia,serif;font-size:23px;color:#ab8752}
+.zw-today-dual-nav button strong{font-size:clamp(15px,3.8vw,18px);font-weight:700;letter-spacing:.08em}
+.zw-today-dual-nav button.is-current{border-color:#bfa678;background:#fffaf1;box-shadow:0 2px 9px rgba(68,50,26,.06)}
+.zw-today-dual-nav button:focus-visible,.sky-art-deep-link:focus-visible{outline:3px solid #926e32;outline-offset:2px}
+.sky-art-home{width:100%;min-width:0;max-width:100%;color:#233b4d}
+.sky-art-intro{position:relative;isolation:isolate;overflow:hidden;padding:18px clamp(16px,3vw,26px);margin-bottom:14px;border:1px solid rgba(173,138,80,.3);border-radius:12px;background:#f7f2e8}
+.sky-art-intro::before{content:"";position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(250,247,240,.98) 0%,rgba(250,247,240,.94) 55%,rgba(250,247,240,.48) 100%),url("/theme-skins/song-gallery-frostleaf-art.webp");background-size:cover;background-position:center 52%;z-index:-1}
+.sky-art-eyebrow{display:block;font-family:Georgia,serif;letter-spacing:.2em;font-size:.69rem;color:#8e7653}
+.sky-art-intro h2{margin:5px 0 3px;font-family:"Songti TC","Songti SC","STSong","Noto Serif CJK TC",Georgia,serif;font-weight:700;font-size:clamp(22px,5.7vw,34px);letter-spacing:.08em;color:#18384d}
+.sky-art-intro p{margin:5px 0 12px;font-size:14px;line-height:1.7;color:#4d554e}
+.sky-art-deep-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:#235769;font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.sky-week-public{scroll-margin-top:20px;margin:0 auto 22px}
+.sky-today{isolation:isolate;position:relative;box-sizing:border-box;padding:clamp(13px,3vw,26px);border:1px solid rgba(178,142,90,.33);border-radius:14px;background:#fbf8f1;background-image:linear-gradient(180deg,rgba(251,248,241,.9),rgba(251,248,241,.97)),url("/theme-skins/song-gallery-frostleaf-art.webp");background-position:center;background-size:cover;box-shadow:0 8px 28px rgba(69,53,33,.07);overflow:hidden}
+.sky-today::after{content:"STONE 原創";position:absolute;bottom:8px;right:16px;pointer-events:none;font-size:10px;letter-spacing:.16em;color:rgba(87,93,77,.34)}
+.sky-today-header{position:relative;isolation:isolate;box-sizing:border-box;min-height:clamp(165px,23vw,230px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px;margin:0 0 16px;padding:clamp(20px,5vw,44px);border:1px solid rgba(188,155,95,.5);border-radius:10px;background:#f7f1e6;overflow:hidden}
+.sky-today-header::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(90deg,rgba(252,248,238,.96) 0%,rgba(252,248,238,.93) 42%,rgba(252,248,238,.44) 72%,rgba(252,248,238,.1) 100%),url("/theme-skins/moon-lotus-boat-art.webp");background-size:cover;background-position:center 40%;pointer-events:none}
+.sky-today-header::after{content:"✧  ✦  ☽";position:absolute;top:14px;right:18px;font-size:17px;letter-spacing:.22em;color:#aa8954;opacity:.75;pointer-events:none}
+.sky-today-header-left{max-width:100%}
+.sky-today-label{color:#8f7042;font-size:.76rem;letter-spacing:.18em}
+.sky-today-header h2{font-family:"Songti TC","Songti SC","STSong",Georgia,serif;color:#16374c;font-size:clamp(2rem,7vw,3.5rem);line-height:1.2;letter-spacing:.1em;text-shadow:0 1px 0 rgba(255,255,255,.55)}
+.sky-today-week-badge{flex-shrink:1;max-width:100%;box-sizing:border-box;white-space:normal;border:1px solid rgba(169,126,64,.4);border-radius:4px;background:rgba(255,251,244,.86);color:#58472e;font-size:.9rem;line-height:1.5}
+.sky-today-theme-block{border:1px solid rgba(184,151,102,.46);border-left:3px solid #9a865e;border-radius:7px;background:#f8f2e7;background-image:linear-gradient(90deg,rgba(250,246,236,.98),rgba(250,246,236,.87)),url("/theme-skins/solar-frost-descent/hero-frost-descent.webp");background-size:cover;background-position:center 43%;padding:18px 20px}
+.sky-today-theme-label{font-family:"Songti TC","Songti SC",Georgia,serif;font-size:.98rem;color:#35576a}
+.sky-today-theme-text{color:#404e4e;line-height:1.85;font-size:clamp(.88rem,2.8vw,.98rem)}
+.sky-today-list{position:relative;gap:12px}
+.sky-today-card{position:relative;overflow:hidden;border:1px solid rgba(167,130,76,.3);border-left:3px solid #a68962;border-radius:10px;background-color:#fffaf1;background-image:linear-gradient(90deg,rgba(255,252,246,.99) 0%,rgba(255,252,246,.97) 62%,rgba(255,252,246,.78) 100%),url("/theme-skins/bamboo-falls-art.webp");background-size:cover;background-position:center 40%;box-shadow:0 3px 14px rgba(63,52,39,.05);gap:clamp(12px,3vw,24px);grid-template-columns:clamp(50px,11vw,74px) minmax(0,1fr);padding:clamp(12px,2.5vw,20px)}
+.sky-today-card:nth-child(3n+2){background-image:linear-gradient(90deg,rgba(255,252,246,.99),rgba(255,252,246,.96) 60%,rgba(255,252,246,.76)),url("/theme-skins/song-gallery-frostleaf-art.webp")}
+.sky-today-card:nth-child(3n+3){background-image:linear-gradient(90deg,rgba(255,252,246,.99),rgba(255,252,246,.96) 60%,rgba(255,252,246,.76)),url("/theme-skins/moon-lotus-boat-art.webp")}
+.sky-today-card::after{content:"✦";position:absolute;right:11px;top:8px;color:#b9a06f;opacity:.7;font-size:11px;pointer-events:none}
+.sky-today-day{color:#1b4054;font-size:clamp(1.4rem,4vw,2rem)}
+.sky-today-month{color:#856c49;font-size:.79rem}
+.sky-today-name{font-family:"Songti TC","Songti SC","STSong",Georgia,serif;color:#203b4b;font-size:clamp(1.08rem,3.5vw,1.3rem)}
+.sky-today-glyph{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;width:32px;height:32px;border:1px solid rgba(161,128,75,.34);border-radius:50%;background:rgba(237,226,208,.6);color:#8a704a;font-size:1.15rem}
+.sky-today-tags{gap:6px}
+.sky-today-tag,.sky-today-flag,.sky-today-signs span{border-radius:999px}
+.sky-today-science,.sky-today-influence{font-size:clamp(.87rem,2.7vw,.95rem);line-height:1.8}
+.sky-today-block-label{color:#846f55;font-size:.76rem}
+.sky-today-footer{padding-bottom:16px}
+@media(max-width:520px){
+ .zw-today-dual-nav{gap:6px;margin-bottom:14px;padding:5px}
+ .zw-today-dual-nav button{min-height:64px}
+ .sky-today{padding:10px;border-radius:10px}
+ .sky-today-header{padding:20px 16px;min-height:190px;background-position:55% center}
+ .sky-today-header::before{background-image:linear-gradient(90deg,rgba(252,248,238,.97) 0%,rgba(252,248,238,.93) 62%,rgba(252,248,238,.4) 100%),url("/theme-skins/moon-lotus-boat-art.webp");background-position:55% 37%}
+ .sky-today-header h2{font-size:clamp(2rem,9vw,2.6rem)}
+ .sky-today-card{grid-template-columns:48px minmax(0,1fr);padding:12px 10px;gap:9px;background-image:linear-gradient(90deg,rgba(255,252,246,.99),rgba(255,252,246,.94)),url("/theme-skins/bamboo-falls-art.webp")}
+ .sky-today-name{font-size:1.05rem;line-height:1.5}
+ .sky-today-glyph{width:27px;height:27px;font-size:1rem}
+ .sky-today-theme-block{padding:13px}
+ .sky-today-week-badge{font-size:.84rem}
+}
+@media(prefers-reduced-motion:reduce){.zw-today-dual-nav button{transition:none}}
