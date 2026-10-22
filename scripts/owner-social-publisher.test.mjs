@@ -4,6 +4,7 @@ import test from "node:test";
 import { publishSocialPost, socialConfiguration, validateSocialPost } from "../lib/meta-social-publisher.js";
 import {
   createThreadsAuthorization,
+  threadsOauthConfiguration,
   decryptThreadsAccessToken,
   encryptThreadsAccessToken,
   threadsAuthorizationOwnerProof,
@@ -166,20 +167,20 @@ test("one Threads publish can target multiple OAuth accounts without exposing to
   assert.equal(results.threads.ok, true);
   assert.deepEqual(results.threads.accounts.map((item) => item.username), ["first", "second"]);
   assert.equal(calls.filter((call) => call.method === "POST").length, 4);
-  assert.doesNotMatch(JSON.stringify(results), /secret-one|secret-two/);
-});
-
-test("Threads OAuth state and stored tokens are authenticated and encrypted", () => {
+  assert.doesNotMatch(JSON.stringify(results), /stest("Threads OAuth state and stored tokens are authenticated and encrypted", () => {
   const env = {
+    THREADS_APP_ID: "9988776655",
     META_APP_ID: "1234567890",
+    THREADS_APP_SECRET: "threads-app-secret-for-unit-test-123456",
     META_APP_SECRET: "app-secret-for-unit-test-123456",
     ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-unit-test-123456",
     PUBLIC_SITE_ORIGIN: "https://zhao-wu.com",
   };
+  assert.equal(threadsOauthConfiguration({ META_APP_ID: env.META_APP_ID, META_APP_SECRET: env.META_APP_SECRET }).ready, false, "Threads must not silently use Facebook credentials");
   const authorization = createThreadsAuthorization(env, 1_000_000, "sealed-owner-proof");
   assert.equal(new URL(authorization.url).origin, "https://threads.com");
   assert.equal(new URL(authorization.url).pathname, "/oauth/authorize");
-  assert.equal(new URL(authorization.url).searchParams.get("client_id"), env.META_APP_ID);
+  assert.equal(new URL(authorization.url).searchParams.get("client_id"), env.THREADS_APP_ID);
   assert.equal(new URL(authorization.url).searchParams.get("scope"), "threads_basic,threads_content_publish");
   assert.equal(new URL(authorization.url).searchParams.get("redirect_uri"), "https://zhao-wu.com/api/owner-session?action=threads.callback");
   const state = new URL(authorization.url).searchParams.get("state");
@@ -192,6 +193,8 @@ test("Threads OAuth state and stored tokens are authenticated and encrypted", ()
   assert.match(encrypted, /^v1\./);
   assert.doesNotMatch(encrypted, /threads-user-token/);
   assert.equal(decryptThreadsAccessToken(encrypted, env), "threads-user-token");
+});
+, "threads-user-token");
 });
 
 test("locked target handles reject the wrong Meta account before any publish call", async () => {
