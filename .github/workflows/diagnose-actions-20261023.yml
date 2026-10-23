@@ -1,0 +1,50 @@
+name: Temporary CI status diagnostic (read only)
+on:
+  pull_request:
+    paths: ['.github/workflows/diagnose-actions-20261023.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  scan:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'diag/actions-status-20261023'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read recent workflow conclusions and failing steps (no secrets)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request, urllib.error, collections
+          repo = os.environ['GH_REPO']
+          def get(route):
+            req=urllib.request.Request('https://api.github.com/repos/'+repo+route,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'zhaowu-ci-readonly'})
+            with urllib.request.urlopen(req,timeout=18) as response: return json.loads(response.read())
+          try:
+            data=get('/actions/runs?per_page=100')
+            runs=data.get('workflow_runs',[])
+            print('TOTAL_VISIBLE',len(runs),'REPO_TOTAL',data.get('total_count'))
+            print('RECENT_RUNS (newest first)')
+            for r in runs[:45]:
+              print(json.dumps({'id':r['id'],'name':r['name'],'status':r['status'],'result':r['conclusion'],'event':r['event'],'branch':r['head_branch'],'sha':r.get('head_sha','')[:12],'date':r['created_at'],'attempt':r.get('run_attempt',1)},ensure_ascii=False))
+            grouped=collections.defaultdict(list)
+            for r in runs:
+              grouped[r['name']].append(r)
+            print('LATEST_PER_WORKFLOW')
+            for name,items in grouped.items():
+              latest=items[0]
+              print(json.dumps({'name':name,'latest_id':latest['id'],'latest_status':latest['status'],'latest_result':latest['conclusion'],'recent_failures':sum(a['conclusion']=='failure' for a in items),'recent_canceled':sum(a['conclusion']=='cancelled' for a in items),'runs_in_page':len(items)},ensure_ascii=False))
+            failures=[r for r in runs if r['conclusion'] in ('failure','timed_out','action_required','startup_failure')]
+            print('FAILED_JOB_STEPS')
+            for r in failures[:18]:
+              jobs=get('/actions/runs/'+str(r['id'])+'/jobs?per_page=50')['jobs']
+              for j in jobs:
+                if j['conclusion'] not in ('failure','timed_out','action_required','startup_failure'): continue
+                steps=[s['name'] for s in (j.get('steps') or []) if s.get('conclusion')=='failure']
+                print(json.dumps({'run_id':r['id'],'workflow':r['name'],'sha':r.get('head_sha','')[:12],'job_id':j['id'],'job':j['name'],'failed_steps':steps,'html_url':r['html_url']},ensure_ascii=False))
+          except urllib.error.HTTPError as exc:
+            print('ERROR HTTP',exc.code,exc.read()[:250].decode('utf8','replace'));raise
+          PY
