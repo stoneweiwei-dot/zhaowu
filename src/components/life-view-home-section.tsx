@@ -17,10 +17,13 @@ import { SEE_BREAK_RETURN_LONG_FORM } from "@/lib/life-view-long-form/see-break-
 import { TIME_IS_IT_FASTER_LONG_FORM } from "@/lib/life-view-long-form/time-is-it-faster";
 import { A_DAY_WITH_INCENSE_LONG_FORM } from "@/lib/life-view-long-form/a-day-with-incense";
 import { ABHIDHAMMA_THIRTY_ONE_PLANES } from "@/lib/life-view-long-form/abhidhamma-thirty-one-planes";
+import { SEVEN_CULTURAL_ATLASES_20261023 } from "@/lib/life-view-long-form/seven-cultural-atlases-20261023";
 import { fetchLifeViewCounts, incrementLifeViewCount, type LifeViewCounts } from "@/lib/life-view-views";
 import { fetchArticleOverrides, applyArticleOverrides, type ArticleOverride } from "@/lib/article-overrides";
 import { useAuthState } from "@/lib/auth/provider";
 import { ownerData } from "@/lib/owner-data-client";
+
+const trImageOpenLabel = (locale: Locale) => locale === "en" ? "Open original full-size image" : locale === "zh-Hans" ? "打开高清原图" : "開啟高清原圖";
 
 type ContentKind = "article" | "short-note";
 
@@ -39,6 +42,7 @@ type LifeViewHomeSectionProps = {
 };
 
 const LONG_ARTICLES: IllustratedArticle[] = [
+  SEVEN_CULTURAL_ATLASES_20261023,
   ABHIDHAMMA_THIRTY_ONE_PLANES,
   A_DAY_WITH_INCENSE_LONG_FORM,
   TIME_IS_IT_FASTER_LONG_FORM,
@@ -271,6 +275,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                           <figure className={illustration.display === "wide"
                             ? "mx-auto my-6 w-full max-w-[640px] overflow-hidden rounded-2xl border border-line/70 bg-paper shadow-[0_8px_24px_rgba(86,62,31,0.06)]"
                             : "mx-auto my-6 w-[72%] max-w-[300px] overflow-hidden rounded-[28px] border border-line/70 bg-paper shadow-[0_8px_24px_rgba(86,62,31,0.06)]"}>
+                            <a href={illustration.src} target="_blank" rel="noopener noreferrer" aria-label={trImageOpenLabel(locale)} className="block cursor-zoom-in">
                             <img
                               src={illustration.src}
                               alt={illustration.alt[locale]}
@@ -283,6 +288,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                                 if (figure) figure.classList.add("life-view-broken-image");
                               }}
                             />
+                            </a>
                           </figure>
                         ) : null}
                       </Fragment>
