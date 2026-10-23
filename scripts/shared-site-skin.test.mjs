@@ -63,6 +63,10 @@ function skinClient(fetcher) {
   const attrs = new Map();
   const context = vm.createContext({
     fetch: fetcher, Event,
+    // Browser-only imports are stubbed for VM execution; production imports remain unchanged.
+    FROST_SKIN_ID: "solar-frost-descent", SEASONAL_AUTO_ID: "solar-auto",
+    seasonalSkinId: () => "solar-frost-descent", frostEdition: () => ({ art: "/test-frost.webp" }),
+    useEffect: () => {}, useState: (initial) => [initial, () => {}],
     document: { documentElement: {
       setAttribute: (key, value) => attrs.set(key, value),
       removeAttribute: (key) => attrs.delete(key),
@@ -72,7 +76,7 @@ function skinClient(fetcher) {
     localStorage: { removeItem() {} },
   });
   const source = readFileSync("src/lib/theme-skins.ts", "utf8")
-    .replace(/^import .* from "react";\n/, "");
+    .replace(/^import .* from ['"][^'"]+['"];?\\r?\\n/gm, "");
   vm.runInContext(stripTypeScriptTypes(source).replace(/\bexport /g, ""), context);
   return { attrs, run: (code) => vm.runInContext(code, context) };
 }
