@@ -57,7 +57,7 @@ jobs:
             page.wait_for_url("**/about",timeout=25000)
             page.locator("[data-zhaowu-features-page]").wait_for(timeout=10000)
             page.wait_for_timeout(1400)
-            count=page.locator("[data-zhaowu-features-page] article").count()
+            count=page.locator("[data-zhaowu-features-page] .zw-about-feature").count()
             print("about articles",count,"URL",page.url,"heading",page.locator("h1").all_text_contents()[:3])
             print("feature page text length",len(page.locator("[data-zhaowu-features-page]").inner_text()))
             assert count==7, f"Expected seven features, received {count}"
