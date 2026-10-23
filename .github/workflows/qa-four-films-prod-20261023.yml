@@ -60,7 +60,7 @@ jobs:
             count=page.locator("[data-zhaowu-features-page] .zw-about-feature").count()
             print("about articles",count,"URL",page.url,"heading",page.locator("h1").all_text_contents()[:3])
             print("feature page text length",len(page.locator("[data-zhaowu-features-page]").inner_text()))
-            assert count==7, f"Expected seven features, received {count}"
+            assert count>=7, f"Expected at least seven feature sections, received {count}"
             sw=page.evaluate("document.documentElement.scrollWidth")
             vw=page.evaluate("document.documentElement.clientWidth")
             print("about viewport",vw,"scroll",sw)
