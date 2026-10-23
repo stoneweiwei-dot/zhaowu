@@ -20,6 +20,7 @@ on:
       - '.github/workflows/production-smoke-active.yml'
   pull_request:
     paths:
+      - '.github/workflows/production-smoke.yml'
       - 'e2e-production/**'
       - 'playwright.production.config.ts'
       - '.github/workflows/production-smoke-active.yml'
