@@ -1,4 +1,5 @@
 // Browser side of the owner Passkey flow. The server does all verification; this only talks WebAuthn and /api/owner-session.
+import { PASSKEY_CEREMONY_TIMEOUT_MS, PASSKEY_REQUEST_TIMEOUT_MS, runPasskeyWithDeadline } from "./passkey-deadline";
 
 export type OwnerDevice = { id: string; label: string; created_at?: string; last_used_at?: string | null; revoked_at?: string | null };
 
@@ -22,15 +23,18 @@ export function passkeySupported() {
 }
 
 async function post(action: string, extra: Record<string, unknown> = {}) {
-  const response = await fetch("/api/owner-session", {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ action, ...extra }),
-  });
-  const body = (await response.json().catch(() => ({}))) as Record<string, any>;
-  if (!response.ok || body.ok === false) throw new Error(String(body.error || `HTTP_${response.status}`));
-  return body;
+  return runPasskeyWithDeadline(async (signal) => {
+    const response = await fetch("/api/owner-session", {
+      method: "POST",
+      signal,
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, ...extra }),
+    });
+    const body = (await response.json().catch(() => ({}))) as Record<string, any>;
+    if (!response.ok || body.ok === false) throw new Error(String(body.error || `HTTP_${response.status}`));
+    return body;
+  }, PASSKEY_REQUEST_TIMEOUT_MS);
 }
 
 function describeError(error: unknown) {
@@ -47,14 +51,15 @@ function describeError(error: unknown) {
 export async function passkeySignIn() {
   try {
     const { options } = (await post("passkey.login.options")) as { options: ServerOptions };
-    const credential = (await navigator.credentials.get({
+    const credential = (await runPasskeyWithDeadline((signal) => navigator.credentials.get({
       publicKey: {
         challenge: fromBase64Url(options.challenge),
         rpId: options.rpId,
         timeout: options.timeout,
         userVerification: "required",
       },
-    })) as PublicKeyCredential | null;
+      signal,
+    }), PASSKEY_CEREMONY_TIMEOUT_MS)) as PublicKeyCredential | null;
     if (!credential) throw new Error("PASSKEY_CANCELLED");
     const assertion = credential.response as AuthenticatorAssertionResponse;
     await post("passkey.login.verify", {
@@ -80,7 +85,7 @@ export async function passkeySignIn() {
 export async function registerThisDevice(label: string) {
   try {
     const { options } = (await post("passkey.register.options")) as { options: ServerOptions };
-    const credential = (await navigator.credentials.create({
+    const credential = (await runPasskeyWithDeadline((signal) => navigator.credentials.create({
       publicKey: {
         challenge: fromBase64Url(options.challenge),
         rp: options.rp,
@@ -91,7 +96,8 @@ export async function registerThisDevice(label: string) {
         excludeCredentials: (options.excludeCredentials ?? []).map((item: { id: string }) => ({ type: "public-key" as const, id: fromBase64Url(item.id) })),
         authenticatorSelection: { residentKey: "required", userVerification: "required" },
       },
-    })) as PublicKeyCredential | null;
+      signal,
+    }), PASSKEY_CEREMONY_TIMEOUT_MS)) as PublicKeyCredential | null;
     if (!credential) throw new Error("PASSKEY_CANCELLED");
     const attestation = credential.response as AuthenticatorAttestationResponse;
     await post("passkey.register.verify", {
