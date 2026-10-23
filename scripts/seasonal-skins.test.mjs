@@ -76,7 +76,7 @@ test('all 72 pentads switch at the scheduled Sydney dates, no gaps or repeated i
       // Local midnight Sydney with correct time-zone DST offset (10 or 11 hours).
       const guesses=[10,11].map(offset=>new Date(iso+`+${offset}:00`));
       const sy=new Intl.DateTimeFormat('sv-SE',{timeZone:'Australia/Sydney',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
-      const instant=guesses.find(x=>sy.format(x).replace(' ','T')===iso);
+      const instant=guesses.find(x=>sy.format(x).replace(' ','T')===iso.slice(0,16));
       assert.ok(instant,`Sydney local instant for ${iso}`);
       return instant;
     };
