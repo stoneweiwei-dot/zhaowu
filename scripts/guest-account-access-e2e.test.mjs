@@ -189,7 +189,9 @@ test("Real Browser: unauthenticated guest accessing /account directly receives n
     // Owner-session verification redirects asynchronously after hydration.
     await page.waitForURL("**/login", { timeout: 15000 });
     assert.equal(new URL(page.url()).pathname, "/login", "Guest /account must resolve only to the owner login route");
-    assert.equal(await page.getByText("站主登入", { exact: true }).count(), 1);
+    // The site's default language is English unless the browser requests Chinese;
+    // verify the language-neutral owner-only login boundary instead of one locale's copy.
+    assert.equal(await page.locator('[data-owner-only-login="true"]').count(), 1);
 
     // 1. Verify owner console DOM markers are absent
     const ownerConsoleCount = await page.locator("[data-owner-console=\"true\"]").count();

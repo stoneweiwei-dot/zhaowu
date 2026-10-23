@@ -139,6 +139,15 @@ test("Instagram without credentials/image becomes a manual task instead of a sil
   assert.equal(state.finished.results.threads.ok, true);
 });
 
+test("an unconnected Facebook channel next to a manual one becomes a manual task, not a silent NOT_CONNECTED", async () => {
+  const state = { settings: { enabled: true, publish_days: [5], channels: ["facebook", "x"] } };
+  const result = await runAutopublish({ env: ENV, fetchImpl: gateway(state).fetchImpl, now: FRIDAY });
+  assert.equal(result.status, "manual");
+  assert.equal(state.finished.results.facebook.manual, true);
+  assert.equal(state.finished.results.x.manual, true);
+  assert.equal(state.finished.results.facebook.code, undefined);
+});
+
 test("one stored Meta connection lets the scheduler publish Facebook and linked Instagram automatically", async () => {
   const env = {
     ...ENV,
