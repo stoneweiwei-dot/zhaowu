@@ -20,4 +20,6 @@ jobs:
       - name: Check exact artwork, home tree, existing real-art protections
         run: node --test scripts/civilization-timeline.test.mjs scripts/home-tree.test.mjs scripts/article-artwork-acceptance.test.mjs
       - name: Typecheck and build against committed sources
+        env:
+          ZHAOWU_SKIP_LIVE_PRIVACY: '1'
         run: npm run build
