@@ -15,30 +15,30 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  "version": "ZW-WEB-2026.10.15-r225",
-  "updateNumber": 225,
-  "publishedAt": "2026-10-15T12:16:38.621Z",
-  "latestSummary": "近日天象新增冥王星於悉尼 10 月 16 日恢復視順行，附上 UTC／悉尼時間、月相、天文資料及非決定論占星解讀。",
+  "version": "ZW-WEB-2026.10.23-r226",
+  "updateNumber": 226,
+  "publishedAt": "2026-10-23T09:30:00.000Z",
+  "latestSummary": "文章區新增七張 STONE 原創文化圖鑑，包含農曆干支月、儒佛概念與現代修身辨析。",
   "summary": {
-    "zh-Hant": "近日天象新增冥王星於悉尼 10 月 16 日恢復視順行，附上 UTC／悉尼時間、月相、天文資料及非決定論占星解讀。",
-    "zh-Hans": "近日天象新增冥王星于悉尼 10 月 16 日恢复视顺行，附上 UTC／悉尼时间、月相、天文资料及非决定论占星解读。",
-    "en": "Sky events now include Pluto's direct station on 16 October Sydney time, with UTC/AEDT timing, lunar facts, sources and clearly labelled symbolic astrology."
+    "zh-Hant": "文章區新增七張 STONE 原創文化圖鑑，包含農曆干支月、儒佛概念與現代修身辨析。",
+    "zh-Hans": "文章区新增七张 STONE 原创文化图鉴，包含农历干支月、儒佛概念与现代修身辨析。",
+    "en": "Added seven original cultural atlas artworks to Articles, separating calendar facts, classical concepts and modern reflections."
   },
   "details": {
     "zh-Hant": [
-      "新增天象：冥王星於 10 月 16 日 02:40 UTC／13:40 悉尼時間，在水瓶座約 3°04′恢復視順行。",
-      "本週月相：上弦月在悉尼 10 月 19 日凌晨，而非射手座月亮換座的同一天。",
-      "資料註明時區與來源；占星象徵和天文事實分開呈現，不將象徵解讀當作因果預測。"
+      "七張 1080×1920 原始 PNG 已獨立接入文章正文，可開啟原圖閱讀。",
+      "核對子平干支月以節換月；佛教六根不再誤稱六欲。",
+      "《警世》署名標記待考；現代人生四面向、情緒十五問、修身九問與十條修心不冒稱經典。"
     ],
     "zh-Hans": [
-      "新增天象：冥王星于 10 月 16 日 02:40 UTC／13:40 悉尼时间，在水瓶座约 3°04′恢复视顺行。",
-      "本周月相：上弦月在悉尼 10 月 19 日凌晨，而非射手座月亮换座的同一天。",
-      "资料注明时区与来源；占星象征和天文事实分开呈现，不将象征解读当作因果预测。"
+      "七张 1080×1920 原始 PNG 已接入文章正文，可打开原图阅读。",
+      "校正干支月以节换月；佛教六根不再误称六欲。",
+      "《警世》署名仍待考；现代四面向与修身观点不冒称经典。"
     ],
     "en": [
-      "Added Pluto's direct station at 02:40 UTC / 13:40 Sydney on 16 October, near 3°04′ tropical Aquarius.",
-      "First quarter falls early 19 October in Sydney, not at the Sagittarius Moon ingress.",
-      "Time zones and sources are explicit; astronomical facts are separated from symbolic astrological interpretation."
+      "Seven original 1080×1920 PNG illustrations added to the full article with full-resolution links.",
+      "Distinguishes Jie month boundaries and Buddhist six faculties from the six desires.",
+      "Keeps uncertain poem attribution separate from modern editorial frameworks."
     ]
   }
 } as const;
