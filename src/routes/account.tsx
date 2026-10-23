@@ -20,12 +20,11 @@ const OwnerGalleryManager = lazy(() => import("@/components/owner-gallery-manage
 const OwnerLoginVisualsManager = lazy(() => import("@/components/owner-login-visuals-manager").then((m) => ({ default: m.OwnerLoginVisualsManager })));
 const PromoPanel = lazy(() => import("@/components/owner/promo-panel").then((m) => ({ default: m.PromoPanel })));
 const OwnerArticleManager = lazy(() => import("@/components/owner/article-manager").then((m) => ({ default: m.OwnerArticleManager })));
-const AutopublishPanel = lazy(() => import("@/components/owner/autopublish-panel").then((m) => ({ default: m.AutopublishPanel })));
 const OwnerThemeSkinsManager = lazy(() => import("@/components/owner-theme-skins-manager").then((m) => ({ default: m.OwnerThemeSkinsManager })));
 import { ConsoleOverview, type OverviewTarget } from "@/components/owner/console-overview";
 const OwnerDevicesManager = lazy(() => import("@/components/owner-devices-manager").then((m) => ({ default: m.OwnerDevicesManager })));
-type ConsoleView = "overview" | "reports" | "autopublish" | "images" | "opening" | "themes" | "promo" | "articles" | "devices";
-const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "autopublish", "images", "opening", "themes", "promo", "articles", "devices"];
+type ConsoleView = "overview" | "reports" | "images" | "opening" | "themes" | "promo" | "articles" | "devices";
+const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "images", "opening", "themes", "promo", "articles", "devices"];
 
 /** Initial tab: `?view=` (used by Meta OAuth returns) otherwise the overview. */
 function initialConsoleView(): ConsoleView {
@@ -40,18 +39,6 @@ function consoleViewHref(view: ConsoleView): string {
   return view === "overview" ? "/account" : `/account?view=${encodeURIComponent(view)}`;
 }
 
-function initialSocialNotice(): string {
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const result = params.get("threads");
-    if (result === "connected") return `Threads @${params.get("username") || ""} 已連接，自動發佈會在排程日自動開始。`;
-    if (result === "error") return "Threads 授權失敗，請再試一次。";
-    const meta = params.get("meta");
-    if (meta === "connected") return `Meta 已連接 ${params.get("pages") || ""} 個 Facebook 粉絲專頁；關聯的 Instagram 也已可用。`;
-    if (meta === "error") return "Meta 授權失敗，請再按一次「連接 Meta」。";
-  } catch { /* ignore */ }
-  return "";
-}
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -125,7 +112,6 @@ function AccountPage() {
   const { user, session, isPending } = useCurrentUserState();
   const [consoleView, setConsoleView] = useState<ConsoleView>(initialConsoleView);
   const [visitedViews, setVisitedViews] = useState<Set<ConsoleView>>(() => new Set([initialConsoleView(), "reports"]));
-  const [socialNotice] = useState(initialSocialNotice);
   function selectConsoleView(view: ConsoleView) {
     setConsoleView(view);
     setVisitedViews((previous) => new Set([...previous, view]));
@@ -370,7 +356,6 @@ function AccountPage() {
         <nav className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2" aria-label={tr(locale, "站主後台導覽", "站主后台导航", "Owner console navigation")}>
           {([
             ["overview", tr(locale, "總覽", "总览", "Overview")],
-            ["autopublish", tr(locale, "自動發佈", "自动发布", "Auto-publish")],
             ["reports", tr(locale, "客戶報告", "客户报告", "Reports")],
             ["images", tr(locale, "背景與圖片", "背景与图片", "Images")],
             ["opening", tr(locale, "開場影片", "开场视频", "Opening video")],
@@ -536,9 +521,6 @@ function AccountPage() {
       </div>
       <div id="console-panel-articles" role="region" aria-labelledby="console-tab-articles" hidden={consoleView !== "articles"}>
         {visitedViews.has("articles") ? <Suspense fallback={<p role="status" className="p-5 text-ink">Loading articles…</p>}><OwnerArticleManager locale={locale} /></Suspense> : null}
-      </div>
-      <div id="console-panel-autopublish" role="region" aria-labelledby="console-tab-autopublish" hidden={consoleView !== "autopublish"}>
-        {visitedViews.has("autopublish") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入自動發佈…", "加载自动发布…", "Loading auto-publish…")}</p>}><AutopublishPanel initialNotice={socialNotice} /></Suspense> : null}
       </div>
 
       <div id="console-panel-devices" role="region" aria-labelledby="console-tab-devices" hidden={consoleView !== "devices"}>

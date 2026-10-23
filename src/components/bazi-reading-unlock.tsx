@@ -10,7 +10,7 @@ export function useBaziReadingAccess() {
   useEffect(() => {
     let alive = true;
     void resolveReportAccess("bazi").then(access => {
-      if (alive) setUnlocked(access.level === "system" || access.level === "bundle");
+      if (alive) setUnlocked(access.level === "system");
     }).catch(() => { if (alive) setUnlocked(false); });
     return () => { alive = false; };
   }, []);

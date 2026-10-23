@@ -10,8 +10,8 @@ import {
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("paid levels grant 1, 3 and 5 distinct five-tone tracks around the chart emphasis", () => {
-  const expected = { quick: 1, system: 3, bundle: 5 };
+test("free and paid levels grant 1 and 3 distinct five-tone tracks around the chart emphasis", () => {
+  const expected = { quick: 1, system: 3 };
   for (const primary of ["木", "火", "土", "金", "水"]) {
     for (const [level, count] of Object.entries(expected)) {
       const plan = buildFiveTonePlan(primary, level);
@@ -29,8 +29,8 @@ test("the primary tone follows structural useful-element output and only falls b
 
 test("only the standardized owner-library five-tone names can fulfill the gift", () => {
   const tracks = [
-    { id: "wood", name: "木｜角音｜Beneath the Ancient Canopy", url: "/wood.mp3", contentType: "audio/mpeg", fileSize: 1, enabled: false, createdAt: null },
-    { id: "fire", name: "火｜徵音｜雲鶴為橋", url: "/fire.mp3", contentType: "audio/mpeg", fileSize: 1, enabled: false, createdAt: null },
+    { id: "wood", name: "木｜角音｜Beneath the Ancient Canopy", url: "/wood.mp3", contentType: "audio/mpeg", fileSize: 1, enabled: true, createdAt: null },
+    { id: "fire", name: "火｜徵音｜雲鶴為橋", url: "/fire.mp3", contentType: "audio/mpeg", fileSize: 1, enabled: true, createdAt: null },
     { id: "other", name: "普通背景音樂", url: "/other.mp3", contentType: "audio/mpeg", fileSize: 1, enabled: true, createdAt: null },
   ];
   assert.deepEqual(parseFiveToneTrackName(tracks[0].name), { element: "木", tone: "角", title: "Beneath the Ancient Canopy" });
@@ -52,7 +52,7 @@ test("the report stays primary while every verified paid level includes its play
     read("src/components/unified-birth-report.tsx"),
   ]);
   assert.match(gate, /你購買的是命盤解讀/);
-  for (const phrase of ["隨報告附贈｜命盤主音 1 首", "隨報告附贈｜生扶音・主音・疏導音 3 首", "隨報告附贈｜完整五音序列 5 首"]) assert.match(gate, new RegExp(phrase));
+  for (const phrase of ["隨報告附贈｜命盤主音 1 首", "隨報告附贈｜生扶音・主音・疏導音 3 首"]) assert.match(gate, new RegExp(phrase));
   assert.doesNotMatch(gate, /昭梧不只給文字解讀/);
   assert.match(gate, /\{personal\}\{full\}<FiveToneGift/);
   assert.match(gate, /\{quick\}<FiveToneGift/);

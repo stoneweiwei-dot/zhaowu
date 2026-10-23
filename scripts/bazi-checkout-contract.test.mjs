@@ -42,16 +42,6 @@ function browserFixture(verification) {
   };
 }
 
-test("six-system bundle cannot unlock separate BaZi, but unlocks all six specialists", async () => {
-  const browser = browserFixture({ product: "bundle", system: null });
-  try {
-    assert.equal((await resolveReportAccess("bazi")).level, "quick");
-    for (const system of ["ziwei", "qizheng", "western", "indian", "palm", "numerology"]) {
-      assert.equal((await resolveReportAccess(system)).level, "bundle", system);
-    }
-  } finally { browser.restore(); }
-});
-
 test("BaZi payment unlocks BaZi alone, never Zi Wei", async () => {
   const browser = browserFixture({ product: "system", system: "bazi" });
   try {
@@ -71,19 +61,16 @@ test("BaZi checkout preserves report ID and passes only opaque reference to Stri
     assert.equal(checkoutUrl.searchParams.get("client_reference_id"), "12345678-1234-4234-8234-123456789abc");
     assert.equal(browser.data.get("zhaowu.pending-bazi-report.v1"), id);
     assert.equal(browser.data.get("zhaowu.pending-bazi-return.v1"), "bazi");
-    assert.ok(browser.redirected().includes("7sY9AT7WT42Za0j7dg2sM0z"));
-    await assert.rejects(startReportCheckout("bundle", "bazi"), /PAYMENT_LINK_MISSING/);
+    assert.ok(browser.redirected().includes("9B600ja510QNgoH5582sM0C"));
   } finally { clearPurchaseConsent(); browser.restore(); }
 });
 
 test("USD prices and webhook entitlement agree with new Stripe link", () => {
-  assert.match(client, /system: \{ amountCents: 990, price: "US\$9\.90" \}/);
-  assert.match(client, /SYSTEM_PRICE_1999[^\n]*new Set<ReportSystemId>\(\["bazi", "ziwei"\]\)/);
+  assert.match(client, /system: FIXED_REPORT_PRICES\.standard\.usd/);
   assert.match(webhook, /plink_1URIwkFAzopdCCax8ZVKkNPH: \{ product: "system", system: "bazi", amount: 1999 \}/);
-  assert.match(client, /bundle: \{ amountCents: 1999, price: "US\$19\.99" \}/);
   assert.match(webhook, /plink_1UPlUXFAzopdCCaxV59sdJfq: \{ product: "system", system: "bazi", amount: 990 \}/);
   assert.match(resultView, /resolveReportAccess\("bazi"\)/);
-  assert.match(resultView, /startReportCheckout\(product, product === "bundle" \? "ziwei" : "bazi", result\.id\)/);
+  assert.match(resultView, /startReportCheckout\(product, "bazi", result\.id\)/);
   assert.match(shell, /pending-bazi-report\.v1/);
   assert.match(shell, /url\.hash = "bazi"/);
   assert.doesNotMatch(resultView, /Zi Wei Full Reading|紫微斗數完整深批/);
@@ -91,10 +78,10 @@ test("USD prices and webhook entitlement agree with new Stripe link", () => {
 
 test("free preview never calls the paid report writer or saves paid output", () => {
   const makeReport = resultView.slice(resultView.indexOf("async function ensureFullReport()"), resultView.indexOf("async function ensureSavedReport()"));
-  assert.ok(makeReport.indexOf('accessLevel !== "system" && accessLevel !== "bundle"') >= 0);
+  assert.ok(makeReport.indexOf('accessLevel !== "system"') >= 0);
   assert.ok(makeReport.indexOf("return renderFocusedReportText") < makeReport.indexOf("await writeFullReport"));
   const preview = resultView.slice(resultView.indexOf("async function onFull()"), resultView.indexOf("async function onSave()"));
-  assert.ok(preview.indexOf('accessLevel !== "system" && accessLevel !== "bundle"') < preview.indexOf("await ensureFullReport"));
+  assert.ok(preview.indexOf('accessLevel !== "system"') < preview.indexOf("await ensureFullReport"));
   assert.match(resultView, /View free 3-part summary/);
 });
 

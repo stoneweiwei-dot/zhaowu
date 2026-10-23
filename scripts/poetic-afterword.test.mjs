@@ -68,12 +68,11 @@ test("theme derives only from report-language content, and abstains on ambiguity
   assert.equal(matchPoeticTheme(""), null);
 });
 
-test("premium gate only mounts afterword after a verified bundle result", async () => {
+test("premium gate mounts the afterword after a verified system result", async () => {
   const { readFileSync } = await import("node:fs");
   const gate = readFileSync(new URL("../src/components/report-access-gate.tsx", import.meta.url), "utf8");
-  assert.match(gate, /if \(level === "bundle" \|\| level === "system"\)/);
-  assert.match(gate, /level === "bundle" && poeticContext \? <PremiumPoeticAfterword/);
-  assert.doesNotMatch(gate, /level === "system" && poeticContext \? <PremiumPoeticAfterword/);
+  assert.match(gate, /if \(level === "system"\)/);
+  assert.match(gate, /poeticContext \? <PremiumPoeticAfterword/);
 });
 
 test("numerology number-four real report text yields a sourced literary theme in three languages", async () => {

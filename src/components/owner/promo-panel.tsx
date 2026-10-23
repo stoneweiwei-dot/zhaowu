@@ -20,7 +20,7 @@ const STATUS: Record<PromoStatus, { text: string; cls: string }> = {
 
 const systemLabel = (id: PromoSystemId | null) => PROMO_SYSTEMS.find((s) => s.id === id)?.label ?? "不限單一系統";
 const dateText = (iso: string | null) => (iso ? new Date(iso).toLocaleString("zh-TW", { timeZone: "Asia/Taipei", hour12: false }) : "永不過期");
-const scopeText = (c: OwnerPromoCode) => (c.productId === "bundle" ? "全部系統套組" : `單一系統・${systemLabel(c.systemId)}`);
+const scopeText = (c: OwnerPromoCode) => `單一系統・${systemLabel(c.systemId)}`;
 
 export function PromoPanel() {
   const [codes, setCodes] = useState<OwnerPromoCode[] | null>(null);
@@ -28,7 +28,6 @@ export function PromoPanel() {
   const [busy, setBusy] = useState(false);
   const [created, setCreated] = useState<OwnerPromoCode | null>(null);
   const [copied, setCopied] = useState(false);
-  const [productId, setProductId] = useState<"system" | "bundle">("system");
   const [systemId, setSystemId] = useState<PromoSystemId | "">("bazi");
   const [max, setMax] = useState("1");
   const [days, setDays] = useState("30");
@@ -52,8 +51,8 @@ export function PromoPanel() {
     if (dayCount !== null && (!Number.isInteger(dayCount) || dayCount < 1 || dayCount > 1825)) { setError("有效天數須為 1 至 1825 的整數，或留空代表永不過期。"); return; }
     void run(async () => {
       const row = await createPromoCode({
-        productId,
-        systemId: productId === "bundle" || systemId === "" ? null : systemId,
+        productId: "system",
+        systemId: systemId === "" ? null : systemId,
         maxRedemptions: max.trim() === "" ? null : Number(max),
         expiresAt: dayCount === null ? null : new Date(Date.now() + dayCount * 86_400_000).toISOString(),
         note: note.trim(),
@@ -76,15 +75,9 @@ export function PromoPanel() {
         <h2 className="font-display text-xl">優惠碼</h2>
         <p className="mt-1 text-sm leading-6 text-ink-mute">兌換只解鎖付費報告，與 Stripe 付款完全分開、不記金額。這裡不能刪除優惠碼，已兌換的紀錄也不會被改動；停用只會擋住之後的新兌換。</p>
         <form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-2">
-          <label className="text-sm">類型
-            <select className={field} value={productId} onChange={(e) => setProductId(e.target.value as "system" | "bundle")}>
-              <option value="system">單一系統完整報告</option>
-              <option value="bundle">全部系統套組</option>
-            </select>
-          </label>
           <label className="text-sm">適用系統
-            <select className={field} value={productId === "bundle" ? "" : systemId} disabled={productId === "bundle"} onChange={(e) => setSystemId(e.target.value as PromoSystemId | "")}>
-              {productId === "bundle" ? <option value="">全部系統</option> : <option value="">不限（客人選哪個系統都可兌換一個）</option>}
+            <select className={field} value={systemId} onChange={(e) => setSystemId(e.target.value as PromoSystemId | "")}>
+              <option value="">不限（客人選哪個系統都可兌換一個）</option>
               {PROMO_SYSTEMS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
             </select>
           </label>

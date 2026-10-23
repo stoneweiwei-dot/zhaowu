@@ -17,24 +17,20 @@ test("generated codes use the unambiguous ZW-XXXX-XXXX shape", () => {
   assert.doesNotMatch(code, /[01OIL]/);
 });
 
-test("create: system code, bundle code, and auto code", () => {
+test("create: system code and auto code", () => {
   const a = normalizeCreate({ productId: "system", systemId: "bazi", maxRedemptions: 1, expiresAt: future(30), note: " 送人 " }, { now: NOW, randomBytes: rnd });
   assert.equal(a.ok, true);
   assert.equal(a.value.system_id, "bazi");
   assert.equal(a.value.note, "送人");
   assert.equal(a.value.active, true);
   assert.match(a.value.code, /^ZW-/);
-  const b = normalizeCreate({ productId: "bundle", code: "VIP-2026" }, { now: NOW, randomBytes: rnd });
-  assert.equal(b.ok, true);
-  assert.equal(b.value.code, "VIP-2026");
-  assert.equal(b.value.max_redemptions, null);
-  assert.equal(b.value.expires_at, null);
+
 });
 
 test("create: rejects values the database or the owner would not mean", () => {
   const bad = (payload) => normalizeCreate(payload, { now: NOW, randomBytes: rnd }).error;
   assert.equal(bad({ productId: "gift" }), "BAD_PRODUCT");
-  assert.equal(bad({ productId: "bundle", systemId: "bazi" }), "BUNDLE_CANNOT_PIN_SYSTEM");
+  assert.equal(bad({ productId: "bundle", systemId: "bazi" }), "BAD_PRODUCT");
   assert.equal(bad({ productId: "system", systemId: "tarot" }), "BAD_SYSTEM");
   assert.equal(bad({ productId: "system", maxRedemptions: 0 }), "BAD_MAX_REDEMPTIONS");
   assert.equal(bad({ productId: "system", maxRedemptions: 100001 }), "BAD_MAX_REDEMPTIONS");
@@ -90,7 +86,7 @@ test("promo function auth is the same gate as zhaowu-owner-data", () => {
 
 test("owner-data routes promo.* to the isolated function, everything else unchanged", () => {
   for (const a of ["promo.list", "promo.create", "promo.update", "promo.setActive"]) assert.equal(ownerUpstreamFunction(a), "zhaowu-owner-promo");
-  for (const a of ["reports.list", "gallery.list", "autopublish.status"]) assert.equal(ownerUpstreamFunction(a), "zhaowu-owner-data");
+  for (const a of ["reports.list", "gallery.list"]) assert.equal(ownerUpstreamFunction(a), "zhaowu-owner-data");
 });
 
 test("promo function never deletes and never touches redeemed_count or the redeem path", () => {

@@ -12,7 +12,7 @@ test('owner access requires a successful server session and never Stripe', async
  const original=globalThis.fetch; const calls=[];
  try {
   globalThis.fetch=async(url, init)=>{calls.push({url,init});return Response.json({authenticated:true});};
-  assert.deepEqual(await resolveReportAccess('ziwei'),{level:'bundle',pending:false,owner:true});
+  assert.deepEqual(await resolveReportAccess('ziwei'),{level:'system',pending:false,owner:true});
   assert.equal(calls.length,1); assert.equal(calls[0].url,'/api/owner-session');
   assert.equal(calls[0].init.credentials,'include'); assert.equal(calls[0].init.cache,'no-store');
   for (const body of [{authenticated:false},{authenticated:'true'},{}]) {

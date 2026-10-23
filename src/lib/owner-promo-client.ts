@@ -6,7 +6,7 @@ export type PromoStatus = "active" | "inactive" | "expired" | "exhausted";
 export type OwnerPromoCode = {
   id: string;
   code: string;
-  productId: "system" | "bundle";
+  productId: "system";
   systemId: PromoSystemId | null;
   active: boolean;
   maxRedemptions: number | null;
@@ -28,7 +28,7 @@ export const PROMO_SYSTEMS: { id: PromoSystemId; label: string }[] = [
 ];
 
 export type CreatePromoInput = {
-  productId: "system" | "bundle";
+  productId: "system";
   systemId: PromoSystemId | null;
   maxRedemptions: number | null;
   expiresAt: string | null;
@@ -39,7 +39,6 @@ export type CreatePromoInput = {
 export const PROMO_ERROR_TEXT: Record<string, string> = {
   BAD_PRODUCT: "產品類型不正確。",
   BAD_SYSTEM: "系統不正確。",
-  BUNDLE_CANNOT_PIN_SYSTEM: "全部系統套組不能指定單一系統。",
   BAD_MAX_REDEMPTIONS: "名額須為 1 至 100000 的整數，或留空代表不限。",
   BAD_EXPIRY: "到期日須是未來 5 年內的日期。",
   NOTE_TOO_LONG: "備註最長 200 字。",

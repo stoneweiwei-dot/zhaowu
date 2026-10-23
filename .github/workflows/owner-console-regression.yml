@@ -8,13 +8,10 @@ on:
       - 'lib/owner-*.js'
       - 'lib/meta-oauth.js'
       - 'lib/threads-oauth.js'
-      - 'lib/social-owner-actions.js'
       - 'src/lib/theme-skins.ts'
-      - 'src/lib/owner-autopublish-client.ts'
       - 'src/components/owner/**'
       - 'src/routes/account.tsx'
       - 'scripts/owner-*.test.mjs'
-      - 'scripts/social-autopublish.test.mjs'
       - '.github/workflows/owner-console-regression.yml'
   workflow_dispatch:
 
@@ -32,9 +29,9 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci --no-audit --no-fund
-      - name: Owner API, OAuth, queue, and Passkey regression tests
+      - name: Owner API, OAuth, and Passkey regression tests
         run: |
-          node --test scripts/owner-console-links.test.mjs scripts/owner-supabase-origin.test.mjs scripts/owner-session-skin-delegation.test.mjs scripts/owner-social-publisher.test.mjs scripts/social-autopublish.test.mjs scripts/owner-passkey.test.mjs scripts/owner-passkey-service-preflight.test.mjs scripts/owner-session-passkey-api.test.mjs scripts/shared-site-skin.test.mjs
+          node --test scripts/owner-console-links.test.mjs scripts/owner-supabase-origin.test.mjs scripts/owner-session-skin-delegation.test.mjs scripts/owner-social-publisher.test.mjs scripts/owner-passkey.test.mjs scripts/owner-passkey-service-preflight.test.mjs scripts/owner-session-passkey-api.test.mjs scripts/shared-site-skin.test.mjs
       - name: Typecheck and production bundle
         run: |
           npm run check

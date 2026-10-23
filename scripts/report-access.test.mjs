@@ -20,20 +20,16 @@ const [client, gate, specialist, palm, numerology, unified, personalComponent, p
 test("the report catalogue keeps quick free and exposes the new canonical USD prices", () => {
   assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
   assert.match(client, /system: FIXED_REPORT_PRICES\.standard\.usd/);
-  assert.match(client, /bundle: FIXED_REPORT_PRICES\.bundle\.usd/);
   assert.match(client, /usd: \{ amountCents: 990, price: "US\$9\.90" \}/);
-  assert.match(client, /usd: \{ amountCents: 2690, price: "US\$26\.90" \}/);
   assert.match(gate, /basic chart is free/i);
   assert.match(gate, /不自動續費/);
 });
 
-test("standard, deep and bundle tiers use fixed AUD and CNY amounts", () => {
+test("standard and deep tiers use fixed AUD and CNY amounts", () => {
   assert.match(client, /aud: \{ amountCents: 1490, price: "A\$14\.90" \}/);
   assert.match(client, /cny: \{ amountCents: 6800, price: "¥68" \}/);
   assert.match(client, /aud: \{ amountCents: 2490, price: "A\$24\.90" \}/);
   assert.match(client, /cny: \{ amountCents: 10800, price: "¥108" \}/);
-  assert.match(client, /aud: \{ amountCents: 3990, price: "A\$39\.90" \}/);
-  assert.match(client, /cny: \{ amountCents: 16800, price: "¥168" \}/);
   assert.match(client, /DEEP_REPORT_SYSTEMS[^\n]*\["bazi", "ziwei"\]/);
 });
 
@@ -69,7 +65,7 @@ test("browser state never grants access without server verification", () => {
 
 test("full paid reports include a customer-specific birth profile without changing the quick tier", () => {
   assert.match(gate, /personal\?: ReactNode/);
-  assert.match(gate, /level === "bundle" \|\| level === "system"[\s\S]*\{personal\}\{full\}/);
+  assert.match(gate, /level === "system"[\s\S]*\{personal\}\{full\}/);
   const quickBranch = gate.slice(gate.indexOf('level === "quick"'), gate.indexOf("<header>"));
   assert.doesNotMatch(quickBranch, /\{personal\}/);
 

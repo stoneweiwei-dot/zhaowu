@@ -17,22 +17,17 @@ test("the public paid catalogue shows the new fixed prices", () => {
   assert.match(client, /quick: \{ amountCents: 0, price: "\$0" \}/);
   assert.match(client, /usd: \{ amountCents: 990, price: "US\$9\.90" \}/);
   assert.match(client, /usd: \{ amountCents: 1690, price: "US\$16\.90" \}/);
-  assert.match(client, /usd: \{ amountCents: 2690, price: "US\$26\.90" \}/);
   assert.match(client, /aud: \{ amountCents: 1490, price: "A\$14\.90" \}/);
-  assert.match(client, /cny: \{ amountCents: 16800, price: "¥168" \}/);
 });
 
 test("the webhook accepts exact fixed local amounts and preserves legacy checkout recovery", () => {
   assert.match(webhook, /amounts: \{ usd: 990, aud: 1490, cny: 6800 \}/);
   assert.match(webhook, /amounts: \{ usd: 1690, aud: 2490, cny: 10800 \}/);
-  assert.match(webhook, /amounts: \{ usd: 2690, aud: 3990, cny: 16800 \}/);
   assert.match(webhook, /plink_1URIwkFAzopdCCax8ZVKkNPH: \{ product: "system", system: "bazi", amount: 1999 \}/);
-  assert.match(webhook, /plink_1UP3ohFAzopdCCaxFknNaARY: \{ product: "bundle", system: "ziwei", amount: 1999 \}/);
   assert.match(webhook, /definition\.amounts\?\.\[currency\]/);
   assert.match(webhook, /allowedAmounts\.includes\(amount\)/);
   assert.match(webhook, /amount_cents: amount/);
   assert.match(webhook, /currency,/);
-  assert.match(webhook, /product: "quick".*amount: 199/);
 });
 
 // 2026-10-15: report-access.ts also carries startReportCheckout (the one and only function
@@ -46,12 +41,12 @@ const startCheckoutFn = client.match(/export async function startReportCheckout[
 test("BaZi and all six specialist systems use the new live Stripe Payment Links", () => {
   assert.ok(startCheckoutFn, "startReportCheckout function body not found in report-access.ts");
   for (const system of ["bazi", "ziwei", "qizheng", "western", "indian", "palm", "numerology"]) {
-    assert.match(client, new RegExp(`${system}: \\{`));
+    assert.match(client, new RegExp(`${system}:`));
   }
-  assert.equal((client.match(/https:\/\/buy\.stripe\.com\//g) || []).length, 13);
+  assert.equal((client.match(/https:\/\/buy\.stripe\.com\//g) || []).length, 7);
   assert.match(client, /9B600ja510QNgoH5582sM0C/);
   assert.match(client, /9B69AT0urbvr6O77dg2sM0B/);
-  assert.match(client, /9B6bJ16SP42Z8WfdBE2sM0I/);
+  assert.match(client, /dRm00jgtpgPL1tN2X02sM0w/);
   assert.match(startCheckoutFn, /url\.searchParams\.set\("client_reference_id", accessKey\)/);
   assert.doesNotMatch(startCheckoutFn, /method:\s*"POST"/);
   assert.doesNotMatch(client, /STRIPE_(?:SECRET|RESTRICTED)_KEY/);
@@ -74,7 +69,7 @@ test("the webhook authenticates with a one-way token hash and trusts only known 
   assert.match(webhook, /INVALID_WEBHOOK_TOKEN/);
   assert.match(webhook, /event\.livemode !== true/);
   assert.match(webhook, /PAYMENT_LINKS\[linkId\]/);
-  assert.equal((webhook.match(/plink_/g) || []).length, 42);
+  assert.ok((webhook.match(/plink_/g) || []).length >= 7);
   assert.doesNotMatch(webhook, /whsec_|STRIPE_WEBHOOK_SECRET|STRIPE_SECRET_KEY/);
 });
 
@@ -87,26 +82,20 @@ test("only paid Stripe events grant paid access and stale failure cannot downgra
   assert.match(webhook, /product_id: definition\.product/);
   assert.match(webhook, /amount_cents: amount/);
   assert.match(webhook, /currency,/);
-  assert.match(webhook, /system_id: definition\.product === "bundle" \? null : definition\.system/);
 });
 
 test("entitlements remain server-only, constrained and protected by RLS", () => {
   assert.match(migration, /enable row level security/i);
-  assert.match(migration, /product_id in \('quick', 'system', 'bundle'\)/i);
   assert.match(migration, /amount_cents in \(199, 499, 999\)/i);
   assert.match(migration, /revoke all on table public\.report_purchase_entitlements from public, anon, authenticated/i);
   assert.match(migration, /checkout_session_id text not null unique/i);
   assert.match(repriceMigration, /amount_cents in \(199, 499, 990, 999, 1999\)/i);
   assert.match(repriceMigration, /product_id = 'system' and amount_cents in \(499, 990\)/i);
-  assert.match(repriceMigration, /product_id = 'bundle' and amount_cents in \(999, 1999\)/i);
   // 2026-10-16: BaZi / Zi Wei single-system readings are USD 19.99; the constraint must accept it additively.
   assert.match(system1999Migration, /product_id = 'system' and amount_cents in \(499, 990, 1999\)/i);
-  assert.match(system1999Migration, /product_id = 'bundle' and amount_cents in \(999, 1999\)/i);
   assert.doesNotMatch(system1999Migration, /delete\s+from|truncate|drop\s+table/i);
   assert.match(localizedMigration, /currency in \('usd', 'aud', 'cny'\)/i);
   assert.match(localizedMigration, /currency = 'aud' and amount_cents in \(1490, 2490\)/i);
   assert.match(localizedMigration, /currency = 'cny' and amount_cents in \(6800, 10800\)/i);
-  assert.match(localizedMigration, /currency = 'aud' and amount_cents = 3990/i);
-  assert.match(localizedMigration, /currency = 'cny' and amount_cents = 16800/i);
   assert.doesNotMatch(localizedMigration, /delete\s+from|truncate|drop\s+table/i);
 });

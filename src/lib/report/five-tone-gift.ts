@@ -29,7 +29,6 @@ export const FIVE_TONE_BY_ELEMENT: Record<Element, FiveTonePlanItem["tone"]> = {
 const ROLE_SEQUENCE: Record<PaidReportAccessLevel, FiveToneRole[]> = {
   quick: ["primary"],
   system: ["support", "primary", "release"],
-  bundle: ["support", "primary", "release", "transform", "settle"],
 };
 
 function cycleElement(index: number) {

@@ -26,8 +26,6 @@ type Copy = {
   quickBody: string;
   system: string;
   systemBody: string;
-  bundle: string;
-  bundleBody: string;
   buy: string;
   unlocked: string;
   pending: string;
@@ -54,9 +52,7 @@ function copyFor(locale: Locale): Copy {
     quickBody: "See this system's main conclusion and the first thing to watch in your chart",
     system: "Full system",
     systemBody: "Every section of this system, plus the personal profile written from your own chart",
-    bundle: "All systems",
-    bundleBody: "Every section of all six systems, plus your full personal chart profile",
-    buy: "Unlock",
+      buy: "Unlock",
     unlocked: "Unlocked",
     pending: "Payment received. Access is being confirmed…",
     unavailable: "Checkout is not active yet. The prices and free/paid boundary are already fixed.",
@@ -66,7 +62,6 @@ function copyFor(locale: Locale): Copy {
     bonus: {
       quick: "Included with the report · 1 chart-matched primary-tone track",
       system: "Included with the report · 3 support, primary, and release tracks",
-      bundle: "Included with the report · the complete 5-track tone cycle",
     },
     welcomeGift: "🎁 New-user welcome gift · Quick read is free for everyone",
     promoToggle: "Have a code?",
@@ -92,8 +87,6 @@ function copyFor(locale: Locale): Copy {
     quickBody: "先看到本系统的核心结论，以及你最需要留意的第一件事",
     system: "完整单盘",
     systemBody: "本系统的全部段落，加上依你这张盘写成的个人命格专页",
-    bundle: "六盘全读",
-    bundleBody: "六个系统的全部段落，加上完整的个人命格专页",
     buy: "解锁",
     unlocked: "已解锁",
     pending: "付款已收到，正在确认读取权限……",
@@ -104,7 +97,6 @@ function copyFor(locale: Locale): Copy {
     bonus: {
       quick: "随报告附赠｜命盘主音 1 首",
       system: "随报告附赠｜生扶音・主音・疏导音 3 首",
-      bundle: "随报告附赠｜完整五音序列 5 首",
     },
     welcomeGift: "🎁 新用户的福利 · 快速读对所有人免费开放",
     promoToggle: "有优惠码？",
@@ -130,8 +122,6 @@ function copyFor(locale: Locale): Copy {
     quickBody: "先看到本系統的核心結論，以及你最需要留意的第一件事",
     system: "完整單盤",
     systemBody: "本系統的全部段落，加上依你這張盤寫成的個人命格專頁",
-    bundle: "六盤全讀",
-    bundleBody: "六個系統的全部段落，加上完整的個人命格專頁",
     buy: "解鎖",
     unlocked: "已解鎖",
     pending: "付款已收到，正在確認讀取權限……",
@@ -142,7 +132,6 @@ function copyFor(locale: Locale): Copy {
     bonus: {
       quick: "隨報告附贈｜命盤主音 1 首",
       system: "隨報告附贈｜生扶音・主音・疏導音 3 首",
-      bundle: "隨報告附贈｜完整五音序列 5 首",
     },
     welcomeGift: "🎁 新用戶的福利 · 快速讀對所有人免費開放",
     promoToggle: "有優惠碼？",
@@ -161,10 +150,8 @@ function copyFor(locale: Locale): Copy {
   };
 }
 
-const tiers: Array<{ id: ReportAccessProduct; copy: "quick" | "system" | "bundle"; body: "quickBody" | "systemBody" | "bundleBody" }> = [
-  { id: "quick", copy: "quick", body: "quickBody" },
+const tiers: Array<{ id: ReportAccessProduct; copy: "system"; body: "systemBody" }> = [
   { id: "system", copy: "system", body: "systemBody" },
-  { id: "bundle", copy: "bundle", body: "bundleBody" },
 ];
 
 export function ReportAccessGate({
@@ -248,7 +235,7 @@ export function ReportAccessGate({
   }
 
   if (checking) return <div className="zhaowu-report-access-loading" aria-live="polite">{locale === "en" ? "Checking access…" : locale === "zh-Hans" ? "正在确认读取权限……" : "正在確認讀取權限……"}</div>;
-  if (level === "bundle" || level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{owner ? (locale === "en" ? "Owner access · Full report, no payment" : locale === "zh-Hans" ? "站主权限 · 完整报告免费阅读" : "站主權限 · 完整報告免費閱讀") : copy.unlocked}</p>{personal}{full}<FiveToneGift birth={birth} locale={locale} level={level} /><DataGradeFooter grade={grade} locale={locale} />{level === "bundle" && poeticContext ? <PremiumPoeticAfterword locale={locale} context={poeticContext} /> : null}</section>;
+  if (level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{owner ? (locale === "en" ? "Owner access · Full report, no payment" : locale === "zh-Hans" ? "站主权限 · 完整报告免费阅读" : "站主權限 · 完整報告免費閱讀") : copy.unlocked}</p>{personal}{full}<FiveToneGift birth={birth} locale={locale} level={level} /><DataGradeFooter grade={grade} locale={locale} />{poeticContext ? <PremiumPoeticAfterword locale={locale} context={poeticContext} /> : null}</section>;
 
   return (
     <section className="zhaowu-report-paywall" data-report-paywall={system}>
@@ -265,7 +252,7 @@ export function ReportAccessGate({
           <span>$0</span>
           <p>{copy.freeBody}</p>
         </article>
-        {tiers.filter((tier) => level !== "quick" || tier.id !== "quick").map((tier) => (
+        {tiers.map((tier) => (
           <article role="listitem" key={tier.id} className={tier.id === "system" ? "is-featured" : undefined}>
             <strong>{copy[tier.copy]}</strong>
             <span>{reportAccessPrice(tier.id, system).price}</span>

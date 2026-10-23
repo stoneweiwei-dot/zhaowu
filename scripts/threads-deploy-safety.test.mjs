@@ -18,12 +18,11 @@ test("Threads callbacks reuse existing owner-session API within Hobby function b
 
 test("client guidance never pretends that Threads OAuth uses the Facebook app", async () => {
   const threads = await source("lib/threads-oauth.js");
-  const help = await source("src/components/owner/autopublish-panel.tsx");
+  const social = await source("src/routes/social.tsx");
   assert.match(threads, /value\(env, "THREADS_APP_ID"\)/);
   assert.match(threads, /value\(env, "THREADS_APP_SECRET"\)/);
   assert.doesNotMatch(threads, /const appId = value\(env, "META_APP_ID"\)/);
-  assert.match(help, /api\/owner-session\?action=threads\.data-deletion/);
-  assert.match(help, /api\/owner-session\?action=threads\.deauthorize/);
+  assert.match(social, /startThreadsConnection/);
 });
 
 test("owner-only theme fallback cannot be called before origin and owner authorization", async () => {

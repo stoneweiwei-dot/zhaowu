@@ -1,11 +1,11 @@
 // Pure validation / shaping for the owner promo-code console. No I/O, so node:test can cover it.
 // Mirrors the live constraints on public.promo_codes (checked against the production schema 2026-10-17):
-//   code UNIQUE · product_id in (system,bundle) · system_id null or one of the 7 systems ·
+//   code UNIQUE · product_id = system · system_id null or one of the 7 systems ·
 //   max_redemptions null or > 0 · redeemed_count >= 0.
 // The customer-facing redeem path (promo-code Edge Function) is NOT touched by this module.
 
 export const SYSTEM_IDS = ["bazi", "ziwei", "qizheng", "western", "indian", "palm", "numerology"];
-export const PRODUCT_IDS = ["system", "bundle"];
+export const PRODUCT_IDS = ["system"];
 // No 0/O/1/I/L so a code read aloud or typed from a screenshot is not ambiguous.
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 const CODE_PATTERN = /^[A-Za-z0-9-]{3,64}$/;
@@ -50,10 +50,7 @@ export function normalizeCreate(payload, { now = new Date(), randomBytes } = {})
 
   let systemId = payload?.systemId ?? null;
   if (systemId === "" || systemId === "all") systemId = null;
-  if (productId === "bundle") {
-    // A bundle unlocks every system; pinning it to one system would silently narrow what the owner meant.
-    if (systemId !== null) return fail("BUNDLE_CANNOT_PIN_SYSTEM");
-  } else if (systemId !== null && !SYSTEM_IDS.includes(String(systemId))) {
+  if (systemId !== null && !SYSTEM_IDS.includes(String(systemId))) {
     return fail("BAD_SYSTEM");
   }
 

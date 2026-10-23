@@ -66,13 +66,13 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setPurchasing(product);
     setPurchaseError(null);
     try {
-      await startReportCheckout(product, product === "bundle" ? "ziwei" : "bazi", result.id);
+      await startReportCheckout(product, "bazi", result.id);
     } catch {
       setPurchaseError(locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : locale === "zh-Hans" ? toSimplifiedCustomerText("付款通道尚未啟用；價格與免費／付費邊界已經固定。") : "付款通道尚未啟用；價格與免費／付費邊界已經固定。");
       setPurchasing(null);
     }
   }
-  const unlocked = accessLevel === "system" || accessLevel === "bundle";
+  const unlocked = accessLevel === "system";
   const { chart, reading, question } = result;
   const foodAnswer = foodPreferenceAnswer(question, result.locale ?? locale);
   const foodSections: ReportSection[] = foodAnswer ? foodAnswer.detail.map((body, index) => ({ sectionNo: index + 1, pageNo: index + 1, key: `food-${index + 1}` as ReportSection["key"], title: index === 0 ? (locale === "en" ? "Start with one meal" : locale === "zh-Hans" ? "先从一餐开始" : "先從一餐開始") : (locale === "en" ? "Practical choices" : locale === "zh-Hans" ? "实际选择" : "實際選擇"), body: [body], optional: false, evidence: { facts: [], conditions: [], limits: [], checks: [] } })) : [];
@@ -129,7 +129,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     if (foodAnswer) return renderFocusedReportText(foodSections, result.locale ?? locale);
     // The three free sections may be saved, but full paid text must never be
     // requested or persisted before a server-verified purchase or owner access.
-    if (accessLevel !== "system" && accessLevel !== "bundle") {
+    if (accessLevel !== "system") {
       return renderFocusedReportText(foodAnswer ? foodSections : petDecision?.sections ?? composeFocusedReport(result), result.locale ?? locale);
     }
     if (fullReport) return fullReport;
@@ -160,7 +160,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setMsg(null);
     const sections = foodAnswer ? foodSections : petDecision?.sections ?? composeFocusedReport(result);
     setReportSections(sections);
-    if (accessLevel !== "system" && accessLevel !== "bundle") {
+    if (accessLevel !== "system") {
       setBusy(null); // Free preview is built locally; no paid full-report request.
       return;
     }
@@ -269,7 +269,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             {locale === "en" ? "Paid Deep Reading" : locale === "zh-Hans" ? "付费进阶深批" : "付費進階深批"}
           </span>
           <span className="text-xs text-ink-mute">
-            {accessLevel === "system" || accessLevel === "bundle"
+            {accessLevel === "system"
               ? (locale === "en" ? "✓ Unlocked" : locale === "zh-Hans" ? toSimplifiedCustomerText("✓ 已解鎖") : "✓ 已解鎖")
               : (locale === "en" ? "One-time unlock · No recurring fees" : locale === "zh-Hans" ? toSimplifiedCustomerText("單次解鎖 · 不設自動續費") : "單次解鎖 · 不設自動續費")}
           </span>
@@ -350,7 +350,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             onClick={() => void onFull()}
             className="text-xs text-cinnabar underline hover:opacity-80"
           >
-            {reportSections ? (locale === "en" ? "Re-generate reading" : locale === "zh-Hans" ? toSimplifiedCustomerText("重新排布報告") : "重新排布報告") : (locale === "en" ? (accessLevel === "system" || accessLevel === "bundle" ? "View full reading" : "View free 3-part summary") : locale === "zh-Hans" ? toSimplifiedCustomerText(accessLevel === "system" || accessLevel === "bundle" ? "查看完整深批" : "查看免費三段摘要") : (accessLevel === "system" || accessLevel === "bundle" ? "查看完整深批" : "查看免費三段摘要"))}
+            {reportSections ? (locale === "en" ? "Re-generate reading" : locale === "zh-Hans" ? toSimplifiedCustomerText("重新排布報告") : "重新排布報告") : (locale === "en" ? (accessLevel === "system" ? "View full reading" : "View free 3-part summary") : locale === "zh-Hans" ? toSimplifiedCustomerText(accessLevel === "system" ? "查看完整深批" : "查看免費三段摘要") : (accessLevel === "system" ? "查看完整深批" : "查看免費三段摘要"))}
           </button> : null}
         </div>
       </section>

@@ -103,8 +103,6 @@ async function handleVerify(req: Request, env: Runtime, admin: ReturnType<typeof
     .in("system_id", ["all", system]);
 
   if (error) return json(req, env, { ok: false, error: { code: "PROMO_STORE_ERROR" } }, 502);
-  const bundleRow = (data ?? []).find((row) => row.product_id === "bundle");
-  if (bundleRow) return json(req, env, { ok: true, paid: true, product: "bundle", system: null });
   const systemRow = (data ?? []).find((row) => row.product_id === "system" && row.system_id === system);
   if (systemRow) return json(req, env, { ok: true, paid: true, product: "system", system });
   return json(req, env, { ok: true, paid: false });
@@ -133,9 +131,12 @@ async function handleRedeem(req: Request, env: Runtime, admin: ReturnType<typeof
   if (promo.system_id && promo.system_id !== system) {
     return json(req, env, { ok: false, error: { code: "PROMO_WRONG_SYSTEM" } }, 409);
   }
+  if (promo.product_id !== "system") {
+    return json(req, env, { ok: false, error: { code: "PROMO_NOT_FOUND" } }, 404);
+  }
 
-  const redemptionSystemId = promo.product_id === "bundle" ? "all" : system;
-  const granted = { ok: true, paid: true, product: promo.product_id, system: promo.product_id === "bundle" ? null : system };
+  const redemptionSystemId = system;
+  const granted = { ok: true, paid: true, product: "system" as const, system };
 
   // Re-entering a code this browser already redeemed is idempotent: unlock again, use no new slot.
   const { data: existing, error: existingError } = await admin
