@@ -1,4 +1,5 @@
 name: Civilization article and sky entry one-time QA
+# Second run: valid TypeScript translation-key test corrected
 on:
   push:
     branches: [content/civilization-timeline-sky-nav-20261023]
