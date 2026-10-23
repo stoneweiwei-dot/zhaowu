@@ -56,7 +56,11 @@ jobs:
             page.locator("[data-zhaowu-discover-link] a").click()
             page.wait_for_url("**/about",timeout=25000)
             page.locator("[data-zhaowu-features-page]").wait_for(timeout=10000)
-            assert page.locator("[data-zhaowu-features-page] article").count()==7
+            page.wait_for_timeout(1400)
+            count=page.locator("[data-zhaowu-features-page] article").count()
+            print("about articles",count,"URL",page.url,"heading",page.locator("h1").all_text_contents()[:3])
+            print("feature page text length",len(page.locator("[data-zhaowu-features-page]").inner_text()))
+            assert count==7, f"Expected seven features, received {count}"
             sw=page.evaluate("document.documentElement.scrollWidth")
             vw=page.evaluate("document.documentElement.clientWidth")
             print("about viewport",vw,"scroll",sw)
