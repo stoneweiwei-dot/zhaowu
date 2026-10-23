@@ -14,6 +14,7 @@
   z-index: 1 !important; filter: saturate(.95) contrast(1.015) !important;
 }
 .zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .zw-login-film-stage .zw-login-film-video[data-landscape="true"] {
+  object-fit: contain !important;
   object-position: center !important;
 }
 .zhaowu-login-shell .stone-login-screen[data-login-surface="song-landing-r224"] .zw-login-film-controls {
