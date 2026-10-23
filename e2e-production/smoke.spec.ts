@@ -174,7 +174,7 @@ test.describe("guest account isolation and API defense (iPhone Safari)", () => {
     const sessionRes = await page.request.get("/api/owner-session");
     const sessionBody = await sessionRes.json().catch(() => ({}));
     const probe = async (body: Record<string, unknown>) => {
-      const response = await page.request.post("/api/owner-data", { data: body });
+      const response = await page.request.post("/api/owner-data", { data: body, headers: { Origin: new URL(page.url()).origin } });
       return { status: response.status(), body: await response.json().catch(() => ({})) };
     };
     const results = {
