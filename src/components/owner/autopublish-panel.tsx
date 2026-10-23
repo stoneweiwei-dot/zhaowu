@@ -79,6 +79,8 @@ function composeLink(channel: QueueChannel, body: string): { href: string; label
   if (channel === "x") return { href: `https://x.com/intent/post?text=${encodeURIComponent(body.slice(0, 280))}`, label: "打開 X（文案已帶入）" };
   if (channel === "xiaohongshu") return { href: "https://creator.xiaohongshu.com/publish/publish", label: "打開小紅書發佈頁" };
   if (channel === "facebook") return { href: "https://www.facebook.com/", label: "打開 Facebook" };
+  if (channel === "threads") return { href: "https://www.threads.com/", label: "打開 Threads" };
+  if (channel === "instagram") return { href: "https://www.instagram.com/", label: "打開 Instagram" };
   return null;
 }
 
@@ -157,14 +159,20 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
   const accountsUnverified = threadsUnverified || metaUnverified;
   const autoChannelConnected = (channel: QueueChannel) => channel === "threads" ? threadsConnected : channel === "instagram" ? Boolean(data?.channels?.instagram) : channel === "facebook" ? Boolean(data?.channels?.facebook) : true;
   const manualTasks = items.filter((item) => pendingManualChannels(item).length > 0);
+  const STALE_MS = 3 * 24 * 60 * 60 * 1000;
+  const staleManual = manualTasks.filter((item) => Date.now() - new Date(item.created_at).getTime() > STALE_MS);
   const queued = items.filter((item) => item.status === "scheduled" || item.status === "draft");
-  const history = items.filter((item) => !["scheduled", "draft", "manual"].includes(item.status));
+  const history = items.filter((item) => !["scheduled", "draft", "manual", "skipped"].includes(item.status));
+  const skippedHistory = items.filter((item) => item.status === "skipped");
 
   const headline = useMemo(() => {
     if (!settings) return null;
     const connectedAuto = (settings.channels ?? []).some((channel) => AUTO_CHANNELS.includes(channel) && autoChannelConnected(channel));
     const hasManual = (settings.channels ?? []).some((channel) => MANUAL_CHANNELS.includes(channel));
     if (!settings.enabled) return { tone: "mute" as const, title: "自動發佈已暫停", detail: "打開開關後，系統會依下方排程自己發文。" };
+    if (!connectedAuto && hasManual && !accountsUnverified) {
+      return { tone: "warn" as const, title: "半自動：文案會備好，要你貼上", detail: "目前沒有任何平台連上全自動發布。排程日系統只會把文案放進下方「待手動發布」；到下方「平台連接」授權 Threads 或 Meta 一次，就能真正自動發。" };
+    }
     if (!connectedAuto && !hasManual) {
       return accountsUnverified
         ? { tone: "mute" as const, title: "帳號連接狀態暫時無法確認", detail: "帳號清單暫時讀不到，所以不能判斷是否已連接。稍後重新整理再確認。" }
@@ -272,7 +280,34 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         {warnings.length ? <ul role="status" data-overview-warnings className="mt-4 space-y-1 rounded-md border border-amber-700/30 bg-amber-600/10 px-4 py-3 text-sm leading-6 text-amber-900">{warnings.map((code) => <li key={code}>{overviewWarningText(code)}</li>)}</ul> : null}
       </section>
 
-      {/* 2. Platforms */}
+      {/* 2. Manual tasks: the one thing that needs the owner today, so it sits right under the status */}
+      {manualTasks.length ? (
+        <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7" data-autopublish-manual>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h3 className="font-display text-xl">待手動發布（{manualTasks.length}）</h3>
+            {staleManual.length ? <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line bg-paper/60 px-4 text-sm text-ink-soft disabled:opacity-50" onClick={() => { if (window.confirm(`略過 ${staleManual.length} 則超過 3 天的舊任務？`)) void act(async () => { for (const item of staleManual) await updateQueuePost(item.id, { status: "skipped" }); }, "舊任務已略過。"); }}>略過 {staleManual.length} 則舊任務</button> : null}
+          </div>
+          <ul className="mt-4 space-y-3">
+            {manualTasks.map((item) => (
+              <li key={item.id} className="rounded-xl border border-amber-700/30 bg-amber-600/5 p-4">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-ink-mute">{pendingManualChannels(item).map((c) => <Pill key={c} tone="warn">{CHANNEL_LABEL[c]}</Pill>)}<span>{taipei(item.created_at)}</span></div>
+                <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-ink">{item.body}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button type="button" className="min-h-11 rounded-full border border-line bg-cream px-4 text-sm" onClick={async () => setNotice((await copyText(item.body)) ? "文案已複製。" : "複製失敗，請手動選取。")}>複製文案</button>
+                  {pendingManualChannels(item).map((c) => {
+                    const link = composeLink(c, item.body);
+                    return link ? <a key={c} href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-4 text-sm text-ink" onClick={() => { void copyText(item.body); }}>{link.label}</a> : null;
+                  })}
+                  <button type="button" disabled={busy} className="min-h-11 rounded-full bg-wood px-4 text-sm text-cream disabled:opacity-50" onClick={() => void act(() => markQueuePostDone(item.id), "已標記為已發布。")}>我已經發了</button>
+                  <button type="button" disabled={busy} className="min-h-11 px-3 text-sm text-ink-mute underline disabled:opacity-50" onClick={() => void act(() => updateQueuePost(item.id, { status: "skipped" }))}>略過</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {/* 3. Platforms */}
       <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <h3 className="font-display text-xl">平台連接</h3>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -336,7 +371,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         </div>
       </section>
 
-      {/* 3. Schedule */}
+      {/* 4. Schedule */}
       <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <h3 className="font-display text-xl">排程</h3>
         <p className="mt-1 text-sm text-ink-soft">每週 2–3 次最剛好。每個發佈日台北時間 20:00 前後檢查一次，一天最多發一則。</p>
@@ -363,30 +398,6 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         ) : null}
         <p className="mt-4 text-xs leading-6 text-ink-mute">沒有你排隊的貼文時，系統用內容庫（五行、八字、掌相基礎與站內測驗導流），全部是預先審過的文字，不會即時生成、不產生額外費用。</p>
       </section>
-
-      {/* 4. Manual tasks */}
-      {manualTasks.length ? (
-        <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7" data-autopublish-manual>
-          <h3 className="font-display text-xl">待手動發布（{manualTasks.length}）</h3>
-          <ul className="mt-4 space-y-3">
-            {manualTasks.map((item) => (
-              <li key={item.id} className="rounded-xl border border-amber-700/30 bg-amber-600/5 p-4">
-                <div className="flex flex-wrap items-center gap-2 text-xs text-ink-mute">{pendingManualChannels(item).map((c) => <Pill key={c} tone="warn">{CHANNEL_LABEL[c]}</Pill>)}<span>{taipei(item.created_at)}</span></div>
-                <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-ink">{item.body}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <button type="button" className="min-h-11 rounded-full border border-line bg-cream px-4 text-sm" onClick={async () => setNotice((await copyText(item.body)) ? "文案已複製。" : "複製失敗，請手動選取。")}>複製文案</button>
-                  {pendingManualChannels(item).map((c) => {
-                    const link = composeLink(c, item.body);
-                    return link ? <a key={c} href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-4 text-sm text-ink" onClick={() => { void copyText(item.body); }}>{link.label}</a> : null;
-                  })}
-                  <button type="button" disabled={busy} className="min-h-11 rounded-full bg-wood px-4 text-sm text-cream disabled:opacity-50" onClick={() => void act(() => markQueuePostDone(item.id), "已標記為已發布。")}>我已經發了</button>
-                  <button type="button" disabled={busy} className="min-h-11 px-3 text-sm text-ink-mute underline disabled:opacity-50" onClick={() => void act(() => updateQueuePost(item.id, { status: "skipped" }))}>略過</button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
 
       {/* 5. Compose */}
       <section id="autopublish-compose" className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
@@ -449,6 +460,19 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
             ))}
           </ul>
         ) : <p className="mt-2 text-sm text-ink-mute">還沒有發布紀錄。</p>}
+        {skippedHistory.length ? (
+          <details className="mt-4 text-sm text-ink-mute">
+            <summary className="min-h-11 cursor-pointer py-3">已略過（{skippedHistory.length}）</summary>
+            <ul className="space-y-2">
+              {skippedHistory.slice(0, 20).map((item) => (
+                <li key={item.id} className="rounded-lg border border-line bg-paper/30 p-3">
+                  <div className="flex flex-wrap items-center gap-2 text-xs"><span>{taipei(item.created_at)}</span>{item.channels.map((c) => <span key={c}>{CHANNEL_LABEL[c]}</span>)}</div>
+                  <p className="mt-1 line-clamp-2 whitespace-pre-wrap leading-6">{item.body}</p>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
       </section>
 
       <details className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
