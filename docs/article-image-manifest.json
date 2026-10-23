@@ -1,0 +1,197 @@
+{
+  "_doc": "文章圖像資產清單：每張文章圖的出處與狀態。由 scripts/article-image-manifest.test.mjs 於 prebuild 驗證。kind: painting|infographic|diagram；source: stone-original|existing-reused|coded-diagram|unverified；status: approved|interim|needs-review。placeholder 一律不得上線。",
+  "entries": [
+    {
+      "src": "/articles/abhidhamma-31-realms-overview-stone-original.png",
+      "article": "abhidhamma-thirty-one-planes",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "needs-review",
+      "note": "檔名標示站主原創；issue #826 仍開啟，待站主確認為正式批准版本（prebuild 由 assemble-abhidhamma-art.mjs 組裝）。"
+    },
+    {
+      "src": "/articles/abhidhamma-31-realms-desire-stone-original.png",
+      "article": "abhidhamma-thirty-one-planes",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "needs-review",
+      "note": "檔名標示站主原創；issue #826 仍開啟，待站主確認為正式批准版本（prebuild 由 assemble-abhidhamma-art.mjs 組裝）。"
+    },
+    {
+      "src": "/articles/abhidhamma-31-realms-form-stone-original.png",
+      "article": "abhidhamma-thirty-one-planes",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "needs-review",
+      "note": "檔名標示站主原創；issue #826 仍開啟，待站主確認為正式批准版本（prebuild 由 assemble-abhidhamma-art.mjs 組裝）。"
+    },
+    {
+      "src": "/articles/abhidhamma-31-realms-formless-stone-original.png",
+      "article": "abhidhamma-thirty-one-planes",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "needs-review",
+      "note": "檔名標示站主原創；issue #826 仍開啟，待站主確認為正式批准版本（prebuild 由 assemble-abhidhamma-art.mjs 組裝）。"
+    },
+    {
+      "src": "/articles/civilization-timeline-2025-2030-stone-original.png",
+      "article": "civilization-timeline-2025-2030",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "INSTRUCTION-REGISTRY 已記錄原件 SHA-256 與 941×1672 比例。"
+    },
+    {
+      "src": "/hero-gallery/dragon-scholar.webp",
+      "article": "face-mind-cultivation",
+      "kind": "painting",
+      "source": "existing-reused",
+      "status": "interim",
+      "note": "暫用既有宋式畫作（docs/ARTWORK-ACCEPTANCE.md §4），待專題原創圖入站後一次性替換。"
+    },
+    {
+      "src": "/art/zhaowu-yunshui-changsui-v1.webp",
+      "article": "shushu-ends-in-choice",
+      "kind": "painting",
+      "source": "existing-reused",
+      "status": "interim",
+      "note": "暫用既有宋式畫作（docs/ARTWORK-ACCEPTANCE.md §4），待專題原創圖入站後一次性替換。"
+    },
+    {
+      "src": "/articles/time-faster-hero.webp",
+      "article": "time-is-it-faster",
+      "kind": "infographic",
+      "source": "unverified",
+      "status": "needs-review",
+      "note": "400×225、約 11KB，文字烤進圖內；手機上偏糊，且不是宋式畫作。出處待站主確認，建議改為 9:16 畫作＋HTML 文字。"
+    },
+    {
+      "src": "/articles/time-objective-subjective.webp",
+      "article": "time-is-it-faster",
+      "kind": "infographic",
+      "source": "unverified",
+      "status": "needs-review",
+      "note": "400×225、約 11KB，文字烤進圖內；手機上偏糊，且不是宋式畫作。出處待站主確認，建議改為 9:16 畫作＋HTML 文字。"
+    },
+    {
+      "src": "/articles/time-16-hours.webp",
+      "article": "time-is-it-faster",
+      "kind": "infographic",
+      "source": "unverified",
+      "status": "needs-review",
+      "note": "400×225、約 11KB，文字烤進圖內；手機上偏糊，且不是宋式畫作。出處待站主確認，建議改為 9:16 畫作＋HTML 文字。"
+    },
+    {
+      "src": "/articles/time-high-energy.webp",
+      "article": "time-is-it-faster",
+      "kind": "infographic",
+      "source": "unverified",
+      "status": "needs-review",
+      "note": "400×225、約 11KB，文字烤進圖內；手機上偏糊，且不是宋式畫作。出處待站主確認，建議改為 9:16 畫作＋HTML 文字。"
+    },
+    {
+      "src": "/articles/bazi-health-five-phases.svg",
+      "article": "bazi-health-symbolism",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "五行／身體／時間示意圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/bazi-health-body-map.svg",
+      "article": "bazi-health-symbolism",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "五行／身體／時間示意圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/bazi-health-timing-rings.svg",
+      "article": "bazi-health-symbolism",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "五行／身體／時間示意圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/bazi-health-balance.svg",
+      "article": "bazi-health-symbolism",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "五行／身體／時間示意圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/images/articles/23-notes-on-mysticism.svg",
+      "article": "life-view-short-form",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "民俗提醒資訊圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/cern-lhc-2026/01.svg",
+      "article": "cern-lhc-shutdown-2026",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "CERN 科普資訊圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/cern-lhc-2026/02.svg",
+      "article": "cern-lhc-shutdown-2026",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "CERN 科普資訊圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/cern-lhc-2026/03.svg",
+      "article": "cern-lhc-shutdown-2026",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "CERN 科普資訊圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/cern-lhc-2026/04.svg",
+      "article": "cern-lhc-shutdown-2026",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "CERN 科普資訊圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/cern-lhc-2026/05.svg",
+      "article": "cern-lhc-shutdown-2026",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "CERN 科普資訊圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/cern-lhc-2026/06.svg",
+      "article": "cern-lhc-shutdown-2026",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "CERN 科普資訊圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/cern-lhc-2026/07.svg",
+      "article": "cern-lhc-shutdown-2026",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "CERN 科普資訊圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/cern-lhc-2026/08.svg",
+      "article": "cern-lhc-shutdown-2026",
+      "kind": "diagram",
+      "source": "coded-diagram",
+      "status": "approved",
+      "note": "CERN 科普資訊圖（資料圖，非畫作）。"
+    }
+  ]
+}
