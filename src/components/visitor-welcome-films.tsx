@@ -35,11 +35,15 @@ const words = (locale: string) => locale === "en" ? {
 export function VisitorWelcomeFilms({ locale }: { locale: string }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(() => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const [paused, setPaused] = useState(false);
   const [muted, setMuted] = useState(true);
   const [failed, setFailed] = useState(false);
   const film = FILMS[index];
   const t = words(locale);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setPaused(true);
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
