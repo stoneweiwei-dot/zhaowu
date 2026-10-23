@@ -66,7 +66,9 @@ function LoginPage() {
     } catch (err) {
       const code = err instanceof Error ? err.message : "";
       if (code === "PASSKEY_CANCELLED") return;
-      setError(code === "PASSKEY_DEVICE_UNKNOWN"
+      setError(code === "PASSKEY_TIMEOUT"
+        ? ownerText(locale, "Face ID 等待逾時，請重試，或使用下方站主密碼登入。", "Face ID 等待超时，请重试，或使用下方站主密码登录。", "Face ID timed out. Try again or sign in with your owner password below.")
+        : code === "PASSKEY_DEVICE_UNKNOWN"
         ? ownerText(locale, "這支手機還不是受信任裝置。請先用密碼登入，再到站主後台加入。", "这支手机还不是受信任设备。请先用密码登录，再到站主后台加入。", "This phone is not a trusted device yet. Sign in with the password first, then add it in the owner console.")
         : code === "PASSKEY_BROWSER_BLOCKED"
           ? ownerText(locale, "Face ID 未完成。請在 iPhone Safari 開啟 zhao-wu.com，避免使用 ChatGPT 內建瀏覽器註冊。", "Face ID 未完成。请在 iPhone Safari 打开 zhao-wu.com，不要在内置浏览器注册。", "Face ID was blocked or cancelled. Open zhao-wu.com in Safari rather than an in-app browser.")
