@@ -26,6 +26,23 @@ function errorText(code: string, locale: Locale) {
     case "DEVICE_LIMIT_REACHED": return tr(locale, "最多 5 台受信任裝置，請先撤銷一台。", "最多 5 台受信任设备，请先撤销一台。", "Up to 5 trusted devices. Revoke one first.");
     case "DEVICE_EXISTS": return tr(locale, "這支手機已經加入過了（或曾被撤銷，無法再次加入）。", "这支手机已经加入过了（或曾被撤销，无法再次加入）。", "This phone is already registered, or was revoked and cannot be added again.");
     case "OWNER_REQUIRED": return tr(locale, "站主登入已失效，請重新登入。", "站主登录已失效，请重新登录。", "Owner session expired. Please sign in again.");
+    case "PASSKEY_BROWSER_BLOCKED": return tr(locale, "Face ID 驗證未完成。若目前在 ChatGPT 內建瀏覽器，請改用 iPhone Safari 開啟正式網站重試。", "Face ID 验证未完成。若在 ChatGPT 内置浏览器，请改用 iPhone Safari 打开正式网站重试。", "Face ID ceremony was not completed. If using an in-app browser, open the website in Safari.");
+    case "PASSKEY_ALREADY_REGISTERED": return tr(locale, "此裝置已有該網站的通行密鑰，但伺服器尚未確認註冊。請勿反覆建立，先檢查 iPhone 的密碼／通行密鑰。", "此设备已有网站通行密钥，但服务器尚未确认注册。请先检查 iPhone 的密码／通行密钥。", "A local passkey already exists but is not confirmed by the server. Check iPhone Passwords before retrying.");
+    case "BRIDGE_UNAUTHORIZED":
+    case "BRIDGE_REQUIRED":
+    case "BRIDGE_NOT_CONFIGURED":
+    case "OWNER_EDGE_NOT_CONFIGURED":
+      return tr(locale, "後台裝置橋接金鑰尚未同步，無法註冊 Face ID。請先修復 Vercel／Supabase 的伺服器驗證。", "后台设备桥接密钥尚未同步，无法注册 Face ID。请先修复 Vercel／Supabase 的服务器验证。", "The server-to-server device bridge is not configured consistently. Face ID enrollment is unavailable.");
+    case "OWNER_UNAUTHORIZED": return tr(locale, "站主已登入，但 Supabase 後端不接受此站主驗證。必須同步後端站主驗證值，無須重設你的密碼。", "站主已登录，但 Supabase 后端不接受站主验证，须同步后端验证值，无须重设密码。", "Signed in, but Supabase rejected the owner proof. Sync the server-side owner verifier; do not reset your password.");
+    case "OWNER_EDGE_HTTP_404": return tr(locale, "裝置服務網址返回 HTTP 404；請檢查 Production 的 Supabase 專案網址與 Edge Function 是否一致。", "设备服务网址返回 HTTP 404；请检查 Production Supabase 项目和 Edge Function。", "The device service returned HTTP 404; check the Production project URL and Edge Function.");
+    case "OWNER_EDGE_HTTP_401":
+    case "OWNER_EDGE_HTTP_403": return tr(locale, "裝置服務拒絕伺服器連線，需核對 Vercel／Supabase 的橋接授權。", "设备服务拒绝服务器连接，需要核对 Vercel／Supabase 的桥接授权。", "Device service rejected server authorization. Check the bridge configuration.");
+    case "DEVICE_LIST_FAILED":
+    case "DEVICE_CREATE_FAILED":
+    case "OWNER_DATA_FAILED":
+    case "SUPABASE_ENV_MISSING":
+    case "OWNER_EDGE_HTTP_502":
+    case "OWNER_EDGE_HTTP_503": return tr(locale, "Supabase 裝置服務錯誤；Face ID 尚未註冊，請勿反覆產生通行密鑰。", "Supabase 设备服务错误；Face ID 尚未注册，请勿重复建立通行密钥。", "Supabase device service error. Enrollment is not complete; do not repeatedly create passkeys.");
     case "PASSKEY_FAILED": return tr(locale, "裝置服務操作失敗；不是密碼輸入錯誤。請重試，若持續發生需要修復伺服器設定。", "设备服务操作失败；不是密码输入错误。请重试，若持续发生需要修复服务器设置。", "Device service failed; this is not a password entry error. Retry or check server configuration.");
     default: return tr(locale, "操作失敗，請稍後再試。", "操作失败，请稍后再试。", "That did not work. Try again shortly.");
   }
@@ -60,6 +77,10 @@ export function OwnerDevicesManager({ locale }: { locale: Locale }) {
   useEffect(() => { void refresh(); }, [refresh]);
 
   async function onRegister() {
+    if (deviceLoadFailed) {
+      setMessage(tr(locale, "裝置清單尚未成功連線；先按「重新讀取」，避免建立無法保存的通行密鑰。", "设备清单尚未成功连接；请先重试，避免建立无法保存的通行密钥。", "The device backend is offline. Retry loading before creating a passkey."));
+      return;
+    }
     setBusy(true);
     setMessage(null);
     try {
@@ -136,6 +157,8 @@ export function OwnerDevicesManager({ locale }: { locale: Locale }) {
           <p className="text-sm text-ink-mute">{tr(locale, "目前是 Face ID 登入；加入新裝置需要先登出，再用站主密碼登入。", "目前是 Face ID 登录；加入新设备需要先登出，再用站主密码登录。", "This is a Face ID session. Sign in with the owner password to add another device.")}</p>
         ) : kind === null ? (
           <p className="text-sm text-cinnabar-deep">{tr(locale, "目前無法確認登入方式。請重新整理頁面，不要先登出。", "目前无法确认登录方式。请刷新页面，不要先登出。", "Cannot verify the current sign-in method. Refresh the page without signing out.")}</p>
+        ) : deviceLoadFailed ? (
+          <p role="status" className="text-sm text-cinnabar-deep">{tr(locale, "後端裝置清單仍未連通，暫停新增 Face ID；請先按上方「重新讀取」。", "后端设备清单仍未连通，暂停新增 Face ID；请先点击上方「重新读取」。", "Device backend is still unavailable. Enrollment is paused until the retry succeeds.")}</p>
         ) : (
           <div className="flex flex-col gap-3 sm:flex-row">
             <input
