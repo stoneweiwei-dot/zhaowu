@@ -21,6 +21,7 @@ function formatDate(value: string | null | undefined, locale: Locale) {
 
 function errorText(code: string, locale: Locale) {
   switch (code) {
+    case "PASSKEY_TIMEOUT": return tr(locale, "驗證等待逾時，請重試；尚未變更受信任裝置。", "验证等待超时，请重试；尚未更改受信任设备。", "Authentication timed out. Try again; no trusted-device change was confirmed.");
     case "PASSKEY_CANCELLED": return tr(locale, "已取消。", "已取消。", "Cancelled.");
     case "OWNER_PASSWORD_REQUIRED": return tr(locale, "加入新裝置必須用站主密碼登入，請先登出再用密碼登入。", "加入新设备必须用站主密码登录，请先登出再用密码登录。", "Adding a device needs a password sign-in. Sign out and sign in with the password first.");
     case "DEVICE_LIMIT_REACHED": return tr(locale, "最多 5 台受信任裝置，請先撤銷一台。", "最多 5 台受信任设备，请先撤销一台。", "Up to 5 trusted devices. Revoke one first.");
