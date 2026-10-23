@@ -35,7 +35,11 @@ async function post(action: string, extra: Record<string, unknown> = {}) {
 
 function describeError(error: unknown) {
   const name = error instanceof DOMException ? error.name : "";
-  if (name === "NotAllowedError" || name === "AbortError") return "PASSKEY_CANCELLED";
+  if (name === "AbortError") return "PASSKEY_CANCELLED";
+  // NotAllowedError includes denied/aborted ceremonies AND browser contexts that reject WebAuthn.
+  // Keep it visible instead of misreporting a server credential failure.
+  if (name === "NotAllowedError" || name === "SecurityError" || name === "NotSupportedError") return "PASSKEY_BROWSER_BLOCKED";
+  if (name === "InvalidStateError") return "PASSKEY_ALREADY_REGISTERED";
   return error instanceof Error ? error.message : "PASSKEY_FAILED";
 }
 

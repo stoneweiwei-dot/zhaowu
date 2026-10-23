@@ -68,7 +68,9 @@ function LoginPage() {
       if (code === "PASSKEY_CANCELLED") return;
       setError(code === "PASSKEY_DEVICE_UNKNOWN"
         ? ownerText(locale, "這支手機還不是受信任裝置。請先用密碼登入，再到站主後台加入。", "这支手机还不是受信任设备。请先用密码登录，再到站主后台加入。", "This phone is not a trusted device yet. Sign in with the password first, then add it in the owner console.")
-        : ownerText(locale, "Face ID 登入失敗，請改用密碼。", "Face ID 登录失败，请改用密码。", "Face ID sign-in failed. Use the password instead."));
+        : code === "PASSKEY_BROWSER_BLOCKED"
+          ? ownerText(locale, "Face ID 未完成。請在 iPhone Safari 開啟 zhao-wu.com，避免使用 ChatGPT 內建瀏覽器註冊。", "Face ID 未完成。请在 iPhone Safari 打开 zhao-wu.com，不要在内置浏览器注册。", "Face ID was blocked or cancelled. Open zhao-wu.com in Safari rather than an in-app browser.")
+          : ownerText(locale, "Face ID 尚不可用：請先確認後台「登入與裝置」已完成註冊，否則繼續使用站主密碼。", "Face ID 尚不可用：请先确认后台「登录与设备」已注册，否则用站主密码。", "Face ID is not ready. Complete device registration under Sign-in, or use the owner password."));
     } finally {
       setBusy(false);
     }
