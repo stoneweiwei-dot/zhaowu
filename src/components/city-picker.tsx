@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { searchCities } from "@/lib/actions";
 import type { CityHit } from "@/lib/bazi/types";
 import type { Locale } from "@/lib/i18n";
-import { localizePlaceHit as localizeCityHit, needsTimezone, resolveCityTimezone } from "@/lib/geo/city-search";
+import { localizePlaceHit as localizeCityHit, needsTimezone, resolveCityTimezone, searchLocalPlaces } from "@/lib/geo/city-search";
 import { standardTimeFallbackCity } from "@/lib/bazi/cities";
 
 type PickerProps = {
@@ -120,6 +120,11 @@ export function CityPicker({
       return;
     }
     setSearching(true);
+    // Local-first: the offline gazetteer answers instantly. The remote merge below can take up to its
+    // 6s timeout when Open-Meteo / Photon are slow or unreachable (e.g. from mainland China), and must
+    // never hold the offline results back.
+    const instant = searchLocalPlaces(q);
+    if (instant.length) setHits(instant.map((city) => localizeCityHit(city, locale)));
     void searchCities({ data: q })
       .then((rows) => {
         if (seq !== requestSeq.current) return;
