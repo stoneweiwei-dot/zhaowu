@@ -35,6 +35,7 @@ export type AutopublishSettings = {
 export type AutopublishOverview = {
   ok: true;
   configured: boolean;
+  warnings?: string[];
   accountWarnings?: string[];
   settings?: AutopublishSettings;
   items?: QueueItem[];
@@ -66,6 +67,17 @@ async function call<T = Record<string, unknown>>(action: string, extra: Record<s
 }
 
 export const readAutopublishOverview = () => call<AutopublishOverview>("autopublish.overview");
+
+/** Codes in `AutopublishOverview.warnings`: a non-critical lookup failed, so the report is partial. */
+export const THREADS_ACCOUNTS_UNAVAILABLE = "THREADS_ACCOUNTS_UNAVAILABLE";
+export const META_ACCOUNTS_UNAVAILABLE = "META_ACCOUNTS_UNAVAILABLE";
+
+export function overviewWarningText(code: string): string {
+  if (code === THREADS_ACCOUNTS_UNAVAILABLE) return "Threads 帳號清單暫時讀不到；此處的連接狀態無法確認，不代表帳號已中斷。";
+  if (code === META_ACCOUNTS_UNAVAILABLE) return "Facebook / Instagram 帳號清單暫時讀不到；此處的連接狀態無法確認，不代表帳號已中斷。";
+  if (code === "BANK_HISTORY_UNAVAILABLE") return "文案庫的發布歷史暫時讀不到，下一則輪播文案的預覽可能不準。";
+  return `部分資料暫時讀不到（${code}）。`;
+}
 
 export const saveAutopublishSettings = (patch: { enabled?: boolean; publishDays?: number[]; channels?: QueueChannel[] }) =>
   call("autopublish.settings", patch);

@@ -176,7 +176,7 @@ export async function publishSiteSkinFallback(skin, env = process.env, fetchImpl
   }
 }
 
-export default async function handler(req, res) {
+export async function handleOwnerData(req, res, parsedPayload) {
   try {
     const method = req.method || "GET";
     if (method === "GET") {
@@ -200,7 +200,7 @@ export default async function handler(req, res) {
 
     const serverBridgeSecret = bridgeSecret();
 
-    const payload = await readJsonBody(req);
+    const payload = parsedPayload ?? await readJsonBody(req);
     const action = String(payload?.action ?? "").trim();
     if (action === "site-skin.publish" && !validSiteSkin(payload?.skin)) {
       return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
@@ -246,4 +246,8 @@ export default async function handler(req, res) {
       detail: error instanceof Error ? error.message : "unknown",
     });
   }
+}
+
+export default async function handler(req, res) {
+  return handleOwnerData(req, res);
 }

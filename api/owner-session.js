@@ -1,3 +1,4 @@
+import { handleOwnerData } from "./owner-data.js";
 import { publishSocialPost, socialConfiguration, SocialPublishError } from "../lib/meta-social-publisher.js";
 import { authenticateOwner, authenticateOwnerProof, ownerProofValue } from "../lib/owner-auth.js";
 import { PASSKEY_ACTIONS, isPublicPasskeyAction, runPasskeyAction } from "../lib/owner-passkey-actions.js";
@@ -199,6 +200,8 @@ export default async function handler(req, res) {
       return handleThreadsMetaCallback(req, res);
     }
     if (method === "GET") {
+      // Public read-only theme lookup survives older deployments missing /api/owner-data.
+      if (queryValue(req, "view") === "site-skin") return handleOwnerData(req, res);
       if (queryValue(req, "action") === "cron.autopublish") {
         if (!requestIsAuthorizedCron(req)) return json(res, 401, { ok: false, error: "CRON_UNAUTHORIZED" });
         try {
@@ -234,6 +237,8 @@ export default async function handler(req, res) {
     }
     const owner = await authenticateOwner(req);
     if (!owner) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+    // Reuse the authenticated owner-data implementation; never downgrade Passkey sessions.
+    if (payload?.action === "site-skin.publish") return handleOwnerData(req, res, payload);
     if (payload?.action === "social.status") {
       const base = socialConfiguration();
       let threadRows = [];

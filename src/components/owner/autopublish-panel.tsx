@@ -1,8 +1,11 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import {
+  META_ACCOUNTS_UNAVAILABLE,
+  THREADS_ACCOUNTS_UNAVAILABLE,
   createQueuePost,
   deleteQueuePost,
   markQueuePostDone,
+  overviewWarningText,
   pendingManualChannels,
   readAutopublishOverview,
   runAutopublishNow,
@@ -60,7 +63,7 @@ function Pill({ tone, children }: { tone: keyof typeof TONE_CLASS; children: Rea
 function threadsErrorText(code: string) {
   if (code.includes("OWNER_REQUIRED")) return "後台登入已過期。請重新登入後台，再按一次。";
   if (code.includes("ORIGIN_REJECTED")) return "請從 zhao-wu.com 打開後台再按；舊網址會自動轉到正式網址。";
-  if (code.includes("THREADS_OAUTH_NOT_CONFIGURED")) return "伺服器尚未設定 Threads 專用應用程式憑證（THREADS_APP_ID / THREADS_APP_SECRET）；不能沿用 Facebook 的 META_APP_ID。";
+  if (code.includes("THREADS_OAUTH_NOT_CONFIGURED")) return "Threads 專用應用程式尚未設定（THREADS_APP_ID / THREADS_APP_SECRET），不會借用 Facebook App。";
   return `無法開始授權：${code || "未知錯誤"}`;
 }
 
@@ -148,6 +151,10 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
   const settings = data?.settings;
   const items = data?.items ?? [];
   const threadsConnected = Boolean(data?.channels?.threads);
+  const warnings = data?.warnings ?? [];
+  const threadsUnverified = warnings.includes(THREADS_ACCOUNTS_UNAVAILABLE);
+  const metaUnverified = warnings.includes(META_ACCOUNTS_UNAVAILABLE);
+  const accountsUnverified = threadsUnverified || metaUnverified;
   const autoChannelConnected = (channel: QueueChannel) => channel === "threads" ? threadsConnected : channel === "instagram" ? Boolean(data?.channels?.instagram) : channel === "facebook" ? Boolean(data?.channels?.facebook) : true;
   const manualTasks = items.filter((item) => pendingManualChannels(item).length > 0);
   const queued = items.filter((item) => item.status === "scheduled" || item.status === "draft");
@@ -158,7 +165,12 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
     const connectedAuto = (settings.channels ?? []).some((channel) => AUTO_CHANNELS.includes(channel) && autoChannelConnected(channel));
     const hasManual = (settings.channels ?? []).some((channel) => MANUAL_CHANNELS.includes(channel));
     if (!settings.enabled) return { tone: "mute" as const, title: "自動發佈已暫停", detail: "打開開關後，系統會依下方排程自己發文。" };
-    if (!connectedAuto && !hasManual) return { tone: "bad" as const, title: "已開啟，但目前不會發出任何貼文", detail: "還沒有連接可自動發布的平台。先連接 Threads（下方一鍵授權），連接完成後會自動開始。" };
+    if (!connectedAuto && !hasManual) {
+      return accountsUnverified
+        ? { tone: "mute" as const, title: "帳號連接狀態暫時無法確認", detail: "帳號清單暫時讀不到，所以不能判斷是否已連接。稍後重新整理再確認。" }
+        : { tone: "bad" as const, title: "已開啟，但目前不會發出任何貼文", detail: "還沒有連接可自動發布的平台。先連接 Threads（下方一鍵授權），連接完成後會自動開始。" };
+    }
+    if (accountsUnverified) return { tone: "warn" as const, title: "部分帳號狀態無法確認", detail: "帳號清單讀取失敗，不能確認全部自動發布渠道正常；請先檢查平台連接。" };
     const next = data?.schedule?.upcoming?.[0];
     return {
       tone: "ok" as const,
@@ -257,6 +269,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         </div>
         {error ? <p role="alert" className="mt-4 rounded-md border border-cinnabar/30 bg-cinnabar/5 px-4 py-3 text-sm text-cinnabar-deep">{error}</p> : null}
         {notice ? <p role="status" className="mt-4 rounded-md border border-line bg-paper/70 px-4 py-3 text-sm text-ink-soft">{notice}</p> : null}
+        {warnings.length ? <ul role="status" data-overview-warnings className="mt-4 space-y-1 rounded-md border border-amber-700/30 bg-amber-600/10 px-4 py-3 text-sm leading-6 text-amber-900">{warnings.map((code) => <li key={code}>{overviewWarningText(code)}</li>)}</ul> : null}
       </section>
 
       {/* 2. Platforms */}
@@ -264,7 +277,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         <h3 className="font-display text-xl">平台連接</h3>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <article className="rounded-xl border border-line bg-paper/40 p-4">
-            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Threads</h4><Pill tone={threadsConnected ? "ok" : "bad"}>{threadsConnected ? "已連接" : "未連接"}</Pill></div>
+            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Threads</h4>{threadsUnverified && !threadsConnected ? <Pill tone="warn">無法確認</Pill> : <Pill tone={threadsConnected ? "ok" : "bad"}>{threadsConnected ? "已連接" : "未連接"}</Pill>}</div>
             {data.channels?.threadsAccounts.length ? (
               <ul className="mt-3 space-y-2 text-sm">
                 {data.channels.threadsAccounts.map((account) => (
@@ -289,16 +302,16 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
                 <summary className="min-h-11 cursor-pointer py-3 text-ink">按了之後沒有看到「允許」？</summary>
                 <ol className="list-decimal space-y-1 pl-5 leading-6">
                   <li>授權頁在 Threads 網站上，不是彈窗。要在已登入 @{data.channels?.targets.threads || "你的帳號"} 的瀏覽器（Safari）裡做；如果跳進 Threads App，回到 Safari 重按。</li>
-                  <li>Meta 開發者後台 → Threads 專屬 App（不是 Facebook App）→ Threads API → 把這個 Threads 帳號加為「Threads 測試人員」，再到 Threads App：設定 → 帳號 → 網站權限 → 邀請，按「接受」。</li>
+                  <li>Meta 開發者後台 → 你的應用 → Threads API → 把這個 Threads 帳號加為「Threads 測試人員」，再到 Threads App：設定 → 帳號 → 網站權限 → 邀請，按「接受」。</li>
                   <li>同一頁的「有效的 OAuth 重新導向 URI」要填：{data.channels?.oauth?.redirectUri ? <code className="break-all rounded bg-paper px-1">{data.channels.oauth.redirectUri}</code> : "（讀取中）"}</li>
                   <li>Threads 表單三欄必填；OAuth 回呼使用上一行網址。解除安裝回呼填 <code className="break-all rounded bg-paper px-1">https://zhao-wu.com/api/owner-session?action=threads.deauthorize</code>；資料刪除回呼填 <code className="break-all rounded bg-paper px-1">https://zhao-wu.com/api/owner-session?action=threads.data-deletion</code>。這兩個安全回呼必須先正式部署才可供 Meta 使用，不能拿登入回呼冒充。</li>
-                  {data.channels?.oauth && !data.channels.oauth.ready ? <li className="text-cinnabar">Threads 專用 App ID／Secret 尚未完成設定，OAuth 暫不可用。</li> : null}
+                  {data.channels?.oauth && !data.channels.oauth.ready ? <li className="text-cinnabar">伺服器還沒設定 Threads 專用應用程式（THREADS_APP_ID / THREADS_APP_SECRET），這一步會失敗。</li> : null}
                 </ol>
               </details>
             ) : null}
           </article>
           <article className="rounded-xl border border-line bg-paper/40 p-4">
-            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Facebook + Instagram</h4><Pill tone={data.channels?.facebook || data.channels?.instagram ? "ok" : "mute"}>{data.channels?.facebook || data.channels?.instagram ? "已連接" : "未連接"}</Pill></div>
+            <div className="flex items-center justify-between gap-2"><h4 className="font-semibold">Facebook + Instagram</h4>{metaUnverified && !(data.channels?.facebook || data.channels?.instagram) ? <Pill tone="warn">無法確認</Pill> : <Pill tone={data.channels?.facebook || data.channels?.instagram ? "ok" : "mute"}>{data.channels?.facebook || data.channels?.instagram ? "已連接" : "未連接"}</Pill>}</div>
             {data.channels?.metaAccounts?.length ? (
               <ul className="mt-3 space-y-2 text-sm">
                 {data.channels.metaAccounts.map((account) => (

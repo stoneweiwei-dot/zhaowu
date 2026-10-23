@@ -350,7 +350,7 @@ function AccountPage() {
             </button>
           </div>
         </div>
-        <nav className="mt-4 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" aria-label={tr(locale, "站主後台導覽", "站主后台导航", "Owner console navigation")}>
+        <nav className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2" aria-label={tr(locale, "站主後台導覽", "站主后台导航", "Owner console navigation")}>
           {([
             ["overview", tr(locale, "總覽", "总览", "Overview")],
             ["autopublish", tr(locale, "自動發佈", "自动发布", "Auto-publish")],
@@ -369,7 +369,7 @@ function AccountPage() {
               aria-controls={`console-panel-${view}`}
               aria-current={consoleView === view ? "page" : undefined}
               onClick={() => selectConsoleView(view)}
-              className={`min-h-11 shrink-0 whitespace-nowrap rounded-full border px-4 text-sm font-medium transition ${consoleView === view ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}
+              className={`min-h-11 min-w-0 whitespace-normal rounded-xl border px-2.5 py-2 text-center text-sm font-medium leading-5 transition sm:rounded-full sm:px-4 ${consoleView === view ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}
             >{label}</button>
           ))}
         </nav>
