@@ -1,3 +1,10 @@
+## 2026-10-23｜文明時間軸原創圖鑑入文章 × 第二步今日星象捷徑
+
+- ACTIVE（站主最新指令）：將已生成的「2025–2030 文明時間軸交叉分析」真正 941×1672 PNG 原畫，納入既有 `/knowledge` 觀世錄 Articles；文章需繁中／簡中／英文，清楚分開干支與玄空的可核對規則、玄學流派象義及不可驗證的文明災變推論。
+- ACTIVE（導覽）：首頁四步樹第二步「今日指引」內新增直接可見「今日星象」子項，一次連到既有 `/sky-events`；勿塞入深層子樹。首頁黃曆保留原有獨立功能，不搬動星象計算及資料來源。
+- 原圖為 `public/articles/civilization-timeline-2025-2030-stone-original.png`，需保持 941×1672 原始比例、原件 SHA-256 `fe37936b94efcf936ce48fe3e62c770ec81976777bd3aa6bcb738173bcbbbf1a`；不能用 SVG／CSS 幾何卡片、暫時性分享網址或裁切圖代替。新增 `scripts/civilization-timeline.test.mjs` 作內容及資產驗證。
+- 邊界：僅改文章名錄與導覽，保留舊文章／後台編輯覆蓋、三語、支付、登入、排盤、星象真實天文計算及單一 Vercel Production；合併前確認 asset、測試與 CI，正式站需另行驗收。
+
 ## 2026-10-22｜Meta 官方授權 × Facebook／Instagram 自動發佈
 
 - ACTIVE：昭梧站主後台沿用既有 `/api/owner-session`，新增 Facebook Login 官方 OAuth；站主同意一次後，系統自動讀取其管理的 Facebook 粉絲專頁，以及每個粉絲專頁關聯的 Instagram 專業帳號。Facebook 粉絲專頁可自動發純文字或圖片，Instagram 依官方接口發公開圖片貼文；兩者皆可加入既有排程，不以 Metricool 付費方案為前提。

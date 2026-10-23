@@ -38,9 +38,10 @@ export function homeTree(t: T): TreeNode[] {
     {
       id: 'today', icon: 'calendar', art: '/art/scene-lotus-boat-v1.webp',
       title: t('今日指引', '今日指引', 'Today’s guide'),
-      hint: t('黃曆、穿衣顏色、今天適合做什麼。', '黄历、穿衣颜色、今天适合做什么。', 'Almanac, colours to wear, and what suits today.'),
-      primary: { kind: 'action', section: 'today', title: t('看今天的黃曆與天象', '看今天的黄历与天象', 'Open today’s almanac and sky'), hint: t('宜忌、節氣、當日天象一頁看完', '宜忌、节气、当日天象一页看完', 'Dos and don’ts, solar term and sky events on one page') },
+      hint: t('黃曆、今日星象、穿衣顏色，一次看清。', '黄历、今日星象、穿衣颜色，一次看清。', 'Almanac, today’s sky and colours, clearly grouped.'),
+      primary: { kind: 'action', section: 'today', title: t('看今天的黃曆', '看今天的黄历', 'Open today’s almanac'), hint: t('宜忌、節氣與今日提醒', '宜忌、节气与今日提醒', 'Dos and don’ts, solar terms and daily guidance') },
       items: [
+        { kind: 'link', href: '/sky-events', title: t('今日星象', '今日星象', 'Today’s sky & astrology'), hint: t('星辰形象、當週天象與占星解讀，直接進入', '星辰形象、当周天象与占星解读，直接进入', 'Sky events, weekly outlook and astrology in one tap') },
         { kind: 'link', href: '/daily-colors', title: t('每日幸運色', '每日幸运色', 'Colour of the day'), hint: t('今天穿什麼顏色比較順。', '今天穿什么颜色比较顺。', 'Which colour to wear today.') },
         { kind: 'link', href: '/auspicious-atlas', title: t('吉象圖鑑', '吉象图鉴', 'Auspicious symbols'), hint: t('認識傳統吉祥圖案與它們的寓意。', '认识传统吉祥图案与它们的寓意。', 'Traditional lucky motifs and what they mean.') },
       ],
