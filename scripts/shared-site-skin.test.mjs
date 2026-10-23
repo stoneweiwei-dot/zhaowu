@@ -76,7 +76,7 @@ function skinClient(fetcher) {
     localStorage: { removeItem() {} },
   });
   const source = readFileSync("src/lib/theme-skins.ts", "utf8")
-    .replace(/^import .* from ['"][^'"]+['"];?\\r?\\n/gm, "");
+    .replace(/^import .* from ['"][^'"]+['"];?\r?\n/gm, "");
   vm.runInContext(stripTypeScriptTypes(source).replace(/\bexport /g, ""), context);
   return { attrs, run: (code) => vm.runInContext(code, context) };
 }
