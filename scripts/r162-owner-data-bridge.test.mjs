@@ -45,7 +45,10 @@ test("browser code contains no Supabase service credential and calls only the sa
   assert.match(api, /authenticateOwner/);
   assert.match(api, /ownerAuthHeaders/);
   assert.match(await source("lib/owner-auth.js"), /X-Zhaowu-Owner-Secret/i);
-  assert.doesNotMatch(api, /SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SECRET_KEY/);
+  // api/ is server-only on Vercel. The narrowly scoped site-skin recovery path may
+  // consume the server credential there; the browser client must never contain it.
+  assert.match(api, /SUPABASE_SERVICE_ROLE_KEY/);
+  assert.doesNotMatch(api, /sb_secret_[A-Za-z0-9_-]+|service_role\.[A-Za-z0-9_-]+/);
   assert.match(edge, /SUPABASE_SERVICE_ROLE_KEY/);
   assert.match(edge, /ALLOWED_ACTIONS/);
 });

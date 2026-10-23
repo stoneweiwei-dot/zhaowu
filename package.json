@@ -3,6 +3,9 @@
   "version": "0.2.3",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "vite dev",
     "check:empty-state": "node scripts/empty-state-gate.mjs",
