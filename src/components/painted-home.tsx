@@ -1,4 +1,4 @@
-import { FROST_SKIN_ID, frostEdition } from '@/lib/seasonal-skins';
+import { FROST_SKIN_ID, SEASONAL_AUTO_ID, SOLAR_TERMS_24, seasonalState, frostEdition } from '@/lib/seasonal-skins';
 import type { CSSProperties } from 'react';
 import { useSkin, type SkinDef } from '@/lib/theme-skins';
 import { useI18n } from '@/lib/i18n';
@@ -20,11 +20,13 @@ export function homeComposition(skin: SkinDef | null): 'scroll' | 'comic' | 'koi
 
 /** Real links and controls over separate art layers; never a screenshot with hotspots. */
 export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) {
-  const { skin } = useSkin();
+  const { id, skin } = useSkin();
   const { locale } = useI18n();
   const t = (zh: string, hans: string, en: string) => locale === 'en' ? en : locale === 'zh-Hans' ? hans : zh;
   const layout = homeComposition(skin);
-  const seasonal = skin?.id === FROST_SKIN_ID ? frostEdition() : null;
+  const seasonalAuto = id === SEASONAL_AUTO_ID ? seasonalState() : null;
+  const frostOnly = !seasonalAuto && skin?.id === FROST_SKIN_ID ? frostEdition() : null;
+  const houNumber = seasonalAuto ? SOLAR_TERMS_24.indexOf(seasonalAuto.term) * 3 + seasonalAuto.houIndex + 1 : null;
   const dark = skin?.mode === 'dark';
   // Every skin shows ITS OWN painting; the koi painting is only the no-skin / pastel-koi default.
   const art = skin?.hero || (dark ? '/theme-skins/reference-dragon.webp' : '/theme-skins/reference-koi.webp');
@@ -53,10 +55,17 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <button className="ph-comic-cta" onClick={() => onOpen('form')}>{t('開始我的命盤','开始我的命盘','Begin my chart')} <span>›</span></button>
       <small>{t('以宋式留白，讀懂命理的文化意象。','以宋式留白，读懂命理的文化意象。','A quiet introduction to traditional imagery.')}</small>
     </section> : null}
-    {seasonal && <aside className="ph-seasonal-note" data-seasonal-note>
+    {seasonalAuto && <aside className="ph-seasonal-note" data-seasonal-note data-solar-term={seasonalAuto.term.zh} data-solar-hou={seasonalAuto.houIndex + 1}>
+      <p className="ph-seasonal-term"><span lang="zh">{locale === 'zh-Hans' ? seasonalAuto.term.hans : seasonalAuto.term.zh}</span><span lang="en">{seasonalAuto.term.en}</span></p>
+      <p>{seasonalAuto.hou[locale]}</p>
+      <blockquote>{t('初候・二候・三候，循時而變。', '初候・二候・三候，循时而变。', 'Three pentads, changing with the seasons.')}</blockquote>
+      <small>{locale === 'en' ? `Pentad ${houNumber} / 72 · Sydney calendar schedule` : `第 ${houNumber} / 72 候 · 悉尼節氣日程`}</small>
+      <small>{t('傳統中國物候，不代表澳洲當地氣候。非霜降節氣沿用已上架畫作。', '传统中国物候，不代表澳洲当地气候。非霜降节气沿用已上架画作。', 'Traditional Chinese imagery, not a Sydney weather forecast. Other terms reuse published artwork.')}</small>
+    </aside>}
+    {frostOnly && <aside className="ph-seasonal-note" data-seasonal-note>
       <p className="ph-seasonal-term"><span lang="zh">霜降</span><span lang="en">Frost’s Descent</span></p>
-      <p>{seasonal.name[locale]}</p>
-      <blockquote>{seasonal.quote[locale]}</blockquote>
+      <p>{frostOnly.name[locale]}</p>
+      <blockquote>{frostOnly.quote[locale]}</blockquote>
       <small>{t('中國傳統物候意象', '中国传统物候意象', 'Traditional Chinese seasonal imagery')}</small>
     </aside>}
     <HomeTree t={t} onOpen={onOpen} />
