@@ -15,7 +15,7 @@ test("ZHAOWU story is public, multilingual and linked from login without touchin
   assert.match(about, /Where the seasons have a form/);
   assert.match(about, /二十四節氣 × 七十二候/);
   assert.match(about, /其他節氣沿用既有畫作/);
-  assert.match(about, /不[\u4e00-\u9fff]*澳洲天氣預報/);
+  assert.match(about, /並非澳洲天氣預報/);
   assert.match(about, /<Link to="\/">/);
   assert.match(login, /data-zhaowu-discover-link/);
   assert.match(login, /<Link to="\/about">/);
