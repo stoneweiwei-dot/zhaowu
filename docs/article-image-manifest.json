@@ -192,6 +192,62 @@
       "source": "coded-diagram",
       "status": "approved",
       "note": "CERN 科普資訊圖（資料圖，非畫作）。"
+    },
+    {
+      "src": "/articles/stone-cultural-atlas-01.png",
+      "article": "seven-cultural-atlases-20261023",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "站主於 PR #871 聲明為原創 1080×1920 PNG（七張，無 SVG／程式圖替代）。"
+    },
+    {
+      "src": "/articles/stone-cultural-atlas-02.png",
+      "article": "seven-cultural-atlases-20261023",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "站主於 PR #871 聲明為原創 1080×1920 PNG（七張，無 SVG／程式圖替代）。"
+    },
+    {
+      "src": "/articles/stone-cultural-atlas-03.png",
+      "article": "seven-cultural-atlases-20261023",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "站主於 PR #871 聲明為原創 1080×1920 PNG（七張，無 SVG／程式圖替代）。"
+    },
+    {
+      "src": "/articles/stone-cultural-atlas-04.png",
+      "article": "seven-cultural-atlases-20261023",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "站主於 PR #871 聲明為原創 1080×1920 PNG（七張，無 SVG／程式圖替代）。"
+    },
+    {
+      "src": "/articles/stone-cultural-atlas-05.png",
+      "article": "seven-cultural-atlases-20261023",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "站主於 PR #871 聲明為原創 1080×1920 PNG（七張，無 SVG／程式圖替代）。"
+    },
+    {
+      "src": "/articles/stone-cultural-atlas-06.png",
+      "article": "seven-cultural-atlases-20261023",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "站主於 PR #871 聲明為原創 1080×1920 PNG（七張，無 SVG／程式圖替代）。"
+    },
+    {
+      "src": "/articles/stone-cultural-atlas-07.png",
+      "article": "seven-cultural-atlases-20261023",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "站主於 PR #871 聲明為原創 1080×1920 PNG（七張，無 SVG／程式圖替代）。"
     }
   ]
 }
