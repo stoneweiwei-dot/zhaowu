@@ -5,18 +5,20 @@ import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { ownerSignIn } from "@/lib/auth/owner-api";
 import { passkeySignIn, passkeySupported } from "@/lib/auth/passkey-client";
 import { useI18n } from "@/lib/i18n";
-import { LoginFilmStage } from "@/components/login-film-stage";
-import "@/about-zhaowu.css";
+import { useSkin } from "@/lib/theme-skins";
 
 function ownerText(locale: string, hant: string, hans: string, en: string) {
   if (locale === "en") return en;
   return locale === "zh-Hans" ? hans : hant;
 }
 
+const LOGIN_BACKDROP = "/hero-gallery/dragon-scholar.webp";
+
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
 function LoginPage() {
   const { t, locale } = useI18n();
+  const { skin } = useSkin();
   const navigate = useNavigate();
   const { user, reload } = useCurrentUserState();
   const [email, setEmail] = useState("");
@@ -84,7 +86,15 @@ function LoginPage() {
       data-login-backend="vercel-owner-cookie"
       data-login-surface="song-landing-r224"
     >
-      <LoginFilmStage locale={locale} />
+      <img
+        className="stone-login-stage-media"
+        src={LOGIN_BACKDROP}
+        alt=""
+        aria-hidden="true"
+        width={1248}
+        height={1248}
+        style={skin?.focus ? { objectPosition: skin.focus } : undefined}
+      />
 
       <section className="stone-login-sheet seal-border">
         <div className="stone-login-brand" aria-label={`${t("brand")} ZHAOWU`}>
@@ -150,11 +160,6 @@ function LoginPage() {
         <div className="stone-login-footer">
           <span>{t("tagline")}</span>
           <Link to="/">{t("backHome")}</Link>
-        </div>
-        <div className="zhaowu-feature-discovery" data-zhaowu-discover-link>
-          <Link to="/about">
-            {ownerText(locale, "認識昭梧特色 →", "认识昭梧特色 →", "Discover ZHAOWU →")}
-          </Link>
         </div>
       </section>
     </main>
