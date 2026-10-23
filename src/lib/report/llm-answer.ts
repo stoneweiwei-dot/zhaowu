@@ -14,6 +14,7 @@ import { toTraditionalCustomerText } from "@/lib/report/reading-locale";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
 import { hasUnsupportedNumbers, hasUnsupportedRelativeYear } from "@/lib/report/answer-number-guard";
+import { hasUnsupportedChartTerms } from "@/lib/report/answer-chart-term-guard";
 
 /** Routes whose fixed wording is a safety decision, not a quality gap. */
 const KEEP_FIXED = /^(safe:|intent:(love\.suspect|money\.lottery|legal|family\.parentHealth|other\.ghost|other\.pastlife|other\.guardian)$)/;
@@ -47,13 +48,15 @@ export function buildWriterRequest(result: AnalysisResult): WriterRequest | null
   return { question, facts, months, draft: { answer: rule.answer, next: rule.nextAction } };
 }
 
-export function acceptWriterOutput(question: string, answer: unknown, next: unknown, months: number[], draft?: WriterRequest["draft"]): { answer: string; next: string } | null {
+export function acceptWriterOutput(question: string, answer: unknown, next: unknown, months: number[], draft?: WriterRequest["draft"], facts = ""): { answer: string; next: string } | null {
   const a = toTraditionalCustomerText(String(answer ?? "").trim());
   const n = toTraditionalCustomerText(String(next ?? "").trim());
   const count = (a.match(/[。！？]/g) ?? []).length;
   if (count < 1 || count > 3 || a.length > 220 || !n || n.length > 100) return null;
   const all = `${a}${n}`;
   if (JARGON.test(all) || SIMPLIFIED.test(all) || FORBIDDEN.test(all)) return null;
+  // The engine owns the chart; a rewrite may not introduce stem/branch notation of its own.
+  if (hasUnsupportedChartTerms(all, [question, facts, draft?.answer ?? "", draft?.next ?? ""])) return null;
   if (!directAnswerCoversQuestion(question, a)) return null;
   for (const m of all.matchAll(/(\d{1,2})月/g)) if (!months.includes(Number(m[1]))) return null;
   if (draft && (hasUnsupportedNumbers(all, [question, draft.answer, draft.next]) || hasUnsupportedRelativeYear(all, [question, draft.answer, draft.next]))) return null;
@@ -74,7 +77,7 @@ export async function requestWrittenAnswer(req: WriterRequest, timeoutMs = 15000
     if (!res.ok) return null;
     const out = await res.json();
     if (out?.source !== "llm") return null;
-    return acceptWriterOutput(req.question, out.answer, out.next, req.months, req.draft);
+    return acceptWriterOutput(req.question, out.answer, out.next, req.months, req.draft, req.facts);
   } catch {
     return null;
   } finally {

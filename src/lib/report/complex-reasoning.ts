@@ -6,6 +6,7 @@ import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
 import { hasUnsupportedNumbers, hasUnsupportedRelativeYear } from "@/lib/report/answer-number-guard";
+import { hasUnsupportedChartTerms } from "@/lib/report/answer-chart-term-guard";
 
 export type ReasoningFact = {
   id: string;
@@ -388,6 +389,8 @@ function validAnswer(out: any, req: ComplexReasoningRequest): out is ComplexReas
   if (INTERNAL_RE.test(answer + next) || CERTAINTY_RE.test(answer + next) || JARGON_OVERLOAD_RE.test(answer + next)) return false;
   const sources = [req.graph.sourceText, req.draft.answer, req.draft.next, ...req.facts.map((fact) => fact.text)];
   if (hasUnsupportedNumbers(answer + next, sources) || hasUnsupportedRelativeYear(answer + next, sources)) return false;
+  // The engine owns the chart; the reasoner may restate supplied stem/branch notation but never invent it.
+  if (hasUnsupportedChartTerms(answer + next, sources)) return false;
   if (!directAnswerCoversQuestion(req.graph.primaryQuestion || req.graph.sourceText, answer)) return false;
   if (!["high", "medium", "limited"].includes(out.confidence)) return false;
   if (!Array.isArray(out.evidenceIds) || !out.evidenceIds.length) return false;
