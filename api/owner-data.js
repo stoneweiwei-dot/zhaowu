@@ -173,7 +173,7 @@ async function readOnlyOperationsDiagnostic() {
       return {http:200,code:"OK"};
     }catch(e){
       const code=String(e instanceof Error?e.message:"");
-      const match=code.match(/^(SOCIAL_QUEUE_HTTP_\\d{3}|SOCIAL_QUEUE_NOT_CONFIGURED|BRIDGE_UNAUTHORIZED|BRIDGE_NOT_CONFIGURED|BRIDGE_REQUIRED)$/);
+      const match=code.match(/^(SOCIAL_QUEUE_HTTP_\d{3}|SOCIAL_QUEUE_NOT_CONFIGURED|BRIDGE_UNAUTHORIZED|BRIDGE_NOT_CONFIGURED|BRIDGE_REQUIRED)$/);
       return {http:0,code:match?match[1]:"SOCIAL_QUEUE_FAILURE"};
     }
   };
