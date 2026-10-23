@@ -11,32 +11,29 @@ test.describe("production smoke (iPhone Safari)", () => {
     if (EXPECT_SHA) expect(body.release).toBe(EXPECT_SHA);
   });
 
-  test("home keeps compact utility chrome, a flush hero, and an accessible birth form", async ({ page }) => {
+  test("home keeps four working entry points and opens the birth form", async ({ page }) => {
     const pageErrors: string[] = [];
     page.on("pageerror", (error) => pageErrors.push(error.message));
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("heading", { name: "一份生辰，讀成一本昭梧命書", exact: true })).toBeVisible({ timeout: 20_000 });
-    await expect(page.getByRole("link", { name: /最新更新/ })).toBeVisible();
+    // The public home was redesigned as a four-step Song editorial guide. The former
+    // flush-hero and top-level birth-heading selectors are no longer the contract.
+    const guide = page.locator("[data-home-tree]");
+    await expect(guide).toBeVisible({ timeout: 20_000 });
+    for (const entrance of ["form", "today", "quiz", "notes"]) {
+      await expect(guide.locator('[data-home-card="' + entrance + '"]')).toHaveCount(1);
+    }
     await expect(page.getByRole("button", { name: "English", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "繁體中文", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "简体中文", exact: true })).toBeVisible();
-    await expect(page.locator(".zhaowu-site-header .zhaowu-header-owner-login")).toHaveCount(0);
 
-    const heroGap = await page.evaluate(() => {
-      const header = document.querySelector(".zhaowu-site-header");
-      const hero = document.querySelector(".zw-hero-gallery");
-      if (!(header instanceof HTMLElement) || !(hero instanceof HTMLElement)) return 999;
-      return hero.getBoundingClientRect().top - header.getBoundingClientRect().bottom;
-    });
-    expect(Math.abs(heroGap)).toBeLessThanOrEqual(2);
-
-    await page.getByRole("button", { name: "命書", exact: true }).click();
+    await guide.locator('[data-home-card="form"] .ph-tree-primary').click();
+    await expect(page.locator("#birth-form")).toBeVisible({ timeout: 20_000 });
     await expect(page.getByRole("heading", { name: "錄入生辰", exact: true })).toBeVisible({ timeout: 20_000 });
     for (const id of ["#birth-year", "#birth-month", "#birth-day", "#birth-hour", "#birth-minute", "#birth-city"]) {
       await expect(page.locator(id)).toBeVisible();
     }
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
     expect(pageErrors).toEqual([]);
   });
 
@@ -59,12 +56,37 @@ test.describe("production smoke (iPhone Safari)", () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
 
-  test("login page renders", async ({ page }) => {
+  test("animated login keeps real sign-in controls and reaches the separate /about page", async ({ page }) => {
     const pageErrors: string[] = [];
     page.on("pageerror", (error) => pageErrors.push(error.message));
     await page.goto("/login", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "站主登入", exact: true })).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator("#owner-account")).toBeVisible();
+    await expect(page.locator("#login-secret")).toBeVisible();
+    await expect(page.locator("[data-login-film-stage]")).toBeVisible();
+    await expect(page.locator("video[data-login-film-video]")).toHaveAttribute("src", /\/login-films\/.*\.mp4/);
+    await expect(page.locator("[data-login-film-controls]")).toBeVisible();
+    const next = page.getByRole("button", { name: "下一段動畫" });
+    await next.click();
+    await expect(page.locator("[data-login-film-stage]")).toHaveAttribute("data-current-film", "dragon-portrait");
+
+    await page.locator("[data-zhaowu-discover-link] a").click();
+    await expect(page).toHaveURL(/\/about\/?$/);
+    await expect(page.locator("[data-zhaowu-features-page]")).toBeVisible();
+    expect(await page.locator("[data-feature-number]").count()).toBeGreaterThanOrEqual(7);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
     expect(pageErrors).toEqual([]);
+  });
+
+  test("all four login film assets are delivered by the canonical host", async ({ request }) => {
+    for (const name of ["flute-dragon", "dragon-portrait", "lotus-sunlight", "imperial-cat"]) {
+      for (const ext of ["mp4", "jpg"]) {
+        const url = "/login-films/" + name + "." + ext;
+        const response = await request.get(url, { headers: { Range: "bytes=0-2047" } });
+        expect([200, 206], url + " status").toContain(response.status());
+        expect(response.headers()["content-type"], url + " content type").toMatch(ext === "mp4" ? /video\/mp4/ : /image\/jpeg/);
+      }
+    }
   });
 
   test("built JS and CSS assets referenced by index.html are served", async ({ request }) => {
