@@ -1,0 +1,22 @@
+name: Civilization article and sky entry one-time QA
+on:
+  push:
+    branches: [content/civilization-timeline-sky-nav-20261023]
+    paths: [.github/workflows/civilization-sky-qa-once.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Check exact artwork, home tree, existing real-art protections
+        run: node --test scripts/civilization-timeline.test.mjs scripts/home-tree.test.mjs scripts/article-artwork-acceptance.test.mjs
+      - name: Typecheck and build against committed sources
+        run: npm run build
