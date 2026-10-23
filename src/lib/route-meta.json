@@ -6,6 +6,11 @@
       "zh-Hans": { "title": "昭梧｜八字排盘・子平八字・真太阳时・流年运势｜免登录免费", "description": "免登录免费八字排盘：依子平八字与真太阳时校正，整理五行旺衰、大运与流年运势、今日提示。" },
       "en": { "title": "ZHAOWU｜Free BaZi Chart · Four Pillars · True Solar Time · Annual Luck · No Sign-up", "description": "Free BaZi (Four Pillars) chart with true solar time correction: five-element balance, luck cycles, annual luck and daily guidance. No sign-up needed." }
     },
+    "/about": {
+      "zh-Hant": { "title": "認識昭梧｜宋式美學・二十四節氣・七十二候・命理文化", "description": "走進昭梧：宋式畫境、節氣與七十二候、即時天氣、主題換裝、個人命書與今日黃曆星象。" },
+      "zh-Hans": { "title": "认识昭梧｜宋式美学・二十四节气・七十二候・命理文化", "description": "走进昭梧：宋式画境、节气与七十二候、实时天气、主题换装、个人命书与今日黄历星象。" },
+      "en": { "title": "Discover ZHAOWU | Song Art, Solar Terms, Personal Destiny", "description": "Explore ZHAOWU: Song-inspired design, 24 solar terms, 72 pentads, live weather, curated site themes and personal destiny books." }
+    },
     "/knowledge": {
       "zh-Hant": { "title": "昭梧知識庫｜命理文章與命理小知識", "description": "文章與短札讀觀點與研究；命理小知識查方法、術語與判讀規則，證據等級分開標示。" },
       "zh-Hans": { "title": "昭梧知识库｜命理文章与命理小知识", "description": "文章与短札读观点与研究；命理小知识查方法、术语与判读规则，证据等级分开标示。" },
