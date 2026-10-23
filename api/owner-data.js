@@ -137,6 +137,26 @@ function bridgeSecret() {
   return String(process.env.ZHAOWU_OWNER_BRIDGE_SECRET ?? "").trim();
 }
 
+const OWNER_UPSTREAM_TIMEOUT_MS = 12_000;
+
+function postOwnerUpstream(action, payload, owner, serverBridgeSecret, fetchImpl = fetch) {
+  return fetchImpl(`${supabaseUrl()}/functions/v1/${ownerUpstreamFunction(action)}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(serverBridgeSecret ? { "X-Zhaowu-Bridge-Secret": serverBridgeSecret } : {}),
+      ...ownerAuthHeaders(owner),
+      "X-Zhaowu-Server-Bridge": "r162",
+    },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(OWNER_UPSTREAM_TIMEOUT_MS),
+  });
+}
+
+function retryableSiteSkinStatus(status) {
+  return status === 408 || status === 429 || status >= 500;
+}
+
 /**
  * Owner-cookie-only fallback for a backend 404 on site-skin.publish.
  * Uses the existing Supabase service role server-side; no browser secrets,
@@ -210,16 +230,19 @@ export async function handleOwnerData(req, res, parsedPayload) {
     if (ownerUpstreamFunction(action) !== "zhaowu-owner-data" && owner.kind !== "secret") {
       return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
     }
-    const upstream = await fetch(`${supabaseUrl()}/functions/v1/${ownerUpstreamFunction(action)}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(serverBridgeSecret ? { "X-Zhaowu-Bridge-Secret": serverBridgeSecret } : {}),
-        ...ownerAuthHeaders(owner),
-        "X-Zhaowu-Server-Bridge": "r162",
-      },
-      body: JSON.stringify(payload),
-    });
+    const sendUpstream = () => postOwnerUpstream(action, payload, owner, serverBridgeSecret);
+    let upstream;
+    try {
+      upstream = await sendUpstream();
+    } catch (error) {
+      // Theme publication is an idempotent upsert. A single Supabase/network
+      // interruption must not make the owner repeat the selection manually.
+      if (action !== "site-skin.publish") throw error;
+      upstream = await sendUpstream();
+    }
+    if (action === "site-skin.publish" && retryableSiteSkinStatus(upstream.status)) {
+      upstream = await sendUpstream();
+    }
     // A stale/missing Edge action can return 404 while the authenticated
     // owner-data API itself is live. Retry this one whitelisted write through
     // the existing server-side service role, never through the browser.
