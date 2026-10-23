@@ -25,25 +25,35 @@ function errorText(code: string, locale: Locale) {
     case "OWNER_PASSWORD_REQUIRED": return tr(locale, "加入新裝置必須用站主密碼登入，請先登出再用密碼登入。", "加入新设备必须用站主密码登录，请先登出再用密码登录。", "Adding a device needs a password sign-in. Sign out and sign in with the password first.");
     case "DEVICE_LIMIT_REACHED": return tr(locale, "最多 5 台受信任裝置，請先撤銷一台。", "最多 5 台受信任设备，请先撤销一台。", "Up to 5 trusted devices. Revoke one first.");
     case "DEVICE_EXISTS": return tr(locale, "這支手機已經加入過了（或曾被撤銷，無法再次加入）。", "这支手机已经加入过了（或曾被撤销，无法再次加入）。", "This phone is already registered, or was revoked and cannot be added again.");
+    case "OWNER_REQUIRED": return tr(locale, "站主登入已失效，請重新登入。", "站主登录已失效，请重新登录。", "Owner session expired. Please sign in again.");
+    case "PASSKEY_FAILED": return tr(locale, "裝置服務操作失敗；不是密碼輸入錯誤。請重試，若持續發生需要修復伺服器設定。", "设备服务操作失败；不是密码输入错误。请重试，若持续发生需要修复服务器设置。", "Device service failed; this is not a password entry error. Retry or check server configuration.");
     default: return tr(locale, "操作失敗，請稍後再試。", "操作失败，请稍后再试。", "That did not work. Try again shortly.");
   }
 }
 
 export function OwnerDevicesManager({ locale }: { locale: Locale }) {
   const [devices, setDevices] = useState<OwnerDevice[] | null>(null);
+  const [deviceLoadFailed, setDeviceLoadFailed] = useState(false);
   const [kind, setKind] = useState<"secret" | "device" | null>(null);
   const [label, setLabel] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
-    try {
-      const [items, sessionKind] = await Promise.all([listOwnerDevices(), readOwnerSessionKind()]);
-      setDevices(items);
-      setKind(sessionKind);
-    } catch (error) {
+    // Device-list failures must never hide a verified password session.
+    // In particular, a broken Edge bridge must not tell a signed-in owner to sign out.
+    const [deviceResult, sessionResult] = await Promise.allSettled([
+      listOwnerDevices(),
+      readOwnerSessionKind(),
+    ]);
+    setKind(sessionResult.status === "fulfilled" ? sessionResult.value : null);
+    if (deviceResult.status === "fulfilled") {
+      setDevices(deviceResult.value);
+      setDeviceLoadFailed(false);
+    } else {
       setDevices([]);
-      setMessage(errorText(error instanceof Error ? error.message : "", locale));
+      setDeviceLoadFailed(true);
+      setMessage(errorText(deviceResult.reason instanceof Error ? deviceResult.reason.message : "", locale));
     }
   }, [locale]);
 
@@ -93,6 +103,13 @@ export function OwnerDevicesManager({ locale }: { locale: Locale }) {
 
       {devices === null ? <p role="status" className="mt-4 text-sm">{tr(locale, "載入中…", "加载中…", "Loading…")}</p> : null}
 
+      {deviceLoadFailed ? (
+        <div role="alert" className="mt-4 rounded-xl border border-cinnabar/30 bg-cinnabar/5 p-3 text-sm text-cinnabar-deep">
+          <p>{tr(locale, "裝置清單暫時無法讀取，這不代表沒有受信任裝置，也不會取消你的登入。", "设备列表暂时无法读取，不代表没有受信任设备，也不会取消你的登录。", "Device list unavailable. This does not mean there are no trusted devices or that you were signed out.")}</p>
+          <button type="button" disabled={busy} onClick={() => void refresh()} className="mt-2 min-h-11 rounded-lg border border-cinnabar/30 px-4">{tr(locale, "重新讀取", "重新读取", "Retry")}</button>
+        </div>
+      ) : null}
+
       {active.length ? (
         <ul className="mt-4 space-y-2">
           {active.map((device) => (
@@ -108,15 +125,17 @@ export function OwnerDevicesManager({ locale }: { locale: Locale }) {
             </li>
           ))}
         </ul>
-      ) : devices ? <p className="mt-4 text-sm text-ink-mute">{tr(locale, "還沒有受信任裝置。", "还没有受信任设备。", "No trusted devices yet.")}</p> : null}
+      ) : devices && !deviceLoadFailed ? <p className="mt-4 text-sm text-ink-mute">{tr(locale, "還沒有受信任裝置。", "还没有受信任设备。", "No trusted devices yet.")}</p> : null}
 
       {revoked.length ? <p className="mt-3 text-xs text-ink-mute">{tr(locale, `已撤銷 ${revoked.length} 台。`, `已撤销 ${revoked.length} 台。`, `${revoked.length} revoked.`)}</p> : null}
 
       <div className="mt-5 border-t border-line/60 pt-4">
         {!passkeySupported() ? (
           <p className="text-sm text-ink-mute">{tr(locale, "這個瀏覽器不支援 Passkey。", "这个浏览器不支持 Passkey。", "This browser does not support passkeys.")}</p>
-        ) : kind !== "secret" ? (
-          <p className="text-sm text-ink-mute">{tr(locale, "要加入這支手機，請先登出，改用站主密碼登入。", "要加入这支手机，请先登出，改用站主密码登录。", "To add this phone, sign out and sign in with the owner password first.")}</p>
+        ) : kind === "device" ? (
+          <p className="text-sm text-ink-mute">{tr(locale, "目前是 Face ID 登入；加入新裝置需要先登出，再用站主密碼登入。", "目前是 Face ID 登录；加入新设备需要先登出，再用站主密码登录。", "This is a Face ID session. Sign in with the owner password to add another device.")}</p>
+        ) : kind === null ? (
+          <p className="text-sm text-cinnabar-deep">{tr(locale, "目前無法確認登入方式。請重新整理頁面，不要先登出。", "目前无法确认登录方式。请刷新页面，不要先登出。", "Cannot verify the current sign-in method. Refresh the page without signing out.")}</p>
         ) : (
           <div className="flex flex-col gap-3 sm:flex-row">
             <input
