@@ -1,4 +1,4 @@
-import { FROST_SKIN_ID, SEASONAL_AUTO_ID, FROST_PHASES } from "@/lib/seasonal-skins";
+import { FROST_SKIN_ID, SEASONAL_AUTO_ID, FROST_PHASES, SOLAR_TERMS_24, seasonalState } from "@/lib/seasonal-skins";
 import { useEffect, useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import {
@@ -93,6 +93,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
   const [success, setSuccess] = useState("");
   const [preview, setPreview] = useState<ThemePreview | null>(null);
   const current = skinById(id);
+  const currentSolar = seasonalState();
   const visibleThemes = useMemo(() => CURATED_SKINS.filter((entry) => filter === "all" || entry.family === filter), [filter]);
 
   useEffect(() => {
@@ -142,11 +143,25 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
 
       <section className="mt-5 border-y border-line py-4" data-seasonal-theme-collection>
         <h3 className="font-display text-xl">{tr(locale, "節氣主題", "节气主题", "Seasonal themes")}</h3>
-        <p className="mt-2 text-sm leading-7">{tr(locale, "按悉尼日期輪替已上架的節氣與三候；新一套未就緒時保留上一套。選擇其他主題即可停止自動模式。", "按悉尼日期轮替已上架的节气与三候；新一套未就绪时保留上一套。选择其他主题即可停止自动模式。", "Follow the published seasonal schedule in Sydney time. Keep the last verified theme when the next is unavailable. Choose any other theme to leave automatic mode.")}</p>
+        <p className="mt-2 text-sm leading-7">{tr(locale, "完整 24 節氣／72 候按悉尼日期 00:01 自動切換，使用天文交節所在的悉尼日曆日，而非精確交節秒數。霜降三候使用專屬原畫，其餘節氣採用現有完整主題畫作，不冒稱已製作 72 幅新畫。", "完整 24 节气／72 候按悉尼日期 00:01 自动切换，依据天文交节所在日期，并非精确交节秒数。霜降三候有专属原画，其余沿用已上架主题。", "All 24 terms and 72 pentads switch at 00:01 on each Sydney calendar date derived from the astronomical solar term. This is a visual schedule, not exact astronomical transition time. Frost has bespoke art; other terms reuse existing complete themes.")}</p>
+        <div data-seasonal-current className="mt-3 rounded-lg border border-line bg-paper/60 px-4 py-3">
+          <strong className="font-display">{locale === "en" ? currentSolar.term.en : locale === "zh-Hans" ? currentSolar.term.hans : currentSolar.term.zh}</strong>
+          <span className="ml-3 text-sm">{currentSolar.hou[locale]}</span>
+          <p className="mt-1 text-xs text-ink-mute">{tr(locale, "當前節氣日期", "当前节气日期", "Current term date")}: {currentSolar.termDate} · {tr(locale, "候序", "候序", "Pentad")} {currentSolar.houIndex + 1}/3</p>
+        </div>
         <button type="button" disabled={saving} aria-pressed={id === SEASONAL_AUTO_ID} onClick={() => void choose(SEASONAL_AUTO_ID)} className="mt-3 min-h-11 w-full rounded-lg border border-wood px-4 py-2 text-sm">
           {id === SEASONAL_AUTO_ID ? tr(locale, "節氣自動模式使用中", "节气自动模式使用中", "Seasonal automatic mode is live") : tr(locale, "啟用節氣自動模式", "启用节气自动模式", "Enable seasonal automatic mode")}
         </button>
-        <p className="my-3 text-sm leading-7">{tr(locale, "霜降：10月23日／二候：10月28日／三候：11月2日，悉尼 00:01；此為網站排程，非天文交節時刻。", "霜降：10月23日／二候：10月28日／三候：11月2日，悉尼 00:01；此为网站排程，非天文交节时刻。", "2026: 23 Oct / 28 Oct / 2 Nov at 00:01 Sydney time. Website schedule, not the astronomical transition.")}</p>
+        <p className="my-3 text-sm leading-7">{tr(locale, "每候約五日：初候第 0–4 日、二候第 5–9 日、三候直至下一節氣，避免日期缺口。中國傳統物候不是悉尼天氣預報。", "每候约五日：初候第 0–4 日、二候第 5–9 日、三候直到下一节气；传统物候并非悉尼天气预报。", "About five days per pentad: days 0–4, 5–9, then the third until the next term. Traditional Chinese phenology is not Sydney's weather forecast.")}</p>
+        <details className="mb-4 rounded-lg border border-line p-3" data-seasonal-72-list>
+          <summary className="cursor-pointer text-sm font-medium">{tr(locale, "查看完整 24 節氣・72 候", "查看完整 24 节气・72 候", "Browse all 24 terms and 72 pentads")}</summary>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">{SOLAR_TERMS_24.map(term => (
+            <div key={term.zh} className="rounded-md bg-paper/70 p-3">
+              <strong className="text-base">{locale === "en" ? term.en : locale === "zh-Hans" ? term.hans : term.zh}</strong>
+              <p className="mt-1 text-sm leading-6 text-ink-soft">{term.hou.map((hou,i) => `${i+1}. ${hou[locale]}`).join(" · ")}</p>
+            </div>
+          ))}</div>
+        </details>
         <div className="grid gap-4 sm:grid-cols-2">{SEASONAL_SKINS.map(skin => <ThemeCard key={skin.id} locale={locale} skin={skin} active={id === skin.id} saving={saving} onChoose={(next) => void choose(next)} onPreview={setPreview} />)}</div>
         <details className="mt-3 border-t border-line pt-2"><summary className="flex min-h-11 cursor-pointer items-center text-sm">{tr(locale, "查看三候畫作", "查看三候画作", "View the three seasonal scenes")}</summary>
           <div className="grid gap-3 sm:grid-cols-3">{FROST_PHASES.map(phase => <button key={phase.start} type="button" onClick={() => setPreview({ src: phase.art, alt: phase.name[locale] })} className="min-h-11 text-left"><img src={phase.art} alt="" loading="lazy" className="aspect-[9/16] w-full rounded-lg object-cover" /><span className="block py-2 text-sm">{phase.name[locale]}</span></button>)}</div>

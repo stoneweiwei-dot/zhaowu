@@ -1,0 +1,33 @@
+name: Seasonal 24 terms / 72 hou
+
+on:
+  pull_request:
+    paths:
+      - 'src/lib/seasonal-skins.ts'
+      - 'src/lib/theme-skins.ts'
+      - 'src/components/painted-home.tsx'
+      - 'src/components/owner-theme-skins-manager.tsx'
+      - 'scripts/seasonal-skins.test.mjs'
+      - '.github/workflows/seasonal-72-regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  full-seasonal-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: All 24 terms / 72 hou and existing art
+        run: npm run test:themes
+      - name: Typecheck
+        run: npm run check
+      - name: Production compilation
+        run: ./node_modules/.bin/vite build

@@ -1,4 +1,4 @@
-import { FROST_SKIN_ID, SEASONAL_AUTO_ID, seasonalSkinId, frostEdition } from './seasonal-skins';
+import { FROST_SKIN_ID, FROST_PHASES, SEASONAL_AUTO_ID, seasonalSkinId, seasonalState, frostEdition } from './seasonal-skins';
 import { useEffect, useState } from "react";
 
 /**
@@ -84,9 +84,21 @@ export const SEASONAL_SKINS = SKINS.filter((skin) => skin.id.startsWith("solar-"
 export const ARCHIVED_SKINS = SKINS.filter((skin) => !skin.id.startsWith("solar-") && !CURATED_SKIN_CATALOG.some((entry) => entry.id === skin.id));
 
 export function skinById(id: string | null | undefined) {
-  const resolved = id === SEASONAL_AUTO_ID ? seasonalSkinId() : id;
+  const auto = id === SEASONAL_AUTO_ID ? seasonalState() : null;
+  const resolved = auto ? auto.term.skinId : id;
   const skin = SKINS.find((s) => s.id === resolved) ?? null;
-  return skin?.id === FROST_SKIN_ID ? { ...skin, hero: frostEdition().art } : skin;
+  if (!skin) return null;
+  if (auto) {
+    return {
+      ...skin,
+      zh: auto.term.zh, hans: auto.term.hans, en: auto.term.en,
+      noteZh: auto.hou['zh-Hant'], noteHans: auto.hou['zh-Hans'], noteEn: auto.hou.en,
+      // The 2026 Frost pack has real three-phase commissioned artwork;
+      // remaining 23 terms use existing full-page skins until their own art is verified.
+      hero: skin.id === FROST_SKIN_ID ? FROST_PHASES[auto.houIndex].art : skin.hero,
+    };
+  }
+  return skin.id === FROST_SKIN_ID ? { ...skin, hero: frostEdition().art } : skin;
 }
 
 export function readSkinId(): string {
@@ -104,6 +116,14 @@ export function applySkin(id: string, persist = false) {
   const skin = skinById(id);
   const root = document.documentElement;
   root.setAttribute("data-zws-selection", skin ? id : "none");
+  if (id === SEASONAL_AUTO_ID && skin) {
+    const state = seasonalState();
+    root.setAttribute("data-zws-term", state.term.zh);
+    root.setAttribute("data-zws-hou", String(state.houIndex + 1));
+  } else {
+    root.removeAttribute("data-zws-term");
+    root.removeAttribute("data-zws-hou");
+  }
   if (skin) {
     root.setAttribute("data-zws", skin.id);
     if (skin.id === FROST_SKIN_ID) root.style.setProperty('--zws-art', `url("${skin.hero}")`);
@@ -223,12 +243,33 @@ export async function publishSkin(id: string): Promise<void> {
   }
 }
 
+/** Refresh without a cron, navigation or publish. Works even when the phone resumes from sleep. */
+let seasonalTickerStarted = false;
+function refreshAutoSkinIfDue() {
+  if (typeof document === "undefined") return;
+  const root = document.documentElement;
+  if (root.getAttribute("data-zws-selection") !== SEASONAL_AUTO_ID) return;
+  const state = seasonalState();
+  if (root.getAttribute("data-zws") !== state.term.skinId ||
+      root.getAttribute("data-zws-hou") !== String(state.houIndex + 1)) {
+    applySkin(SEASONAL_AUTO_ID);
+  }
+}
 /** Boot uses server state, never the previous visitor's device-local preference. */
 export function hydrateSkin() {
   if (typeof window === "undefined") return;
   // Last server-confirmed skin first; the koi default only for a first-ever visit.
   applySkin(cachedPublishedSkin() ?? SITE_DEFAULT_SKIN);
   void refreshSharedSkin();
+  if (!seasonalTickerStarted) {
+    seasonalTickerStarted = true;
+    window.setInterval(refreshAutoSkinIfDue, 30_000);
+    window.addEventListener("focus", refreshAutoSkinIfDue);
+    window.addEventListener("pageshow", refreshAutoSkinIfDue);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") refreshAutoSkinIfDue();
+    });
+  }
 }
 
 export function useSkin() {
