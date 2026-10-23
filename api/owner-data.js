@@ -157,61 +157,6 @@ function retryableSiteSkinStatus(status) {
   return status === 408 || status === 429 || status >= 500;
 }
 
-// Temporary read-only Production diagnosis. Never returns credentials, upstream bodies,
-// headers, owner records or private data. Remove once the bridge has been repaired.
-const OPS_CODES = new Set(["BRIDGE_REQUIRED","BRIDGE_NOT_CONFIGURED","BRIDGE_UNAUTHORIZED","OWNER_UNAUTHORIZED","OWNER_REQUIRED","METHOD_NOT_ALLOWED","INVALID_DEVICE_ID","INVALID_CREDENTIAL_ID","ACTION_NOT_ALLOWED","SUPABASE_ENV_MISSING","PROMO_STORE_NOT_CONFIGURED","OWNER_DATA_FAILED","SOCIAL_QUEUE_HTTP_404","SOCIAL_QUEUE_NOT_CONFIGURED"]);
-async function ownerBridgeProbe(functionName, action, secret) {
-  try {
-    const r = await fetch(`${supabaseUrl()}/functions/v1/${functionName}`, {
-      method:"POST",
-      headers:{"Content-Type":"application/json","X-Zhaowu-Server-Bridge":"r162", ...(secret?{"X-Zhaowu-Bridge-Secret":secret}:{}) ,"X-Zhaowu-Owner-Secret":"__diagnostic_invalid_owner_proof__"},
-      body:JSON.stringify({action}),signal:AbortSignal.timeout(5500),
-    });
-    const b=await r.json().catch(()=>({}));
-    return {http:r.status,code:OPS_CODES.has(b?.error)?b.error:"OTHER"};
-  } catch {return {http:0,code:"NETWORK_ERROR"};}
-}
-async function readOnlyOperationsDiagnostic() {
-  // Existing bridge-only action checks a non-existent credential ID. No device
-  // or customer data is returned and no mutation is performed.
-  const bridge=bridgeSecret();
-  const check=async()=>{
-    try{
-      const r=await fetch(`${supabaseUrl()}/functions/v1/zhaowu-owner-data`,{
-        method:"POST",headers:{"Content-Type":"application/json","X-Zhaowu-Server-Bridge":"r162",...(bridge?{"X-Zhaowu-Bridge-Secret":bridge}:{})},
-        body:JSON.stringify({action:"owner.device.credential",credentialId:"__invalid_diagnostic__"}),signal:AbortSignal.timeout(5500)
-      });
-      const b=await r.json().catch(()=>({}));
-      return {http:r.status,code:OPS_CODES.has(b?.error)?b.error:(r.status===200?"OK":"OTHER")};
-    }catch{return {http:0,code:"NETWORK_ERROR"};}
-  };
-  const social=async()=>{
-    try{
-      const {socialQueueRequest}=await import("../lib/social-queue-client.js");
-      await socialQueueRequest("settings.get",{},process.env,fetch);
-      return {http:200,code:"OK"};
-    }catch(e){
-      const code=String(e instanceof Error?e.message:"");
-      const match=code.match(/^(SOCIAL_QUEUE_HTTP_\d{3}|SOCIAL_QUEUE_NOT_CONFIGURED|BRIDGE_UNAUTHORIZED|BRIDGE_NOT_CONFIGURED|BRIDGE_REQUIRED)$/);
-      return {http:0,code:match?match[1]:"SOCIAL_QUEUE_FAILURE"};
-    }
-  };
-  const admin=async()=>{
-    const key=String(process.env.SUPABASE_SERVICE_ROLE_KEY||"").trim();
-    if(!key)return {http:0,code:"MISSING"};
-    try{
-      const r=await fetch(`${supabaseUrl()}/rest/v1/site_settings?select=key&limit=1`,{
-        headers:{apikey:key,Authorization:`Bearer ${key}`},signal:AbortSignal.timeout(5500)
-      });
-      return {http:r.status,code:r.ok?"OK":r.status===401||r.status===403?"WRONG_PROJECT_KEY":"OTHER"};
-    }catch{return {http:0,code:"NETWORK_ERROR"};}
-  };
-  const [device,promo,articles,queue,serviceKey]=await Promise.all([
-    check(),ownerBridgeProbe(PROMO_FUNCTION,"promo.list",bridge),ownerBridgeProbe(ARTICLE_FUNCTION,"article.list",bridge),social(),admin()
-  ]);
-  return {ok:true,diagnosticOnly:true,device,promo,articles,queue,serviceKey};
-}
-
 /**
  * Owner-cookie-only fallback for a backend 404 on site-skin.publish.
  * Uses the existing Supabase service role server-side; no browser secrets,
@@ -260,7 +205,6 @@ export async function handleOwnerData(req, res, parsedPayload) {
       if (!view) {
         try { view = new URL(String(req.url || "/"), "https://zhaowu.local").searchParams.get("view") || ""; } catch {}
       }
-      if (view === "ops-health") return json(res, 200, await readOnlyOperationsDiagnostic());
       if (view !== "site-skin") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
       try {
         const record = await readPublishedSiteSkinFromSettings().catch(() => null) ?? await readPublishedSiteSkin();
