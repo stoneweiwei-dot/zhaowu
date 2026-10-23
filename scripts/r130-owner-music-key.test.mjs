@@ -14,7 +14,8 @@ test("owner music read and write APIs are physically split off the SPA rewrite",
   const vercel = JSON.parse(await source("vercel.json"));
   assert.match(api, /readOwnerMusicManifest/);
   assert.doesNotMatch(api, /OWNER_KEY_SHA256|OWNER_REQUIRED|owner-music-git|isomorphic-git|ssh2/);
-  assert.match(writeApi, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
+  assert.match(writeApi, /from ["']\.\.\/lib\/owner-auth\.js["']/);
+  assert.match(writeApi, /OWNER_PASSWORD_REQUIRED/);
   assert.match(writeApi, /saveOwnerMusicTrack/);
   assert.match(writeApi, /OWNER_REQUIRED/);
   assert.doesNotMatch(writeApi, /from ["']\.\.\/src\//);
@@ -48,8 +49,10 @@ test("owner key hash is rotated and the raw secret is not in the repo", async ()
   assert.match(server, /from ["']\.\.\/\.\.\/lib\/owner-session-cookie\.js["']/);
   assert.doesNotMatch(shared, committedDigest);
   assert.doesNotMatch(server, committedDigest);
+  // Login reads the cookie module directly; session and music-write go through the shared owner-auth module.
+  assert.match(login, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
+  for (const api of [session, music]) assert.match(api, /from ["']\.\.\/lib\/owner-auth\.js["']/);
   for (const api of [login, session, music]) {
-    assert.match(api, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
     assert.doesNotMatch(api, committedDigest);
   }
   assert.doesNotMatch(shared, /value\.length < 32/);

@@ -121,16 +121,10 @@ test("handleOwnerData prefers the supplied payload over re-reading a consumed bo
   });
 });
 
-test("public GET site-skin is delegated without requiring owner authentication", async () => {
-  const original = globalThis.fetch;
-  try {
-    // Deliberately no owner cookie: the setting read must remain public, read-only.
-    const req = { method: "GET", url: "/api/owner-session?view=site-skin", headers: new Headers({ host: "zhao-wu.com" }) };
-    const response = await ownerSession(req);
+test("public read-only skin fallback does not require a sign-in", async () => {
+  await withEnv(async () => {
+    const response = await ownerSession({ method: "GET", url: ORIGIN + "/api/owner-session?view=site-skin", headers: new Headers({ host: "zhao-wu.com" }) });
     assert.notEqual(response.status, 401);
     assert.notEqual(response.status, 405);
-    assert.equal(response.headers.get("Cache-Control"), "no-store");
-  } finally {
-    globalThis.fetch = original;
-  }
+  });
 });

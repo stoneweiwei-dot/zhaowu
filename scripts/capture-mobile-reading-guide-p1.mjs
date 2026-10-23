@@ -13,6 +13,8 @@ const model = {
   nextAction: "Write the pay, hours, responsibilities and exit terms for both options on one page.",
   confidenceBasis: "The birth time is unconfirmed, so timing remains broad.",
   biggestVariable: "The terms of the real offer.",
+  actions: [],
+  timing: [],
 };
 const guide = renderToStaticMarkup(createElement(MobileReadingGuide, { model, locale: "en" }));
 const before = `<section class="zhaowu-focused-report zhaowu-report-continuous-sheet"><header class="zhaowu-report-header"><h3 class="zhaowu-report-title">Full report</h3></header><nav class="zhaowu-focused-progress"><span><b>01</b>Overall summary</span><span><b>02</b>Illustrated reading</span><span><b>03</b>Body areas to watch</span><span><b>04</b>Notes</span></nav><section class="zhaowu-report-summary-block"><h4><span class="zhaowu-report-stage-no">01</span>Overall summary</h4><div class="zhaowu-report-copy"><p>${model.directAnswer}</p></div><details class="zhaowu-report-fold"><summary>Show the full summary</summary></details></section></section>`;

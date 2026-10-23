@@ -36,6 +36,7 @@ export type AutopublishOverview = {
   ok: true;
   configured: boolean;
   warnings?: string[];
+  accountWarnings?: string[];
   settings?: AutopublishSettings;
   items?: QueueItem[];
   channels?: {

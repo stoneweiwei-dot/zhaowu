@@ -1,4 +1,5 @@
-import { isValidOwnerSecret, ownerSecretFromRequest } from "../lib/owner-session-cookie.js";
+import { authenticateOwner, ownerAuthHeaders } from "../lib/owner-auth.js";
+import { isValidOwnerSecret } from "../lib/owner-session-cookie.js";
 import { readPublishedSiteSkin, readPublishedSiteSkinFromSettings, validSiteSkin } from "../lib/owner-site-skin-public.js";
 
 export { isValidOwnerSecret };
@@ -137,10 +138,44 @@ function bridgeSecret() {
 }
 
 /**
- * `parsedPayload` exists only for in-process delegation (api/owner-session.js has already consumed the
- * request body, and a Fetch-style `req.json()` can be read once). Vercel calls the default export below
- * with (req, res) only, so for every real HTTP request the body is read here exactly as before.
+ * Owner-cookie-only fallback for a backend 404 on site-skin.publish.
+ * Uses the existing Supabase service role server-side; no browser secrets,
+ * public write grants, schema changes, or extra Vercel functions.
  */
+export async function publishSiteSkinFallback(skin, env = process.env, fetchImpl = fetch) {
+  if (!validSiteSkin(skin)) return { status: 400, body: { ok: false, error: "UNKNOWN_SITE_SKIN" } };
+  const key = String(env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
+  if (!key) return { status: 503, body: { ok: false, error: "SITE_SKIN_SERVICE_NOT_CONFIGURED" } };
+  const updatedAt = new Date().toISOString();
+  const url = String(env.SUPABASE_URL || env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "") +
+    "/rest/v1/site_settings?on_conflict=key&select=value,updated_at";
+  try {
+    const response = await fetchImpl(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: key,
+        Authorization: "Bearer " + key,
+        Prefer: "resolution=merge-duplicates,return=representation",
+      },
+      body: JSON.stringify({
+        key: "published_site_skin_v1",
+        value: { skin, updatedAt },
+        public_read: true,
+        updated_at: updatedAt,
+      }),
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!response.ok) return { status: 503, body: { ok: false, error: "SHARED_SKIN_WRITE_FAILED" } };
+    const rows = await response.json();
+    if (!Array.isArray(rows) || rows[0]?.value?.skin !== skin)
+      return { status: 503, body: { ok: false, error: "SHARED_SKIN_VERIFY_FAILED" } };
+    return { status: 200, body: { ok: true, skin, updatedAt } };
+  } catch {
+    return { status: 503, body: { ok: false, error: "SHARED_SKIN_FALLBACK_UNAVAILABLE" } };
+  }
+}
+
 export async function handleOwnerData(req, res, parsedPayload) {
   try {
     const method = req.method || "GET";
@@ -160,8 +195,8 @@ export async function handleOwnerData(req, res, parsedPayload) {
     }
     if (method !== "POST") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
-    const ownerSecret = ownerSecretFromRequest(req);
-    if (!ownerSecret) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
+    const owner = await authenticateOwner(req);
+    if (!owner) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
 
     const serverBridgeSecret = bridgeSecret();
 
@@ -171,16 +206,27 @@ export async function handleOwnerData(req, res, parsedPayload) {
       return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
     }
     if (!ACTIONS.has(action)) return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
+    // Promo and article actions go to their own isolated Edge Functions, which only accept the owner password.
+    if (ownerUpstreamFunction(action) !== "zhaowu-owner-data" && owner.kind !== "secret") {
+      return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
+    }
     const upstream = await fetch(`${supabaseUrl()}/functions/v1/${ownerUpstreamFunction(action)}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         ...(serverBridgeSecret ? { "X-Zhaowu-Bridge-Secret": serverBridgeSecret } : {}),
-        "X-Zhaowu-Owner-Secret": ownerSecret,
+        ...ownerAuthHeaders(owner),
         "X-Zhaowu-Server-Bridge": "r162",
       },
       body: JSON.stringify(payload),
     });
+    // A stale/missing Edge action can return 404 while the authenticated
+    // owner-data API itself is live. Retry this one whitelisted write through
+    // the existing server-side service role, never through the browser.
+    if (action === "site-skin.publish" && upstream.status === 404) {
+      const fallback = await publishSiteSkinFallback(payload.skin);
+      return json(res, fallback.status, fallback.body);
+    }
     const text = await upstream.text();
     let body = null;
     try { body = text ? JSON.parse(text) : null; } catch { body = { ok: false, error: "UPSTREAM_INVALID_RESPONSE" }; }

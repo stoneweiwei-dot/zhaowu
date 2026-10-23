@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { SOCIAL_CONTENT_BANK, bankPostText, pickBankEntry } from "../lib/social-content-bank.js";
 import { isPublishDay, runAutopublish, taipeiClock } from "../lib/social-scheduler.js";
-import { upcomingPublishDates } from "../lib/social-owner-actions.js";
+import { upcomingPublishDates, autopublishOverview } from "../lib/social-owner-actions.js";
 import { encryptMetaAccessToken } from "../lib/meta-oauth.js";
 
 test("every bank post fits Threads (<=500 UTF-8 bytes), is unique, and has no outcome promises", () => {
@@ -179,4 +179,29 @@ test("one stored Meta connection lets the scheduler publish Facebook and linked 
   assert.ok(calls.some((call) => call.url.endsWith("/123456789/photos")));
   assert.ok(calls.some((call) => call.url.endsWith("/987654321/media_publish")));
   assert.doesNotMatch(JSON.stringify(state.finished.results), /page-token-secret/);
+});
+
+
+test("autopublish overview stays readable when optional Meta account lookup returns 404", async () => {
+  const calls = [];
+  const fakeFetch = async (_url, init) => {
+    const action = JSON.parse(init.body).action;
+    calls.push(action);
+    const respond = (body, status = 200) => ({ ok: status < 400, status, json: async () => body });
+    switch (action) {
+      case "settings.get": return respond({ ok: true, settings: { enabled: false, publish_days: [5], channels: ["threads"] } });
+      case "queue.list": return respond({ ok: true, items: [] });
+      case "accounts.list": return respond({ ok: true, items: [] });
+      case "metaAccounts.list": return respond({ ok: false, error: "UNKNOWN_ACTION" }, 404);
+      case "queue.recentBankKeys": return respond({ ok: true, keys: [] });
+      default: throw Error("UNEXPECTED_ACTION_" + action);
+    }
+  };
+  const env = { ZHAOWU_SOCIAL_QUEUE_SECRET: "z".repeat(40) };
+  const status = await autopublishOverview(env, fakeFetch, new Date("2026-10-23T00:00:00Z"));
+  assert.equal(status.ok, true);
+  assert.equal(status.configured, true);
+  assert.deepEqual(status.accountWarnings, ["META_ACCOUNTS_UNAVAILABLE"]);
+  assert.deepEqual(status.channels.metaAccounts, []);
+  assert.equal(calls.length, 5);
 });

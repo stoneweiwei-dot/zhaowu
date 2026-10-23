@@ -15,8 +15,6 @@ import {
   exchangeMetaAuthorizationCode,
   metaAuthorizationOwnerProof,
   verifyMetaAuthorization,
-  encryptMetaAccessToken,
-  decryptMetaAccessToken,
 } from "../lib/meta-oauth.js";
 
 const root = new URL("../", import.meta.url);
@@ -174,13 +172,14 @@ test("one Threads publish can target multiple OAuth accounts without exposing to
 
 test("Threads OAuth state and stored tokens are authenticated and encrypted", () => {
   const env = {
-    THREADS_APP_ID: "961840029733421",
-    THREADS_APP_SECRET: "threads-app-secret-for-unit-test",
-    META_APP_ID: "different-facebook-app-id",
-    META_APP_SECRET: "different-facebook-app-secret",
+    THREADS_APP_ID: "9988776655",
+    META_APP_ID: "1234567890",
+    THREADS_APP_SECRET: "threads-app-secret-for-unit-test-123456",
+    META_APP_SECRET: "app-secret-for-unit-test-123456",
     ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-unit-test-123456",
     PUBLIC_SITE_ORIGIN: "https://zhao-wu.com",
   };
+  assert.equal(threadsOauthConfiguration({ META_APP_ID: env.META_APP_ID, META_APP_SECRET: env.META_APP_SECRET }).ready, false, "Threads must not silently use Facebook credentials");
   const authorization = createThreadsAuthorization(env, 1_000_000, "sealed-owner-proof");
   assert.equal(new URL(authorization.url).origin, "https://threads.com");
   assert.equal(new URL(authorization.url).pathname, "/oauth/authorize");
@@ -262,9 +261,9 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
   const api = await source("api/owner-session.js");
   const vercel = JSON.parse(await source("vercel.json"));
   const apiFiles = (await readdir(new URL("api/", root))).filter((name) => name.endsWith(".js"));
-  assert.match(api, /requestHasOwnerSession/);
+  assert.match(api, /authenticateOwner/);
   assert.match(api, /requestIsSameOrigin/);
-  assert.match(api, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
+  assert.match(api, /from ["']\.\.\/lib\/owner-auth\.js["']/);
   assert.match(await source("lib/owner-session-cookie.js"), /timingSafeEqual/);
   assert.match(api, /Cache-Control.*no-store/s);
   assert.match(api, /social\.status/);
@@ -317,22 +316,11 @@ test("unconfigured production does not pretend the Meta publisher is ready", asy
   assert.doesNotMatch(route, /META_.*ACCESS_TOKEN/);
 });
 
-test("Threads OAuth never borrows the Facebook app credentials", () => {
-  const facebookOnly = { META_APP_ID: "facebook-app", META_APP_SECRET: "facebook-secret" };
-  assert.equal(threadsOauthConfiguration(facebookOnly).ready, false);
-  assert.throws(() => createThreadsAuthorization(facebookOnly), /THREADS_OAUTH_NOT_CONFIGURED/);
-});
-
-test("Meta token encryption retains legacy key after dedicated Threads OAuth setup", () => {
-  const legacy = {
-    META_APP_SECRET: "facebook-legacy-token-key",
-    THREADS_APP_SECRET: "facebook-legacy-token-key",
-    ZHAOWU_OWNER_BRIDGE_SECRET: "stable-bridge",
-  };
-  const split = { ...legacy, THREADS_APP_SECRET: "different-threads-token-key" };
-  const savedBeforeMigration = encryptThreadsAccessToken("existing-facebook-token", legacy);
-  assert.equal(decryptMetaAccessToken(savedBeforeMigration, split), "existing-facebook-token");
-  const newFacebookCipher = encryptMetaAccessToken("new-facebook-token", split);
-  assert.equal(decryptMetaAccessToken(newFacebookCipher, split), "new-facebook-token");
-  assert.throws(() => decryptThreadsAccessToken(newFacebookCipher, split));
+test("Meta (Facebook/Instagram) token encryption is independent of the Threads app secret", async () => {
+  const { encryptMetaAccessToken, decryptMetaAccessToken } = await import("../lib/meta-oauth.js");
+  const base = { META_APP_SECRET: "meta-secret-for-key-isolation-123456", ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-key-isolation-123456" };
+  const sealed = encryptMetaAccessToken("page-token", base);
+  assert.equal(decryptMetaAccessToken(sealed, base), "page-token", "works with no Threads credentials configured");
+  assert.equal(decryptMetaAccessToken(sealed, { ...base, THREADS_APP_SECRET: "some-other-threads-secret-123456" }), "page-token", "Threads secret must not rekey Meta");
+  assert.throws(() => encryptMetaAccessToken("x", { ZHAOWU_OWNER_BRIDGE_SECRET: base.ZHAOWU_OWNER_BRIDGE_SECRET, THREADS_APP_SECRET: "threads-only-secret-123456" }), /THREADS_TOKEN_KEY_NOT_CONFIGURED/, "Threads secret alone must not unlock Meta");
 });

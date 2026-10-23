@@ -3,10 +3,20 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
   assertUploadTicketBinding,
   authorizeBridgeHeaders,
+  authorizeBridgeOnly,
   createUploadTicket,
   validateUploadedObject,
   verifyUploadTicket,
 } from "./security.mjs";
+import {
+  DeviceError,
+  deviceCheck,
+  deviceCreate,
+  deviceCredential,
+  deviceList,
+  deviceRevoke,
+  deviceTouch,
+} from "./devices.mjs";
 
 import { listReportPage, ownerReportRow } from "./reports.mjs";
 
@@ -72,9 +82,20 @@ const ALLOWED_ACTIONS = new Set([
   "social.meta.list",
   "social.meta.upsert",
   "social.meta.delete",
+  "owner.device.check",
+  "owner.device.credential",
+  "owner.device.touch",
+  "owner.device.list",
+  "owner.device.create",
+  "owner.device.revoke",
   "upload.abort",
   "site-skin.publish",
 ]);
+
+// Run before anybody is signed in (Passkey sign-in): they need the server bridge secret, nothing else.
+const BRIDGE_ONLY_ACTIONS = new Set(["owner.device.check", "owner.device.credential", "owner.device.touch"]);
+// Registering a new device needs the password session. A stolen Passkey session cannot enrol more devices.
+const SECRET_ONLY_ACTIONS = new Set(["owner.device.create"]);
 
 type Payload = Record<string, unknown>;
 
@@ -880,6 +901,12 @@ async function dispatch(service: ReturnType<typeof createClient>, action: string
     case "social.meta.list": return metaAccountList(service);
     case "social.meta.upsert": return metaAccountUpsert(service, payload);
     case "social.meta.delete": return metaAccountDelete(service, payload);
+    case "owner.device.check": return deviceCheck(service, payload);
+    case "owner.device.credential": return deviceCredential(service, payload);
+    case "owner.device.touch": return deviceTouch(service, payload);
+    case "owner.device.list": return deviceList(service);
+    case "owner.device.create": return deviceCreate(service, payload);
+    case "owner.device.revoke": return deviceRevoke(service, payload);
     case "upload.abort": return abortUpload(service, payload);
     case "site-skin.publish": return publishSiteSkin(service, payload);
     default: throw new OwnerDataError("ACTION_NOT_ALLOWED", 400);
@@ -890,17 +917,33 @@ Deno.serve(async (req: Request) => {
   try {
     if (req.method !== "POST") return json({ ok: false, error: "METHOD_NOT_ALLOWED" }, 405);
 
-    const auth = authorizeBridgeHeaders(req.headers, bridgeSecret());
-    if (!auth.ok) return json({ ok: false, error: auth.error }, auth.status);
+    // Cheap gate before reading the body: anything that does not come through the server bridge is refused unparsed.
+    if (!["r146", "r161", "r162"].includes(text(req.headers.get("x-zhaowu-server-bridge")))) {
+      return json({ ok: false, error: "BRIDGE_REQUIRED" }, 403);
+    }
 
     let payload: Payload;
     try { payload = await req.json() as Payload; } catch { return json({ ok: false, error: "INVALID_JSON" }, 400); }
     const action = text(payload.action);
     if (!ALLOWED_ACTIONS.has(action)) return json({ ok: false, error: "ACTION_NOT_ALLOWED" }, 400);
 
+    const auth = BRIDGE_ONLY_ACTIONS.has(action)
+      ? authorizeBridgeOnly(req.headers, bridgeSecret())
+      : authorizeBridgeHeaders(req.headers, bridgeSecret());
+    if (!auth.ok) return json({ ok: false, error: auth.error }, auth.status);
+
     const service = requireService();
+    if ("mode" in auth && auth.mode === "device") {
+      if (SECRET_ONLY_ACTIONS.has(action)) return json({ ok: false, error: "OWNER_PASSWORD_REQUIRED" }, 403);
+      // A Passkey session is only as good as its device row: revoked or unknown devices are refused here.
+      const { active } = await deviceCheck(service, { deviceId: auth.deviceId });
+      if (!active) return json({ ok: false, error: "OWNER_UNAUTHORIZED" }, 401);
+    }
     return json(await dispatch(service, action, payload));
   } catch (error) {
+    if (error instanceof DeviceError) {
+      return json({ ok: false, error: error.code, detail: error.message }, error.status);
+    }
     if (error instanceof OwnerDataError) {
       return json({ ok: false, error: error.code, detail: error.message }, error.status);
     }
