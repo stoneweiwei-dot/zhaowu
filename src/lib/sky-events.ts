@@ -1182,6 +1182,24 @@ const ASPECT_FACTS: Array<{
     },
     theme: { "zh-Hant": "舊結構的壓力測試", "zh-Hans": "旧结构的压力测试", en: "A stress test for old structures" },
     note: cardierNote.cardinal
+  },
+  {
+    id: "mercury-station-retrograde-2026-10-24",
+    date: "2026-10-24",
+    grade: "B",
+    visibleToNakedEye: false,
+    glyph: "☿℞",
+    signA: "Scorpio",
+    signB: "Scorpio",
+    aspect: "conjunction",
+    title: { "zh-Hant": "水星於天蠍座停滯逆行", "zh-Hans": "水星于天蝎座停滞逆行", en: "Mercury stations retrograde in Scorpio" },
+    scienceLine: {
+      "zh-Hant": "水星於悉尼時間 10/24 傍晚約 18:12（UTC 07:12）在天蠍約 21° 轉為逆行，11/13 回到順行；逆行期間全程停留天蠍座，是可由星曆驗證的視運動轉向。",
+      "zh-Hans": "水星于悉尼时间 10/24 傍晚约 18:12（UTC 07:12）在天蝎约 21° 转为逆行，11/13 回到顺行；逆行期间全程停留天蝎座，是可由星历验证的视运动转向。",
+      en: "Mercury turns retrograde at about 21° Scorpio near 18:12 Sydney time on 10/24 (07:12 UTC), and returns to direct motion on 11/13, staying in Scorpio throughout — an apparent-motion reversal verifiable against an ephemeris."
+    },
+    theme: { "zh-Hant": "回頭檢視被匆忙略過的細節與動機", "zh-Hans": "回头检视被匆忙略过的细节与动机", en: "Revisit the details and motives that were rushed past" },
+    note: { "zh-Hant": "適合複查合約、財務與舊訊息；避免在逆行初期倉促簽署新承諾。", "zh-Hans": "适合复查合约、财务与旧讯息；避免在逆行初期仓促签署新承诺。", en: "Good for re-checking contracts, finances and old messages; avoid rushing into new commitments at the start of the retrograde." }
   }
 ];
 
