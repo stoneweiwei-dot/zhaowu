@@ -150,6 +150,8 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
     }
   }
 
+  const metaRedirectUri = data?.channels?.metaOauth?.redirectUri || "https://zhao-wu.com/api/owner-session?action=meta.callback";
+  const metaRedirectHost = (() => { try { return new URL(metaRedirectUri).hostname; } catch { return "zhao-wu.com"; } })();
   const settings = data?.settings;
   const items = data?.items ?? [];
   const threadsConnected = Boolean(data?.channels?.threads);
@@ -361,6 +363,21 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
               {data.channels?.metaAccounts?.length ? "重新授權 / 新增粉絲專頁" : "連接 Meta"}
             </button>
             {metaStatus ? <div role={metaStatus.tone === "error" ? "alert" : "status"} className={`mt-3 rounded-md border px-3 py-3 text-sm leading-6 ${metaStatus.tone === "error" ? "border-cinnabar/30 bg-cinnabar/5 text-cinnabar-deep" : "border-line bg-paper/70 text-ink-soft"}`}>{metaStatus.text}{metaStatus.url ? <a href={metaStatus.url} className="mt-2 flex min-h-11 items-center justify-center rounded-full border border-line bg-cream px-4 text-ink">前往 Meta 授權</a> : null}</div> : null}
+            {!(data.channels?.facebook || data.channels?.instagram) ? (
+              <details className="mt-2 text-sm text-ink-soft" open={metaStatus?.tone === "error"}>
+                <summary className="min-h-11 cursor-pointer py-3 text-ink">跳出「無法載入網址／應用程式網域」錯誤？</summary>
+                <p className="leading-6">這是 Meta 開發者後台少了兩項設定（developers.facebook.com → 你的應用程式），改完再按一次「連接 Meta」：</p>
+                <ol className="mt-1 list-decimal space-y-2 pl-5 leading-6">
+                  <li>設定 → 基本資料 → 「應用程式網域」填入 <code className="break-all rounded bg-paper px-1">{metaRedirectHost}</code>，按儲存變更。
+                    <button type="button" className="ml-2 min-h-9 rounded-full border border-line bg-cream px-3 text-xs" onClick={async () => setNotice((await copyText(metaRedirectHost)) ? "網域已複製。" : "複製失敗，請手動選取。")}>複製</button>
+                  </li>
+                  <li>Facebook 登入 → 設定 → 「有效的 OAuth 重新導向 URI」填入 <code className="break-all rounded bg-paper px-1">{metaRedirectUri}</code>，按儲存變更。
+                    <button type="button" className="ml-2 min-h-9 rounded-full border border-line bg-cream px-3 text-xs" onClick={async () => setNotice((await copyText(metaRedirectUri)) ? "回呼網址已複製。" : "複製失敗，請手動選取。")}>複製</button>
+                  </li>
+                  <li>應用程式若還在「開發中」，授權用的 Facebook 帳號要是該應用的管理員或測試人員，且能管理要發文的粉絲專頁。</li>
+                </ol>
+              </details>
+            ) : null}
             {!data.channels?.metaOauth?.ready ? <p className="mt-2 text-xs text-cinnabar">Meta 應用金鑰尚未設定，暫時不能開始授權。</p> : null}
             <p className="mt-3 text-xs leading-5 text-ink-mute">Instagram 官方接口只接受帶圖貼文；Facebook 可發純文字或圖片。授權畫面上看到的粉絲專頁就是系統之後會代你發布的位置。</p>
           </article>

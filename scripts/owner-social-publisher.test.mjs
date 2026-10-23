@@ -285,6 +285,8 @@ test("the owner console embeds the existing gallery-backed dual social publisher
   // 2026-10-16: the console rebuild puts auto-publishing first and keeps the manual publisher inside it.
   assert.match(account, /<AutopublishPanel/);
   assert.match(panel, /<SocialPublisherPage embedded/);
+  assert.match(panel, /應用程式網域/);
+  assert.match(panel, /action=meta\.callback/);
   assert.match(panel, /Instagram/);
   assert.match(route, /data-owner-social-publisher/);
   assert.match(route, /configuration\.targets/);
