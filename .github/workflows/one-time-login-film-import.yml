@@ -1,12 +1,12 @@
-name: Temporary four-film import (branch only)
+name: Temporary login film acceptance
 on:
   pull_request:
     branches: [main]
     paths: ['.github/workflows/one-time-login-film-import.yml']
 permissions:
-  contents: write
+  contents: read
 jobs:
-  transfer:
+  validate:
     if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'feat/login-original-four-films-20261023'
     runs-on: ubuntu-latest
     timeout-minutes: 12
@@ -14,62 +14,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/login-original-four-films-20261023
-          persist-credentials: true
-      - name: Install browser
-        run: |
-          python -m pip install --quiet playwright
-          python -m playwright install chromium --with-deps >/dev/null 2>&1
-      - name: Install FFmpeg for verified web delivery encoding
-        run: |
-          sudo apt-get update -qq >/dev/null
-          sudo apt-get install -y -qq ffmpeg >/dev/null
-      - name: Transfer verified originals and make web delivery MP4/posters
-        env:
-          TRANSFER_PAGE: https://firestorage.ai/ja/f/oHsKQFGY_TRv
-        run: |
-          python - <<'PY'
-          import os, pathlib, hashlib, subprocess
-          from playwright.sync_api import sync_playwright
-          files=[
-            ('B3DD012E-735A-454E-9ECD-7BFB3B6216FA.mp4','flute-dragon','5464731e63b1efaf1cc618a961ddc22ad726be31e4ff0f41194b600253e86a4a'),
-            ('674AF108-A2FE-4633-B4DB-B1E39EC499FD(1).mp4','lotus-sunlight','7a8ff199f58cba9f610d4887ffc091faf5157def072eb1a2d39a645d18f6d95f'),
-            ('E1D22301-C5F2-439F-99A7-6E7DC3DE6C0F(1).mp4','dragon-portrait','5f53788d91e1468c423536a6b35e3dd240958ffd5720b538ef7ee57c3994920e'),
-            ('_users_b34443e3-0317-4cf4-939a-5857c0d32035_generated_2a5f34b4-44ab-4940-a483-d523f76a54d0_generated_video(2).mp4','imperial-cat','b29e81c914e7cb367c999682b62faa354412cde0f3f535135e4caf2544be42d6'),
-          ]
-          out=pathlib.Path('public/login-films')
-          out.mkdir(parents=True,exist_ok=True)
-          with sync_playwright() as p:
-            b=p.chromium.launch(headless=True)
-            page=b.new_page(accept_downloads=True)
-            page.goto(os.environ['TRANSFER_PAGE'],wait_until='domcontentloaded',timeout=28000)
-            page.get_by_role('button',name='ダウンロード',exact=True).first.wait_for(timeout=15000)
-            buttons=page.get_by_role('button',name='ダウンロード',exact=True)
-            assert buttons.count()==4, f'unexpected number of clips: {buttons.count()}'
-            for i,(basename,slug,digest) in enumerate(files):
-              filename=page.get_by_role('button',name=basename,exact=True)
-              assert filename.count()==1, f'cannot uniquely identify: {slug}'
-              print('Fetching original',i+1,slug)
-              with page.expect_download(timeout=60000) as transfer:
-                buttons.nth(i).click()
-              dl=transfer.value
-              source=pathlib.Path('/tmp')/f'original-{i}.mp4'
-              dl.save_as(source)
-              actual=hashlib.sha256(source.read_bytes()).hexdigest()
-              assert actual==digest, f'SHA-256 mismatch for {slug}'
-              video=out/f'{slug}.mp4'
-              poster=out/f'{slug}.jpg'
-              subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y','-i',str(source),'-map','0:v:0','-map','0:a?','-c:v','libx264','-preset','medium','-crf','25','-pix_fmt','yuv420p','-vf','fps=24','-c:a','aac','-b:a','96k','-movflags','+faststart',str(video)],check=True)
-              subprocess.run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y','-ss','00:00:00.8','-i',str(source),'-frames:v','1','-q:v','4',str(poster)],check=True)
-              assert video.stat().st_size>40000 and poster.stat().st_size>4000
-              print('Verified and encoded',slug,'video bytes',video.stat().st_size,'poster bytes',poster.stat().st_size)
-              source.unlink()
-            b.close()
-          PY
-      - name: Commit transferred binaries to the feature branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/login-films
-          git diff --cached --quiet && { echo "No new binaries"; exit 1; }
-          git commit -m "assets(login): import four SHA-verified owner MP4 animations"
-          git push origin HEAD:refs/heads/feat/login-original-four-films-20261023
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Four original films plus unchanged auth route
+        run: node --test scripts/login-films.test.mjs
+      - name: Production-equivalent static build
+        run: npm run build
