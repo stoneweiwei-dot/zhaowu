@@ -68,6 +68,7 @@ function skinClient(fetcher) {
     seasonalSkinId: () => "solar-frost-descent", frostEdition: () => ({ art: "/test-frost.webp" }),
     useEffect: () => {}, useState: (initial) => [initial, () => {}],
     document: { documentElement: {
+      style: { setProperty() {}, removeProperty() {} },
       setAttribute: (key, value) => attrs.set(key, value),
       removeAttribute: (key) => attrs.delete(key),
       getAttribute: (key) => attrs.get(key) ?? null,
