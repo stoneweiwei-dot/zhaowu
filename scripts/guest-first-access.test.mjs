@@ -58,7 +58,10 @@ test("owner cookie remains the only active login path", async () => {
   assert.match(ownerCookieLib, /ZHAOWU_OWNER_KEY_SHA256/);
   assert.match(ownerCookieLib, /HttpOnly/);
   assert.match(ownerCookieLib, /Secure/);
-  assert.match(ownerCookieLib, /SameSite=Strict/);
+  // Lax keeps the owner signed in when they arrive from an external link; None would expose the
+  // session to cross-site requests and must never appear.
+  assert.match(ownerCookieLib, /SameSite=Lax/);
+  assert.doesNotMatch(ownerCookieLib, /SameSite=None/);
   assert.match(ownerCookieLib, /timingSafeEqual/);
   assert.doesNotMatch(ownerCookieLib, /["'][a-f0-9]{64}["']/i);
   assert.doesNotMatch(ownerServer, /["'][a-f0-9]{64}["']/i);

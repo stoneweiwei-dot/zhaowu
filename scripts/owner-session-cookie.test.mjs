@@ -71,7 +71,7 @@ test("plaintext passwords and encoded alternatives cannot act as session cookies
 test("set/clear cookie headers keep the hardened attributes", () => {
   const set = ownerSetCookie(SECRET, { env, now });
   assert.ok(set.startsWith(`${OWNER_COOKIE}=`));
-  assert.match(set, /; Path=\/; HttpOnly; Secure; SameSite=Strict; Max-Age=2592000$/);
+  assert.match(set, /; Path=\/; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000$/);
   assert.ok(!decodeURIComponent(set).includes(SECRET));
   assert.match(ownerClearCookie(), /Max-Age=0$/);
 });

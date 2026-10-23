@@ -137,7 +137,7 @@ test("a device session cookie carries the device id and no owner secret", () => 
   assert.equal(ownerAuthFromCookieValue(value, { env, now: Date.now() + 91 * 86400 * 1000 }), null);
   assert.equal(ownerDeviceCookieValue("not-a-uuid", { env }), "");
   assert.equal(ownerDeviceCookieValue(DEVICE_ID, { env: {} }), "");
-  assert.match(ownerDeviceSetCookie(DEVICE_ID, { env }), new RegExp(`^${OWNER_COOKIE}=.*; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=7776000$`));
+  assert.match(ownerDeviceSetCookie(DEVICE_ID, { env }), new RegExp(`^${OWNER_COOKIE}=.*; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=7776000$`));
   assert.equal(ownerDeviceSetCookie(DEVICE_ID, { env: {} }), "");
 });
 

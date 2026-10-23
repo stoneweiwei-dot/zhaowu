@@ -86,7 +86,7 @@ test("a registered phone signs in with Face ID and gets a long-lived device sess
     const cookies = cookiesOf(verified);
     const session = cookies.find((value) => value.startsWith("__Host-zhaowu_owner_session="));
     assert.ok(session, "session cookie issued");
-    assert.match(session, /HttpOnly; Secure; SameSite=Strict; Max-Age=7776000/);
+    assert.match(session, /HttpOnly; Secure; SameSite=Lax; Max-Age=7776000/);
     assert.ok(cookies.some((value) => value.startsWith("__Host-zhaowu_passkey_challenge=;")), "challenge cookie cleared");
     assert.equal(row.sign_count, 1, "counter stored");
 
