@@ -6,6 +6,7 @@ import { ownerSignIn } from "@/lib/auth/owner-api";
 import { passkeySignIn, passkeySupported } from "@/lib/auth/passkey-client";
 import { useI18n } from "@/lib/i18n";
 import { useSkin } from "@/lib/theme-skins";
+import "@/about-zhaowu.css";
 
 const LOGIN_BACKDROP = "/hero-gallery/dragon-scholar.webp";
 
@@ -158,6 +159,11 @@ function LoginPage() {
         <div className="stone-login-footer">
           <span>{t("tagline")}</span>
           <Link to="/">{t("backHome")}</Link>
+        </div>
+        <div className="zhaowu-feature-discovery" data-zhaowu-discover-link>
+          <Link to="/about">
+            {ownerText(locale, "認識昭梧特色 →", "认识昭梧特色 →", "Discover ZHAOWU →")}
+          </Link>
         </div>
       </section>
     </main>
