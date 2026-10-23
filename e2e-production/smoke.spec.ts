@@ -2,6 +2,29 @@ import { expect, test } from "@playwright/test";
 
 const EXPECT_SHA = (process.env.EXPECT_SHA || "").trim();
 
+// When a real Safari assertion fails, record only public, guest-visible page
+// landmarks. No credentials, cookies, local storage, response bodies or secrets.
+test.afterEach(async ({ page }, info) => {
+  if (info.status === info.expectedStatus) return;
+  try {
+    const publicState = await page.evaluate(() => ({
+      pathname: location.pathname,
+      title: document.title,
+      language: document.documentElement.lang,
+      bodyExcerpt: (document.body?.innerText ?? "").slice(0, 420),
+      pageReady: document.readyState,
+      mainCount: document.querySelectorAll("main").length,
+      formCount: document.querySelectorAll("#birth-form").length,
+      loginCount: document.querySelectorAll("[data-owner-only-login]").length,
+      guideCount: document.querySelectorAll("[data-home-tree]").length,
+      discoverCount: document.querySelectorAll("[data-zhaowu-discover-link]").length,
+    }));
+    console.log("PRODUCTION_SAFARI_FAILURE_LANDMARKS", JSON.stringify(publicState));
+  } catch (error) {
+    console.log("PRODUCTION_SAFARI_DIAGNOSTIC_UNAVAILABLE", String(error));
+  }
+});
+
 test.describe("production smoke (iPhone Safari)", () => {
   test("production serves the exact commit that was just pushed", async ({ request }) => {
     const res = await request.get("/release.json", { headers: { "cache-control": "no-cache" } });
