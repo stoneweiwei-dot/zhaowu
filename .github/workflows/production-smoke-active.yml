@@ -41,17 +41,39 @@ jobs:
       PROD_URL: https://zhao-wu.com
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
 
+      - name: Classify deployment-affecting changes
+        id: release_scope
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! git rev-parse HEAD^ >/dev/null 2>&1; then
+            echo "expected=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if git diff --name-only HEAD^ HEAD | grep -Eq '^(src/|public/|api/|lib/|index\.html$|package(-lock)?\.json$|vite\.config\.|vercel\.json$)'; then
+            echo "expected=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+            echo "Runtime changed: require this exact production commit"
+          else
+            echo "expected=" >> "$GITHUB_OUTPUT"
+            echo "Test or workflow-only change: verify current deployed runtime without expecting redeploy"
+          fi
+
       # A PR tests current public Production without comparing its SHA to the PR.
       # A main push must await the exact released main commit; do not silently
       # approve a green old deployment.
       - name: Wait for the exact main release on canonical Production
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && steps.release_scope.outputs.expected != ''
         shell: bash
+        env:
+          EXPECTED_RELEASE: ${{ steps.release_scope.outputs.expected }}
         run: |
           set -euo pipefail
           for i in $(seq 1 60); do
@@ -60,17 +82,17 @@ jobs:
               "$PROD_URL/release.json?ci=$(date +%s)" \
               | node -e 'let s="";process.stdin.on("data",c=>s+=c).on("end",()=>{try{console.log(JSON.parse(s).release||"")}catch{console.log("")}})' || true)
             echo "attempt $i: production=${got:-missing}; expected=$GITHUB_SHA"
-            [ "$got" = "$GITHUB_SHA" ] && exit 0
+            [ "$got" = "$EXPECTED_RELEASE" ] && exit 0
             sleep 15
           done
-          echo "NOT VERIFIED: canonical Production did not serve exact release SHA $GITHUB_SHA"
+          echo "NOT VERIFIED: canonical Production did not serve exact release SHA $EXPECTED_RELEASE"
           exit 1
       - run: npm ci --no-audit --no-fund
       - run: ./node_modules/.bin/playwright install --with-deps webkit
       - name: Canonical Production smoke (real iPhone Safari)
         run: ./node_modules/.bin/playwright test -c playwright.production.config.ts
         env:
-          EXPECT_SHA: ${{ github.event_name == 'pull_request' && '' || github.sha }}
+          EXPECT_SHA: ${{ steps.release_scope.outputs.expected }}
       - name: Preserve failure traces for debugging
         if: failure()
         uses: actions/upload-artifact@v4
