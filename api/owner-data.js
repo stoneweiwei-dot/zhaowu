@@ -1,10 +1,10 @@
 import { authenticateOwner, ownerAuthHeaders } from "../lib/owner-auth.js";
+import { ownerSupabaseUrl } from "../lib/owner-supabase-origin.js";
 import { isValidOwnerSecret } from "../lib/owner-session-cookie.js";
 import { readPublishedSiteSkin, readPublishedSiteSkinFromSettings, validSiteSkin } from "../lib/owner-site-skin-public.js";
 
 export { isValidOwnerSecret };
 
-const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
 
 const ACTIONS = new Set([
   "report.list",
@@ -130,7 +130,7 @@ async function readJsonBody(req) {
 }
 
 function supabaseUrl() {
-  return String(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "");
+  return ownerSupabaseUrl(process.env);
 }
 
 function bridgeSecret() {
@@ -222,7 +222,7 @@ export async function publishSiteSkinFallback(skin, env = process.env, fetchImpl
   const key = String(env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
   if (!key) return { status: 503, body: { ok: false, error: "SITE_SKIN_SERVICE_NOT_CONFIGURED" } };
   const updatedAt = new Date().toISOString();
-  const url = String(env.SUPABASE_URL || env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/$/, "") +
+  const url = ownerSupabaseUrl(env) +
     "/rest/v1/site_settings?on_conflict=key&select=value,updated_at";
   try {
     const response = await fetchImpl(url, {
