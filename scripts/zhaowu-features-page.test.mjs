@@ -17,7 +17,14 @@ test("ZHAOWU story is public, multilingual and linked from login without touchin
   assert.match(about, /二十四節氣 × 七十二候/);
   assert.match(about, /其他節氣沿用既有畫作/);
   assert.match(about, /並非澳洲天氣預報/);
-  assert.match(about, /<Link to="\/">/);
+  assert.match(about, /不反轉四柱、月令與大運/);
+  assert.match(about, /不反转四柱、月令与大运/);
+  assert.match(about, /does not reverse the four pillars/);
+  assert.match(about, /單次解鎖，不設自動續費/);
+  assert.equal([...about.matchAll(/label: "0\d \/ /g)].length, 24, "8 features x 3 languages");
+  assert.match(read("public/llms.txt"), /zhao-wu\.com\/about/);
+  assert.match(read("index.html"), /<h2>網站特色<\/h2>[\s\S]*<h2>常見問題<\/h2>/);
+  assert.match(about, /<Link to="\/" /);
   assert.match(login, /data-zhaowu-discover-link/);
   assert.match(login, /<Link to="\/about">/);
   assert.match(login, /passkeySignIn/);

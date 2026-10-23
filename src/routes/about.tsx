@@ -29,8 +29,9 @@ function content(locale: string) {
       { label: "03 / PLACE", title: "Today's weather, in your part of the world", body: "Today's guide can present local time, temperature, weather and the season of your hemisphere using browser permission or approximate location. Your actual weather and traditional Chinese seasonal imagery remain distinct.", image: "/theme-skins/song-gallery-frostleaf-art.webp", imageAlt: "Seasonal river landscape" },
       { label: "04 / ART", title: "A whole-site change of scenery", body: "Curated themes range from koi and lotus boats to bamboo rain and celestial dragons. The site owner publishes one coherent visual setting for the entire experience, with an optional seasonal automatic mode.", image: "/theme-skins/reference-koi.webp", imageAlt: "Illustrated koi painting" },
       { label: "05 / DESTINY", title: "One birth record, one personal destiny book", body: "Zi Ping BaZi anchors a structured reading: true solar time, solar-term months, the four pillars and changing luck cycles. Other traditions have their own sections; symbolic interpretation does not override calculated chart data.", image: "/theme-skins/moon-lotus-boat-art.webp", imageAlt: "Moonlit lotus-boat painting" },
-      { label: "06 / TODAY", title: "The almanac beside the sky", body: "Daily almanac, calendar stems and branches, five-element colours, dressing suggestions, spirit slips and recent sky events meet in one guide. Verified astronomical information is kept separate from astrological symbolism.", image: "/theme-skins/verdant-pavilion-art.webp", imageAlt: "Green spring pavilion painting" },
-      { label: "07 / CULTURE", title: "The details make the journey", body: "Essays, illustrated collections, tea, scent, self-discovery quizzes, quiet music and an on-site guide invite exploration beyond a single chart. Read on mobile, switch between Traditional Chinese, Simplified Chinese and English.", image: "/art/scene-osmanthus-tea-v1.webp", imageAlt: "Illustration of tea and osmanthus" }
+      { label: "06 / TODAY", title: "The almanac beside the sky", body: "Daily almanac with do and avoid lists, calendar stems and branches, five-element colours, dressing suggestions, spirit slips and recent sky events meet in one guide. Verified astronomical information is kept separate from astrological symbolism.", image: "/theme-skins/verdant-pavilion-art.webp", imageAlt: "Green spring pavilion painting" },
+      { label: "07 / CULTURE", title: "The details make the journey", body: "Essays, illustrated collections, tea, scent, self-discovery quizzes, quiet music and an on-site guide invite exploration beyond a single chart. Read on mobile, switch between Traditional Chinese, Simplified Chinese and English.", image: "/art/scene-osmanthus-tea-v1.webp", imageAlt: "Illustration of tea and osmanthus" },
+      { label: "08 / BOUNDARY", title: "No sign-in to begin; rules come before symbolism", body: "Enter a birth date, time and place to chart without an account and read the free three-part core reading. Deeper luck-cycle, annual and monthly readings unlock once, with no automatic renewal. True solar time is optional. If you were born or live in the Southern Hemisphere, the site reads local season and daily rhythm only; it does not reverse the four pillars, the month pillar or the luck cycles.", image: "/theme-skins/bamboo-falls-art.webp", imageAlt: "Waterfall and bamboo ink-landscape painting" }
     ] satisfies Feature[],
   };
   if (locale === "zh-Hans") return {
@@ -49,7 +50,8 @@ function content(locale: string) {
       { label: "04 / 主题", title: "更换的不是图片，而是一整套画境", body: "锦鲤、荷舟、竹雨、云龙、凤凰等多套画境由站主发布，带动全站配色与背景统一变化；也可选择跟随节气的自动模式。", image: "/theme-skins/reference-koi.webp", imageAlt: "锦鲤绘画" },
       { label: "05 / 命书", title: "一份生辰，读成一本个人命书", body: "以子平八字为核心，从真太阳时、节气月令、四柱结构到大运流年依次展开。紫微、七政、西洋与印度占星另有独立领域，不用象征叙事覆盖计算结果。", image: "/theme-skins/moon-lotus-boat-art.webp", imageAlt: "月下荷舟绘画" },
       { label: "06 / 今日", title: "今日黄历，与今日星象并肩", body: "每日干支、宜忌、五行穿衣、色彩、灵签及近期天象集中阅读；可核对的天文事件与占星象征解释分别说明。", image: "/theme-skins/verdant-pavilion-art.webp", imageAlt: "春日亭台绘画" },
-      { label: "07 / 细节", title: "茶香、音乐、文章，还有日常的小发现", body: "这里还有东方文化文章、茶与香气、人格探索、测验、画廊、背景音乐与站内导览。繁简中文与英语切换，按手机阅读节奏设计。", image: "/art/scene-osmanthus-tea-v1.webp", imageAlt: "桂花茶意境绘画" }
+      { label: "07 / 细节", title: "茶香、音乐、文章，还有日常的小发现", body: "这里还有东方文化文章、茶与香气、人格探索、测验、画廊、背景音乐与站内导览。繁简中文与英语切换，按手机阅读节奏设计。", image: "/art/scene-osmanthus-tea-v1.webp", imageAlt: "桂花茶意境绘画" },
+      { label: "08 / 边界", title: "免登录起步，规则先于象征", body: "输入出生年月日、时间与出生地即可排盘，免登录阅读三段式核心直断；更深入的大运、流年与流月为单次解锁，不设自动续费。真太阳时可选择是否采用。南半球出生或居住，只按当地季节与作息理解，不反转四柱、月令与大运。", image: "/theme-skins/bamboo-falls-art.webp", imageAlt: "飞瀑竹影水墨山水画" }
     ] satisfies Feature[],
   };
   return {
@@ -68,7 +70,8 @@ function content(locale: string) {
       { label: "04 / 主題", title: "更換的不是圖片，而是一整套畫境", body: "錦鯉、荷舟、竹雨、雲龍、鳳凰等多套畫境由站主發布，帶動全站配色與背景統一變化；也可選擇跟隨節氣的自動模式。", image: "/theme-skins/reference-koi.webp", imageAlt: "錦鯉繪畫" },
       { label: "05 / 命書", title: "一份生辰，讀成一本個人命書", body: "以子平八字為核心，從真太陽時、節氣月令、四柱結構到大運流年依次展開。紫微、七政、西洋與印度占星另有獨立領域，不用象徵敘事覆蓋計算結果。", image: "/theme-skins/moon-lotus-boat-art.webp", imageAlt: "月下荷舟繪畫" },
       { label: "06 / 今日", title: "今日黃曆，與今日星象並肩", body: "每日干支、宜忌、五行穿衣、色彩、靈籤及近期天象集中閱讀；可核對的天文事件與占星象徵解釋分別說明。", image: "/theme-skins/verdant-pavilion-art.webp", imageAlt: "春日亭臺繪畫" },
-      { label: "07 / 細節", title: "茶香、音樂、文章，還有日常的小發現", body: "這裡還有東方文化文章、茶與香氣、人格探索、測驗、畫廊、背景音樂與站內導覽。繁簡中文與英語切換，按手機閱讀節奏設計。", image: "/art/scene-osmanthus-tea-v1.webp", imageAlt: "桂花茶意境繪畫" }
+      { label: "07 / 細節", title: "茶香、音樂、文章，還有日常的小發現", body: "這裡還有東方文化文章、茶與香氣、人格探索、測驗、畫廊、背景音樂與站內導覽。繁簡中文與英語切換，按手機閱讀節奏設計。", image: "/art/scene-osmanthus-tea-v1.webp", imageAlt: "桂花茶意境繪畫" },
+      { label: "08 / 邊界", title: "免登入起步，規則先於象徵", body: "輸入出生年月日、時間與出生地即可排盤，免登入閱讀三段式核心直斷；更深入的大運、流年與流月為單次解鎖，不設自動續費。真太陽時可選擇是否採用。南半球出生或居住，只按當地季節與作息理解，不反轉四柱、月令與大運。", image: "/theme-skins/bamboo-falls-art.webp", imageAlt: "飛瀑竹影水墨山水畫" }
     ] satisfies Feature[],
   };
 }
