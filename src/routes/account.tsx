@@ -36,6 +36,10 @@ function initialConsoleView(): ConsoleView {
   return "overview";
 }
 
+function consoleViewHref(view: ConsoleView): string {
+  return view === "overview" ? "/account" : `/account?view=${encodeURIComponent(view)}`;
+}
+
 function initialSocialNotice(): string {
   try {
     const params = new URLSearchParams(window.location.search);
@@ -125,7 +129,20 @@ function AccountPage() {
   function selectConsoleView(view: ConsoleView) {
     setConsoleView(view);
     setVisitedViews((previous) => new Set([...previous, view]));
+    const href = consoleViewHref(view);
+    if (`${window.location.pathname}${window.location.search}` !== href) {
+      window.history.pushState(window.history.state, "", href);
+    }
   }
+  useEffect(() => {
+    const restoreViewFromUrl = () => {
+      const view = initialConsoleView();
+      setConsoleView(view);
+      setVisitedViews((previous) => new Set([...previous, view]));
+    };
+    window.addEventListener("popstate", restoreViewFromUrl);
+    return () => window.removeEventListener("popstate", restoreViewFromUrl);
+  }, []);
   const [rows, setRows] = useState<ReportListRecord[]>([]);
   const [details, setDetails] = useState<Record<string, ReportRecord | null>>({});
   const [openId, setOpenId] = useState<string | null>(null);
@@ -362,15 +379,18 @@ function AccountPage() {
             ["articles", tr(locale, "文章管理", "文章管理", "Articles")],
             ["devices", tr(locale, "登入與裝置", "登录与设备", "Sign-in")],
           ] as [ConsoleView, string][]).map(([view, label]) => (
-            <button
+            <a
               key={view}
               id={`console-tab-${view}`}
-              type="button"
+              href={consoleViewHref(view)}
               aria-controls={`console-panel-${view}`}
               aria-current={consoleView === view ? "page" : undefined}
-              onClick={() => selectConsoleView(view)}
-              className={`min-h-11 min-w-0 whitespace-normal rounded-xl border px-2.5 py-2 text-center text-sm font-medium leading-5 transition sm:rounded-full sm:px-4 ${consoleView === view ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}
-            >{label}</button>
+              onClick={(event) => {
+                event.preventDefault();
+                selectConsoleView(view);
+              }}
+              className={`flex min-h-11 min-w-0 items-center justify-center whitespace-normal rounded-xl border px-2.5 py-2 text-center text-sm font-medium leading-5 transition sm:rounded-full sm:px-4 ${consoleView === view ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}
+            >{label}</a>
           ))}
         </nav>
       </header>
