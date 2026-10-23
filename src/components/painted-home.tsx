@@ -5,7 +5,6 @@ import { useI18n } from '@/lib/i18n';
 import { BrandIcon } from '@/components/brand-icon';
 import { HomeTree } from '@/components/home-tree';
 import { CuratedVideoShelf } from '@/components/curated-video-shelf';
-import { VisitorEntrance } from '@/components/visitor-entrance';
 
 type Section = 'form' | 'today' | 'quiz' | 'notes';
 /** Skins whose painting is clean enough to show at full strength behind the home title. */
@@ -39,7 +38,6 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     '--ph-on-accent': dark ? '#142b32' : '#fff9e9',
   } as CSSProperties;
   return <section className="zw-painted-home" data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id)} data-tone={dark ? 'dark' : 'light'} data-title-veil={layout === 'koi' && Boolean(skin) && skin?.id !== 'pastel-koi'} style={style}>
-    <VisitorEntrance locale={locale} />
     <div className="ph-hero">
       <img className="ph-hero-art" src={art} alt="" fetchPriority="high" width="1248" height="1248" style={skin?.focus ? { objectPosition: skin.focus } : undefined} />
       {layout === 'scroll' && <p className="ph-resolve" data-home-resolve>{t('知命，不為認命，是為從容。', '知命，不为认命，是为从容。', 'Knowing your pattern isn’t giving in — it’s moving with composure.')}</p>}
