@@ -26,7 +26,8 @@ test("ZHAOWU story is public, multilingual and linked from login without touchin
   assert.match(read("public/llms.txt"), /zhao-wu\.com\/about/);
   assert.match(read("index.html"), /<h2>網站特色<\/h2>[\s\S]*<h2>常見問題<\/h2>/);
   assert.match(about, /<Link to="\/" /);
-  assert.match(home, /<VisitorEntrance locale=\{locale\} \/>/);
+  assert.doesNotMatch(home, /<VisitorEntrance|<VisitorWelcomeFilms/);
+  assert.match(home, /<HomeTree t=\{t\} onOpen=\{onOpen\} \/>/);
   assert.doesNotMatch(login, /data-zhaowu-discover-link/);
   assert.match(login, /passkeySignIn/);
   assert.match(login, /ownerSignIn/);
