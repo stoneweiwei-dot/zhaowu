@@ -54,7 +54,7 @@ function textFor(locale: string) {
  */
 export function VisitorEntrance({ locale }: { locale: string }) {
   const c = textFor(locale);
-  const { visitor, pending } = useVisitor();
+  const { visitor } = useVisitor();
   const [mode, setMode] = useState<FormMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -100,6 +100,7 @@ export function VisitorEntrance({ locale }: { locale: string }) {
       } else {
         if (mode === "signup") await registerVisitor(cleanEmail, password, nickname);
         await loginVisitor(cleanEmail, password);
+        window.requestAnimationFrame(() => document.getElementById("home-guide")?.scrollIntoView({ behavior: "smooth", block: "start" }));
         setPassword("");
         setConfirmation("");
       }
@@ -121,7 +122,7 @@ export function VisitorEntrance({ locale }: { locale: string }) {
         <span className="zw-visitor-eyebrow">ZHAOWU · MEMBER</span>
         <h2>{c.heading}</h2>
         <p className="zw-visitor-subtitle">{c.subtitle}</p>
-        {pending ? <p role="status" className="zw-visitor-hint">{c.submitting}</p> : visitor ? <>
+        {visitor ? <>
           <p className="zw-visitor-signed" role="status">{c.signedIn}<strong>{visitor.email}</strong></p>
           <button className="zw-visitor-logout" type="button" disabled={busy} onClick={() => {
             setBusy(true);
