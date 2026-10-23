@@ -13,13 +13,14 @@ const ENV = {
   ZHAOWU_OWNER_ALLOWED_ORIGINS: ORIGIN,
 };
 
-async function withEnv(fn) {
+async function withEnv(fn, respond) {
   const saved = new Map();
   for (const key of Object.keys(ENV)) { saved.set(key, process.env[key]); process.env[key] = ENV[key]; }
   const realFetch = globalThis.fetch;
   const upstream = [];
   globalThis.fetch = async (url, init) => {
     upstream.push({ url: String(url), init });
+    if (respond) return respond(url, init, upstream.length);
     return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { "Content-Type": "application/json" } });
   };
   try { return await fn(upstream); }
@@ -119,6 +120,31 @@ test("handleOwnerData prefers the supplied payload over re-reading a consumed bo
     assert.equal(response.status, 200);
     assert.deepEqual(JSON.parse(upstream[0].init.body), publish);
   });
+});
+
+test("site-skin publication retries one transient network failure", async () => {
+  await withEnv(async (upstream) => {
+    const response = await ownerData(fetchStyleRequest(publish));
+    assert.equal(response.status, 200);
+    assert.equal(upstream.length, 2);
+  }, (_url, _init, attempt) => {
+    if (attempt === 1) throw new TypeError("transient connection reset");
+    return new Response(JSON.stringify({ ok: true, skin: publish.skin }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  });
+});
+
+test("site-skin publication retries a transient upstream 5xx", async () => {
+  await withEnv(async (upstream) => {
+    const response = await ownerData(fetchStyleRequest(publish));
+    assert.equal(response.status, 200);
+    assert.equal(upstream.length, 2);
+  }, (_url, _init, attempt) => new Response(
+    JSON.stringify(attempt === 1 ? { ok: false, error: "TEMPORARY" } : { ok: true, skin: publish.skin }),
+    { status: attempt === 1 ? 502 : 200, headers: { "Content-Type": "application/json" } },
+  ));
 });
 
 test("public read-only skin fallback does not require a sign-in", async () => {
