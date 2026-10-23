@@ -37,6 +37,7 @@ test("healthy backend issues normal registration options and the protected chall
   assert.equal(result.body.ok, true);
   assert.equal(typeof result.body.options?.challenge, "string");
   assert.equal(result.cookies.length, 1);
+  // The WebAuthn challenge cookie stays Strict: it is only ever written and read by same-origin fetches.
   assert.match(result.cookies[0], /HttpOnly; Secure; SameSite=Strict/);
 });
 

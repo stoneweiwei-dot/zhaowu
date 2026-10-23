@@ -136,12 +136,15 @@ function LoginPage() {
           </label>
           <label>
             <span>{ownerText(locale, "站主密碼", "站主密码", "Owner password")}</span>
+            {/* Keep the value exactly as typed. Trimming on every keystroke silently dropped leading
+                and trailing spaces, so a password holding one could never be entered and the server
+                (which hashes the password verbatim) answered INVALID_OWNER_CREDENTIAL. */}
             <input
               id="login-secret"
               type="password"
               autoComplete="current-password"
               value={secret}
-              onChange={(event) => setSecret(event.target.value.trim())}
+              onChange={(event) => setSecret(event.target.value)}
               placeholder={ownerText(locale, "輸入站主密碼", "输入站主密码", "Enter owner password")}
             />
           </label>
