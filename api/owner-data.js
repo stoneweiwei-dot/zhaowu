@@ -140,7 +140,7 @@ function bridgeSecret() {
 
 // Temporary read-only Production diagnosis. Never returns credentials, upstream bodies,
 // headers, owner records or private data. Remove once the bridge has been repaired.
-const OPS_CODES = new Set(["BRIDGE_REQUIRED","BRIDGE_NOT_CONFIGURED","BRIDGE_UNAUTHORIZED","OWNER_UNAUTHORIZED","OWNER_REQUIRED","METHOD_NOT_ALLOWED","INVALID_DEVICE_ID","ACTION_NOT_ALLOWED","SUPABASE_ENV_MISSING","PROMO_STORE_NOT_CONFIGURED","OWNER_DATA_FAILED","SOCIAL_QUEUE_HTTP_404","SOCIAL_QUEUE_NOT_CONFIGURED"]);
+const OPS_CODES = new Set(["BRIDGE_REQUIRED","BRIDGE_NOT_CONFIGURED","BRIDGE_UNAUTHORIZED","OWNER_UNAUTHORIZED","OWNER_REQUIRED","METHOD_NOT_ALLOWED","INVALID_DEVICE_ID","INVALID_CREDENTIAL_ID","ACTION_NOT_ALLOWED","SUPABASE_ENV_MISSING","PROMO_STORE_NOT_CONFIGURED","OWNER_DATA_FAILED","SOCIAL_QUEUE_HTTP_404","SOCIAL_QUEUE_NOT_CONFIGURED"]);
 async function ownerBridgeProbe(functionName, action, secret) {
   try {
     const r = await fetch(`${supabaseUrl()}/functions/v1/${functionName}`, {
