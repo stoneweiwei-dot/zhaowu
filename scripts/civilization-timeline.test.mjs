@@ -26,7 +26,7 @@ test('civilization article appears in existing three-language Articles catalog w
   const registry = readFileSync(registryPath, 'utf8');
   assert.match(file, /publishedAt: "2026-10-23"/);
   for (const locale of ['zh-Hant', 'zh-Hans']) assert.ok(file.includes('"'+locale+'":'));
-  assert.match(file, /\\ben\\s*:/, 'English field may be unquoted in TypeScript');
+  assert.match(file, /\ben\s*:/, 'English field may be unquoted in TypeScript');
   assert.match(file, /src: "\/articles\/civilization-timeline-2025-2030-stone-original\.png"/);
   assert.match(file, /afterParagraph: 1/);
   assert.match(file, /display: "wide"/);
