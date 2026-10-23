@@ -10,6 +10,7 @@ test("ZHAOWU story is public, multilingual and linked from login without touchin
   const meta = JSON.parse(read("src/lib/route-meta.json"));
   const sitemap = read("public/sitemap.xml");
   assert.match(about, /createFileRoute\("\/about"\)/);
+  assert.match(about, /import "@\/about-zhaowu\.css"/);
   assert.match(about, /讓天時有形，讓命理可讀/);
   assert.match(about, /让天时有形，让命理可读/);
   assert.match(about, /Where the seasons have a form/);
