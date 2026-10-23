@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import "./about-zhaowu.css";
+import "@/about-zhaowu.css";
 
 export const Route = createFileRoute("/about")({ component: AboutZhaowu });
 
