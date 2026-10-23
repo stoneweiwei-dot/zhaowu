@@ -1,0 +1,33 @@
+name: Temporary login film transfer inspection
+on:
+  push:
+    branches: [feat/login-original-four-films-20261023]
+    paths: ['.github/workflows/one-time-login-film-import.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Inspect public short-lived shared files, without printing tokens
+        shell: bash
+        env:
+          TRANSFER_PAGE: https://firestorage.ai/ja/f/oHsKQFGY_TRv
+        run: |
+          python - <<'PY'
+          import os, urllib.request, re, html.parser
+          url=os.environ["TRANSFER_PAGE"]
+          try:
+            req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"})
+            resp=urllib.request.urlopen(req,timeout=16)
+            h=resp.read(1500000).decode("utf8","replace")
+            print("HTTP",resp.status,"content type",resp.headers.get("content-type"),"bytes",len(h))
+            print("page title",re.search(r"<title[^>]*>([^<]+)",h,re.I).group(1)[:110] if re.search(r"<title[^>]*>([^<]+)",h,re.I) else "")
+            print("MP4 basename matches", {x: x.lower() in h.lower() for x in ["B3DD012E","E1D22301","674AF108","2a5f34b4"]})
+            print("script filenames", [x.split("/")[-1].split("?")[0][:60] for x in re.findall(r"<script[^>]+src=[\"']([^\"']+)",h,re.I)][:12])
+            print("potential button labels", [x.strip()[:60] for x in re.findall(r"<button[^>]*>([^<]+)",h,re.I)][:20])
+            print("anchor count",len(re.findall(r"<a\\b",h,re.I)))
+            print("media tags",len(re.findall(r"<video\\b",h,re.I)))
+          except Exception as e: print("fetch failure",type(e).__name__,str(e)[:300]);raise
+          PY
