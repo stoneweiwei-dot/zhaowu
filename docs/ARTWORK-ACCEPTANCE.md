@@ -1,3 +1,8 @@
+## 2026-10-23｜文章圖像資產清單（出處紀錄）
+- 新增 `docs/article-image-manifest.json`：每張文章圖記錄 `kind`（painting／infographic／diagram）、`source`（stone-original／existing-reused／coded-diagram／unverified）與 `status`（approved／interim／needs-review）。`scripts/article-image-manifest.test.mjs` 隨 prebuild 驗證。
+- 失敗條件：文章引用了未登記的圖；清單列了無人引用的圖；出處不在允許清單（`placeholder`、程式生成圖一律不得上線）；程式 SVG 被登記成畫作；登記為 painting 但寬度不足 800px；painting 出處為 unverified。
+- 清單只記錄出處，**不等於**目視驗收；`needs-review`／`interim` 會在測試輸出中列出，待站主決定。新增文章圖必須同時登記。
+
 ## 2026-10-21｜全文章素材稽核補充
 - 已核對文章資料檔：不只《三界三十一界》，另發現《相由心生》的簡陋 SVG 人偶與《術數的最後》的幾何羅盤山形同樣被當成繪畫引用。已改為站內既有 WebP 宋式畫作，並明示為暫用原有畫作。
 - `scripts/article-artwork-acceptance.test.mjs` 擴大為全文庫稽核：不再只限制一篇文章，而是對 `src/lib/life-view*.ts` 與 `src/lib/life-view-long-form/**/*.ts` 的本地素材引用驗證實際檔案、Raster 檔頭及既有示意圖白名單。新發現的未經批准 SVG 卡片會讓 prebuild 失敗。
