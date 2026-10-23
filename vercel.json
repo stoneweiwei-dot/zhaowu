@@ -256,5 +256,11 @@
       "destination": "/index.html"
     }
   ],
-  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" != \"main\" ]; then exit 0; fi; git diff --quiet HEAD^ HEAD -- . ':(exclude)docs/**' ':(exclude)**/*.md' ':(exclude).github/**'"
+  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" != \"main\" ]; then exit 0; fi; git diff --quiet HEAD^ HEAD -- . ':(exclude)docs/**' ':(exclude)**/*.md' ':(exclude).github/**'",
+  "crons": [
+    {
+      "path": "/api/owner-session?action=cron.autopublish",
+      "schedule": "0 12 * * *"
+    }
+  ]
 }

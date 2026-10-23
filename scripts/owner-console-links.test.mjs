@@ -13,7 +13,7 @@ test("owner console tabs are real deep links", () => {
 });
 
 test("every owner console panel remains directly addressable", () => {
-  for (const view of ["overview", "reports", "images", "opening", "themes", "promo", "articles", "devices"]) {
+  for (const view of ["overview", "reports", "autopublish", "images", "opening", "themes", "promo", "articles", "devices"]) {
     assert.match(source, new RegExp(`\\["${view}",`), `missing console link for ${view}`);
   }
 });

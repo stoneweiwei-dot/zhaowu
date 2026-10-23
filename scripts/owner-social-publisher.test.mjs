@@ -279,9 +279,15 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
 
 test("the owner console embeds the existing gallery-backed dual social publisher", async () => {
   const account = await source("src/routes/account.tsx");
+  const panel = await source("src/components/owner/autopublish-panel.tsx");
   const route = await source("src/routes/social.tsx");
   const userState = await source("src/lib/auth/use-current-user.ts");
-  assert.doesNotMatch(account, /AutopublishPanel|autopublish/);
+  // 2026-10-16: the console rebuild puts auto-publishing first and keeps the manual publisher inside it.
+  assert.match(account, /<AutopublishPanel/);
+  assert.match(panel, /<SocialPublisherPage embedded/);
+  assert.match(panel, /應用程式網域/);
+  assert.match(panel, /action=meta\.callback/);
+  assert.match(panel, /Instagram/);
   assert.match(route, /data-owner-social-publisher/);
   assert.match(route, /configuration\.targets/);
   assert.match(route, /useCurrentUserState/);
