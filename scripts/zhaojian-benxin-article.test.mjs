@@ -28,3 +28,13 @@ test("STONE original 9:16 painting is a committed real WebP binary", () => {
   assert.equal(bytes.toString("ascii", 8, 12), "WEBP");
   assert.equal(createHash("sha256").update(bytes).digest("hex"), "b3f27544fc9c6626d91a4736d97cd3679eb2da8bee94ead76b33c52a57d4a935");
 });
+
+test("STONE painting provenance is registered for the production article build", () => {
+  const manifest = JSON.parse(readFileSync("docs/article-image-manifest.json", "utf8"));
+  const entry = manifest.entries.find((row) => row.src === imagePath);
+  assert.ok(entry, "Original painting must be listed in article-image-manifest.json");
+  assert.equal(entry.article, "zhaojian-benxin-awareness-compassion");
+  assert.equal(entry.kind, "painting");
+  assert.equal(entry.source, "stone-original");
+  assert.equal(entry.status, "approved");
+});
