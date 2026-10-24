@@ -23,6 +23,7 @@ const OwnerArticleManager = lazy(() => import("@/components/owner/article-manage
 const AutopublishPanel = lazy(() => import("@/components/owner/autopublish-panel").then((m) => ({ default: m.AutopublishPanel })));
 const OwnerThemeSkinsManager = lazy(() => import("@/components/owner-theme-skins-manager").then((m) => ({ default: m.OwnerThemeSkinsManager })));
 import { ConsoleOverview, type OverviewTarget } from "@/components/owner/console-overview";
+import { ReportEditor } from "@/components/owner/report-editor";
 const OwnerDevicesManager = lazy(() => import("@/components/owner-devices-manager").then((m) => ({ default: m.OwnerDevicesManager })));
 type ConsoleView = "overview" | "reports" | "autopublish" | "images" | "opening" | "themes" | "promo" | "articles" | "devices";
 const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "autopublish", "images", "opening", "themes", "promo", "articles", "devices"];
@@ -494,6 +495,8 @@ function AccountPage() {
                         {reportMessages[row.id] ? <p className="mb-4 rounded-md border border-line bg-cream/70 px-3 py-2 text-xs text-cinnabar">{reportMessages[row.id]}</p> : null}
 
 
+
+                        {!food ? <ReportEditor reportId={row.id} sections={sections} onChanged={() => refreshDetail(row.id, true)} /> : null}
 
                         {sections.length ? (
                           <div className="space-y-4">

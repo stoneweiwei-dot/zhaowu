@@ -499,7 +499,9 @@ async function upgradeLegacyRecordOnce(session: SupabaseSession, row: ReportReco
 
   // Preserve whether the customer had paid/generated a full report. If a readable
   // report already existed, migrate it to the current focused structure once.
-  if (row.paid_report || row.mother_draft) {
+  // Owner-edited sections are the owner's text: upgrade the engine snapshot but never recompose over them.
+  const ownerEdited = Boolean(row.mother_draft && typeof row.mother_draft === "object" && (row.mother_draft as Record<string, unknown>).ownerEdited === true);
+  if (!ownerEdited && (row.paid_report || row.mother_draft)) {
     const sections = composeFocusedReport(upgraded);
     patch.mother_draft = { reportSections: sections, ninePages: sections };
     patch.paid_report = { text: composeFocusedReportText(upgraded), reportSections: sections };
