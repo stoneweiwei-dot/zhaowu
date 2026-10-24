@@ -1,4 +1,5 @@
 import type { LifeViewArticle } from "@/lib/life-view";
+import { ZHAOJIAN_BENXIN_ARTICLE } from "@/lib/life-view-long-form/zhaojian-benxin-awareness-compassion";
 import { AI_DISCARNATE_INTELLIGENCE_ARTICLE } from "@/lib/life-view-long-form/ai-discarnate-intelligence";
 import { CIVILIZATION_TIMELINE_2025_2030_ARTICLE } from "@/lib/life-view-long-form/civilization-timeline-2025-2030";
 import { CERN_LHC_SHUTDOWN_ARTICLE } from "@/lib/life-view-long-form/cern-lhc-shutdown-2026";
@@ -17,6 +18,7 @@ import { YELLOW_SPRINGS_AND_BUDDHIST_REBIRTH_LONG_FORM } from "@/lib/life-view-l
  * 傳統／传统宗教與修行材料只作文化、哲學與歷史脈絡整理；未經驗證的主張不得包裝成科學事實。
  */
 export const LIFE_VIEW_LONG_FORM_ARTICLES: LifeViewArticle[] = [
+  ZHAOJIAN_BENXIN_ARTICLE,
   CIVILIZATION_TIMELINE_2025_2030_ARTICLE,
   AI_DISCARNATE_INTELLIGENCE_ARTICLE,
   CERN_LHC_SHUTDOWN_ARTICLE,
