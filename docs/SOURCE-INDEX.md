@@ -65,6 +65,14 @@ For conflicting project behavior, use the precedence already defined in `AGENTS.
 
 ## External method references
 
+### 黃泉紀 · 左道旁門設定集（站主提供）
+- Name: 《黃泉紀 · 左道旁門設定集》草案與創作對話
+- Authority: OWNER MATERIAL — 世界觀與角色名錄的產品意圖；不是古籍或宗教史權威
+- Scope: `/mythic-atlas` 的標題、八大支系、三十五位角色、四條故事線與十二幅視覺參照
+- Locations: https://agentmore.chatglm.cn/shareFile/6adc4ab9a2dc192bebfc6f74 and https://agentmore.chatglm.cn/share/RFpo1NQk
+- Rights: 僅作站主授權的昭梧原創改寫；十二幅圖使用自製素材，不複製來源畫作或第三方浮水印
+- Freshness: 修改《黃泉紀》設定或對外宣稱來源前，重新核對站主最新指令與公開可驗證資料
+
 ### AI-Partner
 - Name: Jaycheng1103/AI-Partner
 - Authority: REFERENCE ONLY
