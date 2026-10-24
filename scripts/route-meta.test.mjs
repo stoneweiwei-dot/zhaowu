@@ -77,9 +77,21 @@ test("package.json build runs build-route-html after vite build", () => {
   assert.match(pkg.scripts.build, /^vite build && node scripts\/build-route-html\.mjs && tsc --noEmit$/);
 });
 
-test("vercel.json keeps the SPA fallback rewrite (filesystem-first still applies)", () => {
+test("vercel.json has no global SPA catch-all (soft-404 fix) and every client route is still reachable", () => {
   const vercel = JSON.parse(read("vercel.json"));
-  const fallback = vercel.rewrites.find((r) => r.source === "/((?!api/).*)");
-  assert.ok(fallback, "SPA fallback rewrite must remain");
-  assert.equal(fallback.destination, "/index.html");
+  assert.ok(!vercel.rewrites.some((r) => r.source === "/((?!api/).*)"), "global catch-all returns 200 for unknown URLs (soft 404)");
+  // Client-only routes need an explicit rewrite; public routes are prerendered by build-route-html.
+  const rewritten = vercel.rewrites
+    .filter((r) => r.destination === "/index.html")
+    .map((r) => r.source.replace(/\/:path\*$/, ""));
+  const tree = read("src/routeTree.gen.ts");
+  const block = tree.match(/interface FileRoutesByFullPath \{([\s\S]*?)\n\}/)[1];
+  const routes = [...block.matchAll(/'([^']+)':/g)].map((m) => m[1]);
+  assert.ok(routes.length > 30, "route tree parse sanity");
+  const prerendered = new Set(Object.keys(readRouteMeta().routes));
+  const uncovered = routes.filter(
+    (p) => p !== "/" && !prerendered.has(p) && !rewritten.some((base) => p === base || p.startsWith(`${base}/`)),
+  );
+  assert.deepEqual(uncovered, [], `routes neither prerendered nor rewritten would 404 in production: ${uncovered.join(", ")}`);
+  assert.match(read("public/404.html"), /<meta name="robots" content="noindex/);
 });

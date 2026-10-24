@@ -252,7 +252,43 @@
       "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/:path*"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/login/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/account/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/member/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/history/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/auth/callback/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/gallery/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/social/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/mythic-atlas/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/tianji-dual/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/tianji-xinggong/:path*",
       "destination": "/index.html"
     }
   ],

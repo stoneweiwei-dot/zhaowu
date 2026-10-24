@@ -27,7 +27,7 @@ test("owner login APIs are self-contained JavaScript and stay off the SPA rewrit
   assert.match(shared, /Max-Age=0/);
   assert.doesNotMatch(login, /from ["']\.\.\/src\//);
   assert.equal(vercel.rewrites[0].source, "/api/gallery-ingest-finalize");
-  assert.equal(vercel.rewrites.at(-1).source, "/((?!api/).*)");
+  assert.ok(!vercel.rewrites.some((r) => r.source === "/((?!api/).*)"), "global SPA catch-all stays removed (soft-404 fix)");
 });
 
 test("latest homepage contract supersedes r129 and restores the real Four Pillars chart before questions", async () => {

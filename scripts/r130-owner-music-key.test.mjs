@@ -32,7 +32,7 @@ test("owner music read and write APIs are physically split off the SPA rewrite",
   assert.equal(vercel.functions["api/owner-music.js"].includeFiles, undefined);
   assert.deepEqual(vercel.git.deploymentEnabled, { "**": false, main: true });
   assert.match(vercel.ignoreCommand, /git diff --quiet/);
-  assert.equal(vercel.rewrites.at(-1).source, "/((?!api/).*)");
+  assert.ok(!vercel.rewrites.some((r) => r.source === "/((?!api/).*)"), "global SPA catch-all stays removed (soft-404 fix)");
 });
 
 test("owner key hash is rotated and the raw secret is not in the repo", async () => {
