@@ -1,3 +1,13 @@
+## 2026-10-24｜站主可編輯客戶報告 × 修改紀錄與還原
+
+- 站主指令：站主後台要能修改客戶報告，保留修改紀錄並可還原；原始版本永遠保留。
+- 範圍：只改各章節的標題與文字（`mother_draft.reportSections`／`paid_report.reportSections`）；命盤 `engine_snapshot` 與排盤計算**不開放編輯**。
+- 資料：新表 `report_section_edits`（版本 0＝首次修改前的原始快照；`edit`／`restore` 皆新增一版，從不刪除）。僅 service role 可讀寫，RLS 啟用並撤銷 anon/authenticated。
+- Edge actions：`report.edit`／`report.history`／`report.restore`（密碼與 Face ID 登入皆可）。被編輯過的報告以 `mother_draft.ownerEdited` 標記，舊版引擎升級（`upgradeLegacyRecordOnce`）不得覆寫站主文字。
+- 現況邊界：目前只有站主後台會從資料庫讀取已存章節；客戶端頁面尚未讀取，因此客戶不會直接看到修改。若要讓客戶看到，需另做交付（例如分享連結），不在本次範圍。
+- 部署順序（不可顛倒）：① 套用 migration `20261024000000_report_section_edits.sql` → ② 部署 Edge Function `zhaowu-owner-data` → ③ 合併部署 Vercel。
+- 測試：`scripts/owner-report-edits.test.mjs`。
+
 ## 2026-10-24｜《黃泉紀 · 左道旁門設定集》完整化 × 十二幅原創圖
 
 - ACTIVE（站主最新指令）：沿用公開 `/mythic-atlas`，完整呈現《黃泉紀 · 左道旁門設定集》；包含三界與兩序、八大支系、三十五位人物、四條相連故事線、來源分層與十二圖錄。首頁入口同步改用正式名稱，不另開重複路由。

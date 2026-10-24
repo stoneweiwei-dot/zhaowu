@@ -19,6 +19,7 @@ import {
 } from "./devices.mjs";
 
 import { listReportPage, ownerReportRow } from "./reports.mjs";
+import { ReportEditError, reportEdit, reportHistory, reportRestore } from "./report-edits.mjs";
 
 const BACKGROUND_BUCKET = "zhaowu-backgrounds";
 const GALLERY_BUCKET = "zhaowu-gallery";
@@ -59,6 +60,9 @@ const ALLOWED_ACTIONS = new Set([
   "report.save",
   "report.get",
   "report.delete",
+  "report.edit",
+  "report.history",
+  "report.restore",
   "report.viewImage",
   "report.generateImage",
   "background.list",
@@ -878,6 +882,9 @@ async function dispatch(service: ReturnType<typeof createClient>, action: string
       return { ok: true, id: row.id };
     }
     case "report.delete": return reportDelete(service, payload);
+    case "report.edit": return reportEdit(service, payload);
+    case "report.history": return reportHistory(service, payload);
+    case "report.restore": return reportRestore(service, payload);
     case "report.viewImage": return reportViewImage(service, payload);
     case "report.generateImage": return reportGenerateImage(service, payload);
     case "background.list": return backgroundList(service, payload);
@@ -941,6 +948,9 @@ Deno.serve(async (req: Request) => {
     }
     return json(await dispatch(service, action, payload));
   } catch (error) {
+    if (error instanceof ReportEditError) {
+      return json({ ok: false, error: error.code, detail: error.message }, error.status);
+    }
     if (error instanceof DeviceError) {
       return json({ ok: false, error: error.code, detail: error.message }, error.status);
     }
