@@ -10075,3 +10075,52 @@ html body main .zhaowu-element-glance :is(h4, p, span, b) { color: #29251f !impo
 .zhaowu-element-glance > h4 { margin: 0 0 10px; font-size: 1rem; }
 .zhaowu-element-glance .zhaowu-element-bars { margin-top: 0; }
 .zhaowu-element-glance .zhaowu-visual-note { margin: 10px 0 0; background: #f7f0e2 !important; }
+
+/* Owner sign-in: visible-password toggle, a roomier password field and the forgot-password hint. */
+.zhaowu-login-shell .stone-login-screen .owner-password-field {
+  position: relative;
+  display: block;
+}
+
+.zhaowu-login-shell .stone-login-screen .stone-login-form .owner-password-field input {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 58px !important;
+  padding-right: 58px !important;
+  font-size: 18px !important;
+  letter-spacing: .02em;
+}
+
+.zhaowu-login-shell .stone-login-screen .owner-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  min-height: 46px !important;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  color: #5c5040;
+  background: transparent;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.zhaowu-login-shell .stone-login-screen .owner-forgot-toggle {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0 2px;
+  border: 0;
+  color: #7a5a22;
+  background: transparent;
+  font-size: .85rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen .owner-password-toggle { color: #ddc28e; }
+html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen .owner-forgot-toggle { color: #ddc28e; }
