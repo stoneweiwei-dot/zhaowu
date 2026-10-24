@@ -15,6 +15,7 @@ import {
   type ReportAccessProduct,
   type ReportSystemId,
 } from "@/lib/report-access";
+import { oncePerSession, trackConversion } from "@/lib/observability/conversion-telemetry";
 import "@/report-access.css";
 
 type Copy = {
@@ -198,6 +199,13 @@ export function ReportAccessGate({
     }).finally(() => { if (!cancelled) setChecking(false); });
     return () => { cancelled = true; };
   }, [system]);
+
+  useEffect(() => {
+    // Paywall is visible only to non-owner visitors without the paid tier.
+    if (!checking && !owner && level !== "system" && oncePerSession(`paywall:${system}`)) {
+      trackConversion("zhaowu_paywall_viewed", { system, level });
+    }
+  }, [checking, owner, level, system]);
 
   async function purchase(product: ReportAccessProduct) {
     if (!consent.require()) return;

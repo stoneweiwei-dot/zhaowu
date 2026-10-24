@@ -1,4 +1,5 @@
 import { readOwnerSession } from "@/lib/auth/owner-api";
+import { oncePerSession, trackConversion } from "@/lib/observability/conversion-telemetry";
 import { hasPurchaseConsent } from "@/lib/purchase-consent";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 
@@ -173,6 +174,7 @@ export async function redeemPromoCode(code: string, system: ReportSystemId): Pro
     const known: PromoRedeemError[] = ["PROMO_NOT_FOUND", "PROMO_EXPIRED", "PROMO_EXHAUSTED", "PROMO_WRONG_SYSTEM", "PROMO_ALREADY_REDEEMED"];
     throw new Error((known as string[]).includes(raw || "") ? raw! : "PROMO_UNAVAILABLE" satisfies PromoRedeemError);
   }
+  trackConversion("zhaowu_promo_redeemed", { system, level: "system" });
   return levelFor(payload, system);
 }
 
@@ -199,6 +201,7 @@ export async function resolveReportAccess(system: ReportSystemId) {
   if (query) rememberSession(query);
   let level: ReportAccessLevel = "quick";
   let pending = false;
+  let stripeGranted = false;
   for (const sessionId of [...new Set([query, ...storedSessions()].filter(Boolean))]) {
     try {
       // The checkout session ID is the high-entropy return capability. Verification
@@ -207,6 +210,7 @@ export async function resolveReportAccess(system: ReportSystemId) {
       const verification = await verifySession(sessionId);
       pending ||= verification.pending === true;
       const candidate = levelFor(verification, system);
+      if (candidate === "system") stripeGranted = true;
       if (rank[candidate] > rank[level]) level = candidate;
     } catch {
       /* One expired or invalid session must not block other valid purchases. */
@@ -222,6 +226,11 @@ export async function resolveReportAccess(system: ReportSystemId) {
     } catch {
       /* Promo lookup failing must not block an otherwise-valid Stripe entitlement. */
     }
+  }
+  // Funnel: count only Stripe-verified purchases (a promo redemption also yields "system"
+  // but is reported separately as zhaowu_promo_redeemed).
+  if (stripeGranted && oncePerSession(`confirmed:${system}`)) {
+    trackConversion("zhaowu_purchase_confirmed", { system });
   }
   return { level, pending, owner: false };
 }
@@ -245,5 +254,11 @@ export async function startReportCheckout(product: ReportAccessProduct, system: 
   }
   const url = new URL(link);
   url.searchParams.set("client_reference_id", accessKey);
+  trackConversion("zhaowu_checkout_clicked", {
+    system,
+    product,
+    currency: detectReportPriceCurrency(),
+    has_report_id: Boolean(reportId),
+  });
   window.location.assign(url.toString());
 }

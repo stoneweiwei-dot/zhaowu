@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { reportAccessPrice, resolveReportAccess, startReportCheckout } from "@/lib/report-access";
+import { oncePerSession, trackConversion } from "@/lib/observability/conversion-telemetry";
 import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
 import type { DataGradeReport } from "@/lib/bazi/data-grade";
 
@@ -22,6 +23,10 @@ export function BaziReadingUnlock({ locale, reportId, grade }: { locale: Locale;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const text = (hant: string, hans: string, en: string) => locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
+  useEffect(() => {
+    // Rendered only while the reading is locked, so mounting == paywall visible.
+    if (oncePerSession("paywall:bazi")) trackConversion("zhaowu_paywall_viewed", { system: "bazi", level: "quick" });
+  }, []);
   async function unlock() {
     if (!consent.require() || busy) return;
     setBusy(true);

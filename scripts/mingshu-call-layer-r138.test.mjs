@@ -212,7 +212,7 @@ test("API handlers are discoverable, owner-gated where needed, and stay off calc
   assert.equal(vercel.functions["api/mingshu-compare.js"].maxDuration, 15);
   assert.equal(vercel.functions["api/zhaowu-capabilities.js"].maxDuration, 10);
   assert.equal(vercel.functions["api/zhaowu-doctor.js"].maxDuration, 10);
-  assert.equal(vercel.rewrites.at(-1).source, "/((?!api/).*)");
+  assert.ok(!vercel.rewrites.some((r) => r.source === "/((?!api/).*)"), "global SPA catch-all stays removed (soft-404 fix)");
 
   for (const locked of [chartTs, calendar, interpret, actions]) {
     assert.doesNotMatch(locked, /mingshu-compare|zhaowu-verification/);

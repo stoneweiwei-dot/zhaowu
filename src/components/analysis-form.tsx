@@ -9,6 +9,7 @@ import type { AnalyzeInput, BirthTimeSource, CityHit } from "@/lib/bazi/types";
 import { assessBirthRecord } from "@/lib/bazi/data-grade";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
+import { trackConversion } from "@/lib/observability/conversion-telemetry";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { createEngineReportRecord, updateBirthData } from "@/lib/supabase-rest";
 import { UNKNOWN_TIME_COPY } from "@/lib/bazi/presentation";
@@ -324,6 +325,7 @@ export function AnalysisForm() {
     setBusy(true);
     try {
       const payload: AnalyzeInput = { ...rememberedRecord, question: question.trim(), locale };
+      trackConversion("zhaowu_birth_submitted", { system: "bazi" });
       const result = await analyzeLife({ data: payload });
       setCurrent(result);
       if (session) {

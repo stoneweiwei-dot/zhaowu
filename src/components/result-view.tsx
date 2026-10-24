@@ -5,6 +5,7 @@ import type { AnalysisResult } from "@/lib/bazi/types";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
+import { oncePerSession, trackConversion } from "@/lib/observability/conversion-telemetry";
 import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
 import { DataGradeFooter } from "@/components/data-grade-footer";
 import { MobileReadingGuide } from "@/components/mobile-reading-guide";
@@ -57,9 +58,16 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       if (!active) return;
       setAccessLevel(acc.level);
       setOwnerAccess(Boolean(acc.owner));
+      if (!acc.owner && acc.level !== "system" && oncePerSession("paywall:bazi")) {
+        trackConversion("zhaowu_paywall_viewed", { system: "bazi", level: acc.level });
+      }
     }).catch(() => { if (active) { setAccessLevel("none"); setOwnerAccess(false); } });
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    if (oncePerSession(`answer-shown:${result.id ?? ""}`)) trackConversion("zhaowu_answer_shown", { system: "bazi" });
+  }, [result.id]);
 
   async function handleUnlock(product: ReportAccessProduct) {
     if (!consent.require()) return;
