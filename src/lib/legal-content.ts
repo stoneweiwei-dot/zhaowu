@@ -5,7 +5,7 @@ export type LegalDocKey = "privacy" | "terms" | "copyright";
 export type LegalSection = { h: string; p?: string[]; ul?: string[]; p2?: string[] };
 export type LegalDoc = { kicker: string; title: string; lead: string; sections: LegalSection[] };
 
-export const LEGAL_LAST_UPDATED = "2026-10-11";
+export { LEGAL_LAST_UPDATED } from "./legal-meta";
 
 export const LEGAL_DOCS: Record<LegalDocKey, Record<LegalLocale, LegalDoc>> = {
   "privacy": {

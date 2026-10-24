@@ -1,6 +1,17 @@
 import { useEffect } from "react";
 import { useDisplayLanguage } from "@/lib/display-language";
-import { translateKoHiVisibleText, type KoHiLanguage } from "@/lib/ko-hi-localization";
+import type { KoHiLanguage } from "@/lib/ko-hi-localization";
+
+// The ko/hi dictionary (~47 kB) is only needed when a visitor actually selects Korean or Hindi, so it
+// is loaded on demand instead of living in the first-screen bundle.
+type KoHiTranslate = (typeof import("@/lib/ko-hi-localization"))["translateKoHiVisibleText"];
+let koHiTranslate: KoHiTranslate | null = null;
+// Once a ko/hi pass has run, switching back to another language must walk the page again to restore originals.
+let hasTranslatedPage = false;
+
+function translateKoHi(text: string, language: KoHiLanguage) {
+  return koHiTranslate ? koHiTranslate(text, language) : text;
+}
 
 const TEXT_ORIGINAL = new WeakMap<Text, string>();
 const TEXT_TRANSLATED = new WeakMap<Text, string>();
@@ -20,7 +31,7 @@ function localizeTextNode(node: Text, language: KoHiLanguage | null) {
   const lastTranslated = TEXT_TRANSLATED.get(node);
   if (lastTranslated === undefined || current !== lastTranslated) TEXT_ORIGINAL.set(node, current);
   const original = TEXT_ORIGINAL.get(node) ?? current;
-  const next = language ? translateKoHiVisibleText(original, language) : original;
+  const next = language ? translateKoHi(original, language) : original;
   if (current !== next) node.nodeValue = next;
   TEXT_TRANSLATED.set(node, next);
 }
@@ -38,7 +49,7 @@ function localizeAttributes(element: Element, language: KoHiLanguage | null) {
     const last = translated.get(attr);
     if (last === undefined || current !== last) originals.set(attr, current);
     const original = originals.get(attr) ?? current;
-    const next = language ? translateKoHiVisibleText(original, language) : original;
+    const next = language ? translateKoHi(original, language) : original;
     if (current !== next) element.setAttribute(attr, next);
     translated.set(attr, next);
   }
@@ -70,30 +81,51 @@ export function KoHiLocalizationBridge() {
 
   useEffect(() => {
     const target: KoHiLanguage | null = language === "ko" || language === "hi" ? language : null;
-    const root = document.body;
-    walk(root, target);
+    // Public languages (zh / en) with no earlier ko/hi pass: nothing to translate and nothing to restore.
+    if (!target && !hasTranslatedPage) return undefined;
 
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type === "characterData") {
-          if (mutation.target instanceof Text) localizeTextNode(mutation.target, target);
-          continue;
+    const root = document.body;
+    let cancelled = false;
+    let observer: MutationObserver | null = null;
+
+    const start = () => {
+      if (cancelled) return;
+      if (target) hasTranslatedPage = true;
+      walk(root, target);
+      observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          if (mutation.type === "characterData") {
+            if (mutation.target instanceof Text) localizeTextNode(mutation.target, target);
+            continue;
+          }
+          if (mutation.type === "attributes") {
+            if (mutation.target instanceof Element) localizeAttributes(mutation.target, target);
+            continue;
+          }
+          for (const node of mutation.addedNodes) walk(node, target);
         }
-        if (mutation.type === "attributes") {
-          if (mutation.target instanceof Element) localizeAttributes(mutation.target, target);
-          continue;
-        }
-        for (const node of mutation.addedNodes) walk(node, target);
-      }
-    });
-    observer.observe(root, {
-      subtree: true,
-      childList: true,
-      characterData: true,
-      attributes: true,
-      attributeFilter: [...ATTRS],
-    });
-    return () => observer.disconnect();
+      });
+      observer.observe(root, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+        attributes: true,
+        attributeFilter: [...ATTRS],
+      });
+    };
+
+    if (target && !koHiTranslate) {
+      void import("@/lib/ko-hi-localization").then((mod) => {
+        koHiTranslate = mod.translateKoHiVisibleText;
+        start();
+      }).catch(() => { /* dictionary failed to load: leave the page in its original language */ });
+    } else {
+      start();
+    }
+    return () => {
+      cancelled = true;
+      observer?.disconnect();
+    };
   }, [language]);
 
   return null;
