@@ -23,6 +23,8 @@ function LoginPage() {
   const { user, reload } = useCurrentUserState();
   const [email, setEmail] = useState("");
   const [secret, setSecret] = useState("");
+  const [showSecret, setShowSecret] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -141,15 +143,49 @@ function LoginPage() {
             {/* Keep the value exactly as typed. Trimming on every keystroke silently dropped leading
                 and trailing spaces, so a password holding one could never be entered and the server
                 (which hashes the password verbatim) answered INVALID_OWNER_CREDENTIAL. */}
-            <input
-              id="login-secret"
-              type="password"
-              autoComplete="current-password"
-              value={secret}
-              onChange={(event) => setSecret(event.target.value)}
-              placeholder={ownerText(locale, "輸入站主密碼", "输入站主密码", "Enter owner password")}
-            />
+            <span className="owner-password-field">
+              <input
+                id="login-secret"
+                type={showSecret ? "text" : "password"}
+                autoComplete="current-password"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                value={secret}
+                onChange={(event) => setSecret(event.target.value)}
+                placeholder={ownerText(locale, "輸入站主密碼", "输入站主密码", "Enter owner password")}
+              />
+              <button
+                type="button"
+                className="owner-password-toggle"
+                aria-pressed={showSecret}
+                aria-label={showSecret
+                  ? ownerText(locale, "隱藏密碼", "隐藏密码", "Hide password")
+                  : ownerText(locale, "顯示密碼", "显示密码", "Show password")}
+                onClick={() => setShowSecret((value) => !value)}
+                data-owner-password-toggle
+              >
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+                  <circle cx="12" cy="12" r="3" />
+                  {showSecret ? null : <path d="M4 4l16 16" />}
+                </svg>
+              </button>
+            </span>
           </label>
+          <button type="button" className="owner-forgot-toggle" aria-expanded={showForgot} onClick={() => setShowForgot((value) => !value)} data-owner-forgot-toggle>
+            {ownerText(locale, "忘記密碼？", "忘记密码？", "Forgot password?")}
+          </button>
+          {showForgot ? (
+            <p className="stone-login-message" role="note" data-owner-forgot-help>
+              {ownerText(
+                locale,
+                "手機已加入受信任裝置：直接按上方「用 Face ID 登入」，不需要密碼。沒有可用的手機：密碼只以雜湊保存，無法寄信找回，需由站主在伺服器端重設。",
+                "手机已加入受信任设备：直接按上方“用 Face ID 登录”，不需要密码。没有可用的手机：密码只以哈希保存，无法寄信找回，需由站主在服务器端重设。",
+                "Trusted phone: tap “Sign in with Face ID” above, no password needed. No trusted phone: the password is stored only as a hash and cannot be emailed back; the owner must reset it on the server.",
+              )}
+            </p>
+          ) : null}
           {!passkeySupported() && error ? <p className="stone-login-error" role="alert">{error}</p> : null}
           {notice ? <p className="stone-login-message" role="status" data-login-test-account="true">{notice}</p> : null}
           <button type="submit" disabled={busy} className="stone-login-primary">
