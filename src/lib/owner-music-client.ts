@@ -1,4 +1,8 @@
-import { MAX_OWNER_UPLOAD_BYTES, optimizeOwnerMusic, type OwnerMusicOptimizeProgress } from "@/lib/owner-music-transcode";
+// The transcoder (ffmpeg loader + lamejs MP3 encoder, ~150 kB) is owner-only. Load it on first
+// upload instead of shipping it in the public first-screen bundle.
+import type { OwnerMusicOptimizeProgress } from "@/lib/owner-music-transcode";
+
+const loadOwnerMusicTranscode = () => import("@/lib/owner-music-transcode");
 
 export type OwnerMusicTrack = {
   id: string;
@@ -79,6 +83,7 @@ async function postMusicBlob(file: Blob, name: string, contentType: string, extr
 }
 
 async function uploadInChunks(file: File, onProgress?: (progress: OwnerMusicOptimizeProgress) => void) {
+  const { MAX_OWNER_UPLOAD_BYTES } = await loadOwnerMusicTranscode();
   if (file.size > MAX_OWNER_UPLOAD_BYTES) throw new Error("音檔超過 12 MB。請先轉成較小的 MP3／M4A 或裁短曲目。");
   const total = Math.max(1, Math.ceil(file.size / OWNER_MUSIC_CHUNK_BYTES));
   const uploadId = (crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`).replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 48);
@@ -104,6 +109,7 @@ export async function uploadOwnerMusic(
   source: File,
   onProgress?: (progress: OwnerMusicOptimizeProgress) => void,
 ): Promise<OwnerMusicUploadResult> {
+  const { optimizeOwnerMusic } = await loadOwnerMusicTranscode();
   const optimized = await optimizeOwnerMusic(source, onProgress);
   onProgress?.({ percent: 82, label: "上傳音樂" });
   const file = optimized.file;

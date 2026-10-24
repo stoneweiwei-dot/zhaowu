@@ -2,7 +2,7 @@
 // documents so a material change to /terms or /privacy asks buyers again. The record lives in
 // the browser only; the strongest evidence is Stripe's own terms-of-service consent on the
 // Payment Link (see docs/LEGAL-COMPLIANCE.md §8).
-import { LEGAL_LAST_UPDATED } from "@/lib/legal-content";
+import { LEGAL_LAST_UPDATED } from "@/lib/legal-meta";
 
 const CONSENT_STORAGE = "zhaowu.purchase-consent.v1";
 

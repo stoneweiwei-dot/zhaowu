@@ -1,4 +1,3 @@
-import * as tus from "tus-js-client";
 import { SUPABASE_DIRECT_URL, SUPABASE_KEY } from "@/lib/supabase-config";
 
 export const OWNER_COOKIE_ACCESS_TOKEN = "__zhaowu_owner_cookie_server_bridge__";
@@ -110,6 +109,8 @@ export async function uploadOwnerSignedFile(ticket: OwnerUploadTicket, file: Fil
     const signedUploadToken = ticket.token;
     onProgress?.(2);
     try {
+      // tus-js-client (~95 kB) is only needed for owner large-file uploads; keep it out of the public bundle.
+      const tus = await import("tus-js-client");
       await new Promise<void>((resolve, reject) => {
       // The plain /storage/v1/upload/resumable endpoint authorizes the caller the normal way:
       // it checks storage.objects' RLS policies against the Authorization header's JWT role,
