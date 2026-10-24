@@ -219,6 +219,17 @@
       "permanent": false
     },
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "stone-zhaowu-official.vercel.app"
+        }
+      ],
+      "destination": "https://zhao-wu.com/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {
