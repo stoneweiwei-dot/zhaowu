@@ -95,3 +95,14 @@ test("vercel.json has no global SPA catch-all (soft-404 fix) and every client ro
   assert.deepEqual(uncovered, [], `routes neither prerendered nor rewritten would 404 in production: ${uncovered.join(", ")}`);
   assert.match(read("public/404.html"), /<meta name="robots" content="noindex/);
 });
+
+test("old vercel.app host redirects the root path explicitly (/:path* alone does not redirect '/' on Vercel)", () => {
+  const vercel = JSON.parse(read("vercel.json"));
+  const hostRule = (r) => r.has?.some((h) => h.type === "host" && h.value === "stone-zhaowu-official.vercel.app");
+  const root = vercel.redirects.find((r) => r.source === "/" && hostRule(r));
+  assert.ok(root, "host-scoped redirect for '/' is required");
+  assert.equal(root.destination, "https://zhao-wu.com/");
+  assert.equal(root.permanent, true);
+  const rest = vercel.redirects.find((r) => r.source === "/:path*" && hostRule(r));
+  assert.equal(rest?.destination, "https://zhao-wu.com/:path*");
+});
