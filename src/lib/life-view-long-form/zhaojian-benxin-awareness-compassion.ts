@@ -21,7 +21,7 @@ export const ZHAOJIAN_BENXIN_ARTICLE: LifeViewArticle = {
   },
   "illustrations": [
     {
-      "src": "/articles/zhaojian-benxin-stone-original.png",
+      "src": "/articles/zhaojian-benxin-stone-original.webp",
       "afterParagraph": 1,
       "alt": {
         "zh-Hant": "STONE 原創宋式青綠山水《照見本心》9:16 直幅，蓮池、古寺、遠山與晨光",
