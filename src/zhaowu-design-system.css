@@ -10124,3 +10124,86 @@ html body main .zhaowu-element-glance :is(h4, p, span, b) { color: #29251f !impo
 
 html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen .owner-password-toggle { color: #ddc28e; }
 html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen .owner-forgot-toggle { color: #ddc28e; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2026-10-25 · Visual refinement, batch 1: shell (header, language pill, journey nav, dock, login footer).
+   Keeps the Song-painting palette; fixes crowding and overlap on phones. No copy, route or logic changes.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Language pill: smaller options and an icon-only label on phones so the header row never crowds the brand.
+   language-switcher.css loads after this file, so these selectors carry one more element to win ties. */
+@media (max-width: 520px) {
+  html body #root header.zhaowu-site-header .zw-langpick { gap: 6px; }
+  html body #root header.zhaowu-site-header .zw-langpick .zw-langpick__label { font-size: 0; gap: 0; }
+  html body #root header.zhaowu-site-header .zw-langpick .zw-langpick__label svg { width: 20px; height: 20px; }
+  html body #root header.zhaowu-site-header .zw-langpick .zw-langpick__track { padding: 2px; }
+  html body #root header.zhaowu-site-header .zw-langpick .zw-langpick__track button.zw-langpick__opt {
+    min-width: 46px !important;
+    min-height: 40px !important;
+    height: 40px !important;
+    padding: 0 10px !important;
+    font-size: 14px !important;
+  }
+  /* Home: the absolutely placed header used to sit on top of the "ZHAOWU" wordmark, so drop the globe there. */
+  html body #root header.zhaowu-site-header:has(.is-home-entry-row) { left: auto !important; right: 10px !important; width: auto !important; }
+  html body #root header.zhaowu-site-header .is-home-entry-row { left: auto !important; width: auto !important; }
+  html body #root header.zhaowu-site-header .is-home-entry-row .zw-langpick__label { display: none; }
+}
+
+/* Journey navigation: one calm horizontal strip with a pill for the current page, instead of a 2x2 underline grid. */
+html body .zw-journey-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--zws-surface, #f7f3ea) 92%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--zws-divider, #d5cbbb) 70%, transparent);
+}
+html body .zw-journey-nav::-webkit-scrollbar { display: none; }
+html body .zw-journey-nav > :is(a, button, .zw-journey-help) {
+  flex: 1 0 auto;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  font-size: .9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--zws-ink, #24483e);
+}
+html body .zw-journey-nav > a[aria-current="page"] {
+  border: 0;
+  color: #fffaf0;
+  background: var(--zws-action-bg, #315e50);
+}
+
+/* Floating music / guide dock: smaller, quieter, and the page keeps room under it so it never covers text. */
+html body .zhaowu-site-utility-buttons { padding: 3px; gap: 2px; opacity: .94; }
+html body .zhaowu-site-utility-buttons > button { min-width: 48px; min-height: 42px; font-size: .68rem; }
+html body #root main:not(.stone-login-screen):not(.zw-hero-home):not(.zhaowu-home-layout) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+
+/* Login: the tagline and the way home used to touch each other and the submit button. */
+html body .stone-login-sheet .stone-login-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  text-align: center;
+  font-size: .85rem;
+}
+
+/* "Back to Zhaowu" link on the reports page: the label overflowed a tall empty box. */
+html body .history-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+html body .history-topline > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  height: auto;
+  padding: 0 16px;
+  border-radius: 999px;
+  white-space: nowrap;
+  line-height: 1.2;
+}
