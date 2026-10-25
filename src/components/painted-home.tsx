@@ -68,6 +68,15 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <blockquote>{frostOnly.quote[locale]}</blockquote>
       <small>{t('中國傳統物候意象', '中国传统物候意象', 'Traditional Chinese seasonal imagery')}</small>
     </aside>}
+    <a className="ph-mythic-entry" href="/mythic-atlas" data-home-mythic-atlas-entry>
+      <img src="/mythic-atlas/originals/01-skeleton-puppet.webp" alt="" loading="lazy" width="941" height="1672" />
+      <span>
+        <small>{t('昭梧原創圖錄', '昭梧原创图录', 'ZHAOWU ORIGINAL ATLAS')}</small>
+        <strong>{t('黃泉紀 · 左道旁門設定集', '黄泉纪 · 左道旁门设定集', 'Chronicle of the Yellow Springs')}</strong>
+        <em>{t('十二幅原創圖 · 八大支系 · 三十五位人物', '十二幅原创图 · 八大支系 · 三十五位人物', 'Twelve original plates · eight lineages · thirty-five figures')}</em>
+      </span>
+      <i aria-hidden>›</i>
+    </a>
     <HomeTree t={t} onOpen={onOpen} />
     <CuratedVideoShelf placement="home" />
     <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><a href="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></a><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><a href="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></a></nav>

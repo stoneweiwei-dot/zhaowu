@@ -1,5 +1,6 @@
 import type { LifeViewArticle } from "@/lib/life-view";
 import { BINGWU_DINGWEI_ARTICLES } from "@/lib/life-view-long-form/bingwu-dingwei-2026-2027";
+import { GATE_OF_LIFE_ARTICLE } from "@/lib/life-view-long-form/gate-of-life-esotericism";
 import { ZHAOJIAN_BENXIN_ARTICLE } from "@/lib/life-view-long-form/zhaojian-benxin-awareness-compassion";
 import { AI_DISCARNATE_INTELLIGENCE_ARTICLE } from "@/lib/life-view-long-form/ai-discarnate-intelligence";
 import { CIVILIZATION_TIMELINE_2025_2030_ARTICLE } from "@/lib/life-view-long-form/civilization-timeline-2025-2030";
@@ -20,6 +21,7 @@ import { YELLOW_SPRINGS_AND_BUDDHIST_REBIRTH_LONG_FORM } from "@/lib/life-view-l
  */
 export const LIFE_VIEW_LONG_FORM_ARTICLES: LifeViewArticle[] = [
   ...BINGWU_DINGWEI_ARTICLES,
+  GATE_OF_LIFE_ARTICLE,
   ZHAOJIAN_BENXIN_ARTICLE,
   CIVILIZATION_TIMELINE_2025_2030_ARTICLE,
   AI_DISCARNATE_INTELLIGENCE_ARTICLE,
