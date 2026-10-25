@@ -79,24 +79,62 @@ test.describe("production smoke (iPhone Safari)", () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
 
-  test("animated login keeps real sign-in controls and reaches the separate /about page", async ({ page }) => {
+  test("static owner login keeps real sign-in controls and separate /about page", async ({ page }) => {
     const pageErrors: string[] = [];
     page.on("pageerror", (error) => pageErrors.push(error.message));
     await page.goto("/login", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#login-title")).toBeVisible({ timeout: 20_000 });
     await expect(page.locator("#owner-account")).toBeVisible();
     await expect(page.locator("#login-secret")).toBeVisible();
-    await expect(page.locator("[data-login-film-stage]")).toBeVisible();
-    await expect(page.locator("video[data-login-film-video]")).toHaveAttribute("src", /\/login-films\/.*\.mp4/);
-    await expect(page.locator("[data-login-film-controls]")).toBeVisible();
-    const next = page.getByRole("button", { name: /下一段動畫|下一段动画|Next animation/ });
-    await next.click();
-    await expect(page.locator("[data-login-film-stage]")).toHaveAttribute("data-current-film", "dragon-portrait");
-
-    await page.locator("[data-zhaowu-discover-link] a").click();
-    await expect(page).toHaveURL(/\/about\/?$/);
+    await expect(page.locator(".stone-login-stage-media")).toHaveAttribute("src", "/hero-gallery/dragon-scholar.webp");
+    await expect(page.locator("[data-owner-only-login]")).toHaveCount(1);
+    // Static Song artwork is the shipped contract. Do not assert removed film controls.
+    await page.goto("/about", { waitUntil: "domcontentloaded" });
     await expect(page.locator("[data-zhaowu-features-page]")).toBeVisible();
     expect(await page.locator("[data-feature-number]").count()).toBeGreaterThanOrEqual(7);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
+    // WebKit may report service-worker navigation probes blocked by access-control checks
+    // as pageerror, even when both public routes rendered correctly. Keep every other
+    // runtime exception fatal; do not hide an actual login/application crash.
+    const runtimeErrors = pageErrors.filter(message => !message.includes("due to access control checks."));
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  test("Borrowed Star nine original illustrations are served as actual SVG, not SPA fallback HTML", async ({ request }) => {
+    test.skip(!EXPECT_SHA, "New content is verified after the exact main SHA reaches canonical Production");
+    const names = ["01-falling-star.svg","02-follow-the-light.svg","03-reflection-mountain.svg","04-heaven-gate.svg","05-lone-boat.svg","06-enter-water.svg","07-star-palace.svg","08-meeting.svg","09-star-returns.svg"];
+    for (const name of names) {
+      const url = "/mythic-atlas/borrow-star/" + name;
+      const response = await request.get(url);
+      expect(response.status(), name).toBe(200);
+      expect(response.headers()["content-type"], name).toMatch(/image\/svg\+xml/);
+      const text = await response.text();
+      expect(text, name).toContain('viewBox="0 0 540 960"');
+      expect(text, name).toContain("<svg ");
+    }
+  });
+
+  test("Borrowed Star renders nine images and all three locales at 390px in real iPhone Safari", async ({ page }) => {
+    test.skip(!EXPECT_SHA, "Inspect artwork only after the exact main release reaches canonical Production");
+    const pageErrors: string[] = [];
+    page.on("pageerror", error => pageErrors.push(error.message));
+    await page.goto("/mythic-atlas#borrow-star", { waitUntil: "domcontentloaded" });
+    const section = page.locator("#borrow-star");
+    await expect(section).toBeVisible({ timeout: 20_000 });
+    const images = section.locator("figure img");
+    await expect(images).toHaveCount(9);
+    for (let i = 0; i < 9; i++) {
+      await images.nth(i).scrollIntoViewIfNeeded();
+      await expect.poll(async () => images.nth(i).evaluate(img => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0), { timeout: 15_000 }).toBe(true);
+    }
+    for (const [name, text] of [
+      ["繁體中文", "壹 · 墜星"],
+      ["简体中文", "壹 · 坠星"],
+      ["English", "I · Falling Star"],
+    ] as const) {
+      await page.getByRole("radio", { name, exact: true }).click();
+      await expect(section.getByText(text, { exact: true }).first()).toBeVisible();
+    }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
     expect(pageErrors).toEqual([]);
   });
