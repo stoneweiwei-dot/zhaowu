@@ -110,6 +110,31 @@ test.describe("production smoke (iPhone Safari)", () => {
     }
   });
 
+  test("Borrowed Star renders nine images and all three locales at 390px in real iPhone Safari", async ({ page }) => {
+    test.skip(!EXPECT_SHA, "Inspect artwork only after the exact main release reaches canonical Production");
+    const pageErrors: string[] = [];
+    page.on("pageerror", error => pageErrors.push(error.message));
+    await page.goto("/mythic-atlas#borrow-star", { waitUntil: "domcontentloaded" });
+    const section = page.locator("#borrow-star");
+    await expect(section).toBeVisible({ timeout: 20_000 });
+    const images = section.locator("figure img");
+    await expect(images).toHaveCount(9);
+    for (let i = 0; i < 9; i++) {
+      await images.nth(i).scrollIntoViewIfNeeded();
+      await expect.poll(async () => images.nth(i).evaluate(img => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0), { timeout: 15_000 }).toBe(true);
+    }
+    for (const [name, text] of [
+      ["繁體中文", "壹 · 墜星"],
+      ["简体中文", "壹 · 坠星"],
+      ["English", "I · Falling Star"],
+    ] as const) {
+      await page.getByRole("radio", { name, exact: true }).click();
+      await expect(section.getByText(text, { exact: true }).first()).toBeVisible();
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
+    expect(pageErrors).toEqual([]);
+  });
+
   test("all four login film assets are delivered by the canonical host", async ({ request }) => {
     for (const name of ["flute-dragon", "dragon-portrait", "lotus-sunlight", "imperial-cat"]) {
       for (const ext of ["mp4", "jpg"]) {
