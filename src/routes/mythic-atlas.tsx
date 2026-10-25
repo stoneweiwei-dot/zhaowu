@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { ARTWORKS, BRANCHES, CHRONICLES, COPY, l, ORDERS, REALMS, SOURCE_LABELS, tr, type Side, type SourceKind } from "./-mythic-atlas-data";
+import { BorrowStarInterlude } from "./-mythic-atlas-borrow-star";
 import "./mythic-atlas.css";
 
 export const Route = createFileRoute("/mythic-atlas")({ component: MythicAtlasPage });
@@ -51,7 +52,7 @@ function MythicAtlasPage() {
     </header>
 
     <nav className="hq-toc" aria-label={tr(COPY.contents, locale)}>
-      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
+      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
     </nav>
 
     <section className="hq-section" id="world">
@@ -93,6 +94,8 @@ function MythicAtlasPage() {
       <div className="hq-gallery-feature"><Plate index={selectedPlate + 1} locale={locale} /><div><p className="hq-kicker">{tr(COPY.plate, locale)}</p><h3>{tr(ARTWORKS[selectedPlate].title, locale)}</h3><p>{tr(ARTWORKS[selectedPlate].note, locale)}</p><p className="hq-gallery-source">{tr(COPY.inspiredBy, locale)}：{tr(ARTWORKS[selectedPlate].source, locale)}</p></div></div>
       <div className="hq-thumbnails" aria-label={tr(COPY.selectPlate, locale)}>{ARTWORKS.map((art, index) => <button key={art.file} type="button" className={selectedPlate === index ? "is-active" : ""} aria-pressed={selectedPlate === index} onClick={() => setSelectedPlate(index)}><img src={`/mythic-atlas/originals/${art.file}`} alt="" width={94} height={167} loading="lazy" /><span>{String(index + 1).padStart(2, "0")}</span></button>)}</div>
     </section>
+
+    <BorrowStarInterlude locale={locale} />
 
     <section className="hq-section hq-sources" id="sources">
       <div className="hq-section-heading"><span>卷五</span><h2>{tr(COPY.sources, locale)}</h2></div><p>{tr(COPY.methods, locale)}</p>
