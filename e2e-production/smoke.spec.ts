@@ -97,6 +97,7 @@ test.describe("production smoke (iPhone Safari)", () => {
   });
 
   test("Borrowed Star nine original illustrations are served as actual SVG, not SPA fallback HTML", async ({ request }) => {
+    test.skip(!EXPECT_SHA, "New content is verified after the exact main SHA reaches canonical Production");
     const names = ["01-falling-star.svg","02-follow-the-light.svg","03-reflection-mountain.svg","04-heaven-gate.svg","05-lone-boat.svg","06-enter-water.svg","07-star-palace.svg","08-meeting.svg","09-star-returns.svg"];
     for (const name of names) {
       const url = "/mythic-atlas/borrow-star/" + name;
