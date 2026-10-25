@@ -256,6 +256,28 @@
       "source": "stone-original",
       "status": "approved",
       "note": "站主於 PR #871 聲明為原創 1080×1920 PNG（七張，無 SVG／程式圖替代）。"
+    },
+    {
+      "src": "/articles/bingwu-2026-stone-original.png",
+      "article": "bingwu-dingwei-2026-2027",
+      "articleId": "bingwu-2026-fire-symbolism",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-10-25 接入先前已要求發布的 STONE 原創圖；原始 PNG 941×1672、3222144 bytes、SHA-256 a2ee1338bad8f928b903cfff2caed05bec8b5a4588b62c10c68e082d76c7d5b3。未裁切、未重繪、保留署名。圖內推論由圖前三語說明限定；圖片本身保留繁體中文字。",
+      "libraryFileId": "libfile_c2113b75b8248191a8cfc907fa8a87ce",
+      "sha256": "a2ee1338bad8f928b903cfff2caed05bec8b5a4588b62c10c68e082d76c7d5b3"
+    },
+    {
+      "src": "/articles/dingwei-2027-stone-original.png",
+      "article": "bingwu-dingwei-2026-2027",
+      "articleId": "dingwei-2027-fire-earth-transition",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-10-25 接入先前已要求發布的 STONE 原創圖；原始 PNG 941×1672、3114001 bytes、SHA-256 d34231de9886519964666c838278ca04cffc5906880ae1a657a301d412271a61。未裁切、未重繪、保留署名。圖內推論由圖前三語說明限定；圖片本身保留繁體中文字。",
+      "libraryFileId": "libfile_c867bec331d48191b6f06bd64e19c795",
+      "sha256": "d34231de9886519964666c838278ca04cffc5906880ae1a657a301d412271a61"
     }
   ]
 }
