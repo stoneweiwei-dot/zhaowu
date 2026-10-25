@@ -695,3 +695,284 @@ html body #root .zw-painted-home .ph-mythic-entry:focus-visible {
   html body #root .zw-painted-home .ph-mythic-entry > img { width:60px; height:84px; }
   html body #root .zw-painted-home .ph-mythic-entry em { font-size:11px; }
 }
+
+
+/* ============================================================================
+ * STONE EDITORIAL / 2026-10-25
+ * Intent: a finished art-book entrance, not a stack of AI-template cards.
+ * The existing skin image remains authoritative: seasonal switching, three
+ * languages, accessible live controls, and all downstream routes are intact.
+ * Scope: painted home only. No new images, runtime service or JS dependency.
+ * ========================================================================== */
+html[data-zws] body #root .zw-painted-home {
+  --ph-editorial-paper: #f4f0e8;
+  --ph-editorial-ink: #25322c;
+  --ph-editorial-muted: #676c64;
+  background: var(--ph-editorial-paper) !important;
+  color: var(--ph-editorial-ink) !important;
+  overflow-x: clip;
+}
+html[data-zws] body #root .zw-painted-home .ph-hero {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  min-height: min(770px, 92svh) !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  padding: 100px clamp(24px, 6.2vw, 58px) 36px !important;
+  background: #101d19 !important;
+  isolation: isolate;
+  overflow: hidden !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-hero-art {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  object-fit: cover !important;
+  object-position: var(--zws-focus, 50% 45%);
+  opacity: 1 !important;
+  filter: saturate(.76) contrast(1.07) brightness(.76) !important;
+  z-index: -2 !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-hero::before,
+html[data-zws] body #root .zw-painted-home .ph-hero::after {
+  content: '' !important;
+  display: block !important;
+  pointer-events: none;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: -1 !important;
+  background: linear-gradient(180deg, rgba(8,18,15,.44) 0%, rgba(8,18,15,.08) 30%, rgba(8,18,15,.40) 57%, rgba(8,18,15,.91) 100%) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-hero::before { display:none !important; }
+html[data-zws] body #root .zw-painted-home .ph-brand {
+  position: absolute !important;
+  inset: 28px auto auto clamp(24px, 6.2vw, 58px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 2px !important;
+  color: #f5f0e7 !important;
+  text-decoration: none !important;
+  z-index: 2;
+}
+html[data-zws] body #root .zw-painted-home .ph-brand strong {
+  font: 500 27px/1.2 "Songti TC", "Noto Serif TC", serif !important;
+  letter-spacing: .16em !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-brand small {
+  border: 0 !important;
+  padding: 0 !important;
+  color: #eee7da !important;
+  font: 400 9px/1.8 Georgia, serif !important;
+  letter-spacing: .12em !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-title,
+html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-title {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  max-width: 590px !important;
+  margin: 0 0 24px !important;
+  padding: 0 !important;
+  text-align: left !important;
+  color: #faf6ed !important;
+  z-index: 1;
+}
+html[data-zws] body #root .zw-painted-home .ph-title h1,
+html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-title h1 {
+  font-family: "Songti TC", "Noto Serif TC", "Songti SC", serif !important;
+  font-size: clamp(37px, 8.9vw, 65px) !important;
+  font-weight: 400 !important;
+  line-height: 1.35 !important;
+  letter-spacing: .07em !important;
+  color: #faf6ed !important;
+  text-shadow: 0 2px 18px rgba(0,0,0,.24) !important;
+  text-wrap: balance;
+}
+html[lang="en"][data-zws] body #root .zw-painted-home .ph-title h1 {
+  font: 400 clamp(34px, 8vw, 59px)/1.2 "Iowan Old Style", Baskerville, Georgia, serif !important;
+  letter-spacing: -.018em !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-title .ph-motto {
+  display: block !important;
+  margin: 16px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: #e9e2d4 !important;
+  font: 400 13px/1.8 "Songti TC", "Noto Serif TC", serif !important;
+  letter-spacing: .22em !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-title small { display: none !important; }
+html[data-zws] body #root .zw-painted-home .ph-resolve {
+  order: 2;
+  display: block !important;
+  margin: 0 0 24px !important;
+  color: #e6dfd2 !important;
+  text-shadow: 0 1px 8px rgba(0,0,0,.3) !important;
+  font: 400 13px/1.8 "Songti TC", "Noto Serif TC", serif !important;
+  letter-spacing: .09em;
+  z-index: 1;
+}
+html[data-zws] body #root .zw-painted-home .ph-actions,
+html[data-zws] body #root .zw-painted-home[data-composition="scroll"] .ph-actions {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  z-index: 1;
+}
+html[data-zws] body #root .zw-painted-home .ph-actions.ph-guide-start :is(a,button) {
+  min-height: 52px !important;
+  max-width: 360px;
+  border: 1px solid rgba(245,240,231,.75) !important;
+  border-radius: 0 !important;
+  background: rgba(13,28,23,.46) !important;
+  color: #fffaf1 !important;
+  padding: 12px 20px !important;
+  font: 500 15px/1.4 "Avenir Next", system-ui, sans-serif !important;
+  letter-spacing: .08em !important;
+  backdrop-filter: blur(4px);
+}
+html[data-zws] body #root .zw-painted-home .ph-actions.ph-guide-start :is(a,button):active {
+  background: rgba(245,240,231,.16) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-actions.ph-guide-start span { color: inherit !important; }
+html[data-zws] body #root .zw-painted-home .ph-tree {
+  max-width: 760px !important;
+  gap: 0 !important;
+  padding: 12px clamp(22px, 5.6vw, 44px) 34px !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-intro {
+  padding: 36px 0 24px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: none !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-intro h2,
+html[data-zws] body #root .zw-painted-home .ph-tree-head strong {
+  color: var(--ph-editorial-ink) !important;
+  font-family: "Songti TC", "Noto Serif TC", serif !important;
+  font-weight: 500 !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-intro p,
+html[data-zws] body #root .zw-painted-home .ph-tree-head small {
+  color: var(--ph-editorial-muted) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-node {
+  border: 0 !important;
+  border-top: 1px solid rgba(36,52,44,.22) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-head {
+  min-height: 112px !important;
+  padding: 18px 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-head > img {
+  opacity: .18 !important;
+  mask-image: linear-gradient(90deg, transparent 30%, #000) !important;
+  -webkit-mask-image: linear-gradient(90deg, transparent 30%, #000) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-step { color: #806b4f !important; }
+html[data-zws] body #root .zw-painted-home .ph-tree-toggle {
+  border: 0 !important;
+  background: none !important;
+  border-radius: 0 !important;
+  color: var(--ph-editorial-ink) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-body {
+  padding: 0 0 24px !important;
+}
+html[data-zws] body #root .zw-painted-home :is(.ph-tree-leaf,.ph-tree-branch-head) {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid rgba(36,52,44,.12) !important;
+  color: var(--ph-editorial-ink) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-tree-primary {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #304a3c !important;
+  color: #faf6ed !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-mythic-entry {
+  border: 0 !important;
+  border-block: 1px solid rgba(36,52,44,.24) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--ph-editorial-ink) !important;
+  padding: 18px 0 !important;
+  margin-block: 28px !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-mythic-entry > img { border-radius: 0 !important; }
+html[data-zws] body #root .zw-painted-home .ph-mythic-entry strong { color: var(--ph-editorial-ink) !important; }
+html[data-zws] body #root .zw-painted-home .ph-mythic-entry em { color: var(--ph-editorial-muted) !important; }
+html[data-zws] body #root .zw-painted-home .ph-seasonal-note {
+  border: 0 !important;
+  border-bottom: 1px solid rgba(36,52,44,.22) !important;
+  color: var(--ph-editorial-ink) !important;
+}
+html[data-zws] body #root .zw-painted-home .ph-bottom-nav {
+  border: 0 !important;
+  border-top: 1px solid rgba(36,52,44,.16) !important;
+  border-radius: 0 !important;
+  background: rgba(244,240,232,.96) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
+}
+html[data-zws] body #root .zw-painted-home .ph-bottom-nav > [aria-current="page"] {
+  background: transparent !important;
+  color: #304a3c !important;
+}
+html[data-zws] body #root:has(.zw-painted-home) .zhaowu-site-header {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html[data-zws] body #root:has(.zw-painted-home) .site-lang-group {
+  background: rgba(13,28,23,.58) !important;
+  border: 1px solid rgba(255,250,241,.4) !important;
+  border-radius: 0 !important;
+}
+html[data-zws] body #root:has(.zw-painted-home) .site-lang-button {
+  color: #fffaf1 !important;
+  border-radius: 0 !important;
+}
+html[data-zws] body #root:has(.zw-painted-home) .site-lang-button[data-active="true"],
+html[data-zws] body #root:has(.zw-painted-home) .site-lang-button[aria-pressed="true"] {
+  background: #f4f0e8 !important;
+  color: #1e2b24 !important;
+}
+@media (max-width: 420px) {
+  html[data-zws] body #root .zw-painted-home .ph-hero {
+    min-height: min(730px, 92svh) !important;
+    padding: 100px 24px 30px !important;
+  }
+  html[data-zws] body #root .zw-painted-home .ph-title h1 {
+    font-size: clamp(34px, 9.4vw, 42px) !important;
+  }
+  html[data-zws] body #root .zw-painted-home .ph-tree-head { min-height: 98px !important; }
+  html[data-zws] body #root .zw-painted-home .ph-mythic-entry {
+    width: calc(100% - 44px) !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-zws] body #root .zw-painted-home .ph-hero-art { transition: none !important; }
+}
+/* END STONE EDITORIAL */
