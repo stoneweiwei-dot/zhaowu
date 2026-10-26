@@ -976,3 +976,103 @@ html[data-zws] body #root:has(.zw-painted-home) .site-lang-button[aria-pressed="
   html[data-zws] body #root .zw-painted-home .ph-hero-art { transition: none !important; }
 }
 /* END STONE EDITORIAL */
+
+/* 2026-10-27 · PaintedHome editorial spread
+   An art-directed continuous scroll: no stacked fake paper frames.
+   Keep the live theme's paintings, colours and functional click areas. */
+html body #root .zw-painted-home .ph-actions :is(button,a) {
+  border-radius: 3px !important;
+  box-shadow: none !important;
+  min-height: 50px;
+  font-family: var(--zw-font-heading);
+  font-weight: 500;
+  letter-spacing: .055em;
+}
+html body #root .zw-painted-home .ph-scroll-panels {
+  gap: 0;
+  padding-inline: clamp(20px, 6%, 56px);
+  margin-top: clamp(12px, 2vw, 26px);
+}
+html body #root .zw-painted-home .ph-paper-panel {
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--ph-ink) 23%, transparent) !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  padding: clamp(24px, 4vw, 48px) clamp(2px, 1vw, 12px) !important;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home .ph-paper-panel em {
+  border-radius: 2px;
+  min-height: 44px;
+  padding: 10px 18px;
+}
+html body #root .zw-painted-home .ph-paper-panel h2 {
+  font-size: clamp(25px, 4vw, 36px) !important;
+  font-weight: 500 !important;
+  letter-spacing: .05em !important;
+  line-height: 1.4 !important;
+}
+html body #root .zw-painted-home .ph-paper-panel p {
+  font-size: clamp(15px, 2vw, 17px) !important;
+  line-height: 1.9 !important;
+}
+html body #root .zw-painted-home .ph-portals {
+  gap: 0;
+  padding-inline: clamp(20px, 6%, 56px);
+}
+html body #root .zw-painted-home .ph-portal {
+  min-height: 128px;
+  padding: 20px clamp(12px, 3vw, 26px) !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--ph-ink) 24%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home .ph-portal i {
+  border-radius: 2px;
+}
+html body #root .zw-painted-home .ph-guide-panel {
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home .ph-recent-row {
+  border: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--ph-ink) 21%, transparent) !important;
+  border-radius: 0 !important;
+  padding-block: 15px;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home .ph-tree-node {
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--ph-ink) 22%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home .ph-tree-head {
+  min-height: 92px;
+  padding-block: 18px;
+}
+html body #root .zw-painted-home .ph-tree-head strong {
+  font-weight: 500;
+  font-size: clamp(21px, 3.2vw, 28px);
+  letter-spacing: .045em;
+}
+html body #root .zw-painted-home .ph-bottom-nav {
+  border-radius: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--ph-ink) 23%, transparent);
+  box-shadow: 0 -4px 22px rgba(25, 34, 31, .04);
+}
+html body #root .zw-painted-home .ph-bottom-nav>* {
+  min-height: 54px;
+  font-family: var(--zw-editorial-sans);
+}
+html body #root .zw-painted-home :is(.ph-actions button, .ph-actions a, .ph-paper-panel em, .ph-tree-head):focus-visible {
+  outline: 2px solid var(--ph-accent) !important;
+  outline-offset: 3px;
+}
+@media(max-width: 620px) {
+  html body #root .zw-painted-home .ph-portals { grid-template-columns: minmax(0, 1fr); }
+  html body #root .zw-painted-home .ph-portal { min-height: 112px; }
+  html body #root .zw-painted-home .ph-actions :is(button,a) { min-height: 48px; }
+  html body #root .zw-painted-home .ph-tree-head { min-height: 88px; }
+}
