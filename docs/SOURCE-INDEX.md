@@ -65,6 +65,15 @@ For conflicting project behavior, use the precedence already defined in `AGENTS.
 
 ## External method references
 
+### 《怪力亂神》七卷原始母本與編輯校訂（2026-10-27）
+- Name: 《昭梧・黃泉紀：怪力亂神全書》七卷母本
+- Authority: OWNER MATERIAL — 本對話站主補齊的世界觀與角色設定；非古籍史料權威
+- Scope: `/mythic-atlas#guaili` 的七卷導讀、十二地支四態、十二流煞、十年災異編年、終章
+- Canonical archival note: https://github.com/stoneweiwei-dot/zhaowu/blob/main/docs/mythic-atlas/GUAILI-LUANSHEN-CANON-20261027.md
+- Runtime source: `src/routes/-mythic-atlas-guaili-data.ts` 與 `-mythic-atlas-guaili.tsx`
+- Rights: 自有敘事可公開；第三方現代二創線索仍需核權，未查證前不重製其表達
+- Freshness: 後續修改以站主最新明示版本及原始母本優先，對外考據另以可追溯文獻查核
+
 ### 黃泉紀 · 左道旁門設定集（站主提供）
 - Name: 《黃泉紀 · 左道旁門設定集》草案與創作對話
 - Authority: OWNER MATERIAL — 世界觀與角色名錄的產品意圖；不是古籍或宗教史權威
