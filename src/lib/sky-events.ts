@@ -13,6 +13,80 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    id: "full-moon-taurus-sun-square-pluto-2026-10-26",
+    published: "2026-10-26",
+    status: "archive",
+    title: {
+      "zh-Hant": "金牛滿月與太陽四分冥王星：10 月 26 日的雙重節點",
+      "zh-Hans": "金牛满月与太阳四分冥王星：10 月 26 日的双重节点",
+      en: "Taurus Full Moon and the Sun square Pluto: 26 October"
+    },
+    subtitle: {
+      "zh-Hant": "悉尼 10/26（AEDT，UTC+11）｜滿月 15:12；太陽四分冥王星約在當晚",
+      "zh-Hans": "悉尼 10/26（AEDT，UTC+11）｜满月 15:12；太阳四分冥王星约在当晚",
+      en: "Sydney, 26 Oct (AEDT, UTC+11) | Full Moon 15:12; Sun square Pluto around that evening"
+    },
+    facts: [
+      {
+        date: "2026-10-26",
+        label: {
+          "zh-Hant": "美國海軍天文台列出滿月時刻為 UTC 10 月 26 日 04:12（悉尼 15:12）；占星使用的熱帶黃道稱為金牛滿月。",
+          "zh-Hans": "美国海军天文台列出满月时刻为 UTC 10 月 26 日 04:12（悉尼 15:12）；占星使用的热带黄道称为金牛满月。",
+          en: "The U.S. Naval Observatory lists the Full Moon at 04:12 UTC on 26 Oct (15:12 Sydney); the tropical zodiac calls this a Taurus Full Moon."
+        }
+      },
+      {
+        date: "2026-10-26",
+        label: {
+          "zh-Hant": "占星曆將太陽與冥王星的四分相列於 10 月 26 日；不同曆表的精確時刻有差異，本站不指定分鐘。",
+          "zh-Hans": "占星历将太阳与冥王星的四分相列于 10 月 26 日；不同历表的精确时刻有差异，本站不指定分钟。",
+          en: "Astrological ephemerides list the Sun–Pluto square on 26 Oct. Exact times differ across calendars, so no minute is asserted here."
+        }
+      }
+    ],
+    science: {
+      "zh-Hant": [
+        "滿月是月亮與太陽在地球兩側、地心黃經相差 180° 的時刻，月面被陽光照亮的比例在此刻最大。10 月 26 日的滿月在悉尼是週一下午，月亮要到傍晚才會升起；本文不聲稱這是「超級月亮」，月距未逐一核對。",
+        "太陽四分冥王星是地心視黃經相差 90° 的幾何角度。冥王星目前在水瓶座約 3°，每天移動不到 0.1°，所以這個角度前後數天都在容許範圍內；它沒有可肉眼觀察的現象。",
+        "「金牛」「天蠍」「水瓶」指熱帶黃道（以春分點起算）上的 30° 分區，不是同名的天文星座。滿月時刻依美國海軍天文台；太陽與冥王星相位不提供未核實的精確分鐘。"
+      ],
+      "zh-Hans": [
+        "满月是月亮与太阳在地球两侧、地心黄经相差 180° 的时刻，月面被阳光照亮的比例在此刻最大。10 月 26 日的满月在悉尼是周一下午，月亮要到傍晚才会升起；本文不声称这是“超级月亮”，月距未逐一核对。",
+        "太阳四分冥王星是地心视黄经相差 90° 的几何角度。冥王星目前在水瓶座约 3°，每天移动不到 0.1°，所以这个角度前后数天都在容许范围内；它没有可肉眼观察的现象。",
+        "“金牛”“天蝎”“水瓶”指热带黄道（以春分点起算）上的 30° 分区，不是同名的天文星座。满月时刻依美国海军天文台；太阳与冥王星相位不提供未核实的精确分钟。"
+      ],
+      en: [
+        "A Full Moon is the moment the Moon and Sun are 180° apart in geocentric ecliptic longitude, with the Moon on the far side of Earth from the Sun and its lit fraction at a maximum. In Sydney this one falls on Monday afternoon, before moonrise in the evening. This note does not call it a supermoon; lunar distance was not checked.",
+        "The Sun square Pluto is a 90° geometric angle in apparent ecliptic longitude. Pluto is at about 3° Aquarius and moves less than 0.1° a day, so the angle stays within a normal orb for several days either side. There is nothing to see with the naked eye.",
+        "'Taurus', 'Scorpio' and 'Aquarius' mean 30° divisions of the tropical zodiac, not constellations. The Full Moon time follows the U.S. Naval Observatory; no unverified exact minute is given for the Sun–Pluto aspect."
+      ]
+    },
+    interpretation: {
+      "zh-Hant": [
+        "在西洋占星的象徵語言裡，滿月常被讀作「某件事到了可見、需要回應的時刻」；這次落在金牛—天蠍軸線上，關鍵詞多半是資源、安全感與共有的東西（金錢、承諾、信任）。這是文化象徵，不是科學結論。",
+        "太陽四分冥王星在象徵上與權力、控制和不願放手的議題相連。同一天出現的兩個節點，可以當作一個提醒：先分清哪些是真正需要處理的，哪些只是情緒放大；水星仍在逆行，重要的簽署與轉帳不妨多核對一次。",
+        "這只是一個反思框架，並非對任何人的預測。個人層面的閱讀需要出生資料與完整盤面，此專欄不代替個人命盤分析。"
+      ],
+      "zh-Hans": [
+        "在西洋占星的象征语言里，满月常被读作“某件事到了可见、需要回应的时刻”；这次落在金牛—天蝎轴线上，关键词多半是资源、安全感与共有的东西（金钱、承诺、信任）。这是文化象征，不是科学结论。",
+        "太阳四分冥王星在象征上与权力、控制和不愿放手的议题相连。同一天出现的两个节点，可以当作一个提醒：先分清哪些是真正需要处理的，哪些只是情绪放大；水星仍在逆行，重要的签署与转账不妨多核对一次。",
+        "这只是一个反思框架，并非对任何人的预测。个人层面的阅读需要出生资料与完整盘面，此专栏不代替个人命盘分析。"
+      ],
+      en: [
+        "In Western astrological symbolism a Full Moon is often read as a point where something becomes visible and asks for a response. This one lies on the Taurus–Scorpio axis, whose usual keywords are resources, security and shared things (money, commitments, trust). This is cultural symbolism, not a scientific conclusion.",
+        "The Sun square Pluto is symbolically tied to power, control and reluctance to let go. With two markers on the same day, one prompt is to separate what really needs handling from what is emotional amplification; Mercury is still retrograde, so it is reasonable to double-check important signatures and transfers.",
+        "This is a reflective framework, not a prediction for anyone. A personal reading needs birth data and the full chart; this public note is not a substitute for one."
+      ]
+    },
+    houses: [],
+    sources: [
+      { label: "U.S. Naval Observatory · Moon phases 2026", url: "https://aa.usno.navy.mil/calculated/moon/phases?year=2026" },
+      { label: "Girl and Her Moon · Full Moon in Taurus, October 2026", url: "https://girlandhermoon.com/full-moon-in-taurus-october-2026-astrology-horoscopes/" },
+      { label: "Astrolis · Astrology calendar, October 2026", url: "https://www.astrolis.com/astrology/calendar/2026/october" },
+      { label: "NASA/JPL Horizons", url: "https://ssd.jpl.nasa.gov/horizons/" }
+    ]
+  },
+  {
     id: "scorpio-season-mercury-retrograde-venus-conjunct-sun-2026-10-23-24",
     published: "2026-10-22",
     status: "upcoming",
