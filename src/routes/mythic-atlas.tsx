@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { ARTWORKS, BRANCHES, CHRONICLES, COPY, l, OBSERVATION_CHAPTERS, ORDERS, REALMS, SOURCE_LABELS, tr, type Side, type SourceKind } from "./-mythic-atlas-data";
 import { BorrowStarInterlude } from "./-mythic-atlas-borrow-star";
+import { GuailiBook } from "./-mythic-atlas-guaili";
+import "./-mythic-atlas-guaili.css";
 import "./mythic-atlas.css";
 
 export const Route = createFileRoute("/mythic-atlas")({ component: MythicAtlasPage });
@@ -52,7 +54,7 @@ function MythicAtlasPage() {
     </header>
 
     <nav className="hq-toc" aria-label={tr(COPY.contents, locale)}>
-      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#observation">{tr(COPY.observation, locale)}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
+      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#guaili">{tr(l("怪力亂神・七卷", "怪力乱神・七卷", "Strange Powers · Seven Volumes"), locale)}</a><a href="#guaili-zodiac">{tr(l("十二地支四態", "十二地支四态", "Twelve Branches"), locale)}</a><a href="#guaili-ending">{tr(l("十年災異終局", "十年灾异终局", "Final Chronicle"), locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#observation">{tr(COPY.observation, locale)}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
     </nav>
 
     <section className="hq-section" id="world">
@@ -88,6 +90,8 @@ function MythicAtlasPage() {
       <div className="hq-section-heading"><span>卷三</span><h2>{tr(COPY.chronicle, locale)}</h2></div>
       <div className="hq-chronicle-intro"><Plate index={11} locale={locale} /><div className="hq-chronicles">{CHRONICLES.map((chapter) => <article key={chapter.no}><span>{chapter.no}</span><div><h3>{tr(chapter.title, locale)}</h3><strong>{tr(chapter.lead, locale)}</strong><p>{tr(chapter.text, locale)}</p></div></article>)}</div></div>
     </section>
+
+    <GuailiBook locale={locale} />
 
     <section className="hq-section" id="paintings">
       <div className="hq-section-heading"><span>卷四</span><h2>{tr(COPY.paintings, locale)}</h2><p>{tr(COPY.imageNotice, locale)}</p></div>
