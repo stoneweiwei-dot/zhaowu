@@ -356,10 +356,10 @@ function IntroGateScreen({ force }: { force: boolean }) {
         type="button"
         className="zhaowu-intro-skip"
         data-intro-skip
-        aria-label={locale === "en" ? "Skip the opening video" : locale === "zh-Hans" ? "跳过开场影片" : "跳過開場影片"}
+        aria-label={locale === "en" ? "Enter the homepage" : locale === "zh-Hans" ? "进入首页" : "進入首頁"}
         onClick={forceOff}
       >
-        {locale === "en" ? "Skip" : locale === "zh-Hans" ? "跳过" : "跳過"}
+        {locale === "en" ? "Enter homepage" : locale === "zh-Hans" ? "进入首页" : "進入首頁"}
       </button>
       <button
         type="button"
