@@ -109,6 +109,10 @@
         max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem;
       }
 
+      /* Plain paragraph and anchors stay discoverable when Reader/translation strips <nav>. */
+      .zw-static-reader-access { margin: 0 0 1rem; font-size: .91rem !important; line-height: 1.85; }
+      .zw-static-reader-access a { display: inline-block; box-sizing: border-box; min-height: 44px; padding: .35rem .25rem; text-decoration: underline; text-underline-offset: .18em; font-weight: 650; }
+      .zw-static-reader-access a:focus-visible { outline: 3px solid #a16c40; outline-offset: 2px; }
       /* The crawlable/no-JS fallback must remain navigable on the first mobile screen. */
       .zw-static-entry { display: flex; flex-wrap: wrap; gap: .65rem 1.2rem; align-items: center; margin: 0 0 1.25rem; }
       .zw-static-entry a { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; box-sizing: border-box; text-decoration: none; font-size: .95rem; letter-spacing: .035em; }
@@ -201,6 +205,10 @@
     <div id="root">
       <main class="zw-static-shell" lang="zh-Hant">
         <h1>昭梧｜昭於未見，梧於有歸</h1>
+        <p class="zw-static-reader-access" data-static-reader-access>
+          <strong>開始使用昭梧：</strong><a href="https://zhao-wu.com/#birth-form" target="_blank" rel="noopener noreferrer">免費八字排盤</a>，或<a href="https://zhao-wu.com/" target="_blank" rel="noopener noreferrer">進入正式首頁</a>。
+          如果你從微信（WeChat）開啟，畫面頂部有「Translate Full Text／翻譯全文」，卻只看到文字，請點右上角「⋯」選「在瀏覽器開啟／Open in Browser」；沒有此選項時，請複製 zhao-wu.com 到 Safari／Chrome 開啟。這個純文字畫面無法直接操作排盤。
+        </p>
         <nav class="zw-static-entry" aria-label="ZHAOWU entry">
           <a class="zw-static-entry-primary" href="/?zw_entry=home" data-static-home-link>
             <span lang="zh-Hant">進入昭梧首頁</span><span lang="zh-Hans">进入昭梧首页</span><span lang="en">Enter ZHAOWU</span>
