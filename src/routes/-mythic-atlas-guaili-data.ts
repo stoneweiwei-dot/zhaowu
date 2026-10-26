@@ -86,10 +86,16 @@ export const GUAILI_ZODIAC: ZodiacPath[] = [
 export const GUAILI_TWELVE = ["同爐","儀光","祝骨","強郎","文卿","退奇","銅聾","耆耆","赤伯","東僧","天賊","是誰"] as const;
 export const GUAILI_ARTS = ["貓鬼","蠱毒","厭勝","履璧","差神","扶乩","詛咒","調禽","造畜","幻伎","走陰","趕屍","梵杖"] as const;
 export const GUAILI_HOUSES = [
- l("東陵聖母、五通神、妖狐、九黎遺煞與山海異獸", "东陵圣母、五通神、妖狐、九黎遗煞与山海异兽", "Dongling, Wutong, fox spirits, Jiuli remnants and mountain-sea creatures"),
- l("金花聖母、血結魔君、骷髏鬼王與大孤山五毒", "金花圣母、血结魔君、骷髅鬼王与大孤山五毒", "Golden Flowers, Blood-Knot Lord, Skeleton King and Five Poisons"),
- l("五嶽諸司、灌口梅山、真武伏魔院與十殿", "五岳诸司、灌口梅山、真武伏魔院与十殿", "The Five Peaks, Guankou, Zhenwu's offices and Ten Courts"),
- l("波旬、朗達瑪王、祇陀太子及異域諸神依來源獨立考辨，不概括為邪神", "波旬、朗达玛王、祇陀太子及异域诸神依来源独立考辨，不概括为邪神", "Mara, Langdarma, Prince Jeta and foreign deities receive separate historical treatment, not blanket demonization"),
+ l("東陵系：東陵聖母（杜姜身份待考）；獨孤陀、盤三妹、張麗華、嚴道育、呂用之等列名均須各自核對。", "东陵系：东陵圣母（杜姜身份待考）；独孤陀、盘三妹、张丽华、严道育、吕用之等列名均须各自核对。", "Dongling: its identification with Du Jiang, and alleged retainers, all require separate evidence."),
+ l("四方絕境（轉述候選）：東長人、南王虺、西赤蟻、北逴龍；不能冒稱四向組合是《楚辭》原文。", "四方绝境（转述候选）：东长人、南王虺、西赤蚁、北逴龙；不能冒称四向组合是《楚辞》原文。", "The four directions—Giant, Wanghui, Red Ant and Long Dragon—are retold motifs, not a verified Chuci quotation."),
+ l("五通神與巫妖線索：石將軍、棱睜鬼、兔兒爺、西山蟒、狼毒女、妲己、天狗、鬼車、山魈、木客、妖狐；陣營編組為二創素材。", "五通神与巫妖线索：石将军、棱睁鬼、兔儿爷、西山蟒、狼毒女、妲己、天狗、鬼车、山魈、木客、妖狐；阵营编组为二创素材。", "Wutong and spirit index: Stone General, Tengu, Nine-Headed Bird, mountain sprites, fox spirits and other names; faction membership is adaptation material."),
+ l("天帝魔主候選：那育丑琰、巴元丑伯、負天擔石、反山六目、監丑朗馥、橫天擔力；神號及隸屬待考。", "天帝魔主候选：那育丑琰、巴元丑伯、负天担石、反山六目、监丑朗馥、横天担力；神号及隶属待考。", "Demon-lord group: Nayu Chouyan and five supplied subordinate titles remain attribution-pending."),
+ l("山海異獸：狴犴、窮奇、檮杌、饕餮；妖麟角端、素冥、炎駒、獨狐；妖鳳鷫鸘、發明、焦明、幽昌。", "山海异兽：狴犴、穷奇、梼杌、饕餮；妖麟角端、素冥、炎驹、独狐；妖凤鹔鹴、发明、焦明、幽昌。", "Mountain and Sea index: Bian, Qiongqi, Taowu, Taotie and the submitted strange qilin and phoenix-like titles."),
+ l("自然精怪：虎倀、雄王（獼猴國）、鼠王；雁門老白狐聖姑、青丘九尾與軒轅墳狐族。", "自然精怪：虎伥、雄王（猕猴国）、鼠王；雁门老白狐圣姑、青丘九尾与轩辕坟狐族。", "Wild spirits include tiger ghosts, a monkey king, a rat king and fox groups associated with Yanmen, Qingqiu and Xuanyuan."),
+ l("大孤山守界：金花聖母、血結魔君、骷髏鬼王及蜈蚣、蛇、蠍、蛤蚧、蟾蜍；金花護魂是昭梧原創，不是民俗原典。", "大孤山守界：金花圣母、血结魔君、骷髅鬼王及蜈蚣、蛇、蝎、蛤蚧、蟾蜍；金花护魂是昭梧原创，不是民俗原典。", "Golden Flowers, Blood-Knot Lord, Skeleton King and five venomous beings guard the mountain; her sheltering of souls is an original plot."),
+ l("古神與海疆：玄冥、燭龍、混沌、十六路混沌祖神；八幡大菩薩、大黑天、熊野權現等跨文化信仰須獨立考證。", "古神与海疆：玄冥、烛龙、混沌、十六路混沌祖神；八幡大菩萨、大黑天、熊野权现等跨文化信仰须独立考证。", "Xuanming, Torch Dragon and chaos traditions appear beside Hachiman, Daikokuten and Kumano; cross-cultural traditions are not demonized."),
+ l("外道與歷史分層：波旬、朗達瑪王、祇陀太子、外道六師、金剛禪；其中歷史人物與佛教人物不能被統稱為反派。", "外道与历史分层：波旬、朗达玛王、祇陀太子、外道六师、金刚禅；其中历史人物与佛教人物不能被统称为反派。", "Mara, Langdarma, Prince Jeta and other traditions require individual historical treatment rather than blanket villain roles."),
+ l("正統機構：五嶽諸司、觀音相關護法系統、灌口梅山七聖與草頭神、真武伏魔院、九天監生司及十殿；職司和人數跨時代待考。", "正统机构：五岳诸司、观音相关护法系统、灌口梅山七圣与草头神、真武伏魔院、九天监生司及十殿；职司和人数跨时代待考。", "The Five Peaks, Guanyin's protectors, Erlang's forces, Zhenwu, the natal-protection offices and Ten Courts form the institutional study; counts and titles vary."),
 ] as const;
 export const GUAILI_YEARS: ChronicleEvent[] = [
  {year:l("元年","元年","Year 1"),name:l("黃泉空懸","黄泉空悬","The Empty Register"),detail:l("往生臺前滯留亡魂超過三百萬；十殿判牘失聯，黃泉無法再為無籍者安排歸處。","往生台前滞留亡魂超过三百万；十殿判牍失联，黄泉无法再为无籍者安排归处。","Millions wait at the crossing. The Ten Courts fall silent, unable to assign the unregistered a destination.")},
