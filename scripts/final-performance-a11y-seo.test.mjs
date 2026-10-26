@@ -73,3 +73,21 @@ test("the legacy Vercel alias redirects to the canonical custom domain", async (
   assert.equal(redirect?.destination, "https://zhao-wu.com/:path*");
   assert.equal(redirect?.permanent, true);
 });
+
+test("static fallback offers first-screen entry to homepage and working birth form", async () => {
+  const html = await source("index.html");
+  const fallback = html.match(/<main class="zw-static-shell"[^>]*>([\\s\\S]*?)<\\/main>/)?.[1];
+  assert.ok(fallback, "HTML crawlable fallback must exist when JS is unavailable");
+  const navAt = fallback.indexOf('class="zw-static-entry"');
+  assert.ok(navAt > 0 && navAt < fallback.indexOf("<h2>主要功能</h2>"), "Entry links must appear above long SEO text");
+  assert.match(fallback, /data-static-home-link[^>]*href="\\/?/); // alternate attribute order checked below
+  assert.match(fallback, /href="\\/\\?zw_entry=home" data-static-home-link/);
+  assert.match(fallback, /href="\\/\\?zw_entry=chart#birth-form" data-static-chart-link/);
+  for (const caption of ["進入昭梧首頁", "进入昭梧首页", "Enter ZHAOWU", "免費八字排盤", "免费八字排盘", "Free birth chart"]) {
+    assert.ok(fallback.includes(caption), "Missing fallback label: " + caption);
+  }
+  assert.match(html, /\\.zw-static-entry a \\{[^}]*min-height: 44px/);
+  const home = await source("src/routes/index.tsx");
+  assert.match(home, /BIRTH_HASHES = \\["#birth-form"/);
+  assert.match(home, /openBirthBook\\(\\{ focusYear: false \\}\\)/);
+});
