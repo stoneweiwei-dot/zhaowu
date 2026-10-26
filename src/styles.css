@@ -2,16 +2,16 @@
 @import "tw-animate-css";
 
 @theme {
-  --color-paper: #f7f2e8;
-  --color-paper-deep: #e8dcc6;
-  --color-cream: #fffdf7;
-  --color-ink: #27241f;
-  --color-ink-soft: #5a554c;
-  --color-ink-mute: #8a8173;
-  --color-cinnabar: #a7352b;
-  --color-cinnabar-deep: #76251f;
-  --color-line: #d8c7a4;
-  --color-wood: #2f6f5f;
+  --color-paper: #f4f1e9;
+  --color-paper-deep: #e4ddcf;
+  --color-cream: #fcfaf5;
+  --color-ink: #23302d;
+  --color-ink-soft: #50605a;
+  --color-ink-mute: #737d74;
+  --color-cinnabar: #965342;
+  --color-cinnabar-deep: #713a2f;
+  --color-line: #c9c4b5;
+  --color-wood: #305d51;
   --color-fire: #a7352b;
   --color-earth: #9b7745;
   --color-metal: #756f64;
@@ -20,9 +20,9 @@
   --font-sans: "Noto Sans TC", "PingFang TC", "Noto Sans", system-ui, sans-serif;
   --radius-xs: 4px;
   --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
-  --radius-xl: 28px;
+  --radius-md: 7px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
 }
 
 @layer base {
@@ -37,14 +37,11 @@
   }
 
   body {
+    /* A quiet print-paper field. Remove the former visible graph-paper grid. */
     background-image:
-      linear-gradient(rgba(116, 100, 75, .045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(116, 100, 75, .035) 1px, transparent 1px),
-      radial-gradient(circle at 18% 10%, rgba(255, 255, 255, .92), transparent 25%),
-      radial-gradient(circle at 86% 18%, rgba(167, 53, 43, .055), transparent 23%),
-      radial-gradient(circle at 16% 84%, rgba(47, 111, 95, .055), transparent 28%),
-      linear-gradient(180deg, #fbf8f1, #f1e6d3);
-    background-size: 32px 32px, 32px 32px, auto, auto, auto, auto;
+      radial-gradient(ellipse at 8% 5%, rgba(255, 253, 246, .82), transparent 40%),
+      linear-gradient(180deg, #f6f3ed, #eeeae0);
+    background-size: auto;
     background-attachment: fixed;
   }
 
@@ -68,11 +65,8 @@
 }
 
 .seal-border {
-  border-radius: 14px;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--color-line) 82%, transparent),
-    0 18px 50px rgb(62 45 24 / 0.08),
-    inset 0 1px 0 rgb(255 255 255 / .58);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-line) 65%, transparent);
 }
 
 .hero-kicker {

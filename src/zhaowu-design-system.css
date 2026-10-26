@@ -6,23 +6,23 @@
 :root {
   --zw-font-heading: "Songti TC", "Songti SC", "Noto Serif CJK TC", "Noto Serif TC", "Noto Serif SC", "STSong", serif;
   --zw-font-body: -apple-system, BlinkMacSystemFont, "PingFang TC", "PingFang SC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-  --zw-paper: #f7f0e2;
-  --zw-paper-soft: rgba(252, 248, 238, .86);
-  --zw-paper-strong: #fcf8ee;
-  --zw-ink: #29251f;
-  --zw-ink-soft: #554e45;
-  --zw-muted: #74695d;
-  --zw-jade: #294b3f;
-  --zw-jade-deep: #203d34;
-  --zw-cinnabar: #963b32;
+  --zw-paper: #f4f1e9;
+  --zw-paper-soft: rgba(250, 247, 239, .91);
+  --zw-paper-strong: #fcfaf5;
+  --zw-ink: #23302d;
+  --zw-ink-soft: #4a5953;
+  --zw-muted: #69736b;
+  --zw-jade: #305b50;
+  --zw-jade-deep: #244a42;
+  --zw-cinnabar: #965342;
   --zw-cinnabar-soft: #b66a5c;
-  --zw-gold: #a88652;
-  --zw-line: rgba(82, 65, 42, .16);
-  --zw-shadow: 0 16px 52px rgba(55, 44, 29, .07);
-  --zw-card-radius: 22px;
-  --zw-control-radius: 12px;
-  --zw-mobile-inline: 14px;
-  --zw-readable: 46rem;
+  --zw-gold: #a08658;
+  --zw-line: rgba(50, 76, 66, .19);
+  --zw-shadow: 0 6px 22px rgba(35, 48, 45, .03);
+  --zw-card-radius: 7px;
+  --zw-control-radius: 5px;
+  --zw-mobile-inline: 20px;
+  --zw-readable: 52rem;
 }
 
 html {
@@ -10124,3 +10124,91 @@ html body main .zhaowu-element-glance :is(h4, p, span, b) { color: #29251f !impo
 
 html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen .owner-password-toggle { color: #ddc28e; }
 html[data-zw-theme="night"] .zhaowu-login-shell .stone-login-screen .owner-forgot-toggle { color: #ddc28e; }
+
+/* ── 2026-10-27 / EDITORIAL YEARBOOK ─────────────────────────────────────────
+   This is one intentional visual edition in the canonical stylesheet.
+   Presentation only; seasonal artwork and its palette remain owner-managed. */
+:root {
+  --zw-editorial-rule: rgba(50, 76, 66, .22);
+  --zw-editorial-sans: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+}
+#zhaowu-main-content :is(h1, h2, h3) {
+  font-family: var(--zw-font-heading) !important;
+  text-wrap: balance;
+  font-synthesis: none;
+}
+html[lang="en"] #zhaowu-main-content :is(h1, h2, h3) {
+  font-family: "Iowan Old Style", Baskerville, Georgia, serif !important;
+  letter-spacing: -.012em;
+}
+#zhaowu-main-content :is(p, li, blockquote) { text-wrap: pretty; }
+#zhaowu-main-content main > h1 {
+  font-size: clamp(32px, 4.7vw, 53px) !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  letter-spacing: .035em;
+}
+#zhaowu-main-content main > h2 { font-weight: 500; line-height: 1.45; }
+.zhaowu-app-frame:not(.zhaowu-home-app-frame) {
+  width: min(calc(100% - 24px), 980px) !important;
+  max-width: 980px !important;
+  margin: clamp(23px, 4vw, 56px) auto 58px !important;
+  padding: 0 clamp(14px, 3vw, 38px) 66px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.zhaowu-app-frame:not(.zhaowu-home-app-frame) > :is(main, section, article) { min-width: 0; }
+.zhaowu-site-header {
+  background: rgba(244, 241, 233, .95) !important;
+  border-bottom: 1px solid var(--zw-editorial-rule) !important;
+  box-shadow: none !important;
+}
+.zhaowu-site-header .zhaowu-brand-name {
+  font-size: 21px !important;
+  font-weight: 500 !important;
+  letter-spacing: .18em !important;
+}
+.zhaowu-site-header .zhaowu-brand-tagline {
+  font-family: var(--zw-editorial-sans);
+  letter-spacing: .02em;
+}
+.zhaowu-site-header :is(.zhaowu-header-utility, .zhaowu-header-login, .zhaowu-header-home-link) {
+  min-height: 44px;
+  border-radius: 2px;
+  box-shadow: none !important;
+}
+.site-lang-group {
+  border: 0;
+  border-bottom: 1px solid var(--zw-editorial-rule);
+  border-radius: 0;
+  background: transparent;
+}
+.site-lang-button { border-right: 0; }
+.site-lang-button[data-active="true"],
+.site-lang-button[aria-pressed="true"] {
+  background: transparent !important;
+  box-shadow: inset 0 -2px 0 var(--zw-jade) !important;
+}
+.zhaowu-site-footer {
+  width: min(100%, 980px);
+  margin-inline: auto;
+  padding-top: clamp(23px, 4vw, 46px) !important;
+  border-top: 1px solid var(--zw-editorial-rule);
+}
+.zhaowu-site-footer :is(a, button):focus-visible,
+#zhaowu-main-content :is(a, button, input, textarea, select, summary):focus-visible {
+  outline: 2px solid var(--zw-jade);
+  outline-offset: 3px;
+}
+#zhaowu-main-content :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+  font-family: var(--zw-editorial-sans);
+}
+@media (max-width: 620px) {
+  .zhaowu-app-frame:not(.zhaowu-home-app-frame) {
+    width: calc(100% - 16px) !important;
+    margin-top: 20px !important;
+    padding: 0 12px 50px !important;
+  }
+  #zhaowu-main-content main > h1 { font-size: clamp(30px, 8vw, 39px) !important; }
+  .zhaowu-site-header .zhaowu-brand-name { font-size: 19px !important; }
+}
