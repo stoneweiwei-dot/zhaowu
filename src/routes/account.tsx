@@ -374,7 +374,7 @@ function AccountPage() {
             ["autopublish", tr(locale, "自動發佈", "自动发布", "Auto-publish")],
             ["reports", tr(locale, "客戶報告", "客户报告", "Reports")],
             ["images", tr(locale, "背景與圖片", "背景与图片", "Images")],
-            ["opening", tr(locale, "開場影片", "开场视频", "Opening video")],
+            ["opening", tr(locale, "影片素材", "视频素材", "Film library")],
             ["themes", tr(locale, "主題皮膚", "主题皮肤", "Themes")],
             ["promo", tr(locale, "優惠碼", "优惠码", "Promo codes")],
             ["articles", tr(locale, "文章管理", "文章管理", "Articles")],

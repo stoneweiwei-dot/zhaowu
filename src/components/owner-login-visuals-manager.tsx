@@ -10,7 +10,6 @@ import {
   uploadGalleryAsset,
   type GalleryAsset,
 } from "@/lib/bridge/gallery-assets";
-import { LOGIN_VISUAL_CATALOG } from "@/lib/loading-gallery-catalog";
 import { SUPABASE_STORAGE_WRITES_PAUSED } from "@/lib/storage-write-policy";
 import { LOGIN_VIDEO_ACCEPT, isBrowserPlayableVideoType, resolveLoginVideoType } from "@/lib/video-formats";
 import { LOGIN_VIDEO_MAX_SECONDS, compressLoginVideo } from "@/lib/login-video-compress";
@@ -33,34 +32,8 @@ function notifyChanged() {
   if (typeof window !== "undefined") window.dispatchEvent(new Event("zhaowu-gallery-change"));
 }
 
-function catalogRows(): GalleryAsset[] {
-  return LOGIN_VISUAL_CATALOG.map((item) => ({
-    id: `catalog:${item.asset_key}`,
-    category: "loading",
-    asset_key: item.asset_key,
-    title: item.title,
-    storage_path: item.videoPath || item.publicPath,
-    bucket_id: "public-fallback",
-    content_type: item.videoPath ? "video/mp4" : "image/jpeg",
-    tags: [...item.tags],
-    enabled: true,
-    is_primary: (item.tags ?? []).includes("current-default"),
-    created_at: item.created_at,
-    updated_at: item.created_at,
-  }));
-}
-
 function srcOf(asset: GalleryAsset) {
-  if (asset.bucket_id === "public-fallback") return asset.storage_path;
   return galleryPublicUrl(asset.storage_path, asset.bucket_id);
-}
-
-function posterOf(asset: GalleryAsset) {
-  // Only built-in clips have a real poster image. For uploaded videos the poster used to be
-  // the video URL itself (not an image), which rendered a blank tile; they now show a real
-  // frame of the video instead (see videoSrcOf).
-  const catalog = LOGIN_VISUAL_CATALOG.find((item) => item.asset_key === asset.asset_key || asset.id === `catalog:${item.asset_key}`);
-  return catalog?.publicPath;
 }
 
 /** `#t=` makes every browser (incl. iOS Safari) paint a real frame as the preview. */
@@ -70,7 +43,7 @@ function videoSrcOf(asset: GalleryAsset) {
 }
 
 function isVideo(asset: GalleryAsset) {
-  return (asset.content_type ?? "").startsWith("video/") || Boolean(LOGIN_VISUAL_CATALOG.find((item) => item.asset_key === asset.asset_key)?.videoPath);
+  return (asset.content_type ?? "").startsWith("video/");
 }
 
 function readDuration(file: File): Promise<number> {
@@ -111,7 +84,6 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     day: tr(locale, "日間版", "日间版", "Day"),
     night: tr(locale, "夜間版", "夜间版", "Night"),
     common: tr(locale, "通用版", "通用版", "Common"),
-    builtIn: tr(locale, "內置素材", "内置素材", "Built-in"),
     videoRequired: tr(locale, "影片素材接受 MP4、MOV、M4V、WebM 等格式；公開播放能力依訪客瀏覽器而定。", "视频素材支持 MP4、MOV、M4V、WebM 等格式；能否播放取决于访客浏览器。", "The library accepts video files; browser playback depends on the format. MP4 is preferred."),
     clipped: tr(locale, `已上傳原始影片，未進行裁切。`, `已上传原始视频，未进行裁切。`, `The original film was uploaded without trimming.`),
     notPlayable: tr(locale, "已上傳；部分瀏覽器可能無法播放此格式。觀眾可另行開啟原始影片，建議改用 MP4。", "已上传；部分浏览器可能无法播放此格式。访客可另行打开原始视频，建议改用 MP4。", "Uploaded. Some browsers may not play this format. Visitors can open the original file. MP4 is recommended."),
@@ -132,7 +104,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
     compressFailed: tr(locale, "此影片無法在瀏覽器內壓縮，已直接上傳原檔。", "此视频无法在浏览器内压缩，已直接上传原文件。", "This video could not be compressed in the browser; the original was uploaded."),
     mobileDirect: tr(locale, "iPhone／iPad 已略過耗時壓縮，直接傳送原始影片。", "iPhone／iPad 已跳过耗时压缩，直接传送原始视频。", "iPhone/iPad uploads the original video without slow on-device compression."),
     failed: tr(locale, "影片素材操作失敗。", "视频素材操作失败。", "Film library update failed."),
-    empty: tr(locale, "尚無自訂影片；已啟用作品會按主題出現在網站影像展廊。", "暂无自定义视频；已启用作品会按主题出现在网站影像展廊。", "No custom films yet. Enabled uploads appear in the public film collections."),
+    empty: tr(locale, "目前沒有自訂影片。需要時再上傳；首頁仍會使用穩定的內置備援畫面。", "目前没有自定义视频。需要时再上传；首页仍会使用稳定的内置备用画面。", "No custom films. Upload one only when needed; the home page keeps its stable built-in fallback."),
   }), [locale]);
 
   async function load() {
@@ -148,8 +120,9 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
 
   useEffect(() => { void load(); }, [session.access_token]);
 
-  const remoteKeys = new Set(assets.map((asset) => asset.asset_key));
-  const rows = [...catalogRows().filter((asset) => !remoteKeys.has(asset.asset_key)), ...assets];
+  // Built-in fallback films are runtime assets, not owner-managed records. Showing them
+  // here created two undeletable cards that looked broken even when no custom film existed.
+  const rows = assets;
   const currentId = rows.find((asset) => asset.is_primary && asset.enabled)?.id ?? rows.find((asset) => asset.is_primary)?.id;
 
   async function onUpload(event: ChangeEvent<HTMLInputElement>) {
@@ -231,12 +204,11 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
       {!rows.length ? <p className="mt-4 text-sm text-ink-mute">{copy.empty}</p> : null}
       <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {rows.map((asset) => {
-          const locked = asset.id.startsWith("catalog:");
           const current = asset.id === currentId;
           return (
             <article key={asset.id} className={`relative overflow-hidden rounded-xl border ${current ? "border-[#c4a05a] bg-[#fffaf1]" : "border-line bg-cream/72"}`}>
               <button type="button" className="block w-full" onClick={() => setPreview(asset)}>
-                <video className="aspect-[16/10] w-full object-cover" src={videoSrcOf(asset)} poster={posterOf(asset)} muted playsInline preload="metadata" />
+                <video className="aspect-[16/10] w-full object-cover" src={videoSrcOf(asset)} muted playsInline preload="metadata" />
               </button>
               <div className="space-y-2.5 p-3">
                 <div className="flex flex-wrap items-start gap-2">
@@ -249,22 +221,18 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
                   ) : <p className="w-full min-w-0 break-words text-sm font-medium [overflow-wrap:anywhere]">{displayTitle(asset)}</p>}
                   {current ? <span className="shrink-0 rounded-full border border-[#c4a05a] px-2 py-0.5 text-[11px] text-[#1f4e3a]">{copy.current}</span> : null}
                 </div>
-                {locked ? (
-                  <p className="text-[11px] text-ink-mute">{copy.builtIn}</p>
-                ) : (
-                  <div className="flex flex-wrap items-center gap-2">
-                    {!current ? (
-                      <button type="button" className="rounded-full bg-[#1f4e3a] px-2.5 py-1 text-[10px] text-[#faf8f1]" onClick={async () => {
-                        try { await setLoginVisualCurrent(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
-                      }}>{copy.use}</button>
-                    ) : null}
-                    <button type="button" className="rounded-full border border-line px-2.5 py-1 text-[10px]" onClick={() => { setRenamingId(asset.id); setDraftName(displayTitle(asset)); }}>{copy.rename}</button>
-                    <button type="button" className="rounded-full px-2.5 py-1 text-[10px] text-cinnabar" onClick={async () => {
-                      if (!window.confirm(`${copy.remove} ${displayTitle(asset)}?`)) return;
-                      try { await deleteGalleryAsset(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
-                    }}>{copy.remove}</button>
-                  </div>
-                )}
+                <div className="flex flex-wrap items-center gap-2">
+                  {!current ? (
+                    <button type="button" className="rounded-full bg-[#1f4e3a] px-2.5 py-1 text-[10px] text-[#faf8f1]" onClick={async () => {
+                      try { await setLoginVisualCurrent(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
+                    }}>{copy.use}</button>
+                  ) : null}
+                  <button type="button" className="rounded-full border border-line px-2.5 py-1 text-[10px]" onClick={() => { setRenamingId(asset.id); setDraftName(displayTitle(asset)); }}>{copy.rename}</button>
+                  <button type="button" className="rounded-full px-2.5 py-1 text-[10px] text-cinnabar" onClick={async () => {
+                    if (!window.confirm(`${copy.remove} ${displayTitle(asset)}?`)) return;
+                    try { await deleteGalleryAsset(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
+                  }}>{copy.remove}</button>
+                </div>
               </div>
             </article>
           );
@@ -278,7 +246,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
               <button type="button" className="rounded-full border border-line px-3 py-1 text-xs" onClick={() => setPreview(null)}>{copy.close}</button>
             </div>
             <div className="mt-3 overflow-hidden rounded-xl bg-paper">
-              <video className="max-h-[70vh] w-full object-contain" src={srcOf(preview)} poster={posterOf(preview)} controls autoPlay muted playsInline />
+              <video className="max-h-[70vh] w-full object-contain" src={srcOf(preview)} controls autoPlay muted playsInline />
             </div>
           </div>
         </div>

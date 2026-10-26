@@ -27,7 +27,7 @@ export function PromoPanel() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [created, setCreated] = useState<OwnerPromoCode | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copiedCode, setCopiedCode] = useState("");
   const [systemId, setSystemId] = useState<PromoSystemId | "">("bazi");
   const [max, setMax] = useState("1");
   const [days, setDays] = useState("30");
@@ -58,78 +58,104 @@ export function PromoPanel() {
         note: note.trim(),
         ...(customCode.trim() ? { code: customCode.trim() } : {}),
       });
-      setCreated(row); setCopied(false); setNote(""); setCustomCode("");
+      setCreated(row); setCopiedCode(""); setNote(""); setCustomCode("");
     });
   }
 
   async function copy(text: string) {
-    try { await navigator.clipboard.writeText(text); setCopied(true); } catch { setCopied(false); }
+    try { await navigator.clipboard.writeText(text); setCopiedCode(text); } catch { setCopiedCode(""); }
   }
 
   const field = "min-h-11 w-full rounded-lg border border-line bg-paper px-3 text-sm text-ink";
   const btn = "min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft disabled:opacity-40";
+  const activeCodes = codes?.filter((code) => code.status === "active") ?? [];
+  const pastCodes = codes?.filter((code) => code.status !== "active") ?? [];
+
+  function codeCard(code: OwnerPromoCode) {
+    return (
+      <li key={code.id} className="rounded-lg border border-line bg-paper/30 p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="break-all font-mono text-base">{code.code}</span>
+          <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${STATUS[code.status].cls}`}>{STATUS[code.status].text}</span>
+        </div>
+        <p className="mt-1 text-xs leading-5 text-ink-mute">{scopeText(code)}・已兌換 {code.redeemedCount}／{code.maxRedemptions ?? "不限"}・到期 {dateText(code.expiresAt)}</p>
+        {code.note ? <p className="mt-1 text-xs text-ink-soft">{code.note}</p> : null}
+        <div className="mt-2 flex flex-wrap gap-2">
+          <button type="button" className={btn} onClick={() => void copy(code.code)}>{copiedCode === code.code ? "已複製" : "複製"}</button>
+          <button type="button" disabled={busy} className={btn} onClick={() => void run(() => setPromoActive(code.id, !code.active))}>{code.active ? "停用" : "重新啟用"}</button>
+        </div>
+        <details className="mt-2 text-sm text-ink-soft">
+          <summary className="cursor-pointer py-2 text-xs text-ink-mute">調整名額或期限</summary>
+          <div className="mt-1 flex flex-wrap gap-2">
+            <button type="button" disabled={busy} className={btn} onClick={() => void run(() => updatePromoCode(code.id, { maxRedemptions: (code.maxRedemptions ?? code.redeemedCount) + 1 }))} title={code.maxRedemptions === null ? "目前不限名額；按下會改為有限名額" : undefined}>名額 +1</button>
+            <button type="button" disabled={busy} className={btn} onClick={() => void run(() => updatePromoCode(code.id, { expiresAt: new Date(Math.max(Date.now(), code.expiresAt ? new Date(code.expiresAt).getTime() : Date.now()) + 30 * 86_400_000).toISOString() }))}>延長 30 天</button>
+          </div>
+        </details>
+      </li>
+    );
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <h2 className="font-display text-xl">優惠碼</h2>
-        <p className="mt-1 text-sm leading-6 text-ink-mute">兌換只解鎖付費報告，與 Stripe 付款完全分開、不記金額。這裡不能刪除優惠碼，已兌換的紀錄也不會被改動；停用只會擋住之後的新兌換。</p>
-        <form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-2">
-          <label className="text-sm">適用系統
-            <select className={field} value={systemId} onChange={(e) => setSystemId(e.target.value as PromoSystemId | "")}>
-              <option value="">不限（客人選哪個系統都可兌換一個）</option>
-              {PROMO_SYSTEMS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-            </select>
-          </label>
-          <label className="text-sm">可兌換人數（留空＝不限）
-            <input className={field} inputMode="numeric" value={max} onChange={(e) => setMax(e.target.value)} placeholder="1" />
-          </label>
-          <label className="text-sm">有效天數（留空＝永不過期）
-            <input className={field} inputMode="numeric" value={days} onChange={(e) => setDays(e.target.value)} placeholder="30" />
-          </label>
-          <label className="text-sm sm:col-span-2">備註（只有你看得到）
-            <input className={field} maxLength={200} value={note} onChange={(e) => setNote(e.target.value)} placeholder="例如：送給某某的八字" />
-          </label>
-          <label className="text-sm sm:col-span-2">自訂優惠碼（留空會自動產生，英數字與連字號）
-            <input className={field} maxLength={64} value={customCode} onChange={(e) => setCustomCode(e.target.value)} autoCapitalize="characters" autoCorrect="off" spellCheck={false} />
-          </label>
-          <div className="sm:col-span-2"><button type="submit" disabled={busy} className={btn}>{busy ? "處理中…" : "建立優惠碼"}</button></div>
-        </form>
+        <p className="mt-1 text-sm leading-6 text-ink-mute">先管理目前可用的碼；建立與舊紀錄需要時再展開。</p>
+        <details className="mt-4 rounded-xl border border-line bg-paper/35 p-4">
+          <summary className="cursor-pointer font-medium text-ink">建立新優惠碼</summary>
+          <form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-2">
+            <label className="text-sm">適用系統
+              <select className={field} value={systemId} onChange={(e) => setSystemId(e.target.value as PromoSystemId | "")}>
+                <option value="">不限（客人選哪個系統都可兌換一個）</option>
+                {PROMO_SYSTEMS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+              </select>
+            </label>
+            <label className="text-sm">可兌換人數
+              <input className={field} inputMode="numeric" value={max} onChange={(e) => setMax(e.target.value)} placeholder="1" />
+            </label>
+            <label className="text-sm">有效天數
+              <input className={field} inputMode="numeric" value={days} onChange={(e) => setDays(e.target.value)} placeholder="30" />
+            </label>
+            <details className="sm:col-span-2 rounded-lg border border-line/70 px-3 py-2">
+              <summary className="cursor-pointer text-sm text-ink-mute">進階：自訂碼與備註</summary>
+              <div className="mt-3 grid gap-3">
+                <label className="text-sm">備註（只有你看得到）
+                  <input className={field} maxLength={200} value={note} onChange={(e) => setNote(e.target.value)} placeholder="例如：送給某某的八字" />
+                </label>
+                <label className="text-sm">自訂優惠碼（留空會自動產生）
+                  <input className={field} maxLength={64} value={customCode} onChange={(e) => setCustomCode(e.target.value)} autoCapitalize="characters" autoCorrect="off" spellCheck={false} />
+                </label>
+              </div>
+            </details>
+            <div className="sm:col-span-2"><button type="submit" disabled={busy} className={btn}>{busy ? "處理中…" : "建立優惠碼"}</button></div>
+          </form>
+        </details>
         {error ? <p role="alert" className="mt-3 text-sm text-cinnabar">{error}</p> : null}
         {created ? (
           <div role="status" className="mt-4 rounded-lg border border-wood/40 bg-wood/10 p-4">
             <p className="text-sm">已建立。把這組碼交給客人：</p>
             <p className="mt-1 break-all font-mono text-xl tracking-wider">{created.code}</p>
             <p className="mt-1 text-xs text-ink-mute">{scopeText(created)}・名額 {created.maxRedemptions ?? "不限"}・到期 {dateText(created.expiresAt)}</p>
-            <button type="button" className={`${btn} mt-3`} onClick={() => void copy(created.code)}>{copied ? "已複製" : "複製優惠碼"}</button>
+            <button type="button" className={`${btn} mt-3`} onClick={() => void copy(created.code)}>{copiedCode === created.code ? "已複製" : "複製優惠碼"}</button>
           </div>
         ) : null}
       </section>
 
       <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <div className="flex items-center justify-between gap-3">
-          <h3 className="font-display text-lg">全部優惠碼{codes ? `（${codes.length}）` : ""}</h3>
+          <h3 className="font-display text-lg">可用優惠碼{codes ? `（${activeCodes.length}）` : ""}</h3>
           <button type="button" className={btn} disabled={busy} onClick={() => void load()}>重新整理</button>
         </div>
-        {codes === null ? <p role="status" className="mt-3 text-sm text-ink-mute">載入中…</p> : codes.length === 0 ? <p className="mt-3 text-sm text-ink-mute">還沒有優惠碼。</p> : (
-          <ul className="mt-3 space-y-3">
-            {codes.map((c) => (
-              <li key={c.id} className="rounded-lg border border-line bg-paper/30 p-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="break-all font-mono text-base">{c.code}</span>
-                  <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${STATUS[c.status].cls}`}>{STATUS[c.status].text}</span>
-                </div>
-                <p className="mt-1 text-xs leading-5 text-ink-mute">{scopeText(c)}・已兌換 {c.redeemedCount}／{c.maxRedemptions ?? "不限"}・到期 {dateText(c.expiresAt)}</p>
-                {c.note ? <p className="mt-1 text-xs text-ink-soft">{c.note}</p> : null}
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <button type="button" disabled={busy} className={btn} onClick={() => void run(() => setPromoActive(c.id, !c.active))}>{c.active ? "停用" : "啟用"}</button>
-                  <button type="button" disabled={busy} className={btn} onClick={() => void run(() => updatePromoCode(c.id, { maxRedemptions: (c.maxRedemptions ?? c.redeemedCount) + 1 }))} title={c.maxRedemptions === null ? "目前不限名額；按下會改為有限名額" : undefined}>名額 +1</button>
-                  <button type="button" disabled={busy} className={btn} onClick={() => void run(() => updatePromoCode(c.id, { expiresAt: new Date(Math.max(Date.now(), c.expiresAt ? new Date(c.expiresAt).getTime() : Date.now()) + 30 * 86_400_000).toISOString() }))}>延長 30 天</button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+        {codes === null ? <p role="status" className="mt-3 text-sm text-ink-mute">載入中…</p> : activeCodes.length === 0 ? <p className="mt-3 text-sm text-ink-mute">目前沒有可用優惠碼。</p> : <ul className="mt-3 space-y-3">{activeCodes.map(codeCard)}</ul>}
+        {pastCodes.length ? (
+          <details className="mt-4 border-t border-line pt-3">
+            <summary className="cursor-pointer text-sm text-ink-mute">舊紀錄（{pastCodes.length}）</summary>
+            <ul className="mt-3 space-y-3">{pastCodes.map(codeCard)}</ul>
+          </details>
+        ) : null}
+        <details className="mt-4 text-xs leading-6 text-ink-mute">
+          <summary className="cursor-pointer">規則說明</summary>
+          <p className="mt-2">優惠碼只解鎖付費報告，與 Stripe 付款分開且不記金額。紀錄不刪除；停用只會擋住之後的新兌換。</p>
+        </details>
       </section>
     </div>
   );
