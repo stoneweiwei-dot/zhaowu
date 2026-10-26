@@ -11,18 +11,19 @@ export const tr = (value: Localized, locale: Locale) => locale === "en" ? value.
 
 export const COPY = {
   kicker: l("昭梧異聞錄 · 原創神話宇宙", "昭梧异闻录 · 原创神话宇宙", "ZHAOWU MYTHIC ARCHIVE · AN ORIGINAL UNIVERSE"),
-  title: l("黃泉紀", "黄泉纪", "Chronicle of the Yellow Springs"),
-  subtitle: l("左道旁門設定集", "左道旁门设定集", "A Compendium of Unorthodox Paths"),
-  intro: l("三界有律，萬類有名。當黃泉名冊出現第一頁空白，天庭、封疆、幽冥與山海異類都被捲進同一道裂隙。這是一部從中國古代圖像、古籍神話與民間信仰出發，重新編織的原創黑暗神話。", "三界有律，万类有名。当黄泉名册出现第一页空白，天庭、封疆、幽冥与山海异类都被卷进同一道裂隙。这是一部从中国古代图像、古籍神话与民间信仰出发，重新编织的原创黑暗神话。", "All beings have a place in the registers of the Three Realms. When the first blank page appears in the underworld ledger, heaven, earthly wardens, the courts below and the beings of mountain and sea are drawn into one breach. This is an original dark mythology rewoven from classical imagery, old texts and living traditions."),
+  title: l("幽明萬象錄", "幽明万象录", "The Chronicle of Hidden and Manifest Worlds"),
+  subtitle: l("三界異聞 · 生死、神怪與觀心之書", "三界异闻 · 生死、神怪与观心之书", "Three Realms · A Book of Afterlife, Myth and Inner Seeing"),
+  intro: l("三界有律，萬類有名。黃泉只是入口：從天庭、封疆、幽冥與山海異類，到人如何理解死亡、記憶、選擇與自身，《幽明萬象錄》把古籍神話、民間信仰、原創敘事與現代觀心分層收在同一部異聞之書。", "三界有律，万类有名。黄泉只是入口：从天庭、封疆、幽冥与山海异类，到人如何理解死亡、记忆、选择与自身，《幽明万象录》把古籍神话、民间信仰、原创叙事与现代观心分层收在同一部异闻之书。", "The Yellow Springs are only the threshold. The Chronicle of Hidden and Manifest Worlds gathers heaven, the underworld, strange beings, afterlife traditions and modern reflections on perception and choice, while keeping historical sources, living traditions, fiction and contemporary interpretation clearly separated."),
   notice: l("創作聲明：人物來源與本作劇情分層標示；宗教人物皆為文學性演繹，不代表任何教義。十二幅插畫均為 STONE 原創重構，取法古畫構圖與氣韻，不是原作複製。", "创作声明：人物来源与本作剧情分层标示；宗教人物皆为文学性演绎，不代表任何教义。十二幅插画均为 STONE 原创重构，取法古画构图与气韵，不是原作复制。", "Creative note: sources and story inventions are labelled separately. Religious figures are literary interpretations, not statements of doctrine. All twelve illustrations are original STONE reconstructions inspired by historical composition and atmosphere, not reproductions."),
   back: l("返回昭梧", "返回昭梧", "Back to ZHAOWU"),
   begin: l("展開世界觀", "展开世界观", "Enter the world"),
   contents: l("卷目", "卷目", "Contents"),
   world: l("壹 · 三界與兩序", "壹 · 三界与两序", "I · Three Realms, Two Orders"),
   atlas: l("貳 · 八脈眾生圖譜", "贰 · 八脉众生图谱", "II · Atlas of Eight Lineages"),
-  chronicle: l("參 · 黃泉四紀", "叁 · 黄泉四纪", "III · Four Chronicles"),
+  chronicle: l("參 · 幽明四紀", "叁 · 幽明四纪", "III · Four Chronicles of the Hidden Realms"),
   paintings: l("肆 · 十二圖錄", "肆 · 十二图录", "IV · Twelve Plates"),
-  sources: l("伍 · 來源與界線", "伍 · 来源与界线", "V · Sources and Boundaries"),
+  observation: l("伍 · 觀心篇", "伍 · 观心篇", "V · Inner Seeing"),
+  sources: l("陸 · 來源與界線", "陆 · 来源与界线", "VI · Sources and Boundaries"),
   atlasLead: l("八大支系、三十五位角色。搜尋姓名或職司，也可依陣營與來源層級篩選。", "八大支系、三十五位角色。搜索姓名或职司，也可依阵营与来源层级筛选。", "Eight lineages and thirty-five figures. Search by name or role, then filter by allegiance and source layer."),
   search: l("搜尋人物、職司或來源", "搜索人物、职司或来源", "Search figures, roles or sources"),
   all: l("全部", "全部", "All"), order: l("正序", "正序", "Keepers of order"), shadow: l("旁門", "旁门", "Unorthodox paths"),
@@ -30,13 +31,13 @@ export const COPY = {
   figures: l("位人物", "位人物", "figures"), plate: l("STONE 原創重構", "STONE 原创重构", "STONE original reconstruction"),
   imageNotice: l("十二圖均以 9:16 手機閱讀重新構圖；圖檔右下角保留永久 STONE 署名，頁面另標示完整原創聲明。", "十二图均以 9:16 手机阅读重新构图；图档右下角保留永久 STONE 署名，页面另标示完整原创声明。", "All twelve plates were recomposed for 9:16 mobile reading. Each file carries a permanent STONE mark and a full originality label on the page."),
   selectPlate: l("選擇圖版", "选择图版", "Choose plate"), inspiredBy: l("取法", "取法", "Inspired by"), sourceLegend: l("來源分層", "来源分层", "Source layers"),
-  methods: l("本作不把後世附會寫成古籍原文，也不把原創聯盟冒充宗教傳統。角色的歷史來源與《黃泉紀》中的立場分開處理；無法確定的民間名號只標為傳承線索，不製造假引文。", "本作不把后世附会写成古籍原文，也不把原创联盟冒充宗教传统。角色的历史来源与《黄泉纪》中的立场分开处理；无法确定的民间名号只标为传承线索，不制造假引文。", "Later accretions are not presented as classical quotations, and invented alliances are not passed off as religious tradition. A figure's historical provenance is kept separate from their role in this story; uncertain folk titles are treated as leads, never fabricated citations."),
+  methods: l("本作不把後世附會寫成古籍原文，也不把原創聯盟冒充宗教傳統。角色的歷史來源與《幽明萬象錄》中的立場分開處理；無法確定的民間名號只標為傳承線索，不製造假引文。", "本作不把后世附会写成古籍原文，也不把原创联盟冒充宗教传统。角色的历史来源与《幽明万象录》中的立场分开处理；无法确定的民间名号只标为传承线索，不制造假引文。", "Later accretions are not presented as classical quotations, and invented alliances are not passed off as religious tradition. A figure's historical provenance is kept separate from their role in this story; uncertain folk titles are treated as leads, never fabricated citations."),
 } as const;
 
 export const SOURCE_LABELS: Record<SourceKind, Localized> = {
   tradition: l("古籍／宗教傳統", "古籍／宗教传统", "Classical / religious tradition"),
   modern: l("近現代二創線索", "近现代二创线索", "Modern adaptation thread"),
-  story: l("《黃泉紀》原創", "《黄泉纪》原创", "Original to this chronicle"),
+  story: l("《幽明萬象錄》原創", "《幽明万象录》原创", "Original to this chronicle"),
 };
 
 export const REALMS = [
@@ -79,21 +80,21 @@ export const BRANCHES: Branch[] = [
     m(l("丹朱", "丹朱", "Danzhu"), l("拒絕只以敗子之名留在正史，企圖奪回被改寫的命數。", "拒绝只以败子之名留在正史，企图夺回被改写的命数。", "Refuses to survive only as a failed son in official history and seeks his rewritten fate."), "tradition", l("古史傳說人物；命數主線為本作演繹", "古史传说人物；命数主线为本作演绎", "Figure of early historical legend; fate arc is original")),
     m(l("妖鳳", "妖凤", "Calamity Phoenix"), l("不是祥瑞墮落，而是被天界拒絕命名的另一支羽族之長。", "不是祥瑞堕落，而是被天界拒绝命名的另一支羽族之长。", "Not a fallen auspicious bird, but a sovereign of feathered beings heaven refused to name."), "story", l("由五蟲與鳳凰意象延伸的原創角色", "由五虫与凤凰意象延伸的原创角色", "Original figure extrapolated from five-kind and phoenix imagery")),
     m(l("妖麟", "妖麟", "Calamity Qilin"), l("以不祥承擔被排除的罪名，角上刻滿遭刪去的族譜。", "以不祥承担被排除的罪名，角上刻满遭删去的族谱。", "Bears the accusation of ill omen, erased genealogies carved into its horn."), "story", l("由麒麟祥瑞觀念反向創作", "由麒麟祥瑞观念反向创作", "Original inversion of qilin symbolism")),
-    m(l("四方巫妖", "四方巫妖", "Witch-Demons of Four Quarters"), l("分守四處古祭場，以失傳的名諱交換災異記憶。", "分守四处古祭场，以失传的名讳交换灾异记忆。", "Guard four abandoned ritual grounds, trading lost names for memories of catastrophe."), "story", l("《黃泉紀》原創群像", "《黄泉纪》原创群像", "Original collective created for this chronicle")),
+    m(l("四方巫妖", "四方巫妖", "Witch-Demons of Four Quarters"), l("分守四處古祭場，以失傳的名諱交換災異記憶。", "分守四处古祭场，以失传的名讳交换灾异记忆。", "Guard four abandoned ritual grounds, trading lost names for memories of catastrophe."), "story", l("《幽明萬象錄》原創群像", "《幽明万象录》原创群像", "Original collective created for this chronicle")),
   ] },
   { id: "wild", side: "shadow", image: 8, title: l("自然精怪", "自然精怪", "Wild Spirits"), subtitle: l("香火之外，自有山川草木的生死", "香火之外，自有山川草木的生死", "Beyond worship, landscape and living things keep their own cycle"), members: [
     m(l("東陵聖母", "东陵圣母", "Matriarch of the Eastern Mound"), l("收留被廟祀與族譜同時遺忘的女魂，守一座不受冊封的祠。", "收留被庙祀与族谱同时遗忘的女魂，守一座不受册封的祠。", "Shelters women forgotten by shrine and genealogy in a sanctuary no decree recognizes."), "modern", l("民間／近現代敘事線索；本作重新塑形", "民间／近现代叙事线索；本作重新塑形", "Folk or modern narrative lead; reshaped for this story")),
     m(l("金花聖母", "金花圣母", "Golden Flower Matriarch"), l("掌五毒與藥性，認為毒是萬物拒絕被吞食的語言。", "掌五毒与药性，认为毒是万物拒绝被吞食的语言。", "Keeps poison and medicine, holding poison to be nature's language of refusal."), "modern", l("金花信仰線索與五毒母題；關係為本作重構", "金花信仰线索与五毒母题；关系为本作重构", "Golden Flower and Five Poisons motifs; relationship reconstructed")),
     m(l("狐妖一脈", "狐妖一脉", "Fox Lineage"), l("替無名者借來面貌與身份，代價是逐漸忘記自己的第一張臉。", "替无名者借来面貌与身份，代价是逐渐忘记自己的第一张脸。", "Lends faces to the nameless, slowly forgetting its own first face."), "tradition", l("狐魅敘事傳統；借名規則為本作原創", "狐魅叙事传统；借名规则为本作原创", "Fox-spirit traditions; name-lending rule is original")),
     m(l("虎倀", "虎伥", "Tiger Thralls"), l("既是受害者也是引路者，只有帶來下一人才能暫時取回人聲。", "既是受害者也是引路者，只有带来下一人才能暂时取回人声。", "Victims and guides who regain a human voice only by delivering another traveler."), "tradition", l("為虎作倀的民間敘事；聲音規則為本作設定", "为虎作伥的民间叙事；声音规则为本作设定", "Tiger-thrall folklore; voice rule is original")),
-    m(l("雄王", "雄王", "King of Beasts"), l("統領山獸卻拒受祥瑞名號，要把封禪所奪的山路還給群獸。", "统领山兽却拒受祥瑞名号，要把封禅所夺的山路还给群兽。", "Rules mountain beasts but refuses an auspicious title, returning sacred roads to the wild."), "story", l("《黃泉紀》原創角色", "《黄泉纪》原创角色", "Original figure created for this chronicle")),
+    m(l("雄王", "雄王", "King of Beasts"), l("統領山獸卻拒受祥瑞名號，要把封禪所奪的山路還給群獸。", "统领山兽却拒受祥瑞名号，要把封禅所夺的山路还给群兽。", "Rules mountain beasts but refuses an auspicious title, returning sacred roads to the wild."), "story", l("《幽明萬象錄》原創角色", "《幽明万象录》原创角色", "Original figure created for this chronicle")),
     m(l("鼠王", "鼠王", "Rat King"), l("走遍城牆、糧倉與墓穴，掌握三界最細小也最真實的通道。", "走遍城墙、粮仓与墓穴，掌握三界最细小也最真实的通道。", "Knows the smallest passages through walls, granaries and tombs."), "modern", l("動物王母題；本作角色化", "动物王母题；本作角色化", "Animal-king motif; characterized for this story")),
-    m(l("萬獸朝蒼·萬鳥朝昭", "万兽朝苍·万鸟朝昭", "Beasts to Cang · Birds to Zhao"), l("兩場同日發生的異兆：獸向北伏地，鳥向東銜火。", "两场同日发生的异兆：兽向北伏地，鸟向东衔火。", "Twin omens: beasts kneel northward while birds carry fire east."), "story", l("《黃泉紀》原創群像與異象", "《黄泉纪》原创群像与异象", "Original collective omen")),
+    m(l("萬獸朝蒼·萬鳥朝昭", "万兽朝苍·万鸟朝昭", "Beasts to Cang · Birds to Zhao"), l("兩場同日發生的異兆：獸向北伏地，鳥向東銜火。", "两场同日发生的异兆：兽向北伏地，鸟向东衔火。", "Twin omens: beasts kneel northward while birds carry fire east."), "story", l("《幽明萬象錄》原創群像與異象", "《幽明万象录》原创群像与异象", "Original collective omen")),
   ] },
   { id: "heterodox", side: "shadow", image: 9, title: l("外道魔門", "外道魔门", "Heterodox Powers"), subtitle: l("以慾念、禁法與假名開門", "以欲念、禁法与假名开门", "Doors opened through desire, forbidden methods and false names"), members: [
     m(l("波旬", "波旬", "Mara"), l("不奪性命，只讓每個人相信自己的執著就是唯一真理。", "不夺性命，只让每个人相信自己的执着就是唯一真理。", "Takes no life, merely persuading each person that attachment is the only truth."), "tradition", l("佛教魔羅傳統；本作情節為文學演繹", "佛教魔罗传统；本作情节为文学演绎", "Buddhist Mara tradition; literary story treatment")),
     m(l("朗達瑪王", "朗达玛王", "King Langdarma"), l("歷史人物的幽暗傳說在此化成一面鏡，照見政治如何利用信仰之名。", "历史人物的幽暗传说在此化成一面镜，照见政治如何利用信仰之名。", "Dark legends around a historical ruler become a mirror for politics in religion's name."), "tradition", l("歷史人物與後世敘事；超自然角色為本作演繹", "历史人物与后世叙事；超自然角色为本作演绎", "Historical figure and later narratives; supernatural role is literary")),
-    m(l("十二鬼月", "十二鬼月", "Twelve Ghost Moons"), l("每月吞去一種人間記憶，十二月滿便能讓一個朝代從未存在。", "每月吞去一种人间记忆，十二月满便能让一个朝代从未存在。", "Each moon devours one memory; after twelve, a dynasty may never have existed."), "story", l("《黃泉紀》原創設定", "《黄泉纪》原创设定", "Original concept created for this chronicle")),
+    m(l("十二鬼月", "十二鬼月", "Twelve Ghost Moons"), l("每月吞去一種人間記憶，十二月滿便能讓一個朝代從未存在。", "每月吞去一种人间记忆，十二月满便能让一个朝代从未存在。", "Each moon devours one memory; after twelve, a dynasty may never have existed."), "story", l("《幽明萬象錄》原創設定", "《幽明万象录》原创设定", "Original concept created for this chronicle")),
     m(l("五通神", "五通神", "Five Powers"), l("用捷徑實現所求，再把被省去的代價移到無辜者身上。", "用捷径实现所求，再把被省去的代价移到无辜者身上。", "Grants desires by shortcut, transferring every avoided cost onto the innocent."), "tradition", l("五通信仰與志怪傳統；代價機制為本作設定", "五通信仰与志怪传统；代价机制为本作设定", "Five Powers traditions; cost mechanic is original")),
     m(l("金剛禪邪法", "金刚禅邪法", "Corrupted Vajra Method"), l("不是宗派，而是一套把修行者姓名逐筆剝離的禁法。", "不是宗派，而是一套把修行者姓名逐笔剥离的禁法。", "Not a school, but a forbidden method stripping a practitioner's name stroke by stroke."), "story", l("虛構邪法；不指涉真實佛教宗派", "虚构邪法；不指涉真实佛教宗派", "Fictional method; not a real Buddhist school")),
     m(l("祇陀太子", "祇陀太子", "Prince Jeta"), l("借用古老名字的假身；真正身份是外道線的核心疑案。", "借用古老名字的假身；真正身份是外道线的核心疑案。", "A false body borrowing an ancient name; its identity is the central mystery."), "story", l("借名式原創角色；與佛典人物不作同一認定", "借名式原创角色；与佛典人物不作同一认定", "Original name-borrowing figure; not identified with the Buddhist person")),
@@ -113,8 +114,41 @@ export const CHRONICLES = [
   { no: "四", title: l("第十三時", "第十三时", "The Thirteenth Hour"), lead: l("燭龍睜眼為晝、闔眼為夜——唯有裂隙中的一個時辰不受其管轄。", "烛龙睁眼为昼、阖眼为夜——唯有裂隙中的一个时辰不受其管辖。", "The Torch Dragon opens its eye for day and closes it for night—except for one hour inside the breach."), text: l("五星與二十八宿開始錯移，名冊空白連成一幅從未存在的星圖。裂隙原是被秩序捨棄之物共同形成的影子。", "五星与二十八宿开始错移，名册空白连成一幅从未存在的星图。裂隙原是被秩序舍弃之物共同形成的影子。", "Planets and mansions drift while blank pages form an impossible star chart. The breach is the shared shadow of all that order discarded.") },
 ];
 
+export const OBSERVATION_CHAPTERS = [
+  {
+    no: "一",
+    title: l("聽其言，也觀其行", "听其言，也观其行", "Hear the words, then watch the pattern"),
+    lead: l("所謂「聞其頻」，更可靠的理解不是讀取神秘頻率，而是聽見語言背後的動機、情緒與長期一致性。", "所谓“闻其频”，更可靠的理解不是读取神秘频率，而是听见语言背后的动机、情绪与长期一致性。", "What spiritual language calls a person's “frequency” is better treated as motive, emotional tone and long-term consistency rather than a measurable mystical signal."),
+    text: l("一句「我是為你好」可能是真心，也可能帶著控制。不要只憑一句話定性一個人；看他是否尊重你的選擇、承擔自己的責任，以及言語和行為能否長期對得上。", "一句“我是为你好”可能是真心，也可能带着控制。不要只凭一句话定性一个人；看他是否尊重你的选择、承担自己的责任，以及言语和行为能否长期对得上。", "“I am doing this for your own good” may be care or control. Do not decide from one sentence alone. Watch whether the person respects choice, carries responsibility and behaves consistently over time.")
+  },
+  {
+    no: "二",
+    title: l("不迷頭銜，察其相處", "不迷头衔，察其相处", "Look past status to how someone relates"),
+    lead: l("職位、財富與名片是社會資訊，不是人格證明。", "职位、财富与名片是社会信息，不是人格证明。", "Titles, wealth and status are social information, not proof of character."),
+    text: l("與其把「磁場」當成客觀能量，不如看一個人是否穩定、誠實、有邊界感，如何對待弱者與沒有利益關係的人。真正值得信任的訊號，通常藏在反覆出現的小事裡。", "与其把“磁场”当成客观能量，不如看一个人是否稳定、诚实、有边界感，如何对待弱者与没有利益关系的人。真正值得信任的信号，通常藏在反复出现的小事里。", "Instead of treating an “energy field” as an objective fact, look for stability, honesty, boundaries and how someone treats people from whom they have nothing to gain. Reliable signals usually live in repeated small acts.")
+  },
+  {
+    no: "三",
+    title: l("相信直覺，也讓事實校正", "相信直觉，也让事实校正", "Let intuition alert you, then let evidence correct it"),
+    lead: l("直覺可以是第一個警鈴，但不應取代判斷。", "直觉可以是第一个警铃，但不应取代判断。", "Intuition can be the first alert, but it should not replace judgement."),
+    text: l("我們會在很短時間內讀到語氣、表情、節奏與矛盾，但直覺也會受過去經驗、偏見和當下情緒影響。五分鐘可以提醒你慢下來，不能證明你已經看透一個人。", "我们会在很短时间内读到语气、表情、节奏与矛盾，但直觉也会受过去经验、偏见和当下情绪影响。五分钟可以提醒你慢下来，不能证明你已经看透一个人。", "We can notice tone, expression, rhythm and contradiction very quickly, but intuition is also shaped by memory, bias and mood. Five minutes can tell you to slow down; it cannot prove you have seen through a person.")
+  },
+  {
+    no: "四",
+    title: l("所謂升維，是看見更多層", "所谓升维，是看见更多层", "Higher perspective means seeing more layers"),
+    lead: l("三維、四維、五維在這裡只作認知隱喻，不是可證明的靈性等級。", "三维、四维、五维在这里只作认知隐喻，不是可证明的灵性等级。", "Here, 3D, 4D and 5D are metaphors for perspective, not verified spiritual ranks."),
+    text: l("只看事件，是第一層；再看時間、因果與關係動力，是第二層；再看不同選擇、代價與可能路徑，是第三層。真正的提升不是判斷得更快，而是同時容納更多證據，不再被單一視角綁住。", "只看事件，是第一层；再看时间、因果与关系动力，是第二层；再看不同选择、代价与可能路径，是第三层。真正的提升不是判断得更快，而是同时容纳更多证据，不再被单一视角绑住。", "One layer sees the event. Another sees time, causes and relationship dynamics. A further layer sees alternative choices, costs and possible paths. Growth is not faster judgement; it is the ability to hold more evidence without being trapped by one viewpoint.")
+  },
+  {
+    no: "五",
+    title: l("分辨之後，仍能接納", "分辨之后，仍能接纳", "Discernment without contempt"),
+    lead: l("看清差異，不等於把人分成高頻與低頻。", "看清差异，不等于把人分成高频与低频。", "Seeing differences does not require ranking people as high- or low-frequency."),
+    text: l("成熟的分辨，是知道誰適合靠近、誰需要保持距離，同時不把不適合自己的人貶低成較低等的人。允許別人走自己的路，也允許自己退出消耗。", "成熟的分辨，是知道谁适合靠近、谁需要保持距离，同时不把不适合自己的人贬低成较低等的人。允许别人走自己的路，也允许自己退出消耗。", "Mature discernment means knowing who can come closer and where distance is needed, without turning incompatibility into a hierarchy of human worth. Let others walk their path, and let yourself leave what repeatedly drains you.")
+  },
+] as const;
+
 export const ARTWORKS = [
-  { file: "01-skeleton-puppet.webp", title: l("骨偶問名", "骨偶问名", "The Skeleton Asks Its Name"), source: l("李嵩《骷髏幻戲圖》", "李嵩《骷髅幻戏图》", "Li Song, Skeleton Fantasy Show"), note: l("保留生死同場、傀儡與旁觀者的核心關係，重畫為黃泉序章。", "保留生死同场、傀儡与旁观者的核心关系，重画为黄泉序章。", "Recomposes life, death, puppet and witness as the chronicle's prologue.") },
+  { file: "01-skeleton-puppet.webp", title: l("骨偶問名", "骨偶问名", "The Skeleton Asks Its Name"), source: l("李嵩《骷髏幻戲圖》", "李嵩《骷髅幻戏图》", "Li Song, Skeleton Fantasy Show"), note: l("保留生死同場、傀儡與旁觀者的核心關係，重畫為幽明序章。", "保留生死同场、傀儡与旁观者的核心关系，重画为幽明序章。", "Recomposes life, death, puppet and witness as the chronicle's prologue.") },
   { file: "02-three-realms-banner.webp", title: l("三界帛書", "三界帛书", "Banner of Three Realms"), source: l("馬王堆 T 形帛畫", "马王堆 T 形帛画", "Mawangdui T-shaped silk banner"), note: l("沿用天、人、地縱向分層的觀看方式，改寫為本作宇宙圖。", "沿用天、人、地纵向分层的观看方式，改写为本作宇宙图。", "Adapts its vertical heaven–human–earth reading into this world's cosmogram.") },
   { file: "03-celestial-procession.webp", title: l("諸天朝序", "诸天朝序", "Procession of Celestial Order"), source: l("永樂宮《朝元圖》", "永乐宫《朝元图》", "Yongle Palace, Chaoyuan Tu"), note: l("取法神班朝列與雲氣節奏，人物、旌幡與隊列皆重新設計。", "取法神班朝列与云气节奏，人物、旌幡与队列皆重新设计。", "Draws on ranked divine processions and cloud rhythm; figures and banners are newly designed.") },
   { file: "04-guardian-captures-general.webp", title: l("封疆擒將", "封疆擒将", "The Warden Captures a General"), source: l("商喜《關羽擒將圖》", "商喜《关羽擒将图》", "Shang Xi, Guan Yu Captures a General"), note: l("借鑑主將端坐與俘將受審的三角構圖，改為搜山封疆場面。", "借鉴主将端坐与俘将受审的三角构图，改为搜山封疆场面。", "Reworks the seated commander and captive triangle into a mountain-warden scene.") },

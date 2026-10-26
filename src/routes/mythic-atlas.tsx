@@ -2,7 +2,7 @@ import { CuratedVideoShelf } from "@/components/curated-video-shelf";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
-import { ARTWORKS, BRANCHES, CHRONICLES, COPY, l, ORDERS, REALMS, SOURCE_LABELS, tr, type Side, type SourceKind } from "./-mythic-atlas-data";
+import { ARTWORKS, BRANCHES, CHRONICLES, COPY, l, OBSERVATION_CHAPTERS, ORDERS, REALMS, SOURCE_LABELS, tr, type Side, type SourceKind } from "./-mythic-atlas-data";
 import { BorrowStarInterlude } from "./-mythic-atlas-borrow-star";
 import "./mythic-atlas.css";
 
@@ -52,7 +52,7 @@ function MythicAtlasPage() {
     </header>
 
     <nav className="hq-toc" aria-label={tr(COPY.contents, locale)}>
-      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
+      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#observation">{tr(COPY.observation, locale)}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
     </nav>
 
     <section className="hq-section" id="world">
@@ -97,12 +97,17 @@ function MythicAtlasPage() {
 
     <BorrowStarInterlude locale={locale} />
 
+    <section className="hq-section" id="observation">
+      <div className="hq-section-heading"><span>卷五</span><h2>{tr(COPY.observation, locale)}</h2><p>{tr(l("從神怪世界回到人的觀看方式：這一卷是現代認知與關係反思，不冒充古籍、宗教教義或可測量的「能量學」。", "从神怪世界回到人的观看方式：这一卷是现代认知与关系反思，不冒充古籍、宗教教义或可测量的“能量学”。", "This volume returns from myth to human perception. It is a modern reflection on judgement and relationships, not a classical source, religious doctrine or measurable energy theory."), locale)}</p></div>
+      <div className="hq-chronicles">{OBSERVATION_CHAPTERS.map((chapter) => <article key={chapter.no}><span>{chapter.no}</span><div><h3>{tr(chapter.title, locale)}</h3><strong>{tr(chapter.lead, locale)}</strong><p>{tr(chapter.text, locale)}</p></div></article>)}</div>
+    </section>
+
     <section className="hq-section hq-sources" id="sources">
-      <div className="hq-section-heading"><span>卷五</span><h2>{tr(COPY.sources, locale)}</h2></div><p>{tr(COPY.methods, locale)}</p>
+      <div className="hq-section-heading"><span>卷六</span><h2>{tr(COPY.sources, locale)}</h2></div><p>{tr(COPY.methods, locale)}</p>
       <div className="hq-source-legend">{(Object.keys(SOURCE_LABELS) as SourceKind[]).map((kind) => <article key={kind} data-kind={kind}><span>{tr(SOURCE_LABELS[kind], locale)}</span><p>{kind === "tradition" ? tr(l("可追溯到古籍、宗教史或穩定民間傳統；本作職司仍另行註明。", "可追溯到古籍、宗教史或稳定民间传统；本作职司仍另行注明。", "Traceable to texts, religious history or stable folk traditions; story roles remain separately labelled."), locale) : kind === "modern" ? tr(l("來自近現代小說、地方敘事或待考線索，不倒灌為上古原典。", "来自近现代小说、地方叙事或待考线索，不倒灌为上古原典。", "Modern fiction, local narrative or unverified leads, never backdated into antiquity."), locale) : tr(l("人物關係、能力規則、陣營與主線由本作創作。", "人物关系、能力规则、阵营与主线由本作创作。", "Relationships, power rules, alliances and the central plot are original."), locale)}</p></article>)}</div>
     </section>
 
     <CuratedVideoShelf placement="mythic" />
-    <footer className="hq-footer"><span>黃泉紀 · 左道旁門設定集</span><strong>STONE 原創</strong><a href="/">ZHAOWU 昭梧</a></footer>
+    <footer className="hq-footer"><span>{tr(COPY.title, locale)} · {tr(COPY.subtitle, locale)}</span><strong>STONE 原創</strong><a href="/">ZHAOWU 昭梧</a></footer>
   </main>;
 }

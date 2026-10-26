@@ -15,30 +15,30 @@ export type PublicSiteStats = {
 };
 
 export const SITE_RELEASE_FALLBACK = {
-  "version": "ZW-WEB-2026.10.23-r226",
-  "updateNumber": 226,
-  "publishedAt": "2026-10-23T09:30:00.000Z",
-  "latestSummary": "文章區新增七張 STONE 原創文化圖鑑，包含農曆干支月、儒佛概念與現代修身辨析。",
+  "version": "ZW-WEB-2026.10.26-r227",
+  "updateNumber": 227,
+  "publishedAt": "2026-10-26T10:55:00.000Z",
+  "latestSummary": "《黃泉紀》擴展為《幽明萬象錄》，新增觀心篇，把神怪、生死與現代認知分層收進同一專題。",
   "summary": {
-    "zh-Hant": "文章區新增七張 STONE 原創文化圖鑑，包含農曆干支月、儒佛概念與現代修身辨析。",
-    "zh-Hans": "文章区新增七张 STONE 原创文化图鉴，包含农历干支月、儒佛概念与现代修身辨析。",
-    "en": "Added seven original cultural atlas artworks to Articles, separating calendar facts, classical concepts and modern reflections."
+    "zh-Hant": "《黃泉紀》擴展為《幽明萬象錄》，新增觀心篇，把神怪、生死與現代認知分層收進同一專題。",
+    "zh-Hans": "《黄泉纪》扩展为《幽明万象录》，新增观心篇，把神怪、生死与现代认知分层收进同一专题。",
+    "en": "Expanded the Yellow Springs project into The Chronicle of Hidden and Manifest Worlds, adding a clearly labelled modern chapter on perception and discernment."
   },
   "details": {
     "zh-Hant": [
-      "七張 1080×1920 原始 PNG 已獨立接入文章正文，可開啟原圖閱讀。",
-      "核對子平干支月以節換月；佛教六根不再誤稱六欲。",
-      "《警世》署名標記待考；現代人生四面向、情緒十五問、修身九問與十條修心不冒稱經典。"
+      "總名由《黃泉紀》改為《幽明萬象錄》；黃泉保留為三界世界觀中的一界。",
+      "新增「觀心篇」五則：聽言觀行、去頭銜、直覺校正、多層視角、分辨而不貶低。",
+      "3D／4D／5D、頻率、磁場只作現代認知隱喻，不寫成古籍教義或可測量事實。"
     ],
     "zh-Hans": [
-      "七张 1080×1920 原始 PNG 已接入文章正文，可打开原图阅读。",
-      "校正干支月以节换月；佛教六根不再误称六欲。",
-      "《警世》署名仍待考；现代四面向与修身观点不冒称经典。"
+      "总名由《黄泉纪》改为《幽明万象录》；黄泉保留为三界世界观中的一界。",
+      "新增“观心篇”五则：听言观行、去头衔、直觉校正、多层视角、分辨而不贬低。",
+      "3D／4D／5D、频率、磁场只作现代认知隐喻，不写成古籍教义或可测量事实。"
     ],
     "en": [
-      "Seven original 1080×1920 PNG illustrations added to the full article with full-resolution links.",
-      "Distinguishes Jie month boundaries and Buddhist six faculties from the six desires.",
-      "Keeps uncertain poem attribution separate from modern editorial frameworks."
+      "Renamed the umbrella project while keeping Yellow Springs as one realm inside the setting.",
+      "Added five Inner Seeing reflections on behaviour, status, intuition, layered perspective and non-contemptuous boundaries.",
+      "Treats frequency, energy fields and 3D/4D/5D language as metaphor rather than historical doctrine or measurable fact."
     ]
   }
 } as const;
