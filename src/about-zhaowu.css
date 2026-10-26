@@ -1,44 +1,225 @@
-/* ZHAOWU introduction: a Song editorial reading page, not a second visual system. */
-.zw-about{--zw-about-paper:#f7f3ea;--zw-about-ink:#1f2723;--zw-about-muted:#52675d;--zw-about-jade:#315e50;--zw-about-gold:#a98c55;color:var(--zw-about-ink);background:var(--zw-about-paper);min-height:100dvh;overflow-x:clip}
-.zw-about-hero{position:relative;min-height:min(76svh,690px);display:flex;align-items:end;justify-content:center;overflow:hidden;background:#e9e9d9}
-.zw-about-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 32%}
-.zw-about-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(247,243,234,.04) 0%,rgba(247,243,234,.25) 38%,rgba(247,243,234,.94) 80%,var(--zw-about-paper) 100%)}
-.zw-about-hero-content{position:relative;z-index:1;width:min(100%,980px);padding:clamp(20px,5vw,52px) clamp(20px,6vw,60px) 36px}
-.zw-about-eyebrow,.zw-about-feature-index{font-size:12px;letter-spacing:.22em;color:var(--zw-about-jade);font-weight:600}
-.zw-about h1,.zw-about h2,.zw-about-end>p{font-family:"Songti TC","Noto Serif TC","Source Han Serif TC",serif;font-weight:600;text-wrap:balance}
-.zw-about h1{font-size:clamp(34px,6vw,60px);line-height:1.25;margin:12px 0 16px;letter-spacing:.04em;max-width:12em}
-.zw-about-intro{font-size:clamp(15px,2vw,18px);line-height:1.9;max-width:680px;margin:0 0 20px}
-.zw-about-down{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:48px;padding:8px 20px;background:var(--zw-about-jade);color:#fffaf0;border:1px solid var(--zw-about-jade);border-radius:8px;font-size:15px;font-weight:600;text-decoration:none}
-.zw-about-down:hover,.zw-about-enter:hover{filter:brightness(1.08)}
-.zw-about-body{max-width:1050px;margin:0 auto;padding:clamp(28px,5vw,60px) clamp(18px,5vw,55px)}
-.zw-about-feature{display:grid;grid-template-columns:minmax(170px,.87fr) minmax(0,1.13fr);align-items:center;gap:clamp(20px,5vw,56px);padding:clamp(24px,4vw,50px) 0;border-bottom:1px solid rgba(72,99,83,.22)}
-.zw-about-feature:nth-child(even) .zw-about-feature-art{order:2}
-.zw-about-feature-art{overflow:hidden;border-radius:9px;border:1px solid rgba(95,101,75,.15);background:#ede9da;aspect-ratio:5/4}
-.zw-about-feature-art img{display:block;width:100%;height:100%;object-fit:cover}
-.zw-about-feature h2{font-size:clamp(24px,3.2vw,34px);line-height:1.35;margin:10px 0 14px}
-.zw-about-feature-copy p{font-size:16px;line-height:1.95;color:#404842;margin:0;max-width:570px}
-.zw-about-note{max-width:760px;font-size:13px;line-height:1.8;color:var(--zw-about-muted);margin:32px 0 0}
-.zw-about-end{text-align:center;padding:44px 20px 48px;background:#e9e6da;border-top:1px solid rgba(72,99,83,.18)}
-.zw-about-end>p{font-size:clamp(22px,4vw,31px);margin:0 0 24px}
-.zw-about-ctas{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:14px}
-.zw-about-ctas a{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:12px;border-radius:7px;padding:10px 22px;text-decoration:none;font-weight:600}
-.zw-about-enter{background:var(--zw-about-jade);color:#fffaf0}
-.zw-about-back{border:1px solid #9aafa3;color:var(--zw-about-jade);background:#f7f3ea}
-.zw-about-end small{display:block;margin-top:32px;color:#657068;letter-spacing:.13em}
-.zhaowu-feature-discovery{margin-top:15px;text-align:center}
-.zhaowu-feature-discovery a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;width:100%;padding:9px 12px;color:#254f40;text-decoration:none;border:1px solid rgba(49,94,80,.38);background:rgba(255,251,240,.88);border-radius:7px;font-size:15px;font-weight:600}
-.zhaowu-feature-discovery a:hover,.zhaowu-feature-discovery a:focus-visible{background:#ecf3ec;outline-offset:3px}
-@media(max-width:620px){
- .zw-about-hero{min-height:68svh;align-items:end}
- .zw-about-hero>img{object-position:center 25%}
- .zw-about-hero::after{background:linear-gradient(180deg,rgba(247,243,234,.02),rgba(247,243,234,.26) 27%,rgba(247,243,234,.94) 72%,#f7f3ea)}
- .zw-about-hero-content{padding:20px 22px 28px}
- .zw-about h1{font-size:clamp(31px,8.8vw,42px)}
- .zw-about-intro{font-size:15px;line-height:1.8}
- .zw-about-feature{grid-template-columns:minmax(0,1fr);gap:17px;padding:30px 0}
- .zw-about-feature:nth-child(even) .zw-about-feature-art{order:0}
- .zw-about-feature-art{aspect-ratio:5/3}
- .zw-about-feature h2{font-size:25px;margin:7px 0 10px}
- .zw-about-feature-copy p{font-size:15px;line-height:1.85}
+/* ZHAOWU / Editorial Yearbook — introduction.
+   One continuous exhibition catalogue, not a second card-based application.
+   Page-specific composition only; routing, language and theme systems stay untouched. */
+.zw-about {
+  --zw-about-paper: #f4f1e9;
+  --zw-about-ink: #23302d;
+  --zw-about-muted: #66746c;
+  --zw-about-jade: #305b50;
+  --zw-about-gold: #a08658;
+  min-height: 100dvh;
+  color: var(--zw-about-ink);
+  background: var(--zw-about-paper);
+  overflow-x: clip;
 }
-@media(prefers-reduced-motion:reduce){.zw-about *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+.zw-about-hero {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(22px, 4.5vw, 68px);
+  width: min(100%, 1160px);
+  margin-inline: auto;
+  padding: clamp(42px, 7vw, 110px) clamp(20px, 5vw, 72px) clamp(52px, 7vw, 104px);
+  border-bottom: 1px solid rgba(52, 82, 70, .26);
+}
+.zw-about-hero-content { grid-column: 1; grid-row: 1; min-width: 0; }
+.zw-about-eyebrow,
+.zw-about-feature-index {
+  display: block;
+  color: var(--zw-about-jade);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .2em;
+  line-height: 1.65;
+}
+.zw-about h1,
+.zw-about h2,
+.zw-about-end > p {
+  font-family: "Songti TC", "Noto Serif TC", "Source Han Serif TC", serif;
+  font-weight: 500;
+  text-wrap: balance;
+}
+.zw-about h1 {
+  max-width: 12em;
+  margin: 20px 0 25px;
+  font-size: clamp(34px, 5.3vw, 64px);
+  letter-spacing: .06em;
+  line-height: 1.38;
+}
+.zw-about-intro {
+  max-width: 34em;
+  margin: 0;
+  font-size: clamp(16px, 1.65vw, 18px);
+  line-height: 1.95;
+  letter-spacing: .025em;
+  text-wrap: pretty;
+}
+.zw-about-hero-art {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  margin: 0;
+  border-top: 1px solid rgba(48, 91, 80, .20);
+  border-bottom: 1px solid rgba(48, 91, 80, .20);
+  background: rgba(255,255,255,.14);
+}
+.zw-about-hero-art img {
+  display: block;
+  width: 100%;
+  max-height: 650px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  object-position: center;
+}
+.zw-about-down {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: min(100%, 270px);
+  min-height: 48px;
+  gap: 16px;
+  padding: 12px 0 11px;
+  border: 0;
+  border-bottom: 1px solid var(--zw-about-jade);
+  border-radius: 0;
+  color: var(--zw-about-jade);
+  background: transparent;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+.zw-about-down span { font-size: 20px; }
+
+.zw-about-body {
+  width: min(100%, 1160px);
+  margin-inline: auto;
+  padding: 0 clamp(20px, 5vw, 72px) clamp(64px, 9vw, 120px);
+}
+.zw-about-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(26px, 6.5vw, 88px);
+  padding: clamp(48px, 8vw, 106px) 0;
+  border-bottom: 1px solid rgba(48, 91, 80, .21);
+}
+.zw-about-feature:nth-child(even) .zw-about-feature-art { order: 2; }
+.zw-about-feature-art {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  overflow: hidden;
+  background: rgba(233, 226, 209, .38);
+}
+.zw-about-feature-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.zw-about-feature-copy { min-width: 0; }
+.zw-about-feature h2 {
+  margin: 16px 0 24px;
+  font-size: clamp(25px, 3.15vw, 39px);
+  letter-spacing: .045em;
+  line-height: 1.43;
+}
+.zw-about-feature-copy p {
+  max-width: 35em;
+  margin: 0;
+  color: #40514b;
+  font-size: clamp(16px, 1.5vw, 17px);
+  line-height: 1.95;
+  text-wrap: pretty;
+}
+.zw-about-note {
+  max-width: 56em;
+  margin: 36px 0 0;
+  color: var(--zw-about-muted);
+  font-size: 13px;
+  line-height: 1.85;
+}
+.zw-about-end {
+  padding: clamp(56px, 8vw, 100px) 20px 58px;
+  border-top: 1px solid rgba(48, 91, 80, .20);
+  background: #eeeae0;
+  text-align: center;
+}
+.zw-about-end > p { margin: 0 auto 34px; font-size: clamp(26px, 4vw, 39px); line-height: 1.5; }
+.zw-about-ctas { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px 26px; }
+.zw-about-ctas a {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 23px;
+  border-radius: 3px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.zw-about-enter { background: var(--zw-about-jade); color: #fffaf0; }
+.zw-about-back { border: 1px solid rgba(48,91,80,.43); color: var(--zw-about-jade); background: transparent; }
+.zw-about-end small { display: block; margin-top: 38px; color: var(--zw-about-muted); letter-spacing: .16em; }
+.zw-about :is(a,button):focus-visible { outline: 2px solid var(--zw-about-jade); outline-offset: 4px; }
+.zw-about :is(.zw-about-down,.zw-about-enter,.zw-about-back):hover { text-decoration: underline; text-underline-offset: 5px; }
+
+/* Existing discovery entry lives in the shared shell. Preserve its hit target. */
+.zhaowu-feature-discovery { margin-top: 15px; text-align: center; }
+.zhaowu-feature-discovery a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  width: 100%;
+  padding: 9px 12px;
+  color: #254f40;
+  text-decoration: none;
+  border: 1px solid rgba(49,94,80,.38);
+  background: rgba(255,251,240,.88);
+  border-radius: 3px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.zhaowu-feature-discovery a:hover,.zhaowu-feature-discovery a:focus-visible { background:#ecf3ec; outline-offset:3px; }
+
+html[lang="en"] .zw-about :is(h1,h2,.zw-about-end>p) {
+  font-family: "Iowan Old Style", "Baskerville", Georgia, serif;
+  letter-spacing: -.018em;
+}
+@media (max-width: 760px) {
+  .zw-about-hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    gap: 24px;
+    padding: 40px 22px 54px;
+  }
+  .zw-about-hero-content { grid-column: 1; grid-row: 1; }
+  .zw-about h1 { font-size: clamp(32px, 8.3vw, 45px); margin: 14px 0 18px; }
+  .zw-about-intro { font-size: 17px; line-height: 1.9; }
+  .zw-about-hero-art { grid-column: 1; grid-row: 2; }
+  .zw-about-down { grid-column: 1; grid-row: 3; margin-top: 2px; }
+  .zw-about-body { padding: 0 22px 76px; }
+  .zw-about-feature { grid-template-columns: minmax(0,1fr); gap: 26px; padding: 54px 0; }
+  .zw-about-feature:nth-child(even) .zw-about-feature-art { order: 0; }
+  .zw-about-feature h2 { font-size: clamp(26px,6.4vw,33px); margin: 12px 0 16px; }
+  .zw-about-feature-copy p { font-size: 17px; line-height: 1.9; }
+}
+@media (max-width: 359px) {
+  .zw-about-hero { padding-inline: 20px; }
+  .zw-about-body { padding-inline: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zw-about *, .zw-about *::before, .zw-about *::after { scroll-behavior: auto; transition: none; }
+}
