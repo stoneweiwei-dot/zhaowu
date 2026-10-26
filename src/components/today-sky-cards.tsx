@@ -1,6 +1,6 @@
 import { useI18n } from "@/lib/i18n";
 import { getTodaySkyCards, getTodaySkyUpdatedDate } from "@/lib/sky-events";
-import { getSkyCardTone, getSkyWeekRange, getSkyWeekTheme, type SkyTone } from "@/lib/sky-week-presentation";
+import { isSkyReportArchived, getSkyCardTone, getSkyWeekRange, getSkyWeekTheme, type SkyTone } from "@/lib/sky-week-presentation";
 import "@/sky-events.css";
 
 type Lang = "zh-Hant" | "zh-Hans" | "en";
@@ -38,12 +38,13 @@ export function TodaySkyCards() {
   const updated = getTodaySkyUpdatedDate();
   const range = getSkyWeekRange(cards);
   const weekTheme = getSkyWeekTheme(cards);
+  const isArchive = isSkyReportArchived(range?.end);
 
   const ui = lang === "en"
     ? {
         label: "ZHAOWU · WEEKLY BROADCAST",
         title: "Star Imagery",
-        themeLabel: "THIS WEEK'S THEME",
+        themeLabel: isArchive ? "ARCHIVED WEEK THEME" : "THIS WEEK'S THEME",
         science: "ASTRONOMY",
         symbol: "SYMBOLISM",
         signs: "Signs touched",
@@ -59,7 +60,7 @@ export function TodaySkyCards() {
       ? {
           label: "昭梧 · 每周播报",
           title: "星辰形象",
-          themeLabel: "本周主题",
+          themeLabel: isArchive ? "历史周主题" : "本周主题",
           science: "天文事实",
           symbol: "占星象征",
           signs: "影响星座",
@@ -74,7 +75,7 @@ export function TodaySkyCards() {
       : {
           label: "昭梧 · 每週播報",
           title: "星辰形象",
-          themeLabel: "本週主題",
+          themeLabel: isArchive ? "歷史週主題" : "本週主題",
           science: "天文事實",
           symbol: "占星象徵",
           signs: "影響星座",
@@ -102,6 +103,8 @@ export function TodaySkyCards() {
         </div>
         {badge ? <div className="sky-today-week-badge">{badge}</div> : null}
       </header>
+
+      {isArchive ? <p role="note" className="sky-today-archive-status">{lang === "en" ? "Archived sky report · not today's live sky" : lang === "zh-Hans" ? "历史星象播报 · 非今日实时天象" : "歷史星象播報 · 非今日即時天象"}</p> : null}
 
       {weekTheme ? (
         <div className="sky-today-theme-block">

@@ -155,6 +155,10 @@ function SkyEventsPage() {
         <a href="#sky-archive">{labels.archive}</a>
       </nav>
 
+      <section className="sky-week-public" id="sky-week" aria-label={labels.week}>
+        <TodaySkyCards />
+      </section>
+
       <article className="sky-event-article" id="sky-featured">
         <div className="sky-event-kind-tags" aria-label={labels.featureKinds.join(" / ")}>
           {labels.featureKinds.map((label, index) => <span key={label} className={index === 0 ? "is-fact" : "is-symbol"}>{label}</span>)}
@@ -211,10 +215,6 @@ function SkyEventsPage() {
         </details>
       </article>
 
-      <details className="sky-section-disclosure sky-week-disclosure" id="sky-week">
-        <summary><strong>{labels.week}</strong><span>{labels.expand}</span></summary>
-        <TodaySkyCards />
-      </details>
 
       <details className="sky-section-disclosure sky-watch-disclosure">
         <summary><strong>{ui.watch}</strong><span>{SKY_EVENT_CATEGORIES.length}</span></summary>

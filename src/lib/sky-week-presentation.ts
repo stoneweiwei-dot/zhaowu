@@ -42,3 +42,11 @@ export function getSkyWeekTheme(cards: ReadonlyArray<Pick<SkyImpactCard, "date">
   if (!range) return null;
   return WEEK_THEME_BY_RANGE[`${range.start}/${range.end}`] ?? null;
 }
+
+/** Compare calendar dates in the editorial timezone, including readers outside Australia. */
+export function isSkyReportArchived(end: string | undefined, now = new Date()): boolean {
+  if (!end) return false;
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(now);
+  const today = ["year", "month", "day"].map(type => parts.find(part => part.type === type)?.value).join("-");
+  return today > end;
+}
