@@ -108,6 +108,19 @@
       #root:empty, .zw-static-shell {
         max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem;
       }
+
+      /* The crawlable/no-JS fallback must remain navigable on the first mobile screen. */
+      .zw-static-entry { display: flex; flex-wrap: wrap; gap: .65rem 1.2rem; align-items: center; margin: 0 0 1.25rem; }
+      .zw-static-entry a { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; box-sizing: border-box; text-decoration: none; font-size: .95rem; letter-spacing: .035em; }
+      .zw-static-entry .zw-static-entry-primary { padding: .65rem 1.15rem; background: #244b44; color: #fffaf0; border-radius: 2px; }
+      .zw-static-entry .zw-static-entry-secondary { color: #244b44; border-bottom: 1px solid currentColor; }
+      .zw-static-entry a:focus-visible { outline: 3px solid #a16c40; outline-offset: 3px; }
+      .zw-static-entry [lang] { display: none; }
+      html[lang="zh-Hant"] .zw-static-entry [lang="zh-Hant"],
+      html[lang="zh-Hans"] .zw-static-entry [lang="zh-Hans"],
+      html[lang="en"] .zw-static-entry [lang="en"] { display: inline; }
+      .zw-static-entry-help { font-size: .82rem !important; line-height: 1.65; margin: 0 0 1.3rem; color: #625f54 !important; }
+      @media (max-width: 350px) { .zw-static-entry { gap: .4rem .85rem; } .zw-static-entry a { font-size: .9rem; } }
       .zw-static-shell h1 { font-size: 1.75rem; letter-spacing: 0.12em; margin: 0 0 1rem;
         font-family: "Songti TC", "Songti SC", "STSong", "PMingLiU", serif; }
       .zw-static-shell h2 { font-size: 1.15rem; margin: 1.75rem 0 0.6rem; letter-spacing: 0.08em; }
@@ -188,6 +201,15 @@
     <div id="root">
       <main class="zw-static-shell" lang="zh-Hant">
         <h1>昭梧｜昭於未見，梧於有歸</h1>
+        <nav class="zw-static-entry" aria-label="ZHAOWU entry">
+          <a class="zw-static-entry-primary" href="/?zw_entry=home" data-static-home-link>
+            <span lang="zh-Hant">進入昭梧首頁</span><span lang="zh-Hans">进入昭梧首页</span><span lang="en">Enter ZHAOWU</span>
+          </a>
+          <a class="zw-static-entry-secondary" href="/?zw_entry=chart#home-guide" data-static-chart-link>
+            <span lang="zh-Hant">免費八字排盤</span><span lang="zh-Hans">免费八字排盘</span><span lang="en">Free birth chart</span>
+          </a>
+        </nav>
+        <p class="zw-static-entry-help">若點擊後仍只見這份文字介紹，表示互動網站尚未正常載入。請改在 Safari／Chrome 開啟 https://zhao-wu.com/，並確保允許 JavaScript。<noscript>目前瀏覽器未啟用 JavaScript，完整排盤功能需要 JavaScript。</noscript></p>
         <p>免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。</p>
         <p>昭梧以出生資料與傳統子平八字為基礎，整理個人命盤、人生節奏、今日提示與自我探索內容。</p>
         <h2>主要功能</h2>
