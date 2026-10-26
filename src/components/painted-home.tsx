@@ -45,7 +45,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <div className="ph-title">
         {layout === 'comic' ? <><h1>{t('命理不只是答案，\n更是看見自己的另一種方式。','命理不只是答案，\n更是看见自己的另一种方式。','Another way to\nunderstand yourself.')}</h1></> : layout === 'koi' ? <><h1>昭<br/>梧</h1><p>{t('觀天地之氣，\n照你心中之梧。', '观天地之气，\n照你心中之梧。', 'See the world clearly.\nFind your own way.')}</p><small>{t('以東方智慧，尋見更清明的自己。', '以东方智慧，寻见更清明的自己。', 'Eastern wisdom, a clearer sense of self.')}</small></> : <><h1>{skin ? (locale === 'en' ? skin.en : locale === 'zh-Hans' ? skin.hans : skin.zh) : t('順應天時\n看見更好的選擇', '顺应天时\n看见更好的选择', 'Find your rhythm.\nSee your next step.')}</h1><p className="ph-motto">{t('命 · 勢 · 選', '命 · 势 · 选', 'LIFE · TIMING · CHOICE')}</p><small>{t('在變動的時代，找到屬於你的節奏', '在变动的时代，找到属于你的节奏', 'Find your own rhythm in a changing world.')}</small></>}
       </div>
-      <div className="ph-actions ph-guide-start"><a href="#home-guide">{t('從第一步開始', '从第一步开始', 'Start with step one')} <span>↓</span></a></div>
+      <div className="ph-actions ph-guide-start"><button type="button" data-home-birth-entry onClick={() => onOpen('form')}>{t('開始我的命盤', '开始我的命盘', 'Begin my chart')} <span>›</span></button></div>
     </div>
     {layout === 'comic' ? <section className="ph-comic-panel">
       <h2>{t('漫畫命盤預覽','漫画命盘预览','Your illustrated chart')}</h2>
