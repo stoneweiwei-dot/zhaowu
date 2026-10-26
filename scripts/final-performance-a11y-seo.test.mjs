@@ -93,3 +93,22 @@ test("static fallback offers first-screen entry to homepage and working birth fo
   assert.ok(home.includes('BIRTH_HASHES = ["#birth-form"'), "Chart deep-link must be supported");
   assert.ok(home.includes("openBirthBook({ focusYear: false })"), "Deep-link must open form without extra tap");
 });
+
+test("reader and full-text translation views retain first-screen escape guidance", async () => {
+  const html = await source("index.html");
+  const mainStart = html.indexOf('<main class="zw-static-shell" lang="zh-Hant">');
+  const mainEnd = html.indexOf("</main>", mainStart);
+  assert.ok(mainStart >= 0 && mainEnd > mainStart, "Static fallback must exist");
+  const body = html.slice(mainStart, mainEnd);
+  // Reader-style text extractors may remove navigation but retain article paragraphs.
+  const readerBody = body.replace(/<nav\\b[^>]*>[\\s\\S]*?<\\/nav>/g, "");
+  const introEnd = readerBody.indexOf("<h2>主要功能</h2>");
+  const lead = readerBody.slice(0, introEnd);
+  assert.ok(lead.includes('data-static-reader-access'), "Reader-help text must be a paragraph, not a nav");
+  assert.ok(lead.includes("Translate Full Text／翻譯全文"), "Recognizable translation-mode exit steps are required");
+  assert.ok(lead.includes('href="https://zhao-wu.com/#birth-form"'), "Visible link to full browser birth form is required");
+  assert.ok(lead.includes('href="https://zhao-wu.com/"'), "Visible link to homepage is required");
+  assert.ok(lead.indexOf('data-static-reader-access') < lead.indexOf('免登入免費八字排盤'), "Recovery directions must precede feature copy");
+  assert.ok(html.includes(".zw-static-reader-access a {"), "Tap-size CSS must cover inline recovery links");
+  assert.ok(html.includes("min-height: 44px"), "Recovery links need mobile-sized tap targets");
+});
