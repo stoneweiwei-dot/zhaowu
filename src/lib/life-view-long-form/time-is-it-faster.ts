@@ -124,46 +124,7 @@ So, is time really speeding up? The most rational answer today is: there is no r
 
 The deeper question is how much of what we call time belongs to the universe itself and how much belongs to the way consciousness represents the universe. Perhaps the most basic reality is events, change, relations and causality—and “passing” is the remarkably real experience produced by a mind standing among those events, remembering one direction and facing the unknown in the other.`,
   },
-  illustrations: [
-    {
-      src: "/articles/time-faster-hero.webp",
-      afterParagraph: 2,
-      display: "wide",
-      alt: {
-        "zh-Hant": "時間真的變快了嗎：物理時間、主觀時間與一天只剩 16 小時的視覺摘要",
-        "zh-Hans": "时间真的变快了吗：物理时间、主观时间与一天只剩 16 小时的视觉摘要",
-        en: "Visual summary comparing physical time, subjective time and the feeling of a 16-hour day",
-      },
-    },
-    {
-      src: "/articles/time-objective-subjective.webp",
-      afterParagraph: 4,
-      display: "wide",
-      alt: {
-        "zh-Hant": "客觀物理時間與主觀時間感受的對照",
-        "zh-Hans": "客观物理时间与主观时间感受的对照",
-        en: "Objective physical time contrasted with subjective time perception",
-      },
-    },
-    {
-      src: "/articles/time-16-hours.webp",
-      afterParagraph: 7,
-      display: "wide",
-      alt: {
-        "zh-Hant": "24 小時如何被睡眠、切換、干擾與疲勞壓縮成較少的可用時間",
-        "zh-Hans": "24 小时如何被睡眠、切换、干扰与疲劳压缩成较少的可用时间",
-        en: "How sleep, switching, interruptions and fatigue can compress a 24-hour day into fewer usable hours",
-      },
-    },
-    {
-      src: "/articles/time-high-energy.webp",
-      afterParagraph: 10,
-      display: "wide",
-      alt: {
-        "zh-Hant": "高警覺與高投入狀態如何以不同方向改變時間知覺",
-        "zh-Hans": "高警觉与高投入状态如何以不同方向改变时间知觉",
-        en: "How high alertness and deep engagement can alter time perception in opposite directions",
-      },
-    },
-  ],
+  // The former four 400px text-heavy infographics had unverified provenance and unreadable mobile copy.
+  // The article carries the same explanation as accessible HTML paragraphs.
+  illustrations: [],
 };
