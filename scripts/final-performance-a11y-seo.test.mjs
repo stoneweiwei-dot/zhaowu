@@ -108,7 +108,8 @@ test("reader and full-text translation views retain first-screen escape guidance
   const introEnd = readerBody.indexOf("<h2>主要功能</h2>");
   const lead = readerBody.slice(0, introEnd);
   assert.ok(lead.includes('data-static-reader-access'), "Reader-help text must be a paragraph, not a nav");
-  assert.ok(lead.includes("Translate Full Text／翻譯全文"), "Recognizable translation-mode exit steps are required");
+  assert.ok(lead.includes("Translate Full Text／翻譯全文"), "Recognizable WeChat full-text toolbar is required");
+  assert.ok(lead.includes("微信（WeChat）") && lead.includes("在瀏覽器開啟／Open in Browser"), "WeChat visitors must see the external-browser action");
   assert.ok(lead.includes('href="https://zhao-wu.com/#birth-form"'), "Visible link to full browser birth form is required");
   assert.ok(lead.includes('href="https://zhao-wu.com/"'), "Visible link to homepage is required");
   assert.ok(lead.indexOf('data-static-reader-access') < lead.indexOf('免登入免費八字排盤'), "Recovery directions must precede feature copy");
